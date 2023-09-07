@@ -186,10 +186,9 @@ export function getNormalizedAcuantCaptureFailureMessage(
 function getFingerPrint(file: File): Promise<string | null> {
   return new Promise((resolve) => {
     const reader = new FileReader();
-    reader.readAsArrayBuffer(file);
-    reader.onloadend = () => {
+    reader.onload = () => {
       const dataBuffer = reader.result;
-      crypto.subtle
+      window.crypto.subtle
         .digest('SHA-256', dataBuffer as ArrayBuffer)
         .then((arrayBuffer) => {
           const digestArray = new Uint8Array(arrayBuffer);
@@ -197,7 +196,7 @@ function getFingerPrint(file: File): Promise<string | null> {
             (data, byte) => data + String.fromCharCode(byte),
             '',
           );
-          const base64String = btoa(strDigest);
+          const base64String = window.btoa(strDigest);
           const urlSafeBase64String = base64String
             .replace(/\+/g, '-')
             .replace(/\//g, '_')
@@ -206,6 +205,7 @@ function getFingerPrint(file: File): Promise<string | null> {
         })
         .catch(() => null);
     };
+    reader.readAsArrayBuffer(file);
   });
 }
 
@@ -392,6 +392,7 @@ function AcuantCapture(
       );
       if (hasFailed) {
         setOwnErrorMessage('Using a failed image');
+        onChange(nextValue, analyticsPayload);
         return;
       }
       trackEvent(`IdV: ${name} image added`, analyticsPayload);

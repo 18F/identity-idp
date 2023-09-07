@@ -181,13 +181,8 @@ RSpec.feature 'doc auth redo document capture', js: true do
         hash_including(remaining_attempts: 3, attempts: 1),
       )
       DocAuth::Mock::DocAuthMockClient.reset!
-      attach_and_submit_images
-      expect(fake_analytics).to have_logged_event(
-        'IdV: doc auth image upload form submitted',
-        hash_including(remaining_attempts: 2, attempts: 2),
-      )
-
-      click_try_again
+      attach_images
+      # Error message without submit
       expect(page).to have_css(
         '.usa-error-message[role="alert"]',
         text: 'Same failed image uploaded again',

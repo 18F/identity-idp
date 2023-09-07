@@ -4,6 +4,7 @@ import {
   ServiceProviderContextProvider,
   AnalyticsContext,
   InPersonContext,
+  FailedCaptureAttemptsContextProvider,
 } from '@18f/identity-document-capture';
 import { I18n } from '@18f/identity-i18n';
 import { I18nContext } from '@18f/identity-react-i18n';
@@ -334,6 +335,48 @@ describe('document-capture/components/review-issues-step', () => {
         expect(getByLabelText('doc_auth.headings.document_capture_front')).to.be.ok();
         expect(getByLabelText('doc_auth.headings.document_capture_back')).to.be.ok();
       });
+    });
+
+    it('skip renders initially with warning page when failed image is submitted again', () => {
+      const { findByRole, getByRole, getByText } = render(
+        <I18nContext.Provider
+          value={
+            new I18n({
+              strings: {
+                'idv.failure.attempts_html': {
+                  one: '<strong>One attempt</strong> remaining',
+                  other: '<strong>%{count} attempts</strong> remaining',
+                },
+              },
+            })
+          }
+        >
+          <FailedCaptureAttemptsContextProvider
+            maxCaptureAttemptsBeforeNativeCamera={3}
+            maxSubmissionAttemptsBeforeNativeCamera={3}
+          >
+            <ReviewIssuesStep
+              value={{ front_image_metadata: '12345' }}
+              {...DEFAULT_PROPS}
+              failedImageFingerprints={{ front: ['12345'], back: [] }}
+              errors={[
+                {
+                  field: 'front',
+                  error: toFormEntryError({
+                    field: 'front',
+                    message: 'duplicate image',
+                    type: 'duplicate_image',
+                  }),
+                },
+              ]}
+            />
+          </FailedCaptureAttemptsContextProvider>
+        </I18nContext.Provider>,
+      );
+
+      expect(findByRole('button', { name: 'idv.failure.button.warning' })).not.to.exist;
+      expect(getByRole('heading', { name: 'doc_auth.headings.review_issues' })).to.be.ok;
+      expect(getByText('duplicate image')).to.be.ok;
     });
 
     context('ial2 strict', () => {

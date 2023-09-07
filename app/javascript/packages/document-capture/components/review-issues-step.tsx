@@ -65,12 +65,17 @@ function ReviewIssuesStep({
   useDidUpdateEffect(onPageTransition, [hasDismissed]);
 
   const { onFailedSubmissionAttempt } = useContext(FailedCaptureAttemptsContext);
-  useEffect(() => onFailedSubmissionAttempt(failedImageFingerprints), []);
+  useEffect(() => onFailedSubmissionAttempt(failedImageFingerprints), [failedImageFingerprints]);
+
   function onWarningPageDismissed() {
     trackEvent('IdV: Capture troubleshooting dismissed');
 
     setHasDismissed(true);
   }
+
+  const skipWarning =
+    !!failedImageFingerprints?.front?.includes(value.front_image_metadata ?? '') ||
+    !!failedImageFingerprints?.back?.includes(value.back_image_metadata ?? '');
 
   // let FormSteps know, via FormStepsContext, whether this page
   // is ready to submit form values
@@ -82,7 +87,7 @@ function ReviewIssuesStep({
     return <BarcodeAttentionWarning onDismiss={onWarningPageDismissed} pii={pii} />;
   }
   // Show warning screen
-  if (!hasDismissed) {
+  if (!hasDismissed && !skipWarning) {
     // Warning(try again screen)
     return (
       <DocumentCaptureWarning
