@@ -716,7 +716,6 @@ PLATFORMS
 
 DEPENDENCIES
   activerecord-postgis-adapter
-  addressable
   ahoy_matey (~> 3.0)
   aws-sdk-cloudwatchlogs
   aws-sdk-kms (~> 1.4)
