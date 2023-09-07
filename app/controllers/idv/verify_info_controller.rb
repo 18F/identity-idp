@@ -54,8 +54,8 @@ module Idv
       }.merge(ab_test_analytics_buckets)
     end
 
-    # copied from verify_step
     def pii
+      @ssn = idv_session.ssn || pii_from_doc[:ssn]
       @pii = pii_from_doc
     end
   end

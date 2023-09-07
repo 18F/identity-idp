@@ -52,6 +52,7 @@ module Idv
       end
 
       def pii
+        @ssn = idv_session.ssn || flow_session[:pii_from_user][:ssn]
         @pii = flow_session[:pii_from_user]
       end
 
