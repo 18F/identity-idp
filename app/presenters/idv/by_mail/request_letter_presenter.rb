@@ -1,5 +1,5 @@
-module Idv
-  class GpoPresenter
+module Idv::ByMail
+  class RequestLetterPresenter
     include Rails.application.routes.url_helpers
 
     attr_reader :current_user, :url_options

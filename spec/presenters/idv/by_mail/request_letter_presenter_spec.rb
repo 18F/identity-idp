@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::GpoPresenter do
+RSpec.describe Idv::ByMail::RequestLetterPresenter do
   let(:user) { create(:user) }
 
   subject(:decorator) do

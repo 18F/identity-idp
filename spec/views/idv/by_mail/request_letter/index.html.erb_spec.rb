@@ -7,7 +7,7 @@ RSpec.describe 'idv/by_mail/request_letter/index.html.erb' do
   let(:step_indicator_steps) { Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS }
   let(:presenter) do
     user = build_stubbed(:user, :fully_registered)
-    Idv::GpoPresenter.new(user, {})
+    Idv::ByMail::RequestLetterPresenter.new(user, {})
   end
 
   before do
