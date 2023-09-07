@@ -103,7 +103,7 @@ RSpec.feature 'IAL2 Single Sign On' do
           click_link(t('idv.messages.gpo.resend'))
 
           expect(user.events.account_verified.size).to be(0)
-          expect(current_path).to eq(idv_gpo_path)
+          expect(current_path).to eq(idv_request_letter_path)
 
           click_button(t('idv.buttons.mail.resend'))
 
@@ -125,7 +125,7 @@ RSpec.feature 'IAL2 Single Sign On' do
           click_link(t('idv.messages.gpo.resend'))
 
           expect(user.events.account_verified.size).to be(0)
-          expect(current_path).to eq(idv_gpo_path)
+          expect(current_path).to eq(idv_request_letter_path)
 
           click_button(t('idv.buttons.mail.resend'))
 

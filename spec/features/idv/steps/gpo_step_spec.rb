@@ -102,7 +102,7 @@ RSpec.feature 'idv gpo step' do
         complete_idv_and_sign_out
         travel_to(days_passed.days.from_now) do
           sign_in_live_with_2fa(user)
-          visit idv_gpo_path
+          visit idv_request_letter_path
           expect(page).to have_current_path(idv_gpo_verify_path)
           expect(page).not_to have_css('.usa-button', text: t('idv.buttons.mail.resend'))
         end
