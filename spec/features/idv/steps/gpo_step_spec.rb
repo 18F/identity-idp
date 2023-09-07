@@ -45,7 +45,7 @@ RSpec.feature 'idv gpo step' do
 
       expect(page).to have_content(t('idv.messages.gpo.another_letter_on_the_way'))
       expect(page).to have_content(t('idv.titles.come_back_later'))
-      expect(page).to have_current_path(idv_gpo_letter_enqueued_path)
+      expect(page).to have_current_path(idv_letter_enqueued_path)
 
       # Confirm that user cannot visit other IdV pages while unverified
       visit idv_agreement_path

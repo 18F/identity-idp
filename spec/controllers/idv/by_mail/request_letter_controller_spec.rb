@@ -261,6 +261,6 @@ RSpec.describe Idv::ByMail::RequestLetterController do
     expect(gpo_confirmation_maker).to receive(:perform)
     expect(gpo_confirmation_maker).to receive(:otp) if otp
     expect { put :create }.to change { ActionMailer::Base.deliveries.count }.by(1)
-    expect(response).to redirect_to idv_gpo_letter_enqueued_path
+    expect(response).to redirect_to idv_letter_enqueued_path
   end
 end

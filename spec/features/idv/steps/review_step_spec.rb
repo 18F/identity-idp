@@ -31,7 +31,7 @@ RSpec.feature 'idv review step', :js do
       click_continue
 
       expect(page).to have_content(t('idv.titles.come_back_later'))
-      expect(current_path).to eq idv_gpo_letter_enqueued_path
+      expect(current_path).to eq idv_letter_enqueued_path
     end
 
     context 'with an sp' do
