@@ -2,6 +2,8 @@ require 'rails_helper'
 
 RSpec.describe Users::SessionsController, devise: true do
   include ActionView::Helpers::DateHelper
+  include ActionView::Helpers::UrlHelper
+
   let(:mock_valid_site) { 'http://example.com' }
 
   describe 'GET /logout' do
@@ -300,6 +302,60 @@ RSpec.describe Users::SessionsController, devise: true do
       post :create, params: { user: { email: { foo: 'bar' }, password: 'password' } }
 
       expect(response).to render_template(:new)
+    end
+
+    it 'does not allow signing in with empty email' do
+      post :create, params: { user: { email: '', password: 'foo' } }
+
+      expect(flash[:alert]).
+        to eq t(
+          'devise.failure.not_found_in_database_html',
+          link_html: link_to(
+            t('devise.failure.not_found_in_database_link_text'),
+            new_user_password_url,
+          ),
+        )
+    end
+
+    it 'does not allow signing in with the wrong email' do
+      user = create(:user)
+      post :create, params: { user: { email: 'invalid@example.com', password: user.password } }
+
+      expect(flash[:alert]).
+        to eq t(
+          'devise.failure.invalid_html',
+          link_html: link_to(
+            t('devise.failure.invalid_link_text'),
+            new_user_password_url,
+          ),
+        )
+    end
+
+    it 'does not allow signing in with empty password' do
+      post :create, params: { user: { email: 'test@example.com', password: '' } }
+
+      expect(flash[:alert]).
+        to eq t(
+          'devise.failure.not_found_in_database_html',
+          link_html: link_to(
+            t('devise.failure.not_found_in_database_link_text'),
+            new_user_password_url,
+          ),
+        )
+    end
+
+    it 'does not allow signing in with the wrong password' do
+      user = create(:user)
+      post :create, params: { user: { email: user.email, password: 'invalidpass' } }
+
+      expect(flash[:alert]).
+        to eq t(
+          'devise.failure.invalid_html',
+          link_html: link_to(
+            t('devise.failure.invalid_link_text'),
+            new_user_password_url,
+          ),
+        )
     end
 
     context 'with remember_device cookie present and valid' do

@@ -133,5 +133,27 @@ RSpec.describe TwoFactorOptionsForm do
         end
       end
     end
+
+    context 'when a user signs up with phishing resistant requirement' do
+      let(:user) { build(:user) }
+      let(:phishing_resistant_required) { true }
+
+      context 'when user did not select an mfa' do
+        let(:mfa_selection) { [] }
+
+        it 'is unsuccessful' do
+          submission = subject.submit(selection: mfa_selection)
+          expect(submission.success?).to eq(false)
+        end
+      end
+
+      context 'when user selects an mfa' do
+        let(:mfa_selection) { ['piv_cac'] }
+        it 'is successful' do
+          submission = subject.submit(selection: mfa_selection)
+          expect(submission.success?).to eq(true)
+        end
+      end
+    end
   end
 end

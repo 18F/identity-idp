@@ -65,8 +65,8 @@ describe('document-capture/components/document-capture', () => {
     // `onError` called with an Error instance is indication of camera access declined, which is
     // expected to show both field-level and step error.
     // See: https://github.com/18F/identity-idp/blob/164231d/app/javascript/packages/document-capture/components/acuant-capture.jsx#L114
-    window.AcuantCameraUI.start.callsFake(({ _onCaptured, _onCropped, onFailure }) =>
-      onFailure(new Error()),
+    window.AcuantCameraUI.start.callsFake(({ _onCaptured, _onCropped, onError }) =>
+      onError(new Error()),
     );
 
     await userEvent.click(getByLabelText('doc_auth.headings.document_capture_front'));

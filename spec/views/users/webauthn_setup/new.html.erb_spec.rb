@@ -15,6 +15,7 @@ RSpec.describe 'users/webauthn_setup/new.html.erb' do
         user_opted_remember_device_cookie: true,
         remember_device_default: true,
         platform_authenticator: platform_authenticator,
+        url_options: {},
       )
     end
 

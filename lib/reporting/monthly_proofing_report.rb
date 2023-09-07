@@ -28,6 +28,7 @@ module Reporting
       end
     end
 
+    # @param [Array<String>] issuers
     # @param [Range<Time>] date
     def initialize(
       time_range:,
@@ -35,7 +36,7 @@ module Reporting
       progress: false,
       slice: 3.hours,
       threads: 5,
-      issuer: nil # rubocop:disable Lint/UnusedMethodArgument
+      issuers: [] # rubocop:disable Lint/UnusedMethodArgument
     )
       @time_range = time_range
       @verbose = verbose

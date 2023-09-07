@@ -79,14 +79,9 @@ RSpec.describe AccountsController do
     end
 
     context 'when a user is suspended' do
-      render_views
       it 'redirects to contact support page' do
-        user = create(
-          :user,
-          :fully_registered,
-        )
+        user = create(:user, :fully_registered, :suspended)
 
-        user.suspend!
         sign_in user
         get :show
 
@@ -119,6 +114,14 @@ RSpec.describe AccountsController do
 
           expect(response).to_not be_redirect
         end
+      end
+    end
+
+    context 'user is not authenticated' do
+      it 'redirects to sign in page with relevant flash message' do
+        get :show
+        expect(response).to redirect_to(root_path)
+        expect(flash[:alert]).to eq(t('devise.failure.unauthenticated'))
       end
     end
   end
