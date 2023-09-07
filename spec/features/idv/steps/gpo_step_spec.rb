@@ -49,11 +49,11 @@ RSpec.feature 'idv gpo step' do
 
       # Confirm that user cannot visit other IdV pages while unverified
       visit idv_agreement_path
-      expect(page).to have_current_path(idv_gpo_verify_path)
+      expect(page).to have_current_path(idv_enter_verify_by_mail_code_path)
       visit idv_ssn_url
-      expect(page).to have_current_path(idv_gpo_verify_path)
+      expect(page).to have_current_path(idv_enter_verify_by_mail_code_path)
       visit idv_verify_info_url
-      expect(page).to have_current_path(idv_gpo_verify_path)
+      expect(page).to have_current_path(idv_enter_verify_by_mail_code_path)
 
       # complete verification: end to end gpo test
       complete_gpo_verification(user)
@@ -93,7 +93,7 @@ RSpec.feature 'idv gpo step' do
         complete_idv_and_sign_out
         travel_to(days_passed.days.from_now) do
           sign_in_live_with_2fa(user)
-          expect(page).to have_current_path(idv_gpo_verify_path)
+          expect(page).to have_current_path(idv_enter_verify_by_mail_code_path)
           expect(page).not_to have_css('.usa-button', text: t('idv.buttons.mail.resend'))
         end
       end
@@ -103,7 +103,7 @@ RSpec.feature 'idv gpo step' do
         travel_to(days_passed.days.from_now) do
           sign_in_live_with_2fa(user)
           visit idv_request_letter_path
-          expect(page).to have_current_path(idv_gpo_verify_path)
+          expect(page).to have_current_path(idv_enter_verify_by_mail_code_path)
           expect(page).not_to have_css('.usa-button', text: t('idv.buttons.mail.resend'))
         end
       end
@@ -114,7 +114,7 @@ RSpec.feature 'idv gpo step' do
       click_doc_auth_back_link
 
       expect(page).to have_content(t('idv.gpo.title'))
-      expect(page).to have_current_path(idv_gpo_verify_path)
+      expect(page).to have_current_path(idv_enter_verify_by_mail_code_path)
       expect_user_to_be_unverified(user)
     end
 

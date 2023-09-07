@@ -247,7 +247,7 @@ RSpec.describe 'IdvStepConcern' do
         get :show
 
         expect(response.body).to eq 'Hello'
-        expect(response).to_not redirect_to idv_gpo_verify_url
+        expect(response).to_not redirect_to idv_enter_verify_by_mail_code_url
         expect(response.status).to eq 200
       end
     end
@@ -258,7 +258,7 @@ RSpec.describe 'IdvStepConcern' do
       it 'redirects to enter your code page' do
         get :show
 
-        expect(response).to redirect_to idv_gpo_verify_url
+        expect(response).to redirect_to idv_enter_verify_by_mail_code_url
       end
     end
   end

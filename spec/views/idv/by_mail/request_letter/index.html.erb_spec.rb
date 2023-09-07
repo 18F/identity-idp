@@ -52,7 +52,10 @@ RSpec.describe 'idv/by_mail/request_letter/index.html.erb' do
     let(:user_needs_address_otp_verification) { true }
 
     it 'renders fallback link to return to verify path' do
-      expect(rendered).to have_link('‹ ' + t('forms.buttons.back'), href: idv_gpo_verify_path)
+      expect(rendered).to have_link(
+        '‹ ' + t('forms.buttons.back'),
+        href: idv_enter_verify_by_mail_code_path,
+      )
     end
   end
 end
