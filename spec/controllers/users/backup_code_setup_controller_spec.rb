@@ -37,6 +37,7 @@ RSpec.describe Users::BackupCodeSetupController do
     expect(@analytics).to receive(:track_event).
       with('Backup Code Created', {
         enabled_mfa_methods_count: 2,
+        in_account_creation_flow: false,
       })
     expect(@irs_attempts_api_tracker).to receive(:track_event).
       with(:mfa_enroll_backup_code, success: true)

@@ -256,6 +256,11 @@ RSpec.describe Users::WebauthnSetupController do
             transports: 'usb',
           }
         end
+
+        before do
+          controller.user_session[:in_account_creation_flow] = true
+        end
+
         it 'should log expected events' do
           Funnel::Registration::AddMfa.call(user.id, 'phone', @analytics)
           expect(@analytics).to receive(:track_event).
@@ -310,6 +315,11 @@ RSpec.describe Users::WebauthnSetupController do
             platform_authenticator: 'true',
           }
         end
+
+        before do
+          controller.user_session[:in_account_creation_flow] = true
+        end
+
         it 'should log expected events' do
           expect(@analytics).to receive(:track_event).
             with('User marked authenticated', { authentication_type: :valid_2fa_confirmation })
@@ -375,7 +385,7 @@ RSpec.describe Users::WebauthnSetupController do
                 'errors.webauthn_platform_setup.attestation_error',
                 link: MarketingSite.contact_url,
               )] },
-              in_account_creation_flow: true,
+              in_account_creation_flow: false,
               mfa_method_counts: {},
               multi_factor_auth_method: 'webauthn_platform',
               pii_like_keypaths: [[:mfa_method_counts, :phone]],
