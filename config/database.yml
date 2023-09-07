@@ -20,6 +20,7 @@ defaults: &defaults
   reaping_frequency: 10
   variables:
     statement_timeout: <%= IdentityConfig.store.database_statement_timeout %>
+  schema_search_path: <%= ENV['SEQUENT_MIGRATION_SCHEMAS'] || 'public, sequent_schema, view_schema' %>
 
 development:
   primary:
