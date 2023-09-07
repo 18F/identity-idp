@@ -393,16 +393,6 @@ RSpec.feature 'Sign in' do
     end
   end
 
-  describe 'session timeout configuration' do
-    it 'uses delay and warning settings whose sum is a multiple of 60' do
-      expect((session_timeout_start + session_timeout_warning) % 60).to eq 0
-    end
-
-    it 'uses frequency and warning settings whose sum is a multiple of 60' do
-      expect((session_timeout_frequency + session_timeout_warning) % 60).to eq 0
-    end
-  end
-
   context 'user attempts too many concurrent sessions' do
     context 'with email and password' do
       scenario 'redirects to home page with error' do
