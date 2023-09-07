@@ -1,3 +1,4 @@
+import { useContext } from 'react';
 import { PageHeading } from '@18f/identity-components';
 import {
   FormStepError,
@@ -7,6 +8,7 @@ import {
 } from '@18f/identity-form-steps';
 import { Cancel } from '@18f/identity-verify-flow';
 import { useI18n } from '@18f/identity-react-i18n';
+import MarketingSiteContext from '../context/marketing-site';
 import UnknownError from './unknown-error';
 import TipList from './tip-list';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
@@ -40,6 +42,7 @@ function DocumentCaptureReviewIssues({
   onError = () => undefined,
   value = {},
 }: DocumentCaptureReviewIssuesProps) {
+  const { getHelpCenterURL } = useContext(MarketingSiteContext);
   const { t } = useI18n();
   return (
     <>
@@ -51,8 +54,14 @@ function DocumentCaptureReviewIssues({
         altFailedDocTypeMsg={isFailedDocType ? t('doc_auth.errors.doc.wrong_id_type') : null}
       />
       {!isFailedDocType && (
-        <a href="https://www.login.gov/help/verify-your-identity/how-to-add-images-of-your-state-issued-id/">
-          {t('doc_auth.info.review_examples_of_photos')}
+        <a
+          href={getHelpCenterURL({
+            category: 'verify-your-identity',
+            article: 'how-to-add-images-of-your-state-issued-id',
+            location: 'document_capture_review_issues',
+          })}
+        >
+          &nbsp; {t('doc_auth.info.review_examples_of_photos')}
         </a>
       )}
       {!isFailedDocType && captureHints && (
