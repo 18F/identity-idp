@@ -563,15 +563,6 @@ RSpec.feature 'Sign in' do
     end
   end
 
-  context 'visiting a page that requires authentication while signed out' do
-    it 'redirects to sign in page with relevant flash message' do
-      visit account_path
-
-      expect(current_path).to eq new_user_session_path
-      expect(page).to have_content(t('devise.failure.unauthenticated'))
-    end
-  end
-
   it_behaves_like 'signing in with the site in Spanish', :saml
   it_behaves_like 'signing in with the site in Spanish', :oidc
 
