@@ -86,7 +86,13 @@ RSpec.describe GpoVerifyForm do
     end
 
     context 'when OTP is expired' do
-      let(:code_sent_at) { 11.days.ago }
+      let(:expiration_days) { 10 }
+      let(:code_sent_at) { (expiration_days + 1).days.ago }
+
+      before do
+        allow(IdentityConfig.store).to receive(:usps_confirmation_max_days).
+          and_return(expiration_days)
+      end
 
       it 'is invalid' do
         result = subject.submit
@@ -118,13 +124,20 @@ RSpec.describe GpoVerifyForm do
         expect(result.to_h[:enqueued_at]).to eq(confirmation_code.code_sent_at)
       end
 
-      context 'pending in person enrollment' do
-        let!(:enrollment) do
-          create(:in_person_enrollment, :establishing, profile: pending_profile, user: user)
+      context 'establishing in person enrollment' do
+        let!(:establishing_enrollment) do
+          create(
+            :in_person_enrollment,
+            :establishing,
+            profile: pending_profile,
+            user: user,
+          )
         end
+
         let(:proofing_components) do
           ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
         end
+
         before do
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
         end
@@ -134,19 +147,47 @@ RSpec.describe GpoVerifyForm do
           pending_profile.reload
 
           expect(pending_profile).not_to be_active
-          expect(pending_profile.deactivation_reason).to eq('in_person_verification_pending')
-          expect(pending_profile.in_person_verification_pending_at).to be_present
+          expect(pending_profile.in_person_verification_pending?).to eq(true)
           expect(pending_profile.gpo_verification_pending?).to eq(false)
         end
 
         it 'updates establishing in-person enrollment to pending' do
           subject.submit
 
-          enrollment.reload
+          establishing_enrollment.reload
 
-          expect(enrollment.status).to eq(InPersonEnrollment::STATUS_PENDING)
-          expect(enrollment.user_id).to eq(user.id)
-          expect(enrollment.enrollment_code).to be_a(String)
+          expect(establishing_enrollment.status).to eq(InPersonEnrollment::STATUS_PENDING)
+          expect(establishing_enrollment.user_id).to eq(user.id)
+          expect(establishing_enrollment.enrollment_code).to be_a(String)
+        end
+      end
+
+      context 'pending in person enrollment' do
+        let!(:pending_enrollment) do
+          create(
+            :in_person_enrollment,
+            :pending,
+            profile: pending_profile,
+            user: user,
+          )
+        end
+
+        let(:proofing_components) do
+          ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
+        end
+
+        before do
+          allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+        end
+
+        it 'changes profile from pending to active' do
+          subject.submit
+          pending_profile.reload
+
+          expect(pending_profile).to be_active
+          expect(pending_profile.deactivation_reason).to be_nil
+          expect(pending_profile.in_person_verification_pending_at).to be_nil
+          expect(pending_profile.gpo_verification_pending?).to eq(false)
         end
       end
 

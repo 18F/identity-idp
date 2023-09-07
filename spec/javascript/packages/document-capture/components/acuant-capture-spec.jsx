@@ -334,8 +334,8 @@ describe('document-capture/components/acuant-capture', () => {
         </AnalyticsContext.Provider>,
       );
 
-      const start = async ({ onFailure }) => {
-        await onFailure('Camera not supported.', 'start-fail-code');
+      const start = async ({ onError }) => {
+        await onError('Camera not supported.', 'start-fail-code');
       };
 
       initialize({
@@ -412,11 +412,11 @@ describe('document-capture/components/acuant-capture', () => {
 
       initialize({
         start: sinon.stub().callsFake((callbacks) => {
-          const { onFailure } = callbacks;
+          const { onError } = callbacks;
           setTimeout(() => {
             const code = 'sequence-break-code';
             document.cookie = `AcuantCameraHasFailed=${code}`;
-            onFailure('iOS 15 sequence break', code);
+            onError('iOS 15 sequence break', code);
           }, 0);
         }),
       });
@@ -495,8 +495,8 @@ describe('document-capture/components/acuant-capture', () => {
         </AnalyticsContext.Provider>,
       );
 
-      const start = async ({ onFailure }) => {
-        await onFailure(new Error());
+      const start = async ({ onError }) => {
+        await onError(new Error());
       };
 
       initialize({
@@ -538,8 +538,8 @@ describe('document-capture/components/acuant-capture', () => {
       );
       outsideInput = getByTestId('outside-input');
 
-      const start = async ({ onFailure }) => {
-        await onFailure(new Error());
+      const start = async ({ onError }) => {
+        await onError(new Error());
       };
 
       initialize({

@@ -3,10 +3,7 @@ require 'rails_helper'
 RSpec.describe Idv::LinkSentController do
   include IdvHelper
 
-  let(:flow_session) do
-    { document_capture_session_uuid: 'fd14e181-6fb1-4cdc-92e0-ef66dad0df4e',
-      threatmetrix_session_id: 'c90ae7a5-6629-4e77-b97c-f1987c2df7d0' }
-  end
+  let(:flow_session) { {} }
 
   let(:user) { create(:user) }
 
@@ -102,7 +99,7 @@ RSpec.describe Idv::LinkSentController do
 
     context 'with pii in session' do
       it 'redirects to ssn step' do
-        flow_session['pii_from_doc'] = Idp::Constants::MOCK_IDV_APPLICANT
+        flow_session[:pii_from_doc] = Idp::Constants::MOCK_IDV_APPLICANT
         get :show
 
         expect(response).to redirect_to(idv_ssn_url)

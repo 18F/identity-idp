@@ -133,6 +133,16 @@ RSpec.describe ServiceProviderController do
       end
     end
 
+    context 'missing token in header' do
+      let(:token) { nil }
+
+      it 'returns a 401' do
+        post :update
+
+        expect(response.status).to eq 401
+      end
+    end
+
     context 'feature off' do
       let(:use_feature) { false }
       before { post :update }

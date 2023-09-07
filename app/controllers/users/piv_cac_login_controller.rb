@@ -66,8 +66,6 @@ module Users
       user = piv_cac_login_form.user
       sign_in(:user, user)
 
-      mark_user_session_authenticated(:piv_cac)
-
       save_piv_cac_information(
         subject: piv_cac_login_form.x509_dn,
         issuer: piv_cac_login_form.x509_issuer,

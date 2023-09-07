@@ -118,10 +118,7 @@ module Idv
     end
 
     def extra_view_variables
-      {
-        flow_session: flow_session,
-        idv_phone_form: build_form,
-      }
+      { idv_phone_form: build_form }
     end
 
     def build_form

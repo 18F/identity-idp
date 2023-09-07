@@ -34,7 +34,9 @@ RSpec.feature 'verify profile with OTP' do
     end
 
     scenario 'OTP has expired' do
-      GpoConfirmationCode.first.update(code_sent_at: 11.days.ago)
+      GpoConfirmationCode.first.update(
+        code_sent_at: (IdentityConfig.store.usps_confirmation_max_days + 1).days.ago,
+      )
 
       sign_in_live_with_2fa(user)
       fill_in t('idv.gpo.form.otp_label'), with: otp
