@@ -50,6 +50,7 @@ function DocumentsStep({
       <PageHeading>{t('doc_auth.headings.document_capture')}</PageHeading>
       <p>{t('doc_auth.info.document_capture_intro_acknowledgment')}</p>
       <TipList
+        titleClassName="margin-bottom-0"
         title={t('doc_auth.tips.document_capture_header_text')}
         items={[
           t('doc_auth.tips.document_capture_id_text1'),

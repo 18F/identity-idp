@@ -66,6 +66,7 @@ function DocumentCaptureReviewIssues({
       )}
       {!isFailedDocType && captureHints && (
         <TipList
+          titleClassName="margin-bottom-0 margin-top-2"
           title={t('doc_auth.tips.review_issues_id_header_text')}
           items={[
             t('doc_auth.tips.review_issues_id_text1'),
