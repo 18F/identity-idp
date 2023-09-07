@@ -21,12 +21,16 @@ interface InPersonLocationsProps {
   NoInPersonLocations: Function;
 }
 
-function InPersonLocations({ locations, onSelect, address, NoInPersonLocations
-  }: InPersonLocationsProps) {
+function InPersonLocations({
+  locations,
+  onSelect,
+  address,
+  NoInPersonLocations,
+}: InPersonLocationsProps) {
   const isPilot = locations?.some((l) => l.isPilot);
 
   if (locations?.length === 0) {
-    return <NoInPersonLocations address={address} />
+    return <NoInPersonLocations address={address} />;
   }
 
   return (
