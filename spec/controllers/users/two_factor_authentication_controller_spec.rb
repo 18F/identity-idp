@@ -72,7 +72,7 @@ RSpec.describe Users::TwoFactorAuthenticationController do
     context 'when user is piv/cac enabled' do
       it 'renders the piv/cac entry screen' do
         allow_any_instance_of(Browser).to receive(:mobile?).and_return(true)
-        user = create(:user, :with_phone, :with_piv_or_cac)
+        user = create(:user, :with_piv_or_cac)
         stub_sign_in_before_2fa(user)
 
         get :show
@@ -81,7 +81,7 @@ RSpec.describe Users::TwoFactorAuthenticationController do
       end
 
       it 'redirects to phone when on mobile and user has phone' do
-        allow_any_instance_of(Browser).to receive(:mobile?).and_return(true)
+        allow(controller).to receive(:mobile?).and_return(true)
         user = create(:user, :with_phone, :with_piv_or_cac)
         stub_sign_in_before_2fa(user)
 
