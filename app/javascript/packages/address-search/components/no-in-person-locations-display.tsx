@@ -3,7 +3,7 @@ import { t } from '@18f/identity-i18n';
 
 function NoInPersonLocationsDisplay({ address }) {
   return (
-    <div className="grid-row grid-gap grid-gap-2">
+    <div className="grid-row grid-gap grid-gap-1">
       <img
         className="grid-col-2 margin-top-3"
         alt={t('image_description.info_pin_map')}
