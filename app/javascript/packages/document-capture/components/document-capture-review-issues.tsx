@@ -53,17 +53,6 @@ function DocumentCaptureReviewIssues({
         isFailedDocType={isFailedDocType}
         altFailedDocTypeMsg={isFailedDocType ? t('doc_auth.errors.doc.wrong_id_type') : null}
       />
-      {!isFailedDocType && (
-        <a
-          href={getHelpCenterURL({
-            category: 'verify-your-identity',
-            article: 'how-to-add-images-of-your-state-issued-id',
-            location: 'document_capture_review_issues',
-          })}
-        >
-          {t('doc_auth.info.review_examples_of_photos')}
-        </a>
-      )}
       {!isFailedDocType && captureHints && (
         <TipList
           titleClassName="margin-bottom-0 margin-top-2"

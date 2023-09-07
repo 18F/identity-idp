@@ -1,3 +1,4 @@
+import { useContext } from 'react';
 import { FormError } from '@18f/identity-form-steps';
 import { forceRedirect } from '@18f/identity-url';
 import { request } from '@18f/identity-request';
@@ -7,6 +8,7 @@ import type {
   UploadFieldError,
   UploadImplementation,
 } from '../context/upload';
+import MarketingSiteContext from '../context/marketing-site';
 
 /**
  * Personally-identifiable information extracted from document subject to user confirmation.
@@ -28,8 +30,20 @@ export interface PII {
   dob: string;
 }
 
+export function getHelpCenterLink(): String {
+  const { getHelpCenterURL } = useContext(MarketingSiteContext);
+  const helpCenterLink = getHelpCenterURL({
+    category: 'verify-your-identity',
+    article: 'how-to-add-images-of-your-state-issued-id',
+    location: 'document_capture_review_issues',
+  });
+  return helpCenterLink;
+}
+
 export class UploadFormEntryError extends FormError {
   field = '';
+
+  helpCenterLink = getHelpCenterLink();
 }
 
 export class UploadFormEntriesError extends FormError {

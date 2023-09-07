@@ -35,8 +35,9 @@ function UnknownError({
   }
   if (err) {
     return (
-      <p className="display-inline" key={err.message}>
-        {err.message}{' '}
+      <p key={err.message}>
+        {err.message}
+        <a href={err.helpCenterLink}>{t('doc_auth.info.review_examples_of_photos')}</a>
       </p>
     );
   }
