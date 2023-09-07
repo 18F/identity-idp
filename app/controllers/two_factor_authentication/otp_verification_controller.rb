@@ -45,6 +45,7 @@ module TwoFactorAuthentication
         auth_method: params[:otp_delivery_preference],
       )
       flash[:success] = t('notices.phone_confirmed')
+      user_session.delete(:in_account_creation_flow)
       redirect_to next_setup_path || after_mfa_setup_path
     end
 

@@ -68,6 +68,7 @@ module Users
       if user_session[:mfa_selections].first.present?
         redirect_to confirmation_path(user_session[:mfa_selections].first)
       else
+        user_session.delete(:in_account_creation_flow)
         redirect_to after_mfa_setup_path
       end
     end
