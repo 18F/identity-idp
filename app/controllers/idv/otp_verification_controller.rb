@@ -4,7 +4,7 @@ module Idv
     include StepIndicatorConcern
     include PhoneOtpRateLimitable
 
-    # confirm_two_factor_authenticated before action is in PhoneOtpRateLimitable
+    before_action :confirm_two_factor_authenticated
     before_action :confirm_step_needed
     before_action :confirm_otp_sent
     before_action :set_code

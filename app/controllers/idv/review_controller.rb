@@ -17,23 +17,6 @@ module Idv
     rescue_from UspsInPersonProofing::Exception::RequestEnrollException,
                 with: :handle_request_enroll_exception
 
-    def confirm_current_password
-      return if valid_password?
-
-      analytics.idv_review_complete(
-        success: false,
-        gpo_verification_pending: current_user.gpo_verification_pending_profile?,
-        in_person_verification_pending: current_user.in_person_pending_profile?,
-        fraud_review_pending: fraud_review_pending?,
-        fraud_rejection: fraud_rejection?,
-        **ab_test_analytics_buckets,
-      )
-      irs_attempts_api_tracker.idv_password_entered(success: false)
-
-      flash[:error] = t('idv.errors.incorrect_password')
-      redirect_to idv_review_url
-    end
-
     def new
       Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
         call(:encrypt, :view, true)
@@ -97,6 +80,24 @@ module Idv
     end
 
     private
+
+    def confirm_current_password
+      return if valid_password?
+
+      analytics.idv_review_complete(
+        success: false,
+        gpo_verification_pending: current_user.gpo_verification_pending_profile?,
+        # note: this always returns false as of 8/23
+        in_person_verification_pending: current_user.in_person_pending_profile?,
+        fraud_review_pending: fraud_review_pending?,
+        fraud_rejection: fraud_rejection?,
+        **ab_test_analytics_buckets,
+      )
+      irs_attempts_api_tracker.idv_password_entered(success: false)
+
+      flash[:error] = t('idv.errors.incorrect_password')
+      redirect_to idv_review_url
+    end
 
     def gpo_mail_service
       @gpo_mail_service ||= Idv::GpoMail.new(current_user)

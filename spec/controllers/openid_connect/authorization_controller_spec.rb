@@ -11,12 +11,13 @@ RSpec.describe OpenidConnect::AuthorizationController do
 
   let(:client_id) { 'urn:gov:gsa:openidconnect:test' }
   let(:service_provider) { build(:service_provider, issuer: client_id) }
+  let(:prompt) { 'select_account' }
   let(:params) do
     {
       acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
       client_id: client_id,
       nonce: SecureRandom.hex,
-      prompt: 'select_account',
+      prompt: prompt,
       redirect_uri: 'gov.gsa.openidconnect.test://result',
       response_type: 'code',
       scope: 'openid profile',
@@ -26,6 +27,18 @@ RSpec.describe OpenidConnect::AuthorizationController do
 
   describe '#index' do
     subject(:action) { get :index, params: params }
+
+    context 'with prompt=login' do
+      let(:prompt) { 'login' }
+
+      it 'does not log user out when switching languages after authentication' do
+        user = create(:user, :with_phone)
+        action
+        sign_in_as_user(user)
+        get :index, params: params.merge(locale: 'es')
+        expect(controller.current_user).to eq(user)
+      end
+    end
 
     context 'user is signed in' do
       let(:user) { create(:user, :fully_registered) }

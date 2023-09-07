@@ -17,7 +17,9 @@ production:
   redis_url: ['env', 'REDIS_URL']
   password_pepper: f22d4b2cafac9066fe2f4416f5b7a32c
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
-  piv_cac_verify_token_secret: ee7f20f44cdc2ba0c6830f70470d1d1d059e1279cdb58134db92b35947b1528ef5525ece5910cf4f2321ab989a618feea12ef95711dbc62b9601e8520a34ee12
+  piv_cac_service_url: ['env', 'PIV_CAC_SERVICE_URL']
+  piv_cac_verify_token_secret: "a6ed2fb16320ae85a7a8e48f4b0eeb6afca5f1ac64af2a05a0c486df1c20b693987832a11f0910729f199b3ce5c7609fe6d580bed428d035ea8460990e38a382"
+  piv_cac_verify_token_url: ['env', 'PIV_CAC_VERIFY_TOKEN_URL']
   secret_key_base: development_secret_key_base
   domain_name: ['env', 'DOMAIN_NAME']
   use_kms: false
@@ -29,5 +31,4 @@ production:
   telephony_adapter: test
   doc_auth_vendor: 'mock'
   usps_auth_token_refresh_job_enabled: false
-  arcgis_api_refresh_token_job_enabled: false
   lexisnexis_threatmetrix_mock_enabled: true

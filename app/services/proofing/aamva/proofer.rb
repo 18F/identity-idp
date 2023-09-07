@@ -98,13 +98,8 @@ module Proofing
       end
 
       def send_to_new_relic(result)
-        case result.exception
-        when Proofing::TimeoutError
+        if result.mva_timeout?
           return # noop
-        when Proofing::Aamva::VerificationError
-          if result.mva_timeout?
-            return # noop
-          end
         end
         NewRelic::Agent.notice_error(result.exception)
       end

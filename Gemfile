@@ -8,6 +8,7 @@ gem 'rails', '~> 7.0.0'
 gem 'activerecord-postgis-adapter'
 gem 'ahoy_matey', '~> 3.0'
 gem 'aws-sdk-kms', '~> 1.4'
+gem 'aws-sdk-cloudwatchlogs', require: false
 gem 'aws-sdk-pinpoint'
 gem 'aws-sdk-pinpointsmsvoice'
 gem 'aws-sdk-ses', '~> 1.6'
@@ -17,6 +18,7 @@ gem 'barby', '~> 0.6.8'
 gem 'base32-crockford'
 gem 'bootsnap', '~> 1.0', require: false
 gem 'browser'
+gem 'concurrent-ruby'
 gem 'connection_pool'
 gem 'cssbundling-rails'
 gem 'devise', '~> 4.8'
@@ -92,7 +94,6 @@ group :development do
 end
 
 group :development, :test do
-  gem 'aws-sdk-cloudwatchlogs', require: false
   gem 'brakeman', require: false
   gem 'bullet', '~> 7.0'
   gem 'capybara-webmock', git: 'https://github.com/hashrocket/capybara-webmock.git', ref: 'd3f3b7c'

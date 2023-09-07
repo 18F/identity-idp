@@ -6,7 +6,7 @@ module Reporting
     # @return [Hash]
     def parse!(argv, out: STDOUT, require_issuer: true)
       date = nil
-      issuer = nil
+      issuers = []
       verbose = false
       progress = true
       period = nil
@@ -49,7 +49,7 @@ module Reporting
         end
 
         opts.on('--issuer=ISSUER') do |issuer_v|
-          issuer = issuer_v
+          issuers << issuer_v
         end
 
         opts.on('--[no-]verbose', 'log details STDERR, default to off') do |verbose_v|
@@ -89,13 +89,13 @@ module Reporting
 
       parser.parse!(argv)
 
-      if !date || (require_issuer && !issuer)
+      if !date || (require_issuer && issuers.empty?)
         out.puts parser
         exit 1
       else
         {
           time_range: time_range(date:, period:),
-          issuer: issuer,
+          issuers: issuers,
           verbose: verbose,
           progress: progress,
           slice: slice || 3.hours,

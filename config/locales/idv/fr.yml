@@ -60,6 +60,7 @@ fr:
       pattern_mismatch:
         ssn: 'Entrez un numéro de sécurité sociale à neuf chiffres'
         zipcode: Entrez un code postal à 5 ou 9 chiffres
+        zipcode_five: Entrez un code postal à 5 chiffres
     failure:
       attempts_html:
         one: Pour des raisons de sécurité, il vous reste <strong>une tentative</strong>
@@ -168,9 +169,9 @@ fr:
         - Vous devrez ressaisir vos informations personnelles, comme votre nom,
           pièce d’identité officielle, etc.
     form:
-      address1: Adresse Ligne 1
-      address2: Adresse Ligne 2
-      address2_optional: Adresse Ligne 2 (optional)
+      address1: Adresse ligne 1
+      address2: Adresse ligne 2
+      address2_optional: Adresse ligne 2 (optional)
       city: Ville
       dob: Date de naissance
       first_name: Prénom

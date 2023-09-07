@@ -1,16 +1,10 @@
 import { useState, useEffect, useCallback, useRef, useContext } from 'react';
-import { useI18n } from '@18f/identity-react-i18n';
-import { Alert, PageHeading } from '@18f/identity-components';
 import { request } from '@18f/identity-request';
 import { forceRedirect } from '@18f/identity-url';
-import AddressSearch, {
-  transformKeys,
-  snakeCase,
-  LocationQuery,
-} from '@18f/identity-address-search';
+import AddressSearch, { transformKeys, snakeCase } from '@18f/identity-address-search';
+import type { FormattedLocation } from '@18f/identity-address-search/types';
 import BackButton from './back-button';
 import AnalyticsContext from '../context/analytics';
-import InPersonLocations, { FormattedLocation } from './in-person-locations';
 import { InPersonContext } from '../context';
 import UploadContext from '../context/upload';
 
@@ -22,16 +16,13 @@ export const ADDRESSES_URL = new URL('/api/addresses', window.location.href).toS
 
 function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, registerField }) {
   const { inPersonURL } = useContext(InPersonContext);
-  const { t } = useI18n();
   const [inProgress, setInProgress] = useState<boolean>(false);
-  const [isLoadingLocations, setLoadingLocations] = useState<boolean>(false);
   const [autoSubmit, setAutoSubmit] = useState<boolean>(false);
   const { trackEvent } = useContext(AnalyticsContext);
   const [locationResults, setLocationResults] = useState<FormattedLocation[] | null | undefined>(
     null,
   );
-  const [foundAddress, setFoundAddress] = useState<LocationQuery | null>(null);
-  const [apiError, setApiError] = useState<Error | null>(null);
+
   const [disabledAddressSearch, setDisabledAddressSearch] = useState<boolean>(false);
   const { flowPath } = useContext(UploadContext);
 
@@ -102,30 +93,14 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
 
   return (
     <>
-      {apiError && (
-        <Alert type="error" className="margin-bottom-4">
-          {t('idv.failure.exceptions.post_office_search_error')}
-        </Alert>
-      )}
-      <PageHeading>{t('in_person_proofing.headings.po_search.location')}</PageHeading>
-      <p>{t('in_person_proofing.body.location.po_search.po_search_about')}</p>
       <AddressSearch
         registerField={registerField}
-        onFoundAddress={setFoundAddress}
         onFoundLocations={setLocationResults}
-        onLoadingLocations={setLoadingLocations}
-        onError={setApiError}
+        handleLocationSelect={handleLocationSelect}
         disabled={disabledAddressSearch}
         locationsURL={LOCATIONS_URL}
         addressSearchURL={ADDRESSES_URL}
       />
-      {locationResults && foundAddress && !isLoadingLocations && (
-        <InPersonLocations
-          locations={locationResults}
-          onSelect={handleLocationSelect}
-          address={foundAddress?.address || ''}
-        />
-      )}
       <BackButton role="link" includeBorder onClick={toPreviousStep} />
     </>
   );

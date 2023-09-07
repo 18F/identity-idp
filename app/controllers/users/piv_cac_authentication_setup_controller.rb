@@ -34,7 +34,7 @@ module Users
     end
 
     def delete
-      analytics.user_registration_piv_cac_disabled
+      analytics.piv_cac_disabled
       remove_piv_cac
       clear_piv_cac_information
       create_user_event(:piv_cac_disabled)
@@ -57,8 +57,9 @@ module Users
 
     def track_piv_cac_setup_visit
       mfa_user = MfaContext.new(current_user)
-      analytics.user_registration_piv_cac_setup_visit(
+      analytics.piv_cac_setup_visit(
         enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
+        in_multi_mfa_selection_flow: in_multi_mfa_selection_flow?,
       )
     end
 
@@ -131,6 +132,7 @@ module Users
       mfa_user = MfaContext.new(current_user)
       analytics.multi_factor_auth_added_piv_cac(
         enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
+        in_multi_mfa_selection_flow: in_multi_mfa_selection_flow?,
       )
       Funnel::Registration::AddMfa.call(current_user.id, 'piv_cac', analytics)
     end

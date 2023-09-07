@@ -206,7 +206,6 @@ module Users
           otp_make_default_number: default,
         )
       elsif @telephony_result.error.is_a?(Telephony::OptOutError)
-        flash.delete(:info)
         opt_out = PhoneNumberOptOut.mark_opted_out(phone_to_deliver_to)
         redirect_to login_two_factor_sms_opt_in_path(opt_out_uuid: opt_out)
       else

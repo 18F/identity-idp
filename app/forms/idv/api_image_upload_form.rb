@@ -32,7 +32,6 @@ module Idv
 
         if client_response.success?
           doc_pii_response = validate_pii_from_doc(client_response)
-          rate_limiter.reset!
         end
       end
 
@@ -114,7 +113,10 @@ module Idv
 
       analytics.idv_doc_auth_submitted_pii_validation(**response.to_h)
 
-      store_pii(client_response) if client_response.success? && response.success?
+      if client_response.success? && response.success?
+        store_pii(client_response)
+        rate_limiter.reset!
+      end
 
       response
     end
@@ -139,7 +141,7 @@ module Idv
           Digest::SHA256.urlsafe_base64digest(back_image_bytes)
       end
 
-      @extra_attributes
+      @extra_attributes.merge!(getting_started_ab_test_analytics_bucket)
     end
 
     def remaining_attempts
@@ -216,7 +218,9 @@ module Idv
     def doc_auth_client
       @doc_auth_client ||= DocAuthRouter.client(
         vendor_discriminator: document_capture_session_uuid,
-        warn_notifier: proc { |attrs| analytics&.doc_auth_warning(**attrs) },
+        warn_notifier: proc do |attrs|
+          analytics&.doc_auth_warning(**attrs.merge(getting_started_ab_test_analytics_bucket))
+        end,
       )
     end
 
@@ -248,7 +252,8 @@ module Idv
           async: false,
           flow_path: params[:flow_path],
           vendor_request_time_in_ms: vendor_request_time_in_ms,
-        ).merge(acuant_sdk_upgrade_ab_test_data),
+        ).merge(acuant_sdk_upgrade_ab_test_data).
+        merge(getting_started_ab_test_analytics_bucket),
       )
     end
 
@@ -276,6 +281,13 @@ module Idv
       {
         acuant_sdk_upgrade_ab_test_bucket:
           AbTests::ACUANT_SDK.bucket(document_capture_session.uuid),
+      }
+    end
+
+    def getting_started_ab_test_analytics_bucket
+      {
+        getting_started_ab_test_bucket:
+          AbTests::IDV_GETTING_STARTED.bucket(user_uuid),
       }
     end
 

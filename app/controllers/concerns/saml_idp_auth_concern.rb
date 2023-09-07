@@ -1,6 +1,7 @@
 module SamlIdpAuthConcern
   extend ActiveSupport::Concern
   extend Forwardable
+  include ForcedReauthenticationConcern
 
   included do
     # rubocop:disable Rails/LexicallyScopedActionFilter
@@ -19,9 +20,22 @@ module SamlIdpAuthConcern
   private
 
   def sign_out_if_forceauthn_is_true_and_user_is_signed_in
+    if !saml_request.force_authn?
+      set_issuer_forced_reauthentication(
+        issuer: saml_request_service_provider.issuer,
+        is_forced_reauthentication: false,
+      )
+    end
+
     return unless user_signed_in? && saml_request.force_authn?
 
-    sign_out unless sp_session[:final_auth_request]
+    if !sp_session[:final_auth_request]
+      sign_out
+      set_issuer_forced_reauthentication(
+        issuer: saml_request_service_provider.issuer,
+        is_forced_reauthentication: true,
+      )
+    end
     sp_session[:final_auth_request] = false
   end
 

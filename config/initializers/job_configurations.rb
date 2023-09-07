@@ -4,6 +4,7 @@ cron_1h = '0 * * * *'
 cron_24h = '0 0 * * *'
 gpo_cron_24h = '0 10 * * *' # 10am UTC is 5am EST/6am EDT
 cron_1w = '0 0 * * 0'
+cron_1st_of_mo = '0 0 1 * *'
 
 if defined?(Rails::Console)
   Rails.logger.info 'job_configurations: console detected, skipping schedule'
@@ -164,22 +165,33 @@ else
         cron: cron_24h,
         args: -> { [Time.zone.yesterday] },
       },
+      # Send Identity Verification report to S3
+      identity_verification_report: {
+        class: 'Reports::IdentityVerificationReport',
+        cron: cron_24h,
+        args: -> { [Time.zone.yesterday] },
+      },
       usps_auth_token_refresh: (if IdentityConfig.store.usps_auth_token_refresh_job_enabled
                                   {
                                     class: 'UspsAuthTokenRefreshJob',
                                     cron: cron_12m,
                                   }
                                 end),
-      arcgis_token: (if IdentityConfig.store.arcgis_api_refresh_token_job_enabled
-                       {
-                         class: 'ArcgisTokenJob',
-                         cron: IdentityConfig.store.arcgis_api_refresh_token_job_cron,
-                       }
-                     end),
       # Account creation/deletion stats for OKRs
       quarterly_account_stats: {
         class: 'Reports::QuarterlyAccountStats',
         cron: cron_24h,
+        args: -> { [Time.zone.today] },
+      },
+      # Send reminder letters for old, outstanding GPO verification codes
+      send_gpo_code_reminders: {
+        class: 'GpoReminderJob',
+        cron: cron_24h,
+        args: -> { [14.days.ago] },
+      },
+      monthly_account_reuse_report: {
+        class: 'Reports::MonthlyAccountReuseReport',
+        cron: cron_1st_of_mo,
         args: -> { [Time.zone.today] },
       },
     }.compact

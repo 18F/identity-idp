@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+Dir.chdir(__dir__) { require 'bundler/setup' }
+
 require 'active_support'
 require 'active_support/core_ext/enumerable' # index_by
 require 'active_support/core_ext/integer/time'
@@ -58,7 +60,7 @@ class EmailDeliveries
     results = query_data(uuids)
 
     table = Terminal::Table.new
-    table << %w[user_id timestamp message_id events]
+    table << %w[user_id timestamp message_id email_action events]
     table << :separator
 
     results.each do |result|
@@ -66,6 +68,7 @@ class EmailDeliveries
         result.user_id,
         result.timestamp,
         result.message_id,
+        result.email_action,
         result.events.join(', '),
       ]
     end
@@ -77,6 +80,7 @@ class EmailDeliveries
     :user_id,
     :timestamp,
     :message_id,
+    :email_action,
     :events,
     keyword_init: true,
   )
@@ -90,6 +94,7 @@ class EmailDeliveries
             @timestamp
           , properties.user_id AS user_id
           , properties.event_properties.ses_message_id AS ses_message_id
+          , properties.event_properties.action AS email_action
           | filter name = 'Email Sent'
           | filter properties.user_id IN #{quote(uuids)}
           | limit 10000
@@ -122,6 +127,7 @@ class EmailDeliveries
         map do |message_id, events|
           Result.new(
             user_id: events_by_message_id[message_id]['user_id'],
+            email_action: events_by_message_id[message_id]['email_action'],
             timestamp: events_by_message_id[message_id]['@timestamp'],
             message_id: message_id,
             events: events.sort_by { |e| e['@timestamp'] }.map { |e| e['event_type'] },

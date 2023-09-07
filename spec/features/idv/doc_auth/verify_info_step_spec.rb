@@ -51,7 +51,11 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
 
       expect(fake_analytics).to have_logged_event(
         'IdV: doc auth verify proofing results',
-        hash_including(address_edited: true, address_line2_present: true),
+        hash_including(
+          address_edited: true,
+          address_line2_present: true,
+          analytics_id: 'Doc Auth',
+        ),
       )
     end
 

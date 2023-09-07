@@ -4,9 +4,7 @@ RSpec.describe Idv::SsnController do
   include IdvHelper
 
   let(:flow_session) do
-    { 'document_capture_session_uuid' => 'fd14e181-6fb1-4cdc-92e0-ef66dad0df4e',
-      'pii_from_doc' => Idp::Constants::MOCK_IDV_APPLICANT.dup,
-      :threatmetrix_session_id => 'c90ae7a5-6629-4e77-b97c-f1987c2df7d0' }
+    { pii_from_doc: Idp::Constants::MOCK_IDV_APPLICANT.dup }
   end
 
   let(:ssn) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn] }
@@ -88,10 +86,14 @@ RSpec.describe Idv::SsnController do
       )
     end
 
+    it 'adds a threatmetrix session id to idv_session' do
+      expect { get :show }.to change { subject.idv_session.threatmetrix_session_id }.from(nil)
+    end
+
     context 'with an ssn in session' do
       let(:referer) { idv_document_capture_url }
       before do
-        flow_session['pii_from_doc'][:ssn] = ssn
+        flow_session[:pii_from_doc][:ssn] = ssn
         request.env['HTTP_REFERER'] = referer
       end
 
@@ -133,29 +135,6 @@ RSpec.describe Idv::SsnController do
         expect(csp.directives['img-src']).to include('*.online-metrix.net')
       end
     end
-
-    it 'does not override the Content Security for CSP disabled test users' do
-      allow(IdentityConfig.store).to receive(:proofing_device_profiling).
-        and_return(:enabled)
-      allow(IdentityConfig.store).to receive(:idv_tmx_test_csp_disabled_emails).
-        and_return([user.email_addresses.first.email])
-
-      get :show
-
-      csp = response.request.content_security_policy
-
-      aggregate_failures do
-        expect(csp.directives['script-src']).to_not include('h.online-metrix.net')
-
-        expect(csp.directives['style-src']).to_not include("'unsafe-inline'")
-
-        expect(csp.directives['child-src']).to_not include('h.online-metrix.net')
-
-        expect(csp.directives['connect-src']).to_not include('h.online-metrix.net')
-
-        expect(csp.directives['img-src']).to_not include('*.online-metrix.net')
-      end
-    end
   end
 
   describe '#update' do
@@ -177,12 +156,12 @@ RSpec.describe Idv::SsnController do
       it 'merges ssn into pii session value' do
         put :update, params: params
 
-        expect(flow_session['pii_from_doc'][:ssn]).to eq(ssn)
+        expect(flow_session[:pii_from_doc][:ssn]).to eq(ssn)
       end
 
       context 'with a Puerto Rico address' do
         it 'redirects to address controller after user enters their SSN' do
-          flow_session['pii_from_doc'][:state] = 'PR'
+          flow_session[:pii_from_doc][:state] = 'PR'
 
           put :update, params: params
 
@@ -190,8 +169,8 @@ RSpec.describe Idv::SsnController do
         end
 
         it 'redirects to the verify info controller if a user is updating their SSN' do
-          flow_session['pii_from_doc'][:ssn] = ssn
-          flow_session['pii_from_doc'][:state] = 'PR'
+          flow_session[:pii_from_doc][:ssn] = ssn
+          flow_session[:pii_from_doc][:state] = 'PR'
 
           put :update, params: params
 
@@ -216,28 +195,8 @@ RSpec.describe Idv::SsnController do
         end
       end
 
-      it 'adds a threatmetrix session id to flow session' do
-        put :update, params: params
-        subject.threatmetrix_view_variables
-        expect(flow_session[:threatmetrix_session_id]).to_not eq(nil)
-      end
-
-      it 'does not change flow_session threatmetrix_session_id when updating ssn' do
-        flow_session['pii_from_doc'][:ssn] = ssn
-        put :update, params: params
-        session_id = flow_session[:threatmetrix_session_id]
-        subject.threatmetrix_view_variables
-        expect(flow_session[:threatmetrix_session_id]).to eq(session_id)
-      end
-
-      it 'adds a threatmetrix session id to idv_session' do
-        put :update, params: params
-        subject.threatmetrix_view_variables
-        expect(subject.idv_session.threatmetrix_session_id).to_not eq(nil)
-      end
-
-      it 'does not change idv_session threatmetrix_session_id when updating ssn' do
-        flow_session['pii_from_doc'][:ssn] = ssn
+      it 'does not change threatmetrix_session_id when updating ssn' do
+        flow_session[:pii_from_doc][:ssn] = ssn
         put :update, params: params
         session_id = subject.idv_session.threatmetrix_session_id
         subject.threatmetrix_view_variables
@@ -278,7 +237,7 @@ RSpec.describe Idv::SsnController do
     context 'when pii_from_doc is not present' do
       before do
         subject.idv_session.flow_path = 'standard'
-        flow_session.delete('pii_from_doc')
+        flow_session.delete(:pii_from_doc)
       end
 
       it 'redirects to DocumentCaptureController on standard flow' do
@@ -300,31 +259,6 @@ RSpec.describe Idv::SsnController do
         expect(response.status).to eq 302
         expect(response).to redirect_to idv_hybrid_handoff_url
       end
-    end
-  end
-
-  describe '#should_render_threatmetrix_js?' do
-    it 'returns true if the JS should be disabled for the user' do
-      allow(IdentityConfig.store).to receive(:proofing_device_profiling).
-        and_return(:enabled)
-      allow(IdentityConfig.store).to receive(:idv_tmx_test_js_disabled_emails).
-        and_return([user.email_addresses.first.email])
-
-      expect(controller.should_render_threatmetrix_js?).to eq(false)
-    end
-
-    it 'returns true if the JS should not be disabled for the user' do
-      allow(IdentityConfig.store).to receive(:proofing_device_profiling).
-        and_return(:enabled)
-
-      expect(controller.should_render_threatmetrix_js?).to eq(true)
-    end
-
-    it 'returns false if TMx profiling is disabled' do
-      allow(IdentityConfig.store).to receive(:proofing_device_profiling).
-        and_return(:disabled)
-
-      expect(controller.should_render_threatmetrix_js?).to eq(false)
     end
   end
 end

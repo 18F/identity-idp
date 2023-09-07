@@ -30,7 +30,7 @@ module Idv
 
           redirect_to idv_in_person_verify_info_url if updating_address?
 
-          redirect_to idv_in_person_proofing_ssn_url
+          redirect_to idv_in_person_ssn_url
         end
 
         def extra_view_variables

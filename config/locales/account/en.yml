@@ -71,6 +71,8 @@ en:
       delete_account: Delete
       regenerate_personal_key: Reset
     login:
+      forced_reauthentication_notice_html: <strong>%{sp_name}</strong> needs you to
+        enter your email and password again.
       piv_cac: Sign in with your government employee ID
       tab_navigation: Account creation tabs
     navigation:

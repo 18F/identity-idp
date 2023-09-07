@@ -226,9 +226,9 @@ module AnalyticsEvents
   end
 
   # Tracks when the user visits the Backup Code Regenerate page.
-  # @param [String] request_came_from the controller/action the request came from
-  def backup_code_regenerate_visit(request_came_from:, **extra)
-    track_event('Backup Code Regenerate Visited', request_came_from:, **extra)
+  # @param [Boolean] in_multi_mfa_selection_flow whether user is going through MFA selection Flow
+  def backup_code_regenerate_visit(in_multi_mfa_selection_flow:, **extra)
+    track_event('Backup Code Regenerate Visited', in_multi_mfa_selection_flow:, **extra)
   end
 
   # Track user creating new BackupCodeSetupForm, record form submission Hash
@@ -297,11 +297,17 @@ module AnalyticsEvents
     track_event('Doc Auth Async', error: error, uuid: uuid, result_id: result_id, **extra)
   end
 
-  # @param [String] message the warining
+  # @param [String] message the warning
+  # @param [String] getting_started_ab_test_bucket Which initial IdV screen the user saw
   # Logged when there is a non-user-facing error in the doc auth process, such as an unrecognized
   # field from a vendor
-  def doc_auth_warning(message: nil, **extra)
-    track_event('Doc Auth Warning', message: message, **extra)
+  def doc_auth_warning(message: nil, getting_started_ab_test_bucket: nil, **extra)
+    track_event(
+      'Doc Auth Warning',
+      message: message,
+      getting_started_ab_test_bucket: getting_started_ab_test_bucket,
+      **extra,
+    )
   end
 
   # When a user views the edit password page
@@ -553,47 +559,6 @@ module AnalyticsEvents
     track_event('IdV: address visited')
   end
 
-  # Tracks if request to get address candidates from ArcGIS fails
-  # @param [String] exception_class
-  # @param [String] exception_message
-  # @param [Boolean] response_body_present
-  # @param [Hash] response_body
-  # @param [Integer] response_status_code
-  def idv_arcgis_request_failure(
-    exception_class:,
-    exception_message:,
-    response_body_present:,
-    response_body:,
-    response_status_code:,
-    **extra
-  )
-    track_event(
-      'Request ArcGIS Address Candidates: request failed',
-      exception_class: exception_class,
-      exception_message: exception_message,
-      response_body_present: response_body_present,
-      response_body: response_body,
-      response_status_code: response_status_code,
-      **extra,
-    )
-  end
-
-  # Track when ArcGIS auth token refresh job completed
-  def idv_arcgis_token_job_completed(**extra)
-    track_event(
-      'ArcgisTokenJob: Completed',
-      **extra,
-    )
-  end
-
-  # Track when ArcGIS auth token refresh job started
-  def idv_arcgis_token_job_started(**extra)
-    track_event(
-      'ArcgisTokenJob: Started',
-      **extra,
-    )
-  end
-
   # @param [String] step the step that the user was on when they clicked cancel
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # The user confirmed their choice to cancel going through IDV
@@ -759,6 +724,7 @@ module AnalyticsEvents
   # @param [String] flow_path
   # @param [String] front_image_fingerprint Fingerprint of front image data
   # @param [String] back_image_fingerprint Fingerprint of back image data
+  # @param [String] getting_started_ab_test_bucket Which initial IdV screen the user saw
   # The document capture image uploaded was locally validated during the IDV process
   def idv_doc_auth_submitted_image_upload_form(
     success:,
@@ -769,6 +735,7 @@ module AnalyticsEvents
     user_id: nil,
     front_image_fingerprint: nil,
     back_image_fingerprint: nil,
+    getting_started_ab_test_bucket: nil,
     **extra
   )
     track_event(
@@ -781,6 +748,7 @@ module AnalyticsEvents
       flow_path: flow_path,
       front_image_fingerprint: front_image_fingerprint,
       back_image_fingerprint: back_image_fingerprint,
+      getting_started_ab_test_bucket: getting_started_ab_test_bucket,
       **extra,
     )
   end
@@ -800,6 +768,7 @@ module AnalyticsEvents
   # @param [Float] vendor_request_time_in_ms Time it took to upload images & get a response.
   # @param [String] front_image_fingerprint Fingerprint of front image data
   # @param [String] back_image_fingerprint Fingerprint of back image data
+  # @param [String] getting_started_ab_test_bucket Which initial IdV screen the user saw
   # The document capture image was uploaded to vendor during the IDV process
   def idv_doc_auth_submitted_image_upload_vendor(
     success:,
@@ -816,6 +785,7 @@ module AnalyticsEvents
     vendor_request_time_in_ms: nil,
     front_image_fingerprint: nil,
     back_image_fingerprint: nil,
+    getting_started_ab_test_bucket: nil,
     **extra
   )
     track_event(
@@ -835,6 +805,7 @@ module AnalyticsEvents
       vendor_request_time_in_ms: vendor_request_time_in_ms,
       front_image_fingerprint: front_image_fingerprint,
       back_image_fingerprint: back_image_fingerprint,
+      getting_started_ab_test_bucket: getting_started_ab_test_bucket,
       **extra,
     )
   end
@@ -847,6 +818,7 @@ module AnalyticsEvents
   # @param [String] flow_path
   # @param [String] front_image_fingerprint Fingerprint of front image data
   # @param [String] back_image_fingerprint Fingerprint of back image data
+  # @param [String] getting_started_ab_test_bucket Which initial IdV screen the user saw
   # The PII that came back from the document capture vendor was validated
   def idv_doc_auth_submitted_pii_validation(
     success:,
@@ -857,6 +829,7 @@ module AnalyticsEvents
     user_id: nil,
     front_image_fingerprint: nil,
     back_image_fingerprint: nil,
+    getting_started_ab_test_bucket: nil,
     **extra
   )
     track_event(
@@ -869,6 +842,7 @@ module AnalyticsEvents
       flow_path: flow_path,
       front_image_fingerprint: front_image_fingerprint,
       back_image_fingerprint: back_image_fingerprint,
+      getting_started_ab_test_bucket: getting_started_ab_test_bucket,
       **extra,
     )
   end
@@ -918,6 +892,8 @@ module AnalyticsEvents
   # @param [Boolean] gpo_verification_pending Profile is awaiting gpo verificaiton
   # @param [Boolean] in_person_verification_pending Profile is awaiting in person verificaiton
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # @see Reporting::IdentityVerificationReport#query This event is used by the identity verification
+  #       report. Changes here should be reflected there.
   # Tracks the last step of IDV, indicates the user successfully proofed
   def idv_final(
     success:,
@@ -1051,6 +1027,8 @@ module AnalyticsEvents
   # @param [Integer] attempts Number of attempts to enter a correct code
   # @param [Boolean] pending_in_person_enrollment
   # @param [Boolean] fraud_check_failed
+  # @see Reporting::IdentityVerificationReport#query This event is used by the identity verification
+  #       report. Changes here should be reflected there.
   # GPO verification submitted
   def idv_gpo_verification_submitted(
     success:,
@@ -2013,16 +1991,19 @@ module AnalyticsEvents
   # @param [String, nil] deactivation_reason Reason profile was deactivated.
   # @param [Boolean] fraud_review_pending Profile is under review for fraud
   # @param [Boolean] fraud_rejection Profile is rejected due to fraud
+  # @param [Boolean] in_person_verification_pending Profile is pending in-person verification
   # User submitted IDV personal key page
   def idv_personal_key_submitted(
     fraud_review_pending:,
     fraud_rejection:,
+    in_person_verification_pending:,
     proofing_components: nil,
     deactivation_reason: nil,
     **extra
   )
     track_event(
       'IdV: personal key submitted',
+      in_person_verification_pending: in_person_verification_pending,
       deactivation_reason: deactivation_reason,
       fraud_review_pending: fraud_review_pending,
       fraud_rejection: fraud_rejection,
@@ -2598,12 +2579,15 @@ module AnalyticsEvents
 
   # Tracks when the user has added the MFA method piv_cac to their account
   # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
-  def multi_factor_auth_added_piv_cac(enabled_mfa_methods_count:, **extra)
+  # @param [Boolean] in_multi_mfa_selection_flow whether user is going through MFA selection Flow
+  def multi_factor_auth_added_piv_cac(enabled_mfa_methods_count:, in_multi_mfa_selection_flow:,
+                                      **extra)
     track_event(
       'Multi-Factor Authentication: Added PIV_CAC',
       {
         method_name: :piv_cac,
-        enabled_mfa_methods_count: enabled_mfa_methods_count,
+        enabled_mfa_methods_count:,
+        in_multi_mfa_selection_flow:,
         **extra,
       }.compact,
     )
@@ -2611,12 +2595,15 @@ module AnalyticsEvents
 
   # Tracks when the user has added the MFA method TOTP to their account
   # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
-  def multi_factor_auth_added_totp(enabled_mfa_methods_count:, **extra)
+  # @param [Boolean] in_multi_mfa_selection_flow whether user is going through MFA selection Flow
+  def multi_factor_auth_added_totp(enabled_mfa_methods_count:, in_multi_mfa_selection_flow:,
+                                   **extra)
     track_event(
       'Multi-Factor Authentication: Added TOTP',
       {
         method_name: :totp,
-        enabled_mfa_methods_count: enabled_mfa_methods_count,
+        in_multi_mfa_selection_flow:,
+        enabled_mfa_methods_count:,
         **extra,
       }.compact,
     )
@@ -2647,13 +2634,17 @@ module AnalyticsEvents
 
   # Tracks when the user visits the backup code confirmation setup page
   # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
+  # @param [Boolean] in_multi_mfa_selection_flow tell whether its in MFA selection flow or not
   def multi_factor_auth_enter_backup_code_confirmation_visit(
-    enabled_mfa_methods_count:, **extra
+    enabled_mfa_methods_count:,
+    in_multi_mfa_selection_flow:,
+    **extra
   )
     track_event(
       'Multi-Factor Authentication: enter backup code confirmation visited',
       {
-        enabled_mfa_methods_count: enabled_mfa_methods_count,
+        enabled_mfa_methods_count:,
+        in_multi_mfa_selection_flow:,
         **extra,
       }.compact,
     )
@@ -2829,6 +2820,44 @@ module AnalyticsEvents
       multi_factor_auth_method: multi_factor_auth_method,
       in_multi_mfa_selection_flow: in_multi_mfa_selection_flow,
       enabled_mfa_methods_count: enabled_mfa_methods_count,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success
+  # @param [String] exception
+  # @param [Integer] profile_id
+  # A profile was migrated from a single-region key to a multi-region key
+  def multi_region_kms_migration_profile_migrated(
+    success:,
+    exception:,
+    profile_id:,
+    **extra
+  )
+    track_event(
+      'Multi-region KMS migration: Profile migrated',
+      success: success,
+      exception: exception,
+      profile_id: profile_id,
+      **extra,
+    )
+  end
+
+  # @param [Integer] profile_count
+  # @param [Integer] success_count
+  # @param [Integer] error_count
+  # The profile migration job finished running
+  def multi_region_kms_migration_profile_migration_summary(
+    profile_count:,
+    success_count:,
+    error_count:,
+    **extra
+  )
+    track_event(
+      'Multi-region KMS migration: Profile migration summary',
+      profile_count: profile_count,
+      success_count: success_count,
+      error_count: error_count,
       **extra,
     )
   end
@@ -3243,6 +3272,12 @@ module AnalyticsEvents
     )
   end
 
+  # @identity.idp.previous_event_name User Registration: piv cac disabled
+  # Tracks when user's piv cac is disabled
+  def piv_cac_disabled
+    track_event('PIV CAC disabled')
+  end
+
   # @param [Boolean] success
   # @param [Hash] errors
   # tracks piv cac login event
@@ -3251,6 +3286,17 @@ module AnalyticsEvents
       'PIV/CAC Login',
       success: success,
       errors: errors,
+      **extra,
+    )
+  end
+
+  # @identity.idp.previous_event_name User Registration: piv cac setup visited
+  # Tracks when user's piv cac setup
+  # @param [Boolean] in_multi_mfa_selection_flow
+  def piv_cac_setup_visit(in_multi_mfa_selection_flow:, **extra)
+    track_event(
+      'PIV CAC setup visited',
+      in_multi_mfa_selection_flow:,
       **extra,
     )
   end
@@ -3747,17 +3793,20 @@ module AnalyticsEvents
   # @param [Boolean] user_signed_up
   # @param [Boolean] totp_secret_present
   # @param [Integer] enabled_mfa_methods_count
+  # @param [Boolean] in_multi_mfa_selection_flow
   def totp_setup_visit(
     user_signed_up:,
     totp_secret_present:,
     enabled_mfa_methods_count:,
+    in_multi_mfa_selection_flow:,
     **extra
   )
     track_event(
       'TOTP Setup Visited',
-      user_signed_up: user_signed_up,
-      totp_secret_present: totp_secret_present,
-      enabled_mfa_methods_count: enabled_mfa_methods_count,
+      user_signed_up:,
+      totp_secret_present:,
+      enabled_mfa_methods_count:,
+      in_multi_mfa_selection_flow:,
       **extra,
     )
   end
@@ -3829,29 +3878,6 @@ module AnalyticsEvents
       path: path,
       seconds: seconds,
       **extra,
-    )
-  end
-
-  # @param [Boolean] success
-  # @param [Hash] errors
-  # Tracks when the the user has selected and submitted additional MFA methods on user registration
-  def user_registration_2fa_additional_setup(success:,
-                                             errors: nil,
-                                             **extra)
-    track_event(
-      'User Registration: Additional 2FA Setup',
-      {
-        success: success,
-        errors: errors,
-        **extra,
-      }.compact,
-    )
-  end
-
-  # Tracks when user visits additional MFA selection page
-  def user_registration_2fa_additional_setup_visit
-    track_event(
-      'User Registration: Additional 2FA Setup visited',
     )
   end
 
@@ -4051,19 +4077,6 @@ module AnalyticsEvents
     track_event(
       'User Registration: phone setup visited',
       enabled_mfa_methods_count: enabled_mfa_methods_count,
-      **extra,
-    )
-  end
-
-  # Tracks when user's piv cac is disabled
-  def user_registration_piv_cac_disabled
-    track_event('User Registration: piv cac disabled')
-  end
-
-  # Tracks when user's piv cac setup
-  def user_registration_piv_cac_setup_visit(**extra)
-    track_event(
-      'User Registration: piv cac setup visited',
       **extra,
     )
   end

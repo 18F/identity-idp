@@ -1,19 +1,20 @@
-import sinon from 'sinon';
-import { fireEvent } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { waitFor, createEvent } from '@testing-library/dom';
 import AcuantCapture, {
-  isAcuantCameraAccessFailure,
-  getNormalizedAcuantCaptureFailureMessage,
-  getDecodedBase64ByteSize,
   AcuantDocumentType,
+  getDecodedBase64ByteSize,
+  getNormalizedAcuantCaptureFailureMessage,
+  isAcuantCameraAccessFailure,
 } from '@18f/identity-document-capture/components/acuant-capture';
 import { AcuantContextProvider, AnalyticsContext } from '@18f/identity-document-capture';
+import { createEvent, waitFor } from '@testing-library/dom';
+
 import DeviceContext from '@18f/identity-document-capture/context/device';
-import { I18nContext } from '@18f/identity-react-i18n';
 import { I18n } from '@18f/identity-i18n';
-import { render, useAcuant } from '../../../support/document-capture';
+import { I18nContext } from '@18f/identity-react-i18n';
+import { fireEvent } from '@testing-library/react';
+import sinon from 'sinon';
+import userEvent from '@testing-library/user-event';
 import { getFixtureFile } from '../../../support/file';
+import { render, useAcuant } from '../../../support/document-capture';
 
 const ACUANT_CAPTURE_SUCCESS_RESULT = {
   image: {
@@ -283,7 +284,40 @@ describe('document-capture/components/acuant-capture', () => {
       expect(container.querySelector('.full-screen')).to.be.null();
       expect(trackEvent).to.have.been.calledWith('IdV: Image capture failed', {
         field: 'test',
+        acuantCaptureMode: 'AUTO',
         error: 'Camera not supported',
+      });
+      expect(document.activeElement).to.equal(button);
+    });
+
+    it('shows a generic error if camera starts but cropping error occurs', async () => {
+      const trackEvent = sinon.spy();
+      const { container, getByLabelText, findByText } = render(
+        <AnalyticsContext.Provider value={{ trackEvent }}>
+          <DeviceContext.Provider value={{ isMobile: true }}>
+            <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
+              <AcuantCapture label="Image" name="test" />
+            </AcuantContextProvider>
+          </DeviceContext.Provider>
+        </AnalyticsContext.Provider>,
+      );
+
+      initialize({
+        // Call `onCropped` with a response of 'undefined'
+        start: sinon.stub().callsArgWithAsync(1, undefined),
+      });
+
+      const button = getByLabelText('Image');
+      await userEvent.click(button);
+      // "Oops, something went wrong. Please try again."
+      await findByText('errors.general');
+
+      expect(window.AcuantCameraUI.end).to.have.been.calledOnce();
+      expect(container.querySelector('.full-screen')).to.be.null();
+      expect(trackEvent).to.have.been.calledWith('IdV: Image capture failed', {
+        field: 'test',
+        acuantCaptureMode: 'AUTO',
+        error: 'Cropping failure',
       });
       expect(document.activeElement).to.equal(button);
     });
@@ -300,8 +334,8 @@ describe('document-capture/components/acuant-capture', () => {
         </AnalyticsContext.Provider>,
       );
 
-      const start = async ({ onFailure }) => {
-        await onFailure('Camera not supported.', 'start-fail-code');
+      const start = async ({ onError }) => {
+        await onError('Camera not supported.', 'start-fail-code');
       };
 
       initialize({
@@ -316,6 +350,7 @@ describe('document-capture/components/acuant-capture', () => {
       expect(container.querySelector('.full-screen')).to.be.null();
       expect(trackEvent).to.have.been.calledWith('IdV: Image capture failed', {
         field: 'test',
+        acuantCaptureMode: 'AUTO',
         error: 'Camera not supported',
       });
       expect(document.activeElement).to.equal(button);
@@ -351,6 +386,7 @@ describe('document-capture/components/acuant-capture', () => {
       expect(container.querySelector('.full-screen')).to.be.null();
       expect(trackEvent).to.have.been.calledWith('IdV: Image capture failed', {
         field: 'test',
+        acuantCaptureMode: 'AUTO',
         error: 'iOS 15 GPU Highwater failure (SEQUENCE_BREAK_CODE)',
       });
       await waitFor(() => document.activeElement === button);
@@ -376,11 +412,11 @@ describe('document-capture/components/acuant-capture', () => {
 
       initialize({
         start: sinon.stub().callsFake((callbacks) => {
-          const { onFailure } = callbacks;
+          const { onError } = callbacks;
           setTimeout(() => {
             const code = 'sequence-break-code';
             document.cookie = `AcuantCameraHasFailed=${code}`;
-            onFailure('iOS 15 sequence break', code);
+            onError('iOS 15 sequence break', code);
           }, 0);
         }),
       });
@@ -393,6 +429,7 @@ describe('document-capture/components/acuant-capture', () => {
       expect(container.querySelector('.full-screen')).to.be.null();
       expect(trackEvent).to.have.been.calledWith('IdV: Image capture failed', {
         field: 'test',
+        acuantCaptureMode: 'AUTO',
         error: 'iOS 15 GPU Highwater failure (SEQUENCE_BREAK_CODE)',
       });
       await waitFor(() => document.activeElement === button);
@@ -435,6 +472,7 @@ describe('document-capture/components/acuant-capture', () => {
       expect(container.querySelector('.full-screen')).to.be.null();
       expect(trackEvent).to.have.been.calledWith('IdV: Image capture failed', {
         field: 'test',
+        acuantCaptureMode: 'AUTO',
         error: 'User or system denied camera access',
       });
       expect(document.activeElement).to.equal(button);
@@ -457,8 +495,8 @@ describe('document-capture/components/acuant-capture', () => {
         </AnalyticsContext.Provider>,
       );
 
-      const start = async ({ onFailure }) => {
-        await onFailure(new Error());
+      const start = async ({ onError }) => {
+        await onError(new Error());
       };
 
       initialize({
@@ -475,6 +513,7 @@ describe('document-capture/components/acuant-capture', () => {
       expect(container.querySelector('.full-screen')).to.be.null();
       expect(trackEvent).to.have.been.calledWith('IdV: Image capture failed', {
         field: 'test',
+        acuantCaptureMode: 'AUTO',
         error: 'User or system denied camera access',
       });
       expect(document.activeElement).to.equal(button);
@@ -499,8 +538,8 @@ describe('document-capture/components/acuant-capture', () => {
       );
       outsideInput = getByTestId('outside-input');
 
-      const start = async ({ onFailure }) => {
-        await onFailure(new Error());
+      const start = async ({ onError }) => {
+        await onError(new Error());
       };
 
       initialize({

@@ -4,7 +4,7 @@ module Idv
 
     validate :validate_pii
 
-    attr_reader :first_name, :last_name, :dob, :state, :zipcode, :attention_with_barcode,
+    attr_reader :first_name, :last_name, :dob, :address1, :state, :zipcode, :attention_with_barcode,
                 :jurisdiction
     alias_method :attention_with_barcode?, :attention_with_barcode
 
@@ -13,6 +13,7 @@ module Idv
       @first_name = pii[:first_name]
       @last_name = pii[:last_name]
       @dob = pii[:dob]
+      @address1 = pii[:address1]
       @state = pii[:state]
       @zipcode = pii[:zipcode]
       @jurisdiction = pii[:state_id_jurisdiction]
@@ -45,6 +46,8 @@ module Idv
         errors.add(:pii, dob_error, type: :dob_error)
       elsif !dob_meets_min_age?
         errors.add(:pii, dob_min_age_error, type: :dob_min_age_error)
+      elsif address1.blank?
+        errors.add(:pii, address_error, type: :address_error)
       elsif !state_valid?
         errors.add(:pii, generic_error, type: :generic_error)
       elsif !zipcode_valid?
@@ -100,6 +103,10 @@ module Idv
 
     def dob_min_age_error
       I18n.t('doc_auth.errors.pii.birth_date_min_age')
+    end
+
+    def address_error
+      I18n.t('doc_auth.errors.alerts.address_check')
     end
   end
 end
