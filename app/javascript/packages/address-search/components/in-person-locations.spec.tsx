@@ -72,4 +72,22 @@ describe('InPersonLocations', () => {
     const linkText = 'in_person_proofing.body.location.po_search.you_must_start.link_text';
     expect(queryByText(linkText)).to.not.exist();
   });
+
+  it('renders results instructions when onSelect is passed', () => {
+    const { getByText } = render(
+      <InPersonLocations address={address} locations={locations} onSelect={onSelect} />,
+    );
+
+    expect(getByText('in_person_proofing.body.location.po_search.results_instructions')).to.exist();
+  });
+
+  it('does not render results instructions when onSelect is not passed', () => {
+    const { queryByText } = render(
+      <InPersonLocations address={address} locations={locations} onSelect={null} />,
+    );
+
+    expect(
+      queryByText('in_person_proofing.body.location.po_search.results_instructions'),
+    ).to.not.exist();
+  });
 });

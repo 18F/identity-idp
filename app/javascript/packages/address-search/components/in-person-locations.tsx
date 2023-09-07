@@ -40,7 +40,7 @@ function InPersonLocations({ locations, onSelect, address, infoAlertURL }: InPer
           })}
       </h3>
       {infoAlertURL && <InPersonLocationRedirectAlert infoAlertURL={infoAlertURL} />}
-      <p>{t('in_person_proofing.body.location.po_search.results_instructions')}</p>
+      {onSelect && <p>{t('in_person_proofing.body.location.po_search.results_instructions')}</p>}
       <LocationCollection>
         {(locations || []).map((item, index) => (
           <LocationCollectionItem
