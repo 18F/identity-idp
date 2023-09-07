@@ -79,14 +79,9 @@ RSpec.describe AccountsController do
     end
 
     context 'when a user is suspended' do
-      render_views
       it 'redirects to contact support page' do
-        user = create(
-          :user,
-          :fully_registered,
-        )
+        user = create(:user, :fully_registered, :suspended)
 
-        user.suspend!
         sign_in user
         get :show
 

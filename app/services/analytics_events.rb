@@ -559,47 +559,6 @@ module AnalyticsEvents
     track_event('IdV: address visited')
   end
 
-  # Tracks if request to get address candidates from ArcGIS fails
-  # @param [String] exception_class
-  # @param [String] exception_message
-  # @param [Boolean] response_body_present
-  # @param [Hash] response_body
-  # @param [Integer] response_status_code
-  def idv_arcgis_request_failure(
-    exception_class:,
-    exception_message:,
-    response_body_present:,
-    response_body:,
-    response_status_code:,
-    **extra
-  )
-    track_event(
-      'Request ArcGIS Address Candidates: request failed',
-      exception_class: exception_class,
-      exception_message: exception_message,
-      response_body_present: response_body_present,
-      response_body: response_body,
-      response_status_code: response_status_code,
-      **extra,
-    )
-  end
-
-  # Track when ArcGIS auth token refresh job completed
-  def idv_arcgis_token_job_completed(**extra)
-    track_event(
-      'ArcgisTokenJob: Completed',
-      **extra,
-    )
-  end
-
-  # Track when ArcGIS auth token refresh job started
-  def idv_arcgis_token_job_started(**extra)
-    track_event(
-      'ArcgisTokenJob: Started',
-      **extra,
-    )
-  end
-
   # @param [String] step the step that the user was on when they clicked cancel
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # The user confirmed their choice to cancel going through IDV
@@ -2032,16 +1991,19 @@ module AnalyticsEvents
   # @param [String, nil] deactivation_reason Reason profile was deactivated.
   # @param [Boolean] fraud_review_pending Profile is under review for fraud
   # @param [Boolean] fraud_rejection Profile is rejected due to fraud
+  # @param [Boolean] in_person_verification_pending Profile is pending in-person verification
   # User submitted IDV personal key page
   def idv_personal_key_submitted(
     fraud_review_pending:,
     fraud_rejection:,
+    in_person_verification_pending:,
     proofing_components: nil,
     deactivation_reason: nil,
     **extra
   )
     track_event(
       'IdV: personal key submitted',
+      in_person_verification_pending: in_person_verification_pending,
       deactivation_reason: deactivation_reason,
       fraud_review_pending: fraud_review_pending,
       fraud_rejection: fraud_rejection,
@@ -2858,6 +2820,44 @@ module AnalyticsEvents
       multi_factor_auth_method: multi_factor_auth_method,
       in_account_creation_flow: in_account_creation_flow,
       enabled_mfa_methods_count: enabled_mfa_methods_count,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success
+  # @param [String] exception
+  # @param [Integer] profile_id
+  # A profile was migrated from a single-region key to a multi-region key
+  def multi_region_kms_migration_profile_migrated(
+    success:,
+    exception:,
+    profile_id:,
+    **extra
+  )
+    track_event(
+      'Multi-region KMS migration: Profile migrated',
+      success: success,
+      exception: exception,
+      profile_id: profile_id,
+      **extra,
+    )
+  end
+
+  # @param [Integer] profile_count
+  # @param [Integer] success_count
+  # @param [Integer] error_count
+  # The profile migration job finished running
+  def multi_region_kms_migration_profile_migration_summary(
+    profile_count:,
+    success_count:,
+    error_count:,
+    **extra
+  )
+    track_event(
+      'Multi-region KMS migration: Profile migration summary',
+      profile_count: profile_count,
+      success_count: success_count,
+      error_count: error_count,
       **extra,
     )
   end

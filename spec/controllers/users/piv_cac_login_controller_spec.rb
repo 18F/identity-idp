@@ -133,7 +133,7 @@ RSpec.describe Users::PivCacLoginController do
           it 'tracks the user_marked_authed event' do
             expect(@analytics).to have_received(:track_event).with(
               'User marked authenticated',
-              { authentication_type: :piv_cac },
+              { authentication_type: :valid_2fa },
             )
           end
 
