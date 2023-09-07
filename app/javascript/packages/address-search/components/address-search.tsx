@@ -1,19 +1,30 @@
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import { Alert, PageHeading } from '@18f/identity-components';
 import { t } from '@18f/identity-i18n';
+import type { RegisterFieldCallback } from '@18f/identity-form-steps';
 import InPersonLocations from './in-person-locations';
 import AddressInput from './address-input';
 import type { LocationQuery, FormattedLocation } from '../types';
 
+interface AddressSearchProps {
+  addressSearchURL: string;
+  disabled: boolean;
+  handleLocationSelect: (e: any, id: number) => Promise<void>;
+  infoAlertURL?: string;
+  locationsURL: string;
+  onFoundLocations: Dispatch<SetStateAction<FormattedLocation[] | null | undefined>>;
+  registerField: RegisterFieldCallback;
+}
+
 function AddressSearch({
-  registerField,
-  locationsURL,
   addressSearchURL,
-  handleLocationSelect,
-  infoAlert,
   disabled,
+  handleLocationSelect,
+  infoAlertURL,
+  locationsURL,
   onFoundLocations,
-}) {
+  registerField,
+}: AddressSearchProps) {
   const [apiError, setApiError] = useState<Error | null>(null);
   const [foundAddress, setFoundAddress] = useState<LocationQuery | null>(null);
   const [locationResults, setLocationResults] = useState<FormattedLocation[] | null | undefined>(
@@ -48,7 +59,7 @@ function AddressSearch({
           locations={locationResults}
           onSelect={handleLocationSelect}
           address={foundAddress?.address || ''}
-          infoAlert={infoAlert}
+          infoAlertURL={infoAlertURL}
         />
       )}
     </>

@@ -1,5 +1,5 @@
-import { ComponentType } from 'react';
 import { t } from '@18f/identity-i18n';
+import InPersonLocationRedirectAlert from './in-person-location-redirect-alert';
 import LocationCollection from './location-collection';
 import LocationCollectionItem from './location-collection-item';
 import NoInPersonLocationsDisplay from './no-in-person-locations-display';
@@ -20,15 +20,10 @@ interface InPersonLocationsProps {
   locations: FormattedLocation[] | null | undefined;
   onSelect;
   address: string;
-  infoAlert?: ComponentType;
+  infoAlertURL?: string;
 }
 
-function InPersonLocations({
-  locations,
-  onSelect,
-  address,
-  infoAlert: InfoAlert,
-}: InPersonLocationsProps) {
+function InPersonLocations({ locations, onSelect, address, infoAlertURL }: InPersonLocationsProps) {
   const isPilot = locations?.some((l) => l.isPilot);
 
   if (locations?.length === 0) {
@@ -44,7 +39,7 @@ function InPersonLocations({
             count: locations?.length,
           })}
       </h3>
-      {InfoAlert && <InfoAlert />}
+      {infoAlertURL && <InPersonLocationRedirectAlert infoAlertURL={infoAlertURL} />}
       <p>{t('in_person_proofing.body.location.po_search.results_instructions')}</p>
       <LocationCollection>
         {(locations || []).map((item, index) => (
