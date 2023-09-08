@@ -50,7 +50,7 @@ RSpec.describe Idv::SsnController do
     it 'overrides CSPs for ThreatMetrix' do
       expect(subject).to have_actions(
         :before,
-        :override_csp_for_threat_metrix_no_fsm,
+        :override_csp_for_threat_metrix,
       )
     end
   end
