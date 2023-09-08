@@ -398,6 +398,10 @@ Rails.application.routes.draw do
       if FeatureManagement.gpo_verification_enabled?
         get '/usps' => 'by_mail/request_letter#index', as: :request_letter
         put '/usps' => 'by_mail/request_letter#create'
+
+        # These will be made the new "official" routes in a future commit
+        get '/by_mail/request_letter' => 'by_mail/request_letter#index'
+        put '/by_mail/request_letter' => 'by_mail/request_letter#create'
       end
 
       get '/come_back_later' => 'by_mail/letter_enqueued#show', as: :letter_enqueued
@@ -405,9 +409,9 @@ Rails.application.routes.draw do
       # BEGIN temporary routes in preparation for renaming the GPO routes
       #       These will allow old instances to serve requests for new routes during the 50/50
       #       state when new routes are deployed.
-      get '/by_mail/request_letter' => 'by_mail/request_letter#index'
       get '/by_mail/letter_enqueued' => 'by_mail/letter_enqueued#show'
       get '/by_mail/enter_code' => 'by_mail/enter_code#index'
+      post '/by_mail/enter_code' => 'by_mail/enter_code#create'
       # END temporary routes
     end
 
