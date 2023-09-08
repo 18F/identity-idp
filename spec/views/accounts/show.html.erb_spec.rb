@@ -51,7 +51,7 @@ RSpec.describe 'accounts/show.html.erb' do
       render
 
       expect(rendered).to_not have_link(
-        t('account.index.verification.reactivate_button'), href: idv_enter_verify_by_mail_code_path
+        t('account.index.verification.reactivate_button'), href: idv_verify_by_mail_enter_code_path
       )
     end
   end
@@ -73,7 +73,7 @@ RSpec.describe 'accounts/show.html.erb' do
       expect(rendered).
         to have_link(
           t('account.index.verification.reactivate_button'),
-          href: idv_enter_verify_by_mail_code_path,
+          href: idv_verify_by_mail_enter_code_path,
         )
     end
   end

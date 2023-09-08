@@ -545,7 +545,7 @@ RSpec.describe Users::SessionsController, devise: true do
         stub_sign_in(user)
         get :new
 
-        expect(response).to redirect_to idv_enter_verify_by_mail_code_path
+        expect(response).to redirect_to idv_verify_by_mail_enter_code_path
       end
     end
 

@@ -54,7 +54,7 @@ RSpec.describe 'idv/by_mail/request_letter/index.html.erb' do
     it 'renders fallback link to return to verify path' do
       expect(rendered).to have_link(
         '‹ ' + t('forms.buttons.back'),
-        href: idv_enter_verify_by_mail_code_path,
+        href: idv_verify_by_mail_enter_code_path,
       )
     end
   end

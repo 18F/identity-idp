@@ -141,7 +141,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
       end
       it 'redirects user to url with querystring' do
         expect(response).to redirect_to(
-          idv_enter_verify_by_mail_code_path(did_not_receive_letter: 1),
+          idv_verify_by_mail_enter_code_path(did_not_receive_letter: 1),
         )
       end
       it 'clears session value' do
@@ -395,7 +395,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
 
         action
 
-        expect(response).to redirect_to(idv_enter_verify_by_mail_code_url)
+        expect(response).to redirect_to(idv_verify_by_mail_enter_code_url)
       end
 
       it 'does not 500 with missing form keys' do

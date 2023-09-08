@@ -4,7 +4,7 @@ RSpec.shared_examples 'gpo otp verification' do
   it 'prompts for one-time code at sign in' do
     sign_in_live_with_2fa(user)
 
-    expect(current_path).to eq idv_enter_verify_by_mail_code_path
+    expect(current_path).to eq idv_verify_by_mail_enter_code_path
     expect(page).to have_content t('idv.messages.gpo.resend')
 
     gpo_confirmation_code
@@ -35,7 +35,7 @@ RSpec.shared_examples 'gpo otp verification' do
     fill_in t('idv.gpo.form.otp_label'), with: otp
     click_button t('idv.gpo.form.submit')
 
-    expect(current_path).to eq idv_enter_verify_by_mail_code_path
+    expect(current_path).to eq idv_verify_by_mail_enter_code_path
     expect(page).to have_content t('errors.messages.gpo_otp_expired')
 
     user.reload

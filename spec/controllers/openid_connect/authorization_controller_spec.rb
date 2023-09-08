@@ -183,7 +183,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
 
                 it 'redirects to gpo verify page' do
                   action
-                  expect(controller).to redirect_to(idv_enter_verify_by_mail_code_url)
+                  expect(controller).to redirect_to(idv_verify_by_mail_enter_code_url)
                 end
               end
 
@@ -226,7 +226,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
 
                   it 'redirects to gpo verify page' do
                     action
-                    expect(controller).to redirect_to(idv_enter_verify_by_mail_code_url)
+                    expect(controller).to redirect_to(idv_verify_by_mail_enter_code_url)
                   end
                 end
 
@@ -241,7 +241,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
 
                   it 'redirects to gpo verify page' do
                     action
-                    expect(controller).to redirect_to(idv_enter_verify_by_mail_code_url)
+                    expect(controller).to redirect_to(idv_verify_by_mail_enter_code_url)
                   end
                 end
               end

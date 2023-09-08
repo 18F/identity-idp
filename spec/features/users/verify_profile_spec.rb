@@ -43,7 +43,7 @@ RSpec.feature 'verify profile with OTP' do
       click_button t('idv.gpo.form.submit')
 
       expect(page).to have_content t('errors.messages.gpo_otp_expired')
-      expect(current_path).to eq idv_enter_verify_by_mail_code_path
+      expect(current_path).to eq idv_verify_by_mail_enter_code_path
     end
 
     scenario 'wrong OTP used' do
@@ -51,7 +51,7 @@ RSpec.feature 'verify profile with OTP' do
       fill_in t('idv.gpo.form.otp_label'), with: 'the wrong code'
       click_button t('idv.gpo.form.submit')
 
-      expect(current_path).to eq idv_enter_verify_by_mail_code_path
+      expect(current_path).to eq idv_verify_by_mail_enter_code_path
       expect(page).to have_content(t('errors.messages.confirmation_code_incorrect'))
       expect(page.body).to_not match('the wrong code')
     end

@@ -60,7 +60,7 @@ module Idv::ByMail
 
       if !result.success?
         flash[:error] = @gpo_verify_form.errors.first.message
-        redirect_to idv_enter_verify_by_mail_code_url
+        redirect_to idv_verify_by_mail_enter_code_url
         return
       end
 
@@ -90,7 +90,7 @@ module Idv::ByMail
 
       if current_user && session.delete(:gpo_user_did_not_receive_letter)
         # ...and we can pick things up here.
-        redirect_to idv_enter_verify_by_mail_code_path(did_not_receive_letter: 1)
+        redirect_to idv_verify_by_mail_enter_code_path(did_not_receive_letter: 1)
       end
     end
 
