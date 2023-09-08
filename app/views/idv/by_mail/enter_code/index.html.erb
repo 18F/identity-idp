@@ -39,7 +39,7 @@
           'idv.gpo.did_not_receive_letter.intro.request_new_letter_prompt_html',
           request_new_letter_link: link_to(
             t('idv.gpo.did_not_receive_letter.intro.request_new_letter_link'),
-            idv_gpo_path,
+            idv_request_letter_path,
           ),
         ) %>
   <% end %>
@@ -60,7 +60,7 @@
 
 <%= simple_form_for(
       @gpo_verify_form,
-      url: idv_gpo_verify_path,
+      url: idv_verify_by_mail_enter_code_path,
       html: { autocomplete: 'off', method: :post },
     ) do |f| %>
   <div class="grid-row margin-top-neg-2 margin-bottom-5">
@@ -83,7 +83,7 @@
 
 <% if @should_prompt_user_to_request_another_letter %>
   <% unless @user_did_not_receive_letter %>
-    <%= link_to t('idv.messages.gpo.resend'), idv_gpo_path, class: 'display-block margin-bottom-2' %>
+    <%= link_to t('idv.messages.gpo.resend'), idv_request_letter_path, class: 'display-block margin-bottom-2' %>
   <% end %>
 <% end %>
 

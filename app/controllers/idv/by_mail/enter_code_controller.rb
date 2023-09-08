@@ -1,7 +1,7 @@
-module Idv
-  class GpoVerifyController < ApplicationController
+module Idv::ByMail
+  class EnterCodeController < ApplicationController
     include IdvSession
-    include StepIndicatorConcern
+    include Idv::StepIndicatorConcern
     include FraudReviewConcern
 
     prepend_before_action :note_if_user_did_not_receive_letter
@@ -13,7 +13,7 @@ module Idv
       # slightly different copy on this screen.
       @user_did_not_receive_letter = !!params[:did_not_receive_letter]
 
-      analytics.idv_gpo_verification_visited(
+      analytics.idv_enter_verify_by_mail_code_visited(
         source: if @user_did_not_receive_letter then 'gpo_reminder_email' end,
       )
 
@@ -52,7 +52,7 @@ module Idv
       @gpo_verify_form = build_gpo_verify_form
 
       result = @gpo_verify_form.submit
-      analytics.idv_gpo_verification_submitted(**result.to_h)
+      analytics.idv_enter_verify_by_mail_code_submitted(**result.to_h)
       irs_attempts_api_tracker.idv_gpo_verification_submitted(
         success: result.success?,
         failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
@@ -60,7 +60,7 @@ module Idv
 
       if !result.success?
         flash[:error] = @gpo_verify_form.errors.first.message
-        redirect_to idv_gpo_verify_url
+        redirect_to idv_verify_by_mail_enter_code_url
         return
       end
 
@@ -90,7 +90,7 @@ module Idv
 
       if current_user && session.delete(:gpo_user_did_not_receive_letter)
         # ...and we can pick things up here.
-        redirect_to idv_gpo_verify_path(did_not_receive_letter: 1)
+        redirect_to idv_verify_by_mail_enter_code_path(did_not_receive_letter: 1)
       end
     end
 
