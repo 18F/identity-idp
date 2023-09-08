@@ -19,7 +19,7 @@ RUN apt-get update -qq && \
     yarn && \
     rm -rf /var/lib/apt/lists/*
 
-RUN google-chrome --version
+RUN echo $(google-chrome --version)
 
 RUN curl -Ss "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/$(google-chrome --version)/linux64/chromedriver-linux64.zip" > /tmp/chromedriver.zip && \
     unzip /tmp/chromedriver.zip -d /tmp/chromedriver && \
