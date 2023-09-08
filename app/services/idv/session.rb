@@ -19,7 +19,6 @@ module Idv
       previous_phone_step_params
       profile_confirmation
       profile_id
-      profile_step_params
       redo_document_capture
       resolution_successful
       skip_hybrid_handoff
