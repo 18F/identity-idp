@@ -124,7 +124,8 @@ module InPersonHelper
   end
 
   def complete_state_id_step(_user = nil, same_address_as_id: true,
-                             double_address_verification: false, capture_secondary_id_enabled: false)
+                             double_address_verification: false,
+                             capture_secondary_id_enabled: false)
     # Wait for page to load before attempting to fill out form
     expect(page).to have_current_path(idv_in_person_step_path(step: :state_id), wait: 10)
     fill_out_state_id_form_ok(
