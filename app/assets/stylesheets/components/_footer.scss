@@ -29,6 +29,7 @@ body {
     text-decoration: none;
 
     @include at-media('tablet') {
+      @include u-padding-y(0);
       &,
       &:visited {
         color: color($theme-link-reverse-color);
