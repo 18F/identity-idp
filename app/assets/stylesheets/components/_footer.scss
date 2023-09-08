@@ -16,7 +16,7 @@ body {
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  font-size: 0.9rem;
+  font-size: 0.75rem;
 
   @include at-media('tablet') {
     @include u-bg('primary-darker');
