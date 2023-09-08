@@ -130,7 +130,7 @@ RSpec.feature 'idv gpo step' do
     end
 
     def complete_idv_and_return_to_gpo_step
-      complete_idv_and_sign_out
+      travel_to(2.days.ago) { complete_idv_and_sign_out }
       sign_in_live_with_2fa(user)
       click_on t('idv.messages.gpo.resend')
     end
