@@ -165,9 +165,8 @@ describe('document-capture/components/document-capture', () => {
     );
 
     // Make sure that the first element after a tab is what we expect it to be.
-    // Since the error wasn't related to an unsupported document type, user should see a help center link.
     await userEvent.tab();
-    const firstFocusable = getByText('doc_auth.info.review_examples_of_photos');
+    const firstFocusable = getByLabelText('doc_auth.headings.document_capture_front');
     expect(document.activeElement).to.equal(firstFocusable);
 
     const hasValueSelected = getAllByText('doc_auth.forms.change_file').length === 2;

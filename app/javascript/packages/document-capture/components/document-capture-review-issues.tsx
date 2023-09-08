@@ -1,4 +1,3 @@
-import { useContext } from 'react';
 import { PageHeading } from '@18f/identity-components';
 import {
   FormStepError,
@@ -8,7 +7,6 @@ import {
 } from '@18f/identity-form-steps';
 import { Cancel } from '@18f/identity-verify-flow';
 import { useI18n } from '@18f/identity-react-i18n';
-import MarketingSiteContext from '../context/marketing-site';
 import UnknownError from './unknown-error';
 import TipList from './tip-list';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
@@ -23,6 +21,7 @@ interface DocumentCaptureReviewIssuesProps {
   errors: FormStepError<any>[];
   onChange: (...args: any) => void;
   onError: OnErrorCallback;
+  hasDismissed: boolean;
 }
 
 type DocumentSide = 'front' | 'back';
@@ -41,8 +40,8 @@ function DocumentCaptureReviewIssues({
   onChange = () => undefined,
   onError = () => undefined,
   value = {},
+  hasDismissed,
 }: DocumentCaptureReviewIssuesProps) {
-  const { getHelpCenterURL } = useContext(MarketingSiteContext);
   const { t } = useI18n();
   return (
     <>
@@ -52,6 +51,7 @@ function DocumentCaptureReviewIssues({
         remainingAttempts={remainingAttempts}
         isFailedDocType={isFailedDocType}
         altFailedDocTypeMsg={isFailedDocType ? t('doc_auth.errors.doc.wrong_id_type') : null}
+        hasDismissed={hasDismissed}
       />
       {!isFailedDocType && captureHints && (
         <TipList
