@@ -122,7 +122,7 @@ build-idp-image:
     - >-
       /kaniko/executor
       --context "${CI_PROJECT_DIR}"
-      --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
+      --dockerfile "${CI_PROJECT_DIR}/dockerfiles/idp_review_app.Dockerfile"
       --destination "${ECR_REGISTRY}/identity-idp/review:${CI_COMMIT_SHA}"
       ${BRANCH_TAGGING_STRING}
       --cache-repo="${ECR_REGISTRY}/identity-idp/review/cache"
@@ -293,6 +293,40 @@ coverage:
       - coverage/index.html
       - coverage/assets/
       - coverage/coverage.xml
+
+build_ci_image:
+  stage: build
+  interruptible: true
+  tags:
+    - build-pool
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  rules:
+    # Build on commits to default branch so we have something to scan for the security dashboard
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    # Build when there are changes to the Dockerfile or versions.tf in a PR
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "external_pull_request_event" || $CI_PIPELINE_SOURCE == "web"'
+      changes:
+        compare_to: 'refs/heads/main'
+        paths:
+        - dockerfiles/idp_ci.Dockerfile
+  script:
+    - mkdir -p /kaniko/.docker
+    - |-
+      KANIKOCFG="\"credsStore\":\"ecr-login\""
+      if [ "x${http_proxy}" != "x" -o "x${https_proxy}" != "x" ]; then
+        KANIKOCFG="${KANIKOCFG}, \"proxies\": { \"default\": { \"httpProxy\": \"${http_proxy}\", \"httpsProxy\": \"${https_proxy}\", \"noProxy\": \"${no_proxy}\"}}"
+      fi
+      KANIKOCFG="{ ${KANIKOCFG} }"
+      echo "${KANIKOCFG}" > /kaniko/.docker/config.json
+    - >-
+      /kaniko/executor
+      --context "${CI_PROJECT_DIR}"
+      --dockerfile "${CI_PROJECT_DIR}/dockerfiles/idp_ci.Dockerfile"
+      --destination "${ECR_REGISTRY}/idp/ci:latest"
+      --destination "${ECR_REGISTRY}/idp/ci:${CI_COMMIT_TAG}"
+      --build-arg "http_proxy=${http_proxy}" --build-arg "https_proxy=${https_proxy}" --build-arg "no_proxy=${no_proxy}"
 
 # Triggers devops CD to deploy to dev
 trigger_devops:
