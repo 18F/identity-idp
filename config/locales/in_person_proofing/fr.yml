@@ -66,11 +66,6 @@ fr:
             ou effectuez une nouvelle recherche en utilisant une autre adresse.
           search_button: Rechercher
           state_label: État
-          you_must_start:
-            link_text: Apprenez-en davantage sur la façon de vérifier votre identité en
-              personne.
-            message: Vous devez démarrer ce processus sur %{app_name} avant de vous rendre
-              au bureau de poste.
           zipcode_label: Code postal
         retail_hours_heading: Heures de vente au détail
         retail_hours_sat: 'Sam:'

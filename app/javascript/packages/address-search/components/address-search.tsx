@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useState } from 'react';
+import { ComponentType, Dispatch, SetStateAction, useState } from 'react';
 import { Alert, PageHeading } from '@18f/identity-components';
 import { t } from '@18f/identity-i18n';
 import type { RegisterFieldCallback } from '@18f/identity-form-steps';
@@ -10,7 +10,7 @@ interface AddressSearchProps {
   addressSearchURL: string;
   disabled: boolean;
   handleLocationSelect: ((e: any, id: number) => Promise<void>) | null | undefined;
-  infoAlertURL?: string;
+  resultsHeaderComponent?: ComponentType;
   locationsURL: string;
   onFoundLocations: Dispatch<SetStateAction<FormattedLocation[] | null | undefined>>;
   registerField: RegisterFieldCallback;
@@ -20,10 +20,10 @@ function AddressSearch({
   addressSearchURL,
   disabled,
   handleLocationSelect,
-  infoAlertURL,
   locationsURL,
   onFoundLocations,
   registerField,
+  resultsHeaderComponent,
 }: AddressSearchProps) {
   const [apiError, setApiError] = useState<Error | null>(null);
   const [foundAddress, setFoundAddress] = useState<LocationQuery | null>(null);
@@ -59,7 +59,7 @@ function AddressSearch({
           locations={locationResults}
           onSelect={handleLocationSelect}
           address={foundAddress?.address || ''}
-          infoAlertURL={infoAlertURL}
+          resultsHeaderComponent={resultsHeaderComponent}
         />
       )}
     </>

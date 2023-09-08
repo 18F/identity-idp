@@ -60,10 +60,6 @@ en:
             a different address.
           search_button: Search
           state_label: State
-          you_must_start:
-            link_text: Learn more about verifying your identity in person.
-            message: You must start this process on %{app_name} before going to the Post
-              Office.
           zipcode_label: ZIP Code
         retail_hours_heading: Retail Hours
         retail_hours_sat: 'Sat:'
