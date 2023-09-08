@@ -92,7 +92,7 @@ install:
 
 # Build a container image async, and don't block CI tests
 # Cache intermediate images for 1 week (168 hours)
-build-idp-image:
+build-review-image:
   stage: review
   needs: []
   interruptible: true
@@ -122,7 +122,7 @@ build-idp-image:
     - >-
       /kaniko/executor
       --context "${CI_PROJECT_DIR}"
-      --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
+      --dockerfile "${CI_PROJECT_DIR}/dockerfiles/idp_review_app.Dockerfile"
       --destination "${ECR_REGISTRY}/identity-idp/review:${CI_COMMIT_SHA}"
       ${BRANCH_TAGGING_STRING}
       --cache-repo="${ECR_REGISTRY}/identity-idp/review/cache"
@@ -153,6 +153,8 @@ check_changelog:
 
 specs:
   stage: test
+  needs:
+    - job: install
   parallel: 22
   cache:
     - <<: *ruby_cache
@@ -209,6 +211,8 @@ specs:
 
 lint:
   stage: test
+  needs:
+    - job: install
   cache:
     - <<: *ruby_cache
     - <<: *yarn_cache
@@ -227,6 +231,8 @@ lint:
 
 js_build:
   stage: test
+  needs:
+    - job: install
   cache:
     - <<: *ruby_cache
     - <<: *yarn_production_cache
@@ -240,6 +246,8 @@ js_build:
 
 js_tests:
   stage: test
+  needs:
+    - job: install
   cache:
     - <<: *yarn_cache
   script:
@@ -259,6 +267,8 @@ pinpoint-check:
 prepare_deploy:
   # Runs in parallel with tests so we can deploy more quickly after passing
   stage: test
+  needs:
+    - job: install
   tags:
     - build-pool
   variables:
@@ -294,6 +304,39 @@ coverage:
       - coverage/assets/
       - coverage/coverage.xml
 
+build-ci-image:
+  stage: build
+  interruptible: true
+  needs: []
+  tags:
+    - build-pool
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  rules:
+    # Build when there are changes to the Dockerfile
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH || $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "external_pull_request_event" || $CI_PIPELINE_SOURCE == "web"'
+      changes:
+        compare_to: 'refs/heads/main'
+        paths:
+        - dockerfiles/idp_ci.Dockerfile
+  script:
+    - mkdir -p /kaniko/.docker
+    - |-
+      KANIKOCFG="\"credsStore\":\"ecr-login\""
+      if [ "x${http_proxy}" != "x" -o "x${https_proxy}" != "x" ]; then
+        KANIKOCFG="${KANIKOCFG}, \"proxies\": { \"default\": { \"httpProxy\": \"${http_proxy}\", \"httpsProxy\": \"${https_proxy}\", \"noProxy\": \"${no_proxy}\"}}"
+      fi
+      KANIKOCFG="{ ${KANIKOCFG} }"
+      echo "${KANIKOCFG}" > /kaniko/.docker/config.json
+    - >-
+      /kaniko/executor
+      --context "${CI_PROJECT_DIR}"
+      --dockerfile "${CI_PROJECT_DIR}/dockerfiles/idp_ci.Dockerfile"
+      --destination "${ECR_REGISTRY}/idp/ci:latest"
+      --destination "${ECR_REGISTRY}/idp/ci:${CI_COMMIT_TAG}"
+      --build-arg "http_proxy=${http_proxy}" --build-arg "https_proxy=${https_proxy}" --build-arg "no_proxy=${no_proxy}"
+
 # Triggers devops CD to deploy to dev
 trigger_devops:
   stage: after_test
@@ -305,7 +348,7 @@ review-app:
   stage: review
   allow_failure: true
   needs:
-    - job: build-idp-image
+    - job: build-review-image
   resource_group: $CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov
   image:
     name: dtzar/helm-kubectl:latest
@@ -442,21 +485,11 @@ include:
   - template: Jobs/SAST.gitlab-ci.yml
   - template: Jobs/Dependency-Scanning.gitlab-ci.yml
 
-# Export the automated ECR scan results into a format Gitlab can use
-# Report schema https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/container-scanning-report-format.json
-ecr-scan:
-  stage: scan
+.container_scan_template:
   interruptible: true
   allow_failure: true
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
-    - if: $CI_PIPELINE_SOURCE != "merge_request_event"
-      when: never
   tags:
     - build-pool
-  needs:
-    - job: build-idp-image
   image:
     name: amazon/aws-cli
     entrypoint: [""] 
@@ -467,7 +500,7 @@ ecr-scan:
   script:
     - >
       while true; do
-        SCAN_STATUS=$(aws ecr describe-image-scan-findings --repository-name identity-idp/review --image-id imageTag=$CI_COMMIT_SHA --query 'imageScanStatus.status' --output text || true)
+        SCAN_STATUS=$(aws ecr describe-image-scan-findings --repository-name ${ecr_repo} --image-id imageTag=$CI_COMMIT_SHA --query 'imageScanStatus.status' --output text || true)
         if echo "$SCAN_STATUS" | grep -q "ACTIVE"; then
           echo "Scan Complete"
           break
@@ -479,7 +512,7 @@ ecr-scan:
           sleep 15
         fi
       done
-    - SCAN_FINDINGS=$(aws ecr describe-image-scan-findings --repository-name identity-idp/review --image-id imageTag=$CI_COMMIT_SHA)
+    - SCAN_FINDINGS=$(aws ecr describe-image-scan-findings --repository-name ${ecr_repo} --image-id imageTag=$CI_COMMIT_SHA)
     - echo $SCAN_FINDINGS
     - >
       echo $SCAN_FINDINGS |
@@ -582,3 +615,31 @@ ecr-scan:
       - gl-container-scanning-report.json
     reports:
       container_scanning: gl-container-scanning-report.json
+
+# Export the automated ECR scan results into a format Gitlab can use
+# Report schema https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/container-scanning-report-format.json
+ecr-scan-review-app:
+  extends: .container_scan_template
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
+    - if: $CI_PIPELINE_SOURCE != "merge_request_event"
+      when: never
+  needs:
+    - job: build-review-image
+  stage: scan
+  variables:
+    ecr_repo: identity-idp/review
+
+ecr-scan-ci:
+  extends: .container_scan_template
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
+    - if: $CI_PIPELINE_SOURCE != "merge_request_event"
+      when: never
+  needs:
+    - job: build-ci-image
+  stage: scan
+  variables:
+    ecr_repo: idp/ci
