@@ -22,7 +22,7 @@ RSpec.describe Idv::GpoMail do
     end
 
     context 'when the amount of sent mail is lower than the allowed maximum' do
-      context 'and the most recent mail event is too recent' do
+      context 'but the most recent mail event is too recent' do
         it 'returns true' do
           enqueue_gpo_letter_for(user)
 
@@ -55,7 +55,7 @@ RSpec.describe Idv::GpoMail do
       end
     end
 
-    context 'when we would normally be rate limited' do
+    context 'when we would normally be rate limited by both rules' do
       before do
         enqueue_gpo_letter_for(user, at: 2.days.ago)
         enqueue_gpo_letter_for(user)
@@ -136,7 +136,7 @@ RSpec.describe Idv::GpoMail do
       end
     end
 
-    context 'when a user has a recent GPO request that is not attached to their pending profile' do
+    context 'when a user has a recent GPO request' do
       let(:user) do
         user = create(:user, :deactivated_password_reset_profile, :with_pending_gpo_profile)
 
@@ -147,22 +147,35 @@ RSpec.describe Idv::GpoMail do
         user
       end
 
-      it 'returns false' do
-        expect(subject.mail_spammed?).to be_falsey
+      context 'that is not attached to their pending profile' do
+        it 'returns false' do
+          expect(subject.mail_spammed?).to be_falsey
+        end
+      end
+
+      context 'and no pending profile' do
+        before do
+          user.send(:instance_variable_set, :@pending_profile, nil)
+        end
+
+        it 'returns false' do
+          expect(subject.mail_spammed?).to be_falsey
+        end
       end
     end
   end
 
   def enqueue_gpo_letter_for(user, at: Time.zone.now)
-    new_profile = create(:profile, user: user)
+    profile = create(:profile, user: user)
+    user.instance_variable_set(:@pending_profile, profile)
 
     GpoConfirmationMaker.new(
       pii: {},
       service_provider: nil,
-      profile: new_profile,
+      profile: profile,
     ).perform
 
-    new_profile.gpo_confirmation_codes.last.update(
+    profile.gpo_confirmation_codes.last.update(
       created_at: at,
       updated_at: at,
     )

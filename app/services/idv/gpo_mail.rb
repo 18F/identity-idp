@@ -50,26 +50,30 @@ module Idv
     end
 
     def last_not_too_recent_enabled?
-      MINIMUM_WAIT_BEFORE_ANOTHER_USPS_LETTER_IN_HOURS != 0
+      MINIMUM_WAIT_BEFORE_ANOTHER_USPS_LETTER_IN_HOURS != 0 &&
+        current_user.pending_profile?
     end
 
     def too_many_mails_within_window?
-      window_limit_enabled? && 
-        number_of_emails_within(MAIL_EVENTS_WINDOW_DAYS.days) >= MAX_MAIL_EVENTS
+      return false unless window_limit_enabled?
+
+      number_of_emails_within(
+        MAIL_EVENTS_WINDOW_DAYS.days,
+      ) >= MAX_MAIL_EVENTS
     end
 
     def last_mail_too_recent?
-      last_not_too_recent_enabled? &&
-        number_of_emails_within(MINIMUM_WAIT_BEFORE_ANOTHER_USPS_LETTER_IN_HOURS.hours) > 0
+      return false unless last_not_too_recent_enabled?
+
+      number_of_emails_within(
+        MINIMUM_WAIT_BEFORE_ANOTHER_USPS_LETTER_IN_HOURS.hours,
+        for_profile: current_user.pending_profile,
+      ) > 0
     end
 
-    def number_of_emails_within(time_window)
+    def number_of_emails_within(time_window, for_profile: nil)
       profile_hash = { user: current_user }
-
-      pending_profile_id = current_user&.pending_profile&.id
-      if pending_profile_id
-        profile_hash[:id] = pending_profile_id
-      end
+      profile_hash[:id] = for_profile.id if for_profile
 
       GpoConfirmationCode.joins(:profile).
         where(
