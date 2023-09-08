@@ -26,6 +26,7 @@ RSpec.describe Idv::VerifyInfoController do
     stub_attempts_tracker
     stub_idv_steps_before_verify_step(user)
     subject.idv_session.flow_path = 'standard'
+    subject.idv_session.pii_from_doc = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.dup
     subject.user_session['idv/doc_auth'] = flow_session
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
@@ -87,25 +88,48 @@ RSpec.describe Idv::VerifyInfoController do
     context 'address line 2' do
       render_views
 
-      it 'With address2 in PII, shows address line 2 input' do
-        flow_session[:pii_from_doc][:address2] = 'APT 3E'
-        get :show
+      context 'pii_from_doc in flow_session' do
+        before do
+          subject.idv_session.pii_from_doc = nil
+        end
 
-        expect(response.body).to have_content(t('idv.form.address2'))
+        it 'With address2 in PII, shows address line 2 input' do
+          flow_session[:pii_from_doc][:address2] = 'APT 3E'
+          get :show
+
+          expect(response.body).to have_content(t('idv.form.address2'))
+        end
+
+        it 'No address2 in PII, still shows address line 2 input' do
+          flow_session[:pii_from_doc][:address2] = nil
+
+          get :show
+
+          expect(response.body).to have_content(t('idv.form.address2'))
+        end
       end
 
-      it 'No address2 in PII, still shows address line 2 input' do
-        flow_session[:pii_from_doc][:address2] = nil
+      context 'pii_from_doc in idv_session' do
+        it 'With address2 in PII, shows address line 2 input' do
+          subject.idv_session.pii_from_doc[:address2] = 'APT 3E'
+          get :show
 
-        get :show
+          expect(response.body).to have_content(t('idv.form.address2'))
+        end
 
-        expect(response.body).to have_content(t('idv.form.address2'))
+        it 'No address2 in PII, still shows address line 2 input' do
+          subject.idv_session.pii_from_doc[:address2] = nil
+
+          get :show
+
+          expect(response.body).to have_content(t('idv.form.address2'))
+        end
       end
     end
 
     context 'when the user has already verified their info' do
       it 'redirects to the review controller' do
-        controller.idv_session.resolution_successful = true
+        subject.idv_session.resolution_successful = true
 
         get :show
 
@@ -115,6 +139,7 @@ RSpec.describe Idv::VerifyInfoController do
 
     it 'redirects to ssn controller when ssn info is missing' do
       flow_session[:pii_from_doc][:ssn] = nil
+      subject.idv_session.pii_from_doc[:ssn] = nil
       subject.idv_session.ssn = nil
 
       get :show
@@ -410,15 +435,32 @@ RSpec.describe Idv::VerifyInfoController do
       expect(response).to redirect_to idv_verify_info_url
     end
 
-    it 'modifies pii as expected' do
-      app_id = 'hello-world'
-      sp = create(:service_provider, app_id: app_id)
-      sp_session = { issuer: sp.issuer }
-      allow(controller).to receive(:sp_session).and_return(sp_session)
+    context 'pii in flow_session' do
+      it 'modifies pii as expected' do
+        subject.idv_session.pii_from_doc = nil
 
-      put :update
+        app_id = 'hello-world'
+        sp = create(:service_provider, app_id: app_id)
+        sp_session = { issuer: sp.issuer }
+        allow(controller).to receive(:sp_session).and_return(sp_session)
 
-      expect(flow_session[:pii_from_doc][:uuid_prefix]).to eq app_id
+        put :update
+
+        expect(flow_session[:pii_from_doc][:uuid_prefix]).to eq app_id
+      end
+    end
+
+    context 'pii in idv_session' do
+      it 'modifies pii as expected' do
+        app_id = 'hello-world'
+        sp = create(:service_provider, app_id: app_id)
+        sp_session = { issuer: sp.issuer }
+        allow(controller).to receive(:sp_session).and_return(sp_session)
+
+        put :update
+
+        expect(subject.idv_session.pii_from_doc[:uuid_prefix]).to eq app_id
+      end
     end
 
     it 'updates DocAuthLog verify_submit_count' do

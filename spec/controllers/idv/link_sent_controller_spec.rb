@@ -97,9 +97,18 @@ RSpec.describe Idv::LinkSentController do
       end
     end
 
-    context 'with pii in session' do
+    context 'with pii in flow_session' do
       it 'redirects to ssn step' do
         flow_session[:pii_from_doc] = Idp::Constants::MOCK_IDV_APPLICANT
+        get :show
+
+        expect(response).to redirect_to(idv_ssn_url)
+      end
+    end
+
+    context 'with pii in idv_session' do
+      it 'redirects to ssn step' do
+        subject.idv_session.pii_from_doc = Idp::Constants::MOCK_IDV_APPLICANT
         get :show
 
         expect(response).to redirect_to(idv_ssn_url)
