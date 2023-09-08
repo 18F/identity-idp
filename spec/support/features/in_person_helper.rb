@@ -31,8 +31,7 @@ module InPersonHelper
   GOOD_IDENTITY_DOC_ZIPCODE =
     Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:identity_doc_zipcode]
 
-  def fill_out_state_id_form_ok(double_address_verification: false, same_address_as_id: false,
-                                capture_secondary_id_enabled: false)
+  def fill_out_state_id_form_ok(same_address_as_id: false, capture_secondary_id_enabled: false)
     fill_in t('in_person_proofing.form.state_id.first_name'), with: GOOD_FIRST_NAME
     fill_in t('in_person_proofing.form.state_id.last_name'), with: GOOD_LAST_NAME
     year, month, day = GOOD_DOB.split('-')
@@ -43,7 +42,7 @@ module InPersonHelper
            from: t('in_person_proofing.form.state_id.state_id_jurisdiction')
     fill_in t('in_person_proofing.form.state_id.state_id_number'), with: GOOD_STATE_ID_NUMBER
 
-    if double_address_verification && capture_secondary_id_enabled
+    if capture_secondary_id_enabled
       fill_in t('in_person_proofing.form.state_id.address1'), with: GOOD_IDENTITY_DOC_ADDRESS1
       fill_in t('in_person_proofing.form.state_id.address2'), with: GOOD_IDENTITY_DOC_ADDRESS2
       fill_in t('in_person_proofing.form.state_id.city'), with: GOOD_IDENTITY_DOC_CITY
@@ -124,17 +123,15 @@ module InPersonHelper
   end
 
   def complete_state_id_step(_user = nil, same_address_as_id: true,
-                             double_address_verification: false,
                              capture_secondary_id_enabled: false)
     # Wait for page to load before attempting to fill out form
     expect(page).to have_current_path(idv_in_person_step_path(step: :state_id), wait: 10)
     fill_out_state_id_form_ok(
-      double_address_verification: double_address_verification,
       same_address_as_id: same_address_as_id,
       capture_secondary_id_enabled: capture_secondary_id_enabled,
     )
     click_idv_continue
-    unless double_address_verification && same_address_as_id
+    unless capture_secondary_id_enabled && same_address_as_id
       expect(page).to have_current_path(idv_in_person_step_path(step: :address), wait: 10)
       expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
     end
