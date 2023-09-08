@@ -5,16 +5,6 @@ module Idv
     THREAT_METRIX_DOMAIN = 'h.online-metrix.net'
     THREAT_METRIX_WILDCARD_DOMAIN = '*.online-metrix.net'
 
-    def override_csp_for_threat_metrix
-      return unless FeatureManagement.proofing_device_profiling_collecting_enabled?
-
-      return if params[:step] != 'ssn'
-
-      threat_metrix_csp_overrides
-    end
-
-    # Remove this duplication once in_person_controller is no longer in use
-    # for their SSN step
     def override_csp_for_threat_metrix_no_fsm
       return unless FeatureManagement.proofing_device_profiling_collecting_enabled?
 

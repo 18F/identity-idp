@@ -6,12 +6,12 @@ RSpec.describe Idv::ThreatMetrixConcern, type: :controller do
   controller ApplicationController do
     include Idv::ThreatMetrixConcern
 
-    before_action :override_csp_for_threat_metrix
+    before_action :override_csp_for_threat_metrix_no_fsm
 
     def index; end
   end
 
-  describe '#override_csp_for_threat_metrix' do
+  describe '#override_csp_for_threat_metrix_no_fsm' do
     let(:ff_enabled) { true }
 
     before do
@@ -20,30 +20,23 @@ RSpec.describe Idv::ThreatMetrixConcern, type: :controller do
     end
 
     context 'ff is set' do
-      it 'modifies CSP headers for SSN step' do
-        assert_csp_is_modified 'ssn'
-      end
-
-      it 'does not modify CSP headers for any other step' do
-        assert_csp_is_not_modified 'some_other_step'
+      it 'modifies CSP headers' do
+        assert_csp_is_modified
       end
     end
 
     context 'ff is not set' do
       let(:ff_enabled) { false }
-      it 'does not modify CSP headers for SSN step' do
-        assert_csp_is_not_modified 'ssn'
-      end
-      it 'does not modify CSP headers for any other step' do
-        assert_csp_is_not_modified 'some_other_step'
+      it 'does not modify CSP headers' do
+        assert_csp_is_not_modified
       end
     end
   end
 
   private
 
-  def assert_csp_is_modified(step)
-    get :index, params: { step: step }
+  def assert_csp_is_modified
+    get :index
 
     csp = response.request.content_security_policy
 
@@ -61,8 +54,8 @@ RSpec.describe Idv::ThreatMetrixConcern, type: :controller do
     end
   end
 
-  def assert_csp_is_not_modified(step)
-    get :index, params: { step: step }
+  def assert_csp_is_not_modified
+    get :index
     secure_header_config = response.request.headers.env['secure_headers_request_config']
     expect(secure_header_config).to be_nil
   end
