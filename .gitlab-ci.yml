@@ -297,6 +297,7 @@ coverage:
 build_ci_image:
   stage: build
   interruptible: true
+  needs: []
   tags:
     - build-pool
   image:
