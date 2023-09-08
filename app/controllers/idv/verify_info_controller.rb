@@ -55,7 +55,7 @@ module Idv
     end
 
     def pii
-      @ssn = idv_session.ssn || pii_from_doc[:ssn]
+      @ssn = idv_session.ssn
       @pii = pii_from_doc
     end
   end
