@@ -26,7 +26,8 @@ RUN apt-get update -qq && \
 
 RUN echo $(google-chrome --version)
 
-RUN curl -Ss "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/$(google-chrome --version)/linux64/chromedriver-linux64.zip" > /tmp/chromedriver.zip && \
+
+RUN curl -Ss "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/$(curl -Ss "https://googlechromelabs.github.io/chrome-for-testing/LATEST_RELEASE_$(google-chrome --version | grep -Po '\d+\.\d+\.\d+' | tr -d '\n')")/linux64/chromedriver-linux64.zip" > /tmp/chromedriver.zip && \
     unzip /tmp/chromedriver.zip -d /tmp/chromedriver && \
     mv -f /tmp/chromedriver/chromedriver /usr/local/bin/chromedriver && \
     rm /tmp/chromedriver.zip && \
