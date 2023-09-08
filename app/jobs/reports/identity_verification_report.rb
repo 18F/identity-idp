@@ -7,6 +7,7 @@ module Reports
     attr_accessor :report_date
 
     def perform(report_date)
+      return unless IdentityConfig.store.s3_reports_enabled
       self.report_date = report_date
 
       csv = report_maker.to_csv
