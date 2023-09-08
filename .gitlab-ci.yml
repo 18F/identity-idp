@@ -304,10 +304,8 @@ build_ci_image:
     name: gcr.io/kaniko-project/executor:debug
     entrypoint: [""]
   rules:
-    # Build on commits to default branch so we have something to scan for the security dashboard
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-    # Build when there are changes to the Dockerfile or versions.tf in a PR
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "external_pull_request_event" || $CI_PIPELINE_SOURCE == "web"'
+    # Build when there are changes to the Dockerfile
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH || $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "external_pull_request_event" || $CI_PIPELINE_SOURCE == "web"'
       changes:
         compare_to: 'refs/heads/main'
         paths:
