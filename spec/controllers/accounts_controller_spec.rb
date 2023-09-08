@@ -15,6 +15,14 @@ RSpec.describe AccountsController do
   end
 
   describe '#show' do
+    context 'signed out' do
+      it 'redirects to sign in' do
+        get :show
+
+        expect(response).to redirect_to(new_user_session_url)
+      end
+    end
+
     context 'when user has an active identity' do
       it 'renders the profile and does not redirect out of the app' do
         stub_analytics
