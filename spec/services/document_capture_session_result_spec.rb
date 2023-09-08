@@ -27,7 +27,7 @@ RSpec.describe DocumentCaptureSessionResult do
         success: success,
         pii: pii,
         attention_with_barcode: false,
-        )
+      )
       result.add_failed_front_image!('abcdefg')
       expect(result.failed_front_image_fingerprints.is_a?(Array)).to eq(true)
       expect(result.failed_front_image_fingerprints.length).to eq(1)

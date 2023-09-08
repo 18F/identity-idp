@@ -56,7 +56,7 @@ en:
       card_type: Try again with your driver’s license or state ID card.
       doc:
         doc_type_check: Other forms of ID are not accepted.
-        resubmit_failed_image: You already tried this image, and it failed.  Please try
+        resubmit_failed_image: You already tried this image, and it failed. Please try
           adding a different image.
         wrong_id_type: We only accept a driver’s license or a state ID card at this
           time. Other forms of ID are not accepted.

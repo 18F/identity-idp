@@ -149,7 +149,7 @@ module Idv
 
     def back_image_fingerprint
       return @back_image_fingerprint if @back_image_fingerprint
-      if readable?(:front)
+      if readable?(:back)
         @back_image_fingerprint =
           Digest::SHA256.urlsafe_base64digest(back_image_bytes)
       end
