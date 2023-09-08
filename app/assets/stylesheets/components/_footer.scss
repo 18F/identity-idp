@@ -21,7 +21,6 @@ body {
   @include at-media('tablet') {
     @include u-bg('primary-darker');
     flex-direction: row;
-    font-size: 0.75rem;
   }
 
   a {
