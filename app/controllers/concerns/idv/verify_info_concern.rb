@@ -25,6 +25,7 @@ module Idv
       idv_session.vendor_phone_confirmation = false
       idv_session.user_phone_confirmation = false
 
+      pii[:ssn] = idv_session.ssn # Required for proof_resolution job
       Idv::Agent.new(pii).proof_resolution(
         document_capture_session,
         should_proof_state_id: should_use_aamva?(pii),
