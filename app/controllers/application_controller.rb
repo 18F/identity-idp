@@ -213,13 +213,13 @@ class ApplicationController < ActionController::Base
     return fix_broken_personal_key_url if current_user.broken_personal_key?
     return user_session.delete(:stored_location) if user_session.key?(:stored_location)
     return reactivate_account_url if user_needs_to_reactivate_account?
-    return backup_code_reminder_url if user_needs_backup_code_reminder?
     return sp_session_request_url_with_updated_params if sp_session.key?(:request_url)
     signed_in_url
   end
 
   def signed_in_url
     return url_for_pending_profile_reason if user_has_pending_profile?
+    return backup_code_reminder_url if user_needs_backup_code_reminder?
     account_path
   end
 
