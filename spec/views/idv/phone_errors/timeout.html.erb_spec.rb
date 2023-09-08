@@ -35,7 +35,7 @@ RSpec.describe 'idv/phone_errors/timeout.html.erb' do
       )
       expect(rendered).not_to have_link(
         t('idv.troubleshooting.options.verify_by_mail'),
-        href: idv_gpo_path,
+        href: idv_request_letter_path,
       )
     end
   end
@@ -50,7 +50,7 @@ RSpec.describe 'idv/phone_errors/timeout.html.erb' do
       )
       expect(rendered).to have_link(
         t('idv.troubleshooting.options.verify_by_mail'),
-        href: idv_gpo_path,
+        href: idv_request_letter_path,
       )
     end
   end

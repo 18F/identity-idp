@@ -1,13 +1,13 @@
 require 'rails_helper'
 
-RSpec.describe 'idv/gpo/index.html.erb' do
+RSpec.describe 'idv/by_mail/request_letter/index.html.erb' do
   let(:resend_requested) { false }
   let(:user_needs_address_otp_verification) { false }
   let(:go_back_path) { nil }
   let(:step_indicator_steps) { Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS }
   let(:presenter) do
     user = build_stubbed(:user, :fully_registered)
-    Idv::GpoPresenter.new(user, {})
+    Idv::ByMail::RequestLetterPresenter.new(user, {})
   end
 
   before do
@@ -52,7 +52,10 @@ RSpec.describe 'idv/gpo/index.html.erb' do
     let(:user_needs_address_otp_verification) { true }
 
     it 'renders fallback link to return to verify path' do
-      expect(rendered).to have_link('‹ ' + t('forms.buttons.back'), href: idv_gpo_verify_path)
+      expect(rendered).to have_link(
+        '‹ ' + t('forms.buttons.back'),
+        href: idv_verify_by_mail_enter_code_path,
+      )
     end
   end
 end

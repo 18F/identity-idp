@@ -1,5 +1,5 @@
-module Idv
-  class GpoPresenter
+module Idv::ByMail
+  class RequestLetterPresenter
     include Rails.application.routes.url_helpers
 
     attr_reader :current_user, :url_options
@@ -19,7 +19,7 @@ module Idv
 
     def fallback_back_path
       return idv_verify_info_path if OutageStatus.new.any_phone_vendor_outage?
-      user_needs_address_otp_verification? ? idv_gpo_verify_path : idv_phone_path
+      user_needs_address_otp_verification? ? idv_verify_by_mail_enter_code_path : idv_phone_path
     end
 
     def resend_requested?

@@ -34,7 +34,7 @@
       <% if @gpo_letter_available %>
         <div class="margin-y-5">
           <%= render ButtonComponent.new(
-                action: ->(**tag_options, &block) { link_to idv_gpo_path, **tag_options, &block },
+                action: ->(**tag_options, &block) { link_to idv_request_letter_path, **tag_options, &block },
                 big: true,
                 wide: true,
               ).with_content(t('idv.failure.phone.rate_limited.gpo.button')) %>
