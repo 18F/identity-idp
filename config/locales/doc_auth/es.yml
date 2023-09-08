@@ -68,9 +68,10 @@ es:
         estatales.
       doc:
         doc_type_check: No se aceptan otras formas de identificación.
+        resubmit_failed_image: Ya intentó con esta imagen pero falló. Intente añadir una
+          imagen diferente.
         wrong_id_type: Solo aceptamos una licencia de conducir o un documento de
           identidad estatal. No se aceptan otras formas de identificación.
-        resubmit_failed_image: You already tried this image, but it was too small or blurry. Please try adding a different image.
       dpi:
         failed_short: La imagen es demasiado pequeña o está borrosa, por favor inténtelo
           de nuevo.
