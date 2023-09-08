@@ -8,7 +8,7 @@ variables:
   FF_SCRIPT_SECTIONS: 'true'
   JUNIT_OUTPUT: 'true'
   ECR_REGISTRY: '${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com'
-  IDP_CI_SHA: 'sha256:f0bb8e05d803675cfc84d0183d6776646b25efc0d93b31773af5f376e861ffdb'
+  IDP_CI_SHA: 'sha256:793fd67b1c88ed3e5ee05d9252c7fda1bf27625b016cfe9cfc665eeac9134d6c'
   PKI_IMAGE_TAG: 'main'
   DASHBOARD_IMAGE_TAG: 'main'
 
