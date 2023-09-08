@@ -42,7 +42,8 @@ module Idv
     def user_mail_events
       @user_mail_events ||= current_user.events.
         gpo_mail_sent.
-        order('updated_at DESC').
+        order('created_at DESC').
+        where('created_at >= ?', MAIL_EVENTS_WINDOW_DAYS.days.ago).
         limit(MAX_MAIL_EVENTS)
     end
 
@@ -51,7 +52,7 @@ module Idv
     end
 
     def updated_within_last_month?
-      user_mail_events.last.updated_at > MAIL_EVENTS_WINDOW_DAYS.days.ago
+      user_mail_events.last.created_at > MAIL_EVENTS_WINDOW_DAYS.days.ago
     end
   end
 end

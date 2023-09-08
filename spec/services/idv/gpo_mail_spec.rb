@@ -21,15 +21,15 @@ RSpec.describe Idv::GpoMail do
 
     context 'when too much mail has been sent' do
       it 'returns true if the oldest event was within the last month' do
-        event_create(event_type: :gpo_mail_sent, user: user, updated_at: 2.weeks.ago)
-        event_create(event_type: :gpo_mail_sent, user: user, updated_at: 1.week.ago)
+        event_create(event_type: :gpo_mail_sent, user: user, created_at: 2.weeks.ago)
+        event_create(event_type: :gpo_mail_sent, user: user, created_at: 1.week.ago)
 
         expect(subject.mail_spammed?).to eq true
       end
 
       it 'returns false if the oldest event was more than a month ago' do
-        event_create(event_type: :gpo_mail_sent, user: user, updated_at: 2.weeks.ago)
-        event_create(event_type: :gpo_mail_sent, user: user, updated_at: 2.months.ago)
+        event_create(event_type: :gpo_mail_sent, user: user, created_at: 2.weeks.ago)
+        event_create(event_type: :gpo_mail_sent, user: user, created_at: 2.months.ago)
 
         expect(subject.mail_spammed?).to eq false
       end
@@ -51,7 +51,7 @@ RSpec.describe Idv::GpoMail do
     user = hash[:user]
     event = hash[:event_type]
     now = Time.zone.now
-    updated_at = hash[:updated_at] || now
+    created_at = hash[:created_at] || now
     device = Device.find_by(user_id: user.id, cookie_uuid: uuid)
     if device
       device.last_used_at = now
@@ -72,7 +72,7 @@ RSpec.describe Idv::GpoMail do
       device_id: device.id,
       ip: remote_ip,
       event_type: event,
-      created_at: updated_at, updated_at: updated_at
+      created_at: created_at, updated_at: created_at
     )
   end
 end
