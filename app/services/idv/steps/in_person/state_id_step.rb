@@ -104,7 +104,7 @@ module Idv
         end
 
         def form
-          @form ||= Idv::StateIdForm.new(current_user)
+          @form ||= Idv::StateIdForm.new(current_user, capture_secondary_id_enabled: capture_secondary_id_enabled?)
         end
 
         def form_submit

@@ -23,7 +23,10 @@ RSpec.describe 'doc auth IPP state ID step', js: true do
       complete_prepare_step(user)
       complete_location_step(user)
       expect(page).to have_current_path(idv_in_person_step_path(step: :state_id), wait: 10)
-      fill_out_state_id_form_ok(double_address_verification: true, same_address_as_id: true, capture_secondary_id_enabled: true)
+      fill_out_state_id_form_ok(
+        double_address_verification: true, same_address_as_id: true,
+        capture_secondary_id_enabled: true
+      )
       # blank out the zip code field
       fill_in t('in_person_proofing.form.state_id.zipcode'), with: ''
       # try to enter invalid input into the zip code field

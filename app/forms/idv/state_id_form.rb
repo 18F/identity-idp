@@ -13,8 +13,9 @@ module Idv
       ActiveModel::Name.new(self, nil, 'StateId')
     end
 
-    def initialize(pii)
+    def initialize(pii, capture_secondary_id_enabled:)
       @pii = pii
+      @capture_secondary_id_enabled = capture_secondary_id_enabled
     end
 
     def submit(params)
@@ -36,7 +37,7 @@ module Idv
     private
 
     attr_reader :capture_secondary_id_enabled
-      alias_method :capture_secondary_id_enabled?, :capture_secondary_id_enabled
+    alias_method :capture_secondary_id_enabled?, :capture_secondary_id_enabled
 
     def consume_params(params)
       params.each do |key, value|
