@@ -301,7 +301,7 @@ module Idv
         last_name: pii_from_doc[:last_name],
         date_of_birth: pii_from_doc[:dob],
         address: pii_from_doc[:address1],
-        ssn: pii_from_doc[:ssn],
+        ssn: idv_session.ssn || pii_from_doc[:ssn],
         failure_reason: failure_reason,
       )
     end

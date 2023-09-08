@@ -86,7 +86,7 @@ module Idv
       end
 
       def updating_ssn?
-        flow_session.dig(:pii_from_user, :ssn).present?
+        idv_session.ssn.present? || flow_session.dig(:pii_from_user, :ssn).present?
       end
 
       def confirm_in_person_address_step_complete
