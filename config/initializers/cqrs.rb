@@ -1,4 +1,4 @@
-require_relative '../../db/sequent_migrations'
+require_relative '../../db/cqrs_migrations'
 
 Rails.application.reloader.to_prepare do
   Sequent.configure do |config|
