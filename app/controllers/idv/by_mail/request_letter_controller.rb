@@ -80,8 +80,7 @@ module Idv::ByMail
     end
 
     def confirm_mail_not_spammed
-      redirect_to idv_review_url if idv_session.address_mechanism_chosen? &&
-                                    gpo_mail_service.mail_spammed?
+      redirect_to idv_review_url if gpo_mail_service.mail_spammed?
     end
 
     def confirm_user_completed_idv_profile_step
