@@ -386,6 +386,8 @@ RSpec.describe Profile do
 
       # !!! a user can have multiple verified profiles
       expect(active_profile.verified_at).to be_present
+
+      expect(Profile::Events::records.count).to be > 0
     end
 
     it 'sends a reproof completed push event' do
