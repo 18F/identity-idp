@@ -524,6 +524,14 @@ module AnalyticsEvents
     track_event('Forget All Browsers Visited') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
+  def idv_acuant_sdk_loaded(success:, **extra)
+    track_event(
+      'Frontend: IdV: Acuant SDK loaded',
+      success: success,
+      **extra,
+    )
+  end
+
   # @param [Boolean] success
   # @param [Hash] errors
   # @param [String] exception
@@ -606,6 +614,34 @@ module AnalyticsEvents
     track_event('IdV: address visited') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
+  def idv_back_image_added(**extra)
+    track_event(
+      'Frontend: IdV: back image added',
+      **extra,
+    )
+  end
+
+  def idv_back_image_clicked(**extra)
+    track_event(
+      'Frontend: IdV: back image clicked',
+      **extra,
+    )
+  end
+
+  def idv_barcode_warning_continue_clicked(**extra)
+    track_event(
+      'Frontend: IdV: barcode warning continue clicked',
+      **extra,
+    )
+  end
+
+  def idv_barcode_warning_retake_photos_clicked(**extra)
+    track_event(
+      'Frontend: IdV: barcode warning retake photos clicked',
+      **extra,
+    )
+  end
+
   # @param [String] step the step that the user was on when they clicked cancel
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # The user confirmed their choice to cancel going through IDV
@@ -646,6 +682,13 @@ module AnalyticsEvents
       step: step,
       request_came_from: request_came_from,
       proofing_components: proofing_components,
+      **extra,
+    )
+  end
+
+  def idv_capture_troubleshooting_dismissed(**extra)
+    track_event(
+      'Frontend: IdV: Capture troubleshooting dismissed',
       **extra,
     )
   end
@@ -1053,6 +1096,20 @@ module AnalyticsEvents
     )
   end
 
+  def idv_front_image_added(**extra)
+    track_event(
+      'Frontend: IdV: front image added',
+      **extra,
+    )
+  end
+
+  def idv_front_image_clicked(**extra)
+    track_event(
+      'Frontend: IdV: front image clicked',
+      **extra,
+    )
+  end
+
   # @param [DateTime] enqueued_at When letter was enqueued
   # @param [Boolean] resend User requested a second (or more) letter
   # @param [DateTime] first_letter_requested_at When the profile became gpo_pending
@@ -1122,6 +1179,13 @@ module AnalyticsEvents
   # @param [String] user_id UUID of user who we sent a reminder to
   def idv_gpo_reminder_email_sent(user_id:, **extra)
     track_event('IdV: gpo reminder email sent', user_id: user_id, **extra) # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
+  end
+
+  def idv_image_capture_failed(**extra)
+    track_event(
+      'Frontend: IdV: Image capture failed',
+      **extra,
+    )
   end
 
   # Tracks emails that are initiated during InPerson::EmailReminderJob
@@ -1985,6 +2049,20 @@ module AnalyticsEvents
     )
   end
 
+  def idv_link_sent_capture_doc_polling_complete(**extra)
+    track_event(
+      'Frontend: IdV: Link sent capture doc polling complete',
+      **extra,
+    )
+  end
+
+  def idv_link_sent_capture_doc_polling_started(**extra)
+    track_event(
+      'Frontend: IdV: Link sent capture doc polling started',
+      **extra,
+    )
+  end
+
   # Tracks when the user visits Mail only warning when vendor_status_sms is set to full_outage
   def idv_mail_only_warning_visited(**extra)
     track_event(
@@ -2533,6 +2611,20 @@ module AnalyticsEvents
     track_event(
       'IdV: verify in person troubleshooting option clicked', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       flow_path: flow_path,
+      **extra,
+    )
+  end
+
+  def idv_warning_action_triggered(**extra)
+    track_event(
+      'Frontend: IdV: warning action triggered',
+      **extra,
+    )
+  end
+
+  def idv_warning_shown(**extra)
+    track_event(
+      'Frontend: IdV: warning shown',
       **extra,
     )
   end
