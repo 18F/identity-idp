@@ -6,12 +6,12 @@ RSpec.describe Idv::ThreatMetrixConcern, type: :controller do
   controller ApplicationController do
     include Idv::ThreatMetrixConcern
 
-    before_action :override_csp_for_threat_metrix_no_fsm
+    before_action :override_csp_for_threat_metrix
 
     def index; end
   end
 
-  describe '#override_csp_for_threat_metrix_no_fsm' do
+  describe '#override_csp_for_threat_metrix' do
     let(:ff_enabled) { true }
 
     before do
