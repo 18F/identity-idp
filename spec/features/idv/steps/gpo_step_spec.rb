@@ -109,6 +109,23 @@ RSpec.feature 'idv gpo step' do
       end
     end
 
+    context 'too little time has passed', :js do
+      it 'does not present the user the option to to resend', :js do
+        complete_idv_and_sign_out
+        sign_in_live_with_2fa(user)
+        expect(page).to have_current_path(idv_gpo_verify_path)
+        expect(page).not_to have_css('.usa-button', text: t('idv.buttons.mail.resend'))
+      end
+
+      it 'does not allow the user to go to the resend page manually' do
+        complete_idv_and_sign_out
+        sign_in_live_with_2fa(user)
+        visit idv_gpo_path
+        expect(page).to have_current_path(idv_gpo_verify_path)
+        expect(page).not_to have_css('.usa-button', text: t('idv.buttons.mail.resend'))
+      end
+    end
+
     it 'allows the user to return to gpo otp confirmation', :js do
       complete_idv_and_return_to_gpo_step
       click_doc_auth_back_link
