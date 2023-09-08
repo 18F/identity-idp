@@ -208,37 +208,38 @@ function getFingerPrint(file: File): Promise<string | null> {
     reader.readAsArrayBuffer(file);
   });
 }
-
-function getImageDimensions(
-  file: File,
-): Promise<{ width: number | null; height: number | null; fingerprint: string | null }> {
+function getImageDimensions(file: File): Promise<{ width: number | null; height: number | null }> {
   let objectURL: string;
   return file.type.indexOf('image/') === 0
-    ? new Promise<{ width: number | null; height: number | null; fingerprint: string | null }>(
-        (resolve) => {
-          objectURL = window.URL.createObjectURL(file);
-          const image = new window.Image();
-          image.onload = () => {
-            getFingerPrint(file).then((base64Str) => {
-              resolve({ width: image.width, height: image.height, fingerprint: base64Str });
-            });
-          };
-          image.onerror = () => resolve({ width: null, height: null, fingerprint: null });
-          image.src = objectURL;
-        },
-      )
-        .then(({ width, height, fingerprint }) => {
+    ? new Promise<{ width: number | null; height: number | null }>((resolve) => {
+        objectURL = window.URL.createObjectURL(file);
+        const image = new window.Image();
+        image.onload = () => resolve({ width: image.width, height: image.height });
+        image.onerror = () => resolve({ width: null, height: null });
+        image.src = objectURL;
+      })
+        .then(({ width, height }) => {
           window.URL.revokeObjectURL(objectURL);
-          return { width, height, fingerprint };
+          return { width, height };
         })
-        .catch(() => ({ width: null, height: null, fingerprint: null }))
-    : new Promise<{ width: number | null; height: number | null; fingerprint: string | null }>(
-        (resolve) => {
-          getFingerPrint(file).then((base64Str) => {
-            resolve({ width: null, height: null, fingerprint: base64Str });
-          });
-        },
-      );
+        .catch(() => ({ width: null, height: null }))
+    : Promise.resolve({ width: null, height: null });
+}
+
+function getImageMetadata(
+  file: File,
+): Promise<{ width: number | null; height: number | null; fingerprint: string | null }> {
+  const dimension = getImageDimensions(file);
+  const fingerprint = getFingerPrint(file);
+  return new Promise<{ width: number | null; height: number | null; fingerprint: string | null }>(
+    function (resolve) {
+      Promise.all([dimension, fingerprint])
+        .then((results) => {
+          resolve({ width: results[0].width, height: results[0].height, fingerprint: results[1] });
+        })
+        .catch(() => ({ width: null, height: null, fingerprint: null }));
+    },
+  );
 }
 
 /**
@@ -378,7 +379,7 @@ function AcuantCapture(
     let analyticsPayload: ImageAnalyticsPayload | undefined;
     let hasFailed = false;
     if (nextValue) {
-      const { width, height, fingerprint } = await getImageDimensions(nextValue);
+      const { width, height, fingerprint } = await getImageMetadata(nextValue);
       analyticsPayload = getAddAttemptAnalyticsPayload({
         width,
         height,
@@ -395,7 +396,7 @@ function AcuantCapture(
       }
     }
     if (hasFailed) {
-      setOwnErrorMessage('Using a failed image');
+      setOwnErrorMessage(t('doc_auth.errors.doc.resubmit_failed_image'));
     } else {
       onChangeAndResetError(nextValue, analyticsPayload);
     }

@@ -216,20 +216,22 @@ module Idv
       error_sides = []
       if capture_result&.failed_front_image?(front_image_fingerprint)
         errors.add(
-          :front, 'Same failed image uploaded again',
-          type: :duplicate_image
+          :front, t('doc_auth.errors.doc.resubmit_failed_image'), type: :duplicate_image
         )
         error_sides << 'front'
       end
 
       if capture_result&.failed_back_image?(back_image_fingerprint)
         errors.add(
-          :back, 'Same failed image uploaded again',
-          type: :duplicate_image
+          :back, t('doc_auth.errors.doc.resubmit_failed_image'), type: :duplicate_image
         )
         error_sides << 'back'
       end
-      analytics.idv_doc_auth_failed_image_resubmitted( error_sides.length == 2 ? 'both' : error_sides[0], **extra_attributes) unless error_sides.empty?
+      unless error_sides.empty?
+        analytics.idv_doc_auth_failed_image_resubmitted(
+          error_sides.length == 2 ? 'both' : error_sides[0], **extra_attributes
+        )
+      end
     end
 
     def limit_if_rate_limited

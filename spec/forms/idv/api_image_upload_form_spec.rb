@@ -276,7 +276,7 @@ RSpec.describe Idv::ApiImageUploadForm do
         expect(capture_result.failed_front_image_fingerprints).not_to match_array([])
         response = form.submit
         expect(response.errors).to have_key(:front)
-        expect(response.errors).to have_value(['Same failed image uploaded again'])
+        expect(response.errors).to have_value([I18n.t('doc_auth.errors.doc.resubmit_failed_image')])
       end
     end
 
@@ -327,7 +327,7 @@ RSpec.describe Idv::ApiImageUploadForm do
         expect(capture_result.failed_front_image_fingerprints).not_to match_array([])
         response = form.submit
         expect(response.errors).to have_key(:front)
-        expect(response.errors).to have_value(['Same failed image uploaded again'])
+        expect(response.errors).to have_value([I18n.t('doc_auth.errors.doc.resubmit_failed_image')])
         expect(fake_analytics).to have_logged_event(
           'IdV: failed doc image resubmitted',
           attempts: 1,
@@ -338,7 +338,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           back_image_fingerprint: an_instance_of(String),
           getting_started_ab_test_bucket: :welcome_default,
           side: 'both',
-          )
+        )
       end
     end
 

@@ -185,7 +185,7 @@ RSpec.feature 'doc auth redo document capture', js: true do
       # Error message without submit
       expect(page).to have_css(
         '.usa-error-message[role="alert"]',
-        text: 'Same failed image uploaded again',
+        text: t('doc_auth.errors.doc.resubmit_failed_image'),
       )
     end
   end

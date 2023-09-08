@@ -58,6 +58,7 @@ en:
         doc_type_check: Other forms of ID are not accepted.
         wrong_id_type: We only accept a driver’s license or a state ID card at this
           time. Other forms of ID are not accepted.
+        resubmit_failed_image: You already tried this image, but it was too small or blurry. Please try adding a different image.
       dpi:
         failed_short: Image is too small or blurry, please try again.
         top_msg: We couldn’t read your ID. Your image size may be too small, or your ID
