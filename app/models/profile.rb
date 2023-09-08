@@ -57,6 +57,19 @@ class Profile < ApplicationRecord
     where.not(in_person_verification_pending_at: nil)
   end
 
+  # @param [Pii::Attributes] pii
+  def self.build_compound_pii(pii)
+    values = [
+      pii.first_name,
+      pii.last_name,
+      pii.zipcode,
+      pii.dob && DateParser.parse_legacy(pii[:dob]).year,
+    ]
+
+    return unless values.all?(&:present?)
+    values.join(':')
+  end
+
   # Instance methods
   def fraud_review_pending?
     fraud_review_pending_at.present?
@@ -257,19 +270,6 @@ class Profile < ApplicationRecord
       pii.to_json, user_uuid: user.uuid
     )
     @personal_key = personal_key
-  end
-
-  # @param [Pii::Attributes] pii
-  def self.build_compound_pii(pii)
-    values = [
-      pii.first_name,
-      pii.last_name,
-      pii.zipcode,
-      pii.dob && DateParser.parse_legacy(pii[:dob]).year,
-    ]
-
-    return unless values.all?(&:present?)
-    values.join(':')
   end
 
   def includes_phone_check?
