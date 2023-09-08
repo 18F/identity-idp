@@ -79,7 +79,9 @@ module Idv
         where(
           updated_at: (time_window.ago..),
           profile: profile_hash,
-        ).count
+        ).
+        limit([1, MAX_MAIL_EVENTS].max).
+        count
     end
   end
 end
