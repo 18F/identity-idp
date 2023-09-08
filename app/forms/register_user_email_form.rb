@@ -194,6 +194,8 @@ class RegisterUserEmailForm
 
   def blocked_email_address
     return @blocked_email_address if defined?(@blocked_email_address)
-    @blocked_email_address = SuspendedEmail.find_with_email(email)
+
+    email_digest = OpenSSL::Digest::SHA256.hexdigest(email)
+    @blocked_email_address = SuspendedEmail.find_with_email_digest(email_digest)
   end
 end
