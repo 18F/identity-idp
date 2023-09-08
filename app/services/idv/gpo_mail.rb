@@ -9,7 +9,7 @@ module Idv
 
     def mail_spammed?
       return false if user_mail_events.empty?
-      max_events? && updated_within_last_month?
+      max_events? && created_within_limit_period?
     end
 
     def profile_too_old?
@@ -51,7 +51,7 @@ module Idv
       user_mail_events.size == MAX_MAIL_EVENTS
     end
 
-    def updated_within_last_month?
+    def created_within_limit_period?
       user_mail_events.last.created_at > MAIL_EVENTS_WINDOW_DAYS.days.ago
     end
   end
