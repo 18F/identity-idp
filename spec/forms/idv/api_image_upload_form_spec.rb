@@ -320,6 +320,7 @@ RSpec.describe Idv::ApiImageUploadForm do
         response = form.submit
         expect(response.errors[:doc_pii]).to eq('bad')
       end
+
       it 'keeps fingerprints of failed image and triggers error when submit same image' do
         form.submit
         session = DocumentCaptureSession.find_by(uuid: document_capture_session_uuid)
