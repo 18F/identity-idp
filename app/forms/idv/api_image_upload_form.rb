@@ -8,7 +8,7 @@ module Idv
     validates_presence_of :document_capture_session
 
     validate :validate_images
-    validate :validate_duplicate_images
+    validate :validate_duplicate_images , if: :image_resubmission_check?
     validate :limit_if_rate_limited
 
     def initialize(params, service_provider:, analytics: nil,
@@ -411,6 +411,12 @@ module Idv
     # @param [Object] doc_pii_response
     # @return [Object] latest failed fingerprints
     def store_failed_images(client_response, doc_pii_response)
+      unless image_resubmission_check?
+        return {
+          front: [],
+          back: [],
+        }
+      end
       # doc auth failed due to non network error or doc_pii is not valid
       if client_response && !client_response.success? && !client_response.network_error?
         errors_hash = client_response.errors&.to_h || {}
@@ -439,6 +445,10 @@ module Idv
         front: captured_result&.failed_front_image_fingerprints || [],
         back: captured_result&.failed_back_image_fingerprints || [],
       }
+    end
+
+    def image_resubmission_check?
+      IdentityConfig.store.doc_auth_check_failed_image_resubmission_enabled
     end
   end
 end
