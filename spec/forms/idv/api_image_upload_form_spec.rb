@@ -459,9 +459,8 @@ RSpec.describe Idv::ApiImageUploadForm do
     end
   end
   describe '#store_failed_images' do
-    let(:client_response) { instance_double(DocAuth::Response) }
     let(:doc_pii_response) { instance_double(Idv::DocAuthFormResponse) }
-
+    let(:client_response) { instance_double(DocAuth::Response) }
     context 'when client_response is not success and not network error' do
       context 'when both sides error message missing' do
         let(:errors) { {} }

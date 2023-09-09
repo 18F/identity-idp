@@ -29,7 +29,7 @@ DocumentCaptureSessionResult = RedactedStruct.new(
 
     define_method("failed_#{side}_image?") do |fingerprint|
       member_name = "failed_#{side}_image_fingerprints"
-      return false unless self[member_name] && self[member_name].is_a?(Array)
+      return false unless self[member_name]&.is_a?(Array)
       return self[member_name]&.include?(fingerprint)
     end
   end
