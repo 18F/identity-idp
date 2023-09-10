@@ -3,7 +3,7 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}.git" }
 
 ruby "~> #{File.read(File.join(__dir__, '.ruby-version')).strip}"
 
-gem 'rails', '~> 7.0.0'
+gem 'rails', '~> 7.0.8'
 
 gem 'activerecord-postgis-adapter'
 gem 'ahoy_matey', '~> 3.0'
@@ -110,7 +110,7 @@ group :development, :test do
   gem 'rspec-rails', '~> 6.0'
   gem 'rubocop', '~> 1.55.1', require: false
   gem 'rubocop-performance', '~> 1.18.0', require: false
-  gem 'rubocop-rails', '>= 2.5.2', require: false
+  gem 'rubocop-rails', '>= 2.21.0', require: false
 end
 
 group :test do
