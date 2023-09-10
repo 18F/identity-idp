@@ -1217,7 +1217,9 @@ describe('document-capture/components/acuant-capture', () => {
       </AnalyticsContext.Provider>,
     );
     const input = getByLabelText('Image');
-    await userEvent.upload(input, validUpload);
+    uploadFile(input, validUpload);
+    onChange.calls;
+    await new Promise((resolve) => onChange.callsFake(resolve));
     expect(trackEvent).to.have.been.calledWith(
       'IdV: failed front image resubmitted',
       sinon.match({

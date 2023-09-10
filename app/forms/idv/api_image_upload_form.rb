@@ -8,7 +8,7 @@ module Idv
     validates_presence_of :document_capture_session
 
     validate :validate_images
-    validate :validate_duplicate_images , if: :image_resubmission_check?
+    validate :validate_duplicate_images, if: :image_resubmission_check?
     validate :limit_if_rate_limited
 
     def initialize(params, service_provider:, analytics: nil,

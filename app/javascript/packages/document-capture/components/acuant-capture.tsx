@@ -396,6 +396,7 @@ function AcuantCapture(
       }
     }
     if (hasFailed) {
+      onChange(nextValue, analyticsPayload);
       setOwnErrorMessage(t('doc_auth.errors.doc.resubmit_failed_image'));
     } else {
       onChangeAndResetError(nextValue, analyticsPayload);
