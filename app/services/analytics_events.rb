@@ -707,7 +707,7 @@ module AnalyticsEvents
       'IdV: failed doc image resubmitted',
       side: side,
       **extra,
-      )
+    )
   end
 
   def idv_doc_auth_getting_started_submitted(**extra)
