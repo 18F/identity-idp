@@ -57,7 +57,7 @@ RSpec.feature 'doc auth redo document capture', js: true do
       expect(current_path).to eq(idv_verify_info_path)
       check t('forms.ssn.show')
       expect(page).to have_content(DocAuthHelper::GOOD_SSN)
-      expect(page).to have_css('[role="status"]')  # We verified your ID
+      expect(page).to have_css('[role="status"]') # We verified your ID
     end
 
     it 'document capture cannot be reached after submitting verify info step' do
