@@ -229,7 +229,7 @@ module Idv
       end
       unless error_sides.empty?
         analytics.idv_doc_auth_failed_image_resubmitted(
-          error_sides.length == 2 ? 'both' : error_sides[0], **extra_attributes
+          side: error_sides.length == 2 ? 'both' : error_sides[0], **extra_attributes,
         )
       end
     end

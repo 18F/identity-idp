@@ -701,6 +701,15 @@ module AnalyticsEvents
     )
   end
 
+  # @param [String] side the side of the image submission
+  def idv_doc_auth_failed_image_resubmitted(side:, **extra)
+    track_event(
+      'IdV: failed doc image resubmitted',
+      side: side,
+      **extra,
+      )
+  end
+
   def idv_doc_auth_getting_started_submitted(**extra)
     track_event('IdV: doc auth getting_started submitted', **extra)
   end
@@ -746,15 +755,6 @@ module AnalyticsEvents
 
   def idv_doc_auth_redo_ssn_submitted(**extra)
     track_event('IdV: doc auth redo_ssn submitted', **extra)
-  end
-
-  # @param [String] side the side of the image submission
-  def idv_doc_auth_failed_image_resubmitted(side:, **extra)
-    track_event(
-      'IdV: failed doc image resubmitted',
-      side: side,
-      **extra,
-    )
   end
 
   # @identity.idp.previous_event_name IdV: in person proofing ssn submitted
