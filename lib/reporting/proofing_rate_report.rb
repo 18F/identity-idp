@@ -5,7 +5,6 @@ require 'reporting/identity_verification_report'
 
 module Reporting
   class ProofingRateReport
-
     DATE_INTERVALS = [30, 60, 90]
 
     # The basic goal here is to call IdentityVerificationReport for 30, 60, and 90 days
@@ -18,7 +17,7 @@ module Reporting
         issuers: nil, # all issuers
         # FIXME: We actually want to loop over DATE_INVERVALS but it's
         # easier to start with one and then add that in.
-        time_range: (start_date - 30.days)..start_date
+        time_range: (start_date - 30.days)..start_date,
       )
 
       csv = []
@@ -35,7 +34,7 @@ module Reporting
     end
 
     def blanket_proofing_rate
-        ivr.idv_started / ivr.successfully_verified_users
+      ivr.idv_started / ivr.successfully_verified_users
     end
 
     def intent_proofing_rate
@@ -60,6 +59,5 @@ module Reporting
       #  is not blocked by us (e.g. is stopped in funnel w/ rejection codes by Acuant/InstantVerify/PhoneFinder/USPS)
       # I think we need to return (total - sum of all those "not..." cases)
     end
-
   end
 end

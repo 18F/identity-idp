@@ -13,9 +13,9 @@ RSpec.describe Reporting::ProofingRateReport do
     cloudwatch_client = double(
       'Reporting::CloudwatchClient',
       fetch: [
-               # Online verification user
-               { 'user_id' => 'user1', 'name' => 'IdV: doc auth welcome visited' },
-             ]
+        # Online verification user
+        { 'user_id' => 'user1', 'name' => 'IdV: doc auth welcome visited' },
+      ],
     )
 
     allow(report).to receive(:cloudwatch_client).and_return(cloudwatch_client)
@@ -27,5 +27,4 @@ RSpec.describe Reporting::ProofingRateReport do
       expect(report.report_for(start_date: start_date)).to eq([])
     end
   end
-
 end
