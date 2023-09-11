@@ -8,12 +8,13 @@ module Idv
     before_action :confirm_verify_info_step_needed
     before_action :confirm_document_capture_complete
     before_action :confirm_repeat_ssn, only: :show
-    before_action :override_csp_for_threat_metrix_no_fsm
+    before_action :override_csp_for_threat_metrix
 
     attr_accessor :error_message
 
     def show
-      @ssn_form = Idv::SsnFormatForm.new(current_user, flow_session)
+      incoming_ssn = idv_session.ssn || flow_session.dig(:pii_from_doc, :ssn)
+      @ssn_form = Idv::SsnFormatForm.new(current_user, incoming_ssn)
 
       analytics.idv_doc_auth_redo_ssn_submitted(**analytics_arguments) if @ssn_form.updating_ssn?
       analytics.idv_doc_auth_ssn_visited(**analytics_arguments)
@@ -27,7 +28,8 @@ module Idv
     def update
       @error_message = nil
 
-      @ssn_form = Idv::SsnFormatForm.new(current_user, flow_session)
+      incoming_ssn = idv_session.ssn || flow_session.dig(:pii_from_doc, :ssn)
+      @ssn_form = Idv::SsnFormatForm.new(current_user, incoming_ssn)
       form_response = @ssn_form.submit(params.require(:doc_auth).permit(:ssn))
 
       analytics.idv_doc_auth_ssn_submitted(
@@ -39,6 +41,7 @@ module Idv
 
       if form_response.success?
         flow_session[:pii_from_doc][:ssn] = params[:doc_auth][:ssn]
+        idv_session.ssn = params[:doc_auth][:ssn]
         idv_session.invalidate_steps_after_ssn!
         redirect_to next_url
       else
@@ -50,7 +53,7 @@ module Idv
     private
 
     def confirm_repeat_ssn
-      return if !pii_from_doc[:ssn]
+      return if !idv_session.ssn && !pii_from_doc[:ssn]
       return if request.referer == idv_verify_info_url
 
       redirect_to idv_verify_info_url

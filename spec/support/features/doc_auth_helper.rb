@@ -1,9 +1,11 @@
 require_relative 'document_capture_step_helper'
 require_relative 'interaction_helper'
+require_relative '../user_agent_helper'
 
 module DocAuthHelper
   include InteractionHelper
   include DocumentCaptureStepHelper
+  include UserAgentHelper
 
   GOOD_SSN = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]
   GOOD_SSN_MASKED = '9**-**-***4'
@@ -111,10 +113,7 @@ module DocAuthHelper
   end
 
   def mobile_device
-    Browser.new(
-      'Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) \
-AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1',
-    )
+    Browser.new(mobile_user_agent)
   end
 
   def complete_doc_auth_steps_before_ssn_step(expect_accessible: false)

@@ -79,7 +79,7 @@ RSpec.describe 'idv/phone_errors/warning.html.erb' do
     it 'does not render link to gpo flow' do
       expect(rendered).not_to have_link(
         t('idv.troubleshooting.options.verify_by_mail'),
-        href: idv_gpo_path,
+        href: idv_request_letter_path,
       )
     end
   end
@@ -105,7 +105,10 @@ RSpec.describe 'idv/phone_errors/warning.html.erb' do
     end
 
     it 'has a secondary cta' do
-      expect(rendered).to have_link(t('idv.failure.phone.warning.gpo.button'), href: idv_gpo_path)
+      expect(rendered).to have_link(
+        t('idv.failure.phone.warning.gpo.button'),
+        href: idv_request_letter_path,
+      )
     end
   end
 

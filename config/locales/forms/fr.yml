@@ -153,7 +153,7 @@ fr:
         qu’identifiant sur votre appareil, afin de pouvoir les utiliser pour
         accéder à votre compte. %{app_name} ne stocke pas votre visage ni votre
         empreinte digitale</p><p>Il se peut que vous ayez besoin d’utiliser le
-        même appareil pour vous connecter chaque fois.%{link}</p>'
+        même appareil pour vous connecter chaque fois. %{link}</p>'
       intro_link_text: En savoir plus sur le déverrouillage facial ou sur le
         déverrouillage tactile.
       nickname: Pseudo dispositivo

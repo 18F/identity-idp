@@ -1,7 +1,10 @@
 import { render } from '@testing-library/react';
 import { screen } from '@testing-library/dom';
 import sinon from 'sinon';
+import { Alert } from '@18f/identity-components';
 import InPersonLocations from './in-person-locations';
+import type { FormattedLocation } from './in-person-locations';
+
 
 function NoLocationsViewMock({ address }) {
   return (
@@ -92,5 +95,74 @@ describe('InPersonLocations', () => {
       expect(queryByText('456 Test Address')).to.exist();
       expect(queryByText('No PO found')).to.be.null;
     });
+
+    context('Alert', () => {
+      const locations: FormattedLocation[] = [
+        {
+          formattedCityStateZip: 'one',
+          distance: 'one',
+          id: 1,
+          name: 'one',
+          saturdayHours: 'one',
+          streetAddress: 'one',
+          sundayHours: 'one',
+          weekdayHours: 'one',
+          isPilot: false,
+        },
+        {
+          formattedCityStateZip: 'two',
+          distance: 'two',
+          id: 2,
+          name: 'two',
+          saturdayHours: 'two',
+          streetAddress: 'two',
+          sundayHours: 'two',
+          weekdayHours: 'two',
+          isPilot: false,
+        },
+      ];
+    
+      const onSelect = () => {};
+    
+      const address = '123 Fake St, Hollywood, CA 90210';
+  
+      it('renders a component at the top of results when passed', () => {
+        const alertText = 'hello world';
+        const alertComponent = () => <Alert>{alertText}</Alert>;
+    
+        const { getByText } = render(
+          <InPersonLocations
+            address={address}
+            resultsHeaderComponent={alertComponent}
+            locations={locations}
+            onSelect={onSelect}
+            NoInPersonLocations={NoLocationsViewMock}
+          />,
+        );
+    
+        // the alert text
+        expect(getByText(alertText)).to.exist();
+      });
+    
+      it('renders results instructions when onSelect is passed', () => {
+        const { getByText } = render(
+          <InPersonLocations address={address} locations={locations} onSelect={onSelect} NoInPersonLocations={NoLocationsViewMock} />,
+        );
+    
+        expect(getByText('in_person_proofing.body.location.po_search.results_instructions')).to.exist();
+      });
+    
+      it('does not render results instructions when onSelect is not passed', () => {
+        const { queryByText } = render(
+          <InPersonLocations address={address} locations={locations} onSelect={null} NoInPersonLocations={NoLocationsViewMock} />,
+        );
+    
+        expect(
+          queryByText('in_person_proofing.body.location.po_search.results_instructions'),
+        ).to.not.exist();
+      });
+    });
   });
+  
+
 });
