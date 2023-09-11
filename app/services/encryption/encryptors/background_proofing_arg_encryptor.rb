@@ -6,12 +6,12 @@ module Encryption
 
       def encrypt(plaintext)
         aes_ciphertext = AesEncryptor.new.encrypt(plaintext, aes_encryption_key)
-        kms_ciphertext = KmsClient.new.encrypt(aes_ciphertext, 'context' => 'session-encryption')
+        kms_ciphertext = kms_client.encrypt(aes_ciphertext, 'context' => 'session-encryption')
         encode(kms_ciphertext)
       end
 
       def decrypt(ciphertext)
-        aes_ciphertext = KmsClient.new.decrypt(
+        aes_ciphertext = kms_client.decrypt(
           decode(ciphertext), 'context' => 'session-encryption'
         )
         aes_encryptor.decrypt(aes_ciphertext, aes_encryption_key)
@@ -25,6 +25,10 @@ module Encryption
 
       def aes_encryption_key
         IdentityConfig.store.session_encryption_key[0...32]
+      end
+
+      def kms_client
+        @kms_client ||= KmsClient.new(kms_key_id: IdentityConfig.store.aws_kms_session_key_id)
       end
 
       add_method_tracer :encrypt, "Custom/#{name}/encrypt"
