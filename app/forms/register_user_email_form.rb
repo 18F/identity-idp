@@ -25,12 +25,24 @@ class RegisterUserEmailForm
     @user ||= User.new
   end
 
+  def rate_limited?
+    @rate_limited
+  end
+
   def email
     email_address&.email
   end
 
   def email_fingerprint
     email_address&.email_fingerprint
+  end
+
+  def normalized_email
+    @normalized_email ||= EmailNormalizer.new(email).normalized_email
+  end
+
+  def digested_base_email
+    @digested_base_email ||= OpenSSL::Digest::SHA256.hexdigest(normalized_email)
   end
 
   def validate_terms_accepted
@@ -68,11 +80,9 @@ class RegisterUserEmailForm
   attr_accessor :success, :request_id
 
   def build_user_and_email_address_with_email(email:, email_language:)
-    normalized_email = EmailNormalizer.new(email).normalized_email
-
     self.email_address = user.email_addresses.build(
       user: user,
-      email: normalized_email,
+      email: email,
     )
 
     self.email_language = email_language
@@ -99,13 +109,7 @@ class RegisterUserEmailForm
     elsif email_taken?
       send_sign_up_confirmed_email
     else
-      user.accepted_terms_at = Time.zone.now
-      user.save!
-      SendSignUpEmailConfirmation.new(user).call(
-        request_id: email_request_id(request_id),
-        instructions: instructions,
-        password_reset_requested: password_reset_requested?,
-      )
+      send_sign_up_email(request_id, instructions)
     end
   end
 
@@ -120,20 +124,46 @@ class RegisterUserEmailForm
       email_already_exists: email_taken?,
       user_id: user.uuid || existing_user.uuid,
       domain_name: email&.split('@')&.last,
-      rate_limited: @rate_limited,
+      rate_limited: rate_limited?,
     }
   end
 
-  def send_sign_up_unconfirmed_email(request_id)
+  def rate_limit!(rate_limit_type)
     rate_limiter = RateLimiter.new(
-      target: email_fingerprint,
-      rate_limit_type: :reg_unconfirmed_email,
+      target: digested_base_email,
+      rate_limit_type: rate_limit_type,
     )
 
     rate_limiter.increment!
     @rate_limited = rate_limiter.limited?
+  end
 
-    if @rate_limited
+  def send_sign_up_email(request_id, instructions)
+    rate_limit!(:reg_unconfirmed_email)
+
+    if rate_limited?
+      @analytics.rate_limit_reached(
+        limiter_type: :reg_unconfirmed_email,
+      )
+      @attempts_tracker.user_registration_email_submission_rate_limited(
+        email: email, email_already_registered: false,
+      )
+    else
+      user.accepted_terms_at = Time.zone.now
+      user.save!
+
+      SendSignUpEmailConfirmation.new(user).call(
+        request_id: email_request_id(request_id),
+        instructions: instructions,
+        password_reset_requested: password_reset_requested?,
+      )
+    end
+  end
+
+  def send_sign_up_unconfirmed_email(request_id)
+    rate_limit!(:reg_unconfirmed_email)
+
+    if rate_limited?
       @analytics.rate_limit_reached(
         limiter_type: :reg_unconfirmed_email,
       )
@@ -146,15 +176,9 @@ class RegisterUserEmailForm
   end
 
   def send_sign_up_confirmed_email
-    rate_limiter = RateLimiter.new(
-      target: email_fingerprint,
-      rate_limit_type: :reg_confirmed_email,
-    )
+    rate_limit!(:reg_confirmed_email)
 
-    rate_limiter.increment!
-    @rate_limited = rate_limiter.limited?
-
-    if @rate_limited
+    if rate_limited?
       @analytics.rate_limit_reached(
         limiter_type: :reg_confirmed_email,
       )
@@ -195,7 +219,6 @@ class RegisterUserEmailForm
   def blocked_email_address
     return @blocked_email_address if defined?(@blocked_email_address)
 
-    email_digest = OpenSSL::Digest::SHA256.hexdigest(email)
-    @blocked_email_address = SuspendedEmail.find_with_email_digest(email_digest)
+    @blocked_email_address = SuspendedEmail.find_with_email_digest(digested_base_email)
   end
 end
