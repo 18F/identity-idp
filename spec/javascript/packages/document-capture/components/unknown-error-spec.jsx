@@ -32,7 +32,7 @@ describe('UnknownError', () => {
         const paragraph = container.querySelector('p');
         expect(within(paragraph).getByText('An unknown error occurred')).to.be.ok();
         const link = container.querySelector('a');
-        expect(link.text).to.eql('doc_auth.info.review_examples_of_photos');
+        expect(link.text).to.eql('doc_auth.info.review_examples_of_photoslinks.new_tab');
       });
     });
 
