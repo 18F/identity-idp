@@ -224,7 +224,7 @@ RSpec.describe Profile do
   end
 
   describe '#recover_pii' do
-    it 'decrypts the recovery PII with personal key for users with a multi region ciphertext' do
+    it 'decrypts recovery PII with personal key for users with a multi region ciphertext' do
       profile.encrypt_pii(pii, user.password)
       personal_key = profile.personal_key
 
@@ -237,7 +237,7 @@ RSpec.describe Profile do
       expect(decrypted_pii).to eq pii
     end
 
-    it 'decrypts the recovery PII with personal key for users with only a single region ciphertext' do
+    it 'decrypts recovery PII with personal key for users with only a single region ciphertext' do
       profile.encrypt_pii(pii, user.password)
       profile.update!(encrypted_pii_recovery_multi_region: nil)
       personal_key = profile.personal_key
