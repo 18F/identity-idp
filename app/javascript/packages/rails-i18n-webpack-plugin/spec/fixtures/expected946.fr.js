@@ -1,1 +1,1 @@
-window._locale_data=Object.assign({"forms.button.cancel":"Annuler"},window._locale_data)
+_locale_data=Object.assign({"forms.button.cancel":"Annuler"},this._locale_data)

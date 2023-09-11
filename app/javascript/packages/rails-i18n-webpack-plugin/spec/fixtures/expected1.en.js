@@ -1,1 +1,1 @@
-window._locale_data=Object.assign({"forms.button.submit":"Submit","forms.messages":{"one":"One message","other":"%{count} messages"},"forms.key1":"value1-en","forms.key2":"value2-en","item.1":"First","item.2":"Second","item.3":"","forms.button.reset":"Reset"},window._locale_data)
+_locale_data=Object.assign({"forms.button.submit":"Submit","forms.messages":{"one":"One message","other":"%{count} messages"},"forms.key1":"value1-en","forms.key2":"value2-en","item.1":"First","item.2":"Second","item.3":"","forms.button.reset":"Reset"},this._locale_data)

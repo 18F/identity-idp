@@ -1,1 +1,1 @@
-window._locale_data=Object.assign({"forms.dynamic":"Dynamique"},window._locale_data)
+_locale_data=Object.assign({"forms.dynamic":"Dynamique"},this._locale_data)
