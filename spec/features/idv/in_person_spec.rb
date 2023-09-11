@@ -694,7 +694,8 @@ RSpec.describe 'In Person Proofing', js: true do
     end
     it 'successfully proceeds through the flow' do
       complete_state_id_step(
-        user, same_address_as_id: false, capture_secondary_id_enabled: true)
+        user, same_address_as_id: false, capture_secondary_id_enabled: true
+      )
 
       complete_address_step(user, double_address_verification: true)
 
@@ -734,7 +735,8 @@ RSpec.describe 'In Person Proofing', js: true do
 
     it 'skips the address page' do
       complete_state_id_step(
-        user, same_address_as_id: true, capture_secondary_id_enabled: true)
+        user, same_address_as_id: true, capture_secondary_id_enabled: true
+      )
       # skip address step
       complete_ssn_step(user)
       # Ensure the page submitted successfully
@@ -743,7 +745,8 @@ RSpec.describe 'In Person Proofing', js: true do
 
     it 'can redo the address page form even if that page is skipped' do
       complete_state_id_step(
-        user, same_address_as_id: true, capture_secondary_id_enabled: true)
+        user, same_address_as_id: true, capture_secondary_id_enabled: true
+      )
       # skip address step
       complete_ssn_step(user)
       # click update address button on the verify page
@@ -757,7 +760,8 @@ RSpec.describe 'In Person Proofing', js: true do
 
     it 'allows user to update their residential address as different from their state id' do
       complete_state_id_step(
-        user, same_address_as_id: true, capture_secondary_id_enabled: true)
+        user, same_address_as_id: true, capture_secondary_id_enabled: true
+      )
       complete_ssn_step(user)
 
       # click "update residential address"
@@ -802,7 +806,8 @@ RSpec.describe 'In Person Proofing', js: true do
       it 'does not update their previous selection of "Yes,
       I live at the address on my state-issued ID"' do
         complete_state_id_step(
-          user, same_address_as_id: true, capture_secondary_id_enabled: true)
+          user, same_address_as_id: true, capture_secondary_id_enabled: true
+        )
         # skip address step
         complete_ssn_step(user)
         # expect to be on verify page
@@ -835,7 +840,8 @@ RSpec.describe 'In Person Proofing', js: true do
 
       it 'does not update their previous selection of "No, I live at a different address"' do
         complete_state_id_step(
-          user, same_address_as_id: false, capture_secondary_id_enabled: true)
+          user, same_address_as_id: false, capture_secondary_id_enabled: true
+        )
         # expect to be on address page
         expect(page).to have_content(t('in_person_proofing.headings.address'))
         # complete address step
@@ -870,7 +876,8 @@ RSpec.describe 'In Person Proofing', js: true do
 
       it 'updates their previous selection from "Yes" TO "No, I live at a different address"' do
         complete_state_id_step(
-          user, same_address_as_id: true, capture_secondary_id_enabled: true)
+          user, same_address_as_id: true, capture_secondary_id_enabled: true
+        )
         # skip address step
         complete_ssn_step(user)
         # click update state ID button on the verify page
@@ -906,7 +913,8 @@ RSpec.describe 'In Person Proofing', js: true do
       it 'updates their previous selection from "No" TO "Yes,
       I live at the address on my state-issued ID"' do
         complete_state_id_step(
-          user, same_address_as_id: false, capture_secondary_id_enabled: true)
+          user, same_address_as_id: false, capture_secondary_id_enabled: true
+        )
         # expect to be on address page
         expect(page).to have_content(t('in_person_proofing.headings.address'))
         # complete address step
