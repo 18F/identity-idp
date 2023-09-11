@@ -32,6 +32,7 @@ return(
             onLoadingLocations={setLoadingLocationsCallback}
             onError={setApiErrorCallback}
             disabled={disabledAddressSearchCallback}
+            noInPersonLocationsDisplay={noInPersonLocationsDisplay}
           />
     </>
 );
