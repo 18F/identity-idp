@@ -1,3 +1,4 @@
+import { ComponentType } from 'react';
 import { t } from '@18f/identity-i18n';
 import LocationCollection from './location-collection';
 import LocationCollectionItem from './location-collection-item';
@@ -19,9 +20,15 @@ interface InPersonLocationsProps {
   locations: FormattedLocation[] | null | undefined;
   onSelect;
   address: string;
+  resultsHeaderComponent?: ComponentType;
 }
 
-function InPersonLocations({ locations, onSelect, address }: InPersonLocationsProps) {
+function InPersonLocations({
+  locations,
+  onSelect,
+  address,
+  resultsHeaderComponent: HeaderComponent,
+}: InPersonLocationsProps) {
   const isPilot = locations?.some((l) => l.isPilot);
 
   if (locations?.length === 0) {
@@ -37,7 +44,8 @@ function InPersonLocations({ locations, onSelect, address }: InPersonLocationsPr
             count: locations?.length,
           })}
       </h3>
-      <p>{t('in_person_proofing.body.location.po_search.results_instructions')}</p>
+      {HeaderComponent && <HeaderComponent />}
+      {onSelect && <p>{t('in_person_proofing.body.location.po_search.results_instructions')}</p>}
       <LocationCollection>
         {(locations || []).map((item, index) => (
           <LocationCollectionItem
