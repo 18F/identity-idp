@@ -1,6 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe MultiRegionKmsMigration::ProfileMigrationJob do
+  before do
+    allow(IdentityConfig.store).to receive(:aws_kms_multi_region_read_enabled).and_return(true)
+  end
+
   let!(:profiles) { create_list(:profile, 4, :with_pii) }
   let!(:single_region_ciphertext_profiles) do
     single_region_profiles = profiles[2..3]

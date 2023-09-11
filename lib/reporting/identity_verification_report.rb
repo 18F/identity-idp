@@ -22,7 +22,8 @@ module Reporting
       IDV_DOC_AUTH_WELCOME_SUBMITTED = 'IdV: doc auth welcome submitted'
       IDV_DOC_AUTH_IMAGE_UPLOAD = 'IdV: doc auth image upload vendor submitted'
       IDV_FINAL_RESOLUTION = 'IdV: final resolution'
-      GPO_VERIFICATION_SUBMITTED = 'IdV: GPO verification submitted'
+      GPO_VERIFICATION_SUBMITTED = 'IdV: enter verify by mail code submitted'
+      GPO_VERIFICATION_SUBMITTED_OLD = 'IdV: GPO verification submitted'
       USPS_ENROLLMENT_STATUS_UPDATED = 'GetUspsProofingResultsJob: Enrollment status updated'
 
       def self.all_events
@@ -114,7 +115,10 @@ module Reporting
     end
 
     def gpo_verification_submitted
-      data[Events::GPO_VERIFICATION_SUBMITTED].to_i
+      [
+        data[Events::GPO_VERIFICATION_SUBMITTED].to_i,
+        data[Events::GPO_VERIFICATION_SUBMITTED_OLD].to_i,
+      ].sum
     end
 
     def usps_enrollment_status_updated
@@ -183,7 +187,12 @@ module Reporting
         issuers: issuers.present? && quote(issuers),
         event_names: quote(Events.all_events),
         usps_enrollment_status_updated: quote(Events::USPS_ENROLLMENT_STATUS_UPDATED),
-        gpo_verification_submitted: quote(Events::GPO_VERIFICATION_SUBMITTED),
+        gpo_verification_submitted: quote(
+          [
+            Events::GPO_VERIFICATION_SUBMITTED,
+            Events::GPO_VERIFICATION_SUBMITTED_OLD,
+          ],
+        ),
         idv_final_resolution: quote(Events::IDV_FINAL_RESOLUTION),
       }
 
@@ -195,8 +204,8 @@ module Reporting
         | filter name in %{event_names}
         | filter (name = %{usps_enrollment_status_updated} and properties.event_properties.passed = 1)
                  or (name != %{usps_enrollment_status_updated})
-        | filter (name = %{gpo_verification_submitted} and properties.event_properties.success = 1 and !properties.event_properties.pending_in_person_enrollment and !properties.event_properties.fraud_check_failed)
-                 or (name != %{gpo_verification_submitted})
+        | filter (name in %{gpo_verification_submitted} and properties.event_properties.success = 1 and !properties.event_properties.pending_in_person_enrollment and !properties.event_properties.fraud_check_failed)
+                 or (name not in %{gpo_verification_submitted})
         | fields
             coalesce(properties.event_properties.fraud_review_pending, 0) AS fraud_review_pending
           , coalesce(properties.event_properties.gpo_verification_pending, 0) AS gpo_verification_pending

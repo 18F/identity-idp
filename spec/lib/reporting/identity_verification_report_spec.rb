@@ -124,6 +124,15 @@ RSpec.describe Reporting::IdentityVerificationReport do
         expect(result).to_not include('filter properties.service_provider')
       end
     end
+
+    it 'includes GPO submission events with old name' do
+      expected = <<~FRAGMENT
+        | filter (name in ["IdV: enter verify by mail code submitted","IdV: GPO verification submitted"] and properties.event_properties.success = 1 and !properties.event_properties.pending_in_person_enrollment and !properties.event_properties.fraud_check_failed)
+                 or (name not in ["IdV: enter verify by mail code submitted","IdV: GPO verification submitted"])
+      FRAGMENT
+
+      expect(subject.query).to include(expected)
+    end
   end
 
   describe '#cloudwatch_client' do

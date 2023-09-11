@@ -92,10 +92,29 @@ RSpec.feature 'Password recovery via personal key' do
     end
   end
 
+  describe 'signing in as IAL1 with proofed account after resetting password' do
+    it 'redirects to SP without prompting to reactivate account' do
+      user = create(:user, :proofed)
+      visit_idp_from_sp_with_ial1(:oidc)
+      trigger_reset_password_and_click_email_link(user.email)
+      fill_in t('forms.passwords.edit.labels.password'), with: new_password
+      fill_in t('components.password_confirmation.confirm_label'),
+              with: new_password
+      click_button t('forms.passwords.edit.buttons.submit')
+      fill_in_credentials_and_submit(user.email, new_password)
+      fill_in_code_with_last_phone_otp
+      click_submit_default
+
+      click_agree_and_continue
+
+      expect(current_url).to start_with('http://localhost:7654/auth/result')
+    end
+  end
+
   it_behaves_like 'signing in as IAL1 with personal key after resetting password', :saml
   it_behaves_like 'signing in as IAL1 with personal key after resetting password', :oidc
-  it_behaves_like 'signing in as IAL2 with personal key after resetting password', :saml
-  it_behaves_like 'signing in as IAL2 with personal key after resetting password', :oidc
+  it_behaves_like 'signing in as IAL2 after resetting password', :saml
+  it_behaves_like 'signing in as IAL2 after resetting password', :oidc
 
   def reactivate_profile(password, personal_key)
     click_on t('links.account.reactivate.with_key')

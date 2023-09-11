@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::GpoVerifyController do
+RSpec.describe Idv::ByMail::EnterCodeController do
   let(:has_pending_profile) { true }
   let(:success) { true }
   let(:otp) { 'ABC123' }
@@ -53,13 +53,13 @@ RSpec.describe Idv::GpoVerifyController do
       it 'renders page' do
         controller.user_session[:decrypted_pii] = { address1: 'Address1' }.to_json
         expect(@analytics).to receive(:track_event).with(
-          'IdV: GPO verification visited',
+          'IdV: enter verify by mail code visited',
           source: nil,
         )
 
         action
 
-        expect(response).to render_template('idv/gpo_verify/index')
+        expect(response).to render_template('idv/by_mail/enter_code/index')
       end
 
       it 'sets @should_prompt_user_to_request_another_letter to true' do
@@ -96,7 +96,7 @@ RSpec.describe Idv::GpoVerifyController do
         it 'augments analytics event' do
           action
           expect(@analytics).to have_logged_event(
-            'IdV: GPO verification visited',
+            'IdV: enter verify by mail code visited',
             source: 'gpo_reminder_email',
           )
         end
@@ -120,7 +120,7 @@ RSpec.describe Idv::GpoVerifyController do
 
       it 'renders rate limited page' do
         expect(@analytics).to receive(:track_event).with(
-          'IdV: GPO verification visited',
+          'IdV: enter verify by mail code visited',
           source: nil,
         ).once
         expect(@analytics).to receive(:track_event).with(
@@ -140,7 +140,9 @@ RSpec.describe Idv::GpoVerifyController do
         action
       end
       it 'redirects user to url with querystring' do
-        expect(response).to redirect_to(idv_gpo_verify_path(did_not_receive_letter: 1))
+        expect(response).to redirect_to(
+          idv_verify_by_mail_enter_code_path(did_not_receive_letter: 1),
+        )
       end
       it 'clears session value' do
         expect(session).not_to include(gpo_user_did_not_receive_letter: anything)
@@ -183,7 +185,7 @@ RSpec.describe Idv::GpoVerifyController do
 
       it 'redirects to the sign_up/completions page' do
         expect(@analytics).to receive(:track_event).with(
-          'IdV: GPO verification submitted',
+          'IdV: enter verify by mail code submitted',
           success: true,
           errors: {},
           pending_in_person_enrollment: false,
@@ -233,7 +235,7 @@ RSpec.describe Idv::GpoVerifyController do
 
         it 'redirects to personal key page' do
           expect(@analytics).to receive(:track_event).with(
-            'IdV: GPO verification submitted',
+            'IdV: enter verify by mail code submitted',
             success: true,
             errors: {},
             pending_in_person_enrollment: true,
@@ -272,7 +274,7 @@ RSpec.describe Idv::GpoVerifyController do
 
           it 'redirects to the sign_up/completions page' do
             expect(@analytics).to receive(:track_event).with(
-              'IdV: GPO verification submitted',
+              'IdV: enter verify by mail code submitted',
               success: true,
               errors: {},
               pending_in_person_enrollment: false,
@@ -311,7 +313,7 @@ RSpec.describe Idv::GpoVerifyController do
 
           it 'is reflected in analytics' do
             expect(@analytics).to receive(:track_event).with(
-              'IdV: GPO verification submitted',
+              'IdV: enter verify by mail code submitted',
               success: true,
               errors: {},
               pending_in_person_enrollment: false,
@@ -351,7 +353,7 @@ RSpec.describe Idv::GpoVerifyController do
 
           it 'is reflected in analytics' do
             expect(@analytics).to receive(:track_event).with(
-              'IdV: GPO verification submitted',
+              'IdV: enter verify by mail code submitted',
               success: true,
               errors: {},
               pending_in_person_enrollment: false,
@@ -376,7 +378,7 @@ RSpec.describe Idv::GpoVerifyController do
 
       it 'redirects to the index page to show errors' do
         expect(@analytics).to receive(:track_event).with(
-          'IdV: GPO verification submitted',
+          'IdV: enter verify by mail code submitted',
           success: false,
           errors: otp_code_error_message,
           pending_in_person_enrollment: false,
@@ -393,7 +395,7 @@ RSpec.describe Idv::GpoVerifyController do
 
         action
 
-        expect(response).to redirect_to(idv_gpo_verify_url)
+        expect(response).to redirect_to(idv_verify_by_mail_enter_code_url)
       end
 
       it 'does not 500 with missing form keys' do
@@ -422,12 +424,12 @@ RSpec.describe Idv::GpoVerifyController do
             pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
           }
           expect(@analytics).to receive(:track_event).with(
-            'IdV: GPO verification submitted',
+            'IdV: enter verify by mail code submitted',
             **analytics_args,
           ).once
           analytics_args[:attempts] = 2
           expect(@analytics).to receive(:track_event).with(
-            'IdV: GPO verification submitted',
+            'IdV: enter verify by mail code submitted',
             **analytics_args,
           ).once
 
@@ -458,14 +460,14 @@ RSpec.describe Idv::GpoVerifyController do
             },
           )
 
-          expect(response).to render_template('idv/gpo_verify/rate_limited')
+          expect(response).to render_template('idv/by_mail/enter_code/rate_limited')
         end
       end
 
       context 'valid code is submitted' do
         it 'redirects to personal key page' do
           expect(@analytics).to receive(:track_event).with(
-            'IdV: GPO verification submitted',
+            'IdV: enter verify by mail code submitted',
             success: false,
             errors: otp_code_error_message,
             pending_in_person_enrollment: false,
@@ -478,7 +480,7 @@ RSpec.describe Idv::GpoVerifyController do
             pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
           ).exactly(max_attempts - 1).times
           expect(@analytics).to receive(:track_event).with(
-            'IdV: GPO verification submitted',
+            'IdV: enter verify by mail code submitted',
             success: true,
             errors: {},
             pending_in_person_enrollment: false,
