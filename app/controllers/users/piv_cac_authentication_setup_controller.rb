@@ -120,11 +120,10 @@ module Users
       create_user_event(:piv_cac_enabled)
       track_mfa_method_added
       session[:needs_to_setup_piv_cac_after_sign_in] = false
-      final_path = after_sign_in_path_for(current_user)
       continue_setup_path = next_setup_path
       if continue_setup_path.blank?
         user_session.delete(:in_account_creation_flow)
-        continue_setup_path = after_mfa_setup_path
+        continue_setup_path = after_sign_in_path_for(current_user)
       end
       redirect_to continue_setup_path
     end

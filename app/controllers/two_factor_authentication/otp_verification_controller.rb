@@ -67,6 +67,7 @@ module TwoFactorAuthentication
     def track_mfa_added
       analytics.multi_factor_auth_added_phone(
         enabled_mfa_methods_count: MfaContext.new(current_user).enabled_mfa_methods_count,
+        in_account_creation_flow: user_session[:in_account_creation_flow] || false,
       )
       Funnel::Registration::AddMfa.call(current_user.id, 'phone', analytics)
     end
