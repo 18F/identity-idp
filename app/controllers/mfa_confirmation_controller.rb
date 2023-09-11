@@ -41,7 +41,6 @@ class MfaConfirmationController < ApplicationController
     if backup_code_confirmation_needed?
       confirm_backup_codes_path
     else
-      user_session.delete(:in_account_creation_flow)
       after_mfa_setup_path
     end
   end

@@ -45,8 +45,13 @@ module TwoFactorAuthentication
         auth_method: params[:otp_delivery_preference],
       )
       flash[:success] = t('notices.phone_confirmed')
-      user_session.delete(:in_account_creation_flow)
-      redirect_to next_setup_path || after_mfa_setup_path
+      if next_setup_path
+        next_path = next_setup_path
+      else
+        user_session.delete(:in_account_creation_flow)
+        next_path = after_mfa_setup_path
+      end
+      redirect_to next_path
     end
 
     def otp_verification_form

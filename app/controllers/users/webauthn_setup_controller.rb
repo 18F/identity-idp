@@ -168,8 +168,13 @@ module Users
         Funnel::Registration::AddMfa.call(current_user.id, 'webauthn', analytics)
         flash[:success] = t('notices.webauthn_configured')
       end
-      user_session.delete(:in_account_creation_flow)
-      redirect_to next_setup_path || after_mfa_setup_path
+      if next_setup_path
+        next_path = next_setup_path
+      else
+        user_session.delete(:in_account_creation_flow)
+        next_path = after_mfa_setup_path
+      end
+      redirect_to next_path
     end
 
     def analytics_properties
