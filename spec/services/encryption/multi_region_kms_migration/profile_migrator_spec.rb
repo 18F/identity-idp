@@ -7,10 +7,6 @@ RSpec.describe Encryption::MultiRegionKmsMigration::ProfileMigrator do
 
   subject { described_class.new(profile) }
 
-  before do
-    allow(IdentityConfig.store).to receive(:aws_kms_multi_region_read_enabled).and_return(true)
-  end
-
   describe '#migrate!' do
     context 'for a user without multi-region ciphertexts' do
       before do
