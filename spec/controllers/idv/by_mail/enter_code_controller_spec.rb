@@ -30,10 +30,12 @@ RSpec.describe Idv::ByMail::EnterCodeController do
     if user
       stub_sign_in(user)
       pending_user = stub_user_with_pending_profile(user)
-      create(
+      gpo_code = create(
         :gpo_confirmation_code,
         profile: pending_profile,
         otp_fingerprint: Pii::Fingerprinter.fingerprint(otp),
+        created_at: 2.days.ago,
+        updated_at: 2.days.ago,
       )
       allow(pending_user).to receive(:gpo_verification_pending_profile?).
         and_return(has_pending_profile)
