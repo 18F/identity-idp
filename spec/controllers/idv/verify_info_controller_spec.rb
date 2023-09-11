@@ -64,7 +64,7 @@ RSpec.describe Idv::VerifyInfoController do
       }.merge(ab_test_args)
     end
 
-    it 'renders the show template' do
+    it 'renders the show template (with ssn in flow_session)' do
       get :show
 
       expect(response).to render_template :show
@@ -115,10 +115,20 @@ RSpec.describe Idv::VerifyInfoController do
 
     it 'redirects to ssn controller when ssn info is missing' do
       flow_session[:pii_from_doc][:ssn] = nil
+      subject.idv_session.ssn = nil
 
       get :show
 
       expect(response).to redirect_to(idv_ssn_url)
+    end
+
+    it 'renders show when ssn is in idv_session' do
+      subject.idv_session.ssn = flow_session[:pii_from_doc][:ssn]
+      flow_session[:pii_from_doc][:ssn] = nil
+
+      get :show
+
+      expect(response).to render_template :show
     end
 
     context 'when the user is ssn rate limited' do
@@ -131,7 +141,16 @@ RSpec.describe Idv::VerifyInfoController do
         ).increment_to_limited!
       end
 
-      it 'redirects to ssn failure url' do
+      it 'redirects to ssn failure url with ssn in flow session' do
+        get :show
+
+        expect(response).to redirect_to idv_session_errors_ssn_failure_url
+      end
+
+      it 'redirects to ssn failure url with ssn in idv_session' do
+        subject.idv_session.ssn = flow_session[:pii_from_doc][:ssn]
+        flow_session[:pii_from_doc][:ssn] = nil
+
         get :show
 
         expect(response).to redirect_to idv_session_errors_ssn_failure_url

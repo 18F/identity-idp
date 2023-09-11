@@ -80,7 +80,7 @@
             'idv.messages.phone.failed_number.gpo_alert_html',
             link_html: link_to(
               t('idv.messages.phone.failed_number.gpo_verify_link'),
-              idv_gpo_path,
+              idv_request_letter_path,
             ),
           ) %>
     <% else %>
@@ -129,7 +129,7 @@
       heading: t('components.troubleshooting_options.default_heading'),
       options: [
         gpo_letter_available && {
-          url: idv_gpo_path,
+          url: idv_request_letter_path,
           text: t('idv.troubleshooting.options.verify_by_mail'),
         },
       ].select(&:present?),

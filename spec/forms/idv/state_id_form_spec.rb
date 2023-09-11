@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Idv::StateIdForm do
-  let(:subject) { Idv::StateIdForm.new(pii) }
+  let(:subject) { Idv::StateIdForm.new(pii, capture_secondary_id_enabled:) }
   let(:valid_dob) do
     valid_d = Time.zone.today - IdentityConfig.store.idv_min_age_years.years - 1.day
     ActionController::Parameters.new(
@@ -22,6 +22,7 @@ RSpec.describe Idv::StateIdForm do
       dob: valid_dob,
       identity_doc_address1: Faker::Address.street_address,
       identity_doc_address2: Faker::Address.secondary_address,
+      identity_doc_city: Faker::Address.city,
       identity_doc_zipcode: Faker::Address.zip_code,
       identity_doc_address_state: Faker::Address.state_abbr,
       same_address_as_id: 'true',
@@ -36,6 +37,7 @@ RSpec.describe Idv::StateIdForm do
       dob: too_young_dob,
       identity_doc_address1: Faker::Address.street_address,
       identity_doc_address2: Faker::Address.secondary_address,
+      identity_doc_city: Faker::Address.city,
       identity_doc_zipcode: Faker::Address.zip_code,
       identity_doc_address_state: Faker::Address.state_abbr,
       same_address_as_id: 'true',
@@ -51,6 +53,7 @@ RSpec.describe Idv::StateIdForm do
       dob: valid_dob,
       identity_doc_address1: Faker::Address.street_address,
       identity_doc_address2: Faker::Address.secondary_address,
+      identity_doc_city: Faker::Address.city,
       identity_doc_zipcode: Faker::Address.zip_code,
       identity_doc_address_state: Faker::Address.state_abbr,
       same_address_as_id: 'true',
@@ -59,6 +62,7 @@ RSpec.describe Idv::StateIdForm do
     }
   end
   let(:pii) { nil }
+  let(:capture_secondary_id_enabled) { true }
   describe '#submit' do
     context 'when the form is valid' do
       it 'returns a successful form response' do

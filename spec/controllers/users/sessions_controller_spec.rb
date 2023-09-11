@@ -238,6 +238,9 @@ RSpec.describe Users::SessionsController, devise: true do
         profile = create(:profile, :active, :verified, user: user, pii: { ssn: '1234' })
         profile.update!(
           encrypted_pii: { encrypted_data: Base64.strict_encode64('nonsense') }.to_json,
+          encrypted_pii_multi_region: {
+            encrypted_data: Base64.strict_encode64('nonsense'),
+          }.to_json,
         )
 
         stub_analytics
@@ -545,7 +548,7 @@ RSpec.describe Users::SessionsController, devise: true do
         stub_sign_in(user)
         get :new
 
-        expect(response).to redirect_to idv_gpo_verify_path
+        expect(response).to redirect_to idv_verify_by_mail_enter_code_path
       end
     end
 
