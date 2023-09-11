@@ -86,7 +86,7 @@ RSpec.feature 'idv gpo step' do
 
       before do
         allow(IdentityConfig.store).to receive(:gpo_max_profile_age_to_send_letter_in_days).
-                                         and_return(max_days_before_resend_disabled)
+          and_return(max_days_before_resend_disabled)
       end
 
       it 'does not present the user the option to to resend', :js do
@@ -95,7 +95,9 @@ RSpec.feature 'idv gpo step' do
           sign_in_live_with_2fa(user)
 
           expect(page).to have_current_path(idv_verify_by_mail_enter_code_path)
-          expect(page).not_to have_link(t('idv.gpo.did_not_receive_letter.intro.request_new_letter_link'))
+          expect(page).not_to have_link(
+            t('idv.gpo.did_not_receive_letter.intro.request_new_letter_link'),
+          )
         end
       end
 
@@ -106,7 +108,9 @@ RSpec.feature 'idv gpo step' do
           visit idv_request_letter_path
 
           expect(page).to have_current_path(idv_verify_by_mail_enter_code_path)
-          expect(page).not_to have_link(t('idv.gpo.did_not_receive_letter.intro.request_new_letter_link'))
+          expect(page).not_to have_link(
+            t('idv.gpo.did_not_receive_letter.intro.request_new_letter_link'),
+          )
         end
       end
     end
@@ -117,7 +121,9 @@ RSpec.feature 'idv gpo step' do
         sign_in_live_with_2fa(user)
 
         expect(page).to have_current_path(idv_verify_by_mail_enter_code_path)
-        expect(page).not_to have_link(t('idv.gpo.did_not_receive_letter.intro.request_new_letter_link'))
+        expect(page).not_to have_link(
+          t('idv.gpo.did_not_receive_letter.intro.request_new_letter_link'),
+        )
       end
 
       it 'does not allow the user to go to the resend page manually' do
@@ -126,7 +132,9 @@ RSpec.feature 'idv gpo step' do
         visit idv_request_letter_path
 
         expect(page).to have_current_path(idv_verify_by_mail_enter_code_path)
-        expect(page).not_to have_link(t('idv.gpo.did_not_receive_letter.intro.request_new_letter_link'))
+        expect(page).not_to have_link(
+          t('idv.gpo.did_not_receive_letter.intro.request_new_letter_link'),
+        )
       end
     end
 
