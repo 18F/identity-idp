@@ -111,10 +111,7 @@ RSpec.describe 'doc auth IPP ssn step', js: true do
       # location page
       complete_location_step(user)
       # state ID page
-      fill_out_state_id_form_ok(
-        double_address_verification: true, same_address_as_id: false,
-        capture_secondary_id_enabled: true
-      )
+      fill_out_state_id_form_ok( same_address_as_id: false, capture_secondary_id_enabled: true)
       click_idv_continue
       fill_out_address_form_ok(double_address_verification: true, same_address_as_id: false)
       click_idv_continue
