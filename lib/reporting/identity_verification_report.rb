@@ -19,6 +19,7 @@ module Reporting
     module Events
       IDV_DOC_AUTH_WELCOME = 'IdV: doc auth welcome visited'
       IDV_DOC_AUTH_GETTING_STARTED = 'IdV: doc auth getting_started visited'
+      IDV_DOC_AUTH_WELCOME_SUBMITTED = 'IdV: doc auth welcome submitted'
       IDV_DOC_AUTH_IMAGE_UPLOAD = 'IdV: doc auth image upload vendor submitted'
       IDV_FINAL_RESOLUTION = 'IdV: final resolution'
       GPO_VERIFICATION_SUBMITTED = 'IdV: GPO verification submitted'
@@ -71,6 +72,7 @@ module Reporting
         csv << ['Metric', '# of Users']
         csv << []
         csv << ['Started IdV Verification', idv_started]
+        csv << ['Submitted welcome page', idv_doc_auth_welcome_submitted]
         csv << ['Images uploaded', idv_doc_auth_image_vendor_submitted]
         csv << []
         csv << ['Workflow completed', idv_final_resolution]
@@ -80,10 +82,10 @@ module Reporting
         csv << ['Workflow completed - In-Person Pending', idv_final_resolution_in_person]
         csv << ['Workflow completed - Fraud Review Pending', idv_final_resolution_fraud_review]
         csv << []
-        csv << ['Succesfully verified', successfully_verified_users]
-        csv << ['Succesfully verified - Inline', idv_final_resolution_verified]
-        csv << ['Succesfully verified - GPO Code Entry', gpo_verification_submitted]
-        csv << ['Succesfully verified - In Person', usps_enrollment_status_updated]
+        csv << ['Successfully verified', successfully_verified_users]
+        csv << ['Successfully verified - Inline', idv_final_resolution_verified]
+        csv << ['Successfully verified - GPO Code Entry', gpo_verification_submitted]
+        csv << ['Successfully verified - In Person', usps_enrollment_status_updated]
       end
     end
 
@@ -132,6 +134,10 @@ module Reporting
 
     def idv_doc_auth_image_vendor_submitted
       data[Events::IDV_DOC_AUTH_IMAGE_UPLOAD].to_i
+    end
+
+    def idv_doc_auth_welcome_submitted
+      data[Events::IDV_DOC_AUTH_WELCOME_SUBMITTED].to_i
     end
 
     # Turns query results into a hash keyed by event name, values are a count of unique users

@@ -16,16 +16,19 @@ RSpec.describe Reporting::IdentityVerificationReport do
       fetch: [
         # Online verification user
         { 'user_id' => 'user1', 'name' => 'IdV: doc auth welcome visited' },
+        { 'user_id' => 'user1', 'name' => 'IdV: doc auth welcome submitted' },
         { 'user_id' => 'user1', 'name' => 'IdV: doc auth image upload vendor submitted' },
         { 'user_id' => 'user1', 'name' => 'IdV: final resolution', 'identity_verified' => '1' },
 
         # Letter requested user (incomplete)
         { 'user_id' => 'user2', 'name' => 'IdV: doc auth welcome visited' },
+        { 'user_id' => 'user2', 'name' => 'IdV: doc auth welcome submitted' },
         { 'user_id' => 'user2', 'name' => 'IdV: doc auth image upload vendor submitted' },
         { 'user_id' => 'user2', 'name' => 'IdV: final resolution', 'gpo_verification_pending' => '1' },
 
-        # Fraud review user (incomplet)
+        # Fraud review user (incomplete)
         { 'user_id' => 'user3', 'name' => 'IdV: doc auth welcome visited' },
+        { 'user_id' => 'user3', 'name' => 'IdV: doc auth welcome submitted' },
         { 'user_id' => 'user3', 'name' => 'IdV: doc auth image upload vendor submitted' },
         { 'user_id' => 'user3', 'name' => 'IdV: final resolution', 'fraud_review_pending' => '1' },
 
@@ -34,12 +37,14 @@ RSpec.describe Reporting::IdentityVerificationReport do
 
         # Success through in-person verification
         { 'user_id' => 'user5', 'name' => 'IdV: doc auth welcome visited' },
+        { 'user_id' => 'user5', 'name' => 'IdV: doc auth welcome submitted' },
         { 'user_id' => 'user5', 'name' => 'IdV: doc auth image upload vendor submitted' },
         { 'user_id' => 'user5', 'name' => 'IdV: final resolution', 'in_person_verification_pending' => '1' },
         { 'user_id' => 'user5', 'name' => 'GetUspsProofingResultsJob: Enrollment status updated' },
 
         # Incomplete user
         { 'user_id' => 'user6', 'name' => 'IdV: doc auth welcome visited' },
+        { 'user_id' => 'user6', 'name' => 'IdV: doc auth welcome submitted' },
         { 'user_id' => 'user6', 'name' => 'IdV: doc auth image upload vendor submitted' },
       ],
     )
@@ -60,6 +65,7 @@ RSpec.describe Reporting::IdentityVerificationReport do
         ['Metric', '# of Users'],
         [],
         ['Started IdV Verification', '5'],
+        ['Submitted welcome page', '5'],
         ['Images uploaded', '5'],
         [],
         ['Workflow completed', '4'],
@@ -69,10 +75,10 @@ RSpec.describe Reporting::IdentityVerificationReport do
         ['Workflow completed - In-Person Pending', '1'],
         ['Workflow completed - Fraud Review Pending', '1'],
         [],
-        ['Succesfully verified', '3'],
-        ['Succesfully verified - Inline', '1'],
-        ['Succesfully verified - GPO Code Entry', '1'],
-        ['Succesfully verified - In Person', '1'],
+        ['Successfully verified', '3'],
+        ['Successfully verified - Inline', '1'],
+        ['Successfully verified - GPO Code Entry', '1'],
+        ['Successfully verified - In Person', '1'],
       ]
 
       aggregate_failures do
@@ -87,6 +93,7 @@ RSpec.describe Reporting::IdentityVerificationReport do
     it 'counts unique users per event as a hash' do
       expect(report.data).to eq(
         'IdV: doc auth image upload vendor submitted' => 5,
+        'IdV: doc auth welcome submitted' => 5,
         'IdV: doc auth welcome visited' => 5,
         'IdV: final resolution' => 4,
         'IdV: final resolution - GPO Pending' => 1,
