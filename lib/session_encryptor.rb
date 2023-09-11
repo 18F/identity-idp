@@ -84,13 +84,15 @@ class SessionEncryptor
   end
 
   def kms_encrypt(text)
-    Base64.encode64(Encryption::KmsClient.new.encrypt(text, 'context' => 'session-encryption'))
+    Base64.encode64(kms_client.encrypt(text, 'context' => 'session-encryption'))
   end
 
   def kms_decrypt(text)
-    Encryption::KmsClient.new.decrypt(
-      Base64.decode64(text), 'context' => 'session-encryption'
-    )
+    kms_client.decrypt(Base64.decode64(text), 'context' => 'session-encryption')
+  end
+
+  def kms_client
+    Encryption::KmsClient.new(kms_key_id: IdentityConfig.store.aws_kms_session_key_id)
   end
 
   def outer_encrypt(plaintext)

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::ComeBackLaterController do
+RSpec.describe Idv::ByMail::LetterEnqueuedController do
   let(:user) { build_stubbed(:user, :fully_registered) }
   let(:gpo_verification_pending_profile) { true }
 
@@ -15,7 +15,7 @@ RSpec.describe Idv::ComeBackLaterController do
       stub_analytics
 
       expect(@analytics).to receive(:track_event).with(
-        'IdV: come back later visited',
+        'IdV: letter enqueued visited',
         proofing_components: nil,
       )
 

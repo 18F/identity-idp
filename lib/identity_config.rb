@@ -139,6 +139,7 @@ class IdentityConfig
     config.add(:aws_kms_key_id, type: :string)
     config.add(:aws_kms_multi_region_key_id, type: :string)
     config.add(:aws_kms_multi_region_read_enabled, type: :boolean)
+    config.add(:aws_kms_session_key_id, type: :string)
     config.add(:aws_logo_bucket, type: :string)
     config.add(:aws_region, type: :string)
     config.add(:backup_code_cost, type: :string)

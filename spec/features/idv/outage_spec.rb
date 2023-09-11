@@ -112,7 +112,7 @@ RSpec.feature 'IdV Outage Spec' do
       complete_ssn_step
       complete_verify_step
 
-      expect(current_path).to eq idv_gpo_path
+      expect(current_path).to eq idv_request_letter_path
     end
   end
 

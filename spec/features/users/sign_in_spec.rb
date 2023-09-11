@@ -59,7 +59,15 @@ RSpec.feature 'Sign in' do
   scenario 'user opts to not add piv/cac card' do
     perform_steps_to_get_to_add_piv_cac_during_sign_up
     click_on t('forms.piv_cac_setup.no_thanks')
-    expect(current_path).to eq account_path
+    expect(current_path).to eq sign_up_completed_path
+  end
+
+  context 'without an associated service provider' do
+    scenario 'user opts to not add piv/cac card' do
+      perform_steps_to_get_to_add_piv_cac_during_sign_up(sp: nil)
+      click_on t('forms.piv_cac_setup.no_thanks')
+      expect(current_path).to eq account_path
+    end
   end
 
   scenario 'user is suspended, gets show please call page after 2fa' do
@@ -974,9 +982,13 @@ RSpec.feature 'Sign in' do
     end
   end
 
-  def perform_steps_to_get_to_add_piv_cac_during_sign_up
+  def perform_steps_to_get_to_add_piv_cac_during_sign_up(sp: :oidc)
     user = create(:user, :fully_registered, :with_phone)
-    visit_idp_from_sp_with_ial1(:oidc)
+    if sp
+      visit_idp_from_sp_with_ial1(sp)
+    else
+      visit new_user_session_path
+    end
     click_on t('account.login.piv_cac')
     allow(FeatureManagement).to receive(:development_and_identity_pki_disabled?).and_return(false)
 

@@ -17,7 +17,7 @@ module IdvStepConcern
   end
 
   def confirm_no_pending_gpo_profile
-    redirect_to idv_gpo_verify_url if current_user&.gpo_verification_pending_profile?
+    redirect_to idv_verify_by_mail_enter_code_url if current_user&.gpo_verification_pending_profile?
   end
 
   def confirm_no_pending_in_person_enrollment
