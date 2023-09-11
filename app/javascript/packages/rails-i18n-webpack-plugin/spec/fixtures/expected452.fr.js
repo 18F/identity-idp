@@ -1,1 +1,1 @@
-!function(){var k,o={"forms.dynamic":"Dynamique"},l=window._locale_data=window._locale_data||{};for(k in o)l[k]=o[k]}()
+window._locale_data=Object.assign({"forms.dynamic":"Dynamique"},window._locale_data)

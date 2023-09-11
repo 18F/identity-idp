@@ -161,22 +161,22 @@ describe('RailsI18nWebpackPlugin', () => {
             );
 
             expect(manifest).to.deep.equal({
-              'actualmain-3b0c232b.en.js': 'actualmain-3b0c232b.en.js',
-              'actualmain-a43216c8.es.js': 'actualmain-a43216c8.es.js',
+              'actualmain-863ec7fa.es.js': 'actualmain-863ec7fa.es.js',
+              'actualmain-9883d331.en.js': 'actualmain-9883d331.en.js',
               'actualmain.js': 'actualmain.js',
               entrypoints: {
                 main: {
                   assets: {
                     js: [
                       'actualmain.js',
-                      'actualmain-3b0c232b.en.js',
-                      'actualmain-a43216c8.es.js',
-                      'actualmain-3b0c232b.fr.js',
+                      'actualmain-9883d331.en.js',
+                      'actualmain-863ec7fa.es.js',
+                      'actualmain-9883d331.fr.js',
                     ],
                   },
                 },
               },
-              'main.js': 'actualmain-3b0c232b.fr.js',
+              'main.js': 'actualmain-9883d331.fr.js',
             });
             done();
           } catch (error) {
