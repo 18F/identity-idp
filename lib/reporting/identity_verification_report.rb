@@ -21,6 +21,8 @@ module Reporting
       IDV_DOC_AUTH_WELCOME_SUBMITTED = 'IdV: doc auth welcome submitted'
       IDV_DOC_AUTH_GETTING_STARTED = 'IdV: doc auth getting_started visited'
       IDV_DOC_AUTH_IMAGE_UPLOAD = 'IdV: doc auth image upload vendor submitted'
+      IDV_DOC_AUTH_VERIFY_RESULTS = 'IdV: doc auth verify proofing results'
+      IDV_PHONE_FINDER_RESULTS = 'IdV: phone confirmation vendor'
       IDV_FINAL_RESOLUTION = 'IdV: final resolution'
       GPO_VERIFICATION_SUBMITTED = 'IdV: enter verify by mail code submitted'
       GPO_VERIFICATION_SUBMITTED_OLD = 'IdV: GPO verification submitted'
@@ -36,6 +38,11 @@ module Reporting
       IDV_FINAL_RESOLUTION_FRAUD_REVIEW = 'IdV: final resolution - Fraud Review Pending'
       IDV_FINAL_RESOLUTION_GPO = 'IdV: final resolution - GPO Pending'
       IDV_FINAL_RESOLUTION_IN_PERSON = 'IdV: final resolution - In Person Proofing'
+
+      IDV_REJECT_DOC_AUTH = 'IdV Reject: Doc Auth'
+      IDV_REJECT_VERIFY = 'IdV Reject: Verify'
+      IDV_REJECT_PHONE_FINDER = 'IdV Reject: Phone Finder'
+      IDV_REJECT_ANY = 'IdV Reject: Any'
     end
 
     # @param [Array<String>] issuers
@@ -159,6 +166,10 @@ module Reporting
       data[Events::IDV_DOC_AUTH_WELCOME_SUBMITTED].count
     end
 
+    def idv_doc_auth_rejected
+      data[Results::IDV_REJECT_ANY].count
+    end
+
     # Turns query results into a hash keyed by event name, values are the unique user IDs
     # for that event
     # @return [Hash<Set<String>>]
@@ -171,23 +182,43 @@ module Reporting
         # IDEA: maybe there's a block form if this we can do that yields results as it loads them
         # to go slightly faster
         fetch_results.each do |row|
-          event_users[row['name']] << row['user_id']
+          event = row['name']
+          user_id = row['user_id']
+          success = row['success']
 
-          if row['name'] == Events::IDV_FINAL_RESOLUTION
+          event_users[event] << user_id
+
+          if event == Events::IDV_FINAL_RESOLUTION
             if row['identity_verified'] == '1'
-              event_users[Results::IDV_FINAL_RESOLUTION_VERIFIED] << row['user_id']
+              event_users[Results::IDV_FINAL_RESOLUTION_VERIFIED] << user_id
             end
             if row['gpo_verification_pending'] == '1'
-              event_users[Results::IDV_FINAL_RESOLUTION_GPO] << row['user_id']
+              event_users[Results::IDV_FINAL_RESOLUTION_GPO] << user_id
             end
             if row['in_person_verification_pending'] == '1'
-              event_users[Results::IDV_FINAL_RESOLUTION_IN_PERSON] << row['user_id']
+              event_users[Results::IDV_FINAL_RESOLUTION_IN_PERSON] << user_id
             end
             if row['fraud_review_pending'] == '1'
-              event_users[Results::IDV_FINAL_RESOLUTION_FRAUD_REVIEW] << row['user_id']
+              event_users[Results::IDV_FINAL_RESOLUTION_FRAUD_REVIEW] << user_id
             end
+          elsif event == Events::IDV_DOC_AUTH_IMAGE_UPLOAD && success == '0'
+            event_users[Results::IDV_REJECT_DOC_AUTH] << user_id
+          elsif event == Events::IDV_DOC_AUTH_VERIFY_RESULTS && success == '0'
+            event_users[Results::IDV_REJECT_VERIFY] << user_id
+          elsif event == Events::IDV_PHONE_FINDER_RESULTS && success == '0'
+            event_users[Results::IDV_REJECT_PHONE_FINDER] << user_id
           end
         end
+
+        # remove intermediate failures if user eventually succeeded
+        event_users[Results::IDV_REJECT_DOC_AUTH] -= event_users[Results::IDV_FINAL_RESOLUTION_VERIFIED]
+        event_users[Results::IDV_REJECT_VERIFY] -= event_users[Results::IDV_FINAL_RESOLUTION_VERIFIED]
+        event_users[Results::IDV_REJECT_PHONE_FINDER] -= event_users[Results::IDV_FINAL_RESOLUTION_VERIFIED]
+
+        event_users[Results::IDV_REJECT_ANY] =
+          event_users[Results::IDV_REJECT_DOC_AUTH] |
+          event_users[Results::IDV_REJECT_VERIFY] |
+          event_users[Results::IDV_REJECT_PHONE_FINDER]
 
         event_users
       end
@@ -215,6 +246,7 @@ module Reporting
         fields
             name
           , properties.user_id AS user_id
+          , coalesce(properties.event_properties.success, 0) AS success
         #{issuers.present? ? '| filter properties.service_provider IN %{issuers}' : ''}
         | filter name in %{event_names}
         | filter (name = %{usps_enrollment_status_updated} and properties.event_properties.passed = 1)
