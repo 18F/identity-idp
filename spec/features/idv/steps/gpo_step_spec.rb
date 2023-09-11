@@ -86,15 +86,16 @@ RSpec.feature 'idv gpo step' do
 
       before do
         allow(IdentityConfig.store).to receive(:gpo_max_profile_age_to_send_letter_in_days).
-          and_return(max_days_before_resend_disabled)
+                                         and_return(max_days_before_resend_disabled)
       end
 
       it 'does not present the user the option to to resend', :js do
         complete_idv_and_sign_out
         travel_to(days_passed.days.from_now) do
           sign_in_live_with_2fa(user)
+
           expect(page).to have_current_path(idv_verify_by_mail_enter_code_path)
-          expect(page).not_to have_css('.usa-button', text: t('idv.buttons.mail.resend'))
+          expect(page).not_to have_link(t('idv.gpo.did_not_receive_letter.intro.request_new_letter_link'))
         end
       end
 
@@ -103,8 +104,9 @@ RSpec.feature 'idv gpo step' do
         travel_to(days_passed.days.from_now) do
           sign_in_live_with_2fa(user)
           visit idv_request_letter_path
+
           expect(page).to have_current_path(idv_verify_by_mail_enter_code_path)
-          expect(page).not_to have_css('.usa-button', text: t('idv.buttons.mail.resend'))
+          expect(page).not_to have_link(t('idv.gpo.did_not_receive_letter.intro.request_new_letter_link'))
         end
       end
     end
@@ -113,16 +115,18 @@ RSpec.feature 'idv gpo step' do
       it 'does not present the user the option to to resend', :js do
         complete_idv_and_sign_out
         sign_in_live_with_2fa(user)
-        expect(page).to have_current_path(idv_gpo_verify_path)
-        expect(page).not_to have_css('.usa-button', text: t('idv.buttons.mail.resend'))
+
+        expect(page).to have_current_path(idv_verify_by_mail_enter_code_path)
+        expect(page).not_to have_link(t('idv.gpo.did_not_receive_letter.intro.request_new_letter_link'))
       end
 
       it 'does not allow the user to go to the resend page manually' do
         complete_idv_and_sign_out
         sign_in_live_with_2fa(user)
-        visit idv_gpo_path
-        expect(page).to have_current_path(idv_gpo_verify_path)
-        expect(page).not_to have_css('.usa-button', text: t('idv.buttons.mail.resend'))
+        visit idv_request_letter_path
+
+        expect(page).to have_current_path(idv_verify_by_mail_enter_code_path)
+        expect(page).not_to have_link(t('idv.gpo.did_not_receive_letter.intro.request_new_letter_link'))
       end
     end
 
