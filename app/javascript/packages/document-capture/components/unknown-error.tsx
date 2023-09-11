@@ -2,6 +2,7 @@ import type { ComponentProps } from 'react';
 import { useContext } from 'react';
 import { useI18n, HtmlTextWithStrongNoWrap } from '@18f/identity-react-i18n';
 import { FormStepError } from '@18f/identity-form-steps';
+import { Link } from '@18f/identity-components';
 import MarketingSiteContext from '../context/marketing-site';
 
 interface UnknownErrorProps extends ComponentProps<'p'> {
@@ -49,7 +50,10 @@ function UnknownError({
   if (err && hasDismissed) {
     return (
       <p key={err.message}>
-        {err.message} <a href={helpCenterLink}>{t('doc_auth.info.review_examples_of_photos')}</a>
+        {err.message}{' '}
+        <Link isExternal isNewTab href={helpCenterLink}>
+          {t('doc_auth.info.review_examples_of_photos')}
+        </Link>
       </p>
     );
   }
