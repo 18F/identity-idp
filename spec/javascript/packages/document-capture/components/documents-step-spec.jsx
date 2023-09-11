@@ -1,11 +1,7 @@
 import userEvent from '@testing-library/user-event';
 import sinon from 'sinon';
 import { t } from '@18f/identity-i18n';
-import {
-  DeviceContext,
-  ServiceProviderContextProvider,
-  UploadContextProvider,
-} from '@18f/identity-document-capture';
+import { DeviceContext, UploadContextProvider } from '@18f/identity-document-capture';
 import DocumentsStep from '@18f/identity-document-capture/components/documents-step';
 import { render } from '../../../support/document-capture';
 import { getFixtureFile } from '../../../support/file';
@@ -48,26 +44,6 @@ describe('document-capture/components/documents-step', () => {
     getByText = render(<DocumentsStep />).getByText;
 
     expect(() => getByText('doc_auth.tips.document_capture_id_text4')).not.to.throw();
-  });
-
-  it('renders troubleshooting options', () => {
-    const { getByRole } = render(
-      <ServiceProviderContextProvider
-        value={{
-          name: 'Example App',
-          failureToProofURL: 'https://example.com/?step=document_capture',
-        }}
-      >
-        <DocumentsStep />
-      </ServiceProviderContextProvider>,
-    );
-
-    expect(
-      getByRole('heading', { name: 'components.troubleshooting_options.default_heading' }),
-    ).to.be.ok();
-    expect(
-      getByRole('link', { name: 'idv.troubleshooting.options.get_help_at_sp links.new_tab' }).href,
-    ).to.equal('https://example.com/?step=document_capture&location=document_capture');
   });
 
   it('renders the hybrid flow warning if the flow is hybrid', () => {
