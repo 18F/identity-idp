@@ -57,7 +57,7 @@ module Idv
     def too_many_mails_within_window?
       return false unless window_limit_enabled?
 
-      number_of_emails_within(
+      number_of_mails_within(
         MAIL_EVENTS_WINDOW_DAYS.days,
       ) >= MAX_MAIL_EVENTS
     end
@@ -65,13 +65,13 @@ module Idv
     def last_mail_too_recent?
       return false unless last_not_too_recent_enabled?
 
-      number_of_emails_within(
+      number_of_mails_within(
         MINIMUM_WAIT_BEFORE_ANOTHER_USPS_LETTER_IN_HOURS.hours,
         for_profile: current_user.pending_profile,
       ) > 0
     end
 
-    def number_of_emails_within(time_window, for_profile: nil)
+    def number_of_mails_within(time_window, for_profile: nil)
       profile_hash = { user: current_user }
       profile_hash[:id] = for_profile.id if for_profile
 
