@@ -7,10 +7,14 @@ RSpec.describe 'doc auth IPP VerifyInfo', js: true do
 
   let(:user) { user_with_2fa }
   let(:fake_analytics) { FakeAnalytics.new(user: user) }
+  let(:capture_secondary_id_enabled) { false }
+  let(:enrollment) { InPersonEnrollment.new(capture_secondary_id_enabled:) }
 
   before do
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
+    allow(user).to receive(:enrollment).
+      and_return(enrollment)
   end
 
   it 'provides back buttons for address, state ID, and SSN that discard changes',

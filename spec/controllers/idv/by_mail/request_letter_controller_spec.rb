@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::GpoController do
+RSpec.describe Idv::ByMail::RequestLetterController do
   let(:user) { create(:user) }
 
   let(:ab_test_args) do
@@ -37,9 +37,9 @@ RSpec.describe Idv::GpoController do
     it 'renders confirmation page' do
       get :index
 
-      expect(response).to be_ok
+      expect(response).to have_http_status(200)
       expect(@analytics).to have_logged_event(
-        'IdV: USPS address visited',
+        'IdV: request letter visited',
         letter_already_sent: false,
       )
     end
@@ -77,14 +77,15 @@ RSpec.describe Idv::GpoController do
 
     context 'with letter already sent' do
       before do
-        allow_any_instance_of(Idv::GpoPresenter).to receive(:resend_requested?).and_return(true)
+        allow_any_instance_of(Idv::ByMail::RequestLetterPresenter).
+          to receive(:resend_requested?).and_return(true)
       end
 
       it 'logs visited event' do
         get :index
 
         expect(@analytics).to have_logged_event(
-          'IdV: USPS address visited',
+          'IdV: request letter visited',
           letter_already_sent: true,
         )
       end
@@ -261,6 +262,6 @@ RSpec.describe Idv::GpoController do
     expect(gpo_confirmation_maker).to receive(:perform)
     expect(gpo_confirmation_maker).to receive(:otp) if otp
     expect { put :create }.to change { ActionMailer::Base.deliveries.count }.by(1)
-    expect(response).to redirect_to idv_come_back_later_path
+    expect(response).to redirect_to idv_letter_enqueued_path
   end
 end

@@ -11,6 +11,11 @@ module Idv
                 :state_id_number,
                 presence: true
 
+      validates :identity_doc_address1,
+                :identity_doc_city,
+                presence: true,
+                if: :capture_secondary_id_enabled?
+
       validates_with UspsInPersonProofing::TransliterableValidator,
                      fields: [:first_name, :last_name, :identity_doc_city],
                      reject_chars: /[^A-Za-z\-' ]/,
