@@ -614,12 +614,43 @@ module AnalyticsEvents
     track_event('IdV: address visited') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
-  def idv_back_image_added(**extra)
+  # rubocop:disable Naming/VariableName,Naming/MethodParameterName
+  def idv_back_image_added(
+    width:,
+    height:,
+    mimeType:,
+    source:,
+    size:,
+    attempt:,
+    acuantCaptureMode:,
+    flow_path:,
+    acuant_sdk_upgrade_a_b_testing_enabled:,
+    use_alternate_sdk:,
+    acuant_version:,
+    fingerprint:,
+    phone_question_ab_test_bucket:,
+    failedImageResubmission:,
+    **_extra
+  )
     track_event(
       'Frontend: IdV: back image added',
-      **extra,
+      width: width,
+      height: height,
+      mimeType: mimeType,
+      source: source,
+      size: size,
+      attempt: attempt,
+      acuantCaptureMode: acuantCaptureMode,
+      flow_path: flow_path,
+      acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
+      use_alternate_sdk: use_alternate_sdk,
+      acuant_version: acuant_version,
+      fingerprint: fingerprint,
+      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
+      failedImageResubmission: failedImageResubmission,
     )
   end
+  # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
   def idv_back_image_clicked(**extra)
     track_event(
@@ -1096,12 +1127,43 @@ module AnalyticsEvents
     )
   end
 
-  def idv_front_image_added(**extra)
+  # rubocop:disable Naming/VariableName,Naming/MethodParameterName
+  def idv_front_image_added(
+    width:,
+    height:,
+    mimeType:,
+    source:,
+    size:,
+    attempt:,
+    acuantCaptureMode:,
+    flow_path:,
+    acuant_sdk_upgrade_a_b_testing_enabled:,
+    use_alternate_sdk:,
+    acuant_version:,
+    fingerprint:,
+    phone_question_ab_test_bucket:,
+    failedImageResubmission:,
+    **_extra
+  )
     track_event(
       'Frontend: IdV: front image added',
-      **extra,
+      width: width,
+      height: height,
+      mimeType: mimeType,
+      source: source,
+      size: size,
+      attempt: attempt,
+      acuantCaptureMode: acuantCaptureMode,
+      flow_path: flow_path,
+      acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
+      use_alternate_sdk: use_alternate_sdk,
+      acuant_version: acuant_version,
+      fingerprint: fingerprint,
+      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
+      failedImageResubmission: failedImageResubmission,
     )
   end
+  # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
   def idv_front_image_clicked(**extra)
     track_event(
