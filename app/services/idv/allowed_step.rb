@@ -20,12 +20,12 @@ module Idv
       {
         root: [:welcome],
         welcome: [:agreement],
-        agreement: [:hybrid_handoff, :document_capture_standard],
-        hybrid_handoff: [:link_sent, :document_capture_standard],
+        agreement: [:hybrid_handoff, :document_capture],
+        hybrid_handoff: [:link_sent, :document_capture],
         link_sent: [:ssn],
-        document_capture_standard: [:ssn], # in person?
+        document_capture: [:ssn], # in person?
         ssn: [:verify_info],
-        verify_info: [:ssn, :address, :hybrid_handoff, :document_capture_standard, :phone],
+        verify_info: [:ssn, :address, :hybrid_handoff, :document_capture, :phone],
         phone: [:enter_otp, :request_letter],
         enter_otp: [:phone, :review],
         review: [:personal_key, :letter_enqueued],
@@ -44,6 +44,8 @@ module Idv
     end
 
     def latest_step(current_step: :root)
+      return nil if NEXT_STEPS[current_step].empty?
+
       (NEXT_STEPS[current_step]).each do |step|
         if step_allowed?(step: step)
           return latest_step(current_step: step)
@@ -64,7 +66,7 @@ module Idv
       idv_session.idv_consent_given
     end
 
-    def document_capture_standard
+    def document_capture
       idv_session.flow_path == 'standard'
     end
 
