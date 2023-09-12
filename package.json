@@ -22,6 +22,7 @@
   },
   "dependencies": {
     "@18f/identity-design-system": "^7.1.0",
+    "@babel/cli": "^7.22.15",
     "@babel/core": "^7.20.7",
     "@babel/preset-env": "^7.15.6",
     "@babel/preset-react": "^7.14.5",

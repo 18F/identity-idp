@@ -7,7 +7,7 @@
     "dist"
   ],
   "scripts": {
-    "prepublishOnly": "webpack"
+    "prepublishOnly": "babel index.ts  --out-dir dist --extensions '.ts,.js'"
   },
   "exports": {
     ".": {
