@@ -130,92 +130,26 @@ RSpec.describe Encryption::PasswordVerifier do
       expect(bad_match_result).to eq(false)
     end
 
-    context 'aws_kms_multi_region_read_enabled is set to true' do
-      before do
-        allow(IdentityConfig.store).to receive(:aws_kms_multi_region_read_enabled).and_return(true)
-      end
+    it 'uses the single region digest if the multi-region digest is nil' do
+      test_digest_pair = subject.create_digest_pair(
+        password: password,
+        user_uuid: user_uuid,
+      )
+      test_digest_pair.multi_region_ciphertext = nil
 
-      it 'uses the multi-region digest if it is available' do
-        test_digest_pair = Encryption::RegionalCiphertextPair.new(
-          single_region_ciphertext: subject.create_digest_pair(
-            password: 'single-region-password',
-            user_uuid: user_uuid,
-          ).single_region_ciphertext,
-          multi_region_ciphertext: subject.create_digest_pair(
-            password: 'multi-region-password',
-            user_uuid: user_uuid,
-          ).multi_region_ciphertext,
-        )
+      correct_password_result = subject.verify(
+        password: password,
+        digest_pair: test_digest_pair,
+        user_uuid: user_uuid,
+      )
+      incorrect_password_result = subject.verify(
+        password: 'this is a fake password lol',
+        digest_pair: test_digest_pair,
+        user_uuid: user_uuid,
+      )
 
-        single_region_result = subject.verify(
-          password: 'single-region-password',
-          digest_pair: test_digest_pair,
-          user_uuid: user_uuid,
-        )
-        multi_region_result = subject.verify(
-          password: 'multi-region-password',
-          digest_pair: test_digest_pair,
-          user_uuid: user_uuid,
-        )
-
-        expect(single_region_result).to eq(false)
-        expect(multi_region_result).to eq(true)
-      end
-
-      it 'uses the single region digest if the multi-region digest is nil' do
-        test_digest_pair = subject.create_digest_pair(
-          password: password,
-          user_uuid: user_uuid,
-        )
-        test_digest_pair.multi_region_ciphertext = nil
-
-        correct_password_result = subject.verify(
-          password: password,
-          digest_pair: test_digest_pair,
-          user_uuid: user_uuid,
-        )
-        incorrect_password_result = subject.verify(
-          password: 'this is a fake password lol',
-          digest_pair: test_digest_pair,
-          user_uuid: user_uuid,
-        )
-
-        expect(correct_password_result).to eq(true)
-        expect(incorrect_password_result).to eq(false)
-      end
-    end
-
-    context 'aws_kms_multi_region_read_enabled is set to false' do
-      before do
-        allow(IdentityConfig.store).to receive(:aws_kms_multi_region_read_enabled).and_return(false)
-      end
-
-      it 'uses the single-region digest to verify' do
-        test_digest_pair = Encryption::RegionalCiphertextPair.new(
-          single_region_ciphertext: subject.create_digest_pair(
-            password: 'single-region-password',
-            user_uuid: user_uuid,
-          ).single_region_ciphertext,
-          multi_region_ciphertext: subject.create_digest_pair(
-            password: 'multi-region-password',
-            user_uuid: user_uuid,
-          ).multi_region_ciphertext,
-        )
-
-        single_region_result = subject.verify(
-          password: 'single-region-password',
-          digest_pair: test_digest_pair,
-          user_uuid: user_uuid,
-        )
-        multi_region_result = subject.verify(
-          password: 'multi-region-password',
-          digest_pair: test_digest_pair,
-          user_uuid: user_uuid,
-        )
-
-        expect(single_region_result).to eq(true)
-        expect(multi_region_result).to eq(false)
-      end
+      expect(correct_password_result).to eq(true)
+      expect(incorrect_password_result).to eq(false)
     end
   end
 

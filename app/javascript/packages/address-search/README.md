@@ -26,12 +26,13 @@ import AddressSearch from '@18f/identity-address-search';
 return(
     <>
     <AddressSearch
-            registerField={registerFieldCallback}
-            onFoundAddress={setFoundAddressCallback}
-            onFoundLocations={setLocationResultsCallback}
-            onLoadingLocations={setLoadingLocationsCallback}
-            onError={setApiErrorCallback}
+            addressSearchURL={addressSearchURL}
             disabled={disabledAddressSearchCallback}
+            handleLocationSelect={handleLocationSelect}
+            locationsURL={LOCATIONS_URL}
+            onFoundLocations={setLocationResultsCallback}
+            registerField={registerFieldCallback}
+            resultsHeaderComponent={resultsHeaderComponent}
           />
     </>
 );

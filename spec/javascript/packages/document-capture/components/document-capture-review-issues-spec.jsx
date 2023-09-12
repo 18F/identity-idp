@@ -48,11 +48,6 @@ describe('DocumentCaptureReviewIssues', () => {
       expect(h1).to.be.ok();
 
       expect(getByText('general error')).to.be.ok();
-      const h2 = screen.getByRole('heading', {
-        name: 'components.troubleshooting_options.default_heading',
-        level: 2,
-      });
-      expect(h2).to.be.ok();
 
       // tips header
       expect(getByText('doc_auth.tips.review_issues_id_header_text')).to.be.ok();
@@ -63,18 +58,7 @@ describe('DocumentCaptureReviewIssues', () => {
       tipListItem.forEach((li, idx) => {
         expect(li.textContent).to.equals(`doc_auth.tips.review_issues_id_text${idx + 1}`);
       });
-      const troubleShootingList = lists[1];
 
-      expect(troubleShootingList).to.be.ok();
-
-      const troubleShootingListItem = within(troubleShootingList).getAllByRole('listitem');
-      expect(troubleShootingListItem).to.be.ok();
-      const hrefLinks = within(troubleShootingList).getAllByRole('link');
-
-      hrefLinks.forEach((hrefLink) => {
-        expect(hrefLink.href).to.contains('location=post_submission_review');
-        expect(hrefLink.href).to.contains('article=');
-      });
       // front capture input
       const frontCapture = getByLabelText('doc_auth.headings.document_capture_front');
       expect(frontCapture).to.be.ok();
@@ -123,18 +107,6 @@ describe('DocumentCaptureReviewIssues', () => {
 
       expect(getByText('doc_auth.errors.doc.wrong_id_type')).to.be.ok();
 
-      const troubleShootingList = getByRole('list');
-
-      expect(troubleShootingList).to.be.ok();
-
-      const troubleShootingListItem = within(troubleShootingList).getAllByRole('listitem');
-      expect(troubleShootingListItem).to.be.ok();
-      const hrefLinks = within(troubleShootingList).getAllByRole('link');
-
-      hrefLinks.forEach((hrefLink) => {
-        expect(hrefLink.href).to.contains('location=post_submission_review');
-        expect(hrefLink.href).to.contains('article=');
-      });
       // front capture input
       const frontCapture = getByLabelText('doc_auth.headings.document_capture_front');
       expect(frontCapture).to.be.ok();
