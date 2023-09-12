@@ -5,7 +5,9 @@ RSpec.describe Reporting::IdentityVerificationReport do
   let(:issuer) { 'my:example:issuer' }
   let(:time_range) { Date.new(2022, 1, 1).all_day }
 
-  subject(:report) { Reporting::IdentityVerificationReport.new(issuer:, time_range:) }
+  subject(:report) do
+    Reporting::IdentityVerificationReport.new(issuers: Array(issuer), time_range:)
+  end
 
   # rubocop:disable Layout/LineLength
   before do
@@ -102,7 +104,7 @@ RSpec.describe Reporting::IdentityVerificationReport do
       it 'includes an issuer filter' do
         result = subject.query
 
-        expect(result).to include('| filter properties.service_provider = "my:example:issuer"')
+        expect(result).to include('| filter properties.service_provider IN ["my:example:issuer"]')
       end
     end
 
@@ -115,11 +117,20 @@ RSpec.describe Reporting::IdentityVerificationReport do
         expect(result).to_not include('filter properties.service_provider')
       end
     end
+
+    it 'includes GPO submission events with old name' do
+      expected = <<~FRAGMENT
+        | filter (name in ["IdV: enter verify by mail code submitted","IdV: GPO verification submitted"] and properties.event_properties.success = 1 and !properties.event_properties.pending_in_person_enrollment and !properties.event_properties.fraud_check_failed)
+                 or (name not in ["IdV: enter verify by mail code submitted","IdV: GPO verification submitted"])
+      FRAGMENT
+
+      expect(subject.query).to include(expected)
+    end
   end
 
   describe '#cloudwatch_client' do
     let(:opts) { {} }
-    let(:subject) { described_class.new(issuer:, time_range:, **opts) }
+    let(:subject) { described_class.new(issuers: Array(issuer), time_range:, **opts) }
     let(:default_args) do
       {
         num_threads: 5,

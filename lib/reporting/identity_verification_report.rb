@@ -14,14 +14,15 @@ module Reporting
   class IdentityVerificationReport
     include Reporting::CloudwatchQueryQuoting
 
-    attr_reader :issuer, :time_range
+    attr_reader :issuers, :time_range
 
     module Events
       IDV_DOC_AUTH_WELCOME = 'IdV: doc auth welcome visited'
       IDV_DOC_AUTH_GETTING_STARTED = 'IdV: doc auth getting_started visited'
       IDV_DOC_AUTH_IMAGE_UPLOAD = 'IdV: doc auth image upload vendor submitted'
       IDV_FINAL_RESOLUTION = 'IdV: final resolution'
-      GPO_VERIFICATION_SUBMITTED = 'IdV: GPO verification submitted'
+      GPO_VERIFICATION_SUBMITTED = 'IdV: enter verify by mail code submitted'
+      GPO_VERIFICATION_SUBMITTED_OLD = 'IdV: GPO verification submitted'
       USPS_ENROLLMENT_STATUS_UPDATED = 'GetUspsProofingResultsJob: Enrollment status updated'
 
       def self.all_events
@@ -36,17 +37,17 @@ module Reporting
       IDV_FINAL_RESOLUTION_IN_PERSON = 'IdV: final resolution - In Person Proofing'
     end
 
-    # @param [String] isssuer
+    # @param [Array<String>] issuers
     # @param [Range<Time>] date
     def initialize(
-      issuer:,
+      issuers:,
       time_range:,
       verbose: false,
       progress: false,
       slice: 3.hours,
       threads: 5
     )
-      @issuer = issuer
+      @issuers = issuers
       @time_range = time_range
       @verbose = verbose
       @progress = progress
@@ -66,7 +67,7 @@ module Reporting
       CSV.generate do |csv|
         csv << ['Report Timeframe', "#{time_range.begin} to #{time_range.end}"]
         csv << ['Report Generated', Date.today.to_s] # rubocop:disable Rails/Date
-        csv << ['Issuer', issuer] if issuer.present?
+        csv << ['Issuer', issuers.join(', ')] if issuers.present?
         csv << []
         csv << ['Metric', '# of Users']
         csv << []
@@ -112,7 +113,10 @@ module Reporting
     end
 
     def gpo_verification_submitted
-      data[Events::GPO_VERIFICATION_SUBMITTED].to_i
+      [
+        data[Events::GPO_VERIFICATION_SUBMITTED].to_i,
+        data[Events::GPO_VERIFICATION_SUBMITTED_OLD].to_i,
+      ].sum
     end
 
     def usps_enrollment_status_updated
@@ -174,10 +178,15 @@ module Reporting
 
     def query
       params = {
-        issuer: issuer && quote(issuer),
+        issuers: issuers.present? && quote(issuers),
         event_names: quote(Events.all_events),
         usps_enrollment_status_updated: quote(Events::USPS_ENROLLMENT_STATUS_UPDATED),
-        gpo_verification_submitted: quote(Events::GPO_VERIFICATION_SUBMITTED),
+        gpo_verification_submitted: quote(
+          [
+            Events::GPO_VERIFICATION_SUBMITTED,
+            Events::GPO_VERIFICATION_SUBMITTED_OLD,
+          ],
+        ),
         idv_final_resolution: quote(Events::IDV_FINAL_RESOLUTION),
       }
 
@@ -185,12 +194,12 @@ module Reporting
         fields
             name
           , properties.user_id AS user_id
-        #{issuer.present? ? '| filter properties.service_provider = %{issuer}' : ''}
+        #{issuers.present? ? '| filter properties.service_provider IN %{issuers}' : ''}
         | filter name in %{event_names}
         | filter (name = %{usps_enrollment_status_updated} and properties.event_properties.passed = 1)
                  or (name != %{usps_enrollment_status_updated})
-        | filter (name = %{gpo_verification_submitted} and properties.event_properties.success = 1 and !properties.event_properties.pending_in_person_enrollment and !properties.event_properties.fraud_check_failed)
-                 or (name != %{gpo_verification_submitted})
+        | filter (name in %{gpo_verification_submitted} and properties.event_properties.success = 1 and !properties.event_properties.pending_in_person_enrollment and !properties.event_properties.fraud_check_failed)
+                 or (name not in %{gpo_verification_submitted})
         | fields
             coalesce(properties.event_properties.fraud_review_pending, 0) AS fraud_review_pending
           , coalesce(properties.event_properties.gpo_verification_pending, 0) AS gpo_verification_pending

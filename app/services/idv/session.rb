@@ -17,12 +17,11 @@ module Idv
       phone_for_mobile_flow
       pii
       previous_phone_step_params
-      profile_confirmation
       profile_id
-      profile_step_params
       redo_document_capture
       resolution_successful
       skip_hybrid_handoff
+      ssn
       threatmetrix_review_status
       threatmetrix_session_id
       user_phone_confirmation
@@ -185,16 +184,10 @@ module Idv
 
     def mark_verify_info_step_complete!
       session[:resolution_successful] = true
-      # This is here to maintain backwards compadibility with old code.
-      # Once the code that checks `profile_confirmation` is removed from prod
-      # this setter and eventually the value in the Idv::Session struct itself
-      # can be removed.
-      session[:profile_confirmation] = true
     end
 
     def invalidate_verify_info_step!
       session[:resolution_successful] = nil
-      session[:profile_confirmation] = nil
     end
 
     def invalidate_steps_after_verify_info!

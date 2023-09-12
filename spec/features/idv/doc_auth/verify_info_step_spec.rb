@@ -418,7 +418,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
 
     it 'redirects to the gpo page when continuing from verify info page' do
       click_idv_continue
-      expect(page).to have_current_path(idv_gpo_path)
+      expect(page).to have_current_path(idv_request_letter_path)
 
       click_on 'Cancel'
       expect(page).to have_current_path(idv_cancel_path(step: :gpo))

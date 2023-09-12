@@ -5,20 +5,20 @@ import useSWR from 'swr/immutable';
 import type { Location, FormattedLocation, LocationQuery, PostOffice } from '../types';
 import { formatLocations, snakeCase, transformKeys } from '../utils';
 
-const requestUspsLocations = async ({
+export async function requestUspsLocations({
   locationsURL,
   address,
 }: {
   locationsURL: string;
   address: LocationQuery;
-}): Promise<FormattedLocation[]> => {
+}): Promise<FormattedLocation[]> {
   const response = await request<PostOffice[]>(locationsURL, {
     method: 'post',
     json: { address: transformKeys(address, snakeCase) },
   });
 
   return formatLocations(response);
-};
+}
 
 function requestAddressCandidates({
   unvalidatedAddressInput,
@@ -56,7 +56,7 @@ export default function useUspsLocations({
     setAddressQuery(unvalidatedAddressInput);
   }, []);
 
-  // sends the raw text query to arcgis
+  // sends the raw text query for geocoding
   const {
     data: addressCandidates,
     isLoading: isLoadingCandidates,

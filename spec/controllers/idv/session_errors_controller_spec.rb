@@ -125,6 +125,7 @@ RSpec.describe Idv::SessionErrorsController do
     allow(idv_session).to receive(:verify_info_step_complete?).
       and_return(verify_info_step_complete)
     allow(idv_session).to receive(:address_verification_mechanism).and_return(nil)
+    allow(idv_session).to receive(:ssn).and_return(nil)
     allow(controller).to receive(:idv_session).and_return(idv_session)
     stub_sign_in(user) if user
     stub_analytics
@@ -284,7 +285,7 @@ RSpec.describe Idv::SessionErrorsController do
           rate_limit_type: :proof_ssn,
           target: Pii::Fingerprinter.fingerprint(ssn),
         ).increment_to_limited!
-        controller.user_session['idv/doc_auth'] = { pii_from_doc: { 'ssn' => ssn } }
+        controller.user_session['idv/doc_auth'] = { pii_from_doc: { ssn: ssn } }
       end
 
       it 'assigns expiration time' do
@@ -302,6 +303,30 @@ RSpec.describe Idv::SessionErrorsController do
           ),
         )
         get action
+      end
+
+      context 'with ssn in idv_session' do
+        before do
+          controller.user_session['idv/doc_auth'] = {}
+          allow(idv_session).to receive(:ssn).and_return(ssn)
+        end
+
+        it 'assigns expiration time' do
+          get action
+
+          expect(assigns(:expires_at)).not_to eq(Time.zone.now)
+        end
+
+        it 'logs an event with attempts remaining' do
+          expect(@analytics).to receive(:track_event).with(
+            'IdV: session error visited',
+            hash_including(
+              type: 'ssn_failure',
+              attempts_remaining: 0,
+            ),
+          )
+          get action
+        end
       end
     end
   end

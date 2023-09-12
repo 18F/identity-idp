@@ -98,17 +98,17 @@ RSpec.feature 'IAL2 Single Sign On' do
           visit account_path
           click_link(t('account.index.verification.reactivate_button'))
 
-          expect(current_path).to eq idv_gpo_verify_path
+          expect(current_path).to eq idv_verify_by_mail_enter_code_path
 
           click_link(t('idv.messages.gpo.resend'))
 
           expect(user.events.account_verified.size).to be(0)
-          expect(current_path).to eq(idv_gpo_path)
+          expect(current_path).to eq(idv_request_letter_path)
 
           click_button(t('idv.buttons.mail.resend'))
 
           expect(user.events.gpo_mail_sent.size).to eq 2
-          expect(current_path).to eq(idv_come_back_later_path)
+          expect(current_path).to eq(idv_letter_enqueued_path)
         end
 
         it 'after signing out' do
@@ -120,16 +120,16 @@ RSpec.feature 'IAL2 Single Sign On' do
 
           sign_in_live_with_2fa(user)
 
-          expect(current_path).to eq idv_gpo_verify_path
+          expect(current_path).to eq idv_verify_by_mail_enter_code_path
 
           click_link(t('idv.messages.gpo.resend'))
 
           expect(user.events.account_verified.size).to be(0)
-          expect(current_path).to eq(idv_gpo_path)
+          expect(current_path).to eq(idv_request_letter_path)
 
           click_button(t('idv.buttons.mail.resend'))
 
-          expect(current_path).to eq(idv_come_back_later_path)
+          expect(current_path).to eq(idv_letter_enqueued_path)
         end
       end
     end

@@ -94,12 +94,12 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
   return (
     <>
       <AddressSearch
-        registerField={registerField}
-        onFoundLocations={setLocationResults}
-        handleLocationSelect={handleLocationSelect}
-        disabled={disabledAddressSearch}
-        locationsURL={LOCATIONS_URL}
         addressSearchURL={ADDRESSES_URL}
+        disabled={disabledAddressSearch}
+        handleLocationSelect={handleLocationSelect}
+        locationsURL={LOCATIONS_URL}
+        onFoundLocations={setLocationResults}
+        registerField={registerField}
       />
       <BackButton role="link" includeBorder onClick={toPreviousStep} />
     </>

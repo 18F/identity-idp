@@ -11,9 +11,9 @@ module Idv
       ActiveModel::Name.new(self, nil, 'doc_auth')
     end
 
-    def initialize(user, flow_session = {})
+    def initialize(user, incoming_ssn)
       @user = user
-      @ssn = flow_session.dig(:pii_from_doc, :ssn)
+      @ssn = incoming_ssn
       @updating_ssn = ssn.present?
     end
 
