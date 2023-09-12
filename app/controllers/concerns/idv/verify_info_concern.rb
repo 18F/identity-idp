@@ -320,7 +320,9 @@ module Idv
 
     def delete_pii
       idv_session.pii_from_doc = nil
-      flow_session.delete(:pii_from_user)
+      if defined?(flow_session) # no longer defined for remote flow
+        flow_session.delete(:pii_from_user)
+      end
     end
 
     def add_proofing_costs(results)
