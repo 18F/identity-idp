@@ -60,39 +60,20 @@ module Idv
       idv_session.welcome_visited
     end
 
-    def hybrid_handoff_proc
-      ->(idv_session) do
-        idv_session.idv_consent_given
-      end
+    def hybrid_handoff
+      idv_session.idv_consent_given
     end
 
-    def document_capture_standard_proc
-      ->(idv_session) do
-        idv_session.flow_path == 'standard'
-      end
+    def document_capture_standard
+      idv_session.flow_path == 'standard'
     end
 
-    def document_capture_hybrid_proc
-      ->(idv_session) do
-        idv_session.flow_path == 'hybrid'
-      end
+    def link_sent
+      idv_session.flow_path == 'hybrid'
     end
 
-    def ssn_predecessor_proc
-      ->(idv_session) do
-        case idv_session.flow_path
-        when 'standard'
-          :document_capture_standard
-        when 'hybrid'
-          :document_capture_hybrid
-        end
-      end
-    end
-
-    def ssn_proc
-      ->(idv_session) do
-        idv_session.pii_from_doc
-      end
+    def ssn
+      idv_session.pii_from_doc # ignoring in_person
     end
   end
 end
