@@ -5,6 +5,5 @@ class ProfileAggregate < Sequent::AggregateRoot
   end
 
   on ProfileCreated do
-    binding.pry
   end
 end
