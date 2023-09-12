@@ -24,13 +24,17 @@ RSpec.describe 'Idv::AllowedStep' do
       expect(subject.latest_step).to eq(:welcome)
     end
 
-    context 'preconditions for document_capture_standard are present' do
-      it 'returns document_capture_standard for empty session' do
+    context 'preconditions for document_capture are present' do
+      it 'returns document_capture for empty session' do
         idv_session.welcome_visited = true
         idv_session.idv_consent_given = true
         idv_session.flow_path = 'standard'
-        expect(subject.latest_step).to eq(:document_capture_standard)
+        expect(subject.latest_step).to eq(:document_capture)
       end
+    end
+
+    it 'returns nil for an invalid step' do
+      expect(subject.latest_step(current_step: :invalid_step)).to be_nil
     end
   end
 end
