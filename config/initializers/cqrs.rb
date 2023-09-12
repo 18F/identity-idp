@@ -6,12 +6,14 @@ Rails.application.reloader.to_prepare do
 
     config.command_handlers = [
       # add you Sequent::CommandHandler's here
+      ProfileCommandHandler.new,
     ]
 
     config.event_handlers = [
       # add you Sequent::Projector's or Sequent::Workflow's here
     ]
 
+    config.logger = Logger.new(STDOUT)
     config.database_config_directory = 'config'
 
     # this is the location of your sql files for your view_schema

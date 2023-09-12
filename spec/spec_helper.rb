@@ -9,7 +9,10 @@ if ENV['CI'] || ENV['KNAPSACK_GENERATE_REPORT']
   Knapsack::Adapters::RSpecAdapter.bind
 end
 ENV['RACK_ENV'] ||= 'test'
+ENV['RAILS_ENV'] ||= 'test'
 
+require_relative '../config/environment'
+require 'rails/test_help'
 require 'active_support/core_ext/object/blank'
 require 'active_support'
 require 'sequent/test'
