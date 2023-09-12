@@ -22,11 +22,6 @@ class MfaPolicy
       mfa_user.unphishable_configuration_count.positive?
   end
 
-  def ft_unlock_only?
-    mfa_user.webauthn_platform_configurations.count == 1 &&
-      mfa_user.enabled_mfa_methods_count == 1
-  end
-
   private
 
   attr_reader :mfa_user

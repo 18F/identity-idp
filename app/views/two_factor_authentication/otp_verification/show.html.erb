@@ -62,7 +62,7 @@
 <% end %>
 
 <%= render 'two_factor_authentication/troubleshooting_options', presenter: @presenter %>
-<% if MfaPolicy.new(current_user).two_factor_enabled? && !MfaPolicy.new(current_user).ft_unlock_only? %>
+<% if MfaPolicy.new(current_user).two_factor_enabled? && !in_multi_mfa_selection_flow? %>
   <%= render 'shared/cancel', link: @presenter.cancel_link %>
 <% else %>
   <%= link_to t('two_factor_authentication.choose_another_option'), authentication_methods_setup_path %>
