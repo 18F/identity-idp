@@ -1,3 +1,6 @@
+require 'bundler/setup'
+Bundler.setup
+
 # Knapsack runs the tests across multiple nodes in CI. We do not need to run it
 # locally unless we are generating a report to help it figure out how to
 # distribute tests across nodes.
@@ -5,9 +8,22 @@ if ENV['CI'] || ENV['KNAPSACK_GENERATE_REPORT']
   require 'knapsack'
   Knapsack::Adapters::RSpecAdapter.bind
 end
+ENV['RACK_ENV'] ||= 'test'
 
 require 'active_support/core_ext/object/blank'
 require 'active_support'
+require 'sequent/test'
+# require 'database_cleaner'
+
+require_relative '../blog'
+
+# Sequent::Test::DatabaseHelpers.maintain_test_database_schema(env: 'test')
+
+module DomainTests
+  def self.included(base)
+    base.metadata[:domain_tests] = true
+  end
+end
 
 RSPEC_RUNNING_IN_PARALLEL = ENV['PARALLEL_PID_FILE'].present?
 
@@ -29,6 +45,30 @@ RSpec.configure do |config|
 
   # show the n slowest tests at the end of the test run
   config.profile_examples = RSPEC_RUNNING_IN_PARALLEL ? 10 : 0
+
+  config.include Sequent::Test::CommandHandlerHelpers
+  config.include DomainTests, file_path: /spec\/lib/
+
+  # Domain tests run with a clean sequent configuration and the in memory FakeEventStore
+  config.around :each, :domain_tests do |example|
+    old_config = Sequent.configuration
+    Sequent::Configuration.reset
+    Sequent.configuration.event_store = Sequent::Test::CommandHandlerHelpers::FakeEventStore.new
+    Sequent.configuration.event_handlers = []
+    example.run
+  ensure
+    Sequent::Configuration.restore(old_config)
+  end
+
+  config.around do |example|
+    Sequent.configuration.aggregate_repository.clear
+    # DatabaseCleaner.clean_with(:truncation, {except: Sequent::Migrations::ViewSchema::Versions.table_name})
+    # DatabaseCleaner.cleaning do
+    # ensure
+    #   Sequent.configuration.aggregate_repository.clear
+    # end
+    example.run
+  end
 end
 
 require 'webmock/rspec'
