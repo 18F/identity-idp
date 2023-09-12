@@ -28,7 +28,7 @@ module Idv
     end
 
     def success
-      # Make sure pii_from_doc is available in both places so we can 
+      # Make sure pii_from_doc is available in both places so we can
       # update the address for both and keep them in sync
       idv_session.pii_from_doc = pii_from_doc
       profile_params.each do |key, value|

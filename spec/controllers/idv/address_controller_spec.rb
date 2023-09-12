@@ -73,7 +73,6 @@ RSpec.describe Idv::AddressController do
       )
     end
 
-
     it 'updates pii_from_doc in idv_session (even if nil)' do
       subject.idv_session.pii_from_doc = nil
       expect do
