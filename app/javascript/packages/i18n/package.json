@@ -1,13 +1,13 @@
 {
   "name": "@18f/identity-i18n",
   "private": false,
-  "version": "1.0.0",
+  "version": "0.0.1-beta0.4",
   "type": "module",
   "files": [
     "dist"
   ],
   "scripts": {
-    "prepublishOnly": "webpack"
+    "prepublishOnly": "babel index.ts  --out-dir dist --extensions '.ts,.js'"
   },
   "exports": {
     ".": {
