@@ -11,7 +11,7 @@
   },
   "exports": {
     ".": {
-      "source": "./index.tsx",
+      "source": "./index.ts",
       "default": "./dist/index.js"
     }
   },
