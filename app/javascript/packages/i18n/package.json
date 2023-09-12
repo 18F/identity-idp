@@ -4,9 +4,17 @@
   "version": "1.0.0",
   "type": "module",
   "files": [
-    "index.ts"
+    "dist"
   ],
-  "exports": "./index.ts",
+  "scripts": {
+    "prepublishOnly": "webpack"
+  },
+  "exports": {
+    ".": {
+      "source": "./index.tsx",
+      "default": "./dist/index.js"
+    }
+  },
   "license": "CC0-1.0",
   "bugs": {
     "url": "https://github.com/18f/identity-idp/issues"
