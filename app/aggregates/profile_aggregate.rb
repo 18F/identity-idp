@@ -6,4 +6,8 @@ class ProfileAggregate < Sequent::AggregateRoot
 
   on ProfileCreated do
   end
+
+  on ProfileMinted do |event|
+    @minted_at = event.minted_at
+  end
 end
