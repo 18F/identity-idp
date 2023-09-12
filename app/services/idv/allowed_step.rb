@@ -1,35 +1,37 @@
 module Idv
   class AllowedStep
-    # proc for more complicated cases
     # Possibly a /verify/resume controller
     # possibly chain the requirements here. (hybrid_handoff depends on agreement and one more thing)
     # Change polling to not depend on a specific screen (LinkSent)
-      # Could confirm leaving, but link is still out there.
-      # Invalidate document_capture_session? Message on phone
-      # If user submits images, we should try to continue
-      # successful upload count vs ssn viewed count (or link sent complete if available)
+    # Could confirm leaving, but link is still out there.
+    # Invalidate document_capture_session? Message on phone
+    # If user submits images, we should try to continue
+    # successful upload count vs ssn viewed count (or link sent complete if available)
     # When hit back, confirm undo operation?
     # Back -> screen that summarizes what happened (like step indicator) w/links & start over button
     # Accessibility/screen readers
     # collect all info, then call vendors (store images)
     # send phone to IV at VerifyInfo step if we have it
-      # doesn't pass security review/user consent issues
+    # doesn't pass security review/user consent issues
+    # require current_user as well?
 
-
-    NEXT_STEPS = {
-      welcome: [:agreement],
-      getting_started: [:hybrid_handoff],
-      agreement: [:hybrid_handoff, :document_capture_standard],
-      hybrid_handoff: [:link_sent, :document_capture_standard],
-      link_sent: [:ssn],
-      document_capture_standard: [:ssn], # in person?
-      ssn: [:verify_info],
-      verify_info: [:ssn, :address, :hybrid_handoff, :document_capture_standard, :phone],
-      phone: [:enter_otp, :request_letter],
-      enter_otp: [:phone, :review],
-      review: [:personal_key, :letter_enqueued],
-      request_letter: [:review, :letter_enqueued],
-    }
+    NEXT_STEPS = Hash.new([])
+    NEXT_STEPS.merge!(
+      {
+        root: [:welcome],
+        welcome: [:agreement],
+        agreement: [:hybrid_handoff, :document_capture_standard],
+        hybrid_handoff: [:link_sent, :document_capture_standard],
+        link_sent: [:ssn],
+        document_capture_standard: [:ssn], # in person?
+        ssn: [:verify_info],
+        verify_info: [:ssn, :address, :hybrid_handoff, :document_capture_standard, :phone],
+        phone: [:enter_otp, :request_letter],
+        enter_otp: [:phone, :review],
+        review: [:personal_key, :letter_enqueued],
+        request_letter: [:review, :letter_enqueued],
+      },
+    )
 
     attr_reader :idv_session
 
@@ -41,15 +43,16 @@ module Idv
       send(step)
     end
 
-    def gather_step_preconditions(step)
-      # chain through dependencies
+    def latest_step(current_step: :root)
+      (NEXT_STEPS[current_step]).each do |step|
+        if step_allowed?(step: step)
+          return latest_step(current_step: step)
+        end
+      end
+      current_step
     end
 
     def welcome
-      true
-    end
-
-    def getting_started
       true
     end
 
@@ -82,8 +85,6 @@ module Idv
           :document_capture_standard
         when 'hybrid'
           :document_capture_hybrid
-        else
-          nil
         end
       end
     end
