@@ -18,8 +18,8 @@ module Reporting
 
     module Events
       IDV_DOC_AUTH_WELCOME = 'IdV: doc auth welcome visited'
-      IDV_DOC_AUTH_GETTING_STARTED = 'IdV: doc auth getting_started visited'
       IDV_DOC_AUTH_WELCOME_SUBMITTED = 'IdV: doc auth welcome submitted'
+      IDV_DOC_AUTH_GETTING_STARTED = 'IdV: doc auth getting_started visited'
       IDV_DOC_AUTH_IMAGE_UPLOAD = 'IdV: doc auth image upload vendor submitted'
       IDV_DOC_AUTH_VERIFY_RESULTS = 'IdV: doc auth verify proofing results'
       IDV_PHONE_FINDER_RESULTS = 'IdV: phone confirmation vendor'
