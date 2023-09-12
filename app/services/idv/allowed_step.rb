@@ -77,5 +77,26 @@ module Idv
     def ssn
       idv_session.pii_from_doc # ignoring in_person
     end
+
+    def verify_info
+      idv_session.ssn and idv_session.pii_from_doc
+    end
+
+    def phone
+      idv_session.verify_info_step_complete? # controller code also needs applicant
+    end
+
+    def enter_otp
+      idv_session.user_phone_confirmation_session
+    end
+
+    def review
+      idv_session.verify_info_step_complete? &&
+        idv_session.address_step_complete?
+    end
+
+    def request_letter
+      idv_session.verify_info_step_complete?
+    end
   end
 end
