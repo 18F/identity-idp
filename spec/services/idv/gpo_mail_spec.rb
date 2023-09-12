@@ -8,10 +8,12 @@ RSpec.describe Idv::GpoMail do
   let(:minimum_wait_before_another_usps_letter_in_hours) { 24 }
 
   before do
-    stub_const 'Idv::GpoMail::MAX_MAIL_EVENTS', max_mail_events
-    stub_const 'Idv::GpoMail::MAIL_EVENTS_WINDOW_DAYS', mail_events_window_days
-    stub_const 'Idv::GpoMail::MINIMUM_WAIT_BEFORE_ANOTHER_USPS_LETTER_IN_HOURS',
-               minimum_wait_before_another_usps_letter_in_hours
+    allow(IdentityConfig.store).to receive(:max_mail_events).
+      and_return(max_mail_events)
+    allow(IdentityConfig.store).to receive(:max_mail_events_window_in_days).
+      and_return(mail_events_window_days)
+    allow(IdentityConfig.store).to receive(:minimum_wait_before_another_usps_letter_in_hours).
+      and_return(minimum_wait_before_another_usps_letter_in_hours)
   end
 
   describe '#mail_spammed?' do

@@ -1,10 +1,5 @@
 module Idv
   class GpoMail
-    MAX_MAIL_EVENTS = IdentityConfig.store.max_mail_events
-    MAIL_EVENTS_WINDOW_DAYS = IdentityConfig.store.max_mail_events_window_in_days
-    MINIMUM_WAIT_BEFORE_ANOTHER_USPS_LETTER_IN_HOURS =
-      IdentityConfig.store.minimum_wait_before_another_usps_letter_in_hours
-
     def initialize(current_user)
       @current_user = current_user
     end
@@ -46,11 +41,11 @@ module Idv
     end
 
     def window_limit_enabled?
-      MAX_MAIL_EVENTS != 0 && MAIL_EVENTS_WINDOW_DAYS != 0
+      IdentityConfig.store.max_mail_events != 0 && IdentityConfig.store.max_mail_events_window_in_days != 0
     end
 
     def last_not_too_recent_enabled?
-      MINIMUM_WAIT_BEFORE_ANOTHER_USPS_LETTER_IN_HOURS != 0 &&
+      IdentityConfig.store.minimum_wait_before_another_usps_letter_in_hours != 0 &&
         current_user.pending_profile?
     end
 
@@ -58,16 +53,16 @@ module Idv
       return false unless window_limit_enabled?
 
       number_of_mails_within(
-        MAIL_EVENTS_WINDOW_DAYS.days,
-        maximum: MAX_MAIL_EVENTS,
-      ) >= MAX_MAIL_EVENTS
+        IdentityConfig.store.max_mail_events_window_in_days.days,
+        maximum: IdentityConfig.store.max_mail_events,
+      ) >= IdentityConfig.store.max_mail_events
     end
 
     def last_mail_too_recent?
       return false unless last_not_too_recent_enabled?
 
       number_of_mails_within(
-        MINIMUM_WAIT_BEFORE_ANOTHER_USPS_LETTER_IN_HOURS.hours,
+        IdentityConfig.store.minimum_wait_before_another_usps_letter_in_hours.hours,
         maximum: 1,
         for_profile: current_user.pending_profile,
       ) > 0
