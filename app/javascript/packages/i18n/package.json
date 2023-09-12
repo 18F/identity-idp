@@ -7,7 +7,7 @@
     "dist"
   ],
   "scripts": {
-    "prepublishOnly": "babel index.ts  --out-dir dist --extensions '.ts,.js'"
+    "prepublishOnly": "babel index.ts --out-dir dist --extensions '.ts,.js'"
   },
   "exports": {
     ".": {
