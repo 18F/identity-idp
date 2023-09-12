@@ -91,7 +91,7 @@ class TwoFactorOptionsPresenter
 
   def totp_option
     return [] if piv_cac_required? || phishing_resistant_only?
-    [TwoFactorAuthentication::AuthAppSelectionPresenter.new(user: user)]
+    [TwoFactorAuthentication::SetUpAuthAppSelectionPresenter.new(user: user)]
   end
 
   def backup_code_option
