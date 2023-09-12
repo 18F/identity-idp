@@ -1,5 +1,31 @@
 {
   "name": "@18f/identity-i18n",
-  "private": true,
-  "version": "1.0.0"
+  "private": false,
+  "version": "1.0.0",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "prepublishOnly": "webpack"
+  },
+  "exports": {
+    ".": {
+      "source": "./index.tsx",
+      "default": "./dist/index.js"
+    }
+  },
+  "license": "CC0-1.0",
+  "bugs": {
+    "url": "https://github.com/18f/identity-idp/issues"
+  },
+  "homepage": "https://github.com/18f/identity-idp",
+  "peerDependencies": {
+    "react": ">=17"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/18f/identity-idp.git",
+    "directory": "app/javascript/packages/i18n"
+  }
 }
