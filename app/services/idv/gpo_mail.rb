@@ -41,7 +41,8 @@ module Idv
     end
 
     def window_limit_enabled?
-      IdentityConfig.store.max_mail_events != 0 && IdentityConfig.store.max_mail_events_window_in_days != 0
+      IdentityConfig.store.max_mail_events != 0 &&
+        IdentityConfig.store.max_mail_events_window_in_days != 0
     end
 
     def last_not_too_recent_enabled?
