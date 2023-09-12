@@ -22,8 +22,7 @@
   "homepage": "https://github.com/18f/identity-idp",
   "dependencies": {
     "focus-trap": "^6.7.1",
-    "swr": "^2.0.0",
-    "@18f/identity-i18n": "1.0.0"
+    "swr": "^2.0.0"
   },
   "peerDependencies": {
     "react": ">=17"
