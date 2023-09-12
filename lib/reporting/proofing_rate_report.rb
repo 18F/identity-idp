@@ -56,7 +56,8 @@ module Reporting
 
     def abandon_the_process
       # not marked_as_fraudulent (just subtract that)
-      #  is not blocked by us (e.g. is stopped in funnel w/ rejection codes by Acuant/InstantVerify/PhoneFinder/USPS)
+      #  is not blocked by us (e.g. is stopped in funnel w/ 
+      #  rejection codes by Acuant/InstantVerify/PhoneFinder/USPS)
       # I think we need to return (total - sum of all those "not..." cases)
     end
   end
