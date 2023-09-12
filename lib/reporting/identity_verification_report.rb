@@ -90,10 +90,10 @@ module Reporting
         csv << ['Workflow completed - In-Person Pending', idv_final_resolution_in_person]
         csv << ['Workflow completed - Fraud Review Pending', idv_final_resolution_fraud_review]
         csv << []
-        csv << ['Successfully verified', successfully_verified_users]
-        csv << ['Successfully verified - Inline', idv_final_resolution_verified]
-        csv << ['Successfully verified - GPO Code Entry', gpo_verification_submitted]
-        csv << ['Successfully verified - In Person', usps_enrollment_status_updated]
+        csv << ['Succesfully verified', successfully_verified_users]
+        csv << ['Succesfully verified - Inline', idv_final_resolution_verified]
+        csv << ['Succesfully verified - GPO Code Entry', gpo_verification_submitted]
+        csv << ['Succesfully verified - In Person', usps_enrollment_status_updated]
       end
     end
 
