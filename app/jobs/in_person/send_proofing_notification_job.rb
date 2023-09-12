@@ -80,6 +80,7 @@ module InPerson
           'telephony.confirmation_ipp_enrollment_result.sms',
           app_name: APP_NAME,
           proof_date: proof_date,
+          contact_number: IdentityConfig.store.idv_contact_phone_number,
         )
       end
     end

@@ -1,7 +1,7 @@
-module Idv
-  class GpoController < ApplicationController
+module Idv::ByMail
+  class RequestLetterController < ApplicationController
     include IdvSession
-    include StepIndicatorConcern
+    include Idv::StepIndicatorConcern
     include Idv::AbTestAnalyticsConcern
 
     before_action :confirm_two_factor_authenticated
@@ -11,11 +11,11 @@ module Idv
     before_action :confirm_profile_not_too_old
 
     def index
-      @presenter = GpoPresenter.new(current_user, url_options)
+      @presenter = RequestLetterPresenter.new(current_user, url_options)
       @step_indicator_current_step = step_indicator_current_step
       Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
         call(:usps_address, :view, true)
-      analytics.idv_gpo_address_visited(
+      analytics.idv_request_letter_visited(
         letter_already_sent: @presenter.resend_requested?,
       )
     end
@@ -29,7 +29,7 @@ module Idv
       elsif resend_requested?
         resend_letter
         flash[:success] = t('idv.messages.gpo.another_letter_on_the_way')
-        redirect_to idv_come_back_later_url
+        redirect_to idv_letter_enqueued_url
       else
         redirect_to idv_review_url
       end

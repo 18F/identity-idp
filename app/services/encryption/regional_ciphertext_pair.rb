@@ -6,10 +6,6 @@ Encryption::RegionalCiphertextPair = RedactedStruct.new(
   end
 
   def multi_or_single_region_ciphertext
-    if IdentityConfig.store.aws_kms_multi_region_read_enabled
-      multi_region_ciphertext.presence || single_region_ciphertext
-    else
-      single_region_ciphertext
-    end
+    multi_region_ciphertext.presence || single_region_ciphertext
   end
 end

@@ -157,7 +157,7 @@ module Idv
 
     def next_step
       if gpo_user_flow?
-        idv_come_back_later_url
+        idv_letter_enqueued_url
       else
         idv_personal_key_url
       end

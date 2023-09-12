@@ -717,7 +717,7 @@ RSpec.describe Idv::ReviewController do
         it 'redirects to come back later page' do
           put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
 
-          expect(response).to redirect_to idv_come_back_later_url
+          expect(response).to redirect_to idv_letter_enqueued_url
         end
       end
     end

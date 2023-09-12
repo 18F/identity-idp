@@ -21,6 +21,7 @@ class UserPivCacVerificationForm
   end
 
   def piv_cac_configuration
+    return nil if x509_dn_uuid.blank?
     @piv_cac_configuration ||= ::PivCacConfiguration.find_by(x509_dn_uuid: x509_dn_uuid)
   end
 

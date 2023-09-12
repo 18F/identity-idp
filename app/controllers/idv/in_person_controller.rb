@@ -12,7 +12,6 @@ module Idv
     include Idv::ThreatMetrixConcern
 
     before_action :redirect_if_flow_completed
-    before_action :override_csp_for_threat_metrix
 
     FLOW_STATE_MACHINE_SETTINGS = {
       step_url: :idv_in_person_step_url,

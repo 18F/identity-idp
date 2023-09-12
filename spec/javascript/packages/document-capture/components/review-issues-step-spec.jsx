@@ -169,28 +169,6 @@ describe('document-capture/components/review-issues-step', () => {
     });
   });
 
-  it('renders troubleshooting options', async () => {
-    const { getByRole } = render(
-      <ServiceProviderContextProvider
-        value={{
-          name: 'Example App',
-          failureToProofURL: 'https://example.com/?step=document_capture',
-        }}
-      >
-        <ReviewIssuesStep {...DEFAULT_PROPS} />
-      </ServiceProviderContextProvider>,
-    );
-
-    await userEvent.click(getByRole('button', { name: 'idv.failure.button.warning' }));
-
-    expect(
-      getByRole('heading', { name: 'components.troubleshooting_options.default_heading' }),
-    ).to.be.ok();
-    expect(
-      getByRole('link', { name: 'idv.troubleshooting.options.get_help_at_sp links.new_tab' }).href,
-    ).to.equal('https://example.com/?step=document_capture&location=post_submission_review');
-  });
-
   it('does not render sp help troubleshooting option for errored review', () => {
     const { queryByRole } = render(
       <InPersonContext.Provider value={{ inPersonURL: null }}>

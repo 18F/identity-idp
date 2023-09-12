@@ -50,7 +50,7 @@ RSpec.describe Idv::SsnController do
     it 'overrides CSPs for ThreatMetrix' do
       expect(subject).to have_actions(
         :before,
-        :override_csp_for_threat_metrix_no_fsm,
+        :override_csp_for_threat_metrix,
       )
     end
   end
@@ -90,10 +90,35 @@ RSpec.describe Idv::SsnController do
       expect { get :show }.to change { subject.idv_session.threatmetrix_session_id }.from(nil)
     end
 
-    context 'with an ssn in session' do
+    context 'with an ssn in flow_session' do
       let(:referer) { idv_document_capture_url }
       before do
         flow_session[:pii_from_doc][:ssn] = ssn
+        request.env['HTTP_REFERER'] = referer
+      end
+
+      context 'referer is not verify_info' do
+        it 'redirects to verify_info' do
+          get :show
+
+          expect(response).to redirect_to(idv_verify_info_url)
+        end
+      end
+
+      context 'referer is verify_info' do
+        let(:referer) { idv_verify_info_url }
+        it 'does not redirect' do
+          get :show
+
+          expect(response).to render_template :show
+        end
+      end
+    end
+
+    context 'with an ssn in idv_session' do
+      let(:referer) { idv_document_capture_url }
+      before do
+        subject.idv_session.ssn = ssn
         request.env['HTTP_REFERER'] = referer
       end
 
@@ -157,6 +182,11 @@ RSpec.describe Idv::SsnController do
         put :update, params: params
 
         expect(flow_session[:pii_from_doc][:ssn]).to eq(ssn)
+      end
+
+      it 'updates idv_session.ssn' do
+        expect { put :update, params: params }.to change { subject.idv_session.ssn }.
+          from(nil).to(ssn)
       end
 
       context 'with a Puerto Rico address' do

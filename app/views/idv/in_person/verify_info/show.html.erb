@@ -2,6 +2,7 @@
 locals:
   @step_indicator_steps - the correct Idv::Flows variable for this flow
   @pii - user's information
+  @ssn - user's ssn
   @had_barcode_read_failure - show warning if there's a barcode read error
 %>
 
@@ -132,12 +133,12 @@ locals:
       <%= t('idv.form.ssn') %>:
       <%= render(
             'shared/masked_text',
-            text: SsnFormatter.format(@pii[:ssn]),
-            masked_text: SsnFormatter.format_masked(@pii[:ssn]),
+            text: SsnFormatter.format(@ssn),
+            masked_text: SsnFormatter.format_masked(@ssn),
             accessible_masked_text: t(
               'idv.accessible_labels.masked_ssn',
-              first_number: @pii[:ssn][0],
-              last_number: @pii[:ssn][-1],
+              first_number: @ssn[0],
+              last_number: @ssn[-1],
             ),
             toggle_label: t('forms.ssn.show'),
           ) %>

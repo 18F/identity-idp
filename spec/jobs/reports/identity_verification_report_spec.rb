@@ -1,6 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe Reports::IdentityVerificationReport do
+  before do
+    allow(IdentityConfig.store).to receive(:s3_reports_enabled).and_return(true)
+  end
+
   describe '#perform' do
     it 'gets a CSV from the report maker and saves it to S3' do
       report_maker = double(Reporting::IdentityVerificationReport, to_csv: 'I am a CSV, see')
