@@ -243,7 +243,7 @@ push_notifications_enabled: false
 pwned_passwords_file_path: 'pwned_passwords/pwned_passwords.txt'
 rack_mini_profiler: false
 rack_timeout_service_timeout_seconds: 15
-rails_mailer_previews_enabled: false
+rails_mailer_previews_enabled: true
 reauthn_window: 120
 recaptcha_enterprise_api_key: ''
 recaptcha_enterprise_project_id: ''
