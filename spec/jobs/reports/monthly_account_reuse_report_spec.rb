@@ -2,9 +2,10 @@ require 'rails_helper'
 require 'csv'
 
 RSpec.describe Reports::MonthlyAccountReuseReport do
-  subject(:report) { Reports::MonthlyAccountReuseReport.new }
-
   let(:report_date) { Date.new(2021, 3, 1) }
+
+  subject(:report) { Reports::MonthlyAccountReuseReport.new(report_date: report_date) }
+
   let(:s3_report_bucket_prefix) { 'reports-bucket' }
   let(:s3_report_path) do
     'int/monthly-account-reuse-report/2021/2021-03-01.monthly-account-reuse-report.json'
@@ -35,7 +36,7 @@ RSpec.describe Reports::MonthlyAccountReuseReport do
 
       expect(report).to receive(:report_body).and_call_original.once
 
-      report.perform(report_date)
+      report.perform
     end
 
     context 'with data' do
@@ -122,7 +123,7 @@ RSpec.describe Reports::MonthlyAccountReuseReport do
       it 'aggregates by issuer' do
         expect(report).to receive(:upload_file_to_s3_bucket).
           exactly(1).times do |path:, body:, content_type:, bucket:|
-            actual_csv = body # CSV.parse(body, headers: true)
+            actual_csv = body
             expected_csv = CSV.generate do |csv|
               [
                 ['IDV app reuse rate Feb-2021'],
@@ -140,7 +141,7 @@ RSpec.describe Reports::MonthlyAccountReuseReport do
             expect(actual_csv).to eq(expected_csv)
           end
 
-        report.perform(report_date)
+        report.perform
       end
     end
   end

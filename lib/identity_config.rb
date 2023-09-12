@@ -311,6 +311,7 @@ class IdentityConfig
     config.add(:max_piv_cac_per_account, type: :integer)
     config.add(:min_password_score, type: :integer)
     config.add(:minimum_wait_before_another_usps_letter_in_hours, type: :integer)
+    config.add(:monthly_key_metrics_report_configs, type: :json)
     config.add(:multi_region_kms_migration_jobs_enabled, type: :boolean)
     config.add(:multi_region_kms_migration_jobs_profile_count, type: :integer)
     config.add(:multi_region_kms_migration_jobs_profile_timeout, type: :integer)

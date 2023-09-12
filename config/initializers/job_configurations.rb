@@ -195,6 +195,11 @@ else
         cron: cron_1st_of_mo,
         args: -> { [Time.zone.today] },
       },
+      monthly_key_metrics_report: {
+        class: 'Reports::MonthlyKeyMetricsReport',
+        cron: cron_1st_of_mo,
+        args: -> { [Time.zone.today] },
+      },
       # Job to backfill encrypted_pii_recovery_multi_region on profiles
       multi_region_kms_migration_profile_migration: {
         class: 'MultiRegionKmsMigration::ProfileMigrationJob',

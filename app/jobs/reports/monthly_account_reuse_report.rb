@@ -6,9 +6,11 @@ module Reports
 
     attr_reader :report_date
 
-    def perform(report_date)
+    def initialize(report_date:)
       @report_date = report_date
+    end
 
+    def perform
       _latest, path = generate_s3_paths(REPORT_NAME, 'json', now: report_date)
 
       if bucket_name.present?

@@ -203,6 +203,7 @@ max_phone_numbers_per_account: 5
 max_piv_cac_per_account: 2
 min_password_score: 3
 minimum_wait_before_another_usps_letter_in_hours: 24
+monthly_key_metrics_report_configs: '[]'
 multi_region_kms_migration_jobs_enabled: true
 multi_region_kms_migration_jobs_profile_count: 1000
 multi_region_kms_migration_jobs_profile_timeout: 120
@@ -311,6 +312,8 @@ show_user_attribute_deprecation_warnings: false
 otp_min_attempts_remaining_warning_count: 3
 system_demand_report_email: 'foo@bar.com'
 sp_issuer_user_counts_report_configs: '[]'
+team_agnes_email: ''
+team_all_feds_email: ''
 team_ursula_email: ''
 test_ssn_allowed_list: ''
 totp_code_interval: 30
