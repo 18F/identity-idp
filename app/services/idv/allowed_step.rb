@@ -18,44 +18,45 @@ module Idv
       # doesn't pass security review/user consent issues
 
 
-    STEP_PRECONDITIONS = {
-      welcome: [nil, welcome_proc],
-      getting_started: [nil, welcome_proc],
-      agreement: [nil, agreement_proc],
-      hybrid_handoff: [nil, hybrid_handoff_proc],
-      document_capture_standard: [nil, document_capture_standard_proc],
-      document_capture_hybrid: [nil, document_capture_hybrid_proc],
-      ssn: [ssn_predecessor_proc, ssn_proc]
+    NEXT_STEPS = {
+      welcome: [:agreement],
+      getting_started: [:hybrid_handoff],
+      agreement: [:hybrid_handoff, :document_capture_standard],
+      hybrid_handoff: [:link_sent, :document_capture_standard],
+      link_sent: [:ssn],
+      document_capture_standard: [:ssn], # in person?
+      ssn: [:verify_info],
+      verify_info: [:ssn, :address, :hybrid_handoff, :document_capture_standard, :phone],
+      phone: [:enter_otp, :request_letter],
+      enter_otp: [:phone, :review],
+      review: [:personal_key, :letter_enqueued],
+      request_letter: [:review, :letter_enqueued],
     }
 
+    attr_reader :idv_session
 
-    # STEP_PRECONDITIONS = {
-    #   welcome: [],
-    #   getting_started: [],
-    #   agreement: [:welcome, :welcome_visited],
-    #   hybrid_handoff: [:agreement/:getting_started, :idv_consent_given],
-    #   document_capture: [:hybrid_handoff, :flow_path],
-    #   link_sent: [:welcome_visited, :idv_consent_given, :flow_path, :pii_from_doc],
-    #   ssn: [:welcome_visited, :idv_consent_given, :flow_path, :pii_from_doc, ],
-    # }
+    def initialize(idv_session:)
+      @idv_session = idv_session
+    end
 
-    def allowed_step(idv_session:, step:)
-      STEP_PRECONDITIONS[step].first.call(idv_session)
-      # gather_required_properties(step).all |prop| idv_session.send(prop)
+    def step_allowed?(step:)
+      send(step)
     end
 
     def gather_step_preconditions(step)
       # chain through dependencies
     end
 
-    def welcome_proc
-      ->(idv_session) { true }
+    def welcome
+      true
     end
 
-    def agreement_proc
-      ->(idv_session) do
-        idv_session.welcome_visited
-      end
+    def getting_started
+      true
+    end
+
+    def agreement
+      idv_session.welcome_visited
     end
 
     def hybrid_handoff_proc
