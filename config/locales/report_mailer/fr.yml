@@ -5,6 +5,9 @@ fr:
       issuers: Émetteurs
       name: Nom
       subject: Rapport sur les comptes supprimés
+    monthly_key_metrics_report:
+      name: Nom
+      subject: Rapport mensuel sur les mesures importantes
     sp_issuer_user_counts_report:
       ial1_total: IAL1 utilisatrices
       ial2_total: IAL2 utilisatrices

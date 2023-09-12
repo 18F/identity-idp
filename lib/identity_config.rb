@@ -441,6 +441,8 @@ class IdentityConfig
     config.add(:sp_issuer_user_counts_report_configs, type: :json)
     config.add(:state_tracking_enabled, type: :boolean)
     config.add(:system_demand_report_email, type: :string)
+    config.add(:team_agnes_email, type: :string)
+    config.add(:team_all_feds_email, type: :string)
     config.add(:team_ursula_email, type: :string)
     config.add(:telephony_adapter, type: :string)
     config.add(:test_ssn_allowed_list, type: :comma_separated_string_list)

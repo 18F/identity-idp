@@ -5,6 +5,9 @@ en:
       issuers: Issuers
       name: Name
       subject: Deleted accounts report
+    monthly_key_metrics_report:
+      name: Name
+      subject: Monthly Key Metrics Report
     sp_issuer_user_counts_report:
       ial1_total: IAL1 users
       ial2_total: IAL2 users

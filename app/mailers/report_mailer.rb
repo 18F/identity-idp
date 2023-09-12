@@ -15,8 +15,9 @@ class ReportMailer < ActionMailer::Base
     mail(to: email, subject: t('report_mailer.deleted_accounts_report.subject'))
   end
 
-  def monthly_key_metrics_report(email:, data:)
-    @data = data
+  def monthly_key_metrics_report(email:, name:, csv_report:)
+    @name = name
+    @csv_report = csv_report
     mail(to: email, subject: t('report_mailer.monthly_key_metrics_report.subject'))
   end
 
