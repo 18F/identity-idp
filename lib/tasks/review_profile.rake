@@ -5,7 +5,7 @@ namespace :users do
   namespace :review do
     desc 'Pass a user that has a pending review'
     task pass: :environment do |_task, args|
-      user = AnonymousUser.new
+      user = nil
       success = false
       exception = nil
 
@@ -65,14 +65,14 @@ namespace :users do
       end
 
       Analytics.new(
-        user: AnonymousUser.new, request: nil, session: {}, sp: nil,
+        user: user || AnonymousUser.new, request: nil, session: {}, sp: nil,
       ).fraud_review_passed(success:, errors: analytics_error_hash, exception: exception&.inspect)
     end
 
     desc 'Reject a user that has a pending review'
     task reject: :environment do |_task, args|
       error = nil
-      user = AnonymousUser.new
+      user = nil
       success = false
 
       STDOUT.sync = true
@@ -119,7 +119,7 @@ namespace :users do
       end
 
       Analytics.new(
-        user: AnonymousUser.new, request: nil, session: {}, sp: nil,
+        user: user || AnonymousUser.new, request: nil, session: {}, sp: nil,
       ).fraud_review_rejected(success:, errors: analytics_error_hash, exception: exception&.inspect)
     end
   end
