@@ -6,6 +6,7 @@ namespace :users do
     desc 'Pass a user that has a pending review'
     task pass: :environment do |_task, args|
       user = nil
+      profile_fraud_review_pending_at = nil
       success = false
       exception = nil
 
@@ -33,6 +34,7 @@ namespace :users do
 
       if FraudReviewChecker.new(user).fraud_review_eligible?
         profile = user.fraud_review_pending_profile
+        profile_fraud_review_pending_at = profile.fraud_review_pending_at
         profile.activate_after_passing_review
 
         if profile.active?
@@ -66,13 +68,19 @@ namespace :users do
 
       Analytics.new(
         user: user || AnonymousUser.new, request: nil, session: {}, sp: nil,
-      ).fraud_review_passed(success:, errors: analytics_error_hash, exception: exception&.inspect)
+      ).fraud_review_passed(
+        success:,
+        errors: analytics_error_hash,
+        exception: exception&.inspect,
+        profile_fraud_review_pending_at: profile_fraud_review_pending_at,
+      )
     end
 
     desc 'Reject a user that has a pending review'
     task reject: :environment do |_task, args|
       error = nil
       user = nil
+      profile_fraud_review_pending_at = nil
       success = false
 
       STDOUT.sync = true
@@ -99,7 +107,7 @@ namespace :users do
 
       if FraudReviewChecker.new(user).fraud_review_eligible?
         profile = user.fraud_review_pending_profile
-
+        profile_fraud_review_pending_at = profile.fraud_review_pending_at
         profile.reject_for_fraud(notify_user: true)
 
         success = true
@@ -120,7 +128,12 @@ namespace :users do
 
       Analytics.new(
         user: user || AnonymousUser.new, request: nil, session: {}, sp: nil,
-      ).fraud_review_rejected(success:, errors: analytics_error_hash, exception: exception&.inspect)
+      ).fraud_review_rejected(
+        success:,
+        errors: analytics_error_hash,
+        exception: exception&.inspect,
+        profile_fraud_review_pending_at: profile_fraud_review_pending_at,
+      )
     end
   end
 end

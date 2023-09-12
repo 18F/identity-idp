@@ -532,11 +532,13 @@ module AnalyticsEvents
   # @param [Boolean] success
   # @param [Hash] errors
   # @param [String] exception
+  # @param [String] profile_fraud_review_pending_at
   # The user was passed by manual fraud review
   def fraud_review_passed(
     success:,
     errors:,
     exception:,
+    profile_fraud_review_pending_at:,
     **extra
   )
     track_event(
@@ -544,6 +546,7 @@ module AnalyticsEvents
       success: success,
       errors: errors,
       exception: exception,
+      profile_fraud_review_pending_at: profile_fraud_review_pending_at,
       **extra,
     )
   end
@@ -551,11 +554,13 @@ module AnalyticsEvents
   # @param [Boolean] success
   # @param [Hash] errors
   # @param [String] exception
+  # @param [String] profile_fraud_review_pending_at
   # The user was rejected by manual fraud review
   def fraud_review_rejected(
     success:,
     errors:,
     exception:,
+    profile_fraud_review_pending_at:,
     **extra
   )
     track_event(
@@ -563,6 +568,7 @@ module AnalyticsEvents
       success: success,
       errors: errors,
       exception: exception,
+      profile_fraud_review_pending_at: profile_fraud_review_pending_at,
       **extra,
     )
   end

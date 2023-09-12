@@ -47,6 +47,8 @@ RSpec.describe 'review_profile' do
     end
 
     it 'logs that the user was passed to analytics' do
+      profile_fraud_review_pending_at = user.profiles.first.fraud_review_pending_at
+
       invoke_task
 
       expect(analytics).to have_logged_event(
@@ -54,6 +56,7 @@ RSpec.describe 'review_profile' do
         success: true,
         errors: nil,
         exception: nil,
+        profile_fraud_review_pending_at: profile_fraud_review_pending_at,
       )
     end
 
@@ -75,6 +78,7 @@ RSpec.describe 'review_profile' do
           success: false,
           errors: { message: 'Error: Could not find user with that UUID' },
           exception: nil,
+          profile_fraud_review_pending_at: nil,
         )
       end
     end
@@ -89,6 +93,7 @@ RSpec.describe 'review_profile' do
       end
 
       it 'logs an error to analytics' do
+        profile_fraud_review_pending_at = user.profiles.first.fraud_review_pending_at
         user.profiles.first.update!(gpo_verification_pending_at: user.created_at)
 
         expect { invoke_task }.to raise_error(RuntimeError)
@@ -98,6 +103,7 @@ RSpec.describe 'review_profile' do
           success: false,
           errors: nil,
           exception: a_string_including('Attempting to activate profile with pending reason'),
+          profile_fraud_review_pending_at: profile_fraud_review_pending_at,
         )
       end
     end
@@ -117,6 +123,8 @@ RSpec.describe 'review_profile' do
     end
 
     it 'logs that the user was rejected to analytics' do
+      profile_fraud_review_pending_at = user.profiles.first.fraud_review_pending_at
+
       invoke_task
 
       expect(analytics).to have_logged_event(
@@ -124,6 +132,7 @@ RSpec.describe 'review_profile' do
         success: true,
         errors: nil,
         exception: nil,
+        profile_fraud_review_pending_at: profile_fraud_review_pending_at,
       )
     end
 
@@ -145,6 +154,7 @@ RSpec.describe 'review_profile' do
           success: false,
           errors: { message: 'Error: Could not find user with that UUID' },
           exception: nil,
+          profile_fraud_review_pending_at: nil,
         )
       end
     end
@@ -172,6 +182,7 @@ RSpec.describe 'review_profile' do
           success: false,
           errors: { message: 'Error: User does not have a pending fraud review' },
           exception: nil,
+          profile_fraud_review_pending_at: nil,
         )
       end
     end
