@@ -6,14 +6,23 @@ RSpec.describe ProfileCommandHandler do
 
     it 'creates a profile when valid input' do
       command = AddProfile.new(aggregate_id: aggregate_id)
+
       Sequent.aggregate_repository.add_aggregate(
         ProfileAggregate.new(command),
       )
-      when_command AddProfile.new(
+
+      aggregate = Sequent.aggregate_repository.load_aggregate(command.aggregate_id, ProfileAggregate)
+      expect(aggregate).to be_present
+      expect(aggregate.id).to eq(aggregate_id)
+
+      a_time = Time.zone.now
+      when_command MintProfile.new(
         aggregate_id: aggregate_id,
+        minted_at: a_time,
       )
-      then_events ProfileCreated.new(
+      then_events ProfileMinted.new(
         aggregate_id: aggregate_id,
+        minted_at: a_time,
         sequence_number: 1,
       )
     end
