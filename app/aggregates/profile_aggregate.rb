@@ -4,6 +4,10 @@ class ProfileAggregate < Sequent::AggregateRoot
     apply ProfileCreated
   end
 
+  def mint(event)
+    apply ProfileMinted(event)
+  end
+
   on ProfileCreated do
   end
 
