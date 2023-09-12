@@ -120,6 +120,7 @@ group :test do
   gem 'simplecov', '~> 0.22.0', require: false
   gem 'simplecov-cobertura'
   gem 'simplecov_json_formatter'
+  gem 'database_cleaner'
   gem 'email_spec'
   gem 'factory_bot_rails', '>= 6.2.0'
   gem 'rack_session_access', '>= 0.2.0'

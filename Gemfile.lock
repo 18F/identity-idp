@@ -254,6 +254,12 @@ GEM
       addressable
     cssbundling-rails (1.0.0)
       railties (>= 6.0.0)
+    database_cleaner (2.0.2)
+      database_cleaner-active_record (>= 2, < 3)
+    database_cleaner-active_record (2.1.0)
+      activerecord (>= 5.a)
+      database_cleaner-core (~> 2.0.0)
+    database_cleaner-core (2.0.1)
     date (3.3.3)
     dead_end (4.0.0)
     derailed_benchmarks (2.1.2)
@@ -757,6 +763,7 @@ DEPENDENCIES
   concurrent-ruby
   connection_pool
   cssbundling-rails
+  database_cleaner
   derailed_benchmarks
   devise (~> 4.8)
   dotiw (>= 4.0.1)

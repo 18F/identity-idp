@@ -16,7 +16,7 @@ require 'rails/test_help'
 require 'active_support/core_ext/object/blank'
 require 'active_support'
 require 'sequent/test'
-# require 'database_cleaner'
+require 'database_cleaner'
 
 require_relative '../blog'
 
@@ -65,12 +65,12 @@ RSpec.configure do |config|
 
   config.around do |example|
     Sequent.configuration.aggregate_repository.clear
-    # DatabaseCleaner.clean_with(:truncation, {except: Sequent::Migrations::ViewSchema::Versions.table_name})
-    # DatabaseCleaner.cleaning do
-    # ensure
-    #   Sequent.configuration.aggregate_repository.clear
-    # end
-    example.run
+    DatabaseCleaner.clean_with(:truncation, {except: Sequent::Migrations::ViewSchema::Versions.table_name})
+    DatabaseCleaner.cleaning do
+      example.run
+    ensure
+      Sequent.configuration.aggregate_repository.clear
+    end
   end
 end
 
