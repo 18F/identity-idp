@@ -117,6 +117,10 @@ module Reporting
       data[Results::IDV_FINAL_RESOLUTION_FRAUD_REVIEW].to_i
     end
 
+    def idv_doc_auth_rejected
+      data[Results::IDV_REJECT_ANY].to_i
+    end
+
     def idv_final_resolution_total_pending
       idv_final_resolution - idv_final_resolution_verified
     end
@@ -151,10 +155,7 @@ module Reporting
       data[Events::IDV_DOC_AUTH_WELCOME_SUBMITTED].to_i
     end
 
-    def idv_doc_auth_rejected
-      data[Results::IDV_REJECT_ANY].to_i
-    end
-
+    # rubocop:disable Layout/LineLength
     # Turns query results into a hash keyed by event name, values are a count of unique users
     # for that event
     # @return [Hash<Set<String>>]
@@ -173,25 +174,18 @@ module Reporting
 
           event_users[event] << user_id
 
-          if event == Events::IDV_FINAL_RESOLUTION
-            if row['identity_verified'] == '1'
-              event_users[Results::IDV_FINAL_RESOLUTION_VERIFIED] << user_id
-            end
-            if row['gpo_verification_pending'] == '1'
-              event_users[Results::IDV_FINAL_RESOLUTION_GPO] << user_id
-            end
-            if row['in_person_verification_pending'] == '1'
-              event_users[Results::IDV_FINAL_RESOLUTION_IN_PERSON] << user_id
-            end
-            if row['fraud_review_pending'] == '1'
-              event_users[Results::IDV_FINAL_RESOLUTION_FRAUD_REVIEW] << user_id
-            end
-          elsif event == Events::IDV_DOC_AUTH_IMAGE_UPLOAD && success == '0'
-            event_users[Results::IDV_REJECT_DOC_AUTH] << user_id
-          elsif event == Events::IDV_DOC_AUTH_VERIFY_RESULTS && success == '0'
-            event_users[Results::IDV_REJECT_VERIFY] << user_id
-          elsif event == Events::IDV_PHONE_FINDER_RESULTS && success == '0'
-            event_users[Results::IDV_REJECT_PHONE_FINDER] << user_id
+          case event
+          when Events::IDV_FINAL_RESOLUTION
+            event_users[Results::IDV_FINAL_RESOLUTION_VERIFIED] << user_id if row['identity_verified'] == '1'
+            event_users[Results::IDV_FINAL_RESOLUTION_GPO] << user_id if row['gpo_verification_pending'] == '1'
+            event_users[Results::IDV_FINAL_RESOLUTION_IN_PERSON] << user_id if row['in_person_verification_pending'] == '1'
+            event_users[Results::IDV_FINAL_RESOLUTION_FRAUD_REVIEW] << user_id if row['fraud_review_pending'] == '1'
+          when Events::IDV_DOC_AUTH_IMAGE_UPLOAD
+            event_users[Results::IDV_REJECT_DOC_AUTH] << user_id if success == '0'
+          when Events::IDV_DOC_AUTH_VERIFY_RESULTS
+            event_users[Results::IDV_REJECT_VERIFY] << user_id if success == '0'
+          when Events::IDV_PHONE_FINDER_RESULTS
+            event_users[Results::IDV_REJECT_PHONE_FINDER] << user_id if success == '0'
           end
         end
 
@@ -208,6 +202,7 @@ module Reporting
         event_users.transform_values(&:count)
       end
     end
+    # rubocop:enable Layout/LineLength
 
     def fetch_results
       cloudwatch_client.fetch(query:, from: time_range.begin, to: time_range.end)
