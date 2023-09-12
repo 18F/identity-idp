@@ -20,9 +20,6 @@
     "url": "https://github.com/18f/identity-idp/issues"
   },
   "homepage": "https://github.com/18f/identity-idp",
-  "peerDependencies": {
-    "react": ">=17"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/18f/identity-idp.git",
