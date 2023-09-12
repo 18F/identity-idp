@@ -87,7 +87,7 @@ RSpec.feature 'IAL2 Single Sign On' do
     context 'immediately after selecting USPS verification', js: true do
       let(:phone_confirmed) { false }
 
-      context 'does not provides an option to send another letter' do
+      context 'does not provide an option to send another letter' do
         it 'without signing out' do
           user = create(:user, :fully_registered)
 
