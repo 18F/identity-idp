@@ -31,4 +31,3 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
       minimize: false,
     },
   });
-  
