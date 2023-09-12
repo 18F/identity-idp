@@ -8,7 +8,7 @@ class SuspendedEmail < ApplicationRecord
       OpenSSL::Digest::SHA256.hexdigest(normalized_email)
     end
 
-    def create_from_email_adddress!(email_address)
+    def create_from_email_address!(email_address)
       create!(
         digested_base_email: generate_email_digest(email_address.email),
         email_address: email_address,

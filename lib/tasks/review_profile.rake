@@ -5,6 +5,11 @@ namespace :users do
   namespace :review do
     desc 'Pass a user that has a pending review'
     task pass: :environment do |_task, args|
+      user = nil
+      profile_fraud_review_pending_at = nil
+      success = false
+      exception = nil
+
       STDOUT.sync = true
       STDOUT.print 'Enter the name of the investigator: '
       investigator_name = STDIN.gets.chomp
@@ -18,17 +23,18 @@ namespace :users do
       user = User.find_by(uuid: user_uuid)
 
       if !user
-        STDOUT.puts 'Error: Could not find user with that UUID'
+        error = 'Error: Could not find user with that UUID'
         next
       end
 
       if !user.fraud_review_pending?
-        STDOUT.puts 'Error: User does not have a pending fraud review'
+        error = 'Error: User does not have a pending fraud review'
         next
       end
 
       if FraudReviewChecker.new(user).fraud_review_eligible?
         profile = user.fraud_review_pending_profile
+        profile_fraud_review_pending_at = profile.fraud_review_pending_at
         profile.activate_after_passing_review
 
         if profile.active?
@@ -41,17 +47,42 @@ namespace :users do
             sp_name: nil,
           )
 
+          success = true
           STDOUT.puts "User's profile has been activated and the user has been emailed."
         else
-          STDOUT.puts "There was an error activating the user's profile. Please try again"
+          error = "There was an error activating the user's profile. Please try again"
         end
       else
-        STDOUT.puts 'User is past the 30 day review eligibility'
+        error = 'User is past the 30 day review eligibility'
       end
+    rescue StandardError => e
+      success = false
+      exception = e
+      raise e
+    ensure
+      analytics_error_hash = nil
+      if error.present?
+        STDOUT.puts error
+        analytics_error_hash = { message: error }
+      end
+
+      Analytics.new(
+        user: user || AnonymousUser.new, request: nil, session: {}, sp: nil,
+      ).fraud_review_passed(
+        success:,
+        errors: analytics_error_hash,
+        exception: exception&.inspect,
+        profile_fraud_review_pending_at: profile_fraud_review_pending_at,
+      )
     end
 
     desc 'Reject a user that has a pending review'
     task reject: :environment do |_task, args|
+      error = nil
+      user = nil
+      profile_fraud_review_pending_at = nil
+      success = false
+
       STDOUT.sync = true
       STDOUT.print 'Enter the name of the investigator: '
       investigator_name = STDIN.gets.chomp
@@ -65,23 +96,44 @@ namespace :users do
       user = User.find_by(uuid: user_uuid)
 
       if !user
-        STDOUT.puts 'Error: Could not find user with that UUID'
+        error = 'Error: Could not find user with that UUID'
         next
       end
 
       if !user.fraud_review_pending?
-        STDOUT.puts 'Error: User does not have a pending fraud review'
+        error = 'Error: User does not have a pending fraud review'
         next
       end
 
       if FraudReviewChecker.new(user).fraud_review_eligible?
         profile = user.fraud_review_pending_profile
-
+        profile_fraud_review_pending_at = profile.fraud_review_pending_at
         profile.reject_for_fraud(notify_user: true)
+
+        success = true
         STDOUT.puts "User's profile has been deactivated due to fraud rejection."
       else
-        STDOUT.puts 'User is past the 30 day review eligibility'
+        error = 'User is past the 30 day review eligibility'
       end
+    rescue StandardError => e
+      success = false
+      exception = e
+      raise e
+    ensure
+      analytics_error_hash = nil
+      if error.present?
+        STDOUT.puts error
+        analytics_error_hash = { message: error }
+      end
+
+      Analytics.new(
+        user: user || AnonymousUser.new, request: nil, session: {}, sp: nil,
+      ).fraud_review_rejected(
+        success:,
+        errors: analytics_error_hash,
+        exception: exception&.inspect,
+        profile_fraud_review_pending_at: profile_fraud_review_pending_at,
+      )
     end
   end
 end

@@ -54,11 +54,6 @@ fr:
     registrations:
       close_window: Vous pouvez fermer cette fenêtre si vous avez terminé.
       destroyed: Votre compte a bien été supprimé.
-      phone_update_needs_confirmation: Votre demande de mise à jour de votre numéro de
-        téléphone a été traitée, mais nous devons d’abord confirmer votre
-        nouveau numéro. Veuillez suivre les instructions ci-dessous. Si vous ne
-        confirmez pas votre nouveau numéro, nous continuerons d’utiliser votre
-        ancien numéro de téléphone.
       start:
         accordion: Vous aurez aussi besoin
         bullet_1_html: Une <strong>adresse e-mail</strong>.
