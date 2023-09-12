@@ -57,19 +57,6 @@ class Profile < ApplicationRecord
     where.not(in_person_verification_pending_at: nil)
   end
 
-  # @param [Pii::Attributes] pii
-  def self.build_compound_pii(pii)
-    values = [
-      pii.first_name,
-      pii.last_name,
-      pii.zipcode,
-      pii.dob && DateParser.parse_legacy(pii[:dob]).year,
-    ]
-
-    return unless values.all?(&:present?)
-    values.join(':')
-  end
-
   # Instance methods
   def fraud_review_pending?
     fraud_review_pending_at.present?
@@ -108,7 +95,6 @@ class Profile < ApplicationRecord
     transaction do
       Profile.where(user_id: user_id).update_all(active: false)
       update!(attrs)
-      mint
     end
     send_push_notifications if is_reproof
   end
@@ -273,6 +259,19 @@ class Profile < ApplicationRecord
     @personal_key = personal_key
   end
 
+  # @param [Pii::Attributes] pii
+  def self.build_compound_pii(pii)
+    values = [
+      pii.first_name,
+      pii.last_name,
+      pii.zipcode,
+      pii.dob && DateParser.parse_legacy(pii[:dob]).year,
+    ]
+
+    return unless values.all?(&:present?)
+    values.join(':')
+  end
+
   def includes_phone_check?
     return false if proofing_components.blank?
     proofing_components['address_check'] == 'lexis_nexis_address'
@@ -317,31 +316,5 @@ class Profile < ApplicationRecord
   def send_push_notifications
     event = PushNotification::ReproofCompletedEvent.new(user: user)
     PushNotification::HttpPush.deliver(event)
-  end
-
-  # CQRS
-  def mint
-    Sequent.command_service.execute_commands(
-      Commands::MintProfile.new(
-        aggregate_id: Sequent.new_uuid,
-        profile_id: self.id,
-        unencrypted_payload: 'not a secret',
-      ),
-    )
-  end
-
-  module Commands
-    class MintProfile < Sequent::Command
-      attrs profile_id: Integer, unencrypted_payload: String
-      validates :profile_id, presence: true
-    end
-  end
-
-  module Events
-    # class methods
-    # could be a singleton
-    def self.records
-      Sequent::Core::EventRecord
-    end
   end
 end
