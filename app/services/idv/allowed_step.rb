@@ -1,7 +1,5 @@
 module Idv
   class AllowedStep
-    include IdvSession
-
     # proc for more complicated cases
     # Possibly a /verify/resume controller
     # possibly chain the requirements here. (hybrid_handoff depends on agreement and one more thing)
