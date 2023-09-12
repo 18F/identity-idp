@@ -7,7 +7,7 @@ module Idv
     def new
       analytics.idv_address_visit
 
-      @presenter = AddressPresenter.new(pii: pii_from_doc)
+      @presenter = AddressPresenter.new(pii: idv_session.pii_from_doc)
     end
 
     def update
@@ -24,7 +24,7 @@ module Idv
     private
 
     def idv_form
-      Idv::AddressForm.new(pii_from_doc)
+      Idv::AddressForm.new(idv_session.pii_from_doc)
     end
 
     def success
