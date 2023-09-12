@@ -47,7 +47,7 @@ RSpec.configure do |config|
   config.profile_examples = RSPEC_RUNNING_IN_PARALLEL ? 10 : 0
 
   config.include Sequent::Test::CommandHandlerHelpers
-  config.include DomainTests, file_path: /spec\/lib/
+  config.include DomainTests, file_path: /spec\/command_handlers/
 
   # Domain tests run with a clean sequent configuration and the in memory FakeEventStore
   config.around :each, :domain_tests do |example|
