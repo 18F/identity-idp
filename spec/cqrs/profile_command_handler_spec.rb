@@ -20,9 +20,8 @@ RSpec.describe ProfileCommandHandler do
         aggregate_id: aggregate_id,
         minted_at: a_time,
       )
-      then_events ProfileMinted.new(
+      then_events ProfileCreated.new(
         aggregate_id: aggregate_id,
-        minted_at: a_time,
         sequence_number: 1,
       )
     end
