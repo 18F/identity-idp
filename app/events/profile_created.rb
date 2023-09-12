@@ -1,2 +1,2 @@
-class ProfileCreated
+class ProfileCreated < Sequent::Event
 end
