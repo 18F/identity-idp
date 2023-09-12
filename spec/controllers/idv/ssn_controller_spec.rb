@@ -3,10 +3,6 @@ require 'rails_helper'
 RSpec.describe Idv::SsnController do
   include IdvHelper
 
-  let(:flow_session) do
-    { pii_from_doc: Idp::Constants::MOCK_IDV_APPLICANT.dup }
-  end
-
   let(:ssn) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn] }
 
   let(:user) { create(:user) }
@@ -17,7 +13,6 @@ RSpec.describe Idv::SsnController do
 
   before do
     stub_sign_in(user)
-    subject.user_session['idv/doc_auth'] = flow_session
     subject.idv_session.flow_path = 'standard'
     subject.idv_session.pii_from_doc = Idp::Constants::MOCK_IDV_APPLICANT.dup
     stub_analytics
@@ -159,29 +154,7 @@ RSpec.describe Idv::SsnController do
           from(nil).to(ssn)
       end
 
-      context 'with a Puerto Rico address and pii_from_doc in flow_session' do
-        before do
-          subject.idv_session.pii_from_doc = nil
-        end
-        it 'redirects to address controller after user enters their SSN' do
-          flow_session[:pii_from_doc][:state] = 'PR'
-
-          put :update, params: params
-
-          expect(response).to redirect_to(idv_address_url)
-        end
-
-        it 'redirects to the verify info controller if a user is updating their SSN' do
-          subject.idv_session.ssn = ssn
-          flow_session[:pii_from_doc][:state] = 'PR'
-
-          put :update, params: params
-
-          expect(response).to redirect_to(idv_verify_info_url)
-        end
-      end
-
-      context 'with a Puerto Rico address and pii_from_doc in idv_session' do
+      context 'with a Puerto Rico address' do
         it 'redirects to address controller after user enters their SSN' do
           subject.idv_session.pii_from_doc[:state] = 'PR'
 
@@ -259,7 +232,6 @@ RSpec.describe Idv::SsnController do
     context 'when pii_from_doc is not present' do
       before do
         subject.idv_session.flow_path = 'standard'
-        flow_session.delete(:pii_from_doc)
         subject.idv_session.pii_from_doc = nil
       end
 

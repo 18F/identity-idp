@@ -5,8 +5,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
 
   let(:pii_from_user) { Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID.dup }
   let(:flow_session) do
-    { 'document_capture_session_uuid' => 'fd14e181-6fb1-4cdc-92e0-ef66dad0df4e',
-      :pii_from_user => pii_from_user,
+    { :pii_from_user => pii_from_user,
       :flow_path => 'standard' }
   end
 

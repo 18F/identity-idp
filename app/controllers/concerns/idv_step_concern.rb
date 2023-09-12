@@ -38,7 +38,7 @@ module IdvStepConcern
   end
 
   def pii_from_doc
-    idv_session.pii_from_doc || flow_session[:pii_from_doc]
+    idv_session.pii_from_doc
   end
 
   def pii_from_user
@@ -52,7 +52,7 @@ module IdvStepConcern
   private
 
   def confirm_ssn_step_complete
-    return if pii.present? && idv_session.ssn.present?
+    return if pii.present? && (idv_session.ssn.present? || pii[:ssn].present?)
     redirect_to prev_url
   end
 

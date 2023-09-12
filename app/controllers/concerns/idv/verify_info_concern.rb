@@ -319,7 +319,6 @@ module Idv
     end
 
     def delete_pii
-      flow_session.delete(:pii_from_doc)
       idv_session.pii_from_doc = nil
       flow_session.delete(:pii_from_user)
     end
