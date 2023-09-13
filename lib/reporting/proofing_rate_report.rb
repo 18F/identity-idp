@@ -23,9 +23,9 @@ module Reporting
       end
 
       csv << ['PROOFING RATES', 'Trailing 30d', 'Trailing 60d', 'Trailing 90d']
-      csv << ['Blanket Proofing Rate ', *blanket_proofing_rates,]
-      csv << ['Intent Proofing Rate ', *intent_proofing_rates,]
-      csv << ['Actual Proofing Rate ', *actual_proofing_rates,]
+      csv << ['Blanket Proofing Rate ', *blanket_proofing_rates]
+      csv << ['Intent Proofing Rate ', *intent_proofing_rates]
+      csv << ['Actual Proofing Rate ', *actual_proofing_rates]
       # csv << ['Industry Proofing Rate', 'FIXME']
       csv << []
       # Two additional queries:
@@ -36,24 +36,24 @@ module Reporting
 
     def blanket_proofing_rates
       blanket_rates = []
-      DATE_INTERVALS.each do |interval|
-        blanket_rates << ivr[interval.to_sym].idv_started.to_f / ivr[interval.to_sym].successfully_verified_users
+      DATE_INTERVALS.each do |int|
+        blanket_rates << ivr[int.to_sym].idv_started.to_f / ivr[int.to_sym].successfully_verified_users
       end
       blanket_rates
     end
 
     def intent_proofing_rates
       intent_rates = []
-      DATE_INTERVALS.each do |interval|
-        intent_rates << ivr[interval.to_sym].idv_doc_auth_welcome_submitted.to_f / ivr[interval.to_sym].successfully_verified_users
+      DATE_INTERVALS.each do |int|
+        intent_rates << ivr[int.to_sym].idv_doc_auth_welcome_submitted.to_f / ivr[int.to_sym].successfully_verified_users
       end
       intent_rates
     end
 
     def actual_proofing_rates
       actual_rates = []
-      DATE_INTERVALS.each do |interval|
-        ivr[interval.to_sym].idv_doc_auth_image_vendor_submitted.to_f / ivr[interval.to_sym].successfully_verified_users
+      DATE_INTERVALS.each do |int|
+        actual_rates << ivr[int.to_sym].idv_doc_auth_image_vendor_submitted.to_f / ivr[int.to_sym].successfully_verified_users
       end
       actual_rates
     end
