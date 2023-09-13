@@ -36,9 +36,10 @@ module Reporting
 
     def blanket_proofing_rates
       blanket_rates = []
-      DATE_INTERVALS.each do |int|
+      DATE_INTERVALS.each do |interval|
+        user_stats = ivr[interval.to_sym]
         blanket_rates << "#{
-          ivr[int.to_sym].idv_started.to_f / ivr[int.to_sym].successfully_verified_users
+          user_stats.idv_started.to_f / user_stats.successfully_verified_users
         }%"
       end
       blanket_rates
@@ -46,9 +47,10 @@ module Reporting
 
     def intent_proofing_rates
       intent_rates = []
-      DATE_INTERVALS.each do |int|
+      DATE_INTERVALS.each do |interval|
+        user_stats = ivr[interval.to_sym]
         intent_rates << "#{
-          ivr[int.to_sym].idv_doc_auth_welcome_submitted.to_f / ivr[int.to_sym].successfully_verified_users
+          user_stats.idv_doc_auth_welcome_submitted.to_f / user_stats.successfully_verified_users
         }%"
       end
       intent_rates
@@ -56,28 +58,13 @@ module Reporting
 
     def actual_proofing_rates
       actual_rates = []
-      DATE_INTERVALS.each do |int|
+      DATE_INTERVALS.each do |interval|
+        user_stats = ivr[interval.to_sym]
         actual_rates << "#{
-          ivr[int.to_sym].idv_doc_auth_image_vendor_submitted.to_f / ivr[int.to_sym].successfully_verified_users
+          user_stats.idv_doc_auth_image_vendor_submitted.to_f / user_stats.successfully_verified_users
         }%"
       end
       actual_rates
-    end
-
-    def marked_as_fraudulent
-      # flagged by ThreatMetrix and not then given redress
-      # or
-      # rejected by Acuant as having suspicious evidence that does not then successfully verify
-      # 'IdV: Not verified visited'
-      # Or, look at 'IdV: review complete' and is fraud_rejection boolean
-      # 'Fraud: Automatic Fraud Rejection'
-    end
-
-    def abandon_the_process
-      # not marked_as_fraudulent (just subtract that)
-      #  is not blocked by us (e.g. is stopped in funnel w/
-      #  rejection codes by Acuant/InstantVerify/PhoneFinder/USPS)
-      # I think we need to return (total - sum of all those "not..." cases)
     end
   end
 end
