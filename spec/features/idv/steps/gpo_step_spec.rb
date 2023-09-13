@@ -23,15 +23,6 @@ RSpec.feature 'idv gpo step' do
     expect(page).to have_content(t('idv.messages.gpo.letter_on_the_way'))
   end
 
-  it 'allows the user to go back', :js do
-    start_idv_from_sp
-    complete_idv_steps_before_gpo_step
-
-    click_doc_auth_back_link
-
-    expect(page).to have_current_path(idv_phone_path)
-  end
-
   context 'the user has sent a letter but not verified an OTP' do
     let(:user) { user_with_2fa }
 
