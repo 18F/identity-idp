@@ -2,10 +2,10 @@ require 'rails_helper'
 require 'reporting/proofing_rate_report'
 
 RSpec.describe Reporting::ProofingRateReport do
-  let(:start_date) { Date.new(2022, 1, 1) }
+  let(:end_date) { Date.new(2022, 1, 1) }
 
   subject(:report) do
-    Reporting::ProofingRateReport.new(start_date: start_date)
+    Reporting::ProofingRateReport.new(end_date: end_date)
   end
 
   describe '#as_csv' do
@@ -18,7 +18,7 @@ RSpec.describe Reporting::ProofingRateReport do
             idv_doc_auth_welcome_submitted: 3,
             idv_doc_auth_image_vendor_submitted: 2,
             successfully_verified_users: 1,
-            time_range: (start_date - 30.days)..start_date,
+            time_range: (end_date - 30.days)..end_date,
           ),
           instance_double(
             'Reporting::IdentityVerificationReport',
@@ -26,7 +26,7 @@ RSpec.describe Reporting::ProofingRateReport do
             idv_doc_auth_welcome_submitted: 4,
             idv_doc_auth_image_vendor_submitted: 3,
             successfully_verified_users: 2,
-            time_range: (start_date - 60.days)..start_date,
+            time_range: (end_date - 60.days)..end_date,
           ),
           instance_double(
             'Reporting::IdentityVerificationReport',
@@ -34,7 +34,7 @@ RSpec.describe Reporting::ProofingRateReport do
             idv_doc_auth_welcome_submitted: 5,
             idv_doc_auth_image_vendor_submitted: 4,
             successfully_verified_users: 3,
-            time_range: (start_date - 90.days)..start_date,
+            time_range: (end_date - 90.days)..end_date,
           ),
         ],
       )
@@ -65,21 +65,47 @@ RSpec.describe Reporting::ProofingRateReport do
   end
 
   describe '#reports' do
-    it 'calls IdentityVerificationReport correctly' do
-      expect(Reporting::IdentityVerificationReport).to receive(:new).with(
-        issuers: nil,
-        time_range: (start_date - 30.days)..start_date,
-      ).and_call_original
-      expect(Reporting::IdentityVerificationReport).to receive(:new).with(
-        issuers: nil,
-        time_range: (start_date - 60.days)..start_date,
-      ).and_call_original
-      expect(Reporting::IdentityVerificationReport).to receive(:new).with(
-        issuers: nil,
-        time_range: (start_date - 90.days)..start_date,
-      ).and_call_original
+    before do
+      stub_const('Reporting::CloudwatchClient::DEFAULT_WAIT_DURATION', 0)
 
-      expect(report.reports).to be_present
+      query_id = SecureRandom.hex
+
+      Aws.config[:cloudwatchlogs] = {
+        stub_responses: {
+          start_query: { query_id: query_id },
+          get_query_results: {
+            status: 'Complete',
+            results: [],
+          },
+        },
+      }
+    end
+
+    it 'calls IdentityVerificationReport with separate slices, but merges them' do
+      allow(Reporting::IdentityVerificationReport).to receive(:new).and_call_original
+
+      expect(report.reports.map(&:time_range)).to eq(
+        [
+          (end_date - 30.days)..end_date,
+          (end_date - 60.days)..end_date,
+          (end_date - 90.days)..end_date,
+        ],
+      )
+
+      expect(Reporting::IdentityVerificationReport).to have_received(:new).with(
+        issuers: nil,
+        time_range: (end_date - 30.days)..end_date,
+      ).once
+
+      expect(Reporting::IdentityVerificationReport).to have_received(:new).with(
+        issuers: nil,
+        time_range: (end_date - 60.days)..(end_date - 30.days),
+      ).once
+
+      expect(Reporting::IdentityVerificationReport).to have_received(:new).with(
+        issuers: nil,
+        time_range: (end_date - 90.days)..(end_date - 60.days),
+      ).once
     end
   end
 end

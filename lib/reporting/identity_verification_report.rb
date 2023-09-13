@@ -46,7 +46,8 @@ module Reporting
       verbose: false,
       progress: false,
       slice: 3.hours,
-      threads: 5
+      threads: 5,
+      data: nil
     )
       @issuers = issuers
       @time_range = time_range
@@ -54,6 +55,7 @@ module Reporting
       @progress = progress
       @slice = slice
       @threads = threads
+      @data = data
     end
 
     def verbose?
@@ -90,39 +92,54 @@ module Reporting
       end
     end
 
+    # @param [Reporting::IdentityVerificationReport] other
+    # @return [Reporting::IdentityVerificationReport]
+    def merge(other)
+      self.class.new(
+        issuers: (Array(issuers) + Array(other.issuers)).uniq,
+        time_range: Range.new(
+          [time_range.begin, other.time_range.begin].min,
+          [time_range.end, other.time_range.end].max,
+        ),
+        data: data.merge(other.data) do |_event, old_user_ids, new_user_ids|
+          old_user_ids + new_user_ids
+        end,
+      )
+    end
+
     def idv_final_resolution
-      data[Events::IDV_FINAL_RESOLUTION].to_i
+      data[Events::IDV_FINAL_RESOLUTION].count
     end
 
     def idv_final_resolution_verified
-      data[Results::IDV_FINAL_RESOLUTION_VERIFIED].to_i
+      data[Results::IDV_FINAL_RESOLUTION_VERIFIED].count
     end
 
     def idv_final_resolution_gpo
-      data[Results::IDV_FINAL_RESOLUTION_GPO].to_i
+      data[Results::IDV_FINAL_RESOLUTION_GPO].count
     end
 
     def idv_final_resolution_in_person
-      data[Results::IDV_FINAL_RESOLUTION_IN_PERSON].to_i
+      data[Results::IDV_FINAL_RESOLUTION_IN_PERSON].count
     end
 
     def idv_final_resolution_fraud_review
-      data[Results::IDV_FINAL_RESOLUTION_FRAUD_REVIEW].to_i
+      data[Results::IDV_FINAL_RESOLUTION_FRAUD_REVIEW].count
     end
 
     def idv_final_resolution_total_pending
-      idv_final_resolution - idv_final_resolution_verified
+      @idv_final_resolution_total_pending ||=
+        (data[Events::IDV_FINAL_RESOLUTION] - data[Results::IDV_FINAL_RESOLUTION_VERIFIED]).count
     end
 
     def gpo_verification_submitted
-      [
-        data[Events::GPO_VERIFICATION_SUBMITTED].to_i,
-        data[Events::GPO_VERIFICATION_SUBMITTED_OLD].to_i,
-      ].sum
+      @gpo_verification_submitted ||= (
+        data[Events::GPO_VERIFICATION_SUBMITTED] +
+          data[Events::GPO_VERIFICATION_SUBMITTED_OLD]).count
     end
 
     def usps_enrollment_status_updated
-      data[Events::USPS_ENROLLMENT_STATUS_UPDATED].to_i
+      data[Events::USPS_ENROLLMENT_STATUS_UPDATED].count
     end
 
     def successfully_verified_users
@@ -130,21 +147,19 @@ module Reporting
     end
 
     def idv_started
-      [
-        data[Events::IDV_DOC_AUTH_WELCOME].to_i,
-        data[Events::IDV_DOC_AUTH_GETTING_STARTED].to_i,
-      ].sum
+      @idv_started ||=
+        (data[Events::IDV_DOC_AUTH_WELCOME] + data[Events::IDV_DOC_AUTH_GETTING_STARTED]).count
     end
 
     def idv_doc_auth_image_vendor_submitted
-      data[Events::IDV_DOC_AUTH_IMAGE_UPLOAD].to_i
+      data[Events::IDV_DOC_AUTH_IMAGE_UPLOAD].count
     end
 
     def idv_doc_auth_welcome_submitted
-      data[Events::IDV_DOC_AUTH_WELCOME_SUBMITTED].to_i
+      data[Events::IDV_DOC_AUTH_WELCOME_SUBMITTED].count
     end
 
-    # Turns query results into a hash keyed by event name, values are a count of unique users
+    # Turns query results into a hash keyed by event name, values are the unique user IDs
     # for that event
     # @return [Hash<Set<String>>]
     def data
@@ -174,7 +189,7 @@ module Reporting
           end
         end
 
-        event_users.transform_values(&:count)
+        event_users
       end
     end
 
