@@ -90,7 +90,7 @@ RSpec.describe 'devise/sessions/new.html.erb' do
         view_context: view_context,
         sp_session: {},
         service_provider_request: ServiceProviderRequest.new,
-      ).call
+      ).create_session
       allow(view).to receive(:decorated_sp_session).and_return(@decorated_sp_session)
       allow(view_context).to receive(:sign_up_email_path).
         and_return('/sign_up/enter_email')

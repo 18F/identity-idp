@@ -23,7 +23,7 @@ RSpec.describe 'devise/passwords/new.html.erb' do
       view_context: view_context,
       sp_session: {},
       service_provider_request: ServiceProviderRequestProxy.new,
-    ).call
+    ).create_session
     allow(view).to receive(:decorated_sp_session).and_return(@decorated_sp_session)
   end
 

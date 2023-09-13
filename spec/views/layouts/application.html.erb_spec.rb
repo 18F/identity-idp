@@ -11,7 +11,7 @@ RSpec.describe 'layouts/application.html.erb' do
         view_context: nil,
         sp_session: {},
         service_provider_request: ServiceProviderRequestProxy.new,
-      ).call,
+      ).create_session,
     )
     allow(view.request).to receive(:original_fullpath).and_return('/foobar')
     allow(view).to receive(:current_user).and_return(User.new)
@@ -129,7 +129,7 @@ RSpec.describe 'layouts/application.html.erb' do
           view_context: nil,
           sp_session: {},
           service_provider_request: nil,
-        ).call,
+        ).create_session,
       )
       allow(IdentityConfig.store).to receive(:participate_in_dap).and_return(true)
 
