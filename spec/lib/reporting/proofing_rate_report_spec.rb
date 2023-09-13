@@ -93,18 +93,24 @@ RSpec.describe Reporting::ProofingRateReport do
       )
 
       expect(Reporting::IdentityVerificationReport).to have_received(:new).with(
-        issuers: nil,
         time_range: (end_date - 30.days)..end_date,
+        issuers: nil,
+        verbose: false,
+        progress: false,
       ).once
 
       expect(Reporting::IdentityVerificationReport).to have_received(:new).with(
-        issuers: nil,
         time_range: (end_date - 60.days)..(end_date - 30.days),
+        issuers: nil,
+        verbose: false,
+        progress: false,
       ).once
 
       expect(Reporting::IdentityVerificationReport).to have_received(:new).with(
-        issuers: nil,
         time_range: (end_date - 90.days)..(end_date - 60.days),
+        issuers: nil,
+        verbose: false,
+        progress: false,
       ).once
     end
   end
