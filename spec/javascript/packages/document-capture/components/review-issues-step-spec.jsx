@@ -356,7 +356,7 @@ describe('document-capture/components/review-issues-step', () => {
             maxSubmissionAttemptsBeforeNativeCamera={3}
           >
             <ReviewIssuesStep
-              value={{ front_image_metadata: '12345' }}
+              value={{ front_image_metadata: { fingerprint: '12345' } }}
               {...DEFAULT_PROPS}
               failedImageFingerprints={{ front: ['12345'], back: [] }}
               errors={[
@@ -373,7 +373,6 @@ describe('document-capture/components/review-issues-step', () => {
           </FailedCaptureAttemptsContextProvider>
         </I18nContext.Provider>,
       );
-
       expect(findByRole('button', { name: 'idv.failure.button.warning' })).not.to.exist;
       expect(getByRole('heading', { name: 'doc_auth.headings.review_issues' })).to.be.ok;
       expect(getByText('duplicate image')).to.be.ok;
