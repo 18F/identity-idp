@@ -42,7 +42,6 @@ module Reporting
       IDV_REJECT_DOC_AUTH = 'IdV Reject: Doc Auth'
       IDV_REJECT_VERIFY = 'IdV Reject: Verify'
       IDV_REJECT_PHONE_FINDER = 'IdV Reject: Phone Finder'
-      IDV_REJECT_ANY = 'IdV Reject: Any'
     end
 
     # @param [Array<String>] issuers
