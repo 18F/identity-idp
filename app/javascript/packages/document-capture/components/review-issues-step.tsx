@@ -9,6 +9,8 @@ import FailedCaptureAttemptsContext from '../context/failed-capture-attempts';
 import DocumentCaptureWarning from './document-capture-warning';
 import DocumentCaptureReviewIssues from './document-capture-review-issues';
 
+// @ts-ignore
+type JSONObject = Record<string, string | number | boolean | null | JSONObject>;
 interface ReviewIssuesStepValue {
   /**
    * Front image value.
@@ -23,12 +25,12 @@ interface ReviewIssuesStepValue {
   /**
    * Front image metadata.
    */
-  front_image_metadata?: string;
+  front_image_metadata?: JSONObject;
 
   /**
    * Back image metadata.
    */
-  back_image_metadata?: string;
+  back_image_metadata?: JSONObject;
 }
 
 interface ReviewIssuesStepProps extends FormStepComponentProps<ReviewIssuesStepValue> {
@@ -73,9 +75,10 @@ function ReviewIssuesStep({
     setHasDismissed(true);
   }
 
-  const skipWarning =
-    !!failedImageFingerprints?.front?.includes(value.front_image_metadata ?? '') ||
-    !!failedImageFingerprints?.back?.includes(value.back_image_metadata ?? '');
+  const [skipWarning] = useState<boolean>(
+    !!failedImageFingerprints?.front?.includes(value.front_image_metadata?.fingerprint) ||
+      !!failedImageFingerprints?.back?.includes(value.back_image_metadata?.fingerprint),
+  );
 
   // let FormSteps know, via FormStepsContext, whether this page
   // is ready to submit form values
