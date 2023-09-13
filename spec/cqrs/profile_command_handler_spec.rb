@@ -16,35 +16,34 @@ RSpec.describe ProfileCommandHandler do
         ProfileAggregate.new(command),
       )
 
-      aggregate = Sequent.aggregate_repository.load_aggregate(command.aggregate_id, ProfileAggregate)
+      aggregate =
+        Sequent.aggregate_repository.load_aggregate(
+          command.aggregate_id, ProfileAggregate
+        )
       expect(aggregate).to be_present
       expect(aggregate.id).to eq(aggregate_id)
 
-      # mint the profile
-      minted_at = 1.day.ago
-      mint_command = MintProfile.new(
-        aggregate_id: aggregate_id,
-        minted_at: minted_at,
-      )
-
-      Sequent.command_service.execute_commands(mint_command)
-
-      aggregate = Sequent.aggregate_repository.load_aggregate(
-        mint_command.aggregate_id,
-        ProfileAggregate,
-      )
-      expect(aggregate).to be_present
-      # binding.pry
-      # expect(aggregate.minted_at).to eq(minted_at)
-
       a_time = Time.zone.now
+      unencrypted_payload = {
+        foo: :bar,
+      }.to_json
+
       when_command MintProfile.new(
         aggregate_id: aggregate_id,
         minted_at: a_time,
+        unencrypted_payload: unencrypted_payload,
       )
-      then_events ProfileCreated.new(
-        aggregate_id: aggregate_id,
-        sequence_number: 1,
+      then_events(
+        ProfileCreated.new(
+          aggregate_id: aggregate_id,
+          sequence_number: 1,
+        ),
+        ProfileMinted.new(
+          aggregate_id: aggregate_id,
+          minted_at: a_time,
+          unencrypted_payload: unencrypted_payload,
+          sequence_number: 2,
+        ),
       )
     end
   end
