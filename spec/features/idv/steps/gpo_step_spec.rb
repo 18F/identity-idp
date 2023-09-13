@@ -84,6 +84,16 @@ RSpec.feature 'idv gpo step' do
         expect(page).to have_content(t('idv.buttons.mail.resend'))
         expect(page).to_not have_content(t('idv.messages.gpo.info_alert'))
 
+        # Ensure user can go back from this page
+        click_doc_auth_back_link
+
+        expect(page).to have_content(t('idv.gpo.title'))
+        expect(page).to have_current_path(idv_verify_by_mail_enter_code_path)
+        expect_user_to_be_unverified(user)
+
+        click_on t('idv.messages.gpo.resend')
+
+        # And then actually ask for a resend
         expect { click_on t('idv.buttons.mail.resend') }.
           to change { GpoConfirmation.count }.from(1).to(2)
         expect_user_to_be_unverified(user)
@@ -159,18 +169,6 @@ RSpec.feature 'idv gpo step' do
           )
         end
       end
-    end
-
-    it 'allows the user to return to gpo otp confirmation', :js do
-      travel_to(2.days.ago) { complete_idv_by_mail_and_sign_out }
-      sign_in_live_with_2fa(user)
-      click_on t('idv.messages.gpo.resend')
-
-      click_doc_auth_back_link
-
-      expect(page).to have_content(t('idv.gpo.title'))
-      expect(page).to have_current_path(idv_verify_by_mail_enter_code_path)
-      expect_user_to_be_unverified(user)
     end
 
     def complete_idv_by_mail_and_sign_out
