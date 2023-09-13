@@ -21,7 +21,7 @@ RSpec.describe 'idv/shared/_error.html.erb' do
   end
 
   before do
-    decorated_session = instance_double(ServiceProviderSessionDecorator, sp_name: sp_name)
+    decorated_session = instance_double(ServiceProviderSession, sp_name: sp_name)
     allow(view).to receive(:decorated_session).and_return(decorated_session)
 
     if step_indicator_steps

@@ -7,7 +7,7 @@ RSpec.describe 'idv/session_errors/exception.html.erb' do
 
   before do
     decorated_session = instance_double(
-      ServiceProviderSessionDecorator,
+      ServiceProviderSession,
       sp_name: sp_name,
       sp_issuer: sp_issuer,
     )

@@ -6,7 +6,7 @@ RSpec.describe 'shared/_banner.html.erb' do
       :service_provider, logo: 'generic.svg', friendly_name: 'Best SP ever'
     )
 
-    decorated_session = ServiceProviderSessionDecorator.new(
+    decorated_session = ServiceProviderSession.new(
       sp: sp_with_logo,
       view_context: '',
       sp_session: {},

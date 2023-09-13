@@ -10,7 +10,7 @@ RSpec.describe 'sign_up/completions/show.html.erb' do
 
   let(:view_context) { ActionController::Base.new.view_context }
   let(:decorated_session) do
-    ServiceProviderSessionDecorator.new(
+    ServiceProviderSession.new(
       sp: service_provider,
       view_context: view_context,
       sp_session: {},

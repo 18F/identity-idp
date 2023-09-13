@@ -6,7 +6,7 @@ RSpec.describe 'idv/getting_started/show' do
   let(:user) { create(:user) }
 
   before do
-    @decorated_session = instance_double(ServiceProviderSessionDecorator)
+    @decorated_session = instance_double(ServiceProviderSession)
     @sp_name = 'Login.gov'
     @title = t('doc_auth.headings.getting_started', sp_name: @sp_name)
     allow(@decorated_session).to receive(:sp_name).and_return(sp_name)

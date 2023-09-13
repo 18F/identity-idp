@@ -5,7 +5,7 @@ RSpec.describe 'idv/phone_errors/timeout.html.erb' do
   let(:gpo_letter_available) { false }
 
   before do
-    decorated_session = instance_double(ServiceProviderSessionDecorator, sp_name: sp_name)
+    decorated_session = instance_double(ServiceProviderSession, sp_name: sp_name)
     allow(view).to receive(:decorated_session).and_return(decorated_session)
     assign(:gpo_letter_available, gpo_letter_available)
 

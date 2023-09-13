@@ -7,7 +7,7 @@ RSpec.describe 'idv/welcome/show.html.erb' do
   let(:user) { create(:user) }
 
   before do
-    @decorated_session = instance_double(ServiceProviderSessionDecorator)
+    @decorated_session = instance_double(ServiceProviderSession)
     allow(@decorated_session).to receive(:sp_name).and_return(sp_name)
     allow(view).to receive(:decorated_session).and_return(@decorated_session)
     allow(view).to receive(:flow_session).and_return(flow_session)

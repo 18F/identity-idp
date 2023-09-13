@@ -16,7 +16,7 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
 
   before do
     decorated_session = instance_double(
-      ServiceProviderSessionDecorator,
+      ServiceProviderSession,
       sp_name: sp_name,
       sp_issuer: sp_issuer,
     )

@@ -6,7 +6,7 @@ RSpec.describe 'idv/unavailable/show.html.erb' do
 
   before do
     allow(view).to receive(:decorated_session).and_return(
-      instance_double(ServiceProviderSessionDecorator, sp_name: sp_name),
+      instance_double(ServiceProviderSession, sp_name: sp_name),
     )
   end
 

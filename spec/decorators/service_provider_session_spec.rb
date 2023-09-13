@@ -1,9 +1,9 @@
 require 'rails_helper'
 
-RSpec.describe ServiceProviderSessionDecorator do
+RSpec.describe ServiceProviderSession do
   let(:view_context) { ActionController::Base.new.view_context }
   subject(:session_decorator) do
-    ServiceProviderSessionDecorator.new(
+    ServiceProviderSession.new(
       sp: sp,
       view_context: view_context,
       sp_session: {},
@@ -86,7 +86,7 @@ RSpec.describe ServiceProviderSessionDecorator do
 
     it 'returns the agency name if friendly name is not present' do
       sp = build_stubbed(:service_provider, friendly_name: nil)
-      subject = ServiceProviderSessionDecorator.new(
+      subject = ServiceProviderSession.new(
         sp: sp,
         view_context: view_context,
         sp_session: {},
@@ -103,7 +103,7 @@ RSpec.describe ServiceProviderSessionDecorator do
         sp_logo = 'real_logo.svg'
         sp = build_stubbed(:service_provider, logo: sp_logo)
 
-        subject = ServiceProviderSessionDecorator.new(
+        subject = ServiceProviderSession.new(
           sp: sp,
           view_context: view_context,
           sp_session: {},
@@ -118,7 +118,7 @@ RSpec.describe ServiceProviderSessionDecorator do
       it 'returns the default logo' do
         sp = build_stubbed(:service_provider, logo: nil)
 
-        subject = ServiceProviderSessionDecorator.new(
+        subject = ServiceProviderSession.new(
           sp: sp,
           view_context: view_context,
           sp_session: {},
@@ -136,7 +136,7 @@ RSpec.describe ServiceProviderSessionDecorator do
         sp_logo = '18f.svg'
         sp = build_stubbed(:service_provider, logo: sp_logo)
 
-        subject = ServiceProviderSessionDecorator.new(
+        subject = ServiceProviderSession.new(
           sp: sp,
           view_context: view_context,
           sp_session: {},
@@ -151,7 +151,7 @@ RSpec.describe ServiceProviderSessionDecorator do
       it 'returns the default logo' do
         sp = build_stubbed(:service_provider, logo: nil)
 
-        subject = ServiceProviderSessionDecorator.new(
+        subject = ServiceProviderSession.new(
           sp: sp,
           view_context: view_context,
           sp_session: {},
@@ -166,7 +166,7 @@ RSpec.describe ServiceProviderSessionDecorator do
       it 'does not raise an exception' do
         sp = build_stubbed(:service_provider, logo: 'abc')
 
-        subject = ServiceProviderSessionDecorator.new(
+        subject = ServiceProviderSession.new(
           sp: sp,
           view_context: view_context,
           sp_session: {},
@@ -180,7 +180,7 @@ RSpec.describe ServiceProviderSessionDecorator do
 
   describe '#cancel_link_url' do
     subject(:decorator) do
-      ServiceProviderSessionDecorator.new(
+      ServiceProviderSession.new(
         sp: sp,
         view_context: view_context,
         sp_session: { request_id: 'foo' },
