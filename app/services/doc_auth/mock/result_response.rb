@@ -90,7 +90,7 @@ module DocAuth
           success: false,
           errors: errors,
           exception: exception,
-          extra: { vendor: 'Acuant' },
+          extra: { vendor: 'Mock' },
         )
       end
 
@@ -100,7 +100,7 @@ module DocAuth
           success: false,
           errors: errors,
           exception: Faraday::TimeoutError.new,
-          extra: { vendor: 'Acuant' },
+          extra: { vendor: 'Mock' },
         )
       end
 

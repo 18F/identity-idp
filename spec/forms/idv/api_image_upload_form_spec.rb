@@ -494,7 +494,6 @@ RSpec.describe Idv::ApiImageUploadForm do
           allow(client_response).to receive(:errors).and_return(errors)
           form.send(:validate_form)
           capture_result = form.send(:store_failed_images, client_response, doc_pii_response)
-          Rails.logger.debug(capture_result)
           expect(capture_result[:front]).not_to be_empty
           expect(capture_result[:back]).to be_empty
         end
@@ -511,7 +510,6 @@ RSpec.describe Idv::ApiImageUploadForm do
           allow(doc_pii_response).to receive(:success?).and_return(true)
           form.send(:validate_form)
           capture_result = form.send(:store_failed_images, client_response, doc_pii_response)
-          Rails.logger.debug(capture_result)
           expect(capture_result[:front]).to be_empty
           expect(capture_result[:back]).to be_empty
         end
@@ -524,7 +522,6 @@ RSpec.describe Idv::ApiImageUploadForm do
           allow(doc_pii_response).to receive(:success?).and_return(false)
           form.send(:validate_form)
           capture_result = form.send(:store_failed_images, client_response, doc_pii_response)
-          Rails.logger.debug(capture_result)
           expect(capture_result[:front]).not_to be_empty
           expect(capture_result[:back]).not_to be_empty
         end
