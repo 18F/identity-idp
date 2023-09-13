@@ -4,6 +4,13 @@ RSpec.feature 'idv gpo step' do
   include IdvStepHelper
   include OidcAuthHelper
 
+  let(:minimum_wait_for_letter) { 24 }
+
+  before do
+    allow(IdentityConfig.store).to receive(:minimum_wait_before_another_usps_letter_in_hours).
+      and_return(minimum_wait_for_letter)
+  end
+
   it 'redirects to and completes the review step when the user chooses to verify by letter', :js do
     start_idv_from_sp
     complete_idv_steps_before_gpo_step
@@ -46,6 +53,24 @@ RSpec.feature 'idv gpo step' do
                             t('idv.gpo.did_not_receive_letter.intro.request_new_letter_link'),
                           )
       visit sign_out_url
+
+
+      travel_to((minimum_wait_for_letter - 1).hours.from_now) do
+        sign_in_live_with_2fa(user)
+        # rate-limited because too little time has passed
+        expect(page).to have_current_path(idv_verify_by_mail_enter_code_path)
+        expect(page).not_to have_link(
+                              t('idv.gpo.did_not_receive_letter.intro.request_new_letter_link'),
+                            )
+        # does not allow the user to go to the resend page manually
+        visit idv_request_letter_path
+
+        expect(page).to have_current_path(idv_verify_by_mail_enter_code_path)
+        expect(page).not_to have_link(
+                              t('idv.gpo.did_not_receive_letter.intro.request_new_letter_link'),
+                            )
+        visit sign_out_url
+      end
 
       travel_to(2.days.from_now) do
         sign_in_live_with_2fa(user)
