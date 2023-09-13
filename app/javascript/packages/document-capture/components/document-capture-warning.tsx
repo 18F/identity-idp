@@ -13,6 +13,7 @@ interface DocumentCaptureWarningProps {
   remainingAttempts: number;
   actionOnClick?: () => void;
   unknownFieldErrors: FormStepError<{ front: string; back: string }>[];
+  hasDismissed: boolean;
 }
 
 const DISPLAY_ATTEMPTS = 3;
@@ -23,6 +24,7 @@ function DocumentCaptureWarning({
   remainingAttempts,
   actionOnClick,
   unknownFieldErrors = [],
+  hasDismissed,
 }: DocumentCaptureWarningProps) {
   const { t } = useI18n();
   const { inPersonURL } = useContext(InPersonContext);
@@ -59,6 +61,7 @@ function DocumentCaptureWarning({
           unknownFieldErrors={unknownFieldErrors}
           remainingAttempts={remainingAttempts}
           isFailedDocType={isFailedDocType}
+          hasDismissed={hasDismissed}
         />
 
         {!isFailedDocType && remainingAttempts <= DISPLAY_ATTEMPTS && (

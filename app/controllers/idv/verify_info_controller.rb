@@ -11,6 +11,7 @@ module Idv
 
     def show
       @step_indicator_steps = step_indicator_steps
+      @ssn = idv_session.ssn
 
       analytics.idv_doc_auth_verify_visited(**analytics_arguments)
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
@@ -54,7 +55,6 @@ module Idv
       }.merge(ab_test_analytics_buckets)
     end
 
-    # copied from verify_step
     def pii
       @pii = pii_from_doc
     end

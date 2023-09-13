@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe 'devise/sessions/new.html.erb' do
+  include UserAgentHelper
+
   before do
     allow(view).to receive(:resource).and_return(build_stubbed(:user))
     allow(view).to receive(:resource_name).and_return(:user)
@@ -149,6 +151,19 @@ RSpec.describe 'devise/sessions/new.html.erb' do
       expect(rendered).not_to have_link(
         t('links.back_to_sp', sp: 'Awesome Application!'),
       )
+    end
+  end
+
+  context 'on mobile' do
+    before do
+      mobile_device = Browser.new(mobile_user_agent)
+      allow(BrowserCache).to receive(:parse).and_return(mobile_device)
+    end
+
+    it 'does not show PIV/CAC sign-in link' do
+      render
+
+      expect(rendered).to_not have_link t('account.login.piv_cac')
     end
   end
 end

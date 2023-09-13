@@ -1,0 +1,94 @@
+<% content_for(:pre_flash_content) do %>
+  <%= render StepIndicatorComponent.new(
+        steps: step_indicator_steps,
+        current_step: :get_a_letter,
+        locale_scope: 'idv',
+        class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
+      ) %>
+<% end %>
+
+<% if @user_did_not_receive_letter %>
+<% title t('idv.gpo.did_not_receive_letter.title') %>
+<% else %>
+<% title t('idv.gpo.title') %>
+<% end %>
+
+<%= render AlertComponent.new(type: :info, class: 'margin-bottom-4', text_tag: 'div') do %>
+  <p>
+    <%= t('idv.gpo.alert_info') %>
+    <br>
+    <%= render 'shared/address', address: @gpo_verify_form.pii %>
+  </p>
+  <p>
+    <%= t('idv.gpo.wrong_address') %>
+    <%= link_to t('idv.gpo.clear_and_start_over'), idv_confirm_start_over_path %>
+  </p>
+<% end %>
+
+<%= render PageHeadingComponent.new.with_content(
+      if @user_did_not_receive_letter
+        t('idv.gpo.did_not_receive_letter.title')
+      else
+        t('idv.gpo.title')
+      end,
+    ) %>
+
+<% if @user_did_not_receive_letter %>
+  <% if @should_prompt_user_to_request_another_letter %>
+    <%= t(
+          'idv.gpo.did_not_receive_letter.intro.request_new_letter_prompt_html',
+          request_new_letter_link: link_to(
+            t('idv.gpo.did_not_receive_letter.intro.request_new_letter_link'),
+            idv_request_letter_path,
+          ),
+        ) %>
+  <% end %>
+    <%= t('idv.gpo.did_not_receive_letter.intro.be_patient_html') %>
+<% else %>
+  <%= t('idv.gpo.intro_html') %>
+<% end %>
+<hr class="margin-y-4" />
+<h2><%= t('idv.gpo.form.title') %></h2>
+
+<p class="margin-bottom-1">
+  <%= if @user_did_not_receive_letter
+        t('idv.gpo.did_not_receive_letter.form.instructions')
+      else
+        t('idv.gpo.form.instructions')
+      end %>
+</p>
+
+<%= simple_form_for(
+      @gpo_verify_form,
+      url: idv_verify_by_mail_enter_code_path,
+      html: { autocomplete: 'off', method: :post },
+    ) do |f| %>
+  <div class="grid-row margin-top-neg-2 margin-bottom-5">
+    <div class="grid-col-12 tablet:grid-col-6">
+      <%= render ValidatedFieldComponent.new(
+            form: f,
+            name: :otp,
+            maxlength: 10,
+            required: true,
+            autofocus: true,
+            input_html: {
+              value: @code,
+            },
+            label: t('idv.gpo.form.otp_label'),
+          ) %>
+      <%= f.submit t('idv.gpo.form.submit'), full_width: true, wide: false, class: 'display-block margin-top-5' %>
+    </div>
+  </div>
+<% end %>
+
+<% if @should_prompt_user_to_request_another_letter %>
+  <% unless @user_did_not_receive_letter %>
+    <%= link_to t('idv.messages.gpo.resend'), idv_request_letter_path, class: 'display-block margin-bottom-2' %>
+  <% end %>
+<% end %>
+
+<%= link_to t('idv.gpo.return_to_profile'), account_path %>
+
+<div class="margin-top-2 padding-top-2 border-top border-primary-light">
+  <%= link_to t('idv.messages.clear_and_start_over'), idv_confirm_start_over_path %>
+</div>

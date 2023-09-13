@@ -28,4 +28,10 @@ class AccountsController < ApplicationController
 
     redirect_to login_two_factor_options_path
   end
+
+  private
+
+  def confirm_user_is_not_suspended
+    redirect_to user_please_call_url if current_user.suspended?
+  end
 end

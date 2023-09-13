@@ -220,6 +220,7 @@ es:
       privacy: '%{app_name} es un sitio web gubernamental seguro que cumple con las
         normas más estrictas de protección de datos. Utilizamos sus datos para
         verificar su identidad.'
+      review_examples_of_photos: Revisa ejemplos de cómo hacer fotos nítidas de tu documento de identidad.
       secure_account: Vamos a encriptar su cuenta con su contraseña. La encriptación
         significa que sus datos están protegidos y solo usted podrá acceder o
         modificar su información.

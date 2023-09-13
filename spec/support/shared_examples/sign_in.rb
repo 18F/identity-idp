@@ -127,32 +127,34 @@ RSpec.shared_examples 'signing in as IAL1 with personal key after resetting pass
   end
 end
 
-RSpec.shared_examples 'signing in as IAL2 with personal key after resetting password' do |sp|
-  xit 'redirects to SP after reactivating account', :email, js: true do
-    user = create_ial2_account_go_back_to_sp_and_sign_out(sp)
+RSpec.shared_examples 'signing in as IAL2 after resetting password' do |sp|
+  it 'redirects to SP after reactivating account' do
+    user = create(:user, :proofed)
     visit_idp_from_sp_with_ial2(sp)
     trigger_reset_password_and_click_email_link(user.email)
     fill_in t('forms.passwords.edit.labels.password'), with: new_password
+    fill_in t('components.password_confirmation.confirm_label'),
+            with: new_password
     click_button t('forms.passwords.edit.buttons.submit')
     fill_in_credentials_and_submit(user.email, new_password)
-    choose_another_security_option('personal_key')
-    enter_personal_key(personal_key: personal_key_for_ial2_user(user, pii))
+    fill_in_code_with_last_phone_otp
     click_submit_default
-
-    expect(current_path).to eq manage_personal_key_path
-
-    new_personal_key = scrape_personal_key
-    acknowledge_and_confirm_personal_key
+    click_submit_default if current_path == complete_saml_path
 
     expect(current_path).to eq reactivate_account_path
 
-    reactivate_profile(new_password, new_personal_key)
+    reactivate_profile(new_password, user.personal_key)
 
-    expect(current_path).to eq manage_personal_key_path
+    expect(current_path).to eq account_path
+    expect(page).to have_content(t('idv.messages.personal_key'))
 
-    acknowledge_and_confirm_personal_key
+    sp_friendly_name = ServiceProvider.find_by(issuer: service_provider_issuer(sp)).friendly_name
+    click_link t('account.index.continue_to_service_provider', service_provider: sp_friendly_name)
 
-    expect(current_url).to eq @saml_authn_request if sp == :saml
+    click_submit_default if current_path == complete_saml_path
+    click_agree_and_continue
+
+    expect(current_url).to eq complete_saml_url if sp == :saml
     if sp == :oidc
       redirect_uri = URI(current_url)
 
@@ -290,15 +292,6 @@ RSpec.shared_examples 'signing in as proofed account with broken personal key' d
       end
     end
   end
-end
-
-def personal_key_for_ial2_user(user, pii)
-  pii_attrs = Pii::Attributes.new_from_hash(pii)
-  profile = user.profiles.last
-  personal_key = profile.encrypt_pii(pii_attrs, user.password)
-  profile.save!
-
-  personal_key
 end
 
 def ial1_sign_in_with_personal_key_goes_to_sp(sp)

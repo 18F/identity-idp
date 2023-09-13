@@ -4,7 +4,7 @@ RSpec.describe Idv::VerifyInfoController do
   include IdvHelper
 
   let(:flow_session) do
-    { pii_from_doc: Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.dup }
+    { pii_from_doc: Idp::Constants::MOCK_IDV_APPLICANT.dup }
   end
 
   let(:user) { create(:user) }
@@ -26,6 +26,7 @@ RSpec.describe Idv::VerifyInfoController do
     stub_attempts_tracker
     stub_idv_steps_before_verify_step(user)
     subject.idv_session.flow_path = 'standard'
+    subject.idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]
     subject.user_session['idv/doc_auth'] = flow_session
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
@@ -114,7 +115,7 @@ RSpec.describe Idv::VerifyInfoController do
     end
 
     it 'redirects to ssn controller when ssn info is missing' do
-      flow_session[:pii_from_doc][:ssn] = nil
+      subject.idv_session.ssn = nil
 
       get :show
 

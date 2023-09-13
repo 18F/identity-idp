@@ -5,6 +5,7 @@ RSpec.describe 'review_profile' do
   let(:user) { create(:user, :fraud_review_pending) }
   let(:uuid) { user.uuid }
   let(:task_name) { nil }
+  let(:analytics) { FakeAnalytics.new }
 
   subject(:invoke_task) do
     Rake::Task[task_name].reenable
@@ -22,6 +23,8 @@ RSpec.describe 'review_profile' do
       uuid,
     )
     stub_const('STDOUT', stdout)
+
+    allow(Analytics).to receive(:new).and_return(analytics)
   end
 
   describe 'users:review:pass' do
@@ -43,6 +46,20 @@ RSpec.describe 'review_profile' do
       end
     end
 
+    it 'logs that the user was passed to analytics' do
+      profile_fraud_review_pending_at = user.profiles.first.fraud_review_pending_at
+
+      invoke_task
+
+      expect(analytics).to have_logged_event(
+        'Fraud: Profile review passed',
+        success: true,
+        errors: nil,
+        exception: nil,
+        profile_fraud_review_pending_at: profile_fraud_review_pending_at,
+      )
+    end
+
     context 'when the user does not exist' do
       let(:user) { nil }
       let(:uuid) { 'not-a-real-uuid' }
@@ -51,6 +68,18 @@ RSpec.describe 'review_profile' do
         invoke_task
 
         expect(stdout.string).to include('Error: Could not find user with that UUID')
+      end
+
+      it 'logs the error to analytics' do
+        invoke_task
+
+        expect(analytics).to have_logged_event(
+          'Fraud: Profile review passed',
+          success: false,
+          errors: { message: 'Error: Could not find user with that UUID' },
+          exception: nil,
+          profile_fraud_review_pending_at: nil,
+        )
       end
     end
 
@@ -61,6 +90,21 @@ RSpec.describe 'review_profile' do
         expect { invoke_task }.to raise_error(RuntimeError)
 
         expect(user.reload.profiles.first.active).to eq(false)
+      end
+
+      it 'logs an error to analytics' do
+        profile_fraud_review_pending_at = user.profiles.first.fraud_review_pending_at
+        user.profiles.first.update!(gpo_verification_pending_at: user.created_at)
+
+        expect { invoke_task }.to raise_error(RuntimeError)
+
+        expect(analytics).to have_logged_event(
+          'Fraud: Profile review passed',
+          success: false,
+          errors: nil,
+          exception: a_string_including('Attempting to activate profile with pending reason'),
+          profile_fraud_review_pending_at: profile_fraud_review_pending_at,
+        )
       end
     end
   end
@@ -78,6 +122,20 @@ RSpec.describe 'review_profile' do
       expect { invoke_task }.to change(ActionMailer::Base.deliveries, :count).by(1)
     end
 
+    it 'logs that the user was rejected to analytics' do
+      profile_fraud_review_pending_at = user.profiles.first.fraud_review_pending_at
+
+      invoke_task
+
+      expect(analytics).to have_logged_event(
+        'Fraud: Profile review rejected',
+        success: true,
+        errors: nil,
+        exception: nil,
+        profile_fraud_review_pending_at: profile_fraud_review_pending_at,
+      )
+    end
+
     context 'when the user does not exist' do
       let(:user) { nil }
       let(:uuid) { 'not-a-real-uuid' }
@@ -86,6 +144,18 @@ RSpec.describe 'review_profile' do
         invoke_task
 
         expect(stdout.string).to include('Error: Could not find user with that UUID')
+      end
+
+      it 'logs the error to analytics' do
+        invoke_task
+
+        expect(analytics).to have_logged_event(
+          'Fraud: Profile review rejected',
+          success: false,
+          errors: { message: 'Error: Could not find user with that UUID' },
+          exception: nil,
+          profile_fraud_review_pending_at: nil,
+        )
       end
     end
 
@@ -102,6 +172,18 @@ RSpec.describe 'review_profile' do
         invoke_task
 
         expect(stdout.string).to include('Error: User does not have a pending fraud review')
+      end
+
+      it 'logs the error to analytics' do
+        invoke_task
+
+        expect(analytics).to have_logged_event(
+          'Fraud: Profile review rejected',
+          success: false,
+          errors: { message: 'Error: User does not have a pending fraud review' },
+          exception: nil,
+          profile_fraud_review_pending_at: nil,
+        )
       end
     end
   end

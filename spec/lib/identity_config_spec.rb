@@ -30,6 +30,15 @@ RSpec.describe IdentityConfig do
     end
   end
 
+  describe 'idv_contact_phone_number' do
+    it 'has config value for contact phone number' do
+      contact_number = IdentityConfig.store.idv_contact_phone_number
+
+      expect(contact_number).to_not be_empty
+      expect(contact_number).to match(/\(\d{3}\)\ \d{3}-\d{4}/)
+    end
+  end
+
   describe 'in_person_outage_message_enabled' do
     it 'has valid config values for dates when outage enabled' do
       if IdentityConfig.store.in_person_outage_message_enabled

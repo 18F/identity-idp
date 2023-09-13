@@ -125,6 +125,7 @@ RSpec.describe Idv::SessionErrorsController do
     allow(idv_session).to receive(:verify_info_step_complete?).
       and_return(verify_info_step_complete)
     allow(idv_session).to receive(:address_verification_mechanism).and_return(nil)
+    allow(idv_session).to receive(:ssn).and_return(nil)
     allow(controller).to receive(:idv_session).and_return(idv_session)
     stub_sign_in(user) if user
     stub_analytics
@@ -284,7 +285,7 @@ RSpec.describe Idv::SessionErrorsController do
           rate_limit_type: :proof_ssn,
           target: Pii::Fingerprinter.fingerprint(ssn),
         ).increment_to_limited!
-        controller.user_session['idv/doc_auth'] = { pii_from_doc: { 'ssn' => ssn } }
+        allow(idv_session).to receive(:ssn).and_return(ssn)
       end
 
       it 'assigns expiration time' do

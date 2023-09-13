@@ -78,5 +78,25 @@ RSpec.describe 'RateLimitConcern' do
         expect(response).to redirect_to idv_phone_errors_failure_url
       end
     end
+
+    context 'with proof_ssn rate_limiter (across steps)' do
+      let(:ssn) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn] }
+
+      before do
+        RateLimiter.new(
+          target: Pii::Fingerprinter.fingerprint(ssn),
+          rate_limit_type: :proof_ssn,
+        ).increment_to_limited!
+      end
+
+      context 'ssn is in idv_session' do
+        it 'redirects to proof_ssn rate limited error page' do
+          subject.idv_session.ssn = ssn
+          get :show
+
+          expect(response).to redirect_to idv_session_errors_ssn_failure_url
+        end
+      end
+    end
   end
 end

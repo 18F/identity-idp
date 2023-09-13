@@ -16,7 +16,13 @@ describe('FullAddressSearch', () => {
       const handleLocationsFound = sandbox.stub();
       const { findByText, findAllByText } = render(
         <SWRConfig value={{ provider: () => new Map() }}>
-          <FullAddressSearch onFoundLocations={handleLocationsFound} locationsURL={LOCATIONS_URL} />
+          <FullAddressSearch
+            onFoundLocations={handleLocationsFound}
+            locationsURL={LOCATIONS_URL}
+            registerField={undefined}
+            handleLocationSelect={undefined}
+            disabled={undefined}
+          />
         </SWRConfig>,
       );
 
@@ -32,7 +38,13 @@ describe('FullAddressSearch', () => {
       const handleLocationsFound = sandbox.stub();
       const { findByText, findByLabelText, findAllByText } = render(
         <SWRConfig value={{ provider: () => new Map() }}>
-          <FullAddressSearch onFoundLocations={handleLocationsFound} locationsURL={LOCATIONS_URL} />
+          <FullAddressSearch
+            onFoundLocations={handleLocationsFound}
+            locationsURL={LOCATIONS_URL}
+            registerField={undefined}
+            handleLocationSelect={undefined}
+            disabled={undefined}
+          />
         </SWRConfig>,
       );
 
@@ -64,7 +76,13 @@ describe('FullAddressSearch', () => {
       const handleLocationsFound = sandbox.stub();
       const { findByText, findByLabelText, queryByText } = render(
         <SWRConfig value={{ provider: () => new Map() }}>
-          <FullAddressSearch onFoundLocations={handleLocationsFound} locationsURL={LOCATIONS_URL} />
+          <FullAddressSearch
+            onFoundLocations={handleLocationsFound}
+            locationsURL={LOCATIONS_URL}
+            registerField={undefined}
+            handleLocationSelect={undefined}
+            disabled={undefined}
+          />
         </SWRConfig>,
       );
 
@@ -109,7 +127,13 @@ describe('FullAddressSearch', () => {
       const handleLocationsFound = sandbox.stub();
       const { findByText, findByLabelText } = render(
         <SWRConfig value={{ provider: () => new Map() }}>
-          <FullAddressSearch onFoundLocations={handleLocationsFound} locationsURL={LOCATIONS_URL} />
+          <FullAddressSearch
+            onFoundLocations={handleLocationsFound}
+            locationsURL={LOCATIONS_URL}
+            registerField={undefined}
+            handleLocationSelect={undefined}
+            disabled={undefined}
+          />
         </SWRConfig>,
       );
 
