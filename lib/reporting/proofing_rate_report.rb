@@ -7,10 +7,20 @@ module Reporting
   class ProofingRateReport
     DATE_INTERVALS = [30, 60, 90].freeze
 
-    attr_reader :start_date
+    attr_reader :end_date
 
-    def initialize(start_date:)
-      @start_date = start_date
+    def initialize(end_date:, verbose: false, progress: false)
+      @end_date = end_date.in_time_zone('UTC')
+      @verbose = verbose
+      @progress = progress
+    end
+
+    def verbose?
+      @verbose
+    end
+
+    def progress?
+      @progress
     end
 
     # rubocop:disable Layout/LineLength
@@ -44,11 +54,22 @@ module Reporting
     end
 
     def reports
-      @reports ||= DATE_INTERVALS.map do |interval|
+      @reports ||= [0, *DATE_INTERVALS].each_cons(2).map do |slice_end, slice_start|
         Reporting::IdentityVerificationReport.new(
           issuers: nil, # all issuers
-          time_range: (start_date - interval.days)..start_date,
+          time_range: Range.new(
+            (end_date - slice_start.days).beginning_of_day,
+            (end_date - slice_end.days).beginning_of_day,
+          ),
+          progress: progress?,
+          verbose: verbose?,
         )
+      end.reduce([]) do |acc, report|
+        if acc.empty?
+          acc << report
+        else
+          acc << report.merge(acc.last)
+        end
       end
     end
 
@@ -80,8 +101,18 @@ end
 
 # rubocop:disable Rails/Output
 if __FILE__ == $PROGRAM_NAME
-  start_date = Date.parse(ARGV.first)
+  end_date = if ARGV.first.match?(/\d{4}-\d{1,2}-\d{1,2}/)
+               Date.parse(ARGV.first)
+             else
+               ActiveSupport::TimeZone['UTC'].today
+             end
+  progress = !ARGV.include?('--no-progress')
+  verbose = ARGV.include?('--verbose')
 
-  puts Reporting::ProofingRateReport.new(start_date: start_date).to_csv
+  puts Reporting::ProofingRateReport.new(
+    end_date: end_date,
+    progress: progress,
+    verbose: verbose,
+  ).to_csv
 end
 # rubocop:enable Rails/Output

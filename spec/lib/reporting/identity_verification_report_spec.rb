@@ -91,7 +91,7 @@ RSpec.describe Reporting::IdentityVerificationReport do
 
   describe '#data' do
     it 'counts unique users per event as a hash' do
-      expect(report.data).to eq(
+      expect(report.data.transform_values(&:count)).to eq(
         'IdV: doc auth image upload vendor submitted' => 5,
         'IdV: doc auth welcome submitted' => 5,
         'IdV: doc auth welcome visited' => 5,
@@ -103,6 +103,41 @@ RSpec.describe Reporting::IdentityVerificationReport do
         'IdV: GPO verification submitted' => 1,
         'GetUspsProofingResultsJob: Enrollment status updated' => 1,
       )
+    end
+  end
+
+  describe '#merge', :freeze_time do
+    it 'makes a new instance with merged data' do
+      report1 = Reporting::IdentityVerificationReport.new(
+        time_range: 4.days.ago..3.days.ago,
+        issuers: %w[a],
+      )
+      allow(report1).to receive(:data).and_return(
+        'IdV: doc auth image upload vendor submitted' => %w[a b].to_set,
+        'IdV: final resolution' => %w[a].to_set,
+      )
+
+      report2 = Reporting::IdentityVerificationReport.new(
+        time_range: 2.days.ago..1.day.ago,
+        issuers: %w[b],
+      )
+      allow(report2).to receive(:data).and_return(
+        'IdV: doc auth image upload vendor submitted' => %w[b c].to_set,
+        'IdV: final resolution' => %w[c].to_set,
+      )
+
+      merged = report1.merge(report2)
+
+      aggregate_failures do
+        expect(merged.time_range).to eq(4.days.ago..1.day.ago)
+
+        expect(merged.issuers).to eq(%w[a b])
+
+        expect(merged.data).to eq(
+          'IdV: doc auth image upload vendor submitted' => %w[a b c].to_set,
+          'IdV: final resolution' => %w[a c].to_set,
+        )
+      end
     end
   end
 
