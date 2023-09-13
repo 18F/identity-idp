@@ -134,10 +134,6 @@ module Reporting
       data[Results::IDV_FINAL_RESOLUTION_FRAUD_REVIEW].count
     end
 
-    def idv_doc_auth_rejected
-      data[Results::IDV_REJECT_ANY].to_i
-    end
-
     def idv_final_resolution_total_pending
       @idv_final_resolution_total_pending ||=
         (data[Events::IDV_FINAL_RESOLUTION] - data[Results::IDV_FINAL_RESOLUTION_VERIFIED]).count
@@ -172,10 +168,11 @@ module Reporting
 
     def idv_doc_auth_rejected
       @idv_doc_auth_rejected ||= (
-        event_users[Results::IDV_REJECT_DOC_AUTH]
-        + event_users[Results::IDV_REJECT_VERIFY]
-        + event_users[Results::IDV_REJECT_PHONE_FINDER]
-        - event_users[Results::IDV_FINAL_RESOLUTION_VERIFIED]
+        data[Results::IDV_REJECT_DOC_AUTH] +
+        data[Results::IDV_REJECT_VERIFY] +
+        data[Results::IDV_REJECT_PHONE_FINDER] -
+        data[Results::IDV_FINAL_RESOLUTION_VERIFIED] -
+        data[Results::IDV_FINAL_RESOLUTION_IN_PERSON]
       ).count
     end
     # rubocop:disable Layout/LineLength

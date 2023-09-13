@@ -40,7 +40,7 @@ RSpec.describe Reporting::IdentityVerificationReport do
         # Success through address confirmation user
         { 'user_id' => 'user4', 'name' => 'IdV: GPO verification submitted' },
 
-        # Success through in-person verification, failed doc auth
+        # Success through in-person verification, failed doc auth (rejected)
         { 'user_id' => 'user5', 'name' => 'IdV: doc auth welcome visited' },
         { 'user_id' => 'user5', 'name' => 'IdV: doc auth welcome submitted' },
         { 'user_id' => 'user5', 'name' => 'IdV: doc auth image upload vendor submitted', 'success' => '0' },
@@ -116,6 +116,12 @@ RSpec.describe Reporting::IdentityVerificationReport do
         'IdV Reject: Phone Finder' => 1,
         'IdV Reject: Verify' => 1,
       )
+    end
+  end
+
+  describe '#idv_doc_auth_rejected' do
+    it 'is the number of users who failed proofing and never passed' do
+      expect(report.idv_doc_auth_rejected).to eq(1)
     end
   end
 
