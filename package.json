@@ -44,6 +44,7 @@
     "zxcvbn": "4.4.2"
   },
   "devDependencies": {
+    "@babel/cli": "^7.22.15",
     "@testing-library/dom": "^8.18.1",
     "@testing-library/react": "^11.2.2",
     "@testing-library/react-hooks": "^3.7.0",
