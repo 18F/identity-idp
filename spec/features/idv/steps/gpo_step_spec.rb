@@ -29,7 +29,10 @@ RSpec.feature 'idv gpo step' do
     let(:user) { user_with_2fa }
 
     it 'allows the user to resend a letter and redirects to the come back later step', :js do
-      complete_idv_and_return_to_gpo_step
+      # complete_idv_and_return_to_gpo_step
+      travel_to(2.days.ago) { complete_idv_by_mail_and_sign_out }
+      sign_in_live_with_2fa(user)
+      click_on t('idv.messages.gpo.resend')
 
       # Confirm that we show the correct content on
       # the GPO page for users requesting re-send
@@ -90,7 +93,7 @@ RSpec.feature 'idv gpo step' do
       end
 
       it 'does not present the user the option to to resend', :js do
-        complete_idv_and_sign_out
+        complete_idv_by_mail_and_sign_out
         travel_to(days_passed.days.from_now) do
           sign_in_live_with_2fa(user)
 
@@ -102,7 +105,7 @@ RSpec.feature 'idv gpo step' do
       end
 
       it 'does not allow the user to go to the resend page manually' do
-        complete_idv_and_sign_out
+        complete_idv_by_mail_and_sign_out
         travel_to(days_passed.days.from_now) do
           sign_in_live_with_2fa(user)
           visit idv_request_letter_path
@@ -117,7 +120,7 @@ RSpec.feature 'idv gpo step' do
 
     context 'too little time has passed', :js do
       it 'does not present the user the option to to resend', :js do
-        complete_idv_and_sign_out
+        complete_idv_by_mail_and_sign_out
         sign_in_live_with_2fa(user)
 
         expect(page).to have_current_path(idv_verify_by_mail_enter_code_path)
@@ -127,7 +130,7 @@ RSpec.feature 'idv gpo step' do
       end
 
       it 'does not allow the user to go to the resend page manually' do
-        complete_idv_and_sign_out
+        complete_idv_by_mail_and_sign_out
         sign_in_live_with_2fa(user)
         visit idv_request_letter_path
 
@@ -139,7 +142,12 @@ RSpec.feature 'idv gpo step' do
     end
 
     it 'allows the user to return to gpo otp confirmation', :js do
-      complete_idv_and_return_to_gpo_step
+      travel_to(2.days.ago) { complete_idv_by_mail_and_sign_out }
+      sign_in_live_with_2fa(user)
+      click_on t('idv.messages.gpo.resend')
+
+      # complete_idv_and_return_to_gpo_step
+
       click_doc_auth_back_link
 
       expect(page).to have_content(t('idv.gpo.title'))
@@ -147,7 +155,7 @@ RSpec.feature 'idv gpo step' do
       expect_user_to_be_unverified(user)
     end
 
-    def complete_idv_and_sign_out
+    def complete_idv_by_mail_and_sign_out
       start_idv_from_sp
       complete_idv_steps_before_gpo_step(user)
       click_on t('idv.buttons.mail.send')
@@ -159,7 +167,7 @@ RSpec.feature 'idv gpo step' do
     end
 
     def complete_idv_and_return_to_gpo_step
-      travel_to(2.days.ago) { complete_idv_and_sign_out }
+      complete_idv_by_mail_and_sign_out
       sign_in_live_with_2fa(user)
       click_on t('idv.messages.gpo.resend')
     end
