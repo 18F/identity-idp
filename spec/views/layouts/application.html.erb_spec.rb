@@ -101,7 +101,7 @@ RSpec.describe 'layouts/application.html.erb' do
     it 'renders a javascript page refresh' do
       allow(view).to receive(:user_fully_authenticated?).and_return(false)
       allow(view).to receive(:current_user).and_return(false)
-      allow(view).to receive(:decorated_session).and_return(SessionDecorator.new)
+      allow(view).to receive(:decorated_session).and_return(NullServiceProviderSession.new)
       render
 
       expect(view).to render_template(partial: 'session_timeout/_expire_session')
@@ -152,7 +152,7 @@ RSpec.describe 'layouts/application.html.erb' do
   context 'current_user is present but is not fully authenticated' do
     before do
       allow(view).to receive(:user_fully_authenticated?).and_return(false)
-      allow(view).to receive(:decorated_session).and_return(SessionDecorator.new)
+      allow(view).to receive(:decorated_session).and_return(NullServiceProviderSession.new)
     end
 
     it 'does not render the DAP analytics' do

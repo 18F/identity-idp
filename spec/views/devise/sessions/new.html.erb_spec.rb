@@ -8,7 +8,7 @@ RSpec.describe 'devise/sessions/new.html.erb' do
     allow(view).to receive(:resource_name).and_return(:user)
     allow(view).to receive(:devise_mapping).and_return(Devise.mappings[:user])
     allow(view).to receive(:controller_name).and_return('sessions')
-    allow(view).to receive(:decorated_session).and_return(SessionDecorator.new)
+    allow(view).to receive(:decorated_session).and_return(NullServiceProviderSession.new)
     allow_any_instance_of(ActionController::TestRequest).to receive(:path).
       and_return('/')
     assign(:ial, 1)

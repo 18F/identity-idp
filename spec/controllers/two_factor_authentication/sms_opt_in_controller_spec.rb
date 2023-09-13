@@ -15,7 +15,7 @@ RSpec.describe TwoFactorAuthentication::SmsOptInController do
         stub_sign_in_before_2fa(user)
         stub_analytics
         allow(controller).to receive(:decorated_session).
-          and_return(instance_double('SessionDecorator', sp_name: sp_name))
+          and_return(instance_double('NullServiceProviderSession', sp_name: sp_name))
       end
 
       it 'tracks a visit event' do
