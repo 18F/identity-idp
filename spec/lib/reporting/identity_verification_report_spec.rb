@@ -14,43 +14,38 @@ RSpec.describe Reporting::IdentityVerificationReport do
     cloudwatch_client = double(
       'Reporting::CloudwatchClient',
       fetch: [
-        # Online verification user (failed each vendor once, then suceeded once)
+        # Online verification user
         { 'user_id' => 'user1', 'name' => 'IdV: doc auth welcome visited' },
         { 'user_id' => 'user1', 'name' => 'IdV: doc auth welcome submitted' },
-        { 'user_id' => 'user1', 'name' => 'IdV: doc auth image upload vendor submitted', 'success' => '0' },
-        { 'user_id' => 'user1', 'name' => 'IdV: doc auth image upload vendor submitted', 'success' => '1' },
-        { 'user_id' => 'user1', 'name' => 'IdV: doc auth verify proofing results', 'success' => '0' },
-        { 'user_id' => 'user1', 'name' => 'IdV: doc auth verify proofing results', 'success' => '1' },
-        { 'user_id' => 'user1', 'name' => 'IdV: phone confirmation vendor', 'success' => '0' },
-        { 'user_id' => 'user1', 'name' => 'IdV: phone confirmation vendor', 'success' => '1' },
+        { 'user_id' => 'user1', 'name' => 'IdV: doc auth image upload vendor submitted' },
         { 'user_id' => 'user1', 'name' => 'IdV: final resolution', 'identity_verified' => '1' },
 
         # Letter requested user (incomplete)
         { 'user_id' => 'user2', 'name' => 'IdV: doc auth welcome visited' },
         { 'user_id' => 'user2', 'name' => 'IdV: doc auth welcome submitted' },
-        { 'user_id' => 'user2', 'name' => 'IdV: doc auth image upload vendor submitted', 'success' => '1' },
+        { 'user_id' => 'user2', 'name' => 'IdV: doc auth image upload vendor submitted' },
         { 'user_id' => 'user2', 'name' => 'IdV: final resolution', 'gpo_verification_pending' => '1' },
 
         # Fraud review user (incomplete)
         { 'user_id' => 'user3', 'name' => 'IdV: doc auth welcome visited' },
         { 'user_id' => 'user3', 'name' => 'IdV: doc auth welcome submitted' },
-        { 'user_id' => 'user3', 'name' => 'IdV: doc auth image upload vendor submitted', 'success' => '1' },
+        { 'user_id' => 'user3', 'name' => 'IdV: doc auth image upload vendor submitted' },
         { 'user_id' => 'user3', 'name' => 'IdV: final resolution', 'fraud_review_pending' => '1' },
 
         # Success through address confirmation user
         { 'user_id' => 'user4', 'name' => 'IdV: GPO verification submitted' },
 
-        # Success through in-person verification, failed doc auth
+        # Success through in-person verification
         { 'user_id' => 'user5', 'name' => 'IdV: doc auth welcome visited' },
         { 'user_id' => 'user5', 'name' => 'IdV: doc auth welcome submitted' },
-        { 'user_id' => 'user5', 'name' => 'IdV: doc auth image upload vendor submitted', 'success' => '0' },
+        { 'user_id' => 'user5', 'name' => 'IdV: doc auth image upload vendor submitted' },
         { 'user_id' => 'user5', 'name' => 'IdV: final resolution', 'in_person_verification_pending' => '1' },
         { 'user_id' => 'user5', 'name' => 'GetUspsProofingResultsJob: Enrollment status updated' },
 
         # Incomplete user
         { 'user_id' => 'user6', 'name' => 'IdV: doc auth welcome visited' },
         { 'user_id' => 'user6', 'name' => 'IdV: doc auth welcome submitted' },
-        { 'user_id' => 'user6', 'name' => 'IdV: doc auth image upload vendor submitted', 'success' => '0' },
+        { 'user_id' => 'user6', 'name' => 'IdV: doc auth image upload vendor submitted' },
       ],
     )
 
@@ -97,25 +92,16 @@ RSpec.describe Reporting::IdentityVerificationReport do
   describe '#data' do
     it 'counts unique users per event as a hash' do
       expect(report.data).to eq(
-        # events
-        'GetUspsProofingResultsJob: Enrollment status updated' => 1,
         'IdV: doc auth image upload vendor submitted' => 5,
-        'IdV: doc auth verify proofing results' => 1,
         'IdV: doc auth welcome submitted' => 5,
         'IdV: doc auth welcome visited' => 5,
         'IdV: final resolution' => 4,
-        'IdV: GPO verification submitted' => 1,
-        'IdV: phone confirmation vendor' => 1,
-
-        # results
-        'IdV: final resolution - Fraud Review Pending' => 1,
         'IdV: final resolution - GPO Pending' => 1,
         'IdV: final resolution - In Person Proofing' => 1,
+        'IdV: final resolution - Fraud Review Pending' => 1,
         'IdV: final resolution - Verified' => 1,
-        'IdV Reject: Any' => 2,
-        'IdV Reject: Doc Auth' => 2,
-        'IdV Reject: Phone Finder' => 0,
-        'IdV Reject: Verify' => 0,
+        'IdV: GPO verification submitted' => 1,
+        'GetUspsProofingResultsJob: Enrollment status updated' => 1,
       )
     end
   end
