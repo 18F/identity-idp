@@ -81,7 +81,7 @@ class ApplicationController < ActionController::Base
   delegate :remember_device_default, to: :decorated_session
 
   def decorated_session
-    @decorated_session ||= DecoratedSession.new(
+    @decorated_session ||= ServiceProviderSessionCreator.new(
       sp: current_sp,
       view_context: view_context,
       sp_session: sp_session,

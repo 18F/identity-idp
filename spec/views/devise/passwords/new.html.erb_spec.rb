@@ -18,7 +18,7 @@ RSpec.describe 'devise/passwords/new.html.erb' do
     allow_any_instance_of(ActionController::TestRequest).to receive(:path).
       and_return('/users/password/new')
 
-    @decorated_session = DecoratedSession.new(
+    @decorated_session = ServiceProviderSessionCreator.new(
       sp: sp,
       view_context: view_context,
       sp_session: {},

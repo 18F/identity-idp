@@ -6,7 +6,7 @@ RSpec.describe 'layouts/application.html.erb' do
   before do
     allow(view).to receive(:user_fully_authenticated?).and_return(true)
     allow(view).to receive(:decorated_session).and_return(
-      DecoratedSession.new(
+      ServiceProviderSessionCreator.new(
         sp: nil,
         view_context: nil,
         sp_session: {},
@@ -124,7 +124,7 @@ RSpec.describe 'layouts/application.html.erb' do
       allow(view).to receive(:page_with_trust?).and_return(false)
       allow(view).to receive(:user_fully_authenticated?).and_return(false)
       allow(view).to receive(:decorated_session).and_return(
-        DecoratedSession.new(
+        ServiceProviderSessionCreator.new(
           sp: nil,
           view_context: nil,
           sp_session: {},

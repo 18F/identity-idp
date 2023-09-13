@@ -1,4 +1,4 @@
-class DecoratedSession
+class ServiceProviderSessionCreator
   def initialize(sp:, view_context:, sp_session:, service_provider_request:)
     @sp = sp
     @view_context = view_context

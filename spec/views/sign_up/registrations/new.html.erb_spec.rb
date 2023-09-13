@@ -23,7 +23,7 @@ RSpec.describe 'sign_up/registrations/new.html.erb' do
     allow_any_instance_of(ActionView::Base).to receive(:request_id).
       and_return(nil)
 
-    @decorated_session = DecoratedSession.new(
+    @decorated_session = ServiceProviderSessionCreator.new(
       sp: sp,
       view_context: view_context,
       sp_session: {},
