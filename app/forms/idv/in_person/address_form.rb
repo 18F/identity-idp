@@ -8,8 +8,7 @@ module Idv
 
       attr_accessor(*ATTRIBUTES)
 
-      def initialize(capture_secondary_id_enabled:)
-        @capture_secondary_id_enabled = capture_secondary_id_enabled
+      def initialize
       end
 
       def self.model_name
@@ -32,9 +31,6 @@ module Idv
       end
 
       private
-
-      attr_reader :capture_secondary_id_enabled
-      alias_method :capture_secondary_id_enabled?, :capture_secondary_id_enabled
 
       def consume_params(params)
         params.each do |key, value|

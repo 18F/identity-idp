@@ -6,24 +6,10 @@
   <%= render PageHeadingComponent.new.with_content(t('in_person_proofing.headings.address')) %>
 <% end %>
 
-<% unless capture_secondary_id_enabled %>
-  <p>
-    <%= t('in_person_proofing.body.address.info') %>
-    <%= new_tab_link_to(
-          t('in_person_proofing.body.address.learn_more'),
-          MarketingSite.help_center_article_url(
-            category: 'verify-your-identity',
-            article: 'verify-your-identity-in-person',
-          ),
-        ) %>
-  </p>
-<% end %>
-
 <%= simple_form_for(
       form, url: url_for, method: 'PUT',
             html: { autocomplete: 'off' }
     ) do |f| %>
-    <% if capture_secondary_id_enabled %>
       <%= render ValidatedFieldComponent.new(
             collection: us_states_territories,
             form: f,
@@ -35,7 +21,6 @@
             required: true,
             selected: pii[:state],
           ) %>
-    <% end %>
   <%= render ValidatedFieldComponent.new(
         form: f,
         hint: t('in_person_proofing.form.state_id.address1_hint'),
@@ -52,7 +37,7 @@
         hint: t('in_person_proofing.form.state_id.address2_hint'),
         hint_html: { class: ['display-none', 'puerto-rico-extras'] },
         input_html: { value: pii[:address2] },
-        label: capture_secondary_id_enabled ? t('idv.form.address2') : t('idv.form.address2_optional'),
+        label: t('idv.form.address2'),
         label_html: { class: 'usa-label' },
         maxlength: 255,
         name: :address2,
@@ -68,19 +53,6 @@
         required: true,
       ) %>
 
-  <% unless capture_secondary_id_enabled %>
-    <%= render ValidatedFieldComponent.new(
-          collection: us_states_territories,
-          form: f,
-          label: t('idv.form.state'),
-          label_html: { class: 'usa-label' },
-          name: :state,
-          prompt: t('in_person_proofing.form.address.state_prompt'),
-          required: true,
-          selected: pii[:state],
-        ) %>
-  <% end %>
-
   <div class="tablet:grid-col-6">
     <%# using :tel for mobile numeric keypad %>
     <%= render ValidatedFieldComponent.new(
@@ -95,22 +67,6 @@
           required: true,
         ) %>
   </div>
-
-  <% unless capture_secondary_id_enabled %>
-    <%= render ValidatedFieldComponent.new(
-          as: :radio_buttons,
-          checked: pii[:same_address_as_id],
-          collection: [
-            [t('in_person_proofing.form.address.same_address_choice_yes'), true],
-            [t('in_person_proofing.form.address.same_address_choice_no'), false],
-          ],
-          form: f,
-          label: t('in_person_proofing.form.address.same_address'),
-          name: :same_address_as_id,
-          required: true,
-          wrapper: :uswds_radio_buttons,
-        ) %>
-  <% end %>
 
   <%= f.submit class: 'margin-top-1' do %>
     <% if updating_address %>
