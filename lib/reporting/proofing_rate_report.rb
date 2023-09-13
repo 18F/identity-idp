@@ -14,35 +14,48 @@ module Reporting
 
     def report_for(start_date:)
       csv = []
+      @ivr = {}
       DATE_INTERVALS.each do |interval|
-        @ivr = Reporting::IdentityVerificationReport.new(
+        @ivr[interval.to_sym] = Reporting::IdentityVerificationReport.new(
           issuers: nil, # all issuers
           time_range: (start_date - interval.days)..start_date,
         )
-
-        csv << [interval, '-DAY RANGE PROOFING RATES']
-        csv << ['Blanket Proofing Rate ', blanket_proofing_rate]
-        csv << ['Intent Proofing Rate ', intent_proofing_rate]
-        csv << ['Actual Proofing Rate ', actual_proofing_rate]
-        # csv << ['Industry Proofing Rate', 'FIXME']
-        csv << []
-        # Two additional queries:
-        # 1. How many users started IDV and reached IPP / GPO / fraud review?
-        # 2. How many users started IDV and were rejected from moving forward, due to “fraud”?
-        # marked_as_fraudulent should be #2, also used in Industry Proofing Rate
       end
+
+      csv << ['PROOFING RATES', 'Trailing 30d', 'Trailing 60d', 'Trailing 90d']
+      csv << ['Blanket Proofing Rate ', *blanket_proofing_rates,]
+      csv << ['Intent Proofing Rate ', *intent_proofing_rates,]
+      csv << ['Actual Proofing Rate ', *actual_proofing_rates,]
+      # csv << ['Industry Proofing Rate', 'FIXME']
+      csv << []
+      # Two additional queries:
+      # 1. How many users started IDV and reached IPP / GPO / fraud review?
+      # 2. How many users started IDV and were rejected from moving forward, due to “fraud”?
+      # marked_as_fraudulent should be #2, also used in Industry Proofing Rate
     end
 
-    def blanket_proofing_rate
-      ivr.idv_started.to_f / ivr.successfully_verified_users
+    def blanket_proofing_rates
+      blanket_rates = []
+      DATE_INTERVALS.each do |interval|
+        blanket_rates << ivr[interval.to_sym].idv_started.to_f / ivr[interval.to_sym].successfully_verified_users
+      end
+      blanket_rates
     end
 
-    def intent_proofing_rate
-      ivr.idv_doc_auth_welcome_submitted.to_f / ivr.successfully_verified_users
+    def intent_proofing_rates
+      intent_rates = []
+      DATE_INTERVALS.each do |interval|
+        intent_rates << ivr[interval.to_sym].idv_doc_auth_welcome_submitted.to_f / ivr[interval.to_sym].successfully_verified_users
+      end
+      intent_rates
     end
 
-    def actual_proofing_rate
-      ivr.idv_doc_auth_image_vendor_submitted.to_f / ivr.successfully_verified_users
+    def actual_proofing_rates
+      actual_rates = []
+      DATE_INTERVALS.each do |interval|
+        ivr[interval.to_sym].idv_doc_auth_image_vendor_submitted.to_f / ivr[interval.to_sym].successfully_verified_users
+      end
+      actual_rates
     end
 
     def marked_as_fraudulent
