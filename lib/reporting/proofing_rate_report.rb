@@ -9,8 +9,18 @@ module Reporting
 
     attr_reader :end_date
 
-    def initialize(end_date:)
+    def initialize(end_date:, verbose: false, progress: false)
       @end_date = end_date.in_time_zone('UTC')
+      @verbose = verbose
+      @progress = progress
+    end
+
+    def verbose?
+      @verbose
+    end
+
+    def progress?
+      @progress
     end
 
     # rubocop:disable Layout/LineLength
@@ -51,6 +61,8 @@ module Reporting
             (end_date - slice_start.days).beginning_of_day,
             (end_date - slice_end.days).beginning_of_day,
           ),
+          progress: progress?,
+          verbose: verbose?,
         )
       end.reduce([]) do |acc, report|
         if acc.empty?
@@ -89,8 +101,18 @@ end
 
 # rubocop:disable Rails/Output
 if __FILE__ == $PROGRAM_NAME
-  end_date = Date.parse(ARGV.first)
+  end_date = if ARGV.first.match?(/\d{4}-\d{1,2}-\d{1,2}/)
+               Date.parse(ARGV.first)
+             else
+               ActiveSupport::TimeZone['UTC'].today
+             end
+  progress = !ARGV.include?('--no-progress')
+  verbose = ARGV.include?('--verbose')
 
-  puts Reporting::ProofingRateReport.new(end_date: end_date).to_csv
+  puts Reporting::ProofingRateReport.new(
+    end_date: end_date,
+    progress: progress,
+    verbose: verbose,
+  ).to_csv
 end
 # rubocop:enable Rails/Output
