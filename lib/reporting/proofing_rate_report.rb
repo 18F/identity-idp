@@ -5,7 +5,7 @@ require 'reporting/identity_verification_report'
 
 module Reporting
   class ProofingRateReport
-    DATE_INTERVALS = [30, 60, 90]
+    DATE_INTERVALS = ['30', '60', '90']
 
     # The basic goal here is to call IdentityVerificationReport for 30, 60, and 90 days
     # And then return some of the stuff.

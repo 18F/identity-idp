@@ -2,7 +2,7 @@ require 'rails_helper'
 require 'reporting/proofing_rate_report'
 
 RSpec.describe Reporting::ProofingRateReport do
-  let(:start_date) { Date.new(2022, 1, 1) }
+  let(:start_date) { Time.zone.local(2022, 1, 1) }
 
   subject(:report) do
     Reporting::ProofingRateReport.new
