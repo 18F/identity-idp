@@ -503,7 +503,7 @@ RSpec.describe Idv::ApiImageUploadForm do
     context 'when client_response is not success and is network error' do
       let(:errors) { {} }
       context 'when doc_pii_response is success' do
-        it 'stores non the error side as failed' do
+        it 'stores neither of the side as failed' do
           allow(client_response).to receive(:success?).and_return(false)
           allow(client_response).to receive(:network_error?).and_return(true)
           allow(client_response).to receive(:errors).and_return(errors)
