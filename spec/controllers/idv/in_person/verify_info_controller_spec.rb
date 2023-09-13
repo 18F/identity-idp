@@ -5,8 +5,8 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
 
   let(:pii_from_user) { Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID.dup }
   let(:flow_session) do
-    { :pii_from_user => pii_from_user,
-      :flow_path => 'standard' }
+    { pii_from_user: pii_from_user,
+      flow_path: 'standard' }
   end
 
   let(:user) { build(:user, :with_phone, with: { phone: '+1 (415) 555-0130' }) }
