@@ -10,7 +10,7 @@ module Idv
       self.session_go_back_path = go_back_path || idv_path
       @hybrid_session = hybrid_session?
       @presenter = CancellationsPresenter.new(
-        sp_name: decorated_session.sp_name,
+        sp_name: decorated_sp_session.sp_name,
         url_options: url_options,
       )
     end
@@ -72,7 +72,7 @@ module Idv
     end
 
     def cancelled_redirect_path
-      if decorated_session.sp_name
+      if decorated_sp_session.sp_name
         return_to_sp_failure_to_proof_path(location_params)
       else
         account_path

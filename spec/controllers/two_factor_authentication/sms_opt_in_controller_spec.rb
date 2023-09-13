@@ -14,7 +14,7 @@ RSpec.describe TwoFactorAuthentication::SmsOptInController do
       before do
         stub_sign_in_before_2fa(user)
         stub_analytics
-        allow(controller).to receive(:decorated_session).
+        allow(controller).to receive(:decorated_sp_session).
           and_return(instance_double('NullServiceProviderSession', sp_name: sp_name))
       end
 

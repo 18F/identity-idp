@@ -11,8 +11,8 @@ RSpec.describe 'idv/phone_errors/warning.html.erb' do
   let(:formatted_phone) { '+1 360-234-5678' }
 
   before do
-    decorated_session = instance_double(ServiceProviderSession, sp_name: sp_name)
-    allow(view).to receive(:decorated_session).and_return(decorated_session)
+    decorated_sp_session = instance_double(ServiceProviderSession, sp_name: sp_name)
+    allow(view).to receive(:decorated_sp_session).and_return(decorated_sp_session)
     assign(:gpo_letter_available, gpo_letter_available)
     assign(:remaining_attempts, remaining_attempts)
     assign(:country_code, country_code)

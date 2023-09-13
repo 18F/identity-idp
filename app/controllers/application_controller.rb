@@ -24,7 +24,7 @@ class ApplicationController < ActionController::Base
     rescue_from error, with: :render_timeout
   end
 
-  helper_method :decorated_session, :user_fully_authenticated?
+  helper_method :decorated_sp_session, :user_fully_authenticated?
 
   prepend_before_action :add_new_relic_trace_attributes
   prepend_before_action :session_expires_at
@@ -78,10 +78,10 @@ class ApplicationController < ActionController::Base
     @user_event_creator ||= UserEventCreator.new(request: request, current_user: current_user)
   end
   delegate :create_user_event, :create_user_event_with_disavowal, to: :user_event_creator
-  delegate :remember_device_default, to: :decorated_session
+  delegate :remember_device_default, to: :decorated_sp_session
 
-  def decorated_session
-    @decorated_session ||= ServiceProviderSessionCreator.new(
+  def decorated_sp_session
+    @decorated_sp_session ||= ServiceProviderSessionCreator.new(
       sp: current_sp,
       view_context: view_context,
       sp_session: sp_session,

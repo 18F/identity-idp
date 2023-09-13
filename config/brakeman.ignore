@@ -77,7 +77,7 @@
       "file": "app/views/idv/cancellations/new.html.erb",
       "line": 62,
       "link": "https://brakemanscanner.org/docs/warning_types/dynamic_render_path/",
-      "code": "render(action => SpinnerButtonComponent.new(:action => (lambda do\n button_to(idv_cancel_path(:step => params[:step], :location => \"cancel\"), { **tag_options }, &block)\n end), :method => :delete, :big => true, :wide => true, :outline => true, :form => ({ :data => ({ :form_steps_wait => \"\" }) })).with_content(CancellationsPresenter.new(:sp_name => decorated_session.sp_name, :url_options => url_options).exit_action_text), {})",
+      "code": "render(action => SpinnerButtonComponent.new(:action => (lambda do\n button_to(idv_cancel_path(:step => params[:step], :location => \"cancel\"), { **tag_options }, &block)\n end), :method => :delete, :big => true, :wide => true, :outline => true, :form => ({ :data => ({ :form_steps_wait => \"\" }) })).with_content(CancellationsPresenter.new(:sp_name => decorated_sp_session.sp_name, :url_options => url_options).exit_action_text), {})",
       "render_path": [
         {
           "type": "controller",

@@ -15,12 +15,12 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
   let(:acuant_version) { '1.3.3.7' }
 
   before do
-    decorated_session = instance_double(
+    decorated_sp_session = instance_double(
       ServiceProviderSession,
       sp_name: sp_name,
       sp_issuer: sp_issuer,
     )
-    allow(view).to receive(:decorated_session).and_return(decorated_session)
+    allow(view).to receive(:decorated_sp_session).and_return(decorated_sp_session)
     allow(view).to receive(:url_for).and_return('https://example.com/')
 
     allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?) do |issuer|

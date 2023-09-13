@@ -152,7 +152,7 @@ class SamlIdpController < ApplicationController
 
   def render_template_for(message, action_url, type)
     # Returns fully formed CSP array w/"'self'", domain, and ServiceProvider#redirect_uris
-    redirect_uris = decorated_session.sp_redirect_uris ||
+    redirect_uris = decorated_sp_session.sp_redirect_uris ||
                     sp_from_request_issuer_logout&.redirect_uris.to_a.compact
     csp_uris = SecureHeadersAllowList.csp_with_sp_redirect_uris(
       action_url, redirect_uris

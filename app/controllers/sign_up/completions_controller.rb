@@ -44,7 +44,7 @@ module SignUp
         current_user: current_user,
         current_sp: current_sp,
         decrypted_pii: pii,
-        requested_attributes: decorated_session.requested_attributes.map(&:to_sym),
+        requested_attributes: decorated_sp_session.requested_attributes.map(&:to_sym),
         ial2_requested: ial2_requested?,
         completion_context: needs_completion_screen_reason,
       )
@@ -75,7 +75,7 @@ module SignUp
       sign_out
       flash[:info] = t(
         'instructions.go_back_to_mobile_app',
-        friendly_name: decorated_session.sp_name,
+        friendly_name: decorated_sp_session.sp_name,
       )
       redirect_to new_user_session_url
     end
@@ -83,7 +83,7 @@ module SignUp
     def analytics_attributes(page_occurence)
       { ial2: sp_session[:ial2],
         ialmax: sp_session[:ialmax],
-        service_provider_name: decorated_session.sp_name,
+        service_provider_name: decorated_sp_session.sp_name,
         sp_session_requested_attributes: sp_session[:requested_attributes],
         sp_request_requested_attributes: service_provider_request.requested_attributes,
         page_occurence: page_occurence,

@@ -246,9 +246,9 @@ RSpec.describe Idv::SessionErrorsController do
       end
 
       it 'assigns sp_name' do
-        decorated_session = double
-        allow(decorated_session).to receive(:sp_name).and_return('Example SP')
-        allow(controller).to receive(:decorated_session).and_return(decorated_session)
+        decorated_sp_session = double
+        allow(decorated_sp_session).to receive(:sp_name).and_return('Example SP')
+        allow(controller).to receive(:decorated_sp_session).and_return(decorated_sp_session)
         get action
         expect(assigns(:sp_name)).to eql('Example SP')
       end

@@ -9,7 +9,7 @@ RSpec.describe 'sign_up/completions/show.html.erb' do
   let(:completion_context) { :new_sp }
 
   let(:view_context) { ActionController::Base.new.view_context }
-  let(:decorated_session) do
+  let(:decorated_sp_session) do
     ServiceProviderSession.new(
       sp: service_provider,
       view_context: view_context,
@@ -32,7 +32,7 @@ RSpec.describe 'sign_up/completions/show.html.erb' do
   before do
     @user = user
     @presenter = presenter
-    allow(view).to receive(:decorated_session).and_return(decorated_session)
+    allow(view).to receive(:decorated_sp_session).and_return(decorated_sp_session)
   end
 
   it 'shows the app name, not the agency name' do
