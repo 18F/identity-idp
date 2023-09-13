@@ -36,40 +36,40 @@ RSpec.feature 'idv gpo step' do
     let(:user) { user_with_2fa }
 
     it 'allows the user to resend a letter and redirects to the come back later step', :js do
-      # complete_idv_and_return_to_gpo_step
       complete_idv_by_mail_and_sign_out
 
       sign_in_live_with_2fa(user)
+
       # rate-limited because too little time has passed
       expect(page).to have_current_path(idv_verify_by_mail_enter_code_path)
       expect(page).not_to have_link(
-                            t('idv.gpo.did_not_receive_letter.intro.request_new_letter_link'),
-                          )
+        t('idv.gpo.did_not_receive_letter.intro.request_new_letter_link'),
+      )
       # does not allow the user to go to the resend page manually
       visit idv_request_letter_path
 
       expect(page).to have_current_path(idv_verify_by_mail_enter_code_path)
       expect(page).not_to have_link(
-                            t('idv.gpo.did_not_receive_letter.intro.request_new_letter_link'),
-                          )
-      visit sign_out_url
-
+        t('idv.gpo.did_not_receive_letter.intro.request_new_letter_link'),
+      )
+      sign_out
 
       travel_to((minimum_wait_for_letter - 1).hours.from_now) do
         sign_in_live_with_2fa(user)
+
         # rate-limited because too little time has passed
         expect(page).to have_current_path(idv_verify_by_mail_enter_code_path)
         expect(page).not_to have_link(
-                              t('idv.gpo.did_not_receive_letter.intro.request_new_letter_link'),
-                            )
+          t('idv.gpo.did_not_receive_letter.intro.request_new_letter_link'),
+        )
         # does not allow the user to go to the resend page manually
         visit idv_request_letter_path
 
         expect(page).to have_current_path(idv_verify_by_mail_enter_code_path)
         expect(page).not_to have_link(
-                              t('idv.gpo.did_not_receive_letter.intro.request_new_letter_link'),
-                            )
-        visit sign_out_url
+          t('idv.gpo.did_not_receive_letter.intro.request_new_letter_link'),
+        )
+        sign_out
       end
 
       travel_to(2.days.from_now) do
@@ -166,8 +166,6 @@ RSpec.feature 'idv gpo step' do
       sign_in_live_with_2fa(user)
       click_on t('idv.messages.gpo.resend')
 
-      # complete_idv_and_return_to_gpo_step
-
       click_doc_auth_back_link
 
       expect(page).to have_content(t('idv.gpo.title'))
@@ -181,9 +179,7 @@ RSpec.feature 'idv gpo step' do
       click_on t('idv.buttons.mail.send')
       fill_in 'Password', with: user_password
       click_continue
-      visit root_path
-      click_on t('idv.gpo.return_to_profile')
-      first(:button, t('links.sign_out')).click
+      sign_out
     end
 
     def complete_idv_and_return_to_gpo_step
@@ -200,6 +196,10 @@ RSpec.feature 'idv gpo step' do
 
       expect(profile.active?).to eq false
       expect(profile.gpo_verification_pending?).to eq true
+    end
+
+    def sign_out
+      visit sign_out_url
     end
   end
 
