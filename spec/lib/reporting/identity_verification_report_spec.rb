@@ -75,10 +75,10 @@ RSpec.describe Reporting::IdentityVerificationReport do
         ['Workflow completed - In-Person Pending', '1'],
         ['Workflow completed - Fraud Review Pending', '1'],
         [],
-        ['Successfully verified', '3'],
-        ['Successfully verified - Inline', '1'],
-        ['Successfully verified - GPO Code Entry', '1'],
-        ['Successfully verified - In Person', '1'],
+        ['Succesfully verified', '3'],
+        ['Succesfully verified - Inline', '1'],
+        ['Succesfully verified - GPO Code Entry', '1'],
+        ['Succesfully verified - In Person', '1'],
       ]
 
       aggregate_failures do
