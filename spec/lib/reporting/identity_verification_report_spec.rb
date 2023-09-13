@@ -112,10 +112,9 @@ RSpec.describe Reporting::IdentityVerificationReport do
         'IdV: final resolution - GPO Pending' => 1,
         'IdV: final resolution - In Person Proofing' => 1,
         'IdV: final resolution - Verified' => 1,
-        'IdV Reject: Any' => 2,
-        'IdV Reject: Doc Auth' => 2,
-        'IdV Reject: Phone Finder' => 0,
-        'IdV Reject: Verify' => 0,
+        'IdV Reject: Doc Auth' => 3,
+        'IdV Reject: Phone Finder' => 1,
+        'IdV Reject: Verify' => 1,
       )
     end
   end

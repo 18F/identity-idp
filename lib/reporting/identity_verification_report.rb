@@ -171,9 +171,13 @@ module Reporting
     end
 
     def idv_doc_auth_rejected
-      data[Results::IDV_REJECT_ANY].count
+      @idv_doc_auth_rejected ||= (
+        event_users[Results::IDV_REJECT_DOC_AUTH]
+        + event_users[Results::IDV_REJECT_VERIFY]
+        + event_users[Results::IDV_REJECT_PHONE_FINDER]
+        - event_users[Results::IDV_FINAL_RESOLUTION_VERIFIED]
+      ).count
     end
-
     # rubocop:disable Layout/LineLength
     # Turns query results into a hash keyed by event name, values are a count of unique users
     # for that event
@@ -207,16 +211,6 @@ module Reporting
             event_users[Results::IDV_REJECT_PHONE_FINDER] << user_id if success == '0'
           end
         end
-
-        # remove intermediate failures if user eventually succeeded
-        event_users[Results::IDV_REJECT_DOC_AUTH] -= event_users[Results::IDV_FINAL_RESOLUTION_VERIFIED]
-        event_users[Results::IDV_REJECT_VERIFY] -= event_users[Results::IDV_FINAL_RESOLUTION_VERIFIED]
-        event_users[Results::IDV_REJECT_PHONE_FINDER] -= event_users[Results::IDV_FINAL_RESOLUTION_VERIFIED]
-
-        event_users[Results::IDV_REJECT_ANY] =
-          event_users[Results::IDV_REJECT_DOC_AUTH] |
-          event_users[Results::IDV_REJECT_VERIFY] |
-          event_users[Results::IDV_REJECT_PHONE_FINDER]
 
         event_users
       end
