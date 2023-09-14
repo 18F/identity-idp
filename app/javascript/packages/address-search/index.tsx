@@ -1,3 +1,4 @@
+import { Alert } from '@18f/identity-components';
 import { snakeCase, formatLocations, transformKeys } from './utils';
 import AddressInput from './components/address-input';
 import AddressSearch from './components/address-search';
@@ -6,6 +7,7 @@ import NoInPersonLocationsDisplay from './components/no-in-person-locations-disp
 import { requestUspsLocations } from './hooks/use-usps-locations';
 
 export {
+  Alert,
   AddressInput,
   InPersonLocations,
   NoInPersonLocationsDisplay,
