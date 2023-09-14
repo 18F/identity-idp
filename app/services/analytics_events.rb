@@ -529,14 +529,6 @@ module AnalyticsEvents
     track_event('Forget All Browsers Visited')
   end
 
-  # An uncaught error occurred in frontend JavaScript
-  # @param [String] name
-  # @param [String] message
-  # @param [String] stack
-  def frontend_error(name:, message:, stack: nil, **extra)
-    track_event('Frontend Error', name:, message:, stack:, **extra)
-  end
-
   # @param [Boolean] success
   # @param [Hash] errors
   # @param [String] exception
@@ -579,6 +571,14 @@ module AnalyticsEvents
       profile_fraud_review_pending_at: profile_fraud_review_pending_at,
       **extra,
     )
+  end
+
+  # An uncaught error occurred in frontend JavaScript
+  # @param [String] name
+  # @param [String] message
+  # @param [String] stack
+  def frontend_error(name:, message:, stack: nil, **extra)
+    track_event('Frontend Error', name:, message:, stack:, **extra)
   end
 
   # @param [Boolean] success
