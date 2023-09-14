@@ -5,10 +5,14 @@ RSpec.feature 'idv gpo step' do
   include OidcAuthHelper
 
   let(:minimum_wait_for_letter) { 24 }
+  let(:days_passed) { 31 }
+  let(:max_days_before_resend_disabled) { 30 }
 
   before do
     allow(IdentityConfig.store).to receive(:minimum_wait_before_another_usps_letter_in_hours).
       and_return(minimum_wait_for_letter)
+    allow(IdentityConfig.store).to receive(:gpo_max_profile_age_to_send_letter_in_days).
+      and_return(max_days_before_resend_disabled)
   end
 
   it 'redirects to and completes the review step when the user chooses to verify by letter', :js do
@@ -41,7 +45,16 @@ RSpec.feature 'idv gpo step' do
         sign_out
       end
 
-      travel_to(2.days.from_now) do
+      # will be rate-limted after expiration
+      travel_to(days_passed.days.from_now) do
+        sign_in_live_with_2fa(user)
+        expect_to_be_on_the_enter_code_page_and_rate_limited
+        sign_out
+        Telephony::Test::Message.clear_messages
+      end
+
+      # can re-request after the waiting period
+      travel_to((minimum_wait_for_letter + 1).hours.from_now) do
         sign_in_live_with_2fa(user)
         click_on t('idv.messages.gpo.resend')
 
@@ -105,25 +118,6 @@ RSpec.feature 'idv gpo step' do
       end
     end
 
-    context 'too much time has passed', :js do
-      let(:days_passed) { 31 }
-      let(:max_days_before_resend_disabled) { 30 }
-
-      before do
-        allow(IdentityConfig.store).to receive(:gpo_max_profile_age_to_send_letter_in_days).
-          and_return(max_days_before_resend_disabled)
-      end
-
-      it 'does not present the user the option to to resend', :js do
-        complete_idv_by_mail_and_sign_out
-        travel_to(days_passed.days.from_now) do
-          sign_in_live_with_2fa(user)
-          expect_to_be_on_the_enter_code_page_and_rate_limited
-          sign_out
-        end
-      end
-    end
-
     def complete_idv_by_mail_and_sign_out
       start_idv_from_sp
       complete_idv_steps_before_gpo_step(user)
@@ -131,12 +125,6 @@ RSpec.feature 'idv gpo step' do
       fill_in 'Password', with: user_password
       click_continue
       sign_out
-    end
-
-    def complete_idv_and_return_to_gpo_step
-      complete_idv_by_mail_and_sign_out
-      sign_in_live_with_2fa(user)
-      click_on t('idv.messages.gpo.resend')
     end
 
     def expect_user_to_be_unverified(user)
