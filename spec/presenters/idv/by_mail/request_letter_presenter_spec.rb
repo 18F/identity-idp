@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Idv::ByMail::RequestLetterPresenter do
+  include Rails.application.routes.url_helpers
+
   let(:user) { create(:user) }
 
   subject(:decorator) do
@@ -67,13 +69,13 @@ RSpec.describe Idv::ByMail::RequestLetterPresenter do
     context 'when the user has a pending profile' do
       it 'returns the verify account path' do
         create(:profile, user: user, gpo_verification_pending_at: 1.day.ago)
-        expect(subject.fallback_back_path).to eq('/verify/by_mail/enter_code')
+        expect(subject.fallback_back_path).to eq(idv_verify_by_mail_enter_code_path)
       end
     end
 
     context 'when the user does not have a pending profile' do
       it 'returns the idv phone path' do
-        expect(subject.fallback_back_path).to eq('/verify/phone')
+        expect(subject.fallback_back_path).to eq(idv_phone_path)
       end
     end
   end
