@@ -25,6 +25,13 @@ module Idv
         **ab_test_analytics_buckets,
       )
 
+      @title =
+        if gpo_user_flow?
+          t('idv.titles.session.review_letter', app_name: APP_NAME)
+        else
+          t('idv.titles.session.review', app_name: APP_NAME)
+        end
+
       flash_now = flash.now
       if gpo_mail_service.mail_spammed?
         flash_now[:error] = t('idv.errors.mail_limit_reached')

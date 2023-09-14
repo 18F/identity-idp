@@ -9,7 +9,7 @@
       ) %>
 <% end %>
 
-<%= render PageHeadingComponent.new.with_content(t('idv.titles.session.review', app_name: APP_NAME)) %>
+<%= render PageHeadingComponent.new.with_content(@title) %>
 
 <p>
   <%= t('idv.messages.review.message', app_name: APP_NAME) %>

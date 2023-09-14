@@ -12,19 +12,35 @@ RSpec.describe 'idv/review/new.html.erb' do
       allow(view).to receive(:step_indicator_steps).
         and_return(Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS)
       allow(view).to receive(:step_indicator_step).and_return(:secure_account)
-
-      render
     end
 
-    it 'renders the correct content heading' do
-      expect(rendered).to have_content t('idv.titles.session.review', app_name: APP_NAME)
+    context 'user goes through phone finder' do
+      before do
+        @title = t('idv.titles.session.review', app_name: APP_NAME)
+        render
+      end
+
+      it 'renders the correct content heading' do
+        expect(rendered).to have_content t('idv.titles.session.review', app_name: APP_NAME)
+      end
+
+      it 'shows the step indicator' do
+        expect(view.content_for(:pre_flash_content)).to have_css(
+          '.step-indicator__step--current',
+          text: t('step_indicator.flows.idv.secure_account'),
+        )
+      end
     end
 
-    it 'shows the step indicator' do
-      expect(view.content_for(:pre_flash_content)).to have_css(
-        '.step-indicator__step--current',
-        text: t('step_indicator.flows.idv.secure_account'),
-      )
+    context 'user goes through verify by mail flow' do
+      before do
+        @title = t('idv.titles.session.review_letter', app_name: APP_NAME)
+        render
+      end
+
+      it 'renders the correct content heading' do
+        expect(rendered).to have_content t('idv.titles.session.review_letter', app_name: APP_NAME)
+      end
     end
   end
 end
