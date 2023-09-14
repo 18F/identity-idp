@@ -189,10 +189,16 @@ else
         cron: cron_24h,
         args: -> { [14.days.ago] },
       },
+      # Weekly report describing account reuse
       monthly_account_reuse_report: {
         class: 'Reports::MonthlyAccountReuseReport',
         cron: cron_1st_of_mo,
         args: -> { [Time.zone.today] },
+      },
+      # Job to backfill encrypted_pii_recovery_multi_region on profiles
+      multi_region_kms_migration_profile_migraiton: {
+        class: 'MultiRegionKmsMigration::ProfileMigrationJob',
+        cron: cron_12m,
       },
     }.compact
   end

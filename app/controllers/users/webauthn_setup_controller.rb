@@ -27,6 +27,7 @@ module Users
         user_opted_remember_device_cookie: user_opted_remember_device_cookie,
         remember_device_default: remember_device_default,
         platform_authenticator: @platform_authenticator,
+        url_options:,
       )
       properties = result.to_h.merge(analytics_properties)
       analytics.webauthn_setup_visit(**properties)
@@ -54,6 +55,7 @@ module Users
         user_opted_remember_device_cookie: user_opted_remember_device_cookie,
         remember_device_default: remember_device_default,
         platform_authenticator: @platform_authenticator,
+        url_options:,
       )
       properties = result.to_h.merge(analytics_properties)
       analytics.multi_factor_auth_setup(**properties)

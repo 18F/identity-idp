@@ -88,6 +88,7 @@ function ReviewIssuesStep({
         remainingAttempts={remainingAttempts}
         unknownFieldErrors={unknownFieldErrors}
         actionOnClick={onWarningPageDismissed}
+        hasDismissed={false}
       />
     );
   }
@@ -103,6 +104,7 @@ function ReviewIssuesStep({
       errors={errors}
       onChange={onChange}
       onError={onError}
+      hasDismissed
     />
   );
 }

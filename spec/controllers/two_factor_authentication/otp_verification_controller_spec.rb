@@ -110,6 +110,15 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
 
       expect(response).to redirect_to(phone_setup_url)
     end
+
+    it 'redirects to authentication if user is fully registered but does not have a phone' do
+      user = create(:user, :with_authentication_app)
+      stub_sign_in_before_2fa(user)
+
+      get :show, params: { otp_delivery_preference: 'sms' }
+
+      expect(response).to redirect_to(user_two_factor_authentication_url)
+    end
   end
 
   describe '#create' do

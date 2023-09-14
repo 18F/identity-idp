@@ -292,14 +292,14 @@ en:
         need_assistance: 'Need immediate assistance? Here’s how to get help:'
       options:
         contact_support: Contact %{app_name} Support
-        doc_capture_tips: More tips for adding photos of your ID
+        doc_capture_tips: Tips for taking clear photos of your ID
         get_help_at_sp: Get help at %{sp_name}
         learn_more_address_verification_options: Learn more about verifying by phone or mail
         learn_more_verify_by_mail: Learn more about verifying your address by mail
         learn_more_verify_by_phone: Learn more about what phone number to use
         learn_more_verify_by_phone_in_person: Learn more about verifying your phone number
         learn_more_verify_in_person: Learn more about verifying in person
-        supported_documents: See a list of accepted state‑issued IDs
+        supported_documents: Learn more about accepted IDs
         verify_by_mail: Verify your address by mail instead
     unavailable:
       exit_button: 'Exit %{app_name}'
