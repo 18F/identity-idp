@@ -87,8 +87,8 @@ module SignUp
         sp_session_requested_attributes: sp_session[:requested_attributes],
         sp_request_requested_attributes: service_provider_request.requested_attributes,
         page_occurence: page_occurence,
-        in_account_creation_flow: in_account_creation_flow,
-        mfa_method_counts: mfa_context.enabled_two_factor_configuration_counts_hash,
+        in_account_creation_flow: user_session[:in_account_creation_flow] || false,
+        mfa_method_hash_count: mfa_context.enabled_two_factor_configuration_counts_hash,
         enabled_mfa_methods_count: mfa_context.enabled_mfa_methods_count,
         needs_completion_screen_reason: needs_completion_screen_reason }
     end

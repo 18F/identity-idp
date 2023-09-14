@@ -11,7 +11,7 @@ RSpec.describe SignUp::CompletionsController do
       end
 
       it 'redirects to account page when SP request URL is not present' do
-        user = create(:user)
+        user = create(:user, :fully_registered)
         stub_sign_in(user)
         subject.session[:sp] = {
           issuer: current_sp.issuer,
@@ -22,7 +22,7 @@ RSpec.describe SignUp::CompletionsController do
       end
 
       context 'IAL1' do
-        let(:user) { create(:user) }
+        let(:user) { create(:user, :fully_registered) }
         before do
           stub_sign_in(user)
           subject.session[:sp] = {
@@ -44,6 +44,9 @@ RSpec.describe SignUp::CompletionsController do
             needs_completion_screen_reason: :new_sp,
             sp_request_requested_attributes: nil,
             sp_session_requested_attributes: [:email],
+            in_account_creation_flow: false,
+            mfa_method_hash_count: { phone: 1 },
+            enabled_mfa_methods_count: 1,
           )
         end
 
@@ -54,7 +57,7 @@ RSpec.describe SignUp::CompletionsController do
 
       context 'IAL2' do
         let(:user) do
-          create(:user, profiles: [create(:profile, :verified, :active)])
+          create(:user, :fully_registered, profiles: [create(:profile, :verified, :active)])
         end
         let(:pii) { { ssn: '123456789' } }
 
@@ -80,6 +83,9 @@ RSpec.describe SignUp::CompletionsController do
             needs_completion_screen_reason: :new_sp,
             sp_request_requested_attributes: nil,
             sp_session_requested_attributes: [:email],
+            in_account_creation_flow: false,
+            mfa_method_hash_count: { phone: 1 },
+            enabled_mfa_methods_count: 1,
           )
         end
 
@@ -90,7 +96,7 @@ RSpec.describe SignUp::CompletionsController do
 
       context 'IALMax' do
         let(:user) do
-          create(:user, profiles: [create(:profile, :verified, :active)])
+          create(:user, :fully_registered, profiles: [create(:profile, :verified, :active)])
         end
         let(:pii) { { ssn: '123456789' } }
 
@@ -117,6 +123,9 @@ RSpec.describe SignUp::CompletionsController do
             needs_completion_screen_reason: :new_sp,
             sp_request_requested_attributes: nil,
             sp_session_requested_attributes: [:email],
+            in_account_creation_flow: false,
+            mfa_method_hash_count: { phone: 1 },
+            enabled_mfa_methods_count: 1,
           )
         end
 
@@ -196,8 +205,9 @@ RSpec.describe SignUp::CompletionsController do
     end
 
     context 'IAL1' do
+      let(:user) { create(:user, :fully_registered) }
       it 'tracks analytics' do
-        stub_sign_in
+        stub_sign_in(user)
         subject.session[:sp] = {
           ial2: false,
           issuer: 'foo',
@@ -215,11 +225,14 @@ RSpec.describe SignUp::CompletionsController do
           needs_completion_screen_reason: :new_sp,
           sp_request_requested_attributes: nil,
           sp_session_requested_attributes: nil,
+          in_account_creation_flow: false,
+          mfa_method_hash_count: { phone: 1 },
+          enabled_mfa_methods_count: 1,
         )
       end
 
       it 'updates verified attributes' do
-        stub_sign_in
+        stub_sign_in(user)
         subject.session[:sp] = {
           issuer: 'foo',
           ial: 1,
@@ -239,7 +252,7 @@ RSpec.describe SignUp::CompletionsController do
       end
 
       it 'redirects to account page if the session request_url is removed' do
-        stub_sign_in
+        stub_sign_in(user)
         subject.session[:sp] = {
           ial2: false,
           issuer: 'foo',
@@ -253,7 +266,7 @@ RSpec.describe SignUp::CompletionsController do
 
     context 'IAL2' do
       it 'tracks analytics' do
-        user = create(:user, profiles: [create(:profile, :verified, :active)])
+        user = create(:user, :fully_registered, profiles: [create(:profile, :verified, :active)])
         stub_sign_in(user)
         sp = create(:service_provider, issuer: 'https://awesome')
         subject.session[:sp] = {
@@ -274,6 +287,9 @@ RSpec.describe SignUp::CompletionsController do
           needs_completion_screen_reason: :new_sp,
           sp_request_requested_attributes: nil,
           sp_session_requested_attributes: ['email'],
+          in_account_creation_flow: false,
+          mfa_method_hash_count: { phone: 1 },
+          enabled_mfa_methods_count: 1,
         )
       end
 
