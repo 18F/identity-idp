@@ -32,10 +32,6 @@ module Idv
         (Time.zone.now - first_letter_requested_at).to_i.seconds.in_hours.to_i : 0
     end
 
-    private
-
-    attr_reader :current_user
-
     def rate_limiting_enabled?
       window_limit_enabled? || last_not_too_recent_enabled?
     end
@@ -49,6 +45,10 @@ module Idv
       IdentityConfig.store.minimum_wait_before_another_usps_letter_in_hours != 0 &&
         current_user.pending_profile?
     end
+
+    private
+
+    attr_reader :current_user
 
     def too_many_mails_within_window?
       return false unless window_limit_enabled?
