@@ -192,6 +192,7 @@ RSpec.describe FrontendLogController do
               message: 'message',
               stack: 'stack',
             },
+            expected: true,
           )
 
           action
