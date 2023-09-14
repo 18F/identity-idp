@@ -7,9 +7,11 @@ RSpec.describe FrontendErrorLogger do
         kind_of(FrontendErrorLogger::FrontendError),
         expected: true,
         custom_params: {
-          name: 'name',
-          message: 'message',
-          stack: 'stack',
+          frontend_error: {
+            name: 'name',
+            message: 'message',
+            stack: 'stack',
+          },
         },
       )
 

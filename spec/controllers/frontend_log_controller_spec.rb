@@ -188,9 +188,11 @@ RSpec.describe FrontendLogController do
           expect(NewRelic::Agent).to receive(:notice_error).with(
             FrontendErrorLogger::FrontendError.new,
             custom_params: {
-              name: 'name',
-              message: 'message',
-              stack: 'stack',
+              frontend_error: {
+                name: 'name',
+                message: 'message',
+                stack: 'stack',
+              },
             },
             expected: true,
           )

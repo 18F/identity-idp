@@ -5,7 +5,7 @@ class FrontendErrorLogger
     NewRelic::Agent.notice_error(
       FrontendError.new,
       expected: true,
-      custom_params: { name:, message:, stack: },
+      custom_params: { frontend_error: { name:, message:, stack: } },
     )
   end
 end
