@@ -71,6 +71,10 @@ module TwoFactorAuthentication
         false
       end
 
+      def mfa_configuration_count 
+        0
+      end
+
       def mfa_configuration_description
         return '' if mfa_configuration_count == 0
         if single_configuration_only?
