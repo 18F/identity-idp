@@ -36,10 +36,12 @@ module Reporting
       csv << ['Welcome Submitted', *reports.map(&:idv_doc_auth_welcome_submitted)]
       csv << ['Image Submitted', *reports.map(&:idv_doc_auth_image_vendor_submitted)]
       csv << ['Successfully Verified', *reports.map(&:successfully_verified_users)]
+      csv << ['IDV Rejected', *reports.map(&:idv_doc_auth_rejected)]
 
       csv << ['Blanket Proofing Rate (IDV Started to Successfully Verified)', *blanket_proofing_rates(reports)]
       csv << ['Intent Proofing Rate (Welcome Submitted to Successfully Verified)', *intent_proofing_rates(reports)]
       csv << ['Actual Proofing Rate (Image Submitted to Successfully Verified)', *actual_proofing_rates(reports)]
+      csv << ['Industry Proofing Rate (Verified minus IDV Rejected)', *industry_proofing_rates(reports)]
 
       csv
     end
@@ -94,6 +96,16 @@ module Reporting
     def actual_proofing_rates(reports)
       reports.map do |report|
         report.successfully_verified_users.to_f / report.idv_doc_auth_image_vendor_submitted
+      end
+    end
+
+    # @param [Array<Reporting::IdentityVerificationReport>] reports
+    # @return [Array<Float>]
+    def industry_proofing_rates(reports)
+      reports.map do |report|
+        report.successfully_verified_users.to_f / (
+          report.successfully_verified_users + report.idv_doc_auth_rejected
+        )
       end
     end
   end
