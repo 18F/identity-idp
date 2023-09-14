@@ -209,10 +209,10 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
         let(:webauthn_error) { 'NotAllowedError' }
         let(:params) do
           {
-            authenticator_data: authenticator_data,
-            client_data_json: verification_client_data_json,
-            signature: signature,
-            credential_id: credential_id,
+            authenticator_data: '',
+            client_data_json: '',
+            signature: '',
+            credential_id: '',
             platform: true,
             webauthn_error: webauthn_error,
           }
@@ -256,13 +256,19 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
 
         it 'logs an event with error details' do
           expect(@analytics).to receive(:track_mfa_submit_event).with(
-            hash_including(
-              success: false,
-              error_details: { webauthn_error: [webauthn_error] },
-              context: UserSessionContext::AUTHENTICATION_CONTEXT,
-              multi_factor_auth_method: 'webauthn_platform',
-              webauthn_configuration_id: controller.current_user.webauthn_configurations.first.id,
-            ),
+            success: false,
+            error_details: {
+              authenticator_data: [:blank],
+              client_data_json: [:blank],
+              signature: [:blank],
+              webauthn_configuration: [:blank],
+              webauthn_error: [webauthn_error],
+            },
+            context: UserSessionContext::AUTHENTICATION_CONTEXT,
+            multi_factor_auth_method: 'webauthn_platform',
+            multi_factor_auth_method_created_at:
+              controller.current_user.webauthn_configurations.first.created_at.strftime('%s%L'),
+            webauthn_configuration_id: nil,
           )
 
           patch :confirm, params: params

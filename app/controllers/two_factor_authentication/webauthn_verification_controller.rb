@@ -15,7 +15,10 @@ module TwoFactorAuthentication
     def confirm
       result = form.submit
       analytics.track_mfa_submit_event(
-        result.to_h.merge(analytics_properties),
+        **result.to_h,
+        **analytics_properties,
+        multi_factor_auth_method_created_at:
+          webauthn_configuration_or_latest.created_at.strftime('%s%L'),
       )
 
       if analytics_properties[:multi_factor_auth_method] == 'webauthn_platform'
@@ -95,7 +98,7 @@ module TwoFactorAuthentication
     end
 
     def credentials
-      MfaContext.new(current_user).webauthn_configurations.
+      webauthn_configurations.
         select { |configuration| configuration.platform_authenticator? == platform_authenticator? }.
         map do |configuration|
           { id: configuration.credential_id, transports: configuration.transports }
@@ -137,6 +140,14 @@ module TwoFactorAuthentication
 
     def platform_authenticator?
       params[:platform].to_s == 'true'
+    end
+
+    def webauthn_configuration_or_latest
+      form&.webauthn_configuration&.created_at || webauthn_configurations.take
+    end
+
+    def webauthn_configurations
+      MfaContext.new(current_user).webauthn_configurations.order(:created_at)
     end
   end
 end
