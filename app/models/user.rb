@@ -123,7 +123,7 @@ class User < ApplicationRecord
     update!(suspended_at: Time.zone.now, unique_session_id: nil)
     analytics.user_suspended(success: true)
     email_addresses.map do |email_address|
-      SuspendedEmail.create_from_email_adddress!(email_address)
+      SuspendedEmail.create_from_email_address!(email_address)
     end
   end
 
