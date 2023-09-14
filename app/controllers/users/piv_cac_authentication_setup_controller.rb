@@ -120,7 +120,7 @@ module Users
       create_user_event(:piv_cac_enabled)
       track_mfa_method_added
       session[:needs_to_setup_piv_cac_after_sign_in] = false
-      redirect_to next_setup_path || after_mfa_setup_path
+      redirect_to next_setup_path || after_sign_in_path_for(current_user)
     end
 
     def track_mfa_method_added
