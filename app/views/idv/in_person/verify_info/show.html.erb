@@ -25,11 +25,9 @@ locals:
 <div class='margin-top-4 margin-bottom-2'>
   <div class="grid-row grid-gap grid-gap-2 padding-bottom-1 border-bottom border-primary-light">
     <dl class="grid-col-fill margin-y-0">
-      <% if @capture_secondary_id_enabled %>
         <div class="padding-y-1">
           <h2 class="h4 margin-y-0"><%= t('headings.state_id') %></h2>
         </div>
-      <% end %>
       <div>
         <dt class="display-inline"> <%= t('idv.form.first_name') %>: </dt>
         <dd class="display-inline margin-left-0"> <%= @pii[:first_name] %> </dd>
@@ -44,17 +42,14 @@ locals:
           <%= I18n.l(Date.parse(@pii[:dob]), format: I18n.t('time.formats.event_date')) %>
         </dd>
       </div>
-      <% if @capture_secondary_id_enabled %>
         <div>
           <dt class="display-inline"> <%= t('idv.form.issuing_state') %>: </dt>
           <dd class="display-inline margin-left-0"> <%= @pii[:state_id_jurisdiction] %> </dd>
         </div>
-      <% end %>
       <div>
         <dt class="display-inline"> <%= t('idv.form.id_number') %>: </dt>
         <dd class="display-inline margin-left-0"> <%= @pii[:state_id_number] %> </dd>
       </div>
-      <% if @capture_secondary_id_enabled %>
         <div class="margin-top-105">
           <dt class="display-inline"> <%= t('idv.form.address1') %>: </dt>
           <dd class="display-inline margin-left-0"> <%= @pii[:identity_doc_address1] %> </dd>
@@ -75,7 +70,6 @@ locals:
           <dt class="display-inline"> <%= t('idv.form.zipcode') %>: </dt>
           <dd class="display-inline margin-left-0"> <%= @pii[:identity_doc_zipcode] %> </dd>
         </div>
-      <% end %>
     </dl>
     <div class='grid-auto'>
       <%= button_to(
@@ -88,11 +82,9 @@ locals:
   </div>
   <div class="grid-row grid-gap grid-gap-2 padding-bottom-1 padding-top-1 border-bottom border-primary-light">
     <dl class='grid-col-fill margin-y-0'>
-      <% if @capture_secondary_id_enabled %>
         <div class="padding-y-1">
           <h2 class="h4 margin-y-0"><%= t('headings.residential_address') %></h2>
         </div>
-      <% end %>
       <div>
         <dt class="display-inline"> <%= t('idv.form.address1') %>: </dt>
         <dd class="display-inline margin-left-0"> <%= @pii[:address1] %> </dd>
@@ -125,11 +117,9 @@ locals:
   </div>
   <div class="grid-row grid-gap grid-gap-2 padding-top-1">
     <div class='grid-col-fill'>
-      <% if @capture_secondary_id_enabled %>
         <div class="padding-y-1">
           <h2 class="h4 margin-y-0"><%= t('headings.ssn') %></h2>
         </div>
-      <% end %>
       <%= t('idv.form.ssn') %>:
       <%= render(
             'shared/masked_text',
