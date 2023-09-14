@@ -168,6 +168,12 @@ RSpec.describe Idv::ReviewController do
           idv_session.address_verification_mechanism = 'gpo'
         end
 
+        it 'sets the correct title' do
+          get :new
+
+          expect(assigns(:title)).to eq(t('idv.titles.session.review_letter', app_name: APP_NAME))
+        end
+
         it 'displays info message about sending letter' do
           get :new
 
