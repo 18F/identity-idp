@@ -2,6 +2,7 @@
 
 require 'csv'
 require 'reporting/identity_verification_report'
+require 'reporting/unknown_progress_bar'
 
 module Reporting
   class ProofingRateReport
@@ -54,21 +55,31 @@ module Reporting
     end
 
     def reports
-      @reports ||= [0, *DATE_INTERVALS].each_cons(2).map do |slice_end, slice_start|
-        Reporting::IdentityVerificationReport.new(
-          issuers: nil, # all issuers
-          time_range: Range.new(
-            (end_date - slice_start.days).beginning_of_day,
-            (end_date - slice_end.days).beginning_of_day,
-          ),
-          progress: progress?,
-          verbose: verbose?,
-        )
-      end.reduce([]) do |acc, report|
-        if acc.empty?
-          acc << report
-        else
-          acc << report.merge(acc.last)
+      @reports ||= begin
+        threads = [0, *DATE_INTERVALS].each_cons(2).map do |slice_end, slice_start|
+          Thread.new do
+            Reporting::IdentityVerificationReport.new(
+              issuers: nil, # all issuers
+              time_range: Range.new(
+                (end_date - slice_start.days).beginning_of_day,
+                (end_date - slice_end.days).beginning_of_day,
+              ),
+              progress: false,
+              verbose: verbose?,
+            ).tap(&:data)
+          end
+        end
+
+        reports = Reporting::UnknownProgressBar.wrap(show_bar: progress?) do
+          threads.map(&:value)
+        end
+
+        reports.reduce([]) do |acc, report|
+          if acc.empty?
+            acc << report
+          else
+            acc << report.merge(acc.last)
+          end
         end
       end
     end
