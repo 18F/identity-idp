@@ -87,16 +87,24 @@ module SignUp
         sp_session_requested_attributes: sp_session[:requested_attributes],
         sp_request_requested_attributes: service_provider_request.requested_attributes,
         page_occurence: page_occurence,
+        in_account_creation_flow: in_account_creation_flow,
+        mfa_method_counts: mfa_context.enabled_two_factor_configuration_counts_hash,
+        enabled_mfa_methods_count: mfa_context.enabled_mfa_methods_count,
         needs_completion_screen_reason: needs_completion_screen_reason }
     end
 
     def track_completion_event(last_page)
       analytics.user_registration_complete(**analytics_attributes(last_page))
+      user_session.delete(:in_account_creation_flow)
     end
 
     def pii
       pii_string = Pii::Cacher.new(current_user, user_session).fetch_string
       JSON.parse(pii_string || '{}', symbolize_names: true)
+    end
+
+    def mfa_context
+      @mfa_context ||= MfaContext.new(current_user)
     end
 
     def send_in_person_completion_survey

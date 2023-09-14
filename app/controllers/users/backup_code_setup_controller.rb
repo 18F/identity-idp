@@ -37,12 +37,7 @@ module Users
     def continue
       flash[:success] = t('notices.backup_codes_configured')
       analytics.multi_factor_auth_setup(**analytics_properties)
-      continue_setup_path = next_setup_path
-      if continue_setup_path.blank?
-        user_session.delete(:in_account_creation_flow)
-        continue_setup_path = after_mfa_setup_path
-      end
-      redirect_to continue_setup_path
+      redirect_to next_setup_path || after_mfa_setup_path
     end
 
     def confirm_delete; end
