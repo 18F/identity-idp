@@ -174,6 +174,7 @@ module Reporting
         data[Results::IDV_FINAL_RESOLUTION_IN_PERSON]
       ).count
     end
+
     # rubocop:disable Layout/LineLength
     # Turns query results into a hash keyed by event name, values are a count of unique users
     # for that event
