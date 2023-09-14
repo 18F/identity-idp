@@ -1,4 +1,4 @@
-VIEW_SCHEMA_VERSION = 1
+VIEW_SCHEMA_VERSION = 2
 
 class SequentMigrations < Sequent::Migrations::Projectors
   def self.version
@@ -9,6 +9,10 @@ class SequentMigrations < Sequent::Migrations::Projectors
     {
       '1' => [
         # List of migrations for version 1
+      ],
+      '2' => [
+        # List of migrations for version 2
+        ProfileProjector,
       ],
     }
   end

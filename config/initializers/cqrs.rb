@@ -11,6 +11,7 @@ Rails.application.reloader.to_prepare do
 
     config.event_handlers = [
       # add you Sequent::Projector's or Sequent::Workflow's here
+      ProfileProjector.new,
     ]
 
     config.logger = Logger.new(STDOUT)
