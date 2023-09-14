@@ -6,7 +6,7 @@ class ServiceProviderSessionCreator
     @service_provider_request = service_provider_request
   end
 
-  def call
+  def create_session
     if sp
       ServiceProviderSession.new(
         sp: sp,
