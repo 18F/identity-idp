@@ -201,7 +201,7 @@ module Reporting
             event_users[Results::IDV_FINAL_RESOLUTION_IN_PERSON] << user_id if row['in_person_verification_pending'] == '1'
             event_users[Results::IDV_FINAL_RESOLUTION_FRAUD_REVIEW] << user_id if row['fraud_review_pending'] == '1'
           when Events::IDV_DOC_AUTH_IMAGE_UPLOAD
-            event_users[Results::IDV_REJECT_DOC_AUTH] << user_id if success == '0'
+            event_users[Results::IDV_REJECT_DOC_AUTH] << user_id if row['doc_auth_failed_non_fraud'] == '1'
           when Events::IDV_DOC_AUTH_VERIFY_RESULTS
             event_users[Results::IDV_REJECT_VERIFY] << user_id if success == '0'
           when Events::IDV_PHONE_FINDER_RESULTS
@@ -248,6 +248,7 @@ module Reporting
           , coalesce(properties.event_properties.gpo_verification_pending, 0) AS gpo_verification_pending
           , coalesce(properties.event_properties.in_person_verification_pending, 0) AS in_person_verification_pending
           , ispresent(properties.event_properties.deactivation_reason) AS has_other_deactivation_reason
+          , properties.event_properties.success = '0' AND properties.event_properties.doc_auth_result NOT IN ['Failed', 'Attention'] AS doc_auth_failed_non_fraud
         | fields
             !fraud_review_pending and !gpo_verification_pending and !in_person_verification_pending and !has_other_deactivation_reason AS identity_verified
         | limit 10000

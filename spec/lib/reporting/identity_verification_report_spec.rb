@@ -17,7 +17,7 @@ RSpec.describe Reporting::IdentityVerificationReport do
         # Online verification user (failed each vendor once, then suceeded once)
         { 'user_id' => 'user1', 'name' => 'IdV: doc auth welcome visited' },
         { 'user_id' => 'user1', 'name' => 'IdV: doc auth welcome submitted' },
-        { 'user_id' => 'user1', 'name' => 'IdV: doc auth image upload vendor submitted', 'success' => '0' },
+        { 'user_id' => 'user1', 'name' => 'IdV: doc auth image upload vendor submitted', 'doc_auth_failed_non_fraud' => '1' },
         { 'user_id' => 'user1', 'name' => 'IdV: doc auth image upload vendor submitted', 'success' => '1' },
         { 'user_id' => 'user1', 'name' => 'IdV: doc auth verify proofing results', 'success' => '0' },
         { 'user_id' => 'user1', 'name' => 'IdV: doc auth verify proofing results', 'success' => '1' },
@@ -43,14 +43,14 @@ RSpec.describe Reporting::IdentityVerificationReport do
         # Success through in-person verification, failed doc auth (rejected)
         { 'user_id' => 'user5', 'name' => 'IdV: doc auth welcome visited' },
         { 'user_id' => 'user5', 'name' => 'IdV: doc auth welcome submitted' },
-        { 'user_id' => 'user5', 'name' => 'IdV: doc auth image upload vendor submitted', 'success' => '0' },
+        { 'user_id' => 'user5', 'name' => 'IdV: doc auth image upload vendor submitted', 'doc_auth_failed_non_fraud' => '1' },
         { 'user_id' => 'user5', 'name' => 'IdV: final resolution', 'in_person_verification_pending' => '1' },
         { 'user_id' => 'user5', 'name' => 'GetUspsProofingResultsJob: Enrollment status updated' },
 
         # Incomplete user
         { 'user_id' => 'user6', 'name' => 'IdV: doc auth welcome visited' },
         { 'user_id' => 'user6', 'name' => 'IdV: doc auth welcome submitted' },
-        { 'user_id' => 'user6', 'name' => 'IdV: doc auth image upload vendor submitted', 'success' => '0' },
+        { 'user_id' => 'user6', 'name' => 'IdV: doc auth image upload vendor submitted', 'doc_auth_failed_non_fraud' => '1' },
       ],
     )
 
