@@ -1,10 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Encryption::MultiRegionKmsMigration::UserMigrator do
-  before do
-    allow(IdentityConfig.store).to receive(:aws_kms_multi_region_read_enabled).and_return(true)
-  end
-
   let(:user) { create(:user, password: 'salty pickles', personal_key: '1234-ABCD') }
 
   subject { described_class.new(user) }

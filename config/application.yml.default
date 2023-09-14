@@ -51,7 +51,6 @@ aws_kms_key_id: alias/login-dot-gov-test-keymaker
 aws_kms_client_contextless_pool_size: 5
 aws_kms_client_multi_pool_size: 5
 aws_kms_multi_region_key_id: alias/login-dot-gov-keymaker-multi-region
-aws_kms_multi_region_read_enabled: false
 aws_kms_session_key_id: alias/login-dot-gov-test-keymaker
 aws_logo_bucket: ''
 aws_region: 'us-west-2'

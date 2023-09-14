@@ -1,10 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe MultiRegionKmsMigration::UserMigrationJob do
-  before do
-    allow(IdentityConfig.store).to receive(:aws_kms_multi_region_read_enabled).and_return(true)
-  end
-
   let!(:multi_region_password_digest_user) { create(:user, password: 'salty pickles') }
   let!(:single_region_password_digest_user) do
     user = create(:user, password: 'salty_pickles')
