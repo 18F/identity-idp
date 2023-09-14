@@ -143,7 +143,7 @@ module TwoFactorAuthentication
     end
 
     def webauthn_configuration_or_latest
-      form&.webauthn_configuration || webauthn_configurations.take
+      form&.webauthn_configuration || webauthn_configurations.last
     end
 
     def webauthn_configurations
