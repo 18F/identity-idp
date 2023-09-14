@@ -86,7 +86,7 @@ class ApplicationController < ActionController::Base
       view_context: view_context,
       sp_session: sp_session,
       service_provider_request: service_provider_request,
-    ).call
+    ).create_session
   end
 
   def default_url_options
