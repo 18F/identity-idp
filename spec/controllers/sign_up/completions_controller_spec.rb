@@ -45,8 +45,6 @@ RSpec.describe SignUp::CompletionsController do
             sp_request_requested_attributes: nil,
             sp_session_requested_attributes: [:email],
             in_account_creation_flow: false,
-            mfa_method_hash_count: { phone: 1 },
-            enabled_mfa_methods_count: 1,
           )
         end
 
@@ -84,8 +82,6 @@ RSpec.describe SignUp::CompletionsController do
             sp_request_requested_attributes: nil,
             sp_session_requested_attributes: [:email],
             in_account_creation_flow: false,
-            mfa_method_hash_count: { phone: 1 },
-            enabled_mfa_methods_count: 1,
           )
         end
 
@@ -124,8 +120,6 @@ RSpec.describe SignUp::CompletionsController do
             sp_request_requested_attributes: nil,
             sp_session_requested_attributes: [:email],
             in_account_creation_flow: false,
-            mfa_method_hash_count: { phone: 1 },
-            enabled_mfa_methods_count: 1,
           )
         end
 
@@ -226,8 +220,6 @@ RSpec.describe SignUp::CompletionsController do
           sp_request_requested_attributes: nil,
           sp_session_requested_attributes: nil,
           in_account_creation_flow: false,
-          mfa_method_hash_count: { phone: 1 },
-          enabled_mfa_methods_count: 1,
         )
       end
 
@@ -288,8 +280,6 @@ RSpec.describe SignUp::CompletionsController do
           sp_request_requested_attributes: nil,
           sp_session_requested_attributes: ['email'],
           in_account_creation_flow: false,
-          mfa_method_hash_count: { phone: 1 },
-          enabled_mfa_methods_count: 1,
         )
       end
 
