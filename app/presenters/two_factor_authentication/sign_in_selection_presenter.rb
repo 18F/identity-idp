@@ -60,4 +60,3 @@ module TwoFactorAuthentication
     end
   end
 end
-  
