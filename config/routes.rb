@@ -404,12 +404,9 @@ Rails.application.routes.draw do
 
       get '/by_mail/letter_enqueued' => 'by_mail/letter_enqueued#show', as: :letter_enqueued
 
-      # BEGIN temporary routes & redirects supporting GPO route renaming
-      get '/come_back_later' => redirect('/verify/by_mail/letter_enqueued')
-
-      get '/by_mail' => redirect('/verify/by_mail/enter_code')
-      post '/by_mail' => 'by_mail/enter_code#create'
-      # END temporary routes
+      # Redirects for old verify by mail routes
+      get '/come_back_later' => redirect('/verify/by_mail/letter_enqueued', status: 301)
+      get '/by_mail' => redirect('/verify/by_mail/enter_code', status: 301)
     end
 
     root to: 'users/sessions#new'
