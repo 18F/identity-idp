@@ -238,7 +238,7 @@ es:
           vez de tu carta actual seguirá siendo válido durante un tiempo
           limitado. Puedes seguir utilizando el código de una sola vez de
           cualquiera de las dos cartas.
-        resend_timeframe: Las cartas suelen tardar entre 3 y 7 días hábiles en llegar.
+        resend_timeframe_html: Las cartas tardan entre <strong>5 y 10 días</strong> en llegar.
         timeframe_html: Las cartas se envían al siguiente día hábil por USPS First Class
           Mail y tardan entre <strong>5 y 10 días</strong> en llegar.
       gpo_reminder:

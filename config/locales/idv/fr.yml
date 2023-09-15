@@ -252,8 +252,7 @@ fr:
           usage unique de votre lettre actuelle restera valable pendant une
           période limitée. Vous pouvez toujours utiliser le code à usage unique
           de l’une ou l’autre lettre.
-        resend_timeframe: Les lettres mettent généralement entre trois et sept jours
-          ouvrables pour arriver.
+        resend_timeframe_html: Les lettres mettent <strong>5 à 10 jours</strong> pour arriver .
         timeframe_html: Les lettres sont envoyées le jour ouvrable suivant par le
           courrier de première classe d’USPS et arrivent dans un délai de
           <strong>5 à 10 jours</strong>.
