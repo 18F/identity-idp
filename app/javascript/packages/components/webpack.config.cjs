@@ -1,5 +1,3 @@
-const path = require('path');
-
 module.exports = /** @type {import('webpack').Configuration} */ ({
   mode: 'production',
   target: ['node'],
@@ -19,9 +17,7 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
   },
   resolve: {
     extensions: ['.js', '.jsx', '.ts', '.tsx', '.mjs', '.cjs', '.mts', '.cts'],
-    alias: {
-      '@18f/identity-components': path.resolve(__dirname, 'index.ts'),
-    },
+    conditionNames: ['source'],
   },
   externals: /^(?!(@18f\/identity-|\.))/,
   module: {
