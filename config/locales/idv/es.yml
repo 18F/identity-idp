@@ -122,7 +122,7 @@ es:
             explanation: Si no dispones de otro número de teléfono para intentarlo,
               verifícalo por correo.
             heading: Verificar por correo
-            how_long_it_takes: Suele tardar entre 3 y 7 días laborables.
+            how_long_it_takes_html: Esto tarda entre <strong>5 y 10 días</strong>.
           heading: No pudimos asociarlo a este número
           learn_more_link: 'Más información sobre qué número de teléfono usar'
           next_steps_html: 'Pruebe con <strong>otro</strong> número que utilice a menudo y

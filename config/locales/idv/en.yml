@@ -116,7 +116,7 @@ en:
             explanation: If you don’t have another phone number to try, verify by mail
               instead.
             heading: Verify by mail
-            how_long_it_takes: This typically takes 3 - 7 business days.
+            how_long_it_takes_html: This takes <strong>5 to 10 days</strong>.
           heading: We couldn’t match you to this number
           learn_more_link: 'Learn more about what phone number to use'
           next_steps_html: 'Try <strong>another</strong> number that you use often and

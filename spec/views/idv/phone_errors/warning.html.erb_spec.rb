@@ -100,7 +100,7 @@ RSpec.describe 'idv/phone_errors/warning.html.erb' do
     it 'says how long gpo takes' do
       expect(rendered).to have_css(
         'strong',
-        text: t('idv.failure.phone.warning.gpo.how_long_it_takes'),
+        text: strip_tags(t('idv.failure.phone.warning.gpo.how_long_it_takes_html')),
       )
     end
 

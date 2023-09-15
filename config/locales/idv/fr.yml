@@ -128,7 +128,7 @@ fr:
             explanation: Si vous n’avez pas d’autre numéro de téléphone à essayer, vérifiez
               plutôt par courrier.
             heading: Vérifier par courrier
-            how_long_it_takes: Cette procédure prend typiquement 3 à 7 jours ouvrables.
+            how_long_it_takes_html: Cela prend <strong>5 à 10 jours</strong>.
           heading: Nous n’avons pas pu vous associer à ce numéro
           learn_more_link: 'Apprenez-en plus sur quel numéro de téléphone utiliser'
           next_steps_html: 'Essayez <strong>un autre</strong> numéro que vous utilisez
