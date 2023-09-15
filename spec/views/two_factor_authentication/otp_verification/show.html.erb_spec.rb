@@ -67,6 +67,21 @@ RSpec.describe 'two_factor_authentication/otp_verification/show.html.erb' do
       )
     end
 
+    context 'user is signing up' do
+      before do
+        user = create(:user)
+        allow(view).to receive(:current_user).and_return(user)
+        render
+      end
+
+      it 'shows a "Choose another authentication method" link' do
+        expect(rendered).to have_link(
+          t('two_factor_authentication.choose_another_option'),
+          href: authentication_methods_setup_path,
+        )
+      end
+    end
+
     context 'user signed up' do
       before do
         user = create(:user, :fully_registered, personal_key: '1')
