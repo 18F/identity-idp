@@ -36,9 +36,9 @@ class ReportMailer < ActionMailer::Base
   # @param [String] email
   # @param [String] subject
   # @param [String] env name of current deploy environment
-  # @param [Array<Array<Array<String>>>] tables
+  # @param [Array<Array<Hash,Array<String>>>] tables
   #   an array of tables (which are arrays of rows (arrays of strings))
-  #   each table can have an first hash with options
+  #   each table can have a first "row" that is a hash with options
   # @option opts [Boolean] :float_as_percent whether or not to render floats as percents
   # @option opts [Boolean] :title title of the table
   def tables_report(email:, subject:, tables:, env: Identity::Hostdata.env)
