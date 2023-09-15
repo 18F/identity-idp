@@ -109,8 +109,7 @@ es:
             button: Verificar por correo
           heading: No pudimos asociarlo a este número
           option_try_again_later_html: 'Cancelar y empezar de nuevo transcurridas <b>%{time_left}</b>'
-          option_verify_by_mail_html: 'Verificar por correo, lo que suele demorar de <b>3
-            a 7 días hábiles</b>'
+          option_verify_by_mail_html: 'Verificar por correo, lo cual tarda entre <b>5 y 10 días</b>'
           options_header: 'Puede:'
         timeout: Nuestra solicitud para verificar tu información ha caducado. Vuelve a
           intentarlo.

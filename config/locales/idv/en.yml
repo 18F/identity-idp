@@ -103,7 +103,7 @@ en:
             button: Verify by mail
           heading: 'We couldn’t verify your identity by phone'
           option_try_again_later_html: 'Cancel and start over again after <b>%{time_left}</b>'
-          option_verify_by_mail_html: 'Verify by mail, which typically takes <b>3-7 business days</b>'
+          option_verify_by_mail_html: 'Verify by mail, which takes <b>5 to 10 days</b>'
           options_header: 'You can:'
         timeout: Our request to verify your information timed out. Please try again.
         warning:
