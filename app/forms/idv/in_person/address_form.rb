@@ -8,9 +8,6 @@ module Idv
 
       attr_accessor(*ATTRIBUTES)
 
-      def initialize
-      end
-
       def self.model_name
         ActiveModel::Name.new(self, nil, 'InPersonAddress')
       end

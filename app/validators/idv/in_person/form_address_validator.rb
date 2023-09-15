@@ -5,7 +5,6 @@ module Idv
       include Idv::FormAddressValidator
 
       included do
-
         validates_with UspsInPersonProofing::TransliterableValidator,
                        fields: [:city],
                        reject_chars: /[^A-Za-z\-' ]/,
