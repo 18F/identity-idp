@@ -5,7 +5,7 @@ module Idv
     end
 
     def mail_spammed?
-      too_many_mails_within_window? || last_mail_too_recent?
+      too_many_letter_requests_within_window? || last_letter_request_too_recent?
     end
 
     def profile_too_old?
@@ -44,34 +44,34 @@ module Idv
 
     attr_reader :current_user
 
-    def too_many_mails_within_window?
+    def too_many_letter_requests_within_window?
       return false unless window_limit_enabled?
 
-      number_of_mails_within(
+      number_of_letter_requests_within(
         IdentityConfig.store.max_mail_events_window_in_days.days,
         maximum: IdentityConfig.store.max_mail_events,
       ) >= IdentityConfig.store.max_mail_events
     end
 
-    def last_mail_too_recent?
+    def last_letter_request_too_recent?
       return false unless last_not_too_recent_enabled?
       return false unless current_user.gpo_verification_pending_profile?
 
-      number_of_mails_within(
+      number_of_letter_requests_within(
         IdentityConfig.store.minimum_wait_before_another_usps_letter_in_hours.hours,
         maximum: 1,
         for_profile: current_user.pending_profile,
       ) > 0
     end
 
-    def number_of_mails_within(time_window, maximum:, for_profile: nil)
-      profile_hash = { user: current_user }
-      profile_hash[:id] = for_profile.id if for_profile
+    def number_of_letter_requests_within(time_window, maximum:, for_profile: nil)
+      profile_query_conditions = { user: current_user }
+      profile_query_conditions[:id] = for_profile.id if for_profile
 
       GpoConfirmationCode.joins(:profile).
         where(
           updated_at: (time_window.ago..),
-          profile: profile_hash,
+          profile: profile_query_conditions,
         ).
         limit(maximum).
         count

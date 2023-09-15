@@ -30,7 +30,7 @@ RSpec.feature 'idv gpo step' do
   context 'the user has sent a letter but not verified an OTP' do
     let(:user) { user_with_2fa }
 
-    it 'allows the user to resend a letter and redirects to the come back later step', :js do
+    it 'allows the user to resend a letter and redirects to the come back later step if not rate limited', :js do
       complete_idv_by_mail_and_sign_out
 
       # rate-limited because too little time has passed
@@ -50,6 +50,7 @@ RSpec.feature 'idv gpo step' do
         sign_in_live_with_2fa(user)
         confirm_rate_limited
         sign_out
+        # Clear MFA SMS message from the future to allow re-logging in with test helper
         Telephony::Test::Message.clear_messages
       end
 
@@ -68,18 +69,15 @@ RSpec.feature 'idv gpo step' do
 
         # Ensure user can go back from this page
         click_doc_auth_back_link
-
         expect(page).to have_content(t('idv.gpo.title'))
         expect(page).to have_current_path(idv_verify_by_mail_enter_code_path)
         expect_user_to_be_unverified(user)
-
         click_on t('idv.messages.gpo.resend')
 
         # And then actually ask for a resend
         expect { click_on t('idv.buttons.mail.resend') }.
           to change { GpoConfirmation.count }.from(1).to(2)
         expect_user_to_be_unverified(user)
-
         expect(page).to have_content(t('idv.messages.gpo.another_letter_on_the_way'))
         expect(page).to have_content(t('idv.titles.come_back_later'))
         expect(page).to have_current_path(idv_letter_enqueued_path)
@@ -94,9 +92,7 @@ RSpec.feature 'idv gpo step' do
 
         # complete verification: end to end gpo test
         complete_gpo_verification(user)
-
         expect(user.identity_verified?).to be(true)
-
         expect(page).to_not have_content(t('account.index.verification.reactivate_button'))
       end
     end

@@ -3,15 +3,15 @@ require 'rails_helper'
 RSpec.describe Idv::GpoMail do
   let(:user) { create(:user) }
   let(:subject) { Idv::GpoMail.new(user) }
-  let(:max_mail_events) { 2 }
-  let(:mail_events_window_days) { 30 }
+  let(:max_letter_request_events) { 2 }
+  let(:letter_request_events_window_days) { 30 }
   let(:minimum_wait_before_another_usps_letter_in_hours) { 24 }
 
   before do
     allow(IdentityConfig.store).to receive(:max_mail_events).
-      and_return(max_mail_events)
+      and_return(max_letter_request_events)
     allow(IdentityConfig.store).to receive(:max_mail_events_window_in_days).
-      and_return(mail_events_window_days)
+      and_return(letter_request_events_window_days)
     allow(IdentityConfig.store).to receive(:minimum_wait_before_another_usps_letter_in_hours).
       and_return(minimum_wait_before_another_usps_letter_in_hours)
   end
@@ -35,7 +35,7 @@ RSpec.describe Idv::GpoMail do
       end
 
       context 'but the window limit is disabled due to a 0 window size' do
-        let(:mail_events_window_days) { 0 }
+        let(:letter_request_events_window_days) { 0 }
 
         it 'is false' do
           expect(subject.mail_spammed?).to eq false
@@ -43,7 +43,7 @@ RSpec.describe Idv::GpoMail do
       end
 
       context 'but the window limit is disabled due to a 0 window count' do
-        let(:max_mail_events) { 0 }
+        let(:max_letter_request_events) { 0 }
 
         it 'is false' do
           expect(subject.mail_spammed?).to eq false
