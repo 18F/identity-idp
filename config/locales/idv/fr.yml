@@ -194,9 +194,9 @@ fr:
           instructions: Si vous avez reçu votre lettre, veuillez entrer le code à 10
             caractères figurant sur la lettre que vous avez reçue.
         intro:
-          be_patient_html: 'Veuillez noter que les lettres prennent <strong>généralement
-            entre trois à sept jours ouvrables pour arriver</strong>. Nous vous
-            remercions de votre patience.'
+          be_patient_html: 'Veuillez noter que les lettres mettent jusqu’à <strong>10
+            jours</strong> pour arriver. Nous vous remercions de votre
+            patience.'
           request_new_letter_link: demander une nouvelle
           request_new_letter_prompt_html: Si votre lettre n’est pas encore arrivée, vous
             pouvez en <span>%{request_new_letter_link}</span>.

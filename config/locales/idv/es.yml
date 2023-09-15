@@ -186,8 +186,8 @@ es:
           instructions: Si ya tiene su carta, introduzca el código de 10 caracteres de la
             carta que recibió.
         intro:
-          be_patient_html: Tenga en cuenta que las cartas <strong>suelen tardar entre 3 y
-            7 días laborables en llegar</strong>. Gracias por su paciencia.
+          be_patient_html: Tenga en cuenta que las cartas tardan hasta <strong>10
+            días</strong> en llegar. Gracias por su paciencia.
           request_new_letter_link: solicitar una nueva
           request_new_letter_prompt_html: Si no ha recibido su carta, puede
             <span>%{request_new_letter_link}</span>.
