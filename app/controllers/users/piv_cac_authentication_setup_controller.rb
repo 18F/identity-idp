@@ -14,6 +14,8 @@ module Users
     before_action :cap_piv_cac_count, only: %i[new submit_new_piv_cac]
     before_action :confirm_recently_authenticated_2fa
 
+    helper_method :in_multi_mfa_selection_flow?
+
     def new
       if params.key?(:token)
         process_piv_cac_setup

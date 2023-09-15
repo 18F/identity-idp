@@ -12,6 +12,8 @@ module Users
     before_action :cap_auth_app_count, only: %i[new confirm]
     before_action :confirm_recently_authenticated_2fa
 
+    helper_method :in_multi_mfa_selection_flow?
+
     def new
       store_totp_secret_in_session
       track_event

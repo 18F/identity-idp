@@ -8,6 +8,8 @@ module TwoFactorAuthentication
     before_action :redirect_if_blank_phone, only: [:show]
     before_action :confirm_voice_capability, only: [:show]
 
+    helper_method :in_multi_mfa_selection_flow?
+
     def show
       analytics.multi_factor_auth_enter_otp_visit(**analytics_properties)
 

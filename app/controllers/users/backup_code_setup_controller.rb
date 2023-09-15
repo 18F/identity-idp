@@ -13,6 +13,8 @@ module Users
     before_action :authorize_backup_code_disable, only: [:delete]
     before_action :confirm_recently_authenticated_2fa, except: [:reminder]
 
+    helper_method :in_multi_mfa_selection_flow?
+
     def index
       track_backup_codes_confirmation_setup_visit
     end
