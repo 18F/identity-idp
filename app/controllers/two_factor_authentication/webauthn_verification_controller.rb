@@ -143,11 +143,11 @@ module TwoFactorAuthentication
     end
 
     def webauthn_configuration_or_latest
-      form&.webauthn_configuration || webauthn_configurations.last
+      form.webauthn_configuration || webauthn_configurations.last
     end
 
     def webauthn_configurations
-      MfaContext.new(current_user).webauthn_configurations.order(:created_at)
+      MfaContext.new(current_user).webauthn_configurations.order(created_at: :desc)
     end
   end
 end

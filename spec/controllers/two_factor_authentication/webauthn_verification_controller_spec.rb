@@ -73,11 +73,14 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
         end
 
         context 'with multiple webauthn configured' do
-          let!(:webauthn_platform_configuration) do
-            create(:webauthn_configuration, :platform_authenticator, user:)
+          let!(:first_webauthn_platform_configuration) do
+            create(:webauthn_configuration, :platform_authenticator, user:, created_at: 2.days.ago)
+          end
+          let!(:second_webauthn_platform_configuration) do
+            create(:webauthn_configuration, :platform_authenticator, user:, created_at: 1.day.ago)
           end
 
-          it 'filters credentials based on requested authenticator attachment' do
+          it 'filters credentials based on requested attachment, sorted descending by date' do
             get :show
 
             expect(assigns(:presenter).credentials).to eq(
@@ -91,8 +94,14 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
 
             expect(assigns(:presenter).credentials).to eq(
               [
-                id: webauthn_platform_configuration.credential_id,
-                transports: webauthn_platform_configuration.transports,
+                {
+                  id: second_webauthn_platform_configuration.credential_id,
+                  transports: second_webauthn_platform_configuration.transports,
+                },
+                {
+                  id: first_webauthn_platform_configuration.credential_id,
+                  transports: first_webauthn_platform_configuration.transports,
+                },
               ],
             )
           end
@@ -223,17 +232,17 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
         end
 
         let(:view_context) { ActionController::Base.new.view_context }
+        let!(:first_webauthn_platform_configuration) do
+          create(:webauthn_configuration, :platform_authenticator, user:, created_at: 2.days.ago)
+        end
+        let!(:second_webauthn_platform_configuration) do
+          create(:webauthn_configuration, :platform_authenticator, user:, created_at: 1.day.ago)
+        end
+
         before do
           allow_any_instance_of(TwoFactorAuthCode::WebauthnAuthenticationPresenter).
             to receive(:multiple_factors_enabled?).
             and_return(true)
-          create(
-            :webauthn_configuration,
-            user: controller.current_user,
-            credential_id: credential_id,
-            credential_public_key: credential_public_key,
-            platform_authenticator: true,
-          )
         end
 
         it 'redirects to webauthn show page' do
@@ -267,7 +276,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
             context: UserSessionContext::AUTHENTICATION_CONTEXT,
             multi_factor_auth_method: 'webauthn_platform',
             multi_factor_auth_method_created_at:
-              controller.current_user.webauthn_configurations.first.created_at.strftime('%s%L'),
+              second_webauthn_platform_configuration.created_at.strftime('%s%L'),
             webauthn_configuration_id: nil,
           )
 
