@@ -1,6 +1,10 @@
 module MfaSetupConcern
   extend ActiveSupport::Concern
 
+  def self.included(base)
+    base.helper_method :in_multi_mfa_selection_flow?
+  end
+
   def next_setup_path
     if suggest_second_mfa?
       auth_method_confirmation_url
