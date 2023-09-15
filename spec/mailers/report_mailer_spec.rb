@@ -52,4 +52,51 @@ RSpec.describe ReportMailer, type: :mailer do
       expect(mail.text_part.body).to include('this is my test')
     end
   end
+
+  describe '#tables_report' do
+    let(:env) { 'prod' }
+
+    let(:mail) do
+      ReportMailer.tables_report(
+        email: 'foo@example.com',
+        subject: 'My Report',
+        env: env,
+        tables: [
+          [
+            ['Some', 'String'],
+            ['a', 'b'],
+            ['c', 'd'],
+          ],
+          [
+            { float_as_percent: true, title: 'Custom Table 2' },
+            ['Float', 'Int', 'Float'],
+            ['Row 1', 1, 0.5],
+            ['Row 2', 1, 1.5],
+          ],
+          [
+            { float_as_percent: false, title: 'Custom Table 3' },
+            ['Float As Percent', 'Int', 'Float'],
+            ['Row 1', 1, 1.0],
+            ['Row 2', 1, 1.5]
+          ],
+        ],
+      )
+    end
+
+    it 'renders the tables in HTML and attaches them as CSVs' do
+      doc = Nokogiri::HTML(mail.html_part.body.to_s)
+
+      expect(doc.css('h2').map(&:text)).to eq(['Table 1', 'Custom Table 2', 'Custom Table 3'])
+
+      _first_table, percent_table, float_table = doc.css('table')
+
+      percent_cell = percent_table.at_css('tbody tr:nth-child(1) td:last-child')
+      expect(percent_cell.text.strip).to eq('50.0%')
+      expect(percent_cell['class']).to eq('table-number')
+
+      float_cell = float_table.at_css('tbody tr:nth-child(1) td:last-child')
+      expect(float_cell.text.strip).to eq('1.0')
+      expect(percent_cell['class']).to eq('table-number')
+    end
+  end
 end
