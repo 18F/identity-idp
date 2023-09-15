@@ -257,7 +257,7 @@ es:
         - '<strong>Verificar por teléfono</strong>: Le llamaremos o enviaremos
           un mensaje de texto a su número de teléfono. Esto lleva unos minutos'
         - '<strong>Verificar por correo</strong>: Le enviaremos una carta a su
-          domicilio. Esto tarda entre 3 y 7 días laborables.'
+          domicilio. Esto tarda entre <strong>5 y 10 días<strong>.'
       welcome: 'Necesitará su:'
     tips:
       document_capture_header_text: 'Para obtener los mejores resultados:'

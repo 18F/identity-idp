@@ -223,7 +223,7 @@ en:
         - '<strong>Verify by phone</strong>: We’ll call or text your phone
           number. This takes a few minutes.'
         - '<strong>Verify by mail</strong>: We’ll mail a letter to your home
-          address. This takes about 3 to 7 business days.'
+          address. This takes <strong>5 to 10 days</strong>.'
       welcome: 'You will need your:'
     tips:
       document_capture_header_text: 'For best results:'
