@@ -77,7 +77,7 @@ RSpec.describe ReportMailer, type: :mailer do
             { float_as_percent: false, title: 'Custom Table 3' },
             ['Float As Percent', 'Int', 'Float'],
             ['Row 1', 1, 1.0],
-            ['Row 2', 1, 1.5]
+            ['Row 2', 1, 1.5],
           ],
         ],
       )
