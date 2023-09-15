@@ -62,6 +62,6 @@ class ReportMailer < ActionMailer::Base
       end
     end
 
-    mail(to: email, subject: "[#{env}] #{subject}")
+    mail(to: email, subject: "[#{env || 'local'}] #{subject}")
   end
 end
