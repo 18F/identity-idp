@@ -200,6 +200,9 @@ RSpec.describe SignUp::CompletionsController do
 
     context 'IAL1' do
       let(:user) { create(:user, :fully_registered) }
+      before do
+        subject.user_session[:in_account_creation_flow] = true
+      end
       it 'tracks analytics' do
         stub_sign_in(user)
         subject.session[:sp] = {
@@ -219,7 +222,7 @@ RSpec.describe SignUp::CompletionsController do
           needs_completion_screen_reason: :new_sp,
           sp_request_requested_attributes: nil,
           sp_session_requested_attributes: nil,
-          in_account_creation_flow: false,
+          in_account_creation_flow: true,
         )
       end
 
@@ -279,7 +282,7 @@ RSpec.describe SignUp::CompletionsController do
           needs_completion_screen_reason: :new_sp,
           sp_request_requested_attributes: nil,
           sp_session_requested_attributes: ['email'],
-          in_account_creation_flow: false,
+          in_account_creation_flow: true,
         )
       end
 
