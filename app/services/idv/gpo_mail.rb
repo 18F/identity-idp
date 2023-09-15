@@ -60,7 +60,7 @@ module Idv
       number_of_letter_requests_within(
         IdentityConfig.store.minimum_wait_before_another_usps_letter_in_hours.hours,
         maximum: 1,
-        for_profile: current_user.pending_profile,
+        for_profile: current_user.gpo_verification_pending_profile,
       ) > 0
     end
 

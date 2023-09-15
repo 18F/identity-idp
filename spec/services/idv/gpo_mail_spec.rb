@@ -19,15 +19,15 @@ RSpec.describe Idv::GpoMail do
   describe '#mail_spammed?' do
     context 'when no letters have been requested' do
       it 'returns false' do
-        expect(subject.mail_spammed?).to be_falsey
+        expect(subject.mail_spammed?).to eq false
       end
     end
 
     context 'when too many letters have been requested within the limiting window' do
       before do
-        enqueue_gpo_letter_for(user, at: 4.days.ago)
-        enqueue_gpo_letter_for(user, at: 3.days.ago)
-        enqueue_gpo_letter_for(user, at: 2.days.ago)
+        enqueue_gpo_letter_for(user, at_time: 4.days.ago)
+        enqueue_gpo_letter_for(user, at_time: 3.days.ago)
+        enqueue_gpo_letter_for(user, at_time: 2.days.ago)
       end
 
       it 'is true' do
@@ -85,14 +85,12 @@ RSpec.describe Idv::GpoMail do
     end
   end
 
-  def enqueue_gpo_letter_for(user, at: Time.zone.now)
+  def enqueue_gpo_letter_for(user, at_time: Time.zone.now)
     profile = create(
       :profile,
       user: user,
-      gpo_verification_pending_at: at,
+      gpo_verification_pending_at: at_time,
     )
-
-    # user.instance_variable_set(:@pending_profile, profile)
 
     GpoConfirmationMaker.new(
       pii: {},
@@ -101,8 +99,8 @@ RSpec.describe Idv::GpoMail do
     ).perform
 
     profile.gpo_confirmation_codes.last.update(
-      created_at: at,
-      updated_at: at,
+      created_at: at_time,
+      updated_at: at_time,
     )
   end
 end

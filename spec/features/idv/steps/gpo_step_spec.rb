@@ -5,7 +5,7 @@ RSpec.feature 'idv gpo step' do
   include OidcAuthHelper
 
   let(:minimum_wait_for_letter) { 24 }
-  let(:days_passed) { 31 }
+  let(:days_passed) { max_days_before_resend_disabled + 1 }
   let(:max_days_before_resend_disabled) { 30 }
 
   before do
