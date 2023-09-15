@@ -15,7 +15,7 @@ fr:
             quelqu’un qui se fait passer pour vous.'
           options_html:
             - Continuer maintenant et effectuer la vérification par courrier, ce
-              qui prend de <strong>3 à 7 jours ouvrables</strong>.
+              qui prend de <strong>5 à 10 jours</strong>.
             - Quitter Login.gov.
           options_prompt: 'Vous pouvez :'
           status_page_html: Malheureusement, nous avons actuellement des difficultés

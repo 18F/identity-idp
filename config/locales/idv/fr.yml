@@ -114,7 +114,7 @@ fr:
             button: Vérifier par courrier
           heading: Nous n’avons pas pu vérifier votre identité par téléphone
           option_try_again_later_html: 'Annuler et recommencer après <b>%{time_left}</b>'
-          option_verify_by_mail_html: Vérifier par courrier, ce qui prend <b>5 à 10 jours</b>.
+          option_verify_by_mail_html: Vérifier par courrier, ce qui prend de <b>5 à 10 jours</b>.
           options_header: 'Vous Pouvez :'
         timeout: Notre demande de vérification de vos renseignements a expiré. Veuillez
           réessayer.
