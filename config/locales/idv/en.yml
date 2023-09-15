@@ -233,7 +233,7 @@ en:
           still use the one-time code from either letter.
         resend_timeframe: Letters typically take 3 to 7 business days to arrive.
         timeframe_html: Letters are sent the next business day via USPS First Class Mail
-          and <strong>typically take 3 to 7 business days to arrive</strong>.
+          and arrive in <strong>5 to 10 days</strong>.
       gpo_reminder:
         body_html: You requested a letter to verify your identity on
           <strong>%{date_letter_was_sent}</strong>. You’ll need to enter the
