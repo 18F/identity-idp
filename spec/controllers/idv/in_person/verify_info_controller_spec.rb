@@ -20,7 +20,6 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
   before do
     allow(subject).to receive(:flow_session).and_return(flow_session)
     stub_sign_in(user)
-    subject.idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID[:ssn]
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 

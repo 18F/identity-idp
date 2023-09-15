@@ -376,8 +376,6 @@ development:
   logins_per_ip_limit: 5
   logo_upload_enabled: true
   max_bad_passwords: 5
-  newrelic_browser_app_id: ''
-  newrelic_browser_key: ''
   newrelic_license_key: ''
   nonessential_email_banlist: '["banned_email@gmail.com"]'
   otp_delivery_blocklist_findtime: 5
@@ -447,8 +445,6 @@ production:
   logins_per_ip_limit: 20
   logins_per_ip_period: 20
   logins_per_ip_track_only_mode: true
-  newrelic_browser_app_id: ''
-  newrelic_browser_key: ''
   newrelic_license_key: ''
   nonessential_email_banlist: '[]'
   otp_delivery_blocklist_findtime: 5
@@ -519,8 +515,6 @@ test:
   max_bad_passwords: 5
   max_mail_events: 2
   otp_min_attempts_remaining_warning_count: 1
-  newrelic_browser_app_id: ''
-  newrelic_browser_key: ''
   newrelic_license_key: ''
   nonessential_email_banlist: '["banned_email@gmail.com"]'
   otp_delivery_blocklist_findtime: 1

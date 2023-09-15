@@ -1,5 +1,5 @@
 import { trackEvent, trackError } from '@18f/identity-analytics';
-import { usePropertyValue, useSandbox } from '@18f/identity-test-helpers';
+import { useSandbox } from '@18f/identity-test-helpers';
 import type { SinonStub } from 'sinon';
 
 describe('trackEvent', () => {
@@ -84,20 +84,28 @@ describe('trackEvent', () => {
 });
 
 describe('trackError', () => {
-  it('is a noop', () => {
-    trackError(new Error('Oops!'));
+  const sandbox = useSandbox();
+  const endpoint = '/log';
+
+  beforeEach(() => {
+    sandbox.stub(global.navigator, 'sendBeacon').returns(true);
+    document.body.innerHTML = `<script type="application/json" data-config>{"analyticsEndpoint":"${endpoint}"}</script>`;
   });
 
-  context('with newrelic agent present', () => {
-    const sandbox = useSandbox();
-    const noticeError = sandbox.stub();
-    usePropertyValue(globalThis as any, 'newrelic', { noticeError });
+  it('tracks event', async () => {
+    trackError(new Error('Oops!'));
 
-    it('notices error in newrelic', () => {
-      const error = new Error('Oops!');
-      trackError(error);
+    expect(global.navigator.sendBeacon).to.have.been.calledOnce();
 
-      expect(noticeError).to.have.been.calledWith(error);
-    });
+    const [actualEndpoint, data] = (global.navigator.sendBeacon as SinonStub).firstCall.args;
+    expect(actualEndpoint).to.eql(endpoint);
+
+    const { event, payload } = JSON.parse(await data.text());
+    const { name, message, stack } = payload;
+
+    expect(event).to.equal('Frontend Error');
+    expect(name).to.equal('Error');
+    expect(message).to.equal('Oops!');
+    expect(stack).to.be.a('string');
   });
 });
