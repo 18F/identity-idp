@@ -108,8 +108,8 @@ es:
           gpo:
             button: Verificar por correo
           heading: No pudimos asociarlo a este número
-          option_try_again_later_html: 'Cancelar y empezar de nuevo transcurridas <b>%{time_left}</b>'
-          option_verify_by_mail_html: 'Verificar por correo, lo cual tarda entre <b>5 y 10 días</b>'
+          option_try_again_later_html: 'Cancelar y empezar de nuevo transcurridas <strong>%{time_left}</strong>'
+          option_verify_by_mail_html: 'Verificar por correo, lo cual tarda entre <strong>5 y 10 días</strong>'
           options_header: 'Puede:'
         timeout: Nuestra solicitud para verificar tu información ha caducado. Vuelve a
           intentarlo.
