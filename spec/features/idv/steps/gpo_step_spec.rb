@@ -35,20 +35,20 @@ RSpec.feature 'idv gpo step' do
 
       # rate-limited because too little time has passed
       sign_in_live_with_2fa(user)
-      expect_to_be_on_the_enter_code_page_and_rate_limited
+      confirm_rate_limited
       sign_out
 
       # still rate-limited because too little time has passed
       travel_to((minimum_wait_for_letter - 1).hours.from_now) do
         sign_in_live_with_2fa(user)
-        expect_to_be_on_the_enter_code_page_and_rate_limited
+        confirm_rate_limited
         sign_out
       end
 
       # will be rate-limted after expiration
       travel_to(days_passed.days.from_now) do
         sign_in_live_with_2fa(user)
-        expect_to_be_on_the_enter_code_page_and_rate_limited
+        confirm_rate_limited
         sign_out
         Telephony::Test::Message.clear_messages
       end
@@ -141,7 +141,7 @@ RSpec.feature 'idv gpo step' do
       visit sign_out_url
     end
 
-    def expect_to_be_on_the_enter_code_page_and_rate_limited
+    def confirm_rate_limited
       expect(page).to have_current_path(idv_verify_by_mail_enter_code_path)
       expect(page).not_to have_link(
         t('idv.gpo.did_not_receive_letter.intro.request_new_letter_link'),
