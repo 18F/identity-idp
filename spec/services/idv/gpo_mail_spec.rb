@@ -89,7 +89,8 @@ RSpec.describe Idv::GpoMail do
     profile = create(
       :profile,
       user: user,
-      gpo_verification_pending_at: at)
+      gpo_verification_pending_at: at,
+    )
 
     # user.instance_variable_set(:@pending_profile, profile)
 

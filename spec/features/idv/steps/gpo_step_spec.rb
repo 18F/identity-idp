@@ -30,7 +30,7 @@ RSpec.feature 'idv gpo step' do
   context 'the user has sent a letter but not verified an OTP' do
     let(:user) { user_with_2fa }
 
-    it 'allows the user to resend a letter and redirects to the come back later step if not rate limited', :js do
+    it 'if not rate limited, allow user to resend letter & redirect to letter enqueued step', :js do
       complete_idv_by_mail_and_sign_out
 
       # rate-limited because too little time has passed
