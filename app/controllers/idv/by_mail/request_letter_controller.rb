@@ -72,10 +72,6 @@ module Idv
         ProofingComponent.find_or_create_by(user: current_user).update(address_check: 'gpo_letter')
       end
 
-      def confirm_mail_not_spammed
-        redirect_to idv_review_url if gpo_mail_service.mail_spammed?
-      end
-
       def resend_requested?
         current_user.gpo_verification_pending_profile?
       end
