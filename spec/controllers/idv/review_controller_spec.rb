@@ -168,14 +168,6 @@ RSpec.describe Idv::ReviewController do
           idv_session.address_verification_mechanism = 'gpo'
         end
 
-        it 'displays info message about sending letter' do
-          get :new
-
-          expect(flash.now[:info]).to eq(
-            t('idv.messages.review.gpo_pending'),
-          )
-        end
-
         it 'uses the correct step indicator step' do
           indicator_step = subject.step_indicator_step
 

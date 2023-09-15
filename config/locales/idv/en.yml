@@ -260,7 +260,8 @@ en:
           - Your primary number (the one you use the most often)
       return_to_profile: '‹ Return to your %{app_name} profile'
       review:
-        gpo_pending: We’ll send your letter once you re-enter your password.
+        by_mail_password_reminder_html: <b>Remember your password.<b> The verification
+          code in your letter won’t work if you reset your password later.
         message: '%{app_name} will encrypt your information with your password. This
           means that your information is secure and only you will be able to
           access or change it.'
