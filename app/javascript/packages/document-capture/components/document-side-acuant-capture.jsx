@@ -43,7 +43,6 @@ function DocumentSideAcuantCapture({
   className,
 }) {
   const error = errors.find(({ field }) => field === side)?.error;
-
   return (
     <AcuantCapture
       ref={registerField(side, { isRequired: true })}
@@ -54,12 +53,15 @@ function DocumentSideAcuantCapture({
       /* i18n-tasks-use t('doc_auth.headings.front') */
       bannerText={t(`doc_auth.headings.${side}`)}
       value={value}
-      onChange={(nextValue, metadata) =>
+      onChange={(nextValue, metadata) => {
         onChange({
           [side]: nextValue,
           [`${side}_image_metadata`]: JSON.stringify(metadata),
-        })
-      }
+        });
+        if (metadata?.failedImageResubmission) {
+          onError(new Error(t('doc_auth.errors.doc.resubmit_failed_image')), { field: side });
+        }
+      }}
       onCameraAccessDeclined={() => {
         onError(new CameraAccessDeclinedError(), { field: side });
         onError(new CameraAccessDeclinedError(undefined, { isDetail: true }));

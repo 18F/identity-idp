@@ -67,6 +67,11 @@ interface ImageAnalyticsPayload {
    * Fingerprint of the image, base64 encoded SHA-256 digest
    */
   fingerprint: string | null;
+
+  /**
+   *
+   */
+  failedImageResubmission: boolean;
 }
 
 interface AcuantImageAnalyticsPayload extends ImageAnalyticsPayload {
@@ -380,6 +385,7 @@ function AcuantCapture(
     let hasFailed = false;
     if (nextValue) {
       const { width, height, fingerprint } = await getImageMetadata(nextValue);
+      hasFailed = failedSubmissionImageFingerprints[name]?.includes(fingerprint);
       analyticsPayload = getAddAttemptAnalyticsPayload({
         width,
         height,
@@ -387,19 +393,12 @@ function AcuantCapture(
         mimeType: nextValue.type,
         source: 'upload',
         size: nextValue.size,
+        failedImageResubmission: hasFailed,
       });
-      hasFailed = failedSubmissionImageFingerprints[name]?.includes(analyticsPayload.fingerprint);
-      if (hasFailed) {
-        trackEvent(`IdV: failed ${name} image resubmitted`, analyticsPayload);
-      } else {
-        trackEvent(`IdV: ${name} image added`, analyticsPayload);
-      }
+      trackEvent(`IdV: ${name} image added`, analyticsPayload);
     }
-    if (hasFailed) {
-      setOwnErrorMessage(t('doc_auth.errors.doc.resubmit_failed_image'));
-    } else {
-      onChangeAndResetError(nextValue, analyticsPayload);
-    }
+
+    onChangeAndResetError(nextValue, analyticsPayload);
   }
 
   /**

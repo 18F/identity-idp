@@ -109,7 +109,7 @@ const App = composeComponents(
     AcuantContextProvider,
     {
       sdkSrc: acuantVersion && `/acuant/${acuantVersion}/AcuantJavascriptWebSdk.min.js`,
-      cameraSrc: acuantVersion && `/acuant/${acuantVersion}/AcuantCamera.min.js`,
+      cameraSrc: acuantVersion && `/acuant/${acuantVersion}/AcuantCamera.js`,
       credentials: getMetaContent('acuant-sdk-initialization-creds'),
       endpoint: getMetaContent('acuant-sdk-initialization-endpoint'),
       glareThreshold,

@@ -75,11 +75,6 @@ function ReviewIssuesStep({
     setHasDismissed(true);
   }
 
-  const [skipWarning] = useState<boolean>(
-    !!failedImageFingerprints?.front?.includes(value.front_image_metadata?.fingerprint) ||
-      !!failedImageFingerprints?.back?.includes(value.back_image_metadata?.fingerprint),
-  );
-
   // let FormSteps know, via FormStepsContext, whether this page
   // is ready to submit form values
   useEffect(() => {
@@ -90,7 +85,7 @@ function ReviewIssuesStep({
     return <BarcodeAttentionWarning onDismiss={onWarningPageDismissed} pii={pii} />;
   }
   // Show warning screen
-  if (!hasDismissed && !skipWarning) {
+  if (!hasDismissed) {
     // Warning(try again screen)
     return (
       <DocumentCaptureWarning
