@@ -227,11 +227,10 @@ fr:
         information vérifiée, veuillez %{link_html}.
       activated_link: communiquer avec nous
       clear_and_start_over: Supprimer mes données et recommencer
-      come_back_later_html: <p>Les lettres prennent généralement <strong>trois à sept
-        jours ouvrables</strong> pour arriver par le biais du courriel de
-        première classe de l’USPS.</p><p>Une fois votre lettre arrivée,
-        connectez-vous à %{app_name} et entrez votre code à usage unique lorsque
-        vous y êtes invité.</p>
+      come_back_later_html: <p>Les lettres mettent <strong>5 à 10 jours</strong> pour
+        arriver par le courrier de première classe d’USPS.</p><p>Une fois votre
+        lettre arrivée, connectez-vous à %{app_name} et entrez votre code à
+        usage unique lorsque vous y êtes invité.</p>
       come_back_later_no_sp_html: Vous pouvez revenir à votre <strong>compte
         %{app_name}</strong> pour le moment.
       come_back_later_password_html: <strong>N’oubliez pas votre mot de

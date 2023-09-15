@@ -216,10 +216,10 @@ es:
         información verificada, por favor, %{link_html}.
       activated_link: Contáctenos
       clear_and_start_over: Borrar mi información y empezar de nuevo
-      come_back_later_html: <p>Las cartas suelen tardar de <strong>3 a 7 días
-        hábiles</strong> en llegar a través de USPS First Class Mail.</p> <p>Una
-        vez que reciba la carta, inicie sesión en %{app_name} e introduzca el
-        código único cuando se le solicite.</p>
+      come_back_later_html: <p>Las cartas tardan entre <strong>5 y 10 días</strong> en
+        llegar por USPS First Class Mail.</p> <p>Una vez que reciba la carta,
+        inicie sesión en %{app_name} e introduzca el código único cuando se le
+        solicite.</p>
       come_back_later_no_sp_html: Ahora puedes volver a tu <strong>cuenta de %{app_name}</strong>.
       come_back_later_password_html: <strong>No olvide su contraseña.</strong><br />
         Si restablece su contraseña, el código único de su carta ya no
