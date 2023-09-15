@@ -5,8 +5,7 @@ module Idv
     end
 
     def mail_spammed?
-      rate_limiting_enabled? &&
-        (too_many_mails_within_window? || last_mail_too_recent?)
+      too_many_mails_within_window? || last_mail_too_recent?
     end
 
     def profile_too_old?
@@ -32,9 +31,7 @@ module Idv
         (Time.zone.now - first_letter_requested_at).to_i.seconds.in_hours.to_i : 0
     end
 
-    def rate_limiting_enabled?
-      window_limit_enabled? || last_not_too_recent_enabled?
-    end
+    private
 
     def window_limit_enabled?
       IdentityConfig.store.max_mail_events != 0 &&
@@ -42,11 +39,8 @@ module Idv
     end
 
     def last_not_too_recent_enabled?
-      IdentityConfig.store.minimum_wait_before_another_usps_letter_in_hours != 0 &&
-        current_user.pending_profile?
+      IdentityConfig.store.minimum_wait_before_another_usps_letter_in_hours != 0
     end
-
-    private
 
     attr_reader :current_user
 
@@ -61,6 +55,7 @@ module Idv
 
     def last_mail_too_recent?
       return false unless last_not_too_recent_enabled?
+      return false unless current_user.gpo_verification_pending_profile?
 
       number_of_mails_within(
         IdentityConfig.store.minimum_wait_before_another_usps_letter_in_hours.hours,
