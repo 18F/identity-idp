@@ -209,9 +209,9 @@ fr:
         title: Confirmez votre compte
       intro_html: '<p>Si vous avez reçu votre lettre, veuillez entrer votre code à
         usage unique ci-dessous. </p> <p>Si votre lettre n’est pas encore
-        arrivée, veuillez être patient car les <strong>lettres prennent
-        généralement entre trois à sept jours ouvrables pour arriver</strong>.
-        Nous vous remercions de votre patience.</p>'
+        arrivée, veuillez être patient car les lettres mettent jusqu’à
+        <strong>10 jours</strong> pour arriver. Nous vous remercions de votre
+        patience.</p>'
       return_to_profile: Retourner à votre profil
       title: Content de vous revoir
       wrong_address: Pas la bonne adresse?

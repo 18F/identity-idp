@@ -193,8 +193,8 @@ en:
         title: Confirm your account
       intro_html: '<p>If you have received your letter, please enter your one-time
         code below. </p><p>If your letter hasn’t arrived yet, please be patient
-        as <strong>letters typically take 3 to 7 business days to
-        arrive</strong>. Thank you for your patience.</p>'
+        as letters take up to <strong>10 days</strong> to arrive. Thank you for
+        your patience.</p>'
       return_to_profile: Return to your profile
       title: Welcome back
       wrong_address: Not the right address?
