@@ -3732,12 +3732,6 @@ module AnalyticsEvents
     track_event('User Maximum Session Length Exceeded')
   end
 
-  # Tracks if a user clicks the "Show Password button"
-  # @param [String] path URL path where the click occurred
-  def show_password_button_clicked(path:, **extra)
-    track_event('Show Password Button Clicked', path: path, **extra)
-  end
-
   # Tracks if a user clicks the "You will also need" accordion on the homepage
   def sign_in_idv_requirements_accordion_clicked
     track_event('Sign In: IdV requirements accordion clicked')

@@ -1,7 +1,5 @@
 import userEvent from '@testing-library/user-event';
 import { getByLabelText, waitFor } from '@testing-library/dom';
-import { useSandbox } from '@18f/identity-test-helpers';
-import * as analytics from '@18f/identity-analytics';
 import './password-confirmation-element';
 import type PasswordConfirmationElement from './password-confirmation-element';
 
@@ -10,7 +8,6 @@ describe('PasswordConfirmationElement', () => {
   let input1: HTMLInputElement;
   let input2: HTMLInputElement;
   let idCounter = 0;
-  const sandbox = useSandbox();
 
   function createElement() {
     element = document.createElement('lg-password-confirmation') as PasswordConfirmationElement;
@@ -51,17 +48,6 @@ describe('PasswordConfirmationElement', () => {
     await userEvent.click(toggle);
 
     expect(input1.type).to.equal('text');
-  });
-
-  it('logs an event when clicking the Show Password button', async () => {
-    sandbox.stub(analytics, 'trackEvent');
-    const toggle = getByLabelText(element, 'Show password') as HTMLInputElement;
-
-    await userEvent.click(toggle);
-
-    expect(analytics.trackEvent).to.have.been.calledWith('Show Password button clicked', {
-      path: window.location.pathname,
-    });
   });
 
   describe('Password validation', () => {
