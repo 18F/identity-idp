@@ -180,8 +180,8 @@ en:
           instructions: If you have your letter, enter the 10-character code from the
             letter you received.
         intro:
-          be_patient_html: Please note that letters take up to 10 days to arrive. Thank
-            you for your patience.
+          be_patient_html: Please note that letters take up to <strong>10 days</strong> to
+            arrive. Thank you for your patience.
           request_new_letter_link: request a new letter
           request_new_letter_prompt_html: If you haven’t received your letter, you may
             <span>%{request_new_letter_link}</span>.
