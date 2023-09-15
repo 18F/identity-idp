@@ -31,7 +31,7 @@ module InPersonHelper
   GOOD_IDENTITY_DOC_ZIPCODE =
     Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:identity_doc_zipcode]
 
-  def fill_out_state_id_form_ok(same_address_as_id: false, capture_secondary_id_enabled: false)
+  def fill_out_state_id_form_ok(same_address_as_id: false)
     fill_in t('in_person_proofing.form.state_id.first_name'), with: GOOD_FIRST_NAME
     fill_in t('in_person_proofing.form.state_id.last_name'), with: GOOD_LAST_NAME
     year, month, day = GOOD_DOB.split('-')
@@ -42,19 +42,17 @@ module InPersonHelper
            from: t('in_person_proofing.form.state_id.state_id_jurisdiction')
     fill_in t('in_person_proofing.form.state_id.state_id_number'), with: GOOD_STATE_ID_NUMBER
 
-    if capture_secondary_id_enabled
-      fill_in t('in_person_proofing.form.state_id.address1'), with: GOOD_IDENTITY_DOC_ADDRESS1
-      fill_in t('in_person_proofing.form.state_id.address2'), with: GOOD_IDENTITY_DOC_ADDRESS2
-      fill_in t('in_person_proofing.form.state_id.city'), with: GOOD_IDENTITY_DOC_CITY
-      fill_in t('in_person_proofing.form.state_id.zipcode'), with: GOOD_IDENTITY_DOC_ZIPCODE
-      if same_address_as_id
-        select GOOD_IDENTITY_DOC_ADDRESS_STATE,
-               from: t('in_person_proofing.form.state_id.identity_doc_address_state')
-        choose t('in_person_proofing.form.state_id.same_address_as_id_yes')
-      else
-        select GOOD_STATE, from: t('in_person_proofing.form.state_id.identity_doc_address_state')
-        choose t('in_person_proofing.form.state_id.same_address_as_id_no')
-      end
+    fill_in t('in_person_proofing.form.state_id.address1'), with: GOOD_IDENTITY_DOC_ADDRESS1
+    fill_in t('in_person_proofing.form.state_id.address2'), with: GOOD_IDENTITY_DOC_ADDRESS2
+    fill_in t('in_person_proofing.form.state_id.city'), with: GOOD_IDENTITY_DOC_CITY
+    fill_in t('in_person_proofing.form.state_id.zipcode'), with: GOOD_IDENTITY_DOC_ZIPCODE
+    if same_address_as_id
+      select GOOD_IDENTITY_DOC_ADDRESS_STATE,
+             from: t('in_person_proofing.form.state_id.identity_doc_address_state')
+      choose t('in_person_proofing.form.state_id.same_address_as_id_yes')
+    else
+      select GOOD_STATE, from: t('in_person_proofing.form.state_id.identity_doc_address_state')
+      choose t('in_person_proofing.form.state_id.same_address_as_id_no')
     end
   end
 
