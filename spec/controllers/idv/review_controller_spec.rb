@@ -168,10 +168,31 @@ RSpec.describe Idv::ReviewController do
           idv_session.address_verification_mechanism = 'gpo'
         end
 
+        render_views
+
+        it 'shows password reminder banner' do
+          get :new
+
+          expect(response.body).to include(
+            t('idv.messages.review.by_mail_password_reminder_html'),
+          )
+        end
+
         it 'uses the correct step indicator step' do
           indicator_step = subject.step_indicator_step
 
           expect(indicator_step).to eq(:get_a_letter)
+        end
+      end
+
+      context 'not in gpo flow' do
+        render_views
+        it 'does not show password reminder banner for non-gpo' do
+          get :new
+
+          expect(response.body).not_to include(
+            t('idv.messages.review.by_mail_password_reminder_html'),
+          )
         end
       end
 

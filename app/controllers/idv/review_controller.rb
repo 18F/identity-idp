@@ -29,6 +29,8 @@ module Idv
       if gpo_mail_service.mail_spammed?
         flash_now[:error] = t('idv.errors.mail_limit_reached')
       end
+
+      @verifying_by_mail = address_verification_method == 'gpo'
     end
 
     def create
