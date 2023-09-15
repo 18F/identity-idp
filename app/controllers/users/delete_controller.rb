@@ -1,7 +1,10 @@
 module Users
   class DeleteController < ApplicationController
+    include ReauthenticationRequiredConcern
+
     before_action :confirm_two_factor_authenticated
     before_action :confirm_current_password, only: [:delete]
+    before_action :confirm_recently_authenticated_2fa
 
     def show
       analytics.account_delete_visited

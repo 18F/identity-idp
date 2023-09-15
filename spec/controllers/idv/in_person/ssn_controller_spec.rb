@@ -6,10 +6,8 @@ RSpec.describe Idv::InPerson::SsnController do
   let(:pii_from_user) { Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID_WITH_NO_SSN.dup }
 
   let(:flow_session) do
-    { 'document_capture_session_uuid' => 'fd14e181-6fb1-4cdc-92e0-ef66dad0df4e',
-      :pii_from_user => pii_from_user,
-      :threatmetrix_session_id => 'c90ae7a5-6629-4e77-b97c-f1987c2df7d0',
-      :flow_path => 'standard' }
+    { pii_from_user: pii_from_user,
+      flow_path: 'standard' }
   end
 
   let(:ssn) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn] }
@@ -83,10 +81,35 @@ RSpec.describe Idv::InPerson::SsnController do
       expect { get :show }.to change { subject.idv_session.threatmetrix_session_id }.from(nil)
     end
 
-    context 'with an ssn in session' do
+    context 'with an ssn in flow_session' do
       let(:referer) { idv_in_person_step_url(step: :address) }
       before do
         flow_session[:pii_from_user][:ssn] = ssn
+        request.env['HTTP_REFERER'] = referer
+      end
+
+      context 'referer is not verify_info' do
+        it 'redirects to verify_info' do
+          get :show
+
+          expect(response).to redirect_to(idv_in_person_verify_info_url)
+        end
+      end
+
+      context 'referer is verify_info' do
+        let(:referer) { idv_in_person_verify_info_url }
+        it 'does not redirect' do
+          get :show
+
+          expect(response).to render_template :show
+        end
+      end
+    end
+
+    context 'with an ssn in idv_session' do
+      let(:referer) { idv_in_person_step_url(step: :address) }
+      before do
+        subject.idv_session.ssn = ssn
         request.env['HTTP_REFERER'] = referer
       end
 
@@ -126,16 +149,6 @@ RSpec.describe Idv::InPerson::SsnController do
         }.merge(ab_test_args)
       end
 
-      let(:idv_session) do
-        {
-          applicant: Idp::Constants::MOCK_IDV_APPLICANT,
-          resolution_successful: true,
-          profile_confirmation: true,
-          vendor_phone_confirmation: true,
-          user_phone_confirmation: true,
-        }
-      end
-
       it 'sends analytics_submitted event' do
         put :update, params: params
 
@@ -156,14 +169,18 @@ RSpec.describe Idv::InPerson::SsnController do
         expect(flow_session[:pii_from_user][:ssn]).to eq(ssn)
       end
 
+      it 'adds ssn to idv_session' do
+        put :update, params: params
+
+        expect(subject.idv_session.ssn).to eq(ssn)
+      end
+
       it 'invalidates steps after ssn' do
+        subject.idv_session.applicant = Idp::Constants::MOCK_IDV_APPLICANT
+
         put :update, params: params
 
         expect(subject.idv_session.applicant).to be_blank
-        expect(subject.idv_session.resolution_successful).to be_blank
-        expect(subject.idv_session.profile_confirmation).to be_blank
-        expect(subject.idv_session.vendor_phone_confirmation).to be_blank
-        expect(subject.idv_session.user_phone_confirmation).to be_blank
       end
 
       it 'redirects to the expected page' do

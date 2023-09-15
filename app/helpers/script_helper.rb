@@ -19,11 +19,11 @@ module ScriptHelper
   alias_method :enqueue_component_scripts, :javascript_packs_tag_once
 
   def render_javascript_pack_once_tags(*names)
-    javascript_packs_tag_once(*names) if names.present?
-    if @scripts && (sources = AssetSources.get_sources(*@scripts)).present?
+    names = names.presence || @scripts
+    if names && (sources = AssetSources.get_sources(*names)).present?
       safe_join(
         [
-          javascript_assets_tag(*@scripts),
+          javascript_assets_tag(*names),
           *sources.map do |source|
             javascript_include_tag(
               source,

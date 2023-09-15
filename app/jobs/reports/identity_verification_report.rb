@@ -7,6 +7,7 @@ module Reports
     attr_accessor :report_date
 
     def perform(report_date)
+      return unless IdentityConfig.store.s3_reports_enabled
       self.report_date = report_date
 
       csv = report_maker.to_csv
@@ -16,7 +17,7 @@ module Reports
 
     def report_maker
       Reporting::IdentityVerificationReport.new(
-        issuer: nil,
+        issuers: [],
         time_range: report_date.all_day,
         slice: 4.hours,
       )

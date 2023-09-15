@@ -304,7 +304,7 @@ es:
         need_assistance: '¿Necesita ayuda inmediata? Así es como puede obtener ayuda:'
       options:
         contact_support: Póngase en contacto con el servicio de asistencia de %{app_name}
-        doc_capture_tips: Más consejos para agregar fotos de su identificación
+        doc_capture_tips: Sugerencias para obtener fotos nítidas de tu documento de identidad
         get_help_at_sp: Obtenga ayuda en %{sp_name}
         learn_more_address_verification_options: Obtenga más información sobre la verificación por teléfono o por correo
         learn_more_verify_by_mail: Obtenga más información sobre la verificación de su
@@ -312,8 +312,7 @@ es:
         learn_more_verify_by_phone: Más información sobre qué número de teléfono usar
         learn_more_verify_by_phone_in_person: Más información sobre cómo verificar su número de teléfono
         learn_more_verify_in_person: Más información sobre la verificación en persona
-        supported_documents: Vea la lista de documentos de identidad emitidos por el
-          estado que son aceptados
+        supported_documents: Más información sobre los documentos de identidad aceptados
         verify_by_mail: Verifique su dirección por correo
     unavailable:
       exit_button: 'Salir de %{app_name}'

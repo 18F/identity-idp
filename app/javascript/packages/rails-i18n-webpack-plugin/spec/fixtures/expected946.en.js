@@ -1,1 +1,1 @@
-!function(){var k,o={"forms.button.cancel":"Cancel"},l=window._locale_data=window._locale_data||{};for(k in o)l[k]=o[k]}()
+_locale_data=Object.assign({"forms.button.cancel":"Cancel"},this._locale_data)

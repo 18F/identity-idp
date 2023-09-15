@@ -73,11 +73,14 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
         end
 
         context 'with multiple webauthn configured' do
-          let!(:webauthn_platform_configuration) do
-            create(:webauthn_configuration, :platform_authenticator, user:)
+          let!(:first_webauthn_platform_configuration) do
+            create(:webauthn_configuration, :platform_authenticator, user:, created_at: 2.days.ago)
+          end
+          let!(:second_webauthn_platform_configuration) do
+            create(:webauthn_configuration, :platform_authenticator, user:, created_at: 1.day.ago)
           end
 
-          it 'filters credentials based on requested authenticator attachment' do
+          it 'filters credentials based on requested attachment, sorted descending by date' do
             get :show
 
             expect(assigns(:presenter).credentials).to eq(
@@ -91,8 +94,14 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
 
             expect(assigns(:presenter).credentials).to eq(
               [
-                id: webauthn_platform_configuration.credential_id,
-                transports: webauthn_platform_configuration.transports,
+                {
+                  id: second_webauthn_platform_configuration.credential_id,
+                  transports: second_webauthn_platform_configuration.transports,
+                },
+                {
+                  id: first_webauthn_platform_configuration.credential_id,
+                  transports: first_webauthn_platform_configuration.transports,
+                },
               ],
             )
           end
@@ -209,10 +218,10 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
         let(:webauthn_error) { 'NotAllowedError' }
         let(:params) do
           {
-            authenticator_data: authenticator_data,
-            client_data_json: verification_client_data_json,
-            signature: signature,
-            credential_id: credential_id,
+            authenticator_data: '',
+            client_data_json: '',
+            signature: '',
+            credential_id: '',
             platform: true,
             webauthn_error: webauthn_error,
           }
@@ -223,17 +232,17 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
         end
 
         let(:view_context) { ActionController::Base.new.view_context }
+        let!(:first_webauthn_platform_configuration) do
+          create(:webauthn_configuration, :platform_authenticator, user:, created_at: 2.days.ago)
+        end
+        let!(:second_webauthn_platform_configuration) do
+          create(:webauthn_configuration, :platform_authenticator, user:, created_at: 1.day.ago)
+        end
+
         before do
           allow_any_instance_of(TwoFactorAuthCode::WebauthnAuthenticationPresenter).
             to receive(:multiple_factors_enabled?).
             and_return(true)
-          create(
-            :webauthn_configuration,
-            user: controller.current_user,
-            credential_id: credential_id,
-            credential_public_key: credential_public_key,
-            platform_authenticator: true,
-          )
         end
 
         it 'redirects to webauthn show page' do
@@ -256,13 +265,19 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
 
         it 'logs an event with error details' do
           expect(@analytics).to receive(:track_mfa_submit_event).with(
-            hash_including(
-              success: false,
-              error_details: { webauthn_error: [webauthn_error] },
-              context: UserSessionContext::AUTHENTICATION_CONTEXT,
-              multi_factor_auth_method: 'webauthn_platform',
-              webauthn_configuration_id: controller.current_user.webauthn_configurations.first.id,
-            ),
+            success: false,
+            error_details: {
+              authenticator_data: [:blank],
+              client_data_json: [:blank],
+              signature: [:blank],
+              webauthn_configuration: [:blank],
+              webauthn_error: [webauthn_error],
+            },
+            context: UserSessionContext::AUTHENTICATION_CONTEXT,
+            multi_factor_auth_method: 'webauthn_platform',
+            multi_factor_auth_method_created_at:
+              second_webauthn_platform_configuration.created_at.strftime('%s%L'),
+            webauthn_configuration_id: nil,
           )
 
           patch :confirm, params: params

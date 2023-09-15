@@ -32,6 +32,14 @@ class UserMailerPreview < ActionMailer::Preview
     )
   end
 
+  def reset_password_instructions_with_pending_gpo_letter
+    UserMailer.with(
+      user: user_with_pending_gpo_letter, email_address: email_address_record,
+    ).reset_password_instructions(
+      token: SecureRandom.hex, request_id: SecureRandom.hex,
+    )
+  end
+
   def password_changed
     UserMailer.with(user: user, email_address: email_address_record).
       password_changed(disavowal_token: SecureRandom.hex)

@@ -7,7 +7,6 @@ import HybridDocCaptureWarning from './hybrid-doc-capture-warning';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
 import DeviceContext from '../context/device';
 import UploadContext from '../context/upload';
-import DocumentCaptureTroubleshootingOptions from './document-capture-troubleshooting-options';
 import TipList from './tip-list';
 
 /**
@@ -51,6 +50,7 @@ function DocumentsStep({
       <PageHeading>{t('doc_auth.headings.document_capture')}</PageHeading>
       <p>{t('doc_auth.info.document_capture_intro_acknowledgment')}</p>
       <TipList
+        titleClassName="margin-bottom-0"
         title={t('doc_auth.tips.document_capture_header_text')}
         items={[
           t('doc_auth.tips.document_capture_id_text1'),
@@ -70,7 +70,6 @@ function DocumentsStep({
         />
       ))}
       {isLastStep ? <FormStepsButton.Submit /> : <FormStepsButton.Continue />}
-      <DocumentCaptureTroubleshootingOptions location="document_capture" />
       <Cancel />
     </>
   );

@@ -5,6 +5,7 @@ RSpec.feature 'legacy passwords' do
     user = create(:user, :fully_registered)
     user.update!(
       encrypted_password_digest: Encryption::UakPasswordVerifier.digest('legacy password'),
+      encrypted_password_digest_multi_region: nil,
     )
 
     expect(
@@ -26,6 +27,7 @@ RSpec.feature 'legacy passwords' do
     user = create(:user, :fully_registered)
     user.update!(
       encrypted_password_digest: Encryption::UakPasswordVerifier.digest('legacy password'),
+      encrypted_password_digest_multi_region: nil,
     )
 
     signin(user.email, 'a different password')
@@ -40,6 +42,7 @@ RSpec.feature 'legacy passwords' do
     user = create(:user, :fully_registered)
     user.update!(
       encrypted_recovery_code_digest: Encryption::UakPasswordVerifier.digest('1111 2222 3333 4444'),
+      encrypted_recovery_code_digest_multi_region: nil,
     )
 
     expect(
@@ -59,6 +62,7 @@ RSpec.feature 'legacy passwords' do
     user = create(:user, :fully_registered)
     user.update!(
       encrypted_recovery_code_digest: Encryption::UakPasswordVerifier.digest('1111 2222 3333 4444'),
+      encrypted_recovery_code_digest_multi_region: nil,
     )
 
     sign_in_user(user)

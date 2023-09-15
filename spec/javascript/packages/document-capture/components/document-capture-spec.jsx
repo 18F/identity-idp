@@ -65,8 +65,8 @@ describe('document-capture/components/document-capture', () => {
     // `onError` called with an Error instance is indication of camera access declined, which is
     // expected to show both field-level and step error.
     // See: https://github.com/18F/identity-idp/blob/164231d/app/javascript/packages/document-capture/components/acuant-capture.jsx#L114
-    window.AcuantCameraUI.start.callsFake(({ _onCaptured, _onCropped, onFailure }) =>
-      onFailure(new Error()),
+    window.AcuantCameraUI.start.callsFake(({ _onCaptured, _onCropped, onError }) =>
+      onError(new Error()),
     );
 
     await userEvent.click(getByLabelText('doc_auth.headings.document_capture_front'));
@@ -222,8 +222,9 @@ describe('document-capture/components/document-capture', () => {
     );
 
     // Make sure that the first focusable element after a tab is what we expect it to be.
+    // Since the error wasn't related to an unsupported document type, user should see a help center link.
     await userEvent.tab();
-    const firstFocusable = getByLabelText('doc_auth.headings.document_capture_front');
+    const firstFocusable = getByText('doc_auth.info.review_examples_of_photos');
     expect(document.activeElement).to.equal(firstFocusable);
 
     const hasValueSelected = !!getByLabelText('doc_auth.headings.document_capture_front');

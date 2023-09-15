@@ -177,22 +177,28 @@ else
                                     cron: cron_12m,
                                   }
                                 end),
-      arcgis_token: (if IdentityConfig.store.arcgis_api_refresh_token_job_enabled
-                       {
-                         class: 'ArcgisTokenJob',
-                         cron: IdentityConfig.store.arcgis_api_refresh_token_job_cron,
-                       }
-                     end),
       # Account creation/deletion stats for OKRs
       quarterly_account_stats: {
         class: 'Reports::QuarterlyAccountStats',
         cron: cron_24h,
         args: -> { [Time.zone.today] },
       },
+      # Send reminder letters for old, outstanding GPO verification codes
+      send_gpo_code_reminders: {
+        class: 'GpoReminderJob',
+        cron: cron_24h,
+        args: -> { [14.days.ago] },
+      },
+      # Weekly report describing account reuse
       monthly_account_reuse_report: {
         class: 'Reports::MonthlyAccountReuseReport',
         cron: cron_1st_of_mo,
         args: -> { [Time.zone.today] },
+      },
+      # Job to backfill encrypted_pii_recovery_multi_region on profiles
+      multi_region_kms_migration_profile_migraiton: {
+        class: 'MultiRegionKmsMigration::ProfileMigrationJob',
+        cron: cron_12m,
       },
     }.compact
   end

@@ -11,7 +11,10 @@ module Idv
     before_action :confirm_profile_has_been_created
 
     def show
-      analytics.idv_personal_key_visited(address_verification_method: address_verification_method)
+      analytics.idv_personal_key_visited(
+        address_verification_method: address_verification_method,
+        in_person_verification_pending: idv_session.profile&.in_person_verification_pending?,
+      )
       add_proofing_component
 
       finish_idv_session
@@ -23,6 +26,7 @@ module Idv
       analytics.idv_personal_key_submitted(
         address_verification_method: address_verification_method,
         deactivation_reason: idv_session.profile&.deactivation_reason,
+        in_person_verification_pending: idv_session.profile&.in_person_verification_pending?,
         fraud_review_pending: fraud_review_pending?,
         fraud_rejection: fraud_rejection?,
       )

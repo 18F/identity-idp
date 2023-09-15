@@ -13,7 +13,7 @@ RSpec.describe 'clearing IdV and restarting' do
 
     context 'before signing out' do
       before do
-        visit idv_gpo_verify_path
+        visit idv_verify_by_mail_enter_code_path
       end
 
       it_behaves_like 'clearing and restarting idv'
