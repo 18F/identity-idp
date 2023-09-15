@@ -11,6 +11,7 @@ class FrontendLogController < ApplicationController
   # Please try to keep this list alphabetical as well!
   # rubocop:disable Layout/LineLength
   EVENT_MAP = {
+    'Frontend Error' => FrontendErrorLogger.method(:track_error),
     'IdV: consent checkbox toggled' => :idv_consent_checkbox_toggled,
     'IdV: download personal key' => :idv_personal_key_downloaded,
     'IdV: location submitted' => :idv_in_person_location_submitted,
@@ -30,7 +31,7 @@ class FrontendLogController < ApplicationController
     'Sign In: IdV requirements accordion clicked' => :sign_in_idv_requirements_accordion_clicked,
     'User prompted before navigation' => :user_prompted_before_navigation,
     'User prompted before navigation and still on page' => :user_prompted_before_navigation_and_still_on_page,
-  }.transform_values { |method| AnalyticsEvents.instance_method(method) }.freeze
+  }.freeze
   # rubocop:enable Layout/LineLength
 
   def create

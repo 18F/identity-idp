@@ -64,7 +64,9 @@ module RateLimitConcern
   end
 
   def pii_ssn
-    return unless defined?(idv_session) && user_session
-    idv_session&.ssn
+    return unless defined?(flow_session) && defined?(idv_session) && user_session
+    pii_from_doc_ssn = idv_session&.ssn || flow_session[:pii_from_doc]&.[](:ssn)
+    return pii_from_doc_ssn if pii_from_doc_ssn
+    flow_session[:pii_from_user]&.[](:ssn)
   end
 end

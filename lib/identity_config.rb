@@ -310,8 +310,6 @@ class IdentityConfig
     config.add(:minimum_wait_before_another_usps_letter_in_hours, type: :integer)
     config.add(:multi_region_kms_migration_jobs_enabled, type: :boolean)
     config.add(:mx_timeout, type: :integer)
-    config.add(:newrelic_browser_app_id, type: :string)
-    config.add(:newrelic_browser_key, type: :string)
     config.add(:newrelic_license_key, type: :string)
     config.add(:nonessential_email_banlist, type: :json)
     config.add(:otp_delivery_blocklist_findtime, type: :integer)
