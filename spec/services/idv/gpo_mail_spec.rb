@@ -17,234 +17,81 @@ RSpec.describe Idv::GpoMail do
   end
 
   describe '#mail_spammed?' do
-    context 'when no mail has been sent' do
+    context 'when no letters have been requested' do
       it 'returns false' do
         expect(subject.mail_spammed?).to be_falsey
       end
     end
 
-    context 'when the amount of sent mail is lower than the allowed maximum' do
-      context 'but the most recent mail event is too recent' do
-        it 'returns true' do
-          enqueue_gpo_letter_for(user)
-
-          expect(subject.mail_spammed?).to eq true
-        end
+    context 'when too many letters have been requested within the limiting window' do
+      before do
+        enqueue_gpo_letter_for(user, at: 4.days.ago)
+        enqueue_gpo_letter_for(user, at: 3.days.ago)
+        enqueue_gpo_letter_for(user, at: 2.days.ago)
       end
 
-      context 'and the most recent email is not too recent' do
-        it 'returns false' do
-          enqueue_gpo_letter_for(user, at: 25.hours.ago)
-
-          expect(subject.mail_spammed?).to be_falsey
-        end
-      end
-    end
-
-    context 'when too much mail has been sent' do
-      it 'returns true if the oldest mail was within the mail events window' do
-        enqueue_gpo_letter_for(user, at: 2.weeks.ago)
-        enqueue_gpo_letter_for(user, at: 1.week.ago)
-
+      it 'is true' do
         expect(subject.mail_spammed?).to eq true
       end
 
-      it 'returns false if the oldest mail was outside the mail events window' do
-        enqueue_gpo_letter_for(user, at: 2.weeks.ago)
-        enqueue_gpo_letter_for(user, at: 2.months.ago)
+      context 'but the window limit is disabled due to a 0 window size' do
+        let(:mail_events_window_days) { 0 }
 
-        expect(subject.mail_spammed?).to be_falsey
-      end
-    end
-
-    # context 'when we would normally be rate limited by both rules' do
-    #   before do
-    #     enqueue_gpo_letter_for(user, at: 2.days.ago)
-    #     enqueue_gpo_letter_for(user)
-    #   end
-
-    #   context 'but MAX_MAIL_EVENTS is zero' do
-    #     let(:max_mail_events) { 0 }
-
-    #     context 'and MAIL_EVENTS_WINDOW is zero' do
-    #       let(:mail_events_window_days) { 0 }
-
-    #       context 'and MINIMUM_WAIT_BEFORE_ANOTHER_USPS_LETTER is zero' do
-    #         let(:minimum_wait_before_another_usps_letter_in_hours) { 0 }
-
-    #         it 'returns false' do
-    #           expect(subject.mail_spammed?).to be_falsey
-    #         end
-    #       end
-
-    #       context 'and MINIMUM_WAIT_BEFORE_ANOTHER_USPS_LETTER is non-zero' do
-    #         it 'returns true' do
-    #           expect(subject.mail_spammed?).to eq true
-    #         end
-    #       end
-    #     end
-
-    #     context 'and MAIL_EVENTS_WINDOW is non-zero' do
-    #       context 'and MINIMUM_WAIT_BEFORE_ANOTHER_USPS_LETTER is zero' do
-    #         let(:minimum_wait_before_another_usps_letter_in_hours) { 0 }
-
-    #         it 'returns false' do
-    #           expect(subject.mail_spammed?).to be_falsey
-    #         end
-    #       end
-
-    #       context 'and MINIMUM_WAIT_BEFORE_ANOTHER_USPS_LETTER is non-zero' do
-    #         it 'returns true' do
-    #           expect(subject.mail_spammed?).to eq true
-    #         end
-    #       end
-    #     end
-    #   end
-
-    #   context 'but MAX_MAIL_EVENTS is non-zero' do
-    #     context 'and MAIL_EVENTS_WINDOW is zero' do
-    #       let(:mail_events_window_days) { 0 }
-
-    #       context 'and MINIMUM_WAIT_BEFORE_ANOTHER_USPS_LETTER is zero' do
-    #         let(:minimum_wait_before_another_usps_letter_in_hours) { 0 }
-
-    #         it 'returns false' do
-    #           expect(subject.mail_spammed?).to be_falsey
-    #         end
-    #       end
-
-    #       context 'and MINIMUM_WAIT_BEFORE_ANOTHER_USPS_LETTER is non-zero' do
-    #         it 'returns true' do
-    #           expect(subject.mail_spammed?).to eq true
-    #         end
-    #       end
-    #     end
-
-    #     context 'and MAIL_EVENTS_WINDOW is non-zero' do
-    #       context 'and MINIMUM_WAIT_BEFORE_ANOTHER_USPS_LETTER is zero' do
-    #         let(:minimum_wait_before_another_usps_letter_in_hours) { 0 }
-
-    #         it 'returns true' do
-    #           expect(subject.mail_spammed?).to eq true
-    #         end
-    #       end
-
-    #       context 'and MINIMUM_WAIT_BEFORE_ANOTHER_USPS_LETTER is non-zero' do
-    #         it 'returns true' do
-    #           expect(subject.mail_spammed?).to eq true
-    #         end
-    #       end
-    #     end
-    #   end
-    # end
-
-    context 'when a user has a recent GPO request' do
-      let(:user) do
-        user = create(:user, :deactivated_password_reset_profile, :with_pending_gpo_profile)
-
-        # at this point, the gpo is attached to the pending profile. Move it.
-        not_pending_profile = user.profiles.where.not(id: user.pending_profile.id).first
-        GpoConfirmationCode.first.update(profile: not_pending_profile)
-
-        user
-      end
-
-      context 'that is not attached to their pending profile' do
-        it 'returns false' do
-          expect(subject.mail_spammed?).to be_falsey
+        it 'is false' do
+          expect(subject.mail_spammed?).to eq false
         end
       end
 
-      context 'and no pending profile' do
+      context 'but the window limit is disabled due to a 0 window count' do
+        let(:max_mail_events) { 0 }
+
+        it 'is false' do
+          expect(subject.mail_spammed?).to eq false
+        end
+      end
+    end
+
+    context 'when a letter has been requested too recently' do
+      before do
+        enqueue_gpo_letter_for(user)
+      end
+
+      it 'is true' do
+        expect(subject.mail_spammed?).to eq true
+      end
+
+      context 'but the too-recent limit is disabled' do
+        let(:minimum_wait_before_another_usps_letter_in_hours) { 0 }
+
+        it 'is false' do
+          expect(subject.mail_spammed?).to eq false
+        end
+      end
+
+      context 'but the letter is not attached to their pending profile' do
+        # This can happen if the user resets their password while a GPO
+        # letter is pending.
+
         before do
-          user.send(:instance_variable_set, :@pending_profile, nil)
+          user.gpo_verification_pending_profile.update(
+            gpo_verification_pending_at: nil,
+          )
         end
 
         it 'returns false' do
-          expect(subject.mail_spammed?).to be_falsey
+          expect(subject.mail_spammed?).to be false
         end
-      end
-    end
-  end
-
-  describe 'rate limiting enabled predicates' do
-    let(:user) { create(:user, :with_pending_gpo_profile) }
-
-    context 'by default' do
-      it 'rate limiting is enabled' do
-        expect(subject.rate_limiting_enabled?).to eq true
-      end
-
-      it 'the window limit is enabled' do
-        expect(subject.window_limit_enabled?).to eq true
-      end
-
-      it 'the not-too-recent limit is enabled' do
-        expect(subject.last_not_too_recent_enabled?).to eq true
-      end
-    end  
-
-    context 'when max_mail_events is zero' do
-      let(:max_mail_events) { 0 }
-
-      it 'rate limiting is still enabled' do
-        expect(subject.rate_limiting_enabled?).to eq true
-      end
-
-      it 'the window limit is disabled' do
-        expect(subject.window_limit_enabled?).to be_falsey
-      end
-
-      it 'the not-too-recent limit is enabled' do
-        expect(subject.last_not_too_recent_enabled?).to eq true
-      end
-    end
-
-    context 'when minumum wait before another usps letter in hours is zero' do
-      let(:minimum_wait_before_another_usps_letter_in_hours) { 0 }
-
-      it 'rate limiting is still enabled' do
-        expect(subject.rate_limiting_enabled?).to eq true
-      end
-
-      it 'the window limit is enabled' do
-        expect(subject.window_limit_enabled?).to eq true
-      end
-
-      it 'the not-too-recent limit is disabled' do
-        expect(subject.last_not_too_recent_enabled?).to be_falsey
-      end
-    end
-
-    context 'when the user has no pending profile' do
-      let(:user) { create(:user) }
-
-      it 'rate limiting is still enabled' do
-        expect(subject.rate_limiting_enabled?).to eq true
-      end
-
-      it 'the window limit is enabled' do
-        expect(subject.window_limit_enabled?).to eq true
-      end
-
-      it 'the not-too-recent limit is disabled' do
-        expect(subject.last_not_too_recent_enabled?).to be_falsey
-      end
-    end
-
-    context 'when max_mail_events and minimum_wait_before_another_usps_letter_in_hours are zero' do
-      let(:max_mail_events) { 0 }
-      let(:minimum_wait_before_another_usps_letter_in_hours) { 0 }
-      
-      it 'rate limiting is disabled' do
-        expect(subject.rate_limiting_enabled?).to be_falsey
       end
     end
   end
 
   def enqueue_gpo_letter_for(user, at: Time.zone.now)
-    profile = create(:profile, user: user)
-    user.instance_variable_set(:@pending_profile, profile)
+    profile = create(
+      :profile,
+      user: user,
+      gpo_verification_pending_at: at)
+
+    # user.instance_variable_set(:@pending_profile, profile)
 
     GpoConfirmationMaker.new(
       pii: {},
