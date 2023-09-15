@@ -11,8 +11,6 @@ module Users
     before_action :set_webauthn_setup_presenter
     before_action :confirm_recently_authenticated_2fa
 
-    helper_method :in_multi_mfa_selection_flow?
-
     def new
       form = WebauthnVisitForm.new(
         user: current_user,

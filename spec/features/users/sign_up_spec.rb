@@ -92,7 +92,7 @@ RSpec.feature 'Sign Up' do
     end
   end
 
-  context 'User in account creation logs in_account_creation_flow for proper analtic events' do
+  context 'User in account creation logs in_account_creation_flow for proper analytic events' do
     let(:fake_analytics) { FakeAnalytics.new }
     before do
       allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)

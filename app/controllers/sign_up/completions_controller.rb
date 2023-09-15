@@ -101,10 +101,6 @@ module SignUp
       JSON.parse(pii_string || '{}', symbolize_names: true)
     end
 
-    def mfa_context
-      @mfa_context ||= MfaContext.new(current_user)
-    end
-
     def send_in_person_completion_survey
       return unless sp_session_ial == ::Idp::Constants::IAL2
 

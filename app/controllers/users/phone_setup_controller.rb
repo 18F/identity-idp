@@ -15,8 +15,6 @@ module Users
     before_action :confirm_recently_authenticated_2fa
     before_action :check_max_phone_numbers_per_account, only: %i[index create]
 
-    helper_method :in_multi_mfa_selection_flow?
-
     def index
       user_session[:phone_id] = nil
       @new_phone_form = NewPhoneForm.new(
