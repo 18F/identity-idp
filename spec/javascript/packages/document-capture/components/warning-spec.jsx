@@ -9,6 +9,7 @@ describe('document-capture/components/warning', () => {
   it('renders a warning', async () => {
     const actionOnClick = sinon.spy();
     const trackEvent = sinon.spy();
+    const errorMessage = 'We couldn’t read the address on your ID. Try taking new pictures.';
 
     const { getByRole, getByText } = render(
       <AnalyticsContext.Provider value={{ trackEvent }}>
@@ -16,6 +17,7 @@ describe('document-capture/components/warning', () => {
           heading="Oops!"
           actionText="Try again"
           actionOnClick={actionOnClick}
+          errorMessageDisplayed={errorMessage}
           troubleshootingHeading="Having trouble?"
           troubleshootingOptions={
             <TroubleshootingOptions
@@ -32,6 +34,8 @@ describe('document-capture/components/warning', () => {
 
     expect(trackEvent).to.have.been.calledWith('IdV: warning shown', {
       location: 'example',
+      heading: 'Oops!',
+      errorMessageDisplayed: 'We couldn’t read the address on your ID. Try taking new pictures.',
       remaining_attempts: undefined,
     });
 

@@ -54,6 +54,11 @@ interface WarningProps {
    * The number of attempts the user can make.
    */
   remainingAttempts?: number;
+
+  /**
+   * The error message displayed to the user after submitting photos that cannot be used for doc auth.
+   */
+  errorMessageDisplayed: string;
 }
 
 function Warning({
@@ -67,10 +72,16 @@ function Warning({
   troubleshootingOptions,
   location,
   remainingAttempts,
+  errorMessageDisplayed,
 }: WarningProps) {
   const { trackEvent } = useContext(AnalyticsContext);
   useEffect(() => {
-    trackEvent('IdV: warning shown', { location, remaining_attempts: remainingAttempts });
+    trackEvent('IdV: warning shown', {
+      location,
+      remaining_attempts: remainingAttempts,
+      heading,
+      errorMessageDisplayed,
+    });
   }, []);
 
   let actionButtons: ReactComponentElement<typeof Button>[] | undefined;

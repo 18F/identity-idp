@@ -18,6 +18,14 @@ interface DocumentCaptureWarningProps {
 
 const DISPLAY_ATTEMPTS = 3;
 
+function findErrorMessageDisplayed(listOfErrors): string {
+  const generalOrPiiErrors = listOfErrors.filter(
+    (error) => error.field === 'general' || error.field === 'pii',
+  );
+  const messages = generalOrPiiErrors.map((error) => error.error.message);
+  return messages.join(' ');
+}
+
 function DocumentCaptureWarning({
   isFailedDocType,
   isFailedResult,
@@ -39,6 +47,8 @@ function DocumentCaptureWarning({
   const subHeading = !nonIppOrFailedResult && !isFailedDocType && (
     <h2>{t('errors.doc_auth.rate_limited_subheading')}</h2>
   );
+  const errorMessageDisplayed = findErrorMessageDisplayed(unknownFieldErrors);
+
   return (
     <>
       <Warning
@@ -46,6 +56,7 @@ function DocumentCaptureWarning({
         actionText={actionText}
         actionOnClick={actionOnClick}
         location="doc_auth_review_issues"
+        errorMessageDisplayed={errorMessageDisplayed}
         remainingAttempts={remainingAttempts}
         troubleshootingOptions={
           <DocumentCaptureTroubleshootingOptions
