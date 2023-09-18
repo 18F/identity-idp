@@ -46,33 +46,27 @@ module InPersonHelper
     fill_in t('in_person_proofing.form.state_id.address2'), with: GOOD_IDENTITY_DOC_ADDRESS2
     fill_in t('in_person_proofing.form.state_id.city'), with: GOOD_IDENTITY_DOC_CITY
     fill_in t('in_person_proofing.form.state_id.zipcode'), with: GOOD_IDENTITY_DOC_ZIPCODE
+    select GOOD_STATE_ID_JURISDICTION,
+           from: t('in_person_proofing.form.state_id.identity_doc_address_state')
     if same_address_as_id
-      select GOOD_IDENTITY_DOC_ADDRESS_STATE,
-             from: t('in_person_proofing.form.state_id.identity_doc_address_state')
       choose t('in_person_proofing.form.state_id.same_address_as_id_yes')
     else
-      select GOOD_STATE, from: t('in_person_proofing.form.state_id.identity_doc_address_state')
       choose t('in_person_proofing.form.state_id.same_address_as_id_no')
     end
   end
 
-  def fill_out_address_form_ok(double_address_verification: false, same_address_as_id: false)
+  def fill_out_address_form_ok(same_address_as_id: false)
     fill_in t('idv.form.address1'),
             with: same_address_as_id ? GOOD_IDENTITY_DOC_ADDRESS1 : GOOD_ADDRESS1
-    fill_in t('idv.form.address2_optional'), with: GOOD_ADDRESS2 unless double_address_verification
     fill_in t('idv.form.address2'),
             with: same_address_as_id ? GOOD_IDENTITY_DOC_ADDRESS2 : GOOD_ADDRESS2
     fill_in t('idv.form.city'), with: same_address_as_id ? GOOD_IDENTITY_DOC_CITY : GOOD_CITY
     fill_in t('idv.form.zipcode'),
             with: same_address_as_id ? GOOD_IDENTITY_DOC_ZIPCODE : GOOD_ZIPCODE
     if same_address_as_id
-      select GOOD_IDENTITY_DOC_ADDRESS_STATE, from: t('idv.form.state')
+      select GOOD_STATE_ID_JURISDICTION, from: t('idv.form.state')
     else
       select GOOD_STATE, from: t('idv.form.state')
-    end
-
-    unless double_address_verification
-      choose t('in_person_proofing.form.address.same_address_choice_yes')
     end
   end
 
@@ -120,23 +114,19 @@ module InPersonHelper
     click_on t('forms.buttons.continue')
   end
 
-  def complete_state_id_step(_user = nil, same_address_as_id: true,
-                             capture_secondary_id_enabled: false)
+  def complete_state_id_step(_user = nil, same_address_as_id: true)
     # Wait for page to load before attempting to fill out form
     expect(page).to have_current_path(idv_in_person_step_path(step: :state_id), wait: 10)
-    fill_out_state_id_form_ok(
-      same_address_as_id: same_address_as_id,
-      capture_secondary_id_enabled: capture_secondary_id_enabled,
-    )
+    fill_out_state_id_form_ok(same_address_as_id: same_address_as_id)
     click_idv_continue
-    unless capture_secondary_id_enabled && same_address_as_id
+    unless same_address_as_id
       expect(page).to have_current_path(idv_in_person_step_path(step: :address), wait: 10)
       expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
     end
   end
 
-  def complete_address_step(_user = nil, double_address_verification: false)
-    fill_out_address_form_ok(double_address_verification: double_address_verification)
+  def complete_address_step(_user = nil, same_address_as_id: true)
+    fill_out_address_form_ok(same_address_as_id: same_address_as_id)
     click_idv_continue
   end
 
@@ -149,11 +139,11 @@ module InPersonHelper
     click_idv_continue
   end
 
-  def complete_all_in_person_proofing_steps(user = user_with_2fa)
+  def complete_all_in_person_proofing_steps(user = user_with_2fa, same_address_as_id: true)
     complete_prepare_step(user)
     complete_location_step(user)
     complete_state_id_step(user)
-    complete_address_step(user)
+    complete_address_step(user) unless same_address_as_id
     complete_ssn_step(user)
     complete_verify_step(user)
   end
@@ -199,5 +189,42 @@ module InPersonHelper
     expect(enrollment).to_not be_nil
     enrollment.profile.activate_after_passing_in_person
     enrollment.update(status: :passed)
+  end
+
+  def perform_mobile_hybrid_steps
+    perform_in_browser(:mobile) do
+      # doc auth page
+      visit @sms_link
+      mock_doc_auth_attention_with_barcode
+      attach_and_submit_images
+
+      # error page
+      click_button t('in_person_proofing.body.cta.button')
+      # prepare page
+      expect(page).to(have_content(t('in_person_proofing.body.prepare.verify_step_about')))
+      click_idv_continue
+      # location page
+      expect(page).to have_content(t('in_person_proofing.headings.po_search.location'))
+      complete_location_step
+
+      # switch back page
+      expect(page).to have_content(t('in_person_proofing.headings.switch_back'))
+    end
+  end
+
+  def perform_desktop_hybrid_steps(user = user_with_2fa, same_address_as_id: true)
+    perform_in_browser(:desktop) do
+      expect(page).to have_current_path(idv_in_person_step_path(step: :state_id), wait: 10)
+
+      complete_state_id_step(user, same_address_as_id: same_address_as_id)
+      complete_address_step(user, same_address_as_id: same_address_as_id) unless same_address_as_id
+      complete_ssn_step(user)
+      complete_verify_step(user)
+      complete_phone_step(user)
+      complete_review_step(user)
+      acknowledge_and_confirm_personal_key
+
+      expect(page).to have_content('MILWAUKEE')
+    end
   end
 end
