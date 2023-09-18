@@ -17,8 +17,6 @@ import { I18nContext } from '@18f/identity-react-i18n';
 import { fireEvent } from '@testing-library/react';
 import sinon from 'sinon';
 import userEvent from '@testing-library/user-event';
-import { FailedCaptureAttemptsContext } from '@18f/identity-document-capture/context';
-import { PureComponent } from 'react';
 import { getFixtureFile } from '../../../support/file';
 import { render, useAcuant } from '../../../support/document-capture';
 
@@ -1195,29 +1193,24 @@ describe('document-capture/components/acuant-capture', () => {
   it('logs metrics for failed reupload', async () => {
     const trackEvent = sinon.stub();
     const onChange = sinon.stub();
-    class TestComponent extends PureComponent {
-      // eslint-disable-next-line react/static-property-placement
-      static contextType = FailedCaptureAttemptsContext;
-
-      render() {
-        this.context.failedSubmissionImageFingerprints = {
-          front: ['kgLjncfQAICyEYQhdFMAAKxdFceQ80WPjwK2puuuLd8'],
-          back: [],
-        };
-        return (
+    const { getByLabelText } = render(
+      <AnalyticsContext.Provider value={{ trackEvent }}>
+        <FailedCaptureAttemptsContextProvider
+          failedFingerprints={{ front: ['kgLjncfQAICyEYQhdFMAAKxdFceQ80WPjwK2puuuLd8'], back: [] }}
+          maxCaptureAttemptsBeforeNativeCamera={3}
+          maxSubmissionAttemptsBeforeNativeCamera={3}
+        >
           <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
             <AcuantCapture label="Image" name="front" onChange={onChange} />
           </AcuantContextProvider>
-        );
-      }
-    }
-    const { getByLabelText } = render(
-      <AnalyticsContext.Provider value={{ trackEvent }}>
-        <TestComponent />
+        </FailedCaptureAttemptsContextProvider>
       </AnalyticsContext.Provider>,
     );
     const input = getByLabelText('Image');
-    await userEvent.upload(input, validUpload);
+    uploadFile(input, validUpload);
+    onChange.calls;
+    await new Promise((resolve) => onChange.callsFake(resolve));
+    expect(trackEvent).to.be.calledOnce();
     expect(trackEvent).to.be.eventually.calledWith(
       'IdV: failed front image resubmitted',
       sinon.match({

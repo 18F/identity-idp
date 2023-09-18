@@ -95,12 +95,14 @@ interface FailedCaptureAttemptsContextProviderProps {
   children: ReactNode;
   maxCaptureAttemptsBeforeNativeCamera: number;
   maxSubmissionAttemptsBeforeNativeCamera: number;
+  failedFingerprints: { front: []; back: [] };
 }
 
 function FailedCaptureAttemptsContextProvider({
   children,
   maxCaptureAttemptsBeforeNativeCamera,
   maxSubmissionAttemptsBeforeNativeCamera,
+  failedFingerprints = { front: [], back: [] },
 }: FailedCaptureAttemptsContextProviderProps) {
   const [lastAttemptMetadata, setLastAttemptMetadata] = useState<CaptureAttemptMetadata>(
     DEFAULT_LAST_ATTEMPT_METADATA,
@@ -110,16 +112,16 @@ function FailedCaptureAttemptsContextProvider({
   const [failedSubmissionAttempts, incrementFailedSubmissionAttempts] = useCounter();
 
   const [failedSubmissionImageFingerprints, setFailedSubmissionImageFingerprints] =
-    useState<UploadedImageFingerprints>({ front: [], back: [] });
+    useState<UploadedImageFingerprints>(failedFingerprints);
 
   function onFailedCaptureAttempt(metadata: CaptureAttemptMetadata) {
     incrementFailedCaptureAttempts();
     setLastAttemptMetadata(metadata);
   }
 
-  function onFailedSubmissionAttempt(failedFingerprints: UploadedImageFingerprints) {
+  function onFailedSubmissionAttempt(failedOnes: UploadedImageFingerprints) {
     incrementFailedSubmissionAttempts();
-    setFailedSubmissionImageFingerprints(failedFingerprints);
+    setFailedSubmissionImageFingerprints(failedOnes);
   }
 
   const forceNativeCamera =

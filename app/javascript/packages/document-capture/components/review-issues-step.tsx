@@ -10,7 +10,6 @@ import DocumentCaptureWarning from './document-capture-warning';
 import DocumentCaptureReviewIssues from './document-capture-review-issues';
 
 // @ts-ignore
-type JSONObject = Record<string, string | number | boolean | null | JSONObject>;
 interface ReviewIssuesStepValue {
   /**
    * Front image value.
@@ -25,12 +24,11 @@ interface ReviewIssuesStepValue {
   /**
    * Front image metadata.
    */
-  front_image_metadata?: JSONObject;
-
+  front_image_metadata?: string;
   /**
    * Back image metadata.
    */
-  back_image_metadata?: JSONObject;
+  back_image_metadata?: string;
 }
 
 interface ReviewIssuesStepProps extends FormStepComponentProps<ReviewIssuesStepValue> {
@@ -73,15 +71,24 @@ function ReviewIssuesStep({
   useEffect(() => onFailedSubmissionAttempt(failedImageFingerprints), []);
 
   useLayoutEffect(() => {
+    let frontMetaData: any = null;
+    try {
+      frontMetaData = JSON.parse(
+        typeof value.front_image_metadata === 'undefined' ? '{}' : value.front_image_metadata,
+      );
+    } catch (e) {}
     const frontHasFailed = !!failedSubmissionImageFingerprints?.front?.includes(
-      JSON.parse(
-        typeof value.front_image_metadata === 'undefined' ? null : value.front_image_metadata,
-      )?.fingerprint,
+      frontMetaData?.fingerprint,
     );
+
+    let backMetaData: any = null;
+    try {
+      backMetaData = JSON.parse(
+        typeof value.back_image_metadata === 'undefined' ? '{}' : value.back_image_metadata,
+      );
+    } catch (e) {}
     const backHasFailed = !!failedSubmissionImageFingerprints?.back?.includes(
-      JSON.parse(
-        typeof value.back_image_metadata === 'undefined' ? null : value.back_image_metadata,
-      )?.fingerprint,
+      backMetaData?.fingerprint,
     );
     if (frontHasFailed || backHasFailed) {
       setSkipWarning(true);

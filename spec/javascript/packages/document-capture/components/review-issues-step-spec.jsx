@@ -10,8 +10,6 @@ import { I18n } from '@18f/identity-i18n';
 import { I18nContext } from '@18f/identity-react-i18n';
 import ReviewIssuesStep from '@18f/identity-document-capture/components/review-issues-step';
 import { toFormEntryError } from '@18f/identity-document-capture/services/upload';
-import { PureComponent } from 'react';
-import { FailedCaptureAttemptsContext } from '@18f/identity-document-capture/context';
 import { render } from '../../../support/document-capture';
 import { getFixtureFile } from '../../../support/file';
 
@@ -345,16 +343,24 @@ describe('document-capture/components/review-issues-step', () => {
     });
 
     it('skip renders initially with warning page when failed image is submitted again', () => {
-      class TestComponent extends PureComponent {
-        // eslint-disable-next-line react/static-property-placement
-        static contextType = FailedCaptureAttemptsContext;
-
-        render() {
-          this.context.failedSubmissionImageFingerprints = {
-            front: ['12345'],
-            back: [],
-          };
-          return (
+      const { findByRole, getByRole, getByText } = render(
+        <I18nContext.Provider
+          value={
+            new I18n({
+              strings: {
+                'idv.failure.attempts_html': {
+                  one: '<strong>One attempt</strong> remaining',
+                  other: '<strong>%{count} attempts</strong> remaining',
+                },
+              },
+            })
+          }
+        >
+          <FailedCaptureAttemptsContextProvider
+            failedFingerprints={{ front: ['12345'], back: [] }}
+            maxCaptureAttemptsBeforeNativeCamera={3}
+            maxSubmissionAttemptsBeforeNativeCamera={3}
+          >
             <ReviewIssuesStep
               value={{ front_image_metadata: '{ "fingerprint": "12345" }' }}
               {...DEFAULT_PROPS}
@@ -370,23 +376,7 @@ describe('document-capture/components/review-issues-step', () => {
                 },
               ]}
             />
-          );
-        }
-      }
-      const { findByRole, getByRole, getByText } = render(
-        <I18nContext.Provider
-          value={
-            new I18n({
-              strings: {
-                'idv.failure.attempts_html': {
-                  one: '<strong>One attempt</strong> remaining',
-                  other: '<strong>%{count} attempts</strong> remaining',
-                },
-              },
-            })
-          }
-        >
-          <TestComponent />
+          </FailedCaptureAttemptsContextProvider>
         </I18nContext.Provider>,
       );
 
