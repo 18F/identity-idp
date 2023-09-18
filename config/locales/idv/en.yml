@@ -211,7 +211,7 @@ en:
       activated_link: contact us
       clear_and_start_over: Clear my information and start over
       come_back_later_html: <p>Letters take <strong>5 to 10 days</strong> to arrive
-        via USPS First Class Mail.</p> <p>Once your letter arrives, sign in to
+        via USPS First-Class Mail.</p> <p>Once your letter arrives, sign in to
         %{app_name}, and enter your one-time code when prompted.</p>
       come_back_later_no_sp_html: You can return to your <strong>%{app_name} account</strong> for now.
       come_back_later_password_html: <strong>Don’t forget your password.</strong><br
@@ -231,7 +231,7 @@ en:
           your current letter will remain valid for a limited time. You may
           still use the one-time code from either letter.
         resend_timeframe_html: Letters take <strong>5 to 10 days</strong> to arrive
-        timeframe_html: Letters are sent the next business day via USPS First Class Mail
+        timeframe_html: Letters are sent the next business day via USPS First-Class Mail
           and arrive in <strong>5 to 10 days</strong>.
       gpo_reminder:
         body_html: You requested a letter to verify your identity on
