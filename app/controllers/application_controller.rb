@@ -6,6 +6,7 @@ class ApplicationController < ActionController::Base
   include LocaleHelper
   include VerifySpAttributesConcern
   include EffectiveUser
+  include SecondMfaReminderConcern
 
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
@@ -213,6 +214,7 @@ class ApplicationController < ActionController::Base
     return fix_broken_personal_key_url if current_user.broken_personal_key?
     return user_session.delete(:stored_location) if user_session.key?(:stored_location)
     return reactivate_account_url if user_needs_to_reactivate_account?
+    return second_mfa_reminder_url if user_needs_second_mfa_reminder?
     return sp_session_request_url_with_updated_params if sp_session.key?(:request_url)
     signed_in_url
   end
