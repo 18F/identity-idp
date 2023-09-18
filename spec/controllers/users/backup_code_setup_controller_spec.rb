@@ -32,11 +32,12 @@ RSpec.describe Users::BackupCodeSetupController do
         pii_like_keypaths: [[:mfa_method_counts, :phone]],
         error_details: nil,
         enabled_mfa_methods_count: 1,
-        in_multi_mfa_selection_flow: false,
+        in_account_creation_flow: false,
       })
     expect(@analytics).to receive(:track_event).
       with('Backup Code Created', {
         enabled_mfa_methods_count: 2,
+        in_account_creation_flow: false,
       })
     expect(@irs_attempts_api_tracker).to receive(:track_event).
       with(:mfa_enroll_backup_code, success: true)
@@ -152,7 +153,7 @@ RSpec.describe Users::BackupCodeSetupController do
       get :edit
       expect(@analytics).to have_logged_event(
         'Backup Code Regenerate Visited',
-        hash_including(in_multi_mfa_selection_flow: false),
+        hash_including(in_account_creation_flow: false),
       )
     end
   end
