@@ -2,10 +2,6 @@
 en:
   in_person_proofing:
     body:
-      address:
-        info: If your current address does not match the address on your ID, you will
-          need to bring proof of your current address to the Post Office.
-        learn_more: Learn more
       barcode:
         cancel_link_text: Cancel your barcode
         close_window: You may now close this window.
@@ -93,10 +89,6 @@ en:
           unsupported_chars: 'Our system cannot read the following characters:
             %{char_list}. Please try again using substitutes for those
             characters.'
-        same_address: Is this address displayed on the state‑issued ID that you are
-          bringing to the Post Office?
-        same_address_choice_no: I have a different address on my ID
-        same_address_choice_yes: This address is on my state‑issued ID
         state_prompt: '- Select -'
       state_id:
         address1: Address line 1
@@ -115,7 +107,6 @@ en:
             %{char_list}. Please try again using the characters on your ID.'
         first_name: First name
         identity_doc_address_state: State
-        identity_doc_address_state_hint: Select the state shown on your ID
         identity_doc_address_state_prompt: '- Select -'
         last_name: Last name
         memorable_date:

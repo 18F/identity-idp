@@ -2,11 +2,6 @@
 es:
   in_person_proofing:
     body:
-      address:
-        info: Si su dirección actual no coincide con la que figura en su cédula de
-          identidad, deberá llevar a la oficina de correos un comprobante de su
-          dirección actual.
-        learn_more: Aprende más
       barcode:
         cancel_link_text: Cancelar su código de barras
         close_window: Ya puede cerrar esta ventana
@@ -105,10 +100,6 @@ es:
           unsupported_chars: 'Los siguientes caracteres no pueden ser leídos por nuestro
             sistema: %{char_list}. Inténtelo nuevamente usando sustitutos para
             estos caracteres.'
-        same_address: '¿Aparece esta dirección en la cédula de identidad emitido por el
-          Estado que va a llevar a la oficina de Correos?'
-        same_address_choice_no: Tengo una dirección diferente en mi cédula de identidad
-        same_address_choice_yes: Esta dirección aparece en mi cédula de identidad emitida por el estado
         state_prompt: '- Seleccione -'
       state_id:
         address1: Línea de dirección 1
@@ -128,7 +119,6 @@ es:
             su documento de identidad.'
         first_name: Nombre
         identity_doc_address_state: Estado emisor
-        identity_doc_address_state_hint: Este es el estado que emitió su identificación
         identity_doc_address_state_prompt: '- Seleccione -'
         last_name: Apellido
         memorable_date:
