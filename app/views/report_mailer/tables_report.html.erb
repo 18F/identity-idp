@@ -20,9 +20,9 @@
           <% row.each do |cell| %>
             <td <%= cell.is_a?(Numeric) ? 'class=table-number' : nil %> >
               <% if cell.is_a?(Float) && options[:float_as_percent] %>
-                <%= (cell * 100).round(2) %>%
+                <%= number_to_percentage(cell * 100, precision: 2) %>
               <% else %>
-                <%= cell %>
+                <%= number_with_delimiter(cell) %>
               <% end %>
             </td>
           <% end %>

@@ -75,15 +75,15 @@ RSpec.describe ReportMailer, type: :mailer do
           ],
           [
             { float_as_percent: false, title: 'Custom Table 3' },
-            ['Float As Percent', 'Int', 'Float'],
-            ['Row 1', 1, 1.0],
-            ['Row 2', 1, 1.5],
+            ['Float As Percent', 'Gigantic Int', 'Float'],
+            ['Row 1', 100_000_000, 1.0],
+            ['Row 2', 123_456_789, 1.5],
           ],
         ],
       )
     end
 
-    it 'renders the tables in HTML and attaches them as CSVs' do
+    it 'renders the tables in HTML and attaches them as CSVs', aggregate_failures: true do
       doc = Nokogiri::HTML(mail.html_part.body.to_s)
 
       expect(doc.css('h2').map(&:text)).to eq(['Table 1', 'Custom Table 2', 'Custom Table 3'])
@@ -91,12 +91,15 @@ RSpec.describe ReportMailer, type: :mailer do
       _first_table, percent_table, float_table = doc.css('table')
 
       percent_cell = percent_table.at_css('tbody tr:nth-child(1) td:last-child')
-      expect(percent_cell.text.strip).to eq('50.0%')
+      expect(percent_cell.text.strip).to eq('50.00%')
       expect(percent_cell['class']).to eq('table-number')
 
       float_cell = float_table.at_css('tbody tr:nth-child(1) td:last-child')
       expect(float_cell.text.strip).to eq('1.0')
       expect(percent_cell['class']).to eq('table-number')
+
+      big_int_cell = float_table.at_css('tbody tr:nth-child(1) td:nth-child(2)')
+      expect(big_int_cell.text.strip).to eq('100,000,000')
     end
   end
 end

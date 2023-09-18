@@ -26,9 +26,9 @@ class ReportMailerPreview < ActionMailer::Preview
         ],
         [
           { float_as_percent: false },
-          [nil, 'Int', 'Float as Float'],
-          ['Row 1', 1, 1.0],
-          ['Row 2', 1, 1.5],
+          [nil, 'Gigantic Int', 'Float as Float'],
+          ['Row 1', 100_000_000, 1.0],
+          ['Row 2', 123_456_789, 1.5],
         ],
       ],
     )
