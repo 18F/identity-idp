@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import { useDidUpdateEffect } from '@18f/identity-react-hooks';
 import { FormStepsContext } from '@18f/identity-form-steps';
 import type { FormStepComponentProps } from '@18f/identity-form-steps';
@@ -64,10 +64,29 @@ function ReviewIssuesStep({
   const { trackEvent } = useContext(AnalyticsContext);
   const [hasDismissed, setHasDismissed] = useState(remainingAttempts === Infinity);
   const { onPageTransition, changeStepCanComplete } = useContext(FormStepsContext);
+  const [skipWarning, setSkipWarning] = useState(false);
   useDidUpdateEffect(onPageTransition, [hasDismissed]);
 
-  const { onFailedSubmissionAttempt } = useContext(FailedCaptureAttemptsContext);
+  const { onFailedSubmissionAttempt, failedSubmissionImageFingerprints } = useContext(
+    FailedCaptureAttemptsContext,
+  );
   useEffect(() => onFailedSubmissionAttempt(failedImageFingerprints), []);
+
+  useLayoutEffect(() => {
+    const frontHasFailed = !!failedSubmissionImageFingerprints?.front?.includes(
+      JSON.parse(
+        typeof value.front_image_metadata === 'undefined' ? null : value.front_image_metadata,
+      )?.fingerprint,
+    );
+    const backHasFailed = !!failedSubmissionImageFingerprints?.back?.includes(
+      JSON.parse(
+        typeof value.back_image_metadata === 'undefined' ? null : value.back_image_metadata,
+      )?.fingerprint,
+    );
+    if (frontHasFailed || backHasFailed) {
+      setSkipWarning(true);
+    }
+  }, []);
 
   function onWarningPageDismissed() {
     trackEvent('IdV: Capture troubleshooting dismissed');
@@ -78,14 +97,15 @@ function ReviewIssuesStep({
   // let FormSteps know, via FormStepsContext, whether this page
   // is ready to submit form values
   useEffect(() => {
-    changeStepCanComplete(!!hasDismissed);
+    changeStepCanComplete(!!hasDismissed && !skipWarning);
   }, [hasDismissed]);
 
   if (!hasDismissed && pii) {
     return <BarcodeAttentionWarning onDismiss={onWarningPageDismissed} pii={pii} />;
   }
+
   // Show warning screen
-  if (!hasDismissed) {
+  if (!hasDismissed && !skipWarning) {
     // Warning(try again screen)
     return (
       <DocumentCaptureWarning
