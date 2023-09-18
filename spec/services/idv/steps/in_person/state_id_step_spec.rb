@@ -81,7 +81,7 @@ RSpec.describe Idv::Steps::InPerson::StateIdStep do
       end
     end
 
-    context 'when capture_secondary_id_enabled is...' do
+    context 'when same_address_as_id is...' do
       let(:pii_from_user) { flow.flow_session[:pii_from_user] }
       let(:params) { ActionController::Parameters.new({ state_id: submitted_values }) }
       let(:dob) { InPersonHelper::GOOD_DOB }
@@ -103,7 +103,7 @@ RSpec.describe Idv::Steps::InPerson::StateIdStep do
           and_return(enrollment)
       end
 
-      context 'same_address_as_id changed from "true" to "false"' do
+      context 'changed from "true" to "false"' do
         let(:submitted_values) do
           {
             dob:,
@@ -157,7 +157,7 @@ RSpec.describe Idv::Steps::InPerson::StateIdStep do
         end
       end
 
-      context 'same_address_as_id changed from "false" to "true"' do
+      context 'changed from "false" to "true"' do
         let(:submitted_values) do
           {
             dob:,
@@ -195,7 +195,7 @@ RSpec.describe Idv::Steps::InPerson::StateIdStep do
         end
       end
 
-      context 'same_address_as_id does not change from from "false"' do
+      context 'not changed from "false"' do
         let(:submitted_values) do
           {
             dob:,
