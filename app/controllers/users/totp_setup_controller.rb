@@ -139,10 +139,6 @@ module Users
       current_user.auth_app_configurations.count
     end
 
-    def in_account_creation_flow?
-      user_session[:in_account_creation_flow] || false
-    end
-
     def analytics_properties
       {
         in_account_creation_flow: in_account_creation_flow?,

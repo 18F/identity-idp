@@ -125,10 +125,6 @@ module Users
       redirect_to account_two_factor_authentication_path
     end
 
-    def in_account_creation_flow?
-      user_session[:in_account_creation_flow] || false
-    end
-
     def analytics_properties
       {
         success: true,

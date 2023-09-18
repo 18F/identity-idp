@@ -61,6 +61,10 @@ module MfaSetupConcern
     mfa_selection_count < 2 && mfa_context.enabled_mfa_methods_count < 2
   end
 
+  def in_account_creation_flow?
+    user_session[:in_account_creation_flow] || false
+  end
+
   def mfa_selection_count
     user_session[:mfa_selections]&.count || 0
   end
