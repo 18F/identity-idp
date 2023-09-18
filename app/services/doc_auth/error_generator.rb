@@ -48,6 +48,7 @@ module DocAuth
     }.freeze
 
     SUPPORTED_ID_CLASSNAME = ['Identification Card', 'Drivers License'].freeze
+    SUPPORTED_COUNTRY_CODES = %w[US GU VI AS MP PR USA GUM VIR ASM MNP PRI]
 
     def generate_doc_auth_errors(response_info)
       alert_error_count = response_info[:doc_auth_result] == 'Passed' ?
@@ -108,10 +109,12 @@ module DocAuth
       both_side_ok = true
       %w[Front Back].each do |side|
         side_class = classification_info.with_indifferent_access.dig(side, 'ClassName')
+        side_country = classification_info.with_indifferent_access.dig(side, 'CountryCode')
         side_ok = !side_class.present? ||
                   SUPPORTED_ID_CLASSNAME.include?(side_class) || side_class == 'Unknown'
-        both_side_ok &&= side_ok
-        error_result.add_side(side.downcase.to_sym) unless side_ok
+        country_ok = !side_country.present? || SUPPORTED_COUNTRY_CODES.include?(side_country)
+        both_side_ok &&= side_ok && country_ok
+        error_result.add_side(side.downcase.to_sym) unless side_ok && country_ok
       end
       unless both_side_ok
         error_result.set_error(Errors::DOC_TYPE_CHECK)
