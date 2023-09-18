@@ -47,7 +47,7 @@ en:
           city_label: City
           is_searching_message: Searching for Post Office locations…
           none_found: Sorry, there are no participating Post Offices within 50 miles of
-            %{address}.
+            %{address}
           none_found_tip: You can search using a different address, or add photos of your
             ID to try and verify your identity online again.
           po_search_about: You can verify your identity in person at a local participating
