@@ -297,7 +297,7 @@ es:
       review: Revise y envíe
       session:
         review: 'Vuelve a ingresar tu contraseña de %{app_name}'
-        review_letter: 'Vuelve a ingresar tu contraseña de %{app_name} para enviar su carta'
+        review_letter: 'Vuelve a ingresar su contraseña de %{app_name} para enviar su carta'
       unavailable: Estamos trabajando para resolver un error
     troubleshooting:
       headings:
