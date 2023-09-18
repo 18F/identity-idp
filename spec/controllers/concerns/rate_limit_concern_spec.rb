@@ -89,6 +89,16 @@ RSpec.describe 'RateLimitConcern' do
         ).increment_to_limited!
       end
 
+      context 'ssn is in flow session' do
+        it 'redirects to proof_ssn rate limited error page' do
+          flow_session = { pii_from_doc: { ssn: ssn } }
+          allow(subject).to receive(:flow_session).and_return(flow_session)
+          get :show
+
+          expect(response).to redirect_to idv_session_errors_ssn_failure_url
+        end
+      end
+
       context 'ssn is in idv_session' do
         it 'redirects to proof_ssn rate limited error page' do
           subject.idv_session.ssn = ssn

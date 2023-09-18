@@ -2,6 +2,7 @@
 
 require 'csv'
 require 'reporting/identity_verification_report'
+require 'reporting/unknown_progress_bar'
 
 module Reporting
   class ProofingRateReport
@@ -36,10 +37,12 @@ module Reporting
       csv << ['Welcome Submitted', *reports.map(&:idv_doc_auth_welcome_submitted)]
       csv << ['Image Submitted', *reports.map(&:idv_doc_auth_image_vendor_submitted)]
       csv << ['Successfully Verified', *reports.map(&:successfully_verified_users)]
+      csv << ['IDV Rejected', *reports.map(&:idv_doc_auth_rejected)]
 
       csv << ['Blanket Proofing Rate (IDV Started to Successfully Verified)', *blanket_proofing_rates(reports)]
       csv << ['Intent Proofing Rate (Welcome Submitted to Successfully Verified)', *intent_proofing_rates(reports)]
       csv << ['Actual Proofing Rate (Image Submitted to Successfully Verified)', *actual_proofing_rates(reports)]
+      csv << ['Industry Proofing Rate (Verified minus IDV Rejected)', *industry_proofing_rates(reports)]
 
       csv
     end
@@ -54,21 +57,31 @@ module Reporting
     end
 
     def reports
-      @reports ||= [0, *DATE_INTERVALS].each_cons(2).map do |slice_end, slice_start|
-        Reporting::IdentityVerificationReport.new(
-          issuers: nil, # all issuers
-          time_range: Range.new(
-            (end_date - slice_start.days).beginning_of_day,
-            (end_date - slice_end.days).beginning_of_day,
-          ),
-          progress: progress?,
-          verbose: verbose?,
-        )
-      end.reduce([]) do |acc, report|
-        if acc.empty?
-          acc << report
-        else
-          acc << report.merge(acc.last)
+      @reports ||= begin
+        threads = [0, *DATE_INTERVALS].each_cons(2).map do |slice_end, slice_start|
+          Thread.new do
+            Reporting::IdentityVerificationReport.new(
+              issuers: nil, # all issuers
+              time_range: Range.new(
+                (end_date - slice_start.days).beginning_of_day,
+                (end_date - slice_end.days).beginning_of_day,
+              ),
+              progress: false,
+              verbose: verbose?,
+            ).tap(&:data)
+          end
+        end
+
+        reports = Reporting::UnknownProgressBar.wrap(show_bar: progress?) do
+          threads.map(&:value)
+        end
+
+        reports.reduce([]) do |acc, report|
+          if acc.empty?
+            acc << report
+          else
+            acc << report.merge(acc.last)
+          end
         end
       end
     end
@@ -94,6 +107,16 @@ module Reporting
     def actual_proofing_rates(reports)
       reports.map do |report|
         report.successfully_verified_users.to_f / report.idv_doc_auth_image_vendor_submitted
+      end
+    end
+
+    # @param [Array<Reporting::IdentityVerificationReport>] reports
+    # @return [Array<Float>]
+    def industry_proofing_rates(reports)
+      reports.map do |report|
+        report.successfully_verified_users.to_f / (
+          report.successfully_verified_users + report.idv_doc_auth_rejected
+        )
       end
     end
   end

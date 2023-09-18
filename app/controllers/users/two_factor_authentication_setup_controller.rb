@@ -16,8 +16,7 @@ module Users
 
     def create
       result = submit_form
-      analytics_hash = result.to_h
-      analytics.user_registration_2fa_setup(**analytics_hash)
+      analytics.user_registration_2fa_setup(**result.to_h)
       irs_attempts_api_tracker.mfa_enroll_options_selected(
         success: result.success?,
         mfa_device_types: @two_factor_options_form.selection,
