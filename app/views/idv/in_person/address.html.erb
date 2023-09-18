@@ -10,17 +10,17 @@
       form, url: url_for, method: 'PUT',
             html: { autocomplete: 'off' }
     ) do |f| %>
-      <%= render ValidatedFieldComponent.new(
-            collection: us_states_territories,
-            form: f,
-            input_html: { class: 'address-state-selector' },
-            label: t('idv.form.state'),
-            label_html: { class: 'usa-label' },
-            name: :state,
-            prompt: t('in_person_proofing.form.address.state_prompt'),
-            required: true,
-            selected: pii[:state],
-          ) %>
+  <%= render ValidatedFieldComponent.new(
+        collection: us_states_territories,
+        form: f,
+        input_html: { class: 'address-state-selector' },
+        label: t('idv.form.state'),
+        label_html: { class: 'usa-label' },
+        name: :state,
+        prompt: t('in_person_proofing.form.address.state_prompt'),
+        required: true,
+        selected: pii[:state],
+      ) %>
   <%= render ValidatedFieldComponent.new(
         form: f,
         hint: t('in_person_proofing.form.state_id.address1_hint'),

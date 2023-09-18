@@ -96,19 +96,19 @@
       %>
   </div>
 
-    <div class="margin-bottom-4">
-      <%= render ValidatedFieldComponent.new(
-            name: :state_id_jurisdiction,
-            collection: us_states_territories,
-            form: f,
-            hint: t('in_person_proofing.form.state_id.state_id_jurisdiction_hint'),
-            label: t('in_person_proofing.form.state_id.state_id_jurisdiction'),
-            label_html: { class: 'usa-label' },
-            prompt: t('in_person_proofing.form.state_id.state_id_jurisdiction_prompt'),
-            required: true,
-            selected: pii[:state_id_jurisdiction],
-          ) %>
-    </div>
+  <div class="margin-bottom-4">
+    <%= render ValidatedFieldComponent.new(
+          name: :state_id_jurisdiction,
+          collection: us_states_territories,
+          form: f,
+          hint: t('in_person_proofing.form.state_id.state_id_jurisdiction_hint'),
+          label: t('in_person_proofing.form.state_id.state_id_jurisdiction'),
+          label_html: { class: 'usa-label' },
+          prompt: t('in_person_proofing.form.state_id.state_id_jurisdiction_prompt'),
+          required: true,
+          selected: pii[:state_id_jurisdiction],
+        ) %>
+  </div>
   <div class="margin-bottom-5">
     <%= render ValidatedFieldComponent.new(
           name: :state_id_number,
@@ -123,79 +123,79 @@
         ) %>
   </div>
     
-    <h2> <%= t('in_person_proofing.headings.id_address') %> </h2>
-      <%= render ValidatedFieldComponent.new(
-            name: :identity_doc_address_state,
-            collection: us_states_territories,
-            form: f,
-            input_html: { class: 'address-state-selector' },
-            label: t('in_person_proofing.form.state_id.identity_doc_address_state'),
-            label_html: { class: 'usa-label' },
-            prompt: t('in_person_proofing.form.state_id.identity_doc_address_state_prompt'),
-            required: true,
-            selected: pii[:identity_doc_address_state],
-          ) %>
-      <%= render ValidatedFieldComponent.new(
-            name: :identity_doc_address1,
-            form: f,
-            hint_html: { class: ['display-none', 'puerto-rico-extras'] },
-            hint: t('in_person_proofing.form.state_id.address1_hint'),
-            input_html: { value: pii[:identity_doc_address1] },
-            label: t('in_person_proofing.form.state_id.address1'),
-            label_html: { class: 'usa-label' },
-            maxlength: 255,
-            required: true,
-          ) %>
-
-      <%= render ValidatedFieldComponent.new(
-            name: :identity_doc_address2,
-            form: f,
-            hint: t('in_person_proofing.form.state_id.address2_hint'),
-            hint_html: { class: ['display-none', 'puerto-rico-extras'] },
-            input_html: { value: pii[:identity_doc_address2] },
-            label: t('in_person_proofing.form.state_id.address2'),
-            label_html: { class: 'usa-label' },
-            maxlength: 255,
-            required: false,
-          ) %>
- 
-      <%= render ValidatedFieldComponent.new(
-            name: :identity_doc_city,
-            form: f,
-            input_html: { value: pii[:identity_doc_city] },
-            label: t('in_person_proofing.form.state_id.city'),
-            label_html: { class: 'usa-label' },
-            maxlength: 255,
-            required: true,
-          ) %>
-    <div class="tablet:grid-col-8 margin-bottom-5">
-      <%# using :tel for mobile numeric keypad %>
-      <%= render ValidatedFieldComponent.new(
-            as: :tel,
-            error_messages: { patternMismatch: t('idv.errors.pattern_mismatch.zipcode') },
-            form: f,
-            input_html: { value: pii[:identity_doc_zipcode], class: 'zipcode' },
-            label: t('in_person_proofing.form.state_id.zipcode'),
-            label_html: { class: 'usa-label' },
-            name: :identity_doc_zipcode,
-            pattern: '\d{5}([\-]\d{4})?',
-            required: true,
-          ) %>
-    </div>
+  <h2> <%= t('in_person_proofing.headings.id_address') %> </h2>
     <%= render ValidatedFieldComponent.new(
-          as: :radio_buttons,
-          checked: pii[:same_address_as_id],
-          collection: [
-            [t('in_person_proofing.form.state_id.same_address_as_id_yes'), true],
-            [t('in_person_proofing.form.state_id.same_address_as_id_no'), false],
-          ],
+          name: :identity_doc_address_state,
+          collection: us_states_territories,
           form: f,
-          label: t('in_person_proofing.form.state_id.same_address_as_id'),
-          legend_html: { class: 'h2' },
-          name: :same_address_as_id,
+          input_html: { class: 'address-state-selector' },
+          label: t('in_person_proofing.form.state_id.identity_doc_address_state'),
+          label_html: { class: 'usa-label' },
+          prompt: t('in_person_proofing.form.state_id.identity_doc_address_state_prompt'),
           required: true,
-          wrapper: :uswds_radio_buttons,
+          selected: pii[:identity_doc_address_state],
         ) %>
+    <%= render ValidatedFieldComponent.new(
+          name: :identity_doc_address1,
+          form: f,
+          hint_html: { class: ['display-none', 'puerto-rico-extras'] },
+          hint: t('in_person_proofing.form.state_id.address1_hint'),
+          input_html: { value: pii[:identity_doc_address1] },
+          label: t('in_person_proofing.form.state_id.address1'),
+          label_html: { class: 'usa-label' },
+          maxlength: 255,
+          required: true,
+        ) %>
+
+    <%= render ValidatedFieldComponent.new(
+          name: :identity_doc_address2,
+          form: f,
+          hint: t('in_person_proofing.form.state_id.address2_hint'),
+          hint_html: { class: ['display-none', 'puerto-rico-extras'] },
+          input_html: { value: pii[:identity_doc_address2] },
+          label: t('in_person_proofing.form.state_id.address2'),
+          label_html: { class: 'usa-label' },
+          maxlength: 255,
+          required: false,
+        ) %>
+
+    <%= render ValidatedFieldComponent.new(
+          name: :identity_doc_city,
+          form: f,
+          input_html: { value: pii[:identity_doc_city] },
+          label: t('in_person_proofing.form.state_id.city'),
+          label_html: { class: 'usa-label' },
+          maxlength: 255,
+          required: true,
+        ) %>
+  <div class="tablet:grid-col-8 margin-bottom-5">
+    <%# using :tel for mobile numeric keypad %>
+    <%= render ValidatedFieldComponent.new(
+          as: :tel,
+          error_messages: { patternMismatch: t('idv.errors.pattern_mismatch.zipcode') },
+          form: f,
+          input_html: { value: pii[:identity_doc_zipcode], class: 'zipcode' },
+          label: t('in_person_proofing.form.state_id.zipcode'),
+          label_html: { class: 'usa-label' },
+          name: :identity_doc_zipcode,
+          pattern: '\d{5}([\-]\d{4})?',
+          required: true,
+        ) %>
+  </div>
+  <%= render ValidatedFieldComponent.new(
+        as: :radio_buttons,
+        checked: pii[:same_address_as_id],
+        collection: [
+          [t('in_person_proofing.form.state_id.same_address_as_id_yes'), true],
+          [t('in_person_proofing.form.state_id.same_address_as_id_no'), false],
+        ],
+        form: f,
+        label: t('in_person_proofing.form.state_id.same_address_as_id'),
+        legend_html: { class: 'h2' },
+        name: :same_address_as_id,
+        required: true,
+        wrapper: :uswds_radio_buttons,
+      ) %>
 
   <%= f.submit do %>
     <% if updating_state_id %>
