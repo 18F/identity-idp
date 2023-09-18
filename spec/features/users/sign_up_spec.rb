@@ -92,6 +92,44 @@ RSpec.feature 'Sign Up' do
     end
   end
 
+  context 'User in account creation logs in_account_creation_flow for proper analytic events' do
+    let(:fake_analytics) { FakeAnalytics.new }
+    before do
+      allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
+    end
+    it 'logs analytic events for MFA selected with in account creation flow' do
+      sign_up_and_set_password
+      click_2fa_option('phone')
+      click_2fa_option('backup_code')
+
+      click_continue
+      fill_in 'new_phone_form_phone', with: '703-555-1212'
+      click_send_one_time_code
+
+      fill_in_code_with_last_phone_otp
+      click_submit_default
+
+      expect(current_path).to eq backup_code_setup_path
+
+      click_continue
+
+      expect(page).to have_link(t('components.download_button.label'))
+
+      click_continue
+
+      expect(page).to have_content(t('notices.backup_codes_configured'))
+
+      expect(fake_analytics).to have_logged_event(
+        'Multi-Factor Authentication Setup',
+        success: true,
+        errors: nil,
+        multi_factor_auth_method: 'backup_codes',
+        in_account_creation_flow: true,
+        enabled_mfa_methods_count: 2,
+      )
+    end
+  end
+
   scenario 'renders an error when the telephony gem responds with an error' do
     allow(Telephony).to receive(:phone_info).and_return(
       Telephony::PhoneNumberInfo.new(carrier: 'Test', type: :test, error: nil),
@@ -463,5 +501,9 @@ RSpec.feature 'Sign Up' do
         expect(current_path).to eq authentication_methods_setup_path
       end
     end
+  end
+
+  def click_2fa_option(option)
+    find("label[for='two_factor_options_form_selection_#{option}']").click
   end
 end

@@ -11,7 +11,7 @@ RSpec.describe SignUp::CompletionsController do
       end
 
       it 'redirects to account page when SP request URL is not present' do
-        user = create(:user)
+        user = create(:user, :fully_registered)
         stub_sign_in(user)
         subject.session[:sp] = {
           issuer: current_sp.issuer,
@@ -22,7 +22,7 @@ RSpec.describe SignUp::CompletionsController do
       end
 
       context 'IAL1' do
-        let(:user) { create(:user) }
+        let(:user) { create(:user, :fully_registered) }
         before do
           stub_sign_in(user)
           subject.session[:sp] = {
@@ -39,11 +39,12 @@ RSpec.describe SignUp::CompletionsController do
             'User registration: agency handoff visited',
             ial2: false,
             ialmax: nil,
-            service_provider_name: subject.decorated_session.sp_name,
+            service_provider_name: subject.decorated_sp_session.sp_name,
             page_occurence: '',
             needs_completion_screen_reason: :new_sp,
             sp_request_requested_attributes: nil,
             sp_session_requested_attributes: [:email],
+            in_account_creation_flow: false,
           )
         end
 
@@ -54,7 +55,7 @@ RSpec.describe SignUp::CompletionsController do
 
       context 'IAL2' do
         let(:user) do
-          create(:user, profiles: [create(:profile, :verified, :active)])
+          create(:user, :fully_registered, profiles: [create(:profile, :verified, :active)])
         end
         let(:pii) { { ssn: '123456789' } }
 
@@ -75,11 +76,12 @@ RSpec.describe SignUp::CompletionsController do
             'User registration: agency handoff visited',
             ial2: true,
             ialmax: nil,
-            service_provider_name: subject.decorated_session.sp_name,
+            service_provider_name: subject.decorated_sp_session.sp_name,
             page_occurence: '',
             needs_completion_screen_reason: :new_sp,
             sp_request_requested_attributes: nil,
             sp_session_requested_attributes: [:email],
+            in_account_creation_flow: false,
           )
         end
 
@@ -90,7 +92,7 @@ RSpec.describe SignUp::CompletionsController do
 
       context 'IALMax' do
         let(:user) do
-          create(:user, profiles: [create(:profile, :verified, :active)])
+          create(:user, :fully_registered, profiles: [create(:profile, :verified, :active)])
         end
         let(:pii) { { ssn: '123456789' } }
 
@@ -112,11 +114,12 @@ RSpec.describe SignUp::CompletionsController do
             'User registration: agency handoff visited',
             ial2: false,
             ialmax: true,
-            service_provider_name: subject.decorated_session.sp_name,
+            service_provider_name: subject.decorated_sp_session.sp_name,
             page_occurence: '',
             needs_completion_screen_reason: :new_sp,
             sp_request_requested_attributes: nil,
             sp_session_requested_attributes: [:email],
+            in_account_creation_flow: false,
           )
         end
 
@@ -196,13 +199,15 @@ RSpec.describe SignUp::CompletionsController do
     end
 
     context 'IAL1' do
+      let(:user) { create(:user, :fully_registered) }
       it 'tracks analytics' do
-        stub_sign_in
+        stub_sign_in(user)
         subject.session[:sp] = {
           ial2: false,
           issuer: 'foo',
           request_url: 'http://example.com',
         }
+        subject.user_session[:in_account_creation_flow] = true
 
         patch :update
 
@@ -210,16 +215,17 @@ RSpec.describe SignUp::CompletionsController do
           'User registration: complete',
           ial2: false,
           ialmax: nil,
-          service_provider_name: subject.decorated_session.sp_name,
+          service_provider_name: subject.decorated_sp_session.sp_name,
           page_occurence: 'agency-page',
           needs_completion_screen_reason: :new_sp,
           sp_request_requested_attributes: nil,
           sp_session_requested_attributes: nil,
+          in_account_creation_flow: true,
         )
       end
 
       it 'updates verified attributes' do
-        stub_sign_in
+        stub_sign_in(user)
         subject.session[:sp] = {
           issuer: 'foo',
           ial: 1,
@@ -239,7 +245,7 @@ RSpec.describe SignUp::CompletionsController do
       end
 
       it 'redirects to account page if the session request_url is removed' do
-        stub_sign_in
+        stub_sign_in(user)
         subject.session[:sp] = {
           ial2: false,
           issuer: 'foo',
@@ -253,7 +259,7 @@ RSpec.describe SignUp::CompletionsController do
 
     context 'IAL2' do
       it 'tracks analytics' do
-        user = create(:user, profiles: [create(:profile, :verified, :active)])
+        user = create(:user, :fully_registered, profiles: [create(:profile, :verified, :active)])
         stub_sign_in(user)
         sp = create(:service_provider, issuer: 'https://awesome')
         subject.session[:sp] = {
@@ -262,6 +268,7 @@ RSpec.describe SignUp::CompletionsController do
           request_url: 'http://example.com',
           requested_attributes: ['email'],
         }
+        subject.user_session[:in_account_creation_flow] = true
 
         patch :update
 
@@ -269,11 +276,12 @@ RSpec.describe SignUp::CompletionsController do
           'User registration: complete',
           ial2: true,
           ialmax: nil,
-          service_provider_name: subject.decorated_session.sp_name,
+          service_provider_name: subject.decorated_sp_session.sp_name,
           page_occurence: 'agency-page',
           needs_completion_screen_reason: :new_sp,
           sp_request_requested_attributes: nil,
           sp_session_requested_attributes: ['email'],
+          in_account_creation_flow: true,
         )
       end
 

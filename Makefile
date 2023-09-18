@@ -26,13 +26,13 @@ ARTIFACT_DESTINATION_FILE ?= ./tmp/idp.tar.gz
 	lint \
 	lint_analytics_events \
 	lint_analytics_events_sorted \
-	lint_tracker_events \
 	lint_country_dialing_codes \
 	lint_erb \
+	lint_lockfiles \
 	lint_optimized_assets \
+	lint_tracker_events \
 	lint_yaml \
 	lint_yarn_workspaces \
-	lint_lockfiles \
 	lintfix \
 	normalize_yaml \
 	optimize_assets \
@@ -78,7 +78,7 @@ endif
 	make lint_tracker_events
 	make lint_analytics_events_sorted
 	@echo "--- brakeman ---"
-	bundle exec brakeman
+	make brakeman
 	@echo "--- bundler-audit ---"
 	bundle exec bundler-audit check --update
 	# JavaScript
@@ -141,8 +141,8 @@ lintfix: ## Try to automatically fix any Ruby, ERB, JavaScript, YAML, or CSS lin
 	@echo "--- normalize yaml ---"
 	make normalize_yaml
 
-brakeman: ## Runs brakeman
-	bundle exec brakeman
+brakeman: ## Runs brakeman code security check
+	(bundle exec brakeman) || (echo "Error: update code as needed to remove security issues. For known exceptions already in brakeman.ignore, use brakeman to interactively update exceptions."; exit 1)
 
 public/packs/manifest.json: yarn.lock $(shell find app/javascript -type f) ## Builds JavaScript assets
 	yarn build
