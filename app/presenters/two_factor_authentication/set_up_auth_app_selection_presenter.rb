@@ -16,3 +16,4 @@ module TwoFactorAuthentication
       t('two_factor_authentication.two_factor_choice_options.auth_app_info')
     end
   end
+end
