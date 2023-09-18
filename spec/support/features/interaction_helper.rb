@@ -1,6 +1,7 @@
 module InteractionHelper
   def click_spinner_button_and_wait(...)
     click_on(...)
+    sleep(1)
     begin
       expect(page).to have_no_css('lg-spinner-button.spinner-button--spinner-active', wait: 10)
     rescue Selenium::WebDriver::Error::StaleElementReferenceError
