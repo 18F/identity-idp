@@ -87,11 +87,13 @@ module SignUp
         sp_session_requested_attributes: sp_session[:requested_attributes],
         sp_request_requested_attributes: service_provider_request.requested_attributes,
         page_occurence: page_occurence,
+        in_account_creation_flow: user_session[:in_account_creation_flow] || false,
         needs_completion_screen_reason: needs_completion_screen_reason }
     end
 
     def track_completion_event(last_page)
       analytics.user_registration_complete(**analytics_attributes(last_page))
+      user_session.delete(:in_account_creation_flow)
     end
 
     def pii

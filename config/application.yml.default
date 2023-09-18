@@ -199,6 +199,7 @@ max_mail_events_window_in_days: 30
 max_phone_numbers_per_account: 5
 max_piv_cac_per_account: 2
 min_password_score: 3
+minimum_wait_before_another_usps_letter_in_hours: 24
 multi_region_kms_migration_jobs_enabled: true
 mx_timeout: 3
 otp_delivery_blocklist_maxretry: 10
@@ -284,6 +285,9 @@ rules_of_use_updated_at: '2022-01-19T00:00:00Z' # Production has a newer timesta
 s3_public_reports_enabled: false
 s3_reports_enabled: false
 saml_secret_rotation_enabled: false
+second_mfa_reminder_account_age_in_days: 30
+second_mfa_reminder_enabled: true
+second_mfa_reminder_sign_in_count: 10
 seed_agreements_data: true
 service_provider_request_ttl_hours: 24
 session_check_delay: 30
@@ -462,6 +466,7 @@ production:
   s3_reports_enabled: true
   saml_endpoint_configs: '[]'
   scrypt_cost: 10000$8$1$
+  second_mfa_reminder_enabled: false
   secret_key_base:
   seed_agreements_data: false
   session_encryption_key:
