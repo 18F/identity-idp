@@ -1,10 +1,8 @@
-import { trackEvent } from '@18f/identity-analytics';
 import { t } from '@18f/identity-i18n';
 
 class PasswordConfirmationElement extends HTMLElement {
   connectedCallback() {
     this.toggle.addEventListener('change', () => this.setInputType());
-    this.toggle.addEventListener('click', () => this.trackToggleEvent());
     this.input.addEventListener('input', () => this.validatePassword());
     this.inputConfirmation.addEventListener('input', () => this.validatePassword());
     this.setInputType();
@@ -35,10 +33,6 @@ class PasswordConfirmationElement extends HTMLElement {
     const checked = this.toggle.checked ? 'text' : 'password';
     this.input.type = checked;
     this.inputConfirmation.type = checked;
-  }
-
-  trackToggleEvent() {
-    trackEvent('Show Password button clicked', { path: window.location.pathname });
   }
 
   validatePassword() {

@@ -237,8 +237,6 @@ Rails.application.routes.draw do
     get '/manage/email/confirm_delete/:id' => 'users/emails#confirm_delete',
         as: :manage_email_confirm_delete
 
-    get '/add/phone' => 'users/phones#add'
-    post '/add/phone' => 'users/phones#create'
     get '/manage/phone/:id' => 'users/edit_phone#edit', as: :manage_phone
     match '/manage/phone/:id' => 'users/edit_phone#update', via: %i[patch put]
     delete '/manage/phone/:id' => 'users/edit_phone#destroy'
@@ -312,7 +310,6 @@ Rails.application.routes.draw do
       end
 
       get '/mail_only_warning' => 'mail_only_warning#show'
-      get '/come_back_later' => 'come_back_later#show'
       get '/personal_key' => 'personal_key#show'
       post '/personal_key' => 'personal_key#update'
       get '/forgot_password' => 'forgot_password#new'
@@ -391,15 +388,28 @@ Rails.application.routes.draw do
       get '/in_person/:step' => 'in_person#show', as: :in_person_step
       put '/in_person/:step' => 'in_person#update'
 
-      get '/by_mail' => 'gpo_verify#index', as: :gpo_verify
-      post '/by_mail' => 'gpo_verify#create'
+      get '/by_mail/enter_code' => 'by_mail/enter_code#index', as: :verify_by_mail_enter_code
+      post '/by_mail/enter_code' => 'by_mail/enter_code#create'
       get '/by_mail/confirm_start_over' => 'confirm_start_over#index',
           as: :confirm_start_over
 
       if FeatureManagement.gpo_verification_enabled?
-        get '/usps' => 'gpo#index', as: :gpo
-        put '/usps' => 'gpo#create'
+        get '/by_mail/request_letter' => 'by_mail/request_letter#index', as: :request_letter
+        put '/by_mail/request_letter' => 'by_mail/request_letter#create'
+
+        # Temporary routes + redirects supporting GPO route renaming
+        get '/usps' => redirect('/verify/by_mail/request_letter')
+        put '/usps' => 'by_mail/request_letter#create'
       end
+
+      get '/by_mail/letter_enqueued' => 'by_mail/letter_enqueued#show', as: :letter_enqueued
+
+      # BEGIN temporary routes & redirects supporting GPO route renaming
+      get '/come_back_later' => redirect('/verify/by_mail/letter_enqueued')
+
+      get '/by_mail' => redirect('/verify/by_mail/enter_code')
+      post '/by_mail' => 'by_mail/enter_code#create'
+      # END temporary routes
     end
 
     root to: 'users/sessions#new'

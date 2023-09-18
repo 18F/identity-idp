@@ -324,14 +324,14 @@ fr:
           obtenir de l’aide:'
       options:
         contact_support: Contacter le service d’assistance de %{app_name}
-        doc_capture_tips: Plus de conseils pour ajouter des photos de votre carte d’identité
+        doc_capture_tips: Conseils pour prendre des photos claires de votre pièce d’identité
         get_help_at_sp: Demandez de l’aide à %{sp_name}
         learn_more_address_verification_options: En savoir plus sur la vérification par téléphone ou par courrier
         learn_more_verify_by_mail: En savoir plus sur la vérification de votre adresse par courrier
         learn_more_verify_by_phone: Apprenez-en plus sur quel numéro de téléphone utiliser
         learn_more_verify_by_phone_in_person: En savoir plus sur la vérification de votre numéro de téléphone
         learn_more_verify_in_person: En savoir plus sur la vérification en personne
-        supported_documents: Voir la liste des pièces d’identité acceptées et délivrées par l’État
+        supported_documents: En savoir plus sur les pièces d’identité acceptées
         verify_by_mail: Vérifiez plutôt votre adresse par courrier
     unavailable:
       exit_button: 'Quitter %{app_name}'

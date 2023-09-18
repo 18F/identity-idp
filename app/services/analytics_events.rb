@@ -530,6 +530,58 @@ module AnalyticsEvents
   end
 
   # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [String] exception
+  # @param [String] profile_fraud_review_pending_at
+  # The user was passed by manual fraud review
+  def fraud_review_passed(
+    success:,
+    errors:,
+    exception:,
+    profile_fraud_review_pending_at:,
+    **extra
+  )
+    track_event(
+      'Fraud: Profile review passed',
+      success: success,
+      errors: errors,
+      exception: exception,
+      profile_fraud_review_pending_at: profile_fraud_review_pending_at,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [String] exception
+  # @param [String] profile_fraud_review_pending_at
+  # The user was rejected by manual fraud review
+  def fraud_review_rejected(
+    success:,
+    errors:,
+    exception:,
+    profile_fraud_review_pending_at:,
+    **extra
+  )
+    track_event(
+      'Fraud: Profile review rejected',
+      success: success,
+      errors: errors,
+      exception: exception,
+      profile_fraud_review_pending_at: profile_fraud_review_pending_at,
+      **extra,
+    )
+  end
+
+  # An uncaught error occurred in frontend JavaScript
+  # @param [String] name
+  # @param [String] message
+  # @param [String] stack
+  def frontend_error(name:, message:, stack: nil, **extra)
+    track_event('Frontend Error', name:, message:, stack:, **extra)
+  end
+
+  # @param [Boolean] success
   # @param [Boolean] address_edited
   # @param [Hash] pii_like_keypaths
   # @param [Hash] errors
@@ -598,16 +650,6 @@ module AnalyticsEvents
       'IdV: cancellation visited',
       step: step,
       request_came_from: request_came_from,
-      proofing_components: proofing_components,
-      **extra,
-    )
-  end
-
-  # The user visited the "come back later" page shown during the GPO mailing flow
-  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
-  def idv_come_back_later_visit(proofing_components: nil, **extra)
-    track_event(
-      'IdV: come back later visited',
       proofing_components: proofing_components,
       **extra,
     )
@@ -993,19 +1035,6 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Boolean] letter_already_sent
-  # GPO address visited
-  def idv_gpo_address_visited(
-    letter_already_sent:,
-    **extra
-  )
-    track_event(
-      'IdV: USPS address visited',
-      letter_already_sent: letter_already_sent,
-      **extra,
-    )
-  end
-
   # The user visited the gpo confirm cancellation screen
   def idv_gpo_confirm_start_over_visited
     track_event('IdV: gpo confirm start over visited')
@@ -1015,60 +1044,6 @@ module AnalyticsEvents
   # @param [String] user_id UUID of user who we sent a reminder to
   def idv_gpo_reminder_email_sent(user_id:, **extra)
     track_event('IdV: gpo reminder email sent', user_id: user_id, **extra)
-  end
-
-  # @identity.idp.previous_event_name Account verification submitted
-  # @param [Boolean] success
-  # @param [Hash] errors
-  # @param [Hash] pii_like_keypaths
-  # @param [DateTime] enqueued_at When was this letter enqueued
-  # @param [Integer] which_letter Sorted by enqueue time, which letter had this code
-  # @param [Integer] letter_count How many letters did the user enqueue for this profile
-  # @param [Integer] attempts Number of attempts to enter a correct code
-  # @param [Boolean] pending_in_person_enrollment
-  # @param [Boolean] fraud_check_failed
-  # @see Reporting::IdentityVerificationReport#query This event is used by the identity verification
-  #       report. Changes here should be reflected there.
-  # GPO verification submitted
-  def idv_gpo_verification_submitted(
-    success:,
-    errors:,
-    pii_like_keypaths:,
-    enqueued_at:,
-    which_letter:,
-    letter_count:,
-    attempts:,
-    pending_in_person_enrollment:,
-    fraud_check_failed:,
-    **extra
-  )
-    track_event(
-      'IdV: GPO verification submitted',
-      success: success,
-      errors: errors,
-      pii_like_keypaths: pii_like_keypaths,
-      enqueued_at: enqueued_at,
-      which_letter: which_letter,
-      letter_count: letter_count,
-      attempts: attempts,
-      pending_in_person_enrollment: pending_in_person_enrollment,
-      fraud_check_failed: fraud_check_failed,
-      **extra,
-    )
-  end
-
-  # @identity.idp.previous_event_name Account verification visited
-  # GPO verification visited
-  # @param [String,nil] source The source for the visit (i.e., "gpo_reminder_email").
-  def idv_gpo_verification_visited(
-    source: nil,
-    **extra
-  )
-    track_event(
-      'IdV: GPO verification visited',
-      source: source,
-      **extra,
-    )
   end
 
   # Tracks emails that are initiated during InPerson::EmailReminderJob
@@ -1903,6 +1878,17 @@ module AnalyticsEvents
     track_event('IdV: intro visited')
   end
 
+  # The user visited the "letter enqueued" page shown during the verify by mail flow
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # @identity.idp.previous_event_name IdV: come back later visited
+  def idv_letter_enqueued_visit(proofing_components: nil, **extra)
+    track_event(
+      'IdV: letter enqueued visited',
+      proofing_components: proofing_components,
+      **extra,
+    )
+  end
+
   # Tracks when the user visits Mail only warning when vendor_status_sms is set to full_outage
   def idv_mail_only_warning_visited(**extra)
     track_event(
@@ -2311,6 +2297,20 @@ module AnalyticsEvents
     )
   end
 
+  # @param [Boolean] letter_already_sent
+  # GPO "request letter" page visited
+  # @identity.idp.previous_event_name IdV: USPS address visited
+  def idv_request_letter_visited(
+    letter_already_sent:,
+    **extra
+  )
+    track_event(
+      'IdV: request letter visited',
+      letter_already_sent: letter_already_sent,
+      **extra,
+    )
+  end
+
   # User submitted IDV password confirm page
   # @param [Boolean] success
   # @param [Boolean] fraud_review_pending
@@ -2417,6 +2417,62 @@ module AnalyticsEvents
   def idv_usps_auth_token_refresh_job_started(**extra)
     track_event(
       'UspsAuthTokenRefreshJob: Started',
+      **extra,
+    )
+  end
+
+  # @identity.idp.previous_event_name Account verification submitted
+  # @identity.idp.previous_event_name IdV: GPO verification submitted
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [Hash] pii_like_keypaths
+  # @param [DateTime] enqueued_at When was this letter enqueued
+  # @param [Integer] which_letter Sorted by enqueue time, which letter had this code
+  # @param [Integer] letter_count How many letters did the user enqueue for this profile
+  # @param [Integer] attempts Number of attempts to enter a correct code
+  # @param [Boolean] pending_in_person_enrollment
+  # @param [Boolean] fraud_check_failed
+  # @see Reporting::IdentityVerificationReport#query This event is used by the identity verification
+  #       report. Changes here should be reflected there.
+  # GPO verification submitted
+  def idv_verify_by_mail_enter_code_submitted(
+    success:,
+    errors:,
+    pii_like_keypaths:,
+    enqueued_at:,
+    which_letter:,
+    letter_count:,
+    attempts:,
+    pending_in_person_enrollment:,
+    fraud_check_failed:,
+    **extra
+  )
+    track_event(
+      'IdV: enter verify by mail code submitted',
+      success: success,
+      errors: errors,
+      pii_like_keypaths: pii_like_keypaths,
+      enqueued_at: enqueued_at,
+      which_letter: which_letter,
+      letter_count: letter_count,
+      attempts: attempts,
+      pending_in_person_enrollment: pending_in_person_enrollment,
+      fraud_check_failed: fraud_check_failed,
+      **extra,
+    )
+  end
+
+  # @identity.idp.previous_event_name Account verification visited
+  # @identity.idp.previous_event_name IdV: GPO verification visited
+  # Visited page used to enter address verification code received via US mail.
+  # @param [String,nil] source The source for the visit (i.e., "gpo_reminder_email").
+  def idv_verify_by_mail_enter_code_visited(
+    source: nil,
+    **extra
+  )
+    track_event(
+      'IdV: enter verify by mail code visited',
+      source: source,
       **extra,
     )
   end
@@ -3674,12 +3730,6 @@ module AnalyticsEvents
   # tracks when a user's session is timed out
   def session_total_duration_timeout
     track_event('User Maximum Session Length Exceeded')
-  end
-
-  # Tracks if a user clicks the "Show Password button"
-  # @param [String] path URL path where the click occurred
-  def show_password_button_clicked(path:, **extra)
-    track_event('Show Password Button Clicked', path: path, **extra)
   end
 
   # Tracks if a user clicks the "You will also need" accordion on the homepage

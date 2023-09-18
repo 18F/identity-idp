@@ -25,6 +25,11 @@ module Idv
       idv_session.vendor_phone_confirmation = false
       idv_session.user_phone_confirmation = false
 
+      # rubocop:disable Layout/LineLength
+      # TEMPORARY DEBUGGING
+      logger.info("ResolutionJobDebug: user_uuid=#{current_user.uuid} old=#{pii[:ssn].present?} new=#{idv_session.ssn.present?} controller=#{self.class.name}")
+      # rubocop:enable Layout/LineLength
+      pii[:ssn] ||= idv_session.ssn # Required for proof_resolution job
       Idv::Agent.new(pii).proof_resolution(
         document_capture_session,
         should_proof_state_id: should_use_aamva?(pii),
@@ -224,7 +229,7 @@ module Idv
     end
 
     def next_step_url
-      return idv_gpo_url if FeatureManagement.idv_by_mail_only?
+      return idv_request_letter_url if FeatureManagement.idv_by_mail_only?
       idv_phone_url
     end
 
@@ -301,7 +306,7 @@ module Idv
         last_name: pii_from_doc[:last_name],
         date_of_birth: pii_from_doc[:dob],
         address: pii_from_doc[:address1],
-        ssn: pii_from_doc[:ssn],
+        ssn: idv_session.ssn || pii_from_doc[:ssn],
         failure_reason: failure_reason,
       )
     end

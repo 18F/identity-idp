@@ -9,7 +9,7 @@ module Idv
       before_action :confirm_verify_info_step_needed
       before_action :confirm_in_person_address_step_complete
       before_action :confirm_repeat_ssn, only: :show
-      before_action :override_csp_for_threat_metrix_no_fsm
+      before_action :override_csp_for_threat_metrix
 
       attr_accessor :error_message
 
@@ -86,7 +86,7 @@ module Idv
       end
 
       def updating_ssn?
-        flow_session.dig(:pii_from_user, :ssn).present?
+        idv_session.ssn.present? || flow_session.dig(:pii_from_user, :ssn).present?
       end
 
       def confirm_in_person_address_step_complete

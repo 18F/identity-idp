@@ -23,22 +23,6 @@ RSpec.feature 'document capture step', :js do
       complete_doc_auth_steps_before_document_capture_step
     end
 
-    it 'logs return to sp link click' do
-      new_window = window_opened_by do
-        click_on t('idv.troubleshooting.options.get_help_at_sp', sp_name: sp_name)
-      end
-
-      within_window new_window do
-        expect(fake_analytics).to have_logged_event(
-          'Return to SP: Failed to proof',
-          flow: nil,
-          location: 'document_capture',
-          redirect_url: instance_of(String),
-          step: 'document_capture',
-        )
-      end
-    end
-
     context 'wrong doc type is uploaded', allow_browser_log: true do
       it 'try again and page show doc type inline error message' do
         attach_images(
