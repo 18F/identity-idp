@@ -17,46 +17,11 @@ module TwoFactorAuthentication
     end
 
     def label
-      case type
-      when 'auth_app'
-        t('two_factor_authentication.two_factor_choice_options.auth_app')
-      when 'backup_code'
-        t('two_factor_authentication.two_factor_choice_options.backup_code')
-      when 'piv_cac'
-        t('two_factor_authentication.two_factor_choice_options.piv_cac')
-      when 'phone'
-        t('two_factor_authentication.two_factor_choice_options.phone')
-      when 'sms'
-        t('two_factor_authentication.two_factor_choice_options.sms')
-      when 'voice'
-        t('two_factor_authentication.two_factor_choice_options.voice')
-      when 'webauthn'
-        t('two_factor_authentication.two_factor_choice_options.webauthn')
-      when 'webauthn_platform'
-        t('two_factor_authentication.two_factor_choice_options.webauthn_platform')
-      else
-        raise "Unsupported setup method: #{type}"
-      end
+      raise "Unsupported setup method: #{type}"
     end
 
     def info
-      case type
-      when 'auth_app'
-        t('two_factor_authentication.two_factor_choice_options.auth_app_info')
-      when 'backup_code'
-        t('two_factor_authentication.two_factor_choice_options.backup_code_info')
-      when 'piv_cac'
-        t('two_factor_authentication.two_factor_choice_options.piv_cac_info')
-      when 'webauthn'
-        t('two_factor_authentication.two_factor_choice_options.webauthn_info')
-      when 'webauthn_platform'
-        t(
-          'two_factor_authentication.two_factor_choice_options.webauthn_platform_info',
-          app_name: APP_NAME,
-        )
-      else
-        raise "Unsupported setup method: #{type}"
-      end
+      raise "Unsupported setup method: #{type}"
     end
 
     def mfa_added_label
@@ -91,4 +56,4 @@ module TwoFactorAuthentication
       single_configuration_only? && mfa_configuration_count > 0
     end
   end
-  end
+end
