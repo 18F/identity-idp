@@ -6,9 +6,9 @@ RSpec.describe 'users/second_mfa_reminder/new.html.erb' do
   let(:sp_name) {}
 
   before do
-    decorated_session = double
-    allow(decorated_session).to receive(:sp_name).and_return(sp_name)
-    allow(view).to receive(:decorated_session).and_return(decorated_session)
+    decorated_sp_session = double
+    allow(decorated_sp_session).to receive(:sp_name).and_return(sp_name)
+    allow(view).to receive(:decorated_sp_session).and_return(decorated_sp_session)
   end
 
   it 'renders with fallback app name for continue button' do
