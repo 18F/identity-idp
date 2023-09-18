@@ -29,7 +29,7 @@ module Idv
       # TEMPORARY DEBUGGING
       logger.info("ResolutionJobDebug: user_uuid=#{current_user.uuid} old=#{pii[:ssn].present?} new=#{idv_session.ssn.present?} controller=#{self.class.name}")
       # rubocop:enable Layout/LineLength
-      pii[:ssn] ||= idv_session.ssn # Required for proof_resolution job
+      pii[:ssn] = idv_session.ssn # Required for proof_resolution job
       Idv::Agent.new(pii).proof_resolution(
         document_capture_session,
         should_proof_state_id: should_use_aamva?(pii),
