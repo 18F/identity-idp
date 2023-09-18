@@ -24,5 +24,9 @@ module TwoFactorAuthentication
     def info
       raise "Unsupported login method: #{type}"
     end
+
+    def disabled?
+      false
+    end
   end
 end
