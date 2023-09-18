@@ -38,6 +38,7 @@ RSpec.describe 'Identity verification', :js do
 
     validate_phone_page
     try_to_skip_ahead_from_phone
+    visit_by_mail_and_return
     complete_otp_verification_page(user)
 
     validate_review_page
@@ -312,6 +313,12 @@ RSpec.describe 'Identity verification', :js do
 
   def try_to_skip_ahead_from_phone
     visit idv_review_path
+    expect(page).to have_current_path(idv_phone_path)
+  end
+
+  def visit_by_mail_and_return
+    enter_gpo_flow
+    click_doc_auth_back_link
     expect(page).to have_current_path(idv_phone_path)
   end
 
