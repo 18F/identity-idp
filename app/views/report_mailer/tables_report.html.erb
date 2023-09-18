@@ -1,68 +1,16 @@
 <%#
 - @tables: an array of tables, expects first "row" to be an options hash
 %>
-
-<style type="text/css">
-
-.table-number {
-  font-variant-numeric: tabular-nums;
-  text-align: right;
-}
-
-<%#
-borrowed from markdown-here styling
-https://github.com/adam-p/markdown-here/blob/1df5aee09cae90e2991db4e9cfb8c1b65a3c1898/src/common/default.css
-%>
-table {
-  padding: 0;
-  border-collapse: collapse;
-  border-spacing: 0;
-  font-size: 1em;
-  font: inherit;
-  border: 0;
-}
-
-tbody {
-  margin: 0;
-  padding: 0;
-  border: 0;
-}
-
-table tr {
-  border: 0;
-  border-top: 1px solid #CCC;
-  background-color: white;
-  margin: 0;
-  padding: 0;
-}
-
-table tr:nth-child(2n) {
-  background-color: #F8F8F8;
-}
-
-table tr th, table tr td {
-  font-size: 1em;
-  border: 1px solid #CCC;
-  margin: 0;
-  padding: 0.5em 1em;
-}
-
-table tr th {
- font-weight: bold;
-  background-color: #F0F0F0;
-}
-</style>
-
 <% @tables.each do |table| %>
   <% options, header, *rows = table %>
 
   <h2><%= options[:title] %></h2>
 
-  <table>
+  <table class="usa-table">
     <thead>
       <tr>
         <% header.each do |head| %>
-          <th><%= head %></th>
+          <th scope="col"><%= head %></th>
         <% end %>
       </tr>
     </thead>

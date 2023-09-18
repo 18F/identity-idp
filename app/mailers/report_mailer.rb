@@ -5,6 +5,8 @@ class ReportMailer < ActionMailer::Base
 
   before_action :attach_images
 
+  layout 'tables_report', only: [:tables_report]
+
   def deleted_user_accounts_report(email:, name:, issuers:, data:)
     @name = name
     @issuers = issuers
