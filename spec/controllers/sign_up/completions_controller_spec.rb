@@ -200,9 +200,6 @@ RSpec.describe SignUp::CompletionsController do
 
     context 'IAL1' do
       let(:user) { create(:user, :fully_registered) }
-      before do
-        subject.user_session[:in_account_creation_flow] = true
-      end
       it 'tracks analytics' do
         stub_sign_in(user)
         subject.session[:sp] = {
@@ -210,6 +207,7 @@ RSpec.describe SignUp::CompletionsController do
           issuer: 'foo',
           request_url: 'http://example.com',
         }
+        subject.user_session[:in_account_creation_flow] = true
 
         patch :update
 
