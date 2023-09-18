@@ -7,9 +7,12 @@ module TwoFactorAuthCode
     attr_reader :otp_delivery_preference,
                 :otp_make_default_number,
                 :unconfirmed_phone,
-                :otp_expiration
+                :otp_expiration,
+                :in_multi_mfa_selection_flow,
+                :data
 
     alias_method :unconfirmed_phone?, :unconfirmed_phone
+    alias_method :in_multi_mfa_selection_flow?, :in_multi_mfa_selection_flow
 
     def header
       t('two_factor_authentication.header_text')
@@ -58,7 +61,9 @@ module TwoFactorAuthCode
 
     def cancel_link
       locale = LinkLocaleResolver.locale
-      if confirmation_for_add_phone || reauthn
+      if in_multi_mfa_selection_flow
+        authentication_methods_setup_path(locale: locale)
+      elsif confirmation_for_add_phone || reauthn
         account_path(locale: locale)
       else
         sign_out_path(locale: locale)

@@ -76,7 +76,7 @@ RSpec.describe 'two_factor_authentication/otp_verification/show.html.erb' do
 
       it 'shows a "Choose another authentication method" link' do
         expect(rendered).to have_link(
-          t('two_factor_authentication.choose_another_option'),
+          t('links.cancel'),
           href: authentication_methods_setup_path,
         )
       end
