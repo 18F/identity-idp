@@ -114,7 +114,7 @@ RSpec.describe Users::TwoFactorAuthenticationController do
         user = create(:user, :with_phone, **with_default_phone)
         stub_sign_in_before_2fa(user)
 
-        time1 = Time.zone.local(2023, 12, 13, 0, 0, 0)
+        time1 = Time.zone.local(2022, 12, 13, 0, 0, 0)
         cookies.encrypted[:remember_device] = {
           value: RememberDeviceCookie.new(user_id: user.id, created_at: time1).to_json,
           expires: time1 + 10.seconds,

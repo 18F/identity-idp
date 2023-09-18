@@ -3689,6 +3689,17 @@ module AnalyticsEvents
     )
   end
 
+  # User dismissed the second MFA reminder page
+  # @param [Boolean] opted_to_add Whether the user chose to add a method
+  def second_mfa_reminder_dismissed(opted_to_add:, **extra)
+    track_event('Second MFA Reminder Dismissed', opted_to_add:, **extra)
+  end
+
+  # User visited the second MFA reminder page
+  def second_mfa_reminder_visit
+    track_event('Second MFA Reminder Visited')
+  end
+
   # Tracks when security event is received
   # @param [Boolean] success
   # @param [String] error_code
@@ -3730,12 +3741,6 @@ module AnalyticsEvents
   # tracks when a user's session is timed out
   def session_total_duration_timeout
     track_event('User Maximum Session Length Exceeded')
-  end
-
-  # Tracks if a user clicks the "Show Password button"
-  # @param [String] path URL path where the click occurred
-  def show_password_button_clicked(path:, **extra)
-    track_event('Show Password Button Clicked', path: path, **extra)
   end
 
   # Tracks if a user clicks the "You will also need" accordion on the homepage
@@ -4144,6 +4149,7 @@ module AnalyticsEvents
   # @param [Boolean] success
   # @param [Hash] mfa_method_counts
   # @param [Integer] enabled_mfa_methods_count
+  # @param [Boolean] second_mfa_reminder_conversion Whether it is a result of second MFA reminder.
   # @param [Hash] pii_like_keypaths
   # Tracks when a user has completed MFA setup
   def user_registration_mfa_setup_complete(
@@ -4151,6 +4157,7 @@ module AnalyticsEvents
     mfa_method_counts:,
     enabled_mfa_methods_count:,
     pii_like_keypaths:,
+    second_mfa_reminder_conversion: nil,
     **extra
   )
     track_event(
@@ -4160,6 +4167,7 @@ module AnalyticsEvents
         mfa_method_counts: mfa_method_counts,
         enabled_mfa_methods_count: enabled_mfa_methods_count,
         pii_like_keypaths: pii_like_keypaths,
+        second_mfa_reminder_conversion:,
         **extra,
       }.compact,
     )

@@ -131,10 +131,8 @@ RSpec.describe RateLimiter do
     let(:rate_limiter) { RateLimiter.new(target: '1', rate_limit_type: rate_limit_type) }
 
     context 'without having attempted' do
-      it 'returns current time' do
-        freeze_time do
-          expect(rate_limiter.expires_at).to eq(Time.zone.now)
-        end
+      it 'returns nil' do
+        expect(rate_limiter.expires_at).to eq(nil)
       end
     end
 
