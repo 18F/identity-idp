@@ -27,7 +27,6 @@ class FrontendLogController < ApplicationController
     'IdV: user clicked what to bring link on ready to verify page' => :idv_in_person_ready_to_verify_what_to_bring_link_clicked,
     'IdV: verify in person troubleshooting option clicked' => :idv_verify_in_person_troubleshooting_option_clicked,
     'Multi-Factor Authentication: download backup code' => :multi_factor_auth_backup_code_download,
-    'Show Password button clicked' => :show_password_button_clicked,
     'Sign In: IdV requirements accordion clicked' => :sign_in_idv_requirements_accordion_clicked,
     'User prompted before navigation' => :user_prompted_before_navigation,
     'User prompted before navigation and still on page' => :user_prompted_before_navigation_and_still_on_page,

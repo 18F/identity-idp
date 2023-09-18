@@ -21,7 +21,7 @@ production:
   error_collector:
     enabled: true
     capture_source: true
-    ignore_errors: "<%= %w[
+    ignore_classes: "<%= %w[
       ActionController::BadRequest
       ActionController::ParameterMissing
       ActionController::RoutingError

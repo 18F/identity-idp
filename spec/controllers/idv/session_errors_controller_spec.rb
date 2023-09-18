@@ -160,7 +160,7 @@ RSpec.describe Idv::SessionErrorsController do
       let(:user) { create(:user) }
 
       before do
-        RateLimiter.new(rate_limit_type: :proof_address, user: user).increment!
+        RateLimiter.new(rate_limit_type: :idv_resolution, user: user).increment!
       end
 
       it 'assigns remaining count' do
@@ -180,7 +180,7 @@ RSpec.describe Idv::SessionErrorsController do
           'IdV: session error visited',
           hash_including(
             type: action.to_s,
-            attempts_remaining: 5,
+            attempts_remaining: IdentityConfig.store.idv_max_attempts - 1,
           ),
         )
         response
@@ -236,7 +236,7 @@ RSpec.describe Idv::SessionErrorsController do
       let(:user) { create(:user) }
 
       before do
-        RateLimiter.new(rate_limit_type: :proof_address, user: user).increment_to_limited!
+        RateLimiter.new(rate_limit_type: :idv_resolution, user: user).increment_to_limited!
       end
 
       it 'assigns expiration time' do
@@ -258,7 +258,7 @@ RSpec.describe Idv::SessionErrorsController do
           'IdV: session error visited',
           hash_including(
             type: action.to_s,
-            attempts_remaining: 5,
+            attempts_remaining: 0,
           ),
         )
         get action

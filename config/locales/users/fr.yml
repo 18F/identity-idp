@@ -39,6 +39,13 @@ fr:
         </ul>
       overview_html: Nous avons mis à jour notre %{link_html}. Veuillez consulter et
         cocher la case ci-dessous pour continuer.
+    second_mfa_reminder:
+      add_method: Ajouter une méthode d’authentification
+      continue: Continuer vers %{sp_name}
+      description: Votre compte ne dispose que d’une seule méthode d’authentification.
+        Évitez le verrouillage de votre compte en ajoutant une autre méthode
+        d’authentification.
+      heading: Améliorer la sécurité de votre compte
     suspended_sign_in_account:
       contact_details: Nous n’avons pas pu vous connecter. Merci d’appeler notre
         centre de contact au %{contact_number}.

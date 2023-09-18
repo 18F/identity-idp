@@ -13,6 +13,7 @@ module MfaSetupConcern
           in_account_creation_flow: user_session[:in_account_creation_flow] || false,
           enabled_mfa_methods_count: mfa_context.enabled_mfa_methods_count,
           pii_like_keypaths: [[:mfa_method_counts, :phone]],
+          second_mfa_reminder_conversion: user_session.delete(:second_mfa_reminder_conversion),
           success: true,
         )
       end
