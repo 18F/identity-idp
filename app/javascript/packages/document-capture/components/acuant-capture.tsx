@@ -85,6 +85,7 @@ interface AcuantImageAnalyticsPayload extends ImageAnalyticsPayload {
   sharpnessScoreThreshold: number;
   isAssessedAsBlurry: boolean;
   assessment: AcuantImageAssessment;
+  isAssessedAsUnsupported: boolean;
 }
 
 interface AcuantCaptureProps {
@@ -527,6 +528,7 @@ function AcuantCapture(
       assessment,
       size: getDecodedBase64ByteSize(nextCapture.image.data),
       fingerprint: null,
+      failedImageResubmission: false,
     });
 
     trackEvent(`IdV: ${name} image added`, analyticsPayload);

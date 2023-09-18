@@ -799,6 +799,7 @@ describe('document-capture/components/acuant-capture', () => {
         size: sinon.match.number,
         acuantCaptureMode: 'AUTO',
         fingerprint: null,
+        failedImageResubmission: false,
       });
 
       expect(error).to.be.ok();
@@ -856,6 +857,7 @@ describe('document-capture/components/acuant-capture', () => {
         size: sinon.match.number,
         acuantCaptureMode: sinon.match.string,
         fingerprint: null,
+        failedImageResubmission: false,
       });
 
       expect(error).to.be.ok();
@@ -966,6 +968,7 @@ describe('document-capture/components/acuant-capture', () => {
         size: sinon.match.number,
         acuantCaptureMode: sinon.match.string,
         fingerprint: null,
+        failedImageResubmission: false,
       });
     });
 
