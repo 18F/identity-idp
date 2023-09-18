@@ -25,7 +25,9 @@ module Idv
         **ab_test_analytics_buckets,
       )
 
-      @title =
+      @title = gpo_user_flow? ? t('titles.idv.review_letter') : t('titles.idv.review')
+
+      @heading =
         if gpo_user_flow?
           t('idv.titles.session.review_letter', app_name: APP_NAME)
         else

@@ -16,7 +16,14 @@ RSpec.describe 'idv/review/new.html.erb' do
 
     context 'user goes through phone finder' do
       before do
-        @title = t('idv.titles.session.review', app_name: APP_NAME)
+        @title = t('titles.idv.review')
+        @heading = t('idv.titles.session.review', app_name: APP_NAME)
+        render
+      end
+
+      it 'has a localized title' do
+        expect(view).to receive(:title).with(t('titles.idv.review'))
+
         render
       end
 
@@ -34,7 +41,14 @@ RSpec.describe 'idv/review/new.html.erb' do
 
     context 'user goes through verify by mail flow' do
       before do
-        @title = t('idv.titles.session.review_letter', app_name: APP_NAME)
+        @title = t('titles.idv.review_letter')
+        @heading = t('idv.titles.session.review_letter', app_name: APP_NAME)
+        render
+      end
+
+      it 'has a localized title' do
+        expect(view).to receive(:title).with(t('titles.idv.review_letter'))
+
         render
       end
 
