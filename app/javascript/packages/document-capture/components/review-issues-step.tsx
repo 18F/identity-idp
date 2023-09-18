@@ -71,24 +71,24 @@ function ReviewIssuesStep({
   useEffect(() => onFailedSubmissionAttempt(failedImageFingerprints), []);
 
   useLayoutEffect(() => {
-    let frontMetaData: any = null;
+    let frontMetaData: { fingerprint: string | null } = { fingerprint: null };
     try {
       frontMetaData = JSON.parse(
         typeof value.front_image_metadata === 'undefined' ? '{}' : value.front_image_metadata,
       );
     } catch (e) {}
     const frontHasFailed = !!failedSubmissionImageFingerprints?.front?.includes(
-      frontMetaData?.fingerprint,
+      frontMetaData?.fingerprint ?? '',
     );
 
-    let backMetaData: any = null;
+    let backMetaData: { fingerprint: string | null } = { fingerprint: null };
     try {
       backMetaData = JSON.parse(
         typeof value.back_image_metadata === 'undefined' ? '{}' : value.back_image_metadata,
       );
     } catch (e) {}
     const backHasFailed = !!failedSubmissionImageFingerprints?.back?.includes(
-      backMetaData?.fingerprint,
+      backMetaData?.fingerprint ?? '',
     );
     if (frontHasFailed || backHasFailed) {
       setSkipWarning(true);
