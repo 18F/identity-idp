@@ -268,6 +268,7 @@ RSpec.describe SignUp::CompletionsController do
           request_url: 'http://example.com',
           requested_attributes: ['email'],
         }
+        subject.user_session[:in_account_creation_flow] = true
 
         patch :update
 
