@@ -2,7 +2,6 @@ import { ComponentType } from 'react';
 import { t } from '@18f/identity-i18n';
 import LocationCollection from './location-collection';
 import LocationCollectionItem from './location-collection-item';
-import NoInPersonLocationsDisplay from './no-in-person-locations-display';
 
 export interface FormattedLocation {
   formattedCityStateZip: string;
@@ -20,6 +19,7 @@ interface InPersonLocationsProps {
   locations: FormattedLocation[] | null | undefined;
   onSelect;
   address: string;
+  noInPersonLocationsDisplay: ComponentType<{ address: string }>;
   resultsHeaderComponent?: ComponentType;
 }
 
@@ -27,6 +27,7 @@ function InPersonLocations({
   locations,
   onSelect,
   address,
+  noInPersonLocationsDisplay: NoInPersonLocationsDisplay,
   resultsHeaderComponent: HeaderComponent,
 }: InPersonLocationsProps) {
   const isPilot = locations?.some((l) => l.isPilot);

@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { t } from '@18f/identity-i18n';
 import { InPersonLocations } from '@18f/identity-address-search';
 import type { LocationQuery, FormattedLocation } from '@18f/identity-address-search/types';
+import { NoInPersonLocationsDisplay } from '@18f/identity-address-search';
 import FullAddressSearchInput from './full-address-search-input';
 
 function FullAddressSearch({
@@ -11,6 +12,7 @@ function FullAddressSearch({
   handleLocationSelect,
   disabled,
   onFoundLocations,
+  noInPersonLocationsDisplay = NoInPersonLocationsDisplay,
 }) {
   const [apiError, setApiError] = useState<Error | null>(null);
   const [foundAddress, setFoundAddress] = useState<LocationQuery | null>(null);
@@ -48,6 +50,7 @@ function FullAddressSearch({
           locations={locationResults}
           onSelect={handleLocationSelect}
           address={foundAddress.address || ''}
+          noInPersonLocationsDisplay={noInPersonLocationsDisplay}
         />
       )}
     </>
