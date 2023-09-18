@@ -114,7 +114,7 @@ fr:
             button: Vérifier par courrier
           heading: Nous n’avons pas pu vérifier votre identité par téléphone
           option_try_again_later_html: 'Annuler et recommencer après <strong>%{time_left}</strong>'
-          option_verify_by_mail_html: Vérifier par courrier, ce qui prend de <strong>5 à 10 jours</strong>.
+          option_verify_by_mail_html: Vérifier par courrier, qui nécessite <strong>5 à 10 jours</strong>.
           options_header: 'Vous Pouvez :'
         timeout: Notre demande de vérification de vos renseignements a expiré. Veuillez
           réessayer.
@@ -252,7 +252,7 @@ fr:
           usage unique de votre lettre actuelle restera valable pendant une
           période limitée. Vous pouvez toujours utiliser le code à usage unique
           de l’une ou l’autre lettre.
-        resend_timeframe_html: Les lettres mettent <strong>5 à 10 jours</strong> pour arriver .
+        resend_timeframe_html: Les lettres mettent <strong>5 à 10 jours</strong> pour arriver.
         timeframe_html: Les lettres sont envoyées le jour ouvrable suivant par le
           courrier de première classe d’USPS et arrivent dans un délai de
           <strong>5 à 10 jours</strong>.

@@ -230,7 +230,7 @@ en:
         resend_code_warning: If you request a new letter now, the one-time code from
           your current letter will remain valid for a limited time. You may
           still use the one-time code from either letter.
-        resend_timeframe_html: Letters take <strong>5 to 10 days</strong> to arrive
+        resend_timeframe_html: Letters take <strong>5 to 10 days</strong> to arrive.
         timeframe_html: Letters are sent the next business day via USPS First-Class Mail
           and arrive in <strong>5 to 10 days</strong>.
       gpo_reminder:
