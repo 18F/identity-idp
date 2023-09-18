@@ -7,8 +7,7 @@ RSpec.describe 'doc auth IPP VerifyInfo', js: true do
 
   let(:user) { user_with_2fa }
   let(:fake_analytics) { FakeAnalytics.new(user: user) }
-  let(:capture_secondary_id_enabled) { false }
-  let(:enrollment) { InPersonEnrollment.new(capture_secondary_id_enabled:) }
+  let(:enrollment) { InPersonEnrollment.new }
 
   before do
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
@@ -24,7 +23,6 @@ RSpec.describe 'doc auth IPP VerifyInfo', js: true do
     complete_prepare_step(user)
     complete_location_step(user)
     complete_state_id_step(user)
-    complete_address_step(user)
     complete_ssn_step(user)
 
     # verify page
@@ -35,10 +33,11 @@ RSpec.describe 'doc auth IPP VerifyInfo', js: true do
     expect(page).to have_text(InPersonHelper::GOOD_LAST_NAME)
     expect(page).to have_text(InPersonHelper::GOOD_DOB_FORMATTED_EVENT)
     expect(page).to have_text(InPersonHelper::GOOD_STATE_ID_NUMBER)
-    expect(page).to have_text(InPersonHelper::GOOD_ADDRESS1)
-    expect(page).to have_text(InPersonHelper::GOOD_CITY)
-    expect(page).to have_text(InPersonHelper::GOOD_ZIPCODE)
-    expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT[:state])
+    expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS1).twice
+    expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS2).twice
+    expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_CITY).twice
+    expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT[:state_id_jurisdiction], count: 3)
+    expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_ZIPCODE).twice
     expect(page).to have_text(DocAuthHelper::GOOD_SSN_MASKED)
 
     # click update state ID button
@@ -58,7 +57,7 @@ RSpec.describe 'doc auth IPP VerifyInfo', js: true do
     click_doc_auth_back_link
     expect(page).to have_content(t('headings.verify'))
     expect(page).to have_current_path(idv_in_person_verify_info_path)
-    expect(page).to have_text(InPersonHelper::GOOD_ADDRESS1)
+    expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS1)
     expect(page).not_to have_text('bad address')
 
     # click update ssn button
@@ -83,7 +82,6 @@ RSpec.describe 'doc auth IPP VerifyInfo', js: true do
     complete_prepare_step(user)
     complete_location_step(user)
     complete_state_id_step(user)
-    complete_address_step(user)
     complete_ssn_step(user)
 
     # verify page
@@ -95,10 +93,11 @@ RSpec.describe 'doc auth IPP VerifyInfo', js: true do
     expect(page).to have_text(InPersonHelper::GOOD_LAST_NAME)
     expect(page).to have_text(InPersonHelper::GOOD_DOB_FORMATTED_EVENT)
     expect(page).to have_text(InPersonHelper::GOOD_STATE_ID_NUMBER)
-    expect(page).to have_text(InPersonHelper::GOOD_ADDRESS1)
-    expect(page).to have_text(InPersonHelper::GOOD_CITY)
-    expect(page).to have_text(InPersonHelper::GOOD_ZIPCODE)
-    expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT[:state])
+    expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS1).twice
+    expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS2).twice
+    expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_CITY).twice
+    expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT[:state_id_jurisdiction], count: 3)
+    expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_ZIPCODE).twice
     expect(page).to have_text(DocAuthHelper::GOOD_SSN_MASKED)
 
     # click update state ID button
@@ -115,7 +114,6 @@ RSpec.describe 'doc auth IPP VerifyInfo', js: true do
     click_button t('idv.buttons.change_address_label')
     expect(page).to have_content(t('in_person_proofing.headings.update_address'))
     fill_in t('idv.form.address1'), with: '987 Fake St.'
-    choose t('in_person_proofing.form.address.same_address_choice_yes')
     click_button t('forms.buttons.submit.update')
     expect(page).to have_content(t('headings.verify'))
     expect(page).to have_current_path(idv_in_person_verify_info_path)
@@ -145,7 +143,6 @@ RSpec.describe 'doc auth IPP VerifyInfo', js: true do
     complete_prepare_step(user)
     complete_location_step(user)
     complete_state_id_step(user)
-    complete_address_step(user)
     fill_out_ssn_form_with_ssn_that_fails_resolution
     click_idv_continue
     click_idv_continue
@@ -163,7 +160,6 @@ RSpec.describe 'doc auth IPP VerifyInfo', js: true do
     complete_prepare_step(user)
     complete_location_step(user)
     complete_state_id_step(user)
-    complete_address_step(user)
     complete_ssn_step(user)
     click_idv_continue
 

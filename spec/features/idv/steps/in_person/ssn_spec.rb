@@ -6,7 +6,6 @@ RSpec.describe 'doc auth IPP ssn step', js: true do
 
   before do
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
-    allow(IdentityConfig.store).to receive(:in_person_capture_secondary_id_enabled).and_return(true)
   end
 
   context 'when visiting ssn for the first time' do
@@ -101,7 +100,7 @@ RSpec.describe 'doc auth IPP ssn step', js: true do
     end
   end
 
-  context 'when in_person_capture_secondary_id_enabled is true, ssn step is accessible from' do
+  context 'when same_address_as_id is false, ssn step is accessible from' do
     it 'address step', allow_browser_log: true do
       user = user_with_2fa
       sign_in_and_2fa_user(user)
@@ -111,25 +110,27 @@ RSpec.describe 'doc auth IPP ssn step', js: true do
       # location page
       complete_location_step(user)
       # state ID page
-      fill_out_state_id_form_ok(same_address_as_id: false, capture_secondary_id_enabled: true)
+      fill_out_state_id_form_ok(same_address_as_id: false)
       click_idv_continue
-      fill_out_address_form_ok(double_address_verification: true, same_address_as_id: false)
+      fill_out_address_form_ok(same_address_as_id: false)
       click_idv_continue
-      # ssn page
-      expect(page).to have_content(t('doc_auth.headings.ssn'))
-    end
-
-    it 'state_id step (when state id address matches residential address)',
-       allow_browser_log: true do
-      user = user_with_2fa
-      complete_idv_steps_before_ssn(user)
       # ssn page
       expect(page).to have_content(t('doc_auth.headings.ssn'))
     end
 
     it 'verify info step', allow_browser_log: true do
       user = user_with_2fa
-      complete_idv_steps_before_ssn(user)
+      sign_in_and_2fa_user(user)
+      begin_in_person_proofing(user)
+      # prepare page
+      complete_prepare_step(user)
+      # location page
+      complete_location_step(user)
+      # state ID page
+      fill_out_state_id_form_ok(same_address_as_id: false)
+      click_idv_continue
+      fill_out_address_form_ok(same_address_as_id: false)
+      click_idv_continue
       # ssn page (first visit)
       complete_ssn_step(user)
       # verify page (next page)
