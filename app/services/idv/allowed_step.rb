@@ -25,9 +25,9 @@ module Idv
         link_sent: [:ssn],
         document_capture: [:ssn], # in person?
         ssn: [:verify_info],
-        verify_info: [:ssn, :address, :hybrid_handoff, :document_capture, :phone],
+        verify_info: [:phone],
         phone: [:enter_otp, :request_letter],
-        enter_otp: [:phone, :review],
+        enter_otp: [:review],
         review: [:personal_key, :letter_enqueued],
         request_letter: [:review, :letter_enqueued],
       },
