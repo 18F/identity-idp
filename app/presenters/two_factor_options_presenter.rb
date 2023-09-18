@@ -64,6 +64,14 @@ class TwoFactorOptionsPresenter
     after_mfa_setup_path if two_factor_enabled? && show_skip_additional_mfa_link?
   end
 
+  def skip_label
+    if user_has_dismissed_second_mfa_reminder?
+      t('links.cancel')
+    else
+      t('mfa.skip')
+    end
+  end
+
   private
 
   def piv_cac_option
@@ -113,5 +121,9 @@ class TwoFactorOptionsPresenter
 
   def mfa_policy
     @mfa_policy ||= MfaPolicy.new(user)
+  end
+
+  def user_has_dismissed_second_mfa_reminder?
+    user.second_mfa_reminder_dismissed_at.present?
   end
 end

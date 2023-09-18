@@ -105,6 +105,22 @@ RSpec.describe TwoFactorOptionsPresenter do
     end
   end
 
+  describe '#skip_label' do
+    subject(:skip_label) { presenter.skip_label }
+
+    it 'is "Skip"' do
+      expect(skip_label).to eq(t('mfa.skip'))
+    end
+
+    context 'user has dismissed second mfa reminder' do
+      let(:user) { build(:user, second_mfa_reminder_dismissed_at: Time.zone.now) }
+
+      it 'is "Cancel"' do
+        expect(skip_label).to eq(t('links.cancel'))
+      end
+    end
+  end
+
   describe '#show_skip_additional_mfa_link?' do
     it 'returns true' do
       expect(presenter.show_skip_additional_mfa_link?).to eq(true)

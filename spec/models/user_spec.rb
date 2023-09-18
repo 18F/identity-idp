@@ -1490,6 +1490,20 @@ RSpec.describe User do
     end
   end
 
+  describe '#sign_in_count' do
+    it 'returns sign-in event count since the given time' do
+      freeze_time do
+        user = create(:user)
+        user.events.create(event_type: :sign_in_before_2fa, created_at: 1.day.ago)
+        user.events.create(event_type: :email_changed, created_at: 1.day.ago)
+        user.events.create(event_type: :sign_in_before_2fa, created_at: 2.days.ago)
+        user.events.create(event_type: :sign_in_before_2fa, created_at: 3.days.ago)
+
+        expect(user.sign_in_count(since: 2.days.ago)).to eq(2)
+      end
+    end
+  end
+
   describe '#second_last_signed_in_at' do
     it 'returns second most recent full authentication event' do
       user = create(:user)
