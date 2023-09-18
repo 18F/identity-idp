@@ -49,7 +49,7 @@ module Users
 
     def track_phone_setup_visit
       mfa_user = MfaContext.new(current_user)
-      if in_multi_mfa_selection_flow?
+      if user_session[:in_account_creation_flow]
         analytics.user_registration_phone_setup_visit(
           enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
         )

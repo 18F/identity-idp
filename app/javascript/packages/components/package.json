@@ -1,10 +1,35 @@
 {
   "name": "@18f/identity-components",
-  "private": true,
-  "version": "1.0.0",
+  "version": "1.0.0-beta0.2",
+  "type": "module",
+  "private": false,
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "prepublishOnly": "webpack"
+  },
+  "exports": {
+    ".": {
+      "source": "./index.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "license": "CC0-1.0",
+  "bugs": {
+    "url": "https://github.com/18f/identity-idp/issues"
+  },
+  "homepage": "https://github.com/18f/identity-idp",
   "dependencies": {
-    "focus-trap": "^6.7.1",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "focus-trap": "^6.7.1"
+  },
+  "peerDependencies": {
+    "react": ">=17",
+    "react-dom": ">=17"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/18f/identity-idp.git",
+    "directory": "app/javascript/packages/components"
   }
 }

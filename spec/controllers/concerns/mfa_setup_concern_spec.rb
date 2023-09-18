@@ -33,6 +33,7 @@ RSpec.describe 'MfaSetupConcern' do
           mfa_method_counts: { phone: 1, backup_codes: 10 },
           enabled_mfa_methods_count: 2,
           second_mfa_reminder_conversion: true,
+          in_account_creation_flow: false,
         )
       end
     end
