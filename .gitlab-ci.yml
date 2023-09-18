@@ -153,6 +153,8 @@ check_changelog:
 
 specs:
   stage: test
+  needs:
+    - job: install
   parallel: 22
   cache:
     - <<: *ruby_cache
@@ -209,6 +211,8 @@ specs:
 
 lint:
   stage: test
+  needs:
+    - job: install
   cache:
     - <<: *ruby_cache
     - <<: *yarn_cache
@@ -227,6 +231,8 @@ lint:
 
 js_build:
   stage: test
+  needs:
+    - job: install
   cache:
     - <<: *ruby_cache
     - <<: *yarn_production_cache
@@ -240,6 +246,8 @@ js_build:
 
 js_tests:
   stage: test
+  needs:
+    - job: install
   cache:
     - <<: *yarn_cache
   script:
@@ -259,6 +267,8 @@ pinpoint-check:
 prepare_deploy:
   # Runs in parallel with tests so we can deploy more quickly after passing
   stage: test
+  needs:
+    - job: install
   tags:
     - build-pool
   variables:
