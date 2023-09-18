@@ -28,16 +28,6 @@ RSpec.describe SecondMfaReminderConcern do
   describe '#user_needs_second_mfa_reminder?' do
     subject(:user_needs_second_mfa_reminder) { instance.user_needs_second_mfa_reminder? }
 
-    shared_examples 'second mfa reminder feature is disabled' do
-      before do
-        allow(IdentityConfig.store).to receive(:second_mfa_reminder_account_age_in_days).
-          and_return(10)
-        allow(IdentityConfig.store).to receive(:second_mfa_reminder_enabled).and_return(false)
-      end
-
-      it { expect(user_needs_second_mfa_reminder).to eq(false) }
-    end
-
     shared_examples 'second mfa reminder with phishing-resistant required request' do
       let(:phishing_resistant_required) { true }
 
@@ -80,7 +70,6 @@ RSpec.describe SecondMfaReminderConcern do
 
         it { expect(user_needs_second_mfa_reminder).to eq(true) }
 
-        it_behaves_like 'second mfa reminder feature is disabled'
         it_behaves_like 'second mfa reminder with phishing-resistant required request'
         it_behaves_like 'second mfa reminder with piv required request'
       end
@@ -95,7 +84,6 @@ RSpec.describe SecondMfaReminderConcern do
 
         it { expect(user_needs_second_mfa_reminder).to eq(true) }
 
-        it_behaves_like 'second mfa reminder feature is disabled'
         it_behaves_like 'second mfa reminder with phishing-resistant required request'
         it_behaves_like 'second mfa reminder with piv required request'
       end

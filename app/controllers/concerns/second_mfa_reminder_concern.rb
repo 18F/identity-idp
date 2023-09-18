@@ -1,6 +1,5 @@
 module SecondMfaReminderConcern
   def user_needs_second_mfa_reminder?
-    return false unless IdentityConfig.store.second_mfa_reminder_enabled
     return false if user_has_dismissed_second_mfa_reminder?
     return false if second_mfa_enrollment_may_downgrade_for_service_provider_mfa_requirement?
     return false if user_has_multiple_mfa_methods?
