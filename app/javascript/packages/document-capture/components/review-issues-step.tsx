@@ -67,7 +67,7 @@ function ReviewIssuesStep({
   useDidUpdateEffect(onPageTransition, [hasDismissed]);
 
   const { onFailedSubmissionAttempt } = useContext(FailedCaptureAttemptsContext);
-  useEffect(() => onFailedSubmissionAttempt(failedImageFingerprints), [failedImageFingerprints]);
+  useEffect(() => onFailedSubmissionAttempt(failedImageFingerprints), []);
 
   function onWarningPageDismissed() {
     trackEvent('IdV: Capture troubleshooting dismissed');

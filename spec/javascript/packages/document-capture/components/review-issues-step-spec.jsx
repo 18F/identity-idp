@@ -155,7 +155,12 @@ describe('document-capture/components/review-issues-step', () => {
   it('calls onChange callback with uploaded image', async () => {
     const onChange = sinon.stub();
     const { getByLabelText, getByRole } = render(
-      <ReviewIssuesStep {...DEFAULT_PROPS} onChange={onChange} />,
+      <FailedCaptureAttemptsContextProvider
+        maxCaptureAttemptsBeforeNativeCamera={3}
+        maxSubmissionAttemptsBeforeNativeCamera={3}
+      >
+        <ReviewIssuesStep {...DEFAULT_PROPS} onChange={onChange} />,
+      </FailedCaptureAttemptsContextProvider>,
     );
     const file = await getFixtureFile('doc_auth_images/id-back.jpg');
     await userEvent.click(getByRole('button', { name: 'idv.failure.button.warning' }));
