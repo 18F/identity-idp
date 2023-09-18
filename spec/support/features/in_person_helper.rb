@@ -100,6 +100,7 @@ module InPersonHelper
 
     # pause for the location list to disappear
     begin
+      sleep 1
       expect(page).to have_no_css('.location-collection-item')
     rescue Selenium::WebDriver::Error::StaleElementReferenceError
       # A StaleElementReferenceError means that the context the element
