@@ -573,6 +573,14 @@ module AnalyticsEvents
     )
   end
 
+  # An uncaught error occurred in frontend JavaScript
+  # @param [String] name
+  # @param [String] message
+  # @param [String] stack
+  def frontend_error(name:, message:, stack: nil, **extra)
+    track_event('Frontend Error', name:, message:, stack:, **extra)
+  end
+
   # @param [Boolean] success
   # @param [Boolean] address_edited
   # @param [Hash] pii_like_keypaths
@@ -3722,12 +3730,6 @@ module AnalyticsEvents
   # tracks when a user's session is timed out
   def session_total_duration_timeout
     track_event('User Maximum Session Length Exceeded')
-  end
-
-  # Tracks if a user clicks the "Show Password button"
-  # @param [String] path URL path where the click occurred
-  def show_password_button_clicked(path:, **extra)
-    track_event('Show Password Button Clicked', path: path, **extra)
   end
 
   # Tracks if a user clicks the "You will also need" accordion on the homepage
