@@ -39,6 +39,8 @@ export interface InPersonContextProps {
 }
 
 const InPersonContext = createContext<InPersonContextProps>({
+  locationSearchEndpoint: '',
+  addressSearchEndpoint: '',
   inPersonOutageMessageEnabled: false,
   inPersonFullAddressEntryEnabled: false,
   usStatesTerritories: [],

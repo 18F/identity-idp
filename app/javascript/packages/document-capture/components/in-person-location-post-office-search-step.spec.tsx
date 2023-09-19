@@ -57,6 +57,7 @@ const DEFAULT_PROPS = {
 };
 
 describe('InPersonLocationPostOfficeSearchStep', () => {
+  const usStatesTerritories: [string, string][] = [['Delware', 'DE']];
   const locationSearchEndpoint = 'https://localhost:3000/locations/endpoint';
   const addressSearchEndpoint = 'https://localhost:3000/addresses/endpoint';
   const wrapper: ComponentType = ({ children }) => (
@@ -64,6 +65,10 @@ describe('InPersonLocationPostOfficeSearchStep', () => {
       value={{
         locationSearchEndpoint,
         addressSearchEndpoint,
+        inPersonOutageMessageEnabled: false,
+        inPersonOutageExpectedUpdateDate: 'January 1, 2024',
+        inPersonFullAddressEntryEnabled: true,
+        usStatesTerritories,
       }}
     >
       <SWRConfig value={{ provider: () => new Map() }}>{children}</SWRConfig>

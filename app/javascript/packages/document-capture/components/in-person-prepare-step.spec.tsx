@@ -23,6 +23,8 @@ describe('InPersonPrepareStep', () => {
       const { queryByText } = render(
         <InPersonContext.Provider
           value={{
+            locationSearchEndpoint: 'https://localhost:3000/unused',
+            addressSearchEndpoint: 'https://localhost:3000/unused',
             inPersonOutageMessageEnabled: true,
             inPersonOutageExpectedUpdateDate: 'January 1, 2024',
             inPersonFullAddressEntryEnabled: false,
@@ -40,6 +42,8 @@ describe('InPersonPrepareStep', () => {
       const { queryByText } = render(
         <InPersonContext.Provider
           value={{
+            locationSearchEndpoint: 'https://localhost:3000/unused',
+            addressSearchEndpoint: 'https://localhost:3000/unused',
             inPersonOutageMessageEnabled: false,
             inPersonFullAddressEntryEnabled: false,
             usStatesTerritories: [],

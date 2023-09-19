@@ -42,10 +42,21 @@ const DEFAULT_PROPS = {
 };
 
 describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
-  const usStatesTerritories = [['Delware', 'DE']];
+  const usStatesTerritories: [string, string][] = [['Delware', 'DE']];
   const locationSearchEndpoint = 'https://localhost:3000/locations/endpoint';
   const wrapper: ComponentType = ({ children }) => (
-    <SWRConfig value={{ provider: () => new Map() }}>{children}</SWRConfig>
+    <InPersonContext.Provider
+      value={{
+        locationSearchEndpoint,
+        addressSearchEndpoint: 'https://localhost:3000',
+        inPersonOutageMessageEnabled: false,
+        inPersonOutageExpectedUpdateDate: 'January 1, 2024',
+        inPersonFullAddressEntryEnabled: true,
+        usStatesTerritories,
+      }}
+    >
+      <SWRConfig value={{ provider: () => new Map() }}>{children}</SWRConfig>
+    </InPersonContext.Provider>
   );
 
   let server: SetupServer;
@@ -69,17 +80,7 @@ describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
 
   it('renders the step', () => {
     const { getByRole } = render(
-      <InPersonContext.Provider
-        value={{
-          locationSearchEndpoint,
-          inPersonOutageMessageEnabled: false,
-          inPersonOutageExpectedUpdateDate: 'January 1, 2024',
-          inPersonFullAddressEntryEnabled: true,
-          usStatesTerritories,
-        }}
-      >
-        <InPersonLocationFullAddressEntryPostOfficeSearchStep {...DEFAULT_PROPS} />,
-      </InPersonContext.Provider>,
+      <InPersonLocationFullAddressEntryPostOfficeSearchStep {...DEFAULT_PROPS} />,
       { wrapper },
     );
 
@@ -93,17 +94,7 @@ describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
 
     it('displays a try again error message', async () => {
       const { findByText, findByLabelText } = render(
-        <InPersonContext.Provider
-          value={{
-            locationSearchEndpoint,
-            inPersonOutageMessageEnabled: false,
-            inPersonOutageExpectedUpdateDate: 'January 1, 2024',
-            inPersonFullAddressEntryEnabled: true,
-            usStatesTerritories,
-          }}
-        >
-          <InPersonLocationFullAddressEntryPostOfficeSearchStep {...DEFAULT_PROPS} />,
-        </InPersonContext.Provider>,
+        <InPersonLocationFullAddressEntryPostOfficeSearchStep {...DEFAULT_PROPS} />,
         { wrapper },
       );
 
@@ -135,17 +126,7 @@ describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
 
   it('displays validation error messages to the user if fields are empty', async () => {
     const { findAllByText, findByText } = render(
-      <InPersonContext.Provider
-        value={{
-          locationSearchEndpoint,
-          inPersonOutageMessageEnabled: false,
-          inPersonOutageExpectedUpdateDate: 'January 1, 2024',
-          inPersonFullAddressEntryEnabled: true,
-          usStatesTerritories,
-        }}
-      >
-        <InPersonLocationFullAddressEntryPostOfficeSearchStep {...DEFAULT_PROPS} />,
-      </InPersonContext.Provider>,
+      <InPersonLocationFullAddressEntryPostOfficeSearchStep {...DEFAULT_PROPS} />,
       { wrapper },
     );
 
@@ -159,17 +140,7 @@ describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
 
   it('displays no post office results if a successful search is followed by an unsuccessful search', async () => {
     const { findByText, findByLabelText, queryByRole } = render(
-      <InPersonContext.Provider
-        value={{
-          locationSearchEndpoint,
-          inPersonOutageMessageEnabled: false,
-          inPersonOutageExpectedUpdateDate: 'January 1, 2024',
-          inPersonFullAddressEntryEnabled: true,
-          usStatesTerritories,
-        }}
-      >
-        <InPersonLocationFullAddressEntryPostOfficeSearchStep {...DEFAULT_PROPS} />,
-      </InPersonContext.Provider>,
+      <InPersonLocationFullAddressEntryPostOfficeSearchStep {...DEFAULT_PROPS} />,
       { wrapper },
     );
 
@@ -209,17 +180,7 @@ describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
 
   it('clicking search again after first results do not clear results', async () => {
     const { findAllByText, findByText, findByLabelText } = render(
-      <InPersonContext.Provider
-        value={{
-          locationSearchEndpoint,
-          inPersonOutageMessageEnabled: false,
-          inPersonOutageExpectedUpdateDate: 'January 1, 2024',
-          inPersonFullAddressEntryEnabled: true,
-          usStatesTerritories,
-        }}
-      >
-        <InPersonLocationFullAddressEntryPostOfficeSearchStep {...DEFAULT_PROPS} />,
-      </InPersonContext.Provider>,
+      <InPersonLocationFullAddressEntryPostOfficeSearchStep {...DEFAULT_PROPS} />,
       { wrapper },
     );
 
@@ -258,17 +219,7 @@ describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
 
     it('displays correct pluralization for a single location result', async () => {
       const { findByLabelText, findByText } = render(
-        <InPersonContext.Provider
-          value={{
-            locationSearchEndpoint,
-            inPersonOutageMessageEnabled: false,
-            inPersonOutageExpectedUpdateDate: 'January 1, 2024',
-            inPersonFullAddressEntryEnabled: true,
-            usStatesTerritories,
-          }}
-        >
-          <InPersonLocationFullAddressEntryPostOfficeSearchStep {...DEFAULT_PROPS} />,
-        </InPersonContext.Provider>,
+        <InPersonLocationFullAddressEntryPostOfficeSearchStep {...DEFAULT_PROPS} />,
         { wrapper },
       );
       await userEvent.type(
@@ -307,17 +258,7 @@ describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
         rest.post(locationSearchEndpoint, (_req, res, ctx) => res(ctx.json(USPS_RESPONSE))),
       );
       const { findByLabelText, findByText } = render(
-        <InPersonContext.Provider
-          value={{
-            locationSearchEndpoint,
-            inPersonOutageMessageEnabled: false,
-            inPersonOutageExpectedUpdateDate: 'January 1, 2024',
-            inPersonFullAddressEntryEnabled: true,
-            usStatesTerritories,
-          }}
-        >
-          <InPersonLocationFullAddressEntryPostOfficeSearchStep {...DEFAULT_PROPS} />,
-        </InPersonContext.Provider>,
+        <InPersonLocationFullAddressEntryPostOfficeSearchStep {...DEFAULT_PROPS} />,
         { wrapper },
       );
 
@@ -354,17 +295,7 @@ describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
 
   it('allows user to select a location', async () => {
     const { findAllByText, findByLabelText, findByText, queryByText } = render(
-      <InPersonContext.Provider
-        value={{
-          locationSearchEndpoint,
-          inPersonOutageMessageEnabled: false,
-          inPersonOutageExpectedUpdateDate: 'January 1, 2024',
-          inPersonFullAddressEntryEnabled: true,
-          usStatesTerritories,
-        }}
-      >
-        <InPersonLocationFullAddressEntryPostOfficeSearchStep {...DEFAULT_PROPS} />,
-      </InPersonContext.Provider>,
+      <InPersonLocationFullAddressEntryPostOfficeSearchStep {...DEFAULT_PROPS} />,
       { wrapper },
     );
     await userEvent.type(
