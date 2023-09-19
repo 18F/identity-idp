@@ -72,7 +72,7 @@ module TwoFactorAuthentication
     def cancel_url
       if user_fully_authenticated?
         account_path
-      elsif decorated_session.sp_name
+      elsif decorated_sp_session.sp_name
         return_to_sp_cancel_path
       else
         sign_out_path

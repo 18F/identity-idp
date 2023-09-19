@@ -2,9 +2,9 @@ require 'rails_helper'
 
 RSpec.describe SignOutController do
   describe '#destroy' do
-    it 'redirects to decorated_session.cancel_link_url with flash message' do
+    it 'redirects to decorated_sp_session.cancel_link_url with flash message' do
       stub_sign_in_before_2fa
-      allow(controller.decorated_session).to receive(:cancel_link_url).and_return('foo')
+      allow(controller.decorated_sp_session).to receive(:cancel_link_url).and_return('foo')
 
       get :destroy
 
@@ -23,7 +23,7 @@ RSpec.describe SignOutController do
       stub_sign_in_before_2fa
       stub_analytics
       stub_attempts_tracker
-      allow(controller.decorated_session).to receive(:cancel_link_url).and_return('foo')
+      allow(controller.decorated_sp_session).to receive(:cancel_link_url).and_return('foo')
 
       expect(@analytics).
         to receive(:track_event).with('Logout Initiated', hash_including(method: 'cancel link'))

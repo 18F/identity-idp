@@ -32,7 +32,7 @@ module Idv
         rate_limit_type: :idv_resolution,
       )
       @expires_at = rate_limiter.expires_at
-      @sp_name = decorated_session.sp_name
+      @sp_name = decorated_sp_session.sp_name
       log_event(based_on_limiter: rate_limiter)
     end
 

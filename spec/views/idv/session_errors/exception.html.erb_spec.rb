@@ -6,12 +6,12 @@ RSpec.describe 'idv/session_errors/exception.html.erb' do
   let(:try_again_path) { '/example/path' }
 
   before do
-    decorated_session = instance_double(
-      ServiceProviderSessionDecorator,
+    decorated_sp_session = instance_double(
+      ServiceProviderSession,
       sp_name: sp_name,
       sp_issuer: sp_issuer,
     )
-    allow(view).to receive(:decorated_session).and_return(decorated_session)
+    allow(view).to receive(:decorated_sp_session).and_return(decorated_sp_session)
 
     assign(:try_again_path, try_again_path)
 

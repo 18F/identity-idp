@@ -5,13 +5,13 @@ RSpec.describe 'layouts/application.html.erb' do
 
   before do
     allow(view).to receive(:user_fully_authenticated?).and_return(true)
-    allow(view).to receive(:decorated_session).and_return(
-      DecoratedSession.new(
+    allow(view).to receive(:decorated_sp_session).and_return(
+      ServiceProviderSessionCreator.new(
         sp: nil,
         view_context: nil,
         sp_session: {},
         service_provider_request: ServiceProviderRequestProxy.new,
-      ).call,
+      ).create_session,
     )
     allow(view.request).to receive(:original_fullpath).and_return('/foobar')
     allow(view).to receive(:current_user).and_return(User.new)
@@ -101,7 +101,7 @@ RSpec.describe 'layouts/application.html.erb' do
     it 'renders a javascript page refresh' do
       allow(view).to receive(:user_fully_authenticated?).and_return(false)
       allow(view).to receive(:current_user).and_return(false)
-      allow(view).to receive(:decorated_session).and_return(SessionDecorator.new)
+      allow(view).to receive(:decorated_sp_session).and_return(NullServiceProviderSession.new)
       render
 
       expect(view).to render_template(partial: 'session_timeout/_expire_session')
@@ -123,13 +123,13 @@ RSpec.describe 'layouts/application.html.erb' do
       allow(view).to receive(:current_user).and_return(nil)
       allow(view).to receive(:page_with_trust?).and_return(false)
       allow(view).to receive(:user_fully_authenticated?).and_return(false)
-      allow(view).to receive(:decorated_session).and_return(
-        DecoratedSession.new(
+      allow(view).to receive(:decorated_sp_session).and_return(
+        ServiceProviderSessionCreator.new(
           sp: nil,
           view_context: nil,
           sp_session: {},
           service_provider_request: nil,
-        ).call,
+        ).create_session,
       )
       allow(IdentityConfig.store).to receive(:participate_in_dap).and_return(true)
 
@@ -152,7 +152,7 @@ RSpec.describe 'layouts/application.html.erb' do
   context 'current_user is present but is not fully authenticated' do
     before do
       allow(view).to receive(:user_fully_authenticated?).and_return(false)
-      allow(view).to receive(:decorated_session).and_return(SessionDecorator.new)
+      allow(view).to receive(:decorated_sp_session).and_return(NullServiceProviderSession.new)
     end
 
     it 'does not render the DAP analytics' do
