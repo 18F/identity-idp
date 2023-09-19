@@ -48,7 +48,7 @@ FactoryBot.define do
     end
 
     trait :fraud_rejection do
-      fraud_pending_reason { 'threatmetrix_review' }
+      fraud_pending_reason { 'threatmetrix_reject' }
       fraud_rejection_at { 15.days.ago }
     end
 
