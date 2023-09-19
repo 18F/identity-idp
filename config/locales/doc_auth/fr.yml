@@ -266,7 +266,7 @@ fr:
           enverrons un SMS à votre numéro de téléphone. Cela prend quelques
           minutes.'
         - '<strong>Vérification par courrier</strong> : Nous vous enverrons une
-          lettre à votre adresse personnelle. Cela prend de <strong>5 à 10
+          lettre à votre adresse personnelle. Cela prend <strong>5 à 10
           jours</strong>.'
       welcome: 'Vous aurez besoin de votre:'
     tips:

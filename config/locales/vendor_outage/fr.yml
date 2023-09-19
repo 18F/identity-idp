@@ -14,8 +14,8 @@ fr:
           message_html: '%{sp_name_html} doit s’assurer que c’est bien vous — et non
             quelqu’un qui se fait passer pour vous.'
           options_html:
-            - Continuer maintenant et effectuer la vérification par courrier, ce
-              qui prend de <strong>5 à 10 jours</strong>.
+            - Continuer maintenant et effectuer la vérification par courrier,
+              qui nécessite <strong>5 à 10 jours</strong>.
             - Quitter Login.gov.
           options_prompt: 'Vous pouvez :'
           status_page_html: Malheureusement, nous avons actuellement des difficultés

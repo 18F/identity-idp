@@ -16,7 +16,7 @@ es:
             no alguien que se hace pasar por usted.'
           options_html:
             - Continuar ahora y verificar por correo, lo cual tarda entre
-              <strong>5 a 10 días</strong>.
+              <strong>5 y 10 días</strong>.
             - Salir de Login.gov e inténtelo de nuevo más tarde.
           options_prompt: 'Usted puede:'
           status_page_html: Lamentablemente, estamos teniendo problemas técnicos.
