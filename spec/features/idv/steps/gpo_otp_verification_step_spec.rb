@@ -61,7 +61,6 @@ RSpec.feature 'idv gpo otp verification step' do
     end
 
     context 'No ThreatMetrix result on proofing component' do
-      let(:fraud_pending_reason) { nil }
       it_behaves_like 'gpo otp verification'
     end
   end
@@ -126,7 +125,7 @@ RSpec.feature 'idv gpo otp verification step' do
     end
   end
 
-  it 'allows a user to cancel and start over withinthe banner' do
+  it 'allows a user to cancel and start over within the banner' do
     sign_in_live_with_2fa(user)
 
     expect(current_path).to eq idv_verify_by_mail_enter_code_path
