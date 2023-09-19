@@ -288,8 +288,9 @@ fr:
           - Votre numéro principal (celui que vous utilisez le plus souvent)
       return_to_profile: '‹ Revenir à votre profil %{app_name}'
       review:
-        gpo_pending: Nous vous enverrons votre lettre une fois que vous aurez
-          réintroduit votre mot de passe.
+        by_mail_password_reminder_html: <b>Mémorisez votre mot de passe.</b> Le code de
+          vérification contenu dans votre lettre ne fonctionnera pas si vous
+          réinitialisez votre mot de passe par la suite.
         message: '%{app_name} crypte vos informations avec votre mot de passe. Cela
           signifie que vos informations sont sécurisées et que vous seul pourrez
           y accéder ou les modifier.'
@@ -316,6 +317,8 @@ fr:
       review: Réviser et soumettre
       session:
         review: 'Saisissez à nouveau votre mot de passe %{app_name}'
+        review_letter: 'Saisissez à nouveau votre mot de passe %{app_name} pour envoyer
+          votre lettre'
       unavailable: Nous travaillons à la résolution d’une erreur
     troubleshooting:
       headings:
