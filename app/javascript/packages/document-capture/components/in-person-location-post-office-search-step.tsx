@@ -9,8 +9,7 @@ import { InPersonContext } from '../context';
 import UploadContext from '../context/upload';
 
 function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, registerField }) {
-  const { inPersonURL, locationSearchEndpoint, addressSearchEndpoint } =
-    useContext(InPersonContext);
+  const { inPersonURL, locationsURL, addressSearchURL } = useContext(InPersonContext);
   const [inProgress, setInProgress] = useState<boolean>(false);
   const [autoSubmit, setAutoSubmit] = useState<boolean>(false);
   const { trackEvent } = useContext(AnalyticsContext);
@@ -56,7 +55,7 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
       const selected = transformKeys(selectedLocation, snakeCase);
       setInProgress(true);
       try {
-        await request(locationSearchEndpoint, {
+        await request(locationsURL, {
           json: selected,
           method: 'PUT',
         });
@@ -89,10 +88,10 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
   return (
     <>
       <AddressSearch
-        addressSearchURL={addressSearchEndpoint}
+        addressSearchURL={addressSearchURL}
         disabled={disabledAddressSearch}
         handleLocationSelect={handleLocationSelect}
-        locationsURL={locationSearchEndpoint}
+        locationsURL={locationsURL}
         onFoundLocations={setLocationResults}
         registerField={registerField}
       />

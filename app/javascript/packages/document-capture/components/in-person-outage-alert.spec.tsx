@@ -8,8 +8,8 @@ describe('InPersonOutageAlert', () => {
     getByText = render(
       <InPersonContext.Provider
         value={{
-          locationSearchEndpoint: 'https://localhost:3000/unused',
-          addressSearchEndpoint: 'https://localhost:3000/unused',
+          locationsURL: 'https://localhost:3000/unused',
+          addressSearchURL: 'https://localhost:3000/unused',
           inPersonOutageExpectedUpdateDate: 'January 1, 2024',
           inPersonOutageMessageEnabled: true,
           inPersonFullAddressEntryEnabled: false,

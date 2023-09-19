@@ -9,12 +9,12 @@ export interface InPersonContextProps {
   /**
    * Post Office location search endpoint URL
    */
-  locationSearchEndpoint: string;
+  locationsURL: string;
 
   /**
    * Address search endpoint URL
    */
-  addressSearchEndpoint: string;
+  addressSearchURL: string;
 
   /**
    * Whether the message indicating an outage should be displayed
@@ -39,8 +39,8 @@ export interface InPersonContextProps {
 }
 
 const InPersonContext = createContext<InPersonContextProps>({
-  locationSearchEndpoint: '',
-  addressSearchEndpoint: '',
+  locationsURL: '',
+  addressSearchURL: '',
   inPersonOutageMessageEnabled: false,
   inPersonFullAddressEntryEnabled: false,
   usStatesTerritories: [],

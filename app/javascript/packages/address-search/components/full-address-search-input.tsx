@@ -18,7 +18,6 @@ interface FullAddressSearchProps {
   onError?: (error: Error | null) => void;
   disabled?: boolean;
   locationsURL: string;
-  // todo: better document this type
   usStatesTerritories: [string, string][];
 }
 

@@ -13,7 +13,7 @@ function InPersonLocationFullAddressEntryPostOfficeSearchStep({
   toPreviousStep,
   registerField,
 }) {
-  const { inPersonURL, locationSearchEndpoint, usStatesTerritories } = useContext(InPersonContext);
+  const { inPersonURL, locationsURL, usStatesTerritories } = useContext(InPersonContext);
   const [inProgress, setInProgress] = useState<boolean>(false);
   const [autoSubmit, setAutoSubmit] = useState<boolean>(false);
   const { trackEvent } = useContext(AnalyticsContext);
@@ -58,7 +58,7 @@ function InPersonLocationFullAddressEntryPostOfficeSearchStep({
       const selected = transformKeys(selectedLocation, snakeCase);
       setInProgress(true);
       try {
-        await request(locationSearchEndpoint, {
+        await request(locationsURL, {
           json: selected,
           method: 'PUT',
         });
@@ -94,7 +94,7 @@ function InPersonLocationFullAddressEntryPostOfficeSearchStep({
         registerField={registerField}
         onFoundLocations={setLocationResults}
         disabled={disabledAddressSearch}
-        locationsURL={locationSearchEndpoint}
+        locationsURL={locationsURL}
         handleLocationSelect={handleLocationSelect}
         usStatesTerritories={usStatesTerritories}
       />

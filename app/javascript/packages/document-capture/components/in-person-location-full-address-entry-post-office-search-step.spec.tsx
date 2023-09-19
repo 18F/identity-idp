@@ -43,12 +43,12 @@ const DEFAULT_PROPS = {
 
 describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
   const usStatesTerritories: [string, string][] = [['Delware', 'DE']];
-  const locationSearchEndpoint = 'https://localhost:3000/locations/endpoint';
+  const locationsURL = 'https://localhost:3000/locations/endpoint';
   const wrapper: ComponentType = ({ children }) => (
     <InPersonContext.Provider
       value={{
-        locationSearchEndpoint,
-        addressSearchEndpoint: 'https://localhost:3000',
+        locationsURL,
+        addressSearchURL: 'https://localhost:3000',
         inPersonOutageMessageEnabled: false,
         inPersonOutageExpectedUpdateDate: 'January 1, 2024',
         inPersonFullAddressEntryEnabled: true,
@@ -73,9 +73,7 @@ describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
   beforeEach(() => {
     server.resetHandlers();
     // todo: should we return USPS_RESPONSE here?
-    server.use(
-      rest.post(locationSearchEndpoint, (_req, res, ctx) => res(ctx.json([{ name: 'Baltimore' }]))),
-    );
+    server.use(rest.post(locationsURL, (_req, res, ctx) => res(ctx.json([{ name: 'Baltimore' }]))));
   });
 
   it('renders the step', () => {
@@ -89,7 +87,7 @@ describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
 
   context('USPS request returns an error', () => {
     beforeEach(() => {
-      server.use(rest.post(locationSearchEndpoint, (_req, res, ctx) => res(ctx.status(500))));
+      server.use(rest.post(locationsURL, (_req, res, ctx) => res(ctx.status(500))));
     });
 
     it('displays a try again error message', async () => {
@@ -254,9 +252,7 @@ describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
 
     it('displays correct pluralization for multiple location results', async () => {
       server.resetHandlers();
-      server.use(
-        rest.post(locationSearchEndpoint, (_req, res, ctx) => res(ctx.json(USPS_RESPONSE))),
-      );
+      server.use(rest.post(locationsURL, (_req, res, ctx) => res(ctx.json(USPS_RESPONSE))));
       const { findByLabelText, findByText } = render(
         <InPersonLocationFullAddressEntryPostOfficeSearchStep {...DEFAULT_PROPS} />,
         { wrapper },
