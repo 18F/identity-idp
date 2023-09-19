@@ -7,16 +7,8 @@ RSpec.feature 'idv gpo otp verification step' do
   let(:profile) do
     create(
       :profile,
-      gpo_verification_pending_at: 2.days.ago,
-      pii: {
-        address1: '1 Secure Way',
-        address2: 'Unit #4',
-        city: 'Loginville',
-        state: 'DC',
-        zipcode: '11111',
-        ssn: '123-45-6789',
-        dob: '1970-01-01',
-      },
+      :verify_by_mail_pending,
+      :with_pii,
       fraud_pending_reason: fraud_pending_reason,
     )
   end
@@ -140,7 +132,7 @@ RSpec.feature 'idv gpo otp verification step' do
     expect(current_path).to eq idv_verify_by_mail_enter_code_path
     expect(page).to have_content t('idv.gpo.alert_info')
     expect(page).to have_content t('idv.gpo.wrong_address')
-    expect(page).to have_content '1 Secure Way'
+    expect(page).to have_content Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE[:address1]
 
     click_on t('idv.gpo.clear_and_start_over')
 
