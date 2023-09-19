@@ -19,7 +19,7 @@ interface FullAddressSearchProps {
   disabled?: boolean;
   locationsURL: string;
   // todo: better document this type
-  usStatesTerritories: string[][];
+  usStatesTerritories: [string, string][];
 }
 
 export default function FullAddressSearchInput({
