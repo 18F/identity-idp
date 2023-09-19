@@ -189,12 +189,13 @@ else
         cron: cron_24h,
         args: -> { [14.days.ago] },
       },
-      # Weekly report describing account reuse
+      # Monthly report describing account reuse
       monthly_account_reuse_report: {
         class: 'Reports::MonthlyAccountReuseReport',
         cron: cron_1st_of_mo,
         args: -> { [Time.zone.today] },
       },
+      # Monthly report checking in on key metrics
       monthly_key_metrics_report: {
         class: 'Reports::MonthlyKeyMetricsReport',
         cron: cron_24h,
