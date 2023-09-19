@@ -32,16 +32,16 @@ module Idv
         rate_limit_type: :idv_resolution,
       )
       @expires_at = rate_limiter.expires_at
-      @sp_name = decorated_session.sp_name
+      @sp_name = decorated_sp_session.sp_name
       log_event(based_on_limiter: rate_limiter)
     end
 
     def ssn_failure
       rate_limiter = nil
 
-      if ssn_from_doc
+      if idv_session&.ssn
         rate_limiter = RateLimiter.new(
-          target: Pii::Fingerprinter.fingerprint(ssn_from_doc),
+          target: Pii::Fingerprinter.fingerprint(idv_session.ssn),
           rate_limit_type: :proof_ssn,
         )
         @expires_at = rate_limiter.expires_at
@@ -58,10 +58,6 @@ module Idv
     end
 
     private
-
-    def ssn_from_doc
-      idv_session&.ssn || user_session&.dig('idv/doc_auth', :pii_from_doc, :ssn)
-    end
 
     def confirm_two_factor_authenticated_or_user_id_in_session
       return if session[:doc_capture_user_id].present?

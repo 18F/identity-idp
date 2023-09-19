@@ -32,7 +32,7 @@ module Users
     private
 
     def render_prompt
-      analytics.piv_cac_setup_visit(in_multi_mfa_selection_flow: false)
+      analytics.piv_cac_setup_visit(in_account_creation_flow: false)
       render :prompt
     end
 
@@ -81,7 +81,7 @@ module Users
 
     def analytics_properties
       {
-        in_multi_mfa_selection_flow: false,
+        in_account_creation_flow: false,
         enabled_mfa_methods_count: MfaContext.new(current_user).enabled_mfa_methods_count,
       }
     end

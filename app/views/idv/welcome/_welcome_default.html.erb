@@ -11,12 +11,12 @@
 
   <%= render JavascriptRequiredComponent.new(
         header: t('idv.welcome.no_js_header'),
-        intro: t('idv.welcome.no_js_intro', sp_name: decorated_session.sp_name || APP_NAME),
+        intro: t('idv.welcome.no_js_intro', sp_name: decorated_sp_session.sp_name || APP_NAME),
       ) do %>
 
   <%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.welcome')) %>
     <p>
-      <%= t('doc_auth.info.welcome', sp_name: decorated_session.sp_name || APP_NAME) %>
+      <%= t('doc_auth.info.welcome', sp_name: decorated_sp_session.sp_name || APP_NAME) %>
     </p>
 
     <h2><%= t('doc_auth.instructions.welcome') %></h2>
@@ -81,9 +81,9 @@
             text: t('idv.troubleshooting.options.learn_more_address_verification_options'),
             new_tab: true,
           },
-          decorated_session.sp_name && {
+          decorated_sp_session.sp_name && {
             url: return_to_sp_failure_to_proof_url(step: 'welcome', location: 'missing_items'),
-            text: t('idv.troubleshooting.options.get_help_at_sp', sp_name: decorated_session.sp_name),
+            text: t('idv.troubleshooting.options.get_help_at_sp', sp_name: decorated_sp_session.sp_name),
             new_tab: true,
           },
         ].select(&:present?),

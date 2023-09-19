@@ -11,7 +11,7 @@ RSpec.feature 'document capture step', :js do
   let(:sp_name) { 'Test SP' }
   before do
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
-    allow_any_instance_of(ServiceProviderSessionDecorator).to receive(:sp_name).and_return(sp_name)
+    allow_any_instance_of(ServiceProviderSession).to receive(:sp_name).and_return(sp_name)
 
     visit_idp_from_oidc_sp_with_ial2
 

@@ -390,6 +390,17 @@ class User < ApplicationRecord
     !recent_devices.empty?
   end
 
+  # Returns the number of times the user has signed in, corresponding to the `sign_in_before_2fa`
+  # event.
+  #
+  # A `since` time argument is required, to optimize performance based on database indices for
+  # querying a user's events.
+  #
+  # @param [ActiveSupport::TimeWithZone] since Time window to query user's events
+  def sign_in_count(since:)
+    events.where(event_type: :sign_in_before_2fa).where(created_at: since..).count
+  end
+
   def second_last_signed_in_at
     events.where(event_type: 'sign_in_after_2fa').
       order(created_at: :desc).limit(2).pluck(:created_at).second
