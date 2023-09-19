@@ -7,6 +7,16 @@ export interface InPersonContextProps {
   inPersonURL?: string;
 
   /**
+   * Post Office location search endpoint URL
+   */
+  locationSearchEndpoint: string;
+
+  /**
+   * Address search endpoint URL
+   */
+  addressSearchEndpoint: string;
+
+  /**
    * Whether the message indicating an outage should be displayed
    */
   inPersonOutageMessageEnabled: boolean;

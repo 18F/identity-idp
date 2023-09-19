@@ -8,14 +8,9 @@ import AnalyticsContext from '../context/analytics';
 import { InPersonContext } from '../context';
 import UploadContext from '../context/upload';
 
-export const LOCATIONS_URL = new URL(
-  '/verify/in_person/usps_locations',
-  window.location.href,
-).toString();
-export const ADDRESSES_URL = new URL('/api/addresses', window.location.href).toString();
-
 function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, registerField }) {
-  const { inPersonURL } = useContext(InPersonContext);
+  const { inPersonURL, locationSearchEndpoint, addressSearchEndpoint } =
+    useContext(InPersonContext);
   const [inProgress, setInProgress] = useState<boolean>(false);
   const [autoSubmit, setAutoSubmit] = useState<boolean>(false);
   const { trackEvent } = useContext(AnalyticsContext);
@@ -61,7 +56,7 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
       const selected = transformKeys(selectedLocation, snakeCase);
       setInProgress(true);
       try {
-        await request(LOCATIONS_URL, {
+        await request(locationSearchEndpoint, {
           json: selected,
           method: 'PUT',
         });
@@ -94,10 +89,10 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
   return (
     <>
       <AddressSearch
-        addressSearchURL={ADDRESSES_URL}
+        addressSearchURL={addressSearchEndpoint}
         disabled={disabledAddressSearch}
         handleLocationSelect={handleLocationSelect}
-        locationsURL={LOCATIONS_URL}
+        locationsURL={locationSearchEndpoint}
         onFoundLocations={setLocationResults}
         registerField={registerField}
       />

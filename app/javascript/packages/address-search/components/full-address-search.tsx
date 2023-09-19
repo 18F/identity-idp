@@ -6,6 +6,7 @@ import type { LocationQuery, FormattedLocation } from '@18f/identity-address-sea
 import FullAddressSearchInput from './full-address-search-input';
 
 function FullAddressSearch({
+  usStatesTerritories,
   registerField,
   locationsURL,
   handleLocationSelect,
@@ -29,6 +30,7 @@ function FullAddressSearch({
       <PageHeading>{t('in_person_proofing.headings.po_search.location')}</PageHeading>
       <p>{t('in_person_proofing.body.location.po_search.po_search_about')}</p>
       <FullAddressSearchInput
+        usStatesTerritories={usStatesTerritories}
         registerField={registerField}
         onFoundLocations={(
           address: LocationQuery | null,

@@ -97,6 +97,11 @@ const App = composeComponents(
     {
       value: {
         inPersonURL,
+        locationSearchEndpoint: new URL(
+          '/verify/in_person/usps_locations',
+          window.location.href,
+        ).toString(),
+        addressSearchEndpoint: new URL('/api/addresses', window.location.href).toString(),
         inPersonOutageMessageEnabled: inPersonOutageMessageEnabled === 'true',
         inPersonOutageExpectedUpdateDate,
         inPersonFullAddressEntryEnabled: inPersonFullAddressEntryEnabled === 'true',

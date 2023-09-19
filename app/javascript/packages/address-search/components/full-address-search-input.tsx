@@ -5,8 +5,7 @@ import { useDidUpdateEffect } from '@18f/identity-react-hooks';
 import { SpinnerButtonRefHandle, SpinnerButton } from '@18f/identity-spinner-button';
 import { ValidatedField } from '@18f/identity-validated-field';
 import { t } from '@18f/identity-i18n';
-import { useCallback, useContext, useEffect, useRef, useState } from 'react';
-import { InPersonContext } from '../context';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import useValidatedUspsLocations from '../hooks/use-validated-usps-locations';
 
 interface FullAddressSearchProps {
@@ -19,9 +18,12 @@ interface FullAddressSearchProps {
   onError?: (error: Error | null) => void;
   disabled?: boolean;
   locationsURL: string;
+  // todo: better document this type
+  usStatesTerritories: string[][];
 }
 
 export default function FullAddressSearchInput({
+  usStatesTerritories,
   registerField = () => undefined,
   onFoundLocations = () => undefined,
   onLoadingLocations = () => undefined,
@@ -80,8 +82,6 @@ export default function FullAddressSearchInput({
     },
     [addressValue, cityValue, stateValue, zipCodeValue],
   );
-
-  const { usStatesTerritories } = useContext(InPersonContext);
 
   return (
     <>
