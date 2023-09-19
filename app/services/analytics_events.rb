@@ -2291,7 +2291,7 @@ module AnalyticsEvents
   # The system encountered an error and the proofing results are missing
   def idv_proofing_resolution_result_missing(proofing_components: nil, **extra)
     track_event(
-      'Proofing Resolution Result Missing',
+      'IdV: proofing resolution result missing',
       proofing_components: proofing_components,
       **extra,
     )
