@@ -1,4 +1,4 @@
-class ServiceProviderSessionDecorator
+class ServiceProviderSession
   include ActionView::Helpers::TranslationHelper
   include Rails.application.routes.url_helpers
 

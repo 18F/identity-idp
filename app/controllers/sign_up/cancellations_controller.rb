@@ -12,7 +12,7 @@ module SignUp
 
     def destroy
       track_account_deletion_event
-      url_after_cancellation = decorated_session.cancel_link_url
+      url_after_cancellation = decorated_sp_session.cancel_link_url
       destroy_user
       flash[:success] = t('sign_up.cancel.success')
       redirect_to url_after_cancellation

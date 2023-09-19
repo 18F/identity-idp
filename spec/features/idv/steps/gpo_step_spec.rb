@@ -13,6 +13,8 @@ RSpec.feature 'idv gpo step' do
       and_return(minimum_wait_for_letter)
     allow(IdentityConfig.store).to receive(:gpo_max_profile_age_to_send_letter_in_days).
       and_return(max_days_before_resend_disabled)
+    allow(IdentityConfig.store).to receive(:second_mfa_reminder_account_age_in_days).
+      and_return(days_passed + 1)
   end
 
   it 'redirects to and completes the review step when the user chooses to verify by letter', :js do

@@ -10,7 +10,7 @@ class IdvController < ApplicationController
   before_action :confirm_not_rate_limited
 
   def index
-    if decorated_session.requested_more_recent_verification? ||
+    if decorated_sp_session.requested_more_recent_verification? ||
        current_user.reproof_for_irs?(service_provider: current_sp)
       verify_identity
     elsif active_profile?

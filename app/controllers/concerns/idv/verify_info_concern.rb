@@ -29,7 +29,7 @@ module Idv
       # TEMPORARY DEBUGGING
       logger.info("ResolutionJobDebug: user_uuid=#{current_user.uuid} old=#{pii[:ssn].present?} new=#{idv_session.ssn.present?} controller=#{self.class.name}")
       # rubocop:enable Layout/LineLength
-      pii[:ssn] ||= idv_session.ssn # Required for proof_resolution job
+      pii[:ssn] = idv_session.ssn # Required for proof_resolution job
       Idv::Agent.new(pii).proof_resolution(
         document_capture_session,
         should_proof_state_id: should_use_aamva?(pii),
@@ -74,9 +74,8 @@ module Idv
     end
 
     def ssn_rate_limiter
-      ssn = idv_session.ssn || pii[:ssn]
       @ssn_rate_limiter ||= RateLimiter.new(
-        target: Pii::Fingerprinter.fingerprint(ssn),
+        target: Pii::Fingerprinter.fingerprint(idv_session.ssn),
         rate_limit_type: :proof_ssn,
       )
     end
@@ -306,19 +305,18 @@ module Idv
         last_name: pii_from_doc[:last_name],
         date_of_birth: pii_from_doc[:dob],
         address: pii_from_doc[:address1],
-        ssn: idv_session.ssn || pii_from_doc[:ssn],
+        ssn: idv_session.ssn,
         failure_reason: failure_reason,
       )
     end
 
     def check_ssn
-      ssn = idv_session.ssn || pii[:ssn]
-      Idv::SsnForm.new(current_user).submit(ssn: ssn)
+      Idv::SsnForm.new(current_user).submit(ssn: idv_session.ssn)
     end
 
     def move_applicant_to_idv_session
       idv_session.applicant = pii
-      idv_session.applicant[:ssn] ||= idv_session.ssn
+      idv_session.applicant[:ssn] = idv_session.ssn
       idv_session.applicant['uuid'] = current_user.uuid
       delete_pii
     end
