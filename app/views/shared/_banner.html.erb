@@ -66,7 +66,7 @@
     <% if content_for?(:header) %>
       <%= yield(:header) %>
     <% else %>
-      <% if decorated_session.sp_name %>
+      <% if decorated_sp_session.sp_name %>
         <%= render 'shared/nav_branded' %>
       <% else %>
         <%= render 'shared/nav_lite' %>

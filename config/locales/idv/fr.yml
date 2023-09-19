@@ -317,6 +317,8 @@ fr:
       review: Réviser et soumettre
       session:
         review: 'Saisissez à nouveau votre mot de passe %{app_name}'
+        review_letter: 'Saisissez à nouveau votre mot de passe %{app_name} pour envoyer
+          votre lettre'
       unavailable: Nous travaillons à la résolution d’une erreur
     troubleshooting:
       headings:

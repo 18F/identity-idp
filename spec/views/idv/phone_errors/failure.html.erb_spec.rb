@@ -10,8 +10,8 @@ RSpec.describe 'idv/phone_errors/failure.html.erb' do
   end
 
   before do
-    decorated_session = instance_double(ServiceProviderSessionDecorator, sp_name: sp_name)
-    allow(view).to receive(:decorated_session).and_return(decorated_session)
+    decorated_sp_session = instance_double(ServiceProviderSession, sp_name: sp_name)
+    allow(view).to receive(:decorated_sp_session).and_return(decorated_sp_session)
     assign(:gpo_letter_available, gpo_letter_available)
     allow(IdentityConfig.store).to receive(:idv_attempt_window_in_hours).and_return(timeout_hours)
 
