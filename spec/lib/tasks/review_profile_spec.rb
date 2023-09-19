@@ -110,6 +110,7 @@ RSpec.describe 'review_profile' do
 
     context 'when the pending profile is in an invalid state and cannot be activated' do
       before do
+        # Profiles should not be gpo_verification_pending and fraud_review_pending at the same time.
         user.pending_profile.update!(gpo_verification_pending_at: 1.day.ago)
       end
 
