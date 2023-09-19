@@ -271,7 +271,9 @@ es:
           - Su número principal (el que utiliza con más frecuencia)
       return_to_profile: '‹ Volver a tu perfil de %{app_name}'
       review:
-        gpo_pending: Enviaremos tu carta una vez que hayas ingresado tu contraseña.
+        by_mail_password_reminder_html: <b>Recuerde su contraseña.</b> El código de
+          verificación de su carta no funcionará si restablece su contraseña más
+          tarde.
         message: '%{app_name} encriptará tu información con tu contraseña. Esto
           significa que tu información estará segura y solo tú podrás
           consultarla o modificarla.'

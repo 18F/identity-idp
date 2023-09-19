@@ -175,6 +175,8 @@ RSpec.describe Idv::ReviewController do
           idv_session.address_verification_mechanism = 'gpo'
         end
 
+        render_views
+
         it 'sets the correct title and header' do
           get :new
 
@@ -182,11 +184,11 @@ RSpec.describe Idv::ReviewController do
           expect(assigns(:heading)).to eq(t('idv.titles.session.review_letter', app_name: APP_NAME))
         end
 
-        it 'displays info message about sending letter' do
+        it 'shows password reminder banner' do
           get :new
 
-          expect(flash.now[:info]).to eq(
-            t('idv.messages.review.gpo_pending'),
+          expect(response.body).to include(
+            t('idv.messages.review.by_mail_password_reminder_html'),
           )
         end
 
@@ -194,6 +196,17 @@ RSpec.describe Idv::ReviewController do
           indicator_step = subject.step_indicator_step
 
           expect(indicator_step).to eq(:get_a_letter)
+        end
+      end
+
+      context 'not in gpo flow' do
+        render_views
+        it 'does not show password reminder banner for non-gpo' do
+          get :new
+
+          expect(response.body).not_to include(
+            t('idv.messages.review.by_mail_password_reminder_html'),
+          )
         end
       end
 
