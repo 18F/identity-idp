@@ -2,6 +2,7 @@ module DocAuth
   module Mock
     class ResultResponse < DocAuth::Response
       include DocAuth::Acuant::ClassificationConcern
+      include DocAuth::Mock::YmlLoaderConcern
 
       attr_reader :uploaded_file, :config
 
@@ -80,7 +81,7 @@ module DocAuth
       def parsed_data_from_uploaded_file
         return @parsed_data_from_uploaded_file if defined?(@parsed_data_from_uploaded_file)
 
-        @parsed_data_from_uploaded_file = parse_uri || parse_yaml
+        @parsed_data_from_uploaded_file = parse_uri || parse_yaml(uploaded_file)
       end
 
       def doc_auth_result
@@ -114,7 +115,7 @@ module DocAuth
         # no-op, allows falling through to YAML parsing
       end
 
-      def parse_yaml
+      def parse_yaml2
         data = YAML.safe_load(uploaded_file, permitted_classes: [Date])
         if data.is_a?(Hash)
           if (m = data.dig('document', 'dob').to_s.

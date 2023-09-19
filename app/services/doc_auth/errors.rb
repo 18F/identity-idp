@@ -40,6 +40,8 @@ module DocAuth
     # Doc type
     DOC_TYPE_CHECK = 'doc_type_check'
     CARD_TYPE = 'card_type'
+    # network
+    NETWORK = 'network'
     # Other
     FALLBACK_FIELD_LEVEL = 'fallback_field_level'
 

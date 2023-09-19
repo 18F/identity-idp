@@ -174,4 +174,50 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
 
     expect(post_images_response).to be_a(DocAuth::Response)
   end
+
+  describe 'generate response for failure indicating http status' do
+    it 'generate network error response for status 500 when post image' do
+      image = <<-YAML
+      http_status:
+        front: 500
+        back: 500
+      YAML
+      response = client.post_front_image(
+        image: image,
+        instance_id: nil,
+      )
+      expect(response).to be_a(DocAuth::Response)
+      expect(response.success?).to eq(false)
+      expect(response.errors).to eq(general: ['network'])
+    end
+
+    it 'generate network error response for status 500 when get result' do
+      image = <<~YAML
+        http_status:
+          result: 500
+      YAML
+      client.post_back_image(
+        image: image,
+        instance_id: nil,
+      )
+      response = client.get_results(instance_id: nil)
+      expect(response).to be_a(DocAuth::Response)
+      expect(response.success?).to eq(false)
+      expect(response.errors).to eq(general: ['network'])
+    end
+
+    it 'generate correct error for status 440' do
+      image = <<~YAML
+        http_status:
+          front: 440
+      YAML
+      response = client.post_front_image(
+        image: image,
+        instance_id: nil,
+      )
+      expect(response).to be_a(DocAuth::Response)
+      expect(response.success?).to eq(false)
+      expect(response.errors).to eq(general: [DocAuth::Errors::IMAGE_SIZE_FAILURE])
+    end
+  end
 end
