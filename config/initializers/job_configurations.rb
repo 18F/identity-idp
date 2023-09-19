@@ -198,7 +198,7 @@ else
       # Job to backfill encrypted_pii_recovery_multi_region on profiles
       multi_region_kms_migration_profile_migraiton: {
         class: 'MultiRegionKmsMigration::ProfileMigrationJob',
-        cron: cron_12m,
+        cron: cron_10m,
         kwargs: {
           profile_count: IdentityConfig.store.multi_region_kms_migration_jobs_profile_count,
           statement_timeout: IdentityConfig.store.multi_region_kms_migration_jobs_profile_timeout,
@@ -207,7 +207,7 @@ else
       # Job to backfill encrypted_pii_recovery_multi_region on users
       multi_region_kms_migration_user_migraiton: {
         class: 'MultiRegionKmsMigration::UserMigrationJob',
-        cron: cron_12m,
+        cron: cron_10m,
         kwargs: {
           user_count: IdentityConfig.store.multi_region_kms_migration_jobs_user_count,
           statement_timeout: IdentityConfig.store.multi_region_kms_migration_jobs_user_timeout,
