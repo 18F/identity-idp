@@ -9,7 +9,6 @@ import FailedCaptureAttemptsContext from '../context/failed-capture-attempts';
 import DocumentCaptureWarning from './document-capture-warning';
 import DocumentCaptureReviewIssues from './document-capture-review-issues';
 
-// @ts-ignore
 interface ReviewIssuesStepValue {
   /**
    * Front image value.
