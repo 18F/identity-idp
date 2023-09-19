@@ -81,31 +81,6 @@ RSpec.describe Idv::InPerson::SsnController do
       expect { get :show }.to change { subject.idv_session.threatmetrix_session_id }.from(nil)
     end
 
-    context 'with an ssn in flow_session' do
-      let(:referer) { idv_in_person_step_url(step: :address) }
-      before do
-        flow_session[:pii_from_user][:ssn] = ssn
-        request.env['HTTP_REFERER'] = referer
-      end
-
-      context 'referer is not verify_info' do
-        it 'redirects to verify_info' do
-          get :show
-
-          expect(response).to redirect_to(idv_in_person_verify_info_url)
-        end
-      end
-
-      context 'referer is verify_info' do
-        let(:referer) { idv_in_person_verify_info_url }
-        it 'does not redirect' do
-          get :show
-
-          expect(response).to render_template :show
-        end
-      end
-    end
-
     context 'with an ssn in idv_session' do
       let(:referer) { idv_in_person_step_url(step: :address) }
       before do
@@ -163,12 +138,6 @@ RSpec.describe Idv::InPerson::SsnController do
         put :update, params: params
       end
 
-      it 'merges ssn into pii session value' do
-        put :update, params: params
-
-        expect(flow_session[:pii_from_user][:ssn]).to eq(ssn)
-      end
-
       it 'adds ssn to idv_session' do
         put :update, params: params
 
@@ -190,7 +159,7 @@ RSpec.describe Idv::InPerson::SsnController do
       end
 
       it 'does not change threatmetrix_session_id when updating ssn' do
-        flow_session[:pii_from_user][:ssn] = ssn
+        subject.idv_session.ssn = ssn
         put :update, params: params
         session_id = subject.idv_session.threatmetrix_session_id
         subject.threatmetrix_view_variables

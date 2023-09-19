@@ -102,10 +102,10 @@ module Idv
           UserAlerts::AlertUserAboutAccountVerified.call(
             user: current_user,
             date_time: event.created_at,
-            sp_name: decorated_session.sp_name,
+            sp_name: decorated_sp_session.sp_name,
           )
           flash[:success] = t('account.index.verification.success')
-        end
+      end
 
         idv_session.address_verification_mechanism = 'gpo'
         idv_session.address_confirmed!
