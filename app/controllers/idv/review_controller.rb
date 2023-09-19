@@ -25,6 +25,9 @@ module Idv
         **ab_test_analytics_buckets,
       )
 
+      @title = title
+      @heading = heading
+
       flash_now = flash.now
       if gpo_mail_service.mail_spammed?
         flash_now[:error] = t('idv.errors.mail_limit_reached')
@@ -80,6 +83,18 @@ module Idv
     end
 
     private
+
+    def title
+      gpo_user_flow? ? t('titles.idv.review_letter') : t('titles.idv.review')
+    end
+
+    def heading
+      if gpo_user_flow?
+        t('idv.titles.session.review_letter', app_name: APP_NAME)
+      else
+        t('idv.titles.session.review', app_name: APP_NAME)
+      end
+    end
 
     def confirm_current_password
       return if valid_password?

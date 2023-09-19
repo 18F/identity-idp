@@ -156,6 +156,13 @@ RSpec.describe Idv::ReviewController do
         expect(response).to render_template :new
       end
 
+      it 'sets the correct title and header' do
+        get :new
+
+        expect(assigns(:title)).to eq(t('titles.idv.review'))
+        expect(assigns(:heading)).to eq(t('idv.titles.session.review', app_name: APP_NAME))
+      end
+
       it 'uses the correct step indicator step' do
         indicator_step = subject.step_indicator_step
 
@@ -166,6 +173,13 @@ RSpec.describe Idv::ReviewController do
         before do
           idv_session.vendor_phone_confirmation = false
           idv_session.address_verification_mechanism = 'gpo'
+        end
+
+        it 'sets the correct title and header' do
+          get :new
+
+          expect(assigns(:title)).to eq(t('titles.idv.review_letter'))
+          expect(assigns(:heading)).to eq(t('idv.titles.session.review_letter', app_name: APP_NAME))
         end
 
         it 'displays info message about sending letter' do

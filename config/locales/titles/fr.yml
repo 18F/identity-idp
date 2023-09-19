@@ -40,6 +40,7 @@ fr:
       phone: Vérifiez votre numéro de téléphone
       reset_password: Réinitialisez le mot de passe
       review: Saisissez à nouveau votre mot de passe
+      review_letter: Saisissez à nouveau votre mot de passe pour envoyer votre lettre’
       verify_info: Vérifiez vos informations
     mfa_setup:
       suggest_second_mfa: Vous avez ajouté votre première méthode d’authentification !

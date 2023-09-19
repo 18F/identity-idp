@@ -285,6 +285,7 @@ en:
       review: Review and submit
       session:
         review: Re-enter your %{app_name} password
+        review_letter: Re-enter your %{app_name} password to send your letter
       unavailable: 'We are working to resolve an error'
     troubleshooting:
       headings:
