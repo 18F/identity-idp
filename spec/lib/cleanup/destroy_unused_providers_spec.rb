@@ -6,6 +6,15 @@ RSpec.describe DestroyUnusedProviders do
   let(:stdin) { StringIO.new }
   let(:service_provider) { create(:service_provider) }
   let(:issuer) { service_provider.issuer }
+  let(:partner_account) { create(:partner_account) }
+  let(:integration) do
+    create(
+      :integration,
+      issuer: issuer,
+      name: 'Integration',
+      partner_account: partner_account,
+    )
+  end
 
   subject(:destroy_unused_providers) { described_class.new([issuer], stdout:, stdin:) }
 
@@ -69,6 +78,27 @@ RSpec.describe DestroyUnusedProviders do
 
         it 'calls destroy on the records' do
           expect(records).to receive(:destroy_records)
+          subject.run
+        end
+      end
+    end
+
+    describe 'when integration does not exist' do
+      let(:records) { subject.destroy_list.first }
+      let(:stdin) { StringIO.new('anything_but_yes') }
+      let(:prompt) do
+        "Type 'yes' and hit enter to continue and " \
+          "destroy this service provider and associated records:\n"
+      end
+
+      before do
+        allow(records).to receive(:print_data)
+      end
+
+      describe 'when partner account does not exist' do
+        it 'prints the record data' do
+          partner_account.destroy!
+          expect(records).to receive(:print_data)
           subject.run
         end
       end
