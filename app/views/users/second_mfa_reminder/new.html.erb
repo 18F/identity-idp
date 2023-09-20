@@ -1,0 +1,33 @@
+<% title t('users.second_mfa_reminder.heading') %>
+
+<%= render StatusPageComponent.new(status: :info, icon: :question) do |c| %>
+  <% c.with_header { t('users.second_mfa_reminder.heading') } %>
+
+  <p><%= t('users.second_mfa_reminder.description') %></p>
+
+  <div class="grid-row margin-top-5">
+    <div class="tablet:grid-col-9">
+      <%= render ButtonComponent.new(
+            action: ->(**tag_options, &block) do
+              button_to(
+                second_mfa_reminder_path,
+                **tag_options,
+                params: { add_method: true },
+                &block
+              )
+            end,
+            big: true,
+            full_width: true,
+            class: 'margin-bottom-2',
+          ).with_content(t('users.second_mfa_reminder.add_method')) %>
+      <%= render ButtonComponent.new(
+            action: ->(**tag_options, &block) do
+              button_to(second_mfa_reminder_path, **tag_options, &block)
+            end,
+            outline: true,
+            big: true,
+            full_width: true,
+          ).with_content(t('users.second_mfa_reminder.continue', sp_name: decorated_sp_session.sp_name || APP_NAME)) %>
+    </div>
+  </div>
+<% end %>

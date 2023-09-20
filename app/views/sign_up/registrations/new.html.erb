@@ -2,7 +2,7 @@
 
 <%= render 'shared/sp_alert', section: 'sign_up' %>
 
-<% if decorated_session.sp_name %>
+<% if decorated_sp_session.sp_name %>
   <%= render 'sign_up/registrations/sp_registration_heading' %>
 <% end %>
 
@@ -49,7 +49,7 @@
   <%= f.submit t('forms.buttons.submit.default'), class: 'display-block margin-y-5' %>
 <% end %>
 
-<%= render 'shared/cancel', link: decorated_session.cancel_link_url %>
+<%= render 'shared/cancel', link: decorated_sp_session.cancel_link_url %>
 
 <p class='margin-top-2'>
   <%= new_tab_link_to(

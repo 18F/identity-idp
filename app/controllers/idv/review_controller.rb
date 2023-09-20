@@ -25,12 +25,15 @@ module Idv
         **ab_test_analytics_buckets,
       )
 
+      @title = title
+      @heading = heading
+
       flash_now = flash.now
       if gpo_mail_service.mail_spammed?
         flash_now[:error] = t('idv.errors.mail_limit_reached')
-      elsif address_verification_method == 'gpo'
-        flash_now[:info] = t('idv.messages.review.gpo_pending')
       end
+
+      @verifying_by_mail = address_verification_method == 'gpo'
     end
 
     def create
@@ -81,6 +84,18 @@ module Idv
 
     private
 
+    def title
+      gpo_user_flow? ? t('titles.idv.review_letter') : t('titles.idv.review')
+    end
+
+    def heading
+      if gpo_user_flow?
+        t('idv.titles.session.review_letter', app_name: APP_NAME)
+      else
+        t('idv.titles.session.review', app_name: APP_NAME)
+      end
+    end
+
     def confirm_current_password
       return if valid_password?
 
@@ -128,7 +143,7 @@ module Idv
         UserAlerts::AlertUserAboutAccountVerified.call(
           user: current_user,
           date_time: event.created_at,
-          sp_name: decorated_session.sp_name,
+          sp_name: decorated_sp_session.sp_name,
         )
       end
     end

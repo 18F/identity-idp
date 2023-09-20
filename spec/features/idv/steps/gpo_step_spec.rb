@@ -4,6 +4,19 @@ RSpec.feature 'idv gpo step' do
   include IdvStepHelper
   include OidcAuthHelper
 
+  let(:minimum_wait_for_letter) { 24 }
+  let(:days_passed) { max_days_before_resend_disabled + 1 }
+  let(:max_days_before_resend_disabled) { 30 }
+
+  before do
+    allow(IdentityConfig.store).to receive(:minimum_wait_before_another_usps_letter_in_hours).
+      and_return(minimum_wait_for_letter)
+    allow(IdentityConfig.store).to receive(:gpo_max_profile_age_to_send_letter_in_days).
+      and_return(max_days_before_resend_disabled)
+    allow(IdentityConfig.store).to receive(:second_mfa_reminder_account_age_in_days).
+      and_return(days_passed + 1)
+  end
+
   it 'redirects to and completes the review step when the user chooses to verify by letter', :js do
     start_idv_from_sp
     complete_idv_steps_before_gpo_step
@@ -16,51 +29,74 @@ RSpec.feature 'idv gpo step' do
     expect(page).to have_content(t('idv.messages.gpo.letter_on_the_way'))
   end
 
-  it 'allows the user to go back', :js do
-    start_idv_from_sp
-    complete_idv_steps_before_gpo_step
-
-    click_doc_auth_back_link
-
-    expect(page).to have_current_path(idv_phone_path)
-  end
-
   context 'the user has sent a letter but not verified an OTP' do
     let(:user) { user_with_2fa }
 
-    it 'allows the user to resend a letter and redirects to the come back later step', :js do
-      complete_idv_and_return_to_gpo_step
+    it 'if not rate limited, allow user to resend letter & redirect to letter enqueued step', :js do
+      complete_idv_by_mail_and_sign_out
 
-      # Confirm that we show the correct content on
-      # the GPO page for users requesting re-send
-      expect(page).to have_content(t('idv.titles.mail.resend'))
-      expect(page).to have_content(t('idv.messages.gpo.resend_timeframe'))
-      expect(page).to have_content(t('idv.messages.gpo.resend_code_warning'))
-      expect(page).to have_content(t('idv.buttons.mail.resend'))
-      expect(page).to_not have_content(t('idv.messages.gpo.info_alert'))
+      # rate-limited because too little time has passed
+      sign_in_live_with_2fa(user)
+      confirm_rate_limited
+      sign_out
 
-      expect { click_on t('idv.buttons.mail.resend') }.
-        to change { GpoConfirmation.count }.from(1).to(2)
-      expect_user_to_be_unverified(user)
+      # still rate-limited because too little time has passed
+      travel_to((minimum_wait_for_letter - 1).hours.from_now) do
+        sign_in_live_with_2fa(user)
+        confirm_rate_limited
+        sign_out
+      end
 
-      expect(page).to have_content(t('idv.messages.gpo.another_letter_on_the_way'))
-      expect(page).to have_content(t('idv.titles.come_back_later'))
-      expect(page).to have_current_path(idv_letter_enqueued_path)
+      # will be rate-limted after expiration
+      travel_to(days_passed.days.from_now) do
+        sign_in_live_with_2fa(user)
+        confirm_rate_limited
+        sign_out
+        # Clear MFA SMS message from the future to allow re-logging in with test helper
+        Telephony::Test::Message.clear_messages
+      end
 
-      # Confirm that user cannot visit other IdV pages while unverified
-      visit idv_agreement_path
-      expect(page).to have_current_path(idv_verify_by_mail_enter_code_path)
-      visit idv_ssn_url
-      expect(page).to have_current_path(idv_verify_by_mail_enter_code_path)
-      visit idv_verify_info_url
-      expect(page).to have_current_path(idv_verify_by_mail_enter_code_path)
+      # can re-request after the waiting period
+      travel_to((minimum_wait_for_letter + 1).hours.from_now) do
+        sign_in_live_with_2fa(user)
+        click_on t('idv.messages.gpo.resend')
 
-      # complete verification: end to end gpo test
-      complete_gpo_verification(user)
+        # Confirm that we show the correct content on
+        # the GPO page for users requesting re-send
+        expect(page).to have_content(t('idv.titles.mail.resend'))
+        expect(page).to have_content(strip_tags(t('idv.messages.gpo.resend_timeframe_html')))
+        expect(page).to have_content(t('idv.messages.gpo.resend_code_warning'))
+        expect(page).to have_content(t('idv.buttons.mail.resend'))
+        expect(page).to_not have_content(t('idv.messages.gpo.info_alert'))
 
-      expect(user.identity_verified?).to be(true)
+        # Ensure user can go back from this page
+        click_doc_auth_back_link
+        expect(page).to have_content(t('idv.gpo.title'))
+        expect(page).to have_current_path(idv_verify_by_mail_enter_code_path)
+        expect_user_to_be_unverified(user)
+        click_on t('idv.messages.gpo.resend')
 
-      expect(page).to_not have_content(t('account.index.verification.reactivate_button'))
+        # And then actually ask for a resend
+        expect { click_on t('idv.buttons.mail.resend') }.
+          to change { GpoConfirmation.count }.from(1).to(2)
+        expect_user_to_be_unverified(user)
+        expect(page).to have_content(t('idv.messages.gpo.another_letter_on_the_way'))
+        expect(page).to have_content(t('idv.titles.come_back_later'))
+        expect(page).to have_current_path(idv_letter_enqueued_path)
+
+        # Confirm that user cannot visit other IdV pages while unverified
+        visit idv_agreement_path
+        expect(page).to have_current_path(idv_verify_by_mail_enter_code_path)
+        visit idv_ssn_url
+        expect(page).to have_current_path(idv_verify_by_mail_enter_code_path)
+        visit idv_verify_info_url
+        expect(page).to have_current_path(idv_verify_by_mail_enter_code_path)
+
+        # complete verification: end to end gpo test
+        complete_gpo_verification(user)
+        expect(user.identity_verified?).to be(true)
+        expect(page).to_not have_content(t('account.index.verification.reactivate_button'))
+      end
     end
 
     context 'logged in with PIV/CAC and no password' do
@@ -80,59 +116,13 @@ RSpec.feature 'idv gpo step' do
       end
     end
 
-    context 'too much time has passed', :js do
-      let(:days_passed) { 31 }
-      let(:max_days_before_resend_disabled) { 30 }
-
-      before do
-        allow(IdentityConfig.store).to receive(:gpo_max_profile_age_to_send_letter_in_days).
-          and_return(max_days_before_resend_disabled)
-      end
-
-      it 'does not present the user the option to to resend', :js do
-        complete_idv_and_sign_out
-        travel_to(days_passed.days.from_now) do
-          sign_in_live_with_2fa(user)
-          expect(page).to have_current_path(idv_verify_by_mail_enter_code_path)
-          expect(page).not_to have_css('.usa-button', text: t('idv.buttons.mail.resend'))
-        end
-      end
-
-      it 'does not allow the user to go to the resend page manually' do
-        complete_idv_and_sign_out
-        travel_to(days_passed.days.from_now) do
-          sign_in_live_with_2fa(user)
-          visit idv_request_letter_path
-          expect(page).to have_current_path(idv_verify_by_mail_enter_code_path)
-          expect(page).not_to have_css('.usa-button', text: t('idv.buttons.mail.resend'))
-        end
-      end
-    end
-
-    it 'allows the user to return to gpo otp confirmation', :js do
-      complete_idv_and_return_to_gpo_step
-      click_doc_auth_back_link
-
-      expect(page).to have_content(t('idv.gpo.title'))
-      expect(page).to have_current_path(idv_verify_by_mail_enter_code_path)
-      expect_user_to_be_unverified(user)
-    end
-
-    def complete_idv_and_sign_out
+    def complete_idv_by_mail_and_sign_out
       start_idv_from_sp
       complete_idv_steps_before_gpo_step(user)
       click_on t('idv.buttons.mail.send')
       fill_in 'Password', with: user_password
       click_continue
-      visit root_path
-      click_on t('idv.gpo.return_to_profile')
-      first(:button, t('links.sign_out')).click
-    end
-
-    def complete_idv_and_return_to_gpo_step
-      complete_idv_and_sign_out
-      sign_in_live_with_2fa(user)
-      click_on t('idv.messages.gpo.resend')
+      sign_out
     end
 
     def expect_user_to_be_unverified(user)
@@ -143,6 +133,24 @@ RSpec.feature 'idv gpo step' do
 
       expect(profile.active?).to eq false
       expect(profile.gpo_verification_pending?).to eq true
+    end
+
+    def sign_out
+      visit sign_out_url
+    end
+
+    def confirm_rate_limited
+      expect(page).to have_current_path(idv_verify_by_mail_enter_code_path)
+      expect(page).not_to have_link(
+        t('idv.gpo.did_not_receive_letter.intro.request_new_letter_link'),
+      )
+      # does not allow the user to go to the resend page manually
+      visit idv_request_letter_path
+
+      expect(page).to have_current_path(idv_verify_by_mail_enter_code_path)
+      expect(page).not_to have_link(
+        t('idv.gpo.did_not_receive_letter.intro.request_new_letter_link'),
+      )
     end
   end
 

@@ -154,7 +154,7 @@ RSpec.describe Idv::SsnController do
           from(nil).to(ssn)
       end
 
-      context 'with a Puerto Rico address' do
+      context 'with a Puerto Rico address and pii_from_doc in idv_session' do
         it 'redirects to address controller after user enters their SSN' do
           subject.idv_session.pii_from_doc[:state] = 'PR'
 

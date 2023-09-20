@@ -424,7 +424,7 @@ GEM
     net-smtp (0.3.3)
       net-protocol
     net-ssh (6.1.0)
-    newrelic_rpm (8.15.0)
+    newrelic_rpm (9.5.0)
     nio4r (2.5.9)
     nokogiri (1.14.5)
       mini_portile2 (~> 2.8.0)
@@ -770,7 +770,7 @@ DEPENDENCIES
   msgpack (~> 1.6)
   multiset
   net-sftp
-  newrelic_rpm (~> 8.0)
+  newrelic_rpm (~> 9.0)
   nokogiri (~> 1.14.0)
   pg
   pg_query

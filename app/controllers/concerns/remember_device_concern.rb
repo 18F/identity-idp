@@ -18,7 +18,7 @@ module RememberDeviceConcern
     return if remember_device_cookie.nil?
     return unless remember_device_cookie.valid_for_user?(
       user: current_user,
-      expiration_interval: decorated_session.mfa_expiration_interval,
+      expiration_interval: decorated_sp_session.mfa_expiration_interval,
     )
 
     handle_valid_remember_device_cookie(remember_device_cookie: remember_device_cookie)
@@ -35,7 +35,7 @@ module RememberDeviceConcern
   def remember_device_expired_for_sp?
     expired_for_interval?(
       current_user,
-      decorated_session.mfa_expiration_interval,
+      decorated_sp_session.mfa_expiration_interval,
     )
   end
 

@@ -68,5 +68,10 @@ module DocAuth
     def attention_with_barcode?
       @attention_with_barcode
     end
+
+    def network_error?
+      return false unless @errors
+      return !!@errors&.with_indifferent_access&.dig(:network)
+    end
   end
 end

@@ -4,9 +4,9 @@
       heading: t('idv.failure.verify.heading'),
     ) do %>
     <p>
-      <% if decorated_session.sp_name.present? %>
+      <% if decorated_sp_session.sp_name.present? %>
         <%= link_to(
-              t('idv.failure.verify.fail_link_html', sp_name: decorated_session.sp_name),
+              t('idv.failure.verify.fail_link_html', sp_name: decorated_sp_session.sp_name),
               return_to_sp_failure_to_proof_path(
                 step: 'verify_info',
                 location: request.params[:action],

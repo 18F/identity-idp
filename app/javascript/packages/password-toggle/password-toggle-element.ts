@@ -1,9 +1,6 @@
-import { trackEvent } from '@18f/identity-analytics';
-
 class PasswordToggleElement extends HTMLElement {
   connectedCallback() {
     this.toggle.addEventListener('change', () => this.setInputType());
-    this.toggle.addEventListener('click', () => this.trackToggleEvent());
     this.setInputType();
   }
 
@@ -23,10 +20,6 @@ class PasswordToggleElement extends HTMLElement {
 
   setInputType() {
     this.input.type = this.toggle.checked ? 'text' : 'password';
-  }
-
-  trackToggleEvent() {
-    trackEvent('Show Password button clicked', { path: window.location.pathname });
   }
 }
 

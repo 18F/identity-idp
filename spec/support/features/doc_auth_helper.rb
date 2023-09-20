@@ -229,6 +229,36 @@ module DocAuthHelper
     )
   end
 
+  def mock_doc_auth_trueid_http_non2xx_status(status)
+    network_error_response = instance_double(
+      Faraday::Response,
+      status: status,
+      body: '{}',
+    )
+    DocAuth::Mock::DocAuthMockClient.mock_response!(
+      method: :get_results,
+      response: DocAuth::LexisNexis::Responses::TrueIdResponse.new(
+        network_error_response,
+        DocAuth::LexisNexis::Config.new,
+      ),
+    )
+  end
+
+  # @param [Object] status one of 440, 438, 439
+  def mock_doc_auth_acuant_http_4xx_status(status, method = :post_front_image)
+    DocAuth::Mock::DocAuthMockClient.mock_response!(
+      method: method,
+      response: DocAuth::Mock::ResultResponse.create_image_error_response(status),
+    )
+  end
+
+  def mock_doc_auth_acuant_http_5xx_status(method = :post_front_image)
+    DocAuth::Mock::DocAuthMockClient.mock_response!(
+      method: method,
+      response: DocAuth::Mock::ResultResponse.create_network_error_response,
+    )
+  end
+
   def mock_doc_auth_acuant_error_unknown
     failed_http_response = instance_double(
       Faraday::Response,

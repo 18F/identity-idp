@@ -39,7 +39,7 @@ module Idv
       {
         document_capture_session_uuid: document_capture_session_uuid,
         flow_path: 'standard',
-        sp_name: decorated_session.sp_name,
+        sp_name: decorated_sp_session.sp_name,
         failure_to_proof_url: return_to_sp_failure_to_proof_url(step: 'document_capture'),
       }.merge(
         acuant_sdk_upgrade_a_b_testing_variables,

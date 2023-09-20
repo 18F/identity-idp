@@ -64,6 +64,7 @@ module TwoFactorAuthentication
     def track_mfa_added
       analytics.multi_factor_auth_added_phone(
         enabled_mfa_methods_count: MfaContext.new(current_user).enabled_mfa_methods_count,
+        in_account_creation_flow: user_session[:in_account_creation_flow] || false,
       )
       Funnel::Registration::AddMfa.call(current_user.id, 'phone', analytics)
     end
@@ -158,7 +159,7 @@ module TwoFactorAuthentication
         country_code: parsed_phone.country,
         phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
         phone_configuration_id: phone_configuration&.id,
-        in_multi_mfa_selection_flow: in_multi_mfa_selection_flow?,
+        in_account_creation_flow: user_session[:in_account_creation_flow] || false,
         enabled_mfa_methods_count: mfa_context.enabled_mfa_methods_count,
       }
     end
