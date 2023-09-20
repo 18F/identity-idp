@@ -102,8 +102,8 @@ en:
           gpo:
             button: Verify by mail
           heading: 'We couldn’t verify your identity by phone'
-          option_try_again_later_html: 'Cancel and start over again after <b>%{time_left}</b>'
-          option_verify_by_mail_html: 'Verify by mail, which typically takes <b>3-7 business days</b>'
+          option_try_again_later_html: 'Cancel and start over again after <strong>%{time_left}</strong>'
+          option_verify_by_mail_html: 'Verify by mail, which takes <strong>5 to 10 days</strong>'
           options_header: 'You can:'
         timeout: Our request to verify your information timed out. Please try again.
         warning:
@@ -116,7 +116,7 @@ en:
             explanation: If you don’t have another phone number to try, verify by mail
               instead.
             heading: Verify by mail
-            how_long_it_takes: This typically takes 3 - 7 business days.
+            how_long_it_takes_html: This takes <strong>5 to 10 days</strong>.
           heading: We couldn’t match you to this number
           learn_more_link: 'Learn more about what phone number to use'
           next_steps_html: 'Try <strong>another</strong> number that you use often and
@@ -180,8 +180,8 @@ en:
           instructions: If you have your letter, enter the 10-character code from the
             letter you received.
         intro:
-          be_patient_html: Please note that <strong>letters typically take 3 to 7 business
-            days to arrive</strong>. Thank you for your patience.
+          be_patient_html: Please note that letters take up to <strong>10 days</strong> to
+            arrive. Thank you for your patience.
           request_new_letter_link: request a new letter
           request_new_letter_prompt_html: If you haven’t received your letter, you may
             <span>%{request_new_letter_link}</span>.
@@ -193,8 +193,8 @@ en:
         title: Confirm your account
       intro_html: '<p>If you have received your letter, please enter your one-time
         code below. </p><p>If your letter hasn’t arrived yet, please be patient
-        as <strong>letters typically take 3 to 7 business days to
-        arrive</strong>. Thank you for your patience.</p>'
+        as letters take up to <strong>10 days</strong> to arrive. Thank you for
+        your patience.</p>'
       return_to_profile: Return to your profile
       title: Welcome back
       wrong_address: Not the right address?
@@ -210,10 +210,9 @@ en:
         verified information, please %{link_html}.
       activated_link: contact us
       clear_and_start_over: Clear my information and start over
-      come_back_later_html: <p>Letters typically take <strong>3 to 7 business
-        days</strong> to arrive through USPS First Class Mail.</p> <p>Once your
-        letter arrives, sign in to %{app_name}, and enter your one-time code
-        when prompted.</p>
+      come_back_later_html: <p>Letters take <strong>5 to 10 days</strong> to arrive
+        via USPS First-Class Mail.</p> <p>Once your letter arrives, sign in to
+        %{app_name}, and enter your one-time code when prompted.</p>
       come_back_later_no_sp_html: You can return to your <strong>%{app_name} account</strong> for now.
       come_back_later_password_html: <strong>Don’t forget your password.</strong><br
         /> If you reset your password, the one-time code in your letter will no
@@ -231,9 +230,9 @@ en:
         resend_code_warning: If you request a new letter now, the one-time code from
           your current letter will remain valid for a limited time. You may
           still use the one-time code from either letter.
-        resend_timeframe: Letters typically take 3 to 7 business days to arrive.
-        timeframe_html: Letters are sent the next business day via USPS First Class Mail
-          and <strong>typically take 3 to 7 business days to arrive</strong>.
+        resend_timeframe_html: Letters take <strong>5 to 10 days</strong> to arrive.
+        timeframe_html: Letters are sent the next business day via USPS First-Class Mail
+          and arrive in <strong>5 to 10 days</strong>.
       gpo_reminder:
         body_html: You requested a letter to verify your identity on
           <strong>%{date_letter_was_sent}</strong>. You’ll need to enter the

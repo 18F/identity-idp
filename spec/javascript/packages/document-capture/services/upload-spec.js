@@ -142,6 +142,44 @@ describe('document-capture/services/upload', () => {
     }
   });
 
+  it('handles validation error due to resubmit failed message', async () => {
+    const endpoint = 'https://example.com';
+
+    const response = new Response(
+      JSON.stringify({
+        success: false,
+        errors: [{ field: 'front', message: 'Using failed image' }],
+        remaining_attempts: 3,
+        hints: true,
+        result_failed: true,
+        ocr_pii: { first_name: 'Fakey', last_name: 'McFakerson', dob: '1938-10-06' },
+        failed_image_fingerprints: { front: ['12345'], back: [] },
+      }),
+      { status: 400 },
+    );
+    sandbox.stub(response, 'url').get(() => endpoint);
+    sandbox.stub(global, 'fetch').callsFake(() => Promise.resolve(response));
+
+    try {
+      await upload({}, { endpoint });
+      throw new Error('This is a safeguard and should never be reached, since upload should error');
+    } catch (error) {
+      expect(error).to.be.instanceOf(UploadFormEntriesError);
+      expect(error.remainingAttempts).to.equal(3);
+      expect(error.hints).to.be.true();
+      expect(error.pii).to.deep.equal({
+        first_name: 'Fakey',
+        last_name: 'McFakerson',
+        dob: '1938-10-06',
+      });
+      expect(error.isFailedResult).to.be.true();
+      expect(error.formEntryErrors[0]).to.be.instanceOf(UploadFormEntryError);
+      expect(error.formEntryErrors[0].field).to.equal('front');
+      expect(error.formEntryErrors[0].message).to.equal('Using failed image');
+      expect(error.failed_image_fingerprints).to.eql({ front: ['12345'], back: [] });
+    }
+  });
+
   it('redirects error', async () => {
     const endpoint = 'https://example.com';
 

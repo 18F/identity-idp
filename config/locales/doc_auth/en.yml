@@ -56,6 +56,8 @@ en:
       card_type: Try again with your driver’s license or state ID card.
       doc:
         doc_type_check: Other forms of ID are not accepted.
+        resubmit_failed_image: You already tried this image, and it failed. Please try
+          adding a different image.
         wrong_id_type: We only accept a driver’s license or a state ID card at this
           time. Other forms of ID are not accepted.
       dpi:
@@ -223,7 +225,7 @@ en:
         - '<strong>Verify by phone</strong>: We’ll call or text your phone
           number. This takes a few minutes.'
         - '<strong>Verify by mail</strong>: We’ll mail a letter to your home
-          address. This takes about 3 to 7 business days.'
+          address. This takes <strong>5 to 10 days</strong>.'
       welcome: 'You will need your:'
     tips:
       document_capture_header_text: 'For best results:'

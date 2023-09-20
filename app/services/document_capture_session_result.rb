@@ -6,8 +6,11 @@ DocumentCaptureSessionResult = RedactedStruct.new(
   :success,
   :pii,
   :attention_with_barcode,
+  :failed_front_image_fingerprints,
+  :failed_back_image_fingerprints,
   keyword_init: true,
-  allowed_members: [:id, :success, :attention_with_barcode],
+  allowed_members: [:id, :success, :attention_with_barcode, :failed_front_image_fingerprints,
+                    :failed_back_image_fingerprints],
 ) do
   def self.redis_key_prefix
     'dcs:result'
@@ -16,4 +19,18 @@ DocumentCaptureSessionResult = RedactedStruct.new(
   alias_method :success?, :success
   alias_method :attention_with_barcode?, :attention_with_barcode
   alias_method :pii_from_doc, :pii
+
+  %w[front back].each do |side|
+    define_method("add_failed_#{side}_image!") do |fingerprint|
+      member_name = "failed_#{side}_image_fingerprints"
+      self[member_name] ||= []
+      self[member_name] << fingerprint
+    end
+
+    define_method("failed_#{side}_image?") do |fingerprint|
+      member_name = "failed_#{side}_image_fingerprints"
+      return false unless self[member_name]&.is_a?(Array)
+      return self[member_name]&.include?(fingerprint)
+    end
+  end
 end
