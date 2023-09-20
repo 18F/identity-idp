@@ -73,5 +73,26 @@ RSpec.describe DestroyUnusedProviders do
         end
       end
     end
+
+    describe 'when integration does not exist' do
+      let(:records) { subject.destroy_list.first }
+      let(:stdin) { StringIO.new('anything_but_yes') }
+      let(:partner_account) { integration.partner_account }
+      let(:prompt) do
+        "Type 'yes' and hit enter to continue and " \
+          "destroy this service provider and associated records:\n"
+      end
+
+      before do
+        allow(records).to receive(:print_data)
+      end
+
+      it 'prints the record data' do
+        let(:integration) { Agreements::Integration.find_by(issuer: issuer) }
+        partner_account.destroy!
+        expect(records).to receive(:print_data)
+        subject.run
+      end
+    end
   end
 end
