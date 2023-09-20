@@ -205,7 +205,7 @@ else
         }
       },
       # Job to backfill encrypted_pii_recovery_multi_region on users
-      multi_region_kms_migration_user_migraiton: {
+      multi_region_kms_migration_user_migration: {
         class: 'MultiRegionKmsMigration::UserMigrationJob',
         cron: cron_12m,
         kwargs: {
