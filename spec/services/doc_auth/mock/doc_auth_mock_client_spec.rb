@@ -7,7 +7,8 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
     expect(
       described_class.instance_methods.sort,
     ).to eq(
-      DocAuth::Acuant::AcuantClient.instance_methods.sort,
+      DocAuth::Acuant::AcuantClient.instance_methods.
+        concat(DocAuth::Mock::YmlLoaderConcern.instance_methods).sort,
     )
   end
 
