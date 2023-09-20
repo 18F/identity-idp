@@ -271,7 +271,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
             create(
               :profile,
               :with_pii,
-              fraud_pending_reason: 'threatmetrix_reject',
+              :fraud_rejection,
               user: user,
             )
           end
@@ -350,7 +350,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
             create(
               :profile,
               :with_pii,
-              fraud_pending_reason: 'threatmetrix_review',
+              :fraud_review_pending,
               user: user,
             )
           end
