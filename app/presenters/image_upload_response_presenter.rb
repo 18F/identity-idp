@@ -49,6 +49,7 @@ class ImageUploadResponsePresenter
       json[:ocr_pii] = ocr_pii
       json[:result_failed] = doc_auth_result_failed?
       json[:doc_type_supported] = doc_type_supported?
+      json[:failed_image_fingerprints] = failed_fingerprints
       json
     end
   end
@@ -79,5 +80,9 @@ class ImageUploadResponsePresenter
   def doc_type_supported?
     # default to true by assuming using supported doc type unless we clearly detect unsupported type
     @form_response.respond_to?(:id_type_supported?) ? @form_response.id_type_supported? : true
+  end
+
+  def failed_fingerprints
+    @form_response.extra[:failed_image_fingerprints] || { front: [], back: [] }
   end
 end

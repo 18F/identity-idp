@@ -62,6 +62,16 @@ interface ImageAnalyticsPayload {
    * capture functionality
    */
   acuantCaptureMode?: AcuantCaptureMode;
+
+  /**
+   * Fingerprint of the image, base64 encoded SHA-256 digest
+   */
+  fingerprint: string | null;
+
+  /**
+   *
+   */
+  failedImageResubmission: boolean;
 }
 
 interface AcuantImageAnalyticsPayload extends ImageAnalyticsPayload {
@@ -75,6 +85,7 @@ interface AcuantImageAnalyticsPayload extends ImageAnalyticsPayload {
   sharpnessScoreThreshold: number;
   isAssessedAsBlurry: boolean;
   assessment: AcuantImageAssessment;
+  isAssessedAsUnsupported: boolean;
 }
 
 interface AcuantCaptureProps {
@@ -178,6 +189,31 @@ export function getNormalizedAcuantCaptureFailureMessage(
   }
 }
 
+function getFingerPrint(file: File): Promise<string | null> {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const dataBuffer = reader.result;
+      window.crypto.subtle
+        .digest('SHA-256', dataBuffer as ArrayBuffer)
+        .then((arrayBuffer) => {
+          const digestArray = new Uint8Array(arrayBuffer);
+          const strDigest = digestArray.reduce(
+            (data, byte) => data + String.fromCharCode(byte),
+            '',
+          );
+          const base64String = window.btoa(strDigest);
+          const urlSafeBase64String = base64String
+            .replace(/\+/g, '-')
+            .replace(/\//g, '_')
+            .replace(/=+$/, '');
+          resolve(urlSafeBase64String);
+        })
+        .catch(() => null);
+    };
+    reader.readAsArrayBuffer(file);
+  });
+}
 function getImageDimensions(file: File): Promise<{ width: number | null; height: number | null }> {
   let objectURL: string;
   return file.type.indexOf('image/') === 0
@@ -194,6 +230,22 @@ function getImageDimensions(file: File): Promise<{ width: number | null; height:
         })
         .catch(() => ({ width: null, height: null }))
     : Promise.resolve({ width: null, height: null });
+}
+
+function getImageMetadata(
+  file: File,
+): Promise<{ width: number | null; height: number | null; fingerprint: string | null }> {
+  const dimension = getImageDimensions(file);
+  const fingerprint = getFingerPrint(file);
+  return new Promise<{ width: number | null; height: number | null; fingerprint: string | null }>(
+    function (resolve) {
+      Promise.all([dimension, fingerprint])
+        .then((results) => {
+          resolve({ width: results[0].width, height: results[0].height, fingerprint: results[1] });
+        })
+        .catch(() => ({ width: null, height: null, fingerprint: null }));
+    },
+  );
 }
 
 /**
@@ -289,6 +341,7 @@ function AcuantCapture(
     onResetFailedCaptureAttempts,
     failedSubmissionAttempts,
     forceNativeCamera,
+    failedSubmissionImageFingerprints,
   } = useContext(FailedCaptureAttemptsContext);
 
   const hasCapture = !isError && (isReady ? isCameraSupported : isMobile);
@@ -330,17 +383,19 @@ function AcuantCapture(
    */
   async function onUpload(nextValue: File | null) {
     let analyticsPayload: ImageAnalyticsPayload | undefined;
+    let hasFailed = false;
     if (nextValue) {
-      const { width, height } = await getImageDimensions(nextValue);
-
+      const { width, height, fingerprint } = await getImageMetadata(nextValue);
+      hasFailed = failedSubmissionImageFingerprints[name]?.includes(fingerprint);
       analyticsPayload = getAddAttemptAnalyticsPayload({
         width,
         height,
+        fingerprint,
         mimeType: nextValue.type,
         source: 'upload',
         size: nextValue.size,
+        failedImageResubmission: hasFailed,
       });
-
       trackEvent(`IdV: ${name} image added`, analyticsPayload);
     }
 
@@ -472,6 +527,8 @@ function AcuantCapture(
       isAssessedAsBlurry,
       assessment,
       size: getDecodedBase64ByteSize(nextCapture.image.data),
+      fingerprint: null,
+      failedImageResubmission: false,
     });
 
     trackEvent(`IdV: ${name} image added`, analyticsPayload);

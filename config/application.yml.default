@@ -75,6 +75,7 @@ disallow_all_web_crawlers: true
 disposable_email_services: '[]'
 doc_auth_attempt_window_in_minutes: 360
 doc_capture_polling_enabled: true
+doc_auth_check_failed_image_resubmission_enabled: true
 doc_auth_client_glare_threshold: 50
 doc_auth_client_sharpness_threshold: 50
 doc_auth_s3_request_timeout: 5

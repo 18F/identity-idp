@@ -73,6 +73,8 @@ fr:
         par l’État.
       doc:
         doc_type_check: Les autres pièces d’identité ne sont pas acceptées.
+        resubmit_failed_image: Vous avez déjà essayé cette image et elle a échoué.
+          Veuillez essayer d’ajouter une image différente.
         wrong_id_type: Nous n’acceptons que les permis de conduire ou les cartes
           d’identité délivrées par l’État. Les autres pièces d’identité ne sont
           pas acceptées.

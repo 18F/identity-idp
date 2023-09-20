@@ -1,7 +1,11 @@
 import userEvent from '@testing-library/user-event';
 import sinon from 'sinon';
 import { t } from '@18f/identity-i18n';
-import { DeviceContext, UploadContextProvider } from '@18f/identity-document-capture';
+import {
+  DeviceContext,
+  UploadContextProvider,
+  FailedCaptureAttemptsContextProvider,
+} from '@18f/identity-document-capture';
 import DocumentsStep from '@18f/identity-document-capture/components/documents-step';
 import { render } from '../../../support/document-capture';
 import { getFixtureFile } from '../../../support/file';
@@ -19,7 +23,14 @@ describe('document-capture/components/documents-step', () => {
 
   it('calls onChange callback with uploaded image', async () => {
     const onChange = sinon.stub();
-    const { getByLabelText } = render(<DocumentsStep onChange={onChange} />);
+    const { getByLabelText } = render(
+      <FailedCaptureAttemptsContextProvider
+        maxCaptureAttemptsBeforeNativeCamera={3}
+        maxSubmissionAttemptsBeforeNativeCamera={3}
+      >
+        <DocumentsStep onChange={onChange} />,
+      </FailedCaptureAttemptsContextProvider>,
+    );
     const file = await getFixtureFile('doc_auth_images/id-back.jpg');
 
     await Promise.all([
