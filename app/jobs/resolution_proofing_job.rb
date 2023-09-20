@@ -19,7 +19,6 @@ class ResolutionProofingJob < ApplicationJob
     encrypted_arguments:,
     trace_id:,
     should_proof_state_id:,
-    double_address_verification: false,
     user_id: nil,
     threatmetrix_session_id: nil,
     request_ip: nil
@@ -44,7 +43,6 @@ class ResolutionProofingJob < ApplicationJob
       threatmetrix_session_id: threatmetrix_session_id,
       request_ip: request_ip,
       should_proof_state_id: should_proof_state_id,
-      double_address_verification: double_address_verification,
     )
 
     document_capture_session = DocumentCaptureSession.new(result_id: result_id)
@@ -70,8 +68,7 @@ class ResolutionProofingJob < ApplicationJob
     applicant_pii:,
     threatmetrix_session_id:,
     request_ip:,
-    should_proof_state_id:,
-    double_address_verification:
+    should_proof_state_id:
   )
     result = resolution_proofer.proof(
       applicant_pii: applicant_pii,
@@ -79,7 +76,6 @@ class ResolutionProofingJob < ApplicationJob
       threatmetrix_session_id: threatmetrix_session_id,
       request_ip: request_ip,
       should_proof_state_id: should_proof_state_id,
-      double_address_verification: double_address_verification,
       timer: timer,
     )
 

@@ -142,8 +142,8 @@ module InPersonHelper
   def complete_all_in_person_proofing_steps(user = user_with_2fa, same_address_as_id: true)
     complete_prepare_step(user)
     complete_location_step(user)
-    complete_state_id_step(user)
-    complete_address_step(user) unless same_address_as_id
+    complete_state_id_step(user, same_address_as_id: same_address_as_id)
+    complete_address_step(user, same_address_as_id: same_address_as_id) unless same_address_as_id
     complete_ssn_step(user)
     complete_verify_step(user)
   end
