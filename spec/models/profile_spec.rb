@@ -665,7 +665,6 @@ RSpec.describe Profile do
       expect(profile.verified_at).to eq verified_at
     end
 
-    # ??? This method still nils out deactivation_reason even though it raises
     it 'does not activate a profile if it has a pending reason' do
       profile = create(
         :profile,
@@ -676,7 +675,7 @@ RSpec.describe Profile do
 
       expect(profile.activated_at).to be_nil
       expect(profile.active).to eq(false)
-      expect(profile.deactivation_reason).to eq('password_reset') # to change
+      expect(profile.deactivation_reason).to eq('password_reset')
       expect(profile.fraud_review_pending?).to eq(true)
       expect(profile.gpo_verification_pending_at).to be_nil
       expect(profile.in_person_verification_pending_at).to be_nil
@@ -690,7 +689,7 @@ RSpec.describe Profile do
 
       expect(profile.activated_at).to be_nil
       expect(profile.active).to eq(false)
-      expect(profile.deactivation_reason).to be_nil # changed
+      expect(profile.deactivation_reason).to eq('password_reset')
       expect(profile.fraud_review_pending?).to eq(true)
       expect(profile.gpo_verification_pending_at).to be_nil
       expect(profile.in_person_verification_pending_at).to be_nil
