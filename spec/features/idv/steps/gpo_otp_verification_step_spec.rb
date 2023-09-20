@@ -9,7 +9,6 @@ RSpec.feature 'idv gpo otp verification step' do
       :profile,
       :verify_by_mail_pending,
       :with_pii,
-      fraud_pending_reason: fraud_pending_reason,
     )
   end
   let(:gpo_confirmation_code) do
@@ -21,7 +20,6 @@ RSpec.feature 'idv gpo otp verification step' do
   end
   let(:user) { profile.user }
   let(:threatmetrix_enabled) { false }
-  let(:fraud_pending_reason) { nil }
   let(:redirect_after_verification) { nil }
   let(:profile_should_be_active) { true }
   let(:fraud_review_pending) { false }
@@ -35,7 +33,14 @@ RSpec.feature 'idv gpo otp verification step' do
 
   context 'ThreatMetrix disabled, but we have ThreatMetrix status on proofing component' do
     let(:threatmetrix_enabled) { false }
-    let(:fraud_pending_reason) { 'threatmetrix_review' }
+    let(:profile) do
+      create(
+        :profile,
+        :verify_by_mail_pending,
+        :with_pii,
+        :fraud_review_pending,
+      )
+    end
     it_behaves_like 'gpo otp verification'
   end
 
@@ -47,16 +52,28 @@ RSpec.feature 'idv gpo otp verification step' do
     end
 
     context 'ThreatMetrix says "review"' do
-      let(:fraud_pending_reason) { 'threatmetrix_review' }
       let(:profile_should_be_active) { false }
-      let(:fraud_review_pending) { true }
+      let(:profile) do
+        create(
+          :profile,
+          :verify_by_mail_pending,
+          :with_pii,
+          :fraud_review_pending,
+        )
+      end
       it_behaves_like 'gpo otp verification'
     end
 
     context 'ThreatMetrix says "reject"' do
-      let(:fraud_pending_reason) { 'threatmetrix_reject' }
       let(:profile_should_be_active) { false }
-      let(:fraud_review_pending) { true }
+      let(:profile) do
+        create(
+          :profile,
+          :verify_by_mail_pending,
+          :with_pii,
+          :fraud_rejection,
+        )
+      end
       it_behaves_like 'gpo otp verification'
     end
 
