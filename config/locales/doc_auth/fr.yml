@@ -81,7 +81,7 @@ fr:
         wrong_id_type_html: Nous n’acceptons qu’un permis de conduire ou une carte
           d’identité délivrée par un état ou un territoire des États-Unis. Nous
           n’acceptons pas les cartes d’identité militaires, les passeports
-          américains ou autres documents d’identification.<a>En savoir plus sur
+          américains ou autres documents d’identification. <a>En savoir plus sur
           les pièces d’identité acceptées</a>
       dpi:
         failed_short: L’image est trop petite ou floue, veuillez réessayer.

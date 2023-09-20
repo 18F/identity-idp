@@ -76,7 +76,7 @@ es:
         wrong_id_type_html: Solo aceptamos una licencia de conducir o una identificación
           estatal emitida por un estado o territorio de EE. UU. No aceptamos
           cartillas militares, pasaportes estadounidenses ni otros documentos de
-          identificación.<a>Más información sobre los documentos de identidad
+          identificación. <a>Más información sobre los documentos de identidad
           aceptados</a>
       dpi:
         failed_short: La imagen es demasiado pequeña o está borrosa, por favor inténtelo
