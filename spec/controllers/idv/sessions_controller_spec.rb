@@ -13,10 +13,14 @@ RSpec.describe Idv::SessionsController do
     before do
       allow(idv_session).to receive(:clear)
       allow(subject).to receive(:idv_session).and_return(idv_session)
+      controller.user_session['idv/doc_auth'] = flow_session
+      controller.user_session['idv/in_person'] = flow_session
       controller.user_session[:decrypted_pii] = pii
     end
 
     let(:idv_session) { double }
+    let(:flow_session) { { x: {} } }
+
     let(:pii) { { first_name: 'Jane' } }
 
     context 'when destroying the session' do
