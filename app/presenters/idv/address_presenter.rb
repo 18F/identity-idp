@@ -4,10 +4,6 @@ module Idv
       @pii = pii
     end
 
-    def puerto_rico_address?
-      @pii[:state] == 'PR'
-    end
-
     def pii
       @pii
     end

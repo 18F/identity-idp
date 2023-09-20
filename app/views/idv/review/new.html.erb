@@ -1,4 +1,4 @@
-<% title t('titles.idv.review') %>
+<% title @title %>
 
 <% content_for(:pre_flash_content) do %>
   <%= render StepIndicatorComponent.new(
@@ -9,7 +9,7 @@
       ) %>
 <% end %>
 
-<%= render PageHeadingComponent.new.with_content(t('idv.titles.session.review', app_name: APP_NAME)) %>
+<%= render PageHeadingComponent.new.with_content(@heading) %>
 
 <p>
   <%= t('idv.messages.review.message', app_name: APP_NAME) %>
@@ -33,6 +33,17 @@
   <div class="text-right margin-top-neg-4">
     <%= link_to(t('idv.forgot_password.link_text'), idv_forgot_password_url, class: 'margin-left-1') %>
   </div>
+
+  <% if @verifying_by_mail %>
+    <%= render AlertComponent.new(
+          type: :warning,
+          id: 'by-mail-password-warning',
+          class: 'margin-top-4',
+        ) do
+          t('idv.messages.review.by_mail_password_reminder_html')
+        end
+    %>
+  <% end %>
 
   <%= f.submit t('forms.buttons.continue'), class: 'margin-top-5' %>
 <% end %>

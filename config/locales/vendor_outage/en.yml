@@ -13,8 +13,8 @@ en:
           message_html: '%{sp_name_html} needs to make sure you are you — not someone
             pretending to be you.'
           options_html:
-            - Continue now and verify by mail, which takes <strong>3 to 7
-              business days</strong>.
+            - Continue now and verify by mail, which takes <strong>5 to 10
+              days</strong>.
             - Exit Login.gov and try again later.
           options_prompt: 'You can:'
           status_page_html: Unfortunately, we’re having technical difficulties right now.
