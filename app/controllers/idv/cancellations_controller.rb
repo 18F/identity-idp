@@ -84,7 +84,6 @@ module Idv
     end
 
     def reset_doc_auth
-      user_session.delete('idv/doc_auth')
       user_session['idv'] = {}
     end
 

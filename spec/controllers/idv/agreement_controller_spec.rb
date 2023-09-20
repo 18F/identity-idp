@@ -12,7 +12,6 @@ RSpec.describe Idv::AgreementController do
   before do
     stub_sign_in(user)
     stub_analytics
-    subject.user_session['idv/doc_auth'] = {}
     subject.idv_session.welcome_visited = true
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end

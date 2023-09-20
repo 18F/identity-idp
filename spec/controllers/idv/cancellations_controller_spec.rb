@@ -207,12 +207,6 @@ RSpec.describe Idv::CancellationsController do
         stub_sign_in(user)
       end
 
-      it 'destroys session' do
-        expect(subject.user_session).to receive(:delete).with('idv/doc_auth')
-
-        delete :destroy
-      end
-
       it 'renders template' do
         delete :destroy
 
