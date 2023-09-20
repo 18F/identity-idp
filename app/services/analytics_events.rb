@@ -701,6 +701,15 @@ module AnalyticsEvents
     )
   end
 
+  # @param [String] side the side of the image submission
+  def idv_doc_auth_failed_image_resubmitted(side:, **extra)
+    track_event(
+      'IdV: failed doc image resubmitted',
+      side: side,
+      **extra,
+    )
+  end
+
   def idv_doc_auth_getting_started_submitted(**extra)
     track_event('IdV: doc auth getting_started submitted', **extra)
   end

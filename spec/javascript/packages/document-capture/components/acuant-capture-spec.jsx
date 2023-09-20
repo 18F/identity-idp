@@ -4,7 +4,11 @@ import AcuantCapture, {
   getNormalizedAcuantCaptureFailureMessage,
   isAcuantCameraAccessFailure,
 } from '@18f/identity-document-capture/components/acuant-capture';
-import { AcuantContextProvider, AnalyticsContext } from '@18f/identity-document-capture';
+import {
+  AcuantContextProvider,
+  AnalyticsContext,
+  FailedCaptureAttemptsContextProvider,
+} from '@18f/identity-document-capture';
 import { createEvent, waitFor } from '@testing-library/dom';
 
 import DeviceContext from '@18f/identity-document-capture/context/device';
@@ -794,6 +798,8 @@ describe('document-capture/components/acuant-capture', () => {
         attempt: sinon.match.number,
         size: sinon.match.number,
         acuantCaptureMode: 'AUTO',
+        fingerprint: null,
+        failedImageResubmission: false,
       });
 
       expect(error).to.be.ok();
@@ -850,6 +856,8 @@ describe('document-capture/components/acuant-capture', () => {
         attempt: sinon.match.number,
         size: sinon.match.number,
         acuantCaptureMode: sinon.match.string,
+        fingerprint: null,
+        failedImageResubmission: false,
       });
 
       expect(error).to.be.ok();
@@ -959,6 +967,8 @@ describe('document-capture/components/acuant-capture', () => {
         attempt: sinon.match.number,
         size: sinon.match.number,
         acuantCaptureMode: sinon.match.string,
+        fingerprint: null,
+        failedImageResubmission: false,
       });
     });
 
@@ -1149,26 +1159,74 @@ describe('document-capture/components/acuant-capture', () => {
 
   it('logs metrics for manual upload', async () => {
     const trackEvent = sinon.stub();
+    const onChange = sinon.stub();
+
     const { getByLabelText } = render(
       <AnalyticsContext.Provider value={{ trackEvent }}>
-        <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
-          <AcuantCapture label="Image" name="test" />
-        </AcuantContextProvider>
+        <FailedCaptureAttemptsContextProvider
+          maxCaptureAttemptsBeforeNativeCamera={3}
+          maxSubmissionAttemptsBeforeNativeCamera={3}
+        >
+          <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
+            <AcuantCapture label="Image" name="front" onChange={onChange} />
+          </AcuantContextProvider>
+        </FailedCaptureAttemptsContextProvider>
       </AnalyticsContext.Provider>,
     );
-
     const input = getByLabelText('Image');
     uploadFile(input, validUpload);
+    onChange.calls;
+    await new Promise((resolve) => onChange.callsFake(resolve));
+    expect(trackEvent).to.be.calledOnce();
+    expect(trackEvent).to.have.been.calledWith(
+      'IdV: front image added',
+      sinon.match({
+        width: sinon.match.number,
+        height: sinon.match.number,
+        fingerprint: sinon.match.string,
+        source: 'upload',
+        mimeType: 'image/jpeg',
+        size: sinon.match.number,
+        attempt: sinon.match.number,
+        acuantCaptureMode: 'AUTO',
+      }),
+    );
+  });
 
-    await expect(trackEvent).to.eventually.be.calledWith('IdV: test image added', {
-      height: sinon.match.number,
-      mimeType: 'image/jpeg',
-      source: 'upload',
-      width: sinon.match.number,
-      attempt: sinon.match.number,
-      size: sinon.match.number,
-      acuantCaptureMode: sinon.match.string,
-    });
+  it('logs metrics for failed reupload', async () => {
+    const trackEvent = sinon.stub();
+    const onChange = sinon.stub();
+    const { getByLabelText } = render(
+      <AnalyticsContext.Provider value={{ trackEvent }}>
+        <FailedCaptureAttemptsContextProvider
+          failedFingerprints={{ front: ['kgLjncfQAICyEYQhdFMAAKxdFceQ80WPjwK2puuuLd8'], back: [] }}
+          maxCaptureAttemptsBeforeNativeCamera={3}
+          maxSubmissionAttemptsBeforeNativeCamera={3}
+        >
+          <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
+            <AcuantCapture label="Image" name="front" onChange={onChange} />
+          </AcuantContextProvider>
+        </FailedCaptureAttemptsContextProvider>
+      </AnalyticsContext.Provider>,
+    );
+    const input = getByLabelText('Image');
+    uploadFile(input, validUpload);
+    onChange.calls;
+    await new Promise((resolve) => onChange.callsFake(resolve));
+    expect(trackEvent).to.be.calledOnce();
+    expect(trackEvent).to.be.eventually.calledWith(
+      'IdV: failed front image resubmitted',
+      sinon.match({
+        width: sinon.match.number,
+        height: sinon.match.number,
+        fingerprint: sinon.match.string,
+        source: 'upload',
+        mimeType: 'image/jpeg',
+        size: sinon.match.number,
+        attempt: sinon.match.number,
+        acuantCaptureMode: 'AUTO',
+      }),
+    );
   });
 
   it('logs clicks', async () => {
