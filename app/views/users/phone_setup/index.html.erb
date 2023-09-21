@@ -8,6 +8,13 @@
   <%= t('two_factor_authentication.phone_info') %>
 </p>
 
+<p>
+  <%= t('two_factor_authentication.phone_fee_disclosure') %>
+  <% if IdentityConfig.store.voip_block %>
+    <%= t('two_factor_authentication.two_factor_choice_options.phone_info_no_voip') %>
+  <% end %>
+</p>
+
 <%= simple_form_for(
       @new_phone_form,
       method: :post,
@@ -37,20 +44,14 @@
       ).with_content(t('forms.buttons.send_one_time_code')) %>
 <% end %>
 
-<p class="margin-top-5">
-  <%= t('two_factor_authentication.phone_fee_disclosure') %>
-  <% if IdentityConfig.store.voip_block %>
-    <%= t('two_factor_authentication.two_factor_choice_options.phone_info_no_voip') %>
-  <% end %>
-</p>
 <% unless FeatureManagement.phone_recaptcha_enabled? %>
   <%= link_to t('two_factor_authentication.mobile_terms_of_service'),
               MarketingSite.messaging_practices_url,
-              class: 'display-block margin-bottom-4' %>
+              class: 'display-block margin-bottom-4 margin-top-2' %>
 <% end %>
-
-<%= render 'shared/cancel_or_back_to_options' %>
 
 <% if FeatureManagement.phone_recaptcha_enabled? %>
   <%= render 'shared/recaptcha_disclosure' %>
 <% end %>
+
+<%= render 'shared/cancel_or_back_to_options' %>
