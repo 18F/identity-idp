@@ -413,7 +413,7 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
             },
           },
           address_line2_present: true,
-          doc_type_supported: true,
+          doc_type_supported: false,
         }
 
         processed_alerts = response_hash[:processed_alerts]
@@ -434,14 +434,13 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
 
       context 'with successful response of unsupported document issuing country' do
         let(:http_response) do
-          json_body = JSON.parse(AcuantFixtures.get_results_response_success)
-          json_body.tap do |b|
-            json_body['Classification']['ClassificationDetails']['Front']['CountryCode'] = 'CAN'
-            json_body['Classification']['ClassificationDetails']['Back']['CountryCode'] = 'CAN'
+          json_body = JSON.parse(AcuantFixtures.get_results_response_success).tap do |b|
+            b['Classification']['ClassificationDetails']['Front']['CountryCode'] = 'CAN'
+            b['Classification']['ClassificationDetails']['Back']['CountryCode'] = 'CAN'
           end
           instance_double(
             Faraday::Response,
-            body: jsonBody.to_json,
+            body: json_body.to_json,
           )
         end
         let(:expected_errors) do

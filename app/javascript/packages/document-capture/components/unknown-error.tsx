@@ -3,6 +3,7 @@ import { useContext } from 'react';
 import { useI18n, HtmlTextWithStrongNoWrap } from '@18f/identity-react-i18n';
 import { FormStepError } from '@18f/identity-form-steps';
 import { Link } from '@18f/identity-components';
+import formatHTML from '@18f/identity-react-i18n/format-html';
 import MarketingSiteContext from '../context/marketing-site';
 
 interface UnknownErrorProps extends ComponentProps<'p'> {
@@ -11,6 +12,21 @@ interface UnknownErrorProps extends ComponentProps<'p'> {
   remainingAttempts: number;
   altFailedDocTypeMsg?: string | null;
   hasDismissed: boolean;
+}
+
+function formattedIdTypeMsg({ altFailedDocTypeMsg, acceptedIdUrl }) {
+  return formatHTML(altFailedDocTypeMsg, {
+    a: ({ children }) => (
+      <a
+        target="_blank"
+        className="usa-link--external"
+        rel="noopener noreferrer"
+        href={acceptedIdUrl}
+      >
+        {children}
+      </a>
+    ),
+  });
 }
 
 function UnknownError({
@@ -27,12 +43,21 @@ function UnknownError({
     article: 'how-to-add-images-of-your-state-issued-id',
     location: 'document_capture_review_issues',
   });
+
+  const acceptedIdUrl = getHelpCenterURL({
+    category: 'verify-your-identity',
+    article: 'accepted-identification-documents',
+    location: 'document_capture_review_issues',
+  });
+
   const errs =
     !!unknownFieldErrors &&
     unknownFieldErrors.filter((error) => !['front', 'back'].includes(error.field!));
   const err = errs.length !== 0 ? errs[0].error : null;
   if (isFailedDocType && !!altFailedDocTypeMsg) {
-    return <p key={altFailedDocTypeMsg}>{altFailedDocTypeMsg}</p>;
+    return (
+      <p key={altFailedDocTypeMsg}>{formattedIdTypeMsg({ altFailedDocTypeMsg, acceptedIdUrl })}</p>
+    );
   }
   if (isFailedDocType && err) {
     return (
