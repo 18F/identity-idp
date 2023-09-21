@@ -37,6 +37,11 @@ FactoryBot.define do
       in_person_verification_pending_at { 15.days.ago }
     end
 
+    trait :fraud_pending_reason do
+      fraud_pending_reason { 'threatmetrix_review' }
+      proofing_components { { threatmetrix_review_status: 'review' } }
+    end
+
     trait :fraud_review_pending do
       fraud_pending_reason { 'threatmetrix_review' }
       fraud_review_pending_at { 15.days.ago }
@@ -47,8 +52,9 @@ FactoryBot.define do
       gpo_verification_pending_at { 1.day.ago }
     end
 
+    # flagged by TM for review, eventually rejected by us
     trait :fraud_rejection do
-      fraud_pending_reason { 'threatmetrix_reject' }
+      fraud_pending_reason { 'threatmetrix_review' }
       fraud_rejection_at { 15.days.ago }
     end
 
