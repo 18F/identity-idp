@@ -207,8 +207,8 @@ fr:
         otp_label: Code de vérification
         submit: Confirmer le compte
         title: Confirmez votre compte
-      intro_html: '<p>Si vous avez reçu votre lettre, veuillez entrer votre code à
-        usage unique ci-dessous. </p> <p>Si votre lettre n’est pas encore
+      intro_html: '<p>Si vous avez reçu votre lettre, veuillez entrer votre code de
+        vérification ci-dessous. </p> <p>Si votre lettre n’est pas encore
         arrivée, veuillez être patient car les lettres mettent jusqu’à
         <strong>10 jours</strong> pour arriver. Nous vous remercions de votre
         patience.</p>'

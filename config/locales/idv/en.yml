@@ -191,7 +191,7 @@ en:
         otp_label: Verification code
         submit: Confirm account
         title: Confirm your account
-      intro_html: '<p>If you have received your letter, please enter your one-time
+      intro_html: '<p>If you have received your letter, please enter your verification
         code below. </p><p>If your letter hasn’t arrived yet, please be patient
         as letters take up to <strong>10 days</strong> to arrive. Thank you for
         your patience.</p>'
