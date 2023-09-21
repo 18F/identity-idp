@@ -54,7 +54,7 @@ es:
       totp_confirm_delete: Sí, eliminar la aplicación de autenticación
       unknown_location: ubicación desconocida
       verification:
-        instructions: Su cuenta requiere un código único para ser verificado.
+        instructions: Su cuenta requiere un código de verificación para ser verificado.
         reactivate_button: Ingrese el código que recibió por correo postal.
         success: Verificamos tu información
       webauthn: Clave de seguridad
