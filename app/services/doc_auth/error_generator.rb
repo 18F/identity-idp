@@ -110,7 +110,7 @@ module DocAuth
         side_class = classification_info.with_indifferent_access.dig(side, 'ClassName')
         side_country = classification_info.with_indifferent_access.dig(side, 'CountryCode')
         side_ok = !side_class.present? ||
-                  supported_country_codes.include?(side_class) ||
+                  SUPPORTED_ID_CLASSNAME.include?(side_class) ||
                   side_class == 'Unknown'
         country_ok = !side_country.present? || supported_country_codes.include?(side_country)
         both_side_ok &&= side_ok && country_ok
