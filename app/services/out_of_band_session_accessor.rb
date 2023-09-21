@@ -13,9 +13,21 @@ class OutOfBandSessionAccessor
   end
 
   def ttl
+    return 0 if expires_at.nil?
+    return (expires_at - Time.zone.now).to_i
+  end
+
+  def expires_at
+    return @expires_at if defined?(@expires_at)
     uuid = Rack::Session::SessionId.new(session_uuid)
-    session_store.instance_eval do
-      with_redis_connection { |client| client.ttl(prefixed(uuid)) }
+    expires_at = session_store.instance_eval do
+      with_redis_connection { |client| client.expiretime(prefixed(uuid)) }
+    end
+
+    if expires_at >= 0
+      @expires_at = ActiveSupport::TimeZone['UTC'].at(expires_at).in_time_zone(Time.zone)
+    else
+      @expires_at = Time.zone.now
     end
   end
 
