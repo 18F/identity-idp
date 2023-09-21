@@ -22,7 +22,8 @@ module DocAuth
     # @param [String] doc_side value of ['Front', 'Back']
     def doc_side_class_ok?(classification_info, doc_side)
       side_type = classification_info&.with_indifferent_access&.dig(doc_side, 'ClassName')
-      !side_type&.present? || DocAuth::Response::ID_TYPE_SLUGS.key?(side_type) ||
+      !side_type&.present? ||
+        DocAuth::Response::ID_TYPE_SLUGS.key?(side_type) ||
         side_type == 'Unknown'
     end
 
@@ -30,7 +31,12 @@ module DocAuth
     # @param [String] doc_side value of ['Front', 'Back']
     def doc_issuing_country_ok?(classification_info, doc_side)
       side_country = classification_info&.with_indifferent_access&.dig(doc_side, 'CountryCode')
-      !side_country&.present? || DocAuth::Response::SUPPORTED_COUNTRY_CODES.include?(side_country)
+      !side_country&.present? ||
+        supported_country_codes.include?(side_country)
+    end
+
+    def supported_country_codes
+      IdentityConfig.store.doc_auth_supported_country_codes
     end
 end
 end

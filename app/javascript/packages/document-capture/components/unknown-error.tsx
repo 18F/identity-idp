@@ -14,17 +14,12 @@ interface UnknownErrorProps extends ComponentProps<'p'> {
   hasDismissed: boolean;
 }
 
-function formattedIdTypeMsg({ altFailedDocTypeMsg, acceptedIdUrl }) {
+function formatIdTypeMsg({ altFailedDocTypeMsg, acceptedIdUrl }) {
   return formatHTML(altFailedDocTypeMsg, {
     a: ({ children }) => (
-      <a
-        target="_blank"
-        className="usa-link--external"
-        rel="noopener noreferrer"
-        href={acceptedIdUrl}
-      >
+      <Link href={acceptedIdUrl} isExternal>
         {children}
-      </a>
+      </Link>
     ),
   });
 }
@@ -56,7 +51,7 @@ function UnknownError({
   const err = errs.length !== 0 ? errs[0].error : null;
   if (isFailedDocType && !!altFailedDocTypeMsg) {
     return (
-      <p key={altFailedDocTypeMsg}>{formattedIdTypeMsg({ altFailedDocTypeMsg, acceptedIdUrl })}</p>
+      <p key={altFailedDocTypeMsg}>{formatIdTypeMsg({ altFailedDocTypeMsg, acceptedIdUrl })}</p>
     );
   }
   if (isFailedDocType && err) {

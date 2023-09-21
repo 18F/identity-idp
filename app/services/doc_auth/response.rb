@@ -7,8 +7,6 @@ module DocAuth
       'Drivers License' => 'drivers_license',
     }
 
-    SUPPORTED_COUNTRY_CODES = %w[US GU VI AS MP PR USA GUM VIR ASM MNP PRI]
-
     def initialize(
       success:,
       errors: {},
