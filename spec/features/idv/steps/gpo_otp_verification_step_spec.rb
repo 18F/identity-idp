@@ -38,7 +38,7 @@ RSpec.feature 'idv gpo otp verification step' do
         :profile,
         :verify_by_mail_pending,
         :with_pii,
-        :fraud_review_pending,
+        fraud_pending_reason: 'threatmetrix_review',
       )
     end
     it_behaves_like 'gpo otp verification'

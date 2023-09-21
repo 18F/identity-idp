@@ -193,7 +193,7 @@ RSpec.describe GpoVerifyForm do
 
       context 'ThreatMetrix rejection' do
         let(:pending_profile) do
-          create(:profile, :verify_by_mail_pending, :fraud_review_pending, user: user)
+          create(:profile, :verify_by_mail_pending, :fraud_pending_reason, user: user)
         end
 
         before do
