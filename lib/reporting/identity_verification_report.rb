@@ -27,6 +27,7 @@ module Reporting
       GPO_VERIFICATION_SUBMITTED = 'IdV: enter verify by mail code submitted'
       GPO_VERIFICATION_SUBMITTED_OLD = 'IdV: GPO verification submitted'
       USPS_ENROLLMENT_STATUS_UPDATED = 'GetUspsProofingResultsJob: Enrollment status updated'
+      FRAUD_REVIEW_PASSED = 'Fraud: Profile review passed'
 
       def self.all_events
         constants.map { |c| const_get(c) }
@@ -42,6 +43,7 @@ module Reporting
       IDV_REJECT_DOC_AUTH = 'IdV Reject: Doc Auth'
       IDV_REJECT_VERIFY = 'IdV Reject: Verify'
       IDV_REJECT_PHONE_FINDER = 'IdV Reject: Phone Finder'
+      FRAUD_REVIEW_PASSED = 'Fraud: Profile review passed'
     end
 
     # @param [Array<String>] issuers
@@ -91,10 +93,11 @@ module Reporting
         csv << ['Workflow completed - In-Person Pending', idv_final_resolution_in_person]
         csv << ['Workflow completed - Fraud Review Pending', idv_final_resolution_fraud_review]
         csv << []
-        csv << ['Succesfully verified', successfully_verified_users]
-        csv << ['Succesfully verified - Inline', idv_final_resolution_verified]
-        csv << ['Succesfully verified - GPO Code Entry', gpo_verification_submitted]
-        csv << ['Succesfully verified - In Person', usps_enrollment_status_updated]
+        csv << ['Successfully verified', successfully_verified_users]
+        csv << ['Successfully verified - Inline', idv_final_resolution_verified]
+        csv << ['Successfully verified - GPO Code Entry', gpo_verification_submitted]
+        csv << ['Successfully verified - In Person', usps_enrollment_status_updated]
+        csv << ['Successfully verified - Passed Fraud Review', fraud_review_passed]
       end
     end
 
@@ -175,6 +178,10 @@ module Reporting
       ).count
     end
 
+    def fraud_review_passed
+      data[Results::FRAUD_REVIEW_PASSED].count
+    end
+
     # rubocop:disable Layout/LineLength
     # Turns query results into a hash keyed by event name, values are a count of unique users
     # for that event
@@ -206,6 +213,8 @@ module Reporting
             event_users[Results::IDV_REJECT_VERIFY] << user_id if success == '0'
           when Events::IDV_PHONE_FINDER_RESULTS
             event_users[Results::IDV_REJECT_PHONE_FINDER] << user_id if success == '0'
+          when Events::FRAUD_REVIEW_PASSED
+            event_users[Results::FRAUD_REVIEW_PASSED] << user_id if success == '1'
           end
         end
 
