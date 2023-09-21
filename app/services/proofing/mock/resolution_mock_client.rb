@@ -55,7 +55,9 @@ module Proofing
         resolution_result(
           success: false,
           errors: {},
-          exception: Proofing::Aamva::VerificationError.new('Unexpected status code in response: 504'),
+          exception: Proofing::Aamva::VerificationError.new(
+            'Unexpected status code in response: 504',
+          ),
         )
       end
 

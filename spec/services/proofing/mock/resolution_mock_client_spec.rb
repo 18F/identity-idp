@@ -181,7 +181,9 @@ RSpec.describe Proofing::Mock::ResolutionMockClient do
         expect(result.to_h).to eq(
           success: false,
           errors: {},
-          exception: Proofing::Aamva::VerificationError.new('Unexpected status code in response: 504'),
+          exception: Proofing::Aamva::VerificationError.new(
+            'Unexpected status code in response: 504',
+          ),
           timed_out: false,
           reference: reference,
           transaction_id: transaction_id,
