@@ -73,7 +73,7 @@ es:
           identificación.
         resubmit_failed_image: Ya intentó con esta imagen pero falló. Intente añadir una
           imagen diferente.
-        wrong_id_type: Solo aceptamos una licencia de conducir o una identificación
+        wrong_id_type_html: Solo aceptamos una licencia de conducir o una identificación
           estatal emitida por un estado o territorio de EE. UU. No aceptamos
           cartillas militares, pasaportes estadounidenses ni otros documentos de
           identificación.<a>Más información sobre los documentos de identidad

@@ -122,12 +122,8 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         'OrientationChanged' => 'true',
         'PresentationChanged' => 'false',
         classification_info: {
-          Front: {
-            ClassName: 'Drivers License',
-          },
-          Back: {
-            ClassName: 'Drivers License',
-          },
+          Front: a_hash_including(:ClassName, :CountryCode),
+          Back: a_hash_including(:ClassName, :CountryCode),
         },
       )
     end
@@ -325,12 +321,8 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         'OrientationChanged' => 'false',
         'PresentationChanged' => 'false',
         classification_info: {
-          Front: {
-            ClassName: 'Drivers License',
-          },
-          Back: {
-            ClassName: 'Drivers License',
-          },
+          Front: a_hash_including(:ClassName, :CountryCode),
+          Back: a_hash_including(:ClassName, :CountryCode),
         },
       )
     end

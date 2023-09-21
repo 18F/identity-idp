@@ -78,11 +78,11 @@ fr:
           autres documents d’identification.
         resubmit_failed_image: Vous avez déjà essayé cette image et elle a échoué.
           Veuillez essayer d’ajouter une image différente.
-        wrong_id_type: Nous n’acceptons qu’un permis de conduire ou une carte d’identité
-          délivrée par un état ou un territoire des États-Unis. Nous n’acceptons
-          pas les cartes d’identité militaires, les passeports américains ou
-          autres documents d’identification.<a>En savoir plus sur les pièces
-          d’identité acceptées</a>
+        wrong_id_type_html: Nous n’acceptons qu’un permis de conduire ou une carte
+          d’identité délivrée par un état ou un territoire des États-Unis. Nous
+          n’acceptons pas les cartes d’identité militaires, les passeports
+          américains ou autres documents d’identification.<a>En savoir plus sur
+          les pièces d’identité acceptées</a>
       dpi:
         failed_short: L’image est trop petite ou floue, veuillez réessayer.
         top_msg: Nous n’avons pas pu lire votre pièce d’identité. La taille de votre

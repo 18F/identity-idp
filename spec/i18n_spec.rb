@@ -155,7 +155,6 @@ RSpec.describe 'I18n' do
             keys = flatten_hash(YAML.load_file(full_path)).keys
 
             bad_keys = keys.reject { |key| key =~ /^[a-z0-9_.]+$/ }
-
             expect(bad_keys).to be_empty
           end
 
