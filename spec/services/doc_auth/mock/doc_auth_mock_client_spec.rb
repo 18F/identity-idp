@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe DocAuth::Mock::DocAuthMockClient do
   subject(:client) { described_class.new }
 
-  it 'implements the same public methods as the real Acuant client' do
+  it 'implements all the public methods of the real Acuant client' do
     expect(
       described_class.instance_methods.sort,
     ).to eq(
