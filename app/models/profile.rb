@@ -12,6 +12,11 @@ class Profile < ApplicationRecord
 
   validates :active, uniqueness: { scope: :user_id, if: :active? }
 
+  has_one :establishing_in_person_enrollment,
+          -> { where(status: :establishing).order(created_at: :desc) },
+          class_name: 'InPersonEnrollment', foreign_key: :profile_id, inverse_of: :profile,
+          dependent: :destroy
+
   enum deactivation_reason: {
     password_reset: 1,
     encryption_error: 2,
