@@ -14,6 +14,7 @@ module Proofing
         return failed_to_contact_vendor_result if /Fail/i.match?(first_name)
         return failed_to_contact_vendor_result if ssn.match?(NO_CONTACT_SSN)
         return timeout_result if first_name.match?(/Time/i)
+        return parse_error_result if first_name.match?(/Parse/i)
 
         if first_name.match?(/Bad/i)
           unverifiable_result(first_name: ['Unverified first name.'])
@@ -47,6 +48,14 @@ module Proofing
           success: false,
           errors: {},
           exception: Proofing::TimeoutError.new('address mock timeout'),
+        )
+      end
+
+      def parse_error_result
+        resolution_result(
+          success: false,
+          errors: {},
+          exception: Proofing::Aamva::VerificationError.new('Unexpected status code in response: 504'),
         )
       end
 
