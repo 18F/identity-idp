@@ -61,6 +61,7 @@ RSpec.describe OpenidConnect::TokenController do
             code_digest: kind_of(String),
             code_verifier_present: false,
             service_provider_pkce: nil,
+            expires_in: 0,
           })
         action
       end
@@ -90,6 +91,7 @@ RSpec.describe OpenidConnect::TokenController do
             code_verifier_present: false,
             service_provider_pkce: nil,
             error_details: hash_including(:grant_type),
+            expires_in: nil,
           })
 
         action
