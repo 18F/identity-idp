@@ -35,7 +35,7 @@ fr:
         gpo:
           start_over: Si vous supprimez vos informations et recommencez
           warnings:
-            - Le code à usage unique dans votre lettre ne fonctionnera plus
+            - Le code de vérification dans votre lettre ne fonctionnera plus
             - Vous recommencerez la vérification de votre identité depuis le
               début
         hybrid: Si vous annulez maintenant, vous serez invité à retourner sur votre
@@ -187,7 +187,7 @@ fr:
       no_js_intro: '%{sp_name} a besoin de vous pour vérifier votre identité. Vous
         devez activer JavaScript pour poursuivre ce processus.'
     gpo:
-      alert_info: 'Nous avons envoyé une lettre avec votre code à usage unique à:'
+      alert_info: 'Nous avons envoyé une lettre avec votre code de vérification à:'
       clear_and_start_over: Supprimez vos données et recommencez
       did_not_receive_letter:
         form:
@@ -204,7 +204,7 @@ fr:
       form:
         instructions: Entrez le code à 10 caractères figurant sur la lettre que vous
           avez reçue.
-        otp_label: Code à usage unique
+        otp_label: Code de vérification
         submit: Confirmer le compte
         title: Confirmez votre compte
       intro_html: '<p>Si vous avez reçu votre lettre, veuillez entrer votre code à
@@ -229,28 +229,28 @@ fr:
       clear_and_start_over: Supprimer mes données et recommencer
       come_back_later_html: <p>Les lettres mettent <strong>5 à 10 jours</strong> pour
         arriver par le courrier de première classe d’USPS.</p><p>Une fois votre
-        lettre arrivée, connectez-vous à %{app_name} et entrez votre code à
-        usage unique lorsque vous y êtes invité.</p>
+        lettre arrivée, connectez-vous à %{app_name} et entrez votre code de
+        vérification lorsque vous y êtes invité.</p>
       come_back_later_no_sp_html: Vous pouvez revenir à votre <strong>compte
         %{app_name}</strong> pour le moment.
       come_back_later_password_html: <strong>N’oubliez pas votre mot de
         passe.</strong> <br /> Si vous réinitialisez votre mot de passe, le code
-        à usage unique figurant dans votre lettre ne correspondra plus et vous
+        de vérification figurant dans votre lettre ne correspondra plus et vous
         serez obligé de vérifier à nouveau votre identité.
       come_back_later_sp_html: Vous pouvez retourner à l’agence <strong>%{sp}</strong> pour le moment.
       confirm: Nous avons sécurisé vos informations vérifiées
       gpo:
-        address_on_file_html: Nous enverrons une lettre avec <strong>un code à usage
-          unique </strong> à l’adresse que vous avez indiquée à l’étape
+        address_on_file_html: Nous enverrons une lettre avec <strong>un code de
+          vérification</strong> à l’adresse que vous avez indiquée à l’étape
           précédente.
         another_letter_on_the_way: Nous vous envoyons une autre lettre
         info_alert: Vous devrez attendre la livraison de votre lettre pour compléter la
           vérification de votre identité.
         letter_on_the_way: Nous vous envoyons une lettre
         resend: Envoyez-moi une autre lettre
-        resend_code_warning: Si vous demandez une nouvelle lettre maintenant, le code à
-          usage unique de votre lettre actuelle restera valable pendant une
-          période limitée. Vous pouvez toujours utiliser le code à usage unique
+        resend_code_warning: Si vous demandez une nouvelle lettre maintenant, le code de
+          vérification de votre lettre actuelle restera valable pendant une
+          période limitée. Vous pouvez toujours utiliser le code de vérification
           de l’une ou l’autre lettre.
         resend_timeframe_html: Les lettres mettent <strong>5 à 10 jours</strong> pour arriver.
         timeframe_html: Les lettres sont envoyées le jour ouvrable suivant par le
