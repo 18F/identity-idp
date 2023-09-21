@@ -381,6 +381,7 @@ RSpec.describe OpenidConnectTokenForm do
           code_digest: Digest::SHA256.hexdigest(code),
           code_verifier_present: false,
           service_provider_pkce: nil,
+          ial: 1,
         )
       end
     end
