@@ -1,5 +1,6 @@
 require_relative './script_base'
 
+# rubocop:disable Metrics/BlockLength
 class ActionAccount
   attr_reader :argv, :stdout, :stderr
 
@@ -149,13 +150,18 @@ class ActionAccount
       messages = []
 
       users.each do |user|
+        profile_fraud_review_pending_at = nil
+        success = false
+
         log_texts = []
 
         if !user.fraud_review_pending?
           log_texts << log_text[:no_pending]
         elsif FraudReviewChecker.new(user).fraud_review_eligible?
           profile = user.fraud_review_pending_profile
+          profile_fraud_review_pending_at = profile.fraud_review_pending_at
           profile.reject_for_fraud(notify_user: true)
+          success = true
 
           log_texts << log_text[:rejected_for_fraud]
         else
@@ -170,6 +176,19 @@ class ActionAccount
             messages:,
           )
         end
+      ensure
+        if !success
+          analytics_error_hash = { message: log_texts.last }
+        end
+
+        Analytics.new(
+          user: user, request: nil, session: {}, sp: nil,
+        ).fraud_review_rejected(
+          success:,
+          errors: analytics_error_hash,
+          exception: nil,
+          profile_fraud_review_pending_at: profile_fraud_review_pending_at,
+        )
       end
 
       if config.include_missing?
@@ -181,6 +200,14 @@ class ActionAccount
             messages:,
           )
         end
+        Analytics.new(
+          user: AnonymousUser.new, request: nil, session: {}, sp: nil,
+        ).fraud_review_rejected(
+          success: false,
+          errors: { message: log_text[:missing_uuid] },
+          exception: nil,
+          profile_fraud_review_pending_at: nil,
+        )
       end
 
       ScriptBase::Result.new(
@@ -213,12 +240,17 @@ class ActionAccount
 
       messages = []
       users.each do |user|
+        profile_fraud_review_pending_at = nil
+        success = false
+
         log_texts = []
         if !user.fraud_review_pending?
           log_texts << log_text[:no_pending]
         elsif FraudReviewChecker.new(user).fraud_review_eligible?
           profile = user.fraud_review_pending_profile
+          profile_fraud_review_pending_at = profile.fraud_review_pending_at
           profile.activate_after_passing_review
+          success = true
 
           if profile.active?
             event, _disavowal_token = UserEventCreator.new(current_user: user).
@@ -242,6 +274,19 @@ class ActionAccount
             messages:,
           )
         end
+      ensure
+        if !success
+          analytics_error_hash = { message: log_texts.last }
+        end
+
+        Analytics.new(
+          user: user, request: nil, session: {}, sp: nil,
+        ).fraud_review_passed(
+          success:,
+          errors: analytics_error_hash,
+          exception: nil,
+          profile_fraud_review_pending_at: profile_fraud_review_pending_at,
+        )
       end
 
       if config.include_missing?
@@ -253,6 +298,14 @@ class ActionAccount
             messages:,
           )
         end
+        Analytics.new(
+          user: AnonymousUser.new, request: nil, session: {}, sp: nil,
+        ).fraud_review_passed(
+          success: false,
+          errors: { message: log_text[:missing_uuid] },
+          exception: nil,
+          profile_fraud_review_pending_at: nil,
+        )
       end
 
       ScriptBase::Result.new(
@@ -288,3 +341,4 @@ class ActionAccount
     end
   end
 end
+# rubocop:enable Metrics/BlockLength

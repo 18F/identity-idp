@@ -10,7 +10,6 @@ module Idv
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
         call('verify', :update, true)
 
-      pii[:uuid_prefix] = ServiceProvider.find_by(issuer: sp_session[:issuer])&.app_id
       set_state_id_type
 
       ssn_rate_limiter.increment!
@@ -25,11 +24,9 @@ module Idv
       idv_session.vendor_phone_confirmation = false
       idv_session.user_phone_confirmation = false
 
-      # rubocop:disable Layout/LineLength
-      # TEMPORARY DEBUGGING
-      logger.info("ResolutionJobDebug: user_uuid=#{current_user.uuid} old=#{pii[:ssn].present?} new=#{idv_session.ssn.present?} controller=#{self.class.name}")
-      # rubocop:enable Layout/LineLength
-      pii[:ssn] = idv_session.ssn # Required for proof_resolution job
+      # proof_resolution job expects these values
+      pii[:uuid_prefix] = ServiceProvider.find_by(issuer: sp_session[:issuer])&.app_id
+      pii[:ssn] = idv_session.ssn
       Idv::Agent.new(pii).proof_resolution(
         document_capture_session,
         should_proof_state_id: should_use_aamva?(pii),
@@ -323,6 +320,7 @@ module Idv
 
     def delete_pii
       flow_session.delete(:pii_from_doc)
+      idv_session.pii_from_doc = nil
       flow_session.delete(:pii_from_user)
     end
 
