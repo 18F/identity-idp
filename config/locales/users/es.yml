@@ -37,6 +37,13 @@ es:
         </ul>
       overview_html: Actualizamos nuestro %{link_html}. Revise y marque la casilla a
         continuación para continuar.
+    second_mfa_reminder:
+      add_method: Agregar un método de autenticación
+      continue: Continúa con %{sp_name}
+      description: Su cuenta sólo tiene un método de autenticación. Para evitar que
+        bloqueen su cuenta, puede que necesites usar otro método de
+        autenticación.
+      heading: Aumente la seguridad de su cuenta
     suspended_sign_in_account:
       contact_details: No pudimos iniciar tu sesión. Por favor, llama a nuestro centro
         de contacto al %{contact_number}.

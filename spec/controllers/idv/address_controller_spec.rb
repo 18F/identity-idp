@@ -18,6 +18,7 @@ RSpec.describe Idv::AddressController do
     stub_analytics
     stub_idv_steps_before_verify_step(user)
     subject.idv_session.flow_path = 'standard'
+    subject.idv_session.pii_from_doc = pii_from_doc
     subject.user_session['idv/doc_auth'] = flow_session
   end
 
@@ -55,10 +56,28 @@ RSpec.describe Idv::AddressController do
       end.to change { idv_session.address_edited }.from(nil).to eql(true)
     end
 
-    it 'updates pii_from_doc' do
+    it 'updates pii_from_doc in flow_session (even if nil)' do
+      flow_session[:pii_from_doc] = nil
       expect do
         put :update, params: params
       end.to change { flow_session[:pii_from_doc] }.to eql(
+        pii_from_doc.merge(
+          {
+            'address1' => '1234 Main St',
+            'address2' => 'Apt B',
+            'city' => 'Beverly Hills',
+            'state' => 'CA',
+            'zipcode' => '90210',
+          },
+        ),
+      )
+    end
+
+    it 'updates pii_from_doc in idv_session (even if nil)' do
+      subject.idv_session.pii_from_doc = nil
+      expect do
+        put :update, params: params
+      end.to change { idv_session.pii_from_doc }.to eql(
         pii_from_doc.merge(
           {
             'address1' => '1234 Main St',

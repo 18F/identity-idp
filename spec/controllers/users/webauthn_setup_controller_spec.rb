@@ -53,7 +53,7 @@ RSpec.describe Users::WebauthnSetupController do
             platform_authenticator: false,
             errors: {},
             enabled_mfa_methods_count: 0,
-            in_multi_mfa_selection_flow: false,
+            in_account_creation_flow: false,
             success: true,
           )
 
@@ -97,7 +97,7 @@ RSpec.describe Users::WebauthnSetupController do
           multi_factor_auth_method: 'webauthn',
           success: true,
           errors: {},
-          in_multi_mfa_selection_flow: false,
+          in_account_creation_flow: false,
           authenticator_data_flags: {
             up: true,
             uv: false,
@@ -256,6 +256,11 @@ RSpec.describe Users::WebauthnSetupController do
             transports: 'usb',
           }
         end
+
+        before do
+          controller.user_session[:in_account_creation_flow] = true
+        end
+
         it 'should log expected events' do
           Funnel::Registration::AddMfa.call(user.id, 'phone', @analytics)
           expect(@analytics).to receive(:track_event).
@@ -265,7 +270,7 @@ RSpec.describe Users::WebauthnSetupController do
             {
               enabled_mfa_methods_count: 1,
               errors: {},
-              in_multi_mfa_selection_flow: true,
+              in_account_creation_flow: true,
               mfa_method_counts: { webauthn: 1 },
               multi_factor_auth_method: 'webauthn',
               pii_like_keypaths: [[:mfa_method_counts, :phone]],
@@ -310,6 +315,11 @@ RSpec.describe Users::WebauthnSetupController do
             platform_authenticator: 'true',
           }
         end
+
+        before do
+          controller.user_session[:in_account_creation_flow] = true
+        end
+
         it 'should log expected events' do
           expect(@analytics).to receive(:track_event).
             with('User marked authenticated', { authentication_type: :valid_2fa_confirmation })
@@ -323,7 +333,7 @@ RSpec.describe Users::WebauthnSetupController do
             {
               enabled_mfa_methods_count: 1,
               errors: {},
-              in_multi_mfa_selection_flow: true,
+              in_account_creation_flow: true,
               mfa_method_counts: { webauthn_platform: 1 },
               multi_factor_auth_method: 'webauthn_platform',
               pii_like_keypaths: [[:mfa_method_counts, :phone]],
@@ -375,7 +385,7 @@ RSpec.describe Users::WebauthnSetupController do
                 'errors.webauthn_platform_setup.attestation_error',
                 link: MarketingSite.contact_url,
               )] },
-              in_multi_mfa_selection_flow: true,
+              in_account_creation_flow: false,
               mfa_method_counts: {},
               multi_factor_auth_method: 'webauthn_platform',
               pii_like_keypaths: [[:mfa_method_counts, :phone]],

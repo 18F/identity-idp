@@ -80,6 +80,7 @@ module SignUp
 
     def sign_in_and_redirect_user
       sign_in @user
+      user_session[:in_account_creation_flow] = true
       if current_user.accepted_rules_of_use_still_valid?
         redirect_to authentication_methods_setup_url
       else

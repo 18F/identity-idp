@@ -63,10 +63,10 @@ RSpec.feature 'Analytics Regression', js: true do
         flow_path: 'standard', step: 'document_capture', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, irs_reproofing: false
       },
       'Frontend: IdV: front image added' => {
-        'width' => 284, 'height' => 38, 'mimeType' => 'image/png', 'source' => 'upload', 'size' => 3694, 'attempt' => 1, 'flow_path' => 'standard', 'acuant_sdk_upgrade_a_b_testing_enabled' => 'false', 'use_alternate_sdk' => anything, 'acuant_version' => anything, 'acuantCaptureMode' => 'AUTO'
+        'width' => 284, 'height' => 38, 'mimeType' => 'image/png', 'source' => 'upload', 'size' => 3694, 'attempt' => 1, 'flow_path' => 'standard', 'acuant_sdk_upgrade_a_b_testing_enabled' => 'false', 'use_alternate_sdk' => anything, 'acuant_version' => anything, 'acuantCaptureMode' => 'AUTO', 'fingerprint' => anything, 'failedImageResubmission' => boolean
       },
       'Frontend: IdV: back image added' => {
-        'width' => 284, 'height' => 38, 'mimeType' => 'image/png', 'source' => 'upload', 'size' => 3694, 'attempt' => 1, 'flow_path' => 'standard', 'acuant_sdk_upgrade_a_b_testing_enabled' => 'false', 'use_alternate_sdk' => anything, 'acuant_version' => anything, 'acuantCaptureMode' => 'AUTO'
+        'width' => 284, 'height' => 38, 'mimeType' => 'image/png', 'source' => 'upload', 'size' => 3694, 'attempt' => 1, 'flow_path' => 'standard', 'acuant_sdk_upgrade_a_b_testing_enabled' => 'false', 'use_alternate_sdk' => anything, 'acuant_version' => anything, 'acuantCaptureMode' => 'AUTO', 'fingerprint' => anything, 'failedImageResubmission' => boolean
       },
       'IdV: doc auth image upload form submitted' => {
         success: true, errors: {}, attempts: 1, remaining_attempts: 3, user_id: user.uuid, flow_path: 'standard', front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), getting_started_ab_test_bucket: :welcome_default
@@ -168,10 +168,10 @@ RSpec.feature 'Analytics Regression', js: true do
         flow_path: 'standard', step: 'document_capture', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, skip_hybrid_handoff: nil, analytics_id: 'Doc Auth', irs_reproofing: false
       },
       'Frontend: IdV: front image added' => {
-        'width' => 284, 'height' => 38, 'mimeType' => 'image/png', 'source' => 'upload', 'size' => 3694, 'attempt' => 1, 'flow_path' => 'standard', 'acuant_sdk_upgrade_a_b_testing_enabled' => 'false', 'use_alternate_sdk' => anything, 'acuant_version' => anything, 'acuantCaptureMode' => 'AUTO'
+        'width' => 284, 'height' => 38, 'mimeType' => 'image/png', 'source' => 'upload', 'size' => 3694, 'attempt' => 1, 'flow_path' => 'standard', 'acuant_sdk_upgrade_a_b_testing_enabled' => 'false', 'use_alternate_sdk' => anything, 'acuant_version' => anything, 'acuantCaptureMode' => 'AUTO', 'fingerprint' => anything, 'failedImageResubmission' => boolean
       },
       'Frontend: IdV: back image added' => {
-        'width' => 284, 'height' => 38, 'mimeType' => 'image/png', 'source' => 'upload', 'size' => 3694, 'attempt' => 1, 'flow_path' => 'standard', 'acuant_sdk_upgrade_a_b_testing_enabled' => 'false', 'use_alternate_sdk' => anything, 'acuant_version' => anything, 'acuantCaptureMode' => 'AUTO'
+        'width' => 284, 'height' => 38, 'mimeType' => 'image/png', 'source' => 'upload', 'size' => 3694, 'attempt' => 1, 'flow_path' => 'standard', 'acuant_sdk_upgrade_a_b_testing_enabled' => 'false', 'use_alternate_sdk' => anything, 'acuant_version' => anything, 'acuantCaptureMode' => 'AUTO', 'fingerprint' => anything, 'failedImageResubmission' => boolean
       },
       'IdV: doc auth image upload form submitted' => {
         success: true, errors: {}, attempts: 1, remaining_attempts: 3, user_id: user.uuid, flow_path: 'standard', front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), getting_started_ab_test_bucket: :welcome_default
@@ -255,10 +255,10 @@ RSpec.feature 'Analytics Regression', js: true do
         flow_path: 'standard', step: 'document_capture', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, irs_reproofing: false
       },
       'Frontend: IdV: front image added' => {
-        'width' => 284, 'height' => 38, 'mimeType' => 'image/png', 'source' => 'upload', 'size' => 3694, 'attempt' => 1, 'flow_path' => 'standard', 'acuant_sdk_upgrade_a_b_testing_enabled' => 'false', 'use_alternate_sdk' => anything, 'acuant_version' => anything, 'acuantCaptureMode' => 'AUTO'
+        'width' => 284, 'height' => 38, 'mimeType' => 'image/png', 'source' => 'upload', 'size' => 3694, 'attempt' => 1, 'flow_path' => 'standard', 'acuant_sdk_upgrade_a_b_testing_enabled' => 'false', 'use_alternate_sdk' => anything, 'acuant_version' => anything, 'acuantCaptureMode' => 'AUTO', 'fingerprint' => anything, 'failedImageResubmission' => boolean
       },
       'Frontend: IdV: back image added' => {
-        'width' => 284, 'height' => 38, 'mimeType' => 'image/png', 'source' => 'upload', 'size' => 3694, 'attempt' => 1, 'flow_path' => 'standard', 'acuant_sdk_upgrade_a_b_testing_enabled' => 'false', 'use_alternate_sdk' => anything, 'acuant_version' => anything, 'acuantCaptureMode' => 'AUTO'
+        'width' => 284, 'height' => 38, 'mimeType' => 'image/png', 'source' => 'upload', 'size' => 3694, 'attempt' => 1, 'flow_path' => 'standard', 'acuant_sdk_upgrade_a_b_testing_enabled' => 'false', 'use_alternate_sdk' => anything, 'acuant_version' => anything, 'acuantCaptureMode' => 'AUTO', 'fingerprint' => anything, 'failedImageResubmission' => boolean
       },
       'IdV: doc auth image upload form submitted' => {
         success: true, errors: {}, attempts: 1, remaining_attempts: 3, user_id: user.uuid, flow_path: 'standard', front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), getting_started_ab_test_bucket: :welcome_default

@@ -6,6 +6,7 @@ class ApplicationController < ActionController::Base
   include LocaleHelper
   include VerifySpAttributesConcern
   include EffectiveUser
+  include SecondMfaReminderConcern
 
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
@@ -24,7 +25,7 @@ class ApplicationController < ActionController::Base
     rescue_from error, with: :render_timeout
   end
 
-  helper_method :decorated_session, :user_fully_authenticated?
+  helper_method :decorated_sp_session, :user_fully_authenticated?
 
   prepend_before_action :add_new_relic_trace_attributes
   prepend_before_action :session_expires_at
@@ -78,15 +79,15 @@ class ApplicationController < ActionController::Base
     @user_event_creator ||= UserEventCreator.new(request: request, current_user: current_user)
   end
   delegate :create_user_event, :create_user_event_with_disavowal, to: :user_event_creator
-  delegate :remember_device_default, to: :decorated_session
+  delegate :remember_device_default, to: :decorated_sp_session
 
-  def decorated_session
-    @decorated_session ||= DecoratedSession.new(
+  def decorated_sp_session
+    @decorated_sp_session ||= ServiceProviderSessionCreator.new(
       sp: current_sp,
       view_context: view_context,
       sp_session: sp_session,
       service_provider_request: service_provider_request,
-    ).call
+    ).create_session
   end
 
   def default_url_options
@@ -213,6 +214,7 @@ class ApplicationController < ActionController::Base
     return fix_broken_personal_key_url if current_user.broken_personal_key?
     return user_session.delete(:stored_location) if user_session.key?(:stored_location)
     return reactivate_account_url if user_needs_to_reactivate_account?
+    return second_mfa_reminder_url if user_needs_second_mfa_reminder?
     return sp_session_request_url_with_updated_params if sp_session.key?(:request_url)
     signed_in_url
   end

@@ -75,6 +75,7 @@ disallow_all_web_crawlers: true
 disposable_email_services: '[]'
 doc_auth_attempt_window_in_minutes: 360
 doc_capture_polling_enabled: true
+doc_auth_check_failed_image_resubmission_enabled: true
 doc_auth_client_glare_threshold: 50
 doc_auth_client_sharpness_threshold: 50
 doc_auth_s3_request_timeout: 5
@@ -201,6 +202,10 @@ max_piv_cac_per_account: 2
 min_password_score: 3
 minimum_wait_before_another_usps_letter_in_hours: 24
 multi_region_kms_migration_jobs_enabled: true
+multi_region_kms_migration_jobs_profile_count: 1000
+multi_region_kms_migration_jobs_profile_timeout: 120
+multi_region_kms_migration_jobs_user_count: 1000
+multi_region_kms_migration_jobs_user_timeout: 120
 mx_timeout: 3
 otp_delivery_blocklist_maxretry: 10
 otp_valid_for: 10
@@ -285,6 +290,9 @@ rules_of_use_updated_at: '2022-01-19T00:00:00Z' # Production has a newer timesta
 s3_public_reports_enabled: false
 s3_reports_enabled: false
 saml_secret_rotation_enabled: false
+second_mfa_reminder_account_age_in_days: 30
+second_mfa_reminder_enabled: true
+second_mfa_reminder_sign_in_count: 10
 seed_agreements_data: true
 service_provider_request_ttl_hours: 24
 session_check_delay: 30
@@ -463,6 +471,7 @@ production:
   s3_reports_enabled: true
   saml_endpoint_configs: '[]'
   scrypt_cost: 10000$8$1$
+  second_mfa_reminder_enabled: false
   secret_key_base:
   seed_agreements_data: false
   session_encryption_key:

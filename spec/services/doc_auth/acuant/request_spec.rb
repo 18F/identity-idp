@@ -86,6 +86,32 @@ RSpec.describe DocAuth::Acuant::Request do
         expect(response.errors).to eq(network: true)
         expect(response.exception.message).to include('Unexpected HTTP response 404')
       end
+
+      it 'returns a response of status 440 with an exception' do
+        stub_request(:get, full_url).
+          with(headers: request_headers).
+          to_return(body: 'test response body', status: 440)
+        allow(NewRelic::Agent).to receive(:notice_error)
+
+        response = subject.fetch
+
+        expect(response.success?).to eq(false)
+        expect(response.errors).to have_key(:general)
+        expect(response.exception.message).to include('Unexpected HTTP response 440')
+      end
+
+      it 'returns a response of status 500 with an exception' do
+        stub_request(:get, full_url).
+          with(headers: request_headers).
+          to_return(body: 'test response body', status: 500)
+        allow(NewRelic::Agent).to receive(:notice_error)
+
+        response = subject.fetch
+
+        expect(response.success?).to eq(false)
+        expect(response.errors).to have_key(:network)
+        expect(response.exception.message).to include('Unexpected HTTP response 500')
+      end
     end
 
     context 'when the request resolves with retriable error then succeeds it only retries once' do

@@ -23,13 +23,13 @@ RSpec.describe 'sign_up/registrations/new.html.erb' do
     allow_any_instance_of(ActionView::Base).to receive(:request_id).
       and_return(nil)
 
-    @decorated_session = DecoratedSession.new(
+    @decorated_sp_session = ServiceProviderSessionCreator.new(
       sp: sp,
       view_context: view_context,
       sp_session: {},
       service_provider_request: ServiceProviderRequestProxy.new,
-    ).call
-    allow(view).to receive(:decorated_session).and_return(@decorated_session)
+    ).create_session
+    allow(view).to receive(:decorated_sp_session).and_return(@decorated_sp_session)
   end
 
   it 'has a localized title' do
@@ -65,10 +65,10 @@ RSpec.describe 'sign_up/registrations/new.html.erb' do
     expect(rendered).to have_xpath("//input[@autocorrect='off']")
   end
 
-  it 'has a cancel link that points to the decorated_session cancel_link_url' do
+  it 'has a cancel link that points to the decorated_sp_session cancel_link_url' do
     render
 
-    expect(rendered).to have_link(t('links.cancel'), href: @decorated_session.cancel_link_url)
+    expect(rendered).to have_link(t('links.cancel'), href: @decorated_sp_session.cancel_link_url)
   end
 
   it 'includes a link to security / privacy page and privacy statement act' do

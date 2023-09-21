@@ -36,6 +36,12 @@ en:
         </ul>
       overview_html: We’ve updated our %{link_html}. Please review and check the box
         below to continue.
+    second_mfa_reminder:
+      add_method: Add an authentication method
+      continue: Continue to %{sp_name}
+      description: Your account only has a single authentication method. Avoid being
+        locked out of your account by adding another authentication method.
+      heading: Improve your account security
     suspended_sign_in_account:
       contact_details: We couldn’t sign you in. Please call our contact center at
         %{contact_number}.

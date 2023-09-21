@@ -13,6 +13,8 @@ RSpec.feature 'idv gpo step' do
       and_return(minimum_wait_for_letter)
     allow(IdentityConfig.store).to receive(:gpo_max_profile_age_to_send_letter_in_days).
       and_return(max_days_before_resend_disabled)
+    allow(IdentityConfig.store).to receive(:second_mfa_reminder_account_age_in_days).
+      and_return(days_passed + 1)
   end
 
   it 'redirects to and completes the review step when the user chooses to verify by letter', :js do
@@ -62,7 +64,7 @@ RSpec.feature 'idv gpo step' do
         # Confirm that we show the correct content on
         # the GPO page for users requesting re-send
         expect(page).to have_content(t('idv.titles.mail.resend'))
-        expect(page).to have_content(t('idv.messages.gpo.resend_timeframe'))
+        expect(page).to have_content(strip_tags(t('idv.messages.gpo.resend_timeframe_html')))
         expect(page).to have_content(t('idv.messages.gpo.resend_code_warning'))
         expect(page).to have_content(t('idv.buttons.mail.resend'))
         expect(page).to_not have_content(t('idv.messages.gpo.info_alert'))
