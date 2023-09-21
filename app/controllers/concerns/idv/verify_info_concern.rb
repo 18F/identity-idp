@@ -37,12 +37,18 @@ module Idv
         user_id: current_user.id,
         threatmetrix_session_id: idv_session.threatmetrix_session_id,
         request_ip: request.remote_ip,
+        double_address_verification: capture_secondary_id_enabled,
       )
 
       return true
     end
 
     private
+
+    def capture_secondary_id_enabled
+      # if in person return true else return false
+      user_session['idv/doc_auth'].empty?
+    end
 
     def should_use_aamva?(pii)
       aamva_state?(pii) && !aamva_disallowed_for_service_provider?

@@ -271,6 +271,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
       {
         trace_id: anything,
         threatmetrix_session_id: anything,
+        double_address_verification: false,
         request_ip: kind_of(String),
       }
     end
