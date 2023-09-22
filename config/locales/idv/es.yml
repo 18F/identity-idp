@@ -230,7 +230,7 @@ es:
       confirm: Hemos asegurado su información verificada
       gpo:
         address_on_file_html: Le enviaremos una carta con <strong>un código de
-          verificación </strong> a la dirección que nos facilitó en el paso
+          verificación</strong> a la dirección que nos facilitó en el paso
           anterior.
         another_letter_on_the_way: Te enviaremos otra carta
         info_alert: Tendrá que esperar a que su carta sea entregada para terminar de
