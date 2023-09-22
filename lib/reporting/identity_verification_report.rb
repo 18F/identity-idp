@@ -251,8 +251,8 @@ module Reporting
                  or (name != %{usps_enrollment_status_updated})
         | filter (name in %{gpo_verification_submitted} and properties.event_properties.success = 1 and !properties.event_properties.pending_in_person_enrollment and !properties.event_properties.fraud_check_failed)
                  or (name not in %{gpo_verification_submitted})
-        | filter (name in %{fraud_review_passed} and properties.event_properties.success = 1)
-                 or (name not in %{fraud_review_passed})
+        | filter (name = %{fraud_review_passed} and properties.event_properties.success = 1)
+                 or (name != %{fraud_review_passed})
         | fields
             coalesce(properties.event_properties.fraud_review_pending, 0) AS fraud_review_pending
           , coalesce(properties.event_properties.gpo_verification_pending, 0) AS gpo_verification_pending
