@@ -211,9 +211,10 @@ es:
       subject: Le enviamos una carta a la dirección que tiene archivada
     letter_reminder_14_days:
       body_html: El <strong>%{date_letter_was_sent}</strong> solicitaste una carta
-        para verificar tu identidad. Deberás ingresar el código que contiene esa
-        carta para completar la verificación por correo. Vuelve a iniciar sesión
-        en %{app_name} para terminar de verificar tu identidad. %{help_link}.
+        para verificar tu identidad. Deberás ingresar el código de verificación
+        que contiene esa carta para completar la verificación por correo. Vuelve
+        a iniciar sesión en %{app_name} para terminar de verificar tu identidad.
+        %{help_link}.
       did_not_get_a_letter_html: Si no recibiste dicha carta, %{another_letter_link_html}.
       finish: Termina de verificar tu identidad
       sign_in_and_request_another_letter: inicia sesión para solicitar otra
