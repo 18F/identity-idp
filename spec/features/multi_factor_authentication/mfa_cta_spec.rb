@@ -86,6 +86,8 @@ RSpec.feature 'mfa cta banner' do
       fill_in_nickname_and_click_continue
       mock_press_button_on_hardware_key_on_setup
 
+      click_link t('mfa.add')
+
       select_2fa_option('phone')
       click_continue
 
