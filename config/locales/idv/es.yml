@@ -244,16 +244,6 @@ es:
         resend_timeframe_html: Las cartas tardan entre <strong>5 y 10 días</strong> en llegar.
         timeframe_html: Las cartas se envían al siguiente día hábil por USPS First-Class
           Mail y tardan entre <strong>5 y 10 días</strong> en llegar.
-      gpo_reminder:
-        body_html: El <strong>%{date_letter_was_sent}</strong> solicitaste una carta
-          para verificar tu identidad. Deberás ingresar el código que contiene
-          esa carta para completar la verificación por correo. Vuelve a iniciar
-          sesión en %{app_name} para terminar de verificar tu identidad.
-          %{help_link}.
-        did_not_get_a_letter_html: Si no recibiste dicha carta, %{another_letter_link_html}.
-        finish: Termina de verificar tu identidad
-        sign_in_and_request_another_letter: inicia sesión para solicitar otra
-        subject: Termina de verificar tu identidad
       otp_delivery_method_description: Si ha introducido un teléfono fijo más arriba,
         seleccione “Llamada telefónica” más abajo.
       personal_key: Esta es su nueva clave personal. Escríbala y guárdela en un lugar

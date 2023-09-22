@@ -894,7 +894,7 @@ RSpec.describe UserMailer, type: :mailer do
     end
 
     it 'renders the subject' do
-      expect(mail.subject).to eq t('idv.messages.gpo_reminder.subject')
+      expect(mail.subject).to eq t('user_mailer.letter_reminder_14_days.subject')
     end
 
     it 'renders the body' do
@@ -911,7 +911,7 @@ RSpec.describe UserMailer, type: :mailer do
 
       expected_body = strip_tags(
         t(
-          'idv.messages.gpo_reminder.body_html',
+          'user_mailer.letter_reminder_14_days.body_html',
           date_letter_was_sent: date_letter_was_sent.strftime(t('time.formats.event_date')),
           app_name: APP_NAME,
           help_link: expected_help_link,
@@ -923,14 +923,14 @@ RSpec.describe UserMailer, type: :mailer do
 
     it 'renders the finish link' do
       expect(mail.html_part.body).to have_link(
-        t('idv.messages.gpo_reminder.finish'),
+        t('user_mailer.letter_reminder_14_days.finish'),
         href: idv_verify_by_mail_enter_code_url,
       )
     end
 
     it 'renders the did not get it link' do
       expect(mail.html_part.body).to have_link(
-        t('idv.messages.gpo_reminder.sign_in_and_request_another_letter'),
+        t('user_mailer.letter_reminder_14_days.sign_in_and_request_another_letter'),
         href: idv_verify_by_mail_enter_code_url(did_not_receive_letter: 1),
       )
     end
