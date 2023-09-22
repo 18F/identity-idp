@@ -137,6 +137,7 @@ in_person_enrollments_ready_job_queue_url: ''
 in_person_enrollments_ready_job_max_number_of_messages: 10
 in_person_enrollments_ready_job_visibility_timeout_seconds: 30
 in_person_enrollments_ready_job_wait_time_seconds: 20
+in_person_residential_address_controller_enabled: false
 in_person_results_delay_in_hours: 1
 in_person_completion_survey_url: 'https://login.gov'
 in_person_full_address_entry_enabled: true
