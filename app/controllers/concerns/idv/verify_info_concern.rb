@@ -37,7 +37,7 @@ module Idv
         user_id: current_user.id,
         threatmetrix_session_id: idv_session.threatmetrix_session_id,
         request_ip: request.remote_ip,
-        double_address_verification: capture_secondary_id_enabled,
+        double_address_verification: double_address_verification,
       )
 
       return true
@@ -45,9 +45,9 @@ module Idv
 
     private
 
-    def capture_secondary_id_enabled
+    def double_address_verification
       # if in person return true else return false
-      user_session['idv/doc_auth'].empty?
+      analytics_arguments[:analytics_id] == 'In Person Proofing'
     end
 
     def should_use_aamva?(pii)
