@@ -260,7 +260,7 @@ module Reporting
           , ispresent(properties.event_properties.deactivation_reason) AS has_other_deactivation_reason
           , properties.event_properties.success = '0' AND properties.event_properties.doc_auth_result NOT IN ['Failed', 'Attention'] AS doc_auth_failed_non_fraud
         | fields
-            !fraud_review_pending and !gpo_verification_pending and !in_person_verification_pending and !has_other_deactivation_reason) AS identity_verified
+            !fraud_review_pending and !gpo_verification_pending and !in_person_verification_pending and !has_other_deactivation_reason AS identity_verified
         | limit 10000
       QUERY
     end
