@@ -13,10 +13,10 @@ module Proofing
 
         return failed_to_contact_vendor_result if ssn.match?(NO_CONTACT_SSN)
         case first_name
-        when /Bad/i then return unverifiable_result(first_name: ['Unverified first name.'])
         when /Fail/i then return failed_to_contact_vendor_result
         when /Time/i then return timeout_result
         when /Parse/i then return parse_error_result
+        when /Bad/i then return unverifiable_result(first_name: ['Unverified first name.'])
         end
 
         if !verified_ssn?(ssn)
