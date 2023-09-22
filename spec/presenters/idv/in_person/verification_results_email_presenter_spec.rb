@@ -7,7 +7,6 @@ RSpec.describe Idv::InPerson::VerificationResultsEmailPresenter do
   let(:status_updated_at) { described_class::USPS_SERVER_TIMEZONE.parse('2022-07-14T00:00:00Z') }
   let(:sp) { nil }
   let(:current_address_matches_id) { true }
-  let(:capture_secondary_id_enabled) { false }
   let(:enrollment) do
     create(
       :in_person_enrollment,
@@ -15,7 +14,6 @@ RSpec.describe Idv::InPerson::VerificationResultsEmailPresenter do
       service_provider: sp,
       selected_location_details: { name: location_name },
       current_address_matches_id: current_address_matches_id,
-      capture_secondary_id_enabled: capture_secondary_id_enabled,
     )
   end
 
@@ -189,36 +187,16 @@ RSpec.describe Idv::InPerson::VerificationResultsEmailPresenter do
   describe '#needs_proof_of_address?' do
     subject(:needs_proof_of_address) { presenter.needs_proof_of_address? }
 
-    context 'with double address verification disabled' do
-      let(:capture_secondary_id_enabled) { false }
+    context 'with current address matching id' do
+      let(:current_address_matches_id) { true }
 
-      context 'with current address matching id' do
-        let(:current_address_matches_id) { true }
-
-        it { expect(needs_proof_of_address).to eq false }
-      end
-
-      context 'with current address not matching id' do
-        let(:current_address_matches_id) { false }
-
-        it { expect(needs_proof_of_address).to eq true }
-      end
+      it { expect(needs_proof_of_address).to eq false }
     end
 
-    context 'with double address verification enabled' do
-      let(:capture_secondary_id_enabled) { true }
+    context 'with current address not matching id' do
+      let(:current_address_matches_id) { false }
 
-      context 'with current address matching id' do
-        let(:current_address_matches_id) { true }
-
-        it { expect(needs_proof_of_address).to eq false }
-      end
-
-      context 'with current address not matching id' do
-        let(:current_address_matches_id) { false }
-
-        it { expect(needs_proof_of_address).to eq false }
-      end
+      it { expect(needs_proof_of_address).to eq true }
     end
   end
 end

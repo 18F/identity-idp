@@ -120,9 +120,8 @@ class GetUspsProofingResultsJob < ApplicationJob
     enrollment.update(status_check_attempted_at: status_check_attempted_at)
   end
 
-  def passed_with_unsupported_secondary_id_type?(enrollment, response)
-    return enrollment.capture_secondary_id_enabled &&
-           response['secondaryIdType'].present? &&
+  def passed_with_unsupported_secondary_id_type?(_enrollment, response)
+    return response['secondaryIdType'].present? &&
            SUPPORTED_SECONDARY_ID_TYPES.exclude?(response['secondaryIdType'])
   end
 

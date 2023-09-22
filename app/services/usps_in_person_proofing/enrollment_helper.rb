@@ -8,10 +8,8 @@ module UspsInPersonProofing
         enrollment.current_address_matches_id = pii['same_address_as_id']
         enrollment.save!
 
-        # If we're using secondary ID capture (aka double address verification),
-        # then send the state ID address to USPS. Otherwise send the residential address.
         pii = pii.to_h
-        if enrollment.capture_secondary_id_enabled? && !enrollment.current_address_matches_id?
+        if !enrollment.current_address_matches_id?
           pii = pii.except(*SECONDARY_ID_ADDRESS_MAP.values).
             transform_keys(SECONDARY_ID_ADDRESS_MAP)
         end

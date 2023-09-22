@@ -105,36 +105,16 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
   describe '#needs_proof_of_address?' do
     subject(:needs_proof_of_address) { presenter.needs_proof_of_address? }
 
-    context 'with double address verification disabled' do
-      let(:capture_secondary_id_enabled) { false }
+    context 'with current address matching id' do
+      let(:current_address_matches_id) { true }
 
-      context 'with current address matching id' do
-        let(:current_address_matches_id) { true }
-
-        it { expect(needs_proof_of_address).to eq false }
-      end
-
-      context 'with current address not matching id' do
-        let(:current_address_matches_id) { false }
-
-        it { expect(needs_proof_of_address).to eq true }
-      end
+      it { expect(needs_proof_of_address).to eq false }
     end
 
-    context 'with double address verification enabled' do
-      let(:capture_secondary_id_enabled) { true }
+    context 'with current address not matching id' do
+      let(:current_address_matches_id) { false }
 
-      context 'with current address matching id' do
-        let(:current_address_matches_id) { true }
-
-        it { expect(needs_proof_of_address).to eq false }
-      end
-
-      context 'with current address not matching id' do
-        let(:current_address_matches_id) { false }
-
-        it { expect(needs_proof_of_address).to eq false }
-      end
+      it { expect(needs_proof_of_address).to eq true }
     end
   end
 
