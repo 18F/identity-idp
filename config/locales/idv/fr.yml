@@ -171,7 +171,6 @@ fr:
     form:
       address1: Adresse ligne 1
       address2: Adresse ligne 2
-      address2_optional: Adresse ligne 2 (optional)
       city: Ville
       dob: Date de naissance
       first_name: Prénom
