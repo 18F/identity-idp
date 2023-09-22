@@ -6,7 +6,7 @@ es:
       name: Nombre
       subject: Informe de cuentas eliminadas
     monthly_key_metrics_report:
-      name: Nombre
+      month: Mes
       subject: Informe mensual de métricas importantes
     sp_issuer_user_counts_report:
       ial1_total: IAL1 usuarias

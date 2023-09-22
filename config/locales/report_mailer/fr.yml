@@ -6,7 +6,7 @@ fr:
       name: Nom
       subject: Rapport sur les comptes supprimés
     monthly_key_metrics_report:
-      name: Nom
+      month: Mois
       subject: Rapport mensuel sur les mesures importantes
     sp_issuer_user_counts_report:
       ial1_total: IAL1 utilisatrices

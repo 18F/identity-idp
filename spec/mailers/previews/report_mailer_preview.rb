@@ -8,6 +8,21 @@ class ReportMailerPreview < ActionMailer::Preview
     )
   end
 
+  def monthly_key_metrics_report
+    ReportMailer.monthly_key_metrics_report(
+      email: 'test@example.com',
+      month: 'September 2021',
+      csv_report: [
+        [
+          { title: 'Important Monthly Statistics' },
+          ['Fake', 'Report'],
+          ['a', 'b'],
+          ['c', 'd'],
+        ],
+      ]
+    )
+  end
+
   def tables_report
     ReportMailer.tables_report(
       email: 'test@example.com',

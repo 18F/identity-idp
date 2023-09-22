@@ -15,10 +15,10 @@ class ReportMailer < ActionMailer::Base
     mail(to: email, subject: t('report_mailer.deleted_accounts_report.subject'))
   end
 
-  def monthly_key_metrics_report(email:, name:, csv_report:)
-    @name = name
+  def monthly_key_metrics_report(email:, month:, csv_report:)
+    @month = month
     @csv_report = csv_report
-    mail(to: email, subject: t('report_mailer.monthly_key_metrics_report.subject'))
+    tables_report(email: email, subject: t('report_mailer.monthly_key_metrics_report.subject'), tables: csv_report)
   end
 
   def sp_issuer_user_counts_report(email:, issuer:, total:, ial1_total:, ial2_total:, name:)

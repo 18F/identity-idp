@@ -6,7 +6,7 @@ en:
       name: Name
       subject: Deleted accounts report
     monthly_key_metrics_report:
-      name: Name
+      month: Month
       subject: Monthly Key Metrics Report
     sp_issuer_user_counts_report:
       ial1_total: IAL1 users
