@@ -43,7 +43,6 @@ module Reporting
       IDV_REJECT_DOC_AUTH = 'IdV Reject: Doc Auth'
       IDV_REJECT_VERIFY = 'IdV Reject: Verify'
       IDV_REJECT_PHONE_FINDER = 'IdV Reject: Phone Finder'
-      FRAUD_REVIEW_PASSED = 'Fraud: Profile review passed'
     end
 
     # @param [Array<String>] issuers
@@ -152,7 +151,8 @@ module Reporting
     end
 
     def successfully_verified_users
-      idv_final_resolution_verified + gpo_verification_submitted + usps_enrollment_status_updated
+      idv_final_resolution_verified + gpo_verification_submitted + usps_enrollment_status_updated +
+        fraud_review_passed
     end
 
     def idv_started
@@ -179,7 +179,7 @@ module Reporting
     end
 
     def fraud_review_passed
-      data[Results::FRAUD_REVIEW_PASSED].count
+      data[Events::FRAUD_REVIEW_PASSED].count
     end
 
     # rubocop:disable Layout/LineLength
@@ -213,8 +213,6 @@ module Reporting
             event_users[Results::IDV_REJECT_VERIFY] << user_id if success == '0'
           when Events::IDV_PHONE_FINDER_RESULTS
             event_users[Results::IDV_REJECT_PHONE_FINDER] << user_id if success == '0'
-          when Events::FRAUD_REVIEW_PASSED
-            event_users[Results::FRAUD_REVIEW_PASSED] << user_id if success == '1'
           end
         end
 
@@ -239,6 +237,7 @@ module Reporting
           ],
         ),
         idv_final_resolution: quote(Events::IDV_FINAL_RESOLUTION),
+        fraud_review_passed: quote(Events::FRAUD_REVIEW_PASSED),
       }
 
       format(<<~QUERY, params)
@@ -252,6 +251,8 @@ module Reporting
                  or (name != %{usps_enrollment_status_updated})
         | filter (name in %{gpo_verification_submitted} and properties.event_properties.success = 1 and !properties.event_properties.pending_in_person_enrollment and !properties.event_properties.fraud_check_failed)
                  or (name not in %{gpo_verification_submitted})
+        | filter (name in %{fraud_review_passed} and properties.event_properties.success = 1)
+                 or (name not in %{fraud_review_passed})
         | fields
             coalesce(properties.event_properties.fraud_review_pending, 0) AS fraud_review_pending
           , coalesce(properties.event_properties.gpo_verification_pending, 0) AS gpo_verification_pending
@@ -259,7 +260,7 @@ module Reporting
           , ispresent(properties.event_properties.deactivation_reason) AS has_other_deactivation_reason
           , properties.event_properties.success = '0' AND properties.event_properties.doc_auth_result NOT IN ['Failed', 'Attention'] AS doc_auth_failed_non_fraud
         | fields
-            !fraud_review_pending and !gpo_verification_pending and !in_person_verification_pending and !has_other_deactivation_reason AS identity_verified
+            !fraud_review_pending and !gpo_verification_pending and !in_person_verification_pending and !has_other_deactivation_reason) AS identity_verified
         | limit 10000
       QUERY
     end
