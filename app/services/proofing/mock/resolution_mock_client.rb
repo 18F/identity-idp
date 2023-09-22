@@ -13,14 +13,13 @@ module Proofing
 
         return failed_to_contact_vendor_result if ssn.match?(NO_CONTACT_SSN)
         case first_name
+        when /Bad/i then return unverifiable_result(first_name: ['Unverified first name.'])
         when /Fail/i then return failed_to_contact_vendor_result
         when /Time/i then return timeout_result
         when /Parse/i then return parse_error_result
         end
 
-        if first_name.match?(/Bad/i)
-          unverifiable_result(first_name: ['Unverified first name.'])
-        elsif !verified_ssn?(ssn)
+        if !verified_ssn?(ssn)
           unverifiable_result(ssn: ['Unverified SSN.'])
         elsif zipcode == UNVERIFIABLE_ZIP_CODE
           unverifiable_result(zipcode: ['Unverified ZIP code.'])
