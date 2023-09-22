@@ -19,7 +19,7 @@ module Proofing
         @double_address_verification = double_address_verification
         @device_profiling_result = device_profiling_result
         @residential_resolution_result = residential_resolution_result
-        @same_address_as_id = same_address_as_id
+        @same_address_as_id = same_address_as_id # this is a string, "true" or "false"
       end
 
       def adjudicated_result

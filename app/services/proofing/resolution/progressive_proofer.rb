@@ -7,9 +7,9 @@ module Proofing
     #      address or separate residential and identity document addresses
     class ProgressiveProofer
       # @param [Hash] applicant_pii keys are symbols and values are strings, confidential user info
-      # @param [String] request_ip IP address for request
       # @param [Boolean] double_address_verification flag that indicates if user will have
       #   both state id address and current residential address verified
+      # @param [String] request_ip IP address for request
       # @param [Boolean] should_proof_state_id based on state id jurisdiction, indicates if
       #   there should be a state id proofing request made to aamva
       # @param [String] threatmetrix_session_id identifies the threatmetrix session
