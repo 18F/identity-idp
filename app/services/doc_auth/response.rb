@@ -7,6 +7,8 @@ module DocAuth
       'Drivers License' => 'drivers_license',
     }
 
+    SUPPORTED_COUNTRY_CODES = %w[US GU VI AS MP PR USA GUM VIR ASM MNP PRI]
+
     def initialize(
       success:,
       errors: {},
@@ -44,8 +46,6 @@ module DocAuth
     def doc_type_supported?
       @doc_type_supported
     end
-
-    alias_method :id_type_supported?, :doc_type_supported?
 
     # We use `#to_h` to serialize this for logging. Make certain not to include
     # the `#pii` value here.

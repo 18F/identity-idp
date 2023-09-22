@@ -46,6 +46,7 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
             'Name' => 'North Dakota (ND) Back',
             'IssuerCode' => 'ND',
             'IssuerName' => 'North Dakota',
+            'CountryCode' => 'USA',
           },
           'Front' => {
             'ClassName' => 'Identification Card',
@@ -54,6 +55,7 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
             'Name' => 'North Dakota (ND) Non-Driver Identification Card',
             'IssuerCode' => 'ND',
             'IssuerName' => 'North Dakota',
+            'CountryCode' => 'USA',
           },
         },
         address_line2_present: true,
@@ -398,6 +400,7 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
               'Name' => 'Cowlitz Indian Tribe Back',
               'IssuerCode' => 'ND',
               'IssuerName' => 'Cowlitz Indian Tribe',
+              'CountryCode' => 'USA',
             },
             'Front' => {
               'ClassName' => 'Tribal Identification',
@@ -406,6 +409,7 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
               'Name' => 'Cowlitz Indian Tribe Tribal Identification',
               'IssuerCode' => 'ND',
               'IssuerName' => 'Cowlitz Indian Tribe',
+              'CountryCode' => 'USA',
             },
           },
           address_line2_present: true,
