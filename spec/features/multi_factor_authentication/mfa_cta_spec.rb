@@ -78,8 +78,7 @@ RSpec.feature 'mfa cta banner' do
         to receive(:show_unsupported_passkey_platform_authentication_setup).
         and_return(true)
 
-      user = sign_up_and_set_password
-      user.password = Features::SessionHelper::VALID_PASSWORD
+      sign_up_and_set_password
       mock_webauthn_setup_challenge
       select_2fa_option('webauthn_platform', visible: :all)
 

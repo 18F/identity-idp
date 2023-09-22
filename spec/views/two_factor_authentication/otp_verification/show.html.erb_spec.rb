@@ -15,7 +15,6 @@ RSpec.describe 'two_factor_authentication/otp_verification/show.html.erb' do
       allow(view).to receive(:user_session).and_return({})
       allow(view).to receive(:current_user).and_return(User.new)
       allow(view).to receive(:user_fully_authenticated?).and_return(false)
-      allow(view).to receive(:in_multi_mfa_selection_flow?).and_return(false)
       controller.request.path_parameters[:otp_delivery_preference] =
         presenter_data[:otp_delivery_preference]
 
