@@ -1,7 +1,7 @@
 module DocAuth
   module Mock
     class ResultResponse < DocAuth::Response
-      include DocAuth::Acuant::ClassificationConcern
+      include DocAuth::ClassificationConcern
       include DocAuth::Mock::YmlLoaderConcern
 
       attr_reader :uploaded_file, :config

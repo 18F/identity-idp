@@ -122,12 +122,8 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         'OrientationChanged' => 'true',
         'PresentationChanged' => 'false',
         classification_info: {
-          Front: {
-            ClassName: 'Drivers License',
-          },
-          Back: {
-            ClassName: 'Drivers License',
-          },
+          Front: a_hash_including(:ClassName, :CountryCode),
+          Back: a_hash_including(:ClassName, :CountryCode),
         },
       )
     end
@@ -325,12 +321,8 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         'OrientationChanged' => 'false',
         'PresentationChanged' => 'false',
         classification_info: {
-          Front: {
-            ClassName: 'Drivers License',
-          },
-          Back: {
-            ClassName: 'Drivers License',
-          },
+          Front: a_hash_including(:ClassName, :CountryCode),
+          Back: a_hash_including(:ClassName, :CountryCode),
         },
       )
     end
@@ -517,6 +509,20 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     context 'when doc class is identified but not supported' do
       let(:doc_class_name) { 'Passport' }
       it 'identified as un supported doc type ' do
+        is_expected.to eq(false)
+      end
+    end
+
+    context 'when country code is not supported' do
+      let(:success_response) do
+        body = JSON.parse(LexisNexisFixtures.true_id_response_success_2).tap do |json|
+          doc_class_node = json['Products'].first['ParameterDetails'].
+            select { |f| f['Name'] == 'Fields_CountryCode' && f['Group'] == 'IDAUTH_FIELD_DATA' }
+          doc_class_node.first['Values'].first['Value'] = 'CAN'
+        end.to_json
+        instance_double(Faraday::Response, status: 200, body: body)
+      end
+      it 'identify as unsupported doc type' do
         is_expected.to eq(false)
       end
     end

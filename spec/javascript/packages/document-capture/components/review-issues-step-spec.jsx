@@ -225,7 +225,7 @@ describe('document-capture/components/review-issues-step', () => {
                   other: '<strong>%{count} attempts</strong> remaining',
                 },
                 'errors.doc_auth.doc_type_not_supported_heading': 'doc type not supported',
-                'doc_auth.errors.doc.wrong_id_type':
+                'doc_auth.errors.doc.wrong_id_type_html':
                   "We only accept a driver's license or a state ID card at this time.",
               },
             })
@@ -280,7 +280,7 @@ describe('document-capture/components/review-issues-step', () => {
                   other: '<strong>%{count} attempts</strong> remaining',
                 },
                 'errors.doc_auth.doc_type_not_supported_heading': 'doc type not supported',
-                'doc_auth.errors.doc.wrong_id_type':
+                'doc_auth.errors.doc.wrong_id_type_html':
                   "We only accept a driver's license or a state ID card at this time.",
               },
             })

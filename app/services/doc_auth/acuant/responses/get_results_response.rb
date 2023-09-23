@@ -121,6 +121,7 @@ module DocAuth
               'Name',
               'IssuerCode',
               'IssuerName',
+              'CountryCode',
             )
           end
         end

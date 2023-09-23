@@ -9,6 +9,7 @@ class MarketingSite
     get-started/authentication-options
     manage-your-account/personal-key
     trouble-signing-in/face-or-touch-unlock
+    verify-your-identity/accepted-identification-documents
     verify-your-identity/accepted-state-issued-identification
     verify-your-identity/how-to-add-images-of-your-state-issued-id
     verify-your-identity/verify-your-identity-in-person
