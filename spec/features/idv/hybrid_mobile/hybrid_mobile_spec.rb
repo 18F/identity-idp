@@ -221,17 +221,12 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
 
         DocAuth::Mock::DocAuthMockClient.reset!
         attach_and_submit_images
-        click_idv_continue
+
         expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
       end
 
       perform_in_browser(:desktop) do
-        expect(page).to have_current_path(idv_ssn_path, wait: 10)
-
-        fill_out_ssn_form_ok
-        click_idv_continue
-
-        expect(current_path).to eq(idv_verify_info_path)
+        expect(page).to have_current_path(idv_verify_info_path, wait: 10)
         click_idv_continue
       end
     end
