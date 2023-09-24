@@ -23,6 +23,7 @@ module Idv
 
       def update
         result = handle_stored_result
+        document_capture_session.update!(ocr_confirmation_pending: false) if document_capture_session.ocr_confirmation_pending?
 
         analytics.idv_doc_auth_document_capture_submitted(**result.to_h.merge(analytics_arguments))
 
