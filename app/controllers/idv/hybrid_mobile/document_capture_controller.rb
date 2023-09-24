@@ -6,13 +6,9 @@ module Idv
 
       before_action :check_valid_document_capture_session
       before_action :override_csp_to_allow_acuant
+      before_action :confirm_document_capture_needed, only: :show
 
       def show
-        if document_capture_session&.load_result&.success?
-          redirect_to idv_hybrid_mobile_capture_complete_url
-          return
-        end
-
         analytics.idv_doc_auth_document_capture_visited(**analytics_arguments)
 
         Funnel::DocAuth::RegisterStep.new(document_capture_user.id, sp_session[:issuer]).
@@ -68,6 +64,14 @@ module Idv
         else
           extra = { stored_result_present: stored_result.present? }
           failure(I18n.t('doc_auth.errors.general.network_error'), extra)
+        end
+      end
+
+      def confirm_document_capture_needed
+        return unless stored_result&.success?
+
+        if stored_result.created_at > document_capture_session.requested_at
+          redirect_to idv_hybrid_mobile_capture_complete_url
         end
       end
     end

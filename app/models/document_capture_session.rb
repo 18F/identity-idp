@@ -8,10 +8,20 @@ class DocumentCaptureSession < ApplicationRecord
     EncryptedRedisStructStorage.load(result_id, type: DocumentCaptureSessionResult)
   end
 
+  def session_result
+    return @session_result if defined?(@session_result)
+
+    @session_result = load_result
+    if store_session_result?# !@session_result || redo_document_capture?
+      @session_result = DocumentCaptureSessionResult.new(
+        id: generate_result_id,
+        created_at: Time.zone.now,
+      )
+    end
+    @session_result
+  end
+
   def store_result_from_response(doc_auth_response)
-    session_result = load_result || DocumentCaptureSessionResult.new(
-      id: generate_result_id,
-    )
     session_result.success = doc_auth_response.success?
     session_result.pii = doc_auth_response.pii_from_doc
     session_result.attention_with_barcode = doc_auth_response.attention_with_barcode?
@@ -24,9 +34,6 @@ class DocumentCaptureSession < ApplicationRecord
   end
 
   def store_failed_auth_image_fingerprint(front_image_fingerprint, back_image_fingerprint)
-    session_result = load_result || DocumentCaptureSessionResult.new(
-      id: generate_result_id,
-    )
     session_result.success = false
     session_result.add_failed_front_image!(front_image_fingerprint) if front_image_fingerprint
     session_result.add_failed_back_image!(back_image_fingerprint) if back_image_fingerprint
@@ -52,7 +59,7 @@ class DocumentCaptureSession < ApplicationRecord
     save!
   end
 
-  def store_doc_auth_result(result:, pii:)
+  def store_doc_auth_result(result:, pii:) # IS THIS CALLED ANYWHERE?
     EncryptedRedisStructStorage.store(
       DocumentCaptureSessionAsyncResult.new(
         id: result_id,
@@ -103,5 +110,9 @@ class DocumentCaptureSession < ApplicationRecord
 
   def generate_result_id
     self.result_id = SecureRandom.uuid
+  end
+
+  def store_session_result? # rename
+    !@session_result || self.requested_at > @session_result.created_at
   end
 end
