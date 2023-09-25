@@ -27,7 +27,7 @@ class ReportMailerPreview < ActionMailer::Preview
         [
           { title: 'Total proofed identities' },
           ['Total proofed identities (Feb-2021)'],
-          [1972368]
+          [1972368],
         ],
       ],
     )
