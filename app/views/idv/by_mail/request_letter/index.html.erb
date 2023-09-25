@@ -10,15 +10,21 @@
 <% end %>
 
 <% if @presenter.resend_requested? %>
-  <%= render StatusPageComponent.new(status: :warning) do |c| %>
-    <% c.with_header { @presenter.title } %>
-    <p>
-      <%= t('idv.messages.gpo.resend_timeframe_html') %>
-    </p>
-    <p>
-      <%= t('idv.messages.gpo.resend_code_warning') %>
-    </p>
-  <% end %>
+  <%= render PageHeadingComponent.new.with_content(@presenter.title) %>
+  <p>
+    <%= t('idv.gpo.request_another_letter.instructions_html') %>
+  </p>
+  <p>
+    <%= new_tab_link_to(
+          t('idv.gpo.request_another_letter.learn_more_link'),
+          help_center_redirect_url(
+            category: 'verify-your-identity',
+            article: 'verify-your-address-by-mail',
+            flow: :idv,
+            step: :gpo_send_letter,
+          ),
+        ) %>
+  </p>
 <% else %>
   <%= render AlertComponent.new(message: t('idv.messages.gpo.info_alert'), class: 'margin-bottom-4') %>
   <%= render PageHeadingComponent.new.with_content(@presenter.title) %>
@@ -28,28 +34,30 @@
   </p>
 <% end %>
 
-<div class="margin-top-6 margin-bottom-5">
+<div class="margin-y-4">
   <%= button_to @presenter.button,
                 idv_request_letter_path,
                 method: 'put',
                 class: 'usa-button usa-button--big usa-button--wide' %>
 </div>
 
-<%= render(
-      'shared/troubleshooting_options',
-      heading: t('components.troubleshooting_options.default_heading'),
-      options: [
-        {
-          url: help_center_redirect_url(
-            category: 'verify-your-identity',
-            article: 'verify-your-address-by-mail',
-            flow: :idv,
-            step: :gpo_send_letter,
-          ),
-          text: t('idv.troubleshooting.options.learn_more_verify_by_mail'),
-          new_tab: true,
-        },
-      ],
-    ) %>
+<% if @presenter.show_troubleshooting_options? %>
+  <%= render(
+        'shared/troubleshooting_options',
+        heading: t('components.troubleshooting_options.default_heading'),
+        options: [
+          {
+            url: help_center_redirect_url(
+              category: 'verify-your-identity',
+              article: 'verify-your-address-by-mail',
+              flow: :idv,
+              step: :gpo_send_letter,
+            ),
+            text: t('idv.troubleshooting.options.learn_more_verify_by_mail'),
+            new_tab: true,
+          },
+        ],
+      ) %>
+<% end %>
 
 <%= render @presenter.back_or_cancel_partial, @presenter.back_or_cancel_parameters %>
