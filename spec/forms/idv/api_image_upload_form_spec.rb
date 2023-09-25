@@ -194,7 +194,6 @@ RSpec.describe Idv::ApiImageUploadForm do
 
       it 'logs analytics excluding invalid metadata' do
         form.submit
-
         expect(fake_analytics).to have_logged_event(
           'IdV: doc auth image upload form submitted',
           success: true,
@@ -269,6 +268,16 @@ RSpec.describe Idv::ApiImageUploadForm do
         response = form.submit
         expect(response.errors[:front]).to eq('glare')
       end
+
+      it 'keeps fingerprints of failed image and triggers error when submit same image' do
+        form.submit
+        session = DocumentCaptureSession.find_by(uuid: document_capture_session_uuid)
+        capture_result = session.load_result
+        expect(capture_result.failed_front_image_fingerprints).not_to match_array([])
+        response = form.submit
+        expect(response.errors).to have_key(:front)
+        expect(response.errors).to have_value([I18n.t('doc_auth.errors.doc.resubmit_failed_image')])
+      end
     end
 
     context 'PII validation from client response fails' do
@@ -310,6 +319,27 @@ RSpec.describe Idv::ApiImageUploadForm do
         )
         response = form.submit
         expect(response.errors[:doc_pii]).to eq('bad')
+      end
+
+      it 'keeps fingerprints of failed image and triggers error when submit same image' do
+        form.submit
+        session = DocumentCaptureSession.find_by(uuid: document_capture_session_uuid)
+        capture_result = session.load_result
+        expect(capture_result.failed_front_image_fingerprints).not_to match_array([])
+        response = form.submit
+        expect(response.errors).to have_key(:front)
+        expect(response.errors).to have_value([I18n.t('doc_auth.errors.doc.resubmit_failed_image')])
+        expect(fake_analytics).to have_logged_event(
+          'IdV: failed doc image resubmitted',
+          attempts: 1,
+          remaining_attempts: 3,
+          user_id: document_capture_session.user.uuid,
+          flow_path: anything,
+          front_image_fingerprint: an_instance_of(String),
+          back_image_fingerprint: an_instance_of(String),
+          getting_started_ab_test_bucket: :welcome_default,
+          side: 'both',
+        )
       end
     end
 
@@ -424,6 +454,76 @@ RSpec.describe Idv::ApiImageUploadForm do
 
         it 'sets image source to unknown' do
           form.submit
+        end
+      end
+    end
+  end
+  describe '#store_failed_images' do
+    let(:doc_pii_response) { instance_double(Idv::DocAuthFormResponse) }
+    let(:client_response) { instance_double(DocAuth::Response) }
+    context 'when client_response is not success and not network error' do
+      context 'when both sides error message missing' do
+        let(:errors) { {} }
+        it 'stores both sides as failed' do
+          allow(client_response).to receive(:success?).and_return(false)
+          allow(client_response).to receive(:network_error?).and_return(false)
+          allow(client_response).to receive(:errors).and_return(errors)
+          form.send(:validate_form)
+          capture_result = form.send(:store_failed_images, client_response, doc_pii_response)
+          expect(capture_result[:front]).not_to be_empty
+          expect(capture_result[:back]).not_to be_empty
+        end
+      end
+      context 'when both sides error message exist' do
+        let(:errors) { { front: 'blurry', back: 'dpi' } }
+        it 'stores both sides as failed' do
+          allow(client_response).to receive(:success?).and_return(false)
+          allow(client_response).to receive(:network_error?).and_return(false)
+          allow(client_response).to receive(:errors).and_return(errors)
+          form.send(:validate_form)
+          capture_result = form.send(:store_failed_images, client_response, doc_pii_response)
+          expect(capture_result[:front]).not_to be_empty
+          expect(capture_result[:back]).not_to be_empty
+        end
+      end
+      context 'when one sides error message exists' do
+        let(:errors) { { front: 'blurry', back: nil } }
+        it 'stores only the error side as failed' do
+          allow(client_response).to receive(:success?).and_return(false)
+          allow(client_response).to receive(:network_error?).and_return(false)
+          allow(client_response).to receive(:errors).and_return(errors)
+          form.send(:validate_form)
+          capture_result = form.send(:store_failed_images, client_response, doc_pii_response)
+          expect(capture_result[:front]).not_to be_empty
+          expect(capture_result[:back]).to be_empty
+        end
+      end
+    end
+
+    context 'when client_response is not success and is network error' do
+      let(:errors) { {} }
+      context 'when doc_pii_response is success' do
+        it 'stores neither of the side as failed' do
+          allow(client_response).to receive(:success?).and_return(false)
+          allow(client_response).to receive(:network_error?).and_return(true)
+          allow(client_response).to receive(:errors).and_return(errors)
+          allow(doc_pii_response).to receive(:success?).and_return(true)
+          form.send(:validate_form)
+          capture_result = form.send(:store_failed_images, client_response, doc_pii_response)
+          expect(capture_result[:front]).to be_empty
+          expect(capture_result[:back]).to be_empty
+        end
+      end
+      context 'when doc_pii_response is failure' do
+        it 'stores both sides as failed' do
+          allow(client_response).to receive(:success?).and_return(false)
+          allow(client_response).to receive(:network_error?).and_return(true)
+          allow(client_response).to receive(:errors).and_return(errors)
+          allow(doc_pii_response).to receive(:success?).and_return(false)
+          form.send(:validate_form)
+          capture_result = form.send(:store_failed_images, client_response, doc_pii_response)
+          expect(capture_result[:front]).not_to be_empty
+          expect(capture_result[:back]).not_to be_empty
         end
       end
     end

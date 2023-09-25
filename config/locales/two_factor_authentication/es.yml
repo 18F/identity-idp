@@ -20,9 +20,9 @@ es:
     attempt_remaining_warning_html:
       one: Le quedan <strong>%{count} intento</strong>.
       other: Le quedan <strong>%{count} intentos</strong>.
-    backup_code_header_text: Ingrese su código de seguridad de respaldo
-    backup_code_prompt: Puede utilizar este código de seguridad una vez. Después de
-      ingresarlo, deberá usar una nueva clave.
+    backup_code_header_text: Ingrese su código de respaldo
+    backup_code_prompt: Puede utilizar este código de respaldo una vez. Tendrá que
+      usar un nuevo código de respaldo la próxima vez después de que lo envíe.
     backup_codes:
       add_another_authentication_option: '‹ Añada otra opción de autenticación'
       instructions: Si no tiene acceso a otro dispositivo, guarde bien sus códigos de

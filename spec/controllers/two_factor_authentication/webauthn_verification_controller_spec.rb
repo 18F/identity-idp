@@ -123,73 +123,80 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
         controller.user_session[:webauthn_challenge] = webauthn_challenge
       end
 
-      it 'tracks a valid non-platform authenticator submission' do
-        create(
-          :webauthn_configuration,
-          user: controller.current_user,
-          credential_id: credential_id,
-          credential_public_key: credential_public_key,
-        )
-        allow(WebauthnVerificationForm).to receive(:domain_name).and_return('localhost:3000')
-        webauthn_configuration = controller.current_user.webauthn_configurations.first
-        result = {
-          context: 'authentication',
-          multi_factor_auth_method: 'webauthn',
-          success: true,
-          webauthn_configuration_id: webauthn_configuration.id,
-          multi_factor_auth_method_created_at: webauthn_configuration.created_at.strftime('%s%L'),
-        }
+      context 'with a valid submission' do
+        let!(:webauthn_configuration) do
+          create(
+            :webauthn_configuration,
+            user: controller.current_user,
+            credential_id: credential_id,
+            credential_public_key: credential_public_key,
+          )
+          controller.current_user.webauthn_configurations.first
+        end
+        let(:result) do
+          {
+            context: 'authentication',
+            multi_factor_auth_method: 'webauthn',
+            success: true,
+            webauthn_configuration_id: webauthn_configuration.id,
+            multi_factor_auth_method_created_at: webauthn_configuration.created_at.strftime('%s%L'),
+          }
+        end
 
-        expect(@analytics).to receive(:track_mfa_submit_event).
-          with(result)
-        expect(@analytics).to receive(:track_event).
-          with('User marked authenticated', authentication_type: :valid_2fa)
+        before do
+          allow(WebauthnVerificationForm).to receive(:domain_name).and_return('localhost:3000')
+        end
 
-        expect(@irs_attempts_api_tracker).to receive(:track_event).with(
-          :mfa_login_webauthn_roaming,
-          success: true,
-        )
+        it 'tracks a valid submission' do
+          expect(@analytics).to receive(:track_mfa_submit_event).
+            with(result)
+          expect(@analytics).to receive(:track_event).
+            with('User marked authenticated', authentication_type: :valid_2fa)
 
-        patch :confirm, params: params
+          expect(@irs_attempts_api_tracker).to receive(:track_event).with(
+            :mfa_login_webauthn_roaming,
+            success: true,
+          )
 
-        expect(subject.user_session[:auth_method]).to eq(
-          TwoFactorAuthenticatable::AuthMethod::WEBAUTHN,
-        )
-        expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq false
-      end
+          patch :confirm, params: params
 
-      it 'tracks a valid platform authenticator submission' do
-        create(
-          :webauthn_configuration,
-          :platform_authenticator,
-          user: controller.current_user,
-          credential_id: credential_id,
-          credential_public_key: credential_public_key,
-        )
-        allow(WebauthnVerificationForm).to receive(:domain_name).and_return('localhost:3000')
-        webauthn_configuration = controller.current_user.webauthn_configurations.first
-        result = {
-          context: 'authentication',
-          multi_factor_auth_method: 'webauthn_platform',
-          success: true,
-          webauthn_configuration_id: webauthn_configuration.id,
-          multi_factor_auth_method_created_at: webauthn_configuration.created_at.strftime('%s%L'),
-        }
-        expect(@analytics).to receive(:track_mfa_submit_event).
-          with(result)
-        expect(@analytics).to receive(:track_event).
-          with('User marked authenticated', authentication_type: :valid_2fa)
+          expect(subject.user_session[:auth_method]).to eq(
+            TwoFactorAuthenticatable::AuthMethod::WEBAUTHN,
+          )
+          expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq false
+        end
 
-        expect(@irs_attempts_api_tracker).to receive(:track_event).with(
-          :mfa_login_webauthn_platform,
-          success: true,
-        )
+        context 'with platform authenticator' do
+          let!(:webauthn_configuration) do
+            create(
+              :webauthn_configuration,
+              :platform_authenticator,
+              user: controller.current_user,
+              credential_id: credential_id,
+              credential_public_key: credential_public_key,
+            )
+            controller.current_user.webauthn_configurations.first
+          end
+          let(:result) { super().merge(multi_factor_auth_method: 'webauthn_platform') }
 
-        patch :confirm, params: params
-        expect(subject.user_session[:auth_method]).to eq(
-          TwoFactorAuthenticatable::AuthMethod::WEBAUTHN_PLATFORM,
-        )
-        expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq false
+          it 'tracks a valid submission' do
+            expect(@analytics).to receive(:track_mfa_submit_event).
+              with(result)
+            expect(@analytics).to receive(:track_event).
+              with('User marked authenticated', authentication_type: :valid_2fa)
+
+            expect(@irs_attempts_api_tracker).to receive(:track_event).with(
+              :mfa_login_webauthn_platform,
+              success: true,
+            )
+
+            patch :confirm, params: params
+            expect(subject.user_session[:auth_method]).to eq(
+              TwoFactorAuthenticatable::AuthMethod::WEBAUTHN_PLATFORM,
+            )
+            expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq false
+          end
+        end
       end
 
       it 'tracks an invalid submission' do

@@ -12,12 +12,12 @@
           text: t('idv.troubleshooting.options.contact_support', app_name: APP_NAME),
           new_tab: true,
         },
-        decorated_session.sp_name && {
+        decorated_sp_session.sp_name && {
           url: return_to_sp_failure_to_proof_path(
             step: 'verify_info',
             location: request.params[:action],
           ),
-          text: t('idv.troubleshooting.options.get_help_at_sp', sp_name: decorated_session.sp_name),
+          text: t('idv.troubleshooting.options.get_help_at_sp', sp_name: decorated_sp_session.sp_name),
           new_tab: true,
         },
       ].compact,

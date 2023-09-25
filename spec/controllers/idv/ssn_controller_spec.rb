@@ -3,10 +3,6 @@ require 'rails_helper'
 RSpec.describe Idv::SsnController do
   include IdvHelper
 
-  let(:flow_session) do
-    { pii_from_doc: Idp::Constants::MOCK_IDV_APPLICANT.dup }
-  end
-
   let(:ssn) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn] }
 
   let(:user) { create(:user) }
@@ -17,8 +13,8 @@ RSpec.describe Idv::SsnController do
 
   before do
     stub_sign_in(user)
-    subject.user_session['idv/doc_auth'] = flow_session
     subject.idv_session.flow_path = 'standard'
+    subject.idv_session.pii_from_doc = Idp::Constants::MOCK_IDV_APPLICANT.dup
     stub_analytics
     stub_attempts_tracker
     allow(@analytics).to receive(:track_event)
@@ -90,31 +86,6 @@ RSpec.describe Idv::SsnController do
       expect { get :show }.to change { subject.idv_session.threatmetrix_session_id }.from(nil)
     end
 
-    context 'with an ssn in flow_session' do
-      let(:referer) { idv_document_capture_url }
-      before do
-        flow_session[:pii_from_doc][:ssn] = ssn
-        request.env['HTTP_REFERER'] = referer
-      end
-
-      context 'referer is not verify_info' do
-        it 'redirects to verify_info' do
-          get :show
-
-          expect(response).to redirect_to(idv_verify_info_url)
-        end
-      end
-
-      context 'referer is verify_info' do
-        let(:referer) { idv_verify_info_url }
-        it 'does not redirect' do
-          get :show
-
-          expect(response).to render_template :show
-        end
-      end
-    end
-
     context 'with an ssn in idv_session' do
       let(:referer) { idv_document_capture_url }
       before do
@@ -178,20 +149,14 @@ RSpec.describe Idv::SsnController do
         }.merge(ab_test_args)
       end
 
-      it 'merges ssn into pii session value' do
-        put :update, params: params
-
-        expect(flow_session[:pii_from_doc][:ssn]).to eq(ssn)
-      end
-
       it 'updates idv_session.ssn' do
         expect { put :update, params: params }.to change { subject.idv_session.ssn }.
           from(nil).to(ssn)
       end
 
-      context 'with a Puerto Rico address' do
+      context 'with a Puerto Rico address and pii_from_doc in idv_session' do
         it 'redirects to address controller after user enters their SSN' do
-          flow_session[:pii_from_doc][:state] = 'PR'
+          subject.idv_session.pii_from_doc[:state] = 'PR'
 
           put :update, params: params
 
@@ -199,8 +164,8 @@ RSpec.describe Idv::SsnController do
         end
 
         it 'redirects to the verify info controller if a user is updating their SSN' do
-          flow_session[:pii_from_doc][:ssn] = ssn
-          flow_session[:pii_from_doc][:state] = 'PR'
+          subject.idv_session.ssn = ssn
+          subject.idv_session.pii_from_doc[:state] = 'PR'
 
           put :update, params: params
 
@@ -226,7 +191,7 @@ RSpec.describe Idv::SsnController do
       end
 
       it 'does not change threatmetrix_session_id when updating ssn' do
-        flow_session[:pii_from_doc][:ssn] = ssn
+        subject.idv_session.ssn = ssn
         put :update, params: params
         session_id = subject.idv_session.threatmetrix_session_id
         subject.threatmetrix_view_variables
@@ -267,7 +232,7 @@ RSpec.describe Idv::SsnController do
     context 'when pii_from_doc is not present' do
       before do
         subject.idv_session.flow_path = 'standard'
-        flow_session.delete(:pii_from_doc)
+        subject.idv_session.pii_from_doc = nil
       end
 
       it 'redirects to DocumentCaptureController on standard flow' do

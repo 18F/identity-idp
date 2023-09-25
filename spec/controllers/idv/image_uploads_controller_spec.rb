@@ -202,6 +202,7 @@ RSpec.describe Idv::ImageUploadsController do
             result_failed: false,
             ocr_pii: nil,
             doc_type_supported: true,
+            failed_image_fingerprints: { front: [], back: [] },
           },
         )
       end
@@ -217,6 +218,7 @@ RSpec.describe Idv::ImageUploadsController do
             result_failed: false,
             ocr_pii: nil,
             doc_type_supported: true,
+            failed_image_fingerprints: { front: [], back: [] },
           }
         end
 

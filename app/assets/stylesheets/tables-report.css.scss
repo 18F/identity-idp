@@ -1,0 +1,8 @@
+@forward 'uswds-core';
+@forward 'usa-prose';
+@forward 'usa-table';
+
+.table-number {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}

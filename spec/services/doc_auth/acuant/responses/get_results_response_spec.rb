@@ -46,6 +46,7 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
             'Name' => 'North Dakota (ND) Back',
             'IssuerCode' => 'ND',
             'IssuerName' => 'North Dakota',
+            'CountryCode' => 'USA',
           },
           'Front' => {
             'ClassName' => 'Identification Card',
@@ -54,6 +55,7 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
             'Name' => 'North Dakota (ND) Non-Driver Identification Card',
             'IssuerCode' => 'ND',
             'IssuerName' => 'North Dakota',
+            'CountryCode' => 'USA',
           },
         },
         address_line2_present: true,
@@ -355,7 +357,7 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
   end
 
   describe  'with unsupported id' do
-    context 'with successful response' do
+    context 'with successful response of unsupported document type' do
       let(:http_response) do
         instance_double(
           Faraday::Response,
@@ -398,6 +400,7 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
               'Name' => 'Cowlitz Indian Tribe Back',
               'IssuerCode' => 'ND',
               'IssuerName' => 'Cowlitz Indian Tribe',
+              'CountryCode' => 'USA',
             },
             'Front' => {
               'ClassName' => 'Tribal Identification',
@@ -406,10 +409,11 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
               'Name' => 'Cowlitz Indian Tribe Tribal Identification',
               'IssuerCode' => 'ND',
               'IssuerName' => 'Cowlitz Indian Tribe',
+              'CountryCode' => 'USA',
             },
           },
           address_line2_present: true,
-          doc_type_supported: true,
+          doc_type_supported: false,
         }
 
         processed_alerts = response_hash[:processed_alerts]
@@ -426,6 +430,75 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
         expect(response.result_code).to eq(DocAuth::Acuant::ResultCodes::PASSED)
         expect(response.result_code.billed?).to eq(true)
         expect(response.id_type_supported?).to eq(false)
+      end
+
+      context 'with successful response of unsupported document issuing country' do
+        let(:http_response) do
+          json_body = JSON.parse(AcuantFixtures.get_results_response_success).tap do |b|
+            b['Classification']['ClassificationDetails']['Front']['CountryCode'] = 'CAN'
+            b['Classification']['ClassificationDetails']['Back']['CountryCode'] = 'CAN'
+          end
+          instance_double(
+            Faraday::Response,
+            body: json_body.to_json,
+          )
+        end
+        let(:expected_errors) do
+          {
+            general: [DocAuth::Errors::DOC_TYPE_CHECK],
+            front: [DocAuth::Errors::CARD_TYPE],
+            back: [DocAuth::Errors::CARD_TYPE],
+            hints: true,
+          }
+        end
+        it 'generates error for doc type' do
+          expect(response.success?).to eq(false)
+          expect(response.errors).to eq(expected_errors)
+          response_hash = response.to_h
+          expected_hash = {
+            success: false,
+            errors: expected_errors,
+            attention_with_barcode: false,
+            exception: nil,
+            billed: true,
+            vendor: 'Acuant',
+            doc_auth_result: 'Passed',
+            processed_alerts: a_hash_including(
+              failed: all(a_hash_including(:name, :result)),
+              passed: all(a_hash_including(:name, :result)),
+            ),
+            log_alert_results: a_hash_including('2d_barcode_content': { no_side: 'Passed' }),
+            image_metrics: a_hash_including(:back, :front),
+            alert_failure_count: 2,
+            tamper_result: 'Passed',
+            classification_info: {
+              'Back' => {
+                'ClassName' => 'Identification Card',
+                'Issue' => '2014',
+                'IssueType' => 'Back',
+                'Name' => 'North Dakota (ND) Back',
+                'IssuerCode' => 'ND',
+                'IssuerName' => 'North Dakota',
+                'CountryCode' => 'CAN',
+              },
+              'Front' => {
+                'ClassName' => 'Identification Card',
+                'Issue' => '2014',
+                'IssueType' => 'Non-Driver Identification Card',
+                'Name' => 'North Dakota (ND) Non-Driver Identification Card',
+                'IssuerCode' => 'ND',
+                'IssuerName' => 'North Dakota',
+                'CountryCode' => 'CAN',
+              },
+            },
+            address_line2_present: true,
+            doc_type_supported: false,
+          }
+
+          expect(response_hash).to match(expected_hash)
+          expect(response.result_code).to eq(DocAuth::Acuant::ResultCodes::PASSED)
+          expect(response.id_type_supported?).to eq(false)
+        end
       end
     end
   end

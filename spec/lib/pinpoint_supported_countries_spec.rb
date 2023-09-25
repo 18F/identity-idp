@@ -30,7 +30,7 @@ RSpec.describe PinpointSupportedCountries do
           </td>
         </tr>
         <tr>
-          <td>Argentina</td>
+          <td>Argentina<sup><a href="#sms-support-note-1">2</a></sup></td>
           <td>AR</td>
           <td></td>
           <td>Yes</td>

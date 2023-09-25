@@ -6,8 +6,8 @@ RSpec.describe 'idv/phone_errors/_warning.html.erb' do
   let(:assigns) { {} }
 
   before do
-    decorated_session = instance_double(ServiceProviderSessionDecorator, sp_name: sp_name)
-    allow(view).to receive(:decorated_session).and_return(decorated_session)
+    decorated_sp_session = instance_double(ServiceProviderSession, sp_name: sp_name)
+    allow(view).to receive(:decorated_sp_session).and_return(decorated_sp_session)
 
     render('idv/phone_errors/warning', assigns) { text }
   end

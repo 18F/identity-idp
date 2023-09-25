@@ -22,7 +22,7 @@ module Users
 
       @ial = sp_session_ial
       @issuer_forced_reauthentication = issuer_forced_reauthentication?(
-        issuer: decorated_session.sp_issuer,
+        issuer: decorated_sp_session.sp_issuer,
       )
       analytics.sign_in_page_visit(
         flash: flash[:alert],

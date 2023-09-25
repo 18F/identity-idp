@@ -40,6 +40,7 @@ es:
       phone: Verifique su número de teléfono
       reset_password: Restablecer la contraseña
       review: Vuelve a ingresar tu contraseña
+      review_letter: Vuelve a ingresar tu contraseña para enviar su carta
       verify_info: Verifica tu información
     mfa_setup:
       suggest_second_mfa: '¡Has agregado tu primer método de autenticación! Agrega un

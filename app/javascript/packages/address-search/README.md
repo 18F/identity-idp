@@ -30,6 +30,7 @@ return(
             disabled={disabledAddressSearchCallback}
             handleLocationSelect={handleLocationSelect}
             locationsURL={LOCATIONS_URL}
+            noInPersonLocationsDisplay={noInPersonLocationsDisplay}
             onFoundLocations={setLocationResultsCallback}
             registerField={registerFieldCallback}
             resultsHeaderComponent={resultsHeaderComponent}

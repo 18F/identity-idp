@@ -26,7 +26,6 @@ RSpec.describe 'RateLimitConcern' do
     before(:each) do
       sign_in(user)
       allow(subject).to receive(:current_user).and_return(user)
-      allow(subject).to receive(:flow_session).and_return({})
       routes.draw do
         get 'show' => 'idv/step#show'
         put 'update' => 'idv/step#update'
@@ -87,16 +86,6 @@ RSpec.describe 'RateLimitConcern' do
           target: Pii::Fingerprinter.fingerprint(ssn),
           rate_limit_type: :proof_ssn,
         ).increment_to_limited!
-      end
-
-      context 'ssn is in flow session' do
-        it 'redirects to proof_ssn rate limited error page' do
-          flow_session = { pii_from_doc: { ssn: ssn } }
-          allow(subject).to receive(:flow_session).and_return(flow_session)
-          get :show
-
-          expect(response).to redirect_to idv_session_errors_ssn_failure_url
-        end
       end
 
       context 'ssn is in idv_session' do
