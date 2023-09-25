@@ -334,7 +334,7 @@ build-ci-image:
       --context "${CI_PROJECT_DIR}"
       --dockerfile "${CI_PROJECT_DIR}/dockerfiles/idp_ci.Dockerfile"
       --destination "${ECR_REGISTRY}/idp/ci:latest"
-      --destination "${ECR_REGISTRY}/idp/ci:${CI_COMMIT_TAG}"
+      --destination "${ECR_REGISTRY}/idp/ci:${CI_COMMIT_SHA}"
       --build-arg "http_proxy=${http_proxy}" --build-arg "https_proxy=${https_proxy}" --build-arg "no_proxy=${no_proxy}"
 
 # Triggers devops CD to deploy to dev
