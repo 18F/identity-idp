@@ -32,10 +32,6 @@ module IdvSession
     )
   end
 
-  def flow_session
-    user_session['idv/doc_auth'] ||= {}
-  end
-
   def irs_reproofing?
     current_user&.reproof_for_irs?(
       service_provider: current_sp,
