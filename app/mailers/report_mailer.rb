@@ -53,7 +53,9 @@ class ReportMailer < ActionMailer::Base
   #   each table can have a first "row" that is a hash with options
   # @option opts [Boolean] :float_as_percent whether or not to render floats as percents
   # @option opts [Boolean] :title title of the table
-  def tables_report(email:, subject:, tables:, env: Identity::Hostdata.env || 'local')
+  def tables_report(email:, subject:, message:, tables:, env: Identity::Hostdata.env || 'local')
+    @message = message
+
     @tables = tables.each_with_index.map do |table, index|
       options = table.first.is_a?(Hash) ? table.shift : {}
 

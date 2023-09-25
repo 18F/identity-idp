@@ -126,33 +126,33 @@ module Reports
       monthly_reuse_report = total_reuse_report
 
       tables_array = []
-      csv_array_1 = []
-      csv_array_1 << { title: "IDV app reuse rate #{stats_month}",
+      reuse_rate_table = []
+      reuse_rate_table << { title: "IDV app reuse rate #{stats_month}",
                        float_as_percent: true,
                        precision: 4 }
-      csv_array_1 << ['Num. SPs', 'Num. users', 'Percentage']
+                       reuse_rate_table << ['Num. SPs', 'Num. users', 'Percentage']
 
       monthly_reuse_report[:reuse_stats].each do |result_entry|
-        csv_array_1 << [
+        reuse_rate_table << [
           result_entry['num_agencies'],
           result_entry['num_users'],
           result_entry['percentage'],
         ]
       end
-      csv_array_1 << [
+      reuse_rate_table << [
         'Total (all >1)',
         monthly_reuse_report[:total_users],
         monthly_reuse_report[:total_percentage],
       ]
-      tables_array << csv_array_1
+      tables_array << reuse_rate_table
 
-      csv_array_2 = []
-      csv_array_2 << { title: 'Total proofed identities' }
-      csv_array_2 << [
+      total_proofed_identities_table = []
+      total_proofed_identities_table << { title: 'Total proofed identities' }
+      total_proofed_identities_table << [
         ["Total proofed identities (#{stats_month})"],
         [monthly_reuse_report[:total_proofed]],
       ]
-      tables_array << csv_array_2
+      tables_array << total_proofed_identities_table
 
       tables_array
     end

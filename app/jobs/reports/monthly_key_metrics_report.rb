@@ -9,13 +9,14 @@ module Reports
     def perform(date)
       @report_date = date
       csv_for_email = monthly_key_metrics_report_array
+      email_message = "Report: #{REPORT_NAME} #{date}"
 
       emails.each do |email|
-        ReportMailer.monthly_key_metrics_report(
-          name: REPORT_NAME,
+        ReportMailer.tables_report(
           email: email,
-          month: date,
-          csv_report: csv_for_email,
+          subject: "Monthly Key Metrics Report - #{date}",
+          message: email_message,
+          tables: csv_for_email,
         ).deliver_now
       end
     end
