@@ -338,6 +338,8 @@ function AcuantCapture(
   const {
     failedCaptureAttempts,
     onFailedCaptureAttempt,
+    failedCameraPermissionAttempts,
+    onFailedCameraPermissionAttempt,
     onResetFailedCaptureAttempts,
     failedSubmissionAttempts,
     forceNativeCamera,
@@ -561,6 +563,13 @@ function AcuantCapture(
       setAcuantFailureCookie(null);
 
       onCameraAccessDeclined();
+
+      // Due to a bug with Safari on iOS we force the page to refresh on the third
+      // time a user denies permissions.
+      onFailedCameraPermissionAttempt();
+      if (failedCameraPermissionAttempts > 2) {
+        window.location.reload();
+      }
     } else if (code === SEQUENCE_BREAK_CODE) {
       setOwnErrorMessage(
         `${t('doc_auth.errors.upload_error')} ${t('errors.messages.try_again')
