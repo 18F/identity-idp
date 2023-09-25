@@ -11,7 +11,6 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
   let(:enrollment_selected_location_details) do
     JSON.parse(UspsInPersonProofing::Mock::Fixtures.enrollment_selected_location_details)
   end
-  let(:capture_secondary_id_enabled) { false }
   let(:enrollment) do
     create(
       :in_person_enrollment, :with_service_provider, :pending,
@@ -21,7 +20,6 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
       enrollment_established_at: enrollment_established_at,
       current_address_matches_id: current_address_matches_id,
       selected_location_details: enrollment_selected_location_details,
-      capture_secondary_id_enabled: capture_secondary_id_enabled
     )
   end
   subject(:presenter) { described_class.new(enrollment: enrollment) }
