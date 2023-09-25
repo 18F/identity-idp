@@ -47,11 +47,12 @@ class OpenidConnectTokenForm
   def response
     if valid?
       id_token_builder = IdTokenBuilder.new(identity: identity, code: code)
+      @ttl = id_token_builder.ttl
 
       {
         access_token: identity.access_token,
         token_type: 'Bearer',
-        expires_in: id_token_builder.ttl,
+        expires_in: @ttl,
         id_token: id_token_builder.id_token,
       }
     else
@@ -200,6 +201,7 @@ class OpenidConnectTokenForm
       code_digest: code ? Digest::SHA256.hexdigest(code) : nil,
       code_verifier_present: code_verifier.present?,
       service_provider_pkce: service_provider&.pkce,
+      ial: identity&.ial,
     }
   end
 

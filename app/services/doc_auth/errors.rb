@@ -4,6 +4,8 @@ module DocAuth
     IMAGE_LOAD_FAILURE = 'image_load_failure' # 438
     PIXEL_DEPTH_FAILURE = 'pixel_depth_failure' # 439
     IMAGE_SIZE_FAILURE = 'image_size_failure' # 440
+    # Network
+    NETWORK = 'network' # usually 500 or other unhandled error
     # Alerts
     BARCODE_CONTENT_CHECK = 'barcode_content_check'
     BARCODE_READ_CHECK = 'barcode_read_check'

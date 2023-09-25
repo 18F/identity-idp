@@ -1,6 +1,7 @@
 module DocAuth
   module Mock
     class DocAuthMockClient
+      include DocAuth::Mock::YmlLoaderConcern
       attr_reader :config
 
       def initialize(**config_keywords)
@@ -35,13 +36,16 @@ module DocAuth
       def post_front_image(image:, instance_id:)
         return mocked_response_for_method(__method__) if method_mocked?(__method__)
         self.class.last_uploaded_front_image = image
+        error_response = http_error_response(image, 'front')
+        return error_response if error_response
         DocAuth::Response.new(success: true)
       end
 
       def post_back_image(image:, instance_id:)
         return mocked_response_for_method(__method__) if method_mocked?(__method__)
-
         self.class.last_uploaded_back_image = image
+        error_response = http_error_response(image, 'back')
+        return error_response if error_response
         DocAuth::Response.new(success: true)
       end
 
@@ -70,7 +74,8 @@ module DocAuth
 
       def get_results(instance_id:)
         return mocked_response_for_method(__method__) if method_mocked?(__method__)
-
+        error_response = http_error_response(self.class.last_uploaded_back_image, 'result')
+        return error_response if error_response
         overriden_config = config.dup.tap do |c|
           c.dpi_threshold = 290
           c.sharpness_threshold = 40
@@ -94,6 +99,38 @@ module DocAuth
         return if self.class.response_mocks.nil?
 
         self.class.response_mocks[method_name.to_sym]
+      end
+
+      def http_error_response(image, side)
+        data = parse_yaml(image.to_s)
+        status = data.dig('http_status', side)
+        return nil unless [500, 440, 438, 439].include?(status)
+        error = case status
+                when 438
+                  Errors::IMAGE_LOAD_FAILURE
+                when 439
+                  Errors::PIXEL_DEPTH_FAILURE
+                when 440
+                  Errors::IMAGE_SIZE_FAILURE
+                when 500
+                  Errors::NETWORK
+                end
+        return nil unless error
+        errors = { general: [error] }
+        message = [
+          self.class.name,
+          'Unexpected HTTP response',
+          status,
+        ].join(' ')
+        exception = DocAuth::RequestError.new(message, status)
+        return DocAuth::Response.new(
+          success: false,
+          errors: errors,
+          exception: exception,
+          extra: { vendor: 'Mock' },
+        )
+      rescue Psych::SyntaxError
+        nil
       end
     end
   end
