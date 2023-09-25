@@ -4,6 +4,7 @@ module DocAuth
   module LexisNexis
     module Responses
       class TrueIdResponse < LexisNexisResponse
+        include ClassificationConcern
         PII_EXCLUDES = %w[
           Age
           DocSize
@@ -39,6 +40,7 @@ module DocAuth
           'Fields_IssueDate_Month' => :state_id_issued_month,
           'Fields_IssueDate_Year' => :state_id_issued_year,
           'Fields_DocumentClassName' => :state_id_type,
+          'Fields_CountryCode' => :issuing_country_code,
         }.freeze
         attr_reader :config
 
@@ -125,11 +127,6 @@ module DocAuth
           !!doc_auth_result
         end
 
-        def doc_type_supported?
-          !doc_class_name.present? || ID_TYPE_SLUGS.key?(doc_class_name) ||
-            doc_class_name == 'Unknown'
-        end
-
         private
 
         def response_info
@@ -195,12 +192,15 @@ module DocAuth
         def classification_info
           # Acuent response has both sides info, here simulate that
           doc_class = doc_class_name
+          issuing_country = pii_from_doc[:issuing_country_code]
           {
             Front: {
               ClassName: doc_class,
+              CountryCode: issuing_country,
             },
             Back: {
               ClassName: doc_class,
+              CountryCode: issuing_country,
             },
           }
         end
