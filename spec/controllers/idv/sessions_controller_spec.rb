@@ -20,6 +20,7 @@ RSpec.describe Idv::SessionsController do
 
     let(:idv_session) { double }
     let(:flow_session) { { x: {} } }
+
     let(:pii) { { first_name: 'Jane' } }
 
     context 'when destroying the session' do

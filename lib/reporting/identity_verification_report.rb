@@ -27,6 +27,7 @@ module Reporting
       GPO_VERIFICATION_SUBMITTED = 'IdV: enter verify by mail code submitted'
       GPO_VERIFICATION_SUBMITTED_OLD = 'IdV: GPO verification submitted'
       USPS_ENROLLMENT_STATUS_UPDATED = 'GetUspsProofingResultsJob: Enrollment status updated'
+      FRAUD_REVIEW_PASSED = 'Fraud: Profile review passed'
 
       def self.all_events
         constants.map { |c| const_get(c) }
@@ -91,10 +92,11 @@ module Reporting
         csv << ['Workflow completed - In-Person Pending', idv_final_resolution_in_person]
         csv << ['Workflow completed - Fraud Review Pending', idv_final_resolution_fraud_review]
         csv << []
-        csv << ['Succesfully verified', successfully_verified_users]
-        csv << ['Succesfully verified - Inline', idv_final_resolution_verified]
-        csv << ['Succesfully verified - GPO Code Entry', gpo_verification_submitted]
-        csv << ['Succesfully verified - In Person', usps_enrollment_status_updated]
+        csv << ['Successfully verified', successfully_verified_users]
+        csv << ['Successfully verified - Inline', idv_final_resolution_verified]
+        csv << ['Successfully verified - GPO Code Entry', gpo_verification_submitted]
+        csv << ['Successfully verified - In Person', usps_enrollment_status_updated]
+        csv << ['Successfully verified - Passed Fraud Review', fraud_review_passed]
       end
     end
 
@@ -149,7 +151,8 @@ module Reporting
     end
 
     def successfully_verified_users
-      idv_final_resolution_verified + gpo_verification_submitted + usps_enrollment_status_updated
+      idv_final_resolution_verified + gpo_verification_submitted + usps_enrollment_status_updated +
+        fraud_review_passed
     end
 
     def idv_started
@@ -173,6 +176,10 @@ module Reporting
         data[Results::IDV_FINAL_RESOLUTION_VERIFIED] -
         data[Results::IDV_FINAL_RESOLUTION_IN_PERSON]
       ).count
+    end
+
+    def fraud_review_passed
+      data[Events::FRAUD_REVIEW_PASSED].count
     end
 
     # rubocop:disable Layout/LineLength
@@ -230,6 +237,7 @@ module Reporting
           ],
         ),
         idv_final_resolution: quote(Events::IDV_FINAL_RESOLUTION),
+        fraud_review_passed: quote(Events::FRAUD_REVIEW_PASSED),
       }
 
       format(<<~QUERY, params)
@@ -243,6 +251,8 @@ module Reporting
                  or (name != %{usps_enrollment_status_updated})
         | filter (name in %{gpo_verification_submitted} and properties.event_properties.success = 1 and !properties.event_properties.pending_in_person_enrollment and !properties.event_properties.fraud_check_failed)
                  or (name not in %{gpo_verification_submitted})
+        | filter (name = %{fraud_review_passed} and properties.event_properties.success = 1)
+                 or (name != %{fraud_review_passed})
         | fields
             coalesce(properties.event_properties.fraud_review_pending, 0) AS fraud_review_pending
           , coalesce(properties.event_properties.gpo_verification_pending, 0) AS gpo_verification_pending
