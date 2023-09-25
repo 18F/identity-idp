@@ -8,8 +8,7 @@ module TwoFactorAuthCode
                 :otp_make_default_number,
                 :unconfirmed_phone,
                 :otp_expiration,
-                :in_multi_mfa_selection_flow,
-                :data
+                :in_multi_mfa_selection_flow
 
     alias_method :unconfirmed_phone?, :unconfirmed_phone
     alias_method :in_multi_mfa_selection_flow?, :in_multi_mfa_selection_flow

@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 RSpec.feature 'at second mfa setup' do
-  include DocAuthHelper
-  include SamlAuthHelper
   include WebAuthnHelper
 
   describe 'adding a phone as a second mfa' do
