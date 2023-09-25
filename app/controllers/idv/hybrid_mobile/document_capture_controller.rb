@@ -19,7 +19,7 @@ module Idv
 
       def update
         result = handle_stored_result
-        document_capture_session.update!(ocr_confirmation_pending: false) if document_capture_session.ocr_confirmation_pending?
+        confirm_ocr
 
         analytics.idv_doc_auth_document_capture_submitted(**result.to_h.merge(analytics_arguments))
 
@@ -69,10 +69,17 @@ module Idv
 
       def confirm_document_capture_needed
         return unless stored_result&.success?
+        return unless stored_result.captured_at # 50/50 - to be removed
 
         if stored_result.captured_at > document_capture_session.requested_at
           redirect_to idv_hybrid_mobile_capture_complete_url
         end
+      end
+
+      def confirm_ocr
+        return unless document_capture_session.ocr_confirmation_pending
+
+        document_capture_session.update!(ocr_confirmation_pending: false)
       end
     end
   end
