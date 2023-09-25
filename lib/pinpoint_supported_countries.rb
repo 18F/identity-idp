@@ -84,7 +84,7 @@ class PinpointSupportedCountries
 
         CountrySupport.new(
           iso_code: iso_code,
-          name: trim_spaces(sms_config['Country or region']),
+          name: trim_spaces_digits(sms_config['Country or region']),
           supports_sms: supports_sms,
         )
       end
@@ -157,6 +157,10 @@ class PinpointSupportedCountries
 
   def trim_spaces(str)
     str.gsub(/\s{2,}/, ' ').gsub(/\s+$/, '')
+  end
+
+  def trim_spaces_digits(str)
+    trim_spaces(str).gsub(/\d+$/, '')
   end
 
   def digits_only?(str)
