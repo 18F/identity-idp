@@ -123,8 +123,6 @@ en:
         https://fidoalliance.org/certification/fido-certified-products/ and if
         you believe this is our error, please contact at %{link}.
       choose_another_method: choose another authentication method
-      general_error: We were unable to add face or touch unlock. Please try again or
-        choose another method.
       not_supported: Sorry, your browser does not support FIDO platform
         authenticators. The latest versions of Chrome, Firefox, Edge, and Safari
         support FIDO platform authenticators.

@@ -192,7 +192,7 @@ module Users
           flash.now[:error] = t('errors.webauthn_setup.unique_name')
         end
       else
-        flash[:error] = t(
+        flash.now[:error] = t(
           'errors.webauthn_setup.general_error_html',
           link_html: t('errors.webauthn_setup.additional_methods_link'),
         )

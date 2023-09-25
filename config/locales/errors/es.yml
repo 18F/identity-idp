@@ -133,8 +133,6 @@ es:
         cree que se trata de un error nuestro, póngase en contacto con nosotros
         en %{link}.
       choose_another_method: elija otro método de autenticación
-      general_error: No pudimos agregar el desbloqueo con la cara o con la huella
-        digital. Inténtelo de nuevo o elija otro método de autenticación.
       not_supported: Lo sentimos, pero su navegador no es compatible con el desbloqueo
         facial o táctil.
       unique_name: Ese nombre de dispositivo ha sido utilizado. Por favor, seleccione

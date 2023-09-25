@@ -143,9 +143,6 @@ fr:
         si vous pensez qu’il s’agit d’une erreur de notre part, veuillez nous
         contacter à %{link}.
       choose_another_method: choisir une autre méthode d’authentification
-      general_error: Nous n’avons pas pu ajouter le déverrouillage facial ni le
-        déverrouillage tactile. Veuillez réessayer ou choisir une autre méthode
-        d’authentification.
       not_supported: Nous sommes désolés, mais votre navigateur ne prend pas en charge
         le déverrouillage du visage ou du toucher.
       unique_name: Ce nom d’appareil a été utilisé. Veuillez sélectionner un autre nom
