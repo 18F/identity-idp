@@ -214,14 +214,13 @@ fr:
         %{link_html} et en entrant le code de vérification.
       subject: Nous avons envoyé une lettre à l’adresse que vous avez en dossier
     letter_reminder_14_days:
-      body_html: Vous avez demandé une lettre pour vérifier votre identité le
-        <strong>%{date_letter_was_sent}</strong>. Vous devrez saisir le code de
-        vérification figurant dans la lettre pour terminer la vérification par
-        courrier. Reconnectez-vous à %{app_name} pour terminer la vérification
-        de votre identité. %{help_link}.
+      body_html: <p>Vous avez demandé une lettre avec un code de vérification le
+        <strong>%{date_letter_was_sent}</strong>.</p><p>Reconnectez-vous à
+        %{app_name} et saisissez le code de vérification pour terminer la
+        vérification de votre identité. %{help_link}.</p>
       did_not_get_a_letter_html: Si vous n’avez pas reçu cette lettre, %{another_letter_link_html}.
       finish: Terminer la vérification de votre identité
-      sign_in_and_request_another_letter: connectez-vous pour en demander une autre.
+      sign_in_and_request_another_letter: connectez-vous pour en demander une autre
       subject: Terminer la vérification de votre identité
     new_device_sign_in:
       disavowal_link: réinitialiser votre mot de passe

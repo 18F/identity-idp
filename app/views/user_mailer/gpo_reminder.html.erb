@@ -1,4 +1,4 @@
-<p>
+
   <%= help_link = link_to(
         t('idv.troubleshooting.options.learn_more_verify_by_mail'),
         help_center_redirect_url(
@@ -9,14 +9,13 @@
         ),
         { style: "text-decoration: 'underline'" },
       )
-
       t(
         'user_mailer.letter_reminder_14_days.body_html',
         date_letter_was_sent: @gpo_verification_pending_at,
         app_name: APP_NAME,
         help_link: help_link,
       ) %>
-</p>
+
 
 <table class="button expanded large radius">
   <tbody>

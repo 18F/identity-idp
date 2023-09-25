@@ -194,11 +194,10 @@ en:
         verification code.
       subject: We mailed a letter to the address you have on file
     letter_reminder_14_days:
-      body_html: You requested a letter to verify your identity on
-        <strong>%{date_letter_was_sent}</strong>. You’ll need to enter the
-        verification code from the letter to finish verifying your identity.
-        Sign back in to %{app_name} to finish verifying your identity.
-        %{help_link}.
+      body_html: <p>You requested a letter with a verification code on
+        <strong>%{date_letter_was_sent}</strong>.</p><p>Sign back in to
+        %{app_name} and enter the verification code to finish verifying your
+        identity. %{help_link}.</p>
       did_not_get_a_letter_html: If you didn’t get this letter, %{another_letter_link_html}.
       finish: Finish verifying your identity
       sign_in_and_request_another_letter: sign in to request another letter
