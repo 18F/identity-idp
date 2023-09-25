@@ -70,7 +70,7 @@ module Idv
       def confirm_document_capture_needed
         return unless stored_result&.success?
 
-        if stored_result.created_at > document_capture_session.requested_at
+        if stored_result.captured_at > document_capture_session.requested_at
           redirect_to idv_hybrid_mobile_capture_complete_url
         end
       end

@@ -21,7 +21,7 @@ class DocumentCaptureSession < ApplicationRecord
     session_result.success = doc_auth_response.success?
     session_result.pii = doc_auth_response.pii_from_doc
     session_result.attention_with_barcode = doc_auth_response.attention_with_barcode?
-    session_result.created_at = Time.zone.now
+    session_result.captured_at = Time.zone.now
     EncryptedRedisStructStorage.store(
       session_result,
       expires_in: IdentityConfig.store.doc_capture_request_valid_for_minutes.minutes.seconds.to_i,
@@ -32,7 +32,7 @@ class DocumentCaptureSession < ApplicationRecord
 
   def store_failed_auth_image_fingerprint(front_image_fingerprint, back_image_fingerprint)
     session_result.success = false
-    session_result.created_at = Time.zone.now
+    session_result.captured_at = Time.zone.now
     session_result.add_failed_front_image!(front_image_fingerprint) if front_image_fingerprint
     session_result.add_failed_back_image!(back_image_fingerprint) if back_image_fingerprint
     EncryptedRedisStructStorage.store(
