@@ -20,7 +20,7 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
         ['Num. SPs', 'Num. users', 'Percentage'],
         ['Total (all >1)', 0, 0]],
        [{ title: 'Total proofed identities' },
-        ['Total proofed identities (Feb-2021)', 0]]]
+        [['Total proofed identities (Feb-2021)'], [0]]]]
 
     expect(ReportMailer).to receive(:monthly_key_metrics_report).with(
       name: name, email: email, month: report_date, csv_report: expected_csv,

@@ -30,8 +30,8 @@ RSpec.describe Reports::MonthlyAccountReuseReport do
     let(:body_of_report) do
       "\"{:title=>\"\"IDV app reuse rate Feb-2021\"\", :float_as_percent=>true, :precision=>4}\","\
       "\"[\"\"Num. SPs\"\", \"\"Num. users\"\", \"\"Percentage\"\"]\",\"[\"\"Total (all >1)\"\", "\
-      "0, 0]\"\n\"{:title=>\"\"Total proofed identities\"\"}\",\"[\"\"Total proofed identities "\
-      "(Feb-2021)\"\", 0]\"\n"
+      "0, 0]\"\n\"{:title=>\"\"Total proofed identities\"\"}\",\"[[\"\"Total proofed identities "\
+      "(Feb-2021)\"\"], [0]]\"\n"
     end
 
     it 'uploads a file to S3 based on the report date' do
@@ -141,7 +141,7 @@ RSpec.describe Reports::MonthlyAccountReuseReport do
                  ['Total (all >1)', 5, 50.0]],
                 [
                   { title: 'Total proofed identities' },
-                  ['Total proofed identities (Feb-2021)', 10],
+                  [['Total proofed identities (Feb-2021)'], [10]],
                 ],
               ].each do |row|
                 csv << row

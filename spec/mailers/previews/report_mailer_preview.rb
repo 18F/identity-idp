@@ -12,7 +12,7 @@ class ReportMailerPreview < ActionMailer::Preview
     ReportMailer.monthly_key_metrics_report(
       name: 'monthly-key-metrics-report',
       email: 'test@example.com',
-      month: 'September 2021',
+      month: 'February 2021',
       csv_report: [
         [
           { title: 'IDV app reuse rate Feb-2021', float_as_percent: true, precision: 4 },
@@ -26,7 +26,8 @@ class ReportMailerPreview < ActionMailer::Preview
         ],
         [
           { title: 'Total proofed identities' },
-          ['Total proofed identities (Feb-2021)', 1972368],
+          ['Total proofed identities (Feb-2021)'],
+          [1972368]
         ],
       ],
     )

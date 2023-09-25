@@ -149,8 +149,8 @@ module Reports
       csv_array_2 = []
       csv_array_2 << { title: 'Total proofed identities' }
       csv_array_2 << [
-        "Total proofed identities (#{stats_month})",
-        monthly_reuse_report[:total_proofed],
+        ["Total proofed identities (#{stats_month})"],
+        [monthly_reuse_report[:total_proofed]],
       ]
       tables_array << csv_array_2
 
