@@ -22,6 +22,7 @@ RSpec.describe Users::PhoneSetupController do
         stub_analytics
         stub_sign_in_before_2fa(user)
         subject.user_session[:mfa_selections] = ['voice']
+        subject.user_session[:in_account_creation_flow] = true
       end
 
       it 'renders the index view' do

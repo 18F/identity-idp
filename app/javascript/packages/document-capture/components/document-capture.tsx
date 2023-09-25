@@ -117,6 +117,7 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
                     isFailedDocType: submissionError.isFailedDocType,
                     captureHints: submissionError.hints,
                     pii: submissionError.pii,
+                    failedImageFingerprints: submissionError.failed_image_fingerprints,
                   })(ReviewIssuesStep)
                 : ReviewIssuesStep,
             title: t('errors.doc_auth.rate_limited_heading'),

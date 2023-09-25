@@ -72,10 +72,17 @@ fr:
       card_type: Réessayez avec votre permis de conduire ou carte d’identité délivrée
         par l’État.
       doc:
-        doc_type_check: Les autres pièces d’identité ne sont pas acceptées.
-        wrong_id_type: Nous n’acceptons que les permis de conduire ou les cartes
-          d’identité délivrées par l’État. Les autres pièces d’identité ne sont
-          pas acceptées.
+        doc_type_check: Votre permis de conduire ou votre carte d’identité doit être
+          établi par un État ou un territoire des États-Unis. Nous n’acceptons
+          pas les cartes d’identité militaires, les passeports américains ou
+          autres documents d’identification.
+        resubmit_failed_image: Vous avez déjà essayé cette image et elle a échoué.
+          Veuillez essayer d’ajouter une image différente.
+        wrong_id_type_html: Nous n’acceptons qu’un permis de conduire ou une carte
+          d’identité délivrée par un état ou un territoire des États-Unis. Nous
+          n’acceptons pas les cartes d’identité militaires, les passeports
+          américains ou autres documents d’identification. <a>En savoir plus sur
+          les pièces d’identité acceptées</a>
       dpi:
         failed_short: L’image est trop petite ou floue, veuillez réessayer.
         top_msg: Nous n’avons pas pu lire votre pièce d’identité. La taille de votre
@@ -266,8 +273,8 @@ fr:
           enverrons un SMS à votre numéro de téléphone. Cela prend quelques
           minutes.'
         - '<strong>Vérification par courrier</strong> : Nous vous enverrons une
-          lettre à votre adresse personnelle. Cela prend de 3 à 7 jours
-          ouvrables.'
+          lettre à votre adresse personnelle. Cela prend <strong>5 à 10
+          jours</strong>.'
       welcome: 'Vous aurez besoin de votre:'
     tips:
       document_capture_header_text: 'Pour obtenir les meilleurs résultats:'

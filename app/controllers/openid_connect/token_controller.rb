@@ -8,9 +8,14 @@ module OpenidConnect
       @token_form = OpenidConnectTokenForm.new(token_params)
 
       result = @token_form.submit
-      analytics.openid_connect_token(**result.to_h)
+      response = @token_form.response
 
-      render json: @token_form.response,
+      analytics_attributes = result.to_h
+      analytics_attributes[:expires_in] = response[:expires_in]
+
+      analytics.openid_connect_token(**analytics_attributes)
+
+      render json: response,
              status: (result.success? ? :ok : :bad_request)
     end
 

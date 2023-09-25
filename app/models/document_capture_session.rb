@@ -4,20 +4,36 @@ class DocumentCaptureSession < ApplicationRecord
   belongs_to :user
 
   def load_result
+    return nil unless result_id.present?
     EncryptedRedisStructStorage.load(result_id, type: DocumentCaptureSessionResult)
   end
 
   def store_result_from_response(doc_auth_response)
+    session_result = load_result || DocumentCaptureSessionResult.new(
+      id: generate_result_id,
+    )
+    session_result.success = doc_auth_response.success?
+    session_result.pii = doc_auth_response.pii_from_doc
+    session_result.attention_with_barcode = doc_auth_response.attention_with_barcode?
     EncryptedRedisStructStorage.store(
-      DocumentCaptureSessionResult.new(
-        id: generate_result_id,
-        success: doc_auth_response.success?,
-        pii: doc_auth_response.pii_from_doc,
-        attention_with_barcode: doc_auth_response.attention_with_barcode?,
-      ),
+      session_result,
       expires_in: IdentityConfig.store.doc_capture_request_valid_for_minutes.minutes.seconds.to_i,
     )
     self.ocr_confirmation_pending = doc_auth_response.attention_with_barcode?
+    save!
+  end
+
+  def store_failed_auth_image_fingerprint(front_image_fingerprint, back_image_fingerprint)
+    session_result = load_result || DocumentCaptureSessionResult.new(
+      id: generate_result_id,
+    )
+    session_result.success = false
+    session_result.add_failed_front_image!(front_image_fingerprint) if front_image_fingerprint
+    session_result.add_failed_back_image!(back_image_fingerprint) if back_image_fingerprint
+    EncryptedRedisStructStorage.store(
+      session_result,
+      expires_in: IdentityConfig.store.doc_capture_request_valid_for_minutes.minutes.seconds.to_i,
+    )
     save!
   end
 

@@ -51,7 +51,7 @@ RSpec.describe AccessTokenVerifier do
       let(:access_token) { identity.access_token }
       before do
         identity.save!
-        OutOfBandSessionAccessor.new(identity.rails_session_id).put_pii({}, 1)
+        OutOfBandSessionAccessor.new(identity.rails_session_id).put_pii({}, 5)
       end
 
       it 'is successful' do
@@ -65,7 +65,7 @@ RSpec.describe AccessTokenVerifier do
     context 'with a valid access_token' do
       before do
         identity.save!
-        OutOfBandSessionAccessor.new(identity.rails_session_id).put_pii({}, 1)
+        OutOfBandSessionAccessor.new(identity.rails_session_id).put_pii({}, 5)
       end
       let(:access_token) { identity.access_token }
 

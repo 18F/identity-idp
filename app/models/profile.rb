@@ -189,13 +189,6 @@ class Profile < ApplicationRecord
     )
   end
 
-  def bump_fraud_review_pending_timestamps
-    update!(
-      fraud_review_pending_at: Time.zone.now,
-      fraud_rejection_at: nil,
-    )
-  end
-
   def reject_for_fraud(notify_user:)
     update!(
       active: false,

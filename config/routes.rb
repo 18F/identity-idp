@@ -207,6 +207,9 @@ Rails.application.routes.draw do
     get '/rules_of_use' => 'users/rules_of_use#new'
     post '/rules_of_use' => 'users/rules_of_use#create'
 
+    get '/second_mfa_reminder' => 'users/second_mfa_reminder#new'
+    post '/second_mfa_reminder' => 'users/second_mfa_reminder#create'
+
     get '/piv_cac' => 'users/piv_cac_authentication_setup#new', as: :setup_piv_cac
     get '/piv_cac_error' => 'users/piv_cac_authentication_setup#error', as: :setup_piv_cac_error
     delete '/piv_cac' => 'users/piv_cac_authentication_setup#delete', as: :disable_piv_cac

@@ -11,7 +11,7 @@ module Idv
 
     def show
       @step_indicator_steps = step_indicator_steps
-      @ssn = idv_session.ssn || pii_from_doc[:ssn]
+      @ssn = idv_session.ssn
 
       analytics.idv_doc_auth_verify_visited(**analytics_arguments)
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
@@ -56,7 +56,7 @@ module Idv
     end
 
     def pii
-      @pii = pii_from_doc
+      @pii = idv_session.pii_from_doc
     end
   end
 end

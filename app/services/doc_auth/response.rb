@@ -45,8 +45,6 @@ module DocAuth
       @doc_type_supported
     end
 
-    alias_method :id_type_supported?, :doc_type_supported?
-
     # We use `#to_h` to serialize this for logging. Make certain not to include
     # the `#pii` value here.
     def to_h
@@ -67,6 +65,11 @@ module DocAuth
 
     def attention_with_barcode?
       @attention_with_barcode
+    end
+
+    def network_error?
+      return false unless @errors
+      return !!@errors&.with_indifferent_access&.dig(:network)
     end
   end
 end

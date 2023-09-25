@@ -160,7 +160,7 @@ RSpec.describe Idv::SessionErrorsController do
       let(:user) { create(:user) }
 
       before do
-        RateLimiter.new(rate_limit_type: :proof_address, user: user).increment!
+        RateLimiter.new(rate_limit_type: :idv_resolution, user: user).increment!
       end
 
       it 'assigns remaining count' do
@@ -180,7 +180,7 @@ RSpec.describe Idv::SessionErrorsController do
           'IdV: session error visited',
           hash_including(
             type: action.to_s,
-            attempts_remaining: 5,
+            attempts_remaining: IdentityConfig.store.idv_max_attempts - 1,
           ),
         )
         response
@@ -236,7 +236,7 @@ RSpec.describe Idv::SessionErrorsController do
       let(:user) { create(:user) }
 
       before do
-        RateLimiter.new(rate_limit_type: :proof_address, user: user).increment_to_limited!
+        RateLimiter.new(rate_limit_type: :idv_resolution, user: user).increment_to_limited!
       end
 
       it 'assigns expiration time' do
@@ -246,9 +246,9 @@ RSpec.describe Idv::SessionErrorsController do
       end
 
       it 'assigns sp_name' do
-        decorated_session = double
-        allow(decorated_session).to receive(:sp_name).and_return('Example SP')
-        allow(controller).to receive(:decorated_session).and_return(decorated_session)
+        decorated_sp_session = double
+        allow(decorated_sp_session).to receive(:sp_name).and_return('Example SP')
+        allow(controller).to receive(:decorated_sp_session).and_return(decorated_sp_session)
         get action
         expect(assigns(:sp_name)).to eql('Example SP')
       end
@@ -258,7 +258,7 @@ RSpec.describe Idv::SessionErrorsController do
           'IdV: session error visited',
           hash_including(
             type: action.to_s,
-            attempts_remaining: 5,
+            attempts_remaining: 0,
           ),
         )
         get action
@@ -285,7 +285,7 @@ RSpec.describe Idv::SessionErrorsController do
           rate_limit_type: :proof_ssn,
           target: Pii::Fingerprinter.fingerprint(ssn),
         ).increment_to_limited!
-        controller.user_session['idv/doc_auth'] = { pii_from_doc: { ssn: ssn } }
+        allow(idv_session).to receive(:ssn).and_return(ssn)
       end
 
       it 'assigns expiration time' do
@@ -303,30 +303,6 @@ RSpec.describe Idv::SessionErrorsController do
           ),
         )
         get action
-      end
-
-      context 'with ssn in idv_session' do
-        before do
-          controller.user_session['idv/doc_auth'] = {}
-          allow(idv_session).to receive(:ssn).and_return(ssn)
-        end
-
-        it 'assigns expiration time' do
-          get action
-
-          expect(assigns(:expires_at)).not_to eq(Time.zone.now)
-        end
-
-        it 'logs an event with attempts remaining' do
-          expect(@analytics).to receive(:track_event).with(
-            'IdV: session error visited',
-            hash_including(
-              type: 'ssn_failure',
-              attempts_remaining: 0,
-            ),
-          )
-          get action
-        end
       end
     end
   end

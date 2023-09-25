@@ -226,9 +226,9 @@ module AnalyticsEvents
   end
 
   # Tracks when the user visits the Backup Code Regenerate page.
-  # @param [Boolean] in_multi_mfa_selection_flow whether user is going through MFA selection Flow
-  def backup_code_regenerate_visit(in_multi_mfa_selection_flow:, **extra)
-    track_event('Backup Code Regenerate Visited', in_multi_mfa_selection_flow:, **extra)
+  # @param [Boolean] in_account_creation_flow whether user is going through creation flow
+  def backup_code_regenerate_visit(in_account_creation_flow:, **extra)
+    track_event('Backup Code Regenerate Visited', in_account_creation_flow:, **extra)
   end
 
   # Track user creating new BackupCodeSetupForm, record form submission Hash
@@ -697,6 +697,15 @@ module AnalyticsEvents
       'IdV: doc auth exception visited',
       step_name: step_name,
       remaining_attempts: remaining_attempts,
+      **extra,
+    )
+  end
+
+  # @param [String] side the side of the image submission
+  def idv_doc_auth_failed_image_resubmitted(side:, **extra)
+    track_event(
+      'IdV: failed doc image resubmitted',
+      side: side,
       **extra,
     )
   end
@@ -2291,7 +2300,7 @@ module AnalyticsEvents
   # The system encountered an error and the proofing results are missing
   def idv_proofing_resolution_result_missing(proofing_components: nil, **extra)
     track_event(
-      'Proofing Resolution Result Missing',
+      'IdV: proofing resolution result missing',
       proofing_components: proofing_components,
       **extra,
     )
@@ -2635,15 +2644,15 @@ module AnalyticsEvents
 
   # Tracks when the user has added the MFA method piv_cac to their account
   # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
-  # @param [Boolean] in_multi_mfa_selection_flow whether user is going through MFA selection Flow
-  def multi_factor_auth_added_piv_cac(enabled_mfa_methods_count:, in_multi_mfa_selection_flow:,
+  # @param [Boolean] in_account_creation_flow whether user is going through creation flow
+  def multi_factor_auth_added_piv_cac(enabled_mfa_methods_count:, in_account_creation_flow:,
                                       **extra)
     track_event(
       'Multi-Factor Authentication: Added PIV_CAC',
       {
         method_name: :piv_cac,
         enabled_mfa_methods_count:,
-        in_multi_mfa_selection_flow:,
+        in_account_creation_flow:,
         **extra,
       }.compact,
     )
@@ -2651,14 +2660,14 @@ module AnalyticsEvents
 
   # Tracks when the user has added the MFA method TOTP to their account
   # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
-  # @param [Boolean] in_multi_mfa_selection_flow whether user is going through MFA selection Flow
-  def multi_factor_auth_added_totp(enabled_mfa_methods_count:, in_multi_mfa_selection_flow:,
+  # @param [Boolean] in_account_creation_flow whether user is going through creation flow
+  def multi_factor_auth_added_totp(enabled_mfa_methods_count:, in_account_creation_flow:,
                                    **extra)
     track_event(
       'Multi-Factor Authentication: Added TOTP',
       {
         method_name: :totp,
-        in_multi_mfa_selection_flow:,
+        in_account_creation_flow:,
         enabled_mfa_methods_count:,
         **extra,
       }.compact,
@@ -2690,17 +2699,17 @@ module AnalyticsEvents
 
   # Tracks when the user visits the backup code confirmation setup page
   # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
-  # @param [Boolean] in_multi_mfa_selection_flow tell whether its in MFA selection flow or not
+  # @param [Boolean] in_account_creation_flow whether user is going through creation flow
   def multi_factor_auth_enter_backup_code_confirmation_visit(
     enabled_mfa_methods_count:,
-    in_multi_mfa_selection_flow:,
+    in_account_creation_flow:,
     **extra
   )
     track_event(
       'Multi-Factor Authentication: enter backup code confirmation visited',
       {
         enabled_mfa_methods_count:,
-        in_multi_mfa_selection_flow:,
+        in_account_creation_flow:,
         **extra,
       }.compact,
     )
@@ -2859,13 +2868,13 @@ module AnalyticsEvents
   # @param [Boolean] success Whether authenticator setup was successful
   # @param [Hash] errors Authenticator setup error reasons, if unsuccessful
   # @param [String] multi_factor_auth_method
-  # @param [Boolean] in_multi_mfa_selection_flow
+  # @param [Boolean] in_account_creation_flow whether user is going through account creation flow
   # @param [integer] enabled_mfa_methods_count
   def multi_factor_auth_setup(
     success:,
     multi_factor_auth_method:,
     enabled_mfa_methods_count:,
-    in_multi_mfa_selection_flow:,
+    in_account_creation_flow:,
     errors: nil,
     **extra
   )
@@ -2874,7 +2883,7 @@ module AnalyticsEvents
       success: success,
       errors: errors,
       multi_factor_auth_method: multi_factor_auth_method,
-      in_multi_mfa_selection_flow: in_multi_mfa_selection_flow,
+      in_account_creation_flow: in_account_creation_flow,
       enabled_mfa_methods_count: enabled_mfa_methods_count,
       **extra,
     )
@@ -3137,12 +3146,16 @@ module AnalyticsEvents
   # @param [String] client_id
   # @param [String] user_id
   # @param [String] code_digest hash of "code" param
-  def openid_connect_token(client_id:, user_id:, code_digest:, **extra)
+  # @param [Integer, nil] expires_in time to expiration of token
+  # @param [Integer, nil] ial ial level of identity
+  def openid_connect_token(client_id:, user_id:, code_digest:, expires_in:, ial:, **extra)
     track_event(
       'OpenID Connect: token',
       client_id: client_id,
       user_id: user_id,
       code_digest: code_digest,
+      expires_in: expires_in,
+      ial: ial,
       **extra,
     )
   end
@@ -3386,11 +3399,11 @@ module AnalyticsEvents
 
   # @identity.idp.previous_event_name User Registration: piv cac setup visited
   # Tracks when user's piv cac setup
-  # @param [Boolean] in_multi_mfa_selection_flow
-  def piv_cac_setup_visit(in_multi_mfa_selection_flow:, **extra)
+  # @param [Boolean] in_account_creation_flow
+  def piv_cac_setup_visit(in_account_creation_flow:, **extra)
     track_event(
       'PIV CAC setup visited',
-      in_multi_mfa_selection_flow:,
+      in_account_creation_flow:,
       **extra,
     )
   end
@@ -3689,6 +3702,17 @@ module AnalyticsEvents
     )
   end
 
+  # User dismissed the second MFA reminder page
+  # @param [Boolean] opted_to_add Whether the user chose to add a method
+  def second_mfa_reminder_dismissed(opted_to_add:, **extra)
+    track_event('Second MFA Reminder Dismissed', opted_to_add:, **extra)
+  end
+
+  # User visited the second MFA reminder page
+  def second_mfa_reminder_visit
+    track_event('Second MFA Reminder Visited')
+  end
+
   # Tracks when security event is received
   # @param [Boolean] success
   # @param [String] error_code
@@ -3730,12 +3754,6 @@ module AnalyticsEvents
   # tracks when a user's session is timed out
   def session_total_duration_timeout
     track_event('User Maximum Session Length Exceeded')
-  end
-
-  # Tracks if a user clicks the "Show Password button"
-  # @param [String] path URL path where the click occurred
-  def show_password_button_clicked(path:, **extra)
-    track_event('Show Password Button Clicked', path: path, **extra)
   end
 
   # Tracks if a user clicks the "You will also need" accordion on the homepage
@@ -3887,12 +3905,12 @@ module AnalyticsEvents
   # @param [Boolean] user_signed_up
   # @param [Boolean] totp_secret_present
   # @param [Integer] enabled_mfa_methods_count
-  # @param [Boolean] in_multi_mfa_selection_flow
+  # @param [Boolean] in_account_creation_flow
   def totp_setup_visit(
     user_signed_up:,
     totp_secret_present:,
     enabled_mfa_methods_count:,
-    in_multi_mfa_selection_flow:,
+    in_account_creation_flow:,
     **extra
   )
     track_event(
@@ -3900,7 +3918,7 @@ module AnalyticsEvents
       user_signed_up:,
       totp_secret_present:,
       enabled_mfa_methods_count:,
-      in_multi_mfa_selection_flow:,
+      in_account_creation_flow:,
       **extra,
     )
   end
@@ -4144,6 +4162,7 @@ module AnalyticsEvents
   # @param [Boolean] success
   # @param [Hash] mfa_method_counts
   # @param [Integer] enabled_mfa_methods_count
+  # @param [Boolean] second_mfa_reminder_conversion Whether it is a result of second MFA reminder.
   # @param [Hash] pii_like_keypaths
   # Tracks when a user has completed MFA setup
   def user_registration_mfa_setup_complete(
@@ -4151,6 +4170,7 @@ module AnalyticsEvents
     mfa_method_counts:,
     enabled_mfa_methods_count:,
     pii_like_keypaths:,
+    second_mfa_reminder_conversion: nil,
     **extra
   )
     track_event(
@@ -4160,6 +4180,7 @@ module AnalyticsEvents
         mfa_method_counts: mfa_method_counts,
         enabled_mfa_methods_count: enabled_mfa_methods_count,
         pii_like_keypaths: pii_like_keypaths,
+        second_mfa_reminder_conversion:,
         **extra,
       }.compact,
     )

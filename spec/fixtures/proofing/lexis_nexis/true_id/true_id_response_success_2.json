@@ -671,6 +671,11 @@
       },
       {
         "Group": "IDAUTH_FIELD_DATA",
+        "Name": "Fields_CountryCode",
+        "Values": [{"Value": "USA"}]
+      },
+      {
+        "Group": "IDAUTH_FIELD_DATA",
         "Name": "Fields_Address",
         "Values": [{"Value": "123 ABC AVExE2x80xA8ANYTOWN, MD 12345"}]
       },

@@ -8,6 +8,7 @@ module Idv
     validates_presence_of :document_capture_session
 
     validate :validate_images
+    validate :validate_duplicate_images, if: :image_resubmission_check?
     validate :limit_if_rate_limited
 
     def initialize(params, service_provider:, analytics: nil,
@@ -41,8 +42,9 @@ module Idv
         doc_pii_response: doc_pii_response,
       )
 
+      failed_fingerprints = store_failed_images(client_response, doc_pii_response)
+      response.extra[:failed_image_fingerprints] = failed_fingerprints
       track_event(response)
-
       response
     end
 
@@ -92,7 +94,6 @@ module Idv
         client_response: response,
         vendor_request_time_in_ms: timer.results['vendor_request'],
       )
-
       response
     end
 
@@ -122,7 +123,8 @@ module Idv
     end
 
     def extra_attributes
-      return @extra_attributes if defined?(@extra_attributes)
+      return @extra_attributes if defined?(@extra_attributes) &&
+                                  @extra_attributes&.dig('attempts') == attempts
       @extra_attributes = {
         attempts: attempts,
         remaining_attempts: remaining_attempts,
@@ -131,17 +133,26 @@ module Idv
         flow_path: params[:flow_path],
       }
 
+      @extra_attributes[:front_image_fingerprint] = front_image_fingerprint
+      @extra_attributes[:back_image_fingerprint] = back_image_fingerprint
+      @extra_attributes.merge!(getting_started_ab_test_analytics_bucket)
+      @extra_attributes
+    end
+
+    def front_image_fingerprint
+      return @front_image_fingerprint if @front_image_fingerprint
       if readable?(:front)
-        @extra_attributes[:front_image_fingerprint] =
+        @front_image_fingerprint =
           Digest::SHA256.urlsafe_base64digest(front_image_bytes)
       end
+    end
 
+    def back_image_fingerprint
+      return @back_image_fingerprint if @back_image_fingerprint
       if readable?(:back)
-        @extra_attributes[:back_image_fingerprint] =
+        @back_image_fingerprint =
           Digest::SHA256.urlsafe_base64digest(back_image_bytes)
       end
-
-      @extra_attributes.merge!(getting_started_ab_test_analytics_bucket)
     end
 
     def remaining_attempts
@@ -199,8 +210,31 @@ module Idv
       end
     end
 
+    def validate_duplicate_images
+      capture_result = document_capture_session&.load_result
+      return unless capture_result
+      error_sides = []
+      if capture_result&.failed_front_image?(front_image_fingerprint)
+        errors.add(
+          :front, t('doc_auth.errors.doc.resubmit_failed_image'), type: :duplicate_image
+        )
+        error_sides << 'front'
+      end
+
+      if capture_result&.failed_back_image?(back_image_fingerprint)
+        errors.add(
+          :back, t('doc_auth.errors.doc.resubmit_failed_image'), type: :duplicate_image
+        )
+        error_sides << 'back'
+      end
+      unless error_sides.empty?
+        analytics.idv_doc_auth_failed_image_resubmitted(
+          side: error_sides.length == 2 ? 'both' : error_sides[0], **extra_attributes,
+        )
+      end
+    end
+
     def limit_if_rate_limited
-      return unless document_capture_session
       return unless rate_limited?
 
       errors.add(:limit, t('errors.doc_auth.rate_limited_heading'), type: :rate_limited)
@@ -366,6 +400,54 @@ module Idv
         address: pii_from_doc[:address1],
         failure_reason: response.errors&.except(:hints)&.presence,
       )
+    end
+
+    ##
+    # Store failed image fingerprints in document_capture_session_result
+    # when client_response is not successful and not a network error
+    # ( http status except handled status 438, 439, 440 ) or doc_pii_response is not successful.
+    # @param [Object] client_response
+    # @param [Object] doc_pii_response
+    # @return [Object] latest failed fingerprints
+    def store_failed_images(client_response, doc_pii_response)
+      unless image_resubmission_check?
+        return {
+          front: [],
+          back: [],
+        }
+      end
+      # doc auth failed due to non network error or doc_pii is not valid
+      if client_response && !client_response.success? && !client_response.network_error?
+        errors_hash = client_response.errors&.to_h || {}
+        ## assume both sides' error presents or both sides' error missing
+        failed_front_fingerprint = extra_attributes[:front_image_fingerprint]
+        failed_back_fingerprint = extra_attributes[:back_image_fingerprint]
+        ## not both sides' error present nor both sides' error missing
+        ## equivalent to: only one side error presents
+        only_one_side_error = errors_hash[:front]&.present? ^ errors_hash[:back]&.present?
+        if only_one_side_error
+          ## find which side is missing
+          failed_front_fingerprint = nil unless errors_hash[:front]&.present?
+          failed_back_fingerprint = nil unless errors_hash[:back]&.present?
+        end
+        document_capture_session.
+          store_failed_auth_image_fingerprint(failed_front_fingerprint, failed_back_fingerprint)
+      elsif doc_pii_response && !doc_pii_response.success?
+        document_capture_session.store_failed_auth_image_fingerprint(
+          extra_attributes[:front_image_fingerprint],
+          extra_attributes[:back_image_fingerprint],
+        )
+      end
+      # retrieve updated data from session
+      captured_result = document_capture_session&.load_result
+      {
+        front: captured_result&.failed_front_image_fingerprints || [],
+        back: captured_result&.failed_back_image_fingerprints || [],
+      }
+    end
+
+    def image_resubmission_check?
+      IdentityConfig.store.doc_auth_check_failed_image_resubmission_enabled
     end
   end
 end

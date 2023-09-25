@@ -5,11 +5,12 @@ import { setupServer } from 'msw/node';
 import { rest } from 'msw';
 import type { SetupServer } from 'msw/node';
 import { SWRConfig } from 'swr';
-import FullAddressSearch from './in-person-full-address-search';
-import { LOCATIONS_URL } from './in-person-location-post-office-search-step';
+import FullAddressSearch from './full-address-search';
 
 describe('FullAddressSearch', () => {
   const sandbox = useSandbox();
+  const locationsURL = 'https://localhost:3000/locations/endpoint';
+  const usStatesTerritories = [['Delware', 'DE']];
 
   context('validates form', () => {
     it('displays an error for all required fields when input is empty', async () => {
@@ -17,8 +18,9 @@ describe('FullAddressSearch', () => {
       const { findByText, findAllByText } = render(
         <SWRConfig value={{ provider: () => new Map() }}>
           <FullAddressSearch
+            usStatesTerritories={usStatesTerritories}
             onFoundLocations={handleLocationsFound}
-            locationsURL={LOCATIONS_URL}
+            locationsURL={locationsURL}
             registerField={undefined}
             handleLocationSelect={undefined}
             disabled={undefined}
@@ -39,8 +41,9 @@ describe('FullAddressSearch', () => {
       const { findByText, findByLabelText, findAllByText } = render(
         <SWRConfig value={{ provider: () => new Map() }}>
           <FullAddressSearch
+            usStatesTerritories={usStatesTerritories}
             onFoundLocations={handleLocationsFound}
-            locationsURL={LOCATIONS_URL}
+            locationsURL={locationsURL}
             registerField={undefined}
             handleLocationSelect={undefined}
             disabled={undefined}
@@ -77,8 +80,9 @@ describe('FullAddressSearch', () => {
       const { findByText, findByLabelText, queryByText } = render(
         <SWRConfig value={{ provider: () => new Map() }}>
           <FullAddressSearch
+            usStatesTerritories={usStatesTerritories}
             onFoundLocations={handleLocationsFound}
-            locationsURL={LOCATIONS_URL}
+            locationsURL={locationsURL}
             registerField={undefined}
             handleLocationSelect={undefined}
             disabled={undefined}
@@ -114,7 +118,7 @@ describe('FullAddressSearch', () => {
     let server: SetupServer;
     before(() => {
       server = setupServer(
-        rest.post(LOCATIONS_URL, (_req, res, ctx) => res(ctx.json([{ name: 'Baltimore' }]))),
+        rest.post(locationsURL, (_req, res, ctx) => res(ctx.json([{ name: 'Baltimore' }]))),
       );
       server.listen();
     });
@@ -128,8 +132,9 @@ describe('FullAddressSearch', () => {
       const { findByText, findByLabelText } = render(
         <SWRConfig value={{ provider: () => new Map() }}>
           <FullAddressSearch
+            usStatesTerritories={usStatesTerritories}
             onFoundLocations={handleLocationsFound}
-            locationsURL={LOCATIONS_URL}
+            locationsURL={locationsURL}
             registerField={undefined}
             handleLocationSelect={undefined}
             disabled={undefined}
