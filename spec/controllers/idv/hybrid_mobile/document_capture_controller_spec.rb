@@ -114,6 +114,7 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController do
             state: 'WA',
           },
           attention_with_barcode: true,
+          captured_at: Time.zone.now,
         ),
       )
     end
