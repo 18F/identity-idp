@@ -11,13 +11,15 @@ module Proofing
         ssn = applicant[:ssn]
         zipcode = applicant[:zipcode]
 
-        return failed_to_contact_vendor_result if /Fail/i.match?(first_name)
         return failed_to_contact_vendor_result if ssn.match?(NO_CONTACT_SSN)
-        return timeout_result if first_name.match?(/Time/i)
+        case first_name
+        when /Fail/i then return failed_to_contact_vendor_result
+        when /Time/i then return timeout_result
+        when /Parse/i then return parse_error_result
+        when /Bad/i then return unverifiable_result(first_name: ['Unverified first name.'])
+        end
 
-        if first_name.match?(/Bad/i)
-          unverifiable_result(first_name: ['Unverified first name.'])
-        elsif !verified_ssn?(ssn)
+        if !verified_ssn?(ssn)
           unverifiable_result(ssn: ['Unverified SSN.'])
         elsif zipcode == UNVERIFIABLE_ZIP_CODE
           unverifiable_result(zipcode: ['Unverified ZIP code.'])
@@ -47,6 +49,16 @@ module Proofing
           success: false,
           errors: {},
           exception: Proofing::TimeoutError.new('address mock timeout'),
+        )
+      end
+
+      def parse_error_result
+        resolution_result(
+          success: false,
+          errors: {},
+          exception: Proofing::Aamva::VerificationError.new(
+            'Unexpected status code in response: 504',
+          ),
         )
       end
 
