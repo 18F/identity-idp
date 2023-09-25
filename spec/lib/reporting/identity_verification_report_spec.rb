@@ -36,6 +36,7 @@ RSpec.describe Reporting::IdentityVerificationReport do
         { 'user_id' => 'user3', 'name' => 'IdV: doc auth welcome submitted' },
         { 'user_id' => 'user3', 'name' => 'IdV: doc auth image upload vendor submitted', 'success' => '1' },
         { 'user_id' => 'user3', 'name' => 'IdV: final resolution', 'fraud_review_pending' => '1' },
+        { 'user_id' => 'user3', 'name' => 'Fraud: Profile review passed', 'success' => '1' },
 
         # Success through address confirmation user
         { 'user_id' => 'user4', 'name' => 'IdV: GPO verification submitted' },
@@ -80,10 +81,11 @@ RSpec.describe Reporting::IdentityVerificationReport do
         ['Workflow completed - In-Person Pending', '1'],
         ['Workflow completed - Fraud Review Pending', '1'],
         [],
-        ['Succesfully verified', '3'],
-        ['Succesfully verified - Inline', '1'],
-        ['Succesfully verified - GPO Code Entry', '1'],
-        ['Succesfully verified - In Person', '1'],
+        ['Successfully verified', '4'],
+        ['Successfully verified - Inline', '1'],
+        ['Successfully verified - GPO Code Entry', '1'],
+        ['Successfully verified - In Person', '1'],
+        ['Successfully verified - Passed Fraud Review', '1'],
       ]
 
       aggregate_failures do
@@ -115,6 +117,7 @@ RSpec.describe Reporting::IdentityVerificationReport do
         'IdV Reject: Doc Auth' => 3,
         'IdV Reject: Phone Finder' => 1,
         'IdV Reject: Verify' => 1,
+        'Fraud: Profile review passed' => 1,
       )
     end
   end
