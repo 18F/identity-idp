@@ -37,10 +37,6 @@ module IdvStepConcern
     redirect_to idv_mail_only_warning_url
   end
 
-  def pii_from_doc
-    flow_session[:pii_from_doc]
-  end
-
   def pii_from_user
     flow_session['pii_from_user']
   end
@@ -57,7 +53,7 @@ module IdvStepConcern
   end
 
   def confirm_document_capture_complete
-    return if pii_from_doc.present?
+    return if idv_session.pii_from_doc.present?
 
     if flow_path == 'standard'
       redirect_to idv_document_capture_url

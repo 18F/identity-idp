@@ -13,7 +13,7 @@ module Idv
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
         call('welcome', :view, true)
 
-      @sp_name = decorated_session.sp_name || APP_NAME
+      @sp_name = decorated_sp_session.sp_name || APP_NAME
       @title = t('doc_auth.headings.getting_started', sp_name: @sp_name)
 
       @ab_test_bucket = getting_started_ab_test_bucket

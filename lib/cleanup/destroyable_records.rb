@@ -15,7 +15,9 @@ class DestroyableRecords
 
   def print_data
     stdout.puts "You are about to delete a service provider with issuer #{service_provider.issuer}"
-    stdout.puts "The partner is #{integration.partner_account.name}"
+    if integration.partner_account.present?
+      stdout.puts "The partner is #{integration.partner_account.name}"
+    end
     stdout.puts "\n\n"
 
     stdout.puts 'Attributes:'

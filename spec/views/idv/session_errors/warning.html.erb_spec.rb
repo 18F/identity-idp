@@ -7,8 +7,8 @@ RSpec.describe 'idv/session_errors/warning.html.erb' do
   let(:user_session) { {} }
 
   before do
-    decorated_session = instance_double(ServiceProviderSessionDecorator, sp_name: sp_name)
-    allow(view).to receive(:decorated_session).and_return(decorated_session)
+    decorated_sp_session = instance_double(ServiceProviderSession, sp_name: sp_name)
+    allow(view).to receive(:decorated_sp_session).and_return(decorated_sp_session)
     allow(view).to receive(:user_session).and_return(user_session)
 
     assign(:remaining_attempts, remaining_attempts)

@@ -1,9 +1,9 @@
 <% title t('titles.sign_up.confirmation') %>
 
-<% if decorated_session.sp_name %>
+<% if decorated_sp_session.sp_name %>
   <%= render 'sign_up/registrations/sp_registration_heading' %>
 <% else %>
-  <%= render PageHeadingComponent.new.with_content(decorated_session.new_session_heading) %>
+  <%= render PageHeadingComponent.new.with_content(decorated_sp_session.new_session_heading) %>
 <% end %>
 
 <div class='margin-top-4'>

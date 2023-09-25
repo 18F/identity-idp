@@ -48,7 +48,7 @@ class IdTokenBuilder
 
   def timestamp_claims
     {
-      exp: @custom_expiration || expires,
+      exp: @custom_expiration || session_accessor.expires_at.to_i,
       iat: now.to_i,
       nbf: now.to_i,
     }

@@ -9,4 +9,10 @@ RSpec.describe ReportMailerPreview do
       expect { mailer_preview.warn_error }.to_not raise_error
     end
   end
+
+  describe '#tables_report' do
+    it 'generates a tables_report email' do
+      expect { mailer_preview.tables_report }.to_not raise_error
+    end
+  end
 end

@@ -58,6 +58,7 @@ interface AddressSearchProps {
   addressSearchURL: string;
   disabled: boolean;
   handleLocationSelect: ((e: any, id: number) => Promise<void>) | null | undefined;
+  noInPersonLocationsDisplay?: ComponentType<{ address: string }>;
   resultsHeaderComponent?: ComponentType;
   locationsURL: string;
   onFoundLocations: Dispatch<SetStateAction<FormattedLocation[] | null | undefined>>;

@@ -88,7 +88,7 @@ module OpenidConnect
     def identity_needs_verification?
       (@authorize_form.ial2_requested? &&
         (current_user.identity_not_verified? ||
-        decorated_session.requested_more_recent_verification?)) ||
+        decorated_sp_session.requested_more_recent_verification?)) ||
         current_user.reproof_for_irs?(service_provider: current_sp)
     end
 

@@ -15,8 +15,8 @@ es:
           message_html: '%{sp_name_html} necesita asegurarse de que es usted realmente y
             no alguien que se hace pasar por usted.'
           options_html:
-            - Continuar ahora y verificar por correo, que tarda de <strong>3 a 7
-              días laborables</strong>.
+            - Continuar ahora y verificar por correo, lo cual tarda entre
+              <strong>5 y 10 días</strong>.
             - Salir de Login.gov e inténtelo de nuevo más tarde.
           options_prompt: 'Usted puede:'
           status_page_html: Lamentablemente, estamos teniendo problemas técnicos.

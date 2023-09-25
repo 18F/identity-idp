@@ -1,7 +1,8 @@
 module DocAuth
   module Mock
     class ResultResponse < DocAuth::Response
-      include DocAuth::Acuant::ClassificationConcern
+      include DocAuth::ClassificationConcern
+      include DocAuth::Mock::YmlLoaderConcern
 
       attr_reader :uploaded_file, :config
 
@@ -71,6 +72,39 @@ module DocAuth
         parsed_alerts == [ATTENTION_WITH_BARCODE_ALERT]
       end
 
+      def self.create_image_error_response(status)
+        error = case status
+                when 438
+                  Errors::IMAGE_LOAD_FAILURE
+                when 439
+                  Errors::PIXEL_DEPTH_FAILURE
+                when 440
+                  Errors::IMAGE_SIZE_FAILURE
+                end
+        errors = { general: [error] }
+        message = [
+          'Unexpected HTTP response',
+          status,
+        ].join(' ')
+        exception = DocAuth::RequestError.new(message, status)
+        DocAuth::Response.new(
+          success: false,
+          errors: errors,
+          exception: exception,
+          extra: { vendor: 'Mock' },
+        )
+      end
+
+      def self.create_network_error_response
+        errors = { network: true }
+        DocAuth::Response.new(
+          success: false,
+          errors: errors,
+          exception: Faraday::TimeoutError.new,
+          extra: { vendor: 'Mock' },
+        )
+      end
+
       private
 
       def parsed_alerts
@@ -80,7 +114,7 @@ module DocAuth
       def parsed_data_from_uploaded_file
         return @parsed_data_from_uploaded_file if defined?(@parsed_data_from_uploaded_file)
 
-        @parsed_data_from_uploaded_file = parse_uri || parse_yaml
+        @parsed_data_from_uploaded_file = parse_uri || parse_yaml(uploaded_file)
       end
 
       def doc_auth_result
@@ -112,30 +146,6 @@ module DocAuth
         end
       rescue URI::InvalidURIError
         # no-op, allows falling through to YAML parsing
-      end
-
-      def parse_yaml
-        data = YAML.safe_load(uploaded_file, permitted_classes: [Date])
-        if data.is_a?(Hash)
-          if (m = data.dig('document', 'dob').to_s.
-            match(%r{(?<month>\d{1,2})/(?<day>\d{1,2})/(?<year>\d{4})}))
-            data['document']['dob'] = Date.new(m[:year].to_i, m[:month].to_i, m[:day].to_i)
-          end
-
-          if data.dig('document', 'zipcode')
-            data['document']['zipcode'] = data.dig('document', 'zipcode').to_s
-          end
-
-          JSON.parse(data.to_json) # converts Dates back to strings
-        else
-          { general: ["YAML data should have been a hash, got #{data.class}"] }
-        end
-      rescue Psych::SyntaxError
-        if uploaded_file.ascii_only? # don't want this error for images
-          { general: ['invalid YAML file'] }
-        else
-          {}
-        end
       end
 
       ATTENTION_WITH_BARCODE_ALERT = { 'name' => '2D Barcode Read', 'result' => 'Attention' }.freeze

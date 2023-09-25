@@ -84,18 +84,41 @@ RSpec.describe 'review_profile' do
     end
 
     context 'when the user has cancelled verification' do
+      before do
+        user.pending_profile.deactivate(:encryption_error)
+        create(:profile, :verify_by_mail_pending, user: user)
+      end
+
       it 'does not activate the profile' do
-        user.profiles.first.update!(gpo_verification_pending_at: user.created_at)
+        invoke_task
 
-        expect { invoke_task }.to raise_error(RuntimeError)
-
-        expect(user.reload.profiles.first.active).to eq(false)
+        expect(user.reload.active_profile).to be_nil
       end
 
       it 'logs an error to analytics' do
-        profile_fraud_review_pending_at = user.profiles.first.fraud_review_pending_at
-        user.profiles.first.update!(gpo_verification_pending_at: user.created_at)
+        invoke_task
 
+        expect(analytics).to have_logged_event(
+          'Fraud: Profile review passed',
+          success: false,
+          errors: { message: 'Error: User does not have a pending fraud review' },
+          exception: nil,
+          profile_fraud_review_pending_at: nil,
+        )
+      end
+    end
+
+    context 'when the pending profile is in an invalid state and cannot be activated' do
+      before do
+        # Profiles should not be gpo_verification_pending and fraud_review_pending at the same time.
+        user.pending_profile.update!(gpo_verification_pending_at: 1.day.ago)
+      end
+
+      it 'raises an error' do
+        expect { invoke_task }.to raise_error(RuntimeError)
+      end
+
+      it 'logs an exception' do
         expect { invoke_task }.to raise_error(RuntimeError)
 
         expect(analytics).to have_logged_event(
@@ -103,7 +126,7 @@ RSpec.describe 'review_profile' do
           success: false,
           errors: nil,
           exception: a_string_including('Attempting to activate profile with pending reason'),
-          profile_fraud_review_pending_at: profile_fraud_review_pending_at,
+          profile_fraud_review_pending_at: user.pending_profile.fraud_review_pending_at,
         )
       end
     end

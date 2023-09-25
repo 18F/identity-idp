@@ -1106,34 +1106,6 @@ RSpec.describe Profile do
     end
   end
 
-  describe '#bump_fraud_review_pending_timestamps' do
-    context 'a profile is fraud review pending' do
-      it 'updates the fraud review pending timestamp' do
-        profile = create(:profile, :fraud_review_pending, user: user)
-
-        profile.bump_fraud_review_pending_timestamps
-
-        expect(profile).to_not be_active
-        expect(profile.fraud_review_pending?).to eq(true)
-        expect(profile.fraud_rejection?).to eq(false)
-        expect(profile.fraud_pending_reason).to eq('threatmetrix_review')
-      end
-    end
-
-    context 'a profile is fraud review rejected' do
-      it 'removes the fraud rejection timestamp and updates the fraud review pending timestamp' do
-        profile = create(:profile, :fraud_rejection, user: user)
-
-        profile.bump_fraud_review_pending_timestamps
-
-        expect(profile).to_not be_active
-        expect(profile.fraud_review_pending?).to eq(true)
-        expect(profile.fraud_rejection?).to eq(false)
-        expect(profile.fraud_pending_reason).to eq('threatmetrix_review')
-      end
-    end
-  end
-
   describe '#reject_for_fraud' do
     before do
       # This is necessary because UserMailer reaches into the

@@ -8,7 +8,7 @@ module IdvSession
 
   def confirm_idv_needed
     return if idv_session_user.active_profile.blank? ||
-              decorated_session.requested_more_recent_verification? ||
+              decorated_sp_session.requested_more_recent_verification? ||
               idv_session_user.reproof_for_irs?(service_provider: current_sp)
 
     redirect_to idv_activated_url
@@ -30,10 +30,6 @@ module IdvSession
       current_user: idv_session_user,
       service_provider: current_sp,
     )
-  end
-
-  def flow_session
-    user_session['idv/doc_auth'] ||= {}
   end
 
   def irs_reproofing?
