@@ -10,16 +10,16 @@ class ReportMailerPreview < ActionMailer::Preview
 
   def monthly_key_metrics_report
     ReportMailer.monthly_key_metrics_report(
+      name: 'monthly-key-metrics-report',
       email: 'test@example.com',
       month: 'September 2021',
       csv_report: [
-        [
-          { title: 'Important Monthly Statistics' },
-          ['Fake', 'Report'],
-          ['a', 'b'],
-          ['c', 'd'],
-        ],
-      ]
+        [{ title: 'IDV app reuse rate Feb-2021' },
+         ['Num. SPs', 'Num. users', 'Percentage'],
+         ['Total (all >1)', 0, 0]],
+        [{ title: 'Total proofed identities' },
+         ['Total proofed identities (Feb-2021)', 0]],
+      ],
     )
   end
 

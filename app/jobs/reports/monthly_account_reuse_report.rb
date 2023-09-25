@@ -6,12 +6,12 @@ module Reports
 
     attr_reader :report_date
 
-    def initialize(report_date:)
-      @report_date = report_date
+    def initialize
+      @report_date = Time.zone.today
     end
 
-    def perform
-      _latest, path = generate_s3_paths(REPORT_NAME, 'json', now: report_date)
+    def perform(date = report_date)
+      _latest, path = generate_s3_paths(REPORT_NAME, 'json', now: date)
 
       if bucket_name.present?
         upload_file_to_s3_bucket(
@@ -125,31 +125,34 @@ module Reports
     def report_csv
       monthly_reuse_report = total_reuse_report
 
-      csv_array = []
-      csv_array << ["IDV app reuse rate #{stats_month}"]
-      csv_array << ['Num. SPs', 'Num. users', 'Percentage']
+      tables_array = []
+      csv_array_1 = []
+      csv_array_1 << { title: "IDV app reuse rate #{stats_month}" }
+      csv_array_1 << ['Num. SPs', 'Num. users', 'Percentage']
 
       monthly_reuse_report[:reuse_stats].each do |result_entry|
-        csv_array << [
+        csv_array_1 << [
           result_entry['num_agencies'],
           result_entry['num_users'],
           result_entry['percentage'],
         ]
       end
-      csv_array << [
+      csv_array_1 << [
         'Total (all >1)',
         monthly_reuse_report[:total_users],
         monthly_reuse_report[:total_percentage],
       ]
+      tables_array << csv_array_1
 
-      csv_array << []
-      csv_array << ['Total proofed identities']
-      csv_array << [
+      csv_array_2 = []
+      csv_array_2 << { title: 'Total proofed identities' }
+      csv_array_2 << [
         "Total proofed identities (#{stats_month})",
         monthly_reuse_report[:total_proofed],
       ]
+      tables_array << csv_array_2
 
-      csv_array
+      tables_array
     end
 
     def report_body

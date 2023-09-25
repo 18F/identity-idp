@@ -8,12 +8,13 @@ module Reports
 
     def perform(date)
       @report_date = date
-      csv_for_email = monthly_key_metrics_report_csv
+      csv_for_email = monthly_key_metrics_report_array
 
       emails.each do |email|
         ReportMailer.monthly_key_metrics_report(
           name: REPORT_NAME,
           email: email,
+          month: date,
           csv_report: csv_for_email,
         ).deliver_now
       end
@@ -27,17 +28,19 @@ module Reports
       emails
     end
 
-    def monthly_key_metrics_report_csv
-      CSV.generate do |csv|
-        account_reuse_report_csv.each do |row|
-          csv << row
-        end
+    def monthly_key_metrics_report_array
+      csv_array = []
+
+      account_reuse_report_csv.each do |row|
+        csv_array << row
       end
+
+      csv_array
     end
 
     # Individual Key Metric Report
     def account_reuse_report_csv
-      Reports::MonthlyAccountReuseReport.new(report_date: report_date).report_csv
+      Reports::MonthlyAccountReuseReport.new.report_csv
     end
   end
 end
