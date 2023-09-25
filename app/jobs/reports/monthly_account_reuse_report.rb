@@ -127,7 +127,9 @@ module Reports
 
       tables_array = []
       csv_array_1 = []
-      csv_array_1 << { title: "IDV app reuse rate #{stats_month}" }
+      csv_array_1 << { title: "IDV app reuse rate #{stats_month}",
+                       float_as_percent: true,
+                       precision: 4 }
       csv_array_1 << ['Num. SPs', 'Num. users', 'Percentage']
 
       monthly_reuse_report[:reuse_stats].each do |result_entry|

@@ -14,11 +14,20 @@ class ReportMailerPreview < ActionMailer::Preview
       email: 'test@example.com',
       month: 'September 2021',
       csv_report: [
-        [{ title: 'IDV app reuse rate Feb-2021' },
-         ['Num. SPs', 'Num. users', 'Percentage'],
-         ['Total (all >1)', 0, 0]],
-        [{ title: 'Total proofed identities' },
-         ['Total proofed identities (Feb-2021)', 0]],
+        [
+          { title: 'IDV app reuse rate Feb-2021', float_as_percent: true, precision: 4 },
+          ['Num. SPs', 'Num. users', 'Percentage'],
+          [2, 207422, 0.105164],
+          [3, 6700, 0.003397],
+          [4, 254, 0.000129],
+          [5, 26, 0.000013],
+          [6, 1, 0.000001],
+          ['Total (all >1)', 214403, 0.108703],
+        ],
+        [
+          { title: 'Total proofed identities' },
+          ['Total proofed identities (Feb-2021)', 1972368],
+        ],
       ],
     )
   end

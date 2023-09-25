@@ -4,7 +4,7 @@ require 'csv'
 RSpec.describe Reports::MonthlyAccountReuseReport do
   let(:report_date) { Date.new(2021, 3, 1) }
 
-  subject(:report) { Reports::MonthlyAccountReuseReport.new(report_date: report_date) }
+  subject(:report) { Reports::MonthlyAccountReuseReport.new }
 
   let(:s3_report_bucket_prefix) { 'reports-bucket' }
   let(:s3_report_path) do
@@ -12,6 +12,7 @@ RSpec.describe Reports::MonthlyAccountReuseReport do
   end
 
   before do
+    travel_to report_date
     allow(Identity::Hostdata).to receive(:env).and_return('int')
     allow(Identity::Hostdata).to receive(:aws_account_id).and_return('1234')
     allow(Identity::Hostdata).to receive(:aws_region).and_return('us-west-1')
@@ -26,10 +27,17 @@ RSpec.describe Reports::MonthlyAccountReuseReport do
   end
 
   describe '#perform' do
+    let(:body_of_report) do
+      "\"{:title=>\"\"IDV app reuse rate Feb-2021\"\", :float_as_percent=>true, :precision=>4}\","\
+      "\"[\"\"Num. SPs\"\", \"\"Num. users\"\", \"\"Percentage\"\"]\",\"[\"\"Total (all >1)\"\", "\
+      "0, 0]\"\n\"{:title=>\"\"Total proofed identities\"\"}\",\"[\"\"Total proofed identities "\
+      "(Feb-2021)\"\", 0]\"\n"
+    end
+
     it 'uploads a file to S3 based on the report date' do
       expect(report).to receive(:upload_file_to_s3_bucket).with(
         path: s3_report_path,
-        body: kind_of(String),
+        body: body_of_report,
         content_type: 'text/csv',
         bucket: 'reports-bucket.1234-us-west-1',
       ).exactly(1).time.and_call_original
@@ -126,14 +134,15 @@ RSpec.describe Reports::MonthlyAccountReuseReport do
             actual_csv = body
             expected_csv = CSV.generate do |csv|
               [
-                ['IDV app reuse rate Feb-2021'],
-                ['Num. SPs', 'Num. users', 'Percentage'],
-                [2, 3, 30.0],
-                [3, 2, 20.0],
-                ['Total (all >1)', 5, 50.0],
-                [],
-                ['Total proofed identities'],
-                ['Total proofed identities (Feb-2021)', 10],
+                [{ title: 'IDV app reuse rate Feb-2021', float_as_percent: true, precision: 4 },
+                 ['Num. SPs', 'Num. users', 'Percentage'],
+                 [2, 3, 30.0],
+                 [3, 2, 20.0],
+                 ['Total (all >1)', 5, 50.0]],
+                [
+                  { title: 'Total proofed identities' },
+                  ['Total proofed identities (Feb-2021)', 10],
+                ],
               ].each do |row|
                 csv << row
               end

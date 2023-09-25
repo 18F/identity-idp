@@ -16,7 +16,7 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
       [{ 'emails' => [email] }],
     )
     expected_csv =
-      [[{ title: 'IDV app reuse rate Feb-2021' },
+      [[{ title: 'IDV app reuse rate Feb-2021', float_as_percent: true, precision: 4 },
         ['Num. SPs', 'Num. users', 'Percentage'],
         ['Total (all >1)', 0, 0]],
        [{ title: 'Total proofed identities' },
