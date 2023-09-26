@@ -3,7 +3,6 @@ require 'rails_helper'
 RSpec.describe Idv::SsnFormatForm do
   let(:user) { create(:user) }
   let(:ssn) { '111-11-1111' }
-  let(:flow_session) { {} }
   let(:incoming_ssn) { nil }
 
   subject { Idv::SsnFormatForm.new(user, incoming_ssn) }

@@ -14,6 +14,8 @@ npm install @18f/identity-address-search
 
 Requires React version 17 or greater.
 
+Requires @18f/identity-i18n.
+
 ## Usage
 
 To use this component, provide callbacks to it for desired behaviors.
