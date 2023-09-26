@@ -73,11 +73,22 @@ module InPerson::EnrollmentsReadyForStatusCheck
         mail = Mail.read_from_string(ses_message[:content])
         # Depending on how the email is created, we may need to read different
         # parts of the message
-        if mail.multipart?
-          text_body = mail.text_part&.decoded
-        else
-          text_body = mail.body.decoded
-        end
+        # Put all parts that are html/text encoded into a single value and extract
+        # the code from there, this will handle changes in the future to the email.
+        text_body = (mail.text_part || mail.html_part || mail).body.decoded
+
+        part_found = if mail.text_part
+                       'text_part'
+                     elsif mail.html_part
+                       'html_part'
+                     else
+                       'message_body'
+                     end
+
+        analytics.idv_in_person_usps_proofing_enrollment_code_email_received(
+          multi_part: mail.multipart?,
+          part_found: part_found,
+        )
       rescue StandardError
         report_error(err, **error_extra)
         return false

@@ -36,6 +36,38 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheck::EnrollmentPipeline do
         },
       }
     end
+    let(:ses_text_payload) do
+      {
+        content: Mail.new do |m|
+          m.text_part = enrollment_code
+        end.to_s,
+        mail: {
+          messageId: Random.uuid.delete('-'),
+          timestamp: DateTime.now.to_s,
+          source: 'testsource@example.com',
+          commonHeaders: {
+            date: Mail::DateField.new(mail_date).to_s,
+            messageId: Mail::Utilities.generate_message_id,
+          },
+        },
+      }
+    end
+    let(:ses_body_payload) do
+      {
+        content: Mail.new do |m|
+          m.body = enrollment_code
+        end.to_s,
+        mail: {
+          messageId: Random.uuid.delete('-'),
+          timestamp: DateTime.now.to_s,
+          source: 'testsource@example.com',
+          commonHeaders: {
+            date: Mail::DateField.new(mail_date).to_s,
+            messageId: Mail::Utilities.generate_message_id,
+          },
+        },
+      }
+    end
     let(:logged_ses_values) do
       {
         ses_aws_message_id: ses_payload[:mail][:messageId],
@@ -49,6 +81,18 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheck::EnrollmentPipeline do
       {
         MessageId: sns_message_id,
         Message: ses_payload.to_json,
+      }
+    end
+    let(:sns_text_payload) do
+      {
+        MessageId: sns_message_id,
+        Message: ses_text_payload.to_json,
+      }
+    end
+    let(:sns_body_payload) do
+      {
+        MessageId: sns_message_id,
+        Message: ses_body_payload.to_json,
       }
     end
     let(:expected_error) { nil }
@@ -304,6 +348,30 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheck::EnrollmentPipeline do
     end
 
     context 'returns true for records handled as expected' do
+      it 'handles text_part' do
+        allow(sqs_message).to receive(:body).and_return(sns_text_payload.to_json)
+
+        enrollment = create(:in_person_enrollment, enrollment_code:, status: :pending, user:)
+
+        expect(InPersonEnrollment).to receive(:update).
+          with(enrollment.id, ready_for_status_check: true).once
+
+        expect(error_reporter).not_to receive(:report_error)
+
+        expect(enrollment_pipeline.process_message(sqs_message)).to be(true)
+      end
+      it 'handles body' do
+        allow(sqs_message).to receive(:body).and_return(sns_body_payload.to_json)
+
+        enrollment = create(:in_person_enrollment, enrollment_code:, status: :pending, user:)
+
+        expect(InPersonEnrollment).to receive(:update).
+          with(enrollment.id, ready_for_status_check: true).once
+
+        expect(error_reporter).not_to receive(:report_error)
+
+        expect(enrollment_pipeline.process_message(sqs_message)).to be(true)
+      end
       it 'marks non-ready record as ready' do
         allow(sqs_message).to receive(:body).and_return(sns_payload.to_json)
 
