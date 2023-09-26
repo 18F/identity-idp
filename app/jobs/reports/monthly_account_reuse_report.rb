@@ -109,8 +109,7 @@ module Reports
 
         if total_proofed > 0
           reuse_stats.each_with_index do |result_entry, index|
-            reuse_stats[index]['percentage'] =
-              result_entry['num_users'] / total_proofed.to_f * 100
+            reuse_stats[index]['percentage'] = result_entry['num_users'] / total_proofed.to_f
 
             reuse_total_percentage += reuse_stats[index]['percentage']
           end

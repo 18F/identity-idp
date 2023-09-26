@@ -130,9 +130,9 @@ RSpec.describe Reports::MonthlyAccountReuseReport do
                 [
                   { title: 'IDV app reuse rate Feb-2021', float_as_percent: true, precision: 4 },
                   ['Num. SPs', 'Num. users', 'Percentage'],
-                  [2, 3, 30.0],
-                  [3, 2, 20.0],
-                  ['Total (all >1)', 5, 50.0],
+                  [2, 3, 0.3],
+                  [3, 2, 0.2],
+                  ['Total (all >1)', 5, 0.5],
                 ],
                 [
                   { title: 'Total proofed identities' },
