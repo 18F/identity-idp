@@ -6,9 +6,6 @@
 # Subclasses must define the `apply` method.
 module Events
   class BaseEvent < ApplicationRecord
-    serialize :data, JSON
-    serialize :metadata, JSON
-
     before_validation :preset_aggregate
     before_create :apply_and_persist
     after_create :dispatch
