@@ -55,7 +55,7 @@ RSpec.shared_examples 'gpo otp verification' do
 
     expect_step_indicator_current_step(t('step_indicator.flows.idv.get_a_letter'))
 
-    click_on t('idv.buttons.mail.resend')
+    click_on t('idv.gpo.request_another_letter.button')
 
     expect(GpoConfirmation.count).to eq(1)
     expect(GpoConfirmationCode.count).to eq(1)
