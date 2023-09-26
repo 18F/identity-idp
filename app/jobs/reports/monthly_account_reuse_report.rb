@@ -44,23 +44,23 @@ module Reports
               SELECT
                   COUNT(DISTINCT agencies.id) AS num_agencies
                   , identities.user_id
-              FROM 
+              FROM
                   identities
-              JOIN 
+              JOIN
                   service_providers sp ON identities.service_provider = sp.issuer
-              JOIN 
+              JOIN
                   agencies ON sp.agency_id = agencies.id
               WHERE
                   identities.last_ial2_authenticated_at IS NOT NULL
               AND
                   identities.verified_at < %{query_date}
-              GROUP BY 
+              GROUP BY
                   identities.user_id
           ) agencies_per_user
-          GROUP BY 
+          GROUP BY
               agencies_per_user.num_agencies
           HAVING agencies_per_user.num_agencies > 1
-          ORDER BY 
+          ORDER BY
               num_agencies ASC
       SQL
 
