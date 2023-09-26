@@ -8,7 +8,7 @@ module Commands
 
     private def build_event
       Events::Profile::Created.new(
-        user_id: user.id,
+        user_id: user_id,
         metadata: metadata,
       )
     end
