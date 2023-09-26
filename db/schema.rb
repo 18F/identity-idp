@@ -431,14 +431,14 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_26_222037) do
 
   create_table "profile_events", force: :cascade do |t|
     t.string "type"
-    t.bigint "user_id"
+    t.bigint "profile_id"
     t.jsonb "data"
     t.jsonb "metadata"
     t.jsonb "encrypted_payload"
     t.jsonb "unencrypted_payload"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["user_id"], name: "index_profile_events_on_user_id"
+    t.index ["profile_id"], name: "index_profile_events_on_profile_id"
   end
 
   create_table "profiles", id: :serial, force: :cascade do |t|
@@ -671,5 +671,5 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_26_222037) do
   add_foreign_key "integrations", "service_providers"
   add_foreign_key "partner_accounts", "agencies"
   add_foreign_key "partner_accounts", "partner_account_statuses"
-  add_foreign_key "profile_events", "users"
+  add_foreign_key "profile_events", "profiles"
 end
