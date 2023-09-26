@@ -56,5 +56,10 @@
   </p>
 <% end %>
 
+<% unless FeatureManagement.phone_recaptcha_enabled? %>
+  <%= link_to t('two_factor_authentication.mobile_terms_of_service'),
+              MarketingSite.messaging_practices_url,
+              class: 'display-block margin-top-4' %>
+<% end %>
 
 <%= render 'shared/cancel_or_back_to_options' %>
