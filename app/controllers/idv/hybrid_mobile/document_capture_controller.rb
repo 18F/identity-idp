@@ -71,7 +71,7 @@ module Idv
         return unless stored_result&.success?
         return unless stored_result.captured_at # 50/50 - to be removed
 
-        if stored_result.captured_at > document_capture_session.requested_at
+        unless redo_document_capture_pending?
           redirect_to idv_hybrid_mobile_capture_complete_url
         end
       end
@@ -80,6 +80,12 @@ module Idv
         return unless document_capture_session.ocr_confirmation_pending
 
         document_capture_session.update!(ocr_confirmation_pending: false)
+      end
+
+      def redo_document_capture_pending?
+        return unless stored_result&.captured_at
+
+        document_capture_session.requested_at > stored_result.captured_at
       end
     end
   end
