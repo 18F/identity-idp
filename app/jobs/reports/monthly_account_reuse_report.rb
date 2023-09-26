@@ -6,12 +6,14 @@ module Reports
 
     attr_reader :report_date
 
-    def initialize
-      @report_date = Time.zone.today
+    def initialize(report_date = Time.zone.today)
+      @report_date = report_date
     end
 
-    def perform(date = report_date)
-      _latest, path = generate_s3_paths(REPORT_NAME, 'json', now: date)
+    def perform(report_date = Time.zone.today)
+      @report_date = report_date
+
+      _latest, path = generate_s3_paths(REPORT_NAME, 'json', now: report_date)
 
       if bucket_name.present?
         upload_file_to_s3_bucket(
@@ -127,10 +129,12 @@ module Reports
 
       tables_array = []
       reuse_rate_table = []
-      reuse_rate_table << { title: "IDV app reuse rate #{stats_month}",
-                       float_as_percent: true,
-                       precision: 4 }
-                       reuse_rate_table << ['Num. SPs', 'Num. users', 'Percentage']
+      reuse_rate_table << {
+        title: "IDV app reuse rate #{stats_month}",
+        float_as_percent: true,
+        precision: 4,
+      }
+      reuse_rate_table << ['Num. SPs', 'Num. users', 'Percentage']
 
       monthly_reuse_report[:reuse_stats].each do |result_entry|
         reuse_rate_table << [

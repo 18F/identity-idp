@@ -11,14 +11,12 @@ module Reports
       csv_for_email = monthly_key_metrics_report_array
       email_message = "Report: #{REPORT_NAME} #{date}"
 
-      emails.each do |email|
-        ReportMailer.tables_report(
-          email: email,
-          subject: "Monthly Key Metrics Report - #{date}",
-          message: email_message,
-          tables: csv_for_email,
-        ).deliver_now
-      end
+      ReportMailer.tables_report(
+        email: emails,
+        subject: "Monthly Key Metrics Report - #{date}",
+        message: email_message,
+        tables: csv_for_email,
+      ).deliver_now
     end
 
     def emails
@@ -41,7 +39,7 @@ module Reports
 
     # Individual Key Metric Report
     def account_reuse_report_csv
-      Reports::MonthlyAccountReuseReport.new.report_csv
+      Reports::MonthlyAccountReuseReport.new(report_date).report_csv
     end
   end
 end

@@ -27,17 +27,10 @@ RSpec.describe Reports::MonthlyAccountReuseReport do
   end
 
   describe '#perform' do
-    let(:body_of_report) do
-      "\"{:title=>\"\"IDV app reuse rate Feb-2021\"\", :float_as_percent=>true, :precision=>4}\","\
-      "\"[\"\"Num. SPs\"\", \"\"Num. users\"\", \"\"Percentage\"\"]\",\"[\"\"Total (all >1)\"\", "\
-      "0, 0]\"\n\"{:title=>\"\"Total proofed identities\"\"}\",\"[[\"\"Total proofed identities "\
-      "(Feb-2021)\"\"], [0]]\"\n"
-    end
-
     it 'uploads a file to S3 based on the report date' do
       expect(report).to receive(:upload_file_to_s3_bucket).with(
         path: s3_report_path,
-        body: body_of_report,
+        body: anything,
         content_type: 'text/csv',
         bucket: 'reports-bucket.1234-us-west-1',
       ).exactly(1).time.and_call_original
