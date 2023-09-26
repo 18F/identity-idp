@@ -1190,4 +1190,23 @@ RSpec.describe Profile do
       end
     end
   end
+
+  describe 'event sourcing methods' do
+    it 'activate a profile' do
+      event = Commands::Profile::Create.call(
+        user_id: user.id,
+        metadata: {},
+      )
+
+      profile = event.profile
+
+      Commands::Profile::Activate.call(
+        profile: profile,
+        metadata: {},
+      )
+
+      profile.reload
+      expect(profile.active).to eq(true)
+    end
+  end
 end
