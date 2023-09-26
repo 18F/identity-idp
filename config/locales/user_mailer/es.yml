@@ -210,10 +210,10 @@ es:
         e ingresando el código de verificación.
       subject: Le enviamos una carta a la dirección que tiene archivada
     letter_reminder_14_days:
-      body_html: <p>El <strong>%{date_letter_was_sent}</strong> solicitaste una carta
-        con un código de verificación.</p><p>Vuelve a iniciar sesión en
-        %{app_name} y ingresa el código de verificación para terminar de
-        verificar tu identidad. %{help_link}.</p>
+      body_html: <p>Solicitó una carta con un código de verificación el
+        <strong>%{date_letter_was_sent}</strong>.</p><p>Inicie sesión de nuevo
+        en %{app_name} e ingrese el código de verificación para terminar de
+        verificar su identidad. %{help_link}.</p>
       did_not_get_a_letter_html: Si no recibiste dicha carta, %{another_letter_link_html}.
       finish: Termina de verificar tu identidad
       sign_in_and_request_another_letter: inicia sesión para solicitar otra
