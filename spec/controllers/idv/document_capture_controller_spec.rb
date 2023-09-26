@@ -5,8 +5,6 @@ RSpec.describe Idv::DocumentCaptureController do
 
   let(:document_capture_session_uuid) { 'fd14e181-6fb1-4cdc-92e0-ef66dad0df4e' }
 
-  let(:flow_session) { {} }
-
   let(:user) { create(:user) }
 
   let(:ab_test_args) do
@@ -18,7 +16,6 @@ RSpec.describe Idv::DocumentCaptureController do
     stub_analytics
     subject.idv_session.flow_path = 'standard'
     subject.idv_session.document_capture_session_uuid = document_capture_session_uuid
-    subject.user_session['idv/doc_auth'] = flow_session
 
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
@@ -104,15 +101,6 @@ RSpec.describe Idv::DocumentCaptureController do
         get :show
 
         expect(response).to redirect_to(idv_hybrid_handoff_url)
-      end
-    end
-
-    context 'with pii in flow session' do
-      it 'redirects to ssn step' do
-        flow_session[:pii_from_doc] = Idp::Constants::MOCK_IDV_APPLICANT
-        get :show
-
-        expect(response).to redirect_to(idv_ssn_url)
       end
     end
 

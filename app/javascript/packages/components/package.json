@@ -1,6 +1,6 @@
 {
   "name": "@18f/identity-components",
-  "version": "1.0.0-beta0.2",
+  "version": "2.0.0",
   "type": "module",
   "private": false,
   "files": [
@@ -25,7 +25,8 @@
   },
   "peerDependencies": {
     "react": ">=17",
-    "react-dom": ">=17"
+    "react-dom": ">=17",
+    "@18f/identity-i18n": ">=1"
   },
   "repository": {
     "type": "git",

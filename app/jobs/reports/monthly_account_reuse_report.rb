@@ -6,16 +6,19 @@ module Reports
 
     attr_reader :report_date
 
-    def perform(report_date)
+    def initialize(report_date = Time.zone.today)
+      @report_date = report_date
+    end
+
+    def perform(report_date = Time.zone.today)
       @report_date = report_date
 
       _latest, path = generate_s3_paths(REPORT_NAME, 'json', now: report_date)
-      body = report_body
 
       if bucket_name.present?
         upload_file_to_s3_bucket(
           path: path,
-          body: body,
+          body: report_body,
           content_type: 'text/csv',
           bucket: bucket_name,
         )
@@ -124,31 +127,36 @@ module Reports
     def report_csv
       monthly_reuse_report = total_reuse_report
 
-      csv_array = []
-      csv_array << ["IDV app reuse rate #{stats_month}"]
-      csv_array << ['Num. SPs', 'Num. users', 'Percentage']
+      tables_array = []
+      reuse_rate_table = []
+      reuse_rate_table << {
+        title: "IDV app reuse rate #{stats_month}",
+        float_as_percent: true,
+        precision: 4,
+      }
+      reuse_rate_table << ['Num. SPs', 'Num. users', 'Percentage']
 
       monthly_reuse_report[:reuse_stats].each do |result_entry|
-        csv_array << [
+        reuse_rate_table << [
           result_entry['num_agencies'],
           result_entry['num_users'],
           result_entry['percentage'],
         ]
       end
-      csv_array << [
+      reuse_rate_table << [
         'Total (all >1)',
         monthly_reuse_report[:total_users],
         monthly_reuse_report[:total_percentage],
       ]
+      tables_array << reuse_rate_table
 
-      csv_array << []
-      csv_array << ['Total proofed identities']
-      csv_array << [
-        "Total proofed identities (#{stats_month})",
-        monthly_reuse_report[:total_proofed],
-      ]
+      total_proofed_identities_table = []
+      total_proofed_identities_table << { title: 'Total proofed identities' }
+      total_proofed_identities_table << ["Total proofed identities (#{stats_month})"]
+      total_proofed_identities_table << [monthly_reuse_report[:total_proofed]]
+      tables_array << total_proofed_identities_table
 
-      csv_array
+      tables_array
     end
 
     def report_body

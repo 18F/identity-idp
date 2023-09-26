@@ -7,7 +7,7 @@ module Idv
     def new
       analytics.idv_address_visit
 
-      @presenter = AddressPresenter.new(pii: pii_from_doc)
+      @presenter = AddressPresenter.new(pii: idv_session.pii_from_doc)
     end
 
     def update
@@ -24,17 +24,13 @@ module Idv
     private
 
     def idv_form
-      Idv::AddressForm.new(pii_from_doc)
+      Idv::AddressForm.new(idv_session.pii_from_doc)
     end
 
     def success
-      # Make sure pii_from_doc is available in both places so we can
-      # update the address for both and keep them in sync
-      idv_session.pii_from_doc = pii_from_doc
       profile_params.each do |key, value|
         idv_session.pii_from_doc[key] = value
       end
-      flow_session[:pii_from_doc] = idv_session.pii_from_doc
       redirect_to idv_verify_info_url
     end
 

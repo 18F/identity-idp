@@ -39,11 +39,9 @@ module Idv
         uuid_prefix: ServiceProvider.find_by(issuer: sp_session[:issuer])&.app_id,
       )
 
-      if defined?(flow_session) && defined?(idv_session) # hybrid mobile does not have idv_session
+      if defined?(idv_session) # hybrid mobile does not have idv_session
         idv_session.had_barcode_read_failure = response.attention_with_barcode?
         if store_in_session
-          flow_session[:pii_from_doc] ||= {}
-          flow_session[:pii_from_doc].merge!(pii_from_doc)
           idv_session.pii_from_doc ||= {}
           idv_session.pii_from_doc.merge!(pii_from_doc)
           idv_session.clear_applicant!
