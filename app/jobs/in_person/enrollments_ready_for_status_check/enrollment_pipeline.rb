@@ -8,6 +8,10 @@ module InPerson::EnrollmentsReadyForStatusCheck
       @email_body_pattern = email_body_pattern
     end
 
+    def analytics(user: AnonymousUser.new)
+      Analytics.new(user: user, request: nil, session: {}, sp: nil)
+    end
+    
     # Process a message from USPS indicating that an in-person
     # enrollment is ready to have its status checked.
     #
