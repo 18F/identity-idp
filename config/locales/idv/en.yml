@@ -10,7 +10,6 @@ en:
       change_state_id_label: Update state ID
       continue_plain: Continue
       mail:
-        resend: Send another letter
         send: Request a letter
     cancel:
       actions:
@@ -233,11 +232,6 @@ en:
         info_alert: You’ll need to wait until your letter is delivered to finish
           verifying your identity.
         letter_on_the_way: We are sending you a letter
-        resend: Send me another letter
-        resend_code_warning: If you request a new letter now, the one-time code from
-          your current letter will remain valid for a limited time. You may
-          still use the one-time code from either letter.
-        resend_timeframe_html: Letters take <strong>5 to 10 days</strong> to arrive.
         timeframe_html: Letters are sent the next business day via USPS First-Class Mail
           and arrive in <strong>5 to 10 days</strong>.
       gpo_reminder:
@@ -286,7 +280,6 @@ en:
       activated: Your identity has already been verified
       come_back_later: Your letter is on the way
       mail:
-        resend: Send another letter?
         verify: Verify your address
       otp_delivery_method: How should we send a code?
       review: Review and submit
