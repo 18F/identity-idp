@@ -55,7 +55,7 @@ module Command
       attr_reader(*args)
 
       initialize_method_arguments = args.map { |arg| "#{arg}:" }.join(', ')
-      initialize_method_body = args.map { |arg| "@#{arg} = #{arg}" }.join(";")
+      initialize_method_body = args.map { |arg| "@#{arg} = #{arg}" }.join(';')
 
       class_eval <<~CODE, __FILE__, __LINE__ + 1
         def initialize(#{initialize_method_arguments})

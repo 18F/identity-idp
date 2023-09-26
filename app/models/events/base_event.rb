@@ -4,7 +4,7 @@
 # After create, it calls `apply` to apply changes.
 #
 # Subclasses must define the `apply` method.
-class Events::BaseEvent < ApplicationRecord #ActiveRecord::Base
+class Events::BaseEvent < ApplicationRecord
   serialize :data, JSON
   serialize :metadata, JSON
 
@@ -15,7 +15,7 @@ class Events::BaseEvent < ApplicationRecord #ActiveRecord::Base
   self.abstract_class = true
 
   # Not using `created_at` as MySQL timestamps don't include ms.
-  scope :recent_first, -> { reorder('id DESC')}
+  scope :recent_first, -> { reorder('id DESC') }
 
   # Apply the event to the aggregate passed in.
   # Must return the aggregate.
