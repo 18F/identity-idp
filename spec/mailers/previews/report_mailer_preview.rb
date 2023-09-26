@@ -9,11 +9,11 @@ class ReportMailerPreview < ActionMailer::Preview
   end
 
   def monthly_key_metrics_report
-    ReportMailer.monthly_key_metrics_report(
-      name: 'monthly-key-metrics-report',
+    ReportMailer.tables_report(
       email: 'test@example.com',
-      month: 'February 2021',
-      csv_report: [
+      subject: 'Example Key Metrics Report',
+      message: 'Key Metrics Report February 2021',
+      tables: [
         [
           { title: 'IDV app reuse rate Feb-2021', float_as_percent: true, precision: 4 },
           ['Num. SPs', 'Num. users', 'Percentage'],
@@ -37,6 +37,7 @@ class ReportMailerPreview < ActionMailer::Preview
     ReportMailer.tables_report(
       email: 'test@example.com',
       subject: 'Example Report',
+      message: 'Sample Message',
       tables: [
         [
           ['Some', 'String'],
