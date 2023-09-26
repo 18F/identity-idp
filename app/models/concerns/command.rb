@@ -42,8 +42,8 @@ module Command
     # On success: returns the event
     # On noop: returns nil
     # On failure: raise an ActiveRecord::RecordInvalid error
-    def call(*args)
-      new(*args).call
+    def call(**args)
+      new(**args).call
     end
 
     # Define the attributes.
