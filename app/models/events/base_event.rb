@@ -8,7 +8,7 @@ module Events
   class BaseEvent < ApplicationRecord
     before_validation :preset_aggregate
     before_create :apply_and_persist
-    after_create :dispatch
+    # after_create :dispatch
 
     self.abstract_class = true
 
