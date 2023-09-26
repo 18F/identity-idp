@@ -69,7 +69,6 @@ module Idv
 
       def confirm_document_capture_needed
         return unless stored_result&.success?
-        return unless stored_result.captured_at # 50/50 - to be removed
 
         unless redo_document_capture_pending?
           redirect_to idv_hybrid_mobile_capture_complete_url
