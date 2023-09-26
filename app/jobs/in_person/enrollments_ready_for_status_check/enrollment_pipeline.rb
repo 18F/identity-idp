@@ -11,7 +11,7 @@ module InPerson::EnrollmentsReadyForStatusCheck
     def analytics(user: AnonymousUser.new)
       Analytics.new(user: user, request: nil, session: {}, sp: nil)
     end
-    
+
     # Process a message from USPS indicating that an in-person
     # enrollment is ready to have its status checked.
     #
