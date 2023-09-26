@@ -311,6 +311,8 @@ show_user_attribute_deprecation_warnings: false
 otp_min_attempts_remaining_warning_count: 3
 system_demand_report_email: 'foo@bar.com'
 sp_issuer_user_counts_report_configs: '[]'
+team_agnes_email: ''
+team_all_feds_email: ''
 team_ursula_email: ''
 test_ssn_allowed_list: ''
 totp_code_interval: 30
