@@ -105,7 +105,7 @@ describe('DocumentCaptureReviewIssues', () => {
       const h1 = screen.getByRole('heading', { name: 'doc_auth.headings.review_issues', level: 1 });
       expect(h1).to.be.ok();
 
-      expect(getByText('doc_auth.errors.doc.wrong_id_type')).to.be.ok();
+      expect(getByText('doc_auth.errors.doc.wrong_id_type_html')).to.be.ok();
 
       // front capture input
       const frontCapture = getByLabelText('doc_auth.headings.document_capture_front');

@@ -77,8 +77,6 @@ es:
       piv_cac: Inicie sesión con su identificación de empleado del gobierno
       tab_navigation: Pestañas de creación de cuenta
     navigation:
-      access_services: Acceda a los beneficios y servicios de su gobierno desde su
-        cuenta %{app_name}.
       add_authentication_apps: Agregar aplicaciones de autenticación
       add_email: Agregar dirección de correo electrónico
       add_federal_id: Agregar identificación de empleado federal
@@ -94,7 +92,6 @@ es:
       get_backup_codes: Obtener códigos de respaldo
       history: Historia
       landmark_label: Navegación lateral
-      learn_more: Obtenga más información sobre %{app_name}
       menu: Menú
       reset_personal_key: Restablecer la clave personal
       two_factor_authentication: Tus métodos de autenticación
