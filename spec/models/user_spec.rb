@@ -966,9 +966,11 @@ RSpec.describe User do
 
       it 'destroys SuspendedEmail records for each email address' do
         email_address = user.email_addresses.last
+
         expect { user.reinstate! }.
-          to(change { SuspendedEmail.find_with_email(email_address.email) }.
-            from(email_address).to(nil))
+          to(change { SuspendedEmail.find_with_email(email_address.email) }.to(nil))
+
+        expect(user.email_addresses.reload).to be_present, 'does not delete email addresses'
       end
 
       it 'updates the reinstated_at attribute with the current time' do
