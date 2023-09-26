@@ -1,7 +1,8 @@
-<%= @message %><br>
 <%#
+- @message: text to put in the beginning of the email
 - @tables: an array of tables, expects first "row" to be an options hash
 %>
+<%= @message %><br>
 <% @tables.each do |table| %>
   <% options, header, *rows = table %>
 

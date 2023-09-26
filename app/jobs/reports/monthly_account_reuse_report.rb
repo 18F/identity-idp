@@ -152,10 +152,8 @@ module Reports
 
       total_proofed_identities_table = []
       total_proofed_identities_table << { title: 'Total proofed identities' }
-      total_proofed_identities_table << [
-        ["Total proofed identities (#{stats_month})"],
-        [monthly_reuse_report[:total_proofed]],
-      ]
+      total_proofed_identities_table << ["Total proofed identities (#{stats_month})"]
+      total_proofed_identities_table << [monthly_reuse_report[:total_proofed]]
       tables_array << total_proofed_identities_table
 
       tables_array

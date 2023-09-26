@@ -9,15 +9,11 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
   let(:feds_email) { 'fake@feds_email.com' }
 
   before do
-    allow(IdentityConfig.store).to receive(:team_agnes_email).and_return(
-      agnes_email,
-    )
-    allow(IdentityConfig.store).to receive(:team_all_feds_email).and_return(
-      feds_email,
-    )
-    allow(Identity::Hostdata).to receive(:env).and_return(
-      'prod',
-    )
+    allow(IdentityConfig.store).to receive(:team_agnes_email).
+      and_return(agnes_email)
+    allow(IdentityConfig.store).to receive(:team_all_feds_email).
+      and_return(feds_email)
+    allow(Identity::Hostdata).to receive(:env).and_return('prod')
   end
 
   it 'sends out a report to the email listed with one total user' do
@@ -42,5 +38,18 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
     ).and_call_original
 
     subject.perform(first_of_month_date)
+  end
+
+  it 'does not send out a report with no emails' do
+    allow(IdentityConfig.store).to receive(:team_agnes_email).and_return('')
+
+    expect(ReportMailer).not_to receive(:tables_report).with(
+      message: 'Report: monthly-key-metrics-report 2021-03-02',
+      email: [''],
+      subject: 'Monthly Key Metrics Report - 2021-03-02',
+      tables: anything,
+    ).and_call_original
+
+    subject.perform(report_date)
   end
 end

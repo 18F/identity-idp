@@ -10,13 +10,18 @@ module Reports
       @report_date = date
       csv_for_email = monthly_key_metrics_report_array
       email_message = "Report: #{REPORT_NAME} #{date}"
+      email_addresses = emails.select(&:present?)
 
-      ReportMailer.tables_report(
-        email: emails,
-        subject: "Monthly Key Metrics Report - #{date}",
-        message: email_message,
-        tables: csv_for_email,
-      ).deliver_now
+      if !email_addresses.empty?
+        ReportMailer.tables_report(
+          email: email_addresses,
+          subject: "Monthly Key Metrics Report - #{date}",
+          message: email_message,
+          tables: csv_for_email,
+        ).deliver_now
+      else
+        Rails.logger.warn 'No email addresses received - Monthly Key Metrics Report NOT SENT'
+      end
     end
 
     def emails
