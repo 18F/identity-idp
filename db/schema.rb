@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_31_124437) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_26_222037) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pgcrypto"
@@ -429,6 +429,18 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_31_124437) do
     t.index ["x509_dn_uuid"], name: "index_piv_cac_configurations_on_x509_dn_uuid", unique: true
   end
 
+  create_table "profile_events", force: :cascade do |t|
+    t.string "type"
+    t.bigint "user_id"
+    t.jsonb "data"
+    t.jsonb "metadata"
+    t.jsonb "encrypted_payload"
+    t.jsonb "unencrypted_payload"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_profile_events_on_user_id"
+  end
+
   create_table "profiles", id: :serial, force: :cascade do |t|
     t.integer "user_id", null: false
     t.boolean "active", default: false, null: false
@@ -659,4 +671,5 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_31_124437) do
   add_foreign_key "integrations", "service_providers"
   add_foreign_key "partner_accounts", "agencies"
   add_foreign_key "partner_accounts", "partner_account_statuses"
+  add_foreign_key "profile_events", "users"
 end
