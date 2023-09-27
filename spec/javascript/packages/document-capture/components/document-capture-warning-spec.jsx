@@ -83,7 +83,7 @@ describe('DocumentCaptureWarning', () => {
         location: 'doc_auth_review_issues',
         heading: 'errors.doc_auth.rate_limited_heading',
         subheading: '',
-        errorText: 'general error',
+        error_message_displayed: 'general error',
         remaining_attempts: 2,
       });
     });
@@ -181,7 +181,7 @@ describe('DocumentCaptureWarning', () => {
         location: 'doc_auth_review_issues',
         heading: 'errors.doc_auth.doc_type_not_supported_heading',
         subheading: '',
-        errorText: 'general error idv.warning.attempts_html',
+        error_message_displayed: 'general error idv.warning.attempts_html',
         remaining_attempts: 2,
       });
     });

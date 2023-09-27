@@ -42,18 +42,18 @@ function DocumentCaptureWarning({
     <h2>{t('errors.doc_auth.rate_limited_subheading')}</h2>
   );
   const subheadingRef = useRef<HTMLDivElement>(null);
-  const errorTextRef = useRef<HTMLDivElement>(null);
+  const errorMessageDisplayedRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const subheadingText = subheadingRef.current?.textContent;
-    const errorText = errorTextRef.current?.textContent;
+    const errorMessageDisplayed = errorMessageDisplayedRef.current?.textContent;
 
     trackEvent('IdV: warning shown', {
       location: 'doc_auth_review_issues',
       remaining_attempts: remainingAttempts,
       heading,
       subheading: subheadingText,
-      errorText,
+      error_message_displayed: errorMessageDisplayed,
     });
   }, []);
 
@@ -74,7 +74,7 @@ function DocumentCaptureWarning({
         }
       >
         <div ref={subheadingRef}>{!!subheading && subheading}</div>
-        <div ref={errorTextRef}>
+        <div ref={errorMessageDisplayedRef}>
           <UnknownError
             unknownFieldErrors={unknownFieldErrors}
             remainingAttempts={remainingAttempts}
