@@ -486,6 +486,10 @@ include:
   - template: Jobs/Dependency-Scanning.gitlab-ci.yml
   - template: Security/Secret-Detection.gitlab-ci.yml
 
+secret_detection:
+  variables:
+      SECRET_DETECTION_LOG_OPTIONS: origin/${CI_EXTERNAL_PULL_REQUEST_TARGET_BRANCH_NAME}..HEAD
+
 .container_scan_template:
   interruptible: true
   allow_failure: true
