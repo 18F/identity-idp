@@ -484,6 +484,7 @@ stop-review-app:
 include:
   - template: Jobs/SAST.gitlab-ci.yml
   - template: Jobs/Dependency-Scanning.gitlab-ci.yml
+  - template: Security/Secret-Detection.gitlab-ci.yml
 
 .container_scan_template:
   interruptible: true
