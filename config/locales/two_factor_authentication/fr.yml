@@ -22,9 +22,10 @@ fr:
     attempt_remaining_warning_html:
       one: Il vous reste <strong>%{count} tentative</strong>.
       other: Il vous reste <strong>%{count} tentatives</strong>.
-    backup_code_header_text: Entrez votre code de sécurité de secours
-    backup_code_prompt: Vous pouvez utiliser ce code de sécurité une fois. Après
-      l’avoir entré, vous devrez utiliser une nouvelle clé.
+    backup_code_header_text: Entrez votre code de sauvegarde
+    backup_code_prompt: Vous pouvez utiliser ce code de sauvegarde une seule fois.
+      Après l’avoir envoyé, vous devrez utiliser un nouveau code de sauvegarde
+      la fois suivante
     backup_codes:
       add_another_authentication_option: '‹ Ajouter une autre option d’authentification'
       instructions: Si vous n’avez pas accès à un autre appareil, conservez vos codes

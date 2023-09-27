@@ -61,6 +61,8 @@ RSpec.feature 'doc auth test credentials', :js do
 
   it 'rate limits the user if invalid credentials submitted for max allowed attempts',
      allow_browser_log: true do
+    allow(IdentityConfig.store).to receive(:doc_auth_check_failed_image_resubmission_enabled).
+      and_return(false)
     max_attempts = IdentityConfig.store.doc_auth_max_attempts
     (max_attempts - 1).times do
       complete_document_capture_step_with_yml(

@@ -8,8 +8,10 @@ RSpec.describe RegisterUserEmailForm do
   it_behaves_like 'email validation'
 
   describe '#submit' do
+    let(:anonymous_uuid) { 'anonymous-uuid' }
     let(:email_domain) { 'gmail.com' }
     let(:registered_email_address) { 'taken@' + email_domain }
+    let(:variation_of_preexisting_email) { 'TAKEN@' + email_domain }
     let(:unregistered_email_address) { 'not_taken@' + email_domain }
     let(:registered_and_confirmed_user) do
       [:user, :fully_registered, **{ email: registered_email_address }]
@@ -94,7 +96,6 @@ RSpec.describe RegisterUserEmailForm do
       end
     end
 
-    let(:variation_of_preexisting_email) { 'TAKEN@' + email_domain }
     context 'when email is already taken' do
       let!(:existing_user) { create(*registered_and_confirmed_user) }
       let(:extra_params) do
@@ -191,6 +192,30 @@ RSpec.describe RegisterUserEmailForm do
           limiter_type: :reg_unconfirmed_email,
         )
       end
+
+      context 'with the same normalized email address' do
+        let(:rate_limit) { IdentityConfig.store.reg_unconfirmed_email_max_attempts }
+
+        it 'creates rate_limiter events after reaching rate_limiter limit' do
+          expect(attempts_tracker).to receive(
+            :user_registration_email_submission_rate_limited,
+          ).with(
+            email: "taken+#{rate_limit}@gmail.com", email_already_registered: false,
+          )
+
+          1.upto(rate_limit) do |i|
+            RegisterUserEmailForm.new(analytics: analytics, attempts_tracker: attempts_tracker).
+              submit(
+                email: "taken+#{i}@gmail.com", terms_accepted: '1',
+              )
+          end
+
+          expect(analytics).to have_logged_event(
+            'Rate Limit Reached',
+            limiter_type: :reg_unconfirmed_email,
+          )
+        end
+      end
     end
 
     context 'when the email exists but is unconfirmed and on a confirmed user' do
@@ -240,9 +265,32 @@ RSpec.describe RegisterUserEmailForm do
 
         expect(User.find_with_email(unregistered_email_address).email_language).to eq('fr')
       end
+
+      context 'with the same normalized email address' do
+        let(:rate_limit) { IdentityConfig.store.reg_unconfirmed_email_max_attempts }
+
+        it 'creates rate_limiter events after reaching rate_limiter limit' do
+          expect(attempts_tracker).to receive(
+            :user_registration_email_submission_rate_limited,
+          ).with(
+            email: "taken+#{rate_limit}@gmail.com", email_already_registered: false,
+          )
+
+          1.upto(rate_limit) do |i|
+            RegisterUserEmailForm.new(analytics: analytics, attempts_tracker: attempts_tracker).
+              submit(
+                email: "taken+#{i}@gmail.com", terms_accepted: '1',
+              )
+          end
+
+          expect(analytics).to have_logged_event(
+            'Rate Limit Reached',
+            limiter_type: :reg_unconfirmed_email,
+          )
+        end
+      end
     end
 
-    let(:anonymous_uuid) { 'anonymous-uuid' }
     context 'when email is invalid' do
       it 'returns false and adds errors to the form object' do
         invalid_email = 'invalid_email'

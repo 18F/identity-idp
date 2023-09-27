@@ -3,7 +3,6 @@ import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import type { SetupServer } from 'msw/node';
 import useValidatedUspsLocations from './use-validated-usps-locations';
-import { LOCATIONS_URL } from '../components/in-person-location-post-office-search-step';
 
 const USPS_RESPONSE = [
   {
@@ -31,6 +30,7 @@ const USPS_RESPONSE = [
 ];
 
 describe('useValidatedUspsLocations', () => {
+  const locationsURL = 'https://localhost:3000/locations/endpoint';
   let server: SetupServer;
 
   before(() => {
@@ -44,13 +44,11 @@ describe('useValidatedUspsLocations', () => {
 
   beforeEach(() => {
     server.resetHandlers();
-    server.use(rest.post(LOCATIONS_URL, (_req, res, ctx) => res(ctx.json(USPS_RESPONSE))));
+    server.use(rest.post(locationsURL, (_req, res, ctx) => res(ctx.json(USPS_RESPONSE))));
   });
 
   it('returns location results', async () => {
-    const { result, waitForNextUpdate } = renderHook(() =>
-      useValidatedUspsLocations(LOCATIONS_URL),
-    );
+    const { result, waitForNextUpdate } = renderHook(() => useValidatedUspsLocations(locationsURL));
 
     const { handleLocationSearch } = result.current;
     handleLocationSearch(new Event('submit'), '200 main', 'Endeavor', 'DE', '12345');

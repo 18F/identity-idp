@@ -359,7 +359,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
         and_return(nil)
 
       click_idv_continue
-      expect(fake_analytics).to have_logged_event('Proofing Resolution Result Missing')
+      expect(fake_analytics).to have_logged_event('IdV: proofing resolution result missing')
       expect(page).to have_content(t('idv.failure.timeout'))
       expect(page).to have_current_path(idv_verify_info_path)
       allow(DocumentCaptureSession).to receive(:find_by).and_call_original

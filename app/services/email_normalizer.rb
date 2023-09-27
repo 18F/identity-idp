@@ -28,6 +28,7 @@ class EmailNormalizer
 
   def google_mx_record?
     return false if ENV['RAILS_OFFLINE']
+    return false if email.domain.blank? || !email.domain.to_s.ascii_only?
 
     mx_records(email.domain).any? { |domain| domain.end_with?('google.com') }
   end

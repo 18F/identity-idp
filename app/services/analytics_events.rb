@@ -701,6 +701,15 @@ module AnalyticsEvents
     )
   end
 
+  # @param [String] side the side of the image submission
+  def idv_doc_auth_failed_image_resubmitted(side:, **extra)
+    track_event(
+      'IdV: failed doc image resubmitted',
+      side: side,
+      **extra,
+    )
+  end
+
   def idv_doc_auth_getting_started_submitted(**extra)
     track_event('IdV: doc auth getting_started submitted', **extra)
   end
@@ -1602,6 +1611,24 @@ module AnalyticsEvents
     track_event('IdV: in person proofing switch_back visited', flow_path: flow_path, **extra)
   end
 
+  # An email from USPS with an enrollment code has been received, indicating
+  # the enrollment is approved or failed. A check is required to get the status
+  # it is not included in the email.
+  # @param [boolean] multi_part If the email is marked as multi_part
+  # @param [string] part_found Records if the enrollment code was found in text_part or html_part
+  def idv_in_person_usps_proofing_enrollment_code_email_received(
+    multi_part: nil,
+    part_found: nil,
+    **extra
+  )
+    track_event(
+      'IdV: in person usps proofing enrollment code email received',
+      multi_part: multi_part,
+      part_found: part_found,
+      **extra,
+    )
+  end
+
   # GetUspsProofingResultsJob has completed. Includes counts of various outcomes encountered
   # @param [Float] duration_seconds number of minutes the job was running
   # @param [Integer] enrollments_checked number of enrollments eligible for status check
@@ -2291,7 +2318,7 @@ module AnalyticsEvents
   # The system encountered an error and the proofing results are missing
   def idv_proofing_resolution_result_missing(proofing_components: nil, **extra)
     track_event(
-      'Proofing Resolution Result Missing',
+      'IdV: proofing resolution result missing',
       proofing_components: proofing_components,
       **extra,
     )
@@ -3137,12 +3164,16 @@ module AnalyticsEvents
   # @param [String] client_id
   # @param [String] user_id
   # @param [String] code_digest hash of "code" param
-  def openid_connect_token(client_id:, user_id:, code_digest:, **extra)
+  # @param [Integer, nil] expires_in time to expiration of token
+  # @param [Integer, nil] ial ial level of identity
+  def openid_connect_token(client_id:, user_id:, code_digest:, expires_in:, ial:, **extra)
     track_event(
       'OpenID Connect: token',
       client_id: client_id,
       user_id: user_id,
       code_digest: code_digest,
+      expires_in: expires_in,
+      ial: ial,
       **extra,
     )
   end

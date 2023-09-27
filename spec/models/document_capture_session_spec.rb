@@ -11,6 +11,12 @@ RSpec.describe DocumentCaptureSession do
     )
   end
 
+  let(:failed_doc_auth_response) do
+    DocAuth::Response.new(
+      success: false,
+    )
+  end
+
   describe '#store_result_from_response' do
     it 'generates a result ID stores the result encrypted in redis' do
       record = DocumentCaptureSession.new
@@ -112,6 +118,25 @@ RSpec.describe DocumentCaptureSession do
 
         expect(record.expired?).to eq(false)
       end
+    end
+  end
+
+  describe('#store_failed_auth_image_fingerprint') do
+    it 'stores image finger print' do
+      record = DocumentCaptureSession.new(result_id: SecureRandom.uuid)
+
+      record.store_failed_auth_image_fingerprint(
+        'fingerprint1', nil
+      )
+
+      result_id = record.result_id
+      key = EncryptedRedisStructStorage.key(result_id, type: DocumentCaptureSessionResult)
+      data = REDIS_POOL.with { |client| client.get(key) }
+      expect(data).to be_a(String)
+      result = record.load_result
+      expect(result.failed_front_image?('fingerprint1')).to eq(true)
+      expect(result.failed_front_image?(nil)).to eq(false)
+      expect(result.failed_back_image?(nil)).to eq(false)
     end
   end
 end

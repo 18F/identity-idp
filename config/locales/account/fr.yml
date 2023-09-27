@@ -83,8 +83,6 @@ fr:
       piv_cac: Connectez-vous avec votre ID d’employé du gouvernement
       tab_navigation: Onglets de création de compte
     navigation:
-      access_services: Accédez à vos avantages et services gouvernementaux depuis
-        votre compte %{app_name}.
       add_authentication_apps: Ajouter des applications d’authentification
       add_email: Ajouter une adresse e-mail
       add_federal_id: Ajouter un identifiant d’employé fédéral
@@ -100,7 +98,6 @@ fr:
       get_backup_codes: Obtenez des codes de secours
       history: L’histoire
       landmark_label: Navigation latérale
-      learn_more: En savoir plus sur %{app_name}
       menu: Menu
       reset_personal_key: Réinitialisation de la clé personnelle
       two_factor_authentication: Vos méthodes d’authentification

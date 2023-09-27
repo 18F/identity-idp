@@ -16,6 +16,7 @@ module Idv
       personal_key
       phone_for_mobile_flow
       pii
+      pii_from_doc
       previous_phone_step_params
       profile_id
       redo_document_capture

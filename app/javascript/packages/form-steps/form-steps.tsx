@@ -213,7 +213,6 @@ function getFieldActiveErrorFieldElement(
   fields: Record<string, FieldsRefEntry>,
 ) {
   const error = errors.find(({ field }) => field && fields[field]?.element);
-
   if (error) {
     return fields[error.field!].element || undefined;
   }

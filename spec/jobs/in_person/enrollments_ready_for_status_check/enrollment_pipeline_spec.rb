@@ -5,6 +5,8 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheck::EnrollmentPipeline do
   let(:email_body_pattern) { /\A\s*(?<enrollment_code>\d{16})\s*\Z/ }
   subject(:enrollment_pipeline) { described_class.new(error_reporter:, email_body_pattern:) }
 
+  let(:pipeline_analytics) { FakeAnalytics.new }
+
   before(:each) do
     allow(IdentityConfig.store).to receive(:in_person_enrollments_ready_job_email_body_pattern).
       and_return('\A\s*(?<enrollment_code>\d{16})\s*\Z')
@@ -36,6 +38,54 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheck::EnrollmentPipeline do
         },
       }
     end
+    let(:ses_text_payload) do
+      {
+        content: Mail.new do |m|
+          m.text_part = enrollment_code
+        end.to_s,
+        mail: {
+          messageId: Random.uuid.delete('-'),
+          timestamp: DateTime.now.to_s,
+          source: 'testsource@example.com',
+          commonHeaders: {
+            date: Mail::DateField.new(mail_date).to_s,
+            messageId: Mail::Utilities.generate_message_id,
+          },
+        },
+      }
+    end
+    let(:ses_html_payload) do
+      {
+        content: Mail.new do |m|
+          m.html_part = enrollment_code
+        end.to_s,
+        mail: {
+          messageId: Random.uuid.delete('-'),
+          timestamp: DateTime.now.to_s,
+          source: 'testsource@example.com',
+          commonHeaders: {
+            date: Mail::DateField.new(mail_date).to_s,
+            messageId: Mail::Utilities.generate_message_id,
+          },
+        },
+      }
+    end
+    let(:ses_body_payload) do
+      {
+        content: Mail.new do |m|
+          m.body = enrollment_code
+        end.to_s,
+        mail: {
+          messageId: Random.uuid.delete('-'),
+          timestamp: DateTime.now.to_s,
+          source: 'testsource@example.com',
+          commonHeaders: {
+            date: Mail::DateField.new(mail_date).to_s,
+            messageId: Mail::Utilities.generate_message_id,
+          },
+        },
+      }
+    end
     let(:logged_ses_values) do
       {
         ses_aws_message_id: ses_payload[:mail][:messageId],
@@ -49,6 +99,24 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheck::EnrollmentPipeline do
       {
         MessageId: sns_message_id,
         Message: ses_payload.to_json,
+      }
+    end
+    let(:sns_text_payload) do
+      {
+        MessageId: sns_message_id,
+        Message: ses_text_payload.to_json,
+      }
+    end
+    let(:sns_html_payload) do
+      {
+        MessageId: sns_message_id,
+        Message: ses_html_payload.to_json,
+      }
+    end
+    let(:sns_body_payload) do
+      {
+        MessageId: sns_message_id,
+        Message: ses_body_payload.to_json,
       }
     end
     let(:expected_error) { nil }
@@ -304,6 +372,64 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheck::EnrollmentPipeline do
     end
 
     context 'returns true for records handled as expected' do
+      before do
+        allow(enrollment_pipeline).to receive(:analytics).and_return(pipeline_analytics)
+      end
+
+      it 'handles text_part' do
+        allow(sqs_message).to receive(:body).and_return(sns_text_payload.to_json)
+        enrollment = create(:in_person_enrollment, enrollment_code:, status: :pending, user:)
+
+        expect(InPersonEnrollment).to receive(:update).
+          with(enrollment.id, ready_for_status_check: true).once
+
+        expect(error_reporter).not_to receive(:report_error)
+
+        expect(enrollment_pipeline.process_message(sqs_message)).to be(true)
+
+        expect(pipeline_analytics).to have_logged_event(
+          'IdV: in person usps proofing enrollment code email received',
+          multi_part: true,
+          part_found: 'text_part',
+        )
+      end
+
+      it 'handles html_part' do
+        allow(sqs_message).to receive(:body).and_return(sns_html_payload.to_json)
+        enrollment = create(:in_person_enrollment, enrollment_code:, status: :pending, user:)
+
+        expect(InPersonEnrollment).to receive(:update).
+          with(enrollment.id, ready_for_status_check: true).once
+
+        expect(error_reporter).not_to receive(:report_error)
+
+        expect(enrollment_pipeline.process_message(sqs_message)).to be(true)
+
+        expect(pipeline_analytics).to have_logged_event(
+          'IdV: in person usps proofing enrollment code email received',
+          multi_part: true,
+          part_found: 'html_part',
+        )
+      end
+
+      it 'handles message body' do
+        allow(sqs_message).to receive(:body).and_return(sns_body_payload.to_json)
+
+        enrollment = create(:in_person_enrollment, enrollment_code:, status: :pending, user:)
+
+        expect(InPersonEnrollment).to receive(:update).
+          with(enrollment.id, ready_for_status_check: true).once
+
+        expect(error_reporter).not_to receive(:report_error)
+
+        expect(enrollment_pipeline.process_message(sqs_message)).to be(true)
+
+        expect(pipeline_analytics).to have_logged_event(
+          'IdV: in person usps proofing enrollment code email received',
+          multi_part: false,
+          part_found: 'message_body',
+        )
+      end
       it 'marks non-ready record as ready' do
         allow(sqs_message).to receive(:body).and_return(sns_payload.to_json)
 

@@ -142,7 +142,7 @@ RSpec.describe Idv::PhoneForm do
       context 'including country' do
         let(:previous_params) { { phone: '2255555000', international_code: 'IE' } }
         it 'uses the previously submitted phone + country as the initial values' do
-          expect(subject.phone).to eq('+3532255555000')
+          expect(subject.phone).to eq('+353 225 555 5000')
           expect(subject.international_code).to eq('IE')
         end
       end

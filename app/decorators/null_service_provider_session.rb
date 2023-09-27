@@ -1,4 +1,4 @@
-class SessionDecorator
+class NullServiceProviderSession
   def initialize(view_context: nil)
     @view_context = view_context
   end

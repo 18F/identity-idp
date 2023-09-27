@@ -55,7 +55,10 @@ export interface UploadSuccessResponse {
    */
   isPending: boolean;
 }
-
+export interface ImageFingerprints {
+  front: string[] | null;
+  back: string[] | null;
+}
 export interface UploadErrorResponse {
   /**
    * Whether request was successful.
@@ -96,6 +99,11 @@ export interface UploadErrorResponse {
    * Whether the doc type is clearly not supported type.
    */
   doc_type_supported: boolean;
+
+  /**
+   * Record of failed image fingerprints
+   */
+  failed_image_fingerprints: ImageFingerprints | null;
 }
 
 export type UploadImplementation = (
