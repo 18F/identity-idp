@@ -969,7 +969,7 @@ RSpec.describe User do
         email_address = email_addresses.last
         expect(email_addresses.count).to eq 1
         expect { user.reinstate! }.
-          to(change { SuspendedEmail.find_with_email(email_address.email)&.email_address }.to(nil))
+          to(change { SuspendedEmail.find_with_email(email_address.email) }.to(nil))
         expect(user.email_addresses.reload.last).to be_present
       end
 
