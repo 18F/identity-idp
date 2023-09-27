@@ -218,7 +218,7 @@ RSpec.describe GetUspsProofingResultsJob do
 
   describe '#perform' do
     describe 'IPP enabled' do
-      describe 'DAV not enabled' do
+      describe 'Proofed without secondary id' do
         let!(:pending_enrollments) do
           ['BALTIMORE', 'FRIENDSHIP', 'WASHINGTON', 'ARLINGTON', 'DEANWOOD'].map do |name|
             create(
@@ -1149,7 +1149,7 @@ RSpec.describe GetUspsProofingResultsJob do
         end
       end
 
-      describe 'proofed with secondary id' do
+      describe 'Proofed with secondary id' do
         let(:pending_enrollment) do
           create(
             :in_person_enrollment, :pending
