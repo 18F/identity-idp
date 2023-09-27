@@ -90,6 +90,12 @@ class DocumentCaptureSession < ApplicationRecord
       Time.zone.now
   end
 
+  def confirm_ocr
+    return unless self.ocr_confirmation_pending
+
+    update!(ocr_confirmation_pending: false)
+  end
+
   private
 
   def generate_result_id
