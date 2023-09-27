@@ -4,7 +4,7 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheck::EnrollmentPipeline do
   let(:error_reporter) { instance_double(InPerson::EnrollmentsReadyForStatusCheck::ErrorReporter) }
   let(:email_body_pattern) { /\A\s*(?<enrollment_code>\d{16})\s*\Z/ }
   subject(:enrollment_pipeline) { described_class.new(error_reporter:, email_body_pattern:) }
-  
+
   let(:pipeline_analytics) { FakeAnalytics.new }
 
   before(:each) do
@@ -386,7 +386,7 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheck::EnrollmentPipeline do
         expect(error_reporter).not_to receive(:report_error)
 
         expect(enrollment_pipeline.process_message(sqs_message)).to be(true)
-        
+
         expect(pipeline_analytics).to have_logged_event(
           'IdV: in person usps proofing enrollment code email received',
           multi_part: true,
@@ -404,7 +404,7 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheck::EnrollmentPipeline do
         expect(error_reporter).not_to receive(:report_error)
 
         expect(enrollment_pipeline.process_message(sqs_message)).to be(true)
-        
+
         expect(pipeline_analytics).to have_logged_event(
           'IdV: in person usps proofing enrollment code email received',
           multi_part: true,
