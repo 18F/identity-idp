@@ -116,7 +116,9 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController do
       end
 
       context 'document capture re-requested' do
-        let(:document_capture_session_result_captured_at) { document_capture_session_requested_at - 5.minutes }
+        let(:document_capture_session_result_captured_at) do
+          document_capture_session_requested_at - 5.minutes
+        end
         context 'with successful stored_result' do
           it 'renders the show template' do
             get :show
