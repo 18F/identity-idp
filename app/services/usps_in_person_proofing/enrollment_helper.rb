@@ -8,6 +8,7 @@ module UspsInPersonProofing
         enrollment.current_address_matches_id = pii['same_address_as_id']
         enrollment.save!
 
+        # Send state ID address to USPS
         pii = pii.to_h
         if !enrollment.current_address_matches_id?
           pii = pii.except(*SECONDARY_ID_ADDRESS_MAP.values).
