@@ -57,20 +57,6 @@ class DocumentCaptureSession < ApplicationRecord
     save!
   end
 
-  def store_doc_auth_result(result:, pii:) # IS THIS CALLED ANYWHERE?
-    EncryptedRedisStructStorage.store(
-      DocumentCaptureSessionAsyncResult.new(
-        id: result_id,
-        pii: pii,
-        result: result,
-        status: DocumentCaptureSessionAsyncResult::DONE,
-      ),
-      expires_in: IdentityConfig.store.async_wait_timeout_seconds,
-    )
-    self.ocr_confirmation_pending = result[:attention_with_barcode]
-    save!
-  end
-
   def load_proofing_result
     EncryptedRedisStructStorage.load(result_id, type: ProofingSessionAsyncResult)
   end
