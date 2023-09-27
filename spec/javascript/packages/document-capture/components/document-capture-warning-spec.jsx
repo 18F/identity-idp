@@ -74,7 +74,7 @@ describe('DocumentCaptureWarning', () => {
     const inPersonUrl = '/verify/doc_capture';
 
     it('logs the warning displayed to the user', () => {
-      const isFailedResult = true;
+      const isFailedResult = false;
       const isFailedDocType = false;
 
       renderCcontent(isFailedDocType, isFailedResult, inPersonUrl);
@@ -82,7 +82,7 @@ describe('DocumentCaptureWarning', () => {
       expect(trackEvent).to.have.been.calledWith('IdV: warning shown', {
         location: 'doc_auth_review_issues',
         heading: 'errors.doc_auth.rate_limited_heading',
-        subheading: '',
+        subheading: 'errors.doc_auth.rate_limited_subheading',
         error_message_displayed: 'general error',
         remaining_attempts: 2,
       });
@@ -172,7 +172,7 @@ describe('DocumentCaptureWarning', () => {
     const inPersonUrl = '';
 
     it('logs the warning displayed to the user', () => {
-      const isFailedResult = false;
+      const isFailedResult = true;
       const isFailedDocType = true;
 
       renderCcontent(isFailedDocType, isFailedResult, inPersonUrl);
