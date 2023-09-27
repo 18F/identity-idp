@@ -57,7 +57,7 @@ module Idv
     end
 
     def next_url
-      if pii_from_doc[:state] == 'PR' && !updating_ssn?
+      if idv_session.pii_from_doc[:state] == 'PR' && !updating_ssn?
         idv_address_url
       else
         idv_verify_info_url
