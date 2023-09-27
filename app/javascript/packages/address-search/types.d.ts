@@ -58,11 +58,11 @@ interface AddressSearchProps {
   addressSearchURL: string;
   disabled: boolean;
   handleLocationSelect: ((e: any, id: number) => Promise<void>) | null | undefined;
-  noInPersonLocationsDisplay?: ComponentType<{ address: string }>;
-  resultsHeaderComponent?: ComponentType;
   locationsURL: string;
+  noInPersonLocationsDisplay?: ComponentType<{ address: string }>;
   onFoundLocations: Dispatch<SetStateAction<FormattedLocation[] | null | undefined>>;
   registerField: RegisterFieldCallback;
+  resultsHeaderComponent?: ComponentType;
 }
 
 interface InPersonLocationsProps {
@@ -87,4 +87,15 @@ interface LocationCollectionProps {
   className?: string;
 
   children?: ReactNode;
+}
+
+interface FullAddressSearchProps {
+  disabled: boolean;
+  handleLocationSelect: ((e: any, id: number) => Promise<void>) | null | undefined;
+  locationsURL: string;
+  noInPersonLocationsDisplay?: ComponentType<{ address: string }>;
+  onFoundLocations: Dispatch<SetStateAction<FormattedLocation[] | null | undefined>>;
+  registerField: RegisterFieldCallback;
+  resultsHeaderComponent?: ComponentType;
+  usStatesTerritories: [string, string][];
 }
