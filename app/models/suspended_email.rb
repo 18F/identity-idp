@@ -16,11 +16,11 @@ class SuspendedEmail < ApplicationRecord
     end
 
     def find_with_email(email)
-      find_by(digested_base_email: generate_email_digest(email))&.email_address
+      find_by(digested_base_email: generate_email_digest(email))
     end
 
     def find_with_email_digest(digest)
-      find_by(digested_base_email: digest)&.email_address
+      find_by(digested_base_email: digest)
     end
   end
 end

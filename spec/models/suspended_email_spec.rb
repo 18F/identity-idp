@@ -23,7 +23,7 @@ RSpec.describe SuspendedEmail, type: :model do
       it 'returns nil' do
         email = 'not_blocked@example.com'
 
-        expect(SuspendedEmail.find_with_email(email)).to be_nil
+        expect(SuspendedEmail.find_with_email(email)&.email_address).to be_nil
       end
     end
 
@@ -37,7 +37,8 @@ RSpec.describe SuspendedEmail, type: :model do
           email_address: blocked_email,
         )
 
-        expect(SuspendedEmail.find_with_email('blocked@example.com')).to eq(blocked_email)
+        email_address = SuspendedEmail.find_with_email('blocked@example.com')&.email_address
+        expect(email_address).to eq(blocked_email)
       end
     end
   end
@@ -48,7 +49,7 @@ RSpec.describe SuspendedEmail, type: :model do
         email = 'not_blocked@example.com'
         digested_base_email = Digest::SHA256.hexdigest(email)
 
-        expect(SuspendedEmail.find_with_email_digest(digested_base_email)).to be_nil
+        expect(SuspendedEmail.find_with_email_digest(digested_base_email)&.email_address).to be_nil
       end
     end
 
@@ -62,7 +63,8 @@ RSpec.describe SuspendedEmail, type: :model do
           email_address: blocked_email,
         )
 
-        expect(SuspendedEmail.find_with_email_digest(digested_base_email)).to eq(blocked_email)
+        email_address = SuspendedEmail.find_with_email_digest(digested_base_email)&.email_address
+        expect(email_address).to eq(blocked_email)
       end
     end
   end
