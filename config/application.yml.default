@@ -478,6 +478,7 @@ production:
   second_mfa_reminder_enabled: false
   secret_key_base:
   seed_agreements_data: false
+  innocent_key: false
   session_encryption_key:
   skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:dev", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:int"]'
   state_tracking_enabled: false
