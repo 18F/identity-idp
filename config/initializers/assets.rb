@@ -10,3 +10,5 @@ Rails.application.config.assets.paths.push(
   'node_modules/@18f/identity-design-system/dist/assets/img',
   'node_modules/@18f/identity-design-system/dist/assets/fonts',
 )
+
+require Rails.root.join('lib', 'extensions', 'propshaft', 'asset')
