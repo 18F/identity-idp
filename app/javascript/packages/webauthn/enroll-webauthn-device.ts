@@ -38,6 +38,11 @@ interface EnrollResult {
 }
 
 /**
+ * All possible algorithms supported within the CBOR Object Signing and Encryption (COSE) format.
+ *
+ * For practicality's sake, this is not a complete list, and is currently limited to the algorithms
+ * referenced within the supported algorithms below.
+ *
  * @see https://www.iana.org/assignments/cose/cose.xhtml#algorithms
  */
 const enum COSEAlgorithm {
@@ -51,6 +56,8 @@ const enum COSEAlgorithm {
 }
 
 /**
+ * The subset of possible COSE algorithms supported for use in WebAuthn enrollments.
+ *
  * @see https://github.com/18F/identity-idp/blob/main/config/initializers/webauthn.rb
  * @see https://github.com/cedarcode/webauthn-ruby/blob/6db9596/lib/webauthn/relying_party.rb#L16
  */
