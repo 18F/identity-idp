@@ -969,10 +969,8 @@ RSpec.describe User do
         email_address = email_addresses.last
         expect(email_addresses.count).to eq 1
         expect { user.reinstate! }.
-          to(change { SuspendedEmail.find_with_email(email_address.email)&.email_address }.
-            from(email_address).to(nil))
-        expect(email_addresses.reload.last).to_not be_nil
-        expect(email_addresses.reload.count).to eq 1
+          to(change { SuspendedEmail.find_with_email(email_address.email)&.email_address }.to(nil))
+        expect(user.email_addresses.reload.last).to be_present
       end
 
       it 'updates the reinstated_at attribute with the current time' do

@@ -220,6 +220,6 @@ class RegisterUserEmailForm
     return @blocked_email_address if defined?(@blocked_email_address)
 
     @blocked_email_address = SuspendedEmail.find_with_email_digest(digested_base_email)&.
-    email_address
+      email_address
   end
 end
