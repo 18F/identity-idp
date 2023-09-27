@@ -1,5 +1,7 @@
 # Be sure to restart your server when you modify this file.
 
+require 'extensions/propshaft/asset'
+
 # Version of your assets, change this if you want to expire all your assets.
 Rails.application.config.assets.version = '1.0'
 
@@ -10,5 +12,3 @@ Rails.application.config.assets.paths.push(
   'node_modules/@18f/identity-design-system/dist/assets/img',
   'node_modules/@18f/identity-design-system/dist/assets/fonts',
 )
-
-require Rails.root.join('lib', 'extensions', 'propshaft', 'asset')
