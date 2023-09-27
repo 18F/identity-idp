@@ -1,4 +1,3 @@
-import { ComponentType } from 'react';
 import { t } from '@18f/identity-i18n';
 import LocationCollection from './location-collection';
 import LocationCollectionItem from './location-collection-item';
