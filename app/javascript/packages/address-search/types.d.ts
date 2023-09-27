@@ -99,5 +99,5 @@ interface FullAddressSearchProps {
   onFoundLocations: Dispatch<SetStateAction<FormattedLocation[] | null | undefined>>;
   registerField: RegisterFieldCallback;
   resultsHeaderComponent?: ComponentType;
-  usStatesTerritories: [string, string][];
+  usStatesTerritories: string[][];
 }

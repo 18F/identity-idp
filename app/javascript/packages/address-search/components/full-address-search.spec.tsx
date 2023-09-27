@@ -21,9 +21,9 @@ describe('FullAddressSearch', () => {
             usStatesTerritories={usStatesTerritories}
             onFoundLocations={handleLocationsFound}
             locationsURL={locationsURL}
-            registerField={undefined}
+            registerField={() => undefined}
             handleLocationSelect={undefined}
-            disabled={undefined}
+            disabled={false}
           />
         </SWRConfig>,
       );
@@ -44,9 +44,9 @@ describe('FullAddressSearch', () => {
             usStatesTerritories={usStatesTerritories}
             onFoundLocations={handleLocationsFound}
             locationsURL={locationsURL}
-            registerField={undefined}
+            registerField={() => undefined}
             handleLocationSelect={undefined}
-            disabled={undefined}
+            disabled={false}
           />
         </SWRConfig>,
       );
@@ -83,9 +83,9 @@ describe('FullAddressSearch', () => {
             usStatesTerritories={usStatesTerritories}
             onFoundLocations={handleLocationsFound}
             locationsURL={locationsURL}
-            registerField={undefined}
+            registerField={() => undefined}
             handleLocationSelect={undefined}
-            disabled={undefined}
+            disabled={false}
           />
         </SWRConfig>,
       );
@@ -135,9 +135,9 @@ describe('FullAddressSearch', () => {
             usStatesTerritories={usStatesTerritories}
             onFoundLocations={handleLocationsFound}
             locationsURL={locationsURL}
-            registerField={undefined}
+            registerField={() => undefined}
             handleLocationSelect={undefined}
-            disabled={undefined}
+            disabled={false}
           />
         </SWRConfig>,
       );
