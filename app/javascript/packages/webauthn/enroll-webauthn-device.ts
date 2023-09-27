@@ -37,6 +37,33 @@ interface EnrollResult {
   transports?: string[];
 }
 
+/**
+ * @see https://www.iana.org/assignments/cose/cose.xhtml#algorithms
+ */
+const enum COSEAlgorithm {
+  ES256 = -7,
+  ES384 = -35,
+  ES512 = -36,
+  PS256 = -37,
+  PS384 = -38,
+  PS512 = -39,
+  RS256 = -257,
+}
+
+/**
+ * @see https://github.com/18F/identity-idp/blob/main/config/initializers/webauthn.rb
+ * @see https://github.com/cedarcode/webauthn-ruby/blob/6db9596/lib/webauthn/relying_party.rb#L16
+ */
+const SUPPORTED_ALGORITHMS: COSEAlgorithm[] = [
+  COSEAlgorithm.ES256,
+  COSEAlgorithm.ES384,
+  COSEAlgorithm.ES512,
+  COSEAlgorithm.PS256,
+  COSEAlgorithm.PS384,
+  COSEAlgorithm.PS512,
+  COSEAlgorithm.RS256,
+];
+
 async function enrollWebauthnDevice({
   user,
   challenge,
@@ -48,36 +75,7 @@ async function enrollWebauthnDevice({
       challenge,
       rp: { name: window.location.hostname },
       user,
-      pubKeyCredParams: [
-        {
-          type: 'public-key',
-          alg: -7, // ECDSA w/ SHA-256
-        },
-        {
-          type: 'public-key',
-          alg: -35, // ECDSA w/ SHA-384
-        },
-        {
-          type: 'public-key',
-          alg: -36, // ECDSA w/ SHA-512
-        },
-        {
-          type: 'public-key',
-          alg: -37, // RSASSA-PSS w/ SHA-256
-        },
-        {
-          type: 'public-key',
-          alg: -38, // RSASSA-PSS w/ SHA-384
-        },
-        {
-          type: 'public-key',
-          alg: -39, // RSASSA-PSS w/ SHA-512
-        },
-        {
-          type: 'public-key',
-          alg: -257, // RSASSA-PKCS1-v1_5 w/ SHA-256
-        },
-      ],
+      pubKeyCredParams: SUPPORTED_ALGORITHMS.map((alg) => ({ alg, type: 'public-key' })),
       timeout: 800000,
       attestation: 'none',
       authenticatorSelection: {
