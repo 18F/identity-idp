@@ -701,6 +701,15 @@ module AnalyticsEvents
     )
   end
 
+  # @param [String] side the side of the image submission
+  def idv_doc_auth_failed_image_resubmitted(side:, **extra)
+    track_event(
+      'IdV: failed doc image resubmitted',
+      side: side,
+      **extra,
+    )
+  end
+
   def idv_doc_auth_getting_started_submitted(**extra)
     track_event('IdV: doc auth getting_started submitted', **extra)
   end
@@ -2291,7 +2300,7 @@ module AnalyticsEvents
   # The system encountered an error and the proofing results are missing
   def idv_proofing_resolution_result_missing(proofing_components: nil, **extra)
     track_event(
-      'Proofing Resolution Result Missing',
+      'IdV: proofing resolution result missing',
       proofing_components: proofing_components,
       **extra,
     )
@@ -3137,12 +3146,16 @@ module AnalyticsEvents
   # @param [String] client_id
   # @param [String] user_id
   # @param [String] code_digest hash of "code" param
-  def openid_connect_token(client_id:, user_id:, code_digest:, **extra)
+  # @param [Integer, nil] expires_in time to expiration of token
+  # @param [Integer, nil] ial ial level of identity
+  def openid_connect_token(client_id:, user_id:, code_digest:, expires_in:, ial:, **extra)
     track_event(
       'OpenID Connect: token',
       client_id: client_id,
       user_id: user_id,
       code_digest: code_digest,
+      expires_in: expires_in,
+      ial: ial,
       **extra,
     )
   end

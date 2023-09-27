@@ -20,9 +20,9 @@ en:
     attempt_remaining_warning_html:
       one: You have <strong>%{count} attempt</strong> remaining.
       other: You have <strong>%{count} attempts</strong> remaining.
-    backup_code_header_text: Enter your backup security code
-    backup_code_prompt: You can use this security code once. After you enter it,
-      you’ll need to use a new key.
+    backup_code_header_text: Enter your backup code
+    backup_code_prompt: You can use this backup code once. After you submit it,
+      you’ll need to use a new backup code next time.
     backup_codes:
       add_another_authentication_option: '‹ Add another authentication option'
       instructions: If you don’t have access to another device, keep your backup codes

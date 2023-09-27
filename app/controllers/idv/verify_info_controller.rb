@@ -56,7 +56,7 @@ module Idv
     end
 
     def pii
-      @pii = pii_from_doc
+      @pii = idv_session.pii_from_doc
     end
   end
 end

@@ -62,7 +62,6 @@
 <% end %>
 
 <%= render 'two_factor_authentication/troubleshooting_options', presenter: @presenter %>
-
 <% if MfaPolicy.new(current_user).two_factor_enabled? %>
   <%= render 'shared/cancel', link: @presenter.cancel_link %>
 <% else %>

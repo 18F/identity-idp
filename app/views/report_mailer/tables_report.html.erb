@@ -1,6 +1,8 @@
 <%#
+- @message: text to put in the beginning of the email
 - @tables: an array of tables, expects first "row" to be an options hash
 %>
+<%= @message %><br>
 <% @tables.each do |table| %>
   <% options, header, *rows = table %>
 
@@ -20,7 +22,7 @@
           <% row.each do |cell| %>
             <td <%= cell.is_a?(Numeric) ? 'class=table-number' : nil %> >
               <% if cell.is_a?(Float) && options[:float_as_percent] %>
-                <%= number_to_percentage(cell * 100, precision: 2) %>
+                <%= number_to_percentage(cell * 100, precision: options[:precision] || 2) %>
               <% else %>
                 <%= number_with_delimiter(cell) %>
               <% end %>
