@@ -47,7 +47,7 @@ describe('document-capture/components/review-issues-step', () => {
       location: 'doc_auth_review_issues',
       remaining_attempts: 3,
       heading: 'We couldn’t verify your ID',
-      subHeading: '',
+      subheading: '',
       errorText: 'test error',
     });
 

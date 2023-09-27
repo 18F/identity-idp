@@ -38,21 +38,21 @@ function DocumentCaptureWarning({
   const actionText = nonIppOrFailedResult
     ? t('idv.failure.button.warning')
     : t('idv.failure.button.try_online');
-  const subHeading = !nonIppOrFailedResult && !isFailedDocType && (
+  const subheading = !nonIppOrFailedResult && !isFailedDocType && (
     <h2>{t('errors.doc_auth.rate_limited_subheading')}</h2>
   );
-  const subHeadingRef = useRef<HTMLDivElement>(null);
+  const subheadingRef = useRef<HTMLDivElement>(null);
   const errorTextRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const subHeadingText = subHeadingRef.current?.textContent;
+    const subheadingText = subheadingRef.current?.textContent;
     const errorText = errorTextRef.current?.textContent;
 
     trackEvent('IdV: warning shown', {
       location: 'doc_auth_review_issues',
       remaining_attempts: remainingAttempts,
       heading,
-      subHeading: subHeadingText,
+      subheading: subheadingText,
       errorText,
     });
   }, []);
@@ -73,7 +73,7 @@ function DocumentCaptureWarning({
           />
         }
       >
-        <div ref={subHeadingRef}>{!!subHeading && subHeading}</div>
+        <div ref={subheadingRef}>{!!subheading && subheading}</div>
         <div ref={errorTextRef}>
           <UnknownError
             unknownFieldErrors={unknownFieldErrors}

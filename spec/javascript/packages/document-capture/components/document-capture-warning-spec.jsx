@@ -82,7 +82,7 @@ describe('DocumentCaptureWarning', () => {
       expect(trackEvent).to.have.been.calledWith('IdV: warning shown', {
         location: 'doc_auth_review_issues',
         heading: 'errors.doc_auth.rate_limited_heading',
-        subHeading: '',
+        subheading: '',
         errorText: 'general error',
         remaining_attempts: 2,
       });
@@ -180,7 +180,7 @@ describe('DocumentCaptureWarning', () => {
       expect(trackEvent).to.have.been.calledWith('IdV: warning shown', {
         location: 'doc_auth_review_issues',
         heading: 'errors.doc_auth.doc_type_not_supported_heading',
-        subHeading: '',
+        subheading: '',
         errorText: 'general error idv.warning.attempts_html',
         remaining_attempts: 2,
       });
