@@ -66,9 +66,11 @@ interface AddressSearchProps {
 }
 
 interface InPersonLocationsProps {
-  locations: FormattedLocation[] | null | undefined;
-  onSelect;
   address: string;
+  locations: FormattedLocation[] | null | undefined;
+  noInPersonLocationsDisplay: ComponentType<{ address: string }>;
+  onSelect;
+  resultsHeaderComponent?: ComponentType;
 }
 
 interface LocationCollectionItemProps {
