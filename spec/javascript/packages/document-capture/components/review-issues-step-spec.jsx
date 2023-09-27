@@ -47,7 +47,8 @@ describe('document-capture/components/review-issues-step', () => {
       location: 'doc_auth_review_issues',
       remaining_attempts: 3,
       heading: 'We couldn’t verify your ID',
-      errorMessageDisplayed: 'test error',
+      subHeading: '',
+      errorText: 'test error',
     });
 
     const button = getByRole('button');

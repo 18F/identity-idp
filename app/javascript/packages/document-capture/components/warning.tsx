@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react';
+import { useContext } from 'react';
 import type { ReactNode, ReactComponentElement } from 'react';
 import { StatusPage, Button } from '@18f/identity-components';
 import type { TroubleshootingOptions } from '@18f/identity-components';
@@ -49,16 +49,6 @@ interface WarningProps {
    * Source component mounting warning.
    */
   location: string;
-
-  /**
-   * The number of attempts the user can make.
-   */
-  remainingAttempts?: number;
-
-  /**
-   * The error message displayed to the user after submitting photos that cannot be used for doc auth.
-   */
-  errorMessageDisplayed: string;
 }
 
 function Warning({
@@ -71,18 +61,8 @@ function Warning({
   children,
   troubleshootingOptions,
   location,
-  remainingAttempts,
-  errorMessageDisplayed,
 }: WarningProps) {
   const { trackEvent } = useContext(AnalyticsContext);
-  useEffect(() => {
-    trackEvent('IdV: warning shown', {
-      location,
-      remaining_attempts: remainingAttempts,
-      heading,
-      errorMessageDisplayed,
-    });
-  }, []);
 
   let actionButtons: ReactComponentElement<typeof Button>[] | undefined;
   if (actionText && actionOnClick) {

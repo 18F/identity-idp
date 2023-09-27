@@ -1,11 +1,12 @@
 import { Cancel } from '@18f/identity-verify-flow';
 import { useI18n, HtmlTextWithStrongNoWrap } from '@18f/identity-react-i18n';
-import { useContext } from 'react';
+import { useContext, useEffect, useRef } from 'react';
 import { FormStepError } from '@18f/identity-form-steps';
 import Warning from './warning';
 import DocumentCaptureTroubleshootingOptions from './document-capture-troubleshooting-options';
 import UnknownError from './unknown-error';
 import { InPersonContext } from '../context';
+import AnalyticsContext from '../context/analytics';
 
 interface DocumentCaptureWarningProps {
   isFailedDocType: boolean;
@@ -18,14 +19,6 @@ interface DocumentCaptureWarningProps {
 
 const DISPLAY_ATTEMPTS = 3;
 
-function findErrorMessageDisplayed(listOfErrors): string {
-  const generalOrPiiErrors = listOfErrors.filter(
-    (error) => error.field === 'general' || error.field === 'pii',
-  );
-  const messages = generalOrPiiErrors.map((error) => error.error.message);
-  return messages.join(' ');
-}
-
 function DocumentCaptureWarning({
   isFailedDocType,
   isFailedResult,
@@ -36,6 +29,7 @@ function DocumentCaptureWarning({
 }: DocumentCaptureWarningProps) {
   const { t } = useI18n();
   const { inPersonURL } = useContext(InPersonContext);
+  const { trackEvent } = useContext(AnalyticsContext);
 
   const nonIppOrFailedResult = !inPersonURL || isFailedResult;
   const heading = isFailedDocType
@@ -47,7 +41,21 @@ function DocumentCaptureWarning({
   const subHeading = !nonIppOrFailedResult && !isFailedDocType && (
     <h2>{t('errors.doc_auth.rate_limited_subheading')}</h2>
   );
-  const errorMessageDisplayed = findErrorMessageDisplayed(unknownFieldErrors);
+  const subHeadingRef = useRef<HTMLDivElement>(null);
+  const errorTextRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const subHeadingText = subHeadingRef.current?.textContent;
+    const errorText = errorTextRef.current?.textContent;
+
+    trackEvent('IdV: warning shown', {
+      location: 'doc_auth_review_issues',
+      remaining_attempts: remainingAttempts,
+      heading,
+      subHeading: subHeadingText,
+      errorText,
+    });
+  }, []);
 
   return (
     <>
@@ -56,8 +64,6 @@ function DocumentCaptureWarning({
         actionText={actionText}
         actionOnClick={actionOnClick}
         location="doc_auth_review_issues"
-        errorMessageDisplayed={errorMessageDisplayed}
-        remainingAttempts={remainingAttempts}
         troubleshootingOptions={
           <DocumentCaptureTroubleshootingOptions
             location="post_submission_warning"
@@ -67,13 +73,15 @@ function DocumentCaptureWarning({
           />
         }
       >
-        {!!subHeading && subHeading}
-        <UnknownError
-          unknownFieldErrors={unknownFieldErrors}
-          remainingAttempts={remainingAttempts}
-          isFailedDocType={isFailedDocType}
-          hasDismissed={hasDismissed}
-        />
+        <div ref={subHeadingRef}>{!!subHeading && subHeading}</div>
+        <div ref={errorTextRef}>
+          <UnknownError
+            unknownFieldErrors={unknownFieldErrors}
+            remainingAttempts={remainingAttempts}
+            isFailedDocType={isFailedDocType}
+            hasDismissed={hasDismissed}
+          />
+        </div>
 
         {!isFailedDocType && remainingAttempts <= DISPLAY_ATTEMPTS && (
           <p>
