@@ -232,6 +232,7 @@ en:
         info_alert: You’ll need to wait until your letter is delivered to finish
           verifying your identity.
         letter_on_the_way: We are sending you a letter
+        resend: Send me another letter
         timeframe_html: Letters are sent the next business day via USPS First-Class Mail
           and arrive in <strong>5 to 10 days</strong>.
       gpo_reminder:

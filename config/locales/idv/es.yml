@@ -242,6 +242,7 @@ es:
         info_alert: Tendrá que esperar a que su carta sea entregada para terminar de
           verificar su identidad.
         letter_on_the_way: Te enviaremos una carta
+        resend: Envíeme otra carta
         timeframe_html: Las cartas se envían al siguiente día hábil por USPS First-Class
           Mail y tardan entre <strong>5 y 10 días</strong> en llegar.
       gpo_reminder:
