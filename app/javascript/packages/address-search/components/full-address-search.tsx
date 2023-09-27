@@ -4,17 +4,17 @@ import { t } from '@18f/identity-i18n';
 import { InPersonLocations, NoInPersonLocationsDisplay } from '@18f/identity-address-search';
 import type { LocationQuery, FormattedLocation } from '@18f/identity-address-search/types';
 import FullAddressSearchInput from './full-address-search-input';
-import type { FullAddressSearchProps }  from '../types';
+import type { FullAddressSearchProps } from '../types';
 
 function FullAddressSearch({
-disabled,
-handleLocationSelect,
-locationsURL,
-noInPersonLocationsDisplay = NoInPersonLocationsDisplay,
-onFoundLocations,
-registerField,
-resultsHeaderComponent,
-usStatesTerritories,
+  disabled,
+  handleLocationSelect,
+  locationsURL,
+  noInPersonLocationsDisplay = NoInPersonLocationsDisplay,
+  onFoundLocations,
+  registerField,
+  resultsHeaderComponent,
+  usStatesTerritories,
 }: FullAddressSearchProps) {
   const [apiError, setApiError] = useState<Error | null>(null);
   const [foundAddress, setFoundAddress] = useState<LocationQuery | null>(null);
