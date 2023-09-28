@@ -120,7 +120,7 @@ idv_acuant_sdk_version_alternate: '11.8.1'
 idv_acuant_sdk_upgrade_a_b_testing_enabled: false
 idv_acuant_sdk_upgrade_a_b_testing_percent: 50
 idv_getting_started_a_b_testing: '{"welcome_default":100, "welcome_new":0, "getting_started":0}'
-idv_show_phone_question_a_b_testing: '{"default_no_phone_question":100, "new_show_phone_question":0}'
+idv_phone_question_a_b_testing: '{"hide_phone_question":100, "show_phone_question":0}'
 idv_send_link_attempt_window_in_minutes: 10
 idv_send_link_max_attempts: 5
 idv_sp_required: false
