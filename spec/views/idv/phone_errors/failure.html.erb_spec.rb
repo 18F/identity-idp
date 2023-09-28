@@ -40,7 +40,7 @@ RSpec.describe 'idv/phone_errors/failure.html.erb' do
   it 'renders a cancel link' do
     expect(rendered).to have_link(
       t('links.cancel'),
-      href: idv_cancel_path,
+      href: idv_cancel_path(step: :phone_error),
     )
   end
 
