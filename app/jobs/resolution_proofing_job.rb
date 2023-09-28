@@ -79,8 +79,8 @@ class ResolutionProofingJob < ApplicationJob
       threatmetrix_session_id: threatmetrix_session_id,
       request_ip: request_ip,
       should_proof_state_id: should_proof_state_id,
-      timer: timer,
       double_address_verification: double_address_verification,
+      timer: timer,
     )
 
     log_threatmetrix_info(result.device_profiling_result, user)

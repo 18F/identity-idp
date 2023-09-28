@@ -44,7 +44,7 @@ module Idv
 
     def double_address_verification
       # if in person return true else return false
-      analytics_arguments[:analytics_id] == 'In Person Proofing'
+      current_user.has_in_person_enrollment?
     end
 
     def should_use_aamva?(pii)

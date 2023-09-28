@@ -57,7 +57,7 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
   end
 
   describe '#adjudicated_result' do
-   context 'double address verification is enabled' do
+    context 'double address verification is enabled' do
       context 'residential address and id address are different' do
         context 'LexisNexis fails for the residential address' do
           let(:resolution_success) { false }
