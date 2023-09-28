@@ -48,17 +48,6 @@ RSpec.describe Users::BackupCodeSetupController do
     expect(user.backup_code_configurations.length).to eq BackupCodeGenerator::NUMBER_OF_CODES
   end
 
-  it 'creating backup codes revokes remember device cookies' do
-    user = create(:user, :fully_registered)
-    stub_sign_in(user)
-    expect(user.remember_device_revoked_at).to eq nil
-
-    freeze_time do
-      post :create
-      expect(user.reload.remember_device_revoked_at).to eq Time.zone.now
-    end
-  end
-
   it 'deletes backup codes' do
     user = build(:user, :fully_registered, :with_authentication_app, :with_backup_code)
     stub_sign_in(user)

@@ -92,7 +92,6 @@ module Users
     end
 
     def generate_codes
-      revoke_remember_device(current_user)
       @codes = generator.generate
       user_session[:backup_codes] = @codes
     end
