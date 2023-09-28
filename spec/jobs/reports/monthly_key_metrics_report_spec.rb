@@ -13,7 +13,6 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
       and_return(agnes_email)
     allow(IdentityConfig.store).to receive(:team_all_feds_email).
       and_return(feds_email)
-    allow(Identity::Hostdata).to receive(:env).and_return('prod')
   end
 
   it 'sends out a report to the email listed with one total user' do
