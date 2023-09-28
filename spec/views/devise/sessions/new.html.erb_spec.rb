@@ -1,12 +1,14 @@
 require 'rails_helper'
 
 RSpec.describe 'devise/sessions/new.html.erb' do
+  include UserAgentHelper
+
   before do
     allow(view).to receive(:resource).and_return(build_stubbed(:user))
     allow(view).to receive(:resource_name).and_return(:user)
     allow(view).to receive(:devise_mapping).and_return(Devise.mappings[:user])
     allow(view).to receive(:controller_name).and_return('sessions')
-    allow(view).to receive(:decorated_session).and_return(SessionDecorator.new)
+    allow(view).to receive(:decorated_sp_session).and_return(NullServiceProviderSession.new)
     allow_any_instance_of(ActionController::TestRequest).to receive(:path).
       and_return('/')
     assign(:ial, 1)
@@ -83,13 +85,13 @@ RSpec.describe 'devise/sessions/new.html.erb' do
     end
     before do
       view_context = ActionController::Base.new.view_context
-      @decorated_session = DecoratedSession.new(
+      @decorated_sp_session = ServiceProviderSessionCreator.new(
         sp: sp,
         view_context: view_context,
         sp_session: {},
         service_provider_request: ServiceProviderRequest.new,
-      ).call
-      allow(view).to receive(:decorated_session).and_return(@decorated_session)
+      ).create_session
+      allow(view).to receive(:decorated_sp_session).and_return(@decorated_sp_session)
       allow(view_context).to receive(:sign_up_email_path).
         and_return('/sign_up/enter_email')
     end
@@ -149,6 +151,19 @@ RSpec.describe 'devise/sessions/new.html.erb' do
       expect(rendered).not_to have_link(
         t('links.back_to_sp', sp: 'Awesome Application!'),
       )
+    end
+  end
+
+  context 'on mobile' do
+    before do
+      mobile_device = Browser.new(mobile_user_agent)
+      allow(BrowserCache).to receive(:parse).and_return(mobile_device)
+    end
+
+    it 'does not show PIV/CAC sign-in link' do
+      render
+
+      expect(rendered).to_not have_link t('account.login.piv_cac')
     end
   end
 end

@@ -31,5 +31,4 @@ production:
   telephony_adapter: test
   doc_auth_vendor: 'mock'
   usps_auth_token_refresh_job_enabled: false
-  arcgis_api_refresh_token_job_enabled: false
   lexisnexis_threatmetrix_mock_enabled: true

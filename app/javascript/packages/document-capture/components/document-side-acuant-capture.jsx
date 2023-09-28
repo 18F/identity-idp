@@ -1,5 +1,6 @@
 import { t } from '@18f/identity-i18n';
-import { FormError } from '@18f/identity-form-steps';
+import { FormError, FormStepsContext } from '@18f/identity-form-steps';
+import { useContext } from 'react';
 import AcuantCapture from './acuant-capture';
 
 /** @typedef {import('@18f/identity-form-steps').FormStepError<*>} FormStepError */
@@ -43,7 +44,7 @@ function DocumentSideAcuantCapture({
   className,
 }) {
   const error = errors.find(({ field }) => field === side)?.error;
-
+  const { changeStepCanComplete } = useContext(FormStepsContext);
   return (
     <AcuantCapture
       ref={registerField(side, { isRequired: true })}
@@ -54,12 +55,18 @@ function DocumentSideAcuantCapture({
       /* i18n-tasks-use t('doc_auth.headings.front') */
       bannerText={t(`doc_auth.headings.${side}`)}
       value={value}
-      onChange={(nextValue, metadata) =>
+      onChange={(nextValue, metadata) => {
         onChange({
           [side]: nextValue,
           [`${side}_image_metadata`]: JSON.stringify(metadata),
-        })
-      }
+        });
+        if (metadata?.failedImageResubmission) {
+          onError(new Error(t('doc_auth.errors.doc.resubmit_failed_image')), { field: side });
+          changeStepCanComplete(false);
+        } else {
+          changeStepCanComplete(true);
+        }
+      }}
       onCameraAccessDeclined={() => {
         onError(new CameraAccessDeclinedError(), { field: side });
         onError(new CameraAccessDeclinedError(undefined, { isDetail: true }));

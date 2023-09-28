@@ -67,9 +67,17 @@ es:
       card_type: Solo se aceptan licencias de conducir o documentos de identidad
         estatales.
       doc:
-        doc_type_check: No se aceptan otras formas de identificación.
-        wrong_id_type: Solo aceptamos una licencia de conducir o un documento de
-          identidad estatal. No se aceptan otras formas de identificación.
+        doc_type_check: Su licencia de conducir o identificación estatal debe ser
+          emitida por un estado o territorio de los EE. UU. No aceptamos
+          cartillas militares, pasaportes estadounidenses ni otros documentos de
+          identificación.
+        resubmit_failed_image: Ya intentó con esta imagen pero falló. Intente añadir una
+          imagen diferente.
+        wrong_id_type_html: Solo aceptamos una licencia de conducir o una identificación
+          estatal emitida por un estado o territorio de EE. UU. No aceptamos
+          cartillas militares, pasaportes estadounidenses ni otros documentos de
+          identificación. <a>Más información sobre los documentos de identidad
+          aceptados</a>
       dpi:
         failed_short: La imagen es demasiado pequeña o está borrosa, por favor inténtelo
           de nuevo.
@@ -220,6 +228,7 @@ es:
       privacy: '%{app_name} es un sitio web gubernamental seguro que cumple con las
         normas más estrictas de protección de datos. Utilizamos sus datos para
         verificar su identidad.'
+      review_examples_of_photos: Revisa ejemplos de cómo hacer fotos nítidas de tu documento de identidad.
       secure_account: Vamos a encriptar su cuenta con su contraseña. La encriptación
         significa que sus datos están protegidos y solo usted podrá acceder o
         modificar su información.
@@ -256,7 +265,7 @@ es:
         - '<strong>Verificar por teléfono</strong>: Le llamaremos o enviaremos
           un mensaje de texto a su número de teléfono. Esto lleva unos minutos'
         - '<strong>Verificar por correo</strong>: Le enviaremos una carta a su
-          domicilio. Esto tarda entre 3 y 7 días laborables.'
+          domicilio. Esto tarda entre <strong>5 y 10 días</strong>.'
       welcome: 'Necesitará su:'
     tips:
       document_capture_header_text: 'Para obtener los mejores resultados:'

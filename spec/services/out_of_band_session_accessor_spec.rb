@@ -15,13 +15,7 @@ RSpec.describe OutOfBandSessionAccessor do
     it 'returns the remaining time-to-live of the session data in redis' do
       store.put_pii({ first_name: 'Fakey' }, 5.minutes.to_i)
 
-      expect(store.ttl).to eq(5.minutes.to_i)
-    end
-
-    it 'returns the remaining time-to-live of the session data in redis' do
-      store.put_pii({ first_name: 'Fakey' }, 5.minutes.to_i)
-
-      expect(store.ttl).to eq(5.minutes.to_i)
+      expect(store.ttl).to be_within(1).of(5.minutes.to_i)
     end
   end
 

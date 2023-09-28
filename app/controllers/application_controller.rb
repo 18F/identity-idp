@@ -6,6 +6,7 @@ class ApplicationController < ActionController::Base
   include LocaleHelper
   include VerifySpAttributesConcern
   include EffectiveUser
+  include SecondMfaReminderConcern
 
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
@@ -24,7 +25,7 @@ class ApplicationController < ActionController::Base
     rescue_from error, with: :render_timeout
   end
 
-  helper_method :decorated_session, :user_fully_authenticated?
+  helper_method :decorated_sp_session, :user_fully_authenticated?
 
   prepend_before_action :add_new_relic_trace_attributes
   prepend_before_action :session_expires_at
@@ -78,15 +79,15 @@ class ApplicationController < ActionController::Base
     @user_event_creator ||= UserEventCreator.new(request: request, current_user: current_user)
   end
   delegate :create_user_event, :create_user_event_with_disavowal, to: :user_event_creator
-  delegate :remember_device_default, to: :decorated_session
+  delegate :remember_device_default, to: :decorated_sp_session
 
-  def decorated_session
-    @decorated_session ||= DecoratedSession.new(
+  def decorated_sp_session
+    @decorated_sp_session ||= ServiceProviderSessionCreator.new(
       sp: current_sp,
       view_context: view_context,
       sp_session: sp_session,
       service_provider_request: service_provider_request,
-    ).call
+    ).create_session
   end
 
   def default_url_options
@@ -184,18 +185,7 @@ class ApplicationController < ActionController::Base
     @service_provider_request ||= ServiceProviderRequestProxy.from_uuid(params[:request_id])
   end
 
-  def add_piv_cac_setup_url
-    session[:needs_to_setup_piv_cac_after_sign_in] ? login_add_piv_cac_prompt_url : nil
-  end
-
-  def service_provider_mfa_setup_url
-    service_provider_mfa_policy.user_needs_sp_auth_method_setup? ?
-      authentication_methods_setup_url : nil
-  end
-
   def fix_broken_personal_key_url
-    return if !current_user.broken_personal_key?
-
     flash[:info] = t('account.personal_key.needs_new')
 
     pii_unlocked = Pii::Cacher.new(current_user, user_session).exists_in_session?
@@ -217,26 +207,22 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_in_path_for(_user)
-    accept_rules_of_use_url ||
-      service_provider_mfa_setup_url ||
-      add_piv_cac_setup_url ||
-      fix_broken_personal_key_url ||
-      user_session.delete(:stored_location) ||
-      sp_session_request_url_with_updated_params ||
-      signed_in_url
+    return rules_of_use_path if !current_user.accepted_rules_of_use_still_valid?
+    return user_please_call_url if current_user.suspended?
+    return authentication_methods_setup_url if user_needs_sp_auth_method_setup?
+    return login_add_piv_cac_prompt_url if session[:needs_to_setup_piv_cac_after_sign_in].present?
+    return fix_broken_personal_key_url if current_user.broken_personal_key?
+    return user_session.delete(:stored_location) if user_session.key?(:stored_location)
+    return reactivate_account_url if user_needs_to_reactivate_account?
+    return second_mfa_reminder_url if user_needs_second_mfa_reminder?
+    return sp_session_request_url_with_updated_params if sp_session.key?(:request_url)
+    signed_in_url
   end
 
   def signed_in_url
-    return user_two_factor_authentication_url unless user_fully_authenticated?
-    return user_please_call_url if current_user.suspended?
-    return reactivate_account_url if user_needs_to_reactivate_account?
     return url_for_pending_profile_reason if user_has_pending_profile?
     return backup_code_reminder_url if user_needs_backup_code_reminder?
-    account_url
-  end
-
-  def accept_rules_of_use_url
-    rules_of_use_path unless current_user.accepted_rules_of_use_still_valid?
+    account_path
   end
 
   def after_mfa_setup_path
@@ -289,10 +275,6 @@ class ApplicationController < ActionController::Base
       session['warden.user.user.session'] &&
       !session['warden.user.user.session'][TwoFactorAuthenticatable::NEED_AUTHENTICATION] &&
       two_factor_enabled?
-  end
-
-  def confirm_user_is_not_suspended
-    redirect_to user_please_call_url if current_user.suspended?
   end
 
   def confirm_two_factor_authenticated
@@ -404,6 +386,7 @@ class ApplicationController < ActionController::Base
       phishing_resistant_requested: sp_session[:phishing_resistant_requested],
     )
   end
+  delegate :user_needs_sp_auth_method_setup?, to: :service_provider_mfa_policy
 
   def sp_session
     session.fetch(:sp, {})

@@ -6,6 +6,7 @@ import type {
   UploadErrorResponse,
   UploadFieldError,
   UploadImplementation,
+  ImageFingerprints,
 } from '../context/upload';
 
 /**
@@ -44,6 +45,8 @@ export class UploadFormEntriesError extends FormError {
   pii?: PII;
 
   hints = false;
+
+  failed_image_fingerprints: ImageFingerprints = { front: [], back: [] };
 }
 
 /**
@@ -120,6 +123,8 @@ const upload: UploadImplementation = async function (payload, { method = 'POST',
     error.isFailedResult = !!result.result_failed;
 
     error.isFailedDocType = !result.doc_type_supported;
+
+    error.failed_image_fingerprints = result.failed_image_fingerprints ?? { front: [], back: [] };
 
     throw error;
   }

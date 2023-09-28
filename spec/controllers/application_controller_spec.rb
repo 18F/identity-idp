@@ -190,26 +190,6 @@ RSpec.describe ApplicationController do
     end
   end
 
-  describe '#confirm_user_is_not_suspended' do
-    controller do
-      before_action :confirm_user_is_not_suspended
-
-      def index
-        render plain: 'Hello'
-      end
-    end
-
-    context 'when user is suspended' do
-      it 'redirects to users please call page' do
-        user = create(:user, :suspended)
-        sign_in user
-        get :index
-
-        expect(response).to redirect_to user_please_call_url
-      end
-    end
-  end
-
   describe '#confirm_two_factor_authenticated' do
     controller do
       before_action :confirm_two_factor_authenticated

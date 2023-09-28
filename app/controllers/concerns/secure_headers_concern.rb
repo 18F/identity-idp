@@ -21,7 +21,7 @@ module SecureHeadersConcern
     # Returns fully formed CSP array w/"'self'" and redirect_uris
     SecureHeadersAllowList.csp_with_sp_redirect_uris(
       authorize_params[:redirect_uri],
-      decorated_session.sp_redirect_uris,
+      decorated_sp_session.sp_redirect_uris,
     )
   end
 

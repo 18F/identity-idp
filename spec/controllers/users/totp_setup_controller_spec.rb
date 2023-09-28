@@ -42,7 +42,7 @@ RSpec.describe Users::TotpSetupController, devise: true do
           user_signed_up: true,
           totp_secret_present: true,
           enabled_mfa_methods_count: 1,
-          in_multi_mfa_selection_flow: false,
+          in_account_creation_flow: false,
         }
 
         expect(@analytics).
@@ -78,7 +78,7 @@ RSpec.describe Users::TotpSetupController, devise: true do
           user_signed_up: false,
           totp_secret_present: true,
           enabled_mfa_methods_count: 0,
-          in_multi_mfa_selection_flow: false,
+          in_account_creation_flow: false,
         }
 
         expect(@analytics).
@@ -116,7 +116,7 @@ RSpec.describe Users::TotpSetupController, devise: true do
             multi_factor_auth_method: 'totp',
             auth_app_configuration_id: nil,
             enabled_mfa_methods_count: 0,
-            in_multi_mfa_selection_flow: false,
+            in_account_creation_flow: false,
             pii_like_keypaths: [[:mfa_method_counts, :phone]],
           }
 
@@ -153,7 +153,7 @@ RSpec.describe Users::TotpSetupController, devise: true do
             multi_factor_auth_method: 'totp',
             auth_app_configuration_id: next_auth_app_id,
             enabled_mfa_methods_count: 2,
-            in_multi_mfa_selection_flow: false,
+            in_account_creation_flow: false,
             pii_like_keypaths: [[:mfa_method_counts, :phone]],
           }
 
@@ -191,7 +191,7 @@ RSpec.describe Users::TotpSetupController, devise: true do
             multi_factor_auth_method: 'totp',
             auth_app_configuration_id: nil,
             enabled_mfa_methods_count: 1,
-            in_multi_mfa_selection_flow: false,
+            in_account_creation_flow: false,
             pii_like_keypaths: [[:mfa_method_counts, :phone]],
           }
 
@@ -230,7 +230,7 @@ RSpec.describe Users::TotpSetupController, devise: true do
             multi_factor_auth_method: 'totp',
             auth_app_configuration_id: nil,
             enabled_mfa_methods_count: 1,
-            in_multi_mfa_selection_flow: false,
+            in_account_creation_flow: false,
             pii_like_keypaths: [[:mfa_method_counts, :phone]],
           }
 
@@ -268,7 +268,7 @@ RSpec.describe Users::TotpSetupController, devise: true do
             multi_factor_auth_method: 'totp',
             auth_app_configuration_id: nil,
             enabled_mfa_methods_count: 0,
-            in_multi_mfa_selection_flow: false,
+            in_account_creation_flow: false,
             pii_like_keypaths: [[:mfa_method_counts, :phone]],
           }
           expect(@analytics).to have_received(:track_event).
@@ -290,6 +290,7 @@ RSpec.describe Users::TotpSetupController, devise: true do
           allow(@irs_attempts_api_tracker).to receive(:track_event)
           subject.user_session[:new_totp_secret] = secret
           subject.user_session[:mfa_selections] = mfa_selections
+          subject.user_session[:in_account_creation_flow] = true
 
           patch :confirm, params: { name: name, code: generate_totp_code(secret) }
         end
@@ -306,7 +307,7 @@ RSpec.describe Users::TotpSetupController, devise: true do
               multi_factor_auth_method: 'totp',
               auth_app_configuration_id: next_auth_app_id,
               enabled_mfa_methods_count: 1,
-              in_multi_mfa_selection_flow: true,
+              in_account_creation_flow: true,
               pii_like_keypaths: [[:mfa_method_counts, :phone]],
             }
 
@@ -331,7 +332,7 @@ RSpec.describe Users::TotpSetupController, devise: true do
               multi_factor_auth_method: 'totp',
               auth_app_configuration_id: next_auth_app_id,
               enabled_mfa_methods_count: 1,
-              in_multi_mfa_selection_flow: true,
+              in_account_creation_flow: true,
               pii_like_keypaths: [[:mfa_method_counts, :phone]],
             }
 
@@ -367,7 +368,7 @@ RSpec.describe Users::TotpSetupController, devise: true do
             multi_factor_auth_method: 'totp',
             auth_app_configuration_id: nil,
             enabled_mfa_methods_count: 0,
-            in_multi_mfa_selection_flow: false,
+            in_account_creation_flow: false,
             pii_like_keypaths: [[:mfa_method_counts, :phone]],
           }
 

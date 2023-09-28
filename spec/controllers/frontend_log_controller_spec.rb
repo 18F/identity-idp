@@ -170,6 +170,39 @@ RSpec.describe FrontendLogController do
           expect(json[:success]).to eq(true)
         end
       end
+
+      context 'for an error event' do
+        let(:params) do
+          {
+            'event' => 'Frontend Error',
+            'payload' => {
+              'name' => 'name',
+              'message' => 'message',
+              'stack' => 'stack',
+            },
+          }
+        end
+
+        it 'notices the error to NewRelic instead of analytics logger' do
+          expect(fake_analytics).not_to receive(:track_event)
+          expect(NewRelic::Agent).to receive(:notice_error).with(
+            FrontendErrorLogger::FrontendError.new,
+            custom_params: {
+              frontend_error: {
+                name: 'name',
+                message: 'message',
+                stack: 'stack',
+              },
+            },
+            expected: true,
+          )
+
+          action
+
+          expect(response).to have_http_status(:ok)
+          expect(json[:success]).to eq(true)
+        end
+      end
     end
 
     context 'anonymous user with session-associated user id' do

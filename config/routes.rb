@@ -12,8 +12,6 @@ Rails.application.routes.draw do
   get '/api/openid_connect/userinfo' => 'openid_connect/user_info#show'
   post '/api/risc/security_events' => 'risc/security_events#create'
 
-  post '/api/address_search' => 'idv/in_person/public/address_search#index'
-  match '/api/address_search' => 'idv/in_person/public/address_search#options', via: :options
   post '/api/usps_locations' => 'idv/in_person/public/usps_locations#index'
   match '/api/usps_locations' => 'idv/in_person/public/usps_locations#options', via: :options
 
@@ -44,7 +42,6 @@ Rails.application.routes.draw do
   post '/api/service_provider' => 'service_provider#update'
   post '/api/verify/images' => 'idv/image_uploads#create'
   post '/api/logger' => 'frontend_log#create'
-  post '/api/addresses' => 'idv/in_person/address_search#index'
 
   get '/openid_connect/authorize' => 'openid_connect/authorization#index'
   get '/openid_connect/logout' => 'openid_connect/logout#index'
@@ -210,6 +207,9 @@ Rails.application.routes.draw do
     get '/rules_of_use' => 'users/rules_of_use#new'
     post '/rules_of_use' => 'users/rules_of_use#create'
 
+    get '/second_mfa_reminder' => 'users/second_mfa_reminder#new'
+    post '/second_mfa_reminder' => 'users/second_mfa_reminder#create'
+
     get '/piv_cac' => 'users/piv_cac_authentication_setup#new', as: :setup_piv_cac
     get '/piv_cac_error' => 'users/piv_cac_authentication_setup#error', as: :setup_piv_cac_error
     delete '/piv_cac' => 'users/piv_cac_authentication_setup#delete', as: :disable_piv_cac
@@ -240,8 +240,6 @@ Rails.application.routes.draw do
     get '/manage/email/confirm_delete/:id' => 'users/emails#confirm_delete',
         as: :manage_email_confirm_delete
 
-    get '/add/phone' => 'users/phones#add'
-    post '/add/phone' => 'users/phones#create'
     get '/manage/phone/:id' => 'users/edit_phone#edit', as: :manage_phone
     match '/manage/phone/:id' => 'users/edit_phone#update', via: %i[patch put]
     delete '/manage/phone/:id' => 'users/edit_phone#destroy'
@@ -315,7 +313,6 @@ Rails.application.routes.draw do
       end
 
       get '/mail_only_warning' => 'mail_only_warning#show'
-      get '/come_back_later' => 'come_back_later#show'
       get '/personal_key' => 'personal_key#show'
       post '/personal_key' => 'personal_key#update'
       get '/forgot_password' => 'forgot_password#new'
@@ -387,7 +384,6 @@ Rails.application.routes.draw do
           as: :in_person_ready_to_verify
       post '/in_person/usps_locations' => 'in_person/usps_locations#index'
       put '/in_person/usps_locations' => 'in_person/usps_locations#update'
-      post '/in_person/addresses' => 'in_person/address_search#index'
       get '/in_person/ssn' => 'in_person/ssn#show'
       put '/in_person/ssn' => 'in_person/ssn#update'
       get '/in_person/verify_info' => 'in_person/verify_info#show'
@@ -395,15 +391,25 @@ Rails.application.routes.draw do
       get '/in_person/:step' => 'in_person#show', as: :in_person_step
       put '/in_person/:step' => 'in_person#update'
 
-      get '/by_mail' => 'gpo_verify#index', as: :gpo_verify
-      post '/by_mail' => 'gpo_verify#create'
+      get '/by_mail/enter_code' => 'by_mail/enter_code#index', as: :verify_by_mail_enter_code
+      post '/by_mail/enter_code' => 'by_mail/enter_code#create'
       get '/by_mail/confirm_start_over' => 'confirm_start_over#index',
           as: :confirm_start_over
 
       if FeatureManagement.gpo_verification_enabled?
-        get '/usps' => 'gpo#index', as: :gpo
-        put '/usps' => 'gpo#create'
+        get '/by_mail/request_letter' => 'by_mail/request_letter#index', as: :request_letter
+        put '/by_mail/request_letter' => 'by_mail/request_letter#create'
+
+        # Temporary routes + redirects supporting GPO route renaming
+        get '/usps' => redirect('/verify/by_mail/request_letter')
+        put '/usps' => 'by_mail/request_letter#create'
       end
+
+      get '/by_mail/letter_enqueued' => 'by_mail/letter_enqueued#show', as: :letter_enqueued
+
+      # Redirects for old verify by mail routes
+      get '/come_back_later' => redirect('/verify/by_mail/letter_enqueued', status: 301)
+      get '/by_mail' => redirect('/verify/by_mail/enter_code', status: 301)
     end
 
     root to: 'users/sessions#new'

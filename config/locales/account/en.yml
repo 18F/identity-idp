@@ -76,8 +76,6 @@ en:
       piv_cac: Sign in with your government employee ID
       tab_navigation: Account creation tabs
     navigation:
-      access_services: Access your government benefits and services from your
-        %{app_name} account.
       add_authentication_apps: Add authentication apps
       add_email: Add email address
       add_federal_id: Add federal employee ID
@@ -93,7 +91,6 @@ en:
       get_backup_codes: Get backup codes
       history: History
       landmark_label: Side navigation
-      learn_more: Learn more about %{app_name}
       menu: Menu
       reset_personal_key: Reset personal key
       two_factor_authentication: Your authentication methods

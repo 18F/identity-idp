@@ -226,9 +226,9 @@ module AnalyticsEvents
   end
 
   # Tracks when the user visits the Backup Code Regenerate page.
-  # @param [Boolean] in_multi_mfa_selection_flow whether user is going through MFA selection Flow
-  def backup_code_regenerate_visit(in_multi_mfa_selection_flow:, **extra)
-    track_event('Backup Code Regenerate Visited', in_multi_mfa_selection_flow:, **extra)
+  # @param [Boolean] in_account_creation_flow whether user is going through creation flow
+  def backup_code_regenerate_visit(in_account_creation_flow:, **extra)
+    track_event('Backup Code Regenerate Visited', in_account_creation_flow:, **extra)
   end
 
   # Track user creating new BackupCodeSetupForm, record form submission Hash
@@ -530,6 +530,58 @@ module AnalyticsEvents
   end
 
   # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [String] exception
+  # @param [String] profile_fraud_review_pending_at
+  # The user was passed by manual fraud review
+  def fraud_review_passed(
+    success:,
+    errors:,
+    exception:,
+    profile_fraud_review_pending_at:,
+    **extra
+  )
+    track_event(
+      'Fraud: Profile review passed',
+      success: success,
+      errors: errors,
+      exception: exception,
+      profile_fraud_review_pending_at: profile_fraud_review_pending_at,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [String] exception
+  # @param [String] profile_fraud_review_pending_at
+  # The user was rejected by manual fraud review
+  def fraud_review_rejected(
+    success:,
+    errors:,
+    exception:,
+    profile_fraud_review_pending_at:,
+    **extra
+  )
+    track_event(
+      'Fraud: Profile review rejected',
+      success: success,
+      errors: errors,
+      exception: exception,
+      profile_fraud_review_pending_at: profile_fraud_review_pending_at,
+      **extra,
+    )
+  end
+
+  # An uncaught error occurred in frontend JavaScript
+  # @param [String] name
+  # @param [String] message
+  # @param [String] stack
+  def frontend_error(name:, message:, stack: nil, **extra)
+    track_event('Frontend Error', name:, message:, stack:, **extra)
+  end
+
+  # @param [Boolean] success
   # @param [Boolean] address_edited
   # @param [Hash] pii_like_keypaths
   # @param [Hash] errors
@@ -557,47 +609,6 @@ module AnalyticsEvents
   # User visited idv address page
   def idv_address_visit
     track_event('IdV: address visited')
-  end
-
-  # Tracks if request to get address candidates from ArcGIS fails
-  # @param [String] exception_class
-  # @param [String] exception_message
-  # @param [Boolean] response_body_present
-  # @param [Hash] response_body
-  # @param [Integer] response_status_code
-  def idv_arcgis_request_failure(
-    exception_class:,
-    exception_message:,
-    response_body_present:,
-    response_body:,
-    response_status_code:,
-    **extra
-  )
-    track_event(
-      'Request ArcGIS Address Candidates: request failed',
-      exception_class: exception_class,
-      exception_message: exception_message,
-      response_body_present: response_body_present,
-      response_body: response_body,
-      response_status_code: response_status_code,
-      **extra,
-    )
-  end
-
-  # Track when ArcGIS auth token refresh job completed
-  def idv_arcgis_token_job_completed(**extra)
-    track_event(
-      'ArcgisTokenJob: Completed',
-      **extra,
-    )
-  end
-
-  # Track when ArcGIS auth token refresh job started
-  def idv_arcgis_token_job_started(**extra)
-    track_event(
-      'ArcgisTokenJob: Started',
-      **extra,
-    )
   end
 
   # @param [String] step the step that the user was on when they clicked cancel
@@ -639,16 +650,6 @@ module AnalyticsEvents
       'IdV: cancellation visited',
       step: step,
       request_came_from: request_came_from,
-      proofing_components: proofing_components,
-      **extra,
-    )
-  end
-
-  # The user visited the "come back later" page shown during the GPO mailing flow
-  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
-  def idv_come_back_later_visit(proofing_components: nil, **extra)
-    track_event(
-      'IdV: come back later visited',
       proofing_components: proofing_components,
       **extra,
     )
@@ -696,6 +697,15 @@ module AnalyticsEvents
       'IdV: doc auth exception visited',
       step_name: step_name,
       remaining_attempts: remaining_attempts,
+      **extra,
+    )
+  end
+
+  # @param [String] side the side of the image submission
+  def idv_doc_auth_failed_image_resubmitted(side:, **extra)
+    track_event(
+      'IdV: failed doc image resubmitted',
+      side: side,
       **extra,
     )
   end
@@ -1034,19 +1044,6 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Boolean] letter_already_sent
-  # GPO address visited
-  def idv_gpo_address_visited(
-    letter_already_sent:,
-    **extra
-  )
-    track_event(
-      'IdV: USPS address visited',
-      letter_already_sent: letter_already_sent,
-      **extra,
-    )
-  end
-
   # The user visited the gpo confirm cancellation screen
   def idv_gpo_confirm_start_over_visited
     track_event('IdV: gpo confirm start over visited')
@@ -1056,60 +1053,6 @@ module AnalyticsEvents
   # @param [String] user_id UUID of user who we sent a reminder to
   def idv_gpo_reminder_email_sent(user_id:, **extra)
     track_event('IdV: gpo reminder email sent', user_id: user_id, **extra)
-  end
-
-  # @identity.idp.previous_event_name Account verification submitted
-  # @param [Boolean] success
-  # @param [Hash] errors
-  # @param [Hash] pii_like_keypaths
-  # @param [DateTime] enqueued_at When was this letter enqueued
-  # @param [Integer] which_letter Sorted by enqueue time, which letter had this code
-  # @param [Integer] letter_count How many letters did the user enqueue for this profile
-  # @param [Integer] attempts Number of attempts to enter a correct code
-  # @param [Boolean] pending_in_person_enrollment
-  # @param [Boolean] fraud_check_failed
-  # @see Reporting::IdentityVerificationReport#query This event is used by the identity verification
-  #       report. Changes here should be reflected there.
-  # GPO verification submitted
-  def idv_gpo_verification_submitted(
-    success:,
-    errors:,
-    pii_like_keypaths:,
-    enqueued_at:,
-    which_letter:,
-    letter_count:,
-    attempts:,
-    pending_in_person_enrollment:,
-    fraud_check_failed:,
-    **extra
-  )
-    track_event(
-      'IdV: GPO verification submitted',
-      success: success,
-      errors: errors,
-      pii_like_keypaths: pii_like_keypaths,
-      enqueued_at: enqueued_at,
-      which_letter: which_letter,
-      letter_count: letter_count,
-      attempts: attempts,
-      pending_in_person_enrollment: pending_in_person_enrollment,
-      fraud_check_failed: fraud_check_failed,
-      **extra,
-    )
-  end
-
-  # @identity.idp.previous_event_name Account verification visited
-  # GPO verification visited
-  # @param [String,nil] source The source for the visit (i.e., "gpo_reminder_email").
-  def idv_gpo_verification_visited(
-    source: nil,
-    **extra
-  )
-    track_event(
-      'IdV: GPO verification visited',
-      source: source,
-      **extra,
-    )
   end
 
   # Tracks emails that are initiated during InPerson::EmailReminderJob
@@ -1668,6 +1611,24 @@ module AnalyticsEvents
     track_event('IdV: in person proofing switch_back visited', flow_path: flow_path, **extra)
   end
 
+  # An email from USPS with an enrollment code has been received, indicating
+  # the enrollment is approved or failed. A check is required to get the status
+  # it is not included in the email.
+  # @param [boolean] multi_part If the email is marked as multi_part
+  # @param [string] part_found Records if the enrollment code was found in text_part or html_part
+  def idv_in_person_usps_proofing_enrollment_code_email_received(
+    multi_part: nil,
+    part_found: nil,
+    **extra
+  )
+    track_event(
+      'IdV: in person usps proofing enrollment code email received',
+      multi_part: multi_part,
+      part_found: part_found,
+      **extra,
+    )
+  end
+
   # GetUspsProofingResultsJob has completed. Includes counts of various outcomes encountered
   # @param [Float] duration_seconds number of minutes the job was running
   # @param [Integer] enrollments_checked number of enrollments eligible for status check
@@ -1944,6 +1905,17 @@ module AnalyticsEvents
     track_event('IdV: intro visited')
   end
 
+  # The user visited the "letter enqueued" page shown during the verify by mail flow
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # @identity.idp.previous_event_name IdV: come back later visited
+  def idv_letter_enqueued_visit(proofing_components: nil, **extra)
+    track_event(
+      'IdV: letter enqueued visited',
+      proofing_components: proofing_components,
+      **extra,
+    )
+  end
+
   # Tracks when the user visits Mail only warning when vendor_status_sms is set to full_outage
   def idv_mail_only_warning_visited(**extra)
     track_event(
@@ -2032,16 +2004,19 @@ module AnalyticsEvents
   # @param [String, nil] deactivation_reason Reason profile was deactivated.
   # @param [Boolean] fraud_review_pending Profile is under review for fraud
   # @param [Boolean] fraud_rejection Profile is rejected due to fraud
+  # @param [Boolean] in_person_verification_pending Profile is pending in-person verification
   # User submitted IDV personal key page
   def idv_personal_key_submitted(
     fraud_review_pending:,
     fraud_rejection:,
+    in_person_verification_pending:,
     proofing_components: nil,
     deactivation_reason: nil,
     **extra
   )
     track_event(
       'IdV: personal key submitted',
+      in_person_verification_pending: in_person_verification_pending,
       deactivation_reason: deactivation_reason,
       fraud_review_pending: fraud_review_pending,
       fraud_rejection: fraud_rejection,
@@ -2343,8 +2318,22 @@ module AnalyticsEvents
   # The system encountered an error and the proofing results are missing
   def idv_proofing_resolution_result_missing(proofing_components: nil, **extra)
     track_event(
-      'Proofing Resolution Result Missing',
+      'IdV: proofing resolution result missing',
       proofing_components: proofing_components,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] letter_already_sent
+  # GPO "request letter" page visited
+  # @identity.idp.previous_event_name IdV: USPS address visited
+  def idv_request_letter_visited(
+    letter_already_sent:,
+    **extra
+  )
+    track_event(
+      'IdV: request letter visited',
+      letter_already_sent: letter_already_sent,
       **extra,
     )
   end
@@ -2455,6 +2444,62 @@ module AnalyticsEvents
   def idv_usps_auth_token_refresh_job_started(**extra)
     track_event(
       'UspsAuthTokenRefreshJob: Started',
+      **extra,
+    )
+  end
+
+  # @identity.idp.previous_event_name Account verification submitted
+  # @identity.idp.previous_event_name IdV: GPO verification submitted
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [Hash] pii_like_keypaths
+  # @param [DateTime] enqueued_at When was this letter enqueued
+  # @param [Integer] which_letter Sorted by enqueue time, which letter had this code
+  # @param [Integer] letter_count How many letters did the user enqueue for this profile
+  # @param [Integer] attempts Number of attempts to enter a correct code
+  # @param [Boolean] pending_in_person_enrollment
+  # @param [Boolean] fraud_check_failed
+  # @see Reporting::IdentityVerificationReport#query This event is used by the identity verification
+  #       report. Changes here should be reflected there.
+  # GPO verification submitted
+  def idv_verify_by_mail_enter_code_submitted(
+    success:,
+    errors:,
+    pii_like_keypaths:,
+    enqueued_at:,
+    which_letter:,
+    letter_count:,
+    attempts:,
+    pending_in_person_enrollment:,
+    fraud_check_failed:,
+    **extra
+  )
+    track_event(
+      'IdV: enter verify by mail code submitted',
+      success: success,
+      errors: errors,
+      pii_like_keypaths: pii_like_keypaths,
+      enqueued_at: enqueued_at,
+      which_letter: which_letter,
+      letter_count: letter_count,
+      attempts: attempts,
+      pending_in_person_enrollment: pending_in_person_enrollment,
+      fraud_check_failed: fraud_check_failed,
+      **extra,
+    )
+  end
+
+  # @identity.idp.previous_event_name Account verification visited
+  # @identity.idp.previous_event_name IdV: GPO verification visited
+  # Visited page used to enter address verification code received via US mail.
+  # @param [String,nil] source The source for the visit (i.e., "gpo_reminder_email").
+  def idv_verify_by_mail_enter_code_visited(
+    source: nil,
+    **extra
+  )
+    track_event(
+      'IdV: enter verify by mail code visited',
+      source: source,
       **extra,
     )
   end
@@ -2617,15 +2662,15 @@ module AnalyticsEvents
 
   # Tracks when the user has added the MFA method piv_cac to their account
   # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
-  # @param [Boolean] in_multi_mfa_selection_flow whether user is going through MFA selection Flow
-  def multi_factor_auth_added_piv_cac(enabled_mfa_methods_count:, in_multi_mfa_selection_flow:,
+  # @param [Boolean] in_account_creation_flow whether user is going through creation flow
+  def multi_factor_auth_added_piv_cac(enabled_mfa_methods_count:, in_account_creation_flow:,
                                       **extra)
     track_event(
       'Multi-Factor Authentication: Added PIV_CAC',
       {
         method_name: :piv_cac,
         enabled_mfa_methods_count:,
-        in_multi_mfa_selection_flow:,
+        in_account_creation_flow:,
         **extra,
       }.compact,
     )
@@ -2633,14 +2678,14 @@ module AnalyticsEvents
 
   # Tracks when the user has added the MFA method TOTP to their account
   # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
-  # @param [Boolean] in_multi_mfa_selection_flow whether user is going through MFA selection Flow
-  def multi_factor_auth_added_totp(enabled_mfa_methods_count:, in_multi_mfa_selection_flow:,
+  # @param [Boolean] in_account_creation_flow whether user is going through creation flow
+  def multi_factor_auth_added_totp(enabled_mfa_methods_count:, in_account_creation_flow:,
                                    **extra)
     track_event(
       'Multi-Factor Authentication: Added TOTP',
       {
         method_name: :totp,
-        in_multi_mfa_selection_flow:,
+        in_account_creation_flow:,
         enabled_mfa_methods_count:,
         **extra,
       }.compact,
@@ -2672,17 +2717,17 @@ module AnalyticsEvents
 
   # Tracks when the user visits the backup code confirmation setup page
   # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
-  # @param [Boolean] in_multi_mfa_selection_flow tell whether its in MFA selection flow or not
+  # @param [Boolean] in_account_creation_flow whether user is going through creation flow
   def multi_factor_auth_enter_backup_code_confirmation_visit(
     enabled_mfa_methods_count:,
-    in_multi_mfa_selection_flow:,
+    in_account_creation_flow:,
     **extra
   )
     track_event(
       'Multi-Factor Authentication: enter backup code confirmation visited',
       {
         enabled_mfa_methods_count:,
-        in_multi_mfa_selection_flow:,
+        in_account_creation_flow:,
         **extra,
       }.compact,
     )
@@ -2841,13 +2886,13 @@ module AnalyticsEvents
   # @param [Boolean] success Whether authenticator setup was successful
   # @param [Hash] errors Authenticator setup error reasons, if unsuccessful
   # @param [String] multi_factor_auth_method
-  # @param [Boolean] in_multi_mfa_selection_flow
+  # @param [Boolean] in_account_creation_flow whether user is going through account creation flow
   # @param [integer] enabled_mfa_methods_count
   def multi_factor_auth_setup(
     success:,
     multi_factor_auth_method:,
     enabled_mfa_methods_count:,
-    in_multi_mfa_selection_flow:,
+    in_account_creation_flow:,
     errors: nil,
     **extra
   )
@@ -2856,8 +2901,84 @@ module AnalyticsEvents
       success: success,
       errors: errors,
       multi_factor_auth_method: multi_factor_auth_method,
-      in_multi_mfa_selection_flow: in_multi_mfa_selection_flow,
+      in_account_creation_flow: in_account_creation_flow,
       enabled_mfa_methods_count: enabled_mfa_methods_count,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success
+  # @param [String] exception
+  # @param [Integer] profile_id
+  # A profile was migrated from a single-region key to a multi-region key
+  def multi_region_kms_migration_profile_migrated(
+    success:,
+    exception:,
+    profile_id:,
+    **extra
+  )
+    track_event(
+      'Multi-region KMS migration: Profile migrated',
+      success: success,
+      exception: exception,
+      profile_id: profile_id,
+      **extra,
+    )
+  end
+
+  # @param [Integer] profile_count
+  # @param [Integer] success_count
+  # @param [Integer] error_count
+  # The profile migration job finished running
+  def multi_region_kms_migration_profile_migration_summary(
+    profile_count:,
+    success_count:,
+    error_count:,
+    **extra
+  )
+    track_event(
+      'Multi-region KMS migration: Profile migration summary',
+      profile_count: profile_count,
+      success_count: success_count,
+      error_count: error_count,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success
+  # @param [String] exception
+  # @param [Integer] user_id
+  # A user was migrated from a single-region key to a multi-region key
+  def multi_region_kms_migration_user_migrated(
+    success:,
+    exception:,
+    user_id:,
+    **extra
+  )
+    track_event(
+      'Multi-region KMS migration: User migrated',
+      success: success,
+      exception: exception,
+      user_id: user_id,
+      **extra,
+    )
+  end
+
+  # @param [Integer] user_count
+  # @param [Integer] success_count
+  # @param [Integer] error_count
+  # The user migration job finished running
+  def multi_region_kms_migration_user_migration_summary(
+    user_count:,
+    success_count:,
+    error_count:,
+    **extra
+  )
+    track_event(
+      'Multi-region KMS migration: User migration summary',
+      user_count: user_count,
+      success_count: success_count,
+      error_count: error_count,
       **extra,
     )
   end
@@ -3043,12 +3164,16 @@ module AnalyticsEvents
   # @param [String] client_id
   # @param [String] user_id
   # @param [String] code_digest hash of "code" param
-  def openid_connect_token(client_id:, user_id:, code_digest:, **extra)
+  # @param [Integer, nil] expires_in time to expiration of token
+  # @param [Integer, nil] ial ial level of identity
+  def openid_connect_token(client_id:, user_id:, code_digest:, expires_in:, ial:, **extra)
     track_event(
       'OpenID Connect: token',
       client_id: client_id,
       user_id: user_id,
       code_digest: code_digest,
+      expires_in: expires_in,
+      ial: ial,
       **extra,
     )
   end
@@ -3292,11 +3417,11 @@ module AnalyticsEvents
 
   # @identity.idp.previous_event_name User Registration: piv cac setup visited
   # Tracks when user's piv cac setup
-  # @param [Boolean] in_multi_mfa_selection_flow
-  def piv_cac_setup_visit(in_multi_mfa_selection_flow:, **extra)
+  # @param [Boolean] in_account_creation_flow
+  def piv_cac_setup_visit(in_account_creation_flow:, **extra)
     track_event(
       'PIV CAC setup visited',
-      in_multi_mfa_selection_flow:,
+      in_account_creation_flow:,
       **extra,
     )
   end
@@ -3595,6 +3720,17 @@ module AnalyticsEvents
     )
   end
 
+  # User dismissed the second MFA reminder page
+  # @param [Boolean] opted_to_add Whether the user chose to add a method
+  def second_mfa_reminder_dismissed(opted_to_add:, **extra)
+    track_event('Second MFA Reminder Dismissed', opted_to_add:, **extra)
+  end
+
+  # User visited the second MFA reminder page
+  def second_mfa_reminder_visit
+    track_event('Second MFA Reminder Visited')
+  end
+
   # Tracks when security event is received
   # @param [Boolean] success
   # @param [String] error_code
@@ -3636,12 +3772,6 @@ module AnalyticsEvents
   # tracks when a user's session is timed out
   def session_total_duration_timeout
     track_event('User Maximum Session Length Exceeded')
-  end
-
-  # Tracks if a user clicks the "Show Password button"
-  # @param [String] path URL path where the click occurred
-  def show_password_button_clicked(path:, **extra)
-    track_event('Show Password Button Clicked', path: path, **extra)
   end
 
   # Tracks if a user clicks the "You will also need" accordion on the homepage
@@ -3793,12 +3923,12 @@ module AnalyticsEvents
   # @param [Boolean] user_signed_up
   # @param [Boolean] totp_secret_present
   # @param [Integer] enabled_mfa_methods_count
-  # @param [Boolean] in_multi_mfa_selection_flow
+  # @param [Boolean] in_account_creation_flow
   def totp_setup_visit(
     user_signed_up:,
     totp_secret_present:,
     enabled_mfa_methods_count:,
-    in_multi_mfa_selection_flow:,
+    in_account_creation_flow:,
     **extra
   )
     track_event(
@@ -3806,7 +3936,7 @@ module AnalyticsEvents
       user_signed_up:,
       totp_secret_present:,
       enabled_mfa_methods_count:,
-      in_multi_mfa_selection_flow:,
+      in_account_creation_flow:,
       **extra,
     )
   end
@@ -4050,6 +4180,7 @@ module AnalyticsEvents
   # @param [Boolean] success
   # @param [Hash] mfa_method_counts
   # @param [Integer] enabled_mfa_methods_count
+  # @param [Boolean] second_mfa_reminder_conversion Whether it is a result of second MFA reminder.
   # @param [Hash] pii_like_keypaths
   # Tracks when a user has completed MFA setup
   def user_registration_mfa_setup_complete(
@@ -4057,6 +4188,7 @@ module AnalyticsEvents
     mfa_method_counts:,
     enabled_mfa_methods_count:,
     pii_like_keypaths:,
+    second_mfa_reminder_conversion: nil,
     **extra
   )
     track_event(
@@ -4066,6 +4198,7 @@ module AnalyticsEvents
         mfa_method_counts: mfa_method_counts,
         enabled_mfa_methods_count: enabled_mfa_methods_count,
         pii_like_keypaths: pii_like_keypaths,
+        second_mfa_reminder_conversion:,
         **extra,
       }.compact,
     )

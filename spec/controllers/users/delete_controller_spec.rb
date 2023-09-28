@@ -1,6 +1,16 @@
 require 'rails_helper'
 
 RSpec.describe Users::DeleteController do
+  describe 'before_actions' do
+    it 'includes authentication before_action' do
+      expect(subject).to have_actions(
+        :before,
+        :confirm_two_factor_authenticated,
+        :confirm_recently_authenticated_2fa,
+      )
+    end
+  end
+
   describe '#show' do
     it 'shows and logs a visit' do
       stub_analytics

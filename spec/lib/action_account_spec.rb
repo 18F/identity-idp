@@ -135,12 +135,20 @@ RSpec.describe ActionAccount do
       let(:user) { create(:profile, :fraud_review_pending).user }
       let(:user_without_profile) { create(:user) }
 
+      let(:analytics) { FakeAnalytics.new }
+
+      before do
+        allow(Analytics).to receive(:new).and_return(analytics)
+      end
+
       let(:args) { [user.uuid, user_without_profile.uuid, 'uuid-does-not-exist'] }
       let(:include_missing) { true }
       let(:config) { ScriptBase::Config.new(include_missing:) }
       subject(:result) { subtask.run(args:, config:) }
 
       it 'Reject a user that has a pending review', aggregate_failures: true do
+        profile_fraud_review_pending_at = user.pending_profile.fraud_review_pending_at
+
         expect(result.table).to match_array(
           [
             ['uuid', 'status'],
@@ -152,6 +160,28 @@ RSpec.describe ActionAccount do
 
         expect(result.subtask).to eq('review-reject')
         expect(result.uuids).to match_array([user.uuid, user_without_profile.uuid])
+
+        expect(analytics).to have_logged_event(
+          'Fraud: Profile review rejected',
+          success: true,
+          errors: nil,
+          exception: nil,
+          profile_fraud_review_pending_at: profile_fraud_review_pending_at,
+        )
+        expect(analytics).to have_logged_event(
+          'Fraud: Profile review rejected',
+          success: false,
+          errors: { message: 'Error: User does not have a pending fraud review' },
+          exception: nil,
+          profile_fraud_review_pending_at: nil,
+        )
+        expect(analytics).to have_logged_event(
+          'Fraud: Profile review rejected',
+          success: false,
+          errors: { message: 'Error: Could not find user with that UUID' },
+          exception: nil,
+          profile_fraud_review_pending_at: nil,
+        )
       end
     end
   end
@@ -163,12 +193,20 @@ RSpec.describe ActionAccount do
       let(:user) { create(:profile, :fraud_review_pending).user }
       let(:user_without_profile) { create(:user) }
 
+      let(:analytics) { FakeAnalytics.new }
+
+      before do
+        allow(Analytics).to receive(:new).and_return(analytics)
+      end
+
       let(:args) { [user.uuid, user_without_profile.uuid, 'uuid-does-not-exist'] }
       let(:include_missing) { true }
       let(:config) { ScriptBase::Config.new(include_missing:) }
       subject(:result) { subtask.run(args:, config:) }
 
       it 'Pass a user that has a pending review', aggregate_failures: true do
+        profile_fraud_review_pending_at = user.pending_profile.fraud_review_pending_at
+
         expect(result.table).to match_array(
           [
             ['uuid', 'status'],
@@ -180,6 +218,28 @@ RSpec.describe ActionAccount do
 
         expect(result.subtask).to eq('review-pass')
         expect(result.uuids).to match_array([user.uuid, user_without_profile.uuid])
+
+        expect(analytics).to have_logged_event(
+          'Fraud: Profile review passed',
+          success: true,
+          errors: nil,
+          exception: nil,
+          profile_fraud_review_pending_at: profile_fraud_review_pending_at,
+        )
+        expect(analytics).to have_logged_event(
+          'Fraud: Profile review passed',
+          success: false,
+          errors: { message: 'Error: User does not have a pending fraud review' },
+          exception: nil,
+          profile_fraud_review_pending_at: nil,
+        )
+        expect(analytics).to have_logged_event(
+          'Fraud: Profile review passed',
+          success: false,
+          errors: { message: 'Error: Could not find user with that UUID' },
+          exception: nil,
+          profile_fraud_review_pending_at: nil,
+        )
       end
     end
   end

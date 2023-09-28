@@ -3,8 +3,6 @@ require 'rails_helper'
 RSpec.describe Idv::LinkSentController do
   include IdvHelper
 
-  let(:flow_session) { {} }
-
   let(:user) { create(:user) }
 
   let(:ab_test_args) do
@@ -12,7 +10,6 @@ RSpec.describe Idv::LinkSentController do
   end
 
   before do
-    allow(subject).to receive(:flow_session).and_return(flow_session)
     stub_sign_in(user)
     subject.idv_session.flow_path = 'hybrid'
     stub_analytics
@@ -97,9 +94,9 @@ RSpec.describe Idv::LinkSentController do
       end
     end
 
-    context 'with pii in session' do
+    context 'with pii in idv_session' do
       it 'redirects to ssn step' do
-        flow_session['pii_from_doc'] = Idp::Constants::MOCK_IDV_APPLICANT
+        subject.idv_session.pii_from_doc = Idp::Constants::MOCK_IDV_APPLICANT
         get :show
 
         expect(response).to redirect_to(idv_ssn_url)

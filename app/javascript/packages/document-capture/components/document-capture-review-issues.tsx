@@ -10,7 +10,6 @@ import { useI18n } from '@18f/identity-react-i18n';
 import UnknownError from './unknown-error';
 import TipList from './tip-list';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
-import DocumentCaptureTroubleshootingOptions from './document-capture-troubleshooting-options';
 
 interface DocumentCaptureReviewIssuesProps {
   isFailedDocType: boolean;
@@ -22,6 +21,7 @@ interface DocumentCaptureReviewIssuesProps {
   errors: FormStepError<any>[];
   onChange: (...args: any) => void;
   onError: OnErrorCallback;
+  hasDismissed: boolean;
 }
 
 type DocumentSide = 'front' | 'back';
@@ -40,6 +40,7 @@ function DocumentCaptureReviewIssues({
   onChange = () => undefined,
   onError = () => undefined,
   value = {},
+  hasDismissed,
 }: DocumentCaptureReviewIssuesProps) {
   const { t } = useI18n();
   return (
@@ -49,10 +50,12 @@ function DocumentCaptureReviewIssues({
         unknownFieldErrors={unknownFieldErrors}
         remainingAttempts={remainingAttempts}
         isFailedDocType={isFailedDocType}
-        altFailedDocTypeMsg={isFailedDocType ? t('doc_auth.errors.doc.wrong_id_type') : null}
+        altFailedDocTypeMsg={isFailedDocType ? t('doc_auth.errors.doc.wrong_id_type_html') : null}
+        hasDismissed={hasDismissed}
       />
       {!isFailedDocType && captureHints && (
         <TipList
+          titleClassName="margin-bottom-0 margin-top-2"
           title={t('doc_auth.tips.review_issues_id_header_text')}
           items={[
             t('doc_auth.tips.review_issues_id_text1'),
@@ -75,8 +78,6 @@ function DocumentCaptureReviewIssues({
         />
       ))}
       <FormStepsButton.Submit />
-
-      <DocumentCaptureTroubleshootingOptions location="post_submission_review" />
       <Cancel />
     </>
   );

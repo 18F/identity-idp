@@ -3,13 +3,6 @@ require 'rails_helper'
 RSpec.describe Idv::VerifyInfoController do
   include IdvHelper
 
-  let(:flow_session) do
-    { 'error_message' => nil,
-      'document_capture_session_uuid' => 'fd14e181-6fb1-4cdc-92e0-ef66dad0df4e',
-      :pii_from_doc => Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.dup,
-      'threatmetrix_session_id' => 'c90ae7a5-6629-4e77-b97c-f1987c2df7d0' }
-  end
-
   let(:user) { create(:user) }
   let(:analytics_hash) do
     {
@@ -29,7 +22,8 @@ RSpec.describe Idv::VerifyInfoController do
     stub_attempts_tracker
     stub_idv_steps_before_verify_step(user)
     subject.idv_session.flow_path = 'standard'
-    subject.user_session['idv/doc_auth'] = flow_session
+    subject.idv_session.pii_from_doc = Idp::Constants::MOCK_IDV_APPLICANT.dup
+    subject.idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 
@@ -91,14 +85,14 @@ RSpec.describe Idv::VerifyInfoController do
       render_views
 
       it 'With address2 in PII, shows address line 2 input' do
-        flow_session[:pii_from_doc][:address2] = 'APT 3E'
+        subject.idv_session.pii_from_doc[:address2] = 'APT 3E'
         get :show
 
         expect(response.body).to have_content(t('idv.form.address2'))
       end
 
       it 'No address2 in PII, still shows address line 2 input' do
-        flow_session[:pii_from_doc][:address2] = nil
+        subject.idv_session.pii_from_doc[:address2] = nil
 
         get :show
 
@@ -108,7 +102,7 @@ RSpec.describe Idv::VerifyInfoController do
 
     context 'when the user has already verified their info' do
       it 'redirects to the review controller' do
-        controller.idv_session.resolution_successful = true
+        subject.idv_session.resolution_successful = true
 
         get :show
 
@@ -117,7 +111,7 @@ RSpec.describe Idv::VerifyInfoController do
     end
 
     it 'redirects to ssn controller when ssn info is missing' do
-      flow_session[:pii_from_doc][:ssn] = nil
+      subject.idv_session.ssn = nil
 
       get :show
 
@@ -402,7 +396,7 @@ RSpec.describe Idv::VerifyInfoController do
 
       put :update
 
-      expect(flow_session[:pii_from_doc][:uuid_prefix]).to eq app_id
+      expect(subject.idv_session.pii_from_doc[:uuid_prefix]).to eq app_id
     end
 
     it 'updates DocAuthLog verify_submit_count' do

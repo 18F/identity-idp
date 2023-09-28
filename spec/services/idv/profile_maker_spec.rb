@@ -29,6 +29,7 @@ RSpec.describe Idv::ProfileMaker do
       expect(profile.id).to_not be_nil
       expect(profile.encrypted_pii).to_not be_nil
       expect(profile.encrypted_pii).to_not match('Some')
+      expect(profile.fraud_pending_reason).to be_nil
       expect(profile.proofing_components).to match(proofing_component.as_json)
       expect(profile.active).to eq(false)
       expect(profile.deactivation_reason).to be_nil
@@ -49,6 +50,7 @@ RSpec.describe Idv::ProfileMaker do
         expect(profile.activated_at).to be_nil
         expect(profile.active).to eq(false)
         expect(profile.deactivation_reason).to eq('encryption_error')
+        expect(profile.fraud_pending_reason).to be_nil
         expect(profile.fraud_review_pending?).to eq(false)
         expect(profile.gpo_verification_pending_at.present?).to eq(false)
         expect(profile.initiating_service_provider).to eq(nil)
@@ -68,6 +70,7 @@ RSpec.describe Idv::ProfileMaker do
         expect(profile.activated_at).to be_nil
         expect(profile.active).to eq(false)
         expect(profile.deactivation_reason).to be_nil
+        expect(profile.fraud_pending_reason).to eq('threatmetrix_review')
         expect(profile.fraud_review_pending?).to eq(true)
         expect(profile.gpo_verification_pending_at.present?).to eq(false)
         expect(profile.initiating_service_provider).to eq(nil)
@@ -87,6 +90,7 @@ RSpec.describe Idv::ProfileMaker do
         expect(profile.activated_at).to be_nil
         expect(profile.active).to eq(false)
         expect(profile.deactivation_reason).to be_nil
+        expect(profile.fraud_pending_reason).to be_nil
         expect(profile.fraud_review_pending?).to eq(false)
         expect(profile.gpo_verification_pending_at.present?).to eq(true)
         expect(profile.initiating_service_provider).to eq(nil)
@@ -105,8 +109,9 @@ RSpec.describe Idv::ProfileMaker do
 
         expect(profile.activated_at).to be_nil
         expect(profile.active).to eq(false)
-        expect(profile.deactivation_reason).to eq('in_person_verification_pending')
-        expect(profile.in_person_verification_pending_at).to_not be_nil
+        expect(profile.deactivation_reason).to be_nil
+        expect(profile.fraud_pending_reason).to be_nil
+        expect(profile.in_person_verification_pending?).to eq(true)
         expect(profile.fraud_review_pending?).to eq(false)
         expect(profile.gpo_verification_pending_at.present?).to eq(false)
         expect(profile.initiating_service_provider).to eq(nil)
@@ -126,6 +131,7 @@ RSpec.describe Idv::ProfileMaker do
         expect(profile.activated_at).to be_nil
         expect(profile.active).to eq(false)
         expect(profile.deactivation_reason).to be_nil
+        expect(profile.fraud_pending_reason).to be_nil
         expect(profile.fraud_review_pending?).to eq(false)
         expect(profile.gpo_verification_pending_at.present?).to eq(false)
         expect(profile.initiating_service_provider).to eq(nil)
@@ -147,6 +153,7 @@ RSpec.describe Idv::ProfileMaker do
         expect(profile.activated_at).to be_nil
         expect(profile.active).to eq(false)
         expect(profile.deactivation_reason).to be_nil
+        expect(profile.fraud_pending_reason).to be_nil
         expect(profile.fraud_review_pending?).to eq(false)
         expect(profile.gpo_verification_pending_at.present?).to eq(false)
         expect(profile.initiating_service_provider).to eq(initiating_service_provider)

@@ -63,10 +63,10 @@ RSpec.feature 'Analytics Regression', js: true do
         flow_path: 'standard', step: 'document_capture', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, irs_reproofing: false
       },
       'Frontend: IdV: front image added' => {
-        'width' => 284, 'height' => 38, 'mimeType' => 'image/png', 'source' => 'upload', 'size' => 3694, 'attempt' => 1, 'flow_path' => 'standard', 'acuant_sdk_upgrade_a_b_testing_enabled' => 'false', 'use_alternate_sdk' => anything, 'acuant_version' => anything, 'acuantCaptureMode' => 'AUTO'
+        'width' => 284, 'height' => 38, 'mimeType' => 'image/png', 'source' => 'upload', 'size' => 3694, 'attempt' => 1, 'flow_path' => 'standard', 'acuant_sdk_upgrade_a_b_testing_enabled' => 'false', 'use_alternate_sdk' => anything, 'acuant_version' => anything, 'acuantCaptureMode' => 'AUTO', 'fingerprint' => anything, 'failedImageResubmission' => boolean
       },
       'Frontend: IdV: back image added' => {
-        'width' => 284, 'height' => 38, 'mimeType' => 'image/png', 'source' => 'upload', 'size' => 3694, 'attempt' => 1, 'flow_path' => 'standard', 'acuant_sdk_upgrade_a_b_testing_enabled' => 'false', 'use_alternate_sdk' => anything, 'acuant_version' => anything, 'acuantCaptureMode' => 'AUTO'
+        'width' => 284, 'height' => 38, 'mimeType' => 'image/png', 'source' => 'upload', 'size' => 3694, 'attempt' => 1, 'flow_path' => 'standard', 'acuant_sdk_upgrade_a_b_testing_enabled' => 'false', 'use_alternate_sdk' => anything, 'acuant_version' => anything, 'acuantCaptureMode' => 'AUTO', 'fingerprint' => anything, 'failedImageResubmission' => boolean
       },
       'IdV: doc auth image upload form submitted' => {
         success: true, errors: {}, attempts: 1, remaining_attempts: 3, user_id: user.uuid, flow_path: 'standard', front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), getting_started_ab_test_bucket: :welcome_default
@@ -129,15 +129,15 @@ RSpec.feature 'Analytics Regression', js: true do
         proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
       },
       'IdV: personal key visited' => {
-        address_verification_method: 'phone',
-        proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' },
+        address_verification_method: 'phone', in_person_verification_pending: false,
+        proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
       },
       'IdV: personal key acknowledgment toggled' => {
         checked: true,
         proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' },
       },
       'IdV: personal key submitted' => {
-        address_verification_method: 'phone', fraud_review_pending: false, fraud_rejection: false, deactivation_reason: nil,
+        address_verification_method: 'phone', fraud_review_pending: false, fraud_rejection: false, in_person_verification_pending: false, deactivation_reason: nil,
         proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
       },
     }
@@ -168,10 +168,10 @@ RSpec.feature 'Analytics Regression', js: true do
         flow_path: 'standard', step: 'document_capture', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, skip_hybrid_handoff: nil, analytics_id: 'Doc Auth', irs_reproofing: false
       },
       'Frontend: IdV: front image added' => {
-        'width' => 284, 'height' => 38, 'mimeType' => 'image/png', 'source' => 'upload', 'size' => 3694, 'attempt' => 1, 'flow_path' => 'standard', 'acuant_sdk_upgrade_a_b_testing_enabled' => 'false', 'use_alternate_sdk' => anything, 'acuant_version' => anything, 'acuantCaptureMode' => 'AUTO'
+        'width' => 284, 'height' => 38, 'mimeType' => 'image/png', 'source' => 'upload', 'size' => 3694, 'attempt' => 1, 'flow_path' => 'standard', 'acuant_sdk_upgrade_a_b_testing_enabled' => 'false', 'use_alternate_sdk' => anything, 'acuant_version' => anything, 'acuantCaptureMode' => 'AUTO', 'fingerprint' => anything, 'failedImageResubmission' => boolean
       },
       'Frontend: IdV: back image added' => {
-        'width' => 284, 'height' => 38, 'mimeType' => 'image/png', 'source' => 'upload', 'size' => 3694, 'attempt' => 1, 'flow_path' => 'standard', 'acuant_sdk_upgrade_a_b_testing_enabled' => 'false', 'use_alternate_sdk' => anything, 'acuant_version' => anything, 'acuantCaptureMode' => 'AUTO'
+        'width' => 284, 'height' => 38, 'mimeType' => 'image/png', 'source' => 'upload', 'size' => 3694, 'attempt' => 1, 'flow_path' => 'standard', 'acuant_sdk_upgrade_a_b_testing_enabled' => 'false', 'use_alternate_sdk' => anything, 'acuant_version' => anything, 'acuantCaptureMode' => 'AUTO', 'fingerprint' => anything, 'failedImageResubmission' => boolean
       },
       'IdV: doc auth image upload form submitted' => {
         success: true, errors: {}, attempts: 1, remaining_attempts: 3, user_id: user.uuid, flow_path: 'standard', front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), getting_started_ab_test_bucket: :welcome_default
@@ -206,6 +206,9 @@ RSpec.feature 'Analytics Regression', js: true do
         resend: false, phone_step_attempts: 0, first_letter_requested_at: nil, hours_since_first_letter: 0, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, skip_hybrid_handoff: nil,
         proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass' }
       },
+      'IdV: request letter visited' => {
+        letter_already_sent: false,
+      },
       'IdV: review info visited' => {
         address_verification_method: 'gpo', acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, skip_hybrid_handoff: nil,
         proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'gpo_letter' }
@@ -222,7 +225,7 @@ RSpec.feature 'Analytics Regression', js: true do
         success: true, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, skip_hybrid_handoff: nil, fraud_review_pending: false, fraud_rejection: false, gpo_verification_pending: true, in_person_verification_pending: false, deactivation_reason: nil,
         proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'gpo_letter' }
       },
-      'IdV: come back later visited' => {
+      'IdV: letter enqueued visited' => {
         proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'gpo_letter' },
       },
     }
@@ -252,10 +255,10 @@ RSpec.feature 'Analytics Regression', js: true do
         flow_path: 'standard', step: 'document_capture', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, irs_reproofing: false
       },
       'Frontend: IdV: front image added' => {
-        'width' => 284, 'height' => 38, 'mimeType' => 'image/png', 'source' => 'upload', 'size' => 3694, 'attempt' => 1, 'flow_path' => 'standard', 'acuant_sdk_upgrade_a_b_testing_enabled' => 'false', 'use_alternate_sdk' => anything, 'acuant_version' => anything, 'acuantCaptureMode' => 'AUTO'
+        'width' => 284, 'height' => 38, 'mimeType' => 'image/png', 'source' => 'upload', 'size' => 3694, 'attempt' => 1, 'flow_path' => 'standard', 'acuant_sdk_upgrade_a_b_testing_enabled' => 'false', 'use_alternate_sdk' => anything, 'acuant_version' => anything, 'acuantCaptureMode' => 'AUTO', 'fingerprint' => anything, 'failedImageResubmission' => boolean
       },
       'Frontend: IdV: back image added' => {
-        'width' => 284, 'height' => 38, 'mimeType' => 'image/png', 'source' => 'upload', 'size' => 3694, 'attempt' => 1, 'flow_path' => 'standard', 'acuant_sdk_upgrade_a_b_testing_enabled' => 'false', 'use_alternate_sdk' => anything, 'acuant_version' => anything, 'acuantCaptureMode' => 'AUTO'
+        'width' => 284, 'height' => 38, 'mimeType' => 'image/png', 'source' => 'upload', 'size' => 3694, 'attempt' => 1, 'flow_path' => 'standard', 'acuant_sdk_upgrade_a_b_testing_enabled' => 'false', 'use_alternate_sdk' => anything, 'acuant_version' => anything, 'acuantCaptureMode' => 'AUTO', 'fingerprint' => anything, 'failedImageResubmission' => boolean
       },
       'IdV: doc auth image upload form submitted' => {
         success: true, errors: {}, attempts: 1, remaining_attempts: 3, user_id: user.uuid, flow_path: 'standard', front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), getting_started_ab_test_bucket: :welcome_default
@@ -328,14 +331,15 @@ RSpec.feature 'Analytics Regression', js: true do
         proofing_components: { document_check: 'usps', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
       },
       'IdV: review complete' => {
-        success: true, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, skip_hybrid_handoff: nil, fraud_review_pending: false, fraud_rejection: false, gpo_verification_pending: false, in_person_verification_pending: true, deactivation_reason: 'in_person_verification_pending',
+        success: true, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, skip_hybrid_handoff: nil, fraud_review_pending: false, fraud_rejection: false, gpo_verification_pending: false, in_person_verification_pending: true, deactivation_reason: nil,
         proofing_components: { document_check: 'usps', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
       },
       'IdV: final resolution' => {
-        success: true, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, skip_hybrid_handoff: nil, fraud_review_pending: false, fraud_rejection: false, gpo_verification_pending: false, in_person_verification_pending: true, deactivation_reason: 'in_person_verification_pending',
+        success: true, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, skip_hybrid_handoff: nil, fraud_review_pending: false, fraud_rejection: false, gpo_verification_pending: false, in_person_verification_pending: true, deactivation_reason: nil,
         proofing_components: { document_check: 'usps', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
       },
       'IdV: personal key visited' => {
+        in_person_verification_pending: true,
         proofing_components: { document_check: 'usps', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }, address_verification_method: 'phone'
       },
       'IdV: personal key acknowledgment toggled' => {
@@ -343,7 +347,7 @@ RSpec.feature 'Analytics Regression', js: true do
         proofing_components: { document_check: 'usps', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' },
       },
       'IdV: personal key submitted' => {
-        address_verification_method: 'phone', fraud_review_pending: false, fraud_rejection: false, deactivation_reason: 'in_person_verification_pending',
+        address_verification_method: 'phone', fraud_review_pending: false, fraud_rejection: false, in_person_verification_pending: true, deactivation_reason: nil,
         proofing_components: { document_check: 'usps', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
       },
       'IdV: in person ready to verify visited' => {

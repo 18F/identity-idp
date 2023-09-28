@@ -5,8 +5,8 @@ RSpec.describe 'idv/phone_errors/timeout.html.erb' do
   let(:gpo_letter_available) { false }
 
   before do
-    decorated_session = instance_double(ServiceProviderSessionDecorator, sp_name: sp_name)
-    allow(view).to receive(:decorated_session).and_return(decorated_session)
+    decorated_sp_session = instance_double(ServiceProviderSession, sp_name: sp_name)
+    allow(view).to receive(:decorated_sp_session).and_return(decorated_sp_session)
     assign(:gpo_letter_available, gpo_letter_available)
 
     render
@@ -35,7 +35,7 @@ RSpec.describe 'idv/phone_errors/timeout.html.erb' do
       )
       expect(rendered).not_to have_link(
         t('idv.troubleshooting.options.verify_by_mail'),
-        href: idv_gpo_path,
+        href: idv_request_letter_path,
       )
     end
   end
@@ -50,7 +50,7 @@ RSpec.describe 'idv/phone_errors/timeout.html.erb' do
       )
       expect(rendered).to have_link(
         t('idv.troubleshooting.options.verify_by_mail'),
-        href: idv_gpo_path,
+        href: idv_request_letter_path,
       )
     end
   end

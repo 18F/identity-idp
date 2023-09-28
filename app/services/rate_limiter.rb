@@ -48,7 +48,7 @@ class RateLimiter
   end
 
   def expires_at
-    return Time.zone.now if attempted_at.blank?
+    return nil if attempted_at.blank?
     attempted_at + RateLimiter.attempt_window_in_minutes(rate_limit_type).minutes
   end
 
@@ -59,6 +59,7 @@ class RateLimiter
   end
 
   def expired?
+    return nil if expires_at.nil?
     expires_at <= Time.zone.now
   end
 

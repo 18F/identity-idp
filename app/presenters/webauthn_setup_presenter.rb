@@ -1,13 +1,17 @@
 class WebauthnSetupPresenter < SetupPresenter
+  include Rails.application.routes.url_helpers
   include ActionView::Helpers::UrlHelper
   include ActionView::Helpers::TranslationHelper
+
+  attr_reader :url_options
 
   def initialize(
     current_user:,
     user_fully_authenticated:,
     user_opted_remember_device_cookie:,
     remember_device_default:,
-    platform_authenticator:
+    platform_authenticator:,
+    url_options:
   )
     super(
       current_user: current_user,
@@ -17,6 +21,7 @@ class WebauthnSetupPresenter < SetupPresenter
     )
 
     @platform_authenticator = platform_authenticator
+    @url_options = url_options
   end
 
   def image_path
@@ -54,21 +59,19 @@ class WebauthnSetupPresenter < SetupPresenter
       t(
         'forms.webauthn_platform_setup.intro_html',
         app_name: APP_NAME,
-        link: intro_link,
+        link: link_to(
+          t('forms.webauthn_platform_setup.intro_link_text'),
+          help_center_redirect_path(
+            category: 'trouble-signing-in',
+            article: 'face-or-touch-unlock',
+            flow: :two_factor_authentication,
+            step: :webauthn_setup,
+          ),
+        ),
       )
     else
       t('forms.webauthn_setup.intro_html')
     end
-  end
-
-  def intro_link
-    link_to(
-      t('forms.webauthn_platform_setup.intro_link_text'),
-      MarketingSite.help_center_article_url(
-        category: 'get-started',
-        article: 'authentication-options',
-      ),
-    )
   end
 
   def nickname_label

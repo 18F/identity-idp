@@ -46,26 +46,6 @@ RSpec.describe Profile do
     end
   end
 
-  describe '#pending_in_person_enrollment?' do
-    it 'returns true if the document_check component is usps' do
-      profile = create(:profile, proofing_components: { document_check: 'usps' })
-
-      expect(profile.pending_in_person_enrollment?).to eq(true)
-    end
-
-    it 'returns false if the document_check component is something else' do
-      profile = create(:profile, proofing_components: { document_check: 'something_else' })
-
-      expect(profile.pending_in_person_enrollment?).to eq(false)
-    end
-
-    it 'returns false if proofing_components is blank' do
-      profile = create(:profile, proofing_components: '')
-
-      expect(profile.pending_in_person_enrollment?).to eq(false)
-    end
-  end
-
   describe '#includes_phone_check?' do
     it 'returns true if the address_check component is lexis_nexis_address' do
       profile = create(:profile, proofing_components: { address_check: 'lexis_nexis_address' })
@@ -87,7 +67,7 @@ RSpec.describe Profile do
   end
 
   describe '#in_person_verification_pending?' do
-    it 'returns true if the deactivation_reason is in_person_verification_pending' do
+    it 'returns true if the in_person_verification_pending_at is present' do
       profile = create(
         :profile,
         :in_person_verification_pending,
@@ -98,7 +78,9 @@ RSpec.describe Profile do
 
       expect(profile.activated_at).to be_nil
       expect(profile.active).to eq(false)
-      expect(profile.deactivation_reason).to eq('in_person_verification_pending')
+      expect(profile.deactivation_reason).to be_nil
+      expect(profile.in_person_verification_pending_at).to be_present
+      expect(profile.in_person_verification_pending?).to eq(true)
       expect(profile.fraud_review_pending?).to eq(false)
       expect(profile.gpo_verification_pending_at).to be_nil
       expect(profile.initiating_service_provider).to be_nil
@@ -213,10 +195,19 @@ RSpec.describe Profile do
   end
 
   describe '#decrypt_pii' do
-    it 'decrypts PII' do
-      expect(profile.encrypted_pii).to be_nil
-
+    it 'decrypts the PII for users with a multi region ciphertext' do
       profile.encrypt_pii(pii, user.password)
+
+      expect(profile.encrypted_pii_multi_region).to_not be_nil
+
+      decrypted_pii = profile.decrypt_pii(user.password)
+
+      expect(decrypted_pii).to eq pii
+    end
+
+    it 'decrypts the PII for users with only a single region ciphertext' do
+      profile.encrypt_pii(pii, user.password)
+      profile.update!(encrypted_pii_multi_region: nil)
 
       decrypted_pii = profile.decrypt_pii(user.password)
 
@@ -230,74 +221,32 @@ RSpec.describe Profile do
 
       expect { profile.decrypt_pii(user.password) }.to raise_error(Encryption::EncryptionError)
     end
-
-    context 'with aws_kms_multi_region_read_enabled enabled' do
-      before do
-        allow(IdentityConfig.store).to receive(:aws_kms_multi_region_read_enabled).and_return(true)
-      end
-
-      it 'decrypts the PII for users with a multi region ciphertext' do
-        profile.encrypt_pii(pii, user.password)
-
-        expect(profile.encrypted_pii_multi_region).to_not be_nil
-
-        decrypted_pii = profile.decrypt_pii(user.password)
-
-        expect(decrypted_pii).to eq pii
-      end
-
-      it 'decrypts the PII for users with only a single region ciphertext' do
-        profile.encrypt_pii(pii, user.password)
-        profile.update!(encrypted_pii_multi_region: nil)
-
-        decrypted_pii = profile.decrypt_pii(user.password)
-
-        expect(decrypted_pii).to eq pii
-      end
-    end
   end
 
   describe '#recover_pii' do
-    it 'decrypts the encrypted_pii_recovery using a personal key' do
-      expect(profile.encrypted_pii_recovery).to be_nil
-
+    it 'decrypts recovery PII with personal key for users with a multi region ciphertext' do
       profile.encrypt_pii(pii, user.password)
       personal_key = profile.personal_key
 
       normalized_personal_key = PersonalKeyGenerator.new(user).normalize(personal_key)
 
-      expect(profile.recover_pii(normalized_personal_key)).to eq pii
+      expect(profile.encrypted_pii_recovery_multi_region).to_not be_nil
+
+      decrypted_pii = profile.recover_pii(normalized_personal_key)
+
+      expect(decrypted_pii).to eq pii
     end
 
-    context 'with aws_kms_multi_region_read_enabled enabled' do
-      before do
-        allow(IdentityConfig.store).to receive(:aws_kms_multi_region_read_enabled).and_return(true)
-      end
+    it 'decrypts recovery PII with personal key for users with only a single region ciphertext' do
+      profile.encrypt_pii(pii, user.password)
+      profile.update!(encrypted_pii_recovery_multi_region: nil)
+      personal_key = profile.personal_key
 
-      it 'decrypts the PII for users with a multi region ciphertext' do
-        profile.encrypt_pii(pii, user.password)
-        personal_key = profile.personal_key
+      normalized_personal_key = PersonalKeyGenerator.new(user).normalize(personal_key)
 
-        normalized_personal_key = PersonalKeyGenerator.new(user).normalize(personal_key)
+      decrypted_pii = profile.recover_pii(normalized_personal_key)
 
-        expect(profile.encrypted_pii_recovery_multi_region).to_not be_nil
-
-        decrypted_pii = profile.recover_pii(normalized_personal_key)
-
-        expect(decrypted_pii).to eq pii
-      end
-
-      it 'decrypts the PII for users with only a single region ciphertext' do
-        profile.encrypt_pii(pii, user.password)
-        profile.update!(encrypted_pii_recovery_multi_region: nil)
-        personal_key = profile.personal_key
-
-        normalized_personal_key = PersonalKeyGenerator.new(user).normalize(personal_key)
-
-        decrypted_pii = profile.recover_pii(normalized_personal_key)
-
-        expect(decrypted_pii).to eq pii
-      end
+      expect(decrypted_pii).to eq pii
     end
   end
 
@@ -826,7 +775,7 @@ RSpec.describe Profile do
 
       expect(profile.activated_at).to be_nil # to change
       expect(profile.active).to eq(false) # to change
-      expect(profile.deactivation_reason).to eq 'in_person_verification_pending' # to change
+      expect(profile.deactivation_reason).to be_nil
       expect(profile.fraud_review_pending?).to eq(true) # to change
       expect(profile.gpo_verification_pending_at).to be_nil
       expect(profile.in_person_verification_pending_at).to be_present
@@ -837,7 +786,7 @@ RSpec.describe Profile do
 
       expect(profile.activated_at).to be_present # changed
       expect(profile.active).to eq(true) # changed
-      expect(profile.deactivation_reason).to be_nil # changed
+      expect(profile.deactivation_reason).to be_nil
       expect(profile.fraud_review_pending?).to eq(false) # changed
       expect(profile.gpo_verification_pending_at).to be_nil
       expect(profile.in_person_verification_pending_at).to be_nil
@@ -862,7 +811,7 @@ RSpec.describe Profile do
 
       expect(profile.activated_at).to be_nil
       expect(profile.active).to eq(false)
-      expect(profile.deactivation_reason).to eq('in_person_verification_pending')
+      expect(profile.deactivation_reason).to be_nil
       expect(profile.fraud_review_pending?).to eq(true)
       expect(profile.gpo_verification_pending_at).to be_nil
       expect(profile.in_person_verification_pending_at).to be_present
@@ -875,14 +824,14 @@ RSpec.describe Profile do
 
       expect(profile.activated_at).to be_nil
       expect(profile.active).to eq(false)
-      expect(profile.deactivation_reason).to eq('in_person_verification_pending')
+      expect(profile.deactivation_reason).to be_nil
       expect(profile.fraud_review_pending?).to eq(true)
       expect(profile.gpo_verification_pending_at).to be_nil
       expect(profile.in_person_verification_pending_at).to be_present
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to be_nil
 
-      expect(profile.deactivation_reason).to eq('in_person_verification_pending')
+      expect(profile.deactivation_reason).to be_nil
       expect(profile).to_not be_active
     end
   end
@@ -1020,7 +969,7 @@ RSpec.describe Profile do
 
       expect(profile.activated_at).to be_nil
       expect(profile.active).to eq(false)
-      expect(profile.deactivation_reason).to be_nil # to change
+      expect(profile.deactivation_reason).to be_nil
       expect(profile.fraud_review_pending?).to eq(false)
       expect(profile.gpo_verification_pending_at).to be_nil
       expect(profile.in_person_verification_pending_at).to be_nil
@@ -1031,7 +980,7 @@ RSpec.describe Profile do
 
       expect(profile.activated_at).to be_nil
       expect(profile.active).to eq(false)
-      expect(profile.deactivation_reason).to eq('in_person_verification_pending') # changed
+      expect(profile.deactivation_reason).to be_nil
       expect(profile.fraud_review_pending?).to eq(false)
       expect(profile.gpo_verification_pending_at).to be_nil
       expect(profile.in_person_verification_pending_at).to be_present # changed
@@ -1102,34 +1051,6 @@ RSpec.describe Profile do
       expect(profile.fraud_review_pending?).to eq(true)
       expect(profile.fraud_rejection?).to eq(false)
       expect(profile.fraud_pending_reason).to eq('threatmetrix_review')
-    end
-  end
-
-  describe '#bump_fraud_review_pending_timestamps' do
-    context 'a profile is fraud review pending' do
-      it 'updates the fraud review pending timestamp' do
-        profile = create(:profile, :fraud_review_pending, user: user)
-
-        profile.bump_fraud_review_pending_timestamps
-
-        expect(profile).to_not be_active
-        expect(profile.fraud_review_pending?).to eq(true)
-        expect(profile.fraud_rejection?).to eq(false)
-        expect(profile.fraud_pending_reason).to eq('threatmetrix_review')
-      end
-    end
-
-    context 'a profile is fraud review rejected' do
-      it 'removes the fraud rejection timestamp and updates the fraud review pending timestamp' do
-        profile = create(:profile, :fraud_rejection, user: user)
-
-        profile.bump_fraud_review_pending_timestamps
-
-        expect(profile).to_not be_active
-        expect(profile.fraud_review_pending?).to eq(true)
-        expect(profile.fraud_rejection?).to eq(false)
-        expect(profile.fraud_pending_reason).to eq('threatmetrix_review')
-      end
     end
   end
 
@@ -1220,8 +1141,8 @@ RSpec.describe Profile do
     end
   end
 
-  describe 'scopes' do
-    describe '#active' do
+  describe 'query class methods' do
+    describe '.active' do
       it 'returns only active Profiles' do
         user.profiles.create(active: false)
         user.profiles.create(active: true)
@@ -1229,11 +1150,43 @@ RSpec.describe Profile do
       end
     end
 
-    describe '#verified' do
+    describe '.verified' do
       it 'returns only verified Profiles' do
         user.profiles.create(verified_at: Time.zone.now)
         user.profiles.create(verified_at: nil)
         expect(user.profiles.verified.count).to eq 1
+      end
+    end
+
+    describe '.fraud_rejection' do
+      it 'returns only fraud_rejection Profiles' do
+        user.profiles.create(fraud_rejection_at: Time.zone.now)
+        user.profiles.create(fraud_rejection_at: nil)
+        expect(user.profiles.fraud_rejection.count).to eq 1
+      end
+    end
+
+    describe '.fraud_review_pending' do
+      it 'returns only fraud_review_pending Profiles' do
+        user.profiles.create(fraud_review_pending_at: Time.zone.now)
+        user.profiles.create(fraud_review_pending_at: nil)
+        expect(user.profiles.fraud_review_pending.count).to eq 1
+      end
+    end
+
+    describe '.gpo_verification_pending' do
+      it 'returns only gpo_verification_pending Profiles' do
+        user.profiles.create(gpo_verification_pending_at: Time.zone.now)
+        user.profiles.create(gpo_verification_pending_at: nil)
+        expect(user.profiles.gpo_verification_pending.count).to eq 1
+      end
+    end
+
+    describe '.in_person_verification_pending' do
+      it 'returns only in_person_verification_pending Profiles' do
+        user.profiles.create(in_person_verification_pending_at: Time.zone.now)
+        user.profiles.create(in_person_verification_pending_at: nil)
+        expect(user.profiles.in_person_verification_pending.count).to eq 1
       end
     end
   end

@@ -16,13 +16,13 @@ module Idv
       personal_key
       phone_for_mobile_flow
       pii
+      pii_from_doc
       previous_phone_step_params
-      profile_confirmation
       profile_id
-      profile_step_params
       redo_document_capture
       resolution_successful
       skip_hybrid_handoff
+      ssn
       threatmetrix_review_status
       threatmetrix_session_id
       user_phone_confirmation
@@ -60,7 +60,7 @@ module Idv
       profile = profile_maker.save_profile(
         fraud_pending_reason: threatmetrix_fraud_pending_reason,
         gpo_verification_needed: gpo_verification_needed?,
-        in_person_verification_needed: pending_in_person_enrollment?,
+        in_person_verification_needed: current_user.has_in_person_enrollment?,
       )
 
       profile.activate unless profile.reason_not_to_activate
@@ -76,7 +76,7 @@ module Idv
         move_pii_to_user_session
       elsif address_verification_mechanism == 'gpo'
         create_gpo_entry
-      elsif pending_in_person_enrollment?
+      elsif current_user.has_in_person_enrollment?
         UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(
           current_user,
           pii,
@@ -106,7 +106,8 @@ module Idv
     end
 
     def associate_in_person_enrollment_with_profile
-      return unless pending_in_person_enrollment? && current_user.establishing_in_person_enrollment
+      return unless current_user.has_in_person_enrollment?
+
       current_user.establishing_in_person_enrollment.update(profile: profile)
     end
 
@@ -140,10 +141,6 @@ module Idv
       parsed_phone = Phonelib.parse(phone)
       phone_e164 = parsed_phone.e164
       failed_phone_step_numbers << phone_e164 if !failed_phone_step_numbers.include?(phone_e164)
-    end
-
-    def pending_in_person_enrollment?
-      current_user.proofing_component&.document_check == Idp::Constants::Vendors::USPS
     end
 
     def verify_info_step_complete?
@@ -188,16 +185,10 @@ module Idv
 
     def mark_verify_info_step_complete!
       session[:resolution_successful] = true
-      # This is here to maintain backwards compadibility with old code.
-      # Once the code that checks `profile_confirmation` is removed from prod
-      # this setter and eventually the value in the Idv::Session struct itself
-      # can be removed.
-      session[:profile_confirmation] = true
     end
 
     def invalidate_verify_info_step!
       session[:resolution_successful] = nil
-      session[:profile_confirmation] = nil
     end
 
     def invalidate_steps_after_verify_info!

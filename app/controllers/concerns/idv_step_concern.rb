@@ -17,7 +17,7 @@ module IdvStepConcern
   end
 
   def confirm_no_pending_gpo_profile
-    redirect_to idv_gpo_verify_url if current_user&.gpo_verification_pending_profile?
+    redirect_to idv_verify_by_mail_enter_code_url if current_user&.gpo_verification_pending_profile?
   end
 
   def confirm_no_pending_in_person_enrollment
@@ -37,10 +37,6 @@ module IdvStepConcern
     redirect_to idv_mail_only_warning_url
   end
 
-  def pii_from_doc
-    flow_session['pii_from_doc']
-  end
-
   def pii_from_user
     flow_session['pii_from_user']
   end
@@ -52,12 +48,12 @@ module IdvStepConcern
   private
 
   def confirm_ssn_step_complete
-    return if pii.present? && pii[:ssn].present?
+    return if pii.present? && idv_session.ssn.present?
     redirect_to prev_url
   end
 
   def confirm_document_capture_complete
-    return if pii_from_doc.present?
+    return if idv_session.pii_from_doc.present?
 
     if flow_path == 'standard'
       redirect_to idv_document_capture_url
@@ -71,7 +67,7 @@ module IdvStepConcern
   def confirm_verify_info_step_complete
     return if idv_session.verify_info_step_complete?
 
-    if idv_session.pending_in_person_enrollment?
+    if current_user.has_in_person_enrollment?
       redirect_to idv_in_person_verify_info_url
     else
       redirect_to idv_verify_info_url

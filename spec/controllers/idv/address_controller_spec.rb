@@ -5,22 +5,14 @@ RSpec.describe Idv::AddressController do
 
   let(:user) { create(:user) }
 
-  let(:idv_session) { subject.idv_session }
-
   let(:pii_from_doc) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.stringify_keys }
-
-  let(:flow_session) do
-    {
-      'pii_from_doc' => pii_from_doc,
-    }
-  end
 
   before do
     stub_sign_in(user)
     stub_analytics
     stub_idv_steps_before_verify_step(user)
     subject.idv_session.flow_path = 'standard'
-    subject.user_session['idv/doc_auth'] = flow_session
+    subject.idv_session.pii_from_doc = pii_from_doc
   end
 
   describe '#new' do
@@ -54,13 +46,13 @@ RSpec.describe Idv::AddressController do
     it 'sets address_edited in idv_session' do
       expect do
         put :update, params: params
-      end.to change { idv_session.address_edited }.from(nil).to eql(true)
+      end.to change { subject.idv_session.address_edited }.from(nil).to eql(true)
     end
 
-    it 'updates pii_from_doc' do
+    it 'updates pii_from_doc in idv_session' do
       expect do
         put :update, params: params
-      end.to change { flow_session['pii_from_doc'] }.to eql(
+      end.to change { subject.idv_session.pii_from_doc }.to eql(
         pii_from_doc.merge(
           {
             'address1' => '1234 Main St',

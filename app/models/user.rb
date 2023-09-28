@@ -123,7 +123,7 @@ class User < ApplicationRecord
     update!(suspended_at: Time.zone.now, unique_session_id: nil)
     analytics.user_suspended(success: true)
     email_addresses.map do |email_address|
-      SuspendedEmail.create_from_email_adddress!(email_address)
+      SuspendedEmail.create_from_email_address!(email_address)
     end
   end
 
@@ -143,14 +143,12 @@ class User < ApplicationRecord
     return @pending_profile if defined?(@pending_profile)
 
     @pending_profile = begin
-      pending = profiles.where(deactivation_reason: :in_person_verification_pending).or(
-        profiles.where.not(gpo_verification_pending_at: nil),
+      pending = profiles.in_person_verification_pending.or(
+        profiles.gpo_verification_pending,
       ).or(
-        profiles.where.not(in_person_verification_pending_at: nil),
+        profiles.fraud_review_pending,
       ).or(
-        profiles.where.not(fraud_review_pending_at: nil),
-      ).or(
-        profiles.where.not(fraud_rejection_at: nil),
+        profiles.fraud_rejection,
       ).order(created_at: :desc).first
 
       if pending.blank?
@@ -196,6 +194,15 @@ class User < ApplicationRecord
 
   def in_person_pending_profile
     pending_profile if pending_profile&.in_person_verification_pending?
+  end
+
+  def has_in_person_enrollment?
+    pending_in_person_enrollment.present? || establishing_in_person_enrollment.present?
+  end
+
+  # Trust `pending_profile` rather than enrollment associations
+  def has_establishing_in_person_enrollment_safe?
+    !!pending_profile&.in_person_enrollment&.establishing?
   end
 
   def personal_key_generated_at
@@ -381,6 +388,17 @@ class User < ApplicationRecord
 
   def has_devices?
     !recent_devices.empty?
+  end
+
+  # Returns the number of times the user has signed in, corresponding to the `sign_in_before_2fa`
+  # event.
+  #
+  # A `since` time argument is required, to optimize performance based on database indices for
+  # querying a user's events.
+  #
+  # @param [ActiveSupport::TimeWithZone] since Time window to query user's events
+  def sign_in_count(since:)
+    events.where(event_type: :sign_in_before_2fa).where(created_at: since..).count
   end
 
   def second_last_signed_in_at

@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Users::TwoFactorAuthenticationController do
   include ActionView::Helpers::DateHelper
+  include UserAgentHelper
 
   let(:otp_preference_sms) { { otp_delivery_preference: 'sms' } }
   let(:user) { create(:user, :fully_registered) }
@@ -71,15 +72,23 @@ RSpec.describe Users::TwoFactorAuthenticationController do
     context 'when user is piv/cac enabled' do
       it 'renders the piv/cac entry screen' do
         allow_any_instance_of(Browser).to receive(:mobile?).and_return(true)
-        user = build(:user)
+        user = create(:user, :with_piv_or_cac)
         stub_sign_in_before_2fa(user)
-        allow_any_instance_of(
-          TwoFactorAuthentication::PivCacPolicy,
-        ).to receive(:enabled?).and_return(true)
 
         get :show
 
         expect(response).to redirect_to login_two_factor_piv_cac_path
+      end
+
+      it 'redirects to phone when on mobile and user has phone' do
+        allow(controller).to receive(:mobile?).and_return(true)
+        user = create(:user, :with_phone, :with_piv_or_cac)
+        stub_sign_in_before_2fa(user)
+
+        request.headers['User-Agent'] = mobile_user_agent
+        get :show
+
+        expect(response).to redirect_to login_otp_path(otp_delivery_preference: :sms)
       end
     end
 
@@ -105,7 +114,7 @@ RSpec.describe Users::TwoFactorAuthenticationController do
         user = create(:user, :with_phone, **with_default_phone)
         stub_sign_in_before_2fa(user)
 
-        time1 = Time.zone.local(2023, 12, 13, 0, 0, 0)
+        time1 = Time.zone.local(2022, 12, 13, 0, 0, 0)
         cookies.encrypted[:remember_device] = {
           value: RememberDeviceCookie.new(user_id: user.id, created_at: time1).to_json,
           expires: time1 + 10.seconds,

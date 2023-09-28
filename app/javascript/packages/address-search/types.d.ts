@@ -1,5 +1,5 @@
 import type { RegisterFieldCallback } from '@18f/identity-form-steps';
-import type { ReactNode } from 'react';
+import type { ComponentType, Dispatch, SetStateAction, ReactNode } from 'react';
 
 interface FormattedLocation {
   formattedCityStateZip: string;
@@ -52,6 +52,17 @@ interface AddressInputProps {
   disabled?: boolean;
   addressSearchURL: string;
   locationsURL: string;
+}
+
+interface AddressSearchProps {
+  addressSearchURL: string;
+  disabled: boolean;
+  handleLocationSelect: ((e: any, id: number) => Promise<void>) | null | undefined;
+  noInPersonLocationsDisplay?: ComponentType<{ address: string }>;
+  resultsHeaderComponent?: ComponentType;
+  locationsURL: string;
+  onFoundLocations: Dispatch<SetStateAction<FormattedLocation[] | null | undefined>>;
+  registerField: RegisterFieldCallback;
 }
 
 interface InPersonLocationsProps {

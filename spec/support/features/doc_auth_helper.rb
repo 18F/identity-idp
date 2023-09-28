@@ -1,9 +1,11 @@
 require_relative 'document_capture_step_helper'
 require_relative 'interaction_helper'
+require_relative '../user_agent_helper'
 
 module DocAuthHelper
   include InteractionHelper
   include DocumentCaptureStepHelper
+  include UserAgentHelper
 
   GOOD_SSN = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]
   GOOD_SSN_MASKED = '9**-**-***4'
@@ -111,10 +113,7 @@ module DocAuthHelper
   end
 
   def mobile_device
-    Browser.new(
-      'Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) \
-AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1',
-    )
+    Browser.new(mobile_user_agent)
   end
 
   def complete_doc_auth_steps_before_ssn_step(expect_accessible: false)
@@ -227,6 +226,36 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
         attention_with_barcode_response,
         DocAuth::LexisNexis::Config.new,
       ),
+    )
+  end
+
+  def mock_doc_auth_trueid_http_non2xx_status(status)
+    network_error_response = instance_double(
+      Faraday::Response,
+      status: status,
+      body: '{}',
+    )
+    DocAuth::Mock::DocAuthMockClient.mock_response!(
+      method: :get_results,
+      response: DocAuth::LexisNexis::Responses::TrueIdResponse.new(
+        network_error_response,
+        DocAuth::LexisNexis::Config.new,
+      ),
+    )
+  end
+
+  # @param [Object] status one of 440, 438, 439
+  def mock_doc_auth_acuant_http_4xx_status(status, method = :post_front_image)
+    DocAuth::Mock::DocAuthMockClient.mock_response!(
+      method: method,
+      response: DocAuth::Mock::ResultResponse.create_image_error_response(status),
+    )
+  end
+
+  def mock_doc_auth_acuant_http_5xx_status(method = :post_front_image)
+    DocAuth::Mock::DocAuthMockClient.mock_response!(
+      method: method,
+      response: DocAuth::Mock::ResultResponse.create_network_error_response,
     )
   end
 

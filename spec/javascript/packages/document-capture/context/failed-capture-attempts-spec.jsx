@@ -24,6 +24,7 @@ describe('document-capture/context/failed-capture-attempts', () => {
       'maxCaptureAttemptsBeforeNativeCamera',
       'maxSubmissionAttemptsBeforeNativeCamera',
       'lastAttemptMetadata',
+      'failedSubmissionImageFingerprints',
     ]);
     expect(result.current.failedCaptureAttempts).to.equal(0);
     expect(result.current.failedSubmissionAttempts).to.equal(0);
@@ -32,6 +33,7 @@ describe('document-capture/context/failed-capture-attempts', () => {
     expect(result.current.onResetFailedCaptureAttempts).to.be.a('function');
     expect(result.current.maxCaptureAttemptsBeforeNativeCamera).to.be.a('number');
     expect(result.current.lastAttemptMetadata).to.be.an('object');
+    expect(result.current.failedSubmissionImageFingerprints).to.be.an('object');
   });
 
   describe('Provider', () => {
@@ -83,10 +85,14 @@ describe('FailedCaptureAttemptsContext testing of forceNativeCamera logic', () =
         <Provider maxSubmissionAttemptsBeforeNativeCamera={2}>{children}</Provider>
       ),
     });
-    result.current.onFailedSubmissionAttempt();
+    result.current.onFailedSubmissionAttempt({ front: ['abcdefg'], back: [] });
     rerender(true);
     expect(result.current.failedSubmissionAttempts).to.equal(1);
     expect(result.current.forceNativeCamera).to.equal(false);
+    expect(result.current.failedSubmissionImageFingerprints).to.eql({
+      front: ['abcdefg'],
+      back: [],
+    });
   });
 
   it('Updating failed captures to a number gte the maxCaptureAttemptsBeforeNativeCamera will set forceNativeCamera to true', () => {

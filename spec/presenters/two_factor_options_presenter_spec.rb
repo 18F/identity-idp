@@ -30,7 +30,7 @@ RSpec.describe TwoFactorOptionsPresenter do
   describe '#options' do
     it 'supplies all the options for a user' do
       expect(presenter.options.map(&:class)).to eq [
-        TwoFactorAuthentication::AuthAppSelectionPresenter,
+        TwoFactorAuthentication::SetUpAuthAppSelectionPresenter,
         TwoFactorAuthentication::PhoneSelectionPresenter,
         TwoFactorAuthentication::BackupCodeSelectionPresenter,
         TwoFactorAuthentication::WebauthnSelectionPresenter,
@@ -61,7 +61,7 @@ RSpec.describe TwoFactorOptionsPresenter do
 
       it 'supplies all the options except phone' do
         expect(presenter.options.map(&:class)).to eq [
-          TwoFactorAuthentication::AuthAppSelectionPresenter,
+          TwoFactorAuthentication::SetUpAuthAppSelectionPresenter,
           TwoFactorAuthentication::BackupCodeSelectionPresenter,
           TwoFactorAuthentication::WebauthnSelectionPresenter,
           TwoFactorAuthentication::PivCacSelectionPresenter,
@@ -77,7 +77,7 @@ RSpec.describe TwoFactorOptionsPresenter do
       it 'supplies all the options except webauthn' do
         expect(presenter.options.map(&:class)).to eq [
           TwoFactorAuthentication::WebauthnPlatformSelectionPresenter,
-          TwoFactorAuthentication::AuthAppSelectionPresenter,
+          TwoFactorAuthentication::SetUpAuthAppSelectionPresenter,
           TwoFactorAuthentication::PhoneSelectionPresenter,
           TwoFactorAuthentication::BackupCodeSelectionPresenter,
           TwoFactorAuthentication::WebauthnSelectionPresenter,
@@ -101,6 +101,22 @@ RSpec.describe TwoFactorOptionsPresenter do
         let(:show_skip_additional_mfa_link) { false }
 
         it { expect(skip_path).to be_nil }
+      end
+    end
+  end
+
+  describe '#skip_label' do
+    subject(:skip_label) { presenter.skip_label }
+
+    it 'is "Skip"' do
+      expect(skip_label).to eq(t('mfa.skip'))
+    end
+
+    context 'user has dismissed second mfa reminder' do
+      let(:user) { build(:user, second_mfa_reminder_dismissed_at: Time.zone.now) }
+
+      it 'is "Cancel"' do
+        expect(skip_label).to eq(t('links.cancel'))
       end
     end
   end

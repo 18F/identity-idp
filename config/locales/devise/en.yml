@@ -45,9 +45,6 @@ en:
     registrations:
       close_window: You can close this window if you’re done.
       destroyed: Your account has been successfully deleted.
-      phone_update_needs_confirmation: Your request to update your phone configuration
-        was processed, but we need to confirm your new number before you can use
-        it. Please follow the instructions below.
       start:
         accordion: You will also need
         bullet_1_html: An <strong>email address</strong>.

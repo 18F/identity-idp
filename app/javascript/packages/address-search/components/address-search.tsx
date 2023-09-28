@@ -3,16 +3,19 @@ import { Alert, PageHeading } from '@18f/identity-components';
 import { t } from '@18f/identity-i18n';
 import InPersonLocations from './in-person-locations';
 import AddressInput from './address-input';
-import type { LocationQuery, FormattedLocation } from '../types';
+import type { AddressSearchProps, LocationQuery, FormattedLocation } from '../types';
+import NoInPersonLocationsDisplay from './no-in-person-locations-display';
 
 function AddressSearch({
-  registerField,
-  locationsURL,
   addressSearchURL,
-  handleLocationSelect,
   disabled,
+  handleLocationSelect,
+  locationsURL,
+  noInPersonLocationsDisplay = NoInPersonLocationsDisplay,
   onFoundLocations,
-}) {
+  registerField,
+  resultsHeaderComponent,
+}: AddressSearchProps) {
   const [apiError, setApiError] = useState<Error | null>(null);
   const [foundAddress, setFoundAddress] = useState<LocationQuery | null>(null);
   const [locationResults, setLocationResults] = useState<FormattedLocation[] | null | undefined>(
@@ -45,8 +48,10 @@ function AddressSearch({
       {locationResults && foundAddress && !isLoadingLocations && (
         <InPersonLocations
           locations={locationResults}
+          noInPersonLocationsDisplay={noInPersonLocationsDisplay}
           onSelect={handleLocationSelect}
           address={foundAddress?.address || ''}
+          resultsHeaderComponent={resultsHeaderComponent}
         />
       )}
     </>

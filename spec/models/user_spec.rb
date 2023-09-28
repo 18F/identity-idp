@@ -314,6 +314,43 @@ RSpec.describe User do
         expect(user.establishing_in_person_enrollment).to eq establishing_enrollment
       end
     end
+
+    describe '#has_in_person_enrollment?' do
+      it 'returns the establishing IPP enrollment that has an address' do
+        ProofingComponent.find_or_create_by(user: user).
+          update!(document_check: Idp::Constants::Vendors::USPS)
+
+        expect(user.has_in_person_enrollment?).to eq(true)
+      end
+    end
+
+    # We don't know yet if #establishing_in_person_enrollment is, in fact, `establishing`
+    # so we trust the pending profile in the meantime
+    describe '#has_establishing_in_person_enrollment_safe?' do
+      let(:new_user) { create(:user, :fully_registered) }
+      let(:proofing_components) { nil }
+      let(:new_pending_profile) do
+        create(
+          :profile,
+          :verify_by_mail_pending,
+          user: new_user,
+          proofing_components: proofing_components,
+        )
+      end
+      let!(:establishing_enrollment) do
+        create(
+          :in_person_enrollment,
+          :establishing,
+          profile: new_pending_profile,
+          user: new_user,
+        )
+      end
+
+      it 'returns the establishing IPP enrollment through the pending profile' do
+        # trust pending_profile
+        expect(new_user.has_establishing_in_person_enrollment_safe?).to eq(true)
+      end
+    end
   end
 
   describe 'deleting identities' do
@@ -395,43 +432,30 @@ RSpec.describe User do
   end
 
   describe '#valid_password?' do
-    it 'returns true if the password matches the stored digest' do
+    it 'validates the password for a user with a multi-region digest' do
       user = build(:user, password: 'test password')
+
+      expect(user.encrypted_password_digest_multi_region).to_not be_nil
 
       expect(user.valid_password?('test password')).to eq(true)
       expect(user.valid_password?('wrong password')).to eq(false)
     end
 
-    context 'aws_kms_multi_region_read_enabled is set to true' do
-      before do
-        allow(IdentityConfig.store).to receive(:aws_kms_multi_region_read_enabled).and_return(true)
-      end
+    it 'validates the password for a user with a only a single-region digest' do
+      user = build(:user, password: 'test password')
+      user.encrypted_password_digest_multi_region = nil
 
-      it 'validates the password for a user with a multi-region digest' do
-        user = build(:user, password: 'test password')
+      expect(user.valid_password?('test password')).to eq(true)
+      expect(user.valid_password?('wrong password')).to eq(false)
+    end
 
-        expect(user.encrypted_password_digest_multi_region).to_not be_nil
+    it 'validates the password for a user with a only a single-region UAK digest' do
+      user = build(:user)
+      user.encrypted_password_digest = Encryption::UakPasswordVerifier.digest('test password')
+      user.encrypted_password_digest_multi_region = nil
 
-        expect(user.valid_password?('test password')).to eq(true)
-        expect(user.valid_password?('wrong password')).to eq(false)
-      end
-
-      it 'validates the password for a user with a only a single-region digest' do
-        user = build(:user, password: 'test password')
-        user.encrypted_password_digest_multi_region = nil
-
-        expect(user.valid_password?('test password')).to eq(true)
-        expect(user.valid_password?('wrong password')).to eq(false)
-      end
-
-      it 'validates the password for a user with a only a single-region UAK digest' do
-        user = build(:user)
-        user.encrypted_password_digest = Encryption::UakPasswordVerifier.digest('test password')
-        user.encrypted_password_digest_multi_region = nil
-
-        expect(user.valid_password?('test password')).to eq(true)
-        expect(user.valid_password?('wrong password')).to eq(false)
-      end
+      expect(user.valid_password?('test password')).to eq(true)
+      expect(user.valid_password?('wrong password')).to eq(false)
     end
   end
 
@@ -456,44 +480,31 @@ RSpec.describe User do
   end
 
   describe '#valid_personal_key?' do
-    it 'returns true if the personal key matches the stored digest' do
+    it 'validates the personal key for a user with a multi-region digest' do
       user = build(:user, personal_key: 'test personal key')
+
+      expect(user.encrypted_recovery_code_digest_multi_region).to_not be_nil
 
       expect(user.valid_personal_key?('test personal key')).to eq(true)
       expect(user.valid_personal_key?('wrong personal key')).to eq(false)
     end
 
-    context 'aws_kms_multi_region_read_enabled is set to true' do
-      before do
-        allow(IdentityConfig.store).to receive(:aws_kms_multi_region_read_enabled).and_return(true)
-      end
+    it 'validates the personal key for a user with a only a single-region digest' do
+      user = build(:user, personal_key: 'test personal key')
+      user.encrypted_recovery_code_digest_multi_region = nil
 
-      it 'validates the personal key for a user with a multi-region digest' do
-        user = build(:user, personal_key: 'test personal key')
+      expect(user.valid_personal_key?('test personal key')).to eq(true)
+      expect(user.valid_personal_key?('wrong personal key')).to eq(false)
+    end
 
-        expect(user.encrypted_recovery_code_digest_multi_region).to_not be_nil
+    it 'validates the personal key for a user with a only a single-region UAK digest' do
+      user = build(:user)
+      user.encrypted_recovery_code_digest =
+        Encryption::UakPasswordVerifier.digest('test personal key')
+      user.encrypted_recovery_code_digest_multi_region = nil
 
-        expect(user.valid_personal_key?('test personal key')).to eq(true)
-        expect(user.valid_personal_key?('wrong personal key')).to eq(false)
-      end
-
-      it 'validates the personal key for a user with a only a single-region digest' do
-        user = build(:user, personal_key: 'test personal key')
-        user.encrypted_recovery_code_digest_multi_region = nil
-
-        expect(user.valid_personal_key?('test personal key')).to eq(true)
-        expect(user.valid_personal_key?('wrong personal key')).to eq(false)
-      end
-
-      it 'validates the personal key for a user with a only a single-region UAK digest' do
-        user = build(:user)
-        user.encrypted_recovery_code_digest =
-          Encryption::UakPasswordVerifier.digest('test personal key')
-        user.encrypted_recovery_code_digest_multi_region = nil
-
-        expect(user.valid_personal_key?('test personal key')).to eq(true)
-        expect(user.valid_personal_key?('wrong personal key')).to eq(false)
-      end
+      expect(user.valid_personal_key?('test personal key')).to eq(true)
+      expect(user.valid_personal_key?('wrong personal key')).to eq(false)
     end
   end
 
@@ -954,10 +965,12 @@ RSpec.describe User do
       end
 
       it 'destroys SuspendedEmail records for each email address' do
-        email_address = user.email_addresses.last
+        email_addresses = user.email_addresses
+        email_address = email_addresses.last
+        expect(email_addresses.count).to eq 1
         expect { user.reinstate! }.
-          to(change { SuspendedEmail.find_with_email(email_address.email) }.
-            from(email_address).to(nil))
+          to(change { SuspendedEmail.find_with_email(email_address.email) }.to(nil))
+        expect(user.email_addresses.reload.last).to be_present
       end
 
       it 'updates the reinstated_at attribute with the current time' do
@@ -1476,6 +1489,20 @@ RSpec.describe User do
 
     it 'omits deleted apps' do
       expect(user.connected_apps).to eq([app])
+    end
+  end
+
+  describe '#sign_in_count' do
+    it 'returns sign-in event count since the given time' do
+      freeze_time do
+        user = create(:user)
+        user.events.create(event_type: :sign_in_before_2fa, created_at: 1.day.ago)
+        user.events.create(event_type: :email_changed, created_at: 1.day.ago)
+        user.events.create(event_type: :sign_in_before_2fa, created_at: 2.days.ago)
+        user.events.create(event_type: :sign_in_before_2fa, created_at: 3.days.ago)
+
+        expect(user.sign_in_count(since: 2.days.ago)).to eq(2)
+      end
     end
   end
 

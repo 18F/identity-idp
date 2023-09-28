@@ -34,14 +34,14 @@ locals:
         },
         @gpo_letter_available && {
           text: t('idv.troubleshooting.options.verify_by_mail'),
-          url: idv_gpo_path,
+          url: idv_request_letter_path,
         },
-        decorated_session.sp_name && {
+        decorated_sp_session.sp_name && {
           url: return_to_sp_failure_to_proof_path(
             step: 'phone',
             location: local_assigns.fetch(:name, 'warning'),
           ),
-          text: t('idv.troubleshooting.options.get_help_at_sp', sp_name: decorated_session.sp_name),
+          text: t('idv.troubleshooting.options.get_help_at_sp', sp_name: decorated_sp_session.sp_name),
           new_tab: true,
         },
       ].select(&:present?),

@@ -113,9 +113,8 @@ fr:
           gpo:
             button: Vérifier par courrier
           heading: Nous n’avons pas pu vérifier votre identité par téléphone
-          option_try_again_later_html: 'Annuler et recommencer après <b>%{time_left}</b>'
-          option_verify_by_mail_html: Vérifier par courrier, ce qui prend généralement de
-            <b>trois à sept jours ouvrables</b>.
+          option_try_again_later_html: 'Annuler et recommencer après <strong>%{time_left}</strong>'
+          option_verify_by_mail_html: Vérifier par courrier, qui nécessite <strong>5 à 10 jours</strong>.
           options_header: 'Vous Pouvez :'
         timeout: Notre demande de vérification de vos renseignements a expiré. Veuillez
           réessayer.
@@ -129,7 +128,7 @@ fr:
             explanation: Si vous n’avez pas d’autre numéro de téléphone à essayer, vérifiez
               plutôt par courrier.
             heading: Vérifier par courrier
-            how_long_it_takes: Cette procédure prend typiquement 3 à 7 jours ouvrables.
+            how_long_it_takes_html: Cela prend <strong>5 à 10 jours</strong>.
           heading: Nous n’avons pas pu vous associer à ce numéro
           learn_more_link: 'Apprenez-en plus sur quel numéro de téléphone utiliser'
           next_steps_html: 'Essayez <strong>un autre</strong> numéro que vous utilisez
@@ -195,9 +194,9 @@ fr:
           instructions: Si vous avez reçu votre lettre, veuillez entrer le code à 10
             caractères figurant sur la lettre que vous avez reçue.
         intro:
-          be_patient_html: 'Veuillez noter que les lettres prennent <strong>généralement
-            entre trois à sept jours ouvrables pour arriver</strong>. Nous vous
-            remercions de votre patience.'
+          be_patient_html: 'Veuillez noter que les lettres mettent jusqu’à <strong>10
+            jours</strong> pour arriver. Nous vous remercions de votre
+            patience.'
           request_new_letter_link: demander une nouvelle
           request_new_letter_prompt_html: Si votre lettre n’est pas encore arrivée, vous
             pouvez en <span>%{request_new_letter_link}</span>.
@@ -210,9 +209,9 @@ fr:
         title: Confirmez votre compte
       intro_html: '<p>Si vous avez reçu votre lettre, veuillez entrer votre code à
         usage unique ci-dessous. </p> <p>Si votre lettre n’est pas encore
-        arrivée, veuillez être patient car les <strong>lettres prennent
-        généralement entre trois à sept jours ouvrables pour arriver</strong>.
-        Nous vous remercions de votre patience.</p>'
+        arrivée, veuillez être patient car les lettres mettent jusqu’à
+        <strong>10 jours</strong> pour arriver. Nous vous remercions de votre
+        patience.</p>'
       return_to_profile: Retourner à votre profil
       title: Content de vous revoir
       wrong_address: Pas la bonne adresse?
@@ -228,11 +227,10 @@ fr:
         information vérifiée, veuillez %{link_html}.
       activated_link: communiquer avec nous
       clear_and_start_over: Supprimer mes données et recommencer
-      come_back_later_html: <p>Les lettres prennent généralement <strong>trois à sept
-        jours ouvrables</strong> pour arriver par le biais du courriel de
-        première classe de l’USPS.</p><p>Une fois votre lettre arrivée,
-        connectez-vous à %{app_name} et entrez votre code à usage unique lorsque
-        vous y êtes invité.</p>
+      come_back_later_html: <p>Les lettres mettent <strong>5 à 10 jours</strong> pour
+        arriver par le courrier de première classe d’USPS.</p><p>Une fois votre
+        lettre arrivée, connectez-vous à %{app_name} et entrez votre code à
+        usage unique lorsque vous y êtes invité.</p>
       come_back_later_no_sp_html: Vous pouvez revenir à votre <strong>compte
         %{app_name}</strong> pour le moment.
       come_back_later_password_html: <strong>N’oubliez pas votre mot de
@@ -254,11 +252,10 @@ fr:
           usage unique de votre lettre actuelle restera valable pendant une
           période limitée. Vous pouvez toujours utiliser le code à usage unique
           de l’une ou l’autre lettre.
-        resend_timeframe: Les lettres mettent généralement entre trois et sept jours
-          ouvrables pour arriver.
-        timeframe_html: Les lettres sont envoyées les jours ouvrables par courriel de
-          première classe de USPS et <strong>prennent généralement entre trois à
-          sept jours ouvrables pour être reçues</strong>.
+        resend_timeframe_html: Les lettres mettent <strong>5 à 10 jours</strong> pour arriver.
+        timeframe_html: Les lettres sont envoyées le jour ouvrable suivant par le
+          courrier de première classe d’USPS et arrivent dans un délai de
+          <strong>5 à 10 jours</strong>.
       gpo_reminder:
         body_html: Vous avez demandé une lettre pour vérifier votre identité le
           <strong>%{date_letter_was_sent}</strong>. Vous devrez saisir le code
@@ -288,8 +285,9 @@ fr:
           - Votre numéro principal (celui que vous utilisez le plus souvent)
       return_to_profile: '‹ Revenir à votre profil %{app_name}'
       review:
-        gpo_pending: Nous vous enverrons votre lettre une fois que vous aurez
-          réintroduit votre mot de passe.
+        by_mail_password_reminder_html: <b>Mémorisez votre mot de passe.</b> Le code de
+          vérification contenu dans votre lettre ne fonctionnera pas si vous
+          réinitialisez votre mot de passe par la suite.
         message: '%{app_name} crypte vos informations avec votre mot de passe. Cela
           signifie que vos informations sont sécurisées et que vous seul pourrez
           y accéder ou les modifier.'
@@ -316,6 +314,8 @@ fr:
       review: Réviser et soumettre
       session:
         review: 'Saisissez à nouveau votre mot de passe %{app_name}'
+        review_letter: 'Saisissez à nouveau votre mot de passe %{app_name} pour envoyer
+          votre lettre'
       unavailable: Nous travaillons à la résolution d’une erreur
     troubleshooting:
       headings:
@@ -324,14 +324,14 @@ fr:
           obtenir de l’aide:'
       options:
         contact_support: Contacter le service d’assistance de %{app_name}
-        doc_capture_tips: Plus de conseils pour ajouter des photos de votre carte d’identité
+        doc_capture_tips: Conseils pour prendre des photos claires de votre pièce d’identité
         get_help_at_sp: Demandez de l’aide à %{sp_name}
         learn_more_address_verification_options: En savoir plus sur la vérification par téléphone ou par courrier
         learn_more_verify_by_mail: En savoir plus sur la vérification de votre adresse par courrier
         learn_more_verify_by_phone: Apprenez-en plus sur quel numéro de téléphone utiliser
         learn_more_verify_by_phone_in_person: En savoir plus sur la vérification de votre numéro de téléphone
         learn_more_verify_in_person: En savoir plus sur la vérification en personne
-        supported_documents: Voir la liste des pièces d’identité acceptées et délivrées par l’État
+        supported_documents: En savoir plus sur les pièces d’identité acceptées
         verify_by_mail: Vérifiez plutôt votre adresse par courrier
     unavailable:
       exit_button: 'Quitter %{app_name}'

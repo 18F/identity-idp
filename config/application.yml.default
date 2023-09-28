@@ -41,14 +41,6 @@ acuant_get_results_timeout: 1.0
 acuant_create_document_timeout: 1.0
 add_email_link_valid_for_hours: 24
 address_identity_proofing_supported_country_codes: '["AS", "GU", "MP", "PR", "US", "VI"]'
-arcgis_api_username: ''
-arcgis_api_password: ''
-arcgis_mock_fallback: true
-arcgis_api_generate_token_url: 'https://gis.gsa.gov/portal/sharing/rest/generateToken'
-arcgis_api_find_address_candidates_url: 'https://gis.gsa.gov/servernh/rest/services/GSA/USA/GeocodeServer/findAddressCandidates'
-arcgis_api_refresh_token_job_cron: '0/55 * * * *'
-arcgis_api_refresh_token_job_enabled: false
-arcgis_api_request_timeout_seconds: 5
 asset_host: ''
 async_wait_timeout_seconds: 60
 async_stale_job_timeout_seconds: 300
@@ -59,7 +51,7 @@ aws_kms_key_id: alias/login-dot-gov-test-keymaker
 aws_kms_client_contextless_pool_size: 5
 aws_kms_client_multi_pool_size: 5
 aws_kms_multi_region_key_id: alias/login-dot-gov-keymaker-multi-region
-aws_kms_multi_region_read_enabled: false
+aws_kms_session_key_id: alias/login-dot-gov-test-keymaker
 aws_logo_bucket: ''
 aws_region: 'us-west-2'
 backup_code_cost: '2000$8$1$'
@@ -83,6 +75,7 @@ disallow_all_web_crawlers: true
 disposable_email_services: '[]'
 doc_auth_attempt_window_in_minutes: 360
 doc_capture_polling_enabled: true
+doc_auth_check_failed_image_resubmission_enabled: true
 doc_auth_client_glare_threshold: 50
 doc_auth_client_sharpness_threshold: 50
 doc_auth_s3_request_timeout: 5
@@ -92,6 +85,7 @@ doc_auth_error_sharpness_threshold: 40
 doc_auth_max_attempts: 5
 doc_auth_max_capture_attempts_before_native_camera: 3
 doc_auth_max_submission_attempts_before_native_camera: 3
+doc_auth_supported_country_codes: '["US", "GU", "VI", "AS", "MP", "PR", "USA" ,"GUM", "VIR", "ASM", "MNP", "PRI"]'
 doc_capture_request_valid_for_minutes: 15
 email_from: no-reply@login.gov
 email_from_display_name: Login.gov
@@ -144,9 +138,10 @@ in_person_enrollments_ready_job_queue_url: ''
 in_person_enrollments_ready_job_max_number_of_messages: 10
 in_person_enrollments_ready_job_visibility_timeout_seconds: 30
 in_person_enrollments_ready_job_wait_time_seconds: 20
+in_person_residential_address_controller_enabled: false
 in_person_results_delay_in_hours: 1
 in_person_completion_survey_url: 'https://login.gov'
-in_person_full_address_entry_enabled: false
+in_person_full_address_entry_enabled: true
 in_person_outage_message_enabled: false
 # in_person_outage_expected_update_date and in_person_outage_emailed_by_date below
 # are strings in the format 'Month day, year'
@@ -207,6 +202,12 @@ max_mail_events_window_in_days: 30
 max_phone_numbers_per_account: 5
 max_piv_cac_per_account: 2
 min_password_score: 3
+minimum_wait_before_another_usps_letter_in_hours: 24
+multi_region_kms_migration_jobs_enabled: true
+multi_region_kms_migration_jobs_profile_count: 1000
+multi_region_kms_migration_jobs_profile_timeout: 120
+multi_region_kms_migration_jobs_user_count: 1000
+multi_region_kms_migration_jobs_user_timeout: 120
 mx_timeout: 3
 otp_delivery_blocklist_maxretry: 10
 otp_valid_for: 10
@@ -278,6 +279,7 @@ requests_per_ip_period: 300
 requests_per_ip_track_only_mode: false
 reset_password_email_max_attempts: 20
 reset_password_email_window_in_minutes: 60
+reset_password_on_auth_fraud_event: true
 risc_notifications_local_enabled: false
 risc_notifications_active_job_enabled: false
 risc_notifications_rate_limit_interval: 60
@@ -290,6 +292,9 @@ rules_of_use_updated_at: '2022-01-19T00:00:00Z' # Production has a newer timesta
 s3_public_reports_enabled: false
 s3_reports_enabled: false
 saml_secret_rotation_enabled: false
+second_mfa_reminder_account_age_in_days: 30
+second_mfa_reminder_enabled: true
+second_mfa_reminder_sign_in_count: 10
 seed_agreements_data: true
 service_provider_request_ttl_hours: 24
 session_check_delay: 30
@@ -306,6 +311,8 @@ show_user_attribute_deprecation_warnings: false
 otp_min_attempts_remaining_warning_count: 3
 system_demand_report_email: 'foo@bar.com'
 sp_issuer_user_counts_report_configs: '[]'
+team_agnes_email: ''
+team_all_feds_email: ''
 team_ursula_email: ''
 test_ssn_allowed_list: ''
 totp_code_interval: 30
@@ -321,7 +328,7 @@ vendor_status_sms: 'operational'
 vendor_status_voice: 'operational'
 verification_errors_report_configs: '[]'
 verify_gpo_key_attempt_window_in_minutes: 10
-verify_gpo_key_max_attempts: 3
+verify_gpo_key_max_attempts: 5
 verify_personal_key_attempt_window_in_minutes: 15
 verify_personal_key_max_attempts: 5
 version_headers_enabled: false
@@ -382,8 +389,6 @@ development:
   logins_per_ip_limit: 5
   logo_upload_enabled: true
   max_bad_passwords: 5
-  newrelic_browser_app_id: ''
-  newrelic_browser_key: ''
   newrelic_license_key: ''
   nonessential_email_banlist: '["banned_email@gmail.com"]'
   otp_delivery_blocklist_findtime: 5
@@ -417,7 +422,6 @@ production:
   aamva_private_key: ''
   aamva_public_key: ''
   aamva_verification_url: 'https://verificationservices-cert.aamva.org:18449/dldv/2.1/online'
-  arcgis_api_refresh_token_job_enabled: true
   attribute_encryption_key:
   attribute_encryption_key_queue: '[]'
   aws_logo_bucket: ''
@@ -454,8 +458,6 @@ production:
   logins_per_ip_limit: 20
   logins_per_ip_period: 20
   logins_per_ip_track_only_mode: true
-  newrelic_browser_app_id: ''
-  newrelic_browser_key: ''
   newrelic_license_key: ''
   nonessential_email_banlist: '[]'
   otp_delivery_blocklist_findtime: 5
@@ -473,6 +475,7 @@ production:
   s3_reports_enabled: true
   saml_endpoint_configs: '[]'
   scrypt_cost: 10000$8$1$
+  second_mfa_reminder_enabled: false
   secret_key_base:
   seed_agreements_data: false
   session_encryption_key:
@@ -526,8 +529,6 @@ test:
   max_bad_passwords: 5
   max_mail_events: 2
   otp_min_attempts_remaining_warning_count: 1
-  newrelic_browser_app_id: ''
-  newrelic_browser_key: ''
   newrelic_license_key: ''
   nonessential_email_banlist: '["banned_email@gmail.com"]'
   otp_delivery_blocklist_findtime: 1

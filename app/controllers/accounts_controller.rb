@@ -13,7 +13,7 @@ class AccountsController < ApplicationController
       decrypted_pii: cacher.fetch,
       personal_key: flash[:personal_key],
       sp_session_request_url: sp_session_request_url_with_updated_params,
-      sp_name: decorated_session.sp_name,
+      sp_name: decorated_sp_session.sp_name,
       user: current_user,
       locked_for_session: pii_locked_for_session?(current_user),
     )
@@ -27,5 +27,11 @@ class AccountsController < ApplicationController
     user_session[:context] = 'reauthentication'
 
     redirect_to login_two_factor_options_path
+  end
+
+  private
+
+  def confirm_user_is_not_suspended
+    redirect_to user_please_call_url if current_user.suspended?
   end
 end

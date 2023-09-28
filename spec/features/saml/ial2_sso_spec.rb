@@ -84,10 +84,10 @@ RSpec.feature 'IAL2 Single Sign On' do
       )
     end
 
-    context 'having previously selected USPS verification', js: true do
+    context 'immediately after selecting USPS verification', js: true do
       let(:phone_confirmed) { false }
 
-      context 'provides an option to send another letter' do
+      context 'does not provide an option to send another letter' do
         it 'without signing out' do
           user = create(:user, :fully_registered)
 
@@ -98,17 +98,8 @@ RSpec.feature 'IAL2 Single Sign On' do
           visit account_path
           click_link(t('account.index.verification.reactivate_button'))
 
-          expect(current_path).to eq idv_gpo_verify_path
-
-          click_link(t('idv.messages.gpo.resend'))
-
-          expect(user.events.account_verified.size).to be(0)
-          expect(current_path).to eq(idv_gpo_path)
-
-          click_button(t('idv.buttons.mail.resend'))
-
-          expect(user.events.gpo_mail_sent.size).to eq 2
-          expect(current_path).to eq(idv_come_back_later_path)
+          expect(current_path).to eq idv_verify_by_mail_enter_code_path
+          expect(page).not_to have_link(t('idv.messages.gpo.resend'))
         end
 
         it 'after signing out' do
@@ -120,17 +111,34 @@ RSpec.feature 'IAL2 Single Sign On' do
 
           sign_in_live_with_2fa(user)
 
-          expect(current_path).to eq idv_gpo_verify_path
-
-          click_link(t('idv.messages.gpo.resend'))
-
-          expect(user.events.account_verified.size).to be(0)
-          expect(current_path).to eq(idv_gpo_path)
-
-          click_button(t('idv.buttons.mail.resend'))
-
-          expect(current_path).to eq(idv_come_back_later_path)
+          expect(current_path).to eq idv_verify_by_mail_enter_code_path
+          expect(page).not_to have_link(t('idv.messages.gpo.resend'))
         end
+      end
+    end
+
+    context 'having previously selected USPS verification', js: true do
+      let(:phone_confirmed) { false }
+
+      it 'provides an option to send another letter' do
+        user = create(:user, :fully_registered)
+
+        travel_to(2.days.ago) do
+          perform_id_verification_with_gpo_without_confirming_code(user)
+        end
+
+        sign_in_live_with_2fa(user)
+
+        expect(current_path).to eq idv_verify_by_mail_enter_code_path
+
+        click_link(t('idv.messages.gpo.resend'))
+
+        expect(user.events.account_verified.size).to be(0)
+        expect(current_path).to eq(idv_request_letter_path)
+
+        click_button(t('idv.buttons.mail.resend'))
+
+        expect(current_path).to eq(idv_letter_enqueued_path)
       end
     end
   end
