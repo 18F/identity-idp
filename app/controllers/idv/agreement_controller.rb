@@ -53,7 +53,7 @@ module Idv
     end
 
     def consent_form_params
-      params.require(:doc_auth).permit(:ial2_consent_given)
+      params.require(:doc_auth).permit([:ial2_consent_given, :idv_consent_given])
     end
 
     def confirm_welcome_step_complete
