@@ -16,7 +16,7 @@ RSpec.describe 'idv/by_mail/letter_enqueued/show.html.erb' do
       render
       expect(rendered).to have_link(
         t('idv.cancel.actions.exit', app_name: APP_NAME),
-        href: return_to_sp_cancel_path(location: :come_back_later),
+        href: return_to_sp_cancel_path(step: :get_a_letter, location: :come_back_later),
       )
     end
 
