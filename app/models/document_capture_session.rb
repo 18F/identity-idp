@@ -8,15 +8,6 @@ class DocumentCaptureSession < ApplicationRecord
     EncryptedRedisStructStorage.load(result_id, type: DocumentCaptureSessionResult)
   end
 
-  def session_result
-    return @session_result if defined?(@session_result)
-
-    @session_result = load_result || DocumentCaptureSessionResult.new(
-      id: generate_result_id,
-    )
-    @session_result
-  end
-
   def store_result_from_response(doc_auth_response)
     session_result.success = doc_auth_response.success?
     session_result.pii = doc_auth_response.pii_from_doc
@@ -100,5 +91,14 @@ class DocumentCaptureSession < ApplicationRecord
 
   def generate_result_id
     self.result_id = SecureRandom.uuid
+  end
+
+  def session_result
+    return @session_result if defined?(@session_result)
+
+    @session_result = load_result || DocumentCaptureSessionResult.new(
+      id: generate_result_id,
+    )
+    @session_result
   end
 end
