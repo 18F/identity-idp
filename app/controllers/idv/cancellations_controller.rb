@@ -67,7 +67,6 @@ module Idv
         idv_session = user_session[:idv]
         idv_session&.clear
         user_session['idv/in_person'] = {}
-        reset_doc_auth
       end
     end
 
@@ -81,10 +80,6 @@ module Idv
 
     def location_params
       params.permit(:step, :location).to_h.symbolize_keys
-    end
-
-    def reset_doc_auth
-      user_session['idv'] = {}
     end
 
     def cancel_document_capture_session
