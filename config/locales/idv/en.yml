@@ -197,7 +197,7 @@ en:
       request_another_letter:
         button: Request another letter
         instructions_html: Request a new letter if you have issues with your current
-          letter or it never arrived. Letters take <strong>5 to 10</strong> days
+          letter or it never arrived. Letters take <strong>5 to 10 days</strong>
           to arrive.
         learn_more_link: Learn more about verifying your address by mail
         title: Request another letter?
