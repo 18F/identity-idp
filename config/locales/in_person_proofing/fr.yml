@@ -164,19 +164,6 @@ fr:
         heading: Montrez votre code-barres %{app_name}
         info: Le vendeur doit scanner votre code-barres en haut de cette page. Vous
           pouvez imprimer cette page ou la montrer sur votre appareil mobile.
-      proof_of_address:
-        acceptable_proof:
-          - Bail, hypothèque ou acte de fiducie
-          - Inscription sur les listes électorales
-          - Carte d’immatriculation du véhicule
-          - Police d’assurance habitation ou véhicule
-        heading: Preuve de votre adresse actuelle
-        info: 'Vous avez besoin d’un justificatif de domicile si votre adresse actuelle
-          est différente de l’adresse figurant sur votre document d’identité.
-          Les justificatifs d’adresse acceptés sont les suivants:'
-        physical_or_digital_copy: Vous pouvez apporter une copie physique ou montrer une
-          copie numérique du document. Vous ne pouvez pas montrer une photo ou
-          une capture d’écran du document.
       state_id:
         heading: Présentez votre permis de conduire de l’État ou votre carte d’identité
           de non-conducteur de l’État

@@ -149,18 +149,6 @@ en:
         heading: Show your %{app_name} barcode
         info: The retail associate needs to scan your barcode at the top of this page.
           You can print this page or show it on your mobile device.
-      proof_of_address:
-        acceptable_proof:
-          - Lease, Mortgage, or Deed of Trust
-          - Voter Registration
-          - Vehicle Registration Card
-          - Home or Vehicle Insurance Policy
-        heading: Proof of your current address
-        info: 'You need a proof of address if your current address is different than the
-          address on your ID. Acceptable forms of proof of address are:'
-        physical_or_digital_copy: You can bring a physical copy or show a digital copy
-          of the document. You cannot show a photo or screenshot of the
-          document.
       state_id:
         heading: Show your State Driver’s License or State Non-Driver’s Identification
           Card

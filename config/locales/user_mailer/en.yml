@@ -129,9 +129,6 @@ en:
       verifying_step_not_expired: Your state‑issued ID or driver’s license must not be
         expired. We do not currently accept any other forms of identification,
         such as passports and military IDs.
-      verifying_step_proof_of_address: If you try to verify your identity in person
-        again, you need to bring a valid proof of address if your current
-        address is different than the address on your ID.
     in_person_failed_suspected_fraud:
       body:
         help_center_html: If you need further help, you can <a
