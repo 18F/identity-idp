@@ -1,4 +1,5 @@
 import { render } from '@testing-library/react';
+import sinon from 'sinon';
 import { useSandbox } from '@18f/identity-test-helpers';
 import userEvent from '@testing-library/user-event';
 import { setupServer } from 'msw/node';
@@ -6,7 +7,6 @@ import { rest } from 'msw';
 import type { SetupServer } from 'msw/node';
 import { SWRConfig } from 'swr';
 import FullAddressSearch from './full-address-search';
-import sinon from 'sinon';
 
 describe('FullAddressSearch', () => {
   const sandbox = useSandbox();
@@ -31,7 +31,9 @@ describe('FullAddressSearch', () => {
       );
 
       const heading = await findAllByText('in_person_proofing.headings.po_search.location');
-      const aboutMessage = await findAllByText('in_person_proofing.body.location.po_search.po_search_about');
+      const aboutMessage = await findAllByText(
+        'in_person_proofing.body.location.po_search.po_search_about',
+      );
       expect(heading).to.exist();
       expect(aboutMessage).to.exist();
     });
@@ -52,7 +54,9 @@ describe('FullAddressSearch', () => {
       );
 
       const heading = await queryByText('in_person_proofing.headings.po_search.location');
-      const aboutMessage = await queryByText('in_person_proofing.body.location.po_search.po_search_about');
+      const aboutMessage = await queryByText(
+        'in_person_proofing.body.location.po_search.po_search_about',
+      );
       expect(heading).to.not.exist();
       expect(aboutMessage).to.not.exist();
     });
