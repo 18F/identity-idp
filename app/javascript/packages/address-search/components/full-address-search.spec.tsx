@@ -6,11 +6,57 @@ import { rest } from 'msw';
 import type { SetupServer } from 'msw/node';
 import { SWRConfig } from 'swr';
 import FullAddressSearch from './full-address-search';
+import sinon from 'sinon';
 
 describe('FullAddressSearch', () => {
   const sandbox = useSandbox();
   const locationsURL = 'https://localhost:3000/locations/endpoint';
   const usStatesTerritories = [['Delware', 'DE']];
+
+  context('Page Heading and PO Search About Message', () => {
+    it('both render when handleLocationSelect is not null', async () => {
+      const handleLocationsFound = sandbox.stub();
+      const onSelect = sinon.stub();
+      const { findAllByText } = render(
+        <SWRConfig value={{ provider: () => new Map() }}>
+          <FullAddressSearch
+            usStatesTerritories={usStatesTerritories}
+            onFoundLocations={handleLocationsFound}
+            locationsURL={locationsURL}
+            registerField={() => undefined}
+            handleLocationSelect={onSelect}
+            disabled={false}
+          />
+        </SWRConfig>,
+      );
+
+      const heading = await findAllByText('in_person_proofing.headings.po_search.location');
+      const aboutMessage = await findAllByText('in_person_proofing.body.location.po_search.po_search_about');
+      expect(heading).to.exist();
+      expect(aboutMessage).to.exist();
+    });
+
+    it('both do not render when handleLocationSelect is null', async () => {
+      const handleLocationsFound = sandbox.stub();
+      const { queryByText } = render(
+        <SWRConfig value={{ provider: () => new Map() }}>
+          <FullAddressSearch
+            usStatesTerritories={usStatesTerritories}
+            onFoundLocations={handleLocationsFound}
+            locationsURL={locationsURL}
+            registerField={() => undefined}
+            handleLocationSelect={null}
+            disabled={false}
+          />
+        </SWRConfig>,
+      );
+
+      const heading = await queryByText('in_person_proofing.headings.po_search.location');
+      const aboutMessage = await queryByText('in_person_proofing.body.location.po_search.po_search_about');
+      expect(heading).to.not.exist();
+      expect(aboutMessage).to.not.exist();
+    });
+  });
 
   context('validates form', () => {
     it('displays an error for all required fields when input is empty', async () => {
