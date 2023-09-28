@@ -69,8 +69,6 @@ module TwoFactorAuthentication
 
     def login_label(type)
       case type
-      when 'auth_app'
-        t('two_factor_authentication.login_options.auth_app')
       when 'backup_code'
         t('two_factor_authentication.login_options.backup_code')
       when 'personal_key'
@@ -92,8 +90,6 @@ module TwoFactorAuthentication
 
     def setup_label(type)
       case type
-      when 'auth_app'
-        t('two_factor_authentication.two_factor_choice_options.auth_app')
       when 'backup_code'
         t('two_factor_authentication.two_factor_choice_options.backup_code')
       when 'piv_cac'
