@@ -216,7 +216,7 @@ fr:
         instructions_html: Vous pouvez demander à faire une nouvelle demande si vous
           avez des problèmes avec votre lettre actuelle ou si elle n’est pas
           parvenue à destination. Les lettres mettent entre <strong>5 et
-          10</strong> jours pour arriver.
+          10 jours</strong> pour arriver.
         learn_more_link: En savoir plus sur la vérification de votre adresse par courrier
         title: Voulez-vous faire une nouvelle demande?
       return_to_profile: Retourner à votre profil
