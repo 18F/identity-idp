@@ -16,6 +16,7 @@ RSpec.describe 'Identity verification', :js do
     complete_welcome_step
 
     validate_agreement_page
+    try_to_go_back_from_agreement
     try_to_skip_ahead_from_agreement
     complete_agreement_step
 
@@ -344,6 +345,13 @@ RSpec.describe 'Identity verification', :js do
     expect(page).to have_current_path(idv_phone_path)
   end
 
+  def try_to_go_back_from_agreement
+    # The back button should work from the agreement step
+    go_back
+    expect(current_path).to eq(idv_welcome_path)
+    visit(idv_agreement_path)
+  end
+
   def try_to_go_back_from_document_capture
     visit(idv_agreement_path)
     expect(page).to have_current_path(idv_document_capture_path)
@@ -353,6 +361,11 @@ RSpec.describe 'Identity verification', :js do
 
   def try_to_go_back_from_verify_info
     visit(idv_document_capture_url)
+    expect(page).to have_current_path(idv_verify_info_path)
+
+    visit(idv_welcome_path)
+    expect(page).to have_current_path(idv_welcome_path)
+    complete_welcome_step
     expect(page).to have_current_path(idv_verify_info_path)
   end
 
