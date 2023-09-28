@@ -1,9 +1,0 @@
-<p class="margin-top-4 margin-bottom-0">
-  <%= t(
-        'two_factor_authentication.recaptcha.disclosure_statement_html',
-        app_name: APP_NAME,
-        google_policy_link_html: new_tab_link_to(t('two_factor_authentication.recaptcha.google_policy_link'), GooglePolicySite.privacy_url),
-        google_tos_link_html: new_tab_link_to(t('two_factor_authentication.recaptcha.google_tos_link'), GooglePolicySite.terms_url),
-        login_tos_link_html: new_tab_link_to(t('two_factor_authentication.recaptcha.login_tos_link'), MarketingSite.rules_of_use_url),
-      ) %>
-</p>

@@ -178,6 +178,7 @@ module TwoFactorAuthentication
         confirmation_for_add_phone: confirmation_for_add_phone?,
         phone_number: display_phone_to_deliver_to,
         code_value: direct_otp_code,
+        in_multi_mfa_selection_flow: in_multi_mfa_selection_flow?,
         otp_expiration: otp_expiration,
         otp_delivery_preference: params[:otp_delivery_preference],
         otp_make_default_number: selected_otp_make_default_number,

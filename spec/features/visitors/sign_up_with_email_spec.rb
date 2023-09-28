@@ -72,14 +72,16 @@ RSpec.feature 'Visitor signs up with email address' do
     sign_up_with(email)
 
     starting_count = unread_emails_for(email).size
-    max_attempts = IdentityConfig.store.reg_unconfirmed_email_max_attempts
-    (max_attempts - 1).times do |i|
+    remaining_attempts = IdentityConfig.store.
+      reg_unconfirmed_email_max_attempts - 1 - starting_count
+
+    1.upto(remaining_attempts) do |i|
       sign_up_with(email)
-      expect(unread_emails_for(email).size).to eq(starting_count + i + 1)
+      expect(unread_emails_for(email).size).to eq(starting_count + i)
     end
 
-    expect(unread_emails_for(email).size).to eq(starting_count + max_attempts - 1)
+    expect(unread_emails_for(email).size).to eq(starting_count + remaining_attempts)
     sign_up_with(email)
-    expect(unread_emails_for(email).size).to eq(starting_count + max_attempts - 1)
+    expect(unread_emails_for(email).size).to eq(starting_count + remaining_attempts)
   end
 end

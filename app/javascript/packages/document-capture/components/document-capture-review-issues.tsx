@@ -50,7 +50,7 @@ function DocumentCaptureReviewIssues({
         unknownFieldErrors={unknownFieldErrors}
         remainingAttempts={remainingAttempts}
         isFailedDocType={isFailedDocType}
-        altFailedDocTypeMsg={isFailedDocType ? t('doc_auth.errors.doc.wrong_id_type') : null}
+        altFailedDocTypeMsg={isFailedDocType ? t('doc_auth.errors.doc.wrong_id_type_html') : null}
         hasDismissed={hasDismissed}
       />
       {!isFailedDocType && captureHints && (

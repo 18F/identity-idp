@@ -9,7 +9,7 @@ module.exports = (api) => {
   return {
     presets: [
       ['@babel/preset-env', { targets }],
-      '@babel/typescript',
+      ['@babel/typescript', { optimizeConstEnums: true }],
       [
         '@babel/preset-react',
         {

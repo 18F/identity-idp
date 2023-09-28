@@ -55,11 +55,14 @@ en:
         failed: Camera failed to start, please try again.
       card_type: Try again with your driver’s license or state ID card.
       doc:
-        doc_type_check: Other forms of ID are not accepted.
+        doc_type_check: Your driver’s license or state ID must be issued by a U.S. state
+          or territory. We do not accept other forms of ID, like passports or
+          military IDs.
         resubmit_failed_image: You already tried this image, and it failed. Please try
           adding a different image.
-        wrong_id_type: We only accept a driver’s license or a state ID card at this
-          time. Other forms of ID are not accepted.
+        wrong_id_type_html: We only accept a driver’s license or a state ID issued by a
+          U.S. state or territory. We do not accept other forms of ID, like
+          passports or military IDs. <a>Learn more about accepted IDs</a>
       dpi:
         failed_short: Image is too small or blurry, please try again.
         top_msg: We couldn’t read your ID. Your image size may be too small, or your ID

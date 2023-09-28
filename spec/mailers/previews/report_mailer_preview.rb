@@ -8,10 +8,36 @@ class ReportMailerPreview < ActionMailer::Preview
     )
   end
 
+  def monthly_key_metrics_report
+    ReportMailer.tables_report(
+      email: 'test@example.com',
+      subject: 'Example Key Metrics Report',
+      message: 'Key Metrics Report February 2021',
+      tables: [
+        [
+          { title: 'IDV app reuse rate Feb-2021', float_as_percent: true, precision: 4 },
+          ['Num. SPs', 'Num. users', 'Percentage'],
+          [2, 207422, 0.105164],
+          [3, 6700, 0.003397],
+          [4, 254, 0.000129],
+          [5, 26, 0.000013],
+          [6, 1, 0.000001],
+          ['Total (all >1)', 214403, 0.108703],
+        ],
+        [
+          { title: 'Total proofed identities' },
+          ['Total proofed identities (Feb-2021)'],
+          [1972368],
+        ],
+      ],
+    )
+  end
+
   def tables_report
     ReportMailer.tables_report(
       email: 'test@example.com',
       subject: 'Example Report',
+      message: 'Sample Message',
       tables: [
         [
           ['Some', 'String'],

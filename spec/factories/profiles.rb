@@ -52,6 +52,7 @@ FactoryBot.define do
       gpo_verification_pending_at { 1.day.ago }
     end
 
+    # flagged by TM for review, eventually rejected by us
     trait :fraud_rejection do
       fraud_pending_reason { 'threatmetrix_review' }
       fraud_rejection_at { 15.days.ago }

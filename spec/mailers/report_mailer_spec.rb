@@ -60,6 +60,7 @@ RSpec.describe ReportMailer, type: :mailer do
       ReportMailer.tables_report(
         email: 'foo@example.com',
         subject: 'My Report',
+        message: 'My Report - Today',
         env: env,
         tables: [
           [
