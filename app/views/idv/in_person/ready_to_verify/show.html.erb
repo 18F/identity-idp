@@ -45,17 +45,6 @@
     <% c.with_item(heading: t('in_person_proofing.process.state_id.heading')) do %>
       <p><%= t('in_person_proofing.process.state_id.info') %></p>
     <% end %>
-    <% if @presenter.needs_proof_of_address? %>
-      <% c.with_item(heading: t('in_person_proofing.process.proof_of_address.heading')) do %>
-        <p class="margin-bottom-105"><%= t('in_person_proofing.process.proof_of_address.info') %></p>
-        <ul class="usa-list margin-y-105">
-          <% t('in_person_proofing.process.proof_of_address.acceptable_proof').each do |proof| %>
-            <li><%= proof %></li>
-          <% end %>
-        </ul>
-        <p><%= t('in_person_proofing.process.proof_of_address.physical_or_digital_copy') %></p>
-      <% end %>
-    <% end %>
   <% end %>
   <p class="margin-bottom-0">
     <%= t('in_person_proofing.body.barcode.questions') %>

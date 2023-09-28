@@ -183,20 +183,4 @@ RSpec.describe Idv::InPerson::VerificationResultsEmailPresenter do
       end
     end
   end
-
-  describe '#needs_proof_of_address?' do
-    subject(:needs_proof_of_address) { presenter.needs_proof_of_address? }
-
-    context 'with current address matching id' do
-      let(:current_address_matches_id) { true }
-
-      it { expect(needs_proof_of_address).to eq false }
-    end
-
-    context 'with current address not matching id' do
-      let(:current_address_matches_id) { false }
-
-      it { expect(needs_proof_of_address).to eq true }
-    end
-  end
 end
