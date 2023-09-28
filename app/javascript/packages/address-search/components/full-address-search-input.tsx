@@ -7,7 +7,19 @@ import { ValidatedField } from '@18f/identity-validated-field';
 import { t } from '@18f/identity-i18n';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import useValidatedUspsLocations from '../hooks/use-validated-usps-locations';
-import type { FullAddressSearchInputProps } from '../types';
+
+interface FullAddressSearchInputProps {
+  disabled?: boolean;
+  locationsURL: string;
+  onError?: (error: Error | null) => void;
+  onFoundLocations?: (
+    address: LocationQuery | null,
+    locations: FormattedLocation[] | null | undefined,
+  ) => void;
+  onLoadingLocations?: (isLoading: boolean) => void;
+  registerField?: RegisterFieldCallback;
+  usStatesTerritories: Array<Array<string>>;
+}
 
 export default function FullAddressSearchInput({
   disabled = false,

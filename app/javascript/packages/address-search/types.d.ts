@@ -91,18 +91,6 @@ interface LocationCollectionProps {
   children?: ReactNode;
 }
 
-interface FullAddressSearchInputProps {
-  disabled?: boolean;
-  locationsURL: string;
-  onError?: (error: Error | null) => void;
-  onFoundLocations?: (
-    address: LocationQuery | null,
-    locations: FormattedLocation[] | null | undefined,
-  ) => void;
-  onLoadingLocations?: (isLoading: boolean) => void;
-  registerField?: RegisterFieldCallback;
-  usStatesTerritories: Array<Array<string>>;
-}
 interface FullAddressSearchProps {
   disabled: boolean;
   handleLocationSelect: ((e: any, id: number) => Promise<void>) | null | undefined;
