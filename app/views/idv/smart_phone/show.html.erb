@@ -1,0 +1,31 @@
+<% title @title %>
+
+<% content_for(:pre_flash_content) do %>
+  <%= render StepIndicatorComponent.new(
+        steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS,
+        current_step: :verify_id,
+        locale_scope: 'idv',
+        class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
+      ) %>
+<% end %>
+
+<%= render PageHeadingComponent.new.with_content(@title) %>
+  
+<div class="margin-top-4">
+  <%= button_to(
+        '',
+        method: 'get',
+        class: 'usa-button usa-button--wide usa-button--big',
+      ) do %>
+        <%= t('doc_auth.buttons.have_phone') %>
+  <% end %>
+</div>
+
+<p class="margin-top-2">
+  <%= link_to(
+        t('doc_auth.smart_phone.do_not_have'),
+        '',
+      ) %>
+</p>
+
+<%= render 'idv/doc_auth/cancel', step: 'smart_phone' %>
