@@ -1,5 +1,7 @@
 module MultiRegionKmsMigration
   class UserMigrationJob < ApplicationJob
+    queue_as :long_running
+
     MAXIMUM_ERROR_TOLERANCE = 10
 
     include ::NewRelic::Agent::MethodTracer
