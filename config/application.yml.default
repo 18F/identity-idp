@@ -123,7 +123,6 @@ idv_getting_started_a_b_testing: '{"welcome_default":100, "welcome_new":0, "gett
 idv_send_link_attempt_window_in_minutes: 10
 idv_send_link_max_attempts: 5
 idv_sp_required: false
-in_person_capture_secondary_id_enabled: false
 in_person_public_address_search_enabled: false
 in_person_doc_auth_button_enabled: true
 in_person_email_reminder_early_benchmark_in_days: 11
