@@ -9,8 +9,6 @@ module Idv
     before_action :confirm_hybrid_handoff_needed, only: :show
 
     def show
-      # analytics.idv_doc_auth_smart_phone_visited(**analytics_arguments)
-
       @title = t('doc_auth.headings.phone_question')
     end
 
