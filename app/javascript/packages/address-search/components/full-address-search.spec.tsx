@@ -37,7 +37,9 @@ describe('FullAddressSearch', () => {
 
       expect(heading).to.exist();
       expect(aboutMessage).to.exist();
-      expect(queryByRole('heading', { name: 'in_person_proofing.headings.po_search.location' })).to.exist();
+      expect(
+        queryByRole('heading', { name: 'in_person_proofing.headings.po_search.location' }),
+      ).to.exist();
     });
 
     it('both do not render when handleLocationSelect is null', async () => {
