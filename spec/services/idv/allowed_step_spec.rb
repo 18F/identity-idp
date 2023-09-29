@@ -11,6 +11,9 @@ RSpec.describe 'Idv::AllowedStep' do
     )
   end
 
+  let(:user_phone_confirmation_session) { nil }
+  let(:has_gpo_pending_profile) { nil }
+
   subject { Idv::AllowedStep.new(idv_session: idv_session, user: user) }
 
   context '#step_allowed?' do
@@ -31,16 +34,149 @@ RSpec.describe 'Idv::AllowedStep' do
   end
 
   context '#latest_step' do
-    it 'returns welcome for empty session' do
-      expect(subject.latest_step).to eq(:welcome)
+    before do
+      allow(Idv::PhoneConfirmationSession).to receive(:from_h).
+        with(user_phone_confirmation_session).and_return(user_phone_confirmation_session)
+      allow(user).to receive(:gpo_pending_profile?).and_return(has_gpo_pending_profile)
+    end
+    context 'empty session' do
+      it 'returns welcome' do
+        expect(subject.latest_step).to eq(:welcome)
+      end
+    end
+
+    context 'preconditions for agreement are present' do
+      it 'returns agreement' do
+        idv_session.welcome_visited = true
+        expect(subject.latest_step).to eq(:agreement)
+      end
+    end
+
+    context 'preconditions for hybrid_handoff are present' do
+      it 'returns hybrid_handoff' do
+        idv_session.welcome_visited = true
+        idv_session.idv_consent_given = true
+        expect(subject.latest_step).to eq(:hybrid_handoff)
+      end
     end
 
     context 'preconditions for document_capture are present' do
-      it 'returns document_capture for empty session' do
+      it 'returns document_capture' do
         idv_session.welcome_visited = true
         idv_session.idv_consent_given = true
         idv_session.flow_path = 'standard'
         expect(subject.latest_step).to eq(:document_capture)
+      end
+    end
+
+    context 'preconditions for link_sent are present' do
+      it 'returns link_sent' do
+        idv_session.welcome_visited = true
+        idv_session.idv_consent_given = true
+        idv_session.flow_path = 'hybrid'
+        expect(subject.latest_step).to eq(:link_sent)
+      end
+    end
+
+    context 'preconditions for ssn are present' do
+      before do
+        idv_session.welcome_visited = true
+        idv_session.idv_consent_given = true
+        idv_session.flow_path = 'standard'
+        idv_session.pii_from_doc = { pii: 'value' }
+      end
+
+      it 'returns ssn for standard flow' do
+        expect(subject.latest_step).to eq(:ssn)
+      end
+
+      it 'returns ssn for hybrid flow' do
+        idv_session.flow_path = 'hybrid'
+        expect(subject.latest_step).to eq(:ssn)
+      end
+    end
+
+    context 'preconditions for verify_info are present' do
+      before do
+        idv_session.welcome_visited = true
+        idv_session.idv_consent_given = true
+        idv_session.flow_path = 'standard'
+        idv_session.pii_from_doc = { pii: 'value' }
+        idv_session.ssn = '666666666'
+      end
+
+      it 'returns verify_info' do
+        expect(subject.latest_step).to eq(:verify_info)
+      end
+
+      context 'flow_path is missing' do
+        it 'returns hybrid_handoff' do
+          idv_session.flow_path = nil
+          expect(subject.latest_step).to eq(:hybrid_handoff)
+        end
+      end
+    end
+
+    context 'preconditions for phone are present' do
+      it 'returns phone' do
+        idv_session.welcome_visited = true
+        idv_session.idv_consent_given = true
+        idv_session.flow_path = 'standard'
+        idv_session.pii_from_doc = { pii: 'value' }
+        idv_session.ssn = '666666666'
+        idv_session.resolution_successful = true
+        # allow(user).to receive(:gpo_pending_profile?).and_return(false)
+        expect(subject.latest_step).to eq(:phone)
+      end
+    end
+
+    context 'preconditions for phone_enter_otp are present' do
+      let(:user_phone_confirmation_session) { { code: 'abcde' } }
+
+      it 'returns phone_enter_otp' do
+        idv_session.welcome_visited = true
+        idv_session.idv_consent_given = true
+        idv_session.flow_path = 'standard'
+        idv_session.pii_from_doc = { pii: 'value' }
+        idv_session.ssn = '666666666'
+        idv_session.resolution_successful = true
+        idv_session.user_phone_confirmation_session = user_phone_confirmation_session
+        expect(subject.latest_step).to eq(:phone_enter_otp)
+      end
+    end
+
+    context 'preconditions for review are present' do
+      let(:user_phone_confirmation_session) { { code: 'abcde' } }
+
+      context 'user has a gpo pending profile' do
+        let(:has_gpo_pending_profile) { true }
+
+        it 'returns review with gpo verification pending' do
+          idv_session.welcome_visited = true
+          idv_session.idv_consent_given = true
+          idv_session.flow_path = 'standard'
+          idv_session.pii_from_doc = { pii: 'value' }
+          idv_session.ssn = '666666666'
+          idv_session.resolution_successful = true
+          idv_session.user_phone_confirmation_session = user_phone_confirmation_session
+          idv_session.address_verification_mechanism = 'gpo'
+          expect(subject.latest_step).to eq(:review)
+        end
+      end
+
+      context 'user passed phone step' do
+        it 'returns review' do
+          idv_session.welcome_visited = true
+          idv_session.idv_consent_given = true
+          idv_session.flow_path = 'standard'
+          idv_session.pii_from_doc = { pii: 'value' }
+          idv_session.ssn = '666666666'
+          idv_session.resolution_successful = true
+          idv_session.user_phone_confirmation_session = user_phone_confirmation_session
+          idv_session.vendor_phone_confirmation = true
+          idv_session.user_phone_confirmation = true
+          expect(subject.latest_step).to eq(:review)
+        end
       end
     end
 

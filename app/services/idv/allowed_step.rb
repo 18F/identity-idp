@@ -27,10 +27,13 @@ module Idv
         document_capture: [:ssn], # in person?
         ssn: [:verify_info],
         verify_info: [:phone],
-        phone: [:enter_otp, :request_letter],
-        enter_otp: [:review],
-        review: [:personal_key, :letter_enqueued],
-        request_letter: [:review, :letter_enqueued],
+        phone: [:phone_enter_otp],
+        phone_enter_otp: [:review],
+        review: [:personal_key],
+        # request_letter: [:review, :letter_enqueued], to be visited later
+        # letter_enqueued: [:enter_gpo_code],
+        # enter_gpo_code: [:personal_key],
+        personal_key: [:success],
       },
     )
 
@@ -47,6 +50,7 @@ module Idv
 
     def latest_step(current_step: :root)
       return nil if NEXT_STEPS[current_step].empty?
+      return current_step if NEXT_STEPS[current_step] == [:success]
 
       (NEXT_STEPS[current_step]).each do |step|
         if step_allowed?(step: step)
@@ -93,8 +97,8 @@ module Idv
       idv_session.verify_info_step_complete? # controller code also needs applicant
     end
 
-    def enter_otp
-      idv_session.user_phone_confirmation_session
+    def phone_enter_otp
+      idv_session.user_phone_confirmation_session.present?
     end
 
     def review
@@ -104,6 +108,17 @@ module Idv
 
     def request_letter
       idv_session.verify_info_step_complete?
+    end
+
+    def letter_enqueued
+      user.gpo_pending_profile?
+    end
+
+    def enter_gpo_code
+    end
+
+    def personal_key
+      user.identity_verified? # add a check for in-person
     end
   end
 end
