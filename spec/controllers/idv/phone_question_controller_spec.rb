@@ -44,26 +44,10 @@ RSpec.describe Idv::PhoneQuestionController do
   end
 
   describe '#show' do
-    let(:analytics_name) { 'IdV: doc auth smart phone visited' }
-    let(:analytics_args) do
-      {
-        step: 'smart_phone',
-        analytics_id: 'Doc Auth',
-        skip_hybrid_handoff: nil,
-        irs_reproofing: false,
-      }.merge(ab_test_args)
-    end
-
     it 'renders the show template' do
       get :show
 
       expect(response).to render_template :show
-    end
-
-    xit 'sends analytics_visited event' do
-      get :show
-
-      expect(@analytics).to have_logged_event(analytics_name, analytics_args)
     end
 
     context 'agreement step is not complete' do
