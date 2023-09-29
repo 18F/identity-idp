@@ -18,7 +18,7 @@ interface FullAddressSearchInputProps {
   ) => void;
   onLoadingLocations?: (isLoading: boolean) => void;
   registerField?: RegisterFieldCallback;
-  usStatesTerritories: [string, string][];
+  usStatesTerritories: string[][];
 }
 
 export default function FullAddressSearchInput({
