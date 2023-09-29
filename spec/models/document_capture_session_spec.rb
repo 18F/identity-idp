@@ -48,11 +48,17 @@ RSpec.describe DocumentCaptureSession do
 
         record.store_result_from_response(doc_auth_response)
         old_result = record.load_result
-        old_key = EncryptedRedisStructStorage.key(record.result_id, type: DocumentCaptureSessionResult)
+        old_key = EncryptedRedisStructStorage.key(
+          record.result_id,
+          type: DocumentCaptureSessionResult,
+        )
 
         record.store_result_from_response(doc_auth_response)
         new_result = record.load_result
-        new_key = EncryptedRedisStructStorage.key(record.result_id, type: DocumentCaptureSessionResult)
+        new_key = EncryptedRedisStructStorage.key(
+          record.result_id,
+          type: DocumentCaptureSessionResult,
+        )
 
         expect(old_key).not_to eq(new_key)
         expect(old_result).not_to eq(new_result)
@@ -131,13 +137,19 @@ RSpec.describe DocumentCaptureSession do
         'fingerprint1', nil
       )
       old_result = record.load_result
-      old_key = EncryptedRedisStructStorage.key(record.result_id, type: DocumentCaptureSessionResult)
+      old_key = EncryptedRedisStructStorage.key(
+        record.result_id,
+        type: DocumentCaptureSessionResult,
+      )
 
       record.store_failed_auth_image_fingerprint(
         'fingerprint2', nil
       )
       new_result = record.load_result
-      new_key = EncryptedRedisStructStorage.key(record.result_id, type: DocumentCaptureSessionResult)
+      new_key = EncryptedRedisStructStorage.key(
+        record.result_id,
+        type: DocumentCaptureSessionResult,
+      )
 
       expect(old_key).not_to eq(new_key)
       expect(old_result).not_to eq(new_result)
