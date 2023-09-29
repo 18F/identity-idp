@@ -173,7 +173,8 @@ es:
       hybrid_handoff: '¿Cómo desea añadir su documento de identidad?'
       interstitial: Estamos procesando sus imágenes
       lets_go: Cómo funciona la verificación de su identidad
-      phone_question: ¿Tiene un teléfono que pueda usar para tomar fotografías de su identificación?
+      phone_question: ¿Tiene un teléfono que pueda usar para tomar fotografías de su
+        identificación?
       review_issues: Revise sus imágenes e inténtelo de nuevo
       secure_account: Asegure su cuenta
       ssn: Ingrese su número de Seguro Social
