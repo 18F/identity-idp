@@ -3415,6 +3415,10 @@ module AnalyticsEvents
     )
   end
 
+  def piv_cac_login_visited
+    track_event('PIV/CAC Login visited')
+  end
+
   # @identity.idp.previous_event_name User Registration: piv cac setup visited
   # Tracks when user's piv cac setup
   # @param [Boolean] in_account_creation_flow
