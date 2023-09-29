@@ -17,7 +17,7 @@ describe('FullAddressSearch', () => {
     it('both render when handleLocationSelect is not null', async () => {
       const handleLocationsFound = sandbox.stub();
       const onSelect = sinon.stub();
-      const { findAllByText } = render(
+      const { queryByText, queryByRole } = render(
         <SWRConfig value={{ provider: () => new Map() }}>
           <FullAddressSearch
             usStatesTerritories={usStatesTerritories}
@@ -30,12 +30,14 @@ describe('FullAddressSearch', () => {
         </SWRConfig>,
       );
 
-      const heading = await findAllByText('in_person_proofing.headings.po_search.location');
-      const aboutMessage = await findAllByText(
+      const heading = await queryByText('in_person_proofing.headings.po_search.location');
+      const aboutMessage = await queryByText(
         'in_person_proofing.body.location.po_search.po_search_about',
       );
+
       expect(heading).to.exist();
       expect(aboutMessage).to.exist();
+      expect(queryByRole('heading', { name: 'in_person_proofing.headings.po_search.location' })).to.exist();
     });
 
     it('both do not render when handleLocationSelect is null', async () => {
@@ -57,8 +59,8 @@ describe('FullAddressSearch', () => {
       const aboutMessage = await queryByText(
         'in_person_proofing.body.location.po_search.po_search_about',
       );
-      expect(heading).to.not.exist();
-      expect(aboutMessage).to.not.exist();
+      expect(heading).to.be.empty;
+      expect(aboutMessage).to.be.empty;
     });
   });
 
