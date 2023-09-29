@@ -1,5 +1,5 @@
 module Idv
-  class SmartPhoneController < ApplicationController
+  class PhoneQuestionController < ApplicationController
     include ActionView::Helpers::DateHelper
     include IdvStepConcern
     include StepIndicatorConcern
@@ -11,7 +11,7 @@ module Idv
     def show
       # analytics.idv_doc_auth_smart_phone_visited(**analytics_arguments)
 
-      @title = t('doc_auth.headings.smart_phone')
+      @title = t('doc_auth.headings.phone_question')
     end
 
     def confirm_agreement_step_complete
