@@ -16,7 +16,15 @@
 
 .usa-button:disabled.usa-button--active,
 .usa-button--disabled.usa-button--active {
-  &:not(.usa-button--unstyled, .usa-button--secondary, .usa-button--accent-cool, .usa-button--accent-warm, .usa-button--base, .usa-button--outline, .usa-button--inverse) {
+  &:not(
+      .usa-button--unstyled,
+      .usa-button--secondary,
+      .usa-button--accent-cool,
+      .usa-button--accent-warm,
+      .usa-button--base,
+      .usa-button--outline,
+      .usa-button--inverse
+    ) {
     @include set-text-and-bg('primary-darker', $context: 'Button');
   }
 }

@@ -49,9 +49,9 @@ yarn normalize-yaml path/to/file.yml --disable-sort-keys
 
 ### API
 
-#### `normalize(content: string, config?: Options): string`
+#### `normalize(content: string, config?: Options): Promise<string>`
 
-Given an input YAML string and optional options, returns a normalized YAML string.
+Given an input YAML string and optional options, resolves to a normalized YAML string.
 
 **Options:**
 
