@@ -41,7 +41,7 @@ RSpec.describe 'partials/multi_factor_authentication/_mfa_selection.html.erb' do
       render partial: 'mfa_selection', locals: {
         form: form_builder,
         option: presenter.options.find do |option|
-                  option.is_a?(TwoFactorAuthentication::AuthAppSelectionPresenter)
+                  option.is_a?(TwoFactorAuthentication::SetUpAuthAppSelectionPresenter)
                 end,
       }
     end

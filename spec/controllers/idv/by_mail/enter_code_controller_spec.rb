@@ -411,7 +411,12 @@ RSpec.describe Idv::ByMail::EnterCodeController do
 
     context 'final attempt before rate limited' do
       let(:invalid_otp) { 'a-wrong-otp' }
-      let(:max_attempts) { IdentityConfig.store.verify_gpo_key_max_attempts }
+      let(:max_attempts) { 2 }
+
+      before do
+        allow(IdentityConfig.store).to receive(:verify_gpo_key_max_attempts).
+          and_return(max_attempts)
+      end
 
       context 'user is rate limited' do
         it 'renders the index page to show errors' do

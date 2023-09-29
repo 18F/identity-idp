@@ -329,7 +329,7 @@ vendor_status_sms: 'operational'
 vendor_status_voice: 'operational'
 verification_errors_report_configs: '[]'
 verify_gpo_key_attempt_window_in_minutes: 10
-verify_gpo_key_max_attempts: 3
+verify_gpo_key_max_attempts: 5
 verify_personal_key_attempt_window_in_minutes: 15
 verify_personal_key_max_attempts: 5
 version_headers_enabled: false
