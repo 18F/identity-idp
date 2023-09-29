@@ -3,16 +3,16 @@ module Idv
     # Possibly a /verify/resume controller
     # possibly chain the requirements here. (hybrid_handoff depends on agreement and one more thing)
     # Change polling to not depend on a specific screen (LinkSent)
-      # Could confirm leaving, but link is still out there.
-      # Invalidate document_capture_session? Message on phone
-      # If user submits images, we should try to continue
-      # successful upload count vs ssn viewed count (or link sent complete if available)
+    #   Could confirm leaving, but link is still out there.
+    #   Invalidate document_capture_session? Message on phone
+    #   If user submits images, we should try to continue
+    #   successful upload count vs ssn viewed count (or link sent complete if available)
     # When hit back, confirm undo operation?
     # Back -> screen that summarizes what happened (like step indicator) w/links & start over button
     # Accessibility/screen readers
     # collect all info, then call vendors (store images)
     # send phone to IV at VerifyInfo step if we have it
-      # doesn't pass security review/user consent issues
+    #   doesn't pass security review/user consent issues
     # require current_user as well?
 
     NEXT_STEPS = Hash.new([])
@@ -33,10 +33,11 @@ module Idv
       },
     )
 
-    attr_reader :idv_session
+    attr_reader :idv_session, :user
 
-    def initialize(idv_session:)
+    def initialize(idv_session:, user:)
       @idv_session = idv_session
+      @user = user
     end
 
     def step_allowed?(step:)
