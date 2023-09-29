@@ -26,7 +26,7 @@ module Reports
 
     def emails
       emails = [IdentityConfig.store.team_agnes_email]
-      if Identity::Hostdata.env == 'prod' && report_date.day == 1
+      if report_date.day == 1
         emails << IdentityConfig.store.team_all_feds_email
       end
       emails
