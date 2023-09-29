@@ -80,6 +80,16 @@ RSpec.describe Idv::PhoneQuestionController do
       end
     end
 
+    context 'on mobile device' do
+      it 'redirects to hybrid_handoff controller' do
+        subject.idv_session.skip_hybrid_handoff = true
+
+        get :show
+
+        expect(response).to redirect_to(idv_hybrid_handoff_url)
+      end
+    end
+
     context 'hybrid flow is not available' do
       before do
         allow(FeatureManagement).to receive(:idv_allow_hybrid_flow?).and_return(false)
