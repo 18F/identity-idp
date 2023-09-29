@@ -17,6 +17,17 @@ RSpec.describe 'Idv::AllowedStep' do
     it 'allows the welcome step' do
       expect(subject.step_allowed?(step: :welcome)).to be true
     end
+
+    context 'a/b test' do
+      before do
+        allow(AbTests::IDV_GETTING_STARTED).to receive(:bucket).and_return(:getting_started)
+      end
+
+      it 'allows the getting started step' do
+        expect(subject.step_allowed?(step: :welcome)).to be false
+        expect(subject.step_allowed?(step: :getting_started)).to be true
+      end
+    end
   end
 
   context '#latest_step' do
@@ -36,5 +47,19 @@ RSpec.describe 'Idv::AllowedStep' do
     it 'returns nil for an invalid step' do
       expect(subject.latest_step(current_step: :invalid_step)).to be_nil
     end
+
+    # it 'works' do
+    #   # go to hybrid handoff
+    #   expect(check_steps).to eq 'yNyyNNNNNN'
+    # end
   end
+
+  # def check_steps
+  #   [
+  #     allowed_step?(:welcome) ? y : N,
+  #     allowed_step?(:document_capture)? y : N,
+  #     allowed_step?(:agreement) ? y : N,
+  #     allowed_step?(:hybrid_handoff) ? y : N,
+  #   ].join('')
+  # end
 end

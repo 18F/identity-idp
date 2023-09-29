@@ -14,11 +14,12 @@ module Idv
     # send phone to IV at VerifyInfo step if we have it
     #   doesn't pass security review/user consent issues
     # require current_user as well?
+    # add a/b test bucket to checks?
 
     NEXT_STEPS = Hash.new([])
     NEXT_STEPS.merge!(
       {
-        root: [:welcome],
+        root: [:welcome, :getting_started],
         welcome: [:agreement],
         agreement: [:hybrid_handoff, :document_capture],
         hybrid_handoff: [:link_sent, :document_capture],
@@ -56,7 +57,12 @@ module Idv
     end
 
     def welcome
-      true
+      bucket = AbTests::IDV_GETTING_STARTED.bucket(user.uuid)
+      bucket == :welcome_default || bucket == :welcome_new
+    end
+
+    def getting_started
+      AbTests::IDV_GETTING_STARTED.bucket(user.uuid) == :getting_started
     end
 
     def agreement
