@@ -315,29 +315,32 @@ function FormSteps({
    * Returns array of form errors for the current set of values.
    */
   function getValidationErrors(): FormStepError<Record<string, Error>>[] {
-    return Object.keys(fields.current).reduce((result, key) => {
-      const { element, isRequired } = fields.current[key];
-      const isActive = !!element;
+    return Object.keys(fields.current).reduce(
+      (result, key) => {
+        const { element, isRequired } = fields.current[key];
+        const isActive = !!element;
 
-      let error: Error | undefined;
-      if (isActive) {
-        if (element instanceof HTMLInputElement) {
-          element.checkValidity();
+        let error: Error | undefined;
+        if (isActive) {
+          if (element instanceof HTMLInputElement) {
+            element.checkValidity();
+          }
+
+          if (element instanceof HTMLInputElement && element.validationMessage) {
+            error = new Error(element.validationMessage);
+          } else if (isRequired && !values[key]) {
+            error = new RequiredValueMissingError();
+          }
         }
 
-        if (element instanceof HTMLInputElement && element.validationMessage) {
-          error = new Error(element.validationMessage);
-        } else if (isRequired && !values[key]) {
-          error = new RequiredValueMissingError();
+        if (error) {
+          result = result.concat({ field: key, error });
         }
-      }
 
-      if (error) {
-        result = result.concat({ field: key, error });
-      }
-
-      return result;
-    }, [] as FormStepError<Record<string, Error>>[]);
+        return result;
+      },
+      [] as FormStepError<Record<string, Error>>[],
+    );
   }
 
   // An empty steps array is allowed, in which case there is nothing to render.

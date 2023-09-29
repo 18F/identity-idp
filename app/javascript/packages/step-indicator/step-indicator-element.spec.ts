@@ -54,7 +54,7 @@ describe('StepIndicatorElement', () => {
         (element) =>
           ({
             paddingLeft: element.classList.contains('step-indicator__scroller') ? '24px' : '0',
-          } as CSSStyleDeclaration),
+          }) as CSSStyleDeclaration,
       );
       defineProperty(window.Element.prototype, 'scrollWidth', {
         get() {
