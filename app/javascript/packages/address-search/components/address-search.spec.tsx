@@ -15,7 +15,7 @@ describe('AddressSearch', () => {
       const { queryByText, queryByRole } = render(
         <SWRConfig value={{ provider: () => new Map() }}>
           <AddressSearch
-            addressSearchURL={'test'}
+            addressSearchURL="test"
             disabled={false}
             handleLocationSelect={onSelect}
             locationsURL={locationsURL}
@@ -43,7 +43,7 @@ describe('AddressSearch', () => {
       const { queryByText } = render(
         <SWRConfig value={{ provider: () => new Map() }}>
           <AddressSearch
-            addressSearchURL={'test'}
+            addressSearchURL="test"
             disabled={false}
             handleLocationSelect={onSelect}
             locationsURL={locationsURL}
