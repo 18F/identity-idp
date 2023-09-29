@@ -489,6 +489,7 @@ include:
 secret_detection:
   variables:
       SECRET_DETECTION_LOG_OPTIONS: origin/${CI_EXTERNAL_PULL_REQUEST_TARGET_BRANCH_NAME}..HEAD
+      SECRET_DETECTION_REPORT_FILE: "gl-secret-detection-report.json"
 
 .container_scan_template:
   interruptible: true
