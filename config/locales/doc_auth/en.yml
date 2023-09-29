@@ -144,9 +144,9 @@ en:
       hybrid_handoff: How would you like to add your ID?
       interstitial: We are processing your images
       lets_go: How verifying your identity works
+      phone_question: Do you have a phone you can use to take photos of your ID?
       review_issues: Check your images and try again
       secure_account: Secure your account
-      smart_phone: Do you have a phone you can use to take photos of your ID?
       ssn: Enter your Social Security number
       ssn_update: Update your Social Security number
       text_message: We sent a message to your phone
@@ -232,7 +232,7 @@ en:
         - '<strong>Verify by mail</strong>: We’ll mail a letter to your home
           address. This takes <strong>5 to 10 days</strong>.'
       welcome: 'You will need your:'
-    smart_phone:
+    phone_question:
       do_not_have: I don’t have a phone
     tips:
       document_capture_header_text: 'For best results:'

@@ -350,7 +350,7 @@ Rails.application.routes.draw do
       put '/phone_confirmation' => 'otp_verification#update', as: :nil
       get '/review' => 'review#new'
       put '/review' => 'review#create'
-      get '/smart_phone' => 'smart_phone#show'
+      get '/phone_question' => 'phone_question#show'
       get '/session/errors/warning' => 'session_errors#warning'
       get '/session/errors/state_id_warning' => 'session_errors#state_id_warning'
       get '/phone/errors/timeout' => 'phone_errors#timeout'
