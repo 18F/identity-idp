@@ -8,7 +8,7 @@ es:
     buttons:
       add_new_photos: Añadir nuevas fotos
       continue: Continuar
-      have_phone: Si, tengo un telefono
+      have_phone: Sí tengo teléfono
       take_or_upload_picture_html: '<lg-take-photo>Toma una foto</lg-take-photo> o
         <lg-upload>Sube una foto</lg-upload>'
       take_picture: Toma una foto
@@ -173,8 +173,7 @@ es:
       hybrid_handoff: '¿Cómo desea añadir su documento de identidad?'
       interstitial: Estamos procesando sus imágenes
       lets_go: Cómo funciona la verificación de su identidad
-      phone_question: ¿Tiene un teléfono que pueda usar para tomar fotografías de su
-        identificación?
+      phone_question: ¿Tiene un teléfono con el que pueda tomar fotos de su documento de identidad?
       review_issues: Revise sus imágenes e inténtelo de nuevo
       secure_account: Asegure su cuenta
       ssn: Ingrese su número de Seguro Social
@@ -271,7 +270,7 @@ es:
           domicilio. Esto tarda entre <strong>5 y 10 días</strong>.'
       welcome: 'Necesitará su:'
     phone_question:
-      do_not_have: No tengo telefono
+      do_not_have: No tengo teléfono
     tips:
       document_capture_header_text: 'Para obtener los mejores resultados:'
       document_capture_hint: Debe ser un JPG o PNG
