@@ -30,8 +30,12 @@ function AddressSearch({
           {t('idv.failure.exceptions.post_office_search_error')}
         </Alert>
       )}
-      <PageHeading>{t('in_person_proofing.headings.po_search.location')}</PageHeading>
-      <p>{t('in_person_proofing.body.location.po_search.po_search_about')}</p>
+      {handleLocationSelect && (
+        <>
+          <PageHeading>{t('in_person_proofing.headings.po_search.location')}</PageHeading>
+          <p>{t('in_person_proofing.body.location.po_search.po_search_about')}</p>
+        </>
+      )}
       <AddressInput
         registerField={registerField}
         onFoundAddress={setFoundAddress}

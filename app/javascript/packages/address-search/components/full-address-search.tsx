@@ -4,16 +4,18 @@ import { t } from '@18f/identity-i18n';
 import { InPersonLocations, NoInPersonLocationsDisplay } from '@18f/identity-address-search';
 import type { LocationQuery, FormattedLocation } from '@18f/identity-address-search/types';
 import FullAddressSearchInput from './full-address-search-input';
+import type { FullAddressSearchProps } from '../types';
 
 function FullAddressSearch({
-  usStatesTerritories,
-  registerField,
-  locationsURL,
-  handleLocationSelect,
   disabled,
-  onFoundLocations,
+  handleLocationSelect,
+  locationsURL,
   noInPersonLocationsDisplay = NoInPersonLocationsDisplay,
-}) {
+  onFoundLocations,
+  registerField,
+  resultsHeaderComponent,
+  usStatesTerritories,
+}: FullAddressSearchProps) {
   const [apiError, setApiError] = useState<Error | null>(null);
   const [foundAddress, setFoundAddress] = useState<LocationQuery | null>(null);
   const [locationResults, setLocationResults] = useState<FormattedLocation[] | null | undefined>(
@@ -28,8 +30,12 @@ function FullAddressSearch({
           {t('idv.failure.exceptions.post_office_search_error')}
         </Alert>
       )}
-      <PageHeading>{t('in_person_proofing.headings.po_search.location')}</PageHeading>
-      <p>{t('in_person_proofing.body.location.po_search.po_search_about')}</p>
+      {handleLocationSelect && (
+        <>
+          <PageHeading>{t('in_person_proofing.headings.po_search.location')}</PageHeading>
+          <p>{t('in_person_proofing.body.location.po_search.po_search_about')}</p>
+        </>
+      )}
       <FullAddressSearchInput
         usStatesTerritories={usStatesTerritories}
         registerField={registerField}
@@ -52,6 +58,7 @@ function FullAddressSearch({
           onSelect={handleLocationSelect}
           address={foundAddress.address || ''}
           noInPersonLocationsDisplay={noInPersonLocationsDisplay}
+          resultsHeaderComponent={resultsHeaderComponent}
         />
       )}
     </>
