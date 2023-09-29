@@ -5,7 +5,6 @@ module Idv
 
     before_action :confirm_not_rate_limited
     before_action :confirm_welcome_step_complete
-    before_action :confirm_agreement_needed
 
     def show
       analytics.idv_doc_auth_agreement_visited(**analytics_arguments)
@@ -13,6 +12,10 @@ module Idv
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).call(
         'agreement', :view,
         true
+      )
+
+      @consent_form = Idv::ConsentForm.new(
+        idv_consent_given: idv_session.idv_consent_given,
       )
     end
 
