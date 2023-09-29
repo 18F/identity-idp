@@ -11,7 +11,7 @@ RSpec.describe 'Idv::AllowedStep' do
     )
   end
 
-  subject { Idv::AllowedStep.new(idv_session: idv_session) }
+  subject { Idv::AllowedStep.new(idv_session: idv_session, user: user) }
 
   context '#step_allowed?' do
     it 'allows the welcome step' do
