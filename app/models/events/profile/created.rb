@@ -2,7 +2,7 @@
 
 module Events
   module Profile
-    class Created < Events::Profile::BaseEvent
+    class Created < ProfileEvent
       data_attributes :user_id
 
       def apply(profile)
