@@ -104,7 +104,7 @@ RSpec.describe Idv::AgreementController do
     let(:params) do
       {
         doc_auth: {
-          ial2_consent_given: 1,
+          idv_consent_given: 1,
         },
         skip_hybrid_handoff: skip_hybrid_handoff,
       }.compact
@@ -142,6 +142,21 @@ RSpec.describe Idv::AgreementController do
       end
 
       it 'redirects to hybrid handoff' do
+        put :update, params: params
+        expect(response).to redirect_to(idv_hybrid_handoff_url)
+      end
+    end
+
+    context 'ial2_consent_given param present' do
+      let(:params) do
+        {
+          doc_auth: {
+            ial2_consent_given: 1,
+          },
+          skip_hybrid_handoff: skip_hybrid_handoff,
+        }.compact
+      end
+      it 'succeeds' do
         put :update, params: params
         expect(response).to redirect_to(idv_hybrid_handoff_url)
       end

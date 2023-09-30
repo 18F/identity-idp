@@ -10,7 +10,7 @@ import normalize from './index.js';
 const { readFile, writeFile } = fsPromises;
 
 /** @type {Record<string,any>=} */
-const prettierConfig = prettier.resolveConfig.sync(process.cwd());
+const prettierConfig = (await prettier.resolveConfig(process.cwd())) || undefined;
 
 const args = process.argv.slice(2);
 const files = args.filter((arg) => !arg.startsWith('-'));
@@ -34,7 +34,7 @@ await Promise.all(
     const absolutePath = join(process.cwd(), relativePath);
     const content = await readFile(absolutePath, 'utf8');
     try {
-      await writeFile(absolutePath, normalize(content, options));
+      await writeFile(absolutePath, await normalize(content, options));
     } catch (error) {
       console.error(`Error normalizing ${relativePath}: ${error.message}`);
       exitCode = 1;

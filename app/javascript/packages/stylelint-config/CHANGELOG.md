@@ -1,3 +1,12 @@
+## Unreleased
+
+### Breaking Changes
+
+- Breaking changes included in updated dependencies:
+  - [`stylelint-prettier`](https://github.com/prettier/stylelint-prettier/blob/main/CHANGELOG.md):
+    - Minimum supported `prettier` version is now `v3.0.0`.
+    - Minimum supported `stylelint` version is now `v15.8.0`.
+
 ## 2.0.0
 
 ### Breaking Changes

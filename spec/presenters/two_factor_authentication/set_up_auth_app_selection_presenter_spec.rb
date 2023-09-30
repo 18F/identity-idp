@@ -1,14 +1,14 @@
 require 'rails_helper'
 
-RSpec.describe TwoFactorAuthentication::AuthAppSelectionPresenter do
+RSpec.describe TwoFactorAuthentication::SetUpAuthAppSelectionPresenter do
   let(:configuration) {}
   let(:user_without_mfa) { create(:user) }
   let(:user_with_mfa) { create(:user, :with_authentication_app) }
   let(:presenter_without_mfa) do
-    described_class.new(configuration: configuration, user: user_without_mfa)
+    described_class.new(user: user_without_mfa)
   end
   let(:presenter_with_mfa) do
-    described_class.new(configuration: configuration, user: user_with_mfa)
+    described_class.new(user: user_with_mfa)
   end
 
   describe '#type' do
@@ -17,7 +17,7 @@ RSpec.describe TwoFactorAuthentication::AuthAppSelectionPresenter do
     end
   end
 
-  describe '#mfa_configruation' do
+  describe '#mfa_configuration' do
     it 'return an empty string when user has not configured this authenticator' do
       expect(presenter_without_mfa.mfa_configuration_description).to eq('')
     end

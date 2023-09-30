@@ -8,7 +8,7 @@ variables:
   FF_SCRIPT_SECTIONS: 'true'
   JUNIT_OUTPUT: 'true'
   ECR_REGISTRY: '${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com'
-  IDP_CI_SHA: 'sha256:46b0004e27b6ce34df59d790474ebc284bec68abe10684b96124c70898e30cb4'
+  IDP_CI_SHA: 'sha256:26bcd68d39085d0e9dbfe272ec3f95158a272dcc2e25f5152b1d8e4600cf1cac'
   PKI_IMAGE_TAG: 'main'
 
 default:
@@ -634,10 +634,11 @@ ecr-scan-review-app:
 ecr-scan-ci:
   extends: .container_scan_template
   rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
-    - if: $CI_PIPELINE_SOURCE != "merge_request_event"
-      when: never
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH || $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "external_pull_request_event" || $CI_PIPELINE_SOURCE == "web"'
+      changes:
+        compare_to: 'refs/heads/main'
+        paths:
+        - dockerfiles/idp_ci.Dockerfile
   needs:
     - job: build-ci-image
   stage: scan
