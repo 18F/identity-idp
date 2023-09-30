@@ -17,9 +17,12 @@ RSpec.describe Profile do
     )
   end
 
-  it { is_expected.to belong_to(:user) }
-  it { is_expected.to have_many(:gpo_confirmation_codes).dependent(:destroy) }
-  it { is_expected.to have_one(:in_person_enrollment).dependent(:destroy) }
+  describe 'Associations' do
+    it { is_expected.to belong_to(:user) }
+    it { is_expected.to have_many(:gpo_confirmation_codes).dependent(:destroy) }
+    it { is_expected.to have_one(:in_person_enrollment).dependent(:destroy) }
+    it { is_expected.to have_many(:profile_events) }
+  end
 
   describe '#proofing_components' do
     let(:profile) { create(:profile, proofing_components: proofing_components) }
