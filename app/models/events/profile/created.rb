@@ -10,6 +10,10 @@ module Events
 
         profile
       end
+
+      def build_aggregate
+        build_profile(user_id: data['user_id'])
+      end
     end
   end
 end
