@@ -11,6 +11,7 @@ module Events
       end
 
       def build_aggregate
+        # must override because `super` doesn't assign parent
         build_profile(user_id: data['user_id'])
       end
     end
