@@ -26,21 +26,20 @@ RSpec.describe Reports::AuthenticationReport do
     let(:tables) do
       [
         [
-          ['Some', 'String'],
-          ['a', 'b'],
-          ['c', 'd'],
-        ],
-        [
-          { float_as_percent: true, title: 'Custom Table 2' },
-          ['Float', 'Int', 'Float'],
-          ['Row 1', 1, 0.5],
-          ['Row 2', 1, 1.5],
-        ],
-        [
-          { float_as_percent: false, title: 'Custom Table 3' },
-          ['Float As Percent', 'Gigantic Int', 'Float'],
-          ['Row 1', 100_000_000, 1.0],
-          ['Row 2', 123_456_789, 1.5],
+          ['Report Timeframe', '2023-10-01 00:00:00 UTC to 2023-10-01 23:59:59 UTC'],
+          ['Report Generated', '2023-10-02'],
+          ['Issuer', 'some:issuer'],
+          [],
+          ['Metric', 'Number of accounts', '% of total from start'],
+          ['New Users Started IAL1 Verification', '100', '100%'],
+          ['New Users Completed IAL1 Password Setup', '85', '85%'],
+          ['New Users Completed IAL1 MFA', '80', '80%'],
+          ['New IAL1 Users Consented to Partner', '75', '75%'],
+          [],
+          ['Total # of IAL1 Users', '75'],
+          [],
+          ['AAL2 Authentication Requests from Partner', '12', '12%'],
+          ['AAL2 Authenticated Requests', '50', '50%'],
         ],
       ]
     end
