@@ -67,7 +67,7 @@ module Idv
         idv_otp_verification_path => :phone_enter_otp,
         idv_review_path => :review,
         idv_personal_key_path => :personal_key,
-      }
+      }.freeze
     end
 
     def latest_step(current_step: :root)
@@ -82,8 +82,8 @@ module Idv
       current_step
     end
 
-    def path_for_latest_step
-      path_map = {
+    def path_map
+      @path_map ||= {
         welcome: idv_welcome_path,
         agreement: idv_agreement_path,
         hybrid_handoff: idv_hybrid_handoff_path,
@@ -95,7 +95,9 @@ module Idv
         review: idv_review_path,
         personal_key: idv_personal_key_path,
       }.freeze
+    end
 
+    def path_for_latest_step
       path_map[latest_step]
     end
 
@@ -160,6 +162,12 @@ module Idv
 
     def personal_key
       user.identity_verified? # add a check for in-person
+    end
+
+    # This can be blank because we are using paths, not urls,
+    # so international urls are supported.
+    def url_options
+      {}
     end
   end
 end
