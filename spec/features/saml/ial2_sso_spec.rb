@@ -40,7 +40,7 @@ RSpec.feature 'IAL2 Single Sign On' do
   end
 
   def update_mailing_address
-    click_on t('idv.buttons.mail.resend')
+    click_on t('idv.gpo.request_another_letter.button')
     fill_in t('idv.form.password'), with: user.password
     click_continue
     click_link t('idv.cancel.actions.exit', app_name: APP_NAME)
@@ -136,7 +136,7 @@ RSpec.feature 'IAL2 Single Sign On' do
         expect(user.events.account_verified.size).to be(0)
         expect(current_path).to eq(idv_request_letter_path)
 
-        click_button(t('idv.buttons.mail.resend'))
+        click_button(t('idv.gpo.request_another_letter.button'))
 
         expect(current_path).to eq(idv_letter_enqueued_path)
       end
