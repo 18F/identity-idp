@@ -12,14 +12,14 @@ RSpec.describe Reports::AuthenticationReport do
       {
         'name' => name,
         'issuers' => issuers,
-        'emails' => [email]
-      }
+        'emails' => [email],
+      },
     ]
   end
 
   before do
     allow(IdentityConfig.store).to receive(:s3_reports_enabled).and_return(true)
-    allow(IdentityConfig.store).to receive(:weekly_auth_funnel_report_config).and_return(report_configs)
+    allow(IdentityConfig.store).to receive(:weekly_auth_funnel_report_config) { report_configs }
   end
 
   describe '#perform' do
@@ -45,13 +45,13 @@ RSpec.describe Reports::AuthenticationReport do
       ]
     end
 
-    let(:report_maker) { double(Reporting::AuthenticationReport, to_csv: tables) }
+    let(:weekly_report) { double(Reporting::AuthenticationReport, as_csv: tables) }
 
     before do
       expect(Reporting::AuthenticationReport).to receive(:new).with(
         issuers:,
-        time_range: report_date.all_week
-        ) { report_maker }
+        time_range: report_date.all_week,
+      ) { weekly_report }
 
       allow(ReportMailer).to receive(:tables_report).and_call_original
     end
@@ -61,7 +61,7 @@ RSpec.describe Reports::AuthenticationReport do
         email:,
         subject: "Weekly Authentication Report - #{report_date}",
         message: "Report: authentication-report #{report_date}",
-        tables:
+        tables:,
       )
 
       subject.perform(report_date)

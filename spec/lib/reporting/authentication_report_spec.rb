@@ -42,6 +42,29 @@ RSpec.describe Reporting::AuthenticationReport do
     allow(report).to receive(:cloudwatch_client).and_return(cloudwatch_client)
   end
 
+  describe '#as_csv' do
+    it 'generates the tabular csv data' do
+      expected_csv = [
+        ['Report Timeframe', "#{time_range.begin} to #{time_range.end}"],
+        ['Report Generated', Date.today.to_s], # rubocop:disable Rails/Date
+        ['Issuer', issuer],
+        [],
+        ['Metric', 'Number of accounts', '% of total from start'],
+        ['New Users Started IAL1 Verification', '4', '100.0%'],
+        ['New Users Completed IAL1 Password Setup', '3', '75.0%'],
+        ['New Users Completed IAL1 MFA', '2', '50.0%'],
+        ['New IAL1 Users Consented to Partner', '1', '25.0%'],
+        [],
+        ['Total # of IAL1 Users', '2'],
+        [],
+        ['AAL2 Authentication Requests from Partner', '5', '100.0%'],
+        ['AAL2 Authenticated Requests', '2', '40.0%'],
+      ]
+
+      expect(report.as_csv).to eq expected_csv
+    end
+  end
+
   describe '#to_csv' do
     it 'generates a csv' do
       csv = CSV.parse(report.to_csv, headers: false)

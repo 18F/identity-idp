@@ -54,6 +54,10 @@ module Reporting
       @progress
     end
 
+    def as_csv
+      CSV.parse(to_csv)
+    end
+
     # rubocop:disable Metrics/BlockLength
     def to_csv
       CSV.generate do |csv|
