@@ -11,9 +11,11 @@ module Reports
 
       account_reuse_table = account_reuse_queries.account_reuse_report
       total_profiles_table = account_reuse_queries.total_identities_report
+      total_users_all_time_table = total_user_queries.total_user_count_report
 
       upload_to_s3(account_reuse_data, report_name: 'account_reuse')
       upload_to_s3(total_profiles_data, report_name: 'total_profiles', )
+      upload_to_s3(total_users_all_time_table, report_name: 'total_users_all_time')
 
       email_tables = [
         [
@@ -27,7 +29,11 @@ module Reports
         [
           { title: 'Total proofed identities' },
           total_profiles_table,
-        ]
+        ],
+        [
+          { title: 'All-time user total' },
+          total_users_all_time_table,
+        ],
       ]
 
       email_message = "Report: #{REPORT_NAME} #{date}"
@@ -55,6 +61,10 @@ module Reports
 
     def account_reuse_queries
       @account_reuse_queries ||= AccountReuseAndTotalIdentities.new(report_date)
+    end
+
+    def total_user_queries
+      @total_user_queries ||= Reporting::TotalUserCountReport.new(report_date)
     end
 
     def upload_to_s3(report_body, report_name: nil)
