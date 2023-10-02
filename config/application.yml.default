@@ -355,6 +355,7 @@ voice_otp_pause_time: '0.5s'
 voice_otp_speech_rate: 'slow'
 voip_block: true
 voip_allowed_phones: '[]'
+weekly_auth_funnel_report_config: '[]'
 
 development:
   aamva_private_key: 123abc
