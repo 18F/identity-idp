@@ -68,7 +68,7 @@ RSpec.describe Idv::PhoneQuestionController do
 
         get :show
 
-        expect(response).to redirect_to(idv_hybrid_handoff_url)
+        expect(response).to redirect_to(idv_document_capture_url)
       end
 
       it 'redirects to link_sent in hybrid flow' do
@@ -76,7 +76,7 @@ RSpec.describe Idv::PhoneQuestionController do
 
         get :show
 
-        expect(response).to redirect_to(idv_hybrid_handoff_url)
+        expect(response).to redirect_to(idv_link_sent_url)
       end
     end
 
@@ -86,7 +86,7 @@ RSpec.describe Idv::PhoneQuestionController do
 
         get :show
 
-        expect(response).to redirect_to(idv_hybrid_handoff_url)
+        expect(response).to redirect_to(idv_document_capture_url)
       end
     end
 
@@ -97,7 +97,7 @@ RSpec.describe Idv::PhoneQuestionController do
 
       it 'redirects the user straight to document capture' do
         get :show
-        expect(response).to redirect_to(idv_hybrid_handoff_url)
+        expect(response).to redirect_to(idv_document_capture_url)
       end
     end
   end
