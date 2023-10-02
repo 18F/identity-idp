@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe 'Idv::AllowedStep' do
+  include Rails.application.routes.url_helpers
+
   let(:user) { create(:user) }
 
   let(:idv_session) do
@@ -42,6 +44,7 @@ RSpec.describe 'Idv::AllowedStep' do
     context 'empty session' do
       it 'returns welcome' do
         expect(subject.latest_step).to eq(:welcome)
+        expect(subject.path_for_latest_step).to eq(idv_welcome_path)
       end
     end
 
@@ -49,6 +52,7 @@ RSpec.describe 'Idv::AllowedStep' do
       it 'returns agreement' do
         idv_session.welcome_visited = true
         expect(subject.latest_step).to eq(:agreement)
+        expect(subject.path_for_latest_step).to eq(idv_agreement_path)
       end
     end
 
@@ -57,6 +61,7 @@ RSpec.describe 'Idv::AllowedStep' do
         idv_session.welcome_visited = true
         idv_session.idv_consent_given = true
         expect(subject.latest_step).to eq(:hybrid_handoff)
+        expect(subject.path_for_latest_step).to eq(idv_hybrid_handoff_path)
       end
     end
 
@@ -66,6 +71,7 @@ RSpec.describe 'Idv::AllowedStep' do
         idv_session.idv_consent_given = true
         idv_session.flow_path = 'standard'
         expect(subject.latest_step).to eq(:document_capture)
+        expect(subject.path_for_latest_step).to eq(idv_document_capture_path)
       end
     end
 
@@ -93,6 +99,7 @@ RSpec.describe 'Idv::AllowedStep' do
       it 'returns ssn for hybrid flow' do
         idv_session.flow_path = 'hybrid'
         expect(subject.latest_step).to eq(:ssn)
+        expect(subject.path_for_latest_step).to eq(idv_ssn_path)
       end
     end
 
@@ -107,6 +114,7 @@ RSpec.describe 'Idv::AllowedStep' do
 
       it 'returns verify_info' do
         expect(subject.latest_step).to eq(:verify_info)
+        expect(subject.path_for_latest_step).to eq(idv_verify_info_path)
       end
 
       context 'flow_path is missing' do
@@ -127,6 +135,7 @@ RSpec.describe 'Idv::AllowedStep' do
         idv_session.resolution_successful = true
         # allow(user).to receive(:gpo_pending_profile?).and_return(false)
         expect(subject.latest_step).to eq(:phone)
+        expect(subject.path_for_latest_step).to eq(idv_phone_path)
       end
     end
 
@@ -142,6 +151,7 @@ RSpec.describe 'Idv::AllowedStep' do
         idv_session.resolution_successful = true
         idv_session.user_phone_confirmation_session = user_phone_confirmation_session
         expect(subject.latest_step).to eq(:phone_enter_otp)
+        expect(subject.path_for_latest_step).to eq(idv_otp_verification_path)
       end
     end
 
@@ -159,6 +169,7 @@ RSpec.describe 'Idv::AllowedStep' do
           idv_session.user_phone_confirmation_session = user_phone_confirmation_session
           idv_session.address_verification_mechanism = 'gpo'
           expect(subject.latest_step).to eq(:review)
+          expect(subject.path_for_latest_step).to eq(idv_review_path)
         end
       end
 
@@ -174,6 +185,7 @@ RSpec.describe 'Idv::AllowedStep' do
           idv_session.vendor_phone_confirmation = true
           idv_session.user_phone_confirmation = true
           expect(subject.latest_step).to eq(:review)
+          expect(subject.path_for_latest_step).to eq(idv_review_path)
         end
       end
     end
