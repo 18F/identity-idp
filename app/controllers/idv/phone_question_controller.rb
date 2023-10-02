@@ -17,19 +17,5 @@ module Idv
 
       redirect_to idv_agreement_url
     end
-
-    def confirm_hybrid_handoff_needed
-      if idv_session.skip_hybrid_handoff?
-        redirect_to idv_hybrid_handoff_url
-      end
-
-      if !FeatureManagement.idv_allow_hybrid_flow?
-        redirect_to idv_hybrid_handoff_url
-      end
-
-      if idv_session.flow_path.present?
-        redirect_to idv_hybrid_handoff_url
-      end
-    end
   end
 end
