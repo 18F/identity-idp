@@ -148,9 +148,7 @@ RSpec.describe 'Idv::AllowedStep' do
     context 'preconditions for review are present' do
       let(:user_phone_confirmation_session) { { code: 'abcde' } }
 
-      context 'user has a gpo pending profile' do
-        let(:has_gpo_pending_profile) { true }
-
+      context 'user has a gpo address_verification_mechanism' do
         it 'returns review with gpo verification pending' do
           idv_session.welcome_visited = true
           idv_session.idv_consent_given = true
@@ -177,6 +175,23 @@ RSpec.describe 'Idv::AllowedStep' do
           idv_session.user_phone_confirmation = true
           expect(subject.latest_step).to eq(:review)
         end
+      end
+    end
+
+    context 'preconditions for letter enqueued are present' do
+      let(:user_phone_confirmation_session) { { code: 'abcde' } }
+      let(:has_gpo_pending_profile) { true }
+
+      xit 'returns letter enqueued' do
+        idv_session.welcome_visited = true
+        idv_session.idv_consent_given = true
+        idv_session.flow_path = 'standard'
+        idv_session.pii_from_doc = { pii: 'value' }
+        idv_session.ssn = '666666666'
+        idv_session.resolution_successful = true
+        idv_session.user_phone_confirmation_session = user_phone_confirmation_session
+        idv_session.address_verification_mechanism = 'gpo'
+        expect(subject.latest_step).to eq(:letter_enqueued)
       end
     end
 

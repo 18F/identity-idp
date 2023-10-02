@@ -31,8 +31,8 @@ module Idv
         phone_enter_otp: [:review],
         review: [:personal_key],
         # request_letter: [:review, :letter_enqueued], to be visited later
-        # letter_enqueued: [:enter_gpo_code],
-        # enter_gpo_code: [:personal_key],
+        # letter_enqueued: [:enter_verification_code],
+        # enter_verification_code: [:personal_key],
         personal_key: [:success],
       },
     )
@@ -111,10 +111,12 @@ module Idv
     end
 
     def letter_enqueued
-      user.gpo_pending_profile?
+      (idv_session.blank? || idv_session.address_verification_mechanism == 'gpo') &&
+        user.gpo_pending_profile?
     end
 
-    def enter_gpo_code
+    def enter_verification_code
+      user.gpo_pending_profile?
     end
 
     def personal_key
