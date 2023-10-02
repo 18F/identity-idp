@@ -15,6 +15,8 @@ module Idv
     #   doesn't pass security review/user consent issues
     # require current_user as well?
     # add a/b test bucket to checks?
+    #
+    include Rails.application.routes.url_helpers
 
     NEXT_STEPS = Hash.new([])
     NEXT_STEPS.merge!(
@@ -58,6 +60,23 @@ module Idv
         end
       end
       current_step
+    end
+
+    def path_for_latest_step
+      path_map = {
+        welcome: idv_welcome_path,
+        agreement: idv_agreement_path,
+        hybrid_handoff: idv_hybrid_handoff_path,
+        document_capture: idv_document_capture_path,
+        ssn: idv_ssn_path,
+        verify_info: idv_verify_info_path,
+        phone: idv_phone_path,
+        phone_enter_otp: idv_otp_verification_path,
+        review: idv_review_path,
+        personal_key: idv_personal_key_path,
+      }.freeze
+
+      path_map[latest_step]
     end
 
     def welcome
