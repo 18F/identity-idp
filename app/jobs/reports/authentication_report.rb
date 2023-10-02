@@ -8,6 +8,7 @@ module Reports
 
     def perform(report_date)
       return unless IdentityConfig.store.s3_reports_enabled
+
       self.report_date = report_date
       message = "Report: #{REPORT_NAME} #{report_date}"
       subject = "Weekly Authentication Report - #{report_date}"
