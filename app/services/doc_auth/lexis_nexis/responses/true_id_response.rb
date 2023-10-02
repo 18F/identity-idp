@@ -257,6 +257,8 @@ module DocAuth
             new_alert_data[:name] = value if key.end_with?('_AlertName')
             new_alert_data[:result] = value if key.end_with?('_AuthenticationResult')
             new_alert_data[:region] = value if key.end_with?('_Regions')
+            new_alert_data[:disposition] = value if key.end_with?('_Disposition')
+            new_alert_data[:model] = value if key.end_with?('_Model')
           end
 
           new_alert_data

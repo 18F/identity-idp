@@ -160,6 +160,10 @@ module LexisNexisFixtures
       read_fixture_file_at_path('true_id/true_id_response_success_2.json')
     end
 
+    def true_id_response_success_3
+      read_fixture_file_at_path('true_id/true_id_response_success_3.json')
+    end
+
     def true_id_response_failure_no_liveness
       read_fixture_file_at_path('true_id/true_id_response_failure_no_liveness.json')
     end
@@ -178,6 +182,10 @@ module LexisNexisFixtures
 
     def true_id_response_failure_no_liveness_low_dpi
       read_fixture_file_at_path('true_id/true_id_response_failure_no_liveness_low_dpi.json')
+    end
+
+    def true_id_response_failure_tampering
+      read_fixture_file_at_path('true_id/true_id_response_tampering_failure.json')
     end
 
     private
