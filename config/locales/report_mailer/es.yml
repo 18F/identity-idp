@@ -1,10 +1,6 @@
 ---
 es:
   report_mailer:
-    authentication_report:
-      issuers: Emisores
-      name: Nombre
-      subject: Informe de autenticación
     deleted_accounts_report:
       issuers: Emisores
       name: Nombre

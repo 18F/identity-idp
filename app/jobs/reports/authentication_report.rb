@@ -9,29 +9,30 @@ module Reports
     def perform(report_date)
       return unless IdentityConfig.store.s3_reports_enabled
       self.report_date = report_date
+      message = "Report: #{REPORT_NAME} #{report_date}"
+      subject =  "Weekly Authentication Report - #{report_date}"
 
       report_configs.each do |report_hash|
-        issuers = report_hash['issuers']
-        emails = report_hash['emails']
-        name = report_hash['name']
-        data = report_maker(issuers).to_csv
+        tables = weekly_authentication_report_csv(report_hash['issuers'])
 
-        emails.each do |email|
-          ReportMailer.authentication_report(
+        report_hash['emails'].each do |email|
+          ReportMailer.tables_report(
             email:,
-            name:,
-            issuers:,
-            data:,
+            subject:,
+            message:,
+            tables:,
           ).deliver_now
         end
       end
     end
 
-    def report_maker(issuers)
+    private
+
+    def weekly_authentication_report_csv(issuers)
       Reporting::AuthenticationReport.new(
         issuers:,
         time_range: report_date.all_week,
-      )
+      ).to_csv
     end
 
     def report_configs

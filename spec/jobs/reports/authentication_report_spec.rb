@@ -23,32 +23,48 @@ RSpec.describe Reports::AuthenticationReport do
   end
 
   describe '#perform' do
-    let(:report_maker) { double(Reporting::AuthenticationReport, to_csv: 'I am a CSV') }
+    let(:tables) do
+      [
+        [
+          ['Some', 'String'],
+          ['a', 'b'],
+          ['c', 'd'],
+        ],
+        [
+          { float_as_percent: true, title: 'Custom Table 2' },
+          ['Float', 'Int', 'Float'],
+          ['Row 1', 1, 0.5],
+          ['Row 2', 1, 1.5],
+        ],
+        [
+          { float_as_percent: false, title: 'Custom Table 3' },
+          ['Float As Percent', 'Gigantic Int', 'Float'],
+          ['Row 1', 100_000_000, 1.0],
+          ['Row 2', 123_456_789, 1.5],
+        ],
+      ]
+    end
+
+    let(:report_maker) { double(Reporting::AuthenticationReport, to_csv: tables) }
+
     before do
       expect(Reporting::AuthenticationReport).to receive(:new).with(
         issuers:,
         time_range: report_date.all_week
         ) { report_maker }
 
-      allow(ReportMailer).to receive(:authentication_report).and_call_original
+      allow(ReportMailer).to receive(:tables_report).and_call_original
     end
 
     it 'emails the csv' do
-      expect(ReportMailer).to receive(:authentication_report).with(
+      expect(ReportMailer).to receive(:tables_report).with(
         email:,
-        name:,
-        issuers:,
-        data: 'I am a CSV'
+        subject: "Weekly Authentication Report - #{report_date}",
+        message: "Report: authentication-report #{report_date}",
+        tables:
       )
+
       subject.perform(report_date)
-    end
-  end
-
-  describe '#report_maker' do
-    it 'is a identity verification report maker with the right time range' do
-      subject.report_date = report_date
-
-      expect(subject.report_maker(issuers).time_range).to eq(report_date.all_week)
     end
   end
 end
