@@ -219,6 +219,12 @@ else
           statement_timeout: IdentityConfig.store.multi_region_kms_migration_jobs_user_timeout,
         },
       },
+      # Send weekly authentication reports to partners
+      weekly_authentication_report: {
+        class: 'Reports::AuthenticationReport',
+        cron: cron_1w,
+        args: -> { [Time.zone.now] },
+      },
     }.compact
   end
   # rubocop:enable Metrics/BlockLength
