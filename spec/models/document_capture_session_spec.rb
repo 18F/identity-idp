@@ -41,29 +41,6 @@ RSpec.describe DocumentCaptureSession do
         expect(record.ocr_confirmation_pending).to eq(true)
       end
     end
-
-    context 'store a new result when a result already exists' do
-      it 'overwrites the result' do
-        record = DocumentCaptureSession.new
-
-        record.store_result_from_response(doc_auth_response)
-        old_result = record.load_result
-        old_key = EncryptedRedisStructStorage.key(
-          record.result_id,
-          type: DocumentCaptureSessionResult,
-        )
-
-        record.store_result_from_response(doc_auth_response)
-        new_result = record.load_result
-        new_key = EncryptedRedisStructStorage.key(
-          record.result_id,
-          type: DocumentCaptureSessionResult,
-        )
-
-        expect(old_key).not_to eq(new_key)
-        expect(old_result).not_to eq(new_result)
-      end
-    end
   end
 
   describe '#load_result' do
@@ -130,7 +107,7 @@ RSpec.describe DocumentCaptureSession do
       expect(result.failed_back_image?(nil)).to eq(false)
     end
 
-    it 'stores a new result when a result already exists' do
+    it 'saves failed image finterprints' do
       record = DocumentCaptureSession.new(result_id: SecureRandom.uuid)
 
       record.store_failed_auth_image_fingerprint(
@@ -143,7 +120,7 @@ RSpec.describe DocumentCaptureSession do
       )
 
       record.store_failed_auth_image_fingerprint(
-        'fingerprint2', nil
+        'fingerprint2', 'fingerprint3'
       )
       new_result = record.load_result
       new_key = EncryptedRedisStructStorage.key(
@@ -151,14 +128,13 @@ RSpec.describe DocumentCaptureSession do
         type: DocumentCaptureSessionResult,
       )
 
-      expect(old_key).not_to eq(new_key)
-      expect(old_result).not_to eq(new_result)
-
       expect(old_result.failed_front_image?('fingerprint1')).to eq(true)
       expect(old_result.failed_front_image?('fingerprint2')).to eq(false)
+      expect(old_result.failed_back_image?('fingerprint3')).to eq(false)
 
-      expect(new_result.failed_front_image?('fingerprint1')).to eq(false)
+      expect(new_result.failed_front_image?('fingerprint1')).to eq(true)
       expect(new_result.failed_front_image?('fingerprint2')).to eq(true)
+      expect(new_result.failed_back_image?('fingerprint3')).to eq(true)
     end
   end
 end
