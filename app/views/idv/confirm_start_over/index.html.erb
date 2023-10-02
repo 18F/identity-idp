@@ -1,19 +1,16 @@
 <%= render(
       'idv/shared/error',
       type: :warning,
-      heading: t('idv.cancel.headings.prompt.standard'),
+      heading: t('idv.cancel.headings.start_over'),
       current_step: :get_a_letter,
     ) do %>
   <p>
     <%= t('idv.cancel.description.gpo.start_over') %>
   </p>
-  <ul class="usa-list">
-    <% t('idv.cancel.description.gpo.warnings').each do | warning_text | %>
-      <li>
-        <%= warning_text %>
-      </li>
-    <% end %>
-  </ul>
+  <p>
+    <%= t('idv.cancel.description.gpo.continue') %>
+  </p>
+
   <div class="margin-y-5">
     <%= render ButtonComponent.new(
           action: ->(**tag_options, &block) do
