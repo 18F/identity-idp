@@ -50,6 +50,26 @@ module Idv
       send(step)
     end
 
+    def path_allowed?(path:)
+      step = path_to_step[path]
+      send(step)
+    end
+
+    def path_to_step
+      @path_to_step ||= {
+        idv_welcome_path => :welcome,
+        idv_agreement_path => :agreement,
+        idv_hybrid_handoff_path => :hybrid_handoff,
+        idv_document_capture_path => :document_capture,
+        idv_ssn_path => :ssn,
+        idv_verify_info_path => :verify_info,
+        idv_phone_path => :phone,
+        idv_otp_verification_path => :phone_enter_otp,
+        idv_review_path => :review,
+        idv_personal_key_path => :personal_key,
+      }
+    end
+
     def latest_step(current_step: :root)
       return nil if NEXT_STEPS[current_step].empty?
       return current_step if NEXT_STEPS[current_step] == [:success]

@@ -62,6 +62,8 @@ RSpec.describe 'Idv::AllowedStep' do
         idv_session.idv_consent_given = true
         expect(subject.latest_step).to eq(:hybrid_handoff)
         expect(subject.path_for_latest_step).to eq(idv_hybrid_handoff_path)
+        expect(subject.path_allowed?(path: idv_hybrid_handoff_path)).to be
+        expect(subject.path_allowed?(path: idv_document_capture_path)).not_to be
       end
     end
 
