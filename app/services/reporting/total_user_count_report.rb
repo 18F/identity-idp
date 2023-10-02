@@ -11,14 +11,14 @@ module Reporting
     def total_user_count_report
       [
         ['All-time user count'],
-        [total_user_count]
+        [total_user_count],
       ]
     end
 
     private
 
     def total_user_count
-      User.where('created_at < ?', report_date)
+      User.where('created_at <= ?', report_date).count
     end
   end
 end
