@@ -62,10 +62,10 @@ module Reports
       url
     end
 
-    def generate_s3_paths(name, extension, now: Time.zone.now)
+    def generate_s3_paths(name, extension, subname: nil, now: Time.zone.now)
       host_data_env = Identity::Hostdata.env
-      latest = "#{host_data_env}/#{name}/latest.#{name}.#{extension}"
-      [latest, "#{host_data_env}/#{name}/#{now.year}/#{now.strftime('%F')}.#{name}.#{extension}"]
+      latest = "#{host_data_env}/#{name}/latest.#{name}#{subname ? '/' + subname : '' }.#{extension}"
+      [latest, "#{host_data_env}/#{name}/#{now.year}/#{now.strftime('%F')}.#{name}#{subname ? '/' + subname : '' }.#{extension}"]
     end
 
     def logger
