@@ -70,7 +70,7 @@ module Idv
       def confirm_document_capture_needed
         return unless stored_result&.success?
         return if redo_document_capture_pending?
-        
+
         redirect_to idv_hybrid_mobile_capture_complete_url
       end
 
