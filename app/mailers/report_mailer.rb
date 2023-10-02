@@ -8,6 +8,11 @@ class ReportMailer < ActionMailer::Base
   layout 'tables_report', only: [:tables_report]
 
   def authentication_report(email:, name:, issuers:, data:)
+    @name = name
+    @issuers = issuers
+    @data = data
+    attachments['authentication_report.csv'] = data
+    mail(to: email, subject: t('report_mailer.authentication_report.subject'))
   end
 
   def deleted_user_accounts_report(email:, name:, issuers:, data:)

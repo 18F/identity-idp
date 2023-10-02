@@ -1,6 +1,10 @@
 ---
 fr:
   report_mailer:
+    authentication_report:
+      issuers: Émetteurs
+      name: Nom
+      subject: Rapport d'authentification
     deleted_accounts_report:
       issuers: Émetteurs
       name: Nom
