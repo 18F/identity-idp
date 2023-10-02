@@ -114,19 +114,11 @@ RSpec.describe DocumentCaptureSession do
         'fingerprint1', nil
       )
       old_result = record.load_result
-      old_key = EncryptedRedisStructStorage.key(
-        record.result_id,
-        type: DocumentCaptureSessionResult,
-      )
 
       record.store_failed_auth_image_fingerprint(
         'fingerprint2', 'fingerprint3'
       )
       new_result = record.load_result
-      new_key = EncryptedRedisStructStorage.key(
-        record.result_id,
-        type: DocumentCaptureSessionResult,
-      )
 
       expect(old_result.failed_front_image?('fingerprint1')).to eq(true)
       expect(old_result.failed_front_image?('fingerprint2')).to eq(false)
