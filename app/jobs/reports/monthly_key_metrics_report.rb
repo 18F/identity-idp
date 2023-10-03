@@ -9,8 +9,8 @@ module Reports
     def perform(date = Time.zone.today)
       @report_date = date
 
-      account_reuse_table = account_reuse_queries.account_reuse_report
-      total_profiles_table = account_reuse_queries.total_identities_report
+      account_reuse_table = account_reuse_report.account_reuse_report
+      total_profiles_table = account_reuse_report.total_identities_report
 
       upload_to_s3(account_reuse_table, report_name: 'account_reuse')
       upload_to_s3(total_profiles_table, report_name: 'total_profiles')
@@ -18,7 +18,7 @@ module Reports
       email_tables = [
         [
           {
-            title: "IDV app reuse rate #{account_reuse_queries.stats_month}",
+            title: "IDV app reuse rate #{account_reuse_report.stats_month}",
             float_as_percent: true,
             precision: 4,
           },
