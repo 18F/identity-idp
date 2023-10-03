@@ -64,7 +64,7 @@ module Reports
 
     def generate_s3_paths(name, extension, subname: nil, now: Time.zone.now)
       host_data_env = Identity::Hostdata.env
-      name_subdir_ext = "#{name}/#{subname}.#{extension}"
+      name_subdir_ext = "#{name}#{subname ? '/' : ''}#{subname}.#{extension}"
       latest = "#{host_data_env}/#{name}/latest.#{name_subdir_ext}"
       [latest, "#{host_data_env}/#{name}/#{now.year}/#{now.strftime('%F')}.#{name_subdir_ext}"]
     end
