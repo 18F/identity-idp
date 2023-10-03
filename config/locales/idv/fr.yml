@@ -187,6 +187,9 @@ fr:
         devez activer JavaScript pour poursuivre ce processus.'
     gpo:
       alert_info: 'Nous avons envoyé une lettre avec votre code à usage unique à:'
+      change_to_verification_code_html: 'Le <strong>code à usage unique</strong>
+        figurant dans votre lettre est désormais appelé <strong>code de
+        vérification</strong>.'
       clear_and_start_over: Supprimez vos données et recommencez
       did_not_receive_letter:
         form:
