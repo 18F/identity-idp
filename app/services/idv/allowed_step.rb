@@ -111,6 +111,7 @@ module Idv
 
     def hybrid_handoff
       idv_session.idv_consent_given
+      # look into covering verify info step not complete also
     end
 
     def document_capture
@@ -122,11 +123,11 @@ module Idv
     end
 
     def ssn
-      idv_session.pii_from_doc # ignoring in_person
+      post_document_capture_check
     end
 
     def verify_info
-      idv_session.ssn and idv_session.pii_from_doc
+      idv_session.ssn && post_document_capture_check
     end
 
     def phone
@@ -157,6 +158,10 @@ module Idv
 
     def personal_key
       user.identity_verified? # add a check for in-person
+    end
+
+    def post_document_capture_check
+      idv_session.pii_from_doc || idv_session.resolution_successful # ignoring in_person
     end
 
     # This can be blank because we are using paths, not urls,
