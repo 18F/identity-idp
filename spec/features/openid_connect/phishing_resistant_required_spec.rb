@@ -4,7 +4,7 @@ RSpec.describe 'Phishing-resistant authentication required in an OIDC context' d
   include OidcAuthHelper
   include WebAuthnHelper
 
-  shared_examples 'user required to set up phishing-resistant authenticator' do
+  shared_examples 'setting up phishing-resistant authenticator in an OIDC context' do
     it 'sends user to set up phishing-resistant auth' do
       sign_in_live_with_2fa(user)
 
@@ -54,7 +54,7 @@ RSpec.describe 'Phishing-resistant authentication required in an OIDC context' d
 
       before { visit_idp_from_ial1_oidc_sp_requesting_aal3(prompt: 'select_account') }
 
-      it_behaves_like 'user required to set up phishing-resistant authenticator'
+      it_behaves_like 'setting up phishing-resistant authenticator in an OIDC context'
     end
 
     context 'user has phishing-resistant auth configured' do
@@ -109,7 +109,7 @@ RSpec.describe 'Phishing-resistant authentication required in an OIDC context' d
 
       before { visit_idp_from_ial1_oidc_sp_requesting_phishing_resistant(prompt: 'select_account') }
 
-      it_behaves_like 'user required to set up phishing-resistant authenticator'
+      it_behaves_like 'setting up phishing-resistant authenticator in an OIDC context'
     end
 
     context 'user has phishing-resistant auth configured' do
@@ -164,7 +164,7 @@ RSpec.describe 'Phishing-resistant authentication required in an OIDC context' d
 
       before { visit_idp_from_ial1_oidc_sp_defaulting_to_aal3(prompt: 'select_account') }
 
-      it_behaves_like 'user required to set up phishing-resistant authenticator'
+      it_behaves_like 'setting up phishing-resistant authenticator in an OIDC context'
     end
 
     context 'user has phishing-resistant auth configured' do
