@@ -1,4 +1,5 @@
-module.exports = /** @type {import('svgo').Config} */ ({
+/** @type {import('svgo').Config} */
+const config = {
   multipass: true,
   plugins: [
     {
@@ -24,4 +25,6 @@ module.exports = /** @type {import('svgo').Config} */ ({
       },
     },
   ],
-});
+};
+
+module.exports = config;
