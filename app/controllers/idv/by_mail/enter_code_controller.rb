@@ -24,12 +24,14 @@ module Idv
         end
 
         gpo_mail = Idv::GpoMail.new(current_user)
+        @gpo_mail_spammed = gpo_mail.mail_spammed?
+        @last_date_letter_was_sent = current_user.gpo_verification_pending_profile&.gpo_confirmation_codes.maximum(:code_sent_at)
         @gpo_verify_form = GpoVerifyForm.new(user: current_user, pii: pii)
         @code = session[:last_gpo_confirmation_code] if FeatureManagement.reveal_gpo_code?
 
         @should_prompt_user_to_request_another_letter =
           FeatureManagement.gpo_verification_enabled? &&
-          !gpo_mail.mail_spammed? &&
+          !@gpo_mail_spammed &&
           !gpo_mail.profile_too_old?
 
         if pii_locked?
