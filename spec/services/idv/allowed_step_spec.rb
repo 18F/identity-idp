@@ -121,7 +121,7 @@ RSpec.describe 'Idv::AllowedStep' do
         idv_session.welcome_visited = true
         idv_session.idv_consent_given = true
         idv_session.flow_path = 'standard'
-        idv_session.pii_from_doc = { pii: 'value' }
+        idv_session.applicant = { pii: 'value' }
         idv_session.ssn = '666666666'
         idv_session.resolution_successful = true
         # allow(user).to receive(:gpo_pending_profile?).and_return(false)
@@ -137,7 +137,7 @@ RSpec.describe 'Idv::AllowedStep' do
         idv_session.welcome_visited = true
         idv_session.idv_consent_given = true
         idv_session.flow_path = 'standard'
-        idv_session.pii_from_doc = { pii: 'value' }
+        idv_session.applicant = { pii: 'value' }
         idv_session.ssn = '666666666'
         idv_session.resolution_successful = true
         idv_session.user_phone_confirmation_session = user_phone_confirmation_session
@@ -154,7 +154,7 @@ RSpec.describe 'Idv::AllowedStep' do
           idv_session.welcome_visited = true
           idv_session.idv_consent_given = true
           idv_session.flow_path = 'standard'
-          idv_session.pii_from_doc = { pii: 'value' }
+          idv_session.applicant = { pii: 'value' }
           idv_session.ssn = '666666666'
           idv_session.resolution_successful = true
           idv_session.user_phone_confirmation_session = user_phone_confirmation_session
@@ -169,7 +169,7 @@ RSpec.describe 'Idv::AllowedStep' do
           idv_session.welcome_visited = true
           idv_session.idv_consent_given = true
           idv_session.flow_path = 'standard'
-          idv_session.pii_from_doc = { pii: 'value' }
+          idv_session.applicant = { pii: 'value' }
           idv_session.ssn = '666666666'
           idv_session.resolution_successful = true
           idv_session.user_phone_confirmation_session = user_phone_confirmation_session
@@ -189,7 +189,7 @@ RSpec.describe 'Idv::AllowedStep' do
         idv_session.welcome_visited = true
         idv_session.idv_consent_given = true
         idv_session.flow_path = 'standard'
-        idv_session.pii_from_doc = { pii: 'value' }
+        idv_session.applicant = { pii: 'value' }
         idv_session.ssn = '666666666'
         idv_session.resolution_successful = true
         idv_session.user_phone_confirmation_session = user_phone_confirmation_session
