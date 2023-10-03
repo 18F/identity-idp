@@ -28,7 +28,6 @@ module Idv
       cancel_previous_in_person_enrollments
 
       idv_session.welcome_visited = true
-      idv_session.idv_consent_given = false
 
       redirect_to idv_agreement_url
     end
