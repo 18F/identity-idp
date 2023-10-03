@@ -3506,6 +3506,16 @@ module AnalyticsEvents
     track_event('Rate Limit Triggered', type: type, **extra)
   end
 
+  # Account profile reactivation submitted
+  def reactivate_account_submit
+    track_event('Reactivate Account Submitted')
+  end
+
+  # Account profile reactivation page visited
+  def reactivate_account_visit
+    track_event('Reactivate Account Visited')
+  end
+
   # The result of a reCAPTCHA verification request was received
   # @param [Hash] recaptcha_result Full reCAPTCHA response body
   # @param [Float] score_threshold Minimum value for considering passing result
