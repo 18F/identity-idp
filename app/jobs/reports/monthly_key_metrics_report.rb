@@ -12,22 +12,22 @@ module Reports
       account_reuse_table = account_reuse_queries.account_reuse_report
       total_profiles_table = account_reuse_queries.total_identities_report
 
-      upload_to_s3(account_reuse_data, report_name: 'account_reuse')
-      upload_to_s3(total_profiles_data, report_name: 'total_profiles', )
+      upload_to_s3(account_reuse_table, report_name: 'account_reuse')
+      upload_to_s3(total_profiles_table, report_name: 'total_profiles')
 
       email_tables = [
         [
           {
-          title: "IDV app reuse rate #{account_reuse_queries.stats_month}",
-          float_as_percent: true,
-          precision: 4,
+            title: "IDV app reuse rate #{account_reuse_queries.stats_month}",
+            float_as_percent: true,
+            precision: 4,
           },
-          account_reuse_table
-        ], 
+          account_reuse_table,
+        ],
         [
           { title: 'Total proofed identities' },
           total_profiles_table,
-        ]
+        ],
       ]
 
       email_message = "Report: #{REPORT_NAME} #{date}"
@@ -54,20 +54,27 @@ module Reports
     end
 
     def account_reuse_queries
-      @account_reuse_queries ||= AccountReuseAndTotalIdentities.new(report_date)
+      @account_reuse_queries ||= Reporting::AccountReuseAndTotalIdentitiesReport.new(report_date)
     end
 
     def upload_to_s3(report_body, report_name: nil)
-
       _latest, path = generate_s3_paths(REPORT_NAME, 'csv', subname: report_name, now: report_date)
 
       if bucket_name.present?
         upload_file_to_s3_bucket(
           path: path,
-          body: report_body,
+          body: csv_file(report_body),
           content_type: 'text/csv',
           bucket: bucket_name,
         )
+      end
+    end
+
+    def csv_file(report_array)
+      CSV.generate do |csv|
+        report_array.each do |row|
+          csv << row
+        end
       end
     end
   end

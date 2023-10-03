@@ -2,7 +2,6 @@ require 'csv'
 
 module Reporting
   class AccountReuseAndTotalIdentitiesReport
-
     attr_reader :report_date
 
     def initialize(report_date = Time.zone.today)
@@ -105,7 +104,7 @@ module Reporting
               num_agencies ASC
       SQL
 
-      agency_results = transaction_with_timeout do
+      agency_results = Reports::BaseReport.transaction_with_timeout do
         ActiveRecord::Base.connection.execute(agency_sql)
       end
 
@@ -124,7 +123,7 @@ module Reporting
             profiles.activated_at < %{query_date}
       SQL
 
-      proofed_results = transaction_with_timeout do
+      proofed_results = Reports::BaseReport.transaction_with_timeout do
         ActiveRecord::Base.connection.execute(proofed_sql)
       end
 
@@ -140,6 +139,5 @@ module Reporting
     def first_day_of_report_month
       report_date.beginning_of_month.strftime('%Y-%m-%d')
     end
-
   end
 end
