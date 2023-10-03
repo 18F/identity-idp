@@ -1,5 +1,7 @@
 module MultiRegionKmsMigration
   class ProfileMigrationJob < ApplicationJob
+    queue_as :long_running
+
     MAXIMUM_ERROR_TOLERANCE = 10
 
     include ::NewRelic::Agent::MethodTracer
@@ -47,7 +49,7 @@ module MultiRegionKmsMigration
         ).where(
           'encrypted_pii IS NOT NULL',
           'encrypted_pii_recovery IS NOT NULL',
-        ).limit(profile_count)
+        ).limit(profile_count).to_a
       end
     end
 

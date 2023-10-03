@@ -26,7 +26,7 @@ RSpec.describe Idv::ByMail::RequestLetterPresenter do
         create_letter_send_event
 
         expect(subject.title).to eq(
-          I18n.t('idv.titles.mail.resend'),
+          I18n.t('idv.gpo.request_another_letter.title'),
         )
       end
     end
@@ -59,7 +59,7 @@ RSpec.describe Idv::ByMail::RequestLetterPresenter do
       it 'provides text to resend' do
         create_letter_send_event
         expect(subject.button).to eq(
-          I18n.t('idv.buttons.mail.resend'),
+          I18n.t('idv.gpo.request_another_letter.button'),
         )
       end
     end

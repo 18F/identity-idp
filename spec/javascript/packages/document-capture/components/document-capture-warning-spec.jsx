@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { AnalyticsContext } from '@18f/identity-document-capture';
 import { render, screen, within } from '@testing-library/react';
 import { InPersonContext } from '@18f/identity-document-capture/context';
 import { toFormEntryError } from '@18f/identity-document-capture/services/upload';
@@ -5,6 +7,8 @@ import { expect } from 'chai';
 import DocumentCaptureWarning from '@18f/identity-document-capture/components/document-capture-warning';
 
 describe('DocumentCaptureWarning', () => {
+  const trackEvent = sinon.spy();
+
   function validateHeader(headerName, level, existing) {
     const h = screen.queryByRole('heading', {
       name: headerName,
@@ -51,20 +55,39 @@ describe('DocumentCaptureWarning', () => {
       },
     ];
     return render(
-      <InPersonContext.Provider value={{ inPersonURL: inPersonUrl }}>
-        <DocumentCaptureWarning
-          isFailedDocType={isFailedDocType}
-          isFailedResult={isFailedResult}
-          remainingAttempts={2}
-          unknownFieldErrors={unknownFieldErrors}
-          actionOnClick={() => {}}
-        />
-        ,
-      </InPersonContext.Provider>,
+      <AnalyticsContext.Provider value={{ trackEvent }}>
+        <InPersonContext.Provider value={{ inPersonURL: inPersonUrl }}>
+          <DocumentCaptureWarning
+            isFailedDocType={isFailedDocType}
+            isFailedResult={isFailedResult}
+            remainingAttempts={2}
+            unknownFieldErrors={unknownFieldErrors}
+            actionOnClick={() => {}}
+          />
+          ,
+        </InPersonContext.Provider>
+      </AnalyticsContext.Provider>,
     );
   }
+
   context('ipp ', () => {
     const inPersonUrl = '/verify/doc_capture';
+
+    it('logs the warning displayed to the user', () => {
+      const isFailedResult = false;
+      const isFailedDocType = false;
+
+      renderCcontent(isFailedDocType, isFailedResult, inPersonUrl);
+
+      expect(trackEvent).to.have.been.calledWith('IdV: warning shown', {
+        location: 'doc_auth_review_issues',
+        heading: 'errors.doc_auth.rate_limited_heading',
+        subheading: 'errors.doc_auth.rate_limited_subheading',
+        error_message_displayed: 'general error',
+        remaining_attempts: 2,
+      });
+    });
+
     context('not failed result', () => {
       const isFailedResult = false;
       it('renders not failed doc type', () => {
@@ -147,6 +170,22 @@ describe('DocumentCaptureWarning', () => {
 
   context('non ipp ', () => {
     const inPersonUrl = '';
+
+    it('logs the warning displayed to the user', () => {
+      const isFailedResult = true;
+      const isFailedDocType = true;
+
+      renderCcontent(isFailedDocType, isFailedResult, inPersonUrl);
+
+      expect(trackEvent).to.have.been.calledWith('IdV: warning shown', {
+        location: 'doc_auth_review_issues',
+        heading: 'errors.doc_auth.doc_type_not_supported_heading',
+        subheading: '',
+        error_message_displayed: 'general error idv.warning.attempts_html',
+        remaining_attempts: 2,
+      });
+    });
+
     context('not failed result', () => {
       const isFailedResult = false;
       it('renders not failed doc type', () => {
