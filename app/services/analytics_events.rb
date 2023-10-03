@@ -2660,13 +2660,14 @@ module AnalyticsEvents
     )
   end
 
+  # @identity.idp.previous_event_name Multi-Factor Authentication: Added PIV_CAC
   # Tracks when the user has added the MFA method piv_cac to their account
   # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
   # @param [Boolean] in_account_creation_flow whether user is going through creation flow
   def multi_factor_auth_added_piv_cac(enabled_mfa_methods_count:, in_account_creation_flow:,
                                       **extra)
     track_event(
-      'Multi-Factor Authentication: Added PIV_CAC',
+      'Multi-Factor Authentication: Added PIV CAC',
       {
         method_name: :piv_cac,
         enabled_mfa_methods_count:,
@@ -3403,12 +3404,13 @@ module AnalyticsEvents
     track_event('PIV CAC disabled')
   end
 
+  # @identity.idp.previous_event_name PIV/CAC login
   # @param [Boolean] success
   # @param [Hash] errors
   # tracks piv cac login event
   def piv_cac_login(success:, errors:, **extra)
     track_event(
-      'PIV/CAC Login',
+      'PIV CAC login',
       success: success,
       errors: errors,
       **extra,
@@ -3416,7 +3418,7 @@ module AnalyticsEvents
   end
 
   def piv_cac_login_visited
-    track_event('PIV/CAC Login visited')
+    track_event('PIV CAC login visited')
   end
 
   # @identity.idp.previous_event_name User Registration: piv cac setup visited
