@@ -26,7 +26,7 @@ RSpec.describe ReactivateAccountController do
       end
     end
 
-    context 'wthout a password reset profile' do
+    context 'without a password reset profile' do
       let(:profiles) { [create(:profile, :active)] }
       it 'redirects to the root url' do
         get :index
