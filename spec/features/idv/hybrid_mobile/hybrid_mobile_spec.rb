@@ -208,6 +208,13 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
         fill_out_ssn_form_ok
         click_idv_continue
 
+        expect(page).to have_current_path(idv_verify_info_path, wait: 10)
+
+        # verify pii is displayed
+        expect(page).to have_text('DAVID')
+        expect(page).to have_text('SAMPLE')
+        expect(page).to have_text('123 ABC AVE')
+
         warning_link_text = t('doc_auth.headings.capture_scan_warning_link')
         click_link warning_link_text
 
@@ -227,6 +234,16 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
 
       perform_in_browser(:desktop) do
         expect(page).to have_current_path(idv_verify_info_path, wait: 10)
+
+        # verify orig pii no longer displayed
+        expect(page).not_to have_text('DAVID')
+        expect(page).not_to have_text('SAMPLE')
+        expect(page).not_to have_text('123 ABC AVE')
+        # verify new pii from redo is displayed
+        expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT[:first_name])
+        expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT[:last_name])
+        expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT[:address_1])
+
         click_idv_continue
       end
     end
