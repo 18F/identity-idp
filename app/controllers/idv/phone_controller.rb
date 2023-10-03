@@ -7,7 +7,8 @@ module Idv
 
     attr_reader :idv_form
 
-    before_action :confirm_verify_info_step_complete
+    # before_action :confirm_verify_info_step_complete
+    before_action :confirm_step_allowed
     before_action :confirm_step_needed
     before_action :set_idv_form
     skip_before_action :confirm_not_rate_limited, only: :new

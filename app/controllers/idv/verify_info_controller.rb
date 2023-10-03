@@ -5,13 +5,15 @@ module Idv
     include VerifyInfoConcern
     include Steps::ThreatMetrixStepHelper
 
-    before_action :confirm_ssn_step_complete
+    # before_action :confirm_ssn_step_complete
+    before_action :confirm_step_allowed
     before_action :confirm_verify_info_step_needed
     skip_before_action :confirm_not_rate_limited, only: :show
 
     def show
       @step_indicator_steps = step_indicator_steps
       @ssn = idv_session.ssn
+      pii
 
       analytics.idv_doc_auth_verify_visited(**analytics_arguments)
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).

@@ -6,7 +6,8 @@ module Idv
     include ThreatMetrixConcern
 
     before_action :confirm_verify_info_step_needed
-    before_action :confirm_document_capture_complete
+    before_action :confirm_step_allowed
+    # before_action :confirm_document_capture_complete
     before_action :confirm_repeat_ssn, only: :show
     before_action :override_csp_for_threat_metrix
 

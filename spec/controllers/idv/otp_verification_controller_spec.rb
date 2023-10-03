@@ -29,6 +29,10 @@ RSpec.describe Idv::OtpVerificationController do
     sign_in(user)
     stub_verify_steps_one_and_two(user)
     subject.idv_session.applicant[:phone] = phone
+    subject.idv_session.welcome_visited = true
+    subject.idv_session.idv_consent_given = true
+    subject.idv_session.flow_path = 'standard'
+    subject.idv_session.ssn = '666666666'
     subject.idv_session.vendor_phone_confirmation = true
     subject.idv_session.user_phone_confirmation = user_phone_confirmation
     subject.idv_session.user_phone_confirmation_session = user_phone_confirmation_session

@@ -3,7 +3,8 @@ module Idv
     include IdvStepConcern
     include StepIndicatorConcern
 
-    before_action :confirm_welcome_step_complete
+    # before_action :confirm_welcome_step_complete
+    before_action :confirm_step_allowed
     before_action :confirm_agreement_needed
 
     def show
