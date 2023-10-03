@@ -1,5 +1,3 @@
-require 'csv'
-
 module Reporting
   class AccountReuseAndTotalIdentitiesReport
     attr_reader :report_date
