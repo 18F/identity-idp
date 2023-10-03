@@ -170,7 +170,7 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
       context 'with sp' do
         let(:service_provider) { build(:service_provider) }
 
-        it 'returns piv cac required warning text for service provider' do
+        it 'returns phishing resistant required warning text for service provider' do
           expect(restricted_options_warning_text).to eq(
             t(
               'two_factor_authentication.aal2_request.phishing_resistant_html',
@@ -199,7 +199,7 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
       context 'with sp' do
         let(:service_provider) { build(:service_provider) }
 
-        it 'returns phishing resistant required warning text for service provider' do
+        it 'returns piv cac required warning text for service provider' do
           expect(restricted_options_warning_text).to eq(
             t(
               'two_factor_authentication.aal2_request.piv_cac_only_html',
