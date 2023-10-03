@@ -21,7 +21,7 @@ module Idv
     NEXT_STEPS = Hash.new([])
     NEXT_STEPS.merge!(
       {
-        root: [:welcome, :getting_started],
+        root: [:welcome],
         welcome: [:agreement],
         agreement: [:hybrid_handoff, :document_capture],
         hybrid_handoff: [:link_sent, :document_capture],
@@ -102,12 +102,7 @@ module Idv
     end
 
     def welcome
-      bucket = AbTests::IDV_GETTING_STARTED.bucket(user.uuid)
-      bucket == :welcome_default || bucket == :welcome_new
-    end
-
-    def getting_started
-      AbTests::IDV_GETTING_STARTED.bucket(user.uuid) == :getting_started
+      return true
     end
 
     def agreement
