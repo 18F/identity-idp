@@ -22,17 +22,6 @@ RSpec.describe 'Idv::AllowedStep' do
     it 'allows the welcome step' do
       expect(subject.step_allowed?(step: :welcome)).to be true
     end
-
-    context 'a/b test' do
-      before do
-        allow(AbTests::IDV_GETTING_STARTED).to receive(:bucket).and_return(:getting_started)
-      end
-
-      it 'allows the getting started step' do
-        expect(subject.step_allowed?(step: :welcome)).to be false
-        expect(subject.step_allowed?(step: :getting_started)).to be true
-      end
-    end
   end
 
   context '#latest_step' do
