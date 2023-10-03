@@ -24,6 +24,14 @@ module IdvStepConcern
     redirect_to idv_in_person_ready_to_verify_url if current_user&.pending_in_person_enrollment
   end
 
+  def confirm_step_allowed
+    allowed_step_checker = Idv::AllowedStep.new(idv_session: idv_session, user: current_user)
+
+    return if allowed_step_checker.path_allowed?(path: request.path)
+
+    redirect_to allowed_step_checker.path_for_latest_step
+  end
+
   def check_for_mail_only_outage
     return if idv_session.mail_only_warning_shown
 
