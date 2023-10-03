@@ -88,7 +88,7 @@
     "stylelint": "^15.10.1",
     "svgo": "^2.8.0",
     "swr": "^2.0.0",
-    "typescript": "^5.0.4",
+    "typescript": "^5.2.2",
     "webpack-dev-server": "^4.11.1"
   },
   "resolutions": {
