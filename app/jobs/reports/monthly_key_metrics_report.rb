@@ -53,8 +53,8 @@ module Reports
       emails
     end
 
-    def account_reuse_queries
-      @account_reuse_queries ||= Reporting::AccountReuseAndTotalIdentitiesReport.new(report_date)
+    def account_reuse_report
+      @account_reuse_report ||= Reporting::AccountReuseAndTotalIdentitiesReport.new(report_date)
     end
 
     def upload_to_s3(report_body, report_name: nil)
