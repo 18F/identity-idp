@@ -8,6 +8,7 @@ en:
     buttons:
       add_new_photos: Add new photos
       continue: Continue
+      have_phone: Yes, I have a phone
       take_or_upload_picture_html: '<lg-take-photo>Take photo</lg-take-photo> or
         <lg-upload>Upload photo</lg-upload>'
       take_picture: Take photo
@@ -143,6 +144,7 @@ en:
       hybrid_handoff: How would you like to add your ID?
       interstitial: We are processing your images
       lets_go: How verifying your identity works
+      phone_question: Do you have a phone you can use to take photos of your ID?
       review_issues: Check your images and try again
       secure_account: Secure your account
       ssn: Enter your Social Security number
@@ -230,6 +232,8 @@ en:
         - '<strong>Verify by mail</strong>: We’ll mail a letter to your home
           address. This takes <strong>5 to 10 days</strong>.'
       welcome: 'You will need your:'
+    phone_question:
+      do_not_have: I don’t have a phone
     tips:
       document_capture_header_text: 'For best results:'
       document_capture_hint: Must be a JPG or PNG

@@ -1,10 +1,6 @@
 @use 'uswds-core' as *;
 @use '../variables/app' as *;
 
-body {
-  -webkit-font-smoothing: antialiased;
-}
-
 .text-wrap-anywhere {
   overflow-wrap: anywhere;
 }

@@ -49,7 +49,7 @@ module MultiRegionKmsMigration
         ).where(
           'encrypted_pii IS NOT NULL',
           'encrypted_pii_recovery IS NOT NULL',
-        ).limit(profile_count)
+        ).limit(profile_count).to_a
       end
     end
 

@@ -22,6 +22,8 @@ describe('document-capture/context/failed-capture-attempts', () => {
       'onFailedSubmissionAttempt',
       'onResetFailedCaptureAttempts',
       'maxCaptureAttemptsBeforeNativeCamera',
+      'onFailedCameraPermissionAttempt',
+      'failedCameraPermissionAttempts',
       'maxSubmissionAttemptsBeforeNativeCamera',
       'lastAttemptMetadata',
       'failedSubmissionImageFingerprints',
