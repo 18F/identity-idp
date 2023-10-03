@@ -242,7 +242,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
         # verify new pii from redo is displayed
         expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT[:first_name])
         expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT[:last_name])
-        expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT[:address_1])
+        expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT[:address1])
 
         click_idv_continue
       end
