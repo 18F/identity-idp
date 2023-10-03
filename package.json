@@ -86,7 +86,7 @@
     "sinon": "^14.0.0",
     "sinon-chai": "^3.7.0",
     "stylelint": "^15.10.1",
-    "svgo": "^2.8.0",
+    "svgo": "^3.0.2",
     "swr": "^2.0.0",
     "typescript": "^5.0.4",
     "webpack-dev-server": "^4.11.1"
