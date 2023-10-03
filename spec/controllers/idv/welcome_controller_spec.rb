@@ -76,6 +76,16 @@ RSpec.describe Idv::WelcomeController do
 
         expect(response).to render_template('idv/welcome/show')
       end
+
+      context 'and document capture already completed' do
+        before do
+          subject.idv_session.pii_from_doc = { first_name: 'Susan' }
+        end
+        it 'redirects to phone step' do
+          get :show
+          expect(response).to redirect_to(idv_phone_url)
+        end
+      end
     end
 
     it 'redirects to please call page if fraud review is pending' do
