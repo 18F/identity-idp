@@ -61,18 +61,95 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
       )
   end
 
-  context 'with multiple webauthn configurations' do
-    let(:user) { create(:user) }
-    before(:each) do
-      create_list(:webauthn_configuration, 2, user: user)
-      user.webauthn_configurations.reload
+  describe '#options' do
+    let(:user) do
+      create(
+        :user,
+        :fully_registered,
+        :with_webauthn,
+        :with_webauthn_platform,
+        :with_phone,
+        :with_piv_or_cac,
+        :with_personal_key,
+        :with_backup_code,
+        :with_authentication_app,
+      )
+    end
+
+    subject(:options) { presenter.options }
+    let(:options_classes) { options.map(&:class) }
+
+    it 'returns classes for mfas associated with account' do
+      expect(options_classes).to contain_exactly(
+        TwoFactorAuthentication::SmsSelectionPresenter,
+        TwoFactorAuthentication::VoiceSelectionPresenter,
+        TwoFactorAuthentication::WebauthnSelectionPresenter,
+        TwoFactorAuthentication::BackupCodeSelectionPresenter,
+        TwoFactorAuthentication::PivCacSelectionPresenter,
+        TwoFactorAuthentication::SignInAuthAppSelectionPresenter,
+        TwoFactorAuthentication::PersonalKeySelectionPresenter,
+      )
     end
 
     it 'has only one webauthn selection presenter' do
-      webauthn_selection_presenters = presenter.options.map(&:class).select do |klass|
+      webauthn_selection_presenter_count = options_classes.count do |klass|
         klass == TwoFactorAuthentication::WebauthnSelectionPresenter
       end
-      expect(webauthn_selection_presenters.count).to eq 1
+
+      expect(webauthn_selection_presenter_count).to eq 1
+    end
+
+    context 'piv cac required' do
+      let(:piv_cac_required) { true }
+
+      it 'filters to piv method' do
+        expect(options_classes).to contain_exactly(
+          TwoFactorAuthentication::PivCacSelectionPresenter,
+        )
+      end
+
+      context 'in reauthentication context' do
+        let(:reauthentication_context) { true }
+
+        it 'returns all mfas associated with account' do
+          expect(options_classes).to contain_exactly(
+            TwoFactorAuthentication::SmsSelectionPresenter,
+            TwoFactorAuthentication::VoiceSelectionPresenter,
+            TwoFactorAuthentication::WebauthnSelectionPresenter,
+            TwoFactorAuthentication::BackupCodeSelectionPresenter,
+            TwoFactorAuthentication::PivCacSelectionPresenter,
+            TwoFactorAuthentication::SignInAuthAppSelectionPresenter,
+            TwoFactorAuthentication::PersonalKeySelectionPresenter,
+          )
+        end
+      end
+    end
+
+    context 'phishing resistant required' do
+      let(:phishing_resistant_required) { true }
+
+      it 'filters to phishing resistant methods' do
+        expect(options_classes).to contain_exactly(
+          TwoFactorAuthentication::WebauthnSelectionPresenter,
+          TwoFactorAuthentication::PivCacSelectionPresenter,
+        )
+      end
+
+      context 'in reauthentication context' do
+        let(:reauthentication_context) { true }
+
+        it 'returns all mfas associated with account' do
+          expect(options_classes).to contain_exactly(
+            TwoFactorAuthentication::SmsSelectionPresenter,
+            TwoFactorAuthentication::VoiceSelectionPresenter,
+            TwoFactorAuthentication::WebauthnSelectionPresenter,
+            TwoFactorAuthentication::BackupCodeSelectionPresenter,
+            TwoFactorAuthentication::PivCacSelectionPresenter,
+            TwoFactorAuthentication::SignInAuthAppSelectionPresenter,
+            TwoFactorAuthentication::PersonalKeySelectionPresenter,
+          )
+        end
+      end
     end
   end
 
@@ -90,33 +167,10 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
         )
       end
 
-      context 'piv cac required' do
-        let(:piv_cac_required) { true }
-
-        it 'returns piv cac required warning text for app' do
-          expect(restricted_options_warning_text).to eq(
-            t('two_factor_authentication.aal2_request.piv_cac_only_html', sp_name: APP_NAME),
-          )
-        end
-
-        context 'with sp' do
-          let(:service_provider) { build(:service_provider) }
-
-          it 'returns piv cac required warning text for service provider' do
-            expect(restricted_options_warning_text).to eq(
-              t(
-                'two_factor_authentication.aal2_request.piv_cac_only_html',
-                sp_name: service_provider.friendly_name,
-              ),
-            )
-          end
-        end
-      end
-
       context 'with sp' do
         let(:service_provider) { build(:service_provider) }
 
-        it 'returns phishing resistant required warning text for service provider' do
+        it 'returns piv cac required warning text for service provider' do
           expect(restricted_options_warning_text).to eq(
             t(
               'two_factor_authentication.aal2_request.phishing_resistant_html',
@@ -124,6 +178,12 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
             ),
           )
         end
+      end
+
+      context 'in reauthentication context' do
+        let(:reauthentication_context) { true }
+
+        it { should be_nil }
       end
     end
 
@@ -139,7 +199,7 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
       context 'with sp' do
         let(:service_provider) { build(:service_provider) }
 
-        it 'returns piv cac required warning text for service provider' do
+        it 'returns phishing resistant required warning text for service provider' do
           expect(restricted_options_warning_text).to eq(
             t(
               'two_factor_authentication.aal2_request.piv_cac_only_html',
@@ -147,6 +207,12 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
             ),
           )
         end
+      end
+
+      context 'in reauthentication context' do
+        let(:reauthentication_context) { true }
+
+        it { should be_nil }
       end
     end
   end
