@@ -140,14 +140,26 @@ RSpec.describe Idv::LinkSentController do
         allow(subject).to receive(:document_capture_session).and_return(document_capture_session)
       end
 
-      it 'redirects to ssn page when successful' do
-        put :update
+      context 'document capture session successful' do
+        it 'redirects to ssn page' do
+          put :update
 
-        expect(response).to redirect_to(idv_ssn_url)
+          expect(response).to redirect_to(idv_ssn_url)
 
-        pc = ProofingComponent.find_by(user_id: user.id)
-        expect(pc.document_check).to eq('mock')
-        expect(pc.document_type).to eq('state_id')
+          pc = ProofingComponent.find_by(user_id: user.id)
+          expect(pc.document_check).to eq('mock')
+          expect(pc.document_type).to eq('state_id')
+        end
+
+        context 'redo document capture' do
+          before do
+            subject.idv_session.redo_document_capture = true
+          end
+          it 'resets redo_document capture to nil in idv_session' do
+            put :update
+            expect(subject.idv_session.redo_document_capture).to be_nil
+          end
+        end
       end
 
       context 'document capture session canceled' do

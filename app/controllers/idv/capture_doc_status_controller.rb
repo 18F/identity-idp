@@ -5,7 +5,6 @@ module Idv
     respond_to :json
 
     def show
-      idv_session.redo_document_capture = nil if status == :ok
       render(json: { redirect: redirect_url }.compact, status: status)
     end
 

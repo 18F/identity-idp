@@ -103,16 +103,6 @@ RSpec.describe Idv::CaptureDocStatusController do
 
         expect(response.status).to eq(200)
       end
-
-      context 'when redo document capture' do
-        before do
-          idv_session[:redo_document_capture] = true
-        end
-        it 'resets redo_document capture in idv_session' do
-          get :show
-          expect(controller.user_session[:idv][:redo_document_capture]).to be_nil
-        end
-      end
     end
 
     context 'when capture succeeded with barcode attention' do
