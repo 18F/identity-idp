@@ -22,11 +22,11 @@ module Reports
             float_as_percent: true,
             precision: 4,
           },
-          account_reuse_table,
+          *account_reuse_table,
         ],
         [
           { title: 'Total proofed identities' },
-          total_profiles_table,
+          *total_profiles_table,
         ],
       ]
 
