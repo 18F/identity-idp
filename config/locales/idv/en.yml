@@ -32,8 +32,9 @@ en:
             - You will still have a %{app_name} account. You can manage or
               delete your account on your %{account_page_text}.
         gpo:
-          start_over: To mail your letter to another address, you'll need to start over and verify your identity with the new address
           continue: Continue to start over and verify your identity from the beginning.
+          start_over: To mail your letter to another address, you’ll need to start over
+            and verify your identity with the new address
           warnings:
             - The one-time code in your letter will no longer work
             - You will start over verifying your identity from the beginning
@@ -51,7 +52,7 @@ en:
           hybrid: Are you sure you want to cancel uploading photos of your ID on this
             phone?
           standard: Cancel verifying your identity?
-        start_over: Start over verifying your identity
+        start_over: Start over verifying your identity?
     errors:
       incorrect_password: The password you entered is not correct.
       mail_limit_reached: You have requested too much mail in the last month.
