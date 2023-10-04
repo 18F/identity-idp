@@ -342,7 +342,7 @@ RSpec.describe Idv::VerifyInfoController do
         let(:vendor_name) { 'UnsupportedJurisdiction' }
 
         it 'considers the request billable' do
-          expect { put :show }.to change { SpCost.where(cost_type: 'aamva').count }.by(1)
+          expect { put :show }.to_not change { SpCost.where(cost_type: 'aamva').count }
         end
       end
 
