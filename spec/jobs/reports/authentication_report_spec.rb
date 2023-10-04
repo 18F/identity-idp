@@ -26,25 +26,26 @@ RSpec.describe Reports::AuthenticationReport do
     let(:tables) do
       [
         [
+          { title: 'Overview' },
           ['Report Timeframe', '2023-10-01 00:00:00 UTC to 2023-10-01 23:59:59 UTC'],
           ['Report Generated', '2023-10-02'],
           ['Issuer', 'some:issuer'],
-          [],
+          ['Total # of IAL1 Users', '75'],
+        ],
+        [
+          { title: 'Authentication Metrics Report' },
           ['Metric', 'Number of accounts', '% of total from start'],
           ['New Users Started IAL1 Verification', '100', '100%'],
           ['New Users Completed IAL1 Password Setup', '85', '85%'],
           ['New Users Completed IAL1 MFA', '80', '80%'],
           ['New IAL1 Users Consented to Partner', '75', '75%'],
-          [],
-          ['Total # of IAL1 Users', '75'],
-          [],
           ['AAL2 Authentication Requests from Partner', '12', '12%'],
           ['AAL2 Authenticated Requests', '50', '50%'],
         ],
       ]
     end
 
-    let(:weekly_report) { double(Reporting::AuthenticationReport, as_csv: tables) }
+    let(:weekly_report) { double(Reporting::AuthenticationReport, as_tables_with_options: tables) }
 
     before do
       expect(Reporting::AuthenticationReport).to receive(:new).with(
