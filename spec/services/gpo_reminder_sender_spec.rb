@@ -54,11 +54,19 @@ RSpec.describe GpoReminderSender do
       user.
         gpo_verification_pending_profile.
         update(gpo_verification_pending_at: to_time)
+
+      user.
+        gpo_verification_pending_profile.
+        gpo_confirmation_codes.each do |code|
+          code.update(code_sent_at: to_time, created_at: to_time, updated_at: to_time)
+        end
     end
 
     def set_reminder_sent_at(to_time)
       gpo_confirmation_code.update(
         reminder_sent_at: to_time,
+        created_at: to_time,
+        updated_at: to_time,
       )
     end
 
@@ -72,17 +80,20 @@ RSpec.describe GpoReminderSender do
 
     context 'when a user has requested two letters' do
       before do
-        set_gpo_verification_pending_at(user, time_due_for_reminder - 2.days)
-        new_confirmation_code = create(:gpo_confirmation_code)
+        timestamp = time_due_for_reminder - 2.days
+        set_gpo_verification_pending_at(user, timestamp)
+        new_confirmation_code = create(:gpo_confirmation_code, created_at: timestamp)
         user.gpo_verification_pending_profile.gpo_confirmation_codes << new_confirmation_code
       end
 
       include_examples 'sends emails', expected_number_of_emails: 2
 
-      it 'updates the GPO verification code `reminder_sent_at`' do
+      it 'updates the GPO verification code `reminder_sent_at` for the both codes' do
         subject.send_emails(time_due_for_reminder)
+        user.gpo_verification_pending_profile.gpo_confirmation_codes.each(&:reload)
 
-        expect(gpo_confirmation_code.reminder_sent_at).to be_within(1.second).of(Time.zone.now)
+        expect(user.gpo_verification_pending_profile.gpo_confirmation_codes[0].reminder_sent_at).to be_within(1.second).of(Time.zone.now)
+        expect(user.gpo_verification_pending_profile.gpo_confirmation_codes[1].reminder_sent_at).to be_within(1.second).of(Time.zone.now)
       end
     end
 
@@ -93,6 +104,7 @@ RSpec.describe GpoReminderSender do
 
       it 'updates the GPO verification code `reminder_sent_at`' do
         subject.send_emails(time_due_for_reminder)
+        gpo_confirmation_code.reload
 
         expect(gpo_confirmation_code.reminder_sent_at).to be_within(1.second).of(Time.zone.now)
       end
@@ -106,6 +118,7 @@ RSpec.describe GpoReminderSender do
 
         it 'updates the GPO verification code `reminder_sent_at`' do
           subject.send_emails(time_due_for_reminder)
+          gpo_confirmation_code.reload
 
           expect(gpo_confirmation_code.reminder_sent_at).to be_within(1.second).of(Time.zone.now)
         end
