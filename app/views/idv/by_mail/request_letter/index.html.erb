@@ -41,23 +41,4 @@
                 class: 'usa-button usa-button--big usa-button--wide' %>
 </div>
 
-<% if @presenter.show_troubleshooting_options? %>
-  <%= render(
-        'shared/troubleshooting_options',
-        heading: t('components.troubleshooting_options.default_heading'),
-        options: [
-          {
-            url: help_center_redirect_url(
-              category: 'verify-your-identity',
-              article: 'verify-your-address-by-mail',
-              flow: :idv,
-              step: :gpo_send_letter,
-            ),
-            text: t('idv.troubleshooting.options.learn_more_verify_by_mail'),
-            new_tab: true,
-          },
-        ],
-      ) %>
-<% end %>
-
 <%= render @presenter.back_or_cancel_partial, @presenter.back_or_cancel_parameters %>
