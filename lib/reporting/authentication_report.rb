@@ -105,9 +105,13 @@ module Reporting
     end
 
     def as_tables_with_options
-      as_tables.each_with_index.map do |table, index|
-        title = (index == 0) ? 'Overview' : 'Authentication Funnel Metrics'
-        table.unshift({ title: })
+      as_tables.zip(
+        [
+          { title: 'Overview' },
+          { title: 'Authentication Funnel Metrics' },
+        ],
+      ).map do |table, options|
+        [options, *table]
       end
     end
 
