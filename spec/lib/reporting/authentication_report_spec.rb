@@ -59,9 +59,9 @@ RSpec.describe Reporting::AuthenticationReport do
     end
   end
 
-  describe '#to_csv' do
+  describe '#to_csvs' do
     it 'generates a csv' do
-      csv_string_list = report.to_csv
+      csv_string_list = report.to_csvs
       expect(csv_string_list.count).to be 2
 
       csvs = csv_string_list.map { |csv| CSV.parse(csv) }

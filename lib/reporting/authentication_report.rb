@@ -111,7 +111,7 @@ module Reporting
       end
     end
 
-    def to_csv
+    def to_csvs
       as_tables.map do |table|
         CSV.generate do |csv|
           table.each do |row|
@@ -213,7 +213,7 @@ end
 if __FILE__ == $PROGRAM_NAME
   options = Reporting::CommandLineOptions.new.parse!(ARGV)
 
-  Reporting::AuthenticationReport.new(**options).to_csv.each do |csv|
+  Reporting::AuthenticationReport.new(**options).to_csvs.each do |csv|
     puts csv
   end
 end
