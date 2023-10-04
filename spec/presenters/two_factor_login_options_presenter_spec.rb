@@ -80,14 +80,16 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
     let(:options_classes) { options.map(&:class) }
 
     it 'returns classes for mfas associated with account' do
-      expect(options_classes).to contain_exactly(
-        TwoFactorAuthentication::SmsSelectionPresenter,
-        TwoFactorAuthentication::VoiceSelectionPresenter,
-        TwoFactorAuthentication::WebauthnSelectionPresenter,
-        TwoFactorAuthentication::BackupCodeSelectionPresenter,
-        TwoFactorAuthentication::PivCacSelectionPresenter,
-        TwoFactorAuthentication::SignInAuthAppSelectionPresenter,
-        TwoFactorAuthentication::PersonalKeySelectionPresenter,
+      expect(options_classes).to eq(
+        [
+          TwoFactorAuthentication::SmsSelectionPresenter,
+          TwoFactorAuthentication::VoiceSelectionPresenter,
+          TwoFactorAuthentication::WebauthnSelectionPresenter,
+          TwoFactorAuthentication::BackupCodeSelectionPresenter,
+          TwoFactorAuthentication::PivCacSelectionPresenter,
+          TwoFactorAuthentication::SignInAuthAppSelectionPresenter,
+          TwoFactorAuthentication::PersonalKeySelectionPresenter,
+        ],
       )
     end
 
@@ -103,23 +105,23 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
       let(:piv_cac_required) { true }
 
       it 'filters to piv method' do
-        expect(options_classes).to contain_exactly(
-          TwoFactorAuthentication::PivCacSelectionPresenter,
-        )
+        expect(options_classes).to eq([TwoFactorAuthentication::PivCacSelectionPresenter])
       end
 
       context 'in reauthentication context' do
         let(:reauthentication_context) { true }
 
         it 'returns all mfas associated with account' do
-          expect(options_classes).to contain_exactly(
-            TwoFactorAuthentication::SmsSelectionPresenter,
-            TwoFactorAuthentication::VoiceSelectionPresenter,
-            TwoFactorAuthentication::WebauthnSelectionPresenter,
-            TwoFactorAuthentication::BackupCodeSelectionPresenter,
-            TwoFactorAuthentication::PivCacSelectionPresenter,
-            TwoFactorAuthentication::SignInAuthAppSelectionPresenter,
-            TwoFactorAuthentication::PersonalKeySelectionPresenter,
+          expect(options_classes).to eq(
+            [
+              TwoFactorAuthentication::SmsSelectionPresenter,
+              TwoFactorAuthentication::VoiceSelectionPresenter,
+              TwoFactorAuthentication::WebauthnSelectionPresenter,
+              TwoFactorAuthentication::BackupCodeSelectionPresenter,
+              TwoFactorAuthentication::PivCacSelectionPresenter,
+              TwoFactorAuthentication::SignInAuthAppSelectionPresenter,
+              TwoFactorAuthentication::PersonalKeySelectionPresenter,
+            ],
           )
         end
       end
@@ -129,9 +131,11 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
       let(:phishing_resistant_required) { true }
 
       it 'filters to phishing resistant methods' do
-        expect(options_classes).to contain_exactly(
-          TwoFactorAuthentication::WebauthnSelectionPresenter,
-          TwoFactorAuthentication::PivCacSelectionPresenter,
+        expect(options_classes).to eq(
+          [
+            TwoFactorAuthentication::WebauthnSelectionPresenter,
+            TwoFactorAuthentication::PivCacSelectionPresenter,
+          ],
         )
       end
 
@@ -139,14 +143,16 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
         let(:reauthentication_context) { true }
 
         it 'returns all mfas associated with account' do
-          expect(options_classes).to contain_exactly(
-            TwoFactorAuthentication::SmsSelectionPresenter,
-            TwoFactorAuthentication::VoiceSelectionPresenter,
-            TwoFactorAuthentication::WebauthnSelectionPresenter,
-            TwoFactorAuthentication::BackupCodeSelectionPresenter,
-            TwoFactorAuthentication::PivCacSelectionPresenter,
-            TwoFactorAuthentication::SignInAuthAppSelectionPresenter,
-            TwoFactorAuthentication::PersonalKeySelectionPresenter,
+          expect(options_classes).to eq(
+            [
+              TwoFactorAuthentication::SmsSelectionPresenter,
+              TwoFactorAuthentication::VoiceSelectionPresenter,
+              TwoFactorAuthentication::WebauthnSelectionPresenter,
+              TwoFactorAuthentication::BackupCodeSelectionPresenter,
+              TwoFactorAuthentication::PivCacSelectionPresenter,
+              TwoFactorAuthentication::SignInAuthAppSelectionPresenter,
+              TwoFactorAuthentication::PersonalKeySelectionPresenter,
+            ],
           )
         end
       end
