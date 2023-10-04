@@ -37,9 +37,6 @@ es:
             principio.
           start_over: Para enviar su carta a otra dirección, tendrá que empezar de nuevo y
             verificar su identidad con la nueva dirección.
-          warnings:
-            - El código único de tu carta ya no funcionará
-            - Tendrás que volver a verificar tu identidad otra vez
         hybrid: Si cancela ahora, se le pedirá regresar a su computadora para continuar
           con la verificación de su identidad.
         start_over: Si vuelve a empezar, reiniciará este proceso desde el principio.

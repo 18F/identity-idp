@@ -36,10 +36,6 @@ fr:
           continue: Recommencez et vérifiez votre identité depuis le début.
           start_over: Pour envoyer votre lettre à une autre adresse, vous devrez
             recommencer et vérifier votre identité à la nouvelle adresse.
-          warnings:
-            - Le code à usage unique dans votre lettre ne fonctionnera plus
-            - Vous recommencerez la vérification de votre identité depuis le
-              début
         hybrid: Si vous annulez maintenant, vous serez invité à retourner sur votre
           ordinateur pour continuer à vérifier votre identité.
         start_over: Si vous recommencez, vous reprendrez ce processus depuis le début.
