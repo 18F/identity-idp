@@ -32,8 +32,6 @@ class Profile < ApplicationRecord
 
   attr_reader :personal_key
 
-  default_scope where.not(cancelled_or_encryption_error)
-
   # Class methods
   def self.active
     where(active: true)
@@ -59,9 +57,11 @@ class Profile < ApplicationRecord
     where.not(in_person_verification_pending_at: nil)
   end
 
-  def self.cancelled_or_encryption_error
-    where(deactivation_reason: [:encryption_error, :verification_cancelled])
+  def self.not_cancelled_or_encryption_error
+    where.not(deactivation_reason: [:encryption_error, :verification_cancelled])
   end
+
+  default_scope { not_cancelled_or_encryption_error }
 
   # Instance methods
   def fraud_review_pending?
