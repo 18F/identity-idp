@@ -98,7 +98,7 @@ RSpec.feature 'idv gpo otp verification step' do
     end
   end
 
-  context 'warning alert banner for gpo letter spammed', :js do
+  context 'warning alert banner for gpo letter spammed' do
     context 'when gpo letter is not spammed' do
       it 'does not display warning banner' do
         gpo_confirmation_code.update!(updated_at: Time.zone.now - 1.day)
