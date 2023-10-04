@@ -156,7 +156,7 @@ module Idv
       end
 
       def last_date_letter_was_sent
-        current_user.gpo_verification_pending_profile&.gpo_confirmation_codes.pluck(:updated_at).max
+        current_user.gpo_verification_pending_profile&.gpo_confirmation_codes&.pluck(:updated_at)&.max
       end
     end
   end

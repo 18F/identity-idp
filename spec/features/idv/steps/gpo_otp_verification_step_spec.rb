@@ -105,11 +105,15 @@ RSpec.feature 'idv gpo otp verification step' do
         sign_in_live_with_2fa(user)
 
         expect(current_path).to eq idv_verify_by_mail_enter_code_path
-        expect(page).not_to have_content strip_tags(t(
-          'idv.gpo.alert_spam_warning_html',
-          date_letter_was_sent: I18n.l(gpo_confirmation_code.updated_at,
-          format: :event_date),
-        ))
+        expect(page).not_to have_content strip_tags(
+          t(
+            'idv.gpo.alert_spam_warning_html',
+            date_letter_was_sent: I18n.l(
+              gpo_confirmation_code.updated_at,
+              format: :event_date,
+            ),
+          ),
+        )
       end
     end
 
@@ -117,11 +121,15 @@ RSpec.feature 'idv gpo otp verification step' do
       it 'displays warning banner' do
         sign_in_live_with_2fa(user)
         expect(current_path).to eq idv_verify_by_mail_enter_code_path
-        expect(page).not_to have_content strip_tags(t(
-          'idv.gpo.alert_spam_warning_html',
-          date_letter_was_sent: I18n.l(gpo_confirmation_code.updated_at,
-          format: :event_date),
-        ))
+        expect(page).not_to have_content strip_tags(
+          t(
+            'idv.gpo.alert_spam_warning_html',
+            date_letter_was_sent: I18n.l(
+              gpo_confirmation_code.updated_at,
+              format: :event_date,
+            ),
+          ),
+        )
       end
     end
 
@@ -135,11 +143,15 @@ RSpec.feature 'idv gpo otp verification step' do
         )
         sign_in_live_with_2fa(user)
         expect(current_path).to eq idv_verify_by_mail_enter_code_path
-        expect(page).not_to have_content strip_tags(t(
-          'idv.gpo.alert_spam_warning_html',
-          date_letter_was_sent: I18n.l(latest_gpo_confirmation_code.updated_at,
-          format: :event_date),
-        ))
+        expect(page).not_to have_content strip_tags(
+          t(
+            'idv.gpo.alert_spam_warning_html',
+            date_letter_was_sent: I18n.l(
+              latest_gpo_confirmation_code.updated_at,
+              format: :event_date,
+            ),
+          ),
+        )
       end
     end
   end
