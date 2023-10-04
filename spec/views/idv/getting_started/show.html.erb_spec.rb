@@ -36,7 +36,7 @@ RSpec.describe 'idv/getting_started/show' do
   it 'includes code to track clicks on the consent checkbox' do
     selector = [
       'lg-click-observer[event-name="IdV: consent checkbox toggled"]',
-      '[name="doc_auth[ial2_consent_given]"]',
+      '[name="doc_auth[idv_consent_given]"]',
     ].join ' '
 
     expect(rendered).to have_css(selector)
