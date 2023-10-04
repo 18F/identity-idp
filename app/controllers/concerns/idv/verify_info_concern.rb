@@ -333,6 +333,7 @@ module Idv
         elsif stage == :state_id
           next if hash[:exception].present?
           next if hash[:vendor_name] == 'UnsupportedJurisdiction'
+          # transaction_id comes from TransactionLocatorId
           add_cost(:aamva, transaction_id: hash[:transaction_id])
           track_aamva
         elsif stage == :threatmetrix
