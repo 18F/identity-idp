@@ -98,11 +98,4 @@ class DocumentCaptureSession < ApplicationRecord
   def generate_result_id
     self.result_id = SecureRandom.uuid
   end
-
-  def new_session_result
-    DocumentCaptureSessionResult.new(
-      id: generate_result_id,
-      captured_at: Time.zone.now,
-    )
-  end
 end
