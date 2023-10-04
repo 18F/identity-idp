@@ -48,7 +48,7 @@ module IdvStepConcern
   def confirm_hybrid_handoff_needed
     setup_for_redo if params[:redo]
 
-    if idv_session.skip_hybrid_handoff?
+    if idv_session.skip_hybrid_handoff? || params[:no_phone]
       # We previously skipped hybrid handoff. Keep doing that.
       idv_session.flow_path = 'standard'
     end
