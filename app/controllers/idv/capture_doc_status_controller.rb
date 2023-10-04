@@ -20,7 +20,8 @@ module Idv
           :too_many_requests
         elsif confirmed_barcode_attention_result? || user_has_establishing_in_person_enrollment?
           :ok
-        elsif session_result.blank? || pending_barcode_attention_confirmation? || redo_document_capture_pending?
+        elsif session_result.blank? || pending_barcode_attention_confirmation? ||
+              redo_document_capture_pending?
           :accepted
         elsif !session_result.success?
           :unauthorized
@@ -68,11 +69,13 @@ module Idv
     end
 
     def confirmed_barcode_attention_result?
-      !redo_document_capture_pending? && had_barcode_attention_result? && !document_capture_session.ocr_confirmation_pending?
+      !redo_document_capture_pending? && had_barcode_attention_result? &&
+        !document_capture_session.ocr_confirmation_pending?
     end
 
     def pending_barcode_attention_confirmation?
-      !redo_document_capture_pending? && had_barcode_attention_result? && document_capture_session.ocr_confirmation_pending?
+      !redo_document_capture_pending? && had_barcode_attention_result? &&
+        document_capture_session.ocr_confirmation_pending?
     end
 
     def had_barcode_attention_result?
