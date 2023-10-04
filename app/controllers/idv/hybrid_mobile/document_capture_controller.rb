@@ -75,7 +75,7 @@ module Idv
       end
 
       def redo_document_capture_pending?
-        return unless stored_result&.captured_at
+        return unless stored_result&.dig(:captured_at)
         return unless document_capture_session.requested_at
 
         document_capture_session.requested_at > stored_result.captured_at
