@@ -28,16 +28,16 @@ RSpec.describe SuspendedEmail, type: :model do
     end
 
     context 'when the email is blocked' do
-      it 'returns the original email address' do
+      it 'returns the SuspendedEmail' do
         blocked_email = FactoryBot.create(:email_address, email: 'blocked@example.com')
         digested_base_email = SuspendedEmail.generate_email_digest('blocked@example.com')
-        FactoryBot.create(
+        suspended_email = FactoryBot.create(
           :suspended_email,
           digested_base_email: digested_base_email,
           email_address: blocked_email,
         )
 
-        expect(SuspendedEmail.find_with_email('blocked@example.com')).to eq(blocked_email)
+        expect(SuspendedEmail.find_with_email('blocked@example.com')).to eq(suspended_email)
       end
     end
   end
@@ -53,16 +53,16 @@ RSpec.describe SuspendedEmail, type: :model do
     end
 
     context 'when the email is blocked' do
-      it 'returns the original email address' do
+      it 'returns the SuspendedEmail' do
         blocked_email = FactoryBot.create(:email_address, email: 'blocked@example.com')
-        digested_base_email = Digest::SHA256.hexdigest('blocked@example.com')
-        FactoryBot.create(
+        digested_base_email = SuspendedEmail.generate_email_digest('blocked@example.com')
+        suspended_email = FactoryBot.create(
           :suspended_email,
           digested_base_email: digested_base_email,
           email_address: blocked_email,
         )
 
-        expect(SuspendedEmail.find_with_email_digest(digested_base_email)).to eq(blocked_email)
+        expect(SuspendedEmail.find_with_email('blocked@example.com')).to eq(suspended_email)
       end
     end
   end

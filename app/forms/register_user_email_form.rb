@@ -202,6 +202,7 @@ class RegisterUserEmailForm
     existing_user.email_addresses.none?(&:confirmed?)
   end
 
+  # @return [EmailAddress,nil]
   def email_address_record
     return @email_address_record if defined?(@email_address_record)
 
@@ -216,9 +217,11 @@ class RegisterUserEmailForm
     request_id if request_id.present? && ServiceProviderRequestProxy.find_by(uuid: request_id)
   end
 
+  # @return [EmailAddress,nil]
   def blocked_email_address
     return @blocked_email_address if defined?(@blocked_email_address)
 
-    @blocked_email_address = SuspendedEmail.find_with_email_digest(digested_base_email)
+    @blocked_email_address = SuspendedEmail.find_with_email_digest(digested_base_email)&.
+      email_address
   end
 end

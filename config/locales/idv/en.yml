@@ -10,7 +10,6 @@ en:
       change_state_id_label: Update state ID
       continue_plain: Continue
       mail:
-        resend: Send another letter
         send: Request a letter
     cancel:
       actions:
@@ -195,6 +194,13 @@ en:
         code below. </p><p>If your letter hasn’t arrived yet, please be patient
         as letters take up to <strong>10 days</strong> to arrive. Thank you for
         your patience.</p>'
+      request_another_letter:
+        button: Request another letter
+        instructions_html: Request a new letter if you have issues with your current
+          letter or it never arrived. Letters take <strong>5 to 10 days</strong>
+          to arrive.
+        learn_more_link: Learn more about verifying your address by mail
+        title: Request another letter?
       return_to_profile: Return to your profile
       title: Welcome back
       wrong_address: Not the right address?
@@ -227,10 +233,6 @@ en:
           verifying your identity.
         letter_on_the_way: We are sending you a letter
         resend: Send me another letter
-        resend_code_warning: If you request a new letter now, the verification code from
-          your current letter will remain valid for a limited time. You may
-          still use the verification code from either letter.
-        resend_timeframe_html: Letters take <strong>5 to 10 days</strong> to arrive.
         timeframe_html: Letters are sent the next business day via USPS First-Class Mail
           and arrive in <strong>5 to 10 days</strong>.
       otp_delivery_method_description: If you entered a landline above, please select “Phone call” below.
@@ -270,7 +272,6 @@ en:
       activated: Your identity has already been verified
       come_back_later: Your letter is on the way
       mail:
-        resend: Send another letter?
         verify: Verify your address
       otp_delivery_method: How should we send a code?
       review: Review and submit

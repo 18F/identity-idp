@@ -1,4 +1,5 @@
 import { render } from '@testing-library/react';
+import sinon from 'sinon';
 import { useSandbox } from '@18f/identity-test-helpers';
 import userEvent from '@testing-library/user-event';
 import { setupServer } from 'msw/node';
@@ -12,6 +13,59 @@ describe('FullAddressSearch', () => {
   const locationsURL = 'https://localhost:3000/locations/endpoint';
   const usStatesTerritories = [['Delware', 'DE']];
 
+  context('Page Heading and PO Search About Message', () => {
+    it('both render when handleLocationSelect is not null', async () => {
+      const handleLocationsFound = sandbox.stub();
+      const onSelect = sinon.stub();
+      const { queryByText, queryByRole } = render(
+        <SWRConfig value={{ provider: () => new Map() }}>
+          <FullAddressSearch
+            usStatesTerritories={usStatesTerritories}
+            onFoundLocations={handleLocationsFound}
+            locationsURL={locationsURL}
+            registerField={() => undefined}
+            handleLocationSelect={onSelect}
+            disabled={false}
+          />
+        </SWRConfig>,
+      );
+
+      const heading = await queryByText('in_person_proofing.headings.po_search.location');
+      const aboutMessage = await queryByText(
+        'in_person_proofing.body.location.po_search.po_search_about',
+      );
+
+      expect(heading).to.exist();
+      expect(aboutMessage).to.exist();
+      expect(
+        queryByRole('heading', { name: 'in_person_proofing.headings.po_search.location' }),
+      ).to.exist();
+    });
+
+    it('both do not render when handleLocationSelect is null', async () => {
+      const handleLocationsFound = sandbox.stub();
+      const { queryByText } = render(
+        <SWRConfig value={{ provider: () => new Map() }}>
+          <FullAddressSearch
+            usStatesTerritories={usStatesTerritories}
+            onFoundLocations={handleLocationsFound}
+            locationsURL={locationsURL}
+            registerField={() => undefined}
+            handleLocationSelect={null}
+            disabled={false}
+          />
+        </SWRConfig>,
+      );
+
+      const heading = await queryByText('in_person_proofing.headings.po_search.location');
+      const aboutMessage = await queryByText(
+        'in_person_proofing.body.location.po_search.po_search_about',
+      );
+      expect(heading).to.be.empty;
+      expect(aboutMessage).to.be.empty;
+    });
+  });
+
   context('validates form', () => {
     it('displays an error for all required fields when input is empty', async () => {
       const handleLocationsFound = sandbox.stub();
@@ -21,9 +75,9 @@ describe('FullAddressSearch', () => {
             usStatesTerritories={usStatesTerritories}
             onFoundLocations={handleLocationsFound}
             locationsURL={locationsURL}
-            registerField={undefined}
+            registerField={() => undefined}
             handleLocationSelect={undefined}
-            disabled={undefined}
+            disabled={false}
           />
         </SWRConfig>,
       );
@@ -44,9 +98,9 @@ describe('FullAddressSearch', () => {
             usStatesTerritories={usStatesTerritories}
             onFoundLocations={handleLocationsFound}
             locationsURL={locationsURL}
-            registerField={undefined}
+            registerField={() => undefined}
             handleLocationSelect={undefined}
-            disabled={undefined}
+            disabled={false}
           />
         </SWRConfig>,
       );
@@ -83,9 +137,9 @@ describe('FullAddressSearch', () => {
             usStatesTerritories={usStatesTerritories}
             onFoundLocations={handleLocationsFound}
             locationsURL={locationsURL}
-            registerField={undefined}
+            registerField={() => undefined}
             handleLocationSelect={undefined}
-            disabled={undefined}
+            disabled={false}
           />
         </SWRConfig>,
       );
@@ -135,9 +189,9 @@ describe('FullAddressSearch', () => {
             usStatesTerritories={usStatesTerritories}
             onFoundLocations={handleLocationsFound}
             locationsURL={locationsURL}
-            registerField={undefined}
+            registerField={() => undefined}
             handleLocationSelect={undefined}
-            disabled={undefined}
+            disabled={false}
           />
         </SWRConfig>,
       );

@@ -1,5 +1,7 @@
 module MultiRegionKmsMigration
   class UserMigrationJob < ApplicationJob
+    queue_as :long_running
+
     MAXIMUM_ERROR_TOLERANCE = 10
 
     include ::NewRelic::Agent::MethodTracer
@@ -60,7 +62,7 @@ module MultiRegionKmsMigration
           'encrypted_recovery_code_digest NOT LIKE ?', '%encryption_key%'
         )
 
-        password_scope.or(personal_key_scope).limit(user_count)
+        password_scope.or(personal_key_scope).limit(user_count).to_a
       end
     end
 

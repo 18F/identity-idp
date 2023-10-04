@@ -1611,6 +1611,24 @@ module AnalyticsEvents
     track_event('IdV: in person proofing switch_back visited', flow_path: flow_path, **extra)
   end
 
+  # An email from USPS with an enrollment code has been received, indicating
+  # the enrollment is approved or failed. A check is required to get the status
+  # it is not included in the email.
+  # @param [boolean] multi_part If the email is marked as multi_part
+  # @param [string] part_found Records if the enrollment code was found in text_part or html_part
+  def idv_in_person_usps_proofing_enrollment_code_email_received(
+    multi_part: nil,
+    part_found: nil,
+    **extra
+  )
+    track_event(
+      'IdV: in person usps proofing enrollment code email received',
+      multi_part: multi_part,
+      part_found: part_found,
+      **extra,
+    )
+  end
+
   # GetUspsProofingResultsJob has completed. Includes counts of various outcomes encountered
   # @param [Float] duration_seconds number of minutes the job was running
   # @param [Integer] enrollments_checked number of enrollments eligible for status check
@@ -3486,6 +3504,16 @@ module AnalyticsEvents
   # @param [String] type
   def rate_limit_triggered(type:, **extra)
     track_event('Rate Limit Triggered', type: type, **extra)
+  end
+
+  # Account profile reactivation submitted
+  def reactivate_account_submit
+    track_event('Reactivate Account Submitted')
+  end
+
+  # Account profile reactivation page visited
+  def reactivate_account_visit
+    track_event('Reactivate Account Visited')
   end
 
   # The result of a reCAPTCHA verification request was received

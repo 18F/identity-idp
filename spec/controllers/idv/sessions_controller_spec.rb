@@ -13,7 +13,6 @@ RSpec.describe Idv::SessionsController do
     before do
       allow(idv_session).to receive(:clear)
       allow(subject).to receive(:idv_session).and_return(idv_session)
-      controller.user_session['idv/doc_auth'] = flow_session
       controller.user_session['idv/in_person'] = flow_session
       controller.user_session[:decrypted_pii] = pii
     end
@@ -27,10 +26,6 @@ RSpec.describe Idv::SessionsController do
       before do
         expect(idv_session).to receive(:clear)
         delete :destroy
-      end
-
-      it 'clears the idv/doc_auth session' do
-        expect(controller.user_session['idv/doc_auth']).to be_blank
       end
 
       it 'clears the idv/in_person session' do

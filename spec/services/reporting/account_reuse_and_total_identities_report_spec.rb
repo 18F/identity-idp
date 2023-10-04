@@ -1,45 +1,16 @@
 require 'rails_helper'
 require 'csv'
 
-RSpec.describe Reports::MonthlyAccountReuseReport do
+RSpec.describe Reporting::AccountReuseAndTotalIdentitiesReport do
   let(:report_date) { Date.new(2021, 3, 1) }
 
-  subject(:report) { Reports::MonthlyAccountReuseReport.new }
-
-  let(:s3_report_bucket_prefix) { 'reports-bucket' }
-  let(:s3_report_path) do
-    'int/monthly-account-reuse-report/2021/2021-03-01.monthly-account-reuse-report.json'
-  end
+  subject(:report) { Reporting::AccountReuseAndTotalIdentitiesReport.new(report_date) }
 
   before do
     travel_to report_date
-    allow(Identity::Hostdata).to receive(:env).and_return('int')
-    allow(Identity::Hostdata).to receive(:aws_account_id).and_return('1234')
-    allow(Identity::Hostdata).to receive(:aws_region).and_return('us-west-1')
-    allow(IdentityConfig.store).to receive(:s3_report_bucket_prefix).
-      and_return(s3_report_bucket_prefix)
-
-    Aws.config[:s3] = {
-      stub_responses: {
-        put_object: {},
-      },
-    }
   end
 
   describe '#perform' do
-    it 'uploads a file to S3 based on the report date' do
-      expect(report).to receive(:upload_file_to_s3_bucket).with(
-        path: s3_report_path,
-        body: anything,
-        content_type: 'text/csv',
-        bucket: 'reports-bucket.1234-us-west-1',
-      ).exactly(1).time.and_call_original
-
-      expect(report).to receive(:report_body).and_call_original.once
-
-      report.perform
-    end
-
     context 'with data' do
       let(:in_query) { report_date - 12.days }
       let(:out_of_query) { report_date + 12.days }
@@ -121,32 +92,16 @@ RSpec.describe Reports::MonthlyAccountReuseReport do
         end
       end
 
-      it 'aggregates by issuer' do
-        expect(report).to receive(:upload_file_to_s3_bucket).
-          exactly(1).times do |path:, body:, content_type:, bucket:|
-            actual_csv = body
-            expected_csv = CSV.generate do |csv|
-              [
-                [
-                  { title: 'IDV app reuse rate Feb-2021', float_as_percent: true, precision: 4 },
-                  ['Num. SPs', 'Num. users', 'Percentage'],
-                  [2, 3, 30.0],
-                  [3, 2, 20.0],
-                  ['Total (all >1)', 5, 50.0],
-                ],
-                [
-                  { title: 'Total proofed identities' },
-                  ['Total proofed identities (Feb-2021)'],
-                  [10],
-                ],
-              ].each do |row|
-                csv << row
-              end
-            end
-            expect(actual_csv).to eq(expected_csv)
-          end
+      it 'returns correct queries' do
+        actual_account_reuse_table = report.account_reuse_report
+        actual_total_profiles_table = report.total_identities_report
 
-        report.perform
+        expected_account_reuse_table = [['Num. SPs', 'Num. users', 'Percentage'], [2, 3, 0.3],
+                                        [3, 2, 0.2], ['Total (all >1)', 5, 0.5]]
+        expected_total_profiles_table = [['Total proofed identities (Feb-2021)'], [10]]
+
+        expect(actual_account_reuse_table).to eq(expected_account_reuse_table)
+        expect(actual_total_profiles_table).to eq(expected_total_profiles_table)
       end
     end
   end
