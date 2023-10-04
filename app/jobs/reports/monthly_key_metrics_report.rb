@@ -11,9 +11,11 @@ module Reports
 
       account_reuse_table = account_reuse_report.account_reuse_report
       total_profiles_table = account_reuse_report.total_identities_report
+      account_deletion_rate_table = account_deletion_rate_report.account_deletion_report
 
       upload_to_s3(account_reuse_table, report_name: 'account_reuse')
       upload_to_s3(total_profiles_table, report_name: 'total_profiles')
+      upload_to_s3(account_deletion_rate_table, report_name: 'account_deletion_rate')
 
       email_tables = [
         [
@@ -27,6 +29,10 @@ module Reports
         [
           { title: 'Total proofed identities' },
           *total_profiles_table,
+        ],
+        [
+          { title: 'Total account deleted' },
+          account_deletion_rate_table,
         ],
       ]
 
@@ -55,6 +61,10 @@ module Reports
 
     def account_reuse_report
       @account_reuse_report ||= Reporting::AccountReuseAndTotalIdentitiesReport.new(report_date)
+    end
+
+    def account_deletion_rate_report
+      @account_deletion_rate_report ||= Reporting::AccountDeletionRateReport.new(report_date)
     end
 
     def upload_to_s3(report_body, report_name: nil)
