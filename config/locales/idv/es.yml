@@ -181,7 +181,8 @@ es:
         habilitar JavaScript para continuar con este proceso.'
     gpo:
       alert_info: 'Enviamos una carta con su código único a:'
-      alert_spam_warning_html: 'No podemos enviar más cartas. La última carta se envió el <strong>%{date_letter_was_sent}</strong>.'
+      alert_spam_warning_html: 'No podemos enviar más cartas. La última carta se envió
+        el <strong>%{date_letter_was_sent}</strong>.'
       clear_and_start_over: Borrar su información y empezar de nuevo
       did_not_receive_letter:
         form:

@@ -173,7 +173,8 @@ en:
         JavaScript to continue this process.'
     gpo:
       alert_info: 'We sent a letter with your one-time code to:'
-      alert_spam_warning_html: 'We are unable to send more letters. The most recent letter was sent on <strong>%{date_letter_was_sent}</strong>.'
+      alert_spam_warning_html: 'We are unable to send more letters. The most recent
+        letter was sent on <strong>%{date_letter_was_sent}</strong>.'
       clear_and_start_over: Clear your information and start over
       did_not_receive_letter:
         form:
