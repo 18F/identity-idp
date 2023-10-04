@@ -56,63 +56,16 @@ module Reporting
 
     def as_tables
       [
-        [
-          ['Report Timeframe', "#{time_range.begin} to #{time_range.end}"],
-          ['Report Generated', Date.today.to_s], # rubocop:disable Rails/Date
-          ['Issuer', issuers.join(', ')],
-          ['Total # of IAL1 Users', sp_redirect_initiated_all],
-        ],
-        [
-          ['Metric', 'Number of accounts', '% of total from start'],
-          [
-            'New Users Started IAL1 Verification',
-            email_confirmation,
-            format_as_percent(numerator: email_confirmation, denominator: email_confirmation),
-          ],
-          [
-            'New Users Completed IAL1 Password Setup',
-            two_fa_setup_visited,
-            format_as_percent(numerator: two_fa_setup_visited, denominator: email_confirmation),
-          ],
-          [
-            'New Users Completed IAL1 MFA',
-            user_fully_registered,
-            format_as_percent(numerator: user_fully_registered, denominator: email_confirmation),
-          ],
-          [
-            'New IAL1 Users Consented to Partner',
-            sp_redirect_initiated_new_users,
-            format_as_percent(
-              numerator: sp_redirect_initiated_new_users,
-              denominator: email_confirmation,
-            ),
-          ],
-          [
-            'AAL2 Authentication Requests from Partner',
-            oidc_auth_request,
-            format_as_percent(numerator: oidc_auth_request, denominator: oidc_auth_request),
-          ],
-          [
-            'AAL2 Authenticated Requests',
-            sp_redirect_initiated_after_oidc,
-            format_as_percent(
-              numerator: sp_redirect_initiated_after_oidc,
-              denominator: oidc_auth_request,
-            ),
-          ],
-        ],
+        overview_table,
+        funnel_metrics_table,
       ]
     end
 
     def as_tables_with_options
-      as_tables.zip(
-        [
-          { title: 'Overview' },
-          { title: 'Authentication Funnel Metrics' },
-        ],
-      ).map do |table, options|
-        [options, *table]
-      end
+      [
+        [{ title: 'Overview' }, *overview_table],
+        [{ title: 'Authentication Funnel Metrics' }, *funnel_metrics_table],
+      ]
     end
 
     def to_csvs
@@ -204,6 +157,57 @@ module Reporting
         progress: progress?,
         logger: verbose? ? Logger.new(STDERR) : nil,
       )
+    end
+
+    def overview_table
+      [
+        ['Report Timeframe', "#{time_range.begin} to #{time_range.end}"],
+        ['Report Generated', Date.today.to_s], # rubocop:disable Rails/Date
+        ['Issuer', issuers.join(', ')],
+        ['Total # of IAL1 Users', sp_redirect_initiated_all],
+      ]
+    end
+
+    def funnel_metrics_table
+      [
+        ['Metric', 'Number of accounts', '% of total from start'],
+        [
+          'New Users Started IAL1 Verification',
+          email_confirmation,
+          format_as_percent(numerator: email_confirmation, denominator: email_confirmation),
+        ],
+        [
+          'New Users Completed IAL1 Password Setup',
+          two_fa_setup_visited,
+          format_as_percent(numerator: two_fa_setup_visited, denominator: email_confirmation),
+        ],
+        [
+          'New Users Completed IAL1 MFA',
+          user_fully_registered,
+          format_as_percent(numerator: user_fully_registered, denominator: email_confirmation),
+        ],
+        [
+          'New IAL1 Users Consented to Partner',
+          sp_redirect_initiated_new_users,
+          format_as_percent(
+            numerator: sp_redirect_initiated_new_users,
+            denominator: email_confirmation,
+          ),
+        ],
+        [
+          'AAL2 Authentication Requests from Partner',
+          oidc_auth_request,
+          format_as_percent(numerator: oidc_auth_request, denominator: oidc_auth_request),
+        ],
+        [
+          'AAL2 Authenticated Requests',
+          sp_redirect_initiated_after_oidc,
+          format_as_percent(
+            numerator: sp_redirect_initiated_after_oidc,
+            denominator: oidc_auth_request,
+          ),
+        ],
+      ]
     end
 
     # @return [String]
