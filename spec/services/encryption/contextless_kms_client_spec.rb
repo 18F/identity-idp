@@ -185,7 +185,7 @@ RSpec.describe Encryption::ContextlessKmsClient do
       it 'logs the decryption' do
         expect(Encryption::KmsLogger).to receive(:log).with(
           :decrypt,
-          IdentityConfig.store.aws_kms_key_id,
+          key_id: IdentityConfig.store.aws_kms_key_id,
         )
 
         subject.decrypt('KMSx' + kms_ciphertext)
