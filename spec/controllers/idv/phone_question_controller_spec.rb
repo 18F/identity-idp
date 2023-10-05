@@ -50,6 +50,16 @@ RSpec.describe Idv::PhoneQuestionController do
       expect(response).to render_template :show
     end
 
+    context 'when rendered' do
+      render_views
+
+      it 'displays phone question header' do
+        get :show
+
+        expect(response.body).to include(t('doc_auth.headings.phone_question'))
+      end
+    end
+
     context 'agreement step is not complete' do
       before do
         subject.idv_session.idv_consent_given = nil

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'phone question step', :js do
+RSpec.feature 'phone question step' do
   include IdvStepHelper
   include DocAuthHelper
 
@@ -13,19 +13,17 @@ RSpec.feature 'phone question step', :js do
     visit(idv_phone_question_url)
   end
 
-  it 'contains phone question header' do
-    expect(page).to have_content(t('doc_auth.headings.phone_question'))
+  it 'redirects to hybrid handoff if user confirms having phone' do
+    click_link t('doc_auth.buttons.have_phone')
+    expect(page).to have_current_path(idv_hybrid_handoff_path)
   end
 
-  it 'contains option to confirm having phone' do
-    expect(page).to have_content(t('doc_auth.buttons.have_phone'))
+  it 'redirects to standard document capture if user confirms not having phone' do
+    click_link t('doc_auth.phone_question.do_not_have')
+    expect(page).to have_current_path(idv_document_capture_path(camera_phone: false))
   end
 
-  it 'contains option to confirm not having phone' do
-    expect(page).to have_content(t('doc_auth.phone_question.do_not_have'))
-  end
-
-  it 'allows user to cancel identify verification' do
+  it 'allows user to cancel identify verification', :js do
     click_link t('links.cancel')
     expect(page).to have_current_path(idv_cancel_path(step: 'phone_question'))
 
