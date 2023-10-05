@@ -29,6 +29,10 @@ module I18n
         { key: 'time.am' }, # "AM" is "AM" in French and Spanish
         { key: 'time.formats.sms_date' }, # for us date format
         { key: 'time.pm' }, # "PM" is "PM" in French and Spanish
+        { key: 'datetime.dotiw.minutes.one' }, # "minute is minute" in French and English
+        { key: 'datetime.dotiw.minutes.other' }, # "minute is minute" in French and English
+        { key: 'mailer.logo' }, # "logo is logo" in English, French and Spanish
+        { key: 'datetime.dotiw.words_connector' }, # " , " is only punctuation and not translated
       ].freeze
 
       def untranslated_keys

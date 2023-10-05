@@ -1,6 +1,9 @@
+# frozen_string_literal: true
+
 class OtpVerificationForm
   include ActiveModel::Model
 
+  CODE_REGEX = /\A[0-9]+\z/
   validates :code, presence: true, length: { is: TwoFactorAuthenticatable::DIRECT_OTP_LENGTH }
   validate :validate_code_matches_format
   validate :validate_user_otp_presence
@@ -31,25 +34,25 @@ class OtpVerificationForm
   attr_reader :code, :user, :phone_configuration
 
   def validate_code_matches_format
-    return if code.blank? || code.match?(/^[0-9]+/i)
-    errors.add(:code, :pattern_mismatch, type: :pattern_mismatch)
+    return if code.blank? || code.match?(CODE_REGEX)
+    errors.add(:code, 'pattern_mismatch', type: :pattern_mismatch)
   end
 
   def validate_user_otp_presence
     return if user.direct_otp.present?
-    errors.add(:code, :user_otp_missing, type: :user_otp_missing)
+    errors.add(:code, 'user_otp_missing', type: :user_otp_missing)
   end
 
   def validate_user_otp_expiration
     return if !otp_expired?
-    errors.add(:code, :user_otp_expired, type: :user_otp_expired)
+    errors.add(:code, 'user_otp_expired', type: :user_otp_expired)
   end
 
   def validate_code_equals_user_otp
     return if code.blank? ||
               user.direct_otp.blank? ||
               ActiveSupport::SecurityUtils.secure_compare(user.direct_otp, code)
-    errors.add(:code, :invalid, type: :invalid)
+    errors.add(:code, 'incorrect', type: :incorrect)
   end
 
   def otp_expired?
