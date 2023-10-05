@@ -97,11 +97,11 @@ build-review-image:
   needs: []
   interruptible: true
   variables:
-    BRANCH_TAGGING_STRING: ""
+    BRANCH_TAGGING_STRING: ''
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       variables:
-        BRANCH_TAGGING_STRING: "--destination ${ECR_REGISTRY}/identity-idp/review:main"
+        BRANCH_TAGGING_STRING: '--destination ${ECR_REGISTRY}/identity-idp/review:main'
     - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
     - if: $CI_PIPELINE_SOURCE != "merge_request_event"
       when: never
@@ -312,14 +312,14 @@ build-ci-image:
     - build-pool
   image:
     name: gcr.io/kaniko-project/executor:debug
-    entrypoint: [""]
+    entrypoint: ['']
   rules:
     # Build when there are changes to the Dockerfile
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH || $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "external_pull_request_event" || $CI_PIPELINE_SOURCE == "web"'
       changes:
         compare_to: 'refs/heads/main'
         paths:
-        - dockerfiles/idp_ci.Dockerfile
+          - dockerfiles/idp_ci.Dockerfile
   script:
     - mkdir -p /kaniko/.docker
     - |-
@@ -489,8 +489,8 @@ include:
 secret_detection:
   allow_failure: false
   variables:
-      SECRET_DETECTION_LOG_OPTIONS: origin/${CI_EXTERNAL_PULL_REQUEST_TARGET_BRANCH_NAME}..HEAD
-      SECRET_DETECTION_REPORT_FILE: "gl-secret-detection-report.json"
+    SECRET_DETECTION_LOG_OPTIONS: origin/${CI_EXTERNAL_PULL_REQUEST_TARGET_BRANCH_NAME}..HEAD
+    SECRET_DETECTION_REPORT_FILE: 'gl-secret-detection-report.json'
   rules:
     - if: $SECRET_DETECTION_DISABLED
       when: never
@@ -498,6 +498,7 @@ secret_detection:
   before_script:
     - apk add --no-cache jq
   script:
+    - git fetch origin --quiet
     - /analyzer run
     # check if '{ "vulnerabilities": [], ..' is empty in the report file if it exists
     - |
@@ -517,7 +518,7 @@ secret_detection:
     - build-pool
   image:
     name: amazon/aws-cli
-    entrypoint: [""] 
+    entrypoint: ['']
   before_script:
     - curl -LO https://github.com/jqlang/jq/releases/download/jq-1.6/jq-linux64
     - chmod +x jq-linux64
@@ -636,7 +637,7 @@ secret_detection:
       }
       end' > gl-container-scanning-report.json
   artifacts:
-    paths: 
+    paths:
       - gl-container-scanning-report.json
     reports:
       container_scanning: gl-container-scanning-report.json
@@ -663,7 +664,7 @@ ecr-scan-ci:
       changes:
         compare_to: 'refs/heads/main'
         paths:
-        - dockerfiles/idp_ci.Dockerfile
+          - dockerfiles/idp_ci.Dockerfile
   needs:
     - job: build-ci-image
   stage: scan
