@@ -505,7 +505,7 @@ secret_detection:
     - git fetch origin --quiet
   script:
     - |
-      if [ -z "$SECRET_DETECTION_LOG_OPTIONS" ]
+      if [ -z "$SECRET_DETECTION_LOG_OPTIONS" ]; then
         /analyzer run
         if [ -f "$SECRET_DETECTION_REPORT_FILE" ]; then
           # check if '{ "vulnerabilities": [], ..' is empty in the report file if it exists
