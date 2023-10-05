@@ -143,6 +143,10 @@ module Idv
       failed_phone_step_numbers << phone_e164 if !failed_phone_step_numbers.include?(phone_e164)
     end
 
+    def document_capture_complete?
+      pii_from_doc || verify_info_step_complete?
+    end
+
     def verify_info_step_complete?
       resolution_successful
     end

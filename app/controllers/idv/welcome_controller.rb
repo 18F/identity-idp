@@ -45,7 +45,7 @@ module Idv
 
     def confirm_welcome_step_available
       # Don't allow access to the welcome step after the user has completed document capture.
-      redirect_to idv_phone_url if idv_session.pii_from_doc
+      redirect_to idv_ssn_url if idv_session.document_capture_complete?
     end
 
     def create_document_capture_session
