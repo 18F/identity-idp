@@ -143,8 +143,12 @@ module Idv
       failed_phone_step_numbers << phone_e164 if !failed_phone_step_numbers.include?(phone_e164)
     end
 
+    def has_pii_from_user_in_flow_session
+      user_session.dig('idv/in_person', :pii_from_user)
+    end
+
     def document_capture_complete?
-      pii_from_doc || verify_info_step_complete?
+      pii_from_doc || has_pii_from_user_in_flow_session || verify_info_step_complete?
     end
 
     def verify_info_step_complete?

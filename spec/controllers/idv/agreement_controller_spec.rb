@@ -82,6 +82,17 @@ RSpec.describe Idv::AgreementController do
         expect(response).to render_template('idv/agreement/show')
       end
     end
+
+    context 'and document capture already completed' do
+      before do
+        subject.idv_session.pii_from_doc = { first_name: 'Susan' }
+      end
+
+      it 'redirects to ssn step' do
+        get :show
+        expect(response).to redirect_to(idv_ssn_url)
+      end
+    end
   end
 
   describe '#update' do

@@ -132,6 +132,65 @@ RSpec.describe 'IdvStepConcern' do
     end
   end
 
+  describe '#confirm_document_capture_not_complete' do
+    controller Idv::StepController do
+      before_action :confirm_document_capture_not_complete
+    end
+
+    before(:each) do
+      sign_in(user)
+      routes.draw do
+        get 'show' => 'idv/step#show'
+      end
+    end
+
+    context 'the user has not completed document capture' do
+      it 'does not redirect and renders the view' do
+        idv_session.pii_from_doc = nil
+        idv_session.resolution_successful = nil
+
+        get :show
+
+        expect(response.body).to eq('Hello')
+        expect(response.status).to eq(200)
+      end
+    end
+
+    context 'the user has completed remote document capture but not verify_info' do
+      it 'redirects to the ssn step' do
+        idv_session.pii_from_doc = { first_name: 'Susan' }
+        idv_session.resolution_successful = false
+
+        get :show
+
+        expect(response).to redirect_to(idv_ssn_url)
+      end
+    end
+
+    context 'the user has completed in person document capture but not verify_info' do
+      it 'redirects to the ssn step' do
+        subject.user_session['idv/in_person'] = {}
+        subject.user_session['idv/in_person'][:pii_from_user] = { first_name: 'Susan' }
+        idv_session.resolution_successful = false
+
+        get :show
+
+        expect(response).to redirect_to(idv_ssn_url)
+      end
+    end
+
+    context 'the user has completed document capture and verify_info' do
+      it 'redirects to the ssn step' do
+        idv_session.pii_from_doc = nil
+        idv_session.resolution_successful = true
+
+        get :show
+
+        expect(response).to redirect_to(idv_ssn_url)
+      end
+    end
+  end
+
   describe '#confirm_verify_info_step_complete' do
     controller(idv_step_controller_class) do
       before_action :confirm_verify_info_step_complete
