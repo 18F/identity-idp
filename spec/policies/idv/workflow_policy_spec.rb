@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'Idv::AllowedStep' do
+RSpec.describe 'Idv::WorkflowPolicy' do
   include Rails.application.routes.url_helpers
 
   let(:user) { create(:user) }
@@ -16,7 +16,7 @@ RSpec.describe 'Idv::AllowedStep' do
   let(:user_phone_confirmation_session) { nil }
   let(:has_gpo_pending_profile) { nil }
 
-  subject { Idv::AllowedStep.new(idv_session: idv_session, user: user) }
+  subject { Idv::WorkflowPolicy.new(idv_session: idv_session, user: user) }
 
   context '#step_allowed?' do
     it 'allows the welcome step' do
