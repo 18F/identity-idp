@@ -46,6 +46,8 @@ Gemspec/DuplicatedAssignment:
 
 IdentityIdp/AnalyticsEventNameLinter:
   Enabled: true
+  Include:
+    - app/services/analytics_events.rb
 
 IdentityIdp/LocalizedValidationMessageLinter:
   Enabled: true
