@@ -1,5 +1,5 @@
 module Idv
-  class AllowedStep
+  class WorkflowPolicy
     # Possibly a /verify/resume controller
     # possibly chain the requirements here. (hybrid_handoff depends on agreement and one more thing)
     # Change polling to not depend on a specific screen (LinkSent)
