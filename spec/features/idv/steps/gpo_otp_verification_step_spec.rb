@@ -84,6 +84,12 @@ RSpec.feature 'idv gpo otp verification step' do
 
   context 'coming from an "I did not receive my letter" link in a reminder email' do
     it 'renders an alternate ui', :js do
+      gpo_confirmation_code.update!(updated_at: Time.zone.now - 1.day)
+      latest_gpo_confirmation_code = create(
+        :gpo_confirmation_code,
+        profile: profile,
+        otp_fingerprint: Pii::Fingerprinter.fingerprint(otp),
+      )
       visit idv_verify_by_mail_enter_code_url(did_not_receive_letter: 1)
       expect(current_path).to eql(new_user_session_path)
 
@@ -95,64 +101,15 @@ RSpec.feature 'idv gpo otp verification step' do
 
       expect(current_path).to eq idv_verify_by_mail_enter_code_path
       expect(page).to have_css('h1', text: t('idv.gpo.did_not_receive_letter.title'))
-    end
-  end
-
-  context 'warning alert banner for gpo letter spammed' do
-    context 'when gpo letter is not spammed' do
-      it 'does not display warning banner' do
-        gpo_confirmation_code.update!(updated_at: Time.zone.now - 1.day)
-        sign_in_live_with_2fa(user)
-
-        expect(current_path).to eq idv_verify_by_mail_enter_code_path
-        expect(page).not_to have_content strip_tags(
-          t(
-            'idv.gpo.alert_spam_warning_html',
-            date_letter_was_sent: I18n.l(
-              gpo_confirmation_code.updated_at,
-              format: :event_date,
-            ),
+      expect(page).to have_content strip_tags(
+        t(
+          'idv.gpo.alert_spam_warning_html',
+          date_letter_was_sent: I18n.l(
+            latest_gpo_confirmation_code.updated_at,
+            format: :event_date,
           ),
-        )
-      end
-    end
-
-    context 'when gpo letter is spammed' do
-      it 'displays warning banner' do
-        sign_in_live_with_2fa(user)
-        expect(current_path).to eq idv_verify_by_mail_enter_code_path
-        expect(page).not_to have_content strip_tags(
-          t(
-            'idv.gpo.alert_spam_warning_html',
-            date_letter_was_sent: I18n.l(
-              gpo_confirmation_code.updated_at,
-              format: :event_date,
-            ),
-          ),
-        )
-      end
-    end
-
-    context 'multiple gpo codes have been requested' do
-      it 'displays warning banner' do
-        gpo_confirmation_code.update!(updated_at: Time.zone.now - 1.day)
-        latest_gpo_confirmation_code = create(
-          :gpo_confirmation_code,
-          profile: profile,
-          otp_fingerprint: Pii::Fingerprinter.fingerprint(otp),
-        )
-        sign_in_live_with_2fa(user)
-        expect(current_path).to eq idv_verify_by_mail_enter_code_path
-        expect(page).to have_content strip_tags(
-          t(
-            'idv.gpo.alert_spam_warning_html',
-            date_letter_was_sent: I18n.l(
-              latest_gpo_confirmation_code.updated_at,
-              format: :event_date,
-            ),
-          ),
-        )
-      end
+        ),
+      )
     end
   end
 
@@ -160,10 +117,19 @@ RSpec.feature 'idv gpo otp verification step' do
     it 'shows the user a personal key after verification' do
       sign_in_live_with_2fa(user)
 
+      gpo_confirmation_code.update!(updated_at: Time.zone.now - 1.day)
       expect(current_path).to eq idv_verify_by_mail_enter_code_path
+      expect(page).not_to have_content(
+        t(
+          'idv.gpo.alert_spam_warning_html',
+          date_letter_was_sent: I18n.l(
+            gpo_confirmation_code.updated_at,
+            format: :event_date,
+          ),
+        ).split('<strong>').first,
+      )
       expect(page).to have_content t('idv.messages.gpo.resend')
 
-      gpo_confirmation_code
       fill_in t('idv.gpo.form.otp_label'), with: otp
       click_button t('idv.gpo.form.submit')
 
