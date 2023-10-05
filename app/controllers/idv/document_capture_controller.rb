@@ -52,7 +52,7 @@ module Idv
     private
 
     def confirm_hybrid_handoff_complete
-      idv_session.flow_path = 'standard' if params[:no_phone]
+      idv_session.flow_path = 'standard' if params[:camera_phone] == 'false'
 
       return if idv_session.flow_path.present?
 
