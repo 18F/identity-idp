@@ -29,9 +29,22 @@
   <%= render AlertComponent.new(message: t('idv.messages.gpo.info_alert'), class: 'margin-bottom-4') %>
   <%= render PageHeadingComponent.new.with_content(@presenter.title) %>
   <p>
-    <%= t('idv.messages.gpo.address_on_file_html') %>
     <%= t('idv.messages.gpo.timeframe_html') %>
+    <%= link_to(
+          t('idv.messages.gpo.learn_more_verify_by_mail'),
+            help_center_redirect_url(
+            category: 'verify-your-identity',
+            article: 'verify-your-address-by-mail',
+            flow: :idv,
+            step: :gpo_send_letter,
+          ),
+        )
+    %>
   </p>
+  <p>
+    <%= t('idv.messages.gpo.address_on_file_html') %>
+  </p>
+  
 <% end %>
 
 <div class="margin-y-5">
