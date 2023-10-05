@@ -39,10 +39,6 @@ class DocumentCaptureSession < ApplicationRecord
     save!
   end
 
-  def load_doc_auth_async_result
-    EncryptedRedisStructStorage.load(result_id, type: DocumentCaptureSessionAsyncResult)
-  end
-
   def create_doc_auth_session
     EncryptedRedisStructStorage.store(
       DocumentCaptureSessionAsyncResult.new(
