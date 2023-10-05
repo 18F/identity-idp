@@ -64,7 +64,7 @@ class WebauthnVerificationForm
 
   def validate_assertion_response
     return if webauthn_error.present? || webauthn_configuration.blank? || valid_assertion_response?
-    errors.add(:authenticator_data, :invalid_authenticator_data, type: :invalid_authenticator_data)
+    errors.add(:authenticator_data, 'invalid_authenticator_data', type: :invalid_authenticator_data)
   end
 
   def validate_webauthn_error

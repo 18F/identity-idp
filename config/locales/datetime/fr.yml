@@ -2,6 +2,7 @@
 fr:
   datetime:
     dotiw:
+      last_word_connector: ' et '
       minutes:
         one: 1 minute
         other: '%{count} minutes'
@@ -9,3 +10,4 @@ fr:
         one: 1 seconde
         other: '%{count} secondes'
       two_words_connector: ' et '
+      words_connector: ', '

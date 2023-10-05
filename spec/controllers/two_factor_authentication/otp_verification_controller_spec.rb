@@ -133,7 +133,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
 
         properties = {
           success: false,
-          error_details: { code: [:wrong_length, :invalid] },
+          error_details: { code: [:wrong_length, 'incorrect'] },
           confirmation_for_add_phone: false,
           context: 'authentication',
           multi_factor_auth_method: 'sms',
@@ -204,7 +204,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
 
         properties = {
           success: false,
-          error_details: { code: [:wrong_length, :invalid] },
+          error_details: { code: [:wrong_length, 'incorrect'] },
           confirmation_for_add_phone: false,
           context: 'authentication',
           multi_factor_auth_method: 'sms',
@@ -537,7 +537,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
             properties = {
               success: false,
               errors: nil,
-              error_details: { code: [:wrong_length, :invalid] },
+              error_details: { code: [:wrong_length, 'incorrect'] },
               confirmation_for_add_phone: true,
               context: 'confirmation',
               multi_factor_auth_method: 'sms',
