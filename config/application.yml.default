@@ -294,7 +294,6 @@ s3_public_reports_enabled: false
 s3_reports_enabled: false
 saml_secret_rotation_enabled: false
 second_mfa_reminder_account_age_in_days: 30
-second_mfa_reminder_enabled: true
 second_mfa_reminder_sign_in_count: 10
 seed_agreements_data: true
 service_provider_request_ttl_hours: 24
@@ -355,6 +354,7 @@ voice_otp_pause_time: '0.5s'
 voice_otp_speech_rate: 'slow'
 voip_block: true
 voip_allowed_phones: '[]'
+weekly_auth_funnel_report_config: '[]'
 
 development:
   aamva_private_key: 123abc
@@ -476,7 +476,6 @@ production:
   s3_reports_enabled: true
   saml_endpoint_configs: '[]'
   scrypt_cost: 10000$8$1$
-  second_mfa_reminder_enabled: false
   secret_key_base:
   seed_agreements_data: false
   session_encryption_key:

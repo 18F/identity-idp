@@ -2,19 +2,59 @@ require 'rails_helper'
 
 RSpec.describe 'Phishing-resistant authentication required in an OIDC context' do
   include OidcAuthHelper
+  include WebAuthnHelper
+
+  shared_examples 'setting up phishing-resistant authenticator in an OIDC context' do
+    it 'sends user to set up phishing-resistant auth' do
+      sign_in_live_with_2fa(user)
+
+      expect(page).to have_current_path(authentication_methods_setup_path)
+      expect(page).to have_content(t('two_factor_authentication.two_factor_aal3_choice'))
+      expect(page).to have_xpath("//img[@alt='important alert icon']")
+
+      # Validate that user is not allowed to continue without making a selection.
+      click_continue
+      expect(page).to have_current_path(authentication_methods_setup_path)
+      expect(page).to have_content(t('errors.two_factor_auth_setup.must_select_option'))
+
+      # Regression (LG-11110): Ensure the user can reauthenticate with any existing configuration,
+      # not limited based on phishing-resistant requirement.
+      travel (IdentityConfig.store.reauthn_window + 1).seconds do
+        check t('two_factor_authentication.two_factor_choice_options.webauthn')
+        click_continue
+
+        expect(page).to have_content(t('two_factor_authentication.login_options.sms'))
+        expect(page).to have_content(t('two_factor_authentication.login_options.voice'))
+
+        choose t('two_factor_authentication.login_options.sms')
+        click_continue
+
+        fill_in_code_with_last_phone_otp
+        click_submit_default
+
+        # LG-11193: Currently the user is redirected back to the MFA setup selection after
+        # reauthenticating. This should be improved to remember their original selection.
+        expect(page).to have_current_path(authentication_methods_setup_path)
+        expect(page).to have_content(t('two_factor_authentication.two_factor_aal3_choice'))
+        mock_webauthn_setup_challenge
+        check t('two_factor_authentication.two_factor_choice_options.webauthn')
+        click_continue
+
+        fill_in_nickname_and_click_continue
+        mock_press_button_on_hardware_key_on_setup
+
+        expect(page).to have_current_path(sign_up_completed_path)
+      end
+    end
+  end
 
   describe 'OpenID Connect requesting AAL3 authentication' do
     context 'user does not have phishing-resistant auth configured' do
-      it 'sends user to set up phishing-resistant auth' do
-        user = user_with_2fa
+      let(:user) { create(:user, :fully_registered, :with_phone) }
 
-        visit_idp_from_ial1_oidc_sp_requesting_aal3(prompt: 'select_account')
-        sign_in_live_with_2fa(user)
+      before { visit_idp_from_ial1_oidc_sp_requesting_aal3(prompt: 'select_account') }
 
-        expect(current_url).to eq(authentication_methods_setup_url)
-        expect(page).to have_content(t('two_factor_authentication.two_factor_aal3_choice'))
-        expect(page).to have_xpath("//img[@alt='important alert icon']")
-      end
+      it_behaves_like 'setting up phishing-resistant authenticator in an OIDC context'
     end
 
     context 'user has phishing-resistant auth configured' do
@@ -65,16 +105,11 @@ RSpec.describe 'Phishing-resistant authentication required in an OIDC context' d
 
   describe 'OpenID Connect requesting phishing-resistant authentication' do
     context 'user does not have phishing-resistant auth configured' do
-      it 'sends user to set up phishing-resistant auth' do
-        user = user_with_2fa
+      let(:user) { create(:user, :fully_registered, :with_phone) }
 
-        visit_idp_from_ial1_oidc_sp_requesting_phishing_resistant(prompt: 'select_account')
-        sign_in_live_with_2fa(user)
+      before { visit_idp_from_ial1_oidc_sp_requesting_phishing_resistant(prompt: 'select_account') }
 
-        expect(current_url).to eq(authentication_methods_setup_url)
-        expect(page).to have_content(t('two_factor_authentication.two_factor_aal3_choice'))
-        expect(page).to have_xpath("//img[@alt='important alert icon']")
-      end
+      it_behaves_like 'setting up phishing-resistant authenticator in an OIDC context'
     end
 
     context 'user has phishing-resistant auth configured' do
@@ -125,31 +160,11 @@ RSpec.describe 'Phishing-resistant authentication required in an OIDC context' d
 
   describe 'ServiceProvider configured to default to AAL3 authentication' do
     context 'user does not have phishing-resistant auth configured' do
-      it 'sends user to set up phishing-resistant auth' do
-        user = user_with_2fa
+      let(:user) { create(:user, :fully_registered, :with_phone) }
 
-        visit_idp_from_ial1_oidc_sp_defaulting_to_aal3(prompt: 'select_account')
-        sign_in_live_with_2fa(user)
+      before { visit_idp_from_ial1_oidc_sp_defaulting_to_aal3(prompt: 'select_account') }
 
-        expect(current_url).to eq(authentication_methods_setup_url)
-        expect(page).to have_content(t('two_factor_authentication.two_factor_aal3_choice'))
-        expect(page).to have_xpath("//img[@alt='important alert icon']")
-      end
-
-      it 'throws an error if user doesnt select phishing-resistant auth' do
-        user = user_with_2fa
-
-        visit_idp_from_ial1_oidc_sp_defaulting_to_aal3(prompt: 'select_account')
-        sign_in_live_with_2fa(user)
-
-        expect(current_url).to eq(authentication_methods_setup_url)
-        expect(page).to have_content(t('two_factor_authentication.two_factor_aal3_choice'))
-        expect(page).to have_xpath("//img[@alt='important alert icon']")
-
-        click_continue
-
-        expect(page).to have_content(t('errors.two_factor_auth_setup.must_select_option'))
-      end
+      it_behaves_like 'setting up phishing-resistant authenticator in an OIDC context'
     end
 
     context 'user has phishing-resistant auth configured' do

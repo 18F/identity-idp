@@ -42,29 +42,32 @@ RSpec.describe Reporting::AuthenticationReport do
     allow(report).to receive(:cloudwatch_client).and_return(cloudwatch_client)
   end
 
-  describe '#to_csv' do
-    it 'generates a csv' do
-      csv = CSV.parse(report.to_csv, headers: false)
+  describe '#as_tables' do
+    it 'generates the tabular csv data' do
+      expect(report.as_tables).to eq expected_tables
+    end
+  end
 
-      expected_csv = [
-        ['Report Timeframe', "#{time_range.begin} to #{time_range.end}"],
-        ['Report Generated', Date.today.to_s], # rubocop:disable Rails/Date
-        ['Issuer', issuer],
-        [],
-        ['Metric', 'Number of accounts', '% of total from start'],
-        ['New Users Started IAL1 Verification', '4', '100.0%'],
-        ['New Users Completed IAL1 Password Setup', '3', '75.0%'],
-        ['New Users Completed IAL1 MFA', '2', '50.0%'],
-        ['New IAL1 Users Consented to Partner', '1', '25.0%'],
-        [],
-        ['Total # of IAL1 Users', '2'],
-        [],
-        ['AAL2 Authentication Requests from Partner', '5', '100.0%'],
-        ['AAL2 Authenticated Requests', '2', '40.0%'],
-      ]
+  describe '#as_tables_with_names' do
+    it 'adds a "first row" hash with a title for tables_report mailer' do
+      tables = report.as_tables_with_options
+      aggregate_failures do
+        tables.each do |table|
+          expect(table[0][:title]).to_not be nil
+        end
+      end
+    end
+  end
+
+  describe '#to_csvs' do
+    it 'generates a csv' do
+      csv_string_list = report.to_csvs
+      expect(csv_string_list.count).to be 2
+
+      csvs = csv_string_list.map { |csv| CSV.parse(csv) }
 
       aggregate_failures do
-        csv.map(&:to_a).zip(expected_csv).each do |actual, expected|
+        csvs.map(&:to_a).zip(expected_tables(strings: true)).each do |actual, expected|
           expect(actual).to eq(expected)
         end
       end
@@ -140,5 +143,25 @@ RSpec.describe Reporting::AuthenticationReport do
         subject.cloudwatch_client
       end
     end
+  end
+
+  def expected_tables(strings: false)
+    [
+      [
+        ['Report Timeframe', "#{time_range.begin} to #{time_range.end}"],
+        ['Report Generated', Date.today.to_s], # rubocop:disable Rails/Date
+        ['Issuer', issuer],
+        ['Total # of IAL1 Users', strings ? '2' : 2],
+      ],
+      [
+        ['Metric', 'Number of accounts', '% of total from start'],
+        ['New Users Started IAL1 Verification', strings ? '4' : 4, '100.0%'],
+        ['New Users Completed IAL1 Password Setup', strings ? '3' : 3, '75.0%'],
+        ['New Users Completed IAL1 MFA', strings ? '2' : 2, '50.0%'],
+        ['New IAL1 Users Consented to Partner', strings ? '1' : 1, '25.0%'],
+        ['AAL2 Authentication Requests from Partner', strings ? '5' : 5, '100.0%'],
+        ['AAL2 Authenticated Requests', strings ? '2' : 2, '40.0%'],
+      ],
+    ]
   end
 end

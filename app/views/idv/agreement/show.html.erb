@@ -25,7 +25,7 @@
   <%= render ClickObserverComponent.new(event_name: 'IdV: consent checkbox toggled') do %>
     <%= render ValidatedFieldComponent.new(
           form: f,
-          name: :ial2_consent_given,
+          name: :idv_consent_given,
           as: :boolean,
           label: t('doc_auth.instructions.consent', app_name: APP_NAME),
           required: true,
