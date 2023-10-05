@@ -148,7 +148,10 @@ RSpec.describe Encryption::ContextlessKmsClient do
       end
 
       it 'logs the encryption' do
-        expect(Encryption::KmsLogger).to receive(:log).with(:encrypt)
+        expect(Encryption::KmsLogger).to receive(:log).with(
+          :encrypt,
+          key_id: IdentityConfig.store.aws_kms_key_id,
+        )
 
         subject.encrypt(long_kms_plaintext)
       end
@@ -180,7 +183,10 @@ RSpec.describe Encryption::ContextlessKmsClient do
       end
 
       it 'logs the decryption' do
-        expect(Encryption::KmsLogger).to receive(:log).with(:decrypt)
+        expect(Encryption::KmsLogger).to receive(:log).with(
+          :decrypt,
+          key_id: IdentityConfig.store.aws_kms_key_id,
+        )
 
         subject.decrypt('KMSx' + kms_ciphertext)
       end
