@@ -92,8 +92,10 @@ RSpec.describe GpoReminderSender do
         subject.send_emails(time_due_for_reminder)
         user.gpo_verification_pending_profile.gpo_confirmation_codes.each(&:reload)
 
-        expect(user.gpo_verification_pending_profile.gpo_confirmation_codes[0].reminder_sent_at).to be_within(1.second).of(Time.zone.now)
-        expect(user.gpo_verification_pending_profile.gpo_confirmation_codes[1].reminder_sent_at).to be_within(1.second).of(Time.zone.now)
+        expect(user.gpo_verification_pending_profile.gpo_confirmation_codes[0].reminder_sent_at).
+          to be_within(1.second).of(Time.zone.now)
+        expect(user.gpo_verification_pending_profile.gpo_confirmation_codes[1].reminder_sent_at).
+          to be_within(1.second).of(Time.zone.now)
       end
     end
 
