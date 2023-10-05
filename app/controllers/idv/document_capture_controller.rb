@@ -52,6 +52,10 @@ module Idv
     private
 
     def confirm_hybrid_handoff_complete
+      if params[:no_phone]
+        idv_session.flow_path = 'standard'
+      end
+
       return if idv_session.flow_path.present?
 
       redirect_to idv_hybrid_handoff_url
