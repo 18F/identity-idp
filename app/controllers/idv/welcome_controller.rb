@@ -5,7 +5,7 @@ module Idv
     include GettingStartedAbTestConcern
 
     before_action :confirm_not_rate_limited
-    before_action :confirm_welcome_step_available
+    before_action :confirm_document_capture_not_complete
     before_action :maybe_redirect_for_getting_started_ab_test
 
     def show
@@ -41,11 +41,6 @@ module Idv
         analytics_id: 'Doc Auth',
         irs_reproofing: irs_reproofing?,
       }.merge(ab_test_analytics_buckets)
-    end
-
-    def confirm_welcome_step_available
-      # Don't allow access to the welcome step after the user has completed document capture.
-      redirect_to idv_ssn_url if idv_session.document_capture_complete?
     end
 
     def create_document_capture_session
