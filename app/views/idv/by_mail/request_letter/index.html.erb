@@ -33,7 +33,7 @@
     <br />
     <%= link_to(
           t('idv.messages.gpo.learn_more_verify_by_mail'),
-            help_center_redirect_url(
+          help_center_redirect_url(
             category: 'verify-your-identity',
             article: 'verify-your-address-by-mail',
             flow: :idv,
@@ -44,6 +44,18 @@
   </p>
   <p>
     <%= t('idv.messages.gpo.address_on_file_html') %>
+  </p>
+  <p>
+    <%=
+      start_over_link = link_to(
+        t('idv.messages.gpo.start_over_link_text'),
+        idv_cancel_path(step: local_assigns[:step])
+      )
+      t(
+        'idv.messages.gpo.start_over_html',
+        start_over_link: start_over_link,
+      )
+    %>
   </p>
   
 <% end %>
