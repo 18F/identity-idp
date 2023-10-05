@@ -8,28 +8,28 @@ import { t } from '@18f/identity-i18n';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import useValidatedUspsLocations from '../hooks/use-validated-usps-locations';
 
-interface FullAddressSearchProps {
-  registerField?: RegisterFieldCallback;
+interface FullAddressSearchInputProps {
+  disabled?: boolean;
+  locationsURL: string;
+  onError?: (error: Error | null) => void;
   onFoundLocations?: (
     address: LocationQuery | null,
     locations: FormattedLocation[] | null | undefined,
   ) => void;
   onLoadingLocations?: (isLoading: boolean) => void;
-  onError?: (error: Error | null) => void;
-  disabled?: boolean;
-  locationsURL: string;
-  usStatesTerritories: [string, string][];
+  registerField?: RegisterFieldCallback;
+  usStatesTerritories: string[][];
 }
 
 export default function FullAddressSearchInput({
-  usStatesTerritories,
-  registerField = () => undefined,
-  onFoundLocations = () => undefined,
-  onLoadingLocations = () => undefined,
-  onError = () => undefined,
   disabled = false,
   locationsURL,
-}: FullAddressSearchProps) {
+  onError = () => undefined,
+  onFoundLocations = () => undefined,
+  onLoadingLocations = () => undefined,
+  registerField = () => undefined,
+  usStatesTerritories,
+}: FullAddressSearchInputProps) {
   const spinnerButtonRef = useRef<SpinnerButtonRefHandle>(null);
   const [addressValue, setAddressValue] = useState('');
   const [cityValue, setCityValue] = useState('');

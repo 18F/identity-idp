@@ -18,7 +18,7 @@ RSpec.describe SessionEncryptor do
     it 'transparently encrypts/decrypts sensitive elements of the session' do
       session = { 'warden.user.user.session' => {
         'idv' => { 'ssn' => '666-66-6666' },
-        'idv/doc_auth' => { 'ssn' => '666-66-6666' },
+        'idv/in_person' => { 'ssn' => '666-66-6666' },
         'other_value' => 42,
       } }
 
@@ -28,7 +28,7 @@ RSpec.describe SessionEncryptor do
       expect(result).to eq(
         { 'warden.user.user.session' => {
           'idv' => { 'ssn' => '666-66-6666' },
-          'idv/doc_auth' => { 'ssn' => '666-66-6666' },
+          'idv/in_person' => { 'ssn' => '666-66-6666' },
           'other_value' => 42,
         } },
       )
@@ -71,7 +71,7 @@ RSpec.describe SessionEncryptor do
     it 'KMS encrypts/decrypts doc auth elements of the session' do
       session = { 'warden.user.user.session' => {
         'idv' => { 'ssn' => '666-66-6666' },
-        'idv/doc_auth' => { 'ssn' => '666-66-6666' },
+        'idv/in_person' => { 'ssn' => '666-66-6666' },
         'other_value' => 42,
       } }
       ciphertext = subject.dump(session)
@@ -82,7 +82,7 @@ RSpec.describe SessionEncryptor do
       partially_decrypted_json = JSON.parse(partially_decrypted)
 
       expect(partially_decrypted_json.fetch('warden.user.user.session')['idv']).to eq nil
-      expect(partially_decrypted_json.fetch('warden.user.user.session')['idv/doc_auth']).to eq nil
+      expect(partially_decrypted_json.fetch('warden.user.user.session')['idv/in_person']).to eq nil
       expect(
         partially_decrypted_json.fetch('sensitive_data'),
       ).to_not eq nil

@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react';
+import { useContext } from 'react';
 import type { ReactNode, ReactComponentElement } from 'react';
 import { StatusPage, Button } from '@18f/identity-components';
 import type { TroubleshootingOptions } from '@18f/identity-components';
@@ -49,11 +49,6 @@ interface WarningProps {
    * Source component mounting warning.
    */
   location: string;
-
-  /**
-   * The number of attempts the user can make.
-   */
-  remainingAttempts?: number;
 }
 
 function Warning({
@@ -66,12 +61,8 @@ function Warning({
   children,
   troubleshootingOptions,
   location,
-  remainingAttempts,
 }: WarningProps) {
   const { trackEvent } = useContext(AnalyticsContext);
-  useEffect(() => {
-    trackEvent('IdV: warning shown', { location, remaining_attempts: remainingAttempts });
-  }, []);
 
   let actionButtons: ReactComponentElement<typeof Button>[] | undefined;
   if (actionText && actionOnClick) {

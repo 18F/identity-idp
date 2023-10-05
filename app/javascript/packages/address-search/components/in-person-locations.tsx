@@ -1,7 +1,7 @@
-import { ComponentType } from 'react';
 import { t } from '@18f/identity-i18n';
 import LocationCollection from './location-collection';
 import LocationCollectionItem from './location-collection-item';
+import type { InPersonLocationsProps } from '../types';
 
 export interface FormattedLocation {
   formattedCityStateZip: string;
@@ -13,14 +13,6 @@ export interface FormattedLocation {
   sundayHours: string;
   weekdayHours: string;
   isPilot: boolean;
-}
-
-interface InPersonLocationsProps {
-  locations: FormattedLocation[] | null | undefined;
-  onSelect;
-  address: string;
-  noInPersonLocationsDisplay: ComponentType<{ address: string }>;
-  resultsHeaderComponent?: ComponentType;
 }
 
 function InPersonLocations({

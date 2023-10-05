@@ -4,7 +4,6 @@ cron_1h = '0 * * * *'
 cron_24h = '0 0 * * *'
 gpo_cron_24h = '0 10 * * *' # 10am UTC is 5am EST/6am EDT
 cron_1w = '0 0 * * 0'
-cron_1st_of_mo = '0 0 1 * *'
 
 if defined?(Rails::Console)
   Rails.logger.info 'job_configurations: console detected, skipping schedule'
@@ -188,12 +187,6 @@ else
         class: 'GpoReminderJob',
         cron: cron_24h,
         args: -> { [14.days.ago] },
-      },
-      # Monthly report describing account reuse
-      monthly_account_reuse_report: {
-        class: 'Reports::MonthlyAccountReuseReport',
-        cron: cron_1st_of_mo,
-        args: -> { [Time.zone.today] },
       },
       # Monthly report checking in on key metrics
       monthly_key_metrics_report: {

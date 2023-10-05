@@ -62,7 +62,7 @@ module MultiRegionKmsMigration
           'encrypted_recovery_code_digest NOT LIKE ?', '%encryption_key%'
         )
 
-        password_scope.or(personal_key_scope).limit(user_count)
+        password_scope.or(personal_key_scope).limit(user_count).to_a
       end
     end
 
