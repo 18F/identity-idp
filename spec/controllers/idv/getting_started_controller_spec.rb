@@ -155,21 +155,6 @@ RSpec.describe Idv::GettingStartedController do
       expect(response).to redirect_to(idv_hybrid_handoff_url)
     end
 
-    context 'ial2_consent_given param present' do
-      let(:params) do
-        {
-          doc_auth: {
-            ial2_consent_given: 1,
-          },
-          skip_hybrid_handoff: skip_hybrid_handoff,
-        }.compact
-      end
-      it 'succeeds' do
-        put :update, params: params
-        expect(response).to redirect_to(idv_hybrid_handoff_url)
-      end
-    end
-
     context 'skip_hybrid_handoff present in params' do
       let(:skip_hybrid_handoff) { '' }
       it 'sets flow_path to standard' do
