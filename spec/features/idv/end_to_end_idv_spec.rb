@@ -276,10 +276,32 @@ RSpec.describe 'Identity verification', :js do
   def validate_come_back_later_page
     expect(page).to have_current_path(idv_letter_enqueued_path)
     expect_in_person_gpo_step_indicator_current_step(t('step_indicator.flows.idv.get_a_letter'))
+    expect(page).to have_content(t('idv.titles.come_back_later'))
+    expect(page).not_to have_content(t('step_indicator.flows.idv.verify_phone_or_address'))
   end
 
   def validate_personal_key_page
     expect(current_path).to eq idv_personal_key_path
+
+    # Clicking acknowledge checkbox is required to continue
+    click_continue
+    expect(page).to have_content(t('forms.validation.required_checkbox'))
+    expect(current_path).to eq(idv_personal_key_path)
+
+    expect(page).to have_content(t('forms.personal_key_partial.acknowledgement.header'))
+    expect(page).to have_content(t('forms.personal_key_partial.acknowledgement.text'))
+    expect(page).to have_content(t('forms.personal_key_partial.acknowledgement.help_link_text'))
+    expect(page).to have_content(t('idv.messages.confirm'))
+    expect_step_indicator_current_step(t('step_indicator.flows.idv.secure_account'))
+    expect(page).to have_css(
+      '.step-indicator__step--complete',
+      text: t('step_indicator.flows.idv.verify_phone_or_address'),
+    )
+    expect(page).not_to have_content(t('step_indicator.flows.idv.get_a_letter'))
+
+    # Refreshing shows same page (BUT with new personal key, we should warn the user)
+    visit current_path
+    expect(page).not_to have_content(t('idv.messages.confirm'))
     expect(page).to have_content(t('forms.personal_key_partial.acknowledgement.header'))
   end
 
