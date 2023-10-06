@@ -46,27 +46,26 @@
     <%= t('idv.messages.gpo.address_on_file_html') %>
   </p>
 
-<p>
-  <%= @applicant[:address1] %>
-  <br />
-  <% if @applicant[:address2] %>
-    <%= @applicant[:address2] %>
+  <p>
+    <%= @applicant[:address1] %>
     <br />
-  <% end %>
-  <%= @applicant[:city] %>, <%= @applicant[:state] %> <%= @applicant[:zipcode] %>
-  <br />
-</p>
+    <% if @applicant[:address2] %>
+      <%= @applicant[:address2] %>
+      <br />
+    <% end %>
+    <%= @applicant[:city] %>, <%= @applicant[:state] %> <%= @applicant[:zipcode] %>
+    <br />
+  </p>
 
   <p>
-    <%=
-      start_over_link = link_to(
-        t('idv.messages.gpo.start_over_link_text'),
-        idv_cancel_path(step: local_assigns[:step])
-      )
-      t(
-        'idv.messages.gpo.start_over_html',
-        start_over_link: start_over_link,
-      )
+    <%= start_over_link = link_to(
+          t('idv.messages.gpo.start_over_link_text'),
+          idv_cancel_path(step: local_assigns[:step]),
+        )
+        t(
+          'idv.messages.gpo.start_over_html',
+          start_over_link: start_over_link,
+        )
     %>
   </p>
   
