@@ -36,12 +36,13 @@ RSpec.describe Idv::ReviewController do
   end
 
   describe 'before_actions' do
-    it 'includes before_actions from AccountStateChecker' do
+    it 'includes before_actions from IdvStepConcern' do
       expect(subject).to have_actions(
         :before,
         :confirm_two_factor_authenticated,
-        :confirm_verify_info_step_complete,
-        :confirm_address_step_complete,
+        :confirm_step_allowed,
+        # :confirm_verify_info_step_complete,
+        # :confirm_address_step_complete,
       )
     end
 
