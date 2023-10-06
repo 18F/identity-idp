@@ -99,71 +99,76 @@ RSpec.feature 'idv gpo otp verification step' do
     end
   end
 
-  context 'with gpo personal key after verification' do
-    it 'shows the user a personal key after verification' do
-      sign_in_live_with_2fa(user)
-
-      gpo_confirmation_code.update!(updated_at: Time.zone.now - 1.day)
-      expect(current_path).to eq idv_verify_by_mail_enter_code_path
-      verify_no_spam_warning_banner
-      expect(page).to have_content t('idv.messages.gpo.resend')
-
-      fill_in t('idv.gpo.form.otp_label'), with: otp
-      click_button t('idv.gpo.form.submit')
-
-      profile.reload
-
-      expect(page).to have_current_path(idv_personal_key_path)
-      expect(page).to have_content(t('account.index.verification.success'))
-      expect(page).to have_content(t('step_indicator.flows.idv.get_a_letter'))
-
-      expect(profile.active).to be(true)
-      expect(profile.deactivation_reason).to be(nil)
-
-      expect(user.events.account_verified.size).to eq 1
-    end
-  end
-
-  context 'with gpo feature disabled' do
+  context 'has gpo_confirmation_code sent before present day' do
     before do
-      allow(IdentityConfig.store).to receive(:gpo_verification_enabled?).and_return(true)
+      gpo_confirmation_code.update!(updated_at: Time.zone.now - 1.day)
+    end
+    context 'with gpo personal key after verification' do
+      it 'shows the user a personal key after verification' do
+        sign_in_live_with_2fa(user)
+
+        expect(current_path).to eq idv_verify_by_mail_enter_code_path
+        verify_no_spam_warning_banner
+        expect(page).to have_content t('idv.messages.gpo.resend')
+
+        fill_in t('idv.gpo.form.otp_label'), with: otp
+        click_button t('idv.gpo.form.submit')
+
+        profile.reload
+
+        expect(page).to have_current_path(idv_personal_key_path)
+        expect(page).to have_content(t('account.index.verification.success'))
+        expect(page).to have_content(t('step_indicator.flows.idv.get_a_letter'))
+
+        expect(profile.active).to be(true)
+        expect(profile.deactivation_reason).to be(nil)
+
+        expect(user.events.account_verified.size).to eq 1
+      end
     end
 
-    it 'allows a user to verify their account for an existing pending profile' do
+    context 'with gpo feature disabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:gpo_verification_enabled?).and_return(true)
+      end
+
+      it 'allows a user to verify their account for an existing pending profile' do
+        sign_in_live_with_2fa(user)
+
+        expect(current_path).to eq idv_verify_by_mail_enter_code_path
+        expect(page).to have_content t('idv.messages.gpo.resend')
+
+        verify_no_spam_warning_banner
+        gpo_confirmation_code
+        fill_in t('idv.gpo.form.otp_label'), with: otp
+        click_button t('idv.gpo.form.submit')
+
+        expect(user.events.account_verified.size).to eq 1
+        expect(page).to_not have_content(t('account.index.verification.reactivate_button'))
+      end
+    end
+
+    it 'allows a user to cancel and start over within the banner' do
       sign_in_live_with_2fa(user)
 
       expect(current_path).to eq idv_verify_by_mail_enter_code_path
-      expect(page).to have_content t('idv.messages.gpo.resend')
+      expect(page).to have_content t('idv.gpo.alert_info')
+      expect(page).to have_content t('idv.gpo.wrong_address')
+      expect(page).to have_content Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE[:address1]
       verify_no_spam_warning_banner
-      gpo_confirmation_code
-      fill_in t('idv.gpo.form.otp_label'), with: otp
-      click_button t('idv.gpo.form.submit')
 
-      expect(user.events.account_verified.size).to eq 1
-      expect(page).to_not have_content(t('account.index.verification.reactivate_button'))
+      click_on t('idv.gpo.clear_and_start_over')
+
+      expect(current_path).to eq idv_confirm_start_over_path
+
+      click_idv_continue
+
+      expect(current_path).to eq idv_welcome_path
     end
-  end
-
-  it 'allows a user to cancel and start over within the banner' do
-    gpo_confirmation_code.update!(updated_at: Time.zone.now - 2.days)
-    sign_in_live_with_2fa(user)
-
-    expect(current_path).to eq idv_verify_by_mail_enter_code_path
-    expect(page).to have_content t('idv.gpo.alert_info')
-    expect(page).to have_content t('idv.gpo.wrong_address')
-    expect(page).to have_content Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE[:address1]
-    verify_no_spam_warning_banner
-
-    click_on t('idv.gpo.clear_and_start_over')
-
-    expect(current_path).to eq idv_confirm_start_over_path
-
-    click_idv_continue
-
-    expect(current_path).to eq idv_welcome_path
   end
 
   it 'allows a user to cancel and start over in the footer' do
+    gpo_confirmation_code
     another_gpo_confirmation_code = create(
       :gpo_confirmation_code,
       profile: profile,
