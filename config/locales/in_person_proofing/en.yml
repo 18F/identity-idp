@@ -43,7 +43,7 @@ en:
         po_search:
           address_label: Address
           address_search_hint: 'Example: 1234 N Example St., Allentown, PA 12345'
-          address_search_label: Enter an address to find a Post Office near you
+          address_search_label: Enter an address to find a Post Office near you.
           city_label: City
           is_searching_message: Searching for Post Office locations…
           none_found: Sorry, there are no participating Post Offices within 50 miles of
