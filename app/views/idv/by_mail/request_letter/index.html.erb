@@ -58,13 +58,13 @@
   </p>
 
   <p>
-    <%= start_over_link = link_to(
+    <%= start_over_link_html = link_to(
           t('idv.messages.gpo.start_over_link_text'),
           idv_cancel_path(step: local_assigns[:step]),
         )
         t(
-          'idv.messages.gpo.start_over_html',
-          start_over_link: start_over_link,
+          'idv.messages.gpo.start_over',
+          start_over_link_html: start_over_link_html,
         )
     %>
   </p>

@@ -233,7 +233,7 @@ en:
         learn_more_verify_by_mail: Learn more about verifying your address by mail
         letter_on_the_way: We are sending you a letter
         resend: Send me another letter
-        start_over_html: If this isn't the right address, you'll need to %{start_over_link}.
+        start_over: If this isn't the right address, you'll need to %{start_over_link_html}.
         start_over_link_text: start over and verify with your new address
         timeframe_html:  You'll get a letter with a <strong>verification
           code</strong> in <strong>5 to 10 days.</strong>

@@ -10,6 +10,12 @@ RSpec.describe 'idv/by_mail/request_letter/index.html.erb' do
     Idv::ByMail::RequestLetterPresenter.new(user, {})
   end
 
+  let(:address1) { 'applicant address 1' }
+  let(:address2) { nil }
+  let(:city) { 'applicant city' }
+  let(:state) { 'applicant state' }
+  let(:zipcode) { 'applicant zipcode' }
+
   before do
     allow(view).to receive(:go_back_path).and_return(go_back_path)
     allow(view).to receive(:step_indicator_steps).and_return(step_indicator_steps)
@@ -19,6 +25,15 @@ RSpec.describe 'idv/by_mail/request_letter/index.html.erb' do
       and_return(user_needs_address_otp_verification)
 
     @presenter = presenter
+    @applicant = {
+      address1: 'applicant address 1',
+      city: 'applicant city',
+      state: 'applicant state',
+      zipcode: 'applicant zipcode',
+    }
+    if address2
+      @applicant[:address2] = 'applicant address 2'
+    end
     render
   end
 
@@ -36,6 +51,19 @@ RSpec.describe 'idv/by_mail/request_letter/index.html.erb' do
 
     it 'renders back link to return to previous path' do
       expect(rendered).to have_link('‹ ' + t('forms.buttons.back'), href: go_back_path)
+    end
+  end
+
+  it 'renders the address lines' do
+    expect(rendered).to have_content('applicant address 1')
+    expect(rendered).to have_content('applicant city, applicant state applicant zipcode')
+  end
+
+  context 'when there is an address2' do
+    let(:address2) { "applicant address 2" }
+
+    it 'renders the addresss line' do
+      expect(rendered).to have_content('applicant address 2')
     end
   end
 
