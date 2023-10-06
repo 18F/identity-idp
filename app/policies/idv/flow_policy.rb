@@ -36,6 +36,30 @@ module Idv
       send(step)
     end
 
+    def latest_step(current_step: :root)
+      return nil if NEXT_STEPS[current_step].empty?
+      return current_step if NEXT_STEPS[current_step] == [:success]
+
+      (NEXT_STEPS[current_step]).each do |step|
+        if step_allowed?(step: step)
+          return latest_step(current_step: step)
+        end
+      end
+      current_step
+    end
+
+    def path_for_latest_step
+      path_map[latest_step]
+    end
+
+    # This can be blank because we are using paths, not urls,
+    # so international urls are supported.
+    def url_options
+      {}
+    end
+
+    private
+
     def path_to_step
       @path_to_step ||= {
         idv_welcome_path => :welcome,
@@ -52,18 +76,6 @@ module Idv
       }.freeze
     end
 
-    def latest_step(current_step: :root)
-      return nil if NEXT_STEPS[current_step].empty?
-      return current_step if NEXT_STEPS[current_step] == [:success]
-
-      (NEXT_STEPS[current_step]).each do |step|
-        if step_allowed?(step: step)
-          return latest_step(current_step: step)
-        end
-      end
-      current_step
-    end
-
     def path_map
       @path_map ||= {
         welcome: idv_welcome_path,
@@ -78,10 +90,6 @@ module Idv
         review: idv_review_path,
         personal_key: idv_personal_key_path,
       }.freeze
-    end
-
-    def path_for_latest_step
-      path_map[latest_step]
     end
 
     def welcome
@@ -145,12 +153,6 @@ module Idv
 
     def post_document_capture_check
       idv_session.pii_from_doc.present? || idv_session.resolution_successful # ignoring in_person
-    end
-
-    # This can be blank because we are using paths, not urls,
-    # so international urls are supported.
-    def url_options
-      {}
     end
   end
 end
