@@ -16,16 +16,20 @@ module Idv
     end
 
     def phone_with_camera
-      analytics.idv_doc_auth_phone_question_submitted(**analytics_arguments.
-        merge(camera_phone: true))
+      analytics.idv_doc_auth_phone_question_submitted(
+        **analytics_arguments.
+                merge(camera_phone: true),
+      )
 
       redirect_to idv_hybrid_handoff_url
     end
 
     def phone_without_camera
       idv_session.flow_path = 'standard'
-      analytics.idv_doc_auth_phone_question_submitted(**analytics_arguments.
-        merge(camera_phone: false))
+      analytics.idv_doc_auth_phone_question_submitted(
+        **analytics_arguments.
+                merge(camera_phone: false),
+      )
 
       redirect_to idv_hybrid_handoff_url
     end
