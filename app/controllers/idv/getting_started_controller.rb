@@ -3,7 +3,8 @@ module Idv
     include IdvStepConcern
 
     before_action :confirm_not_rate_limited
-    before_action :confirm_agreement_needed
+    before_action :confirm_document_capture_not_complete
+    before_action :confirm_document_capture_not_started
 
     def show
       analytics.idv_doc_auth_getting_started_visited(**analytics_arguments)
@@ -74,12 +75,6 @@ module Idv
 
     def consent_form_params
       params.require(:doc_auth).permit(:idv_consent_given)
-    end
-
-    def confirm_agreement_needed
-      return unless idv_session.idv_consent_given
-
-      redirect_to idv_hybrid_handoff_url
     end
   end
 end
