@@ -68,12 +68,20 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
         expect(@analytics).to receive(:track_event).
           with('User marked authenticated', authentication_type: :valid_2fa)
 
-        post :create, params: payload
+        freeze_time do
+          post :create, params: payload
 
-        expect(subject.user_session[:auth_method]).to eq(
-          TwoFactorAuthenticatable::AuthMethod::PERSONAL_KEY,
-        )
-        expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq false
+          expect(subject.user_session[:auth_method]).to eq(
+            TwoFactorAuthenticatable::AuthMethod::PERSONAL_KEY,
+          )
+          expect(subject.user_session[:auth_events]).to eq(
+            [
+              auth_method: TwoFactorAuthenticatable::AuthMethod::PERSONAL_KEY,
+              at: Time.zone.now,
+            ],
+          )
+          expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq false
+        end
       end
     end
 
@@ -131,6 +139,7 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
         post :create, params: payload
 
         expect(subject.user_session[:auth_method]).to eq nil
+        expect(subject.user_session[:auth_events]).to eq nil
         expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq true
       end
 
