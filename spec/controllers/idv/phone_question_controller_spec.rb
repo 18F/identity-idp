@@ -5,6 +5,15 @@ RSpec.describe Idv::PhoneQuestionController do
 
   let(:user) { create(:user) }
 
+  let(:analytics_args) do
+    {
+      step: 'phone_question',
+      analytics_id: 'Doc Auth',
+      skip_hybrid_handoff: nil,
+      irs_reproofing: false,
+    }.merge(ab_test_args)
+  end
+
   let(:ab_test_args) do
     { sample_bucket1: :sample_value1, sample_bucket2: :sample_value2 }
   end
@@ -50,14 +59,7 @@ RSpec.describe Idv::PhoneQuestionController do
 
   describe '#show' do
     let(:analytics_name) { 'IdV: doc auth phone question visited' }
-    let(:analytics_args) do
-      {
-        step: 'phone_question',
-        analytics_id: 'Doc Auth',
-        skip_hybrid_handoff: nil,
-        irs_reproofing: false,
-      }.merge(ab_test_args)
-    end
+
     it 'renders the show template' do
       get :show
 
@@ -129,6 +131,46 @@ RSpec.describe Idv::PhoneQuestionController do
         get :show
         expect(response).to redirect_to(idv_document_capture_url)
       end
+    end
+  end
+
+  describe '#phone_with_camera' do
+    let(:analytics_name) { 'IdV: doc auth phone question submitted' }
+
+    it 'redurects to hybrid handoff' do
+      get :phone_with_camera
+
+      expect(response).to redirect_to(idv_hybrid_handoff_url)
+    end
+
+    it 'sends analytics_visited event' do
+      get :phone_with_camera
+
+      expect(@analytics).
+        to have_logged_event(analytics_name, analytics_args.merge!(camera_phone: true))
+    end
+  end
+
+  describe '#phone_without_camera' do
+    let(:analytics_name) { 'IdV: doc auth phone question submitted' }
+
+    it 'redirects to hybrid handoff' do
+      get :phone_without_camera
+
+      expect(response).to redirect_to(idv_hybrid_handoff_url)
+    end
+
+    it 'sends analytics_visited event' do
+      get :phone_without_camera
+
+      expect(@analytics).
+        to have_logged_event(analytics_name, analytics_args.merge!(camera_phone: false))
+    end
+
+    it 'set idv_session flow path to standard' do
+      expect do
+        get :phone_without_camera
+      end.to change { subject.idv_session.flow_path }.from(nil).to eql('standard')
     end
   end
 end
