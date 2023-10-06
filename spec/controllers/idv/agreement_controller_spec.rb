@@ -83,7 +83,7 @@ RSpec.describe Idv::AgreementController do
       end
     end
 
-    context 'and document capture already completed' do
+    context 'document capture already completed' do
       before do
         subject.idv_session.pii_from_doc = { first_name: 'Susan' }
       end
@@ -91,6 +91,17 @@ RSpec.describe Idv::AgreementController do
       it 'redirects to ssn step' do
         get :show
         expect(response).to redirect_to(idv_ssn_url)
+      end
+    end
+
+    context 'document capture started' do
+      before do
+        subject.idv_session.flow_path = 'standard'
+      end
+
+      it 'redirects to hybrid_handoff step' do
+        get :show
+        expect(response).to redirect_to(idv_hybrid_handoff_url)
       end
     end
   end

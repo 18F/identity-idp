@@ -6,6 +6,7 @@ module Idv
     before_action :confirm_not_rate_limited
     before_action :confirm_welcome_step_complete
     before_action :confirm_document_capture_not_complete
+    before_action :confirm_document_capture_not_started
 
     def show
       analytics.idv_doc_auth_agreement_visited(**analytics_arguments)
