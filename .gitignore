@@ -25,6 +25,9 @@
 .vagrant
 .capistrano
 
+# avoid checking in stray files
+*.bak
+
 # root files
 capybara-*.html
 dump.rdb

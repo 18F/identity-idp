@@ -25,6 +25,7 @@ module Idv
       # The doc capture flow will have fetched the results already. We need
       # to fetch them again here to add the PII to this session
       handle_document_verification_success(document_capture_session_result)
+      idv_session.redo_document_capture = nil
 
       redirect_to idv_ssn_url
     end

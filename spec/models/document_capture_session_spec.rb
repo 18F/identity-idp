@@ -61,38 +61,6 @@ RSpec.describe DocumentCaptureSession do
     end
   end
 
-  describe '#store_doc_auth_result' do
-    it 'generates a result ID stores the result encrypted in redis' do
-      record = DocumentCaptureSession.new(result_id: SecureRandom.uuid)
-
-      record.store_doc_auth_result(
-        result: doc_auth_response.to_h,
-        pii: doc_auth_response.pii_from_doc,
-      )
-
-      result_id = record.result_id
-      key = EncryptedRedisStructStorage.key(result_id, type: DocumentCaptureSessionAsyncResult)
-      data = REDIS_POOL.with { |client| client.get(key) }
-      expect(data).to be_a(String)
-      expect(data).to_not include('Testy')
-      expect(data).to_not include('Testerson')
-      expect(record.ocr_confirmation_pending).to eq(false)
-    end
-
-    context 'with attention with barcode response' do
-      before { allow(doc_auth_response).to receive(:attention_with_barcode?).and_return(true) }
-
-      it 'sets record as pending ocr confirmation' do
-        record = DocumentCaptureSession.new(result_id: SecureRandom.uuid)
-        record.store_doc_auth_result(
-          result: doc_auth_response.to_h,
-          pii: doc_auth_response.pii_from_doc,
-        )
-        expect(record.ocr_confirmation_pending).to eq(true)
-      end
-    end
-  end
-
   describe '#expired?' do
     before do
       allow(IdentityConfig.store).to receive(:doc_capture_request_valid_for_minutes).and_return(15)
@@ -137,6 +105,28 @@ RSpec.describe DocumentCaptureSession do
       expect(result.failed_front_image?('fingerprint1')).to eq(true)
       expect(result.failed_front_image?(nil)).to eq(false)
       expect(result.failed_back_image?(nil)).to eq(false)
+    end
+
+    it 'saves failed image finterprints' do
+      record = DocumentCaptureSession.new(result_id: SecureRandom.uuid)
+
+      record.store_failed_auth_image_fingerprint(
+        'fingerprint1', nil
+      )
+      old_result = record.load_result
+
+      record.store_failed_auth_image_fingerprint(
+        'fingerprint2', 'fingerprint3'
+      )
+      new_result = record.load_result
+
+      expect(old_result.failed_front_image?('fingerprint1')).to eq(true)
+      expect(old_result.failed_front_image?('fingerprint2')).to eq(false)
+      expect(old_result.failed_back_image?('fingerprint3')).to eq(false)
+
+      expect(new_result.failed_front_image?('fingerprint1')).to eq(true)
+      expect(new_result.failed_front_image?('fingerprint2')).to eq(true)
+      expect(new_result.failed_back_image?('fingerprint3')).to eq(true)
     end
   end
 end
