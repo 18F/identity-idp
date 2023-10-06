@@ -2303,6 +2303,17 @@ module AnalyticsEvents
     )
   end
 
+  # The "phone question" step: Desktop user has submitted they
+  # do or do not have a phone with a a camera via desktop
+  def idv_doc_auth_phone_question_submitted(**extra)
+    track_event('IdV: doc auth phone question submitted', **extra)
+  end
+
+  # Desktop user has reached the above "phone question" view
+  def idv_doc_auth_phone_question_visited(**extra)
+    track_event('IdV: doc auth phone question visited', **extra)
+  end
+
   # @identity.idp.previous_event_name IdV: Verify setup errors visited
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # Tracks when the user reaches the verify please call page after failing proofing

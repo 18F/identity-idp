@@ -14,7 +14,7 @@
 <div class="margin-top-4">
   <%= link_to(
         t('doc_auth.buttons.have_phone'),
-        idv_hybrid_handoff_path,
+        idv_phone_question_phone_with_camera_url,
         class: 'usa-button usa-button--wide usa-button--big',
       ) %>
 </div>
@@ -23,7 +23,7 @@
 
   <%= link_to(
         t('doc_auth.phone_question.do_not_have'),
-        idv_document_capture_url(camera_phone: false),
+        idv_phone_question_phone_without_camera_url,
       ) %>
 </p>
 

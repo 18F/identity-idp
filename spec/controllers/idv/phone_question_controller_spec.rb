@@ -5,12 +5,17 @@ RSpec.describe Idv::PhoneQuestionController do
 
   let(:user) { create(:user) }
 
+  let(:ab_test_args) do
+    { sample_bucket1: :sample_value1, sample_bucket2: :sample_value2 }
+  end
+
   before do
     stub_sign_in(user)
     stub_analytics
     stub_attempts_tracker
     subject.user_session['idv/doc_auth'] = {}
     subject.idv_session.idv_consent_given = true
+    allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 
   describe 'before_actions' do
@@ -44,6 +49,15 @@ RSpec.describe Idv::PhoneQuestionController do
   end
 
   describe '#show' do
+    let(:analytics_name) { 'IdV: doc auth phone question visited' }
+    let(:analytics_args) do
+      {
+        step: 'phone_question',
+        analytics_id: 'Doc Auth',
+        skip_hybrid_handoff: nil,
+        irs_reproofing: false,
+      }.merge(ab_test_args)
+    end
     it 'renders the show template' do
       get :show
 
@@ -60,6 +74,12 @@ RSpec.describe Idv::PhoneQuestionController do
       end
     end
 
+    it 'sends analytics_visited event' do
+      get :show
+
+      expect(@analytics).to have_logged_event(analytics_name, analytics_args)
+    end
+
     context 'agreement step is not complete' do
       before do
         subject.idv_session.idv_consent_given = nil
@@ -72,7 +92,7 @@ RSpec.describe Idv::PhoneQuestionController do
       end
     end
 
-    context 'hybrid_handoff already visited' do
+    context 'standard flow_path already defined' do
       it 'redirects to document_capture in standard flow' do
         subject.idv_session.flow_path = 'standard'
 
@@ -91,7 +111,7 @@ RSpec.describe Idv::PhoneQuestionController do
     end
 
     context 'on mobile device' do
-      it 'redirects to hybrid_handoff controller' do
+      it 'redirects to document_capture' do
         subject.idv_session.skip_hybrid_handoff = true
 
         get :show
