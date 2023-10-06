@@ -20,11 +20,7 @@ locals:
 </div>
 
 <% if @had_barcode_read_failure %>
-  <%= render AlertComponent.new(
-        type: :warning,
-        class: 'margin-bottom-4',
-        text_tag: 'div',
-      ) do %>
+  <%= render AlertComponent.new(type: :warning, class: 'margin-bottom-4') do %>
     <%= t(
           'doc_auth.headings.capture_scan_warning_html',
           link_html: link_to(
