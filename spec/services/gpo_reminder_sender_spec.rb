@@ -88,7 +88,7 @@ RSpec.describe GpoReminderSender do
 
       include_examples 'sends emails', expected_number_of_emails: 2
 
-      it 'updates the GPO verification code `reminder_sent_at` for the both codes' do
+      it 'updates the GPO verification code `reminder_sent_at` for both codes' do
         subject.send_emails(time_due_for_reminder)
         user.gpo_verification_pending_profile.gpo_confirmation_codes.each(&:reload)
 
