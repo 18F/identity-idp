@@ -57,40 +57,38 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
   end
 
   describe '#adjudicated_result' do
-    context 'double address verification is enabled' do
-      context 'residential address and id address are different' do
-        context 'LexisNexis fails for the residential address' do
-          let(:resolution_success) { false }
-          let(:residential_resolution_result) do
-            Proofing::Resolution::Result.new(
-              success: resolution_success,
-              errors: {},
-              exception: nil,
-              vendor_name: 'test-resolution-vendor',
-              failed_result_can_pass_with_additional_verification:
-              can_pass_with_additional_verification,
-              attributes_requiring_additional_verification:
-              attributes_requiring_additional_verification,
-            )
-          end
-          it 'returns a failed response' do
-            result = subject.adjudicated_result
-
-            expect(result.success?).to eq(false)
-            resolution_adjudication_reason = result.extra[:context][:resolution_adjudication_reason]
-            expect(resolution_adjudication_reason).to eq(:fail_resolution_skip_state_id)
-          end
+    context 'residential address and id address are different' do
+      context 'LexisNexis fails for the residential address' do
+        let(:resolution_success) { false }
+        let(:residential_resolution_result) do
+          Proofing::Resolution::Result.new(
+            success: resolution_success,
+            errors: {},
+            exception: nil,
+            vendor_name: 'test-resolution-vendor',
+            failed_result_can_pass_with_additional_verification:
+            can_pass_with_additional_verification,
+            attributes_requiring_additional_verification:
+            attributes_requiring_additional_verification,
+          )
         end
+        it 'returns a failed response' do
+          result = subject.adjudicated_result
 
-        context 'AAMVA fails for the id address' do
-          let(:state_id_success) { false }
-          it 'returns a failed response' do
-            result = subject.adjudicated_result
+          expect(result.success?).to eq(false)
+          resolution_adjudication_reason = result.extra[:context][:resolution_adjudication_reason]
+          expect(resolution_adjudication_reason).to eq(:fail_resolution_skip_state_id)
+        end
+      end
 
-            expect(result.success?).to eq(false)
-            resolution_adjudication_reason = result.extra[:context][:resolution_adjudication_reason]
-            expect(resolution_adjudication_reason).to eq(:fail_state_id)
-          end
+      context 'AAMVA fails for the id address' do
+        let(:state_id_success) { false }
+        it 'returns a failed response' do
+          result = subject.adjudicated_result
+
+          expect(result.success?).to eq(false)
+          resolution_adjudication_reason = result.extra[:context][:resolution_adjudication_reason]
+          expect(resolution_adjudication_reason).to eq(:fail_state_id)
         end
       end
     end

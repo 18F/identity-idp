@@ -43,7 +43,9 @@ module Idv
     private
 
     def double_address_verification
-      # if in person return true else return false
+      # If in person return true else return false. This is temporary until we add a feature flag
+      # to track enrollment was created in the in person flow.
+      # todo LG-11235 update value based on new feature flag
       current_user.has_in_person_enrollment?
     end
 

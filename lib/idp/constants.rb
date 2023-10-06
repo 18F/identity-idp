@@ -113,7 +113,7 @@ module Idp
       same_address_as_id: 'false',
     ).freeze
 
-    # This should be the default applicant for ipp
+    # Use this as the default applicant for in person proofing
     MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID = MOCK_IDV_APPLICANT_WITH_SSN.merge(
       identity_doc_address1: MOCK_IDV_APPLICANT_WITH_SSN[:address1],
       identity_doc_address2: MOCK_IDV_APPLICANT_WITH_SSN[:address2],
