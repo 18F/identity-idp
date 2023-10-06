@@ -66,6 +66,47 @@ describe('FullAddressSearch', () => {
     });
   });
 
+  context('Address Search Label Text', () => {
+    it('does not render when handleLocationSelect is not null', async () => {
+      const handleLocationsFound = sandbox.stub();
+      const onSelect = sinon.stub();
+      const { queryByText } = render(
+        <SWRConfig value={{ provider: () => new Map() }}>
+          <FullAddressSearch
+            usStatesTerritories={usStatesTerritories}
+            onFoundLocations={handleLocationsFound}
+            locationsURL={locationsURL}
+            registerField={() => undefined}
+            handleLocationSelect={onSelect}
+            disabled={false}
+          />
+        </SWRConfig>,
+      );
+
+      const searchLabel = await queryByText('in_person_proofing.headings.po_search.address_search_label');
+      expect(searchLabel).to.be.empty;
+    });
+
+    it('renders when handleLocationSelect is null', async () => {
+      const handleLocationsFound = sandbox.stub();
+      const { queryByText } = render(
+        <SWRConfig value={{ provider: () => new Map() }}>
+          <FullAddressSearch
+            usStatesTerritories={usStatesTerritories}
+            onFoundLocations={handleLocationsFound}
+            locationsURL={locationsURL}
+            registerField={() => undefined}
+            handleLocationSelect={null}
+            disabled={false}
+          />
+        </SWRConfig>,
+      );
+
+      const searchLabel = await queryByText('in_person_proofing.body.location.po_search.address_search_label');
+      expect(searchLabel).to.exist();
+    });
+  });
+
   context('validates form', () => {
     it('displays an error for all required fields when input is empty', async () => {
       const handleLocationsFound = sandbox.stub();
