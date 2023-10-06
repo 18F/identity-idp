@@ -245,7 +245,7 @@ es:
           dirección por correo
         letter_on_the_way: Te enviaremos una carta
         resend: Envíeme otra carta
-        start_over: Si esta no es la dirección correcta, tendrá que
+        start_over_html: Si esta no es la dirección correcta, tendrá que
           %{start_over_link_html}.
         start_over_link_text: (empezar de nuevo y verificar con su nueva dirección
         timeframe_html: Recibirá una carta con un <strong>código de
