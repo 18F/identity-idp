@@ -195,7 +195,7 @@ RSpec.feature 'idv gpo otp verification step' do
     )
   end
 
-  def verify_spam_warning_banner_present(code_sent_at=Time.zone.now)
+  def verify_spam_warning_banner_present(code_sent_at = Time.zone.now)
     expect(page).to have_content strip_tags(
       t(
         'idv.gpo.alert_spam_warning_html',
