@@ -1,21 +1,5 @@
 module Idv
-  class WorkflowPolicy
-    # Possibly a /verify/resume controller
-    # possibly chain the requirements here. (hybrid_handoff depends on agreement and one more thing)
-    # Change polling to not depend on a specific screen (LinkSent)
-    #   Could confirm leaving, but link is still out there.
-    #   Invalidate document_capture_session? Message on phone
-    #   If user submits images, we should try to continue
-    #   successful upload count vs ssn viewed count (or link sent complete if available)
-    # When hit back, confirm undo operation?
-    # Back -> screen that summarizes what happened (like step indicator) w/links & start over button
-    # Accessibility/screen readers
-    # collect all info, then call vendors (store images)
-    # send phone to IV at VerifyInfo step if we have it
-    #   doesn't pass security review/user consent issues
-    # require current_user as well?
-    # add a/b test bucket to checks?
-    #
+  class FlowPolicy
     include Rails.application.routes.url_helpers
 
     NEXT_STEPS = Hash.new([])
@@ -32,9 +16,6 @@ module Idv
         phone: [:phone_enter_otp],
         phone_enter_otp: [:review],
         review: [:personal_key],
-        # request_letter: [:review, :letter_enqueued], to be visited later
-        # letter_enqueued: [:enter_verification_code],
-        # enter_verification_code: [:personal_key],
         personal_key: [:success],
       },
     )
@@ -60,6 +41,7 @@ module Idv
         idv_welcome_path => :welcome,
         idv_agreement_path => :agreement,
         idv_hybrid_handoff_path => :hybrid_handoff,
+        idv_link_sent_path => :link_sent,
         idv_document_capture_path => :document_capture,
         idv_ssn_path => :ssn,
         idv_verify_info_path => :verify_info,
@@ -87,6 +69,7 @@ module Idv
         welcome: idv_welcome_path,
         agreement: idv_agreement_path,
         hybrid_handoff: idv_hybrid_handoff_path,
+        link_sent: idv_link_sent_path,
         document_capture: idv_document_capture_path,
         ssn: idv_ssn_path,
         verify_info: idv_verify_info_path,
@@ -161,7 +144,7 @@ module Idv
     end
 
     def post_document_capture_check
-      idv_session.pii_from_doc || idv_session.resolution_successful # ignoring in_person
+      idv_session.pii_from_doc.present? || idv_session.resolution_successful # ignoring in_person
     end
 
     # This can be blank because we are using paths, not urls,
