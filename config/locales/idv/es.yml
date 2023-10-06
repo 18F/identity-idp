@@ -236,18 +236,20 @@ es:
       come_back_later_sp_html: Ahora puedes volver a <strong>%{sp}</strong>.
       confirm: Hemos asegurado su información verificada
       gpo:
-        address_on_file_html: "Enviaremos la carta por correo a la dirección que verificó anteriormente:"
+        address_on_file: 'Enviaremos la carta por correo a la dirección que verificó
+          anteriormente:'
         another_letter_on_the_way: Te enviaremos otra carta
         info_alert: Tendrá que esperar a que su carta sea entregada para terminar de
           verificar su identidad.
-        learn_more_verify_by_mail: Obtenga más información sobre la verificación de su dirección por correo
+        learn_more_verify_by_mail: Obtenga más información sobre la verificación de su
+          dirección por correo
         letter_on_the_way: Te enviaremos una carta
         resend: Envíeme otra carta
-        start_over: Si esta no es la dirección correcta, tendrá que %{start_over_link_html}.
+        start_over: Si esta no es la dirección correcta, tendrá que
+          %{start_over_link_html}.
         start_over_link_text: (empezar de nuevo y verificar con su nueva dirección
         timeframe_html: Recibirá una carta con un <strong>código de
-          verificación</strong> en un plazo de <strong>5 a 10
-          días.</strong>
+          verificación</strong> en un plazo de <strong>5 a 10 días.</strong>
       gpo_reminder:
         body_html: El <strong>%{date_letter_was_sent}</strong> solicitaste una carta
           para verificar tu identidad. Deberás ingresar el código que contiene
