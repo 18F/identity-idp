@@ -69,9 +69,6 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController do
         freeze_time do
           get :show, params: { token: 'good-token' }
 
-          expect(subject.user_session[:auth_method]).to eq(
-            TwoFactorAuthenticatable::AuthMethod::PIV_CAC,
-          )
           expect(subject.user_session[:auth_events]).to eq(
             [
               auth_method: TwoFactorAuthenticatable::AuthMethod::PIV_CAC,
@@ -163,7 +160,6 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController do
       end
 
       it 'does not set auth_method and requires 2FA' do
-        expect(subject.user_session[:auth_method]).to eq nil
         expect(subject.user_session[:auth_events]).to eq nil
         expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq true
       end

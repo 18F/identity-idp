@@ -7,16 +7,21 @@ RSpec.describe ServiceProviderMfaPolicy do
   let(:aal_level_requested) { 1 }
   let(:piv_cac_requested) { false }
   let(:phishing_resistant_requested) { nil }
+  let(:auth_methods_session) { AuthMethodsSession.new(user_session: {}) }
 
   subject(:policy) do
     described_class.new(
       user: user,
       service_provider: service_provider,
-      auth_method: auth_method,
+      auth_methods_session: auth_methods_session,
       aal_level_requested: aal_level_requested,
       piv_cac_requested: piv_cac_requested,
       phishing_resistant_requested: phishing_resistant_requested,
     )
+  end
+
+  before do
+    auth_methods_session.authenticate!(auth_method) if auth_method
   end
 
   describe '#phishing_resistant_required?' do
@@ -82,6 +87,17 @@ RSpec.describe ServiceProviderMfaPolicy do
         it { expect(policy.user_needs_sp_auth_method_verification?).to eq(false) }
       end
 
+      context 'the user uses an eligible method and authenticates with another method afterward' do
+        let(:auth_method) { 'webauthn' }
+
+        before do
+          setup_user_webauthn_token
+          auth_methods_session.authenticate!(TwoFactorAuthenticatable::AuthMethod::SMS)
+        end
+
+        it { expect(policy.user_needs_sp_auth_method_verification?).to eq(false) }
+      end
+
       context 'the user did not use an AAL3 method' do
         let(:auth_method) { TwoFactorAuthenticatable::AuthMethod::SMS }
 
@@ -110,6 +126,14 @@ RSpec.describe ServiceProviderMfaPolicy do
         before { setup_user_piv }
 
         it { expect(policy.user_needs_sp_auth_method_verification?).to eq(false) }
+
+        context 'the user authenticates with another method after using PIV/CAC' do
+          before do
+            auth_methods_session.authenticate!(TwoFactorAuthenticatable::AuthMethod::SMS)
+          end
+
+          it { expect(policy.user_needs_sp_auth_method_verification?).to eq(false) }
+        end
       end
 
       context 'the user used webauthn' do
@@ -141,6 +165,12 @@ RSpec.describe ServiceProviderMfaPolicy do
       end
 
       it { expect(policy.user_needs_sp_auth_method_verification?).to eq(false) }
+
+      context 'user has not authenticated' do
+        let(:auth_method) { nil }
+
+        it { expect(policy.user_needs_sp_auth_method_verification?).to eq(false) }
+      end
     end
   end
 
@@ -194,6 +224,12 @@ RSpec.describe ServiceProviderMfaPolicy do
       before { setup_user_phone }
 
       it { expect(policy.user_needs_sp_auth_method_setup?).to eq(false) }
+
+      context 'user has not authenticated' do
+        let(:auth_method) { nil }
+
+        it { expect(policy.user_needs_sp_auth_method_setup?).to eq(false) }
+      end
     end
   end
 
