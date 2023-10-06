@@ -171,4 +171,24 @@ RSpec.feature 'idv gpo otp verification step' do
 
     expect(current_path).to eq idv_welcome_path
   end
+
+  context 'user cancels idv from enter code page after getting rate limited', :js do
+    let(:user) { user_with_2fa }
+
+    it 'redirects to welcome page' do
+      complete_idv_steps_with_gpo_before_review_step(user)
+      RateLimiter.new(user: user, rate_limit_type: :proof_address).increment_to_limited!
+      fill_in 'Password', with: user_password
+      click_idv_continue
+      visit sign_out_url
+      user.reload
+      sign_in_live_with_2fa(user)
+
+      click_on t('idv.messages.clear_and_start_over')
+      expect(current_path).to eq idv_confirm_start_over_path
+      click_idv_continue
+
+      expect(current_path).to eq idv_welcome_path
+    end
+  end
 end
