@@ -21,7 +21,7 @@ RSpec.describe 'idv/hybrid_handoff/show.html.erb' do
   context 'with shown phone question' do
     let(:show_phone_question) { 1 }
 
-    it 'displays the text from the "b" case' do
+    it 'displays the expected headings from the "b" case' do
       expect(rendered).to have_selector('h1', text: t('doc_auth.headings.upload_from_phone'))
       expect(rendered).to have_selector('h2', text: t('doc_auth.headings.switch_to_phone'))
       expect(rendered).not_to have_selector('h1', text: t('doc_auth.headings.hybrid_handoff'))
@@ -32,7 +32,7 @@ RSpec.describe 'idv/hybrid_handoff/show.html.erb' do
   context 'without shown phone question' do
     let(:show_phone_question) { 0 }
 
-    it 'displays the text from the "a" case' do
+    it 'displays the expected headings from the "a" case' do
       expect(rendered).to have_selector('h1', text: t('doc_auth.headings.hybrid_handoff'))
       expect(rendered).to have_selector('h2', text: t('doc_auth.headings.upload_from_phone'))
       expect(rendered).not_to have_selector('h1', text: t('doc_auth.headings.upload_from_phone'))
