@@ -11,7 +11,6 @@ es:
       change_state_id_label: Actualizar la información de su cédula de identidad
       continue_plain: Continuar
       mail:
-        resend: Enviar otra carta
         send: Solicitar una carta
     cancel:
       actions:
@@ -202,6 +201,14 @@ es:
         continuación.</p> <p>Si su carta aún no ha llegado, tenga paciencia, ya
         que las cartas tardan hasta <strong>10 días</strong> en llegar. Gracias
         por su paciencia.</p>'
+      request_another_letter:
+        button: Solicitar otra carta
+        instructions_html: Solicite una nueva carta si tiene problemas con la actual o
+          si nunca llegó. Las cartas tardan entre <strong>5 y 10 días</strong>
+          en llegar.
+        learn_more_link: Obtenga más información sobre la verificación de su dirección
+          por correo
+        title: ¿Solicitar otra carta?
       return_to_profile: Regrese a su perfil
       title: Bienvenido de nuevo
       wrong_address: ¿La dirección no es correcta?
@@ -235,11 +242,6 @@ es:
           verificar su identidad.
         letter_on_the_way: Te enviaremos una carta
         resend: Envíeme otra carta
-        resend_code_warning: Si solicitas una nueva carta ahora, el código de una sola
-          vez de tu carta actual seguirá siendo válido durante un tiempo
-          limitado. Puedes seguir utilizando el código de una sola vez de
-          cualquiera de las dos cartas.
-        resend_timeframe_html: Las cartas tardan entre <strong>5 y 10 días</strong> en llegar.
         timeframe_html: Las cartas se envían al siguiente día hábil por USPS First-Class
           Mail y tardan entre <strong>5 y 10 días</strong> en llegar.
       gpo_reminder:
@@ -292,7 +294,6 @@ es:
       activated: Ya se verificó tu identidad.
       come_back_later: Su carta está en camino
       mail:
-        resend: '¿Enviar otra carta?'
         verify: Verifique su dirección
       otp_delivery_method: '¿Cómo debemos enviar un código?'
       review: Revise y envíe

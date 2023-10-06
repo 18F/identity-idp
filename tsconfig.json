@@ -22,6 +22,7 @@
     "app/javascript/packs",
     "spec/javascript/spec_helper.d.ts",
     "spec/javascript/**/*.ts",
+    "./*.js",
     "scripts"
   ],
   "exclude": [

@@ -334,8 +334,10 @@ module Idv
           add_cost(:lexis_nexis_resolution, transaction_id: hash[:transaction_id])
         elsif stage == :state_id
           next if hash[:exception].present?
+          next if hash[:vendor_name] == 'UnsupportedJurisdiction'
+          # transaction_id comes from TransactionLocatorId
           add_cost(:aamva, transaction_id: hash[:transaction_id])
-          track_aamva unless hash[:vendor_name] == 'UnsupportedJurisdiction'
+          track_aamva
         elsif stage == :threatmetrix
           # transaction_id comes from request_id
           tmx_id = hash[:transaction_id]

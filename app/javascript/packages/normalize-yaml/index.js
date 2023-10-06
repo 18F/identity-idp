@@ -12,12 +12,12 @@ import { getVisitors } from './visitors/index.js';
  */
 
 /**
- * Given an input YAML string and optional options, returns a normalized YAML string.
+ * Given an input YAML string and optional options, resolves to a normalized YAML string.
  *
  * @param {string} content Original content.
  * @param {NormalizeOptions} options Normalize options.
  *
- * @return {string} Normalized content.
+ * @return {Promise<string>} Normalized content.
  */
 function normalize(content, { prettierConfig, exclude } = {}) {
   const document = YAML.parseDocument(content);

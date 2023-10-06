@@ -120,6 +120,7 @@ idv_acuant_sdk_version_alternate: '11.8.1'
 idv_acuant_sdk_upgrade_a_b_testing_enabled: false
 idv_acuant_sdk_upgrade_a_b_testing_percent: 50
 idv_getting_started_a_b_testing: '{"welcome_default":100, "welcome_new":0, "getting_started":0}'
+idv_phone_question_a_b_testing: '{"show_phone_question":0}'
 idv_send_link_attempt_window_in_minutes: 10
 idv_send_link_max_attempts: 5
 idv_sp_required: false
@@ -292,7 +293,6 @@ s3_public_reports_enabled: false
 s3_reports_enabled: false
 saml_secret_rotation_enabled: false
 second_mfa_reminder_account_age_in_days: 30
-second_mfa_reminder_enabled: true
 second_mfa_reminder_sign_in_count: 10
 seed_agreements_data: true
 service_provider_request_ttl_hours: 24
@@ -327,7 +327,7 @@ vendor_status_sms: 'operational'
 vendor_status_voice: 'operational'
 verification_errors_report_configs: '[]'
 verify_gpo_key_attempt_window_in_minutes: 10
-verify_gpo_key_max_attempts: 3
+verify_gpo_key_max_attempts: 5
 verify_personal_key_attempt_window_in_minutes: 15
 verify_personal_key_max_attempts: 5
 version_headers_enabled: false
@@ -353,6 +353,7 @@ voice_otp_pause_time: '0.5s'
 voice_otp_speech_rate: 'slow'
 voip_block: true
 voip_allowed_phones: '[]'
+weekly_auth_funnel_report_config: '[]'
 
 development:
   aamva_private_key: 123abc
@@ -474,7 +475,6 @@ production:
   s3_reports_enabled: true
   saml_endpoint_configs: '[]'
   scrypt_cost: 10000$8$1$
-  second_mfa_reminder_enabled: false
   secret_key_base:
   seed_agreements_data: false
   session_encryption_key:

@@ -8,6 +8,7 @@ fr:
     buttons:
       add_new_photos: Ajoutez de nouvelles photos
       continue: Continuer
+      have_phone: Oui j’ai un téléphone
       take_or_upload_picture_html: '<lg-take-photo>Prendre une photo</lg-take-photo>
         ou <lg-upload>Télécharger une photo</lg-upload>'
       take_picture: Prendre une photo
@@ -178,6 +179,8 @@ fr:
       hybrid_handoff: Comment voulez-vous ajouter votre identifiant ?
       interstitial: Nous traitons vos images
       lets_go: Comment fonctionne la vérification de votre identité
+      phone_question: Avez-vous un téléphone que vous pouvez utiliser pour prendre des
+        photos de votre identifiant?
       review_issues: Vérifiez vos images et essayez à nouveau
       secure_account: Sécuriser votre compte
       ssn: Saisissez votre numéro de sécurité sociale
@@ -276,6 +279,8 @@ fr:
           lettre à votre adresse personnelle. Cela prend <strong>5 à 10
           jours</strong>.'
       welcome: 'Vous aurez besoin de votre:'
+    phone_question:
+      do_not_have: Je n’ai pas de téléphone
     tips:
       document_capture_header_text: 'Pour obtenir les meilleurs résultats:'
       document_capture_hint: Doit être un JPG ou PNG

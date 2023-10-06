@@ -14,6 +14,7 @@ class DocumentCaptureSession < ApplicationRecord
     )
     session_result.success = doc_auth_response.success?
     session_result.pii = doc_auth_response.pii_from_doc
+    session_result.captured_at = Time.zone.now
     session_result.attention_with_barcode = doc_auth_response.attention_with_barcode?
     EncryptedRedisStructStorage.store(
       session_result,
@@ -28,6 +29,7 @@ class DocumentCaptureSession < ApplicationRecord
       id: generate_result_id,
     )
     session_result.success = false
+    session_result.captured_at = Time.zone.now
     session_result.add_failed_front_image!(front_image_fingerprint) if front_image_fingerprint
     session_result.add_failed_back_image!(back_image_fingerprint) if back_image_fingerprint
     EncryptedRedisStructStorage.store(
@@ -49,20 +51,6 @@ class DocumentCaptureSession < ApplicationRecord
       ),
       expires_in: IdentityConfig.store.async_wait_timeout_seconds,
     )
-    save!
-  end
-
-  def store_doc_auth_result(result:, pii:)
-    EncryptedRedisStructStorage.store(
-      DocumentCaptureSessionAsyncResult.new(
-        id: result_id,
-        pii: pii,
-        result: result,
-        status: DocumentCaptureSessionAsyncResult::DONE,
-      ),
-      expires_in: IdentityConfig.store.async_wait_timeout_seconds,
-    )
-    self.ocr_confirmation_pending = result[:attention_with_barcode]
     save!
   end
 
@@ -97,6 +85,12 @@ class DocumentCaptureSession < ApplicationRecord
     return true unless requested_at
     (requested_at + IdentityConfig.store.doc_capture_request_valid_for_minutes.minutes) <
       Time.zone.now
+  end
+
+  def confirm_ocr
+    return unless self.ocr_confirmation_pending
+
+    update!(ocr_confirmation_pending: false)
   end
 
   private

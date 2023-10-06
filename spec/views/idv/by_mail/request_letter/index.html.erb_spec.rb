@@ -42,9 +42,30 @@ RSpec.describe 'idv/by_mail/request_letter/index.html.erb' do
   context 'letter already sent' do
     let(:resend_requested) { true }
 
-    it 'prompts to send another letter' do
-      expect(rendered).to have_content(I18n.t('idv.titles.mail.resend'))
-      expect(rendered).to have_button(I18n.t('idv.buttons.mail.resend'))
+    it 'has the right title' do
+      expect(rendered).to have_css('h1', text: t('idv.gpo.request_another_letter.title'))
+    end
+
+    it 'has the right body' do
+      expect(rendered).to have_text(
+        strip_tags(t('idv.gpo.request_another_letter.instructions_html')),
+      )
+    end
+
+    it 'includes link to help' do
+      expect(rendered).to have_link(
+        t('idv.gpo.request_another_letter.learn_more_link'),
+        href: help_center_redirect_url(
+          category: 'verify-your-identity',
+          article: 'verify-your-address-by-mail',
+          flow: :idv,
+          step: :gpo_send_letter,
+        ),
+      )
+    end
+
+    it 'does not include troubleshooting options' do
+      expect(rendered).not_to have_css('.troubleshooting-options')
     end
   end
 

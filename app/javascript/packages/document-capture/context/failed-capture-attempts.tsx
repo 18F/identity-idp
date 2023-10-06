@@ -28,10 +28,22 @@ interface FailedCaptureAttemptsContextInterface {
   failedSubmissionAttempts: number;
 
   /**
+   * There's a bug with Safari on iOS where if you deny camera permissions
+   * three times the prompt stops appearing. To avoid this we keep track
+   * and force a full page reload on the third time.
+   */
+  failedCameraPermissionAttempts: number;
+
+  /**
    * Callback when submission attempt fails.
    * Used to increment the failedSubmissionAttempts
    */
   onFailedSubmissionAttempt: (failedImageFingerprints: UploadedImageFingerprints) => void;
+
+  /**
+   * A wrapper around incrementFailedCameraPermissionAttempts
+   */
+  onFailedCameraPermissionAttempt: () => void;
 
   /**
    * The maximum number of failed Acuant capture attempts
@@ -79,8 +91,10 @@ const DEFAULT_LAST_ATTEMPT_METADATA: CaptureAttemptMetadata = {
 const FailedCaptureAttemptsContext = createContext<FailedCaptureAttemptsContextInterface>({
   failedCaptureAttempts: 0,
   failedSubmissionAttempts: 0,
+  failedCameraPermissionAttempts: 0,
   onFailedCaptureAttempt: () => {},
   onFailedSubmissionAttempt: () => {},
+  onFailedCameraPermissionAttempt: () => {},
   onResetFailedCaptureAttempts: () => {},
   maxCaptureAttemptsBeforeNativeCamera: Infinity,
   maxSubmissionAttemptsBeforeNativeCamera: Infinity,
@@ -110,6 +124,7 @@ function FailedCaptureAttemptsContextProvider({
   const [failedCaptureAttempts, incrementFailedCaptureAttempts, onResetFailedCaptureAttempts] =
     useCounter();
   const [failedSubmissionAttempts, incrementFailedSubmissionAttempts] = useCounter();
+  const [failedCameraPermissionAttempts, incrementFailedCameraPermissionAttempts] = useCounter();
 
   const [failedSubmissionImageFingerprints, setFailedSubmissionImageFingerprints] =
     useState<UploadedImageFingerprints>(failedFingerprints);
@@ -124,6 +139,10 @@ function FailedCaptureAttemptsContextProvider({
     setFailedSubmissionImageFingerprints(failedOnes);
   }
 
+  function onFailedCameraPermissionAttempt() {
+    incrementFailedCameraPermissionAttempts();
+  }
+
   const forceNativeCamera =
     failedCaptureAttempts >= maxCaptureAttemptsBeforeNativeCamera ||
     failedSubmissionAttempts >= maxSubmissionAttemptsBeforeNativeCamera;
@@ -136,6 +155,8 @@ function FailedCaptureAttemptsContextProvider({
         onResetFailedCaptureAttempts,
         failedSubmissionAttempts,
         onFailedSubmissionAttempt,
+        failedCameraPermissionAttempts,
+        onFailedCameraPermissionAttempt,
         maxCaptureAttemptsBeforeNativeCamera,
         maxSubmissionAttemptsBeforeNativeCamera,
         lastAttemptMetadata,

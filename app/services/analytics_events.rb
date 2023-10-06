@@ -2909,44 +2909,6 @@ module AnalyticsEvents
 
   # @param [Boolean] success
   # @param [String] exception
-  # @param [Integer] profile_id
-  # A profile was migrated from a single-region key to a multi-region key
-  def multi_region_kms_migration_profile_migrated(
-    success:,
-    exception:,
-    profile_id:,
-    **extra
-  )
-    track_event(
-      'Multi-region KMS migration: Profile migrated',
-      success: success,
-      exception: exception,
-      profile_id: profile_id,
-      **extra,
-    )
-  end
-
-  # @param [Integer] profile_count
-  # @param [Integer] success_count
-  # @param [Integer] error_count
-  # The profile migration job finished running
-  def multi_region_kms_migration_profile_migration_summary(
-    profile_count:,
-    success_count:,
-    error_count:,
-    **extra
-  )
-    track_event(
-      'Multi-region KMS migration: Profile migration summary',
-      profile_count: profile_count,
-      success_count: success_count,
-      error_count: error_count,
-      **extra,
-    )
-  end
-
-  # @param [Boolean] success
-  # @param [String] exception
   # @param [Integer] user_id
   # A user was migrated from a single-region key to a multi-region key
   def multi_region_kms_migration_user_migrated(
@@ -3504,6 +3466,16 @@ module AnalyticsEvents
   # @param [String] type
   def rate_limit_triggered(type:, **extra)
     track_event('Rate Limit Triggered', type: type, **extra)
+  end
+
+  # Account profile reactivation submitted
+  def reactivate_account_submit
+    track_event('Reactivate Account Submitted')
+  end
+
+  # Account profile reactivation page visited
+  def reactivate_account_visit
+    track_event('Reactivate Account Visited')
   end
 
   # The result of a reCAPTCHA verification request was received
