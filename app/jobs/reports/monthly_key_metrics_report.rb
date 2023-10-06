@@ -31,7 +31,7 @@ module Reports
           *total_profiles_table,
         ],
         [
-          { title: 'Total accounts deleted' },
+          { title: 'Account deletion rate (last 30 days)' },
           account_deletion_rate_table,
         ],
       ]

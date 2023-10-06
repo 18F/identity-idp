@@ -8,16 +8,35 @@ module Reporting
 
     def account_deletion_report
       table = []
-      table << ['Account deletion rate (last 30 days)']
-      table << [deleted_accounts_count]
+      table << ['Deleted Users', 'Total Users', 'Deletion Rate']
+      table << [deleted_user_count, users_and_deleted_for_period, deletion_rate]
       table
     end
 
     private
 
-    def deleted_accounts_count
-      start_date = report_date - 30.days
-      DeletedUser.where(user_created_at: start_date..report_date).count
+    def deleted_user_count
+      @deleted_user_count ||= DeletedUser.where(user_created_at: start_date..end_date).count
+    end
+
+    def user_count
+      @user_count ||= User.where(created_at: start_date..end_date).count
+    end
+
+    def users_and_deleted_for_period
+      deleted_user_count + user_count
+    end
+
+    def deletion_rate
+      format('%.2f%%', (deleted_user_count.to_f / users_and_deleted_for_period.to_f) * 100)
+    end
+
+    def start_date
+      report_date - 30.days
+    end
+
+    def end_date
+      report_date
     end
   end
 end
