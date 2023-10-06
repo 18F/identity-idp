@@ -25,11 +25,11 @@ module IdvStepConcern
   end
 
   def confirm_step_allowed
-    idv_workflow_navigator = Idv::WorkflowPolicy.new(idv_session: idv_session, user: current_user)
+    idv_flow_navigator = Idv::FlowPolicy.new(idv_session: idv_session, user: current_user)
 
-    return if idv_workflow_navigator.path_allowed?(path: request.path)
+    return if idv_flow_navigator.path_allowed?(path: request.path)
 
-    redirect_to idv_workflow_navigator.path_for_latest_step
+    redirect_to idv_flow_navigator.path_for_latest_step
   end
 
   def check_for_mail_only_outage
