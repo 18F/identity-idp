@@ -83,7 +83,9 @@ describe('FullAddressSearch', () => {
         </SWRConfig>,
       );
 
-      const searchLabel = await queryByText('in_person_proofing.headings.po_search.address_search_label');
+      const searchLabel = await queryByText(
+        'in_person_proofing.headings.po_search.address_search_label',
+      );
       expect(searchLabel).to.be.empty;
     });
 
@@ -102,7 +104,9 @@ describe('FullAddressSearch', () => {
         </SWRConfig>,
       );
 
-      const searchLabel = await queryByText('in_person_proofing.body.location.po_search.address_search_label');
+      const searchLabel = await queryByText(
+        'in_person_proofing.body.location.po_search.address_search_label',
+      );
       expect(searchLabel).to.exist();
     });
   });
