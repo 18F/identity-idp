@@ -84,13 +84,8 @@ RSpec.feature 'idv gpo otp verification step' do
 
   context 'coming from an "I did not receive my letter" link in a reminder email' do
     it 'renders an alternate ui', :js do
-      gpo_confirmation_code.update!(updated_at: Time.zone.now - 1.day)
-      latest_gpo_confirmation_code = create(
-        :gpo_confirmation_code,
-        profile: profile,
-        otp_fingerprint: Pii::Fingerprinter.fingerprint(otp),
-      )
       visit idv_verify_by_mail_enter_code_url(did_not_receive_letter: 1)
+      verify_no_spam_warning_banner
       expect(current_path).to eql(new_user_session_path)
 
       fill_in_credentials_and_submit(user.email, user.password)
@@ -101,15 +96,6 @@ RSpec.feature 'idv gpo otp verification step' do
 
       expect(current_path).to eq idv_verify_by_mail_enter_code_path
       expect(page).to have_css('h1', text: t('idv.gpo.did_not_receive_letter.title'))
-      expect(page).to have_content strip_tags(
-        t(
-          'idv.gpo.alert_spam_warning_html',
-          date_letter_was_sent: I18n.l(
-            latest_gpo_confirmation_code.updated_at,
-            format: :event_date,
-          ),
-        ),
-      )
     end
   end
 
@@ -119,15 +105,7 @@ RSpec.feature 'idv gpo otp verification step' do
 
       gpo_confirmation_code.update!(updated_at: Time.zone.now - 1.day)
       expect(current_path).to eq idv_verify_by_mail_enter_code_path
-      expect(page).not_to have_content(
-        t(
-          'idv.gpo.alert_spam_warning_html',
-          date_letter_was_sent: I18n.l(
-            gpo_confirmation_code.updated_at,
-            format: :event_date,
-          ),
-        ).split('<strong>').first,
-      )
+      verify_no_spam_warning_banner
       expect(page).to have_content t('idv.messages.gpo.resend')
 
       fill_in t('idv.gpo.form.otp_label'), with: otp
@@ -156,7 +134,7 @@ RSpec.feature 'idv gpo otp verification step' do
 
       expect(current_path).to eq idv_verify_by_mail_enter_code_path
       expect(page).to have_content t('idv.messages.gpo.resend')
-
+      verify_no_spam_warning_banner
       gpo_confirmation_code
       fill_in t('idv.gpo.form.otp_label'), with: otp
       click_button t('idv.gpo.form.submit')
@@ -167,12 +145,14 @@ RSpec.feature 'idv gpo otp verification step' do
   end
 
   it 'allows a user to cancel and start over within the banner' do
+    gpo_confirmation_code.update!(updated_at: Time.zone.now - 2.days)
     sign_in_live_with_2fa(user)
 
     expect(current_path).to eq idv_verify_by_mail_enter_code_path
     expect(page).to have_content t('idv.gpo.alert_info')
     expect(page).to have_content t('idv.gpo.wrong_address')
     expect(page).to have_content Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE[:address1]
+    verify_no_spam_warning_banner
 
     click_on t('idv.gpo.clear_and_start_over')
 
@@ -184,9 +164,16 @@ RSpec.feature 'idv gpo otp verification step' do
   end
 
   it 'allows a user to cancel and start over in the footer' do
+    another_gpo_confirmation_code = create(
+      :gpo_confirmation_code,
+      profile: profile,
+      otp_fingerprint: Pii::Fingerprinter.fingerprint(otp),
+    )
     sign_in_live_with_2fa(user)
 
     expect(current_path).to eq idv_verify_by_mail_enter_code_path
+    verify_spam_warning_banner_present(another_gpo_confirmation_code.updated_at)
+
     click_on t('idv.messages.clear_and_start_over')
 
     expect(current_path).to eq idv_confirm_start_over_path
@@ -194,5 +181,29 @@ RSpec.feature 'idv gpo otp verification step' do
     click_idv_continue
 
     expect(current_path).to eq idv_welcome_path
+  end
+
+  def verify_no_spam_warning_banner
+    expect(page).not_to have_content(
+      t(
+        'idv.gpo.alert_spam_warning_html',
+        date_letter_was_sent: I18n.l(
+          Time.zone.now,
+          format: :event_date,
+        ),
+      ).split('<strong>').first,
+    )
+  end
+
+  def verify_spam_warning_banner_present(code_sent_at=Time.zone.now)
+    expect(page).to have_content strip_tags(
+      t(
+        'idv.gpo.alert_spam_warning_html',
+        date_letter_was_sent: I18n.l(
+          code_sent_at,
+          format: :event_date,
+        ),
+      ),
+    )
   end
 end
