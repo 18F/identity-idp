@@ -88,7 +88,7 @@ RSpec.feature 'doc auth redo document capture', js: true do
       expect(page).to have_content(t('idv.failure.phone.warning.heading'))
 
       visit idv_url
-      expect(current_path).to eq(idv_welcome_path)
+      expect(current_path).to eq(idv_phone_path)
 
       visit idv_hybrid_handoff_url
       expect(current_path).to eq(idv_phone_path)
