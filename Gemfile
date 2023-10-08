@@ -3,7 +3,7 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}.git" }
 
 ruby "~> #{File.read(File.join(__dir__, '.ruby-version')).strip}"
 
-gem 'rails', '~> 7.0.0'
+gem 'rails', '~> 7.1.0'
 
 gem 'activerecord-postgis-adapter'
 gem 'ahoy_matey', '~> 3.0'
