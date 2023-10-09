@@ -82,7 +82,10 @@ module DocAuth
           product[:ParameterDetails].each do |detail|
             group = detail[:Group]
             detail_name = detail[:Name]
-            value = detail.dig(:Values, 0, :Value)
+            is_region = detail_name.end_with?('Regions', 'Regions_Reference')
+            value = is_region ? detail.dig(:Values).map do |v|
+                                  v.dig(:Value)
+                                end : detail.dig(:Values, 0, :Value)
             product[group] ||= {}
 
             product[group][detail_name] = value

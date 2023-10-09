@@ -68,20 +68,20 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     it 'has PII data' do
       # This is the minimum expected by doc_pii_form in the core IDP
       minimum_expected_hash = {
-        first_name: 'ALASKA',
+        first_name: 'DAVID',
         last_name: 'SAMPLE',
-        dob: '1964-09-01',
-        state: 'AK',
-        state_id_type: 'state_id_card',
+        dob: '1986-07-01',
+        state: 'MD',
+        state_id_type: 'drivers_license',
       }
 
       expect(response.pii_from_doc).to include(minimum_expected_hash)
     end
     it 'includes expiration' do
-      expect(response.pii_from_doc).to include(state_id_expiration: '2099-09-01')
+      expect(response.pii_from_doc).to include(state_id_expiration: '2099-10-15')
     end
     it 'includes issued date' do
-      expect(response.pii_from_doc).to include(state_id_issued: '2019-05-13')
+      expect(response.pii_from_doc).to include(state_id_issued: '2016-10-15')
     end
 
     it 'excludes pii fields from logging' do
@@ -116,17 +116,17 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         doc_auth_result: 'Passed',
         'ClassificationMode' => 'Automatic',
         'DocAuthResult' => 'Passed',
-        'DocClass' => 'IdentificationCard',
-        'DocClassCode' => 'IdentificationCard',
-        'DocClassName' => 'Identification Card',
-        'DocumentName' => 'Alaska (AK) Over 21',
-        'DocIssuerCode' => 'AK',
-        'DocIssuerName' => 'Alaska',
-        'DocIssue' => '2019',
+        'DocClass' => 'DriversLicense',
+        'DocClassCode' => 'DriversLicense',
+        'DocClassName' => 'Drivers License',
+        'DocumentName' => "Maryland (MD) Driver's License - STAR",
+        'DocIssuerCode' => 'MD',
+        'DocIssuerName' => 'Maryland',
+        'DocIssue' => '2016',
         'DocIsGeneric' => 'false',
         'DocIssuerType' => 'StateProvince',
-        'DocIssueType' => 'Over 21',
-        'OrientationChanged' => 'false',
+        'DocIssueType' => "Driver's License - STAR",
+        'OrientationChanged' => 'true',
         'PresentationChanged' => 'false',
         'DocAuthTamperResult' => 'Passed',
         'DocAuthTamperSensitivity' => 'Normal',
@@ -138,7 +138,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     end
 
     it 'notes that address line 2 was present' do
-      expect(response.pii_from_doc).to include(address2: 'SUITE 900')
+      expect(response.pii_from_doc).to include(address2: 'APT 3E')
       expect(response.to_h).to include(address_line2_present: true)
     end
 

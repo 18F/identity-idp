@@ -19,7 +19,7 @@
         {
           "Group": "AUTHENTICATION_RESULT",
           "Name": "DocumentName",
-          "Values": [{ "Value": "Alaska (AK) Over 21" }]
+          "Values": [{ "Value": "Maryland (MD) Driver's License - STAR" }]
         },
         {
           "Group": "AUTHENTICATION_RESULT",
@@ -39,12 +39,12 @@
         {
           "Group": "AUTHENTICATION_RESULT",
           "Name": "DocIssuerCode",
-          "Values": [{ "Value": "AK" }]
+          "Values": [{ "Value": "MD" }]
         },
         {
           "Group": "AUTHENTICATION_RESULT",
           "Name": "DocIssuerName",
-          "Values": [{ "Value": "Alaska" }]
+          "Values": [{ "Value": "Maryland" }]
         },
         {
           "Group": "AUTHENTICATION_RESULT",
@@ -54,17 +54,17 @@
         {
           "Group": "AUTHENTICATION_RESULT",
           "Name": "DocClassCode",
-          "Values": [{ "Value": "IdentificationCard" }]
+          "Values": [{ "Value": "DriversLicense" }]
         },
         {
           "Group": "AUTHENTICATION_RESULT",
           "Name": "DocClass",
-          "Values": [{ "Value": "IdentificationCard" }]
+          "Values": [{ "Value": "DriversLicense" }]
         },
         {
           "Group": "AUTHENTICATION_RESULT",
           "Name": "DocClassName",
-          "Values": [{ "Value": "Identification Card" }]
+          "Values": [{ "Value": "Drivers License" }]
         },
         {
           "Group": "AUTHENTICATION_RESULT",
@@ -74,12 +74,12 @@
         {
           "Group": "AUTHENTICATION_RESULT",
           "Name": "DocIssue",
-          "Values": [{ "Value": "2019" }]
+          "Values": [{ "Value": "2016" }]
         },
         {
           "Group": "AUTHENTICATION_RESULT",
           "Name": "DocIssueType",
-          "Values": [{ "Value": "Over 21" }]
+          "Values": [{ "Value": "Driver's License - STAR" }]
         },
         {
           "Group": "AUTHENTICATION_RESULT",
@@ -94,7 +94,7 @@
         {
           "Group": "AUTHENTICATION_RESULT",
           "Name": "OrientationChanged",
-          "Values": [{ "Value": "false" }]
+          "Values": [{ "Value": "true" }]
         },
         {
           "Group": "AUTHENTICATION_RESULT",
@@ -109,12 +109,12 @@
         {
           "Group": "IMAGE_METRICS_RESULT",
           "Name": "GlareMetric",
-          "Values": [{ "Value": "99" }, { "Value": "99" }]
+          "Values": [{ "Value": "100" }, { "Value": "100" }]
         },
         {
           "Group": "IMAGE_METRICS_RESULT",
           "Name": "SharpnessMetric",
-          "Values": [{ "Value": "67" }, { "Value": "74" }]
+          "Values": [{ "Value": "65" }, { "Value": "65" }]
         },
         {
           "Group": "IMAGE_METRICS_RESULT",
@@ -160,27 +160,27 @@
         {
           "Group": "AUTHENTICATION_RESULT",
           "Name": "FullName",
-          "Values": [{ "Value": "ALASKA SAMPLE" }]
+          "Values": [{ "Value": "DAVID LICENSE SAMPLE" }]
         },
         {
           "Group": "AUTHENTICATION_RESULT",
           "Name": "Sex",
-          "Values": [{ "Value": "Female" }]
+          "Values": [{ "Value": "Male" }]
         },
         {
           "Group": "AUTHENTICATION_RESULT",
           "Name": "Age",
-          "Values": [{ "Value": "59" }]
+          "Values": [{ "Value": "33" }]
         },
         {
           "Group": "AUTHENTICATION_RESULT",
           "Name": "DOB_Year",
-          "Values": [{ "Value": "1964" }]
+          "Values": [{ "Value": "1985" }]
         },
         {
           "Group": "AUTHENTICATION_RESULT",
           "Name": "DOB_Month",
-          "Values": [{ "Value": "9" }]
+          "Values": [{ "Value": "7" }]
         },
         {
           "Group": "AUTHENTICATION_RESULT",
@@ -190,17 +190,17 @@
         {
           "Group": "AUTHENTICATION_RESULT",
           "Name": "ExpirationDate_Year",
-          "Values": [{ "Value": "2019" }]
+          "Values": [{ "Value": "2099" }]
         },
         {
           "Group": "AUTHENTICATION_RESULT",
           "Name": "ExpirationDate_Month",
-          "Values": [{ "Value": "9" }]
+          "Values": [{ "Value": "10" }]
         },
         {
           "Group": "AUTHENTICATION_RESULT",
           "Name": "ExpirationDate_Day",
-          "Values": [{ "Value": "1" }]
+          "Values": [{ "Value": "15" }]
         },
         {
           "Group": "AUTHENTICATION_RESULT",
@@ -821,7 +821,7 @@
         {
           "Group": "IDAUTH_FIELD_DATA",
           "Name": "Fields_FullName",
-          "Values": [{ "Value": "ALASKA SAMPLE" }]
+          "Values": [{ "Value": "DAVID LICENSE SAMPLE" }]
         },
         {
           "Group": "IDAUTH_FIELD_DATA",
@@ -831,22 +831,27 @@
         {
           "Group": "IDAUTH_FIELD_DATA",
           "Name": "Fields_GivenName",
-          "Values": [{ "Value": "ALASKA" }]
+          "Values": [{ "Value": "DAVID LICENSE" }]
         },
         {
           "Group": "IDAUTH_FIELD_DATA",
           "Name": "Fields_FirstName",
-          "Values": [{ "Value": "ALASKA" }]
+          "Values": [{ "Value": "DAVID" }]
+        },
+        {
+          "Group": "IDAUTH_FIELD_DATA",
+          "Name": "Fields_MiddleName",
+          "Values": [{ "Value": "LICENSE" }]
         },
         {
           "Group": "IDAUTH_FIELD_DATA",
           "Name": "Fields_DOB_Year",
-          "Values": [{ "Value": "1964" }]
+          "Values": [{ "Value": "1986" }]
         },
         {
           "Group": "IDAUTH_FIELD_DATA",
           "Name": "Fields_DOB_Month",
-          "Values": [{ "Value": "9" }]
+          "Values": [{ "Value": "7" }]
         },
         {
           "Group": "IDAUTH_FIELD_DATA",
@@ -856,12 +861,12 @@
         {
           "Group": "IDAUTH_FIELD_DATA",
           "Name": "Fields_DocumentClassName",
-          "Values": [{ "Value": "Identification Card" }]
+          "Values": [{ "Value": "Drivers License" }]
         },
         {
           "Group": "IDAUTH_FIELD_DATA",
           "Name": "Fields_DocumentNumber",
-          "Values": [{ "Value": "1000000" }]
+          "Values": [{ "Value": "M555555555555" }]
         },
         {
           "Group": "IDAUTH_FIELD_DATA",
@@ -871,22 +876,22 @@
         {
           "Group": "IDAUTH_FIELD_DATA",
           "Name": "Fields_ExpirationDate_Month",
-          "Values": [{ "Value": "9" }]
+          "Values": [{ "Value": "10" }]
         },
         {
           "Group": "IDAUTH_FIELD_DATA",
           "Name": "Fields_xpirationDate_Day",
-          "Values": [{ "Value": "1" }]
+          "Values": [{ "Value": "15" }]
         },
         {
           "Group": "IDAUTH_FIELD_DATA",
           "Name": "Fields_IssuingStateCode",
-          "Values": [{ "Value": "AK" }]
+          "Values": [{ "Value": "MD" }]
         },
         {
           "Group": "IDAUTH_FIELD_DATA",
           "Name": "Fields_IssuingStateName",
-          "Values": [{ "Value": "Alaska" }]
+          "Values": [{ "Value": "Maryland" }]
         },
         {
           "Group": "IDAUTH_FIELD_DATA",
@@ -898,34 +903,34 @@
           "Name": "Fields_Address",
           "Values": [
             {
-              "Value": "1300 W. BENSON BLVD\u2028SUITE 900\u2028ANCHORAGE, AK 99503"
+              "Value": "123 ABC AVExE2x80xA8ANYTOWN, MD 12345"
             }
           ]
         },
         {
           "Group": "IDAUTH_FIELD_DATA",
           "Name": "Fields_AddressLine1",
-          "Values": [{ "Value": "1300 W. BENSON BLVD" }]
+          "Values": [{ "Value": "123 ABC AVE" }]
         },
         {
           "Group": "IDAUTH_FIELD_DATA",
           "Name": "Fields_AddressLine2",
-          "Values": [{ "Value": "SUITE 900" }]
+          "Values": [{ "Value": "APT 3E" }]
         },
         {
           "Group": "IDAUTH_FIELD_DATA",
           "Name": "Fields_City",
-          "Values": [{ "Value": "ANCHORAGE" }]
+          "Values": [{ "Value": "ANYTOWN" }]
         },
         {
           "Group": "IDAUTH_FIELD_DATA",
           "Name": "Fields_State",
-          "Values": [{ "Value": "AK" }]
+          "Values": [{ "Value": "MD" }]
         },
         {
           "Group": "IDAUTH_FIELD_DATA",
           "Name": "Fields_PostalCode",
-          "Values": [{ "Value": "99503" }]
+          "Values": [{ "Value": "12345" }]
         },
         {
           "Group": "IDAUTH_FIELD_DATA",
@@ -935,17 +940,17 @@
         {
           "Group": "IDAUTH_FIELD_DATA",
           "Name": "Fields_IssueDate_Year",
-          "Values": [{ "Value": "2019" }]
+          "Values": [{ "Value": "2016" }]
         },
         {
           "Group": "IDAUTH_FIELD_DATA",
           "Name": "Fields_IssueDate_Month",
-          "Values": [{ "Value": "5" }]
+          "Values": [{ "Value": "10" }]
         },
         {
           "Group": "IDAUTH_FIELD_DATA",
           "Name": "Fields_IssueDate_Day",
-          "Values": [{ "Value": "13" }]
+          "Values": [{ "Value": "15" }]
         },
         {
           "Group": "IDAUTH_FIELD_DATA",
@@ -955,7 +960,7 @@
         {
           "Group": "IDAUTH_FIELD_DATA",
           "Name": "Fields_LicenseRestrictions",
-          "Values": [{ "Value": "K" }]
+          "Values": [{ "Value": "B" }]
         },
         {
           "Group": "DOCUMENT_REGION",
