@@ -10,7 +10,9 @@ FactoryBot.define do
     help_text do
       { sign_in: { en: '<strong>custom sign in help text for %{sp_name}</strong>' },
         sign_up: { en: '<strong>custom sign up help text for %{sp_name}</strong>' },
-        forgot_password: { en: '<strong>custom forgot password help text for %{sp_name}</strong>' } }
+        forgot_password: {
+          en: '<strong>custom forgot password help text for %{sp_name}</strong>',
+        } }
     end
 
     trait :without_help_text do
