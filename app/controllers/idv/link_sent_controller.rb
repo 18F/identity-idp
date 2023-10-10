@@ -85,7 +85,6 @@ module Idv
 
     def document_capture_session_result
       @document_capture_session_result ||= document_capture_session&.load_result
-      end
     end
   end
 end
