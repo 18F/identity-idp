@@ -109,9 +109,9 @@ fr:
         de sécurité à ce numéro de téléphone.
     otp_delivery_preference:
       instruction: Envoyez des messages texte ainsi que des appels par défaut à ce numéro
-      landline_warning_html: Le numéro de téléphone saisi semble être un <b>téléphone
-        fixe</b>. Demandez plutôt un code à usage unique par
-        %{phone_setup_path}.
+      landline_warning_html: Le numéro de téléphone saisi semble être un
+        <strong>téléphone fixe</strong>. Demandez plutôt un code à usage unique
+        par %{phone_setup_path}.
       no_supported_options: Nous ne sommes pas en mesure de vérifier les numéros de
         téléphone de %{location}
       phone_call: appel téléphonique

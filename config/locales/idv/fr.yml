@@ -279,9 +279,9 @@ fr:
           - Votre numéro principal (celui que vous utilisez le plus souvent)
       return_to_profile: '‹ Revenir à votre profil %{app_name}'
       review:
-        by_mail_password_reminder_html: <b>Mémorisez votre mot de passe.</b> Le code de
-          vérification contenu dans votre lettre ne fonctionnera pas si vous
-          réinitialisez votre mot de passe par la suite.
+        by_mail_password_reminder_html: <strong>Mémorisez votre mot de passe.</strong>
+          Le code de vérification contenu dans votre lettre ne fonctionnera pas
+          si vous réinitialisez votre mot de passe par la suite.
         message: '%{app_name} crypte vos informations avec votre mot de passe. Cela
           signifie que vos informations sont sécurisées et que vous seul pourrez
           y accéder ou les modifier.'

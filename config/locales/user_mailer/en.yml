@@ -267,8 +267,8 @@ en:
         concerned someone other than you may be trying to access your
         information.
       learn_more_link_text: Learn more about your options
-      reminder_html: As a reminder, <b>%{app_name} will never ask for your login
-        credentials by phone or email</b>. You can take additional steps to
+      reminder_html: As a reminder, <strong>%{app_name} will never ask for your login
+        credentials by phone or email</strong>. You can take additional steps to
         secure your account by enabling two-factor authentication.
       step_1: Visit the %{app_name} website and select sign in
       step_2: Select “forgot your password?” at the bottom of the page

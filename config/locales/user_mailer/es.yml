@@ -283,10 +283,10 @@ es:
         preocupados alguien que no sea usted puede estar intentando acceder a su
         información.
       learn_more_link_text: Conozca más sobre sus opciones
-      reminder_html: Le recordamos que <b>%{app_name} nunca le pedirá sus credenciales
-        de inicio de sesión. por teléfono o correo electrónico</b>. Puede tomar
-        medidas adicionales para proteger su cuenta habilitando la autenticación
-        de dos factores.
+      reminder_html: Le recordamos que <strong>%{app_name} nunca le pedirá sus
+        credenciales de inicio de sesión. por teléfono o correo
+        electrónico</strong>. Puede tomar medidas adicionales para proteger su
+        cuenta habilitando la autenticación de dos factores.
       step_1: Visite el sitio web %{app_name} y seleccione iniciar sesión
       step_2: Seleccione “¿olvidó su contraseña?” al final de la página
       step_3: Siga las instrucciones para restablecer su contraseña
