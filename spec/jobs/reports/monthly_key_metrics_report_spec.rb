@@ -8,11 +8,17 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
   let(:agnes_email) { 'fake@agnes_email.com' }
   let(:feds_email) { 'fake@feds_email.com' }
   let(:s3_report_bucket_prefix) { 'reports-bucket' }
+  let(:report_folder) do
+    'int/monthly-key-metrics-report/2021/2021-03-02.monthly-key-metrics-report'
+  end
   let(:account_reuse_s3_path) do
-    'int/monthly-key-metrics-report/2021/2021-03-02.monthly-key-metrics-report/account_reuse.csv'
+    "#{report_folder}/account_reuse.csv"
   end
   let(:total_profiles_s3_path) do
-    'int/monthly-key-metrics-report/2021/2021-03-02.monthly-key-metrics-report/total_profiles.csv'
+    "#{report_folder}/total_profiles.csv"
+  end
+  let(:account_deletion_rate_s3_path) do
+    "#{report_folder}/account_deletion_rate.csv"
   end
 
   before do
@@ -81,6 +87,13 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
 
     expect(subject).to receive(:upload_file_to_s3_bucket).with(
       path: total_profiles_s3_path,
+      body: anything,
+      content_type: 'text/csv',
+      bucket: 'reports-bucket.1234-us-west-1',
+    ).exactly(1).time.and_call_original
+
+    expect(subject).to receive(:upload_file_to_s3_bucket).with(
+      path: account_deletion_rate_s3_path,
       body: anything,
       content_type: 'text/csv',
       bucket: 'reports-bucket.1234-us-west-1',
