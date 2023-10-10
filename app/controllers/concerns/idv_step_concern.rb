@@ -9,7 +9,6 @@ module IdvStepConcern
   included do
     before_action :confirm_two_factor_authenticated
     before_action :confirm_idv_needed
-    before_action :confirm_not_rate_limited
     before_action :confirm_no_pending_gpo_profile
     before_action :confirm_no_pending_in_person_enrollment
     before_action :handle_fraud

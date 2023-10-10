@@ -1,15 +1,28 @@
 module RateLimitConcern
   extend ActiveSupport::Concern
 
-  def confirm_not_rate_limited
+  # idv_resolution idv_doc_auth proof_address proof_ssn
+  ALL_IDV_RATE_LIMITTERS = [:idv_resolution, :idv_doc_auth, :proof_address, :proof_ssn].freeze
+
+  def confirm_not_rate_limited(rate_limiters = ALL_IDV_RATE_LIMITTERS)
     rate_limited = false
-    %i[idv_resolution idv_doc_auth proof_address proof_ssn].each do |rate_limit_type|
+    rate_limiters.each do |rate_limit_type|
       if rate_limit_redirect!(rate_limit_type)
         rate_limited = true
         break
       end
     end
     rate_limited
+  end
+
+  def confirm_not_rate_limited_after_doc_auth
+    rate_limitters = [:idv_resolution, :proof_ssn, :proof_address]
+    confirm_not_rate_limited(rate_limitters)
+  end
+
+  def confirm_not_rate_limited_after_idv_resolution
+    rate_limitters = [:proof_address]
+    confirm_not_rate_limited(rate_limitters)
   end
 
   def rate_limit_redirect!(rate_limit_type)

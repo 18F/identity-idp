@@ -98,4 +98,16 @@ RSpec.describe 'RateLimitConcern' do
       end
     end
   end
+
+  describe '#confirm_not_rate_limited_after_doc_auth' do
+    it 'redirects if the user is rate limitted for a step after doc auth'
+
+    it 'does not if the user is rate limitted for a step before doc auth'
+  end
+
+  describe '#confirm_not_rate_limited_after_idv_resolution' do
+    it 'redirects if the user is rate limitted for a step before idv resolution'
+
+    it 'does not if the user is rate limitted for a step after idv resolution'
+  end
 end

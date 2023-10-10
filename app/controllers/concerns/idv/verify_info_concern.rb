@@ -164,7 +164,7 @@ module Idv
         return
       end
 
-      return if confirm_not_rate_limited
+      return if confirm_not_rate_limited_after_doc_auth
 
       if current_async_state.none?
         idv_session.invalidate_verify_info_step!

@@ -3,6 +3,7 @@ module Idv
     include IdvStepConcern
     include StepIndicatorConcern
 
+    before_action :confirm_not_rate_limited
     before_action :confirm_welcome_step_complete
     before_action :confirm_agreement_needed
 

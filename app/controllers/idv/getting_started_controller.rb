@@ -2,6 +2,7 @@ module Idv
   class GettingStartedController < ApplicationController
     include IdvStepConcern
 
+    before_action :confirm_not_rate_limited
     before_action :confirm_agreement_needed
 
     def show
