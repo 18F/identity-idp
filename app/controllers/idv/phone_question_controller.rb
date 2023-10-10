@@ -9,7 +9,6 @@ module Idv
     before_action :confirm_hybrid_handoff_needed, only: :show
 
     def show
-      idv_session.phone_question_visited = true
       analytics.idv_doc_auth_phone_question_visited(**analytics_arguments)
 
       @title = t('doc_auth.headings.phone_question')
@@ -18,7 +17,7 @@ module Idv
     def phone_with_camera
       analytics.idv_doc_auth_phone_question_submitted(
         **analytics_arguments.
-                merge(camera_phone: true),
+                merge(phone_with_camera: true),
       )
 
       redirect_to idv_hybrid_handoff_url
@@ -28,7 +27,7 @@ module Idv
       idv_session.flow_path = 'standard'
       analytics.idv_doc_auth_phone_question_submitted(
         **analytics_arguments.
-                merge(camera_phone: false),
+                merge(phone_with_camera: false),
       )
 
       redirect_to idv_hybrid_handoff_url
