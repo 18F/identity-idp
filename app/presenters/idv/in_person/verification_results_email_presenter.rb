@@ -47,10 +47,6 @@ module Idv
         sp_return_url_resolver.homepage_url if service_provider
       end
 
-      def needs_proof_of_address?
-        !(enrollment.current_address_matches_id || enrollment.capture_secondary_id_enabled)
-      end
-
       private
 
       def sp_return_url_resolver

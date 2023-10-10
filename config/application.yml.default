@@ -124,7 +124,6 @@ idv_phone_question_a_b_testing: '{"show_phone_question":0}'
 idv_send_link_attempt_window_in_minutes: 10
 idv_send_link_max_attempts: 5
 idv_sp_required: false
-in_person_capture_secondary_id_enabled: false
 in_person_public_address_search_enabled: false
 in_person_doc_auth_button_enabled: true
 in_person_email_reminder_early_benchmark_in_days: 11

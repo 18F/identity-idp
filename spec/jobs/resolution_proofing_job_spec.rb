@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe ResolutionProofingJob, type: :job do
-  let(:pii) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN }
+  let(:pii) { Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID }
   let(:encrypted_arguments) do
     Encryption::Encryptors::BackgroundProofingArgEncryptor.new.encrypt(
       { applicant_pii: pii }.to_json,
