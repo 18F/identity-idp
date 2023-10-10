@@ -289,14 +289,6 @@ module AnalyticsEvents
     )
   end
 
-  # @param [String, nil] error error message
-  # @param [String, nil] uuid document capture session uuid
-  # @param [String, nil] result_id document capture session result id
-  # When there is an error loading async results during the document authentication flow
-  def doc_auth_async(error: nil, uuid: nil, result_id: nil, **extra)
-    track_event('Doc Auth Async', error: error, uuid: uuid, result_id: result_id, **extra) # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
-  end
-
   # @param [String] message the warning
   # @param [String] getting_started_ab_test_bucket Which initial IdV screen the user saw
   # Logged when there is a non-user-facing error in the doc auth process, such as an unrecognized
