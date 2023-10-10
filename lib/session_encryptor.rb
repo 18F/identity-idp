@@ -52,7 +52,7 @@ class SessionEncryptor
       decrypted
     end
 
-    session = JSON.parse(decrypted).with_indifferent_access
+    session = JSON.parse(decrypted)
     kms_decrypt_sensitive_paths!(session)
 
     session

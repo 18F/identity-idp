@@ -54,7 +54,7 @@ RSpec.describe SessionEncryptor do
 
       ciphertext = subject.dump(session)
 
-      result = subject.load(ciphertext)
+      result = subject.load(ciphertext).with_indifferent_access
       pii_cacher = Pii::Cacher.new(nil, result.fetch('warden.user.user.session'))
 
       expect(result.fetch('warden.user.user.session')['decrypted_pii']).to eq nil
