@@ -55,7 +55,7 @@ class SessionEncryptor
     session = JSON.parse(decrypted).with_indifferent_access
     kms_decrypt_sensitive_paths!(session)
 
-    session
+    IdentitySession.new(session)
   end
 
   def dump(value)
