@@ -6,13 +6,15 @@ RSpec.describe 'IdvStepConcern' do
     Idv::Session.new(user_session: subject.user_session, current_user: user, service_provider: nil)
   end
 
-  let(:idv_step_controller_class) do
-    Class.new(ApplicationController) do
-      include IdvStepConcern
+  idv_step_controller_class = Class.new(ApplicationController) do
+    def self.name
+      'AnonymousController'
+    end
 
-      def show
-        render plain: 'Hello'
-      end
+    include IdvStepConcern
+
+    def show
+      render plain: 'Hello'
     end
   end
 
@@ -33,14 +35,8 @@ RSpec.describe 'IdvStepConcern' do
   end
 
   describe '#confirm_idv_needed' do
-    controller(ApplicationController) do
-      include IdvStepConcern
-
+    controller(idv_step_controller_class) do
       before_action :confirm_idv_needed
-
-      def show
-        render plain: 'Hello'
-      end
     end
 
     before(:each) do
@@ -79,14 +75,8 @@ RSpec.describe 'IdvStepConcern' do
   end
 
   describe '#confirm_address_step_complete' do
-    controller(ApplicationController) do
-      include IdvStepConcern
-
+    controller(idv_step_controller_class) do
       before_action :confirm_address_step_complete
-
-      def show
-        render plain: 'Hello'
-      end
     end
 
     before(:each) do
@@ -143,14 +133,8 @@ RSpec.describe 'IdvStepConcern' do
   end
 
   describe '#confirm_verify_info_step_complete' do
-    controller(ApplicationController) do
-      include IdvStepConcern
-
+    controller(idv_step_controller_class) do
       before_action :confirm_verify_info_step_complete
-
-      def show
-        render plain: 'Hello'
-      end
     end
 
     before(:each) do
@@ -203,14 +187,8 @@ RSpec.describe 'IdvStepConcern' do
   end
 
   describe '#confirm_no_pending_in_person_enrollment' do
-    controller(ApplicationController) do
-      include IdvStepConcern
-
+    controller(idv_step_controller_class) do
       before_action :confirm_no_pending_in_person_enrollment
-
-      def show
-        render plain: 'Hello'
-      end
     end
 
     before(:each) do
@@ -247,14 +225,8 @@ RSpec.describe 'IdvStepConcern' do
   end
 
   describe '#confirm_no_pending_gpo_profile' do
-    controller(ApplicationController) do
-      include IdvStepConcern
-
+    controller(idv_step_controller_class) do
       before_action :confirm_no_pending_gpo_profile
-
-      def show
-        render plain: 'Hello'
-      end
     end
 
     before(:each) do
