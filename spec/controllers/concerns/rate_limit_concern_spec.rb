@@ -113,7 +113,7 @@ RSpec.describe 'RateLimitConcern' do
       end
     end
 
-    it 'redirects if the user is rate limitted for a step after doc auth' do
+    it 'redirects if the user is rate limited for a step after doc auth' do
       RateLimiter.new(user: user, rate_limit_type: :idv_resolution).increment_to_limited!
 
       get :show
@@ -121,7 +121,7 @@ RSpec.describe 'RateLimitConcern' do
       expect(response).to redirect_to(idv_session_errors_failure_url)
     end
 
-    it 'does not redirect if the user is rate limitted for doc auth' do
+    it 'does not redirect if the user is rate limited for doc auth' do
       RateLimiter.new(user: user, rate_limit_type: :idv_doc_auth).increment_to_limited!
 
       get :show
@@ -145,7 +145,7 @@ RSpec.describe 'RateLimitConcern' do
       end
     end
 
-    it 'redirects if the user is rate limitted for a step after idv resolution' do
+    it 'redirects if the user is rate limited for a step after idv resolution' do
       RateLimiter.new(user: user, rate_limit_type: :proof_address).increment_to_limited!
 
       get :show
@@ -153,7 +153,7 @@ RSpec.describe 'RateLimitConcern' do
       expect(response).to redirect_to(idv_phone_errors_failure_url)
     end
 
-    it 'does not redirect if the user is rate limitted for idv resolution' do
+    it 'does not redirect if the user is rate limited for idv resolution' do
       RateLimiter.new(user: user, rate_limit_type: :idv_doc_auth).increment_to_limited!
       RateLimiter.new(user: user, rate_limit_type: :idv_resolution).increment_to_limited!
 
