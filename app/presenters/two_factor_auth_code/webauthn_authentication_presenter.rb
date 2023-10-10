@@ -69,10 +69,6 @@ module TwoFactorAuthCode
       :webauthn_verification
     end
 
-    def multiple_factors_enabled?
-      service_provider_mfa_policy.multiple_factors_enabled?
-    end
-
     def platform_authenticator?
       @platform_authenticator
     end

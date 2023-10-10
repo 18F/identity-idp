@@ -98,4 +98,69 @@ RSpec.describe 'RateLimitConcern' do
       end
     end
   end
+
+  describe '#confirm_not_rate_limited_after_doc_auth' do
+    controller Idv::StepController do
+      before_action :confirm_not_rate_limited_after_doc_auth
+    end
+
+    before(:each) do
+      sign_in(user)
+      allow(subject).to receive(:current_user).and_return(user)
+      routes.draw do
+        get 'show' => 'idv/step#show'
+        put 'update' => 'idv/step#update'
+      end
+    end
+
+    it 'redirects if the user is rate limited for a step after doc auth' do
+      RateLimiter.new(user: user, rate_limit_type: :idv_resolution).increment_to_limited!
+
+      get :show
+
+      expect(response).to redirect_to(idv_session_errors_failure_url)
+    end
+
+    it 'does not redirect if the user is rate limited for doc auth' do
+      RateLimiter.new(user: user, rate_limit_type: :idv_doc_auth).increment_to_limited!
+
+      get :show
+
+      expect(response.body).to eq 'Hello'
+      expect(response.status).to eq 200
+    end
+  end
+
+  describe '#confirm_not_rate_limited_after_idv_resolution' do
+    controller Idv::StepController do
+      before_action :confirm_not_rate_limited_after_idv_resolution
+    end
+
+    before(:each) do
+      sign_in(user)
+      allow(subject).to receive(:current_user).and_return(user)
+      routes.draw do
+        get 'show' => 'idv/step#show'
+        put 'update' => 'idv/step#update'
+      end
+    end
+
+    it 'redirects if the user is rate limited for a step after idv resolution' do
+      RateLimiter.new(user: user, rate_limit_type: :proof_address).increment_to_limited!
+
+      get :show
+
+      expect(response).to redirect_to(idv_phone_errors_failure_url)
+    end
+
+    it 'does not redirect if the user is rate limited for idv resolution' do
+      RateLimiter.new(user: user, rate_limit_type: :idv_doc_auth).increment_to_limited!
+      RateLimiter.new(user: user, rate_limit_type: :idv_resolution).increment_to_limited!
+
+      get :show
+
+      expect(response.body).to eq 'Hello'
+      expect(response.status).to eq 200
+    end
+  end
 end

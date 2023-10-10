@@ -16,9 +16,6 @@
 <p><strong><%= t('user_mailer.in_person_failed.verifying_identity') %></strong></p>
 <ul class="usa-list">
   <li><%= t('user_mailer.in_person_failed.verifying_step_not_expired') %></li>
-  <% if @presenter.needs_proof_of_address? %>
-    <li><%= t('user_mailer.in_person_failed.verifying_step_proof_of_address') %></li>
-  <% end %>
 </ul>
 
 <%= render 'shared/in-person-verification-results-email-lower' %>

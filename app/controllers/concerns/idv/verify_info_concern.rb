@@ -33,7 +33,7 @@ module Idv
         user_id: current_user.id,
         threatmetrix_session_id: idv_session.threatmetrix_session_id,
         request_ip: request.remote_ip,
-        double_address_verification: capture_secondary_id_enabled,
+        double_address_verification: double_address_verification,
       )
 
       return true
@@ -41,9 +41,11 @@ module Idv
 
     private
 
-    def capture_secondary_id_enabled
-      current_user.establishing_in_person_enrollment&.
-          capture_secondary_id_enabled || false
+    def double_address_verification
+      # If in person return true else return false. This is temporary until we add a feature flag
+      # to track enrollment was created in the in person flow.
+      # todo LG-11235 update value based on new feature flag
+      current_user.has_in_person_enrollment?
     end
 
     def should_use_aamva?(pii)
@@ -163,7 +165,7 @@ module Idv
         return
       end
 
-      return if confirm_not_rate_limited
+      return if confirm_not_rate_limited_after_doc_auth
 
       if current_async_state.none?
         idv_session.invalidate_verify_info_step!

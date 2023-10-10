@@ -3,6 +3,33 @@ require 'rails_helper'
 RSpec.describe Idv::CaptureDocStatusController do
   let(:user) { build(:user) }
 
+  let(:doc_auth_response) do
+    DocAuth::Response.new(
+      success: true,
+      pii_from_doc: {
+        first_name: 'Testy',
+        last_name: 'Testerson',
+      },
+    )
+  end
+
+  let(:failed_doc_auth_response) do
+    DocAuth::Response.new(
+      success: false,
+    )
+  end
+
+  let(:barcode_attention_auth_response) do
+    DocAuth::Response.new(
+      success: true,
+      pii_from_doc: {
+        first_name: 'Testy',
+        last_name: 'Testerson',
+      },
+      attention_with_barcode: true,
+    )
+  end
+
   before do
     stub_sign_in(user) if user
   end
@@ -69,33 +96,9 @@ RSpec.describe Idv::CaptureDocStatusController do
       end
     end
 
-    context 'when capture failed' do
-      before do
-        allow(EncryptedRedisStructStorage).to receive(:load).and_return(
-          DocumentCaptureSessionResult.new(
-            id: SecureRandom.uuid,
-            success: false,
-            pii: {},
-          ),
-        )
-      end
-
-      it 'returns unauthorized' do
-        get :show
-
-        expect(response.status).to eq(401)
-      end
-    end
-
     context 'when capture succeeded' do
       before do
-        allow(EncryptedRedisStructStorage).to receive(:load).and_return(
-          DocumentCaptureSessionResult.new(
-            id: SecureRandom.uuid,
-            success: true,
-            pii: {},
-          ),
-        )
+        document_capture_session.store_result_from_response(doc_auth_response)
       end
 
       it 'returns success' do
@@ -106,17 +109,8 @@ RSpec.describe Idv::CaptureDocStatusController do
     end
 
     context 'when capture succeeded with barcode attention' do
-      let(:result) do
-        DocumentCaptureSessionResult.new(
-          id: SecureRandom.uuid,
-          success: true,
-          pii: {},
-          attention_with_barcode: true,
-        )
-      end
-
       before do
-        allow(EncryptedRedisStructStorage).to receive(:load).and_return(result)
+        document_capture_session.store_result_from_response(barcode_attention_auth_response)
       end
 
       context 'when barcode attention result is pending confirmation' do
@@ -156,18 +150,11 @@ RSpec.describe Idv::CaptureDocStatusController do
       end
 
       context 'when user receives a second result that is not the attention result' do
-        let(:result) do
-          DocumentCaptureSessionResult.new(
-            id: SecureRandom.uuid,
-            success: true,
-            pii: {},
-            attention_with_barcode: false,
-          )
-        end
-
         before do
           idv_session[:had_barcode_attention_error] = true
           document_capture_session.update(ocr_confirmation_pending: false)
+
+          document_capture_session.store_result_from_response(doc_auth_response)
         end
 
         it 'assigns idv session values as not having received attention result' do

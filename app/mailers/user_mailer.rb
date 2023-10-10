@@ -397,7 +397,7 @@ class UserMailer < ActionMailer::Base
         user.gpo_verification_pending_profile.gpo_verification_pending_at,
         format: :event_date,
       )
-      mail(to: email_address.email, subject: t('idv.messages.gpo_reminder.subject'))
+      mail(to: email_address.email, subject: t('user_mailer.letter_reminder_14_days.subject'))
     end
   end
 

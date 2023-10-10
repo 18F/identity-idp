@@ -33,7 +33,7 @@ en:
         gpo:
           start_over: 'If you clear your information and start over:'
           warnings:
-            - The one-time code in your letter will no longer work
+            - The verification code in your letter will no longer work
             - You will start over verifying your identity from the beginning
         hybrid: If you cancel now, you will be prompted to switch back to your computer
           to continue verifying your identity.
@@ -155,7 +155,6 @@ en:
     form:
       address1: Address line 1
       address2: Address line 2
-      address2_optional: Address line 2 (optional)
       city: City
       dob: Date of birth
       first_name: First name
@@ -172,7 +171,9 @@ en:
       no_js_intro: '%{sp_name} needs you to verify your identity. You need to enable
         JavaScript to continue this process.'
     gpo:
-      alert_info: 'We sent a letter with your one-time code to:'
+      alert_info: 'We sent a letter with your verification code to:'
+      change_to_verification_code_html: 'The <strong>one-time code</strong> from your
+        letter is now referred to as <strong>verification code</strong>.'
       clear_and_start_over: Clear your information and start over
       did_not_receive_letter:
         form:
@@ -187,10 +188,10 @@ en:
         title: Didn’t get your letter?
       form:
         instructions: Enter the 10-character code from the letter you received.
-        otp_label: One-time code
+        otp_label: Verification code
         submit: Confirm account
         title: Confirm your account
-      intro_html: '<p>If you have received your letter, please enter your one-time
+      intro_html: '<p>If you have received your letter, please enter your verification
         code below. </p><p>If your letter hasn’t arrived yet, please be patient
         as letters take up to <strong>10 days</strong> to arrive. Thank you for
         your patience.</p>'
@@ -218,15 +219,15 @@ en:
       clear_and_start_over: Clear my information and start over
       come_back_later_html: <p>Letters take <strong>5 to 10 days</strong> to arrive
         via USPS First-Class Mail.</p> <p>Once your letter arrives, sign in to
-        %{app_name}, and enter your one-time code when prompted.</p>
+        %{app_name}, and enter your verification code when prompted.</p>
       come_back_later_no_sp_html: You can return to your <strong>%{app_name} account</strong> for now.
       come_back_later_password_html: <strong>Don’t forget your password.</strong><br
-        /> If you reset your password, the one-time code in your letter will no
-        longer work and you’ll have to verify your identity again.
+        /> If you reset your password, the verification code in your letter will
+        no longer work and you’ll have to verify your identity again.
       come_back_later_sp_html: You can return to <strong>%{sp}</strong> for now.
       confirm: We secured your verified information
       gpo:
-        address_on_file_html: We will mail a letter with a <strong>one-time
+        address_on_file_html: We will mail a letter with a <strong>verification
           code</strong> to the address that you provided on the previous step.
         another_letter_on_the_way: We are sending you another letter
         info_alert: You’ll need to wait until your letter is delivered to finish
@@ -235,15 +236,6 @@ en:
         resend: Send me another letter
         timeframe_html: Letters are sent the next business day via USPS First-Class Mail
           and arrive in <strong>5 to 10 days</strong>.
-      gpo_reminder:
-        body_html: You requested a letter to verify your identity on
-          <strong>%{date_letter_was_sent}</strong>. You’ll need to enter the
-          code from the letter to finish verifying your identity. Sign back in
-          to %{app_name} to finish verifying your identity. %{help_link}.
-        did_not_get_a_letter_html: If you didn’t get this letter, %{another_letter_link_html}.
-        finish: Finish verifying your identity
-        sign_in_and_request_another_letter: sign in to request another letter
-        subject: Finish verifying your identity
       otp_delivery_method_description: If you entered a landline above, please select “Phone call” below.
       personal_key: This is your new personal key. Write it down and keep it in a safe
         place. You will need it if you ever lose your password.

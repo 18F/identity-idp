@@ -80,10 +80,15 @@ properties to the Form object that get written during `#submit`
 At the end of the day, analytics events get dumped into `events.log` and contain
 information like user ID, service provider, user agent, etc.
 
-Event names are strings. Events correspond to methods in the
+Event names correspond to methods in the
 [AnalyticsEvents](../app/services/analytics_events.rb) mixin. We document these
 with YARD so that we can auto-generate
-[documentation on them in our handbook][analytics-handbook]
+[documentation on them in our handbook][analytics-handbook].
+
+> [!NOTE]
+> The convention to name events to match the method name is expected for all new analytics events,
+> but you will find a number of exceptions for analytics which had existed prior to this convention
+> being established.
 
 [analytics-handbook]: https://handbook.login.gov/articles/analytics-events.html
 
