@@ -105,7 +105,7 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController do
         }
 
         expect(@analytics).to receive(:track_event).
-          with('Multi-Factor Authentication: enter PIV CAC visited', attributes)
+          with(:multi_factor_auth_enter_piv_cac, attributes)
 
         submit_attributes = {
           success: true,
@@ -203,7 +203,7 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController do
         }
 
         expect(@analytics).to receive(:track_event).
-          with('Multi-Factor Authentication: enter PIV CAC visited', attributes)
+          with(:multi_factor_auth_enter_piv_cac, attributes)
 
         expect(@irs_attempts_api_tracker).to receive(:mfa_login_rate_limited).
           with(mfa_device_type: 'piv_cac')
