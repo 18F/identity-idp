@@ -1,7 +1,6 @@
 module RateLimitConcern
   extend ActiveSupport::Concern
 
-  # idv_resolution idv_doc_auth proof_address proof_ssn
   ALL_IDV_RATE_LIMITTERS = [:idv_resolution, :idv_doc_auth, :proof_address, :proof_ssn].freeze
 
   def confirm_not_rate_limited(rate_limiters = ALL_IDV_RATE_LIMITTERS)
