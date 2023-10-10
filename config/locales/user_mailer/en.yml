@@ -129,9 +129,6 @@ en:
       verifying_step_not_expired: Your state‑issued ID or driver’s license must not be
         expired. We do not currently accept any other forms of identification,
         such as passports and military IDs.
-      verifying_step_proof_of_address: If you try to verify your identity in person
-        again, you need to bring a valid proof of address if your current
-        address is different than the address on your ID.
     in_person_failed_suspected_fraud:
       body:
         help_center_html: If you need further help, you can <a
@@ -188,10 +185,20 @@ en:
         password</a>. To report this, <a href="%{contact_us_url}">contact
         %{app_name} support</a>.
     letter_reminder:
-      info_html: The letter you are about to receive will contain a one-time code that
-        helps us verify your address. You can complete the identity verification
-        process by signing into %{link_html} and entering the one-time code.
+      info_html: The letter you are about to receive will contain a verification code
+        that helps us verify your address. You can complete the identity
+        verification process by signing into %{link_html} and entering the
+        verification code.
       subject: We mailed a letter to the address you have on file
+    letter_reminder_14_days:
+      body_html: <p>You requested a letter with a verification code on
+        <strong>%{date_letter_was_sent}</strong>.</p><p>Sign back in to
+        %{app_name} and enter the verification code to finish verifying your
+        identity. %{help_link}.</p>
+      did_not_get_a_letter_html: If you didn’t get this letter, %{another_letter_link_html}.
+      finish: Finish verifying your identity
+      sign_in_and_request_another_letter: sign in to request another letter
+      subject: Finish verifying your identity
     new_device_sign_in:
       disavowal_link: reset your password
       help_html: If you did not make this change, %{disavowal_link_html}. For more
@@ -269,8 +276,8 @@ en:
       subject: Unusual activity — reset your %{app_name} password
     reset_password_instructions:
       footer: This link expires in %{expires} hours.
-      gpo_letter_description: If you reset your password, the one-time code in your
-        letter will no longer work and you’ll have to verify your identity
+      gpo_letter_description: If you reset your password, the verification code in
+        your letter will no longer work and you’ll have to verify your identity
         again.
       gpo_letter_header: Your letter is on the way
       header: To finish resetting your password, please click the link below  or copy

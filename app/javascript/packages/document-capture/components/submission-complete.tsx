@@ -1,31 +1,27 @@
 import { useState, useContext, useRef } from 'react';
 import CallbackOnMount from './callback-on-mount';
 import UploadContext from '../context/upload';
+import type { UploadSuccessResponse } from '../context/upload';
 
-/** @typedef {import('../context/upload').UploadSuccessResponse} UploadSuccessResponse */
+interface Resource<T> {
+  /**
+   * Resource reader.
+   */
+  read: () => T;
+}
 
-/**
- * @typedef Resource
- *
- * @prop {()=>T} read Resource reader.
- *
- * @template T
- */
-
-/**
- * @typedef SubmissionCompleteProps
- *
- * @prop {Resource<UploadSuccessResponse>} resource Resource object.
- */
+interface SubmissionCompleteProps {
+  /**
+   * Resource object.
+   */
+  resource: Resource<UploadSuccessResponse>;
+}
 
 export class RetrySubmissionError extends Error {}
 
-/**
- * @param {SubmissionCompleteProps} props Props object.
- */
-function SubmissionComplete({ resource }) {
-  const [, setRetryError] = useState(/** @type {Error=} */ (undefined));
-  const sleepTimeout = useRef(/** @type {number=} */ (undefined));
+function SubmissionComplete({ resource }: SubmissionCompleteProps) {
+  const [, setRetryError] = useState<Error | undefined>(undefined);
+  const sleepTimeout = useRef<number>();
   const { statusPollInterval } = useContext(UploadContext);
   const response = resource.read();
 
@@ -39,8 +35,7 @@ function SubmissionComplete({ resource }) {
         }, statusPollInterval);
       }
     } else {
-      /** @type {HTMLFormElement?} */
-      const form = document.querySelector('.js-document-capture-form');
+      const form = document.querySelector<HTMLFormElement>('.js-document-capture-form');
       form?.submit();
     }
 

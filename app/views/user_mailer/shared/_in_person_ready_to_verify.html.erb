@@ -62,21 +62,6 @@
         <p class="margin-bottom-105"><%= t('in_person_proofing.process.state_id.info') %></p>
       </td>
     </tr>
-    <% if @presenter.needs_proof_of_address? %>
-      <tr>
-        <td><div class="process-list__circle">4</div></td>
-        <td>
-          <h3 class="font-heading-md text-bold"><%= t('in_person_proofing.process.proof_of_address.heading') %></h3>
-          <p class="margin-bottom-105"><%= t('in_person_proofing.process.proof_of_address.info') %></p>
-          <ul class="usa-list margin-y-105">
-            <% t('in_person_proofing.process.proof_of_address.acceptable_proof').each do |proof| %>
-              <li><%= proof %></li>
-            <% end %>
-          </ul>
-          <p><%= t('in_person_proofing.process.proof_of_address.physical_or_digital_copy') %></p>
-        </td>
-      </tr>
-    <% end %>
   </table>
   <p class="margin-bottom-0">
     <%= t('in_person_proofing.body.barcode.questions') %>

@@ -3,7 +3,16 @@ require 'rails_helper'
 RSpec.describe Idv::DocumentCaptureController do
   include IdvHelper
 
-  let(:document_capture_session_uuid) { 'fd14e181-6fb1-4cdc-92e0-ef66dad0df4e' }
+  let(:document_capture_session_requested_at) { Time.zone.now }
+
+  let!(:document_capture_session) do
+    DocumentCaptureSession.create!(
+      user: user,
+      requested_at: document_capture_session_requested_at,
+    )
+  end
+
+  let(:document_capture_session_uuid) { document_capture_session&.uuid }
 
   let(:user) { create(:user) }
 
@@ -182,6 +191,17 @@ RSpec.describe Idv::DocumentCaptureController do
 
         expect(enrollment.reload.cancelled?).to eq(true)
         expect(user.reload.establishing_in_person_enrollment).to be_nil
+      end
+    end
+
+    context 'ocr confirmation pending' do
+      before do
+        subject.document_capture_session.ocr_confirmation_pending = true
+      end
+
+      it 'confirms ocr' do
+        put :update
+        expect(subject.document_capture_session.ocr_confirmation_pending).to be_falsey
       end
     end
   end

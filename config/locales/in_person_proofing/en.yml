@@ -2,10 +2,6 @@
 en:
   in_person_proofing:
     body:
-      address:
-        info: If your current address does not match the address on your ID, you will
-          need to bring proof of your current address to the Post Office.
-        learn_more: Learn more
       barcode:
         cancel_link_text: Cancel your barcode
         close_window: You may now close this window.
@@ -93,10 +89,6 @@ en:
           unsupported_chars: 'Our system cannot read the following characters:
             %{char_list}. Please try again using substitutes for those
             characters.'
-        same_address: Is this address displayed on the state‑issued ID that you are
-          bringing to the Post Office?
-        same_address_choice_no: I have a different address on my ID
-        same_address_choice_yes: This address is on my state‑issued ID
         state_prompt: '- Select -'
       state_id:
         address1: Address line 1
@@ -115,7 +107,6 @@ en:
             %{char_list}. Please try again using the characters on your ID.'
         first_name: First name
         identity_doc_address_state: State
-        identity_doc_address_state_hint: Select the state shown on your ID
         identity_doc_address_state_prompt: '- Select -'
         last_name: Last name
         memorable_date:
@@ -158,18 +149,6 @@ en:
         heading: Show your %{app_name} barcode
         info: The retail associate needs to scan your barcode at the top of this page.
           You can print this page or show it on your mobile device.
-      proof_of_address:
-        acceptable_proof:
-          - Lease, Mortgage, or Deed of Trust
-          - Voter Registration
-          - Vehicle Registration Card
-          - Home or Vehicle Insurance Policy
-        heading: Proof of your current address
-        info: 'You need a proof of address if your current address is different than the
-          address on your ID. Acceptable forms of proof of address are:'
-        physical_or_digital_copy: You can bring a physical copy or show a digital copy
-          of the document. You cannot show a photo or screenshot of the
-          document.
       state_id:
         heading: Show your State Driver’s License or State Non-Driver’s Identification
           Card

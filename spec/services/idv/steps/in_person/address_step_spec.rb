@@ -5,8 +5,7 @@ RSpec.describe Idv::Steps::InPerson::AddressStep do
   let(:submitted_values) { {} }
   let(:pii_from_user) { flow.flow_session[:pii_from_user] }
   let(:params) { ActionController::Parameters.new({ in_person_address: submitted_values }) }
-  let(:capture_secondary_id_enabled) { false }
-  let(:enrollment) { InPersonEnrollment.new(capture_secondary_id_enabled:) }
+  let(:enrollment) { InPersonEnrollment.new }
   let(:user) { build(:user) }
   let(:service_provider) { create(:service_provider) }
   let(:controller) do
@@ -35,10 +34,6 @@ RSpec.describe Idv::Steps::InPerson::AddressStep do
   end
 
   describe '#call' do
-    before do
-      allow(IdentityConfig.store).to receive(:in_person_capture_secondary_id_enabled).
-        and_return(false)
-    end
     context 'with values submitted' do
       let(:address1) { '1 FAKE RD' }
       let(:address2) { 'APT 1B' }
@@ -63,67 +58,51 @@ RSpec.describe Idv::Steps::InPerson::AddressStep do
         end
       end
 
-      it 'sets values in flow session' do
+      it 'sets the values in flow session' do
         step.call
+
         expect(flow.flow_session[:pii_from_user]).to include(
           address1:,
           address2:,
           city:,
           zipcode:,
           state:,
-          same_address_as_id:,
         )
       end
 
-      context 'with secondary capture enabled' do
-        let(:capture_secondary_id_enabled) { true }
-
-        it 'sets the values in flow session' do
+      context 'when initially entering the residential address' do
+        it 'leaves the "same_address_as_id" attr as false' do
+          flow.flow_session[:pii_from_user][:same_address_as_id] = 'false'
           step.call
 
-          expect(flow.flow_session[:pii_from_user]).to include(
-            address1:,
-            address2:,
-            city:,
-            zipcode:,
-            state:,
-          )
+          expect(flow.flow_session[:pii_from_user][:same_address_as_id]).to eq('false')
+        end
+      end
+
+      context 'when updating the residential address' do
+        before(:each) do
+          flow.flow_session[:pii_from_user][:address1] = '123 New Residential Ave'
         end
 
-        context 'when initially entering the residential address' do
-          it 'leaves the "same_address_as_id" attr as false' do
-            flow.flow_session[:pii_from_user][:same_address_as_id] = 'false'
-            step.call
+        context 'user previously selected that the residential address matched state ID' do
+          before(:each) do
+            flow.flow_session[:pii_from_user][:same_address_as_id] = 'true'
+          end
 
+          it 'infers and sets the "same_address_as_id" in the flow session to false' do
+            step.call
             expect(flow.flow_session[:pii_from_user][:same_address_as_id]).to eq('false')
           end
         end
 
-        context 'when updating the residential address' do
+        context 'user previously selected that the residential address did not match state ID' do
           before(:each) do
-            flow.flow_session[:pii_from_user][:address1] = '123 New Residential Ave'
+            flow.flow_session[:pii_from_user][:same_address_as_id] = 'false'
           end
 
-          context 'user previously selected that the residential address matched state ID' do
-            before(:each) do
-              flow.flow_session[:pii_from_user][:same_address_as_id] = 'true'
-            end
-
-            it 'infers and sets the "same_address_as_id" in the flow session to false' do
-              step.call
-              expect(flow.flow_session[:pii_from_user][:same_address_as_id]).to eq('false')
-            end
-          end
-
-          context 'user previously selected that the residential address did not match state ID' do
-            before(:each) do
-              flow.flow_session[:pii_from_user][:same_address_as_id] = 'false'
-            end
-
-            it 'leaves the "same_address_as_id" in the flow session as false' do
-              step.call
-              expect(flow.flow_session[:pii_from_user][:same_address_as_id]).to eq('false')
-            end
+          it 'leaves the "same_address_as_id" in the flow session as false' do
+            step.call
+            expect(flow.flow_session[:pii_from_user][:same_address_as_id]).to eq('false')
           end
         end
       end
@@ -131,17 +110,10 @@ RSpec.describe Idv::Steps::InPerson::AddressStep do
   end
 
   describe '#analytics_submitted_event' do
-    it 'logs idv_in_person_proofing_address_submitted' do
-      expect(step.analytics_submitted_event).to be(:idv_in_person_proofing_address_submitted)
-    end
-
-    context 'with secondary capture enabled' do
-      let(:capture_secondary_id_enabled) { true }
-      it 'logs idv_in_person_proofing_residential_address_submitted' do
-        expect(step.analytics_submitted_event).to be(
-          :idv_in_person_proofing_residential_address_submitted,
-        )
-      end
+    it 'logs idv_in_person_proofing_residential_address_submitted' do
+      expect(step.analytics_submitted_event).to be(
+        :idv_in_person_proofing_residential_address_submitted,
+      )
     end
   end
 
@@ -170,21 +142,6 @@ RSpec.describe Idv::Steps::InPerson::AddressStep do
 
         expect(step.extra_view_variables).to include(
           updating_address: false,
-        )
-      end
-    end
-
-    it 'returns capture enabled = false' do
-      expect(step.extra_view_variables).to include(
-        capture_secondary_id_enabled: false,
-      )
-    end
-
-    context 'with secondary capture enabled' do
-      let(:capture_secondary_id_enabled) { true }
-      it 'returns capture enabled = true' do
-        expect(step.extra_view_variables).to include(
-          capture_secondary_id_enabled: true,
         )
       end
     end

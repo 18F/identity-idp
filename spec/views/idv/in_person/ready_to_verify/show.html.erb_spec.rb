@@ -65,26 +65,6 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
     )
   end
 
-  context 'with enrollment where current address matches id' do
-    let(:current_address_matches_id) { true }
-
-    it 'renders without proof of address instructions' do
-      render
-
-      expect(rendered).not_to have_content(t('in_person_proofing.process.proof_of_address.heading'))
-    end
-  end
-
-  context 'with enrollment where current address does not match id' do
-    let(:current_address_matches_id) { false }
-
-    it 'renders with proof of address instructions' do
-      render
-
-      expect(rendered).to have_content(t('in_person_proofing.process.proof_of_address.heading'))
-    end
-  end
-
   context 'with enrollment where selected_location_details is present' do
     it 'renders a location' do
       render

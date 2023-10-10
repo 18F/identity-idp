@@ -153,6 +153,7 @@ RSpec.feature 'idv gpo otp verification step' do
 
       expect(current_path).to eq idv_verify_by_mail_enter_code_path
       expect(page).to have_content t('idv.gpo.alert_info')
+          expect(page).to have_content strip_tags(t('idv.gpo.change_to_verification_code_html'))
       expect(page).to have_content t('idv.gpo.wrong_address')
       expect(page).to have_content Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE[:address1]
       verify_no_spam_warning_banner
