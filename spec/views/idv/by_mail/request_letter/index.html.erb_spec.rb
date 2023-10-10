@@ -62,7 +62,7 @@ RSpec.describe 'idv/by_mail/request_letter/index.html.erb' do
   context 'when there is an address2' do
     let(:address2) { 'applicant address 2' }
 
-    it 'renders the addresss line' do
+    it 'renders the address line' do
       expect(rendered).to have_content('applicant address 2')
     end
   end
