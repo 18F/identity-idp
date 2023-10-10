@@ -320,19 +320,37 @@ is a wrapper component for Simple Form's `f.input` helper. It enhances the behav
 
 ### Production Errors
 
-JavaScript errors that occur in production environments are automatically logged to NewRelic.
-Because JavaScript is transpiled and minified in production, these files can be difficult to debug.
-Fortunately, [NewRelic supports source maps](https://docs.newrelic.com/docs/browser/browser-monitoring/browser-pro-features/upload-source-maps-un-minify-js-errors/)
-to produce a readable stack trace of the original code.
+JavaScript errors that occur in production environments are automatically logged to NewRelic. They are logged as an expected Ruby error with the class `FrontendLoggerError::FrontendError`.
 
-When viewing an instance of a JavaScript error, NewRelic will prompt for a sourcemap corresponding
-to a specific JavaScript file URL.
+There are two ways you can view these errors:
 
-![NewRelic minified stack trace](https://user-images.githubusercontent.com/1779930/194325242-1e0cb00a-6ee1-4fb0-82b1-b017ced703b5.png)
+- [In the production APM "Errors" inbox, removing the filter which hides "expected" errors](https://onenr.io/0OQMVbbB9wG)
+- [In the query builder, selecting from `TransactionError` with an error class of `FrontendErrorLogger::FrontendLogger`](https://onenr.io/0kjnpGG4awo)
 
-To retrieve the sourcemap for this URL, simply copy the URL into your browser URL bar and append
-`.map`. Navigating to this URL should download the `.map` file to your computer, which you can then
-drag-and-drop onto the NewRelic web interface to reveal the decompiled stack trace.
+Each error includes a few details to help you debug:
+
+- `message`: Corresponds to [`Error#message`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/message), and is usually a good summary to group by
+- `name`: The subclass of the error (e.g. `TypeError`)
+- `stack`: A stacktrace of the individual error instance
+
+Note that NewRelic creates links in stack traces which are invalid, since they include the line and column number. If you encounter an "AccessDenied" error when clicking a stacktrace link, make sure to remove those details after the `.js` in your browser URL.
+
+Debugging these stack traces can be difficult, since files in production are minified, and the stack traces include line numbers and columns for minified files. With the following steps, you can find a reference to the original code:
+
+1. Download the minified JavaScript file referenced in the stack trace
+   - Example: https://secure.login.gov/packs/js/document-capture-e41c853e.digested.js
+2. Download the sourcemap file for the JavaScript by appending `.map` to the previous URL
+   - Example: https://secure.login.gov/packs/js/document-capture-e41c853e.digested.js.map
+3. Install the [`sourcemap-lookup` npm package](https://www.npmjs.com/package/sourcemap-lookup)
+   - `npm i -g sourcemap-lookup`
+4. Open a terminal window to the directory where you downloaded the files in steps 1 and 2
+   - Example: `cd ~/Downloads`
+5. Clean the sourcemap file to remove Webpack protocol details
+   - Example: `sed -i '' 's/webpack:\/\/@18f\/identity-idp\///g' document-capture-e41c853e.digested.js.map`
+6. Run the `sourcemap-lookup` command with a reference to the JavaScript file, line and column number, and specifying the source path to your local copy of `identity-idp`
+   - Example: `sourcemap-lookup document-capture-e41c853e.digested.js:2:172098 --source-path=/path/to/identity-idp/`
+
+The output of the `sourcemap-lookup` command should include "Original Position" and "Code Section" of the code which triggered the error.
 
 ## Devices
 
