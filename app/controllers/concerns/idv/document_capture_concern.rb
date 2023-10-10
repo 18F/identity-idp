@@ -30,7 +30,6 @@ module Idv
     end
 
     # @param [DocAuth::Response,
-    #   DocumentCaptureSessionAsyncResult,
     #   DocumentCaptureSessionResult] response
     def extract_pii_from_doc(user, response, store_in_session: false)
       pii_from_doc = response.pii_from_doc.merge(
