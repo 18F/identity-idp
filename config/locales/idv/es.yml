@@ -34,7 +34,7 @@ es:
         gpo:
           start_over: Si borras tu información y empiezas de nuevo
           warnings:
-            - El código único de tu carta ya no funcionará
+            - El código de verificación de tu carta ya no funcionará
             - Tendrás que volver a verificar tu identidad otra vez
         hybrid: Si cancela ahora, se le pedirá regresar a su computadora para continuar
           con la verificación de su identidad.
@@ -179,7 +179,7 @@ es:
       no_js_intro: '%{sp_name} requiere que usted verifique su identidad. Debe
         habilitar JavaScript para continuar con este proceso.'
     gpo:
-      alert_info: 'Enviamos una carta con su código único a:'
+      alert_info: 'Enviamos una carta con su código de verificación a:'
       change_to_verification_code_html: 'El <strong>código único</strong> de su carta
         ahora se conoce como <strong>código de verificación</strong>.'
       clear_and_start_over: Borrar su información y empezar de nuevo
@@ -196,10 +196,10 @@ es:
         title: ¿No recibió su carta?
       form:
         instructions: Introduzca el código de 10 caracteres de la carta que ha recibido.
-        otp_label: Código único
+        otp_label: Código de verificación
         submit: Confirmar cuenta
         title: Confirme su cuenta
-      intro_html: '<p>Si ha recibido su carta, introduzca su código único a
+      intro_html: '<p>Si ha recibido su carta, introduzca su código de verificación a
         continuación.</p> <p>Si su carta aún no ha llegado, tenga paciencia, ya
         que las cartas tardan hasta <strong>10 días</strong> en llegar. Gracias
         por su paciencia.</p>'
@@ -228,17 +228,18 @@ es:
       clear_and_start_over: Borrar mi información y empezar de nuevo
       come_back_later_html: <p>Las cartas tardan entre <strong>5 y 10 días</strong> en
         llegar por USPS First-Class Mail.</p> <p>Una vez que reciba la carta,
-        inicie sesión en %{app_name} e introduzca el código único cuando se le
-        solicite.</p>
+        inicie sesión en %{app_name} e introduzca su código de verificación
+        cuando se le solicite.</p>
       come_back_later_no_sp_html: Ahora puedes volver a tu <strong>cuenta de %{app_name}</strong>.
       come_back_later_password_html: <strong>No olvide su contraseña.</strong><br />
-        Si restablece su contraseña, el código único de su carta ya no
+        Si restablece su contraseña, el código de verificación de su carta ya no
         funcionará y tendrá que verificar su identidad de nuevo.
       come_back_later_sp_html: Ahora puedes volver a <strong>%{sp}</strong>.
       confirm: Hemos asegurado su información verificada
       gpo:
-        address_on_file_html: Le enviaremos una carta con <strong>un código único
-          </strong> a la dirección que nos facilitó en el paso anterior.
+        address_on_file_html: Le enviaremos una carta con <strong>un código de
+          verificación</strong> a la dirección que nos facilitó en el paso
+          anterior.
         another_letter_on_the_way: Te enviaremos otra carta
         info_alert: Tendrá que esperar a que su carta sea entregada para terminar de
           verificar su identidad.
@@ -246,16 +247,6 @@ es:
         resend: Envíeme otra carta
         timeframe_html: Las cartas se envían al siguiente día hábil por USPS First-Class
           Mail y tardan entre <strong>5 y 10 días</strong> en llegar.
-      gpo_reminder:
-        body_html: El <strong>%{date_letter_was_sent}</strong> solicitaste una carta
-          para verificar tu identidad. Deberás ingresar el código que contiene
-          esa carta para completar la verificación por correo. Vuelve a iniciar
-          sesión en %{app_name} para terminar de verificar tu identidad.
-          %{help_link}.
-        did_not_get_a_letter_html: Si no recibiste dicha carta, %{another_letter_link_html}.
-        finish: Termina de verificar tu identidad
-        sign_in_and_request_another_letter: inicia sesión para solicitar otra
-        subject: Termina de verificar tu identidad
       otp_delivery_method_description: Si ha introducido un teléfono fijo más arriba,
         seleccione “Llamada telefónica” más abajo.
       personal_key: Esta es su nueva clave personal. Escríbala y guárdela en un lugar
