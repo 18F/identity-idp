@@ -34,7 +34,7 @@ fr:
         gpo:
           start_over: Si vous supprimez vos informations et recommencez
           warnings:
-            - Le code à usage unique dans votre lettre ne fonctionnera plus
+            - Le code de vérification dans votre lettre ne fonctionnera plus
             - Vous recommencerez la vérification de votre identité depuis le
               début
         hybrid: Si vous annulez maintenant, vous serez invité à retourner sur votre
@@ -185,7 +185,10 @@ fr:
       no_js_intro: '%{sp_name} a besoin de vous pour vérifier votre identité. Vous
         devez activer JavaScript pour poursuivre ce processus.'
     gpo:
-      alert_info: 'Nous avons envoyé une lettre avec votre code à usage unique à:'
+      alert_info: 'Nous avons envoyé une lettre avec votre code de vérification à:'
+      change_to_verification_code_html: 'Le <strong>code à usage unique</strong>
+        figurant dans votre lettre est désormais appelé <strong>code de
+        vérification</strong>.'
       clear_and_start_over: Supprimez vos données et recommencez
       did_not_receive_letter:
         form:
@@ -202,11 +205,11 @@ fr:
       form:
         instructions: Entrez le code à 10 caractères figurant sur la lettre que vous
           avez reçue.
-        otp_label: Code à usage unique
+        otp_label: Code de vérification
         submit: Confirmer le compte
         title: Confirmez votre compte
-      intro_html: '<p>Si vous avez reçu votre lettre, veuillez entrer votre code à
-        usage unique ci-dessous. </p> <p>Si votre lettre n’est pas encore
+      intro_html: '<p>Si vous avez reçu votre lettre, veuillez entrer votre code de
+        vérification ci-dessous. </p> <p>Si votre lettre n’est pas encore
         arrivée, veuillez être patient car les lettres mettent jusqu’à
         <strong>10 jours</strong> pour arriver. Nous vous remercions de votre
         patience.</p>'
@@ -235,19 +238,19 @@ fr:
       clear_and_start_over: Supprimer mes données et recommencer
       come_back_later_html: <p>Les lettres mettent <strong>5 à 10 jours</strong> pour
         arriver par le courrier de première classe d’USPS.</p><p>Une fois votre
-        lettre arrivée, connectez-vous à %{app_name} et entrez votre code à
-        usage unique lorsque vous y êtes invité.</p>
+        lettre arrivée, connectez-vous à %{app_name} et entrez votre code de
+        vérification lorsque vous y êtes invité.</p>
       come_back_later_no_sp_html: Vous pouvez revenir à votre <strong>compte
         %{app_name}</strong> pour le moment.
       come_back_later_password_html: <strong>N’oubliez pas votre mot de
         passe.</strong> <br /> Si vous réinitialisez votre mot de passe, le code
-        à usage unique figurant dans votre lettre ne correspondra plus et vous
+        de vérification figurant dans votre lettre ne correspondra plus et vous
         serez obligé de vérifier à nouveau votre identité.
       come_back_later_sp_html: Vous pouvez retourner à l’agence <strong>%{sp}</strong> pour le moment.
       confirm: Nous avons sécurisé vos informations vérifiées
       gpo:
-        address_on_file_html: Nous enverrons une lettre avec <strong>un code à usage
-          unique </strong> à l’adresse que vous avez indiquée à l’étape
+        address_on_file_html: Nous enverrons une lettre avec <strong>un code de
+          vérification</strong> à l’adresse que vous avez indiquée à l’étape
           précédente.
         another_letter_on_the_way: Nous vous envoyons une autre lettre
         info_alert: Vous devrez attendre la livraison de votre lettre pour compléter la
@@ -257,16 +260,6 @@ fr:
         timeframe_html: Les lettres sont envoyées le jour ouvrable suivant par le
           courrier de première classe d’USPS et arrivent dans un délai de
           <strong>5 à 10 jours</strong>.
-      gpo_reminder:
-        body_html: Vous avez demandé une lettre pour vérifier votre identité le
-          <strong>%{date_letter_was_sent}</strong>. Vous devrez saisir le code
-          figurant dans la lettre pour terminer la vérification par courrier.
-          Reconnectez-vous à %{app_name} pour terminer la vérification de votre
-          identité. %{help_link}.
-        did_not_get_a_letter_html: Si vous n’avez pas reçu cette lettre, %{another_letter_link_html}.
-        finish: Terminer la vérification de votre identité
-        sign_in_and_request_another_letter: connectez-vous pour en demander une autre.
-        subject: Terminer la vérification de votre identité
       otp_delivery_method_description: Si vous avez saisi une ligne fixe ci-dessus,
         veuillez sélectionner « Appel téléphonique » ci-dessous.
       personal_key: Il s’agit de votre nouvelle clé personnelle. Notez-la et

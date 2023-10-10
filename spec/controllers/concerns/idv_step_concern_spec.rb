@@ -17,13 +17,6 @@ RSpec.describe 'IdvStepConcern' do
   end
 
   describe 'before_actions' do
-    it 'includes confirm_not_rate_limited before_action' do
-      expect(Idv::StepController).to have_actions(
-        :before,
-        :confirm_not_rate_limited,
-      )
-    end
-
     it 'includes handle_fraud' do
       expect(Idv::StepController).to have_actions(
         :before,

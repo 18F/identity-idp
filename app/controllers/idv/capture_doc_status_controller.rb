@@ -43,8 +43,7 @@ module Idv
 
     def session_result
       return @session_result if defined?(@session_result)
-      @session_result = document_capture_session.load_result ||
-                        document_capture_session.load_doc_auth_async_result
+      @session_result = document_capture_session.load_result
     end
 
     def document_capture_session

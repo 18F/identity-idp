@@ -4,6 +4,7 @@ module Idv
     include StepIndicatorConcern
     include GettingStartedAbTestConcern
 
+    before_action :confirm_not_rate_limited
     before_action :confirm_welcome_needed
     before_action :maybe_redirect_for_getting_started_ab_test
 
