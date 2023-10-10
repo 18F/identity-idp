@@ -50,7 +50,8 @@ es:
           hybrid: '¿Seguro que desea cancelar la carga de fotos de su identificación en
             este teléfono?'
           standard: '¿Cancelar la verificación de su identidad?'
-        start_over: ¿Empezar de nuevo a verificar su identidad?
+          start_over: ¿Empezar de nuevo a verificar su identidad?
+        start_over: Empezar de nuevo a verificar su identidad
     errors:
       incorrect_password: La contraseña que ingresó no es correcta.
       mail_limit_reached: Usted ha solicitado demasiado correo en el último mes.

@@ -48,7 +48,8 @@ en:
           hybrid: Are you sure you want to cancel uploading photos of your ID on this
             phone?
           standard: Cancel verifying your identity?
-        start_over: Start over verifying your identity?
+          start_over: Start over verifying your identity?
+        start_over: Start over verifying your identity
     errors:
       incorrect_password: The password you entered is not correct.
       mail_limit_reached: You have requested too much mail in the last month.

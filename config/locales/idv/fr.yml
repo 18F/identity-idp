@@ -51,7 +51,8 @@ fr:
           hybrid: Êtes-vous sûr de vouloir annuler le téléchargement de vos photos
             d’identité sur ce téléphone?
           standard: Annuler la vérification de votre identité?
-        start_over: Recommencez la vérification de votre identité?
+          start_over: Recommencez la vérification de votre identité?
+        start_over: Recommencez la vérification de votre identité
     errors:
       incorrect_password: Le mot de passe que vous avez inscrit est incorrect.
       mail_limit_reached: Vous avez demandé trop de lettres au cours du dernier mois.
