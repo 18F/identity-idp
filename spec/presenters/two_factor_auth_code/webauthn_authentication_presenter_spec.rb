@@ -17,7 +17,6 @@ RSpec.describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
 
   let(:phishing_resistant_required) { false }
   let(:platform_authenticator) { false }
-  let(:multiple_factors_enabled) { false }
 
   describe '#webauthn_help' do
     let(:phishing_resistant_required) { false }

@@ -246,12 +246,6 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
           create(:webauthn_configuration, :platform_authenticator, user:, created_at: 1.day.ago)
         end
 
-        before do
-          allow_any_instance_of(TwoFactorAuthCode::WebauthnAuthenticationPresenter).
-            to receive(:multiple_factors_enabled?).
-            and_return(true)
-        end
-
         it 'redirects to webauthn show page' do
           patch :confirm, params: params
           expect(response).to redirect_to login_two_factor_webauthn_url(platform: true)
