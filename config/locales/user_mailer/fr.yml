@@ -293,10 +293,10 @@ fr:
         %{app_name}. Nous sommes concernés quelqu’un d’autre que vous tente
         peut-être d’accéder à vos informations.
       learn_more_link_text: En savoir plus sur vos options
-      reminder_html: Pour rappel, <b>%{app_name} ne vous demandera jamais vos
-        identifiants de connexion par téléphone ou par e-mail</b>. Vous pouvez
-        prendre des mesures supplémentaires pour sécuriser votre compte en
-        activant l’authentification à deux facteurs.
+      reminder_html: Pour rappel, <strong>%{app_name} ne vous demandera jamais vos
+        identifiants de connexion par téléphone ou par e-mail</strong>. Vous
+        pouvez prendre des mesures supplémentaires pour sécuriser votre compte
+        en activant l’authentification à deux facteurs.
       step_1: Visitez le site Web %{app_name} et sélectionnez Connexion
       step_2: Sélectionnez “Vous avez oublié votre mot de passe?” au bas de la page
       step_3: Suivez les instructions pour réinitialiser votre mot de passe
