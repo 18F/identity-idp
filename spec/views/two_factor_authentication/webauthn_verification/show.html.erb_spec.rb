@@ -3,17 +3,6 @@ require 'rails_helper'
 RSpec.describe 'two_factor_authentication/webauthn_verification/show.html.erb' do
   let(:user) { build_stubbed(:user) }
   let(:platform_authenticator) { false }
-  let(:phishing_resistant_required) { false }
-  let(:service_provider_mfa_policy) do
-    ServiceProviderMfaPolicy.new(
-      user:,
-      service_provider: nil,
-      auth_method: :webauthn,
-      aal_level_requested: nil,
-      piv_cac_requested: false,
-      phishing_resistant_requested: phishing_resistant_required,
-    )
-  end
 
   subject(:rendered) { render }
 
@@ -27,9 +16,6 @@ RSpec.describe 'two_factor_authentication/webauthn_verification/show.html.erb' d
       service_provider: nil,
       platform_authenticator:,
     )
-    allow(@presenter).to receive(
-      :service_provider_mfa_policy,
-    ).and_return(service_provider_mfa_policy)
   end
 
   it 'includes hidden platform form input with value false' do
