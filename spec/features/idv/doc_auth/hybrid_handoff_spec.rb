@@ -36,9 +36,6 @@ RSpec.feature 'hybrid_handoff step send link and errors' do
         'IdV: doc auth hybrid handoff submitted',
         hash_including(step: 'hybrid_handoff', destination: :link_sent),
       )
-
-      visit(idv_hybrid_handoff_url)
-      expect(page).to have_current_path(idv_link_sent_path)
     end
 
     it 'proceeds to the next page with valid info', :js do

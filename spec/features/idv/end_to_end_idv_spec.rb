@@ -384,7 +384,8 @@ RSpec.describe 'Identity verification', :js do
     )
 
     visit(idv_hybrid_handoff_url)
-    expect(page).to have_current_path(idv_document_capture_path)
+    expect(page).to have_current_path(idv_hybrid_handoff_path)
+    visit(idv_document_capture_url)
   end
 
   def try_to_go_back_from_verify_info

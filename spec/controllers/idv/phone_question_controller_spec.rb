@@ -62,24 +62,6 @@ RSpec.describe Idv::PhoneQuestionController do
       end
     end
 
-    context 'hybrid_handoff already visited' do
-      it 'redirects to document_capture in standard flow' do
-        subject.idv_session.flow_path = 'standard'
-
-        get :show
-
-        expect(response).to redirect_to(idv_document_capture_url)
-      end
-
-      it 'redirects to link_sent in hybrid flow' do
-        subject.idv_session.flow_path = 'hybrid'
-
-        get :show
-
-        expect(response).to redirect_to(idv_link_sent_url)
-      end
-    end
-
     context 'on mobile device' do
       it 'redirects to hybrid_handoff controller' do
         subject.idv_session.skip_hybrid_handoff = true
