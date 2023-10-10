@@ -1,27 +1,36 @@
 module RateLimitConcern
   extend ActiveSupport::Concern
 
-  ALL_IDV_RATE_LIMITTERS = [:idv_resolution, :idv_doc_auth, :proof_address, :proof_ssn].freeze
+  ALL_IDV_RATE_LIMITTERS = [:idv_resolution, :idv_doc_auth, :proof_ssn].freeze
 
   def confirm_not_rate_limited(rate_limiters = ALL_IDV_RATE_LIMITTERS)
-    rate_limited = false
-    rate_limiters.each do |rate_limit_type|
-      if rate_limit_redirect!(rate_limit_type)
-        rate_limited = true
-        break
-      end
+    exceeded_rate_limits = check_for_excceded_rate_limits(rate_limiters)
+    if exceeded_rate_limits.any?
+      rate_limit_redirect!(exceeded_rate_limits.first)
+      return true
     end
-    rate_limited
+    confirm_not_rate_limited_for_phone_and_letter_address_verification
   end
 
   def confirm_not_rate_limited_after_doc_auth
-    rate_limitters = [:idv_resolution, :proof_ssn, :proof_address]
+    rate_limitters = [:idv_resolution, :proof_ssn]
     confirm_not_rate_limited(rate_limitters)
   end
 
-  def confirm_not_rate_limited_after_idv_resolution
-    rate_limitters = [:proof_address]
-    confirm_not_rate_limited(rate_limitters)
+  def confirm_not_rate_limited_for_phone_address_verification
+    if idv_attempter_rate_limited?(:proof_address)
+      rate_limit_redirect!(:proof_address)
+      return true
+    end
+  end
+
+  private
+
+  def confirm_not_rate_limited_for_phone_and_letter_address_verification
+    if idv_attempter_rate_limited?(:proof_address) && Idv::GpoMail.new(current_user).mail_spammed?
+      rate_limit_redirect!(:proof_address)
+      return true
+    end
   end
 
   def rate_limit_redirect!(rate_limit_type)
@@ -57,6 +66,12 @@ module RateLimitConcern
       redirect_to idv_phone_errors_failure_url
     when :proof_ssn
       redirect_to idv_session_errors_ssn_failure_url
+    end
+  end
+
+  def check_for_excceded_rate_limits(rate_limit_types)
+    rate_limit_types.select do |rate_limit_type|
+      idv_attempter_rate_limited?(rate_limit_type)
     end
   end
 

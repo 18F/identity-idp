@@ -27,7 +27,7 @@ RSpec.describe IdvController do
       get :index
     end
 
-    it 'redirects to sad face page if fraud review is pending' do
+    it 'redirects to please call page if fraud review is pending' do
       profile = create(:profile, :fraud_review_pending)
 
       stub_sign_in(profile.user)
@@ -86,7 +86,7 @@ RSpec.describe IdvController do
         stub_sign_in(profile.user)
       end
 
-      it 'redirects to rate limited page' do
+      it 'redirects to failure page' do
         get :index
 
         expect(response).to redirect_to idv_session_errors_rate_limited_url
@@ -105,7 +105,46 @@ RSpec.describe IdvController do
         stub_sign_in(profile.user)
       end
 
-      it 'redirects to rate limited page' do
+      it 'redirects the user to start proofing' do
+        get :index
+
+        expect(response).to redirect_to idv_welcome_url
+      end
+    end
+
+    context 'if the number of letter sends has been exceeded' do
+      before do
+        user = create(:user)
+        profile = create(
+          :profile,
+          :letter_sends_rate_limited,
+          user: user,
+        )
+
+        stub_sign_in(profile.user)
+      end
+
+      it 'redirects the user to start proofing' do
+        get :index
+
+        expect(response).to redirect_to idv_welcome_url
+      end
+    end
+
+    context 'if the number of letter sends and phone attempts have been exceeded' do
+      before do
+        user = create(:user)
+        profile = create(
+          :profile,
+          :letter_sends_rate_limited,
+          user: user,
+        )
+        RateLimiter.new(rate_limit_type: :proof_address, user: user).increment_to_limited!
+
+        stub_sign_in(profile.user)
+      end
+
+      it 'redirects to failure page' do
         get :index
 
         expect(response).to redirect_to idv_phone_errors_failure_url
