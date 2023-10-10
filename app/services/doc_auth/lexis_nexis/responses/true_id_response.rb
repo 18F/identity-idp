@@ -136,6 +136,7 @@ module DocAuth
         def create_response_info
           alerts = parsed_alerts
           log_alert_formatter = DocAuth::ProcessedAlertToLogAlertFormatter.new
+
           {
             transaction_status: transaction_status,
             transaction_reason_code: transaction_reason_code,
@@ -231,6 +232,7 @@ module DocAuth
           all_alerts = true_id_product[:AUTHENTICATION_RESULT].select do |key|
             key.start_with?('Alert_')
           end
+
           region_details = parse_document_region
           alert_names = all_alerts.select { |key| key.end_with?('_AlertName') }
           alert_names.each do |alert_name, _v|
@@ -249,6 +251,7 @@ module DocAuth
           new_alert_data = {}
           # Get the set of Alerts that are all the same number (e.g. Alert_11)
           alert_set = all_alerts.select { |key| key.match?(alert_name) }
+
           alert_set.each do |key, value|
             new_alert_data[:alert] = alert_name.delete_suffix('_')
             new_alert_data[:name] = value if key.end_with?('_AlertName')
@@ -260,6 +263,7 @@ module DocAuth
               new_alert_data[:region_ref] = value.map { |v| region_details[v] }
             end
           end
+
           new_alert_data
         end
 
