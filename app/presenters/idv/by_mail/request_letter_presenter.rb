@@ -11,11 +11,15 @@ module Idv
       end
 
       def title
-        resend_requested? ? I18n.t('idv.titles.mail.resend') : I18n.t('idv.titles.mail.verify')
+        resend_requested? ?
+          I18n.t('idv.gpo.request_another_letter.title') :
+          I18n.t('idv.titles.mail.verify')
       end
 
       def button
-        resend_requested? ? I18n.t('idv.buttons.mail.resend') : I18n.t('idv.buttons.mail.send')
+        resend_requested? ?
+          I18n.t('idv.gpo.request_another_letter.button') :
+          I18n.t('idv.buttons.mail.send')
       end
 
       def fallback_back_path
@@ -41,6 +45,10 @@ module Idv
         else
           { fallback_path: fallback_back_path }
         end
+      end
+
+      def show_troubleshooting_options?
+        !resend_requested?
       end
 
       private

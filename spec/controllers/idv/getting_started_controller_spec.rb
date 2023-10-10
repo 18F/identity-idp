@@ -12,7 +12,6 @@ RSpec.describe Idv::GettingStartedController do
   before do
     stub_sign_in(user)
     stub_analytics
-    subject.user_session['idv/doc_auth'] = {}
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 
@@ -111,7 +110,7 @@ RSpec.describe Idv::GettingStartedController do
     let(:params) do
       {
         doc_auth: {
-          ial2_consent_given: 1,
+          idv_consent_given: 1,
         },
         skip_hybrid_handoff: skip_hybrid_handoff,
       }.compact

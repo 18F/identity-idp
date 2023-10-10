@@ -30,11 +30,6 @@ describe('document-capture/components/warning', () => {
       </AnalyticsContext.Provider>,
     );
 
-    expect(trackEvent).to.have.been.calledWith('IdV: warning shown', {
-      location: 'example',
-      remaining_attempts: undefined,
-    });
-
     const tryAgainButton = getByRole('button', { name: 'Try again' });
     await userEvent.click(tryAgainButton);
 

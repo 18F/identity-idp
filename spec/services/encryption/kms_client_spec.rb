@@ -111,7 +111,11 @@ RSpec.describe Encryption::KmsClient do
     end
 
     it 'logs the context' do
-      expect(Encryption::KmsLogger).to receive(:log).with(:encrypt, encryption_context)
+      expect(Encryption::KmsLogger).to receive(:log).with(
+        :encrypt,
+        context: encryption_context,
+        key_id: subject.kms_key_id,
+      )
 
       subject.encrypt(plaintext, encryption_context)
     end
@@ -163,7 +167,11 @@ RSpec.describe Encryption::KmsClient do
     end
 
     it 'logs the context' do
-      expect(Encryption::KmsLogger).to receive(:log).with(:decrypt, encryption_context)
+      expect(Encryption::KmsLogger).to receive(:log).with(
+        :decrypt,
+        context: encryption_context,
+        key_id: subject.kms_key_id,
+      )
       subject.decrypt(kms_ciphertext, encryption_context)
     end
   end

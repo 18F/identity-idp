@@ -139,7 +139,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
       )
     end
 
-    it 'it shows capture complete on mobile and error page on desktop', js: true do
+    it 'shows capture complete on mobile and error page on desktop', js: true do
       user = nil
 
       perform_in_browser(:desktop) do
@@ -171,6 +171,136 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
 
       perform_in_browser(:desktop) do
         expect(page).to have_current_path(idv_session_errors_rate_limited_path, wait: 10)
+      end
+    end
+  end
+
+  context 'barcode read error on mobile (redo document capture)' do
+    it 'continues to ssn on desktop when user selects Continue', js: true do
+      user = nil
+
+      perform_in_browser(:desktop) do
+        user = sign_in_and_2fa_user
+        complete_doc_auth_steps_before_hybrid_handoff_step
+        clear_and_fill_in(:doc_auth_phone, phone_number)
+        click_send_link
+
+        expect(page).to have_content(t('doc_auth.headings.text_message'))
+      end
+
+      expect(@sms_link).to be_present
+
+      perform_in_browser(:mobile) do
+        visit @sms_link
+
+        mock_doc_auth_attention_with_barcode
+        attach_and_submit_images
+        click_idv_continue
+
+        expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
+        expect(page).to have_content(t('doc_auth.headings.capture_complete').tr(' ', ' '))
+        expect(page).to have_text(t('doc_auth.instructions.switch_back'))
+      end
+
+      perform_in_browser(:desktop) do
+        expect(page).to have_current_path(idv_ssn_path, wait: 10)
+
+        fill_out_ssn_form_ok
+        click_idv_continue
+
+        expect(page).to have_current_path(idv_verify_info_path, wait: 10)
+
+        # verify pii is displayed
+        expect(page).to have_text('DAVID')
+        expect(page).to have_text('SAMPLE')
+        expect(page).to have_text('123 ABC AVE')
+
+        warning_link_text = t('doc_auth.headings.capture_scan_warning_link')
+        click_link warning_link_text
+
+        expect(current_path).to eq(idv_hybrid_handoff_path)
+        clear_and_fill_in(:doc_auth_phone, phone_number)
+        click_send_link
+      end
+
+      perform_in_browser(:mobile) do
+        visit @sms_link
+
+        DocAuth::Mock::DocAuthMockClient.reset!
+        attach_and_submit_images
+
+        expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
+      end
+
+      perform_in_browser(:desktop) do
+        expect(page).to have_current_path(idv_verify_info_path, wait: 10)
+
+        # verify orig pii no longer displayed
+        expect(page).not_to have_text('DAVID')
+        expect(page).not_to have_text('SAMPLE')
+        expect(page).not_to have_text('123 ABC AVE')
+        # verify new pii from redo is displayed
+        expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT[:first_name])
+        expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT[:last_name])
+        expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT[:address1])
+
+        click_idv_continue
+      end
+    end
+  end
+
+  context 'barcode read error on desktop, redo document capture on mobile' do
+    it 'continues to ssn on desktop when user selects Continue', js: true do
+      user = nil
+
+      perform_in_browser(:desktop) do
+        user = sign_in_and_2fa_user
+        complete_doc_auth_steps_before_document_capture_step
+        mock_doc_auth_attention_with_barcode
+        attach_and_submit_images
+        click_idv_continue
+        expect(page).to have_current_path(idv_ssn_path, wait: 10)
+
+        fill_out_ssn_form_ok
+        click_idv_continue
+
+        expect(page).to have_current_path(idv_verify_info_path, wait: 10)
+
+        # verify pii is displayed
+        expect(page).to have_text('DAVID')
+        expect(page).to have_text('SAMPLE')
+        expect(page).to have_text('123 ABC AVE')
+
+        warning_link_text = t('doc_auth.headings.capture_scan_warning_link')
+        click_link warning_link_text
+
+        expect(current_path).to eq(idv_hybrid_handoff_path)
+        clear_and_fill_in(:doc_auth_phone, phone_number)
+        click_send_link
+      end
+
+      perform_in_browser(:mobile) do
+        visit @sms_link
+
+        DocAuth::Mock::DocAuthMockClient.reset!
+        attach_and_submit_images
+
+        expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
+      end
+
+      perform_in_browser(:desktop) do
+        expect(page).to have_current_path(idv_verify_info_path, wait: 10)
+
+        # verify orig pii no longer displayed
+        expect(page).not_to have_text('DAVID')
+        expect(page).not_to have_text('SAMPLE')
+        expect(page).not_to have_text('123 ABC AVE')
+        # verify new pii from redo is displayed
+        expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT[:first_name])
+        expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT[:last_name])
+        expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT[:address1])
+
+        click_idv_continue
       end
     end
   end

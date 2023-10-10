@@ -20,6 +20,9 @@ module Idv
 
     def update
       idv_session.redo_document_capture = nil # done with this redo
+      # Not used in standard flow, here for data consistency with hybrid flow.
+      document_capture_session.confirm_ocr
+
       result = handle_stored_result
       analytics.idv_doc_auth_document_capture_submitted(**result.to_h.merge(analytics_arguments))
 

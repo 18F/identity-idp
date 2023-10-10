@@ -63,10 +63,11 @@ RSpec.feature 'idv gpo step' do
 
         # Confirm that we show the correct content on
         # the GPO page for users requesting re-send
-        expect(page).to have_content(t('idv.titles.mail.resend'))
-        expect(page).to have_content(strip_tags(t('idv.messages.gpo.resend_timeframe_html')))
-        expect(page).to have_content(t('idv.messages.gpo.resend_code_warning'))
-        expect(page).to have_content(t('idv.buttons.mail.resend'))
+        expect(page).to have_content(t('idv.gpo.request_another_letter.title'))
+        expect(page).to have_content(
+          strip_tags(t('idv.gpo.request_another_letter.instructions_html')),
+        )
+        expect(page).to have_content(t('idv.gpo.request_another_letter.button'))
         expect(page).to_not have_content(t('idv.messages.gpo.info_alert'))
 
         # Ensure user can go back from this page
@@ -77,7 +78,7 @@ RSpec.feature 'idv gpo step' do
         click_on t('idv.messages.gpo.resend')
 
         # And then actually ask for a resend
-        expect { click_on t('idv.buttons.mail.resend') }.
+        expect { click_on t('idv.gpo.request_another_letter.button') }.
           to change { GpoConfirmation.count }.from(1).to(2)
         expect_user_to_be_unverified(user)
         expect(page).to have_content(t('idv.messages.gpo.another_letter_on_the_way'))

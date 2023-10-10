@@ -273,17 +273,6 @@ module DocAuthHelper
     )
   end
 
-  def set_up_document_capture_result(uuid:, idv_result:)
-    dcs = DocumentCaptureSession.where(uuid: uuid).first_or_create
-    dcs.create_doc_auth_session
-    if idv_result
-      dcs.store_doc_auth_result(
-        result: idv_result.except(:pii_from_doc),
-        pii: idv_result[:pii_from_doc],
-      )
-    end
-  end
-
   def verify_phone_otp
     choose_idv_otp_delivery_method_sms
     fill_in_code_with_last_phone_otp

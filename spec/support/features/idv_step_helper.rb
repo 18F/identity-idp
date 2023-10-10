@@ -134,7 +134,7 @@ module IdvStepHelper
     # location page
     complete_location_step(user)
     # state ID page
-    fill_out_state_id_form_ok(same_address_as_id: true, capture_secondary_id_enabled: true)
+    fill_out_state_id_form_ok(same_address_as_id: true)
     click_idv_continue
   end
 
