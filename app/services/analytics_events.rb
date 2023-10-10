@@ -787,6 +787,7 @@ module AnalyticsEvents
     front_image_fingerprint: nil,
     back_image_fingerprint: nil,
     getting_started_ab_test_bucket: nil,
+    phone_question_ab_test_bucket: nil,
     **extra
   )
     track_event(
@@ -800,6 +801,7 @@ module AnalyticsEvents
       front_image_fingerprint: front_image_fingerprint,
       back_image_fingerprint: back_image_fingerprint,
       getting_started_ab_test_bucket: getting_started_ab_test_bucket,
+      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
       **extra,
     )
   end
@@ -837,6 +839,7 @@ module AnalyticsEvents
     front_image_fingerprint: nil,
     back_image_fingerprint: nil,
     getting_started_ab_test_bucket: nil,
+    phone_question_ab_test_bucket: nil,
     **extra
   )
     track_event(
@@ -857,6 +860,7 @@ module AnalyticsEvents
       front_image_fingerprint: front_image_fingerprint,
       back_image_fingerprint: back_image_fingerprint,
       getting_started_ab_test_bucket: getting_started_ab_test_bucket,
+      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
       **extra,
     )
   end

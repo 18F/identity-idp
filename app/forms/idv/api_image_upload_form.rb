@@ -136,6 +136,7 @@ module Idv
       @extra_attributes[:front_image_fingerprint] = front_image_fingerprint
       @extra_attributes[:back_image_fingerprint] = back_image_fingerprint
       @extra_attributes.merge!(getting_started_ab_test_analytics_bucket)
+      @extra_attributes.merge!(phone_question_ab_test_analytics_bucket)
       @extra_attributes
     end
 
@@ -253,7 +254,10 @@ module Idv
       @doc_auth_client ||= DocAuthRouter.client(
         vendor_discriminator: document_capture_session_uuid,
         warn_notifier: proc do |attrs|
-          analytics&.doc_auth_warning(**attrs.merge(getting_started_ab_test_analytics_bucket))
+          analytics&.doc_auth_warning(**attrs.
+            merge(getting_started_ab_test_analytics_bucket).
+            merge(phone_question_ab_test_analytics_bucket)
+          )
         end,
       )
     end
@@ -287,7 +291,8 @@ module Idv
           flow_path: params[:flow_path],
           vendor_request_time_in_ms: vendor_request_time_in_ms,
         ).merge(acuant_sdk_upgrade_ab_test_data).
-        merge(getting_started_ab_test_analytics_bucket),
+        merge(getting_started_ab_test_analytics_bucket).
+        merge(phone_question_ab_test_analytics_bucket),
       )
     end
 
@@ -322,6 +327,13 @@ module Idv
       {
         getting_started_ab_test_bucket:
           AbTests::IDV_GETTING_STARTED.bucket(user_uuid),
+      }
+    end
+
+    def phone_question_ab_test_analytics_bucket
+      {
+        phone_question_ab_test_bucket:
+          AbTests::IDV_PHONE_QUESTION.bucket(user_uuid),
       }
     end
 
