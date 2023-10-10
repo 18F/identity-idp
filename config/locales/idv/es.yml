@@ -247,7 +247,7 @@ es:
         resend: Envíeme otra carta
         start_over_html: Si esta no es la dirección correcta, tendrá que
           %{start_over_link_html}.
-        start_over_link_text: (empezar de nuevo y verificar con su nueva dirección
+        start_over_link_text: empezar de nuevo y verificar con su nueva dirección
         timeframe_html: Recibirá una carta con un <strong>código de
           verificación</strong> en un plazo de <strong>5 a 10 días.</strong>
       gpo_reminder:
