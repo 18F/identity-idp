@@ -1,19 +1,14 @@
 require 'rails_helper'
 
 RSpec.describe 'AbTestAnalyticsConcern' do
-  module Idv
-    class StepController < ApplicationController
-      include AbTestAnalyticsConcern
-    end
-  end
-
   let(:user) { create(:user) }
   let(:idv_session) do
     Idv::Session.new(user_session: subject.user_session, current_user: user, service_provider: nil)
   end
 
   describe '#ab_test_analytics_buckets' do
-    controller Idv::StepController do
+    controller(ApplicationController) do
+      include AbTestAnalyticsConcern
     end
 
     let(:acuant_sdk_args) { { as_bucket: :as_value } }
