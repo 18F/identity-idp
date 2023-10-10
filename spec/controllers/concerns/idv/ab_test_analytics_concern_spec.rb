@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'AbTestAnalyticsConcern' do
+RSpec.describe Idv::AbTestAnalyticsConcern do
   let(:user) { create(:user) }
   let(:idv_session) do
     Idv::Session.new(user_session: subject.user_session, current_user: user, service_provider: nil)
@@ -8,7 +8,7 @@ RSpec.describe 'AbTestAnalyticsConcern' do
 
   describe '#ab_test_analytics_buckets' do
     controller(ApplicationController) do
-      include AbTestAnalyticsConcern
+      include Idv::AbTestAnalyticsConcern
     end
 
     let(:acuant_sdk_args) { { as_bucket: :as_value } }
