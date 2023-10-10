@@ -620,9 +620,6 @@ RSpec.describe Idv::ReviewController do
                   let(:applicant) do
                     Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE
                   end
-                  let(:stub_idv_session) do
-                    stub_user_with_applicant_data(user, applicant)
-                  end
 
                   before do
                     allow(IdentityConfig.store).to receive(:proofing_device_profiling).
