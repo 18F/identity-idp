@@ -113,6 +113,7 @@ module Idp
       same_address_as_id: 'false',
     ).freeze
 
+    # Use this as the default applicant for in person proofing
     MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID = MOCK_IDV_APPLICANT_WITH_SSN.merge(
       identity_doc_address1: MOCK_IDV_APPLICANT_WITH_SSN[:address1],
       identity_doc_address2: MOCK_IDV_APPLICANT_WITH_SSN[:address2],
@@ -132,6 +133,9 @@ module Idp
     ).freeze
 
     MOCK_IDV_APPLICANT_WITH_PHONE = MOCK_IDV_APPLICANT_WITH_SSN.merge(phone: '12025551212').freeze
+
+    MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID_WITH_PHONE =
+      MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID.merge(phone: '12025551212').freeze
 
     MOCK_IDV_APPLICANT_FULL_STATE_ID_JURISDICTION = 'North Dakota'
     MOCK_IDV_APPLICANT_FULL_STATE = 'Montana'

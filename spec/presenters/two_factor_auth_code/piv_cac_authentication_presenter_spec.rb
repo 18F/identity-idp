@@ -10,19 +10,6 @@ RSpec.describe TwoFactorAuthCode::PivCacAuthenticationPresenter do
 
   let(:phishing_resistant_required) { true }
   let(:piv_cac_required) { false }
-  let(:service_provider_mfa_policy) do
-    instance_double(
-      ServiceProviderMfaPolicy,
-      phishing_resistant_required?: phishing_resistant_required,
-      piv_cac_required?: piv_cac_required,
-    )
-  end
-
-  before do
-    allow(presenter).to receive(
-      :service_provider_mfa_policy,
-    ).and_return(service_provider_mfa_policy)
-  end
 
   describe '#header' do
     let(:expected_header) { t('two_factor_authentication.piv_cac_header_text') }

@@ -234,7 +234,6 @@ class UserMailerPreview < ActionMailer::Preview
         ),
         status_updated_at: Time.zone.now - 1.hour,
         current_address_matches_id: params['current_address_matches_id'] == 'true',
-        capture_secondary_id_enabled: IdentityConfig.store.in_person_capture_secondary_id_enabled,
         selected_location_details: {
           'name' => 'BALTIMORE',
           'street_address' => '900 E FAYETTE ST RM 118',

@@ -169,7 +169,6 @@ fr:
     form:
       address1: Adresse ligne 1
       address2: Adresse ligne 2
-      address2_optional: Adresse ligne 2 (optional)
       city: Ville
       dob: Date de naissance
       first_name: Prénom
@@ -187,6 +186,9 @@ fr:
         devez activer JavaScript pour poursuivre ce processus.'
     gpo:
       alert_info: 'Nous avons envoyé une lettre avec votre code de vérification à:'
+      change_to_verification_code_html: 'Le <strong>code à usage unique</strong>
+        figurant dans votre lettre est désormais appelé <strong>code de
+        vérification</strong>.'
       clear_and_start_over: Supprimez vos données et recommencez
       did_not_receive_letter:
         form:

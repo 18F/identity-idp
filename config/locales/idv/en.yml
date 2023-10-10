@@ -155,7 +155,6 @@ en:
     form:
       address1: Address line 1
       address2: Address line 2
-      address2_optional: Address line 2 (optional)
       city: City
       dob: Date of birth
       first_name: First name
@@ -173,6 +172,8 @@ en:
         JavaScript to continue this process.'
     gpo:
       alert_info: 'We sent a letter with your verification code to:'
+      change_to_verification_code_html: 'The <strong>one-time code</strong> from your
+        letter is now referred to as <strong>verification code</strong>.'
       clear_and_start_over: Clear your information and start over
       did_not_receive_letter:
         form:

@@ -163,7 +163,6 @@ es:
     form:
       address1: Línea de dirección 1
       address2: Línea de dirección 2
-      address2_optional: Línea de dirección 2 (opcional)
       city: Ciudad
       dob: Fecha de nacimiento
       first_name: Nombre
@@ -181,6 +180,8 @@ es:
         habilitar JavaScript para continuar con este proceso.'
     gpo:
       alert_info: 'Enviamos una carta con su código de verificación a:'
+      change_to_verification_code_html: 'El <strong>código único</strong> de su carta
+        ahora se conoce como <strong>código de verificación</strong>.'
       clear_and_start_over: Borrar su información y empezar de nuevo
       did_not_receive_letter:
         form:
