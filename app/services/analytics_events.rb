@@ -2667,7 +2667,7 @@ module AnalyticsEvents
   def multi_factor_auth_added_piv_cac(enabled_mfa_methods_count:, in_account_creation_flow:,
                                       **extra)
     track_event(
-      'Multi-Factor Authentication: Added PIV CAC',
+      :multi_factor_auth_added_piv_cac,
       {
         method_name: :piv_cac,
         enabled_mfa_methods_count:,
@@ -2787,7 +2787,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'Multi-Factor Authentication: enter PIV CAC visited', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
+      :multi_factor_auth_enter_piv_cac,
       context: context,
       multi_factor_auth_method: multi_factor_auth_method,
       piv_cac_configuration_id: piv_cac_configuration_id,
@@ -3363,7 +3363,7 @@ module AnalyticsEvents
   # @identity.idp.previous_event_name User Registration: piv cac disabled
   # Tracks when user's piv cac is disabled
   def piv_cac_disabled
-    track_event('PIV CAC disabled') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
+    track_event(:piv_cac_disabled)
   end
 
   # @identity.idp.previous_event_name PIV/CAC login
@@ -3372,7 +3372,7 @@ module AnalyticsEvents
   # tracks piv cac login event
   def piv_cac_login(success:, errors:, **extra)
     track_event(
-      'PIV CAC login',
+      :piv_cac_login,
       success: success,
       errors: errors,
       **extra,
@@ -3380,15 +3380,15 @@ module AnalyticsEvents
   end
 
   def piv_cac_login_visited
-    track_event('PIV CAC login visited')
+    track_event(:piv_cac_login_visited)
   end
 
   # @identity.idp.previous_event_name User Registration: piv cac setup visited
   # Tracks when user's piv cac setup
   # @param [Boolean] in_account_creation_flow
-  def piv_cac_setup_visit(in_account_creation_flow:, **extra)
+  def piv_cac_setup_visited(in_account_creation_flow:, **extra)
     track_event(
-      'PIV CAC setup visited', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
+      :piv_cac_setup_visited,
       in_account_creation_flow:,
       **extra,
     )
