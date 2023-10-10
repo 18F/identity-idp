@@ -30,10 +30,6 @@ module Idv
         return localized_hours(hours) if hours
       end
 
-      def needs_proof_of_address?
-        !(enrollment.current_address_matches_id || enrollment.capture_secondary_id_enabled)
-      end
-
       def service_provider
         enrollment.service_provider
       end

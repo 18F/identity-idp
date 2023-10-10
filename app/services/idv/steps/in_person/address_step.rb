@@ -9,20 +9,14 @@ module Idv
         end
 
         def analytics_submitted_event
-          if capture_secondary_id_enabled?
-            :idv_in_person_proofing_residential_address_submitted
-          else
-            :idv_in_person_proofing_address_submitted
-          end
+          :idv_in_person_proofing_residential_address_submitted
         end
 
         def call
           attrs = Idv::InPerson::AddressForm::ATTRIBUTES
 
-          if capture_secondary_id_enabled?
-            attrs = attrs.difference([:same_address_as_id])
-            flow_session[:pii_from_user][:same_address_as_id] = 'false' if updating_address?
-          end
+          attrs = attrs.difference([:same_address_as_id])
+          flow_session[:pii_from_user][:same_address_as_id] = 'false' if updating_address?
 
           attrs.each do |attr|
             flow_session[:pii_from_user][attr] = flow_params[attr]
@@ -35,7 +29,6 @@ module Idv
 
         def extra_view_variables
           {
-            capture_secondary_id_enabled: capture_secondary_id_enabled?,
             form:,
             pii:,
             updating_address: updating_address?,
@@ -61,8 +54,7 @@ module Idv
         end
 
         def form
-          @form ||= Idv::InPerson::AddressForm.
-            new(capture_secondary_id_enabled: capture_secondary_id_enabled?)
+          @form ||= Idv::InPerson::AddressForm.new
         end
 
         def form_submit
