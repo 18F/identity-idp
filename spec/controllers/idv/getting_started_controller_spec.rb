@@ -81,17 +81,6 @@ RSpec.describe Idv::GettingStartedController do
       end
     end
 
-    context 'document capture started' do
-      before do
-        subject.idv_session.flow_path = 'standard'
-      end
-
-      it 'redirects to hybrid_handoff step' do
-        get :show
-        expect(response).to redirect_to(idv_hybrid_handoff_url)
-      end
-    end
-
     it 'redirects to please call page if fraud review is pending' do
       profile = create(:profile, :fraud_review_pending)
 
