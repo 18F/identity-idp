@@ -237,7 +237,7 @@ en:
           %{start_over_link_html}.
         start_over_link_text: start over and verify with your new address
         timeframe_html: You’ll get a letter with a <strong>verification code</strong> in
-          <strong>5 to 10 days.</strong>
+          <strong>5 to 10 days</strong>.
       gpo_reminder:
         body_html: You requested a letter to verify your identity on
           <strong>%{date_letter_was_sent}</strong>. You’ll need to enter the

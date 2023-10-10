@@ -258,7 +258,7 @@ fr:
         start_over_html: Si ce n’est pas la bonne adresse, vous devrez %{start_over_link_html}.
         start_over_link_text: recommencer et vérifier avec votre nouvelle adresse
         timeframe_html: Vous recevrez une lettre avec un <strong>code de
-          vérification</strong> dans un délai de <strong>5 à 10 jours.</strong>
+          vérification</strong> dans un délai de <strong>5 à 10 jours</strong>.
       gpo_reminder:
         body_html: Vous avez demandé une lettre pour vérifier votre identité le
           <strong>%{date_letter_was_sent}</strong>. Vous devrez saisir le code
