@@ -74,12 +74,6 @@ module IdvStepConcern
     redirect_to idv_ssn_url
   end
 
-  def confirm_document_capture_not_started
-    return unless idv_session.flow_path.present?
-
-    redirect_to idv_hybrid_handoff_url
-  end
-
   def confirm_ssn_step_complete
     return if pii.present? && idv_session.ssn.present?
     redirect_to prev_url
