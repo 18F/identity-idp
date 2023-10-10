@@ -28,15 +28,15 @@ module Reporting
     end
 
     def deletion_rate
-      format('%.2f%%', (deleted_user_count.to_f / users_and_deleted_for_period.to_f) * 100)
+      deleted_user_count.to_f / users_and_deleted_for_period.to_f
     end
 
     def start_date
-      report_date - 30.days
+      (report_date - 30.days).beginning_of_day
     end
 
     def end_date
-      report_date
+      report_date.beginning_of_day
     end
   end
 end
