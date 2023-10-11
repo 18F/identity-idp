@@ -1,10 +1,10 @@
 module RateLimitConcern
   extend ActiveSupport::Concern
 
-  ALL_IDV_RATE_LIMITTERS = [:idv_resolution, :idv_doc_auth, :proof_ssn].freeze
+  ALL_IDV_RATE_LIMITERS = [:idv_resolution, :idv_doc_auth, :proof_ssn].freeze
 
-  def confirm_not_rate_limited(rate_limiters = ALL_IDV_RATE_LIMITTERS)
-    exceeded_rate_limits = check_for_excceded_rate_limits(rate_limiters)
+  def confirm_not_rate_limited(rate_limiters = ALL_IDV_RATE_LIMITERS)
+    exceeded_rate_limits = check_for_exceeded_rate_limits(rate_limiters)
     if exceeded_rate_limits.any?
       rate_limit_redirect!(exceeded_rate_limits.first)
       return true
@@ -13,8 +13,8 @@ module RateLimitConcern
   end
 
   def confirm_not_rate_limited_after_doc_auth
-    rate_limitters = [:idv_resolution, :proof_ssn]
-    confirm_not_rate_limited(rate_limitters)
+    rate_limiters = [:idv_resolution, :proof_ssn]
+    confirm_not_rate_limited(rate_limiters)
   end
 
   def confirm_not_rate_limited_for_phone_address_verification
@@ -69,7 +69,7 @@ module RateLimitConcern
     end
   end
 
-  def check_for_excceded_rate_limits(rate_limit_types)
+  def check_for_exceeded_rate_limits(rate_limit_types)
     rate_limit_types.select do |rate_limit_type|
       idv_attempter_rate_limited?(rate_limit_type)
     end

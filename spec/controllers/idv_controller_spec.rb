@@ -86,7 +86,7 @@ RSpec.describe IdvController do
         stub_sign_in(profile.user)
       end
 
-      it 'redirects to failure page' do
+      it 'redirects to rate limited page' do
         get :index
 
         expect(response).to redirect_to idv_session_errors_rate_limited_url
