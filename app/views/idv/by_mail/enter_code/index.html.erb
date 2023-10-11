@@ -8,9 +8,21 @@
 <% end %>
 
 <% if @user_did_not_receive_letter %>
-<% title t('idv.gpo.did_not_receive_letter.title') %>
+  <% title t('idv.gpo.did_not_receive_letter.title') %>
 <% else %>
-<% title t('idv.gpo.title') %>
+  <% title t('idv.gpo.title') %>
+<% end %>
+
+<% if @gpo_mail_spammed %>
+  <%= render AlertComponent.new(type: :warning, class: 'margin-bottom-4') do %>
+    <%= t(
+          'idv.gpo.alert_spam_warning_html',
+          date_letter_was_sent: I18n.l(
+            @last_date_letter_was_sent,
+            format: :event_date,
+          ),
+        ) %>
+  <% end %>
 <% end %>
 
 <%= render AlertComponent.new(type: :warning, class: 'margin-bottom-3') do %>
