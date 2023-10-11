@@ -17,6 +17,8 @@ module Reports
     def months(date_range)
       return [date_range] if start_end_same_month?(date_range)
 
+      results = []
+
       results << (date_range.begin..date_range.begin.end_of_month)
 
       current = date_range.begin.end_of_month + 1.day
