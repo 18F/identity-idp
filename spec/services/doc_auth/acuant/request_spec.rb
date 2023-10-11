@@ -1,10 +1,12 @@
 require 'rails_helper'
 
 RSpec.describe DocAuth::Acuant::Request do
-  class SimpleAcuantRequest < DocAuth::Acuant::Request
-    def handle_http_response(http_response)
-      http_response.body.upcase!
-      http_response
+  let(:simple_acuant_request) do
+    Class.new(DocAuth::Acuant::Request) do
+      def handle_http_response(http_response)
+        http_response.body.upcase!
+        http_response
+      end
     end
   end
 
@@ -38,7 +40,7 @@ RSpec.describe DocAuth::Acuant::Request do
   end
 
   subject do
-    request = SimpleAcuantRequest.new(config: config)
+    request = simple_acuant_request.new(config: config)
     allow(request).to receive(:path).and_return(path)
     allow(request).to receive(:body).and_return(request_body)
     allow(request).to receive(:method).and_return(request_method)

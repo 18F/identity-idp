@@ -1,9 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe TwoFactorAuthentication::SelectionPresenter do
-  class PlaceholderPresenter < TwoFactorAuthentication::SelectionPresenter
-    def method
-      :missing
+  let(:placeholder_presenter_class) do
+    Class.new(TwoFactorAuthentication::SelectionPresenter) do
+      def method
+        :missing
+      end
     end
   end
 
@@ -107,14 +109,14 @@ RSpec.describe TwoFactorAuthentication::SelectionPresenter do
   describe '#label' do
     context 'with no configuration' do
       it 'raises with missing translation' do
-        expect { PlaceholderPresenter.new(user: user).label }.to raise_error(RuntimeError)
+        expect { placeholder_presenter_class.new(user: user).label }.to raise_error(RuntimeError)
       end
     end
 
     context 'with configuration' do
       it 'raises with missing translation' do
         expect do
-          PlaceholderPresenter.new(configuration: 1, user: user).label
+          placeholder_presenter_class.new(configuration: 1, user: user).label
         end.to raise_error(RuntimeError)
       end
     end
@@ -123,14 +125,14 @@ RSpec.describe TwoFactorAuthentication::SelectionPresenter do
   describe '#info' do
     context 'with no configuration' do
       it 'raises with missing translation' do
-        expect { PlaceholderPresenter.new(user: user).info }.to raise_error(RuntimeError)
+        expect { placeholder_presenter_class.new(user: user).info }.to raise_error(RuntimeError)
       end
     end
 
     context 'with configuration' do
       it 'raises with missing translation' do
         expect do
-          PlaceholderPresenter.new(configuration: 1, user: user).info
+          placeholder_presenter_class.new(configuration: 1, user: user).info
         end.to raise_error(RuntimeError)
       end
     end

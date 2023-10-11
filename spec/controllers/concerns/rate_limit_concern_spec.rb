@@ -3,23 +3,25 @@ require 'rails_helper'
 RSpec.describe 'RateLimitConcern' do
   let(:user) { create(:user, :fully_registered, email: 'old_email@example.com') }
 
-  module Idv
-    class StepController < ApplicationController
-      include RateLimitConcern
-      include IdvSession
+  idv_step_controller_class = Class.new(ApplicationController) do
+    def self.name
+      'AnonymousController'
+    end
 
-      def show
-        render plain: 'Hello'
-      end
+    include RateLimitConcern
+    include IdvSession
 
-      def update
-        render plain: 'Bye'
-      end
+    def show
+      render plain: 'Hello'
+    end
+
+    def update
+      render plain: 'Bye'
     end
   end
 
   describe '#confirm_not_rate_limited' do
-    controller Idv::StepController do
+    controller(idv_step_controller_class) do
       before_action :confirm_not_rate_limited
     end
 
@@ -27,8 +29,8 @@ RSpec.describe 'RateLimitConcern' do
       sign_in(user)
       allow(subject).to receive(:current_user).and_return(user)
       routes.draw do
-        get 'show' => 'idv/step#show'
-        put 'update' => 'idv/step#update'
+        get 'show' => 'anonymous#show'
+        put 'update' => 'anonymous#update'
       end
     end
 
@@ -100,7 +102,7 @@ RSpec.describe 'RateLimitConcern' do
   end
 
   describe '#confirm_not_rate_limited_after_doc_auth' do
-    controller Idv::StepController do
+    controller(idv_step_controller_class) do
       before_action :confirm_not_rate_limited_after_doc_auth
     end
 
@@ -108,8 +110,8 @@ RSpec.describe 'RateLimitConcern' do
       sign_in(user)
       allow(subject).to receive(:current_user).and_return(user)
       routes.draw do
-        get 'show' => 'idv/step#show'
-        put 'update' => 'idv/step#update'
+        get 'show' => 'anonymous#show'
+        put 'update' => 'anonymous#update'
       end
     end
 
@@ -132,7 +134,7 @@ RSpec.describe 'RateLimitConcern' do
   end
 
   describe '#confirm_not_rate_limited_after_idv_resolution' do
-    controller Idv::StepController do
+    controller(idv_step_controller_class) do
       before_action :confirm_not_rate_limited_after_idv_resolution
     end
 
@@ -140,8 +142,8 @@ RSpec.describe 'RateLimitConcern' do
       sign_in(user)
       allow(subject).to receive(:current_user).and_return(user)
       routes.draw do
-        get 'show' => 'idv/step#show'
-        put 'update' => 'idv/step#update'
+        get 'show' => 'anonymous#show'
+        put 'update' => 'anonymous#update'
       end
     end
 
