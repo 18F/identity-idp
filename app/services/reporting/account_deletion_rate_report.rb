@@ -6,6 +6,18 @@ module Reporting
       @report_date = report_date
     end
 
+    def account_deletion_report_title
+      'Account deletion rate (last 30 days)'
+    end
+
+    def account_deletion_report_metadata
+      {
+        title: account_deletion_report_title,
+        float_as_percent: true,
+        precision: 4,
+      }
+    end
+
     def account_deletion_report
       table = []
       table << ['Deleted Users', 'Total Users', 'Deletion Rate']

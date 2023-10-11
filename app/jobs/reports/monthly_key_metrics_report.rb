@@ -21,29 +21,19 @@ module Reports
 
       email_tables = [
         [
-          {
-            title: "IDV app reuse rate #{account_reuse_report.stats_month}",
-            float_as_percent: true,
-            precision: 4,
-          },
+          account_reuse_report.account_reuse_report_metadata,
           *account_reuse_table,
         ],
         [
-          { title: 'Total proofed identities' },
+          account_reuse_report.total_identities_report_metadata,
           *total_profiles_table,
         ],
         [
-          {
-            title: 'Account deletion rate (last 30 days)',
-            float_as_percent: true,
-            precision: 4,
-          },
+          account_deletion_rate_report.account_deletion_report_metadata,
           *account_deletion_rate_table,
         ],
         [
-          {
-            title: 'Total user count (all-time)',
-          },
+          total_user_count_report.total_user_count_report_metadata,
           *total_user_count_table,
         ],
       ]

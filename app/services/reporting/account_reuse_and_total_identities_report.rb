@@ -6,6 +6,18 @@ module Reporting
       @report_date = report_date
     end
 
+    def account_reuse_report_title
+      "IDV app reuse rate #{stats_month}"
+    end
+
+    def account_reuse_report_metadata
+      {
+        title: account_reuse_report_title,
+        float_as_percent: true,
+        precision: 4,
+      }
+    end
+
     # Return array of arrays
     def account_reuse_report
       account_reuse_table = []
@@ -26,6 +38,14 @@ module Reporting
       ]
 
       account_reuse_table
+    end
+
+    def total_identities_report_title
+      'Total proofed identities'
+    end
+
+    def total_identities_report_metadata
+      { title: total_identities_report_title }
     end
 
     def total_identities_report
