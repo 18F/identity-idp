@@ -26,7 +26,7 @@ module Idv
         protected
 
         def proofer
-          UspsInPersonProofing::Mock::Proofer.new
+          UspsInPersonProofing::Proofer.new
         end
 
         def enabled?
