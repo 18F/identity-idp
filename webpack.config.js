@@ -49,7 +49,7 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
   },
   resolve: {
     extensions: ['.js', '.jsx', '.ts', '.tsx', '.mjs', '.cjs', '.mts', '.cts'],
-    conditionNames: ['source', '...'],
+    conditionNames: ['source', 'import', 'require', 'node'],
   },
   module: {
     rules: [
