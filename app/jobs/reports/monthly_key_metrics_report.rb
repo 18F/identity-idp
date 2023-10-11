@@ -59,7 +59,6 @@ module Reports
           tables: email_tables,
         ).deliver_now
       else
-        # MW -- pull this up sooner, don't run if this is the case.
         Rails.logger.warn 'No email addresses received - Monthly Key Metrics Report NOT SENT'
       end
     end
