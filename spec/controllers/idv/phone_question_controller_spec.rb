@@ -94,42 +94,44 @@ RSpec.describe Idv::PhoneQuestionController do
       end
     end
 
-    context 'standard flow_path already defined' do
-      it 'redirects to document_capture in standard flow' do
-        subject.idv_session.flow_path = 'standard'
+    context 'confirm_hybrid_handoff_needed before action behavior' do
+      context 'standard flow_path already defined' do
+        it 'redirects to document_capture in standard flow' do
+          subject.idv_session.flow_path = 'standard'
 
-        get :show
+          get :show
 
-        expect(response).to redirect_to(idv_document_capture_url)
+          expect(response).to redirect_to(idv_document_capture_url)
+        end
+
+        it 'redirects to link_sent in hybrid flow' do
+          subject.idv_session.flow_path = 'hybrid'
+
+          get :show
+
+          expect(response).to redirect_to(idv_link_sent_url)
+        end
       end
 
-      it 'redirects to link_sent in hybrid flow' do
-        subject.idv_session.flow_path = 'hybrid'
+      context 'on mobile device' do
+        it 'redirects to document_capture' do
+          subject.idv_session.skip_hybrid_handoff = true
 
-        get :show
+          get :show
 
-        expect(response).to redirect_to(idv_link_sent_url)
-      end
-    end
-
-    context 'on mobile device' do
-      it 'redirects to document_capture' do
-        subject.idv_session.skip_hybrid_handoff = true
-
-        get :show
-
-        expect(response).to redirect_to(idv_document_capture_url)
-      end
-    end
-
-    context 'hybrid flow is not available' do
-      before do
-        allow(FeatureManagement).to receive(:idv_allow_hybrid_flow?).and_return(false)
+          expect(response).to redirect_to(idv_document_capture_url)
+        end
       end
 
-      it 'redirects the user straight to document capture' do
-        get :show
-        expect(response).to redirect_to(idv_document_capture_url)
+      context 'hybrid flow is not available' do
+        before do
+          allow(FeatureManagement).to receive(:idv_allow_hybrid_flow?).and_return(false)
+        end
+
+        it 'redirects the user straight to document capture' do
+          get :show
+          expect(response).to redirect_to(idv_document_capture_url)
+        end
       end
     end
   end
@@ -137,7 +139,7 @@ RSpec.describe Idv::PhoneQuestionController do
   describe '#phone_with_camera' do
     let(:analytics_name) { 'IdV: doc auth phone question submitted' }
 
-    it 'redurects to hybrid handoff' do
+    it 'redirects to hybrid handoff' do
       get :phone_with_camera
 
       expect(response).to redirect_to(idv_hybrid_handoff_url)

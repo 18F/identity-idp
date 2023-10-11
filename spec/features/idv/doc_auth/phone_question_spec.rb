@@ -23,32 +23,25 @@ RSpec.feature 'phone question step' do
 
   context 'phone question answered' do
     let(:analytics_name) { 'IdV: doc auth phone question submitted' }
-    describe '#camera_with_phone' do
-      before do
-        analytics_args.merge!(camera_phone: true)
-      end
 
+    describe '#camera_with_phone' do
       it 'redirects to hybrid handoff if user confirms having phone' do
         click_link t('doc_auth.buttons.have_phone')
         expect(page).to have_current_path(idv_hybrid_handoff_path)
         expect(fake_analytics).to have_logged_event(
           analytics_name,
-          hash_including(step: 'phone_question', camera_phone: true),
+          hash_including(step: 'phone_question', phone_with_camera: true),
         )
       end
     end
 
     describe '#camera_without_phone' do
-      before do
-        analytics_args.merge!(camera_phone: false)
-      end
-
       it 'redirects to standard document capture if user confirms not having phone' do
         click_link t('doc_auth.phone_question.do_not_have')
         expect(page).to have_current_path(idv_document_capture_path)
         expect(fake_analytics).to have_logged_event(
           analytics_name,
-          hash_including(step: 'phone_question', camera_phone: false),
+          hash_including(step: 'phone_question', phone_with_camera: false),
         )
       end
     end
