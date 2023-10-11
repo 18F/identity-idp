@@ -243,6 +243,7 @@ js_build:
     - *bundle_install
     - *yarn_production_install
     - bundle exec rake assets:precompile
+    - make lint_asset_bundle_size
 
 js_tests:
   stage: test
