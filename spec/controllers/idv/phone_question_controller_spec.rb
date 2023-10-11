@@ -147,7 +147,7 @@ RSpec.describe Idv::PhoneQuestionController do
       get :phone_with_camera
 
       expect(@analytics).
-        to have_logged_event(analytics_name, analytics_args.merge!(camera_phone: true))
+        to have_logged_event(analytics_name, analytics_args.merge!(phone_with_camera: true))
     end
   end
 
@@ -164,7 +164,7 @@ RSpec.describe Idv::PhoneQuestionController do
       get :phone_without_camera
 
       expect(@analytics).
-        to have_logged_event(analytics_name, analytics_args.merge!(camera_phone: false))
+        to have_logged_event(analytics_name, analytics_args.merge!(phone_with_camera: false))
     end
 
     it 'set idv_session flow path to standard' do
