@@ -45,7 +45,7 @@ RSpec.describe OtpVerificationForm do
         expect(result.to_h).to eq(
           success: false,
           error_details: {
-            code: [:blank, :wrong_length],
+            code: [:blank],
           },
           multi_factor_auth_method: 'otp_code',
           multi_factor_auth_method_created_at: phone_configuration.created_at.strftime('%s%L'),
@@ -67,7 +67,7 @@ RSpec.describe OtpVerificationForm do
         expect(result.to_h).to eq(
           success: false,
           error_details: {
-            code: ['user_otp_missing'],
+            code: [:user_otp_missing],
           },
           multi_factor_auth_method: 'otp_code',
           multi_factor_auth_method_created_at: phone_configuration.created_at.strftime('%s%L'),
@@ -89,7 +89,7 @@ RSpec.describe OtpVerificationForm do
         expect(result.to_h).to eq(
           success: false,
           error_details: {
-            code: [:wrong_length, 'incorrect'],
+            code: [:incorrect_length, :incorrect],
           },
           multi_factor_auth_method: 'otp_code',
           multi_factor_auth_method_created_at: phone_configuration.created_at.strftime('%s%L'),
@@ -111,7 +111,7 @@ RSpec.describe OtpVerificationForm do
         expect(result.to_h).to eq(
           success: false,
           error_details: {
-            code: ['pattern_mismatch', 'incorrect'],
+            code: [:pattern_mismatch, :incorrect],
           },
           multi_factor_auth_method: 'otp_code',
           multi_factor_auth_method_created_at: phone_configuration.created_at.strftime('%s%L'),
@@ -136,7 +136,7 @@ RSpec.describe OtpVerificationForm do
         expect(result.to_h).to eq(
           success: false,
           error_details: {
-            code: ['user_otp_expired'],
+            code: [:user_otp_expired],
           },
           multi_factor_auth_method: 'otp_code',
           multi_factor_auth_method_created_at: phone_configuration.created_at.strftime('%s%L'),

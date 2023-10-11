@@ -186,11 +186,11 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
 
   def queued_duration(job)
     return if job.enqueued_at.blank?
-    (Time.zone.now - job.enqueued_at).in_milliseconds
+    (Time.zone.now - Time.zone.parse(job.enqueued_at)).in_milliseconds
   end
 
   def scheduled_at(event)
-    event.payload[:job].scheduled_at.utc
+    Time.zone.at(event.payload[:job].scheduled_at).utc
   end
 
   def trace_id(job)

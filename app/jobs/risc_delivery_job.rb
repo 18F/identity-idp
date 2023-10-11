@@ -10,11 +10,11 @@ class RiscDeliveryJob < ApplicationJob
 
   retry_on(
     *NETWORK_ERRORS,
-    wait: :polynomially_longer,
+    wait: :exponentially_longer,
     attempts: 2,
   )
   retry_on RedisRateLimiter::LimitError,
-           wait: :polynomially_longer,
+           wait: :exponentially_longer,
            attempts: 10
 
   def self.warning_error_classes
