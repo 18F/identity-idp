@@ -21,5 +21,14 @@ RSpec.describe Reports::MonthHelper do
         ],
       )
     end
+
+    it 'correctly returns a partial month when the first month is a partial month' do
+      expect(months(Date.new(2022, 1, 1)..Date.new(2022, 1, 28))).to eq(
+        [
+          Date.new(2022, 1, 1)..Date.new(2022, 1, 28),
+        ],
+      )
+    end
+
   end
 end
