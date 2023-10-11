@@ -69,6 +69,8 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
   it 'does not send out a report with no emails' do
     allow(IdentityConfig.store).to receive(:team_agnes_email).and_return('')
 
+    expect_any_instance_of(Reporting::AccountReuseAndTotalIdentitiesReport).not_to receive(:total_identities_report)
+
     expect(ReportMailer).not_to receive(:tables_report).with(
       message: 'Report: monthly-key-metrics-report 2021-03-02',
       email: [''],
