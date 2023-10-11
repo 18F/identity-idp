@@ -254,9 +254,10 @@ module Idv
       @doc_auth_client ||= DocAuthRouter.client(
         vendor_discriminator: document_capture_session_uuid,
         warn_notifier: proc do |attrs|
-          analytics&.doc_auth_warning(**attrs.
-            merge(getting_started_ab_test_analytics_bucket).
-            merge(phone_question_ab_test_analytics_bucket)
+          analytics&.doc_auth_warning(
+            **attrs.
+                        merge(getting_started_ab_test_analytics_bucket).
+                        merge(phone_question_ab_test_analytics_bucket),
           )
         end,
       )

@@ -269,7 +269,6 @@ RSpec.describe Idv::ImageUploadsController do
           back_image_fingerprint: an_instance_of(String),
           getting_started_ab_test_bucket: :welcome_default,
           phone_question_ab_test_bucket: :bypass_phone_question,
-          phone_question_ab_test_bucket: :bypass_phone_question,
         )
 
         expect(@irs_attempts_api_tracker).to receive(:track_event).with(
