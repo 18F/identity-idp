@@ -744,6 +744,17 @@ module AnalyticsEvents
     track_event('IdV: doc auth link_sent visited', **extra)
   end
 
+  # The "phone question" step: Desktop user has submitted they
+  # do or do not have a phone with a a camera via desktop
+  def idv_doc_auth_phone_question_submitted(**extra)
+    track_event(:idv_doc_auth_phone_question_submitted, **extra)
+  end
+
+  # Desktop user has reached the above "phone question" view
+  def idv_doc_auth_phone_question_visited(**extra)
+    track_event(:idv_doc_auth_phone_question_visited, **extra)
+  end
+
   def idv_doc_auth_randomizer_defaulted
     track_event(
       'IdV: doc_auth random vendor error',
@@ -2310,17 +2321,6 @@ module AnalyticsEvents
       proofing_components: proofing_components,
       **extra,
     )
-  end
-
-  # The "phone question" step: Desktop user has submitted they
-  # do or do not have a phone with a a camera via desktop
-  def idv_doc_auth_phone_question_submitted(**extra)
-    track_event(:idv_doc_auth_phone_question_submitted, **extra)
-  end
-
-  # Desktop user has reached the above "phone question" view
-  def idv_doc_auth_phone_question_visited(**extra)
-    track_event(:idv_doc_auth_phone_question_visited, **extra)
   end
 
   # @identity.idp.previous_event_name IdV: Verify setup errors visited
