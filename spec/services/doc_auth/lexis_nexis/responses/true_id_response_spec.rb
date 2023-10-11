@@ -93,7 +93,8 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     end
 
     it 'produces expected hash output' do
-      expect(response.to_h).to match(
+      response_hash = response.to_h
+      expect(response_hash).to match(
         success: true,
         exception: nil,
         errors: {},
@@ -135,6 +136,14 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
           Back: a_hash_including(:ClassName, :CountryCode),
         },
       )
+      passed_alerts = response_hash.dig(:processed_alerts, :passed)
+      passed_alerts.each do |alert|
+        expect(alert).to have_key(:disposition)
+      end
+      alerts_with_model = passed_alerts.select do |alert|
+        alert[:model].present? && alert[:region].present?
+      end
+      expect(alerts_with_model).not_to be_empty
     end
 
     it 'notes that address line 2 was present' do
