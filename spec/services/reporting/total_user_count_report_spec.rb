@@ -2,7 +2,9 @@ require 'rails_helper'
 require 'csv'
 
 RSpec.describe Reporting::TotalUserCountReport do
-  let(:report_date) { Date.new(2021, 3, 1) }
+  let(:report_date) do
+    Date.new(2021, 3, 1).in_time_zone('UTC')
+  end
   let(:expected_report) do
     [
       ['All-time user count'],
