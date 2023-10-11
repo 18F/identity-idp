@@ -6,37 +6,42 @@ module Reports
 
     attr_reader :report_date
 
+    Report = Struct.new(:metadata, :table, :csv_name)
+
     def perform(date = Time.zone.today)
       @report_date = date
 
-      account_reuse_table = account_reuse_report.account_reuse_report
-      total_profiles_table = account_reuse_report.total_identities_report
-      account_deletion_rate_table = account_deletion_rate_report.account_deletion_report
-      total_user_count_table = total_user_count_report.total_user_count_report
+      reports = []
+      reports << Report.new(
+        metadata: account_reuse_report.account_reuse_report_metadata,
+        table: account_reuse_report.account_reuse_report,
+        csv_name: 'account_reuse'
+      )
+      reports << Report.new(
+        metadata: account_reuse_report.total_identities_report_metadata,
+        table: account_reuse_report.total_identities_report,
+        csv_name: 'total_profiles'
+      )
+      reports << Report.new(
+        metadata: account_deletion_rate_report.account_deletion_report_metadata,
+        table: account_deletion_rate_report.account_deletion_report,
+        csv_name: 'account_deletion_rate'
+      )
+      reports << Report.new(
+        metadata: total_user_count_report.total_user_count_report_metadata,
+        table: total_user_count_report.total_user_count_report,
+        csv_name: 'total_user_count'
+      )
 
-      upload_to_s3(account_reuse_table, report_name: 'account_reuse')
-      upload_to_s3(total_profiles_table, report_name: 'total_profiles')
-      upload_to_s3(account_deletion_rate_table, report_name: 'account_deletion_rate')
-      upload_to_s3(total_user_count_table, report_name: 'total_user_count')
-
-      email_tables = [
-        [
-          account_reuse_report.account_reuse_report_metadata,
-          *account_reuse_table,
-        ],
-        [
-          account_reuse_report.total_identities_report_metadata,
-          *total_profiles_table,
-        ],
-        [
-          account_deletion_rate_report.account_deletion_report_metadata,
-          *account_deletion_rate_table,
-        ],
-        [
-          total_user_count_report.total_user_count_report_metadata,
-          *total_user_count_table,
-        ],
-      ]
+      email_tables = []
+      reports.each do |report|
+        upload_to_s3(report.table, report_name: report.csv_name)
+        
+        email_tables << [
+          report.metadata,
+          *report.table
+        ]
+      end
 
       email_message = "Report: #{REPORT_NAME} #{date}"
       email_addresses = emails.select(&:present?)
