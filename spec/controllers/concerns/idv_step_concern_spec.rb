@@ -133,7 +133,7 @@ RSpec.describe 'IdvStepConcern' do
   end
 
   describe '#confirm_document_capture_not_complete' do
-    controller (idv_step_controller_class) do
+    controller(idv_step_controller_class) do
       before_action :confirm_document_capture_not_complete
     end
 
