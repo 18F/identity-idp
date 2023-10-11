@@ -36,7 +36,6 @@ module Rack
       namespace: 'rack-attack',
       redis: REDIS_THROTTLE_POOL,
       expires_in: 2.weeks.to_i,
-      pool: false,
     )
 
     ### Configure Safelisting ###

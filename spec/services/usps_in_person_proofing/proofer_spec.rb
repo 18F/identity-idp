@@ -78,10 +78,7 @@ RSpec.describe UspsInPersonProofing::Proofer do
     context 'when using redis as a backing store' do
       before do |ex|
         allow(Rails).to receive(:cache).and_return(
-          ActiveSupport::Cache::RedisCacheStore.new(
-            url: IdentityConfig.store.redis_throttle_url,
-            pool: false,
-          ),
+          ActiveSupport::Cache::RedisCacheStore.new(url: IdentityConfig.store.redis_throttle_url),
         )
       end
 
