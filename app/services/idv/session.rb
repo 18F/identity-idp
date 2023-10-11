@@ -15,7 +15,6 @@ module Idv
       mail_only_warning_shown
       personal_key
       phone_for_mobile_flow
-      phone_question_visited
       pii
       pii_from_doc
       previous_phone_step_params
