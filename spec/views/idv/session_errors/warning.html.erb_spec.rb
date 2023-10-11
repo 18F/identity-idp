@@ -32,7 +32,7 @@ RSpec.describe 'idv/session_errors/warning.html.erb' do
   it 'shows a cancel link' do
     expect(rendered).to have_link(
       t('links.cancel'),
-      href: idv_cancel_path(step: :session, location: :warning),
+      href: idv_cancel_path(step: :invalid_session),
     )
   end
 
@@ -48,7 +48,7 @@ RSpec.describe 'idv/session_errors/warning.html.erb' do
       )
       expect(rendered).to have_link(
         t('links.cancel'),
-        href: idv_cancel_path(step: :session, location: :warning),
+        href: idv_cancel_path(step: :invalid_session),
       )
     end
   end
