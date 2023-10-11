@@ -2776,6 +2776,7 @@ module AnalyticsEvents
     )
   end
 
+  # @identity.idp.previous_event_name 'Multi-Factor Authentication: enter PIV CAC visited'
   # @param ["authentication","reauthentication","confirmation"] context user session context
   # @param ["piv_cac"] multi_factor_auth_method
   # @param [Integer, nil] piv_cac_configuration_id PIV/CAC configuration database ID
@@ -3361,6 +3362,7 @@ module AnalyticsEvents
   end
 
   # @identity.idp.previous_event_name User Registration: piv cac disabled
+  # @identity.idp.previous_event_name PIV CAC disabled
   # Tracks when user's piv cac is disabled
   def piv_cac_disabled
     track_event(:piv_cac_disabled)
@@ -3384,6 +3386,7 @@ module AnalyticsEvents
   end
 
   # @identity.idp.previous_event_name User Registration: piv cac setup visited
+  # @identity.idp.previous_event_name PIV CAC setup visited
   # Tracks when user's piv cac setup
   # @param [Boolean] in_account_creation_flow
   def piv_cac_setup_visited(in_account_creation_flow:, **extra)
