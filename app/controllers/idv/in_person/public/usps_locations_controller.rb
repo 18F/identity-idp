@@ -3,6 +3,7 @@ module Idv
     module Public
       class UspsLocationsController < ApplicationController
         include RenderConditionConcern
+        include UspsInPersonProofing
 
         check_or_render_not_found -> { enabled? }
 
@@ -26,7 +27,7 @@ module Idv
         protected
 
         def proofer
-          UspsInPersonProofing::Proofer.new
+          @proofer ||= EnrollmentHelper.usps_proofer
         end
 
         def enabled?
