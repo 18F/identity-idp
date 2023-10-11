@@ -297,8 +297,8 @@ module DocAuth
           true_id_product[:ParameterDetails].each do |detail|
             next unless detail[:Group] == 'DOCUMENT_REGION' ||
                         (detail[:Group] == 'IMAGE_METRICS_RESULT' &&
-                          %w[ImageMetrics_Id  Side].include?(detail[:Name]))
-            inner_val = detail.dig(:Values).collect { |value| value.dig(:Value) }
+                          %w[ImageMetrics_Id Side].include?(detail[:Name]))
+            inner_val = detail[:Values].map { |value| value[:Value] }
             if detail[:Group] == 'DOCUMENT_REGION'
               region_details[detail[:Name]] = inner_val
             else
