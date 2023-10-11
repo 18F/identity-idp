@@ -299,6 +299,7 @@ module AnalyticsEvents
 
   # @param [String] message the warning
   # @param [String] getting_started_ab_test_bucket Which initial IdV screen the user saw
+  # @param [String] phone_question_ab_test_bucket Prompt user with phone question before doc auth
   # Logged when there is a non-user-facing error in the doc auth process, such as an unrecognized
   # field from a vendor
   def doc_auth_warning(message: nil, getting_started_ab_test_bucket: nil,
@@ -778,6 +779,7 @@ module AnalyticsEvents
   # @param [String] front_image_fingerprint Fingerprint of front image data
   # @param [String] back_image_fingerprint Fingerprint of back image data
   # @param [String] getting_started_ab_test_bucket Which initial IdV screen the user saw
+  # @param [String] phone_question_ab_test_bucket Prompt user with phone question before doc auth
   # The document capture image uploaded was locally validated during the IDV process
   def idv_doc_auth_submitted_image_upload_form(
     success:,
@@ -824,6 +826,7 @@ module AnalyticsEvents
   # @param [String] front_image_fingerprint Fingerprint of front image data
   # @param [String] back_image_fingerprint Fingerprint of back image data
   # @param [String] getting_started_ab_test_bucket Which initial IdV screen the user saw
+  # @param [String] phone_question_ab_test_bucket Prompt user with phone question before doc auth
   # The document capture image was uploaded to vendor during the IDV process
   def idv_doc_auth_submitted_image_upload_vendor(
     success:,
