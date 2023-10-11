@@ -30,6 +30,7 @@ module Idv
         fraud_review_pending: fraud_review_pending?,
         fraud_rejection: fraud_rejection?,
       )
+      idv_session.personal_key = nil
       redirect_to next_step
     end
 
@@ -64,7 +65,7 @@ module Idv
       @personal_key_generated_at = current_user.personal_key_generated_at
 
       user_session[:personal_key] = @code
-      idv_session.personal_key = nil
+      idv_session.personal_key = @code
 
       irs_attempts_api_tracker.idv_personal_key_generated
     end
