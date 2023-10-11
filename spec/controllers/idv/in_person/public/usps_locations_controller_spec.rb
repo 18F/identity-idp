@@ -3,6 +3,8 @@ require 'rails_helper'
 RSpec.describe Idv::InPerson::Public::UspsLocationsController do
   include Rails.application.routes.url_helpers
 
+  it_behaves_like 'post office search'
+
   describe '#index' do
     subject(:action) do
       post :index,
