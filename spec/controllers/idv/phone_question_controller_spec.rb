@@ -58,7 +58,7 @@ RSpec.describe Idv::PhoneQuestionController do
   end
 
   describe '#show' do
-    let(:analytics_name) { 'IdV: doc auth phone question visited' }
+    let(:analytics_name) { :idv_doc_auth_phone_question_visited }
 
     it 'renders the show template' do
       get :show
@@ -94,7 +94,7 @@ RSpec.describe Idv::PhoneQuestionController do
       end
     end
 
-    context 'confirm_hybrid_handoff_needed before action behavior' do
+    context 'confirm_hybrid_handoff_needed before action' do
       context 'standard flow_path already defined' do
         it 'redirects to document_capture in standard flow' do
           subject.idv_session.flow_path = 'standard'
@@ -137,7 +137,7 @@ RSpec.describe Idv::PhoneQuestionController do
   end
 
   describe '#phone_with_camera' do
-    let(:analytics_name) { 'IdV: doc auth phone question submitted' }
+    let(:analytics_name) { :idv_doc_auth_phone_question_submitted }
 
     it 'redirects to hybrid handoff' do
       get :phone_with_camera
@@ -145,7 +145,7 @@ RSpec.describe Idv::PhoneQuestionController do
       expect(response).to redirect_to(idv_hybrid_handoff_url)
     end
 
-    it 'sends analytics_visited event' do
+    it 'sends analytics submitted event' do
       get :phone_with_camera
 
       expect(@analytics).
@@ -154,7 +154,7 @@ RSpec.describe Idv::PhoneQuestionController do
   end
 
   describe '#phone_without_camera' do
-    let(:analytics_name) { 'IdV: doc auth phone question submitted' }
+    let(:analytics_name) { :idv_doc_auth_phone_question_submitted }
 
     it 'redirects to hybrid handoff' do
       get :phone_without_camera
@@ -162,7 +162,7 @@ RSpec.describe Idv::PhoneQuestionController do
       expect(response).to redirect_to(idv_hybrid_handoff_url)
     end
 
-    it 'sends analytics_visited event' do
+    it 'sends analytics submitted event' do
       get :phone_without_camera
 
       expect(@analytics).

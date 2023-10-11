@@ -29,7 +29,7 @@ RSpec.feature 'phone question step' do
         click_link t('doc_auth.buttons.have_phone')
         expect(page).to have_current_path(idv_hybrid_handoff_path)
         expect(fake_analytics).to have_logged_event(
-          analytics_name,
+          :idv_doc_auth_phone_question_submitted,
           hash_including(step: 'phone_question', phone_with_camera: true),
         )
       end
@@ -40,7 +40,7 @@ RSpec.feature 'phone question step' do
         click_link t('doc_auth.phone_question.do_not_have')
         expect(page).to have_current_path(idv_document_capture_path)
         expect(fake_analytics).to have_logged_event(
-          analytics_name,
+          :idv_doc_auth_phone_question_submitted,
           hash_including(step: 'phone_question', phone_with_camera: false),
         )
       end
