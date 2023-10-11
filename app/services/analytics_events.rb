@@ -301,7 +301,8 @@ module AnalyticsEvents
   # @param [String] getting_started_ab_test_bucket Which initial IdV screen the user saw
   # Logged when there is a non-user-facing error in the doc auth process, such as an unrecognized
   # field from a vendor
-  def doc_auth_warning(message: nil, getting_started_ab_test_bucket: nil, phone_question_ab_test_bucket: nil, **extra)
+  def doc_auth_warning(message: nil, getting_started_ab_test_bucket: nil,
+                       phone_question_ab_test_bucket: nil, **extra)
     track_event(
       'Doc Auth Warning',
       message: message,
