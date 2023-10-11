@@ -5,9 +5,9 @@ module Idv
     include VerifyInfoConcern
     include Steps::ThreatMetrixStepHelper
 
+    before_action :confirm_not_rate_limited_after_doc_auth, except: [:show]
     before_action :confirm_ssn_step_complete
     before_action :confirm_verify_info_step_needed
-    skip_before_action :confirm_not_rate_limited, only: :show
 
     def show
       @step_indicator_steps = step_indicator_steps

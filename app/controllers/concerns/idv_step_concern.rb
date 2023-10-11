@@ -9,7 +9,6 @@ module IdvStepConcern
   included do
     before_action :confirm_two_factor_authenticated
     before_action :confirm_idv_needed
-    before_action :confirm_not_rate_limited
     before_action :confirm_no_pending_gpo_profile
     before_action :confirm_no_pending_in_person_enrollment
     before_action :handle_fraud
@@ -43,6 +42,28 @@ module IdvStepConcern
 
   def flow_path
     idv_session.flow_path
+  end
+
+  def confirm_hybrid_handoff_needed
+    setup_for_redo if params[:redo]
+
+    if idv_session.skip_hybrid_handoff?
+      # We previously skipped hybrid handoff. Keep doing that.
+      idv_session.flow_path = 'standard'
+    end
+
+    if !FeatureManagement.idv_allow_hybrid_flow?
+      # When hybrid flow is unavailable, skip it.
+      # But don't store that we skipped it in idv_session, in case it is back to
+      # available when the user tries to redo document capture.
+      idv_session.flow_path = 'standard'
+    end
+
+    if idv_session.flow_path == 'standard'
+      redirect_to idv_document_capture_url
+    elsif idv_session.flow_path == 'hybrid'
+      redirect_to idv_link_sent_url
+    end
   end
 
   private
@@ -95,5 +116,17 @@ module IdvStepConcern
         flow_session[:pii_from_user][:same_address_as_id].to_s == 'true'
     end
     extra
+  end
+
+  def setup_for_redo
+    idv_session.redo_document_capture = true
+
+    # If we previously skipped hybrid handoff for the user (because they're on a mobile
+    # device with a camera), skip it _again_ here.
+    if idv_session.skip_hybrid_handoff?
+      idv_session.flow_path = 'standard'
+    else
+      idv_session.flow_path = nil
+    end
   end
 end

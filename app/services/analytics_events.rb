@@ -14,18 +14,18 @@ module AnalyticsEvents
   # @param [Boolean] success
   # When a user submits a form to delete their account
   def account_delete_submitted(success:, **extra)
-    track_event('Account Delete submitted', success: success, **extra)
+    track_event('Account Delete submitted', success: success, **extra) # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # When a user visits the page to delete their account
   def account_delete_visited
-    track_event('Account Delete visited')
+    track_event('Account Delete visited') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # @param [String] request_came_from the controller/action the request came from
   # When a user deletes their account
   def account_deletion(request_came_from:, **extra)
-    track_event('Account Deletion Requested', request_came_from: request_came_from, **extra)
+    track_event('Account Deletion Requested', request_came_from: request_came_from, **extra) # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # @identity.idp.previous_event_name Account Reset
@@ -35,7 +35,7 @@ module AnalyticsEvents
   # An account reset was cancelled
   def account_reset_cancel(user_id:, message_id: nil, request_id: nil, **extra)
     track_event(
-      'Account Reset: cancel',
+      'Account Reset: cancel', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       {
         user_id: user_id,
         message_id: message_id,
@@ -51,7 +51,7 @@ module AnalyticsEvents
   # Validates the token used for cancelling an account reset
   def account_reset_cancel_token_validation(user_id:, errors: nil, **extra)
     track_event(
-      'Account Reset: cancel token validation',
+      'Account Reset: cancel token validation', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       user_id: user_id,
       errors: errors,
       **extra,
@@ -77,7 +77,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'Account Reset: delete',
+      'Account Reset: delete', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       success: success,
       user_id: user_id,
       account_age_in_days: account_age_in_days,
@@ -94,7 +94,7 @@ module AnalyticsEvents
   # Validates the granted token for account reset
   def account_reset_granted_token_validation(user_id: nil, errors: nil, **extra)
     track_event(
-      'Account Reset: granted token validation',
+      'Account Reset: granted token validation', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       user_id: user_id,
       errors: errors,
       **extra,
@@ -105,12 +105,12 @@ module AnalyticsEvents
   # @param [Integer] count number of email notifications sent
   # Account reset was performed, logs the number of email notifications sent
   def account_reset_notifications(count:, **extra)
-    track_event('Account Reset: notifications', count: count, **extra)
+    track_event('Account Reset: notifications', count: count, **extra) # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # Tracks users visiting the recovery options page
   def account_reset_recovery_options_visit
-    track_event('Account Reset: Recovery Options Visited')
+    track_event('Account Reset: Recovery Options Visited') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # @identity.idp.previous_event_name Account Reset
@@ -133,7 +133,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'Account Reset: request',
+      'Account Reset: request', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       {
         success: success,
         sms_phone: sms_phone,
@@ -149,19 +149,19 @@ module AnalyticsEvents
 
   # User visited the account deletion and reset page
   def account_reset_visit
-    track_event('Account deletion and reset visited')
+    track_event('Account deletion and reset visited') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # When a user views the account page
   def account_visit
-    track_event('Account Page Visited')
+    track_event('Account Page Visited') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # @param [Boolean] success
   # @param [String] user_id account the email is linked to
   # A user has clicked the confirmation link in an email
   def add_email_confirmation(user_id:, success: nil, **extra)
-    track_event('Add Email: Email Confirmation', user_id: user_id, success: success, **extra)
+    track_event('Add Email: Email Confirmation', user_id: user_id, success: success, **extra) # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # @param [Boolean] success
@@ -169,7 +169,7 @@ module AnalyticsEvents
   # Tracks request for adding new emails to an account
   def add_email_request(success:, errors:, **extra)
     track_event(
-      'Add Email Requested',
+      'Add Email Requested', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       success: success,
       errors: errors,
       **extra,
@@ -178,38 +178,38 @@ module AnalyticsEvents
 
   # When a user views the add email address page
   def add_email_visit
-    track_event('Add Email Address Page Visited')
+    track_event('Add Email Address Page Visited') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # Tracks When users visit the add phone page
   def add_phone_setup_visit
     track_event(
-      'Phone Setup Visited',
+      'Phone Setup Visited', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
     )
   end
 
   # When a user views the "you are already signed in with the following email" screen
   def authentication_confirmation
-    track_event('Authentication Confirmation')
+    track_event('Authentication Confirmation') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # When a user views the "you are already signed in with the following email" screen and
   # continues with their existing logged-in email
   def authentication_confirmation_continue
-    track_event('Authentication Confirmation: Continue selected')
+    track_event('Authentication Confirmation: Continue selected') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # When a user views the "you are already signed in with the following email" screen and
   # signs out of their current logged in email to choose a different email
   def authentication_confirmation_reset
-    track_event('Authentication Confirmation: Reset selected')
+    track_event('Authentication Confirmation: Reset selected') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # @param [DateTime] fraud_rejection_at Date when profile was rejected
   # Tracks when a profile is automatically rejected due to being under review for 30 days
   def automatic_fraud_rejection(fraud_rejection_at:, **extra)
     track_event(
-      'Fraud: Automatic Fraud Rejection',
+      'Fraud: Automatic Fraud Rejection', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       fraud_rejection_at: fraud_rejection_at,
       **extra,
     )
@@ -219,7 +219,7 @@ module AnalyticsEvents
   # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
   def backup_code_created(enabled_mfa_methods_count:, **extra)
     track_event(
-      'Backup Code Created',
+      'Backup Code Created', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       enabled_mfa_methods_count: enabled_mfa_methods_count,
       **extra,
     )
@@ -228,7 +228,7 @@ module AnalyticsEvents
   # Tracks when the user visits the Backup Code Regenerate page.
   # @param [Boolean] in_account_creation_flow whether user is going through creation flow
   def backup_code_regenerate_visit(in_account_creation_flow:, **extra)
-    track_event('Backup Code Regenerate Visited', in_account_creation_flow:, **extra)
+    track_event('Backup Code Regenerate Visited', in_account_creation_flow:, **extra) # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # Track user creating new BackupCodeSetupForm, record form submission Hash
@@ -242,7 +242,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'Backup Code Setup Visited',
+      'Backup Code Setup Visited', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       success: success,
       errors: errors,
       error_details: error_details,
@@ -253,24 +253,24 @@ module AnalyticsEvents
   # A user that has been banned from an SP has authenticated, they are redirected
   # to a page showing them that they have been banned
   def banned_user_redirect
-    track_event('Banned User redirected')
+    track_event('Banned User redirected') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # A user that has been banned from an SP has authenticated, they have visited
   # a page showing them that they have been banned
   def banned_user_visited
-    track_event('Banned User visited')
+    track_event('Banned User visited') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # A user that had a broken personal key was routed to a page to regenerate their personal key,
   # so that they no longer have a broken one
   def broken_personal_key_regenerated
-    track_event('Broken Personal Key: Regenerated')
+    track_event('Broken Personal Key: Regenerated') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # Tracks users going back or cancelling acoount recovery
   def cancel_account_reset_recovery
-    track_event('Account Reset: Cancel Account Recovery Options')
+    track_event('Account Reset: Cancel Account Recovery Options') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # @param [String] redirect_url URL user was directed to
@@ -280,7 +280,7 @@ module AnalyticsEvents
   # User was redirected to the login.gov contact page
   def contact_redirect(redirect_url:, step: nil, location: nil, flow: nil, **extra)
     track_event(
-      'Contact Page Redirect',
+      'Contact Page Redirect', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       redirect_url: redirect_url,
       step: step,
       location: location,
@@ -289,21 +289,13 @@ module AnalyticsEvents
     )
   end
 
-  # @param [String, nil] error error message
-  # @param [String, nil] uuid document capture session uuid
-  # @param [String, nil] result_id document capture session result id
-  # When there is an error loading async results during the document authentication flow
-  def doc_auth_async(error: nil, uuid: nil, result_id: nil, **extra)
-    track_event('Doc Auth Async', error: error, uuid: uuid, result_id: result_id, **extra)
-  end
-
   # @param [String] message the warning
   # @param [String] getting_started_ab_test_bucket Which initial IdV screen the user saw
   # Logged when there is a non-user-facing error in the doc auth process, such as an unrecognized
   # field from a vendor
   def doc_auth_warning(message: nil, getting_started_ab_test_bucket: nil, **extra)
     track_event(
-      'Doc Auth Warning',
+      'Doc Auth Warning', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       message: message,
       getting_started_ab_test_bucket: getting_started_ab_test_bucket,
       **extra,
@@ -312,7 +304,7 @@ module AnalyticsEvents
 
   # When a user views the edit password page
   def edit_password_visit
-    track_event('Edit Password Page Visited')
+    track_event('Edit Password Page Visited') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # @param [Boolean] success
@@ -334,7 +326,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'Email and Password Authentication',
+      'Email and Password Authentication', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       success: success,
       user_id: user_id,
       user_locked_out: user_locked_out,
@@ -351,7 +343,7 @@ module AnalyticsEvents
   # Tracks request for deletion of email address
   def email_deletion_request(success:, errors:, **extra)
     track_event(
-      'Email Deletion Requested',
+      'Email Deletion Requested', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       success: success,
       errors: errors,
       **extra,
@@ -363,7 +355,7 @@ module AnalyticsEvents
   # Tracks if Email Language is updated
   def email_language_updated(success:, errors:, **extra)
     track_event(
-      'Email Language: Updated',
+      'Email Language: Updated', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       success: success,
       errors: errors,
       **extra,
@@ -372,7 +364,7 @@ module AnalyticsEvents
 
   # Tracks if Email Language is visited
   def email_language_visited
-    track_event('Email Language: Visited')
+    track_event('Email Language: Visited') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # Logs after an email is sent
@@ -380,7 +372,7 @@ module AnalyticsEvents
   # @param [String, nil] ses_message_id AWS SES Message ID
   def email_sent(action:, ses_message_id:, **extra)
     track_event(
-      'Email Sent',
+      'Email Sent', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       action: action,
       ses_message_id: ses_message_id,
       **extra,
@@ -410,7 +402,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'Event disavowal visited',
+      'Event disavowal visited', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       success: success,
       errors: errors,
       event_created_at: event_created_at,
@@ -447,7 +439,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'Event disavowal password reset',
+      'Event disavowal password reset', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       success: success,
       errors: errors,
       event_created_at: event_created_at,
@@ -484,7 +476,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'Event disavowal token invalid',
+      'Event disavowal token invalid', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       success: success,
       errors: errors,
       event_created_at: event_created_at,
@@ -500,7 +492,7 @@ module AnalyticsEvents
 
   # User visited the events page
   def events_visit
-    track_event('Events Page Visited')
+    track_event('Events Page Visited') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # @param [String] redirect_url URL user was directed to
@@ -510,7 +502,7 @@ module AnalyticsEvents
   # User was redirected to a page outside the IDP
   def external_redirect(redirect_url:, step: nil, location: nil, flow: nil, **extra)
     track_event(
-      'External Redirect',
+      'External Redirect', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       redirect_url: redirect_url,
       step: step,
       location: location,
@@ -521,12 +513,12 @@ module AnalyticsEvents
 
   # The user chose to "forget all browsers"
   def forget_all_browsers_submitted
-    track_event('Forget All Browsers Submitted')
+    track_event('Forget All Browsers Submitted') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # The user visited the "forget all browsers" page
   def forget_all_browsers_visited
-    track_event('Forget All Browsers Visited')
+    track_event('Forget All Browsers Visited') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # @param [Boolean] success
@@ -542,7 +534,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'Fraud: Profile review passed',
+      'Fraud: Profile review passed', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       success: success,
       errors: errors,
       exception: exception,
@@ -564,7 +556,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'Fraud: Profile review rejected',
+      'Fraud: Profile review rejected', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       success: success,
       errors: errors,
       exception: exception,
@@ -578,7 +570,7 @@ module AnalyticsEvents
   # @param [String] message
   # @param [String] stack
   def frontend_error(name:, message:, stack: nil, **extra)
-    track_event('Frontend Error', name:, message:, stack:, **extra)
+    track_event('Frontend Error', name:, message:, stack:, **extra) # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # @param [Boolean] success
@@ -596,7 +588,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'IdV: address submitted',
+      'IdV: address submitted', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       success: success,
       errors: errors,
       address_edited: address_edited,
@@ -608,7 +600,7 @@ module AnalyticsEvents
 
   # User visited idv address page
   def idv_address_visit
-    track_event('IdV: address visited')
+    track_event('IdV: address visited') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # @param [String] step the step that the user was on when they clicked cancel
@@ -616,7 +608,7 @@ module AnalyticsEvents
   # The user confirmed their choice to cancel going through IDV
   def idv_cancellation_confirmed(step:, proofing_components: nil, **extra)
     track_event(
-      'IdV: cancellation confirmed',
+      'IdV: cancellation confirmed', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       step: step,
       proofing_components: proofing_components,
       **extra,
@@ -628,7 +620,7 @@ module AnalyticsEvents
   # The user chose to go back instead of cancel IDV
   def idv_cancellation_go_back(step:, proofing_components: nil, **extra)
     track_event(
-      'IdV: cancellation go back',
+      'IdV: cancellation go back', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       step: step,
       proofing_components: proofing_components,
       **extra,
@@ -647,7 +639,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'IdV: cancellation visited',
+      'IdV: cancellation visited', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       step: step,
       request_came_from: request_came_from,
       proofing_components: proofing_components,
@@ -660,7 +652,7 @@ module AnalyticsEvents
   # @param [Boolean] checked Whether the user checked the checkbox
   def idv_consent_checkbox_toggled(checked:, **extra)
     track_event(
-      'IdV: consent checkbox toggled',
+      'IdV: consent checkbox toggled', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       checked: checked,
       **extra,
     )
@@ -669,23 +661,23 @@ module AnalyticsEvents
   # User has consented to share information with document upload and may
   # view the "hybrid handoff" step next unless "skip_hybrid_handoff" param is true
   def idv_doc_auth_agreement_submitted(**extra)
-    track_event('IdV: doc auth agreement submitted', **extra)
+    track_event('IdV: doc auth agreement submitted', **extra) # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   def idv_doc_auth_agreement_visited(**extra)
-    track_event('IdV: doc auth agreement visited', **extra)
+    track_event('IdV: doc auth agreement visited', **extra) # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   def idv_doc_auth_capture_complete_visited(**extra)
-    track_event('IdV: doc auth capture_complete visited', **extra)
+    track_event('IdV: doc auth capture_complete visited', **extra) # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   def idv_doc_auth_document_capture_submitted(**extra)
-    track_event('IdV: doc auth document_capture submitted', **extra)
+    track_event('IdV: doc auth document_capture submitted', **extra) # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   def idv_doc_auth_document_capture_visited(**extra)
-    track_event('IdV: doc auth document_capture visited', **extra)
+    track_event('IdV: doc auth document_capture visited', **extra) # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # @param [String] step_name which step the user was on
@@ -694,7 +686,7 @@ module AnalyticsEvents
   # The user visited an error page due to an encountering an exception talking to a proofing vendor
   def idv_doc_auth_exception_visited(step_name:, remaining_attempts:, **extra)
     track_event(
-      'IdV: doc auth exception visited',
+      'IdV: doc auth exception visited', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       step_name: step_name,
       remaining_attempts: remaining_attempts,
       **extra,
@@ -704,18 +696,18 @@ module AnalyticsEvents
   # @param [String] side the side of the image submission
   def idv_doc_auth_failed_image_resubmitted(side:, **extra)
     track_event(
-      'IdV: failed doc image resubmitted',
+      'IdV: failed doc image resubmitted', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       side: side,
       **extra,
     )
   end
 
   def idv_doc_auth_getting_started_submitted(**extra)
-    track_event('IdV: doc auth getting_started submitted', **extra)
+    track_event('IdV: doc auth getting_started submitted', **extra) # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   def idv_doc_auth_getting_started_visited(**extra)
-    track_event('IdV: doc auth getting_started visited', **extra)
+    track_event('IdV: doc auth getting_started visited', **extra) # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # The "hybrid handoff" step: Desktop user has submitted their choice to
@@ -723,48 +715,48 @@ module AnalyticsEvents
   # to mobile phone ("send_link" destination) to perform document upload.
   # @identity.idp.previous_event_name IdV: doc auth upload submitted
   def idv_doc_auth_hybrid_handoff_submitted(**extra)
-    track_event('IdV: doc auth hybrid handoff submitted', **extra)
+    track_event('IdV: doc auth hybrid handoff submitted', **extra) # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # Desktop user has reached the above "hybrid handoff" view
   # @identity.idp.previous_event_name IdV: doc auth upload visited
   def idv_doc_auth_hybrid_handoff_visited(**extra)
-    track_event('IdV: doc auth hybrid handoff visited', **extra)
+    track_event('IdV: doc auth hybrid handoff visited', **extra) # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # @identity.idp.previous_event_name IdV: doc auth send_link submitted
   def idv_doc_auth_link_sent_submitted(**extra)
-    track_event('IdV: doc auth link_sent submitted', **extra)
+    track_event('IdV: doc auth link_sent submitted', **extra) # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   def idv_doc_auth_link_sent_visited(**extra)
-    track_event('IdV: doc auth link_sent visited', **extra)
+    track_event('IdV: doc auth link_sent visited', **extra) # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   def idv_doc_auth_randomizer_defaulted
     track_event(
-      'IdV: doc_auth random vendor error',
+      'IdV: doc_auth random vendor error', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       error: 'document_capture_session_uuid_key missing',
     )
   end
 
   # @identity.idp.previous_event_name IdV: in person proofing redo_address submitted
   def idv_doc_auth_redo_address_submitted(**extra)
-    track_event('IdV: doc auth redo_address submitted', **extra)
+    track_event('IdV: doc auth redo_address submitted', **extra) # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   def idv_doc_auth_redo_ssn_submitted(**extra)
-    track_event('IdV: doc auth redo_ssn submitted', **extra)
+    track_event('IdV: doc auth redo_ssn submitted', **extra) # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # @identity.idp.previous_event_name IdV: in person proofing ssn submitted
   def idv_doc_auth_ssn_submitted(**extra)
-    track_event('IdV: doc auth ssn submitted', **extra)
+    track_event('IdV: doc auth ssn submitted', **extra) # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # @identity.idp.previous_event_name IdV: in person proofing ssn visited
   def idv_doc_auth_ssn_visited(**extra)
-    track_event('IdV: doc auth ssn visited', **extra)
+    track_event('IdV: doc auth ssn visited', **extra) # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # @param [Boolean] success
@@ -790,7 +782,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'IdV: doc auth image upload form submitted',
+      'IdV: doc auth image upload form submitted', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       success: success,
       errors: errors,
       attempts: attempts,
@@ -840,7 +832,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'IdV: doc auth image upload vendor submitted',
+      'IdV: doc auth image upload vendor submitted', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       success: success,
       errors: errors,
       exception: exception,
@@ -884,7 +876,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'IdV: doc auth image upload vendor pii validation',
+      'IdV: doc auth image upload vendor pii validation', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       success: success,
       errors: errors,
       user_id: user_id,
@@ -899,17 +891,17 @@ module AnalyticsEvents
   end
 
   def idv_doc_auth_verify_proofing_results(**extra)
-    track_event('IdV: doc auth verify proofing results', **extra)
+    track_event('IdV: doc auth verify proofing results', **extra) # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # @identity.idp.previous_event_name IdV: in person proofing verify submitted
   def idv_doc_auth_verify_submitted(**extra)
-    track_event('IdV: doc auth verify submitted', **extra)
+    track_event('IdV: doc auth verify submitted', **extra) # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # @identity.idp.previous_event_name IdV: in person proofing verify visited
   def idv_doc_auth_verify_visited(**extra)
-    track_event('IdV: doc auth verify visited', **extra)
+    track_event('IdV: doc auth verify visited', **extra) # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # @param [String] step_name
@@ -921,7 +913,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'IdV: doc auth warning visited',
+      'IdV: doc auth warning visited', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       step_name: step_name,
       remaining_attempts: remaining_attempts,
       **extra,
@@ -929,11 +921,11 @@ module AnalyticsEvents
   end
 
   def idv_doc_auth_welcome_submitted(**extra)
-    track_event('IdV: doc auth welcome submitted', **extra)
+    track_event('IdV: doc auth welcome submitted', **extra) # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   def idv_doc_auth_welcome_visited(**extra)
-    track_event('IdV: doc auth welcome visited', **extra)
+    track_event('IdV: doc auth welcome visited', **extra) # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # @param [Boolean] success
@@ -957,7 +949,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'IdV: final resolution',
+      'IdV: final resolution', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       success: success,
       fraud_review_pending: fraud_review_pending,
       fraud_rejection: fraud_rejection,
@@ -973,7 +965,7 @@ module AnalyticsEvents
   # User visited forgot password page
   def idv_forgot_password(proofing_components: nil, **extra)
     track_event(
-      'IdV: forgot password visited',
+      'IdV: forgot password visited', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       proofing_components: proofing_components,
       **extra,
     )
@@ -983,7 +975,7 @@ module AnalyticsEvents
   # User confirmed forgot password
   def idv_forgot_password_confirmed(proofing_components: nil, **extra)
     track_event(
-      'IdV: forgot password confirmed',
+      'IdV: forgot password confirmed', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       proofing_components: proofing_components,
       **extra,
     )
@@ -1007,7 +999,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'IdV: USPS address letter enqueued',
+      'IdV: USPS address letter enqueued', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       enqueued_at: enqueued_at,
       resend: resend,
       first_letter_requested_at: first_letter_requested_at,
@@ -1034,7 +1026,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'IdV: USPS address letter requested',
+      'IdV: USPS address letter requested', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       resend: resend,
       first_letter_requested_at:,
       hours_since_first_letter:,
@@ -1046,13 +1038,13 @@ module AnalyticsEvents
 
   # The user visited the gpo confirm cancellation screen
   def idv_gpo_confirm_start_over_visited
-    track_event('IdV: gpo confirm start over visited')
+    track_event('IdV: gpo confirm start over visited') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # A GPO reminder email was sent to the user
   # @param [String] user_id UUID of user who we sent a reminder to
   def idv_gpo_reminder_email_sent(user_id:, **extra)
-    track_event('IdV: gpo reminder email sent', user_id: user_id, **extra)
+    track_event('IdV: gpo reminder email sent', user_id: user_id, **extra) # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # Tracks emails that are initiated during InPerson::EmailReminderJob
@@ -1064,7 +1056,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'InPerson::EmailReminderJob: Reminder email initiated',
+      'InPerson::EmailReminderJob: Reminder email initiated', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       email_type: email_type,
       enrollment_id: enrollment_id,
       **extra,
@@ -1082,7 +1074,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'InPerson::EmailReminderJob: Exception raised when attempting to send reminder email',
+      'InPerson::EmailReminderJob: Exception raised when attempting to send reminder email', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       enrollment_id: enrollment_id,
       exception_class: exception_class,
       exception_message: exception_message,
@@ -1096,7 +1088,7 @@ module AnalyticsEvents
   def idv_in_person_location_submitted(selected_location:, flow_path:,
                                        **extra)
     track_event(
-      'IdV: in person proofing location submitted',
+      'IdV: in person proofing location submitted', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       selected_location: selected_location,
       flow_path: flow_path,
       **extra,
@@ -1107,7 +1099,7 @@ module AnalyticsEvents
   # The user visited the in person proofing location step
   def idv_in_person_location_visited(flow_path:, **extra)
     track_event(
-      'IdV: in person proofing location visited',
+      'IdV: in person proofing location visited', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       flow_path: flow_path,
       **extra,
     )
@@ -1128,7 +1120,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'Request USPS IPP locations: request failed',
+      'Request USPS IPP locations: request failed', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       exception_class: exception_class,
       exception_message: exception_message,
       response_body_present: response_body_present,
@@ -1155,7 +1147,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'IdV: in person proofing location search submitted',
+      'IdV: in person proofing location search submitted', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       success: success,
       result_total: result_total,
       errors: errors,
@@ -1170,7 +1162,7 @@ module AnalyticsEvents
   # The user submitted the in person proofing prepare step
   def idv_in_person_prepare_submitted(flow_path:, **extra)
     track_event(
-      'IdV: in person proofing prepare submitted',
+      'IdV: in person proofing prepare submitted', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       flow_path: flow_path,
       **extra,
     )
@@ -1179,7 +1171,7 @@ module AnalyticsEvents
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
   # The user visited the in person proofing prepare step
   def idv_in_person_prepare_visited(flow_path:, **extra)
-    track_event('IdV: in person proofing prepare visited', flow_path: flow_path, **extra)
+    track_event('IdV: in person proofing prepare visited', flow_path: flow_path, **extra) # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # @param [String] flow_path
@@ -1203,7 +1195,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'IdV: in person proofing address submitted',
+      'IdV: in person proofing address submitted', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       flow_path: flow_path,
       step: step,
       step_count: step_count,
@@ -1231,7 +1223,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'IdV: in person proofing address visited',
+      'IdV: in person proofing address visited', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       flow_path: flow_path,
       step: step,
       step_count: step_count,
@@ -1262,7 +1254,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'IdV: in person proofing cancel_update_address submitted',
+      'IdV: in person proofing cancel_update_address submitted', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       flow_path: flow_path,
       step: step,
       step_count: step_count,
@@ -1296,7 +1288,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'IdV: in person proofing cancel_update_state_id submitted',
+      'IdV: in person proofing cancel_update_state_id submitted', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       flow_path: flow_path,
       step: step,
       step_count: step_count,
@@ -1328,7 +1320,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'InPersonEnrollmentsReadyForStatusCheckJob: Job completed',
+      'InPersonEnrollmentsReadyForStatusCheckJob: Job completed', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       fetched_items:,
       processed_items:,
       deleted_items:,
@@ -1350,7 +1342,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'InPersonEnrollmentsReadyForStatusCheckJob: Ingestion error',
+      'InPersonEnrollmentsReadyForStatusCheckJob: Ingestion error', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       exception_class:,
       exception_message:,
       **extra,
@@ -1360,7 +1352,7 @@ module AnalyticsEvents
   # A job to check USPS notifications about in-person enrollment status updates has started
   def idv_in_person_proofing_enrollments_ready_for_status_check_job_started(**extra)
     track_event(
-      'InPersonEnrollmentsReadyForStatusCheckJob: Job started',
+      'InPersonEnrollmentsReadyForStatusCheckJob: Job started', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       **extra,
     )
   end
@@ -1372,7 +1364,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'IdV: in person proofing characters submitted could not be transliterated',
+      'IdV: in person proofing characters submitted could not be transliterated', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       nontransliterable_characters: nontransliterable_characters,
       **extra,
     )
@@ -1399,7 +1391,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'IdV: in person proofing redo_state_id submitted',
+      'IdV: in person proofing redo_state_id submitted', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       flow_path: flow_path,
       step: step,
       step_count: step_count,
@@ -1413,7 +1405,7 @@ module AnalyticsEvents
   end
 
   def idv_in_person_proofing_residential_address_submitted(**extra)
-    track_event('IdV: in person proofing residential address submitted', **extra)
+    track_event('IdV: in person proofing residential address submitted', **extra) # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # @param [String] flow_path
@@ -1437,7 +1429,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'IdV: in person proofing state_id submitted',
+      'IdV: in person proofing state_id submitted', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       flow_path: flow_path,
       step: step,
       step_count: step_count,
@@ -1465,7 +1457,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'IdV: in person proofing state_id visited',
+      'IdV: in person proofing state_id visited', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       flow_path: flow_path,
       step: step,
       step_count: step_count,
@@ -1478,7 +1470,7 @@ module AnalyticsEvents
   # The user clicked the sp link on the "ready to verify" page
   def idv_in_person_ready_to_verify_sp_link_clicked(**extra)
     track_event(
-      'IdV: user clicked sp link on ready to verify page',
+      'IdV: user clicked sp link on ready to verify page', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       **extra,
     )
   end
@@ -1488,7 +1480,7 @@ module AnalyticsEvents
   def idv_in_person_ready_to_verify_visit(proofing_components: nil,
                                           **extra)
     track_event(
-      'IdV: in person ready to verify visited',
+      'IdV: in person ready to verify visited', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       proofing_components: proofing_components,
       **extra,
     )
@@ -1497,7 +1489,7 @@ module AnalyticsEvents
   # The user clicked the what to bring link on the "ready to verify" page
   def idv_in_person_ready_to_verify_what_to_bring_link_clicked(**extra)
     track_event(
-      'IdV: user clicked what to bring link on ready to verify page',
+      'IdV: user clicked what to bring link on ready to verify page', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       **extra,
     )
   end
@@ -1516,7 +1508,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'SendProofingNotificationJob: in person notification SMS send attempted',
+      'SendProofingNotificationJob: in person notification SMS send attempted', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       success: success,
       enrollment_code: enrollment_code,
       enrollment_id: enrollment_id,
@@ -1535,7 +1527,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'SendProofingNotificationJob: job completed',
+      'SendProofingNotificationJob: job completed', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       enrollment_code: enrollment_code,
       enrollment_id: enrollment_id,
       **extra,
@@ -1556,7 +1548,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'SendProofingNotificationJob: exception raised',
+      'SendProofingNotificationJob: exception raised', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       enrollment_code: enrollment_code,
       enrollment_id: enrollment_id,
       exception_class: exception_class,
@@ -1575,7 +1567,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'SendProofingNotificationJob: job skipped',
+      'SendProofingNotificationJob: job skipped', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       enrollment_code: enrollment_code,
       enrollment_id: enrollment_id,
       **extra,
@@ -1592,7 +1584,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'SendProofingNotificationJob: job started',
+      'SendProofingNotificationJob: job started', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       enrollment_code: enrollment_code,
       enrollment_id: enrollment_id,
       **extra,
@@ -1602,13 +1594,13 @@ module AnalyticsEvents
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
   # The user submitted the in person proofing switch_back step
   def idv_in_person_switch_back_submitted(flow_path:, **extra)
-    track_event('IdV: in person proofing switch_back submitted', flow_path: flow_path, **extra)
+    track_event('IdV: in person proofing switch_back submitted', flow_path: flow_path, **extra) # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
   # The user visited the in person proofing switch_back step
   def idv_in_person_switch_back_visited(flow_path:, **extra)
-    track_event('IdV: in person proofing switch_back visited', flow_path: flow_path, **extra)
+    track_event('IdV: in person proofing switch_back visited', flow_path: flow_path, **extra) # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # An email from USPS with an enrollment code has been received, indicating
@@ -1622,7 +1614,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'IdV: in person usps proofing enrollment code email received',
+      'IdV: in person usps proofing enrollment code email received', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       multi_part: multi_part,
       part_found: part_found,
       **extra,
@@ -1648,7 +1640,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'GetUspsProofingResultsJob: Job completed',
+      'GetUspsProofingResultsJob: Job completed', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       duration_seconds: duration_seconds,
       enrollments_checked: enrollments_checked,
       enrollments_errored: enrollments_errored,
@@ -1671,7 +1663,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'GetUspsProofingResultsJob: Exception raised when attempting to send deadline passed email',
+      'GetUspsProofingResultsJob: Exception raised when attempting to send deadline passed email', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       enrollment_id: enrollment_id,
       exception_class: exception_class,
       exception_message: exception_message,
@@ -1686,7 +1678,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'GetUspsProofingResultsJob: deadline passed email initiated',
+      'GetUspsProofingResultsJob: deadline passed email initiated', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       enrollment_id: enrollment_id,
       **extra,
     )
@@ -1699,7 +1691,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'GetUspsProofingResultsJob: Success or failure email initiated',
+      'GetUspsProofingResultsJob: Success or failure email initiated', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       email_type: email_type,
       **extra,
     )
@@ -1718,7 +1710,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'GetUspsProofingResultsJob: Enrollment incomplete',
+      'GetUspsProofingResultsJob: Enrollment incomplete', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       enrollment_code: enrollment_code,
       enrollment_id: enrollment_id,
       minutes_since_established: minutes_since_established,
@@ -1744,7 +1736,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'GetUspsProofingResultsJob: Enrollment status updated',
+      'GetUspsProofingResultsJob: Enrollment status updated', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       enrollment_code: enrollment_code,
       enrollment_id: enrollment_id,
       minutes_since_established: minutes_since_established,
@@ -1806,7 +1798,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'GetUspsProofingResultsJob: Exception raised',
+      'GetUspsProofingResultsJob: Exception raised', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       reason: reason,
       enrollment_id: enrollment_id,
       exception_class: exception_class,
@@ -1843,7 +1835,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'GetUspsProofingResultsJob: Job started',
+      'GetUspsProofingResultsJob: Job started', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       enrollments_count: enrollments_count,
       reprocess_delay_minutes: reprocess_delay_minutes,
       **extra,
@@ -1865,7 +1857,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'GetUspsProofingResultsJob: Unexpected response received',
+      'GetUspsProofingResultsJob: Unexpected response received', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       enrollment_code: enrollment_code,
       enrollment_id: enrollment_id,
       minutes_since_established: minutes_since_established,
@@ -1890,7 +1882,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'USPS IPPaaS enrollment failed',
+      'USPS IPPaaS enrollment failed', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       context: context,
       enrollment_id: enrollment_id,
       exception_class: exception_class,
@@ -1902,7 +1894,7 @@ module AnalyticsEvents
 
   # User visits IdV
   def idv_intro_visit
-    track_event('IdV: intro visited')
+    track_event('IdV: intro visited') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # The user visited the "letter enqueued" page shown during the verify by mail flow
@@ -1910,7 +1902,7 @@ module AnalyticsEvents
   # @identity.idp.previous_event_name IdV: come back later visited
   def idv_letter_enqueued_visit(proofing_components: nil, **extra)
     track_event(
-      'IdV: letter enqueued visited',
+      'IdV: letter enqueued visited', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       proofing_components: proofing_components,
       **extra,
     )
@@ -1919,7 +1911,7 @@ module AnalyticsEvents
   # Tracks when the user visits Mail only warning when vendor_status_sms is set to full_outage
   def idv_mail_only_warning_visited(**extra)
     track_event(
-      'IdV: Mail only warning visited',
+      'IdV: Mail only warning visited', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       **extra,
     )
   end
@@ -1937,7 +1929,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'IdV: Mobile device and camera check',
+      'IdV: Mobile device and camera check', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       is_camera_capable_mobile: is_camera_capable_mobile,
       camera_present: camera_present,
       grace_time: grace_time,
@@ -1961,7 +1953,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'IdV: Native camera forced after failed attempts',
+      'IdV: Native camera forced after failed attempts', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       failed_capture_attempts: failed_capture_attempts,
       failed_submission_attempts: failed_submission_attempts,
       field: field,
@@ -1972,7 +1964,7 @@ module AnalyticsEvents
 
   # Tracks when user reaches verify errors due to being rejected due to fraud
   def idv_not_verified_visited
-    track_event('IdV: Not verified visited')
+    track_event('IdV: Not verified visited') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # Tracks if a user clicks the 'acknowledge' checkbox during personal
@@ -1982,7 +1974,7 @@ module AnalyticsEvents
   #                  the box with this click
   def idv_personal_key_acknowledgment_toggled(checked:, proofing_components:, **extra)
     track_event(
-      'IdV: personal key acknowledgment toggled',
+      'IdV: personal key acknowledgment toggled', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       checked: checked,
       proofing_components: proofing_components,
       **extra,
@@ -1994,7 +1986,7 @@ module AnalyticsEvents
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   def idv_personal_key_downloaded(proofing_components: nil, **extra)
     track_event(
-      'IdV: personal key downloaded',
+      'IdV: personal key downloaded', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       proofing_components: proofing_components,
       **extra,
     )
@@ -2015,7 +2007,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'IdV: personal key submitted',
+      'IdV: personal key submitted', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       in_person_verification_pending: in_person_verification_pending,
       deactivation_reason: deactivation_reason,
       fraud_review_pending: fraud_review_pending,
@@ -2029,7 +2021,7 @@ module AnalyticsEvents
   # User visited IDV personal key page
   def idv_personal_key_visited(proofing_components: nil, **extra)
     track_event(
-      'IdV: personal key visited',
+      'IdV: personal key visited', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       proofing_components: proofing_components,
       **extra,
     )
@@ -2048,7 +2040,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'IdV: phone confirmation form',
+      'IdV: phone confirmation form', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       success: success,
       errors: errors,
       otp_delivery_preference: otp_delivery_preference,
@@ -2061,7 +2053,7 @@ module AnalyticsEvents
   # The user was rate limited for submitting too many OTPs during the IDV phone step
   def idv_phone_confirmation_otp_rate_limit_attempts(proofing_components: nil, **extra)
     track_event(
-      'Idv: Phone OTP attempts rate limited',
+      'Idv: Phone OTP attempts rate limited', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       proofing_components: proofing_components,
       **extra,
     )
@@ -2071,7 +2063,7 @@ module AnalyticsEvents
   # The user was locked out for hitting the phone OTP rate limit during IDV
   def idv_phone_confirmation_otp_rate_limit_locked_out(proofing_components: nil, **extra)
     track_event(
-      'Idv: Phone OTP rate limited user',
+      'Idv: Phone OTP rate limited user', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       proofing_components: proofing_components,
       **extra,
     )
@@ -2081,7 +2073,7 @@ module AnalyticsEvents
   # The user was rate limited for requesting too many OTPs during the IDV phone step
   def idv_phone_confirmation_otp_rate_limit_sends(proofing_components: nil, **extra)
     track_event(
-      'Idv: Phone OTP sends rate limited',
+      'Idv: Phone OTP sends rate limited', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       proofing_components: proofing_components,
       **extra,
     )
@@ -2108,7 +2100,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'IdV: phone confirmation otp resent',
+      'IdV: phone confirmation otp resent', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       success: success,
       errors: errors,
       otp_delivery_preference: otp_delivery_preference,
@@ -2146,7 +2138,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'IdV: phone confirmation otp sent',
+      'IdV: phone confirmation otp sent', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       success: success,
       errors: errors,
       otp_delivery_preference: otp_delivery_preference,
@@ -2180,7 +2172,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'IdV: phone confirmation otp submitted',
+      'IdV: phone confirmation otp submitted', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       success: success,
       errors: errors,
       code_expired: code_expired,
@@ -2196,7 +2188,7 @@ module AnalyticsEvents
   # When a user visits the page to confirm posession of a new phone number during the IDV process
   def idv_phone_confirmation_otp_visit(proofing_components: nil, **extra)
     track_event(
-      'IdV: phone confirmation otp visited',
+      'IdV: phone confirmation otp visited', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       proofing_components: proofing_components,
       **extra,
     )
@@ -2213,7 +2205,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'IdV: phone confirmation vendor',
+      'IdV: phone confirmation vendor', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       success: success,
       errors: errors,
       proofing_components: proofing_components,
@@ -2234,7 +2226,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'IdV: phone error visited',
+      'IdV: phone error visited', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       {
         type: type,
         proofing_components: proofing_components,
@@ -2249,7 +2241,7 @@ module AnalyticsEvents
   # User visited idv phone of record
   def idv_phone_of_record_visited(proofing_components: nil, **extra)
     track_event(
-      'IdV: phone of record visited',
+      'IdV: phone of record visited', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       proofing_components: proofing_components,
       **extra,
     )
@@ -2269,7 +2261,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'IdV: Phone OTP Delivery Selection Submitted',
+      'IdV: Phone OTP Delivery Selection Submitted', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       {
         success: success,
         errors: errors,
@@ -2285,7 +2277,7 @@ module AnalyticsEvents
   # User visited idv phone OTP delivery selection
   def idv_phone_otp_delivery_selection_visit(proofing_components: nil, **extra)
     track_event(
-      'IdV: Phone OTP delivery Selection Visited',
+      'IdV: Phone OTP delivery Selection Visited', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       proofing_components: proofing_components,
       **extra,
     )
@@ -2296,7 +2288,7 @@ module AnalyticsEvents
   # User decided to use a different phone number in idv
   def idv_phone_use_different(step:, proofing_components: nil, **extra)
     track_event(
-      'IdV: use different phone number',
+      'IdV: use different phone number', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       step: step,
       proofing_components: proofing_components,
       **extra,
@@ -2308,7 +2300,7 @@ module AnalyticsEvents
   # Tracks when the user reaches the verify please call page after failing proofing
   def idv_please_call_visited(proofing_components: nil, **extra)
     track_event(
-      'IdV: Verify please call visited',
+      'IdV: Verify please call visited', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       proofing_components: proofing_components,
       **extra,
     )
@@ -2318,7 +2310,7 @@ module AnalyticsEvents
   # The system encountered an error and the proofing results are missing
   def idv_proofing_resolution_result_missing(proofing_components: nil, **extra)
     track_event(
-      'IdV: proofing resolution result missing',
+      'IdV: proofing resolution result missing', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       proofing_components: proofing_components,
       **extra,
     )
@@ -2332,7 +2324,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'IdV: request letter visited',
+      'IdV: request letter visited', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       letter_already_sent: letter_already_sent,
       **extra,
     )
@@ -2357,7 +2349,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'IdV: review complete',
+      'IdV: review complete', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       success: success,
       deactivation_reason: deactivation_reason,
       fraud_review_pending: fraud_review_pending,
@@ -2378,7 +2370,7 @@ module AnalyticsEvents
                               address_verification_method: nil,
                               **extra)
     track_event(
-      'IdV: review info visited',
+      'IdV: review info visited', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       address_verification_method: address_verification_method,
       proofing_components: proofing_components,
       **extra,
@@ -2394,7 +2386,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'IdV: session error visited',
+      'IdV: session error visited', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       type: type,
       attempts_remaining: attempts_remaining,
       **extra,
@@ -2412,7 +2404,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'IdV: start over',
+      'IdV: start over', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       step: step,
       location: location,
       proofing_components: proofing_components,
@@ -2423,7 +2415,7 @@ module AnalyticsEvents
   # Track when USPS auth token refresh job completed
   def idv_usps_auth_token_refresh_job_completed(**extra)
     track_event(
-      'UspsAuthTokenRefreshJob: Completed',
+      'UspsAuthTokenRefreshJob: Completed', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       **extra,
     )
   end
@@ -2433,7 +2425,7 @@ module AnalyticsEvents
   # @param [String] exception_message
   def idv_usps_auth_token_refresh_job_network_error(exception_class:, exception_message:, **extra)
     track_event(
-      'UspsAuthTokenRefreshJob: Network error',
+      'UspsAuthTokenRefreshJob: Network error', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       exception_class: exception_class,
       exception_message: exception_message,
       **extra,
@@ -2443,7 +2435,7 @@ module AnalyticsEvents
   # Track when USPS auth token refresh job started
   def idv_usps_auth_token_refresh_job_started(**extra)
     track_event(
-      'UspsAuthTokenRefreshJob: Started',
+      'UspsAuthTokenRefreshJob: Started', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       **extra,
     )
   end
@@ -2475,7 +2467,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'IdV: enter verify by mail code submitted',
+      'IdV: enter verify by mail code submitted', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       success: success,
       errors: errors,
       pii_like_keypaths: pii_like_keypaths,
@@ -2498,7 +2490,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'IdV: enter verify by mail code visited',
+      'IdV: enter verify by mail code visited', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       source: source,
       **extra,
     )
@@ -2509,7 +2501,7 @@ module AnalyticsEvents
   def idv_verify_in_person_troubleshooting_option_clicked(flow_path:,
                                                           **extra)
     track_event(
-      'IdV: verify in person troubleshooting option clicked',
+      'IdV: verify in person troubleshooting option clicked', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       flow_path: flow_path,
       **extra,
     )
@@ -2524,7 +2516,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'Invalid Authenticity Token',
+      'Invalid Authenticity Token', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       controller: controller,
       user_signed_in: user_signed_in,
       **extra,
@@ -2544,7 +2536,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'IRS Attempt API: Events submitted',
+      'IRS Attempt API: Events submitted', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       rendered_event_count: rendered_event_count,
       authenticated: authenticated,
       elapsed_time: elapsed_time,
@@ -2578,7 +2570,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'Logout Initiated',
+      'Logout Initiated', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       success: success,
       client_id: client_id,
       client_id_parameter_present: client_id_parameter_present,
@@ -2627,7 +2619,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'Multi-Factor Authentication',
+      'Multi-Factor Authentication', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       success: success,
       errors: errors,
       context: context,
@@ -2651,7 +2643,7 @@ module AnalyticsEvents
   # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
   def multi_factor_auth_added_phone(enabled_mfa_methods_count:, **extra)
     track_event(
-      'Multi-Factor Authentication: Added phone',
+      'Multi-Factor Authentication: Added phone', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       {
         method_name: :phone,
         enabled_mfa_methods_count: enabled_mfa_methods_count,
@@ -2660,13 +2652,14 @@ module AnalyticsEvents
     )
   end
 
+  # @identity.idp.previous_event_name Multi-Factor Authentication: Added PIV_CAC
   # Tracks when the user has added the MFA method piv_cac to their account
   # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
   # @param [Boolean] in_account_creation_flow whether user is going through creation flow
   def multi_factor_auth_added_piv_cac(enabled_mfa_methods_count:, in_account_creation_flow:,
                                       **extra)
     track_event(
-      'Multi-Factor Authentication: Added PIV_CAC',
+      :multi_factor_auth_added_piv_cac,
       {
         method_name: :piv_cac,
         enabled_mfa_methods_count:,
@@ -2682,7 +2675,7 @@ module AnalyticsEvents
   def multi_factor_auth_added_totp(enabled_mfa_methods_count:, in_account_creation_flow:,
                                    **extra)
     track_event(
-      'Multi-Factor Authentication: Added TOTP',
+      'Multi-Factor Authentication: Added TOTP', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       {
         method_name: :totp,
         in_account_creation_flow:,
@@ -2700,7 +2693,7 @@ module AnalyticsEvents
     enabled_mfa_methods_count:, **extra
   )
     track_event(
-      'Multi-Factor Authentication: Added webauthn',
+      'Multi-Factor Authentication: Added webauthn', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       {
         method_name: :webauthn,
         platform_authenticator: platform_authenticator,
@@ -2712,7 +2705,7 @@ module AnalyticsEvents
 
   # A user has downloaded their backup codes
   def multi_factor_auth_backup_code_download
-    track_event('Multi-Factor Authentication: download backup code')
+    track_event('Multi-Factor Authentication: download backup code') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # Tracks when the user visits the backup code confirmation setup page
@@ -2724,7 +2717,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'Multi-Factor Authentication: enter backup code confirmation visited',
+      'Multi-Factor Authentication: enter backup code confirmation visited', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       {
         enabled_mfa_methods_count:,
         in_account_creation_flow:,
@@ -2737,7 +2730,7 @@ module AnalyticsEvents
   # User visited the page to enter a backup code as their MFA
   def multi_factor_auth_enter_backup_code_visit(context:, **extra)
     track_event(
-      'Multi-Factor Authentication: enter backup code visited',
+      'Multi-Factor Authentication: enter backup code visited', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       context: context,
       **extra,
     )
@@ -2756,7 +2749,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'Multi-Factor Authentication: enter OTP visited',
+      'Multi-Factor Authentication: enter OTP visited', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       context: context,
       multi_factor_auth_method: multi_factor_auth_method,
       confirmation_for_add_phone: confirmation_for_add_phone,
@@ -2769,12 +2762,13 @@ module AnalyticsEvents
   # User visited the page to enter a personal key as their mfa (legacy flow)
   def multi_factor_auth_enter_personal_key_visit(context:, **extra)
     track_event(
-      'Multi-Factor Authentication: enter personal key visited',
+      'Multi-Factor Authentication: enter personal key visited', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       context: context,
       **extra,
     )
   end
 
+  # @identity.idp.previous_event_name 'Multi-Factor Authentication: enter PIV CAC visited'
   # @param ["authentication","reauthentication","confirmation"] context user session context
   # @param ["piv_cac"] multi_factor_auth_method
   # @param [Integer, nil] piv_cac_configuration_id PIV/CAC configuration database ID
@@ -2786,7 +2780,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'Multi-Factor Authentication: enter PIV CAC visited',
+      :multi_factor_auth_enter_piv_cac,
       context: context,
       multi_factor_auth_method: multi_factor_auth_method,
       piv_cac_configuration_id: piv_cac_configuration_id,
@@ -2797,7 +2791,7 @@ module AnalyticsEvents
   # @param ["authentication","reauthentication","confirmation"] context user session context
   # User visited the page to enter a TOTP as their mfa
   def multi_factor_auth_enter_totp_visit(context:, **extra)
-    track_event('Multi-Factor Authentication: enter TOTP visited', context: context, **extra)
+    track_event('Multi-Factor Authentication: enter TOTP visited', context: context, **extra) # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # @param ["authentication","reauthentication","confirmation"] context user session context
@@ -2813,7 +2807,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'Multi-Factor Authentication: enter webAuthn authentication visited',
+      'Multi-Factor Authentication: enter webAuthn authentication visited', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       context: context,
       multi_factor_auth_method: multi_factor_auth_method,
       webauthn_configuration_id: webauthn_configuration_id,
@@ -2823,12 +2817,12 @@ module AnalyticsEvents
 
   # Max multi factor auth attempts met
   def multi_factor_auth_max_attempts
-    track_event('Multi-Factor Authentication: max attempts reached')
+    track_event('Multi-Factor Authentication: max attempts reached') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # Max multi factor max otp sends reached
   def multi_factor_auth_max_sends
-    track_event('Multi-Factor Authentication: max otp sends reached')
+    track_event('Multi-Factor Authentication: max otp sends reached') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # Multi factor selected from auth options list
@@ -2837,7 +2831,7 @@ module AnalyticsEvents
   # @param [String] selection
   def multi_factor_auth_option_list(success:, errors:, selection:, **extra)
     track_event(
-      'Multi-Factor Authentication: option list',
+      'Multi-Factor Authentication: option list', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       success: success,
       errors: errors,
       selection: selection,
@@ -2847,7 +2841,7 @@ module AnalyticsEvents
 
   # User visited the list of multi-factor options to use
   def multi_factor_auth_option_list_visit
-    track_event('Multi-Factor Authentication: option list visited')
+    track_event('Multi-Factor Authentication: option list visited') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # Multi factor auth phone setup
@@ -2869,7 +2863,7 @@ module AnalyticsEvents
                                     types:,
                                     **extra)
     track_event(
-      'Multi-Factor Authentication: phone setup',
+      'Multi-Factor Authentication: phone setup', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       success: success,
       errors: errors,
       otp_delivery_preference: otp_delivery_preference,
@@ -2897,50 +2891,12 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'Multi-Factor Authentication Setup',
+      'Multi-Factor Authentication Setup', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       success: success,
       errors: errors,
       multi_factor_auth_method: multi_factor_auth_method,
       in_account_creation_flow: in_account_creation_flow,
       enabled_mfa_methods_count: enabled_mfa_methods_count,
-      **extra,
-    )
-  end
-
-  # @param [Boolean] success
-  # @param [String] exception
-  # @param [Integer] profile_id
-  # A profile was migrated from a single-region key to a multi-region key
-  def multi_region_kms_migration_profile_migrated(
-    success:,
-    exception:,
-    profile_id:,
-    **extra
-  )
-    track_event(
-      'Multi-region KMS migration: Profile migrated',
-      success: success,
-      exception: exception,
-      profile_id: profile_id,
-      **extra,
-    )
-  end
-
-  # @param [Integer] profile_count
-  # @param [Integer] success_count
-  # @param [Integer] error_count
-  # The profile migration job finished running
-  def multi_region_kms_migration_profile_migration_summary(
-    profile_count:,
-    success_count:,
-    error_count:,
-    **extra
-  )
-    track_event(
-      'Multi-region KMS migration: Profile migration summary',
-      profile_count: profile_count,
-      success_count: success_count,
-      error_count: error_count,
       **extra,
     )
   end
@@ -2956,7 +2912,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'Multi-region KMS migration: User migrated',
+      'Multi-region KMS migration: User migrated', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       success: success,
       exception: exception,
       user_id: user_id,
@@ -2975,7 +2931,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'Multi-region KMS migration: User migration summary',
+      'Multi-region KMS migration: User migration summary', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       user_count: user_count,
       success_count: success_count,
       error_count: error_count,
@@ -3008,7 +2964,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'OIDC Logout Requested',
+      'OIDC Logout Requested', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       success: success,
       client_id: client_id,
       client_id_parameter_present: client_id_parameter_present,
@@ -3048,7 +3004,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'OIDC Logout Submitted',
+      'OIDC Logout Submitted', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       success: success,
       client_id: client_id,
       client_id_parameter_present: client_id_parameter_present,
@@ -3088,7 +3044,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'OIDC Logout Page Visited',
+      'OIDC Logout Page Visited', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       success: success,
       client_id: client_id,
       client_id_parameter_present: client_id_parameter_present,
@@ -3112,7 +3068,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'OpenID Connect: authorization request handoff',
+      'OpenID Connect: authorization request handoff', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       client_id: client_id,
       code_digest: code_digest,
       **extra,
@@ -3126,7 +3082,7 @@ module AnalyticsEvents
   # @param [Hash] errors
   def openid_connect_bearer_token(success:, ial:, client_id:, errors:, **extra)
     track_event(
-      'OpenID Connect: bearer token authentication',
+      'OpenID Connect: bearer token authentication', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       success: success,
       ial: ial,
       client_id: client_id,
@@ -3150,7 +3106,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'OpenID Connect: authorization request',
+      'OpenID Connect: authorization request', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       client_id: client_id,
       scope: scope,
       acr_values: acr_values,
@@ -3168,7 +3124,7 @@ module AnalyticsEvents
   # @param [Integer, nil] ial ial level of identity
   def openid_connect_token(client_id:, user_id:, code_digest:, expires_in:, ial:, **extra)
     track_event(
-      'OpenID Connect: token',
+      'OpenID Connect: token', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       client_id: client_id,
       user_id: user_id,
       code_digest: code_digest,
@@ -3195,7 +3151,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'OTP: Delivery Selection',
+      'OTP: Delivery Selection', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       otp_delivery_preference: otp_delivery_preference,
       resend: resend,
       country_code: country_code,
@@ -3213,7 +3169,7 @@ module AnalyticsEvents
   # @param [String] country
   def otp_phone_validation_failed(error:, context:, country:, **extra)
     track_event(
-      'Vendor Phone Validation failed',
+      'Vendor Phone Validation failed', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       error: error,
       context: context,
       country: country,
@@ -3225,19 +3181,19 @@ module AnalyticsEvents
   # @param [Hash] errors
   # The user updated their password
   def password_changed(success:, errors:, **extra)
-    track_event('Password Changed', success: success, errors: errors, **extra)
+    track_event('Password Changed', success: success, errors: errors, **extra) # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # @param [Boolean] success
   # @param [Hash] errors
   # The user added a password after verifying their email for account creation
   def password_creation(success:, errors:, **extra)
-    track_event('Password Creation', success: success, errors: errors, **extra)
+    track_event('Password Creation', success: success, errors: errors, **extra) # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # The user got their password incorrect the max number of times, their session was terminated
   def password_max_attempts
-    track_event('Password Max Attempts Reached')
+    track_event('Password Max Attempts Reached') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # @param [Boolean] success
@@ -3249,7 +3205,7 @@ module AnalyticsEvents
   # The user entered an email address to request a password reset
   def password_reset_email(success:, errors:, confirmed:, active_profile:, **extra)
     track_event(
-      'Password Reset: Email Submitted',
+      'Password Reset: Email Submitted', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       success: success,
       errors: errors,
       confirmed: confirmed,
@@ -3265,7 +3221,7 @@ module AnalyticsEvents
   # The user changed the password for their account via the password reset flow
   def password_reset_password(success:, errors:, profile_deactivated:, **extra)
     track_event(
-      'Password Reset: Password Submitted',
+      'Password Reset: Password Submitted', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       success: success,
       errors: errors,
       profile_deactivated: profile_deactivated,
@@ -3279,7 +3235,7 @@ module AnalyticsEvents
   # A password token has been sent for user
   def password_reset_token(success:, errors:, user_id:, **extra)
     track_event(
-      'Password Reset: Token Submitted',
+      'Password Reset: Token Submitted', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       success: success,
       errors: errors,
       user_id: user_id,
@@ -3289,17 +3245,17 @@ module AnalyticsEvents
 
   # Password reset form has been visited.
   def password_reset_visit
-    track_event('Password Reset: Email Form Visited')
+    track_event('Password Reset: Email Form Visited') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # Pending account reset cancelled
   def pending_account_reset_cancelled
-    track_event('Pending account reset cancelled')
+    track_event('Pending account reset cancelled') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # Pending account reset visited
   def pending_account_reset_visited
-    track_event('Pending account reset visited')
+    track_event('Pending account reset visited') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # @param [Boolean] success
@@ -3307,7 +3263,7 @@ module AnalyticsEvents
   # Alert user if a personal key was used to sign in
   def personal_key_alert_about_sign_in(success:, errors:, **extra)
     track_event(
-      'Personal key: Alert user about sign in',
+      'Personal key: Alert user about sign in', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       success: success,
       errors: errors,
       **extra,
@@ -3316,13 +3272,13 @@ module AnalyticsEvents
 
   # Account reactivated with personal key
   def personal_key_reactivation
-    track_event('Personal key reactivation: Account reactivated with personal key')
+    track_event('Personal key reactivation: Account reactivated with personal key') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # Account reactivated with personal key as MFA
   def personal_key_reactivation_sign_in
     track_event(
-      'Personal key reactivation: Account reactivated with personal key as MFA',
+      'Personal key reactivation: Account reactivated with personal key as MFA', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
     )
   end
 
@@ -3332,7 +3288,7 @@ module AnalyticsEvents
   # Personal key form submitted
   def personal_key_reactivation_submitted(success:, errors:, pii_like_keypaths:, **extra)
     track_event(
-      'Personal key reactivation: Personal key form submitted',
+      'Personal key reactivation: Personal key form submitted', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       success: success,
       errors: errors,
       pii_like_keypaths: pii_like_keypaths,
@@ -3342,14 +3298,14 @@ module AnalyticsEvents
 
   # Personal key reactivation visited
   def personal_key_reactivation_visited
-    track_event('Personal key reactivation: Personal key form visited')
+    track_event('Personal key reactivation: Personal key form visited') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # @param [Boolean] personal_key_present if personal key is present
   # Personal key viewed
   def personal_key_viewed(personal_key_present:, **extra)
     track_event(
-      'Personal key viewed',
+      'Personal key viewed', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       personal_key_present: personal_key_present,
       **extra,
     )
@@ -3370,7 +3326,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'Phone Number Change: Form submitted',
+      'Phone Number Change: Form submitted', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       success: success,
       errors: errors,
       delivery_preference: delivery_preference,
@@ -3382,7 +3338,7 @@ module AnalyticsEvents
 
   # User has viewed the page to change their phone number
   def phone_change_viewed
-    track_event('Phone Number Change: Visited')
+    track_event('Phone Number Change: Visited') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # @param [Boolean] success
@@ -3390,7 +3346,7 @@ module AnalyticsEvents
   # tracks a phone number deletion event
   def phone_deletion(success:, phone_configuration_id:, **extra)
     track_event(
-      'Phone Number Deletion: Submitted',
+      'Phone Number Deletion: Submitted', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       success: success,
       phone_configuration_id: phone_configuration_id,
       **extra,
@@ -3398,29 +3354,36 @@ module AnalyticsEvents
   end
 
   # @identity.idp.previous_event_name User Registration: piv cac disabled
+  # @identity.idp.previous_event_name PIV CAC disabled
   # Tracks when user's piv cac is disabled
   def piv_cac_disabled
-    track_event('PIV CAC disabled')
+    track_event(:piv_cac_disabled)
   end
 
+  # @identity.idp.previous_event_name PIV/CAC login
   # @param [Boolean] success
   # @param [Hash] errors
   # tracks piv cac login event
   def piv_cac_login(success:, errors:, **extra)
     track_event(
-      'PIV/CAC Login',
+      :piv_cac_login,
       success: success,
       errors: errors,
       **extra,
     )
   end
 
+  def piv_cac_login_visited
+    track_event(:piv_cac_login_visited)
+  end
+
   # @identity.idp.previous_event_name User Registration: piv cac setup visited
+  # @identity.idp.previous_event_name PIV CAC setup visited
   # Tracks when user's piv cac setup
   # @param [Boolean] in_account_creation_flow
-  def piv_cac_setup_visit(in_account_creation_flow:, **extra)
+  def piv_cac_setup_visited(in_account_creation_flow:, **extra)
     track_event(
-      'PIV CAC setup visited',
+      :piv_cac_setup_visited,
       in_account_creation_flow:,
       **extra,
     )
@@ -3433,7 +3396,7 @@ module AnalyticsEvents
   # User was redirected to the login.gov policy page
   def policy_redirect(redirect_url:, step: nil, location: nil, flow: nil, **extra)
     track_event(
-      'Policy Page Redirect',
+      'Policy Page Redirect', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       redirect_url: redirect_url,
       step: step,
       location: location,
@@ -3445,13 +3408,13 @@ module AnalyticsEvents
   # @param [String] error
   # Tracks if a Profile encryption is invalid
   def profile_encryption_invalid(error:, **extra)
-    track_event('Profile Encryption: Invalid', error: error, **extra)
+    track_event('Profile Encryption: Invalid', error: error, **extra) # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # @see #profile_personal_key_create_notifications
   # User has chosen to receive a new personal key
   def profile_personal_key_create
-    track_event('Profile: Created new personal key')
+    track_event('Profile: Created new personal key') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # @param [true] success this event always succeeds
@@ -3462,7 +3425,7 @@ module AnalyticsEvents
   # were sent to phone numbers and email addresses for the user
   def profile_personal_key_create_notifications(success:, emails:, sms_message_ids:, **extra)
     track_event(
-      'Profile: Created new personal key notifications',
+      'Profile: Created new personal key notifications', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       success: success,
       emails: emails,
       sms_message_ids: sms_message_ids,
@@ -3472,21 +3435,21 @@ module AnalyticsEvents
 
   # User has visited the page that lets them confirm if they want a new personal key
   def profile_personal_key_visit
-    track_event('Profile: Visited new personal key')
+    track_event('Profile: Visited new personal key') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # @identity.idp.previous_event_name Proofing Address Timeout
   # The job for address verification (PhoneFinder) did not record a result in the expected
   # place during the expected time frame
   def proofing_address_result_missing
-    track_event('Proofing Address Result Missing')
+    track_event('Proofing Address Result Missing') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # @identity.idp.previous_event_name Proofing Document Timeout
   # The job for document authentication did not record a result in the expected
   # place during the expected time frame
   def proofing_document_result_missing
-    track_event('Proofing Document Result Missing')
+    track_event('Proofing Document Result Missing') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # Tracks when a user triggered a rate limiter
@@ -3494,7 +3457,7 @@ module AnalyticsEvents
   # @identity.idp.previous_event_name Throttler Rate Limit Triggered
   def rate_limit_reached(limiter_type:, **extra)
     track_event(
-      'Rate Limit Reached',
+      'Rate Limit Reached', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       limiter_type: limiter_type,
       **extra,
     )
@@ -3503,7 +3466,17 @@ module AnalyticsEvents
   # Rate limit triggered
   # @param [String] type
   def rate_limit_triggered(type:, **extra)
-    track_event('Rate Limit Triggered', type: type, **extra)
+    track_event('Rate Limit Triggered', type: type, **extra) # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
+  end
+
+  # Account profile reactivation submitted
+  def reactivate_account_submit
+    track_event('Reactivate Account Submitted') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
+  end
+
+  # Account profile reactivation page visited
+  def reactivate_account_visit
+    track_event('Reactivate Account Visited') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # The result of a reCAPTCHA verification request was received
@@ -3523,7 +3496,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'reCAPTCHA verify result received',
+      'reCAPTCHA verify result received', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       {
         recaptcha_result:,
         score_threshold:,
@@ -3545,7 +3518,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'Remembered device used for authentication',
+      'Remembered device used for authentication', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       cookie_created_at: cookie_created_at,
       cookie_age_seconds: cookie_age_seconds,
       **extra,
@@ -3561,7 +3534,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'Remote Logout completed',
+      'Remote Logout completed', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       service_provider: service_provider,
       user_id: user_id,
       **extra,
@@ -3577,7 +3550,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'Remote Logout initiated',
+      'Remote Logout initiated', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       service_provider: service_provider,
       saml_request_valid: saml_request_valid,
       **extra,
@@ -3588,7 +3561,7 @@ module AnalyticsEvents
   # Tracks request for resending confirmation for new emails to an account
   def resend_add_email_request(success:, **extra)
     track_event(
-      'Resend Add Email Requested',
+      'Resend Add Email Requested', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       success: success,
       **extra,
     )
@@ -3605,7 +3578,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'Response Timed Out',
+      'Response Timed Out', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       backtrace: backtrace,
       exception_message: exception_message,
       exception_class: exception_class,
@@ -3626,7 +3599,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'Return to SP: Cancelled',
+      'Return to SP: Cancelled', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       redirect_url: redirect_url,
       step: step,
       location: location,
@@ -3642,7 +3615,7 @@ module AnalyticsEvents
   # @param [String] location
   def return_to_sp_failure_to_proof(redirect_url:, flow: nil, step: nil, location: nil, **extra)
     track_event(
-      'Return to SP: Failed to proof',
+      'Return to SP: Failed to proof', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       redirect_url: redirect_url,
       flow: flow,
       step: step,
@@ -3656,7 +3629,7 @@ module AnalyticsEvents
   # @param [Hash] errors
   def rules_of_use_submitted(success: nil, errors: nil, **extra)
     track_event(
-      'Rules of Use Submitted',
+      'Rules of Use Submitted', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       success: success,
       errors: errors,
       **extra,
@@ -3665,7 +3638,7 @@ module AnalyticsEvents
 
   # Tracks when rules of use is visited
   def rules_of_use_visit
-    track_event('Rules of Use Visited')
+    track_event('Rules of Use Visited') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # Record SAML authentication payload Hash
@@ -3685,7 +3658,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'SAML Auth',
+      'SAML Auth', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       success: success,
       errors: errors,
       nameid_format: nameid_format,
@@ -3709,7 +3682,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'SAML Auth Request',
+      'SAML Auth Request', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       {
         requested_ial: requested_ial,
         requested_aal_authn_context: requested_aal_authn_context,
@@ -3723,12 +3696,12 @@ module AnalyticsEvents
   # User dismissed the second MFA reminder page
   # @param [Boolean] opted_to_add Whether the user chose to add a method
   def second_mfa_reminder_dismissed(opted_to_add:, **extra)
-    track_event('Second MFA Reminder Dismissed', opted_to_add:, **extra)
+    track_event('Second MFA Reminder Dismissed', opted_to_add:, **extra) # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # User visited the second MFA reminder page
   def second_mfa_reminder_visit
-    track_event('Second MFA Reminder Visited')
+    track_event('Second MFA Reminder Visited') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # Tracks when security event is received
@@ -3748,7 +3721,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'RISC: Security event received',
+      'RISC: Security event received', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       success: success,
       error_code: error_code,
       errors: errors,
@@ -3761,22 +3734,22 @@ module AnalyticsEvents
 
   # tracks if the session is kept alive
   def session_kept_alive
-    track_event('Session Kept Alive')
+    track_event('Session Kept Alive') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # tracks if the session timed out
   def session_timed_out
-    track_event('Session Timed Out')
+    track_event('Session Timed Out') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # tracks when a user's session is timed out
   def session_total_duration_timeout
-    track_event('User Maximum Session Length Exceeded')
+    track_event('User Maximum Session Length Exceeded') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # Tracks if a user clicks the "You will also need" accordion on the homepage
   def sign_in_idv_requirements_accordion_clicked
-    track_event('Sign In: IdV requirements accordion clicked')
+    track_event('Sign In: IdV requirements accordion clicked') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # @param [String] flash
@@ -3784,7 +3757,7 @@ module AnalyticsEvents
   # tracks when a user visits the sign in page
   def sign_in_page_visit(flash:, stored_location:, **extra)
     track_event(
-      'Sign in page visited',
+      'Sign in page visited', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       flash: flash,
       stored_location: stored_location,
       **extra,
@@ -3804,7 +3777,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'SMS Opt-In: Submitted',
+      'SMS Opt-In: Submitted', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       success: success,
       new_user: new_user,
       has_other_auth_methods: has_other_auth_methods,
@@ -3824,7 +3797,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'SMS Opt-In: Visited',
+      'SMS Opt-In: Visited', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       new_user: new_user,
       has_other_auth_methods: has_other_auth_methods,
       phone_configuration_id: phone_configuration_id,
@@ -3834,17 +3807,17 @@ module AnalyticsEvents
 
   # Tracks when a user is bounced back from the service provider due to an integration issue.
   def sp_handoff_bounced_detected
-    track_event('SP handoff bounced detected')
+    track_event('SP handoff bounced detected') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # Tracks when a user visits the bounced page.
   def sp_handoff_bounced_visit
-    track_event('SP handoff bounced visited')
+    track_event('SP handoff bounced visited') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # Tracks when a user visits the "This agency no longer uses Login.gov" page.
   def sp_inactive_visit
-    track_event('SP inactive visited')
+    track_event('SP inactive visited') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # Tracks when a user is redirected back to the service provider
@@ -3852,7 +3825,7 @@ module AnalyticsEvents
   # @param [Integer] billed_ial
   def sp_redirect_initiated(ial:, billed_ial:, **extra)
     track_event(
-      'SP redirect initiated',
+      'SP redirect initiated', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       ial: ial,
       billed_ial: billed_ial,
       **extra,
@@ -3863,7 +3836,7 @@ module AnalyticsEvents
   # @param [String] issuer issuer of the service provider consent to be revoked
   def sp_revoke_consent_revoked(issuer:, **extra)
     track_event(
-      'SP Revoke Consent: Revoked',
+      'SP Revoke Consent: Revoked', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       issuer: issuer,
       **extra,
     )
@@ -3873,7 +3846,7 @@ module AnalyticsEvents
   # @param [String] issuer which issuer
   def sp_revoke_consent_visited(issuer:, **extra)
     track_event(
-      'SP Revoke Consent: Visited',
+      'SP Revoke Consent: Visited', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       issuer: issuer,
       **extra,
     )
@@ -3903,7 +3876,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'Telephony: OTP sent',
+      'Telephony: OTP sent', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       {
         area_code: area_code,
         country_code: country_code,
@@ -3932,7 +3905,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'TOTP Setup Visited',
+      'TOTP Setup Visited', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       user_signed_up:,
       totp_secret_present:,
       enabled_mfa_methods_count:,
@@ -3943,7 +3916,7 @@ module AnalyticsEvents
 
   # Tracks when a user disabled a TOTP device
   def totp_user_disabled
-    track_event('TOTP: User Disabled')
+    track_event('TOTP: User Disabled') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # @param [String] controller
@@ -3957,7 +3930,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'Unsafe Redirect',
+      'Unsafe Redirect', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       controller: controller,
       referer: referer,
       user_signed_in: user_signed_in,
@@ -3970,7 +3943,7 @@ module AnalyticsEvents
   # @param [String] authenticated_at
   def user_2fa_reauthentication_required(auth_method:, authenticated_at:, **extra)
     track_event(
-      'User 2FA Reauthentication Required',
+      'User 2FA Reauthentication Required', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       auth_method: auth_method,
       authenticated_at: authenticated_at,
       **extra,
@@ -3981,7 +3954,7 @@ module AnalyticsEvents
   # @param [String] authentication_type
   def user_marked_authed(authentication_type:, **extra)
     track_event(
-      'User marked authenticated',
+      'User marked authenticated', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       authentication_type: authentication_type,
       **extra,
     )
@@ -3992,7 +3965,7 @@ module AnalyticsEvents
   # @param [String] path Path where this event was encountered.
   def user_prompted_before_navigation(path:, **extra)
     track_event(
-      'User prompted before navigation',
+      'User prompted before navigation', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       path: path,
       **extra,
     )
@@ -4004,7 +3977,7 @@ module AnalyticsEvents
   # @param [Integer] seconds Amount of time user has been on page since prompt.
   def user_prompted_before_navigation_and_still_on_page(path:, seconds:, **extra)
     track_event(
-      'User prompted before navigation and still on page',
+      'User prompted before navigation and still on page', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       path: path,
       seconds: seconds,
       **extra,
@@ -4026,7 +3999,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'User Registration: 2FA Setup',
+      'User Registration: 2FA Setup', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       {
         success: success,
         errors: errors,
@@ -4042,7 +4015,7 @@ module AnalyticsEvents
   # @param [Integer] enabled_mfa_methods_count Number of MFAs associated with user at time of visit
   def user_registration_2fa_setup_visit(enabled_mfa_methods_count:, **extra)
     track_event(
-      'User Registration: 2FA Setup visited',
+      'User Registration: 2FA Setup visited', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       enabled_mfa_methods_count:,
       **extra,
     )
@@ -4067,7 +4040,7 @@ module AnalyticsEvents
       **extra
     )
     track_event(
-      'User registration: agency handoff visited',
+      'User registration: agency handoff visited', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       ial2: ial2,
       ialmax: ialmax,
       service_provider_name: service_provider_name,
@@ -4083,7 +4056,7 @@ module AnalyticsEvents
   # @param [String] request_came_from the controller/action the request came from
   def user_registration_cancellation(request_came_from:, **extra)
     track_event(
-      'User registration: cancellation visited',
+      'User registration: cancellation visited', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       request_came_from: request_came_from,
       **extra,
     )
@@ -4108,7 +4081,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'User registration: complete',
+      'User registration: complete', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       ial2: ial2,
       ialmax: ialmax,
       service_provider_name: service_provider_name,
@@ -4137,7 +4110,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'User Registration: Email Submitted',
+      'User Registration: Email Submitted', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       {
         success: success,
         rate_limited: rate_limited,
@@ -4163,7 +4136,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'User Registration: Email Confirmation',
+      'User Registration: Email Confirmation', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       success: success,
       errors: errors,
       error_details: error_details,
@@ -4174,7 +4147,7 @@ module AnalyticsEvents
 
   # Tracks when user visits enter email page
   def user_registration_enter_email_visit
-    track_event('User Registration: enter email visited')
+    track_event('User Registration: enter email visited') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # @param [Boolean] success
@@ -4192,7 +4165,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'User Registration: MFA Setup Complete',
+      'User Registration: MFA Setup Complete', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       {
         success: success,
         mfa_method_counts: mfa_method_counts,
@@ -4208,7 +4181,7 @@ module AnalyticsEvents
   # Tracks when user visits the phone setup step during registration
   def user_registration_phone_setup_visit(enabled_mfa_methods_count:, **extra)
     track_event(
-      'User Registration: phone setup visited',
+      'User Registration: phone setup visited', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       enabled_mfa_methods_count: enabled_mfa_methods_count,
       **extra,
     )
@@ -4216,12 +4189,12 @@ module AnalyticsEvents
 
   # Tracks when user skips Suggest Another MFA Page
   def user_registration_suggest_another_mfa_notice_skipped
-    track_event('User Registration: Suggest Another MFA Notice Skipped')
+    track_event('User Registration: Suggest Another MFA Notice Skipped') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # Tracks when user visits Suggest Another MFA Page
   def user_registration_suggest_another_mfa_notice_visited
-    track_event('User Registration: Suggest Another MFA Notice visited')
+    track_event('User Registration: Suggest Another MFA Notice visited') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # @param [String] mfa_method
@@ -4231,7 +4204,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'User Registration: User Fully Registered',
+      'User Registration: User Fully Registered', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       {
         mfa_method: mfa_method,
         **extra,
@@ -4248,7 +4221,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'User Suspension: Reinstated',
+      'User Suspension: Reinstated', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       {
         success: success,
         error_message: error_message,
@@ -4266,7 +4239,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'User Suspension: Suspended',
+      'User Suspension: Suspended', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       {
         success: success,
         error_message: error_message,
@@ -4278,7 +4251,7 @@ module AnalyticsEvents
   # Tracks when the user is suspended and attempts to sign in, triggering the please call page.
   def user_suspended_please_call_visited(**extra)
     track_event(
-      'User Suspension: Please call visited',
+      'User Suspension: Please call visited', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       **extra,
     )
   end
@@ -4296,7 +4269,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'USPS IPPaaS enrollment created',
+      'USPS IPPaaS enrollment created', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       enrollment_code: enrollment_code,
       enrollment_id: enrollment_id,
       second_address_line_present: second_address_line_present,
@@ -4314,7 +4287,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'Vendor Outage',
+      'Vendor Outage', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       redirect_from: redirect_from,
       vendor_status: vendor_status,
       **extra,
@@ -4326,7 +4299,7 @@ module AnalyticsEvents
   # Tracks when WebAuthn is deleted
   def webauthn_deleted(success:, mfa_method_counts:, pii_like_keypaths:, **extra)
     track_event(
-      'WebAuthn Deleted',
+      'WebAuthn Deleted', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       success: success,
       mfa_method_counts: mfa_method_counts,
       pii_like_keypaths: pii_like_keypaths,
@@ -4342,7 +4315,7 @@ module AnalyticsEvents
   def webauthn_setup_visit(platform_authenticator:, errors:, enabled_mfa_methods_count:, success:,
                            **extra)
     track_event(
-      'WebAuthn Setup Visited',
+      'WebAuthn Setup Visited', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       platform_authenticator: platform_authenticator,
       errors: errors,
       enabled_mfa_methods_count: enabled_mfa_methods_count,

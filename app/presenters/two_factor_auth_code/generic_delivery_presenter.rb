@@ -60,17 +60,6 @@ module TwoFactorAuthCode
 
     private
 
-    def service_provider_mfa_policy
-      @service_provider_mfa_policy ||= ServiceProviderMfaPolicy.new(
-        user: @view.current_user,
-        service_provider: @service_provider,
-        auth_method: @view.user_session[:auth_method],
-        aal_level_requested: @view.sp_session[:aal_level_requested],
-        piv_cac_requested: @view.sp_session[:piv_cac_requested],
-        phishing_resistant_requested: @view.sp_session[:phishing_resistant_requested],
-      )
-    end
-
     attr_reader :view, :user_opted_remember_device_cookie
   end
 end

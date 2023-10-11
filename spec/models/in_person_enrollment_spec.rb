@@ -144,34 +144,6 @@ RSpec.describe InPersonEnrollment, type: :model do
 
       expect(enrollment.unique_id).to eq('1234')
     end
-
-    describe 'setting capture_secondary_id_enabled on creation' do
-      let(:capture_enabled) { nil }
-
-      before do
-        allow(IdentityConfig.store).
-          to(
-            receive(:in_person_capture_secondary_id_enabled).
-            and_return(capture_enabled),
-          )
-      end
-
-      context 'feature flag is enabled' do
-        let(:capture_enabled) { true }
-        it 'sets capture_secondary_id_enabled to true on the enrollment' do
-          enrollment = create(:in_person_enrollment, :pending)
-          expect(enrollment.capture_secondary_id_enabled).to eq(true)
-        end
-      end
-
-      context 'feature flag is not enabled' do
-        let(:capture_enabled) { false }
-        it 'does not set capture_secondary_id_enabled to true on the enrollment' do
-          enrollment = create(:in_person_enrollment, :pending)
-          expect(enrollment.capture_secondary_id_enabled).to eq(false)
-        end
-      end
-    end
   end
 
   describe 'enrollments that need email reminders' do

@@ -1,15 +1,19 @@
 require 'rails_helper'
 
 RSpec.describe FrontendLogger do
-  module ExampleAnalyticsEvents
-    def example_method_handler(ok:, **rest)
-      track_event('example', ok: ok, rest: rest)
+  let(:example_analytics_mixin) do
+    Module.new do
+      def example_method_handler(ok:, **rest)
+        track_event('example', ok: ok, rest: rest)
+      end
     end
   end
 
   let(:analytics_class) do
+    mixin = example_analytics_mixin
+
     Class.new(FakeAnalytics) do
-      include ExampleAnalyticsEvents
+      include mixin
     end
   end
   let(:analytics) { analytics_class.new }

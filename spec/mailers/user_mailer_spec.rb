@@ -534,7 +534,6 @@ RSpec.describe UserMailer, type: :mailer do
   end
 
   context 'in person emails' do
-    let(:capture_secondary_id_enabled) { false }
     let(:current_address_matches_id) { false }
     let!(:enrollment) do
       create(
@@ -542,7 +541,6 @@ RSpec.describe UserMailer, type: :mailer do
         :pending,
         selected_location_details: { name: 'FRIENDSHIP' },
         status_updated_at: Time.zone.now - 2.hours,
-        capture_secondary_id_enabled: capture_secondary_id_enabled,
         current_address_matches_id: current_address_matches_id,
       )
     end
@@ -556,25 +554,6 @@ RSpec.describe UserMailer, type: :mailer do
 
       it_behaves_like 'a system email'
       it_behaves_like 'an email that respects user email locale preference'
-
-      context 'double address verification is not enabled' do
-        it 'renders the body' do
-          expect(mail.html_part.body).
-            to have_content(
-              t('in_person_proofing.process.proof_of_address.heading'),
-            )
-        end
-      end
-
-      context 'double address verification is enabled' do
-        let(:capture_secondary_id_enabled) { true }
-        it 'renders the body' do
-          expect(mail.html_part.body).
-            to_not have_content(
-              t('in_person_proofing.process.proof_of_address.heading'),
-            )
-        end
-      end
 
       context 'Outage message' do
         let(:formatted_date) { 'Tuesday, October 31' }
@@ -646,25 +625,6 @@ RSpec.describe UserMailer, type: :mailer do
       it_behaves_like 'a system email'
       it_behaves_like 'an email that respects user email locale preference'
 
-      context 'double address verification is not enabled' do
-        it 'renders the body' do
-          expect(mail.html_part.body).
-            to have_content(
-              t('in_person_proofing.process.proof_of_address.heading'),
-            )
-        end
-      end
-
-      context 'double address verification is enabled' do
-        let(:capture_secondary_id_enabled) { true }
-        it 'renders the body' do
-          expect(mail.html_part.body).
-            to_not have_content(
-              t('in_person_proofing.process.proof_of_address.heading'),
-            )
-        end
-      end
-
       it 'renders the body' do
         expect(mail.html_part.body).
           to have_content(
@@ -699,7 +659,6 @@ RSpec.describe UserMailer, type: :mailer do
           selected_location_details: { name: 'FRIENDSHIP' },
           status_updated_at: Time.zone.now - 2.hours,
           current_address_matches_id: current_address_matches_id,
-          capture_secondary_id_enabled: capture_secondary_id_enabled,
         )
       end
 
@@ -711,25 +670,6 @@ RSpec.describe UserMailer, type: :mailer do
 
       it_behaves_like 'a system email'
       it_behaves_like 'an email that respects user email locale preference'
-
-      context 'double address verification is not enabled' do
-        it 'renders the body' do
-          expect(mail.html_part.body).
-            to have_content(
-              t('user_mailer.in_person_failed.verifying_step_proof_of_address'),
-            )
-        end
-      end
-
-      context 'double address verification is enabled' do
-        let(:capture_secondary_id_enabled) { true }
-        it 'renders the body' do
-          expect(mail.html_part.body).
-            to_not have_content(
-              t('user_mailer.in_person_failed.verifying_step_proof_of_address'),
-            )
-        end
-      end
     end
 
     describe '#in_person_failed_fraud' do
@@ -894,7 +834,7 @@ RSpec.describe UserMailer, type: :mailer do
     end
 
     it 'renders the subject' do
-      expect(mail.subject).to eq t('idv.messages.gpo_reminder.subject')
+      expect(mail.subject).to eq t('user_mailer.letter_reminder_14_days.subject')
     end
 
     it 'renders the body' do
@@ -911,7 +851,7 @@ RSpec.describe UserMailer, type: :mailer do
 
       expected_body = strip_tags(
         t(
-          'idv.messages.gpo_reminder.body_html',
+          'user_mailer.letter_reminder_14_days.body_html',
           date_letter_was_sent: date_letter_was_sent.strftime(t('time.formats.event_date')),
           app_name: APP_NAME,
           help_link: expected_help_link,
@@ -923,14 +863,14 @@ RSpec.describe UserMailer, type: :mailer do
 
     it 'renders the finish link' do
       expect(mail.html_part.body).to have_link(
-        t('idv.messages.gpo_reminder.finish'),
+        t('user_mailer.letter_reminder_14_days.finish'),
         href: idv_verify_by_mail_enter_code_url,
       )
     end
 
     it 'renders the did not get it link' do
       expect(mail.html_part.body).to have_link(
-        t('idv.messages.gpo_reminder.sign_in_and_request_another_letter'),
+        t('user_mailer.letter_reminder_14_days.sign_in_and_request_another_letter'),
         href: idv_verify_by_mail_enter_code_url(did_not_receive_letter: 1),
       )
     end

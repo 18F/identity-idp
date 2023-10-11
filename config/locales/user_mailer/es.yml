@@ -137,10 +137,6 @@ es:
       verifying_step_not_expired: Su documento de identidad o permiso de conducir
         emitido por el estado debe estar vigente. Por el momento, no aceptamos
         otras formas de identificación, como pasaportes o cartillas militares.
-      verifying_step_proof_of_address: Si vuelve a intentar verificar su identidad en
-        persona, deberá llevar un comprobante de domicilio vigente si su
-        dirección actual es distinta de la que aparece en su documento de
-        identidad.
     in_person_failed_suspected_fraud:
       body:
         help_center_html: Si necesita ayuda adicional, puede <a
@@ -204,11 +200,20 @@ es:
         contraseña</a>. Para informar de esto, póngase en <a
         href="%{contact_us_url}">contacto con el soporte de %{app_name}</a>.
     letter_reminder:
-      info_html: La carta que está a punto de recibir contendrá un código único que
-        nos ayudará a verificar su dirección. Puede completar el proceso de
-        verificación de identidad iniciando sesión en %{link_html} e ingresando
-        el código único.
+      info_html: La carta que está a punto de recibir contendrá un código de
+        verificación que nos ayudará a verificar su dirección. Puede completar
+        el proceso de verificación de identidad iniciando sesión en %{link_html}
+        e ingresando el código de verificación.
       subject: Le enviamos una carta a la dirección que tiene archivada
+    letter_reminder_14_days:
+      body_html: <p>Solicitó una carta con un código de verificación el
+        <strong>%{date_letter_was_sent}</strong>.</p><p>Inicie sesión de nuevo
+        en %{app_name} e ingrese el código de verificación para terminar de
+        verificar su identidad. %{help_link}.</p>
+      did_not_get_a_letter_html: Si no recibiste dicha carta, %{another_letter_link_html}.
+      finish: Termina de verificar tu identidad
+      sign_in_and_request_another_letter: inicia sesión para solicitar otra
+      subject: Termina de verificar tu identidad
     new_device_sign_in:
       disavowal_link: restablecer su contraseña
       help_html: Si no realizó este cambio, %{disavowal_link_html}. Para más ayuda,
@@ -278,19 +283,19 @@ es:
         preocupados alguien que no sea usted puede estar intentando acceder a su
         información.
       learn_more_link_text: Conozca más sobre sus opciones
-      reminder_html: Le recordamos que <b>%{app_name} nunca le pedirá sus credenciales
-        de inicio de sesión. por teléfono o correo electrónico</b>. Puede tomar
-        medidas adicionales para proteger su cuenta habilitando la autenticación
-        de dos factores.
+      reminder_html: Le recordamos que <strong>%{app_name} nunca le pedirá sus
+        credenciales de inicio de sesión. por teléfono o correo
+        electrónico</strong>. Puede tomar medidas adicionales para proteger su
+        cuenta habilitando la autenticación de dos factores.
       step_1: Visite el sitio web %{app_name} y seleccione iniciar sesión
       step_2: Seleccione “¿olvidó su contraseña?” al final de la página
       step_3: Siga las instrucciones para restablecer su contraseña
       subject: Actividad inusual — restablezca su contraseña de %{app_name}
     reset_password_instructions:
       footer: Este enlace expira en %{expires} horas.
-      gpo_letter_description: Si restablece su contraseña, el código único que figura
-        en su carta dejará de funcionar y tendrá que volver a verificar su
-        identidad.
+      gpo_letter_description: Si restablece su contraseña, el código de verificación
+        que figura en su carta dejará de funcionar y tendrá que volver a
+        verificar su identidad.
       gpo_letter_header: Su carta está en camino
       header: Para terminar de restablecer su contraseña, haga clic en el enlace de
         abajo o copie y pegue el enlace completo en su navegador.

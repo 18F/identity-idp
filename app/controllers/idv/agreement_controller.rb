@@ -3,6 +3,7 @@ module Idv
     include IdvStepConcern
     include StepIndicatorConcern
 
+    before_action :confirm_not_rate_limited
     before_action :confirm_welcome_step_complete
     before_action :confirm_agreement_needed
 
@@ -53,7 +54,7 @@ module Idv
     end
 
     def consent_form_params
-      params.require(:doc_auth).permit([:ial2_consent_given, :idv_consent_given])
+      params.require(:doc_auth).permit(:idv_consent_given)
     end
 
     def confirm_welcome_step_complete

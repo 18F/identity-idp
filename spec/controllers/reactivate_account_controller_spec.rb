@@ -17,13 +17,16 @@ RSpec.describe ReactivateAccountController do
       let(:profiles) { [create(:profile, :verified, :password_reset)] }
 
       it 'renders the index template' do
+        stub_analytics
+        expect(@analytics).to receive(:track_event).with('Reactivate Account Visited')
+
         get :index
 
         expect(subject).to render_template(:index)
       end
     end
 
-    context 'wthout a password reset profile' do
+    context 'without a password reset profile' do
       let(:profiles) { [create(:profile, :active)] }
       it 'redirects to the root url' do
         get :index
@@ -37,6 +40,8 @@ RSpec.describe ReactivateAccountController do
     let(:profiles) { [create(:profile, :verified, :password_reset)] }
 
     it 'redirects user to idv_url' do
+      stub_analytics
+      expect(@analytics).to receive(:track_event).with('Reactivate Account Submitted')
       put :update
 
       expect(subject.user_session[:acknowledge_personal_key]).to be_nil

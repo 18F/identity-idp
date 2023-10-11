@@ -6,33 +6,28 @@ RSpec.describe 'IdvStepConcern' do
     Idv::Session.new(user_session: subject.user_session, current_user: user, service_provider: nil)
   end
 
-  module Idv
-    class StepController < ApplicationController
-      include IdvStepConcern
+  idv_step_controller_class = Class.new(ApplicationController) do
+    def self.name
+      'AnonymousController'
+    end
 
-      def show
-        render plain: 'Hello'
-      end
+    include IdvStepConcern
+
+    def show
+      render plain: 'Hello'
     end
   end
 
   describe 'before_actions' do
-    it 'includes confirm_not_rate_limited before_action' do
-      expect(Idv::StepController).to have_actions(
-        :before,
-        :confirm_not_rate_limited,
-      )
-    end
-
     it 'includes handle_fraud' do
-      expect(Idv::StepController).to have_actions(
+      expect(idv_step_controller_class).to have_actions(
         :before,
         :handle_fraud,
       )
     end
 
     it 'includes check_for_mail_only_outage before_action' do
-      expect(Idv::StepController).to have_actions(
+      expect(idv_step_controller_class).to have_actions(
         :before,
         :check_for_mail_only_outage,
       )
@@ -40,14 +35,14 @@ RSpec.describe 'IdvStepConcern' do
   end
 
   describe '#confirm_idv_needed' do
-    controller Idv::StepController do
+    controller(idv_step_controller_class) do
       before_action :confirm_idv_needed
     end
 
     before(:each) do
       sign_in(user)
       routes.draw do
-        get 'show' => 'idv/step#show'
+        get 'show' => 'anonymous#show'
       end
     end
 
@@ -80,14 +75,14 @@ RSpec.describe 'IdvStepConcern' do
   end
 
   describe '#confirm_address_step_complete' do
-    controller Idv::StepController do
+    controller(idv_step_controller_class) do
       before_action :confirm_address_step_complete
     end
 
     before(:each) do
       sign_in(user)
       routes.draw do
-        get 'show' => 'idv/step#show'
+        get 'show' => 'anonymous#show'
       end
     end
 
@@ -138,14 +133,14 @@ RSpec.describe 'IdvStepConcern' do
   end
 
   describe '#confirm_verify_info_step_complete' do
-    controller Idv::StepController do
+    controller(idv_step_controller_class) do
       before_action :confirm_verify_info_step_complete
     end
 
     before(:each) do
       sign_in(user)
       routes.draw do
-        get 'show' => 'idv/step#show'
+        get 'show' => 'anonymous#show'
       end
     end
 
@@ -192,7 +187,7 @@ RSpec.describe 'IdvStepConcern' do
   end
 
   describe '#confirm_no_pending_in_person_enrollment' do
-    controller Idv::StepController do
+    controller(idv_step_controller_class) do
       before_action :confirm_no_pending_in_person_enrollment
     end
 
@@ -200,7 +195,7 @@ RSpec.describe 'IdvStepConcern' do
       sign_in(user)
       allow(subject).to receive(:current_user).and_return(user)
       routes.draw do
-        get 'show' => 'idv/step#show'
+        get 'show' => 'anonymous#show'
       end
     end
 
@@ -230,7 +225,7 @@ RSpec.describe 'IdvStepConcern' do
   end
 
   describe '#confirm_no_pending_gpo_profile' do
-    controller Idv::StepController do
+    controller(idv_step_controller_class) do
       before_action :confirm_no_pending_gpo_profile
     end
 
@@ -238,7 +233,7 @@ RSpec.describe 'IdvStepConcern' do
       sign_in(user)
       allow(subject).to receive(:current_user).and_return(user)
       routes.draw do
-        get 'show' => 'idv/step#show'
+        get 'show' => 'anonymous#show'
       end
     end
 

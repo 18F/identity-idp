@@ -25,7 +25,7 @@ RSpec.shared_examples 'clearing and restarting idv' do
     if page.has_button?(t('idv.buttons.mail.send'))
       click_on t('idv.buttons.mail.send')
     else
-      click_on t('idv.buttons.mail.resend')
+      click_on t('idv.gpo.request_another_letter.button')
     end
     fill_in 'Password', with: user.password
     click_idv_continue
