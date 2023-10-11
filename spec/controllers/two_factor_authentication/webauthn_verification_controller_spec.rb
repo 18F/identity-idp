@@ -211,7 +211,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
         result = { context: 'authentication',
                    multi_factor_auth_method: 'webauthn',
                    success: false,
-                   error_details: { authenticator_data: [:invalid_authenticator_data] },
+                   error_details: { authenticator_data: ['invalid_authenticator_data'] },
                    webauthn_configuration_id: webauthn_configuration.id,
                    multi_factor_auth_method_created_at: webauthn_configuration.created_at.
                      strftime('%s%L') }
