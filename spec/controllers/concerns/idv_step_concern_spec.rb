@@ -133,14 +133,14 @@ RSpec.describe 'IdvStepConcern' do
   end
 
   describe '#confirm_document_capture_not_complete' do
-    controller Idv::StepController do
+    controller (idv_step_controller_class) do
       before_action :confirm_document_capture_not_complete
     end
 
     before(:each) do
       sign_in(user)
       routes.draw do
-        get 'show' => 'idv/step#show'
+        get 'show' => 'anonymous#show'
       end
     end
 
