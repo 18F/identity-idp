@@ -29,6 +29,5 @@ RSpec.describe Reports::MonthHelper do
         ],
       )
     end
-
   end
 end
