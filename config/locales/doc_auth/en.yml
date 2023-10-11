@@ -105,6 +105,15 @@ en:
         top_msg_plural: We couldn’t read your ID. Your photos may be too blurry or dark.
           Try taking new pictures in a bright area.
       upload_error: Sorry, something went wrong on our end.
+    exit_survey_id_types:
+      military_id: Military ID card(this includes a Department of Defense
+        Identification Card, a Veteran Health Identification Card, or a Veteran
+        ID Card)
+      other: Something not listed
+      resident_card: U.S. Green Card(also referred to as a Permanent Resident Card)
+      tribal_id: Tribal ID card
+      us_passport: U.S. Passport
+      voter_registration_card: Voter registration card
     forms:
       captured_image: Captured Image
       change_file: Change file
