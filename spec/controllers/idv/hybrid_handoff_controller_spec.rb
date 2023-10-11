@@ -303,7 +303,7 @@ RSpec.describe Idv::HybridHandoffController do
       end
     end
 
-    context 'A/B test specifies welcome page' do
+    context 'A/B test specifies phone question page' do
       before do
         allow(controller).to receive(:phone_question_ab_test_bucket).
           and_return(:show_phone_question)
