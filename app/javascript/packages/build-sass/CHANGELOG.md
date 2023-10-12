@@ -10,6 +10,10 @@
 
 - Prevent situations where overridden output stylesheets may be temporarily emptied during parallel builds.
 
+### Miscellaneous
+
+- Update dependencies to latest versions.
+
 ## 1.3.0
 
 ### Improvements
