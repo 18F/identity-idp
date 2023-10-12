@@ -64,7 +64,6 @@ module Idv
       @code = personal_key
       @personal_key_generated_at = current_user.personal_key_generated_at
 
-      user_session[:personal_key] = @code
       idv_session.personal_key = @code
 
       irs_attempts_api_tracker.idv_personal_key_generated
