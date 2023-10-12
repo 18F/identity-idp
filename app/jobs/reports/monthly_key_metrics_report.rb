@@ -17,6 +17,7 @@ module Reports
 
       reports = [
         total_user_count_report.total_user_count_emailable_report,
+        total_user_count_report.total_verified_users_emailable_report,
         account_deletion_rate_report.account_deletion_emailable_report,
         account_reuse_report.account_reuse_emailable_report,
         account_reuse_report.total_identities_emailable_report,

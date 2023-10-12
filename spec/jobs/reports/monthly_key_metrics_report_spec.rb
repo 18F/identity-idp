@@ -15,6 +15,16 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
   let(:total_profiles_s3_path) { "#{report_folder}/total_profiles.csv" }
   let(:account_deletion_rate_s3_path) { "#{report_folder}/account_deletion_rate.csv" }
   let(:total_user_count_s3_path) { "#{report_folder}/total_user_count.csv" }
+  let(:total_verified_users_path) { "#{report_folder}/total_verified_users.csv" }
+  let(:expected_s3_paths) do
+    [
+      account_reuse_s3_path,
+      total_profiles_s3_path,
+      account_deletion_rate_s3_path,
+      total_user_count_s3_path,
+      total_verified_users_path,
+    ]
+  end
   let(:s3_metadata) do
     {
       body: anything,
@@ -83,25 +93,12 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
   end
 
   it 'uploads a file to S3 based on the report date' do
-    expect(subject).to receive(:upload_file_to_s3_bucket).with(
-      path: account_reuse_s3_path,
-      **s3_metadata,
-    ).exactly(1).time.and_call_original
-
-    expect(subject).to receive(:upload_file_to_s3_bucket).with(
-      path: total_profiles_s3_path,
-      **s3_metadata,
-    ).exactly(1).time.and_call_original
-
-    expect(subject).to receive(:upload_file_to_s3_bucket).with(
-      path: account_deletion_rate_s3_path,
-      **s3_metadata,
-    ).exactly(1).time.and_call_original
-
-    expect(subject).to receive(:upload_file_to_s3_bucket).with(
-      path: total_user_count_s3_path,
-      **s3_metadata,
-    ).exactly(1).time.and_call_original
+    expected_s3_paths.each do |path|
+      expect(subject).to receive(:upload_file_to_s3_bucket).with(
+        path: path,
+        **s3_metadata,
+      ).exactly(1).time.and_call_original
+    end
 
     subject.perform(report_date)
   end

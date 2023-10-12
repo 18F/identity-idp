@@ -16,14 +16,14 @@ RSpec.describe Reporting::TotalUserCountReport do
 
   before { travel_to report_date }
 
-  shared_examples 'a report with that user counted' do
-    let(:expected_count) { 1 }
-    it 'includes that user in the count' do
-      expect(subject.total_user_count_report).to eq expected_report
-    end
-  end
-
   describe '#total_user_count_report' do
+    shared_examples 'a report with that user counted' do
+      let(:expected_count) { 1 }
+      it 'includes that user in the count' do
+        expect(subject.total_user_count_report).to eq expected_report
+      end
+    end
+
     context 'with no users' do
       let(:expected_count) { 0 }
 
@@ -68,6 +68,32 @@ RSpec.describe Reporting::TotalUserCountReport do
       end
 
       it_behaves_like 'a report with that user counted'
+    end
+  end
+
+  describe '#total_verified_user_report' do
+    let(:expected_count) { 0 }
+    let(:expected_report) do
+      [['Total verified users'], [expected_count]]
+    end
+
+    context 'with only a non-IdV user' do
+      let!(:unverified_user) { create(:user) }
+      let(:expected_count) { 0 }
+
+      it 'returns zero users' do
+        expect(subject.total_verified_user_report).to eq expected_report
+      end
+    end
+
+    context 'with an IdV user and a non-IdV user' do
+      let!(:unverified_user) { create(:user) }
+      let!(:verified_user) { create(:user, :proofed) }
+      let(:expected_count) { 1 }
+
+      it 'returns only 1 user (the IdV user)' do
+        expect(subject.total_verified_user_report).to eq expected_report
+      end
     end
   end
 end
