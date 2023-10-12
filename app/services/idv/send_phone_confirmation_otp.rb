@@ -14,7 +14,8 @@ module Idv
       # in this change: https://github.com/18F/identity-idp/pull/2216
       #
       # This adds protection against a race condition that would result in sending a large number
-      # of OTPs and/or needlessly making atomic increments to the rate limit counter.
+      # of OTPs and/or needlessly making atomic increments to the rate limit counter if 
+      # a bad actor sends many requests at the same time.
       #
       return too_many_otp_sends_response if rate_limit_exceeded?
       otp_rate_limiter.increment
