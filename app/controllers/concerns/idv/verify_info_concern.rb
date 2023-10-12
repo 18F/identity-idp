@@ -217,6 +217,8 @@ module Idv
         idv_session.mark_verify_info_step_complete!
         idv_session.invalidate_steps_after_verify_info!
 
+        resolution_rate_limiter.increment!
+
         flash[:success] = t('doc_auth.forms.doc_success')
         redirect_to next_step_url
       else
