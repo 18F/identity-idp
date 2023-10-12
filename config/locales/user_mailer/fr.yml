@@ -142,10 +142,6 @@ fr:
         délivré par l’État ne doit pas être périmé. Nous n’acceptons
         actuellement aucune autre forme d’identification, comme les passeports
         et les cartes d’identité militaires.
-      verifying_step_proof_of_address: Si vous tentez à nouveau de vérifier votre
-        identité en personne, vous devez apporter un justificatif de domicile
-        valable si votre adresse actuelle est différente de celle figurant sur
-        votre pièce d’identité.
     in_person_failed_suspected_fraud:
       body:
         help_center_html: Si vous avez besoin d’aide supplémentaire, vous pouvez <a

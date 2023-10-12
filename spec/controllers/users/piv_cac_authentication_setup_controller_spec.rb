@@ -108,7 +108,7 @@ RSpec.describe Users::PivCacAuthenticationSetupController do
           it 'tracks the analytic event of visited' do
             stub_analytics
             expect(@analytics).to receive(:track_event).
-              with('PIV CAC setup visited', {
+              with(:piv_cac_setup_visited, {
                 in_account_creation_flow: false,
                 enabled_mfa_methods_count: 1,
               })

@@ -236,7 +236,6 @@ class IdentityConfig
     config.add(:idv_send_link_attempt_window_in_minutes, type: :integer)
     config.add(:idv_send_link_max_attempts, type: :integer)
     config.add(:idv_sp_required, type: :boolean)
-    config.add(:in_person_capture_secondary_id_enabled, type: :boolean)
     config.add(:in_person_completion_survey_url, type: :string)
     config.add(:in_person_doc_auth_button_enabled, type: :boolean)
     config.add(:in_person_email_reminder_early_benchmark_in_days, type: :integer)
@@ -483,6 +482,7 @@ class IdentityConfig
     config.add(:voice_otp_speech_rate)
     config.add(:voip_allowed_phones, type: :json)
     config.add(:voip_block, type: :boolean)
+    config.add(:weekly_auth_funnel_report_config, type: :json)
 
     @key_types = config.key_types
     @store = RedactedStruct.new('IdentityConfig', *config.written_env.keys, keyword_init: true).

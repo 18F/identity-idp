@@ -1,3 +1,3 @@
-<%= render AlertComponent.new(type: :info, text_tag: 'div') do %>
+<%= render AlertComponent.new(type: :info) do %>
   <%= link_to(t('account.index.continue_to_service_provider', service_provider: presenter.sp_name), presenter.sp_session_request_url) %>
 <% end %>

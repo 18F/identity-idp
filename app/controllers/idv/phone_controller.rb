@@ -7,10 +7,10 @@ module Idv
 
     attr_reader :idv_form
 
+    before_action :confirm_not_rate_limited_for_phone_address_verification, except: [:new]
     before_action :confirm_verify_info_step_complete
     before_action :confirm_step_needed
     before_action :set_idv_form
-    skip_before_action :confirm_not_rate_limited, only: :new
 
     def new
       flash.keep(:success) if should_keep_flash_success?
@@ -24,7 +24,7 @@ module Idv
 
       render 'shared/wait' and return if async_state.in_progress?
 
-      return if confirm_not_rate_limited
+      return if confirm_not_rate_limited_for_phone_address_verification
 
       if async_state.none?
         Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).

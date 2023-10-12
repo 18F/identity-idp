@@ -7,7 +7,12 @@ class GpoReminderSender
 
     profiles_due_for_reminder(letter_eligible_range).each do |profile|
       profile.user.send_email_to_all_addresses(:gpo_reminder)
-      profile.gpo_confirmation_codes.first.update(reminder_sent_at: Time.zone.now)
+      profile.gpo_confirmation_codes.all.each do |gpo_code|
+        next if gpo_code.reminder_sent_at
+        next unless letter_eligible_range.cover?(gpo_code.created_at)
+
+        gpo_code.update(reminder_sent_at: Time.zone.now)
+      end
       analytics.idv_gpo_reminder_email_sent(user_id: profile.user.uuid)
     end
   end

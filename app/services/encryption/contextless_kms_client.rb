@@ -17,13 +17,13 @@ module Encryption
     }.freeze
 
     def encrypt(plaintext)
-      KmsLogger.log(:encrypt)
+      KmsLogger.log(:encrypt, key_id: IdentityConfig.store.aws_kms_key_id)
       return encrypt_kms(plaintext) if FeatureManagement.use_kms?
       encrypt_local(plaintext)
     end
 
     def decrypt(ciphertext)
-      KmsLogger.log(:decrypt)
+      KmsLogger.log(:decrypt, key_id: IdentityConfig.store.aws_kms_key_id)
       return decrypt_kms(ciphertext) if use_kms?(ciphertext)
       decrypt_local(ciphertext)
     end

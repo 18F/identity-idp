@@ -66,7 +66,7 @@ RSpec.shared_examples 'expiring remember device for an sp config' do |expiration
       end
 
       it 'does require MFA when AAL2 request is sent after configured AAL2 timeframe' do
-        travel_to(AAL2_REMEMBER_DEVICE_EXPIRATION.from_now + 1.day) do
+        travel_to(expiration_time.from_now + 1.day) do
           visit_idp_from_sp_with_ial1_aal2(protocol)
           sign_in_user(user)
 
@@ -85,9 +85,11 @@ end
 
 RSpec.feature 'remember device sp expiration' do
   include SamlAuthHelper
-  AAL1_REMEMBER_DEVICE_EXPIRATION =
+
+  aal1_remember_device_expiration =
     IdentityConfig.store.remember_device_expiration_hours_aal_1.hours
-  AAL2_REMEMBER_DEVICE_EXPIRATION =
+
+  aal2_remember_device_expiration =
     IdentityConfig.store.remember_device_expiration_minutes_aal_2.minutes
 
   let(:user) do
@@ -109,7 +111,7 @@ RSpec.feature 'remember device sp expiration' do
   before do
     allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry).and_return(1000)
     allow(IdentityConfig.store).to receive(:second_mfa_reminder_account_age_in_days).
-      and_return([AAL1_REMEMBER_DEVICE_EXPIRATION, AAL2_REMEMBER_DEVICE_EXPIRATION].max.in_days + 2)
+      and_return([aal1_remember_device_expiration, aal2_remember_device_expiration].max.in_days + 2)
 
     ServiceProvider.find_by(issuer: OidcAuthHelper::OIDC_IAL1_ISSUER).update!(
       default_aal: aal,
@@ -126,9 +128,9 @@ RSpec.feature 'remember device sp expiration' do
       let(:aal) { 2 }
       let(:ial) { 1 }
 
-      it_behaves_like 'expiring remember device for an sp config', AAL2_REMEMBER_DEVICE_EXPIRATION,
+      it_behaves_like 'expiring remember device for an sp config', aal2_remember_device_expiration,
                       :oidc
-      it_behaves_like 'expiring remember device for an sp config', AAL2_REMEMBER_DEVICE_EXPIRATION,
+      it_behaves_like 'expiring remember device for an sp config', aal2_remember_device_expiration,
                       :saml
     end
 
@@ -136,9 +138,9 @@ RSpec.feature 'remember device sp expiration' do
       let(:aal) { 1 }
       let(:ial) { 2 }
 
-      it_behaves_like 'expiring remember device for an sp config', AAL2_REMEMBER_DEVICE_EXPIRATION,
+      it_behaves_like 'expiring remember device for an sp config', aal2_remember_device_expiration,
                       :oidc
-      it_behaves_like 'expiring remember device for an sp config', AAL2_REMEMBER_DEVICE_EXPIRATION,
+      it_behaves_like 'expiring remember device for an sp config', aal2_remember_device_expiration,
                       :saml
     end
 
@@ -146,9 +148,9 @@ RSpec.feature 'remember device sp expiration' do
       let(:aal) { 2 }
       let(:ial) { 2 }
 
-      it_behaves_like 'expiring remember device for an sp config', AAL2_REMEMBER_DEVICE_EXPIRATION,
+      it_behaves_like 'expiring remember device for an sp config', aal2_remember_device_expiration,
                       :oidc
-      it_behaves_like 'expiring remember device for an sp config', AAL2_REMEMBER_DEVICE_EXPIRATION,
+      it_behaves_like 'expiring remember device for an sp config', aal2_remember_device_expiration,
                       :saml
     end
 
@@ -156,9 +158,9 @@ RSpec.feature 'remember device sp expiration' do
       let(:aal) { 1 }
       let(:ial) { 1 }
 
-      it_behaves_like 'expiring remember device for an sp config', AAL1_REMEMBER_DEVICE_EXPIRATION,
+      it_behaves_like 'expiring remember device for an sp config', aal1_remember_device_expiration,
                       :oidc
-      it_behaves_like 'expiring remember device for an sp config', AAL1_REMEMBER_DEVICE_EXPIRATION,
+      it_behaves_like 'expiring remember device for an sp config', aal1_remember_device_expiration,
                       :saml
     end
 
@@ -166,9 +168,9 @@ RSpec.feature 'remember device sp expiration' do
       let(:aal) { 1 }
       let(:ial) { 1 }
 
-      it_behaves_like 'expiring remember device for an sp config', AAL2_REMEMBER_DEVICE_EXPIRATION,
+      it_behaves_like 'expiring remember device for an sp config', aal2_remember_device_expiration,
                       :oidc, 2
-      it_behaves_like 'expiring remember device for an sp config', AAL2_REMEMBER_DEVICE_EXPIRATION,
+      it_behaves_like 'expiring remember device for an sp config', aal2_remember_device_expiration,
                       :saml, 2
     end
   end

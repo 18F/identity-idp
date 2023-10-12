@@ -61,7 +61,6 @@ If not using macOS:
   Login.gov uses the following tools for our testing:
 
   - [RSpec](https://relishapp.com/rspec/rspec-core/docs/command-line)
-  - [Guard](https://github.com/guard/guard-rspec)
   - [Mocha documentation](https://mochajs.org/)
 
   To run our full test suite locally, use the following command:
@@ -90,24 +89,6 @@ If not using macOS:
 
   ```
   $ SHOW_BROWSER=true bundle exec rspec spec/features/
-  ```
-
-### Speeding up local development and testing
-
-  To automatically run the test that corresponds to the file you are editing,
-  run `bundle exec guard` with the env var `GUARD_RSPEC_CMD` set to your preferred
-  command for running `rspec`. For example, if you use [Zeus](https://github.com/burke/zeus),
-  you would set the env var to `zeus rspec`:
-  ```console
-  GUARD_RSPEC_CMD="zeus rspec" bundle exec guard
-  ```
-
-  If you don't specify the `GUARD_RSPEC_CMD` env var, it will default to
-  `bundle exec rspec`.
-
-  We also recommend setting up a shell alias for running this command, such as:
-  ```console
-  alias idpguard='GUARD_RSPEC_CMD="zeus rspec" bundle exec guard'
   ```
 
 ### Viewing email messages

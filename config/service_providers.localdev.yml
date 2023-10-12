@@ -266,14 +266,14 @@ test:
     ial: 2
     help_text:
       sign_in:
-        en: <b>First time here from %{sp_name}?</b><p>Your old %{sp_name} username
+        en: <strong>First time here from %{sp_name}?</strong><p>Your old %{sp_name} username
           and password won’t work. Please <a href=%{sp_create_link}>create a Login.gov account</a> using the same email address you use for %{sp_name}. <p><a href="https://login.gov/help/">Learn
           more</a>
-        es: <b>¿Ha venido de %{sp_name}?</b><p>Si tiene un perfil de %{sp_name}
+        es: <strong>¿Ha venido de %{sp_name}?</strong><p>Si tiene un perfil de %{sp_name}
           existente, favor de usar la dirección de correo electrónico primaria o secundaria
           que usó para %{sp_name} para <a href=%{sp_create_link}>crear un nueva cuenta
           de Login.gov</a> <p><a href="https://login.gov/help/">Obtenga más información.</a>
-        fr: <b>Êtes-vous venu(e) de %{sp_name}?</b><p> Si vous avez déjà un profil
+        fr: <strong>Êtes-vous venu(e) de %{sp_name}?</strong><p> Si vous avez déjà un profil
           %{sp_name}, veuillez utiliser l'adresse e-mail principale ou secondaire
           que vous avez utilisée pour %{sp_name} pour <a href=%{sp_create_link}> créer
           votre nouveau compte Login.gov</a> <p><a href="https://login.gov/help/">En

@@ -26,6 +26,17 @@ RSpec.describe 'content security policy' do
       )
       expect(content_security_policy['style-src']).to eq("'self'")
     end
+
+    it 'uses logout SP to override CSP form action that will allow a redirect to the CSP' do
+      visit_password_form_with_sp
+      visit_logout_form_with_sp
+
+      content_security_policy = parse_content_security_policy
+
+      expect(content_security_policy['form-action']).to eq(
+        "'self' gov.gsa.openidconnect.test:",
+      )
+    end
   end
 
   context 'on endpoints that will not redirect to an SP' do
@@ -76,6 +87,19 @@ RSpec.describe 'content security policy' do
       openid_connect_authorize_path,
       params: params,
       headers: { 'Accept' => '*/*' },
+    )
+  end
+
+  def visit_logout_form_with_sp
+    params = {
+      client_id: 'urn:gov:gsa:openidconnect:test',
+      post_logout_redirect_uri: 'gov.gsa.openidconnect.test://result/signout',
+      state: 'a' * 22,
+    }
+
+    get(
+      openid_connect_logout_path,
+      params: params,
     )
   end
 end

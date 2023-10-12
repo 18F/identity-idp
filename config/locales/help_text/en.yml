@@ -8,14 +8,16 @@ en:
       email: Email address
       full_name: Full name
       ial1_consent_reminder_html: You must consent each year to share your information
-        with <b>%{sp}</b>. We’ll share your information with <b>%{sp}</b> to
+        with <strong>%{sp}</strong>. We’ll share your information with
+        <strong>%{sp}</strong> to connect your account.
+      ial1_intro_html: We’ll share your information with <strong>%{sp}</strong> to
         connect your account.
-      ial1_intro_html: We’ll share your information with <b>%{sp}</b> to connect your account.
-      ial2_consent_reminder_html: '<b>%{sp}</b> needs to know who you are to connect
-        to your account. You must consent each year to share your verified
-        information with <b>%{sp}</b>. We’ll share this information: '
-      ial2_intro_html: '<b>%{sp}</b> needs to know who you are to connect your
-        account. We’ll share this information with %{sp}: '
+      ial2_consent_reminder_html: '<strong>%{sp}</strong> needs to know who you are to
+        connect to your account. You must consent each year to share your
+        verified information with <strong>%{sp}</strong>. We’ll share this
+        information: '
+      ial2_intro_html: '<strong>%{sp}</strong> needs to know who you are to connect
+        your account. We’ll share this information with %{sp}: '
       ial2_reverified_consent_info: 'Because you verified your identity again, we need
         your permission to share this information with %{sp}: '
       phone: Phone number

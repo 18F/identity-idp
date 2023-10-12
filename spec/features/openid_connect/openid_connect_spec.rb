@@ -290,6 +290,8 @@ RSpec.describe 'OpenID Connect' do
           post_logout_redirect_uri: 'gov.gsa.openidconnect.test://result/signout',
           state: state,
         )
+        expect(page.response_headers['Content-Security-Policy']).
+          to(include('form-action \'self\' gov.gsa.openidconnect.test:'))
         expect(page).to have_content(
           t(
             'openid_connect.logout.heading_with_sp',

@@ -5,6 +5,7 @@ module Idv
     include IdvStepConcern
     include StepIndicatorConcern
 
+    before_action :confirm_not_rate_limited
     before_action :confirm_hybrid_handoff_complete
     before_action :confirm_document_capture_needed
     before_action :override_csp_to_allow_acuant
@@ -20,6 +21,9 @@ module Idv
 
     def update
       idv_session.redo_document_capture = nil # done with this redo
+      # Not used in standard flow, here for data consistency with hybrid flow.
+      document_capture_session.confirm_ocr
+
       result = handle_stored_result
       analytics.idv_doc_auth_document_capture_submitted(**result.to_h.merge(analytics_arguments))
 

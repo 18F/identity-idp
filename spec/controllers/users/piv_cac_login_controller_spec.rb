@@ -10,10 +10,9 @@ RSpec.describe Users::PivCacLoginController do
     context 'without a token' do
       before { get :new }
 
-      it 'tracks the piv_cac setup' do
+      it 'tracks the piv cac login' do
         expect(@analytics).to have_received(:track_event).with(
-          'PIV CAC setup visited',
-          in_account_creation_flow: false,
+          :piv_cac_login_visited,
         )
       end
 
@@ -29,7 +28,7 @@ RSpec.describe Users::PivCacLoginController do
         before { get :new, params: { token: token } }
         it 'tracks the login attempt' do
           expect(@analytics).to have_received(:track_event).with(
-            'PIV/CAC Login',
+            :piv_cac_login,
             {
               errors: {},
               key_id: nil,
@@ -74,7 +73,7 @@ RSpec.describe Users::PivCacLoginController do
 
           it 'tracks the login attempt' do
             expect(@analytics).to have_received(:track_event).with(
-              'PIV/CAC Login',
+              :piv_cac_login,
               {
                 errors: {
                   type: 'user.not_found',
@@ -113,7 +112,7 @@ RSpec.describe Users::PivCacLoginController do
 
           it 'tracks the login attempt' do
             expect(@analytics).to have_received(:track_event).with(
-              'PIV/CAC Login',
+              :piv_cac_login,
               {
                 errors: {},
                 key_id: nil,
