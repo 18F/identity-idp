@@ -1,4 +1,4 @@
-import { FieldsetHTMLAttributes, HTMLAttributes, ReactNode } from 'react';
+import { FieldsetHTMLAttributes, ReactNode } from 'react';
 
 export interface FieldSetProps extends FieldsetHTMLAttributes<HTMLFieldSetElement> {
   /**

@@ -1,8 +1,11 @@
 import { Tag, Checkbox, FieldSet, Button } from '@18f/identity-components';
 import { useI18n } from '@18f/identity-react-i18n';
+import { useContext, useState } from 'react';
+import AnalyticsContext from '../context/analytics';
 
 function DocumentCaptureAbandon() {
   const { t } = useI18n();
+  const { trackEvent } = useContext(AnalyticsContext);
 
   const header = <h3>Don&amp;apos;t have a driver;apos;s licnese or State ID?</h3>;
   const content = (
@@ -20,14 +23,6 @@ function DocumentCaptureAbandon() {
       have instead?
     </p>
   );
-  const idTypes = [
-    'us_passport',
-    'resident_card',
-    'military_id',
-    'tribal_id',
-    'voter_registration_card',
-    'other',
-  ];
 
   const idTypeLabels = [
     t('doc_auth.exit_survey_id_types.us_passport'),
@@ -38,9 +33,40 @@ function DocumentCaptureAbandon() {
     t('doc_auth.exit_survey_id_types.other'),
   ];
 
-  const checkboxes = idTypes.map((idType, idx) => (
-    <Checkbox key={idType} name={idType} value={idType} label={idTypeLabels[idx]} />
+  const allIdTypeOptions = [
+    { name: 'us_passport', checked: false },
+    { name: 'resident_card', checked: false },
+    { name: 'military_id', checked: false },
+    { name: 'tribal_id', checked: false },
+    { name: 'voter_registration_card', checked: false },
+    { name: 'other', checked: false },
+  ];
+
+  const [idTypeOptions, setIdTypeOptions] = useState(allIdTypeOptions);
+
+  const updateCheckStatus = (index: number) => {
+    setIdTypeOptions(
+      idTypeOptions.map((id_option, currentIndex) =>
+        currentIndex === index ? { ...id_option, checked: !id_option.checked } : { ...id_option },
+      ),
+    );
+  };
+
+  const checkboxes = idTypeOptions.map((idType, idx) => (
+    <Checkbox
+      key={idType.name}
+      name={idType.name}
+      value={idType.name}
+      label={idTypeLabels[idx]}
+      onChange={() => updateCheckStatus(idx)}
+    />
   ));
+
+  const handleExit = () => {
+    trackEvent('IdV: exit optional id types', { ids: idTypeOptions });
+    window.location.href = '/verify/exit?step=document-capture&location=optional_question';
+  };
+
   return (
     <>
       {header}
@@ -48,7 +74,9 @@ function DocumentCaptureAbandon() {
       {optionalTag}
       {optionalText}
       <FieldSet legend="Optional. Select any of the documents you have.">{checkboxes}</FieldSet>
-      <Button isOutline>Submit and exit Login.gov</Button>
+      <Button isOutline onClick={handleExit}>
+        Submit and exit Login.gov
+      </Button>
     </>
   );
 }

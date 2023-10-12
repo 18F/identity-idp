@@ -28,6 +28,7 @@ function Checkbox({
   const classes = ['usa-checkbox__input', isTitle && 'usa-button__input-title', className]
     .filter(Boolean)
     .join(' ');
+
   return (
     <div className="usa-checkbox">
       <input id={inputId} className={classes} type="checkbox" {...inputProps} />
