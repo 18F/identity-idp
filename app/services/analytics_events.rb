@@ -3747,11 +3747,6 @@ module AnalyticsEvents
     track_event('User Maximum Session Length Exceeded') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
-  # Tracks if a user clicks the "You will also need" accordion on the homepage
-  def sign_in_idv_requirements_accordion_clicked
-    track_event('Sign In: IdV requirements accordion clicked') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
-  end
-
   # @param [String] flash
   # @param [String] stored_location
   # tracks when a user visits the sign in page
