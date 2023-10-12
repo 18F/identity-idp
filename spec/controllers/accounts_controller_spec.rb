@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe AccountsController do
   describe 'before_actions' do
-    it 'includes before_actions from AccountStateChecker' do
+    it 'includes before_actions' do
       expect(subject).to have_actions(
         :before,
         :confirm_two_factor_authenticated,

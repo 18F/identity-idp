@@ -116,7 +116,6 @@ module Idv
 
       if client_response.success? && response.success?
         store_pii(client_response)
-        rate_limiter.reset!
       end
 
       response

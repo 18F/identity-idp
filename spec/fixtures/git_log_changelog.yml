@@ -130,3 +130,18 @@ commit_changelog_with_commas_in_change:
   pr_number: '7000'
   commit_messages:
     - 'changelog:Internal,Changelog,Allow listing one, two, and more items with commas'
+dependabot_dependency_update:
+  commit_log: |
+    title: Bump libphonenumber-js from 1.10.46 to 1.10.47 (#9332)
+    body:...
+
+    Signed-off-by: dependabot[bot] <support@github.com>
+    DELIMITER
+  title: Bump libphonenumber-js from 1.10.46 to 1.10.47 (#9332)
+  category: Internal
+  subcategory: Dependencies
+  change: Update dependencies to latest versions
+  pr_number: '9332'
+  commit_messages:
+    - '...'
+    - 'Signed-off-by: dependabot[bot] <support@github.com>'

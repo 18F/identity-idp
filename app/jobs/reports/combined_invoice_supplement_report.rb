@@ -5,8 +5,14 @@ module Reports
     REPORT_NAME = 'combined-invoice-supplement-report'.freeze
 
     def perform(_date)
-      iaas = IaaReportingHelper.iaas
+      csv = build_csv(IaaReportingHelper.iaas)
 
+      save_report(REPORT_NAME, csv, extension: 'csv')
+    end
+
+    # @param [Array<IaaReportingHelper::IaaConfig>] iaas
+    # @return [String] CSV report
+    def build_csv(iaas)
       by_iaa_results = iaas.flat_map do |iaa|
         Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa.call(
           key: iaa.key,
@@ -27,12 +33,10 @@ module Reports
         end
       end
 
-      csv = combine_by_iaa_month(
+      combine_by_iaa_month(
         by_iaa_results: by_iaa_results,
         by_issuer_results: by_issuer_results,
       )
-
-      save_report(REPORT_NAME, csv, extension: 'csv')
     end
 
     def combine_by_iaa_month(by_iaa_results:, by_issuer_results:)

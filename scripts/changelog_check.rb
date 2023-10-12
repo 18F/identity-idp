@@ -18,7 +18,7 @@ REVERT_COMMIT_MESSAGE = /This reverts commit ([a-z\d]+)./
 SECURITY_CHANGELOG = {
   category: 'Internal',
   subcategory: 'Dependencies',
-  change: 'Update dependencies to resolve security advisories',
+  change: 'Update dependencies to latest versions',
 }.freeze
 REVERT_CHANGELOG = {
   category: 'Bug Fixes',
