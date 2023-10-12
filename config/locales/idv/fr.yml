@@ -259,16 +259,6 @@ fr:
         start_over_link_text: recommencer et vérifier avec votre nouvelle adresse
         timeframe_html: Vous recevrez une lettre avec un <strong>code de
           vérification</strong> dans un délai de <strong>5 à 10 jours</strong>.
-      gpo_reminder:
-        body_html: Vous avez demandé une lettre pour vérifier votre identité le
-          <strong>%{date_letter_was_sent}</strong>. Vous devrez saisir le code
-          figurant dans la lettre pour terminer la vérification par courrier.
-          Reconnectez-vous à %{app_name} pour terminer la vérification de votre
-          identité. %{help_link}.
-        did_not_get_a_letter_html: Si vous n’avez pas reçu cette lettre, %{another_letter_link_html}.
-        finish: Terminer la vérification de votre identité
-        sign_in_and_request_another_letter: connectez-vous pour en demander une autre.
-        subject: Terminer la vérification de votre identité
       otp_delivery_method_description: Si vous avez saisi une ligne fixe ci-dessus,
         veuillez sélectionner « Appel téléphonique » ci-dessous.
       personal_key: Il s’agit de votre nouvelle clé personnelle. Notez-la et

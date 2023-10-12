@@ -238,15 +238,6 @@ en:
         start_over_link_text: start over and verify with your new address
         timeframe_html: You’ll get a letter with a <strong>verification code</strong> in
           <strong>5 to 10 days</strong>.
-      gpo_reminder:
-        body_html: You requested a letter to verify your identity on
-          <strong>%{date_letter_was_sent}</strong>. You’ll need to enter the
-          code from the letter to finish verifying your identity. Sign back in
-          to %{app_name} to finish verifying your identity. %{help_link}.
-        did_not_get_a_letter_html: If you didn’t get this letter, %{another_letter_link_html}.
-        finish: Finish verifying your identity
-        sign_in_and_request_another_letter: sign in to request another letter
-        subject: Finish verifying your identity
       otp_delivery_method_description: If you entered a landline above, please select “Phone call” below.
       personal_key: This is your new personal key. Write it down and keep it in a safe
         place. You will need it if you ever lose your password.
