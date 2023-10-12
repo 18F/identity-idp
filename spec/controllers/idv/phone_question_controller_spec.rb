@@ -170,9 +170,8 @@ RSpec.describe Idv::PhoneQuestionController do
     end
 
     it 'set idv_session flow path to standard' do
-      expect do
-        get :phone_without_camera
-      end.to change { subject.idv_session.flow_path }.from(nil).to eql('standard')
+      expect { get :phone_without_camera }.
+        to change { subject.idv_session.flow_path }.from(nil).to 'standard'
     end
   end
 end
