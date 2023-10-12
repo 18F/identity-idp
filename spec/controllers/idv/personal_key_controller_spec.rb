@@ -43,7 +43,7 @@ RSpec.describe Idv::PersonalKeyController do
   end
 
   describe 'before_actions' do
-    it 'includes before_actions from AccountStateChecker' do
+    it 'includes before_actions' do
       expect(subject).to have_actions(
         :before,
         :confirm_two_factor_authenticated,
@@ -133,6 +133,16 @@ RSpec.describe Idv::PersonalKeyController do
       subject.idv_session.create_profile_from_applicant_with_password(password)
       code = subject.idv_session.personal_key
 
+      get :show
+
+      expect(assigns(:code)).to eq(code)
+    end
+
+    it 'shows the same personal key when page is refreshed' do
+      subject.idv_session.create_profile_from_applicant_with_password(password)
+      code = subject.idv_session.personal_key
+
+      get :show
       get :show
 
       expect(assigns(:code)).to eq(code)
