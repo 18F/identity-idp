@@ -137,10 +137,6 @@ es:
       verifying_step_not_expired: Su documento de identidad o permiso de conducir
         emitido por el estado debe estar vigente. Por el momento, no aceptamos
         otras formas de identificación, como pasaportes o cartillas militares.
-      verifying_step_proof_of_address: Si vous tentez à nouveau de vérifier votre
-        identité en personne, vous devez apporter un justificatif de domicile
-        valable si votre adresse actuelle est différente de celle figurant sur
-        votre pièce d’identité.
     in_person_failed_suspected_fraud:
       body:
         help_center_html: Si necesita ayuda adicional, puede <a
