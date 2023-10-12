@@ -9,6 +9,12 @@ module Reports
     def perform(date = Time.zone.today)
       @report_date = date
 
+      email_addresses = emails.select(&:present?)
+      if email_addresses.empty?
+        Rails.logger.warn 'No email addresses received - Monthly Key Metrics Report NOT SENT'
+        return false
+      end
+
       reports = [
         total_user_count_report.total_user_count_emailable_report,
         account_deletion_rate_report.account_deletion_emailable_report,
@@ -25,18 +31,13 @@ module Reports
       end
 
       email_message = "Report: #{REPORT_NAME} #{date}"
-      email_addresses = emails.select(&:present?)
 
-      if !email_addresses.empty?
-        ReportMailer.tables_report(
-          email: email_addresses,
-          subject: "Monthly Key Metrics Report - #{date}",
-          message: email_message,
-          tables: email_tables,
-        ).deliver_now
-      else
-        Rails.logger.warn 'No email addresses received - Monthly Key Metrics Report NOT SENT'
-      end
+      ReportMailer.tables_report(
+        email: email_addresses,
+        subject: "Monthly Key Metrics Report - #{date}",
+        message: email_message,
+        tables: email_tables,
+      ).deliver_now
     end
 
     def emails
