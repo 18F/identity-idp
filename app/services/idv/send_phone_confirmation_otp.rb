@@ -10,6 +10,12 @@ module Idv
     def call
       otp_rate_limiter.reset_count_and_otp_last_sent_at if user.no_longer_locked_out?
 
+      # The pattern for checking the rate limiter, incrementing, then checking again was introduced
+      # in this change: https://github.com/18F/identity-idp/pull/2216
+      #
+      # This adds protection against a race condition that would result in sending a large number
+      # of OTPs and/or needlessly making atomic increments to the rate limit counter.
+      #
       return too_many_otp_sends_response if rate_limit_exceeded?
       otp_rate_limiter.increment
       return too_many_otp_sends_response if rate_limit_exceeded?
