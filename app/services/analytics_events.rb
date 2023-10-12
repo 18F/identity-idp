@@ -948,6 +948,55 @@ module AnalyticsEvents
     track_event('IdV: doc auth welcome visited', **extra) # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
+  # User submitted IDV password confirm page
+  # @param [Boolean] success
+  # @param [Boolean] fraud_review_pending
+  # @param [Boolean] fraud_rejection
+  # @param [Boolean] gpo_verification_pending
+  # @param [Boolean] in_person_verification_pending
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # @param [String, nil] deactivation_reason Reason user's profile was deactivated, if any.
+  def idv_enter_password_complete(
+    success:,
+    fraud_review_pending:,
+    fraud_rejection:,
+    gpo_verification_pending:,
+    in_person_verification_pending:,
+    deactivation_reason: nil,
+    proofing_components: nil,
+    **extra
+  )
+    track_event(
+      'IdV: review complete', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
+      success: success,
+      deactivation_reason: deactivation_reason,
+      fraud_review_pending: fraud_review_pending,
+      gpo_verification_pending: gpo_verification_pending,
+      in_person_verification_pending: in_person_verification_pending,
+      fraud_rejection: fraud_rejection,
+      proofing_components: proofing_components,
+      **extra,
+    )
+  end
+
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's
+  #        current proofing components
+  # @param [String] address_verification_method The method (phone or gpo) being
+  #        used to verify the user's identity
+  # User visited IDV password confirm page
+  def idv_enter_password_visited(
+    proofing_components: nil,
+    address_verification_method: nil,
+    **extra
+  )
+    track_event(
+      'IdV: review info visited', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
+      address_verification_method: address_verification_method,
+      proofing_components: proofing_components,
+      **extra,
+    )
+  end
+
   # @param [Boolean] success
   # @param [String, nil] deactivation_reason Reason user's profile was deactivated, if any.
   # @param [Boolean] fraud_review_pending Profile is under review for fraud
@@ -2346,53 +2395,6 @@ module AnalyticsEvents
     track_event(
       'IdV: request letter visited', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       letter_already_sent: letter_already_sent,
-      **extra,
-    )
-  end
-
-  # User submitted IDV password confirm page
-  # @param [Boolean] success
-  # @param [Boolean] fraud_review_pending
-  # @param [Boolean] fraud_rejection
-  # @param [Boolean] gpo_verification_pending
-  # @param [Boolean] in_person_verification_pending
-  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
-  # @param [String, nil] deactivation_reason Reason user's profile was deactivated, if any.
-  def idv_review_complete(
-    success:,
-    fraud_review_pending:,
-    fraud_rejection:,
-    gpo_verification_pending:,
-    in_person_verification_pending:,
-    deactivation_reason: nil,
-    proofing_components: nil,
-    **extra
-  )
-    track_event(
-      'IdV: review complete', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
-      success: success,
-      deactivation_reason: deactivation_reason,
-      fraud_review_pending: fraud_review_pending,
-      gpo_verification_pending: gpo_verification_pending,
-      in_person_verification_pending: in_person_verification_pending,
-      fraud_rejection: fraud_rejection,
-      proofing_components: proofing_components,
-      **extra,
-    )
-  end
-
-  # @param [Idv::ProofingComponentsLogging] proofing_components User's
-  #        current proofing components
-  # @param [String] address_verification_method The method (phone or gpo) being
-  #        used to verify the user's identity
-  # User visited IDV password confirm page
-  def idv_review_info_visited(proofing_components: nil,
-                              address_verification_method: nil,
-                              **extra)
-    track_event(
-      'IdV: review info visited', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
-      address_verification_method: address_verification_method,
-      proofing_components: proofing_components,
       **extra,
     )
   end

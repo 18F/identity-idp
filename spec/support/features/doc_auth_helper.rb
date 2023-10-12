@@ -317,7 +317,7 @@ module DocAuthHelper
     complete_ssn_step
     click_idv_continue
     complete_phone_step(user)
-    complete_review_step(user)
+    complete_enter_password_step(user)
     acknowledge_and_confirm_personal_key
   end
 end

@@ -387,7 +387,7 @@ RSpec.feature 'Analytics Regression', js: true do
       complete_ssn_step
       complete_verify_step
       complete_phone_step(user)
-      complete_review_step(user)
+      complete_enter_password_step(user)
       acknowledge_and_confirm_personal_key
     end
 
@@ -446,7 +446,7 @@ RSpec.feature 'Analytics Regression', js: true do
       complete_verify_step
       enter_gpo_flow
       gpo_step
-      complete_review_step(user)
+      complete_enter_password_step(user)
     end
 
     it 'records all of the events' do
@@ -493,7 +493,7 @@ RSpec.feature 'Analytics Regression', js: true do
       begin_in_person_proofing(user)
       complete_all_in_person_proofing_steps(user, same_address_as_id: false)
       complete_phone_step(user)
-      complete_review_step(user)
+      complete_enter_password_step(user)
       acknowledge_and_confirm_personal_key
       visit_help_center
       visit_sp_from_in_person_ready_to_verify

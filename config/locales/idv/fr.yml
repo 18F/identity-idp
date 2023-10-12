@@ -251,6 +251,14 @@ fr:
         serez obligé de vérifier à nouveau votre identité.
       come_back_later_sp_html: Vous pouvez retourner à l’agence <strong>%{sp}</strong> pour le moment.
       confirm: Nous avons sécurisé vos informations vérifiées
+      enter_password:
+        by_mail_password_reminder_html: <strong>Mémorisez votre mot de passe.</strong>
+          Le code de vérification contenu dans votre lettre ne fonctionnera pas
+          si vous réinitialisez votre mot de passe par la suite.
+        message: '%{app_name} crypte vos informations avec votre mot de passe. Cela
+          signifie que vos informations sont sécurisées et que vous seul pourrez
+          y accéder ou les modifier.'
+        phone_verified: Nous avons vérifié votre numéro de téléphone
       gpo:
         address_on_file: 'Nous enverrons la lettre à l’adresse que vous avez vérifiée
           précédemment:'
@@ -282,14 +290,6 @@ fr:
           - Basé aux Etats-Unis (y compris les territoires américains)
           - Votre numéro principal (celui que vous utilisez le plus souvent)
       return_to_profile: '‹ Revenir à votre profil %{app_name}'
-      review:
-        by_mail_password_reminder_html: <strong>Mémorisez votre mot de passe.</strong>
-          Le code de vérification contenu dans votre lettre ne fonctionnera pas
-          si vous réinitialisez votre mot de passe par la suite.
-        message: '%{app_name} crypte vos informations avec votre mot de passe. Cela
-          signifie que vos informations sont sécurisées et que vous seul pourrez
-          y accéder ou les modifier.'
-        phone_verified: Nous avons vérifié votre numéro de téléphone
       select_verification_with_sp: Afin de vous protéger des fraudes d’identité, vous
         ne pouvez pas utiliser votre compte au %{sp_name} tant que vous ne
         l’aurez pas activé en entrant votre code à usage unique.
@@ -297,22 +297,23 @@ fr:
         à l’identité, votre profil ne sera pas activé tant que vous n’aurez pas
         entré votre code à usage unique.
       sessions:
+        enter_password_message: Lorsque vous entrez à nouveau votre mot de passe,
+          %{app_name} crypte vos données pour vous assurer que personne ne peut
+          y accéder.
         no_pii: SITE DE TEST - N’utilisez pas de véritables données personnelles (il
           s’agit d’une démonstration seulement) - SITE DE TEST
-        review_message: Lorsque vous entrez à nouveau votre mot de passe, %{app_name}
-          crypte vos données pour vous assurer que personne ne peut y accéder.
       verifying: Vérification…
     titles:
       activated: Votre identité a déjà été vérifiée
       come_back_later: Votre lettre est en route
+      enter_password: Réviser et soumettre
       mail:
         verify: Vérifiez votre adresse
       otp_delivery_method: Comment envoyer un code?
-      review: Réviser et soumettre
       session:
-        review: 'Saisissez à nouveau votre mot de passe %{app_name}'
-        review_letter: 'Saisissez à nouveau votre mot de passe %{app_name} pour envoyer
-          votre lettre'
+        enter_password: 'Saisissez à nouveau votre mot de passe %{app_name}'
+        enter_password_letter: 'Saisissez à nouveau votre mot de passe %{app_name} pour
+          envoyer votre lettre'
       unavailable: Nous travaillons à la résolution d’une erreur
     troubleshooting:
       headings:

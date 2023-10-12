@@ -43,7 +43,7 @@ RSpec.describe Idv::ResendOtpController do
     context 'the user has already confirmed their phone' do
       let(:user_phone_confirmation) { true }
 
-      it 'redirects to the review step' do
+      it 'redirects to the enter password step' do
         post :create
         expect(response).to redirect_to(idv_review_path)
       end
