@@ -192,7 +192,7 @@ RSpec.describe Idv::PhoneController do
         end
 
         context 'the user submited their last attempt' do
-          it 'it redirects to the OTP confirmation and the rate limiter is maxed' do
+          it 'redirects to the OTP confirmation and the rate limiter is maxed' do
             RateLimiter.new(user: user, rate_limit_type: :proof_address).increment_to_limited!
 
             get :new
