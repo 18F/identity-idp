@@ -129,7 +129,6 @@ module Reports
     def total_user_count_report
       @total_user_count_report ||= Reporting::TotalUserCountReport.new(report_date)
     end
-    
 
     def upload_to_s3(report_body, report_name: nil)
       _latest, path = generate_s3_paths(REPORT_NAME, 'csv', subname: report_name, now: report_date)
