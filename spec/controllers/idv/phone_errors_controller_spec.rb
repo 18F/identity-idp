@@ -87,21 +87,12 @@ RSpec.describe Idv::PhoneErrorsController do
       end
     end
 
-    context 'the user is not authenticated and not recovering their account' do
+    context 'the user is not authenticated' do
       let(:user) { nil }
       it 'redirects to sign in' do
         get action
 
         expect(response).to redirect_to(new_user_session_url)
-      end
-      it 'does not log an event' do
-        expect(@analytics).not_to receive(:track_event).with(
-          'IdV: phone error visited',
-          hash_including(
-            type: action,
-          ),
-        )
-        get action
       end
     end
   end
@@ -235,18 +226,16 @@ RSpec.describe Idv::PhoneErrorsController do
 
   describe '#failure' do
     let(:action) { :failure }
-    let(:template) { 'idv/phone_errors/failure' }
-
-    it_behaves_like 'an idv phone errors controller action'
 
     context 'while rate limited' do
       let(:user) { create(:user) }
 
-      it 'assigns expiration time' do
+      it 'renders an error and assigns expiration time' do
         RateLimiter.new(rate_limit_type: :proof_address, user: user).increment_to_limited!
         get action
 
         expect(assigns(:expires_at)).to be_kind_of(Time)
+        expect(response).to render_template('idv/phone_errors/failure')
       end
 
       it 'logs an event' do
@@ -264,6 +253,44 @@ RSpec.describe Idv::PhoneErrorsController do
             **ab_test_args,
           )
         end
+      end
+
+      context 'fetch() request from form-steps-wait JS' do
+        before do
+          request.headers['X-Form-Steps-Wait'] = '1'
+        end
+
+        it 'returns an empty response' do
+          get action
+          expect(response).to have_http_status(204)
+        end
+
+        it 'does not log an event' do
+          expect(@analytics).not_to receive(:track_event).with(
+            'IdV: phone error visited',
+            anything,
+          )
+          get action
+        end
+      end
+    end
+
+    context 'while not rate limited' do
+      let(:user) { create(:user) }
+
+      it 'redirects to the phone step' do
+        get action
+
+        expect(response).to redirect_to(idv_phone_url)
+      end
+    end
+
+    context 'the user is not authenticated' do
+      let(:user) { nil }
+      it 'redirects to sign in' do
+        get action
+
+        expect(response).to redirect_to(new_user_session_url)
       end
     end
   end

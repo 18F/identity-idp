@@ -16,7 +16,8 @@ module ControllerHelper
   def stub_sign_in(user = build(:user, password: VALID_PASSWORD))
     allow(request.env['warden']).to receive(:authenticate!).and_return(user)
     allow(request.env['warden']).to receive(:session).and_return(user: {})
-    allow(controller).to receive(:user_session).and_return(authn_at: Time.zone.now)
+    allow(controller).to receive(:user_session).
+      and_return({ authn_at: Time.zone.now }.with_indifferent_access)
     controller.user_session[:auth_method] ||= TwoFactorAuthenticatable::AuthMethod::SMS
     allow(controller).to receive(:current_user).and_return(user)
     allow(controller).to receive(:confirm_two_factor_authenticated).and_return(true)
@@ -54,7 +55,7 @@ module ControllerHelper
   end
 
   def stub_verify_steps_one_and_two(user)
-    user_session = {}
+    user_session = ActiveSupport::HashWithIndifferentAccess.new
     stub_sign_in(user)
     idv_session = Idv::Session.new(
       user_session: user_session, current_user: user,
@@ -67,20 +68,6 @@ module ControllerHelper
       dob: 50.years.ago.to_date.to_s,
       ssn: '666-12-1234',
     }.with_indifferent_access
-    idv_session.resolution_successful = true
-    allow(subject).to receive(:confirm_idv_applicant_created).and_return(true)
-    allow(subject).to receive(:idv_session).and_return(idv_session)
-    allow(subject).to receive(:user_session).and_return(user_session)
-  end
-
-  def stub_user_with_applicant_data(user, applicant)
-    user_session = {}
-    stub_sign_in(user)
-    idv_session = Idv::Session.new(
-      user_session: user_session, current_user: user,
-      service_provider: nil
-    )
-    idv_session.applicant = applicant.with_indifferent_access
     idv_session.resolution_successful = true
     allow(subject).to receive(:confirm_idv_applicant_created).and_return(true)
     allow(subject).to receive(:idv_session).and_return(idv_session)

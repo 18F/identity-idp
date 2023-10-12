@@ -309,10 +309,12 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
 
     it 'is compatible with job classes that do not inherit from ApplicationJob' do
       # rubocop:disable Rails/ApplicationJob
-      class SampleJob < ActiveJob::Base; def perform(_); end; end
+      sample_job_class = Class.new(ActiveJob::Base) do
+        def perform(_); end
+      end
       # rubocop:enable Rails/ApplicationJob
 
-      job = SampleJob.new
+      job = sample_job_class.new
 
       event = ActiveSupport::Notifications::Event.new(
         'enqueue.active_job',

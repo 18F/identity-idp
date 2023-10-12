@@ -172,6 +172,8 @@ en:
         JavaScript to continue this process.'
     gpo:
       alert_info: 'We sent a letter with your verification code to:'
+      alert_spam_warning_html: 'We are unable to send more letters. The most recent
+        letter was sent on <strong>%{date_letter_was_sent}</strong>.'
       change_to_verification_code_html: 'The <strong>one-time code</strong> from your
         letter is now referred to as <strong>verification code</strong>.'
       clear_and_start_over: Clear your information and start over
@@ -253,8 +255,9 @@ en:
           - Your primary number (the one you use the most often)
       return_to_profile: '‹ Return to your %{app_name} profile'
       review:
-        by_mail_password_reminder_html: <b>Remember your password.</b> The verification
-          code in your letter won’t work if you reset your password later.
+        by_mail_password_reminder_html: <strong>Remember your password.</strong> The
+          verification code in your letter won’t work if you reset your password
+          later.
         message: '%{app_name} will encrypt your information with your password. This
           means that your information is secure and only you will be able to
           access or change it.'

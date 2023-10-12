@@ -111,7 +111,6 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
 
           it 'maps enrollment address fields' do
             expect(proofer).to receive(:request_enroll) do |applicant|
-              ADDR = Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS
               expect(applicant).to have_attributes(
                 address: Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[
                   :identity_doc_address1

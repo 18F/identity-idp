@@ -87,7 +87,6 @@ gem 'zxcvbn', '0.1.9'
 group :development do
   gem 'better_errors', '>= 2.5.1'
   gem 'derailed_benchmarks'
-  gem 'guard-rspec', require: false
   gem 'irb'
   gem 'letter_opener', '~> 1.8'
   gem 'rack-mini-profiler', '>= 1.1.3', require: false
@@ -107,10 +106,12 @@ group :development, :test do
   gem 'pry-doc'
   gem 'pry-rails'
   gem 'psych'
+  gem 'rspec', '~> 3.12.0'
   gem 'rspec-rails', '~> 6.0'
   gem 'rubocop', '~> 1.55.1', require: false
   gem 'rubocop-performance', '~> 1.18.0', require: false
   gem 'rubocop-rails', '>= 2.5.2', require: false
+  gem 'rubocop-rspec', require: false
 end
 
 group :test do
