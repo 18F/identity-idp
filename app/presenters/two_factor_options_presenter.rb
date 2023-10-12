@@ -26,6 +26,15 @@ class TwoFactorOptionsPresenter
       backup_code_option + webauthn_option + piv_cac_option
   end
 
+  def selected_options
+    [TwoFactorAuthentication::WebauthnPlatformSelectionPresenter.new(user: user)] +
+      [TwoFactorAuthentication::SetUpAuthAppSelectionPresenter.new(user: user)] +
+      [TwoFactorAuthentication::PhoneSelectionPresenter.new(user: user)] +
+      [TwoFactorAuthentication::BackupCodeSelectionPresenter.new(user: user)] +
+      [TwoFactorAuthentication::WebauthnSelectionPresenter.new(user: user)] +
+      [TwoFactorAuthentication::PivCacSelectionPresenter.new(user: user)]
+  end
+
   def icon
     if piv_cac_required? || (phishing_resistant_only? && mfa_policy.two_factor_enabled?)
       'icon-lock-alert-important.svg'
@@ -54,6 +63,10 @@ class TwoFactorOptionsPresenter
     else
       t('mfa.info')
     end
+  end
+
+  def show_cancel_phishing_resistant_only
+    phishing_resistant_only?
   end
 
   def show_skip_additional_mfa_link?
