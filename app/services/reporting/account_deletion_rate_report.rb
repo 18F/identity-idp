@@ -6,23 +6,23 @@ module Reporting
       @report_date = report_date
     end
 
-    def account_deletion_report_title
-      'Account deletion rate (last 30 days)'
-    end
-
-    def account_deletion_report_metadata
-      {
-        title: account_deletion_report_title,
-        float_as_percent: true,
-        precision: 4,
-      }
-    end
-
     def account_deletion_report
       table = []
       table << ['Deleted Users', 'Total Users', 'Deletion Rate']
       table << [deleted_user_count, users_and_deleted_for_period, deletion_rate]
       table
+    end
+
+    def account_deletion_emailable_report
+      EmailableReport.new(
+        email_options: {
+          title: 'Account deletion rate (last 30 days)',
+          float_as_percent: true,
+          precision: 4,
+        },
+        table: account_deletion_report,
+        csv_name: 'account_deletion_rate',
+      )
     end
 
     private

@@ -8,19 +8,19 @@ module Reporting
       @report_date = report_date
     end
 
-    def total_user_count_report_title
-      'Total user count (all-time)'
-    end
-
-    def total_user_count_report_metadata
-      { title: total_user_count_report_title }
-    end
-
     def total_user_count_report
       [
         ['All-time user count'],
         [total_user_count],
       ]
+    end
+
+    def total_user_count_emailable_report
+      EmailableReport.new(
+        email_options: { title: 'Total user count (all-time)' },
+        table: total_user_count_report,
+        csv_name: 'total_user_count',
+      )
     end
 
     private
