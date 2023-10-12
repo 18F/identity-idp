@@ -82,7 +82,7 @@ RSpec.describe Reporting::TotalUserCountReport do
       let(:expected_count) { 0 }
 
       it 'returns zero users' do
-        expect(subject.total_verified_user_report).to eq expected_report
+        expect(subject.total_verified_users_report).to eq expected_report
       end
     end
 
@@ -92,7 +92,7 @@ RSpec.describe Reporting::TotalUserCountReport do
       let(:expected_count) { 1 }
 
       it 'returns only 1 user (the IdV user)' do
-        expect(subject.total_verified_user_report).to eq expected_report
+        expect(subject.total_verified_users_report).to eq expected_report
       end
     end
   end
