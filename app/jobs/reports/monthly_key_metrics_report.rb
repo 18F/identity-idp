@@ -15,44 +15,20 @@ module Reports
         return false
       end
 
-      account_reuse_table = account_reuse_report.account_reuse_report
-      total_profiles_table = account_reuse_report.total_identities_report
-      account_deletion_rate_table = account_deletion_rate_report.account_deletion_report
-      total_user_count_table = total_user_count_report.total_user_count_report
-
-      upload_to_s3(account_reuse_table, report_name: 'account_reuse')
-      upload_to_s3(total_profiles_table, report_name: 'total_profiles')
-      upload_to_s3(account_deletion_rate_table, report_name: 'account_deletion_rate')
-      upload_to_s3(total_user_count_table, report_name: 'total_user_count')
-
-      email_tables = [
-        [
-          {
-            title: "IDV app reuse rate #{account_reuse_report.stats_month}",
-            float_as_percent: true,
-            precision: 4,
-          },
-          *account_reuse_table,
-        ],
-        [
-          { title: 'Total proofed identities' },
-          *total_profiles_table,
-        ],
-        [
-          {
-            title: 'Account deletion rate (last 30 days)',
-            float_as_percent: true,
-            precision: 4,
-          },
-          *account_deletion_rate_table,
-        ],
-        [
-          {
-            title: 'Total user count (all-time)',
-          },
-          *total_user_count_table,
-        ],
+      reports = [
+        total_user_count_report.total_user_count_emailable_report,
+        account_deletion_rate_report.account_deletion_emailable_report,
+        account_reuse_report.account_reuse_emailable_report,
+        account_reuse_report.total_identities_emailable_report,
       ]
+
+      reports.each do |report|
+        upload_to_s3(report.table, report_name: report.csv_name)
+      end
+
+      email_tables = reports.map do |report|
+        [report.email_options, *report.table]
+      end
 
       email_message = "Report: #{REPORT_NAME} #{date}"
 
