@@ -9,12 +9,6 @@ RSpec.feature 'Sign in' do
   include IdvHelper
   include DocAuthHelper
 
-  scenario 'user signs in as ial1 and does not see ial2 help text' do
-    visit_idp_from_sp_with_ial1(:oidc)
-
-    expect(page).to_not have_content t('devise.registrations.start.accordion')
-  end
-
   context 'service provider is on the ialmax allow list' do
     before do
       allow(IdentityConfig.store).to receive(:allowed_ialmax_providers) {
@@ -25,27 +19,8 @@ RSpec.feature 'Sign in' do
     scenario 'user signs in as ialmax and does not see ial2 help text' do
       visit_idp_from_oidc_sp_with_ialmax
 
-      expect(page).to_not have_content t('devise.registrations.start.accordion')
       expect(page).to_not have_content 'The page you were looking for doesn’t exist'
     end
-  end
-
-  scenario 'user signs in as ial2 and does see ial2 help text' do
-    visit_idp_from_sp_with_ial2(:oidc)
-
-    expect(page).to have_content t('devise.registrations.start.accordion')
-  end
-
-  scenario 'user signs in with loa3 request from oidc sp and does see ial2 help text' do
-    visit_idp_from_oidc_sp_with_loa3
-
-    expect(page).to have_content t('devise.registrations.start.accordion')
-  end
-
-  scenario 'user signs in with loa3 request from saml sp and does see ial2 help text' do
-    visit_idp_from_saml_sp_with_loa3
-
-    expect(page).to have_content t('devise.registrations.start.accordion')
   end
 
   scenario 'user cannot sign in if not registered' do
