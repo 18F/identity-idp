@@ -70,6 +70,12 @@ FactoryBot.define do
       pii { Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE }
     end
 
+    trait :letter_sends_rate_limited do
+      gpo_confirmation_codes do
+        build_list(:gpo_confirmation_code, IdentityConfig.store.max_mail_events)
+      end
+    end
+
     after(:build) do |profile, evaluator|
       if evaluator.pii
         pii_attrs = Pii::Attributes.new_from_hash(evaluator.pii)
