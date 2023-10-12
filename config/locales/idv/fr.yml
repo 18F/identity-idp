@@ -229,11 +229,6 @@ fr:
       wrong_address: Pas la bonne adresse?
     images:
       come_back_later: Lettre avec un crochet
-    index:
-      id:
-        need_html: Si vous créez un compte, vous aurez besoin d’un <strong>identifiant
-          actuel émis par l’état</strong>.
-        state_issue: Carte d’identité délivrée par l’État
     messages:
       activated_html: Votre identité a été vérifiée. Si vous souhaitez modifier votre
         information vérifiée, veuillez %{link_html}.

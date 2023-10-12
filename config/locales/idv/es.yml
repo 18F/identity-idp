@@ -218,11 +218,6 @@ es:
       wrong_address: ¿La dirección no es correcta?
     images:
       come_back_later: Carta con una marca de verificación
-    index:
-      id:
-        need_html: Si está creando una cuenta, necesitará una <strong>identificación
-          emitida por el estado actual</strong>.
-        state_issue: Documento de identidad emitido por el Estado
     messages:
       activated_html: Su identidad ha sido verificada. Si necesita cambiar la
         información verificada, por favor, %{link_html}.

@@ -209,11 +209,6 @@ en:
       wrong_address: Not the right address?
     images:
       come_back_later: Letter with a check mark
-    index:
-      id:
-        need_html: If you’re creating an account, you’ll need a <strong>current
-          state‑issued ID</strong>.
-        state_issue: State‑issued ID
     messages:
       activated_html: Your identity has been verified. If you need to change your
         verified information, please %{link_html}.
