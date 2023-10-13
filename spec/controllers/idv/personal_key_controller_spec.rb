@@ -43,7 +43,7 @@ RSpec.describe Idv::PersonalKeyController do
   end
 
   describe 'before_actions' do
-    it 'includes before_actions from AccountStateChecker' do
+    it 'includes before_actions' do
       expect(subject).to have_actions(
         :before,
         :confirm_two_factor_authenticated,
@@ -138,6 +138,16 @@ RSpec.describe Idv::PersonalKeyController do
       expect(assigns(:code)).to eq(code)
     end
 
+    it 'shows the same personal key when page is refreshed' do
+      subject.idv_session.create_profile_from_applicant_with_password(password)
+      code = subject.idv_session.personal_key
+
+      get :show
+      get :show
+
+      expect(assigns(:code)).to eq(code)
+    end
+
     it 'can decrypt the profile with the code' do
       get :show
 
@@ -205,7 +215,7 @@ RSpec.describe Idv::PersonalKeyController do
 
         expect(@analytics).to have_logged_event(
           'IdV: personal key submitted',
-          address_verification_method: nil,
+          address_verification_method: 'phone',
           fraud_review_pending: false,
           fraud_rejection: false,
           in_person_verification_pending: false,
@@ -249,7 +259,7 @@ RSpec.describe Idv::PersonalKeyController do
 
         expect(@analytics).to have_logged_event(
           'IdV: personal key submitted',
-          address_verification_method: nil,
+          address_verification_method: 'phone',
           fraud_review_pending: false,
           fraud_rejection: false,
           deactivation_reason: nil,
@@ -277,7 +287,7 @@ RSpec.describe Idv::PersonalKeyController do
 
           expect(@analytics).to have_logged_event(
             'IdV: personal key submitted',
-            address_verification_method: nil,
+            address_verification_method: 'phone',
             fraud_review_pending: false,
             fraud_rejection: false,
             in_person_verification_pending: false,
@@ -306,7 +316,7 @@ RSpec.describe Idv::PersonalKeyController do
             'IdV: personal key submitted',
             fraud_review_pending: true,
             fraud_rejection: false,
-            address_verification_method: nil,
+            address_verification_method: 'phone',
             in_person_verification_pending: false,
             deactivation_reason: nil,
             proofing_components: nil,

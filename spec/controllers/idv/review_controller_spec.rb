@@ -36,7 +36,7 @@ RSpec.describe Idv::ReviewController do
   end
 
   describe 'before_actions' do
-    it 'includes before_actions from AccountStateChecker' do
+    it 'includes before_actions' do
       expect(subject).to have_actions(
         :before,
         :confirm_two_factor_authenticated,
@@ -391,7 +391,7 @@ RSpec.describe Idv::ReviewController do
             stub_request_enroll
           end
           let(:applicant) do
-            Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE
+            Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID_WITH_PHONE
           end
 
           before do
@@ -587,12 +587,13 @@ RSpec.describe Idv::ReviewController do
           end
 
           context 'when user enters an address2 value' do
-            let(:applicant) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(address2: '3b') }
+            let(:applicant) do
+              Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID_WITH_PHONE.merge(address2: '3b')
+            end
 
             it 'does not include address2' do
               proofer = UspsInPersonProofing::Proofer.new
               mock = double
-
               expect(UspsInPersonProofing::Proofer).to receive(:new).and_return(mock)
               expect(mock).to receive(:request_enroll) do |applicant|
                 expect(applicant.address).
@@ -618,9 +619,6 @@ RSpec.describe Idv::ReviewController do
                   let(:proofing_device_profiling_state) { proofing_device_profiling_state }
                   let(:applicant) do
                     Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE
-                  end
-                  let(:stub_idv_session) do
-                    stub_user_with_applicant_data(user, applicant)
                   end
 
                   before do

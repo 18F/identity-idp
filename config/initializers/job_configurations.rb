@@ -194,15 +194,6 @@ else
         cron: cron_24h,
         args: -> { [Time.zone.today] },
       },
-      # Job to backfill encrypted_pii_recovery_multi_region on profiles
-      multi_region_kms_migration_profile_migration: {
-        class: 'MultiRegionKmsMigration::ProfileMigrationJob',
-        cron: cron_12m,
-        kwargs: {
-          profile_count: IdentityConfig.store.multi_region_kms_migration_jobs_profile_count,
-          statement_timeout: IdentityConfig.store.multi_region_kms_migration_jobs_profile_timeout,
-        },
-      },
       # Job to backfill encrypted_pii_recovery_multi_region on users
       multi_region_kms_migration_user_migration: {
         class: 'MultiRegionKmsMigration::UserMigrationJob',

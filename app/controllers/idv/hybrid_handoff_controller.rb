@@ -5,6 +5,7 @@ module Idv
     include StepIndicatorConcern
     include PhoneQuestionAbTestConcern
 
+    before_action :confirm_not_rate_limited
     before_action :confirm_verify_info_step_needed
     before_action :confirm_agreement_step_complete
     before_action :confirm_hybrid_handoff_needed, only: :show

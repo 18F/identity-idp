@@ -34,7 +34,7 @@ module Idv
         user_id: current_user.id,
         threatmetrix_session_id: idv_session.threatmetrix_session_id,
         request_ip: request.remote_ip,
-        double_address_verification: capture_secondary_id_enabled,
+        double_address_verification: double_address_verification,
       )
 
       return true
@@ -42,9 +42,11 @@ module Idv
 
     private
 
-    def capture_secondary_id_enabled
-      current_user.establishing_in_person_enrollment&.
-          capture_secondary_id_enabled || false
+    def double_address_verification
+      # If in person return true else return false. This is temporary until we add a feature flag
+      # to track enrollment was created in the in person flow.
+      # todo LG-11235 update value based on new feature flag
+      current_user.has_in_person_enrollment?
     end
 
     def should_use_aamva?(pii)
@@ -164,7 +166,7 @@ module Idv
         return
       end
 
-      return if confirm_not_rate_limited
+      return if confirm_not_rate_limited_after_doc_auth
 
       if current_async_state.none?
         idv_session.invalidate_verify_info_step!
@@ -237,7 +239,6 @@ module Idv
     def summarize_result_and_rate_limit_failures(summary_result)
       if summary_result.success?
         add_proofing_components
-        ssn_rate_limiter.reset!
       else
         idv_failure(summary_result)
       end
@@ -332,8 +333,10 @@ module Idv
           add_cost(:lexis_nexis_resolution, transaction_id: hash[:transaction_id])
         elsif stage == :state_id
           next if hash[:exception].present?
+          next if hash[:vendor_name] == 'UnsupportedJurisdiction'
+          # transaction_id comes from TransactionLocatorId
           add_cost(:aamva, transaction_id: hash[:transaction_id])
-          track_aamva unless hash[:vendor_name] == 'UnsupportedJurisdiction'
+          track_aamva
         elsif stage == :threatmetrix
           # transaction_id comes from request_id
           tmx_id = hash[:transaction_id]

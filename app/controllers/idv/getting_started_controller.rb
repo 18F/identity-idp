@@ -2,6 +2,7 @@ module Idv
   class GettingStartedController < ApplicationController
     include IdvStepConcern
 
+    before_action :confirm_not_rate_limited
     before_action :confirm_agreement_needed
 
     def show
@@ -72,7 +73,7 @@ module Idv
     end
 
     def consent_form_params
-      params.require(:doc_auth).permit([:ial2_consent_given, :idv_consent_given])
+      params.require(:doc_auth).permit(:idv_consent_given)
     end
 
     def confirm_agreement_needed

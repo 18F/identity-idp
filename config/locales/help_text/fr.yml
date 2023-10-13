@@ -8,16 +8,16 @@ fr:
       email: Adresse e-mail
       full_name: Nom complet
       ial1_consent_reminder_html: Vous devez consentir chaque année au partage de vos
-        informations avec <b>%{sp}</b>. Nous partagerons vos informations avec
-        <b>%{sp}</b> pour connecter votre compte.
-      ial1_intro_html: Nous partagerons vos informations avec <b>%{sp}</b> pour
-        connecter votre compte.
-      ial2_consent_reminder_html: '<b>%{sp}</b> doit savoir qui vous êtes pour se
-        connecter à votre compte. Vous devez consentir chaque année à partager
-        vos informations vérifiées avec <b>%{sp}</b>. Nous partagerons ces
-        informations :'
-      ial2_intro_html: '<b>%{sp}</b> a besoin de savoir qui vous êtes pour connecter
-        votre compte. Nous partagerons ces informations avec l’agence
+        informations avec <strong>%{sp}</strong>. Nous partagerons vos
+        informations avec <strong>%{sp}</strong> pour connecter votre compte.
+      ial1_intro_html: Nous partagerons vos informations avec <strong>%{sp}</strong>
+        pour connecter votre compte.
+      ial2_consent_reminder_html: '<strong>%{sp}</strong> doit savoir qui vous êtes
+        pour se connecter à votre compte. Vous devez consentir chaque année à
+        partager vos informations vérifiées avec <strong>%{sp}</strong>. Nous
+        partagerons ces informations :'
+      ial2_intro_html: '<strong>%{sp}</strong> a besoin de savoir qui vous êtes pour
+        connecter votre compte. Nous partagerons ces informations avec l’agence
         partenaire:'
       ial2_reverified_consent_info: 'Puisque vous avez à nouveau vérifié votre
         identité, nous avons besoin de votre autorisation pour partager ces

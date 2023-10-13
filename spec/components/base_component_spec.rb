@@ -1,11 +1,13 @@
 require 'rails_helper'
 
 RSpec.describe BaseComponent, type: :component do
+  # rubocop:disable RSpec/LeakyConstantDeclaration
   class ExampleComponent < BaseComponent
     def call
       ''
     end
   end
+  # rubocop:enable RSpec/LeakyConstantDeclaration
 
   let(:view_context) { vc_test_controller.view_context }
 
@@ -20,6 +22,7 @@ RSpec.describe BaseComponent, type: :component do
   end
 
   context 'with sidecar script' do
+    # rubocop:disable RSpec/LeakyConstantDeclaration
     class ExampleComponentWithScript < BaseComponent
       def call
         ''
@@ -32,7 +35,9 @@ RSpec.describe BaseComponent, type: :component do
         files.presence || super(extensions)
       end
     end
+    # rubocop:enable RSpec/LeakyConstantDeclaration
 
+    # rubocop:disable RSpec/LeakyConstantDeclaration
     class ExampleComponentWithScriptRenderingOtherComponentWithScript < BaseComponent
       def call
         render(ExampleComponentWithScript.new)
@@ -46,7 +51,9 @@ RSpec.describe BaseComponent, type: :component do
         end
       end
     end
+    # rubocop:enable RSpec/LeakyConstantDeclaration
 
+    # rubocop:disable RSpec/LeakyConstantDeclaration
     class NestedExampleComponentWithScript < ExampleComponentWithScript
       def self.sidecar_files(extensions)
         if extensions.include?('js')
@@ -56,6 +63,7 @@ RSpec.describe BaseComponent, type: :component do
         end
       end
     end
+    # rubocop:enable RSpec/LeakyConstantDeclaration
 
     it 'adds script to class variable when rendered' do
       expect(view_context).to receive(:enqueue_component_scripts).with(
@@ -98,6 +106,7 @@ RSpec.describe BaseComponent, type: :component do
   end
 
   context 'with sidecar stylesheet' do
+    # rubocop:disable RSpec/LeakyConstantDeclaration
     class ExampleComponentWithStylesheet < BaseComponent
       def call
         ''
@@ -109,7 +118,9 @@ RSpec.describe BaseComponent, type: :component do
         files.presence || super(extensions)
       end
     end
+    # rubocop:enable RSpec/LeakyConstantDeclaration
 
+    # rubocop:disable RSpec/LeakyConstantDeclaration
     class ExampleComponentWithStylesheetRenderingOtherComponentWithStylesheet < BaseComponent
       def call
         render(ExampleComponentWithStylesheet.new)
@@ -123,7 +134,9 @@ RSpec.describe BaseComponent, type: :component do
         end
       end
     end
+    # rubocop:enable RSpec/LeakyConstantDeclaration
 
+    # rubocop:disable RSpec/LeakyConstantDeclaration
     class NestedExampleComponentWithStylesheet < ExampleComponentWithStylesheet
       def self.sidecar_files(extensions)
         if extensions.include?('scss')
@@ -133,6 +146,7 @@ RSpec.describe BaseComponent, type: :component do
         end
       end
     end
+    # rubocop:enable RSpec/LeakyConstantDeclaration
 
     it 'adds script to class variable when rendered' do
       expect(view_context).to receive(:enqueue_component_stylesheets).with(

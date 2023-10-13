@@ -29,9 +29,9 @@ RSpec.describe ServiceProviderUpdater do
       active: true,
       approved: true,
       help_text: {
-        sign_in: { en: '<b>A new different sign-in help text</b>' },
-        sign_up: { en: '<b>A new different help text</b>' },
-        forgot_password: { en: '<b>A new different forgot password help text</b>' },
+        sign_in: { en: '<strong>A new different sign-in help text</strong>' },
+        sign_up: { en: '<strong>A new different help text</strong>' },
+        forgot_password: { en: '<strong>A new different forgot password help text</strong>' },
       },
     }
   end

@@ -46,7 +46,7 @@ RSpec.describe ServiceProviderSession do
     context 'sp has custom alert' do
       it 'uses the custom template' do
         expect(subject.sp_alert('sign_in')).
-          to eq "<b>custom sign in help text for #{sp.friendly_name}</b>"
+          to eq "<strong>custom sign in help text for #{sp.friendly_name}</strong>"
       end
     end
 

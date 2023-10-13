@@ -5,8 +5,7 @@ RSpec.describe Idv::Steps::InPerson::StateIdStep do
   let(:submitted_values) { {} }
   let(:params) { ActionController::Parameters.new({ state_id: submitted_values }) }
   let(:user) { build(:user) }
-  let(:capture_secondary_id_enabled) { false }
-  let(:enrollment) { InPersonEnrollment.new(capture_secondary_id_enabled:) }
+  let(:enrollment) { InPersonEnrollment.new }
   let(:service_provider) { create(:service_provider) }
   let(:controller) do
     instance_double(
@@ -44,8 +43,6 @@ RSpec.describe Idv::Steps::InPerson::StateIdStep do
       end
 
       before do
-        allow(IdentityConfig.store).to receive(:in_person_capture_secondary_id_enabled).
-          and_return(false)
         allow(user).to receive(:establishing_in_person_enrollment).
           and_return(enrollment)
       end
@@ -84,10 +81,9 @@ RSpec.describe Idv::Steps::InPerson::StateIdStep do
       end
     end
 
-    context 'when capture_secondary_id_enabled is...' do
+    context 'when same_address_as_id is...' do
       let(:pii_from_user) { flow.flow_session[:pii_from_user] }
       let(:params) { ActionController::Parameters.new({ state_id: submitted_values }) }
-      let(:capture_secondary_id_enabled) { true }
       let(:dob) { InPersonHelper::GOOD_DOB }
       # residential
       let(:address1) { InPersonHelper::GOOD_ADDRESS1 }
@@ -107,8 +103,7 @@ RSpec.describe Idv::Steps::InPerson::StateIdStep do
           and_return(enrollment)
       end
 
-      context 'enabled, and
-        same_address_as_id changed from "true" to "false"' do
+      context 'changed from "true" to "false"' do
         let(:submitted_values) do
           {
             dob:,
@@ -125,6 +120,7 @@ RSpec.describe Idv::Steps::InPerson::StateIdStep do
             identity_doc_zipcode:,
           }
         end
+
         it 'marks address step as incomplete, retains identity_doc_ attrs/value
         but removes addr attr in flow session' do
           Idv::StateIdForm::ATTRIBUTES.each do |attr|
@@ -161,8 +157,7 @@ RSpec.describe Idv::Steps::InPerson::StateIdStep do
         end
       end
 
-      context 'enabled, and
-      same_address_as_id changed from "false" to "true"' do
+      context 'changed from "false" to "true"' do
         let(:submitted_values) do
           {
             dob:,
@@ -200,8 +195,7 @@ RSpec.describe Idv::Steps::InPerson::StateIdStep do
         end
       end
 
-      context 'enabled, and
-      same_address_as_id does not change from from "false"' do
+      context 'not changed from "false"' do
         let(:submitted_values) do
           {
             dob:,
@@ -252,47 +246,6 @@ RSpec.describe Idv::Steps::InPerson::StateIdStep do
           expect(pii_from_user[:zipcode]).to_not eq identity_doc_zipcode
         end
       end
-
-      context 'not enabled' do
-        let(:capture_secondary_id_enabled) { false }
-        let(:submitted_values) do
-          {
-            dob:,
-            address1:,
-            address2:,
-            city:,
-            state:,
-            zipcode:,
-            identity_doc_address1:,
-            identity_doc_address2:,
-            identity_doc_city:,
-            identity_doc_address_state:,
-            identity_doc_zipcode:,
-          }
-        end
-
-        it 'retains identity_doc_ attr/values in flow session' do
-          Idv::StateIdForm::ATTRIBUTES.each do |attr|
-            expect(flow.flow_session[:pii_from_user]).to_not have_key attr
-          end
-
-          pii_from_user[:identity_doc_address1] = identity_doc_address1
-          pii_from_user[:identity_doc_address2] = identity_doc_address2
-          pii_from_user[:identity_doc_city] = identity_doc_city
-          pii_from_user[:identity_doc_address_state] = identity_doc_address_state
-          pii_from_user[:identity_doc_zipcode] = identity_doc_zipcode
-
-          step.call
-
-          expect(flow.flow_session[:pii_from_user]).to include(
-            identity_doc_address1:,
-            identity_doc_address2:,
-            identity_doc_city:,
-            identity_doc_address_state:,
-            identity_doc_zipcode:,
-          )
-        end
-      end
     end
   end
 
@@ -301,8 +254,7 @@ RSpec.describe Idv::Steps::InPerson::StateIdStep do
     let(:first_name) { 'First name' }
     let(:pii_from_user) { flow.flow_session[:pii_from_user] }
     let(:params) { ActionController::Parameters.new }
-    let(:capture_secondary_id_enabled) { true }
-    let(:enrollment) { InPersonEnrollment.new(capture_secondary_id_enabled:) }
+    let(:enrollment) { InPersonEnrollment.new }
 
     before(:each) do
       allow(step).to receive(:current_user).
@@ -354,30 +306,12 @@ RSpec.describe Idv::Steps::InPerson::StateIdStep do
         )
       end
     end
-
-    context 'with secondary capture enabled' do
-      it 'returns capture enabled = true' do
-        expect(step.extra_view_variables).to include(
-          capture_secondary_id_enabled: true,
-        )
-      end
-    end
-
-    context 'with secondary capture disabled' do
-      let(:capture_secondary_id_enabled) { false }
-      it 'returns capture enabled = false' do
-        expect(step.extra_view_variables).to include(
-          capture_secondary_id_enabled: false,
-        )
-      end
-    end
   end
 
   describe 'skip address step?' do
     let(:pii_from_user) { flow.flow_session[:pii_from_user] }
     let(:params) { ActionController::Parameters.new({ state_id: submitted_values }) }
-    let(:capture_secondary_id_enabled) { true }
-    let(:enrollment) { InPersonEnrollment.new(capture_secondary_id_enabled:) }
+    let(:enrollment) { InPersonEnrollment.new }
     let(:dob) { '1980-01-01' }
     let(:identity_doc_address_state) { 'Nevada' }
     let(:identity_doc_city) { 'Twin Peaks' }
@@ -426,20 +360,6 @@ RSpec.describe Idv::Steps::InPerson::StateIdStep do
 
     context 'different address from id' do
       let(:same_address_as_id) { 'false' }
-      it 'does not add state id values to address values in pii' do
-        step.call
-
-        pii_from_user = flow.flow_session[:pii_from_user]
-        expect(pii_from_user[:address1]).to_not eq identity_doc_address1
-        expect(pii_from_user[:address2]).to_not eq identity_doc_address2
-        expect(pii_from_user[:city]).to_not eq identity_doc_city
-        expect(pii_from_user[:state]).to_not eq identity_doc_address_state
-        expect(pii_from_user[:zipcode]).to_not eq identity_doc_zipcode
-      end
-    end
-
-    context 'capture secondary id is disabled' do
-      let(:capture_secondary_id_enabled) { false }
       it 'does not add state id values to address values in pii' do
         step.call
 

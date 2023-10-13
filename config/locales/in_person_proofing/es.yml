@@ -2,11 +2,6 @@
 es:
   in_person_proofing:
     body:
-      address:
-        info: Si su dirección actual no coincide con la que figura en su cédula de
-          identidad, deberá llevar a la oficina de correos un comprobante de su
-          dirección actual.
-        learn_more: Aprende más
       barcode:
         cancel_link_text: Cancelar su código de barras
         close_window: Ya puede cerrar esta ventana
@@ -47,7 +42,7 @@ es:
           address_label: Dirección
           address_search_hint: 'Ejemplo: 1234 N Example St., Allentown, PA 12345'
           address_search_label: Introduzca una dirección para encontrar una Oficina de
-            Correos cercana a usted
+            Correos cercana a usted.
           city_label: Ciudad
           is_searching_message: Buscando oficinas de correos…
           none_found: Lo sentimos, no hay Oficinas de Correos participantes en un radio de
@@ -105,10 +100,6 @@ es:
           unsupported_chars: 'Los siguientes caracteres no pueden ser leídos por nuestro
             sistema: %{char_list}. Inténtelo nuevamente usando sustitutos para
             estos caracteres.'
-        same_address: '¿Aparece esta dirección en la cédula de identidad emitido por el
-          Estado que va a llevar a la oficina de Correos?'
-        same_address_choice_no: Tengo una dirección diferente en mi cédula de identidad
-        same_address_choice_yes: Esta dirección aparece en mi cédula de identidad emitida por el estado
         state_prompt: '- Seleccione -'
       state_id:
         address1: Línea de dirección 1
@@ -128,7 +119,6 @@ es:
             su documento de identidad.'
         first_name: Nombre
         identity_doc_address_state: Estado emisor
-        identity_doc_address_state_hint: Este es el estado que emitió su identificación
         identity_doc_address_state_prompt: '- Seleccione -'
         last_name: Apellido
         memorable_date:
@@ -174,19 +164,6 @@ es:
         info: El empleado deberá escanear el código de barras que aparece en la parte
           superior de esta página. Puede imprimir esta página o mostrarla en su
           dispositivo móvil.
-      proof_of_address:
-        acceptable_proof:
-          - Arrendamiento, hipoteca o escritura de fideicomiso
-          - Registro de votantes
-          - Tarjeta de registro del vehículo
-          - Póliza de seguro del hogar o del vehículo
-        heading: Prueba de su dirección actual
-        info: 'Necesita un justificante de domicilio si su dirección actual es diferente
-          a la que figura en su cédula de identidad. Los comprobantes de
-          domicilio aceptables son:'
-        physical_or_digital_copy: Puede traer una copia física o mostrar una copia
-          digital del documento. No puede mostrar una foto o una captura de
-          pantalla del documento.
       state_id:
         heading: Muestre su licencia de conducir estatal o su tarjeta de identificación
           estatal de no conductor

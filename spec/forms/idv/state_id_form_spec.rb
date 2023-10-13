@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Idv::StateIdForm do
-  let(:subject) { Idv::StateIdForm.new(pii, capture_secondary_id_enabled:) }
+  let(:subject) { Idv::StateIdForm.new(pii) }
   let(:valid_dob) do
     valid_d = Time.zone.today - IdentityConfig.store.idv_min_age_years.years - 1.day
     ActionController::Parameters.new(
@@ -62,7 +62,6 @@ RSpec.describe Idv::StateIdForm do
     }
   end
   let(:pii) { nil }
-  let(:capture_secondary_id_enabled) { true }
   describe '#submit' do
     context 'when the form is valid' do
       it 'returns a successful form response' do
