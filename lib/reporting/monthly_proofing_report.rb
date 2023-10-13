@@ -53,6 +53,14 @@ module Reporting
       @progress
     end
 
+    def document_upload_proofing_emailable_report
+      EmailableReport.new(
+        email_options: { title: 'Document upload proofing rates' },
+        table: proofing_report,
+        csv_name: 'document_upload_proofing',
+      )
+    end
+
     def proofing_report
       csv = []
       csv << ['metric', 'num_users', 'percent']
