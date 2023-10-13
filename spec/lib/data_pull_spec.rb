@@ -346,13 +346,23 @@ RSpec.describe DataPull do
     subject(:subtask) { DataPull::EventsSummary.new }
 
     let(:user) { create(:user) }
-    let!(:event) do
+
+    before do
       create(
         :event,
         user: user,
         event_type: :account_created,
         ip: '1.2.3.4',
-        device: create(:device, user: user, cookie_uuid: 'cookie1234'),
+        created_at: Date.new(2023, 1, 1).in_time_zone('UTC'),
+      )
+
+      create_list(
+        :event,
+        5,
+        user: user,
+        event_type: :account_created,
+        ip: '1.2.3.4',
+        created_at: Date.new(2023, 1, 2).in_time_zone('UTC'),
       )
     end
 
@@ -364,9 +374,10 @@ RSpec.describe DataPull do
       it 'loads events for the users' do
         expect(result.table).to match_array(
           [
-            %w[uuid event_type event_timestamp event_ip device_cookie],
-            [user.uuid, event.event_type, event.created_at, event.ip, event.device.cookie_uuid],
-            ['uuid-does-not-exist', '[UUID NOT FOUND]', nil, nil, nil],
+            %w[uuid date events_count],
+            [user.uuid, '2023-01-02', 5],
+            [user.uuid, '2023-01-01', 1],
+            ['uuid-does-not-exist', '[UUID NOT FOUND]', nil],
           ],
         )
 

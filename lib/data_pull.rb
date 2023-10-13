@@ -266,32 +266,44 @@ class DataPull
     def run(args:, config:)
       uuids = args
 
-      users = User.includes(events: :device).where(uuid: uuids).order(:uuid)
+      sql = <<-SQL
+        SELECT
+          users.uuid AS uuid
+        , events.created_at::date AS date
+        , COUNT(events.id) AS events_count
+        FROM users
+        JOIN events ON users.id = events.user_id
+        WHERE users.uuid IN (:uuids)
+        GROUP BY
+          users.uuid
+        , events.created_at::date
+        ORDER BY
+          users.uuid ASC
+        , events.created_at::date DESC
+      SQL
+
+      results = ActiveRecord::Base.connection.execute(
+        ApplicationRecord.sanitize_sql_array([sql, { uuids: uuids }]),
+      )
 
       table = []
-      table << %w[uuid event_type event_timestamp event_ip device_cookie]
+      table << %w[uuid date events_count]
 
-      users.each do |user|
-        user.events.sort_by(&:created_at).each do |event|
-          table << [
-            user.uuid,
-            event.event_type,
-            event.created_at,
-            event.ip,
-            event.device&.cookie_uuid,
-          ]
-        end
+      results.each do |row|
+        table << [row['uuid'], row['date'], row['events_count']]
       end
 
+      found_uuids = results.map { |r| r['uuid'] }.uniq
+
       if config.include_missing?
-        (uuids - users.map(&:uuid)).each do |missing_uuid|
-          table << [missing_uuid, '[UUID NOT FOUND]', nil, nil, nil]
+        (uuids - found_uuids).each do |missing_uuid|
+          table << [missing_uuid, '[UUID NOT FOUND]', nil]
         end
       end
 
       ScriptBase::Result.new(
         subtask: 'events-summary',
-        uuids: users.map(&:uuid),
+        uuids: found_uuids,
         table:,
       )
     end
