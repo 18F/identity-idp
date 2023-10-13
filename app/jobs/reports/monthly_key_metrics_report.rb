@@ -1,10 +1,16 @@
 require 'csv'
+require 'reporting/monthly_proofing_report'
 
 module Reports
   class MonthlyKeyMetricsReport < BaseReport
     REPORT_NAME = 'monthly-key-metrics-report'.freeze
 
     attr_reader :report_date
+
+    def initialize(*args, report_date: nil, **rest)
+      @report_date = report_date
+      super(*args, **rest)
+    end
 
     def perform(date = Time.zone.today)
       @report_date = date
@@ -20,6 +26,7 @@ module Reports
         account_deletion_rate_report.account_deletion_emailable_report,
         account_reuse_report.account_reuse_emailable_report,
         account_reuse_report.total_identities_emailable_report,
+        monthly_proofing_report.document_upload_proofing_emailable_report,
       ]
 
       reports.each do |report|
@@ -50,6 +57,15 @@ module Reports
 
     def account_reuse_report
       @account_reuse_report ||= Reporting::AccountReuseAndTotalIdentitiesReport.new(report_date)
+    end
+
+    def monthly_proofing_report
+      @monthly_proofing_report ||= Reporting::MonthlyProofingReport.new(
+        # FYI - we should look for a way to share these configs
+        time_range: @report_date.prev_month(1).in_time_zone('UTC').all_month,
+        slice: 1.hour,
+        threads: 10,
+      )
     end
 
     def account_deletion_rate_report
