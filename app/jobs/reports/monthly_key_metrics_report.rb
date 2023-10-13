@@ -1,5 +1,4 @@
 require 'csv'
-require 'reporting/command_line_options'
 require 'reporting/monthly_proofing_report'
 
 module Reports
