@@ -82,4 +82,16 @@ describe('document-capture/components/documents-step', () => {
 
     expect(queryByText(notExpectedText)).to.not.exist();
   });
+
+  it('renders optional question part', () => {
+    const { getByRole, getByText } = render(
+      <DeviceContext.Provider value={{ isMobile: true }}>
+        <UploadContextProvider flowPath="standard">
+          <DocumentsStep />
+        </UploadContextProvider>
+      </DeviceContext.Provider>,
+    );
+    expect(getByRole('heading', { name: 'doc_auth.exit_survey.header', level: 3 })).to.be.ok();
+    expect(getByText('doc_auth.exit_survey.optional.button')).to.be.ok();
+  });
 });

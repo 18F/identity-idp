@@ -3,7 +3,7 @@ import { useI18n } from '@18f/identity-react-i18n';
 import { useContext, useState } from 'react';
 import FlowContext from '@18f/identity-verify-flow/context/flow-context';
 import formatHTML from '@18f/identity-react-i18n/format-html';
-import { addSearchParams, forceRedirect } from '@18f/identity-url';
+import { addSearchParams, forceRedirect, Navigate } from '@18f/identity-url';
 import { getConfigValue } from '@18f/identity-config';
 import AnalyticsContext from '../context/analytics';
 import { ServiceProviderContext } from '../context';
@@ -19,7 +19,11 @@ function formatContentHtml({ msg, url }) {
   });
 }
 
-function DocumentCaptureAbandon() {
+export interface DocumentCaptureAbandonProps {
+  navigate?: Navigate;
+}
+
+function DocumentCaptureAbandon({ navigate }: DocumentCaptureAbandonProps) {
   const { t } = useI18n();
   const { trackEvent } = useContext(AnalyticsContext);
   const { currentStep, exitURL, cancelURL } = useContext(FlowContext);
@@ -30,16 +34,15 @@ function DocumentCaptureAbandon() {
   const content = (
     <p>
       {formatContentHtml({
-        msg:
-          spName && spName.trim()
-            ? t('doc_auth.exit_survey.content_html', {
-                sp_name: spName,
-                app_name: appName,
-              })
-            : t('doc_auth.exit_survey.content_nosp_html', {
-                app_name: appName,
-              }),
-        url: addSearchParams(spName && spName.trim() ? exitURL : cancelURL, {
+        msg: spName?.trim()
+          ? t('doc_auth.exit_survey.content_html', {
+              sp_name: spName,
+              app_name: appName,
+            })
+          : t('doc_auth.exit_survey.content_nosp_html', {
+              app_name: appName,
+            }),
+        url: addSearchParams(spName?.trim() ? exitURL : cancelURL, {
           step: currentStep,
           location: 'optional_question',
         }),
@@ -101,7 +104,11 @@ function DocumentCaptureAbandon() {
 
   const handleExit = () => {
     trackEvent('IdV: exit optional questions', { ids: idTypeOptions });
-    forceRedirect(addSearchParams(exitURL, { step: currentStep }));
+    const url = spName?.trim() ? exitURL : cancelURL;
+    forceRedirect(
+      addSearchParams(url, { step: currentStep, location: 'optional_question' }),
+      navigate,
+    );
   };
 
   return (
@@ -112,7 +119,7 @@ function DocumentCaptureAbandon() {
       {optionalText}
       <FieldSet legend={t('doc_auth.exit_survey.optional.legend')}>{checkboxes}</FieldSet>
       <Button isOutline className="margin-top-3" onClick={handleExit}>
-        {t('doc_auth.exit_survey.optional.button', { sp_name: spName, app_name: appName })}
+        {t('doc_auth.exit_survey.optional.button', { app_name: appName })}
       </Button>
       <div className="usa-prose margin-top-3">
         {t('idv.legal_statement.information_collection')}
