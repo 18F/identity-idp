@@ -53,23 +53,37 @@ module Reporting
       @progress
     end
 
+    def proofing_report
+      csv = []
+      csv << ['metric', 'num_users', 'percent']
+
+      start = idv_doc_auth_image_vendor_submitted
+
+      [
+        ['image_submitted', idv_doc_auth_image_vendor_submitted],
+        ['verified', idv_final_resolution],
+        ['not_verified_started_gpo', idv_gpo_address_letter_requested],
+        ['not_verified_started_in_person', usps_ipp_enrollment_created],
+        ['not_verified_started_fraud_review', idv_please_call_visited],
+      ].each do |(label, num)|
+        csv << [label, num, num.to_f / start.to_f]
+      end
+      csv
+    end
+
+    def as_csv
+      [
+        ['report_start', time_range.begin.iso8601],
+        ['report_end', time_range.end.iso8601],
+        ['report_generated', Date.today.to_s], # rubocop:disable Rails/Date
+        *proofing_report,
+      ]
+    end
+
     def to_csv
       CSV.generate do |csv|
-        csv << ['report_start', time_range.begin.iso8601]
-        csv << ['report_end', time_range.end.iso8601]
-        csv << ['report_generated', Date.today.to_s] # rubocop:disable Rails/Date
-        csv << ['metric', 'num_users', 'percent']
-
-        start = idv_doc_auth_image_vendor_submitted
-
-        [
-          ['image_submitted', idv_doc_auth_image_vendor_submitted],
-          ['verified', idv_final_resolution],
-          ['not_verified_started_gpo', idv_gpo_address_letter_requested],
-          ['not_verified_started_in_person', usps_ipp_enrollment_created],
-          ['not_verified_started_fraud_review', idv_please_call_visited],
-        ].each do |(label, num)|
-          csv << [label, num, num.to_f / start.to_f]
+        as_csv.each do |row|
+          csv << row
         end
       end
     end

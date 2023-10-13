@@ -1,9 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe Reports::MonthlyKeyMetricsReport do
-  subject(:report) { Reports::MonthlyKeyMetricsReport.new }
-
   let(:report_date) { Date.new(2021, 3, 2) }
+  subject(:report) { Reports::MonthlyKeyMetricsReport.new(report_date: report_date) }
+
   let(:name) { 'monthly-key-metrics-report' }
   let(:agnes_email) { 'fake@agnes_email.com' }
   let(:feds_email) { 'fake@feds_email.com' }
@@ -26,15 +26,7 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
 
   let(:mock_proofing_report_data) do
     [
-      ['report_start', '2023-08-01T00:00:00Z'],
-      ['report_end', '2023-08-31T23:59:59Z'],
-      ['report_generated', '2023-10-11'],
       ['metric', 'num_users', 'percent'],
-      ['image_submitted', '219622', '1.0'],
-      ['verified', '152151', '0.6927857864876925'],
-      ['not_verified_started_gpo', '1167', '0.005313675314859167'],
-      ['not_verified_started_in_person', '2114', '0.009625629490670334'],
-      ['not_verified_started_fraud_review', '270', '0.0012293850342861826'],
     ]
   end
 
@@ -56,13 +48,8 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
       },
     }
 
-    mock_proofing_report = CSV.generate do |csv|
-      mock_proofing_report_data.each do |row|
-        csv << row
-      end
-    end
-
-    allow(subject).to receive(:get_raw_proofing_report).and_return(mock_proofing_report)
+    allow(subject.monthly_proofing_report).to receive(:proofing_report).
+      and_return(mock_proofing_report_data)
   end
 
   it 'sends out a report to the email listed with one total user' do
@@ -105,15 +92,17 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
     subject.perform(report_date)
   end
 
-  it 'correctly builds the document_upload_proofing_table' do
-    expected_document_proofing_table = mock_proofing_report_data[3...]
-    subject.perform(report_date)
-    actual_document_proofing_table = subject.monthly_proofing_report
-
-    expect(actual_document_proofing_table).to eq(expected_document_proofing_table)
-  end
-
   it 'uploads a file to S3 based on the report date' do
+    expect(subject).to receive(:upload_file_to_s3_bucket).with(
+      path: total_user_count_s3_path,
+      **s3_metadata,
+    ).exactly(1).time.and_call_original
+
+    expect(subject).to receive(:upload_file_to_s3_bucket).with(
+      path: account_deletion_rate_s3_path,
+      **s3_metadata,
+    ).exactly(1).time.and_call_original
+
     expect(subject).to receive(:upload_file_to_s3_bucket).with(
       path: account_reuse_s3_path,
       **s3_metadata,
@@ -126,16 +115,6 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
 
     expect(subject).to receive(:upload_file_to_s3_bucket).with(
       path: document_upload_proofing_s3_path,
-      **s3_metadata,
-    ).exactly(1).time.and_call_original
-
-    expect(subject).to receive(:upload_file_to_s3_bucket).with(
-      path: account_deletion_rate_s3_path,
-      **s3_metadata,
-    ).exactly(1).time.and_call_original
-
-    expect(subject).to receive(:upload_file_to_s3_bucket).with(
-      path: total_user_count_s3_path,
       **s3_metadata,
     ).exactly(1).time.and_call_original
 
