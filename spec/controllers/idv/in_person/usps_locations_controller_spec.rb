@@ -38,119 +38,117 @@ RSpec.describe Idv::InPerson::UspsLocationsController do
     allow(controller).to receive(:current_sp).and_return(sp)
   end
 
-  shared_examples 'post office search' do
-    describe '#index' do
-      let(:proofer) { double('Proofer') }
-      let(:locations) do
-        [
-          { address: '3118 WASHINGTON BLVD',
-            city: 'ARLINGTON',
-            distance: '6.02 mi',
-            name: 'ARLINGTON',
-            saturday_hours: '9:00 AM - 1:00 PM',
-            state: 'VA',
-            sunday_hours: 'Closed',
-            weekday_hours: '9:00 AM - 5:00 PM',
-            zip_code_4: '9998',
-            zip_code_5: '22201' },
-          { address: '4005 WISCONSIN AVE NW',
-            city: 'WASHINGTON',
-            distance: '6.59 mi',
-            name: 'FRIENDSHIP',
-            saturday_hours: '8:00 AM - 4:00 PM',
-            state: 'DC',
-            sunday_hours: '10:00 AM - 4:00 PM',
-            weekday_hours: '8:00 AM - 6:00 PM',
-            zip_code_4: '9997',
-            zip_code_5: '20016' },
-          { address: '6900 WISCONSIN AVE STE 100',
-            city: 'CHEVY CHASE',
-            distance: '8.99 mi',
-            name: 'BETHESDA',
-            saturday_hours: '9:00 AM - 4:00 PM',
-            state: 'MD',
-            sunday_hours: 'Closed',
-            weekday_hours: '9:00 AM - 5:00 PM',
-            zip_code_4: '9996',
-            zip_code_5: '20815' },
-        ]
-      end
-      let(:pilot_locations) do
-        [
-          { name: 'Location 1' },
-          { name: 'Location 2' },
-          { name: 'Location 3' },
-          { name: 'Location 4' },
-        ]
-      end
-      subject(:response) do
-        post :index, params: { address: { street_address: '1600 Pennsylvania Ave',
-                                          city: 'Washington',
-                                          state: 'DC',
-                                          zip_code: '20500' } }
-      end
+  describe '#index' do
+    let(:proofer) { double('Proofer') }
+    let(:locations) do
+      [
+        { address: '3118 WASHINGTON BLVD',
+          city: 'ARLINGTON',
+          distance: '6.02 mi',
+          name: 'ARLINGTON',
+          saturday_hours: '9:00 AM - 1:00 PM',
+          state: 'VA',
+          sunday_hours: 'Closed',
+          weekday_hours: '9:00 AM - 5:00 PM',
+          zip_code_4: '9998',
+          zip_code_5: '22201' },
+        { address: '4005 WISCONSIN AVE NW',
+          city: 'WASHINGTON',
+          distance: '6.59 mi',
+          name: 'FRIENDSHIP',
+          saturday_hours: '8:00 AM - 4:00 PM',
+          state: 'DC',
+          sunday_hours: '10:00 AM - 4:00 PM',
+          weekday_hours: '8:00 AM - 6:00 PM',
+          zip_code_4: '9997',
+          zip_code_5: '20016' },
+        { address: '6900 WISCONSIN AVE STE 100',
+          city: 'CHEVY CHASE',
+          distance: '8.99 mi',
+          name: 'BETHESDA',
+          saturday_hours: '9:00 AM - 4:00 PM',
+          state: 'MD',
+          sunday_hours: 'Closed',
+          weekday_hours: '9:00 AM - 5:00 PM',
+          zip_code_4: '9996',
+          zip_code_5: '20815' },
+      ]
+    end
+    let(:pilot_locations) do
+      [
+        { name: 'Location 1' },
+        { name: 'Location 2' },
+        { name: 'Location 3' },
+        { name: 'Location 4' },
+      ]
+    end
+    subject(:response) do
+      post :index, params: { address: { street_address: '1600 Pennsylvania Ave',
+                                        city: 'Washington',
+                                        state: 'DC',
+                                        zip_code: '20500' } }
+    end
+
+    before do
+      allow(UspsInPersonProofing::Proofer).to receive(:new).and_return(proofer)
+    end
+
+    context 'with a nil address in params' do
+      let(:param_error) { ActionController::ParameterMissing.new(param: address) }
 
       before do
-        allow(UspsInPersonProofing::Proofer).to receive(:new).and_return(proofer)
+        allow(proofer).to receive(:request_facilities).with(address).and_raise(param_error)
       end
 
-      context 'with a nil address in params' do
-        let(:param_error) { ActionController::ParameterMissing.new(param: address) }
-
-        before do
-          allow(proofer).to receive(:request_facilities).with(address).and_raise(param_error)
-        end
-
-        subject(:response) do
-          post :index, params: { address: nil }
-        end
-
-        it 'returns no locations' do
-          subject
-          json = response.body
-          facilities = JSON.parse(json)
-          expect(facilities.length).to eq 0
-        end
+      subject(:response) do
+        post :index, params: { address: nil }
       end
 
-      context 'no addresses found by usps' do
-        before do
-          allow(proofer).to receive(:request_facilities).with(address).and_return(empty_locations)
-        end
+      it 'returns no locations' do
+        subject
+        json = response.body
+        facilities = JSON.parse(json)
+        expect(facilities.length).to eq 0
+      end
+    end
 
-        it 'logs analytics with error when successful response is empty' do
-          response
-          expect(@analytics).to have_logged_event(
-            'IdV: in person proofing location search submitted',
-            success: false,
-            errors: 'No USPS locations found',
-            result_total: 0,
-            exception_class: nil,
-            exception_message: nil,
-            response_status_code: nil,
-          )
-        end
+    context 'no addresses found by usps' do
+      before do
+        allow(proofer).to receive(:request_facilities).with(address).and_return(empty_locations)
       end
 
-      context 'with successful fetch' do
-        before do
-          allow(proofer).to receive(:request_facilities).with(address).and_return(locations)
-        end
+      it 'logs analytics with error when successful response is empty' do
+        response
+        expect(@analytics).to have_logged_event(
+          'IdV: in person proofing location search submitted',
+          success: false,
+          errors: 'No USPS locations found',
+          result_total: 0,
+          exception_class: nil,
+          exception_message: nil,
+          response_status_code: nil,
+        )
+      end
+    end
 
-        it 'returns a successful response' do
-          json = response.body
-          facilities = JSON.parse(json)
-          expect(facilities.length).to eq 3
-          expect(@analytics).to have_logged_event(
-            'IdV: in person proofing location search submitted',
-            success: true,
-            errors: nil,
-            result_total: 3,
-            exception_class: nil,
-            exception_message: nil,
-            response_status_code: nil,
-          )
-        end
+    context 'with successful fetch' do
+      before do
+        allow(proofer).to receive(:request_facilities).with(address).and_return(locations)
+      end
+
+      it 'returns a successful response' do
+        json = response.body
+        facilities = JSON.parse(json)
+        expect(facilities.length).to eq 3
+        expect(@analytics).to have_logged_event(
+          'IdV: in person proofing location search submitted',
+          success: true,
+          errors: nil,
+          result_total: 3,
+          exception_class: nil,
+          exception_message: nil,
+          response_status_code: nil,
+        )
       end
     end
 
