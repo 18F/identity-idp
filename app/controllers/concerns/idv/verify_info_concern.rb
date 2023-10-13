@@ -89,8 +89,6 @@ module Idv
         :mva_exception,
       )
 
-      resolution_rate_limiter.increment! if proofing_results_exception.blank?
-
       if ssn_rate_limiter.limited?
         idv_failure_log_rate_limited(:proof_ssn)
         redirect_to idv_session_errors_ssn_failure_url
@@ -208,7 +206,7 @@ module Idv
       )
 
       form_response = form_response.merge(check_ssn) if form_response.success?
-      summarize_result_and_rate_limit_failures(form_response)
+      summarize_result_and_rate_limit(form_response)
       delete_async
 
       if form_response.success?
@@ -216,8 +214,6 @@ module Idv
         move_applicant_to_idv_session
         idv_session.mark_verify_info_step_complete!
         idv_session.invalidate_steps_after_verify_info!
-
-        resolution_rate_limiter.increment!
 
         flash[:success] = t('doc_auth.forms.doc_success')
         redirect_to next_step_url
@@ -238,7 +234,10 @@ module Idv
       idv_session.threatmetrix_review_status = review_status
     end
 
-    def summarize_result_and_rate_limit_failures(summary_result)
+    def summarize_result_and_rate_limit(summary_result)
+      proofing_results_exception = summary_result.extra.dig(:proofing_results, :exception)
+      resolution_rate_limiter.increment! if proofing_results_exception.blank?
+
       if summary_result.success?
         add_proofing_components
       else
