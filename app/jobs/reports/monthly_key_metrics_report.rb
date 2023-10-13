@@ -8,6 +8,11 @@ module Reports
 
     attr_reader :report_date
 
+    def initialize(*args, report_date: nil, **rest)
+      @report_date = report_date
+      super(*args, **rest)
+    end
+
     def perform(date = Time.zone.today)
       @report_date = date
 
@@ -16,6 +21,11 @@ module Reports
         Rails.logger.warn 'No email addresses received - Monthly Key Metrics Report NOT SENT'
         return false
       end
+      # account_reuse_table = account_reuse_report.account_reuse_report
+      # total_profiles_table = account_reuse_report.total_identities_report
+      # document_upload_proofing_table = monthly_proofing_report.proofing_report
+      # account_deletion_rate_table = account_deletion_rate_report.account_deletion_report
+      # total_user_count_table = total_user_count_report.total_user_count_report
 
       reports = [
         total_user_count_report.total_user_count_emailable_report,
@@ -100,26 +110,12 @@ module Reports
     end
 
     def monthly_proofing_report
-      prepared_report = []
-
-      CSV.parse(get_raw_proofing_report).each do |row|
-        unless row.first.start_with?('report')
-          prepared_report << row
-        end
-      end
-
-      prepared_report
-    end
-
-    def get_raw_proofing_report
-      range_prev_month = Reporting::CommandLineOptions.new.time_range(
-        date: @report_date.prev_month(1), period: :month,
+      @monthly_proofing_report ||= Reporting::MonthlyProofingReport.new(
+        # FYI - we should look for a way to share these configs
+        time_range: @report_date.prev_month(1).in_time_zone('UTC').all_month,
+        slice: 1.hour,
+        threads: 10,
       )
-
-      Reporting::MonthlyProofingReport.new(
-        time_range: range_prev_month, slice: 1.hour,
-        threads: 10
-      ).to_csv
     end
 
     def account_deletion_rate_report
