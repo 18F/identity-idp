@@ -140,4 +140,19 @@ RSpec.describe TwoFactorOptionsPresenter do
       end
     end
   end
+
+  describe '#show_cancel_phishing_resistant_only' do
+    context 'phishing resistant required to add additonal mfa' do
+      let(:presenter) do
+        described_class.new(
+          user_agent: user_agent, user: user_with_2fa,
+          phishing_resistant_required: true
+        )
+      end
+
+      it 'returns true' do
+        expect(presenter.show_cancel_phishing_resistant_only).to eq(true)
+      end
+    end
+  end
 end

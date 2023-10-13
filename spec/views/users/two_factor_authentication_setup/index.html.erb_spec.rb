@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe 'users/two_factor_authentication_setup/index.html.erb' do
   include Devise::Test::ControllerHelpers
+  include IdvHelper
 
   let(:user) { build(:user) }
   let(:user_agent) { '' }
@@ -102,12 +103,11 @@ RSpec.describe 'users/two_factor_authentication_setup/index.html.erb' do
   end
 
   context 'unphishable requires additional authentication to be added' do
-    let(:user) { build(:user, :with_phone) }
+    let(:user) { build(:user, :fully_registered, :with_phone) }
     let(:phishing_resistant_required) { true }
 
-    it 'lists current mfa methods' do
+    it 'lists current selected mfa methods' do
       render
-
       expect(rendered).to have_content(t('two_factor_authentication.two_factor_aal3_choice'))
       expect(rendered).to have_content(
         t('two_factor_authentication.two_factor_choice_options.phone'),
