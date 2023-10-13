@@ -266,10 +266,10 @@ class DataPull
     def run(args:, config:)
       uuids = args
 
-      users = User.includes(:events).where(uuid: uuids).order(:uuid)
+      users = User.includes(events: :device).where(uuid: uuids).order(:uuid)
 
       table = []
-      table << %w[uuid event_type event_timestamp event_ip]
+      table << %w[uuid event_type event_timestamp event_ip device_cookie]
 
       users.each do |user|
         user.events.sort_by(&:created_at).each do |event|
@@ -278,13 +278,14 @@ class DataPull
             event.event_type,
             event.created_at,
             event.ip,
+            event.device&.cookie_uuid,
           ]
         end
       end
 
       if config.include_missing?
         (uuids - users.map(&:uuid)).each do |missing_uuid|
-          table << [missing_uuid, '[UUID NOT FOUND]', nil, nil]
+          table << [missing_uuid, '[UUID NOT FOUND]', nil, nil, nil]
         end
       end
 
