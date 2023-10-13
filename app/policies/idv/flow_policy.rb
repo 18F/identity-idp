@@ -1,45 +1,98 @@
 module Idv
   class FlowPolicy
     include Rails.application.routes.url_helpers
-
-    NEXT_STEPS = Hash.new([]).merge(
-      {
-        root: [:welcome],
-        welcome: [:agreement],
-        agreement: [:hybrid_handoff, :document_capture],
-        hybrid_handoff: [:link_sent, :document_capture],
-        link_sent: [:ssn],
-        document_capture: [:ssn], # in person?
-        ssn: [:verify_info],
-        verify_info: [:phone],
-        phone: [:phone_enter_otp],
-        phone_enter_otp: [:review],
-        review: [:personal_key],
-        personal_key: [:success],
-      },
-    ).freeze
-
     attr_reader :idv_session, :user
+
+    Step = Struct.new(:path, :next_steps, :requirements)
 
     def initialize(idv_session:, user:)
       @idv_session = idv_session
       @user = user
     end
 
+    def steps
+      blank_step = Step.new(path: nil, next_steps: [], requirements: -> { false })
+      Hash.new(blank_step).merge(
+        {
+          root: Step.new(next_steps: [:welcome]),
+          welcome: Step.new(
+            path: idv_welcome_path,
+            next_steps: [:agreement],
+            requirements: -> { true },
+          ),
+          agreement: Step.new(
+            path: idv_agreement_path,
+            next_steps: [:hybrid_handoff, :document_capture],
+            requirements: -> { idv_session.welcome_visited },
+          ),
+          hybrid_handoff: Step.new(
+            path: idv_hybrid_handoff_path,
+            next_steps: [:link_sent, :document_capture],
+            requirements: -> { idv_session.idv_consent_given },
+          ),
+          link_sent: Step.new(
+            path: idv_link_sent_path,
+            next_steps: [:ssn],
+            requirements: -> { idv_session.flow_path == 'hybrid' },
+          ),
+          document_capture: Step.new(
+            path: idv_document_capture_path,
+            next_steps: [:ssn],
+            requirements: -> { idv_session.flow_path == 'standard' },
+          ),
+          ssn: Step.new(
+            path: idv_ssn_path,
+            next_steps: [:verify_info],
+            requirements: -> { post_document_capture_check },
+          ),
+          verify_info: Step.new(
+            path: idv_verify_info_path,
+            next_steps: [:phone],
+            requirements: -> { idv_session.ssn && post_document_capture_check },
+          ),
+          phone: Step.new(
+            path: idv_phone_path,
+            next_steps: [:phone_enter_otp],
+            requirements: -> { idv_session.verify_info_step_complete? },
+          ),
+          phone_enter_otp: Step.new(
+            path: idv_otp_verification_path,
+            next_steps: [:review],
+            requirements: -> do
+              idv_session.user_phone_confirmation_session.present?
+            end,
+          ),
+          review: Step.new(
+            path: idv_review_path,
+            next_steps: [:personal_key],
+            requirements: -> do
+              idv_session.verify_info_step_complete? &&
+                idv_session.address_step_complete?
+            end,
+          ),
+          personal_key: Step.new(
+            path: idv_personal_key_path,
+            next_steps: [:success],
+            requirements: -> { user.identity_verified? },
+          ),
+        },
+      )
+    end
+
     def step_allowed?(step:)
-      send(step)
+      steps[step].requirements.call
     end
 
     def path_allowed?(path:)
-      step = path_to_step[path]
-      send(step)
+      step = path_to_step(path: path)
+      step_allowed?(step: step)
     end
 
     def latest_step(current_step: :root)
-      return nil if NEXT_STEPS[current_step].empty?
-      return current_step if NEXT_STEPS[current_step] == [:success]
+      return nil if steps[current_step].next_steps.empty?
+      return current_step if steps[current_step].next_steps == [:success]
 
-      (NEXT_STEPS[current_step]).each do |step|
+      steps[current_step].next_steps.each do |step|
         if step_allowed?(step: step)
           return latest_step(current_step: step)
         end
@@ -48,7 +101,7 @@ module Idv
     end
 
     def path_for_latest_step
-      path_map[latest_step]
+      steps[latest_step].path
     end
 
     # This can be blank because we are using paths, not urls,
@@ -59,83 +112,10 @@ module Idv
 
     private
 
-    def path_to_step
-      @path_to_step ||= path_map.invert
-    end
-
-    def path_map
-      @path_map ||= {
-        welcome: idv_welcome_path,
-        agreement: idv_agreement_path,
-        hybrid_handoff: idv_hybrid_handoff_path,
-        link_sent: idv_link_sent_path,
-        document_capture: idv_document_capture_path,
-        ssn: idv_ssn_path,
-        verify_info: idv_verify_info_path,
-        phone: idv_phone_path,
-        phone_enter_otp: idv_otp_verification_path,
-        review: idv_review_path,
-        personal_key: idv_personal_key_path,
-      }.freeze
-    end
-
-    def welcome
-      return true
-    end
-
-    def agreement
-      idv_session.welcome_visited
-    end
-
-    def hybrid_handoff
-      idv_session.idv_consent_given
-      # look into covering verify info step not complete also
-    end
-
-    def document_capture
-      idv_session.flow_path == 'standard'
-    end
-
-    def link_sent
-      idv_session.flow_path == 'hybrid'
-    end
-
-    def ssn
-      post_document_capture_check
-    end
-
-    def verify_info
-      idv_session.ssn && post_document_capture_check
-    end
-
-    def phone
-      idv_session.verify_info_step_complete? # controller code also needs applicant
-    end
-
-    def phone_enter_otp
-      idv_session.user_phone_confirmation_session.present?
-    end
-
-    def review
-      idv_session.verify_info_step_complete? &&
-        idv_session.address_step_complete?
-    end
-
-    def request_letter
-      idv_session.verify_info_step_complete?
-    end
-
-    def letter_enqueued
-      (idv_session.blank? || idv_session.address_verification_mechanism == 'gpo') &&
-        user.gpo_pending_profile?
-    end
-
-    def enter_verification_code
-      user.gpo_pending_profile?
-    end
-
-    def personal_key
-      user.identity_verified? # add a check for in-person
+    def path_to_step(path:)
+      steps.keys.each do |key|
+        return key if steps[key].path == path
+      end
     end
 
     def post_document_capture_check
