@@ -140,10 +140,15 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       passed_alerts.each do |alert|
         expect(alert).to have_key(:disposition)
       end
-      alerts_with_model = passed_alerts.select do |alert|
-        alert[:model].present? && alert[:region].present?
+      alerts_with_mode_etc = passed_alerts.select do |alert|
+        alert[:model].present? && alert[:region].present? && alert[:region_ref].present?
       end
-      expect(alerts_with_model).not_to be_empty
+      expect(alerts_with_mode_etc).not_to be_empty
+      alerts_with_mode_etc.each do |alert|
+        alert[:region_ref].each do |region_ref|
+          expect(region_ref).to include(:side, :key)
+        end
+      end
     end
 
     it 'notes that address line 2 was present' do
