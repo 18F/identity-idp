@@ -16,6 +16,7 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
   let(:document_upload_proofing_s3_path) { "#{report_folder}/document_upload_proofing.csv" }
   let(:account_deletion_rate_s3_path) { "#{report_folder}/account_deletion_rate.csv" }
   let(:total_user_count_s3_path) { "#{report_folder}/total_user_count.csv" }
+  let(:monthly_active_users_count_s3_path) { "#{report_folder}/monthly_active_users_count.csv" }
   let(:s3_metadata) do
     {
       body: anything,
@@ -115,6 +116,11 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
 
     expect(subject).to receive(:upload_file_to_s3_bucket).with(
       path: document_upload_proofing_s3_path,
+      **s3_metadata,
+    ).exactly(1).time.and_call_original
+
+    expect(subject).to receive(:upload_file_to_s3_bucket).with(
+      path: monthly_active_users_count_s3_path,
       **s3_metadata,
     ).exactly(1).time.and_call_original
 

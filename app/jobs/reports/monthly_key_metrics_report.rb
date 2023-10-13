@@ -27,6 +27,7 @@ module Reports
         account_reuse_report.account_reuse_emailable_report,
         account_reuse_report.total_identities_emailable_report,
         monthly_proofing_report.document_upload_proofing_emailable_report,
+        monthly_active_users_count_report.monthly_active_users_count_emailable_report,
       ]
 
       reports.each do |report|
@@ -74,6 +75,12 @@ module Reports
 
     def total_user_count_report
       @total_user_count_report ||= Reporting::TotalUserCountReport.new(report_date)
+    end
+
+    def monthly_active_users_count_report
+      @monthly_active_users_count_report ||= Reporting::MonthlyActiveUsersCountReport.new(
+        report_date,
+      )
     end
 
     def upload_to_s3(report_body, report_name: nil)
