@@ -8,15 +8,17 @@ module Reporting
 
     def monthly_active_users_count_report
       [
-        ['Monthly IAL1 Active', 'Monthly IAL2 Active', 'Total'],
-        [total_ial1_active, total_ial2_active, total_ial1_active + total_ial2_active],
+        ['Monthly Active Users', 'Value'],
+        ['IAL1', total_ial1_active],
+        ['IDV', total_ial2_active],
+        ['Total', total_ial1_active + total_ial2_active],
       ]
     end
 
     def monthly_active_users_count_emailable_report
       EmailableReport.new(
         email_options: {
-          title: 'Monthly active user count',
+          title: "#{report_month_year} Active Users",
         },
         table: monthly_active_users_count_report,
         csv_name: 'monthly_active_users_count',
@@ -38,7 +40,11 @@ module Reporting
     end
 
     def range
-      report_date.day == 1 ? report_date.last_month.all_month : report_date.all_month
+      @range ||= report_date.day == 1 ? report_date.last_month.all_month : report_date.all_month
+    end
+
+    def report_month_year
+      "#{range.begin.strftime("%B")} #{range.begin.year}"
     end
   end
 end

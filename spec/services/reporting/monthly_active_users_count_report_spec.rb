@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Reporting::MonthlyActiveUsersCountReport do
-  let(:report_date) { Date.new(2021, 3, 1) }
+  let(:report_date) { Date.new(2023, 3, 1) }
 
   subject(:report) { Reporting::MonthlyActiveUsersCountReport.new(report_date) }
   let(:sp1) { create(:service_provider) }
@@ -34,15 +34,18 @@ RSpec.describe Reporting::MonthlyActiveUsersCountReport do
       )
       monthly_active_users_count_table = report.monthly_active_users_count_report
 
-      expected_table = [['Monthly IAL1 Active', 'Monthly IAL2 Active', 'Total'], [1, 1, 2]]
+      expected_table = [
+        ['Monthly Active Users', 'Value'],
+        ['IAL1', 1],
+        ['IDV', 1],
+        ['Total', 2],
+      ]
 
       expect(monthly_active_users_count_table).to eq(expected_table)
 
       emailable_report = report.monthly_active_users_count_emailable_report
       expect(emailable_report.email_options).to include(
-        title: 'Monthly active user count',
-        float_as_percent: true,
-        precision: 4,
+        title: 'February 2023 Active Users',
       )
       expect(emailable_report.table).to eq monthly_active_users_count_table
       expect(emailable_report.csv_name).to eq 'monthly_active_users_count'
