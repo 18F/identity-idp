@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'idv gpo step' do
+RSpec.feature 'idv request letter step' do
   include IdvStepHelper
   include OidcAuthHelper
 
