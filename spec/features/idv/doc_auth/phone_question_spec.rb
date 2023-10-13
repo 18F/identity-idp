@@ -25,6 +25,8 @@ RSpec.feature 'phone question step' do
     let(:analytics_name) { 'IdV: doc auth phone question submitted' }
 
     describe '#camera_with_phone' do
+      let(:phone_number) { '415-555-0199' }
+
       it 'redirects to hybrid handoff if user confirms having phone' do
         click_link t('doc_auth.buttons.have_phone')
         expect(page).to have_current_path(idv_hybrid_handoff_path)
@@ -32,6 +34,13 @@ RSpec.feature 'phone question step' do
           :idv_doc_auth_phone_question_submitted,
           hash_including(step: 'phone_question', phone_with_camera: true),
         )
+        # test back link on link sent returns to hybrid handoff
+        clear_and_fill_in(:doc_auth_phone, phone_number)
+        click_send_link
+        expect(page).to have_current_path(idv_link_sent_path)
+        click_link(t('forms.buttons.back'))
+        expect(page).to have_current_path(idv_hybrid_handoff_path(redo: true))
+
       end
     end
 
