@@ -40,7 +40,6 @@ RSpec.feature 'phone question step' do
         expect(page).to have_current_path(idv_link_sent_path)
         click_link(t('forms.buttons.back'))
         expect(page).to have_current_path(idv_hybrid_handoff_path(redo: true))
-
       end
     end
 
