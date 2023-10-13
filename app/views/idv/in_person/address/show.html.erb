@@ -1,0 +1,86 @@
+<% title t('titles.doc_auth.verify') %>
+
+<% if updating_address %>
+  <%= render PageHeadingComponent.new.with_content(t('in_person_proofing.headings.update_address')) %>
+<% else %>
+  <%= render PageHeadingComponent.new.with_content(t('in_person_proofing.headings.address')) %>
+<% end %>
+
+<%= simple_form_for(
+      form, url: url_for, method: 'PUT',
+            html: { autocomplete: 'off' }
+    ) do |f| %>
+  <%= render ValidatedFieldComponent.new(
+        collection: us_states_territories,
+        form: f,
+        input_html: { class: 'address-state-selector' },
+        label: t('idv.form.state'),
+        label_html: { class: 'usa-label' },
+        name: :state,
+        prompt: t('in_person_proofing.form.address.state_prompt'),
+        required: true,
+        selected: pii[:state],
+      ) %>
+  <%= render ValidatedFieldComponent.new(
+        form: f,
+        hint: t('in_person_proofing.form.state_id.address1_hint'),
+        hint_html: { class: ['display-none', 'puerto-rico-extras'] },
+        input_html: { value: pii[:address1] },
+        label: t('idv.form.address1'),
+        label_html: { class: 'usa-label' },
+        maxlength: 255,
+        name: :address1,
+        required: true,
+      ) %>
+  <%= render ValidatedFieldComponent.new(
+        form: f,
+        hint: t('in_person_proofing.form.state_id.address2_hint'),
+        hint_html: { class: ['display-none', 'puerto-rico-extras'] },
+        input_html: { value: pii[:address2] },
+        label: t('idv.form.address2'),
+        label_html: { class: 'usa-label' },
+        maxlength: 255,
+        name: :address2,
+        required: false,
+      ) %>
+  <%= render ValidatedFieldComponent.new(
+        form: f,
+        input_html: { value: pii[:city] },
+        label: t('idv.form.city'),
+        label_html: { class: 'usa-label' },
+        maxlength: 255,
+        name: :city,
+        required: true,
+      ) %>
+
+  <div class="tablet:grid-col-6">
+    <%# using :tel for mobile numeric keypad %>
+    <%= render ValidatedFieldComponent.new(
+          as: :tel,
+          error_messages: { patternMismatch: t('idv.errors.pattern_mismatch.zipcode') },
+          form: f,
+          input_html: { value: pii[:zipcode], class: 'zipcode' },
+          label: t('idv.form.zipcode'),
+          label_html: { class: 'usa-label' },
+          name: :zipcode,
+          pattern: '\d{5}([\-]\d{4})?',
+          required: true,
+        ) %>
+  </div>
+
+  <%= f.submit class: 'margin-top-1' do %>
+    <% if updating_address %>
+      <%= t('forms.buttons.submit.update') %>
+    <% else %>
+      <%= t('forms.buttons.continue') %>
+    <% end %>
+  <% end %>
+<% end %>
+
+<% if updating_address %>
+  <%= render 'idv/shared/back', action: 'cancel_update_address' %>
+<% else %>
+  <%= render 'idv/doc_auth/cancel', step: 'address' %>
+<% end %>
+
+<%= javascript_packs_tag_once('formatted-fields', 'puerto-rico-guidance') %>
