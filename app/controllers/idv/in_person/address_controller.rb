@@ -3,6 +3,8 @@ module Idv
     class AddressController < ApplicationController
       include IdvStepConcern
 
+      before_action :render_404_if_not_in_person_residential_address_controller_enabled
+
       def show
         analytics.idv_in_person_proofing_address_visited
 
@@ -13,14 +15,12 @@ module Idv
         attrs = Idv::InPerson::AddressForm::ATTRIBUTES
 
         attrs = attrs.difference([:same_address_as_id])
-        flow_session[:pii_from_user][:same_address_as_id] = 'false' if updating_address?
+        pii_from_user[:same_address_as_id] = 'false' if updating_address?
 
         attrs.each do |attr|
-          flow_session[:pii_from_user][attr] = flow_params[attr]
+          pii_from_user[attr] = flow_params[attr]
         end
 
-        puts "form: #{form_submit.pretty_inspect}"
-        puts "pii: #{pii}"
         form_result = form_submit
         analytics.idv_in_person_proofing_residential_address_submitted(**form_result.to_h)
 
@@ -46,11 +46,11 @@ module Idv
       end
 
       def updating_address?
-        flow_session[:pii_from_user].has_key?(:address1) && user_session[:idv].has_key?(:ssn)
+        pii_from_user.has_key?(:address1) && user_session[:idv].has_key?(:ssn)
       end
 
       def pii
-        data = flow_session[:pii_from_user]
+        data = pii_from_user
         data = data.merge(flow_params) if params.has_key?(:in_person_address)
         data.deep_symbolize_keys
       end
@@ -67,6 +67,10 @@ module Idv
 
       def form_submit
         form.submit(flow_params)
+      end
+
+      def render_404_if_not_in_person_residential_address_controller_enabled
+        render_not_found unless IdentityConfig.store.in_person_residential_address_controller_enabled
       end
     end
   end
