@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Idv::InPerson::VerifyInfoController do
-  include IdvHelper
-
   let(:pii_from_user) { Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID.dup }
   let(:flow_session) do
     { pii_from_user: pii_from_user,

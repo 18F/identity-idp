@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Idv::SsnController do
-  include IdvHelper
-
   let(:ssn) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn] }
 
   let(:user) { create(:user) }
