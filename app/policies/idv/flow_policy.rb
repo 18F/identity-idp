@@ -2,8 +2,7 @@ module Idv
   class FlowPolicy
     include Rails.application.routes.url_helpers
 
-    NEXT_STEPS = Hash.new([])
-    NEXT_STEPS.merge!(
+    NEXT_STEPS = Hash.new([]).merge(
       {
         root: [:welcome],
         welcome: [:agreement],
@@ -18,7 +17,7 @@ module Idv
         review: [:personal_key],
         personal_key: [:success],
       },
-    )
+    ).freeze
 
     attr_reader :idv_session, :user
 
@@ -61,19 +60,7 @@ module Idv
     private
 
     def path_to_step
-      @path_to_step ||= {
-        idv_welcome_path => :welcome,
-        idv_agreement_path => :agreement,
-        idv_hybrid_handoff_path => :hybrid_handoff,
-        idv_link_sent_path => :link_sent,
-        idv_document_capture_path => :document_capture,
-        idv_ssn_path => :ssn,
-        idv_verify_info_path => :verify_info,
-        idv_phone_path => :phone,
-        idv_otp_verification_path => :phone_enter_otp,
-        idv_review_path => :review,
-        idv_personal_key_path => :personal_key,
-      }.freeze
+      @path_to_step ||= path_map.invert
     end
 
     def path_map
