@@ -341,4 +341,30 @@ RSpec.describe DataPull do
       end
     end
   end
+
+  describe DataPull::EventsSummary do
+    subject(:subtask) { DataPull::EventsSummary.new }
+
+    let(:user) { create(:user) }
+    let!(:event) { create(:event, user: user, event_type: :account_created, ip: '1.2.3.4') }
+
+    let(:args) { [user.uuid, 'uuid-does-not-exist'] }
+    let(:config) { ScriptBase::Config.new(include_missing: true) }
+    subject(:result) { subtask.run(args:, config:) }
+
+    describe '#run' do
+      it 'loads events for the users' do
+        expect(result.table).to match_array(
+          [
+            %w[uuid event_type event_timestamp event_ip],
+            [user.uuid, event.event_type, event.created_at, event.ip],
+            ['uuid-does-not-exist', '[UUID NOT FOUND]', nil, nil],
+          ],
+        )
+
+        expect(result.subtask).to eq('events-summary')
+        expect(result.uuids).to match_array([user.uuid])
+      end
+    end
+  end
 end

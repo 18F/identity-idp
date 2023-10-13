@@ -36,6 +36,8 @@ class DataPull
 
         * #{basename} email-lookup uuid1 uuid2
 
+        * #{basename} events-summary uuid1 uuid2
+
         * #{basename} ig-request uuid1 uuid2 --requesting-issuer ABC:DEF:GHI
 
         * #{basename} profile-summary uuid1 uuid2
@@ -55,6 +57,7 @@ class DataPull
       'uuid-lookup' => UuidLookup,
       'uuid-convert' => UuidConvert,
       'email-lookup' => EmailLookup,
+      'events-summary' => EventsSummary,
       'ig-request' => InspectorGeneralRequest,
       'profile-summary' => ProfileSummary,
       'uuid-export' => UuidExport,
@@ -255,6 +258,40 @@ class DataPull
       ScriptBase::Result.new(
         subtask: 'uuid-export',
         uuids: uuids.uniq,
+        table:,
+      )
+    end
+  end
+
+  class EventsSummary
+    def run(args:, config:)
+      uuids = args
+
+      users = User.includes(:events).where(uuid: uuids).order(:uuid)
+
+      table = []
+      table << %w[uuid event_type event_timestamp event_ip]
+
+      users.each do |user|
+        user.events.sort_by(&:created_at).each do |event|
+          table << [
+            user.uuid,
+            event.event_type,
+            event.created_at,
+            event.ip,
+          ]
+        end
+      end
+
+      if config.include_missing?
+        (uuids - users.map(&:uuid)).each do |missing_uuid|
+          table << [missing_uuid, '[UUID NOT FOUND]', nil, nil]
+        end
+      end
+
+      ScriptBase::Result.new(
+        subtask: 'events-summary',
+        uuids: users.map(&:uuid),
         table:,
       )
     end
