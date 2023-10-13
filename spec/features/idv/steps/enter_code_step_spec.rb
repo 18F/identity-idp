@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'idv gpo otp verification step' do
+RSpec.feature 'idv enter letter code step' do
   include IdvStepHelper
 
   let(:otp) { 'ABC123' }
@@ -187,6 +187,20 @@ RSpec.feature 'idv gpo otp verification step' do
     click_idv_continue
 
     expect(current_path).to eq idv_welcome_path
+  end
+
+  context 'user cancels idv from enter code page after getting rate limited', :js do
+    it 'redirects to welcome page' do
+      RateLimiter.new(user: user, rate_limit_type: :proof_address).increment_to_limited!
+
+      sign_in_live_with_2fa(user)
+
+      click_on t('idv.messages.clear_and_start_over')
+      expect(current_path).to eq idv_confirm_start_over_path
+      click_idv_continue
+
+      expect(current_path).to eq idv_welcome_path
+    end
   end
 
   def verify_no_spam_warning_banner

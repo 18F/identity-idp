@@ -251,17 +251,18 @@ fr:
       come_back_later_sp_html: Vous pouvez retourner à l’agence <strong>%{sp}</strong> pour le moment.
       confirm: Nous avons sécurisé vos informations vérifiées
       gpo:
-        address_on_file_html: Nous enverrons une lettre avec <strong>un code de
-          vérification</strong> à l’adresse que vous avez indiquée à l’étape
-          précédente.
+        address_on_file: 'Nous enverrons la lettre à l’adresse que vous avez vérifiée
+          précédemment:'
         another_letter_on_the_way: Nous vous envoyons une autre lettre
         info_alert: Vous devrez attendre la livraison de votre lettre pour compléter la
           vérification de votre identité.
+        learn_more_verify_by_mail: En savoir plus sur la vérification de votre adresse par courrier
         letter_on_the_way: Nous vous envoyons une lettre
         resend: Envoyez-moi une autre lettre
-        timeframe_html: Les lettres sont envoyées le jour ouvrable suivant par le
-          courrier de première classe d’USPS et arrivent dans un délai de
-          <strong>5 à 10 jours</strong>.
+        start_over_html: Si ce n’est pas la bonne adresse, vous devrez %{start_over_link_html}.
+        start_over_link_text: recommencer et vérifier avec votre nouvelle adresse
+        timeframe_html: Vous recevrez une lettre avec un <strong>code de
+          vérification</strong> dans un délai de <strong>5 à 10 jours</strong>.
       otp_delivery_method_description: Si vous avez saisi une ligne fixe ci-dessus,
         veuillez sélectionner « Appel téléphonique » ci-dessous.
       personal_key: Il s’agit de votre nouvelle clé personnelle. Notez-la et

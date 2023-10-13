@@ -55,7 +55,7 @@ RSpec.describe 'sign_up/completions/show.html.erb' do
     render
     expect(rendered).to have_link(
       t('links.cancel'),
-      href: return_to_sp_cancel_path,
+      href: return_to_sp_cancel_path(step: :sign_up),
     )
   end
 

@@ -7,7 +7,7 @@ module Idv
 
     attr_reader :idv_form
 
-    before_action :confirm_not_rate_limited_after_idv_resolution, except: [:new]
+    before_action :confirm_not_rate_limited_for_phone_address_verification, except: [:new]
     before_action :confirm_verify_info_step_complete
     before_action :confirm_step_needed
     before_action :set_idv_form
@@ -24,7 +24,7 @@ module Idv
 
       render 'shared/wait' and return if async_state.in_progress?
 
-      return if confirm_not_rate_limited_after_idv_resolution
+      return if confirm_not_rate_limited_for_phone_address_verification
 
       if async_state.none?
         Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
@@ -174,11 +174,11 @@ module Idv
         ),
       )
 
-      if async_state.result[:success]
-        rate_limiter.reset!
-        redirect_to_next_step and return
+      if form_result.success?
+        redirect_to_next_step
+      else
+        handle_proofing_failure
       end
-      handle_proofing_failure
     end
 
     def is_req_from_frontend?

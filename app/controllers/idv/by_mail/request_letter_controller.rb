@@ -12,8 +12,10 @@ module Idv
       before_action :confirm_profile_not_too_old
 
       def index
+        @applicant = idv_session.applicant
         @presenter = RequestLetterPresenter.new(current_user, url_options)
         @step_indicator_current_step = step_indicator_current_step
+
         Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
           call(:usps_address, :view, true)
         analytics.idv_request_letter_visited(

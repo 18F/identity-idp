@@ -291,13 +291,16 @@ module AnalyticsEvents
 
   # @param [String] message the warning
   # @param [String] getting_started_ab_test_bucket Which initial IdV screen the user saw
+  # @param [String] phone_question_ab_test_bucket Prompt user with phone question before doc auth
   # Logged when there is a non-user-facing error in the doc auth process, such as an unrecognized
   # field from a vendor
-  def doc_auth_warning(message: nil, getting_started_ab_test_bucket: nil, **extra)
+  def doc_auth_warning(message: nil, getting_started_ab_test_bucket: nil,
+                       phone_question_ab_test_bucket: nil, **extra)
     track_event(
       'Doc Auth Warning', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       message: message,
       getting_started_ab_test_bucket: getting_started_ab_test_bucket,
+      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
       **extra,
     )
   end
@@ -733,6 +736,17 @@ module AnalyticsEvents
     track_event('IdV: doc auth link_sent visited', **extra) # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
+  # The "phone question" step: Desktop user has submitted they
+  # do or do not have a phone with a a camera via desktop
+  def idv_doc_auth_phone_question_submitted(**extra)
+    track_event(:idv_doc_auth_phone_question_submitted, **extra)
+  end
+
+  # Desktop user has reached the above "phone question" view
+  def idv_doc_auth_phone_question_visited(**extra)
+    track_event(:idv_doc_auth_phone_question_visited, **extra)
+  end
+
   def idv_doc_auth_randomizer_defaulted
     track_event(
       'IdV: doc_auth random vendor error', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
@@ -768,6 +782,7 @@ module AnalyticsEvents
   # @param [String] front_image_fingerprint Fingerprint of front image data
   # @param [String] back_image_fingerprint Fingerprint of back image data
   # @param [String] getting_started_ab_test_bucket Which initial IdV screen the user saw
+  # @param [String] phone_question_ab_test_bucket Prompt user with phone question before doc auth
   # The document capture image uploaded was locally validated during the IDV process
   def idv_doc_auth_submitted_image_upload_form(
     success:,
@@ -779,6 +794,7 @@ module AnalyticsEvents
     front_image_fingerprint: nil,
     back_image_fingerprint: nil,
     getting_started_ab_test_bucket: nil,
+    phone_question_ab_test_bucket: nil,
     **extra
   )
     track_event(
@@ -792,6 +808,7 @@ module AnalyticsEvents
       front_image_fingerprint: front_image_fingerprint,
       back_image_fingerprint: back_image_fingerprint,
       getting_started_ab_test_bucket: getting_started_ab_test_bucket,
+      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
       **extra,
     )
   end
@@ -812,6 +829,7 @@ module AnalyticsEvents
   # @param [String] front_image_fingerprint Fingerprint of front image data
   # @param [String] back_image_fingerprint Fingerprint of back image data
   # @param [String] getting_started_ab_test_bucket Which initial IdV screen the user saw
+  # @param [String] phone_question_ab_test_bucket Prompt user with phone question before doc auth
   # The document capture image was uploaded to vendor during the IDV process
   def idv_doc_auth_submitted_image_upload_vendor(
     success:,
@@ -829,6 +847,7 @@ module AnalyticsEvents
     front_image_fingerprint: nil,
     back_image_fingerprint: nil,
     getting_started_ab_test_bucket: nil,
+    phone_question_ab_test_bucket: nil,
     **extra
   )
     track_event(
@@ -849,6 +868,7 @@ module AnalyticsEvents
       front_image_fingerprint: front_image_fingerprint,
       back_image_fingerprint: back_image_fingerprint,
       getting_started_ab_test_bucket: getting_started_ab_test_bucket,
+      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
       **extra,
     )
   end

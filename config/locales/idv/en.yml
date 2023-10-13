@@ -229,15 +229,18 @@ en:
       come_back_later_sp_html: You can return to <strong>%{sp}</strong> for now.
       confirm: We secured your verified information
       gpo:
-        address_on_file_html: We will mail a letter with a <strong>verification
-          code</strong> to the address that you provided on the previous step.
+        address_on_file: 'We’ll mail the letter to the address you verified earlier:'
         another_letter_on_the_way: We are sending you another letter
         info_alert: You’ll need to wait until your letter is delivered to finish
           verifying your identity.
+        learn_more_verify_by_mail: Learn more about verifying your address by mail
         letter_on_the_way: We are sending you a letter
         resend: Send me another letter
-        timeframe_html: Letters are sent the next business day via USPS First-Class Mail
-          and arrive in <strong>5 to 10 days</strong>.
+        start_over_html: If this isn’t the right address, you’ll need to
+          %{start_over_link_html}.
+        start_over_link_text: start over and verify with your new address
+        timeframe_html: You’ll get a letter with a <strong>verification code</strong> in
+          <strong>5 to 10 days</strong>.
       otp_delivery_method_description: If you entered a landline above, please select “Phone call” below.
       personal_key: This is your new personal key. Write it down and keep it in a safe
         place. You will need it if you ever lose your password.

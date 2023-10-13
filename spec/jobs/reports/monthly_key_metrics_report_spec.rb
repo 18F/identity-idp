@@ -11,14 +11,16 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
   let(:report_folder) do
     'int/monthly-key-metrics-report/2021/2021-03-02.monthly-key-metrics-report'
   end
-  let(:account_reuse_s3_path) do
-    "#{report_folder}/account_reuse.csv"
-  end
-  let(:total_profiles_s3_path) do
-    "#{report_folder}/total_profiles.csv"
-  end
-  let(:account_deletion_rate_s3_path) do
-    "#{report_folder}/account_deletion_rate.csv"
+  let(:account_reuse_s3_path) { "#{report_folder}/account_reuse.csv" }
+  let(:total_profiles_s3_path) { "#{report_folder}/total_profiles.csv" }
+  let(:account_deletion_rate_s3_path) { "#{report_folder}/account_deletion_rate.csv" }
+  let(:total_user_count_s3_path) { "#{report_folder}/total_user_count.csv" }
+  let(:s3_metadata) do
+    {
+      body: anything,
+      content_type: 'text/csv',
+      bucket: 'reports-bucket.1234-us-west-1',
+    }
   end
 
   before do
@@ -67,6 +69,9 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
   it 'does not send out a report with no emails' do
     allow(IdentityConfig.store).to receive(:team_agnes_email).and_return('')
 
+    expect_any_instance_of(Reporting::AccountReuseAndTotalIdentitiesReport).
+      not_to receive(:total_identities_report)
+
     expect(ReportMailer).not_to receive(:tables_report).with(
       message: 'Report: monthly-key-metrics-report 2021-03-02',
       email: [''],
@@ -80,23 +85,22 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
   it 'uploads a file to S3 based on the report date' do
     expect(subject).to receive(:upload_file_to_s3_bucket).with(
       path: account_reuse_s3_path,
-      body: anything,
-      content_type: 'text/csv',
-      bucket: 'reports-bucket.1234-us-west-1',
+      **s3_metadata,
     ).exactly(1).time.and_call_original
 
     expect(subject).to receive(:upload_file_to_s3_bucket).with(
       path: total_profiles_s3_path,
-      body: anything,
-      content_type: 'text/csv',
-      bucket: 'reports-bucket.1234-us-west-1',
+      **s3_metadata,
     ).exactly(1).time.and_call_original
 
     expect(subject).to receive(:upload_file_to_s3_bucket).with(
       path: account_deletion_rate_s3_path,
-      body: anything,
-      content_type: 'text/csv',
-      bucket: 'reports-bucket.1234-us-west-1',
+      **s3_metadata,
+    ).exactly(1).time.and_call_original
+
+    expect(subject).to receive(:upload_file_to_s3_bucket).with(
+      path: total_user_count_s3_path,
+      **s3_metadata,
     ).exactly(1).time.and_call_original
 
     subject.perform(report_date)

@@ -162,6 +162,74 @@ RSpec.describe Idv::PhoneController do
       get :new
       expect(response).to render_template :wait
     end
+
+    context 'when the document capture session has a doc auth result' do
+      let(:phone) { '2025555555' }
+
+      before do
+        subject.idv_session.previous_phone_step_params = {
+          phone: phone, international_code: 'US', otp_delivery_preference: 'sms'
+        }
+        document_capture_session = DocumentCaptureSession.create(
+          user_id: user.id,
+          requested_at: Time.zone.now,
+        )
+        document_capture_session.create_proofing_session
+        subject.idv_session.idv_phone_step_document_capture_session_uuid =
+          document_capture_session.uuid
+        proofing_result = Proofing::Mock::AddressMockClient.new.proof(phone: phone)
+        document_capture_session.store_proofing_result(proofing_result)
+      end
+
+      context 'when the result is successful' do
+        it 'sends an OTP and redirects to OTP confirmation' do
+          get :new
+
+          expect(response).to redirect_to(idv_otp_verification_url)
+          expect(subject.idv_session.vendor_phone_confirmation).to eq(true)
+          expect(subject.idv_session.user_phone_confirmation).to eq(false)
+          expect(Telephony::Test::Message.messages.length).to eq(1)
+        end
+
+        context 'the user submited their last attempt' do
+          it 'redirects to the OTP confirmation and the rate limiter is maxed' do
+            RateLimiter.new(user: user, rate_limit_type: :proof_address).increment_to_limited!
+
+            get :new
+
+            expect(response).to redirect_to(idv_otp_verification_url)
+            expect(Telephony::Test::Message.messages.length).to eq(1)
+            expect(RateLimiter.new(user: user, rate_limit_type: :proof_address).maxed?).to eq(true)
+          end
+        end
+      end
+
+      context 'when the doc auth result is not successful' do
+        # This is a test phone number that causes the mock proofer to fail
+        let(:phone) { Proofing::Mock::AddressMockClient::UNVERIFIABLE_PHONE_NUMBER }
+
+        it 'does not send an otp and redirects to the error page' do
+          get :new
+
+          expect(response).to redirect_to(idv_phone_errors_warning_url)
+          expect(subject.idv_session.vendor_phone_confirmation).to eq(nil)
+          expect(subject.idv_session.user_phone_confirmation).to eq(nil)
+          expect(Telephony::Test::Message.messages.length).to eq(0)
+        end
+
+        context 'the user submited their last attempt' do
+          it 'it redirects to the failure page and the rate limiter is maxed' do
+            RateLimiter.new(user: user, rate_limit_type: :proof_address).increment_to_limited!
+
+            get :new
+
+            expect(response).to redirect_to(idv_phone_errors_failure_url)
+            expect(Telephony::Test::Message.messages.length).to eq(0)
+            expect(RateLimiter.new(user: user, rate_limit_type: :proof_address).maxed?).to eq(true)
+          end
+        end
+      end
+    end
   end
 
   describe '#create' do
