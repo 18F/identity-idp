@@ -22,7 +22,7 @@ function formatContentHtml({ msg, url }) {
 function DocumentCaptureAbandon() {
   const { t } = useI18n();
   const { trackEvent } = useContext(AnalyticsContext);
-  const { currentStep, exitURL } = useContext(FlowContext);
+  const { currentStep, exitURL, cancelURL } = useContext(FlowContext);
   const { name: spName } = useContext(ServiceProviderContext);
   const appName = getConfigValue('appName');
   const header = <h3>{t('doc_auth.exit_survey.header')}</h3>;
@@ -30,11 +30,19 @@ function DocumentCaptureAbandon() {
   const content = (
     <p>
       {formatContentHtml({
-        msg: t('doc_auth.exit_survey.content_html', {
-          sp_name: spName ?? 'NA',
-          app_name: appName,
+        msg:
+          spName && spName.trim()
+            ? t('doc_auth.exit_survey.content_html', {
+                sp_name: spName,
+                app_name: appName,
+              })
+            : t('doc_auth.exit_survey.content_nosp_html', {
+                app_name: appName,
+              }),
+        url: addSearchParams(spName && spName.trim() ? exitURL : cancelURL, {
+          step: currentStep,
+          location: 'optional_question',
         }),
-        url: addSearchParams(exitURL, { step: currentStep, location: 'optional_question' }),
       })}
     </p>
   );
@@ -77,18 +85,22 @@ function DocumentCaptureAbandon() {
     );
   };
 
-  const checkboxes = idTypeOptions.map((idType, idx) => (
-    <Checkbox
-      key={idType.name}
-      name={idType.name}
-      value={idType.name}
-      label={idTypeLabels[idx]}
-      onChange={() => updateCheckStatus(idx)}
-    />
-  ));
+  const checkboxes = (
+    <>
+      {idTypeOptions.map((idType, idx) => (
+        <Checkbox
+          key={idType.name}
+          name={idType.name}
+          value={idType.name}
+          label={idTypeLabels[idx]}
+          onChange={() => updateCheckStatus(idx)}
+        />
+      ))}
+    </>
+  );
 
   const handleExit = () => {
-    trackEvent('IdV: exit optional id types', { ids: idTypeOptions });
+    trackEvent('IdV: exit optional questions', { ids: idTypeOptions });
     forceRedirect(addSearchParams(exitURL, { step: currentStep }));
   };
 

@@ -142,8 +142,13 @@ fr:
     exit_survey:
       content_html: <strong>Si vous n’avez pas de permis de conduire ou de carte
         d’identité de l’État, vous ne pouvez pas continuer à utiliser
-        Login.gov.</strong> Veuillez <a>quitter Login.gov et contacter [Partner
-        Agency]</a> pour savoir ce que vous pouvez faire.
+        %{app_name}.</strong> Veuillez <a>quitter %{app_name} et contacter
+        %{sp_name}</a> pour savoir ce que vous pouvez faire.
+      content_nosp_html: <strong>Si vous n’avez pas de permis de conduire ou de carte
+        d’identité de l’État, vous ne pouvez pas continuer à utiliser
+        %{app_name}.</strong> <a>Annulez la vérification de votre identité avec
+        %{app_name}</a> et vous pourrez redémarrer le processus lorsque vous
+        serez prêt.
       header: N’avez-vous pas de permis de conduire ou de carte d’identité de l’État?
       optional:
         button: Soumettre et quitter Login.gov

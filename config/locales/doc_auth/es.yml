@@ -135,9 +135,13 @@ es:
       upload_error: Lo siento, algo salió mal por nuestra parte.
     exit_survey:
       content_html: <strong>Si no tiene una licencia de conducir o identificación
-        estatal, no puede continuar en Login.gov.</strong> Por favor <a>salga de
-        Login.gov y contacte a [Partner Agency]</a> para averiguar qué puede
+        estatal, no puede continuar en %{app_name}.</strong> Por favor <a>salga
+        de %{app_name} y contacte a %{sp_name}</a> para averiguar qué puede
         hacer.
+      content_nosp_html: <strong>Si no tiene una licencia de conducir o identificación
+        estatal, no puede continuar en %{app_name}.</strong> <a>Cancele la
+        verificación de identidad con %{app_name}</a> y podrá reiniciar el
+        proceso cuando esté listo.
       header: No cuenta con una licencia de conducir o identificación estatal?
       optional:
         button: Enviar y salir de Login.gov

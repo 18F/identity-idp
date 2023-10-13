@@ -35,7 +35,7 @@ function Checkbox({
       <label className="usa-checkbox__label" htmlFor={inputId}>
         {label}
         {labelDescription && (
-          <span className="usa-checkbox__label-description">labelDescription</span>
+          <span className="usa-checkbox__label-description">{labelDescription}</span>
         )}
       </label>
       {hint && (

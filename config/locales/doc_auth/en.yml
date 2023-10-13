@@ -107,8 +107,12 @@ en:
       upload_error: Sorry, something went wrong on our end.
     exit_survey:
       content_html: <strong>If you do not have a driver’s license or state ID card,
-        you cannot continue with Login.gov.</strong> Please <a>exit %{app_name}
-        and contact %{sp_name}</a> to find out what you can do.
+        you cannot continue with %{app_name}.</strong> Please <a>exit
+        %{app_name} and contact %{sp_name}</a> to find out what you can do.
+      content_nosp_html: <strong>If you do not have a driver’s license or state ID
+        card, you cannot continue with %{app_name}.</strong> <a>Cancel verifying
+        your identity with %{app_name}</a> and you can restart the process when
+        you’re ready.
       header: Don’t have a driver’s license or state ID?
       optional:
         button: Submit and exit %{app_name}
