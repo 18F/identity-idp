@@ -30,10 +30,6 @@ class DataPull
 
       Example usage:
 
-        * #{basename} uuid-lookup email1@example.com email2@example.com
-
-        * #{basename} uuid-convert partner-uuid1 partner-uuid2
-
         * #{basename} email-lookup uuid1 uuid2
 
         * #{basename} events-summary uuid1 uuid2
@@ -42,8 +38,11 @@ class DataPull
 
         * #{basename} profile-summary uuid1 uuid2
 
+        * #{basename} uuid-convert partner-uuid1 partner-uuid2
+
         * #{basename} uuid-export uuid1 uuid2 --requesting-issuer ABC:DEF:GHI
 
+        * #{basename} uuid-lookup email1@example.com email2@example.com
       Options:
     EOS
   end
@@ -54,13 +53,13 @@ class DataPull
   # @return [Class,nil]
   def subtask(name)
     {
-      'uuid-lookup' => UuidLookup,
-      'uuid-convert' => UuidConvert,
       'email-lookup' => EmailLookup,
       'events-summary' => EventsSummary,
       'ig-request' => InspectorGeneralRequest,
       'profile-summary' => ProfileSummary,
+      'uuid-convert' => UuidConvert,
       'uuid-export' => UuidExport,
+      'uuid-lookup' => UuidLookup,
     }[name]
   end
 
