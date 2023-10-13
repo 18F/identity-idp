@@ -2,7 +2,7 @@
       'idv/shared/error',
       type: :warning,
       heading: t('idv.cancel.headings.prompt.start_over'),
-      current_step: :get_a_letter,
+      current_step: @current_step,
     ) do %>
   <p>
     <%= t('idv.cancel.description.gpo.start_over') %>
