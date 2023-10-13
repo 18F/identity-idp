@@ -76,6 +76,7 @@ module Reporting
       ].each do |(label, num)|
         csv << [label, num, num.to_f / start.to_f]
       end
+
       csv
     end
 
