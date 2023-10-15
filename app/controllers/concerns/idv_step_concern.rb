@@ -1,3 +1,5 @@
+# require 'policies/idv/flow_policy'
+
 module IdvStepConcern
   extend ActiveSupport::Concern
 
@@ -126,15 +128,19 @@ module IdvStepConcern
     extra
   end
 
-  def setup_for_redo
-    idv_session.redo_document_capture = true
+  def flow_policy
+    @flow_policy ||= Idv::FlowPolicy.new(idv_session: idv_session, user: current_user)
+  end
 
-    # If we previously skipped hybrid handoff for the user (because they're on a mobile
-    # device with a camera), skip it _again_ here.
-    if idv_session.skip_hybrid_handoff?
-      idv_session.flow_path = 'standard'
-    else
-      idv_session.flow_path = nil
-    end
+  def step_allowed?(step)
+    flow_policy.step_allowed?(step: step)
+  end
+
+  def step_needed?(step)
+    flow_policy.step_needed?(step: step)
+  end
+
+  def path_for_latest_step
+    flow_policy.path_for_latest_step
   end
 end

@@ -3,7 +3,7 @@ module Idv
     include Rails.application.routes.url_helpers
     attr_reader :idv_session, :user
 
-    Step = Struct.new(:path, :next_steps, :requirements)
+    Step = Struct.new(:path, :next_steps, :requirements, :needed)
 
     def initialize(idv_session:, user:)
       @idv_session = idv_session
@@ -14,9 +14,17 @@ module Idv
       steps[step].requirements.call
     end
 
+    def step_needed?(step:)
+      steps[step].needed.call
+    end
+
     def path_allowed?(path:)
       step = path_to_step(path: path)
       step_allowed?(step: step)
+    end
+
+    def path_for_latest_step
+      steps[latest_step].path
     end
 
     def latest_step(current_step: :root)
@@ -29,10 +37,6 @@ module Idv
         end
       end
       current_step
-    end
-
-    def path_for_latest_step
-      steps[latest_step].path
     end
 
     # This can be blank because we are using paths, not urls,
@@ -52,49 +56,52 @@ module Idv
             path: idv_welcome_path,
             next_steps: [:agreement],
             requirements: -> { true },
-            ),
+            needed: -> { !idv_session.welcome_visited },
+          ),
           agreement: Step.new(
             path: idv_agreement_path,
             next_steps: [:hybrid_handoff, :document_capture],
             requirements: -> { idv_session.welcome_visited },
-            ),
+            needed: -> { !idv_session.idv_consent_given },
+          ),
           hybrid_handoff: Step.new(
             path: idv_hybrid_handoff_path,
             next_steps: [:link_sent, :document_capture],
             requirements: -> { idv_session.idv_consent_given },
-            ),
+            needed: -> { idv_session.flow_path.blank? },
+          ),
           link_sent: Step.new(
             path: idv_link_sent_path,
             next_steps: [:ssn],
             requirements: -> { idv_session.flow_path == 'hybrid' },
-            ),
+          ),
           document_capture: Step.new(
             path: idv_document_capture_path,
             next_steps: [:ssn],
             requirements: -> { idv_session.flow_path == 'standard' },
-            ),
+          ),
           ssn: Step.new(
             path: idv_ssn_path,
             next_steps: [:verify_info],
             requirements: -> { post_document_capture_check },
-            ),
+          ),
           verify_info: Step.new(
             path: idv_verify_info_path,
             next_steps: [:phone],
             requirements: -> { idv_session.ssn && post_document_capture_check },
-            ),
+          ),
           phone: Step.new(
             path: idv_phone_path,
             next_steps: [:phone_enter_otp],
             requirements: -> { idv_session.verify_info_step_complete? },
-            ),
+          ),
           phone_enter_otp: Step.new(
             path: idv_otp_verification_path,
             next_steps: [:review],
             requirements: -> do
               idv_session.user_phone_confirmation_session.present?
             end,
-            ),
+          ),
           review: Step.new(
             path: idv_review_path,
             next_steps: [:personal_key],
@@ -102,14 +109,14 @@ module Idv
               idv_session.verify_info_step_complete? &&
                 idv_session.address_step_complete?
             end,
-            ),
+          ),
           personal_key: Step.new(
             path: idv_personal_key_path,
             next_steps: [:success],
             requirements: -> { user.identity_verified? },
-            ),
+          ),
         },
-        )
+      )
     end
 
     def path_to_step(path:)

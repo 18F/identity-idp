@@ -5,7 +5,7 @@ module Idv
     include GettingStartedAbTestConcern
 
     before_action :confirm_not_rate_limited
-    before_action :confirm_welcome_needed
+    before_action :confirm_welcome_needed, only: :show
     before_action :maybe_redirect_for_getting_started_ab_test
 
     def show
@@ -58,9 +58,9 @@ module Idv
     end
 
     def confirm_welcome_needed
-      return unless idv_session.welcome_visited
+      return if step_needed?(:welcome)
 
-      redirect_to idv_agreement_url
+      redirect_to path_for_latest_step
     end
   end
 end

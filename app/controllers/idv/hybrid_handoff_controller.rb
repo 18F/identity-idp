@@ -7,7 +7,8 @@ module Idv
 
     before_action :confirm_not_rate_limited
     before_action :confirm_verify_info_step_needed
-    before_action :confirm_agreement_step_complete
+    before_action :confirm_hybrid_handoff_allowed
+    before_action :setup_for_redo, only: :show
     before_action :confirm_hybrid_handoff_needed, only: :show
     before_action :maybe_redirect_for_phone_question_ab_test, only: :show
 
@@ -189,10 +190,39 @@ module Idv
       FormResponse.new(**form_response_params)
     end
 
-    def confirm_agreement_step_complete
-      return if idv_session.idv_consent_given
+    def confirm_hybrid_handoff_allowed
+      return if step_allowed?(:hybrid_handoff)
 
       redirect_to idv_agreement_url
+    end
+
+    def setup_for_redo
+      return unless params[:redo]
+
+      idv_session.redo_document_capture = true
+      idv_session.flow_path = nil
+    end
+
+    def confirm_hybrid_handoff_needed
+      if idv_session.skip_hybrid_handoff?
+        # We previously skipped hybrid handoff. Keep doing that.
+        idv_session.flow_path = 'standard'
+      end
+
+      if !FeatureManagement.idv_allow_hybrid_flow?
+        # When hybrid flow is unavailable, skip it.
+        # But don't store that we skipped it in idv_session, in case it is back to
+        # available when the user tries to redo document capture.
+        idv_session.flow_path = 'standard'
+      end
+
+      return if step_needed?(:hybrid_handoff)
+
+      if idv_session.flow_path == 'standard'
+        redirect_to idv_document_capture_url
+      elsif idv_session.flow_path == 'hybrid'
+        redirect_to idv_link_sent_url
+      end
     end
 
     def formatted_destination_phone

@@ -4,8 +4,8 @@ module Idv
     include StepIndicatorConcern
 
     before_action :confirm_not_rate_limited
-    before_action :confirm_welcome_step_complete
-    before_action :confirm_agreement_needed
+    before_action :confirm_agreement_step_allowed
+    before_action :confirm_agreement_needed, only: :show
 
     def show
       analytics.idv_doc_auth_agreement_visited(**analytics_arguments)
@@ -57,16 +57,16 @@ module Idv
       params.require(:doc_auth).permit(:idv_consent_given)
     end
 
-    def confirm_welcome_step_complete
-      return if idv_session.welcome_visited
+    def confirm_agreement_step_allowed
+      return if step_allowed?(:agreement)
 
-      redirect_to idv_welcome_url
+      redirect_to path_for_latest_step
     end
 
     def confirm_agreement_needed
-      return unless idv_session.idv_consent_given
+      return if step_needed?(:agreement)
 
-      redirect_to idv_hybrid_handoff_url
+      redirect_to path_for_latest_step
     end
   end
 end
