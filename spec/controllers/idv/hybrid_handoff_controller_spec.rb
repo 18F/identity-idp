@@ -32,10 +32,24 @@ RSpec.describe Idv::HybridHandoffController do
       )
     end
 
-    it 'checks that agreement step is complete' do
+    it 'checks that the previous steps are complete' do
       expect(subject).to have_actions(
         :before,
-        :confirm_agreement_step_complete,
+        :confirm_verify_info_step_needed,
+      )
+    end
+
+    it 'checks that the previous steps are complete' do
+      expect(subject).to have_actions(
+        :before,
+        :confirm_hybrid_handoff_allowed,
+      )
+    end
+
+    it 'checks for a redo of document capture' do
+      expect(subject).to have_actions(
+        :before,
+        :setup_for_redo,
       )
     end
 
