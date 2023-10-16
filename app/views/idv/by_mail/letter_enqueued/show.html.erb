@@ -36,7 +36,7 @@
   <% if decorated_sp_session.sp_name.present? %>
     <%= link_to(
           t('idv.cancel.actions.exit', app_name: APP_NAME),
-          return_to_sp_cancel_path(location: :come_back_later),
+          return_to_sp_cancel_path(step: :get_a_letter, location: :come_back_later),
           class: 'usa-button usa-button--big usa-button--wide',
         ) %>
   <% else %>

@@ -15,7 +15,8 @@ RSpec.feature 'saml api' do
 
     it 'returns the user to the acs url after authentication' do
       expect(page).
-        to have_link t('links.back_to_sp', sp: sp.friendly_name), href: return_to_sp_cancel_path
+        to have_link t('links.back_to_sp', sp: sp.friendly_name),
+                     href: return_to_sp_cancel_path(step: :authentication)
 
       sign_in_via_branded_page(user)
       click_submit_default
@@ -35,7 +36,8 @@ RSpec.feature 'saml api' do
 
     it 'returns the user to the account page after authentication' do
       expect(page).
-        to have_link t('links.back_to_sp', sp: sp.friendly_name), href: return_to_sp_cancel_path
+        to have_link t('links.back_to_sp', sp: sp.friendly_name),
+                     href: return_to_sp_cancel_path(step: :authentication)
 
       sign_in_via_branded_page(user)
       click_submit_default

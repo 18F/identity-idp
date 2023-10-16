@@ -2,7 +2,7 @@ import { basename, join } from 'node:path';
 import { createWriteStream } from 'node:fs';
 import { Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
-import sass from 'sass-embedded';
+import { compile as sassCompile } from 'sass-embedded';
 import { transform as lightningTransform, browserslistToTargets } from 'lightningcss';
 import browserslist from 'browserslist';
 
@@ -30,7 +30,7 @@ const TARGETS = browserslistToTargets(
  */
 export async function buildFile(file, options) {
   const { outDir, optimize, loadPaths = [], ...sassOptions } = options;
-  const sassResult = sass.compile(file, {
+  const sassResult = sassCompile(file, {
     style: optimize ? 'compressed' : 'expanded',
     ...sassOptions,
     loadPaths: [...loadPaths, 'node_modules'],
