@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Idv::InPerson::SsnController do
-  include IdvHelper
-
   let(:pii_from_user) { Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID_WITH_NO_SSN.dup }
 
   let(:flow_session) do

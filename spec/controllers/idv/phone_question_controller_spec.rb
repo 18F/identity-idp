@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Idv::PhoneQuestionController do
-  include IdvHelper
-
   let(:user) { create(:user) }
 
   let(:analytics_args) do
