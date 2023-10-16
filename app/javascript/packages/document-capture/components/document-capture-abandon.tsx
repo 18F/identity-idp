@@ -1,36 +1,61 @@
-import { Tag, Checkbox, FieldSet, Button } from '@18f/identity-components';
+import { Tag, Checkbox, FieldSet, Button, Link } from '@18f/identity-components';
 import { useI18n } from '@18f/identity-react-i18n';
 import { useContext, useState } from 'react';
+import FlowContext from '@18f/identity-verify-flow/context/flow-context';
+import formatHTML from '@18f/identity-react-i18n/format-html';
+import { addSearchParams, forceRedirect } from '@18f/identity-url';
+import { getConfigValue } from '@18f/identity-config';
 import AnalyticsContext from '../context/analytics';
+import { ServiceProviderContext } from '../context';
+
+function formatContentHtml({ msg, url }) {
+  return formatHTML(msg, {
+    a: ({ children }) => (
+      <Link href={url} isExternal={false}>
+        {children}
+      </Link>
+    ),
+    strong: ({ children }) => <strong>{children}</strong>,
+  });
+}
 
 function DocumentCaptureAbandon() {
   const { t } = useI18n();
   const { trackEvent } = useContext(AnalyticsContext);
+  const { currentStep, exitURL } = useContext(FlowContext);
+  const { name: spName } = useContext(ServiceProviderContext);
+  const appName = getConfigValue('appName');
+  const header = <h3>{t('doc_auth.exit_survey.header')}</h3>;
 
-  const header = <h3>Don&amp;apos;t have a driver;apos;s licnese or State ID?</h3>;
   const content = (
     <p>
-      If you dont have a driver;apos;s licens or state ID card, you cannot continu with Loging.gov.
-      Please exit Login.gov and contact[Partner Agency] to find out what you can do.
+      {formatContentHtml({
+        msg: t('doc_auth.exit_survey.content_html', {
+          sp_name: spName ?? 'NA',
+          app_name: appName,
+        }),
+        url: addSearchParams(exitURL, { step: currentStep, location: 'optional_question' }),
+      })}
     </p>
   );
-
-  const optionalTag = <Tag isBig={false}>Optional</Tag>;
-
+  const optionalTag = (
+    <Tag isBig={false} id="optional_question_tag">
+      {t('doc_auth.exit_survey.optional.tag')}
+    </Tag>
+  );
   const optionalText = (
-    <p>
-      Help us add more identity documents to Login.gov. Which types of identity documents do you
-      have instead?
+    <p className="margin-top-3">
+      <strong>{t('doc_auth.exit_survey.optional.content_html')}</strong>
     </p>
   );
 
   const idTypeLabels = [
-    t('doc_auth.exit_survey_id_types.us_passport'),
-    t('doc_auth.exit_survey_id_types.resident_card'),
-    t('doc_auth.exit_survey_id_types.military_id'),
-    t('doc_auth.exit_survey_id_types.tribal_id'),
-    t('doc_auth.exit_survey_id_types.voter_registration_card'),
-    t('doc_auth.exit_survey_id_types.other'),
+    t('doc_auth.exit_survey.optional.id_types.us_passport'),
+    t('doc_auth.exit_survey.optional.id_types.resident_card'),
+    t('doc_auth.exit_survey.optional.id_types.military_id'),
+    t('doc_auth.exit_survey.optional.id_types.tribal_id'),
+    t('doc_auth.exit_survey.optional.id_types.voter_registration_card'),
+    t('doc_auth.exit_survey.optional.id_types.other'),
   ];
 
   const allIdTypeOptions = [
@@ -46,8 +71,8 @@ function DocumentCaptureAbandon() {
 
   const updateCheckStatus = (index: number) => {
     setIdTypeOptions(
-      idTypeOptions.map((id_option, currentIndex) =>
-        currentIndex === index ? { ...id_option, checked: !id_option.checked } : { ...id_option },
+      idTypeOptions.map((idOption, currentIndex) =>
+        currentIndex === index ? { ...idOption, checked: !idOption.checked } : { ...idOption },
       ),
     );
   };
@@ -64,7 +89,7 @@ function DocumentCaptureAbandon() {
 
   const handleExit = () => {
     trackEvent('IdV: exit optional id types', { ids: idTypeOptions });
-    window.location.href = '/verify/exit?step=document-capture&location=optional_question';
+    forceRedirect(addSearchParams(exitURL, { step: currentStep }));
   };
 
   return (
@@ -73,10 +98,13 @@ function DocumentCaptureAbandon() {
       {content}
       {optionalTag}
       {optionalText}
-      <FieldSet legend="Optional. Select any of the documents you have.">{checkboxes}</FieldSet>
-      <Button isOutline onClick={handleExit}>
-        Submit and exit Login.gov
+      <FieldSet legend={t('doc_auth.exit_survey.optional.legend')}>{checkboxes}</FieldSet>
+      <Button isOutline className="margin-top-3" onClick={handleExit}>
+        {t('doc_auth.exit_survey.optional.button', { sp_name: spName, app_name: appName })}
       </Button>
+      <div className="usa-prose margin-top-3">
+        {t('idv.legal_statement.information_collection')}
+      </div>
     </>
   );
 }

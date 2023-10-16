@@ -12,7 +12,7 @@ export interface FieldSetProps extends FieldsetHTMLAttributes<HTMLFieldSetElemen
 function FieldSet({ legend, children }: FieldSetProps) {
   return (
     <fieldset className="usa-fieldset">
-      {legend && <legend className="usa-fieldset">{legend}</legend>}
+      {legend && <legend className="usa-legend">{legend}</legend>}
       {children}
     </fieldset>
   );

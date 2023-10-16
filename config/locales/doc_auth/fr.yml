@@ -139,6 +139,28 @@ fr:
           peut-être trop floues ou trop sombres. Essayez de prendre de nouvelles
           photos dans un endroit lumineux.
       upload_error: Désolé, quelque chose a mal tourné de notre côté.
+    exit_survey:
+      content_html: <strong>Si vous n’avez pas de permis de conduire ou de carte
+        d’identité de l’État, vous ne pouvez pas continuer à utiliser
+        Login.gov.</strong> Veuillez <a>quitter Login.gov et contacter [Partner
+        Agency]</a> pour savoir ce que vous pouvez faire.
+      header: N’avez-vous pas de permis de conduire ou de carte d’identité de l’État?
+      optional:
+        button: Soumettre et quitter Login.gov
+        content_html: Aidez-nous à ajouter plus de documents d’identité à Login.gov.
+          Quels types de documents d’identité avez-vous à la place?
+        id_types:
+          military_id: Carte d’identité militaire (y compris la carte d’identité du
+            ministère de la défense, la carte d’identité médicale des anciens
+            combattants ou la carte d’identité des anciens combattants)
+          other: Quelque chose qui ne figure pas dans la liste
+          resident_card: Carte verte américaine (également appelée carte de résident
+            permanent)
+          tribal_id: Carte d’identité tribale
+          us_passport: Passeport américain
+          voter_registration_card: Carte d’électeur
+        legend: Facultatif. Sélectionnez l’un des documents que vous possédez.
+        tag: Facultatif
     forms:
       captured_image: Image capturée
       change_file: Changer de fichier
@@ -279,6 +301,7 @@ fr:
           lettre à votre adresse personnelle. Cela prend <strong>5 à 10
           jours</strong>.'
       welcome: 'Vous aurez besoin de votre:'
+
     phone_question:
       do_not_have: Je n’ai pas de téléphone
     tips:

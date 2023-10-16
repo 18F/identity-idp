@@ -209,6 +209,19 @@ en:
       wrong_address: Not the right address?
     images:
       come_back_later: Letter with a check mark
+    legal_statement:
+      information_collection: >-
+        This information collection meets the requirements of 44 U.S.C. § 3507,
+        as amended by section 2 of the Paperwork Reduction Act of 1995. You do
+        not need to answer these questions unless we display a valid Office of
+        Management and Budget (OMB) control number. The OMB control number for
+        this collection is 3090-0325. We estimate that it will take 1 minute to
+        read the instructions, gather the facts, and answer the questions. Send
+        only comments relating to our time estimate, including suggestions for
+        reducing this burden, or any other aspects of this collection of
+        information to: General Services Administration, Regulatory Secretariat
+        Division (MVCB), ATTN: Lois Mandell/IC 3090-0325, 1800 F Street, NW,
+        Washington, DC 20405.
     messages:
       activated_html: Your identity has been verified. If you need to change your
         verified information, please %{link_html}.
