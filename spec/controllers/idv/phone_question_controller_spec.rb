@@ -156,10 +156,10 @@ RSpec.describe Idv::PhoneQuestionController do
   describe '#phone_without_camera' do
     let(:analytics_name) { :idv_doc_auth_phone_question_submitted }
 
-    it 'redirects to hybrid handoff' do
+    it 'redirects to document_capture' do
       get :phone_without_camera
 
-      expect(response).to redirect_to(idv_hybrid_handoff_url)
+      expect(response).to redirect_to(idv_document_capture_url)
     end
 
     it 'sends analytics submitted event' do
