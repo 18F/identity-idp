@@ -51,12 +51,12 @@ function DocumentCaptureAbandon({ navigate }: DocumentCaptureAbandonProps) {
   );
   const optionalTag = (
     <Tag isBig={false} id="optional_question_tag">
-      {t('doc_auth.exit_survey.optional.tag')}
+      {t('doc_auth.exit_survey.optional.tag', { app_name: appName })}
     </Tag>
   );
   const optionalText = (
     <p className="margin-top-3">
-      <strong>{t('doc_auth.exit_survey.optional.content_html')}</strong>
+      <strong>{t('doc_auth.exit_survey.optional.content_html', { app_name: appName })}</strong>
     </p>
   );
 

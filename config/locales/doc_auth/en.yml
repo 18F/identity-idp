@@ -116,7 +116,7 @@ en:
       header: Don’t have a driver’s license or state ID?
       optional:
         button: Submit and exit %{app_name}
-        content_html: Help us add more identity documents to Login.gov. Which types of
+        content_html: Help us add more identity documents to %{app_name}. Which types of
           identity documents do you have instead?
         id_types:
           military_id: Military ID card (this includes a Department of Defense

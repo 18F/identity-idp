@@ -151,8 +151,8 @@ fr:
         serez prêt.
       header: N’avez-vous pas de permis de conduire ou de carte d’identité de l’État?
       optional:
-        button: Soumettre et quitter Login.gov
-        content_html: Aidez-nous à ajouter plus de documents d’identité à Login.gov.
+        button: Soumettre et quitter %{app_name}
+        content_html: Aidez-nous à ajouter plus de documents d’identité à %{app_name}.
           Quels types de documents d’identité avez-vous à la place?
         id_types:
           military_id: Carte d’identité militaire (y compris la carte d’identité du
