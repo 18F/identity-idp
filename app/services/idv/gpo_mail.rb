@@ -17,11 +17,8 @@ module Idv
       current_user.pending_profile.created_at < min_creation_date
     end
 
-    # Next two methods are analytics helpers used from RequestLetterController and ReviewController
-
-    # Caveat: If the user succeeds on their final phone attempt, the :proof_address
-    # RateLimiter is reset to 0. But they probably wouldn't be doing verify by mail
-    # if they succeeded on the phone step.
+    # Next two methods are analytics helpers used from RequestLetterController and
+    # EnterPasswordController
     def phone_step_attempts
       RateLimiter.new(user: @current_user, rate_limit_type: :proof_address).attempts
     end

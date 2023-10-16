@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'idv review step', :js do
+RSpec.feature 'idv enter password step', :js do
   include IdvStepHelper
 
   context 'choosing to confirm address with gpo' do
@@ -9,7 +9,7 @@ RSpec.feature 'idv review step', :js do
 
     before do
       start_idv_from_sp(sp)
-      complete_idv_steps_with_gpo_before_review_step(user)
+      complete_idv_steps_with_gpo_before_enter_password_step(user)
     end
 
     it 'sends a letter, creates an unverified profile, and sends an email' do
@@ -26,7 +26,7 @@ RSpec.feature 'idv review step', :js do
       end
     end
 
-    it 'sends you to the come_back_later page after review step' do
+    it 'sends you to the come_back_later page after enter password step' do
       fill_in 'Password', with: user_password
       click_continue
 
@@ -89,12 +89,12 @@ RSpec.feature 'idv review step', :js do
 
     before do
       start_idv_from_sp
-      complete_idv_steps_with_phone_before_review_step(user)
+      complete_idv_steps_with_phone_before_enter_password_step(user)
     end
 
     it 'allows the user to submit password and proceed to obtain a personal key' do
       visit(idv_hybrid_handoff_url(redo: true))
-      complete_review_step(user)
+      complete_enter_password_step(user)
       expect(current_path).to eq idv_personal_key_path
     end
   end
