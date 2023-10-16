@@ -151,7 +151,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
         allow(user).to receive(:establishing_in_person_enrollment).and_return(nil)
       end
 
-      it 'indicates to the IDV agent that ipp_enrollment_in_progress is disabled' do
+      it 'indicates to the IDV agent that an IPP enrollment is not in progress' do
         expect_any_instance_of(Idv::Agent).to receive(:proof_resolution).
           with(
             kind_of(DocumentCaptureSession),
