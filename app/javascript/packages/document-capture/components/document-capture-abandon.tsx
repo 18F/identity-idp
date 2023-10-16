@@ -56,7 +56,7 @@ function DocumentCaptureAbandon({ navigate }: DocumentCaptureAbandonProps) {
   );
   const optionalText = (
     <p className="margin-top-3">
-      <strong>{t('doc_auth.exit_survey.optional.content_html', { app_name: appName })}</strong>
+      <strong>{t('doc_auth.exit_survey.optional.content', { app_name: appName })}</strong>
     </p>
   );
 

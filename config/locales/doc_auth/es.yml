@@ -145,8 +145,8 @@ es:
       header: No cuenta con una licencia de conducir o identificación estatal?
       optional:
         button: Enviar y salir de %{app_name}
-        content_html: Ayúdenos a agregar más identificaciones oficiales a %{app_name}.
-          ¿Qué identificaciones tiene como alternativa?
+        content: Ayúdenos a agregar más identificaciones oficiales a %{app_name}. ¿Qué
+          identificaciones tiene como alternativa?
         id_types:
           military_id: Credencial militar (puede ser una credencial del Departamento de
             Defensa, una credencial de Salud de los Veteranos o una credencial
