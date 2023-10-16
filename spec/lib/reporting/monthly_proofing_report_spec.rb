@@ -58,6 +58,26 @@ RSpec.describe Reporting::MonthlyProofingReport do
     end
   end
 
+  describe '#proofing_report' do
+    context 'when the data is outside the log retention range' do
+      before do
+        allow(report.cloudwatch_client).to receive(:fetch).and_raise(
+          Aws::CloudWatchLogs::Errors::MalformedQueryException.new(
+            nil,
+            'exceeds the log groups log retention settings',
+          ),
+        )
+      end
+
+      it 'handles the error and returns a table with information on the error' do
+        expect(report.proofing_report).to match([
+          ['Error', 'Message'],
+          ['Aws::CloudWatchLogs::Errors::MalformedQueryException', kind_of(String)],
+        ])
+      end
+    end
+  end
+
   describe '#data' do
     it 'keeps unique users per event as a hash' do
       expect(report.data).to eq(
