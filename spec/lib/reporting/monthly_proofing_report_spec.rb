@@ -70,10 +70,12 @@ RSpec.describe Reporting::MonthlyProofingReport do
       end
 
       it 'handles the error and returns a table with information on the error' do
-        expect(report.proofing_report).to match([
-          ['Error', 'Message'],
-          ['Aws::CloudWatchLogs::Errors::MalformedQueryException', kind_of(String)],
-        ])
+        expect(report.proofing_report).to match(
+          [
+            ['Error', 'Message'],
+            ['Aws::CloudWatchLogs::Errors::MalformedQueryException', kind_of(String)],
+          ],
+        )
       end
     end
   end
