@@ -15,7 +15,7 @@ class ReportMailerPreview < ActionMailer::Preview
       message: 'Key Metrics Report February 2021',
       tables: [
         [
-          { title: 'February 2023 Active Users' },
+          { title: 'February 2021 Active Users' },
           ['Monthly Active Users', 'Value'],
           ['IAL1', 1],
           ['IDV', 1],
