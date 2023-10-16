@@ -111,14 +111,31 @@ module Idv
         attention_with_barcode: client_response.attention_with_barcode?,
       ).submit
       response.extra.merge!(extra_attributes)
+      doc_type_and_issuing_country = doc_type_and_issuing_country(response.pii_from_doc)
+      response_with_doc_type_and_issuing_country =
+        response.to_h.merge!(doc_type_and_issuing_country)
 
-      analytics.idv_doc_auth_submitted_pii_validation(**response.to_h)
+      analytics.idv_doc_auth_submitted_pii_validation(**response_with_doc_type_and_issuing_country)
 
       if client_response.success? && response.success?
         store_pii(client_response)
       end
 
       response
+    end
+
+    def doc_type_and_issuing_country(pii_from_doc)
+      front_issuing_country = pii_from_doc&.dig(:Front, 'CountryCode')
+      back_issuing_country = pii_from_doc&.dig(:Back, 'CountryCode')
+      front_doc_type = pii_from_doc&.dig(:Front, 'ClassName')
+      back_doc_type = pii_from_doc&.dig(:Back, 'ClassName')
+
+      {
+        front_issuing_country: front_issuing_country,
+        back_issuing_country: back_issuing_country,
+        front_doc_type: front_doc_type,
+        back_doc_type: back_doc_type,
+      }
     end
 
     def extra_attributes

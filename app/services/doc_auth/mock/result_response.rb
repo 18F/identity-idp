@@ -36,7 +36,7 @@ module DocAuth
             classification_info = file_data.dig('classification_info')
 
             if [doc_auth_result, image_metrics, failed, passed, liveness_result,
-                classification_info].any?(&:present?)
+                !id_type_supported?].any?(&:present?)
               mock_args = {}
               mock_args[:doc_auth_result] = doc_auth_result if doc_auth_result.present?
               mock_args[:image_metrics] = image_metrics.symbolize_keys if image_metrics.present?
@@ -57,7 +57,9 @@ module DocAuth
 
       def pii_from_doc
         if parsed_data_from_uploaded_file.present?
-          raw_pii = parsed_data_from_uploaded_file['document']
+          raw_pii_from_doc = parsed_data_from_uploaded_file['document'] || {}
+          raw_pii_from_classification = parsed_data_from_uploaded_file['classification_info'] || {}
+          raw_pii = raw_pii_from_doc.merge(raw_pii_from_classification)
           raw_pii&.symbolize_keys || {}
         else
           Idp::Constants::MOCK_IDV_APPLICANT

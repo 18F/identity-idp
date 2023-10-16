@@ -478,4 +478,88 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.doc_type_supported?).to eq(false)
     end
   end
+  context 'with a yaml file with a supported classname and country' do
+    let(:input) do
+      <<~YAML
+        doc_auth_result: Failed
+        classification_info:
+          Front:
+            ClassName: Drivers License
+            CountryCode: US
+          Back:
+            ClassName: Drivers License
+            CountryCode: US
+      YAML
+    end
+    it 'returns doc type as supported' do
+      expect(response.doc_type_supported?).to eq(true)
+    end
+  end
+  context 'with a yaml file with a supported classname and not supported country' do
+    let(:input) do
+      <<~YAML
+        doc_auth_result: Failed
+        classification_info:
+          Front:
+            ClassName: Drivers License
+            CountryCode: UK
+          Back:
+            ClassName: Drivers License
+            CountryCode: UK
+      YAML
+    end
+    it 'returns doc type as not supported' do
+      expect(response.doc_type_supported?).to eq(false)
+    end
+  end
+  context 'with a yaml file that does not include classification info' do
+    let(:input) do
+      <<~YAML
+        document:
+          first_name: Jane
+          last_name: Doe
+          middle_name: Q
+          city: Bayside
+          state: NY
+          zipcode: '11364'
+          dob: 10/06/1938
+          phone: +1 314-555-1212
+          state_id_jurisdiction: 'ND'
+      YAML
+    end
+    it 'successfully extracts PII' do
+      expect(response.pii_from_doc.empty?).to eq(false)
+    end
+  end
+  context 'with a yaml file that includes classification info' do
+    let(:input) do
+      <<~YAML
+        document:
+          first_name: Jane
+          last_name: Doe
+          middle_name: Q
+          city: Bayside
+          state: NY
+          zipcode: '11364'
+          dob: 10/06/1938
+          phone: +1 314-555-1212
+          state_id_jurisdiction: 'ND'
+        classification_info:
+          Front:
+            ClassName: Drivers License
+            CountryCode: USA
+          Back:
+            ClassName: Drivers License
+            CountryCode: USA        
+      YAML
+    end
+    it 'successfully extracts classification info' do
+      front = response.pii_from_doc[:Front]
+      back = response.pii_from_doc[:Back]
+      expect(front['ClassName']).to eq('Drivers License')
+      expect(front['CountryCode']).to eq('USA')
+      expect(back['ClassName']).to eq('Drivers License')
+      expect(back['CountryCode']).to eq('USA')
+    end
+  end
 end

@@ -373,6 +373,10 @@ RSpec.describe Idv::ImageUploadsController do
           flow_path: 'standard',
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
+          front_issuing_country: nil,
+          back_issuing_country: nil,
+          front_doc_type: nil,
+          back_doc_type: nil,
           getting_started_ab_test_bucket: :welcome_default,
           phone_question_ab_test_bucket: :bypass_phone_question,
         )
@@ -427,6 +431,8 @@ RSpec.describe Idv::ImageUploadsController do
         let(:state) { 'ND' }
         let(:state_id_type) { 'drivers_license' }
         let(:dob) { '10/06/1938' }
+        let(:country_code) { 'USA' }
+        let(:class_name) { 'Identification Card' }
 
         before do
           DocAuth::Mock::DocAuthMockClient.mock_response!(
@@ -442,6 +448,14 @@ RSpec.describe Idv::ImageUploadsController do
                 state: state,
                 state_id_type: state_id_type,
                 dob: dob,
+                Front: {
+                  'CountryCode' => country_code,
+                  'ClassName' => class_name,
+                },
+                Back: {
+                  'CountryCode' => country_code,
+                  'ClassName' => class_name,
+                },
               },
             ),
           )
@@ -543,6 +557,10 @@ RSpec.describe Idv::ImageUploadsController do
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
+              front_issuing_country: 'USA',
+              back_issuing_country: 'USA',
+              front_doc_type: 'Identification Card',
+              back_doc_type: 'Identification Card',
               getting_started_ab_test_bucket: :welcome_default,
               phone_question_ab_test_bucket: :bypass_phone_question,
             )
@@ -636,6 +654,10 @@ RSpec.describe Idv::ImageUploadsController do
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
+              front_issuing_country: 'USA',
+              back_issuing_country: 'USA',
+              front_doc_type: 'Identification Card',
+              back_doc_type: 'Identification Card',
               getting_started_ab_test_bucket: :welcome_default,
               phone_question_ab_test_bucket: :bypass_phone_question,
             )
@@ -729,6 +751,10 @@ RSpec.describe Idv::ImageUploadsController do
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
+              front_issuing_country: 'USA',
+              back_issuing_country: 'USA',
+              front_doc_type: 'Identification Card',
+              back_doc_type: 'Identification Card',
               getting_started_ab_test_bucket: :welcome_default,
               phone_question_ab_test_bucket: :bypass_phone_question,
             )

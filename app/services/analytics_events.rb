@@ -882,6 +882,10 @@ module AnalyticsEvents
   # @param [String] front_image_fingerprint Fingerprint of front image data
   # @param [String] back_image_fingerprint Fingerprint of back image data
   # @param [String] getting_started_ab_test_bucket Which initial IdV screen the user saw
+  # @param [String] front_issuing_country The country which issued the id in the front image
+  # @param [String] back_issuing_country The country which issued the id in the back image
+  # @param [String] front_doc_type The type of id captured in the front image
+  # @param [String] back_doc_type The type of id captured in the back image
   # The PII that came back from the document capture vendor was validated
   def idv_doc_auth_submitted_pii_validation(
     success:,
@@ -893,6 +897,10 @@ module AnalyticsEvents
     front_image_fingerprint: nil,
     back_image_fingerprint: nil,
     getting_started_ab_test_bucket: nil,
+    front_issuing_country: nil,
+    back_issuing_country: nil,
+    front_doc_type: nil,
+    back_doc_type: nil,
     **extra
   )
     track_event(
@@ -906,6 +914,10 @@ module AnalyticsEvents
       front_image_fingerprint: front_image_fingerprint,
       back_image_fingerprint: back_image_fingerprint,
       getting_started_ab_test_bucket: getting_started_ab_test_bucket,
+      front_issuing_country: front_issuing_country,
+      back_issuing_country: back_issuing_country,
+      front_doc_type: front_doc_type,
+      back_doc_type: back_doc_type,
       **extra,
     )
   end
