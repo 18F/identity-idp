@@ -29,7 +29,7 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
   end
 
   let(:should_proof_state_id) { true }
-  let(:double_address_verification) { true }
+  let(:ipp_enrollment_in_progress) { true }
   let(:same_address_as_id) { 'false' }
 
   let(:device_profiling_success) { true }
@@ -50,7 +50,7 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
       residential_resolution_result: residential_resolution_result,
       state_id_result: state_id_result,
       should_proof_state_id: should_proof_state_id,
-      double_address_verification: double_address_verification,
+      ipp_enrollment_in_progress: ipp_enrollment_in_progress,
       device_profiling_result: device_profiling_result,
       same_address_as_id: same_address_as_id,
     )

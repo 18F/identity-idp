@@ -7,7 +7,7 @@ module Proofing
     #      address or separate residential and identity document addresses
     class ProgressiveProofer
       # @param [Hash] applicant_pii keys are symbols and values are strings, confidential user info
-      # @param [Boolean] double_address_verification flag that indicates if user will have
+      # @param [Boolean] ipp_enrollment_in_progress flag that indicates if user will have
       #   both state id address and current residential address verified
       # @param [String] request_ip IP address for request
       # @param [Boolean] should_proof_state_id based on state id jurisdiction, indicates if
@@ -18,7 +18,7 @@ module Proofing
       # @return [ResultAdjudicator] object which contains the logic to determine proofing's result
       def proof(
         applicant_pii:,
-        double_address_verification:,
+        ipp_enrollment_in_progress:,
         request_ip:,
         should_proof_state_id:,
         threatmetrix_session_id:,
@@ -36,11 +36,11 @@ module Proofing
         residential_instant_verify_result = proof_residential_address_if_needed(
           applicant_pii: applicant_pii,
           timer: timer,
-          double_address_verification: double_address_verification,
+          ipp_enrollment_in_progress: ipp_enrollment_in_progress,
         )
 
         applicant_pii_transformed = applicant_pii.clone
-        if double_address_verification
+        if ipp_enrollment_in_progress
           applicant_pii_transformed = with_state_id_address(applicant_pii_transformed)
         end
 
@@ -48,7 +48,7 @@ module Proofing
           applicant_pii: applicant_pii_transformed,
           timer: timer,
           residential_instant_verify_result: residential_instant_verify_result,
-          double_address_verification: double_address_verification,
+          ipp_enrollment_in_progress: ipp_enrollment_in_progress,
         )
 
         state_id_result = proof_id_with_aamva_if_needed(
@@ -57,12 +57,12 @@ module Proofing
           residential_instant_verify_result: residential_instant_verify_result,
           instant_verify_result: instant_verify_result,
           should_proof_state_id: should_proof_state_id,
-          double_address_verification: double_address_verification,
+          ipp_enrollment_in_progress: ipp_enrollment_in_progress,
         )
 
         ResultAdjudicator.new(
           device_profiling_result: device_profiling_result,
-          double_address_verification: double_address_verification,
+          ipp_enrollment_in_progress: ipp_enrollment_in_progress,
           resolution_result: instant_verify_result,
           should_proof_state_id: should_proof_state_id,
           state_id_result: state_id_result,
@@ -103,9 +103,9 @@ module Proofing
       def proof_residential_address_if_needed(
         applicant_pii:,
         timer:,
-        double_address_verification:
+        ipp_enrollment_in_progress:
       )
-        return residential_address_unnecessary_result unless double_address_verification
+        return residential_address_unnecessary_result unless ipp_enrollment_in_progress
 
         timer.time('residential address') do
           resolution_proofer.proof(applicant_pii)
@@ -126,8 +126,8 @@ module Proofing
 
       def proof_id_address_with_lexis_nexis_if_needed(applicant_pii:, timer:,
                                                       residential_instant_verify_result:,
-                                                      double_address_verification:)
-        if applicant_pii[:same_address_as_id] == 'true' && double_address_verification == true
+                                                      ipp_enrollment_in_progress:)
+        if applicant_pii[:same_address_as_id] == 'true' && ipp_enrollment_in_progress == true
           return residential_instant_verify_result
         end
         return resolution_cannot_pass unless residential_instant_verify_result.success?
@@ -137,11 +137,11 @@ module Proofing
         end
       end
 
-      def should_proof_state_id_with_aamva?(double_address_verification:, same_address_as_id:,
+      def should_proof_state_id_with_aamva?(ipp_enrollment_in_progress:, same_address_as_id:,
                                             should_proof_state_id:, instant_verify_result:,
                                             residential_instant_verify_result:)
         return false unless should_proof_state_id
-        if double_address_verification == false || same_address_as_id == 'true'
+        if ipp_enrollment_in_progress == false || same_address_as_id == 'true'
           user_can_pass_after_state_id_check?(instant_verify_result)
         else
           residential_instant_verify_result.success?
@@ -153,11 +153,11 @@ module Proofing
         residential_instant_verify_result:,
         instant_verify_result:,
         should_proof_state_id:,
-        double_address_verification:
+        ipp_enrollment_in_progress:
       )
         same_address_as_id = applicant_pii[:same_address_as_id]
         should_proof_state_id_with_aamva = should_proof_state_id_with_aamva?(
-          double_address_verification:,
+          ipp_enrollment_in_progress:,
           same_address_as_id:,
           should_proof_state_id:,
           instant_verify_result:,
