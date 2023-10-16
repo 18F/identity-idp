@@ -30,7 +30,6 @@ class ReportMailerPreview < ActionMailer::Preview
           { title: 'Account deletion rate (last 30 days)', float_as_percent: true, precision: 4 },
           ['Deleted Users',	'Total Users', 'Deletion Rate'],
           [137, 7434, 0.18429222],
-
         ],
         [
           { title: 'IDV app reuse rate Feb-2021', float_as_percent: true, precision: 4 },
