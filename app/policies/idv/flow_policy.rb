@@ -1,6 +1,8 @@
 module Idv
   class FlowPolicy
     include Rails.application.routes.url_helpers
+    include PhoneQuestionAbTestConcern
+
     attr_reader :idv_session, :user
 
     Step = Struct.new(:path, :next_steps, :requirements, :needed)
@@ -60,9 +62,18 @@ module Idv
           ),
           agreement: Step.new(
             path: idv_agreement_path,
-            next_steps: [:hybrid_handoff, :document_capture],
+            next_steps: [:hybrid_handoff, :document_capture, :phone_question],
             requirements: -> { idv_session.welcome_visited },
             needed: -> { !idv_session.idv_consent_given },
+          ),
+          phone_question: Step.new(
+            path: idv_phone_question_path,
+            next_steps: [:hybrid_handoff, :document_capture],
+            requirements: -> { idv_session.idv_consent_given },
+            needed: -> do
+              idv_session.flow_path.blank? &&
+                phone_question_ab_test_bucket == :show_phone_question
+            end,
           ),
           hybrid_handoff: Step.new(
             path: idv_hybrid_handoff_path,
