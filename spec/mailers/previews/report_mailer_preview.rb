@@ -1,4 +1,3 @@
-require 'reports/monthly_key_metrics_report'
 class ReportMailerPreview < ActionMailer::Preview
   def warn_error
     ReportMailer.warn_error(
