@@ -65,8 +65,8 @@ class TwoFactorOptionsPresenter
     end
   end
 
-  def show_cancel_phishing_resistant_only
-    phishing_resistant_only?
+  def show_cancel_aal2plus
+    phishing_resistant_only? || piv_cac_required?
   end
 
   def show_skip_additional_mfa_link?

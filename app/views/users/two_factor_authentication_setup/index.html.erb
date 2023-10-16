@@ -51,11 +51,11 @@
 
 <% if @presenter.skip_path || !@presenter.two_factor_enabled? %>
   <%= render PageFooterComponent.new do %>
-    <% if @presenter.skip_path && !@presenter.show_cancel_phishing_resistant_only %>
+    <% if @presenter.skip_path && !@presenter.show_cancel_aal2plus %>
       <%= link_to @presenter.skip_label, @presenter.skip_path %>
     <% elsif !@presenter.two_factor_enabled? %>
       <%= link_to t('links.cancel_account_creation'), sign_up_cancel_path %>
-    <% elsif @presenter.show_cancel_phishing_resistant_only %>
+    <% elsif @presenter.show_cancel_aal2plus %>
       <%= link_to t('links.cancel'), return_to_sp_cancel_path %>
     <% end %>
   <% end %>
