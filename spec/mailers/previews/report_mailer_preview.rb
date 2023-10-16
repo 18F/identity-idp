@@ -24,7 +24,7 @@ class ReportMailerPreview < ActionMailer::Preview
         [
           { title: 'Total user count (all-time)' },
           ['All-time user count'],
-          [289411],
+          [2289411],
         ],
         [
           { title: 'Account deletion rate (last 30 days)', float_as_percent: true, precision: 4 },
