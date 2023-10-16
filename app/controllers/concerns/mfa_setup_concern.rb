@@ -16,6 +16,7 @@ module MfaSetupConcern
           second_mfa_reminder_conversion: user_session.delete(:second_mfa_reminder_conversion),
           success: true,
         )
+        analytics.user_registration_complete(**registration_complete_event_attributes('proof-of-concept'))
       end
       user_session.delete(:mfa_selections)
       nil
@@ -94,4 +95,17 @@ module MfaSetupConcern
       determine_next_mfa,
     )
   end
+
+  def registration_complete_event_attributes(page_occurence)
+    { 
+      ial2: sp_session[:ial2],
+      ialmax: sp_session[:ialmax],
+      service_provider_name: decorated_sp_session.sp_name,
+      sp_session_requested_attributes: sp_session[:requested_attributes],
+      sp_request_requested_attributes: service_provider_request.requested_attributes,
+      page_occurence: page_occurence,
+      in_account_creation_flow: user_session[:in_account_creation_flow] || false,
+      needs_completion_screen_reason: needs_completion_screen_reason
+    }
+  end  
 end

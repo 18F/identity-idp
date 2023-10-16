@@ -16,7 +16,7 @@ module SignUp
     end
 
     def update
-      track_completion_event('agency-page')
+      track_completion_event('agency-page') # relevant for ial2. maybe add exception for ial2
       update_verified_attributes
       send_in_person_completion_survey
       if decider.go_back_to_mobile_app?
@@ -63,6 +63,7 @@ module SignUp
     end
 
     def return_to_account
+      # the following can be called from ial1 backup code flow 
       track_completion_event('account-page')
       redirect_to account_url
     end
@@ -81,14 +82,16 @@ module SignUp
     end
 
     def analytics_attributes(page_occurence)
-      { ial2: sp_session[:ial2],
+      {
+        ial2: sp_session[:ial2],
         ialmax: sp_session[:ialmax],
         service_provider_name: decorated_sp_session.sp_name,
         sp_session_requested_attributes: sp_session[:requested_attributes],
         sp_request_requested_attributes: service_provider_request.requested_attributes,
         page_occurence: page_occurence,
         in_account_creation_flow: user_session[:in_account_creation_flow] || false,
-        needs_completion_screen_reason: needs_completion_screen_reason }
+        needs_completion_screen_reason: needs_completion_screen_reason,
+      }
     end
 
     def track_completion_event(last_page)

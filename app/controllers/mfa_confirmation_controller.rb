@@ -17,6 +17,8 @@ class MfaConfirmationController < ApplicationController
       pii_like_keypaths: [[:mfa_method_counts, :phone]],
       success: true,
     )
+    # only call the following if not ial2
+    analytics.user_registration_complete(**registration_complete_event_attributes('proof-of-concept')) if !sp_session[:ial2]
     redirect_to after_skip_path
   end
 
@@ -47,4 +49,18 @@ class MfaConfirmationController < ApplicationController
   def backup_code_confirmation_needed?
     !MfaPolicy.new(current_user).multiple_factors_enabled? && user_backup_codes_configured?
   end
+
+  def registration_complete_event_attributes(page_occurence)
+    { 
+      ial2: sp_session[:ial2],
+      ialmax: sp_session[:ialmax],
+      service_provider_name: decorated_sp_session.sp_name,
+      sp_session_requested_attributes: sp_session[:requested_attributes],
+      sp_request_requested_attributes: service_provider_request.requested_attributes,
+      page_occurence: page_occurence,
+      in_account_creation_flow: user_session[:in_account_creation_flow] || false,
+      needs_completion_screen_reason: needs_completion_screen_reason
+    }
+  end
+
 end
