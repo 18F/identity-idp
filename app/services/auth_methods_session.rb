@@ -11,7 +11,7 @@ class AuthMethodsSession
     user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION] = false
     user_session[:auth_events] = auth_events.
       push({ auth_method:, at: Time.zone.now }).
-      pop(MAX_AUTH_EVENTS)
+      last(MAX_AUTH_EVENTS)
   end
 
   def auth_events
