@@ -304,8 +304,10 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
           expect(subject.user_session[:auth_method]).to eq TwoFactorAuthenticatable::AuthMethod::SMS
           expect(subject.user_session[:auth_events]).to eq(
             [
-              auth_method: TwoFactorAuthenticatable::AuthMethod::SMS,
-              at: Time.zone.now,
+              {
+                auth_method: TwoFactorAuthenticatable::AuthMethod::SMS,
+                at: Time.zone.now,
+              },
             ],
           )
           expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq false
