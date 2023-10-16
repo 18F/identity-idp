@@ -20,7 +20,7 @@
   </h2>
 
   <ul class="usa-icon-list">
-    <% @presenter.selected_options.each do |option| %>
+    <% @presenter.all_user_selected_options.each do |option| %>
       <% if option.mfa_configuration_count > 0 %>
         <%= render partial: 'partials/multi_factor_authentication/selected_mfa_option', locals: { option: option } %>
       <% end %>
@@ -51,11 +51,11 @@
 
 <% if @presenter.skip_path || !@presenter.two_factor_enabled? %>
   <%= render PageFooterComponent.new do %>
-    <% if @presenter.skip_path && !@presenter.show_cancel_aal2plus %>
+    <% if @presenter.skip_path && !@presenter.show_cancel_return_to_sp? %>
       <%= link_to @presenter.skip_label, @presenter.skip_path %>
     <% elsif !@presenter.two_factor_enabled? %>
       <%= link_to t('links.cancel_account_creation'), sign_up_cancel_path %>
-    <% elsif @presenter.show_cancel_aal2plus %>
+    <% elsif @presenter.show_cancel_return_to_sp? %>
       <%= link_to t('links.cancel'), return_to_sp_cancel_path %>
     <% end %>
   <% end %>

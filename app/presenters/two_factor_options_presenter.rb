@@ -26,13 +26,17 @@ class TwoFactorOptionsPresenter
       backup_code_option + webauthn_option + piv_cac_option
   end
 
-  def selected_options
-    [TwoFactorAuthentication::WebauthnPlatformSelectionPresenter.new(user: user)] +
-      [TwoFactorAuthentication::SetUpAuthAppSelectionPresenter.new(user: user)] +
-      [TwoFactorAuthentication::PhoneSelectionPresenter.new(user: user)] +
-      [TwoFactorAuthentication::BackupCodeSelectionPresenter.new(user: user)] +
-      [TwoFactorAuthentication::WebauthnSelectionPresenter.new(user: user)] +
-      [TwoFactorAuthentication::PivCacSelectionPresenter.new(user: user)]
+  # Array of possible options selected by the user to display on the
+  # add additional MFA page
+  def all_user_selected_options
+    [
+      TwoFactorAuthentication::WebauthnPlatformSelectionPresenter.new(user: user),
+      TwoFactorAuthentication::SetUpAuthAppSelectionPresenter.new(user: user),
+      TwoFactorAuthentication::PhoneSelectionPresenter.new(user: user),
+      TwoFactorAuthentication::BackupCodeSelectionPresenter.new(user: user),
+      TwoFactorAuthentication::WebauthnSelectionPresenter.new(user: user),
+      TwoFactorAuthentication::PivCacSelectionPresenter.new(user: user),
+    ]
   end
 
   def icon
@@ -65,7 +69,7 @@ class TwoFactorOptionsPresenter
     end
   end
 
-  def show_cancel_aal2plus
+  def show_cancel_return_to_sp?
     phishing_resistant_only? || piv_cac_required?
   end
 
