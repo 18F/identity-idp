@@ -123,8 +123,7 @@ fr:
       voice_unsupported: Il nous est impossible d’appeler des numéros de téléphone
         dans le %{location}.
     otp_make_default_number:
-      instruction: Faites de ce numéro de téléphone le numéro par défaut où vous
-        recevez des messages texte ou des appels téléphoniques.
+      instruction: Envoyez des codes à usage unique à ce numéro par défaut.
       label: Numéro de téléphone par défaut
       one_number_instruction: Vous devez avoir ajouté plus d’un numéro de téléphone
         pour pouvoir sélectionner un numéro de téléphone par défaut.
