@@ -43,9 +43,6 @@ module Idv
     private
 
     def ipp_enrollment_in_progress?
-      # If in person return true else return false. This is temporary until we add a feature flag
-      # to track enrollment was created in the in person flow.
-      # todo LG-11235 update value based on new feature flag
       current_user.has_in_person_enrollment?
     end
 
@@ -238,7 +235,6 @@ module Idv
     def summarize_result_and_rate_limit_failures(summary_result)
       if summary_result.success?
         add_proofing_components
-        ssn_rate_limiter.reset!
       else
         idv_failure(summary_result)
       end

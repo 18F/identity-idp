@@ -29,7 +29,7 @@
     "@babel/register": "^7.15.3",
     "babel-loader": "^9.1.0",
     "babel-plugin-polyfill-corejs3": "^0.5.2",
-    "browserslist": "^4.21.5",
+    "browserslist": "^4.22.1",
     "cleave.js": "^1.6.0",
     "core-js": "^3.21.1",
     "fast-glob": "^3.2.7",

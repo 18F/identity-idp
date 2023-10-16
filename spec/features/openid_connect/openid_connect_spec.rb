@@ -774,7 +774,10 @@ RSpec.describe 'OpenID Connect' do
         expect(page).to have_content(sp_content)
 
         expect(page).to have_link(
-          t('links.back_to_sp', sp: 'Example iOS App'), href: return_to_sp_cancel_path
+          t(
+            'links.back_to_sp',
+            sp: 'Example iOS App',
+          ), href: return_to_sp_cancel_path(step: :authentication)
         )
 
         sign_up_user_from_sp_without_confirming_email(email)
@@ -837,9 +840,11 @@ RSpec.describe 'OpenID Connect' do
   context 'going back to the SP' do
     it 'links back to the SP from the sign in page' do
       visit_idp_from_ial1_oidc_sp(prompt: 'select_account')
-
       expect(page).to have_link(
-        "‹ #{t('links.back_to_sp', sp: 'Test SP')}", href: return_to_sp_cancel_path
+        "‹ #{t(
+          'links.back_to_sp',
+          sp: 'Test SP',
+        )}", href: return_to_sp_cancel_path(step: :authentication)
       )
     end
   end

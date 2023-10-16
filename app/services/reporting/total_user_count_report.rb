@@ -15,6 +15,14 @@ module Reporting
       ]
     end
 
+    def total_user_count_emailable_report
+      EmailableReport.new(
+        email_options: { title: 'Total user count (all-time)' },
+        table: total_user_count_report,
+        csv_name: 'total_user_count',
+      )
+    end
+
     private
 
     def total_user_count

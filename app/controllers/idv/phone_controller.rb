@@ -174,11 +174,11 @@ module Idv
         ),
       )
 
-      if async_state.result[:success]
-        rate_limiter.reset!
-        redirect_to_next_step and return
+      if form_result.success?
+        redirect_to_next_step
+      else
+        handle_proofing_failure
       end
-      handle_proofing_failure
     end
 
     def is_req_from_frontend?

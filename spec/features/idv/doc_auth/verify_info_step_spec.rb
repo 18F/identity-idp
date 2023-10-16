@@ -139,7 +139,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
     expect(page).to have_current_path(idv_verify_info_path)
   end
 
-  context 'resolution throttling' do
+  context 'resolution rate limiting' do
     let(:max_resolution_attempts) { 3 }
     before do
       allow(IdentityConfig.store).to receive(:idv_max_attempts).
@@ -196,7 +196,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
     end
   end
 
-  context 'ssn throttling' do
+  context 'ssn rate limiting' do
     # Simulates someone trying same SSN with second account
     let(:max_resolution_attempts) { 4 }
     let(:max_ssn_attempts) { 3 }

@@ -1,9 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe Reports::MonthlyKeyMetricsReport do
-  subject(:report) { Reports::MonthlyKeyMetricsReport.new }
-
   let(:report_date) { Date.new(2021, 3, 2) }
+  subject(:report) { Reports::MonthlyKeyMetricsReport.new(report_date: report_date) }
+
   let(:name) { 'monthly-key-metrics-report' }
   let(:agnes_email) { 'fake@agnes_email.com' }
   let(:feds_email) { 'fake@feds_email.com' }
@@ -13,14 +13,22 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
   end
   let(:account_reuse_s3_path) { "#{report_folder}/account_reuse.csv" }
   let(:total_profiles_s3_path) { "#{report_folder}/total_profiles.csv" }
+  let(:document_upload_proofing_s3_path) { "#{report_folder}/document_upload_proofing.csv" }
   let(:account_deletion_rate_s3_path) { "#{report_folder}/account_deletion_rate.csv" }
   let(:total_user_count_s3_path) { "#{report_folder}/total_user_count.csv" }
+  let(:monthly_active_users_count_s3_path) { "#{report_folder}/monthly_active_users_count.csv" }
   let(:s3_metadata) do
     {
       body: anything,
       content_type: 'text/csv',
       bucket: 'reports-bucket.1234-us-west-1',
     }
+  end
+
+  let(:mock_proofing_report_data) do
+    [
+      ['metric', 'num_users', 'percent'],
+    ]
   end
 
   before do
@@ -40,6 +48,9 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
         put_object: {},
       },
     }
+
+    allow(subject.monthly_proofing_report).to receive(:proofing_report).
+      and_return(mock_proofing_report_data)
   end
 
   it 'sends out a report to the email listed with one total user' do
@@ -69,6 +80,9 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
   it 'does not send out a report with no emails' do
     allow(IdentityConfig.store).to receive(:team_agnes_email).and_return('')
 
+    expect_any_instance_of(Reporting::AccountReuseAndTotalIdentitiesReport).
+      not_to receive(:total_identities_report)
+
     expect(ReportMailer).not_to receive(:tables_report).with(
       message: 'Report: monthly-key-metrics-report 2021-03-02',
       email: [''],
@@ -81,6 +95,16 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
 
   it 'uploads a file to S3 based on the report date' do
     expect(subject).to receive(:upload_file_to_s3_bucket).with(
+      path: total_user_count_s3_path,
+      **s3_metadata,
+    ).exactly(1).time.and_call_original
+
+    expect(subject).to receive(:upload_file_to_s3_bucket).with(
+      path: account_deletion_rate_s3_path,
+      **s3_metadata,
+    ).exactly(1).time.and_call_original
+
+    expect(subject).to receive(:upload_file_to_s3_bucket).with(
       path: account_reuse_s3_path,
       **s3_metadata,
     ).exactly(1).time.and_call_original
@@ -91,12 +115,12 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
     ).exactly(1).time.and_call_original
 
     expect(subject).to receive(:upload_file_to_s3_bucket).with(
-      path: account_deletion_rate_s3_path,
+      path: document_upload_proofing_s3_path,
       **s3_metadata,
     ).exactly(1).time.and_call_original
 
     expect(subject).to receive(:upload_file_to_s3_bucket).with(
-      path: total_user_count_s3_path,
+      path: monthly_active_users_count_s3_path,
       **s3_metadata,
     ).exactly(1).time.and_call_original
 
