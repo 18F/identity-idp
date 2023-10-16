@@ -10,7 +10,7 @@
 <% end %>
 
 <%= render PageHeadingComponent.new do %>
-  <% if IdentityConfig.store.idv_phone_question_a_b_testing[:show_phone_question] == 1 %>
+  <% if @phone_question_ab_test_bucket == :show_phone_question %>
     <%= t('doc_auth.headings.upload_from_phone') %>
   <% else %>
     <%= t('doc_auth.headings.hybrid_handoff') %>
@@ -35,7 +35,7 @@
       <%= t('doc_auth.info.tag') %>
     </div>
     <h2 class="margin-y-105">
-      <% if IdentityConfig.store.idv_phone_question_a_b_testing[:show_phone_question] == 1 %>
+    <% if @phone_question_ab_test_bucket == :show_phone_question %>
         <%= t('doc_auth.headings.switch_to_phone') %>
       <% else %>
         <%= t('doc_auth.headings.upload_from_phone') %>
