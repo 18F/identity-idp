@@ -1,3 +1,4 @@
+require 'reports/monthly_key_metrics_report'
 class ReportMailerPreview < ActionMailer::Preview
   def warn_error
     ReportMailer.warn_error(
@@ -15,7 +16,7 @@ class ReportMailerPreview < ActionMailer::Preview
       message: 'Key Metrics Report February 2021',
       tables: [
         [
-          { title: 'February 2021 Active Users' },
+          { title: 'February 2023 Active Users' },
           ['Monthly Active Users', 'Value'],
           ['IAL1', 1],
           ['IDV', 1],
@@ -24,7 +25,7 @@ class ReportMailerPreview < ActionMailer::Preview
         [
           { title: 'Total user count (all-time)' },
           ['All-time user count'],
-          [2289411],
+          [289411],
         ],
         [
           { title: 'Account deletion rate (last 30 days)', float_as_percent: true, precision: 4 },
@@ -50,7 +51,7 @@ class ReportMailerPreview < ActionMailer::Preview
           { title: 'Document upload proofing rates', float_as_percent: true, precision: 4 },
           ['metric', 'num_users', 'percent'],
           ['image_submitted', 5, 5.0 / 5],
-          ['verified', 2, 2.0 / 5],
+          ['verified', 1, 1.0 / 5],
           ['not_verified_started_gpo', 1, 1.0 / 5],
           ['not_verified_started_in_person', 1, 1.0 / 5],
           ['not_verified_started_fraud_review', 1, 1.0 / 5],
