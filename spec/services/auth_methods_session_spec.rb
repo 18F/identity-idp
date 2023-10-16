@@ -38,6 +38,22 @@ RSpec.describe AuthMethodsSession do
         expect(result).to eq([first_auth_event, { auth_method:, at: Time.zone.now }])
       end
     end
+
+    context 'with maximum tracked events' do
+      before do
+        stub_const('AuthMethodsSession::MAX_AUTH_EVENTS', 2)
+      end
+
+      let(:first_auth_event) { { auth_method: 'first', at: 2.days.ago } }
+      let(:second_auth_event) { { auth_method: 'second', at: 1.day.ago } }
+      let(:user_session) { { auth_events: [first_auth_event, second_auth_event] } }
+
+      it 'ejects the oldest' do
+        expect { result }.to change { auth_methods_session.auth_events }.
+          from([first_auth_event, second_auth_event]).
+          to([second_auth_event, { auth_method:, at: Time.zone.now }])
+      end
+    end
   end
 
   describe '#auth_events' do
