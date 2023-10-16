@@ -115,14 +115,16 @@ function DocumentCaptureAbandon({ navigate }: DocumentCaptureAbandonProps) {
     <>
       {header}
       {content}
-      {optionalTag}
-      {optionalText}
-      <FieldSet legend={t('doc_auth.exit_survey.optional.legend')}>{checkboxes}</FieldSet>
-      <Button isOutline className="margin-top-3" onClick={handleExit}>
-        {t('doc_auth.exit_survey.optional.button', { app_name: appName })}
-      </Button>
-      <div className="usa-prose margin-top-3">
-        {t('idv.legal_statement.information_collection')}
+      <div className="document-capture-optional-questions">
+        {optionalTag}
+        {optionalText}
+        <FieldSet legend={t('doc_auth.exit_survey.optional.legend')}>{checkboxes}</FieldSet>
+        <Button isOutline className="margin-top-3" onClick={handleExit}>
+          {t('doc_auth.exit_survey.optional.button', { app_name: appName })}
+        </Button>
+        <div className="usa-prose margin-top-3">
+          {t('idv.legal_statement.information_collection')}
+        </div>
       </div>
     </>
   );

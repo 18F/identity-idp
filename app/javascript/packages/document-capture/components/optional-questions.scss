@@ -1,0 +1,24 @@
+@use 'uswds-core' as *;
+
+.document-capture-optional-questions {
+  margin-top: 2em;
+  .usa-tag {
+    background-color: #306F84FF;
+    color: white;
+  }
+  .usa-fieldset {
+    .usa-legend {
+      text-transform: none;
+      margin-top: 1rem;
+      font-size: 1rem;
+      line-height: 1.4;
+      display: block;
+      border-bottom: none;
+    }
+    .usa-checkbox {
+      .usa-checkbox__label {
+        display: block; //collapsing margin
+      }
+    }
+  }
+}
