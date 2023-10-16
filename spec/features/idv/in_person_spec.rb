@@ -72,8 +72,8 @@ RSpec.describe 'In Person Proofing', js: true do
 
       # password confirm page
       expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.secure_account'))
-      expect(page).to have_content(t('idv.titles.session.review', app_name: APP_NAME))
-      complete_review_step(user)
+      expect(page).to have_content(t('idv.titles.session.enter_password', app_name: APP_NAME))
+      complete_enter_password_step(user)
 
       # personal key page
       expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.secure_account'))
@@ -200,8 +200,8 @@ RSpec.describe 'In Person Proofing', js: true do
 
     # password confirm page
     expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.secure_account'))
-    expect(page).to have_content(t('idv.titles.session.review', app_name: APP_NAME))
-    complete_review_step(user)
+    expect(page).to have_content(t('idv.titles.session.enter_password', app_name: APP_NAME))
+    complete_enter_password_step(user)
 
     # personal key page
     expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.secure_account'))
@@ -248,7 +248,7 @@ RSpec.describe 'In Person Proofing', js: true do
     begin_in_person_proofing
     complete_all_in_person_proofing_steps
     complete_phone_step(user)
-    complete_review_step(user)
+    complete_enter_password_step(user)
     acknowledge_and_confirm_personal_key
 
     click_link t('links.cancel')
@@ -372,7 +372,7 @@ RSpec.describe 'In Person Proofing', js: true do
       )
       click_on t('idv.buttons.mail.send')
       expect_in_person_gpo_step_indicator_current_step(t('step_indicator.flows.idv.get_a_letter'))
-      complete_review_step
+      complete_enter_password_step
 
       expect_in_person_gpo_step_indicator_current_step(t('step_indicator.flows.idv.get_a_letter'))
       expect(page).to have_content(t('idv.titles.come_back_later'))
@@ -403,7 +403,7 @@ RSpec.describe 'In Person Proofing', js: true do
       complete_all_in_person_proofing_steps
       click_on t('idv.troubleshooting.options.verify_by_mail')
       click_on t('idv.buttons.mail.send')
-      complete_review_step
+      complete_enter_password_step
       click_idv_continue
       click_on t('account.index.verification.reactivate_button')
       click_on t('idv.messages.clear_and_start_over')
@@ -866,8 +866,8 @@ RSpec.describe 'In Person Proofing', js: true do
 
       # password confirm page
       expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.secure_account'))
-      expect(page).to have_content(t('idv.titles.session.review', app_name: APP_NAME))
-      complete_review_step(user)
+      expect(page).to have_content(t('idv.titles.session.enter_password', app_name: APP_NAME))
+      complete_enter_password_step(user)
 
       # personal key page
       expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.secure_account'))
