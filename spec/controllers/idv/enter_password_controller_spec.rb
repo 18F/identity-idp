@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::ReviewController do
+RSpec.describe Idv::EnterPasswordController do
   include UspsIppHelper
 
   let(:user) do
@@ -62,7 +62,7 @@ RSpec.describe Idv::ReviewController do
     before(:each) do
       stub_sign_in(user)
       routes.draw do
-        get 'show' => 'idv/review#show'
+        get 'show' => 'idv/enter_password#show'
       end
     end
 
@@ -96,7 +96,7 @@ RSpec.describe Idv::ReviewController do
       stub_sign_in(user)
       stub_attempts_tracker
       routes.draw do
-        post 'show' => 'idv/review#show'
+        post 'show' => 'idv/enter_password#show'
       end
       allow(subject).to receive(:confirm_idv_steps_complete).and_return(true)
       allow(subject).to receive(:idv_session).and_return(idv_session)
@@ -159,8 +159,8 @@ RSpec.describe Idv::ReviewController do
       it 'sets the correct title and header' do
         get :new
 
-        expect(assigns(:title)).to eq(t('titles.idv.review'))
-        expect(assigns(:heading)).to eq(t('idv.titles.session.review', app_name: APP_NAME))
+        expect(assigns(:title)).to eq(t('titles.idv.enter_password'))
+        expect(assigns(:heading)).to eq(t('idv.titles.session.enter_password', app_name: APP_NAME))
       end
 
       it 'uses the correct step indicator step' do
@@ -180,15 +180,17 @@ RSpec.describe Idv::ReviewController do
         it 'sets the correct title and header' do
           get :new
 
-          expect(assigns(:title)).to eq(t('titles.idv.review_letter'))
-          expect(assigns(:heading)).to eq(t('idv.titles.session.review_letter', app_name: APP_NAME))
+          expect(assigns(:title)).to eq(t('titles.idv.enter_password_letter'))
+          expect(assigns(:heading)).to eq(
+            t('idv.titles.session.enter_password_letter', app_name: APP_NAME),
+          )
         end
 
         it 'shows password reminder banner' do
           get :new
 
           expect(response.body).to include(
-            t('idv.messages.review.by_mail_password_reminder_html'),
+            t('idv.messages.enter_password.by_mail_password_reminder_html'),
           )
         end
 
@@ -205,7 +207,7 @@ RSpec.describe Idv::ReviewController do
           get :new
 
           expect(response.body).not_to include(
-            t('idv.messages.review.by_mail_password_reminder_html'),
+            t('idv.messages.enter_password.by_mail_password_reminder_html'),
           )
         end
       end

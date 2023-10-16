@@ -168,6 +168,14 @@ RSpec.describe Users::PivCacLoginController do
                 expect(response).to redirect_to(account_url)
               end
 
+              context 'ial2 service_level' do
+                let(:sp_session) { { ial: Idp::Constants::IAL2, issuer: service_provider.issuer } }
+
+                it 'redirects to account' do
+                  expect(response).to redirect_to(account_url)
+                end
+              end
+
               context 'ial_max service level' do
                 let(:sp_session) do
                   { ial: Idp::Constants::IAL_MAX, issuer: service_provider.issuer }

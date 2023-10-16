@@ -47,10 +47,6 @@ module Idv
         end
       end
 
-      def show_troubleshooting_options?
-        !resend_requested?
-      end
-
       private
 
       def user_needs_address_otp_verification?

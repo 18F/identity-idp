@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'idv/review/new.html.erb' do
+RSpec.describe 'idv/enter_password/new.html.erb' do
   include XPathHelper
 
   context 'user has completed all steps' do
@@ -16,19 +16,19 @@ RSpec.describe 'idv/review/new.html.erb' do
 
     context 'user goes through phone finder' do
       before do
-        @title = t('titles.idv.review')
-        @heading = t('idv.titles.session.review', app_name: APP_NAME)
+        @title = t('titles.idv.enter_password')
+        @heading = t('idv.titles.session.enter_password', app_name: APP_NAME)
         render
       end
 
       it 'has a localized title' do
-        expect(view).to receive(:title).with(t('titles.idv.review'))
+        expect(view).to receive(:title).with(t('titles.idv.enter_password'))
 
         render
       end
 
       it 'renders the correct content heading' do
-        expect(rendered).to have_content t('idv.titles.session.review', app_name: APP_NAME)
+        expect(rendered).to have_content t('idv.titles.session.enter_password', app_name: APP_NAME)
       end
 
       it 'shows the step indicator' do
@@ -41,19 +41,21 @@ RSpec.describe 'idv/review/new.html.erb' do
 
     context 'user goes through verify by mail flow' do
       before do
-        @title = t('titles.idv.review_letter')
-        @heading = t('idv.titles.session.review_letter', app_name: APP_NAME)
+        @title = t('titles.idv.enter_password_letter')
+        @heading = t('idv.titles.session.enter_password_letter', app_name: APP_NAME)
         render
       end
 
       it 'has a localized title' do
-        expect(view).to receive(:title).with(t('titles.idv.review_letter'))
+        expect(view).to receive(:title).with(t('titles.idv.enter_password_letter'))
 
         render
       end
 
       it 'renders the correct content heading' do
-        expect(rendered).to have_content t('idv.titles.session.review_letter', app_name: APP_NAME)
+        expect(rendered).to have_content(
+          t('idv.titles.session.enter_password_letter', app_name: APP_NAME),
+        )
       end
     end
   end

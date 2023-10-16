@@ -12,7 +12,7 @@
 <%= render PageHeadingComponent.new.with_content(@heading) %>
 
 <p>
-  <%= t('idv.messages.review.message', app_name: APP_NAME) %>
+  <%= t('idv.messages.enter_password.message', app_name: APP_NAME) %>
 </p>
 
 <%= simple_form_for(
@@ -40,7 +40,7 @@
           id: 'by-mail-password-warning',
           class: 'margin-top-4',
         ) do
-          t('idv.messages.review.by_mail_password_reminder_html')
+          t('idv.messages.enter_password.by_mail_password_reminder_html')
         end
     %>
   <% end %>

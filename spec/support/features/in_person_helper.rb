@@ -221,7 +221,7 @@ module InPersonHelper
       complete_ssn_step(user)
       complete_verify_step(user)
       complete_phone_step(user)
-      complete_review_step(user)
+      complete_enter_password_step(user)
       acknowledge_and_confirm_personal_key
 
       expect(page).to have_content('MILWAUKEE')
