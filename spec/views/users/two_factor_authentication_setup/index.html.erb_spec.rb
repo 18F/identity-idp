@@ -103,7 +103,7 @@ RSpec.describe 'users/two_factor_authentication_setup/index.html.erb' do
   end
 
   context 'unphishable requires additional authentication to be added' do
-    let(:user) { build(:user, :fully_registered, :with_phone) }
+    let(:user) { create(:user, :fully_registered, :with_phone) }
     let(:phishing_resistant_required) { true }
 
     it 'lists current selected mfa methods' do
