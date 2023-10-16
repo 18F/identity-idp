@@ -1,3 +1,4 @@
+require 'reports/monthly_key_metrics_report'
 class ReportMailerPreview < ActionMailer::Preview
   def warn_error
     ReportMailer.warn_error(
@@ -15,6 +16,24 @@ class ReportMailerPreview < ActionMailer::Preview
       message: 'Key Metrics Report February 2021',
       tables: [
         [
+          { title: 'February 2023 Active Users' },
+          ['Monthly Active Users', 'Value'],
+          ['IAL1', 1],
+          ['IDV', 1],
+          ['Total', 2],
+        ],
+        [
+          { title: 'Total user count (all-time)' },
+          ['All-time user count'],
+          [289411],
+        ],
+        [
+          { title: 'Account deletion rate (last 30 days)', float_as_percent: true, precision: 4 },
+          ['Deleted Users',	'Total Users', 'Deletion Rate'],
+          [137, 7434, 0.18429222],
+
+        ],
+        [
           { title: 'IDV app reuse rate Feb-2021', float_as_percent: true, precision: 4 },
           ['Num. SPs', 'Num. users', 'Percentage'],
           [2, 207422, 0.105164],
@@ -28,6 +47,15 @@ class ReportMailerPreview < ActionMailer::Preview
           { title: 'Total proofed identities' },
           ['Total proofed identities (Feb-2021)'],
           [1972368],
+        ],
+        [
+          { title: 'Document upload proofing rates', float_as_percent: true, precision: 4 },
+          ['metric', 'num_users', 'percent'],
+          ['image_submitted', 5, 5.0 / 5],
+          ['verified', 1, 1.0 / 5],
+          ['not_verified_started_gpo', 1, 1.0 / 5],
+          ['not_verified_started_in_person', 1, 1.0 / 5],
+          ['not_verified_started_fraud_review', 1, 1.0 / 5],
         ],
       ],
     )
