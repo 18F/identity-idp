@@ -47,7 +47,7 @@ module SpAuthHelper
     complete_all_in_person_proofing_steps
 
     complete_phone_step(user)
-    complete_review_step(user)
+    complete_enter_password_step(user)
     acknowledge_and_confirm_personal_key
     expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
 

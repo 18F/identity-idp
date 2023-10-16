@@ -233,21 +233,21 @@ module DocAuth
             key.start_with?('Alert_')
           end
 
+          region_details = parse_document_region
           alert_names = all_alerts.select { |key| key.end_with?('_AlertName') }
           alert_names.each do |alert_name, _v|
             alert_prefix = alert_name.scan(/Alert_\d{1,2}_/).first
-            alert = combine_alert_data(all_alerts, alert_prefix)
+            alert = combine_alert_data(all_alerts, alert_prefix, region_details)
             if alert[:result] == 'Passed'
               @new_alerts[:passed].push(alert)
             else
               @new_alerts[:failed].push(alert)
             end
           end
-
           @new_alerts
         end
 
-        def combine_alert_data(all_alerts, alert_name)
+        def combine_alert_data(all_alerts, alert_name, region_details)
           new_alert_data = {}
           # Get the set of Alerts that are all the same number (e.g. Alert_11)
           alert_set = all_alerts.select { |key| key.match?(alert_name) }
@@ -257,6 +257,11 @@ module DocAuth
             new_alert_data[:name] = value if key.end_with?('_AlertName')
             new_alert_data[:result] = value if key.end_with?('_AuthenticationResult')
             new_alert_data[:region] = value if key.end_with?('_Regions')
+            new_alert_data[:disposition] = value if key.end_with?('_Disposition')
+            new_alert_data[:model] = value if key.end_with?('_Model')
+            if key.end_with?('Regions_Reference')
+              new_alert_data[:region_ref] = value.map { |v| region_details[v] }
+            end
           end
 
           new_alert_data
@@ -282,6 +287,53 @@ module DocAuth
           end
 
           new_metrics
+        end
+
+        # Generate a hash for image references information that can be linked to Alert
+        # @return A hash with region_id => {:key : 'What region', :side: 'Front|Back'}
+        def parse_document_region
+          region_details = {}
+          image_sides = {}
+          true_id_product[:ParameterDetails].each do |detail|
+            next unless detail[:Group] == 'DOCUMENT_REGION' ||
+                        (detail[:Group] == 'IMAGE_METRICS_RESULT' &&
+                          %w[ImageMetrics_Id Side].include?(detail[:Name]))
+            inner_val = detail[:Values].map { |value| value[:Value] }
+            if detail[:Group] == 'DOCUMENT_REGION'
+              region_details[detail[:Name]] = inner_val
+            else
+              image_sides[detail[:Name]] = inner_val
+            end
+          end
+          transform_document_region(region_details, image_sides)
+        end
+
+        def transform_document_region(region_details, image_sides)
+          new_region_details = {}
+          new_image_sides = {}
+          image_sides['ImageMetrics_Id']&.each_with_index do |id, i|
+            new_image_sides[id] = image_sides.transform_values { |v| v[i] }
+          end
+          region_details['DocumentRegion_Id']&.each_with_index do |region_id, i|
+            new_region_details[region_id] = region_details.transform_values { |v| v[i] }
+            new_region_details[region_id].delete('DocumentRegion_Id')
+          end
+          new_region_details.deep_transform_values! do |v|
+            if new_image_sides[v]
+              new_image_sides[v]['Side']
+            else
+              v
+            end
+          end
+          new_region_details.deep_transform_keys! do |k|
+            if k.start_with?('DocumentRegion_')
+              new_key = k.sub(/DocumentRegion_/, '').downcase
+              new_key = new_key == 'imagereference' ? 'side' : new_key
+              new_key.to_sym
+            else
+              k
+            end
+          end
         end
 
         def parse_date(year:, month:, day:)

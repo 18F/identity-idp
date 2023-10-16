@@ -24,7 +24,7 @@ RSpec.feature 'phone otp verification step spec', :js do
     fill_in_code_with_last_phone_otp
     click_submit_default
 
-    expect(page).to have_content(t('idv.titles.session.review', app_name: APP_NAME))
+    expect(page).to have_content(t('idv.titles.session.enter_password', app_name: APP_NAME))
     expect(page).to have_current_path(idv_review_path)
   end
 
@@ -57,7 +57,7 @@ RSpec.feature 'phone otp verification step spec', :js do
     fill_in_code_with_last_phone_otp
     click_submit_default
 
-    expect(page).to have_content(t('idv.titles.session.review', app_name: APP_NAME))
+    expect(page).to have_content(t('idv.titles.session.enter_password', app_name: APP_NAME))
     expect(page).to have_current_path(idv_review_path)
   end
 

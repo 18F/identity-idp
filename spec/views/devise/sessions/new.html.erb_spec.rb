@@ -111,7 +111,10 @@ RSpec.describe 'devise/sessions/new.html.erb' do
       render
 
       expect(rendered).to have_link(
-        t('links.back_to_sp', sp: 'Awesome Application!'), href: return_to_sp_cancel_path
+        t(
+          'links.back_to_sp',
+          sp: 'Awesome Application!',
+        ), href: return_to_sp_cancel_path(step: :authentication)
       )
     end
 

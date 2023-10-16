@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'idv gpo otp verification step' do
+RSpec.feature 'idv enter letter code step' do
   include IdvStepHelper
 
   let(:otp) { 'ABC123' }

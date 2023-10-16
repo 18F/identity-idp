@@ -47,7 +47,7 @@ RSpec.describe TwoFactorAuthentication::SmsOptInController do
         it 'points the cancel link back to the SP' do
           action
 
-          expect(assigns[:cancel_url]).to eq(return_to_sp_cancel_path)
+          expect(assigns[:cancel_url]).to eq(return_to_sp_cancel_path(step: :sms_opt_in))
         end
       end
     end
