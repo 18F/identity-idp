@@ -296,20 +296,6 @@ es:
         - '<strong>Verificar por correo</strong>: Le enviaremos una carta a su
           domicilio. Esto tarda entre <strong>5 y 10 días</strong>.'
       welcome: 'Necesitará su:'
-    legal_statement:
-      information_collection: >-
-        Esta recopilación de información cumple con los requisitos del título 44
-        del U.S.C., § 3507, modificado por la sección 2 de la Ley de Reducción
-        de Trámites de 1995. No es necesario que responda a estas preguntas, a
-        menos que le mostremos un número de control válido de la Oficina de
-        Administración y Presupuesto (OMB). El número de control de la OMB para
-        esta recopilación es 3090-0325. Nous estimons qu’il faut une minute pour
-        lire les instructions, rassembler les preuves et répondre aux questions.
-        N’envoyez que des commentaires relatifs à notre estimation du temps, y
-        compris des suggestions pour réduire cette charge, ou tout autre aspect
-        de cette collecte d’informations à : General Services Administration,
-        Regulatory Secretariat Division (MVCB), ATTN : Lois Mandell/IC
-        3090-0325, 1800 F Street, NW, Washington, DC 20405.
     phone_question:
       do_not_have: No tengo teléfono
     tips:
