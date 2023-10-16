@@ -239,7 +239,6 @@ module Idv
     def summarize_result_and_rate_limit_failures(summary_result)
       if summary_result.success?
         add_proofing_components
-        ssn_rate_limiter.reset!
       else
         idv_failure(summary_result)
       end

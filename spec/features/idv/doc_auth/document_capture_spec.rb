@@ -105,6 +105,10 @@ RSpec.feature 'document capture step', :js do
         it 'proceeds to the next page with valid info' do
           attach_and_submit_images
           expect(page).to have_current_path(idv_ssn_url)
+
+          visit idv_document_capture_path
+
+          expect(page).to have_current_path(idv_session_errors_rate_limited_path)
         end
       end
     end

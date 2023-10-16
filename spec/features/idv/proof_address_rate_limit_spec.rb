@@ -17,7 +17,7 @@ RSpec.feature 'address proofing rate limit' do
       click_on t('idv.failure.phone.rate_limited.gpo.button')
       click_on t('idv.buttons.mail.send')
 
-      expect(page).to have_content(t('idv.titles.session.review', app_name: APP_NAME))
+      expect(page).to have_content(t('idv.titles.session.enter_password', app_name: APP_NAME))
       expect(current_path).to eq(idv_review_path)
       fill_in 'Password', with: user.password
       click_idv_continue
@@ -58,7 +58,7 @@ RSpec.feature 'address proofing rate limit' do
       fill_in_code_with_last_phone_otp
       click_submit_default
 
-      expect(page).to have_content(t('idv.titles.session.review', app_name: APP_NAME))
+      expect(page).to have_content(t('idv.titles.session.enter_password', app_name: APP_NAME))
       expect(current_path).to eq(idv_review_path)
       fill_in 'Password', with: user.password
       click_idv_continue

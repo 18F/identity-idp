@@ -97,6 +97,20 @@ RSpec.describe QueryCloudwatch do
       end
     end
 
+    context 'with --date' do
+      let(:argv) { required_parameters + ['--date', '2023-01-01,2023-08-01'] }
+
+      it 'creates disjoint time slices' do
+        config = parse!
+        expect(config.time_slices).to eq(
+          [
+            Date.new(2023, 1, 1).in_time_zone('UTC').all_day,
+            Date.new(2023, 8, 1).in_time_zone('UTC').all_day,
+          ],
+        )
+      end
+    end
+
     context 'with --no-progress' do
       let(:argv) { required_parameters + %w[--no-progress] }
 

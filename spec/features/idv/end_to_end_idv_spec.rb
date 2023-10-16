@@ -41,9 +41,9 @@ RSpec.describe 'Identity verification', :js do
     visit_by_mail_and_return
     complete_otp_verification_page(user)
 
-    validate_review_page
-    complete_review_step(user)
-    validate_review_submit(user)
+    validate_enter_password_page
+    complete_enter_password_step(user)
+    validate_enter_password_submit(user)
 
     validate_personal_key_page
     acknowledge_and_confirm_personal_key
@@ -72,7 +72,7 @@ RSpec.describe 'Identity verification', :js do
       enter_gpo_flow
       gpo_step
 
-      complete_review_step(user)
+      complete_enter_password_step(user)
 
       validate_come_back_later_page
       complete_come_back_later
@@ -251,10 +251,10 @@ RSpec.describe 'Identity verification', :js do
     click_submit_default
   end
 
-  def validate_review_page
+  def validate_enter_password_page
     expect(page).to have_current_path(idv_review_path)
-    expect(page).to have_content(t('idv.messages.review.message', app_name: APP_NAME))
-    expect(page).to have_content(t('idv.messages.review.phone_verified'))
+    expect(page).to have_content(t('idv.messages.enter_password.message', app_name: APP_NAME))
+    expect(page).to have_content(t('idv.messages.enter_password.phone_verified'))
 
     # does not move ahead with incorrect password
     fill_in 'Password', with: 'this is not the right password'
@@ -263,7 +263,7 @@ RSpec.describe 'Identity verification', :js do
     expect(page).to have_current_path(idv_review_path)
   end
 
-  def validate_review_submit(user)
+  def validate_enter_password_submit(user)
     expect(user.events.account_verified.size).to be(1)
     expect(user.profiles.count).to eq 1
 

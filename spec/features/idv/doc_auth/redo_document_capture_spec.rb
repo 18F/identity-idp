@@ -108,10 +108,9 @@ RSpec.feature 'doc auth redo document capture', js: true do
 
       it 'shows a troubleshooting option to allow the user to cancel and return to SP' do
         click_idv_continue
-
         expect(page).to have_link(
           t('links.cancel'),
-          href: idv_cancel_path,
+          href: idv_cancel_path(step: :invalid_session),
         )
 
         click_link t('links.cancel')
