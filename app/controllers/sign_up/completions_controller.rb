@@ -16,7 +16,7 @@ module SignUp
     end
 
     def update
-      track_completion_event('agency-page') # relevant for ial2. maybe add exception for ial2
+      track_completion_event('agency-page')
       update_verified_attributes
       send_in_person_completion_survey
       if decider.go_back_to_mobile_app?
@@ -63,7 +63,6 @@ module SignUp
     end
 
     def return_to_account
-      # the following can be called from ial1 backup code flow 
       track_completion_event('account-page')
       redirect_to account_url
     end
