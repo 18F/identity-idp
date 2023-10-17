@@ -35,7 +35,7 @@ module Reports
         # Number of applications using Login (separated by auth / IdV) - LG-11154
         # Number of agencies using Login - LG-11155
         # Fiscal year active users, sum and split - LG-10816
-        # APG Reporting of Annual Active Users by FY (w/ cumulative Active Users by quarter) - LG-11156
+        # APG Reporting Annual Active Users by FY (w/ cumulative Active Users by quarter) - LG-11156
         # APG Reporting of Active Federal Partner Agencies - LG-11157
         # APG Reporting of Active Login.gov Serviced Applications - LG-11158
         # APG Reporting of Cumulative Proofed Identities By Year/Month - LG-11159
