@@ -3,7 +3,7 @@ require 'csv'
 class ReportMailer < ActionMailer::Base
   include Mailable
 
-  before_action :attach_images
+  before_action :attach_images, except: [:tables_report]
 
   layout 'tables_report', only: [:tables_report]
 
