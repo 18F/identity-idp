@@ -22,12 +22,24 @@ module Reports
       end
 
       reports = [
+        # Number of verified users (total) - LG-11148
+        # Number of verified users (new) - LG-11164
+        monthly_active_users_count_report.monthly_active_users_count_emailable_report,
+        # Total Annual Users - LG-11150
         total_user_count_report.total_user_count_emailable_report,
+        # Proofing rate(s) (tbd on this one pager) - LG-11152
         account_deletion_rate_report.account_deletion_emailable_report,
         account_reuse_report.account_reuse_emailable_report,
         account_reuse_report.total_identities_emailable_report,
         monthly_proofing_report.document_upload_proofing_emailable_report,
-        monthly_active_users_count_report.monthly_active_users_count_emailable_report,
+        # Number of applications using Login (separated by auth / IdV) - LG-11154
+        # Number of agencies using Login - LG-11155
+        # Fiscal year active users, sum and split - LG-10816
+        # APG Reporting Annual Active Users by FY (w/ cumulative Active Users by quarter) - LG-11156
+        # APG Reporting of Active Federal Partner Agencies - LG-11157
+        # APG Reporting of Active Login.gov Serviced Applications - LG-11158
+        # APG Reporting of Cumulative Proofed Identities By Year/Month - LG-11159
+        # APG Reporting Proofing rate for HISPs - LG-11160
       ]
 
       reports.each do |report|
