@@ -32,8 +32,12 @@ en:
               delete your account on your %{account_page_text}.
         gpo:
           continue: Continue to start over and verify your identity from the beginning.
-          start_over: To mail your letter to another address, you’ll need to start over
-            and verify your identity with the new address.
+          start_over: 'If you clear your information and start over:'
+          start_over_new_address: To mail your letter to another address, you’ll need to
+            start over and verify your identity with the new address.
+          warnings:
+            - The verification code in your letter will no longer work
+            - You will start over verifying your identity from the beginning
         hybrid: If you cancel now, you will be prompted to switch back to your computer
           to continue verifying your identity.
         start_over: If you start over, you will restart this process from the beginning.
