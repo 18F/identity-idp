@@ -3,13 +3,14 @@ require 'rails_helper'
 RSpec.describe 'users/two_factor_authentication_setup/index.html.erb' do
   include Devise::Test::ControllerHelpers
   include IdvHelper
+  include Rails.application.routes.url_helpers
 
   let(:user) { build(:user) }
   let(:user_agent) { '' }
   let(:show_skip_additional_mfa_link) { true }
   let(:phishing_resistant_required) { false }
   let(:after_mfa_setup_path) { account_path }
-  let(:return_to_sp_cancel_path) { '/redirect/return_to_sp/cancel' }
+  let(:return_to_sp_cancel_path) { return_to_sp_cancel_path }
   subject(:rendered) { render }
 
   before do
