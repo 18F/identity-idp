@@ -429,6 +429,19 @@ review-app:
       ]
       EOF
       )
+    - |-
+      export DASHBOARD_ENV=$(cat <<EOF
+      [
+        {"name": "POSTGRES_SSLMODE", "value": "prefer"},
+        {"name": "POSTGRES_NAME", "value": "dashboard"},
+        {"name": "POSTGRES_HOST","value": "$CI_ENVIRONMENT_SLUG-login-chart-dashboard-pg.review-apps"},
+        {"name": "POSTGRES_USERNAME", "value": "postgres"},
+        {"name": "POSTGRES_PASSWORD", "value": "postgres"},
+        {"name": "IDP_HOST", "value": "$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov"},
+        {"name": "DOMAIN_NAME", "value": "$CI_ENVIRONMENT_SLUG-review-app.dashboard.identitysandbox.gov"}
+      ]
+      EOF
+      )
     - git clone -b dashboard-chart --single-branch https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.login.gov/lg-public/identity-idp-helm-chart.git
     - >-
       helm upgrade --install --namespace review-apps
