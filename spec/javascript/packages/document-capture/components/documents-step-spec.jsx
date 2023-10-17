@@ -91,7 +91,7 @@ describe('document-capture/components/documents-step', () => {
         </UploadContextProvider>
       </DeviceContext.Provider>,
     );
-    expect(getByRole('heading', { name: 'doc_auth.exit_survey.header', level: 3 })).to.be.ok();
+    expect(getByRole('heading', { name: 'doc_auth.exit_survey.header', level: 2 })).to.be.ok();
     expect(getByText('doc_auth.exit_survey.optional.button')).to.be.ok();
   });
 });
