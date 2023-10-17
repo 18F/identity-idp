@@ -58,6 +58,7 @@ module Users
         piv_cac_required: service_provider_mfa_policy.piv_cac_required?,
         show_skip_additional_mfa_link: show_skip_additional_mfa_link?,
         after_mfa_setup_path:,
+        return_to_sp_cancel_path:,
       )
     end
 
