@@ -2,10 +2,29 @@ import type { InputHTMLAttributes } from 'react';
 import { useInstanceId } from '@18f/identity-react-hooks';
 
 export interface CheckboxProps extends InputHTMLAttributes<HTMLInputElement> {
+  /**
+   * Whether checkbox is considered title, a box around it, with optional description for the label
+   */
   isTitle?: boolean;
+  /**
+   * Whether is focused, a focus box around the checkbox
+   */
+  isFocus?: boolean;
+  /**
+   * Optional id for the element
+   */
   id?: string;
+  /**
+   * Optional additional class names.
+   */
   className?: string;
+  /**
+   * Label text for the checkbox
+   */
   label: string;
+  /**
+   * Optional description for the label, used with isTitle
+   */
   labelDescription?: string;
   /**
    * Muted explainer text sitting below the label.
@@ -16,6 +35,7 @@ export interface CheckboxProps extends InputHTMLAttributes<HTMLInputElement> {
 function Checkbox({
   id,
   isTitle,
+  isFocus,
   className,
   label,
   labelDescription,
@@ -23,9 +43,14 @@ function Checkbox({
   ...inputProps
 }: CheckboxProps) {
   const instanceId = useInstanceId();
-  const inputId = id ?? `checkbox-input-${instanceId}`;
-  const hintId = id ?? `select-input-hint-${instanceId}`;
-  const classes = ['usa-checkbox__input', isTitle && 'usa-button__input-title', className]
+  const inputId = id ?? `check-input-${instanceId}`;
+  const hintId = id ?? `check-input-hint-${instanceId}`;
+  const classes = [
+    'usa-checkbox__input',
+    isTitle && 'usa-button__input-title',
+    isFocus && 'usa-focus',
+    className,
+  ]
     .filter(Boolean)
     .join(' ');
 
