@@ -347,7 +347,7 @@ describe('document-capture/components/review-issues-step', () => {
     const { getByText, getByRole } = render(<ReviewIssuesStep {...DEFAULT_PROPS} />);
 
     await userEvent.click(getByRole('button', { name: 'idv.failure.button.warning' }));
-    expect(getByRole('heading', { name: 'doc_auth.exit_survey.header', level: 3 })).to.be.ok();
+    expect(getByRole('heading', { name: 'doc_auth.exit_survey.header', level: 2 })).to.be.ok();
     expect(getByText('doc_auth.exit_survey.optional.button')).to.be.ok();
   });
 
