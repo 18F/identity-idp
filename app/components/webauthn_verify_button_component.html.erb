@@ -18,8 +18,12 @@
       <%= t('two_factor_authentication.webauthn_authenticating') %>
     </p>
   </div>
-  <%= render SubmitButtonComponent.new(
-        class: 'webauthn-verify-button__button display-block margin-y-3',
+  <%= render ButtonComponent.new(
+        type: :button,
+        big: true,
+        wide: true,
+        **button_options,
+        class: [*button_options.to_h[:class], 'webauthn-verify-button__button'],
       ).with_content(content) %>
   <%= hidden_field_tag :credential_id, '' %>
   <%= hidden_field_tag :authenticator_data, '' %>

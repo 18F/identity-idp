@@ -52,15 +52,25 @@
   <% else %>
     <%= f.submit t('links.sign_in'), full_width: true, wide: false %>
   <% end %>
-<% end %>
-<% if desktop_device? %>
-  <div class='margin-x-neg-1 margin-top-205'>
-    <%= link_to(
-          t('account.login.piv_cac'),
-          login_piv_cac_url,
-          class: 'padding-x-1',
-        ) %>
-  </div>
+  <h2 class="separator-text">
+    Or sign in another way
+  </h2>
+  <%= render WebauthnVerifyButtonComponent.new(
+        user_challenge: session[:webauthn_challenge],
+        button_options: {
+          icon: :fingerprint,
+          outline: true,
+          full_width: true,
+          class: 'margin-bottom-1',
+        },
+      ).with_content('Sign in with passkey') %>
+  <%= render ButtonComponent.new(
+      url: login_piv_cac_url,
+      icon: :identification,
+      big: true,
+      outline: true,
+      full_width: true,
+    ).with_content('Sign in with government employee ID') %>
 <% end %>
 
 <%= render PageFooterComponent.new do %>

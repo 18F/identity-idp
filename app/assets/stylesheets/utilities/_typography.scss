@@ -95,3 +95,28 @@ h6,
 .h6 {
   @extend %h6;
 }
+
+.separator-text {
+  @include u-margin-y(3);
+  display: flex;
+  align-items: center;
+  text-align: center;
+  font-size: 1.125rem;
+
+  &::before,
+  &::after {
+    content: '';
+    display: block;
+    border-bottom: 1px solid color('primary-light');
+    flex-grow: 1;
+    min-width: 2rem;
+  }
+
+  &::before {
+    margin-right: 1rem;
+  }
+
+  &::after {
+    margin-left: 1rem;
+  }
+}

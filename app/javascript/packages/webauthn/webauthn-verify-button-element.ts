@@ -14,7 +14,7 @@ class WebauthnVerifyButtonElement extends HTMLElement {
   dataset: WebauthnVerifyButtonDataset;
 
   connectedCallback() {
-    this.form.addEventListener('submit', this.#handleSubmit, { once: true });
+    this.button.addEventListener('click', () => this.verify(), { once: true });
   }
 
   get form(): HTMLFormElement {
@@ -71,11 +71,6 @@ class WebauthnVerifyButtonElement extends HTMLElement {
     const input = this.querySelector<HTMLInputElement>(`[name="${name}"]`)!;
     input.value = value;
   }
-
-  #handleSubmit = (event: SubmitEvent) => {
-    event.preventDefault();
-    this.verify();
-  };
 }
 
 declare global {
