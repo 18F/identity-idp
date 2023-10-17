@@ -9,7 +9,7 @@ export interface VerifyCredentialDescriptor {
 interface VerifyOptions {
   userChallenge: string;
 
-  credentials: VerifyCredentialDescriptor[];
+  credentials: VerifyCredentialDescriptor[] | null;
 }
 
 interface VerifyResult {
@@ -38,7 +38,7 @@ async function verifyWebauthnDevice({
     publicKey: {
       challenge: new Uint8Array(JSON.parse(userChallenge)),
       rpId: window.location.hostname,
-      allowCredentials: credentials.map(mapVerifyCredential),
+      allowCredentials: credentials?.map(mapVerifyCredential),
       timeout: 800000,
     },
   })) as PublicKeyCredential;

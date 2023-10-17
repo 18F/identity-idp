@@ -8,6 +8,7 @@ module Users
     include Ial2ProfileConcern
     include Api::CsrfTokenConcern
     include ForcedReauthenticationConcern
+    include TwoFactorAuthenticatableMethods
 
     rescue_from ActionController::InvalidAuthenticityToken, with: :redirect_to_signin
 
@@ -20,6 +21,7 @@ module Users
     def new
       override_csp_for_google_analytics
 
+      session[:webauthn_challenge] ||= WebAuthn::Credential.options_for_get.challenge.bytes.to_a
       @ial = sp_session_ial
       @issuer_forced_reauthentication = issuer_forced_reauthentication?(
         issuer: decorated_sp_session.sp_issuer,
@@ -32,6 +34,7 @@ module Users
     end
 
     def create
+      return handle_webauthn_verification if params[:credential_id].present?
       return process_locked_out_session if session_bad_password_count_max_exceeded?
       return process_locked_out_user if current_user && user_locked_out?(current_user)
 
@@ -56,6 +59,28 @@ module Users
     end
 
     private
+
+    def handle_webauthn_verification
+      user = WebauthnConfiguration.where(credential_id: params[:credential_id]).first&.user
+      form = WebauthnVerificationForm.new(
+        user:,
+        challenge: session[:webauthn_challenge],
+        protocol: request.protocol,
+        authenticator_data: params[:authenticator_data],
+        client_data_json: params[:client_data_json],
+        signature: params[:signature],
+        credential_id: params[:credential_id],
+        webauthn_error: params[:webauthn_error],
+      )
+      result = form.submit
+      if result.success?
+        sign_in(:user, user)
+        handle_valid_verification_for_authentication_context(
+          auth_method: TwoFactorAuthenticatable::AuthMethod::WEBAUTHN_PLATFORM,
+        )
+        redirect_to after_sign_in_path_for(current_user)
+      end
+    end
 
     def clear_session_bad_password_count_if_window_expired
       locked_at = session[:max_bad_passwords_at]

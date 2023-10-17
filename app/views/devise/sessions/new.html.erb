@@ -30,6 +30,9 @@
       html: { autocomplete: 'off' },
     ) do |f|
 %>
+  <%= render WebauthnVerifyButtonComponent.new(
+        user_challenge: session[:webauthn_challenge],
+      ).with_content(t('two_factor_authentication.webauthn_platform_use_key')) %>
   <%= render ValidatedFieldComponent.new(
         form: f,
         name: :email,
