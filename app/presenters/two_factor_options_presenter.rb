@@ -1,7 +1,7 @@
 class TwoFactorOptionsPresenter
   include ActionView::Helpers::TranslationHelper
 
-  attr_reader :user, :after_mfa_setup_path
+  attr_reader :user, :after_mfa_setup_path, :return_to_sp_cancel_path
 
   delegate :two_factor_enabled?, to: :mfa_policy
 
@@ -11,7 +11,8 @@ class TwoFactorOptionsPresenter
     phishing_resistant_required: false,
     piv_cac_required: false,
     show_skip_additional_mfa_link: true,
-    after_mfa_setup_path: nil
+    after_mfa_setup_path: nil,
+    return_to_sp_cancel_path: nil
   )
     @user_agent = user_agent
     @user = user
@@ -19,6 +20,7 @@ class TwoFactorOptionsPresenter
     @piv_cac_required = piv_cac_required
     @show_skip_additional_mfa_link = show_skip_additional_mfa_link
     @after_mfa_setup_path = after_mfa_setup_path
+    @return_to_sp_cancel_path = return_to_sp_cancel_path
   end
 
   def options
@@ -78,11 +80,15 @@ class TwoFactorOptionsPresenter
   end
 
   def skip_path
-    after_mfa_setup_path if two_factor_enabled? && show_skip_additional_mfa_link?
+    if show_cancel_return_to_sp?
+      return_to_sp_cancel_path
+    elsif two_factor_enabled? && show_skip_additional_mfa_link?
+      after_mfa_setup_path
+    end
   end
 
   def skip_label
-    if user_has_dismissed_second_mfa_reminder?
+    if user_has_dismissed_second_mfa_reminder? || show_cancel_return_to_sp?
       t('links.cancel')
     else
       t('mfa.skip')

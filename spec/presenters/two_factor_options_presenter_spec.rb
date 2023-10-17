@@ -89,7 +89,6 @@ RSpec.describe TwoFactorOptionsPresenter do
 
   describe '#skip_path' do
     subject(:skip_path) { presenter.skip_path }
-
     it { expect(skip_path).to be_nil }
 
     context 'with mfa configured' do
@@ -145,8 +144,9 @@ RSpec.describe TwoFactorOptionsPresenter do
     context 'phishing resistant required to add additonal mfa' do
       let(:presenter) do
         described_class.new(
-          user_agent: user_agent, user: user_with_2fa,
-          phishing_resistant_required: true
+          user_agent: user_agent,
+          user: user_with_2fa,
+          phishing_resistant_required: true,
         )
       end
 

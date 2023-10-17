@@ -9,6 +9,7 @@ RSpec.describe 'users/two_factor_authentication_setup/index.html.erb' do
   let(:show_skip_additional_mfa_link) { true }
   let(:phishing_resistant_required) { false }
   let(:after_mfa_setup_path) { account_path }
+  let(:return_to_sp_cancel_path) { '/redirect/return_to_sp/cancel' }
   subject(:rendered) { render }
 
   before do
@@ -17,6 +18,7 @@ RSpec.describe 'users/two_factor_authentication_setup/index.html.erb' do
       user:,
       show_skip_additional_mfa_link:,
       after_mfa_setup_path:,
+      return_to_sp_cancel_path:,
       phishing_resistant_required:,
     )
     @two_factor_options_form = TwoFactorLoginOptionsForm.new(user)
@@ -116,7 +118,6 @@ RSpec.describe 'users/two_factor_authentication_setup/index.html.erb' do
 
     it 'shows a cancel link that aborts the login' do
       render
-
       expect(rendered).not_to have_link(t('mfa.skip'))
       expect(rendered).to have_link(t('links.cancel'))
     end
