@@ -156,6 +156,10 @@ module Users
         platform_authenticator: form.platform_authenticator?,
         enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
       )
+      analytics.webauthn_setup_submitted(
+        platform_authenticator: form.platform_authenticator?,
+        success: true,
+      )
       handle_remember_device_preference(params[:remember_device])
       if form.platform_authenticator?
         handle_valid_verification_for_confirmation_context(
@@ -199,6 +203,12 @@ module Users
           link_html: t('errors.webauthn_setup.additional_methods_link'),
         )
       end
+
+      analytics.webauthn_setup_submitted(
+        platform_authenticator: form.platform_authenticator?,
+        error: flash[:error],
+        success: false,
+      )
       render :new
     end
 

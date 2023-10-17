@@ -4328,9 +4328,9 @@ module AnalyticsEvents
   # @param [Hash] errors
   # @param [Boolean] success
   # Tracks when user submits WebAuthn setup
-  def webauthn_setup_submitted(platform_authenticator:, errors:, success:, **extra)
+  def webauthn_setup_submitted(platform_authenticator:, errors: nil, success:, **extra)
     track_event(
-      'WebAuthn Setup Submitted', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
+      :webauthn_setup_submitted,
       platform_authenticator: platform_authenticator,
       errors: errors,
       success: success,
@@ -4339,9 +4339,7 @@ module AnalyticsEvents
   end
 
   # @param [Hash] platform_authenticator
-  # @param [Hash] errors
   # @param [Integer] enabled_mfa_methods_count
-  # @param [Boolean] success
   # Tracks when WebAuthn setup is visited
   def webauthn_setup_visit(platform_authenticator:, enabled_mfa_methods_count:, **extra)
     track_event(
