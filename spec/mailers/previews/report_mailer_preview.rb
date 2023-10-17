@@ -50,7 +50,7 @@ class ReportMailerPreview < ActionMailer::Preview
           { title: 'Document upload proofing rates', float_as_percent: true, precision: 4 },
           ['metric', 'num_users', 'percent'],
           ['image_submitted', 5, 5.0 / 5],
-          ['verified', 1, 1.0 / 5],
+          ['verified', 2, 2.0 / 5],
           ['not_verified_started_gpo', 1, 1.0 / 5],
           ['not_verified_started_in_person', 1, 1.0 / 5],
           ['not_verified_started_fraud_review', 1, 1.0 / 5],
