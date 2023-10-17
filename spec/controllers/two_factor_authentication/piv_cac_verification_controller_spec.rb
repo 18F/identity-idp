@@ -66,20 +66,28 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController do
       it 'redirects to the profile' do
         expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
 
-        get :show, params: { token: 'good-token' }
+        freeze_time do
+          get :show, params: { token: 'good-token' }
 
-        expect(subject.user_session[:auth_method]).to eq(
-          TwoFactorAuthenticatable::AuthMethod::PIV_CAC,
-        )
-        expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq false
-        expect(response).to redirect_to account_path
-        expect(subject.user_session[:decrypted_x509]).to eq(
-          {
-            'subject' => x509_subject,
-            'issuer' => x509_issuer,
-            'presented' => true,
-          }.to_json,
-        )
+          expect(subject.user_session[:auth_method]).to eq(
+            TwoFactorAuthenticatable::AuthMethod::PIV_CAC,
+          )
+          expect(subject.user_session[:auth_events]).to eq(
+            [
+              auth_method: TwoFactorAuthenticatable::AuthMethod::PIV_CAC,
+              at: Time.zone.now,
+            ],
+          )
+          expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq false
+          expect(response).to redirect_to account_path
+          expect(subject.user_session[:decrypted_x509]).to eq(
+            {
+              'subject' => x509_subject,
+              'issuer' => x509_issuer,
+              'presented' => true,
+            }.to_json,
+          )
+        end
       end
 
       it 'resets the second_factor_attempts_count' do
@@ -156,6 +164,7 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController do
 
       it 'does not set auth_method and requires 2FA' do
         expect(subject.user_session[:auth_method]).to eq nil
+        expect(subject.user_session[:auth_events]).to eq nil
         expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq true
       end
     end

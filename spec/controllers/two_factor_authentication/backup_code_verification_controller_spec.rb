@@ -42,12 +42,18 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
             with(:mfa_login_backup_code, success: true)
 
           post :create, params: payload
-        end
 
-        expect(subject.user_session[:auth_method]).to eq(
-          TwoFactorAuthenticatable::AuthMethod::BACKUP_CODE,
-        )
-        expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq false
+          expect(subject.user_session[:auth_method]).to eq(
+            TwoFactorAuthenticatable::AuthMethod::BACKUP_CODE,
+          )
+          expect(subject.user_session[:auth_events]).to eq(
+            [
+              auth_method: TwoFactorAuthenticatable::AuthMethod::BACKUP_CODE,
+              at: Time.zone.now,
+            ],
+          )
+          expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq false
+        end
       end
 
       context 'with remember_device in the params' do
@@ -141,6 +147,7 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
         expect(response).to render_template(:show)
         expect(flash[:error]).to eq t('two_factor_authentication.invalid_backup_code')
         expect(subject.user_session[:auth_method]).to eq nil
+        expect(subject.user_session[:auth_events]).to eq nil
         expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq true
       end
 
