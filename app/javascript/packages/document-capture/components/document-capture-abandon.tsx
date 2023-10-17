@@ -50,7 +50,7 @@ function DocumentCaptureAbandon({ navigate }: DocumentCaptureAbandonProps) {
     </p>
   );
   const optionalTag = (
-    <Tag isBig={false} id="optional_question_tag">
+    <Tag isBig={false} isInformative>
       {t('doc_auth.exit_survey.optional.tag', { app_name: appName })}
     </Tag>
   );
