@@ -24,6 +24,7 @@ module Idv
       idv_session.vendor_phone_confirmation = false
       idv_session.user_phone_confirmation = false
 
+      # proof_resolution job expects these values
       pii[:uuid_prefix] = ServiceProvider.find_by(issuer: sp_session[:issuer])&.app_id
       pii[:ssn] = idv_session.ssn
       Idv::Agent.new(pii).proof_resolution(
@@ -238,7 +239,6 @@ module Idv
     def summarize_result_and_rate_limit_failures(summary_result)
       if summary_result.success?
         add_proofing_components
-        ssn_rate_limiter.reset!
       else
         idv_failure(summary_result)
       end

@@ -64,9 +64,11 @@ RSpec.feature 'IAL1 Single Sign On' do
 
     it 'shows user the start page with a link back to the SP' do
       visit saml_authn_request_url
-
       expect(page).to have_link(
-        t('links.back_to_sp', sp: 'Your friendly Government Agency'), href: return_to_sp_cancel_path
+        t(
+          'links.back_to_sp',
+          sp: 'Your friendly Government Agency',
+        ), href: return_to_sp_cancel_path(step: :authentication)
       )
     end
 

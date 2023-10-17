@@ -35,12 +35,12 @@ en:
       cancelled: Identity verification is cancelled
       come_back_soon: Come back soon
       enter_one_time_code: Enter your one-time code
+      enter_password: Re-enter your password
+      enter_password_letter: Re-enter your password to send your letter
       get_letter: Get a letter
       personal_key: Save your personal key
       phone: Verify your phone number
       reset_password: Reset Password
-      review: Re-enter your password
-      review_letter: Re-enter your password to send your letter
       verify_info: Verify your information
     mfa_setup:
       suggest_second_mfa: You’ve added your first authentication method! Add a second

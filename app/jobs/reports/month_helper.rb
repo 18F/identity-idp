@@ -15,6 +15,8 @@ module Reports
     # @param [Range<Date>] date_range
     # @return [Array<Range<Date>>]
     def months(date_range)
+      return [date_range] if start_end_same_month?(date_range)
+
       results = []
 
       results << (date_range.begin..date_range.begin.end_of_month)
@@ -32,6 +34,14 @@ module Reports
       results << (date_range.end.beginning_of_month..date_range.end) if current < date_range.end
 
       results
+    end
+
+    # @api private
+    def start_end_same_month?(date_range)
+      start_date = date_range.begin
+      end_date = date_range.end
+
+      start_date.year == end_date.year && start_date.month == end_date.month
     end
   end
 end

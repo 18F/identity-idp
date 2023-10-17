@@ -42,6 +42,6 @@
       <% end %>
     <% end %>
     <%= render PageFooterComponent.new do %>
-      <%= link_to(t('links.cancel'), idv_cancel_path) %>
+      <%= link_to(t('links.cancel'), idv_cancel_path(step: :phone_error)) %>
     <% end %>
 

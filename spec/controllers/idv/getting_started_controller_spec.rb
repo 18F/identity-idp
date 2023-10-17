@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Idv::GettingStartedController do
-  include IdvHelper
-
   let(:user) { create(:user) }
 
   let(:ab_test_args) do

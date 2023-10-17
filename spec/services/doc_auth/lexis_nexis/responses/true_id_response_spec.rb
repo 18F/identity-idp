@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
-  let(:success_response_body) { LexisNexisFixtures.true_id_response_success_2 }
+  let(:success_response_body) { LexisNexisFixtures.true_id_response_success_3 }
   let(:success_response) do
     instance_double(Faraday::Response, status: 200, body: success_response_body)
   end
@@ -13,9 +13,16 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     LexisNexisFixtures.true_id_response_failure_no_liveness_low_dpi
   end
 
+  let(:failure_body_tampering) do
+    LexisNexisFixtures.true_id_response_failure_tampering
+  end
+
   # rubocop:disable Layout/LineLength
   let(:failure_response_no_liveness) do
     instance_double(Faraday::Response, status: 200, body: failure_body_no_liveness)
+  end
+  let(:failure_response_tampering) do
+    instance_double(Faraday::Response, status: 200, body: failure_body_tampering)
   end
   let(:failure_response_with_all_failures) do
     instance_double(Faraday::Response, status: 200, body: failure_body_with_all_failures)
@@ -86,7 +93,8 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     end
 
     it 'produces expected hash output' do
-      expect(response.to_h).to match(
+      response_hash = response.to_h
+      expect(response_hash).to match(
         success: true,
         exception: nil,
         errors: {},
@@ -101,12 +109,12 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         transaction_reason_code: 'trueid_pass',
         product_status: 'pass',
         decision_product_status: 'pass',
-        doc_auth_result: 'Passed',
         processed_alerts: a_hash_including(:failed),
         address_line2_present: true,
         alert_failure_count: a_kind_of(Numeric),
         portrait_match_results: nil,
         image_metrics: a_hash_including(:front, :back),
+        doc_auth_result: 'Passed',
         'ClassificationMode' => 'Automatic',
         'DocAuthResult' => 'Passed',
         'DocClass' => 'DriversLicense',
@@ -121,11 +129,26 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         'DocIssueType' => "Driver's License - STAR",
         'OrientationChanged' => 'true',
         'PresentationChanged' => 'false',
+        'DocAuthTamperResult' => 'Passed',
+        'DocAuthTamperSensitivity' => 'Normal',
         classification_info: {
           Front: a_hash_including(:ClassName, :CountryCode),
           Back: a_hash_including(:ClassName, :CountryCode),
         },
       )
+      passed_alerts = response_hash.dig(:processed_alerts, :passed)
+      passed_alerts.each do |alert|
+        expect(alert).to have_key(:disposition)
+      end
+      alerts_with_mode_etc = passed_alerts.select do |alert|
+        alert[:model].present? && alert[:region].present? && alert[:region_ref].present?
+      end
+      expect(alerts_with_mode_etc).not_to be_empty
+      alerts_with_mode_etc.each do |alert|
+        alert[:region_ref].each do |region_ref|
+          expect(region_ref).to include(:side, :key)
+        end
+      end
     end
 
     it 'notes that address line 2 was present' do
@@ -140,7 +163,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
 
   context 'when there is no address line 2' do
     let(:success_response_no_line2) do
-      body_no_line2 = JSON.parse(LexisNexisFixtures.true_id_response_success_2).tap do |json|
+      body_no_line2 = JSON.parse(LexisNexisFixtures.true_id_response_success_3).tap do |json|
         json['Products'].first['ParameterDetails'] = json['Products'].first['ParameterDetails'].
           select { |f| f['Name'] != 'Fields_AddressLine2' }
       end.to_json
@@ -156,14 +179,14 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   end
 
   context 'when True_ID response does not contain a decision product status' do
-    let(:true_id_response_success_2) { JSON.parse(LexisNexisFixtures.true_id_response_success_2) }
+    let(:true_id_response_success_3) { JSON.parse(LexisNexisFixtures.true_id_response_success_3) }
     describe 'when a True_ID Decision product is not present in the response' do
       it 'excludes decision_product_status from logging' do
-        body_no_decision = true_id_response_success_2.tap do |json|
+        body_no_decision = true_id_response_success_3.tap do |json|
           json['Products'].delete_if { |products| products['ProductType'] == 'TrueID_Decision' }
         end.to_json
 
-        decision_product = get_decision_product(true_id_response_success_2)
+        decision_product = get_decision_product(true_id_response_success_3)
         expect(decision_product).to be_nil
         success_response_no_decision = instance_double(
           Faraday::Response, status: 200,
@@ -177,7 +200,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
 
     describe 'when a True_ID_Decision does not contain a status' do
       it 'excludes decision_product_status from logging' do
-        decision_product = get_decision_product(true_id_response_success_2)
+        decision_product = get_decision_product(true_id_response_success_3)
         body_no_decision_status = decision_product.tap do |json|
           json.delete('ProductStatus')
         end.to_json
@@ -325,6 +348,20 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
           Back: a_hash_including(:ClassName, :CountryCode),
         },
       )
+    end
+    it 'produces appropriate errors with document tampering' do
+      output = described_class.new(failure_response_tampering, config).to_h
+      errors = output[:errors]
+      expect(output.to_h[:log_alert_results]).to include(
+        document_tampering_detection: { no_side: 'Failed' },
+      )
+      expect(output[:success]).to eq(false)
+      expect(errors.keys).to contain_exactly(:general, :front, :back, :hints)
+      # we dont have specific error for tampering yet
+      expect(errors[:general]).to contain_exactly(DocAuth::Errors::GENERAL_ERROR)
+      expect(errors[:front]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
+      expect(errors[:back]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
+      expect(errors[:hints]).to eq(true)
     end
   end
 
@@ -486,7 +523,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   describe '#doc_type_supported?' do
     let(:doc_class_name) { 'Drivers License' }
     let(:success_response) do
-      response = JSON.parse(LexisNexisFixtures.true_id_response_success_2).tap do |json|
+      response = JSON.parse(LexisNexisFixtures.true_id_response_success_3).tap do |json|
         doc_class_node = json['Products'].first['ParameterDetails'].
           select { |f| f['Name'] == 'DocClassName' }
         doc_class_node.first['Values'].first['Value'] = doc_class_name
@@ -515,7 +552,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
 
     context 'when country code is not supported' do
       let(:success_response) do
-        body = JSON.parse(LexisNexisFixtures.true_id_response_success_2).tap do |json|
+        body = JSON.parse(LexisNexisFixtures.true_id_response_success_3).tap do |json|
           doc_class_node = json['Products'].first['ParameterDetails'].
             select { |f| f['Name'] == 'Fields_CountryCode' && f['Group'] == 'IDAUTH_FIELD_DATA' }
           doc_class_node.first['Values'].first['Value'] = 'CAN'

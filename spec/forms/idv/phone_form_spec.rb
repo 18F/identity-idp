@@ -130,6 +130,29 @@ RSpec.describe Idv::PhoneForm do
       end
     end
 
+    context 'with a number submitted on the hybrid handoff step' do
+      context 'with a phone number on the user record' do
+        let(:user_phone) { '2025555000' }
+        let(:hybrid_handoff_phone_number) { '2025551234' }
+        let(:user) { build_stubbed(:user, :fully_registered, with: { phone: user_phone }) }
+        let(:optional_params) { { hybrid_handoff_phone_number: hybrid_handoff_phone_number } }
+
+        it 'uses the user phone as the initial value' do
+          expect(subject.phone).to eq(PhoneFormatter.format(user_phone))
+        end
+      end
+
+      context 'without a phone number on the user record' do
+        let(:hybrid_handoff_phone_number) { '2025551234' }
+        let(:user) { build_stubbed(:user) }
+        let(:optional_params) { { hybrid_handoff_phone_number: hybrid_handoff_phone_number } }
+
+        it 'uses the hybrid handoff phone as the initial value' do
+          expect(subject.phone).to eq(PhoneFormatter.format(hybrid_handoff_phone_number))
+        end
+      end
+    end
+
     context 'with previously submitted value' do
       let(:user) { build_stubbed(:user, :fully_registered, with: { phone: '7035551234' }) }
       let(:previous_params) { { phone: '2255555000' } }

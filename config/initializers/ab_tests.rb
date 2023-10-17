@@ -23,4 +23,9 @@ module AbTests
     experiment_name: 'Idv: Getting Started Experience',
     buckets: IdentityConfig.store.idv_getting_started_a_b_testing,
   )
+
+  IDV_PHONE_QUESTION = AbTestBucket.new(
+    experiment_name: 'Idv: Phone Question',
+    buckets: IdentityConfig.store.idv_phone_question_a_b_testing,
+  )
 end
