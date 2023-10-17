@@ -13,6 +13,7 @@ class ReportMailerPreview < ActionMailer::Preview
       email: 'test@example.com',
       subject: 'Example Key Metrics Report',
       message: 'Key Metrics Report February 2021',
+      as_xlsx: true,
       tables: [
         [
           { title: 'February 2021 Active Users' },
