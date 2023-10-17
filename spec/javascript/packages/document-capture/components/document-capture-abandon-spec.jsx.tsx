@@ -62,7 +62,7 @@ describe('DocumentCaptureAbandon', () => {
         </AnalyticsContextProvider>,
       );
       // header
-      expect(getByRole('heading', { name: 'header text', level: 3 })).to.be.ok();
+      expect(getByRole('heading', { name: 'header text', level: 2 })).to.be.ok();
 
       // content and exit link
       const exitLink = getByRole('link', { name: 'exit Login.gov and contact testSP' });

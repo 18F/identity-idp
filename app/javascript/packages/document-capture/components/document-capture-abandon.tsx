@@ -29,7 +29,7 @@ function DocumentCaptureAbandon({ navigate }: DocumentCaptureAbandonProps) {
   const { currentStep, exitURL, cancelURL } = useContext(FlowContext);
   const { name: spName } = useContext(ServiceProviderContext);
   const appName = getConfigValue('appName');
-  const header = <h3>{t('doc_auth.exit_survey.header')}</h3>;
+  const header = <h2 className="h3">{t('doc_auth.exit_survey.header')}</h2>;
 
   const content = (
     <p>
