@@ -3,12 +3,13 @@ require 'rack/timeout/base'
 module Rack
   class Timeout
     EXCLUDES = [
-      '/api/verify/images',
       '/verify/verify_info',
       '/verify/phone',
       '/verify/document_capture',
       '/verify/link_sent',
-    ]
+    ].flat_map do |path|
+      [path] + Idp::Constants::AVAILABLE_LOCALES.map { |locale| "/#{locale}#{path}" }
+    end + ['/api/verify/images']
 
     class << self
       attr_accessor :excludes
