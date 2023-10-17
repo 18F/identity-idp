@@ -10,6 +10,7 @@ variables:
   ECR_REGISTRY: '${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com'
   IDP_CI_SHA: 'sha256:26bcd68d39085d0e9dbfe272ec3f95158a272dcc2e25f5152b1d8e4600cf1cac'
   PKI_IMAGE_TAG: 'main'
+  DASHBOARD_IMAGE_TAG: 'latest'
 
 default:
   image: '${ECR_REGISTRY}/idp/ci@${IDP_CI_SHA}'
@@ -433,11 +434,14 @@ review-app:
       export DASHBOARD_ENV=$(cat <<EOF
       [
         {"name": "POSTGRES_SSLMODE", "value": "prefer"},
-        {"name": "POSTGRES_NAME", "value": "dashboard"},
+        {"name": "POSTGRES_DB", "value": "dashboard"},
         {"name": "POSTGRES_HOST","value": "$CI_ENVIRONMENT_SLUG-login-chart-dashboard-pg.review-apps"},
         {"name": "POSTGRES_USERNAME", "value": "postgres"},
         {"name": "POSTGRES_PASSWORD", "value": "postgres"},
-        {"name": "IDP_HOST", "value": "$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov"},
+        {"name": "NEW_RELIC_ENABLED", "value": "false"},
+        {"name": "IDP_URL", "value": "$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov"},
+        {"name": "IDP_SP_URL", "value": "$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov"},
+        {"name": "POST_LOGOUT_URL", "value": "$CI_ENVIRONMENT_SLUG-review-app.dashboard.identitysandbox.gov"},
         {"name": "DOMAIN_NAME", "value": "$CI_ENVIRONMENT_SLUG-review-app.dashboard.identitysandbox.gov"}
       ]
       EOF
@@ -453,10 +457,12 @@ review-app:
       --set pivcac.image.repository="${ECR_REGISTRY}/identity-pivcac/review"
       --set pivcac.image.tag="${PKI_IMAGE_TAG}"
       --set dashboard.image.repository="${ECR_REGISTRY}/identity-idp/dashboard"
-      --set dashboard.image.tag="${CI_COMMIT_SHA}"
+      --set dashboard.image.tag="${DASHBOARD_IMAGE_TAG}"
       --set-json idp.env="$IDP_ENV"
       --set-json worker.env="$WORKER_ENV"
       --set-json pivcac.env="$PIVCAC_ENV"
+      --set-json dashboard.env="$DASHBOARD_ENV"
+      --set-json dashboard.enabled=true
       --set-json idp.ingress.hosts="[{\"host\": \"$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov\", \"paths\": [{\"path\": \"/\", \"pathType\": \"Prefix\"}]}]"
       --set-json pivcac.ingress.hosts="[{\"host\": \"$CI_ENVIRONMENT_SLUG-review-app.pivcac.identitysandbox.gov\", \"paths\": [{\"path\": \"/\", \"pathType\": \"Prefix\"}]}]"
       --set-json dashboard.ingress.hosts="[{\"host\": \"$CI_ENVIRONMENT_SLUG-review-app.dashboard.identitysandbox.gov\", \"paths\": [{\"path\": \"/\", \"pathType\": \"Prefix\"}]}]"
