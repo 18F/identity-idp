@@ -3,7 +3,11 @@ class GpoUaaAnalyzer
     data = []
     get_codes.each do |code|
       gpo_confirmation_code = GpoConfirmationCode.first_with_otp(code)
-      profile = gpo_confirmation_code.profile
+      profile = gpo_confirmation_code&.profile
+      if profile.nil?
+        data << "#{code}#{',missing' * 5}"
+        next
+      end
       data << [
         code,
         gpo_confirmation_code.created_at,
@@ -50,6 +54,8 @@ class GpoUaaAnalyzer
   end
 
   def get_codes
-    []
+    %w[
+
+    ]
   end
 end
