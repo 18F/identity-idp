@@ -17,11 +17,9 @@ module Reporting
 
     def monthly_active_users_count_emailable_report
       EmailableReport.new(
-        email_options: {
-          title: "#{report_month_year} Active Users",
-        },
+        title: "#{report_month_year} Active Users",
         table: monthly_active_users_count_report,
-        csv_name: 'monthly_active_users_count',
+        filename: 'monthly_active_users_count',
       )
     end
 

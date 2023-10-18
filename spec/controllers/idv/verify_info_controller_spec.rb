@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Idv::VerifyInfoController do
-  include IdvHelper
-
   let(:user) { create(:user) }
   let(:analytics_hash) do
     {

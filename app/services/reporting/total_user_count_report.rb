@@ -17,9 +17,9 @@ module Reporting
 
     def total_user_count_emailable_report
       EmailableReport.new(
-        email_options: { title: 'Total user counts' },
+        title: 'Total user counts',
         table: total_user_count_report,
-        csv_name: 'total_user_count',
+        filename: 'total_user_count',
       )
     end
 

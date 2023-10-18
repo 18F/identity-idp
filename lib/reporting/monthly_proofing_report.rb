@@ -29,7 +29,7 @@ module Reporting
     end
 
     # @param [Array<String>] issuers
-    # @param [Range<Time>] date
+    # @param [Range<Time>] time_range
     def initialize(
       time_range:,
       verbose: false,
@@ -55,9 +55,9 @@ module Reporting
 
     def document_upload_proofing_emailable_report
       EmailableReport.new(
-        email_options: { title: 'Document upload proofing rates' },
+        title: 'Document upload proofing rates',
         table: proofing_report,
-        csv_name: 'document_upload_proofing',
+        filename: 'document_upload_proofing',
       )
     end
 
@@ -78,6 +78,11 @@ module Reporting
       end
 
       csv
+    rescue Aws::CloudWatchLogs::Errors::MalformedQueryException => error
+      [
+        ['Error', 'Message'],
+        [error.class.name, error.message],
+      ]
     end
 
     def as_csv
