@@ -12,6 +12,13 @@ module Idv
     before_action :confirm_hybrid_handoff_needed, only: :show
     before_action :maybe_redirect_for_phone_question_ab_test, only: :show
 
+    NAVIGATION_STEP = Step.new(
+      path: idv_hybrid_handoff_path,
+      next_steps: [:link_sent, :document_capture],
+      requirements: -> { idv_session.idv_consent_given },
+      # needed: -> { idv_session.flow_path.blank? },
+    )
+
     def show
       analytics.idv_doc_auth_hybrid_handoff_visited(**analytics_arguments)
 

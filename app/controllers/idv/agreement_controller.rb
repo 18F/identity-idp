@@ -5,7 +5,6 @@ module Idv
 
     before_action :confirm_not_rate_limited
     before_action :confirm_agreement_step_allowed
-    before_action :confirm_agreement_needed, only: :show
 
     def show
       analytics.idv_doc_auth_agreement_visited(**analytics_arguments)
@@ -59,12 +58,6 @@ module Idv
 
     def confirm_agreement_step_allowed
       return if step_allowed?(:agreement)
-
-      redirect_to path_for_latest_step
-    end
-
-    def confirm_agreement_needed
-      return if step_needed?(:agreement)
 
       redirect_to path_for_latest_step
     end

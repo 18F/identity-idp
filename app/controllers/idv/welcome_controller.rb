@@ -5,7 +5,6 @@ module Idv
     include GettingStartedAbTestConcern
 
     before_action :confirm_not_rate_limited
-    before_action :confirm_welcome_needed, only: :show
     before_action :maybe_redirect_for_getting_started_ab_test
 
     def show
@@ -55,12 +54,6 @@ module Idv
       return unless IdentityConfig.store.in_person_proofing_enabled
       UspsInPersonProofing::EnrollmentHelper.
         cancel_stale_establishing_enrollments_for_user(current_user)
-    end
-
-    def confirm_welcome_needed
-      return if step_needed?(:welcome)
-
-      redirect_to path_for_latest_step
     end
   end
 end

@@ -75,12 +75,13 @@ module Idv
                 phone_question_ab_test_bucket == :show_phone_question
             end,
           ),
-          hybrid_handoff: Step.new(
-            path: idv_hybrid_handoff_path,
-            next_steps: [:link_sent, :document_capture],
-            requirements: -> { idv_session.idv_consent_given },
-            needed: -> { idv_session.flow_path.blank? },
-          ),
+          hybrid_handoff: Idv::HybridHandoffController::NAVIGATION_STEP,
+          # hybrid_handoff: Step.new(
+          #   path: idv_hybrid_handoff_path,
+          #   next_steps: [:link_sent, :document_capture],
+          #   requirements: -> { idv_session.idv_consent_given },
+          #   needed: -> { idv_session.flow_path.blank? },
+          # ),
           link_sent: Step.new(
             path: idv_link_sent_path,
             next_steps: [:ssn],
