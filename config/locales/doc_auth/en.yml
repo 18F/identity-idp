@@ -90,8 +90,10 @@ en:
       http:
         image_load: The image file that you added is not supported. Please take new
           photos of your ID and try again.
-        image_size: Your image size is too large or too small. Please add images of your
-          ID that are about 2025 x 1275 pixels.
+        image_size:
+          failed_short: Image file is not supported, please try again.
+          top_msg: Your image size is too large or too small. Please add images of your ID
+            that are about 2025 x 1275 pixels.
         pixel_depth: The pixel depth of your image file is not supported. Please take
           new photos of your ID and try again. Supported image pixel depth is
           24-bit RGB.

@@ -127,16 +127,21 @@ module DocAuth
       end
 
       def handle_expected_http_error(http_response)
-        error = case http_response.status
-          when 438
-            Errors::IMAGE_LOAD_FAILURE
-          when 439
-            Errors::PIXEL_DEPTH_FAILURE
-          when 440
-            Errors::IMAGE_SIZE_FAILURE
-        end
+        errors = errors_from_http_status(http_response.status)
+        create_error_response(errors, create_http_exception(http_response))
+      end
 
-        create_error_response({ general: [error] }, create_http_exception(http_response))
+      def errors_from_http_status(status)
+        # todo: side specific message
+        error = case status
+        when 438
+          Errors::IMAGE_LOAD_FAILURE
+        when 439
+          Errors::PIXEL_DEPTH_FAILURE
+        when 440
+          Errors::IMAGE_SIZE_FAILURE
+                end
+        { general: [error] }
       end
 
       def handle_invalid_response(http_response)

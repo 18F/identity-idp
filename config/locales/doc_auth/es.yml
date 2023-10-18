@@ -114,9 +114,10 @@ es:
       http:
         image_load: El archivo de imagen que ha añadido no es compatible. Por favor,
           tome nuevas fotos de su identificación y vuelva a intentarlo.
-        image_size: El tamaño de la imagen es demasiado grande o demasiado pequeño.
-          Añada imágenes de su documento de identidad de unos 2025 x 1275
-          píxeles.
+        image_size:
+          failed_short: El archivo de imagen no es compatible, inténtalo de nuevo.
+          top_msg: El tamaño de la imagen es demasiado grande o demasiado pequeño. Añada
+            imágenes de su documento de identidad de unos 2025 x 1275 píxeles.
         pixel_depth: No es compatible con la profundidad de píxeles de su archivo de
           imagen. Tome nuevas fotos de su documento de identidad e inténtelo
           nuevamente. La profundidad de píxeles de la imagen admitida es de 24

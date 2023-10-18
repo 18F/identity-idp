@@ -80,10 +80,13 @@ module DocAuthRouter
     DocAuth::Errors::GLARE_LOW_FIELD => 'doc_auth.errors.glare.failed_short',
     # i18n-tasks-use t('doc_auth.errors.http.image_load')
     DocAuth::Errors::IMAGE_LOAD_FAILURE => 'doc_auth.errors.http.image_load',
+    DocAuth::Errors::IMAGE_LOAD_FAILURE_FIELD => 'doc_auth.errors.http.image_load',
     # i18n-tasks-use t('doc_auth.errors.http.pixel_depth')
     DocAuth::Errors::PIXEL_DEPTH_FAILURE => 'doc_auth.errors.http.pixel_depth',
-    # i18n-tasks-use t('doc_auth.errors.http.image_size')
-    DocAuth::Errors::IMAGE_SIZE_FAILURE => 'doc_auth.errors.http.image_size',
+    DocAuth::Errors::PIXEL_DEPTH_FAILURE_FIELD => 'doc_auth.errors.http.pixel_depth',
+    # i18n-tasks-use t('doc_auth.errors.http.image_size.top_msg')
+    DocAuth::Errors::IMAGE_SIZE_FAILURE => 'doc_auth.errors.http.image_size.top_msg',
+    DocAuth::Errors::IMAGE_SIZE_FAILURE_FIELD => 'doc_auth.errors.http.image_size.failed_short',
     # i18n-tasks-use t('doc_auth.errors.general.fallback_field_level')
     DocAuth::Errors::FALLBACK_FIELD_LEVEL => 'doc_auth.errors.general.fallback_field_level',
   }.freeze

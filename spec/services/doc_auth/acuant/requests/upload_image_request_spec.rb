@@ -29,6 +29,36 @@ RSpec.describe DocAuth::Acuant::Requests::UploadImageRequest do
       expect(response.exception).to be_nil
       expect(request_stub).to have_been_requested
     end
+
+    context 'when http status is 4xx' do
+      shared_examples 'http unexpected 4xx status' do |http_status, general_failure, side_failure|
+        it "generate errors for #{http_status}" do
+          request_stub = stub_request(:post, url).with(
+            query: { side: 0, light: 0 },
+            body: DocAuthImageFixtures.document_front_image,
+          ).to_return(body: '', status: http_status)
+
+          request = described_class.new(
+            config: config,
+            image_data: DocAuthImageFixtures.document_front_image,
+            instance_id: instance_id,
+            side: :front,
+          )
+          response = request.fetch
+          expect(response.success?).to eq(false)
+          expect(response.errors).to eq({ front: [side_failure], general: [general_failure] })
+          expect(response.exception).not_to be_nil
+          expect(request_stub).to have_been_requested
+        end
+      end
+
+      it_should_behave_like 'http unexpected 4xx status', 440, 'image_size_failure',
+                            'image_size_failure_field'
+      it_should_behave_like 'http unexpected 4xx status', 438, 'image_load_failure',
+                            'image_load_failure_field'
+      it_should_behave_like 'http unexpected 4xx status', 439, 'pixel_depth_failure',
+                            'pixel_depth_failure_field'
+    end
   end
 
   context 'with a back image' do
