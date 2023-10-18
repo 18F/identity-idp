@@ -40,7 +40,7 @@ class ReportMailer < ActionMailer::Base
   # @param [String] subject
   # @param [String] env name of current deploy environment
   # @param [:csv,:xlsx] attachment_format
-  # @param [Array<Array<Hash,Array<String>>>] tables
+  # @param [Array<EmailableReport>] reports
   #   an array of tables (which are arrays of rows (arrays of strings))
   #   each table can have a first "row" that is a hash with options
   # @option opts [Boolean] :float_as_percent whether or not to render floats as percents
@@ -49,40 +49,34 @@ class ReportMailer < ActionMailer::Base
     email:,
     subject:,
     message:,
-    tables:,
+    reports:,
     attachment_format:,
     env: Identity::Hostdata.env || 'local'
   )
     @message = message
 
-    @tables = tables.map(&:dup).each_with_index.map do |table, index|
-      options = table.first.is_a?(Hash) ? table.shift : {}
-
-      options[:title] ||= "Table #{index + 1}"
-
-      [options, *table]
+    @reports = reports.map(&:dup).each_with_index do |report, index|
+      report.title ||= "Table #{index + 1}"
     end
 
     case attachment_format
     when :csv
-      @tables.each do |options_and_table|
-        options, *table = options_and_table
+      @reports.each do |report|
+        filename = "#{report.filename || report.title.parameterize}.csv"
 
-        title = "#{options[:title].parameterize}.csv"
-
-        attachments[title] = CSV.generate do |csv|
-          table.each do |row|
+        attachments[filename] = CSV.generate do |csv|
+          report.table.each do |row|
             csv << row
           end
         end
       end
     when :xlsx
       Axlsx::Package.new do |package|
-        @tables.each do |options_and_table|
-          options, *table = options_and_table
+        @reports.each do |report|
+          name = report.title.byteslice(0...31)
 
-          package.workbook.add_worksheet(name: options[:title].byteslice(0...31)) do |sheet|
-            table.each do |row|
+          package.workbook.add_worksheet(name: name) do |sheet|
+            report.table.each do |row|
               sheet.add_row(row)
             end
           end

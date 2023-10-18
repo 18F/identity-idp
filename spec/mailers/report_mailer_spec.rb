@@ -89,16 +89,18 @@ RSpec.describe ReportMailer, type: :mailer do
         message: 'My Report - Today',
         env: env,
         attachment_format: attachment_format,
-        tables: [
-          first_table,
-          [
-            { float_as_percent: true, title: 'Custom Table 2' },
-            *second_table,
-          ],
-          [
-            { float_as_percent: false, title: 'Custom Table 3 With Very Long Name' },
-            *third_table,
-          ],
+        reports: [
+          Reporting::EmailableReport.new(table: first_table),
+          Reporting::EmailableReport.new(
+            table: second_table,
+            float_as_percent: true,
+            title: 'Custom Table 2',
+          ),
+          Reporting::EmailableReport.new(
+            table: third_table,
+            float_as_percent: false,
+            title: 'Custom Table 3 With Very Long Name',
+          ),
         ],
       )
     end

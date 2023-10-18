@@ -58,7 +58,7 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
       message: 'Report: monthly-key-metrics-report 2021-03-02',
       email: [agnes_email],
       subject: 'Monthly Key Metrics Report - 2021-03-02',
-      tables: anything,
+      reports: anything,
       attachment_format: :xlsx,
     ).and_call_original
 
@@ -72,7 +72,7 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
       message: 'Report: monthly-key-metrics-report 2021-03-01',
       email: [agnes_email, feds_email],
       subject: 'Monthly Key Metrics Report - 2021-03-01',
-      tables: anything,
+      reports: anything,
       attachment_format: :xlsx,
     ).and_call_original
 
