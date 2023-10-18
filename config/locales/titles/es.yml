@@ -74,7 +74,7 @@ es:
       completion_ial2: Conecte su información verificada a %{sp}
       completion_new_attributes: '%{sp} está solicitando nueva información'
       completion_new_sp: Acabas de iniciar sesión por primera vez
-      completion_reverified_consent: Comparta su información actualizada con %{sp}
+      completion_reverified_consent: Proporciónale tu información actualizada a %{sp}
       confirmation: Continuar para iniciar sesión
     spam_protection: Protección contra el correo no deseado
     totp_setup:
