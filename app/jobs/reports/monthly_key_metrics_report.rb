@@ -7,7 +7,7 @@ module Reports
 
     attr_reader :report_date
 
-    def initialize(*args, report_date: nil, **rest)
+    def initialize(report_date = nil, *args, **rest)
       @report_date = report_date
       super(*args, **rest)
     end
