@@ -84,6 +84,10 @@ RSpec.describe ReportMailer, type: :mailer do
       )
     end
 
+    it 'does not attach the Login.gov logo' do
+      expect(mail.attachments.map(&:filename)).to_not include('logo.png')
+    end
+
     it 'renders the tables in HTML and attaches them as CSVs', aggregate_failures: true do
       doc = Nokogiri::HTML(mail.html_part.body.to_s)
 
