@@ -48,6 +48,9 @@ RSpec.describe UpdateUserPasswordForm, type: :model do
         expect(subject.submit(params).to_h).to eq(
           success: true,
           errors: {},
+          active_profile_present: false,
+          pending_profile_present: false,
+          user_id: user.uuid,
         )
       end
 
@@ -67,10 +70,9 @@ RSpec.describe UpdateUserPasswordForm, type: :model do
     context 'when the user has an active profile' do
       let(:profile) { create(:profile, :active, :verified, pii: { ssn: '1234' }) }
       let(:user) { profile.user }
+      let(:user_session) { { decrypted_pii: { ssn: '1234' }.to_json } }
 
       it 'encrypts the active profile' do
-        allow(user).to receive(:active_profile).and_return(profile)
-
         encryptor = instance_double(ActiveProfileEncryptor)
         allow(ActiveProfileEncryptor).to receive(:new).
           with(user, user_session, password).and_return(encryptor)
@@ -80,13 +82,51 @@ RSpec.describe UpdateUserPasswordForm, type: :model do
 
         expect(encryptor).to have_received(:call)
       end
+
+      it 'logs that the user has an active profile' do
+        result = subject.submit(params)
+
+        expect(result.extra).to include(
+          active_profile_present: true,
+          pending_profile_present: false,
+        )
+      end
     end
 
-    context 'when the user does not have an active profile' do
+    context 'the user has a pending profile' do
+      let(:profile) { create(:profile, :verify_by_mail_pending, :verified, pii: { ssn: '1234' }) }
+      let(:user) { profile.user }
+
       it 'does not call ActiveProfileEncryptor' do
         expect(ActiveProfileEncryptor).to_not receive(:new)
 
         subject.submit(params)
+      end
+
+      it 'logs that the user does not have an active or pending profile' do
+        result = subject.submit(params)
+
+        expect(result.extra).to include(
+          active_profile_present: false,
+          pending_profile_present: true,
+        )
+      end
+    end
+
+    context 'when the user does not have a profile' do
+      it 'does not call ActiveProfileEncryptor' do
+        expect(ActiveProfileEncryptor).to_not receive(:new)
+
+        subject.submit(params)
+      end
+
+      it 'logs that the user does not have an active or pending profile' do
+        result = subject.submit(params)
+
+        expect(result.extra).to include(
+          active_profile_present: false,
+          pending_profile_present: false,
+        )
       end
     end
   end
