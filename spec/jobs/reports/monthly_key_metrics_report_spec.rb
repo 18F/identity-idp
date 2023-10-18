@@ -16,7 +16,6 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
   let(:document_upload_proofing_s3_path) { "#{report_folder}/document_upload_proofing.csv" }
   let(:account_deletion_rate_s3_path) { "#{report_folder}/account_deletion_rate.csv" }
   let(:total_user_count_s3_path) { "#{report_folder}/total_user_count.csv" }
-  let(:total_verified_users_path) { "#{report_folder}/total_verified_users.csv" }
   let(:monthly_active_users_count_s3_path) { "#{report_folder}/monthly_active_users_count.csv" }
   let(:expected_s3_paths) do
     [
@@ -24,7 +23,8 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
       total_profiles_s3_path,
       account_deletion_rate_s3_path,
       total_user_count_s3_path,
-      total_verified_users_path,
+      document_upload_proofing_s3_path,
+      monthly_active_users_count_s3_path,
     ]
   end
   let(:s3_metadata) do
