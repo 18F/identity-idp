@@ -3,11 +3,7 @@ require 'rails_helper'
 RSpec.describe 'IdvStepConcern' do
   let(:user) { create(:user, :fully_registered, email: 'old_email@example.com') }
   let(:idv_session) do
-    Idv::Session.new(
-      user_session: subject.user_session,
-      current_user: user,
-      service_provider: nil,
-    )
+    Idv::Session.new(user_session: subject.user_session, current_user: user, service_provider: nil)
   end
 
   idv_step_controller_class = Class.new(ApplicationController) do
@@ -43,60 +39,48 @@ RSpec.describe 'IdvStepConcern' do
       before_action :confirm_hybrid_handoff_needed
     end
 
-    let(:params) do
-      {}
-    end
-
-    let(:pii_from_doc) { nil }
-
-    let(:skip_hybrid_handoff) { nil }
-
     before(:each) do
       sign_in(user)
       routes.draw do
         get 'show' => 'anonymous#show'
       end
-      idv_session.pii_from_doc = pii_from_doc
-      idv_session.skip_hybrid_handoff = skip_hybrid_handoff
     end
 
     context 'redo specified' do
-      let(:params) { { redo: true } }
-
       it 'sets flag in idv_session' do
-        expect { get :show, params: params }.to change {
-                                                  idv_session.redo_document_capture
-                                                }.from(nil).to(true)
+        expect { get :show, params: { redo: true } }.to change {
+                                                          idv_session.redo_document_capture
+                                                        }.from(nil).to(true)
       end
 
       it 'does not redirect' do
-        get :show, params: params
+        get :show, params: { redo: true }
         expect(response).to have_http_status(200)
       end
     end
 
     context 'document capture complete' do
-      let(:pii_from_doc) { { first_name: 'Susan' } }
+      before do
+        idv_session.pii_from_doc = { first_name: 'Susan' }
+      end
 
       it 'redirects to ssn screen' do
-        get :show, params: params
+        get :show
         expect(response).to redirect_to(idv_ssn_url)
       end
 
       context 'and redo specified' do
-        let(:params) { { redo: true } }
         it 'does not redirect' do
-          get :show, params: params
+          get :show, params: { redo: true }
           expect(response).to have_http_status(200)
         end
       end
     end
 
     context 'previously skipped hybrid handoff' do
-      let(:skip_hybrid_handoff) { true }
-
       before do
-        get :show, params: params
+        idv_session.skip_hybrid_handoff = true
+        get :show
       end
 
       it 'sets flow_path to standard' do
@@ -111,7 +95,7 @@ RSpec.describe 'IdvStepConcern' do
     context 'hybrid flow not available' do
       before do
         allow(FeatureManagement).to receive(:idv_allow_hybrid_flow?).and_return(false)
-        get :show, params: params
+        get :show
       end
 
       it 'sets flow_path to standard' do
