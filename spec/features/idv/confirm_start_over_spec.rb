@@ -36,6 +36,7 @@ RSpec.feature 'idv gpo confirm start over', js: true do
       click_on t('idv.messages.gpo.start_over_link_text')
 
       expect(current_path).to eq idv_confirm_start_over_path
+      expect(page).to have_content(t('idv.cancel.description.gpo.start_over_new_address'))
       expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_phone_or_address'))
       expect(fake_analytics).to have_logged_event('IdV: gpo confirm start over visited')
       click_idv_continue
@@ -55,6 +56,7 @@ RSpec.feature 'idv gpo confirm start over', js: true do
       click_on t('idv.messages.clear_and_start_over')
 
       expect(current_path).to eq idv_confirm_start_over_path
+      expect(page).to have_content(t('idv.cancel.description.gpo.start_over'))
       expect_step_indicator_current_step(t('step_indicator.flows.idv.get_a_letter'))
       expect(fake_analytics).to have_logged_event('IdV: gpo confirm start over visited')
 
