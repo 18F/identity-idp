@@ -10,6 +10,7 @@ module Proofing
         residential_resolution_result:, # InstantVerify Residential
         should_proof_state_id:,
         ipp_enrollment_in_progress:,
+        double_address_verification:,
         device_profiling_result:,
         same_address_as_id:
       )
@@ -17,6 +18,7 @@ module Proofing
         @state_id_result = state_id_result
         @should_proof_state_id = should_proof_state_id
         @ipp_enrollment_in_progress = ipp_enrollment_in_progress
+        @double_address_verification = double_address_verification
         @device_profiling_result = device_profiling_result
         @residential_resolution_result = residential_resolution_result
         @same_address_as_id = same_address_as_id # this is a string, "true" or "false"
@@ -87,7 +89,7 @@ module Proofing
 
       def resolution_result_and_reason
         if !residential_resolution_result.success? &&
-           same_address_as_id == 'false' && ipp_enrollment_in_progress == true
+           same_address_as_id == 'false' && (ipp_enrollment_in_progress == true || double_address_verification)
           [false, :fail_resolution_skip_state_id]
         elsif resolution_result.success? && state_id_result.success?
           [true, :pass_resolution_and_state_id]
