@@ -26,7 +26,9 @@ module Reporting
     private
 
     def total_user_count
-      User.where('created_at <= ?', report_date).count
+      Reports::BaseReport.transaction_with_timeout do
+        User.where('created_at <= ?', report_date).count
+      end
     end
   end
 end
