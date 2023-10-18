@@ -59,7 +59,7 @@ RSpec.describe Idv::ByMail::RequestLetterController do
         and_return(true)
       get :index
 
-      expect(response).to redirect_to idv_review_path
+      expect(response).to redirect_to idv_enter_password_path
     end
 
     it 'allows a user to request another letter' do
@@ -143,7 +143,7 @@ RSpec.describe Idv::ByMail::RequestLetterController do
 
         put :create
 
-        expect(response).to redirect_to idv_review_path
+        expect(response).to redirect_to idv_enter_password_path
         expect(subject.idv_session.address_verification_mechanism).to eq :gpo
       end
 

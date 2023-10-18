@@ -73,7 +73,7 @@ module Idv
           send_phone_confirmation_otp_and_handle_result
         end
       else
-        redirect_to idv_review_url
+        redirect_to idv_enter_password_url
       end
     end
 
