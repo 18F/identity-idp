@@ -175,7 +175,7 @@ RSpec.feature 'hybrid_handoff step send link and errors' do
       before(:each) do
         allow_any_instance_of(Idv::HybridHandoffController).
           to receive(:phone_question_ab_test_bucket).and_return(:show_phone_question)
-        
+
         @user = user_with_2fa
         sign_in_and_2fa_user(@user)
         complete_doc_auth_steps_before_hybrid_handoff_step
