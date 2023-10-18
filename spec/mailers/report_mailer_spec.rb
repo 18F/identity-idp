@@ -66,6 +66,22 @@ RSpec.describe ReportMailer, type: :mailer do
       ]
     end
 
+    let(:second_table) do
+      [
+        ['Float', 'Int', 'Float'],
+        ['Row 1', 1, 0.5],
+        ['Row 2', 1, 1.5],
+      ]
+    end
+
+    let(:third_table) do
+      [
+        ['Float As Percent', 'Gigantic Int', 'Float'],
+        ['Row 1', 100_000_000, 1.0],
+        ['Row 2', 123_456_789, 1.5],
+      ]
+    end
+
     let(:mail) do
       ReportMailer.tables_report(
         email: 'foo@example.com',
@@ -77,15 +93,11 @@ RSpec.describe ReportMailer, type: :mailer do
           first_table,
           [
             { float_as_percent: true, title: 'Custom Table 2' },
-            ['Float', 'Int', 'Float'],
-            ['Row 1', 1, 0.5],
-            ['Row 2', 1, 1.5],
+            *second_table,
           ],
           [
             { float_as_percent: false, title: 'Custom Table 3 With Very Long Name' },
-            ['Float As Percent', 'Gigantic Int', 'Float'],
-            ['Row 1', 100_000_000, 1.0],
-            ['Row 2', 123_456_789, 1.5],
+            *third_table,
           ],
         ],
       )
@@ -95,9 +107,7 @@ RSpec.describe ReportMailer, type: :mailer do
       expect(mail.attachments.map(&:filename)).to_not include('logo.png')
     end
 
-    it 'renders the tables in HTML and attaches them as CSVs', aggregate_failures: true do
-      expect(mail.attachments.map(&:filename)).to all(end_with('.csv'))
-
+    it 'renders the tables in HTML', aggregate_failures: true do
       doc = Nokogiri::HTML(mail.html_part.body.to_s)
 
       expect(doc.css('h2').map(&:text)).
@@ -117,6 +127,27 @@ RSpec.describe ReportMailer, type: :mailer do
       expect(big_int_cell.text.strip).to eq('100,000,000')
     end
 
+    context 'with attachment_format: :csv' do
+      let(:attachment_format) { :csv }
+
+      it 'renders each table as a separate CSV', aggregate_failures: true do
+        expect(mail.attachments.map(&:filename)).to eq(
+          [
+            'table-1.csv',
+            'custom-table-2.csv',
+            'custom-table-3-with-very-long-name.csv',
+          ],
+        )
+
+        tables = mail.attachments.map { |a| CSV.parse(a.read) }
+
+        expect(tables).to eq(
+          [first_table, second_table, third_table].
+            map { |table| table.map { |row| row.map(&:to_s) } },
+        )
+      end
+    end
+
     context 'with attachment_format: :xlsx' do
       let(:attachment_format) { :xlsx }
 
@@ -124,11 +155,9 @@ RSpec.describe ReportMailer, type: :mailer do
         expect(mail.attachments.size).to eq(1)
 
         attachment = mail.attachments.first
-
         expect(attachment.filename).to eq('report.xlsx')
 
         xlsx = SimpleXlsxReader.parse(attachment.read)
-
         expect(xlsx.sheets.map(&:name)).to(
           eq(['Table 1', 'Custom Table 2', 'Custom Table 3 With Very Long N']),
           'truncates sheet names to fit within 31-byte XLSX limit',
