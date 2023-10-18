@@ -51,10 +51,8 @@ RSpec.describe Users::WebauthnSetupController do
           with(
             'WebAuthn Setup Visited',
             platform_authenticator: false,
-            errors: {},
             enabled_mfa_methods_count: 0,
             in_account_creation_flow: false,
-            success: true,
           )
 
         expect(@irs_attempts_api_tracker).not_to receive(:track_event)
@@ -113,6 +111,13 @@ RSpec.describe Users::WebauthnSetupController do
         expect(@analytics).to receive(:track_event).
           with('Multi-Factor Authentication Setup', result)
 
+        expect(@analytics).to receive(:track_event).
+          with(
+            :webauthn_setup_submitted,
+            errors: nil,
+            platform_authenticator: false,
+            success: true,
+          )
         expect(@analytics).to receive(:track_event).
           with('Multi-Factor Authentication: Added webauthn', {
             enabled_mfa_methods_count: 3,
@@ -287,6 +292,14 @@ RSpec.describe Users::WebauthnSetupController do
             },
           )
 
+          expect(@analytics).to receive(:track_event).
+            with(
+              :webauthn_setup_submitted,
+              errors: nil,
+              platform_authenticator: false,
+              success: true,
+            )
+
           expect(@irs_attempts_api_tracker).to receive(:track_event).with(
             :mfa_enroll_webauthn_roaming, success: true
           )
@@ -321,6 +334,14 @@ RSpec.describe Users::WebauthnSetupController do
         end
 
         it 'should log expected events' do
+          expect(@analytics).to receive(:track_event).
+            with(
+              :webauthn_setup_submitted,
+              errors: nil,
+              platform_authenticator: true,
+              success: true,
+            )
+
           expect(@analytics).to receive(:track_event).
             with('User marked authenticated', { authentication_type: :valid_2fa_confirmation })
           expect(@analytics).to receive(:track_event).with(
@@ -392,6 +413,14 @@ RSpec.describe Users::WebauthnSetupController do
               success: false,
             },
           )
+
+          expect(@analytics).to receive(:track_event).
+            with(
+              :webauthn_setup_submitted,
+              errors: t('errors.webauthn_platform_setup.general_error'),
+              platform_authenticator: true,
+              success: false,
+            )
 
           expect(@irs_attempts_api_tracker).to receive(:track_event).with(
             :mfa_enroll_webauthn_platform, success: false

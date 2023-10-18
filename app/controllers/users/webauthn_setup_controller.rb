@@ -29,8 +29,11 @@ module Users
         platform_authenticator: @platform_authenticator,
         url_options:,
       )
-      properties = result.to_h.merge(analytics_properties)
-      analytics.webauthn_setup_visit(**properties)
+      analytics.webauthn_setup_visit(
+        platform_authenticator: result.extra[:platform_authenticator],
+        in_account_creation_flow: user_session[:in_account_creation_flow] || false,
+        enabled_mfa_methods_count: result.extra[:enabled_mfa_methods_count],
+      )
       save_challenge_in_session
       @exclude_credentials = exclude_credentials
       @need_to_set_up_additional_mfa = need_to_set_up_additional_mfa?
@@ -206,7 +209,7 @@ module Users
 
       analytics.webauthn_setup_submitted(
         platform_authenticator: form.platform_authenticator?,
-        error: flash[:error],
+        errors: flash[:error],
         success: false,
       )
       render :new
