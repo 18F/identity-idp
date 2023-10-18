@@ -194,6 +194,9 @@ RSpec.feature 'hybrid_handoff step send link and errors' do
           :idv_phone_send_link_rate_limited,
         ).with({ phone_number: '+1 415-555-0199' })
 
+        expect(page).to have_current_path(idv_phone_question_path)
+        click_link t('doc_auth.buttons.have_phone')
+
         freeze_time do
           idv_send_link_max_attempts.times do
             expect(page).to_not have_content(
