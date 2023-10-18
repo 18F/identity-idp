@@ -67,7 +67,7 @@ module Reporting
           title: 'Overview',
           table: overview_table,
         ),
-        Reporting::EmailableReport(
+        Reporting::EmailableReport.new(
           title: 'Authentication Funnel Metrics',
           table: funnel_metrics_table,
         ),
