@@ -16,7 +16,7 @@ module Reporting
     :filename,
     :title,
     :float_as_percent,
-    :precision
+    :precision,
   ) do
     alias_method :float_as_percent?, :float_as_percent
   end
