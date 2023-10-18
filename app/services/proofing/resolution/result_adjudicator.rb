@@ -10,7 +10,7 @@ module Proofing
         residential_resolution_result:, # InstantVerify Residential
         should_proof_state_id:,
         ipp_enrollment_in_progress:,
-        double_address_verification:,
+        double_address_verification: false,
         device_profiling_result:,
         same_address_as_id:
       )
