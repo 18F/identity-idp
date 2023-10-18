@@ -12,7 +12,7 @@ RSpec.describe 'idv/hybrid_handoff/show.html.erb' do
     }
   end
 
-  context 'with shown phone question' do
+  context 'with show phone question' do
     before do
       @phone_question_ab_test_bucket = :show_phone_question
     end
@@ -25,7 +25,7 @@ RSpec.describe 'idv/hybrid_handoff/show.html.erb' do
     end
   end
 
-  context 'without shown phone question' do
+  context 'without show phone question' do
     before do
       @phone_question_ab_test_bucket = :bypass_phone_question
     end
