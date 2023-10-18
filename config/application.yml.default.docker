@@ -34,3 +34,4 @@ production:
   usps_auth_token_refresh_job_enabled: false
   lexisnexis_threatmetrix_mock_enabled: true
   enable_usps_verification: true
+  idv_phone_question_a_b_testing: '{"bypass_phone_question":0, "show_phone_question":100}'
