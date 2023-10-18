@@ -140,7 +140,7 @@ RSpec.feature 'document capture step', :js do
       expect(current_url).to start_with('http://localhost:7654/auth/result?error=access_denied')
     end
 
-    it 'logs event and return to sp whe click on submit and exit button', :js do
+    it 'logs event and return to sp when click on submit and exit button', :js do
       click_submit_exit_button
       expect(fake_analytics).to have_logged_event(
         'Frontend: IdV: exit optional questions',

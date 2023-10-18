@@ -145,7 +145,7 @@ describe('DocumentCaptureAbandon', () => {
                     strings: {
                       'doc_auth.exit_survey.header': 'header text',
                       'doc_auth.exit_survey.content_nosp_html':
-                        '<a>Cancel verifying your identity with %{app_name}</a> and you can restart the process whenyou’re ready.',
+                        '<a>Cancel verifying your identity with %{app_name}</a> and you can restart the process when you’re ready.',
                       'doc_auth.exit_survey.optional.button': 'Submit and exit %{app_name}',
                     },
                   })
@@ -181,7 +181,7 @@ describe('DocumentCaptureAbandon', () => {
       await userEvent.click(otherId);
       await userEvent.click(usPassport);
       await userEvent.click(exitButton);
-      expect(navigateSpy).to.be.called.calledWithMatch(
+      expect(navigateSpy).to.be.calledWithMatch(
         /cancel\?step=document_capture&location=optional_question/,
       );
       expect(trackEvent).to.be.calledWithMatch(/IdV: exit optional questions/, {

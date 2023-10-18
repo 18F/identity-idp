@@ -55,7 +55,7 @@ function DocumentCaptureAbandon({ navigate }: DocumentCaptureAbandonProps) {
     </Tag>
   );
   const optionalText = (
-    <p className="margin-top-3">
+    <p className="margin-top-2">
       <strong>{t('doc_auth.exit_survey.optional.content', { app_name: appName })}</strong>
     </p>
   );
@@ -104,9 +104,11 @@ function DocumentCaptureAbandon({ navigate }: DocumentCaptureAbandonProps) {
 
   const handleExit = () => {
     trackEvent('IdV: exit optional questions', { ids: idTypeOptions });
-    const url = spName?.trim() ? exitURL : cancelURL;
     forceRedirect(
-      addSearchParams(url, { step: currentStep, location: 'optional_question' }),
+      addSearchParams(spName ? exitURL : cancelURL, {
+        step: currentStep,
+        location: 'optional_question',
+      }),
       navigate,
     );
   };

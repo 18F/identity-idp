@@ -1,15 +1,18 @@
 @use 'uswds-core' as *;
 
 .document-capture-optional-questions {
-  margin-top: 2em;
+  margin-top: 1.5em;
   .usa-fieldset {
+    margin-top: 0;
     .usa-legend {
       text-transform: none;
-      margin-top: 1rem;
+      margin-top: 0;
       font-size: 1rem;
       line-height: 1.4;
       display: block;
       border-bottom: none;
+      padding-bottom: 0;
+      padding-top: 0;
     }
     .usa-checkbox {
       .usa-checkbox__label {

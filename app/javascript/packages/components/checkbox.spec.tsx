@@ -32,8 +32,8 @@ describe('Checkbox', () => {
     });
   });
 
-  context('withs hint', () => {
-    it('render hint', () => {
+  context('with hint', () => {
+    it('renders hint', () => {
       const { getByText } = render(
         <Checkbox
           isTitle
