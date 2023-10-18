@@ -127,6 +127,14 @@ RSpec.describe Users::PivCacLoginController do
 
             expect(controller.user_session[:authn_at]).to_not be nil
             expect(controller.user_session[:authn_at].class).to eq ActiveSupport::TimeWithZone
+            expect(controller.auth_methods_session.auth_events).to match(
+              [
+                {
+                  auth_method: TwoFactorAuthenticatable::AuthMethod::PIV_CAC,
+                  at: kind_of(ActiveSupport::TimeWithZone),
+                },
+              ],
+            )
           end
 
           it 'tracks the user_marked_authed event' do

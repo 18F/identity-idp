@@ -20,7 +20,7 @@
   </h2>
 
   <ul class="usa-icon-list">
-    <% @presenter.options.each do |option| %>
+    <% @presenter.all_user_selected_options.each do |option| %>
       <% if option.mfa_configuration_count > 0 %>
         <%= render partial: 'partials/multi_factor_authentication/selected_mfa_option', locals: { option: option } %>
       <% end %>

@@ -13,7 +13,25 @@ class ReportMailerPreview < ActionMailer::Preview
       email: 'test@example.com',
       subject: 'Example Key Metrics Report',
       message: 'Key Metrics Report February 2021',
+      attachment_format: :xlsx,
       tables: [
+        [
+          { title: 'February 2021 Active Users' },
+          ['Monthly Active Users', 'Value'],
+          ['IAL1', 1],
+          ['IDV', 1],
+          ['Total', 2],
+        ],
+        [
+          { title: 'Total user count (all-time)' },
+          ['All-time user count'],
+          [2289411],
+        ],
+        [
+          { title: 'Account deletion rate (last 30 days)', float_as_percent: true, precision: 4 },
+          ['Deleted Users',	'Total Users', 'Deletion Rate'],
+          [137, 7434, 0.18429222],
+        ],
         [
           { title: 'IDV app reuse rate Feb-2021', float_as_percent: true, precision: 4 },
           ['Num. SPs', 'Num. users', 'Percentage'],
@@ -29,6 +47,15 @@ class ReportMailerPreview < ActionMailer::Preview
           ['Total proofed identities (Feb-2021)'],
           [1972368],
         ],
+        [
+          { title: 'Document upload proofing rates', float_as_percent: true, precision: 4 },
+          ['metric', 'num_users', 'percent'],
+          ['image_submitted', 5, 5.0 / 5],
+          ['verified', 2, 2.0 / 5],
+          ['not_verified_started_gpo', 1, 1.0 / 5],
+          ['not_verified_started_in_person', 1, 1.0 / 5],
+          ['not_verified_started_fraud_review', 1, 1.0 / 5],
+        ],
       ],
     )
   end
@@ -38,6 +65,7 @@ class ReportMailerPreview < ActionMailer::Preview
       email: 'test@example.com',
       subject: 'Example Report',
       message: 'Sample Message',
+      attachment_format: :csv,
       tables: [
         [
           ['Some', 'String'],

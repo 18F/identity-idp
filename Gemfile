@@ -18,6 +18,7 @@ gem 'barby', '~> 0.6.8'
 gem 'base32-crockford'
 gem 'bootsnap', '~> 1.0', require: false
 gem 'browser'
+gem 'caxlsx', require: false
 gem 'concurrent-ruby'
 gem 'connection_pool'
 gem 'cssbundling-rails'
@@ -128,6 +129,7 @@ group :test do
   gem 'rspec-retry'
   gem 'rspec_junit_formatter'
   gem 'shoulda-matchers', '~> 4.0', require: false
+  gem 'simple_xlsx_reader', require: false
   gem 'tableparser', require: false
   gem 'webmock'
   gem 'zonebie'

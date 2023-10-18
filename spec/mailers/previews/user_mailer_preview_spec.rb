@@ -5,7 +5,7 @@ RSpec.describe UserMailerPreview do
   UserMailerPreview.instance_methods(false).each do |mailer_method|
     describe "##{mailer_method}" do
       it 'generates a preview without blowing up' do
-        expect { UserMailerPreview.new.public_send(mailer_method) }.to_not raise_error
+        expect { UserMailerPreview.new.public_send(mailer_method).body }.to_not raise_error
       end
     end
   end
