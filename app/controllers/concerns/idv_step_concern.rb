@@ -48,7 +48,8 @@ module IdvStepConcern
     if params[:redo]
       idv_session.redo_document_capture = true
     elsif idv_session.document_capture_complete?
-      redirect_to idv_ssn_url && return
+      redirect_to idv_ssn_url
+      return
     end
 
     # If we previously skipped hybrid handoff, keep doing that.
