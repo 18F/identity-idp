@@ -11,7 +11,7 @@ module VerifyProfileConcern
       end
     end
     return idv_please_call_url if current_user.fraud_review_pending?
-    return idv_not_verified_url if current_user.fraud_rejection?
+    idv_not_verified_url if current_user.fraud_rejection?
   end
 
   def user_has_pending_profile?
