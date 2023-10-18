@@ -129,7 +129,7 @@ en:
           match, we’ll send you a code.
         text4: Your password saves and encrypts your personal information.
     headings:
-      address: Update your mailing address
+      address: Update your address
       back: Back of your driver’s license or state ID
       capture_complete: We verified your ID
       capture_scan_warning_html: We couldn’t read the barcode on your ID. If the

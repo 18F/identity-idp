@@ -2,7 +2,7 @@
 en:
   help_text:
     requested_attributes:
-      address: Mailing address
+      address: Address
       all_emails: Email addresses on your account
       birthdate: Date of birth
       email: Email address

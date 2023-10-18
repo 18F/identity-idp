@@ -11,7 +11,7 @@ en:
       new: Resend confirmation instructions for your account
       show: Choose a password
     doc_auth:
-      address: Update your mailing address
+      address: Update your address
       doc_capture: Add your ID
       hybrid_handoff: Verify your ID
       link_sent: Link sent
