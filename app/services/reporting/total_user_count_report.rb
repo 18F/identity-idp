@@ -10,31 +10,16 @@ module Reporting
 
     def total_user_count_report
       [
-        ['All-time user count'],
-        [total_user_count],
-      ]
-    end
-
-    def total_verified_users_report
-      [
-        ['Total verified users'],
-        [verified_user_count],
+        ['All-time user count', 'Total verified users', 'Total annual users'],
+        [total_user_count, verified_user_count, annual_total_user_count],
       ]
     end
 
     def total_user_count_emailable_report
       EmailableReport.new(
-        email_options: { title: 'Total user count (all-time)' },
+        email_options: { title: 'Total user counts' },
         table: total_user_count_report,
         csv_name: 'total_user_count',
-      )
-    end
-
-    def total_verified_users_emailable_report
-      EmailableReport.new(
-        email_options: { title: 'Total verified users' },
-        table: total_verified_users_report,
-        csv_name: 'total_verified_users',
       )
     end
 
@@ -46,6 +31,18 @@ module Reporting
 
     def verified_user_count
       Profile.where(active: true).where('activated_at <= ?', report_date).count
+    end
+
+    def annual_total_user_count
+      User.where(created_at: annual_start_date..end_date).count
+    end
+
+    def annual_start_date
+      (report_date - 1.year).beginning_of_day
+    end
+
+    def end_date
+      report_date.beginning_of_day
     end
   end
 end
