@@ -72,12 +72,23 @@ RSpec.describe Idv::AgreementController do
     end
 
     context 'agreement already visited' do
-      it 'redirects to hybrid_handoff' do
+      it 'does not redirect to hybrid_handoff' do
         allow(subject.idv_session).to receive(:idv_consent_given).and_return(true)
 
         get :show
 
-        expect(response).to redirect_to(idv_hybrid_handoff_url)
+        expect(response).to render_template('idv/agreement/show')
+      end
+    end
+
+    context 'and document capture already completed' do
+      before do
+        subject.idv_session.pii_from_doc = { first_name: 'Susan' }
+      end
+
+      it 'redirects to ssn step' do
+        get :show
+        expect(response).to redirect_to(idv_ssn_url)
       end
     end
   end
