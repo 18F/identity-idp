@@ -174,6 +174,70 @@ RSpec.feature 'hybrid_handoff step send link and errors' do
       end
     end
 
+    context 'PhoneQuestion page' do
+      before do
+        allow_any_instance_of(Idv::HybridHandoffController).
+          to receive(:phone_question_ab_test_bucket).and_return(:show_phone_question)
+      end
+
+      it 'rate limits sending the link' do
+        user = user_with_2fa
+        sign_in_and_2fa_user(user)
+        complete_doc_auth_steps_before_hybrid_handoff_step
+        timeout = distance_of_time_in_words(
+          RateLimiter.attempt_window_in_minutes(:idv_send_link).minutes,
+        )
+        allow(IdentityConfig.store).to receive(:idv_send_link_max_attempts).
+          and_return(idv_send_link_max_attempts)
+
+        expect(fake_attempts_tracker).to receive(
+          :idv_phone_send_link_rate_limited,
+        ).with({ phone_number: '+1 415-555-0199' })
+
+        expect(page).to have_current_path(idv_phone_question_path)
+        click_link t('doc_auth.buttons.have_phone')
+
+        freeze_time do
+          idv_send_link_max_attempts.times do
+            expect(page).to_not have_content(
+              I18n.t('errors.doc_auth.send_link_limited', timeout: timeout),
+            )
+
+            fill_in :doc_auth_phone, with: '415-555-0199'
+            click_send_link
+
+            expect(page).to have_current_path(idv_link_sent_path)
+
+            click_doc_auth_back_link
+          end
+
+          fill_in :doc_auth_phone, with: '415-555-0199'
+
+          click_send_link
+          expect(page).to have_current_path(idv_hybrid_handoff_path, ignore_query: true)
+          expect(page).to have_content(
+            I18n.t(
+              'errors.doc_auth.send_link_limited',
+              timeout: timeout,
+            ),
+          )
+        end
+        expect(fake_analytics).to have_logged_event(
+          'Rate Limit Reached',
+          limiter_type: :idv_send_link,
+        )
+
+        # Manual expiration is needed for now since the RateLimiter uses
+        # Redis ttl instead of expiretime
+        RateLimiter.new(rate_limit_type: :idv_send_link, user: user).reset!
+        travel_to(Time.zone.now + idv_send_link_attempt_window_in_minutes.minutes) do
+          fill_in :doc_auth_phone, with: '415-555-0199'
+          click_send_link
+          expect(page).to have_current_path(idv_link_sent_path)
+        end
+      end
+    end
+
     it 'includes expected URL parameters' do
       expect(Telephony).to receive(:send_doc_auth_link).and_wrap_original do |impl, config|
         params = Rack::Utils.parse_nested_query URI(config[:link]).query
