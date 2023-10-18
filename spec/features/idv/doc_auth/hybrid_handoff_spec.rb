@@ -176,8 +176,8 @@ RSpec.feature 'hybrid_handoff step send link and errors' do
 
     context 'PhoneQuestion page' do
       before do
-        allow_any_instance_of(Idv::HybridHandoffController).to receive(:phone_question_ab_test_bucket).
-          and_return(:show_phone_question)
+        allow_any_instance_of(Idv::HybridHandoffController).
+          to receive(:phone_question_ab_test_bucket).and_return(:show_phone_question)
       end
 
       it 'rate limits sending the link' do
