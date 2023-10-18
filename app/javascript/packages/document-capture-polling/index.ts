@@ -18,6 +18,8 @@ interface DocumentCapturePollingOptions {
 
   elements: DocumentCapturePollingElements;
 
+  phoneQuestionAbTestBucket: string | undefined;
+
   trackEvent?: typeof defaultTrackEvent;
 }
 
@@ -41,11 +43,17 @@ export class DocumentCapturePolling {
 
   statusEndpoint: string;
 
-  trackEvent: typeof defaultTrackEvent;
+  trackEvent: typeof defaultTrackEvent = (event, payload) =>
+    defaultTrackEvent(event, {
+      ...payload,
+      phone_question_ab_test_bucket: this.phoneQuestionAbTestBucket,
+    });
 
   pollAttempts = 0;
 
   cleanUpPromptOnNavigate: (() => void) | undefined;
+
+  phoneQuestionAbTestBucket: string | undefined;
 
   constructor({
     elements,
