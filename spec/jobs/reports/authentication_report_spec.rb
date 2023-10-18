@@ -62,6 +62,7 @@ RSpec.describe Reports::AuthenticationReport do
         subject: "Weekly Authentication Report - #{report_date}",
         message: "Report: authentication-report #{report_date}",
         tables:,
+        attachment_format: :csv,
       )
 
       subject.perform(report_date)

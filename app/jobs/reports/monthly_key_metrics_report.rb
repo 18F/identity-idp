@@ -57,6 +57,7 @@ module Reports
         subject: "Monthly Key Metrics Report - #{date}",
         message: email_message,
         tables: email_tables,
+        attachment_format: :xlsx,
       ).deliver_now
     end
 

@@ -13,6 +13,7 @@ class ReportMailerPreview < ActionMailer::Preview
       email: 'test@example.com',
       subject: 'Example Key Metrics Report',
       message: 'Key Metrics Report February 2021',
+      attachment_format: :xlsx,
       tables: [
         [
           { title: 'February 2021 Active Users' },
@@ -64,6 +65,7 @@ class ReportMailerPreview < ActionMailer::Preview
       email: 'test@example.com',
       subject: 'Example Report',
       message: 'Sample Message',
+      attachment_format: :csv,
       tables: [
         [
           ['Some', 'String'],
