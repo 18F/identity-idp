@@ -43,11 +43,7 @@ module Reports
       ]
 
       reports.each do |report|
-        upload_to_s3(report.table, report_name: report.csv_name)
-      end
-
-      email_tables = reports.map do |report|
-        [report.email_options, *report.table]
+        upload_to_s3(report.table, report_name: report.filename)
       end
 
       email_message = "Report: #{REPORT_NAME} #{date}"
@@ -56,7 +52,7 @@ module Reports
         email: email_addresses,
         subject: "Monthly Key Metrics Report - #{date}",
         message: email_message,
-        tables: email_tables,
+        reports: reports,
         attachment_format: :xlsx,
       ).deliver_now
     end

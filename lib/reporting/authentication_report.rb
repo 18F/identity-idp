@@ -61,10 +61,16 @@ module Reporting
       ]
     end
 
-    def as_tables_with_options
+    def as_emailable_reports
       [
-        [{ title: 'Overview' }, *overview_table],
-        [{ title: 'Authentication Funnel Metrics' }, *funnel_metrics_table],
+        Reporting::EmailableReport.new(
+          title: 'Overview',
+          table: overview_table,
+        ),
+        Reporting::EmailableReport(
+          title: 'Authentication Funnel Metrics',
+          table: funnel_metrics_table,
+        ),
       ]
     end
 
