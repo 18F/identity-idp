@@ -103,7 +103,7 @@ RSpec.describe UpdateUserPasswordForm, type: :model do
         subject.submit(params)
       end
 
-      it 'logs that the user does not have an active or pending profile' do
+      it 'logs that the user has a pending profile' do
         result = subject.submit(params)
 
         expect(result.extra).to include(
