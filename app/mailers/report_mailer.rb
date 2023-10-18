@@ -50,8 +50,8 @@ class ReportMailer < ActionMailer::Base
     subject:,
     message:,
     tables:,
-    env: Identity::Hostdata.env || 'local',
-    attachment_format: :csv
+    attachment_format:,
+    env: Identity::Hostdata.env || 'local'
   )
     @message = message
 

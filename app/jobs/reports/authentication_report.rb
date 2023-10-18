@@ -22,6 +22,7 @@ module Reports
             subject:,
             message:,
             tables:,
+            attachment_format: :csv,
           ).deliver_now
         end
       end

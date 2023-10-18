@@ -65,6 +65,7 @@ class ReportMailerPreview < ActionMailer::Preview
       email: 'test@example.com',
       subject: 'Example Report',
       message: 'Sample Message',
+      attachment_format: :csv,
       tables: [
         [
           ['Some', 'String'],
