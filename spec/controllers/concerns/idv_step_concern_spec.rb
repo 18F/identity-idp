@@ -107,6 +107,21 @@ RSpec.describe 'IdvStepConcern' do
         expect(response).to redirect_to(idv_document_capture_url)
       end
     end
+
+    context 'hybrid flow not available' do
+      before do
+        allow(FeatureManagement).to receive(:idv_allow_hybrid_flow?).and_return(false)
+        get :show, params: params
+      end
+
+      it 'sets flow_path to standard' do
+        expect(idv_session.flow_path).to eql('standard')
+      end
+
+      it 'redirects to document capture' do
+        expect(response).to redirect_to(idv_document_capture_url)
+      end
+    end
   end
 
   describe '#confirm_idv_needed' do
