@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Reports::MonthlyKeyMetricsReport do
   let(:report_date) { Date.new(2021, 3, 2) }
-  subject(:report) { Reports::MonthlyKeyMetricsReport.new(report_date: report_date) }
+  subject(:report) { Reports::MonthlyKeyMetricsReport.new(report_date) }
 
   let(:name) { 'monthly-key-metrics-report' }
   let(:agnes_email) { 'fake@agnes_email.com' }
