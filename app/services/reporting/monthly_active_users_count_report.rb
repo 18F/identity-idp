@@ -26,7 +26,9 @@ module Reporting
     private
 
     def active_users_count
-      @active_users_count ||= Db::Identity::SpActiveUserCounts.overall(range.begin, range.end).first
+      @active_users_count ||= Reports::BaseReport.transaction_with_timeout do
+        Db::Identity::SpActiveUserCounts.overall(range.begin, range.end).first
+      end
     end
 
     def total_ial1_active
