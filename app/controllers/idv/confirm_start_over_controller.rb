@@ -8,8 +8,14 @@ module Idv
     before_action :confirm_idv_needed
 
     def index
-      @current_step = requested_letter_before? ? :get_a_letter : :verify_phone_or_address
+      @step_indicator_step = requested_letter_before? ? :get_a_letter : :verify_phone_or_address
       analytics.idv_gpo_confirm_start_over_visited
+
+      if request.referer == idv_request_letter_url
+        render 'idv/confirm_start_over/index_request_letter'
+      else
+        render :index
+      end
     end
 
     private
