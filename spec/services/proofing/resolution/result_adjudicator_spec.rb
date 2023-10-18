@@ -94,8 +94,10 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
         end
       end
 
+      # rubocop:disable Layout/LineLength
       context 'Confirm adjudication works for either double_address_verification or ipp_enrollment_in_progress' do
         context 'Adjudication passes if double_address_verification is false and ipp_enrollment_in_progress is true' do
+          # rubocop:enable Layout/LineLength
           let(:double_address_verification) { false }
           let(:ipp_enrollment_in_progress) { true }
 
@@ -105,8 +107,9 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
             expect(result.success?).to eq(true)
           end
         end
-
+        # rubocop:disable Layout/LineLength
         context 'Adjudication passes if ipp_enrollment_in_progress is false and double_address_verification is true' do
+          # rubocop:enable Layout/LineLength
           let(:double_address_verification) { true }
           let(:ipp_enrollment_in_progress) { false }
 

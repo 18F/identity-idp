@@ -8,8 +8,8 @@ module Proofing
     class ProgressiveProofer
       # @param [Hash] applicant_pii keys are symbols and values are strings, confidential user info
       # @param [Boolean] double_address_verification flag that indicates if user will have
-      #   both state id address and current residential address verified. Note this value is here as a place
-      #   holder until it can be replaced with ipp_enrollment_in_progress
+      #   both state id address and current residential address verified. Note this value is here as
+      #   a placeholder until it can be replaced with ipp_enrollment_in_progress
       # @param [Boolean] ipp_enrollment_in_progress flag that indicates if user will have
       #   both state id address and current residential address verified
       # @param [String] request_ip IP address for request
@@ -114,7 +114,8 @@ module Proofing
         double_address_verification:,
         ipp_enrollment_in_progress: false
       )
-        return residential_address_unnecessary_result unless ipp_enrollment_in_progress || double_address_verification
+        return residential_address_unnecessary_result unless
+          ipp_enrollment_in_progress || double_address_verification
 
         timer.time('residential address') do
           resolution_proofer.proof(applicant_pii)
@@ -137,7 +138,8 @@ module Proofing
                                                       residential_instant_verify_result:,
                                                       double_address_verification:,
                                                       ipp_enrollment_in_progress:)
-        if applicant_pii[:same_address_as_id] == 'true' && (ipp_enrollment_in_progress == true || double_address_verification)
+        if applicant_pii[:same_address_as_id] == 'true' &&
+           (ipp_enrollment_in_progress == true || double_address_verification)
           return residential_instant_verify_result
         end
         return resolution_cannot_pass unless residential_instant_verify_result.success?
@@ -152,7 +154,9 @@ module Proofing
                                             residential_instant_verify_result:,
                                             double_address_verification:)
         return false unless should_proof_state_id
+        # rubocop:disable Layout/LineLength
         if (ipp_enrollment_in_progress == false || double_address_verification == false) || same_address_as_id == 'true'
+          # rubocop:enable Layout/LineLength
           user_can_pass_after_state_id_check?(instant_verify_result)
         else
           residential_instant_verify_result.success?
