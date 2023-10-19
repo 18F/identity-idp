@@ -48,9 +48,9 @@ class ReportMailer < ActionMailer::Base
   def tables_report(
     email:,
     subject:,
-    message:,
     reports:,
     attachment_format:,
+    message: nil,
     env: Identity::Hostdata.env || 'local'
   )
     @message = message
