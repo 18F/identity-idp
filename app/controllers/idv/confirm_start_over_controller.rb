@@ -9,13 +9,21 @@ module Idv
 
     def index
       @step_indicator_step = requested_letter_before? ? :get_a_letter : :verify_phone_or_address
-      analytics.idv_gpo_confirm_start_over_visited
 
       if request.referer == idv_request_letter_url
-        render 'idv/confirm_start_over/index_request_letter'
+        analytics.idv_gpo_confirm_start_over_before_letter_visited
+        render 'idv/confirm_start_over/before_letter'
       else
+        analytics.idv_gpo_confirm_start_over_visited
         render :index
       end
+    end
+
+    def before_letter
+      @step_indicator_step = requested_letter_before? ? :get_a_letter : :verify_phone_or_address
+      analytics.idv_gpo_confirm_start_over_before_letter_visited
+
+      render 'idv/confirm_start_over/before_letter'
     end
 
     private
