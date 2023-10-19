@@ -174,6 +174,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
 
       it 'does not set auth_method and requires 2FA' do
         expect(controller.user_session[:auth_method]).to eq nil
+        expect(controller.user_session[:auth_events]).to eq nil
         expect(controller.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq true
       end
     end
@@ -294,13 +295,23 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
         expect(@irs_attempts_api_tracker).to receive(:mfa_login_phone_otp_submitted).
           with(reauthentication: false, success: true)
 
-        post :create, params: {
-          code: subject.current_user.reload.direct_otp,
-          otp_delivery_preference: 'sms',
-        }
+        freeze_time do
+          post :create, params: {
+            code: subject.current_user.reload.direct_otp,
+            otp_delivery_preference: 'sms',
+          }
 
-        expect(subject.user_session[:auth_method]).to eq TwoFactorAuthenticatable::AuthMethod::SMS
-        expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq false
+          expect(subject.user_session[:auth_method]).to eq TwoFactorAuthenticatable::AuthMethod::SMS
+          expect(subject.user_session[:auth_events]).to eq(
+            [
+              {
+                auth_method: TwoFactorAuthenticatable::AuthMethod::SMS,
+                at: Time.zone.now,
+              },
+            ],
+          )
+          expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq false
+        end
       end
 
       context "with a leading '#' sign" do

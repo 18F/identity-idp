@@ -2,6 +2,7 @@
 production:
   attribute_encryption_key: 2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25
   asset_host: ['env', 'ASSET_HOST']
+  component_previews_enabled: true
   database_host: ['env', 'POSTGRES_HOST']
   database_name: ['env', 'POSTGRES_NAME']
   database_password: ['env', 'POSTGRES_PASSWORD']

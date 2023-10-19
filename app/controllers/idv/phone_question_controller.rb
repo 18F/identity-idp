@@ -31,7 +31,7 @@ module Idv
                 merge(phone_with_camera: false),
       )
 
-      redirect_to idv_hybrid_handoff_url
+      redirect_to idv_document_capture_url
     end
 
     private

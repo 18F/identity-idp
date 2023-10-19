@@ -19,6 +19,7 @@ RSpec.describe Idv::Session do
       end
     end
 
+    # FlowStateMachine related specs, can be removed when FSM is gone
     context 'with idv user session' do
       let(:idv_session) { { vendor_phone_confirmation: true } }
       let(:user_session) { { idv: idv_session } }

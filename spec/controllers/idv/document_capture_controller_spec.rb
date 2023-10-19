@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Idv::DocumentCaptureController do
-  include IdvHelper
-
   let(:document_capture_session_requested_at) { Time.zone.now }
 
   let!(:document_capture_session) do

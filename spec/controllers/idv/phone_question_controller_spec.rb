@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Idv::PhoneQuestionController do
-  include IdvHelper
-
   let(:user) { create(:user) }
 
   let(:analytics_args) do
@@ -96,20 +94,20 @@ RSpec.describe Idv::PhoneQuestionController do
 
     context 'confirm_hybrid_handoff_needed before action' do
       context 'standard flow_path already defined' do
-        it 'redirects to document_capture in standard flow' do
+        it 'does not redirect to document_capture in standard flow' do
           subject.idv_session.flow_path = 'standard'
 
           get :show
 
-          expect(response).to redirect_to(idv_document_capture_url)
+          expect(response).to render_template :show
         end
 
-        it 'redirects to link_sent in hybrid flow' do
+        it 'does not redirect to link_sent in hybrid flow' do
           subject.idv_session.flow_path = 'hybrid'
 
           get :show
 
-          expect(response).to redirect_to(idv_link_sent_url)
+          expect(response).to render_template :show
         end
       end
 
@@ -156,10 +154,10 @@ RSpec.describe Idv::PhoneQuestionController do
   describe '#phone_without_camera' do
     let(:analytics_name) { :idv_doc_auth_phone_question_submitted }
 
-    it 'redirects to hybrid handoff' do
+    it 'redirects to document_capture' do
       get :phone_without_camera
 
-      expect(response).to redirect_to(idv_hybrid_handoff_url)
+      expect(response).to redirect_to(idv_document_capture_url)
     end
 
     it 'sends analytics submitted event' do

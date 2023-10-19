@@ -145,6 +145,7 @@ module Idv
         allowed_countries:
           PhoneNumberCapabilities::ADDRESS_IDENTITY_PROOFING_SUPPORTED_COUNTRY_CODES,
         failed_phone_numbers: idv_session.failed_phone_step_numbers,
+        hybrid_handoff_phone_number: idv_session.phone_for_mobile_flow,
       )
     end
 
@@ -171,6 +172,7 @@ module Idv
             [:context, :stages, :address],
           ],
           new_phone_added: new_phone_added?,
+          hybrid_handoff_phone_used: hybrid_handoff_phone_used?,
         ),
       )
 
@@ -198,8 +200,18 @@ module Idv
       configured_phones = context.phone_configurations.map(&:phone).map do |number|
         PhoneFormatter.format(number)
       end
-      applicant_phone = PhoneFormatter.format(idv_session.applicant['phone'])
-      !configured_phones.include?(applicant_phone)
+      !configured_phones.include?(formatted_previous_phone_step_params_phone)
+    end
+
+    def hybrid_handoff_phone_used?
+      formatted_previous_phone_step_params_phone ==
+        PhoneFormatter.format(idv_session.phone_for_mobile_flow)
+    end
+
+    def formatted_previous_phone_step_params_phone
+      PhoneFormatter.format(
+        idv_session.previous_phone_step_params&.fetch('phone'),
+      )
     end
 
     def gpo_letter_available

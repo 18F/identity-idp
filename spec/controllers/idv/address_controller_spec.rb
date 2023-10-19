@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Idv::AddressController do
-  include IdvHelper
-
   let(:user) { create(:user) }
 
   let(:pii_from_doc) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.stringify_keys }

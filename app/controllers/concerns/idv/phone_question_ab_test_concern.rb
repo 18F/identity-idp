@@ -16,6 +16,8 @@ module Idv
       return if phone_question_ab_test_bucket != :show_phone_question
       return if request.referer == idv_phone_question_url
       return if request.referer == idv_link_sent_url
+      return if request.referer == idv_hybrid_handoff_url
+      return if request.referer == idv_hybrid_handoff_url(redo: true)
 
       redirect_to idv_phone_question_url
     end

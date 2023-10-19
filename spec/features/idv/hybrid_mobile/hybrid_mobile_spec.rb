@@ -81,6 +81,14 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
       expect(page).to have_content(t('headings.verify'))
       click_idv_continue
 
+      prefilled_phone = page.find(id: 'idv_phone_form_phone').value
+
+      expect(
+        PhoneFormatter.format(prefilled_phone),
+      ).to eq(
+        PhoneFormatter.format(user.default_phone_configuration.phone),
+      )
+
       fill_out_phone_form_ok
       verify_phone_otp
 
@@ -302,6 +310,47 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
 
         click_idv_continue
       end
+    end
+  end
+
+  it 'prefils the phone number used on the phone step if the user has no MFA phone', :js do
+    user = create(:user, :with_authentication_app)
+
+    perform_in_browser(:desktop) do
+      start_idv_from_sp
+      sign_in_and_2fa_user(user)
+
+      complete_doc_auth_steps_before_hybrid_handoff_step
+      clear_and_fill_in(:doc_auth_phone, phone_number)
+      click_send_link
+    end
+
+    expect(@sms_link).to be_present
+
+    perform_in_browser(:mobile) do
+      visit @sms_link
+      attach_and_submit_images
+
+      expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
+      expect(page).to have_text(t('doc_auth.instructions.switch_back'))
+    end
+
+    perform_in_browser(:desktop) do
+      expect(page).to have_current_path(idv_ssn_path, wait: 10)
+
+      fill_out_ssn_form_ok
+      click_idv_continue
+
+      expect(page).to have_content(t('headings.verify'))
+      click_idv_continue
+
+      prefilled_phone = page.find(id: 'idv_phone_form_phone').value
+
+      expect(
+        PhoneFormatter.format(prefilled_phone),
+      ).to eq(
+        PhoneFormatter.format(phone_number),
+      )
     end
   end
 end
