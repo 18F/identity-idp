@@ -34,6 +34,80 @@ RSpec.describe 'IdvStepConcern' do
     end
   end
 
+  describe '#confirm_hybrid_handoff_needed' do
+    controller(idv_step_controller_class) do
+      before_action :confirm_hybrid_handoff_needed
+    end
+
+    before(:each) do
+      sign_in(user)
+      routes.draw do
+        get 'show' => 'anonymous#show'
+      end
+    end
+
+    context 'redo specified' do
+      it 'sets flag in idv_session' do
+        expect { get :show, params: { redo: true } }.to change {
+                                                          idv_session.redo_document_capture
+                                                        }.from(nil).to(true)
+      end
+
+      it 'does not redirect' do
+        get :show, params: { redo: true }
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    context 'document capture complete' do
+      before do
+        idv_session.pii_from_doc = { first_name: 'Susan' }
+      end
+
+      it 'redirects to ssn screen' do
+        get :show
+        expect(response).to redirect_to(idv_ssn_url)
+      end
+
+      context 'and redo specified' do
+        it 'does not redirect' do
+          get :show, params: { redo: true }
+          expect(response).to have_http_status(200)
+        end
+      end
+    end
+
+    context 'previously skipped hybrid handoff' do
+      before do
+        idv_session.skip_hybrid_handoff = true
+        get :show
+      end
+
+      it 'sets flow_path to standard' do
+        expect(idv_session.flow_path).to eql('standard')
+      end
+
+      it 'redirects to document capture' do
+        expect(response).to redirect_to(idv_document_capture_url)
+      end
+    end
+
+    context 'hybrid flow not available' do
+      before do
+        allow(FeatureManagement).to receive(:idv_allow_hybrid_flow?).and_return(false)
+        get :show
+      end
+
+      it 'sets flow_path to standard' do
+        expect(idv_session.flow_path).to eql('standard')
+      end
+
+      it 'redirects to document capture' do
+        expect(response).to redirect_to(idv_document_capture_url)
+      end
+    end
+  end
+
   describe '#confirm_idv_needed' do
     controller(idv_step_controller_class) do
       before_action :confirm_idv_needed
@@ -128,6 +202,65 @@ RSpec.describe 'IdvStepConcern' do
 
         expect(response.body).to eq('Hello')
         expect(response.status).to eq(200)
+      end
+    end
+  end
+
+  describe '#confirm_document_capture_not_complete' do
+    controller(idv_step_controller_class) do
+      before_action :confirm_document_capture_not_complete
+    end
+
+    before(:each) do
+      sign_in(user)
+      routes.draw do
+        get 'show' => 'anonymous#show'
+      end
+    end
+
+    context 'the user has not completed document capture' do
+      it 'does not redirect and renders the view' do
+        idv_session.pii_from_doc = nil
+        idv_session.resolution_successful = nil
+
+        get :show
+
+        expect(response.body).to eq('Hello')
+        expect(response.status).to eq(200)
+      end
+    end
+
+    context 'the user has completed remote document capture but not verify_info' do
+      it 'redirects to the ssn step' do
+        idv_session.pii_from_doc = { first_name: 'Susan' }
+        idv_session.resolution_successful = false
+
+        get :show
+
+        expect(response).to redirect_to(idv_ssn_url)
+      end
+    end
+
+    context 'the user has completed in person document capture but not verify_info' do
+      it 'redirects to the ssn step' do
+        subject.user_session['idv/in_person'] = {}
+        subject.user_session['idv/in_person'][:pii_from_user] = { first_name: 'Susan' }
+        idv_session.resolution_successful = false
+
+        get :show
+
+        expect(response).to redirect_to(idv_ssn_url)
+      end
+    end
+
+    context 'the user has completed document capture and verify_info' do
+      it 'redirects to the ssn step' do
+        idv_session.pii_from_doc = nil
+        idv_session.resolution_successful = true
+
+        get :show
+
+        expect(response).to redirect_to(idv_ssn_url)
       end
     end
   end

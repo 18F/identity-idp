@@ -26,11 +26,15 @@ module Reporting
     private
 
     def deleted_user_count
-      @deleted_user_count ||= DeletedUser.where(user_created_at: start_date..end_date).count
+      @deleted_user_count ||= Reports::BaseReport.transaction_with_timeout do
+        DeletedUser.where(user_created_at: start_date..end_date).count
+      end
     end
 
     def user_count
-      @user_count ||= User.where(created_at: start_date..end_date).count
+      @user_count ||= Reports::BaseReport.transaction_with_timeout do
+        User.where(created_at: start_date..end_date).count
+      end
     end
 
     def users_and_deleted_for_period
