@@ -10,21 +10,13 @@ module Idv
     def index
       @step_indicator_step = requested_letter_before? ? :get_a_letter : :verify_phone_or_address
 
-      # Temporarily check referer until request letter view is updated to link to the before_letter route
-      if request.referer == idv_request_letter_url
-        analytics.idv_gpo_confirm_start_over_before_letter_visited
-        render 'idv/confirm_start_over/before_letter'
-      else
-        analytics.idv_gpo_confirm_start_over_visited
-        render :index
-      end
+      analytics.idv_gpo_confirm_start_over_visited
     end
 
     def before_letter
       @step_indicator_step = requested_letter_before? ? :get_a_letter : :verify_phone_or_address
-      analytics.idv_gpo_confirm_start_over_before_letter_visited
 
-      render 'idv/confirm_start_over/before_letter'
+      analytics.idv_gpo_confirm_start_over_before_letter_visited
     end
 
     private
