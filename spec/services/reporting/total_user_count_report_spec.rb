@@ -8,8 +8,9 @@ RSpec.describe Reporting::TotalUserCountReport do
 
   let(:expected_report) do
     [
-      ['All-time user count', 'Total verified users', 'Total annual users'],
-      [expected_total_count, expected_verified_count, expected_annual_count],
+      ['All-time user count', expected_total_count],
+      ['Total verified users', expected_verified_count],
+      ['Total annual users', expected_annual_count],
     ]
   end
 
