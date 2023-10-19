@@ -8,10 +8,10 @@ RSpec.describe Reporting::TotalUserCountReport do
 
   let(:expected_report) do
     [
-      ['All-time user count', expected_total_count],
-      ['Total verified users', expected_verified_count],
-      ['Total annual users', expected_annual_count],
-      ['Period for annual user count', '2020-03-01 - 2021-03-01'],
+      ['Metric', 'Value', 'Time Range Start', 'Time Range End'],
+      ['All-time user count', expected_total_count, '-', '2021-03-01'],
+      ['Total verified users', expected_verified_count, '-', '2021-03-01'],
+      ['Total annual users', expected_annual_count, '2020-03-01', '2021-03-01'],
     ]
   end
 
