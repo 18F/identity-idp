@@ -59,10 +59,12 @@ export class DocumentCapturePolling {
     elements,
     statusEndpoint,
     trackEvent = defaultTrackEvent,
+    phoneQuestionAbTestBucket,
   }: DocumentCapturePollingOptions) {
     this.elements = elements;
     this.statusEndpoint = statusEndpoint;
     this.trackEvent = trackEvent;
+    this.phoneQuestionAbTestBucket = phoneQuestionAbTestBucket;
   }
 
   bind() {
