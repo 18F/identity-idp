@@ -30,8 +30,14 @@ RSpec.describe Users::PasswordsController do
         }
         patch :update, params: { update_user_password_form: params }
 
-        expect(@analytics).to have_received(:track_event).
-          with('Password Changed', success: true, errors: {})
+        expect(@analytics).to have_received(:track_event).with(
+          'Password Changed',
+          success: true,
+          errors: {},
+          pending_profile_present: false,
+          active_profile_present: false,
+          user_id: subject.current_user.uuid,
+        )
         expect(response).to redirect_to account_url
         expect(flash[:info]).to eq t('notices.password_changed')
         expect(flash[:personal_key]).to be_nil
@@ -154,6 +160,9 @@ RSpec.describe Users::PasswordsController do
               )],
             },
             error_details: password_short_error,
+            pending_profile_present: false,
+            active_profile_present: false,
+            user_id: subject.current_user.uuid,
           )
           expect(response).to render_template(:edit)
         end
@@ -196,6 +205,9 @@ RSpec.describe Users::PasswordsController do
             error_details: {
               password_confirmation: [t('errors.messages.password_mismatch')],
             },
+            pending_profile_present: false,
+            active_profile_present: false,
+            user_id: subject.current_user.uuid,
           )
           expect(response).to render_template(:edit)
         end

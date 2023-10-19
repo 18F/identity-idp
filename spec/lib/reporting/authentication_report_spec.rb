@@ -48,12 +48,12 @@ RSpec.describe Reporting::AuthenticationReport do
     end
   end
 
-  describe '#as_tables_with_names' do
+  describe '#as_emailable_reports' do
     it 'adds a "first row" hash with a title for tables_report mailer' do
-      tables = report.as_tables_with_options
+      reports = report.as_emailable_reports
       aggregate_failures do
-        tables.each do |table|
-          expect(table[0][:title]).to_not be nil
+        reports.each do |report|
+          expect(report.title).to be_present
         end
       end
     end
