@@ -122,8 +122,8 @@ See [`@18f/identity-i18n` package documentation](../app/javascript/packages/i18n
 
 ### Analytics
 
-See [`@18f/identity-analytics` package documentation](../app/javascript/packages/i18n/README.md) for
-code examples detailing how to track an event in JavaScript.
+See [`@18f/identity-analytics` package documentation][analytics_package] for code examples detailing
+how to track an event in JavaScript.
 
 Any event logged from the frontend must be added to the `EVENT_MAP` allowlist in [`FrontendLogController`][frontend_log_controller.rb].
 This mapping associates the event name logged from the frontend with the corresponding method from
@@ -140,6 +140,7 @@ is implemented.
 3. Implement a mixin to intercept and override the default behavior of an analytics event, such as
 how [`Idv::AnalyticsEventEnhancer`][analytics_events_enhancer.rb] is implemented.
 
+[analytics_package]: ../app/javascript/packages/analytics/README.md
 [frontend_log_controller.rb]: https://github.com/18F/identity-idp/blob/main/app/controllers/frontend_log_controller.rb
 [analytics_events.rb]: https://github.com/18F/identity-idp/blob/main/app/services/analytics_events.rb
 [data_attributes]: https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes
