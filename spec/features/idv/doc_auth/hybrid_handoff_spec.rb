@@ -171,17 +171,17 @@ RSpec.feature 'hybrid_handoff step send link and errors' do
       end
     end
 
-    context 'with PhoneQuestion page enabled' do
+    context 'PhoneQuestion page' do
       before(:each) do
         allow_any_instance_of(Idv::HybridHandoffController).
           to receive(:phone_question_ab_test_bucket).and_return(:show_phone_question)
-
-        @user = user_with_2fa
-        sign_in_and_2fa_user(@user)
-        complete_doc_auth_steps_before_hybrid_handoff_step
       end
 
       it 'displays the expected headings' do
+        user = user_with_2fa
+        sign_in_and_2fa_user(user)
+        complete_doc_auth_steps_before_hybrid_handoff_step
+
         expect(page).to have_current_path(idv_phone_question_path)
         click_link t('doc_auth.buttons.have_phone')
         fill_in :doc_auth_phone, with: '415-555-0199'
@@ -199,6 +199,9 @@ RSpec.feature 'hybrid_handoff step send link and errors' do
       end
 
       it 'rate limits sending the link' do
+        user = user_with_2fa
+        sign_in_and_2fa_user(user)
+        complete_doc_auth_steps_before_hybrid_handoff_step
         timeout = distance_of_time_in_words(
           RateLimiter.attempt_window_in_minutes(:idv_send_link).minutes,
         )
@@ -244,7 +247,7 @@ RSpec.feature 'hybrid_handoff step send link and errors' do
 
         # Manual expiration is needed for now since the RateLimiter uses
         # Redis ttl instead of expiretime
-        RateLimiter.new(rate_limit_type: :idv_send_link, user: @user).reset!
+        RateLimiter.new(rate_limit_type: :idv_send_link, user: user).reset!
         travel_to(Time.zone.now + idv_send_link_attempt_window_in_minutes.minutes) do
           fill_in :doc_auth_phone, with: '415-555-0199'
           click_send_link
