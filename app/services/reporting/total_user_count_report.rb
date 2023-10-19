@@ -13,6 +13,8 @@ module Reporting
         ['All-time user count', total_user_count],
         ['Total verified users', verified_user_count],
         ['Total annual users', annual_total_user_count],
+        ['Period for annual user count',
+         "#{annual_start_date.strftime('%F')} - #{end_date.strftime('%F')}"],
       ]
     end
 
