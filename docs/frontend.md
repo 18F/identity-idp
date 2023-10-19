@@ -120,6 +120,32 @@ to deduplicate resolved package versions within the Yarn lockfile.
 
 See [`@18f/identity-i18n` package documentation](../app/javascript/packages/i18n/README.md).
 
+### Analytics
+
+See [`@18f/identity-analytics` package documentation](../app/javascript/packages/i18n/README.md) for
+code examples detailing how to track an event in JavaScript.
+
+Any event logged from the frontend must be added to the `EVENT_MAP` allowlist in [`FrontendLogController`][frontend_log_controller.rb].
+This mapping associates the event name logged from the frontend with the corresponding method from
+[AnalyticsEvents][analytics_events.rb] to be called. All properties will be passed automatically to
+the event from the frontend as long as they are defined in the method argument signature.
+
+There may be some situations where you need to append a value known by the server to an event logged
+in the frontend, such as an A/B test bucket descriptor. In these scenarios, you have a few options:
+
+1. Add the value to the page markup, such as through an [HTML `data-` attribute][data_attributes],
+and reference that attribute in JavaScript.
+2. Define the mapped value in `EVENT_MAP` to a service class, such as how [frontend error logging][frontend_error_logging]
+is implemented.
+3. Implement a mixin to intercept and override the default behavior of an analytics event, such as
+how [`Idv::AnalyticsEventEnhancer`][analytics_events_enhancer.rb] is implemented.
+
+[frontend_log_controller.rb]: https://github.com/18F/identity-idp/blob/main/app/controllers/frontend_log_controller.rb
+[analytics_events.rb]: https://github.com/18F/identity-idp/blob/main/app/services/analytics_events.rb
+[data_attributes]: https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes
+[frontend_error_logging]: https://github.com/18F/identity-idp/blob/9c17164c0b8d9b4aefad74dde1a521c111b53aac/app/controllers/frontend_log_controller.rb#L14
+[analytics_events_enhancer.rb]: https://github.com/18F/identity-idp/blob/main/app/services/idv/analytics_events_enhancer.rb
+
 ## Components
 
 ### Design System
