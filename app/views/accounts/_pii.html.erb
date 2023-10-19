@@ -20,7 +20,7 @@
   <div class="grid-row margin-bottom-1 margin-top-0">
     <div class="grid-col-12">
       <h2 class="margin-0">
-        <%= t('headings.account.profile_info') %>
+        <%= t('headings.account.verified_information') %>
         <%= image_tag asset_url('lock.svg'), width: 8, height: 10 %>
       </h2>
     </div>
@@ -28,7 +28,7 @@
   <div class="border-bottom border-primary-light">
     <div class="padding-1 grid-row border-top border-left border-right border-primary-light">
       <div class="tablet:grid-col-4 text-bold">
-        <%= t('account.index.full_name') %>
+        <%= t('account.verified_information.full_name') %>
       </div>
       <div class="tablet:grid-col-8 padding-x-1 truncate">
         <%= pii.full_name %>
@@ -36,7 +36,7 @@
     </div>
     <div class="padding-1 grid-row border-top border-left border-right border-primary-light">
       <div class="tablet:grid-col-4 text-bold">
-        <%= t('account.index.address') %>
+        <%= t('account.verified_information.address') %>
       </div>
       <div class="tablet:grid-col-8 padding-x-1">
         <%= render 'shared/address', address: pii %>
@@ -44,7 +44,7 @@
     </div>
     <div class="padding-1 grid-row border-top border-left border-right border-primary-light">
       <div class="tablet:grid-col-4 text-bold">
-        <%= t('account.index.dob') %>
+        <%= t('account.verified_information.dob') %>
       </div>
       <div class="tablet:grid-col-8 padding-x-1">
         <%= pii.dob %>
@@ -52,7 +52,7 @@
     </div>
     <div class="padding-1 grid-row border-top border-left border-right border-primary-light">
       <div class="tablet:grid-col-4 text-bold">
-        <%= t('account.index.ssn') %>
+        <%= t('account.verified_information.ssn') %>
       </div>
       <div class="tablet:grid-col-8 padding-x-1">
         ***-**-****
@@ -60,7 +60,7 @@
     </div>
     <div class="padding-1 grid-row border-top border-left border-right border-primary-light">
       <div class="tablet:grid-col-4 text-bold">
-        <%= t('account.index.phone') %>
+        <%= t('account.verified_information.phone_number') %>
       </div>
       <div class="tablet:grid-col-8 padding-x-1">
         <%= PhoneFormatter.format(pii.phone) %>

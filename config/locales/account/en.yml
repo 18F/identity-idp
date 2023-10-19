@@ -23,7 +23,6 @@ en:
         text/SMS code or a security key) each time you want to access your
         account.
     index:
-      address: Current address
       auth_app_add: Add app
       auth_app_disabled: not enabled
       auth_app_enabled: enabled
@@ -34,12 +33,10 @@ en:
       continue_to_service_provider: Continue to %{service_provider}
       default: default
       device: '%{browser} on %{os}'
-      dob: Date of birth
       email: Email address
       email_add: Add new email
       email_addresses: Email addresses
       email_preferences: Email preferences
-      full_name: Full name
       password: Password
       phone: Phone numbers
       phone_add: Add phone
@@ -49,7 +46,6 @@ en:
         instructions: Your profile was recently deactivated due to a password reset.
         link: Reactivate your profile now.
       sign_in_location_and_ip: From %{ip} (IP address potentially located in %{location})
-      ssn: Social Security number
       totp_confirm_delete: Yes, remove authentication app
       unknown_location: unknown location
       verification:
@@ -120,4 +116,10 @@ en:
     security:
       link: Learn more at the Help Center
       text: Your profile information is locked for your security.
+    verified_information:
+      address: Address
+      dob: Date of birth
+      full_name: Full name
+      phone_number: Phone number
+      ssn: Social Security number
     welcome: Welcome
