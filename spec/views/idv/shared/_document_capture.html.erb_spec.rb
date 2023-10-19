@@ -42,7 +42,7 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
       acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
       use_alternate_sdk: use_alternate_sdk,
       acuant_version: acuant_version,
-      phone_question_ab_test_bucket: phone_question_ab_test_bucket, 
+      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
     }
   end
 
