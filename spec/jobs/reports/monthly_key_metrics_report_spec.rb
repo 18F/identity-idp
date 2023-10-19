@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Reports::MonthlyKeyMetricsReport do
   let(:report_date) { Date.new(2021, 3, 2) }
-  subject(:report) { Reports::MonthlyKeyMetricsReport.new(report_date: report_date) }
+  subject(:report) { Reports::MonthlyKeyMetricsReport.new(report_date) }
 
   let(:name) { 'monthly-key-metrics-report' }
   let(:agnes_email) { 'fake@agnes_email.com' }
@@ -58,7 +58,8 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
       message: 'Report: monthly-key-metrics-report 2021-03-02',
       email: [agnes_email],
       subject: 'Monthly Key Metrics Report - 2021-03-02',
-      tables: anything,
+      reports: anything,
+      attachment_format: :xlsx,
     ).and_call_original
 
     subject.perform(report_date)
@@ -71,7 +72,8 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
       message: 'Report: monthly-key-metrics-report 2021-03-01',
       email: [agnes_email, feds_email],
       subject: 'Monthly Key Metrics Report - 2021-03-01',
-      tables: anything,
+      reports: anything,
+      attachment_format: :xlsx,
     ).and_call_original
 
     subject.perform(first_of_month_date)
@@ -83,12 +85,7 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
     expect_any_instance_of(Reporting::AccountReuseAndTotalIdentitiesReport).
       not_to receive(:total_identities_report)
 
-    expect(ReportMailer).not_to receive(:tables_report).with(
-      message: 'Report: monthly-key-metrics-report 2021-03-02',
-      email: [''],
-      subject: 'Monthly Key Metrics Report - 2021-03-02',
-      tables: anything,
-    ).and_call_original
+    expect(ReportMailer).not_to receive(:tables_report)
 
     subject.perform(report_date)
   end

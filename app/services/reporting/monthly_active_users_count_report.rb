@@ -17,18 +17,18 @@ module Reporting
 
     def monthly_active_users_count_emailable_report
       EmailableReport.new(
-        email_options: {
-          title: "#{report_month_year} Active Users",
-        },
+        title: "#{report_month_year} Active Users",
         table: monthly_active_users_count_report,
-        csv_name: 'monthly_active_users_count',
+        filename: 'monthly_active_users_count',
       )
     end
 
     private
 
     def active_users_count
-      @active_users_count ||= Db::Identity::SpActiveUserCounts.overall(range.begin, range.end).first
+      @active_users_count ||= Reports::BaseReport.transaction_with_timeout do
+        Db::Identity::SpActiveUserCounts.overall(range.begin, range.end).first
+      end
     end
 
     def total_ial1_active

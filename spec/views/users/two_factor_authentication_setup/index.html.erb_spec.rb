@@ -2,10 +2,12 @@ require 'rails_helper'
 
 RSpec.describe 'users/two_factor_authentication_setup/index.html.erb' do
   include Devise::Test::ControllerHelpers
+  include IdvHelper
 
   let(:user) { build(:user) }
   let(:user_agent) { '' }
   let(:show_skip_additional_mfa_link) { true }
+  let(:phishing_resistant_required) { false }
   let(:after_mfa_setup_path) { account_path }
   subject(:rendered) { render }
 
@@ -15,6 +17,8 @@ RSpec.describe 'users/two_factor_authentication_setup/index.html.erb' do
       user:,
       show_skip_additional_mfa_link:,
       after_mfa_setup_path:,
+      return_to_sp_cancel_path:,
+      phishing_resistant_required:,
     )
     @two_factor_options_form = TwoFactorLoginOptionsForm.new(user)
   end
@@ -96,6 +100,25 @@ RSpec.describe 'users/two_factor_authentication_setup/index.html.erb' do
         with: :phone,
         disabled: false,
       )
+    end
+  end
+
+  context 'unphishable requires additional authentication to be added' do
+    let(:user) { create(:user, :fully_registered, :with_phone) }
+    let(:phishing_resistant_required) { true }
+
+    it 'lists current selected mfa methods' do
+      render
+      expect(rendered).to have_content(t('two_factor_authentication.two_factor_aal3_choice'))
+      expect(rendered).to have_content(
+        t('two_factor_authentication.two_factor_choice_options.phone'),
+      )
+    end
+
+    it 'shows a cancel link that aborts the login' do
+      render
+      expect(rendered).not_to have_link(t('mfa.skip'))
+      expect(rendered).to have_link(t('links.cancel'))
     end
   end
 end

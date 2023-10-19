@@ -74,7 +74,7 @@ fr:
       completion_ial2: Connectez vos informations vérifiées à %{sp}
       completion_new_attributes: '%{sp} demande de nouvelles informations'
       completion_new_sp: Vous vous connectez pour la première fois
-      completion_reverified_consent: Mettez à jour vos informations vérifiées avec %{sp}
+      completion_reverified_consent: Partagez vos informations mises à jour avec %{sp}
       confirmation: Continuer à vous connecter
     spam_protection: Protection contre les pourriels
     totp_setup:

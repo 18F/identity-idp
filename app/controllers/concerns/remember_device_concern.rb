@@ -67,7 +67,10 @@ module RememberDeviceConcern
 
   def handle_valid_remember_device_cookie(remember_device_cookie:)
     user_session[:auth_method] = TwoFactorAuthenticatable::AuthMethod::REMEMBER_DEVICE
-    mark_user_session_authenticated(:device_remembered)
+    mark_user_session_authenticated(
+      auth_method: TwoFactorAuthenticatable::AuthMethod::REMEMBER_DEVICE,
+      authentication_type: :device_remembered,
+    )
     handle_valid_remember_device_analytics(cookie_created_at: remember_device_cookie.created_at)
     redirect_to after_sign_in_path_for(current_user)
   end
