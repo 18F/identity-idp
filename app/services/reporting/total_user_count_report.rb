@@ -10,11 +10,15 @@ module Reporting
 
     def total_user_count_report
       [
-        ['All-time user count', total_user_count],
-        ['Total verified users', verified_user_count],
-        ['Total annual users', annual_total_user_count],
-        ['Period for annual user count',
-         "#{annual_start_date.strftime('%F')} - #{end_date.strftime('%F')}"],
+        ['Metric', 'Value', 'Time Range Start', 'Time Range End'],
+        ['All-time user count', total_user_count, '-', report_date.strftime('%F')],
+        ['Total verified users', verified_user_count, '-', report_date.strftime('%F')],
+        [
+          'Total annual users',
+          annual_total_user_count,
+          annual_start_date.strftime('%F'),
+          end_date.strftime('%F'),
+        ],
       ]
     end
 
@@ -30,13 +34,13 @@ module Reporting
 
     def total_user_count
       Reports::BaseReport.transaction_with_timeout do
-        User.where('created_at <= ?', report_date).count
+        User.where('created_at <= ?', end_date).count
       end
     end
 
     def verified_user_count
       Reports::BaseReport.transaction_with_timeout do
-        Profile.where(active: true).where('activated_at <= ?', report_date).count
+        Profile.where(active: true).where('activated_at <= ?', end_date).count
       end
     end
 
