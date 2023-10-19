@@ -3,6 +3,7 @@ module Idv
     class DocumentCaptureController < ApplicationController
       include DocumentCaptureConcern
       include HybridMobileConcern
+      include PhoneQuestionAbTestConcern
 
       before_action :check_valid_document_capture_session
       before_action :override_csp_to_allow_acuant
@@ -42,6 +43,7 @@ module Idv
           failure_to_proof_url: return_to_sp_failure_to_proof_url(step: 'document_capture'),
         }.merge(
           acuant_sdk_upgrade_a_b_testing_variables,
+          phone_question_ab_test_analytics_bucket
         )
       end
 
