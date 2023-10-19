@@ -55,7 +55,6 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
 
   it 'sends out a report to the email listed with one total user' do
     expect(ReportMailer).to receive(:tables_report).once.with(
-      message: 'Report: monthly-key-metrics-report 2021-03-02',
       email: [agnes_email],
       subject: 'Monthly Key Metrics Report - 2021-03-02',
       reports: anything,
@@ -69,7 +68,6 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
     first_of_month_date = report_date - 1
 
     expect(ReportMailer).to receive(:tables_report).once.with(
-      message: 'Report: monthly-key-metrics-report 2021-03-01',
       email: [agnes_email, feds_email],
       subject: 'Monthly Key Metrics Report - 2021-03-01',
       reports: anything,
