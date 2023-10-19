@@ -248,7 +248,7 @@ module DocAuthHelper
   def mock_doc_auth_acuant_http_4xx_status(status, method = :post_front_image)
     DocAuth::Mock::DocAuthMockClient.mock_response!(
       method: method,
-      response: DocAuth::Mock::ResultResponse.create_image_error_response(status),
+      response: DocAuth::Mock::ResultResponse.create_image_error_response(status, 'front'),
     )
   end
 

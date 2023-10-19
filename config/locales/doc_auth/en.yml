@@ -88,15 +88,19 @@ en:
         top_msg_plural: We couldn’t read your ID. Your photos may have glare. Make sure
           that the flash on your camera is off and try taking new pictures.
       http:
-        image_load: The image file that you added is not supported. Please take new
-          photos of your ID and try again.
+        image_load:
+          failed_short: The image file that you added is not supported.
+          top_msg: The image file that you added is not supported. Please take new photos
+            of your ID and try again.
         image_size:
           failed_short: Image file is not supported, please try again.
           top_msg: Your image size is too large or too small. Please add images of your ID
             that are about 2025 x 1275 pixels.
-        pixel_depth: The pixel depth of your image file is not supported. Please take
-          new photos of your ID and try again. Supported image pixel depth is
-          24-bit RGB.
+        pixel_depth:
+          failed_short: The pixel depth of your image file is not supported.
+          top_msg: The pixel depth of your image file is not supported. Please take new
+            photos of your ID and try again. Supported image pixel depth is
+            24-bit RGB.
       not_a_file: The selection was not a valid file.
       pii:
         birth_date_min_age: Your birthday does not meet the minimum age requirement.
