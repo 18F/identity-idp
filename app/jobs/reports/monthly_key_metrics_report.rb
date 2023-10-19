@@ -21,7 +21,20 @@ module Reports
         return false
       end
 
-      reports = [
+      reports.each do |report|
+        upload_to_s3(report.table, report_name: report.filename)
+      end
+
+      ReportMailer.tables_report(
+        email: email_addresses,
+        subject: "Monthly Key Metrics Report - #{date}",
+        reports: reports,
+        attachment_format: :xlsx,
+      ).deliver_now
+    end
+
+    def reports
+      @reports ||= [
         # Number of verified users (total) - LG-11148
         # Number of verified users (new) - LG-11164
         monthly_active_users_count_report.monthly_active_users_count_emailable_report,
@@ -41,20 +54,6 @@ module Reports
         # APG Reporting of Cumulative Proofed Identities By Year/Month - LG-11159
         # APG Reporting Proofing rate for HISPs - LG-11160
       ]
-
-      reports.each do |report|
-        upload_to_s3(report.table, report_name: report.filename)
-      end
-
-      email_message = "Report: #{REPORT_NAME} #{date}"
-
-      ReportMailer.tables_report(
-        email: email_addresses,
-        subject: "Monthly Key Metrics Report - #{date}",
-        message: email_message,
-        reports: reports,
-        attachment_format: :xlsx,
-      ).deliver_now
     end
 
     def emails
