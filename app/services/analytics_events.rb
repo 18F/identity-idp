@@ -1058,7 +1058,7 @@ module AnalyticsEvents
 
   # The user visited the gpo confirm cancellation screen
   def idv_gpo_confirm_start_over_visited(**extra)
-    track_event('IdV: gpo confirm start over visited') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
+    track_event('IdV: gpo confirm start over visited', **extra) # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # The user visited the gpo confirm cancellation screen from RequestLetter
