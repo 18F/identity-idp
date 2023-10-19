@@ -20,7 +20,7 @@ es:
         su cuenta. Compartiremos esta información con el organismo asociado: '
       ial2_reverified_consent_info: 'Como volvió a verificar su identidad, necesitamos
         su permiso para compartir esta información con %{sp}: '
-      phone: Teléfono
+      phone: Número de teléfono
       social_security_number: Número de Seguro Social
       verified_at: Actualizado en
       x509_issuer: Emisor PIV/CAC

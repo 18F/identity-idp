@@ -9,11 +9,11 @@ fr:
       events: Événements
       federal_employee_id: Identification des employés fédéraux
       login_info: Votre compte
-      profile_info: Information du profil
       reactivate: Réactivez votre compte
       two_factor: Vos méthodes d’authentification
       unphishable: Incapable de phishing
       verified_account: Compte vérifié
+      verified_information: Informations vérifiées
     add_email: Ajouter une nouvelle adresse e-mail
     add_info:
       phone: Ajouter un numéro de téléphone
