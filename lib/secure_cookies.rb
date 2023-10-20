@@ -12,15 +12,16 @@ class SecureCookies
 
   def call(env)
     status, headers, body = @app.call(env)
-
-    if (cookie_header = headers['Set-Cookie']).present?
-
-      Array(cookie_header).each do |cookie|
-        next if cookie.blank?
+    cookies = headers[Rack::SET_COOKIE]
+    if cookies
+      headers[Rack::SET_COOKIE] = Array(cookies).map do |cookie|
+        return cookie if cookie.blank?
 
         cookie << '; Secure' if env['HTTPS'] == 'on' && !cookie.match?(SECURE_REGEX)
         cookie << '; HttpOnly' if !cookie.match?(HTTP_ONLY_REGEX)
         cookie << '; SameSite=Lax' if !cookie.match?(SAME_SITE_REGEX)
+
+        cookie
       end
     end
 
