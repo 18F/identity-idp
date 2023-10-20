@@ -66,7 +66,7 @@ export class DocumentCapturePolling {
   bind() {
     this.toggleFormVisible(false);
     this.trackEvent('IdV: Link sent capture doc polling started', {
-      phoneQuestionAbTestBucket: this.phoneQuestionAbTestBucket,
+      phone_question_ab_test_bucket: this.phoneQuestionAbTestBucket,
     });
     this.schedulePoll();
     this.bindPromptOnNavigate(true);
@@ -100,7 +100,7 @@ export class DocumentCapturePolling {
     this.trackEvent('IdV: Link sent capture doc polling complete', {
       isCancelled: result === ResultType.CANCELLED,
       isRateLimited: result === ResultType.RATE_LIMITED,
-      phoneQuestionAbTestBucket: this.phoneQuestionAbTestBucket,
+      phone_question_ab_test_bucket: this.phoneQuestionAbTestBucket,
     });
     this.bindPromptOnNavigate(false);
     if (redirect) {
