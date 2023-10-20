@@ -19,7 +19,6 @@ module MfaSetupConcern
         user_session.delete(:mfa_selections)
         return sign_up_completed_path
       end
-      nil
     end
   end
 
