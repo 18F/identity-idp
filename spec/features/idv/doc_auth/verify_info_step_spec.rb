@@ -111,6 +111,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
     click_idv_continue
 
     expect(page).to have_current_path(idv_session_errors_warning_path)
+    expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
     click_on t('idv.failure.button.warning')
 
     expect(page).to have_current_path(idv_verify_info_path)
