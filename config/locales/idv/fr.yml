@@ -190,8 +190,8 @@ fr:
         devez activer JavaScript pour poursuivre ce processus.'
     gpo:
       alert_info: 'Nous avons envoyé une lettre avec votre code de vérification à:'
-      alert_spam_warning_html: 'Nous ne sommes pas en mesure d’envoyer d’autres
-        lettres. La dernière lettre a été envoyée
+      alert_spam_warning_html: Vous ne pouvez pas demander d’autres lettres pour
+        le moment. Votre précédente demande de lettre a été effectuée le
         <strong>%{date_letter_was_sent}</strong>.'
       change_to_verification_code_html: 'Le <strong>code à usage unique</strong>
         figurant dans votre lettre est désormais appelé <strong>code de
