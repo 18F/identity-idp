@@ -121,7 +121,7 @@ en:
         id_types:
           military_id: Military ID card (this includes a Department of Defense
             Identification Card, a Veteran Health Identification Card, or a
-            Veteran ID Card
+            Veteran ID Card)
           other: Something not listed
           resident_card: U.S. Green Card (also referred to as a Permanent Resident Card)
           tribal_id: Tribal ID card
