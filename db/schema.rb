@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_31_124437) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_18_230656) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pgcrypto"
@@ -621,6 +621,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_31_124437) do
     t.datetime "updated_at", precision: nil, null: false
     t.datetime "bounced_at", precision: nil
     t.datetime "reminder_sent_at", precision: nil
+    t.datetime "expiration_notice_sent_at", precision: nil
+    t.index ["code_sent_at"], name: "ix_code_sent_at"
+    t.index ["expiration_notice_sent_at"], name: "index_usps_confirmation_codes_on_expiration_notice_sent_at"
     t.index ["otp_fingerprint"], name: "index_usps_confirmation_codes_on_otp_fingerprint"
     t.index ["profile_id"], name: "index_usps_confirmation_codes_on_profile_id"
     t.index ["reminder_sent_at"], name: "index_usps_confirmation_codes_on_reminder_sent_at"
