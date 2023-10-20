@@ -22,13 +22,13 @@ module Proofing
       # @return [ResultAdjudicator] object which contains the logic to determine proofing's result
       def proof(
         applicant_pii:,
-        double_address_verification:,
         ipp_enrollment_in_progress:,
         request_ip:,
         should_proof_state_id:,
         threatmetrix_session_id:,
         timer:,
-        user_email:
+        user_email:,
+        double_address_verification: false
       )
         device_profiling_result = proof_with_threatmetrix_if_needed(
           applicant_pii: applicant_pii,
@@ -112,7 +112,7 @@ module Proofing
       def proof_residential_address_if_needed(
         applicant_pii:,
         timer:,
-        double_address_verification:,
+        double_address_verification: false,
         ipp_enrollment_in_progress: false
       )
         return residential_address_unnecessary_result unless
@@ -140,7 +140,7 @@ module Proofing
                                                       double_address_verification:,
                                                       ipp_enrollment_in_progress:)
         if applicant_pii[:same_address_as_id] == 'true' &&
-           (ipp_enrollment_in_progress == true || double_address_verification)
+           (ipp_enrollment_in_progress || double_address_verification)
           return residential_instant_verify_result
         end
         return resolution_cannot_pass unless residential_instant_verify_result.success?
