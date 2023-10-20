@@ -40,6 +40,7 @@ describe('DocumentCapturePolling', () => {
         ),
       },
       trackEvent,
+      phoneQuestionAbTestBucket: 'bypass_phone_question',
     });
     subject.bind();
   });

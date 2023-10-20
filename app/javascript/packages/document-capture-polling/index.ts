@@ -43,11 +43,7 @@ export class DocumentCapturePolling {
 
   statusEndpoint: string;
 
-  trackEvent: typeof defaultTrackEvent = (event, payload) =>
-    defaultTrackEvent(event, {
-      ...payload,
-      phone_question_ab_test_bucket: this.phoneQuestionAbTestBucket,
-    });
+  trackEvent: typeof defaultTrackEvent;
 
   pollAttempts = 0;
 
