@@ -25,10 +25,12 @@ class ScriptBase
     :format,
     :show_help,
     :requesting_issuers,
+    :deflate,
     keyword_init: true,
   ) do
     alias_method :include_missing?, :include_missing
     alias_method :show_help?, :show_help
+    alias_method :deflate?, :deflate
   end
 
   def config
@@ -37,6 +39,7 @@ class ScriptBase
       format: :table,
       show_help: false,
       requesting_issuers: [],
+      deflate: false,
     )
   end
 
@@ -59,7 +62,10 @@ class ScriptBase
       stderr.puts "*Messages*:\n#{result.messages.map { |message| "    • #{message}" }.join("\n")}"
     end
 
-    if result.json
+    if config.deflate?
+      require 'zlib'
+      stdout.puts Zlib::Deflate.deflate((result.json || result.table).to_json, Zlib::BEST_COMPRESSION)
+    elsif result.json
       stdout.puts result.json.to_json
     else
       self.class.render_output(result.table, format: config.format, stdout: stdout)
@@ -90,6 +96,10 @@ class ScriptBase
 
       opts.on('--json') do
         config.format = :json
+      end
+
+      opts.on('--deflate', 'Use DEFLATE compression on the output') do
+        config.deflate = true
       end
 
       opts.on('--[no-]include-missing', <<~STR) do |include_missing|
