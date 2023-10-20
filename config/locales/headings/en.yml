@@ -9,11 +9,11 @@ en:
       events: Events
       federal_employee_id: Federal employee ID
       login_info: Your account
-      profile_info: Profile information
       reactivate: Reactivate your account
       two_factor: Your authentication methods
       unphishable: Unphishable
       verified_account: Verified Account
+      verified_information: Verified information
     add_email: Add a new email address
     add_info:
       phone: Add a phone number

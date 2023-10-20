@@ -6,7 +6,16 @@ RSpec.describe Idv::PhoneErrorsController do
   end
 
   before do
+    allow(subject).to receive(:remaining_attempts).and_return(5)
+    stub_analytics
+    allow(@analytics).to receive(:track_event)
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
+
+    if user
+      stub_sign_in(user)
+      subject.idv_session.user_phone_confirmation = false
+      subject.idv_session.previous_phone_step_params = previous_phone_step_params
+    end
   end
 
   shared_examples_for 'an idv phone errors controller action' do
@@ -21,9 +30,7 @@ RSpec.describe Idv::PhoneErrorsController do
 
       context 'the user has not submtted a phone number' do
         it 'redirects to phone step' do
-          allow(idv_session).to receive(:previous_phone_step_params).
-            and_return(nil)
-
+          subject.idv_session.previous_phone_step_params = nil
           get action
 
           expect(response).to redirect_to(idv_phone_url)
@@ -67,7 +74,9 @@ RSpec.describe Idv::PhoneErrorsController do
         end
 
         context 'the user has confirmed their phone' do
-          let(:idv_session_user_phone_confirmation) { true }
+          before do
+            subject.idv_session.user_phone_confirmation = true
+          end
 
           it 'redirects to the review url' do
             get action
@@ -97,8 +106,6 @@ RSpec.describe Idv::PhoneErrorsController do
     end
   end
 
-  let(:idv_session) { double }
-  let(:idv_session_user_phone_confirmation) { false }
   let(:user) { nil }
   let(:phone) { '3602345678' }
   let(:country_code) { 'US' }
@@ -107,20 +114,6 @@ RSpec.describe Idv::PhoneErrorsController do
       phone: phone,
       international_code: country_code,
     }
-  end
-
-  before do
-    allow(idv_session).to receive(:user_phone_confirmation).
-      and_return(idv_session_user_phone_confirmation)
-    allow(idv_session).to receive(:current_user).and_return(user)
-    allow(idv_session).to receive(:previous_phone_step_params).
-      and_return(previous_phone_step_params)
-    allow(subject).to receive(:remaining_attempts).and_return(5)
-    allow(controller).to receive(:idv_session).and_return(idv_session)
-    stub_sign_in(user) if user
-
-    stub_analytics
-    allow(@analytics).to receive(:track_event)
   end
 
   describe '#warning' do
@@ -146,8 +139,8 @@ RSpec.describe Idv::PhoneErrorsController do
       end
 
       context 'not knowing about a phone just entered' do
-        let(:previous_phone_step_params) { nil }
         it 'does not crash' do
+          subject.idv_session.previous_phone_step_params = nil
           get action
         end
       end

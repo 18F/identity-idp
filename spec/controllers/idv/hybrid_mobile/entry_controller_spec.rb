@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Idv::HybridMobile::EntryController do
-  include IdvHelper
-
   describe '#show' do
     let(:user) { create(:user) }
 

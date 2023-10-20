@@ -218,11 +218,6 @@ es:
       wrong_address: ¿La dirección no es correcta?
     images:
       come_back_later: Carta con una marca de verificación
-    index:
-      id:
-        need_html: Si está creando una cuenta, necesitará una <strong>identificación
-          emitida por el estado actual</strong>.
-        state_issue: Documento de identidad emitido por el Estado
     messages:
       activated_html: Su identidad ha sido verificada. Si necesita cambiar la
         información verificada, por favor, %{link_html}.
@@ -238,6 +233,14 @@ es:
         funcionará y tendrá que verificar su identidad de nuevo.
       come_back_later_sp_html: Ahora puedes volver a <strong>%{sp}</strong>.
       confirm: Hemos asegurado su información verificada
+      enter_password:
+        by_mail_password_reminder_html: <strong>Recuerde su contraseña.</strong> El
+          código de verificación de su carta no funcionará si restablece su
+          contraseña más tarde.
+        message: '%{app_name} encriptará tu información con tu contraseña. Esto
+          significa que tu información estará segura y solo tú podrás
+          consultarla o modificarla.'
+        phone_verified: Verificamos su número de teléfono
       gpo:
         address_on_file: 'Enviaremos la carta por correo a la dirección que verificó
           anteriormente:'
@@ -270,35 +273,28 @@ es:
           - Con base en Estados Unidos (incluidos los territorios de EE.UU.)
           - Su número principal (el que utiliza con más frecuencia)
       return_to_profile: '‹ Volver a tu perfil de %{app_name}'
-      review:
-        by_mail_password_reminder_html: <strong>Recuerde su contraseña.</strong> El
-          código de verificación de su carta no funcionará si restablece su
-          contraseña más tarde.
-        message: '%{app_name} encriptará tu información con tu contraseña. Esto
-          significa que tu información estará segura y solo tú podrás
-          consultarla o modificarla.'
-        phone_verified: Verificamos su número de teléfono
       select_verification_with_sp: Para protegerlo de robo de identidad, no puede
         utilizar su cuenta en %{sp_name} hasta que la active ingresando un
         código único.
       select_verification_without_sp: Para proteger su cuenta de robo de identidad, su
         perfil no se activará hasta que ingrese un código único.
       sessions:
+        enter_password_message: Cuando vuelva a ingresar su contraseña, %{app_name}
+          cifrará sus datos para asegurarse de que nadie más pueda acceder a
+          ellos.
         no_pii: SITIO DE PRUEBA - No utilice información personal real (sólo para
           propósitos de demostración) - SITIO DE PRUEBA
-        review_message: Cuando vuelva a ingresar su contraseña, %{app_name} cifrará sus
-          datos para asegurarse de que nadie más pueda acceder a ellos.
       verifying: Verificando…
     titles:
       activated: Ya se verificó tu identidad.
       come_back_later: Su carta está en camino
+      enter_password: Revise y envíe
       mail:
         verify: Verifique su dirección
       otp_delivery_method: '¿Cómo debemos enviar un código?'
-      review: Revise y envíe
       session:
-        review: 'Vuelve a ingresar tu contraseña de %{app_name}'
-        review_letter: 'Vuelve a ingresar su contraseña de %{app_name} para enviar su carta'
+        enter_password: 'Vuelve a ingresar tu contraseña de %{app_name}'
+        enter_password_letter: 'Vuelve a ingresar su contraseña de %{app_name} para enviar su carta'
       unavailable: Estamos trabajando para resolver un error
     troubleshooting:
       headings:

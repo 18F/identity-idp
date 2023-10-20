@@ -209,11 +209,6 @@ en:
       wrong_address: Not the right address?
     images:
       come_back_later: Letter with a check mark
-    index:
-      id:
-        need_html: If you’re creating an account, you’ll need a <strong>current
-          state‑issued ID</strong>.
-        state_issue: State‑issued ID
     messages:
       activated_html: Your identity has been verified. If you need to change your
         verified information, please %{link_html}.
@@ -228,6 +223,14 @@ en:
         no longer work and you’ll have to verify your identity again.
       come_back_later_sp_html: You can return to <strong>%{sp}</strong> for now.
       confirm: We secured your verified information
+      enter_password:
+        by_mail_password_reminder_html: <strong>Remember your password.</strong> The
+          verification code in your letter won’t work if you reset your password
+          later.
+        message: '%{app_name} will encrypt your information with your password. This
+          means that your information is secure and only you will be able to
+          access or change it.'
+        phone_verified: We verified your phone number
       gpo:
         address_on_file: 'We’ll mail the letter to the address you verified earlier:'
         another_letter_on_the_way: We are sending you another letter
@@ -257,34 +260,27 @@ en:
           - Based in the United States (including U.S. territories)
           - Your primary number (the one you use the most often)
       return_to_profile: '‹ Return to your %{app_name} profile'
-      review:
-        by_mail_password_reminder_html: <strong>Remember your password.</strong> The
-          verification code in your letter won’t work if you reset your password
-          later.
-        message: '%{app_name} will encrypt your information with your password. This
-          means that your information is secure and only you will be able to
-          access or change it.'
-        phone_verified: We verified your phone number
       select_verification_with_sp: To protect you from identity fraud, we will contact
         you to confirm that this %{sp_name} account is legitimate.
       select_verification_without_sp: To protect you from identity fraud, we will
         contact you to confirm that this account is legitimate.
       sessions:
+        enter_password_message: When you re-enter your password, %{app_name} will
+          protect the information you’ve given us, so that only you can access
+          it.
         no_pii: TEST SITE - Do not use real personal information (demo purposes only) -
           TEST SITE
-        review_message: When you re-enter your password, %{app_name} will protect the
-          information you’ve given us, so that only you can access it.
       verifying: Verifying…
     titles:
       activated: Your identity has already been verified
       come_back_later: Your letter is on the way
+      enter_password: Review and submit
       mail:
         verify: Verify your address
       otp_delivery_method: How should we send a code?
-      review: Review and submit
       session:
-        review: Re-enter your %{app_name} password
-        review_letter: Re-enter your %{app_name} password to send your letter
+        enter_password: Re-enter your %{app_name} password
+        enter_password_letter: Re-enter your %{app_name} password to send your letter
       unavailable: 'We are working to resolve an error'
     troubleshooting:
       headings:

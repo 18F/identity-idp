@@ -25,7 +25,6 @@ fr:
         texte / SMS ou une clé de sécurité) chaque fois que vous souhaitez
         accéder à votre compte.
     index:
-      address: Adresse actuelle
       auth_app_add: Ajouter une application
       auth_app_disabled: non activée
       auth_app_enabled: activée
@@ -36,12 +35,10 @@ fr:
       continue_to_service_provider: Continuer à %{service_provider}
       default: défaut
       device: '%{browser} sur %{os}'
-      dob: Date de naissance
       email: Adresse e-mail
       email_add: Ajouter un nouvel e-mail
       email_addresses: Adresses courriel
       email_preferences: Préférences de messagerie
-      full_name: Nom complet
       password: Mot de passe
       phone: Numéro de téléphone
       phone_add: Ajouter un téléphone
@@ -53,7 +50,6 @@ fr:
           personnelle pour réactiver votre profil.
         link: Réactivez votre profil maintenant.
       sign_in_location_and_ip: '%{ip} (adresse IP probablement située dans %{location})'
-      ssn: Numéro d’assurance sociale
       totp_confirm_delete: Oui, supprimez l’application d’authentification
       unknown_location: lieu inconnu
       verification:
@@ -131,4 +127,10 @@ fr:
     security:
       link: En apprendre davantage dans le Centre d’aide
       text: L’information de votre profil est verrouillée pour votre sécurité.
+    verified_information:
+      address: Adresse
+      dob: Date de naissance
+      full_name: Nom complet
+      phone_number: Numéro de téléphone
+      ssn: Numéro d’assurance sociale
     welcome: Bienvenue

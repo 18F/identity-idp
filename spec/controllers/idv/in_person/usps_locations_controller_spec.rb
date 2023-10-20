@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Idv::InPerson::UspsLocationsController do
-  include IdvHelper
-
   let(:user) { create(:user) }
   let(:sp) { nil }
   let(:in_person_proofing_enabled) { true }

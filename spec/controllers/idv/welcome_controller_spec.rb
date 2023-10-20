@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Idv::WelcomeController do
-  include IdvHelper
-
   let(:user) { create(:user) }
 
   let(:ab_test_args) do
@@ -69,12 +67,23 @@ RSpec.describe Idv::WelcomeController do
     end
 
     context 'welcome already visited' do
-      it 'redirects to agreement' do
+      it 'does not redirect to agreement' do
         subject.idv_session.welcome_visited = true
 
         get :show
 
-        expect(response).to redirect_to(idv_agreement_url)
+        expect(response).to render_template('idv/welcome/show')
+      end
+
+      context 'and document capture already completed' do
+        before do
+          subject.idv_session.pii_from_doc = { first_name: 'Susan' }
+        end
+
+        it 'redirects to ssn step' do
+          get :show
+          expect(response).to redirect_to(idv_ssn_url)
+        end
       end
     end
 

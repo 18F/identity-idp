@@ -30,18 +30,19 @@ class DataPull
 
       Example usage:
 
-        * #{basename} uuid-lookup email1@example.com email2@example.com
-
-        * #{basename} uuid-convert partner-uuid1 partner-uuid2
-
         * #{basename} email-lookup uuid1 uuid2
+
+        * #{basename} events-summary uuid1 uuid2
 
         * #{basename} ig-request uuid1 uuid2 --requesting-issuer ABC:DEF:GHI
 
         * #{basename} profile-summary uuid1 uuid2
 
+        * #{basename} uuid-convert partner-uuid1 partner-uuid2
+
         * #{basename} uuid-export uuid1 uuid2 --requesting-issuer ABC:DEF:GHI
 
+        * #{basename} uuid-lookup email1@example.com email2@example.com
       Options:
     EOS
   end
@@ -52,12 +53,13 @@ class DataPull
   # @return [Class,nil]
   def subtask(name)
     {
-      'uuid-lookup' => UuidLookup,
-      'uuid-convert' => UuidConvert,
       'email-lookup' => EmailLookup,
+      'events-summary' => EventsSummary,
       'ig-request' => InspectorGeneralRequest,
       'profile-summary' => ProfileSummary,
+      'uuid-convert' => UuidConvert,
       'uuid-export' => UuidExport,
+      'uuid-lookup' => UuidLookup,
     }[name]
   end
 
@@ -255,6 +257,53 @@ class DataPull
       ScriptBase::Result.new(
         subtask: 'uuid-export',
         uuids: uuids.uniq,
+        table:,
+      )
+    end
+  end
+
+  class EventsSummary
+    def run(args:, config:)
+      uuids = args
+
+      sql = <<-SQL
+        SELECT
+          users.uuid AS uuid
+        , events.created_at::date AS date
+        , COUNT(events.id) AS events_count
+        FROM users
+        JOIN events ON users.id = events.user_id
+        WHERE users.uuid IN (:uuids)
+        GROUP BY
+          users.uuid
+        , events.created_at::date
+        ORDER BY
+          users.uuid ASC
+        , events.created_at::date DESC
+      SQL
+
+      results = ActiveRecord::Base.connection.execute(
+        ApplicationRecord.sanitize_sql_array([sql, { uuids: uuids }]),
+      )
+
+      table = []
+      table << %w[uuid date events_count]
+
+      results.each do |row|
+        table << [row['uuid'], row['date'], row['events_count']]
+      end
+
+      found_uuids = results.map { |r| r['uuid'] }.uniq
+
+      if config.include_missing?
+        (uuids - found_uuids).each do |missing_uuid|
+          table << [missing_uuid, '[UUID NOT FOUND]', nil]
+        end
+      end
+
+      ScriptBase::Result.new(
+        subtask: 'events-summary',
+        uuids: found_uuids,
         table:,
       )
     end

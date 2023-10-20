@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Idv::PhoneController do
-  include IdvHelper
-
   let(:max_attempts) { RateLimiter.max_attempts(:proof_address) }
   let(:good_phone) { '+1 (703) 555-0000' }
   let(:bad_phone) do
@@ -478,6 +476,7 @@ RSpec.describe Idv::PhoneController do
         result = {
           success: true,
           new_phone_added: true,
+          hybrid_handoff_phone_used: false,
           errors: {},
           phone_fingerprint: Pii::Fingerprinter.fingerprint(proofing_phone.e164),
           country_code: proofing_phone.country,
@@ -504,6 +503,27 @@ RSpec.describe Idv::PhoneController do
         expect(response).to redirect_to idv_phone_path
         get :new
       end
+    end
+
+    it 'tracks that the hybrid handoff phone was used' do
+      user = build(:user)
+      stub_verify_steps_one_and_two(user)
+
+      stub_analytics
+      allow(@analytics).to receive(:track_event)
+
+      expect(@analytics).to receive(:track_event).ordered.with(
+        'IdV: phone confirmation form', hash_including(:success)
+      )
+      expect(@analytics).to receive(:track_event).ordered.with(
+        'IdV: phone confirmation vendor', hash_including(hybrid_handoff_phone_used: true)
+      )
+
+      subject.idv_session.phone_for_mobile_flow = good_phone
+
+      put :create, params: { idv_phone_form: { phone: good_phone } }
+      expect(response).to redirect_to idv_phone_path
+      get :new
     end
 
     context 'when verification fails' do
@@ -548,6 +568,7 @@ RSpec.describe Idv::PhoneController do
         result = {
           success: false,
           new_phone_added: true,
+          hybrid_handoff_phone_used: false,
           phone_fingerprint: Pii::Fingerprinter.fingerprint(proofing_phone.e164),
           country_code: proofing_phone.country,
           area_code: proofing_phone.area_code,

@@ -114,6 +114,27 @@ RSpec.describe 'Phishing-resistant authentication required in an SAML context' d
           expect(current_url).to eq(login_two_factor_webauthn_url(platform: true))
         end
       end
+
+      context 'adding an ineligible method after authenticating with phishing-resistant' do
+        before do
+          signin_with_piv
+          within('.sidenav') { click_on t('account.navigation.add_phone_number') }
+          fill_in t('two_factor_authentication.phone_label'), with: '5135550100'
+          click_send_one_time_code
+          fill_in_code_with_last_phone_otp
+          click_submit_default
+        end
+
+        it 'does not prompt the user to authenticate again' do
+          visit_saml_authn_request_url(
+            overrides: {
+              authn_context: Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF,
+            },
+          )
+
+          expect(page).to have_current_path(sign_up_completed_path)
+        end
+      end
     end
   end
 
@@ -179,6 +200,27 @@ RSpec.describe 'Phishing-resistant authentication required in an SAML context' d
           )
           visit login_two_factor_path(otp_delivery_preference: 'sms')
           expect(current_url).to eq(login_two_factor_webauthn_url(platform: true))
+        end
+      end
+
+      context 'adding an ineligible method after authenticating with phishing-resistant' do
+        before do
+          signin_with_piv
+          within('.sidenav') { click_on t('account.navigation.add_phone_number') }
+          fill_in t('two_factor_authentication.phone_label'), with: '5135550100'
+          click_send_one_time_code
+          fill_in_code_with_last_phone_otp
+          click_submit_default
+        end
+
+        it 'does not prompt the user to authenticate again' do
+          visit_saml_authn_request_url(
+            overrides: {
+              authn_context: Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
+            },
+          )
+
+          expect(page).to have_current_path(sign_up_completed_path)
         end
       end
     end
@@ -258,6 +300,28 @@ RSpec.describe 'Phishing-resistant authentication required in an SAML context' d
         )
 
         expect(current_url).to eq(login_two_factor_webauthn_url)
+      end
+
+      context 'adding an ineligible method after authenticating with phishing-resistant' do
+        before do
+          signin_with_piv
+          within('.sidenav') { click_on t('account.navigation.add_phone_number') }
+          fill_in t('two_factor_authentication.phone_label'), with: '5135550100'
+          click_send_one_time_code
+          fill_in_code_with_last_phone_otp
+          click_submit_default
+        end
+
+        it 'does not prompt the user to authenticate again' do
+          visit_saml_authn_request_url(
+            overrides: {
+              issuer: aal3_issuer,
+              authn_context: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+            },
+          )
+
+          expect(page).to have_current_path(sign_up_completed_path)
+        end
       end
     end
   end
