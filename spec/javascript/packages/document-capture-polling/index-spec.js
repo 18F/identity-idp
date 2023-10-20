@@ -68,7 +68,10 @@ describe('DocumentCapturePolling', () => {
     sandbox.clock.tick(DOC_CAPTURE_POLL_INTERVAL);
     expect(global.fetch).to.have.been.calledTwice();
 
-    expect(trackEvent).to.have.been.calledOnceWith('IdV: Link sent capture doc polling started');
+    expect(trackEvent).to.have.been.calledOnceWithExactly(
+      'IdV: Link sent capture doc polling started',
+      { phoneQuestionAbTestBucket: 'bypass_phone_question' },
+    );
   });
 
   it('submits when done', async () => {

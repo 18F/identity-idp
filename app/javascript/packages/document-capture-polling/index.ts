@@ -65,7 +65,9 @@ export class DocumentCapturePolling {
 
   bind() {
     this.toggleFormVisible(false);
-    this.trackEvent('IdV: Link sent capture doc polling started');
+    this.trackEvent('IdV: Link sent capture doc polling started', {
+      phoneQuestionAbTestBucket: this.phoneQuestionAbTestBucket,
+    });
     this.schedulePoll();
     this.bindPromptOnNavigate(true);
     this.elements.backLink.addEventListener('click', () => this.bindPromptOnNavigate(false));
