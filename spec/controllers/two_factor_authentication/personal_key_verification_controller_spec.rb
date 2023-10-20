@@ -71,9 +71,6 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
         freeze_time do
           post :create, params: payload
 
-          expect(subject.user_session[:auth_method]).to eq(
-            TwoFactorAuthenticatable::AuthMethod::PERSONAL_KEY,
-          )
           expect(subject.user_session[:auth_events]).to eq(
             [
               auth_method: TwoFactorAuthenticatable::AuthMethod::PERSONAL_KEY,
@@ -138,7 +135,6 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
 
         post :create, params: payload
 
-        expect(subject.user_session[:auth_method]).to eq nil
         expect(subject.user_session[:auth_events]).to eq nil
         expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq true
       end

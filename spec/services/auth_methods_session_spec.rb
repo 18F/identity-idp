@@ -79,4 +79,84 @@ RSpec.describe AuthMethodsSession do
       end
     end
   end
+
+  describe '#last_auth_event' do
+    subject(:last_auth_event) { auth_methods_session.last_auth_event }
+
+    context 'no auth events' do
+      it { expect(last_auth_event).to be_nil }
+    end
+
+    context 'with multiple auth events' do
+      let(:second_auth_event) { { auth_method: 'second', at: Time.zone.now } }
+      let(:session_auth_events) do
+        [
+          { auth_method: 'first', at: 3.minutes.ago },
+          second_auth_event,
+        ]
+      end
+      let(:user_session) { { auth_events: session_auth_events } }
+
+      it 'returns the last auth event' do
+        expect(last_auth_event).to eq(second_auth_event)
+      end
+    end
+  end
+
+  describe '#recently_authenticated_2fa?' do
+    subject(:recently_authenticated_2fa) { auth_methods_session.recently_authenticated_2fa? }
+
+    context 'no auth events' do
+      it { expect(recently_authenticated_2fa).to eq(false) }
+    end
+
+    context 'with remember device auth event' do
+      let(:user_session) do
+        {
+          auth_events: [
+            {
+              auth_method: TwoFactorAuthenticatable::AuthMethod::REMEMBER_DEVICE,
+              at: Time.zone.now,
+            },
+          ],
+        }
+      end
+
+      it { expect(recently_authenticated_2fa).to eq(false) }
+
+      context 'with non-remember device auth event' do
+        let(:user_session) do
+          {
+            auth_events: [
+              {
+                auth_method: TwoFactorAuthenticatable::AuthMethod::REMEMBER_DEVICE,
+                at: 3.minutes.ago,
+              },
+              {
+                auth_method: TwoFactorAuthenticatable::AuthMethod::SMS,
+                at: Time.zone.now,
+              },
+            ],
+          }
+        end
+
+        it { expect(recently_authenticated_2fa).to eq(true) }
+      end
+    end
+
+    context 'with non-remember device auth event' do
+      let(:user_session) do
+        {
+          auth_events: [
+            {
+              auth_method: TwoFactorAuthenticatable::AuthMethod::SMS,
+              at: Time.zone.now,
+            },
+          ],
+        }
+      end
+
+      it { expect(recently_authenticated_2fa).to eq(true) }
+    end
+  end
 end

@@ -1,17 +1,17 @@
 class ServiceProviderMfaPolicy
-  attr_reader :mfa_context, :auth_method, :service_provider
+  attr_reader :mfa_context, :auth_methods_session, :service_provider
 
   def initialize(
     user:,
     service_provider:,
-    auth_method:,
+    auth_methods_session:,
     aal_level_requested:,
     piv_cac_requested:,
     phishing_resistant_requested:
   )
     @user = user
     @mfa_context = MfaContext.new(user)
-    @auth_method = auth_method
+    @auth_methods_session = auth_methods_session
     @service_provider = service_provider
     @aal_level_requested = aal_level_requested
     @piv_cac_requested = piv_cac_requested
@@ -22,13 +22,18 @@ class ServiceProviderMfaPolicy
     # If the user needs to setup a new MFA method, return false so they go to
     # setup instead of verification
     return false if user_needs_sp_auth_method_setup?
+    return false if !piv_cac_required? && !phishing_resistant_required?
+    valid_auth_methods_for_sp_auth.blank?
+  end
 
+  def valid_auth_methods_for_sp_auth
+    all_auth_methods = auth_methods_session.auth_events.pluck(:auth_method)
     if piv_cac_required?
-      auth_method.to_s != TwoFactorAuthenticatable::AuthMethod::PIV_CAC
+      all_auth_methods & [TwoFactorAuthenticatable::AuthMethod::PIV_CAC]
     elsif phishing_resistant_required?
-      !TwoFactorAuthenticatable::AuthMethod.phishing_resistant?(auth_method)
+      all_auth_methods & TwoFactorAuthenticatable::AuthMethod::PHISHING_RESISTANT_METHODS.to_a
     else
-      false
+      all_auth_methods
     end
   end
 
