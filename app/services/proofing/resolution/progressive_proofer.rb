@@ -9,7 +9,8 @@ module Proofing
       # @param [Hash] applicant_pii keys are symbols and values are strings, confidential user info
       # @param [Boolean] double_address_verification flag that indicates if user will have
       #   both state id address and current residential address verified. Note this value is here as
-      #   a placeholder until it can be replaced with ipp_enrollment_in_progress
+      #   a placeholder until it can be replaced with ipp_enrollment_in_progress in ticket LG-353:
+      #   https://cm-jira.usa.gov/browse/LG-11353
       # @param [Boolean] ipp_enrollment_in_progress flag that indicates if user will have
       #   both state id address and current residential address verified
       # @param [String] request_ip IP address for request
