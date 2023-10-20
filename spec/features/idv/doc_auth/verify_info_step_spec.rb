@@ -274,7 +274,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
         trace_id: anything,
         threatmetrix_session_id: anything,
         request_ip: kind_of(String),
-        double_address_verification: false,
+        ipp_enrollment_in_progress: false,
       }
     end
 

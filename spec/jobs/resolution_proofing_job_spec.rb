@@ -331,7 +331,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
           user_id: user.id,
           threatmetrix_session_id: threatmetrix_session_id,
           request_ip: request_ip,
-          double_address_verification: true,
+          ipp_enrollment_in_progress: true,
         )
       end
 
