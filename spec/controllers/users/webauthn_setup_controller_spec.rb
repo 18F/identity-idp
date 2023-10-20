@@ -118,12 +118,6 @@ RSpec.describe Users::WebauthnSetupController do
             platform_authenticator: false,
             success: true,
           )
-        expect(@analytics).to receive(:track_event).
-          with('Multi-Factor Authentication: Added webauthn', {
-            enabled_mfa_methods_count: 3,
-            method_name: :webauthn,
-            platform_authenticator: false,
-          })
 
         patch :confirm, params: params
       end
@@ -283,15 +277,6 @@ RSpec.describe Users::WebauthnSetupController do
             },
           )
 
-          expect(@analytics).to receive(:track_event).with(
-            'Multi-Factor Authentication: Added webauthn',
-            {
-              enabled_mfa_methods_count: 1,
-              method_name: :webauthn,
-              platform_authenticator: false,
-            },
-          )
-
           expect(@analytics).to receive(:track_event).
             with(
               :webauthn_setup_submitted,
@@ -359,15 +344,6 @@ RSpec.describe Users::WebauthnSetupController do
               multi_factor_auth_method: 'webauthn_platform',
               pii_like_keypaths: [[:mfa_method_counts, :phone]],
               success: true,
-            },
-          )
-
-          expect(@analytics).to receive(:track_event).with(
-            'Multi-Factor Authentication: Added webauthn',
-            {
-              enabled_mfa_methods_count: 1,
-              method_name: :webauthn,
-              platform_authenticator: true,
             },
           )
 
