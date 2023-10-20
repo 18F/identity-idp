@@ -155,6 +155,13 @@ RSpec.feature 'hybrid_handoff step send link and errors' do
             timeout: timeout,
           ),
         )
+
+        # expect to see the headings that reflect having
+        # :phone_question_ab_test_bucket set to :bypass_phone_question
+        expect(page).to have_selector('h1', text: t('doc_auth.headings.hybrid_handoff'))
+        expect(page).to have_selector('h2', text: t('doc_auth.headings.upload_from_phone'))
+        expect(page).not_to have_selector('h1', text: t('doc_auth.headings.upload_from_phone'))
+        expect(page).not_to have_selector('h2', text: t('doc_auth.headings.switch_to_phone'))
       end
       expect(fake_analytics).to have_logged_event(
         'Rate Limit Reached',
@@ -219,6 +226,14 @@ RSpec.feature 'hybrid_handoff step send link and errors' do
             ),
           )
         end
+
+        # expect to see the headings that refelect having
+        # :phone_question_ab_test_bucket set to :show_phone_question
+        expect(page).to have_selector('h1', text: t('doc_auth.headings.upload_from_phone'))
+        expect(page).to have_selector('h2', text: t('doc_auth.headings.switch_to_phone'))
+        expect(page).not_to have_selector('h1', text: t('doc_auth.headings.hybrid_handoff'))
+        expect(page).not_to have_selector('h2', text: t('doc_auth.headings.upload_from_phone'))
+
         expect(fake_analytics).to have_logged_event(
           'Rate Limit Reached',
           limiter_type: :idv_send_link,
