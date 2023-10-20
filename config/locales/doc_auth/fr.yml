@@ -118,7 +118,7 @@ fr:
           photo est désactivé puis essayez de prendre de nouvelles photos.
       http:
         image_load:
-          failed_short: Le fichier image que vous avez ajouté n’est pas pris en charge.
+          failed_short: Le fichier image n’est pas pris en charge, veuillez réessayer.
           top_msg: Le fichier image que vous avez ajouté n’est pas pris en charge.
             Veuillez prendre de nouvelles photos de votre pièce d’identité et
             réessayer.
@@ -128,7 +128,7 @@ fr:
             ajouter des images de votre pièce d’identité d’environ 2025 x 1275
             pixels.
         pixel_depth:
-          failed_short: La profondeur de pixel de votre fichier image n’est pas supportée.
+          failed_short: Le fichier image n’est pas pris en charge, veuillez réessayer.
           top_msg: La profondeur de pixel de votre fichier image n’est pas supportée.
             Veuillez prendre de nouvelles photos de votre pièce d’identité et
             réessayer. La profondeur de pixel de l’image prise en charge est de

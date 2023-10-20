@@ -89,7 +89,7 @@ en:
           that the flash on your camera is off and try taking new pictures.
       http:
         image_load:
-          failed_short: The image file that you added is not supported.
+          failed_short: Image file is not supported, please try again.
           top_msg: The image file that you added is not supported. Please take new photos
             of your ID and try again.
         image_size:
@@ -97,7 +97,7 @@ en:
           top_msg: Your image size is too large or too small. Please add images of your ID
             that are about 2025 x 1275 pixels.
         pixel_depth:
-          failed_short: The pixel depth of your image file is not supported.
+          failed_short: Image file is not supported, please try again.
           top_msg: The pixel depth of your image file is not supported. Please take new
             photos of your ID and try again. Supported image pixel depth is
             24-bit RGB.
