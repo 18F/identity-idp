@@ -245,7 +245,7 @@ RSpec.describe 'In Person Proofing', js: true do
     expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
   end
 
-  it 'allows user to get to account page' do
+  it 'allows user to get to account page', allow_browser_log: true do
     user = user_with_2fa
 
     sign_in_and_2fa_user(user)
