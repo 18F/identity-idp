@@ -243,59 +243,6 @@ RSpec.describe 'In Person Proofing', js: true do
     expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
     visit idv_verify_info_url
     expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
-  end
-
-  it 'allows user to get to account page', allow_browser_log: true do
-    user = user_with_2fa
-
-    sign_in_and_2fa_user(user)
-    begin_in_person_proofing(user)
-
-    # prepare page
-    expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.find_a_post_office'))
-    complete_prepare_step(user)
-
-    # location page
-    expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.find_a_post_office'))
-    complete_location_step
-
-    # state ID page
-    expect_in_person_step_indicator_current_step(
-      t('step_indicator.flows.idv.verify_info'),
-    )
-    complete_state_id_step(user)
-
-    # ssn page
-    expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
-    complete_ssn_step(user)
-
-    # verify page
-    expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
-    complete_verify_step(user)
-
-    # phone page
-    expect_in_person_step_indicator_current_step(
-      t('step_indicator.flows.idv.verify_phone_or_address'),
-    )
-    expect(page).to have_content(t('titles.idv.phone'))
-    fill_out_phone_form_ok(MfaContext.new(user).phone_configurations.first.phone)
-    click_idv_send_security_code
-    expect_in_person_step_indicator_current_step(
-      t('step_indicator.flows.idv.verify_phone_or_address'),
-    )
-
-    expect_in_person_step_indicator_current_step(
-      t('step_indicator.flows.idv.verify_phone_or_address'),
-    )
-    fill_in_code_with_last_phone_otp
-    click_submit_default
-
-    # password confirm page
-    expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.secure_account'))
-    complete_enter_password_step(user)
-
-    # personal key page
-    expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.secure_account'))
 
     # Confirms that user can vissit account page even if not completing in person proofing
     Capybara.reset_session!
