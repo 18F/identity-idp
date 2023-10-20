@@ -25,6 +25,12 @@ RSpec.feature 'sign up with backup code' do
       expect(page).to have_content(t('notices.backup_codes_configured'))
       expect(current_path).to eq auth_method_confirmation_path
       expect(user.backup_code_configurations.count).to eq(10)
+
+      click_on t('mfa.skip')
+      expect(current_path).to eq(confirm_backup_codes_path)
+
+      click_on t('two_factor_authentication.backup_codes.saved_backup_codes')
+      expect(page).to have_title(t('titles.account'))
     end
   end
 
