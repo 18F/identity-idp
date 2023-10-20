@@ -96,6 +96,7 @@ describe('DocumentCapturePolling', () => {
       {
         isCancelled: false,
         isRateLimited: false,
+        phoneQuestionAbTestBucket: 'bypass_phone_question',
       },
     );
   });
@@ -135,6 +136,7 @@ describe('DocumentCapturePolling', () => {
       {
         isCancelled: true,
         isRateLimited: false,
+        phoneQuestionAbTestBucket: 'bypass_phone_question',
       },
     );
     expect(subject.elements.form.submit).to.have.been.called();
@@ -159,6 +161,7 @@ describe('DocumentCapturePolling', () => {
       {
         isCancelled: false,
         isRateLimited: true,
+        phoneQuestionAbTestBucket: 'bypass_phone_question',
       },
     );
     expect(window.location.hash).to.equal('#rate_limited');

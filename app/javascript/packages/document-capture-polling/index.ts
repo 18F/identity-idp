@@ -100,6 +100,7 @@ export class DocumentCapturePolling {
     this.trackEvent('IdV: Link sent capture doc polling complete', {
       isCancelled: result === ResultType.CANCELLED,
       isRateLimited: result === ResultType.RATE_LIMITED,
+      phoneQuestionAbTestBucket: this.phoneQuestionAbTestBucket,
     });
     this.bindPromptOnNavigate(false);
     if (redirect) {
