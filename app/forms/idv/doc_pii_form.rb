@@ -2,7 +2,14 @@ module Idv
   class DocPiiForm
     include ActiveModel::Model
 
-    validate :validate_pii
+    validate :name_valid?
+    validate :dob_valid?
+    validates_presence_of :address1, { message: proc { I18n.t('doc_auth.errors.alerts.address_check') } }
+    validates_length_of :state, { is: 2, message: proc { I18n.t('doc_auth.errors.general.no_liveness') } }
+    # validates_length_of :zipcode, { minimum: 1, message: proc { I18n.t('doc_auth.errors.general.no_liveness') } } # minimum 5?
+    validate :zipcode_valid?
+    validate :jurisdiction_valid?
+    # validate :validate_pii
 
     attr_reader :first_name, :last_name, :dob, :address1, :state, :zipcode, :attention_with_barcode,
                 :jurisdiction
@@ -39,54 +46,73 @@ module Idv
 
     def validate_pii
       if error_count > 1
-        errors.add(:pii, generic_error, type: :generic_error)
-      elsif !name_valid?
-        errors.add(:pii, name_error, type: :name_error)
-      elsif dob.blank?
-        errors.add(:pii, dob_error, type: :dob_error)
-      elsif !dob_meets_min_age?
-        errors.add(:pii, dob_min_age_error, type: :dob_min_age_error)
-      elsif address1.blank?
-        errors.add(:pii, address_error, type: :address_error)
-      elsif !state_valid?
-        errors.add(:pii, generic_error, type: :generic_error)
-      elsif !zipcode_valid?
-        errors.add(:pii, generic_error, type: :generic_error)
-      elsif !jurisdiction_valid?
-        errors.add(:pii, generic_error, type: :generic_error)
+        puts "errors\t#{errors}"
+        # errors.add(:pii, generic_error, type: :generic_error)
+      # elsif !name_valid?
+      #   errors.add(:pii, name_error, type: :name_error)
+      # elsif dob.blank?
+      #   errors.add(:pii, dob_error, type: :dob_error)
+      # elsif !dob_meets_min_age?
+      #   errors.add(:pii, dob_min_age_error, type: :dob_min_age_error)
+      # elsif address1.blank?
+      #   errors.add(:pii, address_error, type: :address_error)
+      # elsif !state_valid?
+      #   errors.add(:pii, generic_error, type: :generic_error)
+      # elsif !zipcode_valid?
+        # errors.add(:pii, generic_error, type: :generic_error)
+      # elsif !jurisdiction_valid?
+      #   errors.add(:pii, generic_error, type: :generic_error)
       end
     end
 
     def jurisdiction_valid?
-      Idp::Constants::STATE_AND_TERRITORY_CODES.include? jurisdiction
+      return if Idp::Constants::STATE_AND_TERRITORY_CODES.include? jurisdiction
+
+      # errors.add(:pii, generic_error, type: :generic_error)
+      errors.add(:jurisdiction, generic_error)
     end
 
     def name_valid?
-      first_name.present? && last_name.present?
+      return if first_name.present? && last_name.present?
+
+      # errors.add(:pii, name_error, type: :name_error)
+      errors.add(:name_error, name_error)
     end
 
     def dob_valid?
-      dob.present? && dob_meets_min_age?
-    end
+    #   dob.present? && dob_meets_min_age?
+    # end
 
-    def dob_meets_min_age?
+    # def dob_meets_min_age?
+      if dob.blank?
+        # errors.add(:pii, dob_error, type: :dob_error)
+        errors.add(:dob_error, dob_error)
+        return
+      end
+
       dob_date = DateParser.parse_legacy(dob)
       today = Time.zone.today
       age = today.year - dob_date.year - ((today.month > dob_date.month ||
         (today.month == dob_date.month && today.day >= dob_date.day)) ? 0 : 1)
-      age >= IdentityConfig.store.idv_min_age_years
+      if age < IdentityConfig.store.idv_min_age_years
+        # errors.add(:pii, dob_min_age_error, type: :dob_min_age_error)
+        errors.add(:dob_min_age_error, dob_min_age_error)
+      end
     end
 
-    def state_valid?
-      state.present? && state.length == 2
-    end
+    # def state_valid?
+    #   state.present? && state.length == 2
+    # end
 
-    def error_count
-      [name_valid?, dob_valid?, state_valid?].count(&:blank?)
-    end
+    # def error_count
+    #   [name_valid?, dob_valid?, state_valid?].count(&:blank?)
+    # end
 
     def zipcode_valid?
-      zipcode.is_a?(String) && zipcode.present?
+      return if  zipcode.is_a?(String) && zipcode.present?
+
+    #   errors.add(:pii, generic_error, type: :generic_error)
+      errors.add(:zipcode, generic_error)
     end
 
     def generic_error

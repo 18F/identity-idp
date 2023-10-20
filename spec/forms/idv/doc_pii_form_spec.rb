@@ -112,7 +112,7 @@ RSpec.describe Idv::DocPiiForm do
 
         expect(result).to be_kind_of(FormResponse)
         expect(result.success?).to eq(false)
-        expect(result.errors[:pii]).to eq [t('doc_auth.errors.alerts.full_name_check')]
+        expect(result.errors[:name_error]).to eq [t('doc_auth.errors.alerts.full_name_check')]
         expect(result.extra).to eq(
           attention_with_barcode: false,
           pii_like_keypaths: [[:pii]],
@@ -128,9 +128,13 @@ RSpec.describe Idv::DocPiiForm do
 
         expect(result).to be_kind_of(FormResponse)
         expect(result.success?).to eq(false)
-        expect(result.errors[:pii]).to eq [
-          t('doc_auth.errors.general.no_liveness'),
-        ]
+        expect(result.errors.keys).
+          to contain_exactly(
+            :name_error,
+            :dob_error,
+            :zipcode,
+            :jurisdiction
+          )
         expect(result.extra).to eq(
           attention_with_barcode: false,
           pii_like_keypaths: [[:pii]],
@@ -146,7 +150,7 @@ RSpec.describe Idv::DocPiiForm do
 
         expect(result).to be_kind_of(FormResponse)
         expect(result.success?).to eq(false)
-        expect(result.errors[:pii]).to eq [
+        expect(result.errors[:dob_min_age_error]).to eq [
           t('doc_auth.errors.pii.birth_date_min_age'),
         ]
         expect(result.extra).to eq(
@@ -164,7 +168,7 @@ RSpec.describe Idv::DocPiiForm do
 
         expect(result).to be_kind_of(FormResponse)
         expect(result.success?).to eq(false)
-        expect(result.errors[:pii]).to eq [
+        expect(result.errors[:zipcode]).to eq [
           t('doc_auth.errors.general.no_liveness'),
         ]
         expect(result.extra).to eq(
@@ -182,7 +186,7 @@ RSpec.describe Idv::DocPiiForm do
 
         expect(result).to be_kind_of(FormResponse)
         expect(result.success?).to eq(false)
-        expect(result.errors[:pii]).to eq [
+        expect(result.errors[:zipcode]).to eq [
           t('doc_auth.errors.general.no_liveness'),
         ]
         expect(result.extra).to eq(
@@ -210,7 +214,7 @@ RSpec.describe Idv::DocPiiForm do
 
         expect(result).to be_kind_of(FormResponse)
         expect(result.success?).to eq(false)
-        expect(result.errors[:pii]).to eq [t('doc_auth.errors.alerts.address_check')]
+        expect(result.errors[:address1]).to eq [t('doc_auth.errors.alerts.address_check')]
         expect(result.extra).to eq(
           attention_with_barcode: false,
           pii_like_keypaths: [[:pii]],
