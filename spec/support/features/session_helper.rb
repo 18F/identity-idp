@@ -203,8 +203,10 @@ module Features
 
       Warden.on_next_request do |proxy|
         session = proxy.env['rack.session']
-        session['warden.user.user.session'] = { authn_at: Time.zone.now }
-        session['warden.user.user.session']['auth_method'] = auth_method if auth_method
+        session['warden.user.user.session'] = {}.with_indifferent_access
+        if auth_method
+          session['warden.user.user.session']['auth_events'] = [{ auth_method:, at: Time.zone.now }]
+        end
       end
       visit account_path
     end

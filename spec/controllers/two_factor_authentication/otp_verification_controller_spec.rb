@@ -173,7 +173,6 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
       end
 
       it 'does not set auth_method and requires 2FA' do
-        expect(controller.user_session[:auth_method]).to eq nil
         expect(controller.user_session[:auth_events]).to eq nil
         expect(controller.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq true
       end
@@ -301,7 +300,6 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
             otp_delivery_preference: 'sms',
           }
 
-          expect(subject.user_session[:auth_method]).to eq TwoFactorAuthenticatable::AuthMethod::SMS
           expect(subject.user_session[:auth_events]).to eq(
             [
               {

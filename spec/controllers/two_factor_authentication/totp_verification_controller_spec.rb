@@ -24,9 +24,6 @@ RSpec.describe TwoFactorAuthentication::TotpVerificationController do
           post :create, params: { code: generate_totp_code(@secret) }
 
           expect(response).to redirect_to account_path
-          expect(subject.user_session[:auth_method]).to eq(
-            TwoFactorAuthenticatable::AuthMethod::TOTP,
-          )
           expect(subject.user_session[:auth_events]).to eq(
             [
               auth_method: TwoFactorAuthenticatable::AuthMethod::TOTP,
@@ -112,7 +109,6 @@ RSpec.describe TwoFactorAuthentication::TotpVerificationController do
       end
 
       it 'does not set auth_method and still requires 2FA' do
-        expect(subject.user_session[:auth_method]).to eq nil
         expect(subject.user_session[:auth_events]).to eq nil
         expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq true
       end
