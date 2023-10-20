@@ -64,7 +64,13 @@ class ScriptBase
 
     if config.deflate?
       require 'zlib'
-      stdout.puts Zlib::Deflate.deflate((result.json || result.table).to_json, Zlib::BEST_COMPRESSION)
+      require 'base64'
+      stdout.puts Base64.encode64(
+        Zlib::Deflate.deflate(
+          (result.json || result.table).to_json,
+          Zlib::BEST_COMPRESSION,
+        )
+      )
     elsif result.json
       stdout.puts result.json.to_json
     else

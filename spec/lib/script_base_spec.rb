@@ -41,7 +41,7 @@ RSpec.describe ScriptBase do
 
         table = subtask_class.new.run(args: nil, config: nil).table
 
-        expect(JSON.parse(Zlib::Inflate.inflate(stdout.string))).to eq(table)
+        expect(JSON.parse(Zlib::Inflate.inflate(Base64.decode64(stdout.string)))).to eq(table)
       end
     end
   end
