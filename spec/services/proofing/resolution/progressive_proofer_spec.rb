@@ -145,6 +145,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
 
         expect(result.same_address_as_id).to eq('true')
         expect(result.ipp_enrollment_in_progress).to eq(true)
+        expect(result.double_address_verification).to eq(true)
         expect(result.resolution_result).to eq(result.residential_resolution_result)
       end
 

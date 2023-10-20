@@ -89,7 +89,7 @@ module Proofing
 
       def resolution_result_and_reason
         if !residential_resolution_result.success? && same_address_as_id == 'false' &&
-           (ipp_enrollment_in_progress == true || double_address_verification)
+           (ipp_enrollment_in_progress || double_address_verification)
           [false, :fail_resolution_skip_state_id]
         elsif resolution_result.success? && state_id_result.success?
           [true, :pass_resolution_and_state_id]
