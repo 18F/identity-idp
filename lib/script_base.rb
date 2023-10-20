@@ -69,7 +69,7 @@ class ScriptBase
         Zlib::Deflate.deflate(
           (result.json || result.table).to_json,
           Zlib::BEST_COMPRESSION,
-        )
+        ),
       )
     elsif result.json
       stdout.puts result.json.to_json
@@ -78,6 +78,7 @@ class ScriptBase
     end
   end
 
+  # rubocop:disable Metrics/BlockLength
   def option_parser
     @option_parser ||= OptionParser.new do |opts|
       opts.banner = banner
@@ -115,6 +116,7 @@ class ScriptBase
       end
     end
   end
+  # rubocop:enable Metrics/BlockLength
 
   # @param [Array<Array<String>>] rows
   def self.render_output(rows, format:, stdout: STDOUT)

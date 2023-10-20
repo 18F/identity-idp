@@ -4,7 +4,7 @@ require 'script_base'
 RSpec.describe ScriptBase do
   let(:subtask_class) do
     Class.new do
-      def run(args:, config:)
+      def run(args:, config:) # rubocop:disable Lint/UnusedMethodArgument
         ScriptBase::Result.new(
           table: [
             %w[header1 header2],
