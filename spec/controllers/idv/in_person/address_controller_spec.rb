@@ -23,6 +23,8 @@ RSpec.describe Idv::InPerson::AddressController do
   let(:flow_path) { 'standard' }
 
   before(:each) do
+    allow(IdentityConfig.store).to receive(:in_person_residential_address_controller_enabled).
+      and_return(true)
     allow(subject).to receive(:current_user).
       and_return(user)
     allow(subject).to receive(:pii_from_user).and_return(pii_from_user)
