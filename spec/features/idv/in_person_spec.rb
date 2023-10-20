@@ -106,6 +106,7 @@ RSpec.describe 'In Person Proofing', js: true do
       # signing in again before completing in-person proofing at a post office
       Capybara.reset_session!
       sign_in_live_with_2fa(user)
+      visit_idp_from_sp_with_ial2(:oidc)
       expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
     end
   end
@@ -246,15 +247,30 @@ RSpec.describe 'In Person Proofing', js: true do
 
   it 'allows user to get to account page' do
     user = user_with_2fa
+
     sign_in_and_2fa_user(user)
     begin_in_person_proofing(user)
+
+    # prepare page
     expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.find_a_post_office'))
     complete_prepare_step(user)
+
+    # location page
+    expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.find_a_post_office'))
     complete_location_step
+
+    # state ID page
+    expect_in_person_step_indicator_current_step(
+      t('step_indicator.flows.idv.verify_info'),
+    )
     complete_state_id_step(user)
 
+    # ssn page
+    expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
     complete_ssn_step(user)
 
+    # verify page
+    expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
     complete_verify_step(user)
 
     # phone page
@@ -276,25 +292,10 @@ RSpec.describe 'In Person Proofing', js: true do
 
     # password confirm page
     expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.secure_account'))
-    expect(page).to have_content(t('idv.titles.session.review', app_name: APP_NAME))
-    complete_review_step(user)
+    complete_enter_password_step(user)
 
     # personal key page
     expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.secure_account'))
-    expect(page).to have_content(t('titles.idv.personal_key'))
-    deadline = nil
-    freeze_time do
-      acknowledge_and_confirm_personal_key
-      deadline = (Time.zone.now + IdentityConfig.store.in_person_enrollment_validity_in_days.days).
-        in_time_zone(Idv::InPerson::ReadyToVerifyPresenter::USPS_SERVER_TIMEZONE).
-        strftime(t('time.formats.event_date'))
-    end
-
-    # signing in again before completing in-person proofing at a post office
-    Capybara.reset_session!
-    sign_in_live_with_2fa(user)
-    visit_idp_from_sp_with_ial2(:oidc)
-    expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
 
     # Confirms that user can vissit account page even if not completing in person proofing
     Capybara.reset_session!
@@ -959,6 +960,7 @@ RSpec.describe 'In Person Proofing', js: true do
       # signing in again before completing in-person proofing at a post office
       Capybara.reset_session!
       sign_in_live_with_2fa(user)
+      visit_idp_from_sp_with_ial2(:oidc)
       expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
     end
   end
