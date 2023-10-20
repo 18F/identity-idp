@@ -155,6 +155,12 @@ RSpec.feature 'hybrid_handoff step send link and errors' do
             timeout: timeout,
           ),
         )
+
+        # expect to see the headings that reflect having :phone_question_ab_test_bucket set to :bypass_phone_question
+        expect(page).to have_selector('h1', text: t('doc_auth.headings.hybrid_handoff'))
+        expect(page).to have_selector('h2', text: t('doc_auth.headings.upload_from_phone'))
+        expect(page).not_to have_selector('h1', text: t('doc_auth.headings.upload_from_phone'))
+        expect(page).not_to have_selector('h2', text: t('doc_auth.headings.switch_to_phone'))
       end
       expect(fake_analytics).to have_logged_event(
         'Rate Limit Reached',
@@ -175,27 +181,6 @@ RSpec.feature 'hybrid_handoff step send link and errors' do
       before do
         allow_any_instance_of(Idv::HybridHandoffController).
           to receive(:phone_question_ab_test_bucket).and_return(:show_phone_question)
-      end
-
-      it 'displays the expected headings' do
-        user = user_with_2fa
-        sign_in_and_2fa_user(user)
-        complete_doc_auth_steps_before_hybrid_handoff_step
-
-        expect(page).to have_current_path(idv_phone_question_path)
-        click_link t('doc_auth.buttons.have_phone')
-        fill_in :doc_auth_phone, with: '415-555-0199'
-        click_send_link
-
-        expect(page).to have_current_path(idv_link_sent_path)
-
-        click_doc_auth_back_link
-
-        expect(page).to have_current_path(idv_hybrid_handoff_path, ignore_query: true)
-        expect(page).to have_selector('h1', text: t('doc_auth.headings.upload_from_phone'))
-        expect(page).to have_selector('h2', text: t('doc_auth.headings.switch_to_phone'))
-        expect(page).not_to have_selector('h1', text: t('doc_auth.headings.hybrid_handoff'))
-        expect(page).not_to have_selector('h2', text: t('doc_auth.headings.upload_from_phone'))
       end
 
       it 'rate limits sending the link' do
@@ -240,6 +225,13 @@ RSpec.feature 'hybrid_handoff step send link and errors' do
             ),
           )
         end
+
+        # expect to see the headings that refelect having :phone_question_ab_test_bucket set to :show_phone_question
+        expect(page).to have_selector('h1', text: t('doc_auth.headings.upload_from_phone'))
+        expect(page).to have_selector('h2', text: t('doc_auth.headings.switch_to_phone'))
+        expect(page).not_to have_selector('h1', text: t('doc_auth.headings.hybrid_handoff'))
+        expect(page).not_to have_selector('h2', text: t('doc_auth.headings.upload_from_phone'))
+
         expect(fake_analytics).to have_logged_event(
           'Rate Limit Reached',
           limiter_type: :idv_send_link,
@@ -253,27 +245,6 @@ RSpec.feature 'hybrid_handoff step send link and errors' do
           click_send_link
           expect(page).to have_current_path(idv_link_sent_path)
         end
-      end
-    end
-
-    context 'with PhoneQuestion page disabled' do
-      before do
-        allow_any_instance_of(Idv::HybridHandoffController).
-          to receive(:phone_question_ab_test_bucket).and_return(:bypass_phone_question)
-
-        user = user_with_2fa
-        sign_in_and_2fa_user(user)
-        complete_doc_auth_steps_before_hybrid_handoff_step
-      end
-
-      it 'displays the expected headings' do
-        expect(page).not_to have_current_path(idv_phone_question_path)
-        expect(page).to have_current_path(idv_hybrid_handoff_path, ignore_query: true)
-
-        expect(page).to have_selector('h1', text: t('doc_auth.headings.hybrid_handoff'))
-        expect(page).to have_selector('h2', text: t('doc_auth.headings.upload_from_phone'))
-        expect(page).not_to have_selector('h1', text: t('doc_auth.headings.upload_from_phone'))
-        expect(page).not_to have_selector('h2', text: t('doc_auth.headings.switch_to_phone'))
       end
     end
 
