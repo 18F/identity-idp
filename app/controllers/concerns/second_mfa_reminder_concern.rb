@@ -1,17 +1,10 @@
 module SecondMfaReminderConcern
   def user_needs_second_mfa_reminder?
-    return false if user_has_dismissed_second_mfa_reminder?
-    return false if second_mfa_enrollment_may_downgrade_for_service_provider_mfa_requirement?
-    return false if user_has_multiple_mfa_methods?
+    return false if user_has_dismissed_second_mfa_reminder? || user_has_multiple_mfa_methods?
     exceeded_sign_in_count_for_second_mfa_reminder? || exceeded_account_age_for_second_mfa_reminder?
   end
 
   private
-
-  def second_mfa_enrollment_may_downgrade_for_service_provider_mfa_requirement?
-    service_provider_mfa_policy.phishing_resistant_required? ||
-      service_provider_mfa_policy.piv_cac_required?
-  end
 
   def user_has_dismissed_second_mfa_reminder?
     current_user.second_mfa_reminder_dismissed_at.present?

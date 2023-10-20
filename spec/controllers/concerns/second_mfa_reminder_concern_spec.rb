@@ -5,40 +5,18 @@ RSpec.describe SecondMfaReminderConcern do
     Class.new do
       include SecondMfaReminderConcern
 
-      attr_reader :current_user, :service_provider_mfa_policy
+      attr_reader :current_user
 
-      def initialize(current_user:, service_provider_mfa_policy:)
+      def initialize(current_user:)
         @current_user = current_user
-        @service_provider_mfa_policy = service_provider_mfa_policy
       end
     end
   end
   let(:user) { build(:user) }
-  let(:phishing_resistant_required) { false }
-  let(:piv_cac_required) { false }
-  let(:service_provider_mfa_policy) do
-    instance_double(
-      ServiceProviderMfaPolicy,
-      phishing_resistant_required?: phishing_resistant_required,
-      piv_cac_required?: piv_cac_required,
-    )
-  end
-  let(:instance) { test_class.new(current_user: user, service_provider_mfa_policy:) }
+  let(:instance) { test_class.new(current_user: user) }
 
   describe '#user_needs_second_mfa_reminder?' do
     subject(:user_needs_second_mfa_reminder) { instance.user_needs_second_mfa_reminder? }
-
-    shared_examples 'second mfa reminder with phishing-resistant required request' do
-      let(:phishing_resistant_required) { true }
-
-      it { expect(user_needs_second_mfa_reminder).to eq(false) }
-    end
-
-    shared_examples 'second mfa reminder with piv required request' do
-      let(:piv_cac_required) { true }
-
-      it { expect(user_needs_second_mfa_reminder).to eq(false) }
-    end
 
     context 'user has already dismissed second mfa reminder' do
       let(:user) { build(:user, second_mfa_reminder_dismissed_at: Time.zone.now) }
@@ -69,9 +47,6 @@ RSpec.describe SecondMfaReminderConcern do
         end
 
         it { expect(user_needs_second_mfa_reminder).to eq(true) }
-
-        it_behaves_like 'second mfa reminder with phishing-resistant required request'
-        it_behaves_like 'second mfa reminder with piv required request'
       end
 
       context 'user has exceeded account age threshold for reminder' do
@@ -83,9 +58,6 @@ RSpec.describe SecondMfaReminderConcern do
         end
 
         it { expect(user_needs_second_mfa_reminder).to eq(true) }
-
-        it_behaves_like 'second mfa reminder with phishing-resistant required request'
-        it_behaves_like 'second mfa reminder with piv required request'
       end
     end
   end
