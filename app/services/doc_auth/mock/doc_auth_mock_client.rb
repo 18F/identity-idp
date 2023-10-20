@@ -127,6 +127,13 @@ module DocAuth
                    }
                  end
         return nil unless errors
+        errors = errors.tap do |h|
+          if h.has_key?(:result)
+            h[:front] = h[:result]
+            h[:back] = h[:result]
+            h.delete(:result)
+          end
+        end
         message = [
           self.class.name,
           'Unexpected HTTP response',

@@ -132,7 +132,6 @@ module DocAuth
       end
 
       def errors_from_http_status(status)
-        # todo: side specific message
         error = case status
         when 438
           Errors::IMAGE_LOAD_FAILURE
