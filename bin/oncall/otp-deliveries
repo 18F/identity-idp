@@ -90,7 +90,7 @@ class OtpDeliveries
       ]
     end
 
-    out.puts ScriptBase.format_output(table, format: output_format)
+    ScriptBase.render_output(table, format: output_format, stdout: out)
   end
 
   Result = Struct.new(
