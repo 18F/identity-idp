@@ -59,7 +59,8 @@ module Idv
       end
 
       def render_404_if_not_in_person_residential_address_controller_enabled
-        render_not_found unless IdentityConfig.store.in_person_residential_address_controller_enabled
+        render_not_found unless
+            IdentityConfig.store.in_person_residential_address_controller_enabled
       end
     end
   end
