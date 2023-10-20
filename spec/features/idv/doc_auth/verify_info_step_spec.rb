@@ -174,6 +174,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
 
       click_idv_continue
       expect(page).to have_current_path(idv_session_errors_failure_path)
+      expect(page).not_to have_css('.step-indicator__step--current', text: text, wait: 5)
       expect(fake_analytics).to have_logged_event(
         'Rate Limit Reached',
         limiter_type: :idv_resolution,
