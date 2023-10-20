@@ -4327,7 +4327,7 @@ module AnalyticsEvents
   # @param [Hash] platform_authenticator
   # @param [Boolean] success
   # @param [Hash, nil] errors
-  # Tracks when user submits WebAuthn setup
+  # Tracks whether or not Webauthn setup was successful
   def webauthn_setup_submitted(platform_authenticator:, success:, errors: nil, **extra)
     track_event(
       :webauthn_setup_submitted,
