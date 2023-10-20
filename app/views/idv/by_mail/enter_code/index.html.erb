@@ -13,7 +13,7 @@
   <% title t('idv.gpo.title') %>
 <% end %>
 
-<% if @gpo_mail_spammed %>
+<% if !@can_request_another_letter %>
   <%= render AlertComponent.new(type: :warning, class: 'margin-bottom-4') do %>
     <%= t(
           'idv.gpo.alert_spam_warning_html',
@@ -50,7 +50,7 @@
     ) %>
 
 <% if @user_did_not_receive_letter %>
-  <% if @should_prompt_user_to_request_another_letter %>
+  <% if @can_request_another_letter %>
     <%= t(
           'idv.gpo.did_not_receive_letter.intro.request_new_letter_prompt_html',
           request_new_letter_link: link_to(
@@ -97,7 +97,7 @@
   </div>
 <% end %>
 
-<% if @should_prompt_user_to_request_another_letter %>
+<% if @can_request_another_letter %>
   <% unless @user_did_not_receive_letter %>
     <%= link_to t('idv.messages.gpo.resend'), idv_request_letter_path, class: 'display-block margin-bottom-2' %>
   <% end %>
