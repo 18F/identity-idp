@@ -87,11 +87,17 @@ describe('DocumentCapturePolling', () => {
     await flushPromises(); // Flush `json`
 
     expect(subject.elements.form.submit).to.have.been.called();
-    expect(trackEvent).to.have.been.calledWith('IdV: Link sent capture doc polling started');
-    expect(trackEvent).to.have.been.calledWith('IdV: Link sent capture doc polling complete', {
-      isCancelled: false,
-      isRateLimited: false,
-    });
+    expect(trackEvent).to.have.been.calledWithExactly(
+      'IdV: Link sent capture doc polling started',
+      { phoneQuestionAbTestBucket: 'bypass_phone_question' },
+    );
+    expect(trackEvent).to.have.been.calledWithExactly(
+      'IdV: Link sent capture doc polling complete',
+      {
+        isCancelled: false,
+        isRateLimited: false,
+      },
+    );
   });
 
   it('redirects if given redirect URL on success', async () => {
@@ -120,11 +126,17 @@ describe('DocumentCapturePolling', () => {
     await flushPromises(); // Flush `fetch`
     await flushPromises(); // Flush `json`
 
-    expect(trackEvent).to.have.been.calledWith('IdV: Link sent capture doc polling started');
-    expect(trackEvent).to.have.been.calledWith('IdV: Link sent capture doc polling complete', {
-      isCancelled: true,
-      isRateLimited: false,
-    });
+    expect(trackEvent).to.have.been.calledWithExactly(
+      'IdV: Link sent capture doc polling started',
+      { phoneQuestionAbTestBucket: 'bypass_phone_question' },
+    );
+    expect(trackEvent).to.have.been.calledWithExactly(
+      'IdV: Link sent capture doc polling complete',
+      {
+        isCancelled: true,
+        isRateLimited: false,
+      },
+    );
     expect(subject.elements.form.submit).to.have.been.called();
   });
 
@@ -138,11 +150,17 @@ describe('DocumentCapturePolling', () => {
     await flushPromises(); // Flush `fetch`
     await flushPromises(); // Flush `json`
 
-    expect(trackEvent).to.have.been.calledWith('IdV: Link sent capture doc polling started');
-    expect(trackEvent).to.have.been.calledWith('IdV: Link sent capture doc polling complete', {
-      isCancelled: false,
-      isRateLimited: true,
-    });
+    expect(trackEvent).to.have.been.calledWithExactly(
+      'IdV: Link sent capture doc polling started',
+      { phoneQuestionAbTestBucket: 'bypass_phone_question' },
+    );
+    expect(trackEvent).to.have.been.calledWithExactly(
+      'IdV: Link sent capture doc polling complete',
+      {
+        isCancelled: false,
+        isRateLimited: true,
+      },
+    );
     expect(window.location.hash).to.equal('#rate_limited');
   });
 
