@@ -230,22 +230,46 @@ RSpec.describe DocAuthRouter do
       )
     end
 
-    it 'translates http response errors and maintains exceptions' do
-      DocAuth::Mock::DocAuthMockClient.mock_response!(
-        method: :post_images,
-        response: DocAuth::Response.new(
-          success: false,
-          errors: {
-            general: [DocAuth::Errors::IMAGE_LOAD_FAILURE],
-          },
-          exception: DocAuth::RequestError.new('Test 438 HTTP failure', 438),
-        ),
-      )
+    context 'translates http response errors and maintains exceptions' do
+      it 'translate general message' do
+        DocAuth::Mock::DocAuthMockClient.mock_response!(
+          method: :post_images,
+          response: DocAuth::Response.new(
+            success: false,
+            errors: {
+              general: [DocAuth::Errors::IMAGE_LOAD_FAILURE],
+            },
+            exception: DocAuth::RequestError.new('Test 438 HTTP failure', 438),
+          ),
+        )
 
-      response = proxy.post_images(front_image: 'a', back_image: 'b')
+        response = proxy.post_images(front_image: 'a', back_image: 'b')
+        expect(response.errors).to eq(general: [I18n.t('doc_auth.errors.http.image_load.top_msg')])
+        expect(response.exception.message).to eq('Test 438 HTTP failure')
+      end
+      it 'translate general message with side related inline error message' do
+        DocAuth::Mock::DocAuthMockClient.mock_response!(
+          method: :post_images,
+          response: DocAuth::Response.new(
+            success: false,
+            errors: {
+              general: [DocAuth::Errors::IMAGE_SIZE_FAILURE],
+              front: [DocAuth::Errors::IMAGE_SIZE_FAILURE_FIELD],
+              back: [DocAuth::Errors::IMAGE_SIZE_FAILURE_FIELD],
+            },
+            exception: DocAuth::RequestError.new('Test 440 HTTP failure', 440),
+          ),
+        )
 
-      expect(response.errors).to eq(general: [I18n.t('doc_auth.errors.http.image_load')])
-      expect(response.exception.message).to eq('Test 438 HTTP failure')
+        response = proxy.post_images(front_image: 'a', back_image: 'b')
+
+        expect(response.errors).to eq(
+          general: [I18n.t('doc_auth.errors.http.image_size.top_msg')],
+          front: [I18n.t('doc_auth.errors.http.image_size.failed_short')],
+          back: [I18n.t('doc_auth.errors.http.image_size.failed_short')],
+        )
+        expect(response.exception.message).to eq('Test 440 HTTP failure')
+      end
     end
 
     it 'translates doc type error' do
