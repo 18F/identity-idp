@@ -217,8 +217,8 @@ RSpec.describe DocAuth::Acuant::AcuantClient do
     end
   end
 
-  context 'when there is unexpected http status code' do
-    shared_examples 'with http status 4xx' do |status|
+  context 'when there is expected rxx http status code' do
+    shared_examples 'with http status' do |status|
       it "generate response for status #{status} " do
         instance_id = 'this-is-a-test-instance-id'
         url = URI.join(
@@ -259,8 +259,8 @@ RSpec.describe DocAuth::Acuant::AcuantClient do
         end
       end
     end
-    it_should_behave_like 'with http status 4xx', 440
-    it_should_behave_like 'with http status 4xx', 439
-    it_should_behave_like 'with http status 4xx', 438
+    it_should_behave_like 'with http status', 440
+    it_should_behave_like 'with http status', 439
+    it_should_behave_like 'with http status', 438
   end
 end
