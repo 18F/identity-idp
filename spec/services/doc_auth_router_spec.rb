@@ -255,7 +255,7 @@ RSpec.describe DocAuthRouter do
             errors: {
               general: [DocAuth::Errors::IMAGE_SIZE_FAILURE],
               front: [DocAuth::Errors::IMAGE_SIZE_FAILURE_FIELD],
-              back: [DocAuth::Errors::IMAGE_SIZE_FAILURE],
+              back: [DocAuth::Errors::IMAGE_SIZE_FAILURE_FIELD],
             },
             exception: DocAuth::RequestError.new('Test 440 HTTP failure', 440),
           ),
