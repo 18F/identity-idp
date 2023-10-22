@@ -247,7 +247,7 @@ RSpec.describe DocAuthRouter do
         expect(response.errors).to eq(general: [I18n.t('doc_auth.errors.http.image_load.top_msg')])
         expect(response.exception.message).to eq('Test 438 HTTP failure')
       end
-      it 'translate general message with side related inline error message' do
+      it 'translate related inline error messages for both sides' do
         DocAuth::Mock::DocAuthMockClient.mock_response!(
           method: :post_images,
           response: DocAuth::Response.new(
@@ -255,7 +255,7 @@ RSpec.describe DocAuthRouter do
             errors: {
               general: [DocAuth::Errors::IMAGE_SIZE_FAILURE],
               front: [DocAuth::Errors::IMAGE_SIZE_FAILURE_FIELD],
-              back: [DocAuth::Errors::IMAGE_SIZE_FAILURE_FIELD],
+              back: [DocAuth::Errors::IMAGE_SIZE_FAILURE],
             },
             exception: DocAuth::RequestError.new('Test 440 HTTP failure', 440),
           ),
@@ -269,6 +269,27 @@ RSpec.describe DocAuthRouter do
           back: [I18n.t('doc_auth.errors.http.image_size.failed_short')],
         )
         expect(response.exception.message).to eq('Test 440 HTTP failure')
+      end
+      it 'translate related side specific inline error message' do
+        DocAuth::Mock::DocAuthMockClient.mock_response!(
+          method: :post_images,
+          response: DocAuth::Response.new(
+            success: false,
+            errors: {
+              general: [DocAuth::Errors::PIXEL_DEPTH_FAILURE],
+              front: [DocAuth::Errors::PIXEL_DEPTH_FAILURE_FIELD],
+            },
+            exception: DocAuth::RequestError.new('Test 439 HTTP failure', 439),
+          ),
+        )
+
+        response = proxy.post_images(front_image: 'a', back_image: 'b')
+
+        expect(response.errors).to eq(
+          general: [I18n.t('doc_auth.errors.http.pixel_depth.top_msg')],
+          front: [I18n.t('doc_auth.errors.http.pixel_depth.failed_short')],
+        )
+        expect(response.exception.message).to eq('Test 439 HTTP failure')
       end
     end
 
