@@ -30,16 +30,40 @@ RSpec.describe Idv::InPerson::SsnController do
 
   describe 'before_actions' do
     context('#confirm_in_person_address_step_complete') do
-      it 'redirects if the user hasn\'t completed the address page' do
-        # delete address attributes on session
-        flow_session[:pii_from_user].delete(:address1)
-        flow_session[:pii_from_user].delete(:address2)
-        flow_session[:pii_from_user].delete(:city)
-        flow_session[:pii_from_user].delete(:state)
-        flow_session[:pii_from_user].delete(:zipcode)
-        get :show
+      context 'residential address controller flag enabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:in_person_residential_address_controller_enabled).
+            and_return(false)
+        end
+        it 'redirects if the user hasn\'t completed the address page' do
+          # delete address attributes on session
+          flow_session[:pii_from_user].delete(:address1)
+          flow_session[:pii_from_user].delete(:address2)
+          flow_session[:pii_from_user].delete(:city)
+          flow_session[:pii_from_user].delete(:state)
+          flow_session[:pii_from_user].delete(:zipcode)
+          get :show
 
-        expect(response).to redirect_to idv_in_person_step_url(step: :address)
+          expect(response).to redirect_to idv_in_person_step_url(step: :address)
+        end
+      end
+
+      context 'residential address controller flag enabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:in_person_residential_address_controller_enabled).
+            and_return(true)
+        end
+        it 'redirects if address page not completed' do
+          # delete address attributes on session
+          flow_session[:pii_from_user].delete(:address1)
+          flow_session[:pii_from_user].delete(:address2)
+          flow_session[:pii_from_user].delete(:city)
+          flow_session[:pii_from_user].delete(:state)
+          flow_session[:pii_from_user].delete(:zipcode)
+          get :show
+
+          expect(response).to redirect_to idv_in_person_proofing_address_url
+        end
       end
     end
   end
