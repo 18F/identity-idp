@@ -59,7 +59,7 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
       },
     }
 
-    allow(subject.monthly_proofing_report).to receive(:proofing_report).
+    allow(report.monthly_proofing_report).to receive(:proofing_report).
       and_return(mock_proofing_report_data)
   end
 
@@ -68,10 +68,11 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
       email: [agnes_email],
       subject: 'Monthly Key Metrics Report - 2021-03-02',
       reports: anything,
+      message: report.preamble,
       attachment_format: :xlsx,
     ).and_call_original
 
-    subject.perform(report_date)
+    report.perform(report_date)
   end
 
   it 'sends out a report to the emails listed with two users' do
@@ -81,10 +82,11 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
       email: [agnes_email, feds_email],
       subject: 'Monthly Key Metrics Report - 2021-03-01',
       reports: anything,
+      message: report.preamble,
       attachment_format: :xlsx,
     ).and_call_original
 
-    subject.perform(first_of_month_date)
+    report.perform(first_of_month_date)
   end
 
   it 'does not send out a report with no emails' do
@@ -95,7 +97,7 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
 
     expect(ReportMailer).not_to receive(:tables_report)
 
-    subject.perform(report_date)
+    report.perform(report_date)
   end
 
   it 'uploads a file to S3 based on the report date' do
@@ -106,6 +108,16 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
       ).exactly(1).time.and_call_original
     end
 
-    subject.perform(report_date)
+    report.perform(report_date)
+  end
+
+  describe '#preamble' do
+    subject(:preamble)  { report.preamble }
+
+    it 'has a preamble that is valid HTML' do
+      expect(preamble).to be_html_safe
+
+      expect { Nokogiri::XML(preamble) { |config| config.strict } }.to_not raise_error
+    end
   end
 end

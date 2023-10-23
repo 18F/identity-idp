@@ -29,8 +29,21 @@ module Reports
         email: email_addresses,
         subject: "Monthly Key Metrics Report - #{date}",
         reports: reports,
+        message: preamble,
         attachment_format: :xlsx,
       ).deliver_now
+    end
+
+    # Explanatory text to go before the report in the email
+    # @return [String]
+    def preamble
+      <<~HTML.html_safe
+        <p>
+          For more information on how each of these metrics are calculated,
+          take a look at our <a href="articles/monthly-key-metrics-explainer.html">
+          Monthly Key Metrics Report Explainer document</a>.
+        </p>
+      HTML
     end
 
     def reports
