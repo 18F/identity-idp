@@ -244,9 +244,9 @@ RSpec.describe 'In Person Proofing', js: true do
     visit idv_verify_info_url
     expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
 
-    # Confirms that user can vissit account page even if not completing in person proofing
+    # Confirms that user can visit account page even if not completing in person proofing
     Capybara.reset_session!
-    sign_in_live_with_2fa(user)
+    sign_in_user(user)
     expect(page).to have_current_path(account_path)
   end
 
