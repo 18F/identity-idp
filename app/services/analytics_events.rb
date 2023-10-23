@@ -2707,24 +2707,6 @@ module AnalyticsEvents
     )
   end
 
-  # Tracks when the user has added the MFA method webauthn to their account
-  # @param [Boolean] platform_authenticator indicates if webauthn_platform was used
-  # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
-  def multi_factor_auth_added_webauthn(
-    platform_authenticator:,
-    enabled_mfa_methods_count:, **extra
-  )
-    track_event(
-      'Multi-Factor Authentication: Added webauthn', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
-      {
-        method_name: :webauthn,
-        platform_authenticator: platform_authenticator,
-        enabled_mfa_methods_count: enabled_mfa_methods_count,
-        **extra,
-      }.compact,
-    )
-  end
-
   # A user has downloaded their backup codes
   def multi_factor_auth_backup_code_download
     track_event('Multi-Factor Authentication: download backup code') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
