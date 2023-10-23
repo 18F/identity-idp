@@ -2,6 +2,7 @@ import sinon from 'sinon';
 import quibble from 'quibble';
 import { screen } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
+import '@18f/identity-submit-button/submit-button-element';
 import type { WebauthnVerifyButtonDataset } from './webauthn-verify-button-element';
 
 describe('WebauthnVerifyButtonElement', () => {
@@ -30,9 +31,11 @@ describe('WebauthnVerifyButtonElement', () => {
           <div class="webauthn-verify-button__spinner" hidden>
             <p>Authenticating</p>
           </div>
-          <button class="webauthn-verify-button__button">
-            Authenticate
-          </button>
+          <lg-submit-button>
+            <button class="webauthn-verify-button__button">
+              Authenticate
+            </button>
+          </lg-submit-button>
           <input type="hidden" name="credential_id" value="">
           <input type="hidden" name="authenticator_data" value="">
           <input type="hidden" name="signature" value="">
@@ -79,6 +82,16 @@ describe('WebauthnVerifyButtonElement', () => {
       userChallenge: '[1,2]',
       credentials: [{}],
     });
+  });
+
+  it('calls to verify at most one time', async () => {
+    createElement();
+
+    const button = screen.getByRole('button', { name: 'Authenticate' });
+    await userEvent.click(button);
+    await userEvent.click(button);
+
+    expect(verifyWebauthnDevice).to.have.been.calledOnce();
   });
 
   it('submits with error name as input on thrown expected error', async () => {
