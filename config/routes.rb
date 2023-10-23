@@ -401,6 +401,8 @@ Rails.application.routes.draw do
       post '/by_mail/enter_code' => 'by_mail/enter_code#create'
       get '/by_mail/confirm_start_over' => 'confirm_start_over#index',
           as: :confirm_start_over
+      get '/by_mail/confirm_start_over/before_letter' => 'confirm_start_over#before_letter',
+          as: :confirm_start_over_before_letter
 
       if FeatureManagement.gpo_verification_enabled?
         get '/by_mail/request_letter' => 'by_mail/request_letter#index', as: :request_letter
