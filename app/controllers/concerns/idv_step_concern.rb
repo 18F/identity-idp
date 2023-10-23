@@ -26,15 +26,6 @@ module IdvStepConcern
     redirect_to idv_in_person_ready_to_verify_url if current_user&.pending_in_person_enrollment
   end
 
-  def confirm_step_allowed
-    idv_flow_policy = Idv::FlowPolicy.new(idv_session: idv_session, user: current_user)
-
-    return if idv_flow_policy.path_allowed?(controller: self.class.name.underscore)
-
-    step_info = idv_flow_policy.latest_step
-    redirect_to url_for(controller: step_info.controller, action: step_info.action, only_path: true)
-  end
-
   def check_for_mail_only_outage
     return if idv_session.mail_only_warning_shown
 
@@ -129,6 +120,12 @@ module IdvStepConcern
         flow_session[:pii_from_user][:same_address_as_id].to_s == 'true'
     end
     extra
+  end
+
+  def confirm_step_allowed
+    return if flow_policy.controller_allowed?(controller: self.class.controller_name)
+
+    redirect_to path_for_latest_step
   end
 
   def flow_policy
