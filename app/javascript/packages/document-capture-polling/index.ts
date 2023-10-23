@@ -18,6 +18,8 @@ interface DocumentCapturePollingOptions {
 
   elements: DocumentCapturePollingElements;
 
+  phoneQuestionAbTestBucket: string | undefined;
+
   trackEvent?: typeof defaultTrackEvent;
 }
 
@@ -47,19 +49,25 @@ export class DocumentCapturePolling {
 
   cleanUpPromptOnNavigate: (() => void) | undefined;
 
+  phoneQuestionAbTestBucket: string | undefined;
+
   constructor({
     elements,
     statusEndpoint,
     trackEvent = defaultTrackEvent,
+    phoneQuestionAbTestBucket,
   }: DocumentCapturePollingOptions) {
     this.elements = elements;
     this.statusEndpoint = statusEndpoint;
     this.trackEvent = trackEvent;
+    this.phoneQuestionAbTestBucket = phoneQuestionAbTestBucket;
   }
 
   bind() {
     this.toggleFormVisible(false);
-    this.trackEvent('IdV: Link sent capture doc polling started');
+    this.trackEvent('IdV: Link sent capture doc polling started', {
+      phone_question_ab_test_bucket: this.phoneQuestionAbTestBucket,
+    });
     this.schedulePoll();
     this.bindPromptOnNavigate(true);
     this.elements.backLink.addEventListener('click', () => this.bindPromptOnNavigate(false));
@@ -92,6 +100,7 @@ export class DocumentCapturePolling {
     this.trackEvent('IdV: Link sent capture doc polling complete', {
       isCancelled: result === ResultType.CANCELLED,
       isRateLimited: result === ResultType.RATE_LIMITED,
+      phone_question_ab_test_bucket: this.phoneQuestionAbTestBucket,
     });
     this.bindPromptOnNavigate(false);
     if (redirect) {

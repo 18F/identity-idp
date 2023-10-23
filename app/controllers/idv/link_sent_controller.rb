@@ -3,6 +3,7 @@ module Idv
     include DocumentCaptureConcern
     include IdvStepConcern
     include StepIndicatorConcern
+    include PhoneQuestionAbTestConcern
 
     before_action :confirm_not_rate_limited
     before_action :confirm_hybrid_handoff_complete
@@ -32,7 +33,9 @@ module Idv
     end
 
     def extra_view_variables
-      { phone: idv_session.phone_for_mobile_flow }
+      { phone: idv_session.phone_for_mobile_flow }.merge(
+        phone_question_ab_test_analytics_bucket,
+      )
     end
 
     private
