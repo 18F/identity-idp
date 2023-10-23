@@ -204,7 +204,7 @@ module Users
 
       analytics.webauthn_setup_submitted(
         platform_authenticator: form.platform_authenticator?,
-        errors: flash[:error],
+        errors: form.errors,
         success: false,
       )
       render :new
