@@ -246,7 +246,7 @@ RSpec.describe 'In Person Proofing', js: true do
 
     # Confirms that user can visit account page even if not completing in person proofing
     Capybara.reset_session!
-    sign_in_user(user)
+    sign_in_and_2fa_user(user)
     expect(page).to have_current_path(account_path)
   end
 
