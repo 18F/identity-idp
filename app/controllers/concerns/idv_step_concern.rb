@@ -139,10 +139,6 @@ module IdvStepConcern
     flow_policy.step_allowed?(step: step)
   end
 
-  def step_needed?(step)
-    flow_policy.step_needed?(step: step)
-  end
-
   def path_for_latest_step
     step_info = flow_policy.info_for_latest_step
     url_for(controller: step_info.controller, action: step_info.action, only_path: true)

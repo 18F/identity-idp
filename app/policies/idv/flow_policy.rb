@@ -16,10 +16,6 @@ module Idv
       steps[step].requirements.call(idv_session: idv_session, user: user)
     end
 
-    def step_needed?(step:)
-      steps[step].needed.call
-    end
-
     # TODO: fix path_allowed?
     def path_allowed?(path:)
       step = path_to_step(path: path)
