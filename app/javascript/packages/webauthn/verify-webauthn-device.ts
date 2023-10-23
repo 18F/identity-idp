@@ -10,6 +10,8 @@ interface VerifyOptions {
   userChallenge: string;
 
   credentials: VerifyCredentialDescriptor[] | null;
+
+  mediation?: 'conditional';
 }
 
 interface VerifyResult {
@@ -33,6 +35,7 @@ const mapVerifyCredential = (
 async function verifyWebauthnDevice({
   userChallenge,
   credentials,
+  mediation,
 }: VerifyOptions): Promise<VerifyResult> {
   const credential = (await navigator.credentials.get({
     publicKey: {
@@ -41,6 +44,7 @@ async function verifyWebauthnDevice({
       allowCredentials: credentials?.map(mapVerifyCredential),
       timeout: 800000,
     },
+    mediation,
   })) as PublicKeyCredential;
 
   const response = credential.response as AuthenticatorAssertionResponse;

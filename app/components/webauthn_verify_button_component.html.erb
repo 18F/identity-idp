@@ -5,7 +5,9 @@
         **tag_options[:data].to_h,
         credentials: credentials.to_json,
         user_challenge: user_challenge.to_json,
+        mediation:,
       },
+      hidden: mediation.present?,
     ) do %>
   <div class="webauthn-verify-button__spinner text-center" hidden>
     <%= image_tag(
@@ -22,7 +24,7 @@
         big: true,
         wide: true,
         class: 'webauthn-verify-button__button display-block margin-y-3',
-      ).with_content(content) %>
+      ).with_content(content || '') %>
   <%= hidden_field_tag :credential_id, '' %>
   <%= hidden_field_tag :authenticator_data, '' %>
   <%= hidden_field_tag :signature, '' %>

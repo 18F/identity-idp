@@ -6,6 +6,7 @@ import isExpectedWebauthnError from './is-expected-error';
 export interface WebauthnVerifyButtonDataset extends DOMStringMap {
   credentials: string;
   userChallenge: string;
+  mediation?: 'conditional';
 }
 
 class WebauthnVerifyButtonElement extends HTMLElement {
@@ -14,6 +15,10 @@ class WebauthnVerifyButtonElement extends HTMLElement {
   connectedCallback() {
     this.setButtonAttributes();
     this.bindEvents();
+
+    if (this.dataset.mediation) {
+      this.verify();
+    }
   }
 
   get button(): HTMLButtonElement {
@@ -46,7 +51,11 @@ class WebauthnVerifyButtonElement extends HTMLElement {
     const { userChallenge, credentials } = this;
 
     try {
-      const result = await verifyWebauthnDevice({ userChallenge, credentials });
+      const result = await verifyWebauthnDevice({
+        userChallenge,
+        credentials,
+        mediation: this.dataset.mediation,
+      });
       this.setInputValue('credential_id', result.credentialId);
       this.setInputValue('authenticator_data', result.authenticatorData);
       this.setInputValue('client_data_json', result.clientDataJSON);
