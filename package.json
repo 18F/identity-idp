@@ -21,7 +21,7 @@
     "build:css": "build-sass app/assets/stylesheets/*.css.scss app/components/*.scss --load-path=app/assets/stylesheets --out-dir=app/assets/builds"
   },
   "dependencies": {
-    "@18f/identity-design-system": "^8.0.0",
+    "@18f/identity-design-system": "^8.0.1",
     "@babel/core": "^7.20.7",
     "@babel/preset-env": "^7.15.6",
     "@babel/preset-react": "^7.14.5",
@@ -29,7 +29,7 @@
     "@babel/register": "^7.15.3",
     "babel-loader": "^9.1.0",
     "babel-plugin-polyfill-corejs3": "^0.5.2",
-    "browserslist": "^4.21.5",
+    "browserslist": "^4.22.1",
     "cleave.js": "^1.6.0",
     "core-js": "^3.21.1",
     "fast-glob": "^3.2.7",

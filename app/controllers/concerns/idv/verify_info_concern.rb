@@ -34,7 +34,7 @@ module Idv
         user_id: current_user.id,
         threatmetrix_session_id: idv_session.threatmetrix_session_id,
         request_ip: request.remote_ip,
-        double_address_verification: double_address_verification,
+        ipp_enrollment_in_progress: ipp_enrollment_in_progress?,
       )
 
       return true
@@ -42,10 +42,7 @@ module Idv
 
     private
 
-    def double_address_verification
-      # If in person return true else return false. This is temporary until we add a feature flag
-      # to track enrollment was created in the in person flow.
-      # todo LG-11235 update value based on new feature flag
+    def ipp_enrollment_in_progress?
       current_user.has_in_person_enrollment?
     end
 
@@ -88,8 +85,6 @@ module Idv
         :state_id,
         :mva_exception,
       )
-
-      resolution_rate_limiter.increment! if proofing_results_exception.blank?
 
       if ssn_rate_limiter.limited?
         idv_failure_log_rate_limited(:proof_ssn)
@@ -208,7 +203,7 @@ module Idv
       )
 
       form_response = form_response.merge(check_ssn) if form_response.success?
-      summarize_result_and_rate_limit_failures(form_response)
+      summarize_result_and_rate_limit(form_response)
       delete_async
 
       if form_response.success?
@@ -222,7 +217,6 @@ module Idv
       else
         idv_session.invalidate_verify_info_step!
       end
-
       analytics.idv_doc_auth_verify_proofing_results(**analytics_arguments, **form_response.to_h)
     end
 
@@ -236,7 +230,10 @@ module Idv
       idv_session.threatmetrix_review_status = review_status
     end
 
-    def summarize_result_and_rate_limit_failures(summary_result)
+    def summarize_result_and_rate_limit(summary_result)
+      proofing_results_exception = summary_result.extra.dig(:proofing_results, :exception)
+      resolution_rate_limiter.increment! if proofing_results_exception.blank?
+
       if summary_result.success?
         add_proofing_components
       else

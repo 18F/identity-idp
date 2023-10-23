@@ -63,10 +63,10 @@ RSpec.feature 'Analytics Regression', js: true do
         flow_path: 'standard', step: 'document_capture', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, irs_reproofing: false
       },
       'Frontend: IdV: front image added' => {
-        'width' => 284, 'height' => 38, 'mimeType' => 'image/png', 'source' => 'upload', 'size' => 3694, 'attempt' => 1, 'flow_path' => 'standard', 'acuant_sdk_upgrade_a_b_testing_enabled' => 'false', 'use_alternate_sdk' => anything, 'acuant_version' => anything, 'acuantCaptureMode' => 'AUTO', 'fingerprint' => anything, 'failedImageResubmission' => boolean
+        'width' => 284, 'height' => 38, 'mimeType' => 'image/png', 'source' => 'upload', 'size' => 3694, 'attempt' => 1, 'flow_path' => 'standard', 'acuant_sdk_upgrade_a_b_testing_enabled' => 'false', 'use_alternate_sdk' => anything, 'acuant_version' => anything, 'acuantCaptureMode' => 'AUTO', 'fingerprint' => anything, 'failedImageResubmission' => boolean, 'phone_question_ab_test_bucket' => 'bypass_phone_question'
       },
       'Frontend: IdV: back image added' => {
-        'width' => 284, 'height' => 38, 'mimeType' => 'image/png', 'source' => 'upload', 'size' => 3694, 'attempt' => 1, 'flow_path' => 'standard', 'acuant_sdk_upgrade_a_b_testing_enabled' => 'false', 'use_alternate_sdk' => anything, 'acuant_version' => anything, 'acuantCaptureMode' => 'AUTO', 'fingerprint' => anything, 'failedImageResubmission' => boolean
+        'width' => 284, 'height' => 38, 'mimeType' => 'image/png', 'source' => 'upload', 'size' => 3694, 'attempt' => 1, 'flow_path' => 'standard', 'acuant_sdk_upgrade_a_b_testing_enabled' => 'false', 'use_alternate_sdk' => anything, 'acuant_version' => anything, 'acuantCaptureMode' => 'AUTO', 'fingerprint' => anything, 'failedImageResubmission' => boolean, 'phone_question_ab_test_bucket' => 'bypass_phone_question'
       },
       'IdV: doc auth image upload form submitted' => {
         success: true, errors: {}, attempts: 1, remaining_attempts: 3, user_id: user.uuid, flow_path: 'standard', front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question
@@ -91,7 +91,7 @@ RSpec.feature 'Analytics Regression', js: true do
       },
       'IdV: doc auth verify proofing results' => {
         success: true, errors: {}, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'Doc Auth', ssn_is_unique: true, step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, irs_reproofing: false, skip_hybrid_handoff: nil,
-        proofing_results: { exception: nil, timed_out: false, threatmetrix_review_status: 'pass', context: { device_profiling_adjudication_reason: 'device_profiling_result_pass', double_address_verification: false, resolution_adjudication_reason: 'pass_resolution_and_state_id', should_proof_state_id: true, stages: { resolution: { success: true, errors: {}, exception: nil, timed_out: false, transaction_id: 'resolution-mock-transaction-id-123', reference: 'aaa-bbb-ccc', can_pass_with_additional_verification: false, attributes_requiring_additional_verification: [], vendor_name: 'ResolutionMock', vendor_workflow: nil }, residential_address: { errors: {}, exception: nil, reference: '', success: true, timed_out: false, transaction_id: '', vendor_name: 'ResidentialAddressNotRequired' }, state_id: { success: true, errors: {}, exception: nil, mva_exception: nil, timed_out: false, transaction_id: 'state-id-mock-transaction-id-456', vendor_name: 'StateIdMock', verified_attributes: [], state: 'MT', state_id_jurisdiction: 'ND', state_id_number: '#############' }, threatmetrix: threatmetrix_response } } }
+        proofing_results: { exception: nil, timed_out: false, threatmetrix_review_status: 'pass', context: { device_profiling_adjudication_reason: 'device_profiling_result_pass', resolution_adjudication_reason: 'pass_resolution_and_state_id', should_proof_state_id: true, stages: { resolution: { success: true, errors: {}, exception: nil, timed_out: false, transaction_id: 'resolution-mock-transaction-id-123', reference: 'aaa-bbb-ccc', can_pass_with_additional_verification: false, attributes_requiring_additional_verification: [], vendor_name: 'ResolutionMock', vendor_workflow: nil }, residential_address: { errors: {}, exception: nil, reference: '', success: true, timed_out: false, transaction_id: '', vendor_name: 'ResidentialAddressNotRequired' }, state_id: { success: true, errors: {}, exception: nil, mva_exception: nil, timed_out: false, transaction_id: 'state-id-mock-transaction-id-456', vendor_name: 'StateIdMock', verified_attributes: [], state: 'MT', state_id_jurisdiction: 'ND', state_id_number: '#############' }, threatmetrix: threatmetrix_response } } }
       },
       'IdV: phone of record visited' => {
         acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil,
@@ -102,7 +102,7 @@ RSpec.feature 'Analytics Regression', js: true do
         proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass' }
       },
       'IdV: phone confirmation vendor' => {
-        success: true, errors: {}, vendor: { exception: nil, vendor_name: 'AddressMock', transaction_id: 'address-mock-transaction-id-123', timed_out: false, reference: '' }, new_phone_added: false, area_code: '202', country_code: 'US', phone_fingerprint: anything,
+        success: true, errors: {}, vendor: { exception: nil, vendor_name: 'AddressMock', transaction_id: 'address-mock-transaction-id-123', timed_out: false, reference: '' }, new_phone_added: false, hybrid_handoff_phone_used: false, area_code: '202', country_code: 'US', phone_fingerprint: anything,
         proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
       },
       'IdV: phone confirmation otp sent' => {
@@ -168,10 +168,10 @@ RSpec.feature 'Analytics Regression', js: true do
         flow_path: 'standard', step: 'document_capture', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil, analytics_id: 'Doc Auth', irs_reproofing: false
       },
       'Frontend: IdV: front image added' => {
-        'width' => 284, 'height' => 38, 'mimeType' => 'image/png', 'source' => 'upload', 'size' => 3694, 'attempt' => 1, 'flow_path' => 'standard', 'acuant_sdk_upgrade_a_b_testing_enabled' => 'false', 'use_alternate_sdk' => anything, 'acuant_version' => anything, 'acuantCaptureMode' => 'AUTO', 'fingerprint' => anything, 'failedImageResubmission' => boolean
+        'width' => 284, 'height' => 38, 'mimeType' => 'image/png', 'source' => 'upload', 'size' => 3694, 'attempt' => 1, 'flow_path' => 'standard', 'acuant_sdk_upgrade_a_b_testing_enabled' => 'false', 'use_alternate_sdk' => anything, 'acuant_version' => anything, 'acuantCaptureMode' => 'AUTO', 'fingerprint' => anything, 'failedImageResubmission' => boolean, 'phone_question_ab_test_bucket' => 'bypass_phone_question'
       },
       'Frontend: IdV: back image added' => {
-        'width' => 284, 'height' => 38, 'mimeType' => 'image/png', 'source' => 'upload', 'size' => 3694, 'attempt' => 1, 'flow_path' => 'standard', 'acuant_sdk_upgrade_a_b_testing_enabled' => 'false', 'use_alternate_sdk' => anything, 'acuant_version' => anything, 'acuantCaptureMode' => 'AUTO', 'fingerprint' => anything, 'failedImageResubmission' => boolean
+        'width' => 284, 'height' => 38, 'mimeType' => 'image/png', 'source' => 'upload', 'size' => 3694, 'attempt' => 1, 'flow_path' => 'standard', 'acuant_sdk_upgrade_a_b_testing_enabled' => 'false', 'use_alternate_sdk' => anything, 'acuant_version' => anything, 'acuantCaptureMode' => 'AUTO', 'fingerprint' => anything, 'failedImageResubmission' => boolean, 'phone_question_ab_test_bucket' => 'bypass_phone_question'
       },
       'IdV: doc auth image upload form submitted' => {
         success: true, errors: {}, attempts: 1, remaining_attempts: 3, user_id: user.uuid, flow_path: 'standard', front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question
@@ -196,7 +196,7 @@ RSpec.feature 'Analytics Regression', js: true do
       },
       'IdV: doc auth verify proofing results' => {
         success: true, errors: {}, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'Doc Auth', ssn_is_unique: true, step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, irs_reproofing: false, skip_hybrid_handoff: nil,
-        proofing_results: { exception: nil, timed_out: false, threatmetrix_review_status: 'pass', context: { device_profiling_adjudication_reason: 'device_profiling_result_pass', double_address_verification: false, resolution_adjudication_reason: 'pass_resolution_and_state_id', should_proof_state_id: true, stages: { resolution: { success: true, errors: {}, exception: nil, timed_out: false, transaction_id: 'resolution-mock-transaction-id-123', reference: 'aaa-bbb-ccc', can_pass_with_additional_verification: false, attributes_requiring_additional_verification: [], vendor_name: 'ResolutionMock', vendor_workflow: nil }, residential_address: { errors: {}, exception: nil, reference: '', success: true, timed_out: false, transaction_id: '', vendor_name: 'ResidentialAddressNotRequired' }, state_id: { success: true, errors: {}, exception: nil, mva_exception: nil, timed_out: false, transaction_id: 'state-id-mock-transaction-id-456', vendor_name: 'StateIdMock', verified_attributes: [], state: 'MT', state_id_jurisdiction: 'ND', state_id_number: '#############' }, threatmetrix: threatmetrix_response } } }
+        proofing_results: { exception: nil, timed_out: false, threatmetrix_review_status: 'pass', context: { device_profiling_adjudication_reason: 'device_profiling_result_pass', resolution_adjudication_reason: 'pass_resolution_and_state_id', should_proof_state_id: true, stages: { resolution: { success: true, errors: {}, exception: nil, timed_out: false, transaction_id: 'resolution-mock-transaction-id-123', reference: 'aaa-bbb-ccc', can_pass_with_additional_verification: false, attributes_requiring_additional_verification: [], vendor_name: 'ResolutionMock', vendor_workflow: nil }, residential_address: { errors: {}, exception: nil, reference: '', success: true, timed_out: false, transaction_id: '', vendor_name: 'ResidentialAddressNotRequired' }, state_id: { success: true, errors: {}, exception: nil, mva_exception: nil, timed_out: false, transaction_id: 'state-id-mock-transaction-id-456', vendor_name: 'StateIdMock', verified_attributes: [], state: 'MT', state_id_jurisdiction: 'ND', state_id_number: '#############' }, threatmetrix: threatmetrix_response } } }
       },
       'IdV: phone of record visited' => {
         acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil,
@@ -255,10 +255,10 @@ RSpec.feature 'Analytics Regression', js: true do
         flow_path: 'standard', step: 'document_capture', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, irs_reproofing: false
       },
       'Frontend: IdV: front image added' => {
-        'width' => 284, 'height' => 38, 'mimeType' => 'image/png', 'source' => 'upload', 'size' => 3694, 'attempt' => 1, 'flow_path' => 'standard', 'acuant_sdk_upgrade_a_b_testing_enabled' => 'false', 'use_alternate_sdk' => anything, 'acuant_version' => anything, 'acuantCaptureMode' => 'AUTO', 'fingerprint' => anything, 'failedImageResubmission' => boolean
+        'width' => 284, 'height' => 38, 'mimeType' => 'image/png', 'source' => 'upload', 'size' => 3694, 'attempt' => 1, 'flow_path' => 'standard', 'acuant_sdk_upgrade_a_b_testing_enabled' => 'false', 'use_alternate_sdk' => anything, 'acuant_version' => anything, 'acuantCaptureMode' => 'AUTO', 'fingerprint' => anything, 'failedImageResubmission' => boolean, 'phone_question_ab_test_bucket' => 'bypass_phone_question'
       },
       'Frontend: IdV: back image added' => {
-        'width' => 284, 'height' => 38, 'mimeType' => 'image/png', 'source' => 'upload', 'size' => 3694, 'attempt' => 1, 'flow_path' => 'standard', 'acuant_sdk_upgrade_a_b_testing_enabled' => 'false', 'use_alternate_sdk' => anything, 'acuant_version' => anything, 'acuantCaptureMode' => 'AUTO', 'fingerprint' => anything, 'failedImageResubmission' => boolean
+        'width' => 284, 'height' => 38, 'mimeType' => 'image/png', 'source' => 'upload', 'size' => 3694, 'attempt' => 1, 'flow_path' => 'standard', 'acuant_sdk_upgrade_a_b_testing_enabled' => 'false', 'use_alternate_sdk' => anything, 'acuant_version' => anything, 'acuantCaptureMode' => 'AUTO', 'fingerprint' => anything, 'failedImageResubmission' => boolean, 'phone_question_ab_test_bucket' => 'bypass_phone_question'
       },
       'IdV: doc auth image upload form submitted' => {
         success: true, errors: {}, attempts: 1, remaining_attempts: 3, user_id: user.uuid, flow_path: 'standard', front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question
@@ -305,14 +305,14 @@ RSpec.feature 'Analytics Regression', js: true do
       },
       'IdV: doc auth verify proofing results' => {
         success: true, errors: {}, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'In Person Proofing', ssn_is_unique: true, step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, irs_reproofing: false, skip_hybrid_handoff: nil,
-        proofing_results: { exception: nil, timed_out: false, threatmetrix_review_status: 'pass', context: { device_profiling_adjudication_reason: 'device_profiling_result_pass', double_address_verification: true, resolution_adjudication_reason: 'pass_resolution_and_state_id', should_proof_state_id: true, stages: { resolution: { success: true, errors: {}, exception: nil, timed_out: false, transaction_id: 'resolution-mock-transaction-id-123', reference: 'aaa-bbb-ccc', can_pass_with_additional_verification: false, attributes_requiring_additional_verification: [], vendor_name: 'ResolutionMock', vendor_workflow: nil }, residential_address: { errors: {}, exception: nil, reference: 'aaa-bbb-ccc', success: true, timed_out: false, transaction_id: 'resolution-mock-transaction-id-123', can_pass_with_additional_verification: false, attributes_requiring_additional_verification: [], vendor_name: 'ResolutionMock', vendor_workflow: nil }, state_id: { success: true, errors: {}, exception: nil, mva_exception: nil, timed_out: false, transaction_id: 'state-id-mock-transaction-id-456', vendor_name: 'StateIdMock', verified_attributes: [], state: 'MT', state_id_jurisdiction: 'ND', state_id_number: '#############' }, threatmetrix: threatmetrix_response } } }
+        proofing_results: { exception: nil, timed_out: false, threatmetrix_review_status: 'pass', context: { device_profiling_adjudication_reason: 'device_profiling_result_pass', resolution_adjudication_reason: 'pass_resolution_and_state_id', should_proof_state_id: true, stages: { resolution: { success: true, errors: {}, exception: nil, timed_out: false, transaction_id: 'resolution-mock-transaction-id-123', reference: 'aaa-bbb-ccc', can_pass_with_additional_verification: false, attributes_requiring_additional_verification: [], vendor_name: 'ResolutionMock', vendor_workflow: nil }, residential_address: { errors: {}, exception: nil, reference: 'aaa-bbb-ccc', success: true, timed_out: false, transaction_id: 'resolution-mock-transaction-id-123', can_pass_with_additional_verification: false, attributes_requiring_additional_verification: [], vendor_name: 'ResolutionMock', vendor_workflow: nil }, state_id: { success: true, errors: {}, exception: nil, mva_exception: nil, timed_out: false, transaction_id: 'state-id-mock-transaction-id-456', vendor_name: 'StateIdMock', verified_attributes: [], state: 'MT', state_id_jurisdiction: 'ND', state_id_number: '#############' }, threatmetrix: threatmetrix_response } } }
       },
       'IdV: phone confirmation form' => {
         success: true, errors: {}, phone_type: :mobile, types: [:fixed_or_mobile], carrier: 'Test Mobile Carrier', country_code: 'US', area_code: '202', acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil, otp_delivery_preference: 'sms',
         proofing_components: { document_check: 'usps', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', source_check: 'aamva' }
       },
       'IdV: phone confirmation vendor' => {
-        success: true, errors: {}, vendor: { exception: nil, vendor_name: 'AddressMock', transaction_id: 'address-mock-transaction-id-123', timed_out: false, reference: '' }, new_phone_added: false, area_code: '202', country_code: 'US', phone_fingerprint: anything,
+        success: true, errors: {}, vendor: { exception: nil, vendor_name: 'AddressMock', transaction_id: 'address-mock-transaction-id-123', timed_out: false, reference: '' }, new_phone_added: false, hybrid_handoff_phone_used: false, area_code: '202', country_code: 'US', phone_fingerprint: anything,
         proofing_components: { address_check: 'lexis_nexis_address', document_check: 'usps', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', source_check: 'aamva' }
       },
       'IdV: phone confirmation otp sent' => {
@@ -387,7 +387,7 @@ RSpec.feature 'Analytics Regression', js: true do
       complete_ssn_step
       complete_verify_step
       complete_phone_step(user)
-      complete_review_step(user)
+      complete_enter_password_step(user)
       acknowledge_and_confirm_personal_key
     end
 
@@ -446,7 +446,7 @@ RSpec.feature 'Analytics Regression', js: true do
       complete_verify_step
       enter_gpo_flow
       gpo_step
-      complete_review_step(user)
+      complete_enter_password_step(user)
     end
 
     it 'records all of the events' do
@@ -493,7 +493,7 @@ RSpec.feature 'Analytics Regression', js: true do
       begin_in_person_proofing(user)
       complete_all_in_person_proofing_steps(user, same_address_as_id: false)
       complete_phone_step(user)
-      complete_review_step(user)
+      complete_enter_password_step(user)
       acknowledge_and_confirm_personal_key
       visit_help_center
       visit_sp_from_in_person_ready_to_verify

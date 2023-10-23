@@ -17,7 +17,8 @@
 <p><%= t('doc_auth.info.secure_account') %></p>
 
 <%= simple_form_for(
-      :doc_auth,
+      @consent_form,
+      as: :doc_auth,
       url: url_for,
       method: 'put',
       html: { autocomplete: 'off', class: 'margin-top-2 margin-bottom-5 js-consent-continue-form' },

@@ -20,6 +20,7 @@ module Idv
         true
       )
 
+      @phone_question_ab_test_bucket = phone_question_ab_test_bucket
       render :show, locals: extra_view_variables
     end
 

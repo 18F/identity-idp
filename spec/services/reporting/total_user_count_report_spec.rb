@@ -5,10 +5,13 @@ RSpec.describe Reporting::TotalUserCountReport do
   let(:report_date) do
     Date.new(2021, 3, 1).in_time_zone('UTC')
   end
+
   let(:expected_report) do
     [
-      ['All-time user count'],
-      [expected_count],
+      ['Metric', 'Value', 'Time Range Start', 'Time Range End'],
+      ['All-time user count', expected_total_count, '-', '2021-03-01'],
+      ['Total verified users', expected_verified_count, '-', '2021-03-01'],
+      ['Total annual users', expected_annual_count, '2020-03-01', '2021-03-01'],
     ]
   end
 
@@ -16,58 +19,70 @@ RSpec.describe Reporting::TotalUserCountReport do
 
   before { travel_to report_date }
 
-  shared_examples 'a report with that user counted' do
-    let(:expected_count) { 1 }
-    it 'includes that user in the count' do
-      expect(subject.total_user_count_report).to eq expected_report
-    end
-  end
-
   describe '#total_user_count_report' do
-    context 'with no users' do
-      let(:expected_count) { 0 }
-
-      it 'returns a report with a count of zero' do
+    shared_examples 'a report with the specified counts' do
+      it 'returns a report with the expected counts' do
         expect(subject.total_user_count_report).to eq expected_report
       end
     end
 
-    context 'with one ordinary user' do
-      let!(:user) { create(:user) }
-      it_behaves_like 'a report with that user counted'
+    context 'with only a non-verified user' do
+      before { create(:user) }
+      let(:expected_total_count) { 1 }
+      let(:expected_verified_count) { 0 }
+      let(:expected_annual_count) { expected_total_count }
+
+      it_behaves_like 'a report with the specified counts'
     end
 
-    context 'with a suspended user' do
-      let!(:suspended_user) { create(:user, :suspended) }
+    context 'with 2 users, 1 from more than a year ago' do
+      let!(:recent_user) { create(:user) }
+      let!(:old_user) { create(:user, created_at: report_date - 13.months) }
 
-      it 'has a suspended user' do
-        expect(suspended_user).to be_suspended
-        expect(User.count).to eq 1
-      end
+      let(:expected_total_count) { 2 }
+      let(:expected_verified_count) { 0 }
+      let(:expected_annual_count) { 1 }
 
-      it_behaves_like 'a report with that user counted'
+      it_behaves_like 'a report with the specified counts'
     end
 
-    context 'with an unconfirmed user' do
-      let!(:unconfirmed_user) { create(:user, :unconfirmed) }
-
-      it 'has an unconfirmed user' do
-        expect(unconfirmed_user).to_not be_confirmed
-        expect(User.count).to eq 1
+    context 'with one verified and one non-verified user' do
+      before do
+        create(:user)
+        user2 = create(:user)
+        # MW: The :verified trait doesn't set active: true. This feels confusing.
+        create(:profile, :active, user: user2)
       end
+      let(:expected_total_count) { 2 }
+      let(:expected_verified_count) { 1 }
+      let(:expected_annual_count) { expected_total_count }
 
-      it_behaves_like 'a report with that user counted'
+      it_behaves_like 'a report with the specified counts'
     end
 
-    context 'with a user rejected for fraud' do
-      let!(:fraud_user) { create(:user, :fraud_rejection) }
+    # The suspended and fraud-rejection examples are meant to highlight this
+    # developer's understanding of the requirements and resulting behavior,
+    # not to express immutable business logic.
+    context 'with one user, who is suspended' do
+      before { create(:user, :suspended) }
 
-      it 'has a user rejected for fraud' do
-        expect(fraud_user).to be_fraud_rejection
-        expect(User.count).to eq 1
-      end
+      # A suspended user is still a total user:
+      let(:expected_total_count) { 1 }
+      let(:expected_verified_count) { 0 }
+      let(:expected_annual_count) { 1 }
 
-      it_behaves_like 'a report with that user counted'
+      it_behaves_like 'a report with the specified counts'
+    end
+
+    context 'with one user, who was rejected for fraud' do
+      before { create(:user, :fraud_rejection) }
+
+      # A user with a fraud rejection is still a total user
+      let(:expected_total_count) { 1 }
+      let(:expected_verified_count) { 0 }
+      let(:expected_annual_count) { 1 }
+
+      it_behaves_like 'a report with the specified counts'
     end
   end
 end

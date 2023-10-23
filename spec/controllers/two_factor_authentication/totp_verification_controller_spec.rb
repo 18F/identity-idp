@@ -20,11 +20,18 @@ RSpec.describe TwoFactorAuthentication::TotpVerificationController do
         expect(Db::AuthAppConfiguration).to receive(:authenticate).and_return(cfg)
         expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
 
-        post :create, params: { code: generate_totp_code(@secret) }
+        freeze_time do
+          post :create, params: { code: generate_totp_code(@secret) }
 
-        expect(response).to redirect_to account_path
-        expect(subject.user_session[:auth_method]).to eq TwoFactorAuthenticatable::AuthMethod::TOTP
-        expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq false
+          expect(response).to redirect_to account_path
+          expect(subject.user_session[:auth_events]).to eq(
+            [
+              auth_method: TwoFactorAuthenticatable::AuthMethod::TOTP,
+              at: Time.zone.now,
+            ],
+          )
+          expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq false
+        end
       end
 
       it 'resets the second_factor_attempts_count' do
@@ -102,7 +109,7 @@ RSpec.describe TwoFactorAuthentication::TotpVerificationController do
       end
 
       it 'does not set auth_method and still requires 2FA' do
-        expect(subject.user_session[:auth_method]).to eq nil
+        expect(subject.user_session[:auth_events]).to eq nil
         expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq true
       end
     end

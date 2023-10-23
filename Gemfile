@@ -18,6 +18,7 @@ gem 'barby', '~> 0.6.8'
 gem 'base32-crockford'
 gem 'bootsnap', '~> 1.0', require: false
 gem 'browser'
+gem 'caxlsx', require: false
 gem 'concurrent-ruby'
 gem 'connection_pool'
 gem 'cssbundling-rails'
@@ -79,6 +80,7 @@ gem 'webauthn', '~> 2.5.2'
 gem 'xmldsig', '~> 0.6'
 gem 'xmlenc', '~> 0.7', '>= 0.7.1'
 gem 'yard', require: false
+gem 'zlib', require: false
 
 # This version of the zxcvbn gem matches the data and behavior of the zxcvbn NPM package.
 # It should not be updated without verifying that the behavior still matches JS version 4.4.2.
@@ -128,6 +130,7 @@ group :test do
   gem 'rspec-retry'
   gem 'rspec_junit_formatter'
   gem 'shoulda-matchers', '~> 4.0', require: false
+  gem 'simple_xlsx_reader', require: false
   gem 'tableparser', require: false
   gem 'webmock'
   gem 'zonebie'

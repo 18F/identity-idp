@@ -14,14 +14,15 @@ module Reports
       subject = "Weekly Authentication Report - #{report_date}"
 
       report_configs.each do |report_hash|
-        tables = weekly_authentication_report_tables(report_hash['issuers'])
+        reports = weekly_authentication_emailable_reports(report_hash['issuers'])
 
         report_hash['emails'].each do |email|
           ReportMailer.tables_report(
             email:,
             subject:,
             message:,
-            tables:,
+            reports:,
+            attachment_format: :csv,
           ).deliver_now
         end
       end
@@ -29,11 +30,11 @@ module Reports
 
     private
 
-    def weekly_authentication_report_tables(issuers)
+    def weekly_authentication_emailable_reports(issuers)
       Reporting::AuthenticationReport.new(
         issuers:,
         time_range: report_date.all_week,
-      ).as_tables_with_options
+      ).as_emailable_reports
     end
 
     def report_configs

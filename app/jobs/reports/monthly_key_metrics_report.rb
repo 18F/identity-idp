@@ -7,7 +7,7 @@ module Reports
 
     attr_reader :report_date
 
-    def initialize(*args, report_date: nil, **rest)
+    def initialize(report_date = nil, *args, **rest)
       @report_date = report_date
       super(*args, **rest)
     end
@@ -21,37 +21,59 @@ module Reports
         return false
       end
 
-      reports = [
-        total_user_count_report.total_user_count_emailable_report,
-        account_deletion_rate_report.account_deletion_emailable_report,
-        account_reuse_report.account_reuse_emailable_report,
-        account_reuse_report.total_identities_emailable_report,
-        monthly_proofing_report.document_upload_proofing_emailable_report,
-        monthly_active_users_count_report.monthly_active_users_count_emailable_report,
-      ]
-
       reports.each do |report|
-        upload_to_s3(report.table, report_name: report.csv_name)
+        upload_to_s3(report.table, report_name: report.filename)
       end
-
-      email_tables = reports.map do |report|
-        [report.email_options, *report.table]
-      end
-
-      email_message = "Report: #{REPORT_NAME} #{date}"
 
       ReportMailer.tables_report(
         email: email_addresses,
         subject: "Monthly Key Metrics Report - #{date}",
-        message: email_message,
-        tables: email_tables,
+        reports: reports,
+        message: preamble,
+        attachment_format: :xlsx,
       ).deliver_now
+    end
+
+    # Explanatory text to go before the report in the email
+    # @return [String]
+    def preamble
+      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
+        <p>
+          For more information on how each of these metrics are calculated, take a look at our
+          <a href="https://handbook.login.gov/articles/monthly-key-metrics-explainer.html">
+          Monthly Key Metrics Report Explainer document</a>.
+        </p>
+      HTML
+    end
+
+    def reports
+      @reports ||= [
+        # Number of verified users (total) - LG-11148
+        # Number of verified users (new) - LG-11164
+        monthly_active_users_count_report.monthly_active_users_count_emailable_report,
+        # Total Annual Users - LG-11150
+        total_user_count_report.total_user_count_emailable_report,
+        # Proofing rate(s) (tbd on this one pager) - LG-11152
+        account_deletion_rate_report.account_deletion_emailable_report,
+        account_reuse_report.account_reuse_emailable_report,
+        account_reuse_report.total_identities_emailable_report,
+        monthly_proofing_report.document_upload_proofing_emailable_report,
+        # Number of applications using Login (separated by auth / IdV) - LG-11154
+        # Number of agencies using Login - LG-11155
+        # Fiscal year active users, sum and split - LG-10816
+        # APG Reporting Annual Active Users by FY (w/ cumulative Active Users by quarter) - LG-11156
+        # APG Reporting of Active Federal Partner Agencies - LG-11157
+        # APG Reporting of Active Login.gov Serviced Applications - LG-11158
+        # APG Reporting of Cumulative Proofed Identities By Year/Month - LG-11159
+        # APG Reporting Proofing rate for HISPs - LG-11160
+      ]
     end
 
     def emails
       emails = [IdentityConfig.store.team_agnes_email]
       if report_date.day == 1
         emails << IdentityConfig.store.team_all_feds_email
+        emails << IdentityConfig.store.team_all_contractors_email
       end
       emails
     end

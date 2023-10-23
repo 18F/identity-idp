@@ -53,9 +53,7 @@ module RememberDeviceConcern
   private
 
   def expired_for_interval?(user, interval)
-    unless user_session[:auth_method] == TwoFactorAuthenticatable::AuthMethod::REMEMBER_DEVICE
-      return false
-    end
+    return false unless has_remember_device_auth_event?
     remember_cookie = remember_device_cookie
     return true if remember_cookie.nil?
 
@@ -65,9 +63,17 @@ module RememberDeviceConcern
     )
   end
 
+  def has_remember_device_auth_event?
+    auth_methods_session.auth_events.any? do |auth_event|
+      auth_event[:auth_method] == TwoFactorAuthenticatable::AuthMethod::REMEMBER_DEVICE
+    end
+  end
+
   def handle_valid_remember_device_cookie(remember_device_cookie:)
-    user_session[:auth_method] = TwoFactorAuthenticatable::AuthMethod::REMEMBER_DEVICE
-    mark_user_session_authenticated(:device_remembered)
+    mark_user_session_authenticated(
+      auth_method: TwoFactorAuthenticatable::AuthMethod::REMEMBER_DEVICE,
+      authentication_type: :device_remembered,
+    )
     handle_valid_remember_device_analytics(cookie_created_at: remember_device_cookie.created_at)
     redirect_to after_sign_in_path_for(current_user)
   end

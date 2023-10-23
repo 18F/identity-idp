@@ -15,6 +15,7 @@ require_relative '../lib/email_delivery_observer'
 require_relative '../lib/good_job_connection_pool_size'
 require_relative '../lib/identity_cors'
 require_relative '../lib/version_headers'
+require_relative '../lib/idp/constants'
 
 Bundler.require(*Rails.groups)
 
@@ -85,7 +86,7 @@ module Identity
     config.time_zone = 'UTC'
 
     config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '**', '*.{yml}')]
-    config.i18n.available_locales = %w[en es fr]
+    config.i18n.available_locales = Idp::Constants::AVAILABLE_LOCALES
     config.i18n.default_locale = :en
     config.action_controller.per_form_csrf_tokens = true
 

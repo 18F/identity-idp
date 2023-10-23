@@ -1,0 +1,25 @@
+<%= render(
+      'idv/shared/error',
+      type: :warning,
+      heading: t('idv.cancel.headings.prompt.start_over'),
+      current_step: @step_indicator_step,
+    ) do %>
+  <p>
+    <%= t('idv.cancel.description.gpo.start_over_new_address') %>
+  </p>
+  <p>
+      <%= t('idv.cancel.description.gpo.continue') %>
+  </p>
+
+  <div class="margin-y-5">
+    <%= render ButtonComponent.new(
+          action: ->(**tag_options, &block) do
+            button_to(idv_session_path(step: :gpo_verify), **tag_options, &block)
+          end,
+          method: :delete,
+          big: true,
+          wide: true,
+        ).with_content(t('idv.buttons.continue_plain')) %>
+  </div>
+<% end %>
+<%= render('idv/shared/back', step: 'gpo_verify', fallback_path: idv_verify_by_mail_enter_code_path) %>

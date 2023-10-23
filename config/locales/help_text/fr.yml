@@ -2,7 +2,7 @@
 fr:
   help_text:
     requested_attributes:
-      address: Adresse postale
+      address: Adresse
       all_emails: Adresses e-mail sur votre compte
       birthdate: Date de naissance
       email: Adresse e-mail

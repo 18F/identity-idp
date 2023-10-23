@@ -44,11 +44,9 @@ RSpec.describe Reporting::MonthlyActiveUsersCountReport do
       expect(monthly_active_users_count_table).to eq(expected_table)
 
       emailable_report = report.monthly_active_users_count_emailable_report
-      expect(emailable_report.email_options).to include(
-        title: 'February 2023 Active Users',
-      )
+      expect(emailable_report.title).to eq('February 2023 Active Users')
       expect(emailable_report.table).to eq monthly_active_users_count_table
-      expect(emailable_report.csv_name).to eq 'monthly_active_users_count'
+      expect(emailable_report.filename).to eq 'monthly_active_users_count'
     end
   end
 end

@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Idv::HybridHandoffController do
-  include IdvHelper
-
   let(:user) { create(:user) }
 
   let(:ab_test_args) do
@@ -124,7 +122,7 @@ RSpec.describe Idv::HybridHandoffController do
 
         get :show
 
-        expect(response).to redirect_to(idv_document_capture_url)
+        expect(response).to render_template :show
       end
 
       it 'redirects to link_sent in hybrid flow' do
@@ -132,7 +130,7 @@ RSpec.describe Idv::HybridHandoffController do
 
         get :show
 
-        expect(response).to redirect_to(idv_link_sent_url)
+        expect(response).to render_template :show
       end
     end
 

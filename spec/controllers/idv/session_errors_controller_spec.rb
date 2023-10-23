@@ -52,7 +52,9 @@ RSpec.describe Idv::SessionErrorsController do
         get action
       end
     end
+  end
 
+  shared_examples_for 'non-authenticated idv session errors controller action' do
     context 'the user is not authenticated and in doc capture flow' do
       before do
         user = create(:user, :fully_registered)
@@ -117,17 +119,17 @@ RSpec.describe Idv::SessionErrorsController do
     end
   end
 
-  let(:idv_session) { double }
   let(:verify_info_step_complete) { false }
   let(:user) { nil }
 
   before do
-    allow(idv_session).to receive(:verify_info_step_complete?).
-      and_return(verify_info_step_complete)
-    allow(idv_session).to receive(:address_verification_mechanism).and_return(nil)
-    allow(idv_session).to receive(:ssn).and_return(nil)
-    allow(controller).to receive(:idv_session).and_return(idv_session)
-    stub_sign_in(user) if user
+    if user
+      stub_sign_in(user)
+      controller.idv_session.resolution_successful = verify_info_step_complete
+      controller.idv_session.address_verification_mechanism = nil
+      controller.idv_session.ssn = nil
+    end
+
     stub_analytics
   end
 
@@ -145,6 +147,7 @@ RSpec.describe Idv::SessionErrorsController do
     subject(:response) { get action, params: params }
 
     it_behaves_like 'an idv session errors controller action'
+    it_behaves_like 'non-authenticated idv session errors controller action'
   end
 
   describe '#warning' do
@@ -155,6 +158,7 @@ RSpec.describe Idv::SessionErrorsController do
     subject(:response) { get :warning, params: params }
 
     it_behaves_like 'an idv session errors controller action'
+    it_behaves_like 'non-authenticated idv session errors controller action'
 
     context 'with rate limit attempts' do
       let(:user) { create(:user) }
@@ -206,6 +210,7 @@ RSpec.describe Idv::SessionErrorsController do
     subject(:response) { get action, params: params }
 
     it_behaves_like 'an idv session errors controller action'
+    it_behaves_like 'non-authenticated idv session errors controller action'
 
     describe 'try again URL' do
       let(:user) { create(:user) }
@@ -231,6 +236,7 @@ RSpec.describe Idv::SessionErrorsController do
     let(:template) { 'idv/session_errors/failure' }
 
     it_behaves_like 'an idv session errors controller action'
+    it_behaves_like 'non-authenticated idv session errors controller action'
 
     context 'while rate limited' do
       let(:user) { create(:user) }
@@ -285,7 +291,7 @@ RSpec.describe Idv::SessionErrorsController do
           rate_limit_type: :proof_ssn,
           target: Pii::Fingerprinter.fingerprint(ssn),
         ).increment_to_limited!
-        allow(idv_session).to receive(:ssn).and_return(ssn)
+        controller.idv_session.ssn = ssn
       end
 
       it 'assigns expiration time' do
@@ -312,6 +318,7 @@ RSpec.describe Idv::SessionErrorsController do
     let(:template) { 'idv/session_errors/rate_limited' }
 
     it_behaves_like 'an idv session errors controller action'
+    it_behaves_like 'non-authenticated idv session errors controller action'
 
     context 'while rate limited' do
       let(:user) { create(:user) }

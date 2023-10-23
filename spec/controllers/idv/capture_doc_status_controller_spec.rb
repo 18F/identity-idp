@@ -36,10 +36,9 @@ RSpec.describe Idv::CaptureDocStatusController do
 
   describe '#show' do
     let(:document_capture_session) { DocumentCaptureSession.create!(user: user) }
-    let(:idv_session) { { document_capture_session_uuid: document_capture_session.uuid } }
 
     before do
-      controller.user_session[:idv] = idv_session if user
+      subject.idv_session.document_capture_session_uuid = document_capture_session.uuid if user
     end
 
     context 'when unauthenticated' do
@@ -53,9 +52,8 @@ RSpec.describe Idv::CaptureDocStatusController do
     end
 
     context 'when session does not exist' do
-      let(:idv_session) { {} }
-
       it 'returns unauthorized' do
+        subject.idv_session.document_capture_session_uuid = nil
         get :show
 
         expect(response.status).to eq(401)
@@ -127,7 +125,7 @@ RSpec.describe Idv::CaptureDocStatusController do
         it 'assigns idv session values as having received attention result' do
           get :show
 
-          expect(controller.user_session[:idv][:had_barcode_attention_error]).to eq(true)
+          expect(subject.idv_session.had_barcode_attention_error).to eq(true)
         end
       end
 
@@ -145,13 +143,13 @@ RSpec.describe Idv::CaptureDocStatusController do
         it 'assigns idv session values as having received attention result' do
           get :show
 
-          expect(controller.user_session[:idv][:had_barcode_attention_error]).to eq(true)
+          expect(subject.idv_session.had_barcode_attention_error).to eq(true)
         end
       end
 
       context 'when user receives a second result that is not the attention result' do
         before do
-          idv_session[:had_barcode_attention_error] = true
+          subject.idv_session.had_barcode_attention_error = true
           document_capture_session.update(ocr_confirmation_pending: false)
 
           document_capture_session.store_result_from_response(doc_auth_response)
@@ -160,17 +158,15 @@ RSpec.describe Idv::CaptureDocStatusController do
         it 'assigns idv session values as not having received attention result' do
           get :show
 
-          expect(controller.user_session[:idv][:had_barcode_attention_error]).to eq(false)
+          expect(subject.idv_session.had_barcode_attention_error).to eq(false)
         end
       end
 
       context 'when loaded result expires but session was already marked with attention result' do
         let(:result) { nil }
-        let(:idv_session) do
-          {
-            document_capture_session_uuid: document_capture_session.uuid,
-            had_barcode_attention_error: true,
-          }
+
+        before do
+          subject.idv_session.had_barcode_attention_error = true
         end
 
         context 'when barcode attention result is pending confirmation' do
@@ -187,7 +183,7 @@ RSpec.describe Idv::CaptureDocStatusController do
           it 'assigns idv session values as having received attention result' do
             get :show
 
-            expect(controller.user_session[:idv][:had_barcode_attention_error]).to eq(true)
+            expect(subject.idv_session.had_barcode_attention_error).to eq(true)
           end
         end
 
@@ -205,7 +201,7 @@ RSpec.describe Idv::CaptureDocStatusController do
           it 'assigns idv session values as having received attention result' do
             get :show
 
-            expect(controller.user_session[:idv][:had_barcode_attention_error]).to eq(true)
+            expect(subject.idv_session.had_barcode_attention_error).to eq(true)
           end
         end
       end
