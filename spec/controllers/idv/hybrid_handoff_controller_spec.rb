@@ -117,7 +117,7 @@ RSpec.describe Idv::HybridHandoffController do
     end
 
     context 'hybrid_handoff already visited' do
-      it 'redirects to document_capture in standard flow' do
+      it 'shows hybrid_handoff' do
         subject.idv_session.flow_path = 'standard'
 
         get :show
@@ -125,7 +125,7 @@ RSpec.describe Idv::HybridHandoffController do
         expect(response).to render_template :show
       end
 
-      it 'redirects to link_sent in hybrid flow' do
+      it 'shows hybrid_handoff' do
         subject.idv_session.flow_path = 'hybrid'
 
         get :show

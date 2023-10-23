@@ -214,28 +214,6 @@ module Idv
       idv_session.flow_path = nil
     end
 
-    def confirm_hybrid_handoff_needed
-      if idv_session.skip_hybrid_handoff?
-        # We previously skipped hybrid handoff. Keep doing that.
-        idv_session.flow_path = 'standard'
-      end
-
-      if !FeatureManagement.idv_allow_hybrid_flow?
-        # When hybrid flow is unavailable, skip it.
-        # But don't store that we skipped it in idv_session, in case it is back to
-        # available when the user tries to redo document capture.
-        idv_session.flow_path = 'standard'
-      end
-
-      return if idv_session.flow_path.blank?
-
-      if idv_session.flow_path == 'standard'
-        redirect_to idv_document_capture_url
-      elsif idv_session.flow_path == 'hybrid'
-        redirect_to idv_link_sent_url
-      end
-    end
-
     def formatted_destination_phone
       raw_phone = params.require(:doc_auth).permit(:phone)
       PhoneFormatter.format(raw_phone, country_code: 'US')
