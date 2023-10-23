@@ -29,9 +29,10 @@ module IdvStepConcern
   def confirm_step_allowed
     idv_flow_policy = Idv::FlowPolicy.new(idv_session: idv_session, user: current_user)
 
-    return if idv_flow_policy.path_allowed?(path: request.path)
+    return if idv_flow_policy.path_allowed?(controller: self.class.name.underscore)
 
-    redirect_to idv_flow_policy.path_for_latest_step
+    step_info = idv_flow_policy.latest_step
+    redirect_to url_for(controller: step_info.controller, action: step_info.action, only_path: true)
   end
 
   def check_for_mail_only_outage
