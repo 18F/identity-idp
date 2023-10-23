@@ -36,8 +36,13 @@ export const getSteps = (
   flowPath,
 ) => {
   const { t } = useI18n();
+
+  // getReviewStep needs to be called even if we're not going to use it because it contains
+  // a hook (in a context). Conditionally calling a hook causes problems in React, so
+  // always calling getReviewStep is necessary
   const reviewStep: FormStep = getReviewStep(submissionError);
 
+  // When there's no submission error, the only step is the 'documents' step where we upload images.
   if (!submissionError) {
     return [
       {
@@ -48,6 +53,7 @@ export const getSteps = (
     ];
   }
 
+  // Change the location step UI based on the current full address entry setting
   const locationStep: FormStep = inPersonFullAddressEntryEnabled
     ? {
         name: 'location',
@@ -71,8 +77,14 @@ export const getSteps = (
         locationStep,
       ];
 
+  // Unless the inPersonURL is missing this will be ['review', 'prepare', 'location']
   const steps: FormStep[] = [reviewStep].concat(inPersonProofingSteps);
+  if (flowPath !== 'hybrid') {
+    return steps;
+  }
 
+  // When the user is in the hybrid flowPath, then they need to get the switch_back screen
+  // after all of the other steps.
   if (flowPath === 'hybrid') {
     return steps.concat({
       name: 'switch_back',
@@ -80,5 +92,4 @@ export const getSteps = (
       title: t('in_person_proofing.headings.switch_back'),
     });
   }
-  return steps;
 };
