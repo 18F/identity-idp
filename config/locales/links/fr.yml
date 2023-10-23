@@ -21,7 +21,7 @@ fr:
     privacy_policy: Confidentialité et sécurité
     resend: Renvoyer
     reverify: Veuillez vérifier votre identité de nouveau.
-    sign_in: Connexion
+    sign_in: Se connecter
     sign_out: Déconnexion
     two_factor_authentication:
       send_another_code: Envoyer un autre code
