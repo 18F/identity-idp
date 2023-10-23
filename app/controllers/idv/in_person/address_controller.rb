@@ -66,12 +66,13 @@ module Idv
       end
 
       def confirm_in_person_state_id_step_complete
-        return if pii_from_user && pii_from_user.has_key?(:identity_doc_address1)
+        return if pii_from_user&.has_key?(:identity_doc_address1)
         redirect_to idv_in_person_step_url(step: :state_id)
       end
 
       def confirm_in_person_address_step_needed
-        return if pii_from_user && pii_from_user[:same_address_as_id] == 'false' && !pii_from_user.has_key?(:address1)
+        return if pii_from_user && pii_from_user[:same_address_as_id] == 'false' &&
+                  !pii_from_user.has_key?(:address1)
         redirect_to idv_in_person_ssn_url
       end
     end
