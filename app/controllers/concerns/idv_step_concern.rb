@@ -144,6 +144,7 @@ module IdvStepConcern
   end
 
   def path_for_latest_step
-    flow_policy.path_for_latest_step
+    step_info = flow_policy.info_for_latest_step
+    url_for(controller: step_info.controller, action: step_info.action, only_path: true)
   end
 end
