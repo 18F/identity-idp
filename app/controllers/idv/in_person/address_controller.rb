@@ -3,7 +3,7 @@ module Idv
     class AddressController < ApplicationController
       include IdvStepConcern
 
-      before_action :render_404_if_not_in_person_residential_address_controller_enabled
+      before_action :render_404_if_in_person_residential_address_controller_enabled_not_set
 
       def show
         analytics.idv_in_person_proofing_address_visited(**analytics_arguments)
@@ -58,7 +58,7 @@ module Idv
         }
       end
 
-      def render_404_if_not_in_person_residential_address_controller_enabled
+      def render_404_if_in_person_residential_address_controller_enabled_not_set
         render_not_found unless
             IdentityConfig.store.in_person_residential_address_controller_enabled
       end

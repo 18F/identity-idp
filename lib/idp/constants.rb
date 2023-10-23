@@ -102,6 +102,24 @@ module Idp
       same_address_as_id: nil,
     }.freeze
 
+    MOCK_IPP_APPLICANT = {
+      first_name: 'FAKEY',
+      last_name: 'MCFAKERSON',
+      dob: '1938-10-06',
+      identity_doc_address1: '123 Way St',
+      identity_doc_address2: '2nd Address Line',
+      identity_doc_city: 'Best City',
+      identity_doc_zipcode: '12345',
+      state_id_jurisdiction: 'Virginia',
+      identity_doc_address_state: 'VA',
+      state_id_number: '1111111111111',
+      same_address_as_id: 'true',
+    }.freeze
+
+    MOCK_IPP_APPLICANT_SAME_ADDRESS_AS_ID_FALSE = MOCK_IPP_APPLICANT.merge(
+      same_address_as_id: 'false',
+    ).freeze
+
     MOCK_IDV_APPLICANT_WITH_SSN = MOCK_IDV_APPLICANT.merge(ssn: '900-66-1234').freeze
 
     MOCK_IDV_APPLICANT_STATE_ID_ADDRESS = MOCK_IDV_APPLICANT_WITH_SSN.merge(

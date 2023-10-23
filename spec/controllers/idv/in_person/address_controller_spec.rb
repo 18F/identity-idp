@@ -3,19 +3,7 @@ require 'rails_helper'
 RSpec.describe Idv::InPerson::AddressController do
   include InPersonHelper
   let(:in_person_residential_address_controller_enabled) { true }
-  let(:pii_from_user) do
-    { first_name: '',
-      last_name: '',
-      dob: '',
-      identity_doc_address1: '',
-      identity_doc_address2: '',
-      identity_doc_city: '',
-      identity_doc_zipcode: '',
-      state_id_jurisdiction: '',
-      identity_doc_address_state: '',
-      state_id_number: '',
-      same_address_as_id: 'false' }
-  end
+  let(:pii_from_user) { Idp::Constants::MOCK_IPP_APPLICANT_SAME_ADDRESS_AS_ID_FALSE }
   let(:user) { build(:user) }
   let(:flow_session) do
     { pii_from_user: pii_from_user }
@@ -36,7 +24,7 @@ RSpec.describe Idv::InPerson::AddressController do
   end
 
   describe 'before_actions' do
-    context '#render_404_if_not_in_person_residential_address_controller_enabled' do
+    context '#render_404_if_in_person_residential_address_controller_enabled_not_set' do
       context 'flag not set' do
         before do
           allow(IdentityConfig.store).to receive(:in_person_residential_address_controller_enabled).
