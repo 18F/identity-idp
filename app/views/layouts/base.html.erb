@@ -64,7 +64,6 @@
 </head>
 
 <body class="site <%= yield(:background_cls) %>">
-  <%= link_to t('shared.skip_link'), '#main-content', class: 'usa-skipnav' %>
   <div class="usa-overlay"></div>
   <% if content_for?(:mobile_nav) %>
     <div class="usa-header">
