@@ -185,9 +185,8 @@ es:
         habilitar JavaScript para continuar con este proceso.'
     gpo:
       alert_info: 'Enviamos una carta con su código de verificación a:'
-      alert_spam_warning_html: No puede solicitar más cartas ahora mismo.
-        Su solicitud de carta anterior la hizo el
-        <strong>%{date_letter_was_sent}</strong>.
+      alert_spam_warning_html: No puede solicitar más cartas ahora mismo. Su solicitud
+        de carta anterior la hizo el <strong>%{date_letter_was_sent}</strong>.
       change_to_verification_code_html: 'El <strong>código único</strong> de su carta
         ahora se conoce como <strong>código de verificación</strong>.'
       clear_and_start_over: Borrar su información y empezar de nuevo
