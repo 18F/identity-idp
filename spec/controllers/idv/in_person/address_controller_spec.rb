@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Idv::InPerson::AddressController do
   include InPersonHelper
   let(:in_person_residential_address_controller_enabled) { true }
-  let(:pii_from_user) { Idp::Constants::MOCK_IPP_APPLICANT_SAME_ADDRESS_AS_ID_FALSE }
+  let(:pii_from_user) { Idp::Constants::MOCK_IPP_APPLICANT_SAME_ADDRESS_AS_ID_FALSE.dup }
   let(:user) { build(:user) }
   let(:flow_session) do
     { pii_from_user: pii_from_user }
@@ -46,6 +46,31 @@ RSpec.describe Idv::InPerson::AddressController do
           get :show
 
           expect(response).to be_not_found
+        end
+      end
+    end
+
+    context '#confirm_in_person_state_id_step_complete' do
+      it 'redirects to state id page if not complete' do
+        flow_session[:pii_from_user].delete(:identity_doc_address1)
+        get :show
+
+        expect(response).to redirect_to idv_in_person_step_url(step: :state_id)
+      end
+    end
+
+    context '#confirm_in_person_address_step_needed' do
+      context 'step is not needed' do
+        it 'redirects to ssn page when same address as id is true' do
+          flow_session[:pii_from_user][:same_address_as_id] = 'true'
+          get :show
+          expect(response).to redirect_to idv_in_person_ssn_url
+        end
+
+        it 'redirects to ssn page when address1 present' do
+          flow_session[:pii_from_user][:address1] = '123 Main St'
+          get :show
+          expect(response).to redirect_to idv_in_person_ssn_url
         end
       end
     end
