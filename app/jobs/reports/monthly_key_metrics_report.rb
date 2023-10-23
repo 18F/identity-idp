@@ -39,8 +39,8 @@ module Reports
     def preamble
       <<~HTML.html_safe
         <p>
-          For more information on how each of these metrics are calculated,
-          take a look at our <a href="articles/monthly-key-metrics-explainer.html">
+          For more information on how each of these metrics are calculated, take a look at our
+          <a href="https://handbook.login.gov/articles/monthly-key-metrics-explainer.html">
           Monthly Key Metrics Report Explainer document</a>.
         </p>
       HTML
