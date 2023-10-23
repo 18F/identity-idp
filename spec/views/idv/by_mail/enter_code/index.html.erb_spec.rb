@@ -13,6 +13,8 @@ RSpec.describe 'idv/by_mail/enter_code/index.html.erb' do
 
   let(:user_did_not_receive_letter) { false }
 
+  let(:last_date_letter_was_sent) { 2.days.ago }
+
   before do
     allow(view).to receive(:step_indicator_steps).and_return({})
 
@@ -24,6 +26,7 @@ RSpec.describe 'idv/by_mail/enter_code/index.html.erb' do
 
     @can_request_another_letter = can_request_another_letter
     @user_did_not_receive_letter = user_did_not_receive_letter
+    @last_date_letter_was_sent = last_date_letter_was_sent
 
     render
   end
