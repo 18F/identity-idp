@@ -73,6 +73,7 @@ module Reports
       emails = [IdentityConfig.store.team_agnes_email]
       if report_date.day == 1
         emails << IdentityConfig.store.team_all_feds_email
+        emails << IdentityConfig.store.team_all_contractors_email
       end
       emails
     end
