@@ -37,7 +37,7 @@ module Reports
     # Explanatory text to go before the report in the email
     # @return [String]
     def preamble
-      <<~HTML.html_safe
+      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
         <p>
           For more information on how each of these metrics are calculated, take a look at our
           <a href="https://handbook.login.gov/articles/monthly-key-metrics-explainer.html">

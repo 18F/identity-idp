@@ -109,7 +109,7 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
   end
 
   describe '#preamble' do
-    subject(:preamble)  { report.preamble }
+    subject(:preamble) { report.preamble }
 
     it 'has a preamble that is valid HTML' do
       expect(preamble).to be_html_safe
