@@ -222,36 +222,6 @@ RSpec.describe Idv::EnterPasswordController do
       end
     end
 
-    context 'user has not requested too much mail' do
-      before do
-        idv_session.address_verification_mechanism = 'gpo'
-        gpo_mail_service = instance_double(Idv::GpoMail)
-        allow(Idv::GpoMail).to receive(:new).with(user).and_return(gpo_mail_service)
-        allow(gpo_mail_service).to receive(:mail_spammed?).and_return(false)
-      end
-
-      it 'displays a success message' do
-        get :new
-
-        expect(flash.now[:error]).to be_nil
-      end
-    end
-
-    context 'user has requested too much mail' do
-      before do
-        idv_session.address_verification_mechanism = 'gpo'
-        gpo_mail_service = instance_double(Idv::GpoMail)
-        allow(Idv::GpoMail).to receive(:new).with(user).and_return(gpo_mail_service)
-        allow(gpo_mail_service).to receive(:mail_spammed?).and_return(true)
-      end
-
-      it 'displays a helpful error message' do
-        get :new
-
-        expect(flash.now[:error]).to eq t('idv.errors.mail_limit_reached')
-      end
-    end
-
     it 'redirects to the verify info controller if the user has not completed it' do
       controller.idv_session.resolution_successful = nil
 
