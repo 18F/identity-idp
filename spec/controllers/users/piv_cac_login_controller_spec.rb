@@ -125,8 +125,6 @@ RSpec.describe Users::PivCacLoginController do
             expect(controller.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).
               to eq false
 
-            expect(controller.user_session[:authn_at]).to_not be nil
-            expect(controller.user_session[:authn_at].class).to eq ActiveSupport::TimeWithZone
             expect(controller.auth_methods_session.auth_events).to match(
               [
                 {

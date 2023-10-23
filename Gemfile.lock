@@ -702,6 +702,7 @@ GEM
       nokogiri (~> 1.8)
     yard (0.9.34)
     zeitwerk (2.6.12)
+    zlib (3.0.0)
     zonebie (0.6.1)
     zxcvbn (0.1.9)
 
@@ -825,6 +826,7 @@ DEPENDENCIES
   xmldsig (~> 0.6)
   xmlenc (~> 0.7, >= 0.7.1)
   yard
+  zlib
   zonebie
   zxcvbn (= 0.1.9)
 

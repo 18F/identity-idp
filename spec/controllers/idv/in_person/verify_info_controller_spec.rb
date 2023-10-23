@@ -149,7 +149,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
         allow(user).to receive(:establishing_in_person_enrollment).and_return(nil)
       end
 
-      it 'disables double address verification for the user' do
+      it 'indicates to the IDV agent that an IPP enrollment is not in progress' do
         expect_any_instance_of(Idv::Agent).to receive(:proof_resolution).
           with(
             kind_of(DocumentCaptureSession),
@@ -158,7 +158,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
             threatmetrix_session_id: nil,
             user_id: anything,
             request_ip: request.remote_ip,
-            double_address_verification: false,
+            ipp_enrollment_in_progress: false,
           )
 
         put :update
@@ -166,7 +166,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
     end
 
     context 'a user does have an establishing in person enrollment associated with them' do
-      it 'indicates to the IDV agent that double_address_verification is enabled' do
+      it 'indicates to the IDV agent that ipp_enrollment_in_progress is enabled' do
         expect_any_instance_of(Idv::Agent).to receive(:proof_resolution).with(
           kind_of(DocumentCaptureSession),
           should_proof_state_id: anything,
@@ -174,7 +174,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
           threatmetrix_session_id: anything,
           user_id: anything,
           request_ip: anything,
-          double_address_verification: true,
+          ipp_enrollment_in_progress: true,
         )
 
         put :update
@@ -197,7 +197,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
           threatmetrix_session_id: nil,
           user_id: anything,
           request_ip: request.remote_ip,
-          double_address_verification: true,
+          ipp_enrollment_in_progress: true,
         )
 
       put :update

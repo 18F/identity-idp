@@ -27,8 +27,15 @@ RSpec.describe ReauthenticationRequiredConcern, type: :controller do
     end
 
     context 'authenticated outside the authn window' do
+      let(:travel_time) { (IdentityConfig.store.reauthn_window + 1).seconds }
+
       before do
-        controller.user_session[:authn_at] -= IdentityConfig.store.reauthn_window
+        controller.auth_methods_session.authenticate!(TwoFactorAuthenticatable::AuthMethod::TOTP)
+        travel travel_time
+      end
+
+      around do |example|
+        freeze_time { example.run }
       end
 
       it 'redirects to 2FA options' do
@@ -44,12 +51,11 @@ RSpec.describe ReauthenticationRequiredConcern, type: :controller do
       end
 
       it 'records analytics' do
-        controller.user_session[:auth_method] = TwoFactorAuthenticatable::AuthMethod::TOTP
         stub_analytics
         expect(@analytics).to receive(:track_event).with(
           'User 2FA Reauthentication Required',
-          authenticated_at: controller.user_session[:authn_at],
-          auth_method: 'totp',
+          authenticated_at: travel_time.ago,
+          auth_method: TwoFactorAuthenticatable::AuthMethod::TOTP,
         )
         get :index
       end

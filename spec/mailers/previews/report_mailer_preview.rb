@@ -9,72 +9,16 @@ class ReportMailerPreview < ActionMailer::Preview
   end
 
   def monthly_key_metrics_report
+    monthly_key_metrics_report = Reports::MonthlyKeyMetricsReport.new(Time.zone.today)
+
+    stub_cloudwatch_client(monthly_key_metrics_report.monthly_proofing_report)
+
     ReportMailer.tables_report(
       email: 'test@example.com',
       subject: 'Example Key Metrics Report',
       message: 'Key Metrics Report February 2021',
       attachment_format: :xlsx,
-      reports: [
-        Reporting::EmailableReport.new(
-          title: 'February 2021 Active Users',
-          table: [
-            ['Monthly Active Users', 'Value'],
-            ['IAL1', 1],
-            ['IDV', 1],
-            ['Total', 2],
-          ],
-        ),
-        Reporting::EmailableReport.new(
-          title: 'Total user count (all-time)',
-          table: [
-            ['All-time user count'],
-            [2289411],
-          ],
-        ),
-        Reporting::EmailableReport.new(
-          title: 'Account deletion rate (last 30 days)',
-          float_as_percent: true,
-          precision: 4,
-          table: [
-            ['Deleted Users',	'Total Users', 'Deletion Rate'],
-            [137, 7434, 0.18429222],
-          ],
-        ),
-        Reporting::EmailableReport.new(
-          title: 'IDV app reuse rate Feb-2021',
-          float_as_percent: true,
-          precision: 4,
-          table: [
-            ['Num. SPs', 'Num. users', 'Percentage'],
-            [2, 207422, 0.105164],
-            [3, 6700, 0.003397],
-            [4, 254, 0.000129],
-            [5, 26, 0.000013],
-            [6, 1, 0.000001],
-            ['Total (all >1)', 214403, 0.108703],
-          ],
-        ),
-        Reporting::EmailableReport.new(
-          title: 'Total proofed identities',
-          table: [
-            ['Total proofed identities (Feb-2021)'],
-            [1972368],
-          ],
-        ),
-        Reporting::EmailableReport.new(
-          title: 'Document upload proofing rates',
-          float_as_percent: true,
-          precision: 4,
-          table: [
-            ['metric', 'num_users', 'percent'],
-            ['image_submitted', 5, 5.0 / 5],
-            ['verified', 2, 2.0 / 5],
-            ['not_verified_started_gpo', 1, 1.0 / 5],
-            ['not_verified_started_in_person', 1, 1.0 / 5],
-            ['not_verified_started_fraud_review', 1, 1.0 / 5],
-          ],
-        ),
-      ],
+      reports: monthly_key_metrics_report.reports,
     )
   end
 
@@ -110,5 +54,21 @@ class ReportMailerPreview < ActionMailer::Preview
         ),
       ],
     )
+  end
+
+  private
+
+  class FakeCloudwatchClient
+    def fetch(**)
+      []
+    end
+  end
+
+  def stub_cloudwatch_client(report)
+    class << report
+      def cloudwatch_client
+        FakeCloudwatchClient.new
+      end
+    end
   end
 end
