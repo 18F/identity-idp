@@ -74,8 +74,9 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
 
   const steps = getSteps(submissionError, inPersonURL, inPersonFullAddressEntryEnabled, flowPath);
 
+  const inPersonProofingStepNames = ['location', 'prepare', 'switch_back'];
   const stepIndicatorPath =
-    stepName && ['location', 'prepare', 'switch_back'].includes(stepName)
+    stepName && inPersonProofingStepNames.includes(stepName)
       ? VerifyFlowPath.IN_PERSON
       : VerifyFlowPath.DEFAULT;
 
