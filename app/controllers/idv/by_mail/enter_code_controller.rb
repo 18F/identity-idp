@@ -33,9 +33,6 @@ module Idv
           !gpo_mail.mail_spammed? &&
           !gpo_mail.profile_too_old?
 
-        puts "gpo_mail.mail_spammed?: #{gpo_mail.mail_spammed?}"
-        puts "gpo_mail.profile_too_old?: #{gpo_mail.profile_too_old?}"
-
         if pii_locked?
           redirect_to capture_password_url
         else
