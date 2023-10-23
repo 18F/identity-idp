@@ -66,7 +66,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
         expect(response).to render_template('idv/by_mail/enter_code/index')
       end
 
-      it 'sets @should_prompt_user_to_request_another_letter to true' do
+      it 'sets @can_request_another_letter to true' do
         action
         expect(assigns(:can_request_another_letter)).to eql(true)
       end
@@ -81,7 +81,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
 
       context 'but that profile is > 30 days old' do
         let(:profile_created_at) { 31.days.ago }
-        it 'sets @should_prompt_user_to_request_another_letter to false' do
+        it 'sets @can_request_another_letter to false' do
           action
           expect(assigns(:can_request_another_letter)).to eql(false)
         end

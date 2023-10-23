@@ -9,7 +9,7 @@ RSpec.describe 'idv/by_mail/enter_code/index.html.erb' do
     {}
   end
 
-  let(:should_prompt_user_to_request_another_letter) { true }
+  let(:can_request_another_letter) { true }
 
   let(:user_did_not_receive_letter) { false }
 
@@ -22,7 +22,7 @@ RSpec.describe 'idv/by_mail/enter_code/index.html.erb' do
       otp: '1234',
     )
 
-    @should_prompt_user_to_request_another_letter = should_prompt_user_to_request_another_letter
+    @can_request_another_letter = can_request_another_letter
     @user_did_not_receive_letter = user_did_not_receive_letter
 
     render
@@ -35,7 +35,7 @@ RSpec.describe 'idv/by_mail/enter_code/index.html.erb' do
   end
 
   context 'user is NOT allowed to request another GPO letter' do
-    let(:should_prompt_user_to_request_another_letter) { false }
+    let(:can_request_another_letter) { false }
     it 'does not include the send another letter link' do
       expect(rendered).not_to have_link(t('idv.messages.gpo.resend'), href: idv_request_letter_path)
     end
@@ -84,7 +84,7 @@ RSpec.describe 'idv/by_mail/enter_code/index.html.erb' do
     end
 
     context 'user is NOT allowed to request another GPO letter' do
-      let(:should_prompt_user_to_request_another_letter) { false }
+      let(:can_request_another_letter) { false }
 
       it 'still has a special intro' do
         expect(rendered).to have_content(
