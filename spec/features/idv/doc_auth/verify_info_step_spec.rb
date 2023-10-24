@@ -111,6 +111,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
     click_idv_continue
 
     expect(page).to have_current_path(idv_session_errors_warning_path)
+    expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
     click_on t('idv.failure.button.warning')
 
     expect(page).to have_current_path(idv_verify_info_path)
@@ -173,6 +174,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
 
       click_idv_continue
       expect(page).to have_current_path(idv_session_errors_failure_path)
+      expect(page).not_to have_css('.step-indicator__step--current', text: text, wait: 5)
       expect(fake_analytics).to have_logged_event(
         'Rate Limit Reached',
         limiter_type: :idv_resolution,
@@ -274,7 +276,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
         trace_id: anything,
         threatmetrix_session_id: anything,
         request_ip: kind_of(String),
-        double_address_verification: false,
+        ipp_enrollment_in_progress: false,
       }
     end
 

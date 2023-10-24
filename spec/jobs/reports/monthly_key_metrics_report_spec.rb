@@ -5,8 +5,6 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
   subject(:report) { Reports::MonthlyKeyMetricsReport.new(report_date) }
 
   let(:name) { 'monthly-key-metrics-report' }
-  let(:agnes_email) { 'fake@agnes_email.com' }
-  let(:feds_email) { 'fake@feds_email.com' }
   let(:s3_report_bucket_prefix) { 'reports-bucket' }
   let(:report_folder) do
     'int/monthly-key-metrics-report/2021/2021-03-02.monthly-key-metrics-report'
@@ -42,11 +40,6 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
   end
 
   before do
-    allow(IdentityConfig.store).to receive(:team_agnes_email).
-      and_return(agnes_email)
-    allow(IdentityConfig.store).to receive(:team_all_feds_email).
-      and_return(feds_email)
-
     allow(Identity::Hostdata).to receive(:env).and_return('int')
     allow(Identity::Hostdata).to receive(:aws_account_id).and_return('1234')
     allow(Identity::Hostdata).to receive(:aws_region).and_return('us-west-1')
@@ -59,32 +52,38 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
       },
     }
 
-    allow(subject.monthly_proofing_report).to receive(:proofing_report).
+    allow(report.monthly_proofing_report).to receive(:proofing_report).
       and_return(mock_proofing_report_data)
   end
 
   it 'sends out a report to the email listed with one total user' do
     expect(ReportMailer).to receive(:tables_report).once.with(
-      email: [agnes_email],
+      email: [IdentityConfig.store.team_agnes_email],
       subject: 'Monthly Key Metrics Report - 2021-03-02',
       reports: anything,
+      message: report.preamble,
       attachment_format: :xlsx,
     ).and_call_original
 
-    subject.perform(report_date)
+    report.perform(report_date)
   end
 
   it 'sends out a report to the emails listed with two users' do
     first_of_month_date = report_date - 1
 
     expect(ReportMailer).to receive(:tables_report).once.with(
-      email: [agnes_email, feds_email],
+      email: [
+        IdentityConfig.store.team_agnes_email,
+        IdentityConfig.store.team_all_feds_email,
+        IdentityConfig.store.team_all_contractors_email,
+      ],
       subject: 'Monthly Key Metrics Report - 2021-03-01',
       reports: anything,
+      message: report.preamble,
       attachment_format: :xlsx,
     ).and_call_original
 
-    subject.perform(first_of_month_date)
+    report.perform(first_of_month_date)
   end
 
   it 'does not send out a report with no emails' do
@@ -95,7 +94,7 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
 
     expect(ReportMailer).not_to receive(:tables_report)
 
-    subject.perform(report_date)
+    report.perform(report_date)
   end
 
   it 'uploads a file to S3 based on the report date' do
@@ -106,6 +105,16 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
       ).exactly(1).time.and_call_original
     end
 
-    subject.perform(report_date)
+    report.perform(report_date)
+  end
+
+  describe '#preamble' do
+    subject(:preamble) { report.preamble }
+
+    it 'has a preamble that is valid HTML' do
+      expect(preamble).to be_html_safe
+
+      expect { Nokogiri::XML(preamble) { |config| config.strict } }.to_not raise_error
+    end
   end
 end

@@ -4,6 +4,7 @@ module Idv
     include DocumentCaptureConcern
     include IdvStepConcern
     include StepIndicatorConcern
+    include PhoneQuestionAbTestConcern
 
     before_action :confirm_not_rate_limited, except: [:update]
     before_action :confirm_hybrid_handoff_complete
@@ -47,6 +48,7 @@ module Idv
         failure_to_proof_url: return_to_sp_failure_to_proof_url(step: 'document_capture'),
       }.merge(
         acuant_sdk_upgrade_a_b_testing_variables,
+        phone_question_ab_test_analytics_bucket,
       )
     end
 

@@ -10,7 +10,11 @@
 <% end %>
 
 <%= render PageHeadingComponent.new do %>
-  <%= t('doc_auth.headings.hybrid_handoff') %>
+  <% if @phone_question_ab_test_bucket == :show_phone_question %>
+    <%= t('doc_auth.headings.upload_from_phone') %>
+  <% else %>
+    <%= t('doc_auth.headings.hybrid_handoff') %>
+  <% end %>
 <% end %>
 
 <p>
@@ -31,7 +35,11 @@
       <%= t('doc_auth.info.tag') %>
     </div>
     <h2 class="margin-y-105">
-      <%= t('doc_auth.headings.upload_from_phone') %>
+    <% if @phone_question_ab_test_bucket == :show_phone_question %>
+        <%= t('doc_auth.headings.switch_to_phone') %>
+      <% else %>
+        <%= t('doc_auth.headings.upload_from_phone') %>
+      <% end %>
     </h2>
     <%= t('doc_auth.info.upload_from_phone') %>
     <%= simple_form_for(

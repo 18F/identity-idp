@@ -55,7 +55,6 @@ en:
         start_over: Start over verifying your identity
     errors:
       incorrect_password: The password you entered is not correct.
-      mail_limit_reached: You have requested too much mail in the last month.
       pattern_mismatch:
         ssn: 'Enter a nine-digit Social Security number'
         zipcode: Enter a 5 or 9 digit ZIP Code

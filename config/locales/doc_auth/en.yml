@@ -149,6 +149,7 @@ en:
       secure_account: Secure your account
       ssn: Enter your Social Security number
       ssn_update: Update your Social Security number
+      switch_to_phone: Switch to your phone
       text_message: We sent a message to your phone
       upload_from_computer: Continue on this computer
       upload_from_phone: Use your phone to take photos
