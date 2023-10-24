@@ -149,13 +149,11 @@ module TwoFactorAuthenticatableMethods
   end
 
   def handle_valid_verification_for_confirmation_context(auth_method:)
-    user_session[:auth_method] = auth_method
     mark_user_session_authenticated(auth_method:, authentication_type: :valid_2fa_confirmation)
     reset_second_factor_attempts_count
   end
 
   def handle_valid_verification_for_authentication_context(auth_method:)
-    user_session[:auth_method] = auth_method
     mark_user_session_authenticated(auth_method:, authentication_type: :valid_2fa)
     create_user_event(:sign_in_after_2fa)
 
@@ -167,8 +165,6 @@ module TwoFactorAuthenticatableMethods
   end
 
   def mark_user_session_authenticated(auth_method:, authentication_type:)
-    user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION] = false
-    user_session[:authn_at] = Time.zone.now
     auth_methods_session.authenticate!(auth_method)
     mark_user_session_authenticated_analytics(authentication_type)
   end

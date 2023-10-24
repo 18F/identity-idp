@@ -43,9 +43,6 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
 
           post :create, params: payload
 
-          expect(subject.user_session[:auth_method]).to eq(
-            TwoFactorAuthenticatable::AuthMethod::BACKUP_CODE,
-          )
           expect(subject.user_session[:auth_events]).to eq(
             [
               auth_method: TwoFactorAuthenticatable::AuthMethod::BACKUP_CODE,
@@ -146,7 +143,6 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
 
         expect(response).to render_template(:show)
         expect(flash[:error]).to eq t('two_factor_authentication.invalid_backup_code')
-        expect(subject.user_session[:auth_method]).to eq nil
         expect(subject.user_session[:auth_events]).to eq nil
         expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq true
       end

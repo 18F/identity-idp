@@ -161,9 +161,6 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
           freeze_time do
             patch :confirm, params: params
 
-            expect(subject.user_session[:auth_method]).to eq(
-              TwoFactorAuthenticatable::AuthMethod::WEBAUTHN,
-            )
             expect(subject.user_session[:auth_events]).to eq(
               [
                 auth_method: TwoFactorAuthenticatable::AuthMethod::WEBAUTHN,
@@ -200,9 +197,6 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
 
             freeze_time do
               patch :confirm, params: params
-              expect(subject.user_session[:auth_method]).to eq(
-                TwoFactorAuthenticatable::AuthMethod::WEBAUTHN_PLATFORM,
-              )
               expect(subject.user_session[:auth_events]).to eq(
                 [
                   auth_method: TwoFactorAuthenticatable::AuthMethod::WEBAUTHN_PLATFORM,
@@ -267,7 +261,6 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
         it 'redirects to webauthn show page' do
           patch :confirm, params: params
           expect(response).to redirect_to login_two_factor_webauthn_url(platform: true)
-          expect(subject.user_session[:auth_method]).to eq nil
           expect(subject.user_session[:auth_events]).to eq nil
           expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq true
         end

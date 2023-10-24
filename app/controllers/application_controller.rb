@@ -7,6 +7,7 @@ class ApplicationController < ActionController::Base
   include VerifySpAttributesConcern
   include EffectiveUser
   include SecondMfaReminderConcern
+  include TwoFactorAuthenticatableMethods
 
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
@@ -380,7 +381,7 @@ class ApplicationController < ActionController::Base
     @service_provider_mfa_policy ||= ServiceProviderMfaPolicy.new(
       user: current_user,
       service_provider: sp_from_sp_session,
-      auth_method: user_session[:auth_method],
+      auth_methods_session:,
       aal_level_requested: sp_session[:aal_level_requested],
       piv_cac_requested: sp_session[:piv_cac_requested],
       phishing_resistant_requested: sp_session[:phishing_resistant_requested],

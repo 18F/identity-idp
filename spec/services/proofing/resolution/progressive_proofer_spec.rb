@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe Proofing::Resolution::ProgressiveProofer do
   let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS }
   let(:should_proof_state_id) { true }
+  let(:ipp_enrollment_in_progress) { true }
   let(:double_address_verification) { true }
   let(:request_ip) { Faker::Internet.ip_v4_address }
   let(:threatmetrix_session_id) { SecureRandom.uuid }
@@ -39,6 +40,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
     subject(:proof) do
       instance.proof(
         applicant_pii: applicant_pii,
+        ipp_enrollment_in_progress: ipp_enrollment_in_progress,
         double_address_verification: double_address_verification,
         request_ip: request_ip,
         should_proof_state_id: should_proof_state_id,
@@ -142,6 +144,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         result = subject
 
         expect(result.same_address_as_id).to eq('true')
+        expect(result.ipp_enrollment_in_progress).to eq(true)
         expect(result.double_address_verification).to eq(true)
         expect(result.resolution_result).to eq(result.residential_resolution_result)
       end
@@ -260,6 +263,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       let(:resolution_result) do
         instance_double(Proofing::Resolution::Result)
       end
+      let(:ipp_enrollment_in_progress) { true }
       let(:double_address_verification) { true }
       let(:applicant_pii) do
         JSON.parse(<<-STR, symbolize_names: true)

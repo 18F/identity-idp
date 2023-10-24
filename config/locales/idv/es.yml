@@ -32,7 +32,11 @@ es:
             - No obstante, continuará teniendo una cuenta en %{app_name}. Puede
               administrar o eliminar su cuenta desde %{account_page_text}.
         gpo:
+          continue: Continúe empezando de nuevo y verifique su identidad desde el
+            principio.
           start_over: Si borras tu información y empiezas de nuevo
+          start_over_new_address: Para enviar su carta a otra dirección, tendrá que
+            empezar de nuevo y verificar su identidad con la nueva dirección.
           warnings:
             - El código de verificación de tu carta ya no funcionará
             - Tendrás que volver a verificar tu identidad otra vez
@@ -49,6 +53,7 @@ es:
           hybrid: '¿Seguro que desea cancelar la carga de fotos de su identificación en
             este teléfono?'
           standard: '¿Cancelar la verificación de su identidad?'
+          start_over: ¿Empezar de nuevo a verificar su identidad?
         start_over: Empezar de nuevo a verificar su identidad
     errors:
       incorrect_password: La contraseña que ingresó no es correcta.

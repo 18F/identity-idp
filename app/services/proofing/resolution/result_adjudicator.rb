@@ -2,20 +2,23 @@ module Proofing
   module Resolution
     class ResultAdjudicator
       attr_reader :resolution_result, :state_id_result, :device_profiling_result,
-                  :double_address_verification, :residential_resolution_result, :same_address_as_id
+                  :double_address_verification, :ipp_enrollment_in_progress,
+                  :residential_resolution_result, :same_address_as_id
 
       def initialize(
         resolution_result:, # InstantVerify
         state_id_result:, # AAMVA
         residential_resolution_result:, # InstantVerify Residential
         should_proof_state_id:,
-        double_address_verification:,
+        ipp_enrollment_in_progress:,
         device_profiling_result:,
-        same_address_as_id:
+        same_address_as_id:,
+        double_address_verification: false
       )
         @resolution_result = resolution_result
         @state_id_result = state_id_result
         @should_proof_state_id = should_proof_state_id
+        @ipp_enrollment_in_progress = ipp_enrollment_in_progress
         @double_address_verification = double_address_verification
         @device_profiling_result = device_profiling_result
         @residential_resolution_result = residential_resolution_result
@@ -37,7 +40,6 @@ module Proofing
               device_profiling_adjudication_reason: device_profiling_reason,
               resolution_adjudication_reason: resolution_reason,
               should_proof_state_id: should_proof_state_id?,
-              double_address_verification: double_address_verification,
               stages: {
                 resolution: resolution_result.to_h,
                 residential_address: residential_resolution_result.to_h,
@@ -87,8 +89,8 @@ module Proofing
       end
 
       def resolution_result_and_reason
-        if !residential_resolution_result.success? &&
-           same_address_as_id == 'false' && double_address_verification == true
+        if !residential_resolution_result.success? && same_address_as_id == 'false' &&
+           (ipp_enrollment_in_progress || double_address_verification)
           [false, :fail_resolution_skip_state_id]
         elsif resolution_result.success? && state_id_result.success?
           [true, :pass_resolution_and_state_id]
