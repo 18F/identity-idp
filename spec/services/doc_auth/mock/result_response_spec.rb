@@ -550,16 +550,16 @@ RSpec.describe DocAuth::Mock::ResultResponse do
             CountryCode: USA
           Back:
             ClassName: Drivers License
-            CountryCode: USA        
+            CountryCode: USA
       YAML
     end
     it 'successfully extracts classification info' do
       front = response.pii_from_doc[:Front]
       back = response.pii_from_doc[:Back]
-      expect(front['ClassName']).to eq('Drivers License')
-      expect(front['CountryCode']).to eq('USA')
-      expect(back['ClassName']).to eq('Drivers License')
-      expect(back['CountryCode']).to eq('USA')
+      expect(front[:ClassName]).to eq('Drivers License')
+      expect(front[:CountryCode]).to eq('USA')
+      expect(back[:ClassName]).to eq('Drivers License')
+      expect(back[:CountryCode]).to eq('USA')
     end
   end
 end

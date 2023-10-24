@@ -449,12 +449,12 @@ RSpec.describe Idv::ImageUploadsController do
                 state_id_type: state_id_type,
                 dob: dob,
                 Front: {
-                  'CountryCode' => country_code,
-                  'ClassName' => class_name,
+                  CountryCode: country_code,
+                  ClassName: class_name,
                 },
                 Back: {
-                  'CountryCode' => country_code,
-                  'ClassName' => class_name,
+                  CountryCode: country_code,
+                  ClassName: class_name,
                 },
               },
             ),

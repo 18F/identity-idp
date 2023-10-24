@@ -125,10 +125,10 @@ module Idv
     end
 
     def doc_type_and_issuing_country(pii_from_doc)
-      front_issuing_country = pii_from_doc&.dig(:Front, 'CountryCode')
-      back_issuing_country = pii_from_doc&.dig(:Back, 'CountryCode')
-      front_doc_type = pii_from_doc&.dig(:Front, 'ClassName')
-      back_doc_type = pii_from_doc&.dig(:Back, 'ClassName')
+      front_issuing_country = pii_from_doc&.dig(:Front, :CountryCode)
+      back_issuing_country = pii_from_doc&.dig(:Back, :CountryCode)
+      front_doc_type = pii_from_doc&.dig(:Front, :ClassName)
+      back_doc_type = pii_from_doc&.dig(:Back, :ClassName)
 
       {
         front_issuing_country: front_issuing_country,

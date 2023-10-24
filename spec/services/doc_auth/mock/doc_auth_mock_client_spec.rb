@@ -99,7 +99,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
       state_id_number: '111111111',
       state_id_jurisdiction: 'ND',
       state_id_type: 'drivers_license',
-      Front: { 'ClassName' => 'Tribal Identification' },
+      Front: { ClassName: 'Tribal Identification' },
     )
     expect(get_results_response.attention_with_barcode?).to eq(false)
   end

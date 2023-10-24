@@ -60,7 +60,7 @@ module DocAuth
           raw_pii_from_doc = parsed_data_from_uploaded_file['document'] || {}
           raw_pii_from_classification = parsed_data_from_uploaded_file['classification_info'] || {}
           raw_pii = raw_pii_from_doc.merge(raw_pii_from_classification)
-          raw_pii&.symbolize_keys || {}
+          raw_pii&.deep_symbolize_keys || {}
         else
           Idp::Constants::MOCK_IDV_APPLICANT
         end
@@ -128,7 +128,8 @@ module DocAuth
       end
 
       def classification_info
-        parsed_data_from_uploaded_file&.[]('classification_info')
+        classification_info = parsed_data_from_uploaded_file&.[]('classification_info')
+        classification_info&.symbolize_keys
       end
 
       def doc_auth_result_from_success
