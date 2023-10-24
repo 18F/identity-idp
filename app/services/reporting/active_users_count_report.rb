@@ -72,13 +72,19 @@ module Reporting
 
     def monthly_active_users
       @monthly_active_users ||= Reports::BaseReport.transaction_with_timeout do
-        Db::Identity::SpActiveUserCounts.overall(monthly_range.begin, monthly_range.end).first
+        Db::Identity::SpActiveUserCounts.overall(
+          monthly_range.begin,
+          monthly_range.end,
+        ).first
       end
     end
 
     def fiscal_year_active_users
       @fiscal_year_active_users ||= Reports::BaseReport.transaction_with_timeout do
-        Db::Identity::SpActiveUserCounts.overall(fiscal_start_date.beginning_of_day, fiscal_end_date.end_of_day).first
+        Db::Identity::SpActiveUserCounts.overall(
+          fiscal_start_date.beginning_of_day,
+          fiscal_end_date.end_of_day,
+        ).first
       end
     end
 
