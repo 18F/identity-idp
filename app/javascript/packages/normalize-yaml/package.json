@@ -1,6 +1,5 @@
 {
   "name": "@18f/identity-normalize-yaml",
-  "private": false,
   "description": "Normalizes YAML files to ensure consistency and typographical quality",
   "version": "1.0.0",
   "type": "module",
@@ -10,8 +9,7 @@
     "normalize-yaml": "./cli.js"
   },
   "scripts": {
-    "prebuild:types": "rm -rf types",
-    "build:types": "tsc",
+    "build:types": "rm -rf types && tsc",
     "prepublishOnly": "npm run build:types"
   },
   "files": [

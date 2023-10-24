@@ -2,7 +2,6 @@
   "name": "@18f/identity-address-search",
   "version": "3.1.1",
   "type": "module",
-  "private": false,
   "files": [
     "dist"
   ],
@@ -25,8 +24,8 @@
     "swr": "^2.0.0"
   },
   "peerDependencies": {
-    "react": ">=17",
-    "@18f/identity-i18n": ">=1"
+    "@18f/identity-i18n": ">=1",
+    "react": ">=17"
   },
   "repository": {
     "type": "git",

@@ -1,7 +1,6 @@
 {
   "name": "@18f/identity-build-sass",
   "version": "2.0.0",
-  "private": false,
   "description": "Stylesheet compilation utility with reasonable defaults and fast performance.",
   "type": "module",
   "bin": {

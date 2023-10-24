@@ -27,10 +27,10 @@ bundle config set --local without 'deploy development doc test'
 if [ "$IDP_LOCAL_DEPENDENCIES" == "true" ]
 then
   bundle install --jobs 4 --local
-  yarn install --production --frozen-lockfile --offline --cache-folder .yarn-cache
+  YARN_ENABLE_GLOBAL_CACHE=false YARN_ENABLE_OFFLINE_MODE=1 yarn workspaces focus --all --production
 else
   bundle install --jobs 4
-  yarn install --production --frozen-lockfile --cache-folder .yarn-cache
+  YARN_ENABLE_GLOBAL_CACHE=false yarn workspaces focus --all --production
 fi
 
 bundle binstubs --all

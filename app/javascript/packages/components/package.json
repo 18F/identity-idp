@@ -2,7 +2,6 @@
   "name": "@18f/identity-components",
   "version": "2.0.0",
   "type": "module",
-  "private": false,
   "files": [
     "dist"
   ],
@@ -24,9 +23,9 @@
     "focus-trap": "^6.7.1"
   },
   "peerDependencies": {
+    "@18f/identity-i18n": ">=1",
     "react": ">=17",
-    "react-dom": ">=17",
-    "@18f/identity-i18n": ">=1"
+    "react-dom": ">=17"
   },
   "repository": {
     "type": "git",

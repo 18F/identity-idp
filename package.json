@@ -16,9 +16,8 @@
     "normalize-yaml": "normalize-yaml",
     "generate-browsers-json": "./scripts/generate-browsers-json.js",
     "clean": "rm -rf public/packs/*",
-    "prebuild": "yarn run clean",
-    "build": "webpack && yarn generate-browsers-json",
-    "build:css": "build-sass app/assets/stylesheets/*.css.scss app/components/*.scss --load-path=app/assets/stylesheets --out-dir=app/assets/builds"
+    "build": "yarn clean && webpack && yarn generate-browsers-json",
+    "build:css": "app/javascript/packages/build-sass/cli.js app/assets/stylesheets/*.css.scss app/components/*.scss --load-path=app/assets/stylesheets --out-dir=app/assets/builds"
   },
   "dependencies": {
     "@18f/identity-design-system": "^8.0.1",
@@ -93,5 +92,6 @@
   "resolutions": {
     "minimist": "1.2.6",
     "postcss": "8.4.31"
-  }
+  },
+  "packageManager": "yarn@4.0.0"
 }

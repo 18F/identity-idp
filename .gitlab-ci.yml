@@ -10,6 +10,7 @@ variables:
   ECR_REGISTRY: '${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com'
   IDP_CI_SHA: 'sha256:26bcd68d39085d0e9dbfe272ec3f95158a272dcc2e25f5152b1d8e4600cf1cac'
   PKI_IMAGE_TAG: 'main'
+  YARN_ENABLE_GLOBAL_CACHE: 'false'
 
 default:
   image: '${ECR_REGISTRY}/idp/ci@${IDP_CI_SHA}'
@@ -18,10 +19,10 @@ default:
   - bundle check || bundle install --deployment --jobs=4 --retry=3 --without deploy development doc production --path vendor/ruby
 
 .yarn_install: &yarn_install
-  - yarn install --frozen-lockfile --ignore-engines --cache-folder .yarn-cache
+  - yarn install --immutable
 
 .yarn_production_install: &yarn_production_install
-  - yarn install --production --frozen-lockfile --ignore-engines --cache-folder .yarn-cache
+  - yarn workspaces focus --all --production
 
 .build_cache:
   - &ruby_cache
@@ -37,7 +38,7 @@ default:
       files:
         - yarn.lock
     paths:
-      - .yarn-cache/
+      - .yarn/cache
     policy: pull
 
   - &yarn_production_cache
@@ -45,7 +46,7 @@ default:
       files:
         - yarn.lock
     paths:
-      - .yarn-cache/
+      - .yarn/cache
     policy: pull
 
   - &assets_cache

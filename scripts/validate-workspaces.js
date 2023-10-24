@@ -43,11 +43,24 @@ function checkHaveCommonDependencyVersions(manifests) {
  */
 function checkHaveRequiredFields(manifests) {
   for (const [path, manifest] of manifests) {
-    ['name', 'version', 'private'].forEach((field) => {
+    ['name', 'version'].forEach((field) => {
       if (!(field in manifest)) {
         throw new Error(`Missing required field ${field} in ${path}`);
       }
     });
+  }
+}
+
+/**
+ * @param {ManifestPairs} manifests
+ */
+function checkPrivateField(manifests) {
+  for (const [path, manifest] of manifests) {
+    if (!manifest.private) {
+      throw new Error(
+        `Expected "private" field for unpublished package in ${path}. Published packages are exempt if a CHANGELOG.md exists.`,
+      );
+    }
   }
 }
 
@@ -122,6 +135,7 @@ const CHECKS = {
   checkHaveNoDevDependencies,
   checkHaveCommonDependencyVersions,
   checkHaveRequiredFields,
+  checkPrivateField,
   checkHaveCorrectPackageName,
   checkHaveCorrectVersion,
   checkHaveNoSiblingDependencies,
@@ -135,6 +149,9 @@ const EXCEPTIONS = {
   // Reason: ESLint plugins must follow a specific format for their package names, which conflicts
   // with our standard "identity-" prefix.
   checkHaveCorrectPackageName: ['app/javascript/packages/eslint-plugin/package.json'],
+  checkPrivateField: glob('app/javascript/packages/*/CHANGELOG.md').map((path) =>
+    join(dirname(path), 'package.json'),
+  ),
   // Reason: There is no reason aside from legacy prior to enforcement. Please write documentation!
   checkHaveDocumentation: [
     'app/javascript/packages/assets/package.json',

@@ -28,7 +28,8 @@ ENV REDIS_URL redis://redis:6379
 ENV ASSET_HOST http://localhost:3000
 ENV DOMAIN_NAME localhost:3000
 ENV PIV_CAC_SERVICE_URL https://localhost:8443/
-ENV PIV_CAC_VERIFY_TOKEN_URL https://localhost:8443/ 
+ENV PIV_CAC_VERIFY_TOKEN_URL https://localhost:8443/
+ENV YARN_ENABLE_GLOBAL_CACHE false
 
 # Prevent documentation installation
 RUN echo 'path-exclude=/usr/share/doc/*' > /etc/dpkg/dpkg.cfg.d/00_nodoc && \
@@ -100,7 +101,7 @@ RUN bundle binstubs --all
 
 COPY package.json $RAILS_ROOT/package.json
 COPY yarn.lock $RAILS_ROOT/yarn.lock
-RUN yarn install --production=true --frozen-lockfile --cache-folder .yarn-cache
+RUN yarn workspaces focus --all --production
 
 # Add the application code
 COPY --chown=app:app ./lib ./lib
