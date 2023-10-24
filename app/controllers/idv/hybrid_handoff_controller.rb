@@ -36,9 +36,9 @@ module Idv
       end
     end
 
-    def navigation_step
+    def self.navigation_step
       Idv::StepInfo.new(
-        controller: self.class.controller_name,
+        controller: controller_name,
         next_steps: [:link_sent, :document_capture],
         requirements: ->(idv_session:, user:) { idv_session.idv_consent_given },
       )

@@ -17,7 +17,7 @@ RSpec.describe Idv::HybridHandoffController do
 
   describe '#navigation_step' do
     it 'returns a valid StepInfo object' do
-      expect(Idv::HybridHandoffController.new.navigation_step).to be_valid
+      expect(Idv::HybridHandoffController.navigation_step).to be_valid
     end
   end
 

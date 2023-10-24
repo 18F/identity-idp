@@ -38,9 +38,9 @@ module Idv
       end
     end
 
-    def navigation_step
+    def self.navigation_step
       Idv::StepInfo.new(
-        controller: self.class.controller_name,
+        controller: controller_name,
         next_steps: [:hybrid_handoff, :document_capture, :phone_question],
         requirements: ->(idv_session:, user:) { idv_session.welcome_visited },
       )

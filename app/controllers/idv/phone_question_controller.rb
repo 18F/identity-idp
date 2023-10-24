@@ -34,9 +34,9 @@ module Idv
       redirect_to idv_document_capture_url
     end
 
-    def navigation_step
+    def self.navigation_step
       Idv::StepInfo.new(
-        controller: self.class.controller_name,
+        controller: controller_name,
         next_steps: [:hybrid_handoff, :document_capture],
         requirements: ->(idv_session:, user:) do
           AbTests::IDV_PHONE_QUESTION.bucket(user.uuid) == :show_phone_question &&

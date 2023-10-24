@@ -38,9 +38,9 @@ module Idv
       )
     end
 
-    def navigation_step
+    def self.navigation_step
       Idv::StepInfo.new(
-        controller: self.class.controller_name,
+        controller: controller_name,
         next_steps: [:success], # [:ssn],
         requirements: ->(idv_session:, user:) { idv_session.flow_path == 'hybrid' },
       )

@@ -33,9 +33,9 @@ module Idv
       redirect_to idv_agreement_url
     end
 
-    def navigation_step
+    def self.navigation_step
       Idv::StepInfo.new(
-        controller: self.class.controller_name,
+        controller: controller_name,
         next_steps: [:agreement],
         requirements: ->(idv_session:, user:) { true },
       )

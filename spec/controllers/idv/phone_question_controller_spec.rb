@@ -26,6 +26,12 @@ RSpec.describe Idv::PhoneQuestionController do
     allow(AbTests::IDV_PHONE_QUESTION).to receive(:bucket).and_return(:show_phone_question)
   end
 
+  describe '#navigation_step' do
+    it 'returns a valid StepInfo object' do
+      expect(Idv::PhoneQuestionController.navigation_step).to be_valid
+    end
+  end
+
   describe 'before_actions' do
     it 'includes authentication before_action' do
       expect(subject).to have_actions(
