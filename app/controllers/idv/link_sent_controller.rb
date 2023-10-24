@@ -38,6 +38,14 @@ module Idv
       )
     end
 
+    def navigation_step
+      Idv::StepInfo.new(
+        controller: self.class.controller_name,
+        next_steps: [:success], # [:ssn],
+        requirements: ->(idv_session:, user:) { idv_session.flow_path == 'hybrid' },
+      )
+    end
+
     private
 
     def confirm_hybrid_handoff_complete

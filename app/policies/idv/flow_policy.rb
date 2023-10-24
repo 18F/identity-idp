@@ -60,16 +60,8 @@ module Idv
           requirements: ->(idv_session:, user:) { idv_session.idv_consent_given },
         ),
         hybrid_handoff: Idv::HybridHandoffController.new.navigation_step,
-        link_sent: Idv::StepInfo.new(
-          controller: Idv::LinkSentController.controller_name,
-          next_steps: [:success], # [:ssn],
-          requirements: ->(idv_session:, user:) { idv_session.flow_path == 'hybrid' },
-        ),
-        document_capture: Idv::StepInfo.new(
-          controller: Idv::DocumentCaptureController.controller_name,
-          next_steps: [:success], # [:ssn],
-          requirements: ->(idv_session:, user:) { idv_session.flow_path == 'standard' },
-        ),
+        link_sent: Idv::LinkSentController.new.navigation_step,
+        document_capture: Idv::DocumentCaptureController.new.navigation_step,
         # ssn: Step.new(
         #   path: idv_ssn_path,
         #   next_steps: [:verify_info],
