@@ -1,3 +1,4 @@
+import { useContext } from 'react';
 import type { FormStep } from '@18f/identity-form-steps';
 import { useI18n } from '@18f/identity-react-i18n';
 import { UploadFormEntriesError } from '../services/upload';
@@ -8,39 +9,34 @@ import InPersonLocationFullAddressEntryPostOfficeSearchStep from '../components/
 import InPersonSwitchBackStep from '../components/in-person-switch-back-step';
 import ReviewIssuesStep from '../components/review-issues-step';
 import withProps from '../higher-order/with-props';
+import { InPersonContext } from '../context';
+import UploadContext from '../context/upload';
 
-const getReviewStep = (submissionError) => {
+const getReviewStep = (submissionError, t) => ({
+  name: 'review',
+  form:
+    submissionError instanceof UploadFormEntriesError
+      ? withProps({
+          remainingAttempts: submissionError.remainingAttempts,
+          isFailedResult: submissionError.isFailedResult,
+          isFailedDocType: submissionError.isFailedDocType,
+          captureHints: submissionError.hints,
+          pii: submissionError.pii,
+          failedImageFingerprints: submissionError.failed_image_fingerprints,
+        })(ReviewIssuesStep)
+      : ReviewIssuesStep,
+  title: t('errors.doc_auth.rate_limited_heading'),
+});
+
+export const useSteps = (submissionError) => {
   const { t } = useI18n();
-
-  return {
-    name: 'review',
-    form:
-      submissionError instanceof UploadFormEntriesError
-        ? withProps({
-            remainingAttempts: submissionError.remainingAttempts,
-            isFailedResult: submissionError.isFailedResult,
-            isFailedDocType: submissionError.isFailedDocType,
-            captureHints: submissionError.hints,
-            pii: submissionError.pii,
-            failedImageFingerprints: submissionError.failed_image_fingerprints,
-          })(ReviewIssuesStep)
-        : ReviewIssuesStep,
-    title: t('errors.doc_auth.rate_limited_heading'),
-  };
-};
-
-export const useSteps = (
-  submissionError,
-  inPersonURL,
-  inPersonFullAddressEntryEnabled,
-  flowPath,
-) => {
-  const { t } = useI18n();
+  const { inPersonFullAddressEntryEnabled, inPersonURL } = useContext(InPersonContext);
+  const { flowPath } = useContext(UploadContext);
 
   // getReviewStep needs to be called even if we're not going to use it because it contains
   // a hook (in a context). Conditionally calling a hook causes problems in React, so
   // always calling getReviewStep is necessary
-  const reviewStep: FormStep = getReviewStep(submissionError);
+  const reviewStep: FormStep = getReviewStep(submissionError, t);
 
   // When there's no submission error, the only step is the 'documents' step where we upload images.
   if (!submissionError) {

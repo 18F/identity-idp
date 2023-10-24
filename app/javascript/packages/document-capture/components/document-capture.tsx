@@ -13,7 +13,6 @@ import SubmissionStatus from './submission-status';
 import { RetrySubmissionError } from './submission-complete';
 import SuspenseErrorBoundary from './suspense-error-boundary';
 import SubmissionInterstitial from './submission-interstitial';
-import { InPersonContext } from '../context';
 import { useSteps } from '../hooks/useSteps';
 
 interface DocumentCaptureProps {
@@ -30,7 +29,6 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
   const { t } = useI18n();
   const { flowPath } = useContext(UploadContext);
   const { trackSubmitEvent, trackVisitEvent } = useContext(AnalyticsContext);
-  const { inPersonFullAddressEntryEnabled, inPersonURL } = useContext(InPersonContext);
   const appName = getConfigValue('appName');
 
   useDidUpdateEffect(onStepChange, [stepName]);
@@ -39,7 +37,7 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
       trackVisitEvent(stepName);
     }
   }, [stepName]);
-  const steps = useSteps(submissionError, inPersonURL, inPersonFullAddressEntryEnabled, flowPath);
+  const steps = useSteps(submissionError);
 
   /**
    * Clears error state and sets form values for submission.
@@ -72,7 +70,6 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
   if (submissionError && formValues) {
     initialValues = formValues;
   }
-
 
   const inPersonProofingStepNames = ['location', 'prepare', 'switch_back'];
   const stepIndicatorPath =
