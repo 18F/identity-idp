@@ -94,6 +94,16 @@ es:
       help_html: Si no desea eliminar esta dirección de correo electrónico, visite el
         %{app_name_html} %{help_link_html} o el %{contact_link_html}.
       subject: Dirección de correo electrónico eliminada
+    gpo_code_expired:
+      body:
+        cta: Comenzar a verificar su identidad
+        intro: Solicitó una carta con un código de verificación el
+          %{date_letter_requested}. Este código de verificación ya expiró.
+          Vuelva a iniciar sesión en Login.gov para comenzar a verificar su
+          identidad nuevamente.
+        learn_more_link: Obtenga más información sobre la verificación de su dirección
+          por correo.
+      subject: Su código de verificación ha caducado
     help_link_text: Centro de Ayuda
     in_person_completion_survey:
       body:

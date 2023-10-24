@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe SendGpoCodeExpirationNoticesJob do
+  include Rails.application.routes.url_helpers
 
   let(:job) { described_class.new(analytics: analytics) }
 
@@ -108,8 +109,14 @@ RSpec.describe SendGpoCodeExpirationNoticesJob do
       users_who_should_be_notified.each do |user|
         expect_delivered_email(
           to: [user.email],
-          subject: 'HI',
-          body: [],
+          subject: t('user_mailer.gpo_code_expired.subject'),
+          body: [
+            I18n.l(
+              user.gpo_verification_pending_profile.gpo_verification_pending_at,
+              format: :event_date,
+            ),
+            idv_url,
+          ],
         )
       end
     end

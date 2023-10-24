@@ -187,6 +187,13 @@ class UserMailerPreview < ActionMailer::Preview
     ).suspended_reset_password
   end
 
+  def gpo_code_expired
+    UserMailer.with(
+      user: user_with_pending_gpo_letter,
+      email_address: email_address_record,
+    ).gpo_code_expired
+  end
+
   def gpo_reminder
     UserMailer.with(
       user: user_with_pending_gpo_letter,

@@ -1,21 +1,20 @@
 
-  <%= help_link = link_to(
-        t('idv.troubleshooting.options.learn_more_verify_by_mail'),
-        help_center_redirect_url(
-          category: 'verify-your-identity',
-          article: 'verify-your-address-by-mail',
-          flow: :idv,
-          step: :gpo_send_letter,
-        ),
-        { style: "text-decoration: 'underline'" },
-      )
-      t(
-        'user_mailer.letter_reminder_14_days.body_html',
-        date_letter_was_sent: @gpo_verification_pending_at,
-        app_name: APP_NAME,
-        help_link: help_link,
-      ) %>
+<%= t(
+      'user_mailer.gpo_code_expired.body.intro',
+      date_letter_requested: @gpo_verification_pending_at,
+      app_name: APP_NAME,
+    ) %>
 
+<%= link_to(
+      t('user_mailer.gpo_code_expired.body.learn_more_link'),
+      help_center_redirect_url(
+        category: 'verify-your-identity',
+        article: 'verify-your-address-by-mail',
+        flow: :idv,
+        step: :gpo_send_letter,
+      ),
+      { style: "text-decoration: 'underline'" },
+    ) %>
 
 <table class="button expanded large radius">
   <tbody>
@@ -25,8 +24,8 @@
           <tbody>
             <tr>
               <td style="text-align: center">
-                <%= link_to t('user_mailer.letter_reminder_14_days.finish'),
-                            idv_verify_by_mail_enter_code_url,
+                <%= link_to t('user_mailer.gpo_code_expired.body.cta'),
+                            idv_url,
                             target: '_blank',
                             class: 'float-center',
                             align: 'center',
@@ -40,14 +39,3 @@
     </tr>
   </tbody>
 </table>
-
-<p>
-  <%= t(
-        'user_mailer.letter_reminder_14_days.did_not_get_a_letter_html',
-        another_letter_link_html: link_to(
-          t('user_mailer.letter_reminder_14_days.sign_in_and_request_another_letter'),
-          idv_verify_by_mail_enter_code_url(did_not_receive_letter: 1),
-          { style: "text-decoration: 'underline'" },
-        ),
-      ) %>
-</p>

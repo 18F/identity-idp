@@ -98,6 +98,15 @@ fr:
         veuillez visiter le %{help_link_html} de %{app_name_html} ou
         %{contact_link_html}.
       subject: Adresse email supprimée
+    gpo_code_expired:
+      body:
+        cta: Commencez à vérifier votre identité
+        intro: Vous avez demandé une lettre avec un code de vérification le
+          %{date_letter_requested}. Ce code de vérification a expiré.
+          Reconnectez-vous à Login.gov pour reprendre la vérification de votre
+          identité.
+        learn_more_link: En savoir plus sur la vérification de votre adresse par courrier.
+      subject: Votre code de vérification a expiré
     help_link_text: Centre d’aide
     in_person_completion_survey:
       body:

@@ -403,7 +403,11 @@ class UserMailer < ActionMailer::Base
 
   def gpo_code_expired
     with_user_locale(user) do
-      mail(to: email_address.email, subject: 'HI')
+      @gpo_verification_pending_at = I18n.l(
+        user.gpo_verification_pending_profile.gpo_verification_pending_at,
+        format: :event_date,
+      )
+      mail(to: email_address.email, subject: t('user_mailer.gpo_code_expired.subject'))
     end
   end
 
