@@ -158,7 +158,7 @@ module Proofing
         # If the user is in double-address-verification and they have changed their address then
         # they are not eligible for get-to-yes
         # rubocop:disable Layout/LineLength
-        if !(ipp_enrollment_in_progress == false || double_address_verification == false) || same_address_as_id == 'true'
+        if !(ipp_enrollment_in_progress || double_address_verification) || same_address_as_id == 'true'
           # rubocop:enable Layout/LineLength
           user_can_pass_after_state_id_check?(instant_verify_result)
         else
