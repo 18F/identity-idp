@@ -235,3 +235,14 @@ def expect_page_to_have_no_accessibility_violations(page, validate_markup: true)
   expect(page).to be_uniquely_titled
   expect(page).to have_valid_markup if validate_markup
 end
+
+def expect_page_to_have_skip_link(page, &block)
+  page.active_element.send_keys(:tab)
+  expect(page.active_element).to have_content(t('shared.skip_link'), wait: 5)
+
+  if block.present?
+    page.active_element.send_keys(:enter)
+    page.active_element.send_keys(:tab)
+    yield
+  end
+end
