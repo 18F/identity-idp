@@ -23,6 +23,7 @@ RSpec.describe Idv::PhoneQuestionController do
     subject.user_session['idv/doc_auth'] = {}
     subject.idv_session.idv_consent_given = true
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
+    allow(AbTests::IDV_PHONE_QUESTION).to receive(:bucket).and_return(:show_phone_question)
   end
 
   describe 'before_actions' do
@@ -82,6 +83,7 @@ RSpec.describe Idv::PhoneQuestionController do
 
     context 'agreement step is not complete' do
       before do
+        subject.idv_session.welcome_visited = true
         subject.idv_session.idv_consent_given = nil
       end
 
