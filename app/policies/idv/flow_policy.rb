@@ -15,7 +15,9 @@ module Idv
     end
 
     def controller_allowed?(controller:)
-      step = controller_to_step(controller: controller)
+      controller_name = controller.ancestors.include?(ApplicationController) ?
+                          controller.controller_name : controller
+      step = controller_to_step(controller: controller_name)
       step_allowed?(step: step)
     end
 

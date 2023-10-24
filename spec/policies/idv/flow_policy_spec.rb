@@ -40,8 +40,8 @@ RSpec.describe 'Idv::FlowPolicy' do
       it 'returns agreement' do
         idv_session.welcome_visited = true
         expect(subject.latest_step).to eq(:agreement)
-        # expect(subject.path_allowed?(path: idv_agreement_path)).to be
-        # expect(subject.path_allowed?(path: idv_hybrid_handoff_path)).not_to be
+        expect(subject.controller_allowed?(controller: Idv::AgreementController)).to be
+        expect(subject.controller_allowed?(controller: Idv::HybridHandoffController)).not_to be
       end
     end
 
@@ -50,8 +50,8 @@ RSpec.describe 'Idv::FlowPolicy' do
         idv_session.welcome_visited = true
         idv_session.idv_consent_given = true
         expect(subject.latest_step).to eq(:hybrid_handoff)
-        # expect(subject.path_allowed?(path: idv_hybrid_handoff_path)).to be
-        # expect(subject.path_allowed?(path: idv_document_capture_path)).not_to be
+        expect(subject.controller_allowed?(controller: Idv::HybridHandoffController)).to be
+        expect(subject.controller_allowed?(controller: Idv::DocumentCaptureController)).not_to be
       end
     end
 
@@ -61,8 +61,8 @@ RSpec.describe 'Idv::FlowPolicy' do
         idv_session.idv_consent_given = true
         idv_session.flow_path = 'standard'
         expect(subject.latest_step).to eq(:document_capture)
-        # expect(subject.path_allowed?(path: idv_document_capture_path)).to be
-        # expect(subject.path_allowed?(path: idv_ssn_path)).not_to be
+        expect(subject.controller_allowed?(controller: Idv::DocumentCaptureController)).to be
+        # expect(subject.controller_allowed?(controller: Idv::SsnController)).not_to be
       end
     end
 
@@ -72,8 +72,8 @@ RSpec.describe 'Idv::FlowPolicy' do
         idv_session.idv_consent_given = true
         idv_session.flow_path = 'hybrid'
         expect(subject.latest_step).to eq(:link_sent)
-        # expect(subject.path_allowed?(path: idv_link_sent_path)).to be
-        # expect(subject.path_allowed?(path: idv_ssn_path)).not_to be
+        expect(subject.controller_allowed?(controller: Idv::LinkSentController)).to be
+        # expect(subject.controller_allowed?(controller: Idv::SsnController)).not_to be
       end
     end
 
@@ -87,16 +87,16 @@ RSpec.describe 'Idv::FlowPolicy' do
     #
     #   it 'returns ssn for standard flow' do
     #     expect(subject.latest_step).to eq(:ssn)
-    #     expect(subject.path_allowed?(path: idv_ssn_path)).to be
-    #     expect(subject.path_allowed?(path: idv_verify_info_path)).not_to be
+    #     expect(subject.controller_allowed?(controller: idv_ssn_path)).to be
+    #     expect(subject.controller_allowed?(controller: idv_verify_info_path)).not_to be
     #     expect(subject.path_for_latest_step).to eq(idv_ssn_path)
     #   end
     #
     #   it 'returns ssn for hybrid flow' do
     #     idv_session.flow_path = 'hybrid'
     #     expect(subject.latest_step).to eq(:ssn)
-    #     expect(subject.path_allowed?(path: idv_ssn_path)).to be
-    #     expect(subject.path_allowed?(path: idv_verify_info_path)).not_to be
+    #     expect(subject.controller_allowed?(controller: idv_ssn_path)).to be
+    #     expect(subject.controller_allowed?(controller: idv_verify_info_path)).not_to be
     #     expect(subject.path_for_latest_step).to eq(idv_ssn_path)
     #   end
     # end
@@ -110,8 +110,8 @@ RSpec.describe 'Idv::FlowPolicy' do
     #     idv_session.ssn = '666666666'
     #
     #     expect(subject.latest_step).to eq(:verify_info)
-    #     expect(subject.path_allowed?(path: idv_verify_info_path)).to be
-    #     expect(subject.path_allowed?(path: idv_phone_path)).not_to be
+    #     expect(subject.controller_allowed?(controller: idv_verify_info_path)).to be
+    #     expect(subject.controller_allowed?(controller: idv_phone_path)).not_to be
     #     expect(subject.path_for_latest_step).to eq(idv_verify_info_path)
     #   end
     # end
@@ -126,8 +126,8 @@ RSpec.describe 'Idv::FlowPolicy' do
     #     idv_session.resolution_successful = true
     #
     #     expect(subject.latest_step).to eq(:phone)
-    #     expect(subject.path_allowed?(path: idv_phone_path)).to be
-    #     expect(subject.path_allowed?(path: idv_otp_verification_path)).not_to be
+    #     expect(subject.controller_allowed?(controller: idv_phone_path)).to be
+    #     expect(subject.controller_allowed?(controller: idv_otp_verification_path)).not_to be
     #     expect(subject.path_for_latest_step).to eq(idv_phone_path)
     #   end
     # end
@@ -145,8 +145,8 @@ RSpec.describe 'Idv::FlowPolicy' do
     #     idv_session.user_phone_confirmation_session = user_phone_confirmation_session
     #
     #     expect(subject.latest_step).to eq(:phone_enter_otp)
-    #     expect(subject.path_allowed?(path: idv_otp_verification_path)).to be
-    #     expect(subject.path_allowed?(path: idv_review_path)).not_to be
+    #     expect(subject.controller_allowed?(controller: idv_otp_verification_path)).to be
+    #     expect(subject.controller_allowed?(controller: idv_review_path)).not_to be
     #     expect(subject.path_for_latest_step).to eq(idv_otp_verification_path)
     #   end
     # end
@@ -166,8 +166,8 @@ RSpec.describe 'Idv::FlowPolicy' do
     #       idv_session.address_verification_mechanism = 'gpo'
     #
     #       expect(subject.latest_step).to eq(:review)
-    #       expect(subject.path_allowed?(path: idv_review_path)).to be
-    #       expect(subject.path_allowed?(path: idv_personal_key_path)).not_to be
+    #       expect(subject.controller_allowed?(controller: idv_review_path)).to be
+    #       expect(subject.controller_allowed?(controller: idv_personal_key_path)).not_to be
     #       expect(subject.path_for_latest_step).to eq(idv_review_path)
     #     end
     #   end
@@ -185,8 +185,8 @@ RSpec.describe 'Idv::FlowPolicy' do
     #       idv_session.user_phone_confirmation = true
     #
     #       expect(subject.latest_step).to eq(:review)
-    #       expect(subject.path_allowed?(path: idv_review_path)).to be
-    #       expect(subject.path_allowed?(path: idv_personal_key_path)).not_to be
+    #       expect(subject.controller_allowed?(controller: idv_review_path)).to be
+    #       expect(subject.controller_allowed?(controller: idv_personal_key_path)).not_to be
     #       expect(subject.path_for_latest_step).to eq(idv_review_path)
     #     end
     #   end
