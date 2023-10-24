@@ -23,6 +23,7 @@ gem 'concurrent-ruby'
 gem 'connection_pool'
 gem 'cssbundling-rails'
 gem 'devise', '~> 4.8'
+gem "email_data", require: "email_data/source/active_record"
 gem 'dotiw', '>= 4.0.1'
 gem 'faraday', '~> 2'
 gem 'faker'

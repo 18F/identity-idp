@@ -1,0 +1,3 @@
+class DisposableDomain < ApplicationRecord
+end
+  
