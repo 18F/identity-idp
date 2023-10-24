@@ -155,6 +155,8 @@ module Proofing
                                             residential_instant_verify_result:,
                                             double_address_verification:)
         return false unless should_proof_state_id
+        # If the user is in double-address-verification and they have changed their address then
+        # they are not eligible for get-to-yes
         # rubocop:disable Layout/LineLength
         if !(ipp_enrollment_in_progress == false || double_address_verification == false) || same_address_as_id == 'true'
           # rubocop:enable Layout/LineLength
