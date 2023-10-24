@@ -53,12 +53,7 @@ module Idv
         ),
         welcome: Idv::WelcomeController.new.navigation_step,
         agreement: Idv::AgreementController.new.navigation_step,
-        # TODO: check buckets
-        phone_question: Idv::StepInfo.new(
-          controller: Idv::PhoneQuestionController.controller_name,
-          next_steps: [:hybrid_handoff, :document_capture],
-          requirements: ->(idv_session:, user:) { idv_session.idv_consent_given },
-        ),
+        phone_question: Idv::PhoneQuestionController.new.navigation_step,
         hybrid_handoff: Idv::HybridHandoffController.new.navigation_step,
         link_sent: Idv::LinkSentController.new.navigation_step,
         document_capture: Idv::DocumentCaptureController.new.navigation_step,

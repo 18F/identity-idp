@@ -43,7 +43,7 @@ RSpec.describe Idv::PhoneQuestionController do
     it 'checks that agreement step is complete' do
       expect(subject).to have_actions(
         :before,
-        :confirm_agreement_step_complete,
+        :confirm_phone_question_allowed,
       )
     end
 

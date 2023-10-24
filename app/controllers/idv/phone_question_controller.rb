@@ -6,7 +6,7 @@ module Idv
 
     before_action :confirm_not_rate_limited
     before_action :confirm_verify_info_step_needed
-    before_action :confirm_agreement_step_complete
+    before_action :confirm_phone_question_allowed
     before_action :confirm_hybrid_handoff_needed, only: :show
 
     def show
@@ -34,12 +34,23 @@ module Idv
       redirect_to idv_document_capture_url
     end
 
+    def navigation_step
+      Idv::StepInfo.new(
+        controller: self.class.controller_name,
+        next_steps: [:hybrid_handoff, :document_capture],
+        requirements: ->(idv_session:, user:) do
+          AbTests::IDV_PHONE_QUESTION.bucket(user.uuid) == :show_phone_question &&
+            idv_session.idv_consent_given
+        end,
+      )
+    end
+
     private
 
-    def confirm_agreement_step_complete
-      return if idv_session.idv_consent_given
+    def confirm_phone_question_allowed
+      return if step_allowed?(:phone_question)
 
-      redirect_to idv_agreement_url
+      redirect_to path_for_latest_step
     end
 
     def analytics_arguments
