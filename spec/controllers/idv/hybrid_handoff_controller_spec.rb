@@ -106,6 +106,7 @@ RSpec.describe Idv::HybridHandoffController do
 
     context 'agreement step is not complete' do
       before do
+        subject.idv_session.welcome_visited = true
         subject.idv_session.idv_consent_given = nil
       end
 
