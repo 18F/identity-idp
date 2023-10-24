@@ -21,13 +21,13 @@ module Idv
 
     def next_steps_validation
       unless next_steps.is_a?(Array)
-        raise 'next_steps must be an Array'
+        errors.add(:next_steps, type: :invalid_argument, message: 'next_steps must be an Array')
       end
     end
 
     def requirements_validation
       unless requirements.is_a?(Proc)
-        raise 'requirements must be a Proc'
+        errors.add(:requirements, type: :invalid_argument, message: 'requirements must be a Proc')
       end
     end
   end

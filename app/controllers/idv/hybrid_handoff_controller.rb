@@ -204,7 +204,7 @@ module Idv
     def confirm_hybrid_handoff_allowed
       return if step_allowed?(:hybrid_handoff)
 
-      redirect_to idv_agreement_url
+      redirect_to path_for_latest_step
     end
 
     def setup_for_redo
