@@ -11,7 +11,11 @@ class ImageUploadResponsePresenter
   end
 
   def errors
-    @form_response.errors.except(:hints).flat_map do |key, errs|
+    form_response_errors = @form_response.errors
+    if form_response_errors.values_at(:name, :dob_error, :dob_min_age_error, :state).compact.many?
+      form_response_errors = { pii: I18n.t('doc_auth.errors.general.no_liveness') }
+    end
+    form_response_errors.except(:hints).flat_map do |key, errs|
       Array(errs).map { |err| { field: key, message: err } }
     end
   end
