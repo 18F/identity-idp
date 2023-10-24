@@ -14,7 +14,7 @@ import { RetrySubmissionError } from './submission-complete';
 import SuspenseErrorBoundary from './suspense-error-boundary';
 import SubmissionInterstitial from './submission-interstitial';
 import { InPersonContext } from '../context';
-import { getSteps } from '../steps/getSteps';
+import { useSteps } from '../hooks/useSteps';
 
 interface DocumentCaptureProps {
   /**
@@ -72,7 +72,7 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
     initialValues = formValues;
   }
 
-  const steps = getSteps(submissionError, inPersonURL, inPersonFullAddressEntryEnabled, flowPath);
+  const steps = useSteps(submissionError, inPersonURL, inPersonFullAddressEntryEnabled, flowPath);
 
   const inPersonProofingStepNames = ['location', 'prepare', 'switch_back'];
   const stepIndicatorPath =

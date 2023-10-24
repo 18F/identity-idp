@@ -29,7 +29,7 @@ const getReviewStep = (submissionError) => {
   };
 };
 
-export const getSteps = (
+export const useSteps = (
   submissionError,
   inPersonURL,
   inPersonFullAddressEntryEnabled,
