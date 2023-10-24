@@ -7,6 +7,7 @@ module Idv
     include PhoneQuestionAbTestConcern
 
     before_action :confirm_not_rate_limited, except: [:update]
+    before_action :confirm_step_allowed
     before_action :confirm_hybrid_handoff_complete
     before_action :confirm_document_capture_needed
     before_action :override_csp_to_allow_acuant

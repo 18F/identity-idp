@@ -123,7 +123,7 @@ module IdvStepConcern
   end
 
   def confirm_step_allowed
-    return if flow_policy.controller_allowed?(controller: self.class.controller_name)
+    return if flow_policy.controller_allowed?(controller: self.class)
 
     redirect_to path_for_latest_step
   end

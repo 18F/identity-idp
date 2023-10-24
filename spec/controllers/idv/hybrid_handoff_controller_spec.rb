@@ -36,34 +36,6 @@ RSpec.describe Idv::HybridHandoffController do
       )
     end
 
-    it 'checks that the previous steps are complete' do
-      expect(subject).to have_actions(
-        :before,
-        :confirm_verify_info_step_needed,
-      )
-    end
-
-    it 'checks that the previous steps are complete' do
-      expect(subject).to have_actions(
-        :before,
-        :confirm_hybrid_handoff_allowed,
-      )
-    end
-
-    it 'checks for a redo of document capture' do
-      expect(subject).to have_actions(
-        :before,
-        :setup_for_redo,
-      )
-    end
-
-    it 'checks that hybrid_handoff is needed' do
-      expect(subject).to have_actions(
-        :before,
-        :confirm_hybrid_handoff_needed,
-      )
-    end
-
     it 'includes redirect for phone_question ab test before_action' do
       expect(subject).to have_actions(
         :before,

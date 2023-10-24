@@ -6,7 +6,7 @@ module Idv
 
     before_action :confirm_not_rate_limited
     before_action :confirm_verify_info_step_needed
-    before_action :confirm_phone_question_allowed
+    before_action :confirm_step_allowed
     before_action :confirm_hybrid_handoff_needed, only: :show
 
     def show
@@ -46,12 +46,6 @@ module Idv
     end
 
     private
-
-    def confirm_phone_question_allowed
-      return if step_allowed?(:phone_question)
-
-      redirect_to path_for_latest_step
-    end
 
     def analytics_arguments
       {

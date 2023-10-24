@@ -7,8 +7,7 @@ module Idv
 
     before_action :confirm_not_rate_limited
     before_action :confirm_verify_info_step_needed
-    before_action :confirm_hybrid_handoff_allowed
-    before_action :setup_for_redo, only: :show
+    before_action :confirm_step_allowed
     before_action :confirm_hybrid_handoff_needed, only: :show
     before_action :maybe_redirect_for_phone_question_ab_test, only: :show
 
@@ -199,19 +198,6 @@ module Idv
       form_response_params = { success: false, errors: { message: message } }
       form_response_params[:extra] = extra unless extra.nil?
       FormResponse.new(**form_response_params)
-    end
-
-    def confirm_hybrid_handoff_allowed
-      return if step_allowed?(:hybrid_handoff)
-
-      redirect_to path_for_latest_step
-    end
-
-    def setup_for_redo
-      return unless params[:redo]
-
-      idv_session.redo_document_capture = true
-      idv_session.flow_path = nil
     end
 
     def formatted_destination_phone

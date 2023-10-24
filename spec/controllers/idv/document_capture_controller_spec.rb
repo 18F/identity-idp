@@ -109,6 +109,8 @@ RSpec.describe Idv::DocumentCaptureController do
 
     context 'hybrid handoff step is not complete' do
       it 'redirects to hybrid handoff' do
+        subject.idv_session.welcome_visited = true
+        subject.idv_session.idv_consent_given = true
         subject.idv_session.flow_path = nil
 
         get :show

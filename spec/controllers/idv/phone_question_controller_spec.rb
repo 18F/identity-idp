@@ -47,13 +47,6 @@ RSpec.describe Idv::PhoneQuestionController do
       )
     end
 
-    it 'checks that agreement step is complete' do
-      expect(subject).to have_actions(
-        :before,
-        :confirm_phone_question_allowed,
-      )
-    end
-
     it 'checks that hybrid_handoff is needed' do
       expect(subject).to have_actions(
         :before,

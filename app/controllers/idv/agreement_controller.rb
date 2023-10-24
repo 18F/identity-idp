@@ -4,7 +4,7 @@ module Idv
     include StepIndicatorConcern
 
     before_action :confirm_not_rate_limited
-    before_action :confirm_agreement_step_allowed
+    before_action :confirm_step_allowed
     before_action :confirm_document_capture_not_complete
 
     def show
@@ -67,12 +67,6 @@ module Idv
 
     def consent_form_params
       params.require(:doc_auth).permit(:idv_consent_given)
-    end
-
-    def confirm_agreement_step_allowed
-      return if step_allowed?(:agreement)
-
-      redirect_to path_for_latest_step
     end
   end
 end
