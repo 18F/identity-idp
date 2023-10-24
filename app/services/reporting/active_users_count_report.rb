@@ -47,11 +47,11 @@ module Reporting
     end
 
     def monthly_ial1
-      active_users_count('monthly')['total_ial1_active']
+      monthly_active_users['total_ial1_active']
     end
 
     def monthly_ial2
-      active_users_count('monthly')['total_ial2_active']
+      monthly_active_users['total_ial2_active']
     end
 
     def monthly_total
@@ -59,28 +59,26 @@ module Reporting
     end
 
     def fiscal_year_ial1
-      active_users_count('fiscal')['total_ial1_active']
+      fiscal_year_active_users['total_ial1_active']
     end
 
     def fiscal_year_ial2
-      active_users_count('fiscal')['total_ial2_active']
+      fiscal_year_active_users['total_ial2_active']
     end
 
     def fiscal_total
       fiscal_year_ial1 + fiscal_year_ial2
     end
 
-    def active_users_count(period)
-      @active_users_count ||= {}
-      @active_users_count[period] ||= Reports::BaseReport.transaction_with_timeout do
-        if period == 'monthly'
-          start_date = monthly_range.begin
-          end_date = monthly_range.end
-        else
-          start_date = fiscal_start_date
-          end_date = fiscal_end_date.end_of_day
-        end
-        Db::Identity::SpActiveUserCounts.overall(start_date, end_date).first
+    def monthly_active_users
+      @monthly_active_users ||= Reports::BaseReport.transaction_with_timeout do
+        Db::Identity::SpActiveUserCounts.overall(monthly_range.begin, monthly_range.end).first
+      end
+    end
+
+    def fiscal_year_active_users
+      @fiscal_year_active_users ||= Reports::BaseReport.transaction_with_timeout do
+        Db::Identity::SpActiveUserCounts.overall(fiscal_start_date.beginning_of_day, fiscal_end_date.end_of_day).first
       end
     end
 
