@@ -401,6 +401,12 @@ class UserMailer < ActionMailer::Base
     end
   end
 
+  def gpo_code_expired
+    with_user_locale(user) do
+      mail(to: email_address.email, subject: 'HI')
+    end
+  end
+
   private
 
   def email_should_receive_nonessential_notifications?(email)

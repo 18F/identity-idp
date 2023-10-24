@@ -6,7 +6,14 @@ class SendGpoCodeExpirationNoticesJob < ApplicationJob
   end
 
   def perform
-    raise 'Not implemented'
+    codes_to_send_notifications_for.find_each do |code|
+      user = code.profile.user
+
+      user.send_email_to_all_addresses(:gpo_code_expired)
+      code.update(expiration_notice_sent_at: Time.zone.now)
+
+      analytics.idv_gpo_expiration_email_sent(user_id: user.uuid)
+    end
   end
 
   def codes_to_send_notifications_for

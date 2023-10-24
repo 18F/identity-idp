@@ -94,4 +94,65 @@ RSpec.describe SendGpoCodeExpirationNoticesJob do
       )
     end
   end
+
+  describe '#perform' do
+    let(:users_who_should_be_notified) do
+      [
+        user_with_expired_code,
+        user_with_two_expired_codes,
+      ]
+    end
+
+    it 'sends one email to each user' do
+      expect { job.perform }.to change { ActionMailer::Base.deliveries.count }.by(2)
+      users_who_should_be_notified.each do |user|
+        expect_delivered_email(
+          to: [user.email],
+          subject: 'HI',
+          body: [],
+        )
+      end
+    end
+
+    it 'logs an analytics event for each user' do
+      job.perform
+
+      actual_events = analytics.events[:idv_gpo_expiration_email_sent]
+      expect(actual_events.count).to eql(users_who_should_be_notified.count)
+
+      users_who_should_be_notified.each do |user|
+        expect(analytics).to have_logged_event(
+          :idv_gpo_expiration_email_sent,
+          user_id: user.uuid,
+        )
+      end
+    end
+
+    it 'marks codes as having had an expiration notice sent' do
+      codes_that_should_receive_notices = [
+        user_with_expired_code.
+          gpo_verification_pending_profile.
+          gpo_confirmation_codes.
+          first,
+        user_with_two_expired_codes.
+          gpo_verification_pending_profile.
+          gpo_confirmation_codes.
+          order(code_sent_at: :desc).
+          first,
+      ]
+
+      freeze_time do
+        job.perform
+        codes_that_should_receive_notices.each do |code|
+          code.reload
+          expect(code.expiration_notice_sent_at).to eql(Time.zone.now)
+        end
+      end
+    end
+
+    it 'does not send anything on a second call' do
+      job.perform
+      expect { job.perform }.not_to change { ActionMailer::Base.deliveries.count }
+    end
+  end
 end
