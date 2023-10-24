@@ -124,13 +124,13 @@ module Proofing
       end
 
       def residential_address_unnecessary_result
-        Proofing::AddressResult.new(
+        Proofing::Resolution::Result.new(
           success: true, errors: {}, exception: nil, vendor_name: 'ResidentialAddressNotRequired',
         )
       end
 
       def resolution_cannot_pass
-        Proofing::AddressResult.new(
+        Proofing::Resolution::Result.new(
           success: false, errors: {}, exception: nil, vendor_name: 'ResolutionCannotPass',
         )
       end
