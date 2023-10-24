@@ -30,7 +30,7 @@ RSpec.describe Idv::InPerson::SsnController do
 
   describe 'before_actions' do
     context('#confirm_in_person_address_step_complete') do
-      context 'residential address controller flag enabled' do
+      context 'residential address controller flag not enabled' do
         before do
           allow(IdentityConfig.store).to receive(:in_person_residential_address_controller_enabled).
             and_return(false)
