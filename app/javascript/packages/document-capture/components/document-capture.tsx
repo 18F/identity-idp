@@ -39,6 +39,7 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
       trackVisitEvent(stepName);
     }
   }, [stepName]);
+  const steps = useSteps(submissionError, inPersonURL, inPersonFullAddressEntryEnabled, flowPath);
 
   /**
    * Clears error state and sets form values for submission.
@@ -72,7 +73,6 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
     initialValues = formValues;
   }
 
-  const steps = useSteps(submissionError, inPersonURL, inPersonFullAddressEntryEnabled, flowPath);
 
   const inPersonProofingStepNames = ['location', 'prepare', 'switch_back'];
   const stepIndicatorPath =
