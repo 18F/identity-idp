@@ -526,7 +526,7 @@ module AnalyticsEvents
 
   def idv_acuant_sdk_loaded(success:, **extra)
     track_event(
-      'Frontend: IdV: Acuant SDK loaded',
+      'Frontend: IdV: Acuant SDK loaded', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       success: success,
       **extra,
     )
@@ -633,7 +633,7 @@ module AnalyticsEvents
     **_extra
   )
     track_event(
-      'Frontend: IdV: back image added',
+      'Frontend: IdV: back image added', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       width: width,
       height: height,
       mimeType: mimeType,
@@ -654,21 +654,21 @@ module AnalyticsEvents
 
   def idv_back_image_clicked(**extra)
     track_event(
-      'Frontend: IdV: back image clicked',
+      'Frontend: IdV: back image clicked', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       **extra,
     )
   end
 
   def idv_barcode_warning_continue_clicked(**extra)
     track_event(
-      'Frontend: IdV: barcode warning continue clicked',
+      'Frontend: IdV: barcode warning continue clicked', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       **extra,
     )
   end
 
   def idv_barcode_warning_retake_photos_clicked(**extra)
     track_event(
-      'Frontend: IdV: barcode warning retake photos clicked',
+      'Frontend: IdV: barcode warning retake photos clicked', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       **extra,
     )
   end
@@ -719,7 +719,7 @@ module AnalyticsEvents
 
   def idv_capture_troubleshooting_dismissed(**extra)
     track_event(
-      'Frontend: IdV: Capture troubleshooting dismissed',
+      'Frontend: IdV: Capture troubleshooting dismissed', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       **extra,
     )
   end
@@ -1146,7 +1146,7 @@ module AnalyticsEvents
     **_extra
   )
     track_event(
-      'Frontend: IdV: front image added',
+      'Frontend: IdV: front image added', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       width: width,
       height: height,
       mimeType: mimeType,
@@ -1167,7 +1167,7 @@ module AnalyticsEvents
 
   def idv_front_image_clicked(**extra)
     track_event(
-      'Frontend: IdV: front image clicked',
+      'Frontend: IdV: front image clicked', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       **extra,
     )
   end
@@ -1245,7 +1245,7 @@ module AnalyticsEvents
 
   def idv_image_capture_failed(**extra)
     track_event(
-      'Frontend: IdV: Image capture failed',
+      'Frontend: IdV: Image capture failed', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       **extra,
     )
   end
@@ -2113,14 +2113,14 @@ module AnalyticsEvents
 
   def idv_link_sent_capture_doc_polling_complete(**extra)
     track_event(
-      'Frontend: IdV: Link sent capture doc polling complete',
+      'Frontend: IdV: Link sent capture doc polling complete', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       **extra,
     )
   end
 
   def idv_link_sent_capture_doc_polling_started(**extra)
     track_event(
-      'Frontend: IdV: Link sent capture doc polling started',
+      'Frontend: IdV: Link sent capture doc polling started', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       **extra,
     )
   end
@@ -2679,14 +2679,14 @@ module AnalyticsEvents
 
   def idv_warning_action_triggered(**extra)
     track_event(
-      'Frontend: IdV: warning action triggered',
+      'Frontend: IdV: warning action triggered', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       **extra,
     )
   end
 
   def idv_warning_shown(**extra)
     track_event(
-      'Frontend: IdV: warning shown',
+      'Frontend: IdV: warning shown', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       **extra,
     )
   end
