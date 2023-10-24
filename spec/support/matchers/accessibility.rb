@@ -237,7 +237,7 @@ def expect_page_to_have_no_accessibility_violations(page, validate_markup: true)
 end
 
 def activate_skip_link
-  page.evaluate_script('document.activeElement.blur()') if page.active_element.tag_name != 'body'
+  page.evaluate_script('document.activeElement.blur()')
   page.active_element.send_keys(:tab)
   expect(page.active_element).to have_content(t('shared.skip_link'), wait: 5)
   page.active_element.send_keys(:enter)
