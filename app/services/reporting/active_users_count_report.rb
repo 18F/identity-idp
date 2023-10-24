@@ -17,14 +17,14 @@ module Reporting
     def generate_report
       [
         ['Active Users', 'IAL1', 'IDV', 'Total', 'Range start', 'Range end'],
-        monthly_report,
-        fiscal_report,
+        current_month_row,
+        fiscal_year_row,
       ]
     end
 
     private
 
-    def monthly_report
+    def current_month_row
       [
         "Monthly #{report_month_year}",
         monthly_ial1,
@@ -35,9 +35,9 @@ module Reporting
       ]
     end
 
-    def fiscal_report
+    def fiscal_year_row
       [
-        'Fiscal Year',
+        "Fiscal Year #{fiscal_end_date.year}",
         fiscal_year_ial1,
         fiscal_year_ial2,
         fiscal_total,
@@ -89,17 +89,11 @@ module Reporting
     end
 
     def fiscal_start_date
-      @fiscal_start_date ||= begin
-        year = report_date.month >= 10 ? report_date.year : report_date.year - 1
-        report_date.change(year: year, month: 10, day: 1)
-      end
+      CalendarService.fiscal_start_date(report_date)
     end
 
     def fiscal_end_date
-      @fiscal_end_date ||= begin
-        year = report_date.month >= 10 ? report_date.year + 1 : report_date.year
-        report_date.change(year: year, month: 9, day: 30)
-      end
+      CalendarService.fiscal_end_date(report_date)
     end
 
     def report_month_year

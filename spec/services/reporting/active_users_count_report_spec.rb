@@ -66,7 +66,7 @@ RSpec.describe Reporting::ActiveUsersCountReport do
           Date.new(2023, 2, 28),
         ],
         [
-          'Fiscal Year',
+          'Fiscal Year 2023',
           2,
           2,
           4,
