@@ -133,12 +133,12 @@ module DocAuth
 
       def errors_from_http_status(status)
         error = case status
-        when 438
-          Errors::IMAGE_LOAD_FAILURE
-        when 439
-          Errors::PIXEL_DEPTH_FAILURE
-        when 440
-          Errors::IMAGE_SIZE_FAILURE
+                when 438
+                  Errors::IMAGE_LOAD_FAILURE
+                when 439
+                  Errors::PIXEL_DEPTH_FAILURE
+                when 440
+                  Errors::IMAGE_SIZE_FAILURE
                 end
         { general: [error] }
       end
