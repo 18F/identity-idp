@@ -813,6 +813,67 @@ RSpec.describe UserMailer, type: :mailer do
     end
   end
 
+  describe '#gpo_code_expired' do
+    let(:date_letter_requested) { Date.new(1981, 6, 18) }
+
+    let(:user) do
+      user = create(:user, :with_pending_gpo_profile)
+      user.pending_profile.update(gpo_verification_pending_at: date_letter_requested)
+      user
+    end
+
+    let(:mail) do
+      UserMailer.with(user: user, email_address: email_address).gpo_code_expired
+    end
+
+    it_behaves_like 'a system email'
+    it_behaves_like 'an email that respects user email locale preference'
+
+    it 'sends to the specified email' do
+      expect(mail.to).to eq [email_address.email]
+    end
+
+    it 'renders the subject' do
+      expect(mail.subject).to eq t('user_mailer.gpo_code_expired.subject')
+    end
+
+    it 'renders the body intro' do
+      expect(mail.html_part.body).to have_content(
+        strip_tags(
+          t(
+            'user_mailer.gpo_code_expired.body.intro',
+            date_letter_requested: date_letter_requested.strftime(t('time.formats.event_date')),
+            app_name: APP_NAME,
+          ),
+        ),
+      )
+    end
+
+    it 'renders the learn more link' do
+      expect(mail.html_part.body).to have_content(
+        strip_tags(
+          ActionController::Base.helpers.link_to(
+            t('user_mailer.gpo_code_expired.body.learn_more_link'),
+            help_center_redirect_url(
+              category: 'verify-your-identity',
+              article: 'verify-your-address-by-mail',
+              flow: :idv,
+              step: :gpo_send_letter,
+            ),
+            { style: "text-decoration: 'underline'" },
+          ),
+        ),
+      )
+    end
+
+    it 'renders the cta' do
+      expect(mail.html_part.body).to have_link(
+        t('user_mailer.gpo_code_expired.body.cta'),
+        href: idv_url,
+      )
+    end
+  end
+
   describe '#gpo_reminder' do
     let(:date_letter_was_sent) { Date.new(1969, 7, 20) }
 
