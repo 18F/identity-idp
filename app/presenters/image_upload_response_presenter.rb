@@ -11,6 +11,7 @@ class ImageUploadResponsePresenter
   end
 
   def errors
+    puts "@form_response.errors:\t#{@form_response.errors}"
     @form_response.errors.except(:hints).flat_map do |key, errs|
       Array(errs).map { |err| { field: key, message: err } }
     end
@@ -38,6 +39,7 @@ class ImageUploadResponsePresenter
                errors: errors,
                remaining_attempts: remaining_attempts,
                doc_type_supported: doc_type_supported? }
+      puts "errors:\t#{errors}"
       if remaining_attempts&.zero?
         if @form_response.extra[:flow_path] == 'standard'
           json[:redirect] = idv_session_errors_rate_limited_url

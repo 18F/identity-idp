@@ -77,12 +77,13 @@ module Idv
 
     def response_errors
       if %i(name dob dob_min_age state).count{|i| errors.has_key?(i)} > 1
-        # returning this doesn't work ... caused downstream where errors not expected inthis format
-        { pii: I18n.t('doc_auth.errors.general.no_liveness') }
-      else
-        # format errors here with pii key
-        errors
+        return { pii: [ I18n.t('doc_auth.errors.general.no_liveness') ] }
       end
+      error = errors.first
+      if error
+        return { pii: [ error.message ] }
+      end
+      {}
     end
   end
 end
