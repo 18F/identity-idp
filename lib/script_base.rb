@@ -76,6 +76,15 @@ class ScriptBase
     else
       self.class.render_output(result.table, format: config.format, stdout: stdout)
     end
+  rescue => err
+    stdout.puts [
+      ['Error', 'Message'],
+      [err.class.name, err.message],
+    ].to_json
+
+    stderr.puts "#{err.class.name}: #{err.message}"
+
+    exit 1
   end
 
   # rubocop:disable Metrics/BlockLength

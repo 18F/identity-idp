@@ -44,5 +44,29 @@ RSpec.describe ScriptBase do
         expect(JSON.parse(Zlib::Inflate.inflate(Base64.decode64(stdout.string)))).to eq(table)
       end
     end
+
+    context 'throwing an error inside the task' do
+      let(:subtask_class) do
+        Class.new do
+          def run(args:, config:) # rubocop:disable Lint/UnusedMethodArgument
+            raise 'some dangerous error'
+          end
+        end
+      end
+
+      it 'logs the error message to stderr but not the backtrace' do
+        expect(base).to receive(:exit).with(1)
+
+        expect { base.run }.to_not raise_error
+
+        expect(stderr.string.chomp).to eq('RuntimeError: some dangerous error')
+        expect(JSON.parse(stdout.string)).to eq(
+          [
+            %w[Error Message],
+            ['RuntimeError', 'some dangerous error'],
+          ],
+        )
+      end
+    end
   end
 end
