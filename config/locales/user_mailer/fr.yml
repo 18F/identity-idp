@@ -103,7 +103,7 @@ fr:
         cta: Commencez à vérifier votre identité
         intro: Vous avez demandé une lettre avec un code de vérification le
           %{date_letter_requested}. Ce code de vérification a expiré.
-          Reconnectez-vous à Login.gov pour reprendre la vérification de votre
+          Reconnectez-vous à %{app_name} pour reprendre la vérification de votre
           identité.
         learn_more_link: En savoir plus sur la vérification de votre adresse par courrier.
       subject: Votre code de vérification a expiré
