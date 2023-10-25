@@ -36,7 +36,7 @@ margins or borders.
 ### Naming Conventions
 
 - Files within `app/javascript` should be named as kebab-case, e.g. `./path-to/my-javascript.ts`.
-- Variables should be named as camelCase, e.g. `const myFavoriteNumber = 1;`.
+- Variables and functions (excluding React components) should be named as camelCase, e.g. `const myFavoriteNumber = 1;`.
    - Only the first letter of an abbreviation should be capitalized, e.g. `const userId = 10;`.
    - All letters of an acronym should be capitalized, e.g. `const siteURL = 'https://example.com';`.
 - Classes and React components should be named as PascalCase (upper camel case), e.g. `class MyCustomElement {}`.
