@@ -5,6 +5,7 @@
 # https://github.com/bbatsov/rubocop/blob/master/config/disabled.yml
 require:
   - rubocop-rails
+  - rubocop-rspec
   - rubocop-performance
   - ./lib/linters/analytics_event_name_linter.rb
   - ./lib/linters/localized_validation_message_linter.rb
@@ -995,6 +996,9 @@ Rails/WhereNot:
   Enabled: false
 
 Rails/WhereNotWithMultipleConditions:
+  Enabled: true
+
+RSpec/LeakyConstantDeclaration:
   Enabled: true
 
 Security/Eval:

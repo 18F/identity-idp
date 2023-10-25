@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'idv gpo step' do
+RSpec.feature 'idv request letter step' do
   include IdvStepHelper
   include OidcAuthHelper
 
@@ -17,15 +17,15 @@ RSpec.feature 'idv gpo step' do
       and_return(days_passed + 1)
   end
 
-  it 'redirects to and completes the review step when the user chooses to verify by letter', :js do
+  it 'visits and completes the enter password step when the user chooses verify by letter', :js do
     start_idv_from_sp
     complete_idv_steps_before_gpo_step
     click_on t('idv.buttons.mail.send')
 
-    expect(page).to have_content(t('idv.titles.session.review', app_name: APP_NAME))
-    expect(page).to have_current_path(idv_review_path)
+    expect(page).to have_content(t('idv.titles.session.enter_password', app_name: APP_NAME))
+    expect(page).to have_current_path(idv_enter_password_path)
 
-    complete_review_step
+    complete_enter_password_step
     expect(page).to have_content(t('idv.messages.gpo.letter_on_the_way'))
   end
 

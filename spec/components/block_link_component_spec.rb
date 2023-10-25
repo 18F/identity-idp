@@ -30,6 +30,7 @@ RSpec.describe BlockLinkComponent, type: :component do
   end
 
   context 'with custom renderer' do
+    # rubocop:disable RSpec/LeakyConstantDeclaration
     class ExampleBlockLinkCustomRendererComponent < BaseComponent
       def initialize(href:, **)
         @href = href
@@ -39,6 +40,7 @@ RSpec.describe BlockLinkComponent, type: :component do
         content_tag(:button, "Example #{content.strip}", data: { href: @href })
       end
     end
+    # rubocop:enable RSpec/LeakyConstantDeclaration
 
     it 'renders using the custom renderer' do
       rendered = render_inline BlockLinkComponent.new(

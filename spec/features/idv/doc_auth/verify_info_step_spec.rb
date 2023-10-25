@@ -6,6 +6,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
 
   let(:fake_analytics) { FakeAnalytics.new }
   let(:fake_attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
+  let(:user) { user_with_2fa }
 
   # values from Idp::Constants::MOCK_IDV_APPLICANT
   let(:fake_pii_details) do
@@ -25,7 +26,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
     allow_any_instance_of(ApplicationController).to receive(:irs_attempts_api_tracker).
       and_return(fake_attempts_tracker)
-    sign_in_and_2fa_user
+    sign_in_and_2fa_user(user)
     complete_doc_auth_steps_before_ssn_step
   end
 
@@ -110,6 +111,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
     click_idv_continue
 
     expect(page).to have_current_path(idv_session_errors_warning_path)
+    expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
     click_on t('idv.failure.button.warning')
 
     expect(page).to have_current_path(idv_verify_info_path)
@@ -139,7 +141,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
     expect(page).to have_current_path(idv_verify_info_path)
   end
 
-  context 'resolution throttling' do
+  context 'resolution rate limiting' do
     let(:max_resolution_attempts) { 3 }
     before do
       allow(IdentityConfig.store).to receive(:idv_max_attempts).
@@ -172,6 +174,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
 
       click_idv_continue
       expect(page).to have_current_path(idv_session_errors_failure_path)
+      expect(page).not_to have_css('.step-indicator__step--current', text: text, wait: 5)
       expect(fake_analytics).to have_logged_event(
         'Rate Limit Reached',
         limiter_type: :idv_resolution,
@@ -182,11 +185,12 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
       expect(page).to have_current_path(idv_session_errors_failure_path)
 
       travel_to(IdentityConfig.store.idv_attempt_window_in_hours.hours.from_now + 1) do
-        sign_in_and_2fa_user
+        sign_in_and_2fa_user(user)
         complete_doc_auth_steps_before_verify_step
         click_idv_continue
 
         expect(page).to have_current_path(idv_phone_path)
+        expect(RateLimiter.new(user: user, rate_limit_type: :idv_resolution)).to be_limited
       end
     end
 
@@ -196,7 +200,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
     end
   end
 
-  context 'ssn throttling' do
+  context 'ssn rate limiting' do
     # Simulates someone trying same SSN with second account
     let(:max_resolution_attempts) { 4 }
     let(:max_ssn_attempts) { 3 }
@@ -232,7 +236,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
       expect(page).to have_current_path(idv_session_errors_ssn_failure_path)
 
       travel_to(IdentityConfig.store.idv_attempt_window_in_hours.hours.from_now + 1) do
-        sign_in_and_2fa_user
+        sign_in_and_2fa_user(user)
         complete_doc_auth_steps_before_verify_step
         click_idv_continue
 
@@ -272,7 +276,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
         trace_id: anything,
         threatmetrix_session_id: anything,
         request_ip: kind_of(String),
-        double_address_verification: false,
+        ipp_enrollment_in_progress: false,
       }
     end
 
@@ -281,7 +285,6 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
         allow(IdentityConfig.store).to receive(:aamva_supported_jurisdictions).and_return(
           mock_state_id_jurisdiction,
         )
-        user = create(:user, :fully_registered)
         expect_any_instance_of(Idv::Agent).
           to receive(:proof_resolution).
           with(
@@ -306,7 +309,6 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
           IdentityConfig.store.aamva_supported_jurisdictions -
             mock_state_id_jurisdiction,
         )
-        user = create(:user, :fully_registered)
         expect_any_instance_of(Idv::Agent).
           to receive(:proof_resolution).
           with(
@@ -329,7 +331,6 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
       it 'does not perform the state ID check' do
         allow(IdentityConfig.store).to receive(:aamva_sp_banlist_issuers).
           and_return("[\"#{OidcAuthHelper::OIDC_IAL1_ISSUER}\"]")
-        user = create(:user, :fully_registered)
         expect_any_instance_of(Idv::Agent).
           to receive(:proof_resolution).
           with(
@@ -352,7 +353,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
 
   context 'async missing' do
     it 'allows resubmitting form' do
-      sign_in_and_2fa_user
+      sign_in_and_2fa_user(user)
       complete_doc_auth_steps_before_verify_step
 
       allow(DocumentCaptureSession).to receive(:find_by).
@@ -374,7 +375,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
         **fake_pii_details,
         ssn: DocAuthHelper::GOOD_SSN,
       )
-      sign_in_and_2fa_user
+      sign_in_and_2fa_user(user)
       complete_doc_auth_steps_before_verify_step
 
       allow(DocumentCaptureSession).to receive(:find_by).
@@ -389,7 +390,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
 
   context 'async timed out' do
     it 'allows resubmitting form' do
-      sign_in_and_2fa_user
+      sign_in_and_2fa_user(user)
       complete_doc_auth_steps_before_verify_step
 
       allow(DocumentCaptureSession).to receive(:find_by).
@@ -408,7 +409,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
     before do
       allow_any_instance_of(OutageStatus).to receive(:any_phone_vendor_outage?).and_return(true)
       visit_idp_from_sp_with_ial2(:oidc)
-      sign_in_and_2fa_user
+      sign_in_and_2fa_user(user)
       complete_doc_auth_steps_before_verify_step
     end
 

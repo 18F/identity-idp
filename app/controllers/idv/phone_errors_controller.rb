@@ -6,7 +6,7 @@ module Idv
 
     before_action :confirm_two_factor_authenticated
     before_action :confirm_idv_phone_step_needed
-    before_action :confirm_idv_phone_step_submitted
+    before_action :confirm_idv_phone_step_submitted, except: [:failure]
     before_action :set_gpo_letter_available
     before_action :ignore_form_step_wait_requests
 
@@ -32,6 +32,8 @@ module Idv
     end
 
     def failure
+      return redirect_to(idv_phone_url) unless rate_limiter.limited?
+
       @expires_at = rate_limiter.expires_at
       track_event(type: :failure)
     end
@@ -44,7 +46,7 @@ module Idv
 
     def confirm_idv_phone_step_needed
       return unless user_fully_authenticated?
-      redirect_to idv_review_url if idv_session.user_phone_confirmation == true
+      redirect_to idv_enter_password_url if idv_session.user_phone_confirmation == true
     end
 
     def confirm_idv_phone_step_submitted

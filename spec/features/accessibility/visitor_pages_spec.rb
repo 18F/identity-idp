@@ -6,6 +6,10 @@ RSpec.feature 'Accessibility on pages that do not require authentication', :js d
     visit root_path
 
     expect_page_to_have_no_accessibility_violations(page)
+
+    activate_skip_link
+    page.active_element.send_keys(:tab)
+    expect(page.active_element).to match_css('a', text: t('links.sign_in'), wait: 5)
   end
 
   scenario 'forgot password page' do

@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Idv::VerifyInfoController do
-  include IdvHelper
-
   let(:user) { create(:user) }
   let(:analytics_hash) do
     {
@@ -101,12 +99,12 @@ RSpec.describe Idv::VerifyInfoController do
     end
 
     context 'when the user has already verified their info' do
-      it 'redirects to the review controller' do
+      it 'redirects to the enter password controller' do
         subject.idv_session.resolution_successful = true
 
         get :show
 
-        expect(response).to redirect_to(idv_review_url)
+        expect(response).to redirect_to(idv_enter_password_url)
       end
     end
 
@@ -295,7 +293,7 @@ RSpec.describe Idv::VerifyInfoController do
             verified_attributes: [],
           ),
           device_profiling_result: Proofing::DdpResult.new(success: true),
-          double_address_verification: false,
+          ipp_enrollment_in_progress: false,
           residential_resolution_result: Proofing::Resolution::Result.new(success: true),
           resolution_result: Proofing::Resolution::Result.new(success: true),
           same_address_as_id: true,

@@ -56,7 +56,7 @@ module Users
     private
 
     def track_piv_cac_setup_visit
-      analytics.piv_cac_setup_visit(**analytics_properties)
+      analytics.piv_cac_setup_visited(**analytics_properties)
     end
 
     def remove_piv_cac

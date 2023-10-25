@@ -107,6 +107,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
           getting_started_ab_test_bucket: :welcome_default,
+          phone_question_ab_test_bucket: :bypass_phone_question,
         )
 
         expect(fake_analytics).to have_logged_event(
@@ -143,6 +144,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           back_image_fingerprint: an_instance_of(String),
           doc_type_supported: boolean,
           getting_started_ab_test_bucket: :welcome_default,
+          phone_question_ab_test_bucket: :bypass_phone_question,
         )
       end
 
@@ -205,6 +207,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
           getting_started_ab_test_bucket: :welcome_default,
+          phone_question_ab_test_bucket: :bypass_phone_question,
         )
       end
 
@@ -338,6 +341,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
           getting_started_ab_test_bucket: :welcome_default,
+          phone_question_ab_test_bucket: :bypass_phone_question,
           side: 'both',
         )
       end

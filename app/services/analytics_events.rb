@@ -289,23 +289,18 @@ module AnalyticsEvents
     )
   end
 
-  # @param [String, nil] error error message
-  # @param [String, nil] uuid document capture session uuid
-  # @param [String, nil] result_id document capture session result id
-  # When there is an error loading async results during the document authentication flow
-  def doc_auth_async(error: nil, uuid: nil, result_id: nil, **extra)
-    track_event('Doc Auth Async', error: error, uuid: uuid, result_id: result_id, **extra) # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
-  end
-
   # @param [String] message the warning
   # @param [String] getting_started_ab_test_bucket Which initial IdV screen the user saw
+  # @param [String] phone_question_ab_test_bucket Prompt user with phone question before doc auth
   # Logged when there is a non-user-facing error in the doc auth process, such as an unrecognized
   # field from a vendor
-  def doc_auth_warning(message: nil, getting_started_ab_test_bucket: nil, **extra)
+  def doc_auth_warning(message: nil, getting_started_ab_test_bucket: nil,
+                       phone_question_ab_test_bucket: nil, **extra)
     track_event(
       'Doc Auth Warning', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       message: message,
       getting_started_ab_test_bucket: getting_started_ab_test_bucket,
+      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
       **extra,
     )
   end
@@ -741,6 +736,17 @@ module AnalyticsEvents
     track_event('IdV: doc auth link_sent visited', **extra) # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
+  # The "phone question" step: Desktop user has submitted they
+  # do or do not have a phone with a a camera via desktop
+  def idv_doc_auth_phone_question_submitted(**extra)
+    track_event(:idv_doc_auth_phone_question_submitted, **extra)
+  end
+
+  # Desktop user has reached the above "phone question" view
+  def idv_doc_auth_phone_question_visited(**extra)
+    track_event(:idv_doc_auth_phone_question_visited, **extra)
+  end
+
   def idv_doc_auth_randomizer_defaulted
     track_event(
       'IdV: doc_auth random vendor error', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
@@ -776,6 +782,7 @@ module AnalyticsEvents
   # @param [String] front_image_fingerprint Fingerprint of front image data
   # @param [String] back_image_fingerprint Fingerprint of back image data
   # @param [String] getting_started_ab_test_bucket Which initial IdV screen the user saw
+  # @param [String] phone_question_ab_test_bucket Prompt user with phone question before doc auth
   # The document capture image uploaded was locally validated during the IDV process
   def idv_doc_auth_submitted_image_upload_form(
     success:,
@@ -787,6 +794,7 @@ module AnalyticsEvents
     front_image_fingerprint: nil,
     back_image_fingerprint: nil,
     getting_started_ab_test_bucket: nil,
+    phone_question_ab_test_bucket: nil,
     **extra
   )
     track_event(
@@ -800,6 +808,7 @@ module AnalyticsEvents
       front_image_fingerprint: front_image_fingerprint,
       back_image_fingerprint: back_image_fingerprint,
       getting_started_ab_test_bucket: getting_started_ab_test_bucket,
+      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
       **extra,
     )
   end
@@ -820,6 +829,7 @@ module AnalyticsEvents
   # @param [String] front_image_fingerprint Fingerprint of front image data
   # @param [String] back_image_fingerprint Fingerprint of back image data
   # @param [String] getting_started_ab_test_bucket Which initial IdV screen the user saw
+  # @param [String] phone_question_ab_test_bucket Prompt user with phone question before doc auth
   # The document capture image was uploaded to vendor during the IDV process
   def idv_doc_auth_submitted_image_upload_vendor(
     success:,
@@ -837,6 +847,7 @@ module AnalyticsEvents
     front_image_fingerprint: nil,
     back_image_fingerprint: nil,
     getting_started_ab_test_bucket: nil,
+    phone_question_ab_test_bucket: nil,
     **extra
   )
     track_event(
@@ -857,6 +868,7 @@ module AnalyticsEvents
       front_image_fingerprint: front_image_fingerprint,
       back_image_fingerprint: back_image_fingerprint,
       getting_started_ab_test_bucket: getting_started_ab_test_bucket,
+      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
       **extra,
     )
   end
@@ -934,6 +946,55 @@ module AnalyticsEvents
 
   def idv_doc_auth_welcome_visited(**extra)
     track_event('IdV: doc auth welcome visited', **extra) # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
+  end
+
+  # User submitted IDV password confirm page
+  # @param [Boolean] success
+  # @param [Boolean] fraud_review_pending
+  # @param [Boolean] fraud_rejection
+  # @param [Boolean] gpo_verification_pending
+  # @param [Boolean] in_person_verification_pending
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # @param [String, nil] deactivation_reason Reason user's profile was deactivated, if any.
+  def idv_enter_password_complete(
+    success:,
+    fraud_review_pending:,
+    fraud_rejection:,
+    gpo_verification_pending:,
+    in_person_verification_pending:,
+    deactivation_reason: nil,
+    proofing_components: nil,
+    **extra
+  )
+    track_event(
+      'IdV: review complete', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
+      success: success,
+      deactivation_reason: deactivation_reason,
+      fraud_review_pending: fraud_review_pending,
+      gpo_verification_pending: gpo_verification_pending,
+      in_person_verification_pending: in_person_verification_pending,
+      fraud_rejection: fraud_rejection,
+      proofing_components: proofing_components,
+      **extra,
+    )
+  end
+
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's
+  #        current proofing components
+  # @param [String] address_verification_method The method (phone or gpo) being
+  #        used to verify the user's identity
+  # User visited IDV password confirm page
+  def idv_enter_password_visited(
+    proofing_components: nil,
+    address_verification_method: nil,
+    **extra
+  )
+    track_event(
+      'IdV: review info visited', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
+      address_verification_method: address_verification_method,
+      proofing_components: proofing_components,
+      **extra,
+    )
   end
 
   # @param [Boolean] success
@@ -1044,9 +1105,14 @@ module AnalyticsEvents
     )
   end
 
+  # The user visited the gpo confirm cancellation screen from RequestLetter
+  def idv_gpo_confirm_start_over_before_letter_visited(**extra)
+    track_event(:idv_gpo_confirm_start_over_before_letter_visited, **extra)
+  end
+
   # The user visited the gpo confirm cancellation screen
-  def idv_gpo_confirm_start_over_visited
-    track_event('IdV: gpo confirm start over visited') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
+  def idv_gpo_confirm_start_over_visited(**extra)
+    track_event('IdV: gpo confirm start over visited', **extra) # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # A GPO reminder email was sent to the user
@@ -2338,53 +2404,6 @@ module AnalyticsEvents
     )
   end
 
-  # User submitted IDV password confirm page
-  # @param [Boolean] success
-  # @param [Boolean] fraud_review_pending
-  # @param [Boolean] fraud_rejection
-  # @param [Boolean] gpo_verification_pending
-  # @param [Boolean] in_person_verification_pending
-  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
-  # @param [String, nil] deactivation_reason Reason user's profile was deactivated, if any.
-  def idv_review_complete(
-    success:,
-    fraud_review_pending:,
-    fraud_rejection:,
-    gpo_verification_pending:,
-    in_person_verification_pending:,
-    deactivation_reason: nil,
-    proofing_components: nil,
-    **extra
-  )
-    track_event(
-      'IdV: review complete', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
-      success: success,
-      deactivation_reason: deactivation_reason,
-      fraud_review_pending: fraud_review_pending,
-      gpo_verification_pending: gpo_verification_pending,
-      in_person_verification_pending: in_person_verification_pending,
-      fraud_rejection: fraud_rejection,
-      proofing_components: proofing_components,
-      **extra,
-    )
-  end
-
-  # @param [Idv::ProofingComponentsLogging] proofing_components User's
-  #        current proofing components
-  # @param [String] address_verification_method The method (phone or gpo) being
-  #        used to verify the user's identity
-  # User visited IDV password confirm page
-  def idv_review_info_visited(proofing_components: nil,
-                              address_verification_method: nil,
-                              **extra)
-    track_event(
-      'IdV: review info visited', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
-      address_verification_method: address_verification_method,
-      proofing_components: proofing_components,
-      **extra,
-    )
-  end
-
   # Tracks when the user visits one of the the session error pages.
   # @param [String] type
   # @param [Integer,nil] attempts_remaining
@@ -2660,13 +2679,14 @@ module AnalyticsEvents
     )
   end
 
+  # @identity.idp.previous_event_name Multi-Factor Authentication: Added PIV_CAC
   # Tracks when the user has added the MFA method piv_cac to their account
   # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
   # @param [Boolean] in_account_creation_flow whether user is going through creation flow
   def multi_factor_auth_added_piv_cac(enabled_mfa_methods_count:, in_account_creation_flow:,
                                       **extra)
     track_event(
-      'Multi-Factor Authentication: Added PIV_CAC', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
+      :multi_factor_auth_added_piv_cac,
       {
         method_name: :piv_cac,
         enabled_mfa_methods_count:,
@@ -2775,6 +2795,7 @@ module AnalyticsEvents
     )
   end
 
+  # @identity.idp.previous_event_name 'Multi-Factor Authentication: enter PIV CAC visited'
   # @param ["authentication","reauthentication","confirmation"] context user session context
   # @param ["piv_cac"] multi_factor_auth_method
   # @param [Integer, nil] piv_cac_configuration_id PIV/CAC configuration database ID
@@ -2786,7 +2807,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'Multi-Factor Authentication: enter PIV CAC visited', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
+      :multi_factor_auth_enter_piv_cac,
       context: context,
       multi_factor_auth_method: multi_factor_auth_method,
       piv_cac_configuration_id: piv_cac_configuration_id,
@@ -3360,29 +3381,36 @@ module AnalyticsEvents
   end
 
   # @identity.idp.previous_event_name User Registration: piv cac disabled
+  # @identity.idp.previous_event_name PIV CAC disabled
   # Tracks when user's piv cac is disabled
   def piv_cac_disabled
-    track_event('PIV CAC disabled') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
+    track_event(:piv_cac_disabled)
   end
 
+  # @identity.idp.previous_event_name PIV/CAC login
   # @param [Boolean] success
   # @param [Hash] errors
   # tracks piv cac login event
   def piv_cac_login(success:, errors:, **extra)
     track_event(
-      'PIV/CAC Login', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
+      :piv_cac_login,
       success: success,
       errors: errors,
       **extra,
     )
   end
 
+  def piv_cac_login_visited
+    track_event(:piv_cac_login_visited)
+  end
+
   # @identity.idp.previous_event_name User Registration: piv cac setup visited
+  # @identity.idp.previous_event_name PIV CAC setup visited
   # Tracks when user's piv cac setup
   # @param [Boolean] in_account_creation_flow
-  def piv_cac_setup_visit(in_account_creation_flow:, **extra)
+  def piv_cac_setup_visited(in_account_creation_flow:, **extra)
     track_event(
-      'PIV CAC setup visited', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
+      :piv_cac_setup_visited,
       in_account_creation_flow:,
       **extra,
     )
@@ -3744,11 +3772,6 @@ module AnalyticsEvents
   # tracks when a user's session is timed out
   def session_total_duration_timeout
     track_event('User Maximum Session Length Exceeded') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
-  end
-
-  # Tracks if a user clicks the "You will also need" accordion on the homepage
-  def sign_in_idv_requirements_accordion_clicked
-    track_event('Sign In: IdV requirements accordion clicked') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # @param [String] flash

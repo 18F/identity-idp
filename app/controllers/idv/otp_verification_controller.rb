@@ -33,8 +33,8 @@ module Idv
       if result.success?
         idv_session.user_phone_confirmation = true
         save_in_person_notification_phone
-        flash[:success] = t('idv.messages.review.phone_verified')
-        redirect_to idv_review_url
+        flash[:success] = t('idv.messages.enter_password.phone_verified')
+        redirect_to idv_enter_password_url
       else
         handle_otp_confirmation_failure
       end
@@ -44,7 +44,7 @@ module Idv
 
     def confirm_step_needed
       return unless idv_session.user_phone_confirmation
-      redirect_to idv_review_url
+      redirect_to idv_enter_password_url
     end
 
     def confirm_otp_sent

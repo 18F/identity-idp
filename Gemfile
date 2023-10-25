@@ -18,6 +18,7 @@ gem 'barby', '~> 0.6.8'
 gem 'base32-crockford'
 gem 'bootsnap', '~> 1.0', require: false
 gem 'browser'
+gem 'caxlsx', require: false
 gem 'concurrent-ruby'
 gem 'connection_pool'
 gem 'cssbundling-rails'
@@ -79,6 +80,7 @@ gem 'webauthn', '~> 2.5.2'
 gem 'xmldsig', '~> 0.6'
 gem 'xmlenc', '~> 0.7', '>= 0.7.1'
 gem 'yard', require: false
+gem 'zlib', require: false
 
 # This version of the zxcvbn gem matches the data and behavior of the zxcvbn NPM package.
 # It should not be updated without verifying that the behavior still matches JS version 4.4.2.
@@ -87,7 +89,6 @@ gem 'zxcvbn', '0.1.9'
 group :development do
   gem 'better_errors', '>= 2.5.1'
   gem 'derailed_benchmarks'
-  gem 'guard-rspec', require: false
   gem 'irb'
   gem 'letter_opener', '~> 1.8'
   gem 'rack-mini-profiler', '>= 1.1.3', require: false
@@ -107,10 +108,12 @@ group :development, :test do
   gem 'pry-doc'
   gem 'pry-rails'
   gem 'psych'
+  gem 'rspec', '~> 3.12.0'
   gem 'rspec-rails', '~> 6.0'
   gem 'rubocop', '~> 1.55.1', require: false
   gem 'rubocop-performance', '~> 1.18.0', require: false
   gem 'rubocop-rails', '>= 2.5.2', require: false
+  gem 'rubocop-rspec', require: false
 end
 
 group :test do
@@ -127,6 +130,7 @@ group :test do
   gem 'rspec-retry'
   gem 'rspec_junit_formatter'
   gem 'shoulda-matchers', '~> 4.0', require: false
+  gem 'simple_xlsx_reader', require: false
   gem 'tableparser', require: false
   gem 'webmock'
   gem 'zonebie'

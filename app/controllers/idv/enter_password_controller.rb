@@ -1,5 +1,5 @@
 module Idv
-  class ReviewController < ApplicationController
+  class EnterPasswordController < ApplicationController
     before_action :personal_key_confirmed
 
     include IdvStepConcern
@@ -10,7 +10,6 @@ module Idv
     before_action :confirm_verify_info_step_complete
     before_action :confirm_address_step_complete
     before_action :confirm_current_password, only: [:create]
-    skip_before_action :confirm_not_rate_limited
 
     helper_method :step_indicator_step
 
@@ -20,18 +19,13 @@ module Idv
     def new
       Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
         call(:encrypt, :view, true)
-      analytics.idv_review_info_visited(
+      analytics.idv_enter_password_visited(
         address_verification_method: address_verification_method,
         **ab_test_analytics_buckets,
       )
 
       @title = title
       @heading = heading
-
-      flash_now = flash.now
-      if gpo_mail_service.mail_spammed?
-        flash_now[:error] = t('idv.errors.mail_limit_reached')
-      end
 
       @verifying_by_mail = address_verification_method == 'gpo'
     end
@@ -52,7 +46,7 @@ module Idv
 
       redirect_to next_step
 
-      analytics.idv_review_complete(
+      analytics.idv_enter_password_complete(
         success: true,
         fraud_review_pending: idv_session.profile.fraud_review_pending?,
         fraud_rejection: idv_session.profile.fraud_rejection?,
@@ -85,21 +79,21 @@ module Idv
     private
 
     def title
-      gpo_user_flow? ? t('titles.idv.review_letter') : t('titles.idv.review')
+      gpo_user_flow? ? t('titles.idv.enter_password_letter') : t('titles.idv.enter_password')
     end
 
     def heading
       if gpo_user_flow?
-        t('idv.titles.session.review_letter', app_name: APP_NAME)
+        t('idv.titles.session.enter_password_letter', app_name: APP_NAME)
       else
-        t('idv.titles.session.review', app_name: APP_NAME)
+        t('idv.titles.session.enter_password', app_name: APP_NAME)
       end
     end
 
     def confirm_current_password
       return if valid_password?
 
-      analytics.idv_review_complete(
+      analytics.idv_enter_password_complete(
         success: false,
         gpo_verification_pending: current_user.gpo_verification_pending_profile?,
         # note: this always returns false as of 8/23
@@ -111,7 +105,7 @@ module Idv
       irs_attempts_api_tracker.idv_password_entered(success: false)
 
       flash[:error] = t('idv.errors.incorrect_password')
-      redirect_to idv_review_url
+      redirect_to idv_enter_password_url
     end
 
     def gpo_mail_service
@@ -192,7 +186,7 @@ module Idv
         reason: 'Request exception',
       )
       flash[:error] = t('idv.failure.exceptions.internal_error')
-      redirect_to idv_review_url
+      redirect_to idv_enter_password_url
     end
   end
 end

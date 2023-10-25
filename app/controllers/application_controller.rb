@@ -7,6 +7,7 @@ class ApplicationController < ActionController::Base
   include VerifySpAttributesConcern
   include EffectiveUser
   include SecondMfaReminderConcern
+  include TwoFactorAuthenticatableMethods
 
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
@@ -220,7 +221,7 @@ class ApplicationController < ActionController::Base
   end
 
   def signed_in_url
-    return url_for_pending_profile_reason if user_has_pending_profile?
+    return idv_verify_by_mail_enter_code_url if current_user.gpo_verification_pending_profile?
     return backup_code_reminder_url if user_needs_backup_code_reminder?
     account_path
   end
@@ -380,7 +381,7 @@ class ApplicationController < ActionController::Base
     @service_provider_mfa_policy ||= ServiceProviderMfaPolicy.new(
       user: current_user,
       service_provider: sp_from_sp_session,
-      auth_method: user_session[:auth_method],
+      auth_methods_session:,
       aal_level_requested: sp_session[:aal_level_requested],
       piv_cac_requested: sp_session[:piv_cac_requested],
       phishing_resistant_requested: sp_session[:phishing_resistant_requested],

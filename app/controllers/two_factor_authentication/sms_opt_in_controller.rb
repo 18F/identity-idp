@@ -73,7 +73,7 @@ module TwoFactorAuthentication
       if user_fully_authenticated?
         account_path
       elsif decorated_sp_session.sp_name
-        return_to_sp_cancel_path
+        return_to_sp_cancel_path(step: :sms_opt_in)
       else
         sign_out_path
       end

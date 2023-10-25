@@ -165,9 +165,9 @@ module Reporting
       wait_for_query_result(query_id)
     rescue Aws::CloudWatchLogs::Errors::InvalidParameterException => err
       if err.message.match?(/End time should not be before the service was generally available/)
-        # rubocop:disable Layout/LineLength
-        log(:warn, "query end_time=#{end_time} (#{Time.zone.at(end_time)}) is before Cloudwatch Insights availability, skipping")
-        # rubocop:enable Layout/LineLength
+        # rubocop:disable Layout/LineLength, Rails/TimeZone
+        log(:warn, "query end_time=#{end_time} (#{Time.at(end_time)}) is before Cloudwatch Insights availability, skipping")
+        # rubocop:enable Layout/LineLength, Rails/TimeZone
         Aws::CloudWatchLogs::Types::GetQueryResultsResponse.new(results: [])
       else
         raise err

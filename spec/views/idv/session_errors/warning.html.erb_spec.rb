@@ -14,6 +14,8 @@ RSpec.describe 'idv/session_errors/warning.html.erb' do
     assign(:remaining_attempts, remaining_attempts)
     assign(:try_again_path, try_again_path)
 
+    @step_indicator_steps = Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS
+
     render
   end
 
@@ -30,7 +32,10 @@ RSpec.describe 'idv/session_errors/warning.html.erb' do
   end
 
   it 'shows a cancel link' do
-    expect(rendered).to have_link(t('links.cancel'), href: idv_cancel_path)
+    expect(rendered).to have_link(
+      t('links.cancel'),
+      href: idv_cancel_path(step: :invalid_session),
+    )
   end
 
   context 'with a nil user_session' do
@@ -43,7 +48,10 @@ RSpec.describe 'idv/session_errors/warning.html.erb' do
           t('idv.warning.attempts_html', count: remaining_attempts),
         ),
       )
-      expect(rendered).to have_link(t('links.cancel'), href: idv_cancel_path)
+      expect(rendered).to have_link(
+        t('links.cancel'),
+        href: idv_cancel_path(step: :invalid_session),
+      )
     end
   end
 end

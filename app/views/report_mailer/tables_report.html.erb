@@ -1,12 +1,11 @@
 <%#
 - @message: text to put in the beginning of the email
-- @tables: an array of tables, expects first "row" to be an options hash
+- @reports: an array of EmailableReport
 %>
 <%= @message %><br>
-<% @tables.each do |table| %>
-  <% options, header, *rows = table %>
-
-  <h2><%= options[:title] %></h2>
+<% @reports.each do |report| %>
+  <% header, *rows = report.table %>
+  <h2><%= report.title %></h2>
 
   <table class="usa-table">
     <thead>
@@ -21,8 +20,8 @@
         <tr>
           <% row.each do |cell| %>
             <td <%= cell.is_a?(Numeric) ? 'class=table-number' : nil %> >
-              <% if cell.is_a?(Float) && options[:float_as_percent] %>
-                <%= number_to_percentage(cell * 100, precision: options[:precision] || 2) %>
+              <% if cell.is_a?(Float) && report.float_as_percent? %>
+                <%= number_to_percentage(cell * 100, precision: report.precision || 2) %>
               <% else %>
                 <%= number_with_delimiter(cell) %>
               <% end %>

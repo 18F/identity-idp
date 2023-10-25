@@ -25,10 +25,12 @@ class ScriptBase
     :format,
     :show_help,
     :requesting_issuers,
+    :deflate,
     keyword_init: true,
   ) do
     alias_method :include_missing?, :include_missing
     alias_method :show_help?, :show_help
+    alias_method :deflate?, :deflate
   end
 
   def config
@@ -37,6 +39,7 @@ class ScriptBase
       format: :table,
       show_help: false,
       requesting_issuers: [],
+      deflate: false,
     )
   end
 
@@ -59,13 +62,36 @@ class ScriptBase
       stderr.puts "*Messages*:\n#{result.messages.map { |message| "    • #{message}" }.join("\n")}"
     end
 
-    if result.json
+    if config.deflate?
+      require 'zlib'
+      require 'base64'
+      stdout.puts Base64.encode64(
+        Zlib::Deflate.deflate(
+          (result.json || result.table).to_json,
+          Zlib::BEST_COMPRESSION,
+        ),
+      )
+    elsif result.json
       stdout.puts result.json.to_json
     else
       self.class.render_output(result.table, format: config.format, stdout: stdout)
     end
+  rescue => err
+    self.class.render_output(
+      [
+        ['Error', 'Message'],
+        [err.class.name, err.message],
+      ],
+      format: config.format,
+      stdout: stdout,
+    )
+
+    stderr.puts "#{err.class.name}: #{err.message}"
+
+    exit 1 # rubocop:disable Rails/Exit
   end
 
+  # rubocop:disable Metrics/BlockLength
   def option_parser
     @option_parser ||= OptionParser.new do |opts|
       opts.banner = banner
@@ -92,6 +118,10 @@ class ScriptBase
         config.format = :json
       end
 
+      opts.on('--deflate', 'Use DEFLATE compression on the output') do
+        config.deflate = true
+      end
+
       opts.on('--[no-]include-missing', <<~STR) do |include_missing|
         Whether or not to add rows in the output for missing inputs, defaults to on
       STR
@@ -99,6 +129,7 @@ class ScriptBase
       end
     end
   end
+  # rubocop:enable Metrics/BlockLength
 
   # @param [Array<Array<String>>] rows
   def self.render_output(rows, format:, stdout: STDOUT)

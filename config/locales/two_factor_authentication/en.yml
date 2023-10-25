@@ -99,8 +99,8 @@ en:
     otp_delivery_preference:
       instruction: You can change this anytime. If you use a landline number, select
         “Phone call.”
-      landline_warning_html: The phone number entered appears to be a <b>landline
-        phone</b>. Request a one-time code by %{phone_setup_path} instead.
+      landline_warning_html: The phone number entered appears to be a <strong>landline
+        phone</strong>. Request a one-time code by %{phone_setup_path} instead.
       no_supported_options: We are unable to verify phone numbers from %{location}
       phone_call: phone call
       sms: Text message (SMS)
@@ -109,7 +109,7 @@ en:
       voice: Phone call
       voice_unsupported: We are unable to call phone numbers in %{location}.
     otp_make_default_number:
-      instruction: Send text messages and calls to this number by default.
+      instruction: Send one-time codes to this number by default.
       label: Default phone number
       one_number_instruction: You must have more than one phone number added to select
         a default phone number.

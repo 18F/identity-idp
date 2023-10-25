@@ -26,7 +26,7 @@ module Idv
         protected
 
         def proofer
-          UspsInPersonProofing::Mock::Proofer.new
+          @proofer ||= UspsInPersonProofing::EnrollmentHelper.usps_proofer
         end
 
         def enabled?

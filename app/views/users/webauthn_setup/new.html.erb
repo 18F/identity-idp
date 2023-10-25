@@ -64,11 +64,7 @@
           checked: @presenter.remember_device_box_checked?,
         },
       ) %>
-  <%= submit_tag(
-        @presenter.button_text,
-        id: 'continue-button',
-        class: 'display-block usa-button usa-button--big usa-button--wide margin-y-5',
-      ) %>
+  <%= render SubmitButtonComponent.new(class: 'display-block margin-y-5').with_content(@presenter.button_text) %>
 <% end %>
 
 <%= render 'shared/cancel_or_back_to_options' %>

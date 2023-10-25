@@ -348,9 +348,14 @@ Rails.application.routes.draw do
       post '/phone/resend_code' => 'resend_otp#create', as: :resend_otp
       get '/phone_confirmation' => 'otp_verification#show', as: :otp_verification
       put '/phone_confirmation' => 'otp_verification#update', as: :nil
-      get '/review' => 'review#new'
-      put '/review' => 'review#create'
+      # The `/review` route is deperecated in favor of `/enter_password`
+      get '/review' => 'enter_password#new'
+      put '/review' => 'enter_password#create'
+      get '/enter_password' => 'enter_password#new'
+      put '/enter_password' => 'enter_password#create'
       get '/phone_question' => 'phone_question#show'
+      get '/phone_question/phone_with_camera' => 'phone_question#phone_with_camera'
+      get '/phone_question/phone_without_camera' => 'phone_question#phone_without_camera'
       get '/session/errors/warning' => 'session_errors#warning'
       get '/session/errors/state_id_warning' => 'session_errors#state_id_warning'
       get '/phone/errors/timeout' => 'phone_errors#timeout'
@@ -364,6 +369,7 @@ Rails.application.routes.draw do
       get '/cancel/' => 'cancellations#new', as: :cancel
       put '/cancel' => 'cancellations#update'
       delete '/cancel' => 'cancellations#destroy'
+      get '/exit' => 'cancellations#exit', as: :exit
       get '/address' => 'address#new'
       post '/address' => 'address#update'
       get '/capture_doc' => 'hybrid_mobile/entry#show'
@@ -398,6 +404,8 @@ Rails.application.routes.draw do
       post '/by_mail/enter_code' => 'by_mail/enter_code#create'
       get '/by_mail/confirm_start_over' => 'confirm_start_over#index',
           as: :confirm_start_over
+      get '/by_mail/confirm_start_over/before_letter' => 'confirm_start_over#before_letter',
+          as: :confirm_start_over_before_letter
 
       if FeatureManagement.gpo_verification_enabled?
         get '/by_mail/request_letter' => 'by_mail/request_letter#index', as: :request_letter

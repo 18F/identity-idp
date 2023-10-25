@@ -3,7 +3,9 @@ module Idv
     include DocumentCaptureConcern
     include IdvStepConcern
     include StepIndicatorConcern
+    include PhoneQuestionAbTestConcern
 
+    before_action :confirm_not_rate_limited
     before_action :confirm_hybrid_handoff_complete
     before_action :confirm_document_capture_needed
 
@@ -31,7 +33,9 @@ module Idv
     end
 
     def extra_view_variables
-      { phone: idv_session.phone_for_mobile_flow }
+      { phone: idv_session.phone_for_mobile_flow }.merge(
+        phone_question_ab_test_analytics_bucket,
+      )
     end
 
     private
@@ -84,10 +88,7 @@ module Idv
     end
 
     def document_capture_session_result
-      @document_capture_session_result ||= begin
-        document_capture_session&.load_result ||
-          document_capture_session&.load_doc_auth_async_result
-      end
+      @document_capture_session_result ||= document_capture_session&.load_result
     end
   end
 end

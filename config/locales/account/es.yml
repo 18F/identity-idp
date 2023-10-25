@@ -24,7 +24,6 @@ es:
         de múltiples factores (como texto / código de SMS o una clave de
         seguridad) cada vez que desee acceder a su cuenta.
     index:
-      address: Dirección actual
       auth_app_add: Agregar aplicación
       auth_app_disabled: no permitido
       auth_app_enabled: permitido
@@ -35,12 +34,10 @@ es:
       continue_to_service_provider: Continuar con %{service_provider}
       default: defecto
       device: '%{browser} en %{os}'
-      dob: Fecha de nacimiento
       email: Dirección de correo electrónico
       email_add: Agregar nuevo correo electrónico
       email_addresses: Correos electrónicos
       email_preferences: Preferencias de correo electrónico
-      full_name: Nombre completo
       password: Contraseña
       phone: Teléfono
       phone_add: Añadir teléfono
@@ -50,11 +47,10 @@ es:
         instructions: Su perfil ha sido desactivado debido a un cambio de contraseña.
         link: Reactive su perfil ahora.
       sign_in_location_and_ip: Desde %{ip} (la dirección IP probablemente se encuentra en %{location})
-      ssn: Número de Seguro Social
       totp_confirm_delete: Sí, eliminar la aplicación de autenticación
       unknown_location: ubicación desconocida
       verification:
-        instructions: Su cuenta requiere un código único para ser verificado.
+        instructions: Su cuenta requiere un código de verificación para ser verificado.
         reactivate_button: Ingrese el código que recibió por correo postal.
         success: Verificamos tu información
       webauthn: Clave de seguridad
@@ -121,4 +117,10 @@ es:
     security:
       link: Obtenga más información en el Centro de ayuda
       text: Para su seguridad, la información de su perfil está bloqueada.
+    verified_information:
+      address: Dirección
+      dob: Fecha de nacimiento
+      full_name: Nombre completo
+      phone_number: Número de teléfono
+      ssn: Número de Seguro Social
     welcome: Bienvenido/a

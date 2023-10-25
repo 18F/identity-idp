@@ -104,9 +104,9 @@ es:
         seguridad para ese número de teléfono.
     otp_delivery_preference:
       instruction: Envíe mensajes de texto y llamadas a este número por defecto.
-      landline_warning_html: Al parecer el número ingresado pertenece a un <b>teléfono
-        fijo</b>. Mejor solicita un código de un solo uso por
-        %{phone_setup_path}.
+      landline_warning_html: Al parecer el número ingresado pertenece a un
+        <strong>teléfono fijo</strong>. Mejor solicita un código de un solo uso
+        por %{phone_setup_path}.
       no_supported_options: No podemos verificar los números de teléfono de %{location}
       phone_call: llamada telefónica
       sms: Mensaje de texto (SMS, sigla en inglés)
@@ -115,8 +115,7 @@ es:
       voice: Llamada telefónica
       voice_unsupported: No podemos llamar a números de teléfono en %{location}.
     otp_make_default_number:
-      instruction: Establece este número de teléfono como predeterminado para que
-        recibas en él mensajes de texto o llamadas telefónicas.
+      instruction: Envíe códigos únicos a este número por defecto.
       label: Número de teléfono predeterminado
       one_number_instruction: Debes tener más de un número de teléfono agregado para
         seleccionar un número de teléfono predeterminado.

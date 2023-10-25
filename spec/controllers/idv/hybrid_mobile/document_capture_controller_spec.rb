@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Idv::HybridMobile::DocumentCaptureController do
-  include IdvHelper
-
   let(:user) { create(:user) }
 
   let!(:document_capture_session) do

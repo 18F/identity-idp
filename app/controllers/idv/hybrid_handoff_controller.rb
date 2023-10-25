@@ -3,10 +3,13 @@ module Idv
     include ActionView::Helpers::DateHelper
     include IdvStepConcern
     include StepIndicatorConcern
+    include PhoneQuestionAbTestConcern
 
+    before_action :confirm_not_rate_limited
     before_action :confirm_verify_info_step_needed
     before_action :confirm_agreement_step_complete
     before_action :confirm_hybrid_handoff_needed, only: :show
+    before_action :maybe_redirect_for_phone_question_ab_test, only: :show
 
     def show
       analytics.idv_doc_auth_hybrid_handoff_visited(**analytics_arguments)
@@ -16,6 +19,7 @@ module Idv
         true
       )
 
+      @phone_question_ab_test_bucket = phone_question_ab_test_bucket
       render :show, locals: extra_view_variables
     end
 

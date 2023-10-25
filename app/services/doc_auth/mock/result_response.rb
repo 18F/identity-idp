@@ -72,16 +72,24 @@ module DocAuth
         parsed_alerts == [ATTENTION_WITH_BARCODE_ALERT]
       end
 
-      def self.create_image_error_response(status)
-        error = case status
+      def self.create_image_error_response(status, side)
+        errors = case status
                 when 438
-                  Errors::IMAGE_LOAD_FAILURE
+                  {
+                    general: [Errors::IMAGE_LOAD_FAILURE],
+                    side.to_sym => [Errors::IMAGE_LOAD_FAILURE_FIELD],
+                  }
                 when 439
-                  Errors::PIXEL_DEPTH_FAILURE
+                  {
+                    general: [Errors::PIXEL_DEPTH_FAILURE],
+                    side.to_sym => [Errors::IMAGE_LOAD_FAILURE_FIELD],
+                  }
                 when 440
-                  Errors::IMAGE_SIZE_FAILURE
+                  {
+                    general: [Errors::IMAGE_SIZE_FAILURE],
+                    side.to_sym => [Errors::IMAGE_SIZE_FAILURE_FIELD],
+                  }
                 end
-        errors = { general: [error] }
         message = [
           'Unexpected HTTP response',
           status,

@@ -832,7 +832,9 @@ RSpec.describe SamlIdpController do
 
         it 'returns AAL3 authn_context when AAL3 is requested' do
           allow(controller).to receive(:user_session).and_return(
-            { auth_method: TwoFactorAuthenticatable::AuthMethod::PIV_CAC },
+            auth_events: [
+              { auth_method: TwoFactorAuthenticatable::AuthMethod::PIV_CAC, at: Time.zone.now },
+            ],
           )
           user = create(:user, :with_piv_or_cac)
           auth_settings = saml_settings(
@@ -849,7 +851,9 @@ RSpec.describe SamlIdpController do
 
         it 'returns AAL3-HSPD12 authn_context when AAL3-HSPD12 is requested' do
           allow(controller).to receive(:user_session).and_return(
-            { auth_method: TwoFactorAuthenticatable::AuthMethod::PIV_CAC },
+            auth_events: [
+              { auth_method: TwoFactorAuthenticatable::AuthMethod::PIV_CAC, at: Time.zone.now },
+            ],
           )
           user = create(:user, :with_piv_or_cac)
           auth_settings = saml_settings(
@@ -866,7 +870,9 @@ RSpec.describe SamlIdpController do
 
         it 'returns AAL2-HSPD12 authn_context when AAL2-HSPD12 is requested' do
           allow(controller).to receive(:user_session).and_return(
-            { auth_method: TwoFactorAuthenticatable::AuthMethod::PIV_CAC },
+            auth_events: [
+              { auth_method: TwoFactorAuthenticatable::AuthMethod::PIV_CAC, at: Time.zone.now },
+            ],
           )
           user = create(:user, :with_piv_or_cac)
           auth_settings = saml_settings(
@@ -883,7 +889,9 @@ RSpec.describe SamlIdpController do
 
         it 'returns AAL2-phishing-resistant authn_context when AAL2-phishing-resistant requested' do
           allow(controller).to receive(:user_session).and_return(
-            { auth_method: TwoFactorAuthenticatable::AuthMethod::WEBAUTHN },
+            auth_events: [
+              { auth_method: TwoFactorAuthenticatable::AuthMethod::WEBAUTHN, at: Time.zone.now },
+            ],
           )
           user = create(:user, :with_webauthn)
           auth_settings = saml_settings(

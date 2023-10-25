@@ -8,6 +8,14 @@ module Idv
       render(json: { redirect: redirect_url }.compact, status: status)
     end
 
+    def idv_session
+      @idv_session ||= Idv::Session.new(
+        user_session: user_session,
+        current_user: current_user,
+        service_provider: current_sp,
+      )
+    end
+
     private
 
     def status
@@ -43,8 +51,7 @@ module Idv
 
     def session_result
       return @session_result if defined?(@session_result)
-      @session_result = document_capture_session.load_result ||
-                        document_capture_session.load_doc_auth_async_result
+      @session_result = document_capture_session.load_result
     end
 
     def document_capture_session
@@ -84,14 +91,6 @@ module Idv
       end
 
       idv_session.had_barcode_attention_error
-    end
-
-    def idv_session
-      @idv_session ||= Idv::Session.new(
-        user_session: user_session,
-        current_user: current_user,
-        service_provider: current_sp,
-      )
     end
 
     def redo_document_capture_pending?

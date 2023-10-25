@@ -16,10 +16,12 @@ RSpec.describe 'Identity verification', :js do
     complete_welcome_step
 
     validate_agreement_page
+    try_to_go_back_from_agreement
     try_to_skip_ahead_from_agreement
     complete_agreement_step
 
     validate_hybrid_handoff_page
+    try_to_go_back_from_hybrid_handoff
     try_to_skip_ahead_from_hybrid_handoff
     complete_hybrid_handoff_step # upload photos
 
@@ -41,9 +43,9 @@ RSpec.describe 'Identity verification', :js do
     visit_by_mail_and_return
     complete_otp_verification_page(user)
 
-    validate_review_page
-    complete_review_step(user)
-    validate_review_submit(user)
+    validate_enter_password_page
+    complete_enter_password_step(user)
+    validate_enter_password_submit(user)
 
     validate_personal_key_page
     acknowledge_and_confirm_personal_key
@@ -72,7 +74,7 @@ RSpec.describe 'Identity verification', :js do
       enter_gpo_flow
       gpo_step
 
-      complete_review_step(user)
+      complete_enter_password_step(user)
 
       validate_come_back_later_page
       complete_come_back_later
@@ -251,19 +253,19 @@ RSpec.describe 'Identity verification', :js do
     click_submit_default
   end
 
-  def validate_review_page
-    expect(page).to have_current_path(idv_review_path)
-    expect(page).to have_content(t('idv.messages.review.message', app_name: APP_NAME))
-    expect(page).to have_content(t('idv.messages.review.phone_verified'))
+  def validate_enter_password_page
+    expect(page).to have_current_path(idv_enter_password_path)
+    expect(page).to have_content(t('idv.messages.enter_password.message', app_name: APP_NAME))
+    expect(page).to have_content(t('idv.messages.enter_password.phone_verified'))
 
     # does not move ahead with incorrect password
     fill_in 'Password', with: 'this is not the right password'
     click_idv_continue
     expect(page).to have_content(t('idv.errors.incorrect_password'))
-    expect(page).to have_current_path(idv_review_path)
+    expect(page).to have_current_path(idv_enter_password_path)
   end
 
-  def validate_review_submit(user)
+  def validate_enter_password_submit(user)
     expect(user.events.account_verified.size).to be(1)
     expect(user.profiles.count).to eq 1
 
@@ -276,15 +278,37 @@ RSpec.describe 'Identity verification', :js do
   def validate_come_back_later_page
     expect(page).to have_current_path(idv_letter_enqueued_path)
     expect_in_person_gpo_step_indicator_current_step(t('step_indicator.flows.idv.get_a_letter'))
+    expect(page).to have_content(t('idv.titles.come_back_later'))
+    expect(page).not_to have_content(t('step_indicator.flows.idv.verify_phone_or_address'))
   end
 
   def validate_personal_key_page
     expect(current_path).to eq idv_personal_key_path
+
+    # Clicking acknowledge checkbox is required to continue
+    click_continue
+    expect(page).to have_content(t('forms.validation.required_checkbox'))
+    expect(current_path).to eq(idv_personal_key_path)
+
+    expect(page).to have_content(t('forms.personal_key_partial.acknowledgement.header'))
+    expect(page).to have_content(t('forms.personal_key_partial.acknowledgement.text'))
+    expect(page).to have_content(t('forms.personal_key_partial.acknowledgement.help_link_text'))
+    expect(page).to have_content(t('idv.messages.confirm'))
+    expect_step_indicator_current_step(t('step_indicator.flows.idv.secure_account'))
+    expect(page).to have_css(
+      '.step-indicator__step--complete',
+      text: t('step_indicator.flows.idv.verify_phone_or_address'),
+    )
+    expect(page).not_to have_content(t('step_indicator.flows.idv.get_a_letter'))
+
+    # Refreshing shows same page (BUT with new personal key, we should warn the user)
+    visit current_path
+    expect(page).not_to have_content(t('idv.messages.confirm'))
     expect(page).to have_content(t('forms.personal_key_partial.acknowledgement.header'))
   end
 
   def try_to_skip_ahead_before_signing_in
-    visit idv_review_path
+    visit idv_enter_password_path
     expect(current_path).to eq(root_path)
   end
 
@@ -312,7 +336,7 @@ RSpec.describe 'Identity verification', :js do
   end
 
   def try_to_skip_ahead_from_phone
-    visit idv_review_path
+    visit idv_enter_password_path
     expect(page).to have_current_path(idv_phone_path)
   end
 
@@ -322,15 +346,52 @@ RSpec.describe 'Identity verification', :js do
     expect(page).to have_current_path(idv_phone_path)
   end
 
+  def try_to_go_back_from_agreement
+    go_back
+    expect(current_path).to eq(idv_welcome_path)
+    complete_welcome_step
+    expect(current_path).to eq(idv_agreement_path)
+    expect(page).not_to have_checked_field(
+      t('doc_auth.instructions.consent', app_name: APP_NAME),
+      visible: :all,
+    )
+  end
+
+  def try_to_go_back_from_hybrid_handoff
+    go_back
+    expect(current_path).to eql(idv_agreement_path)
+    expect(page).to have_checked_field(
+      t('doc_auth.instructions.consent', app_name: APP_NAME),
+      visible: :all,
+    )
+    visit idv_welcome_path
+    expect(current_path).to eql(idv_welcome_path)
+    complete_welcome_step
+    expect(page).to have_current_path(idv_agreement_path)
+    expect(page).to have_checked_field(
+      t('doc_auth.instructions.consent', app_name: APP_NAME),
+      visible: :all,
+    )
+    complete_agreement_step
+  end
+
   def try_to_go_back_from_document_capture
     visit(idv_agreement_path)
-    expect(page).to have_current_path(idv_document_capture_path)
+    expect(page).to have_current_path(idv_agreement_path)
+    expect(page).to have_checked_field(
+      t('doc_auth.instructions.consent', app_name: APP_NAME),
+      visible: :all,
+    )
+
     visit(idv_hybrid_handoff_url)
-    expect(page).to have_current_path(idv_document_capture_path)
+    expect(page).to have_current_path(idv_hybrid_handoff_path)
+    visit(idv_document_capture_url)
   end
 
   def try_to_go_back_from_verify_info
     visit(idv_document_capture_url)
+    expect(page).to have_current_path(idv_verify_info_path)
+    visit(idv_welcome_path)
     expect(page).to have_current_path(idv_verify_info_path)
   end
 

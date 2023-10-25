@@ -33,6 +33,7 @@ ARTIFACT_DESTINATION_FILE ?= ./tmp/idp.tar.gz
 	lint_tracker_events \
 	lint_yaml \
 	lint_yarn_workspaces \
+	lint_asset_bundle_size \
 	lintfix \
 	normalize_yaml \
 	optimize_assets \
@@ -112,6 +113,10 @@ lint_yaml: normalize_yaml ## Lints YAML files
 
 lint_yarn_workspaces: ## Lints Yarn workspace packages
 	scripts/validate-workspaces.js
+
+lint_asset_bundle_size: ## Lints JavaScript and CSS compiled bundle size
+	find app/assets/builds/application.css -size -270000c | grep .
+	find public/packs/js/application-*.digested.js -size -5000c | grep .
 
 lint_migrations:
 	scripts/migration_check

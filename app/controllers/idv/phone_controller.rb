@@ -7,10 +7,10 @@ module Idv
 
     attr_reader :idv_form
 
+    before_action :confirm_not_rate_limited_for_phone_address_verification, except: [:new]
     before_action :confirm_verify_info_step_complete
     before_action :confirm_step_needed
     before_action :set_idv_form
-    skip_before_action :confirm_not_rate_limited, only: :new
 
     def new
       flash.keep(:success) if should_keep_flash_success?
@@ -24,7 +24,7 @@ module Idv
 
       render 'shared/wait' and return if async_state.in_progress?
 
-      return if confirm_not_rate_limited
+      return if confirm_not_rate_limited_for_phone_address_verification
 
       if async_state.none?
         Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
@@ -73,7 +73,7 @@ module Idv
           send_phone_confirmation_otp_and_handle_result
         end
       else
-        redirect_to idv_review_url
+        redirect_to idv_enter_password_url
       end
     end
 
@@ -145,6 +145,7 @@ module Idv
         allowed_countries:
           PhoneNumberCapabilities::ADDRESS_IDENTITY_PROOFING_SUPPORTED_COUNTRY_CODES,
         failed_phone_numbers: idv_session.failed_phone_step_numbers,
+        hybrid_handoff_phone_number: idv_session.phone_for_mobile_flow,
       )
     end
 
@@ -171,14 +172,15 @@ module Idv
             [:context, :stages, :address],
           ],
           new_phone_added: new_phone_added?,
+          hybrid_handoff_phone_used: hybrid_handoff_phone_used?,
         ),
       )
 
-      if async_state.result[:success]
-        rate_limiter.reset!
-        redirect_to_next_step and return
+      if form_result.success?
+        redirect_to_next_step
+      else
+        handle_proofing_failure
       end
-      handle_proofing_failure
     end
 
     def is_req_from_frontend?
@@ -198,8 +200,18 @@ module Idv
       configured_phones = context.phone_configurations.map(&:phone).map do |number|
         PhoneFormatter.format(number)
       end
-      applicant_phone = PhoneFormatter.format(idv_session.applicant['phone'])
-      !configured_phones.include?(applicant_phone)
+      !configured_phones.include?(formatted_previous_phone_step_params_phone)
+    end
+
+    def hybrid_handoff_phone_used?
+      formatted_previous_phone_step_params_phone ==
+        PhoneFormatter.format(idv_session.phone_for_mobile_flow)
+    end
+
+    def formatted_previous_phone_step_params_phone
+      PhoneFormatter.format(
+        idv_session.previous_phone_step_params&.fetch('phone'),
+      )
     end
 
     def gpo_letter_available

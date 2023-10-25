@@ -6,6 +6,7 @@ module Idv
       include Steps::ThreatMetrixStepHelper
       include ThreatMetrixConcern
 
+      before_action :confirm_not_rate_limited_after_doc_auth
       before_action :confirm_verify_info_step_needed
       before_action :confirm_in_person_address_step_complete
       before_action :confirm_repeat_ssn, only: :show

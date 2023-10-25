@@ -12,8 +12,10 @@ module Idv
       before_action :confirm_profile_not_too_old
 
       def index
+        @applicant = idv_session.applicant
         @presenter = RequestLetterPresenter.new(current_user, url_options)
         @step_indicator_current_step = step_indicator_current_step
+
         Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
           call(:usps_address, :view, true)
         analytics.idv_request_letter_visited(
@@ -32,7 +34,7 @@ module Idv
           flash[:success] = t('idv.messages.gpo.another_letter_on_the_way')
           redirect_to idv_letter_enqueued_url
         else
-          redirect_to idv_review_url
+          redirect_to idv_enter_password_url
         end
       end
 
@@ -81,7 +83,7 @@ module Idv
       end
 
       def confirm_mail_not_spammed
-        redirect_to idv_review_url if gpo_mail_service.mail_spammed?
+        redirect_to idv_enter_password_url if gpo_mail_service.mail_spammed?
       end
 
       def confirm_user_completed_idv_profile_step

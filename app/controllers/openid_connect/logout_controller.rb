@@ -3,7 +3,6 @@ module OpenidConnect
     include SecureHeadersConcern
     include FullyAuthenticatable
 
-    before_action :apply_secure_headers_override, only: [:index, :delete]
     before_action :confirm_two_factor_authenticated, only: [:delete]
 
     def index
@@ -41,6 +40,17 @@ module OpenidConnect
 
     private
 
+    def apply_logout_secure_headers_override(redirect_uri, service_provider)
+      return if service_provider.nil? || redirect_uri.nil?
+
+      uris = SecureHeadersAllowList.csp_with_sp_redirect_uris(
+        redirect_uri,
+        service_provider.redirect_uris,
+      )
+
+      override_form_action_csp(uris)
+    end
+
     def require_logout_confirmation?
       (logout_params[:id_token_hint].nil? || IdentityConfig.store.reject_id_token_hint_in_logout) &&
         logout_params[:client_id] &&
@@ -55,6 +65,7 @@ module OpenidConnect
     end
 
     def handle_successful_logout_request(result, redirect_uri)
+      apply_logout_secure_headers_override(redirect_uri, @logout_form.service_provider)
       if require_logout_confirmation?
         analytics.oidc_logout_visited(**result.to_h.except(:redirect_uri))
         @params = {

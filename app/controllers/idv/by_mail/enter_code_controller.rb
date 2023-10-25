@@ -23,11 +23,12 @@ module Idv
           return
         end
 
-        gpo_mail = Idv::GpoMail.new(current_user)
+        @last_date_letter_was_sent = last_date_letter_was_sent
         @gpo_verify_form = GpoVerifyForm.new(user: current_user, pii: pii)
         @code = session[:last_gpo_confirmation_code] if FeatureManagement.reveal_gpo_code?
 
-        @should_prompt_user_to_request_another_letter =
+        gpo_mail = Idv::GpoMail.new(current_user)
+        @can_request_another_letter =
           FeatureManagement.gpo_verification_enabled? &&
           !gpo_mail.mail_spammed? &&
           !gpo_mail.profile_too_old?
@@ -151,6 +152,11 @@ module Idv
 
       def pii_locked?
         !Pii::Cacher.new(current_user, user_session).exists_in_session?
+      end
+
+      def last_date_letter_was_sent
+        current_user.gpo_verification_pending_profile&.gpo_confirmation_codes&.
+          pluck(:updated_at)&.max
       end
     end
   end

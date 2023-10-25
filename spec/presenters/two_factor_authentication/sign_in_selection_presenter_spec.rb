@@ -1,16 +1,18 @@
 require 'rails_helper'
 
 RSpec.describe TwoFactorAuthentication::SignInSelectionPresenter do
-  class PlaceholderPresenter < TwoFactorAuthentication::SignInSelectionPresenter
-    def method
-      :missing
+  let(:placeholder_presenter_class) do
+    Class.new(TwoFactorAuthentication::SignInSelectionPresenter) do
+      def method
+        :missing
+      end
     end
   end
 
   let(:user) { build(:user) }
   let(:configuration) { create(:phone_configuration, user: user) }
 
-  subject(:presenter) { PlaceholderPresenter.new(user: user, configuration: configuration) }
+  subject(:presenter) { placeholder_presenter_class.new(user: user, configuration: configuration) }
 
   describe '#render_in' do
     it 'renders captured block content' do

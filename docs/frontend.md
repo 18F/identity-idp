@@ -33,6 +33,18 @@ margins or borders.
 - Packages are managed with [Yarn](https://classic.yarnpkg.com/), organized using [Yarn workspaces](https://classic.yarnpkg.com/en/docs/workspaces/)
 - JavaScript is transpiled, bundled, and minified via [Webpack](https://webpack.js.org/) and [Babel](https://babeljs.io/)
 
+### Naming Conventions
+
+- Files within `app/javascript` should be named as kebab-case, e.g. `./path-to/my-javascript.ts`.
+- Variables and functions (excluding React components) should be named as camelCase, e.g. `const myFavoriteNumber = 1;`.
+   - Only the first letter of an abbreviation should be capitalized, e.g. `const userId = 10;`.
+   - All letters of an acronym should be capitalized, e.g. `const siteURL = 'https://example.com';`.
+- Classes and React components should be named as PascalCase (upper camel case), e.g. `class MyCustomElement {}`.
+- Constants should be named as SCREAMING_SNAKE_CASE, e.g. `const MEANING_OF_LIFE = 42;`.
+- TypeScript enums should be named as PascalCase with SCREAMING_SNAKE_CASE members, e.g. `enum Color { RED = '#f00'; }`.
+
+Related: [Component Naming Conventions](#naming)
+
 ### Prettier
 
 [Prettier](https://prettier.io/) is an opinionated code formatter which simplifies adherence to
@@ -120,6 +132,33 @@ to deduplicate resolved package versions within the Yarn lockfile.
 
 See [`@18f/identity-i18n` package documentation](../app/javascript/packages/i18n/README.md).
 
+### Analytics
+
+See [`@18f/identity-analytics` package documentation][analytics_package] for code examples detailing
+how to track an event in JavaScript.
+
+Any event logged from the frontend must be added to the `EVENT_MAP` allowlist in [`FrontendLogController`][frontend_log_controller.rb].
+This mapping associates the event name logged from the frontend with the corresponding method from
+[AnalyticsEvents][analytics_events.rb] to be called. All properties will be passed automatically to
+the event from the frontend as long as they are defined in the method argument signature.
+
+There may be some situations where you need to append a value known by the server to an event logged
+in the frontend, such as an A/B test bucket descriptor. In these scenarios, you have a few options:
+
+1. Add the value to the page markup, such as through an [HTML `data-` attribute][data_attributes],
+and reference that attribute in JavaScript.
+2. Define the mapped value in `EVENT_MAP` to a service class, such as how [frontend error logging][frontend_error_logging]
+is implemented.
+3. Implement a mixin to intercept and override the default behavior of an analytics event, such as
+how [`Idv::AnalyticsEventEnhancer`][analytics_events_enhancer.rb] is implemented.
+
+[analytics_package]: ../app/javascript/packages/analytics/README.md
+[frontend_log_controller.rb]: https://github.com/18F/identity-idp/blob/main/app/controllers/frontend_log_controller.rb
+[analytics_events.rb]: https://github.com/18F/identity-idp/blob/main/app/services/analytics_events.rb
+[data_attributes]: https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes
+[frontend_error_logging]: https://github.com/18F/identity-idp/blob/9c17164c0b8d9b4aefad74dde1a521c111b53aac/app/controllers/frontend_log_controller.rb#L14
+[analytics_events_enhancer.rb]: https://github.com/18F/identity-idp/blob/main/app/services/idv/analytics_events_enhancer.rb
+
 ## Components
 
 ### Design System
@@ -187,8 +226,8 @@ For example, consider a **Password Input** component:
 - A ViewComponent file would be named `app/components/password_input_component.rb`
 - A stylesheet file would be named `app/assets/stylesheets/componewnts/_password-input.scss`
 - A stylesheet selector would be named `.password-input`, with child elements prefixed as `.password-input__`
-- A react component would be named `<PasswordInput />`
-- A react component file would be named `app/javascript/packages/password-input/password-input.tsx`
+- A React component would be named `<PasswordInput />`
+- A React component file would be named `app/javascript/packages/password-input/password-input.tsx`
 - A web component would be named `PasswordInputElement`
 - A web components file would be named `app/javascript/packages/password-input/password-input-element.ts`
 

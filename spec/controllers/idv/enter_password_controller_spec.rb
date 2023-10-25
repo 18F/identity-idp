@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::ReviewController do
+RSpec.describe Idv::EnterPasswordController do
   include UspsIppHelper
 
   let(:user) do
@@ -36,7 +36,7 @@ RSpec.describe Idv::ReviewController do
   end
 
   describe 'before_actions' do
-    it 'includes before_actions from AccountStateChecker' do
+    it 'includes before_actions' do
       expect(subject).to have_actions(
         :before,
         :confirm_two_factor_authenticated,
@@ -62,7 +62,7 @@ RSpec.describe Idv::ReviewController do
     before(:each) do
       stub_sign_in(user)
       routes.draw do
-        get 'show' => 'idv/review#show'
+        get 'show' => 'idv/enter_password#show'
       end
     end
 
@@ -96,7 +96,7 @@ RSpec.describe Idv::ReviewController do
       stub_sign_in(user)
       stub_attempts_tracker
       routes.draw do
-        post 'show' => 'idv/review#show'
+        post 'show' => 'idv/enter_password#show'
       end
       allow(subject).to receive(:confirm_idv_steps_complete).and_return(true)
       allow(subject).to receive(:idv_session).and_return(idv_session)
@@ -108,7 +108,7 @@ RSpec.describe Idv::ReviewController do
         post :show, params: { user: { password: '' } }
 
         expect(flash[:error]).to eq t('idv.errors.incorrect_password')
-        expect(response).to redirect_to idv_review_path
+        expect(response).to redirect_to idv_enter_password_path
       end
     end
 
@@ -119,7 +119,7 @@ RSpec.describe Idv::ReviewController do
 
       it 'redirects to new' do
         expect(flash[:error]).to eq t('idv.errors.incorrect_password')
-        expect(response).to redirect_to idv_review_path
+        expect(response).to redirect_to idv_enter_password_path
       end
 
       it 'tracks irs password entered event (idv_password_entered)' do
@@ -159,8 +159,8 @@ RSpec.describe Idv::ReviewController do
       it 'sets the correct title and header' do
         get :new
 
-        expect(assigns(:title)).to eq(t('titles.idv.review'))
-        expect(assigns(:heading)).to eq(t('idv.titles.session.review', app_name: APP_NAME))
+        expect(assigns(:title)).to eq(t('titles.idv.enter_password'))
+        expect(assigns(:heading)).to eq(t('idv.titles.session.enter_password', app_name: APP_NAME))
       end
 
       it 'uses the correct step indicator step' do
@@ -180,15 +180,17 @@ RSpec.describe Idv::ReviewController do
         it 'sets the correct title and header' do
           get :new
 
-          expect(assigns(:title)).to eq(t('titles.idv.review_letter'))
-          expect(assigns(:heading)).to eq(t('idv.titles.session.review_letter', app_name: APP_NAME))
+          expect(assigns(:title)).to eq(t('titles.idv.enter_password_letter'))
+          expect(assigns(:heading)).to eq(
+            t('idv.titles.session.enter_password_letter', app_name: APP_NAME),
+          )
         end
 
         it 'shows password reminder banner' do
           get :new
 
           expect(response.body).to include(
-            t('idv.messages.review.by_mail_password_reminder_html'),
+            t('idv.messages.enter_password.by_mail_password_reminder_html'),
           )
         end
 
@@ -205,7 +207,7 @@ RSpec.describe Idv::ReviewController do
           get :new
 
           expect(response.body).not_to include(
-            t('idv.messages.review.by_mail_password_reminder_html'),
+            t('idv.messages.enter_password.by_mail_password_reminder_html'),
           )
         end
       end
@@ -217,36 +219,6 @@ RSpec.describe Idv::ReviewController do
         expect { get :new }.to(
           change { doc_auth_log.reload.encrypt_view_count }.from(0).to(1),
         )
-      end
-    end
-
-    context 'user has not requested too much mail' do
-      before do
-        idv_session.address_verification_mechanism = 'gpo'
-        gpo_mail_service = instance_double(Idv::GpoMail)
-        allow(Idv::GpoMail).to receive(:new).with(user).and_return(gpo_mail_service)
-        allow(gpo_mail_service).to receive(:mail_spammed?).and_return(false)
-      end
-
-      it 'displays a success message' do
-        get :new
-
-        expect(flash.now[:error]).to be_nil
-      end
-    end
-
-    context 'user has requested too much mail' do
-      before do
-        idv_session.address_verification_mechanism = 'gpo'
-        gpo_mail_service = instance_double(Idv::GpoMail)
-        allow(Idv::GpoMail).to receive(:new).with(user).and_return(gpo_mail_service)
-        allow(gpo_mail_service).to receive(:mail_spammed?).and_return(true)
-      end
-
-      it 'displays a helpful error message' do
-        get :new
-
-        expect(flash.now[:error]).to eq t('idv.errors.mail_limit_reached')
       end
     end
 
@@ -277,7 +249,7 @@ RSpec.describe Idv::ReviewController do
       it 'redirects to original path' do
         put :create, params: { user: { password: 'wrong' } }
 
-        expect(response).to redirect_to idv_review_path
+        expect(response).to redirect_to idv_enter_password_path
 
         expect(@analytics).to have_logged_event(
           'IdV: review complete',
@@ -518,7 +490,7 @@ RSpec.describe Idv::ReviewController do
             it 'allows the user to retry the request' do
               put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
               expect(flash[:error]).to eq t('idv.failure.exceptions.internal_error')
-              expect(response).to redirect_to idv_review_path
+              expect(response).to redirect_to idv_enter_password_path
 
               stub_request_enroll
 
@@ -619,9 +591,6 @@ RSpec.describe Idv::ReviewController do
                   let(:proofing_device_profiling_state) { proofing_device_profiling_state }
                   let(:applicant) do
                     Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE
-                  end
-                  let(:stub_idv_session) do
-                    stub_user_with_applicant_data(user, applicant)
                   end
 
                   before do

@@ -28,11 +28,29 @@ module Reporting
       account_reuse_table
     end
 
+    def account_reuse_emailable_report
+      EmailableReport.new(
+        title: "IDV app reuse rate #{stats_month}",
+        float_as_percent: true,
+        precision: 4,
+        filename: 'account_reuse',
+        table: account_reuse_report,
+      )
+    end
+
     def total_identities_report
       total_identities_table = []
       total_identities_table << ["Total proofed identities (#{stats_month})"]
       total_identities_table << [total_reuse_report[:total_proofed]]
       total_identities_table
+    end
+
+    def total_identities_emailable_report
+      EmailableReport.new(
+        title: 'Total proofed identities',
+        table: total_identities_report,
+        filename: 'total_profiles',
+      )
     end
 
     def stats_month

@@ -42,7 +42,7 @@ es:
           address_label: Dirección
           address_search_hint: 'Ejemplo: 1234 N Example St., Allentown, PA 12345'
           address_search_label: Introduzca una dirección para encontrar una Oficina de
-            Correos cercana a usted
+            Correos cercana a usted.
           city_label: Ciudad
           is_searching_message: Buscando oficinas de correos…
           none_found: Lo sentimos, no hay Oficinas de Correos participantes en un radio de

@@ -32,9 +32,13 @@ es:
             - No obstante, continuará teniendo una cuenta en %{app_name}. Puede
               administrar o eliminar su cuenta desde %{account_page_text}.
         gpo:
+          continue: Continúe empezando de nuevo y verifique su identidad desde el
+            principio.
           start_over: Si borras tu información y empiezas de nuevo
+          start_over_new_address: Para enviar su carta a otra dirección, tendrá que
+            empezar de nuevo y verificar su identidad con la nueva dirección.
           warnings:
-            - El código único de tu carta ya no funcionará
+            - El código de verificación de tu carta ya no funcionará
             - Tendrás que volver a verificar tu identidad otra vez
         hybrid: Si cancela ahora, se le pedirá regresar a su computadora para continuar
           con la verificación de su identidad.
@@ -49,10 +53,10 @@ es:
           hybrid: '¿Seguro que desea cancelar la carga de fotos de su identificación en
             este teléfono?'
           standard: '¿Cancelar la verificación de su identidad?'
+          start_over: ¿Empezar de nuevo a verificar su identidad?
         start_over: Empezar de nuevo a verificar su identidad
     errors:
       incorrect_password: La contraseña que ingresó no es correcta.
-      mail_limit_reached: Usted ha solicitado demasiado correo en el último mes.
       pattern_mismatch:
         ssn: 'Ingrese un número de Seguro Social de nueve dígitos'
         zipcode: Ingresa un código postal de 5 o 9 dígitos
@@ -179,7 +183,11 @@ es:
       no_js_intro: '%{sp_name} requiere que usted verifique su identidad. Debe
         habilitar JavaScript para continuar con este proceso.'
     gpo:
-      alert_info: 'Enviamos una carta con su código único a:'
+      alert_info: 'Enviamos una carta con su código de verificación a:'
+      alert_spam_warning_html: No puede solicitar más cartas ahora mismo. Su solicitud
+        de carta anterior la hizo el <strong>%{date_letter_was_sent}</strong>.
+      change_to_verification_code_html: 'El <strong>código único</strong> de su carta
+        ahora se conoce como <strong>código de verificación</strong>.'
       clear_and_start_over: Borrar su información y empezar de nuevo
       did_not_receive_letter:
         form:
@@ -194,10 +202,10 @@ es:
         title: ¿No recibió su carta?
       form:
         instructions: Introduzca el código de 10 caracteres de la carta que ha recibido.
-        otp_label: Código único
+        otp_label: Código de verificación
         submit: Confirmar cuenta
         title: Confirme su cuenta
-      intro_html: '<p>Si ha recibido su carta, introduzca su código único a
+      intro_html: '<p>Si ha recibido su carta, introduzca su código de verificación a
         continuación.</p> <p>Si su carta aún no ha llegado, tenga paciencia, ya
         que las cartas tardan hasta <strong>10 días</strong> en llegar. Gracias
         por su paciencia.</p>'
@@ -214,11 +222,21 @@ es:
       wrong_address: ¿La dirección no es correcta?
     images:
       come_back_later: Carta con una marca de verificación
-    index:
-      id:
-        need_html: Si está creando una cuenta, necesitará una <strong>identificación
-          emitida por el estado actual</strong>.
-        state_issue: Documento de identidad emitido por el Estado
+    legal_statement:
+      information_collection: >-
+        Cette collecte d’informations répond aux exigences de l’article 3507 du
+        44 U.S.C., tel que modifié par l’article 2 de la loi de 1995 sur la
+        réduction des tâches administratives. Vous n’avez pas besoin de répondre
+        à ces questions, sauf si nous affichons un numéro de contrôle valide de
+        l’Office of Management and Budget (OMB). Le numéro de contrôle de l’OMB
+        pour cette collecte est 3090-0325. Calculamos que tomará un minuto leer
+        las instrucciones, recopilar los datos y responder las preguntas. Envíe
+        solo comentarios relacionados con nuestro tiempo estimado, incluidas
+        sugerencias para reducir esta molestia, o cualquier otro aspecto
+        relacionado con esta recopilación de información a: Administración de
+        Servicios Generales, División de la Secretaría Reguladora (MVCB), a la
+        atención de Lois Mandell/IC 3090-0325, 1800 F Street, NW, Washington, D.
+        C. 20405.
     messages:
       activated_html: Su identidad ha sido verificada. Si necesita cambiar la
         información verificada, por favor, %{link_html}.
@@ -226,34 +244,37 @@ es:
       clear_and_start_over: Borrar mi información y empezar de nuevo
       come_back_later_html: <p>Las cartas tardan entre <strong>5 y 10 días</strong> en
         llegar por USPS First-Class Mail.</p> <p>Una vez que reciba la carta,
-        inicie sesión en %{app_name} e introduzca el código único cuando se le
-        solicite.</p>
+        inicie sesión en %{app_name} e introduzca su código de verificación
+        cuando se le solicite.</p>
       come_back_later_no_sp_html: Ahora puedes volver a tu <strong>cuenta de %{app_name}</strong>.
       come_back_later_password_html: <strong>No olvide su contraseña.</strong><br />
-        Si restablece su contraseña, el código único de su carta ya no
+        Si restablece su contraseña, el código de verificación de su carta ya no
         funcionará y tendrá que verificar su identidad de nuevo.
       come_back_later_sp_html: Ahora puedes volver a <strong>%{sp}</strong>.
       confirm: Hemos asegurado su información verificada
+      enter_password:
+        by_mail_password_reminder_html: <strong>Recuerde su contraseña.</strong> El
+          código de verificación de su carta no funcionará si restablece su
+          contraseña más tarde.
+        message: '%{app_name} encriptará tu información con tu contraseña. Esto
+          significa que tu información estará segura y solo tú podrás
+          consultarla o modificarla.'
+        phone_verified: Verificamos su número de teléfono
       gpo:
-        address_on_file_html: Le enviaremos una carta con <strong>un código único
-          </strong> a la dirección que nos facilitó en el paso anterior.
+        address_on_file: 'Enviaremos la carta por correo a la dirección que verificó
+          anteriormente:'
         another_letter_on_the_way: Te enviaremos otra carta
         info_alert: Tendrá que esperar a que su carta sea entregada para terminar de
           verificar su identidad.
+        learn_more_verify_by_mail: Obtenga más información sobre la verificación de su
+          dirección por correo
         letter_on_the_way: Te enviaremos una carta
         resend: Envíeme otra carta
-        timeframe_html: Las cartas se envían al siguiente día hábil por USPS First-Class
-          Mail y tardan entre <strong>5 y 10 días</strong> en llegar.
-      gpo_reminder:
-        body_html: El <strong>%{date_letter_was_sent}</strong> solicitaste una carta
-          para verificar tu identidad. Deberás ingresar el código que contiene
-          esa carta para completar la verificación por correo. Vuelve a iniciar
-          sesión en %{app_name} para terminar de verificar tu identidad.
-          %{help_link}.
-        did_not_get_a_letter_html: Si no recibiste dicha carta, %{another_letter_link_html}.
-        finish: Termina de verificar tu identidad
-        sign_in_and_request_another_letter: inicia sesión para solicitar otra
-        subject: Termina de verificar tu identidad
+        start_over_html: Si esta no es la dirección correcta, tendrá que
+          %{start_over_link_html}.
+        start_over_link_text: empezar de nuevo y verificar con su nueva dirección
+        timeframe_html: Recibirá una carta con un <strong>código de
+          verificación</strong> en un plazo de <strong>5 a 10 días</strong>.
       otp_delivery_method_description: Si ha introducido un teléfono fijo más arriba,
         seleccione “Llamada telefónica” más abajo.
       personal_key: Esta es su nueva clave personal. Escríbala y guárdela en un lugar
@@ -271,35 +292,28 @@ es:
           - Con base en Estados Unidos (incluidos los territorios de EE.UU.)
           - Su número principal (el que utiliza con más frecuencia)
       return_to_profile: '‹ Volver a tu perfil de %{app_name}'
-      review:
-        by_mail_password_reminder_html: <b>Recuerde su contraseña.</b> El código de
-          verificación de su carta no funcionará si restablece su contraseña más
-          tarde.
-        message: '%{app_name} encriptará tu información con tu contraseña. Esto
-          significa que tu información estará segura y solo tú podrás
-          consultarla o modificarla.'
-        phone_verified: Verificamos su número de teléfono
       select_verification_with_sp: Para protegerlo de robo de identidad, no puede
         utilizar su cuenta en %{sp_name} hasta que la active ingresando un
         código único.
       select_verification_without_sp: Para proteger su cuenta de robo de identidad, su
         perfil no se activará hasta que ingrese un código único.
       sessions:
+        enter_password_message: Cuando vuelva a ingresar su contraseña, %{app_name}
+          cifrará sus datos para asegurarse de que nadie más pueda acceder a
+          ellos.
         no_pii: SITIO DE PRUEBA - No utilice información personal real (sólo para
           propósitos de demostración) - SITIO DE PRUEBA
-        review_message: Cuando vuelva a ingresar su contraseña, %{app_name} cifrará sus
-          datos para asegurarse de que nadie más pueda acceder a ellos.
       verifying: Verificando…
     titles:
       activated: Ya se verificó tu identidad.
       come_back_later: Su carta está en camino
+      enter_password: Revise y envíe
       mail:
         verify: Verifique su dirección
       otp_delivery_method: '¿Cómo debemos enviar un código?'
-      review: Revise y envíe
       session:
-        review: 'Vuelve a ingresar tu contraseña de %{app_name}'
-        review_letter: 'Vuelve a ingresar su contraseña de %{app_name} para enviar su carta'
+        enter_password: 'Vuelve a ingresar tu contraseña de %{app_name}'
+        enter_password_letter: 'Vuelve a ingresar su contraseña de %{app_name} para enviar su carta'
       unavailable: Estamos trabajando para resolver un error
     troubleshooting:
       headings:
