@@ -16,12 +16,12 @@ es:
     go_back: Regresa
     help: Ayuda
     new_tab: (abrir nueva pestaña)
-    next: Siguiente
     passwords:
       forgot: '¿Olvidó su contraseña?'
     privacy_policy: Privacidad y seguridad
     resend: Reenviar
     reverify: Verifique su identidad nuevamente.
+    sign_in: Iniciar sesión
     sign_out: Cerrar sesión
     two_factor_authentication:
       send_another_code: Enviar otro código

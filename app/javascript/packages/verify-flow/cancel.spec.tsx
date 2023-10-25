@@ -15,6 +15,7 @@ describe('Cancel', () => {
         <FlowContext.Provider
           value={{
             cancelURL: 'http://example.test/cancel',
+            exitURL: 'http://example.test/exit',
             currentStep: 'one',
           }}
         >

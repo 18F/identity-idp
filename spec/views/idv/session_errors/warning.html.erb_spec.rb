@@ -14,6 +14,8 @@ RSpec.describe 'idv/session_errors/warning.html.erb' do
     assign(:remaining_attempts, remaining_attempts)
     assign(:try_again_path, try_again_path)
 
+    @step_indicator_steps = Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS
+
     render
   end
 

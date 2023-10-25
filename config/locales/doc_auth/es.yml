@@ -133,6 +133,32 @@ es:
           estén demasiado borrosas u oscuras. Intente tomar nuevas fotos en un
           área iluminada.
       upload_error: Lo siento, algo salió mal por nuestra parte.
+    exit_survey:
+      content_html: <strong>Si no tiene una licencia de conducir o identificación
+        estatal, no puede continuar en %{app_name}.</strong> Por favor <a>salga
+        de %{app_name} y contacte a %{sp_name}</a> para averiguar qué puede
+        hacer.
+      content_nosp_html: <strong>Si no tiene una licencia de conducir o identificación
+        estatal, no puede continuar en %{app_name}.</strong> <a>Cancele la
+        verificación de identidad con %{app_name}</a> y podrá reiniciar el
+        proceso cuando esté listo.
+      header: No cuenta con una licencia de conducir o identificación estatal?
+      optional:
+        button: Enviar y salir de %{app_name}
+        content: Ayúdenos a agregar más identificaciones oficiales a %{app_name}. ¿Qué
+          identificaciones tiene como alternativa?
+        id_types:
+          military_id: Credencial militar (puede ser una credencial del Departamento de
+            Defensa, una credencial de Salud de los Veteranos o una credencial
+            de veterano)
+          other: Una que no aparece en la lista
+          resident_card: Tarjeta Verde de Estados Unidos (también conocida como Tarjeta de
+            Residente Permanente)
+          tribal_id: Credencial tribal
+          us_passport: Pasaporte estadounidense
+          voter_registration_card: Credencial para votar
+        legend: Opcional. Seleccione todas las identificaciones que tenga.
+        tag: Opcional
     forms:
       captured_image: Imagen capturada
       change_file: Cambiar archivo

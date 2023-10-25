@@ -106,6 +106,7 @@ RSpec.describe 'In Person Proofing', js: true do
       # signing in again before completing in-person proofing at a post office
       Capybara.reset_session!
       sign_in_live_with_2fa(user)
+      visit_idp_from_sp_with_ial2(:oidc)
       expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
     end
   end
@@ -232,6 +233,7 @@ RSpec.describe 'In Person Proofing', js: true do
     # signing in again before completing in-person proofing at a post office
     Capybara.reset_session!
     sign_in_live_with_2fa(user)
+    visit_idp_from_sp_with_ial2(:oidc)
     expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
 
     # confirm that user cannot visit other IdV pages before completing in-person proofing
@@ -241,6 +243,11 @@ RSpec.describe 'In Person Proofing', js: true do
     expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
     visit idv_verify_info_url
     expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
+
+    # Confirms that user can visit account page even if not completing in person proofing
+    Capybara.reset_session!
+    sign_in_and_2fa_user(user)
+    expect(page).to have_current_path(account_path)
   end
 
   it 'allows the user to cancel and start over from the beginning', allow_browser_log: true do
@@ -900,6 +907,7 @@ RSpec.describe 'In Person Proofing', js: true do
       # signing in again before completing in-person proofing at a post office
       Capybara.reset_session!
       sign_in_live_with_2fa(user)
+      visit_idp_from_sp_with_ial2(:oidc)
       expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
     end
   end

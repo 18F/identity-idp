@@ -111,7 +111,7 @@ module Features
     def fill_in_credentials_and_submit(email, password)
       fill_in t('account.index.email'), with: email
       fill_in t('account.index.password'), with: password
-      click_button t('links.next')
+      click_button t('links.sign_in')
     end
 
     def continue_as(email = nil, password = VALID_PASSWORD)

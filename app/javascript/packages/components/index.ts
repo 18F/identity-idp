@@ -21,8 +21,11 @@ export { default as StatusPage } from './status-page';
 export { default as Tag } from './tag';
 export { default as TextInput } from './text-input';
 export { default as TroubleshootingOptions } from './troubleshooting-options';
+export { default as Checkbox } from './checkbox';
+export { default as FieldSet } from './field-set';
 
 export type { ButtonProps } from './button';
 export type { FullScreenRefHandle } from './full-screen';
 export type { LinkProps } from './link';
 export type { TextInputProps } from './text-input';
+export type { CheckboxProps } from './checkbox';

@@ -221,7 +221,7 @@ class ApplicationController < ActionController::Base
   end
 
   def signed_in_url
-    return url_for_pending_profile_reason if user_has_pending_profile?
+    return idv_verify_by_mail_enter_code_url if current_user.gpo_verification_pending_profile?
     return backup_code_reminder_url if user_needs_backup_code_reminder?
     account_path
   end

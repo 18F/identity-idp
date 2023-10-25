@@ -48,7 +48,7 @@ RSpec.describe 'sign_up/registrations/new.html.erb' do
     render
 
     expect(rendered).to have_link(
-      t('links.next'),
+      t('links.sign_in'),
       href: new_user_session_url(request_id: nil),
     )
   end
