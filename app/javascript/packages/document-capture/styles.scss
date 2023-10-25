@@ -1,5 +1,6 @@
-@import './components/acuant-capture';
-@import './components/acuant-capture-canvas';
-@import './components/location-collection-item';
-@import './components/select-error';
-@import './components/optional-questions';
+@forward './components/acuant-capture';
+@forward './components/acuant-capture-canvas';
+@forward './components/file-input';
+@forward './components/location-collection-item';
+@forward './components/optional-questions';
+@forward './components/select-error';
