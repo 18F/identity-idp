@@ -9,12 +9,12 @@ module Idv
                                                 } }
     validates_length_of :state, { is: 2,
                                   message: proc {
-                                             I18n.t('doc_auth.errors.general.no_liveness')
+                                             :generic_error
                                            } }
     validate :zipcode_valid?
     validates :jurisdiction, inclusion: { in: Idp::Constants::STATE_AND_TERRITORY_CODES,
                                           message: proc {
-                                                     I18n.t('doc_auth.errors.general.no_liveness')
+                                                     :generic_error
                                                    } }
 
     attr_reader :first_name, :last_name, :dob, :address1, :state, :zipcode, :attention_with_barcode,
