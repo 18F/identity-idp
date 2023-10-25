@@ -175,7 +175,7 @@ RSpec.describe Idv::PersonalKeyController do
       it 'redirects to review url' do
         get :show
 
-        expect(response).to redirect_to idv_review_url
+        expect(response).to redirect_to idv_enter_password_url
       end
     end
   end
@@ -236,7 +236,7 @@ RSpec.describe Idv::PersonalKeyController do
       it 'redirects to review url' do
         patch :update
 
-        expect(response).to redirect_to idv_review_url
+        expect(response).to redirect_to idv_enter_password_url
       end
     end
 
