@@ -24,7 +24,7 @@ RSpec.describe Idv::InPerson::AddressController do
   end
 
   describe 'before_actions' do
-    context '#render_404_if_in_person_residential_address_controller_enabled_not_set' do
+    context '#render_404_if_in_person_residential_address_controller_enabled not set' do
       context 'flag not set' do
         before do
           allow(IdentityConfig.store).to receive(:in_person_residential_address_controller_enabled).
