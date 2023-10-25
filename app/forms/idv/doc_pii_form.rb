@@ -6,8 +6,8 @@ module Idv
     validate :dob_valid?
     validates_presence_of :address1, { message: proc { I18n.t('doc_auth.errors.alerts.address_check') } }
     validates_length_of :state, { is: 2, message: proc { I18n.t('doc_auth.errors.general.no_liveness') } }
-    validate :zipcode_valid?
-    validate :jurisdiction_valid?
+    validates :zipcode, format: { with: /\A\d{5}(?:[-\s]\d{4})?\z/, message: proc { I18n.t('doc_auth.errors.general.no_liveness') } }
+    validates :jurisdiction, inclusion: { in: Idp::Constants::STATE_AND_TERRITORY_CODES, message: proc { I18n.t('doc_auth.errors.general.no_liveness') } }
 
     attr_reader :first_name, :last_name, :dob, :address1, :state, :zipcode, :attention_with_barcode,
                 :jurisdiction
@@ -28,7 +28,7 @@ module Idv
     def submit
       response = Idv::DocAuthFormResponse.new(
         success: valid?,
-        errors: errors,
+        errors: response_errors,
         extra: {
           pii_like_keypaths: [[:pii]], # see errors.add(:pii)
           attention_with_barcode: attention_with_barcode?,
@@ -41,12 +41,6 @@ module Idv
     private
 
     attr_reader :pii_from_doc
-
-    def jurisdiction_valid?
-      return if Idp::Constants::STATE_AND_TERRITORY_CODES.include? jurisdiction
-
-      errors.add(:jurisdiction, generic_error)
-    end
 
     def name_valid?
       return if first_name.present? && last_name.present?
@@ -69,16 +63,6 @@ module Idv
       end
     end
 
-    def zipcode_valid?
-      return if  zipcode.is_a?(String) && zipcode.present?
-
-      errors.add(:zipcode, generic_error)
-    end
-
-    def generic_error
-      I18n.t('doc_auth.errors.general.no_liveness')
-    end
-
     def name_error
       I18n.t('doc_auth.errors.alerts.full_name_check')
     end
@@ -89,6 +73,16 @@ module Idv
 
     def dob_min_age_error
       I18n.t('doc_auth.errors.pii.birth_date_min_age')
+    end
+
+    def response_errors
+      if %i(name dob dob_min_age state).count{|i| errors.has_key?(i)} > 1
+        # returning this doesn't work ... caused downstream where errors not expected inthis format
+        { pii: I18n.t('doc_auth.errors.general.no_liveness') }
+      else
+        # format errors here with pii key
+        errors
+      end
     end
   end
 end
