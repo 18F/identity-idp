@@ -305,6 +305,47 @@ RSpec.describe Idv::ImageUploadsController do
       end
     end
 
+    context 'when image upload fails with 4xx status' do
+      before do
+        status = 440
+        errors = { general: [DocAuth::Errors::IMAGE_SIZE_FAILURE],
+                   front: [DocAuth::Errors::IMAGE_SIZE_FAILURE_FIELD] }
+        message = [
+          self.class.name,
+          'Unexpected HTTP response',
+          status,
+        ].join(' ')
+        exception = DocAuth::RequestError.new(message, status)
+        response = DocAuth::Response.new(
+          success: false,
+          errors: errors,
+          exception: exception,
+          extra: { vendor: 'Mock' },
+        )
+        DocAuth::Mock::DocAuthMockClient.mock_response!(
+          method: :post_front_image,
+          response: response,
+        )
+      end
+
+      it 'returns error response' do
+        action
+        expect(response.status).to eq(400)
+        expect(json[:success]).to eq(false)
+        expect(json[:remaining_attempts]).to be_a_kind_of(Numeric)
+        expect(json[:errors]).to eq [
+          {
+            field: 'general',
+            message: I18n.t('doc_auth.errors.http.image_size.top_msg'),
+          },
+          {
+            field: 'front',
+            message: I18n.t('doc_auth.errors.http.image_size.failed_short'),
+          },
+        ]
+      end
+    end
+
     context 'when image upload succeeds' do
       it 'returns a successful response and modifies the session' do
         action

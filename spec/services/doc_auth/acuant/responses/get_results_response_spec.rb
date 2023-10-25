@@ -163,7 +163,7 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
     end
   end
 
-  context 'with a failed result of unknow document type' do
+  context 'with a failed result' do
     let(:http_response) do
       instance_double(
         Faraday::Response,
