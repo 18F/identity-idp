@@ -23,7 +23,7 @@ module Reports
     private
 
     def verification_errors_data_for_issuers(date, report_name, issuers)
-      csv = CSV.new('', row_sep: "\r\n")
+      csv = CSV.new(+'', row_sep: "\r\n")
       csv << %w[uuid welcome_view_at error_code]
       issuers.each do |issuer|
         transaction_with_timeout do

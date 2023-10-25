@@ -28,7 +28,7 @@ module Reports
     private
 
     def deleted_user_accounts_data_for_issuers(issuers)
-      csv = CSV.new('', row_sep: "\r\n")
+      csv = CSV.new(+'', row_sep: "\r\n")
       issuers.each do |issuer|
         transaction_with_timeout do
           rows = DeletedAccountsReport.call(issuer, 10_000)
