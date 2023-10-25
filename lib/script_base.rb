@@ -77,10 +77,14 @@ class ScriptBase
       self.class.render_output(result.table, format: config.format, stdout: stdout)
     end
   rescue => err
-    stdout.puts [
-      ['Error', 'Message'],
-      [err.class.name, err.message],
-    ].to_json
+    self.class.render_output(
+      [
+        ['Error', 'Message'],
+        [err.class.name, err.message],
+      ],
+      format: config.format,
+      stdout: stdout,
+    )
 
     stderr.puts "#{err.class.name}: #{err.message}"
 
