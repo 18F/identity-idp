@@ -348,9 +348,6 @@ Rails.application.routes.draw do
       post '/phone/resend_code' => 'resend_otp#create', as: :resend_otp
       get '/phone_confirmation' => 'otp_verification#show', as: :otp_verification
       put '/phone_confirmation' => 'otp_verification#update', as: :nil
-      # The `/review` route is deperecated in favor of `/enter_password`
-      get '/review' => 'enter_password#new'
-      put '/review' => 'enter_password#create'
       get '/enter_password' => 'enter_password#new'
       put '/enter_password' => 'enter_password#create'
       get '/phone_question' => 'phone_question#show'
