@@ -84,7 +84,7 @@ export const useSteps = (submissionError: Error | undefined) => {
 
   // When the user is in the hybrid flowPath, then they need to get the switch_back screen
   // after all of the other steps.
-  if (flowPath === 'hybrid') {
+  if (flowPath === 'hybrid' && inPersonURL) {
     return steps.concat({
       name: 'switch_back',
       form: InPersonSwitchBackStep,
