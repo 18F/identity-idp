@@ -141,6 +141,7 @@ en:
       document_capture_front: Front of your ID
       front: Front of your driver’s license or state ID
       getting_started: Let’s verify your identity for %{sp_name}
+      how_to_verify: Choose how you want to verify your identity
       hybrid_handoff: How would you like to add your ID?
       interstitial: We are processing your images
       lets_go: How verifying your identity works
@@ -179,6 +180,7 @@ en:
       getting_started_html: '%{sp_name} needs to make sure you are you — not someone
         pretending to be you. %{link_html}'
       getting_started_learn_more: Learn more about what you need to verify your identity
+      how_to_verify: You have the option to verify your identity online, or in person at a participating Post Office
       hybrid_handoff: We’ll collect information about you by reading your state‑issued ID.
       image_loaded: Image loaded
       image_loading: Image loading

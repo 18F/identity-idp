@@ -1,0 +1,8 @@
+<% title t('doc_auth.headings.how_to_verify') %>
+
+<%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.how_to_verify')) %>
+<p><%= t('doc_auth.info.how_to_verify') %></p>
+
+<%= link_to 'Go Remote!', idv_hybrid_handoff_path %>
+
+<%= link_to 'Go to the Post Office!', idv_document_capture_path %>

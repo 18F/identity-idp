@@ -1,0 +1,2 @@
+module Idv::HowToVerifyHelper
+end
