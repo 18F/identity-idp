@@ -42,7 +42,7 @@ module Reports
     end
 
     def fiscal_end_date(time)
-      time.change(year: time.month >= 10 ? time.year + 1 : time.year, month: 9, day: 30).end_of_day
+      CalendarService.fiscal_end_date(report_date).end_of_day
     end
 
     def reporting_range(time)
