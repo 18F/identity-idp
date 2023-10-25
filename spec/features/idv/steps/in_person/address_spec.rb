@@ -15,7 +15,7 @@ RSpec.describe 'doc auth In person proofing residential address step', js: true 
       complete_idv_steps_before_address
       # residential address page
       expect(page).to have_current_path(idv_in_person_proofing_address_url)
-      
+
       expect(page).to have_content(t('forms.buttons.continue'))
       expect(page).to have_content(t('in_person_proofing.headings.address'))
     end
