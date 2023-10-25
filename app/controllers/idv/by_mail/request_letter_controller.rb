@@ -83,7 +83,7 @@ module Idv
       end
 
       def confirm_mail_not_spammed
-        redirect_to idv_enter_password_url if gpo_mail_service.mail_spammed?
+        redirect_to idv_enter_password_url if gpo_mail_service.rate_limited?
       end
 
       def confirm_user_completed_idv_profile_step
