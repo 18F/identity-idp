@@ -7,7 +7,7 @@ module Idv
     validates_presence_of :address1, { message: proc { I18n.t('doc_auth.errors.alerts.address_check') } }
     validates_length_of :state, { is: 2, message: proc { I18n.t('doc_auth.errors.general.no_liveness') } }
     validate :zipcode_valid?
-    validate :jurisdiction_valid?
+    validates :jurisdiction, inclusion: { in: Idp::Constants::STATE_AND_TERRITORY_CODES, message: proc { I18n.t('doc_auth.errors.general.no_liveness') } }
 
     attr_reader :first_name, :last_name, :dob, :address1, :state, :zipcode, :attention_with_barcode,
                 :jurisdiction
@@ -30,7 +30,7 @@ module Idv
         success: valid?,
         errors: errors,
         extra: {
-          pii_like_keypaths: [[:pii]], # see errors.add(:pii)
+          pii_like_keypaths: [[:name, :dob, :dob_min_age, :address1, :state, :zipcode, :jurisdiction]], # see errors.add(:pii)
           attention_with_barcode: attention_with_barcode?,
         },
       )
@@ -41,12 +41,6 @@ module Idv
     private
 
     attr_reader :pii_from_doc
-
-    def jurisdiction_valid?
-      return if Idp::Constants::STATE_AND_TERRITORY_CODES.include? jurisdiction
-
-      errors.add(:jurisdiction, generic_error)
-    end
 
     def name_valid?
       return if first_name.present? && last_name.present?
