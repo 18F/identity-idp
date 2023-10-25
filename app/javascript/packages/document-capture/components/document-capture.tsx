@@ -13,7 +13,7 @@ import SubmissionStatus from './submission-status';
 import { RetrySubmissionError } from './submission-complete';
 import SuspenseErrorBoundary from './suspense-error-boundary';
 import SubmissionInterstitial from './submission-interstitial';
-import { useSteps } from '../hooks/useSteps';
+import { useSteps } from '../hooks/use-steps';
 
 interface DocumentCaptureProps {
   /**
