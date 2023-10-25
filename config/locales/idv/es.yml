@@ -222,6 +222,21 @@ es:
       wrong_address: ¿La dirección no es correcta?
     images:
       come_back_later: Carta con una marca de verificación
+    legal_statement:
+      information_collection: >-
+        Cette collecte d’informations répond aux exigences de l’article 3507 du
+        44 U.S.C., tel que modifié par l’article 2 de la loi de 1995 sur la
+        réduction des tâches administratives. Vous n’avez pas besoin de répondre
+        à ces questions, sauf si nous affichons un numéro de contrôle valide de
+        l’Office of Management and Budget (OMB). Le numéro de contrôle de l’OMB
+        pour cette collecte est 3090-0325. Calculamos que tomará un minuto leer
+        las instrucciones, recopilar los datos y responder las preguntas. Envíe
+        solo comentarios relacionados con nuestro tiempo estimado, incluidas
+        sugerencias para reducir esta molestia, o cualquier otro aspecto
+        relacionado con esta recopilación de información a: Administración de
+        Servicios Generales, División de la Secretaría Reguladora (MVCB), a la
+        atención de Lois Mandell/IC 3090-0325, 1800 F Street, NW, Washington, D.
+        C. 20405.
     messages:
       activated_html: Su identidad ha sido verificada. Si necesita cambiar la
         información verificada, por favor, %{link_html}.
