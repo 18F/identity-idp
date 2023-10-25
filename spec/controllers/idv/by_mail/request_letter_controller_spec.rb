@@ -19,7 +19,7 @@ RSpec.describe Idv::ByMail::RequestLetterController do
         :before,
         :confirm_two_factor_authenticated,
         :confirm_idv_needed,
-        :confirm_mail_not_spammed,
+        :confirm_mail_not_rate_limited,
         :confirm_profile_not_too_old,
       )
     end

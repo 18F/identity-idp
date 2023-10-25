@@ -8,7 +8,7 @@ module Idv
       before_action :confirm_two_factor_authenticated
       before_action :confirm_idv_needed
       before_action :confirm_user_completed_idv_profile_step
-      before_action :confirm_mail_not_spammed
+      before_action :confirm_mail_not_rate_limited
       before_action :confirm_profile_not_too_old
 
       def index
@@ -82,7 +82,7 @@ module Idv
         current_user.gpo_verification_pending_profile&.gpo_verification_pending_at
       end
 
-      def confirm_mail_not_spammed
+      def confirm_mail_not_rate_limited
         redirect_to idv_enter_password_url if gpo_mail_service.rate_limited?
       end
 
