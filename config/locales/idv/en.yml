@@ -175,8 +175,8 @@ en:
         JavaScript to continue this process.'
     gpo:
       alert_info: 'We sent a letter with your verification code to:'
-      alert_spam_warning_html: 'We are unable to send more letters. The most recent
-        letter was sent on <strong>%{date_letter_was_sent}</strong>.'
+      alert_spam_warning_html: You can’t request more letters right now. Your previous
+        letter request was on <strong>%{date_letter_was_sent}</strong>.
       change_to_verification_code_html: 'The <strong>one-time code</strong> from your
         letter is now referred to as <strong>verification code</strong>.'
       clear_and_start_over: Clear your information and start over
