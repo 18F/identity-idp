@@ -88,7 +88,7 @@ class ScriptBase
 
     stderr.puts "#{err.class.name}: #{err.message}"
 
-    exit 1 # rubodop:disable Rails/Exit
+    exit 1 # rubocop:disable Rails/Exit
   end
 
   # rubocop:disable Metrics/BlockLength
