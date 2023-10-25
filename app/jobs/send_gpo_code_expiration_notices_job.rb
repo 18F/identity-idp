@@ -48,17 +48,7 @@ class SendGpoCodeExpirationNoticesJob < ApplicationJob
       where.not(profile: { gpo_verification_pending_at: nil }).
 
       # 4. Exclude codes where the associated profile has been deactivated for some reason
-      where(profile: { deactivation_reason: nil }).or(
-        GpoConfirmationCode.where.not(
-          profile: {
-            deactivation_reason: [
-              :password_reset,
-              :encryption_error,
-              :verification_cancelled,
-            ],
-          },
-        ),
-      ).
+      where(profile: { deactivation_reason: nil }).
 
       # 5. Exclude codes where the user has since gotten an active profile (no point in notifying)
       where.not(

@@ -51,9 +51,18 @@ RSpec.describe SendGpoCodeExpirationNoticesJob do
   end
 
   let!(:users_with_profiles_in_invalid_states) do
-    %i[password_reset encryption_error verification_cancelled].map do |reason|
+    reasons = %i[
+      password_reset
+      encryption_error
+      verification_cancelled
+      gpo_verification_pending_NO_LONGER_USED
+      in_person_verification_pending_NO_LONGER_USED
+    ]
+
+    reasons.map do |reason|
       create(:user, :with_pending_gpo_profile, code_sent_at: expired_timestamp).tap do |user|
-        user.gpo_verification_pending_profile.deactivate(reason)
+        profile = user.gpo_verification_pending_profile
+        profile.deactivate(reason)
       end
     end
   end
@@ -78,7 +87,7 @@ RSpec.describe SendGpoCodeExpirationNoticesJob do
   end
 
   it 'has the expected number of test users configured' do
-    expect(User.count).to eql(10)
+    expect(User.count).to eql(12)
   end
 
   describe '#codes_to_send_notifications_for' do
