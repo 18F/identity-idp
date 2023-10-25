@@ -33,6 +33,18 @@ margins or borders.
 - Packages are managed with [Yarn](https://classic.yarnpkg.com/), organized using [Yarn workspaces](https://classic.yarnpkg.com/en/docs/workspaces/)
 - JavaScript is transpiled, bundled, and minified via [Webpack](https://webpack.js.org/) and [Babel](https://babeljs.io/)
 
+### Naming Conventions
+
+- Files within `app/javascript` should be named as kebab-case, e.g. `./path-to/my-javascript.ts`.
+- Variables should be named as camelCase, e.g. `const myFavoriteNumber = 1;`.
+   - Only the first letter of an abbreviation should be capitalized, e.g. `const userId = 10;`
+   - All letters of an acronym should be capitalized, e.g. `const siteURL = 'https://example.com';`
+- Classes should be named as PascalCase (upper camel case), e.g. `MyComponent`.
+- Constants should be named as SCREAMING_SNAKE_CASE, e.g. `const MEANING_OF_LIFE = 42;`.
+- TypeScript enums should be named as PascalCase with SCREAMING_SNAKE_CASE members, e.g. `enum Color { RED = '#f00'; }`.
+
+Related: [Component Naming Conventions](#naming)
+
 ### Prettier
 
 [Prettier](https://prettier.io/) is an opinionated code formatter which simplifies adherence to
