@@ -76,14 +76,13 @@ module Idv
     end
 
     def response_errors
+      return {} if errors.empty?
+
       if %i(name dob dob_min_age state).count{|i| errors.has_key?(i)} > 1
         return { pii: [ I18n.t('doc_auth.errors.general.no_liveness') ] }
       end
-      error = errors.first
-      if error
-        return { pii: [ error.message ] }
-      end
-      {}
+      
+      { pii: [ errors.first.message ] }
     end
   end
 end
