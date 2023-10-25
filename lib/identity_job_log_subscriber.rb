@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # ActiveJob events documentation:
 # https://edgeguides.rubyonrails.org/active_support_instrumentation.html#active-job
 # https://github.com/rails/rails/blob/v6.1.3.1/activejob/lib/active_job/log_subscriber.rb

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'aws-sdk-cloudwatchlogs'
 require 'ruby-progressbar'
 require 'identity/hostdata'

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'erb'
 require 'faraday'
 require 'openssl'
@@ -10,10 +12,10 @@ module Proofing
   module Aamva
     module Request
       class SecurityTokenRequest
-        DEFAULT_AUTH_URL = 'https://authentication-cert.aamva.org/Authentication/Authenticate.svc'.freeze
-        CONTENT_TYPE = 'application/soap+xml;charset=UTF-8'.freeze
+        DEFAULT_AUTH_URL = 'https://authentication-cert.aamva.org/Authentication/Authenticate.svc'
+        CONTENT_TYPE = 'application/soap+xml;charset=UTF-8'
         SOAP_ACTION =
-          '"http://aamva.org/authentication/3.1.0/IAuthenticationService/Authenticate"'.freeze
+          '"http://aamva.org/authentication/3.1.0/IAuthenticationService/Authenticate"'
 
         attr_reader :config, :body, :headers, :url
 

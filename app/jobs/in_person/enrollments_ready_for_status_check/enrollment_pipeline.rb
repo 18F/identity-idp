@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module InPerson::EnrollmentsReadyForStatusCheck
   class EnrollmentPipeline
     # @param [InPerson::EnrollmentsReadyForStatusCheck::ErrorReporter] error_reporter

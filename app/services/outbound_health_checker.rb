@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Checks outbound network connections
 module OutboundHealthChecker
   module_function

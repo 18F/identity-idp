@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Abstract class to combine IaaGtcs and IaaOrders for JSON serialization
 module Agreements
   class Iaa

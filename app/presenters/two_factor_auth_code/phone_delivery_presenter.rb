@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module TwoFactorAuthCode
   class PhoneDeliveryPresenter < TwoFactorAuthCode::GenericDeliveryPresenter
     include ActionView::Helpers::UrlHelper

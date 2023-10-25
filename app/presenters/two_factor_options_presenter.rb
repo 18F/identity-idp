@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class TwoFactorOptionsPresenter
   include ActionView::Helpers::TranslationHelper
 

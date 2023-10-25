@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class FormLinkComponent < BaseComponent
   attr_reader :href, :method, :tag_options
 

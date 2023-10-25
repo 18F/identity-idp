@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module UspsInPersonProofing
   module Exception
     class RequestEnrollException < StandardError

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module TwoFactorAuthentication
   class SmsSelectionPresenter < PhoneSelectionPresenter
     def method

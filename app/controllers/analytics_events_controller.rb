@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Serve a static file from Rails so that the CORS middleware can add the correct headers
 class AnalyticsEventsController < ApplicationController
   prepend_before_action :skip_session_load

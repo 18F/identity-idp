@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Idv
   class SendPhoneConfirmationOtp
     attr_reader :telephony_response

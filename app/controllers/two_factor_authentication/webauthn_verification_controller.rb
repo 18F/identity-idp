@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module TwoFactorAuthentication
   # The WebauthnVerificationController class is responsible webauthn verification at sign in
   class WebauthnVerificationController < ApplicationController

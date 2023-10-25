@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ForgotPasswordController < ApplicationController
   def show
     if session[:email].blank?

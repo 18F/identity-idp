@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RuboCop
   module Cop
     module IdentityIdp
@@ -15,7 +17,7 @@ module RuboCop
       #   ReportMailer.report_mail(data).deliver_now
       #
       class MailLaterLinter < RuboCop::Cop::Cop
-        MSG = 'Please send mail using deliver_now_or_later instead'.freeze
+        MSG = 'Please send mail using deliver_now_or_later instead'
 
         RESTRICT_ON_SEND = [:deliver_now, :deliver_later].freeze
 

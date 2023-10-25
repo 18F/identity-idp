@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CaptchaSubmitButtonComponent < BaseComponent
   attr_reader :form, :action, :tag_options
 

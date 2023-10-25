@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SamlRequestPresenter
   ATTRIBUTE_TO_FRIENDLY_NAME_MAP = {
     email: :email,

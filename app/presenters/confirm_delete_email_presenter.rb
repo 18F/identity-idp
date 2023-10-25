@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ConfirmDeleteEmailPresenter
   include ActionView::Helpers::TranslationHelper
 

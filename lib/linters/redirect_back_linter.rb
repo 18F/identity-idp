@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RuboCop
   module Cop
     module IdentityIdp
@@ -15,7 +17,7 @@ module RuboCop
       #   redirect_back fallback_location: '/', allow_other_host: false
       #
       class RedirectBackLinter < RuboCop::Cop::Cop
-        MSG = 'Please set a fallback_location and the allow_other_host parameter to false'.freeze
+        MSG = 'Please set a fallback_location and the allow_other_host parameter to false'
 
         RESTRICT_ON_SEND = [:redirect_back]
 

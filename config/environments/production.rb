@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Rails.application.configure do
   config.cache_classes = true
   config.cache_store = :redis_cache_store, { url: IdentityConfig.store.redis_url }

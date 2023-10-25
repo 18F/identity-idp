@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 cron_5m = '0/5 * * * *'
 cron_12m = '0/12 * * * *'
 cron_1h = '0 * * * *'

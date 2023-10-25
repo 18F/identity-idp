@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 require 'csv'
 
 class GpoConfirmationExporter
-  DELIMITER = '|'.freeze
-  LINE_ENDING = "\r\n".freeze
-  HEADER_ROW_ID = '01'.freeze
-  CONTENT_ROW_ID = '02'.freeze
+  DELIMITER = '|'
+  LINE_ENDING = "\r\n"
+  HEADER_ROW_ID = '01'
+  CONTENT_ROW_ID = '02'
 
   def initialize(confirmations)
     @confirmations = confirmations

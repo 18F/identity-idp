@@ -1118,6 +1118,13 @@ Style/For:
   Enabled: true
   EnforcedStyle: each
 
+Style/FrozenStringLiteralComment:
+  Enabled: true
+  Include:
+    - app/**/*.rb
+    - config/**/*.rb
+    - lib/**/*.rb
+
 Style/GlobalVars:
   Enabled: true
   AllowedVariables: []

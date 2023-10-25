@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class GpoReminderSender
   LOCAL_DATABASE_TIMEOUT = 60_000
 

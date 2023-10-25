@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CalendarService
   # https://www.opm.gov/policy-data-oversight/snow-dismissal-procedures/federal-holidays
 

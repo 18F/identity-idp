@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ServiceProviderMfaPolicy
   attr_reader :mfa_context, :auth_methods_session, :service_provider
 

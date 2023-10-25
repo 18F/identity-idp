@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class BackupCodeConfiguration < ApplicationRecord
   NUM_WORDS = 3
 

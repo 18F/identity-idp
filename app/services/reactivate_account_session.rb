@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ReactivateAccountSession
   SESSION_KEY = :reactivate_account
 

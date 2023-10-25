@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 require 'identity/hostdata'
 require 'csv'
 
 module Reports
   class DeletedUserAccountsReport < BaseReport
-    REPORT_NAME = 'deleted-user-accounts-report'.freeze
+    REPORT_NAME = 'deleted-user-accounts-report'
 
     def perform(_date)
       configs = IdentityConfig.store.deleted_user_accounts_report_configs

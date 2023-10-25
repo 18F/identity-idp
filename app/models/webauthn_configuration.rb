@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class WebauthnConfiguration < ApplicationRecord
   belongs_to :user
   validates :name, presence: true

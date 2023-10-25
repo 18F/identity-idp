@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module AccountReset
   class CreateRequest
     def initialize(user, requesting_issuer)

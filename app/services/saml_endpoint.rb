@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SamlEndpoint
   attr_reader :year
 

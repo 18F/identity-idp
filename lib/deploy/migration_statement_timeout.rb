@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Deploy
   module MigrationStatementTimeout
     def connection

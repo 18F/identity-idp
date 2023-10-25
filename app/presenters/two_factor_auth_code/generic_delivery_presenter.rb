@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module TwoFactorAuthCode
   class GenericDeliveryPresenter
     include ActionView::Helpers::TagHelper

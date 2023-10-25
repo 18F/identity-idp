@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PasswordConfirmationComponent < BaseComponent
   attr_reader :form, :field_options, :tag_options
 

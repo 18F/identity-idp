@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Db
   class PivCacConfiguration
     def self.create(user, x509_dn_uuid, name = x509_dn_uuid, issuer = nil)

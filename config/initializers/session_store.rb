@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 require 'session_encryptor'
 
-APPLICATION_SESSION_COOKIE_KEY = '_identity_idp_session'.freeze
+APPLICATION_SESSION_COOKIE_KEY = '_identity_idp_session'
 
 Rails.application.config.session_store(
   :redis_session_store,

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # monkeypatch to prevent new relic from truncating backtraces.
 # stack length is not currently configurable in new relic.
 # The MAX_BACKTRACE_FRAMES constant is commented out for reference

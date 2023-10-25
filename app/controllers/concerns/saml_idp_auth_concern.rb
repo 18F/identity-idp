@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SamlIdpAuthConcern
   extend ActiveSupport::Concern
   extend Forwardable

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module UspsInPersonProofing
   class Proofer
     AUTH_TOKEN_CACHE_KEY = :usps_ippaas_api_auth_token

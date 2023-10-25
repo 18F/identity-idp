@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 require 'csv'
 
 module Reports
   class CombinedInvoiceSupplementReport < BaseReport
-    REPORT_NAME = 'combined-invoice-supplement-report'.freeze
+    REPORT_NAME = 'combined-invoice-supplement-report'
 
     def perform(_date)
       csv = build_csv(IaaReportingHelper.iaas)

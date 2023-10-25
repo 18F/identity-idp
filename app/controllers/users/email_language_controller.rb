@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Users
   class EmailLanguageController < ApplicationController
     before_action :confirm_two_factor_authenticated

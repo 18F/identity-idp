@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Reports
   module MonthHelper
     module_function

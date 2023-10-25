@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Health
   class AbstractHealthController < ApplicationController
     prepend_before_action :skip_session_load

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Redirect
   class HelpCenterController < RedirectController
     before_action :validate_help_center_article_params

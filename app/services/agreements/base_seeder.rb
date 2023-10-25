@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Agreements
   class BaseSeeder
     def initialize(rails_env: Rails.env, yaml_path: 'config')

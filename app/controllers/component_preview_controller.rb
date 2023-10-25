@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ComponentPreviewController < ViewComponentsController
   if IdentityConfig.store.component_previews_enabled
     include ActionView::Helpers::AssetTagHelper

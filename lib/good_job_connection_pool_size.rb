@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This class provides a starting point to dynamically calculate the number of database connections
 # needed for our multi-threaded GoodJob deployment. Each process will create
 # a certain number of threads based on configuration in the environment.

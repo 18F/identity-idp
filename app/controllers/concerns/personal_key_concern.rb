@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module PersonalKeyConcern
   delegate :active_profile, to: :current_user
 

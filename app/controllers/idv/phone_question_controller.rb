@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Idv
   class PhoneQuestionController < ApplicationController
     include ActionView::Helpers::DateHelper

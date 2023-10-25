@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 require 'csv'
 
 module Reports
   class AgreementSummaryReport < BaseReport
-    REPORT_NAME = 'agreement-summary-report'.freeze
+    REPORT_NAME = 'agreement-summary-report'
 
     def perform(_date)
       csv = build_report

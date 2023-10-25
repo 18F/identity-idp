@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SetupPresenter
   attr_reader :current_user, :user_fully_authenticated, :user_opted_remember_device_cookie
 

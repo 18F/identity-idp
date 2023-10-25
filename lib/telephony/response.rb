@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Telephony
   class Response
     attr_reader :error, :extra

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module DocAuth
   class RequestError < StandardError
     attr_reader :error_code

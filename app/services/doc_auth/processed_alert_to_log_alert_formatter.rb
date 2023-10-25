@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module DocAuth
   class ProcessedAlertToLogAlertFormatter
     def log_alerts(alerts)

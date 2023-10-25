@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Idv
   class ImageUploadsController < ApplicationController
     include ApplicationHelper # for liveness_checking_enabled?

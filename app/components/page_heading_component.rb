@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PageHeadingComponent < BaseComponent
   attr_reader :tag_options
 

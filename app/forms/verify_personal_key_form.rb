@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class VerifyPersonalKeyForm
   include ActiveModel::Model
   include PersonalKeyValidator

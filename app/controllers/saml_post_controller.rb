@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SamlPostController < ApplicationController
   after_action -> { request.session_options[:skip] = true }, only: :auth
   skip_before_action :verify_authenticity_token

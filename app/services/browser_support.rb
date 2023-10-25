@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class BrowserSupport
   @cache = LruRedux::Cache.new(1_000)
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # PII is stored encrypted in the database using the user's passphrase.
 # Since we need to access the PII during the entire user session,
 # but we only have the passphrase at initial log in,

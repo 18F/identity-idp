@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RuboCop
   module Cop
     module IdentityIdp
@@ -32,7 +34,7 @@ module RuboCop
       #   end
       #
       class UrlOptionsLinter < RuboCop::Cop::Cop
-        MSG = 'Please define url_options when including Rails.application.routes.url_helpers'.freeze
+        MSG = 'Please define url_options when including Rails.application.routes.url_helpers'
 
         RESTRICT_ON_SEND = [:include].freeze
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AuthMethodsSession
   attr_reader :user_session
 

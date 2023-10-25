@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Accounts
   class HistoryController < ApplicationController
     include RememberDeviceConcern

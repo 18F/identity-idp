@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module JobHelpers
   module StaleJobHelper
     class StaleJobError < StandardError; end

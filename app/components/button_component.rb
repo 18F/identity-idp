@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ButtonComponent < BaseComponent
   attr_reader :action, :icon, :big, :wide, :full_width, :outline, :unstyled, :danger, :tag_options
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'reporting/cloudwatch_query_time_slice'
 
 module Reporting

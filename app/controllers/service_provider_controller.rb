@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ServiceProviderController < ApplicationController
   protect_from_forgery with: :null_session
 

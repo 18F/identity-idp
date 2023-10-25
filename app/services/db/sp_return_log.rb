@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Db
   class SpReturnLog
     def self.create_return(request_id:, user_id:, billable:, ial:, issuer:, requested_at:)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'reporting/identity_verification_report'
 
 module Reports

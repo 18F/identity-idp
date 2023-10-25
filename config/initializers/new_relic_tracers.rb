@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ## Add NR tracers to methods so we can trace execution in the NR dashboard
 ## Ref: https://docs.newrelic.com/docs/agents/ruby-agent/api-guides/ruby-custom-instrumentation
 require 'new_relic/agent/method_tracer'

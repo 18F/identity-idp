@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Api
   module CsrfTokenConcern
     def add_csrf_token_header_to_response

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module EventDisavowal
   class FindDisavowedEvent
     attr_reader :disavowal_token

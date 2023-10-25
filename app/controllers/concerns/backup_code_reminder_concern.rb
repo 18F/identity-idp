@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module BackupCodeReminderConcern
   def user_needs_backup_code_reminder?
     user_backup_codes_configured? && user_last_signed_in_more_than_5_months_ago?

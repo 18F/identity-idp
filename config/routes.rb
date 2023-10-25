@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Rails.application.routes.draw do
   # Non i18n routes. Alphabetically sorted.
   get '/api/analytics-events' => 'analytics_events#index'

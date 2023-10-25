@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Idv
   module PhoneQuestionAbTestConcern
     def phone_question_ab_test_bucket

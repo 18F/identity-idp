@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ActiveProfileEncryptor
   attr_reader :personal_key
 

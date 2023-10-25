@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class LinkLocaleResolver
   def self.locale
     locale = I18n.locale

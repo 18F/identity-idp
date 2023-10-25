@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class FlashComponent < BaseComponent
   VALID_FLASH_TYPES = %w[error info success warning other notice alert].freeze
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PhoneInputComponent < BaseComponent
   attr_reader :form,
               :confirmed_phone,

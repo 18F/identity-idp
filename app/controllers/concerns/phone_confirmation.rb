@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module PhoneConfirmation
   def prompt_to_confirm_phone(id:, phone:, selected_delivery_method: nil,
                               selected_default_number: nil, phone_type: nil)

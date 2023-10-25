@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Test
   class DeviceProfilingController < ApplicationController
     prepend_before_action :skip_session_load

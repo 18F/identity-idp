@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Db
   module MonthlySpAuthCount
     # Similar to TotalMonthlyAuthCounts, but scopes authorizations to within

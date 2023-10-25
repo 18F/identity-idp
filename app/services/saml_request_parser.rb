@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SamlRequestParser
   URI_PATTERN = Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF
 

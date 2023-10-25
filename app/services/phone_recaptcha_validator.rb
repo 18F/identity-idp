@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 class PhoneRecaptchaValidator
-  RECAPTCHA_ACTION = 'phone_setup'.freeze
+  RECAPTCHA_ACTION = 'phone_setup'
 
   attr_reader :parsed_phone, :validator_class, :validator_args
 

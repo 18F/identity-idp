@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module DocAuth
   module Acuant
     module Responses
@@ -5,7 +7,7 @@ module DocAuth
         include ClassificationConcern
         attr_reader :config
 
-        BARCODE_COULD_NOT_BE_READ_ERROR = '2D Barcode Read'.freeze
+        BARCODE_COULD_NOT_BE_READ_ERROR = '2D Barcode Read'
 
         def initialize(http_response, config)
           @http_response = http_response

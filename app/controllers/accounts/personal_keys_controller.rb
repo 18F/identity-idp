@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Accounts
   # Lets users generate a new personal key
   class PersonalKeysController < ApplicationController

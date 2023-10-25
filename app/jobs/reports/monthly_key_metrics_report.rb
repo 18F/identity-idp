@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 require 'csv'
 require 'reporting/monthly_proofing_report'
 
 module Reports
   class MonthlyKeyMetricsReport < BaseReport
-    REPORT_NAME = 'monthly-key-metrics-report'.freeze
+    REPORT_NAME = 'monthly-key-metrics-report'
 
     attr_reader :report_date
 

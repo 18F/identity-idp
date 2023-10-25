@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class EmailPolicy
   def initialize(user)
     @user = EmailContext.new(user)

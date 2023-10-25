@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Health
   # Checks outbound network connections
   class OutboundController < AbstractHealthController

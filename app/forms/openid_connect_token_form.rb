@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class OpenidConnectTokenForm
   include ActiveModel::Model
   include ActionView::Helpers::TranslationHelper
@@ -15,7 +17,7 @@ class OpenidConnectTokenForm
 
   attr_reader(*ATTRS)
 
-  CLIENT_ASSERTION_TYPE = 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer'.freeze
+  CLIENT_ASSERTION_TYPE = 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer'
 
   validates_inclusion_of :grant_type, in: %w[authorization_code]
   validates_inclusion_of :client_assertion_type,

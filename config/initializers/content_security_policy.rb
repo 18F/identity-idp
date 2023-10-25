@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'feature_management'
 
 # rubocop:disable Metrics/BlockLength

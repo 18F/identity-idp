@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class IconComponent < BaseComponent
   # See: https://github.com/uswds/uswds/tree/develop/src/img/usa-icons
   ICONS = %i[

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ParseControllerFromReferer
   def initialize(referer)
     @referer = referer

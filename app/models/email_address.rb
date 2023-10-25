@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class EmailAddress < ApplicationRecord
   include EncryptableAttribute
 

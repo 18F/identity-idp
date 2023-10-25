@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :multi_region_kms do
   desc 'Confirm that the multi-region KMS inner-layers are the same for both ciphertexts'
   task check_inner_layer: :environment do |_task, _args|

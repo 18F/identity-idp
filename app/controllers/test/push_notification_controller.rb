@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Test
   class PushNotificationController < ApplicationController
     layout 'no_card'

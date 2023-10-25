@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'saml_idp_constants'
 require 'saml_idp/logout_request_builder'
 require './spec/support/saml_auth_helper'

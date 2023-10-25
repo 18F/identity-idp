@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class IdentityLinker
   attr_reader :user, :service_provider
 

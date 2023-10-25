@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Mixin for account reset event tracking
 # Assumes these methods exist on the including class:
 # - sp

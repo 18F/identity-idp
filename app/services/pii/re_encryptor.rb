@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Pii
   class ReEncryptor
     def initialize(user: nil, user_session: nil, pii: nil, profile: nil)

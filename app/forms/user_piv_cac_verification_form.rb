@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UserPivCacVerificationForm
   include ActiveModel::Model
   include PivCacFormHelpers

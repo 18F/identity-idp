@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'reporting/authentication_report'
 
 module Reports

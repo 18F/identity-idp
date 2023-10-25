@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Db
   class AddDocumentVerificationAndSelfieCosts
     def initialize(user_id:, service_provider:)

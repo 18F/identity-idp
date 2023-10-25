@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :partners do
   desc 'Provision dummy IAL2 users from CSV file'
   task seed_users: :environment do

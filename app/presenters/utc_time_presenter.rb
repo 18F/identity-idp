@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UtcTimePresenter
   def initialize(timestamp)
     @timestamp = timestamp

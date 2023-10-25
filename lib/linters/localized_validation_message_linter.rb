@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 module RuboCop
   module Cop
     module IdentityIdp
       class LocalizedValidationMessageLinter < RuboCop::Cop::Cop
-        MSG = 'Use proc when translating validation message'.freeze
+        MSG = 'Use proc when translating validation message'
 
         RESTRICT_ON_SEND = [
           :validate,

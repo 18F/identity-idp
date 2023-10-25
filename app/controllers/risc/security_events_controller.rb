@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Risc
   # Controller to receive SET (Security Event Tokens)
   class SecurityEventsController < ApplicationController

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresenter
   include ActionView::Helpers::TranslationHelper
 

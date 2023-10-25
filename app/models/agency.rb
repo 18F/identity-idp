@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Agency < ApplicationRecord
   has_many :agency_identities, dependent: :destroy
   # rubocop:disable Rails/HasManyOrHasOneDependent

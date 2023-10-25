@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SpReturnUrlResolver
   attr_reader :service_provider, :oidc_state, :oidc_redirect_uri
 

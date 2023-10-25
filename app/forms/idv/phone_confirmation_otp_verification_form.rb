@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Idv
   class PhoneConfirmationOtpVerificationForm
     attr_reader :user, :user_phone_confirmation_session, :irs_attempts_api_tracker, :code

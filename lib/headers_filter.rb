@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rack/headers_filter'
 
 # Expands on Rack::HeadersFilter to delete additional headers

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Reporting
   module CloudwatchQueryQuoting
     # Quotes a string or array to be used as a literal

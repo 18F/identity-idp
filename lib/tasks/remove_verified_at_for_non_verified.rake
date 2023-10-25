@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :profiles do
   desc 'Remove verified_at if a profile is gpo, fraud pending or fraud rejected'
 

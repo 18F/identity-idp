@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module DocAuth
   class Response
     attr_reader :errors, :exception, :extra, :pii_from_doc, :doc_type_supported

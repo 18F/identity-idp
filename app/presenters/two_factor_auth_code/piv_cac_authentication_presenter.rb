@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module TwoFactorAuthCode
   class PivCacAuthenticationPresenter < TwoFactorAuthCode::GenericDeliveryPresenter
     include ActionView::Helpers::TranslationHelper

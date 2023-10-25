@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class EventDisavowalController < ApplicationController
   before_action :validate_disavowed_event
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'resolv'
 
 # Class to help normalize email addresses for services like Gmail that let users

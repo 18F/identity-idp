@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module UriService
   def self.params(original_uri)
     uri = URI(original_uri)

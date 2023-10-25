@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class EmailDeliveryObserver
   def self.delivered_email(mail)
     metadata = mail.instance_variable_get(:@_metadata) || {}

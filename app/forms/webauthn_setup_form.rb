@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class WebauthnSetupForm
   include ActiveModel::Model
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Flow
   class BaseStep
     include Rails.application.routes.url_helpers

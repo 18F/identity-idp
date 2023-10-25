@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Helps route between various doc auth backends
 module DocAuthRouter
   ERROR_TRANSLATIONS = {

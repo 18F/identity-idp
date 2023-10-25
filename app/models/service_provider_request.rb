@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ServiceProviderRequest
   # WARNING - Modification of these params requires particular care
   # since these objects are serialized to/from Redis and may be present

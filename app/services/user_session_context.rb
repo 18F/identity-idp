@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 class UserSessionContext
-  AUTHENTICATION_CONTEXT = 'authentication'.freeze
-  REAUTHENTICATION_CONTEXT = 'reauthentication'.freeze
-  CONFIRMATION_CONTEXT = 'confirmation'.freeze
+  AUTHENTICATION_CONTEXT = 'authentication'
+  REAUTHENTICATION_CONTEXT = 'reauthentication'
+  CONFIRMATION_CONTEXT = 'confirmation'
 
   def self.authentication_context?(context)
     context == AUTHENTICATION_CONTEXT

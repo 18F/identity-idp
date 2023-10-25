@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module UserAlerts
   class AlertUserAboutAccountVerified
     def self.call(user:, date_time:, sp_name:)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module TwoFactorAuthCode
   # The WebauthnAuthenticationPresenter class is the presenter for webauthn verification
   class WebauthnAuthenticationPresenter < TwoFactorAuthCode::GenericDeliveryPresenter

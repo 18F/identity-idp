@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class FeatureManagement
   ENVS_WHERE_PREFILLING_GPO_CODE_ALLOWED = %w[
     idp.dev.login.gov idp.int.login.gov idp.qa.login.gov idp.pt.login.gov

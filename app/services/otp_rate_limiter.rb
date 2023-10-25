@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class OtpRateLimiter
   def initialize(phone:, user:, phone_confirmed:)
     @phone = phone

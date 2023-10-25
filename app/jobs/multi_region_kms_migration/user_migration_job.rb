@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MultiRegionKmsMigration
   class UserMigrationJob < ApplicationJob
     queue_as :long_running

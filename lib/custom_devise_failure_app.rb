@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This class overrides the default `i18n_message` defined by Devise
 # in order to allow customizing the `devise.failure.invalid` and
 # 'devise.failure.not_found_in_database' error messages with a link

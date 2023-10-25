@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module UspsInPersonProofing
   # Validator that can be attached to a form or other model
   # to verify that specific supported fields are comparable to other dates.

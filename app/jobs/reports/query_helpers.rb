@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Reports
   module QueryHelpers
     def quote(value)

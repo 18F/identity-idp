@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 class PersonalKeyGenerator
   attr_reader :user_access_key, :length
 
-  INVALID_CODE = 'meaningless string that RandomPhrase will never generate'.freeze
+  INVALID_CODE = 'meaningless string that RandomPhrase will never generate'
 
   def initialize(user, length: 4)
     @user = user

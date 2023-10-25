@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Idv
   class EnterPasswordController < ApplicationController
     before_action :personal_key_confirmed

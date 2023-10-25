@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 module PushNotification
   class RecoveryInformationChangedEvent
     include IssSubEvent
 
-    EVENT_TYPE = 'https://schemas.openid.net/secevent/risc/event-type/recovery-information-changed'.freeze
+    EVENT_TYPE = 'https://schemas.openid.net/secevent/risc/event-type/recovery-information-changed'
 
     attr_reader :user
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class NewPhoneForm
   include ActiveModel::Model
   include FormPhoneValidator

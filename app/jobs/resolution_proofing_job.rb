@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ResolutionProofingJob < ApplicationJob
   include JobHelpers::StaleJobHelper
 

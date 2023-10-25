@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'boot'
 
 require 'active_record/railtie'
@@ -21,7 +23,7 @@ Bundler.require(*Rails.groups)
 
 require_relative '../lib/mailer_sensitive_information_checker'
 
-APP_NAME = 'Login.gov'.freeze
+APP_NAME = 'Login.gov'
 
 module Identity
   class Application < Rails::Application

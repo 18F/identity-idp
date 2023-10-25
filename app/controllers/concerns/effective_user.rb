@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module EffectiveUser
   def effective_user
     return current_user if effective_user_id == current_user&.id

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ProcessListComponent < BaseComponent
   renders_many :items, ->(**kwargs, &block) {
     ProcessListItemComponent.new(heading_level:, **kwargs, &block)

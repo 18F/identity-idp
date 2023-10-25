@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SubmitButtonComponent < ButtonComponent
   def initialize(big: true, wide: true, **tag_options)
     super(big:, wide:, **tag_options)

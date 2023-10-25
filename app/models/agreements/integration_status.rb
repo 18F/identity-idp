@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Agreements::IntegrationStatus < ApplicationRecord
   self.table_name = 'integration_statuses'
 

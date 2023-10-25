@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Monkeypatches the MessageDelivery to add deliver_now_or_later that
 # can route between #deliver_now and #deliver_later
 module DeliverLaterArgumentChecker

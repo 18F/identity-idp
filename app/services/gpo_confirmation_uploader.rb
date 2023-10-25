@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class GpoConfirmationUploader
   def initialize(now = Time.zone.now)
     @now = now

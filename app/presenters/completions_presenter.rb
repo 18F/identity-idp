@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CompletionsPresenter
   attr_reader :current_user, :current_sp, :decrypted_pii, :requested_attributes, :completion_context
 

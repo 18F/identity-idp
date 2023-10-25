@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Redirect
   class RedirectController < ApplicationController
     PERMITTED_LOCATION_PARAMS = [:flow, :step, :location].freeze

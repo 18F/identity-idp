@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Db
   module MonthlySpAuthCount
     class TotalMonthlyAuthCounts

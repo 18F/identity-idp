@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 # Drop in replacement for ServiceProviderRequest. Moves us from Postgres to Redis
 # To manage the migration and still respect in flight transactions code will default
 # to checking the db if no redis object is available. Following release can remove db dependence.
 # To migrate code simply replace ServiceProviderRequest with ServiceProviderRequestProxy
 class ServiceProviderRequestProxy
-  REDIS_KEY_PREFIX = 'redis-pool:spr:'.freeze
+  REDIS_KEY_PREFIX = 'redis-pool:spr:'
 
   # This is used to support the .last method. That method is only used in the
   # test environment

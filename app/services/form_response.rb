@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class FormResponse
   attr_reader :errors, :extra, :serialize_error_details_only
 

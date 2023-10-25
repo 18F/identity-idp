@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This module defines an interface for storing when an issuer has forced re-authentication
 # for an active session. A request to force re-authentication that does not result
 # in the user needing to re-authenticate due to not being authenticated should be excluded.

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Idv
   class InPersonConfig
     def self.enabled_for_issuer?(issuer)

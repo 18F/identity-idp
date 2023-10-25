@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PasswordForm
   include ActiveModel::Model
   include FormPasswordValidator

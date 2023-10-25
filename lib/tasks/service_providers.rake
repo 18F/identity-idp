@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :service_providers do
   # rubocop:disable Rails/SkipsModelValidations
   task backfill_help_texts: [:environment] do |_task|

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Flow
   module FlowStateMachine
     extend ActiveSupport::Concern

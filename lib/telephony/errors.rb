@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Telephony
   class TelephonyError < StandardError
     def friendly_message

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MfaConfirmationPresenter
   def initialize(show_skip_additional_mfa_link: true)
     @show_skip_additional_mfa_link = show_skip_additional_mfa_link

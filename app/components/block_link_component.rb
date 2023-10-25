@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class BlockLinkComponent < BaseComponent
   attr_reader :url, :action, :new_tab, :tag_options
 

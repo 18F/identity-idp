@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 require 'identity/hostdata'
 require 'csv'
 require 'fugit'
 
 module Reports
   class VerificationFailuresReport < BaseReport
-    REPORT_NAME = 'verification-failures-report'.freeze
+    REPORT_NAME = 'verification-failures-report'
 
     def perform(date)
       csv_reports = []

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Encryption
   class PasswordVerifier
     include ::NewRelic::Agent::MethodTracer

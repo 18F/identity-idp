@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module InPerson
   # This job checks a queue regularly to determine whether USPS has notitied us
   # about whether an in-person enrollment is ready to have its status checked. If

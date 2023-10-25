@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ForgetAllBrowsers
   attr_reader :user, :remember_device_revoked_at
 

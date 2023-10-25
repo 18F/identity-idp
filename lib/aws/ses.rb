@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ##
 # ActionMailer delivery method for SES inspired by https://github.com/drewblas/aws-ses
 #

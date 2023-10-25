@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RecaptchaMockValidator < RecaptchaValidator
   attr_reader :score
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class StepIndicatorComponent < BaseComponent
   attr_reader :current_step, :locale_scope, :tag_options
 

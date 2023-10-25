@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module VerifySpAttributesConcern
   def needs_completion_screen_reason
     return nil if sp_session[:issuer].blank?

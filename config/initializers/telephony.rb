@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'telephony'
 require 'pinpoint_supported_countries'
 

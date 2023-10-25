@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Reporting
   module CloudwatchQueryTimeSlice
     # @param [String] value a string such as 1min, 2h, 3d, 4w, 5mon, 6y

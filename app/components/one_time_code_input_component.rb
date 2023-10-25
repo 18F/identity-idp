@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class OneTimeCodeInputComponent < BaseComponent
   attr_reader :form,
               :name,

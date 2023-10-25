@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module EncryptedDocumentStorage
   WriteDocumentResult = Struct.new(
     :front_filename,

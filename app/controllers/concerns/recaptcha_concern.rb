@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RecaptchaConcern
   RECAPTCHA_SCRIPT_SRC = [
     'https://www.google.com/recaptcha/',

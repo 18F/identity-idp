@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Detects profanity in a string, the list of profane words
 # comes from the profanity_filter gem for now
 module ProfanityDetector

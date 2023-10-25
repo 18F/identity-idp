@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # UserMailer handles all email sending to the User class. It expects to be called using `with`
 # that receives a `user` and `email_address`. This pattern is preferred as the User and
 # EmailAddress database records are needed across any email being sent.

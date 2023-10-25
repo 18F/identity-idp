@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module BillableEventTrackable
   def track_billing_events
     if current_session_has_been_billed?

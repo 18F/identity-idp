@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'open3'
 
 # Parses comment strings (## help) out of the Makefile

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'ruby-progressbar'
 
 module Reporting

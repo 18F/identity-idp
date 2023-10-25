@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class GpoConfirmationMaker
   def initialize(pii:, service_provider:, profile: nil, profile_id: nil, otp: nil)
     raise ArgumentError 'must have either profile or profile_id' if !profile && !profile_id

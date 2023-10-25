@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # UserAccessKey outputs various key hashing related to NIST encryption.
 #
 # Generate and store a 128-bit salt S.

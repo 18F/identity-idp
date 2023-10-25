@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RenderConditionConcern
   extend ActiveSupport::Concern
 

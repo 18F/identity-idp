@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DisplayablePiiFormatter
   FormattedPii = Struct.new(
     :email, :all_emails, :verified_at, :x509_subject, :x509_issuer, :full_name,

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Idv
   module GettingStartedAbTestConcern
     def getting_started_ab_test_bucket

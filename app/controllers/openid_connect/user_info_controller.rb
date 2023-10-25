@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module OpenidConnect
   class UserInfoController < ApplicationController
     prepend_before_action :skip_session_load

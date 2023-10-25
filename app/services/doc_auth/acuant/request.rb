@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module DocAuth
   module Acuant
     # https://documentation.help/AssureID-Connect/Error%20Codes.html

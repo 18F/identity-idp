@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SpinnerButtonComponent < BaseComponent
   attr_reader :action_message, :button_options, :outline, :spin_on_click
 

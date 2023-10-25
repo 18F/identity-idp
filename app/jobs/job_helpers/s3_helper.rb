@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module JobHelpers
   class S3Helper
     def s3_url?(url)

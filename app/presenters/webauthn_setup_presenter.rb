@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class WebauthnSetupPresenter < SetupPresenter
   include Rails.application.routes.url_helpers
   include ActionView::Helpers::UrlHelper

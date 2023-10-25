@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 module PhoneFormatter
-  DEFAULT_COUNTRY = 'US'.freeze
+  DEFAULT_COUNTRY = 'US'
 
   def self.format(phone, country_code: nil)
     country_code = DEFAULT_COUNTRY if country_code.nil? && !phone&.start_with?('+')

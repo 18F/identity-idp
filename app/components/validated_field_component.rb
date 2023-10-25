@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ValidatedFieldComponent < BaseComponent
   attr_reader :form, :name, :tag_options, :input_type
 

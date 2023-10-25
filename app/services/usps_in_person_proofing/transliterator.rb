@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 module UspsInPersonProofing
   class Transliterator
     # This is the default. May not be able to override this in current version.
-    REPLACEMENT = '?'.freeze
+    REPLACEMENT = '?'
 
     # Container to hold the results of transliteration
     TransliterationResult = Struct.new(

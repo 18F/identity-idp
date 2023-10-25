@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Accounts
   class TwoFactorAuthenticationController < ApplicationController
     include RememberDeviceConcern

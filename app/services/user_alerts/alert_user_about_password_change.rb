@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module UserAlerts
   class AlertUserAboutPasswordChange
     def self.call(user, disavowal_token)

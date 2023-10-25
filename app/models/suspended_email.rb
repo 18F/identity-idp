@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SuspendedEmail < ApplicationRecord
   belongs_to :email_address
   validates :digested_base_email, presence: true

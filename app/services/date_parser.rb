@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module DateParser
   AMERICAN_REGEX = %r{(?<month>\d{1,2})/(?<day>\d{1,2})/(?<year>\d{4})}
 

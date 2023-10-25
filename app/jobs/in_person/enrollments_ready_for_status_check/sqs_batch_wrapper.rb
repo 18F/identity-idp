@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module InPerson::EnrollmentsReadyForStatusCheck
   class SqsBatchWrapper
     # @param [Aws::SQS::Client] sqs_client AWS SQS Client

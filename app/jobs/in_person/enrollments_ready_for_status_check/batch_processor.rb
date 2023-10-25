@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module InPerson::EnrollmentsReadyForStatusCheck
   class BatchProcessor
     # @param [InPerson::EnrollmentsReadyForStatusCheck::ErrorReporter] error_reporter

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AgencyIdentityLinker
   def initialize(sp_identity)
     @sp_identity = sp_identity

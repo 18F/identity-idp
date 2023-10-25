@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SsnFormatter
   def self.format(ssn)
     normalized_ssn = normalize(ssn)

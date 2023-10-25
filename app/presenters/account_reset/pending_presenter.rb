@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module AccountReset
   class PendingPresenter
     include ActionView::Helpers::DateHelper

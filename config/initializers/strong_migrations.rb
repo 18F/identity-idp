@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # id columns are generated as bigint, and we sometimes use constraint-less integer columns
 # that reference another table. To ensure we use bigint for those columns, this check raises
 # if a column is added that uses :integer and the column_name ends with "_id".

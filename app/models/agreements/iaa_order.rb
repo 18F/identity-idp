@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Agreements::IaaOrder < ApplicationRecord
   self.table_name = 'iaa_orders'
 

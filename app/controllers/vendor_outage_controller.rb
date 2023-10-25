@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class VendorOutageController < ApplicationController
   def show
     outage_status = OutageStatus.new

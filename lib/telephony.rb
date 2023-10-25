@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'aws-sdk-pinpoint'
 require 'aws-sdk-pinpointsmsvoice'
 require 'forwardable'

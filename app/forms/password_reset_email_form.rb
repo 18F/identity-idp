@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PasswordResetEmailForm
   include ActiveModel::Model
   include FormEmailValidator

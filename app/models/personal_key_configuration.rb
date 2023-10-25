@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PersonalKeyConfiguration
   # This is a wrapping class that lets us interface with the personal key configuration in a
   # manner consistent with phone and webauthn configurations.

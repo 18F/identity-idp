@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 module DocAuth
   module Acuant
     module SensorTypes
-      UNKNOWN = '0'.freeze
-      CAMERA = '1'.freeze
-      SCANNER = '2'.freeze
-      MOBILE = '3'.freeze
+      UNKNOWN = '0'
+      CAMERA = '1'
+      SCANNER = '2'
+      MOBILE = '3'
 
       ALL = [
         UNKNOWN,

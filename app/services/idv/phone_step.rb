@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Idv
   class PhoneStep
     def initialize(idv_session:, trace_id:, analytics:, attempts_tracker:)

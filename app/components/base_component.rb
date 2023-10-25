@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class BaseComponent < ViewComponent::Base
   def before_render
     render_assets unless rendered_assets?

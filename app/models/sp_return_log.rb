@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SpReturnLog < ApplicationRecord
   # rubocop:disable Rails/InverseOf
   belongs_to :user

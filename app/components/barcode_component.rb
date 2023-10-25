@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'barby'
 require 'barby/barcode/code_128'
 require 'barby/outputter/html_outputter'

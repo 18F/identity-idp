@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # For some reason the test result class does not impelement the `language=`
 # method. This patches an empty method onto it to prevent NoMethodErrors in
 # the tests
