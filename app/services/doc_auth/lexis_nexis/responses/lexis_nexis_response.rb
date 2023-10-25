@@ -41,6 +41,10 @@ module DocAuth
           raise NotImplementedError
         end
 
+        def classification_info
+          raise NotImplementedError
+        end
+
         private
 
         def parsed_response_body

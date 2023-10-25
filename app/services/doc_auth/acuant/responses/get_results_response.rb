@@ -43,6 +43,25 @@ module DocAuth
           end
         end
 
+        def classification_info
+          classification_details = parsed_response_body.dig(
+            'Classification', 'ClassificationDetails'
+          )
+          return unless classification_details.present?
+
+          classification_details.transform_values do |classification_detail|
+            classification_detail.slice(
+              'ClassName',
+              'Issue',
+              'IssueType',
+              'Name',
+              'IssuerCode',
+              'IssuerName',
+              'CountryCode',
+            )
+          end
+        end
+
         private
 
         attr_reader :http_response
@@ -104,25 +123,6 @@ module DocAuth
           @processed_image_metrics ||= raw_images_data.index_by do |image|
             image.delete('Uri')
             get_image_side_name(image['Side'])
-          end
-        end
-
-        def classification_info
-          classification_details = parsed_response_body.dig(
-            'Classification', 'ClassificationDetails'
-          )
-          return unless classification_details.present?
-
-          classification_details.transform_values do |classification_detail|
-            classification_detail.slice(
-              'ClassName',
-              'Issue',
-              'IssueType',
-              'Name',
-              'IssuerCode',
-              'IssuerName',
-              'CountryCode',
-            )
           end
         end
 
