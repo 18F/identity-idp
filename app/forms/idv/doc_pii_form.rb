@@ -4,10 +4,18 @@ module Idv
 
     validate :name_valid?
     validate :dob_valid?
-    validates_presence_of :address1, { message: proc { I18n.t('doc_auth.errors.alerts.address_check') } }
-    validates_length_of :state, { is: 2, message: proc { I18n.t('doc_auth.errors.general.no_liveness') } }
+    validates_presence_of :address1, { message: proc {
+                                                  I18n.t('doc_auth.errors.alerts.address_check')
+                                                } }
+    validates_length_of :state, { is: 2,
+                                  message: proc {
+                                             I18n.t('doc_auth.errors.general.no_liveness')
+                                           } }
     validate :zipcode_valid?
-    validates :jurisdiction, inclusion: { in: Idp::Constants::STATE_AND_TERRITORY_CODES, message: proc { I18n.t('doc_auth.errors.general.no_liveness') } }
+    validates :jurisdiction, inclusion: { in: Idp::Constants::STATE_AND_TERRITORY_CODES,
+                                          message: proc {
+                                                     I18n.t('doc_auth.errors.general.no_liveness')
+                                                   } }
 
     attr_reader :first_name, :last_name, :dob, :address1, :state, :zipcode, :attention_with_barcode,
                 :jurisdiction
@@ -45,12 +53,16 @@ module Idv
     def name_valid?
       return if first_name.present? && last_name.present?
 
-      errors.add(:name, name_error)
+      errors.add(:name, name_error, type: :name_error)
+    end
+
+    def generic_error
+      I18n.t('doc_auth.errors.general.no_liveness')
     end
 
     def dob_valid?
       if dob.blank?
-        errors.add(:dob, dob_error)
+        errors.add(:dob, dob_error, type: :dob_error)
         return
       end
 
@@ -59,14 +71,14 @@ module Idv
       age = today.year - dob_date.year - ((today.month > dob_date.month ||
         (today.month == dob_date.month && today.day >= dob_date.day)) ? 0 : 1)
       if age < IdentityConfig.store.idv_min_age_years
-        errors.add(:dob_min_age, dob_min_age_error)
+        errors.add(:dob_min_age, dob_min_age_error, type: :dob_min_age_error)
       end
     end
 
     def zipcode_valid?
       return if zipcode.is_a?(String) && zipcode.present?
 
-      errors.add(:zipcode, I18n.t('doc_auth.errors.general.no_liveness'))
+      errors.add(:zipcode, generic_error, type: :generic_error)
     end
 
     def name_error
@@ -84,11 +96,11 @@ module Idv
     def response_errors
       return {} if errors.empty?
 
-      if %i(name dob dob_min_age state).count{|i| errors.has_key?(i)} > 1
-        return { pii: [ I18n.t('doc_auth.errors.general.no_liveness') ] }
+      if %i[name dob dob_min_age state].count { |i| errors.has_key?(i) } > 1
+        return { pii: [I18n.t('doc_auth.errors.general.no_liveness')] }
       end
-      
-      { pii: [ errors.first.message ] }
+
+      { pii: [errors.first.message] }
     end
   end
 end
