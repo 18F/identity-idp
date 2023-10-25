@@ -230,7 +230,7 @@ RSpec.feature 'idv enter letter code step' do
   def verify_no_spam_warning_banner
     expect(page).not_to have_content(
       t(
-        'idv.gpo.alert_spam_warning_html',
+        'idv.gpo.alert_rate_limit_warning_html',
         date_letter_was_sent: I18n.l(
           Time.zone.now,
           format: :event_date,
@@ -242,7 +242,7 @@ RSpec.feature 'idv enter letter code step' do
   def verify_spam_warning_banner_present(code_sent_at = Time.zone.now)
     expect(page).to have_content strip_tags(
       t(
-        'idv.gpo.alert_spam_warning_html',
+        'idv.gpo.alert_rate_limit_warning_html',
         date_letter_was_sent: I18n.l(
           code_sent_at,
           format: :event_date,
