@@ -35,7 +35,8 @@ module DocAuth
             liveness_result = file_data.dig('liveness_result')
             classification_info = file_data.dig('classification_info')
 
-            if !id_type_supported? || [doc_auth_result, image_metrics, failed, passed, liveness_result].any?(&:present?)
+            if !id_type_supported? || [doc_auth_result, image_metrics, failed, passed,
+                                       liveness_result].any?(&:present?)
               mock_args = {}
               mock_args[:doc_auth_result] = doc_auth_result if doc_auth_result.present?
               mock_args[:image_metrics] = image_metrics.symbolize_keys if image_metrics.present?
