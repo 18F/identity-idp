@@ -85,7 +85,7 @@ RSpec.feature 'idv enter letter code step' do
   context 'coming from an "I did not receive my letter" link in a reminder email' do
     it 'renders an alternate ui', :js do
       visit idv_verify_by_mail_enter_code_url(did_not_receive_letter: 1)
-      verify_no_spam_warning_banner
+      verify_no_rate_limit_banner
       expect(current_path).to eql(new_user_session_path)
 
       fill_in_credentials_and_submit(user.email, user.password)
@@ -108,7 +108,7 @@ RSpec.feature 'idv enter letter code step' do
         sign_in_live_with_2fa(user)
 
         expect(current_path).to eq idv_verify_by_mail_enter_code_path
-        verify_no_spam_warning_banner
+        verify_no_rate_limit_banner
         expect(page).to have_content t('idv.messages.gpo.resend')
 
         fill_in t('idv.gpo.form.otp_label'), with: otp
@@ -138,7 +138,7 @@ RSpec.feature 'idv enter letter code step' do
         expect(current_path).to eq idv_verify_by_mail_enter_code_path
         expect(page).to have_content t('idv.messages.gpo.resend')
 
-        verify_no_spam_warning_banner
+        verify_no_rate_limit_banner
         gpo_confirmation_code
         fill_in t('idv.gpo.form.otp_label'), with: otp
         click_button t('idv.gpo.form.submit')
@@ -156,7 +156,7 @@ RSpec.feature 'idv enter letter code step' do
       expect(page).to have_content strip_tags(t('idv.gpo.change_to_verification_code_html'))
       expect(page).to have_content t('idv.gpo.wrong_address')
       expect(page).to have_content Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE[:address1]
-      verify_no_spam_warning_banner
+      verify_no_rate_limit_banner
 
       click_on t('idv.gpo.clear_and_start_over')
 
@@ -178,7 +178,7 @@ RSpec.feature 'idv enter letter code step' do
     sign_in_live_with_2fa(user)
 
     expect(current_path).to eq idv_verify_by_mail_enter_code_path
-    verify_spam_warning_banner_present(another_gpo_confirmation_code.updated_at)
+    verify_rate_limit_banner_present(another_gpo_confirmation_code.updated_at)
 
     click_on t('idv.messages.clear_and_start_over')
 
@@ -222,12 +222,12 @@ RSpec.feature 'idv enter letter code step' do
     end
 
     it 'shows a warning message and does not allow the user to request another letter' do
-      verify_spam_warning_banner_present(code_sent_at)
+      verify_rate_limit_banner_present(code_sent_at)
       expect(page).not_to have_content t('idv.messages.gpo.resend')
     end
   end
 
-  def verify_no_spam_warning_banner
+  def verify_no_rate_limit_banner
     expect(page).not_to have_content(
       t(
         'idv.gpo.alert_rate_limit_warning_html',
@@ -239,7 +239,7 @@ RSpec.feature 'idv enter letter code step' do
     )
   end
 
-  def verify_spam_warning_banner_present(code_sent_at = Time.zone.now)
+  def verify_rate_limit_banner_present(code_sent_at = Time.zone.now)
     expect(page).to have_content strip_tags(
       t(
         'idv.gpo.alert_rate_limit_warning_html',
