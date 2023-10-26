@@ -25,22 +25,6 @@ module DocAuth
           )
         end
 
-        def successful_result?
-          raise NotImplementedError
-        end
-
-        def error_messages
-          raise NotImplementedError
-        end
-
-        def extra_attributes
-          raise NotImplementedError
-        end
-
-        def pii_from_doc
-          raise NotImplementedError
-        end
-
         private
 
         def parsed_response_body

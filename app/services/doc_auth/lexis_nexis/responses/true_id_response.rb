@@ -181,10 +181,6 @@ module DocAuth
           doc_auth_result == 'Attention'
         end
 
-        def doc_auth_result_unknown?
-          doc_auth_result == 'Unknown'
-        end
-
         def doc_class_name
           true_id_product&.dig(:AUTHENTICATION_RESULT, :DocClassName)
         end
