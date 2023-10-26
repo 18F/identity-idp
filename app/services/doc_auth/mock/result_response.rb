@@ -106,11 +106,6 @@ module DocAuth
         )
       end
 
-      def classification_info
-        info = parsed_data_from_uploaded_file&.[]('classification_info') || {}
-        info.to_h.symbolize_keys
-      end
-
       private
 
       def parsed_alerts
@@ -129,6 +124,11 @@ module DocAuth
 
       def doc_auth_result_from_uploaded_file
         parsed_data_from_uploaded_file&.[]('doc_auth_result')
+      end
+
+      def classification_info
+        info = parsed_data_from_uploaded_file&.[]('classification_info') || {}
+        info.to_h.symbolize_keys
       end
 
       def doc_auth_result_from_success
