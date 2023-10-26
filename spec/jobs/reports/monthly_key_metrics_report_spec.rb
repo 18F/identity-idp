@@ -9,20 +9,16 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
   let(:report_folder) do
     'int/monthly-key-metrics-report/2021/2021-03-02.monthly-key-metrics-report'
   end
-  let(:account_reuse_s3_path) { "#{report_folder}/account_reuse.csv" }
-  let(:total_profiles_s3_path) { "#{report_folder}/total_profiles.csv" }
-  let(:document_upload_proofing_s3_path) { "#{report_folder}/document_upload_proofing.csv" }
-  let(:account_deletion_rate_s3_path) { "#{report_folder}/account_deletion_rate.csv" }
-  let(:total_user_count_s3_path) { "#{report_folder}/total_user_count.csv" }
-  let(:active_users_count_s3_path) { "#{report_folder}/active_users_count.csv" }
+
   let(:expected_s3_paths) do
     [
-      account_reuse_s3_path,
-      total_profiles_s3_path,
-      account_deletion_rate_s3_path,
-      total_user_count_s3_path,
-      document_upload_proofing_s3_path,
-      active_users_count_s3_path,
+      "#{report_folder}/account_reuse.csv",
+      "#{report_folder}/total_profiles.csv",
+      "#{report_folder}/document_upload_proofing.csv",
+      "#{report_folder}/account_deletion_rate.csv",
+      "#{report_folder}/total_user_count.csv",
+      "#{report_folder}/active_users_count.csv",
+      "#{report_folder}/proofing_rate_metrics.csv",
     ]
   end
   let(:s3_metadata) do
@@ -36,6 +32,12 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
   let(:mock_proofing_report_data) do
     [
       ['metric', 'num_users', 'percent'],
+    ]
+  end
+
+  let(:mock_proofing_rate_data) do
+    [
+      ['Metric', 'Trailing 30d', 'Trailing 60d', 'Trailing 90d'],
     ]
   end
 
@@ -54,6 +56,8 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
 
     allow(report.monthly_proofing_report).to receive(:proofing_report).
       and_return(mock_proofing_report_data)
+    allow(report.proofing_rate_report).to receive(:as_csv).
+      and_return(mock_proofing_rate_data)
   end
 
   it 'sends out a report to the email listed with one total user' do
