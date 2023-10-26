@@ -40,8 +40,8 @@ module Reporting
 
       csv << ['Metric', *DATE_INTERVALS.map { |days| "Trailing #{days}d" }]
 
-      csv << ['Start Date', *reports.map(&:time_range).map(&:begin).map { |t| t.strftime('%F') }]
-      csv << ['End Date', *reports.map(&:time_range).map(&:end).map { |t| t.strftime('%F') }]
+      csv << ['Start Date', *reports.map(&:time_range).map(&:begin).map(&:to_date)]
+      csv << ['End Date', *reports.map(&:time_range).map(&:end).map(&:to_date)]
 
       csv << ['IDV Started', *reports.map(&:idv_started)]
       csv << ['Welcome Submitted', *reports.map(&:idv_doc_auth_welcome_submitted)]
@@ -76,7 +76,7 @@ module Reporting
                 (end_date - slice_start.days).beginning_of_day,
                 (end_date - slice_end.days).beginning_of_day,
               ),
-              client: cloudwatch_client,
+              cloudwatch_client: cloudwatch_client,
             ).tap(&:data)
           end
         end
@@ -131,9 +131,7 @@ module Reporting
 
     def cloudwatch_client
       @cloudwatch_client ||= Reporting::CloudwatchClient.new(
-        num_threads: @threads,
         ensure_complete_logs: true,
-        slice_interval: @slice,
         progress: false,
         logger: verbose? ? Logger.new(STDERR) : nil,
       )
