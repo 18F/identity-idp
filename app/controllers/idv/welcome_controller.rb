@@ -37,7 +37,7 @@ module Idv
       Idv::StepInfo.new(
         controller: controller_name,
         next_steps: [:agreement],
-        requirements: ->(idv_session:, user:) { true },
+        preconditions: ->(idv_session:, user:) { true },
       )
     end
 

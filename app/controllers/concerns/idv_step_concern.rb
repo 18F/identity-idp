@@ -125,19 +125,19 @@ module IdvStepConcern
   def confirm_step_allowed
     return if flow_policy.controller_allowed?(controller: self.class)
 
-    redirect_to path_for_latest_step
+    redirect_to url_for_latest_step
   end
 
   def flow_policy
     @flow_policy ||= Idv::FlowPolicy.new(idv_session: idv_session, user: current_user)
   end
 
-  def step_allowed?(step)
-    flow_policy.step_allowed?(step: step)
-  end
+  # def step_allowed?(step)
+  #   flow_policy.step_allowed?(step: step)
+  # end
 
-  def path_for_latest_step
+  def url_for_latest_step
     step_info = flow_policy.info_for_latest_step
-    url_for(controller: step_info.controller, action: step_info.action, only_path: true)
+    url_for(controller: step_info.controller, action: step_info.action)
   end
 end

@@ -10,8 +10,8 @@ module Idv
       @user = user
     end
 
-    def step_allowed?(step:)
-      steps[step].requirements.call(idv_session: idv_session, user: user)
+    private def step_allowed?(step:)
+      steps[step].preconditions.call(idv_session: idv_session, user: user)
     end
 
     def controller_allowed?(controller:)
@@ -25,7 +25,6 @@ module Idv
       steps[latest_step]
     end
 
-    # TODO: Graceful exit back to status quo
     def latest_step(current_step: :root)
       return nil if steps[current_step]&.next_steps.blank?
       return current_step if steps[current_step].next_steps == [:success]
@@ -51,7 +50,7 @@ module Idv
         root: Idv::StepInfo.new(
           controller: AccountsController.controller_name,
           next_steps: [:welcome],
-          requirements: ->(idv_session:, user:) { true },
+          preconditions: ->(idv_session:, user:) { true },
         ),
         welcome: Idv::WelcomeController.navigation_step,
         agreement: Idv::AgreementController.navigation_step,
@@ -62,29 +61,29 @@ module Idv
         # ssn: Step.new(
         #   path: idv_ssn_path,
         #   next_steps: [:verify_info],
-        #   requirements: -> { post_document_capture_check },
+        #   preconditions: -> { post_document_capture_check },
         # ),
         # verify_info: Step.new(
         #   path: idv_verify_info_path,
         #   next_steps: [:phone],
-        #   requirements: -> { idv_session.ssn && post_document_capture_check },
+        #   preconditions: -> { idv_session.ssn && post_document_capture_check },
         # ),
         # phone: Step.new(
         #   path: idv_phone_path,
         #   next_steps: [:phone_enter_otp],
-        #   requirements: -> { idv_session.verify_info_step_complete? },
+        #   preconditions: -> { idv_session.verify_info_step_complete? },
         # ),
         # phone_enter_otp: Step.new(
         #   path: idv_otp_verification_path,
         #   next_steps: [:review],
-        #   requirements: -> do
+        #   preconditions: -> do
         #     idv_session.user_phone_confirmation_session.present?
         #   end,
         # ),
         # review: Step.new(
         #   path: idv_review_path,
         #   next_steps: [:personal_key],
-        #   requirements: -> do
+        #   preconditions: -> do
         #     idv_session.verify_info_step_complete? &&
         #       idv_session.address_step_complete?
         #   end,
@@ -92,7 +91,7 @@ module Idv
         # personal_key: Step.new(
         #   path: idv_personal_key_path,
         #   next_steps: [:success],
-        #   requirements: -> { user.identity_verified? },
+        #   preconditions: -> { user.identity_verified? },
         # ),
       }
     end

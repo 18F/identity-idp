@@ -42,7 +42,7 @@ module Idv
       Idv::StepInfo.new(
         controller: controller_name,
         next_steps: [:hybrid_handoff, :document_capture, :phone_question],
-        requirements: ->(idv_session:, user:) { idv_session.welcome_visited },
+        preconditions: ->(idv_session:, user:) { idv_session.welcome_visited },
       )
     end
 

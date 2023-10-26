@@ -57,7 +57,7 @@ module Idv
       Idv::StepInfo.new(
         controller: controller_name,
         next_steps: [:success], # [:ssn],
-        requirements: ->(idv_session:, user:) { idv_session.flow_path == 'standard' },
+        preconditions: ->(idv_session:, user:) { idv_session.flow_path == 'standard' },
       )
     end
 

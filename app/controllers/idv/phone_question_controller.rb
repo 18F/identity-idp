@@ -38,7 +38,7 @@ module Idv
       Idv::StepInfo.new(
         controller: controller_name,
         next_steps: [:hybrid_handoff, :document_capture],
-        requirements: ->(idv_session:, user:) do
+        preconditions: ->(idv_session:, user:) do
           AbTests::IDV_PHONE_QUESTION.bucket(user.uuid) == :show_phone_question &&
             idv_session.idv_consent_given
         end,

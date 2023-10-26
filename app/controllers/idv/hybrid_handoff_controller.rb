@@ -39,7 +39,7 @@ module Idv
       Idv::StepInfo.new(
         controller: controller_name,
         next_steps: [:link_sent, :document_capture],
-        requirements: ->(idv_session:, user:) { idv_session.idv_consent_given },
+        preconditions: ->(idv_session:, user:) { idv_session.idv_consent_given },
       )
     end
 

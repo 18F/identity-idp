@@ -5,12 +5,12 @@ require 'rails_helper'
 RSpec.describe 'Idv::StepInfo' do
   let(:controller) { ApplicationController.controller_name }
   let(:next_steps) { [] }
-  let(:requirements) { ->(idv_session:, user:) { true } }
+  let(:preconditions) { ->(idv_session:, user:) { true } }
   subject do
     Idv::StepInfo.new(
       controller: controller,
       next_steps: next_steps,
-      requirements: requirements,
+      preconditions: preconditions,
     )
   end
 
@@ -28,8 +28,8 @@ RSpec.describe 'Idv::StepInfo' do
     end
   end
 
-  context 'when given an invalid requirements' do
-    let(:requirements) { 'foo' }
+  context 'when given an invalid preconditions' do
+    let(:preconditions) { 'foo' }
 
     it 'raises an ArgumentError' do
       expect { subject }.to raise_error(ArgumentError)

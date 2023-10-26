@@ -18,9 +18,9 @@ RSpec.describe 'Idv::FlowPolicy' do
 
   subject { Idv::FlowPolicy.new(idv_session: idv_session, user: user) }
 
-  context '#step_allowed?' do
+  context '#controller_allowed?' do
     it 'allows the welcome step' do
-      expect(subject.step_allowed?(step: :welcome)).to be true
+      expect(subject.controller_allowed?(controller: Idv::WelcomeController)).to be true
     end
   end
 

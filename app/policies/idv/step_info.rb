@@ -4,17 +4,17 @@ module Idv
   class StepInfo
     include ActiveModel::Validations
 
-    attr_reader :controller, :action, :next_steps, :requirements
+    attr_reader :controller, :action, :next_steps, :preconditions
 
     # validates :controller, presence: true
     # validates :action, presence: true
-    validate :next_steps_validation, :requirements_validation
+    validate :next_steps_validation, :preconditions_validation
 
-    def initialize(controller:, next_steps:, requirements:, action: :show)
+    def initialize(controller:, next_steps:, preconditions:, action: :show)
       @controller = controller
       @action = action
       @next_steps = next_steps
-      @requirements = requirements
+      @preconditions = preconditions
 
       raise ArgumentError unless valid?
     end
@@ -25,9 +25,9 @@ module Idv
       end
     end
 
-    def requirements_validation
-      unless requirements.is_a?(Proc)
-        errors.add(:requirements, type: :invalid_argument, message: 'requirements must be a Proc')
+    def preconditions_validation
+      unless preconditions.is_a?(Proc)
+        errors.add(:preconditions, type: :invalid_argument, message: 'preconditions must be a Proc')
       end
     end
   end
