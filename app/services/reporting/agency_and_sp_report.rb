@@ -5,11 +5,8 @@ module Reporting
     def initialize(report_date = Time.zone.today)
       @report_date = report_date
     end
+
     def agency_and_sp_report
-      # Calling this with a past launch_day may give surprising results,
-      # since it looks only at "active: true" SPs.
-      # Aside: We don't actually use sp.id, but it seems silly to not grab it.
-      #idv_sps = idv_sps
       # We also don't actually do anything with this list except count it.
       idv_agency_ids = idv_sps.collect { |sp| sp.agency_id }.uniq # 27
 
@@ -37,10 +34,10 @@ module Reporting
     def idv_sps
       @idv_sps ||= Reports::BaseReport.transaction_with_timeout do
         ServiceProvider.active.
-        where(ial: 2).
-        where("launch_date <= ?", report_date).
-        select(:id, :agency_id).
-        to_a # 47
+          where(ial: 2).
+          where('launch_date <= ?', report_date).
+          select(:id, :agency_id).
+          to_a # 47
       end
     end
   end

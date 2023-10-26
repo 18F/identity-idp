@@ -24,7 +24,6 @@ RSpec.describe Reporting::AgencyAndSpReport do
   subject(:report) { described_class.new(report_date) }
 
   describe '#agency_and_sp_report' do
-
     subject { report.agency_and_sp_report }
 
     # OK, so there's existing seed data, it turns out!
@@ -52,7 +51,6 @@ RSpec.describe Reporting::AgencyAndSpReport do
     # I wrote it while troubleshooting and kinda feel like leaving it.
     # Actually, this whole thing is a huge mess, lol.
     context 'when there is no IDV data' do
-
       let(:expected_report) do
         [
           ['', 'Number of apps (SPs)', 'Number of agencies'],
@@ -66,7 +64,6 @@ RSpec.describe Reporting::AgencyAndSpReport do
       end
 
       it 'shows 0 for counts without errors' do
-        #expect(Agency.count).to eq 0
         expect(subject).to match_array(expected_report)
       end
     end
