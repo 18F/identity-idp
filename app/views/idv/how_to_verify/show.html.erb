@@ -3,6 +3,45 @@
 <%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.how_to_verify')) %>
 <p><%= t('doc_auth.info.how_to_verify') %></p>
 
-<%= link_to 'Go Remote!', idv_hybrid_handoff_path %>
+<%= simple_form_for(
+    @idv_how_to_verify_form,
+    html: { autocomplete: 'off' },
+    method: :put,
+    url: idv_how_to_verify_url,
+  ) do |f|
+%>
+  <div role="group" aria-label="<%= t('doc_auth.headings.how_to_verify') %>">
+    <%= radio_button_tag(
+          'idv_how_to_verify_form[selection]',
+          'remote',
+          false,
+          class: 'usa-radio__input usa-radio__input--tile',
+        ) %>
+    <%= label_tag(
+          "idv_how_to_verify_form_selection_#{'remote'}",
+          class: 'usa-radio__label',
+        ) do %>
+          Remote
+          <span class="usa-radio__label-description">
+            Do it online
+          </span>
+        <% end %>
+    <%= radio_button_tag(
+          'idv_how_to_verify_form[selection]',
+          'ipp',
+          false,
+          class: 'usa-radio__input usa-radio__input--tile',
+        ) %>
+    <%= label_tag(
+          "idv_how_to_verify_form_selection_#{'ipp'}",
+          class: 'usa-radio__label',
+        ) do %>
+          In Person
+          <span class="usa-radio__label-description">
+            Do it at your local post office!
+          </span>
+        <% end %>
+  </div>
 
-<%= link_to 'Go to the Post Office!', idv_document_capture_path %>
+  <%= f.submit t('forms.buttons.continue'), class: 'display-block margin-y-5' %>
+<% end %>

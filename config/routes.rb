@@ -320,6 +320,7 @@ Rails.application.routes.draw do
       get '/agreement' => 'agreement#show'
       put '/agreement' => 'agreement#update'
       get '/how_to_verify' => 'how_to_verify#show'
+      put '/how_to_verify' => 'how_to_verify#update'
       get '/document_capture' => 'document_capture#show'
       put '/document_capture' => 'document_capture#update'
       # This route is included in SMS messages sent to users who start the IdV hybrid flow. It
