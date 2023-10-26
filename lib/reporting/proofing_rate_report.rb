@@ -40,8 +40,8 @@ module Reporting
 
       csv << ['Metric', *DATE_INTERVALS.map { |days| "Trailing #{days}d" }]
 
-      csv << ['Start Date', *reports.map(&:time_range).map(&:begin)]
-      csv << ['End Date', *reports.map(&:time_range).map(&:end)]
+      csv << ['Start Date', *reports.map(&:time_range).map(&:begin).map { |t| t.strftime('%F') }]
+      csv << ['End Date', *reports.map(&:time_range).map(&:end).map { |t| t.strftime('%F') }]
 
       csv << ['IDV Started', *reports.map(&:idv_started)]
       csv << ['Welcome Submitted', *reports.map(&:idv_doc_auth_welcome_submitted)]
