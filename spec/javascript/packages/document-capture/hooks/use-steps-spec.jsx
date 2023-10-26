@@ -6,6 +6,7 @@ import {
 import { FlowContext } from '@18f/identity-verify-flow';
 import httpUpload from '@18f/identity-document-capture/services/upload';
 import { useSteps } from '@18f/identity-document-capture/hooks/use-steps';
+import { renderHook } from '@testing-library/react-hooks';
 import { render } from '../../../support/document-capture';
 
 function TestComponent({ submissionError }) {
@@ -13,6 +14,28 @@ function TestComponent({ submissionError }) {
   const stepElements = steps.map((step) => <div key={step.name}>{step.name}</div>);
   return stepElements;
 }
+
+function Providers({ children, inPersonURLPresent = true, flowPathIsHybrid = false }) {
+  const flowPath = flowPathIsHybrid ? 'hybrid' : 'not-hybrid';
+  const inPersonURL = inPersonURLPresent ? '/in_person' : undefined;
+  const endpoint = '/upload';
+  const cancelURL = '/cancel';
+  const currentStep = 'document_capture';
+
+  return (
+    <UploadContextProvider upload={httpUpload} endpoint={endpoint} flowPath={flowPath}>
+      <ServiceProviderContextProvider value={{ isLivenessRequired: false }}>
+        <FlowContext.Provider value={{ cancelURL, currentStep }}>
+          <InPersonContext.Provider value={{ inPersonURL }}>{children}</InPersonContext.Provider>
+        </FlowContext.Provider>
+      </ServiceProviderContextProvider>
+    </UploadContextProvider>
+  );
+}
+
+const createWrapper =
+  (Wrapper, props) =>
+  ({ children }) => <Wrapper {...props}>{children}</Wrapper>;
 
 const setup = ({ submissionError, inPersonURLPresent = true, flowPathIsHybrid = false }) => {
   const flowPath = flowPathIsHybrid ? 'hybrid' : 'not-hybrid';
@@ -39,6 +62,15 @@ const setup = ({ submissionError, inPersonURLPresent = true, flowPathIsHybrid = 
 describe('document-capture/hooks/use-steps', () => {
   it('returns only the documents step when there is no submission error', () => {
     const { queryByText } = setup({});
+    const { result } = renderHook(() => useSteps(undefined), {
+      wrapper: createWrapper(Providers, {}),
+    });
+
+    const stepOneName = result.current[0].name;
+    expect(stepOneName).to.equal('documents');
+    const numberOfSteps = result.current.length;
+    expect(numberOfSteps).to.equal(1);
+
     expect(queryByText('documents')).to.exist();
     expect(queryByText('review')).not.to.exist();
     expect(queryByText('location')).not.to.exist();
