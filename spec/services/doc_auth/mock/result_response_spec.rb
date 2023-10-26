@@ -568,4 +568,36 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       )
     end
   end
+  context 'with a yaml file that includes classification info but missing pii' do
+    let(:input) do
+      <<~YAML
+        doc_auth_result: Passed
+        document:
+          city: Bayside
+          state: NY
+          zipcode: '11364'
+          dob: 10/06/1938
+          phone: +1 314-555-1212
+          state_id_jurisdiction: 'ND'
+        failed_alerts: []
+        classification_info:
+          Front:
+            ClassName: Drivers License
+            CountryCode: USA
+          Back:
+            ClassName: Drivers License
+            CountryCode: USA
+      YAML
+    end
+    it 'successfully extracts classification info' do
+      classification_info = response.extra[:classification_info].deep_symbolize_keys
+      expect(classification_info).to eq(
+        {
+          Front: { ClassName: 'Drivers License',
+                   CountryCode: 'USA' },
+          Back: { ClassName: 'Drivers License', CountryCode: 'USA' },
+        },
+      )
+    end
+  end
 end
