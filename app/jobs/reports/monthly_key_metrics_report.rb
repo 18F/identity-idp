@@ -45,8 +45,7 @@ module Reports
         account_reuse_report.account_reuse_emailable_report,
         account_reuse_report.total_identities_emailable_report,
         monthly_proofing_report.document_upload_proofing_emailable_report,
-        # Number of applications using Login (separated by auth / IdV) - LG-11154
-        # Number of agencies using Login - LG-11155
+        agency_and_sp_report.agency_and_sp_emailable_report,
         # Fiscal year active users, sum and split - LG-10816
         # APG Reporting Annual Active Users by FY (w/ cumulative Active Users by quarter) - LG-11156
         # APG Reporting of Active Federal Partner Agencies - LG-11157
@@ -83,6 +82,10 @@ module Reports
 
     def total_user_count_report
       @total_user_count_report ||= Reporting::TotalUserCountReport.new(report_date)
+    end
+
+    def agency_and_sp_report
+      @agency_and_sp_report ||= Reporting::AgencyAndSpReport.new(report_date)
     end
 
     def monthly_active_users_count_report

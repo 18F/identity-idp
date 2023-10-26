@@ -7,6 +7,7 @@ FactoryBot.define do
     issuer { SecureRandom.uuid }
     return_to_sp_url { '/' }
     agency { association :agency }
+    launch_date { Date.new(2020, 1, 1) }
     help_text do
       { sign_in: { en: '<strong>custom sign in help text for %{sp_name}</strong>' },
         sign_up: { en: '<strong>custom sign up help text for %{sp_name}</strong>' },
@@ -33,6 +34,16 @@ FactoryBot.define do
       end
     end
 
+    trait :idv do
+      ial { 2 }
+    end
+
+    # Can we enable this globally?
+    trait :active do
+      active { true }
+    end
+
+    # Do we need this still?
     trait :irs do
       friendly_name { 'An IRS Service Provider' }
       ial { 2 }
