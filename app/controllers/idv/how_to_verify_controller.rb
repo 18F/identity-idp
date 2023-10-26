@@ -1,4 +1,5 @@
-class Idv::HowToVerifyController < ApplicationController
+module Idv
+  class HowToVerifyController < ApplicationController
   def show
     @idv_how_to_verify_form = Idv::HowToVerifyForm.new
   end
