@@ -5,6 +5,12 @@ RSpec.feature 'sign up with backup code' do
   include SamlAuthHelper
 
   context 'with js', js: true do
+    let(:fake_analytics) { FakeAnalytics.new }
+
+    before do
+      allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
+    end
+
     it 'allows backup code only MFA configurations' do
       user = sign_up_and_set_password
       expect(page).to_not \
@@ -25,6 +31,14 @@ RSpec.feature 'sign up with backup code' do
       expect(page).to have_content(t('notices.backup_codes_configured'))
       expect(current_path).to eq auth_method_confirmation_path
       expect(user.backup_code_configurations.count).to eq(10)
+
+      click_on t('mfa.skip')
+      expect(current_path).to eq(confirm_backup_codes_path)
+
+      click_on t('two_factor_authentication.backup_codes.saved_backup_codes')
+
+      expect(fake_analytics).to have_logged_event('User registration: complete')
+      expect(page).to have_title(t('titles.account'))
     end
   end
 

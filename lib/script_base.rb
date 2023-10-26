@@ -76,6 +76,19 @@ class ScriptBase
     else
       self.class.render_output(result.table, format: config.format, stdout: stdout)
     end
+  rescue => err
+    self.class.render_output(
+      [
+        ['Error', 'Message'],
+        [err.class.name, err.message],
+      ],
+      format: config.format,
+      stdout: stdout,
+    )
+
+    stderr.puts "#{err.class.name}: #{err.message}"
+
+    exit 1 # rubocop:disable Rails/Exit
   end
 
   # rubocop:disable Metrics/BlockLength

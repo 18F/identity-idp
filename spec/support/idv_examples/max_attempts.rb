@@ -52,7 +52,7 @@ RSpec.shared_examples 'verification step max attempts' do |step, sp|
 
       fill_out_phone_form_ok
       verify_phone_otp
-      expect(page).to have_current_path(idv_review_path, wait: 10)
+      expect(page).to have_current_path(idv_enter_password_path, wait: 10)
     end
   end
 

@@ -17,7 +17,7 @@ RSpec.describe WebauthnVerifyButtonComponent, type: :component do
 
     expect(element.attr('data-credentials')).to eq('[]')
     expect(element.attr('data-user-challenge')).to eq('[]')
-    expect(rendered).to have_button(content)
+    expect(rendered).to have_css('lg-submit-button', text: content)
   end
 
   it 'renders hidden fields' do

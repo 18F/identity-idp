@@ -46,7 +46,7 @@ module Idv
 
     def confirm_idv_phone_step_needed
       return unless user_fully_authenticated?
-      redirect_to idv_review_url if idv_session.user_phone_confirmation == true
+      redirect_to idv_enter_password_url if idv_session.user_phone_confirmation == true
     end
 
     def confirm_idv_phone_step_submitted

@@ -18,7 +18,7 @@ RSpec.feature 'address proofing rate limit' do
       click_on t('idv.buttons.mail.send')
 
       expect(page).to have_content(t('idv.titles.session.enter_password', app_name: APP_NAME))
-      expect(current_path).to eq(idv_review_path)
+      expect(current_path).to eq(idv_enter_password_path)
       fill_in 'Password', with: user.password
       click_idv_continue
       expect(page).to have_current_path(idv_letter_enqueued_path)
@@ -59,7 +59,7 @@ RSpec.feature 'address proofing rate limit' do
       click_submit_default
 
       expect(page).to have_content(t('idv.titles.session.enter_password', app_name: APP_NAME))
-      expect(current_path).to eq(idv_review_path)
+      expect(current_path).to eq(idv_enter_password_path)
       fill_in 'Password', with: user.password
       click_idv_continue
       expect(current_path).to eq(idv_personal_key_path)

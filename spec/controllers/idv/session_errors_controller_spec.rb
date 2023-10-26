@@ -103,6 +103,20 @@ RSpec.describe Idv::SessionErrorsController do
         get action
       end
     end
+
+    context 'the user is in the hybrid flow' do
+      render_views
+      let(:effective_user) { create(:user) }
+
+      before do
+        session[:doc_capture_user_id] = effective_user.id
+      end
+
+      it 'renders the error template' do
+        get action
+        expect(response).to render_template(template)
+      end
+    end
   end
 
   let(:verify_info_step_complete) { false }
@@ -134,20 +148,6 @@ RSpec.describe Idv::SessionErrorsController do
 
     it_behaves_like 'an idv session errors controller action'
     it_behaves_like 'non-authenticated idv session errors controller action'
-
-    context 'the user is in the hybrid flow' do
-      render_views
-      let(:effective_user) { create(:user) }
-
-      before do
-        session[:doc_capture_user_id] = effective_user.id
-      end
-
-      it 'renders the error template' do
-        get action
-        expect(response).to render_template(template)
-      end
-    end
   end
 
   describe '#warning' do
@@ -159,20 +159,6 @@ RSpec.describe Idv::SessionErrorsController do
 
     it_behaves_like 'an idv session errors controller action'
     it_behaves_like 'non-authenticated idv session errors controller action'
-
-    context 'the user is in the hybrid flow' do
-      render_views
-      let(:effective_user) { create(:user) }
-
-      before do
-        session[:doc_capture_user_id] = effective_user.id
-      end
-
-      it 'renders the error template' do
-        get action
-        expect(response).to render_template(template)
-      end
-    end
 
     context 'with rate limit attempts' do
       let(:user) { create(:user) }
@@ -333,20 +319,6 @@ RSpec.describe Idv::SessionErrorsController do
 
     it_behaves_like 'an idv session errors controller action'
     it_behaves_like 'non-authenticated idv session errors controller action'
-
-    context 'the user is in the hybrid flow' do
-      render_views
-      let(:effective_user) { create(:user) }
-
-      before do
-        session[:doc_capture_user_id] = effective_user.id
-      end
-
-      it 'renders the error template' do
-        get action
-        expect(response).to render_template(template)
-      end
-    end
 
     context 'while rate limited' do
       let(:user) { create(:user) }

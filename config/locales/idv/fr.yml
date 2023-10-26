@@ -59,7 +59,6 @@ fr:
         start_over: Recommencez la vérification de votre identité
     errors:
       incorrect_password: Le mot de passe que vous avez inscrit est incorrect.
-      mail_limit_reached: Vous avez demandé trop de lettres au cours du dernier mois.
       pattern_mismatch:
         ssn: 'Entrez un numéro de sécurité sociale à neuf chiffres'
         zipcode: Entrez un code postal à 5 ou 9 chiffres
@@ -190,9 +189,9 @@ fr:
         devez activer JavaScript pour poursuivre ce processus.'
     gpo:
       alert_info: 'Nous avons envoyé une lettre avec votre code de vérification à:'
-      alert_spam_warning_html: 'Nous ne sommes pas en mesure d’envoyer d’autres
-        lettres. La dernière lettre a été envoyée
-        <strong>%{date_letter_was_sent}</strong>.'
+      alert_spam_warning_html: Vous ne pouvez pas demander d’autres lettres pour le
+        moment. Votre précédente demande de lettre a été effectuée le
+        <strong>%{date_letter_was_sent}</strong>.
       change_to_verification_code_html: 'Le <strong>code à usage unique</strong>
         figurant dans votre lettre est désormais appelé <strong>code de
         vérification</strong>.'
@@ -233,6 +232,20 @@ fr:
       wrong_address: Pas la bonne adresse?
     images:
       come_back_later: Lettre avec un crochet
+    legal_statement:
+      information_collection: >-
+        Esta recopilación de información cumple con los requisitos del título 44
+        del U.S.C., § 3507, modificado por la sección 2 de la Ley de Reducción
+        de Trámites de 1995. No es necesario que responda a estas preguntas, a
+        menos que le mostremos un número de control válido de la Oficina de
+        Administración y Presupuesto (OMB). El número de control de la OMB para
+        esta recopilación es 3090-0325. Nous estimons qu’il faut une minute pour
+        lire les instructions, rassembler les preuves et répondre aux questions.
+        N’envoyez que des commentaires relatifs à notre estimation du temps, y
+        compris des suggestions pour réduire cette charge, ou tout autre aspect
+        de cette collecte d’informations à : General Services Administration,
+        Regulatory Secretariat Division (MVCB), ATTN : Lois Mandell/IC
+        3090-0325, 1800 F Street, NW, Washington, DC 20405.
     messages:
       activated_html: Votre identité a été vérifiée. Si vous souhaitez modifier votre
         information vérifiée, veuillez %{link_html}.

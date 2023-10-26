@@ -8,6 +8,7 @@ import DocumentSideAcuantCapture from './document-side-acuant-capture';
 import DeviceContext from '../context/device';
 import UploadContext from '../context/upload';
 import TipList from './tip-list';
+import DocumentCaptureAbandon from './document-capture-abandon';
 
 /**
  * @typedef {'front'|'back'} DocumentSide
@@ -70,6 +71,8 @@ function DocumentsStep({
         />
       ))}
       {isLastStep ? <FormStepsButton.Submit /> : <FormStepsButton.Continue />}
+
+      <DocumentCaptureAbandon />
       <Cancel />
     </>
   );

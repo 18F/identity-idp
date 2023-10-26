@@ -40,7 +40,7 @@ class MfaConfirmationController < ApplicationController
     if backup_code_confirmation_needed?
       confirm_backup_codes_path
     else
-      after_mfa_setup_path
+      sign_up_completed_path
     end
   end
 

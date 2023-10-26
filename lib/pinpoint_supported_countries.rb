@@ -14,6 +14,7 @@ class PinpointSupportedCountries
     BY
     EG
     FR
+    GB
     JO
     PH
     TH
