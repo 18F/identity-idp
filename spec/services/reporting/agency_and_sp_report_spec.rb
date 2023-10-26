@@ -8,6 +8,19 @@ RSpec.describe Reporting::AgencyAndSpReport do
 
   before { travel_to report_date }
 
+  # Wipe the pre-seeded data. It's easier to start from a clean slate.
+  before do
+    Agreements::IntegrationUsage.destroy_all
+    Agreements::IaaOrder.destroy_all
+    Agreements::Integration.destroy_all
+    Agreements::IntegrationStatus.destroy_all
+    Agreements::IaaGtc.destroy_all
+    Agreements::PartnerAccount.destroy_all
+    Agreements::PartnerAccountStatus.destroy_all
+    Agency.destroy_all
+    ServiceProvider.destroy_all
+  end
+
   subject(:report) { described_class.new(report_date) }
 
   describe '#agency_and_sp_report' do
@@ -21,7 +34,7 @@ RSpec.describe Reporting::AgencyAndSpReport do
       let(:expected_report) do
         [
           ['', 'Number of apps (SPs)', 'Number of agencies'],
-          ['Auth', 19, 19],
+          ['Auth', 0, 0],
           ['IDV', 1, 1],
         ]
       end
@@ -39,10 +52,11 @@ RSpec.describe Reporting::AgencyAndSpReport do
     # I wrote it while troubleshooting and kinda feel like leaving it.
     # Actually, this whole thing is a huge mess, lol.
     context 'when there is no IDV data' do
+
       let(:expected_report) do
         [
           ['', 'Number of apps (SPs)', 'Number of agencies'],
-          ['Auth', 19, 19],
+          ['Auth', 0, 0],
           ['IDV', 0, 0],
         ]
       end

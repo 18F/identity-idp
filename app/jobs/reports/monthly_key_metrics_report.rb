@@ -59,7 +59,6 @@ module Reports
         account_reuse_report.total_identities_emailable_report,
         monthly_proofing_report.document_upload_proofing_emailable_report,
         agency_and_sp_report.agency_and_sp_emailable_report,
-        # Fiscal year active users, sum and split - LG-10816
         # APG Reporting Annual Active Users by FY (w/ cumulative Active Users by quarter) - LG-11156
         # APG Reporting of Active Federal Partner Agencies - LG-11157
         # APG Reporting of Active Login.gov Serviced Applications - LG-11158
@@ -98,20 +97,14 @@ module Reports
       @total_user_count_report ||= Reporting::TotalUserCountReport.new(report_date)
     end
 
-    def agency_and_sp_report
-      @agency_and_sp_report ||= Reporting::AgencyAndSpReport.new(report_date)
-    end
-
-    def monthly_active_users_count_report
-      @monthly_active_users_count_report ||= Reporting::MonthlyActiveUsersCountReport.new(
-        report_date,
-        )
-    end
-
     def active_users_count_report
       @active_users_count_report ||= Reporting::ActiveUsersCountReport.new(
         report_date,
-        )
+      )
+    end
+
+    def agency_and_sp_report
+      @agency_and_sp_report ||= Reporting::AgencyAndSpReport.new(report_date)
     end
 
     def upload_to_s3(report_body, report_name: nil)
