@@ -7,12 +7,11 @@ module Reporting
     end
 
     def agency_and_sp_report
-      # We also don't actually do anything with this list except count it.
-      idv_agency_ids = idv_sps.collect { |sp| sp.agency_id }.uniq # 27
+      idv_agency_ids = idv_sps.collect { |sp| sp.agency_id }.uniq
 
       # We define auth as "not IDV", can include ial: 1 and ial: nil
-      auth_sp_count = ServiceProvider.active.count - idv_sps.count # 422
-      auth_agency_count = Agency.count - idv_agency_ids.count # 175
+      auth_sp_count = ServiceProvider.active.count - idv_sps.count
+      auth_agency_count = Agency.count - idv_agency_ids.count
 
       [
         ['', 'Number of apps (SPs)', 'Number of agencies'],
@@ -37,7 +36,7 @@ module Reporting
           where(ial: 2).
           where('launch_date <= ?', report_date).
           select(:id, :agency_id).
-          to_a # 47
+          to_a
       end
     end
   end

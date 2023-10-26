@@ -6,6 +6,10 @@ RSpec.describe Reporting::AgencyAndSpReport do
     Date.new(2021, 1, 1).in_time_zone('UTC')
   end
 
+  let(:header_row) do
+    ['', 'Number of apps (SPs)', 'Number of agencies']
+  end
+
   before { travel_to report_date }
 
   # Wipe the pre-seeded data. It's easier to start from a clean slate.
@@ -26,44 +30,80 @@ RSpec.describe Reporting::AgencyAndSpReport do
   describe '#agency_and_sp_report' do
     subject { report.agency_and_sp_report }
 
-    # OK, so there's existing seed data, it turns out!
+    context 'when adding a non-IDV SP' do
+      let!(:auth_sp) { create(:service_provider, :active) }
+      let(:expected_report) do
+        [
+          header_row,
+          ['Auth', 1, 1],
+          ['IDV', 0, 0],
+        ]
+      end
+
+      it 'counts the SP and its Agency as auth (non-IDV)' do
+        expect(subject).to match_array(expected_report)
+      end
+    end
+
+    context 'when adding an inactive SP' do
+      let!(:inactive_sp) { create(:service_provider) }
+      let(:expected_report) do
+        [
+          header_row,
+          ['Auth', 0, 1],
+          ['IDV', 0, 0],
+        ]
+      end
+
+      # Agencies don't have a sense of 'active' and are included.
+      it 'does not include them in the counts because they are not active' do
+        expect(subject).to match_array(expected_report)
+      end
+    end
+
+    context 'when adding an IDV SP to a non-IDV Agency' do
+      let!(:initial_sp) { create(:service_provider, :active) }
+      let!(:agency) { initial_sp.agency }
+
+      let(:initial_report) do
+        [
+          header_row,
+          ['Auth', 1, 1],
+          ['IDV', 0, 0]
+        ]
+      end
+
+      let(:updated_report) do
+        [
+          header_row,
+          ['Auth', 1, 0],
+          ['IDV', 1, 1],
+        ]
+      end
+
+      it 'becomes an IDV agency' do
+        expect(subject).to match_array(initial_report)
+
+        create(:service_provider, :active, :idv, agency: agency)
+
+        # The report gets memoized, so we need to reconstruct it here:
+        new_report = described_class.new(report_date)
+        expect(new_report.agency_and_sp_report).to match_array(updated_report)
+      end
+    end
+
     context 'when adding an IDV SP' do
       let!(:idv_sp) { create(:service_provider, :idv, :active) }
 
       let(:expected_report) do
         [
-          ['', 'Number of apps (SPs)', 'Number of agencies'],
+          header_row,
           ['Auth', 0, 0],
           ['IDV', 1, 1],
         ]
       end
 
-      it 'has the SP as active' do
-        expect(idv_sp).to be_active
-      end
-
-      it 'looks like what I expect' do
-        expect(subject).to match_array(expected_report)
-      end
-    end
-
-    # This is a case of a test that really doesn't need to exist anymore, but
-    # I wrote it while troubleshooting and kinda feel like leaving it.
-    # Actually, this whole thing is a huge mess, lol.
-    context 'when there is no IDV data' do
-      let(:expected_report) do
-        [
-          ['', 'Number of apps (SPs)', 'Number of agencies'],
-          ['Auth', 0, 0],
-          ['IDV', 0, 0],
-        ]
-      end
-
-      before do
-        allow(report).to receive(:idv_sps).and_return([])
-      end
-
-      it 'shows 0 for counts without errors' do
+      it 'counts the SP and its Agency as IDV' do
         expect(subject).to match_array(expected_report)
       end
     end
