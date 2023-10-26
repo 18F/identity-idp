@@ -440,6 +440,7 @@ class IdentityConfig
     config.add(:state_tracking_enabled, type: :boolean)
     config.add(:system_demand_report_email, type: :string)
     config.add(:team_agnes_email, type: :string)
+    config.add(:team_all_contractors_email, type: :string)
     config.add(:team_all_feds_email, type: :string)
     config.add(:team_ursula_email, type: :string)
     config.add(:telephony_adapter, type: :string)

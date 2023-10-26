@@ -29,8 +29,21 @@ module Reports
         email: email_addresses,
         subject: "Monthly Key Metrics Report - #{date}",
         reports: reports,
+        message: preamble,
         attachment_format: :xlsx,
       ).deliver_now
+    end
+
+    # Explanatory text to go before the report in the email
+    # @return [String]
+    def preamble
+      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
+        <p>
+          For more information on how each of these metrics are calculated, take a look at our
+          <a href="https://handbook.login.gov/articles/monthly-key-metrics-explainer.html">
+          Monthly Key Metrics Report Explainer document</a>.
+        </p>
+      HTML
     end
 
     def reports
@@ -60,6 +73,7 @@ module Reports
       emails = [IdentityConfig.store.team_agnes_email]
       if report_date.day == 1
         emails << IdentityConfig.store.team_all_feds_email
+        emails << IdentityConfig.store.team_all_contractors_email
       end
       emails
     end

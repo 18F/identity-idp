@@ -311,6 +311,7 @@ otp_min_attempts_remaining_warning_count: 3
 system_demand_report_email: 'foo@bar.com'
 sp_issuer_user_counts_report_configs: '[]'
 team_agnes_email: ''
+team_all_contractors_email: ''
 team_all_feds_email: ''
 team_ursula_email: ''
 test_ssn_allowed_list: ''
@@ -559,6 +560,9 @@ test:
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
   skip_encryption_allowed_list: '[]'
   state_tracking_enabled: true
+  team_agnes_email: 'a@example.com'
+  team_all_contractors_email: 'c@example.com'
+  team_all_feds_email: 'f@example.com'
   telephony_adapter: test
   test_ssn_allowed_list: '999999999'
   totp_code_interval: 3

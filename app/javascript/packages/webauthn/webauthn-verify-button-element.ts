@@ -1,4 +1,5 @@
 import { trackError } from '@18f/identity-analytics';
+import type SubmitButtonElement from '@18f/identity-submit-button/submit-button-element';
 import verifyWebauthnDevice from './verify-webauthn-device';
 import type { VerifyCredentialDescriptor } from './verify-webauthn-device';
 import isExpectedWebauthnError from './is-expected-error';
@@ -18,6 +19,10 @@ class WebauthnVerifyButtonElement extends HTMLElement {
 
   get button(): HTMLButtonElement {
     return this.querySelector('.webauthn-verify-button__button')!;
+  }
+
+  get submitButton(): SubmitButtonElement {
+    return this.querySelector('lg-submit-button')!;
   }
 
   get spinner(): HTMLElement {
@@ -42,6 +47,7 @@ class WebauthnVerifyButtonElement extends HTMLElement {
 
   async verify() {
     this.spinner.hidden = false;
+    this.submitButton.activate();
 
     const { userChallenge, credentials } = this;
 

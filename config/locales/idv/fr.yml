@@ -32,7 +32,10 @@ fr:
             - Vous aurez toujours un compte %{app_name}. Vous pouvez gérer ou
               supprimer votre compte sur %{account_page_text}.
         gpo:
+          continue: Recommencez et vérifiez votre identité depuis le début.
           start_over: Si vous supprimez vos informations et recommencez
+          start_over_new_address: Pour envoyer votre lettre à une autre adresse, vous
+            devrez recommencer et vérifier votre identité à la nouvelle adresse.
           warnings:
             - Le code de vérification dans votre lettre ne fonctionnera plus
             - Vous recommencerez la vérification de votre identité depuis le
@@ -52,10 +55,10 @@ fr:
           hybrid: Êtes-vous sûr de vouloir annuler le téléchargement de vos photos
             d’identité sur ce téléphone?
           standard: Annuler la vérification de votre identité?
+          start_over: Recommencez la vérification de votre identité?
         start_over: Recommencez la vérification de votre identité
     errors:
       incorrect_password: Le mot de passe que vous avez inscrit est incorrect.
-      mail_limit_reached: Vous avez demandé trop de lettres au cours du dernier mois.
       pattern_mismatch:
         ssn: 'Entrez un numéro de sécurité sociale à neuf chiffres'
         zipcode: Entrez un code postal à 5 ou 9 chiffres
