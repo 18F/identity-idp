@@ -35,6 +35,16 @@ module Idv
       end
     end
 
+    def self.navigation_step
+      Idv::StepInfo.new(
+        controller: controller_name,
+        next_steps: [:phone],
+        preconditions: ->(idv_session:, user:) do
+          idv_session.ssn && idv_session.document_capture_complete?
+        end,
+      )
+    end
+
     private
 
     def flow_param; end

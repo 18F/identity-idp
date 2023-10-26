@@ -48,6 +48,14 @@ module Idv
       end
     end
 
+    def self.navigation_step
+      Idv::StepInfo.new(
+        controller: controller_name,
+        next_steps: [:verify_info],
+        preconditions: ->(idv_session:, user:) { idv_session.document_capture_complete? },
+      )
+    end
+
     private
 
     def confirm_repeat_ssn

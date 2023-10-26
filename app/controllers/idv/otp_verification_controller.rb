@@ -40,6 +40,14 @@ module Idv
       end
     end
 
+    def self.navigation_step
+      Idv::StepInfo.new(
+        controller: controller_name,
+        next_steps: [:enter_password],
+        preconditions: ->(idv_session:, user:) { idv_session.phone_otp_sent? },
+      )
+    end
+
     private
 
     def confirm_step_needed
