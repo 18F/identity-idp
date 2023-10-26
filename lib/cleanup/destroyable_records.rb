@@ -15,7 +15,7 @@ class DestroyableRecords
 
   def print_data
     stdout.puts "You are about to delete a service provider with issuer #{service_provider.issuer}"
-    if integration.partner_account.present?
+    if integration&.partner_account.present?
       stdout.puts "The partner is #{integration.partner_account.name}"
     end
     stdout.puts "\n\n"
@@ -26,7 +26,7 @@ class DestroyableRecords
 
     stdout.puts '********'
     stdout.puts 'Integration:'
-    stdout.puts integration.attributes.to_yaml
+    stdout.puts integration&.attributes.to_yaml
     stdout.puts "\n"
 
     stdout.puts '********'
@@ -42,7 +42,7 @@ class DestroyableRecords
 
     stdout.puts '*******'
     stdout.puts 'These are the IAA orders that will be affected: \n'
-    iaa_orders.each do |iaa_order|
+    iaa_orders&.each do |iaa_order|
       stdout.puts "#{iaa_order.iaa_gtc.gtc_number} Order #{iaa_order.order_number}"
     end
     stdout.puts "\n"
@@ -70,11 +70,11 @@ class DestroyableRecords
   private
 
   def integration_usages
-    integration.integration_usages
+    integration&.integration_usages
   end
 
   def iaa_orders
-    integration.iaa_orders
+    integration&.iaa_orders
   end
 
   def in_person_enrollments
