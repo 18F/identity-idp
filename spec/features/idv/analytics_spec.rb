@@ -39,28 +39,28 @@ RSpec.feature 'Analytics Regression', js: true do
     {
       'IdV: intro visited' => {},
       'IdV: doc auth welcome visited' => {
-        step: 'welcome', analytics_id: 'Doc Auth', irs_reproofing: false, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil
+        step: 'welcome', analytics_id: 'Doc Auth', irs_reproofing: false, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil, phone_with_camera: nil
       },
       'IdV: doc auth welcome submitted' => {
-        step: 'welcome', analytics_id: 'Doc Auth', irs_reproofing: false, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil
+        step: 'welcome', analytics_id: 'Doc Auth', irs_reproofing: false, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil, phone_with_camera: nil
       },
       'IdV: doc auth agreement visited' => {
-        step: 'agreement', analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, irs_reproofing: false, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question
+        step: 'agreement', analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, phone_with_camera: nil, irs_reproofing: false, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question
       },
       'IdV: consent checkbox toggled' => {
         checked: true,
       },
       'IdV: doc auth agreement submitted' => {
-        success: true, errors: {}, step: 'agreement', analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, irs_reproofing: false, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question
+        success: true, errors: {}, step: 'agreement', analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, phone_with_camera: nil, irs_reproofing: false, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question
       },
       'IdV: doc auth hybrid handoff visited' => {
-        step: 'hybrid_handoff', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, irs_reproofing: false
+        step: 'hybrid_handoff', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, phone_with_camera: nil, irs_reproofing: false
       },
       'IdV: doc auth hybrid handoff submitted' => {
-        success: true, errors: {}, destination: :document_capture, flow_path: 'standard', step: 'hybrid_handoff', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, irs_reproofing: false
+        success: true, errors: {}, destination: :document_capture, flow_path: 'standard', step: 'hybrid_handoff', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, phone_with_camera: nil, irs_reproofing: false
       },
       'IdV: doc auth document_capture visited' => {
-        flow_path: 'standard', step: 'document_capture', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, irs_reproofing: false
+        flow_path: 'standard', step: 'document_capture', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, phone_with_camera: nil, irs_reproofing: false
       },
       'Frontend: IdV: front image added' => {
         'width' => 284, 'height' => 38, 'mimeType' => 'image/png', 'source' => 'upload', 'size' => 3694, 'attempt' => 1, 'flow_path' => 'standard', 'acuant_sdk_upgrade_a_b_testing_enabled' => 'false', 'use_alternate_sdk' => anything, 'acuant_version' => anything, 'acuantCaptureMode' => 'AUTO', 'fingerprint' => anything, 'failedImageResubmission' => boolean, 'phone_question_ab_test_bucket' => 'bypass_phone_question'
@@ -75,30 +75,30 @@ RSpec.feature 'Analytics Regression', js: true do
         success: true, errors: {}, user_id: user.uuid, attempts: 1, remaining_attempts: 3, flow_path: 'standard', attention_with_barcode: false, front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question
       },
       'IdV: doc auth document_capture submitted' => {
-        success: true, errors: {}, flow_path: 'standard', step: 'document_capture', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, irs_reproofing: false
+        success: true, errors: {}, flow_path: 'standard', step: 'document_capture', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, phone_with_camera: nil, irs_reproofing: false
       },
       'IdV: doc auth ssn visited' => {
-        flow_path: 'standard', step: 'ssn', acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil, analytics_id: 'Doc Auth', irs_reproofing: false
+        flow_path: 'standard', step: 'ssn', acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil, phone_with_camera: nil, analytics_id: 'Doc Auth', irs_reproofing: false
       },
       'IdV: doc auth ssn submitted' => {
-        success: true, errors: {}, flow_path: 'standard', step: 'ssn', acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil, analytics_id: 'Doc Auth', irs_reproofing: false
+        success: true, errors: {}, flow_path: 'standard', step: 'ssn', acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil, phone_with_camera: nil, analytics_id: 'Doc Auth', irs_reproofing: false
       },
       'IdV: doc auth verify visited' => {
-        flow_path: 'standard', step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil, analytics_id: 'Doc Auth', irs_reproofing: false
+        flow_path: 'standard', step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil, phone_with_camera: nil, analytics_id: 'Doc Auth', irs_reproofing: false
       },
       'IdV: doc auth verify submitted' => {
-        flow_path: 'standard', step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil, analytics_id: 'Doc Auth', irs_reproofing: false
+        flow_path: 'standard', step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil, phone_with_camera: nil, analytics_id: 'Doc Auth', irs_reproofing: false
       },
       'IdV: doc auth verify proofing results' => {
-        success: true, errors: {}, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'Doc Auth', ssn_is_unique: true, step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, irs_reproofing: false, skip_hybrid_handoff: nil,
+        success: true, errors: {}, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'Doc Auth', ssn_is_unique: true, step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, irs_reproofing: false, skip_hybrid_handoff: nil, phone_with_camera: nil,
         proofing_results: { exception: nil, timed_out: false, threatmetrix_review_status: 'pass', context: { device_profiling_adjudication_reason: 'device_profiling_result_pass', resolution_adjudication_reason: 'pass_resolution_and_state_id', should_proof_state_id: true, stages: { resolution: { success: true, errors: {}, exception: nil, timed_out: false, transaction_id: 'resolution-mock-transaction-id-123', reference: 'aaa-bbb-ccc', can_pass_with_additional_verification: false, attributes_requiring_additional_verification: [], vendor_name: 'ResolutionMock', vendor_workflow: nil }, residential_address: { attributes_requiring_additional_verification: [], can_pass_with_additional_verification: false, errors: {}, exception: nil, reference: '', success: true, timed_out: false, transaction_id: '', vendor_name: 'ResidentialAddressNotRequired', vendor_workflow: nil }, state_id: { success: true, errors: {}, exception: nil, mva_exception: nil, timed_out: false, transaction_id: 'state-id-mock-transaction-id-456', vendor_name: 'StateIdMock', verified_attributes: [], state: 'MT', state_id_jurisdiction: 'ND', state_id_number: '#############' }, threatmetrix: threatmetrix_response } } }
       },
       'IdV: phone of record visited' => {
-        acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil,
+        acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil, phone_with_camera: nil,
         proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass' }
       },
       'IdV: phone confirmation form' => {
-        success: true, errors: {}, phone_type: :mobile, types: [:fixed_or_mobile], carrier: 'Test Mobile Carrier', country_code: 'US', area_code: '202', acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil, otp_delivery_preference: 'sms',
+        success: true, errors: {}, phone_type: :mobile, types: [:fixed_or_mobile], carrier: 'Test Mobile Carrier', country_code: 'US', area_code: '202', acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil, phone_with_camera: nil, otp_delivery_preference: 'sms',
         proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass' }
       },
       'IdV: phone confirmation vendor' => {
@@ -117,15 +117,15 @@ RSpec.feature 'Analytics Regression', js: true do
         proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
       },
       'IdV: review info visited' => {
-        address_verification_method: 'phone', acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil,
+        address_verification_method: 'phone', acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil, phone_with_camera: nil,
         proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
       },
       'IdV: review complete' => {
-        success: true, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil, fraud_review_pending: false, fraud_rejection: false, gpo_verification_pending: false, in_person_verification_pending: false, deactivation_reason: nil,
+        success: true, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil, phone_with_camera: nil, fraud_review_pending: false, fraud_rejection: false, gpo_verification_pending: false, in_person_verification_pending: false, deactivation_reason: nil,
         proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
       },
       'IdV: final resolution' => {
-        success: true, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil, fraud_review_pending: false, fraud_rejection: false, gpo_verification_pending: false, in_person_verification_pending: false, deactivation_reason: nil,
+        success: true, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil, phone_with_camera: nil, fraud_review_pending: false, fraud_rejection: false, gpo_verification_pending: false, in_person_verification_pending: false, deactivation_reason: nil,
         proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
       },
       'IdV: personal key visited' => {
@@ -147,25 +147,25 @@ RSpec.feature 'Analytics Regression', js: true do
     {
       'IdV: intro visited' => {},
       'IdV: doc auth welcome visited' => {
-        step: 'welcome', analytics_id: 'Doc Auth', irs_reproofing: false, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil
+        step: 'welcome', analytics_id: 'Doc Auth', irs_reproofing: false, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil, phone_with_camera: nil
       },
       'IdV: doc auth welcome submitted' => {
-        step: 'welcome', analytics_id: 'Doc Auth', irs_reproofing: false, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil
+        step: 'welcome', analytics_id: 'Doc Auth', irs_reproofing: false, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil, phone_with_camera: nil
       },
       'IdV: doc auth agreement visited' => {
-        step: 'agreement', analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, irs_reproofing: false, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question
+        step: 'agreement', analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, phone_with_camera: nil, irs_reproofing: false, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question
       },
       'IdV: doc auth agreement submitted' => {
-        success: true, errors: {}, step: 'agreement', analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, irs_reproofing: false, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question
+        success: true, errors: {}, step: 'agreement', analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, phone_with_camera: nil, irs_reproofing: false, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question
       },
       'IdV: doc auth hybrid handoff visited' => {
-        step: 'hybrid_handoff', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, irs_reproofing: false
+        step: 'hybrid_handoff', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, phone_with_camera: nil, irs_reproofing: false
       },
       'IdV: doc auth hybrid handoff submitted' => {
-        success: true, errors: {}, destination: :document_capture, flow_path: 'standard', redo_document_capture: nil, step: 'hybrid_handoff', acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, irs_reproofing: false
+        success: true, errors: {}, destination: :document_capture, flow_path: 'standard', redo_document_capture: nil, step: 'hybrid_handoff', acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, phone_with_camera: nil, irs_reproofing: false
       },
       'IdV: doc auth document_capture visited' => {
-        flow_path: 'standard', step: 'document_capture', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil, analytics_id: 'Doc Auth', irs_reproofing: false
+        flow_path: 'standard', step: 'document_capture', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil, phone_with_camera: nil, analytics_id: 'Doc Auth', irs_reproofing: false
       },
       'Frontend: IdV: front image added' => {
         'width' => 284, 'height' => 38, 'mimeType' => 'image/png', 'source' => 'upload', 'size' => 3694, 'attempt' => 1, 'flow_path' => 'standard', 'acuant_sdk_upgrade_a_b_testing_enabled' => 'false', 'use_alternate_sdk' => anything, 'acuant_version' => anything, 'acuantCaptureMode' => 'AUTO', 'fingerprint' => anything, 'failedImageResubmission' => boolean, 'phone_question_ab_test_bucket' => 'bypass_phone_question'
@@ -180,49 +180,49 @@ RSpec.feature 'Analytics Regression', js: true do
         success: true, errors: {}, user_id: user.uuid, attempts: 1, remaining_attempts: 3, flow_path: 'standard', attention_with_barcode: false, front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question
       },
       'IdV: doc auth document_capture submitted' => {
-        success: true, errors: {}, flow_path: 'standard', step: 'document_capture', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil, analytics_id: 'Doc Auth', irs_reproofing: false
+        success: true, errors: {}, flow_path: 'standard', step: 'document_capture', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil, phone_with_camera: nil, analytics_id: 'Doc Auth', irs_reproofing: false
       },
       'IdV: doc auth ssn visited' => {
-        flow_path: 'standard', step: 'ssn', acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil, analytics_id: 'Doc Auth', irs_reproofing: false
+        flow_path: 'standard', step: 'ssn', acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil, phone_with_camera: nil, analytics_id: 'Doc Auth', irs_reproofing: false
       },
       'IdV: doc auth ssn submitted' => {
-        success: true, errors: {}, flow_path: 'standard', step: 'ssn', acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil, analytics_id: 'Doc Auth', irs_reproofing: false
+        success: true, errors: {}, flow_path: 'standard', step: 'ssn', acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil, phone_with_camera: nil, analytics_id: 'Doc Auth', irs_reproofing: false
       },
       'IdV: doc auth verify visited' => {
-        flow_path: 'standard', step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil, analytics_id: 'Doc Auth', irs_reproofing: false
+        flow_path: 'standard', step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil, phone_with_camera: nil, analytics_id: 'Doc Auth', irs_reproofing: false
       },
       'IdV: doc auth verify submitted' => {
-        flow_path: 'standard', step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil, analytics_id: 'Doc Auth', irs_reproofing: false
+        flow_path: 'standard', step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil, phone_with_camera: nil, analytics_id: 'Doc Auth', irs_reproofing: false
       },
       'IdV: doc auth verify proofing results' => {
-        success: true, errors: {}, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'Doc Auth', ssn_is_unique: true, step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, irs_reproofing: false, skip_hybrid_handoff: nil,
+        success: true, errors: {}, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'Doc Auth', ssn_is_unique: true, step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, irs_reproofing: false, skip_hybrid_handoff: nil, phone_with_camera: nil,
         proofing_results: { exception: nil, timed_out: false, threatmetrix_review_status: 'pass', context: { device_profiling_adjudication_reason: 'device_profiling_result_pass', resolution_adjudication_reason: 'pass_resolution_and_state_id', should_proof_state_id: true, stages: { resolution: { success: true, errors: {}, exception: nil, timed_out: false, transaction_id: 'resolution-mock-transaction-id-123', reference: 'aaa-bbb-ccc', can_pass_with_additional_verification: false, attributes_requiring_additional_verification: [], vendor_name: 'ResolutionMock', vendor_workflow: nil }, residential_address: { attributes_requiring_additional_verification: [], can_pass_with_additional_verification: false, errors: {}, exception: nil, reference: '', success: true, timed_out: false, transaction_id: '', vendor_name: 'ResidentialAddressNotRequired', vendor_workflow: nil }, state_id: { success: true, errors: {}, exception: nil, mva_exception: nil, timed_out: false, transaction_id: 'state-id-mock-transaction-id-456', vendor_name: 'StateIdMock', verified_attributes: [], state: 'MT', state_id_jurisdiction: 'ND', state_id_number: '#############' }, threatmetrix: threatmetrix_response } } }
       },
       'IdV: phone of record visited' => {
-        acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil,
+        acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil, phone_with_camera: nil,
         proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass' }
       },
       'IdV: USPS address letter requested' => {
-        resend: false, phone_step_attempts: 0, first_letter_requested_at: nil, hours_since_first_letter: 0, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil,
+        resend: false, phone_step_attempts: 0, first_letter_requested_at: nil, hours_since_first_letter: 0, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil, phone_with_camera: nil,
         proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass' }
       },
       'IdV: request letter visited' => {
         letter_already_sent: false,
       },
       'IdV: review info visited' => {
-        address_verification_method: 'gpo', acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil,
+        address_verification_method: 'gpo', acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil, phone_with_camera: nil,
         proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'gpo_letter' }
       },
       'IdV: USPS address letter enqueued' => {
-        enqueued_at: Time.zone.now.utc, resend: false, phone_step_attempts: 0, first_letter_requested_at: Time.zone.now.utc, hours_since_first_letter: 0, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil,
+        enqueued_at: Time.zone.now.utc, resend: false, phone_step_attempts: 0, first_letter_requested_at: Time.zone.now.utc, hours_since_first_letter: 0, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil, phone_with_camera: nil,
         proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'gpo_letter' }
       },
       'IdV: review complete' => {
-        success: true, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil, fraud_review_pending: false, fraud_rejection: false, gpo_verification_pending: true, in_person_verification_pending: false, deactivation_reason: nil,
+        success: true, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil, phone_with_camera: nil, fraud_review_pending: false, fraud_rejection: false, gpo_verification_pending: true, in_person_verification_pending: false, deactivation_reason: nil,
         proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'gpo_letter' }
       },
       'IdV: final resolution' => {
-        success: true, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil, fraud_review_pending: false, fraud_rejection: false, gpo_verification_pending: true, in_person_verification_pending: false, deactivation_reason: nil,
+        success: true, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil, phone_with_camera: nil, fraud_review_pending: false, fraud_rejection: false, gpo_verification_pending: true, in_person_verification_pending: false, deactivation_reason: nil,
         proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'gpo_letter' }
       },
       'IdV: letter enqueued visited' => {
@@ -234,25 +234,25 @@ RSpec.feature 'Analytics Regression', js: true do
   let(:in_person_path_events) do
     {
       'IdV: doc auth welcome visited' => {
-        step: 'welcome', analytics_id: 'Doc Auth', irs_reproofing: false, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil
+        step: 'welcome', analytics_id: 'Doc Auth', irs_reproofing: false, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil, phone_with_camera: nil
       },
       'IdV: doc auth welcome submitted' => {
-        step: 'welcome', analytics_id: 'Doc Auth', irs_reproofing: false, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil
+        step: 'welcome', analytics_id: 'Doc Auth', irs_reproofing: false, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil, phone_with_camera: nil
       },
       'IdV: doc auth agreement visited' => {
-        step: 'agreement', analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, irs_reproofing: false, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question
+        step: 'agreement', analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, phone_with_camera: nil, irs_reproofing: false, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question
       },
       'IdV: doc auth agreement submitted' => {
-        success: true, errors: {}, step: 'agreement', analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, irs_reproofing: false, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question
+        success: true, errors: {}, step: 'agreement', analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, phone_with_camera: nil, irs_reproofing: false, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question
       },
       'IdV: doc auth hybrid handoff visited' => {
-        step: 'hybrid_handoff', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, irs_reproofing: false
+        step: 'hybrid_handoff', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, phone_with_camera: nil, irs_reproofing: false
       },
       'IdV: doc auth hybrid handoff submitted' => {
-        success: true, errors: {}, destination: :document_capture, flow_path: 'standard', redo_document_capture: nil, step: 'hybrid_handoff', acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, irs_reproofing: false
+        success: true, errors: {}, destination: :document_capture, flow_path: 'standard', redo_document_capture: nil, step: 'hybrid_handoff', acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, phone_with_camera: nil, irs_reproofing: false
       },
       'IdV: doc auth document_capture visited' => {
-        flow_path: 'standard', step: 'document_capture', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, irs_reproofing: false
+        flow_path: 'standard', step: 'document_capture', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, phone_with_camera: nil, irs_reproofing: false
       },
       'Frontend: IdV: front image added' => {
         'width' => 284, 'height' => 38, 'mimeType' => 'image/png', 'source' => 'upload', 'size' => 3694, 'attempt' => 1, 'flow_path' => 'standard', 'acuant_sdk_upgrade_a_b_testing_enabled' => 'false', 'use_alternate_sdk' => anything, 'acuant_version' => anything, 'acuantCaptureMode' => 'AUTO', 'fingerprint' => anything, 'failedImageResubmission' => boolean, 'phone_question_ab_test_bucket' => 'bypass_phone_question'
@@ -292,23 +292,23 @@ RSpec.feature 'Analytics Regression', js: true do
         success: true, step: 'address', flow_path: 'standard', step_count: 1, analytics_id: 'In Person Proofing', irs_reproofing: false, errors: {}, same_address_as_id: false
       },
       'IdV: doc auth ssn visited' => {
-        analytics_id: 'In Person Proofing', step: 'ssn', flow_path: 'standard', irs_reproofing: false, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, same_address_as_id: false
+        analytics_id: 'In Person Proofing', step: 'ssn', flow_path: 'standard', irs_reproofing: false, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, phone_with_camera: nil, same_address_as_id: false
       },
       'IdV: doc auth ssn submitted' => {
-        analytics_id: 'In Person Proofing', success: true, step: 'ssn', flow_path: 'standard', irs_reproofing: false, errors: {}, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, same_address_as_id: false
+        analytics_id: 'In Person Proofing', success: true, step: 'ssn', flow_path: 'standard', irs_reproofing: false, errors: {}, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, phone_with_camera: nil, same_address_as_id: false
       },
       'IdV: doc auth verify visited' => {
-        analytics_id: 'In Person Proofing', step: 'verify', flow_path: 'standard', irs_reproofing: false, same_address_as_id: false, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil
+        analytics_id: 'In Person Proofing', step: 'verify', flow_path: 'standard', irs_reproofing: false, same_address_as_id: false, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, phone_with_camera: nil
       },
       'IdV: doc auth verify submitted' => {
-        analytics_id: 'In Person Proofing', step: 'verify', flow_path: 'standard', irs_reproofing: false, same_address_as_id: false, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil
+        analytics_id: 'In Person Proofing', step: 'verify', flow_path: 'standard', irs_reproofing: false, same_address_as_id: false, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, acuant_sdk_upgrade_ab_test_bucket: :default, skip_hybrid_handoff: nil, phone_with_camera: nil
       },
       'IdV: doc auth verify proofing results' => {
-        success: true, errors: {}, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'In Person Proofing', ssn_is_unique: true, step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, irs_reproofing: false, skip_hybrid_handoff: nil,
+        success: true, errors: {}, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'In Person Proofing', ssn_is_unique: true, step: 'verify', acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, irs_reproofing: false, skip_hybrid_handoff: nil, phone_with_camera: nil,
         proofing_results: { exception: nil, timed_out: false, threatmetrix_review_status: 'pass', context: { device_profiling_adjudication_reason: 'device_profiling_result_pass', resolution_adjudication_reason: 'pass_resolution_and_state_id', should_proof_state_id: true, stages: { resolution: { success: true, errors: {}, exception: nil, timed_out: false, transaction_id: 'resolution-mock-transaction-id-123', reference: 'aaa-bbb-ccc', can_pass_with_additional_verification: false, attributes_requiring_additional_verification: [], vendor_name: 'ResolutionMock', vendor_workflow: nil }, residential_address: { errors: {}, exception: nil, reference: 'aaa-bbb-ccc', success: true, timed_out: false, transaction_id: 'resolution-mock-transaction-id-123', can_pass_with_additional_verification: false, attributes_requiring_additional_verification: [], vendor_name: 'ResolutionMock', vendor_workflow: nil }, state_id: { success: true, errors: {}, exception: nil, mva_exception: nil, timed_out: false, transaction_id: 'state-id-mock-transaction-id-456', vendor_name: 'StateIdMock', verified_attributes: [], state: 'MT', state_id_jurisdiction: 'ND', state_id_number: '#############' }, threatmetrix: threatmetrix_response } } }
       },
       'IdV: phone confirmation form' => {
-        success: true, errors: {}, phone_type: :mobile, types: [:fixed_or_mobile], carrier: 'Test Mobile Carrier', country_code: 'US', area_code: '202', acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil, otp_delivery_preference: 'sms',
+        success: true, errors: {}, phone_type: :mobile, types: [:fixed_or_mobile], carrier: 'Test Mobile Carrier', country_code: 'US', area_code: '202', acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil, phone_with_camera: nil, otp_delivery_preference: 'sms',
         proofing_components: { document_check: 'usps', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', source_check: 'aamva' }
       },
       'IdV: phone confirmation vendor' => {
@@ -327,15 +327,15 @@ RSpec.feature 'Analytics Regression', js: true do
         proofing_components: { document_check: 'usps', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
       },
       'IdV: review info visited' => {
-        acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil, address_verification_method: 'phone',
+        acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil, phone_with_camera: nil, address_verification_method: 'phone',
         proofing_components: { document_check: 'usps', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
       },
       'IdV: review complete' => {
-        success: true, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil, fraud_review_pending: false, fraud_rejection: false, gpo_verification_pending: false, in_person_verification_pending: true, deactivation_reason: nil,
+        success: true, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil, phone_with_camera: nil, fraud_review_pending: false, fraud_rejection: false, gpo_verification_pending: false, in_person_verification_pending: true, deactivation_reason: nil,
         proofing_components: { document_check: 'usps', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
       },
       'IdV: final resolution' => {
-        success: true, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil, fraud_review_pending: false, fraud_rejection: false, gpo_verification_pending: false, in_person_verification_pending: true, deactivation_reason: nil,
+        success: true, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil, phone_with_camera: nil, fraud_review_pending: false, fraud_rejection: false, gpo_verification_pending: false, in_person_verification_pending: true, deactivation_reason: nil,
         proofing_components: { document_check: 'usps', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
       },
       'IdV: personal key visited' => {
