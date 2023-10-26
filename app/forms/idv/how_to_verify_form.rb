@@ -2,7 +2,7 @@ module Idv
   class HowToVerifyForm
     include ActiveModel::Model
 
-    def submit(params)
+    def submit(_params)
       FormResponse.new(success: valid?, errors: errors)
     end
   end

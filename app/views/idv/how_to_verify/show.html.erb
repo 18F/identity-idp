@@ -4,11 +4,11 @@
 <p><%= t('doc_auth.info.how_to_verify') %></p>
 
 <%= simple_form_for(
-    @idv_how_to_verify_form,
-    html: { autocomplete: 'off' },
-    method: :put,
-    url: idv_how_to_verify_url,
-  ) do |f|
+      @idv_how_to_verify_form,
+      html: { autocomplete: 'off' },
+      method: :put,
+      url: idv_how_to_verify_url,
+    ) do |f|
 %>
   <div role="group" aria-label="<%= t('doc_auth.headings.how_to_verify') %>">
     <%= radio_button_tag(
@@ -18,7 +18,7 @@
           class: 'usa-radio__input usa-radio__input--tile',
         ) %>
     <%= label_tag(
-          "idv_how_to_verify_form_selection_#{'remote'}",
+          'idv_how_to_verify_form_selection_remote',
           class: 'usa-radio__label usa-radio__label--illustrated',
         ) do %>
           <%= image_tag asset_url('idv/remote.svg'), class: 'usa-radio__image position-absolute left-2', style: 'top: 50px; width: 88px', alt: t('image_description.camera_mobile_phone') %>
@@ -28,13 +28,14 @@
             </span>
             <p class="text-gray-70"><%= t('doc_auth.headings.verify_online') %></p>
             <span class="usa-radio__label-description">
-              <%= t('doc_auth.info.verify_online_html',
-              help_url:
-                MarketingSite.help_center_article_url(
-                  category: 'verify-your-identity',
-                  article: 'how-to-verify-your-identity',
-                )
-              ) %>
+              <%= t(
+                    'doc_auth.info.verify_online_html',
+                    help_url:
+                      MarketingSite.help_center_article_url(
+                        category: 'verify-your-identity',
+                        article: 'how-to-verify-your-identity',
+                      ),
+                  ) %>
             </span>
           </div>
         <% end %>
@@ -45,19 +46,20 @@
           class: 'usa-radio__input usa-radio__input--tile',
         ) %>
     <%= label_tag(
-          "idv_how_to_verify_form_selection_#{'ipp'}",
+          'idv_how_to_verify_form_selection_ipp',
           class: 'usa-radio__label usa-radio__label--illustrated',
         ) do %>
           <%= image_tag asset_url('idv/in-person.svg'), class: 'usa-radio__image position-absolute left-2', style: 'top: 50px; width: 88px', alt: t('image_description.camera_mobile_phone') %>
           <div class="usa-radio__label--text margin-left-6">
             <p class="text-gray-70"><%= t('doc_auth.headings.verify_at_post_office') %></p>
             <span class="usa-radio__label-description">
-              <%= t('doc_auth.info.verify_at_post_office_html', help_url:
+              <%= t(
+                    'doc_auth.info.verify_at_post_office_html', help_url:
                 MarketingSite.help_center_article_url(
                   category: 'verify-your-identity',
                   article: 'verify-your-identity-in-person',
                 )
-              ) %>
+                  ) %>
             </span>
           </div>
         <% end %>
