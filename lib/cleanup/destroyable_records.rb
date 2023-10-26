@@ -27,8 +27,8 @@ class DestroyableRecords
     stdout.puts '********'
     stdout.puts 'Integration:'
     if integration.nil?
-     stdout.puts "No associated integration"
-    else 
+      stdout.puts 'No associated integration'
+    else
       stdout.puts integration.attributes.to_yaml
     end
     stdout.puts "\n"
@@ -47,11 +47,11 @@ class DestroyableRecords
     stdout.puts '*******'
     stdout.puts 'These are the IAA orders that will be affected: \n'
     if iaa_orders.nil?
-     stdout.puts "No IAA orders will be affected"
-    else 
+      stdout.puts 'No IAA orders will be affected'
+    else
       stdout.puts 'These are the IAA orders that will be affected: \n'
       iaa_orders.each do |iaa_order|
-         stdout.puts "#{iaa_order.iaa_gtc.gtc_number} Order #{iaa_order.order_number}"
+        stdout.puts "#{iaa_order.iaa_gtc.gtc_number} Order #{iaa_order.order_number}"
       end
     end
     stdout.puts "\n"
