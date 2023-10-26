@@ -99,7 +99,6 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
       state_id_number: '111111111',
       state_id_jurisdiction: 'ND',
       state_id_type: 'drivers_license',
-      Front: { ClassName: 'Tribal Identification' },
     )
     expect(get_results_response.attention_with_barcode?).to eq(false)
   end
@@ -133,6 +132,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
     expect(errors[:front]).to contain_exactly(DocAuth::Errors::CARD_TYPE)
     expect(errors[:back]).to contain_exactly(DocAuth::Errors::CARD_TYPE)
     expect(errors[:hints]).to eq(true)
+    expect(get_results_response.extra[:classification_info]).to include(:Front, :Back)
   end
   it 'allows responses to be mocked' do
     described_class.mock_response!(method: :create_document, response: 'Create doc test')

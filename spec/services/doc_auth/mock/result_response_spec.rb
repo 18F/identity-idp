@@ -301,6 +301,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.extra).to eq(
         doc_auth_result: DocAuth::Acuant::ResultCodes::PASSED.name,
         billed: true,
+        classification_info: {},
       )
     end
   end
@@ -327,6 +328,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.extra).to eq(
         doc_auth_result: DocAuth::Acuant::ResultCodes::CAUTION.name,
         billed: true,
+        classification_info: {},
       )
     end
   end
@@ -351,6 +353,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.extra).to eq(
         doc_auth_result: DocAuth::Acuant::ResultCodes::FAILED.name,
         billed: true,
+        classification_info: {},
       )
     end
   end
@@ -396,6 +399,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.extra).to eq(
         doc_auth_result: DocAuth::Acuant::ResultCodes::PASSED.name,
         billed: true,
+        classification_info: {},
       )
     end
   end
