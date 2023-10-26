@@ -14,9 +14,9 @@ RSpec.describe Idv::AgreementController do
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 
-  describe '#navigation_step' do
+  describe '#step_info' do
     it 'returns a valid StepInfo object' do
-      expect(Idv::AgreementController.navigation_step).to be_valid
+      expect(Idv::AgreementController.step_info).to be_valid
     end
   end
 

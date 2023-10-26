@@ -42,9 +42,9 @@ RSpec.describe Idv::PersonalKeyController do
     stub_analytics
   end
 
-  describe '#navigation_step' do
+  describe '#step_info' do
     it 'returns a valid StepInfo object' do
-      expect(Idv::PersonalKeyController.navigation_step).to be_valid
+      expect(Idv::PersonalKeyController.step_info).to be_valid
     end
   end
 

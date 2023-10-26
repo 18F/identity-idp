@@ -81,7 +81,7 @@ module Idv
       :get_a_letter
     end
 
-    def self.navigation_step
+    def self.step_info
       Idv::StepInfo.new(
         key: :enter_password,
         controller: controller_name,

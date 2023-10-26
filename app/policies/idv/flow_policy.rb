@@ -40,12 +40,12 @@ module Idv
           next_steps: [:welcome],
           preconditions: ->(idv_session:, user:) { true },
         ),
-        welcome: Idv::WelcomeController.navigation_step,
-        agreement: Idv::AgreementController.navigation_step,
-        phone_question: Idv::PhoneQuestionController.navigation_step,
-        hybrid_handoff: Idv::HybridHandoffController.navigation_step,
-        link_sent: Idv::LinkSentController.navigation_step,
-        document_capture: Idv::DocumentCaptureController.navigation_step,
+        welcome: Idv::WelcomeController.step_info,
+        agreement: Idv::AgreementController.step_info,
+        phone_question: Idv::PhoneQuestionController.step_info,
+        hybrid_handoff: Idv::HybridHandoffController.step_info,
+        link_sent: Idv::LinkSentController.step_info,
+        document_capture: Idv::DocumentCaptureController.step_info,
       }
     end
 

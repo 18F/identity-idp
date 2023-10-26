@@ -34,7 +34,7 @@ module Idv
       redirect_to idv_document_capture_url
     end
 
-    def self.navigation_step
+    def self.step_info
       Idv::StepInfo.new(
         key: :phone_question,
         controller: controller_name,

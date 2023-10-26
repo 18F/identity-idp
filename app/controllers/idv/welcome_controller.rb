@@ -33,7 +33,7 @@ module Idv
       redirect_to idv_agreement_url
     end
 
-    def self.navigation_step
+    def self.step_info
       Idv::StepInfo.new(
         key: :welcome,
         controller: controller_name,

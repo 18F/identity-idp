@@ -39,7 +39,7 @@ module Idv
       )
     end
 
-    def self.navigation_step
+    def self.step_info
       Idv::StepInfo.new(
         key: :link_sent,
         controller: controller_name,

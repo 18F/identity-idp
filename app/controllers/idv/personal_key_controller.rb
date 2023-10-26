@@ -34,7 +34,7 @@ module Idv
       redirect_to next_step
     end
 
-    def self.navigation_step
+    def self.step_info
       Idv::StepInfo.new(
         key: :personal_key,
         controller: controller_name,

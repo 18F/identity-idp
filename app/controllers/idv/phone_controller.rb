@@ -59,7 +59,7 @@ module Idv
       end
     end
 
-    def self.navigation_step
+    def self.step_info
       Idv::StepInfo.new(
         key: :phone,
         controller: controller_name,
