@@ -18,6 +18,8 @@ module Idv
       steps[latest_step]
     end
 
+    private
+
     def latest_step(current_step: :root)
       return nil if steps[current_step]&.next_steps.blank?
       return current_step if steps[current_step].next_steps == [:success]
@@ -29,8 +31,6 @@ module Idv
       end
       current_step
     end
-
-    private
 
     def steps
       {
