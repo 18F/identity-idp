@@ -90,6 +90,12 @@ RSpec.describe Idv::PhoneQuestionController do
 
         expect(response).to redirect_to(idv_agreement_url)
       end
+
+      it 'phone_with_camera not set in idv_session' do
+        get :phone_with_camera
+
+        expect(subject.idv_session.phone_with_camera).to be_nil
+      end
     end
 
     context 'confirm_hybrid_handoff_needed before action' do
@@ -147,7 +153,12 @@ RSpec.describe Idv::PhoneQuestionController do
       get :phone_with_camera
 
       expect(@analytics).
-        to have_logged_event(analytics_name, analytics_args.merge!(phone_with_camera: true))
+        to have_logged_event(analytics_name, analytics_args)
+    end
+
+    it 'phone_with_camera set in idv_session' do
+      expect { get :phone_with_camera }.
+        to change { subject.idv_session.phone_with_camera }.from(nil).to true
     end
   end
 
@@ -164,12 +175,17 @@ RSpec.describe Idv::PhoneQuestionController do
       get :phone_without_camera
 
       expect(@analytics).
-        to have_logged_event(analytics_name, analytics_args.merge!(phone_with_camera: false))
+        to have_logged_event(analytics_name, analytics_args)
     end
 
     it 'set idv_session flow path to standard' do
       expect { get :phone_without_camera }.
         to change { subject.idv_session.flow_path }.from(nil).to 'standard'
+    end
+
+    it 'phone_with_camera set in idv_session' do
+      expect { get :phone_without_camera }.
+        to change { subject.idv_session.phone_with_camera }.from(nil).to false
     end
   end
 end
