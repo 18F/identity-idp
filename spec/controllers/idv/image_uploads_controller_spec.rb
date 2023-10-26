@@ -561,7 +561,10 @@ RSpec.describe Idv::ImageUploadsController do
               back_image_fingerprint: an_instance_of(String),
               getting_started_ab_test_bucket: :welcome_default,
               phone_question_ab_test_bucket: :bypass_phone_question,
-              classification_info: hash_including(:Front, :Back),
+              classification_info: hash_including(
+                Front: hash_including(ClassName: 'Identification Card', CountryCode: 'USA'),
+                Back: hash_including(ClassName: 'Identification Card', CountryCode: 'USA'),
+              ),
             )
 
             expect(@irs_attempts_api_tracker).to receive(:track_event).with(
