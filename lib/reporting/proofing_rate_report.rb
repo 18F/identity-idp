@@ -24,6 +24,16 @@ module Reporting
       @progress
     end
 
+    def proofing_rate_emailable_report
+      EmailableReport.new(
+        title: 'Proofing Rate Metrics',
+        float_as_percent: true,
+        precision: 2,
+        table: as_csv,
+        filename: 'proofing_rate_metrics',
+      )
+    end
+
     # rubocop:disable Layout/LineLength
     def as_csv
       csv = []
@@ -66,8 +76,7 @@ module Reporting
                 (end_date - slice_start.days).beginning_of_day,
                 (end_date - slice_end.days).beginning_of_day,
               ),
-              progress: false,
-              verbose: verbose?,
+              client: cloudwatch_client,
             ).tap(&:data)
           end
         end
@@ -118,6 +127,16 @@ module Reporting
           report.successfully_verified_users + report.idv_doc_auth_rejected
         )
       end
+    end
+
+    def cloudwatch_client
+      @cloudwatch_client ||= Reporting::CloudwatchClient.new(
+        num_threads: @threads,
+        ensure_complete_logs: true,
+        slice_interval: @slice,
+        progress: false,
+        logger: verbose? ? Logger.new(STDERR) : nil,
+      )
     end
   end
 end
