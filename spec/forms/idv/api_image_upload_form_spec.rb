@@ -289,7 +289,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           success: false,
           errors: { doc_pii: 'bad' },
           extra: {
-            pii_like_keypaths: [[:pii]],
+            pii_like_keypaths: pii_like_keypaths: [[:name, :dob, :dob_min_age, :address1, :state, :zipcode, :jurisdiction, :pii]], # see errors.add(:pii)#[[:pii]],
             attention_with_barcode: false,
           },
         )

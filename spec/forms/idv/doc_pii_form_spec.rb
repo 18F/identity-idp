@@ -99,7 +99,7 @@ RSpec.describe Idv::DocPiiForm do
         expect(result.errors).to be_empty
         expect(result.extra).to eq(
           attention_with_barcode: false,
-          pii_like_keypaths: [[:name, :dob, :dob_min_age, :address1, :state, :zipcode, :jurisdiction]],
+          pii_like_keypaths: [[:name, :dob, :dob_min_age, :address1, :state, :zipcode, :jurisdiction, :pii]],
         )
       end
     end
@@ -115,7 +115,7 @@ RSpec.describe Idv::DocPiiForm do
         expect(result.errors[:name]).to eq [t('doc_auth.errors.alerts.full_name_check')]
         expect(result.extra).to eq(
           attention_with_barcode: false,
-          pii_like_keypaths: [[:name, :dob, :dob_min_age, :address1, :state, :zipcode, :jurisdiction]],
+          pii_like_keypaths: [[:name, :dob, :dob_min_age, :address1, :state, :zipcode, :jurisdiction, :pii]],
         )
       end
     end
@@ -137,7 +137,7 @@ RSpec.describe Idv::DocPiiForm do
           )
         expect(result.extra).to eq(
           attention_with_barcode: false,
-          pii_like_keypaths: [[:name, :dob, :dob_min_age, :address1, :state, :zipcode, :jurisdiction]],
+          pii_like_keypaths: [[:name, :dob, :dob_min_age, :address1, :state, :zipcode, :jurisdiction, :pii]],
         )
       end
     end
@@ -155,7 +155,7 @@ RSpec.describe Idv::DocPiiForm do
         ]
         expect(result.extra).to eq(
           attention_with_barcode: false,
-          pii_like_keypaths: [[:name, :dob, :dob_min_age, :address1, :state, :zipcode, :jurisdiction]],
+          pii_like_keypaths: [[:name, :dob, :dob_min_age, :address1, :state, :zipcode, :jurisdiction, :pii]],
         )
       end
     end
@@ -173,7 +173,7 @@ RSpec.describe Idv::DocPiiForm do
         ]
         expect(result.extra).to eq(
           attention_with_barcode: false,
-          pii_like_keypaths: [[:name, :dob, :dob_min_age, :address1, :state, :zipcode, :jurisdiction]],
+          pii_like_keypaths: [[:name, :dob, :dob_min_age, :address1, :state, :zipcode, :jurisdiction, :pii]],
         )
       end
     end
@@ -191,7 +191,7 @@ RSpec.describe Idv::DocPiiForm do
         ]
         expect(result.extra).to eq(
           attention_with_barcode: false,
-          pii_like_keypaths: [[:name, :dob, :dob_min_age, :address1, :state, :zipcode, :jurisdiction]],
+          pii_like_keypaths: [[:name, :dob, :dob_min_age, :address1, :state, :zipcode, :jurisdiction, :pii]],
         )
       end
     end
@@ -217,7 +217,7 @@ RSpec.describe Idv::DocPiiForm do
         expect(result.errors[:address1]).to eq [t('doc_auth.errors.alerts.address_check')]
         expect(result.extra).to eq(
           attention_with_barcode: false,
-          pii_like_keypaths: [[:name, :dob, :dob_min_age, :address1, :state, :zipcode, :jurisdiction]],
+          pii_like_keypaths: [[:name, :dob, :dob_min_age, :address1, :state, :zipcode, :jurisdiction, :pii]],
         )
       end
     end

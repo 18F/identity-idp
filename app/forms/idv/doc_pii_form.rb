@@ -21,6 +21,7 @@ module Idv
       @address1 = pii[:address1]
       @state = pii[:state]
       @zipcode = pii[:zipcode]
+
       @jurisdiction = pii[:state_id_jurisdiction]
       @attention_with_barcode = attention_with_barcode
     end
@@ -29,8 +30,8 @@ module Idv
       response = Idv::DocAuthFormResponse.new(
         success: valid?,
         errors: errors,
-        extra: {
-          pii_like_keypaths: [[:name, :dob, :dob_min_age, :address1, :state, :zipcode, :jurisdiction]], # see errors.add(:pii)
+        extra: { # do we need pii_like_keypaths here?
+          pii_like_keypaths: pii_like_keypaths, #[[:name, :dob, :dob_min_age, :address1, :state, :zipcode, :jurisdiction, :pii]], # see errors.add(:pii)
           attention_with_barcode: attention_with_barcode?,
         },
       )
@@ -42,6 +43,16 @@ module Idv
 
     attr_reader :pii_from_doc
 
+    def pii_like_keypaths
+      p = []
+      fields = [:name, :dob, :dob_min_age, :address1, :state, :zipcode, :jurisdiction, :pii]
+      p << fields
+      fields.each do |k|
+        p << [:errors, k]
+        p << [:error_details, k]
+      end
+      p
+    end
     def name_valid?
       return if first_name.present? && last_name.present?
 
