@@ -36,6 +36,7 @@ module Idv
 
     def self.navigation_step
       Idv::StepInfo.new(
+        key: :phone_question,
         controller: controller_name,
         next_steps: [:hybrid_handoff, :document_capture],
         preconditions: ->(idv_session:, user:) do

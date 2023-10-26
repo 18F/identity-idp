@@ -83,6 +83,7 @@ module Idv
 
     def self.navigation_step
       Idv::StepInfo.new(
+        key: :enter_password,
         controller: controller_name,
         next_steps: [:personal_key],
         preconditions: ->(idv_session:, user:) do

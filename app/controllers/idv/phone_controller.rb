@@ -61,8 +61,9 @@ module Idv
 
     def self.navigation_step
       Idv::StepInfo.new(
+        key: :phone,
         controller: controller_name,
-        next_steps: [:phone_enter_otp],
+        next_steps: [:otp_verification],
         preconditions: ->(idv_session:, user:) { idv_session.verify_info_step_complete? },
       )
     end

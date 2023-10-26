@@ -8,6 +8,7 @@ RSpec.describe 'Idv::StepInfo' do
   let(:preconditions) { ->(idv_session:, user:) { true } }
   subject do
     Idv::StepInfo.new(
+      key: :my_key,
       controller: controller,
       next_steps: next_steps,
       preconditions: preconditions,

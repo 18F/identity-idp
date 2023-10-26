@@ -37,6 +37,7 @@ module Idv
 
     def self.navigation_step
       Idv::StepInfo.new(
+        key: :hybrid_handoff,
         controller: controller_name,
         next_steps: [:link_sent, :document_capture],
         preconditions: ->(idv_session:, user:) { idv_session.idv_consent_given },

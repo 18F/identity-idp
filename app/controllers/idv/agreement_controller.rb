@@ -40,6 +40,7 @@ module Idv
 
     def self.navigation_step
       Idv::StepInfo.new(
+        key: :agreement,
         controller: controller_name,
         next_steps: [:hybrid_handoff, :document_capture, :phone_question],
         preconditions: ->(idv_session:, user:) { idv_session.welcome_visited },

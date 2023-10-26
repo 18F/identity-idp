@@ -35,6 +35,7 @@ module Idv
     def steps
       {
         root: Idv::StepInfo.new(
+          key: :root,
           controller: AccountsController.controller_name,
           next_steps: [:welcome],
           preconditions: ->(idv_session:, user:) { true },

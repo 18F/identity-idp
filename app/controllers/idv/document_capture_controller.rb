@@ -55,6 +55,7 @@ module Idv
 
     def self.navigation_step
       Idv::StepInfo.new(
+        key: :document_capture,
         controller: controller_name,
         next_steps: [:success], # [:ssn],
         preconditions: ->(idv_session:, user:) { idv_session.flow_path == 'standard' },

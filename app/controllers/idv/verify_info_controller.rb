@@ -37,6 +37,7 @@ module Idv
 
     def self.navigation_step
       Idv::StepInfo.new(
+        key: :verify_info,
         controller: controller_name,
         next_steps: [:phone],
         preconditions: ->(idv_session:, user:) do

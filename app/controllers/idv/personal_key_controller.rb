@@ -36,6 +36,7 @@ module Idv
 
     def self.navigation_step
       Idv::StepInfo.new(
+        key: :personal_key,
         controller: controller_name,
         next_steps: [:success],
         preconditions: ->(idv_session:, user:) { user.identity_verified? },

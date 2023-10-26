@@ -4,13 +4,14 @@ module Idv
   class StepInfo
     include ActiveModel::Validations
 
-    attr_reader :controller, :action, :next_steps, :preconditions
+    attr_reader :key, :controller, :action, :next_steps, :preconditions
 
     # validates :controller, presence: true
     # validates :action, presence: true
     validate :next_steps_validation, :preconditions_validation
 
-    def initialize(controller:, next_steps:, preconditions:, action: :show)
+    def initialize(key:, controller:, next_steps:, preconditions:, action: :show)
+      @key = key
       @controller = controller
       @action = action
       @next_steps = next_steps
