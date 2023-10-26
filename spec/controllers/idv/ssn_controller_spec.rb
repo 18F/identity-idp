@@ -19,6 +19,12 @@ RSpec.describe Idv::SsnController do
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 
+  describe '#navigation_step' do
+    it 'returns a valid StepInfo object' do
+      expect(Idv::SsnController.navigation_step).to be_valid
+    end
+  end
+
   describe 'before_actions' do
     it 'includes authentication before_action' do
       expect(subject).to have_actions(
