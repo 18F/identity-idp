@@ -127,22 +127,6 @@ module DocAuth
           !!doc_auth_result
         end
 
-        def classification_info
-          # Acuant response has both sides info, here simulate that
-          doc_class = doc_class_name
-          issuing_country = pii_from_doc[:issuing_country_code]
-          {
-            Front: {
-              ClassName: doc_class,
-              CountryCode: issuing_country,
-            },
-            Back: {
-              ClassName: doc_class,
-              CountryCode: issuing_country,
-            },
-          }
-        end
-
         private
 
         def response_info
@@ -203,6 +187,22 @@ module DocAuth
 
         def doc_class_name
           true_id_product&.dig(:AUTHENTICATION_RESULT, :DocClassName)
+        end
+
+        def classification_info
+          # Acuent response has both sides info, here simulate that
+          doc_class = doc_class_name
+          issuing_country = pii_from_doc[:issuing_country_code]
+          {
+            Front: {
+              ClassName: doc_class,
+              CountryCode: issuing_country,
+            },
+            Back: {
+              ClassName: doc_class,
+              CountryCode: issuing_country,
+            },
+          }
         end
 
         def doc_auth_result

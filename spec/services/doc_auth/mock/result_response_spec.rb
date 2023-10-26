@@ -554,12 +554,14 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       YAML
     end
     it 'successfully extracts classification info' do
-      front = response.pii_from_doc[:Front]
-      back = response.pii_from_doc[:Back]
-      expect(front[:ClassName]).to eq('Drivers License')
-      expect(front[:CountryCode]).to eq('USA')
-      expect(back[:ClassName]).to eq('Drivers License')
-      expect(back[:CountryCode]).to eq('USA')
+      classification_info = response.extra[:classification_info].deep_symbolize_keys
+      expect(classification_info).to eq(
+        {
+          Front: { ClassName: 'Drivers License',
+                   CountryCode: 'USA' },
+          Back: { ClassName: 'Drivers License', CountryCode: 'USA' },
+        },
+      )
     end
   end
 end

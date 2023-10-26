@@ -111,12 +111,11 @@ module Idv
         attention_with_barcode: client_response.attention_with_barcode?,
       ).submit
       response.extra.merge!(extra_attributes)
-      binding.pry
-      doc_type_and_issuing_country = doc_type_and_issuing_country(client_response.classification_info)
-      response_with_doc_type_and_issuing_country =
-        response.to_h.merge!(doc_type_and_issuing_country)
+      side_classification = doc_side_classification(client_response)
+      response_with_classification =
+        response.to_h.merge(side_classification)
 
-      analytics.idv_doc_auth_submitted_pii_validation(**response_with_doc_type_and_issuing_country)
+      analytics.idv_doc_auth_submitted_pii_validation(**response_with_classification)
 
       if client_response.success? && response.success?
         store_pii(client_response)
@@ -125,17 +124,11 @@ module Idv
       response
     end
 
-    def doc_type_and_issuing_country(classification_info)
-      front_issuing_country = classification_info&.dig(:Front, :CountryCode)
-      back_issuing_country = classification_info&.dig(:Back, :CountryCode)
-      front_doc_type = classification_info&.dig(:Front, :ClassName)
-      back_doc_type = classification_info&.dig(:Back, :ClassName)
-
+    def doc_side_classification(client_response)
+      side_info = {}.merge(client_response&.extra&.[](:classification_info) || {})
+      side_info.transform_keys(&:downcase).symbolize_keys
       {
-        front_issuing_country: front_issuing_country,
-        back_issuing_country: back_issuing_country,
-        front_doc_type: front_doc_type,
-        back_doc_type: back_doc_type,
+        classification_info: side_info,
       }
     end
 
@@ -308,7 +301,8 @@ module Idv
           async: false,
           flow_path: params[:flow_path],
           vendor_request_time_in_ms: vendor_request_time_in_ms,
-        ).merge(acuant_sdk_upgrade_ab_test_data).
+        ).except(:classification_info).
+        merge(acuant_sdk_upgrade_ab_test_data).
         merge(getting_started_ab_test_analytics_bucket).
         merge(phone_question_ab_test_analytics_bucket),
       )
