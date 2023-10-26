@@ -29,7 +29,7 @@ RSpec.feature 'idv enter letter code step' do
       and_return(threatmetrix_enabled ? :enabled : :disabled)
   end
 
-  it_behaves_like 'gpo otp verification'
+  it_behaves_like 'verification code entry'
 
   context 'ThreatMetrix disabled, but we have ThreatMetrix status on proofing component' do
     let(:threatmetrix_enabled) { false }
@@ -41,14 +41,14 @@ RSpec.feature 'idv enter letter code step' do
         fraud_pending_reason: 'threatmetrix_review',
       )
     end
-    it_behaves_like 'gpo otp verification'
+    it_behaves_like 'verification code entry'
   end
 
   context 'ThreatMetrix enabled' do
     let(:threatmetrix_enabled) { true }
 
     context 'ThreatMetrix says "pass"' do
-      it_behaves_like 'gpo otp verification'
+      it_behaves_like 'verification code entry'
     end
 
     context 'ThreatMetrix says "review"' do
@@ -61,7 +61,7 @@ RSpec.feature 'idv enter letter code step' do
           fraud_pending_reason: 'threatmetrix_review',
         )
       end
-      it_behaves_like 'gpo otp verification'
+      it_behaves_like 'verification code entry'
     end
 
     context 'ThreatMetrix says "reject"' do
@@ -74,11 +74,11 @@ RSpec.feature 'idv enter letter code step' do
           fraud_pending_reason: 'threatmetrix_reject',
         )
       end
-      it_behaves_like 'gpo otp verification'
+      it_behaves_like 'verification code entry'
     end
 
     context 'No ThreatMetrix result on proofing component' do
-      it_behaves_like 'gpo otp verification'
+      it_behaves_like 'verification code entry'
     end
   end
 
