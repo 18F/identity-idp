@@ -45,6 +45,14 @@ module Users
         end
       end
 
+      if result.errors.present?
+        analytics.webauthn_setup_submitted(
+          platform_authenticator: form.platform_authenticator?,
+          errors: result.errors,
+          success: false,
+        )
+      end
+
       flash_error(result.errors) unless result.success?
     end
 
@@ -201,12 +209,6 @@ module Users
           link_html: t('errors.webauthn_setup.additional_methods_link'),
         )
       end
-
-      analytics.webauthn_setup_submitted(
-        platform_authenticator: form.platform_authenticator?,
-        errors: result.errors,
-        success: false,
-      )
       render :new
     end
 
