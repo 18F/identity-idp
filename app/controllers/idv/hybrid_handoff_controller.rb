@@ -44,8 +44,6 @@ module Idv
       )
     end
 
-    # private
-
     def handle_phone_submission
       return rate_limited_failure if rate_limiter.limited?
       rate_limiter.increment!

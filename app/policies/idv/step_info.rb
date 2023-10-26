@@ -1,13 +1,11 @@
-# frozen_string_literal: true
-
 module Idv
   class StepInfo
     include ActiveModel::Validations
 
     attr_reader :key, :controller, :action, :next_steps, :preconditions
 
-    # validates :controller, presence: true
-    # validates :action, presence: true
+    validates :controller, presence: true
+    validates :action, presence: true
     validate :next_steps_validation, :preconditions_validation
 
     def initialize(key:, controller:, next_steps:, preconditions:, action: :show)

@@ -1,5 +1,3 @@
-# require 'policies/idv/flow_policy'
-
 module IdvStepConcern
   extend ActiveSupport::Concern
 
