@@ -26,7 +26,7 @@ RSpec.describe DocAuth::Acuant::Requests::GetResultsRequest do
     it 'get general error for 4xx' do
       stub_request(:get, url).to_return(status: 440)
       response = described_class.new(config: config, instance_id: instance_id).fetch
-      expect(response.errors).to have_key(:general)
+      expect(response.errors).to include(:general, :front, :back)
       expect(response.network_error?).to eq(false)
     end
 

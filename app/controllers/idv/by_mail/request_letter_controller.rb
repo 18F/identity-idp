@@ -34,7 +34,7 @@ module Idv
           flash[:success] = t('idv.messages.gpo.another_letter_on_the_way')
           redirect_to idv_letter_enqueued_url
         else
-          redirect_to idv_review_url
+          redirect_to idv_enter_password_url
         end
       end
 
@@ -83,7 +83,7 @@ module Idv
       end
 
       def confirm_mail_not_spammed
-        redirect_to idv_review_url if gpo_mail_service.mail_spammed?
+        redirect_to idv_enter_password_url if gpo_mail_service.mail_spammed?
       end
 
       def confirm_user_completed_idv_profile_step

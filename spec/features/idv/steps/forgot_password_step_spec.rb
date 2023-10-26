@@ -19,7 +19,7 @@ RSpec.feature 'forgot password step', :js do
     click_link t('idv.forgot_password.link_text')
     click_link t('idv.forgot_password.try_again')
 
-    expect(page.current_path).to eq(idv_review_path)
+    expect(page.current_path).to eq(idv_enter_password_path)
   end
 
   it 'allows the user to reset their password' do

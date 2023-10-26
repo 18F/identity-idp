@@ -203,6 +203,30 @@ RSpec.feature 'idv enter letter code step' do
     end
   end
 
+  context 'when the letter is too old' do
+    let(:code_sent_at) { (IdentityConfig.store.usps_confirmation_max_days + 1).days.ago }
+
+    before do
+      user.gpo_verification_pending_profile.update(
+        created_at: code_sent_at,
+        updated_at: code_sent_at,
+      )
+
+      gpo_confirmation_code.update(
+        code_sent_at: code_sent_at,
+        created_at: code_sent_at,
+        updated_at: code_sent_at,
+      )
+
+      sign_in_live_with_2fa(user)
+    end
+
+    it 'shows a warning message and does not allow the user to request another letter' do
+      verify_spam_warning_banner_present(code_sent_at)
+      expect(page).not_to have_content t('idv.messages.gpo.resend')
+    end
+  end
+
   def verify_no_spam_warning_banner
     expect(page).not_to have_content(
       t(

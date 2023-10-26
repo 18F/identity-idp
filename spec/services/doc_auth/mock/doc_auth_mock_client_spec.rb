@@ -218,7 +218,10 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
       )
       expect(response).to be_a(DocAuth::Response)
       expect(response.success?).to eq(false)
-      expect(response.errors).to eq(general: [DocAuth::Errors::IMAGE_SIZE_FAILURE])
+      expect(response.errors).to eq(
+        { general: [DocAuth::Errors::IMAGE_SIZE_FAILURE],
+          front: [DocAuth::Errors::IMAGE_SIZE_FAILURE_FIELD] },
+      )
     end
   end
 end

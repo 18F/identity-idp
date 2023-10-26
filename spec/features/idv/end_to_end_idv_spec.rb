@@ -254,7 +254,7 @@ RSpec.describe 'Identity verification', :js do
   end
 
   def validate_enter_password_page
-    expect(page).to have_current_path(idv_review_path)
+    expect(page).to have_current_path(idv_enter_password_path)
     expect(page).to have_content(t('idv.messages.enter_password.message', app_name: APP_NAME))
     expect(page).to have_content(t('idv.messages.enter_password.phone_verified'))
 
@@ -262,7 +262,7 @@ RSpec.describe 'Identity verification', :js do
     fill_in 'Password', with: 'this is not the right password'
     click_idv_continue
     expect(page).to have_content(t('idv.errors.incorrect_password'))
-    expect(page).to have_current_path(idv_review_path)
+    expect(page).to have_current_path(idv_enter_password_path)
   end
 
   def validate_enter_password_submit(user)
@@ -308,7 +308,7 @@ RSpec.describe 'Identity verification', :js do
   end
 
   def try_to_skip_ahead_before_signing_in
-    visit idv_review_path
+    visit idv_enter_password_path
     expect(current_path).to eq(root_path)
   end
 
@@ -336,7 +336,7 @@ RSpec.describe 'Identity verification', :js do
   end
 
   def try_to_skip_ahead_from_phone
-    visit idv_review_path
+    visit idv_enter_password_path
     expect(page).to have_current_path(idv_phone_path)
   end
 

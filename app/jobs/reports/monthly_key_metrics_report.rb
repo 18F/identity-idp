@@ -29,15 +29,28 @@ module Reports
         email: email_addresses,
         subject: "Monthly Key Metrics Report - #{date}",
         reports: reports,
+        message: preamble,
         attachment_format: :xlsx,
       ).deliver_now
+    end
+
+    # Explanatory text to go before the report in the email
+    # @return [String]
+    def preamble
+      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
+        <p>
+          For more information on how each of these metrics are calculated, take a look at our
+          <a href="https://handbook.login.gov/articles/monthly-key-metrics-explainer.html">
+          Monthly Key Metrics Report Explainer document</a>.
+        </p>
+      HTML
     end
 
     def reports
       @reports ||= [
         # Number of verified users (total) - LG-11148
         # Number of verified users (new) - LG-11164
-        monthly_active_users_count_report.monthly_active_users_count_emailable_report,
+        active_users_count_report.active_users_count_emailable_report,
         # Total Annual Users - LG-11150
         total_user_count_report.total_user_count_emailable_report,
         # Proofing rate(s) (tbd on this one pager) - LG-11152
@@ -59,6 +72,7 @@ module Reports
       emails = [IdentityConfig.store.team_agnes_email]
       if report_date.day == 1
         emails << IdentityConfig.store.team_all_feds_email
+        emails << IdentityConfig.store.team_all_contractors_email
       end
       emails
     end
@@ -91,7 +105,13 @@ module Reports
     def monthly_active_users_count_report
       @monthly_active_users_count_report ||= Reporting::MonthlyActiveUsersCountReport.new(
         report_date,
-      )
+        )
+    end
+
+    def active_users_count_report
+      @active_users_count_report ||= Reporting::ActiveUsersCountReport.new(
+        report_date,
+        )
     end
 
     def upload_to_s3(report_body, report_name: nil)

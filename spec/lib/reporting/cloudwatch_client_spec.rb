@@ -233,6 +233,9 @@ RSpec.describe Reporting::CloudwatchClient do
             ),
           },
         }
+
+        # override Zonebie
+        allow(Time).to receive(:zone).and_return(nil)
       end
 
       it 'logs a warning and returns an empty array for that range' do

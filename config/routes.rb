@@ -369,6 +369,7 @@ Rails.application.routes.draw do
       get '/cancel/' => 'cancellations#new', as: :cancel
       put '/cancel' => 'cancellations#update'
       delete '/cancel' => 'cancellations#destroy'
+      get '/exit' => 'cancellations#exit', as: :exit
       get '/address' => 'address#new'
       post '/address' => 'address#update'
       get '/capture_doc' => 'hybrid_mobile/entry#show'

@@ -16,7 +16,7 @@ class ReportMailerPreview < ActionMailer::Preview
     ReportMailer.tables_report(
       email: 'test@example.com',
       subject: 'Example Key Metrics Report',
-      message: 'Key Metrics Report February 2021',
+      message: monthly_key_metrics_report.preamble,
       attachment_format: :xlsx,
       reports: monthly_key_metrics_report.reports,
     )
