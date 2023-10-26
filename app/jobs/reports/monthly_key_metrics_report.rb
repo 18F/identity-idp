@@ -1,5 +1,6 @@
 require 'csv'
 require 'reporting/monthly_proofing_report'
+require 'reporting/proofing_rate_report'
 
 module Reports
   class MonthlyKeyMetricsReport < BaseReport
@@ -53,7 +54,7 @@ module Reports
         active_users_count_report.active_users_count_emailable_report,
         # Total Annual Users - LG-11150
         total_user_count_report.total_user_count_emailable_report,
-        # Proofing rate(s) (tbd on this one pager) - LG-11152
+        proofing_rate_report.proofing_rate_emailable_report,
         account_deletion_rate_report.account_deletion_emailable_report,
         account_reuse_report.account_reuse_emailable_report,
         account_reuse_report.total_identities_emailable_report,
@@ -74,6 +75,10 @@ module Reports
         emails << IdentityConfig.store.team_all_contractors_email
       end
       emails
+    end
+
+    def proofing_rate_report
+      @proofing_rate_report ||= Reporting::ProofingRateReport.new(end_date: report_date)
     end
 
     def account_reuse_report
