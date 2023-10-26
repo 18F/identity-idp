@@ -80,7 +80,7 @@ module Users
       if result.success?
         process_valid_webauthn(form)
       else
-        process_invalid_webauthn(form, result)
+        process_invalid_webauthn(form)
       end
     end
 
@@ -194,7 +194,7 @@ module Users
       in_multi_mfa_selection_flow? && mfa_selection_count < 2
     end
 
-    def process_invalid_webauthn(form, result)
+    def process_invalid_webauthn(form)
       if form.name_taken
         if form.platform_authenticator?
           flash.now[:error] = t('errors.webauthn_platform_setup.unique_name')
