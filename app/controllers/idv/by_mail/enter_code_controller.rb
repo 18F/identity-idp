@@ -119,6 +119,7 @@ module Idv
         )
       end
 
+      # REMEMBER TO REMOVE
       def render_rate_limited
         irs_attempts_api_tracker.idv_gpo_verification_rate_limited
         analytics.rate_limit_reached(
