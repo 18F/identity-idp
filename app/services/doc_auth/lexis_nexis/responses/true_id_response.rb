@@ -3,7 +3,7 @@
 module DocAuth
   module LexisNexis
     module Responses
-      class TrueIdResponse < LexisNexisResponse
+      class TrueIdResponse < DocAuth::Response
         include ClassificationConcern
         PII_EXCLUDES = %w[
           Age
@@ -42,12 +42,26 @@ module DocAuth
           'Fields_DocumentClassName' => :state_id_type,
           'Fields_CountryCode' => :issuing_country_code,
         }.freeze
-        attr_reader :config
+        attr_reader :config, :http_response
 
         def initialize(http_response, config)
           @config = config
+          @http_response = http_response
 
-          super http_response
+          super(
+            success: successful_result?,
+            errors: error_messages,
+            extra: extra_attributes,
+            pii_from_doc: pii_from_doc,
+          )
+        rescue StandardError => e
+          NewRelic::Agent.notice_error(e)
+          super(
+            success: false,
+            errors: { network: true },
+            exception: e,
+            extra: { backtrace: e.backtrace },
+          )
         end
 
         def successful_result?
@@ -128,6 +142,54 @@ module DocAuth
         end
 
         private
+
+        def conversation_id
+          @conversation_id ||= parsed_response_body.dig(:Status, :ConversationId)
+        end
+
+        def parsed_response_body
+          @parsed_response_body ||= JSON.parse(http_response.body).with_indifferent_access
+        end
+
+        def transaction_status
+          parsed_response_body.dig(:Status, :TransactionStatus)
+        end
+
+        def transaction_status_passed?
+          transaction_status == 'passed'
+        end
+
+        def transaction_reason_code
+          @transaction_reason_code ||=
+            parsed_response_body.dig(:Status, :TransactionReasonCode, :Code)
+        end
+
+        def reference
+          @reference ||= parsed_response_body.dig(:Status, :Reference)
+        end
+
+        def products
+          @products ||=
+            parsed_response_body.dig(:Products)&.each_with_object({}) do |product, product_list|
+              extract_details(product)
+              product_list[product[:ProductType]] = product
+            end&.with_indifferent_access
+        end
+
+        def extract_details(product)
+          return unless product[:ParameterDetails]
+
+          product[:ParameterDetails].each do |detail|
+            group = detail[:Group]
+            detail_name = detail[:Name]
+            is_region = detail_name.end_with?('Regions', 'Regions_Reference')
+            value = is_region ? detail[:Values].map { |v| v[:Value] } :
+                      detail.dig(:Values, 0, :Value)
+            product[group] ||= {}
+
+            product[group][detail_name] = value
+          end
+        end
 
         def response_info
           @response_info ||= create_response_info
