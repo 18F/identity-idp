@@ -155,6 +155,8 @@ en:
       upload_from_computer: Continue on this computer
       upload_from_phone: Use your phone to take photos
       verify_identity: Verify your identity
+      verify_online: Verify your identity online
+      verify_at_post_office: Verify your identity at a post office
       welcome: Get started verifying your identity
     hybrid_flow_warning:
       explanation_html: You’re using <strong>%{app_name}</strong> to verify your
@@ -211,6 +213,18 @@ en:
         camera and a web browser.
       verify_identity: We’ll ask for your personal information to verify your identity
         against public records.
+      verify_online_html:
+        <p>You’ll take photos of your ID to verify your identity fully online. Most users finish this process in one sitting.</p>
+        <p>
+        This option is better if you have a mobile device or a way to take photos of your ID. Learn more about verifying online.
+        <a href="%{help_url}" target="_blank">Learn more about verifying online.</a>
+        </p>
+      verify_at_post_office_html:
+        <p>You’ll enter your ID information online, and verify your identity in person at a participating Post Office.</p>
+        <p>
+        This option is better if you don't have a mobile device or an easy way to take photos of your ID. Learn more about verifying in person.
+        <a href="%{help_url}" target="_blank">Learn more about verifying in person.</a>
+        </p>
       welcome: '%{sp_name} needs to make sure you are you — not someone pretending to
         be you.'
       you_entered: 'You entered:'
@@ -249,3 +263,4 @@ en:
       review_issues_id_text2: Did you take the photo on a flat surface?
       review_issues_id_text3: Is the flash on your camera off?
       review_issues_id_text4: Are all details sharp and clearly visible?
+      most_common: Most Common
