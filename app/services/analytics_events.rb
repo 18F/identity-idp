@@ -525,15 +525,6 @@ module AnalyticsEvents
   end
 
   # @param [Boolean] success
-  # The Acuant SDK was loaded
-  def idv_acuant_sdk_loaded(success:, **_extra)
-    track_event(
-      'Frontend: IdV: Acuant SDK loaded', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
-      success: success,
-    )
-  end
-
-  # @param [Boolean] success
   # @param [Hash] errors
   # @param [String] exception
   # @param [String] profile_fraud_review_pending_at
@@ -583,6 +574,15 @@ module AnalyticsEvents
   # @param [String] stack
   def frontend_error(name:, message:, stack: nil, **_extra)
     track_event('Frontend Error', name:, message:, stack:) # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
+  end
+
+  # @param [Boolean] success
+  # The Acuant SDK was loaded
+  def idv_acuant_sdk_loaded(success:, **_extra)
+    track_event(
+      'Frontend: IdV: Acuant SDK loaded', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
+      success: success,
+    )
   end
 
   # @param [Boolean] success
