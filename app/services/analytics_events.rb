@@ -1069,6 +1069,15 @@ module AnalyticsEvents
     )
   end
 
+  # @param [Array] ids ID Types the user has checked whether they have
+  # Exit survey of optional questions when the user leaves document capture
+  def idv_exit_optional_questions(ids:, **_extra)
+    track_event(
+      'Frontend: IdV: exit optional questions', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
+      ids: ids,
+    )
+  end
+
   # @param [Boolean] success
   # @param [String, nil] deactivation_reason Reason user's profile was deactivated, if any.
   # @param [Boolean] fraud_review_pending Profile is under review for fraud

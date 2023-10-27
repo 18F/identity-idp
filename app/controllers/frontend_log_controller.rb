@@ -20,6 +20,7 @@ class FrontendLogController < ApplicationController
     'IdV: Capture troubleshooting dismissed' => :idv_capture_troubleshooting_dismissed,
     'IdV: consent checkbox toggled' => :idv_consent_checkbox_toggled,
     'IdV: download personal key' => :idv_personal_key_downloaded,
+    'IdV: exit optional questions' => :idv_exit_optional_questions,
     'IdV: front image added' => :idv_front_image_added,
     'IdV: front image clicked' => :idv_front_image_clicked,
     'IdV: Image capture failed' => :idv_image_capture_failed,
