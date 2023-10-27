@@ -290,8 +290,8 @@ fr:
         être équipé d’un appareil photo et d’un navigateur web.
       verify_identity: Nous vous demanderons vos informations personnelles afin de
         vérifier votre identité par rapport aux registres publics.
-      verify_online_html: <p>
-        Vous prendrez des photos de votre pièce d'identité pour confirmer votre identité entièrement en ligne.</p>
+      verify_online_html:
+        <p>Vous prendrez des photos de votre pièce d'identité pour confirmer votre identité entièrement en ligne.</p>
         <p>La plupart des utilisateurs terminent ce processus en une seule fois.
         Cette option est préférable si vous disposez d'un appareil mobile ou d'un moyen de prendre des photos de votre pièce d'identité.
         <a href="%{help_url}" target="_blank">En savoir plus sur la confirmation en ligne.</a>

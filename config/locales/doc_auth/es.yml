@@ -287,7 +287,7 @@ es:
         La mayoría de los usuarios finalizan este proceso de una sola vez.
         Esta opción es mejor si tiene un dispositivo móvil o una forma de tomar fotografías de su identificación.
         <a href="%{help_url}" target="_blank">Obtenga más información sobre la verificación en línea.</a>
-        <p>
+        </p>
       verify_at_post_office_html:
         <p>Ingresará su información de identificación en línea y verificará tu identidad en persona en una Oficina de Correos participante.</p>
         <p>
