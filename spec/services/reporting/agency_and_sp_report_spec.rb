@@ -56,7 +56,7 @@ RSpec.describe Reporting::AgencyAndSpReport do
       end
 
       # Agencies don't have a sense of 'active' and are included.
-      it 'does not include them in the counts because they are not active' do
+      it 'includes the agency but not the inactive SP' do
         expect(subject).to match_array(expected_report)
       end
     end
