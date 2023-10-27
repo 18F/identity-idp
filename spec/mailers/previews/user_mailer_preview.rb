@@ -191,7 +191,7 @@ class UserMailerPreview < ActionMailer::Preview
     UserMailer.with(
       user: user_with_pending_gpo_letter,
       email_address: email_address_record,
-    ).gpo_code_expired
+    ).gpo_code_expired(code_sent_at: 31.days.ago)
   end
 
   def gpo_reminder
