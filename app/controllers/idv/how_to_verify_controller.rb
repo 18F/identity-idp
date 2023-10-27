@@ -7,7 +7,7 @@ module Idv
     VERIFICATION_OPTIONS = {
       ipp: 'ipp',
       remote: 'remote',
-    }
+    }.freeze
 
     def show
       @idv_how_to_verify_form = Idv::HowToVerifyForm.new
