@@ -30,7 +30,7 @@ module Idv
         gpo_mail = Idv::GpoMail.new(current_user)
         @can_request_another_letter =
           FeatureManagement.gpo_verification_enabled? &&
-          !gpo_mail.mail_spammed? &&
+          !gpo_mail.rate_limited? &&
           !gpo_mail.profile_too_old?
 
         if pii_locked?

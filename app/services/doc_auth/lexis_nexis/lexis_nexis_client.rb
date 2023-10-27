@@ -12,18 +12,6 @@ module DocAuth
         raise NotImplementedError
       end
 
-      def post_front_image(image:, instance_id: nil)
-        raise NotImplementedError
-      end
-
-      def post_back_image(image:, instance_id: nil)
-        raise NotImplementedError
-      end
-
-      def get_results(instance_id:)
-        raise NotImplementedError
-      end
-
       def post_images(
         front_image:,
         back_image:,

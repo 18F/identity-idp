@@ -72,7 +72,7 @@ RSpec.feature 'Analytics Regression', js: true do
         success: true, errors: {}, attempts: 1, remaining_attempts: 3, user_id: user.uuid, flow_path: 'standard', front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question
       },
       'IdV: doc auth image upload vendor pii validation' => {
-        success: true, errors: {}, user_id: user.uuid, attempts: 1, remaining_attempts: 3, flow_path: 'standard', attention_with_barcode: false, front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question
+        success: true, errors: {}, user_id: user.uuid, attempts: 1, remaining_attempts: 3, flow_path: 'standard', attention_with_barcode: false, front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, classification_info: {}
       },
       'IdV: doc auth document_capture submitted' => {
         success: true, errors: {}, flow_path: 'standard', step: 'document_capture', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, irs_reproofing: false
@@ -177,7 +177,7 @@ RSpec.feature 'Analytics Regression', js: true do
         success: true, errors: {}, attempts: 1, remaining_attempts: 3, user_id: user.uuid, flow_path: 'standard', front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question
       },
       'IdV: doc auth image upload vendor pii validation' => {
-        success: true, errors: {}, user_id: user.uuid, attempts: 1, remaining_attempts: 3, flow_path: 'standard', attention_with_barcode: false, front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question
+        success: true, errors: {}, user_id: user.uuid, attempts: 1, remaining_attempts: 3, flow_path: 'standard', attention_with_barcode: false, front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, classification_info: {}
       },
       'IdV: doc auth document_capture submitted' => {
         success: true, errors: {}, flow_path: 'standard', step: 'document_capture', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome_default, phone_question_ab_test_bucket: :bypass_phone_question, skip_hybrid_handoff: nil, analytics_id: 'Doc Auth', irs_reproofing: false
