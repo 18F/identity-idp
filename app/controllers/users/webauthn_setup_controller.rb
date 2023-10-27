@@ -51,9 +51,9 @@ module Users
           errors: result.errors,
           success: false,
         )
-
-        flash_error(result.errors)
       end
+
+      flash_error(result.errors) unless result.success?
     end
 
     def confirm
