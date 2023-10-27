@@ -65,30 +65,26 @@ export const useSteps = (submissionError: Error | undefined) => {
         title: t('in_person_proofing.headings.po_search.location'),
       };
 
-  const inPersonProofingSteps: FormStep[] = !inPersonURL
-    ? []
-    : [
-        {
-          name: 'prepare',
-          form: InPersonPrepareStep,
-          title: t('in_person_proofing.headings.prepare'),
-        },
-        locationStep,
-      ];
+  const inPersonProofingSteps: FormStep[] =
+    inPersonURL !== undefined
+      ? []
+      : ([
+          {
+            name: 'prepare',
+            form: InPersonPrepareStep,
+            title: t('in_person_proofing.headings.prepare'),
+          },
+          locationStep,
+          // When the user is in the hybrid flowPath, then they need to get the
+          // switch_back screen after the other steps.
+          flowPath === 'hybrid' && {
+            name: 'switch_back',
+            form: InPersonSwitchBackStep,
+            title: t('in_person_proofing.headings.switch_back'),
+          },
+        ].filter(Boolean) as FormStep[]);
 
   // Unless the inPersonURL is missing this will be ['review', 'prepare', 'location']
   const steps: FormStep[] = [reviewStep].concat(inPersonProofingSteps);
-  if (flowPath !== 'hybrid') {
-    return steps;
-  }
-
-  // When the user is in the hybrid flowPath, then they need to get the switch_back screen
-  // after all of the other steps.
-  if (flowPath === 'hybrid' && inPersonURL) {
-    return steps.concat({
-      name: 'switch_back',
-      form: InPersonSwitchBackStep,
-      title: t('in_person_proofing.headings.switch_back'),
-    });
-  }
+  return steps;
 };
