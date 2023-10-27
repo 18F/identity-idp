@@ -201,6 +201,11 @@ RSpec.feature 'hybrid_handoff step send link and errors' do
         expect(page).to have_current_path(idv_phone_question_path)
         click_link t('doc_auth.buttons.have_phone')
 
+        # added to test FlowPolicy behavior with PhoneQuestion
+        expect(page).to have_current_path(idv_hybrid_handoff_path)
+        visit(idv_link_sent_url)
+        expect(page).to have_current_path(idv_hybrid_handoff_path)
+
         freeze_time do
           idv_send_link_max_attempts.times do
             expect(page).to_not have_content(
