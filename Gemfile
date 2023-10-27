@@ -73,7 +73,6 @@ gem 'stringex', require: false
 gem 'strong_migrations', '>= 0.4.2'
 gem 'subprocess', require: false
 gem 'terminal-table', require: false
-gem 'uglifier', '~> 4.2'
 gem 'valid_email', '>= 0.1.3'
 gem 'view_component', '~> 3.0.0'
 gem 'webauthn', '~> 2.5.2'
