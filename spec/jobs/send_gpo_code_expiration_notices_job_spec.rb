@@ -9,22 +9,36 @@ RSpec.describe SendGpoCodeExpirationNoticesJob do
 
   let(:usps_confirmation_max_days) { 30 }
 
-  let(:expired_timestamp) { (usps_confirmation_max_days.days + 1).ago }
+  let(:min_age_for_expiration_notice_in_days) { usps_confirmation_max_days.days + 1.day }
 
-  let(:more_expired_timestamp) { expired_timestamp - 1.day }
+  let(:expired_but_not_yet_notifiable_timestamp) { usps_confirmation_max_days.days.ago }
 
-  let(:not_expired_timestamp) { (usps_confirmation_max_days.days - 1).ago }
+  let(:expired_and_notifiable_timestamp) { min_age_for_expiration_notice_in_days.ago - 1.day }
 
-  let(:expired_too_long_ago_timestamp) { expired_timestamp - 30.days }
+  let(:too_expired_to_notify_timestamp) { expired_but_not_yet_notifiable_timestamp - 3.days }
 
-  let!(:user_with_expired_code) do
-    create(:user, :with_pending_gpo_profile, code_sent_at: expired_timestamp)
+  let(:not_expired_timestamp) { usps_confirmation_max_days.days.ago + 1.day }
+
+  let!(:user_with_expired_code_who_should_be_notified) do
+    create(:user, :with_pending_gpo_profile, code_sent_at: expired_and_notifiable_timestamp)
   end
 
-  let!(:user_with_two_expired_codes) do
-    create(:user, :with_pending_gpo_profile, code_sent_at: expired_timestamp).tap do |user|
+  let!(:user_with_code_thats_not_expired_enough) do
+    create(:user, :with_pending_gpo_profile, code_sent_at: expired_but_not_yet_notifiable_timestamp)
+  end
+
+  let!(:user_with_two_expired_and_notifiable_codes) do
+    create(
+      :user,
+      :with_pending_gpo_profile,
+      code_sent_at: expired_and_notifiable_timestamp,
+    ).tap do |user|
       profile = user.gpo_verification_pending_profile
-      create(:gpo_confirmation_code, profile: profile, code_sent_at: more_expired_timestamp)
+      create(
+        :gpo_confirmation_code,
+        profile: profile,
+        code_sent_at: expired_and_notifiable_timestamp - 1.second,
+      )
     end
   end
 
@@ -32,35 +46,45 @@ RSpec.describe SendGpoCodeExpirationNoticesJob do
     create(
       :user,
       :with_pending_gpo_profile,
-      code_sent_at: expired_timestamp,
+      code_sent_at: expired_and_notifiable_timestamp,
     ).tap do |user|
       code = user.
         gpo_verification_pending_profile.
         gpo_confirmation_codes.first
 
-      code.update!(expiration_notice_sent_at: Time.zone.now)
+      code.update(expiration_notice_sent_at: Time.zone.now)
     end
   end
 
   let!(:user_who_completed_gpo) do
-    create(:user, :with_pending_gpo_profile, code_sent_at: expired_timestamp).tap do |user|
+    create(
+      :user,
+      :with_pending_gpo_profile,
+      code_sent_at: expired_and_notifiable_timestamp,
+    ).tap do |user|
       profile = user.gpo_verification_pending_profile
       profile.remove_gpo_deactivation_reason
       profile.activate
     end
   end
 
-  let!(:users_with_profiles_in_invalid_states) do
-    reasons = %i[
+  let(:deactivation_reasons) do
+    %i[
       password_reset
       encryption_error
       verification_cancelled
       gpo_verification_pending_NO_LONGER_USED
       in_person_verification_pending_NO_LONGER_USED
     ]
+  end
 
-    reasons.map do |reason|
-      create(:user, :with_pending_gpo_profile, code_sent_at: expired_timestamp).tap do |user|
+  let!(:users_with_profiles_with_deactivation_reasons) do
+    deactivation_reasons.map do |reason|
+      create(
+        :user,
+        :with_pending_gpo_profile,
+        code_sent_at: expired_and_notifiable_timestamp,
+      ).tap do |user|
         profile = user.gpo_verification_pending_profile
         profile.deactivate(reason)
       end
@@ -68,7 +92,11 @@ RSpec.describe SendGpoCodeExpirationNoticesJob do
   end
 
   let!(:user_who_started_gpo_but_then_verified_a_different_way) do
-    create(:user, :with_pending_gpo_profile, code_sent_at: expired_timestamp).tap do |user|
+    create(
+      :user,
+      :with_pending_gpo_profile,
+      code_sent_at: expired_and_notifiable_timestamp,
+    ).tap do |user|
       create(:profile, :active, :verified, :with_pii, user: user)
     end
   end
@@ -78,7 +106,7 @@ RSpec.describe SendGpoCodeExpirationNoticesJob do
   end
 
   let!(:user_with_code_that_expired_too_long_ago) do
-    create(:user, :with_pending_gpo_profile, code_sent_at: expired_too_long_ago_timestamp)
+    create(:user, :with_pending_gpo_profile, code_sent_at: too_expired_to_notify_timestamp)
   end
 
   before do
@@ -86,18 +114,56 @@ RSpec.describe SendGpoCodeExpirationNoticesJob do
       and_return(usps_confirmation_max_days)
   end
 
-  it 'has the expected number of test users configured' do
-    expect(User.count).to eql(12)
+  describe '#calculate_notification_window_bounds' do
+    it 'finds the right bounds' do
+      from, to = job.calculate_notification_window_bounds(
+        as_of: Time.zone.parse('2023-11-25 13:14:15'),
+      )
+      expect(from).to eql(Time.zone.parse('2023-10-24 00:00:00'))
+      expect(to).to eql(Time.zone.parse('2023-10-26 00:00:00'))
+    end
   end
 
   describe '#codes_to_send_notifications_for' do
+    def user_for(code:)
+      users = %i[
+        user_with_expired_code_who_should_be_notified
+        user_with_code_thats_not_expired_enough
+        user_with_two_expired_and_notifiable_codes
+        user_who_already_got_an_expiration_notice
+        user_who_completed_gpo
+        user_who_started_gpo_but_then_verified_a_different_way
+        user_who_has_an_unexpired_code
+        user_with_code_that_expired_too_long_ago
+      ]
+
+      users.each do |sym|
+        user = send(sym)
+        return sym if code.profile.user == user
+      end
+
+      deactivation_reasons.with_index.each do |reason, index|
+        user = users_with_profiles_in_invalid_states[index]
+        return reason if user == code.profile.user
+      end
+
+      nil
+    end
+
     it 'returns correct codes requiring notification' do
+      expect(job.codes_to_send_notifications_for.map { |code| user_for(code: code) }).to eql(
+        [
+          :user_with_expired_code_who_should_be_notified,
+          :user_with_two_expired_and_notifiable_codes,
+        ],
+      )
+
       expect(job.codes_to_send_notifications_for.to_a).to eql(
         [
-          user_with_expired_code.
+          user_with_expired_code_who_should_be_notified.
             gpo_verification_pending_profile.
             gpo_confirmation_codes.first,
-          user_with_two_expired_codes.
+          user_with_two_expired_and_notifiable_codes.
             gpo_verification_pending_profile.
             gpo_confirmation_codes.first,
         ],
@@ -108,8 +174,8 @@ RSpec.describe SendGpoCodeExpirationNoticesJob do
   describe '#perform' do
     let(:users_who_should_be_notified) do
       [
-        user_with_expired_code,
-        user_with_two_expired_codes,
+        user_with_expired_code_who_should_be_notified,
+        user_with_two_expired_and_notifiable_codes,
       ]
     end
 
@@ -146,11 +212,11 @@ RSpec.describe SendGpoCodeExpirationNoticesJob do
 
     it 'marks codes as having had an expiration notice sent' do
       codes_that_should_receive_notices = [
-        user_with_expired_code.
+        user_with_expired_code_who_should_be_notified.
           gpo_verification_pending_profile.
           gpo_confirmation_codes.
           first,
-        user_with_two_expired_codes.
+        user_with_two_expired_and_notifiable_codes.
           gpo_verification_pending_profile.
           gpo_confirmation_codes.
           order(code_sent_at: :desc).

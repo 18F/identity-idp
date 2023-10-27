@@ -17,13 +17,18 @@ class SendGpoCodeExpirationNoticesJob < ApplicationJob
   end
 
   def codes_to_send_notifications_for
-    latest_time = Time.zone.now - IdentityConfig.store.usps_confirmation_max_days.days
-    earliest_time = latest_time - 1.day
-
+    # We are looking at a 48 hr window in which all codes will _definitely_ be expired.
+    from, to = calculate_notification_window_bounds
     expired_codes_needing_notification_sent_between(
-      from: earliest_time,
-      to: latest_time,
+      from: from,
+      to: to,
     )
+  end
+
+  def calculate_notification_window_bounds(as_of: Time.zone.now)
+    to = as_of.beginning_of_day - IdentityConfig.store.usps_confirmation_max_days.days
+    from = to - 2.days
+    [from, to]
   end
 
   private
