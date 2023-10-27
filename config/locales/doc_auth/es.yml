@@ -184,6 +184,8 @@ es:
       upload_from_computer: Continuar en esta computadora
       upload_from_phone: Utilice su teléfono para tomar las fotos
       verify_identity: Verifique su identidad
+      verify_online:
+      verify_at_post_office:
       welcome: Comience a verificar su identidad
     hybrid_flow_warning:
       explanation_html: Usted está utilizando <strong>%{app_name}</strong> para
@@ -246,6 +248,8 @@ es:
         tener una cámara y un navegador web.
       verify_identity: Le preguntaremos sus datos personales para verificar su
         identidad comparándola con los registros públicos.
+      verify_online_html:
+      verify_at_post_office_html:
       welcome: '%{sp_name} necesita asegurarse de que es usted y no es alguien que se
         hace pasar por usted.'
       you_entered: 'Ud. entregó:'
@@ -286,3 +290,4 @@ es:
       review_issues_id_text2: '¿Tomó la foto en una superficie plana?'
       review_issues_id_text3: '¿Tiene el flash de su cámara apagado?'
       review_issues_id_text4: '¿Todos los detalles están nítidos y claramente visibles?'
+      most_common:

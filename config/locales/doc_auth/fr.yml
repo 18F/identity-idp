@@ -190,6 +190,8 @@ fr:
       upload_from_computer: Continuer sur cet ordinateur
       upload_from_phone: Utilisez votre téléphone pour prendre des photos
       verify_identity: Vérifier votre identité
+      verify_online:
+      verify_at_post_office:
       welcome: Commencez à vérifier votre identité
     hybrid_flow_warning:
       explanation_html: Vous utilisez <strong>%{app_name}</strong> pour vérifier votre
@@ -253,6 +255,8 @@ fr:
         être équipé d’un appareil photo et d’un navigateur web.
       verify_identity: Nous vous demanderons vos informations personnelles afin de
         vérifier votre identité par rapport aux registres publics.
+      verify_online_html:
+      verify_at_post_office_html:
       welcome: '%{sp_name} doit s’assurer que vous êtes bien vous, et non quelqu’un
         qui se fait passer pour vous.'
       you_entered: 'Tu as soumis:'
@@ -295,3 +299,4 @@ fr:
       review_issues_id_text3: Le flash de votre caméra est-il éteint?
       review_issues_id_text4: Tous les détails sont-ils nets et clairement visibles?
         couvert par un chapeau ou des lunettes?
+      most_common:
