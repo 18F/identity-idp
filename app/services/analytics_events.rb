@@ -524,6 +524,8 @@ module AnalyticsEvents
     track_event('Forget All Browsers Visited') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
+  # @param [Boolean] success
+  # The Acuant SDK was loaded
   def idv_acuant_sdk_loaded(success:, **_extra)
     track_event(
       'Frontend: IdV: Acuant SDK loaded', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
@@ -613,40 +615,86 @@ module AnalyticsEvents
     track_event('IdV: address visited') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
+  # @param [String] acuantCaptureMode
+  # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
+  # @param [String] acuant_version
+  # @param [Boolean] assessment
+  # @param [Integer] attempt number of attempts
+  # @param [String] documentType
+  # @param [Integer] dpi  dots per inch of image
+  # @param [Integer] failedImageResubmission
+  # @param [String] fingerprint fingerprint of the image added
+  # @param [String] flow_path whether the user is in the hybrid or standard flow
+  # @param [Integer] glare
+  # @param [Integer] glareScoreThreshold
+  # @param [Integer] height height of image added in pixels
+  # @param [Boolean] isAssessedAsBlurry
+  # @param [Boolean] isAssessedAsGlare
+  # @param [Boolean] isAssessedAsUnsupported
+  # @param [String] mimeType MIME type of image added
+  # @param [Integer] moire
+  # @param [String] phone_question_ab_test_bucket
+  # @param [Integer] sharpness
+  # @param [Integer] sharpnessScoreThreshold
+  # @param [Integer] size size of image added in bytes
+  # @param [String] source
+  # @param [Boolean] use_alternate_sdk
+  # @param [Integer] width width of image added in pixels
+  # Back image was added in document capture
   # rubocop:disable Naming/VariableName,Naming/MethodParameterName
   def idv_back_image_added(
-    width:,
-    height:,
-    mimeType:,
-    source:,
-    size:,
-    attempt:,
     acuantCaptureMode:,
-    flow_path:,
     acuant_sdk_upgrade_a_b_testing_enabled:,
-    use_alternate_sdk:,
     acuant_version:,
-    fingerprint:,
-    phone_question_ab_test_bucket:,
+    assessment:,
+    attempt:,
+    documentType:,
+    dpi:,
     failedImageResubmission:,
+    flow_path:,
+    glare:,
+    glareScoreThreshold:,
+    height:,
+    isAssessedAsBlurry:,
+    isAssessedAsGlare:,
+    isAssessedAsUnsupported:,
+    mimeType:,
+    moire:,
+    phone_question_ab_test_bucket:,
+    sharpness:,
+    sharpnessScoreThreshold:,
+    size:,
+    source:,
+    use_alternate_sdk:,
+    width:,
     **_extra
   )
     track_event(
       'Frontend: IdV: back image added', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
-      width: width,
-      height: height,
-      mimeType: mimeType,
-      source: source,
-      size: size,
-      attempt: attempt,
       acuantCaptureMode: acuantCaptureMode,
-      flow_path: flow_path,
       acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
-      use_alternate_sdk: use_alternate_sdk,
       acuant_version: acuant_version,
-      fingerprint: fingerprint,
-      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
+      assessment: assessment,
+      attempt: attempt,
+      documentType: documentType,
+      dpi: dpi,
       failedImageResubmission: failedImageResubmission,
+      flow_path: flow_path,
+      glare: glare,
+      glareScoreThreshold: glareScoreThreshold,
+      height: height,
+      isAssessedAsBlurry: isAssessedAsBlurry,
+      isAssessedAsGlare: isAssessedAsGlare,
+      isAssessedAsUnsupported: isAssessedAsUnsupported,
+      mimeType: mimeType,
+      moire: moire,
+      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
+      sharpness: sharpness,
+      sharpnessScoreThreshold: sharpnessScoreThreshold,
+      size: size,
+      source: source,
+      use_alternate_sdk: use_alternate_sdk,
+      width: width,
     )
   end
   # rubocop:enable Naming/VariableName,Naming/MethodParameterName
@@ -1131,40 +1179,86 @@ module AnalyticsEvents
     )
   end
 
+  # @param [String] acuantCaptureMode
+  # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
+  # @param [String] acuant_version
+  # @param [Boolean] assessment
+  # @param [Integer] attempt number of attempts
+  # @param [String] documentType
+  # @param [Integer] dpi  dots per inch of image
+  # @param [Integer] failedImageResubmission
+  # @param [String] fingerprint fingerprint of the image added
+  # @param [String] flow_path whether the user is in the hybrid or standard flow
+  # @param [Integer] glare
+  # @param [Integer] glareScoreThreshold
+  # @param [Integer] height height of image added in pixels
+  # @param [Boolean] isAssessedAsBlurry
+  # @param [Boolean] isAssessedAsGlare
+  # @param [Boolean] isAssessedAsUnsupported
+  # @param [String] mimeType MIME type of image added
+  # @param [Integer] moire
+  # @param [String] phone_question_ab_test_bucket
+  # @param [Integer] sharpness
+  # @param [Integer] sharpnessScoreThreshold
+  # @param [Integer] size size of image added in bytes
+  # @param [String] source
+  # @param [Boolean] use_alternate_sdk
+  # @param [Integer] width width of image added in pixels
+  # Front image was added in document capture
   # rubocop:disable Naming/VariableName,Naming/MethodParameterName
   def idv_front_image_added(
-    width:,
-    height:,
-    mimeType:,
-    source:,
-    size:,
-    attempt:,
     acuantCaptureMode:,
-    flow_path:,
     acuant_sdk_upgrade_a_b_testing_enabled:,
-    use_alternate_sdk:,
     acuant_version:,
-    fingerprint:,
-    phone_question_ab_test_bucket:,
+    assessment:,
+    attempt:,
+    documentType:,
+    dpi:,
     failedImageResubmission:,
+    flow_path:,
+    glare:,
+    glareScoreThreshold:,
+    height:,
+    isAssessedAsBlurry:,
+    isAssessedAsGlare:,
+    isAssessedAsUnsupported:,
+    mimeType:,
+    moire:,
+    phone_question_ab_test_bucket:,
+    sharpness:,
+    sharpnessScoreThreshold:,
+    size:,
+    source:,
+    use_alternate_sdk:,
+    width:,
     **_extra
   )
     track_event(
       'Frontend: IdV: front image added', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
-      width: width,
-      height: height,
-      mimeType: mimeType,
-      source: source,
-      size: size,
-      attempt: attempt,
       acuantCaptureMode: acuantCaptureMode,
-      flow_path: flow_path,
       acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
-      use_alternate_sdk: use_alternate_sdk,
       acuant_version: acuant_version,
-      fingerprint: fingerprint,
-      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
+      assessment: assessment,
+      attempt: attempt,
+      documentType: documentType,
+      dpi: dpi,
       failedImageResubmission: failedImageResubmission,
+      flow_path: flow_path,
+      glare: glare,
+      glareScoreThreshold: glareScoreThreshold,
+      height: height,
+      isAssessedAsBlurry: isAssessedAsBlurry,
+      isAssessedAsGlare: isAssessedAsGlare,
+      isAssessedAsUnsupported: isAssessedAsUnsupported,
+      mimeType: mimeType,
+      moire: moire,
+      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
+      sharpness: sharpness,
+      sharpnessScoreThreshold: sharpnessScoreThreshold,
+      size: size,
+      source: source,
+      use_alternate_sdk: use_alternate_sdk,
+      width: width,
     )
   end
   # rubocop:enable Naming/VariableName,Naming/MethodParameterName
