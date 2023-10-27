@@ -46,9 +46,14 @@ class FrontendLogController < ApplicationController
   # rubocop:enable Layout/LineLength
 
   def create
-    frontend_logger.track_event(log_params[:event], log_params[:payload].to_h)
+    result = frontend_logger.track_event(log_params[:event], log_params[:payload].to_h)
 
-    render json: { success: true }, status: :ok
+    if result
+      render json: { success: true }, status: :ok
+    else
+      render json: { success: false, error_message: 'invalid event' },
+             status: :bad_request
+    end
   end
 
   private

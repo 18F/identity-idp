@@ -20,8 +20,12 @@ class FrontendLogger
         analytics_method,
         **hash_from_kwargs(attributes, AnalyticsEvents.instance_method(analytics_method)),
       )
+      true
     elsif analytics_method.respond_to?(:call)
       analytics_method.call(**hash_from_kwargs(attributes, analytics_method))
+      true
+    else
+      false
     end
   end
 

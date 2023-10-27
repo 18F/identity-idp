@@ -23,8 +23,8 @@ RSpec.describe FrontendLogController do
 
           action
 
-          expect(response).to have_http_status(:ok)
-          expect(json[:success]).to eq(true)
+          expect(response).to have_http_status(:bad_request)
+          expect(json[:success]).to eq(false)
         end
 
         it 'does not commit session' do
@@ -194,8 +194,8 @@ RSpec.describe FrontendLogController do
 
           action
 
-          expect(response).to have_http_status(:ok)
-          expect(json[:success]).to eq(true)
+          expect(response).to have_http_status(:bad_request)
+          expect(json[:success]).to eq(false)
         end
 
         it 'does not commit session' do
