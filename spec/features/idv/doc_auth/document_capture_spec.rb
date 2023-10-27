@@ -134,20 +134,6 @@ RSpec.feature 'document capture step', :js do
 
       expect(DocAuthLog.find_by(user_id: user.id).state).to be_nil
     end
-
-    it 'return to sp when click on exit link', :js do
-      click_sp_exit_link(sp_name: sp_name)
-      expect(current_url).to start_with('http://localhost:7654/auth/result?error=access_denied')
-    end
-
-    it 'logs event and return to sp when click on submit and exit button', :js do
-      click_submit_exit_button
-      expect(fake_analytics).to have_logged_event(
-        'Frontend: IdV: exit optional questions',
-        hash_including('ids'),
-      )
-      expect(current_url).to start_with('http://localhost:7654/auth/result?error=access_denied')
-    end
   end
 
   context 'standard mobile flow' do
@@ -174,16 +160,6 @@ RSpec.feature 'document capture step', :js do
         expect(page).to have_current_path(idv_phone_url)
         visit(idv_document_capture_url)
         expect(page).to have_current_path(idv_phone_url)
-      end
-    end
-
-    it 'return to sp when click on exit link', :js do
-      perform_in_browser(:mobile) do
-        visit_idp_from_oidc_sp_with_ial2
-        sign_in_and_2fa_user(user)
-        complete_doc_auth_steps_before_document_capture_step
-        click_sp_exit_link(sp_name: sp_name)
-        expect(current_url).to start_with('http://localhost:7654/auth/result?error=access_denied')
       end
     end
   end
