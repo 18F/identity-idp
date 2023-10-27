@@ -319,6 +319,8 @@ Rails.application.routes.draw do
       post '/forgot_password' => 'forgot_password#update'
       get '/agreement' => 'agreement#show'
       put '/agreement' => 'agreement#update'
+      get '/remote_or_in_person' => 'remote_or_in_person#show'
+      put '/remote_or_in_person' => 'remote_or_in_person#update'
       get '/document_capture' => 'document_capture#show'
       put '/document_capture' => 'document_capture#update'
       # This route is included in SMS messages sent to users who start the IdV hybrid flow. It
@@ -391,6 +393,9 @@ Rails.application.routes.draw do
       put '/in_person/verify_info' => 'in_person/verify_info#update'
       get '/in_person/:step' => 'in_person#show', as: :in_person_step
       put '/in_person/:step' => 'in_person#update'
+
+      get '/opt_in_ipp' => 'opt_in_ipp#show'
+      put '/opt_in_ipp' => 'opt_in_ipp#update'
 
       get '/by_mail/enter_code' => 'by_mail/enter_code#index', as: :verify_by_mail_enter_code
       post '/by_mail/enter_code' => 'by_mail/enter_code#create'

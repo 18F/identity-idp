@@ -32,6 +32,7 @@ interface AppRootData {
   cancelUrl: string;
   idvInPersonUrl?: string;
   securityAndPrivacyHowItWorksUrl: string;
+  skipDocAuth: string;
 }
 
 const appRoot = document.getElementById('document-capture-form')!;
@@ -81,13 +82,14 @@ const {
   inPersonFullAddressEntryEnabled,
   inPersonOutageMessageEnabled,
   inPersonOutageExpectedUpdateDate,
+  skipDocAuth,
   usStatesTerritories = '',
 } = appRoot.dataset as DOMStringMap & AppRootData;
 
 let parsedUsStatesTerritories = [];
 try {
   parsedUsStatesTerritories = JSON.parse(usStatesTerritories);
-} catch (e) {}
+} catch (e) { }
 
 const App = composeComponents(
   [MarketingSiteContextProvider, { helpCenterRedirectURL, securityAndPrivacyHowItWorksURL }],
@@ -127,6 +129,7 @@ const App = composeComponents(
       isMockClient,
       formData,
       flowPath,
+      skipDocAuth,
     },
   ],
   [

@@ -30,12 +30,13 @@ interface DocumentCaptureProps {
   onStepChange?: () => void;
 }
 
-function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
+function DocumentCapture({ onStepChange = () => { } }: DocumentCaptureProps) {
   const [formValues, setFormValues] = useState<Record<string, any> | null>(null);
   const [submissionError, setSubmissionError] = useState<Error | undefined>(undefined);
+  // todo: retrieve the step name from the URL anchor if opt-in IPP is enabled
   const [stepName, setStepName] = useState<string | undefined>(undefined);
   const { t } = useI18n();
-  const { flowPath } = useContext(UploadContext);
+  const { flowPath, skipDocAuth } = useContext(UploadContext);
   const { trackSubmitEvent, trackVisitEvent } = useContext(AnalyticsContext);
   const { inPersonFullAddressEntryEnabled, inPersonURL } = useContext(InPersonContext);
   const appName = getConfigValue('appName');
@@ -83,65 +84,95 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
     ? InPersonLocationFullAddressEntryPostOfficeSearchStep
     : InPersonLocationPostOfficeSearchStep;
 
-  const inPersonSteps: FormStep[] =
-    inPersonURL === undefined
-      ? []
-      : ([
-          {
-            name: 'prepare',
-            form: InPersonPrepareStep,
-            title: t('in_person_proofing.headings.prepare'),
-          },
-          {
-            name: 'location',
-            form: inPersonLocationPostOfficeSearchForm,
-            title: t('in_person_proofing.headings.po_search.location'),
-          },
-          flowPath === 'hybrid' && {
-            name: 'switch_back',
-            form: InPersonSwitchBackStep,
-            title: t('in_person_proofing.headings.switch_back'),
-          },
-        ].filter(Boolean) as FormStep[]);
-
-  const steps: FormStep[] = submissionError
-    ? (
-        [
-          {
-            name: 'review',
-            form:
-              submissionError instanceof UploadFormEntriesError
-                ? withProps({
-                    remainingAttempts: submissionError.remainingAttempts,
-                    isFailedResult: submissionError.isFailedResult,
-                    isFailedDocType: submissionError.isFailedDocType,
-                    captureHints: submissionError.hints,
-                    pii: submissionError.pii,
-                    failedImageFingerprints: submissionError.failed_image_fingerprints,
-                  })(ReviewIssuesStep)
-                : ReviewIssuesStep,
-            title: t('errors.doc_auth.rate_limited_heading'),
-          },
-        ] as FormStep[]
-      ).concat(inPersonSteps)
-    : ([
-        {
-          name: 'documents',
-          form: DocumentsStep,
-          title: t('doc_auth.headings.document_capture'),
-        },
-      ].filter(Boolean) as FormStep[]);
+  const inPersonStepsRaw = [
+    {
+      name: 'prepare',
+      form: InPersonPrepareStep,
+      title: t('in_person_proofing.headings.prepare'),
+    },
+    {
+      name: 'location',
+      form: inPersonLocationPostOfficeSearchForm,
+      title: t('in_person_proofing.headings.po_search.location'),
+    },
+    flowPath === 'hybrid' && {
+      name: 'switch_back',
+      form: InPersonSwitchBackStep,
+      title: t('in_person_proofing.headings.switch_back'),
+    },
+  ].filter(Boolean) as FormStep[];
 
   const stepIndicatorPath =
     stepName && ['location', 'prepare', 'switch_back'].includes(stepName)
       ? VerifyFlowPath.IN_PERSON
       : VerifyFlowPath.DEFAULT;
 
+
+  const optInIpp = (
+    <>
+      <VerifyFlowStepIndicator currentStep="document_capture" path={stepIndicatorPath} />
+      <>
+        <FormSteps
+          steps={inPersonStepsRaw}
+          initialValues={initialValues}
+          initialActiveErrors={initialActiveErrors}
+          onComplete={submitForm}
+          onStepChange={setStepName}
+          onStepSubmit={trackSubmitEvent}
+          autoFocus={!!submissionError}
+          titleFormat={`%{step} - ${appName}`}
+        />
+      </>
+    </>
+  );
+
+  if (skipDocAuth === 'true') {
+    return optInIpp;
+  }
+
+  const inPersonSteps: FormStep[] =
+    inPersonURL === undefined
+      ? []
+      : inPersonStepsRaw
+
+  const steps: FormStep[] = submissionError
+    ? (
+      [
+        {
+          name: 'review',
+          form:
+            submissionError instanceof UploadFormEntriesError
+              ? withProps({
+                remainingAttempts: submissionError.remainingAttempts,
+                isFailedResult: submissionError.isFailedResult,
+                isFailedDocType: submissionError.isFailedDocType,
+                captureHints: submissionError.hints,
+                pii: submissionError.pii,
+                failedImageFingerprints: submissionError.failed_image_fingerprints,
+              })(ReviewIssuesStep)
+              : ReviewIssuesStep,
+          title: t('errors.doc_auth.rate_limited_heading'),
+        },
+      ] as FormStep[]
+    ).concat(inPersonSteps)
+    : ([
+      {
+        name: 'documents',
+        form: DocumentsStep,
+        title: t('doc_auth.headings.document_capture'),
+      },
+    ].filter(Boolean) as FormStep[]);
+
+  console.log("our steps are: ", steps);
+
+  console.log("stepName is: ", stepName);
+  console.log("step indicator path is: ", stepIndicatorPath);
+
   return (
     <>
       <VerifyFlowStepIndicator currentStep="document_capture" path={stepIndicatorPath} />
       {submissionFormValues &&
-      (!submissionError || submissionError instanceof RetrySubmissionError) ? (
+        (!submissionError || submissionError instanceof RetrySubmissionError) ? (
         <>
           <SubmissionInterstitial autoFocus />
           <SuspenseErrorBoundary

@@ -25,10 +25,14 @@ module Idv
         **analytics_arguments.merge(result.to_h),
       )
 
+      next_url = IdentityConfig.store.in_person_proofing_opt_in_enabled ? idv_remote_or_in_person_url : idv_hybrid_handoff_url
+      puts('feature flag is: ' + IdentityConfig.store.in_person_proofing_opt_in_enabled.to_s)
+      puts "next url is: " + next_url
+
       if result.success?
         idv_session.idv_consent_given = true
 
-        redirect_to idv_hybrid_handoff_url
+        redirect_to next_url
       else
         redirect_to idv_agreement_url
       end

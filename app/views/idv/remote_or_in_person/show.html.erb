@@ -1,0 +1,74 @@
+<% title t('titles.doc_auth.hybrid_handoff') %>
+
+<% content_for(:pre_flash_content) do %>
+  <%= render StepIndicatorComponent.new(
+        steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS,
+        current_step: :verify_id,
+        locale_scope: 'idv',
+        class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
+      ) %>
+<% end %>
+
+<%= render PageHeadingComponent.new do %>
+  <%= t('doc_auth.headings.hybrid_handoff') %>
+<% end %>
+
+<p>
+  <%= t('doc_auth.info.hybrid_handoff') %>
+</p>
+
+<div class="grid-row grid-gap grid-gap-2">
+  <div class="grid-col-12 tablet:grid-col-auto">
+    <%= image_tag(
+          asset_url('idv/phone-icon.svg'),
+          alt: t('image_description.camera_mobile_phone'),
+          width: 88,
+          height: 88,
+        ) %>
+  </div>
+  <div class="grid-col-12 tablet:grid-col-fill">
+    <div class="usa-tag usa-tag--informative">
+      <%= t('doc_auth.info.tag') %>
+    </div>
+    <h2 class="margin-y-105">
+      <%= t('doc_auth.headings.upload_from_phone') %>
+    </h2>
+    <%= t('doc_auth.info.upload_from_phone') %>
+    <%= simple_form_for(
+          :remote_or_in_person,
+          url: url_for(type: :remote),
+          method: 'PUT',
+          class: 'margin-bottom-4',
+        ) do |f| %>
+      <%= f.submit "Remote", outline: true %>
+    <% end %>
+  </div>
+</div>
+
+<hr class="margin-y-4" />
+<div class="grid-row grid-gap grid-gap-2">
+  <div class="grid-col-12 tablet:grid-col-auto">
+    <%= image_tag(
+          asset_url('idv/laptop-icon.svg'),
+          alt: t('image_description.laptop'),
+          width: 88,
+          height: 88,
+        ) %>
+  </div>
+  <div class="grid-col-12 tablet:grid-col-fill">
+    <h2 class="margin-y-105">
+      <%= t('doc_auth.headings.upload_from_computer') %>
+    </h2>
+    <%= t('doc_auth.info.upload_from_computer') %>&nbsp;
+    <%= simple_form_for(
+          :remote_or_in_person,
+          url: url_for(type: :in_person),
+          method: 'PUT',
+          class: 'margin-bottom-4',
+        ) do |f| %>
+      <%= f.submit "In-person", outline: true %>
+    <% end %>
+  </div>
+</div>
+
+<%= render 'idv/doc_auth/cancel', step: 'hybrid_handoff' %>

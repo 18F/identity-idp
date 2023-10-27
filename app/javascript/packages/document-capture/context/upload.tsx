@@ -11,6 +11,7 @@ const UploadContext = createContext({
   isMockClient: false,
   flowPath: 'standard' as FlowPath,
   formData: {} as Record<string, any>,
+  skipDocAuth: false,
 });
 
 UploadContext.displayName = 'UploadContext';
@@ -121,6 +122,7 @@ interface UploadContextProviderProps {
    * Whether to treat upload as a mock implementation.
    */
   isMockClient?: boolean;
+  skipDocAuth: boolean;
 
   /**
    * Endpoint to which payload should be sent.
@@ -167,6 +169,7 @@ function UploadContextProvider({
   statusPollInterval,
   formData = DEFAULT_FORM_DATA,
   flowPath,
+  skipDocAuth,
   children,
 }: UploadContextProviderProps) {
   const uploadWithFormData = (payload) => upload({ ...payload, ...formData }, { endpoint });
@@ -182,6 +185,7 @@ function UploadContextProvider({
     statusPollInterval,
     isMockClient,
     flowPath,
+    skipDocAuth,
     formData,
   });
 
