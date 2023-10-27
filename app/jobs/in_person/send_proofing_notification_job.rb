@@ -81,6 +81,7 @@ module InPerson
           app_name: APP_NAME,
           proof_date: proof_date,
           contact_number: IdentityConfig.store.idv_contact_phone_number,
+          reference_string: enrollment.enrollment_code,
         )
       end
     end
