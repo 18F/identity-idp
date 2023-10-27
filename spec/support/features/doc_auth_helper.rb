@@ -175,7 +175,7 @@ module DocAuthHelper
     fill_out_phone_form_ok if find('#idv_phone_form_phone').value.blank?
     click_continue
     verify_phone_otp
-    expect(page).to have_current_path(idv_review_path, wait: 10)
+    expect(page).to have_current_path(idv_enter_password_path, wait: 10)
     expect_page_to_have_no_accessibility_violations(page) if expect_accessible
   end
 
@@ -248,7 +248,7 @@ module DocAuthHelper
   def mock_doc_auth_acuant_http_4xx_status(status, method = :post_front_image)
     DocAuth::Mock::DocAuthMockClient.mock_response!(
       method: method,
-      response: DocAuth::Mock::ResultResponse.create_image_error_response(status),
+      response: DocAuth::Mock::ResultResponse.create_image_error_response(status, 'front'),
     )
   end
 

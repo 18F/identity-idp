@@ -132,6 +132,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
     expect(errors[:front]).to contain_exactly(DocAuth::Errors::CARD_TYPE)
     expect(errors[:back]).to contain_exactly(DocAuth::Errors::CARD_TYPE)
     expect(errors[:hints]).to eq(true)
+    expect(get_results_response.extra[:classification_info]).to include(:Front, :Back)
   end
   it 'allows responses to be mocked' do
     described_class.mock_response!(method: :create_document, response: 'Create doc test')
@@ -218,7 +219,10 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
       )
       expect(response).to be_a(DocAuth::Response)
       expect(response.success?).to eq(false)
-      expect(response.errors).to eq(general: [DocAuth::Errors::IMAGE_SIZE_FAILURE])
+      expect(response.errors).to eq(
+        { general: [DocAuth::Errors::IMAGE_SIZE_FAILURE],
+          front: [DocAuth::Errors::IMAGE_SIZE_FAILURE_FIELD] },
+      )
     end
   end
 end

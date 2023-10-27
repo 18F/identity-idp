@@ -64,9 +64,8 @@ module RememberDeviceConcern
   end
 
   def has_remember_device_auth_event?
-    auth_methods_session.auth_events.any? do |auth_event|
-      auth_event[:auth_method] == TwoFactorAuthenticatable::AuthMethod::REMEMBER_DEVICE
-    end
+    auth_methods_session.last_auth_event&.fetch(:auth_method) ==
+      TwoFactorAuthenticatable::AuthMethod::REMEMBER_DEVICE
   end
 
   def handle_valid_remember_device_cookie(remember_device_cookie:)

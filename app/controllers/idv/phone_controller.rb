@@ -73,7 +73,7 @@ module Idv
           send_phone_confirmation_otp_and_handle_result
         end
       else
-        redirect_to idv_review_url
+        redirect_to idv_enter_password_url
       end
     end
 
@@ -217,7 +217,7 @@ module Idv
     def gpo_letter_available
       return @gpo_letter_available if defined?(@gpo_letter_available)
       @gpo_letter_available ||= FeatureManagement.gpo_verification_enabled? &&
-                                !Idv::GpoMail.new(current_user).mail_spammed?
+                                !Idv::GpoMail.new(current_user).rate_limited?
     end
 
     # Migrated from otp_delivery_method_controller

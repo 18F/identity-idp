@@ -1,5 +1,6 @@
 @use 'uswds-core' as *;
-@use '../utilities/typography' as *;
+@use 'utilities/typography' as *;
+@forward 'usa-file-input';
 
 // ===============================================
 // Pending upstream Login Design System revisions:

@@ -24,14 +24,24 @@ module Reporting
       @progress
     end
 
+    def proofing_rate_emailable_report
+      EmailableReport.new(
+        title: 'Proofing Rate Metrics',
+        float_as_percent: true,
+        precision: 2,
+        table: as_csv,
+        filename: 'proofing_rate_metrics',
+      )
+    end
+
     # rubocop:disable Layout/LineLength
     def as_csv
       csv = []
 
       csv << ['Metric', *DATE_INTERVALS.map { |days| "Trailing #{days}d" }]
 
-      csv << ['Start Date', *reports.map(&:time_range).map(&:begin)]
-      csv << ['End Date', *reports.map(&:time_range).map(&:end)]
+      csv << ['Start Date', *reports.map(&:time_range).map(&:begin).map(&:to_date)]
+      csv << ['End Date', *reports.map(&:time_range).map(&:end).map(&:to_date)]
 
       csv << ['IDV Started', *reports.map(&:idv_started)]
       csv << ['Welcome Submitted', *reports.map(&:idv_doc_auth_welcome_submitted)]
@@ -66,8 +76,7 @@ module Reporting
                 (end_date - slice_start.days).beginning_of_day,
                 (end_date - slice_end.days).beginning_of_day,
               ),
-              progress: false,
-              verbose: verbose?,
+              cloudwatch_client: cloudwatch_client,
             ).tap(&:data)
           end
         end
@@ -118,6 +127,14 @@ module Reporting
           report.successfully_verified_users + report.idv_doc_auth_rejected
         )
       end
+    end
+
+    def cloudwatch_client
+      @cloudwatch_client ||= Reporting::CloudwatchClient.new(
+        ensure_complete_logs: true,
+        progress: false,
+        logger: verbose? ? Logger.new(STDERR) : nil,
+      )
     end
   end
 end

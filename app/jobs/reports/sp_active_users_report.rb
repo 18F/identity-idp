@@ -41,8 +41,12 @@ module Reports
       end
     end
 
+    def fiscal_start_date(time = Time.zone.now.beginning_of_day)
+      CalendarService.fiscal_start_date(time)
+    end
+
     def fiscal_end_date(time)
-      time.change(year: time.month >= 10 ? time.year + 1 : time.year, month: 9, day: 30).end_of_day
+      CalendarService.fiscal_end_date(time).end_of_day
     end
 
     def reporting_range(time)
