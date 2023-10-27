@@ -38,12 +38,10 @@ FactoryBot.define do
       ial { 2 }
     end
 
-    # Can we enable this globally?
     trait :active do
       active { true }
     end
 
-    # Do we need this still?
     trait :irs do
       friendly_name { 'An IRS Service Provider' }
       ial { 2 }
