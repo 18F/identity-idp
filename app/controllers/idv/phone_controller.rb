@@ -59,15 +59,6 @@ module Idv
       end
     end
 
-    def self.step_info
-      Idv::StepInfo.new(
-        key: :phone,
-        controller: controller_name,
-        next_steps: [:otp_verification],
-        preconditions: ->(idv_session:, user:) { idv_session.verify_info_step_complete? },
-      )
-    end
-
     private
 
     def rate_limiter

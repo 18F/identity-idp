@@ -34,12 +34,6 @@ RSpec.describe Idv::OtpVerificationController do
     subject.idv_session.user_phone_confirmation_session = user_phone_confirmation_session
   end
 
-  describe '#step_info' do
-    it 'returns a valid StepInfo object' do
-      expect(Idv::OtpVerificationController.step_info).to be_valid
-    end
-  end
-
   describe 'before_actions' do
     it 'includes before_actions from IdvSession' do
       expect(subject).to have_actions(:before, :redirect_if_sp_context_needed)

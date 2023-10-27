@@ -42,12 +42,6 @@ RSpec.describe Idv::PersonalKeyController do
     stub_analytics
   end
 
-  describe '#step_info' do
-    it 'returns a valid StepInfo object' do
-      expect(Idv::PersonalKeyController.step_info).to be_valid
-    end
-  end
-
   describe 'before_actions' do
     it 'includes before_actions' do
       expect(subject).to have_actions(

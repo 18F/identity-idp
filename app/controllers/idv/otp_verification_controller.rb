@@ -40,15 +40,6 @@ module Idv
       end
     end
 
-    def self.step_info
-      Idv::StepInfo.new(
-        key: :otp_verification,
-        controller: controller_name,
-        next_steps: [:enter_password],
-        preconditions: ->(idv_session:, user:) { idv_session.phone_otp_sent? },
-      )
-    end
-
     private
 
     def confirm_step_needed

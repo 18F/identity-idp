@@ -11,12 +11,6 @@ RSpec.describe Idv::PhoneController do
   let(:international_phone) { '+81 54 354 3643' }
   let(:timeout_phone) { '7035555888' }
 
-  describe '#step_info' do
-    it 'returns a valid StepInfo object' do
-      expect(Idv::PhoneController.step_info).to be_valid
-    end
-  end
-
   describe 'before_actions' do
     it 'includes authentication before_action' do
       expect(subject).to have_actions(

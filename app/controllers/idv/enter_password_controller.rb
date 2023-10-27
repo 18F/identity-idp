@@ -81,18 +81,6 @@ module Idv
       :get_a_letter
     end
 
-    def self.step_info
-      Idv::StepInfo.new(
-        key: :enter_password,
-        controller: controller_name,
-        next_steps: [:personal_key],
-        preconditions: ->(idv_session:, user:) do
-          idv_session.verify_info_step_complete? &&
-            idv_session.address_step_complete?
-        end,
-      )
-    end
-
     private
 
     def title

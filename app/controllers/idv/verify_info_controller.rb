@@ -35,17 +35,6 @@ module Idv
       end
     end
 
-    def self.step_info
-      Idv::StepInfo.new(
-        key: :verify_info,
-        controller: controller_name,
-        next_steps: [:phone],
-        preconditions: ->(idv_session:, user:) do
-          idv_session.ssn && idv_session.document_capture_complete?
-        end,
-      )
-    end
-
     private
 
     def flow_param; end

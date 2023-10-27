@@ -48,15 +48,6 @@ module Idv
       end
     end
 
-    def self.step_info
-      Idv::StepInfo.new(
-        key: :ssn,
-        controller: controller_name,
-        next_steps: [:verify_info],
-        preconditions: ->(idv_session:, user:) { idv_session.document_capture_complete? },
-      )
-    end
-
     private
 
     def confirm_repeat_ssn

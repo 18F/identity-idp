@@ -34,15 +34,6 @@ module Idv
       redirect_to next_step
     end
 
-    def self.step_info
-      Idv::StepInfo.new(
-        key: :personal_key,
-        controller: controller_name,
-        next_steps: [:success],
-        preconditions: ->(idv_session:, user:) { user.identity_verified? },
-      )
-    end
-
     private
 
     def address_verification_method
