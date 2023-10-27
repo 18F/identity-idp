@@ -377,12 +377,6 @@ Rails.application.routes.draw do
           # sometimes underscores get messed up when linked to via SMS
           as: :capture_doc_dashes
 
-      # DEPRECATION NOTICE
-      # Usage of the /in_person_proofing/ssn routes is deprecated.
-      # Use the /in_person/ssn routes instead.
-      #
-      # These have been left in temporarily to prevent any impact to users
-      # during the deprecation process.
       get '/in_person_proofing/address' => 'in_person/address#show'
 
       get '/in_person' => 'in_person#index'
