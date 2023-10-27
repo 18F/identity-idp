@@ -1,7 +1,7 @@
 <%= render(
       'idv/shared/error',
       title: t('titles.failure.phone_verification'),
-      heading: t('idv.failure.phone.rate_limited.heading'),
+      heading: t('idv.failure.gpo.rate_limited.heading'),
       options: [
         {
           url: MarketingSite.contact_url,
@@ -11,37 +11,41 @@
       ].select(&:present?),
     ) do %>
       <p>
-        <%= t('idv.failure.phone.rate_limited.body') %>
+        <%= t(
+              'errors.enter_code.rate_limited_html',
+              timeout: distance_of_time_in_words(
+                Time.zone.now,
+                [@expires_at, Time.zone.now].compact.max,
+                except: :seconds,
+              ),
+            ) %>
       </p>
-      <%= t('idv.failure.phone.rate_limited.options_header') %>
-      <ul>
-        <% if @gpo_letter_available %>
-          <li><%= t('idv.failure.phone.rate_limited.option_verify_by_mail_html') %></li>
-        <% end %>
-        <li>
-          <%= t(
-                'idv.failure.phone.rate_limited.option_try_again_later_html',
-                time_left: distance_of_time_in_words(
-                  Time.zone.now,
-                  [@expires_at, Time.zone.now].compact.max,
-                  except: :seconds,
-                ),
-              ) %>
-        </li>
-      </ul>
 
-      <% if @gpo_letter_available %>
-        <div class="margin-y-5">
-          <%= render ButtonComponent.new(
-                action: ->(**tag_options, &block) { link_to idv_request_letter_path, **tag_options, &block },
-                big: true,
-                wide: true,
-              ).with_content(t('idv.failure.phone.rate_limited.gpo.button')) %>
-        </div>
-      <% end %>
+      <p>
+        <strong>
+          <% if decorated_sp_session.sp_name.present? %>
+            <%= link_to(
+                  t(
+                    'idv.failure.exit.with_sp',
+                    app_name: APP_NAME, sp_name: decorated_sp_session.sp_name,
+                  ),
+                  return_to_sp_failure_to_proof_path(
+                    step: 'verify_id',
+                    location: request.params[:action],
+                  ),
+                ) %>
+          <% else %>
+            <%= link_to(
+                  t(
+                    'idv.failure.exit.without_sp',
+                    app_name: APP_NAME,
+                  ),
+                  return_to_sp_failure_to_proof_path(
+                    step: 'verify_id',
+                    location: request.params[:action],
+                  ),
+                ) %>
+          <% end %>
+        </strong>
+      </p>
     <% end %>
-    <%= render PageFooterComponent.new do %>
-      <%= link_to(t('links.cancel'), idv_cancel_path(step: :phone_error)) %>
-    <% end %>
-
-

@@ -110,6 +110,9 @@ en:
     two_factor_auth_setup:
       must_select_additional_option: Select an additional authentication method.
       must_select_option: Select an authentication method.
+    enter_code:
+      rate_limited_html: You entered an incorrect verification code too many times.
+        <strong>Try again in %{timeout}.</strong>
     verify_personal_key:
       rate_limited: You tried too many times, please try again in %{timeout}.
     verify_profile:
