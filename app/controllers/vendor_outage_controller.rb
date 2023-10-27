@@ -16,6 +16,6 @@ class VendorOutageController < ApplicationController
   def gpo_letter_available?
     FeatureManagement.gpo_verification_enabled? &&
       current_user &&
-      !Idv::GpoMail.new(current_user).mail_spammed?
+      !Idv::GpoMail.new(current_user).rate_limited?
   end
 end
