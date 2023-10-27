@@ -814,16 +814,17 @@ RSpec.describe UserMailer, type: :mailer do
   end
 
   describe '#gpo_code_expired' do
-    let(:date_letter_requested) { Date.new(1981, 6, 18) }
+    let(:code_sent_at) { Time.new(2023, 10, 1, 14, 15, 16, 'Z') }
 
     let(:user) do
-      user = create(:user, :with_pending_gpo_profile)
-      user.pending_profile.update(gpo_verification_pending_at: date_letter_requested)
-      user
+      create(:user, :with_pending_gpo_profile)
     end
 
     let(:mail) do
-      UserMailer.with(user: user, email_address: email_address).gpo_code_expired
+      UserMailer.with(
+        user: user,
+        email_address: email_address,
+      ).gpo_code_expired(code_sent_at: code_sent_at)
     end
 
     it_behaves_like 'a system email'
@@ -842,7 +843,7 @@ RSpec.describe UserMailer, type: :mailer do
         strip_tags(
           t(
             'user_mailer.gpo_code_expired.body.intro',
-            date_letter_requested: date_letter_requested.strftime(t('time.formats.event_date')),
+            code_sent_at: code_sent_at.strftime(t('time.formats.event_date')),
             app_name: APP_NAME,
           ),
         ),

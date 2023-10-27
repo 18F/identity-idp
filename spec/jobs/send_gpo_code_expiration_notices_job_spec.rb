@@ -187,7 +187,7 @@ RSpec.describe SendGpoCodeExpirationNoticesJob do
           subject: t('user_mailer.gpo_code_expired.subject'),
           body: [
             I18n.l(
-              user.gpo_verification_pending_profile.gpo_verification_pending_at,
+              user.gpo_verification_pending_profile.gpo_confirmation_codes.first.code_sent_at,
               format: :event_date,
             ),
             idv_url,

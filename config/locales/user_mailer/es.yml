@@ -97,10 +97,9 @@ es:
     gpo_code_expired:
       body:
         cta: Comenzar a verificar su identidad
-        intro: Solicitó una carta con un código de verificación el
-          %{date_letter_requested}. Este código de verificación ya expiró.
-          Vuelva a iniciar sesión en %{app_name} para comenzar a verificar su
-          identidad nuevamente.
+        intro: Solicitó una carta con un código de verificación el %{code_sent_at}. Este
+          código de verificación ya expiró. Vuelva a iniciar sesión en
+          %{app_name} para comenzar a verificar su identidad nuevamente.
         learn_more_link: Obtenga más información sobre la verificación de su dirección
           por correo.
       subject: Su código de verificación ha caducado

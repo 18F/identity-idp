@@ -90,9 +90,9 @@ en:
     gpo_code_expired:
       body:
         cta: Start verifying your identity
-        intro: You requested a letter with a verification code on
-          %{date_letter_requested}. This verification code has now expired. Sign
-          back into %{app_name} to start verifying your identity again.
+        intro: You requested a letter with a verification code on %{code_sent_at}. This
+          verification code has now expired. Sign back into %{app_name} to start
+          verifying your identity again.
         learn_more_link: Learn more about verifying your address by mail.
       subject: Your verification code has expired
     help_link_text: Help Center
