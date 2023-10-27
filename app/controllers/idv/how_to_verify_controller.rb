@@ -10,11 +10,13 @@ module Idv
     }.freeze
 
     def show
+      analytics.idv_doc_auth_how_to_verify_visited(**analytics_arguments)
       @idv_how_to_verify_form = Idv::HowToVerifyForm.new
       @verificationOptions = VERIFICATION_OPTIONS
     end
 
     def update
+      analytics.idv_doc_auth_how_to_verify_submitted(**analytics_arguments)
       if how_to_verify_form_params['selection'] == VERIFICATION_OPTIONS[:ipp]
         redirect_to idv_document_capture_url
       else
@@ -23,6 +25,13 @@ module Idv
     end
 
     private
+
+    def analytics_arguments
+      {
+        step: 'how_to_verify',
+        analytics_id: 'Doc Auth',
+      }
+    end
 
     def how_to_verify_form_params
       params.require(:idv_how_to_verify_form).permit(:selection)

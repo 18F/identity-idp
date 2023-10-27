@@ -671,6 +671,14 @@ module AnalyticsEvents
     track_event('IdV: doc auth agreement visited', **extra) # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
+  def idv_doc_auth_how_to_verify_visited(**extra)
+    track_event('IdV: doc auth how to verify visited', **extra) # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
+  end
+
+  def idv_doc_auth_how_to_verify_submitted(**extra)
+    track_event('IdV: doc auth how to verify submitted', **extra) # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
+  end
+  
   def idv_doc_auth_capture_complete_visited(**extra)
     track_event('IdV: doc auth capture_complete visited', **extra) # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end

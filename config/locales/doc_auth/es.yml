@@ -201,6 +201,7 @@ es:
       document_capture_front: Parte delantera de su documento de identidad
       front: Anverso de su licencia de conducir o identificación estatal
       getting_started: Vamos a verificar su identidad para %{sp_name}
+      how_to_verify: Elija cómo quiere verificar su identidad
       hybrid_handoff: '¿Cómo desea añadir su documento de identidad?'
       interstitial: Estamos procesando sus imágenes
       lets_go: Cómo funciona la verificación de su identidad
@@ -215,8 +216,8 @@ es:
       upload_from_computer: Continuar en esta computadora
       upload_from_phone: Utilice su teléfono para tomar las fotos
       verify_identity: Verifique su identidad
-      verify_online:
-      verify_at_post_office:
+      verify_online: Verifique su identidad en línea
+      verify_at_post_office: Verifique su identidad en una Oficina de Correos
       welcome: Comience a verificar su identidad
     hybrid_flow_warning:
       explanation_html: Usted está utilizando <strong>%{app_name}</strong> para
@@ -245,6 +246,7 @@ es:
       getting_started_html: '%{sp_name} necesita asegurarse de que es usted realmente
         y no alguien que se hace pasar por usted. %{link_html}'
       getting_started_learn_more: Obtenga más información sobre lo que necesita para verificar su identidad
+      how_to_verify: Tiene la opción de verificar su identidad en línea o en persona en una Oficina de Correos participante.
       hybrid_handoff: Recopilaremos información sobre usted leyendo su documento de
         identidad expedido por el estado.
       image_loaded: Imagen cargada
@@ -280,7 +282,18 @@ es:
       verify_identity: Le preguntaremos sus datos personales para verificar su
         identidad comparándola con los registros públicos.
       verify_online_html:
+        <p>Tomará fotografías de tu identificación para verificar tu identidad completamente en línea.</p>
+        <p>
+        La mayoría de los usuarios finalizan este proceso de una sola vez.
+        Esta opción es mejor si tiene un dispositivo móvil o una forma de tomar fotografías de su identificación.
+        <a href="%{help_url}" target="_blank">Obtenga más información sobre la verificación en línea.</a>
+        <p>
       verify_at_post_office_html:
+        <p>Ingresará su información de identificación en línea y verificará tu identidad en persona en una Oficina de Correos participante.</p>
+        <p>
+        Esta opción es mejor si no tiene un dispositivo móvil o una manera fácil de tomar fotografías de su identificación.
+        <a href="%{help_url}" target="_blank">Obtenga más información sobre la verificación en persona.</a>
+        </p>
       welcome: '%{sp_name} necesita asegurarse de que es usted y no es alguien que se
         hace pasar por usted.'
       you_entered: 'Ud. entregó:'
@@ -321,4 +334,4 @@ es:
       review_issues_id_text2: '¿Tomó la foto en una superficie plana?'
       review_issues_id_text3: '¿Tiene el flash de su cámara apagado?'
       review_issues_id_text4: '¿Todos los detalles están nítidos y claramente visibles?'
-      most_common:
+      most_common: Más común
