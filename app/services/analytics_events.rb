@@ -524,11 +524,10 @@ module AnalyticsEvents
     track_event('Forget All Browsers Visited') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
-  def idv_acuant_sdk_loaded(success:, **extra)
+  def idv_acuant_sdk_loaded(success:, **_extra)
     track_event(
       'Frontend: IdV: Acuant SDK loaded', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       success: success,
-      **extra,
     )
   end
 
@@ -580,8 +579,8 @@ module AnalyticsEvents
   # @param [String] name
   # @param [String] message
   # @param [String] stack
-  def frontend_error(name:, message:, stack: nil, **extra)
-    track_event('Frontend Error', name:, message:, stack:, **extra) # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
+  def frontend_error(name:, message:, stack: nil, **_extra)
+    track_event('Frontend Error', name:, message:, stack:) # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
   # @param [Boolean] success
@@ -652,24 +651,21 @@ module AnalyticsEvents
   end
   # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
-  def idv_back_image_clicked(**extra)
+  def idv_back_image_clicked(**_extra)
     track_event(
       'Frontend: IdV: back image clicked', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
-      **extra,
     )
   end
 
-  def idv_barcode_warning_continue_clicked(**extra)
+  def idv_barcode_warning_continue_clicked(**_extra)
     track_event(
       'Frontend: IdV: barcode warning continue clicked', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
-      **extra,
     )
   end
 
-  def idv_barcode_warning_retake_photos_clicked(**extra)
+  def idv_barcode_warning_retake_photos_clicked(**_extra)
     track_event(
       'Frontend: IdV: barcode warning retake photos clicked', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
-      **extra,
     )
   end
 
@@ -717,10 +713,9 @@ module AnalyticsEvents
     )
   end
 
-  def idv_capture_troubleshooting_dismissed(**extra)
+  def idv_capture_troubleshooting_dismissed(**_extra)
     track_event(
       'Frontend: IdV: Capture troubleshooting dismissed', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
-      **extra,
     )
   end
 
@@ -1165,10 +1160,9 @@ module AnalyticsEvents
   end
   # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
-  def idv_front_image_clicked(**extra)
+  def idv_front_image_clicked(**_extra)
     track_event(
       'Frontend: IdV: front image clicked', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
-      **extra,
     )
   end
 
@@ -1243,10 +1237,9 @@ module AnalyticsEvents
     track_event('IdV: gpo reminder email sent', user_id: user_id, **extra) # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
-  def idv_image_capture_failed(**extra)
+  def idv_image_capture_failed(**_extra)
     track_event(
       'Frontend: IdV: Image capture failed', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
-      **extra,
     )
   end
 
@@ -2111,17 +2104,15 @@ module AnalyticsEvents
     )
   end
 
-  def idv_link_sent_capture_doc_polling_complete(**extra)
+  def idv_link_sent_capture_doc_polling_complete(**_extra)
     track_event(
       'Frontend: IdV: Link sent capture doc polling complete', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
-      **extra,
     )
   end
 
-  def idv_link_sent_capture_doc_polling_started(**extra)
+  def idv_link_sent_capture_doc_polling_started(**_extra)
     track_event(
       'Frontend: IdV: Link sent capture doc polling started', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
-      **extra,
     )
   end
 
@@ -2677,17 +2668,15 @@ module AnalyticsEvents
     )
   end
 
-  def idv_warning_action_triggered(**extra)
+  def idv_warning_action_triggered(**_extra)
     track_event(
       'Frontend: IdV: warning action triggered', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
-      **extra,
     )
   end
 
-  def idv_warning_shown(**extra)
+  def idv_warning_shown(**_extra)
     track_event(
       'Frontend: IdV: warning shown', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
-      **extra,
     )
   end
 
