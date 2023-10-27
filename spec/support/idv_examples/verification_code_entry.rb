@@ -1,7 +1,7 @@
-RSpec.shared_examples 'gpo otp verification' do
+RSpec.shared_examples 'verification code entry' do
   include IdvStepHelper
 
-  it 'prompts for one-time code at sign in' do
+  it 'prompts for verification code at sign in' do
     sign_in_live_with_2fa(user)
 
     expect(current_path).to eq idv_verify_by_mail_enter_code_path
@@ -26,7 +26,7 @@ RSpec.shared_examples 'gpo otp verification' do
     expect(page).to_not have_content(t('account.index.verification.reactivate_button'))
   end
 
-  it 'renders an error for an expired GPO OTP' do
+  it 'renders an error for an expired verification code' do
     sign_in_live_with_2fa(user)
 
     gpo_confirmation_code.update(
