@@ -30,6 +30,7 @@ interface AppRootData {
   acuantVersion: string;
   flowPath: FlowPath;
   cancelUrl: string;
+  exitUrl: string;
   idvInPersonUrl?: string;
   securityAndPrivacyHowItWorksUrl: string;
 }
@@ -82,6 +83,7 @@ const {
   acuantVersion,
   flowPath,
   cancelUrl: cancelURL,
+  exitUrl: exitURL,
   idvInPersonUrl: inPersonURL,
   securityAndPrivacyHowItWorksUrl: securityAndPrivacyHowItWorksURL,
   inPersonFullAddressEntryEnabled,
@@ -140,6 +142,7 @@ const App = composeComponents(
     {
       value: {
         cancelURL,
+        exitURL,
         currentStep: 'document_capture',
       },
     },

@@ -36,7 +36,7 @@ RSpec.feature 'Accessibility on IDV pages', :js do
       visit idv_path
       complete_all_doc_auth_steps_before_password_step
 
-      expect(page).to have_current_path(idv_review_path)
+      expect(page).to have_current_path(idv_enter_password_path)
       expect_page_to_have_no_accessibility_violations(page)
     end
 

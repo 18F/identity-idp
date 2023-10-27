@@ -99,7 +99,7 @@ module IdvStepConcern
 
   def confirm_verify_info_step_needed
     return unless idv_session.verify_info_step_complete?
-    redirect_to idv_review_url
+    redirect_to idv_enter_password_url
   end
 
   def confirm_address_step_complete

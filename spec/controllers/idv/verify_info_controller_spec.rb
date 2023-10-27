@@ -104,7 +104,7 @@ RSpec.describe Idv::VerifyInfoController do
 
         get :show
 
-        expect(response).to redirect_to(idv_review_url)
+        expect(response).to redirect_to(idv_enter_password_url)
       end
     end
 

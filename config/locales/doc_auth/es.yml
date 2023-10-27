@@ -112,15 +112,20 @@ es:
           tengan reflejos. Asegúrese de que el flash de su cámara esté
           desactivado e intente tomar nuevas fotos.
       http:
-        image_load: El archivo de imagen que ha añadido no es compatible. Por favor,
-          tome nuevas fotos de su identificación y vuelva a intentarlo.
-        image_size: El tamaño de la imagen es demasiado grande o demasiado pequeño.
-          Añada imágenes de su documento de identidad de unos 2025 x 1275
-          píxeles.
-        pixel_depth: No es compatible con la profundidad de píxeles de su archivo de
-          imagen. Tome nuevas fotos de su documento de identidad e inténtelo
-          nuevamente. La profundidad de píxeles de la imagen admitida es de 24
-          bits RGB.
+        image_load:
+          failed_short: El archivo de la imagen no es compatible. Inténtalo de nuevo.
+          top_msg: El archivo de imagen que ha añadido no es compatible. Por favor, tome
+            nuevas fotos de su identificación y vuelva a intentarlo.
+        image_size:
+          failed_short: El archivo de la imagen no es compatible. Inténtalo de nuevo.
+          top_msg: El tamaño de la imagen es demasiado grande o demasiado pequeño. Añada
+            imágenes de su documento de identidad de unos 2025 x 1275 píxeles.
+        pixel_depth:
+          failed_short: El archivo de la imagen no es compatible. Inténtalo de nuevo.
+          top_msg: No es compatible con la profundidad de píxeles de su archivo de imagen.
+            Tome nuevas fotos de su documento de identidad e inténtelo
+            nuevamente. La profundidad de píxeles de la imagen admitida es de 24
+            bits RGB.
       not_a_file: La selección no era un archivo válido.
       pii:
         birth_date_min_age: Tu cumpleaños no cumple con el requisito de edad mínima.
@@ -133,6 +138,32 @@ es:
           estén demasiado borrosas u oscuras. Intente tomar nuevas fotos en un
           área iluminada.
       upload_error: Lo siento, algo salió mal por nuestra parte.
+    exit_survey:
+      content_html: <strong>Si no tiene una licencia de conducir o identificación
+        estatal, no puede continuar en %{app_name}.</strong> Por favor <a>salga
+        de %{app_name} y contacte a %{sp_name}</a> para averiguar qué puede
+        hacer.
+      content_nosp_html: <strong>Si no tiene una licencia de conducir o identificación
+        estatal, no puede continuar en %{app_name}.</strong> <a>Cancele la
+        verificación de identidad con %{app_name}</a> y podrá reiniciar el
+        proceso cuando esté listo.
+      header: No cuenta con una licencia de conducir o identificación estatal?
+      optional:
+        button: Enviar y salir de %{app_name}
+        content: Ayúdenos a agregar más identificaciones oficiales a %{app_name}. ¿Qué
+          identificaciones tiene como alternativa?
+        id_types:
+          military_id: Credencial militar (puede ser una credencial del Departamento de
+            Defensa, una credencial de Salud de los Veteranos o una credencial
+            de veterano)
+          other: Una que no aparece en la lista
+          resident_card: Tarjeta Verde de Estados Unidos (también conocida como Tarjeta de
+            Residente Permanente)
+          tribal_id: Credencial tribal
+          us_passport: Pasaporte estadounidense
+          voter_registration_card: Credencial para votar
+        legend: Opcional. Seleccione todas las identificaciones que tenga.
+        tag: Opcional
     forms:
       captured_image: Imagen capturada
       change_file: Cambiar archivo

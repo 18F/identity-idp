@@ -16,10 +16,10 @@ RSpec.describe Idv::GpoMail do
       and_return(minimum_wait_before_another_usps_letter_in_hours)
   end
 
-  describe '#mail_spammed?' do
+  describe '#rate_limited?' do
     context 'when no letters have been requested' do
       it 'returns false' do
-        expect(subject.mail_spammed?).to eq false
+        expect(subject.rate_limited?).to eq false
       end
     end
 
@@ -31,14 +31,14 @@ RSpec.describe Idv::GpoMail do
       end
 
       it 'is true' do
-        expect(subject.mail_spammed?).to eq true
+        expect(subject.rate_limited?).to eq true
       end
 
       context 'but the window limit is disabled due to a 0 window size' do
         let(:letter_request_events_window_days) { 0 }
 
         it 'is false' do
-          expect(subject.mail_spammed?).to eq false
+          expect(subject.rate_limited?).to eq false
         end
       end
 
@@ -46,7 +46,7 @@ RSpec.describe Idv::GpoMail do
         let(:max_letter_request_events) { 0 }
 
         it 'is false' do
-          expect(subject.mail_spammed?).to eq false
+          expect(subject.rate_limited?).to eq false
         end
       end
     end
@@ -57,14 +57,14 @@ RSpec.describe Idv::GpoMail do
       end
 
       it 'is true' do
-        expect(subject.mail_spammed?).to eq true
+        expect(subject.rate_limited?).to eq true
       end
 
       context 'but the too-recent limit is disabled' do
         let(:minimum_wait_before_another_usps_letter_in_hours) { 0 }
 
         it 'is false' do
-          expect(subject.mail_spammed?).to eq false
+          expect(subject.rate_limited?).to eq false
         end
       end
 
@@ -79,7 +79,7 @@ RSpec.describe Idv::GpoMail do
         end
 
         it 'returns false' do
-          expect(subject.mail_spammed?).to be false
+          expect(subject.rate_limited?).to be false
         end
       end
     end

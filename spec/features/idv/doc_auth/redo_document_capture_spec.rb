@@ -189,6 +189,23 @@ RSpec.feature 'doc auth redo document capture', js: true do
     end
   end
 
+  shared_examples_for 'inline error for 4xx status shown' do |status|
+    it "shows inline error for status #{status}" do
+      error = case status
+              when 438
+                t('doc_auth.errors.http.image_load.failed_short')
+              when 439
+                t('doc_auth.errors.http.pixel_depth.failed_short')
+              when 440
+                t('doc_auth.errors.http.image_size.failed_short')
+              end
+      expect(page).to have_css(
+        '.usa-error-message[role="alert"]',
+        text: error,
+      )
+    end
+  end
+
   context 'error due to data issue with 2xx status code', allow_browser_log: true do
     before do
       sign_in_and_2fa_user
@@ -232,6 +249,7 @@ RSpec.feature 'doc auth redo document capture', js: true do
       attach_and_submit_images
       click_try_again
     end
+    it_behaves_like 'inline error for 4xx status shown', 440
     it_behaves_like 'image re-upload not allowed'
   end
 

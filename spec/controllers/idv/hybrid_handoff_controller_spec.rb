@@ -163,7 +163,7 @@ RSpec.describe Idv::HybridHandoffController do
         it 'redirects to review' do
           get :show, params: { redo: true }
 
-          expect(response).to redirect_to(idv_review_url)
+          expect(response).to redirect_to(idv_enter_password_url)
         end
       end
     end

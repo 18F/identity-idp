@@ -55,7 +55,7 @@ RSpec.describe Idv::OtpVerificationController do
 
       it 'redirects to the review step' do
         get :show
-        expect(response).to redirect_to(idv_review_path)
+        expect(response).to redirect_to(idv_enter_password_path)
       end
     end
 
@@ -85,7 +85,7 @@ RSpec.describe Idv::OtpVerificationController do
 
       it 'redirects to the review step' do
         put :update, params: otp_code_param
-        expect(response).to redirect_to(idv_review_path)
+        expect(response).to redirect_to(idv_enter_password_path)
       end
     end
 

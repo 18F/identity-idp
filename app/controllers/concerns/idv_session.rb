@@ -21,7 +21,7 @@ module IdvSession
   def confirm_phone_or_address_confirmed
     return if idv_session.address_confirmed? || idv_session.phone_confirmed?
 
-    redirect_to idv_review_url
+    redirect_to idv_enter_password_url
   end
 
   def idv_session
