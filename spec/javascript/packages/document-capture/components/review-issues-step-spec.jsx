@@ -343,14 +343,6 @@ describe('document-capture/components/review-issues-step', () => {
     expect(getByLabelText('doc_auth.headings.document_capture_back')).to.be.ok();
   });
 
-  it('renders optional questions', async () => {
-    const { getByText, getByRole } = render(<ReviewIssuesStep {...DEFAULT_PROPS} />);
-
-    await userEvent.click(getByRole('button', { name: 'idv.failure.button.warning' }));
-    expect(getByRole('heading', { name: 'doc_auth.exit_survey.header', level: 2 })).to.be.ok();
-    expect(getByText('doc_auth.exit_survey.optional.button')).to.be.ok();
-  });
-
   context('service provider context', () => {
     context('ial2', () => {
       it('renders with front and back inputs', async () => {
