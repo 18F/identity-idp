@@ -25,6 +25,7 @@ RSpec.describe FrontendLogController do
 
           expect(response).to have_http_status(:bad_request)
           expect(json[:success]).to eq(false)
+          expect(json[:error_message]).to eq('invalid event')
         end
 
         it 'does not commit session' do
@@ -196,6 +197,7 @@ RSpec.describe FrontendLogController do
 
           expect(response).to have_http_status(:bad_request)
           expect(json[:success]).to eq(false)
+          expect(json[:error_message]).to eq('invalid event')
         end
 
         it 'does not commit session' do
