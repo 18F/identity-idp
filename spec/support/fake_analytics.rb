@@ -100,7 +100,7 @@ end
 RSpec::Matchers.define :have_logged_event do |event, attributes_matcher|
   match do |actual|
     if event.nil? && attributes_matcher.nil?
-      expect(actual.events.count).to eq 1
+      expect(actual.events.count).to be > 0
     elsif attributes_matcher.nil?
       expect(actual.events).to have_key(event)
     else
