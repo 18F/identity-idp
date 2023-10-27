@@ -18,6 +18,7 @@ module Idv
       return if request.referer == idv_link_sent_url
       return if request.referer == idv_hybrid_handoff_url
       return if request.referer == idv_hybrid_handoff_url(redo: true)
+      return if request.referer == idv_cancel_url(step: 'hybrid_handoff')
 
       redirect_to idv_phone_question_url
     end
