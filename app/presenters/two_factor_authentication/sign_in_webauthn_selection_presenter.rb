@@ -9,7 +9,7 @@ module TwoFactorAuthentication
     end
 
     def label
-      t('two_factor_authentication.two_factor_choice_options.webauthn')
+      t('two_factor_authentication.login_options.webauthn')
     end
 
     def info
