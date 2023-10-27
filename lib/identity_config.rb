@@ -184,6 +184,7 @@ class IdentityConfig
     config.add(:doc_auth_max_capture_attempts_before_native_camera, type: :integer)
     config.add(:doc_auth_max_submission_attempts_before_native_camera, type: :integer)
     config.add(:doc_auth_s3_request_timeout, type: :integer)
+    config.add(:doc_auth_selfie_capture, type: :json, options: { symbolize_names: true })
     config.add(:doc_auth_supported_country_codes, type: :json)
     config.add(:doc_auth_vendor, type: :string)
     config.add(:doc_auth_vendor_randomize, type: :boolean)
