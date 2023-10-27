@@ -46,7 +46,6 @@ RSpec.feature 'phone question step' do
         expect(current_path).to eq(idv_cancel_path)
         click_on t('idv.cancel.actions.keep_going')
         expect(page).to have_current_path(idv_hybrid_handoff_path(redo: true))
-
       end
     end
 
