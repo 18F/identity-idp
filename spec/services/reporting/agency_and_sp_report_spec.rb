@@ -69,7 +69,7 @@ RSpec.describe Reporting::AgencyAndSpReport do
         [
           header_row,
           ['Auth', 1, 1],
-          ['IDV', 0, 0]
+          ['IDV', 0, 0],
         ]
       end
 
