@@ -12,6 +12,7 @@ RSpec.describe InPerson::SendProofingNotificationJob do
       :passed,
       :with_notification_phone_configuration,
       proofed_at: Time.zone.now - 3.days,
+      enrollment_code: '1234567890123456',
     )
   end
   let(:failing_enrollment) do
@@ -153,6 +154,7 @@ RSpec.describe InPerson::SendProofingNotificationJob do
           proofed_date = Time.zone.now.strftime('%m/%d/%Y')
           phone_number = passed_enrollment.notification_phone_configuration.formatted_phone
           contact_number = '(844) 555-5555'
+          reference_string = passed_enrollment.enrollment_code
 
           expect(Telephony).
             to(
@@ -160,8 +162,8 @@ RSpec.describe InPerson::SendProofingNotificationJob do
               with(
                 to: phone_number,
                 message: "Login.gov: Vous avez visité le bureau de poste le #{proofed_date}." \
-                         " Vérifiez votre e-mail pour votre résultat. Ce n'est pas vous?" \
-                          " Signalez-le immédiatement: #{contact_number}",
+                          " Vérifiez votre e-mail pour votre résultat. Ce n'est pas vous?" \
+                          " Signalez-le immédiatement: #{contact_number}. Réf: #{reference_string}",
                 country_code: Phonelib.parse(phone_number).country,
               ),
             )
