@@ -8,6 +8,7 @@ en:
     info_pin_map: Image of a map pin
     info_question: Blue question mark
     laptop: Laptop computer
+    laptop_and_phone: Laptop and phone
     personal_key: Personal key
     post_office: Post office
     totp_qrcode: QR code for authenticator app

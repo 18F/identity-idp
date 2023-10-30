@@ -8,8 +8,9 @@ fr:
     info_pin_map: Image d’une épingle à carte
     info_question: point d’interrogation bleu
     laptop: Ordinateur portable
+    laptop_and_phone: ordinateur et téléphone portable
     personal_key: Clé personnelle
-    post_office: Bureau de poste
+    post_office: Bureau de Poste
     totp_qrcode: Code QR pour l’application d’authentification
     us_flag: Drapeau américain
     warning: Panneau d’avertissement jaune

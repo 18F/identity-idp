@@ -8,8 +8,9 @@ es:
     info_pin_map: Imagen de un marcador de mapa
     info_question: signo de interrogación azul
     laptop: Computadora portátil
+    laptop_and_phone: computadora portátil y celular
     personal_key: Clave personal
-    post_office: Oficina de correos
+    post_office: Oficina de Correos
     totp_qrcode: Código QR para la aplicación de autenticación
     us_flag: Bandera de estados unidos
     warning: Letrero de precaución amarillo
