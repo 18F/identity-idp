@@ -13,7 +13,7 @@
   <div role="group" aria-label="<%= t('doc_auth.headings.how_to_verify') %>">
     <%= radio_button_tag(
           'idv_how_to_verify_form[selection]',
-          @verificationOptions[:remote],
+          'remote',
           false,
           class: 'usa-radio__input usa-radio__input--tile',
         ) %>
@@ -45,7 +45,7 @@
         <% end %>
     <%= radio_button_tag(
           'idv_how_to_verify_form[selection]',
-          @verificationOptions[:ipp],
+          'ipp',
           false,
           class: 'usa-radio__input usa-radio__input--tile',
         ) %>
