@@ -107,12 +107,20 @@ locals:
       </div>
     </dl>
     <div class='grid-auto'>
-      <%= button_to(
-            idv_in_person_step_url(step: :redo_address),
-            method: :put,
-            class: 'usa-button usa-button--unstyled padding-y-1',
-            'aria-label': t('idv.buttons.change_address_label'),
-          ) { t('idv.buttons.change_label') } %>
+      <% if IdentityConfig.store.in_person_residential_address_controller_enabled %>
+        <%= link_to(
+              t('idv.buttons.change_label'),
+              idv_in_person_proofing_address_url,
+              'aria-label': t('idv.buttons.change_address_label'),
+            ) %>
+      <% else %>
+        <%= button_to(
+              idv_in_person_step_url(step: :redo_address),
+              method: :put,
+              class: 'usa-button usa-button--unstyled padding-y-1',
+              'aria-label': t('idv.buttons.change_address_label'),
+            ) { t('idv.buttons.change_label') } %>
+      <% end %>
     </div>
   </div>
   <div class="grid-row grid-gap grid-gap-2 padding-top-1">
