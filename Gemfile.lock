@@ -286,7 +286,6 @@ GEM
     erubi (1.12.0)
     et-orbi (1.2.7)
       tzinfo
-    execjs (2.8.1)
     factory_bot (6.2.1)
       activesupport (>= 5.0.0)
     factory_bot_rails (6.2.0)
@@ -650,8 +649,6 @@ GEM
       openssl-signature_algorithm (~> 1.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
-    uglifier (4.2.0)
-      execjs (>= 0.3.0, < 3)
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.8)
@@ -818,7 +815,6 @@ DEPENDENCIES
   subprocess
   tableparser
   terminal-table
-  uglifier (~> 4.2)
   valid_email (>= 0.1.3)
   view_component (~> 3.0.0)
   webauthn (~> 2.5.2)

@@ -15,6 +15,7 @@ module Idv
       mail_only_warning_shown
       personal_key
       phone_for_mobile_flow
+      phone_with_camera
       pii
       pii_from_doc
       previous_phone_step_params
@@ -121,6 +122,10 @@ module Idv
       confirmation_maker.perform
 
       @gpo_otp = confirmation_maker.otp
+    end
+
+    def phone_otp_sent?
+      user_phone_confirmation_session.present?
     end
 
     def user_phone_confirmation_session
