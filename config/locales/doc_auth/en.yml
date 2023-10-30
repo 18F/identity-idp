@@ -263,6 +263,14 @@ en:
         - '<strong>Verify by mail</strong>: We’ll mail a letter to your home
           address. This takes <strong>5 to 10 days</strong>.'
       welcome: 'You will need your:'
+    not_ready:
+      button_nosp: Cancel and return to your profile
+      button_sp: Exit %{app_name} and return to %{sp_name}
+      content_nosp: If you exit %{app_name} now, you will not have verified your
+        identity. You can return later to finish this process.
+      content_sp: If you exit %{app_name} and return to %{sp_name}, you will not have
+        verified your identity. You can return later to finish this process.
+      header: Not ready to add photos?
     phone_question:
       do_not_have: I don’t have a phone
     tips:
