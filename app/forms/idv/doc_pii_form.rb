@@ -4,10 +4,18 @@ module Idv
 
     validate :name_valid?
     validate :dob_valid?
-    validates_presence_of :address1, { message: proc { I18n.t('doc_auth.errors.alerts.address_check') } }
-    validates_length_of :state, { is: 2, message: proc { I18n.t('doc_auth.errors.general.no_liveness') } }
+    validates_presence_of :address1, { message: proc {
+                                                  I18n.t('doc_auth.errors.alerts.address_check')
+                                                } }
+    validates_length_of :state, { is: 2,
+                                  message: proc {
+                                             I18n.t('doc_auth.errors.general.no_liveness')
+                                           } }
     validate :zipcode_valid?
-    validates :jurisdiction, inclusion: { in: Idp::Constants::STATE_AND_TERRITORY_CODES, message: proc { I18n.t('doc_auth.errors.general.no_liveness') } }
+    validates :jurisdiction, inclusion: { in: Idp::Constants::STATE_AND_TERRITORY_CODES,
+                                          message: proc {
+                                                     I18n.t('doc_auth.errors.general.no_liveness')
+                                                   } }
 
     attr_reader :first_name, :last_name, :dob, :address1, :state, :zipcode, :attention_with_barcode,
                 :jurisdiction
@@ -41,7 +49,7 @@ module Idv
 
     def self.pii_like_keypaths
       keypaths = [[:pii]]
-      attrs = %i(name dob dob_min_age address1 state zipcode jurisdiction)
+      attrs = %i[name dob dob_min_age address1 state zipcode jurisdiction]
       keypaths << attrs
       attrs.each do |k|
         keypaths << [:errors, k]
@@ -76,7 +84,7 @@ module Idv
     end
 
     def zipcode_valid?
-      return if  zipcode.is_a?(String) && zipcode.present?
+      return if zipcode.is_a?(String) && zipcode.present?
 
       errors.add(:zipcode, generic_error)
     end
