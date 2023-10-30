@@ -128,7 +128,7 @@ module Idv
         attempts: attempts,
         remaining_attempts: remaining_attempts,
         user_id: user_uuid,
-        pii_like_keypaths: DocPiiForm.pii_like_keypaths, # see errors.add(:pii)
+        pii_like_keypaths: DocPiiForm.pii_like_keypaths,
         flow_path: params[:flow_path],
       }
 

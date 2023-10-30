@@ -31,7 +31,7 @@ module Idv
         success: valid?,
         errors: errors,
         extra: { # do we need pii_like_keypaths here?
-          pii_like_keypaths: self.class.pii_like_keypaths, # see errors.add(:pii)
+          pii_like_keypaths: self.class.pii_like_keypaths,
           attention_with_barcode: attention_with_barcode?,
         },
       )
@@ -40,14 +40,14 @@ module Idv
     end
 
     def self.pii_like_keypaths
-      p = [[:pii]]
-      fields = %i(name dob dob_min_age address1 state zipcode jurisdiction)
-      p << fields
-      fields.each do |k|
-        p << [:errors, k]
-        p << [:error_details, k]
+      keypaths = [[:pii]]
+      attrs = %i(name dob dob_min_age address1 state zipcode jurisdiction)
+      keypaths << attrs
+      attrs.each do |k|
+        keypaths << [:errors, k]
+        keypaths << [:error_details, k]
       end
-      p
+      keypaths
     end
 
     private
