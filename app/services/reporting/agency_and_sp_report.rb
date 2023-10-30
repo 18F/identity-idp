@@ -7,7 +7,6 @@ module Reporting
     end
 
     def agency_and_sp_report
-
       idv_sps, auth_sps = ServiceProvider.where('created_at <= ?', report_date).active.
         partition { |sp| sp.ial.present? && sp.ial >= 2 }
       idv_agency_ids = idv_sps.map(&:agency_id).uniq
