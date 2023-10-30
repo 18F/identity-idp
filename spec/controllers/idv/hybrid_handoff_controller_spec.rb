@@ -313,10 +313,9 @@ RSpec.describe Idv::HybridHandoffController do
         expect(response).to redirect_to(idv_phone_question_url)
       end
 
-      context 'when refered by phone_question page' do
-        let(:referer) { idv_phone_question_url }
+      context 'when user comes from phone_question page' do
         before do
-          request.env['HTTP_REFERER'] = referer
+          subject.idv_session.phone_with_camera = false
         end
 
         it 'does not redirect users away from hybrid handoff page' do
