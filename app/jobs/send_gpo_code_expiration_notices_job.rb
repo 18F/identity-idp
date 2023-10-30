@@ -36,36 +36,48 @@ class SendGpoCodeExpirationNoticesJob < ApplicationJob
 
   def expired_codes_needing_notification_sent_between(bounds)
     GpoConfirmationCode.joins(:profile).
-      # 1. Exclude codes that we've already sent an expiration notice for
-      where(expiration_notice_sent_at: nil).
+      where(no_prior_expiration_notice_sent_for_code).
+      and(code_sent_within(bounds)).
+      and(profile_is_pending_gpo).
+      and(profile_has_not_been_otherwise_deactivated).
+      and(user_has_not_completed_idv_since_requesting_code).
+      and(code_is_most_recent_one_sent_for_the_profile)
+  end
 
-      # 2. Exclude codes not sent in the window we're looking at
-      where(code_sent_at: bounds).
+  def no_prior_expiration_notice_sent_for_code
+    { expiration_notice_sent_at: nil }
+  end
 
-      # 3. Exclude codes where the associated profile does not have the GPO pending timestamp set
-      #    (meaning they either completed GPO or reset their password).
-      where.not(profile: { gpo_verification_pending_at: nil }).
+  def code_sent_within(bounds)
+    GpoConfirmationCode.where(code_sent_at: bounds)
+  end
 
-      # 4. Exclude codes where the associated profile has been deactivated for some reason
-      where(profile: { deactivation_reason: nil }).
+  def profile_is_pending_gpo
+    GpoConfirmationCode.joins(:profile).where.not(profile: { gpo_verification_pending_at: nil })
+  end
 
-      # 5. Exclude codes where the user has since gotten an active profile (no point in notifying)
-      where.not(
-        profile: {
-          user_id: User.joins(:profiles).where(
-            profiles: {
-              active: true,
-            },
-          ),
-        },
-      ).
+  def profile_has_not_been_otherwise_deactivated
+    GpoConfirmationCode.joins(:profile).where(profile: { deactivation_reason: nil })
+  end
 
-      # 6. Only include codes that are the most recent code sent for the profile
-      where(
-        code_sent_at: GpoConfirmationCode.
-          select('max(code_sent_at)').
-          from('usps_confirmation_codes child').
-          where('child.profile_id = usps_confirmation_codes.profile_id'),
-      )
+  def user_has_not_completed_idv_since_requesting_code
+    GpoConfirmationCode.joins(:profile).where.not(
+      profile: {
+        user_id: User.joins(:profiles).where(
+          profiles: {
+            active: true,
+          },
+        ),
+      },
+    )
+  end
+
+  def code_is_most_recent_one_sent_for_the_profile
+    GpoConfirmationCode.where(
+      code_sent_at: GpoConfirmationCode.
+        select('max(code_sent_at)').
+        from('usps_confirmation_codes child').
+        where('child.profile_id = usps_confirmation_codes.profile_id'),
+    )
   end
 end
