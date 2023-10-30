@@ -9,6 +9,7 @@ require 'identity/logging/railtie'
 
 require_relative '../lib/asset_sources'
 require_relative '../lib/identity_config'
+require_relative '../lib/load_disposable_domain'
 require_relative '../lib/fingerprinter'
 require_relative '../lib/identity_job_log_subscriber'
 require_relative '../lib/email_delivery_observer'

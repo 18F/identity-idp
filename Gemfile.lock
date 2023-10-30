@@ -271,7 +271,6 @@ GEM
       activesupport
       i18n
     dumb_delegator (1.0.0)
-    email_data (1697934462.0.0)
     email_spec (2.2.2)
       htmlentities (~> 4.3.3)
       launchy (~> 2.1)
@@ -737,7 +736,6 @@ DEPENDENCIES
   derailed_benchmarks
   devise (~> 4.8)
   dotiw (>= 4.0.1)
-  email_data
   email_spec
   erb_lint (~> 0.4.0)
   factory_bot_rails (>= 6.2.0)
