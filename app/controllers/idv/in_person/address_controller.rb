@@ -13,6 +13,27 @@ module Idv
         render :show, locals: extra_view_variables
       end
 
+      def update
+        attrs = Idv::InPerson::AddressForm::ATTRIBUTES
+
+        attrs = attrs.difference([:same_address_as_id])
+        pii_from_user[:same_address_as_id] = 'false' if updating_address?
+
+        attrs.each do |attr|
+          pii_from_user[attr] = flow_params[attr]
+        end
+
+        form_result = form.submit(flow_params)
+
+        analytics.idv_in_person_proofing_residential_address_submitted(**form_result.to_h)
+
+        if updating_address?
+          redirect_to idv_in_person_verify_info_url
+        else
+          redirect_to idv_in_person_ssn_url
+        end
+      end
+
       def extra_view_variables
         {
           form:,
@@ -73,7 +94,6 @@ module Idv
       def confirm_in_person_address_step_needed
         return if pii_from_user && pii_from_user[:same_address_as_id] == 'false' &&
                   !pii_from_user.has_key?(:address1)
-        redirect_to idv_in_person_ssn_url
       end
     end
   end
