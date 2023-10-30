@@ -2,6 +2,10 @@ module Idv
   class HowToVerifyController < ApplicationController
     include RenderConditionConcern
 
+    REMOTE = 'remote'
+    IPP = 'ipp'
+    VERIFICATION_OPTIONS = [REMOTE, IPP].freeze
+
     check_or_render_not_found -> { enabled? }
 
     def show
