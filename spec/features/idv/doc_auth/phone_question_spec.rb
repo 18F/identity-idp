@@ -41,6 +41,12 @@ RSpec.feature 'phone question step' do
         expect(page).to have_current_path(idv_link_sent_path)
         click_link(t('forms.buttons.back'))
         expect(page).to have_current_path(idv_hybrid_handoff_path(redo: true))
+
+        # test no, keep going from cancel page
+        click_link t('links.cancel')
+        expect(current_path).to eq(idv_cancel_path)
+        click_on t('idv.cancel.actions.keep_going')
+        expect(page).to have_current_path(idv_hybrid_handoff_path(redo: true))
       end
     end
 

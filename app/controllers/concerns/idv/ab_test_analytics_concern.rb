@@ -8,6 +8,7 @@ module Idv
       buckets = {}
       if defined?(idv_session)
         buckets[:skip_hybrid_handoff] = idv_session&.skip_hybrid_handoff
+        buckets[:phone_with_camera] = idv_session&.phone_with_camera
       end
 
       buckets.merge(acuant_sdk_ab_test_analytics_args).
