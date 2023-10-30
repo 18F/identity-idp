@@ -18,17 +18,14 @@ class SendGpoCodeExpirationNoticesJob < ApplicationJob
 
   def codes_to_send_notifications_for
     # We are looking at a 48 hr window in which all codes will _definitely_ be expired.
-    from, to = calculate_notification_window_bounds
-    expired_codes_needing_notification_sent_between(
-      from: from,
-      to: to,
-    )
+    bounds = calculate_notification_window_bounds
+    expired_codes_needing_notification_sent_between(bounds)
   end
 
   def calculate_notification_window_bounds(as_of: Time.zone.now)
     to = as_of.beginning_of_day - IdentityConfig.store.usps_confirmation_max_days.days
     from = to - 2.days
-    [from, to]
+    from..to
   end
 
   private
@@ -37,16 +34,13 @@ class SendGpoCodeExpirationNoticesJob < ApplicationJob
     @analytics ||= Analytics.new(user: AnonymousUser.new, request: nil, session: {}, sp: nil)
   end
 
-  def expired_codes_needing_notification_sent_between(
-    from:,
-    to:
-  )
+  def expired_codes_needing_notification_sent_between(bounds)
     GpoConfirmationCode.joins(:profile).
       # 1. Exclude codes that we've already sent an expiration notice for
       where(expiration_notice_sent_at: nil).
 
       # 2. Exclude codes not sent in the window we're looking at
-      where(code_sent_at: from...to).
+      where(code_sent_at: bounds).
 
       # 3. Exclude codes where the associated profile does not have the GPO pending timestamp set
       #    (meaning they either completed GPO or reset their password).

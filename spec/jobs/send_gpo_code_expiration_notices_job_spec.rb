@@ -116,11 +116,13 @@ RSpec.describe SendGpoCodeExpirationNoticesJob do
 
   describe '#calculate_notification_window_bounds' do
     it 'finds the right bounds' do
-      from, to = job.calculate_notification_window_bounds(
+      bounds = job.calculate_notification_window_bounds(
         as_of: Time.zone.parse('2023-11-25 13:14:15'),
       )
-      expect(from).to eql(Time.zone.parse('2023-10-24 00:00:00'))
-      expect(to).to eql(Time.zone.parse('2023-10-26 00:00:00'))
+      expected_min = Time.zone.parse('2023-10-24 00:00:00')
+      expected_max = Time.zone.parse('2023-10-26 00:00:00')
+
+      expect(bounds).to eql(expected_min..expected_max)
     end
   end
 
