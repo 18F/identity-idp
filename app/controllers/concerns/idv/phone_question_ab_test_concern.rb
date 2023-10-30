@@ -15,6 +15,7 @@ module Idv
     def maybe_redirect_for_phone_question_ab_test
       return if phone_question_ab_test_bucket != :show_phone_question
 
+      return if !defined?(idv_session)
       return if !idv_session.phone_with_camera.nil?
 
       redirect_to idv_phone_question_url
