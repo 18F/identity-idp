@@ -68,7 +68,7 @@ RSpec.describe Idv::PhoneQuestionAbTestConcern do
     before do
       sign_in(user)
     end
-    let(:visited){ nil }
+    let(:visited) { nil }
     context 'A/B test specifies phone question page' do
       before do
         allow(controller).to receive(:phone_question_ab_test_bucket).
@@ -88,7 +88,7 @@ RSpec.describe Idv::PhoneQuestionAbTestConcern do
       end
 
       context 'referred from phone question page' do
-        let(:visited){ true }
+        let(:visited) { true }
         it 'does not redirect users away from hybrid handoff page' do
           get :index
 
