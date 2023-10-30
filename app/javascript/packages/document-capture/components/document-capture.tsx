@@ -22,6 +22,7 @@ import SuspenseErrorBoundary from './suspense-error-boundary';
 import SubmissionInterstitial from './submission-interstitial';
 import withProps from '../higher-order/with-props';
 import { InPersonContext } from '../context';
+import OptInIpp from './opt-in-ipp';
 
 interface DocumentCaptureProps {
   /**
@@ -40,6 +41,14 @@ function DocumentCapture({ onStepChange = () => { } }: DocumentCaptureProps) {
   const { trackSubmitEvent, trackVisitEvent } = useContext(AnalyticsContext);
   const { inPersonFullAddressEntryEnabled, inPersonURL } = useContext(InPersonContext);
   const appName = getConfigValue('appName');
+
+  // If the user got here by opting-in to in-person proofing then skip rendering the document capture
+  // component
+  if (skipDocAuth == 'true') {
+    return (
+      <OptInIpp onStepChange={onStepChange} />
+    )
+  }
 
   useDidUpdateEffect(onStepChange, [stepName]);
   useEffect(() => {
@@ -84,23 +93,6 @@ function DocumentCapture({ onStepChange = () => { } }: DocumentCaptureProps) {
     ? InPersonLocationFullAddressEntryPostOfficeSearchStep
     : InPersonLocationPostOfficeSearchStep;
 
-  const inPersonStepsRaw = [
-    {
-      name: 'prepare',
-      form: InPersonPrepareStep,
-      title: t('in_person_proofing.headings.prepare'),
-    },
-    {
-      name: 'location',
-      form: inPersonLocationPostOfficeSearchForm,
-      title: t('in_person_proofing.headings.po_search.location'),
-    },
-    flowPath === 'hybrid' && {
-      name: 'switch_back',
-      form: InPersonSwitchBackStep,
-      title: t('in_person_proofing.headings.switch_back'),
-    },
-  ].filter(Boolean) as FormStep[];
 
   const stepIndicatorPath =
     stepName && ['location', 'prepare', 'switch_back'].includes(stepName)
@@ -108,32 +100,26 @@ function DocumentCapture({ onStepChange = () => { } }: DocumentCaptureProps) {
       : VerifyFlowPath.DEFAULT;
 
 
-  const optInIpp = (
-    <>
-      <VerifyFlowStepIndicator currentStep="document_capture" path={stepIndicatorPath} />
-      <>
-        <FormSteps
-          steps={inPersonStepsRaw}
-          initialValues={initialValues}
-          initialActiveErrors={initialActiveErrors}
-          onComplete={submitForm}
-          onStepChange={setStepName}
-          onStepSubmit={trackSubmitEvent}
-          autoFocus={!!submissionError}
-          titleFormat={`%{step} - ${appName}`}
-        />
-      </>
-    </>
-  );
-
-  if (skipDocAuth === 'true') {
-    return optInIpp;
-  }
-
   const inPersonSteps: FormStep[] =
     inPersonURL === undefined
       ? []
-      : inPersonStepsRaw
+      : [
+        {
+          name: 'prepare',
+          form: InPersonPrepareStep,
+          title: t('in_person_proofing.headings.prepare'),
+        },
+        {
+          name: 'location',
+          form: inPersonLocationPostOfficeSearchForm,
+          title: t('in_person_proofing.headings.po_search.location'),
+        },
+        flowPath === 'hybrid' && {
+          name: 'switch_back',
+          form: InPersonSwitchBackStep,
+          title: t('in_person_proofing.headings.switch_back'),
+        },
+      ].filter(Boolean) as FormStep[];
 
   const steps: FormStep[] = submissionError
     ? (
@@ -162,11 +148,6 @@ function DocumentCapture({ onStepChange = () => { } }: DocumentCaptureProps) {
         title: t('doc_auth.headings.document_capture'),
       },
     ].filter(Boolean) as FormStep[]);
-
-  console.log("our steps are: ", steps);
-
-  console.log("stepName is: ", stepName);
-  console.log("step indicator path is: ", stepIndicatorPath);
 
   return (
     <>
