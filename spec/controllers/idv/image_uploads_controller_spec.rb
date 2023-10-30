@@ -427,6 +427,8 @@ RSpec.describe Idv::ImageUploadsController do
         let(:state) { 'ND' }
         let(:state_id_type) { 'drivers_license' }
         let(:dob) { '10/06/1938' }
+        let(:jurisdiction) { 'ND'}
+        let(:zipcode) { '12345'}
 
         before do
           DocAuth::Mock::DocAuthMockClient.mock_response!(
@@ -442,6 +444,8 @@ RSpec.describe Idv::ImageUploadsController do
                 state: state,
                 state_id_type: state_id_type,
                 dob: dob,
+                state_id_jurisdiction: jurisdiction,
+                zipcode: zipcode,
               },
             ),
           )
@@ -457,7 +461,7 @@ RSpec.describe Idv::ImageUploadsController do
             expect(@irs_attempts_api_tracker).to receive(:track_event).with(
               :idv_document_upload_submitted,
               success: false,
-              failure_reason: { pii:
+              failure_reason: { name:
                 ['We couldn’t read the full name on your ID. Try taking new pictures.'] },
               document_state: 'ND',
               document_number: nil,
@@ -530,10 +534,10 @@ RSpec.describe Idv::ImageUploadsController do
               'IdV: doc auth image upload vendor pii validation',
               success: false,
               errors: {
-                pii: [I18n.t('doc_auth.errors.alerts.full_name_check')],
+                name: [I18n.t('doc_auth.errors.alerts.full_name_check')],
               },
               error_details: {
-                pii: [I18n.t('doc_auth.errors.alerts.full_name_check')],
+                name: [I18n.t('doc_auth.errors.alerts.full_name_check')],
               },
               attention_with_barcode: false,
               user_id: user.uuid,
@@ -550,7 +554,7 @@ RSpec.describe Idv::ImageUploadsController do
             expect(@irs_attempts_api_tracker).to receive(:track_event).with(
               :idv_document_upload_submitted,
               success: false,
-              failure_reason: { pii:
+              failure_reason: { name:
                 ['We couldn’t read the full name on your ID. Try taking new pictures.'] },
               document_state: 'ND',
               document_number: nil,
@@ -623,10 +627,10 @@ RSpec.describe Idv::ImageUploadsController do
               'IdV: doc auth image upload vendor pii validation',
               success: false,
               errors: {
-                pii: [I18n.t('doc_auth.errors.general.no_liveness')],
+                state: [I18n.t('doc_auth.errors.general.no_liveness')],
               },
               error_details: {
-                pii: [I18n.t('doc_auth.errors.general.no_liveness')],
+                state: [:wrong_length],
               },
               attention_with_barcode: false,
               user_id: user.uuid,
@@ -643,7 +647,7 @@ RSpec.describe Idv::ImageUploadsController do
             expect(@irs_attempts_api_tracker).to receive(:track_event).with(
               :idv_document_upload_submitted,
               success: false,
-              failure_reason: { pii:
+              failure_reason: { state:
                 ['Try taking new pictures.'] },
               document_state: 'Maryland',
               document_number: nil,
@@ -716,10 +720,10 @@ RSpec.describe Idv::ImageUploadsController do
               'IdV: doc auth image upload vendor pii validation',
               success: false,
               errors: {
-                pii: [I18n.t('doc_auth.errors.alerts.birth_date_checks')],
+                dob: [I18n.t('doc_auth.errors.alerts.birth_date_checks')],
               },
               error_details: {
-                pii: [I18n.t('doc_auth.errors.alerts.birth_date_checks')],
+                dob: [I18n.t('doc_auth.errors.alerts.birth_date_checks')],
               },
               attention_with_barcode: false,
               user_id: user.uuid,
@@ -736,7 +740,7 @@ RSpec.describe Idv::ImageUploadsController do
             expect(@irs_attempts_api_tracker).to receive(:track_event).with(
               :idv_document_upload_submitted,
               success: false,
-              failure_reason: { pii:
+              failure_reason: { dob:
                 ['We couldn’t read the birth date on your ID. Try taking new pictures.'] },
               document_back_image_filename: nil,
               document_front_image_filename: nil,
@@ -921,7 +925,7 @@ RSpec.describe Idv::ImageUploadsController do
         expect(json[:remaining_attempts]).to be_a_kind_of(Numeric)
         expect(json[:errors]).to eq [
           {
-            field: 'pii',
+            field: 'dob',
             message: I18n.t('doc_auth.errors.alerts.birth_date_checks'),
           },
         ]
