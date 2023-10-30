@@ -14,11 +14,21 @@ module Idv
     end
 
     def update
-      analytics.idv_doc_auth_how_to_verify_submitted(**analytics_arguments)
-      if VERIFICATION_OPTIONS.include?(how_to_verify_form_params['selection'])
-        redirect_to idv_document_capture_url
+      result = Idv::HowToVerifyForm.new.submit(how_to_verify_form_params)
+
+      analytics.idv_doc_auth_how_to_verify_submitted(
+        **analytics_arguments.merge(result.to_h)
+      )
+
+      if result.success?
+        if how_to_verify_form_params['selection'] == REMOTE
+          redirect_to idv_document_capture_url
+        else
+          redirect_to idv_hybrid_handoff_url
+        end
       else
-        redirect_to idv_hybrid_handoff_url
+        flash[:error] = result.errors[:selection].first
+        redirect_to idv_how_to_verify_url
       end
     end
 
