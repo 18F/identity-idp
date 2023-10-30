@@ -40,8 +40,8 @@ module Idv
     end
 
     def self.pii_like_keypaths
-      p = []
-      fields = [:name, :dob, :dob_min_age, :address1, :state, :zipcode, :jurisdiction]
+      p = [[:pii]]
+      fields = %i(name dob dob_min_age address1 state zipcode jurisdiction)
       p << fields
       fields.each do |k|
         p << [:errors, k]
