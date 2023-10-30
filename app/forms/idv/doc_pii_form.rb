@@ -31,7 +31,7 @@ module Idv
         success: valid?,
         errors: errors,
         extra: { # do we need pii_like_keypaths here?
-          pii_like_keypaths: pii_like_keypaths, # see errors.add(:pii)
+          pii_like_keypaths: self.class.pii_like_keypaths, # see errors.add(:pii)
           attention_with_barcode: attention_with_barcode?,
         },
       )
@@ -39,11 +39,7 @@ module Idv
       response
     end
 
-    private
-
-    attr_reader :pii_from_doc
-
-    def pii_like_keypaths
+    def self.pii_like_keypaths
       p = []
       fields = [:name, :dob, :dob_min_age, :address1, :state, :zipcode, :jurisdiction]
       p << fields
@@ -53,6 +49,11 @@ module Idv
       end
       p
     end
+
+    private
+
+    attr_reader :pii_from_doc
+
     def name_valid?
       return if first_name.present? && last_name.present?
 
