@@ -13,17 +13,16 @@
   <div role="group" aria-label="<%= t('doc_auth.headings.how_to_verify') %>">
     <%= radio_button_tag(
           'idv_how_to_verify_form[selection]',
-          HowToVerifyController::REMOTE,
+          Idv::HowToVerifyController::REMOTE,
           false,
           class: 'usa-radio__input usa-radio__input--tile',
         ) %>
     <%= label_tag(
           'idv_how_to_verify_form_selection_remote',
-          class: 'usa-radio__label usa-radio__label--illustrated',
+          class: 'usa-radio__label usa-radio__label--illustrated usa-radio__label-illustrated-large',
         ) do %>
           <%= image_tag asset_url('idv/remote.svg'),
-                        class: 'usa-radio__image position-absolute left-2',
-                        style: 'top: 50px; width: 88px',
+                        class: 'usa-radio__image',
                         alt: t('image_description.laptop')
           %>
           <div class="usa-radio__label--text margin-left-6">
@@ -45,17 +44,16 @@
         <% end %>
     <%= radio_button_tag(
           'idv_how_to_verify_form[selection]',
-          HowToVerifyController::IPP,
+          Idv::HowToVerifyController::IPP,
           false,
           class: 'usa-radio__input usa-radio__input--tile',
         ) %>
     <%= label_tag(
           'idv_how_to_verify_form_selection_ipp',
-          class: 'usa-radio__label usa-radio__label--illustrated',
+          class: 'usa-radio__label usa-radio__label--illustrated usa-radio__label-illustrated-large',
         ) do %>
           <%= image_tag asset_url('idv/in-person.svg'),
-                        class: 'usa-radio__image position-absolute left-2',
-                        style: 'top: 50px; width: 88px',
+                        class: 'usa-radio__image',
                         alt: t('image_description.post_office')
           %>
           <div class="usa-radio__label--text margin-left-6">
