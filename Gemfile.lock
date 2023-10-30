@@ -424,7 +424,8 @@ GEM
     net-smtp (0.4.0)
       net-protocol
     net-ssh (6.1.0)
-    newrelic_rpm (9.5.0)
+    newrelic_rpm (9.6.0)
+      base64
     nio4r (2.5.9)
     nokogiri (1.14.5)
       mini_portile2 (~> 2.8.0)
