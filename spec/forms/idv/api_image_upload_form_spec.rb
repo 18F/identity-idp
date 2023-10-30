@@ -289,7 +289,6 @@ RSpec.describe Idv::ApiImageUploadForm do
           success: false,
           errors: { doc_pii: 'bad' },
           extra: {
-            # should match pii_like_keypaths in app/lib - to be fixed
             pii_like_keypaths: pii_like_keypaths,
             attention_with_barcode: false,
           },
@@ -298,13 +297,6 @@ RSpec.describe Idv::ApiImageUploadForm do
 
       before do
         allow_any_instance_of(Idv::DocPiiForm).to receive(:submit).and_return(failed_response)
-      end
-
-      xit '' do # to be added
-        # expect(result.extra).to eq(
-        #   attention_with_barcode: false,
-        #   pii_like_keypaths: [[:name, :dob, :dob_min_age, :address1, :state, :zipcode, :jurisdiction, :pii]],
-        # )
       end
 
       it 'is not successful' do

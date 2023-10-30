@@ -38,7 +38,7 @@ module Idv
       response = Idv::DocAuthFormResponse.new(
         success: valid?,
         errors: errors,
-        extra: { # do we need pii_like_keypaths here?
+        extra: {
           pii_like_keypaths: self.class.pii_like_keypaths,
           attention_with_barcode: attention_with_barcode?,
         },
@@ -65,12 +65,12 @@ module Idv
     def name_valid?
       return if first_name.present? && last_name.present?
 
-      errors.add(:name, name_error)
+      errors.add(:name, name_error, type: :name)
     end
 
     def dob_valid?
       if dob.blank?
-        errors.add(:dob, dob_error)
+        errors.add(:dob, dob_error, type: :dob)
         return
       end
 
@@ -79,14 +79,14 @@ module Idv
       age = today.year - dob_date.year - ((today.month > dob_date.month ||
         (today.month == dob_date.month && today.day >= dob_date.day)) ? 0 : 1)
       if age < IdentityConfig.store.idv_min_age_years
-        errors.add(:dob_min_age, dob_min_age_error)
+        errors.add(:dob_min_age, dob_min_age_error, type: :dob)
       end
     end
 
     def zipcode_valid?
       return if zipcode.is_a?(String) && zipcode.present?
 
-      errors.add(:zipcode, generic_error)
+      errors.add(:zipcode, generic_error, type: :zipcode)
     end
 
     def generic_error
