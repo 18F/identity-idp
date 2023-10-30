@@ -76,8 +76,8 @@ class SendGpoCodeExpirationNoticesJob < ApplicationJob
     GpoConfirmationCode.where(
       code_sent_at: GpoConfirmationCode.
         select('max(code_sent_at)').
-        from('usps_confirmation_codes child').
-        where('child.profile_id = usps_confirmation_codes.profile_id'),
+        from(GpoConfirmationCode.arel_table.alias('child')).
+        where("child.profile_id = #{GpoConfirmationCode.arel_table.name}.profile_id"),
     )
   end
 end
