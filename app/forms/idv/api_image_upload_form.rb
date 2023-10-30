@@ -121,16 +121,6 @@ module Idv
       response
     end
 
-    # def pii_like_keypaths
-    #   p = []
-    #   fields = %i(:name, :dob, :dob_min_age, :address1, :state, :zipcode, :jurisdiction, :pii)
-    #   p << fields
-    #   fields.each do |k|
-    #     p << [:errors, k]
-    #     p << [:error_details, k]
-    #   end
-    #   p
-    # end
     def extra_attributes
       return @extra_attributes if defined?(@extra_attributes) &&
                                   @extra_attributes&.dig('attempts') == attempts
@@ -138,7 +128,6 @@ module Idv
         attempts: attempts,
         remaining_attempts: remaining_attempts,
         user_id: user_uuid,
-        # pii_like_keypaths: pii_like_keypaths, # is this just clobbering piiform?
         flow_path: params[:flow_path],
       }
 

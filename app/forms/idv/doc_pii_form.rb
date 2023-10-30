@@ -31,7 +31,7 @@ module Idv
         success: valid?,
         errors: errors,
         extra: { # do we need pii_like_keypaths here?
-          pii_like_keypaths: pii_like_keypaths, #[[:name, :dob, :dob_min_age, :address1, :state, :zipcode, :jurisdiction, :pii]], # see errors.add(:pii)
+          pii_like_keypaths: pii_like_keypaths, # see errors.add(:pii)
           attention_with_barcode: attention_with_barcode?,
         },
       )
@@ -47,11 +47,10 @@ module Idv
       p = []
       fields = [:name, :dob, :dob_min_age, :address1, :state, :zipcode, :jurisdiction]
       p << fields
-      fields.each do |k| # why are errors and error_details newly req'd?
+      fields.each do |k|
         p << [:errors, k]
         p << [:error_details, k]
       end
-      # p << [:pii]
       p
     end
     def name_valid?
