@@ -87,9 +87,6 @@ module Idv
         document_capture_session.requested_at > stored_result.captured_at
       end
 
-      def phone_with_camera
-        { phone_with_camera: phone_question_ab_test_bucket == :show_phone_question ? true : nil }
-      end
     end
   end
 end
