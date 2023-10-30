@@ -68,11 +68,17 @@ RSpec.describe Idv::PhoneQuestionAbTestConcern do
     before do
       sign_in(user)
     end
-
+    let(:visited){ nil }
     context 'A/B test specifies phone question page' do
       before do
         allow(controller).to receive(:phone_question_ab_test_bucket).
           and_return(:show_phone_question)
+
+        idv_session = instance_double(Idv::Session)
+        allow(idv_session).to receive(:method_missing).
+          with(:phone_with_camera).
+          and_return(visited)
+        allow(controller).to receive(:idv_session).and_return(idv_session)
       end
 
       it 'redirects to idv_phone_question_url' do
@@ -82,10 +88,7 @@ RSpec.describe Idv::PhoneQuestionAbTestConcern do
       end
 
       context 'referred from phone question page' do
-        let(:referer) { idv_phone_question_url }
-        before do
-          request.env['HTTP_REFERER'] = referer
-        end
+        let(:visited){ true }
         it 'does not redirect users away from hybrid handoff page' do
           get :index
 
