@@ -414,6 +414,9 @@ Rails.application.routes.draw do
     root to: 'users/sessions#new'
   end
 
+  get  '/simple_form_test' => 'simple_form_test#index'
+  post '/simple_form_test' => 'simple_form_test#update'
+
   # Make sure any new routes are added above this line!
   # The line below will route all requests that aren't
   # defined route to the 404 page. Therefore, anything you put after this rule

@@ -68,7 +68,7 @@ gem 'ruby-saml'
 gem 'safe_target_blank', '>= 1.0.2'
 gem 'saml_idp', github: '18F/saml_idp', tag: '0.18.2-18f'
 gem 'scrypt'
-gem 'simple_form', '>= 5.0.2'
+gem 'simple_form', '>= 5.3.0'
 gem 'stringex', require: false
 gem 'strong_migrations', '>= 0.4.2'
 gem 'subprocess', require: false

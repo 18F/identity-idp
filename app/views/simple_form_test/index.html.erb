@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta content="simple_form test" name="description">
+    <title>SimpleForm Test</title>
+  </head>
+  <body>
+<%= simple_form_for(@user, url: simple_form_test_url) do |f| %>
+    <%= f.input :uuid, required: true %>
+<% end %>
+  </body>
+</html>

@@ -615,7 +615,7 @@ GEM
       websocket (~> 1.0)
     shoulda-matchers (4.5.1)
       activesupport (>= 4.2.0)
-    simple_form (5.1.0)
+    simple_form (5.3.0)
       actionpack (>= 5.2)
       activemodel (>= 5.2)
     simple_xlsx_reader (5.0.0)
@@ -805,7 +805,7 @@ DEPENDENCIES
   saml_idp!
   scrypt
   shoulda-matchers (~> 4.0)
-  simple_form (>= 5.0.2)
+  simple_form (>= 5.3.0)
   simple_xlsx_reader
   simplecov (~> 0.22.0)
   simplecov-cobertura
