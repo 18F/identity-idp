@@ -290,7 +290,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           errors: { doc_pii: 'bad' },
           extra: {
             # should match pii_like_keypaths in app/lib - to be fixed
-            pii_like_keypaths: [[:name, :dob, :dob_min_age, :address1, :state, :zipcode, :jurisdiction], [:pii]], # see errors.add(:pii)#[[:pii]],
+            pii_like_keypaths: pii_like_keypaths,
             attention_with_barcode: false,
           },
         )
@@ -539,5 +539,19 @@ RSpec.describe Idv::ApiImageUploadForm do
         end
       end
     end
+  end
+
+  def pii_like_keypaths
+    [
+      [:pii],
+      [:name, :dob, :dob_min_age, :address1, :state, :zipcode, :jurisdiction],
+      [:errors, :name], [:error_details, :name],
+      [:errors, :dob], [:error_details, :dob],
+      [:errors, :dob_min_age], [:error_details, :dob_min_age],
+      [:errors, :address1], [:error_details, :address1],
+      [:errors, :state], [:error_details, :state],
+      [:errors, :zipcode], [:error_details, :zipcode],
+      [:errors, :jurisdiction], [:error_details, :jurisdiction]
+    ]
   end
 end
