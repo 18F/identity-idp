@@ -63,6 +63,17 @@ RSpec.describe Idv::DocPiiForm do
       state_id_jurisdiction: 'AL',
     }
   end
+  let(:state_error_pii) do
+    {
+      first_name: Faker::Name.first_name,
+      last_name: Faker::Name.last_name,
+      dob: valid_dob,
+      address1: Faker::Address.street_address,
+      zipcode: Faker::Address.zip_code,
+      state: 'YORK',
+      state_id_jurisdiction: 'AL',
+    }
+  end
   let(:jurisdiction_error_pii) do
     {
       first_name: Faker::Name.first_name,
@@ -230,6 +241,18 @@ RSpec.describe Idv::DocPiiForm do
       result = subject.submit
 
       expect(result.success?).to eq(false)
+      expect(result.errors[:jurisdiction]).to eq([I18n.t('doc_auth.errors.general.no_liveness')])
+    end
+  end
+
+  context 'when there is an invalid state' do
+    let(:subject) { Idv::DocPiiForm.new(pii: state_error_pii) }
+
+    it 'responds with an unsuccessful result' do
+      result = subject.submit
+
+      expect(result.success?).to eq(false)
+      expect(result.errors[:state]).to eq([I18n.t('doc_auth.errors.general.no_liveness')])
     end
   end
 
