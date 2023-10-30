@@ -23,6 +23,13 @@ RSpec.describe Idv::PhoneQuestionController do
     subject.user_session['idv/doc_auth'] = {}
     subject.idv_session.idv_consent_given = true
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
+    allow(AbTests::IDV_PHONE_QUESTION).to receive(:bucket).and_return(:show_phone_question)
+  end
+
+  describe '#step_info' do
+    it 'returns a valid StepInfo object' do
+      expect(Idv::PhoneQuestionController.step_info).to be_valid
+    end
   end
 
   describe 'before_actions' do
@@ -37,13 +44,6 @@ RSpec.describe Idv::PhoneQuestionController do
       expect(subject).to have_actions(
         :before,
         :check_for_mail_only_outage,
-      )
-    end
-
-    it 'checks that agreement step is complete' do
-      expect(subject).to have_actions(
-        :before,
-        :confirm_agreement_step_complete,
       )
     end
 
@@ -82,6 +82,7 @@ RSpec.describe Idv::PhoneQuestionController do
 
     context 'agreement step is not complete' do
       before do
+        subject.idv_session.welcome_visited = true
         subject.idv_session.idv_consent_given = nil
       end
 
