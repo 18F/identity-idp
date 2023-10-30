@@ -6,7 +6,7 @@ module Idv
 
     validates :selection, inclusion: {
       in: Idv::HowToVerifyController::VERIFICATION_OPTIONS,
-      message: proc { I18n.t('errors.doc_auth.how_to_verify_form') }
+      message: proc { I18n.t('errors.doc_auth.how_to_verify_form') },
     }
 
     def initialize(selection: nil)

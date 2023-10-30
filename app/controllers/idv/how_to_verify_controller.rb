@@ -17,7 +17,7 @@ module Idv
       result = Idv::HowToVerifyForm.new.submit(how_to_verify_form_params)
 
       analytics.idv_doc_auth_how_to_verify_submitted(
-        **analytics_arguments.merge(result.to_h)
+        **analytics_arguments.merge(result.to_h),
       )
 
       if result.success?
