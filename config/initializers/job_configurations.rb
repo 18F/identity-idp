@@ -192,7 +192,6 @@ else
       send_gpo_code_expiration_notices: {
         class: 'SendGpoCodeExpirationNoticesJob',
         cron: cron_24h,
-        args: -> { [] },
       },
       # Monthly report checking in on key metrics
       monthly_key_metrics_report: {
