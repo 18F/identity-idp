@@ -417,6 +417,41 @@ RSpec.describe InPersonEnrollment, type: :model do
         expect(enrollment.days_to_due_date).to eq(validity_in_days - days_ago_established_at)
       end
     end
+
+    context 'check edges to confirm date calculation is correct' do
+      it 'returns the correct due date and days to due date with 1 day left' do
+        freeze_time do
+          enrollment = create(
+            :in_person_enrollment,
+            enrollment_established_at: Time.zone.now - 9.days,
+          )
+          expect(enrollment.days_to_due_date).to eq(1)
+          expect(enrollment.due_date).to eq(Time.zone.now + 1.day)
+        end
+      end
+
+      it 'returns the correct due date and days to due date with 0.5 days left' do
+        freeze_time do
+          enrollment = create(
+            :in_person_enrollment,
+            enrollment_established_at: Time.zone.now - 9.5.days,
+          )
+          expect(enrollment.days_to_due_date).to eq(0)
+          expect(enrollment.due_date).to eq(Time.zone.now + 0.5.days)
+        end
+      end
+
+      it 'returns the correct due date and days to due date with 0 days left' do
+        freeze_time do
+          enrollment = create(
+            :in_person_enrollment,
+            enrollment_established_at: Time.zone.now - 10.days,
+          )
+          expect(enrollment.days_to_due_date).to eq(0)
+          expect(enrollment.due_date).to eq(Time.zone.now)
+        end
+      end
+    end
   end
 
   describe 'eligible_for_notification?' do
