@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Idv::ApiImageUploadForm do
+  include DocPiiHelper
+
   subject(:form) do
     Idv::ApiImageUploadForm.new(
       ActionController::Parameters.new(
