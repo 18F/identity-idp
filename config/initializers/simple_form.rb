@@ -2,7 +2,10 @@
 SimpleForm.setup do |config|
   require Rails.root.join('lib', 'extensions', 'simple_form', 'error_notification')
   require Rails.root.join('lib', 'extensions', 'simple_form', 'components', 'submit_component')
-  require Rails.root.join('lib', 'extensions', 'simple_form', 'components', 'html5')
+  require Rails.root.join(
+    'lib', 'extensions', 'simple_form', 'components',
+    'html5_no_aria_required'
+  )
 
   config.button_class = 'usa-button'
   config.boolean_label_class = nil
@@ -48,7 +51,7 @@ SimpleForm.setup do |config|
   end
 
   config.wrappers :uswds_text_input, class: 'margin-bottom-4' do |b|
-    b.use :html5
+    b.use :html5_no_aria_required
     b.optional :placeholder
     b.optional :maxlength
     b.optional :pattern
