@@ -34,7 +34,7 @@ module TwoFactorAuthentication
     end
 
     def platform_visible?
-      platform_configured? || IdentityConfig.store.platform_auth_set_up_enabled
+      platform_configured?
     end
 
     private

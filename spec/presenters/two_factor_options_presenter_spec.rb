@@ -16,11 +16,6 @@ RSpec.describe TwoFactorOptionsPresenter do
     described_class.new(user:, user_agent:, after_mfa_setup_path:, show_skip_additional_mfa_link:)
   end
 
-  before do
-    allow(IdentityConfig.store).to receive(:platform_auth_set_up_enabled).
-      and_return(false)
-  end
-
   describe '#two_factor_enabled?' do
     it 'delegates to mfa_policy' do
       expect(presenter).to delegate_method(:two_factor_enabled?).to(:mfa_policy)
@@ -30,6 +25,7 @@ RSpec.describe TwoFactorOptionsPresenter do
   describe '#options' do
     it 'supplies all the options for a user' do
       expect(presenter.options.map(&:class)).to eq [
+        TwoFactorAuthentication::WebauthnPlatformSelectionPresenter,
         TwoFactorAuthentication::SetUpAuthAppSelectionPresenter,
         TwoFactorAuthentication::PhoneSelectionPresenter,
         TwoFactorAuthentication::BackupCodeSelectionPresenter,
@@ -48,6 +44,7 @@ RSpec.describe TwoFactorOptionsPresenter do
 
       it 'only displays phishing-resistant MFA methods' do
         expect(presenter.options.map(&:class)).to eq [
+          TwoFactorAuthentication::WebauthnPlatformSelectionPresenter,
           TwoFactorAuthentication::WebauthnSelectionPresenter,
           TwoFactorAuthentication::PivCacSelectionPresenter,
         ]
@@ -61,24 +58,8 @@ RSpec.describe TwoFactorOptionsPresenter do
 
       it 'supplies all the options except phone' do
         expect(presenter.options.map(&:class)).to eq [
-          TwoFactorAuthentication::SetUpAuthAppSelectionPresenter,
-          TwoFactorAuthentication::BackupCodeSelectionPresenter,
-          TwoFactorAuthentication::WebauthnSelectionPresenter,
-          TwoFactorAuthentication::PivCacSelectionPresenter,
-        ]
-      end
-    end
-    context 'when platform_auth_set_up_enabled is enabled' do
-      before do
-        allow(IdentityConfig.store).to receive(:platform_auth_set_up_enabled).
-          and_return(true)
-      end
-
-      it 'supplies all the options except webauthn' do
-        expect(presenter.options.map(&:class)).to eq [
           TwoFactorAuthentication::WebauthnPlatformSelectionPresenter,
           TwoFactorAuthentication::SetUpAuthAppSelectionPresenter,
-          TwoFactorAuthentication::PhoneSelectionPresenter,
           TwoFactorAuthentication::BackupCodeSelectionPresenter,
           TwoFactorAuthentication::WebauthnSelectionPresenter,
           TwoFactorAuthentication::PivCacSelectionPresenter,

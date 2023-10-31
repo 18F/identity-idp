@@ -158,10 +158,6 @@ RSpec.describe 'webauthn management' do
     end
 
     context 'with webauthn platform set up enabled' do
-      before do
-        allow(IdentityConfig.store).to receive(:platform_auth_set_up_enabled).and_return(true)
-      end
-
       it 'allows the user to setup another key' do
         mock_webauthn_setup_challenge
         create(:webauthn_configuration, :platform_authenticator, user:)
@@ -187,22 +183,6 @@ RSpec.describe 'webauthn management' do
         mock_press_button_on_hardware_key_on_setup
 
         expect_webauthn_platform_setup_success
-      end
-    end
-
-    context 'with platform auth set up disabled' do
-      before do
-        allow(IdentityConfig.store).to receive(:platform_auth_set_up_enabled).and_return(false)
-      end
-
-      it 'does not allows the user to setup another platform authenticator' do
-        mock_webauthn_setup_challenge
-        create(:webauthn_configuration, :platform_authenticator, user:)
-
-        sign_in_and_2fa_user(user)
-
-        expect(page).
-          to_not have_content t('account.index.webauthn_platform_add')
       end
     end
 
