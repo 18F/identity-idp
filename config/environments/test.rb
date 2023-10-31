@@ -44,11 +44,9 @@ Rails.application.configure do
       :auth_app_configurations,
       :backup_code_configurations,
       :webauthn_configurations,
-      :email_addresses,
       :proofing_component,
       :account_reset_request,
-      :pending_in_person_enrollment,
-      :establishing_in_person_enrollment,
+      :registration_log,
     ].each do |association|
       Bullet.add_safelist(type: :n_plus_one_query, class_name: 'User', association: association)
     end
