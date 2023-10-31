@@ -45,7 +45,6 @@ module Users
         end
       end
 
-      puts "LABEL! #{params[:errors].inspect}"
       if result.errors.present?
         analytics.webauthn_setup_submitted(
           platform_authenticator: form.platform_authenticator?,
