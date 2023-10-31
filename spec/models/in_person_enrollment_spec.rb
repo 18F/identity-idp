@@ -387,10 +387,10 @@ RSpec.describe InPersonEnrollment, type: :model do
   describe 'due_date and days_to_due_date' do
     let(:validity_in_days) { 10 }
     let(:days_ago_established_at) { 7 }
-    let(:today) { Time.zone.now }
-    let(:nine_days_ago) { today - 9.days }
-    let(:nine_and_a_half_days_ago) { today - 9.5.days }
-    let(:ten_days_ago) { today - 10.days }
+    let(:today) { 0 }
+    let(:nine) { 9 }
+    let(:nine_and_a_half) { 9.5 }
+    let(:ten) { 10 }
 
     before do
       allow(IdentityConfig.store).
@@ -427,10 +427,12 @@ RSpec.describe InPersonEnrollment, type: :model do
         freeze_time do
           enrollment = create(
             :in_person_enrollment,
-            enrollment_established_at: nine_days_ago,
+            enrollment_established_at: nine.days.ago,
           )
-          expect(enrollment.days_to_due_date).to eq(1)
-          expect(enrollment.due_date).to eq(today + 1.day)
+          expect(enrollment.days_to_due_date).to eq((validity_in_days - nine).to_i)
+          expect(enrollment.due_date).to(
+            eq((validity_in_days - nine).days.from_now),
+            )
         end
       end
 
@@ -438,10 +440,12 @@ RSpec.describe InPersonEnrollment, type: :model do
         freeze_time do
           enrollment = create(
             :in_person_enrollment,
-            enrollment_established_at: nine_and_a_half_days_ago,
+            enrollment_established_at: nine_and_a_half.days.ago,
           )
-          expect(enrollment.days_to_due_date).to eq(0)
-          expect(enrollment.due_date).to eq(today + 0.5.days)
+          expect(enrollment.days_to_due_date).to eq((validity_in_days - nine_and_a_half).to_i)
+          expect(enrollment.due_date).to(
+            eq((validity_in_days - nine_and_a_half).days.from_now),
+            )
         end
       end
 
@@ -449,10 +453,12 @@ RSpec.describe InPersonEnrollment, type: :model do
         freeze_time do
           enrollment = create(
             :in_person_enrollment,
-            enrollment_established_at: ten_days_ago,
+            enrollment_established_at: ten.days.ago,
           )
-          expect(enrollment.days_to_due_date).to eq(0)
-          expect(enrollment.due_date).to eq(today)
+          expect(enrollment.days_to_due_date).to eq((validity_in_days - ten).to_i)
+          expect(enrollment.due_date).to(
+            eq((validity_in_days - ten).days.from_now),
+            )
         end
       end
     end
