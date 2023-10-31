@@ -17,7 +17,7 @@ module Pii
     :identity_doc_address_state,
     :ssn, :dob, :phone,
     *DEPRECATED_PII_ATTRIBUTES,
-    keyword_init: true,
+    keyword_init: true
   ) do
     def self.new_from_hash(hash)
       attrs = new
