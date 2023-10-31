@@ -80,11 +80,6 @@ module Reporting
       end
 
       csv
-    rescue Aws::CloudWatchLogs::Errors::MalformedQueryException => error
-      [
-        ['Error', 'Message'],
-        [error.class.name, error.message],
-      ]
     end
 
     def as_csv
