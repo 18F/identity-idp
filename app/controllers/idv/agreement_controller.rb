@@ -44,9 +44,9 @@ module Idv
 
     def self.step_info
       Idv::StepInfo.new(
-        key: :agreement,
+        key: :how_to_verify,
         controller: controller_name,
-        next_steps: [:hybrid_handoff, :document_capture, :phone_question],
+        next_steps: [:hybrid_handoff, :document_capture, :phone_question, :how_to_verify],
         preconditions: ->(idv_session:, user:) { idv_session.welcome_visited },
       )
     end

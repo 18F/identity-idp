@@ -1,12 +1,15 @@
 module Idv
   class HowToVerifyController < ApplicationController
+    include IdvStepConcern
     include RenderConditionConcern
+
+    before_action :confirm_step_allowed
 
     REMOTE = 'remote'
     IPP = 'ipp'
     VERIFICATION_OPTIONS = [REMOTE, IPP].freeze
 
-    check_or_render_not_found -> { enabled? }
+    check_or_render_not_found -> { self.class.enabled? }
 
     def show
       analytics.idv_doc_auth_how_to_verify_visited(**analytics_arguments)
@@ -32,6 +35,21 @@ module Idv
       end
     end
 
+    def self.step_info
+      Idv::StepInfo.new(
+        key: :how_to_verify,
+        controller: controller_name,
+        next_steps: [:hybrid_handoff, :document_capture],
+        preconditions: ->(idv_session:, user:) do
+          self.enabled?
+        end,
+      )
+    end
+
+    def self.enabled?
+      IdentityConfig.store.in_person_proofing_opt_in_option
+    end
+
     private
 
     def analytics_arguments
@@ -43,10 +61,6 @@ module Idv
 
     def how_to_verify_form_params
       params.require(:idv_how_to_verify_form).permit(:selection)
-    end
-
-    def enabled?
-      IdentityConfig.store.in_person_proofing_opt_in_option
     end
   end
 end
