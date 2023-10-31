@@ -386,11 +386,6 @@ RSpec.describe InPersonEnrollment, type: :model do
 
   describe 'due_date and days_to_due_date' do
     let(:validity_in_days) { 10 }
-    let(:days_ago_established_at) { 7 }
-    let(:today) { 0 }
-    let(:nine) { 9 }
-    let(:nine_and_a_half) { 9.5 }
-    let(:ten) { 10 }
 
     before do
       allow(IdentityConfig.store).
@@ -404,10 +399,10 @@ RSpec.describe InPersonEnrollment, type: :model do
       freeze_time do
         enrollment = create(
           :in_person_enrollment,
-          enrollment_established_at: days_ago_established_at.days.ago,
+          enrollment_established_at: (validity_in_days - 3).days.ago,
         )
         expect(enrollment.due_date).to(
-          eq((validity_in_days - days_ago_established_at).days.from_now),
+          eq(3.days.from_now),
         )
       end
     end
@@ -416,9 +411,9 @@ RSpec.describe InPersonEnrollment, type: :model do
       freeze_time do
         enrollment = create(
           :in_person_enrollment,
-          enrollment_established_at: days_ago_established_at.days.ago,
+          enrollment_established_at: (validity_in_days - 3).days.ago,
         )
-        expect(enrollment.days_to_due_date).to eq(validity_in_days - days_ago_established_at)
+        expect(enrollment.days_to_due_date).to eq(3)
       end
     end
 
@@ -427,12 +422,12 @@ RSpec.describe InPersonEnrollment, type: :model do
         freeze_time do
           enrollment = create(
             :in_person_enrollment,
-            enrollment_established_at: nine.days.ago,
+            enrollment_established_at: (validity_in_days - 1).days.ago,
           )
-          expect(enrollment.days_to_due_date).to eq((validity_in_days - nine).to_i)
+          expect(enrollment.days_to_due_date).to eq(1)
           expect(enrollment.due_date).to(
-            eq((validity_in_days - nine).days.from_now),
-            )
+            eq(Time.zone.now + 1.day),
+          )
         end
       end
 
@@ -440,12 +435,12 @@ RSpec.describe InPersonEnrollment, type: :model do
         freeze_time do
           enrollment = create(
             :in_person_enrollment,
-            enrollment_established_at: nine_and_a_half.days.ago,
+            enrollment_established_at: (validity_in_days - 0.5).days.ago,
           )
-          expect(enrollment.days_to_due_date).to eq((validity_in_days - nine_and_a_half).to_i)
+          expect(enrollment.days_to_due_date).to eq(0)
           expect(enrollment.due_date).to(
-            eq((validity_in_days - nine_and_a_half).days.from_now),
-            )
+            eq(Time.zone.now + 0.5.days),
+          )
         end
       end
 
@@ -453,12 +448,12 @@ RSpec.describe InPersonEnrollment, type: :model do
         freeze_time do
           enrollment = create(
             :in_person_enrollment,
-            enrollment_established_at: ten.days.ago,
+            enrollment_established_at: validity_in_days.days.ago,
           )
-          expect(enrollment.days_to_due_date).to eq((validity_in_days - ten).to_i)
+          expect(enrollment.days_to_due_date).to eq(0)
           expect(enrollment.due_date).to(
-            eq((validity_in_days - ten).days.from_now),
-            )
+            eq(Time.zone.now),
+          )
         end
       end
     end
