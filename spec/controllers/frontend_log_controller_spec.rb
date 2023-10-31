@@ -17,19 +17,20 @@ RSpec.describe FrontendLogController do
         allow(controller).to receive(:analytics).and_return(fake_analytics)
       end
 
-      it 'succeeds' do
-        expect(fake_analytics).to receive(:track_event).
-          with("Frontend: #{event}", payload)
+      context 'with invalid event name' do
+        it 'logs with warning' do
+          action
 
-        action
+          expect(fake_analytics).to have_logged_event('Frontend (warning): Custom Event')
+          expect(response).to have_http_status(:bad_request)
+          expect(json[:success]).to eq(false)
+          expect(json[:error_message]).to eq('invalid event')
+        end
 
-        expect(response).to have_http_status(:ok)
-        expect(json[:success]).to eq(true)
-      end
-
-      it 'does not commit session' do
-        action
-        expect(request.session_options[:skip]).to eql(true)
+        it 'does not commit session' do
+          action
+          expect(request.session_options[:skip]).to eql(true)
+        end
       end
 
       context 'allowlisted analytics event' do
@@ -74,33 +75,6 @@ RSpec.describe FrontendLogController do
               )
             end
           end
-        end
-      end
-
-      context 'empty payload' do
-        let(:payload) { {} }
-
-        it 'succeeds' do
-          expect(fake_analytics).to receive(:track_event).
-            with("Frontend: #{event}", payload)
-
-          action
-
-          expect(response).to have_http_status(:ok)
-          expect(json[:success]).to eq(true)
-        end
-      end
-
-      context 'without payload' do
-        let(:params) { { 'event' => event } }
-
-        it 'succeeds' do
-          expect(fake_analytics).to receive(:track_event).with("Frontend: #{event}", {})
-
-          action
-
-          expect(response).to have_http_status(:ok)
-          expect(json[:success]).to eq(true)
         end
       end
 
@@ -155,7 +129,7 @@ RSpec.describe FrontendLogController do
           }
         end
 
-        it 'logs the analytics event without the prefix' do
+        it 'logs the analytics event' do
           expect(fake_analytics).to receive(:track_event).with(
             'IdV: Native camera forced after failed attempts',
             field: field,
@@ -214,18 +188,35 @@ RSpec.describe FrontendLogController do
         expect(Analytics).to receive(:new).with(hash_including(user: user))
       end
 
-      it 'succeeds' do
-        expect(fake_analytics).to receive(:track_event).with("Frontend: #{event}", payload)
+      context 'with invalid event name' do
+        it 'logs with warning' do
+          action
 
-        action
+          expect(fake_analytics).to have_logged_event('Frontend (warning): Custom Event')
+          expect(response).to have_http_status(:bad_request)
+          expect(json[:success]).to eq(false)
+          expect(json[:error_message]).to eq('invalid event')
+        end
 
-        expect(response).to have_http_status(:ok)
-        expect(json[:success]).to eq(true)
+        it 'does not commit session' do
+          action
+          expect(request.session_options[:skip]).to eql(true)
+        end
       end
 
-      it 'does not commit session' do
-        action
-        expect(request.session_options[:skip]).to eql(true)
+      context 'for a named analytics method' do
+        let(:event) { 'User prompted before navigation' }
+
+        it 'logs the analytics event' do
+          expect(fake_analytics).to receive(:track_event).with(
+            'User prompted before navigation',
+            path: nil,
+          )
+          action
+
+          expect(response).to have_http_status(:ok)
+          expect(json[:success]).to eq(true)
+        end
       end
     end
 

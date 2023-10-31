@@ -35,12 +35,12 @@ RSpec.describe FrontendLogger do
     subject(:call) { logger.track_event(name, attributes) }
 
     context 'with unknown event' do
-      let(:name) { 'unknown' }
+      let(:name) { :test_event }
 
-      it 'logs with prefix for unknown event' do
+      it 'logs unknown event with warning' do
         call
 
-        expect(analytics).to have_logged_event('Frontend: unknown', attributes)
+        expect(analytics).to have_logged_event('Frontend (warning): test_event')
       end
     end
 
