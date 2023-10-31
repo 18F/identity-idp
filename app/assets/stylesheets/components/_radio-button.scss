@@ -13,3 +13,10 @@
     }
   }
 }
+
+.usa-radio__input--tile
+  + .usa-radio__label--illustrated.usa-radio__label-illustrated-large
+  .usa-radio__image {
+  @include u-width(88px);
+  @include u-height('auto');
+}
