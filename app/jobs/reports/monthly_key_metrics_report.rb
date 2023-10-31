@@ -88,7 +88,7 @@ module Reports
     def monthly_proofing_report
       @monthly_proofing_report ||= Reporting::MonthlyProofingReport.new(
         # FYI - we should look for a way to share these configs
-        time_range: @report_date.prev_month(1).in_time_zone('UTC').all_month,
+        time_range: @report_date.in_time_zone('UTC').all_month,
         slice: 1.hour,
         threads: 10,
       )
