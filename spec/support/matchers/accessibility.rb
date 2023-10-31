@@ -50,6 +50,28 @@ RSpec::Matchers.define :label_required_fields do
   end
 end
 
+RSpec::Matchers.define :be_logically_grouped do |name|
+  match do |inputs|
+    group_names = inputs.map do |input|
+      group = input.ancestor('fieldset,[role=group]')
+      name = group['aria-label']
+      begin
+        name ||= group.find('legend').text if group.tag_name == 'fieldset'
+      rescue Capybara::ElementNotFound; end
+      name ||= aria_labelledby_name(group)
+      name
+    end
+
+    group_names.compact.uniq == [name]
+  end
+
+  failure_message do
+    <<-STR.squish
+      Expected inputs to be logically grouped with as "#{name}"
+    STR
+  end
+end
+
 RSpec::Matchers.define :have_valid_markup do
   def page_html
     if page.driver.is_a?(Capybara::Selenium::Driver)
@@ -132,18 +154,6 @@ RSpec::Matchers.define :have_name do |name|
     '' if element['aria-hidden'] == 'true'
   end
 
-  def aria_labelledby_name(element)
-    # "if computing a name, and the current node has an aria-labelledby attribute that contains at
-    # least one valid IDREF, and the current node is not already part of an aria-labelledby
-    # traversal, process its IDREFs in the order they occur"
-    valid_labels = element['aria-labelledby']&.
-      split(' ')&.
-      map { |label_id| page.find("##{label_id}")&.text }&.
-      compact
-
-    valid_labels.join('') if valid_labels.present?
-  end
-
   def aria_label_name(element)
     # "Otherwise, if computing a name, and if the current node has an aria-label attribute whose
     # value is not the empty string, nor, when trimmed of white space, is not the empty string:"
@@ -223,4 +233,16 @@ def activate_skip_link
   page.active_element.send_keys(:tab)
   expect(page.active_element).to have_content(t('shared.skip_link'), wait: 5)
   page.active_element.send_keys(:enter)
+end
+
+def aria_labelledby_name(element)
+  # "if computing a name, and the current node has an aria-labelledby attribute that contains at
+  # least one valid IDREF, and the current node is not already part of an aria-labelledby
+  # traversal, process its IDREFs in the order they occur"
+  valid_labels = element['aria-labelledby']&.
+    split(' ')&.
+    map { |label_id| page.find("##{label_id}")&.text }&.
+    compact
+
+  valid_labels.join('') if valid_labels.present?
 end
