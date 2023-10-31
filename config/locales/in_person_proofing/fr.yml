@@ -23,7 +23,9 @@ fr:
         what_to_expect: À quoi s’attendre au bureau de poste
       cta:
         button: Essayez dans un bureau de poste
-        prompt_detail: Vous commencerez ce processus en saisissant vos informations en ligne et continuerez à vérifier votre identité en personne dans un bureau de poste participant près de chez vous.
+        prompt_detail: Vous commencerez ce processus en saisissant vos informations en
+          ligne et continuerez à vérifier votre identité en personne dans un
+          bureau de poste participant près de chez vous.
       expect:
         heading: Que faire après votre visite
         info: Dans les 24 heures suivant votre visite au bureau de poste, nous vous
@@ -67,7 +69,10 @@ fr:
         retail_hours_weekday: 'Lundi à Vendredi:'
         selection: 'Il s’agit du bureau que vous avez sélectionné:'
       prepare:
-        additional_information: Vous recevrez un e-mail avec les résultats dans les 24 heures suivant votre visite au bureau de poste. Si votre vérification d'identité est réussie, vous pourrez vous connecter et partager vos informations vérifiées avec votre agence.
+        additional_information: Vous recevrez un e-mail avec les résultats dans les 24
+          heures suivant votre visite au bureau de poste. Si votre vérification
+          d’identité est réussie, vous pourrez vous connecter et partager vos
+          informations vérifiées avec votre agence.
         privacy_disclaimer: '%{app_name} est un site gouvernemental sécurisé. Nous et le
           service postal américain utilisons vos données pour vérifier votre
           identité.'
@@ -75,12 +80,15 @@ fr:
         privacy_disclaimer_questions: Vous avez des questions?
         verify_step_about: 'Suivez les étapes ci-dessous pour générer le code-barres que
           vous emporterez avec vous au bureau de poste:'
-        verify_step_enter_phone: Entrez votre numéro de téléphone principal ou celui que vous utilisez le plus souvent. Si nous sommes en mesure de vérifier vos informations, vous recevrez un code-barres.
+        verify_step_enter_phone: Entrez votre numéro de téléphone principal ou celui que
+          vous utilisez le plus souvent. Si nous sommes en mesure de vérifier
+          vos informations, vous recevrez un code-barres.
         verify_step_enter_pii: Saisissez votre nom, votre date de naissance, votre
           document d’identité délivré par l’État, votre adresse et votre numéro
           de sécurité sociale.
         verify_step_post_office: Trouver un bureau de poste participant.
-        verify_step_visit_post_office: Apportez le code-barres et votre pièce d'identité délivrée par l'État dans un bureau de poste participant.
+        verify_step_visit_post_office: Apportez le code-barres et votre pièce d’identité
+          délivrée par l’État dans un bureau de poste participant.
       state_id:
         alert_message: 'Votre carte d’identité délivrée par l’État ne doit pas être
           périmée. Les pièces d’identité acceptées sont:'
