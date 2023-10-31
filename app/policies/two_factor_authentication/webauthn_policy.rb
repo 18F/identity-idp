@@ -34,7 +34,7 @@ module TwoFactorAuthentication
     end
 
     def platform_visible?
-      platform_configured?
+      true
     end
 
     private

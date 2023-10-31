@@ -25,5 +25,6 @@
         link_to(webauthn_setup_path(platform: true), **tag_options, &block)
       end,
       icon: :add,
-      class: 'usa-button usa-button--outline margin-top-2',
+      outline: true,
+      class: 'margin-top-2',
     ).with_content(t('account.index.webauthn_platform_add')) %>
