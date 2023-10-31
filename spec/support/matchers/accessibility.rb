@@ -195,12 +195,6 @@ class AccessibleName
     '' if element['aria-hidden'] == 'true'
   end
 
-  def aria_label_name(element)
-    # "Otherwise, if computing a name, and if the current node has an aria-label attribute whose
-    # value is not the empty string, nor, when trimmed of white space, is not the empty string:"
-    element['aria-label']
-  end
-
   def aria_labelledby_name(element)
     # "if computing a name, and the current node has an aria-labelledby attribute that contains at
     # least one valid IDREF, and the current node is not already part of an aria-labelledby
@@ -211,6 +205,12 @@ class AccessibleName
       compact
 
     valid_labels.join('') if valid_labels.present?
+  end
+
+  def aria_label_name(element)
+    # "Otherwise, if computing a name, and if the current node has an aria-label attribute whose
+    # value is not the empty string, nor, when trimmed of white space, is not the empty string:"
+    element['aria-label']
   end
 
   def referenced_label_name(element)
