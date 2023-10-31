@@ -46,7 +46,7 @@ es:
     messages:
       already_confirmed: ya estaba confirmado, por favor intente iniciar una sesión
       blank: Por favor, rellenar este campo.
-      confirmation_code_incorrect: El código es incorrecto. ¿Lo escribió correctamente?
+      confirmation_code_incorrect: Código de verificación incorrecto. ¿Lo escribió correctamente?
       confirmation_invalid_token: El enlace de confirmación no es válido. El enlace
         expiró o usted ya ha confirmado su cuenta.
       confirmation_period_expired: El enlace de confirmación expiró. Puede hacer clic

@@ -19,8 +19,10 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
       "#{report_folder}/total_user_count.csv",
       "#{report_folder}/active_users_count.csv",
       "#{report_folder}/proofing_rate_metrics.csv",
+      "#{report_folder}/agency_and_sp_counts.csv",
     ]
   end
+
   let(:s3_metadata) do
     {
       body: anything,

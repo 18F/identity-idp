@@ -16,9 +16,9 @@ RSpec.feature 'phone question step' do
 
   before do
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
+    allow(AbTests::IDV_PHONE_QUESTION).to receive(:bucket).and_return(:show_phone_question)
     sign_in_and_2fa_user
     complete_doc_auth_steps_before_hybrid_handoff_step
-    visit(idv_phone_question_url)
   end
 
   context 'phone question answered' do
@@ -28,6 +28,7 @@ RSpec.feature 'phone question step' do
       let(:phone_number) { '415-555-0199' }
 
       it 'redirects to hybrid handoff if user confirms having phone' do
+        expect(page).to have_current_path(idv_phone_question_path)
         click_link t('doc_auth.buttons.have_phone')
         expect(page).to have_current_path(idv_hybrid_handoff_path)
         expect(fake_analytics).to have_logged_event(
@@ -39,6 +40,12 @@ RSpec.feature 'phone question step' do
         click_send_link
         expect(page).to have_current_path(idv_link_sent_path)
         click_link(t('forms.buttons.back'))
+        expect(page).to have_current_path(idv_hybrid_handoff_path(redo: true))
+
+        # test no, keep going from cancel page
+        click_link t('links.cancel')
+        expect(current_path).to eq(idv_cancel_path)
+        click_on t('idv.cancel.actions.keep_going')
         expect(page).to have_current_path(idv_hybrid_handoff_path(redo: true))
       end
     end

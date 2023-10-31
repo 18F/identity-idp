@@ -4,7 +4,7 @@ module Idv
     include StepIndicatorConcern
 
     before_action :confirm_not_rate_limited
-    before_action :confirm_welcome_step_complete
+    before_action :confirm_step_allowed
     before_action :confirm_document_capture_not_complete
 
     def show
@@ -42,6 +42,15 @@ module Idv
       end
     end
 
+    def self.step_info
+      Idv::StepInfo.new(
+        key: :agreement,
+        controller: controller_name,
+        next_steps: [:hybrid_handoff, :document_capture, :phone_question],
+        preconditions: ->(idv_session:, user:) { idv_session.welcome_visited },
+      )
+    end
+
     private
 
     def analytics_arguments
@@ -63,18 +72,6 @@ module Idv
 
     def consent_form_params
       params.require(:doc_auth).permit(:idv_consent_given)
-    end
-
-    def confirm_welcome_step_complete
-      return if idv_session.welcome_visited
-
-      redirect_to idv_welcome_url
-    end
-
-    def confirm_agreement_needed
-      return unless idv_session.idv_consent_given
-
-      redirect_to idv_hybrid_handoff_url
     end
   end
 end
