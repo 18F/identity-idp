@@ -38,6 +38,9 @@ es:
       send_link_limited: Ha intentado demasiadas veces, por favor, inténtelo de nuevo
         en %{timeout}. También puede retroceder y elegir utilizar su computadora
         como alternativa.
+    enter_code:
+      rate_limited_html: Ingresó un código de verificación incorrecto demasiadas
+        veces. <strong>Inténtelo de nuevo dentro de %{timeout}.</strong>
     general: '¡Oops! Algo salió mal. Inténtelo de nuevo.'
     invalid_totp: El código es inválido. Vuelva a intentarlo.
     max_password_attempts_reached: Ha ingresado demasiadas contraseñas incorrectas.

@@ -97,7 +97,6 @@ en:
       gpo:
         rate_limited:
           heading: Try again later
-          body: You entered an incorrect verification code too many times.
       phone:
         heading: We could not match this phone number to other records
         jobfail: Something went wrong and we cannot process your request at this time.
