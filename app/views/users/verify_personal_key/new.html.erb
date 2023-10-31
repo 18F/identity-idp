@@ -1,3 +1,5 @@
+<% title t('forms.personal_key.title') %>
+
 <%= simple_form_for('', url: create_verify_personal_key_path, method: 'post', html: { class: 'margin-top-8' }) do |f| %>
   <div class="padding-top-6 padding-bottom-1 padding-x-1 tablet:padding-x-4 position-relative border border-secondary rounded-xl">
     <%= render AlertIconComponent.new(

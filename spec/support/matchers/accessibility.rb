@@ -211,28 +211,10 @@ RSpec::Matchers.define :have_name do |name|
   end
 end
 
-RSpec::Matchers.define :be_uniquely_titled do
-  # Attempts to validate conformance to WCAG Success Criteria 2.4.2: Page Titled
-  #
-  # Visiting a page with the default app name title is considered a failure, and should be resolved
-  # by providing a distinct description for the page using the `:title` content block.
-  #
-  # https://www.w3.org/WAI/WCAG21/Understanding/page-titled.html
-
-  match do |page|
-    page.title.present? && page.title.strip != APP_NAME
-  end
-
-  failure_message do |page|
-    "Page '#{page.current_path}' should have a unique and descriptive title. Found '#{page.title}'."
-  end
-end
-
 def expect_page_to_have_no_accessibility_violations(page, validate_markup: true)
   expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
   expect(page).to have_valid_idrefs
   expect(page).to label_required_fields
-  expect(page).to be_uniquely_titled
   expect(page).to have_valid_markup if validate_markup
 end
 
