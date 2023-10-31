@@ -40,13 +40,5 @@ module Pii
     def ==(other)
       eql?(other)
     end
-
-    private
-
-    def assign_all_members
-      self.class.members.each do |member|
-        self[member] = self[member]
-      end
-    end
   end
 end
