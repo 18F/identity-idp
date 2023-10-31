@@ -44,7 +44,7 @@ fr:
         d’utiliser votre ordinateur à la place.
     enter_code:
       rate_limited_html: Vous avez saisi un code de vérification inexact à trop de
-        reprises. <strong>Réessayez dans %{timeout}.</strong>
+        reprises. <br><strong>Réessayez dans %{timeout}.</strong>
     general: Oups, une erreur s’est produite. Veuillez essayer de nouveau.
     invalid_totp: Code non valide. Veuillez essayer de nouveau.
     max_password_attempts_reached: Vous avez inscrit des mots de passe incorrects un
