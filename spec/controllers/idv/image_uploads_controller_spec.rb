@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Idv::ImageUploadsController do
+  include DocPiiHelper
+
   let(:document_filename_regex) { /^[a-f0-9]{8}-([a-f0-9]{4}-){3}[a-f0-9]{12}\.[a-z]+$/ }
   let(:base64_regex) { /^[a-z0-9+\/]+=*$/i }
 
@@ -937,19 +939,5 @@ RSpec.describe Idv::ImageUploadsController do
     doc_auth_log = DocAuthLog.where(user_id: user.id).first
     expect(doc_auth_log.back_image_submit_count).to eq(count)
     expect(doc_auth_log.front_image_submit_count).to eq(count)
-  end
-
-  def pii_like_keypaths
-    [
-      [:pii],
-      [:name, :dob, :dob_min_age, :address1, :state, :zipcode, :jurisdiction],
-      [:errors, :name], [:error_details, :name],
-      [:errors, :dob], [:error_details, :dob],
-      [:errors, :dob_min_age], [:error_details, :dob_min_age],
-      [:errors, :address1], [:error_details, :address1],
-      [:errors, :state], [:error_details, :state],
-      [:errors, :zipcode], [:error_details, :zipcode],
-      [:errors, :jurisdiction], [:error_details, :jurisdiction]
-    ]
   end
 end
