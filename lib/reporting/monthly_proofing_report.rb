@@ -56,6 +56,8 @@ module Reporting
     def document_upload_proofing_emailable_report
       EmailableReport.new(
         title: 'Document upload proofing rates',
+        float_as_percent: true,
+        precision: 4,
         table: proofing_report,
         filename: 'document_upload_proofing',
       )

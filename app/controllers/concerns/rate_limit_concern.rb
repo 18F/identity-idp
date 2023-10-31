@@ -27,7 +27,7 @@ module RateLimitConcern
   private
 
   def confirm_not_rate_limited_for_phone_and_letter_address_verification
-    if idv_attempter_rate_limited?(:proof_address) && Idv::GpoMail.new(current_user).mail_spammed?
+    if idv_attempter_rate_limited?(:proof_address) && Idv::GpoMail.new(current_user).rate_limited?
       rate_limit_redirect!(:proof_address)
       return true
     end

@@ -127,6 +127,18 @@ module IdvStepHelper
     expect(page).to have_css('.step-indicator__step--current', text: text, wait: 5)
   end
 
+  def complete_idv_steps_before_address(user = user_with_2fa)
+    sign_in_and_2fa_user(user)
+    begin_in_person_proofing(user)
+    # prepare page
+    complete_prepare_step(user)
+    # location page
+    complete_location_step(user)
+    # state ID page
+    fill_out_state_id_form_ok(same_address_as_id: false)
+    click_idv_continue
+  end
+
   def complete_idv_steps_before_ssn(user = user_with_2fa)
     sign_in_and_2fa_user(user)
     begin_in_person_proofing(user)

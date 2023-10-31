@@ -5,7 +5,7 @@ RSpec.describe 'clearing IdV and restarting' do
 
   let(:user) { user_with_2fa }
 
-  context 'during GPO otp verification', js: true do
+  context 'during verification code entry', js: true do
     before do
       start_idv_from_sp
       complete_idv_steps_with_gpo_before_confirmation_step(user)

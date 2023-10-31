@@ -216,4 +216,51 @@ RSpec.describe DocAuth::Acuant::AcuantClient do
       )
     end
   end
+
+  context 'when there is expected rxx http status code' do
+    shared_examples 'with http status' do |status|
+      it "generate response for status #{status} " do
+        instance_id = 'this-is-a-test-instance-id'
+        url = URI.join(
+          assure_id_url, "/AssureIDService/Document/#{instance_id}/Image"
+        )
+        stub_request(:post, url).with(query: { side: 0, light: 0 }).to_return(
+          body: '',
+          status: status,
+        )
+
+        result = subject.post_front_image(
+          instance_id: instance_id,
+          image: DocAuthImageFixtures.document_front_image,
+        )
+        expect(result.exception.message).not_to be_nil
+        case status
+        when 440
+          expect(result.errors).to eql(
+            {
+              general: [DocAuth::Errors::IMAGE_SIZE_FAILURE],
+              front: [DocAuth::Errors::IMAGE_SIZE_FAILURE_FIELD],
+            },
+          )
+        when 438
+          expect(result.errors).to eql(
+            {
+              general: [DocAuth::Errors::IMAGE_LOAD_FAILURE],
+              front: [DocAuth::Errors::IMAGE_LOAD_FAILURE_FIELD],
+            },
+          )
+        when 439
+          expect(result.errors).to eql(
+            {
+              general: [DocAuth::Errors::PIXEL_DEPTH_FAILURE],
+              front: [DocAuth::Errors::PIXEL_DEPTH_FAILURE_FIELD],
+            },
+          )
+        end
+      end
+    end
+    it_should_behave_like 'with http status', 440
+    it_should_behave_like 'with http status', 439
+    it_should_behave_like 'with http status', 438
+  end
 end

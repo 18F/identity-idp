@@ -112,15 +112,20 @@ es:
           tengan reflejos. Asegúrese de que el flash de su cámara esté
           desactivado e intente tomar nuevas fotos.
       http:
-        image_load: El archivo de imagen que ha añadido no es compatible. Por favor,
-          tome nuevas fotos de su identificación y vuelva a intentarlo.
-        image_size: El tamaño de la imagen es demasiado grande o demasiado pequeño.
-          Añada imágenes de su documento de identidad de unos 2025 x 1275
-          píxeles.
-        pixel_depth: No es compatible con la profundidad de píxeles de su archivo de
-          imagen. Tome nuevas fotos de su documento de identidad e inténtelo
-          nuevamente. La profundidad de píxeles de la imagen admitida es de 24
-          bits RGB.
+        image_load:
+          failed_short: El archivo de la imagen no es compatible. Inténtalo de nuevo.
+          top_msg: El archivo de imagen que ha añadido no es compatible. Por favor, tome
+            nuevas fotos de su identificación y vuelva a intentarlo.
+        image_size:
+          failed_short: El archivo de la imagen no es compatible. Inténtalo de nuevo.
+          top_msg: El tamaño de la imagen es demasiado grande o demasiado pequeño. Añada
+            imágenes de su documento de identidad de unos 2025 x 1275 píxeles.
+        pixel_depth:
+          failed_short: El archivo de la imagen no es compatible. Inténtalo de nuevo.
+          top_msg: No es compatible con la profundidad de píxeles de su archivo de imagen.
+            Tome nuevas fotos de su documento de identidad e inténtelo
+            nuevamente. La profundidad de píxeles de la imagen admitida es de 24
+            bits RGB.
       not_a_file: La selección no era un archivo válido.
       pii:
         birth_date_min_age: Tu cumpleaños no cumple con el requisito de edad mínima.
