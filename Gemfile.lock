@@ -657,7 +657,7 @@ GEM
       unf (~> 0.1.4)
     smart_properties (1.17.0)
     stringex (2.8.5)
-    strong_migrations (1.6.0)
+    strong_migrations (1.6.4)
       activerecord (>= 5.2)
     subprocess (1.5.5)
     tableparser (1.0.1)
