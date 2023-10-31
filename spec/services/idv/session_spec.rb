@@ -126,9 +126,9 @@ RSpec.describe Idv::Session do
           expect(profile.initiating_service_provider).to eq nil
           expect(profile.verified_at).to eq now
 
-          pii_from_sesison = Pii::Cacher.new(user, user_session).fetch
-          expect(pii_from_sesison).to_not be_nil
-          expect(pii_from_sesison.ssn).to eq(Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn])
+          pii_from_session = Pii::Cacher.new(user, user_session).fetch
+          expect(pii_from_session).to_not be_nil
+          expect(pii_from_session.ssn).to eq(Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn])
         end
       end
 
@@ -145,9 +145,9 @@ RSpec.describe Idv::Session do
         expect(profile.initiating_service_provider).to eq nil
         expect(profile.verified_at).to eq nil
 
-        pii_from_sesison = Pii::Cacher.new(user, user_session).fetch
-        expect(pii_from_sesison).to_not be_nil
-        expect(pii_from_sesison.ssn).to eq(Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn])
+        pii_from_session = Pii::Cacher.new(user, user_session).fetch
+        expect(pii_from_session).to_not be_nil
+        expect(pii_from_session.ssn).to eq(Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn])
       end
 
       context 'with establishing in person enrollment' do
@@ -174,9 +174,9 @@ RSpec.describe Idv::Session do
           expect(profile.initiating_service_provider).to eq nil
           expect(profile.verified_at).to eq nil
 
-          pii_from_sesison = Pii::Cacher.new(user, user_session).fetch
-          expect(pii_from_sesison).to_not be_nil
-          expect(pii_from_sesison.ssn).to eq(Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE[:ssn])
+          pii_from_session = Pii::Cacher.new(user, user_session).fetch
+          expect(pii_from_session).to_not be_nil
+          expect(pii_from_session.ssn).to eq(Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE[:ssn])
         end
 
         it 'creates a USPS enrollment' do
@@ -217,9 +217,9 @@ RSpec.describe Idv::Session do
         expect(profile.initiating_service_provider).to eq nil
         expect(profile.verified_at).to eq nil
 
-        pii_from_sesison = Pii::Cacher.new(user, user_session).fetch
-        expect(pii_from_sesison).to_not be_nil
-        expect(pii_from_sesison.ssn).to eq(Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn])
+        pii_from_session = Pii::Cacher.new(user, user_session).fetch
+        expect(pii_from_session).to_not be_nil
+        expect(pii_from_session.ssn).to eq(Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn])
       end
     end
 
@@ -241,9 +241,9 @@ RSpec.describe Idv::Session do
         expect(profile.initiating_service_provider).to eq nil
         expect(profile.verified_at).to eq nil
 
-        pii_from_sesison = Pii::Cacher.new(user, user_session).fetch
-        expect(pii_from_sesison).to_not be_nil
-        expect(pii_from_sesison.ssn).to eq(Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn])
+        pii_from_session = Pii::Cacher.new(user, user_session).fetch
+        expect(pii_from_session).to_not be_nil
+        expect(pii_from_session.ssn).to eq(Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn])
       end
     end
   end
