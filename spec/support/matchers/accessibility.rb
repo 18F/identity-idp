@@ -140,20 +140,6 @@ RSpec::Matchers.define :have_name do |name|
   end
 end
 
-def expect_page_to_have_no_accessibility_violations(page, validate_markup: true)
-  expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
-  expect(page).to have_valid_idrefs
-  expect(page).to label_required_fields
-  expect(page).to have_valid_markup if validate_markup
-end
-
-def activate_skip_link
-  page.evaluate_script('document.activeElement.blur()')
-  page.active_element.send_keys(:tab)
-  expect(page.active_element).to have_content(t('shared.skip_link'), wait: 5)
-  page.active_element.send_keys(:enter)
-end
-
 class AccessibleName
   attr_reader :page
 
@@ -270,4 +256,18 @@ class AccessibleName
     # attribute, then use that attribute."
     element['title']
   end
+end
+
+def expect_page_to_have_no_accessibility_violations(page, validate_markup: true)
+  expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
+  expect(page).to have_valid_idrefs
+  expect(page).to label_required_fields
+  expect(page).to have_valid_markup if validate_markup
+end
+
+def activate_skip_link
+  page.evaluate_script('document.activeElement.blur()')
+  page.active_element.send_keys(:tab)
+  expect(page.active_element).to have_content(t('shared.skip_link'), wait: 5)
+  page.active_element.send_keys(:enter)
 end
