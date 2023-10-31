@@ -1,6 +1,5 @@
 RSpec.shared_examples 'webauthn setup' do
   let(:fake_analytics) { FakeAnalytics.new }
-
   let(:submitted_error_hash) do
     { name: [I18n.t(
       'errors.webauthn_platform_setup.attestation_error',
