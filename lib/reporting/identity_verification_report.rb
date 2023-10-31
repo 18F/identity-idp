@@ -54,7 +54,8 @@ module Reporting
       progress: false,
       slice: 3.hours,
       threads: 5,
-      data: nil
+      data: nil,
+      cloudwatch_client: nil
     )
       @issuers = issuers
       @time_range = time_range
@@ -63,6 +64,7 @@ module Reporting
       @slice = slice
       @threads = threads
       @data = data
+      @cloudwatch_client = cloudwatch_client
     end
 
     def verbose?

@@ -4,7 +4,7 @@ module Idv
       @current_user = current_user
     end
 
-    def mail_spammed?
+    def rate_limited?
       too_many_letter_requests_within_window? || last_letter_request_too_recent?
     end
 

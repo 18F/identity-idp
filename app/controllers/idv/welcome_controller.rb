@@ -33,6 +33,15 @@ module Idv
       redirect_to idv_agreement_url
     end
 
+    def self.step_info
+      Idv::StepInfo.new(
+        key: :welcome,
+        controller: controller_name,
+        next_steps: [:agreement],
+        preconditions: ->(idv_session:, user:) { true },
+      )
+    end
+
     private
 
     def analytics_arguments

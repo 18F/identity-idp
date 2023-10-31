@@ -15,6 +15,12 @@ RSpec.describe Idv::HybridHandoffController do
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 
+  describe '#step_info' do
+    it 'returns a valid StepInfo object' do
+      expect(Idv::HybridHandoffController.step_info).to be_valid
+    end
+  end
+
   describe 'before_actions' do
     it 'includes authentication before_action' do
       expect(subject).to have_actions(
@@ -27,20 +33,6 @@ RSpec.describe Idv::HybridHandoffController do
       expect(subject).to have_actions(
         :before,
         :check_for_mail_only_outage,
-      )
-    end
-
-    it 'checks that agreement step is complete' do
-      expect(subject).to have_actions(
-        :before,
-        :confirm_agreement_step_complete,
-      )
-    end
-
-    it 'checks that hybrid_handoff is needed' do
-      expect(subject).to have_actions(
-        :before,
-        :confirm_hybrid_handoff_needed,
       )
     end
 
@@ -86,6 +78,7 @@ RSpec.describe Idv::HybridHandoffController do
 
     context 'agreement step is not complete' do
       before do
+        subject.idv_session.welcome_visited = true
         subject.idv_session.idv_consent_given = nil
       end
 
@@ -97,7 +90,7 @@ RSpec.describe Idv::HybridHandoffController do
     end
 
     context 'hybrid_handoff already visited' do
-      it 'redirects to document_capture in standard flow' do
+      it 'shows hybrid_handoff' do
         subject.idv_session.flow_path = 'standard'
 
         get :show
@@ -105,7 +98,7 @@ RSpec.describe Idv::HybridHandoffController do
         expect(response).to render_template :show
       end
 
-      it 'redirects to link_sent in hybrid flow' do
+      it 'shows hybrid_handoff' do
         subject.idv_session.flow_path = 'hybrid'
 
         get :show
@@ -313,10 +306,9 @@ RSpec.describe Idv::HybridHandoffController do
         expect(response).to redirect_to(idv_phone_question_url)
       end
 
-      context 'when refered by phone_question page' do
-        let(:referer) { idv_phone_question_url }
+      context 'when user comes from phone_question page' do
         before do
-          request.env['HTTP_REFERER'] = referer
+          subject.idv_session.phone_with_camera = false
         end
 
         it 'does not redirect users away from hybrid handoff page' do
