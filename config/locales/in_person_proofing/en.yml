@@ -147,7 +147,7 @@ en:
       id_address: Address on your ID
       po_search:
         location: Find a participating Post Office
-      prepare: Verify your identity in person at a Post Office
+      prepare: Verify your identity at a Post Office
       state_id_milestone_2: Enter the information on your state‑issued ID
       switch_back: Switch back to your computer to prepare to verify your identity in person
       update_address: Update your current address
