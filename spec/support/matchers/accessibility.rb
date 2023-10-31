@@ -208,6 +208,15 @@ class AccessibleName
     nil
   end
 
+  def button_to_name(element)
+    # Handle the special case where the element is a button generated
+    # with Rails' `button_to` helper. In this case, the aria tags go
+    # on the enclosing form which `button_to` generates.
+    element.tag_name == 'button' && element.ancestor('form.button_to')['aria-label']
+  rescue Capybara::ElementNotFound
+    nil
+  end
+
   def ancestor_label_text_name(element)
     # "Otherwise, if the current node is a control embedded within the label"
     descendent_name(element.find(:xpath, 'ancestor::label'))
