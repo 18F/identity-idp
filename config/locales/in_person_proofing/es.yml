@@ -68,6 +68,7 @@ es:
         retail_hours_weekday: 'De Lunes a Viernes:'
         selection: 'Esta es la oficina que seleccionó:'
       prepare:
+        additional_information: Recibirá un correo electrónico con los resultados dentro de las 24 horas posteriores a su visita a la Oficina de Correos. Si su verificación de identidad fue exitosa, podrá iniciar sesión y compartir su información verificada con su agencia.
         privacy_disclaimer: '%{app_name} es un sitio web seguro del gobierno. Nosotros y
           el Servicio Postal de los Estados Unidos utilizamos sus datos para
           verificar su identidad.'
@@ -75,12 +76,12 @@ es:
         privacy_disclaimer_questions: '¿Preguntas?'
         verify_step_about: 'Complete los siguientes pasos para generar el código de
           barras que llevará a la oficina de correos:'
-        verify_step_enter_phone: Introduzca su número de teléfono principal o el que use
-          con más frecuencia.
+        verify_step_enter_phone: Introduzca su número de teléfono principal o el que use con más frecuencia. Si podemos verificar su información, recibirá un código de barras.
         verify_step_enter_pii: Ingrese su nombre, fecha de nacimiento, número de
           identificación emitido por el estado, dirección y número de la
           Seguridad Social.
         verify_step_post_office: Encuentre una Oficina de Correos participantes cercana a usted.
+        verify_step_visit_post_office: Lleve el código de barras y su identificación emitida por el estado a una Oficina de Correos participante.
       state_id:
         alert_message: 'Su identificación emitida por el estado no debe estar vencida.
           Se aceptan las siguientes formas de identificación:'
@@ -151,7 +152,7 @@ es:
       id_address: Domicilio que consta en su identificación
       po_search:
         location: Encuentre una oficina de correos participante
-      prepare: Verifique su identidad en persona
+      prepare: Verifique su identidad en una Oficina de Correos
       state_id_milestone_2: Ingrese la información de su identificación emitida por el estado
       switch_back: Vuelva a su computadora para prepararse para verificar su identidad
         en persona

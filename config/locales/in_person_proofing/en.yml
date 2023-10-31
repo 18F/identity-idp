@@ -63,16 +63,18 @@ en:
         retail_hours_weekday: 'Monday to Friday:'
         selection: 'This is the location you selected:'
       prepare:
+        additional_information: You’ll receive an email with the results within 24 hours of your visit to the Post Office. If your identity verification was successful, you’ll be able to sign in and share your verified information with your agency.
         privacy_disclaimer: '%{app_name} is a secure, government website. We and the
           U.S. Postal Service use your data to verify your identity.'
         privacy_disclaimer_link: Learn more about privacy and security.
         privacy_disclaimer_questions: Questions?
         verify_step_about: 'Complete the steps below to generate the barcode you’ll take
           with you to the Post Office:'
-        verify_step_enter_phone: Enter your primary phone number or the number that you use most often.
+        verify_step_enter_phone: Enter your primary phone number or the number that you use most often. If we’re able to verify your information, you'll receive a barcode.
         verify_step_enter_pii: Enter your name, date of birth, state‑issued ID number,
           address and Social Security number.
         verify_step_post_office: Find a participating Post Office near you.
+        verify_step_visit_post_office: Bring the barcode and your state-issued ID to a participating Post Office.
       state_id:
         alert_message: 'Your state‑issued ID must not be expired. Accepted forms of ID are:'
         id_types:
@@ -138,7 +140,7 @@ en:
       id_address: Address on your ID
       po_search:
         location: Find a participating Post Office
-      prepare: Verify your identity in person
+      prepare: Verify your identity in person at a Post Office
       state_id_milestone_2: Enter the information on your state‑issued ID
       switch_back: Switch back to your computer to prepare to verify your identity in person
       update_address: Update your current address
