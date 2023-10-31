@@ -3,7 +3,7 @@ es:
   saml_idp:
     auth:
       error:
-        title: SAML Error
+        title: Error
     shared:
       saml_post_binding:
         heading: Enviar para continuar
@@ -11,4 +11,4 @@ es:
           paso se realiza automáticamente, pero debido a que tiene JavaScript
           desactivado, haga clic en el botón Enviar para continuar iniciando o
           cerrando la sesión.
-        redirecting: Redirecting
+        redirecting: Redirigiendo

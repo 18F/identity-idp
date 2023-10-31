@@ -3,7 +3,7 @@ en:
   saml_idp:
     auth:
       error:
-        title: SAML Error
+        title: Error
     shared:
       saml_post_binding:
         heading: Submit to continue
