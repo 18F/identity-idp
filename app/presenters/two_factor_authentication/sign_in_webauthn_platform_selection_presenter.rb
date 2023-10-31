@@ -8,10 +8,8 @@ module TwoFactorAuthentication
       view_context.render(
         WebauthnInputComponent.new(
           platform: true,
-          passkey_supported_only: configuration.blank?,
-          show_unsupported_passkey:
-            configuration.blank? &&
-            IdentityConfig.store.show_unsupported_passkey_platform_authentication_setup,
+          passkey_supported_only: false,
+          show_unsupported_passkey: false,
         ),
         &block
       )

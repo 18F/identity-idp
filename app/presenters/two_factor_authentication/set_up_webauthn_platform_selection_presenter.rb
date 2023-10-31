@@ -1,12 +1,12 @@
 module TwoFactorAuthentication
   class SetUpWebauthnPlatformSelectionPresenter < SetUpSelectionPresenter
-    def method
-      :webauthn_platform
-    end
-
     def initialize(user:, configuration: nil)
       @user = user
       @configuration = configuration
+    end
+
+    def method
+      :webauthn_platform
     end
 
     def render_in(view_context, &block)
