@@ -69,11 +69,11 @@ module Idv
       self.personal_key = profile.personal_key
 
       move_pii_to_user_session(profile_maker.pii_attributes)
-      associate_in_person_enrollment_with_profile
+      associate_in_person_enrollment_with_profile if profile.in_person_verification_pending?
 
-      if address_verification_mechanism == 'gpo'
+      if profile.in_person_verification_pending?
         create_gpo_entry(profile_maker.pii_attributes)
-      elsif !profile.active? && current_user.has_in_person_enrollment?
+      elsif profile.in_person_verification_pending?
         UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(
           current_user,
           profile_maker.pii_attributes,
@@ -98,8 +98,6 @@ module Idv
     end
 
     def associate_in_person_enrollment_with_profile
-      return unless current_user.has_in_person_enrollment?
-
       current_user.establishing_in_person_enrollment.update(profile: profile)
     end
 
