@@ -50,7 +50,7 @@ module Idv
       }.merge(
         acuant_sdk_upgrade_a_b_testing_variables,
         phone_question_ab_test_analytics_bucket,
-        phone_with_camera,
+        phone_with_camera: idv_session.phone_with_camera,
       )
     end
 

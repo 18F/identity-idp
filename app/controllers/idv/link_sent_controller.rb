@@ -36,7 +36,7 @@ module Idv
     def extra_view_variables
       { phone: idv_session.phone_for_mobile_flow }.merge(
         phone_question_ab_test_analytics_bucket,
-        phone_with_camera,
+        phone_with_camera: idv_session.phone_with_camera,
       )
     end
 
