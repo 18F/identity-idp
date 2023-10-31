@@ -21,9 +21,8 @@ es:
         return_to_partner_link: cerrar sesión y regresar a %{sp_name}
         what_to_expect: Qué esperar en la oficina de correos
       cta:
-        button: Inténtelo en persona
-        prompt_detail: Es posible que pueda verificar su documento de identidad en
-          persona en una oficina de correos participante cercana.
+        button: Inténtelo en una Oficina de Correos
+        prompt_detail: Comenzará este proceso ingresando su información en línea, y continuará verificando tu identidad en persona en una Oficina de Correos participante cercana.
       expect:
         heading: Qué esperar después de la visita
         info: Le enviaremos un correo electrónico para informarle si su verificación de
@@ -148,7 +147,7 @@ es:
       address: Ingresa tu domicilio actual
       barcode: Muestre este código de barras y su documento nacional de identidad en
         una oficina de correos para terminar de verificar su identidad
-      cta: Intente verificar su ID en persona
+      cta: Intente verificar su identidad en una oficina de correos
       id_address: Domicilio que consta en su identificación
       po_search:
         location: Encuentre una oficina de correos participante
