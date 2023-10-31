@@ -166,15 +166,15 @@ RSpec.describe InPerson::SendProofingNotificationJob do
                   with(
                     to: phone_number,
                     message: "Login.gov: You visited the Post Office on #{proofed_date}." \
-                      " Check email for your result. Not you? Report this right away: #{contact_number}." \
+                      " Check email for your result." \
+                      " Not you? Report this right away: #{contact_number}." \
                       " Ref: #{reference_string}",
                     country_code: Phonelib.parse(phone_number).country,
-                    ),
-                )
+                  ),
+              )
 
             job.perform(passed_enrollment.id)
           end
-
 
           it 'handles French language preference' do
             passed_enrollment.user.update!(email_language: 'fr')
@@ -189,8 +189,8 @@ RSpec.describe InPerson::SendProofingNotificationJob do
                       " Vérifiez votre e-mail pour votre résultat. Ce n'est pas vous?" \
                       " Signalez-le immédiatement: #{contact_number}. Réf: #{reference_string}",
                     country_code: Phonelib.parse(phone_number).country,
-                    ),
-                )
+                  ),
+              )
 
             job.perform(passed_enrollment.id)
           end
@@ -208,8 +208,8 @@ RSpec.describe InPerson::SendProofingNotificationJob do
                       " Revise su correo electrónico para ver su resultado. ¿No fue usted?" \
                       " Informe ahora mismo: #{contact_number}. Ref: #{reference_string}",
                     country_code: Phonelib.parse(phone_number).country,
-                    ),
-                )
+                  ),
+              )
 
             job.perform(passed_enrollment.id)
           end
