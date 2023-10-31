@@ -30,6 +30,19 @@ module Pii
       Pii::Attributes.new_from_json(pii_string)
     end
 
+    def exists_in_session?
+      return user_session[:decrypted_pii] || user_session[:encrypted_pii]
+    end
+
+    def delete
+      user_session.delete(:decrypted_pii)
+      user_session.delete(:encrypted_pii)
+    end
+
+    private
+
+    attr_reader :user, :user_session
+
     # Between requests, the decrypted PII bundle is encrypted with KMS and moved to the
     # 'encrypted_pii' key by the SessionEncryptor.
     #
@@ -46,19 +59,6 @@ module Pii
 
       decrypted
     end
-
-    def exists_in_session?
-      return user_session[:decrypted_pii] || user_session[:encrypted_pii]
-    end
-
-    def delete
-      user_session.delete(:decrypted_pii)
-      user_session.delete(:encrypted_pii)
-    end
-
-    private
-
-    attr_reader :user, :user_session
 
     def rotate_fingerprints(profile)
       KeyRotator::HmacFingerprinter.new.rotate(
