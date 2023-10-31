@@ -56,6 +56,8 @@ module Reporting
     def document_upload_proofing_emailable_report
       EmailableReport.new(
         title: 'Document upload proofing rates',
+        float_as_percent: true,
+        precision: 4,
         table: proofing_report,
         filename: 'document_upload_proofing',
       )
@@ -78,11 +80,6 @@ module Reporting
       end
 
       csv
-    rescue Aws::CloudWatchLogs::Errors::MalformedQueryException => error
-      [
-        ['Error', 'Message'],
-        [error.class.name, error.message],
-      ]
     end
 
     def as_csv

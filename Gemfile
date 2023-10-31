@@ -3,9 +3,9 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}.git" }
 
 ruby "~> #{File.read(File.join(__dir__, '.ruby-version')).strip}"
 
-gem 'rails', '~> 7.0.0'
+gem 'rails', '~> 7.1.0'
 
-gem 'activerecord-postgis-adapter'
+gem 'activerecord-postgis-adapter', '~> 9.0'
 gem 'ahoy_matey', '~> 3.0'
 gem 'aws-sdk-kms', '~> 1.4'
 gem 'aws-sdk-cloudwatchlogs', require: false
@@ -73,7 +73,6 @@ gem 'stringex', require: false
 gem 'strong_migrations', '>= 0.4.2'
 gem 'subprocess', require: false
 gem 'terminal-table', require: false
-gem 'uglifier', '~> 4.2'
 gem 'valid_email', '>= 0.1.3'
 gem 'view_component', '~> 3.0.0'
 gem 'webauthn', '~> 2.5.2'

@@ -14,20 +14,25 @@ module I18n
       # List of keys allowed to be untranslated or are the same as English
       ALLOWED_UNTRANSLATED_KEYS = [
         { key: 'account.navigation.menu', locales: %i[fr] }, # "Menu" is "Menu" in French
+        { key: /^countries/ }, # Some countries have the same name across languages
+        { key: 'datetime.dotiw.minutes.one' }, # "minute is minute" in French and English
+        { key: 'datetime.dotiw.minutes.other' }, # "minute is minute" in French and English
         { key: 'doc_auth.headings.photo', locales: %i[fr] }, # "Photo" is "Photo" in French
         { key: /^i18n\.locale\./ }, # Show locale options translated as that language
         { key: /^i18n\.transliterate\./ }, # Approximate non-ASCII characters in ASCII
-        { key: /^countries/ }, # Some countries have the same name across languages
         { key: 'links.contact', locales: %i[fr] }, # "Contact" is "Contact" in French
+        { key: 'mailer.logo' }, # "logo is logo" in English, French and Spanish
+        { key: 'saml_idp.auth.error.title', locales: %i[es] }, # "Error" is "Error" in Spanish
         { key: 'simple_form.no', locales: %i[es] }, # "No" is "No" in Spanish
         { key: 'simple_form.required.html' }, # No text content
         { key: 'simple_form.required.mark' }, # No text content
         { key: 'time.am' }, # "AM" is "AM" in French and Spanish
-        { key: 'time.pm' }, # "PM" is "PM" in French and Spanish
         { key: 'time.formats.sms_date' }, # for us date format
+        { key: 'time.pm' }, # "PM" is "PM" in French and Spanish
         { key: 'datetime.dotiw.minutes.one' }, # "minute is minute" in French and English
         { key: 'datetime.dotiw.minutes.other' }, # "minute is minute" in French and English
         { key: 'mailer.logo' }, # "logo is logo" in English, French and Spanish
+        { key: 'datetime.dotiw.words_connector' }, # " , " is only punctuation and not translated
       ].freeze
 
       def untranslated_keys
