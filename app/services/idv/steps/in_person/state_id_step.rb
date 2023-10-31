@@ -25,14 +25,14 @@ module Idv
 
           if pii_from_user[:same_address_as_id] == 'true'
             copy_state_id_address_to_residential_address(pii_from_user)
-            mark_step_complete(:address)
+            flow_session['Idv::Steps::InPerson::AddressStep'] = true
             redirect_to idv_in_person_ssn_url
           end
 
           if initial_state_of_same_address_as_id == 'true' &&
              pii_from_user[:same_address_as_id] == 'false'
             clear_residential_address(pii_from_user)
-            mark_step_incomplete(:address)
+            flow_session['Idv::Steps::InPerson::AddressStep'] = false
          end
 
           if flow_session['Idv::Steps::InPerson::AddressStep']
