@@ -34,7 +34,6 @@ interface DocumentCaptureProps {
 function DocumentCapture({ onStepChange = () => { } }: DocumentCaptureProps) {
   const [formValues, setFormValues] = useState<Record<string, any> | null>(null);
   const [submissionError, setSubmissionError] = useState<Error | undefined>(undefined);
-  // todo: retrieve the step name from the URL anchor if opt-in IPP is enabled
   const [stepName, setStepName] = useState<string | undefined>(undefined);
   const { t } = useI18n();
   const { flowPath, skipDocAuth } = useContext(UploadContext);
@@ -43,7 +42,7 @@ function DocumentCapture({ onStepChange = () => { } }: DocumentCaptureProps) {
   const appName = getConfigValue('appName');
 
   // If the user got here by opting-in to in-person proofing then skip rendering the document capture
-  // component
+  // component and just render the in-person page
   if (skipDocAuth == 'true') {
     return (
       <OptInIpp onStepChange={onStepChange} />
@@ -94,12 +93,6 @@ function DocumentCapture({ onStepChange = () => { } }: DocumentCaptureProps) {
     : InPersonLocationPostOfficeSearchStep;
 
 
-  const stepIndicatorPath =
-    stepName && ['location', 'prepare', 'switch_back'].includes(stepName)
-      ? VerifyFlowPath.IN_PERSON
-      : VerifyFlowPath.DEFAULT;
-
-
   const inPersonSteps: FormStep[] =
     inPersonURL === undefined
       ? []
@@ -148,6 +141,11 @@ function DocumentCapture({ onStepChange = () => { } }: DocumentCaptureProps) {
         title: t('doc_auth.headings.document_capture'),
       },
     ].filter(Boolean) as FormStep[]);
+
+  const stepIndicatorPath =
+    stepName && ['location', 'prepare', 'switch_back'].includes(stepName)
+      ? VerifyFlowPath.IN_PERSON
+      : VerifyFlowPath.DEFAULT;
 
   return (
     <>
