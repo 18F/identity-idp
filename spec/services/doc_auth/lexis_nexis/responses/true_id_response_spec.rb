@@ -64,6 +64,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     it 'has extra attributes' do
       extra_attributes = response.extra_attributes
       expect(extra_attributes).not_to be_empty
+      expect(extra_attributes[:classification_info]).to include(:Front, :Back)
     end
     it 'has PII data' do
       # This is the minimum expected by doc_pii_form in the core IDP

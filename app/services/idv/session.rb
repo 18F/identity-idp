@@ -124,6 +124,10 @@ module Idv
       @gpo_otp = confirmation_maker.otp
     end
 
+    def phone_otp_sent?
+      user_phone_confirmation_session.present?
+    end
+
     def user_phone_confirmation_session
       session_value = session[:user_phone_confirmation_session]
       return if session_value.blank?

@@ -1,5 +1,6 @@
 require 'csv'
 require 'reporting/monthly_proofing_report'
+require 'reporting/proofing_rate_report'
 
 module Reports
   class MonthlyKeyMetricsReport < BaseReport
@@ -53,13 +54,12 @@ module Reports
         active_users_count_report.active_users_count_emailable_report,
         # Total Annual Users - LG-11150
         total_user_count_report.total_user_count_emailable_report,
-        # Proofing rate(s) (tbd on this one pager) - LG-11152
+        proofing_rate_report.proofing_rate_emailable_report,
         account_deletion_rate_report.account_deletion_emailable_report,
         account_reuse_report.account_reuse_emailable_report,
         account_reuse_report.total_identities_emailable_report,
         monthly_proofing_report.document_upload_proofing_emailable_report,
-        # Number of applications using Login (separated by auth / IdV) - LG-11154
-        # Number of agencies using Login - LG-11155
+        agency_and_sp_report.agency_and_sp_emailable_report,
         # APG Reporting Annual Active Users by FY (w/ cumulative Active Users by quarter) - LG-11156
         # APG Reporting of Active Federal Partner Agencies - LG-11157
         # APG Reporting of Active Login.gov Serviced Applications - LG-11158
@@ -75,6 +75,10 @@ module Reports
         emails << IdentityConfig.store.team_all_contractors_email
       end
       emails
+    end
+
+    def proofing_rate_report
+      @proofing_rate_report ||= Reporting::ProofingRateReport.new(end_date: report_date)
     end
 
     def account_reuse_report
@@ -102,6 +106,10 @@ module Reports
       @active_users_count_report ||= Reporting::ActiveUsersCountReport.new(
         report_date,
       )
+    end
+
+    def agency_and_sp_report
+      @agency_and_sp_report ||= Reporting::AgencyAndSpReport.new(report_date)
     end
 
     def upload_to_s3(report_body, report_name: nil)
