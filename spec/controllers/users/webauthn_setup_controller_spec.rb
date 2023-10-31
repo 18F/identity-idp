@@ -231,6 +231,7 @@ RSpec.describe Users::WebauthnSetupController do
         end
       end
     end
+
     describe 'multiple MFA handling' do
       let(:mfa_selections) { ['webauthn_platform', 'voice'] }
 
@@ -367,13 +368,6 @@ RSpec.describe Users::WebauthnSetupController do
           }
         end
 
-        let(:submitted_error_hash) do
-          { name: [I18n.t(
-            'errors.webauthn_platform_setup.attestation_error',
-            link: MarketingSite.contact_url,
-          )] }
-        end
-
         it 'should log expected events' do
           allow(IdentityConfig.store).to receive(:domain_name).and_return('localhost:3000')
           allow(WebAuthn::AttestationStatement).to receive(:from).and_raise(StandardError)
@@ -397,14 +391,6 @@ RSpec.describe Users::WebauthnSetupController do
               success: false,
             },
           )
-
-          expect(@analytics).to receive(:track_event).
-            with(
-              :webauthn_setup_submitted,
-              errors: submitted_error_hash,
-              platform_authenticator: true,
-              success: false,
-            )
 
           expect(@irs_attempts_api_tracker).to receive(:track_event).with(
             :mfa_enroll_webauthn_platform, success: false
