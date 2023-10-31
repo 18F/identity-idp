@@ -72,8 +72,8 @@ en:
           U.S. Postal Service use your data to verify your identity.'
         privacy_disclaimer_link: Learn more about privacy and security.
         privacy_disclaimer_questions: Questions?
-        verify_step_about: 'Complete the steps below to generate the barcode you’ll take
-          with you to the Post Office:'
+        verify_step_about: 'Complete the following steps to verify your identity at a
+          Post Office:'
         verify_step_enter_phone: Enter your primary phone number or the number that you
           use most often. If we’re able to verify your information, you’ll
           receive a barcode.

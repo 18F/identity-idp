@@ -78,8 +78,8 @@ fr:
           identité.'
         privacy_disclaimer_link: En savoir plus sur la confidentialité et la sécurité.
         privacy_disclaimer_questions: Vous avez des questions?
-        verify_step_about: 'Suivez les étapes ci-dessous pour générer le code-barres que
-          vous emporterez avec vous au bureau de poste:'
+        verify_step_about: 'Suivez les étapes suivantes pour vérifier votre identité
+          dans un bureau de poste:'
         verify_step_enter_phone: Entrez votre numéro de téléphone principal ou celui que
           vous utilisez le plus souvent. Si nous sommes en mesure de vérifier
           vos informations, vous recevrez un code-barres.
