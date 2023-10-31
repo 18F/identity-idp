@@ -208,7 +208,7 @@ GEM
       parser (>= 2.4)
       smart_properties
     bigdecimal (3.1.4)
-    bindata (2.4.14)
+    bindata (2.4.15)
     bootsnap (1.17.0)
       msgpack (~> 1.2)
     brakeman (6.0.1)
@@ -331,7 +331,7 @@ GEM
       fugit (>= 1.1)
       railties (>= 6.0.0)
       thor (>= 0.14.1)
-    google-protobuf (3.24.0)
+    google-protobuf (3.24.4)
     hashdiff (1.0.1)
     hashie (4.1.0)
     heapy (0.2.0)
