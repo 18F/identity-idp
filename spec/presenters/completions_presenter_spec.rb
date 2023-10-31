@@ -13,7 +13,7 @@ RSpec.describe CompletionsPresenter do
   let(:current_user) { create(:user, :fully_registered, identities: identities) }
   let(:current_sp) { create(:service_provider, friendly_name: 'Friendly service provider') }
   let(:decrypted_pii) do
-    {
+    Pii::Attributes.new(
       first_name: 'Testy',
       last_name: 'Testerson',
       ssn: '900123456',
@@ -24,7 +24,7 @@ RSpec.describe CompletionsPresenter do
       zipcode: '20405',
       dob: '1990-01-01',
       phone: '+12022121000',
-    }
+    )
   end
   let(:requested_attributes) do
     [

@@ -16,7 +16,8 @@ module Pii
     # the state in the state id address, which may not be the state that issued the ID
     :identity_doc_address_state,
     :ssn, :dob, :phone,
-    *DEPRECATED_PII_ATTRIBUTES
+    *DEPRECATED_PII_ATTRIBUTES,
+    keyword_init: true,
   ) do
     def self.new_from_hash(hash)
       attrs = new
@@ -30,11 +31,6 @@ module Pii
       return new if pii_json.blank?
       pii = JSON.parse(pii_json, symbolize_names: true)
       new_from_hash(pii)
-    end
-
-    def initialize(*args)
-      super
-      assign_all_members
     end
 
     def eql?(other)
