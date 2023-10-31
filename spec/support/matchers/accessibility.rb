@@ -52,14 +52,10 @@ end
 
 RSpec::Matchers.define :be_logically_grouped do |name|
   match do |inputs|
+    accessible_name = AccessibleName.new(page:)
     group_names = inputs.map do |input|
       group = input.ancestor('fieldset,[role=group]')
-      name = group['aria-label']
-      begin
-        name ||= group.find('legend').text if group.tag_name == 'fieldset'
-      rescue Capybara::ElementNotFound; end
-      name ||= aria_labelledby_name(group)
-      name
+      accessible_name.computed_name(group)
     end
 
     group_names.compact.uniq == [name]
@@ -134,8 +130,38 @@ RSpec::Matchers.define :have_description do |description|
 end
 
 RSpec::Matchers.define :have_name do |name|
+  match { |element| AccessibleName.new(page:).computed_name(element) == name }
+
+  failure_message do |element|
+    <<-STR.squish
+      Expected element would have computed name "#{name}".
+      Found #{computed_name(element)}.
+    STR
+  end
+end
+
+def expect_page_to_have_no_accessibility_violations(page, validate_markup: true)
+  expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
+  expect(page).to have_valid_idrefs
+  expect(page).to label_required_fields
+  expect(page).to have_valid_markup if validate_markup
+end
+
+def activate_skip_link
+  page.evaluate_script('document.activeElement.blur()')
+  page.active_element.send_keys(:tab)
+  expect(page.active_element).to have_content(t('shared.skip_link'), wait: 5)
+  page.active_element.send_keys(:enter)
+end
+
+class AccessibleName
+  attr_reader :page
+
   # Implements a best effort approximation of W3C Accessible Name and Description Computation 1.2
+  # and naming behaviors described in the HTML Accessibility API Mappings 1.0
+  #
   # See: https://www.w3.org/TR/accname-1.2/#mapping_additional_nd_te
+  # See: https://w3c.github.io/html-aam/
   #
   # In the future, consider implementing using Chrome DevTools Accessibility features. At time of
   # writing, these are experimental and return a `nil` value in local testing.
@@ -145,6 +171,21 @@ RSpec::Matchers.define :have_name do |name|
   # We can use the Capybara driver "bridge" to call these commands.
   #
   # Example: https://github.com/18F/identity-idp/blob/3c7d3be/spec/support/features/browser_emulation_helper.rb
+
+  def initialize(page:)
+    @page = page
+  end
+
+  def computed_name(element)
+    hidden_name(element) ||
+      aria_labelledby_name(element) ||
+      aria_label_name(element) ||
+      referenced_label_name(element) ||
+      ancestor_label_text_name(element) ||
+      fieldset_legend_name(element)
+  end
+
+  private
 
   def hidden_name(element)
     # "If the current node is hidden [...] return the empty string."
@@ -158,6 +199,18 @@ RSpec::Matchers.define :have_name do |name|
     # "Otherwise, if computing a name, and if the current node has an aria-label attribute whose
     # value is not the empty string, nor, when trimmed of white space, is not the empty string:"
     element['aria-label']
+  end
+
+  def aria_labelledby_name(element)
+    # "if computing a name, and the current node has an aria-labelledby attribute that contains at
+    # least one valid IDREF, and the current node is not already part of an aria-labelledby
+    # traversal, process its IDREFs in the order they occur"
+    valid_labels = element['aria-labelledby']&.
+      split(' ')&.
+      map { |label_id| page.find("##{label_id}")&.text }&.
+      compact
+
+    valid_labels.join('') if valid_labels.present?
   end
 
   def referenced_label_name(element)
@@ -203,46 +256,18 @@ RSpec::Matchers.define :have_name do |name|
     page.evaluate_script(visible_text_js, element)
   end
 
-  def computed_name(element)
-    hidden_name(element) ||
-      aria_labelledby_name(element) ||
-      aria_label_name(element) ||
-      referenced_label_name(element) ||
-      ancestor_label_text_name(element)
+  def fieldset_legend_name(element)
+    # See: https://w3c.github.io/html-aam/#fieldset-element-accessible-name-computation
+    return if element.tag_name != 'fieldset'
+
+    # "If the accessible name is still empty, then: if the fieldset element has a child that is a
+    # legend element, then use the subtree of the first such element."
+    begin
+      return element.find('legend').text
+    rescue Capybara::ElementNotFound; end
+
+    # "If the accessible name is still empty, then:, if the fieldset element has a title
+    # attribute, then use that attribute."
+    element['title']
   end
-
-  match { |element| computed_name(element) == name }
-
-  failure_message do |element|
-    <<-STR.squish
-      Expected element would have computed name "#{name}".
-      Found #{computed_name(element)}.
-    STR
-  end
-end
-
-def expect_page_to_have_no_accessibility_violations(page, validate_markup: true)
-  expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
-  expect(page).to have_valid_idrefs
-  expect(page).to label_required_fields
-  expect(page).to have_valid_markup if validate_markup
-end
-
-def activate_skip_link
-  page.evaluate_script('document.activeElement.blur()')
-  page.active_element.send_keys(:tab)
-  expect(page.active_element).to have_content(t('shared.skip_link'), wait: 5)
-  page.active_element.send_keys(:enter)
-end
-
-def aria_labelledby_name(element)
-  # "if computing a name, and the current node has an aria-labelledby attribute that contains at
-  # least one valid IDREF, and the current node is not already part of an aria-labelledby
-  # traversal, process its IDREFs in the order they occur"
-  valid_labels = element['aria-labelledby']&.
-    split(' ')&.
-    map { |label_id| page.find("##{label_id}")&.text }&.
-    compact
-
-  valid_labels.join('') if valid_labels.present?
 end
