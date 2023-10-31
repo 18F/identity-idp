@@ -37,10 +37,10 @@ RSpec.describe FrontendLogger do
     context 'with unknown event' do
       let(:name) { :test_event }
 
-      it 'does not log unknown event' do
+      it 'logs unknown event with warning' do
         call
 
-        expect(analytics).to_not have_logged_event
+        expect(analytics).to have_logged_event('Frontend (warning): test_event')
       end
     end
 
