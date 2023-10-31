@@ -29,7 +29,6 @@ module Idv
       @address1 = pii[:address1]
       @state = pii[:state]
       @zipcode = pii[:zipcode]
-
       @jurisdiction = pii[:state_id_jurisdiction]
       @attention_with_barcode = attention_with_barcode
     end
