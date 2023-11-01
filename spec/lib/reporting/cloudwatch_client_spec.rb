@@ -244,5 +244,28 @@ RSpec.describe Reporting::CloudwatchClient do
         expect(logger_io.string).to include('is before Cloudwatch Insights availability')
       end
     end
+
+    context 'when the query is outside the log retention range' do
+      before do
+        # rubocop:disable Layout/LineLength
+        Aws.config[:cloudwatchlogs] = {
+          stub_responses: {
+            start_query: Aws::CloudWatchLogs::Errors::MalformedQueryException.new(
+              nil,
+              'end date and time is either before the log groups creation time or exceeds the log groups log retention settings',
+            ),
+          },
+        }
+        # rubocop:enable Layout/LineLength
+
+        allow(Time).to receive(:zone).and_return(nil)
+      end
+
+      it 'logs a warning and returns an empty array for that range' do
+        expect(fetch).to eq([])
+
+        expect(logger_io.string).to include('exceeds the log groups log retention settings')
+      end
+    end
   end
 end

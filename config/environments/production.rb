@@ -1,6 +1,6 @@
 Rails.application.configure do
   config.cache_classes = true
-  config.cache_store = :redis_cache_store, { url: IdentityConfig.store.redis_url }
+  config.cache_store = :redis_cache_store, { url: IdentityConfig.store.redis_url, pool: false }
   config.eager_load = true
   config.consider_all_requests_local = false
   config.action_controller.perform_caching = true
