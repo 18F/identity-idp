@@ -36,7 +36,7 @@ class SendGpoCodeExpirationNoticesJob < ApplicationJob
 
   def expired_codes_needing_notification_sent_between(bounds)
     GpoConfirmationCode.joins(:profile).
-      where(no_prior_expiration_notice_sent_for_code).
+      and(no_prior_expiration_notice_sent_for_code).
       and(code_sent_within(bounds)).
       and(profile_is_pending_gpo).
       and(profile_has_not_been_otherwise_deactivated).
@@ -45,7 +45,7 @@ class SendGpoCodeExpirationNoticesJob < ApplicationJob
   end
 
   def no_prior_expiration_notice_sent_for_code
-    { expiration_notice_sent_at: nil }
+    GpoConfirmationCode.where(expiration_notice_sent_at: nil)
   end
 
   def code_sent_within(bounds)
