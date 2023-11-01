@@ -34,8 +34,7 @@ RSpec.describe Reporting::AccountDeletionRateReport do
   end
 
   def create_and_delete_accounts
-    create(:user, :fully_registered, :proofed)
-    create_list(:user, 2, :fully_registered)
+    create_list(:user, 3, :fully_registered)
 
     user = create(:user, :fully_registered)
     DeletedUser.create_from_user(user)
