@@ -42,7 +42,9 @@ WebMock.disable_net_connect!(
 )
 
 require 'zonebie'
-# Zonebie.quiet = true
+if !ENV['CI']
+  Zonebie.quiet = true
+end
 require 'zonebie/rspec'
 
 RSpec::Expectations.configuration.on_potential_false_positives = :nothing
