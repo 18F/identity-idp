@@ -1,7 +1,7 @@
 <% title t('doc_auth.headings.how_to_verify') %>
 
 <%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.how_to_verify')) %>
-<p><%= t('doc_auth.info.how_to_verify') %></p>
+<p id='how-to-verify-info'><%= t('doc_auth.info.how_to_verify') %></p>
 
 <%= simple_form_for(
       @idv_how_to_verify_form,
@@ -10,7 +10,7 @@
       url: idv_how_to_verify_url,
     ) do |f|
 %>
-  <div role="group" aria-label="<%= t('doc_auth.headings.how_to_verify') %>">
+  <div role="group" aria-labelledby="how-to-verify-info">
     <%= radio_button_tag(
           'idv_how_to_verify_form[selection]',
           Idv::HowToVerifyController::REMOTE,
