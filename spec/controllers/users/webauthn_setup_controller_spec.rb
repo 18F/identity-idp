@@ -363,7 +363,7 @@ RSpec.describe Users::WebauthnSetupController do
         end
 
         it 'should log submitted failure' do
-          get :new, params: { error: 'NotAllowedError' }
+          get :new, params: { platform: true, error: 'NotAllowedError' }
 
           expect(@analytics).to have_logged_event(
             :webauthn_setup_submitted,
