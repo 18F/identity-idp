@@ -55,7 +55,10 @@ module Idv
           step: 'document_capture',
           analytics_id: 'Doc Auth',
           irs_reproofing: irs_reproofing?,
-        }.merge(ab_test_analytics_buckets)
+        }.merge(
+          ab_test_analytics_buckets,
+          phone_with_camera,
+        )
       end
 
       def handle_stored_result
@@ -81,6 +84,10 @@ module Idv
         return unless document_capture_session.requested_at
 
         document_capture_session.requested_at > stored_result.captured_at
+      end
+
+      def phone_with_camera
+        { phone_with_camera: phone_question_ab_test_bucket == :show_phone_question ? true : nil }
       end
     end
   end

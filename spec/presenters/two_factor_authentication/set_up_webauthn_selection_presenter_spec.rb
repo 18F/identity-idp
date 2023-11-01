@@ -1,32 +1,19 @@
 require 'rails_helper'
 
-RSpec.describe TwoFactorAuthentication::WebauthnSelectionPresenter do
+RSpec.describe TwoFactorAuthentication::SetUpWebauthnSelectionPresenter do
   let(:user_without_mfa) { create(:user) }
   let(:user_with_mfa) { create(:user) }
   let(:configuration) {}
   let(:presenter_without_mfa) do
-    described_class.new(configuration: configuration, user: user_without_mfa)
+    described_class.new(user: user_without_mfa)
   end
   let(:presenter_with_mfa) do
-    described_class.new(configuration: configuration, user: user_with_mfa)
+    described_class.new(user: user_with_mfa)
   end
 
   describe '#type' do
     it 'returns webauthn' do
       expect(presenter_without_mfa.type).to eq 'webauthn'
-    end
-  end
-
-  describe '#render_in' do
-    it 'renders a WebauthnInputComponent' do
-      view_context = ActionController::Base.new.view_context
-
-      expect(view_context).to receive(:render) do |component, &block|
-        expect(component).to be_instance_of(WebauthnInputComponent)
-        expect(block.call).to eq('content')
-      end
-
-      presenter_without_mfa.render_in(view_context) { 'content' }
     end
   end
 

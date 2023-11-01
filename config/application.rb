@@ -56,7 +56,6 @@ module Identity
 
     config.load_defaults '7.0'
     config.active_record.belongs_to_required_by_default = false
-    config.active_record.legacy_connection_handling = false
     config.active_job.queue_adapter = :good_job
 
     FileUtils.mkdir_p(Rails.root.join('log'))

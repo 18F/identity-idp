@@ -572,8 +572,17 @@ module AnalyticsEvents
   # @param [String] name
   # @param [String] message
   # @param [String] stack
-  def frontend_error(name:, message:, stack: nil, **extra)
-    track_event('Frontend Error', name:, message:, stack:, **extra) # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
+  def frontend_error(name:, message:, stack: nil, **_extra)
+    track_event('Frontend Error', name:, message:, stack:) # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
+  end
+
+  # @param [Boolean] success
+  # The Acuant SDK was loaded
+  def idv_acuant_sdk_loaded(success:, **_extra)
+    track_event(
+      'Frontend: IdV: Acuant SDK loaded', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
+      success: success,
+    )
   end
 
   # @param [Boolean] success
@@ -604,6 +613,110 @@ module AnalyticsEvents
   # User visited idv address page
   def idv_address_visit
     track_event('IdV: address visited') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
+  end
+
+  # @param [String] acuantCaptureMode
+  # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
+  # @param [String] acuant_version
+  # @param [Boolean] assessment
+  # @param [Integer] attempt number of attempts
+  # @param [String] documentType
+  # @param [Integer] dpi  dots per inch of image
+  # @param [Integer] failedImageResubmission
+  # @param [String] fingerprint fingerprint of the image added
+  # @param [String] flow_path whether the user is in the hybrid or standard flow
+  # @param [Integer] glare
+  # @param [Integer] glareScoreThreshold
+  # @param [Integer] height height of image added in pixels
+  # @param [Boolean] isAssessedAsBlurry
+  # @param [Boolean] isAssessedAsGlare
+  # @param [Boolean] isAssessedAsUnsupported
+  # @param [String] mimeType MIME type of image added
+  # @param [Integer] moire
+  # @param [String] phone_question_ab_test_bucket
+  # @param [Integer] sharpness
+  # @param [Integer] sharpnessScoreThreshold
+  # @param [Integer] size size of image added in bytes
+  # @param [String] source
+  # @param [Boolean] use_alternate_sdk
+  # @param [Integer] width width of image added in pixels
+  # Back image was added in document capture
+  # rubocop:disable Naming/VariableName,Naming/MethodParameterName
+  def idv_back_image_added(
+    acuantCaptureMode:,
+    acuant_sdk_upgrade_a_b_testing_enabled:,
+    acuant_version:,
+    assessment:,
+    attempt:,
+    documentType:,
+    dpi:,
+    failedImageResubmission:,
+    fingerprint:,
+    flow_path:,
+    glare:,
+    glareScoreThreshold:,
+    height:,
+    isAssessedAsBlurry:,
+    isAssessedAsGlare:,
+    isAssessedAsUnsupported:,
+    mimeType:,
+    moire:,
+    phone_question_ab_test_bucket:,
+    sharpness:,
+    sharpnessScoreThreshold:,
+    size:,
+    source:,
+    use_alternate_sdk:,
+    width:,
+    **_extra
+  )
+    track_event(
+      'Frontend: IdV: back image added', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
+      acuantCaptureMode: acuantCaptureMode,
+      acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
+      acuant_version: acuant_version,
+      assessment: assessment,
+      attempt: attempt,
+      documentType: documentType,
+      dpi: dpi,
+      failedImageResubmission: failedImageResubmission,
+      fingerprint: fingerprint,
+      flow_path: flow_path,
+      glare: glare,
+      glareScoreThreshold: glareScoreThreshold,
+      height: height,
+      isAssessedAsBlurry: isAssessedAsBlurry,
+      isAssessedAsGlare: isAssessedAsGlare,
+      isAssessedAsUnsupported: isAssessedAsUnsupported,
+      mimeType: mimeType,
+      moire: moire,
+      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
+      sharpness: sharpness,
+      sharpnessScoreThreshold: sharpnessScoreThreshold,
+      size: size,
+      source: source,
+      use_alternate_sdk: use_alternate_sdk,
+      width: width,
+    )
+  end
+  # rubocop:enable Naming/VariableName,Naming/MethodParameterName
+
+  def idv_back_image_clicked(**_extra)
+    track_event(
+      'Frontend: IdV: back image clicked', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
+    )
+  end
+
+  def idv_barcode_warning_continue_clicked(**_extra)
+    track_event(
+      'Frontend: IdV: barcode warning continue clicked', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
+    )
+  end
+
+  def idv_barcode_warning_retake_photos_clicked(**_extra)
+    track_event(
+      'Frontend: IdV: barcode warning retake photos clicked', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
+    )
   end
 
   # @param [String] step the step that the user was on when they clicked cancel
@@ -647,6 +760,24 @@ module AnalyticsEvents
       request_came_from: request_came_from,
       proofing_components: proofing_components,
       **extra,
+    )
+  end
+
+  def idv_capture_troubleshooting_dismissed(**_extra)
+    track_event(
+      'Frontend: IdV: Capture troubleshooting dismissed', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
+    )
+  end
+
+  def idv_clicked_sp_link_on_ready_to_verify_page(**_extra)
+    track_event(
+      'Frontend: IdV: user clicked sp link on ready to verify page', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
+    )
+  end
+
+  def idv_clicked_what_to_bring_link_on_ready_to_verify_page(**_extra)
+    track_event(
+      'Frontend: IdV: user clicked what to bring link on ready to verify page', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
     )
   end
 
@@ -1000,6 +1131,15 @@ module AnalyticsEvents
     )
   end
 
+  # @param [Array] ids ID Types the user has checked whether they have
+  # Exit survey of optional questions when the user leaves document capture
+  def idv_exit_optional_questions(ids:, **_extra)
+    track_event(
+      'Frontend: IdV: exit optional questions', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
+      ids: ids,
+    )
+  end
+
   # @param [Boolean] success
   # @param [String, nil] deactivation_reason Reason user's profile was deactivated, if any.
   # @param [Boolean] fraud_review_pending Profile is under review for fraud
@@ -1050,6 +1190,98 @@ module AnalyticsEvents
       'IdV: forgot password confirmed', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       proofing_components: proofing_components,
       **extra,
+    )
+  end
+
+  # @param [String] acuantCaptureMode
+  # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
+  # @param [String] acuant_version
+  # @param [Boolean] assessment
+  # @param [Integer] attempt number of attempts
+  # @param [String] documentType
+  # @param [Integer] dpi  dots per inch of image
+  # @param [Integer] failedImageResubmission
+  # @param [String] fingerprint fingerprint of the image added
+  # @param [String] flow_path whether the user is in the hybrid or standard flow
+  # @param [Integer] glare
+  # @param [Integer] glareScoreThreshold
+  # @param [Integer] height height of image added in pixels
+  # @param [Boolean] isAssessedAsBlurry
+  # @param [Boolean] isAssessedAsGlare
+  # @param [Boolean] isAssessedAsUnsupported
+  # @param [String] mimeType MIME type of image added
+  # @param [Integer] moire
+  # @param [String] phone_question_ab_test_bucket
+  # @param [Integer] sharpness
+  # @param [Integer] sharpnessScoreThreshold
+  # @param [Integer] size size of image added in bytes
+  # @param [String] source
+  # @param [Boolean] use_alternate_sdk
+  # @param [Integer] width width of image added in pixels
+  # Front image was added in document capture
+  # rubocop:disable Naming/VariableName,Naming/MethodParameterName
+  def idv_front_image_added(
+    acuantCaptureMode:,
+    acuant_sdk_upgrade_a_b_testing_enabled:,
+    acuant_version:,
+    assessment:,
+    attempt:,
+    documentType:,
+    dpi:,
+    failedImageResubmission:,
+    fingerprint:,
+    flow_path:,
+    glare:,
+    glareScoreThreshold:,
+    height:,
+    isAssessedAsBlurry:,
+    isAssessedAsGlare:,
+    isAssessedAsUnsupported:,
+    mimeType:,
+    moire:,
+    phone_question_ab_test_bucket:,
+    sharpness:,
+    sharpnessScoreThreshold:,
+    size:,
+    source:,
+    use_alternate_sdk:,
+    width:,
+    **_extra
+  )
+    track_event(
+      'Frontend: IdV: front image added', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
+      acuantCaptureMode: acuantCaptureMode,
+      acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
+      acuant_version: acuant_version,
+      assessment: assessment,
+      attempt: attempt,
+      documentType: documentType,
+      dpi: dpi,
+      failedImageResubmission: failedImageResubmission,
+      fingerprint: fingerprint,
+      flow_path: flow_path,
+      glare: glare,
+      glareScoreThreshold: glareScoreThreshold,
+      height: height,
+      isAssessedAsBlurry: isAssessedAsBlurry,
+      isAssessedAsGlare: isAssessedAsGlare,
+      isAssessedAsUnsupported: isAssessedAsUnsupported,
+      mimeType: mimeType,
+      moire: moire,
+      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
+      sharpness: sharpness,
+      sharpnessScoreThreshold: sharpnessScoreThreshold,
+      size: size,
+      source: source,
+      use_alternate_sdk: use_alternate_sdk,
+      width: width,
+    )
+  end
+  # rubocop:enable Naming/VariableName,Naming/MethodParameterName
+
+  def idv_front_image_clicked(**_extra)
+    track_event(
+      'Frontend: IdV: front image clicked', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
     )
   end
 
@@ -1128,6 +1360,12 @@ module AnalyticsEvents
   # @param [String] user_id UUID of user who we sent a reminder to
   def idv_gpo_reminder_email_sent(user_id:, **extra)
     track_event('IdV: gpo reminder email sent', user_id: user_id, **extra) # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
+  end
+
+  def idv_image_capture_failed(**_extra)
+    track_event(
+      'Frontend: IdV: Image capture failed', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
+    )
   end
 
   # Tracks emails that are initiated during InPerson::EmailReminderJob
@@ -1991,6 +2229,18 @@ module AnalyticsEvents
     )
   end
 
+  def idv_link_sent_capture_doc_polling_complete(**_extra)
+    track_event(
+      'Frontend: IdV: Link sent capture doc polling complete', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
+    )
+  end
+
+  def idv_link_sent_capture_doc_polling_started(**_extra)
+    track_event(
+      'Frontend: IdV: Link sent capture doc polling started', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
+    )
+  end
+
   # Tracks when the user visits Mail only warning when vendor_status_sms is set to full_outage
   def idv_mail_only_warning_visited(**extra)
     track_event(
@@ -2540,6 +2790,18 @@ module AnalyticsEvents
       'IdV: verify in person troubleshooting option clicked', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       flow_path: flow_path,
       **extra,
+    )
+  end
+
+  def idv_warning_action_triggered(**_extra)
+    track_event(
+      'Frontend: IdV: warning action triggered', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
+    )
+  end
+
+  def idv_warning_shown(**_extra)
+    track_event(
+      'Frontend: IdV: warning shown', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
     )
   end
 
