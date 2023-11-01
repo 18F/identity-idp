@@ -176,6 +176,20 @@ RSpec.describe SendGpoCodeExpirationNoticesJob do
       ]
     end
 
+    let(:codes_that_should_receive_notices) do
+      [
+        user_with_expired_code_who_should_be_notified.
+          gpo_verification_pending_profile.
+          gpo_confirmation_codes.
+          first,
+        user_with_two_expired_and_notifiable_codes.
+          gpo_verification_pending_profile.
+          gpo_confirmation_codes.
+          order(code_sent_at: :desc).
+          first,
+      ]
+    end
+
     it 'sends one email to each user' do
       expect { job.perform }.to change { ActionMailer::Base.deliveries.count }.by(2)
       users_who_should_be_notified.each do |user|
@@ -203,23 +217,14 @@ RSpec.describe SendGpoCodeExpirationNoticesJob do
         expect(analytics).to have_logged_event(
           :idv_gpo_expiration_email_sent,
           user_id: user.uuid,
+          code_sent_at: codes_that_should_receive_notices.find do |code|
+            code.profile.user == user
+          end.code_sent_at,
         )
       end
     end
 
     it 'marks codes as having had an expiration notice sent' do
-      codes_that_should_receive_notices = [
-        user_with_expired_code_who_should_be_notified.
-          gpo_verification_pending_profile.
-          gpo_confirmation_codes.
-          first,
-        user_with_two_expired_and_notifiable_codes.
-          gpo_verification_pending_profile.
-          gpo_confirmation_codes.
-          order(code_sent_at: :desc).
-          first,
-      ]
-
       freeze_time do
         job.perform
         codes_that_should_receive_notices.each do |code|

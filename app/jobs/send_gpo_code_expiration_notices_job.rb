@@ -12,7 +12,10 @@ class SendGpoCodeExpirationNoticesJob < ApplicationJob
       user.send_email_to_all_addresses(:gpo_code_expired, code_sent_at: code.code_sent_at)
       code.update(expiration_notice_sent_at: Time.zone.now)
 
-      analytics.idv_gpo_expiration_email_sent(user_id: user.uuid)
+      analytics.idv_gpo_expiration_email_sent(
+        user_id: user.uuid,
+        code_sent_at: code.code_sent_at,
+      )
     end
   end
 
