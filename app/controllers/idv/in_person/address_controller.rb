@@ -9,6 +9,7 @@ module Idv
       before_action :confirm_ssn_step_needed
 
       def show
+        flow_session['Idv::Steps::InPerson::AddressStep'] = true
         analytics.idv_in_person_proofing_address_visited(**analytics_arguments)
 
         render :show, locals: extra_view_variables
