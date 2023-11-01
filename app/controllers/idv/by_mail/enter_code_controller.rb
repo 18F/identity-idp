@@ -62,7 +62,7 @@ module Idv
         )
 
         if !result.success?
-          flash[:error] = @gpo_verify_form.errors.first.message
+          flash[:error] = @gpo_verify_form.errors.first.message if !rate_limiter.limited?
           redirect_to idv_verify_by_mail_enter_code_url
           return
         end
