@@ -115,12 +115,12 @@ lint_yarn_workspaces: ## Lints Yarn workspace packages
 	scripts/validate-workspaces.js
 
 lint_asset_bundle_size: ## Lints JavaScript and CSS compiled bundle size
-# This enforces an asset size budget to ensure that download sizes are reasonable and to protect
-# against accidentally importing large pieces of third-party libraries. If you're here debugging a
-# failing build, check to ensure that you've not added more JavaScript or CSS than necessary, and
-# you have no options to split that from the main bundles. If you need to increase this budget and
-# accept the fact that this will force end-users to endure longer load times, you should set the new
-# budget to within a few thousand bytes of the current production-compiled size.
+	@# This enforces an asset size budget to ensure that download sizes are reasonable and to protect
+	@# against accidentally importing large pieces of third-party libraries. If you're here debugging
+	@# a failing build, check to ensure that you've not added more JavaScript or CSS than necessary,
+	@# and you have no options to split that from the common bundles. If you need to increase this
+	@# budget and accept the fact that this will force end-users to endure longer load times, you
+	@# should set the new budget to within a few thousand bytes of the production-compiled size.
 	find app/assets/builds/application.css -size -235000c | grep .
 	find public/packs/js/application-*.digested.js -size -5000c | grep .
 
