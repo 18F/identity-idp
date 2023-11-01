@@ -10,6 +10,7 @@ import {
   FailedCaptureAttemptsContextProvider,
   MarketingSiteContextProvider,
   InPersonContext,
+  UIConfigContext,
 } from '@18f/identity-document-capture';
 import { isCameraCapableMobile } from '@18f/identity-device';
 import { FlowContext } from '@18f/identity-verify-flow';
@@ -153,6 +154,15 @@ const App = composeComponents(
     {
       maxCaptureAttemptsBeforeNativeCamera: Number(maxCaptureAttemptsBeforeNativeCamera),
       maxSubmissionAttemptsBeforeNativeCamera: Number(maxSubmissionAttemptsBeforeNativeCamera),
+    },
+  ],
+  [
+    UIConfigContext.Provider,
+    {
+      value: {
+        notReadySectionEnabled:
+          String(appRoot.getAttribute('data-ui-not-ready-section-enabled')) === 'true',
+      },
     },
   ],
   [

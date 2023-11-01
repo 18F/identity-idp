@@ -1,3 +1,4 @@
+import { useContext } from 'react';
 import { PageHeading } from '@18f/identity-components';
 import {
   FormStepError,
@@ -11,6 +12,7 @@ import UnknownError from './unknown-error';
 import TipList from './tip-list';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
 import DocumentCaptureNotReady from './document-capture-not-ready';
+import { UIConfigContext } from '../context';
 
 interface DocumentCaptureReviewIssuesProps {
   isFailedDocType: boolean;
@@ -44,6 +46,7 @@ function DocumentCaptureReviewIssues({
   hasDismissed,
 }: DocumentCaptureReviewIssuesProps) {
   const { t } = useI18n();
+  const { notReadySectionEnabled } = useContext(UIConfigContext);
   return (
     <>
       <PageHeading>{t('doc_auth.headings.review_issues')}</PageHeading>
@@ -79,7 +82,7 @@ function DocumentCaptureReviewIssues({
         />
       ))}
       <FormStepsButton.Submit />
-      <DocumentCaptureNotReady />
+      {notReadySectionEnabled && <DocumentCaptureNotReady />}
       <Cancel />
     </>
   );

@@ -180,6 +180,7 @@ class IdentityConfig
     config.add(:doc_auth_error_dpi_threshold, type: :integer)
     config.add(:doc_auth_error_glare_threshold, type: :integer)
     config.add(:doc_auth_error_sharpness_threshold, type: :integer)
+    config.add(:doc_auth_not_ready_section_enabled, type: :boolean)
     config.add(:doc_auth_max_attempts, type: :integer)
     config.add(:doc_auth_max_capture_attempts_before_native_camera, type: :integer)
     config.add(:doc_auth_max_submission_attempts_before_native_camera, type: :integer)
