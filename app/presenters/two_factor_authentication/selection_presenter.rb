@@ -71,8 +71,6 @@ module TwoFactorAuthentication
       case type
       when 'backup_code'
         t('two_factor_authentication.login_options.backup_code')
-      when 'personal_key'
-        t('two_factor_authentication.login_options.personal_key')
       when 'piv_cac'
         t('two_factor_authentication.login_options.piv_cac')
       when 'sms'
@@ -107,8 +105,6 @@ module TwoFactorAuthentication
         t('two_factor_authentication.login_options.auth_app_info')
       when 'backup_code'
         t('two_factor_authentication.login_options.backup_code_info')
-      when 'personal_key'
-        t('two_factor_authentication.login_options.personal_key_info')
       when 'piv_cac'
         t('two_factor_authentication.login_options.piv_cac_info')
       when 'webauthn'
