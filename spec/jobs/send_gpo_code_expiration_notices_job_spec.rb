@@ -140,8 +140,8 @@ RSpec.describe SendGpoCodeExpirationNoticesJob do
         return method if code.profile.user == user
       end
 
-      deactivation_reasons.with_index.each do |reason, index|
-        user = users_with_profiles_in_invalid_states[index]
+      deactivation_reasons.each.with_index do |reason, index|
+        user = users_with_profiles_with_deactivation_reasons[index]
         return reason if user == code.profile.user
       end
 
