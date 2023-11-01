@@ -10,13 +10,12 @@ class HaveButtonToWithAccessibilityMatcher
   end
 
   def match(actual_text)
-    @actual ||= Capybara.string(actual_text)
+    @actual = Capybara.string(actual_text.strip)
 
     button && enclosing_form && aria_label_ok? && action_ok?
   end
 
-  def failure_message(actual_text)
-    @actual ||= Capybara.string(actual_text)
+  def failure_message(_actual_text)
     return "expected to find button with text '#{expected_button_text}'" unless button
     return 'expected button to be in a (Rails) "button_to" form tag' unless enclosing_form
 
@@ -29,8 +28,6 @@ class HaveButtonToWithAccessibilityMatcher
   private
 
   def button
-    puts "expected_button_text: #{expected_button_text.inspect}"
-
     actual.find_button(expected_button_text)
   rescue Capybara::ElementNotFound
     return nil
