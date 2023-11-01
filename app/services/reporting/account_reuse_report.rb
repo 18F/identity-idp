@@ -9,20 +9,51 @@ module Reporting
     # Return array of arrays
     def account_reuse_report
       account_reuse_table = []
-      account_reuse_table << ['Num. SPs', 'Num. users', 'Percentage']
+      account_reuse_table << [
+        'Metric',
+        'Num. all users',
+        '% of accounts',
+        'Num. IDV users',
+        '% of accounts',
+      ]
 
-      total_reuse_report[:reuse_stats].each do |result_entry|
+      total_reuse_report[:sp_reuse_stats].each do |result_entry|
         account_reuse_table << [
-          result_entry['num_agencies'],
-          result_entry['num_users'],
-          result_entry['percentage'],
+          "#{result_entry['num_sps']} apps",
+          result_entry['num_all_users'],
+          result_entry['all_percent'],
+          result_entry['num_idv_users'],
+          result_entry['idv_percent'],
         ]
       end
 
       account_reuse_table << [
-        'Total (all >1)',
-        total_reuse_report[:total_users],
-        total_reuse_report[:total_percentage],
+        '2+ apps',
+        total_reuse_report[:sp_reuse_stats][:total_all_users],
+        total_reuse_report[:sp_reuse_stats][:total_all_percent],
+        total_reuse_report[:sp_reuse_stats][:total_idv_users],
+        total_reuse_report[:sp_reuse_stats][:total_idv_percent],
+      ]
+
+      # Blank line to separate multiple app use from multiple agency use
+      account_reuse_table << ['', '', '', '', '']
+
+      total_reuse_report[:agency_reuse_stats].each do |result_entry|
+        account_reuse_table << [
+          "#{result_entry['num_agencies']} agencies",
+          result_entry['num_all_users'],
+          result_entry['all_percent'],
+          result_entry['num_idv_users'],
+          result_entry['idv_percent'],
+        ]
+      end
+
+      account_reuse_table << [
+        '2+ agencies',
+        total_reuse_report[:agency_reuse_stats][:total_all_users],
+        total_reuse_report[:agency_reuse_stats][:total_all_percent],
+        total_reuse_report[:agency_reuse_stats][:total_idv_users],
+        total_reuse_report[:agency_reuse_stats][:total_idv_percent],
       ]
 
       account_reuse_table
@@ -46,63 +77,127 @@ module Reporting
 
     def total_reuse_report
       return @total_reuse_report if defined?(@total_reuse_report)
-      reuse_stats = agency_reuse_results
-
-      reuse_total_users = 0
-      reuse_total_percentage = 0
+      sp_reuse_stats = {
+        results: sp_reuse_results,
+        total_all_users: 0,
+        total_all_percent: 0,
+        total_idv_users: 0,
+        total_idv_percent: 0,
+      }
+      agency_reuse_stats = {
+        results: agency_reuse_results,
+        total_all_users: 0,
+        total_all_percent: 0,
+        total_idv_users: 0,
+        total_idv_percent: 0,
+      }
 
       total_proofed = num_active_profiles
 
-      if !reuse_stats.empty?
-        reuse_stats.each do |result_entry|
-          reuse_total_users += result_entry['num_users']
-        end
+      [sp_reuse_stats, agency_reuse_stats].each do |stats|
+        if !stats['results'].empty?
+          # Count how many total users have multiples for both sps and agencies
+          stats['results'].each do |result_entry|
+            stats['total_all_users'] += result_entry['num_all_users']
+            stats['total_idv_users'] += result_entry['num_idv_users']
+          end
 
-        if total_proofed > 0
-          reuse_stats.each_with_index do |result_entry, index|
-            reuse_stats[index]['percentage'] = result_entry['num_users'] / total_proofed.to_f
+          if total_proofed > 0
+            # Calculate percentages for breakdowns with both sps and angencies
+            stats['results'].each_with_index do |result_entry, index|
+              stats['results'][index]['all_percent'] =
+                result_entry['num_all_users'] / total_proofed.to_f
+              stats['results'][index]['idv_percent'] =
+                result_entry['num_idv_users'] / total_proofed.to_f
 
-            reuse_total_percentage += reuse_stats[index]['percentage']
+              stats['total_all_percent'] += agency_reuse_stats[index]['all_percent']
+              stats['total_idv_percent'] += agency_reuse_stats[index]['idv_percent']
+            end
           end
         end
       end
 
       # reuse_stats and total_stats
       @total_reuse_report = {
-        reuse_stats: reuse_stats,
-        total_users: reuse_total_users,
-        total_percentage: reuse_total_percentage,
+        sp_reuse_stats: sp_reuse_stats,
+        agency_reuse_stats: agency_reuse_stats,
         total_proofed: total_proofed,
       }
     end
 
+    def sp_reuse_results
+      # TODO: Test this query so that it returns correct data
+      sp_sql = format(<<-SQL, params)
+          SELECT
+              num_all_users
+              , all_query.sps_per_all_users.num_sps
+              , COUNT(*) AS num_idv_users
+          FROM (
+            SELECT
+                COUNT(*) AS num_all_users
+                , sps_per_all_users.num_sps
+                , identities
+            FROM (
+                SELECT
+                    COUNT(*) AS num_sps
+                    , identities.user_id
+                FROM
+                    identities
+                AND
+                    identities.verified_at < %{query_date}
+                GROUP BY
+                    identities.user_id
+              ) sps_per_all_users
+            GROUP BY
+              sps_per_all_users.num_sps
+            HAVING sps_per_all_users.num_sps > 1
+            ) all_query
+          WHERE
+            identities.last_ial2_authenticated_at IS NOT NULL
+          ORDER BY
+              num_sps ASC
+      SQL
+
+      sp_results = Reports::BaseReport.transaction_with_timeout do
+        ActiveRecord::Base.connection.execute(sp_sql)
+      end
+
+      sp_results.as_json
+    end
+
     def agency_reuse_results
       agency_sql = format(<<-SQL, params)
-          SELECT
-              COUNT(*) AS num_users
-              , agencies_per_user.num_agencies
-          FROM (
-              SELECT
-                  COUNT(DISTINCT agencies.id) AS num_agencies
-                  , identities.user_id
-              FROM
-                  identities
-              JOIN
-                  service_providers sp ON identities.service_provider = sp.issuer
-              JOIN
-                  agencies ON sp.agency_id = agencies.id
-              WHERE
-                  identities.last_ial2_authenticated_at IS NOT NULL
-              AND
-                  identities.verified_at < %{query_date}
-              GROUP BY
-                  identities.user_id
-          ) agencies_per_user
-          GROUP BY
-              agencies_per_user.num_agencies
-          HAVING agencies_per_user.num_agencies > 1
+        SELECT
+          num_all_users
+          , all_query.agencies_per_all_users.num_agencies
+          , COUNT(*) AS num_idv_users
+        FROM (
+            SELECT
+                COUNT(*) AS num_all_users
+                , agencies_per_all_users.num_agencies
+            FROM (
+                SELECT
+                    COUNT(DISTINCT agencies.id) AS num_agencies
+                    , identities.user_id
+                FROM
+                    identities
+                JOIN
+                    service_providers sp ON identities.service_provider = sp.issuer
+                JOIN
+                    agencies ON sp.agency_id = agencies.id
+                AND
+                    identities.verified_at < %{query_date}
+                GROUP BY
+                    identities.user_id
+            ) agencies_per_all_users
+            GROUP BY
+                agencies_per_all_users.num_agencies
+            HAVING agencies_per_all_users.num_agencies > 1
+            ) all_query
+            WHERE
+              identities.last_ial2_authenticated_at IS NOT NULL
           ORDER BY
-              num_agencies ASC
+            num_agencies ASC
       SQL
 
       agency_results = Reports::BaseReport.transaction_with_timeout do
