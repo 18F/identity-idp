@@ -19,7 +19,7 @@
     <%= t('headings.account.two_factor') %>
   </h2>
 
-  <%= render IconListComponent.new(icon: :check_circle, color: :green) do |c| %>
+  <%= render IconListComponent.new(icon: :check_circle, color: :success) do |c| %>
     <% @presenter.all_user_selected_options.each do |option| %>
       <% if option.mfa_configuration_count > 0 %>
         <% c.with_item do %>
