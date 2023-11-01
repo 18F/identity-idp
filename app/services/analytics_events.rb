@@ -273,6 +273,11 @@ module AnalyticsEvents
     track_event('Account Reset: Cancel Account Recovery Options') # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
   end
 
+  # We sent an email to the user confirming that they will remain suspended
+  def confirm_suspended
+    track_event(:user_suspension_confirmed)
+  end
+
   # @param [String] redirect_url URL user was directed to
   # @param [String, nil] step which step
   # @param [String, nil] location which part of a step, if applicable

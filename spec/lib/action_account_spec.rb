@@ -313,6 +313,12 @@ RSpec.describe ActionAccount do
       let(:config) { ScriptBase::Config.new(include_missing:) }
       subject(:result) { subtask.run(args:, config:) }
 
+      let(:analytics) { FakeAnalytics.new }
+
+      before do
+        allow(subtask).to receive(:analytics).and_return(analytics)
+      end
+
       it 'emails users that are suspended', aggregate_failures: true do
         expect { result }.to(change { ActionMailer::Base.deliveries.count }.by(1))
 
@@ -327,6 +333,8 @@ RSpec.describe ActionAccount do
 
         expect(result.subtask).to eq('confirm-suspend-user')
         expect(result.uuids).to match_array([user.uuid, suspended_user.uuid])
+
+        expect(analytics).to have_logged_event(:user_suspension_confirmed)
       end
     end
   end

@@ -111,6 +111,7 @@ class ActionAccount
         when :confirm_suspend
           if user.suspended?
             user.send_email_to_all_addresses(:suspension_confirmed)
+            analytics(user).confirm_suspended
             log_texts << log_text[:user_emailed]
           else
             log_texts << log_text[:user_is_not_suspended]
@@ -145,6 +146,12 @@ class ActionAccount
         uuids: users.map(&:uuid),
         messages:,
         table:,
+      )
+    end
+
+    def analytics(user)
+      Analytics.new(
+        user: user, request: nil, session: {}, sp: nil,
       )
     end
   end
