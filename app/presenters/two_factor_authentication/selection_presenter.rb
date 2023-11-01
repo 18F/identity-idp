@@ -79,10 +79,6 @@ module TwoFactorAuthentication
         t('two_factor_authentication.login_options.sms')
       when 'voice'
         t('two_factor_authentication.login_options.voice')
-      when 'webauthn'
-        t('two_factor_authentication.login_options.webauthn')
-      when 'webauthn_platform'
-        t('two_factor_authentication.login_options.webauthn_platform')
       else
         raise "Unsupported login method: #{type}"
       end
@@ -100,10 +96,6 @@ module TwoFactorAuthentication
         t('two_factor_authentication.two_factor_choice_options.sms')
       when 'voice'
         t('two_factor_authentication.two_factor_choice_options.voice')
-      when 'webauthn'
-        t('two_factor_authentication.two_factor_choice_options.webauthn')
-      when 'webauthn_platform'
-        t('two_factor_authentication.two_factor_choice_options.webauthn_platform')
       else
         raise "Unsupported setup method: #{type}"
       end
