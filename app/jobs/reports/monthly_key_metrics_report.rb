@@ -60,7 +60,7 @@ module Reports
         account_reuse_report.total_identities_emailable_report,
         monthly_proofing_report.document_upload_proofing_emailable_report,
         agency_and_sp_report.agency_and_sp_emailable_report,
-        # APG Reporting Annual Active Users by FY (w/ cumulative Active Users by quarter) - LG-11156
+        active_users_count_report.active_users_count_apg_emailable_report,
         # APG Reporting of Active Federal Partner Agencies - LG-11157
         # APG Reporting of Active Login.gov Serviced Applications - LG-11158
         # APG Reporting of Cumulative Proofed Identities By Year/Month - LG-11159
