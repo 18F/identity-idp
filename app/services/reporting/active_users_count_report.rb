@@ -43,7 +43,7 @@ module Reporting
         )
       end
 
-      def as_csv(title: )
+      def as_csv(title:)
         [
           title,
           ial1,

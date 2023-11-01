@@ -23,15 +23,15 @@ class CalendarService
     end
 
     def fiscal_q2_start(date)
-      date.change(year: date.month >= 10 ? date.year + 1: date.year, month: 1, day: 1)
+      date.change(year: date.month >= 10 ? date.year + 1 : date.year, month: 1, day: 1)
     end
 
     def fiscal_q3_start(date)
-      date.change(year: date.month >= 10 ? date.year + 1: date.year, month: 4, day: 1)
+      date.change(year: date.month >= 10 ? date.year + 1 : date.year, month: 4, day: 1)
     end
 
     def fiscal_q4_start(date)
-      date.change(year: date.month >= 10 ? date.year + 1: date.year, month: 7, day: 1)
+      date.change(year: date.month >= 10 ? date.year + 1 : date.year, month: 7, day: 1)
     end
 
     def fiscal_end_date(date)
