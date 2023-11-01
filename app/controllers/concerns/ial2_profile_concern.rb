@@ -1,9 +1,22 @@
 module Ial2ProfileConcern
   extend ActiveSupport::Concern
 
-  def cache_active_profile(raw_password)
+  def cache_profiles(raw_password)
+    pending_profile = current_user.pending_profile
+    if pending_profile.present?
+      cache_profile_and_handle_errors(raw_password, pending_profile)
+    end
+
+    active_profile = current_user.active_profile
+    if active_profile.present?
+      cache_profile_and_handle_errors(raw_password, active_profile)
+    end
+  end
+
+  private
+
+  def cache_profile_and_handle_errors(raw_password, profile)
     cacher = Pii::Cacher.new(current_user, user_session)
-    profile = current_user.active_or_pending_profile
     begin
       cacher.save(raw_password, profile)
     rescue Encryption::EncryptionError => err
