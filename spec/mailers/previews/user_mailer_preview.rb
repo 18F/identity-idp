@@ -194,6 +194,20 @@ class UserMailerPreview < ActionMailer::Preview
     ).gpo_reminder
   end
 
+  def suspension_confirmed
+    UserMailer.with(
+      user: user,
+      email_address: email_address_record,
+    ).suspension_confirmed
+  end
+
+  def account_reinstated
+    UserMailer.with(
+      user: user,
+      email_address: email_address_record,
+    ).account_reinstated
+  end
+
   private
 
   def user
