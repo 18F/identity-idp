@@ -68,25 +68,25 @@
 <% end %>
 
 <%= render(
-  'shared/troubleshooting_options',
-  heading_tag: :h3,
-  heading: t('doc_auth.info.how_to_verify_troubleshooting_options_header'),
-  options: [
-    {
-      url: MarketingSite.help_center_article_url(
-        category: 'verify-your-identity',
-        article: 'how-to-verify-your-identity',
-      ),
-      text: t('doc_auth.info.verify_online_link_text'),
-      new_tab: true,
-    },
-    {
-      url: MarketingSite.help_center_article_url(
-        category: 'verify-your-identity',
-        article: 'verify-your-identity-in-person',
-      ),
-      text: t('doc_auth.info.verify_at_post_office_link_text'),
-      new_tab: true,
-    },
-  ],
-) %>
+      'shared/troubleshooting_options',
+      heading_tag: :h3,
+      heading: t('doc_auth.info.how_to_verify_troubleshooting_options_header'),
+      options: [
+        {
+          url: MarketingSite.help_center_article_url(
+            category: 'verify-your-identity',
+            article: 'how-to-verify-your-identity',
+          ),
+          text: t('doc_auth.info.verify_online_link_text'),
+          new_tab: true,
+        },
+        {
+          url: MarketingSite.help_center_article_url(
+            category: 'verify-your-identity',
+            article: 'verify-your-identity-in-person',
+          ),
+          text: t('doc_auth.info.verify_at_post_office_link_text'),
+          new_tab: true,
+        },
+      ],
+    ) %>
