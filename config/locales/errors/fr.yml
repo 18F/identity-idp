@@ -132,8 +132,6 @@ fr:
       must_select_option: Sélectionnez une méthode d’authentification.
     verify_personal_key:
       rate_limited: Vous avez essayé plusieurs fois, essayez à nouveau dans %{timeout}.
-    verify_profile:
-      rate_limited: Vous avez essayé plusieurs fois, essayez à nouveau dans %{timeout}.
     webauthn_platform_setup:
       account_setup_error: Nous n’avons pas pu ajouter le déverrouillage facial ni le
         déverrouillage tactile. Veuillez réessayer ou %{link}.

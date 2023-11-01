@@ -122,8 +122,6 @@ es:
       must_select_option: Seleccione un método de autenticación.
     verify_personal_key:
       rate_limited: Lo intentaste muchas veces, vuelve a intentarlo en %{timeout}.
-    verify_profile:
-      rate_limited: Lo intentaste muchas veces, vuelve a intentarlo en %{timeout}.
     webauthn_platform_setup:
       account_setup_error: No pudimos agregar el desbloqueo con la cara o con la
         huella digital. Inténtelo de nuevo o %{link}.

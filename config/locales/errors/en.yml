@@ -115,8 +115,6 @@ en:
       must_select_option: Select an authentication method.
     verify_personal_key:
       rate_limited: You tried too many times, please try again in %{timeout}.
-    verify_profile:
-      rate_limited: You tried too many times, please try again in %{timeout}.
     webauthn_platform_setup:
       account_setup_error: We were unable to add face or touch unlock. Please try again or %{link}.
       already_registered: Face or touch unlock is already registered on this device.

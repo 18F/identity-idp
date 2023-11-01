@@ -8,7 +8,7 @@
           text: t('idv.troubleshooting.options.contact_support', app_name: APP_NAME),
           new_tab: true,
         },
-      ].select(&:present?),
+      ]
     ) do %>
       <p>
         <%= t(
@@ -30,7 +30,7 @@
                     app_name: APP_NAME, sp_name: decorated_sp_session.sp_name,
                   ),
                   return_to_sp_failure_to_proof_path(
-                    step: 'verify_id',
+                    step: 'get_a_letter',
                     location: request.params[:action],
                   ),
                 ) %>
@@ -41,7 +41,7 @@
                     app_name: APP_NAME,
                   ),
                   return_to_sp_failure_to_proof_path(
-                    step: 'verify_id',
+                    step: 'get_a_letter',
                     location: request.params[:action],
                   ),
                 ) %>
