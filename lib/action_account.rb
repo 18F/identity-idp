@@ -111,7 +111,7 @@ class ActionAccount
         when :confirm_suspend
           if user.suspended?
             user.send_email_to_all_addresses(:suspension_confirmed)
-            analytics(user).confirm_suspended
+            analytics(user).user_suspension_confirmed
             log_texts << log_text[:user_emailed]
           else
             log_texts << log_text[:user_is_not_suspended]
