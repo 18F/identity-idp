@@ -101,7 +101,7 @@ make watch_events
 You can also watch for specific events by assigning the `EVENT_NAME` environment variable:
 
 ```
-EVENT_NAME="Account Page Visited" make watch_events
+EVENT_NAME="piv_cac_disabled" make watch_events
 ```
 
 [analytics-handbook]: https://handbook.login.gov/articles/analytics-events.html
