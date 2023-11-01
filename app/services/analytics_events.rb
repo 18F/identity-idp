@@ -1352,6 +1352,7 @@ module AnalyticsEvents
 
   # A GPO expiration email was sent to the user
   # @param [String] user_id UUID of user we sent an email to
+  # @param [Time] code_sent_at Time when the code that has expired was originally requested.
   def idv_gpo_expiration_email_sent(user_id:, code_sent_at:, **extra)
     track_event(
       :idv_gpo_expiration_email_sent,
