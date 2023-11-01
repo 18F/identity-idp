@@ -4543,6 +4543,11 @@ module AnalyticsEvents
     )
   end
 
+  # We sent an email to the user confirming that they will remain suspended
+  def user_suspension_confirmed
+    track_event(:user_suspension_confirmed)
+  end
+
   # Tracks when USPS in-person proofing enrollment is created
   # @param [String] enrollment_code
   # @param [Integer] enrollment_id
