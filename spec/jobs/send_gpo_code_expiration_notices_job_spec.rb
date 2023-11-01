@@ -127,6 +127,8 @@ RSpec.describe SendGpoCodeExpirationNoticesJob do
   end
 
   describe '#codes_to_send_notifications_for' do
+    # Helper method to map a GpoConfirmationCode back to the `let!()` in this
+    # file that defines its user.
     def user_for(code:)
       users = %i[
         user_with_expired_code_who_should_be_notified
@@ -153,6 +155,7 @@ RSpec.describe SendGpoCodeExpirationNoticesJob do
     end
 
     it 'returns correct codes requiring notification' do
+      # First check to make sure we're getting codes for the users we expect
       expect(job.codes_to_send_notifications_for.map { |code| user_for(code: code) }).to eql(
         [
           :user_with_expired_code_who_should_be_notified,
