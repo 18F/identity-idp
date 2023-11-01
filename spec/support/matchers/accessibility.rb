@@ -168,8 +168,7 @@ class AccessibleName
       aria_label_name(element) ||
       referenced_label_name(element) ||
       ancestor_label_text_name(element) ||
-      fieldset_legend_name(element) ||
-      name_for_button_to(element)
+      fieldset_legend_name(element)
   end
 
   private
@@ -205,15 +204,6 @@ class AccessibleName
     # (e.g. HTML label) that defines a text alternative, return that alternative in the form of a
     # flat string as defined by the host language"
     descendent_name(page.find("label[for='#{element['id']}']"))
-  rescue Capybara::ElementNotFound
-    nil
-  end
-
-  def name_for_button_to(element)
-    # Handle the special case where the element is a button generated
-    # with Rails' `button_to` helper. In this case, the aria tags go
-    # on the enclosing form which `button_to` generates.
-    element.tag_name == 'button' && element.ancestor('form.button_to')['aria-label']
   rescue Capybara::ElementNotFound
     nil
   end
