@@ -63,7 +63,7 @@ SimpleForm.setup do |config|
   end
 
   config.wrappers :uswds_select do |b|
-    b.use :html5
+    b.use :html5_no_aria_required
     b.optional :label, class: 'usa-label'
     b.optional :hint,  wrap_with: { tag: 'div', class: 'usa-hint' }
     b.use :input, class: 'usa-select usa-select--big', error_class: 'usa-input--error'
