@@ -30,7 +30,7 @@ module Idv
           redirect_to idv_hybrid_handoff_url
         end
       else
-        flash[:error] = result.errors[:selection].first
+        flash[:error] = result.first_error_message
         redirect_to idv_how_to_verify_url
       end
     end
