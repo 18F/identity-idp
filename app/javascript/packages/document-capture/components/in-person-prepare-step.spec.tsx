@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import type { ComponentType } from 'react';
 import { Provider as MarketingSiteContextProvider } from '../context/marketing-site';
 import InPersonPrepareStep from './in-person-prepare-step';
@@ -16,6 +16,22 @@ describe('InPersonPrepareStep', () => {
         name: 'in_person_proofing.body.prepare.privacy_disclaimer_link links.new_tab',
       }),
     ).not.to.exist();
+  });
+
+  it('renders all steps to verify your identity at a Post Office', async () => {
+    const { getByText } = render(<InPersonPrepareStep {...DEFAULT_PROPS} />);
+
+    expect(getByText('in_person_proofing.body.prepare.verify_step_post_office')).to.exist();
+    expect(getByText('in_person_proofing.body.prepare.verify_step_enter_pii')).to.exist();
+    expect(getByText('in_person_proofing.body.prepare.verify_step_enter_phone')).to.exist();
+    expect(getByText('in_person_proofing.body.prepare.verify_step_visit_post_office')).to.exist();
+  });
+
+  it('renders about and additional information', () => {
+    const { getByText } = render(<InPersonPrepareStep {...DEFAULT_PROPS} />);
+
+    expect(getByText('in_person_proofing.body.prepare.verify_step_about')).to.exist();
+    expect(getByText('in_person_proofing.body.prepare.additional_information')).to.exist();
   });
 
   context('Outage message', () => {
