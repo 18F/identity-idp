@@ -155,7 +155,8 @@ RSpec.describe InPerson::SendProofingNotificationJob do
 
           before do
             allow(Telephony).to receive(:send_notification).and_return(sms_success_response)
-            allow(Idv::InPerson::EnrollmentCodeFormatter).to receive(:format).and_return(formatted_string)
+            allow(Idv::InPerson::EnrollmentCodeFormatter).to receive(:format).
+              and_return(formatted_string)
           end
 
           it 'handles English language preference' do
@@ -188,8 +189,8 @@ RSpec.describe InPerson::SendProofingNotificationJob do
                   with(
                     to: phone_number,
                     message: "Login.gov: Vous avez visité le bureau de poste le #{proofed_date}." \
-                      " Vérifiez votre e-mail pour votre résultat. Ce n'est pas vous?" \
-                      " Signalez-le immédiatement: #{contact_number}. Réf: #{formatted_string}",
+                      " Vérifiez votre e-mail. Ce n'est pas vous? Signalez-le: #{contact_number}." \
+                      " Réf: #{formatted_string}",
                     country_code: Phonelib.parse(phone_number).country,
                   ),
               )
@@ -207,8 +208,8 @@ RSpec.describe InPerson::SendProofingNotificationJob do
                   with(
                     to: phone_number,
                     message: "Login.gov: Visitó la oficina de correos el #{proofed_date}." \
-                      " Revise su correo electrónico para ver su resultado. ¿No fue usted?" \
-                      " Informe ahora mismo: #{contact_number}. Ref: #{formatted_string}",
+                      " Revise su correo electrónico. ¿No fue usted? Llame: #{contact_number}." \
+                      " Ref: #{formatted_string}",
                     country_code: Phonelib.parse(phone_number).country,
                   ),
               )
