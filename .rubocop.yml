@@ -786,6 +786,9 @@ Performance/StartWith:
 Performance/StringIdentifierArgument:
   Enabled: true
 
+Performance/StringInclude:
+  Enabled: true
+
 Performance/StringReplacement:
   Enabled: true
 

@@ -219,7 +219,7 @@ RSpec.describe 'I18n' do
 
   def likely_html_interpolation?(str)
     str.scan(I18n::INTERPOLATION_PATTERN).flatten.compact.any? do |key|
-      key =~ /html/
+      key.include? 'html'
     end
   end
 
