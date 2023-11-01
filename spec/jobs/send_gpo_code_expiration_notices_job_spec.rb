@@ -156,22 +156,20 @@ RSpec.describe SendGpoCodeExpirationNoticesJob do
 
     it 'returns correct codes requiring notification' do
       # First check to make sure we're getting codes for the users we expect
-      expect(job.codes_to_send_notifications_for.map { |code| user_for(code: code) }).to eql(
-        [
-          :user_with_expired_code_who_should_be_notified,
-          :user_with_two_expired_and_notifiable_codes,
-        ],
+      expect(
+        job.codes_to_send_notifications_for.map { |code| user_for(code: code) },
+      ).to contain_exactly(
+        :user_with_expired_code_who_should_be_notified,
+        :user_with_two_expired_and_notifiable_codes,
       )
 
-      expect(job.codes_to_send_notifications_for.to_a).to eql(
-        [
-          user_with_expired_code_who_should_be_notified.
-            gpo_verification_pending_profile.
-            gpo_confirmation_codes.first,
-          user_with_two_expired_and_notifiable_codes.
-            gpo_verification_pending_profile.
-            gpo_confirmation_codes.first,
-        ],
+      expect(job.codes_to_send_notifications_for.to_a).to contain_exactly(
+        user_with_expired_code_who_should_be_notified.
+          gpo_verification_pending_profile.
+          gpo_confirmation_codes.first,
+        user_with_two_expired_and_notifiable_codes.
+          gpo_verification_pending_profile.
+          gpo_confirmation_codes.first,
       )
     end
   end
