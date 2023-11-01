@@ -37,7 +37,7 @@ en:
         can also go back and choose to use your computer instead.
     enter_code:
       rate_limited_html: You entered an incorrect verification code too many
-        times.<br> <strong>Try again in %{timeout}.</strong>
+        times. <strong>Try again in %{timeout}.</strong>
     general: Oops, something went wrong. Please try again.
     invalid_totp: Invalid code. Please try again.
     max_password_attempts_reached: You’ve entered too many incorrect passwords. You
