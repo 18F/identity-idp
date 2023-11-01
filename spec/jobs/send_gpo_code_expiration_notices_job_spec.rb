@@ -69,13 +69,7 @@ RSpec.describe SendGpoCodeExpirationNoticesJob do
   end
 
   let(:deactivation_reasons) do
-    %i[
-      password_reset
-      encryption_error
-      verification_cancelled
-      gpo_verification_pending_NO_LONGER_USED
-      in_person_verification_pending_NO_LONGER_USED
-    ]
+    Profile.deactivation_reasons.keys.map(&:to_sym)
   end
 
   let!(:users_with_profiles_with_deactivation_reasons) do
