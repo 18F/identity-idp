@@ -168,7 +168,8 @@ class AccessibleName
       aria_label_name(element) ||
       referenced_label_name(element) ||
       ancestor_label_text_name(element) ||
-      fieldset_legend_name(element)
+      fieldset_legend_name(element) ||
+      name_for_button_to(element)
   end
 
   private
@@ -208,7 +209,7 @@ class AccessibleName
     nil
   end
 
-  def button_to_name(element)
+  def name_for_button_to(element)
     # Handle the special case where the element is a button generated
     # with Rails' `button_to` helper. In this case, the aria tags go
     # on the enclosing form which `button_to` generates.
