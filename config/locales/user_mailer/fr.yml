@@ -4,7 +4,7 @@ fr:
     account_reinstated:
       subject: Votre compte est déverrouillé
       we_have_finished_reviewing: Nous avons terminé l’examen de votre compte
-        Login.gov et vous pouvez maintenant vous reconnecter avec les
+        %{app_name} et vous pouvez maintenant vous reconnecter avec les
         informations de votre compte.
     account_rejected:
       intro: Nous n’avons pas pu vérifier votre identité avec %{app_name}. Veuillez
