@@ -53,6 +53,10 @@ module InPerson
 
     private
 
+    def formatter
+      Idv::InPerson::EnrollmentCodeFormatter
+    end
+
     def log_job_completed(enrollment:)
       analytics(user: enrollment.user).
         idv_in_person_send_proofing_notification_job_completed(
@@ -81,7 +85,7 @@ module InPerson
           app_name: APP_NAME,
           proof_date: proof_date,
           contact_number: IdentityConfig.store.idv_contact_phone_number,
-          reference_string: enrollment.enrollment_code,
+          reference_string: formatter.format(enrollment.enrollment_code),
         )
       end
     end

@@ -151,9 +151,11 @@ RSpec.describe InPerson::SendProofingNotificationJob do
           let(:phone_number) { passed_enrollment.notification_phone_configuration.formatted_phone }
           let(:contact_number) { '(844) 555-5555' }
           let(:reference_string) { passed_enrollment.enrollment_code }
+          let(:formatted_string) { '1234-5678-9012-3456' }
 
           before do
             allow(Telephony).to receive(:send_notification).and_return(sms_success_response)
+            allow(Idv::InPerson::EnrollmentCodeFormatter).to receive(:format).and_return(formatted_string)
           end
 
           it 'handles English language preference' do
@@ -168,7 +170,7 @@ RSpec.describe InPerson::SendProofingNotificationJob do
                     message: "Login.gov: You visited the Post Office on #{proofed_date}." \
                       " Check email for your result." \
                       " Not you? Report this right away: #{contact_number}." \
-                      " Ref: #{reference_string}",
+                      " Ref: #{formatted_string}",
                     country_code: Phonelib.parse(phone_number).country,
                   ),
               )
@@ -187,7 +189,7 @@ RSpec.describe InPerson::SendProofingNotificationJob do
                     to: phone_number,
                     message: "Login.gov: Vous avez visité le bureau de poste le #{proofed_date}." \
                       " Vérifiez votre e-mail pour votre résultat. Ce n'est pas vous?" \
-                      " Signalez-le immédiatement: #{contact_number}. Réf: #{reference_string}",
+                      " Signalez-le immédiatement: #{contact_number}. Réf: #{formatted_string}",
                     country_code: Phonelib.parse(phone_number).country,
                   ),
               )
@@ -206,7 +208,7 @@ RSpec.describe InPerson::SendProofingNotificationJob do
                     to: phone_number,
                     message: "Login.gov: Visitó la oficina de correos el #{proofed_date}." \
                       " Revise su correo electrónico para ver su resultado. ¿No fue usted?" \
-                      " Informe ahora mismo: #{contact_number}. Ref: #{reference_string}",
+                      " Informe ahora mismo: #{contact_number}. Ref: #{formatted_string}",
                     country_code: Phonelib.parse(phone_number).country,
                   ),
               )
