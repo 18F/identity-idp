@@ -4517,11 +4517,6 @@ module AnalyticsEvents
     )
   end
 
-  # We sent an email to the user confirming that they will remain suspended
-  def user_suspension_confirmed
-    track_event(:user_suspension_confirmed)
-  end
-
   # Tracks when user suspended
   # @param [Boolean] success
   # @param [String] error_message
@@ -4546,6 +4541,11 @@ module AnalyticsEvents
       'User Suspension: Please call visited', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       **extra,
     )
+  end
+
+  # We sent an email to the user confirming that they will remain suspended
+  def user_suspension_confirmed
+    track_event(:user_suspension_confirmed)
   end
 
   # Tracks when USPS in-person proofing enrollment is created
