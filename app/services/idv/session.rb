@@ -71,7 +71,7 @@ module Idv
       move_pii_to_user_session(profile_maker.pii_attributes)
       associate_in_person_enrollment_with_profile if profile.in_person_verification_pending?
 
-      if profile.in_person_verification_pending?
+      if profile.gpo_verification_pending?
         create_gpo_entry(profile_maker.pii_attributes)
       elsif profile.in_person_verification_pending?
         UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(
