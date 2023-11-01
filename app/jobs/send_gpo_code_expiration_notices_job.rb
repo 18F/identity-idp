@@ -53,22 +53,20 @@ class SendGpoCodeExpirationNoticesJob < ApplicationJob
   end
 
   def profile_is_pending_gpo
-    GpoConfirmationCode.joins(:profile).where.not(profile: { gpo_verification_pending_at: nil })
+    Profile.where.not(gpo_verification_pending_at: nil)
   end
 
   def profile_has_not_been_otherwise_deactivated
-    GpoConfirmationCode.joins(:profile).where(profile: { deactivation_reason: nil })
+    Profile.where(deactivation_reason: nil)
   end
 
   def user_has_not_completed_idv_since_requesting_code
-    GpoConfirmationCode.joins(:profile).where.not(
-      profile: {
-        user_id: User.joins(:profiles).where(
-          profiles: {
-            active: true,
-          },
-        ),
-      },
+    Profile.where.not(
+      user_id: User.joins(:profiles).where(
+        profiles: {
+          active: true,
+        },
+      ),
     )
   end
 
