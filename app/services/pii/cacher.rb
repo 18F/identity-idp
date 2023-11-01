@@ -13,13 +13,13 @@ module Pii
 
     def save(user_password, profile = user.active_profile)
       decrypted_pii = profile.decrypt_pii(user_password) if profile
-      save_decrypted_pii_json(decrypted_pii.to_json) if decrypted_pii
+      save_decrypted_pii(decrypted_pii) if decrypted_pii
       rotate_fingerprints(profile) if stale_fingerprints?(profile)
       user_session[:decrypted_pii]
     end
 
-    def save_decrypted_pii_json(decrypted_pii_json)
-      user_session[:decrypted_pii] = decrypted_pii_json
+    def save_decrypted_pii(decrypted_pii)
+      user_session[:decrypted_pii] = decrypted_pii.to_json
       nil
     end
 
@@ -29,6 +29,19 @@ module Pii
 
       Pii::Attributes.new_from_json(pii_string)
     end
+
+    def exists_in_session?
+      return user_session[:decrypted_pii] || user_session[:encrypted_pii]
+    end
+
+    def delete
+      user_session.delete(:decrypted_pii)
+      user_session.delete(:encrypted_pii)
+    end
+
+    private
+
+    attr_reader :user, :user_session
 
     # Between requests, the decrypted PII bundle is encrypted with KMS and moved to the
     # 'encrypted_pii' key by the SessionEncryptor.
@@ -46,19 +59,6 @@ module Pii
 
       decrypted
     end
-
-    def exists_in_session?
-      return user_session[:decrypted_pii] || user_session[:encrypted_pii]
-    end
-
-    def delete
-      user_session.delete(:decrypted_pii)
-      user_session.delete(:encrypted_pii)
-    end
-
-    private
-
-    attr_reader :user, :user_session
 
     def rotate_fingerprints(profile)
       KeyRotator::HmacFingerprinter.new.rotate(

@@ -83,7 +83,7 @@ RSpec.describe WebauthnVerificationForm do
             success: false,
             error_details: {
               challenge: [:blank],
-              authenticator_data: [:invalid_authenticator_data],
+              authenticator_data: ['invalid_authenticator_data'],
             },
             multi_factor_auth_method: 'webauthn',
             webauthn_configuration_id: webauthn_configuration.id,
@@ -98,7 +98,7 @@ RSpec.describe WebauthnVerificationForm do
           expect(result.to_h).to eq(
             success: false,
             error_details: {
-              authenticator_data: [:blank, :invalid_authenticator_data],
+              authenticator_data: [:blank, 'invalid_authenticator_data'],
             },
             multi_factor_auth_method: 'webauthn',
             webauthn_configuration_id: webauthn_configuration.id,
@@ -114,7 +114,7 @@ RSpec.describe WebauthnVerificationForm do
             success: false,
             error_details: {
               client_data_json: [:blank],
-              authenticator_data: [:invalid_authenticator_data],
+              authenticator_data: ['invalid_authenticator_data'],
             },
             multi_factor_auth_method: 'webauthn',
             webauthn_configuration_id: webauthn_configuration.id,
@@ -130,7 +130,7 @@ RSpec.describe WebauthnVerificationForm do
             success: false,
             error_details: {
               signature: [:blank],
-              authenticator_data: [:invalid_authenticator_data],
+              authenticator_data: ['invalid_authenticator_data'],
             },
             multi_factor_auth_method: 'webauthn',
             webauthn_configuration_id: webauthn_configuration.id,
@@ -172,7 +172,7 @@ RSpec.describe WebauthnVerificationForm do
         it 'returns unsuccessful result' do
           expect(result.to_h).to eq(
             success: false,
-            error_details: { authenticator_data: [:invalid_authenticator_data] },
+            error_details: { authenticator_data: ['invalid_authenticator_data'] },
             multi_factor_auth_method: 'webauthn',
             webauthn_configuration_id: webauthn_configuration.id,
           )
@@ -188,7 +188,7 @@ RSpec.describe WebauthnVerificationForm do
         it 'returns unsucessful result' do
           expect(result.to_h).to eq(
             success: false,
-            error_details: { authenticator_data: [:invalid_authenticator_data] },
+            error_details: { authenticator_data: ['invalid_authenticator_data'] },
             multi_factor_auth_method: 'webauthn',
             webauthn_configuration_id: webauthn_configuration.id,
           )

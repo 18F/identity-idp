@@ -9,7 +9,7 @@
 <%= render TabNavigationComponent.new(
       label: t('account.login.tab_navigation'),
       routes: [
-        { text: t('links.next'), path: new_user_session_url },
+        { text: t('links.sign_in'), path: new_user_session_url },
         { text: t('links.create_account'), path: sign_up_email_path },
       ],
       class: 'margin-bottom-4',

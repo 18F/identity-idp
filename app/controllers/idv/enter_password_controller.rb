@@ -27,11 +27,6 @@ module Idv
       @title = title
       @heading = heading
 
-      flash_now = flash.now
-      if gpo_mail_service.mail_spammed?
-        flash_now[:error] = t('idv.errors.mail_limit_reached')
-      end
-
       @verifying_by_mail = address_verification_method == 'gpo'
     end
 
@@ -110,7 +105,7 @@ module Idv
       irs_attempts_api_tracker.idv_password_entered(success: false)
 
       flash[:error] = t('idv.errors.incorrect_password')
-      redirect_to idv_review_url
+      redirect_to idv_enter_password_url
     end
 
     def gpo_mail_service
@@ -191,7 +186,7 @@ module Idv
         reason: 'Request exception',
       )
       flash[:error] = t('idv.failure.exceptions.internal_error')
-      redirect_to idv_review_url
+      redirect_to idv_enter_password_url
     end
   end
 end

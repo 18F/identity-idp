@@ -50,6 +50,24 @@ RSpec::Matchers.define :label_required_fields do
   end
 end
 
+RSpec::Matchers.define :be_logically_grouped do |name|
+  match do |inputs|
+    accessible_name = AccessibleName.new(page:)
+    group_names = inputs.map do |input|
+      group = input.ancestor('fieldset,[role=group]')
+      accessible_name.computed_name(group)
+    end
+
+    group_names.compact.uniq == [name]
+  end
+
+  failure_message do
+    <<-STR.squish
+      Expected inputs to be logically grouped with as "#{name}"
+    STR
+  end
+end
+
 RSpec::Matchers.define :have_valid_markup do
   def page_html
     if page.driver.is_a?(Capybara::Selenium::Driver)
@@ -112,8 +130,24 @@ RSpec::Matchers.define :have_description do |description|
 end
 
 RSpec::Matchers.define :have_name do |name|
+  match { |element| AccessibleName.new(page:).computed_name(element) == name }
+
+  failure_message do |element|
+    <<-STR.squish
+      Expected element would have computed name "#{name}".
+      Found #{computed_name(element)}.
+    STR
+  end
+end
+
+class AccessibleName
+  attr_reader :page
+
   # Implements a best effort approximation of W3C Accessible Name and Description Computation 1.2
+  # and naming behaviors described in the HTML Accessibility API Mappings 1.0
+  #
   # See: https://www.w3.org/TR/accname-1.2/#mapping_additional_nd_te
+  # See: https://w3c.github.io/html-aam/
   #
   # In the future, consider implementing using Chrome DevTools Accessibility features. At time of
   # writing, these are experimental and return a `nil` value in local testing.
@@ -123,6 +157,21 @@ RSpec::Matchers.define :have_name do |name|
   # We can use the Capybara driver "bridge" to call these commands.
   #
   # Example: https://github.com/18F/identity-idp/blob/3c7d3be/spec/support/features/browser_emulation_helper.rb
+
+  def initialize(page:)
+    @page = page
+  end
+
+  def computed_name(element)
+    hidden_name(element) ||
+      aria_labelledby_name(element) ||
+      aria_label_name(element) ||
+      referenced_label_name(element) ||
+      ancestor_label_text_name(element) ||
+      fieldset_legend_name(element)
+  end
+
+  private
 
   def hidden_name(element)
     # "If the current node is hidden [...] return the empty string."
@@ -193,38 +242,19 @@ RSpec::Matchers.define :have_name do |name|
     page.evaluate_script(visible_text_js, element)
   end
 
-  def computed_name(element)
-    hidden_name(element) ||
-      aria_labelledby_name(element) ||
-      aria_label_name(element) ||
-      referenced_label_name(element) ||
-      ancestor_label_text_name(element)
-  end
+  def fieldset_legend_name(element)
+    # See: https://w3c.github.io/html-aam/#fieldset-element-accessible-name-computation
+    return if element.tag_name != 'fieldset'
 
-  match { |element| computed_name(element) == name }
+    # "If the accessible name is still empty, then: if the fieldset element has a child that is a
+    # legend element, then use the subtree of the first such element."
+    begin
+      return element.find('legend').text
+    rescue Capybara::ElementNotFound; end
 
-  failure_message do |element|
-    <<-STR.squish
-      Expected element would have computed name "#{name}".
-      Found #{computed_name(element)}.
-    STR
-  end
-end
-
-RSpec::Matchers.define :be_uniquely_titled do
-  # Attempts to validate conformance to WCAG Success Criteria 2.4.2: Page Titled
-  #
-  # Visiting a page with the default app name title is considered a failure, and should be resolved
-  # by providing a distinct description for the page using the `:title` content block.
-  #
-  # https://www.w3.org/WAI/WCAG21/Understanding/page-titled.html
-
-  match do |page|
-    page.title.present? && page.title.strip != APP_NAME
-  end
-
-  failure_message do |page|
-    "Page '#{page.current_path}' should have a unique and descriptive title. Found '#{page.title}'."
+    # "If the accessible name is still empty, then:, if the fieldset element has a title
+    # attribute, then use that attribute."
+    element['title']
   end
 end
 
@@ -232,6 +262,12 @@ def expect_page_to_have_no_accessibility_violations(page, validate_markup: true)
   expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
   expect(page).to have_valid_idrefs
   expect(page).to label_required_fields
-  expect(page).to be_uniquely_titled
   expect(page).to have_valid_markup if validate_markup
+end
+
+def activate_skip_link
+  page.evaluate_script('document.activeElement.blur()')
+  page.active_element.send_keys(:tab)
+  expect(page.active_element).to have_content(t('shared.skip_link'), wait: 5)
+  page.active_element.send_keys(:enter)
 end

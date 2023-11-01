@@ -307,6 +307,47 @@ RSpec.describe Idv::ImageUploadsController do
       end
     end
 
+    context 'when image upload fails with 4xx status' do
+      before do
+        status = 440
+        errors = { general: [DocAuth::Errors::IMAGE_SIZE_FAILURE],
+                   front: [DocAuth::Errors::IMAGE_SIZE_FAILURE_FIELD] }
+        message = [
+          self.class.name,
+          'Unexpected HTTP response',
+          status,
+        ].join(' ')
+        exception = DocAuth::RequestError.new(message, status)
+        response = DocAuth::Response.new(
+          success: false,
+          errors: errors,
+          exception: exception,
+          extra: { vendor: 'Mock' },
+        )
+        DocAuth::Mock::DocAuthMockClient.mock_response!(
+          method: :post_front_image,
+          response: response,
+        )
+      end
+
+      it 'returns error response' do
+        action
+        expect(response.status).to eq(400)
+        expect(json[:success]).to eq(false)
+        expect(json[:remaining_attempts]).to be_a_kind_of(Numeric)
+        expect(json[:errors]).to eq [
+          {
+            field: 'general',
+            message: I18n.t('doc_auth.errors.http.image_size.top_msg'),
+          },
+          {
+            field: 'front',
+            message: I18n.t('doc_auth.errors.http.image_size.failed_short'),
+          },
+        ]
+      end
+    end
+
     context 'when image upload succeeds' do
       it 'returns a successful response and modifies the session' do
         action
@@ -377,6 +418,7 @@ RSpec.describe Idv::ImageUploadsController do
           back_image_fingerprint: an_instance_of(String),
           getting_started_ab_test_bucket: :welcome_default,
           phone_question_ab_test_bucket: :bypass_phone_question,
+          classification_info: a_kind_of(Hash),
         )
 
         expect(@irs_attempts_api_tracker).to receive(:track_event).with(
@@ -431,6 +473,8 @@ RSpec.describe Idv::ImageUploadsController do
         let(:dob) { '10/06/1938' }
         let(:jurisdiction) { 'ND' }
         let(:zipcode) { '12345' }
+        let(:country_code) { 'USA' }
+        let(:class_name) { 'Identification Card' }
 
         before do
           DocAuth::Mock::DocAuthMockClient.mock_response!(
@@ -438,7 +482,20 @@ RSpec.describe Idv::ImageUploadsController do
             response: DocAuth::Response.new(
               success: true,
               errors: {},
-              extra: { doc_auth_result: 'Passed', billed: true },
+              extra: {
+                doc_auth_result: 'Passed',
+                billed: true,
+                classification_info: {
+                  Front: {
+                    CountryCode: country_code,
+                    ClassName: class_name,
+                  },
+                  Back: {
+                    CountryCode: country_code,
+                    ClassName: class_name,
+                  },
+                },
+              },
               pii_from_doc: {
                 first_name: first_name,
                 last_name: last_name,
@@ -551,6 +608,10 @@ RSpec.describe Idv::ImageUploadsController do
               back_image_fingerprint: an_instance_of(String),
               getting_started_ab_test_bucket: :welcome_default,
               phone_question_ab_test_bucket: :bypass_phone_question,
+              classification_info: hash_including(
+                Front: hash_including(ClassName: 'Identification Card', CountryCode: 'USA'),
+                Back: hash_including(ClassName: 'Identification Card', CountryCode: 'USA'),
+              ),
             )
 
             expect(@irs_attempts_api_tracker).to receive(:track_event).with(
@@ -644,6 +705,10 @@ RSpec.describe Idv::ImageUploadsController do
               back_image_fingerprint: an_instance_of(String),
               getting_started_ab_test_bucket: :welcome_default,
               phone_question_ab_test_bucket: :bypass_phone_question,
+              classification_info: hash_including(
+                Front: hash_including(ClassName: 'Identification Card', CountryCode: 'USA'),
+                Back: hash_including(ClassName: 'Identification Card', CountryCode: 'USA'),
+              ),
             )
 
             expect(@irs_attempts_api_tracker).to receive(:track_event).with(
@@ -737,6 +802,7 @@ RSpec.describe Idv::ImageUploadsController do
               back_image_fingerprint: an_instance_of(String),
               getting_started_ab_test_bucket: :welcome_default,
               phone_question_ab_test_bucket: :bypass_phone_question,
+              classification_info: hash_including(:Front, :Back),
             )
 
             expect(@irs_attempts_api_tracker).to receive(:track_event).with(

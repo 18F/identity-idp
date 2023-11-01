@@ -30,6 +30,7 @@ interface AppRootData {
   acuantVersion: string;
   flowPath: FlowPath;
   cancelUrl: string;
+  exitUrl: string;
   idvInPersonUrl?: string;
   securityAndPrivacyHowItWorksUrl: string;
 }
@@ -53,14 +54,20 @@ function getMetaContent(name): string | null {
 const device: DeviceContextValue = { isMobile: isCameraCapableMobile() };
 
 const trackEvent: typeof baseTrackEvent = (event, payload) => {
-  const { flowPath, acuantSdkUpgradeABTestingEnabled, useAlternateSdk, acuantVersion } =
-    appRoot.dataset;
+  const {
+    flowPath,
+    acuantSdkUpgradeABTestingEnabled,
+    useAlternateSdk,
+    acuantVersion,
+    phoneQuestionAbTestBucket,
+  } = appRoot.dataset;
   return baseTrackEvent(event, {
     ...payload,
     flow_path: flowPath,
     acuant_sdk_upgrade_a_b_testing_enabled: acuantSdkUpgradeABTestingEnabled,
     use_alternate_sdk: useAlternateSdk,
     acuant_version: acuantVersion,
+    phone_question_ab_test_bucket: phoneQuestionAbTestBucket,
   });
 };
 
@@ -76,6 +83,7 @@ const {
   acuantVersion,
   flowPath,
   cancelUrl: cancelURL,
+  exitUrl: exitURL,
   idvInPersonUrl: inPersonURL,
   securityAndPrivacyHowItWorksUrl: securityAndPrivacyHowItWorksURL,
   inPersonFullAddressEntryEnabled,
@@ -134,6 +142,7 @@ const App = composeComponents(
     {
       value: {
         cancelURL,
+        exitURL,
         currentStep: 'document_capture',
       },
     },

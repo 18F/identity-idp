@@ -34,7 +34,7 @@ module Idv
         user_id: current_user.id,
         threatmetrix_session_id: idv_session.threatmetrix_session_id,
         request_ip: request.remote_ip,
-        double_address_verification: double_address_verification,
+        ipp_enrollment_in_progress: ipp_enrollment_in_progress?,
       )
 
       return true
@@ -42,10 +42,7 @@ module Idv
 
     private
 
-    def double_address_verification
-      # If in person return true else return false. This is temporary until we add a feature flag
-      # to track enrollment was created in the in person flow.
-      # todo LG-11235 update value based on new feature flag
+    def ipp_enrollment_in_progress?
       current_user.has_in_person_enrollment?
     end
 
@@ -220,7 +217,6 @@ module Idv
       else
         idv_session.invalidate_verify_info_step!
       end
-
       analytics.idv_doc_auth_verify_proofing_results(**analytics_arguments, **form_response.to_h)
     end
 

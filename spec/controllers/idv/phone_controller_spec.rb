@@ -64,7 +64,7 @@ RSpec.describe Idv::PhoneController do
         subject.idv_session.vendor_phone_confirmation = true
         get :new
 
-        expect(response).to redirect_to idv_review_path
+        expect(response).to redirect_to idv_enter_password_path
       end
     end
 

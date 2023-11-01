@@ -40,6 +40,7 @@ describe('DocumentCapturePolling', () => {
         ),
       },
       trackEvent,
+      phoneQuestionAbTestBucket: 'bypass_phone_question',
     });
     subject.bind();
   });
@@ -67,7 +68,10 @@ describe('DocumentCapturePolling', () => {
     sandbox.clock.tick(DOC_CAPTURE_POLL_INTERVAL);
     expect(global.fetch).to.have.been.calledTwice();
 
-    expect(trackEvent).to.have.been.calledOnceWith('IdV: Link sent capture doc polling started');
+    expect(trackEvent).to.have.been.calledOnceWithExactly(
+      'IdV: Link sent capture doc polling started',
+      { phone_question_ab_test_bucket: 'bypass_phone_question' },
+    );
   });
 
   it('submits when done', async () => {
@@ -83,11 +87,18 @@ describe('DocumentCapturePolling', () => {
     await flushPromises(); // Flush `json`
 
     expect(subject.elements.form.submit).to.have.been.called();
-    expect(trackEvent).to.have.been.calledWith('IdV: Link sent capture doc polling started');
-    expect(trackEvent).to.have.been.calledWith('IdV: Link sent capture doc polling complete', {
-      isCancelled: false,
-      isRateLimited: false,
-    });
+    expect(trackEvent).to.have.been.calledWithExactly(
+      'IdV: Link sent capture doc polling started',
+      { phone_question_ab_test_bucket: 'bypass_phone_question' },
+    );
+    expect(trackEvent).to.have.been.calledWithExactly(
+      'IdV: Link sent capture doc polling complete',
+      {
+        isCancelled: false,
+        isRateLimited: false,
+        phone_question_ab_test_bucket: 'bypass_phone_question',
+      },
+    );
   });
 
   it('redirects if given redirect URL on success', async () => {
@@ -116,11 +127,18 @@ describe('DocumentCapturePolling', () => {
     await flushPromises(); // Flush `fetch`
     await flushPromises(); // Flush `json`
 
-    expect(trackEvent).to.have.been.calledWith('IdV: Link sent capture doc polling started');
-    expect(trackEvent).to.have.been.calledWith('IdV: Link sent capture doc polling complete', {
-      isCancelled: true,
-      isRateLimited: false,
-    });
+    expect(trackEvent).to.have.been.calledWithExactly(
+      'IdV: Link sent capture doc polling started',
+      { phone_question_ab_test_bucket: 'bypass_phone_question' },
+    );
+    expect(trackEvent).to.have.been.calledWithExactly(
+      'IdV: Link sent capture doc polling complete',
+      {
+        isCancelled: true,
+        isRateLimited: false,
+        phone_question_ab_test_bucket: 'bypass_phone_question',
+      },
+    );
     expect(subject.elements.form.submit).to.have.been.called();
   });
 
@@ -134,11 +152,18 @@ describe('DocumentCapturePolling', () => {
     await flushPromises(); // Flush `fetch`
     await flushPromises(); // Flush `json`
 
-    expect(trackEvent).to.have.been.calledWith('IdV: Link sent capture doc polling started');
-    expect(trackEvent).to.have.been.calledWith('IdV: Link sent capture doc polling complete', {
-      isCancelled: false,
-      isRateLimited: true,
-    });
+    expect(trackEvent).to.have.been.calledWithExactly(
+      'IdV: Link sent capture doc polling started',
+      { phone_question_ab_test_bucket: 'bypass_phone_question' },
+    );
+    expect(trackEvent).to.have.been.calledWithExactly(
+      'IdV: Link sent capture doc polling complete',
+      {
+        isCancelled: false,
+        isRateLimited: true,
+        phone_question_ab_test_bucket: 'bypass_phone_question',
+      },
+    );
     expect(window.location.hash).to.equal('#rate_limited');
   });
 

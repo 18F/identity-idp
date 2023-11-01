@@ -28,8 +28,7 @@ class ReactivateAccountSession
   # @param [Pii::Attributes]
   def store_decrypted_pii(pii)
     reactivate_account_session[:validated_personal_key] = true
-    pii_json = pii.to_json
-    Pii::Cacher.new(@user, session).save_decrypted_pii_json(pii_json)
+    Pii::Cacher.new(@user, session).save_decrypted_pii(pii)
     nil
   end
 

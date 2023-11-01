@@ -2,6 +2,7 @@
 es:
   datetime:
     dotiw:
+      last_word_connector: ' y '
       minutes:
         one: un minuto
         other: '%{count} minutos'
@@ -9,3 +10,4 @@ es:
         one: un segundo
         other: '%{count} segundos'
       two_words_connector: ' y '
+      words_connector: ', '
