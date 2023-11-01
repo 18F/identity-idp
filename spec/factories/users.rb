@@ -179,9 +179,7 @@ FactoryBot.define do
     trait :fully_registered do
       with_phone
 
-      after :create do |user|
-        user.create_registration_log(registered_at: Time.zone.now)
-      end
+      association :registration_log
     end
 
     trait :unconfirmed do

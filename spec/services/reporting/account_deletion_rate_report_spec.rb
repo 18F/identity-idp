@@ -24,17 +24,20 @@ RSpec.describe Reporting::AccountDeletionRateReport do
 
     it 'returns a report for account deletion rate (last 30 days)' do
       account_deletion_table = report.account_deletion_report
-      expected_table = [['Deleted Users', 'Total Users', 'Deletion Rate'], [2, 8, 0.25]]
+      expected_table = [
+        ['Deleted Users', 'Fully Registered Users', 'Deletion Rate'],
+        [2, 6, 2.0 / 6],
+      ]
 
       expect(account_deletion_table).to eq(expected_table)
     end
   end
 
   def create_and_delete_accounts
-    create(:user, :proofed)
-    create_list(:user, 2)
+    create(:user, :fully_registered, :proofed)
+    create_list(:user, 2, :fully_registered)
 
-    user = create(:user)
+    user = create(:user, :fully_registered)
     DeletedUser.create_from_user(user)
     user.destroy!
   end
