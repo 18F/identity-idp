@@ -1,6 +1,10 @@
 ---
 es:
   user_mailer:
+    account_reinstated:
+      subject: Tu cuenta está desbloqueada
+      we_have_finished_reviewing: Hemos terminado de revisar su cuenta de %{app_name}
+        y ya puede volver a iniciar sesión con los datos de su cuenta.
     account_rejected:
       intro: No hemos podido verificar su identidad con %{app_name}. Por favor,
         póngase en contacto con la agencia a cuyo servicio está intentando
@@ -329,3 +333,8 @@ es:
         centro de atención al número %{contact_number} y proporcione este código
         - %{support_code}.
       subject: No pudimos restablecer su contraseña
+    suspension_confirmed:
+      contact_agency: Póngase en contacto con la agencia a cuyo servicio trata de acceder.
+      remain_locked: Ya hemos completado la revisión de su cuenta de %{app_name} así
+        que su cuenta continuará bloqueada.
+      subject: Su cuenta está bloqueada

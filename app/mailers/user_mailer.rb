@@ -411,6 +411,20 @@ class UserMailer < ActionMailer::Base
     end
   end
 
+  def suspension_confirmed
+    @help_text = t('user_mailer.suspension_confirmed.contact_agency')
+
+    with_user_locale(user) do
+      mail(to: email_address.email, subject: t('user_mailer.suspension_confirmed.subject'))
+    end
+  end
+
+  def account_reinstated
+    with_user_locale(user) do
+      mail(to: email_address.email, subject: t('user_mailer.account_reinstated.subject'))
+    end
+  end
+
   private
 
   def email_should_receive_nonessential_notifications?(email)

@@ -1,6 +1,11 @@
 ---
 fr:
   user_mailer:
+    account_reinstated:
+      subject: Votre compte est déverrouillé
+      we_have_finished_reviewing: Nous avons terminé l’examen de votre compte
+        %{app_name} et vous pouvez maintenant vous reconnecter avec les
+        informations de votre compte.
     account_rejected:
       intro: Nous n’avons pas pu vérifier votre identité avec %{app_name}. Veuillez
         contacter l’agence dont vous essayez d’accéder au service.
@@ -342,3 +347,8 @@ fr:
         appeler notre centre d’appels au %{contact_number} et fournir ce code -
         %{support_code}.
       subject: Nous n’avons pas pu réinitialiser votre mot de passe
+    suspension_confirmed:
+      contact_agency: Veuillez contacter l’agence dont vous essayez d’accéder au service.
+      remain_locked: Nous avons terminé l’examen de votre compte %{app_name} et votre
+        compte restera verrouillé.
+      subject: Votre compte est verrouillé

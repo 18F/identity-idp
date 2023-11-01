@@ -54,7 +54,7 @@ module Reporting
     end
 
     def stats_month
-      report_date.prev_month(1).strftime('%b-%Y')
+      report_date.strftime('%b-%Y')
     end
 
     private
@@ -148,12 +148,8 @@ module Reporting
 
     def params
       {
-        query_date: first_day_of_report_month,
+        query_date: report_date.end_of_day,
       }.transform_values { |v| ActiveRecord::Base.connection.quote(v) }
-    end
-
-    def first_day_of_report_month
-      report_date.beginning_of_month.strftime('%Y-%m-%d')
     end
   end
 end

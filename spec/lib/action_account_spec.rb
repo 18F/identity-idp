@@ -284,18 +284,57 @@ RSpec.describe ActionAccount do
       let(:config) { ScriptBase::Config.new(include_missing:) }
       subject(:result) { subtask.run(args:, config:) }
 
-      it 'Suspend a user that is not suspended already', aggregate_failures: true do
+      it 'suspends users that are not suspended already', aggregate_failures: true do
+        expect { result }.to(change { ActionMailer::Base.deliveries.count }.by(1))
+
         expect(result.table).to match_array(
           [
             ['uuid', 'status'],
             [user.uuid, 'User is not suspended'],
-            [suspended_user.uuid, 'User has been reinstated'],
+            [suspended_user.uuid, 'User has been reinstated and the user has been emailed'],
             ['uuid-does-not-exist', 'Error: Could not find user with that UUID'],
           ],
         )
 
         expect(result.subtask).to eq('reinstate-user')
         expect(result.uuids).to match_array([user.uuid, suspended_user.uuid])
+      end
+    end
+  end
+
+  describe ActionAccount::ConfirmSuspendUser do
+    subject(:subtask) { ActionAccount::ConfirmSuspendUser.new }
+
+    describe '#run' do
+      let(:user) { create(:user) }
+      let(:suspended_user) { create(:user, :suspended) }
+      let(:args) { [suspended_user.uuid, user.uuid, 'uuid-does-not-exist'] }
+      let(:include_missing) { true }
+      let(:config) { ScriptBase::Config.new(include_missing:) }
+      subject(:result) { subtask.run(args:, config:) }
+
+      let(:analytics) { FakeAnalytics.new }
+
+      before do
+        allow(subtask).to receive(:analytics).and_return(analytics)
+      end
+
+      it 'emails users that are suspended', aggregate_failures: true do
+        expect { result }.to(change { ActionMailer::Base.deliveries.count }.by(1))
+
+        expect(result.table).to match_array(
+          [
+            ['uuid', 'status'],
+            [suspended_user.uuid, 'User has been emailed'],
+            [user.uuid, 'User is not suspended'],
+            ['uuid-does-not-exist', 'Error: Could not find user with that UUID'],
+          ],
+        )
+
+        expect(result.subtask).to eq('confirm-suspend-user')
+        expect(result.uuids).to match_array([user.uuid, suspended_user.uuid])
+
+        expect(analytics).to have_logged_event(:user_suspension_confirmed)
       end
     end
   end
