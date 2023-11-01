@@ -1,7 +1,7 @@
 class IconListComponent < BaseComponent
-  renders_many :items, ->(**kwargs, &block) {
+  renders_many :items, ->(**kwargs, &block) do
     IconListItemComponent.new(icon:, color:, **kwargs, &block)
-  }
+  end
 
   attr_reader :icon, :size, :color, :tag_options
 
