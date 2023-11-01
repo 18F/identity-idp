@@ -1,5 +1,10 @@
 module TwoFactorAuthentication
-  class WebauthnPlatformSelectionPresenter < SelectionPresenter
+  class SetUpWebauthnPlatformSelectionPresenter < SetUpSelectionPresenter
+    def initialize(user:, configuration: nil)
+      @user = user
+      @configuration = configuration
+    end
+
     def method
       :webauthn_platform
     end
@@ -8,12 +13,22 @@ module TwoFactorAuthentication
       view_context.render(
         WebauthnInputComponent.new(
           platform: true,
-          passkey_supported_only: configuration.blank?,
+          passkey_supported_only: true,
           show_unsupported_passkey:
-            configuration.blank? &&
             IdentityConfig.store.show_unsupported_passkey_platform_authentication_setup,
         ),
         &block
+      )
+    end
+
+    def label
+      t('two_factor_authentication.two_factor_choice_options.webauthn_platform')
+    end
+
+    def info
+      t(
+        'two_factor_authentication.two_factor_choice_options.webauthn_platform_info',
+        app_name: APP_NAME,
       )
     end
 

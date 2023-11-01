@@ -33,7 +33,7 @@ RSpec.describe TwoFactorOptionsPresenter do
         TwoFactorAuthentication::SetUpAuthAppSelectionPresenter,
         TwoFactorAuthentication::PhoneSelectionPresenter,
         TwoFactorAuthentication::BackupCodeSelectionPresenter,
-        TwoFactorAuthentication::WebauthnSelectionPresenter,
+        TwoFactorAuthentication::SetUpWebauthnSelectionPresenter,
         TwoFactorAuthentication::PivCacSelectionPresenter,
       ]
     end
@@ -48,7 +48,7 @@ RSpec.describe TwoFactorOptionsPresenter do
 
       it 'only displays phishing-resistant MFA methods' do
         expect(presenter.options.map(&:class)).to eq [
-          TwoFactorAuthentication::WebauthnSelectionPresenter,
+          TwoFactorAuthentication::SetUpWebauthnSelectionPresenter,
           TwoFactorAuthentication::PivCacSelectionPresenter,
         ]
       end
@@ -63,7 +63,7 @@ RSpec.describe TwoFactorOptionsPresenter do
         expect(presenter.options.map(&:class)).to eq [
           TwoFactorAuthentication::SetUpAuthAppSelectionPresenter,
           TwoFactorAuthentication::BackupCodeSelectionPresenter,
-          TwoFactorAuthentication::WebauthnSelectionPresenter,
+          TwoFactorAuthentication::SetUpWebauthnSelectionPresenter,
           TwoFactorAuthentication::PivCacSelectionPresenter,
         ]
       end
@@ -76,11 +76,11 @@ RSpec.describe TwoFactorOptionsPresenter do
 
       it 'supplies all the options except webauthn' do
         expect(presenter.options.map(&:class)).to eq [
-          TwoFactorAuthentication::WebauthnPlatformSelectionPresenter,
+          TwoFactorAuthentication::SetUpWebauthnPlatformSelectionPresenter,
           TwoFactorAuthentication::SetUpAuthAppSelectionPresenter,
           TwoFactorAuthentication::PhoneSelectionPresenter,
           TwoFactorAuthentication::BackupCodeSelectionPresenter,
-          TwoFactorAuthentication::WebauthnSelectionPresenter,
+          TwoFactorAuthentication::SetUpWebauthnSelectionPresenter,
           TwoFactorAuthentication::PivCacSelectionPresenter,
         ]
       end
