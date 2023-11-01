@@ -78,7 +78,7 @@ class MakefileHelpParser
     raw_makefile = File.readlines(makefile_path)
 
     raw_makefile.map.with_index.select do |line, _lineno|
-      line =~ / ## /
+      line.include?(' ## ')
     end.flat_map do |line, lineno|
       targets, rest = line.chomp.split(':', 2)
       _sources, comment = rest.split(' ## ')
