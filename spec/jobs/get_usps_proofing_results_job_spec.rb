@@ -6,7 +6,7 @@ RSpec.shared_examples 'enrollment_with_a_status_update' do |passed:,
                                                             response_json:|
 
   it 'logs a message with common attributes' do
-    freeze_time do
+    travel_to Time.zone.parse('2023-11-30T10:00:00Z') do
       pending_enrollment.update(
         enrollment_established_at: Time.zone.now - 3.days,
         status_check_attempted_at: Time.zone.now - 15.minutes,
@@ -26,11 +26,9 @@ RSpec.shared_examples 'enrollment_with_a_status_update' do |passed:,
         issuer: pending_enrollment.issuer,
         minutes_since_last_status_check: 15.0,
         minutes_since_last_status_check_completed: 17.0,
-        # Around DST changes, days have 23/25 hours, so account for that
-        # with be_within(60) minutes.
-        minutes_since_last_status_update: be_within(60).of(2.days.in_minutes),
-        minutes_to_completion: be_within(60).of(3.days.in_minutes),
-        minutes_since_established: be_within(60).of(3.days.in_minutes),
+        minutes_since_last_status_update: 2.days.in_minutes,
+        minutes_to_completion: 3.days.in_minutes,
+        minutes_since_established: 3.days.in_minutes,
         passed: passed,
         primary_id_type: response['primaryIdType'],
         proofing_city: response['proofingCity'],
