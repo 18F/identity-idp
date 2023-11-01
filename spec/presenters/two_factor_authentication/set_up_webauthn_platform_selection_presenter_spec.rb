@@ -10,6 +10,12 @@ RSpec.describe TwoFactorAuthentication::SetUpWebauthnPlatformSelectionPresenter 
   let(:presenter_with_mfa) do
     described_class.new(user: user_with_mfa)
   end
+  subject(:presenter) do
+    TwoFactorAuthentication::SetUpWebauthnPlatformSelectionPresenter.new(
+      user:,
+      configuration: user.webauthn_configurations.platform_authenticators.first,
+    )
+  end
 
   describe '#type' do
     it 'returns webauthn_platform' do
@@ -18,6 +24,7 @@ RSpec.describe TwoFactorAuthentication::SetUpWebauthnPlatformSelectionPresenter 
   end
 
   describe '#render_in' do
+    let(:user) { create(:user) }
     it 'renders a WebauthnInputComponent' do
       view_context = instance_double(ActionView::Base)
       expect(view_context).to receive(:render) do |component, &block|
