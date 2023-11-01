@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import type { ComponentType } from 'react';
 import { Provider as MarketingSiteContextProvider } from '../context/marketing-site';
 import InPersonPrepareStep from './in-person-prepare-step';
@@ -18,7 +18,7 @@ describe('InPersonPrepareStep', () => {
     ).not.to.exist();
   });
 
-  it('renders all steps to verify your identity at a Post Office', async () => {
+  it('renders all steps to verify your identity at a Post Office', () => {
     const { getByText } = render(<InPersonPrepareStep {...DEFAULT_PROPS} />);
 
     expect(getByText('in_person_proofing.body.prepare.verify_step_post_office')).to.exist();
