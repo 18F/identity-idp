@@ -33,14 +33,8 @@
             </span>
             <h3 class="text-gray-70"><%= t('doc_auth.headings.verify_online') %></h3>
             <span class="usa-radio__label-description">
-              <%= t(
-                    'doc_auth.info.verify_online_html',
-                    help_url:
-                      MarketingSite.help_center_article_url(
-                        category: 'verify-your-identity',
-                        article: 'how-to-verify-your-identity',
-                      ),
-                  ) %>
+              <p><%= t('doc_auth.info.verify_online_instruction') %></p>
+              <p><%= t('doc_auth.info.verify_online_description') %></p>
             </span>
           </div>
         <% end %>
@@ -63,13 +57,8 @@
           <div class="usa-radio__label--text">
             <h3 class="text-gray-70"><%= t('doc_auth.headings.verify_at_post_office') %></h3>
             <span class="usa-radio__label-description">
-              <%= t(
-                    'doc_auth.info.verify_at_post_office_html', help_url:
-                MarketingSite.help_center_article_url(
-                  category: 'verify-your-identity',
-                  article: 'verify-your-identity-in-person',
-                )
-                  ) %>
+              <p><%= t('doc_auth.info.verify_at_post_office_instruction') %></p>
+              <p><%= t('doc_auth.info.verify_at_post_office_description') %></p>
             </span>
           </div>
         <% end %>
@@ -77,3 +66,27 @@
   <%= hidden_field_tag 'idv_how_to_verify_form[empty]', '' %>
   <%= f.submit t('forms.buttons.continue'), class: 'display-block margin-y-5' %>
 <% end %>
+
+<%= render(
+  'shared/troubleshooting_options',
+  heading_tag: :h3,
+  heading: t('doc_auth.info.how_to_verify_troubleshooting_options_header'),
+  options: [
+    {
+      url: MarketingSite.help_center_article_url(
+        category: 'verify-your-identity',
+        article: 'how-to-verify-your-identity',
+      ),
+      text: t('doc_auth.info.verify_online_link_text'),
+      new_tab: true,
+    },
+    {
+      url: MarketingSite.help_center_article_url(
+        category: 'verify-your-identity',
+        article: 'verify-your-identity-in-person',
+      ),
+      text: t('doc_auth.info.verify_at_post_office_link_text'),
+      new_tab: true,
+    },
+  ],
+) %>
