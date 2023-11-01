@@ -226,6 +226,7 @@ FactoryBot.define do
           user: user,
           device: create(:device, user: user),
           event_type: :gpo_mail_sent,
+          created_at: code_sent_at,
         )
       end
     end
