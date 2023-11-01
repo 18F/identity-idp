@@ -188,11 +188,6 @@ else
         cron: cron_24h,
         args: -> { [14.days.ago] },
       },
-      # Send emails when unused GPO verification codes have expired
-      send_gpo_code_expiration_notices: {
-        class: 'SendGpoCodeExpirationNoticesJob',
-        cron: cron_24h,
-      },
       # Monthly report checking in on key metrics
       monthly_key_metrics_report: {
         class: 'Reports::MonthlyKeyMetricsReport',
