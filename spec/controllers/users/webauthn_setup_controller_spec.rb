@@ -317,8 +317,8 @@ RSpec.describe Users::WebauthnSetupController do
 
         let(:submitted_error_hash) do
           { name: [I18n.t(
-            'errors.webauthn_setup.general_html_error',
-            link: authentication_methods_setup_path,
+            'errors.webauthn_setup.general_error_html',
+            link_html: authentication_methods_setup_path,
           )] }
         end
 
@@ -363,11 +363,13 @@ RSpec.describe Users::WebauthnSetupController do
         end
 
         it 'should log submitted failure' do
-          get :new, params: { error: 'NotAllowedError', platform: true }
+          get :new, params: { error: 'NotAllowedError' }
 
           expect(@analytics).to have_logged_event(
             :webauthn_setup_submitted,
-            hash_including(success: false),
+            hash_including(
+              success: false,
+            ),
           )
         end
       end
