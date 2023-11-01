@@ -247,7 +247,7 @@ en:
         mobile device or an easy way to take photos of your ID.
       verify_at_post_office_instruction: You’ll enter your ID information online, and
         verify your identity in person at a participating Post Office.
-      verify_at_post_office_link_text: Learn more about verifying in person.
+      verify_at_post_office_link_text: Learn more about verifying in person
       verify_identity: We’ll ask for your personal information to verify your identity
         against public records.
       verify_online_description: This option is better if you have a mobile device or

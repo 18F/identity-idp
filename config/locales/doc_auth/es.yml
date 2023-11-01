@@ -287,7 +287,7 @@ es:
       verify_at_post_office_instruction: Ingresará su información de identificación en
         línea y verificará tu identidad en persona en una Oficina de Correos
         participante.
-      verify_at_post_office_link_text: Obtenga más información sobre la verificación en persona.
+      verify_at_post_office_link_text: Obtenga más información sobre la verificación en persona
       verify_identity: Le preguntaremos sus datos personales para verificar su
         identidad comparándola con los registros públicos.
       verify_online_description: La mayoría de los usuarios finalizan este proceso de
@@ -295,7 +295,7 @@ es:
         forma de tomar fotografías de su identificación.
       verify_online_instruction: Tomará fotografías de tu identificación para
         verificar tu identidad completamente en línea.
-      verify_online_link_text: Obtenga más información sobre la verificación en línea.
+      verify_online_link_text: Obtenga más información sobre la verificación en línea
       welcome: '%{sp_name} necesita asegurarse de que es usted y no es alguien que se
         hace pasar por usted.'
       you_entered: 'Ud. entregó:'

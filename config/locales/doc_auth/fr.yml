@@ -296,7 +296,7 @@ fr:
       verify_at_post_office_instruction: Vous saisissez vos données d’identification
         en ligne et confirmez votre identité en personne dans un bureau de poste
         participant.
-      verify_at_post_office_link_text: En savoir plus sur la confirmation en personne.
+      verify_at_post_office_link_text: En savoir plus sur la confirmation en personne
       verify_identity: Nous vous demanderons vos informations personnelles afin de
         vérifier votre identité par rapport aux registres publics.
       verify_online_description: La plupart des utilisateurs terminent ce processus en
@@ -305,7 +305,7 @@ fr:
         d’identité.
       verify_online_instruction: Vous prendrez des photos de votre pièce d’identité
         pour confirmer votre identité entièrement en ligne.
-      verify_online_link_text: En savoir plus sur la confirmation en ligne.
+      verify_online_link_text: En savoir plus sur la confirmation en ligne
       welcome: '%{sp_name} doit s’assurer que vous êtes bien vous, et non quelqu’un
         qui se fait passer pour vous.'
       you_entered: 'Tu as soumis:'
