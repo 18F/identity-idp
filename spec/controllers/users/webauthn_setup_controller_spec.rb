@@ -315,13 +315,6 @@ RSpec.describe Users::WebauthnSetupController do
           }
         end
 
-        let(:submitted_error_hash) do
-          { name: [I18n.t(
-            'errors.webauthn_setup.general_error_html',
-            link_html: authentication_methods_setup_path,
-          )] }
-        end
-
         before do
           controller.user_session[:in_account_creation_flow] = true
         end
@@ -369,6 +362,7 @@ RSpec.describe Users::WebauthnSetupController do
             :webauthn_setup_submitted,
             hash_including(
               success: false,
+              platform_authenticator: true,
             ),
           )
         end
