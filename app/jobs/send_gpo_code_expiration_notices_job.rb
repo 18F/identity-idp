@@ -44,6 +44,7 @@ class SendGpoCodeExpirationNoticesJob < ApplicationJob
       and(profile_is_pending_gpo).
       and(profile_has_not_been_otherwise_deactivated).
       and(user_has_not_completed_idv_since_requesting_code).
+      and(user_is_not_rate_limited_for_gpo).
       and(code_is_most_recent_one_sent_for_the_profile)
   end
 
@@ -70,6 +71,25 @@ class SendGpoCodeExpirationNoticesJob < ApplicationJob
           active: true,
         },
       ),
+    )
+  end
+
+  def user_is_not_rate_limited_for_gpo
+    rate_limit_enabled = (
+      IdentityConfig.store.max_mail_events > 0 &&
+      IdentityConfig.store.max_mail_events_window_in_days > 0
+    )
+
+    return GpoConfirmationCode.all if !rate_limit_enabled
+
+    rate_limit_window_start = IdentityConfig.store.max_mail_events_window_in_days.days.ago
+
+    Profile.where.not(
+      user_id: Event.
+        select(:user_id).
+        where(created_at: [rate_limit_window_start..]).
+        group(:user_id).
+        having('count(*) >= ?', IdentityConfig.store.max_mail_events),
     )
   end
 

@@ -9,6 +9,10 @@ RSpec.describe SendGpoCodeExpirationNoticesJob do
 
   let(:usps_confirmation_max_days) { 30 }
 
+  let(:max_mail_events) { 5 }
+
+  let(:max_mail_events_window_in_days) { 30 }
+
   let(:min_age_for_expiration_notice_in_days) { usps_confirmation_max_days.days + 1.day }
 
   let(:expired_but_not_yet_notifiable_timestamp) { usps_confirmation_max_days.days.ago }
@@ -103,9 +107,30 @@ RSpec.describe SendGpoCodeExpirationNoticesJob do
     create(:user, :with_pending_gpo_profile, code_sent_at: too_expired_to_notify_timestamp)
   end
 
+  let!(:user_with_expired_code_who_is_rate_limited_and_should_not_be_notified) do
+    create(
+      :user, :with_pending_gpo_profile,
+      code_sent_at: expired_and_notifiable_timestamp
+    ).tap do |user|
+      max_mail_events.times do
+        create(
+          :event,
+          user: user,
+          device: create(:device, user: user),
+          event_type: :gpo_mail_sent,
+          created_at: expired_and_notifiable_timestamp + (max_mail_events_window_in_days / 2).days,
+        )
+      end
+    end
+  end
+
   before do
     allow(IdentityConfig.store).to receive(:usps_confirmation_max_days).
       and_return(usps_confirmation_max_days)
+    allow(IdentityConfig.store).to receive(:max_mail_events).
+      and_return(max_mail_events)
+    allow(IdentityConfig.store).to receive(:max_mail_events_window_in_days).
+      and_return(max_mail_events_window_in_days)
   end
 
   describe '#calculate_notification_window_bounds' do
@@ -133,6 +158,7 @@ RSpec.describe SendGpoCodeExpirationNoticesJob do
         user_who_started_gpo_but_then_verified_a_different_way
         user_who_has_an_unexpired_code
         user_with_code_that_expired_too_long_ago
+        user_with_expired_code_who_is_rate_limited_and_should_not_be_notified
       ]
 
       user_fixture_methods.each do |method|
@@ -165,6 +191,19 @@ RSpec.describe SendGpoCodeExpirationNoticesJob do
           gpo_verification_pending_profile.
           gpo_confirmation_codes.first,
       )
+    end
+
+    context 'GPO rate limit disabled' do
+      let(:max_mail_events) { 0 }
+      it 'returns correct users requiring notification' do
+        expect(
+          job.codes_to_send_notifications_for.map { |code| user_fixture_method_for(code: code) },
+        ).to contain_exactly(
+          :user_with_expired_code_who_should_be_notified,
+          :user_with_two_expired_and_notifiable_codes,
+          :user_with_expired_code_who_is_rate_limited_and_should_not_be_notified,
+        )
+      end
     end
   end
 
