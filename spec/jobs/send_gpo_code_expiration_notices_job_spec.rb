@@ -24,7 +24,15 @@ RSpec.describe SendGpoCodeExpirationNoticesJob do
   let(:not_expired_timestamp) { usps_confirmation_max_days.days.ago + 1.day }
 
   let!(:user_with_expired_code_who_should_be_notified) do
-    create(:user, :with_pending_gpo_profile, code_sent_at: expired_and_notifiable_timestamp)
+    create(
+      :user, :with_pending_gpo_profile,
+      code_sent_at: expired_and_notifiable_timestamp
+    ).tap do |user|
+      # Create a bunch of non-GPO related events to try and trick the rate limiter
+      max_mail_events.times do
+        create(:event, user: user, event_type: :account_created)
+      end
+    end
   end
 
   let!(:user_with_code_thats_not_expired_enough) do

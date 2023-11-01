@@ -87,7 +87,10 @@ class SendGpoCodeExpirationNoticesJob < ApplicationJob
     Profile.where.not(
       user_id: Event.
         select(:user_id).
-        where(created_at: [rate_limit_window_start..]).
+        where(
+          created_at: [rate_limit_window_start..],
+          event_type: :gpo_mail_sent,
+        ).
         group(:user_id).
         having('count(*) >= ?', IdentityConfig.store.max_mail_events),
     )
