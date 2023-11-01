@@ -13,7 +13,7 @@ module Reports
       super(*args, **rest)
     end
 
-    def perform(date = Time.zone.today)
+    def perform(date = Time.zone.yesterday)
       @report_date = date
 
       email_addresses = emails.select(&:present?)
@@ -70,7 +70,7 @@ module Reports
 
     def emails
       emails = [IdentityConfig.store.team_agnes_email]
-      if report_date.day == 1
+      if report_date.next_day.day == 1
         emails << IdentityConfig.store.team_all_feds_email
         emails << IdentityConfig.store.team_all_contractors_email
       end
