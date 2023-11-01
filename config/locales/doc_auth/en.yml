@@ -245,11 +245,6 @@ en:
         camera and a web browser.
       verify_at_post_office_description: This option is better if you don’t have a
         mobile device or an easy way to take photos of your ID.
-      verify_at_post_office_html: <p>You’ll enter your ID information online, and
-        verify your identity in person at a participating Post Office.</p> <p>
-        This option is better if you don’t have a mobile device or an easy way
-        to take photos of your ID. <a href="%{help_url}" target="_blank">Learn
-        more about verifying in person.</a> </p>
       verify_at_post_office_instruction: You’ll enter your ID information online, and
         verify your identity in person at a participating Post Office.
       verify_at_post_office_link_text: Learn more about verifying in person.
@@ -257,11 +252,6 @@ en:
         against public records.
       verify_online_description: This option is better if you have a mobile device or
         a way to take photos of your ID.
-      verify_online_html: <p>You’ll take photos of your ID to verify your identity
-        fully online. Most users finish this process in one sitting.</p> <p>
-        This option is better if you have a mobile device or a way to take
-        photos of your ID. <a href="%{help_url}" target="_blank">Learn more
-        about verifying online.</a> </p>
       verify_online_instruction: You’ll take photos of your ID to verify your identity
         fully online. Most users finish this process in one sitting.
       verify_online_link_text: Learn more about verifying online
