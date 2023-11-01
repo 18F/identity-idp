@@ -184,9 +184,9 @@ en:
       text_message: We sent a message to your phone
       upload_from_computer: Continue on this computer
       upload_from_phone: Use your phone to take photos
+      verify_at_post_office: Verify your identity at a post office
       verify_identity: Verify your identity
       verify_online: Verify your identity online
-      verify_at_post_office: Verify your identity at a post office
       welcome: Get started verifying your identity
     hybrid_flow_warning:
       explanation_html: You’re using <strong>%{app_name}</strong> to verify your
@@ -212,7 +212,8 @@ en:
       getting_started_html: '%{sp_name} needs to make sure you are you — not someone
         pretending to be you. %{link_html}'
       getting_started_learn_more: Learn more about what you need to verify your identity
-      how_to_verify: You have the option to verify your identity online, or in person at a participating Post Office
+      how_to_verify: You have the option to verify your identity online, or in person
+        at a participating Post Office
       hybrid_handoff: We’ll collect information about you by reading your state‑issued ID.
       image_loaded: Image loaded
       image_loading: Image loading
@@ -241,20 +242,28 @@ en:
       upload_from_phone: You won’t have to sign in again, and you’ll switch back to
         this computer after you take photos. Your mobile phone must have a
         camera and a web browser.
+      verify_at_post_office_description: This option is better if you don’t have a
+        mobile device or an easy way to take photos of your ID.
+      verify_at_post_office_html: <p>You’ll enter your ID information online, and
+        verify your identity in person at a participating Post Office.</p> <p>
+        This option is better if you don’t have a mobile device or an easy way
+        to take photos of your ID. <a href="%{help_url}" target="_blank">Learn
+        more about verifying in person.</a> </p>
+      verify_at_post_office_instruction: You’ll enter your ID information online, and
+        verify your identity in person at a participating Post Office.
+      verify_at_post_office_link_text: Learn more about verifying in person.
       verify_identity: We’ll ask for your personal information to verify your identity
         against public records.
-      verify_online_html:
-        <p>You’ll take photos of your ID to verify your identity fully online. Most users finish this process in one sitting.</p>
-        <p>
-        This option is better if you have a mobile device or a way to take photos of your ID.
-        <a href="%{help_url}" target="_blank">Learn more about verifying online.</a>
-        </p>
-      verify_at_post_office_html:
-        <p>You’ll enter your ID information online, and verify your identity in person at a participating Post Office.</p>
-        <p>
-        This option is better if you don't have a mobile device or an easy way to take photos of your ID.
-        <a href="%{help_url}" target="_blank">Learn more about verifying in person.</a>
-        </p>
+      verify_online_description: This option is better if you have a mobile device or
+        a way to take photos of your ID.
+      verify_online_html: <p>You’ll take photos of your ID to verify your identity
+        fully online. Most users finish this process in one sitting.</p> <p>
+        This option is better if you have a mobile device or a way to take
+        photos of your ID. <a href="%{help_url}" target="_blank">Learn more
+        about verifying online.</a> </p>
+      verify_online_instruction: You’ll take photos of your ID to verify your identity
+        fully online. Most users finish this process in one sitting.
+      verify_online_link_text: Learn more about verifying online
       welcome: '%{sp_name} needs to make sure you are you — not someone pretending to
         be you.'
       you_entered: 'You entered:'
@@ -288,9 +297,9 @@ en:
       document_capture_id_text2: Take the photo on a flat surface
       document_capture_id_text3: Do not use the flash on your camera
       document_capture_id_text4: File size should be at least 2 MB
+      most_common: Most Common
       review_issues_id_header_text: 'Review the images of your state‑issued ID:'
       review_issues_id_text1: Did you use a dark background?
       review_issues_id_text2: Did you take the photo on a flat surface?
       review_issues_id_text3: Is the flash on your camera off?
       review_issues_id_text4: Are all details sharp and clearly visible?
-      most_common: Most Common

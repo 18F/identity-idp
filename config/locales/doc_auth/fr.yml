@@ -223,9 +223,9 @@ fr:
       text_message: Nous avons envoyé un message à votre téléphone
       upload_from_computer: Continuer sur cet ordinateur
       upload_from_phone: Utilisez votre téléphone pour prendre des photos
+      verify_at_post_office: Confirmez votre identité un bureau de poste
       verify_identity: Vérifier votre identité
       verify_online: Confirmez votre identité en ligne
-      verify_at_post_office: Confirmez votre identité un bureau de poste
       welcome: Commencez à vérifier votre identité
     hybrid_flow_warning:
       explanation_html: Vous utilisez <strong>%{app_name}</strong> pour vérifier votre
@@ -253,7 +253,8 @@ fr:
       getting_started_html: '%{sp_name} doit s’assurer que c’est bien vous — et non
         quelqu’un qui se fait passer pour vous. %{link_html}'
       getting_started_learn_more: En savoir plus sur ce dont vous avez besoin pour vérifier votre identité
-      how_to_verify: Vous avez la possibilité de confirmer votre identité en ligne ou en personne dans un bureau de poste participant.
+      how_to_verify: Vous avez la possibilité de confirmer votre identité en ligne ou
+        en personne dans un bureau de poste participant.
       hybrid_handoff: Nous recueillons des informations sur vous en lisant votre carte
         d’identité délivrée par l’État.
       image_loaded: Image chargée
@@ -288,19 +289,34 @@ fr:
       upload_from_phone: Vous n’aurez pas à vous reconnecter. Vous reviendrez sur cet
         ordinateur après avoir pris des photos. Votre téléphone portable doit
         être équipé d’un appareil photo et d’un navigateur web.
+      verify_at_post_office_description: Cette option est préférable si vous ne
+        disposez pas d’un appareil mobile ou d’un moyen facile de prendre des
+        photos de votre pièce d’identité.
+      verify_at_post_office_html: <p> Vous saisissez vos données d’identification en
+        ligne et confirmez votre identité en personne dans un bureau de poste
+        participant.</p> <p>Cette option est préférable si vous ne disposez pas
+        d’un appareil mobile ou d’un moyen facile de prendre des photos de votre
+        pièce d’identité. <a href="%{help_url}" target="_blank">En savoir plus
+        sur la confirmation en personne.</a> </p>
+      verify_at_post_office_instruction: Vous saisissez vos données d’identification
+        en ligne et confirmez votre identité en personne dans un bureau de poste
+        participant.
+      verify_at_post_office_link_text: En savoir plus sur la confirmation en personne.
       verify_identity: Nous vous demanderons vos informations personnelles afin de
         vérifier votre identité par rapport aux registres publics.
-      verify_online_html:
-        <p>Vous prendrez des photos de votre pièce d'identité pour confirmer votre identité entièrement en ligne.</p>
-        <p>La plupart des utilisateurs terminent ce processus en une seule fois.
-        Cette option est préférable si vous disposez d'un appareil mobile ou d'un moyen de prendre des photos de votre pièce d'identité.
-        <a href="%{help_url}" target="_blank">En savoir plus sur la confirmation en ligne.</a>
-        </p>
-      verify_at_post_office_html: <p>
-        Vous saisissez vos données d'identification en ligne et confirmez votre identité en personne dans un bureau de poste participant.</p>
-        <p>Cette option est préférable si vous ne disposez pas d'un appareil mobile ou d'un moyen facile de prendre des photos de votre pièce d'identité.
-        <a href="%{help_url}" target="_blank">En savoir plus sur la confirmation en personne.</a>
-        </p>
+      verify_online_description: La plupart des utilisateurs terminent ce processus en
+        une seule fois. Cette option est préférable si vous disposez d’un
+        appareil mobile ou d’un moyen de prendre des photos de votre pièce
+        d’identité.
+      verify_online_html: <p>Vous prendrez des photos de votre pièce d’identité pour
+        confirmer votre identité entièrement en ligne.</p> <p>La plupart des
+        utilisateurs terminent ce processus en une seule fois. Cette option est
+        préférable si vous disposez d’un appareil mobile ou d’un moyen de
+        prendre des photos de votre pièce d’identité. <a href="%{help_url}"
+        target="_blank">En savoir plus sur la confirmation en ligne.</a> </p>
+      verify_online_instruction: Vous prendrez des photos de votre pièce d’identité
+        pour confirmer votre identité entièrement en ligne.
+      verify_online_link_text: En savoir plus sur la confirmation en ligne.
       welcome: '%{sp_name} doit s’assurer que vous êtes bien vous, et non quelqu’un
         qui se fait passer pour vous.'
       you_entered: 'Tu as soumis:'
@@ -337,10 +353,10 @@ fr:
       document_capture_id_text2: Prenez la photo sur une surface plane
       document_capture_id_text3: N’utilisez pas le flash de votre appareil photo
       document_capture_id_text4: La taille du fichier doit être d’au moins 2 Mo
+      most_common: Le plus commun
       review_issues_id_header_text: 'Examinez les images de votre carte d’identité délivrée par l’État:'
       review_issues_id_text1: Avez-vous utilisé un fond sombre?
       review_issues_id_text2: Avez-vous pris la photo sur une surface plane?
       review_issues_id_text3: Le flash de votre caméra est-il éteint?
       review_issues_id_text4: Tous les détails sont-ils nets et clairement visibles?
         couvert par un chapeau ou des lunettes?
-      most_common: Le plus commun
