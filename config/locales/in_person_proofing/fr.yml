@@ -83,9 +83,9 @@ fr:
         verify_step_enter_phone: Entrez votre numéro de téléphone principal ou celui que
           vous utilisez le plus souvent. Si nous sommes en mesure de vérifier
           vos informations, vous recevrez un code-barres.
-        verify_step_enter_pii: Saisissez votre nom, votre date de naissance, votre
-          document d’identité délivré par l’État, votre adresse et votre numéro
-          de sécurité sociale.
+        verify_step_enter_pii: Entrez votre nom, votre date de naissance, votre numéro
+          d’identification délivré par l’État, votre adresse et votre numéro de
+          sécurité sociale.
         verify_step_post_office: Trouver un bureau de poste participant.
         verify_step_visit_post_office: Apportez le code-barres et votre pièce d’identité
           délivrée par l’État dans un bureau de poste participant.
