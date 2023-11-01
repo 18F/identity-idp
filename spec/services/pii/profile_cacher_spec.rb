@@ -50,7 +50,9 @@ RSpec.describe Pii::ProfileCacher do
       expect(decrypted_active_session_pii).to eq(active_pii.to_json)
 
       encrypted_pending_session_pii = user_session[:encrypted_profiles][pending_profile.id.to_s]
-      decrypted_pending_session_pii = SessionEncryptor.new.kms_decrypt(encrypted_pending_session_pii)
+      decrypted_pending_session_pii = SessionEncryptor.new.kms_decrypt(
+        encrypted_pending_session_pii,
+      )
       expect(decrypted_pending_session_pii).to eq(pending_pii.to_json)
     end
 
