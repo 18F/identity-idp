@@ -76,7 +76,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
 
         action
 
-        expect(response).to redirect_to(idv_enter_code_rate_limited_path)
+        expect(response).to redirect_to(idv_enter_code_rate_limited_url)
       end
 
       context 'but that profile is > 30 days old' do
@@ -130,7 +130,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
 
         action
 
-        expect(response).to redirect_to(idv_enter_code_rate_limited_path)
+        expect(response).to redirect_to(idv_enter_code_rate_limited_url)
       end
     end
 
@@ -458,7 +458,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
             },
           )
 
-          expect(response).to redirect_to(idv_enter_code_rate_limited_path)
+          expect(response).to redirect_to(idv_enter_code_rate_limited_url)
         end
       end
 
