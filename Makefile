@@ -18,6 +18,7 @@ ARTIFACT_DESTINATION_FILE ?= ./tmp/idp.tar.gz
 	clobber_db \
 	clobber_assets \
 	clobber_logs \
+	watch_events \
 	docker_setup \
 	download_acuant_sdk \
 	fast_setup \
@@ -301,6 +302,9 @@ clobber_logs: ## Purges logs and tmp/
 	rm -rf tmp/encrypted_doc_storage
 	rm -rf tmp/letter_opener
 	rm -rf tmp/mails
+
+watch_events: ## Prints events logging as they happen
+	@tail -F -n0 log/events.log | jq "select(.name | test(\".*$$EVENT_NAME.*\"; \"i\")) | ."
 
 tidy: clobber_assets clobber_logs ## Remove assets, logs, and unused gems, but leave DB alone
 	bundle clean

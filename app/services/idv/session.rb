@@ -16,7 +16,6 @@ module Idv
       personal_key
       phone_for_mobile_flow
       phone_with_camera
-      pii
       pii_from_doc
       previous_phone_step_params
       profile_id
@@ -66,32 +65,24 @@ module Idv
 
       profile.activate unless profile.reason_not_to_activate
 
-      self.pii = profile_maker.pii_attributes
       self.profile_id = profile.id
       self.personal_key = profile.personal_key
 
-      cache_encrypted_pii(user_password)
-      associate_in_person_enrollment_with_profile
+      move_pii_to_user_session(profile_maker.pii_attributes)
+      associate_in_person_enrollment_with_profile if profile.in_person_verification_pending?
 
-      if profile.active?
-        move_pii_to_user_session
-      elsif address_verification_mechanism == 'gpo'
-        create_gpo_entry
-      elsif current_user.has_in_person_enrollment?
+      if profile.gpo_verification_pending?
+        create_gpo_entry(profile_maker.pii_attributes)
+      elsif profile.in_person_verification_pending?
         UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(
           current_user,
-          pii,
+          profile_maker.pii_attributes,
         )
       end
     end
 
     def gpo_verification_needed?
       !phone_confirmed? || address_verification_mechanism == 'gpo'
-    end
-
-    def cache_encrypted_pii(password)
-      cacher = Pii::Cacher.new(current_user, session)
-      cacher.save(password, profile)
     end
 
     def vendor_params
@@ -107,14 +98,10 @@ module Idv
     end
 
     def associate_in_person_enrollment_with_profile
-      return unless current_user.has_in_person_enrollment?
-
       current_user.establishing_in_person_enrollment.update(profile: profile)
     end
 
-    def create_gpo_entry
-      move_pii_to_user_session
-      self.pii = Pii::Cacher.new(current_user, user_session).fetch if pii.is_a?(String)
+    def create_gpo_entry(pii)
       confirmation_maker = GpoConfirmationMaker.new(
         pii: pii, service_provider: service_provider,
         profile: profile
@@ -230,10 +217,8 @@ module Idv
       {}
     end
 
-    def move_pii_to_user_session
-      return if session[:decrypted_pii].blank?
-      decrypted_pii = session.delete(:decrypted_pii)
-      Pii::Cacher.new(current_user, user_session).save_decrypted_pii_json(decrypted_pii)
+    def move_pii_to_user_session(pii)
+      Pii::Cacher.new(current_user, user_session).save_decrypted_pii(pii)
     end
 
     def session
