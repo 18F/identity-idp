@@ -5,10 +5,6 @@ module Idv
 
     before_action :confirm_step_allowed
 
-    REMOTE = 'remote'
-    IPP = 'ipp'
-    VERIFICATION_OPTIONS = [REMOTE, IPP].freeze
-
     check_or_render_not_found -> { self.class.enabled? }
 
     def show
@@ -24,7 +20,7 @@ module Idv
       )
 
       if result.success?
-        if how_to_verify_form_params['selection'] == REMOTE
+        if how_to_verify_form_params['selection'] == Idv::HowToVerifyForm::REMOTE
           redirect_to idv_document_capture_url
         else
           redirect_to idv_hybrid_handoff_url
