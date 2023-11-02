@@ -160,4 +160,31 @@ RSpec.describe Db::Identity::SpActiveUserCounts do
       )
     end
   end
+
+  describe '.overall_apg' do
+    let(:sp1) { create(:service_provider) }
+    let(:sp2) { create(:service_provider) }
+    let(:sp3) { create(:service_provider) }
+
+    it 'adds up overall usage, duplicating users who go to multiple SPs' do
+      [sp1, sp2, sp3].each do |sp|
+        create(
+          :service_provider_identity,
+          user_id: 1,
+          service_provider_record: sp,
+          last_ial1_authenticated_at: now,
+        )
+      end
+
+      result = subject.overall_apg(fiscal_start_date)
+
+      expect(result.size).to eq(1)
+      expect(result.first).to eq(
+        'issuer' => nil,
+        'app_id' => nil,
+        'total_ial1_active' => 3,
+        'total_ial2_active' => 0,
+      )
+    end
+  end
 end

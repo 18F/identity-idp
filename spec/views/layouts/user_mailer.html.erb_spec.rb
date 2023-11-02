@@ -34,7 +34,7 @@ RSpec.describe 'layouts/user_mailer.html.erb' do
   it 'includes the support text and link' do
     expect(rendered).to have_content(t('mailer.no_reply'))
     expect(rendered).to have_content(
-      t('mailer.help', app_name: APP_NAME, link: MarketingSite.nice_help_url),
+      t('mailer.help_html', app_name: APP_NAME, link_html: MarketingSite.nice_help_url),
     )
     expect(rendered).to have_link(MarketingSite.nice_help_url, href: MarketingSite.help_url)
   end
