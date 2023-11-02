@@ -24,15 +24,15 @@ module Idv
         Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
           call('ssn', :view, true)
 
-        render 'idv/shared/ssn', locals: extra_view_variables
+        render 'idv/shared/ssn', locals: threatmetrix_view_variables
       end
 
       def update
         @step_indicator_steps = step_indicator_steps
         @error_message = nil
+
         @ssn_form = Idv::SsnFormatForm.new(current_user, idv_session.ssn)
-        ssn = params.require(:doc_auth).permit(:ssn)
-        form_response = @ssn_form.submit(ssn)
+        form_response = @ssn_form.submit(params.require(:doc_auth).permit(:ssn))
 
         analytics.idv_doc_auth_ssn_submitted(
           **analytics_arguments.merge(form_response.to_h),
@@ -45,18 +45,11 @@ module Idv
         if form_response.success?
           idv_session.ssn = params[:doc_auth][:ssn]
           idv_session.invalidate_steps_after_ssn!
-          redirect_to idv_in_person_verify_info_url
+          redirect_to next_url
         else
           @error_message = form_response.first_error_message
-          render 'idv/shared/ssn', locals: extra_view_variables
+          render 'idv/shared/ssn', locals: threatmetrix_view_variables
         end
-      end
-
-      def extra_view_variables
-        {
-          updating_ssn: updating_ssn?,
-          **threatmetrix_view_variables,
-        }
       end
 
       private
@@ -75,6 +68,10 @@ module Idv
         redirect_to idv_in_person_verify_info_url
       end
 
+      def next_url
+        idv_in_person_verify_info_url
+      end
+
       def analytics_arguments
         {
           flow_path: flow_path,
@@ -86,7 +83,7 @@ module Idv
       end
 
       def updating_ssn?
-        idv_session.ssn.present?
+        @ssn_form.updating_ssn?
       end
 
       def confirm_in_person_address_step_complete
