@@ -1090,7 +1090,7 @@ module AnalyticsEvents
   # @param [Boolean] in_person_verification_pending
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [String, nil] deactivation_reason Reason user's profile was deactivated, if any.
-  def idv_enter_password_complete(
+  def idv_enter_password_submitted(
     success:,
     fraud_review_pending:,
     fraud_rejection:,
@@ -1101,7 +1101,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'IdV: review complete',
+      :idv_enter_password_submitted,
       success: success,
       deactivation_reason: deactivation_reason,
       fraud_review_pending: fraud_review_pending,
@@ -1124,7 +1124,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'IdV: review info visited',
+      :idv_enter_password_visited,
       address_verification_method: address_verification_method,
       proofing_components: proofing_components,
       **extra,
