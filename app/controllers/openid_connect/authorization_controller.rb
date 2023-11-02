@@ -73,7 +73,13 @@ module OpenidConnect
     def handle_successful_handoff
       track_events
       SpHandoffBounce::AddHandoffTimeToSession.call(sp_session)
-      redirect_to @authorize_form.success_redirect_uri, allow_other_host: true
+      delete_branded_experience
+      @oidc_redirect_uri = @authorize_form.success_redirect_uri
+      @sp_name = @authorize_form.service_provider.friendly_name
+      render(
+        'redirect',
+        layout: false,
+      )
       delete_branded_experience
     end
 
