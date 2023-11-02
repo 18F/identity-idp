@@ -25,7 +25,7 @@ RSpec.describe TwoFactorOptionsPresenter do
   describe '#options' do
     it 'supplies all the options for a user' do
       expect(presenter.options.map(&:class)).to eq [
-        TwoFactorAuthentication::WebauthnPlatformSelectionPresenter,
+        TwoFactorAuthentication::SetUpWebauthnPlatformSelectionPresenter,
         TwoFactorAuthentication::SetUpAuthAppSelectionPresenter,
         TwoFactorAuthentication::PhoneSelectionPresenter,
         TwoFactorAuthentication::BackupCodeSelectionPresenter,
