@@ -15,7 +15,15 @@
   <meta content="noindex,nofollow" name="robots" />
   <% end %>
 
-  <title><%= yield(:title).presence || (raise 'Missing title') %> | <%= APP_NAME %></title>
+  <%
+    title = begin
+      yield(:title).presence || (raise 'Missing title (error hidden from user)')
+    rescue => err
+      NewRelic::Agent.notice_error(err)
+      ''
+    end
+  %>
+  <title><%= title %> | <%= APP_NAME %></title>
 
   <%= javascript_tag(nonce: true) do %>
     document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/, 'js');

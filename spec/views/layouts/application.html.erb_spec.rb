@@ -73,8 +73,13 @@ RSpec.describe 'layouts/application.html.erb' do
     context 'without title' do
       let(:title_content) { nil }
 
-      it 'raises an error' do
-        expect { render }.to raise_error 'Missing title'
+      it 'notifies NewRelic' do
+        expect(NewRelic::Agent).to receive(:notice_error) do |error|
+          expect(error).to be_kind_of(RuntimeError)
+          expect(error.message).to include('Missing title')
+        end
+
+        expect { render }.to_not raise_error
       end
     end
 
