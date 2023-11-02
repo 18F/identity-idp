@@ -4,4 +4,4 @@ namespace :disposable_domains do
     DisposableDomain.insert_all(file)
   end
 end
-# rake "disposable_domains:load"
+# rake "disposable_domains:load['URL_HERE']"
