@@ -50,7 +50,6 @@ module Reports
     def reports
       @reports ||= [
         # Number of verified users (total) - LG-11148
-        # Number of verified users (new) - LG-11164
         active_users_count_report.active_users_count_emailable_report,
         # Total Annual Users - LG-11150
         total_user_count_report.total_user_count_emailable_report,
