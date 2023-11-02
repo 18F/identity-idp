@@ -73,7 +73,16 @@ module OpenidConnect
     def handle_successful_handoff
       track_events
       SpHandoffBounce::AddHandoffTimeToSession.call(sp_session)
-      redirect_to @authorize_form.success_redirect_uri, allow_other_host: true
+      if IdentityConfig.store.openid_connect_redirect_interstitial_enabled
+        @oidc_redirect_uri = @authorize_form.success_redirect_uri
+        render(
+          'redirect',
+          layout: false,
+        )
+      else
+        redirect_to @authorize_form.success_redirect_uri, allow_other_host: true
+      end
+
       delete_branded_experience
     end
 
@@ -97,6 +106,7 @@ module OpenidConnect
     end
 
     def secure_headers_override
+      return if IdentityConfig.store.openid_connect_redirect_interstitial_enabled
       csp_uris = SecureHeadersAllowList.csp_with_sp_redirect_uris(
         @authorize_form.redirect_uri,
         @authorize_form.service_provider.redirect_uris,
@@ -117,11 +127,18 @@ module OpenidConnect
         ),
       )
       return if result.success?
+      redirect_uri = result.extra[:redirect_uri]
 
-      if (redirect_uri = result.extra[:redirect_uri])
-        redirect_to redirect_uri, allow_other_host: true
-      else
+      if redirect_uri.nil?
         render :error
+      elsif IdentityConfig.store.openid_connect_redirect_interstitial_enabled
+        @oidc_redirect_uri = redirect_uri
+        render(
+          'redirect',
+          layout: false,
+        )
+      else
+        redirect_to redirect_uri, allow_other_host: true
       end
     end
 
