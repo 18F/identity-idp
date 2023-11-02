@@ -60,7 +60,7 @@ module Idv
     end
 
     def next_url
-      if idv_session.pii_from_doc[:state] == 'PR' && !updating_ssn?
+      if idv_session.pii_from_doc[:state] == 'PR' && !@ssn_form.updating_ssn?
         idv_address_url
       else
         idv_verify_info_url
@@ -74,10 +74,6 @@ module Idv
         analytics_id: 'Doc Auth',
         irs_reproofing: irs_reproofing?,
       }.merge(ab_test_analytics_buckets)
-    end
-
-    def updating_ssn?
-      @ssn_form.updating_ssn?
     end
   end
 end
