@@ -14,7 +14,7 @@ class BackupCodeConfiguration < ApplicationRecord
   end
 
   def selection_presenters
-    [TwoFactorAuthentication::BackupCodeSelectionPresenter.new(user:, configuration: self)]
+    [TwoFactorAuthentication::SignInBackupCodeSelectionPresenter.new(user:, configuration: self)]
   end
 
   def friendly_name
