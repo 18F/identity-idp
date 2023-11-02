@@ -2237,15 +2237,27 @@ module AnalyticsEvents
     )
   end
 
-  def idv_link_sent_capture_doc_polling_complete(**_extra)
+  def idv_link_sent_capture_doc_polling_complete(
+    phone_question_ab_test_bucket:,
+    phone_with_camera:,
+    **_extra
+  )
     track_event(
       'Frontend: IdV: Link sent capture doc polling complete', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
+      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
+      phone_with_camera: phone_with_camera,
     )
   end
 
-  def idv_link_sent_capture_doc_polling_started(**_extra)
+  def idv_link_sent_capture_doc_polling_started(
+    phone_question_ab_test_bucket:,
+    phone_with_camera:,
+    **_extra
+  )
     track_event(
       'Frontend: IdV: Link sent capture doc polling started', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
+      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
+      phone_with_camera: phone_with_camera,
     )
   end
 
