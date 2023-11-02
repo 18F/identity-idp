@@ -140,7 +140,7 @@ RSpec.describe BackupCodeConfiguration, type: :model do
       bc = BackupCodeConfiguration.new
       set = BackupCodeConfiguration.selection_presenters([bc])
 
-      expect(set.first).instance_of? TwoFactorAuthentication::BackupCodeSelectionPresenter.class
+      expect(set.first).instance_of? TwoFactorAuthentication::SignInBackupCodeSelectionPresenter.class
     end
 
     it 'returns only one selection presenter if multiple backup code configurations' do
@@ -148,7 +148,7 @@ RSpec.describe BackupCodeConfiguration, type: :model do
       bc2 = BackupCodeConfiguration.new
       set = BackupCodeConfiguration.selection_presenters([bc, bc2])
 
-      expect(set.first).instance_of? TwoFactorAuthentication::BackupCodeSelectionPresenter.class
+      expect(set.first).instance_of? TwoFactorAuthentication::SignInBackupCodeSelectionPresenter.class
       expect(set.size).to eq(1)
     end
   end
