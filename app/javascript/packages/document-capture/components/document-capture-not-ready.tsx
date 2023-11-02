@@ -50,7 +50,7 @@ function DocumentCaptureNotReady({ navigate }: DocumentCaptureNotReadyProps) {
       <Button isUnstyled className="margin-top-1" onClick={handleExit}>
         {spName
           ? t('doc_auth.not_ready.button_sp', { app_name: appName, sp_name: spName })
-          : t('doc_auth.not_ready.button_nosp', { app_name: appName })}
+          : t('doc_auth.not_ready.button_nosp')}
       </Button>
     </>
   );
