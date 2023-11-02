@@ -634,6 +634,7 @@ module AnalyticsEvents
   # @param [String] mimeType MIME type of image added
   # @param [Integer] moire
   # @param [String] phone_question_ab_test_bucket
+  # @param [String] phone_with_camera the result of the phone question a/b test
   # @param [Integer] sharpness
   # @param [Integer] sharpnessScoreThreshold
   # @param [Integer] size size of image added in bytes
@@ -703,6 +704,8 @@ module AnalyticsEvents
   end
   # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
+  # @param [String] phone_question_ab_test_bucket
+  # @param [String] phone_with_camera the result of the phone question a/b test
   def idv_back_image_clicked(
     phone_with_camera:,
     phone_question_ab_test_bucket:,
@@ -1220,6 +1223,7 @@ module AnalyticsEvents
   # @param [String] mimeType MIME type of image added
   # @param [Integer] moire
   # @param [String] phone_question_ab_test_bucket
+  # @param [String] phone_with_camera the result of the phone question a/b test
   # @param [Integer] sharpness
   # @param [Integer] sharpnessScoreThreshold
   # @param [Integer] size size of image added in bytes
@@ -1289,9 +1293,10 @@ module AnalyticsEvents
   end
   # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
-  # other attrs to be added
+  # @param [String] phone_question_ab_test_bucket
+  # @param [String] phone_with_camera the result of the phone question a/b test
   def idv_front_image_clicked(
-    phone_question_ab_test_bucket,
+    phone_question_ab_test_bucket:,
     phone_with_camera:,
     **_extra
   )
@@ -2240,6 +2245,8 @@ module AnalyticsEvents
     )
   end
 
+  # @param [String] phone_question_ab_test_bucket
+  # @param [String] phone_with_camera the result of the phone question a/b test
   def idv_link_sent_capture_doc_polling_complete(
     phone_question_ab_test_bucket:,
     phone_with_camera:,
@@ -2252,6 +2259,8 @@ module AnalyticsEvents
     )
   end
 
+  # @param [String] phone_question_ab_test_bucket
+  # @param [String] phone_with_camera the result of the phone question a/b test
   def idv_link_sent_capture_doc_polling_started(
     phone_question_ab_test_bucket:,
     phone_with_camera:,
