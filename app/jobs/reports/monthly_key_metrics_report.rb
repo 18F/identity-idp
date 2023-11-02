@@ -51,7 +51,6 @@ module Reports
       @reports ||= [
         # Number of verified users (total) - LG-11148
         active_users_count_report.active_users_count_emailable_report,
-        # Total Annual Users - LG-11150
         total_user_count_report.total_user_count_emailable_report,
         proofing_rate_report.proofing_rate_emailable_report,
         account_deletion_rate_report.account_deletion_emailable_report,
