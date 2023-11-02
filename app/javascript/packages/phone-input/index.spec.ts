@@ -64,7 +64,6 @@ describe('PhoneInput', () => {
     phoneInput.setAttribute('aria-invalid', 'false');
     phoneInput.setAttribute('aria-describedby', 'validated-field-error-298658fb');
     phoneInput.setAttribute('required', 'required');
-    phoneInput.setAttribute('aria-required', 'true');
 
     element.innerHTML = `
       <script type="application/json" class="phone-input__strings">

@@ -30,7 +30,6 @@ describe('ValidatedFieldElement', () => {
           aria-invalid="${hasInitialError}"
           aria-describedby="validated-field-hint${hasInitialError ? ` ${errorMessageId}` : ''}"
           required="required"
-          aria-required="true"
           class="validated-field__input${hasInitialError ? ' usa-input--error' : ''}"
         />
         ${errorHtml && errorInsideField ? errorHtml : ''}
