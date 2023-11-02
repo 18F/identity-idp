@@ -390,7 +390,7 @@ Rails.application.routes.draw do
 
       get '/by_mail/enter_code' => 'by_mail/enter_code#index', as: :verify_by_mail_enter_code
       post '/by_mail/enter_code' => 'by_mail/enter_code#create'
-      get '/by_mail/enter_code/try_again_later' => 'by_mail/enter_code_rate_limited#index',
+      get '/by_mail/enter_code/rate_limited' => 'by_mail/enter_code_rate_limited#index',
           as: :enter_code_rate_limited
       get '/by_mail/confirm_start_over' => 'confirm_start_over#index',
           as: :confirm_start_over

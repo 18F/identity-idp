@@ -19,7 +19,7 @@ module Idv
         )
 
         if rate_limiter.limited?
-          redirect_to idv_enter_code_rate_limited_path
+          redirect_to idv_enter_code_rate_limited_url
           return
         end
 
@@ -46,7 +46,7 @@ module Idv
 
       def create
         if rate_limiter.limited?
-          redirect_to idv_enter_code_rate_limited_path
+          redirect_to idv_enter_code_rate_limited_url
           return
         end
 
