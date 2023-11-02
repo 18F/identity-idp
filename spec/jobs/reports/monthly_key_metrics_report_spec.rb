@@ -14,7 +14,6 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
     [
       "#{report_folder}/account_reuse.csv",
       "#{report_folder}/total_profiles.csv",
-      "#{report_folder}/document_upload_proofing.csv",
       "#{report_folder}/account_deletion_rate.csv",
       "#{report_folder}/total_user_count.csv",
       "#{report_folder}/active_users_count.csv",
@@ -57,8 +56,6 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
       },
     }
 
-    allow(report.monthly_proofing_report).to receive(:proofing_report).
-      and_return(mock_proofing_report_data)
     allow(report.proofing_rate_report).to receive(:as_csv).
       and_return(mock_proofing_rate_data)
   end

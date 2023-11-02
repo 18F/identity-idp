@@ -1,5 +1,4 @@
 require 'csv'
-require 'reporting/monthly_proofing_report'
 require 'reporting/proofing_rate_report'
 
 module Reports
@@ -58,7 +57,6 @@ module Reports
         account_deletion_rate_report.account_deletion_emailable_report,
         account_reuse_report.account_reuse_emailable_report,
         account_reuse_report.total_identities_emailable_report,
-        monthly_proofing_report.document_upload_proofing_emailable_report,
         agency_and_sp_report.agency_and_sp_emailable_report,
         active_users_count_report.active_users_count_apg_emailable_report,
         # APG Reporting of Active Federal Partner Agencies - LG-11157
@@ -83,15 +81,6 @@ module Reports
 
     def account_reuse_report
       @account_reuse_report ||= Reporting::AccountReuseAndTotalIdentitiesReport.new(report_date)
-    end
-
-    def monthly_proofing_report
-      @monthly_proofing_report ||= Reporting::MonthlyProofingReport.new(
-        # FYI - we should look for a way to share these configs
-        time_range: @report_date.in_time_zone('UTC').all_month,
-        slice: 1.hour,
-        threads: 10,
-      )
     end
 
     def account_deletion_rate_report
