@@ -32,7 +32,7 @@ module Idv
       if result.success?
         idv_session.idv_consent_given = true
 
-        if IdentityConfig.store.in_person_proofing_opt_in_option
+        if IdentityConfig.store.in_person_proofing_opt_in_enabled
           redirect_to idv_how_to_verify_url
         else
           redirect_to idv_hybrid_handoff_url

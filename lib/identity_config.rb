@@ -254,7 +254,7 @@ class IdentityConfig
     config.add(:in_person_outage_expected_update_date, type: :string)
     config.add(:in_person_outage_message_enabled, type: :boolean)
     config.add(:in_person_proofing_enabled, type: :boolean)
-    config.add(:in_person_proofing_opt_in_option, type: :boolean)
+    config.add(:in_person_proofing_opt_in_enabled, type: :boolean)
     config.add(:in_person_public_address_search_enabled, type: :boolean)
     config.add(:in_person_residential_address_controller_enabled, type: :boolean)
     config.add(:in_person_results_delay_in_hours, type: :integer)

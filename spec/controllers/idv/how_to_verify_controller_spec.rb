@@ -5,7 +5,7 @@ RSpec.describe Idv::HowToVerifyController do
   let(:enabled) { true }
 
   before do
-    allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_option) { enabled }
+    allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { enabled }
     stub_sign_in(user)
     stub_analytics
     subject.idv_session.welcome_visited = true

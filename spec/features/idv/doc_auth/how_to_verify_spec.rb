@@ -8,7 +8,7 @@ RSpec.feature 'how to verify step' do
     let(:enabled) { true }
 
     before do
-      allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_option) { enabled }
+      allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { enabled }
 
       sign_in_and_2fa_user
       complete_doc_auth_steps_before_agreement_step
