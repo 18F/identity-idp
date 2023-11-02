@@ -610,7 +610,7 @@ RSpec.feature 'Analytics Regression', js: true do
 
       it 'records all of the events' do
         aggregate_failures 'analytics events' do
-          happy_path_events.each do |event, attributes|
+          happy_hybrid_path_events.each do |event, attributes|
             expect(fake_analytics).to have_logged_event(event, attributes)
           end
         end
