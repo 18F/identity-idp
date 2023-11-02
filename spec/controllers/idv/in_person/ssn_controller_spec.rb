@@ -82,7 +82,7 @@ RSpec.describe Idv::InPerson::SsnController do
     it 'renders the show template' do
       get :show
 
-      expect(response).to render_template :show
+      expect(response).to render_template 'idv/shared/ssn'
     end
 
     it 'sends analytics_visited event' do
@@ -123,7 +123,7 @@ RSpec.describe Idv::InPerson::SsnController do
         it 'does not redirect' do
           get :show
 
-          expect(response).to render_template :show
+          expect(response).to render_template 'idv/shared/ssn'
         end
       end
     end
@@ -213,7 +213,7 @@ RSpec.describe Idv::InPerson::SsnController do
       it 'renders the show template with an error message' do
         put :update, params: params
 
-        expect(response).to have_rendered(:show)
+        expect(response).to have_rendered('idv/shared/ssn')
         expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
         expect(response.body).to include('Enter a nine-digit Social Security number')
       end

@@ -15,6 +15,7 @@ module Idv
       attr_accessor :error_message
 
       def show
+        @step_indicator_steps = step_indicator_steps
         @ssn_form = Idv::SsnFormatForm.new(current_user, idv_session.ssn)
 
         analytics.idv_doc_auth_redo_ssn_submitted(**analytics_arguments) if updating_ssn?
@@ -23,10 +24,11 @@ module Idv
         Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
           call('ssn', :view, true)
 
-        render :show, locals: extra_view_variables
+        render 'idv/shared/ssn', locals: extra_view_variables
       end
 
       def update
+        @step_indicator_steps = step_indicator_steps
         @error_message = nil
         @ssn_form = Idv::SsnFormatForm.new(current_user, idv_session.ssn)
         ssn = params.require(:doc_auth).permit(:ssn)
@@ -46,7 +48,7 @@ module Idv
           redirect_to idv_in_person_verify_info_url
         else
           @error_message = form_response.first_error_message
-          render :show, locals: extra_view_variables
+          render 'idv/shared/ssn', locals: extra_view_variables
         end
       end
 
