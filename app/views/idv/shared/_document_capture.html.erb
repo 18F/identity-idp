@@ -1,4 +1,4 @@
-<% title t('titles.doc_auth.doc_capture') %>
+<% self.title = t('titles.doc_auth.doc_capture') %>
 <% content_for :head do %>
   <%= tag.meta name: 'acuant-sdk-initialization-endpoint', content: IdentityConfig.store.acuant_sdk_initialization_endpoint %>
   <%= tag.meta name: 'acuant-sdk-initialization-creds', content: IdentityConfig.store.acuant_sdk_initialization_creds %>

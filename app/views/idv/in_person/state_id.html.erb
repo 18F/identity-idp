@@ -1,4 +1,4 @@
-<% title t('titles.doc_auth.verify') %>
+<% self.title = t('titles.doc_auth.verify') %>
 
 <% if updating_state_id %>
   <%= render PageHeadingComponent.new.with_content(t('in_person_proofing.headings.update_state_id')) %>
@@ -122,7 +122,7 @@
           required: true,
         ) %>
   </div>
-    
+
   <h2> <%= t('in_person_proofing.headings.id_address') %> </h2>
     <%= render ValidatedFieldComponent.new(
           name: :identity_doc_address_state,

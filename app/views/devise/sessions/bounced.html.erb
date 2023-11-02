@@ -1,4 +1,4 @@
-<% title t('headings.sp_handoff_bounced', sp_name: @sp_name) %>
+<% self.title = t('headings.sp_handoff_bounced', sp_name: @sp_name) %>
 <%= render PageHeadingComponent.new.with_content(t('headings.sp_handoff_bounced', sp_name: @sp_name)) %>
 <p class='margin-top-2 margin-bottom-2'>
   <%= t(

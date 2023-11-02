@@ -8,10 +8,10 @@
 <% end %>
 
 <% if updating_address %>
-  <% title t('in_person_proofing.headings.update_address') %>
+  <% self.title = t('in_person_proofing.headings.update_address') %>
   <%= render PageHeadingComponent.new.with_content(t('in_person_proofing.headings.update_address')) %>
 <% else %>
-  <% title t('in_person_proofing.headings.address') %>
+  <% self.title = t('in_person_proofing.headings.address') %>
   <%= render PageHeadingComponent.new.with_content(t('in_person_proofing.headings.address')) %>
 <% end %>
 
