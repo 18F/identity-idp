@@ -70,6 +70,29 @@ module Db
           }.transform_keys(&:to_s),
         ]
       end
+
+      # The way we calculate our program APG (Agency Priority Goals) will count a user
+      # twice if they are active at two separate SPs.
+      #
+      # Adds up results from by_issuer, users will be duplicated compared to by_issuer
+      def self.overall_apg(start, finish = Time.zone.now)
+        total_ial1_active = 0
+        total_ial2_active = 0
+
+        by_issuer(start, finish).each do |row|
+          total_ial1_active += row['total_ial1_active']
+          total_ial2_active += row['total_ial2_active']
+        end
+
+        [
+          {
+            issuer: nil,
+            app_id: nil,
+            total_ial1_active:,
+            total_ial2_active:,
+          }.transform_keys(&:to_s),
+        ]
+      end
     end
   end
 end

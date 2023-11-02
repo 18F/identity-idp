@@ -29,4 +29,14 @@ RSpec.describe RuboCop::Cop::IdentityIdp::AnalyticsEventNameLinter do
       end
     RUBY
   end
+
+  it 'does not register an offense for an exempted legacy event name' do
+    expect_no_offenses(<<~RUBY)
+      module AnalyticsEvents
+        def account_delete_submitted
+          track_event('Account Delete submitted')
+        end
+      end
+    RUBY
+  end
 end

@@ -4,7 +4,7 @@ es:
     about: Sobre %{app_name}
     email_reuse_notice:
       subject: Este email ya está asociado a una cuenta.
-    help: Si necesita ayuda, visite %{link}
+    help_html: Si necesita ayuda, visite %{link_html}
     logo: '%{app_name} logo'
     no_reply: Por favor, no responda a este mensaje.
     privacy_policy: Póliza de privacidad
