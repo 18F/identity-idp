@@ -75,7 +75,7 @@ RSpec.describe 'layouts/application.html.erb' do
 
       it 'notifies NewRelic' do
         expect(NewRelic::Agent).to receive(:notice_error) do |error|
-          expect(error).to be_kind_of(RuntimeError)
+          expect(error).to be_kind_of(ApplicationHelper::MissingTitleError)
           expect(error.message).to include('Missing title')
         end
 
@@ -90,7 +90,7 @@ RSpec.describe 'layouts/application.html.erb' do
         it 'raises' do
           expect { render }.to raise_error do |error|
             expect(error).to be_kind_of(ActionView::TemplateError)
-            expect(error.cause).to be_kind_of(RuntimeError)
+            expect(error.cause).to be_kind_of(ApplicationHelper::MissingTitleError)
             expect(error.message).to include('Missing title')
           end
         end

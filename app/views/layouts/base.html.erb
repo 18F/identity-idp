@@ -15,19 +15,7 @@
   <meta content="noindex,nofollow" name="robots" />
   <% end %>
 
-  <%
-    title = begin
-      yield(:title).presence || (raise 'Missing title')
-    rescue => err
-      if IdentityConfig.store.raise_on_missing_title
-        raise err
-      else
-        NewRelic::Agent.notice_error(err)
-        ''
-      end
-    end
-  %>
-  <title><%= title %> | <%= APP_NAME %></title>
+  <title><%= page_title %> | <%= APP_NAME %></title>
 
   <%= javascript_tag(nonce: true) do %>
     document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/, 'js');
