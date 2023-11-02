@@ -44,8 +44,7 @@ module Idv
         }.merge(
           acuant_sdk_upgrade_a_b_testing_variables,
           phone_question_ab_test_analytics_bucket,
-          phone_with_camera: phone_with_camera,
-        )
+        ).merge(phone_with_camera)
       end
 
       private
@@ -56,10 +55,9 @@ module Idv
           step: 'document_capture',
           analytics_id: 'Doc Auth',
           irs_reproofing: irs_reproofing?,
-          phone_with_camera: phone_with_camera,
         }.merge(
           ab_test_analytics_buckets,
-        )
+        ).merge(phone_with_camera)
       end
 
       def handle_stored_result
