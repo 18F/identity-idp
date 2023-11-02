@@ -48,7 +48,6 @@ module Reports
 
     def reports
       @reports ||= [
-        # Number of verified users (total) - LG-11148
         # Number of verified users (new) - LG-11164
         active_users_count_report.active_users_count_emailable_report,
         # Total Annual Users - LG-11150
@@ -56,7 +55,6 @@ module Reports
         proofing_rate_report.proofing_rate_emailable_report,
         account_deletion_rate_report.account_deletion_emailable_report,
         account_reuse_report.account_reuse_emailable_report,
-        account_reuse_report.total_identities_emailable_report,
         agency_and_sp_report.agency_and_sp_emailable_report,
         active_users_count_report.active_users_count_apg_emailable_report,
       ]
@@ -76,7 +74,7 @@ module Reports
     end
 
     def account_reuse_report
-      @account_reuse_report ||= Reporting::AccountReuseAndTotalIdentitiesReport.new(report_date)
+      @account_reuse_report ||= Reporting::AccountReuseReport.new(report_date)
     end
 
     def account_deletion_rate_report

@@ -13,7 +13,6 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
   let(:expected_s3_paths) do
     [
       "#{report_folder}/account_reuse.csv",
-      "#{report_folder}/total_profiles.csv",
       "#{report_folder}/account_deletion_rate.csv",
       "#{report_folder}/total_user_count.csv",
       "#{report_folder}/active_users_count.csv",
@@ -95,8 +94,7 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
   it 'does not send out a report with no emails' do
     allow(IdentityConfig.store).to receive(:team_agnes_email).and_return('')
 
-    expect_any_instance_of(Reporting::AccountReuseAndTotalIdentitiesReport).
-      not_to receive(:total_identities_report)
+    expect(report).to_not receive(:reports)
 
     expect(ReportMailer).not_to receive(:tables_report)
 
