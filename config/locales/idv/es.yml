@@ -304,6 +304,8 @@ es:
           ellos.
         no_pii: SITIO DE PRUEBA - No utilice información personal real (sólo para
           propósitos de demostración) - SITIO DE PRUEBA
+      verify_info: Leímos sus datos en su identificación. Revíselos y modifíquelos si
+        es necesario antes de enviarlos para la verificación.
       verifying: Verificando…
     titles:
       activated: Ya se verificó tu identidad.

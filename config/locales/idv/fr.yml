@@ -314,6 +314,9 @@ fr:
           y accéder.
         no_pii: SITE DE TEST - N’utilisez pas de véritables données personnelles (il
           s’agit d’une démonstration seulement) - SITE DE TEST
+      verify_info: Nous lisons vos informations à partir de votre pièce d’identité.
+        Passez-les en revue et mettez-les à jour avant de les soumettre pour
+        vérification.
       verifying: Vérification…
     titles:
       activated: Votre identité a déjà été vérifiée

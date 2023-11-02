@@ -286,6 +286,8 @@ en:
           it.
         no_pii: TEST SITE - Do not use real personal information (demo purposes only) -
           TEST SITE
+      verify_info: We read your information from your ID. Review it and make any
+        updates before submitting for verification.
       verifying: Verifying…
     titles:
       activated: Your identity has already been verified
