@@ -22,7 +22,7 @@ module Idv
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
         call('ssn', :view, true)
 
-      render :show, locals: threatmetrix_view_variables
+      render 'idv/shared/ssn', locals: threatmetrix_view_variables
     end
 
     def update
@@ -44,7 +44,7 @@ module Idv
         redirect_to next_url
       else
         @error_message = form_response.first_error_message
-        render :show, locals: threatmetrix_view_variables
+        render 'idv/shared/ssn', locals: threatmetrix_view_variables
       end
     end
 
