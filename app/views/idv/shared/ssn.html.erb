@@ -8,7 +8,7 @@ locals:
 %>
 <% content_for(:pre_flash_content) do %>
   <%= render StepIndicatorComponent.new(
-        steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS,
+        steps: @step_indicator_steps,
         current_step: :verify_info,
         locale_scope: 'idv',
         class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
@@ -58,7 +58,7 @@ locals:
 
 <%= simple_form_for(
       @ssn_form,
-      url: idv_ssn_url,
+      url: url_for,
       method: :put,
       html: { autocomplete: 'off' },
     ) do |f| %>

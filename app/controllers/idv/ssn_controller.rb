@@ -14,6 +14,7 @@ module Idv
     attr_accessor :error_message
 
     def show
+      @step_indicator_steps = step_indicator_steps
       @ssn_form = Idv::SsnFormatForm.new(current_user, idv_session.ssn)
 
       analytics.idv_doc_auth_redo_ssn_submitted(**analytics_arguments) if @ssn_form.updating_ssn?
@@ -26,6 +27,7 @@ module Idv
     end
 
     def update
+      @step_indicator_steps = step_indicator_steps
       @error_message = nil
 
       @ssn_form = Idv::SsnFormatForm.new(current_user, idv_session.ssn)
