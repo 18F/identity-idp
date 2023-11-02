@@ -56,7 +56,9 @@ module Idv
     end
 
     def how_to_verify_form_params
-      params.require(:idv_how_to_verify_form).permit(:selection)
+      params.require(:idv_how_to_verify_form).permit(:selection, selection: [])
+    rescue ActionController::ParameterMissing
+      ActionController::Parameters.new(selection: [])
     end
   end
 end

@@ -8,11 +8,11 @@ module Idv
 
     attr_accessor :selection
 
-    validates :selection, presence: {
-      message: proc { I18n.t('errors.doc_auth.how_to_verify_form') },
-    }
     validates :selection, inclusion: {
       in: VERIFICATION_OPTIONS,
+    }
+    validates :selection, presence: {
+      message: proc { I18n.t('errors.doc_auth.how_to_verify_form') },
     }
 
     def initialize(selection: nil)
