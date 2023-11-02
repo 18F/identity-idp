@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'ipaddr'
 
 module Rack
@@ -165,7 +167,7 @@ module Rack
         limit: IdentityConfig.store.otps_per_ip_limit,
         period: IdentityConfig.store.otps_per_ip_period,
       ) do |req|
-        req.remote_ip if req.path.match?(%r{/otp/send})
+        req.remote_ip if req.path.include?('/otp/send')
       end
     else
       throttle(
@@ -173,7 +175,7 @@ module Rack
         limit: IdentityConfig.store.otps_per_ip_limit,
         period: IdentityConfig.store.otps_per_ip_period,
       ) do |req|
-        req.remote_ip if req.path.match?(%r{/otp/send})
+        req.remote_ip if req.path.include?('/otp/send')
       end
     end
 

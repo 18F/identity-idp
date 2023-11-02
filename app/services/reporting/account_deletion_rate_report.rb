@@ -8,8 +8,8 @@ module Reporting
 
     def account_deletion_report
       table = []
-      table << ['Deleted Users', 'Total Users', 'Deletion Rate']
-      table << [deleted_user_count, users_and_deleted_for_period, deletion_rate]
+      table << ['Deleted Users', 'Fully Registered Users', 'Deletion Rate']
+      table << [deleted_user_count, fully_registered_users, deletion_rate]
       table
     end
 
@@ -27,22 +27,21 @@ module Reporting
 
     def deleted_user_count
       @deleted_user_count ||= Reports::BaseReport.transaction_with_timeout do
-        DeletedUser.where(user_created_at: start_date..end_date).count
+        DeletedUser.
+          where(deleted_at: start_date..end_date).
+          where('user_created_at < ?', end_date).
+          count
       end
     end
 
-    def user_count
-      @user_count ||= Reports::BaseReport.transaction_with_timeout do
-        User.where(created_at: start_date..end_date).count
+    def fully_registered_users
+      @fully_registered_users ||= Reports::BaseReport.transaction_with_timeout do
+        RegistrationLog.where(registered_at: start_date..end_date).count
       end
-    end
-
-    def users_and_deleted_for_period
-      deleted_user_count + user_count
     end
 
     def deletion_rate
-      deleted_user_count.to_f / users_and_deleted_for_period.to_f
+      deleted_user_count.to_f / fully_registered_users.to_f
     end
 
     def start_date
