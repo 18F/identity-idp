@@ -29,14 +29,6 @@ module TwoFactorAuthentication
       roaming_configured?
     end
 
-    def roaming_visible?
-      true
-    end
-
-    def platform_visible?
-      true
-    end
-
     private
 
     attr_reader :mfa_user
