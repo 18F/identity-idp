@@ -29,6 +29,10 @@ module I18n
         { key: 'time.am' }, # "AM" is "AM" in French and Spanish
         { key: 'time.formats.sms_date' }, # for us date format
         { key: 'time.pm' }, # "PM" is "PM" in French and Spanish
+        { key: 'datetime.dotiw.minutes.one' }, # "minute is minute" in French and English
+        { key: 'datetime.dotiw.minutes.other' }, # "minute is minute" in French and English
+        { key: 'mailer.logo' }, # "logo is logo" in English, French and Spanish
+        { key: 'datetime.dotiw.words_connector' }, # " , " is only punctuation and not translated
       ].freeze
 
       def untranslated_keys
@@ -215,7 +219,7 @@ RSpec.describe 'I18n' do
 
   def likely_html_interpolation?(str)
     str.scan(I18n::INTERPOLATION_PATTERN).flatten.compact.any? do |key|
-      key =~ /html/
+      key.include?('html')
     end
   end
 
