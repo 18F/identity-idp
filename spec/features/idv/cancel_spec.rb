@@ -28,6 +28,8 @@ RSpec.describe 'cancel IdV' do
       hash_including(step: 'agreement'),
     )
 
+    expect(page).to have_unique_form_landmark_labels
+
     expect(page).to have_button(t('idv.cancel.actions.start_over'))
     expect(page).to have_button(t('idv.cancel.actions.account_page'))
     expect(page).to have_button(t('idv.cancel.actions.keep_going'))
@@ -51,6 +53,8 @@ RSpec.describe 'cancel IdV' do
       hash_including(step: 'agreement'),
     )
 
+    expect(page).to have_unique_form_landmark_labels
+
     expect(page).to have_button(t('idv.cancel.actions.start_over'))
     expect(page).to have_button(t('idv.cancel.actions.account_page'))
     expect(page).to have_button(t('idv.cancel.actions.keep_going'))
@@ -73,6 +77,8 @@ RSpec.describe 'cancel IdV' do
       'IdV: cancellation visited',
       hash_including(step: 'agreement'),
     )
+
+    expect(page).to have_unique_form_landmark_labels
 
     expect(page).to have_button(t('idv.cancel.actions.start_over'))
     expect(page).to have_button(t('idv.cancel.actions.account_page'))
@@ -107,6 +113,8 @@ RSpec.describe 'cancel IdV' do
         request_came_from: 'idv/ssn#show',
         step: 'ssn',
       )
+
+      expect(page).to have_unique_form_landmark_labels
 
       expect(page).to have_button(t('idv.cancel.actions.start_over'))
       expect(page).to have_button(t('idv.cancel.actions.account_page'))
@@ -163,6 +171,8 @@ RSpec.describe 'cancel IdV' do
       expect(page).to have_button(t('idv.cancel.actions.start_over'))
       expect(page).to have_button(t('idv.cancel.actions.exit', app_name: APP_NAME))
       expect(page).to have_button(t('idv.cancel.actions.keep_going'))
+
+      expect(page).to have_unique_form_landmark_labels
 
       click_spinner_button_and_wait t('idv.cancel.actions.exit', app_name: APP_NAME)
 

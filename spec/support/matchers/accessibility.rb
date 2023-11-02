@@ -140,6 +140,36 @@ RSpec::Matchers.define :have_name do |name|
   end
 end
 
+RSpec::Matchers.define :have_unique_form_landmark_labels do
+  # Could maybe be extended to other landmarks by modifying this function
+  def landmarks(page)
+    page.all(:css, 'form').reject { |element| element[:'aria-hidden'] == 'true' }
+  end
+
+  match do |page|
+    labels = landmarks(page).map { |element| AccessibleName.new(page:).computed_name(element) }
+
+    labels.none?(&:nil?) && labels.uniq.length == labels.length
+  end
+
+  failure_message do |page|
+    message_parts = []
+    labels_already_seen = []
+
+    landmarks(page).each do |landmark|
+      label = AccessibleName.new(page:).computed_name(landmark)
+      if !label
+        message_parts << "expected to find aria labeling in #{landmark.native.to_html}"
+      elsif labels_already_seen.include?(label)
+        message_parts << "label '#{label}' applies to more than one landmark"
+      end
+      labels_already_seen << label
+    end
+
+    message_parts.join("\n")
+  end
+end
+
 class AccessibleName
   attr_reader :page
 
