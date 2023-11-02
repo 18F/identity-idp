@@ -334,13 +334,14 @@ fr:
           jours</strong>.'
       welcome: 'Vous aurez besoin de votre:'
     not_ready:
-      button_nosp: Exit %{app_name}
-      button_sp: Exit %{app_name} and return to %{sp_name}
-      content_nosp: If you exit %{app_name}, you will not have verified your identity.
-        You can return later to finish this process.
-      content_sp: If you exit %{app_name} and return to %{sp_name}, you will not have
-        verified your identity. You can return later to finish this process.
-      header: Not ready to add photos?
+      button_nosp: Annuler et revenir à votre profil
+      button_sp: Quittez %{app_name} et retournez à %{sp_name}
+      content_nosp: Si vous quittez %{app_name}, votre identité n’aura pas été
+        vérifiée. Vous pourrez revenir plus tard pour terminer ce processus.
+      content_sp: Si vous quittez %{app_name} maintenant et revenez sur %{sp_name},
+        votre identité n’aura pas été vérifiée. Vous pourrez revenir plus tard
+        pour terminer ce processus.
+      header: Vous n’êtes pas prêt à ajouter des photos?
     phone_question:
       do_not_have: Je n’ai pas de téléphone
     tips:
