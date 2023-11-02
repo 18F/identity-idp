@@ -706,7 +706,8 @@ module AnalyticsEvents
   def idv_back_image_clicked(
     phone_with_camera:,
     phone_question_ab_test_bucket:,
-    **_extra)
+    **_extra
+  )
     track_event(
       'Frontend: IdV: back image clicked', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       phone_with_camera: phone_with_camera,
@@ -1288,10 +1289,12 @@ module AnalyticsEvents
   end
   # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
-  def idv_front_image_clicked( # other attrs to be added
+  # other attrs to be added
+  def idv_front_image_clicked(
     phone_question_ab_test_bucket,
     phone_with_camera:,
-    **_extra)
+    **_extra
+  )
     track_event(
       'Frontend: IdV: front image clicked', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
       phone_with_camera: phone_with_camera,
