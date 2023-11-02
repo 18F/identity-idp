@@ -81,6 +81,20 @@ RSpec.describe 'layouts/application.html.erb' do
 
         expect { render }.to_not raise_error
       end
+
+      context 'when raise_on_missing_title is true' do
+        before do
+          allow(IdentityConfig.store).to receive(:raise_on_missing_title).and_return(true)
+        end
+
+        it 'raises' do
+          expect { render }.to raise_error do |error|
+            expect(error).to be_kind_of(ActionView::TemplateError)
+            expect(error.cause).to be_kind_of(RuntimeError)
+            expect(error.message).to include('Missing title')
+          end
+        end
+      end
     end
 
     context 'with escapable html' do

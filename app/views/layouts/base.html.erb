@@ -17,10 +17,14 @@
 
   <%
     title = begin
-      yield(:title).presence || (raise 'Missing title (error hidden from user)')
+      yield(:title).presence || (raise 'Missing title')
     rescue => err
-      NewRelic::Agent.notice_error(err)
-      ''
+      if IdentityConfig.store.raise_on_missing_title
+        raise err
+      else
+        NewRelic::Agent.notice_error(err)
+        ''
+      end
     end
   %>
   <title><%= title %> | <%= APP_NAME %></title>
