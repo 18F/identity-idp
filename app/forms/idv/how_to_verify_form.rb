@@ -2,8 +2,8 @@ module Idv
   class HowToVerifyForm
     include ActiveModel::Model
     ATTRIBUTES = [:selection].freeze
-    REMOTE = 'remote'
-    IPP = 'ipp'
+    REMOTE = 'remote'.freeze
+    IPP = 'ipp'.freeze
     VERIFICATION_OPTIONS = [REMOTE, IPP].freeze
 
     attr_accessor :selection
