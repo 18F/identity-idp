@@ -56,9 +56,9 @@ module Idv
           step: 'document_capture',
           analytics_id: 'Doc Auth',
           irs_reproofing: irs_reproofing?,
+          phone_with_camera,
         }.merge(
           ab_test_analytics_buckets,
-          phone_with_camera,
         )
       end
 
