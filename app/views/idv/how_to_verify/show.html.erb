@@ -11,14 +11,13 @@
     ) do |f|
 %>
   <div role="group" aria-labelledby="how-to-verify-info">
-    <%= radio_button_tag(
-          'idv_how_to_verify_form[selection]',
+    <%= f.radio_button(
+          :selection,
           Idv::HowToVerifyForm::REMOTE,
-          false,
           class: 'usa-radio__input usa-radio__input--tile',
         ) %>
-    <%= label_tag(
-          'idv_how_to_verify_form_selection_remote',
+    <%= f.label(
+          :selection_remote,
           class: 'usa-radio__label usa-radio__label--illustrated usa-radio__label-illustrated-large',
         ) do %>
           <%= image_tag asset_url('idv/remote.svg'),
@@ -38,14 +37,13 @@
             </span>
           </div>
         <% end %>
-    <%= radio_button_tag(
-          'idv_how_to_verify_form[selection]',
+    <%= f.radio_button(
+          :selection,
           Idv::HowToVerifyForm::IPP,
-          false,
           class: 'usa-radio__input usa-radio__input--tile',
         ) %>
-    <%= label_tag(
-          'idv_how_to_verify_form_selection_ipp',
+    <%= f.label(
+          :selection_ipp,
           class: 'usa-radio__label usa-radio__label--illustrated usa-radio__label-illustrated-large',
         ) do %>
           <%= image_tag asset_url('idv/in-person.svg'),
