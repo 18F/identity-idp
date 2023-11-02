@@ -2,9 +2,9 @@ require 'rails_helper'
 require 'reporting/monthly_proofing_report'
 
 RSpec.describe Reporting::MonthlyProofingReport do
-  let(:time_range) { Date.new(2022, 1, 1).all_month }
+  let(:time_range) { Date.new(2022, 1, 1).in_time_zone('UTC').all_month }
 
-  subject(:report) { Reporting::MonthlyProofingReport.new(time_range:) }
+  subject(:report) { Reporting::MonthlyProofingReport.new(time_range:, wait_duration: 0) }
 
   before do
     cloudwatch_client = double(
@@ -54,6 +54,32 @@ RSpec.describe Reporting::MonthlyProofingReport do
         csv.map(&:to_a).zip(expected_csv).each do |actual, expected|
           expect(actual).to eq(expected.map(&:to_s))
         end
+      end
+    end
+  end
+
+  describe '#as_csv' do
+    context 'when hitting a Cloudwatch rate limit' do
+      before do
+        allow(report).to receive(:cloudwatch_client).and_call_original
+
+        Aws.config[:cloudwatchlogs] = {
+          stub_responses: {
+            start_query: Aws::CloudWatchLogs::Errors::ThrottlingException.new(
+              nil,
+              'Rate exceeded',
+            ),
+          },
+        }
+      end
+
+      it 'renders an error table' do
+        expect(report.as_csv).to eq(
+          [
+            ['Error', 'Message'],
+            ['Aws::CloudWatchLogs::Errors::ThrottlingException', 'Rate exceeded'],
+          ],
+        )
       end
     end
   end
