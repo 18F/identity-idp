@@ -10,20 +10,21 @@ module Reporting
 
     def total_user_count_report
       [
-        ['Metric', 'Value', 'Time Range Start', 'Time Range End'],
-        ['All-time user count', total_user_count, '-', report_date.to_date],
-        ['Total verified users', verified_user_count, '-', report_date.to_date],
+        ['Metric', 'Users', 'Verified users', 'Time Range Start', 'Time Range End'],
+        ['All-time count', total_user_count, verified_user_count, '-', report_date.to_date],
         [
-          'New verified users',
+          'New users count',
+          new_user_count,
           new_verified_user_count,
           current_month.begin.to_date,
           current_month.end.to_date,
         ],
         [
-          'Total annual users',
+          'Annual users count',
           annual_total_user_count,
+          annual_verified_user_count,
           annual_start_date.to_date,
-          end_date.to_date,
+          annual_end_date.to_date,
         ],
       ]
     end
@@ -37,6 +38,12 @@ module Reporting
     end
 
     private
+
+    def new_user_count
+      Reports::BaseReport.transaction_with_timeout do
+        User.where(created_at: current_month).count
+      end
+    end
 
     def total_user_count
       Reports::BaseReport.transaction_with_timeout do
@@ -58,12 +65,24 @@ module Reporting
 
     def annual_total_user_count
       Reports::BaseReport.transaction_with_timeout do
-        User.where(created_at: annual_start_date..end_date).count
+        User.where(created_at: annual_start_date..annual_end_date).count
+      end
+    end
+
+    def annual_verified_user_count
+      Reports::BaseReport.transaction_with_timeout do
+        Profile.where(active: true).
+          where(activated_at: annual_start_date..annual_end_date).
+          count
       end
     end
 
     def annual_start_date
-      (report_date - 1.year).beginning_of_day
+      CalendarService.fiscal_start_date(report_date).beginning_of_day
+    end
+
+    def annual_end_date
+      CalendarService.fiscal_end_date(report_date).end_of_day
     end
 
     def current_month

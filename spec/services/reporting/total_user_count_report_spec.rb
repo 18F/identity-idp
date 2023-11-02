@@ -8,16 +8,22 @@ RSpec.describe Reporting::TotalUserCountReport do
 
   let(:expected_report) do
     [
-      ['Metric', 'Value', 'Time Range Start', 'Time Range End'],
-      ['All-time user count', expected_total_count, '-', Date.new(2021, 3, 1)],
-      ['Total verified users', expected_verified_count, '-', Date.new(2021, 3, 1)],
+      ['Metric', 'Users', 'Verified users', 'Time Range Start', 'Time Range End'],
+      ['All-time count', expected_total_count, expected_verified_count, '-', Date.new(2021, 3, 1)],
       [
-        'New verified users',
+        'New users count',
+        expected_new_count,
         expected_new_verified_count,
         Date.new(2021, 3, 1),
         Date.new(2021, 3, 31),
       ],
-      ['Total annual users', expected_annual_count, Date.new(2020, 3, 1), Date.new(2021, 3, 1)],
+      [
+        'Annual users count',
+        expected_annual_count,
+        expected_annual_verified_count,
+        Date.new(2020, 10, 1),
+        Date.new(2021, 9, 30),
+      ],
     ]
   end
 
@@ -38,8 +44,10 @@ RSpec.describe Reporting::TotalUserCountReport do
       before { create(:user) }
       let(:expected_total_count) { 1 }
       let(:expected_verified_count) { 0 }
+      let(:expected_new_count) { 1 }
       let(:expected_new_verified_count) { 0 }
       let(:expected_annual_count) { expected_total_count }
+      let(:expected_annual_verified_count) { 0 }
 
       it_behaves_like 'a report with the specified counts'
     end
@@ -50,8 +58,10 @@ RSpec.describe Reporting::TotalUserCountReport do
 
       let(:expected_total_count) { 2 }
       let(:expected_verified_count) { 0 }
+      let(:expected_new_count) { 1 }
       let(:expected_new_verified_count) { 0 }
       let(:expected_annual_count) { 1 }
+      let(:expected_annual_verified_count) { 0 }
 
       it_behaves_like 'a report with the specified counts'
     end
@@ -65,8 +75,10 @@ RSpec.describe Reporting::TotalUserCountReport do
       end
       let(:expected_total_count) { 2 }
       let(:expected_verified_count) { 1 }
+      let(:expected_new_count) { 2 }
       let(:expected_new_verified_count) { 1 }
       let(:expected_annual_count) { expected_total_count }
+      let(:expected_annual_verified_count) { 1 }
 
       it_behaves_like 'a report with the specified counts'
     end
@@ -80,8 +92,10 @@ RSpec.describe Reporting::TotalUserCountReport do
       # A suspended user is still a total user:
       let(:expected_total_count) { 1 }
       let(:expected_verified_count) { 0 }
+      let(:expected_new_count) { 1 }
       let(:expected_new_verified_count) { 0 }
       let(:expected_annual_count) { 1 }
+      let(:expected_annual_verified_count) { 0 }
 
       it_behaves_like 'a report with the specified counts'
     end
@@ -92,8 +106,10 @@ RSpec.describe Reporting::TotalUserCountReport do
       # A user with a fraud rejection is still a total user
       let(:expected_total_count) { 1 }
       let(:expected_verified_count) { 0 }
+      let(:expected_new_count) { 1 }
       let(:expected_new_verified_count) { 0 }
       let(:expected_annual_count) { 1 }
+      let(:expected_annual_verified_count) { 0 }
 
       it_behaves_like 'a report with the specified counts'
     end
