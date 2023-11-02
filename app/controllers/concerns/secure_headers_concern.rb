@@ -7,7 +7,7 @@ module SecureHeadersConcern
     authorize_form = OpenidConnectAuthorizeForm.new(authorize_params)
     return unless authorize_form.valid?
 
-    override_form_action_csp(csp_uris)
+    # override_form_action_csp(csp_uris)
   end
 
   def override_form_action_csp(uris)
