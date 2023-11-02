@@ -10,7 +10,7 @@ module Reporting
 
     def total_user_count_report
       [
-        ['Metric', 'Users', 'Verified users', 'Time Range Start', 'Time Range End'],
+        ['Metric', 'All Users', 'Verified users', 'Time Range Start', 'Time Range End'],
         ['All-time count', total_user_count, verified_user_count, '-', report_date.to_date],
         [
           'New users count',
