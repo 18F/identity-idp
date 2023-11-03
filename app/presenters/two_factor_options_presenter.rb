@@ -108,7 +108,7 @@ class TwoFactorOptionsPresenter
   end
 
   def webauthn_platform_option
-    return [] if piv_cac_required? || !IdentityConfig.store.platform_auth_set_up_enabled
+    return [] if piv_cac_required?
     [TwoFactorAuthentication::SetUpWebauthnPlatformSelectionPresenter.new(user: user)]
   end
 

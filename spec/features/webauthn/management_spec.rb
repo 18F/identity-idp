@@ -157,53 +157,31 @@ RSpec.describe 'webauthn management' do
       expect(page).to have_content webauthn_config2.name
     end
 
-    context 'with webauthn platform set up enabled' do
-      before do
-        allow(IdentityConfig.store).to receive(:platform_auth_set_up_enabled).and_return(true)
-      end
+    it 'allows the user to setup another key' do
+      mock_webauthn_setup_challenge
+      create(:webauthn_configuration, :platform_authenticator, user:)
 
-      it 'allows the user to setup another key' do
-        mock_webauthn_setup_challenge
-        create(:webauthn_configuration, :platform_authenticator, user:)
+      sign_in_and_2fa_user(user)
 
-        sign_in_and_2fa_user(user)
+      visit_webauthn_platform_setup
 
-        visit_webauthn_platform_setup
+      expect(page).to have_current_path webauthn_setup_path(platform: true)
 
-        expect(page).to have_current_path webauthn_setup_path(platform: true)
+      # Regression: LG-9860: Ensure that the platform URL parameter is maintained through reauthn
+      travel_to (IdentityConfig.store.reauthn_window + 1).seconds.from_now
+      fill_in_nickname_and_click_continue
+      mock_press_button_on_hardware_key_on_setup
 
-        # Regression: LG-9860: Ensure that the platform URL parameter is maintained through reauthn
-        travel_to (IdentityConfig.store.reauthn_window + 1).seconds.from_now
-        fill_in_nickname_and_click_continue
-        mock_press_button_on_hardware_key_on_setup
+      expect(page).to have_current_path login_two_factor_options_path
+      click_on t('forms.buttons.continue')
+      fill_in_code_with_last_phone_otp
+      click_submit_default
 
-        expect(page).to have_current_path login_two_factor_options_path
-        click_on t('forms.buttons.continue')
-        fill_in_code_with_last_phone_otp
-        click_submit_default
+      expect(page).to have_current_path webauthn_setup_path(platform: true)
+      fill_in_nickname_and_click_continue
+      mock_press_button_on_hardware_key_on_setup
 
-        expect(page).to have_current_path webauthn_setup_path(platform: true)
-        fill_in_nickname_and_click_continue
-        mock_press_button_on_hardware_key_on_setup
-
-        expect_webauthn_platform_setup_success
-      end
-    end
-
-    context 'with platform auth set up disabled' do
-      before do
-        allow(IdentityConfig.store).to receive(:platform_auth_set_up_enabled).and_return(false)
-      end
-
-      it 'does not allows the user to setup another platform authenticator' do
-        mock_webauthn_setup_challenge
-        create(:webauthn_configuration, :platform_authenticator, user:)
-
-        sign_in_and_2fa_user(user)
-
-        expect(page).
-          to_not have_content t('account.index.webauthn_platform_add')
-      end
+      expect_webauthn_platform_setup_success
     end
 
     it 'allows user to delete a platform authenticator when another 2FA option is set up' do

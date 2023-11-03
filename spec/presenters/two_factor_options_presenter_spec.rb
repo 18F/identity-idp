@@ -16,11 +16,6 @@ RSpec.describe TwoFactorOptionsPresenter do
     described_class.new(user:, user_agent:, after_mfa_setup_path:, show_skip_additional_mfa_link:)
   end
 
-  before do
-    allow(IdentityConfig.store).to receive(:platform_auth_set_up_enabled).
-      and_return(false)
-  end
-
   describe '#two_factor_enabled?' do
     it 'delegates to mfa_policy' do
       expect(presenter).to delegate_method(:two_factor_enabled?).to(:mfa_policy)
@@ -30,6 +25,7 @@ RSpec.describe TwoFactorOptionsPresenter do
   describe '#options' do
     it 'supplies all the options for a user' do
       expect(presenter.options.map(&:class)).to eq [
+        TwoFactorAuthentication::SetUpWebauthnPlatformSelectionPresenter,
         TwoFactorAuthentication::SetUpAuthAppSelectionPresenter,
         TwoFactorAuthentication::PhoneSelectionPresenter,
         TwoFactorAuthentication::SetUpBackupCodeSelectionPresenter,
@@ -48,6 +44,7 @@ RSpec.describe TwoFactorOptionsPresenter do
 
       it 'only displays phishing-resistant MFA methods' do
         expect(presenter.options.map(&:class)).to eq [
+          TwoFactorAuthentication::SetUpWebauthnPlatformSelectionPresenter,
           TwoFactorAuthentication::SetUpWebauthnSelectionPresenter,
           TwoFactorAuthentication::PivCacSelectionPresenter,
         ]
