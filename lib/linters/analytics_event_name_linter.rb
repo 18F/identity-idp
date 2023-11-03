@@ -6,40 +6,41 @@ module RuboCop
 
         # DO NOT ADD TO THIS LIST OR YOU WILL MAKE A KITTEN CRY!
         LEGACY_EVENT_NAMES = %w[
-          fa2f67e c3060a6 625c109 074a73e 1ddace4 49a1013 2e71630 feb2483 774c2e9 fcc9f02 ef39c7c
-          67a6254 452df94 3d4c642 9f05438 42a4beb 8c7f423 ca5c243 1f86f19 3f5dcb7 80eb9a6 c6c20d3
-          df508f2 06e295f 9479ccc 6b12f5a 236bf38 b63a840 58000bf 5045eea 9513de6 ef6d127 d9113fc
-          394fda2 3fce36d 0659960 7fa7cd1 27e2f1a 63ecb4e 55860c0 d97a3d7 c25e0a3 a6b5bd0 05bccf5
-          c57b9cb 86bb247 b89b4f1 df354b7 bb3e94d cb04f63 b03ccde a15c306 5c531e1 9e2d5e5 31aa7e2
-          22cd3d1 414caa6 bc99baf d4389ec 889b2f9 0015f2f d618afe 6b24568 a9c1d15 f04807b 319b83c
-          a381ca6 b49b3a2 e39312c fe5ffd3 404a2d7 0b50305 6ab602d f075ee0 0a6e717 1a8ab16 836a2d1
-          ae328e8 491ca0e 73f8b14 1c753ed 74ace4e f92f040 045dbb2 fad0d5b e64f0c8 a3d2374 8d04135
-          8c14c0a fd8ead8 672dbfa 7e9900f 2d1e4d2 294e3ae cf19350 4d95c63 607bfb7 1d43091 d14eb4d
-          b8dabbe 3891860 942fe5d c62565c ba49cf4 c3aadb6 8283e0d bbb114a 42693b9 5abf6e8 c28802a
-          9d17d30 b702e7e 27737a0 92d1e42 47e21a2 ef37839 a53ca41 24b7a87 b83531b f9bbcd1 ead592c
-          c08f217 ceeba19 6cb85ec e8fa955 dbd33b6 e4c9313 f7ba0db 166d9f9 2fc0973 7f64dec 08057ae
-          a86dcfa 91cf765 ca4ff04 73eba23 bbc673d 612d6af f70e428 7e592da 2411bc8 e18400e c55f8e7
-          f703c3b 2139f3c b0c6e3c feb0ae0 c0d1995 68d050c 01407b5 48b9d7b e54cadf c445688 0480a6a
-          de202d0 4f640ac 833bb3b 2714ab3 cc442c9 ef94278 3149e01 f1b713a 66566d7 12cfe99 ae7bf19
-          dec4ba9 7894491 50c890f cf1a116 5af8fb2 6d3e841 b9c1844 81fd71b 2ccfec6 e4644bb c18ae37
-          3a63d78 7187c0a f4fedd8 965aa71 6ebd703 a01a37c dc98bdc a1b33c6 23b7753 8506e38 fa5c68e
-          1426081 f064ba3 42b5269 9dfec94 2fc3f51 b82e749 50a82ce 30a6e9d 1e9de28 9083a03 fbf06db
-          6628492 0a79346 80774c2 3385dfe ad5c3f4 cc7c8b2 3a1628a 116e9dd 62d5999 a06d7ae 0598142
-          8557ddc 4412ef4 245cc6b 780d115 075565e 05734b0 b4d3a07 1db82fa 0e27f2a 9543306 6646e27
-          8b861cf 7cbfab2 e2ba048 e3773e8 acd0dbe 7dddb36 5fe88d2 e4d17d3 79e09c5 377c0c9 3cf0c22
-          2cd4684 beefc43 452be67 3cf9b87 7376981 b78faa8 cec5d15 0957a56 a1769cf eabc949 e4173d8
-          fa5332b f94ad46 96db2d8 95d1a06 1aa4b09 ccbc838 9714e09 3fc806f fc9ea0c 2f08a61 d26d285
-          ce78de1 1a814b6 8d4127f a38d713 6f9ca12 faa5adf e1aac4b cd4c1af de7251b 6493d96 7a30fac
-          3bcec60 93dfdf0 fd6bd3c 8335775 ac1176c 6a79836 784f40a 307f8ef f21600d 189c1bf cace681
-          17e0c61 a71de38 43d6156 66a2b2d 88c7243 93818dd 393c30c eea17f7 7e17e9d 3631bdb 430f6b1
-          002849f 8f19a15 afe1a04 5eaaedb 79b8cf1 7126d6b 862a03b 8bea4d5
+          f97bba7 72e5548 0a36bd8 98a6b0d 2cd5649 d39afb9 f4661b5 0245386 d8aba6e f653446 4e94ceb
+          384a1f7 9a75308 9fb9eac c29fe60 907072e 4c863ee 458f9a5 eef2fc1 ec5a847 9937d84 e501af0
+          81c8c81 1cea9c4 2710bff 308f5ea bae998b 0508dfa ca5aa25 527c555 2e51e29 c37f53f 9f555b9
+          ad6d4bb 54d0d6b 59769e4 ebcfdca 7be355e be59e46 cb15a62 c4c3e4a d16168d c702771 ae04688
+          857f289 35f9dd5 fa3a0fa daa2c12 8f9f601 361abd3 de72369 5aabbd0 7ee041a 9af4b70 d06e578
+          3b0d063 d439d76 8de7256 4c5b054 587797a c35f931 a072862 cc6b97e a396d98 b118c2a 3a7ad4e
+          b050e67 cb84bac a4878f9 b77cc79 d3816df 293db82 c9dfa47 f23bbfb 0add62d 5242daa ec3779d
+          747cf60 27f2ae5 732940e b4fac17 32bff80 bbaa5d8 867dadb 7b0cbaa 4790e16 450d84f b60bc2b
+          97c2ab4 2e7d1a7 a7ce0d7 a20ede6 515e746 a710b74 274ce1b c373ace b6b91a3 f605c20 edcc7a6
+          6249b0a cba192c 9be510c 8fa5dc7 9fd6baa 4e2e21d 64ba757 f390fb8 418cada 9984089 5d9b165
+          c108062 38e474a fe806c7 8e454c0 677b5d9 0b4317a 770fc14 bc1bc0b 19afc39 df43227 1086bac
+          2f19ec2 a0ffc8c 3c550cf 2908eda 3dd8001 9306404 50ba274 b8051dd 638668d 59f46e9 e203c53
+          3b0a7fb 7113ad2 8a495fd 53ec7c6 d8ece77 7637c9c 590bd37 77e1092 c7f8476 4b7ac07 d487486
+          556f19f ee298d0 f0578cc 172a392 6b48c75 b50b9b0 6c249da be8bdeb 1ff91cc 4e58962 db81086
+          d877291 82dafe0 00f9e1b 1ae5182 b648cef f2723ee 4303fd2 9e41d1a b4d10f2 bf29e20 26ceebe
+          62d7044 957143a 73a72d4 d88fdb8 07800e8 9f86600 f40898e d5c9516 df93413 9c0b662 c091aa9
+          f496e8b 0906c77 6439ec0 b6670dd af4401a e4fe498 2843311 857abc2 ee9f1e5 d0bca05 d37b223
+          7ed9a57 a886780 6d888fa 66e1615 320993f 4f6da45 6e9c6f8 fb9c5b9 31d87f9 f6e8041 e814d71
+          a3a5bfa d749026 d5c03af aa7c94f 54fe8c0 239b184 a248399 1087484 b5d0700 703c923 20d89cc
+          2d736e7 4fc13f2 4fd24d1 8934e6f 3c7f45e 2d1b4d0 7cb4050 54efe76 1e6bdb4 a7f5ec7 878797c
+          74e9903 34536b1 cec325a b6d7718 31723f0 d01b454 a3b78db 7a1a726 ea64de3 4c9cc98 18ea166
+          e71af8e d5d8c73 c95bb0e 2e9916e 0a6fa31 474e68e 5d9ff65 eb693d9 400b55a d4c156d 9e7dc64
+          5c582b2 8f4e87a 5b6d007 eb7300e 7ce9c36 fac6071 97e2876 e1e99f3 d8cf084 ab0859c 8c45e01
+          5f5fca9 0e53395 ca5b5e1 5bb79a7 8004498 32f2c00 99d67ea 07598ea 027a2fc 64cb317 a8d711f
+          d5f7d41 f7bcf84 5b196c2 61d039e 0f98879 ef50563 17b0399 1bd3c49 e25070a bb8e82f bcf8992
+          6d672fc 760218c 5e93c76 8afa12f 08dfd0e cbfc2df 7792f12 3df9123 3d3dee4 fd14e6a 61e59e3
+          5c47e81 cc9afa4 24999e1 76ffd91 a10ee5f efe4f95 670841e bb86c4a
         ].to_set.freeze
 
         def on_send(node)
           first_argument, = node.arguments
           expected_name = ancestor_method_name(node)
-          return if first_argument.type == :sym && first_argument.value == expected_name
-          return if LEGACY_EVENT_NAMES.include?(Digest::MD5.hexdigest(expected_name.to_s)[0...7])
+          actual_name = first_argument.value
+          return if actual_name == expected_name
+          return if LEGACY_EVENT_NAMES.include?(Digest::MD5.hexdigest(actual_name.to_s)[0...7])
           add_offense(
             first_argument,
             location: :expression,
