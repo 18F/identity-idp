@@ -1,4 +1,4 @@
-<% title t('titles.doc_auth.hybrid_handoff') %>
+<% self.title = t('titles.doc_auth.hybrid_handoff') %>
 
 <% content_for(:pre_flash_content) do %>
   <%= render StepIndicatorComponent.new(
@@ -47,7 +47,9 @@
           as: :doc_auth,
           url: url_for(type: :mobile, combined: true),
           method: 'PUT',
-          html: { autocomplete: 'off' },
+          html: { autocomplete: 'off',
+                  id: 'form-to-submit-photos-through-mobile',
+                  'aria-label': t('forms.buttons.send_link') },
         ) do |f| %>
       <%= render PhoneInputComponent.new(
             form: f,
@@ -80,6 +82,10 @@
           url: url_for(type: :desktop),
           method: 'PUT',
           class: 'margin-bottom-4',
+          html: {
+            id: 'form-to-submit-photos-through-desktop',
+            'aria-label': t('forms.buttons.upload_photos'),
+          },
         ) do |f| %>
       <%= f.submit t('forms.buttons.upload_photos'), outline: true %>
     <% end %>

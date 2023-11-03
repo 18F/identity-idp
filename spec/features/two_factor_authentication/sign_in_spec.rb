@@ -559,34 +559,13 @@ RSpec.feature 'Two Factor Authentication' do
     end
 
     context 'sign in' do
-      context 'with platform auth sign up enabled' do
-        before do
-          allow(IdentityConfig.store).to receive(:platform_auth_set_up_enabled).and_return(true)
-        end
+      it 'allows user to be signed in without issue' do
+        mock_webauthn_verification_challenge
 
-        it 'allows user to be signed in without issue' do
-          mock_webauthn_verification_challenge
+        sign_in_user(webauthn_configuration.user)
+        mock_successful_webauthn_authentication { click_webauthn_authenticate_button }
 
-          sign_in_user(webauthn_configuration.user)
-          mock_successful_webauthn_authentication { click_webauthn_authenticate_button }
-
-          expect(page).to have_current_path(account_path)
-        end
-      end
-
-      context 'with platform auth sign up disabled' do
-        before do
-          allow(IdentityConfig.store).to receive(:platform_auth_set_up_enabled).and_return(false)
-        end
-
-        it 'allows user to be signed in without issue' do
-          mock_webauthn_verification_challenge
-
-          sign_in_user(webauthn_configuration.user)
-          mock_successful_webauthn_authentication { click_webauthn_authenticate_button }
-
-          expect(page).to have_current_path(account_path)
-        end
+        expect(page).to have_current_path(account_path)
       end
     end
   end

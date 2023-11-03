@@ -1,4 +1,4 @@
-<% title t('users.second_mfa_reminder.heading') %>
+<% self.title = t('users.second_mfa_reminder.heading') %>
 
 <%= render StatusPageComponent.new(status: :info, icon: :question) do |c| %>
   <% c.with_header { t('users.second_mfa_reminder.heading') } %>

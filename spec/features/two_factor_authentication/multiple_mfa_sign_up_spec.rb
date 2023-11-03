@@ -206,7 +206,6 @@ RSpec.feature 'Multi Two Factor Authentication' do
 
       context 'with platform authenticator as the first mfa' do
         it 'does not allow the user to skip selecting second mfa' do
-          allow(IdentityConfig.store).to receive(:platform_auth_set_up_enabled).and_return(true)
           allow(IdentityConfig.store).
             to receive(:show_unsupported_passkey_platform_authentication_setup).
             and_return(true)
@@ -276,7 +275,6 @@ RSpec.feature 'Multi Two Factor Authentication' do
 
   describe 'adding a phone as a second mfa' do
     it 'at setup, phone as second MFA show a cancel link that returns to mfa setup' do
-      allow(IdentityConfig.store).to receive(:platform_auth_set_up_enabled).and_return(true)
       allow(IdentityConfig.store).
         to receive(:show_unsupported_passkey_platform_authentication_setup).
         and_return(true)
