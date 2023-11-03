@@ -9,7 +9,7 @@ import DeviceContext from '../context/device';
 import UploadContext from '../context/upload';
 import TipList from './tip-list';
 import DocumentCaptureNotReady from './document-capture-not-ready';
-import { UIConfigContext } from '../context';
+import { NotReadySectionUIContext } from '../context';
 
 /**
  * @typedef {'front'|'back'} DocumentSide
@@ -45,7 +45,7 @@ function DocumentsStep({
   const { isMobile } = useContext(DeviceContext);
   const { isLastStep } = useContext(FormStepsContext);
   const { flowPath } = useContext(UploadContext);
-  const { notReadySectionEnabled } = useContext(UIConfigContext);
+  const { notReadySectionEnabled } = useContext(NotReadySectionUIContext);
   return (
     <>
       {flowPath === 'hybrid' && <HybridDocCaptureWarning className="margin-bottom-4" />}
