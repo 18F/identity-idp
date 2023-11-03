@@ -899,6 +899,17 @@ RSpec.describe UserMailer, type: :mailer do
     it 'does not link to the help center' do
       expect(mail.html_part.body).to_not include(MarketingSite.nice_help_url)
     end
+
+    context 'in another language' do
+      let(:user) { build(:user, email_language: :es ) }
+
+      it 'translates the footer help text correctly' do
+        expect(mail.html_part.body).
+          to include(t('user_mailer.suspension_confirmed.contact_agency', locale: :es))
+        expect(mail.html_part.body).
+          to_not include(t('user_mailer.suspension_confirmed.contact_agency', locale: :en))
+      end
+    end
   end
 
   describe '#account_reinstated' do
