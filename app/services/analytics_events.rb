@@ -813,7 +813,13 @@ module AnalyticsEvents
   # @param [String] acuant_version
   # @param [String] flow_path whether the user is in the hybrid or standard flow
   # @param [String] use_alternate_sdk
-  def idv_capture_troubleshooting_dismissed(**_extra)
+  def idv_capture_troubleshooting_dismissed(
+    acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
+    acuant_version: acuant_version:,
+    flow_path: flow_path:,
+    use_alternate_sdk: use_alternate_sdk:,
+    **_extra
+  )
     track_event(
       'Frontend: IdV: Capture troubleshooting dismissed',
       acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
