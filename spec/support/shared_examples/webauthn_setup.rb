@@ -63,7 +63,13 @@ RSpec.shared_examples 'webauthn setup' do
         :webauthn_setup_submitted,
         errors: { SecurityError:
           [
-            'We were unable to add the security key. Please try again or <a href="/authentication_methods_setup">choose another authentication method</a>.',
+            t(
+              'errors.webauthn_setup.general_error_html',
+              link_html: link_to(
+                t('errors.webauthn_setup.additional_methods_link'),
+                authentication_methods_setup_path,
+              ),
+            ),
           ] },
         platform_authenticator: false,
         success: false,
