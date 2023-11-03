@@ -27,7 +27,7 @@ describe('InPersonPrepareStep', () => {
     expect(getByText('in_person_proofing.body.prepare.verify_step_visit_post_office')).to.exist();
   });
 
-  it('renders about and additional information', () => {
+  it('renders about and additional information steps', () => {
     const { getByText } = render(<InPersonPrepareStep {...DEFAULT_PROPS} />);
 
     expect(getByText('in_person_proofing.body.prepare.verify_step_about')).to.exist();
