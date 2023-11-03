@@ -721,7 +721,7 @@ module AnalyticsEvents
     acuant_sdk_upgrade_a_b_testing_enabled:,
     acuant_version:,
     flow_path:,
-    is_drop:, # isDrop
+    isDrop:,
     phone_question_ab_test_bucket:,
     source:,
     use_alternate_sdk:,
@@ -732,7 +732,7 @@ module AnalyticsEvents
       acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
       acuant_version: acuant_version,
       flow_path: flow_path,
-      is_drop: is_drop, # isDrop
+      isDrop: isDrop,
       phone_question_ab_test_bucket: phone_question_ab_test_bucket,
       source: source,
       use_alternate_sdk: use_alternate_sdk,
@@ -1329,7 +1329,7 @@ module AnalyticsEvents
     acuant_sdk_upgrade_a_b_testing_enabled:,
     acuant_version:,
     flow_path:,
-    is_drop:, # isDrop
+    isDrop:,
     phone_question_ab_test_bucket:,
     source:,
     use_alternate_sdk:,
@@ -1340,7 +1340,7 @@ module AnalyticsEvents
       acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
       acuant_version: acuant_version,
       flow_path: flow_path,
-      is_drop: is_drop, # isDrop
+      isDrop: isDrop,
       phone_question_ab_test_bucket: phone_question_ab_test_bucket,
       source: source,
       use_alternate_sdk: use_alternate_sdk,
