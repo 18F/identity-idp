@@ -1371,7 +1371,7 @@ module AnalyticsEvents
     phone_question_ab_test_bucket:,
     source:,
     use_alternate_sdk:,
-    **
+    **_extra
   )
     track_event(
       'Frontend: IdV: front image clicked',
