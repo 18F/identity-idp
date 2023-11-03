@@ -42,9 +42,8 @@ module Reports
           <div class="usa-alert usa-alert--info">
             <div class="usa-alert__body">
               <%#
-                NOTE: our AlertComponent doesn't support heading content like this,
-                so for a one-off outside the Rails pipeline it was easier to inline the HTML
-                like this.
+                NOTE: our AlertComponent doesn't support heading content like this uses,
+                so for a one-off outside the Rails pipeline it was easier to inline the HTML here.
               %>
               <h2 class="usa-alert__heading">
                 Non-Production Report
