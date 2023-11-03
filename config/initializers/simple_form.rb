@@ -2,6 +2,9 @@
 SimpleForm.setup do |config|
   require Rails.root.join('lib', 'extensions', 'simple_form', 'error_notification')
   require Rails.root.join('lib', 'extensions', 'simple_form', 'components', 'submit_component')
+  require Rails.root.join(
+    'lib', 'extensions', 'simple_form', 'components', 'html5_no_aria_required'
+  )
 
   config.button_class = 'usa-button'
   config.boolean_label_class = nil
@@ -23,14 +26,14 @@ SimpleForm.setup do |config|
     b.optional :hint
     b.optional :label
     b.optional :placeholder
-    b.use :html5
+    b.use :html5_no_aria_required
     b.use :input
   end
 
   config.wrappers :vertical_form,
                   tag: 'div',
                   class: 'margin-bottom-4' do |b|
-    b.use :html5
+    b.use :html5_no_aria_required
     b.optional :placeholder
     b.optional :maxlength
     b.optional :pattern
@@ -47,7 +50,7 @@ SimpleForm.setup do |config|
   end
 
   config.wrappers :uswds_text_input, class: 'margin-bottom-4' do |b|
-    b.use :html5
+    b.use :html5_no_aria_required
     b.optional :placeholder
     b.optional :maxlength
     b.optional :pattern
@@ -60,7 +63,7 @@ SimpleForm.setup do |config|
   end
 
   config.wrappers :uswds_select do |b|
-    b.use :html5
+    b.use :html5_no_aria_required
     b.optional :label, class: 'usa-label'
     b.optional :hint,  wrap_with: { tag: 'div', class: 'usa-hint' }
     b.use :input, class: 'usa-select usa-select--big', error_class: 'usa-input--error'
@@ -68,7 +71,7 @@ SimpleForm.setup do |config|
   end
 
   config.wrappers :uswds_checkbox do |b|
-    b.use :html5
+    b.use :html5_no_aria_required
     b.optional :hint, wrap_with: { tag: 'div', class: 'usa-hint' }
     b.use :input, class: 'usa-checkbox__input', error_class: 'usa-input--error'
     b.optional :label, class: 'usa-checkbox__label'
@@ -87,7 +90,7 @@ SimpleForm.setup do |config|
                     wrapper_class: 'usa-fieldset margin-bottom-4',
                     item_wrapper_tag: nil,
                     item_label_class: item_label_class do |b|
-      b.use :html5
+      b.use :html5_no_aria_required
       b.wrapper :legend, tag: 'legend', class: legend_class do |ba|
         ba.use :label_text
       end

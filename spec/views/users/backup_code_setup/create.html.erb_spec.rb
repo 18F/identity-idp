@@ -9,7 +9,7 @@ RSpec.describe 'users/backup_code_setup/create.html.erb' do
   end
 
   it 'has a localized title' do
-    expect(view).to receive(:title).with(t('forms.backup_code.title'))
+    expect(view).to receive(:title=).with(t('forms.backup_code.title'))
 
     render
   end

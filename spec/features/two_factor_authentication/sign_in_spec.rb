@@ -59,6 +59,35 @@ RSpec.feature 'Two Factor Authentication' do
       end
     end
 
+    context 'with a number that has opted out of SMS delivery' do
+      let(:user) { create(:user, :with_phone) }
+      let(:phone_configuration) { user.phone_configurations.first }
+
+      before do
+        PhoneNumberOptOut.create_or_find_with_phone(phone_configuration.phone)
+        opt_out_manager = instance_double('Telephony::Pinpoint::OptOutManager')
+        allow(opt_out_manager).
+          to receive(:opt_in_phone_number).
+          with(phone_configuration.formatted_phone).
+          and_return(FormResponse.new(success: true))
+        allow_any_instance_of(TwoFactorAuthentication::SmsOptInController).
+          to receive(:opt_out_manager).and_return(opt_out_manager)
+      end
+
+      scenario 'renders the sms opt-out error screen when signing in' do
+        sign_in_before_2fa(user)
+
+        expect(page).to have_content(t('two_factor_authentication.opt_in.title'))
+
+        click_button t('forms.buttons.send_one_time_code')
+
+        fill_in_code_with_last_phone_otp
+        click_submit_default
+
+        expect(page).to have_current_path(account_path)
+      end
+    end
+
     context 'with international phone that does not support voice delivery' do
       scenario 'updates international code as user types', :js do
         sign_in_before_2fa
@@ -530,34 +559,13 @@ RSpec.feature 'Two Factor Authentication' do
     end
 
     context 'sign in' do
-      context 'with platform auth sign up enabled' do
-        before do
-          allow(IdentityConfig.store).to receive(:platform_auth_set_up_enabled).and_return(true)
-        end
+      it 'allows user to be signed in without issue' do
+        mock_webauthn_verification_challenge
 
-        it 'allows user to be signed in without issue' do
-          mock_webauthn_verification_challenge
+        sign_in_user(webauthn_configuration.user)
+        mock_successful_webauthn_authentication { click_webauthn_authenticate_button }
 
-          sign_in_user(webauthn_configuration.user)
-          mock_successful_webauthn_authentication { click_webauthn_authenticate_button }
-
-          expect(page).to have_current_path(account_path)
-        end
-      end
-
-      context 'with platform auth sign up disabled' do
-        before do
-          allow(IdentityConfig.store).to receive(:platform_auth_set_up_enabled).and_return(false)
-        end
-
-        it 'allows user to be signed in without issue' do
-          mock_webauthn_verification_challenge
-
-          sign_in_user(webauthn_configuration.user)
-          mock_successful_webauthn_authentication { click_webauthn_authenticate_button }
-
-          expect(page).to have_current_path(account_path)
-        end
+        expect(page).to have_current_path(account_path)
       end
     end
   end

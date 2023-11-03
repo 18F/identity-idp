@@ -7,7 +7,7 @@ module Idv
 
     before_action :confirm_not_rate_limited
     before_action :confirm_verify_info_step_needed
-    before_action :confirm_agreement_step_complete
+    before_action :confirm_step_allowed
     before_action :confirm_hybrid_handoff_needed, only: :show
     before_action :maybe_redirect_for_phone_question_ab_test, only: :show
 
@@ -33,6 +33,15 @@ module Idv
       else
         bypass_send_link_steps
       end
+    end
+
+    def self.step_info
+      Idv::StepInfo.new(
+        key: :hybrid_handoff,
+        controller: controller_name,
+        next_steps: [:link_sent, :document_capture],
+        preconditions: ->(idv_session:, user:) { idv_session.idv_consent_given },
+      )
     end
 
     def handle_phone_submission
@@ -188,12 +197,6 @@ module Idv
       form_response_params = { success: false, errors: { message: message } }
       form_response_params[:extra] = extra unless extra.nil?
       FormResponse.new(**form_response_params)
-    end
-
-    def confirm_agreement_step_complete
-      return if idv_session.idv_consent_given
-
-      redirect_to idv_agreement_url
     end
 
     def formatted_destination_phone

@@ -6,24 +6,17 @@ module MfaSetupConcern
       auth_method_confirmation_url
     elsif next_setup_choice
       confirmation_path
-    else
-      if user_session[:mfa_selections]
-        analytics.user_registration_mfa_setup_complete(
-          mfa_method_counts: mfa_context.enabled_two_factor_configuration_counts_hash,
-          in_account_creation_flow: user_session[:in_account_creation_flow] || false,
-          enabled_mfa_methods_count: mfa_context.enabled_mfa_methods_count,
-          pii_like_keypaths: [[:mfa_method_counts, :phone]],
-          second_mfa_reminder_conversion: user_session.delete(:second_mfa_reminder_conversion),
-          success: true,
-        )
-      end
+    elsif user_session[:mfa_selections]
+      track_user_registration_mfa_setup_complete_event
       user_session.delete(:mfa_selections)
-      nil
+
+      sign_up_completed_path
     end
   end
 
   def confirmation_path(next_mfa_selection_choice = nil)
     user_session[:next_mfa_selection_choice] = next_mfa_selection_choice || next_setup_choice
+
     case user_session[:next_mfa_selection_choice]
     when 'voice', 'sms', 'phone'
       phone_setup_url
@@ -79,6 +72,17 @@ module MfaSetupConcern
   end
 
   private
+
+  def track_user_registration_mfa_setup_complete_event
+    analytics.user_registration_mfa_setup_complete(
+      mfa_method_counts: mfa_context.enabled_two_factor_configuration_counts_hash,
+      in_account_creation_flow: user_session[:in_account_creation_flow] || false,
+      enabled_mfa_methods_count: mfa_context.enabled_mfa_methods_count,
+      pii_like_keypaths: [[:mfa_method_counts, :phone]],
+      second_mfa_reminder_conversion: user_session.delete(:second_mfa_reminder_conversion),
+      success: true,
+    )
+  end
 
   def determine_next_mfa
     return unless user_session[:mfa_selections]

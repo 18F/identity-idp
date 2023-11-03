@@ -103,13 +103,14 @@
                                       <tr>
                                         <th>
                                           <p>
-                                            <%= (t('mailer.no_reply') + ' ' + t(
-                                                  'mailer.help',
-                                                  link: link_to(
+                                            <%= t('mailer.no_reply') %>
+                                            <%= @help_text || t(
+                                                  'mailer.help_html',
+                                                  link_html: link_to(
                                                     MarketingSite.nice_help_url,
                                                     MarketingSite.help_url,
                                                   ),
-                                                )).html_safe %>
+                                                ) %>
                                           </p>
                                         </th>
                                       </tr>

@@ -6,7 +6,8 @@ RSpec.shared_examples 'enrollment_with_a_status_update' do |passed:,
                                                             response_json:|
 
   it 'logs a message with common attributes' do
-    freeze_time do
+    date_far_from_daylight_savings_changes = Time.zone.parse('2023-11-30T10:00:00Z')
+    travel_to date_far_from_daylight_savings_changes do
       pending_enrollment.update(
         enrollment_established_at: Time.zone.now - 3.days,
         status_check_attempted_at: Time.zone.now - 15.minutes,

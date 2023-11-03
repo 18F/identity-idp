@@ -108,7 +108,7 @@ RSpec.describe Idv::EnterPasswordController do
         post :show, params: { user: { password: '' } }
 
         expect(flash[:error]).to eq t('idv.errors.incorrect_password')
-        expect(response).to redirect_to idv_review_path
+        expect(response).to redirect_to idv_enter_password_path
       end
     end
 
@@ -119,7 +119,7 @@ RSpec.describe Idv::EnterPasswordController do
 
       it 'redirects to new' do
         expect(flash[:error]).to eq t('idv.errors.incorrect_password')
-        expect(response).to redirect_to idv_review_path
+        expect(response).to redirect_to idv_enter_password_path
       end
 
       it 'tracks irs password entered event (idv_password_entered)' do
@@ -249,7 +249,7 @@ RSpec.describe Idv::EnterPasswordController do
       it 'redirects to original path' do
         put :create, params: { user: { password: 'wrong' } }
 
-        expect(response).to redirect_to idv_review_path
+        expect(response).to redirect_to idv_enter_password_path
 
         expect(@analytics).to have_logged_event(
           'IdV: review complete',
@@ -490,7 +490,7 @@ RSpec.describe Idv::EnterPasswordController do
             it 'allows the user to retry the request' do
               put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
               expect(flash[:error]).to eq t('idv.failure.exceptions.internal_error')
-              expect(response).to redirect_to idv_review_path
+              expect(response).to redirect_to idv_enter_password_path
 
               stub_request_enroll
 

@@ -17,6 +17,26 @@ class CalendarService
     def weekend_or_holiday?(date)
       weekend?(date) || holiday?(date)
     end
+
+    def fiscal_start_date(date)
+      date.change(year: date.month >= 10 ? date.year : date.year - 1, month: 10, day: 1)
+    end
+
+    def fiscal_q2_start(date)
+      date.change(year: date.month >= 10 ? date.year + 1 : date.year, month: 1, day: 1)
+    end
+
+    def fiscal_q3_start(date)
+      date.change(year: date.month >= 10 ? date.year + 1 : date.year, month: 4, day: 1)
+    end
+
+    def fiscal_q4_start(date)
+      date.change(year: date.month >= 10 ? date.year + 1 : date.year, month: 7, day: 1)
+    end
+
+    def fiscal_end_date(date)
+      date.change(year: date.month >= 10 ? date.year + 1 : date.year, month: 9, day: 30)
+    end
   end
 
   attr_reader :year

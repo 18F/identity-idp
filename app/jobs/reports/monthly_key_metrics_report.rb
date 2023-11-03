@@ -1,5 +1,5 @@
 require 'csv'
-require 'reporting/monthly_proofing_report'
+require 'reporting/proofing_rate_report'
 
 module Reports
   class MonthlyKeyMetricsReport < BaseReport
@@ -12,7 +12,7 @@ module Reports
       super(*args, **rest)
     end
 
-    def perform(date = Time.zone.today)
+    def perform(date = Time.zone.yesterday)
       @report_date = date
 
       email_addresses = emails.select(&:present?)
@@ -36,59 +36,59 @@ module Reports
 
     # Explanatory text to go before the report in the email
     # @return [String]
-    def preamble
-      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
+    def preamble(env: Identity::Hostdata.env || 'local')
+      ERB.new(<<~ERB).result(binding).html_safe # rubocop:disable Rails/OutputSafety
+        <% if env != 'prod' %>
+          <div class="usa-alert usa-alert--info">
+            <div class="usa-alert__body">
+              <%#
+                NOTE: our AlertComponent doesn't support heading content like this uses,
+                so for a one-off outside the Rails pipeline it was easier to inline the HTML here.
+              %>
+              <h2 class="usa-alert__heading">
+                Non-Production Report
+              </h2>
+              <p class="usa-alert__text">
+                This was generated in the <strong><%= env %></strong> environment.
+              </p>
+            </div>
+          </div>
+        <% end %>
         <p>
           For more information on how each of these metrics are calculated, take a look at our
           <a href="https://handbook.login.gov/articles/monthly-key-metrics-explainer.html">
           Monthly Key Metrics Report Explainer document</a>.
         </p>
-      HTML
+      ERB
     end
 
     def reports
       @reports ||= [
-        # Number of verified users (total) - LG-11148
-        # Number of verified users (new) - LG-11164
-        monthly_active_users_count_report.monthly_active_users_count_emailable_report,
-        # Total Annual Users - LG-11150
+        active_users_count_report.active_users_count_emailable_report,
         total_user_count_report.total_user_count_emailable_report,
-        # Proofing rate(s) (tbd on this one pager) - LG-11152
+        proofing_rate_report.proofing_rate_emailable_report,
         account_deletion_rate_report.account_deletion_emailable_report,
         account_reuse_report.account_reuse_emailable_report,
-        account_reuse_report.total_identities_emailable_report,
-        monthly_proofing_report.document_upload_proofing_emailable_report,
-        # Number of applications using Login (separated by auth / IdV) - LG-11154
-        # Number of agencies using Login - LG-11155
-        # Fiscal year active users, sum and split - LG-10816
-        # APG Reporting Annual Active Users by FY (w/ cumulative Active Users by quarter) - LG-11156
-        # APG Reporting of Active Federal Partner Agencies - LG-11157
-        # APG Reporting of Active Login.gov Serviced Applications - LG-11158
-        # APG Reporting of Cumulative Proofed Identities By Year/Month - LG-11159
-        # APG Reporting Proofing rate for HISPs - LG-11160
+        agency_and_sp_report.agency_and_sp_emailable_report,
+        active_users_count_report.active_users_count_apg_emailable_report,
       ]
     end
 
     def emails
       emails = [IdentityConfig.store.team_agnes_email]
-      if report_date.day == 1
+      if report_date.next_day.day == 1
         emails << IdentityConfig.store.team_all_feds_email
         emails << IdentityConfig.store.team_all_contractors_email
       end
       emails
     end
 
-    def account_reuse_report
-      @account_reuse_report ||= Reporting::AccountReuseAndTotalIdentitiesReport.new(report_date)
+    def proofing_rate_report
+      @proofing_rate_report ||= Reporting::ProofingRateReport.new(end_date: report_date)
     end
 
-    def monthly_proofing_report
-      @monthly_proofing_report ||= Reporting::MonthlyProofingReport.new(
-        # FYI - we should look for a way to share these configs
-        time_range: @report_date.prev_month(1).in_time_zone('UTC').all_month,
-        slice: 1.hour,
-        threads: 10,
-      )
+    def account_reuse_report
+      @account_reuse_report ||= Reporting::AccountReuseReport.new(report_date)
     end
 
     def account_deletion_rate_report
@@ -99,10 +99,14 @@ module Reports
       @total_user_count_report ||= Reporting::TotalUserCountReport.new(report_date)
     end
 
-    def monthly_active_users_count_report
-      @monthly_active_users_count_report ||= Reporting::MonthlyActiveUsersCountReport.new(
+    def active_users_count_report
+      @active_users_count_report ||= Reporting::ActiveUsersCountReport.new(
         report_date,
       )
+    end
+
+    def agency_and_sp_report
+      @agency_and_sp_report ||= Reporting::AgencyAndSpReport.new(report_date)
     end
 
     def upload_to_s3(report_body, report_name: nil)

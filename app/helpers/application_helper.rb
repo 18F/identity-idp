@@ -1,8 +1,25 @@
 # frozen_string_literal: true
 
 module ApplicationHelper
-  def title(title)
+  # Sets the page title
+  def title=(title)
     content_for(:title) { title }
+  end
+
+  class MissingTitleError < StandardError; end
+
+  # Shows the page title, or raises
+  # @return [String]
+  # @raise [MissingTitleError]
+  def title
+    content_for(:title).presence || (raise MissingTitleError, 'Missing title')
+  rescue MissingTitleError => error
+    if IdentityConfig.store.raise_on_missing_title
+      raise error
+    else
+      NewRelic::Agent.notice_error(error)
+      ''
+    end
   end
 
   def background_cls(cls)

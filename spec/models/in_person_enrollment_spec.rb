@@ -386,7 +386,6 @@ RSpec.describe InPersonEnrollment, type: :model do
 
   describe 'due_date and days_to_due_date' do
     let(:validity_in_days) { 10 }
-    let(:days_ago_established_at) { 7 }
 
     before do
       allow(IdentityConfig.store).
@@ -400,10 +399,10 @@ RSpec.describe InPersonEnrollment, type: :model do
       freeze_time do
         enrollment = create(
           :in_person_enrollment,
-          enrollment_established_at: days_ago_established_at.days.ago,
+          enrollment_established_at: (validity_in_days - 3).days.ago,
         )
         expect(enrollment.due_date).to(
-          eq((validity_in_days - days_ago_established_at).days.from_now),
+          eq(3.days.from_now),
         )
       end
     end
@@ -412,9 +411,50 @@ RSpec.describe InPersonEnrollment, type: :model do
       freeze_time do
         enrollment = create(
           :in_person_enrollment,
-          enrollment_established_at: days_ago_established_at.days.ago,
+          enrollment_established_at: (validity_in_days - 3).days.ago,
         )
-        expect(enrollment.days_to_due_date).to eq(validity_in_days - days_ago_established_at)
+        expect(enrollment.days_to_due_date).to eq(3)
+      end
+    end
+
+    context 'check edges to confirm date calculation is correct' do
+      it 'returns the correct due date and days to due date with 1 day left' do
+        freeze_time do
+          enrollment = create(
+            :in_person_enrollment,
+            enrollment_established_at: (validity_in_days - 1).days.ago,
+          )
+          expect(enrollment.days_to_due_date).to eq(1)
+          expect(enrollment.due_date).to(
+            eq(Time.zone.now + 1.day),
+          )
+        end
+      end
+
+      it 'returns the correct due date and days to due date with 0.5 days left' do
+        freeze_time do
+          enrollment = create(
+            :in_person_enrollment,
+            enrollment_established_at: (validity_in_days - 0.5).days.ago,
+          )
+          expect(enrollment.days_to_due_date).to eq(0)
+          expect(enrollment.due_date).to(
+            eq(Time.zone.now + 0.5.days),
+          )
+        end
+      end
+
+      it 'returns the correct due date and days to due date with 0 days left' do
+        freeze_time do
+          enrollment = create(
+            :in_person_enrollment,
+            enrollment_established_at: validity_in_days.days.ago,
+          )
+          expect(enrollment.days_to_due_date).to eq(0)
+          expect(enrollment.due_date).to(
+            eq(Time.zone.now),
+          )
+        end
       end
     end
   end

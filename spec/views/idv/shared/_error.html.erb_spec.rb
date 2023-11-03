@@ -98,7 +98,7 @@ RSpec.describe 'idv/shared/_error.html.erb' do
       let(:params) { { heading: heading } }
 
       it 'sets title as defaulting to heading' do
-        expect(view).to receive(:title).with(heading)
+        expect(view).to receive(:title=).with(heading)
 
         render 'idv/shared/error', **params
       end
@@ -109,7 +109,7 @@ RSpec.describe 'idv/shared/_error.html.erb' do
       let(:params) { { heading: heading, title: title } }
 
       it 'sets title' do
-        expect(view).to receive(:title).with(title)
+        expect(view).to receive(:title=).with(title)
 
         render 'idv/shared/error', **params
       end

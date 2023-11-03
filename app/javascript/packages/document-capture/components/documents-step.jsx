@@ -70,6 +70,7 @@ function DocumentsStep({
         />
       ))}
       {isLastStep ? <FormStepsButton.Submit /> : <FormStepsButton.Continue />}
+
       <Cancel />
     </>
   );

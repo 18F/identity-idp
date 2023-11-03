@@ -1,4 +1,4 @@
-<% title @title %>
+<% self.title = @title %>
 
 <% content_for(:pre_flash_content) do %>
   <%= render StepIndicatorComponent.new(
@@ -10,7 +10,7 @@
 <% end %>
 
 <%= render PageHeadingComponent.new.with_content(@title) %>
-  
+
 <div class="margin-top-4">
   <%= link_to(
         t('doc_auth.buttons.have_phone'),

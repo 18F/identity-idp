@@ -105,7 +105,7 @@ module Idv
       irs_attempts_api_tracker.idv_password_entered(success: false)
 
       flash[:error] = t('idv.errors.incorrect_password')
-      redirect_to idv_review_url
+      redirect_to idv_enter_password_url
     end
 
     def gpo_mail_service
@@ -186,7 +186,7 @@ module Idv
         reason: 'Request exception',
       )
       flash[:error] = t('idv.failure.exceptions.internal_error')
-      redirect_to idv_review_url
+      redirect_to idv_enter_password_url
     end
   end
 end

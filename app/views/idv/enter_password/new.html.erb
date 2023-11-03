@@ -1,4 +1,4 @@
-<% title @title %>
+<% self.title = @title %>
 
 <% content_for(:pre_flash_content) do %>
   <%= render StepIndicatorComponent.new(
@@ -17,7 +17,7 @@
 
 <%= simple_form_for(
       current_user,
-      url: idv_review_path,
+      url: idv_enter_password_path,
       html: { autocomplete: 'off', method: :put, class: 'margin-top-4' },
     ) do |f| %>
   <%= render PasswordToggleComponent.new(

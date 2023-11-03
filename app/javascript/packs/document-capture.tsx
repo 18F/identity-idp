@@ -30,6 +30,7 @@ interface AppRootData {
   acuantVersion: string;
   flowPath: FlowPath;
   cancelUrl: string;
+  exitUrl: string;
   idvInPersonUrl?: string;
   securityAndPrivacyHowItWorksUrl: string;
 }
@@ -65,6 +66,7 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
     useAlternateSdk,
     acuantVersion,
     phoneQuestionAbTestBucket,
+    phoneWithCamera,
   } = appRoot.dataset;
   return baseTrackEvent(event, {
     ...payload,
@@ -73,6 +75,7 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
     use_alternate_sdk: useAlternateSdk,
     acuant_version: acuantVersion,
     phone_question_ab_test_bucket: phoneQuestionAbTestBucket,
+    phone_with_camera: phoneWithCamera,
   });
 };
 
@@ -88,6 +91,7 @@ const {
   acuantVersion,
   flowPath,
   cancelUrl: cancelURL,
+  exitUrl: exitURL,
   idvInPersonUrl: inPersonURL,
   securityAndPrivacyHowItWorksUrl: securityAndPrivacyHowItWorksURL,
   inPersonFullAddressEntryEnabled,
@@ -146,6 +150,7 @@ const App = composeComponents(
     {
       value: {
         cancelURL,
+        exitURL,
         currentStep: 'document_capture',
       },
     },

@@ -100,6 +100,8 @@ ignore_unused:
   - 'errors.messages.*'
   - 'simple_form.*'
   - 'time.*'
+  - 'datetime.dotiw.words_connector'
+  - 'datetime.dotiw.last_word_connector'
 ## Exclude these keys from the `i18n-tasks eq-base' report:
 # ignore_eq_base:
 #   all:

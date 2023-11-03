@@ -348,9 +348,6 @@ Rails.application.routes.draw do
       post '/phone/resend_code' => 'resend_otp#create', as: :resend_otp
       get '/phone_confirmation' => 'otp_verification#show', as: :otp_verification
       put '/phone_confirmation' => 'otp_verification#update', as: :nil
-      # The `/review` route is deperecated in favor of `/enter_password`
-      get '/review' => 'enter_password#new'
-      put '/review' => 'enter_password#create'
       get '/enter_password' => 'enter_password#new'
       put '/enter_password' => 'enter_password#create'
       get '/phone_question' => 'phone_question#show'
@@ -369,6 +366,7 @@ Rails.application.routes.draw do
       get '/cancel/' => 'cancellations#new', as: :cancel
       put '/cancel' => 'cancellations#update'
       delete '/cancel' => 'cancellations#destroy'
+      get '/exit' => 'cancellations#exit', as: :exit
       get '/address' => 'address#new'
       post '/address' => 'address#update'
       get '/capture_doc' => 'hybrid_mobile/entry#show'
@@ -376,14 +374,7 @@ Rails.application.routes.draw do
           # sometimes underscores get messed up when linked to via SMS
           as: :capture_doc_dashes
 
-      # DEPRECATION NOTICE
-      # Usage of the /in_person_proofing/ssn routes is deprecated.
-      # Use the /in_person/ssn routes instead.
-      #
-      # These have been left in temporarily to prevent any impact to users
-      # during the deprecation process.
-      get '/in_person_proofing/ssn' => redirect('/verify/in_person/ssn', status: 307)
-      put '/in_person_proofing/ssn' => redirect('/verify/in_person/ssn', status: 307)
+      get '/in_person_proofing/address' => 'in_person/address#show'
 
       get '/in_person' => 'in_person#index'
       get '/in_person/ready_to_verify' => 'in_person/ready_to_verify#show',
@@ -415,9 +406,11 @@ Rails.application.routes.draw do
 
       get '/by_mail/letter_enqueued' => 'by_mail/letter_enqueued#show', as: :letter_enqueued
 
-      # Redirects for old verify by mail routes
-      get '/come_back_later' => redirect('/verify/by_mail/letter_enqueued', status: 301)
-      get '/by_mail' => redirect('/verify/by_mail/enter_code', status: 301)
+      # We re-mapped `/verify/by_mail` to `/verify/by_mail/enter_code`. However, we sent emails to
+      # users with a link to `/verify/by_mail?did_not_receive_letter=1`. We need to continue
+      # supporting that feature so we are maintaining this URL mapped to that action. Rendering a
+      # redirect here will strip the query parameter.
+      get '/by_mail' => 'by_mail/enter_code#index'
     end
 
     root to: 'users/sessions#new'

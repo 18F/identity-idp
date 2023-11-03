@@ -48,7 +48,7 @@ RSpec.feature 'idv phone step', :js do
 
       visit idv_phone_path
       expect(page).to have_content(t('idv.titles.session.enter_password', app_name: APP_NAME))
-      expect(page).to have_current_path(idv_review_path)
+      expect(page).to have_current_path(idv_enter_password_path)
 
       fill_in 'Password', with: user_password
       click_continue

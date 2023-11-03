@@ -7,6 +7,7 @@ module Idv
     include PhoneQuestionAbTestConcern
 
     before_action :confirm_not_rate_limited, except: [:update]
+    before_action :confirm_step_allowed
     before_action :confirm_hybrid_handoff_complete
     before_action :confirm_document_capture_needed
     before_action :override_csp_to_allow_acuant
@@ -46,9 +47,19 @@ module Idv
         flow_path: 'standard',
         sp_name: decorated_sp_session.sp_name,
         failure_to_proof_url: return_to_sp_failure_to_proof_url(step: 'document_capture'),
+        phone_with_camera: idv_session.phone_with_camera,
       }.merge(
         acuant_sdk_upgrade_a_b_testing_variables,
         phone_question_ab_test_analytics_bucket,
+      )
+    end
+
+    def self.step_info
+      Idv::StepInfo.new(
+        key: :document_capture,
+        controller: controller_name,
+        next_steps: [:success], # [:ssn],
+        preconditions: ->(idv_session:, user:) { idv_session.flow_path == 'standard' },
       )
     end
 

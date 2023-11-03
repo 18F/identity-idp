@@ -7,7 +7,7 @@ RSpec.describe 'sign_up/email_resend/new.html.erb' do
   end
 
   it 'has a localized title' do
-    expect(view).to receive(:title).with(t('titles.confirmations.new'))
+    expect(view).to receive(:title=).with(t('titles.confirmations.new'))
 
     render
   end

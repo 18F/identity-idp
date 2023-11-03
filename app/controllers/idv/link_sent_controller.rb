@@ -6,6 +6,7 @@ module Idv
     include PhoneQuestionAbTestConcern
 
     before_action :confirm_not_rate_limited
+    before_action :confirm_step_allowed
     before_action :confirm_hybrid_handoff_complete
     before_action :confirm_document_capture_needed
 
@@ -35,6 +36,16 @@ module Idv
     def extra_view_variables
       { phone: idv_session.phone_for_mobile_flow }.merge(
         phone_question_ab_test_analytics_bucket,
+        phone_with_camera: idv_session.phone_with_camera,
+      )
+    end
+
+    def self.step_info
+      Idv::StepInfo.new(
+        key: :link_sent,
+        controller: controller_name,
+        next_steps: [:success], # [:ssn],
+        preconditions: ->(idv_session:, user:) { idv_session.flow_path == 'hybrid' },
       )
     end
 
