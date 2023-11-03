@@ -104,7 +104,7 @@ describe('document-capture/components/documents-step', () => {
       const button = getByRole('button', { name: 'doc_auth.not_ready.button_nosp' });
       expect(button).to.be.ok();
     });
-    it('is rendered when disabled', () => {
+    it('is not rendered when disabled', () => {
       const App = composeComponents(
         [
           UIConfigContext.Provider,
