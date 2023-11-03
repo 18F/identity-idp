@@ -1,6 +1,4 @@
 RSpec.shared_examples 'webauthn setup' do
-  include WebAuthnHelper
-
   it 'allows a user to setup webauthn' do
     mock_webauthn_setup_challenge
     visit_webauthn_setup
@@ -56,27 +54,32 @@ RSpec.shared_examples 'webauthn setup' do
     let(:fake_analytics) { FakeAnalytics.new }
 
     it 'sends a submit failure event', :js do
-      select_2fa_option('webauthn_platform', visible: :all)
-
-      expect(current_path).to eq webauthn_setup_path
+      mock_webauthn_setup_challenge
+      visit_webauthn_setup
 
       fill_in_nickname_and_click_continue
       mock_submit_without_pressing_button_on_hardware_key_on_setup
       expect(fake_analytics).to have_logged_event(
         :webauthn_setup_submitted,
-        hash_including(success: false),
+        errors: { SecurityError:
+          [
+            'We were unable to add the security key. Please try again or <a href="/authentication_methods_setup">choose another authentication method</a>.',
+          ] },
+        platform_authenticator: false,
+        success: false,
       )
     end
 
     it 'sends a submit success event', :js do
-      select_2fa_option('webauthn_platform', visible: :all)
-      expect(current_path).to eq webauthn_setup_path
+      visit_webauthn_setup
       fill_in_nickname_and_click_continue
       mock_press_button_on_hardware_key_on_setup
 
       expect(fake_analytics).to have_logged_event(
         :webauthn_setup_submitted,
-        hash_including(success: true),
+        success: true,
+        errors: nil,
+        platform_authenticator: false,
       )
     end
   end
