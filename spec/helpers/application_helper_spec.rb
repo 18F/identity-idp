@@ -8,6 +8,8 @@ RSpec.describe ApplicationHelper do
 
     before do
       helper.title = assigned_title if assigned_title
+      allow(IdentityConfig.store).to receive(:raise_on_missing_title).
+        and_return(raise_on_missing_title)
     end
 
     context 'with a title assigned' do
@@ -19,11 +21,6 @@ RSpec.describe ApplicationHelper do
     end
 
     context 'without a title assigned' do
-      before do
-        allow(IdentityConfig.store).to receive(:raise_on_missing_title).
-          and_return(raise_on_missing_title)
-      end
-
       context 'configured not to raise on missing title' do
         let(:raise_on_missing_title) { false }
 
