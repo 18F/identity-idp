@@ -72,7 +72,7 @@ const SUPPORTED_ALGORITHMS: COSEAlgorithm[] = [
 ];
 
 export function getAuthenticatorDataFlagsValue(
-  response: AuthenticatorAttestationResponseBrowserSupport,
+  response: AuthenticatorAttestationResponse,
 ): number | undefined {
   try {
     const authenticatorData = response.getAuthenticatorData?.();
