@@ -41,7 +41,7 @@ RSpec.describe ApplicationHelper do
         end
       end
 
-      context 'configured not to raise on missing title' do
+      context 'configured to raise on missing title' do
         let(:raise_on_missing_title) { true }
 
         it 'raises an error' do
