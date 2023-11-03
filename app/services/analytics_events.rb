@@ -657,6 +657,7 @@ module AnalyticsEvents
   # @param [String] mimeType MIME type of image added
   # @param [Integer] moire
   # @param [String] phone_question_ab_test_bucket
+  # @param [String] phone_with_camera the result of the phone question a/b test
   # @param [Integer] sharpness
   # @param [Integer] sharpnessScoreThreshold
   # @param [Integer] size size of image added in bytes
@@ -685,6 +686,7 @@ module AnalyticsEvents
     mimeType:,
     moire:,
     phone_question_ab_test_bucket:,
+    phone_with_camera:,
     sharpness:,
     sharpnessScoreThreshold:,
     size:,
@@ -714,6 +716,7 @@ module AnalyticsEvents
       mimeType: mimeType,
       moire: moire,
       phone_question_ab_test_bucket: phone_question_ab_test_bucket,
+      phone_with_camera: phone_with_camera,
       sharpness: sharpness,
       sharpnessScoreThreshold: sharpnessScoreThreshold,
       size: size,
@@ -728,6 +731,7 @@ module AnalyticsEvents
   # @param [String] flow_path whether the user is in the hybrid or standard flow
   # @param [Boolean] isDrop
   # @param [String] phone_question_ab_test_bucket
+  # @param [String] phone_with_camera the result of the phone question a/b test
   # @param [Boolean] source
   # @param [Boolean] use_alternate_sdk
   def idv_back_image_clicked(
@@ -736,6 +740,7 @@ module AnalyticsEvents
     flow_path:,
     isDrop:,
     phone_question_ab_test_bucket:,
+    phone_with_camera:,
     source:,
     use_alternate_sdk:,
     **_extra
@@ -747,6 +752,7 @@ module AnalyticsEvents
       flow_path: flow_path,
       isDrop: isDrop,
       phone_question_ab_test_bucket: phone_question_ab_test_bucket,
+      phone_with_camera: phone_with_camera,
       source: source,
       use_alternate_sdk: use_alternate_sdk,
     )
@@ -1290,6 +1296,7 @@ module AnalyticsEvents
   # @param [String] mimeType MIME type of image added
   # @param [Integer] moire
   # @param [String] phone_question_ab_test_bucket
+  # @param [String] phone_with_camera the result of the phone question a/b test
   # @param [Integer] sharpness
   # @param [Integer] sharpnessScoreThreshold
   # @param [Integer] size size of image added in bytes
@@ -1318,6 +1325,7 @@ module AnalyticsEvents
     mimeType:,
     moire:,
     phone_question_ab_test_bucket:,
+    phone_with_camera:,
     sharpness:,
     sharpnessScoreThreshold:,
     size:,
@@ -1347,6 +1355,7 @@ module AnalyticsEvents
       mimeType: mimeType,
       moire: moire,
       phone_question_ab_test_bucket: phone_question_ab_test_bucket,
+      phone_with_camera: phone_with_camera,
       sharpness: sharpness,
       sharpnessScoreThreshold: sharpnessScoreThreshold,
       size: size,
@@ -1361,6 +1370,7 @@ module AnalyticsEvents
   # @param [String] flow_path whether the user is in the hybrid or standard flow
   # @param [Boolean] isDrop
   # @param [String] phone_question_ab_test_bucket
+  # @param [String] phone_with_camera the result of the phone question a/b test
   # @param [String] source
   # @param [String] use_alternate_sdk
   def idv_front_image_clicked(
@@ -1369,6 +1379,7 @@ module AnalyticsEvents
     flow_path:,
     isDrop:,
     phone_question_ab_test_bucket:,
+    phone_with_camera:,
     source:,
     use_alternate_sdk:,
     **_extra
@@ -1380,6 +1391,7 @@ module AnalyticsEvents
       flow_path: flow_path,
       isDrop: isDrop,
       phone_question_ab_test_bucket: phone_question_ab_test_bucket,
+      phone_with_camera: phone_with_camera,
       source: source,
       use_alternate_sdk: use_alternate_sdk,
     )
@@ -2350,6 +2362,7 @@ module AnalyticsEvents
   end
 
   # @param [String] phone_question_ab_test_bucket
+  # @param [String] phone_with_camera the result of the phone question a/b test
   # @param [Boolean] isCancelled
   # @param [Boolean] isRateLimited
   # rubocop:disable Naming/VariableName,Naming/MethodParameterName
@@ -2357,6 +2370,7 @@ module AnalyticsEvents
     isCancelled:,
     isRateLimited:,
     phone_question_ab_test_bucket:,
+    phone_with_camera:,
     **_extra
   )
     track_event(
@@ -2364,15 +2378,22 @@ module AnalyticsEvents
       isCancelled: isCancelled,
       isRateLimited: isRateLimited,
       phone_question_ab_test_bucket: phone_question_ab_test_bucket,
+      phone_with_camera: phone_with_camera,
     )
   end
   # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
   # @param [String] phone_question_ab_test_bucket
-  def idv_link_sent_capture_doc_polling_started(phone_question_ab_test_bucket:, **_extra)
+  # @param [String] phone_with_camera the result of the phone question a/b test
+  def idv_link_sent_capture_doc_polling_started(
+    phone_question_ab_test_bucket:,
+    phone_with_camera:,
+    **_extra
+  )
     track_event(
       'Frontend: IdV: Link sent capture doc polling started',
       phone_question_ab_test_bucket: phone_question_ab_test_bucket,
+      phone_with_camera: phone_with_camera,
     )
   end
 

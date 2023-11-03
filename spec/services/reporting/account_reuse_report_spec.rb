@@ -1,10 +1,10 @@
 require 'rails_helper'
 require 'csv'
 
-RSpec.describe Reporting::AccountReuseAndTotalIdentitiesReport do
+RSpec.describe Reporting::AccountReuseReport do
   let(:report_date) { Date.new(2021, 2, 28) }
 
-  subject(:report) { Reporting::AccountReuseAndTotalIdentitiesReport.new(report_date) }
+  subject(:report) { Reporting::AccountReuseReport.new(report_date) }
 
   before do
     travel_to report_date
@@ -99,17 +99,6 @@ RSpec.describe Reporting::AccountReuseAndTotalIdentitiesReport do
             [2, 3, 0.3],
             [3, 2, 0.2],
             ['Total (all >1)', 5, 0.5],
-          ],
-        )
-      end
-    end
-
-    describe '#total_identities_emailable_report' do
-      it 'has the correct data' do
-        expect(report.total_identities_emailable_report.table).to eq(
-          [
-            ['Total proofed identities (Feb-2021)'],
-            [10],
           ],
         )
       end

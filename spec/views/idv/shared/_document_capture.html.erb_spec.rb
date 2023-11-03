@@ -13,6 +13,7 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
   let(:acuant_sdk_upgrade_a_b_testing_enabled) { false }
   let(:use_alternate_sdk) { false }
   let(:phone_question_ab_test_bucket) { :bypass_phone_question }
+  let(:phone_with_camera) { false }
   let(:acuant_version) { '1.3.3.7' }
 
   before do
@@ -43,6 +44,7 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
       use_alternate_sdk: use_alternate_sdk,
       acuant_version: acuant_version,
       phone_question_ab_test_bucket: phone_question_ab_test_bucket,
+      phone_with_camera: phone_with_camera,
     }
   end
 
