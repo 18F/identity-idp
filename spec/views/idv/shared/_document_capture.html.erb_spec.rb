@@ -13,7 +13,7 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
   let(:acuant_sdk_upgrade_a_b_testing_enabled) { false }
   let(:use_alternate_sdk) { false }
   let(:phone_question_ab_test_bucket) { :bypass_phone_question }
-  let(:doc_auth_selfie_capture) { { "enabled": false } }
+  let(:doc_auth_selfie_capture) { { enabled: false } }
   let(:acuant_version) { '1.3.3.7' }
 
   before do
