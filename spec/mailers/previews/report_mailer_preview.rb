@@ -12,7 +12,6 @@ class ReportMailerPreview < ActionMailer::Preview
     monthly_key_metrics_report = Reports::MonthlyKeyMetricsReport.new(Time.zone.yesterday)
 
     stub_cloudwatch_client(monthly_key_metrics_report.proofing_rate_report)
-    stub_cloudwatch_client(monthly_key_metrics_report.monthly_proofing_report)
 
     ReportMailer.tables_report(
       email: 'test@example.com',
