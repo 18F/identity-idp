@@ -50,10 +50,6 @@ RSpec.describe 'webauthn hide' do
   describe 'platform authenticator' do
     let(:option_id) { 'two_factor_options_form_selection_webauthn_platform' }
 
-    before do
-      allow(IdentityConfig.store).to receive(:platform_auth_set_up_enabled).and_return(true)
-    end
-
     context 'on sign up' do
       context 'with javascript enabled', :js do
         it 'does not display the authenticator option' do
