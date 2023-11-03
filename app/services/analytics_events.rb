@@ -584,6 +584,7 @@ module AnalyticsEvents
   # @param [Boolean] success
   # @param [Boolean] use_alternate_sdk
   # The Acuant SDK was loaded
+  # rubocop:disable Naming/VariableName,Naming/MethodParameterName
   def idv_acuant_sdk_loaded(
     acuant_sdk_upgrade_a_b_testing_enabled:,
     acuant_version:,
@@ -605,6 +606,7 @@ module AnalyticsEvents
       use_alternate_sdk: use_alternate_sdk,
     )
   end
+  # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
   # @param [Boolean] success
   # @param [Boolean] address_edited
@@ -728,7 +730,6 @@ module AnalyticsEvents
   # @param [String] phone_question_ab_test_bucket
   # @param [Boolean] source
   # @param [Boolean] use_alternate_sdk
-  # rubocop:enable Naming/VariableName,Naming/MethodParameterName
   def idv_back_image_clicked(
     acuant_sdk_upgrade_a_b_testing_enabled:,
     acuant_version:,
@@ -750,6 +751,7 @@ module AnalyticsEvents
       use_alternate_sdk: use_alternate_sdk,
     )
   end
+  # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
   def idv_barcode_warning_continue_clicked(**_extra)
     track_event(
@@ -1355,7 +1357,6 @@ module AnalyticsEvents
   # @param [String] phone_question_ab_test_bucket
   # @param [String] source
   # @param [String] use_alterate_sdk
-  # rubocop:enable Naming/VariableName,Naming/MethodParameterName
   def idv_front_image_clicked(
     acuant_sdk_upgrade_a_b_testing_enabled:,
     acuant_version:,
@@ -1377,6 +1378,7 @@ module AnalyticsEvents
       use_alternate_sdk: use_alternate_sdk,
     )
   end
+  # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
   # @param [DateTime] enqueued_at When letter was enqueued
   # @param [Boolean] resend User requested a second (or more) letter
