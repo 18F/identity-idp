@@ -634,6 +634,7 @@ module AnalyticsEvents
   # @param [String] mimeType MIME type of image added
   # @param [Integer] moire
   # @param [String] phone_question_ab_test_bucket
+  # @param [String] phone_with_camera the result of the phone question a/b test
   # @param [Integer] sharpness
   # @param [Integer] sharpnessScoreThreshold
   # @param [Integer] size size of image added in bytes
@@ -662,6 +663,7 @@ module AnalyticsEvents
     mimeType:,
     moire:,
     phone_question_ab_test_bucket:,
+    phone_with_camera:,
     sharpness:,
     sharpnessScoreThreshold:,
     size:,
@@ -691,6 +693,7 @@ module AnalyticsEvents
       mimeType: mimeType,
       moire: moire,
       phone_question_ab_test_bucket: phone_question_ab_test_bucket,
+      phone_with_camera: phone_with_camera,
       sharpness: sharpness,
       sharpnessScoreThreshold: sharpnessScoreThreshold,
       size: size,
@@ -701,9 +704,17 @@ module AnalyticsEvents
   end
   # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
-  def idv_back_image_clicked(**_extra)
+  # @param [String] phone_question_ab_test_bucket
+  # @param [String] phone_with_camera the result of the phone question a/b test
+  def idv_back_image_clicked(
+    phone_with_camera:,
+    phone_question_ab_test_bucket:,
+    **_extra
+  )
     track_event(
       'Frontend: IdV: back image clicked',
+      phone_with_camera: phone_with_camera,
+      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
     )
   end
 
@@ -1212,6 +1223,7 @@ module AnalyticsEvents
   # @param [String] mimeType MIME type of image added
   # @param [Integer] moire
   # @param [String] phone_question_ab_test_bucket
+  # @param [String] phone_with_camera the result of the phone question a/b test
   # @param [Integer] sharpness
   # @param [Integer] sharpnessScoreThreshold
   # @param [Integer] size size of image added in bytes
@@ -1240,6 +1252,7 @@ module AnalyticsEvents
     mimeType:,
     moire:,
     phone_question_ab_test_bucket:,
+    phone_with_camera:,
     sharpness:,
     sharpnessScoreThreshold:,
     size:,
@@ -1269,6 +1282,7 @@ module AnalyticsEvents
       mimeType: mimeType,
       moire: moire,
       phone_question_ab_test_bucket: phone_question_ab_test_bucket,
+      phone_with_camera: phone_with_camera,
       sharpness: sharpness,
       sharpnessScoreThreshold: sharpnessScoreThreshold,
       size: size,
@@ -1279,9 +1293,17 @@ module AnalyticsEvents
   end
   # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
-  def idv_front_image_clicked(**_extra)
+  # @param [String] phone_question_ab_test_bucket
+  # @param [String] phone_with_camera the result of the phone question a/b test
+  def idv_front_image_clicked(
+    phone_question_ab_test_bucket:,
+    phone_with_camera:,
+    **_extra
+  )
     track_event(
       'Frontend: IdV: front image clicked',
+      phone_with_camera: phone_with_camera,
+      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
     )
   end
 
@@ -2223,15 +2245,31 @@ module AnalyticsEvents
     )
   end
 
-  def idv_link_sent_capture_doc_polling_complete(**_extra)
+  # @param [String] phone_question_ab_test_bucket
+  # @param [String] phone_with_camera the result of the phone question a/b test
+  def idv_link_sent_capture_doc_polling_complete(
+    phone_question_ab_test_bucket:,
+    phone_with_camera:,
+    **_extra
+  )
     track_event(
       'Frontend: IdV: Link sent capture doc polling complete',
+      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
+      phone_with_camera: phone_with_camera,
     )
   end
 
-  def idv_link_sent_capture_doc_polling_started(**_extra)
+  # @param [String] phone_question_ab_test_bucket
+  # @param [String] phone_with_camera the result of the phone question a/b test
+  def idv_link_sent_capture_doc_polling_started(
+    phone_question_ab_test_bucket:,
+    phone_with_camera:,
+    **_extra
+  )
     track_event(
       'Frontend: IdV: Link sent capture doc polling started',
+      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
+      phone_with_camera: phone_with_camera,
     )
   end
 

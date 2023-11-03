@@ -18,6 +18,7 @@ describe('document-capture/context/upload', () => {
       'statusPollInterval',
       'getStatus',
       'flowPath',
+      'phoneWithCamera',
       'formData',
     ]);
 
