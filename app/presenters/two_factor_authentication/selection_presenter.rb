@@ -80,8 +80,6 @@ module TwoFactorAuthentication
 
     def setup_label(type)
       case type
-      when 'phone'
-        t('two_factor_authentication.two_factor_choice_options.phone')
       when 'sms'
         t('two_factor_authentication.two_factor_choice_options.sms')
       when 'voice'
