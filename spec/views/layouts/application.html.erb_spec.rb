@@ -73,13 +73,19 @@ RSpec.describe 'layouts/application.html.erb' do
     context 'without title' do
       let(:title_content) { nil }
 
-      it 'notifies NewRelic' do
-        expect(NewRelic::Agent).to receive(:notice_error) do |error|
-          expect(error).to be_kind_of(ApplicationHelper::MissingTitleError)
-          expect(error.message).to include('Missing title')
+      context 'when raise_on_missing_title is false' do
+        before do
+          allow(IdentityConfig.store).to receive(:raise_on_missing_title).and_return(false)
         end
 
-        expect { render }.to_not raise_error
+        it 'notifies NewRelic' do
+          expect(NewRelic::Agent).to receive(:notice_error) do |error|
+            expect(error).to be_kind_of(ApplicationHelper::MissingTitleError)
+            expect(error.message).to include('Missing title')
+          end
+
+          expect { render }.to_not raise_error
+        end
       end
 
       context 'when raise_on_missing_title is true' do

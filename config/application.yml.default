@@ -399,6 +399,7 @@ development:
   piv_cac_verify_token_secret: ee7f20f44cdc2ba0c6830f70470d1d1d059e1279cdb58134db92b35947b1528ef5525ece5910cf4f2321ab989a618feea12ef95711dbc62b9601e8520a34ee12
   rails_mailer_previews_enabled: true
   rack_timeout_service_timeout_seconds: 9_999_999_999
+  raise_on_missing_title: true
   s3_report_bucket_prefix: ''
   s3_report_public_bucket_prefix: ''
   saml_endpoint_configs: '[{"suffix":"2023","secret_key_passphrase":"trust-but-verify"}]'
@@ -547,6 +548,7 @@ test:
   phone_setups_per_ip_track_only_mode: false
   piv_cac_verify_token_secret: 3ac13bfa23e22adae321194c083e783faf89469f6f85dcc0802b27475c94b5c3891b5657bd87d0c1ad65de459166440512f2311018db90d57b15d8ab6660748f
   poll_rate_for_verify_in_seconds: 0
+  raise_on_missing_title: true
   reg_confirmed_email_max_attempts: 3
   reg_unconfirmed_email_max_attempts: 4
   reg_unconfirmed_email_window_in_minutes: 70
