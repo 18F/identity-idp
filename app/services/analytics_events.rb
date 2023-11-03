@@ -1459,6 +1459,20 @@ module AnalyticsEvents
     track_event('IdV: gpo confirm start over visited', **extra)
   end
 
+  # The user ran out of time to complete their address verification by mail.
+  # @param [String] user_id UUID of the user who expired
+  # @param [Boolean] user_has_active_profile Whether the user current has an active profile
+  # @param [Integer] letters_sent Total # of GPO letters sent for this profile
+  def idv_gpo_expired(user_id:, user_has_active_profile:, letters_sent:, **extra)
+    track_event(
+      :idv_gpo_expired,
+      user_id: user_id,
+      user_has_active_profile: user_has_active_profile,
+      letters_sent: letters_sent,
+      **extra,
+    )
+  end
+
   # A GPO reminder email was sent to the user
   # @param [String] user_id UUID of user who we sent a reminder to
   def idv_gpo_reminder_email_sent(user_id:, **extra)
