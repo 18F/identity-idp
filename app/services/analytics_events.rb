@@ -712,7 +712,7 @@ module AnalyticsEvents
     **_extra
   )
     track_event(
-      'Frontend: IdV: back image clicked', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
+      'Frontend: IdV: back image clicked',
       phone_with_camera: phone_with_camera,
       phone_question_ab_test_bucket: phone_question_ab_test_bucket,
     )
@@ -1301,7 +1301,7 @@ module AnalyticsEvents
     **_extra
   )
     track_event(
-      'Frontend: IdV: front image clicked', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
+      'Frontend: IdV: front image clicked',
       phone_with_camera: phone_with_camera,
       phone_question_ab_test_bucket: phone_question_ab_test_bucket,
     )
@@ -2253,7 +2253,7 @@ module AnalyticsEvents
     **_extra
   )
     track_event(
-      'Frontend: IdV: Link sent capture doc polling complete', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
+      'Frontend: IdV: Link sent capture doc polling complete',
       phone_question_ab_test_bucket: phone_question_ab_test_bucket,
       phone_with_camera: phone_with_camera,
     )
@@ -2267,7 +2267,7 @@ module AnalyticsEvents
     **_extra
   )
     track_event(
-      'Frontend: IdV: Link sent capture doc polling started', # rubocop:disable IdentityIdp/AnalyticsEventNameLinter
+      'Frontend: IdV: Link sent capture doc polling started',
       phone_question_ab_test_bucket: phone_question_ab_test_bucket,
       phone_with_camera: phone_with_camera,
     )
