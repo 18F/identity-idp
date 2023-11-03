@@ -901,7 +901,7 @@ RSpec.describe UserMailer, type: :mailer do
     end
 
     context 'in another language' do
-      let(:user) { build(:user, email_language: :es ) }
+      let(:user) { build(:user, email_language: :es) }
 
       it 'translates the footer help text correctly' do
         expect(mail.html_part.body).
