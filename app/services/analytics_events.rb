@@ -1457,11 +1457,36 @@ module AnalyticsEvents
     track_event('IdV: gpo reminder email sent', user_id: user_id, **extra)
   end
 
-  def idv_image_capture_failed(**_extra)
+  # @param [String] field back or front
+  # @param [String] acuantCaptureMode
+  # @param [String] error
+  # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
+  # @param [String] acuant_version
+  # @param [String] flow_path
+  # @param [Boolean] use_alternate_sdk
+  # rubocop:disable Naming/VariableName,Naming/MethodParameterName
+  def idv_image_capture_failed(
+    field:,
+    acuantCaptureMode:,
+    error:,
+    acuant_sdk_upgrade_a_b_testing_enabled:,
+    acuant_version:,
+    flow_path:,
+    use_alternate_sdk:,
+    **_extra
+  )
     track_event(
       'Frontend: IdV: Image capture failed',
+      field: field,
+      acuantCaptureMode: acuantCaptureMode,
+      error: error,
+      acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
+      acuant_version: acuant_version,
+      flow_path: flow_path,
+      use_alternate_sdk: use_alternate_sdk,
     )
   end
+  # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
   # Tracks emails that are initiated during InPerson::EmailReminderJob
   # @param [String] email_type early or late
@@ -2324,15 +2349,30 @@ module AnalyticsEvents
     )
   end
 
-  def idv_link_sent_capture_doc_polling_complete(**_extra)
+  # @param [String] phone_question_ab_test_bucket
+  # @param [Boolean] isCancelled
+  # @param [Boolean] isRateLimited
+  # rubocop:disable Naming/VariableName,Naming/MethodParameterName
+  def idv_link_sent_capture_doc_polling_complete(
+    isCancelled:,
+    isRateLimited:,
+    phone_question_ab_test_bucket:,
+    **_extra
+  )
     track_event(
       'Frontend: IdV: Link sent capture doc polling complete',
+      isCancelled: isCancelled,
+      isRateLimited: isRateLimited,
+      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
     )
   end
+  # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
-  def idv_link_sent_capture_doc_polling_started(**_extra)
+  # @param [String] phone_question_ab_test_bucket
+  def idv_link_sent_capture_doc_polling_started(phone_question_ab_test_bucket:, **_extra)
     track_event(
       'Frontend: IdV: Link sent capture doc polling started',
+      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
     )
   end
 
@@ -2888,15 +2928,61 @@ module AnalyticsEvents
     )
   end
 
-  def idv_warning_action_triggered(**_extra)
+  # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
+  # @param [String] acuant_version
+  # @param [String] flow_path
+  # @param [String] location
+  # @param [Boolean] use_alternate_sdk
+  def idv_warning_action_triggered(
+    acuant_sdk_upgrade_a_b_testing_enabled:,
+    acuant_version:,
+    flow_path:,
+    location:,
+    use_alternate_sdk:,
+    **_extra
+  )
     track_event(
       'Frontend: IdV: warning action triggered',
+      acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
+      acuant_version: acuant_version,
+      flow_path: flow_path,
+      location: location,
+      use_alternate_sdk: use_alternate_sdk,
     )
   end
 
-  def idv_warning_shown(**_extra)
+  # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
+  # @param [String] acuant_version
+  # @param [String] error_message_displayed
+  # @param [String] flow_path
+  # @param [String] heading
+  # @param [String] location
+  # @param [Integer] remaining_attempts
+  # @param [String] subheading
+  # @param [Boolean] use_alternate_sdk
+  def idv_warning_shown(
+    acuant_sdk_upgrade_a_b_testing_enabled:,
+    acuant_version:,
+    error_message_displayed:,
+    flow_path:,
+    heading:,
+    location:,
+    remaining_attempts:,
+    subheading:,
+    use_alternate_sdk:,
+    **_extra
+  )
     track_event(
       'Frontend: IdV: warning shown',
+      acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
+      acuant_version: acuant_version,
+      error_message_displayed: error_message_displayed,
+      flow_path: flow_path,
+      heading: heading,
+      location: location,
+      remaining_attempts: remaining_attempts,
+      subheading: subheading,
+      use_alternate_sdk: use_alternate_sdk,
     )
   end
 
