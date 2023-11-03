@@ -36,14 +36,31 @@ module Reports
 
     # Explanatory text to go before the report in the email
     # @return [String]
-    def preamble
-      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
+    def preamble(env: Identity::Hostdata.env || 'local')
+      ERB.new(<<~ERB).result(binding).html_safe # rubocop:disable Rails/OutputSafety
+        <% if env != 'prod' %>
+          <div class="usa-alert usa-alert--info">
+            <div class="usa-alert__body">
+              <%#
+                NOTE: our AlertComponent doesn't support heading content like this,
+                so for a one-off outside the Rails pipeline it was easier to inline the HTML
+                like this.
+              %>
+              <h2 class="usa-alert__heading">
+                Non-Production Report
+              </h2>
+              <p class="usa-alert__text">
+                This was generated in the <strong><%= env %></strong> environment.
+              </p>
+            </div>
+          </div>
+        <% end %>
         <p>
           For more information on how each of these metrics are calculated, take a look at our
           <a href="https://handbook.login.gov/articles/monthly-key-metrics-explainer.html">
           Monthly Key Metrics Report Explainer document</a>.
         </p>
-      HTML
+      ERB
     end
 
     def reports
