@@ -1,15 +1,16 @@
+# frozen_string_literal: true
+
 module Idv
   class HowToVerifyForm
     include ActiveModel::Model
     ATTRIBUTES = [:selection].freeze
-    REMOTE = 'remote'.freeze
-    IPP = 'ipp'.freeze
-    VERIFICATION_OPTIONS = [REMOTE, IPP].freeze
+    REMOTE = 'remote'
+    IPP = 'ipp'
 
     attr_accessor :selection
 
     validates :selection, inclusion: {
-      in: VERIFICATION_OPTIONS,
+      in: [REMOTE, IPP],
     }
     validates :selection, presence: {
       message: proc { I18n.t('errors.doc_auth.how_to_verify_form') },
