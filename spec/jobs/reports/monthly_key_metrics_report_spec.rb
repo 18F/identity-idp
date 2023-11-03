@@ -113,12 +113,26 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
   end
 
   describe '#preamble' do
-    subject(:preamble) { report.preamble }
+    let(:env) { 'prod' }
+    subject(:preamble) { report.preamble(env:) }
 
     it 'has a preamble that is valid HTML' do
       expect(preamble).to be_html_safe
 
       expect { Nokogiri::XML(preamble) { |config| config.strict } }.to_not raise_error
+    end
+
+    context 'in a non-prod environment' do
+      let(:env) { 'staging' }
+
+      it 'has an alert with the environment name' do
+        expect(preamble).to be_html_safe
+
+        doc = Nokogiri::XML(preamble)
+
+        alert = doc.at_css('.usa-alert')
+        expect(alert.text).to include(env)
+      end
     end
   end
 end

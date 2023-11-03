@@ -33,8 +33,8 @@ RSpec.describe RuboCop::Cop::IdentityIdp::AnalyticsEventNameLinter do
   it 'does not register an offense for an exempted legacy event name' do
     expect_no_offenses(<<~RUBY)
       module AnalyticsEvents
-        def account_delete_submitted
-          track_event('Account Delete submitted')
+        def idv_back_image_added
+          track_event('Frontend: IdV: back image added')
         end
       end
     RUBY
