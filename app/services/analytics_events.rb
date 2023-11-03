@@ -580,7 +580,7 @@ module AnalyticsEvents
   # @param [String] acuant_version
   # @param [String] flow_path whether the user is in the hybrid or standard flow
   # @param [Boolean] isCameraSupported
-  # @param [String] phone_question_ab_test_bucket
+  # @param [String] phone_question_ab_test_analytics_bucket
   # @param [Boolean] success
   # @param [Boolean] use_alternate_sdk
   # The Acuant SDK was loaded
@@ -1362,7 +1362,7 @@ module AnalyticsEvents
   # @param [Boolean] isDrop
   # @param [String] phone_question_ab_test_bucket
   # @param [String] source
-  # @param [String] use_alterate_sdk
+  # @param [String] use_alternate_sdk
   def idv_front_image_clicked(
     acuant_sdk_upgrade_a_b_testing_enabled:,
     acuant_version:,
