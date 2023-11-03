@@ -585,7 +585,7 @@ module AnalyticsEvents
   # @param [Boolean] use_alternate_sdk
   # The Acuant SDK was loaded
   def idv_acuant_sdk_loaded(
-    acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
+    acuant_sdk_upgrade_a_b_testing_enabled:,
     acuant_version:,
     flow_path:,
     isCameraSupported:,
@@ -603,7 +603,6 @@ module AnalyticsEvents
       phone_question_ab_test_analytics_bucket: phone_question_ab_test_analytics_bucket,
       success: success,
       use_alternate_sdk: use_alternate_sdk,
-      **extra,
     )
   end
 
@@ -738,7 +737,7 @@ module AnalyticsEvents
     phone_question_ab_test_bucket:,
     source:,
     use_alternate_sdk:,
-    **_extra,
+    **_extra
   )
     track_event(
       'Frontend: IdV: back image clicked',
