@@ -835,18 +835,6 @@ module AnalyticsEvents
     )
   end
 
-  def idv_clicked_sp_link_on_ready_to_verify_page(**_extra)
-    track_event(
-      'IdV: user clicked sp link on ready to verify page',
-    )
-  end
-
-  def idv_clicked_what_to_bring_link_on_ready_to_verify_page(**_extra)
-    track_event(
-      'IdV: user clicked what to bring link on ready to verify page',
-    )
-  end
-
   # The user checked or unchecked the "By checking this box..." checkbox on the idv agreement step.
   # (This is a frontend event.)
   # @param [Boolean] checked Whether the user checked the checkbox
