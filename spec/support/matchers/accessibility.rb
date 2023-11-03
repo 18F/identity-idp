@@ -135,7 +135,7 @@ RSpec::Matchers.define :have_name do |name|
   failure_message do |element|
     <<-STR.squish
       Expected element would have computed name "#{name}".
-      Found #{computed_name(element)}.
+      Found #{AccessibleName.new(page:).computed_name(element)}.
     STR
   end
 end
