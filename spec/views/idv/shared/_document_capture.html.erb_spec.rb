@@ -98,7 +98,7 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
     it 'sends doc_auth_selfie_capture to the FE' do
       render_partial
       expect(rendered).to have_css(
-        "#document-capture-form[data-doc-auth-selfie-capture='#{doc_auth_selfie_capture}']",
+        "#document-capture-form[data-doc-auth-selfie-capture='{\"enabled\":false}']",
       )
     end
   end
