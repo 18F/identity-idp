@@ -578,10 +578,26 @@ module AnalyticsEvents
 
   # @param [Boolean] success
   # The Acuant SDK was loaded
-  def idv_acuant_sdk_loaded(success:, **_extra)
+  def idv_acuant_sdk_loaded(
+    acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
+    acuant_version:,
+    flow_path:,
+    isCameraSupported:,
+    phone_question_ab_test_analytics_bucket:,
+    success:,
+    use_alternate_sdk:,
+    **_extra
+  )
     track_event(
       'Frontend: IdV: Acuant SDK loaded',
+      acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
+      acuant_version: acuant_version,
+      flow_path: flow_path,
+      isCameraSupported: isCameraSupported,
+      phone_question_ab_test_analytics_bucket: phone_question_ab_test_analytics_bucket,
       success: success,
+      use_alternate_sdk: use_alternate_sdk,
+      **extra,
     )
   end
 
@@ -701,9 +717,25 @@ module AnalyticsEvents
   end
   # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
-  def idv_back_image_clicked(**_extra)
+  def idv_back_image_clicked(
+    acuant_sdk_upgrade_a_b_testing_enabled:,
+    acuant_version:,
+    flow_path:,
+    is_drop:, # isDrop
+    phone_question_ab_test_bucket:,
+    source:,
+    use_alternate_sdk:,
+    **_extra,
+  )
     track_event(
       'Frontend: IdV: back image clicked',
+      acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
+      acuant_version: acuant_version,
+      flow_path: flow_path,
+      is_drop: is_drop, # isDrop
+      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
+      source: source,
+      use_alternate_sdk: use_alternate_sdk,
     )
   end
 
@@ -766,18 +798,22 @@ module AnalyticsEvents
   def idv_capture_troubleshooting_dismissed(**_extra)
     track_event(
       'Frontend: IdV: Capture troubleshooting dismissed',
+      acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
+      acuant_version: acuant_version,
+      flow_path: flow_path,
+      use_alternate_sdk: use_alternate_sdk,
     )
   end
 
   def idv_clicked_sp_link_on_ready_to_verify_page(**_extra)
     track_event(
-      'Frontend: IdV: user clicked sp link on ready to verify page',
+      'IdV: user clicked sp link on ready to verify page',
     )
   end
 
   def idv_clicked_what_to_bring_link_on_ready_to_verify_page(**_extra)
     track_event(
-      'Frontend: IdV: user clicked what to bring link on ready to verify page',
+      IdV: user clicked what to bring link on ready to verify page',
     )
   end
 
@@ -1133,10 +1169,20 @@ module AnalyticsEvents
 
   # @param [Array] ids ID Types the user has checked whether they have
   # Exit survey of optional questions when the user leaves document capture
-  def idv_exit_optional_questions(ids:, **_extra)
+  def idv_exit_optional_questions(
+    ids:,
+    phone_question_ab_test_bucket:,
+    use_alternate_sdk:,
+    **_extra,
+  )
     track_event(
       'Frontend: IdV: exit optional questions',
+      acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
+      acuant_version: acuant_version,
+      flow_path: flow_path,
       ids: ids,
+      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
+      use_alternate_sdk: use_alternate_sdk,
     )
   end
 
@@ -1279,9 +1325,25 @@ module AnalyticsEvents
   end
   # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
-  def idv_front_image_clicked(**_extra)
+  def idv_front_image_clicked(
+    acuant_sdk_upgrade_a_b_testing_enabled:,
+    acuant_version:,
+    flow_path:,
+    is_drop:, # isDrop
+    phone_question_ab_test_bucket:,
+    source:,
+    use_alternate_sdk:,
+    **_extra,
+  )
     track_event(
       'Frontend: IdV: front image clicked',
+      acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
+      acuant_version: acuant_version,
+      flow_path: flow_path,
+      is_drop: is_drop, # isDrop
+      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
+      source: source,
+      use_alternate_sdk: use_alternate_sdk,
     )
   end
 
