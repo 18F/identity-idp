@@ -11,8 +11,6 @@ module Idv
     before_action :confirm_repeat_ssn, only: :show
     before_action :override_csp_for_threat_metrix
 
-    attr_accessor :error_message
-
     def show
       @step_indicator_steps = step_indicator_steps
       @ssn_form = Idv::SsnFormatForm.new(current_user, idv_session.ssn)
@@ -28,7 +26,6 @@ module Idv
 
     def update
       @step_indicator_steps = step_indicator_steps
-      @error_message = nil
 
       @ssn_form = Idv::SsnFormatForm.new(current_user, idv_session.ssn)
       form_response = @ssn_form.submit(params.require(:doc_auth).permit(:ssn))
@@ -45,7 +42,7 @@ module Idv
         idv_session.invalidate_steps_after_ssn!
         redirect_to next_url
       else
-        @error_message = form_response.first_error_message
+        flash[:error] = form_response.first_error_message
         render 'idv/shared/ssn', locals: threatmetrix_view_variables
       end
     end

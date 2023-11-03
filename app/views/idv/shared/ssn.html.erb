@@ -66,8 +66,6 @@ locals:
     <%= render 'shared/ssn_field', f: f %>
   </div>
 
-  <p><%= @error_message %></p>
-
   <%= f.submit class: 'display-block margin-y-5' do %>
     <% if @ssn_form.updating_ssn? %>
       <%= t('forms.buttons.submit.update') %>
