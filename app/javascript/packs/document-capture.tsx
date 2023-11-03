@@ -122,10 +122,12 @@ const App = composeComponents(
     {
       sdkSrc: acuantVersion && `/acuant/${acuantVersion}/AcuantJavascriptWebSdk.min.js`,
       cameraSrc: acuantVersion && `/acuant/${acuantVersion}/AcuantCamera.min.js`,
+      passiveLivenessSrc: acuantVersion && `/acuant/${acuantVersion}/AcuantPassiveLiveness.min.js`,
       credentials: getMetaContent('acuant-sdk-initialization-creds'),
       endpoint: getMetaContent('acuant-sdk-initialization-endpoint'),
       glareThreshold,
       sharpnessThreshold,
+      selfieCaptureEnabled: true, // Todo replace with code from #9536
     },
   ],
   [

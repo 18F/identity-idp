@@ -89,6 +89,10 @@ interface AcuantContextProviderProps {
    */
   cameraSrc: string;
   /**
+   * Passive Liveness (Selfie) JavaScript source URL.
+   */
+  passiveLivenessSrc: string;
+  /**
    * SDK credentials.
    */
   credentials: string | null;
@@ -104,6 +108,12 @@ interface AcuantContextProviderProps {
    * Minimum acceptable sharpness score for images.
    */
   sharpnessThreshold: number;
+  /**
+   * Whether or not selfie capture is enabled.
+   * Used here to determine whether or not to load
+   * the passive liveness script
+   */
+  selfieCaptureEnabled: boolean;
   /**
    * Child element
    */
@@ -211,10 +221,12 @@ const getActualAcuantCamera = (): AcuantCameraInterface => {
 function AcuantContextProvider({
   sdkSrc,
   cameraSrc,
+  passiveLivenessSrc,
   credentials = null,
   endpoint = null,
   glareThreshold = DEFAULT_ACCEPTABLE_GLARE_SCORE,
   sharpnessThreshold = DEFAULT_ACCEPTABLE_SHARPNESS_SCORE,
+  selfieCaptureEnabled = false,
   children,
 }: AcuantContextProviderProps) {
   const { isMobile } = useContext(DeviceContext);
@@ -295,23 +307,36 @@ function AcuantContextProvider({
     const originalAcuantConfig = window.acuantConfig;
     window.acuantConfig = { path: dirname(sdkSrc) };
 
+    // SDK Main script load
     const sdkScript = document.createElement('script');
     sdkScript.src = sdkSrc;
     sdkScript.onload = onAcuantSdkLoaded;
     sdkScript.onerror = () => setIsError(true);
     sdkScript.dataset.acuantSdk = '';
     document.body.appendChild(sdkScript);
+    // Camera script load
     const cameraScript = document.createElement('script');
     cameraScript.async = true;
     cameraScript.src = cameraSrc;
     cameraScript.onerror = () => setIsError(true);
     document.body.appendChild(cameraScript);
+    // Passive liveness (Selfie) script load
+    // Create the empty script regardless of whether we load
+    // to make the cleanup function simpler
+    const passiveLivenessScript = document.createElement('script');
+    if (selfieCaptureEnabled) {
+      passiveLivenessScript.async = true;
+      passiveLivenessScript.src = passiveLivenessSrc;
+      passiveLivenessScript.onerror = () => setIsError(true);
+      document.body.appendChild(passiveLivenessScript);
+    }
 
     return () => {
       window.acuantConfig = originalAcuantConfig;
       sdkScript.onload = null;
       document.body.removeChild(sdkScript);
       document.body.removeChild(cameraScript);
+      document.body.removeChild(passiveLivenessScript);
     };
   }, []);
 
