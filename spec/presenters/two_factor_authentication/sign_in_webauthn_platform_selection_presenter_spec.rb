@@ -15,7 +15,7 @@ RSpec.describe TwoFactorAuthentication::SignInWebauthnPlatformSelectionPresenter
   end
 
   describe '#label' do
-    it 'raises with missing translation' do
+    it 'returns the label text' do
       expect(presenter.label).to eq(
         t('two_factor_authentication.two_factor_choice_options.webauthn_platform'),
       )
@@ -23,7 +23,7 @@ RSpec.describe TwoFactorAuthentication::SignInWebauthnPlatformSelectionPresenter
   end
 
   describe '#info' do
-    it 'raises with missing translation' do
+    it 'returns the info text' do
       expect(presenter.info).to eq(
         t('two_factor_authentication.login_options.webauthn_platform_info'),
       )

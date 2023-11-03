@@ -63,7 +63,7 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
       and_return(mock_proofing_rate_data)
   end
 
-  it 'sends out a report to the email listed with one total user' do
+  it 'sends out a report to just to team agnes' do
     expect(ReportMailer).to receive(:tables_report).once.with(
       email: [IdentityConfig.store.team_agnes_email],
       subject: 'Monthly Key Metrics Report - 2021-03-02',
@@ -75,22 +75,24 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
     report.perform(report_date)
   end
 
-  it 'sends out a report to the emails listed with two users' do
-    first_of_month_date = report_date - 1
+  context 'when queued from the first of the month' do
+    let(:report_date) { Date.new(2021, 3, 1).prev_day }
 
-    expect(ReportMailer).to receive(:tables_report).once.with(
-      email: [
-        IdentityConfig.store.team_agnes_email,
-        IdentityConfig.store.team_all_feds_email,
-        IdentityConfig.store.team_all_contractors_email,
-      ],
-      subject: 'Monthly Key Metrics Report - 2021-03-01',
-      reports: anything,
-      message: report.preamble,
-      attachment_format: :xlsx,
-    ).and_call_original
+    it 'sends out a report to everybody' do
+      expect(ReportMailer).to receive(:tables_report).once.with(
+        email: [
+          IdentityConfig.store.team_agnes_email,
+          IdentityConfig.store.team_all_feds_email,
+          IdentityConfig.store.team_all_contractors_email,
+        ],
+        subject: 'Monthly Key Metrics Report - 2021-02-28',
+        reports: anything,
+        message: report.preamble,
+        attachment_format: :xlsx,
+      ).and_call_original
 
-    report.perform(first_of_month_date)
+      report.perform(report_date)
+    end
   end
 
   it 'does not send out a report with no emails' do
