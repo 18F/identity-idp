@@ -1197,7 +1197,7 @@ module AnalyticsEvents
     ids:,
     phone_question_ab_test_bucket:,
     use_alternate_sdk:,
-    **_extra,
+    **_extra
   )
     track_event(
       'Frontend: IdV: exit optional questions',
@@ -1364,7 +1364,7 @@ module AnalyticsEvents
     phone_question_ab_test_bucket:,
     source:,
     use_alternate_sdk:,
-    **_extra,
+    **
   )
     track_event(
       'Frontend: IdV: front image clicked',
