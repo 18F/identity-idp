@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_24_172229) do
+ActiveRecord::Schema[7.1].define(version: 2023_10_24_172229) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -656,7 +656,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_24_172229) do
   add_foreign_key "iaa_gtcs", "partner_accounts"
   add_foreign_key "iaa_orders", "iaa_gtcs"
   add_foreign_key "in_person_enrollments", "profiles"
-  add_foreign_key "in_person_enrollments", "service_providers", column: "issuer", primary_key: "issuer"
+  add_foreign_key "in_person_enrollments", "service_providers", column: "issuer", primary_key: "issuer", validate: false
   add_foreign_key "in_person_enrollments", "users"
   add_foreign_key "integration_usages", "iaa_orders"
   add_foreign_key "integration_usages", "integrations"
