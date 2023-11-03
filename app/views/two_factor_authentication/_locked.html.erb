@@ -1,4 +1,4 @@
-<% title t('titles.account_locked') %>
+<% self.title = t('titles.account_locked') %>
 
 <%= render StatusPageComponent.new(status: :error, icon: :lock) do |c| %>
   <% c.with_header { t('titles.account_locked') } %>

@@ -7,7 +7,7 @@
       ) %>
 <% end %>
 
-<% title t('titles.doc_auth.link_sent') %>
+<% self.title = t('titles.doc_auth.link_sent') %>
 
 <%= render AlertComponent.new(type: :warning, class: 'margin-bottom-4') do %>
   <strong class="display-block"><%= t('doc_auth.info.keep_window_open') %></strong>

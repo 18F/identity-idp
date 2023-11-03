@@ -2,7 +2,7 @@
 
 module ApplicationHelper
   # Sets the page title
-  def title(title)
+  def title=(title)
     content_for(:title) { title }
   end
 
@@ -11,7 +11,7 @@ module ApplicationHelper
   # Shows the page title, or raises
   # @return [String]
   # @raise [MissingTitleError]
-  def page_title
+  def title
     content_for(:title).presence || (raise MissingTitleError, 'Missing title')
   rescue MissingTitleError => error
     if IdentityConfig.store.raise_on_missing_title

@@ -19,7 +19,7 @@ RSpec.describe 'layouts/application.html.erb' do
     allow(view).to receive(:current_user).and_return(User.new)
     controller.request.path_parameters[:controller] = 'users/sessions'
     controller.request.path_parameters[:action] = 'new'
-    view.title(title_content) if title_content
+    view.title = title_content if title_content
   end
 
   context 'no content for nav present' do

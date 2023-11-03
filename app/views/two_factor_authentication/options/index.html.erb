@@ -1,4 +1,4 @@
-<% title @presenter.title %>
+<% self.title = @presenter.title %>
 
 <%= render(VendorOutageAlertComponent.new(vendors: [:sms, :voice])) %>
 

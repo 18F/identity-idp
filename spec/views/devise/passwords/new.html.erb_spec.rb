@@ -28,7 +28,7 @@ RSpec.describe 'devise/passwords/new.html.erb' do
   end
 
   it 'has a localized title' do
-    expect(view).to receive(:title).with(t('titles.passwords.forgot'))
+    expect(view).to receive(:title=).with(t('titles.passwords.forgot'))
 
     render
   end
