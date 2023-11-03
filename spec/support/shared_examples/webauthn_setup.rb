@@ -54,7 +54,6 @@ RSpec.shared_examples 'webauthn setup' do
     let(:fake_analytics) { FakeAnalytics.new }
 
     it 'sends a submit failure event', :js do
-      mock_webauthn_setup_challenge
       visit_webauthn_setup
 
       fill_in_nickname_and_click_continue
