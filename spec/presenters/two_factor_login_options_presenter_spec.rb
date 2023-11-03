@@ -88,7 +88,7 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
           TwoFactorAuthentication::BackupCodeSelectionPresenter,
           TwoFactorAuthentication::PivCacSelectionPresenter,
           TwoFactorAuthentication::SignInAuthAppSelectionPresenter,
-          TwoFactorAuthentication::PersonalKeySelectionPresenter,
+          TwoFactorAuthentication::SignInPersonalKeySelectionPresenter,
         ],
       )
     end
@@ -120,7 +120,7 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
               TwoFactorAuthentication::BackupCodeSelectionPresenter,
               TwoFactorAuthentication::PivCacSelectionPresenter,
               TwoFactorAuthentication::SignInAuthAppSelectionPresenter,
-              TwoFactorAuthentication::PersonalKeySelectionPresenter,
+              TwoFactorAuthentication::SignInPersonalKeySelectionPresenter,
             ],
           )
         end
@@ -151,7 +151,7 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
               TwoFactorAuthentication::BackupCodeSelectionPresenter,
               TwoFactorAuthentication::PivCacSelectionPresenter,
               TwoFactorAuthentication::SignInAuthAppSelectionPresenter,
-              TwoFactorAuthentication::PersonalKeySelectionPresenter,
+              TwoFactorAuthentication::SignInPersonalKeySelectionPresenter,
             ],
           )
         end
