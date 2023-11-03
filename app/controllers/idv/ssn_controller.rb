@@ -11,6 +11,8 @@ module Idv
     before_action :confirm_repeat_ssn, only: :show
     before_action :override_csp_for_threat_metrix
 
+    # Keep this code in sync with Idv::InPerson::SsnController
+
     def show
       @step_indicator_steps = step_indicator_steps
       @ssn_form = Idv::SsnFormatForm.new(current_user, idv_session.ssn)
