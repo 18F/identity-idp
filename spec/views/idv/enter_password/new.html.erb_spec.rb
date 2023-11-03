@@ -22,7 +22,7 @@ RSpec.describe 'idv/enter_password/new.html.erb' do
       end
 
       it 'has a localized title' do
-        expect(view).to receive(:title).with(t('titles.idv.enter_password'))
+        expect(view).to receive(:title=).with(t('titles.idv.enter_password'))
 
         render
       end
@@ -47,7 +47,7 @@ RSpec.describe 'idv/enter_password/new.html.erb' do
       end
 
       it 'has a localized title' do
-        expect(view).to receive(:title).with(t('titles.idv.enter_password_letter'))
+        expect(view).to receive(:title=).with(t('titles.idv.enter_password_letter'))
 
         render
       end
