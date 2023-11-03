@@ -71,6 +71,17 @@ const SUPPORTED_ALGORITHMS: COSEAlgorithm[] = [
   COSEAlgorithm.RS256,
 ];
 
+export function getAuthenticatorData(
+  response: AuthenticatorAttestationResponseBrowserSupport,
+): number | undefined {
+  try {
+    const authenticatorData = response.getAuthenticatorData?.();
+    if (authenticatorData) {
+      return new Uint8Array(authenticatorData)[32];
+    }
+  } catch {}
+}
+
 async function enrollWebauthnDevice({
   user,
   challenge,
@@ -95,16 +106,12 @@ async function enrollWebauthnDevice({
   })) as PublicKeyCredential;
 
   const response = credential.response as AuthenticatorAttestationResponseBrowserSupport;
-  const authenticatorData = response.getAuthenticatorData?.();
-  const authenticatorDataFlagsValue = authenticatorData
-    ? new Uint8Array(authenticatorData)[32]
-    : undefined;
 
   return {
     webauthnId: arrayBufferToBase64(credential.rawId),
     attestationObject: arrayBufferToBase64(response.attestationObject),
     clientDataJSON: arrayBufferToBase64(response.clientDataJSON),
-    authenticatorDataFlagsValue,
+    authenticatorDataFlagsValue: getAuthenticatorData(response),
     transports: response.getTransports?.(),
   };
 }

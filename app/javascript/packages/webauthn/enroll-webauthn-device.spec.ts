@@ -184,4 +184,29 @@ describe('enrollWebauthnDevice', () => {
       expect(result.authenticatorDataFlagsValue).to.equal(undefined);
     });
   });
+
+  context('AuthenticatorAttestationResponse#getAuthenticatorData throws', () => {
+    // In some contexts (e.g. 1Password), we've observed that getAuthenticatorData is defined on the
+    // response, but throws an "Illegal invocation" TypeError exception when called.
+
+    beforeEach(() => {
+      defineNavigatorCredentials({
+        getAuthenticatorData() {
+          throw new TypeError('Illegal invocation');
+        },
+        getTransports: () => ['usb'],
+      });
+    });
+
+    it('enrolls a device with a blank authenticatorDataFlagsValue result', async () => {
+      const result = await enrollWebauthnDevice({
+        user,
+        challenge,
+        excludeCredentials,
+        authenticatorAttachment: 'cross-platform',
+      });
+
+      expect(result.authenticatorDataFlagsValue).to.equal(undefined);
+    });
+  });
 });
