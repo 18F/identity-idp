@@ -576,7 +576,13 @@ module AnalyticsEvents
     track_event('Frontend Error', name:, message:, stack:)
   end
 
+  # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
+  # @param [String] acuant_version
+  # @param [String] flow_path whether the user is in the hybrid or standard flow
+  # @param [Boolean] isCameraSupported
+  # @param [String] phone_question_ab_test_bucket
   # @param [Boolean] success
+  # @param [Boolean] use_alternate_sdk
   # The Acuant SDK was loaded
   def idv_acuant_sdk_loaded(
     acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
@@ -715,8 +721,15 @@ module AnalyticsEvents
       width: width,
     )
   end
-  # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
+  # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
+  # @param [String] acuant_version
+  # @param [String] flow_path whether the user is in the hybrid or standard flow
+  # @param [Boolean] isDrop
+  # @param [String] phone_question_ab_test_bucket
+  # @param [Boolean] source
+  # @param [Boolean] use_alternate_sdk
+  # rubocop:enable Naming/VariableName,Naming/MethodParameterName
   def idv_back_image_clicked(
     acuant_sdk_upgrade_a_b_testing_enabled:,
     acuant_version:,
@@ -795,6 +808,10 @@ module AnalyticsEvents
     )
   end
 
+  # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
+  # @param [String] acuant_version
+  # @param [String] flow_path whether the user is in the hybrid or standard flow
+  # @param [String] use_alternate_sdk
   def idv_capture_troubleshooting_dismissed(**_extra)
     track_event(
       'Frontend: IdV: Capture troubleshooting dismissed',
@@ -813,7 +830,7 @@ module AnalyticsEvents
 
   def idv_clicked_what_to_bring_link_on_ready_to_verify_page(**_extra)
     track_event(
-      IdV: user clicked what to bring link on ready to verify page',
+      'IdV: user clicked what to bring link on ready to verify page',
     )
   end
 
@@ -1167,9 +1184,17 @@ module AnalyticsEvents
     )
   end
 
+  # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
+  # @param [String] acuant_version
+  # @param [String] flow_path whether the user is in the hybrid or standard flow
   # @param [Array] ids ID Types the user has checked whether they have
+  # @param [String] phone_question_ab_test_bucket
+  # @param [String] use_alternate_sdk
   # Exit survey of optional questions when the user leaves document capture
   def idv_exit_optional_questions(
+    acuant_sdk_upgrade_a_b_testing_enabled:,
+    acuant_version:,
+    flow_path:,
     ids:,
     phone_question_ab_test_bucket:,
     use_alternate_sdk:,
@@ -1323,8 +1348,15 @@ module AnalyticsEvents
       width: width,
     )
   end
-  # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
+  # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
+  # @param [String] acuant_version
+  # @param [String] flow_path whether the user is in the hybrid or standard flow
+  # @param [Boolean] isDrop
+  # @param [String] phone_question_ab_test_bucket
+  # @param [String] source
+  # @param [String] use_alterate_sdk
+  # rubocop:enable Naming/VariableName,Naming/MethodParameterName
   def idv_front_image_clicked(
     acuant_sdk_upgrade_a_b_testing_enabled:,
     acuant_version:,
