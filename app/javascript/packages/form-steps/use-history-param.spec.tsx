@@ -1,5 +1,4 @@
-import { render } from '@testing-library/react';
-import { renderHook } from '@testing-library/react-hooks';
+import { render, renderHook } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import useHistoryParam, { getStepParam } from './use-history-param';
 

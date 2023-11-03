@@ -1,5 +1,5 @@
 import sinon from 'sinon';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import useCookie from '@18f/identity-document-capture/hooks/use-cookie';
 
 describe('document-capture/hooks/use-cookie', () => {

@@ -1,6 +1,6 @@
 import sinon from 'sinon';
 import { useContext } from 'react';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import type { ComponentType } from 'react';
 import AnalyticsContext, { AnalyticsContextProvider, LOGGED_STEPS } from './analytics';
 

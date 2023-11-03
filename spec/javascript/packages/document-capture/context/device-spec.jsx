@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import DeviceContext from '@18f/identity-document-capture/context/device';
 
 describe('document-capture/context/device', () => {

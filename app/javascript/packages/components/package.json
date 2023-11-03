@@ -24,8 +24,8 @@
     "focus-trap": "^6.7.1"
   },
   "peerDependencies": {
-    "react": ">=17",
-    "react-dom": ">=17",
+    "react": ">=18",
+    "react-dom": ">=18",
     "@18f/identity-i18n": ">=1"
   },
   "repository": {

@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { DeviceContext, AnalyticsContext } from '@18f/identity-document-capture';
 import { Provider as AcuantContextProvider } from '@18f/identity-document-capture/context/acuant';

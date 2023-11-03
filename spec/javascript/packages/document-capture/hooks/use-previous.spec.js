@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import usePrevious from '@18f/identity-document-capture/hooks/use-previous';
 
 describe('document-capture/hooks/use-previous', () => {

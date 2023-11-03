@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import sinon from 'sinon';
 import useForceRender from './use-force-render';
 

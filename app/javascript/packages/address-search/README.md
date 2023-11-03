@@ -12,7 +12,7 @@ You can install this module using npm:
 npm install @18f/identity-address-search
 ```
 
-Requires React version 17 or greater.
+Requires React version 18 or greater.
 
 Requires @18f/identity-i18n.
 

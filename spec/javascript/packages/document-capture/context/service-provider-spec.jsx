@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import ServiceProviderContext, {
   Provider,
 } from '@18f/identity-document-capture/context/service-provider';

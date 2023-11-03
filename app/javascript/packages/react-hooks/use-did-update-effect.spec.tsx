@@ -1,5 +1,5 @@
 import sinon from 'sinon';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import useDidUpdateEffect from './use-did-update-effect';
 
 describe('document-capture/hooks/use-did-update-effect', () => {
