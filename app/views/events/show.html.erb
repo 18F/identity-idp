@@ -2,7 +2,7 @@
   <%= render 'accounts/nav_auth', enable_mobile_nav: false, greeting: @presenter.header_personalization %>
 <% end %>
 
-<% title t('titles.account') %>
+<% self.title = t('titles.account') %>
 
 <%= render PageHeadingComponent.new.with_content(t('headings.account.activity')) %>
 

@@ -252,6 +252,7 @@ pwned_passwords_file_path: 'pwned_passwords/pwned_passwords.txt'
 rack_mini_profiler: false
 rack_timeout_service_timeout_seconds: 15
 rails_mailer_previews_enabled: false
+raise_on_missing_title: false
 reauthn_window: 120
 recaptcha_enterprise_api_key: ''
 recaptcha_enterprise_project_id: ''
@@ -298,6 +299,8 @@ seed_agreements_data: true
 service_provider_request_ttl_hours: 24
 session_check_delay: 30
 session_check_frequency: 30
+session_encrypted_profiles_read_enabled: true
+session_encrypted_profiles_write_enabled: true
 session_encryptor_alert_enabled: false
 session_timeout_in_minutes: 15
 session_timeout_warning_seconds: 150
@@ -311,6 +314,7 @@ otp_min_attempts_remaining_warning_count: 3
 system_demand_report_email: 'foo@bar.com'
 sp_issuer_user_counts_report_configs: '[]'
 team_agnes_email: ''
+team_all_contractors_email: ''
 team_all_feds_email: ''
 team_ursula_email: ''
 test_ssn_allowed_list: ''
@@ -477,6 +481,8 @@ production:
   scrypt_cost: 10000$8$1$
   secret_key_base:
   seed_agreements_data: false
+  session_encrypted_profiles_read_enabled: false
+  session_encrypted_profiles_write_enabled: false
   session_encryption_key:
   skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:dev", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:int"]'
   state_tracking_enabled: false
@@ -559,6 +565,9 @@ test:
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
   skip_encryption_allowed_list: '[]'
   state_tracking_enabled: true
+  team_agnes_email: 'a@example.com'
+  team_all_contractors_email: 'c@example.com'
+  team_all_feds_email: 'f@example.com'
   telephony_adapter: test
   test_ssn_allowed_list: '999999999'
   totp_code_interval: 3

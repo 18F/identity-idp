@@ -81,7 +81,7 @@ RSpec.describe Idv::PhoneErrorsController do
           it 'redirects to the review url' do
             get action
 
-            expect(response).to redirect_to(idv_review_url)
+            expect(response).to redirect_to(idv_enter_password_url)
           end
           it 'does not log an event' do
             expect(@analytics).not_to receive(:track_event).with(

@@ -7,6 +7,11 @@ export interface FlowContextValue {
   cancelURL: string;
 
   /**
+   * URL to exit session without confirmation
+   */
+  exitURL: string;
+
+  /**
    * Current step name.
    */
   currentStep: string;
@@ -14,6 +19,7 @@ export interface FlowContextValue {
 
 const FlowContext = createContext<FlowContextValue>({
   cancelURL: '',
+  exitURL: '',
   currentStep: '',
 });
 

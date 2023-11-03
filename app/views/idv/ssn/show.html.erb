@@ -15,7 +15,7 @@ locals:
       ) %>
 <% end %>
 
-<% title t('titles.doc_auth.ssn') %>
+<% self.title = t('titles.doc_auth.ssn') %>
 
 <% if @ssn_form.updating_ssn? %>
   <%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.ssn_update')) %>

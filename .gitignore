@@ -24,6 +24,7 @@
 .ruby-version
 .vagrant
 .capistrano
+.tool-versions
 
 # avoid checking in stray files
 *.bak

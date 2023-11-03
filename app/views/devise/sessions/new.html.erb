@@ -1,4 +1,4 @@
-<% title t('titles.visitors.index') %>
+<% self.title = t('titles.visitors.index') %>
 
 <% if decorated_sp_session.sp_name %>
   <%= render 'sign_up/registrations/sp_registration_heading' %>
@@ -7,7 +7,7 @@
 <%= render TabNavigationComponent.new(
       label: t('account.login.tab_navigation'),
       routes: [
-        { text: t('links.next'), path: new_user_session_url },
+        { text: t('links.sign_in'), path: new_user_session_url },
         { text: t('links.create_account'), path: sign_up_email_url },
       ],
       class: 'margin-bottom-4',
@@ -47,7 +47,7 @@
           },
         },
       ) %>
-  <%= f.submit t('links.next'), full_width: true, wide: false %>
+  <%= f.submit t('links.sign_in'), full_width: true, wide: false %>
 <% end %>
 <% if @ial && desktop_device? %>
   <div class='margin-x-neg-1 margin-top-205'>

@@ -3,6 +3,8 @@ require 'rails_helper'
 RSpec.describe 'layouts/application.html.erb' do
   include Devise::Test::ControllerHelpers
 
+  let(:title_content) { 'Example' }
+
   before do
     allow(view).to receive(:user_fully_authenticated?).and_return(true)
     allow(view).to receive(:decorated_sp_session).and_return(
@@ -17,6 +19,7 @@ RSpec.describe 'layouts/application.html.erb' do
     allow(view).to receive(:current_user).and_return(User.new)
     controller.request.path_parameters[:controller] = 'users/sessions'
     controller.request.path_parameters[:action] = 'new'
+    view.title = title_content if title_content
   end
 
   context 'no content for nav present' do
@@ -67,32 +70,52 @@ RSpec.describe 'layouts/application.html.erb' do
   end
 
   context '<title>' do
-    context 'with a page title added' do
-      it 'does not double-escape HTML in the title tag' do
-        view.title("Something with 'single quotes'")
+    context 'without title' do
+      let(:title_content) { nil }
 
+      it 'notifies NewRelic' do
+        expect(NewRelic::Agent).to receive(:notice_error) do |error|
+          expect(error).to be_kind_of(ApplicationHelper::MissingTitleError)
+          expect(error.message).to include('Missing title')
+        end
+
+        expect { render }.to_not raise_error
+      end
+
+      context 'when raise_on_missing_title is true' do
+        before do
+          allow(IdentityConfig.store).to receive(:raise_on_missing_title).and_return(true)
+        end
+
+        it 'raises' do
+          expect { render }.to raise_error do |error|
+            expect(error).to be_kind_of(ActionView::TemplateError)
+            expect(error.cause).to be_kind_of(ApplicationHelper::MissingTitleError)
+            expect(error.message).to include('Missing title')
+          end
+        end
+      end
+    end
+
+    context 'with escapable html' do
+      let(:title_content) { "Something with 'single quotes'" }
+
+      it 'does not double-escape HTML' do
         render
 
         doc = Nokogiri::HTML(rendered)
         expect(doc.at_css('title').text).to eq("Something with 'single quotes' | #{APP_NAME}")
       end
+    end
 
-      it 'properly works with > in the title tag' do
-        view.title('Symbols <>')
+    context 'with html opening or closing syntax' do
+      let(:title_content) { 'Symbols <>' }
 
+      it 'properly encodes text' do
         render
 
         doc = Nokogiri::HTML(rendered)
         expect(doc.at_css('title').text).to eq("Symbols <> | #{APP_NAME}")
-      end
-    end
-
-    context 'without a page title added' do
-      it 'should only have Login.gov as title' do
-        render
-
-        doc = Nokogiri::HTML(rendered)
-        expect(doc.at_css('title').text).to eq(APP_NAME)
       end
     end
   end

@@ -99,7 +99,7 @@ module IdvStepConcern
 
   def confirm_verify_info_step_needed
     return unless idv_session.verify_info_step_complete?
-    redirect_to idv_review_url
+    redirect_to idv_enter_password_url
   end
 
   def confirm_address_step_complete
@@ -118,5 +118,20 @@ module IdvStepConcern
         flow_session[:pii_from_user][:same_address_as_id].to_s == 'true'
     end
     extra
+  end
+
+  def flow_policy
+    @flow_policy ||= Idv::FlowPolicy.new(idv_session: idv_session, user: current_user)
+  end
+
+  def confirm_step_allowed
+    return if flow_policy.controller_allowed?(controller: self.class)
+
+    redirect_to url_for_latest_step
+  end
+
+  def url_for_latest_step
+    step_info = flow_policy.info_for_latest_step
+    url_for(controller: step_info.controller, action: step_info.action)
   end
 end

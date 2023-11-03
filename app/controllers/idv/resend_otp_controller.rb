@@ -30,7 +30,7 @@ module Idv
 
     def confirm_user_phone_confirmation_needed
       return unless idv_session.user_phone_confirmation
-      redirect_to idv_review_url
+      redirect_to idv_enter_password_url
     end
 
     def confirm_user_phone_confirmation_session_started

@@ -1,4 +1,4 @@
-<% title t('titles.idv.get_letter') %>
+<% self.title = t('titles.idv.get_letter') %>
 
 <% content_for(:pre_flash_content) do %>
   <%= render StepIndicatorComponent.new(
@@ -60,7 +60,7 @@
   <p>
     <%= start_over_link_html = link_to(
           t('idv.messages.gpo.start_over_link_text'),
-          idv_confirm_start_over_path,
+          idv_confirm_start_over_before_letter_path,
         )
         t(
           'idv.messages.gpo.start_over_html',
@@ -68,7 +68,7 @@
         )
     %>
   </p>
-  
+
 <% end %>
 
 <div class="margin-y-5">

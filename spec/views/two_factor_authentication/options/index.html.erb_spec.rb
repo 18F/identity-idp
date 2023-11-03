@@ -21,7 +21,7 @@ RSpec.describe 'two_factor_authentication/options/index.html.erb' do
   end
 
   it 'has a localized title' do
-    expect(view).to receive(:title).with( \
+    expect(view).to receive(:title=).with( \
       t('two_factor_authentication.login_options_title'),
     )
 

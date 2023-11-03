@@ -23,7 +23,7 @@ RSpec.feature 'idv request letter step' do
     click_on t('idv.buttons.mail.send')
 
     expect(page).to have_content(t('idv.titles.session.enter_password', app_name: APP_NAME))
-    expect(page).to have_current_path(idv_review_path)
+    expect(page).to have_current_path(idv_enter_password_path)
 
     complete_enter_password_step
     expect(page).to have_content(t('idv.messages.gpo.letter_on_the_way'))

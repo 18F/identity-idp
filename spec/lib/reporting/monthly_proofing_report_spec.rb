@@ -2,9 +2,9 @@ require 'rails_helper'
 require 'reporting/monthly_proofing_report'
 
 RSpec.describe Reporting::MonthlyProofingReport do
-  let(:time_range) { Date.new(2022, 1, 1).all_month }
+  let(:time_range) { Date.new(2022, 1, 1).in_time_zone('UTC').all_month }
 
-  subject(:report) { Reporting::MonthlyProofingReport.new(time_range:) }
+  subject(:report) { Reporting::MonthlyProofingReport.new(time_range:, wait_duration: 0) }
 
   before do
     cloudwatch_client = double(
@@ -58,22 +58,26 @@ RSpec.describe Reporting::MonthlyProofingReport do
     end
   end
 
-  describe '#proofing_report' do
-    context 'when the data is outside the log retention range' do
+  describe '#as_csv' do
+    context 'when hitting a Cloudwatch rate limit' do
       before do
-        allow(report.cloudwatch_client).to receive(:fetch).and_raise(
-          Aws::CloudWatchLogs::Errors::MalformedQueryException.new(
-            nil,
-            'exceeds the log groups log retention settings',
-          ),
-        )
+        allow(report).to receive(:cloudwatch_client).and_call_original
+
+        Aws.config[:cloudwatchlogs] = {
+          stub_responses: {
+            start_query: Aws::CloudWatchLogs::Errors::ThrottlingException.new(
+              nil,
+              'Rate exceeded',
+            ),
+          },
+        }
       end
 
-      it 'handles the error and returns a table with information on the error' do
-        expect(report.proofing_report).to match(
+      it 'renders an error table' do
+        expect(report.as_csv).to eq(
           [
             ['Error', 'Message'],
-            ['Aws::CloudWatchLogs::Errors::MalformedQueryException', kind_of(String)],
+            ['Aws::CloudWatchLogs::Errors::ThrottlingException', 'Rate exceeded'],
           ],
         )
       end

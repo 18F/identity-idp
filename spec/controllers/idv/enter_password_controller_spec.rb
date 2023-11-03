@@ -108,7 +108,7 @@ RSpec.describe Idv::EnterPasswordController do
         post :show, params: { user: { password: '' } }
 
         expect(flash[:error]).to eq t('idv.errors.incorrect_password')
-        expect(response).to redirect_to idv_review_path
+        expect(response).to redirect_to idv_enter_password_path
       end
     end
 
@@ -119,7 +119,7 @@ RSpec.describe Idv::EnterPasswordController do
 
       it 'redirects to new' do
         expect(flash[:error]).to eq t('idv.errors.incorrect_password')
-        expect(response).to redirect_to idv_review_path
+        expect(response).to redirect_to idv_enter_password_path
       end
 
       it 'tracks irs password entered event (idv_password_entered)' do
@@ -222,36 +222,6 @@ RSpec.describe Idv::EnterPasswordController do
       end
     end
 
-    context 'user has not requested too much mail' do
-      before do
-        idv_session.address_verification_mechanism = 'gpo'
-        gpo_mail_service = instance_double(Idv::GpoMail)
-        allow(Idv::GpoMail).to receive(:new).with(user).and_return(gpo_mail_service)
-        allow(gpo_mail_service).to receive(:mail_spammed?).and_return(false)
-      end
-
-      it 'displays a success message' do
-        get :new
-
-        expect(flash.now[:error]).to be_nil
-      end
-    end
-
-    context 'user has requested too much mail' do
-      before do
-        idv_session.address_verification_mechanism = 'gpo'
-        gpo_mail_service = instance_double(Idv::GpoMail)
-        allow(Idv::GpoMail).to receive(:new).with(user).and_return(gpo_mail_service)
-        allow(gpo_mail_service).to receive(:mail_spammed?).and_return(true)
-      end
-
-      it 'displays a helpful error message' do
-        get :new
-
-        expect(flash.now[:error]).to eq t('idv.errors.mail_limit_reached')
-      end
-    end
-
     it 'redirects to the verify info controller if the user has not completed it' do
       controller.idv_session.resolution_successful = nil
 
@@ -279,7 +249,7 @@ RSpec.describe Idv::EnterPasswordController do
       it 'redirects to original path' do
         put :create, params: { user: { password: 'wrong' } }
 
-        expect(response).to redirect_to idv_review_path
+        expect(response).to redirect_to idv_enter_password_path
 
         expect(@analytics).to have_logged_event(
           'IdV: review complete',
@@ -520,7 +490,7 @@ RSpec.describe Idv::EnterPasswordController do
             it 'allows the user to retry the request' do
               put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
               expect(flash[:error]).to eq t('idv.failure.exceptions.internal_error')
-              expect(response).to redirect_to idv_review_path
+              expect(response).to redirect_to idv_enter_password_path
 
               stub_request_enroll
 

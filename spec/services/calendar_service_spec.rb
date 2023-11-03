@@ -164,6 +164,106 @@ RSpec.describe CalendarService do
         it { is_expected.to eq(true) }
       end
     end
+
+    describe '.fiscal_start_date' do
+      subject { described_class.fiscal_start_date(date) }
+
+      context 'when the date is on or after October' do
+        let(:date) { Date.new(year, 11, 15) }
+
+        it 'calculates the correct fiscal start date' do
+          expect(subject).to eq Date.new(2018, 10, 1)
+        end
+      end
+
+      context 'when the date is before October' do
+        let(:date) { Date.new(year, 8, 15) }
+
+        it 'calculates the correct fiscal start date' do
+          expect(subject).to eq Date.new(2017, 10, 1)
+        end
+      end
+    end
+
+    describe '.fiscal_q2_start' do
+      subject { described_class.fiscal_q2_start(date) }
+
+      context 'when the date is on or after October' do
+        let(:date) { Date.new(year, 11, 15) }
+
+        it 'calculates the correct fiscal quarter start' do
+          expect(subject).to eq Date.new(2019, 1, 1)
+        end
+      end
+
+      context 'when the date is before October' do
+        let(:date) { Date.new(year, 8, 15) }
+
+        it 'calculates the correct fiscal quarter start' do
+          expect(subject).to eq Date.new(2018, 1, 1)
+        end
+      end
+    end
+
+    describe '.fiscal_q3_start' do
+      subject { described_class.fiscal_q3_start(date) }
+
+      context 'when the date is on or after October' do
+        let(:date) { Date.new(year, 11, 15) }
+
+        it 'calculates the correct fiscal quarter start' do
+          expect(subject).to eq Date.new(2019, 4, 1)
+        end
+      end
+
+      context 'when the date is before October' do
+        let(:date) { Date.new(year, 8, 15) }
+
+        it 'calculates the correct fiscal quarter start' do
+          expect(subject).to eq Date.new(2018, 4, 1)
+        end
+      end
+    end
+
+    describe '.fiscal_q4_start' do
+      subject { described_class.fiscal_q4_start(date) }
+
+      context 'when the date is on or after October' do
+        let(:date) { Date.new(year, 11, 15) }
+
+        it 'calculates the correct fiscal quarter start' do
+          expect(subject).to eq Date.new(2019, 7, 1)
+        end
+      end
+
+      context 'when the date is before October' do
+        let(:date) { Date.new(year, 8, 15) }
+
+        it 'calculates the correct fiscal quarter start' do
+          expect(subject).to eq Date.new(2018, 7, 1)
+        end
+      end
+    end
+
+    describe '.fiscal_end_date' do
+      subject { described_class.fiscal_end_date(date) }
+
+      context 'when the date is on or after October' do
+        let(:date) { Date.new(year, 11, 15) }
+
+        it 'calculates the correct fiscal end date' do
+          expect(subject).to eq DateTime.new(2019, 9, 30)
+        end
+      end
+
+      context 'when the date is before October' do
+        let(:date) { Date.new(year, 8, 15) }
+
+        it 'calculates the correct fiscal end date' do
+          expect(subject).to eq DateTime.new(2018, 9, 30)
+        end
+      end
+    end
   end
 
   def holidays

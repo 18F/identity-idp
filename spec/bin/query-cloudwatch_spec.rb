@@ -197,6 +197,24 @@ RSpec.describe QueryCloudwatch do
       end
     end
 
+    context 'number of threads' do
+      let(:argv) { required_parameters }
+
+      it 'defaults to Reporting::CloudwatchClient::DEFAULT_NUM_THREADS' do
+        config = parse!
+        expect(config.num_threads).to eq(Reporting::CloudwatchClient::DEFAULT_NUM_THREADS)
+      end
+
+      context 'with --num-threads' do
+        let(:argv) { required_parameters + %w[--num-threads 15] }
+
+        it 'overrides the number of threads' do
+          config = parse!
+          expect(config.num_threads).to eq(15)
+        end
+      end
+    end
+
     def build_stdin_without_query
       StringIO.new.tap do |io|
         allow(io).to receive(:tty?).and_return(true)
@@ -222,6 +240,7 @@ RSpec.describe QueryCloudwatch do
         query: 'fields @timestamp, @message',
         format: format,
         count_distinct: count_distinct,
+        num_threads: Reporting::CloudwatchClient::DEFAULT_NUM_THREADS,
       )
     end
     let(:query_cloudwatch) { QueryCloudwatch.new(config) }

@@ -84,18 +84,18 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
         [
           TwoFactorAuthentication::SmsSelectionPresenter,
           TwoFactorAuthentication::VoiceSelectionPresenter,
-          TwoFactorAuthentication::WebauthnSelectionPresenter,
+          TwoFactorAuthentication::SignInWebauthnSelectionPresenter,
           TwoFactorAuthentication::BackupCodeSelectionPresenter,
           TwoFactorAuthentication::PivCacSelectionPresenter,
           TwoFactorAuthentication::SignInAuthAppSelectionPresenter,
-          TwoFactorAuthentication::PersonalKeySelectionPresenter,
+          TwoFactorAuthentication::SignInPersonalKeySelectionPresenter,
         ],
       )
     end
 
     it 'has only one webauthn selection presenter' do
       webauthn_selection_presenter_count = options_classes.count do |klass|
-        klass == TwoFactorAuthentication::WebauthnSelectionPresenter
+        klass == TwoFactorAuthentication::SignInWebauthnSelectionPresenter
       end
 
       expect(webauthn_selection_presenter_count).to eq 1
@@ -116,11 +116,11 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
             [
               TwoFactorAuthentication::SmsSelectionPresenter,
               TwoFactorAuthentication::VoiceSelectionPresenter,
-              TwoFactorAuthentication::WebauthnSelectionPresenter,
+              TwoFactorAuthentication::SignInWebauthnSelectionPresenter,
               TwoFactorAuthentication::BackupCodeSelectionPresenter,
               TwoFactorAuthentication::PivCacSelectionPresenter,
               TwoFactorAuthentication::SignInAuthAppSelectionPresenter,
-              TwoFactorAuthentication::PersonalKeySelectionPresenter,
+              TwoFactorAuthentication::SignInPersonalKeySelectionPresenter,
             ],
           )
         end
@@ -133,7 +133,7 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
       it 'filters to phishing resistant methods' do
         expect(options_classes).to eq(
           [
-            TwoFactorAuthentication::WebauthnSelectionPresenter,
+            TwoFactorAuthentication::SignInWebauthnSelectionPresenter,
             TwoFactorAuthentication::PivCacSelectionPresenter,
           ],
         )
@@ -147,11 +147,11 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
             [
               TwoFactorAuthentication::SmsSelectionPresenter,
               TwoFactorAuthentication::VoiceSelectionPresenter,
-              TwoFactorAuthentication::WebauthnSelectionPresenter,
+              TwoFactorAuthentication::SignInWebauthnSelectionPresenter,
               TwoFactorAuthentication::BackupCodeSelectionPresenter,
               TwoFactorAuthentication::PivCacSelectionPresenter,
               TwoFactorAuthentication::SignInAuthAppSelectionPresenter,
-              TwoFactorAuthentication::PersonalKeySelectionPresenter,
+              TwoFactorAuthentication::SignInPersonalKeySelectionPresenter,
             ],
           )
         end

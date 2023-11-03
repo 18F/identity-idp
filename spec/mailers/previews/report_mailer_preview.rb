@@ -9,14 +9,15 @@ class ReportMailerPreview < ActionMailer::Preview
   end
 
   def monthly_key_metrics_report
-    monthly_key_metrics_report = Reports::MonthlyKeyMetricsReport.new(Time.zone.today)
+    monthly_key_metrics_report = Reports::MonthlyKeyMetricsReport.new(Time.zone.yesterday)
 
+    stub_cloudwatch_client(monthly_key_metrics_report.proofing_rate_report)
     stub_cloudwatch_client(monthly_key_metrics_report.monthly_proofing_report)
 
     ReportMailer.tables_report(
       email: 'test@example.com',
       subject: 'Example Key Metrics Report',
-      message: 'Key Metrics Report February 2021',
+      message: monthly_key_metrics_report.preamble,
       attachment_format: :xlsx,
       reports: monthly_key_metrics_report.reports,
     )

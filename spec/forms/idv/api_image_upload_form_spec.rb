@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Idv::ApiImageUploadForm do
+  include DocPiiHelper
+
   subject(:form) do
     Idv::ApiImageUploadForm.new(
       ActionController::Parameters.new(
@@ -289,7 +291,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           success: false,
           errors: { doc_pii: 'bad' },
           extra: {
-            pii_like_keypaths: [[:pii]],
+            pii_like_keypaths: pii_like_keypaths,
             attention_with_barcode: false,
           },
         )

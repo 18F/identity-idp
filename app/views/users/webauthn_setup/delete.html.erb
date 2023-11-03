@@ -1,7 +1,7 @@
 <% if @webauthn.platform_authenticator %>
-    <% title t('forms.webauthn_platform_delete.confirm') %>
+    <% self.title = t('forms.webauthn_platform_delete.confirm') %>
 <% else %>
-    <% title t('forms.webauthn_delete.confirm') %>
+    <% self.title = t('forms.webauthn_delete.confirm') %>
 <% end %>
 
 <%= render AlertIconComponent.new(icon_name: :warning, class: 'display-block margin-bottom-4') %>

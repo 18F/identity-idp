@@ -14,7 +14,7 @@ module Reporting
   class MonthlyProofingReport
     include Reporting::CloudwatchQueryQuoting
 
-    attr_reader :time_range
+    attr_reader :time_range, :wait_duration
 
     module Events
       IDV_DOC_AUTH_IMAGE_UPLOAD = 'IdV: doc auth image upload vendor submitted'
@@ -36,6 +36,7 @@ module Reporting
       progress: false,
       slice: 3.hours,
       threads: 5,
+      wait_duration: CloudwatchClient::DEFAULT_WAIT_DURATION,
       issuers: [] # rubocop:disable Lint/UnusedMethodArgument
     )
       @time_range = time_range
@@ -43,6 +44,7 @@ module Reporting
       @progress = progress
       @slice = slice
       @threads = threads
+      @wait_duration = wait_duration
     end
 
     def verbose?
@@ -56,6 +58,8 @@ module Reporting
     def document_upload_proofing_emailable_report
       EmailableReport.new(
         title: 'Document upload proofing rates',
+        float_as_percent: true,
+        precision: 4,
         table: proofing_report,
         filename: 'document_upload_proofing',
       )
@@ -78,11 +82,6 @@ module Reporting
       end
 
       csv
-    rescue Aws::CloudWatchLogs::Errors::MalformedQueryException => error
-      [
-        ['Error', 'Message'],
-        [error.class.name, error.message],
-      ]
     end
 
     def as_csv
@@ -91,6 +90,11 @@ module Reporting
         ['report_end', time_range.end.iso8601],
         ['report_generated', Date.today.to_s], # rubocop:disable Rails/Date
         *proofing_report,
+      ]
+    rescue Aws::CloudWatchLogs::Errors::ThrottlingException => err
+      [
+        ['Error', 'Message'],
+        [err.class.name, err.message],
       ]
     end
 
@@ -181,6 +185,7 @@ module Reporting
         slice_interval: @slice,
         progress: progress?,
         logger: verbose? ? Logger.new(STDERR) : nil,
+        wait_duration: wait_duration,
       )
     end
   end

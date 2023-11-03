@@ -29,6 +29,7 @@ class QueryCloudwatch
     :format,
     :complete,
     :progress,
+    :num_threads,
     :wait_duration,
     :count_distinct,
     keyword_init: true,
@@ -83,6 +84,7 @@ class QueryCloudwatch
       log_group_name: config.group,
       progress: config.progress,
       slice_interval: config.slice,
+      num_threads: config.num_threads,
       **config.to_h.slice(:wait_duration).compact,
     )
   end
@@ -98,6 +100,7 @@ class QueryCloudwatch
       time_slices: [],
       complete: false,
       progress: true,
+      num_threads: Reporting::CloudwatchClient::DEFAULT_NUM_THREADS,
       count_distinct: nil,
     )
 
@@ -197,6 +200,13 @@ class QueryCloudwatch
         else
           config.to = Time.parse(str) # rubocop:disable Rails/TimeZone
         end
+      end
+
+      opts.on(
+        '--num-threads NUM',
+        "number of threads, defaults to #{Reporting::CloudwatchClient::DEFAULT_NUM_THREADS}",
+      ) do |str|
+        config.num_threads = Integer(str, 10)
       end
 
       opts.on(
