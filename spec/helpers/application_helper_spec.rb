@@ -3,13 +3,10 @@ require 'rails_helper'
 RSpec.describe ApplicationHelper do
   describe '#title' do
     let(:assigned_title) { nil }
-    let(:raise_on_missing_title) { nil }
     subject(:title) { helper.title }
 
     before do
       helper.title = assigned_title if assigned_title
-      allow(IdentityConfig.store).to receive(:raise_on_missing_title).
-        and_return(raise_on_missing_title)
     end
 
     context 'with a title assigned' do
@@ -21,6 +18,13 @@ RSpec.describe ApplicationHelper do
     end
 
     context 'without a title assigned' do
+      let(:raise_on_missing_title) { nil }
+
+      before do
+        allow(IdentityConfig.store).to receive(:raise_on_missing_title).
+          and_return(raise_on_missing_title)
+      end
+
       context 'configured not to raise on missing title' do
         let(:raise_on_missing_title) { false }
 
