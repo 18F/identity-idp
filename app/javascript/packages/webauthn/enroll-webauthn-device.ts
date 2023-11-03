@@ -71,7 +71,7 @@ const SUPPORTED_ALGORITHMS: COSEAlgorithm[] = [
   COSEAlgorithm.RS256,
 ];
 
-export function getAuthenticatorData(
+export function getAuthenticatorDataFlagsValue(
   response: AuthenticatorAttestationResponseBrowserSupport,
 ): number | undefined {
   try {
@@ -111,7 +111,7 @@ async function enrollWebauthnDevice({
     webauthnId: arrayBufferToBase64(credential.rawId),
     attestationObject: arrayBufferToBase64(response.attestationObject),
     clientDataJSON: arrayBufferToBase64(response.clientDataJSON),
-    authenticatorDataFlagsValue: getAuthenticatorData(response),
+    authenticatorDataFlagsValue: getAuthenticatorDataFlagsValue(response),
     transports: response.getTransports?.(),
   };
 }
