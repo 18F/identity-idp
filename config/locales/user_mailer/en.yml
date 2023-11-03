@@ -1,6 +1,10 @@
 ---
 en:
   user_mailer:
+    account_reinstated:
+      subject: Your account is unlocked
+      we_have_finished_reviewing: We have finished reviewing your %{app_name} account
+        and you can now log back in with your account information.
     account_rejected:
       intro: We couldn’t verify your identity with %{app_name}. Please contact the
         agency whose service you are trying to access.
@@ -303,3 +307,8 @@ en:
         center a call at %{contact_number} and provide this code -
         %{support_code}.
       subject: We couldn’t reset your password
+    suspension_confirmed:
+      contact_agency: Please contact the agency whose service you are trying to access.
+      remain_locked: We have completed our review of your %{app_name} account and your
+        account will remain locked.
+      subject: Your account is locked

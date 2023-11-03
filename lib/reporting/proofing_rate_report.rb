@@ -8,12 +8,18 @@ module Reporting
   class ProofingRateReport
     DATE_INTERVALS = [30, 60, 90].freeze
 
-    attr_reader :end_date
+    attr_reader :end_date, :wait_duration
 
-    def initialize(end_date:, verbose: false, progress: false)
+    def initialize(
+      end_date:,
+      verbose: false,
+      progress: false,
+      wait_duration: CloudwatchClient::DEFAULT_WAIT_DURATION
+    )
       @end_date = end_date.in_time_zone('UTC')
       @verbose = verbose
       @progress = progress
+      @wait_duration = wait_duration
     end
 
     def verbose?
@@ -55,6 +61,11 @@ module Reporting
       csv << ['Industry Proofing Rate (Verified minus IDV Rejected)', *industry_proofing_rates(reports)]
 
       csv
+    rescue Aws::CloudWatchLogs::Errors::ThrottlingException => err
+      [
+        ['Error', 'Message'],
+        [err.class.name, err.message],
+      ]
     end
     # rubocop:enable Layout/LineLength
 
@@ -78,6 +89,8 @@ module Reporting
               ),
               cloudwatch_client: cloudwatch_client,
             ).tap(&:data)
+          end.tap do |thread|
+            thread.report_on_exception = false
           end
         end
 
@@ -134,6 +147,7 @@ module Reporting
         ensure_complete_logs: true,
         progress: false,
         logger: verbose? ? Logger.new(STDERR) : nil,
+        wait_duration: wait_duration,
       )
     end
   end

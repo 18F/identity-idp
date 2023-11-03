@@ -46,8 +46,8 @@ RSpec.describe Users::PasswordsController do
       it 'updates the user password and regenerates personal key' do
         user = create(:user, :proofed)
         stub_sign_in(user)
-        Pii::Cacher.new(user, controller.user_session).save_decrypted_pii_json(
-          { ssn: '111-222-3333' }.to_json,
+        Pii::Cacher.new(user, controller.user_session).save_decrypted_pii(
+          Pii::Attributes.new(ssn: '111-222-3333'),
         )
 
         params = {

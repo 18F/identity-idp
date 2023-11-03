@@ -27,7 +27,7 @@ RSpec.describe 'devise/sessions/new.html.erb' do
   end
 
   it 'has a localized title' do
-    expect(view).to receive(:title).with(t('titles.visitors.index'))
+    expect(view).to receive(:title=).with(t('titles.visitors.index'))
 
     render
   end

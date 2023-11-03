@@ -13,7 +13,7 @@ class PersonalKeyConfiguration
 
   def selection_presenters
     if mfa_enabled?
-      [TwoFactorAuthentication::PersonalKeySelectionPresenter.new(user:, configuration: self)]
+      [TwoFactorAuthentication::SignInPersonalKeySelectionPresenter.new(user:, configuration: self)]
     else
       []
     end

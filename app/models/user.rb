@@ -137,6 +137,7 @@ class User < ApplicationRecord
     email_addresses.map do |email_address|
       SuspendedEmail.find_with_email(email_address.email)&.destroy
     end
+    send_email_to_all_addresses(:account_reinstated)
   end
 
   def pending_profile

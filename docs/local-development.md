@@ -24,7 +24,7 @@ If not using macOS:
     - Ruby. Choose the version [in the `.ruby-version` file](../.ruby-version)
     - [PostgreSQL](http://www.postgresql.org/download/)
     - [PostGIS](https://postgis.net/documentation/getting_started/#installing-postgis)
-        - Note: if you run into errors installing `postgis` or creating the databse, check [the troubleshooting docs](./troubleshooting.md#errors-related-to-the-databse).
+        - Note: if you run into errors installing `postgis` or creating the database, check [the troubleshooting docs](./troubleshooting.md#errors-related-to-the-databse).
     - [Redis 7+](http://redis.io/)
     - [Node.js v18](https://nodejs.org)
     - [Yarn](https://yarnpkg.com/en/)
@@ -75,7 +75,7 @@ If not using macOS:
   $ make fast_test
   ```
 
-  Check out our Makefile commands learn more about how you can customize this command to run specific tests using rspec: https://github.com/18F/identity-idp/blob/main/Makefile#L41
+  Check out our Makefile commands and learn more about how you can customize this command to run specific tests using rspec: https://github.com/18F/identity-idp/blob/main/Makefile#L41
 
   To test a specific spec file with rspec, you may need to add the following configuration to `/config/application.yml` so the tests do not crash:
   ```

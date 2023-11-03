@@ -408,9 +408,11 @@ Rails.application.routes.draw do
 
       get '/by_mail/letter_enqueued' => 'by_mail/letter_enqueued#show', as: :letter_enqueued
 
-      # Redirects for old verify by mail routes
-      get '/come_back_later' => redirect('/verify/by_mail/letter_enqueued', status: 301)
-      get '/by_mail' => redirect('/verify/by_mail/enter_code', status: 301)
+      # We re-mapped `/verify/by_mail` to `/verify/by_mail/enter_code`. However, we sent emails to
+      # users with a link to `/verify/by_mail?did_not_receive_letter=1`. We need to continue
+      # supporting that feature so we are maintaining this URL mapped to that action. Rendering a
+      # redirect here will strip the query parameter.
+      get '/by_mail' => 'by_mail/enter_code#index'
     end
 
     root to: 'users/sessions#new'

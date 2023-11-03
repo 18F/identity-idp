@@ -20,10 +20,14 @@ class FrontendLogger
         analytics_method,
         **hash_from_kwargs(attributes, AnalyticsEvents.instance_method(analytics_method)),
       )
+      true
     elsif analytics_method.respond_to?(:call)
       analytics_method.call(**hash_from_kwargs(attributes, analytics_method))
+      true
     else
-      analytics.track_event("Frontend: #{name}", attributes)
+      # 2023-10-31 - Temporary
+      analytics.track_event("Frontend (warning): #{name}", attributes)
+      false
     end
   end
 

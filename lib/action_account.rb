@@ -38,6 +38,7 @@ class ActionAccount
 
           * #{basename} reinstate-user uuid1 uuid2
 
+          * #{basename} confirm-suspend-user uuid1 uuid2
         Options:
     EOS
   end
@@ -52,6 +53,7 @@ class ActionAccount
       'review-pass' => ReviewPass,
       'suspend-user' => SuspendUser,
       'reinstate-user' => ReinstateUser,
+      'confirm-suspend-user' => ConfirmSuspendUser,
     }[name]
   end
 
@@ -70,8 +72,9 @@ class ActionAccount
         error_activating: "There was an error activating the user's profile. Please try again.",
         past_eligibility: 'User is past the 30 day review eligibility.',
         missing_uuid: 'Error: Could not find user with that UUID',
+        user_emailed: 'User has been emailed',
         user_suspended: 'User has been suspended',
-        user_reinstated: 'User has been reinstated',
+        user_reinstated: 'User has been reinstated and the user has been emailed',
         user_already_suspended: 'User has already been suspended',
         user_is_not_suspended: 'User is not suspended',
       }
@@ -105,6 +108,16 @@ class ActionAccount
           else
             log_texts << log_text[:user_is_not_suspended]
           end
+        when :confirm_suspend
+          if user.suspended?
+            user.send_email_to_all_addresses(:suspension_confirmed)
+            analytics(user).user_suspension_confirmed
+            log_texts << log_text[:user_emailed]
+          else
+            log_texts << log_text[:user_is_not_suspended]
+          end
+        else
+          raise "unknown subtask=#{action}"
         end
 
         log_texts.each do |text|
@@ -129,10 +142,16 @@ class ActionAccount
       end
 
       ScriptBase::Result.new(
-        subtask: "#{action}-user",
+        subtask: "#{action.to_s.dasherize}-user",
         uuids: users.map(&:uuid),
         messages:,
         table:,
+      )
+    end
+
+    def analytics(user)
+      Analytics.new(
+        user: user, request: nil, session: {}, sp: nil,
       )
     end
   end
@@ -337,6 +356,18 @@ class ActionAccount
         args:,
         config:,
         action: :reinstate,
+      )
+    end
+  end
+
+  class ConfirmSuspendUser
+    include UserActions
+
+    def run(args:, config:)
+      perform_user_action(
+        args:,
+        config:,
+        action: :confirm_suspend,
       )
     end
   end
