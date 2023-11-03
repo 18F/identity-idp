@@ -4,8 +4,7 @@ RSpec.describe Idv::InPerson::SsnController do
   let(:pii_from_user) { Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID_WITH_NO_SSN.dup }
 
   let(:flow_session) do
-    { pii_from_user: pii_from_user,
-      flow_path: 'standard' }
+    { pii_from_user: pii_from_user }
   end
 
   let(:ssn) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn] }
@@ -24,6 +23,7 @@ RSpec.describe Idv::InPerson::SsnController do
     stub_attempts_tracker
     allow(@analytics).to receive(:track_event)
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
+    subject.idv_session.flow_path = 'standard'
   end
 
   describe 'before_actions' do

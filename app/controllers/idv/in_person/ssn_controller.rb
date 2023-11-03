@@ -26,8 +26,6 @@ module Idv
       end
 
       def update
-        @step_indicator_steps = step_indicator_steps
-
         @ssn_form = Idv::SsnFormatForm.new(current_user, idv_session.ssn)
         form_response = @ssn_form.submit(params.require(:doc_auth).permit(:ssn))
 
@@ -45,6 +43,7 @@ module Idv
           redirect_to next_url
         else
           flash[:error] = form_response.first_error_message
+          @step_indicator_steps = step_indicator_steps
           render 'idv/shared/ssn', locals: threatmetrix_view_variables
         end
       end
@@ -53,10 +52,6 @@ module Idv
 
       def flow_session
         user_session.fetch('idv/in_person', {})
-      end
-
-      def flow_path
-        flow_session[:flow_path]
       end
 
       def confirm_repeat_ssn
@@ -71,7 +66,7 @@ module Idv
 
       def analytics_arguments
         {
-          flow_path: flow_path,
+          flow_path: idv_session.flow_path,
           step: 'ssn',
           analytics_id: 'In Person Proofing',
           irs_reproofing: irs_reproofing?,
