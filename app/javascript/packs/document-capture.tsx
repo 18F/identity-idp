@@ -34,6 +34,7 @@ interface AppRootData {
   exitUrl: string;
   idvInPersonUrl?: string;
   securityAndPrivacyHowItWorksUrl: string;
+  uiNotReadySectionEnabled: string;
 }
 
 const appRoot = document.getElementById('document-capture-form')!;
@@ -91,6 +92,7 @@ const {
   inPersonOutageMessageEnabled,
   inPersonOutageExpectedUpdateDate,
   usStatesTerritories = '',
+  uiNotReadySectionEnabled = '',
 } = appRoot.dataset as DOMStringMap & AppRootData;
 
 let parsedUsStatesTerritories = [];
@@ -160,8 +162,7 @@ const App = composeComponents(
     UIConfigContext.Provider,
     {
       value: {
-        notReadySectionEnabled:
-          String(appRoot.getAttribute('data-ui-not-ready-section-enabled')) === 'true',
+        notReadySectionEnabled: String(uiNotReadySectionEnabled) === 'true',
       },
     },
   ],
