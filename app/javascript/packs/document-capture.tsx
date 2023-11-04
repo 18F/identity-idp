@@ -10,7 +10,7 @@ import {
   FailedCaptureAttemptsContextProvider,
   MarketingSiteContextProvider,
   InPersonContext,
-  UIConfigContext,
+  FeatureFlagContext,
 } from '@18f/identity-document-capture';
 import { isCameraCapableMobile } from '@18f/identity-device';
 import { FlowContext } from '@18f/identity-verify-flow';
@@ -179,7 +179,7 @@ const App = composeComponents(
     },
   ],
   [
-    UIConfigContext.Provider,
+    FeatureFlagContext.Provider,
     {
       value: {
         notReadySectionEnabled: String(uiNotReadySectionEnabled) === 'true',

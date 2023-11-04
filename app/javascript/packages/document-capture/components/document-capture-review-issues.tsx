@@ -12,7 +12,7 @@ import UnknownError from './unknown-error';
 import TipList from './tip-list';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
 import DocumentCaptureNotReady from './document-capture-not-ready';
-import { UIConfigContext } from '../context';
+import { FeatureFlagContext } from '../context';
 
 interface DocumentCaptureReviewIssuesProps {
   isFailedDocType: boolean;
@@ -46,7 +46,7 @@ function DocumentCaptureReviewIssues({
   hasDismissed,
 }: DocumentCaptureReviewIssuesProps) {
   const { t } = useI18n();
-  const { notReadySectionEnabled } = useContext(UIConfigContext);
+  const { notReadySectionEnabled } = useContext(FeatureFlagContext);
   return (
     <>
       <PageHeading>{t('doc_auth.headings.review_issues')}</PageHeading>

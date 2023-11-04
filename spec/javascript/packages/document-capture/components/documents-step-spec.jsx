@@ -6,7 +6,7 @@ import {
   DeviceContext,
   UploadContextProvider,
   FailedCaptureAttemptsContextProvider,
-  UIConfigContext,
+  FeatureFlagContext,
 } from '@18f/identity-document-capture';
 import DocumentsStep from '@18f/identity-document-capture/components/documents-step';
 import { composeComponents } from '@18f/identity-compose-components';
@@ -90,7 +90,7 @@ describe('document-capture/components/documents-step', () => {
     it('is rendered when enabled', () => {
       const App = composeComponents(
         [
-          UIConfigContext.Provider,
+          FeatureFlagContext.Provider,
           {
             value: {
               notReadySectionEnabled: true,
@@ -107,7 +107,7 @@ describe('document-capture/components/documents-step', () => {
     it('is not rendered when disabled', () => {
       const App = composeComponents(
         [
-          UIConfigContext.Provider,
+          FeatureFlagContext.Provider,
           {
             value: {
               notReadySectionEnabled: false,
