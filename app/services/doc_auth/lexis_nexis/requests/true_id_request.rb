@@ -29,13 +29,10 @@ module DocAuth
             Document: {
               Front: encode(front_image),
               Back: encode(back_image),
+              Selfie: (encode(selfie_image) if include_liveness?),
               DocumentType: 'DriversLicense',
             },
-          }
-          if liveness_checking_enabled && !selfie_image.blank?
-            document[:Document][:Selfie] =
-              encode(selfie_image)
-          end
+          }.compact
 
           settings.merge(document).to_json
         end
@@ -65,9 +62,13 @@ module DocAuth
 
         def workflow
           if acuant_sdk_source?
-            config.trueid_noliveness_nocropping_workflow
+            include_liveness? ?
+              config.trueid_liveness_nocropping_workflow :
+              config.trueid_noliveness_nocropping_workflow
           else
-            config.trueid_noliveness_cropping_workflow
+            include_liveness? ?
+              config.trueid_liveness_cropping_workflow :
+              config.trueid_noliveness_cropping_workflow
           end
         end
 
@@ -85,6 +86,10 @@ module DocAuth
 
         def timeout
           IdentityConfig.store.lexisnexis_trueid_timeout
+        end
+
+        def include_liveness?
+          liveness_checking_enabled && !selfie_image.nil?
         end
       end
     end

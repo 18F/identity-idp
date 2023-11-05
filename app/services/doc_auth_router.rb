@@ -178,6 +178,8 @@ module DocAuthRouter
           trueid_account_id: IdentityConfig.store.lexisnexis_trueid_account_id,
           trueid_noliveness_cropping_workflow: IdentityConfig.store.lexisnexis_trueid_noliveness_cropping_workflow,
           trueid_noliveness_nocropping_workflow: IdentityConfig.store.lexisnexis_trueid_noliveness_nocropping_workflow,
+          trueid_liveness_cropping_workflow: IdentityConfig.store.lexisnexis_trueid_liveness_cropping_workflow,
+          trueid_liveness_nocropping_workflow: IdentityConfig.store.lexisnexis_trueid_liveness_nocropping_workflow,
           trueid_password: IdentityConfig.store.lexisnexis_trueid_password,
           trueid_username: IdentityConfig.store.lexisnexis_trueid_username,
           hmac_key_id: IdentityConfig.store.lexisnexis_trueid_hmac_key_id,
