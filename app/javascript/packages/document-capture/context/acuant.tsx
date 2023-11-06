@@ -89,11 +89,15 @@ interface AcuantContextProviderProps {
    */
   cameraSrc: string;
   /**
+   * OpenCV JavaScript source URL. Required for passive liveness.
+   */
+  passiveLivenessOpenCVSrc: string;
+  /**
    * Passive Liveness (Selfie) JavaScript source URL.
    * If this is undefined, it means the selfie feature is
    * disabled.
    */
-  passiveLivenessSrc: string;
+  passiveLivenessSrc: string | undefined;
   /**
    * SDK credentials.
    */
@@ -217,6 +221,7 @@ const getActualAcuantCamera = (): AcuantCameraInterface => {
 function AcuantContextProvider({
   sdkSrc,
   cameraSrc,
+  passiveLivenessOpenCVSrc,
   passiveLivenessSrc,
   credentials = null,
   endpoint = null,
@@ -236,7 +241,6 @@ function AcuantContextProvider({
   const [isCameraSupported, setIsCameraSupported] = useState(isMobile ? null : false);
   const [isActive, setIsActive] = useState(false);
   const [acuantCaptureMode, setAcuantCaptureMode] = useState<AcuantCaptureMode>('AUTO');
-  const selfieCaptureEnabled: Boolean = !!passiveLivenessSrc;
 
   const value = useObjectMemo({
     isReady,
@@ -320,12 +324,18 @@ function AcuantContextProvider({
     // Create the empty script regardless of whether we load
     // to make the cleanup function simpler
     const passiveLivenessScript = document.createElement('script');
-    if (selfieCaptureEnabled) {
+    // Open CV script load. Open CV is required only for passive liveness
+    const passiveLivenessOpenCVScript = document.createElement('script');
+    if (passiveLivenessSrc) {
       passiveLivenessScript.async = true;
       passiveLivenessScript.src = passiveLivenessSrc;
       passiveLivenessScript.onerror = () => setIsError(true);
+      passiveLivenessOpenCVScript.async = true;
+      passiveLivenessOpenCVScript.src = passiveLivenessOpenCVSrc;
+      passiveLivenessOpenCVScript.onerror = () => setIsError(true);
     }
     document.body.appendChild(passiveLivenessScript);
+    document.body.appendChild(passiveLivenessOpenCVScript);
 
     return () => {
       window.acuantConfig = originalAcuantConfig;
@@ -333,6 +343,7 @@ function AcuantContextProvider({
       document.body.removeChild(sdkScript);
       document.body.removeChild(cameraScript);
       document.body.removeChild(passiveLivenessScript);
+      document.body.removeChild(passiveLivenessOpenCVScript);
     };
   }, []);
 
