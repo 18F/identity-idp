@@ -40,17 +40,18 @@ RSpec.shared_examples 'webauthn setup' do
   end
 
   context 'platform authenticator logging' do
+    let(:fake_analytics) { FakeAnalytics.new }
+
     before do
+      allow(IdentityConfig.store).to receive(:platform_auth_set_up_enabled).and_return(true)
       allow(IdentityConfig.store).
         to receive(:show_unsupported_passkey_platform_authentication_setup).
         and_return(true)
       allow(WebauthnVerificationForm).to receive(:domain_name).and_return('localhost:3000')
       allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
+      sign_up_and_set_password
       mock_webauthn_setup_challenge
     end
-
-    let!(:user) { sign_up_and_set_password }
-    let(:fake_analytics) { FakeAnalytics.new }
 
     it 'sends a submit failure event', :js do
       select_2fa_option('webauthn', visible: :all)
