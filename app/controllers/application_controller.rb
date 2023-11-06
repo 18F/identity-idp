@@ -42,7 +42,7 @@ class ApplicationController < ActionController::Base
 
   # for lograge
   def append_info_to_payload(payload)
-    return if Lograge.lograge_config.ignore_actions.include?(
+    return if Lograge.lograge_config.ignore_actions&.include?(
       "#{Lograge.controller_field(payload)}##{payload[:action]}",
     )
 
