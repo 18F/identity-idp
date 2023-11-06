@@ -129,7 +129,7 @@ COPY --chown=app:app config/integration_statuses.localdev.yml $RAILS_ROOT/config
 COPY --chown=app:app config/integrations.localdev.yml $RAILS_ROOT/config/integrations.yaml
 COPY --chown=app:app config/partner_account_statuses.localdev.yml $RAILS_ROOT/config/partner_account_statuses.yaml
 COPY --chown=app:app config/partner_accounts.localdev.yml $RAILS_ROOT/config/partner_accounts.yaml
-COPY --chown=app:app config/service_providers.localdev.yml $RAILS_ROOT/config/service_providers.yaml
+RUN echo -e "production:\n  'urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:dashboard':\n    friendly_name: 'Dashboard'\n    agency: 'GSA'\n    agency_id: 2\n    logo: '18f.svg'\n    certs:\n      - 'identity_dashboard_cert'\n    return_to_sp_url: $DASHBOARD_URL\n    redirect_uris:\n      - $DASHBOARD_URL/auth/logindotgov/callback\n      - $DASHBOARD_URL\n    push_notification_url: $DASHBOARD_URL/api/security_events" > $RAILS_ROOT/config/service_providers.yaml
 
 # Copy keys
 COPY --chown=app:app keys.example $RAILS_ROOT/keys
