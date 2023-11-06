@@ -1,13 +1,16 @@
-import { useContext, useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
 import { useImmutableCallback } from '@18f/identity-react-hooks';
 import AcuantContext from '../context/acuant';
 
 declare let AcuantCameraUI: AcuantCameraUIInterface;
+declare let AcuantPassiveLiveness: AcuantPassiveLivenessInterface;
+
 declare global {
   interface Window {
     AcuantCameraUI: AcuantCameraUIInterface;
+    AcuantPassiveLiveness: AcuantPassiveLivenessInterface;
   }
 }
 
@@ -16,6 +19,7 @@ declare global {
  */
 type AcuantGlobals = {
   AcuantCameraUI: AcuantCameraUIInterface;
+  AcuantPassiveLiveness: AcuantPassiveLivenessInterface;
   AcuantCamera: AcuantCameraInterface;
 };
 export type AcuantGlobal = Window & AcuantGlobals;
@@ -138,11 +142,23 @@ type AcuantCameraUIStart = (
   options?: AcuantCameraUIOptions,
 ) => void;
 
+type AcuantPassiveLivenessStart = () => void;
+
 interface AcuantCameraUIInterface {
   /**
    * Start capture
    */
   start: AcuantCameraUIStart;
+  /**
+   * End capture
+   */
+  end: () => void;
+}
+interface AcuantPassiveLivenessInterface {
+  /**
+   * Start capture
+   */
+  start: AcuantPassiveLivenessStart;
   /**
    * End capture
    */
@@ -289,6 +305,17 @@ const getActualAcuantCameraUI = (): AcuantCameraUIInterface => {
   return AcuantCameraUI;
 };
 
+const getActualAcuantPassiveLiveness = (): AcuantPassiveLivenessInterface => {
+  if (window.AcuantPassiveLiveness) {
+    return window.AcuantPassiveLiveness;
+  }
+  if (typeof AcuantPassiveLiveness === 'undefined') {
+    // eslint-disable-next-line no-console
+    console.error('AcuantCameraUI is not defined in the global scope');
+  }
+  return AcuantPassiveLiveness;
+};
+
 function AcuantCamera({
   onImageCaptureSuccess = () => {},
   onImageCaptureFailure = () => {},
@@ -307,6 +334,36 @@ function AcuantCamera({
     },
     [onImageCaptureSuccess],
   );
+  const faceCaptureCallback = {
+    onDetectorInitialized: () => {
+      // This callback is triggered when the face detector is ready.
+      // Until then, no actions are executed and the user sees only the camera stream.
+      // You can opt to display an alert before the callback is triggered.
+    },
+    onDetection: (text) => {
+      // Triggered when the face does not pass the scan. The UI element
+      // should be updated here to provide guidence to the user
+    },
+    onOpened: () => {
+      // Camera has opened
+    },
+    onClosed: () => {
+      // Camera has closed
+    },
+    onError: (error) => {
+      // Error occurred. Camera permission not granted will
+      // manifest here with 1 as error code. Unexpected errors will have 2 as error code.
+    },
+    onPhotoTaken: () => {
+      // The photo has been taken and it's showing a preview with a button to accept or retake the image.
+    },
+    onPhotoRetake: () => {
+      // Triggered when retake button is tapped
+    },
+    onCaptured: (base64Image) => {
+      // Triggered when accept button is tapped
+    },
+  };
 
   useEffect(() => {
     const textOptions = {
@@ -319,7 +376,25 @@ function AcuantCamera({
         TAP_TO_CAPTURE: t('doc_auth.info.capture_status_tap_to_capture'),
       },
     };
-    if (isReady) {
+    const faceDetectionStates = {
+      FACE_NOT_FOUND: 'FACE NOT FOUND',
+      TOO_MANY_FACES: 'TOO MANY FACES',
+      FACE_ANGLE_TOO_LARGE: 'FACE ANGLE TOO LARGE',
+      PROBABILITY_TOO_SMALL: 'PROBABILITY TOO SMALL',
+      FACE_TOO_SMALL: 'FACE TOO SMALL',
+      FACE_CLOSE_TO_BORDER: 'TOO CLOSE TO THE FRAME',
+    };
+
+    const selfieMode = false;
+    const cleanupCamera = () => {
+      window.AcuantCameraUI.end();
+      setIsActive(false);
+    };
+    const cleanupSelfieCamera = () => {
+      window.AcuantPassiveLiveness.end();
+      setIsActive(false);
+    };
+    const startCamera = () => {
       const onFailureCallbackWithOptions = (...args) => onImageCaptureFailure(...args);
       Object.keys(textOptions).forEach((key) => {
         onFailureCallbackWithOptions[key] = textOptions[key];
@@ -336,12 +411,19 @@ function AcuantCamera({
         textOptions,
       );
       setIsActive(true);
-    }
+    };
+    const startSelfieCamera = () => {
+      window.AcuantPassiveLiveness = getActualAcuantPassiveLiveness();
+      window.AcuantPassiveLiveness.start(faceCaptureCallback, faceDetectionStates);
+      setIsActive(true);
+    };
 
+    if (isReady) {
+      selfieMode ? startSelfieCamera() : startCamera();
+    }
     return () => {
       if (isReady) {
-        window.AcuantCameraUI.end();
-        setIsActive(false);
+        selfieMode ? cleanupSelfieCamera() : cleanupCamera();
       }
     };
   }, [isReady]);
