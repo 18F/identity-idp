@@ -15,7 +15,7 @@ module Idv
 
     def show
       @step_indicator_steps = step_indicator_steps
-      @ssn_form = Idv::SsnFormatForm.new(current_user, idv_session.ssn)
+      @ssn_form = Idv::SsnFormatForm.new(idv_session.ssn)
 
       analytics.idv_doc_auth_redo_ssn_submitted(**analytics_arguments) if @ssn_form.updating_ssn?
       analytics.idv_doc_auth_ssn_visited(**analytics_arguments)
@@ -27,7 +27,7 @@ module Idv
     end
 
     def update
-      @ssn_form = Idv::SsnFormatForm.new(current_user, idv_session.ssn)
+      @ssn_form = Idv::SsnFormatForm.new(idv_session.ssn)
       form_response = @ssn_form.submit(params.require(:doc_auth).permit(:ssn))
 
       analytics.idv_doc_auth_ssn_submitted(

@@ -6,7 +6,6 @@ RSpec.describe 'idv/shared/ssn.html.erb' do
   let(:threatmetrix_enabled) { nil }
   let(:lexisnexis_threatmetrix_org_id) { 'test_org_id' }
   let(:session_id) { 'ABCD-1234' }
-  let(:updating_ssn) { false }
   let(:js_domain) { 'h.online-metrix.net' }
 
   let(:tags_js_url) do
@@ -24,6 +23,8 @@ RSpec.describe 'idv/shared/ssn.html.erb' do
       and_return(threatmetrix_enabled ? :enabled : :disabled)
     allow(IdentityConfig.store).
       to receive(:lexisnexis_threatmetrix_org_id).and_return(lexisnexis_threatmetrix_org_id)
+
+    assign(:ssn_form, Idv::SsnFormatForm.new(nil))
 
     @step_indicator_steps = Idv::Flows::InPersonFlow::STEP_INDICATOR_STEPS
     render template: 'idv/shared/ssn', locals: {
