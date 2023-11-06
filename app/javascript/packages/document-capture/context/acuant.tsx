@@ -328,8 +328,8 @@ function AcuantContextProvider({
       passiveLivenessScript.async = true;
       passiveLivenessScript.src = passiveLivenessSrc;
       passiveLivenessScript.onerror = () => setIsError(true);
-      document.body.appendChild(passiveLivenessScript);
     }
+    document.body.appendChild(passiveLivenessScript);
 
     return () => {
       window.acuantConfig = originalAcuantConfig;
