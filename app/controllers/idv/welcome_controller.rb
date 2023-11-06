@@ -23,6 +23,11 @@ module Idv
     end
 
     def update
+      if !FeatureManagement.idv_available?
+        redirect_to idv_unavailable_url
+        return
+      end
+
       analytics.idv_doc_auth_welcome_submitted(**analytics_arguments)
 
       create_document_capture_session
