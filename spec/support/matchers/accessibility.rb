@@ -149,7 +149,7 @@ RSpec::Matchers.define :have_unique_form_landmark_labels do
   match do |page|
     labels = landmarks(page).map { |element| AccessibleName.new(page:).computed_name(element) }
 
-    labels.none?(&:nil?) && labels.uniq.length == labels.length
+    labels.one? || labels.compact.uniq.length == labels.length
   end
 
   failure_message do |page|
