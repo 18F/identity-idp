@@ -31,6 +31,7 @@ fr:
         les cartes d’identité délivrées par l’État
       document_capture_cancelled: Vous avez annulé le téléchargement de vos photos
         d’identité sur votre téléphone.
+      how_to_verify_form: Sélectionnez un moyen de vérifier votre identité.
       phone_step_incomplete: Vous devez aller sur votre téléphone et télécharger des
         photos de votre identifiant avant de continuer. Nous vous avons envoyé
         un lien avec des instructions.

@@ -28,6 +28,7 @@ es:
       doc_type_not_supported_heading: Solo aceptamos una licencia de conducir o un
         documento de identidad estatal
       document_capture_cancelled: Ha cancelado la carga de fotos de su identificación en este teléfono.
+      how_to_verify_form: Seleccione una forma de verificar su identidad.
       phone_step_incomplete: Debe ir a su teléfono y cargar fotos de su identificación
         antes de continuar. Te enviamos un enlace con instrucciones.
       rate_limited_heading: No pudimos verificar la identificación
