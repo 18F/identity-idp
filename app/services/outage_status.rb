@@ -86,7 +86,7 @@ class OutageStatus
     end
   end
 
-  def track_event(analytics)
+  def track_event(analytics, redirect_from: nil)
     raise ArgumentError, 'analytics instance required' if analytics.nil?
 
     analytics.vendor_outage(
@@ -98,6 +98,7 @@ class OutageStatus
         voice: IdentityConfig.store.vendor_status_voice,
         idv_scheduled_maintenance: idv_scheduled_maintenance_status,
       },
+      redirect_from: redirect_from,
     )
   end
 end
