@@ -54,7 +54,7 @@ RSpec.shared_examples 'webauthn setup' do
     let(:fake_analytics) { FakeAnalytics.new }
 
     it 'sends a submit failure event', :js do
-      visit_webauthn_setup
+      select_2fa_option('webauthn', visible: :all)
 
       fill_in_nickname_and_click_continue
       mock_submit_without_pressing_button_on_hardware_key_on_setup
@@ -76,7 +76,8 @@ RSpec.shared_examples 'webauthn setup' do
     end
 
     it 'sends a submit success event', :js do
-      visit_webauthn_setup
+      select_2fa_option('webauthn', visible: :all)
+
       fill_in_nickname_and_click_continue
       mock_press_button_on_hardware_key_on_setup
 
