@@ -90,6 +90,8 @@ interface AcuantContextProviderProps {
   cameraSrc: string;
   /**
    * Passive Liveness (Selfie) JavaScript source URL.
+   * If this is undefined, it means the selfie feature is
+   * disabled.
    */
   passiveLivenessSrc: string;
   /**
@@ -108,12 +110,6 @@ interface AcuantContextProviderProps {
    * Minimum acceptable sharpness score for images.
    */
   sharpnessThreshold: number;
-  /**
-   * Whether or not selfie capture is enabled.
-   * Used here to determine whether or not to load
-   * the passive liveness script
-   */
-  selfieCaptureEnabled: boolean;
   /**
    * Child element
    */
@@ -226,7 +222,6 @@ function AcuantContextProvider({
   endpoint = null,
   glareThreshold = DEFAULT_ACCEPTABLE_GLARE_SCORE,
   sharpnessThreshold = DEFAULT_ACCEPTABLE_SHARPNESS_SCORE,
-  selfieCaptureEnabled = false,
   children,
 }: AcuantContextProviderProps) {
   const { isMobile } = useContext(DeviceContext);
@@ -241,6 +236,7 @@ function AcuantContextProvider({
   const [isCameraSupported, setIsCameraSupported] = useState(isMobile ? null : false);
   const [isActive, setIsActive] = useState(false);
   const [acuantCaptureMode, setAcuantCaptureMode] = useState<AcuantCaptureMode>('AUTO');
+  const selfieCaptureEnabled: Boolean = !!passiveLivenessSrc;
 
   const value = useObjectMemo({
     isReady,
