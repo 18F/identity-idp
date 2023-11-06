@@ -102,7 +102,7 @@ module Deploy
         'git@github.com:18F/identity-idp-config.git',
       )
 
-      cmd = ['git', 'clone', '--depth', '1', '--branch', 'main', private_git_repo_url, checkout_dir]
+      cmd = ['git', 'clone', '--depth', '1', '--branch', 'mitchellhenke/testing-env2', private_git_repo_url, checkout_dir]
       logger.info('+ ' + cmd.join(' '))
       Subprocess.check_call(cmd)
     end
