@@ -21,19 +21,18 @@ module SamlIdp
           inflated = decoded
         end
       else
-        inflated = ""
+        inflated = ''
       end
       new(inflated, options)
     end
 
     def self.log(msg, level: :debug)
-      if Rails && Rails.logger
+      if Rails&.logger
         Rails.logger.send(level, msg)
       else
         puts msg
       end
     end
-
 
     attr_accessor :raw_xml, :options
     attr_reader :errors
@@ -43,7 +42,7 @@ module SamlIdp
     delegate :xpath, to: :document
     private :xpath
 
-    def initialize(raw_xml = "", options = {})
+    def initialize(raw_xml = '', options = {})
       self.options = options
       self.raw_xml = raw_xml
       @errors = []
@@ -58,7 +57,7 @@ module SamlIdp
     end
 
     def request_id
-      request["ID"]
+      request['ID']
     end
 
     def request
@@ -72,7 +71,7 @@ module SamlIdp
     def force_authn?
       return nil unless authn_request?
 
-      request["ForceAuthn"] == 'true'
+      request['ForceAuthn'] == 'true'
     end
 
     def requested_authn_context
@@ -80,13 +79,11 @@ module SamlIdp
     end
 
     def requested_authn_context_comparison
-      if authn_request? && requested_authn_context_node
-        requested_authn_context_node["Comparison"]
-      end
+      requested_authn_context_node['Comparison'] if authn_request? && requested_authn_context_node
     end
 
     def requested_authn_contexts
-      if authn_request? && authn_context_nodes.length > 0
+      if authn_request? && !authn_context_nodes.empty?
         authn_context_nodes.map(&:content)
       else
         []
@@ -107,7 +104,7 @@ module SamlIdp
 
     def acs_url
       service_provider.acs_url ||
-        authn_request["AssertionConsumerServiceURL"].to_s
+        authn_request['AssertionConsumerServiceURL'].to_s
     end
 
     def logout_url
@@ -123,7 +120,7 @@ module SamlIdp
     end
 
     def log(msg)
-      if Rails && Rails.logger
+      if Rails&.logger
         Rails.logger.info msg
       else
         puts msg
@@ -131,72 +128,74 @@ module SamlIdp
     end
 
     def valid?
-      log "Checking validity..."
+      log 'Checking validity...'
 
       unless service_provider?
         log "Unable to find service provider for issuer #{issuer}"
-        @errors.push("Issuer is missing or invalid")
+        @errors.push('Issuer is missing or invalid')
       end
 
       if authn_request? && logout_request?
-        log "One and only one of authnrequest and logout request is required."
-        @errors.push("Request must ONLY have an AuthnRequest OR LogoutRequest tag, this request has both")
+        log 'One and only one of authnrequest and logout request is required.'
+        @errors.push('Request must ONLY have an AuthnRequest OR LogoutRequest tag, this request has both')
       end
 
       unless authn_request? || logout_request?
         log "One and only one of authnrequest and logout request is required. authnrequest: #{authn_request?} logout_request: #{logout_request?} "
-        @errors.push("Request must have either an AuthnRequest or LogoutRequest tag")
+        @errors.push('Request must have either an AuthnRequest or LogoutRequest tag')
       end
 
       if service_provider? && response_url.blank?
         log "Unable to find response url for #{issuer}: #{raw_xml}"
-        @errors.push("No response URL found")
+        @errors.push('No response URL found')
       end
 
       unless service_provider? && valid_signature?
         log "Signature is invalid in #{raw_xml}"
         # TODO: We should get more specific errors
-        @errors.push("Signature is invalid")
+        @errors.push('Signature is invalid')
       end
 
-      return errors.blank?
+      errors.blank?
     end
 
     def signed?
-      document.signed? || !!self.options[:get_params]&.key?(:Signature)
+      document.signed? || !!options[:get_params]&.key?(:Signature)
     end
 
     def valid_signature?
       # Force signatures for logout requests because there is no other
       # protection against a cross-site DoS.
-      service_provider.valid_signature?(document, logout_request?, self.options)
+      service_provider.valid_signature?(document, logout_request?, options)
     end
 
     def service_provider?
-      service_provider && service_provider.valid?
+      service_provider&.valid?
     end
 
     def service_provider
       return unless issuer.present?
+
       @_service_provider ||= ServiceProvider.new((service_provider_finder[issuer] || {}).merge(identifier: issuer))
     end
 
     def issuer
-      @_issuer ||= xpath("//saml:Issuer", saml: assertion).first.try(:content)
+      @_issuer ||= xpath('//saml:Issuer', saml: assertion).first.try(:content)
       @_issuer if @_issuer.present?
     end
 
     def name_id
-      @_name_id ||= xpath("//saml:NameID", saml: assertion).first.try(:content)
+      @_name_id ||= xpath('//saml:NameID', saml: assertion).first.try(:content)
     end
 
     def name_id_format
       return name_id_format_node.content if authn_request? && name_id_format_node
+
       nil
     end
 
     def session_index
-      @_session_index ||= xpath("//samlp:SessionIndex", samlp: samlp).first.try(:content)
+      @_session_index ||= xpath('//samlp:SessionIndex', samlp: samlp).first.try(:content)
     end
 
     def document
@@ -206,6 +205,7 @@ module SamlIdp
 
     def name_id_format_node
       return @_name_id_format_node if defined?(@_name_id_format_node)
+
       @_name_id_format_node ||= xpath('//samlp:AuthnRequest/samlp:NameIDPolicy/@Format',
                                       samlp: samlp,
                                       saml: assertion).first
@@ -213,33 +213,33 @@ module SamlIdp
     private :name_id_format_node
 
     def requested_authn_context_node
-      @_authn_context_node ||= xpath("//samlp:AuthnRequest/samlp:RequestedAuthnContext",
-        samlp: samlp,
-        saml: assertion).first
+      @_authn_context_node ||= xpath('//samlp:AuthnRequest/samlp:RequestedAuthnContext',
+                                     samlp: samlp,
+                                     saml: assertion).first
     end
     private :requested_authn_context_node
 
     def authn_context_node
-      @_authn_context_node ||= xpath("//samlp:AuthnRequest/samlp:RequestedAuthnContext/saml:AuthnContextClassRef",
-        samlp: samlp,
-        saml: assertion).first
+      @_authn_context_node ||= xpath('//samlp:AuthnRequest/samlp:RequestedAuthnContext/saml:AuthnContextClassRef',
+                                     samlp: samlp,
+                                     saml: assertion).first
     end
     private :authn_context_node
 
     def authn_context_nodes
-      @_authn_context_nodes ||= xpath("//samlp:AuthnRequest/samlp:RequestedAuthnContext/saml:AuthnContextClassRef",
-        samlp: samlp,
-        saml: assertion)
+      @_authn_context_nodes ||= xpath('//samlp:AuthnRequest/samlp:RequestedAuthnContext/saml:AuthnContextClassRef',
+                                      samlp: samlp,
+                                      saml: assertion)
     end
     private :authn_context_nodes
 
     def authn_request
-      @_authn_request ||= xpath("//samlp:AuthnRequest", samlp: samlp).first
+      @_authn_request ||= xpath('//samlp:AuthnRequest', samlp: samlp).first
     end
     private :authn_request
 
     def logout_request
-      @_logout_request ||= xpath("//samlp:LogoutRequest", samlp: samlp).first
+      @_logout_request ||= xpath('//samlp:LogoutRequest', samlp: samlp).first
     end
     private :logout_request
 
