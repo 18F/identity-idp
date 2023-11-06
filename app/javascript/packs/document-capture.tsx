@@ -98,6 +98,7 @@ const {
   inPersonOutageMessageEnabled,
   inPersonOutageExpectedUpdateDate,
   usStatesTerritories = '',
+  phoneWithCamera = '',
 } = appRoot.dataset as DOMStringMap & AppRootData;
 
 let parsedUsStatesTerritories = [];
@@ -147,6 +148,7 @@ const App = composeComponents(
       isMockClient,
       formData,
       flowPath,
+      phoneWithCamera,
     },
   ],
   [
