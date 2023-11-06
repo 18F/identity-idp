@@ -67,6 +67,7 @@ function AcuantCaptureCanvas() {
         </p>
       )}
       <div id="acuant-camera" ref={cameraRef} className="acuant-capture-canvas__camera" />
+      <div id="acuant-face-capture-container" ref={cameraRef} />
       <button
         type="button"
         onClick={clickCanvas}

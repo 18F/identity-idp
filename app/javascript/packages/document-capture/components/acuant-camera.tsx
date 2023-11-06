@@ -385,7 +385,7 @@ function AcuantCamera({
       FACE_CLOSE_TO_BORDER: 'TOO CLOSE TO THE FRAME',
     };
 
-    const selfieMode = false;
+    const selfieMode = true;
     const cleanupCamera = () => {
       window.AcuantCameraUI.end();
       setIsActive(false);
@@ -414,6 +414,8 @@ function AcuantCamera({
     };
     const startSelfieCamera = () => {
       window.AcuantPassiveLiveness = getActualAcuantPassiveLiveness();
+      // This opens the native camera, but TODO callbacks
+      // window.AcuantPassiveLiveness.startManualCapture();
       window.AcuantPassiveLiveness.start(faceCaptureCallback, faceDetectionStates);
       setIsActive(true);
     };
