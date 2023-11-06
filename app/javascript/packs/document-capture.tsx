@@ -46,6 +46,12 @@ function getServiceProvider() {
   return { name, failureToProofURL };
 }
 
+function getSelfieCaptureEnabled() {
+  const { docAuthSelfieCapture } = appRoot.dataset;
+  const docAuthSelfieCaptureObject = docAuthSelfieCapture ? JSON.parse(docAuthSelfieCapture) : {};
+  return !!docAuthSelfieCaptureObject?.enabled;
+}
+
 function getMetaContent(name): string | null {
   const meta = document.querySelector<HTMLMetaElement>(`meta[name="${name}"]`);
   return meta?.content ?? null;
@@ -149,7 +155,13 @@ const App = composeComponents(
       },
     },
   ],
-  [ServiceProviderContextProvider, { value: getServiceProvider() }],
+  [
+    ServiceProviderContextProvider,
+    {
+      value: getServiceProvider(),
+      selfieCaptureEnabled: getSelfieCaptureEnabled(),
+    },
+  ],
   [
     FailedCaptureAttemptsContextProvider,
     {
