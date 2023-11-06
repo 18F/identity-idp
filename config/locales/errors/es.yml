@@ -28,6 +28,7 @@ es:
       doc_type_not_supported_heading: Solo aceptamos una licencia de conducir o un
         documento de identidad estatal
       document_capture_cancelled: Ha cancelado la carga de fotos de su identificación en este teléfono.
+      how_to_verify_form: Seleccione una forma de verificar su identidad.
       phone_step_incomplete: Debe ir a su teléfono y cargar fotos de su identificación
         antes de continuar. Te enviamos un enlace con instrucciones.
       rate_limited_heading: No pudimos verificar la identificación
@@ -38,6 +39,9 @@ es:
       send_link_limited: Ha intentado demasiadas veces, por favor, inténtelo de nuevo
         en %{timeout}. También puede retroceder y elegir utilizar su computadora
         como alternativa.
+    enter_code:
+      rate_limited_html: Ingresó un código de verificación incorrecto demasiadas
+        veces. <strong>Inténtelo de nuevo en %{timeout}.</strong>
     general: '¡Oops! Algo salió mal. Inténtelo de nuevo.'
     invalid_totp: El código es inválido. Vuelva a intentarlo.
     max_password_attempts_reached: Ha ingresado demasiadas contraseñas incorrectas.
@@ -118,8 +122,6 @@ es:
       must_select_additional_option: Seleccione un método de autenticación adicional.
       must_select_option: Seleccione un método de autenticación.
     verify_personal_key:
-      rate_limited: Lo intentaste muchas veces, vuelve a intentarlo en %{timeout}.
-    verify_profile:
       rate_limited: Lo intentaste muchas veces, vuelve a intentarlo en %{timeout}.
     webauthn_platform_setup:
       account_setup_error: No pudimos agregar el desbloqueo con la cara o con la

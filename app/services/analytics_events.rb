@@ -898,6 +898,14 @@ module AnalyticsEvents
     track_event('IdV: doc auth getting_started visited', **extra)
   end
 
+  def idv_doc_auth_how_to_verify_submitted(**extra)
+    track_event(:idv_doc_auth_how_to_verify_submitted, **extra)
+  end
+
+  def idv_doc_auth_how_to_verify_visited(**extra)
+    track_event(:idv_doc_auth_how_to_verify_visited, **extra)
+  end
+
   # The "hybrid handoff" step: Desktop user has submitted their choice to
   # either continue via desktop ("document_capture" destination) or switch
   # to mobile phone ("send_link" destination) to perform document upload.

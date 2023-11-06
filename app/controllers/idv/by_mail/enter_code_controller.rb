@@ -19,7 +19,7 @@ module Idv
         )
 
         if rate_limiter.limited?
-          render_rate_limited
+          redirect_to idv_enter_code_rate_limited_url
           return
         end
 
@@ -46,9 +46,10 @@ module Idv
 
       def create
         if rate_limiter.limited?
-          render_rate_limited
+          redirect_to idv_enter_code_rate_limited_url
           return
         end
+
         rate_limiter.increment!
 
         @gpo_verify_form = build_gpo_verify_form
@@ -61,7 +62,7 @@ module Idv
         )
 
         if !result.success?
-          flash[:error] = @gpo_verify_form.errors.first.message
+          flash[:error] = @gpo_verify_form.errors.first.message if !rate_limiter.limited?
           redirect_to idv_verify_by_mail_enter_code_url
           return
         end
@@ -117,16 +118,6 @@ module Idv
           user: current_user,
           rate_limit_type: :verify_gpo_key,
         )
-      end
-
-      def render_rate_limited
-        irs_attempts_api_tracker.idv_gpo_verification_rate_limited
-        analytics.rate_limit_reached(
-          limiter_type: :verify_gpo_key,
-        )
-
-        @expires_at = rate_limiter.expires_at
-        render :rate_limited
       end
 
       def build_gpo_verify_form

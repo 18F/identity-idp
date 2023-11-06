@@ -1,0 +1,28 @@
+@use 'uswds-core' as *;
+
+@include at-media('tablet') {
+  .usa-radio__label-illustrated-large {
+    .usa-radio__image {
+      @include u-position('absolute');
+      @include u-left(2);
+      @include u-top(50px);
+    }
+
+    .usa-radio__label--text {
+      @include u-margin-left(6);
+    }
+  }
+}
+
+.usa-radio__input--tile + .usa-radio__label--illustrated.usa-radio__label-illustrated-large {
+  .usa-radio__image {
+    @include u-width(88px);
+    @include u-height('auto');
+  }
+
+  .usa-radio__label--text {
+    h3 {
+      @include u-text('gray-70');
+    }
+  }
+}

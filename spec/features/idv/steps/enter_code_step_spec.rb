@@ -4,6 +4,7 @@ RSpec.feature 'idv enter letter code step' do
   include IdvStepHelper
 
   let(:otp) { 'ABC123' }
+  let(:wrong_otp) { 'XYZ456' }
   let(:profile) do
     create(
       :profile,
@@ -187,6 +188,24 @@ RSpec.feature 'idv enter letter code step' do
     click_idv_continue
 
     expect(current_path).to eq idv_welcome_path
+  end
+
+  context 'user is rate limited', :js do
+    before do
+      sign_in_live_with_2fa(user)
+
+      (RateLimiter.max_attempts(:verify_gpo_key) - 1).times do
+        fill_in t('idv.gpo.form.otp_label'), with: wrong_otp
+        click_button t('idv.gpo.form.submit')
+      end
+    end
+
+    it 'redirects to rate limited page' do
+      fill_in t('idv.gpo.form.otp_label'), with: wrong_otp
+      click_button t('idv.gpo.form.submit')
+
+      expect(current_path).to eq(idv_enter_code_rate_limited_path)
+    end
   end
 
   context 'user cancels idv from enter code page after getting rate limited', :js do
