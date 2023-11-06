@@ -1,10 +1,17 @@
 <%#
 Renders a page asking the user to enter their SSN or update their SSN if they had previously entered it.
 
+locals:
+* updating_ssn: true if the user is updating their SSN instead of providing it for the first time. This
+                will render a different page heading and different navigation buttons in the page footer
+* threatmetrix_session_id: A session identifier needed by the ThreatMetrix tool
+* threatmetrix_javascript_urls:: URLs to add to script tags to load the ThreatMetrix javascript
+* threatmetrix_iframe_url: A URL to add to the page for Threatmetrix
 %>
+
 <% content_for(:pre_flash_content) do %>
   <%= render StepIndicatorComponent.new(
-        steps: @step_indicator_steps,
+        steps: Idv::Flows::InPersonFlow::STEP_INDICATOR_STEPS,
         current_step: :verify_info,
         locale_scope: 'idv',
         class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
@@ -13,7 +20,7 @@ Renders a page asking the user to enter their SSN or update their SSN if they ha
 
 <% self.title = t('titles.doc_auth.ssn') %>
 
-<% if @ssn_form.updating_ssn? %>
+<% if updating_ssn %>
   <%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.ssn_update')) %>
 <% else %>
   <%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.ssn')) %>
@@ -53,7 +60,7 @@ Renders a page asking the user to enter their SSN or update their SSN if they ha
 <% end %>
 
 <%= simple_form_for(
-      @ssn_form,
+      Idv::SsnFormatForm.new(current_user, nil),
       url: url_for,
       method: :put,
       html: { autocomplete: 'off' },
@@ -62,8 +69,10 @@ Renders a page asking the user to enter their SSN or update their SSN if they ha
     <%= render 'shared/ssn_field', f: f %>
   </div>
 
-  <%= f.submit class: 'display-block margin-y-5' do %>
-    <% if @ssn_form.updating_ssn? %>
+<p><%= @error_message %></p>
+
+<%= f.submit class: 'display-block margin-y-5' do %>
+    <% if updating_ssn %>
       <%= t('forms.buttons.submit.update') %>
     <% else %>
       <%= t('forms.buttons.continue') %>
@@ -71,8 +80,9 @@ Renders a page asking the user to enter their SSN or update their SSN if they ha
   <% end %>
 <% end %>
 
-<% if @ssn_form.updating_ssn? %>
-  <%= render 'idv/shared/back', fallback_path: idv_verify_info_path %>
+<% if updating_ssn %>
+  <%= render 'idv/shared/back', fallback_path: idv_in_person_verify_info_path %>
 <% else %>
   <%= render 'idv/doc_auth/cancel', step: 'ssn' %>
 <% end %>
+
