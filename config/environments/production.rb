@@ -39,5 +39,5 @@ Rails.application.configure do
     config.logger = ActiveSupport::Logger.new(STDOUT)
   end
   config.log_level = :info
-  config.lograge.ignore_actions = ['Users::SessionsController#active']
+  config.lograge.ignore_actions = ['Api::Internal::SessionsController#show']
 end
