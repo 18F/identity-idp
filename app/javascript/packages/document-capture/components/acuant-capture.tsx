@@ -1,6 +1,6 @@
 import { Button, FullScreen } from '@18f/identity-components';
 import type { MouseEvent, ReactNode, Ref } from 'react';
-import {
+import React, {
   forwardRef,
   useContext,
   useEffect,
