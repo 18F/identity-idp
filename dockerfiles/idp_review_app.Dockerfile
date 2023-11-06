@@ -152,6 +152,9 @@ RUN openssl req -x509 -sha256 -nodes -newkey rsa:2048 -days 1825 \
 # Precompile assets
 RUN bundle exec rake assets:precompile --trace
 
+# Seed data
+RUN bundle exec rake db:seed
+
 # Expose the port the app runs on
 EXPOSE 3000
 
