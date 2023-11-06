@@ -1,7 +1,11 @@
 module TwoFactorAuthentication
-  class SmsSelectionPresenter < PhoneSelectionPresenter
+  class SignInSmsSelectionPresenter < SignInPhoneSelectionPresenter
     def method
       :sms
+    end
+
+    def label
+      t('two_factor_authentication.login_options.sms')
     end
 
     def info

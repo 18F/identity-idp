@@ -1,7 +1,11 @@
 module TwoFactorAuthentication
-  class VoiceSelectionPresenter < PhoneSelectionPresenter
+  class SignInVoiceSelectionPresenter < SignInPhoneSelectionPresenter
     def method
       :voice
+    end
+
+    def label
+      t('two_factor_authentication.login_options.voice')
     end
 
     def info

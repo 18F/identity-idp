@@ -1,5 +1,5 @@
 module TwoFactorAuthentication
-  class PhoneSelectionPresenter < SelectionPresenter
+  class SignInPhoneSelectionPresenter < SignInSelectionPresenter
     def method
       :phone
     end
@@ -14,10 +14,6 @@ module TwoFactorAuthentication
 
     def info
       t('two_factor_authentication.two_factor_choice_options.phone_info')
-    end
-
-    def mfa_configuration_count
-      user.phone_configurations.count
     end
 
     def disabled?
