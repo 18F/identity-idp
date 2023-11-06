@@ -18,6 +18,22 @@ describe('InPersonPrepareStep', () => {
     ).not.to.exist();
   });
 
+  it('renders all steps to verify your identity at a Post Office', () => {
+    const { getByText } = render(<InPersonPrepareStep {...DEFAULT_PROPS} />);
+
+    expect(getByText('in_person_proofing.body.prepare.verify_step_post_office')).to.exist();
+    expect(getByText('in_person_proofing.body.prepare.verify_step_enter_pii')).to.exist();
+    expect(getByText('in_person_proofing.body.prepare.verify_step_enter_phone')).to.exist();
+    expect(getByText('in_person_proofing.body.prepare.verify_step_visit_post_office')).to.exist();
+  });
+
+  it('renders about and additional information steps', () => {
+    const { getByText } = render(<InPersonPrepareStep {...DEFAULT_PROPS} />);
+
+    expect(getByText('in_person_proofing.body.prepare.verify_step_about')).to.exist();
+    expect(getByText('in_person_proofing.body.prepare.additional_information')).to.exist();
+  });
+
   context('Outage message', () => {
     it('renders a warning when the flag is enabled', () => {
       const { queryByText } = render(

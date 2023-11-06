@@ -85,6 +85,7 @@ doc_auth_error_sharpness_threshold: 40
 doc_auth_max_attempts: 5
 doc_auth_max_capture_attempts_before_native_camera: 3
 doc_auth_max_submission_attempts_before_native_camera: 3
+doc_auth_selfie_capture: '{"enabled":false}'
 doc_auth_supported_country_codes: '["US", "GU", "VI", "AS", "MP", "PR", "USA" ,"GUM", "VIR", "ASM", "MNP", "PRI"]'
 doc_capture_request_valid_for_minutes: 15
 email_from: no-reply@login.gov
@@ -239,7 +240,6 @@ pinpoint_voice_pool_size: 5
 piv_cac_service_url: https://localhost:8443/
 piv_cac_service_timeout: 5.0
 piv_cac_verify_token_url: https://localhost:8443/
-platform_auth_set_up_enabled: false
 poll_rate_for_verify_in_seconds: 3
 proofer_mock_fallback: true
 proof_address_max_attempts: 5
@@ -252,6 +252,7 @@ pwned_passwords_file_path: 'pwned_passwords/pwned_passwords.txt'
 rack_mini_profiler: false
 rack_timeout_service_timeout_seconds: 15
 rails_mailer_previews_enabled: false
+raise_on_missing_title: false
 reauthn_window: 120
 recaptcha_enterprise_api_key: ''
 recaptcha_enterprise_project_id: ''
@@ -298,6 +299,8 @@ seed_agreements_data: true
 service_provider_request_ttl_hours: 24
 session_check_delay: 30
 session_check_frequency: 30
+session_encrypted_profiles_read_enabled: true
+session_encrypted_profiles_write_enabled: true
 session_encryptor_alert_enabled: false
 session_timeout_in_minutes: 15
 session_timeout_warning_seconds: 150
@@ -376,6 +379,7 @@ development:
   database_worker_jobs_username: ''
   database_worker_jobs_host: ''
   database_worker_jobs_password: ''
+  doc_auth_selfie_capture: '{"enabled":false}' 
   doc_auth_vendor: 'mock'
   doc_auth_vendor_randomize: false
   doc_auth_vendor_randomize_percent: 0
@@ -395,9 +399,9 @@ development:
   otp_delivery_blocklist_findtime: 5
   password_pepper: f22d4b2cafac9066fe2f4416f5b7a32c
   piv_cac_verify_token_secret: ee7f20f44cdc2ba0c6830f70470d1d1d059e1279cdb58134db92b35947b1528ef5525ece5910cf4f2321ab989a618feea12ef95711dbc62b9601e8520a34ee12
-  platform_auth_set_up_enabled: true
   rails_mailer_previews_enabled: true
   rack_timeout_service_timeout_seconds: 9_999_999_999
+  raise_on_missing_title: true
   s3_report_bucket_prefix: ''
   s3_report_public_bucket_prefix: ''
   saml_endpoint_configs: '[{"suffix":"2023","secret_key_passphrase":"trust-but-verify"}]'
@@ -478,6 +482,8 @@ production:
   scrypt_cost: 10000$8$1$
   secret_key_base:
   seed_agreements_data: false
+  session_encrypted_profiles_read_enabled: false
+  session_encrypted_profiles_write_enabled: false
   session_encryption_key:
   skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:dev", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:int"]'
   state_tracking_enabled: false
@@ -516,6 +522,7 @@ test:
   doc_auth_vendor_randomize: false
   doc_auth_vendor_randomize_percent: 0
   doc_auth_vendor_randomize_alternate_vendor: ''
+  doc_auth_selfie_capture: '{"enabled":false}' 
   doc_capture_polling_enabled: false
   domain_name: www.example.com
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
@@ -544,6 +551,7 @@ test:
   phone_setups_per_ip_track_only_mode: false
   piv_cac_verify_token_secret: 3ac13bfa23e22adae321194c083e783faf89469f6f85dcc0802b27475c94b5c3891b5657bd87d0c1ad65de459166440512f2311018db90d57b15d8ab6660748f
   poll_rate_for_verify_in_seconds: 0
+  raise_on_missing_title: true
   reg_confirmed_email_max_attempts: 3
   reg_unconfirmed_email_max_attempts: 4
   reg_unconfirmed_email_window_in_minutes: 70

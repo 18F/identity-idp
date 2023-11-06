@@ -44,7 +44,7 @@ module Idv
         }.merge(
           acuant_sdk_upgrade_a_b_testing_variables,
           phone_question_ab_test_analytics_bucket,
-        )
+        ).merge(phone_with_camera)
       end
 
       private
@@ -57,8 +57,7 @@ module Idv
           irs_reproofing: irs_reproofing?,
         }.merge(
           ab_test_analytics_buckets,
-          phone_with_camera,
-        )
+        ).merge(phone_with_camera)
       end
 
       def handle_stored_result

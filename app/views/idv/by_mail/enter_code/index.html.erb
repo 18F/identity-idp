@@ -8,9 +8,9 @@
 <% end %>
 
 <% if @user_did_not_receive_letter %>
-  <% title t('idv.gpo.did_not_receive_letter.title') %>
+  <% self.title = t('idv.gpo.did_not_receive_letter.title') %>
 <% else %>
-  <% title t('idv.gpo.title') %>
+  <% self.title = t('idv.gpo.title') %>
 <% end %>
 
 <% if !@can_request_another_letter %>

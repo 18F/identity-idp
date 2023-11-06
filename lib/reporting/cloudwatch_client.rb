@@ -53,6 +53,7 @@ module Reporting
     #   @return [nil]
     def fetch(query:, from: nil, to: nil, time_slices: nil)
       results = Concurrent::Array.new if !block_given?
+      errors = Concurrent::Array.new
       each_result_queue = Queue.new if block_given?
       in_progress = Concurrent::Hash.new(0)
 
@@ -117,8 +118,12 @@ module Reporting
           log(:debug, "thread done thread_idx=#{thread_idx}")
 
           nil
+        rescue => err
+          errors << err
+          queue.clear
+          in_progress.clear
         end.tap do |thread|
-          thread.abort_on_exception = true
+          thread.report_on_exception = false
         end
       end
       # rubocop:enable Metrics/BlockLength
@@ -128,6 +133,8 @@ module Reporting
           while (row = each_result_queue.pop)
             yield row
           end
+        end.tap do |thread|
+          thread.report_on_exception = false
         end
       end
 
@@ -144,7 +151,11 @@ module Reporting
 
       with_progress_bar(&:finish)
 
-      results
+      if errors.blank?
+        results
+      else
+        raise errors.first
+      end
     ensure
       threads&.each(&:kill)
     end

@@ -402,9 +402,9 @@ class UserMailer < ActionMailer::Base
   end
 
   def suspension_confirmed
-    @help_text = t('user_mailer.suspension_confirmed.contact_agency')
-
     with_user_locale(user) do
+      @help_text = t('user_mailer.suspension_confirmed.contact_agency')
+
       mail(to: email_address.email, subject: t('user_mailer.suspension_confirmed.subject'))
     end
   end

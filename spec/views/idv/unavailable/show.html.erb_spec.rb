@@ -11,7 +11,7 @@ RSpec.describe 'idv/unavailable/show.html.erb' do
   end
 
   it 'sets a title' do
-    expect(view).to receive(:title).with(t('idv.titles.unavailable'))
+    expect(view).to receive(:title=).with(t('idv.titles.unavailable'))
     render
   end
   it 'has an h1' do
