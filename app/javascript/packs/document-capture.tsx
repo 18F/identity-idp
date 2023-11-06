@@ -128,7 +128,7 @@ const App = composeComponents(
     {
       sdkSrc: acuantVersion && `/acuant/${acuantVersion}/AcuantJavascriptWebSdk.min.js`,
       cameraSrc: acuantVersion && `/acuant/${acuantVersion}/AcuantCamera.min.js`,
-      passiveLivenessSrc: true // pending selfieCaptureEnabled featureflag
+      passiveLivenessSrc: getSelfieCaptureEnabled()
         ? acuantVersion && `/acuant/${acuantVersion}/AcuantPassiveLiveness.min.js`
         : undefined,
       credentials: getMetaContent('acuant-sdk-initialization-creds'),
