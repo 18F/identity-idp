@@ -96,9 +96,6 @@ module Idv
       end
 
       def confirm_ssn_step_needed
-        if pii_from_user && pii_from_user[:same_address_as_id] == 'true'
-          redirect_to idv_in_person_ssn_url
-        end
         if pii_from_user&.has_key?(:address1) && !user_session[:idv][:ssn]
           redirect_to idv_in_person_ssn_url
         end

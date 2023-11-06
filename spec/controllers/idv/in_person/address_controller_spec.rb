@@ -72,22 +72,20 @@ RSpec.describe Idv::InPerson::AddressController do
         expect(response).to render_template :show
       end
 
-      it 'redirects to verify info if ssn is present and not coming from verify pg' do
-        user_session[:idv][:ssn] = '900123456'
-        get :show
+      context 'with ssn' do
+        before do
+          subject.idv_session.ssn = '900123456'
+          pii_from_user[:address1] = '123 main st'
+        end
+        it 'redirects to verify info if ssn is present and not coming from verify pg' do
+          get :show
 
-        expect(response).to redirect_to idv_in_person_verify_info_url
+          expect(response).to redirect_to idv_in_person_verify_info_url
+        end
       end
     end
 
     context '#confirm_ssn_step_needed' do
-      it 'redirects to ssn page when same address as id is true' do
-        flow_session[:pii_from_user][:same_address_as_id] = 'true'
-        get :show
-
-        expect(response).to redirect_to idv_in_person_ssn_url
-      end
-
       it 'redirects to ssn page when address1 present' do
         flow_session[:pii_from_user][:address1] = '123 Main St'
         user_session[:idv] = {}
@@ -153,9 +151,8 @@ RSpec.describe Idv::InPerson::AddressController do
         state: state,
       } }
     end
-    let(:ssn) { '900123456' }
     let(:user_session) do
-      { idv: { ssn: ssn } }
+      { idv: { ssn: '900123456' } }
     end
     let(:analytics_name) { 'IdV: in person proofing residential address submitted' }
     let(:analytics_args) do
