@@ -49,7 +49,6 @@ RSpec.shared_examples 'webauthn setup' do
         and_return(true)
       allow(WebauthnVerificationForm).to receive(:domain_name).and_return('localhost:3000')
       allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
-      sign_up_and_set_password
       mock_webauthn_setup_challenge
     end
 
