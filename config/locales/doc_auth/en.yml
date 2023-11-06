@@ -284,8 +284,9 @@ en:
       button_sp: Exit %{app_name} and return to %{sp_name}
       content_nosp: If you exit %{app_name} now, you will not have verified your
         identity. You can return later to finish this process.
-      content_sp: If you exit %{app_name} and return to %{sp_name}, you will not have
-        verified your identity. You can return later to finish this process.
+      content_sp: If you exit %{app_name} now and return to %{sp_name}, you will not
+        have verified your identity. You can return later to finish this
+        process.
       header: Not ready to add photos?
     phone_question:
       do_not_have: I don’t have a phone
