@@ -11,10 +11,11 @@ module Idv
     before_action :confirm_repeat_ssn, only: :show
     before_action :override_csp_for_threat_metrix
 
-    attr_accessor :error_message
+    # Keep this code in sync with Idv::InPerson::SsnController
 
     def show
-      @ssn_form = Idv::SsnFormatForm.new(current_user, idv_session.ssn)
+      @step_indicator_steps = step_indicator_steps
+      @ssn_form = Idv::SsnFormatForm.new(idv_session.ssn)
 
       analytics.idv_doc_auth_redo_ssn_submitted(**analytics_arguments) if @ssn_form.updating_ssn?
       analytics.idv_doc_auth_ssn_visited(**analytics_arguments)
@@ -22,13 +23,11 @@ module Idv
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
         call('ssn', :view, true)
 
-      render :show, locals: threatmetrix_view_variables
+      render 'idv/shared/ssn', locals: threatmetrix_view_variables
     end
 
     def update
-      @error_message = nil
-
-      @ssn_form = Idv::SsnFormatForm.new(current_user, idv_session.ssn)
+      @ssn_form = Idv::SsnFormatForm.new(idv_session.ssn)
       form_response = @ssn_form.submit(params.require(:doc_auth).permit(:ssn))
 
       analytics.idv_doc_auth_ssn_submitted(
@@ -43,8 +42,9 @@ module Idv
         idv_session.invalidate_steps_after_ssn!
         redirect_to next_url
       else
-        @error_message = form_response.first_error_message
-        render :show, locals: threatmetrix_view_variables
+        flash[:error] = form_response.first_error_message
+        @step_indicator_steps = step_indicator_steps
+        render 'idv/shared/ssn', locals: threatmetrix_view_variables
       end
     end
 
@@ -58,7 +58,7 @@ module Idv
     end
 
     def next_url
-      if idv_session.pii_from_doc[:state] == 'PR' && !updating_ssn?
+      if idv_session.pii_from_doc[:state] == 'PR' && !@ssn_form.updating_ssn?
         idv_address_url
       else
         idv_verify_info_url
@@ -67,15 +67,11 @@ module Idv
 
     def analytics_arguments
       {
-        flow_path: flow_path,
+        flow_path: idv_session.flow_path,
         step: 'ssn',
         analytics_id: 'Doc Auth',
         irs_reproofing: irs_reproofing?,
       }.merge(ab_test_analytics_buckets)
-    end
-
-    def updating_ssn?
-      @ssn_form.updating_ssn?
     end
   end
 end
