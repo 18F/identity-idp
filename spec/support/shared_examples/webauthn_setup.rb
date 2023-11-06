@@ -41,7 +41,6 @@ RSpec.shared_examples 'webauthn setup' do
 
   context 'platform authenticator logging' do
     before do
-      allow(IdentityConfig.store).to receive(:platform_auth_set_up_enabled).and_return(true)
       allow(IdentityConfig.store).
         to receive(:show_unsupported_passkey_platform_authentication_setup).
         and_return(true)
