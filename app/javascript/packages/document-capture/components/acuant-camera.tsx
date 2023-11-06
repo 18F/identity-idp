@@ -319,7 +319,12 @@ function AcuantCamera({
         TAP_TO_CAPTURE: t('doc_auth.info.capture_status_tap_to_capture'),
       },
     };
-    if (isReady) {
+
+    const cleanupCamera = () => {
+      window.AcuantCameraUI.end();
+      setIsActive(false);
+    };
+    const startCamera = () => {
       const onFailureCallbackWithOptions = (...args) => onImageCaptureFailure(...args);
       Object.keys(textOptions).forEach((key) => {
         onFailureCallbackWithOptions[key] = textOptions[key];
@@ -338,10 +343,12 @@ function AcuantCamera({
       setIsActive(true);
     }
 
+    if (isReady) {
+      startCamera();
+    }
     return () => {
       if (isReady) {
-        window.AcuantCameraUI.end();
-        setIsActive(false);
+        cleanupCamera();
       }
     };
   }, [isReady]);
