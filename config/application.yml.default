@@ -329,6 +329,8 @@ vendor_status_lexisnexis_phone_finder: 'operational'
 vendor_status_lexisnexis_trueid: 'operational'
 vendor_status_sms: 'operational'
 vendor_status_voice: 'operational'
+vendor_status_idv_scheduled_maintenance_start: ''
+vendor_status_idv_scheduled_maintenance_finish: ''
 verification_errors_report_configs: '[]'
 verify_gpo_key_attempt_window_in_minutes: 10
 verify_gpo_key_max_attempts: 5
