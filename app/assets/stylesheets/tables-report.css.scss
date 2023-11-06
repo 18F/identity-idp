@@ -8,11 +8,10 @@
   text-align: right;
 }
 
-.usa-alert__email.usa-alert--info {
+.usa-alert.usa-alert--info.usa-alert--email {
   .usa-alert__body {
     &:before {
-      background-image: none;
-      content: '\2139';
+      background-image: url('email/info.png');
     }
   }
 }
