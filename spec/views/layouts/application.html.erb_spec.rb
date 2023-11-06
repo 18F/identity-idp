@@ -19,7 +19,7 @@ RSpec.describe 'layouts/application.html.erb' do
     allow(view).to receive(:current_user).and_return(User.new)
     controller.request.path_parameters[:controller] = 'users/sessions'
     controller.request.path_parameters[:action] = 'new'
-    view.title(title_content) if title_content
+    view.title = title_content if title_content
   end
 
   context 'no content for nav present' do
@@ -73,8 +73,33 @@ RSpec.describe 'layouts/application.html.erb' do
     context 'without title' do
       let(:title_content) { nil }
 
-      it 'raises an error' do
-        expect { render }.to raise_error 'Missing title'
+      context 'when raise_on_missing_title is false' do
+        before do
+          allow(IdentityConfig.store).to receive(:raise_on_missing_title).and_return(false)
+        end
+
+        it 'notifies NewRelic' do
+          expect(NewRelic::Agent).to receive(:notice_error) do |error|
+            expect(error).to be_kind_of(ApplicationHelper::MissingTitleError)
+            expect(error.message).to include('Missing title')
+          end
+
+          expect { render }.to_not raise_error
+        end
+      end
+
+      context 'when raise_on_missing_title is true' do
+        before do
+          allow(IdentityConfig.store).to receive(:raise_on_missing_title).and_return(true)
+        end
+
+        it 'raises' do
+          expect { render }.to raise_error do |error|
+            expect(error).to be_kind_of(ActionView::TemplateError)
+            expect(error.cause).to be_kind_of(ApplicationHelper::MissingTitleError)
+            expect(error.message).to include('Missing title')
+          end
+        end
       end
     end
 

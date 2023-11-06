@@ -1,5 +1,5 @@
 module Reporting
-  class AccountReuseAndTotalIdentitiesReport
+  class AccountReuseReport
     attr_reader :report_date
 
     def initialize(report_date = Time.zone.today)
@@ -38,23 +38,8 @@ module Reporting
       )
     end
 
-    def total_identities_report
-      total_identities_table = []
-      total_identities_table << ["Total proofed identities (#{stats_month})"]
-      total_identities_table << [total_reuse_report[:total_proofed]]
-      total_identities_table
-    end
-
-    def total_identities_emailable_report
-      EmailableReport.new(
-        title: 'Total proofed identities',
-        table: total_identities_report,
-        filename: 'total_profiles',
-      )
-    end
-
     def stats_month
-      report_date.prev_month(1).strftime('%b-%Y')
+      report_date.strftime('%b-%Y')
     end
 
     private
@@ -148,12 +133,8 @@ module Reporting
 
     def params
       {
-        query_date: first_day_of_report_month,
+        query_date: report_date.end_of_day,
       }.transform_values { |v| ActiveRecord::Base.connection.quote(v) }
-    end
-
-    def first_day_of_report_month
-      report_date.beginning_of_month.strftime('%Y-%m-%d')
     end
   end
 end

@@ -42,6 +42,10 @@ class ApplicationController < ActionController::Base
 
   # for lograge
   def append_info_to_payload(payload)
+    return if Lograge.lograge_config.ignore_actions&.include?(
+      "#{Lograge.controller_field(payload)}##{payload[:action]}",
+    )
+
     payload[:user_id] = analytics_user.uuid unless @skip_session_load
 
     payload[:git_sha] = IdentityConfig::GIT_SHA

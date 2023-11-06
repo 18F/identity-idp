@@ -435,7 +435,7 @@ GEM
       openssl (> 2.0, < 3.1)
     orm_adapter (0.5.0)
     parallel (1.23.0)
-    parser (3.2.2.3)
+    parser (3.2.2.4)
       ast (~> 2.4.1)
       racc
     pg (1.5.4)
@@ -473,7 +473,7 @@ GEM
     puma (5.6.7)
       nio4r (~> 2.0)
     raabro (1.4.0)
-    racc (1.7.1)
+    racc (1.7.2)
     rack (2.2.8)
     rack-attack (6.5.0)
       rack (>= 1.0, < 3)
@@ -544,7 +544,7 @@ GEM
       redis-client (>= 0.9.0)
     redis-client (0.14.1)
       connection_pool
-    regexp_parser (2.8.1)
+    regexp_parser (2.8.2)
     reline (0.3.9)
       io-console (~> 0.5)
     request_store (1.5.1)
@@ -600,13 +600,13 @@ GEM
       rubocop-ast (>= 1.28.1, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 2.4.0, < 3.0)
-    rubocop-ast (1.29.0)
+    rubocop-ast (1.30.0)
       parser (>= 3.2.1.0)
     rubocop-capybara (2.19.0)
       rubocop (~> 1.41)
     rubocop-factory_bot (2.24.0)
       rubocop (~> 1.33)
-    rubocop-performance (1.18.0)
+    rubocop-performance (1.19.1)
       rubocop (>= 1.7.0, < 2.0)
       rubocop-ast (>= 0.4.0)
     rubocop-rails (2.20.2)
@@ -675,7 +675,7 @@ GEM
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.8)
-    unicode-display_width (2.4.2)
+    unicode-display_width (2.5.0)
     uniform_notifier (1.16.0)
     valid_email (0.1.4)
       activemodel
@@ -819,7 +819,7 @@ DEPENDENCIES
   rspec-retry
   rspec_junit_formatter
   rubocop (~> 1.55.1)
-  rubocop-performance (~> 1.18.0)
+  rubocop-performance (~> 1.19.0)
   rubocop-rails (>= 2.5.2)
   rubocop-rspec
   ruby-progressbar

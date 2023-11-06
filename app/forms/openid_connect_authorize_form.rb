@@ -100,7 +100,7 @@ class OpenidConnectAuthorizeForm
   end
 
   def ial_values
-    acr_values.filter { |acr| %r{/ial/}.match?(acr) || %r{/loa/}.match?(acr) }
+    acr_values.filter { |acr| acr.include?('ial') || acr.include?('loa') }
   end
 
   def ial_context
@@ -112,7 +112,7 @@ class OpenidConnectAuthorizeForm
   end
 
   def aal_values
-    acr_values.filter { |acr| %r{/aal/}.match? acr }
+    acr_values.filter { |acr| acr.include?('aal') }
   end
 
   def aal

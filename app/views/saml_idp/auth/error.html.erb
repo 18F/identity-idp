@@ -1,4 +1,4 @@
-<% title t('saml_idp.auth.error.title') %>
+<% self.title = t('saml_idp.auth.error.title') %>
 
 <ul>
   <% @saml_request_validator.errors.full_messages.each do |message| %>

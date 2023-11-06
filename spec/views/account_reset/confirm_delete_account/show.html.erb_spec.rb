@@ -6,7 +6,7 @@ RSpec.describe 'account_reset/confirm_delete_account/show.html.erb' do
   end
 
   it 'has a localized title' do
-    expect(view).to receive(:title).with(t('account_reset.confirm_delete_account.title'))
+    expect(view).to receive(:title=).with(t('account_reset.confirm_delete_account.title'))
 
     render
   end

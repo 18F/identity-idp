@@ -15,9 +15,10 @@ module Reporting
       end
 
       [
-        ['', 'Number of apps (SPs)', 'Number of agencies'],
+        ['', 'Number of apps (SPs)', 'Number of agencies and states'],
         ['Auth', auth_sps.count, auth_agencies.count],
         ['IDV', idv_sps.count, idv_agencies.count],
+        ['Total', auth_sps.count + idv_sps.count, auth_agencies.count + idv_agencies.count],
       ]
     end
 
