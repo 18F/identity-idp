@@ -65,19 +65,35 @@ RSpec.describe Idv::InPerson::AddressController do
     end
 
     context '#confirm_in_person_address_step_needed' do
-      context 'step is not needed' do
-        # this is no longer true for this b4 action
-        it 'redirects to ssn page when same address as id is true' do
-          flow_session[:pii_from_user][:same_address_as_id] = 'true'
-          get :show
-          expect(response).to redirect_to idv_in_person_ssn_url
-        end
+      it 'remains on page when referer is verify info' do
+        request = idv_in_person_verify_info_url
+        get :show
 
-        it 'redirects to ssn page when address1 present' do
-          flow_session[:pii_from_user][:address1] = '123 Main St'
-          get :show
-          expect(response).to redirect_to idv_in_person_ssn_url
-        end
+        expect(response).to render_template :show
+      end
+
+      it 'redirects to verify info if ssn is present and not coming from verify pg' do
+        user_session[:idv][:ssn] = '900123456'
+        get :show
+
+        expect(response).to redirect_to idv_in_person_verify_info_url
+      end
+    end
+
+    context '#confirm_ssn_step_needed' do
+      it 'redirects to ssn page when same address as id is true' do
+        flow_session[:pii_from_user][:same_address_as_id] = 'true'
+        get :show
+
+        expect(response).to redirect_to idv_in_person_ssn_url
+      end
+
+      it 'redirects to ssn page when address1 present' do
+        flow_session[:pii_from_user][:address1] = '123 Main St'
+        user_session[:idv] = {}
+        get :show
+
+        expect(response).to redirect_to idv_in_person_ssn_url
       end
     end
   end
@@ -128,16 +144,15 @@ RSpec.describe Idv::InPerson::AddressController do
     let(:city) { 'GREAT FALLS' }
     let(:zipcode) { '59010' }
     let(:state) { 'Montana' }
-    let(:submitted_values) do
-      {
-        address1:,
-        address2:,
-        city:,
-        zipcode:,
-        state:,
-      }
+    let(:params) do
+      { in_person_address: {
+        address1: address1,
+        address2: address2,
+        city: city,
+        zipcode: zipcode,
+        state: state,
+      } }
     end
-    let(:params) { { in_person_address: submitted_values } }
     let(:ssn) { '900123456' }
     let(:user_session) do
       { idv: { ssn: ssn } }
@@ -146,12 +161,16 @@ RSpec.describe Idv::InPerson::AddressController do
     let(:analytics_args) do
       {
         success: true,
-        errors: { },
+        errors: {},
+        analytics_id: 'In Person Proofing',
+        flow_path: 'standard',
+        irs_reproofing: false,
+        step: 'address',
       }
     end
 
     it 'sets values in the flow session' do
-      get :update, params: params
+      put :update, params: params
 
       expect(flow_session[:pii_from_user]).to include(
         address1:,
@@ -163,7 +182,7 @@ RSpec.describe Idv::InPerson::AddressController do
     end
 
     it 'logs idv_in_person_proofing_address_visited' do
-      get :update, params: params
+      put :update, params: params
 
       expect(@analytics).to have_received(
         :track_event,
@@ -182,7 +201,7 @@ RSpec.describe Idv::InPerson::AddressController do
         end
 
         it 'infers and sets the "same_address_as_id" in the flow session to false' do
-          get :update, params: params
+          put :update, params: params
 
           expect(flow_session[:pii_from_user][:same_address_as_id]).to eq('false')
         end
@@ -194,7 +213,7 @@ RSpec.describe Idv::InPerson::AddressController do
         end
 
         it 'leaves the "same_address_as_id" in the flow session as false' do
-          get :update, params: params
+          put :update, params: params
 
           expect(flow_session[:pii_from_user][:same_address_as_id]).to eq('false')
         end
