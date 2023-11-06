@@ -36,6 +36,9 @@ en:
         %{timeout}.</strong>'
       send_link_limited: You tried too many times, please try again in %{timeout}. You
         can also go back and choose to use your computer instead.
+    enter_code:
+      rate_limited_html: You entered an incorrect verification code too many times.
+        <strong>Try again in %{timeout}.</strong>
     general: Oops, something went wrong. Please try again.
     invalid_totp: Invalid code. Please try again.
     max_password_attempts_reached: You’ve entered too many incorrect passwords. You
@@ -112,8 +115,6 @@ en:
       must_select_additional_option: Select an additional authentication method.
       must_select_option: Select an authentication method.
     verify_personal_key:
-      rate_limited: You tried too many times, please try again in %{timeout}.
-    verify_profile:
       rate_limited: You tried too many times, please try again in %{timeout}.
     webauthn_platform_setup:
       account_setup_error: We were unable to add face or touch unlock. Please try again or %{link}.

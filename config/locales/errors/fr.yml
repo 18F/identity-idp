@@ -43,6 +43,9 @@ fr:
       send_link_limited: Vous avez essayé trop de fois, veuillez réessayer dans
         %{timeout}. Vous pouvez également revenir en arrière et choisir
         d’utiliser votre ordinateur à la place.
+    enter_code:
+      rate_limited_html: Vous avez saisi un code de vérification inexact à trop de
+        reprises. <strong>Réessayez dans %{timeout}.</strong>
     general: Oups, une erreur s’est produite. Veuillez essayer de nouveau.
     invalid_totp: Code non valide. Veuillez essayer de nouveau.
     max_password_attempts_reached: Vous avez inscrit des mots de passe incorrects un
@@ -129,8 +132,6 @@ fr:
       must_select_additional_option: Sélectionnez une méthode d’authentification supplémentaire.
       must_select_option: Sélectionnez une méthode d’authentification.
     verify_personal_key:
-      rate_limited: Vous avez essayé plusieurs fois, essayez à nouveau dans %{timeout}.
-    verify_profile:
       rate_limited: Vous avez essayé plusieurs fois, essayez à nouveau dans %{timeout}.
     webauthn_platform_setup:
       account_setup_error: Nous n’avons pas pu ajouter le déverrouillage facial ni le
