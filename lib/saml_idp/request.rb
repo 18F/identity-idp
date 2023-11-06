@@ -146,7 +146,7 @@ module SamlIdp
         return false
       end
 
-      if response_url.nil?
+      if response_url.blank?
         log "Unable to find response url for #{issuer}: #{raw_xml}"
         return false
       end
