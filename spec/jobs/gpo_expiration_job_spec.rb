@@ -123,6 +123,7 @@ RSpec.describe GpoExpirationJob do
           code_sent_at: expired_timestamp,
         )
       end
+
       it 'we note that in the analytics event' do
         job.perform
 
@@ -132,6 +133,27 @@ RSpec.describe GpoExpirationJob do
           user_has_active_profile: false,
           letters_sent: 2,
         )
+      end
+    end
+
+    describe 'limit' do
+      let(:limit) { 3 }
+      before do
+        (0..limit).each do
+          create(
+            :user,
+            :with_pending_gpo_profile,
+            created_at: expired_timestamp,
+          )
+        end
+      end
+      it 'limits the number of records affected' do
+        initial_count = Profile.where.not(gpo_verification_pending_at: nil).count
+
+        job.perform(limit: limit)
+
+        expect(Profile.where.not(gpo_verification_pending_at: nil).count).
+          to eql(initial_count - limit)
       end
     end
   end

@@ -5,8 +5,12 @@ class GpoExpirationJob < ApplicationJob
     @analytics = analytics
   end
 
-  def perform(as_of: Time.zone.now)
+  def perform(as_of: Time.zone.now, limit: nil)
     profiles = gpo_profiles_that_should_be_expired(as_of: as_of)
+
+    if limit.present?
+      profiles = profiles.limit(limit)
+    end
 
     profiles.find_each do |profile|
       profile.deactivate_due_to_gpo_expiration
