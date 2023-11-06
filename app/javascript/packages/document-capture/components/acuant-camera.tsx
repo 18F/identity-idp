@@ -5,9 +5,12 @@ import { useImmutableCallback } from '@18f/identity-react-hooks';
 import AcuantContext from '../context/acuant';
 
 declare let AcuantCameraUI: AcuantCameraUIInterface;
+declare let AcuantSelfieCameraUI: AcuantCameraUIInterface;
+
 declare global {
   interface Window {
     AcuantCameraUI: AcuantCameraUIInterface;
+    AcuantSelfieCameraUI: AcuantSelfieCameraUIInterface;
   }
 }
 
@@ -16,6 +19,7 @@ declare global {
  */
 type AcuantGlobals = {
   AcuantCameraUI: AcuantCameraUIInterface;
+  AcuantSelfieCameraUI: AcuantSelfieCameraUIInterface;
   AcuantCamera: AcuantCameraInterface;
 };
 export type AcuantGlobal = Window & AcuantGlobals;
@@ -138,11 +142,23 @@ type AcuantCameraUIStart = (
   options?: AcuantCameraUIOptions,
 ) => void;
 
+type AcuantSelfieCameraUIStart = () => void;
+
 interface AcuantCameraUIInterface {
   /**
    * Start capture
    */
   start: AcuantCameraUIStart;
+  /**
+   * End capture
+   */
+  end: () => void;
+}
+interface AcuantSelfieCameraUIInterface {
+  /**
+   * Start capture
+   */
+  start: AcuantSelfieCameraUIStart;
   /**
    * End capture
    */
@@ -320,8 +336,13 @@ function AcuantCamera({
       },
     };
 
+    const selfieMode = false;
     const cleanupCamera = () => {
       window.AcuantCameraUI.end();
+      setIsActive(false);
+    };
+    const cleanupSelfieCamera = () => {
+      window.AcuantSelfieCameraUI.end();
       setIsActive(false);
     };
     const startCamera = () => {
@@ -341,14 +362,15 @@ function AcuantCamera({
         textOptions,
       );
       setIsActive(true);
-    }
+    };
+    const startSelfieCamera = () => {};
 
     if (isReady) {
-      startCamera();
+      selfieMode ? startSelfieCamera() : startCamera();
     }
     return () => {
       if (isReady) {
-        cleanupCamera();
+        selfieMode ? cleanupSelfieCamera() : cleanupCamera();
       }
     };
   }, [isReady]);
