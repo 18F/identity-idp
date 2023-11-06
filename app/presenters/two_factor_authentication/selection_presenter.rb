@@ -69,8 +69,6 @@ module TwoFactorAuthentication
 
     def login_label(type)
       case type
-      when 'personal_key'
-        t('two_factor_authentication.login_options.personal_key')
       when 'piv_cac'
         t('two_factor_authentication.login_options.piv_cac')
       when 'sms'
