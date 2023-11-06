@@ -7,3 +7,12 @@
   font-variant-numeric: tabular-nums;
   text-align: right;
 }
+
+.usa-alert__email.usa-alert--info {
+  .usa-alert__body {
+    &:before {
+      background-image: none;
+      content: '\2139';
+    }
+  }
+}
