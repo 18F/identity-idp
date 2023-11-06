@@ -13,8 +13,6 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
   let(:expected_s3_paths) do
     [
       "#{report_folder}/account_reuse.csv",
-      "#{report_folder}/total_profiles.csv",
-      "#{report_folder}/document_upload_proofing.csv",
       "#{report_folder}/account_deletion_rate.csv",
       "#{report_folder}/total_user_count.csv",
       "#{report_folder}/active_users_count.csv",
@@ -57,8 +55,6 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
       },
     }
 
-    allow(report.monthly_proofing_report).to receive(:proofing_report).
-      and_return(mock_proofing_report_data)
     allow(report.proofing_rate_report).to receive(:as_csv).
       and_return(mock_proofing_rate_data)
   end
@@ -98,8 +94,7 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
   it 'does not send out a report with no emails' do
     allow(IdentityConfig.store).to receive(:team_agnes_email).and_return('')
 
-    expect_any_instance_of(Reporting::AccountReuseAndTotalIdentitiesReport).
-      not_to receive(:total_identities_report)
+    expect(report).to_not receive(:reports)
 
     expect(ReportMailer).not_to receive(:tables_report)
 
@@ -118,12 +113,26 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
   end
 
   describe '#preamble' do
-    subject(:preamble) { report.preamble }
+    let(:env) { 'prod' }
+    subject(:preamble) { report.preamble(env:) }
 
     it 'has a preamble that is valid HTML' do
       expect(preamble).to be_html_safe
 
       expect { Nokogiri::XML(preamble) { |config| config.strict } }.to_not raise_error
+    end
+
+    context 'in a non-prod environment' do
+      let(:env) { 'staging' }
+
+      it 'has an alert with the environment name' do
+        expect(preamble).to be_html_safe
+
+        doc = Nokogiri::XML(preamble)
+
+        alert = doc.at_css('.usa-alert')
+        expect(alert.text).to include(env)
+      end
     end
   end
 end

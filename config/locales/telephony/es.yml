@@ -15,7 +15,7 @@ es:
         Este código expira en %{expiration} minutos.
     confirmation_ipp_enrollment_result:
       sms: |-
-        %{app_name}: Visitó la oficina de correos el %{proof_date}. Revise su correo electrónico para ver su resultado. ¿No fue usted? Informe ahora mismo: %{contact_number}
+        %{app_name}: Visitó la oficina de correos el %{proof_date}. Revise su correo electrónico. ¿No fue usted? Llame: %{contact_number}. Ref: %{reference_string}
     confirmation_otp:
       sms: |-
         %{app_name}: La contraseña es %{code}. Esta contraseña puede usarse una vez y se vence en %{expiration} minutos. No la comparta con nadie.

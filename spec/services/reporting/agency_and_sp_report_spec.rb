@@ -7,7 +7,7 @@ RSpec.describe Reporting::AgencyAndSpReport do
   end
 
   let(:header_row) do
-    ['', 'Number of apps (SPs)', 'Number of agencies']
+    ['', 'Number of apps (SPs)', 'Number of agencies and states']
   end
 
   before { travel_to report_date }
@@ -37,6 +37,7 @@ RSpec.describe Reporting::AgencyAndSpReport do
           header_row,
           ['Auth', 1, 1],
           ['IDV', 0, 0],
+          ['Total', 1, 1],
         ]
       end
 
@@ -52,6 +53,7 @@ RSpec.describe Reporting::AgencyAndSpReport do
           header_row,
           ['Auth', 0, 1],
           ['IDV', 0, 0],
+          ['Total', 0, 1],
         ]
       end
 
@@ -70,6 +72,7 @@ RSpec.describe Reporting::AgencyAndSpReport do
           header_row,
           ['Auth', 1, 1],
           ['IDV', 0, 0],
+          ['Total', 1, 1],
         ]
       end
 
@@ -78,6 +81,7 @@ RSpec.describe Reporting::AgencyAndSpReport do
           header_row,
           ['Auth', 1, 0],
           ['IDV', 1, 1],
+          ['Total', 2, 1],
         ]
       end
 
@@ -100,6 +104,7 @@ RSpec.describe Reporting::AgencyAndSpReport do
           header_row,
           ['Auth', 0, 0],
           ['IDV', 1, 1],
+          ['Total', 1, 1],
         ]
       end
 

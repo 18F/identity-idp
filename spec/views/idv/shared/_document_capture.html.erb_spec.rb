@@ -13,6 +13,8 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
   let(:acuant_sdk_upgrade_a_b_testing_enabled) { false }
   let(:use_alternate_sdk) { false }
   let(:phone_question_ab_test_bucket) { :bypass_phone_question }
+  let(:doc_auth_selfie_capture) { { enabled: false } }
+  let(:phone_with_camera) { false }
   let(:acuant_version) { '1.3.3.7' }
 
   before do
@@ -43,6 +45,8 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
       use_alternate_sdk: use_alternate_sdk,
       acuant_version: acuant_version,
       phone_question_ab_test_bucket: phone_question_ab_test_bucket,
+      doc_auth_selfie_capture: doc_auth_selfie_capture,
+      phone_with_camera: phone_with_camera,
     }
   end
 
@@ -90,6 +94,14 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
           end
         end
       end
+    end
+  end
+  describe 'view variables sent correctly' do
+    it 'sends doc_auth_selfie_capture to the FE' do
+      render_partial
+      expect(rendered).to have_css(
+        "#document-capture-form[data-doc-auth-selfie-capture='{\"enabled\":false}']",
+      )
     end
   end
 end
