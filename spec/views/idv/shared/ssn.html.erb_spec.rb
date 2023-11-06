@@ -25,8 +25,7 @@ RSpec.describe 'idv/shared/ssn.html.erb' do
       to receive(:lexisnexis_threatmetrix_org_id).and_return(lexisnexis_threatmetrix_org_id)
 
     assign(:ssn_form, Idv::SsnFormatForm.new(nil))
-
-    @step_indicator_steps = Idv::Flows::InPersonFlow::STEP_INDICATOR_STEPS
+    assign(:step_indicator_steps, Idv::Flows::InPersonFlow::STEP_INDICATOR_STEPS)
     render template: 'idv/shared/ssn', locals: {
       threatmetrix_session_id: session_id,
       threatmetrix_javascript_urls: [tags_js_url],
