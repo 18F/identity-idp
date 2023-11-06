@@ -36,6 +36,7 @@ module SamlIdp
 
 
     attr_accessor :raw_xml, :options
+    attr_reader :errors
 
     delegate :config, to: :SamlIdp
     private :config
@@ -45,6 +46,7 @@ module SamlIdp
     def initialize(raw_xml = "", options = {})
       self.options = options
       self.raw_xml = raw_xml
+      @errors = []
     end
 
     def logout_request?
@@ -130,34 +132,34 @@ module SamlIdp
 
     def valid?
       log "Checking validity..."
-      valid = true
 
       unless service_provider?
         log "Unable to find service provider for issuer #{issuer}"
-        valid = false
+        @errors.push("Issuer is missing or invalid")
       end
 
       if authn_request? && logout_request?
         log "One and only one of authnrequest and logout request is required."
-        valid = false
+        @errors.push("Request must ONLY have an AuthnRequest OR LogoutRequest tag, this request has both")
       end
 
       unless authn_request? || logout_request?
         log "One and only one of authnrequest and logout request is required. authnrequest: #{authn_request?} logout_request: #{logout_request?} "
-        valid = false
+        @errors.push("Request must have either an AuthnRequest or LogoutRequest tag")
       end
 
-      if valid && response_url.blank?
+      if service_provider? && response_url.blank?
         log "Unable to find response url for #{issuer}: #{raw_xml}"
-        valid = false
+        @errors.push("No response URL found")
       end
 
-      unless valid && valid_signature?
+      unless service_provider? && valid_signature?
         log "Signature is invalid in #{raw_xml}"
-        valid = false
+        # TODO: We should get more specific errors
+        @errors.push("Signature is invalid")
       end
 
-      return valid
+      return errors.blank?
     end
 
     def signed?

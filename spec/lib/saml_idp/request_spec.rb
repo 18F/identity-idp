@@ -245,6 +245,10 @@ module SamlIdp
         it 'returns true' do
           expect(subject.valid?).to be true
         end
+
+        it 'has no errors' do
+          expect(subject.errors.blank?).to be true
+        end
       end
 
       context 'an invalid request' do
@@ -253,6 +257,11 @@ module SamlIdp
 
           it "is not valid" do
             expect(subject.valid?).to eq(false)
+          end
+
+          it "adds an error to the request object" do
+            subject.valid?
+            expect(subject.errors.first).to eq "Issuer is missing or invalid"
           end
         end
 
@@ -263,6 +272,11 @@ module SamlIdp
 
           it 'is not valid' do
             expect(subject.valid?).to eq false
+          end
+
+          it 'adds an error to request object' do
+            subject.valid?
+            expect(subject.errors.first).to eq "Request must have either an AuthnRequest or LogoutRequest tag"
           end
         end
 
@@ -276,6 +290,11 @@ module SamlIdp
           it 'is not valid' do
             expect(subject.valid?).to eq false
           end
+
+          it 'adds an error to request object' do
+            subject.valid?
+            expect(subject.errors.first).to eq "Request must ONLY have an AuthnRequest OR LogoutRequest tag, this request has both"
+          end
         end
 
         describe 'there is no response url' do
@@ -287,13 +306,26 @@ module SamlIdp
             it 'is not valid' do
               expect(subject.valid?).to eq false
             end
+
+            it 'adds an error to request object' do
+              subject.valid?
+              expect(subject.errors.first).to eq "No response URL found"
+            end
           end
 
           describe 'logout_request' do
             let(:request_saml) { raw_logout_request }
+            before do
+              subject.service_provider.assertion_consumer_logout_service_url = nil
+            end
 
             it 'is not valid' do
               expect(subject.valid?).to eq false
+            end
+
+            it 'adds an error to request object' do
+              subject.valid?
+              expect(subject.errors.first).to eq "No response URL found"
             end
           end
         end
@@ -306,6 +338,11 @@ module SamlIdp
 
           it 'is not valid' do
             expect(subject.valid?).to eq false
+          end
+
+          it 'adds an error to request object' do
+            subject.valid?
+            expect(subject.errors.include?("Signature is invalid")).to be true
           end
         end
       end
