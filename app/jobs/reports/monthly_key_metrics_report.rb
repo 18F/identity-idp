@@ -39,7 +39,7 @@ module Reports
     def preamble(env: Identity::Hostdata.env || 'local')
       ERB.new(<<~ERB).result(binding).html_safe # rubocop:disable Rails/OutputSafety
         <% if env != 'prod' %>
-          <div class="usa-alert usa-alert--info">
+          <div class="usa-alert usa-alert--info usa-alert--email">
             <div class="usa-alert__body">
               <%#
                 NOTE: our AlertComponent doesn't support heading content like this uses,
