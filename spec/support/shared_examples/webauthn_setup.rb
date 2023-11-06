@@ -41,6 +41,7 @@ RSpec.shared_examples 'webauthn setup' do
 
   context 'platform authenticator logging' do
     let(:fake_analytics) { FakeAnalytics.new }
+    let(:user) { sign_up_and_set_password }
 
     before do
       allow(IdentityConfig.store).to receive(:platform_auth_set_up_enabled).and_return(true)
