@@ -288,7 +288,7 @@ RSpec.feature 'IdV Outage Spec' do
     end
   end
 
-  context 'during an IDV maintenance window' do
+  context 'during an IDV maintenance window', js: true do
     before do
       allow(IdentityConfig.store).to receive(:vendor_status_idv_scheduled_maintenance_start).
         and_return('2023-01-01T00:00:00Z')
