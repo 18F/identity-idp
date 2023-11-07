@@ -25,11 +25,20 @@ module Idv
         uuid_prefix: current_sp&.app_id,
         irs_attempts_api_tracker: irs_attempts_api_tracker,
         store_encrypted_images: store_encrypted_images?,
+        ial_context: ial_context,
       )
     end
 
     def store_encrypted_images?
       IdentityConfig.store.encrypted_document_storage_enabled
+    end
+
+    def ial_context
+      @ial_context ||= IalContext.new(
+        ial: sp_session_ial,
+        service_provider: current_sp,
+        user: current_user,
+      )
     end
   end
 end

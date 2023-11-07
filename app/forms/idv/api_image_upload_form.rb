@@ -5,7 +5,7 @@ module Idv
 
     validates_presence_of :front
     validates_presence_of :back
-    validates_presence_of :selfie, if: :liveness_checking_required?
+    validates_presence_of :selfie, if: :liveness_checking_enabled?
     validates_presence_of :document_capture_session
 
     validate :validate_images
@@ -13,7 +13,8 @@ module Idv
     validate :limit_if_rate_limited
 
     def initialize(params, service_provider:, analytics: nil,
-                   uuid_prefix: nil, irs_attempts_api_tracker: nil, store_encrypted_images: false)
+                   uuid_prefix: nil, irs_attempts_api_tracker: nil, store_encrypted_images: false,
+                   ial_context: nil)
       @params = params
       @service_provider = service_provider
       @analytics = analytics
@@ -21,6 +22,7 @@ module Idv
       @uuid_prefix = uuid_prefix
       @irs_attempts_api_tracker = irs_attempts_api_tracker
       @store_encrypted_images = store_encrypted_images
+      @ial_context = ial_context
     end
 
     def submit
@@ -52,11 +54,6 @@ module Idv
     def liveness_checking_enabled?
       # todo: use config item incorp UI options
       IdentityConfig.store.doc_auth_selfie_capture['enabled']
-    end
-
-    def liveness_checking_required?
-      # todo: use config item incorp UI options
-      IdentityConfig.store.doc_auth_selfie_capture['required']
     end
 
     private
