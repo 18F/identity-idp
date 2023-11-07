@@ -30,7 +30,7 @@ RSpec.feature 'Users pending ThreatMetrix review', :js do
     complete_doc_auth_steps_before_ssn_step
     select 'Reject', from: :mock_profiling_result
     complete_ssn_step
-    click_idv_continue
+    click_idv_submit_default
     complete_phone_step(user)
     complete_enter_password_step(user)
     acknowledge_and_confirm_personal_key
@@ -117,7 +117,7 @@ RSpec.feature 'Users pending ThreatMetrix review', :js do
       complete_doc_auth_steps_before_ssn_step
       select 'No Result', from: :mock_profiling_result
       complete_ssn_step
-      click_idv_continue
+      click_idv_submit_default
 
       expect(page).to have_content(t('idv.failure.sessions.exception'))
       expect(page).to have_current_path(idv_session_errors_exception_path)
