@@ -10,7 +10,7 @@ module TwoFactorAuthentication
     end
 
     def type
-      if MfaContext.new(configuration&.user).phone_configurations.many?
+      if MfaContext.new(user).phone_configurations.many?
         "#{super}_#{configuration.id}"
       else
         super

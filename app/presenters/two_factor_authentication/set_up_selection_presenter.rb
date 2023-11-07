@@ -2,7 +2,7 @@ module TwoFactorAuthentication
   class SetUpSelectionPresenter
     include ActionView::Helpers::TranslationHelper
 
-    attr_reader :user, :configuration
+    attr_reader :user
 
     def initialize(user:)
       @user = user
