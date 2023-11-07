@@ -85,10 +85,10 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
           TwoFactorAuthentication::SmsSelectionPresenter,
           TwoFactorAuthentication::VoiceSelectionPresenter,
           TwoFactorAuthentication::SignInWebauthnSelectionPresenter,
-          TwoFactorAuthentication::BackupCodeSelectionPresenter,
+          TwoFactorAuthentication::SignInBackupCodeSelectionPresenter,
           TwoFactorAuthentication::PivCacSelectionPresenter,
           TwoFactorAuthentication::SignInAuthAppSelectionPresenter,
-          TwoFactorAuthentication::PersonalKeySelectionPresenter,
+          TwoFactorAuthentication::SignInPersonalKeySelectionPresenter,
         ],
       )
     end
@@ -117,10 +117,10 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
               TwoFactorAuthentication::SmsSelectionPresenter,
               TwoFactorAuthentication::VoiceSelectionPresenter,
               TwoFactorAuthentication::SignInWebauthnSelectionPresenter,
-              TwoFactorAuthentication::BackupCodeSelectionPresenter,
+              TwoFactorAuthentication::SignInBackupCodeSelectionPresenter,
               TwoFactorAuthentication::PivCacSelectionPresenter,
               TwoFactorAuthentication::SignInAuthAppSelectionPresenter,
-              TwoFactorAuthentication::PersonalKeySelectionPresenter,
+              TwoFactorAuthentication::SignInPersonalKeySelectionPresenter,
             ],
           )
         end
@@ -148,10 +148,10 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
               TwoFactorAuthentication::SmsSelectionPresenter,
               TwoFactorAuthentication::VoiceSelectionPresenter,
               TwoFactorAuthentication::SignInWebauthnSelectionPresenter,
-              TwoFactorAuthentication::BackupCodeSelectionPresenter,
+              TwoFactorAuthentication::SignInBackupCodeSelectionPresenter,
               TwoFactorAuthentication::PivCacSelectionPresenter,
               TwoFactorAuthentication::SignInAuthAppSelectionPresenter,
-              TwoFactorAuthentication::PersonalKeySelectionPresenter,
+              TwoFactorAuthentication::SignInPersonalKeySelectionPresenter,
             ],
           )
         end

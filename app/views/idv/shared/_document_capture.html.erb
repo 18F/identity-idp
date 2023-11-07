@@ -1,4 +1,4 @@
-<% title t('titles.doc_auth.doc_capture') %>
+<% self.title = t('titles.doc_auth.doc_capture') %>
 <% content_for :head do %>
   <%= tag.meta name: 'acuant-sdk-initialization-endpoint', content: IdentityConfig.store.acuant_sdk_initialization_endpoint %>
   <%= tag.meta name: 'acuant-sdk-initialization-creds', content: IdentityConfig.store.acuant_sdk_initialization_creds %>
@@ -24,6 +24,7 @@
       use_alternate_sdk: use_alternate_sdk,
       acuant_version: acuant_version,
       phone_question_ab_test_bucket: phone_question_ab_test_bucket,
+      phone_with_camera: phone_with_camera,
       sp_name: sp_name,
       flow_path: flow_path,
       cancel_url: idv_cancel_path(step: :document_capture),
@@ -35,6 +36,7 @@
       in_person_outage_message_enabled: IdentityConfig.store.in_person_outage_message_enabled,
       in_person_outage_expected_update_date: IdentityConfig.store.in_person_outage_expected_update_date,
       us_states_territories: us_states_territories,
+      doc_auth_selfie_capture: IdentityConfig.store.doc_auth_selfie_capture,
     } %>
   <%= simple_form_for(
         :doc_auth,

@@ -576,14 +576,37 @@ module AnalyticsEvents
     track_event('Frontend Error', name:, message:, stack:)
   end
 
+  # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
+  # @param [String] acuant_version
+  # @param [String] flow_path whether the user is in the hybrid or standard flow
+  # @param [Boolean] isCameraSupported
+  # @param [String] phone_question_ab_test_analytics_bucket
   # @param [Boolean] success
+  # @param [Boolean] use_alternate_sdk
   # The Acuant SDK was loaded
-  def idv_acuant_sdk_loaded(success:, **_extra)
+  # rubocop:disable Naming/VariableName,Naming/MethodParameterName
+  def idv_acuant_sdk_loaded(
+    acuant_sdk_upgrade_a_b_testing_enabled:,
+    acuant_version:,
+    flow_path:,
+    isCameraSupported:,
+    phone_question_ab_test_analytics_bucket:,
+    success:,
+    use_alternate_sdk:,
+    **_extra
+  )
     track_event(
       'Frontend: IdV: Acuant SDK loaded',
+      acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
+      acuant_version: acuant_version,
+      flow_path: flow_path,
+      isCameraSupported: isCameraSupported,
+      phone_question_ab_test_analytics_bucket: phone_question_ab_test_analytics_bucket,
       success: success,
+      use_alternate_sdk: use_alternate_sdk,
     )
   end
+  # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
   # @param [Boolean] success
   # @param [Boolean] address_edited
@@ -634,6 +657,7 @@ module AnalyticsEvents
   # @param [String] mimeType MIME type of image added
   # @param [Integer] moire
   # @param [String] phone_question_ab_test_bucket
+  # @param [String] phone_with_camera the result of the phone question a/b test
   # @param [Integer] sharpness
   # @param [Integer] sharpnessScoreThreshold
   # @param [Integer] size size of image added in bytes
@@ -662,6 +686,7 @@ module AnalyticsEvents
     mimeType:,
     moire:,
     phone_question_ab_test_bucket:,
+    phone_with_camera:,
     sharpness:,
     sharpnessScoreThreshold:,
     size:,
@@ -691,6 +716,7 @@ module AnalyticsEvents
       mimeType: mimeType,
       moire: moire,
       phone_question_ab_test_bucket: phone_question_ab_test_bucket,
+      phone_with_camera: phone_with_camera,
       sharpness: sharpness,
       sharpnessScoreThreshold: sharpnessScoreThreshold,
       size: size,
@@ -699,13 +725,39 @@ module AnalyticsEvents
       width: width,
     )
   end
-  # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
-  def idv_back_image_clicked(**_extra)
+  # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
+  # @param [String] acuant_version
+  # @param [String] flow_path whether the user is in the hybrid or standard flow
+  # @param [Boolean] isDrop
+  # @param [String] phone_question_ab_test_bucket
+  # @param [String] phone_with_camera the result of the phone question a/b test
+  # @param [Boolean] source
+  # @param [Boolean] use_alternate_sdk
+  def idv_back_image_clicked(
+    acuant_sdk_upgrade_a_b_testing_enabled:,
+    acuant_version:,
+    flow_path:,
+    isDrop:,
+    phone_question_ab_test_bucket:,
+    phone_with_camera:,
+    source:,
+    use_alternate_sdk:,
+    **_extra
+  )
     track_event(
       'Frontend: IdV: back image clicked',
+      acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
+      acuant_version: acuant_version,
+      flow_path: flow_path,
+      isDrop: isDrop,
+      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
+      phone_with_camera: phone_with_camera,
+      source: source,
+      use_alternate_sdk: use_alternate_sdk,
     )
   end
+  # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
   def idv_barcode_warning_continue_clicked(**_extra)
     track_event(
@@ -763,21 +815,23 @@ module AnalyticsEvents
     )
   end
 
-  def idv_capture_troubleshooting_dismissed(**_extra)
+  # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
+  # @param [String] acuant_version
+  # @param [String] flow_path whether the user is in the hybrid or standard flow
+  # @param [String] use_alternate_sdk
+  def idv_capture_troubleshooting_dismissed(
+    acuant_sdk_upgrade_a_b_testing_enabled:,
+    acuant_version:,
+    flow_path:,
+    use_alternate_sdk:,
+    **_extra
+  )
     track_event(
       'Frontend: IdV: Capture troubleshooting dismissed',
-    )
-  end
-
-  def idv_clicked_sp_link_on_ready_to_verify_page(**_extra)
-    track_event(
-      'Frontend: IdV: user clicked sp link on ready to verify page',
-    )
-  end
-
-  def idv_clicked_what_to_bring_link_on_ready_to_verify_page(**_extra)
-    track_event(
-      'Frontend: IdV: user clicked what to bring link on ready to verify page',
+      acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
+      acuant_version: acuant_version,
+      flow_path: flow_path,
+      use_alternate_sdk: use_alternate_sdk,
     )
   end
 
@@ -842,6 +896,14 @@ module AnalyticsEvents
 
   def idv_doc_auth_getting_started_visited(**extra)
     track_event('IdV: doc auth getting_started visited', **extra)
+  end
+
+  def idv_doc_auth_how_to_verify_submitted(**extra)
+    track_event(:idv_doc_auth_how_to_verify_submitted, **extra)
+  end
+
+  def idv_doc_auth_how_to_verify_visited(**extra)
+    track_event(:idv_doc_auth_how_to_verify_visited, **extra)
   end
 
   # The "hybrid handoff" step: Desktop user has submitted their choice to
@@ -1131,12 +1193,30 @@ module AnalyticsEvents
     )
   end
 
+  # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
+  # @param [String] acuant_version
+  # @param [String] flow_path whether the user is in the hybrid or standard flow
   # @param [Array] ids ID Types the user has checked whether they have
+  # @param [String] phone_question_ab_test_bucket
+  # @param [String] use_alternate_sdk
   # Exit survey of optional questions when the user leaves document capture
-  def idv_exit_optional_questions(ids:, **_extra)
+  def idv_exit_optional_questions(
+    acuant_sdk_upgrade_a_b_testing_enabled:,
+    acuant_version:,
+    flow_path:,
+    ids:,
+    phone_question_ab_test_bucket:,
+    use_alternate_sdk:,
+    **_extra
+  )
     track_event(
       'Frontend: IdV: exit optional questions',
+      acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
+      acuant_version: acuant_version,
+      flow_path: flow_path,
       ids: ids,
+      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
+      use_alternate_sdk: use_alternate_sdk,
     )
   end
 
@@ -1212,6 +1292,7 @@ module AnalyticsEvents
   # @param [String] mimeType MIME type of image added
   # @param [Integer] moire
   # @param [String] phone_question_ab_test_bucket
+  # @param [String] phone_with_camera the result of the phone question a/b test
   # @param [Integer] sharpness
   # @param [Integer] sharpnessScoreThreshold
   # @param [Integer] size size of image added in bytes
@@ -1240,6 +1321,7 @@ module AnalyticsEvents
     mimeType:,
     moire:,
     phone_question_ab_test_bucket:,
+    phone_with_camera:,
     sharpness:,
     sharpnessScoreThreshold:,
     size:,
@@ -1269,6 +1351,7 @@ module AnalyticsEvents
       mimeType: mimeType,
       moire: moire,
       phone_question_ab_test_bucket: phone_question_ab_test_bucket,
+      phone_with_camera: phone_with_camera,
       sharpness: sharpness,
       sharpnessScoreThreshold: sharpnessScoreThreshold,
       size: size,
@@ -1277,13 +1360,39 @@ module AnalyticsEvents
       width: width,
     )
   end
-  # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
-  def idv_front_image_clicked(**_extra)
+  # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
+  # @param [String] acuant_version
+  # @param [String] flow_path whether the user is in the hybrid or standard flow
+  # @param [Boolean] isDrop
+  # @param [String] phone_question_ab_test_bucket
+  # @param [String] phone_with_camera the result of the phone question a/b test
+  # @param [String] source
+  # @param [String] use_alternate_sdk
+  def idv_front_image_clicked(
+    acuant_sdk_upgrade_a_b_testing_enabled:,
+    acuant_version:,
+    flow_path:,
+    isDrop:,
+    phone_question_ab_test_bucket:,
+    phone_with_camera:,
+    source:,
+    use_alternate_sdk:,
+    **_extra
+  )
     track_event(
       'Frontend: IdV: front image clicked',
+      acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
+      acuant_version: acuant_version,
+      flow_path: flow_path,
+      isDrop: isDrop,
+      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
+      phone_with_camera: phone_with_camera,
+      source: source,
+      use_alternate_sdk: use_alternate_sdk,
     )
   end
+  # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
   # @param [DateTime] enqueued_at When letter was enqueued
   # @param [Boolean] resend User requested a second (or more) letter
@@ -1356,11 +1465,36 @@ module AnalyticsEvents
     track_event('IdV: gpo reminder email sent', user_id: user_id, **extra)
   end
 
-  def idv_image_capture_failed(**_extra)
+  # @param [String] field back or front
+  # @param [String] acuantCaptureMode
+  # @param [String] error
+  # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
+  # @param [String] acuant_version
+  # @param [String] flow_path
+  # @param [Boolean] use_alternate_sdk
+  # rubocop:disable Naming/VariableName,Naming/MethodParameterName
+  def idv_image_capture_failed(
+    field:,
+    acuantCaptureMode:,
+    error:,
+    acuant_sdk_upgrade_a_b_testing_enabled:,
+    acuant_version:,
+    flow_path:,
+    use_alternate_sdk:,
+    **_extra
+  )
     track_event(
       'Frontend: IdV: Image capture failed',
+      field: field,
+      acuantCaptureMode: acuantCaptureMode,
+      error: error,
+      acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
+      acuant_version: acuant_version,
+      flow_path: flow_path,
+      use_alternate_sdk: use_alternate_sdk,
     )
   end
+  # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
   # Tracks emails that are initiated during InPerson::EmailReminderJob
   # @param [String] email_type early or late
@@ -2223,15 +2357,39 @@ module AnalyticsEvents
     )
   end
 
-  def idv_link_sent_capture_doc_polling_complete(**_extra)
+  # @param [String] phone_question_ab_test_bucket
+  # @param [String] phone_with_camera the result of the phone question a/b test
+  # @param [Boolean] isCancelled
+  # @param [Boolean] isRateLimited
+  # rubocop:disable Naming/VariableName,Naming/MethodParameterName
+  def idv_link_sent_capture_doc_polling_complete(
+    isCancelled:,
+    isRateLimited:,
+    phone_question_ab_test_bucket:,
+    phone_with_camera:,
+    **_extra
+  )
     track_event(
       'Frontend: IdV: Link sent capture doc polling complete',
+      isCancelled: isCancelled,
+      isRateLimited: isRateLimited,
+      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
+      phone_with_camera: phone_with_camera,
     )
   end
+  # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
-  def idv_link_sent_capture_doc_polling_started(**_extra)
+  # @param [String] phone_question_ab_test_bucket
+  # @param [String] phone_with_camera the result of the phone question a/b test
+  def idv_link_sent_capture_doc_polling_started(
+    phone_question_ab_test_bucket:,
+    phone_with_camera:,
+    **_extra
+  )
     track_event(
       'Frontend: IdV: Link sent capture doc polling started',
+      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
+      phone_with_camera: phone_with_camera,
     )
   end
 
@@ -2787,15 +2945,61 @@ module AnalyticsEvents
     )
   end
 
-  def idv_warning_action_triggered(**_extra)
+  # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
+  # @param [String] acuant_version
+  # @param [String] flow_path
+  # @param [String] location
+  # @param [Boolean] use_alternate_sdk
+  def idv_warning_action_triggered(
+    acuant_sdk_upgrade_a_b_testing_enabled:,
+    acuant_version:,
+    flow_path:,
+    location:,
+    use_alternate_sdk:,
+    **_extra
+  )
     track_event(
       'Frontend: IdV: warning action triggered',
+      acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
+      acuant_version: acuant_version,
+      flow_path: flow_path,
+      location: location,
+      use_alternate_sdk: use_alternate_sdk,
     )
   end
 
-  def idv_warning_shown(**_extra)
+  # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
+  # @param [String] acuant_version
+  # @param [String] error_message_displayed
+  # @param [String] flow_path
+  # @param [String] heading
+  # @param [String] location
+  # @param [Integer] remaining_attempts
+  # @param [String] subheading
+  # @param [Boolean] use_alternate_sdk
+  def idv_warning_shown(
+    acuant_sdk_upgrade_a_b_testing_enabled:,
+    acuant_version:,
+    error_message_displayed:,
+    flow_path:,
+    heading:,
+    location:,
+    remaining_attempts:,
+    subheading:,
+    use_alternate_sdk:,
+    **_extra
+  )
     track_event(
       'Frontend: IdV: warning shown',
+      acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
+      acuant_version: acuant_version,
+      error_message_displayed: error_message_displayed,
+      flow_path: flow_path,
+      heading: heading,
+      location: location,
+      remaining_attempts: remaining_attempts,
+      subheading: subheading,
+      use_alternate_sdk: use_alternate_sdk,
     )
   end
 

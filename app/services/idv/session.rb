@@ -68,7 +68,11 @@ module Idv
       self.profile_id = profile.id
       self.personal_key = profile.personal_key
 
-      move_pii_to_user_session(profile_maker.pii_attributes)
+      Pii::Cacher.new(current_user, user_session).save_decrypted_pii(
+        profile_maker.pii_attributes,
+        profile.id,
+      )
+
       associate_in_person_enrollment_with_profile if profile.in_person_verification_pending?
 
       if profile.gpo_verification_pending?
@@ -215,10 +219,6 @@ module Idv
 
     def new_idv_session
       {}
-    end
-
-    def move_pii_to_user_session(pii)
-      Pii::Cacher.new(current_user, user_session).save_decrypted_pii(pii)
     end
 
     def session

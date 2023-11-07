@@ -202,7 +202,11 @@ module Idv
         failure_reason: irs_attempts_api_tracker.parse_failure_reason(form_response),
       )
 
-      form_response = form_response.merge(check_ssn) if form_response.success?
+      form_response.extra[:ssn_is_unique] = DuplicateSsnFinder.new(
+        ssn: idv_session.ssn,
+        user: current_user,
+      ).ssn_is_unique?
+
       summarize_result_and_rate_limit(form_response)
       delete_async
 
@@ -303,10 +307,6 @@ module Idv
         ssn: idv_session.ssn,
         failure_reason: failure_reason,
       )
-    end
-
-    def check_ssn
-      Idv::SsnForm.new(current_user).submit(ssn: idv_session.ssn)
     end
 
     def move_applicant_to_idv_session

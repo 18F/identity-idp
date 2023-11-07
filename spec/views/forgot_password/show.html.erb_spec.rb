@@ -10,7 +10,7 @@ RSpec.describe 'forgot_password/show.html.erb' do
   end
 
   it 'has a localized title' do
-    expect(view).to receive(:title).with(t('titles.verify_email'))
+    expect(view).to receive(:title=).with(t('titles.verify_email'))
 
     render
   end

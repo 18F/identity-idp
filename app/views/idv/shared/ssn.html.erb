@@ -1,21 +1,17 @@
 <%#
 Renders a page asking the user to enter their SSN or update their SSN if they had previously entered it.
 
-locals:
-* success_alert_enabled: whether or not to display a "We've successfully verified your ID" success alert
-* updating_ssn: true if the user is updating their SSN instead of providing it for the first time. This
-                will render a different page heading and different navigation buttons in the page footer
 %>
 <% content_for(:pre_flash_content) do %>
   <%= render StepIndicatorComponent.new(
-        steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS,
+        steps: @step_indicator_steps,
         current_step: :verify_info,
         locale_scope: 'idv',
         class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
       ) %>
 <% end %>
 
-<% title t('titles.doc_auth.ssn') %>
+<% self.title = t('titles.doc_auth.ssn') %>
 
 <% if @ssn_form.updating_ssn? %>
   <%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.ssn_update')) %>
@@ -58,15 +54,13 @@ locals:
 
 <%= simple_form_for(
       @ssn_form,
-      url: idv_ssn_url,
+      url: url_for,
       method: :put,
       html: { autocomplete: 'off' },
     ) do |f| %>
   <div class="tablet:grid-col-8">
     <%= render 'shared/ssn_field', f: f %>
   </div>
-
-  <p><%= @error_message %></p>
 
   <%= f.submit class: 'display-block margin-y-5' do %>
     <% if @ssn_form.updating_ssn? %>

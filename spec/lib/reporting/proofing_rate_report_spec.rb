@@ -2,10 +2,10 @@ require 'rails_helper'
 require 'reporting/proofing_rate_report'
 
 RSpec.describe Reporting::ProofingRateReport do
-  let(:end_date) { Date.new(2022, 1, 1) }
+  let(:end_date) { Date.new(2022, 1, 1).in_time_zone('UTC').beginning_of_day }
 
   subject(:report) do
-    Reporting::ProofingRateReport.new(end_date: end_date)
+    Reporting::ProofingRateReport.new(end_date: end_date, wait_duration: 0)
   end
 
   describe '#as_csv' do
@@ -67,12 +67,36 @@ RSpec.describe Reporting::ProofingRateReport do
         end
       end
     end
+
+    context 'when hitting a Cloudwatch rate limit' do
+      before do
+        stub_const('CloudwatchClient::DEFAULT_WAIT_DURATION', 0)
+
+        allow(report).to receive(:reports).and_call_original
+
+        Aws.config[:cloudwatchlogs] = {
+          stub_responses: {
+            start_query: Aws::CloudWatchLogs::Errors::ThrottlingException.new(
+              nil,
+              'Rate exceeded',
+            ),
+          },
+        }
+      end
+
+      it 'renders an error table' do
+        expect(report.as_csv).to eq(
+          [
+            ['Error', 'Message'],
+            ['Aws::CloudWatchLogs::Errors::ThrottlingException', 'Rate exceeded'],
+          ],
+        )
+      end
+    end
   end
 
   describe '#reports' do
     before do
-      stub_const('Reporting::CloudwatchClient::DEFAULT_WAIT_DURATION', 0)
-
       query_id = SecureRandom.hex
 
       Aws.config[:cloudwatchlogs] = {

@@ -201,6 +201,7 @@ es:
       document_capture_front: Parte delantera de su documento de identidad
       front: Anverso de su licencia de conducir o identificación estatal
       getting_started: Vamos a verificar su identidad para %{sp_name}
+      how_to_verify: Elija cómo quiere verificar su identidad
       hybrid_handoff: '¿Cómo desea añadir su documento de identidad?'
       interstitial: Estamos procesando sus imágenes
       lets_go: Cómo funciona la verificación de su identidad
@@ -214,7 +215,9 @@ es:
       text_message: Enviamos un mensaje a su teléfono
       upload_from_computer: Continuar en esta computadora
       upload_from_phone: Utilice su teléfono para tomar las fotos
+      verify_at_post_office: Verifique su identidad en una oficina de correos
       verify_identity: Verifique su identidad
+      verify_online: Verifique su identidad en línea
       welcome: Comience a verificar su identidad
     hybrid_flow_warning:
       explanation_html: Usted está utilizando <strong>%{app_name}</strong> para
@@ -243,6 +246,9 @@ es:
       getting_started_html: '%{sp_name} necesita asegurarse de que es usted realmente
         y no alguien que se hace pasar por usted. %{link_html}'
       getting_started_learn_more: Obtenga más información sobre lo que necesita para verificar su identidad
+      how_to_verify: Tiene la opción de verificar su identidad en línea o en persona
+        en una oficina de correos participante.
+      how_to_verify_troubleshooting_options_header: ¿Quiere saber más sobre cómo verificar su identidad?
       hybrid_handoff: Recopilaremos información sobre usted leyendo su documento de
         identidad expedido por el estado.
       image_loaded: Imagen cargada
@@ -275,8 +281,21 @@ es:
       upload_from_phone: No tendrá que volver a iniciar sesión y volverá a cambiar a
         esta computadora después de tomar las fotos. Su teléfono móvil debe
         tener una cámara y un navegador web.
+      verify_at_post_office_description: Esta opción es mejor si no tiene un
+        dispositivo móvil o una manera fácil de tomar fotografías de su
+        identificación.
+      verify_at_post_office_instruction: Ingresará su información de identificación en
+        línea y verificará tu identidad en persona en una oficina de correos
+        participante.
+      verify_at_post_office_link_text: Obtenga más información sobre la verificación en persona
       verify_identity: Le preguntaremos sus datos personales para verificar su
         identidad comparándola con los registros públicos.
+      verify_online_description: La mayoría de los usuarios finalizan este proceso de
+        una sola vez. Esta opción es mejor si tiene un dispositivo móvil o una
+        forma de tomar fotografías de su identificación.
+      verify_online_instruction: Tomará fotografías de tu identificación para
+        verificar tu identidad completamente en línea.
+      verify_online_link_text: Obtenga más información sobre la verificación en línea
       welcome: '%{sp_name} necesita asegurarse de que es usted y no es alguien que se
         hace pasar por usted.'
       you_entered: 'Ud. entregó:'
@@ -311,6 +330,7 @@ es:
       document_capture_id_text2: Tome la foto en una superficie plana
       document_capture_id_text3: No use el flash de su cámara
       document_capture_id_text4: El tamaño del archivo debe ser de al menos 2 MB
+      most_common: Más común
       review_issues_id_header_text: 'Revise las imágenes de su documento de identidad
         expedido por el estado:'
       review_issues_id_text1: '¿Ha usado un fondo oscuro?'

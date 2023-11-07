@@ -80,7 +80,6 @@ en:
       new: Add authentication app
     two_factor_setup: Two-factor authentication setup
     verify_email: Check your email
-    verify_profile: Activate your account
     visitors:
       index: Welcome
     webauthn_setup: Add your security key

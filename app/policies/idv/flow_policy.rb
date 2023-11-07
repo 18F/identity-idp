@@ -42,6 +42,7 @@ module Idv
         ),
         welcome: Idv::WelcomeController.step_info,
         agreement: Idv::AgreementController.step_info,
+        how_to_verify: Idv::HowToVerifyController.step_info,
         phone_question: Idv::PhoneQuestionController.step_info,
         hybrid_handoff: Idv::HybridHandoffController.step_info,
         link_sent: Idv::LinkSentController.step_info,

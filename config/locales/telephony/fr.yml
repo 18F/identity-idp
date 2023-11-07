@@ -16,7 +16,7 @@ fr:
         minutes.
     confirmation_ipp_enrollment_result:
       sms: |-
-        %{app_name}: Vous avez visité le bureau de poste le %{proof_date}. Vérifiez votre e-mail pour votre résultat. Ce n'est pas vous? Signalez-le immédiatement: %{contact_number}
+        %{app_name}: Vous avez visité le bureau de poste le %{proof_date}. Vérifiez votre e-mail. Ce n'est pas vous? Signalez-le: %{contact_number}. Réf: %{reference_string}
     confirmation_otp:
       sms: |-
         %{app_name}: Votre code à usage unique est %{code}. Il est valable pendant %{expiration} minutes. Vous ne devez pas partager ce code avec personne.

@@ -1,11 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe Idv::SsnFormatForm do
-  let(:user) { create(:user) }
   let(:ssn) { '111-11-1111' }
   let(:incoming_ssn) { nil }
 
-  subject { Idv::SsnFormatForm.new(user, incoming_ssn) }
+  subject { Idv::SsnFormatForm.new(incoming_ssn) }
 
   describe '#submit' do
     context 'when the form is valid' do
@@ -50,7 +49,7 @@ RSpec.describe Idv::SsnFormatForm do
 
   describe '#updating_ssn?' do
     context 'when no value is provided' do
-      subject { Idv::SsnFormatForm.new(user, nil) }
+      subject { Idv::SsnFormatForm.new(nil) }
 
       it { expect(subject.updating_ssn?).to eq(false) }
     end

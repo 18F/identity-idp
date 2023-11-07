@@ -46,6 +46,12 @@ function getServiceProvider() {
   return { name, failureToProofURL };
 }
 
+function getSelfieCaptureEnabled() {
+  const { docAuthSelfieCapture } = appRoot.dataset;
+  const docAuthSelfieCaptureObject = docAuthSelfieCapture ? JSON.parse(docAuthSelfieCapture) : {};
+  return !!docAuthSelfieCaptureObject?.enabled;
+}
+
 function getMetaContent(name): string | null {
   const meta = document.querySelector<HTMLMetaElement>(`meta[name="${name}"]`);
   return meta?.content ?? null;
@@ -60,6 +66,7 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
     useAlternateSdk,
     acuantVersion,
     phoneQuestionAbTestBucket,
+    phoneWithCamera,
   } = appRoot.dataset;
   return baseTrackEvent(event, {
     ...payload,
@@ -68,6 +75,7 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
     use_alternate_sdk: useAlternateSdk,
     acuant_version: acuantVersion,
     phone_question_ab_test_bucket: phoneQuestionAbTestBucket,
+    phone_with_camera: phoneWithCamera,
   });
 };
 
@@ -120,6 +128,10 @@ const App = composeComponents(
     {
       sdkSrc: acuantVersion && `/acuant/${acuantVersion}/AcuantJavascriptWebSdk.min.js`,
       cameraSrc: acuantVersion && `/acuant/${acuantVersion}/AcuantCamera.min.js`,
+      passiveLivenessOpenCVSrc: acuantVersion && `/acuant/${acuantVersion}/opencv.min.js`,
+      passiveLivenessSrc: getSelfieCaptureEnabled()
+        ? acuantVersion && `/acuant/${acuantVersion}/AcuantPassiveLiveness.min.js`
+        : undefined,
       credentials: getMetaContent('acuant-sdk-initialization-creds'),
       endpoint: getMetaContent('acuant-sdk-initialization-endpoint'),
       glareThreshold,
@@ -147,7 +159,13 @@ const App = composeComponents(
       },
     },
   ],
-  [ServiceProviderContextProvider, { value: getServiceProvider() }],
+  [
+    ServiceProviderContextProvider,
+    {
+      value: getServiceProvider(),
+      selfieCaptureEnabled: getSelfieCaptureEnabled(),
+    },
+  ],
   [
     FailedCaptureAttemptsContextProvider,
     {
