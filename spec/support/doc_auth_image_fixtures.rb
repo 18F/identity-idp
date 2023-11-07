@@ -27,6 +27,10 @@ module DocAuthImageFixtures
     Rack::Test::UploadedFile.new(fixture_path('selfie.jpg'), 'image/jpeg')
   end
 
+  def self.selfie_image_data_uri
+    "data:image/jpeg;base64,#{Base64.strict_encode64(selfie_image)}"
+  end
+
   def self.error_yaml_multipart
     path = File.join(
       File.dirname(__FILE__),
