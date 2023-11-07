@@ -30,7 +30,7 @@ Rails.application.configure do
 
   routes.default_url_options[:protocol] = 'https' if ENV['HTTPS'] == 'on'
 
-  config.lograge.ignore_actions = ['Users::SessionsController#active']
+  config.lograge.ignore_actions = ['Api::Internal::SessionsController#show']
 
   if Rails.root.join('tmp', 'caching-dev.txt').exist?
     config.action_controller.perform_caching = true

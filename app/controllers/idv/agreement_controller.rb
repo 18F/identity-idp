@@ -32,7 +32,11 @@ module Idv
       if result.success?
         idv_session.idv_consent_given = true
 
-        redirect_to idv_hybrid_handoff_url
+        if IdentityConfig.store.in_person_proofing_opt_in_enabled
+          redirect_to idv_how_to_verify_url
+        else
+          redirect_to idv_hybrid_handoff_url
+        end
       else
         redirect_to idv_agreement_url
       end
@@ -42,7 +46,7 @@ module Idv
       Idv::StepInfo.new(
         key: :agreement,
         controller: controller_name,
-        next_steps: [:hybrid_handoff, :document_capture, :phone_question],
+        next_steps: [:hybrid_handoff, :document_capture, :phone_question, :how_to_verify],
         preconditions: ->(idv_session:, user:) { idv_session.welcome_visited },
       )
     end

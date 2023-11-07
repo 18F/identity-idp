@@ -4,8 +4,7 @@ RSpec.describe Idv::InPerson::SsnController do
   let(:pii_from_user) { Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID_WITH_NO_SSN.dup }
 
   let(:flow_session) do
-    { pii_from_user: pii_from_user,
-      flow_path: 'standard' }
+    { pii_from_user: pii_from_user }
   end
 
   let(:ssn) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn] }
@@ -24,6 +23,7 @@ RSpec.describe Idv::InPerson::SsnController do
     stub_attempts_tracker
     allow(@analytics).to receive(:track_event)
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
+    subject.idv_session.flow_path = 'standard'
   end
 
   describe 'before_actions' do
@@ -82,7 +82,7 @@ RSpec.describe Idv::InPerson::SsnController do
     it 'renders the show template' do
       get :show
 
-      expect(response).to render_template :show
+      expect(response).to render_template 'idv/shared/ssn'
     end
 
     it 'sends analytics_visited event' do
@@ -123,7 +123,7 @@ RSpec.describe Idv::InPerson::SsnController do
         it 'does not redirect' do
           get :show
 
-          expect(response).to render_template :show
+          expect(response).to render_template 'idv/shared/ssn'
         end
       end
     end
@@ -213,7 +213,7 @@ RSpec.describe Idv::InPerson::SsnController do
       it 'renders the show template with an error message' do
         put :update, params: params
 
-        expect(response).to have_rendered(:show)
+        expect(response).to have_rendered('idv/shared/ssn')
         expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
         expect(response.body).to include('Enter a nine-digit Social Security number')
       end

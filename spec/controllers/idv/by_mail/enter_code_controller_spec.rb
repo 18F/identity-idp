@@ -76,7 +76,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
 
         action
 
-        expect(response).to render_template(:rate_limited)
+        expect(response).to redirect_to(idv_enter_code_rate_limited_url)
       end
 
       context 'but that profile is > 30 days old' do
@@ -122,19 +122,15 @@ RSpec.describe Idv::ByMail::EnterCodeController do
         RateLimiter.new(rate_limit_type: :verify_gpo_key, user: user).increment_to_limited!
       end
 
-      it 'renders rate limited page' do
+      it 'redirects to the rate limited page' do
         expect(@analytics).to receive(:track_event).with(
           'IdV: enter verify by mail code visited',
           source: nil,
         ).once
-        expect(@analytics).to receive(:track_event).with(
-          'Rate Limit Reached',
-          limiter_type: :verify_gpo_key,
-        ).once
 
         action
 
-        expect(response).to render_template(:rate_limited)
+        expect(response).to redirect_to(idv_enter_code_rate_limited_url)
       end
     end
 
@@ -419,7 +415,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
       end
 
       context 'user is rate limited' do
-        it 'renders the index page to show errors' do
+        it 'redirects to the rate limited index page to show errors' do
           analytics_args = {
             success: false,
             errors: otp_code_error_message,
@@ -442,13 +438,6 @@ RSpec.describe Idv::ByMail::EnterCodeController do
             **analytics_args,
           ).once
 
-          expect(@analytics).to receive(:track_event).with(
-            'Rate Limit Reached',
-            limiter_type: :verify_gpo_key,
-          ).once
-
-          expect(@irs_attempts_api_tracker).to receive(:idv_gpo_verification_rate_limited).once
-
           max_attempts.times do |i|
             post(
               :create,
@@ -469,7 +458,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
             },
           )
 
-          expect(response).to render_template('idv/by_mail/enter_code/rate_limited')
+          expect(response).to redirect_to(idv_enter_code_rate_limited_url)
         end
       end
 

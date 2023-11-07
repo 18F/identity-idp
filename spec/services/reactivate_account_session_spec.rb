@@ -1,10 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe ReactivateAccountSession do
-  let(:user) { build(:user) }
+  let(:user) { create(:user, :proofed) }
   let(:user_session) { {} }
 
   before do
+    user.active_profile.deactivate(:password_reset)
     @reactivate_account_session = ReactivateAccountSession.new(
       user: user,
       user_session: user_session,

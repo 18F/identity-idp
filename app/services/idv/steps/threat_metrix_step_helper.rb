@@ -12,7 +12,7 @@ module Idv
       end
 
       def generate_threatmetrix_session_id
-        idv_session.threatmetrix_session_id = SecureRandom.uuid if !updating_ssn?
+        idv_session.threatmetrix_session_id = SecureRandom.uuid if !@ssn_form.updating_ssn?
         idv_session.threatmetrix_session_id
       end
 

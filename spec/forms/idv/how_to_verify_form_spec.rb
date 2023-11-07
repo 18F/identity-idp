@@ -1,52 +1,39 @@
 require 'rails_helper'
 
-RSpec.describe Idv::SsnForm do
-  let(:user) { create(:user) }
-  let(:subject) { Idv::SsnForm.new(user) }
-  let(:ssn) { '111111111' }
+RSpec.describe Idv::HowToVerifyForm do
+  let(:subject) { Idv::HowToVerifyForm.new }
 
   describe '#submit' do
     context 'when the form is valid' do
       it 'returns a successful form response' do
-        result = subject.submit(ssn: ssn)
+        result = subject.submit(selection: Idv::HowToVerifyForm::REMOTE)
 
         expect(result).to be_kind_of(FormResponse)
         expect(result.success?).to eq(true)
         expect(result.errors).to be_empty
-        expect(result.extra).to eq(ssn_is_unique: true)
-      end
-
-      context 'when the SSN is a duplicate' do
-        before { create(:profile, pii: { ssn: ssn }) }
-
-        it 'logs that there is a duplicate SSN' do
-          result = subject.submit(ssn: ssn)
-          expect(result.extra).to eq(ssn_is_unique: false)
-        end
       end
     end
 
     context 'when the form is invalid' do
       it 'returns an unsuccessful form response' do
-        result = subject.submit(ssn: 'abc')
+        result = subject.submit(selection: 'peanut butter')
 
         expect(result).to be_kind_of(FormResponse)
         expect(result.success?).to eq(false)
-        expect(result.errors).to include(:ssn)
       end
     end
 
     context 'when the form has invalid attributes' do
       it 'raises an error' do
-        expect { subject.submit(ssn: ssn, foo: 1) }.
-          to raise_error(ArgumentError, 'foo is an invalid ssn attribute')
+        expect { subject.submit(selection: Idv::HowToVerifyForm::REMOTE, foo: 1) }.
+          to raise_error(ArgumentError, 'foo is an invalid how_to_verify attribute')
       end
     end
   end
 
   describe 'presence validations' do
     it 'is invalid when required attribute is not present' do
-      subject.submit(ssn: nil)
+      subject.submit(selection: nil)
 
       expect(subject).to_not be_valid
     end

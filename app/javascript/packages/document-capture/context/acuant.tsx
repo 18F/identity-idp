@@ -89,6 +89,16 @@ interface AcuantContextProviderProps {
    */
   cameraSrc: string;
   /**
+   * OpenCV JavaScript source URL. Required for passive liveness.
+   */
+  passiveLivenessOpenCVSrc: string;
+  /**
+   * Passive Liveness (Selfie) JavaScript source URL.
+   * If this is undefined, it means the selfie feature is
+   * disabled.
+   */
+  passiveLivenessSrc: string | undefined;
+  /**
    * SDK credentials.
    */
   credentials: string | null;
@@ -211,6 +221,8 @@ const getActualAcuantCamera = (): AcuantCameraInterface => {
 function AcuantContextProvider({
   sdkSrc,
   cameraSrc,
+  passiveLivenessOpenCVSrc,
+  passiveLivenessSrc,
   credentials = null,
   endpoint = null,
   glareThreshold = DEFAULT_ACCEPTABLE_GLARE_SCORE,
@@ -295,23 +307,43 @@ function AcuantContextProvider({
     const originalAcuantConfig = window.acuantConfig;
     window.acuantConfig = { path: dirname(sdkSrc) };
 
+    // SDK Main script load
     const sdkScript = document.createElement('script');
     sdkScript.src = sdkSrc;
     sdkScript.onload = onAcuantSdkLoaded;
     sdkScript.onerror = () => setIsError(true);
     sdkScript.dataset.acuantSdk = '';
     document.body.appendChild(sdkScript);
+    // Camera script load
     const cameraScript = document.createElement('script');
     cameraScript.async = true;
     cameraScript.src = cameraSrc;
     cameraScript.onerror = () => setIsError(true);
     document.body.appendChild(cameraScript);
+    // Passive liveness (Selfie) script load
+    // Create the empty script regardless of whether we load
+    // to make the cleanup function simpler
+    const passiveLivenessScript = document.createElement('script');
+    // Open CV script load. Open CV is required only for passive liveness
+    const passiveLivenessOpenCVScript = document.createElement('script');
+    if (passiveLivenessSrc) {
+      passiveLivenessScript.async = true;
+      passiveLivenessScript.src = passiveLivenessSrc;
+      passiveLivenessScript.onerror = () => setIsError(true);
+      passiveLivenessOpenCVScript.async = true;
+      passiveLivenessOpenCVScript.src = passiveLivenessOpenCVSrc;
+      passiveLivenessOpenCVScript.onerror = () => setIsError(true);
+    }
+    document.body.appendChild(passiveLivenessScript);
+    document.body.appendChild(passiveLivenessOpenCVScript);
 
     return () => {
       window.acuantConfig = originalAcuantConfig;
       sdkScript.onload = null;
       document.body.removeChild(sdkScript);
       document.body.removeChild(cameraScript);
+      document.body.removeChild(passiveLivenessScript);
+      document.body.removeChild(passiveLivenessOpenCVScript);
     };
   }, []);
 

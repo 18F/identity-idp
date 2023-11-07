@@ -35,7 +35,7 @@ class TwoFactorOptionsPresenter
       TwoFactorAuthentication::SetUpWebauthnPlatformSelectionPresenter.new(user: user),
       TwoFactorAuthentication::SetUpAuthAppSelectionPresenter.new(user: user),
       TwoFactorAuthentication::PhoneSelectionPresenter.new(user: user),
-      TwoFactorAuthentication::BackupCodeSelectionPresenter.new(user: user),
+      TwoFactorAuthentication::SetUpBackupCodeSelectionPresenter.new(user: user),
       TwoFactorAuthentication::SetUpWebauthnSelectionPresenter.new(user: user),
       TwoFactorAuthentication::PivCacSelectionPresenter.new(user: user),
     ]
@@ -127,7 +127,7 @@ class TwoFactorOptionsPresenter
 
   def backup_code_option
     return [] if piv_cac_required? || phishing_resistant_only?
-    [TwoFactorAuthentication::BackupCodeSelectionPresenter.new(user: user)]
+    [TwoFactorAuthentication::SetUpBackupCodeSelectionPresenter.new(user: user)]
   end
 
   def current_device_is_desktop?
