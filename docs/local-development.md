@@ -56,6 +56,21 @@ If not using macOS:
 
     You should now be able to go to open up your favorite browser, go to `localhost:3000` and see your local development environment running.
 
+### Running a sample partner application
+
+Typically, a person who uses Login.gov will arrive from a partner application, and their experience
+on Login.gov will be customized to incorporate the name and logo of the partner. They will also be
+asked to consent to share their information with the partner before being sent back.
+
+To simulate a true end-to-end user experience, you can use one of the sample partner applications,
+which are configured by default to work with your local IdP instance.
+
+- OIDC: https://github.com/18F/identity-oidc-sinatra
+- SAML: https://github.com/18F/identity-saml-sinatra
+
+When running a sample application, you can visit either http://localhost:9292/ (OIDC) or
+http://localhost:4567/ (SAML) and click "Sign in" to begin the sign-in process using the IdP.
+
 ### Running tests locally
 
   Login.gov uses the following tools for our testing:
