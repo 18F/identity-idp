@@ -85,6 +85,7 @@ doc_auth_error_sharpness_threshold: 40
 doc_auth_max_attempts: 5
 doc_auth_max_capture_attempts_before_native_camera: 3
 doc_auth_max_submission_attempts_before_native_camera: 3
+doc_auth_not_ready_section_enabled: false
 doc_auth_selfie_capture: '{"enabled":false}'
 doc_auth_supported_country_codes: '["US", "GU", "VI", "AS", "MP", "PR", "USA" ,"GUM", "VIR", "ASM", "MNP", "PRI"]'
 doc_capture_request_valid_for_minutes: 15
@@ -330,6 +331,8 @@ vendor_status_lexisnexis_phone_finder: 'operational'
 vendor_status_lexisnexis_trueid: 'operational'
 vendor_status_sms: 'operational'
 vendor_status_voice: 'operational'
+vendor_status_idv_scheduled_maintenance_start: ''
+vendor_status_idv_scheduled_maintenance_finish: ''
 verification_errors_report_configs: '[]'
 verify_gpo_key_attempt_window_in_minutes: 10
 verify_gpo_key_max_attempts: 5
@@ -380,11 +383,12 @@ development:
   database_worker_jobs_username: ''
   database_worker_jobs_host: ''
   database_worker_jobs_password: ''
-  doc_auth_selfie_capture: '{"enabled":false}' 
+  doc_auth_selfie_capture: '{"enabled":false}'
   doc_auth_vendor: 'mock'
   doc_auth_vendor_randomize: false
   doc_auth_vendor_randomize_percent: 0
   doc_auth_vendor_randomize_alternate_vendor: ''
+  doc_auth_not_ready_section_enabled: true
   domain_name: localhost:3000
   enable_rate_limiting: false
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
@@ -523,7 +527,7 @@ test:
   doc_auth_vendor_randomize: false
   doc_auth_vendor_randomize_percent: 0
   doc_auth_vendor_randomize_alternate_vendor: ''
-  doc_auth_selfie_capture: '{"enabled":false}' 
+  doc_auth_selfie_capture: '{"enabled":false}'
   doc_capture_polling_enabled: false
   domain_name: www.example.com
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c

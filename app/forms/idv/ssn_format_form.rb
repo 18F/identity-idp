@@ -11,8 +11,7 @@ module Idv
       ActiveModel::Name.new(self, nil, 'doc_auth')
     end
 
-    def initialize(user, incoming_ssn)
-      @user = user
+    def initialize(incoming_ssn)
       @ssn = incoming_ssn
       @updating_ssn = ssn.present?
     end
