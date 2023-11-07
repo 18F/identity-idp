@@ -90,6 +90,7 @@ RSpec.describe GpoExpirationJob do
         user_id: users[:user_with_one_expired_gpo_profile].uuid,
         user_has_active_profile: false,
         letters_sent: 1,
+        gpo_verification_pending_at: expired_timestamp,
       )
     end
 
@@ -105,6 +106,7 @@ RSpec.describe GpoExpirationJob do
           user_id: users[:user_with_one_expired_gpo_profile].uuid,
           user_has_active_profile: true,
           letters_sent: 1,
+          gpo_verification_pending_at: expired_timestamp,
         )
       end
     end
@@ -126,6 +128,7 @@ RSpec.describe GpoExpirationJob do
           user_id: users[:user_with_one_expired_gpo_profile].uuid,
           user_has_active_profile: false,
           letters_sent: 2,
+          gpo_verification_pending_at: expired_timestamp,
         )
       end
     end

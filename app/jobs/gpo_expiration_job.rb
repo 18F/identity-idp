@@ -13,12 +13,15 @@ class GpoExpirationJob < ApplicationJob
     end
 
     profiles.find_each do |profile|
+      gpo_verification_pending_at = profile.gpo_verification_pending_at
+
       profile.deactivate_due_to_gpo_expiration
 
       analytics.idv_gpo_expired(
         user_id: profile.user.uuid,
         user_has_active_profile: profile.user.active_profile.present?,
         letters_sent: profile.gpo_confirmation_codes.count,
+        gpo_verification_pending_at: gpo_verification_pending_at,
       )
     end
   end

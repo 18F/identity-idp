@@ -1467,14 +1467,22 @@ module AnalyticsEvents
 
   # The user ran out of time to complete their address verification by mail.
   # @param [String] user_id UUID of the user who expired
-  # @param [Boolean] user_has_active_profile Whether the user current has an active profile
+  # @param [Boolean] user_has_active_profile Whether the user currently has an active profile
   # @param [Integer] letters_sent Total # of GPO letters sent for this profile
-  def idv_gpo_expired(user_id:, user_has_active_profile:, letters_sent:, **extra)
+  # @param [Time] gpo_verification_pending_at Date/time when profile originally entered GPO flow
+  def idv_gpo_expired(
+    user_id:,
+    user_has_active_profile:,
+    letters_sent:,
+    gpo_verification_pending_at:,
+    **extra
+  )
     track_event(
       :idv_gpo_expired,
       user_id: user_id,
       user_has_active_profile: user_has_active_profile,
       letters_sent: letters_sent,
+      gpo_verification_pending_at: gpo_verification_pending_at,
       **extra,
     )
   end
