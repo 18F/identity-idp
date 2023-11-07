@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe TwoFactorAuthentication::SmsSelectionPresenter do
+RSpec.describe TwoFactorAuthentication::SetUpSmsSelectionPresenter do
   let(:subject) { described_class.new(configuration: phone, user: user) }
   let(:user) { build(:user) }
 
@@ -31,7 +31,7 @@ RSpec.describe TwoFactorAuthentication::SmsSelectionPresenter do
   describe '#info' do
     context 'when a user has a phone configuration' do
       let(:phone) { build(:phone_configuration, phone: '+1 888 867-5309') }
-      it 'includes the masked the number' do
+      it 'includes the masked number' do
         expect(subject.info).to include('(***) ***-5309')
       end
     end
