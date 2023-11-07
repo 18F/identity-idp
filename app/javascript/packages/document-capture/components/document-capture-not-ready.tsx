@@ -17,20 +17,6 @@ function DocumentCaptureNotReady({ navigate }: DocumentCaptureNotReadyProps) {
   const { currentStep } = useContext(FlowContext);
   const { name: spName, failureToProofURL } = useContext(ServiceProviderContext);
   const appName = getConfigValue('appName');
-  const header = <h2 className="h3">{t('doc_auth.not_ready.header')}</h2>;
-
-  const content = (
-    <p>
-      {spName
-        ? t('doc_auth.not_ready.content_sp', {
-            sp_name: spName,
-            app_name: appName,
-          })
-        : t('doc_auth.not_ready.content_nosp', {
-            app_name: appName,
-          })}
-    </p>
-  );
   const handleExit = () => {
     trackEvent('IdV: docauth not ready link clicked');
     forceRedirect(
@@ -44,9 +30,17 @@ function DocumentCaptureNotReady({ navigate }: DocumentCaptureNotReadyProps) {
 
   return (
     <>
-      {header}
-      {content}
-
+      <h2 className="h3">{t('doc_auth.not_ready.header')}</h2>
+      <p>
+        {spName
+          ? t('doc_auth.not_ready.content_sp', {
+              sp_name: spName,
+              app_name: appName,
+            })
+          : t('doc_auth.not_ready.content_nosp', {
+              app_name: appName,
+            })}
+      </p>
       <Button isUnstyled className="margin-top-1" onClick={handleExit}>
         {spName
           ? t('doc_auth.not_ready.button_sp', { app_name: appName, sp_name: spName })
