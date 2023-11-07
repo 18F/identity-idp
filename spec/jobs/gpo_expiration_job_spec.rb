@@ -15,31 +15,27 @@ RSpec.describe GpoExpirationJob do
 
   let(:not_expired_timestamp) { Time.zone.now - (usps_confirmation_max_days / 2).days }
 
-  let!(:user_with_one_expired_gpo_profile) do
-    create(
-      :user,
-      :with_pending_gpo_profile,
-      created_at: expired_timestamp,
-    )
-  end
-
-  let!(:user_with_one_unexpired_gpo_profile) do
-    create(
-      :user,
-      :with_pending_gpo_profile,
-      created_at: not_expired_timestamp,
-    )
-  end
-
-  let!(:user_with_one_expired_code_and_one_unexpired_code) do
-    create(
-      :user,
-      :with_pending_gpo_profile,
-      created_at: expired_timestamp,
-    ).tap do |user|
-      profile = user.gpo_verification_pending_profile
-      create(:gpo_confirmation_code, profile: profile, code_sent_at: not_expired_timestamp)
-    end
+  let!(:users) do
+    {
+      user_with_one_expired_gpo_profile: create(
+        :user,
+        :with_pending_gpo_profile,
+        created_at: expired_timestamp,
+      ),
+      user_with_one_unexpired_gpo_profile: create(
+        :user,
+        :with_pending_gpo_profile,
+        created_at: not_expired_timestamp,
+      ),
+      user_with_one_expired_code_and_one_unexpired_code: create(
+        :user,
+        :with_pending_gpo_profile,
+        created_at: expired_timestamp,
+      ).tap do |user|
+        profile = user.gpo_verification_pending_profile
+        create(:gpo_confirmation_code, profile: profile, code_sent_at: not_expired_timestamp)
+      end,
+    }
   end
 
   before do
@@ -56,11 +52,9 @@ RSpec.describe GpoExpirationJob do
       profiles = job.gpo_profiles_that_should_be_expired(as_of: Time.zone.now)
 
       expect(
-        profiles.map do |profile|
-          user_fixture_method_for(profile: profile)
-        end,
+        profiles.map(&:user),
       ).to contain_exactly(
-        :user_with_one_expired_gpo_profile,
+        users[:user_with_one_expired_gpo_profile],
       )
     end
 
@@ -76,7 +70,7 @@ RSpec.describe GpoExpirationJob do
 
   describe '#perform' do
     it 'expires the profile' do
-      profile = user_with_one_expired_gpo_profile.reload.gpo_verification_pending_profile
+      profile = users[:user_with_one_expired_gpo_profile].reload.gpo_verification_pending_profile
       freeze_time do
         expect { job.perform }.to change {
                                     profile.reload.gpo_verification_expired_at
@@ -85,7 +79,7 @@ RSpec.describe GpoExpirationJob do
     end
 
     it 'clears gpo_verification_pending_at' do
-      profile = user_with_one_expired_gpo_profile.reload.gpo_verification_pending_profile
+      profile = users[:user_with_one_expired_gpo_profile].reload.gpo_verification_pending_profile
       expect { job.perform }.to change { profile.reload.gpo_verification_pending_at }.to eql(nil)
     end
 
@@ -93,7 +87,7 @@ RSpec.describe GpoExpirationJob do
       job.perform
       expect(analytics).to have_logged_event(
         :idv_gpo_expired,
-        user_id: user_with_one_expired_gpo_profile.uuid,
+        user_id: users[:user_with_one_expired_gpo_profile].uuid,
         user_has_active_profile: false,
         letters_sent: 1,
       )
@@ -101,14 +95,14 @@ RSpec.describe GpoExpirationJob do
 
     context 'when the user has an active profile' do
       let!(:active_profile) do
-        create(:profile, :active, user: user_with_one_expired_gpo_profile)
+        create(:profile, :active, user: users[:user_with_one_expired_gpo_profile])
       end
       it 'includes that information in analytics event' do
         job.perform
 
         expect(analytics).to have_logged_event(
           :idv_gpo_expired,
-          user_id: user_with_one_expired_gpo_profile.uuid,
+          user_id: users[:user_with_one_expired_gpo_profile].uuid,
           user_has_active_profile: true,
           letters_sent: 1,
         )
@@ -119,7 +113,7 @@ RSpec.describe GpoExpirationJob do
       let!(:extra_code) do
         create(
           :gpo_confirmation_code,
-          profile: user_with_one_expired_gpo_profile.gpo_verification_pending_profile,
+          profile: users[:user_with_one_expired_gpo_profile].gpo_verification_pending_profile,
           code_sent_at: expired_timestamp,
         )
       end
@@ -129,7 +123,7 @@ RSpec.describe GpoExpirationJob do
 
         expect(analytics).to have_logged_event(
           :idv_gpo_expired,
-          user_id: user_with_one_expired_gpo_profile.uuid,
+          user_id: users[:user_with_one_expired_gpo_profile].uuid,
           user_has_active_profile: false,
           letters_sent: 2,
         )
@@ -156,13 +150,5 @@ RSpec.describe GpoExpirationJob do
           to eql(initial_count - limit)
       end
     end
-  end
-
-  def user_fixture_method_for(profile:)
-    self.methods.
-      map(&:to_s).
-      filter { |method| /^user_with_/.match(method) }.
-      map(&:to_sym).
-      find { |user_fixture_method| profile.user == send(user_fixture_method) }
   end
 end
