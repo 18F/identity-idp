@@ -15,7 +15,7 @@ RSpec.feature 'idv enter letter code step' do
   let(:gpo_confirmation_code) do
     create(
       :gpo_confirmation_code,
-      profile: profile,
+      profile:,
       otp_fingerprint: Pii::Fingerprinter.fingerprint(otp),
     )
   end
@@ -173,7 +173,7 @@ RSpec.feature 'idv enter letter code step' do
     gpo_confirmation_code
     another_gpo_confirmation_code = create(
       :gpo_confirmation_code,
-      profile: profile,
+      profile:,
       otp_fingerprint: Pii::Fingerprinter.fingerprint(otp),
     )
     sign_in_live_with_2fa(user)
@@ -210,7 +210,7 @@ RSpec.feature 'idv enter letter code step' do
 
   context 'user cancels idv from enter code page after getting rate limited', :js do
     it 'redirects to welcome page' do
-      RateLimiter.new(user: user, rate_limit_type: :proof_address).increment_to_limited!
+      RateLimiter.new(user:, rate_limit_type: :proof_address).increment_to_limited!
 
       sign_in_live_with_2fa(user)
 
@@ -232,7 +232,7 @@ RSpec.feature 'idv enter letter code step' do
       )
 
       gpo_confirmation_code.update(
-        code_sent_at: code_sent_at,
+        code_sent_at:,
         created_at: code_sent_at,
         updated_at: code_sent_at,
       )

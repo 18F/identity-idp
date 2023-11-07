@@ -61,13 +61,13 @@ module OidcAuthHelper
                   client_id: OIDC_IAL1_ISSUER,
                   tid: nil)
     ial1_params = {
-      client_id: client_id,
+      client_id:,
       response_type: 'code',
       acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
       scope: 'openid email',
       redirect_uri: 'http://localhost:7654/auth/result',
-      state: state,
-      nonce: nonce,
+      state:,
+      nonce:,
     }
     ial1_params[:tid] = tid if tid
     ial1_params[:prompt] = prompt if prompt
@@ -81,13 +81,13 @@ module OidcAuthHelper
                   acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
                   tid: nil)
     ial2_params = {
-      client_id: client_id,
+      client_id:,
       response_type: 'code',
-      acr_values: acr_values,
+      acr_values:,
       scope: 'openid email profile:name social_security_number',
       redirect_uri: 'http://localhost:7654/auth/result',
-      state: state,
-      nonce: nonce,
+      state:,
+      nonce:,
     }
     ial2_params[:tid] = tid if tid
     ial2_params[:prompt] = prompt if prompt

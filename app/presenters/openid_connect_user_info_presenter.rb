@@ -55,8 +55,8 @@ class OpenidConnectUserInfoPresenter
       family_name: stringify_attr(ial2_data.last_name),
       birthdate: dob,
       social_security_number: stringify_attr(ial2_data.ssn),
-      address: address,
-      phone: phone,
+      address:,
+      phone:,
       phone_verified: phone.present? ? true : nil,
     }
   end
@@ -85,10 +85,10 @@ class OpenidConnectUserInfoPresenter
 
     {
       formatted: formatted_address,
-      street_address: street_address,
+      street_address:,
       locality: stringify_attr(ial2_data.city),
       region: stringify_attr(ial2_data.state),
-      postal_code: postal_code,
+      postal_code:,
     }
   end
 

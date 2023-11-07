@@ -7,14 +7,14 @@ module Idv
 
       doc_auth_vendor = DocAuthRouter.doc_auth_vendor(
         discriminator: document_capture_session_uuid,
-        analytics: analytics,
+        analytics:,
       )
 
       component_attributes = {
         document_check: doc_auth_vendor,
         document_type: 'state_id',
       }
-      ProofingComponent.create_or_find_by(user: user).update(component_attributes)
+      ProofingComponent.create_or_find_by(user:).update(component_attributes)
     end
 
     def successful_response
@@ -24,7 +24,7 @@ module Idv
     # copied from Flow::Failure module
     def failure(message, extra = nil)
       flash[:error] = message
-      form_response_params = { success: false, errors: { message: message } }
+      form_response_params = { success: false, errors: { message: } }
       form_response_params[:extra] = extra unless extra.nil?
       FormResponse.new(**form_response_params)
     end

@@ -89,7 +89,7 @@ RSpec.feature 'sign up with backup code' do
   context 'when the user needs a backup code reminder' do
     let!(:user) { create(:user, :fully_registered, :with_authentication_app, :with_backup_code) }
     let!(:event) do
-      create(:event, user: user, event_type: :sign_in_after_2fa, created_at: 9.months.ago)
+      create(:event, user:, event_type: :sign_in_after_2fa, created_at: 9.months.ago)
     end
 
     it 'redirects the user to the backup code reminder url' do

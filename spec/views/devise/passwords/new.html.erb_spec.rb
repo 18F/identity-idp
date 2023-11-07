@@ -19,8 +19,8 @@ RSpec.describe 'devise/passwords/new.html.erb' do
       and_return('/users/password/new')
 
     @decorated_sp_session = ServiceProviderSessionCreator.new(
-      sp: sp,
-      view_context: view_context,
+      sp:,
+      view_context:,
       sp_session: {},
       service_provider_request: ServiceProviderRequestProxy.new,
     ).create_session

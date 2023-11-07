@@ -125,7 +125,7 @@ RSpec.feature 'Users pending ThreatMetrix review', :js do
   end
 
   def expect_pending_failure_reason(threatmetrix:)
-    complete_all_idv_steps_with(threatmetrix: threatmetrix)
+    complete_all_idv_steps_with(threatmetrix:)
     expect(page).to have_content(t('idv.failure.setup.heading'))
     expect(page).to have_current_path(idv_please_call_path)
   end

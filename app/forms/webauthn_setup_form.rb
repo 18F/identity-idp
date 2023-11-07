@@ -26,11 +26,11 @@ class WebauthnSetupForm
     success = valid? && valid_attestation_response?(protocol)
     if success
       create_webauthn_configuration
-      event = PushNotification::RecoveryInformationChangedEvent.new(user: user)
+      event = PushNotification::RecoveryInformationChangedEvent.new(user:)
       PushNotification::HttpPush.deliver(event)
     end
 
-    FormResponse.new(success: success, errors: errors, extra: extra_analytics_attributes)
+    FormResponse.new(success:, errors:, extra: extra_analytics_attributes)
   end
 
   # this gives us a hook to override the domain embedded in the attestation test object
@@ -117,10 +117,10 @@ class WebauthnSetupForm
     user.webauthn_configurations.create(
       credential_public_key: public_key,
       credential_id: id,
-      name: name,
-      platform_authenticator: platform_authenticator,
+      name:,
+      platform_authenticator:,
       transports: transports.presence,
-      authenticator_data_flags: authenticator_data_flags,
+      authenticator_data_flags:,
     )
   end
 
@@ -139,7 +139,7 @@ class WebauthnSetupForm
       enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
       multi_factor_auth_method: auth_method,
       pii_like_keypaths: [[:mfa_method_counts, :phone]],
-      authenticator_data_flags: authenticator_data_flags,
+      authenticator_data_flags:,
       unknown_transports: invalid_transports.presence,
     }.compact
   end

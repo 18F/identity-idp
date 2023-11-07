@@ -12,12 +12,12 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
 
   subject(:presenter) do
     TwoFactorLoginOptionsPresenter.new(
-      user: user,
-      view: view,
-      reauthentication_context: reauthentication_context,
-      service_provider: service_provider,
-      phishing_resistant_required: phishing_resistant_required,
-      piv_cac_required: piv_cac_required,
+      user:,
+      view:,
+      reauthentication_context:,
+      service_provider:,
+      phishing_resistant_required:,
+      piv_cac_required:,
     )
   end
 
@@ -248,7 +248,7 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
 
     context 'enabled options' do
       before do
-        create(:phone_configuration, user: user, phone: '(202) 555-1111')
+        create(:phone_configuration, user:, phone: '(202) 555-1111')
       end
 
       it 'returns first enabled index' do
@@ -258,7 +258,7 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
 
     context 'disabled options' do
       before do
-        create(:phone_configuration, user: user, phone: '(202) 555-1111')
+        create(:phone_configuration, user:, phone: '(202) 555-1111')
         allow_any_instance_of(OutageStatus).to receive(:vendor_outage?).and_return(false)
         allow_any_instance_of(OutageStatus).to receive(:vendor_outage?).with(:sms).and_return(true)
       end

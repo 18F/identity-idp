@@ -5,7 +5,7 @@ RSpec.describe Idv::DocumentCaptureController do
 
   let!(:document_capture_session) do
     DocumentCaptureSession.create!(
-      user: user,
+      user:,
       requested_at: document_capture_session_requested_at,
     )
   end
@@ -73,7 +73,7 @@ RSpec.describe Idv::DocumentCaptureController do
       expect(subject).to receive(:render).with(
         :show,
         locals: hash_including(
-          document_capture_session_uuid: document_capture_session_uuid,
+          document_capture_session_uuid:,
         ),
       ).and_call_original
 
@@ -139,7 +139,7 @@ RSpec.describe Idv::DocumentCaptureController do
       it 'redirects to rate limited page' do
         user = create(:user)
 
-        RateLimiter.new(rate_limit_type: :idv_doc_auth, user: user).increment_to_limited!
+        RateLimiter.new(rate_limit_type: :idv_doc_auth, user:).increment_to_limited!
         allow(subject).to receive(:current_user).and_return(user)
 
         get :show
@@ -188,7 +188,7 @@ RSpec.describe Idv::DocumentCaptureController do
     end
 
     context 'user has an establishing in-person enrollment' do
-      let!(:enrollment) { create(:in_person_enrollment, :establishing, user: user, profile: nil) }
+      let!(:enrollment) { create(:in_person_enrollment, :establishing, user:, profile: nil) }
 
       it 'cancels the establishing enrollment' do
         expect(user.establishing_in_person_enrollment).to eq enrollment

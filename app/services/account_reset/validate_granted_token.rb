@@ -13,7 +13,7 @@ module AccountReset
     def call
       @success = valid?
       track_irs_event if !success && sp
-      FormResponse.new(success: success, errors: errors, extra: extra_analytics_attributes)
+      FormResponse.new(success:, errors:, extra: extra_analytics_attributes)
     end
 
     private

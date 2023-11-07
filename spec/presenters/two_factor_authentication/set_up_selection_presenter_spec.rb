@@ -11,7 +11,7 @@ RSpec.describe TwoFactorAuthentication::SetUpSelectionPresenter do
 
   let(:user) { build(:user) }
 
-  subject(:presenter) { described_class.new(user: user) }
+  subject(:presenter) { described_class.new(user:) }
 
   describe '#render_in' do
     it 'renders captured block content' do
@@ -95,13 +95,13 @@ RSpec.describe TwoFactorAuthentication::SetUpSelectionPresenter do
 
   describe '#label' do
     it 'raises with missing translation' do
-      expect { placeholder_presenter_class.new(user: user).label }.to raise_error(RuntimeError)
+      expect { placeholder_presenter_class.new(user:).label }.to raise_error(RuntimeError)
     end
   end
 
   describe '#info' do
     it 'raises with missing translation' do
-      expect { placeholder_presenter_class.new(user: user).info }.to raise_error(RuntimeError)
+      expect { placeholder_presenter_class.new(user:).info }.to raise_error(RuntimeError)
     end
   end
 end

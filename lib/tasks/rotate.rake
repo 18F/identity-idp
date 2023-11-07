@@ -55,7 +55,7 @@ namespace :rotate do
     User.find_in_batches.with_index do |users, _batch|
       User.transaction do
         users.each do |user|
-          KeyRotator::HmacFingerprinter.new.rotate(user: user)
+          KeyRotator::HmacFingerprinter.new.rotate(user:)
           progress&.increment
         rescue StandardError => err # Don't use user.email in output...
           Kernel.puts "Error with user id:#{user.id} #{err.message} #{err.backtrace}"

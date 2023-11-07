@@ -20,9 +20,9 @@ RSpec.describe Idv::Agent do
 
     before do
       ServiceProvider.create(
-        issuer: issuer,
-        friendly_name: friendly_name,
-        app_id: app_id,
+        issuer:,
+        friendly_name:,
+        app_id:,
       )
     end
 
@@ -37,10 +37,10 @@ RSpec.describe Idv::Agent do
           agent.proof_resolution(
             document_capture_session,
             should_proof_state_id: true,
-            trace_id: trace_id,
+            trace_id:,
             user_id: user.id,
             threatmetrix_session_id: nil,
-            request_ip: request_ip,
+            request_ip:,
           )
 
           result = document_capture_session.load_proofing_result.result
@@ -53,10 +53,10 @@ RSpec.describe Idv::Agent do
           agent.proof_resolution(
             document_capture_session,
             should_proof_state_id: true,
-            trace_id: trace_id,
+            trace_id:,
             user_id: user.id,
             threatmetrix_session_id: nil,
-            request_ip: request_ip,
+            request_ip:,
           )
           result = document_capture_session.load_proofing_result.result
           expect(result[:context][:stages][:state_id]).to include(
@@ -78,10 +78,10 @@ RSpec.describe Idv::Agent do
           agent.proof_resolution(
             document_capture_session,
             should_proof_state_id: false,
-            trace_id: trace_id,
+            trace_id:,
             user_id: user.id,
             threatmetrix_session_id: nil,
-            request_ip: request_ip,
+            request_ip:,
           )
           result = document_capture_session.load_proofing_result.result
           expect(result[:errors][:ssn]).to eq ['Unverified SSN.']
@@ -93,10 +93,10 @@ RSpec.describe Idv::Agent do
           agent.proof_resolution(
             document_capture_session,
             should_proof_state_id: false,
-            trace_id: trace_id,
+            trace_id:,
             user_id: user.id,
             threatmetrix_session_id: nil,
-            request_ip: request_ip,
+            request_ip:,
           )
 
           result = document_capture_session.load_proofing_result.result
@@ -114,10 +114,10 @@ RSpec.describe Idv::Agent do
           agent.proof_resolution(
             document_capture_session,
             should_proof_state_id: false,
-            trace_id: trace_id,
+            trace_id:,
             user_id: user.id,
             threatmetrix_session_id: nil,
-            request_ip: request_ip,
+            request_ip:,
           )
           result = document_capture_session.load_proofing_result.result
 
@@ -138,10 +138,10 @@ RSpec.describe Idv::Agent do
         agent.proof_resolution(
           document_capture_session,
           should_proof_state_id: true,
-          trace_id: trace_id,
+          trace_id:,
           user_id: user.id,
           threatmetrix_session_id: nil,
-          request_ip: request_ip,
+          request_ip:,
         )
         result = document_capture_session.load_proofing_result.result
 
@@ -169,9 +169,9 @@ RSpec.describe Idv::Agent do
         )
         agent.proof_address(
           document_capture_session,
-          trace_id: trace_id,
-          user_id: user_id,
-          issuer: issuer,
+          trace_id:,
+          user_id:,
+          issuer:,
         )
         result = document_capture_session.load_proofing_result[:result]
         expect(result[:vendor_name]).to eq('AddressMock')
@@ -181,7 +181,7 @@ RSpec.describe Idv::Agent do
       it 'fails to proof addresses with invalid information' do
         agent = Idv::Agent.new(phone: bad_phone)
         agent.proof_address(
-          document_capture_session, trace_id: trace_id, user_id: user_id, issuer: issuer
+          document_capture_session, trace_id:, user_id:, issuer:
         )
         result = document_capture_session.load_proofing_result[:result]
         expect(result[:vendor_name]).to eq('AddressMock')

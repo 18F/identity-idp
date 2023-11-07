@@ -141,7 +141,7 @@ RSpec.describe Idv::LinkSentController do
         allow(load_result).to receive(:success?).and_return(load_result_success)
 
         document_capture_session = DocumentCaptureSession.create!(
-          user: user,
+          user:,
           cancelled_at: session_canceled_at,
         )
         allow(document_capture_session).to receive(:load_result).and_return(load_result)

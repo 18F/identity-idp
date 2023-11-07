@@ -53,8 +53,8 @@ class AnalyticsEventsDocumenter
 
     documenter = new(
       database_path: argv.first,
-      class_name: class_name,
-      require_extra_params: require_extra_params,
+      class_name:,
+      require_extra_params:,
     )
 
     if help || (!check && !json)
@@ -143,7 +143,7 @@ class AnalyticsEventsDocumenter
         event_name: extract_event_name(method_object),
         previous_event_names: method_object.tags(PREVIOUS_EVENT_NAME_TAG).map(&:text),
         description: method_object.docstring.presence,
-        attributes: attributes,
+        attributes:,
         method_name: method_object.name,
         source_line: method_object.line,
         source_file: method_object.file,

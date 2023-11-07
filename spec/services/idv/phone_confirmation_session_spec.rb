@@ -53,7 +53,7 @@ RSpec.describe Idv::PhoneConfirmationSession do
     end
     subject do
       described_class.new(
-        code: code,
+        code:,
         phone: '+1 (202) 123-4567',
         sent_at: Time.zone.now,
         delivery_method: :sms,

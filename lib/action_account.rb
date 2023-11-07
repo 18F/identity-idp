@@ -16,7 +16,7 @@ class ActionAccount
       stdout:,
       stderr:,
       subtask_class: subtask(argv.shift),
-      banner: banner,
+      banner:,
     )
   end
 
@@ -151,7 +151,7 @@ class ActionAccount
 
     def analytics(user)
       Analytics.new(
-        user: user, request: nil, session: {}, sp: nil,
+        user:, request: nil, session: {}, sp: nil,
       )
     end
   end
@@ -201,12 +201,12 @@ class ActionAccount
         end
 
         Analytics.new(
-          user: user, request: nil, session: {}, sp: nil,
+          user:, request: nil, session: {}, sp: nil,
         ).fraud_review_rejected(
           success:,
           errors: analytics_error_hash,
           exception: nil,
-          profile_fraud_review_pending_at: profile_fraud_review_pending_at,
+          profile_fraud_review_pending_at:,
         )
       end
 
@@ -243,8 +243,8 @@ class ActionAccount
 
     def alert_verified(user:, date_time:)
       UserAlerts::AlertUserAboutAccountVerified.call(
-        user: user,
-        date_time: date_time,
+        user:,
+        date_time:,
         sp_name: nil,
       )
     end
@@ -275,7 +275,7 @@ class ActionAccount
             event, _disavowal_token = UserEventCreator.new(current_user: user).
               create_out_of_band_user_event(:account_verified)
 
-            alert_verified(user: user, date_time: event.created_at)
+            alert_verified(user:, date_time: event.created_at)
 
             log_texts << log_text[:profile_activated]
           else
@@ -299,12 +299,12 @@ class ActionAccount
         end
 
         Analytics.new(
-          user: user, request: nil, session: {}, sp: nil,
+          user:, request: nil, session: {}, sp: nil,
         ).fraud_review_passed(
           success:,
           errors: analytics_error_hash,
           exception: nil,
-          profile_fraud_review_pending_at: profile_fraud_review_pending_at,
+          profile_fraud_review_pending_at:,
         )
       end
 

@@ -15,9 +15,9 @@ RSpec.describe 'Remembering a webauthn device' do
       before do
         create(
           :webauthn_configuration,
-          user: user,
-          credential_id: credential_id,
-          credential_public_key: credential_public_key,
+          user:,
+          credential_id:,
+          credential_public_key:,
         )
       end
 
@@ -78,9 +78,9 @@ RSpec.describe 'Remembering a webauthn device' do
         create(
           :webauthn_configuration,
           :platform_authenticator,
-          user: user,
-          credential_id: credential_id,
-          credential_public_key: credential_public_key,
+          user:,
+          credential_id:,
+          credential_public_key:,
         )
       end
 

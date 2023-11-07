@@ -16,7 +16,7 @@ RSpec.describe Reports::IrsWeeklySummaryReport do
 
       report = "Data Requested,Total Count\nSystem Demand,10\n"
       expect(ReportMailer).to receive(:system_demand_report).with(
-        email: email, data: report, name: report_name,
+        email:, data: report, name: report_name,
       )
 
       subject.perform(Time.zone.now)

@@ -9,9 +9,9 @@ RSpec.describe 'shared/_troubleshooting_options.html.erb' do
   before do
     render(
       'shared/troubleshooting_options',
-      heading: heading,
-      heading_tag: heading_tag,
-      options: options,
+      heading:,
+      heading_tag:,
+      options:,
       class: classes,
     )
   end

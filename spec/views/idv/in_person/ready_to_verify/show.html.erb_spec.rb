@@ -4,7 +4,7 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
   include Devise::Test::ControllerHelpers
 
   let(:user) { build(:user) }
-  let(:profile) { build(:profile, user: user) }
+  let(:profile) { build(:profile, user:) }
   let(:current_address_matches_id) { true }
   let(:selected_location_details) do
     JSON.parse(UspsInPersonProofing::Mock::Fixtures.enrollment_selected_location_details)
@@ -15,14 +15,14 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
   let(:enrollment) do
     build(
       :in_person_enrollment, :pending,
-      current_address_matches_id: current_address_matches_id,
-      profile: profile,
-      selected_location_details: selected_location_details,
-      service_provider: service_provider,
-      user: user
+      current_address_matches_id:,
+      profile:,
+      selected_location_details:,
+      service_provider:,
+      user:
     )
   end
-  let(:presenter) { Idv::InPerson::ReadyToVerifyPresenter.new(enrollment: enrollment) }
+  let(:presenter) { Idv::InPerson::ReadyToVerifyPresenter.new(enrollment:) }
   let(:step_indicator_steps) { Idv::Flows::InPersonFlow::STEP_INDICATOR_STEPS }
   let(:sp_event_name) { 'IdV: user clicked sp link on ready to verify page' }
   let(:help_event_name) { 'IdV: user clicked what to bring link on ready to verify page' }

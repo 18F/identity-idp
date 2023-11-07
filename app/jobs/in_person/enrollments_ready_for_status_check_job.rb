@@ -50,7 +50,7 @@ module InPerson
             InPerson::EnrollmentsReadyForStatusCheck::BatchProcessor.name,
             analytics,
           ),
-          sqs_batch_wrapper: sqs_batch_wrapper,
+          sqs_batch_wrapper:,
           enrollment_pipeline: InPerson::EnrollmentsReadyForStatusCheck::EnrollmentPipeline.new(
             error_reporter: InPerson::EnrollmentsReadyForStatusCheck::ErrorReporter.new(
               InPerson::EnrollmentsReadyForStatusCheck::EnrollmentPipeline.name,

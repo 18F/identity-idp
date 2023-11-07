@@ -21,7 +21,7 @@ RSpec.describe EventDisavowalController do
           build_analytics_hash,
         )
 
-        get :new, params: { disavowal_token: disavowal_token }
+        get :new, params: { disavowal_token: }
       end
 
       it 'assigns forbidden passwords' do
@@ -30,7 +30,7 @@ RSpec.describe EventDisavowalController do
           build_analytics_hash,
         )
 
-        get :new, params: { disavowal_token: disavowal_token }
+        get :new, params: { disavowal_token: }
 
         expect(assigns(:forbidden_passwords)).to all(be_a(String))
       end
@@ -48,7 +48,7 @@ RSpec.describe EventDisavowalController do
           ),
         )
 
-        get :new, params: { disavowal_token: disavowal_token }
+        get :new, params: { disavowal_token: }
       end
 
       it 'does not assign forbidden passwords' do
@@ -62,7 +62,7 @@ RSpec.describe EventDisavowalController do
           ),
         )
 
-        get :new, params: { disavowal_token: disavowal_token }
+        get :new, params: { disavowal_token: }
 
         expect(assigns(:forbidden_passwords)).to be_nil
       end
@@ -78,7 +78,7 @@ RSpec.describe EventDisavowalController do
         )
 
         post :create, params: {
-          disavowal_token: disavowal_token,
+          disavowal_token:,
           event_disavowal_password_reset_from_disavowal_form: { password: 'salty pickles' },
         }
       end
@@ -101,11 +101,11 @@ RSpec.describe EventDisavowalController do
         )
 
         params = {
-          disavowal_token: disavowal_token,
+          disavowal_token:,
           event_disavowal_password_reset_from_disavowal_form: { password: 'too short' },
         }
 
-        post :create, params: params
+        post :create, params:
       end
 
       it 'assigns forbidden passwords' do
@@ -118,11 +118,11 @@ RSpec.describe EventDisavowalController do
         )
 
         params = {
-          disavowal_token: disavowal_token,
+          disavowal_token:,
           event_disavowal_password_reset_from_disavowal_form: { password: 'too short' },
         }
 
-        post :create, params: params
+        post(:create, params:)
 
         expect(assigns(:forbidden_passwords)).to all(be_a(String))
       end
@@ -141,11 +141,11 @@ RSpec.describe EventDisavowalController do
         )
 
         params = {
-          disavowal_token: disavowal_token,
+          disavowal_token:,
           event_disavowal_password_reset_from_disavowal_form: { password: 'salty pickles' },
         }
 
-        post :create, params: params
+        post :create, params:
       end
     end
 
@@ -166,7 +166,7 @@ RSpec.describe EventDisavowalController do
         )
 
         post :create, params: {
-          disavowal_token: disavowal_token,
+          disavowal_token:,
           event_disavowal_password_reset_from_disavowal_form: { password: 'salty pickles' },
         }
       end
@@ -177,8 +177,8 @@ RSpec.describe EventDisavowalController do
     hash_including(
       :event_created_at,
       :disavowed_device_last_used_at,
-      success: success,
-      errors: errors,
+      success:,
+      errors:,
       event_id: event.id,
       event_type: event.event_type,
       event_ip: event.ip,

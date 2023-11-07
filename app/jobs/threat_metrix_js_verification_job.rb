@@ -35,12 +35,12 @@ class ThreatMetrixJsVerificationJob < ApplicationJob
     logger.info(
       {
         name: 'ThreatMetrixJsVerification',
-        org_id: org_id,
-        session_id: session_id,
+        org_id:,
+        session_id:,
         http_status: resp&.status,
         signature: (signature || '').each_byte.map { |b| b.to_s(16).rjust(2, '0') }.join,
-        js: js,
-        valid: valid,
+        js:,
+        valid:,
         error_class: error&.class,
         error_message: error&.message,
       }.compact.to_json,

@@ -11,7 +11,7 @@ class SuspendedEmail < ApplicationRecord
     def create_from_email_address!(email_address)
       create!(
         digested_base_email: generate_email_digest(email_address.email),
-        email_address: email_address,
+        email_address:,
       )
     end
 

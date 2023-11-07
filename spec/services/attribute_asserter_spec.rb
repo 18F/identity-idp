@@ -114,12 +114,12 @@ RSpec.describe AttributeAsserter do
     context 'verified user and IAL2 request' do
       let(:subject) do
         described_class.new(
-          user: user,
-          name_id_format: name_id_format,
-          service_provider: service_provider,
+          user:,
+          name_id_format:,
+          service_provider:,
           authn_request: ial2_authn_request,
-          decrypted_pii: decrypted_pii,
-          user_session: user_session,
+          decrypted_pii:,
+          user_session:,
         )
       end
 
@@ -298,12 +298,12 @@ RSpec.describe AttributeAsserter do
     context 'verified user and IAL1 request' do
       let(:subject) do
         described_class.new(
-          user: user,
-          name_id_format: name_id_format,
-          service_provider: service_provider,
+          user:,
+          name_id_format:,
+          service_provider:,
           authn_request: sp1_authn_request,
-          decrypted_pii: decrypted_pii,
-          user_session: user_session,
+          decrypted_pii:,
+          user_session:,
         )
       end
 
@@ -461,12 +461,12 @@ RSpec.describe AttributeAsserter do
         let(:service_provider_aal) { 3 }
         let(:subject) do
           described_class.new(
-            user: user,
-            name_id_format: name_id_format,
-            service_provider: service_provider,
+            user:,
+            name_id_format:,
+            service_provider:,
             authn_request: aal3_sp1_authn_request,
-            decrypted_pii: decrypted_pii,
-            user_session: user_session,
+            decrypted_pii:,
+            user_session:,
           )
         end
 
@@ -490,12 +490,12 @@ RSpec.describe AttributeAsserter do
       context 'service provider requests AAL3' do
         let(:subject) do
           described_class.new(
-            user: user,
-            name_id_format: name_id_format,
-            service_provider: service_provider,
+            user:,
+            name_id_format:,
+            service_provider:,
             authn_request: ial1_aal3_authn_request,
-            decrypted_pii: decrypted_pii,
-            user_session: user_session,
+            decrypted_pii:,
+            user_session:,
           )
         end
 
@@ -522,12 +522,12 @@ RSpec.describe AttributeAsserter do
         let(:service_provider_ial) { 2 }
         let(:subject) do
           described_class.new(
-            user: user,
-            name_id_format: name_id_format,
-            service_provider: service_provider,
+            user:,
+            name_id_format:,
+            service_provider:,
             authn_request: ialmax_authn_request,
-            decrypted_pii: decrypted_pii,
-            user_session: user_session,
+            decrypted_pii:,
+            user_session:,
           )
         end
 
@@ -550,12 +550,12 @@ RSpec.describe AttributeAsserter do
         let(:service_provider_ial) { 2 }
         let(:subject) do
           described_class.new(
-            user: user,
-            name_id_format: name_id_format,
-            service_provider: service_provider,
+            user:,
+            name_id_format:,
+            service_provider:,
             authn_request: ialmax_authn_request,
-            decrypted_pii: decrypted_pii,
-            user_session: user_session,
+            decrypted_pii:,
+            user_session:,
           )
         end
 
@@ -593,7 +593,7 @@ RSpec.describe AttributeAsserter do
 
       context 'custom bundle includes all_emails' do
         before do
-          create(:email_address, user: user)
+          create(:email_address, user:)
           allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).and_return(
             %w[all_emails],
           )
@@ -626,11 +626,11 @@ RSpec.describe AttributeAsserter do
       let(:subject) do
         described_class.new(
           user: ial1_user,
-          name_id_format: name_id_format,
-          service_provider: service_provider,
+          name_id_format:,
+          service_provider:,
           authn_request: ial2_authn_request,
-          decrypted_pii: decrypted_pii,
-          user_session: user_session,
+          decrypted_pii:,
+          user_session:,
         )
       end
 
@@ -641,11 +641,11 @@ RSpec.describe AttributeAsserter do
       let(:subject) do
         described_class.new(
           user: ial1_user,
-          name_id_format: name_id_format,
-          service_provider: service_provider,
+          name_id_format:,
+          service_provider:,
           authn_request: ial1_authn_request,
-          decrypted_pii: decrypted_pii,
-          user_session: user_session,
+          decrypted_pii:,
+          user_session:,
         )
       end
 

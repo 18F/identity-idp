@@ -19,7 +19,7 @@ RSpec.describe Proofing::LexisNexis::InstantVerify::Proofer do
 
   let(:verification_request) do
     Proofing::LexisNexis::InstantVerify::VerificationRequest.new(
-      applicant: applicant,
+      applicant:,
       config: LexisNexisFixtures.example_config,
     )
   end

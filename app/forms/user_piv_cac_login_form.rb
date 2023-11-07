@@ -17,8 +17,8 @@ class UserPivCacLoginForm
     success = valid? && valid_submission?
 
     errors = error_type ? { type: error_type } : {}
-    response_hash = { success: success, errors: errors }
-    response_hash[:extra] = { key_id: key_id }
+    response_hash = { success:, errors: }
+    response_hash[:extra] = { key_id: }
     FormResponse.new(**response_hash)
   end
 

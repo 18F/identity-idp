@@ -9,13 +9,13 @@ class ServiceProviderSessionCreator
   def create_session
     if sp
       ServiceProviderSession.new(
-        sp: sp,
-        view_context: view_context,
-        sp_session: sp_session,
-        service_provider_request: service_provider_request,
+        sp:,
+        view_context:,
+        sp_session:,
+        service_provider_request:,
       )
     else
-      NullServiceProviderSession.new(view_context: view_context)
+      NullServiceProviderSession.new(view_context:)
     end
   end
 

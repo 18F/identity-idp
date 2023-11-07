@@ -76,8 +76,8 @@ module Encryption
       KMS_CLIENT_POOL.with do |client|
         client.encrypt(
           key_id: kms_key_id,
-          plaintext: plaintext,
-          encryption_context: encryption_context,
+          plaintext:,
+          encryption_context:,
         ).ciphertext_blob
       end
     end
@@ -99,7 +99,7 @@ module Encryption
       KMS_CLIENT_POOL.with do |client|
         client.decrypt(
           ciphertext_blob: ciphertext,
-          encryption_context: encryption_context,
+          encryption_context:,
         ).plaintext
       end
     rescue Aws::KMS::Errors::InvalidCiphertextException

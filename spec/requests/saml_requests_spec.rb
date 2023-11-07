@@ -7,7 +7,7 @@ RSpec.describe 'SAML requests', type: :request do
     let(:path_year) { SamlAuthHelper::PATH_YEAR }
 
     it 'is successful' do
-      get api_saml_auth_url(path_year: path_year),
+      get api_saml_auth_url(path_year:),
           params: UriService.params(saml_authn_request_url)
 
       expect(response).to be_redirect
@@ -17,7 +17,7 @@ RSpec.describe 'SAML requests', type: :request do
       let(:path_year) { (SamlEndpoint.suffixes.max.to_i + 1).to_s }
 
       it '404s' do
-        get api_saml_auth_url(path_year: path_year)
+        get api_saml_auth_url(path_year:)
 
         expect(response).to be_not_found
       end
@@ -32,7 +32,7 @@ RSpec.describe 'SAML requests', type: :request do
 
       overridden_saml_settings = saml_settings(
         overrides: {
-          idp_sso_target_url: api_saml_auth_url(path_year: path_year),
+          idp_sso_target_url: api_saml_auth_url(path_year:),
         },
       )
       path_year = overridden_saml_settings.idp_sso_target_url[-4..-1]
@@ -56,7 +56,7 @@ RSpec.describe 'SAML requests', type: :request do
       let(:path_year) { (SamlEndpoint.suffixes.max.to_i + 1).to_s }
 
       it '404s' do
-        post api_saml_auth_url(path_year: path_year)
+        post api_saml_auth_url(path_year:)
 
         expect(response).to be_not_found
       end
@@ -66,7 +66,7 @@ RSpec.describe 'SAML requests', type: :request do
   describe '/api/saml/remotelogout' do
     let(:path_year) { SamlAuthHelper::PATH_YEAR }
     let(:remote_slo_url) do
-      api_saml_remotelogout_url(path_year: path_year)
+      api_saml_remotelogout_url(path_year:)
     end
 
     xit 'does not accept GET requests' do
@@ -89,7 +89,7 @@ RSpec.describe 'SAML requests', type: :request do
       let(:path_year) { (SamlEndpoint.suffixes.max.to_i + 1).to_s }
 
       it '404s' do
-        post api_saml_remotelogout_url(path_year: path_year)
+        post api_saml_remotelogout_url(path_year:)
 
         expect(response).to be_not_found
       end

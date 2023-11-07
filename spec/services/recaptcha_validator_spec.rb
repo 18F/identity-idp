@@ -100,7 +100,7 @@ RSpec.describe RecaptchaValidator do
             errors: [],
           },
           evaluated_as_valid: false,
-          score_threshold: score_threshold,
+          score_threshold:,
           recaptcha_version: 3,
           validator_class: 'RecaptchaValidator',
         )
@@ -129,7 +129,7 @@ RSpec.describe RecaptchaValidator do
                 reasons: [],
               },
               evaluated_as_valid: true,
-              score_threshold: score_threshold,
+              score_threshold:,
               recaptcha_version: 3,
               validator_class: 'RecaptchaValidator',
             )
@@ -158,7 +158,7 @@ RSpec.describe RecaptchaValidator do
                 reasons: [],
               },
               evaluated_as_valid: true,
-              score_threshold: score_threshold,
+              score_threshold:,
               recaptcha_version: 3,
               validator_class: 'RecaptchaValidator',
             )
@@ -182,7 +182,7 @@ RSpec.describe RecaptchaValidator do
         expect(analytics).to have_logged_event(
           'reCAPTCHA verify result received',
           evaluated_as_valid: true,
-          score_threshold: score_threshold,
+          score_threshold:,
           recaptcha_version: 3,
           validator_class: 'RecaptchaValidator',
           exception_class: 'Faraday::ConnectionFailed',
@@ -212,7 +212,7 @@ RSpec.describe RecaptchaValidator do
             reasons: [],
           },
           evaluated_as_valid: false,
-          score_threshold: score_threshold,
+          score_threshold:,
           recaptcha_version: 3,
           validator_class: 'RecaptchaValidator',
         )
@@ -241,7 +241,7 @@ RSpec.describe RecaptchaValidator do
             reasons: [],
           },
           evaluated_as_valid: true,
-          score_threshold: score_threshold,
+          score_threshold:,
           recaptcha_version: 3,
           validator_class: 'RecaptchaValidator',
         )
@@ -262,7 +262,7 @@ RSpec.describe RecaptchaValidator do
               reasons: [],
             },
             evaluated_as_valid: true,
-            score_threshold: score_threshold,
+            score_threshold:,
             recaptcha_version: 3,
             validator_class: 'RecaptchaValidator',
             extra: true,
@@ -305,7 +305,7 @@ RSpec.describe RecaptchaValidator do
               reasons: [],
             },
             evaluated_as_valid: true,
-            score_threshold: score_threshold,
+            score_threshold:,
             recaptcha_version: 2,
             validator_class: 'RecaptchaValidator',
           )

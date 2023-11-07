@@ -390,7 +390,7 @@ RSpec.feature 'Two Factor Authentication' do
         login_two_factor_piv_cac_path,
         uuid: user.piv_cac_configurations.first.x509_dn_uuid,
         dn: 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
-        nonce: nonce,
+        nonce:,
       )
       expect(current_path).to eq account_path
     end
@@ -407,7 +407,7 @@ RSpec.feature 'Two Factor Authentication' do
         login_two_factor_piv_cac_path,
         uuid: user.piv_cac_configurations.first.x509_dn_uuid + 'X',
         dn: 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.12345',
-        nonce: nonce,
+        nonce:,
       )
       expect(current_path).to eq login_two_factor_piv_cac_path
       expect(page).to have_content(t('two_factor_authentication.invalid_piv_cac'))
@@ -422,7 +422,7 @@ RSpec.feature 'Two Factor Authentication' do
         )
       end
       let(:otp_rate_limiter) do
-        OtpRateLimiter.new(user: user, phone_confirmed: true, phone: '+12255551000')
+        OtpRateLimiter.new(user:, phone_confirmed: true, phone: '+12255551000')
       end
 
       it 'does not change their OTP delivery preference' do
@@ -548,10 +548,10 @@ RSpec.feature 'Two Factor Authentication' do
     let!(:webauthn_configuration) do
       create(
         :webauthn_configuration,
-        credential_id: credential_id,
-        credential_public_key: credential_public_key,
+        credential_id:,
+        credential_public_key:,
         platform_authenticator: true,
-        user: user,
+        user:,
       )
     end
     let(:user) do

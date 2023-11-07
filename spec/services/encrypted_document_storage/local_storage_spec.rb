@@ -7,8 +7,8 @@ RSpec.describe EncryptedDocumentStorage::LocalStorage do
       name = SecureRandom.uuid
 
       EncryptedDocumentStorage::LocalStorage.new.write_image(
-        encrypted_image: encrypted_image,
-        name: name,
+        encrypted_image:,
+        name:,
       )
 
       result = File.read(

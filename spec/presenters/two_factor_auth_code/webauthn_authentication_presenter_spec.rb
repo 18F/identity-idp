@@ -10,8 +10,8 @@ RSpec.describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
     TwoFactorAuthCode::WebauthnAuthenticationPresenter.new(
       data: { reauthn:, credentials: },
       service_provider: nil,
-      view: view,
-      platform_authenticator: platform_authenticator,
+      view:,
+      platform_authenticator:,
     )
   end
 
@@ -109,7 +109,7 @@ RSpec.describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
       let(:reauthn) { true }
 
       it 'returns the account path' do
-        expect(presenter.cancel_link).to eq account_path(locale: locale)
+        expect(presenter.cancel_link).to eq account_path(locale:)
       end
     end
 
@@ -117,7 +117,7 @@ RSpec.describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
       let(:reauthn) { false }
 
       it 'returns the sign out path' do
-        expect(presenter.cancel_link).to eq sign_out_path(locale: locale)
+        expect(presenter.cancel_link).to eq sign_out_path(locale:)
       end
     end
   end

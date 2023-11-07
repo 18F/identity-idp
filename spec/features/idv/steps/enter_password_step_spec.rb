@@ -18,7 +18,7 @@ RSpec.feature 'idv enter password step', :js do
 
     context 'user is rate-limited' do
       before do
-        RateLimiter.new(user: user, rate_limit_type: :proof_address).increment_to_limited!
+        RateLimiter.new(user:, rate_limit_type: :proof_address).increment_to_limited!
       end
 
       it 'sends a letter, creates an unverified profile, and sends an email' do

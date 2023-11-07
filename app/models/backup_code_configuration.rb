@@ -36,15 +36,15 @@ class BackupCodeConfiguration < ApplicationRecord
 
       user_salt_costs = select(:code_salt, :code_cost).
         distinct.
-        where(user_id: user_id).
+        where(user_id:).
         where.not(code_salt: nil).where.not(code_cost: nil).
         pluck(:code_salt, :code_cost)
 
       salted_fingerprints = user_salt_costs.map do |salt, cost|
-        scrypt_password_digest(password: code, salt: salt, cost: cost)
+        scrypt_password_digest(password: code, salt:, cost:)
       end
 
-      where(salted_code_fingerprint: salted_fingerprints).find_by(user_id: user_id)
+      where(salted_code_fingerprint: salted_fingerprints).find_by(user_id:)
     end
 
     def scrypt_password_digest(password:, salt:, cost:)

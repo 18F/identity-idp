@@ -48,7 +48,7 @@ RSpec.describe EncryptedRedisStructStorage do
 
     context 'with a keyword init struct' do
       it 'loads the value out of redis' do
-        EncryptedRedisStructStorage.store(struct_class.new(id: id, a: 'a', b: 'b', c: 'c'))
+        EncryptedRedisStructStorage.store(struct_class.new(id:, a: 'a', b: 'b', c: 'c'))
 
         loaded_result = load_struct
 
@@ -116,7 +116,7 @@ RSpec.describe EncryptedRedisStructStorage do
 
       it 'writes encrypted data to redis' do
         EncryptedRedisStructStorage.store(
-          struct_class.new(id: id, a: 'value for a', b: 'value for b', c: 'value for c'),
+          struct_class.new(id:, a: 'value for a', b: 'value for b', c: 'value for c'),
         )
 
         data = REDIS_POOL.with do |client|
@@ -131,7 +131,7 @@ RSpec.describe EncryptedRedisStructStorage do
 
       it 'stores the value with a ttl (expiration)' do
         EncryptedRedisStructStorage.store(
-          struct_class.new(id: id, a: 'value for a', b: 'value for b', c: 'value for c'),
+          struct_class.new(id:, a: 'value for a', b: 'value for b', c: 'value for c'),
         )
 
         ttl = REDIS_POOL.with do |redis|
@@ -148,7 +148,7 @@ RSpec.describe EncryptedRedisStructStorage do
 
         it 'converts the data and stores it' do
           EncryptedRedisStructStorage.store(
-            struct_class.new(id: id, a: { some: { nested: [data] } }),
+            struct_class.new(id:, a: { some: { nested: [data] } }),
           )
 
           loaded = EncryptedRedisStructStorage.load(id, type: struct_class)
@@ -164,7 +164,7 @@ RSpec.describe EncryptedRedisStructStorage do
       struct = struct_class.new
 
       EncryptedRedisStructStorage.init_fields(
-        struct: struct,
+        struct:,
         data: {
           a: 'a',
           unknown_key: 'unknown_key',

@@ -23,7 +23,7 @@ RSpec.describe KeyRotator::HmacFingerprinter do
 
       rotate_hmac_key
 
-      rotator.rotate(user: user, pii_attributes: pii_attributes)
+      rotator.rotate(user:, pii_attributes:)
 
       expect(user.active_profile.ssn_signature).to_not eq old_ssn_signature
       expect(user.active_profile.name_zip_birth_year_signature).to_not eq old_compound_signature
@@ -39,7 +39,7 @@ RSpec.describe KeyRotator::HmacFingerprinter do
 
       rotate_hmac_key
       rotator = described_class.new
-      rotator.rotate(user: user, pii_attributes: pii_attributes)
+      rotator.rotate(user:, pii_attributes:)
 
       expect(user.updated_at).to eq old_updated_timestamp
     end
@@ -51,7 +51,7 @@ RSpec.describe KeyRotator::HmacFingerprinter do
 
       rotate_hmac_key
 
-      rotator.rotate(user: user)
+      rotator.rotate(user:)
 
       expect(user.email_addresses.first.email_fingerprint).to_not eq old_email_fingerprint
     end

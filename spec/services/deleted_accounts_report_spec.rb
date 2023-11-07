@@ -14,8 +14,8 @@ RSpec.describe DeletedAccountsReport do
       user = create(:user)
       create(
         :service_provider_identity,
-        service_provider: service_provider,
-        user: user,
+        service_provider:,
+        user:,
         last_authenticated_at: Time.zone.now,
       )
       rows = DeletedAccountsReport.call(service_provider, days_ago)
@@ -29,8 +29,8 @@ RSpec.describe DeletedAccountsReport do
       user = create(:user)
       create(
         :service_provider_identity,
-        service_provider: service_provider,
-        user: user,
+        service_provider:,
+        user:,
         last_authenticated_at: Time.zone.now,
       )
       user.destroy!
@@ -45,8 +45,8 @@ RSpec.describe DeletedAccountsReport do
       user = create(:user)
       create(
         :service_provider_identity,
-        service_provider: service_provider,
-        user: user,
+        service_provider:,
+        user:,
         last_authenticated_at: days_ago + 1,
       )
       user.destroy!
@@ -62,7 +62,7 @@ RSpec.describe DeletedAccountsReport do
       create(
         :service_provider_identity,
         service_provider: 'foo',
-        user: user,
+        user:,
         last_authenticated_at: Time.zone.now,
       )
       user.destroy!

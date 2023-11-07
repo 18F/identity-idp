@@ -151,7 +151,7 @@ RSpec.describe ThreatMetrixJsVerificationJob, type: :job do
             expect(JSON.parse(message, symbolize_names: true)).to include(
               name: 'ThreatMetrixJsVerification',
               valid: false,
-              js: js,
+              js:,
             )
           end
 
@@ -182,7 +182,7 @@ RSpec.describe ThreatMetrixJsVerificationJob, type: :job do
             expect(JSON.parse(message, symbolize_names: true)).to include(
               name: 'ThreatMetrixJsVerification',
               valid: false,
-              js: js,
+              js:,
             )
           end
 
@@ -196,7 +196,7 @@ RSpec.describe ThreatMetrixJsVerificationJob, type: :job do
             expect(JSON.parse(message, symbolize_names: true)).to include(
               name: 'ThreatMetrixJsVerification',
               session_id: threatmetrix_session_id,
-              signature: signature,
+              signature:,
               valid: true,
               http_status: 200,
             )

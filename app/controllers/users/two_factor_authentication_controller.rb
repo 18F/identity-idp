@@ -154,7 +154,7 @@ module Users
       analytics.otp_phone_validation_failed(
         error: telephony_error.class.to_s,
         message: telephony_error.message,
-        context: context,
+        context:,
         country: parsed_phone.country,
       )
     end
@@ -175,30 +175,30 @@ module Users
       if exceeded_otp_send_limit?
         return handle_too_many_otp_sends(
           phone: parsed_phone.e164,
-          context: context,
+          context:,
         )
       end
       otp_rate_limiter.increment
       if exceeded_otp_send_limit?
         return handle_too_many_otp_sends(
           phone: parsed_phone.e164,
-          context: context,
+          context:,
         )
       end
       return handle_too_many_confirmation_sends if exceeded_phone_confirmation_limit?
 
       @telephony_result = send_user_otp(method)
       handle_telephony_result(
-        method: method,
-        default: default,
-        otp_delivery_selection_result: otp_delivery_selection_result,
+        method:,
+        default:,
+        otp_delivery_selection_result:,
       )
     end
 
     def handle_telephony_result(method:, default:, otp_delivery_selection_result:)
       track_events(
         otp_delivery_preference: method,
-        otp_delivery_selection_result: otp_delivery_selection_result,
+        otp_delivery_selection_result:,
       )
       if @telephony_result.success?
         redirect_to login_two_factor_url(
@@ -218,8 +218,8 @@ module Users
         area_code: parsed_phone.area_code,
         country_code: parsed_phone.country,
         phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
-        context: context,
-        otp_delivery_preference: otp_delivery_preference,
+        context:,
+        otp_delivery_preference:,
         resend: otp_delivery_selection_result.extra[:resend],
         adapter: Telephony.config.adapter,
         telephony_response: @telephony_result.to_h,

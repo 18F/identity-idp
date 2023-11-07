@@ -37,7 +37,7 @@ RSpec.describe TwoFactorOptionsPresenter do
     context 'when a phishing-resistant only SP is being used' do
       let(:presenter) do
         described_class.new(
-          user_agent: user_agent, user: user_with_2fa,
+          user_agent:, user: user_with_2fa,
           phishing_resistant_required: true
         )
       end
@@ -127,8 +127,8 @@ RSpec.describe TwoFactorOptionsPresenter do
       let(:show_skip_additional_mfa_link) { false }
       let(:presenter) do
         described_class.new(
-          user_agent: user_agent,
-          show_skip_additional_mfa_link: show_skip_additional_mfa_link,
+          user_agent:,
+          show_skip_additional_mfa_link:,
         )
       end
 
@@ -142,7 +142,7 @@ RSpec.describe TwoFactorOptionsPresenter do
     context 'phishing resistant required to add additonal mfa' do
       let(:presenter) do
         described_class.new(
-          user_agent: user_agent,
+          user_agent:,
           user: user_with_2fa,
           phishing_resistant_required: true,
         )

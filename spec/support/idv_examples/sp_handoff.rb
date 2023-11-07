@@ -155,11 +155,13 @@ RSpec.shared_examples 'sp handoff after identity verification' do |sp|
     client_assertion_type = 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer'
 
     Capybara.using_driver(:desktop_rack_test) do
-      page.driver.post api_openid_connect_token_path,
-                       grant_type: 'authorization_code',
-                       code: code,
-                       client_assertion_type: client_assertion_type,
-                       client_assertion: client_assertion
+      page.driver.post(
+        api_openid_connect_token_path,
+        grant_type: 'authorization_code',
+        code:,
+        client_assertion_type:,
+        client_assertion:,
+      )
 
       expect(page.status_code).to eq(200)
       token_response = JSON.parse(page.body).with_indifferent_access

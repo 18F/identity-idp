@@ -8,8 +8,8 @@ RSpec.describe 'idv/session_errors/exception.html.erb' do
   before do
     decorated_sp_session = instance_double(
       ServiceProviderSession,
-      sp_name: sp_name,
-      sp_issuer: sp_issuer,
+      sp_name:,
+      sp_issuer:,
     )
     allow(view).to receive(:decorated_sp_session).and_return(decorated_sp_session)
 
@@ -35,7 +35,7 @@ RSpec.describe 'idv/session_errors/exception.html.erb' do
 
     it 'renders a list of troubleshooting options' do
       expect(rendered).to have_link(
-        t('idv.troubleshooting.options.get_help_at_sp', sp_name: sp_name),
+        t('idv.troubleshooting.options.get_help_at_sp', sp_name:),
         href: return_to_sp_failure_to_proof_path(step: 'verify_info', location: 'exception'),
       )
       expect(rendered).to have_link(

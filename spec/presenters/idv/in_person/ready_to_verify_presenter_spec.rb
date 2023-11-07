@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
   let(:user) { build(:user) }
-  let(:profile) { build(:profile, user: user) }
+  let(:profile) { build(:profile, user:) }
   let(:current_address_matches_id) { true }
   let(:created_at) { described_class::USPS_SERVER_TIMEZONE.parse('2022-07-14T00:00:00Z') }
   let(:enrollment_established_at) do
@@ -14,15 +14,15 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
   let(:enrollment) do
     create(
       :in_person_enrollment, :with_service_provider, :pending,
-      user: user,
-      profile: profile,
-      created_at: created_at,
-      enrollment_established_at: enrollment_established_at,
-      current_address_matches_id: current_address_matches_id,
+      user:,
+      profile:,
+      created_at:,
+      enrollment_established_at:,
+      current_address_matches_id:,
       selected_location_details: enrollment_selected_location_details
     )
   end
-  subject(:presenter) { described_class.new(enrollment: enrollment) }
+  subject(:presenter) { described_class.new(enrollment:) }
   describe '#formatted_due_date' do
     subject(:formatted_due_date) { presenter.formatted_due_date }
 
@@ -175,7 +175,7 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
     context 'with barcode url' do
       let(:barcode_url) { 'https://example.com/barcode.png' }
       subject(:presenter) do
-        described_class.new(enrollment: enrollment, barcode_image_url: barcode_url)
+        described_class.new(enrollment:, barcode_image_url: barcode_url)
       end
 
       it 'returns barcode url' do

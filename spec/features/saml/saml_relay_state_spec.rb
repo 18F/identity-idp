@@ -14,7 +14,7 @@ RSpec.feature 'SAML RelayState' do
           issuer: sp1_issuer,
           authn_context: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
         },
-        params: params,
+        params:,
       )
 
       login_and_confirm_sp(user, :saml)

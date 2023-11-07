@@ -52,7 +52,7 @@ module RateLimitConcern
       limiter_context = 'multi-session'
     end
 
-    irs_attempts_api_tracker.idv_verification_rate_limited(limiter_context: limiter_context)
+    irs_attempts_api_tracker.idv_verification_rate_limited(limiter_context:)
     analytics.rate_limit_reached(**analytics_args)
   end
 
@@ -85,7 +85,7 @@ module RateLimitConcern
     else
       RateLimiter.new(
         user: idv_session_user,
-        rate_limit_type: rate_limit_type,
+        rate_limit_type:,
       ).limited?
     end
   end

@@ -238,7 +238,7 @@ RSpec.feature 'saml api' do
   context 'with an SP configured to receive verified attributes' do
     context 'with a proofed user' do
       let(:pii) { { phone: '+12025555555', ssn: '111111111', dob: '01/01/1941' } }
-      let(:user) { create(:profile, :active, :verified, pii: pii).user }
+      let(:user) { create(:profile, :active, :verified, pii:).user }
 
       scenario 'sign in flow with user authorizing SP' do
         visit_idp_from_saml_sp_with_ial2

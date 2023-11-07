@@ -53,18 +53,18 @@ RSpec.shared_examples 'failed idv phone job' do
   end
 
   def session_timeout_path
-    idv_session_errors_timeout_path(locale: locale)
+    idv_session_errors_timeout_path(locale:)
   end
 
   def phone_timeout_path
-    idv_phone_errors_timeout_path(locale: locale)
+    idv_phone_errors_timeout_path(locale:)
   end
 
   def session_jobfail_path
-    idv_session_errors_jobfail_path(locale: locale)
+    idv_session_errors_jobfail_path(locale:)
   end
 
   def phone_jobfail_path
-    idv_phone_errors_jobfail_path(locale: locale)
+    idv_phone_errors_jobfail_path(locale:)
   end
 end

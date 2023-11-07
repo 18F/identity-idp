@@ -5,7 +5,7 @@ RSpec.describe Reporting::ProofingRateReport do
   let(:end_date) { Date.new(2022, 1, 1).in_time_zone('UTC').beginning_of_day }
 
   subject(:report) do
-    Reporting::ProofingRateReport.new(end_date: end_date, wait_duration: 0)
+    Reporting::ProofingRateReport.new(end_date:, wait_duration: 0)
   end
 
   describe '#as_csv' do
@@ -101,7 +101,7 @@ RSpec.describe Reporting::ProofingRateReport do
 
       Aws.config[:cloudwatchlogs] = {
         stub_responses: {
-          start_query: { query_id: query_id },
+          start_query: { query_id: },
           get_query_results: {
             status: 'Complete',
             results: [],

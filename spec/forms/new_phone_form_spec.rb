@@ -168,7 +168,7 @@ RSpec.describe NewPhoneForm do
       it 'is invalid' do
         phone = PhoneFormatter.format('+1 (954) 555-0100', country_code: 'US')
         params[:phone] = phone
-        create(:phone_configuration, user: user, phone: phone)
+        create(:phone_configuration, user:, phone:)
 
         result = subject.submit(params)
 
@@ -180,7 +180,7 @@ RSpec.describe NewPhoneForm do
       it 'is invalid if database phone is not formatted' do
         unformatted_phone = '+1 954 5550100'
         params[:phone] = '+1 9545550100'
-        create(:phone_configuration, user: user, phone: unformatted_phone)
+        create(:phone_configuration, user:, phone: unformatted_phone)
 
         result = subject.submit(params)
 
@@ -193,7 +193,7 @@ RSpec.describe NewPhoneForm do
         unformatted_phone = '+610491570006'
         params[:phone] = '+61 0491 570 006'
         params[:international_code] = 'CA'
-        create(:phone_configuration, user: user, phone: unformatted_phone)
+        create(:phone_configuration, user:, phone: unformatted_phone)
 
         result = subject.submit(params)
 
@@ -207,7 +207,7 @@ RSpec.describe NewPhoneForm do
       let(:phone) { '+44 113 496 0000' }
 
       subject(:result) do
-        form.submit(params.merge(phone: phone))
+        form.submit(params.merge(phone:))
       end
 
       before do

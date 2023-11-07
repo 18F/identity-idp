@@ -49,7 +49,7 @@ RSpec.describe 'idv/session_errors/failure.html.erb' do
       expect(rendered).to have_link(
         t(
           'idv.failure.exit.with_sp',
-          sp_name: sp_name,
+          sp_name:,
           app_name: 'Login.gov',
         ),
         href: return_to_sp_failure_to_proof_path(step: 'verify_id', location: 'failure'),

@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe RegisterUserEmailForm do
   let(:analytics) { FakeAnalytics.new }
   let(:attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
-  subject { RegisterUserEmailForm.new(analytics: analytics, attempts_tracker: attempts_tracker) }
+  subject { RegisterUserEmailForm.new(analytics:, attempts_tracker:) }
 
   it_behaves_like 'email validation'
 
@@ -204,7 +204,7 @@ RSpec.describe RegisterUserEmailForm do
           )
 
           1.upto(rate_limit) do |i|
-            RegisterUserEmailForm.new(analytics: analytics, attempts_tracker: attempts_tracker).
+            RegisterUserEmailForm.new(analytics:, attempts_tracker:).
               submit(
                 email: "taken+#{i}@gmail.com", terms_accepted: '1',
               )
@@ -230,7 +230,7 @@ RSpec.describe RegisterUserEmailForm do
 
         result = subject.submit(email: email_address.email, terms_accepted: '1')
         uuid = result.extra[:user_id]
-        new_user = User.find_by(uuid: uuid)
+        new_user = User.find_by(uuid:)
 
         expect(new_user).to_not be_nil
         expect(new_user.id).to_not eq(old_user.id)
@@ -256,7 +256,7 @@ RSpec.describe RegisterUserEmailForm do
       end
 
       it 'saves the user email_language for a valid form' do
-        form = RegisterUserEmailForm.new(analytics: analytics, attempts_tracker: attempts_tracker)
+        form = RegisterUserEmailForm.new(analytics:, attempts_tracker:)
 
         response = form.submit(
           email: unregistered_email_address, email_language: 'fr', terms_accepted: '1',
@@ -277,7 +277,7 @@ RSpec.describe RegisterUserEmailForm do
           )
 
           1.upto(rate_limit) do |i|
-            RegisterUserEmailForm.new(analytics: analytics, attempts_tracker: attempts_tracker).
+            RegisterUserEmailForm.new(analytics:, attempts_tracker:).
               submit(
                 email: "taken+#{i}@gmail.com", terms_accepted: '1',
               )
@@ -305,7 +305,7 @@ RSpec.describe RegisterUserEmailForm do
 
         expect(subject.submit(email: invalid_email, terms_accepted: '1').to_h).to include(
           success: false,
-          errors: errors,
+          errors:,
           error_details: hash_including(*errors.keys),
           **extra,
         )
@@ -324,7 +324,7 @@ RSpec.describe RegisterUserEmailForm do
 
         expect(subject.submit(email: 'test@çà.com', terms_accepted: '1').to_h).to include(
           success: false,
-          errors: errors,
+          errors:,
           error_details: hash_including(*errors.keys),
           **extra,
         )
@@ -347,7 +347,7 @@ RSpec.describe RegisterUserEmailForm do
 
         expect(subject.submit(email: blocked_email, terms_accepted: '1').to_h).to include(
           success: false,
-          errors: errors,
+          errors:,
           error_details: hash_including(*errors.keys),
           **extra,
         )
@@ -383,7 +383,7 @@ RSpec.describe RegisterUserEmailForm do
         request_id = sp_request.uuid
         submit_form = subject.submit(
           email: unregistered_email_address,
-          request_id: request_id,
+          request_id:,
           terms_accepted: '1',
         )
         extra = {

@@ -4,7 +4,7 @@ RSpec.describe ActiveProfileEncryptor do
   describe '#call' do
     it 'encrypts the profile' do
       decrypted_pii = { ssn: '1234' }.to_json
-      user_session = { decrypted_pii: decrypted_pii }
+      user_session = { decrypted_pii: }
       profile = create(:profile, :active, :verified, pii: { ssn: '1234' })
       user = profile.user
       password = user.password

@@ -204,7 +204,7 @@ RSpec.describe Users::SessionsController, devise: true do
 
       it 'computes one SCrypt hash for the user password and one for the PII' do
         user = create(:user, :fully_registered)
-        create(:profile, :active, :verified, user: user, pii: { ssn: '1234' })
+        create(:profile, :active, :verified, user:, pii: { ssn: '1234' })
 
         expect(SCrypt::Engine).to receive(:hash_secret).twice.and_call_original
 
@@ -216,7 +216,7 @@ RSpec.describe Users::SessionsController, devise: true do
         create(
           :profile,
           gpo_verification_pending_at: 1.day.ago,
-          user: user, pii: { ssn: '1234' }
+          user:, pii: { ssn: '1234' }
         )
 
         post :create, params: { user: { email: user.email.upcase, password: user.password } }
@@ -226,7 +226,7 @@ RSpec.describe Users::SessionsController, devise: true do
 
       it 'caches PII in the user session' do
         user = create(:user, :fully_registered)
-        create(:profile, :active, :verified, user: user, pii: { ssn: '1234' })
+        create(:profile, :active, :verified, user:, pii: { ssn: '1234' })
 
         post :create, params: { user: { email: user.email.upcase, password: user.password } }
 
@@ -235,7 +235,7 @@ RSpec.describe Users::SessionsController, devise: true do
 
       it 'deactivates profile if not de-cryptable' do
         user = create(:user, :fully_registered)
-        profile = create(:profile, :active, :verified, user: user, pii: { ssn: '1234' })
+        profile = create(:profile, :active, :verified, user:, pii: { ssn: '1234' })
         profile.update!(
           encrypted_pii: { encrypted_data: Base64.strict_encode64('nonsense') }.to_json,
           encrypted_pii_multi_region: {
@@ -417,7 +417,7 @@ RSpec.describe Users::SessionsController, devise: true do
     context 'with user that is up to date with rules of use' do
       let(:rules_of_use_updated_at) { 1.day.ago }
       let(:accepted_terms_at) { 12.hours.ago }
-      let(:user) { create(:user, :fully_registered, accepted_terms_at: accepted_terms_at) }
+      let(:user) { create(:user, :fully_registered, accepted_terms_at:) }
 
       before do
         allow(IdentityConfig.store).to receive(:rules_of_use_updated_at).
@@ -433,7 +433,7 @@ RSpec.describe Users::SessionsController, devise: true do
     context 'with user that is not up to date with rules of use' do
       let(:rules_of_use_updated_at) { 1.day.ago }
       let(:accepted_terms_at) { 2.days.ago }
-      let(:user) { create(:user, :fully_registered, accepted_terms_at: accepted_terms_at) }
+      let(:user) { create(:user, :fully_registered, accepted_terms_at:) }
 
       before do
         allow(IdentityConfig.store).to receive(:rules_of_use_updated_at).
@@ -450,7 +450,7 @@ RSpec.describe Users::SessionsController, devise: true do
       let(:rules_of_use_horizon_years) { 6 }
       let(:rules_of_use_updated_at) { 7.years.ago }
       let(:accepted_terms_at) { 6.years.ago - 1.day }
-      let(:user) { create(:user, :fully_registered, accepted_terms_at: accepted_terms_at) }
+      let(:user) { create(:user, :fully_registered, accepted_terms_at:) }
 
       before do
         allow(IdentityConfig.store).to receive(:rules_of_use_horizon_years).
@@ -581,7 +581,7 @@ RSpec.describe Users::SessionsController, devise: true do
         email = Faker::Internet.safe_email
         password = SecureRandom.uuid
 
-        get :new, params: { user: { email: email, password: password } }
+        get :new, params: { user: { email:, password: } }
 
         doc = Nokogiri::HTML(response.body)
 

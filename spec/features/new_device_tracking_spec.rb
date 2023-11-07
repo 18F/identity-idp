@@ -7,7 +7,7 @@ RSpec.describe 'New device tracking' do
 
   context 'user has existing devices' do
     before do
-      create(:device, user: user)
+      create(:device, user:)
     end
 
     it 'sends a user notification on signin' do

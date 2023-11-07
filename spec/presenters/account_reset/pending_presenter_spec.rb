@@ -5,8 +5,8 @@ RSpec.describe AccountReset::PendingPresenter do
   let(:requested_at) { 22.hours.ago }
   let(:account_reset_request) do
     AccountResetRequest.new(
-      user: user,
-      requested_at: requested_at,
+      user:,
+      requested_at:,
     )
   end
 

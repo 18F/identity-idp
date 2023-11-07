@@ -183,8 +183,8 @@ RSpec.describe 'throttling requests' do
         first_email = 'test1@example.com'
         second_email = 'test2@example.com'
 
-        post '/', params: { user: { email: first_email } }, headers: headers
-        post '/', params: { user: { email: second_email } }, headers: headers
+        post('/', params: { user: { email: first_email } }, headers:)
+        post('/', params: { user: { email: second_email } }, headers:)
 
         expect(response.status).to eq(200)
       end
@@ -221,10 +221,10 @@ RSpec.describe 'throttling requests' do
           third_email = 'test3@example.com'
           fourth_email = 'test4@example.com'
 
-          post path, params: { user: { email: first_email } }, headers: headers
-          post path, params: { user: { email: second_email } }, headers: headers
-          post path, params: { user: { email: third_email } }, headers: headers
-          post path, params: { user: { email: fourth_email } }, headers: headers
+          post(path, params: { user: { email: first_email } }, headers:)
+          post(path, params: { user: { email: second_email } }, headers:)
+          post(path, params: { user: { email: third_email } }, headers:)
+          post(path, params: { user: { email: fourth_email } }, headers:)
 
           expect(response.status).to eq(429)
           expect(response.body).
@@ -256,7 +256,7 @@ RSpec.describe 'throttling requests' do
     context 'when the email is nil, an empty string, or not a String' do
       it 'does not blow up' do
         [nil, '', :xml, 1].each do |email|
-          post '/', params: { user: { email: email } }, headers: { REMOTE_ADDR: '1.2.3.4' }
+          post '/', params: { user: { email: } }, headers: { REMOTE_ADDR: '1.2.3.4' }
         end
 
         expect(response.status).to eq(429)
@@ -266,7 +266,7 @@ RSpec.describe 'throttling requests' do
     context 'when the email is not properly encoded' do
       it 'returns a 400' do
         params = { user: { email: "test@\xFFbar\xF8.com" } }
-        post '/', params: params, headers: { REMOTE_ADDR: '1.2.3.4' }
+        post '/', params:, headers: { REMOTE_ADDR: '1.2.3.4' }
 
         expect(response.status).to eq(400)
       end
@@ -321,10 +321,14 @@ RSpec.describe 'throttling requests' do
       it 'does not throttle' do
         headers = { REMOTE_ADDR: '1.2.3.4' }
 
-        post '/sign_up/enter_email',
-             params: { user: { email: 'test@example.com', terms_accepted: '1' } }, headers: headers
-        post '/sign_up/enter_email',
-             params: { user: { email: 'test1@example.com', terms_accepted: '1' } }, headers: headers
+        post(
+          '/sign_up/enter_email',
+          params: { user: { email: 'test@example.com', terms_accepted: '1' } }, headers:,
+        )
+        post(
+          '/sign_up/enter_email',
+          params: { user: { email: 'test1@example.com', terms_accepted: '1' } }, headers:,
+        )
 
         expect(response.status).to eq(302)
       end
@@ -353,12 +357,16 @@ RSpec.describe 'throttling requests' do
               type: 'email_registrations/ip',
             )
 
-          post path, params: { user: { email: first_email, terms_accepted: '1' } }, headers: headers
-          post path, params: { user: { email: second_email, terms_accepted: '1' } },
-                     headers: headers
-          post path, params: { user: { email: third_email, terms_accepted: '1' } }, headers: headers
-          post path, params: { user: { email: fourth_email, terms_accepted: '1' } },
-                     headers: headers
+          post(path, params: { user: { email: first_email, terms_accepted: '1' } }, headers:)
+          post(
+            path, params: { user: { email: second_email, terms_accepted: '1' } },
+                  headers:
+          )
+          post(path, params: { user: { email: third_email, terms_accepted: '1' } }, headers:)
+          post(
+            path, params: { user: { email: fourth_email, terms_accepted: '1' } },
+                  headers:
+          )
 
           expect(response.status).to eq(429)
           expect(response.body).

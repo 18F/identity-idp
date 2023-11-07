@@ -11,7 +11,7 @@ RSpec.describe Proofing::Mock::DdpMockClient do
 
   let(:applicant) do
     Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.merge(
-      threatmetrix_session_id: threatmetrix_session_id,
+      threatmetrix_session_id:,
       request_ip: Faker::Internet.ip_v4_address,
     )
   end

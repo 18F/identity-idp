@@ -5,7 +5,7 @@ module DocAuth
         attr_reader :image_data, :instance_id, :side
 
         def initialize(config:, image_data:, instance_id:, side:)
-          super(config: config)
+          super(config:)
           @image_data = image_data
           @instance_id = instance_id
           @side = side

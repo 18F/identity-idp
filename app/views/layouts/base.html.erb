@@ -76,7 +76,7 @@
       ) do %>
     <div class="grid-container padding-y-4 tablet:padding-y-8 <%= local_assigns[:disable_card].present? ? '' : 'card' %>">
       <%= yield(:pre_flash_content) if content_for?(:pre_flash_content) %>
-      <%= render FlashComponent.new(flash: flash) %>
+      <%= render FlashComponent.new(flash:) %>
       <%= content_for?(:content) ? yield(:content) : yield %>
     </div>
   <% end %>

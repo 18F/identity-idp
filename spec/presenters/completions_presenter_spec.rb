@@ -10,7 +10,7 @@ RSpec.describe CompletionsPresenter do
       ),
     ]
   end
-  let(:current_user) { create(:user, :fully_registered, identities: identities) }
+  let(:current_user) { create(:user, :fully_registered, identities:) }
   let(:current_sp) { create(:service_provider, friendly_name: 'Friendly service provider') }
   let(:decrypted_pii) do
     Pii::Attributes.new(
@@ -38,12 +38,12 @@ RSpec.describe CompletionsPresenter do
 
   subject(:presenter) do
     described_class.new(
-      current_user: current_user,
-      current_sp: current_sp,
-      decrypted_pii: decrypted_pii,
-      requested_attributes: requested_attributes,
-      ial2_requested: ial2_requested,
-      completion_context: completion_context,
+      current_user:,
+      current_sp:,
+      decrypted_pii:,
+      requested_attributes:,
+      ial2_requested:,
+      completion_context:,
     )
   end
 

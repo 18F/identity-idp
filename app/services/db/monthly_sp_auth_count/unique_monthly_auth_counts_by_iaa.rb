@@ -18,7 +18,7 @@ module Db
         # Query a month at a time, to keep query time/result size fairly reasonable
         # The results are rows with [user_id, ial, auth_count, year_month]
         months = Reports::MonthHelper.months(date_range)
-        queries = build_queries(issuers: issuers, months: months)
+        queries = build_queries(issuers:, months:)
 
         ial_to_year_month_to_users = Hash.new do |ial_h, ial_k|
           ial_h[ial_k] = Hash.new { |ym_h, ym_k| ym_h[ym_k] = Multiset.new }
@@ -70,9 +70,9 @@ module Db
             prev_seen_users |= unique_users
 
             rows << {
-              key: key,
-              ial: ial,
-              year_month: year_month,
+              key:,
+              ial:,
+              year_month:,
               iaa_start_date: date_range.begin.to_s,
               iaa_end_date: date_range.end.to_s,
               total_auth_count: auth_count,
@@ -95,7 +95,7 @@ module Db
             range_start: month_range.begin,
             range_end: month_range.end,
             year_month: month_range.begin.strftime('%Y%m'),
-            issuers: issuers,
+            issuers:,
           }.transform_values { |value| quote(value) }
 
           format(<<~SQL, params)

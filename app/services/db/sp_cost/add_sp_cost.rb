@@ -22,16 +22,16 @@ module Db
         end
         agency_id = service_provider&.agency_id || 0
         ial_context = IalContext.new(
-          ial: ial,
-          service_provider: service_provider,
-          user: user,
+          ial:,
+          service_provider:,
+          user:,
         )
         ::SpCost.create(
           issuer: service_provider&.issuer.to_s,
           ial: ial_context.bill_for_ial_1_or_2,
-          agency_id: agency_id,
+          agency_id:,
           cost_type: token,
-          transaction_id: transaction_id,
+          transaction_id:,
         )
       end
     end

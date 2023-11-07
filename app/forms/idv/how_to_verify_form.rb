@@ -23,7 +23,7 @@ module Idv
     def submit(params)
       consume_params(params)
 
-      FormResponse.new(success: valid?, errors: errors)
+      FormResponse.new(success: valid?, errors:)
     end
 
     private

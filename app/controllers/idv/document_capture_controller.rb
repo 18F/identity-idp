@@ -43,7 +43,7 @@ module Idv
 
     def extra_view_variables
       {
-        document_capture_session_uuid: document_capture_session_uuid,
+        document_capture_session_uuid:,
         flow_path: 'standard',
         sp_name: decorated_sp_session.sp_name,
         failure_to_proof_url: return_to_sp_failure_to_proof_url(step: 'document_capture'),
@@ -86,7 +86,7 @@ module Idv
 
     def analytics_arguments
       {
-        flow_path: flow_path,
+        flow_path:,
         step: 'document_capture',
         analytics_id: 'Doc Auth',
         irs_reproofing: irs_reproofing?,

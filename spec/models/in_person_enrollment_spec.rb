@@ -27,21 +27,21 @@ RSpec.describe InPersonEnrollment, type: :model do
 
     it 'does not allow more than one pending enrollment per user' do
       user = create(:user)
-      profile = create(:profile, gpo_verification_pending_at: 1.day.ago, user: user)
-      profile2 = create(:profile, gpo_verification_pending_at: 1.day.ago, user: user)
-      create(:in_person_enrollment, user: user, profile: profile, status: :pending)
+      profile = create(:profile, gpo_verification_pending_at: 1.day.ago, user:)
+      profile2 = create(:profile, gpo_verification_pending_at: 1.day.ago, user:)
+      create(:in_person_enrollment, user:, profile:, status: :pending)
       expect(InPersonEnrollment.pending.count).to eq 1
-      expect { create(:in_person_enrollment, user: user, profile: profile2, status: :pending) }.
+      expect { create(:in_person_enrollment, user:, profile: profile2, status: :pending) }.
         to raise_error ActiveRecord::RecordNotUnique
       expect(InPersonEnrollment.pending.count).to eq 1
     end
 
     it 'does not allow duplicate unique ids' do
       user = create(:user)
-      profile = create(:profile, gpo_verification_pending_at: 1.day.ago, user: user)
+      profile = create(:profile, gpo_verification_pending_at: 1.day.ago, user:)
       unique_id = InPersonEnrollment.generate_unique_id
-      create(:in_person_enrollment, user: user, profile: profile, unique_id: unique_id)
-      expect { create(:in_person_enrollment, user: user, profile: profile, unique_id: unique_id) }.
+      create(:in_person_enrollment, user:, profile:, unique_id:)
+      expect { create(:in_person_enrollment, user:, profile:, unique_id:) }.
         to raise_error ActiveRecord::RecordNotUnique
       expect(InPersonEnrollment.count).to eq 1
     end
@@ -51,14 +51,14 @@ RSpec.describe InPersonEnrollment, type: :model do
       expect do
         InPersonEnrollment.statuses.each do |key,|
           status = InPersonEnrollment.statuses[key]
-          profile = create(:profile, gpo_verification_pending_at: 1.day.ago, user: user)
-          create(:in_person_enrollment, user: user, profile: profile, status: status)
+          profile = create(:profile, gpo_verification_pending_at: 1.day.ago, user:)
+          create(:in_person_enrollment, user:, profile:, status:)
         end
         InPersonEnrollment.statuses.each do |key,|
           status = InPersonEnrollment.statuses[key]
           if status != InPersonEnrollment.statuses[:pending]
-            profile = create(:profile, gpo_verification_pending_at: 1.day.ago, user: user)
-            create(:in_person_enrollment, user: user, profile: profile, status: status)
+            profile = create(:profile, gpo_verification_pending_at: 1.day.ago, user:)
+            create(:in_person_enrollment, user:, profile:, status:)
           end
         end
       end.not_to raise_error
@@ -90,7 +90,7 @@ RSpec.describe InPersonEnrollment, type: :model do
             config_id = enrollment.notification_phone_configuration.id
             expect(NotificationPhoneConfiguration.find_by({ id: config_id })).to_not be_nil
 
-            enrollment.update(status: status)
+            enrollment.update(status:)
             enrollment.reload
 
             expect(enrollment.notification_phone_configuration).to be_nil
@@ -127,20 +127,20 @@ RSpec.describe InPersonEnrollment, type: :model do
 
     it 'generates a unique ID if one is not provided' do
       user = create(:user)
-      profile = create(:profile, gpo_verification_pending_at: 1.day.ago, user: user)
+      profile = create(:profile, gpo_verification_pending_at: 1.day.ago, user:)
       expect(InPersonEnrollment).to receive(:generate_unique_id).and_call_original
 
-      enrollment = create(:in_person_enrollment, user: user, profile: profile)
+      enrollment = create(:in_person_enrollment, user:, profile:)
 
       expect(enrollment.unique_id).not_to be_nil
     end
 
     it 'does not generated a unique ID if one is provided' do
       user = create(:user)
-      profile = create(:profile, gpo_verification_pending_at: 1.day.ago, user: user)
+      profile = create(:profile, gpo_verification_pending_at: 1.day.ago, user:)
       expect(InPersonEnrollment).not_to receive(:generate_unique_id)
 
-      enrollment = create(:in_person_enrollment, user: user, profile: profile, unique_id: '1234')
+      enrollment = create(:in_person_enrollment, user:, profile:, unique_id: '1234')
 
       expect(enrollment.unique_id).to eq('1234')
     end

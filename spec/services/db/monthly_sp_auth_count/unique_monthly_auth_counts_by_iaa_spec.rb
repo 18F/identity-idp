@@ -5,7 +5,7 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa do
     let(:key) { 'iaa1-0001' }
     let(:iaa) do
       {
-        key: key,
+        key:,
         start_date: 1.year.ago,
         end_date: Time.zone.now,
         issuers: [],
@@ -23,7 +23,7 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa do
     context 'with data' do
       let(:iaa) do
         {
-          key: key,
+          key:,
           start_date: iaa_range.begin,
           end_date: iaa_range.end,
           issuers: [issuer1, issuer2, issuer3],
@@ -44,8 +44,8 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa do
         [issuer1, issuer2, issuer3].map do |issuer|
           create(
             :service_provider,
-            iaa: iaa,
-            issuer: issuer,
+            iaa:,
+            issuer:,
             iaa_start_date: iaa_range.begin,
             iaa_end_date: iaa_range.end,
           )
@@ -123,7 +123,7 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa do
         rows = [
           {
             ial: 1,
-            key: key,
+            key:,
             year_month: '202009',
             iaa_start_date: iaa_range.begin.to_s,
             iaa_end_date: iaa_range.end.to_s,
@@ -133,7 +133,7 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa do
           },
           {
             ial: 2,
-            key: key,
+            key:,
             year_month: '202009',
             iaa_start_date: iaa_range.begin.to_s,
             iaa_end_date: iaa_range.end.to_s,
@@ -143,7 +143,7 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa do
           },
           {
             ial: 1,
-            key: key,
+            key:,
             year_month: '202010',
             iaa_start_date: iaa_range.begin.to_s,
             iaa_end_date: iaa_range.end.to_s,
@@ -153,7 +153,7 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa do
           },
           {
             ial: 2,
-            key: key,
+            key:,
             year_month: '202010',
             iaa_start_date: iaa_range.begin.to_s,
             iaa_end_date: iaa_range.end.to_s,

@@ -142,7 +142,7 @@ RSpec.feature 'hybrid_handoff step send link and errors' do
       freeze_time do
         idv_send_link_max_attempts.times do
           expect(page).to_not have_content(
-            I18n.t('errors.doc_auth.send_link_limited', timeout: timeout),
+            I18n.t('errors.doc_auth.send_link_limited', timeout:),
           )
 
           fill_in :doc_auth_phone, with: '415-555-0199'
@@ -160,7 +160,7 @@ RSpec.feature 'hybrid_handoff step send link and errors' do
         expect(page).to have_content(
           I18n.t(
             'errors.doc_auth.send_link_limited',
-            timeout: timeout,
+            timeout:,
           ),
         )
 
@@ -178,7 +178,7 @@ RSpec.feature 'hybrid_handoff step send link and errors' do
 
       # Manual expiration is needed for now since the RateLimiter uses
       # Redis ttl instead of expiretime
-      RateLimiter.new(rate_limit_type: :idv_send_link, user: user).reset!
+      RateLimiter.new(rate_limit_type: :idv_send_link, user:).reset!
       travel_to(Time.zone.now + idv_send_link_attempt_window_in_minutes.minutes) do
         fill_in :doc_auth_phone, with: '415-555-0199'
         click_send_link
@@ -211,7 +211,7 @@ RSpec.feature 'hybrid_handoff step send link and errors' do
         freeze_time do
           idv_send_link_max_attempts.times do
             expect(page).to_not have_content(
-              I18n.t('errors.doc_auth.send_link_limited', timeout: timeout),
+              I18n.t('errors.doc_auth.send_link_limited', timeout:),
             )
 
             fill_in :doc_auth_phone, with: '415-555-0199'
@@ -229,7 +229,7 @@ RSpec.feature 'hybrid_handoff step send link and errors' do
           expect(page).to have_content(
             I18n.t(
               'errors.doc_auth.send_link_limited',
-              timeout: timeout,
+              timeout:,
             ),
           )
         end
@@ -248,7 +248,7 @@ RSpec.feature 'hybrid_handoff step send link and errors' do
 
         # Manual expiration is needed for now since the RateLimiter uses
         # Redis ttl instead of expiretime
-        RateLimiter.new(rate_limit_type: :idv_send_link, user: user).reset!
+        RateLimiter.new(rate_limit_type: :idv_send_link, user:).reset!
         travel_to(Time.zone.now + idv_send_link_attempt_window_in_minutes.minutes) do
           fill_in :doc_auth_phone, with: '415-555-0199'
           click_send_link

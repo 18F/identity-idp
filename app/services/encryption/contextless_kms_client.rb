@@ -61,7 +61,7 @@ module Encryption
       KMS_CLIENT_POOL.with do |aws_client|
         aws_client.encrypt(
           key_id: IdentityConfig.store.aws_kms_key_id,
-          plaintext: plaintext,
+          plaintext:,
         ).ciphertext_blob
       end
     end

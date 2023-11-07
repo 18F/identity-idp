@@ -8,7 +8,7 @@
       <%= t('headings.account.devices') %>
     </h2>
     <% @presenter.recent_devices.each do |device| %>
-      <%= render 'accounts/device_item', device: device %>
+      <%= render 'accounts/device_item', device: %>
     <% end %>
   </div>
 </div>
@@ -20,9 +20,9 @@
     </h2>
     <% @presenter.recent_events.each do |event| %>
       <% if event.is_a?(ServiceProviderIdentity) %>
-        <%= render 'accounts/identity_item', event: event %>
+        <%= render 'accounts/identity_item', event: %>
       <% else %>
-        <%= render 'accounts/event_item', event: event %>
+        <%= render 'accounts/event_item', event: %>
       <% end %>
     <% end %>
   </div>

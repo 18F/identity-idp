@@ -14,7 +14,7 @@ RSpec.describe DisplayablePiiFormatter do
   let(:verified_at) { 1.day.ago }
   let(:profiles) do
     if verified_at
-      [build(:profile, :active, verified_at: verified_at)]
+      [build(:profile, :active, verified_at:)]
     else
       []
     end
@@ -23,7 +23,7 @@ RSpec.describe DisplayablePiiFormatter do
   let(:x509_issuer) { 'bar' }
   let(:piv_cac_configurations) do
     if x509_subject && x509_issuer
-      [build(:piv_cac_configuration, x509_dn_uuid: x509_subject, x509_issuer: x509_issuer)]
+      [build(:piv_cac_configuration, x509_dn_uuid: x509_subject, x509_issuer:)]
     else
       []
     end
@@ -42,28 +42,28 @@ RSpec.describe DisplayablePiiFormatter do
   let(:current_user) do
     create(
       :user,
-      email_addresses: email_addresses,
-      piv_cac_configurations: piv_cac_configurations,
-      profiles: profiles,
+      email_addresses:,
+      piv_cac_configurations:,
+      profiles:,
     )
   end
 
   let(:pii) do
     {
-      first_name: first_name,
-      last_name: last_name,
-      ssn: ssn,
-      address1: address1,
-      address2: address2,
-      city: city,
-      state: state,
-      zipcode: zipcode,
-      dob: dob,
-      phone: phone,
+      first_name:,
+      last_name:,
+      ssn:,
+      address1:,
+      address2:,
+      city:,
+      state:,
+      zipcode:,
+      dob:,
+      phone:,
     }
   end
 
-  subject(:formatter) { described_class.new(current_user: current_user, pii: pii) }
+  subject(:formatter) { described_class.new(current_user:, pii:) }
 
   describe '#format' do
     context 'ial1' do

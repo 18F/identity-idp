@@ -9,13 +9,13 @@ RSpec.describe Users::EmailConfirmationsController do
 
         expect(PushNotification::HttpPush).to receive(:deliver).once.
           with(PushNotification::EmailChangedEvent.new(
-            user: user,
+            user:,
             email: new_email,
           )).ordered
 
         expect(PushNotification::HttpPush).to receive(:deliver).once.
           with(PushNotification::RecoveryInformationChangedEvent.new(
-            user: user,
+            user:,
           )).ordered
 
         add_email_form = AddUserEmailForm.new

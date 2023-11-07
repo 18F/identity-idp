@@ -9,9 +9,9 @@ RSpec.describe WebauthnVisitForm do
   let(:in_mfa_selection_flow) { true }
   let(:form) do
     WebauthnVisitForm.new(
-      user: user,
+      user:,
       url_options:,
-      in_mfa_selection_flow: in_mfa_selection_flow,
+      in_mfa_selection_flow:,
     )
   end
   subject { form }
@@ -48,7 +48,7 @@ RSpec.describe WebauthnVisitForm do
 
         expect(subject.submit(params).to_h).to include(
           success: false,
-          errors: errors,
+          errors:,
           error_details: hash_including(*errors.keys),
         )
       end
@@ -59,7 +59,7 @@ RSpec.describe WebauthnVisitForm do
 
         expect(subject.submit(params).to_h).to include(
           success: false,
-          errors: errors,
+          errors:,
           error_details: hash_including(*errors.keys),
         )
       end
@@ -79,7 +79,7 @@ RSpec.describe WebauthnVisitForm do
 
         expect(subject.submit(params).to_h).to include(
           success: false,
-          errors: errors,
+          errors:,
           error_details: hash_including(*errors.keys),
         )
       end
@@ -93,7 +93,7 @@ RSpec.describe WebauthnVisitForm do
 
           expect(subject.submit(params).to_h).to include(
             success: false,
-            errors: errors,
+            errors:,
             error_details: hash_including(*errors.keys),
           )
         end
@@ -104,7 +104,7 @@ RSpec.describe WebauthnVisitForm do
 
           expect(subject.submit(params).to_h).to include(
             success: false,
-            errors: errors,
+            errors:,
             error_details: hash_including(*errors.keys),
           )
         end
@@ -121,7 +121,7 @@ RSpec.describe WebauthnVisitForm do
 
           expect(subject.submit(params).to_h).to include(
             success: false,
-            errors: errors,
+            errors:,
             error_details: hash_including(*errors.keys),
           )
         end
@@ -139,7 +139,7 @@ RSpec.describe WebauthnVisitForm do
 
             expect(subject.submit(params).to_h).to include(
               success: false,
-              errors: errors,
+              errors:,
               error_details: hash_including(*errors.keys),
             )
           end

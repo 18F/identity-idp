@@ -22,7 +22,7 @@ module Telephony
           Aws::Pinpoint::Client.new(
             region: sms_config.region,
             retry_limit: 0,
-            credentials: credentials,
+            credentials:,
           )
         end
       end
@@ -59,7 +59,7 @@ module Telephony
               },
             )
             finish = Time.zone.now
-            response = build_response(pinpoint_response, start: start, finish: finish)
+            response = build_response(pinpoint_response, start:, finish:)
             if response.success? ||
                response.error.is_a?(OptOutError) ||
                response.error.is_a?(PermanentFailureError)
@@ -80,7 +80,7 @@ module Telephony
               region: sms_config.region,
               channel: :sms,
               extra: {
-                duration_ms: Util.duration_ms(start: start, finish: finish),
+                duration_ms: Util.duration_ms(start:, finish:),
               },
             )
           end
@@ -102,12 +102,12 @@ module Telephony
           error = nil
           CLIENT_POOL[sms_config].with do |client|
             response = client.phone_number_validate(
-              number_validate_request: { phone_number: phone_number },
+              number_validate_request: { phone_number: },
             )
           rescue Seahorse::Client::NetworkingError,
                  Aws::Pinpoint::Errors::ServiceError => error
             PinpointHelper.notify_pinpoint_failover(
-              error: error,
+              error:,
               region: sms_config.region,
               channel: :sms,
               extra: {},
@@ -130,9 +130,9 @@ module Telephony
         error ||= unknown_failure_error if !response
 
         PhoneNumberInfo.new(
-          type: type,
+          type:,
           carrier: response&.number_validate_response&.carrier,
-          error: error,
+          error:,
         )
       end
 
@@ -150,7 +150,7 @@ module Telephony
       def build_sender_config(country_code, sms_config, sender_id)
         if sender_id
           {
-            sender_id: sender_id,
+            sender_id:,
           }
         else
           {
@@ -181,7 +181,7 @@ module Telephony
             message_id: message_response_result.message_id,
             status_code: message_response_result.status_code,
             status_message: message_response_result.status_message.gsub(/\d/, 'x'),
-            duration_ms: Util.duration_ms(start: start, finish: finish),
+            duration_ms: Util.duration_ms(start:, finish:),
           },
         )
       end

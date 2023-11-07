@@ -5,7 +5,7 @@ RSpec.describe 'idv/phone_errors/jobfail.html.erb' do
   let(:gpo_letter_available) { false }
 
   before do
-    decorated_sp_session = instance_double(ServiceProviderSession, sp_name: sp_name)
+    decorated_sp_session = instance_double(ServiceProviderSession, sp_name:)
     allow(view).to receive(:decorated_sp_session).and_return(decorated_sp_session)
     assign(:gpo_letter_available, gpo_letter_available)
 
@@ -30,7 +30,7 @@ RSpec.describe 'idv/phone_errors/jobfail.html.erb' do
   context 'gpo verification disabled' do
     it 'renders a list of troubleshooting options' do
       expect(rendered).to have_link(
-        t('idv.troubleshooting.options.get_help_at_sp', sp_name: sp_name),
+        t('idv.troubleshooting.options.get_help_at_sp', sp_name:),
         href: return_to_sp_failure_to_proof_path(step: 'phone', location: 'jobfail'),
       )
       expect(rendered).not_to have_link(
@@ -45,7 +45,7 @@ RSpec.describe 'idv/phone_errors/jobfail.html.erb' do
 
     it 'renders a list of troubleshooting options' do
       expect(rendered).to have_link(
-        t('idv.troubleshooting.options.get_help_at_sp', sp_name: sp_name),
+        t('idv.troubleshooting.options.get_help_at_sp', sp_name:),
         href: return_to_sp_failure_to_proof_path(step: 'phone', location: 'jobfail'),
       )
       expect(rendered).to have_link(

@@ -168,7 +168,7 @@ module Reporting
       log(:debug, "starting query: #{start_time}..#{end_time}")
 
       query_id = aws_client.start_query(
-        log_group_name: log_group_name,
+        log_group_name:,
         start_time:,
         end_time:,
         query_string: query.to_s,
@@ -271,7 +271,7 @@ module Reporting
       loop do
         log(:debug, "waiting on query_id=#{query_id}")
         sleep wait_duration
-        response = aws_client.get_query_results(query_id: query_id)
+        response = aws_client.get_query_results(query_id:)
         case response.status
         when 'Complete', 'Failed', 'Cancelled'
           duration = Time.now.to_f - start

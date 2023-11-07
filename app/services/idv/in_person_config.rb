@@ -7,7 +7,7 @@ module Idv
         enabled_without_issuer?
       else
         ServiceProvider.exists?(
-          issuer: issuer,
+          issuer:,
           in_person_proofing_enabled: true,
         )
       end

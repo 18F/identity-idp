@@ -97,7 +97,7 @@ module UspsInPersonProofing
     end
 
     def analytics(user: AnonymousUser.new)
-      Analytics.new(user: user, request: nil, session: {}, sp: nil)
+      Analytics.new(user:, request: nil, session: {}, sp: nil)
     end
   end
 end

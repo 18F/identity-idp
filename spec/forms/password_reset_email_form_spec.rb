@@ -43,7 +43,7 @@ RSpec.describe PasswordResetEmailForm do
 
         expect(subject.submit.to_h).to include(
           success: false,
-          errors: errors,
+          errors:,
           error_details: hash_including(*errors.keys),
           user_id: 'nonexistent-uuid',
           confirmed: false,
@@ -57,7 +57,7 @@ RSpec.describe PasswordResetEmailForm do
 
         expect(subject.submit.to_h).to include(
           success: false,
-          errors: errors,
+          errors:,
           error_details: hash_including(*errors.keys),
           user_id: 'nonexistent-uuid',
           confirmed: false,

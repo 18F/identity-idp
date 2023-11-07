@@ -50,7 +50,7 @@ RSpec.describe Idv::InPersonController do
 
         context 'with establishing in-person enrollment' do
           before do
-            create(:in_person_enrollment, :establishing, user: user, profile: nil)
+            create(:in_person_enrollment, :establishing, user:, profile: nil)
           end
 
           it 'redirects to the first step' do

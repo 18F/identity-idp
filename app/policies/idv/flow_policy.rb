@@ -11,7 +11,7 @@ module Idv
       controller_name = controller.ancestors.include?(ApplicationController) ?
                           controller.controller_name : controller
       key = controller_to_key(controller: controller_name)
-      step_allowed?(key: key)
+      step_allowed?(key:)
     end
 
     def info_for_latest_step
@@ -25,7 +25,7 @@ module Idv
       return current_step if steps[current_step].next_steps == [:success]
 
       steps[current_step].next_steps.each do |key|
-        if step_allowed?(key: key)
+        if step_allowed?(key:)
           return latest_step(current_step: key)
         end
       end
@@ -51,7 +51,7 @@ module Idv
     end
 
     def step_allowed?(key:)
-      steps[key].preconditions.call(idv_session: idv_session, user: user)
+      steps[key].preconditions.call(idv_session:, user:)
     end
 
     def controller_to_key(controller:)

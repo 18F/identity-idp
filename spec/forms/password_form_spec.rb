@@ -8,7 +8,7 @@ RSpec.describe PasswordForm, type: :model do
   let(:extra) do
     {
       user_id: user.uuid,
-      request_id_present: request_id_present,
+      request_id_present:,
     }
   end
 
@@ -19,8 +19,8 @@ RSpec.describe PasswordForm, type: :model do
     subject(:result) { form.submit(params) }
     let(:params) do
       {
-        password: password,
-        password_confirmation: password_confirmation,
+        password:,
+        password_confirmation:,
       }
     end
 
@@ -105,7 +105,7 @@ RSpec.describe PasswordForm, type: :model do
     context 'with request_id in the params' do
       let(:params) do
         {
-          password: password,
+          password:,
           password_confirmation: password,
           request_id: 'foo',
         }
@@ -126,7 +126,7 @@ RSpec.describe PasswordForm, type: :model do
       context 'when the request_id is not properly encoded' do
         let(:params) do
           {
-            password: password,
+            password:,
             password_confirmation: password,
             request_id: "\xFFbar\xF8",
           }

@@ -16,7 +16,7 @@ class TwoFactorLoginOptionsForm
 
     success = valid?
 
-    FormResponse.new(success: success, errors: errors, extra: extra_analytics_attributes)
+    FormResponse.new(success:, errors:, extra: extra_analytics_attributes)
   end
 
   private
@@ -37,7 +37,7 @@ class TwoFactorLoginOptionsForm
 
   def extra_analytics_attributes
     {
-      selection: selection,
+      selection:,
     }
   end
 end

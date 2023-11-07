@@ -22,9 +22,9 @@ module Encryption
           encrypted_pii_recovery_multi_region = migrate_ciphertext(profile.encrypted_pii_recovery)
           profile.update!(
             encrypted_pii: profile.encrypted_pii,
-            encrypted_pii_multi_region: encrypted_pii_multi_region,
+            encrypted_pii_multi_region:,
             encrypted_pii_recovery: profile.encrypted_pii_recovery,
-            encrypted_pii_recovery_multi_region: encrypted_pii_recovery_multi_region,
+            encrypted_pii_recovery_multi_region:,
           )
         end
       end

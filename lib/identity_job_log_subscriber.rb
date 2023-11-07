@@ -20,7 +20,7 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
 
         warn(json.to_json)
       else
-        error_or_warn(event: event, include_exception_message: true)
+        error_or_warn(event:, include_exception_message: true)
       end
     elsif event.payload[:aborted]
       json[:halted] = true
@@ -38,7 +38,7 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
     json = default_attributes(event, job)
 
     if ex
-      error_or_warn(event: event, include_exception_message: true)
+      error_or_warn(event:, include_exception_message: true)
     elsif event.payload[:aborted]
       json[:halted] = true
 
@@ -71,7 +71,7 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
     if ex
       # NewRelic?
       error_or_warn(
-        event: event,
+        event:,
         include_exception_message: true,
         include_exception_backtrace: true,
       )
@@ -92,10 +92,10 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
     wait_ms = wait_seconds.to_i.in_milliseconds
 
     if ex
-      error_or_warn(event: event, extra_attributes: { wait_ms: wait_ms })
+      error_or_warn(event:, extra_attributes: { wait_ms: })
     else
       default_attributes(event, job).merge(
-        wait_ms: wait_ms,
+        wait_ms:,
       )
     end
   end
@@ -104,13 +104,13 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
     job = event.payload[:job]
 
     error_or_warn(
-      event: event,
+      event:,
       extra_attributes: { attempts: job.executions },
     )
   end
 
   def discard(event)
-    error_or_warn(event: event)
+    error_or_warn(event:)
   end
 
   def logger

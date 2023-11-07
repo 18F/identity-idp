@@ -12,8 +12,8 @@ RSpec.describe AccountReset::DeleteAccountController do
   describe '#delete' do
     it 'logs a good token to the analytics' do
       user = create(:user, :fully_registered, :with_backup_code, confirmed_at: Time.zone.now.round)
-      create(:phone_configuration, user: user, phone: Faker::PhoneNumber.cell_phone)
-      create_list(:webauthn_configuration, 2, user: user)
+      create(:phone_configuration, user:, phone: Faker::PhoneNumber.cell_phone)
+      create_list(:webauthn_configuration, 2, user:)
       create_account_reset_request_for(user)
       grant_request(user)
 

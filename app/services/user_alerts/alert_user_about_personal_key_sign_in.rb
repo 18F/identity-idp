@@ -3,8 +3,8 @@ module UserAlerts
     # @return [FormResponse]
     def self.call(user, disavowal_token)
       emails = user.confirmed_email_addresses.map do |email_address|
-        UserMailer.with(user: user, email_address: email_address).personal_key_sign_in(
-          disavowal_token: disavowal_token,
+        UserMailer.with(user:, email_address:).personal_key_sign_in(
+          disavowal_token:,
         ).deliver_now_or_later
       end
       telephony_responses = MfaContext.new(user).phone_configurations.map do |phone_configuration|
@@ -14,7 +14,7 @@ module UserAlerts
           country_code: Phonelib.parse(phone).country,
         )
       end
-      form_response(emails: emails, telephony_responses: telephony_responses)
+      form_response(emails:, telephony_responses:)
     end
 
     def self.form_response(emails:, telephony_responses:)

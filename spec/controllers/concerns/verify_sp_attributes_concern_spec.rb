@@ -6,7 +6,7 @@ RSpec.describe VerifySpAttributesConcern do
   end
 
   describe '#consent_has_expired?' do
-    let(:sp_session_identity) { build(:service_provider_identity, user: user) }
+    let(:sp_session_identity) { build(:service_provider_identity, user:) }
     let(:user) { build(:user) }
 
     before do
@@ -117,8 +117,8 @@ RSpec.describe VerifySpAttributesConcern do
     let(:sp_session_identity) do
       build(
         :service_provider_identity,
-        user: user,
-        verified_attributes: verified_attributes,
+        user:,
+        verified_attributes:,
       )
     end
     let(:sp_session) { {} }
@@ -137,8 +137,8 @@ RSpec.describe VerifySpAttributesConcern do
       let(:requested_attributes) { nil }
       let(:sp_session) do
         {
-          issuer: issuer,
-          requested_attributes: requested_attributes,
+          issuer:,
+          requested_attributes:,
           request_url: 'http://localhost',
         }
       end
@@ -181,12 +181,12 @@ RSpec.describe VerifySpAttributesConcern do
           let(:sp_session_identity) do
             build(
               :service_provider_identity,
-              user: user,
+              user:,
               last_consented_at: 15.days.ago,
             )
           end
           before do
-            create(:profile, :active, verified_at: verified_at, user: user)
+            create(:profile, :active, verified_at:, user:)
           end
           it 'is reverified_after_consent' do
             expect(needs_completion_screen_reason).to eq(:reverified_after_consent)
@@ -203,7 +203,7 @@ RSpec.describe VerifySpAttributesConcern do
   end
 
   describe '#reverified_after_consent?' do
-    let(:sp_session_identity) { build(:service_provider_identity, user: user) }
+    let(:sp_session_identity) { build(:service_provider_identity, user:) }
     let(:user) { build(:user) }
 
     before do
@@ -282,11 +282,11 @@ RSpec.describe VerifySpAttributesConcern do
 
     context 'when there is an active profile' do
       let(:sp_session_identity) do
-        create(:service_provider_identity, last_consented_at: 15.days.ago, user: user)
+        create(:service_provider_identity, last_consented_at: 15.days.ago, user:)
       end
 
       before do
-        create(:profile, :active, verified_at: verified_at, user: user)
+        create(:profile, :active, verified_at:, user:)
       end
 
       context 'when the active profile was verified after last_consented_at' do

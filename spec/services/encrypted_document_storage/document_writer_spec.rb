@@ -7,9 +7,9 @@ RSpec.describe EncryptedDocumentStorage::DocumentWriter do
       back_image = 'hello, i am the back image'
 
       result = EncryptedDocumentStorage::DocumentWriter.new.encrypt_and_write_document(
-        front_image: front_image,
+        front_image:,
         front_image_content_type: 'image/jpeg',
-        back_image: back_image,
+        back_image:,
         back_image_content_type: 'image/png',
       )
 

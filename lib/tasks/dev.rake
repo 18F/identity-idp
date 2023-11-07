@@ -4,11 +4,11 @@ namespace :dev do
     pw = 'salty pickles'
     %w[test1@test.com test2@test.com admin@gsa.gov].each_with_index do |email, index|
       user = User.find_with_email(email) || User.create!
-      setup_user(user, email: email, pw: pw, num: index)
+      setup_user(user, email:, pw:, num: index)
     end
 
     user = User.find_with_email('totp@test.com') || User.create!
-    setup_totp_user(user, email: 'totp@test.com', pw: pw)
+    setup_totp_user(user, email: 'totp@test.com', pw:)
 
     ial2_user = User.find_with_email('test2@test.com')
     profile = Profile.new(user: ial2_user)
@@ -54,10 +54,10 @@ namespace :dev do
       while num_created < num_users
         email_addr = "testuser#{num_created}@example.com"
         user = User.find_with_email(email_addr) || User.create!
-        setup_user(user, email: email_addr, pw: pw, num: num_created) unless user.confirmed?
+        setup_user(user, email: email_addr, pw:, num: num_created) unless user.confirmed?
 
         if ENV['VERIFIED'] && user.active_profile.nil?
-          profile = Profile.new(user: user)
+          profile = Profile.new(user:)
           pii = Pii::Attributes.new_from_hash(
             first_name: 'Test',
             last_name: "User #{num_created}",
@@ -109,7 +109,7 @@ namespace :dev do
         if is_established
           unless raw_enrollment_status == InPersonEnrollment::STATUS_PENDING &&
                  !user.pending_in_person_enrollment.nil?
-            profile = Profile.new(user: user)
+            profile = Profile.new(user:)
 
             # Convert index to a string of letters to be a valid last name for the USPS API
             usps_compatible_number_alternative = n.to_s.chars.map do |c|
@@ -134,9 +134,9 @@ namespace :dev do
 
             if raw_enrollment_status === InPersonEnrollment::STATUS_PENDING && create_in_usps
               enrollment = InPersonEnrollment.find_or_initialize_by(
-                user: user,
+                user:,
                 status: :establishing,
-                profile: profile,
+                profile:,
               )
               enrollment.save!
 
@@ -160,8 +160,8 @@ namespace :dev do
               end
             else
               enrollment = InPersonEnrollment.create!(
-                user: user,
-                profile: profile,
+                user:,
+                profile:,
                 status: enrollment_status,
                 enrollment_established_at: Time.zone.now - random.rand(0..5).days,
                 unique_id: SecureRandom.hex(9),
@@ -176,7 +176,7 @@ namespace :dev do
           end
         else
           InPersonEnrollment.create!(
-            user: user,
+            user:,
             status: enrollment_status,
           )
         end
@@ -209,14 +209,14 @@ namespace :dev do
   end
 
   def setup_user(user, args)
-    EmailAddress.create!(email: args[:email], user: user, confirmed_at: Time.zone.now)
+    EmailAddress.create!(email: args[:email], user:, confirmed_at: Time.zone.now)
     user.reset_password(args[:pw], args[:pw])
     MfaContext.new(user).phone_configurations.create(phone_configuration_data(user, args))
     Event.create(user_id: user.id, event_type: :account_created)
   end
 
   def setup_totp_user(user, args)
-    EmailAddress.create!(email: args[:email], user: user, confirmed_at: Time.zone.now)
+    EmailAddress.create!(email: args[:email], user:, confirmed_at: Time.zone.now)
     user.reset_password(args[:pw], args[:pw])
     Event.create(user_id: user.id, event_type: :account_created)
   end

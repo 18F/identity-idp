@@ -5,13 +5,13 @@ module Idv
     respond_to :json
 
     def show
-      render(json: { redirect: redirect_url }.compact, status: status)
+      render(json: { redirect: redirect_url }.compact, status:)
     end
 
     def idv_session
       @idv_session ||= Idv::Session.new(
-        user_session: user_session,
-        current_user: current_user,
+        user_session:,
+        current_user:,
         service_provider: current_sp,
       )
     end

@@ -24,7 +24,7 @@ module SamlIdpLogoutConcern
   def handle_valid_sp_remote_logout_request(user_id:, issuer:)
     # Remotely delete the user's current session
     session_id = ServiceProviderIdentity.
-      where(user_id: user_id, service_provider: issuer).pick(:rails_session_id)
+      where(user_id:, service_provider: issuer).pick(:rails_session_id)
 
     if session_id
       OutOfBandSessionAccessor.new(session_id).destroy
@@ -44,10 +44,10 @@ module SamlIdpLogoutConcern
   def find_user_from_session_index
     uuid = saml_request.session_index
     issuer = saml_request.issuer
-    agency_id = ServiceProvider.find_by(issuer: issuer).agency_id
-    user_id = AgencyIdentity.find_by(agency_id: agency_id, uuid: uuid)&.user_id
+    agency_id = ServiceProvider.find_by(issuer:).agency_id
+    user_id = AgencyIdentity.find_by(agency_id:, uuid:)&.user_id
     # ensure that the user has authenticated to that SP
-    ServiceProviderIdentity.find_by(user_id: user_id, service_provider: issuer)&.user_id
+    ServiceProviderIdentity.find_by(user_id:, service_provider: issuer)&.user_id
   end
 
   def logout_response
@@ -60,7 +60,7 @@ module SamlIdpLogoutConcern
   def track_logout_event
     sp_initiated = saml_request.present?
     analytics.logout_initiated(
-      sp_initiated: sp_initiated,
+      sp_initiated:,
       oidc: false,
       saml_request_valid: sp_initiated ? valid_saml_request? : true,
     )

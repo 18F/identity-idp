@@ -8,11 +8,11 @@ RSpec.describe DocAuth::Response do
   let(:attention_with_barcode) { false }
   subject(:response) do
     described_class.new(
-      success: success,
-      errors: errors,
-      exception: exception,
-      pii_from_doc: pii_from_doc,
-      attention_with_barcode: attention_with_barcode,
+      success:,
+      errors:,
+      exception:,
+      pii_from_doc:,
+      attention_with_barcode:,
     )
   end
 

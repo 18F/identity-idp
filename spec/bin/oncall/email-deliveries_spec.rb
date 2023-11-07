@@ -5,7 +5,7 @@ require 'tableparser'
 RSpec.describe EmailDeliveries do
   describe '.parse!' do
     let(:out) { StringIO.new }
-    subject(:parse!) { EmailDeliveries.parse!(argv: argv, out: out) }
+    subject(:parse!) { EmailDeliveries.parse!(argv:, out:) }
 
     context 'with --help' do
       let(:argv) { %w[--help] }

@@ -40,8 +40,8 @@ module UspsInPersonProofing
       TransliterationResult.new(
         changed?: value != transliterated,
         original: value,
-        transliterated: transliterated,
-        unsupported_chars: unsupported_chars,
+        transliterated:,
+        unsupported_chars:,
       )
     end
   end

@@ -36,20 +36,20 @@ class SecurityEventForm
 
     if success
       SecurityEvent.create!(
-        event_type: event_type,
+        event_type:,
         issuer: service_provider.issuer,
-        jti: jti,
-        user: user,
-        occurred_at: occurred_at,
+        jti:,
+        user:,
+        occurred_at:,
       )
 
       if event_type == SecurityEvent::AUTHORIZATION_FRAUD_DETECTED &&
          IdentityConfig.store.reset_password_on_auth_fraud_event
-        ResetUserPassword.new(user: user).call
+        ResetUserPassword.new(user:).call
       end
     end
 
-    FormResponse.new(success: success, errors: errors, extra: extra_analytics_attributes)
+    FormResponse.new(success:, errors:, extra: extra_analytics_attributes)
   end
 
   def error_code
@@ -150,7 +150,7 @@ class SecurityEventForm
 
     @record_already_exists = SecurityEvent.exists?(
       issuer: service_provider.issuer,
-      jti: jti,
+      jti:,
       user_id: user.id,
     )
   end
@@ -180,7 +180,7 @@ class SecurityEventForm
     elsif !SecurityEvent::EVENT_TYPES.include?(event_type)
       errors.add(
         :event_type,
-        t('risc.security_event.errors.event_type_unsupported', event_type: event_type),
+        t('risc.security_event.errors.event_type_unsupported', event_type:),
         type: :event_type_unsupported,
       )
       @error_code = ErrorCodes::SET_TYPE
@@ -298,11 +298,11 @@ class SecurityEventForm
 
   def extra_analytics_attributes
     {
-      client_id: client_id,
-      error_code: error_code,
-      jti: jti,
+      client_id:,
+      error_code:,
+      jti:,
       user_id: user&.uuid,
-      event_type: event_type,
+      event_type:,
     }
   end
 end

@@ -28,8 +28,8 @@ RSpec.feature 'PIV/CAC Management' do
 
       visit_piv_cac_service(
         setup_piv_cac_url,
-        nonce: nonce,
-        uuid: uuid,
+        nonce:,
+        uuid:,
         subject: 'SomeIgnoredSubject',
       )
 
@@ -45,7 +45,7 @@ RSpec.feature 'PIV/CAC Management' do
     scenario 'disallows add if 2 piv cacs' do
       stub_piv_cac_service
       user_id = user.id
-      ::PivCacConfiguration.create!(user_id: user_id, x509_dn_uuid: 'foo', name: 'key1')
+      ::PivCacConfiguration.create!(user_id:, x509_dn_uuid: 'foo', name: 'key1')
 
       sign_in_and_2fa_user(user)
       visit account_two_factor_authentication_path
@@ -53,7 +53,7 @@ RSpec.feature 'PIV/CAC Management' do
       expect(page).to have_link(t('account.index.piv_cac_add'), href: setup_piv_cac_url)
       visit account_two_factor_authentication_path
 
-      ::PivCacConfiguration.create!(user_id: user_id, x509_dn_uuid: 'bar', name: 'key2')
+      ::PivCacConfiguration.create!(user_id:, x509_dn_uuid: 'bar', name: 'key2')
       visit account_two_factor_authentication_path
       expect(page).to_not have_link(t('account.index.piv_cac_add'), href: setup_piv_cac_url)
 
@@ -72,8 +72,8 @@ RSpec.feature 'PIV/CAC Management' do
 
       visit_piv_cac_service(
         setup_piv_cac_url,
-        nonce: nonce,
-        uuid: uuid,
+        nonce:,
+        uuid:,
         subject: 'SomeIgnoredSubject',
       )
 
@@ -98,7 +98,7 @@ RSpec.feature 'PIV/CAC Management' do
       nonce = piv_cac_nonce_from_form_action
       visit_piv_cac_service(
         setup_piv_cac_url,
-        nonce: nonce,
+        nonce:,
         error: 'certificate.none',
         key_id: 'AB:CD:EF',
       )
@@ -122,7 +122,7 @@ RSpec.feature 'PIV/CAC Management' do
       nonce = piv_cac_nonce_from_form_action
       visit_piv_cac_service(
         setup_piv_cac_url,
-        nonce: nonce,
+        nonce:,
         error: 'certificate.expired',
         key_id: 'AB:CD:EF',
       )

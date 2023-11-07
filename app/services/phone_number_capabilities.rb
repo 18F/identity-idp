@@ -19,7 +19,7 @@ class PhoneNumberCapabilities
     I18n.available_locales.each do |locale|
       INTERNATIONAL_CODES.each do |k, value|
         @translated_intl_codes_data[locale][k] =
-          value.merge('name' => I18n.t("countries.#{k.downcase}", locale: locale))
+          value.merge('name' => I18n.t("countries.#{k.downcase}", locale:))
       end
     end
     @translated_intl_codes_data[I18n.locale]

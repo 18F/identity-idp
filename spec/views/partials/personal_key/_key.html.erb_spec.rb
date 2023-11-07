@@ -10,7 +10,7 @@ RSpec.describe 'partials/personal_key/_key.html.erb' do
   end
 
   subject(:rendered) do
-    render partial: 'key', locals: locals
+    render partial: 'key', locals:
   end
 
   it 'renders the code without whitespace between segments' do
@@ -28,7 +28,7 @@ RSpec.describe 'partials/personal_key/_key.html.erb' do
 
   context 'with local personal_key_generated_at' do
     let(:personal_key_generated_at) { Time.zone.parse('2020-04-09T14:03:00Z').utc }
-    let(:locals) { super().merge(personal_key_generated_at: personal_key_generated_at) }
+    let(:locals) { super().merge(personal_key_generated_at:) }
 
     it 'displays the specified date' do
       expect(rendered).to have_css(

@@ -12,8 +12,8 @@ RSpec.describe Idv::ByMail::EnterCodeController do
       create(
         :profile,
         :with_pii,
-        user: user,
-        proofing_components: proofing_components,
+        user:,
+        proofing_components:,
         created_at: profile_created_at,
       )
     end
@@ -50,7 +50,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
 
   describe '#index' do
     subject(:action) do
-      get(:index, params: params)
+      get(:index, params:)
     end
 
     context 'user has pending profile' do
@@ -72,7 +72,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
       end
 
       it 'shows rate limited page if user is rate limited' do
-        RateLimiter.new(rate_limit_type: :verify_gpo_key, user: user).increment_to_limited!
+        RateLimiter.new(rate_limit_type: :verify_gpo_key, user:).increment_to_limited!
 
         action
 
@@ -119,7 +119,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
 
     context 'with rate limit reached' do
       before do
-        RateLimiter.new(rate_limit_type: :verify_gpo_key, user: user).increment_to_limited!
+        RateLimiter.new(rate_limit_type: :verify_gpo_key, user:).increment_to_limited!
       end
 
       it 'redirects to the rate limited page' do
@@ -218,13 +218,13 @@ RSpec.describe Idv::ByMail::EnterCodeController do
           create(
             :in_person_enrollment,
             :pending,
-            user: user,
+            user:,
             profile: pending_profile,
           )
         end
 
         let(:proofing_components) do
-          ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
+          ProofingComponent.create(user:, document_check: Idp::Constants::Vendors::USPS)
         end
 
         before do
@@ -268,7 +268,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
               :profile,
               :with_pii,
               fraud_pending_reason: 'threatmetrix_reject',
-              user: user,
+              user:,
             )
           end
 
@@ -307,7 +307,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
               :profile,
               :with_pii,
               fraud_pending_reason: 'threatmetrix_reject',
-              user: user,
+              user:,
             )
           end
 
@@ -347,7 +347,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
               :profile,
               :with_pii,
               fraud_pending_reason: 'threatmetrix_review',
-              user: user,
+              user:,
             )
           end
 

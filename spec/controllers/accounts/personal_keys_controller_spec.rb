@@ -64,7 +64,7 @@ RSpec.describe Accounts::PersonalKeysController do
 
     it 'prompts for password if PII is not present' do
       user = create(:user, :fully_registered, :with_piv_or_cac)
-      create(:profile, :active, :verified, user: user)
+      create(:profile, :active, :verified, user:)
       stub_sign_in(user)
 
       post :create

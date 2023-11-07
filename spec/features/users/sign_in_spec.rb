@@ -65,7 +65,7 @@ RSpec.feature 'Sign in' do
     nonce = piv_cac_nonce_from_form_action
     visit_piv_cac_service(
       current_url,
-      nonce: nonce,
+      nonce:,
       dn: 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
       uuid: SecureRandom.uuid,
       subject: 'SomeIgnoredSubject',
@@ -108,7 +108,7 @@ RSpec.feature 'Sign in' do
       :profile,
       :active,
       :verified,
-      user: user,
+      user:,
       pii: { first_name: 'John', ssn: '111223333' },
     )
     service_provider = ServiceProvider.find_by(issuer: OidcAuthHelper::OIDC_ISSUER)
@@ -136,7 +136,7 @@ RSpec.feature 'Sign in' do
     nonce = piv_cac_nonce_from_form_action
     visit_piv_cac_service(
       current_url,
-      nonce: nonce,
+      nonce:,
       dn: 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
       uuid: SecureRandom.uuid,
       error: 'certificate.bad',
@@ -170,7 +170,7 @@ RSpec.feature 'Sign in' do
     nonce = get_piv_cac_nonce_from_link(find_link(t('forms.piv_cac_login.submit')))
     visit_piv_cac_service(
       current_url,
-      nonce: nonce,
+      nonce:,
       dn: 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
       uuid: SecureRandom.uuid,
       subject: 'SomeIgnoredSubject',
@@ -434,7 +434,7 @@ RSpec.feature 'Sign in' do
         email = 'test@example.com'
         password = 'salty pickles'
 
-        create(:user, :fully_registered, email: email, password: password)
+        create(:user, :fully_registered, email:, password:)
 
         user = User.find_with_email(email)
         encrypted_email = user.confirmed_email_addresses.first.encrypted_email
@@ -454,7 +454,7 @@ RSpec.feature 'Sign in' do
         email = 'test@example.com'
         password = 'salty pickles'
 
-        create(:user, :fully_registered, email: email, password: password)
+        create(:user, :fully_registered, email:, password:)
 
         user = User.find_with_email(email)
         encrypted_email = user.confirmed_email_addresses.first.encrypted_email
@@ -740,8 +740,8 @@ RSpec.feature 'Sign in' do
     it 'allows you to sign in with either' do
       user = create(:user, :fully_registered, :with_piv_or_cac)
       user_id = user.id
-      ::PivCacConfiguration.create!(user_id: user_id, x509_dn_uuid: 'foo', name: 'key1')
-      ::PivCacConfiguration.create!(user_id: user_id, x509_dn_uuid: 'bar', name: 'key2')
+      ::PivCacConfiguration.create!(user_id:, x509_dn_uuid: 'foo', name: 'key1')
+      ::PivCacConfiguration.create!(user_id:, x509_dn_uuid: 'bar', name: 'key2')
 
       visit new_user_session_path
       click_on t('account.login.piv_cac')
@@ -971,7 +971,7 @@ RSpec.feature 'Sign in' do
     nonce = get_piv_cac_nonce_from_link(find_link(t('forms.piv_cac_login.submit')))
     visit_piv_cac_service(
       current_url,
-      nonce: nonce,
+      nonce:,
       dn: 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
       uuid: SecureRandom.uuid,
       subject: 'SomeIgnoredSubject',

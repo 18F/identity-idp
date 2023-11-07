@@ -7,11 +7,11 @@ module Telephony
       def deliver(message:, to:, country_code:, otp: nil)
         error = ErrorSimulator.new.error_for_number(to)
         if error.nil?
-          Message.messages.push(Message.new(body: message, to: to, otp: otp))
+          Message.messages.push(Message.new(body: message, to:, otp:))
           success_response
         else
           Response.new(
-            success: false, error: error, extra: { request_id: 'fake-message-request-id' },
+            success: false, error:, extra: { request_id: 'fake-message-request-id' },
           )
         end
       end
@@ -35,13 +35,13 @@ module Telephony
         when TelephonyError
           PhoneNumberInfo.new(
             type: :unknown,
-            error: error,
+            error:,
           )
         else
           type = phone_type(phone_number)
 
           PhoneNumberInfo.new(
-            type: type,
+            type:,
             carrier: "Test #{type.to_s.capitalize} Carrier",
           )
         end

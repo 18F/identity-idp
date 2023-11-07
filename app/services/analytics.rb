@@ -10,7 +10,7 @@ class Analytics
     @user = user
     @request = request
     @sp = sp
-    @ahoy = ahoy || Ahoy::Tracker.new(request: request)
+    @ahoy = ahoy || Ahoy::Tracker.new(request:)
     @session = session
   end
 
@@ -21,7 +21,7 @@ class Analytics
       event_properties: attributes.except(:user_id),
       new_event: first_event_this_session?,
       path: request&.path,
-      session_duration: session_duration,
+      session_duration:,
       user_id: attributes[:user_id] || user.uuid,
       locale: I18n.locale,
     }

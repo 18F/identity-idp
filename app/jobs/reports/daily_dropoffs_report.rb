@@ -33,8 +33,8 @@ module Reports
       ].select(&:present?).
         each do |bucket_name|
         upload_file_to_s3_bucket(
-          path: path,
-          body: body,
+          path:,
+          body:,
           content_type: 'text/csv',
           bucket: bucket_name,
         )
@@ -76,8 +76,8 @@ module Reports
 
     def query_results
       params = {
-        start: start,
-        finish: finish,
+        start:,
+        finish:,
       }.transform_values { |v| ActiveRecord::Base.connection.quote(v) }
 
       sql = format(<<-SQL, params)

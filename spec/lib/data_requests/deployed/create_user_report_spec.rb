@@ -20,9 +20,9 @@ RSpec.describe DataRequests::Deployed::CreateUserReport do
       user = create(:user)
       service_provider = create(:service_provider)
       identity = create(
-        :service_provider_identity, user: user, service_provider: service_provider.issuer
+        :service_provider_identity, user:, service_provider: service_provider.issuer
       )
-      AgencyIdentity.create!(user: user, agency: service_provider.agency, uuid: identity.uuid)
+      AgencyIdentity.create!(user:, agency: service_provider.agency, uuid: identity.uuid)
 
       result = described_class.new(user, service_provider.issuer).call
 

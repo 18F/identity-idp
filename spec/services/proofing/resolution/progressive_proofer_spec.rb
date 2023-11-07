@@ -39,13 +39,13 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
     end
     subject(:proof) do
       instance.proof(
-        applicant_pii: applicant_pii,
-        ipp_enrollment_in_progress: ipp_enrollment_in_progress,
-        double_address_verification: double_address_verification,
-        request_ip: request_ip,
-        should_proof_state_id: should_proof_state_id,
-        threatmetrix_session_id: threatmetrix_session_id,
-        timer: timer,
+        applicant_pii:,
+        ipp_enrollment_in_progress:,
+        double_address_verification:,
+        request_ip:,
+        should_proof_state_id:,
+        threatmetrix_session_id:,
+        timer:,
         user_email: user.confirmed_email_addresses.first.email,
       )
     end

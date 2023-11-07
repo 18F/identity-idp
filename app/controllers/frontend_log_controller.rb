@@ -60,7 +60,7 @@ class FrontendLogController < ApplicationController
   private
 
   def frontend_logger
-    FrontendLogger.new(analytics: analytics, event_map: EVENT_MAP)
+    FrontendLogger.new(analytics:, event_map: EVENT_MAP)
   end
 
   def log_params

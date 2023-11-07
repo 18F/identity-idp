@@ -38,7 +38,7 @@ module ControllerHelper
     user_session = {}
     stub_sign_in(user)
     idv_session = Idv::Session.new(
-      user_session: user_session, current_user: user,
+      user_session:, current_user: user,
       service_provider: nil
     )
     idv_session.applicant = {
@@ -57,7 +57,7 @@ module ControllerHelper
     user_session = ActiveSupport::HashWithIndifferentAccess.new
     stub_sign_in(user)
     idv_session = Idv::Session.new(
-      user_session: user_session, current_user: user,
+      user_session:, current_user: user,
       service_provider: nil
     )
     idv_session.applicant = {
@@ -81,7 +81,7 @@ module ControllerHelper
   end
 
   def stub_identity(user, params)
-    ServiceProviderIdentity.new(params.merge(user: user)).save
+    ServiceProviderIdentity.new(params.merge(user:)).save
   end
 end
 

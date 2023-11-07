@@ -8,8 +8,8 @@ module DataRequests
       end
 
       def call
-        User.find_by(uuid: uuid) ||
-          ServiceProviderIdentity.find_by(uuid: uuid)&.user
+        User.find_by(uuid:) ||
+          ServiceProviderIdentity.find_by(uuid:)&.user
       end
     end
   end

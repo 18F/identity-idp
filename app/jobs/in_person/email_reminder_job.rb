@@ -27,7 +27,7 @@ module InPerson
     private
 
     def analytics(user: AnonymousUser.new)
-      Analytics.new(user: user, request: nil, session: {}, sp: nil)
+      Analytics.new(user:, request: nil, session: {}, sp: nil)
     end
 
     def send_emails_for_enrollments(enrollments:, email_type:)
@@ -42,7 +42,7 @@ module InPerson
         )
       else
         analytics(user: enrollment.user).idv_in_person_email_reminder_job_email_initiated(
-          email_type: email_type,
+          email_type:,
           enrollment_id: enrollment.id,
         )
         if email_type == EMAIL_TYPE_EARLY
@@ -74,10 +74,10 @@ module InPerson
       user.confirmed_email_addresses.each do |email_address|
         # rubocop:disable IdentityIdp/MailLaterLinter
         UserMailer.with(
-          user: user,
-          email_address: email_address,
+          user:,
+          email_address:,
         ).in_person_ready_to_verify_reminder(
-          enrollment: enrollment,
+          enrollment:,
         ).deliver_later
         # rubocop:enable IdentityIdp/MailLaterLinter
       end

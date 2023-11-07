@@ -29,21 +29,21 @@ RSpec.describe Proofing::Aamva::AuthenticationClient do
       security_token_request_stub
 
       auth_token_request = Proofing::Aamva::Request::AuthenticationTokenRequest.new(
-        security_context_token_identifier: security_context_token_identifier,
-        security_context_token_reference: security_context_token_reference,
-        client_hmac_secret: client_hmac_secret,
-        server_hmac_secret: server_hmac_secret,
-        config: config,
+        security_context_token_identifier:,
+        security_context_token_reference:,
+        client_hmac_secret:,
+        server_hmac_secret:,
+        config:,
       )
       allow(auth_token_request).to receive(:body).
         and_return(AamvaFixtures.authentication_token_request)
       allow(Proofing::Aamva::Request::AuthenticationTokenRequest).to receive(:new).
         with(
-          config: config,
-          security_context_token_identifier: security_context_token_identifier,
-          security_context_token_reference: security_context_token_reference,
-          client_hmac_secret: client_hmac_secret,
-          server_hmac_secret: server_hmac_secret,
+          config:,
+          security_context_token_identifier:,
+          security_context_token_reference:,
+          client_hmac_secret:,
+          server_hmac_secret:,
         ).
         and_return(auth_token_request)
       auth_token_request_stub

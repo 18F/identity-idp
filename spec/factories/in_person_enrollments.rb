@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :in_person_enrollment do
     current_address_matches_id { true }
-    profile { association :profile, user: user }
+    profile { association :profile, user: }
     selected_location_details { { name: 'BALTIMORE' } }
     unique_id { InPersonEnrollment.generate_unique_id }
     user { association :user, :fully_registered }

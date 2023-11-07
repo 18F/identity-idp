@@ -9,10 +9,10 @@ RSpec.describe AccountReset::FindPendingRequestForUser do
 
     let!(:account_reset_request) do
       AccountResetRequest.create(
-        user: user,
-        granted_at: granted_at,
-        cancelled_at: cancelled_at,
-        requested_at: requested_at,
+        user:,
+        granted_at:,
+        cancelled_at:,
+        requested_at:,
       )
     end
 

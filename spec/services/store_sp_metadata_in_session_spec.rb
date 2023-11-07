@@ -21,7 +21,7 @@ RSpec.describe StoreSpMetadataInSession do
           sp_request.url = 'http://issuer.gov'
           sp_request.requested_attributes = %w[email]
         end
-        instance = StoreSpMetadataInSession.new(session: app_session, request_id: request_id)
+        instance = StoreSpMetadataInSession.new(session: app_session, request_id:)
 
         app_session_hash = {
           issuer: 'issuer',
@@ -32,7 +32,7 @@ RSpec.describe StoreSpMetadataInSession do
           ial2: false,
           ialmax: false,
           request_url: 'http://issuer.gov',
-          request_id: request_id,
+          request_id:,
           requested_attributes: %w[email],
         }
 
@@ -52,7 +52,7 @@ RSpec.describe StoreSpMetadataInSession do
           sp_request.url = 'http://issuer.gov'
           sp_request.requested_attributes = %w[email]
         end
-        instance = StoreSpMetadataInSession.new(session: app_session, request_id: request_id)
+        instance = StoreSpMetadataInSession.new(session: app_session, request_id:)
 
         app_session_hash = {
           issuer: 'issuer',
@@ -63,7 +63,7 @@ RSpec.describe StoreSpMetadataInSession do
           ial2: true,
           ialmax: false,
           request_url: 'http://issuer.gov',
-          request_id: request_id,
+          request_id:,
           requested_attributes: %w[email],
         }
 
@@ -83,7 +83,7 @@ RSpec.describe StoreSpMetadataInSession do
           sp_request.url = 'http://issuer.gov'
           sp_request.requested_attributes = %w[email]
         end
-        instance = StoreSpMetadataInSession.new(session: app_session, request_id: request_id)
+        instance = StoreSpMetadataInSession.new(session: app_session, request_id:)
 
         app_session_hash = {
           issuer: 'issuer',
@@ -94,7 +94,7 @@ RSpec.describe StoreSpMetadataInSession do
           ial2: true,
           ialmax: false,
           request_url: 'http://issuer.gov',
-          request_id: request_id,
+          request_id:,
           requested_attributes: %w[email],
         }
 

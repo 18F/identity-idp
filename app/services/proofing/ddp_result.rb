@@ -61,13 +61,13 @@ module Proofing
 
     def to_h
       {
-        client: client,
+        client:,
         success: success?,
-        errors: errors,
-        exception: exception,
+        errors:,
+        exception:,
         timed_out: timed_out?,
-        transaction_id: transaction_id,
-        review_status: review_status,
+        transaction_id:,
+        review_status:,
         response_body: Proofing::LexisNexis::Ddp::ResponseRedacter.redact(response_body),
       }
     end

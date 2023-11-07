@@ -67,14 +67,14 @@ RSpec.describe Encryption::Encryptors::PiiEncryptor do
       expect(ciphertext_single_region).to eq(
         {
           encrypted_data: Base64.strict_encode64('single_region_kms_ciphertext'),
-          salt: salt,
+          salt:,
           cost: '800$8$1$',
         }.to_json,
       )
       expect(ciphertext_multi_region).to eq(
         {
           encrypted_data: Base64.strict_encode64('multi_region_kms_ciphertext'),
-          salt: salt,
+          salt:,
           cost: '800$8$1$',
         }.to_json,
       )
@@ -121,12 +121,12 @@ RSpec.describe Encryption::Encryptors::PiiEncryptor do
       ciphertext_pair = Encryption::RegionalCiphertextPair.new(
         single_region_ciphertext: {
           encrypted_data: Base64.strict_encode64('kms_ciphertext_sr'),
-          salt: salt,
+          salt:,
           cost: '800$8$1$',
         }.to_json,
         multi_region_ciphertext: {
           encrypted_data: Base64.strict_encode64('kms_ciphertext_mr'),
-          salt: salt,
+          salt:,
           cost: '800$8$1$',
         }.to_json,
       )

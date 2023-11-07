@@ -84,9 +84,9 @@ class PinpointSupportedCountries
         end
 
         CountrySupport.new(
-          iso_code: iso_code,
+          iso_code:,
           name: trim_spaces_digits(sms_config['Country or region']),
-          supports_sms: supports_sms,
+          supports_sms:,
         )
       end
   end
@@ -114,7 +114,7 @@ class PinpointSupportedCountries
       raise "no phone_data for '#{iso_code}', maybe it needs to be remapped?" unless phone_data
 
       CountryDialingCode.new(
-        iso_code: iso_code,
+        iso_code:,
         country_code: country_code(phone_data),
         name: combined.name,
         supports_sms: combined.supports_sms || false,

@@ -6,8 +6,8 @@ RSpec.describe HealthCheckSummary do
 
   subject(:health_check_summary) do
     HealthCheckSummary.new(
-      healthy: healthy,
-      result: result,
+      healthy:,
+      result:,
     )
   end
 

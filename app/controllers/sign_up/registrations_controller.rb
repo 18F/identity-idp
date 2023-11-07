@@ -11,7 +11,7 @@ module SignUp
 
     def new
       @register_user_email_form = RegisterUserEmailForm.new(
-        analytics: analytics,
+        analytics:,
         attempts_tracker: irs_attempts_api_tracker,
       )
       analytics.user_registration_enter_email_visit
@@ -20,7 +20,7 @@ module SignUp
 
     def create
       @register_user_email_form = RegisterUserEmailForm.new(
-        analytics: analytics,
+        analytics:,
         attempts_tracker: irs_attempts_api_tracker,
       )
 

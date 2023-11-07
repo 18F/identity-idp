@@ -26,7 +26,7 @@ RSpec.describe Users::DeleteController do
 
   describe '#delete' do
     let(:password) { ControllerHelper::VALID_PASSWORD }
-    subject(:delete) { post :delete, params: { user: { password: password } } }
+    subject(:delete) { post :delete, params: { user: { password: } } }
 
     context 'with an incorrect password' do
       let(:password) { 'wrong' }
@@ -96,7 +96,7 @@ RSpec.describe Users::DeleteController do
 
     it 'deletes profile information for ial2' do
       user = stub_sign_in
-      create(:profile, :active, :verified, user: user, pii: { ssn: '1234', dob: '1920-01-01' })
+      create(:profile, :active, :verified, user:, pii: { ssn: '1234', dob: '1920-01-01' })
       expect(Profile.count).to eq(1)
       delete
       expect(Profile.count).to eq(0)

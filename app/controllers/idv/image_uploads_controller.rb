@@ -9,7 +9,7 @@ module Idv
 
       presenter = ImageUploadResponsePresenter.new(
         form_response: image_upload_form_response,
-        url_options: url_options,
+        url_options:,
       )
 
       render json: presenter, status: presenter.status
@@ -21,9 +21,9 @@ module Idv
       @image_upload_form ||= Idv::ApiImageUploadForm.new(
         params,
         service_provider: current_sp,
-        analytics: analytics,
+        analytics:,
         uuid_prefix: current_sp&.app_id,
-        irs_attempts_api_tracker: irs_attempts_api_tracker,
+        irs_attempts_api_tracker:,
         store_encrypted_images: store_encrypted_images?,
       )
     end

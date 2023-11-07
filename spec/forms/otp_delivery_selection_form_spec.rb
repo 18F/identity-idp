@@ -62,7 +62,7 @@ RSpec.describe OtpDeliverySelectionForm do
 
         expect(subject.submit(otp_delivery_preference: 'foo').to_h).to include(
           success: false,
-          errors: errors,
+          errors:,
           error_details: hash_including(*errors.keys),
           **extra,
         )
@@ -81,7 +81,7 @@ RSpec.describe OtpDeliverySelectionForm do
 
         updated_user = instance_double(UpdateUser)
         allow(UpdateUser).to receive(:new).
-          with(user: user, attributes: attributes).and_return(updated_user)
+          with(user:, attributes:).and_return(updated_user)
 
         expect(updated_user).to receive(:call)
 

@@ -17,7 +17,7 @@ RSpec.describe Redirect::PolicyController do
         'Policy Page Redirect',
         flow: 'flow',
         location: 'location',
-        redirect_url: redirect_url,
+        redirect_url:,
         step: 'step',
       )
     end

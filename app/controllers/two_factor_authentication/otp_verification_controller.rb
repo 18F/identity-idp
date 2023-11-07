@@ -34,7 +34,7 @@ module TwoFactorAuthentication
 
         reset_otp_session_data
       else
-        handle_invalid_otp(context: context, type: 'otp')
+        handle_invalid_otp(context:, type: 'otp')
       end
     end
 
@@ -152,7 +152,7 @@ module TwoFactorAuthentication
       parsed_phone = Phonelib.parse(phone)
 
       {
-        context: context,
+        context:,
         multi_factor_auth_method: params[:otp_delivery_preference],
         confirmation_for_add_phone: confirmation_for_add_phone?,
         area_code: parsed_phone.area_code,
@@ -169,7 +169,7 @@ module TwoFactorAuthentication
         data: phone_view_data,
         view: view_context,
         service_provider: current_sp,
-        remember_device_default: remember_device_default,
+        remember_device_default:,
       )
     end
 
@@ -179,7 +179,7 @@ module TwoFactorAuthentication
         phone_number: display_phone_to_deliver_to,
         code_value: direct_otp_code,
         in_multi_mfa_selection_flow: in_multi_mfa_selection_flow?,
-        otp_expiration: otp_expiration,
+        otp_expiration:,
         otp_delivery_preference: params[:otp_delivery_preference],
         otp_make_default_number: selected_otp_make_default_number,
         unconfirmed_phone: unconfirmed_phone?,
@@ -246,8 +246,8 @@ module TwoFactorAuthentication
     def send_phone_added_email
       _event, disavowal_token = create_user_event_with_disavowal(:phone_added, current_user)
       current_user.confirmed_email_addresses.each do |email_address|
-        UserMailer.with(user: current_user, email_address: email_address).
-          phone_added(disavowal_token: disavowal_token).deliver_now_or_later
+        UserMailer.with(user: current_user, email_address:).
+          phone_added(disavowal_token:).deliver_now_or_later
       end
     end
 

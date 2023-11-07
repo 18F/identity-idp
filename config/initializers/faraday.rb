@@ -29,12 +29,12 @@ ActiveSupport::Notifications.subscribe('request_metric.faraday') do |name, start
   duration_seconds = ends - starts
   service = env.request.context.fetch(:service_name)
   metadata = {
-    http_method: http_method,
+    http_method:,
     host: url.host,
     path: url.path,
-    duration_seconds: duration_seconds,
+    duration_seconds:,
     status: env.status,
-    service: service,
+    service:,
     name: 'request_metric.faraday',
   }
   Rails.logger.info(
@@ -48,12 +48,12 @@ ActiveSupport::Notifications.subscribe('request_log.faraday') do |name, starts, 
   duration_seconds = ends - starts
   service = env.request.context&.dig(:service_name)
   metadata = {
-    http_method: http_method,
+    http_method:,
     host: url.host,
     path: url.path,
-    duration_seconds: duration_seconds,
+    duration_seconds:,
     status: env.status,
-    service: service,
+    service:,
     name: 'request_log.faraday',
   }
   Rails.logger.info(

@@ -9,7 +9,7 @@ RSpec.describe Proofing::LexisNexis::InstantVerify::VerificationRequest do
       first_name: 'Testy',
       last_name: 'McTesterson',
       ssn: '123-45-6789',
-      dob: dob,
+      dob:,
       address1: '123 Main St',
       address2: 'Ste 3',
       city: 'Baton Rouge',
@@ -21,7 +21,7 @@ RSpec.describe Proofing::LexisNexis::InstantVerify::VerificationRequest do
     }
   end
   let(:response_body) { LexisNexisFixtures.instant_verify_success_response_json }
-  subject { described_class.new(applicant: applicant, config: LexisNexisFixtures.example_config) }
+  subject { described_class.new(applicant:, config: LexisNexisFixtures.example_config) }
 
   it_behaves_like 'a lexisnexis request'
 

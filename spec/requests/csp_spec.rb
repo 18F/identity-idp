@@ -85,7 +85,7 @@ RSpec.describe 'content security policy' do
     }
     get(
       openid_connect_authorize_path,
-      params: params,
+      params:,
       headers: { 'Accept' => '*/*' },
     )
   end
@@ -99,7 +99,7 @@ RSpec.describe 'content security policy' do
 
     get(
       openid_connect_logout_path,
-      params: params,
+      params:,
     )
   end
 end

@@ -17,12 +17,12 @@ RSpec.feature 'idv gpo confirm start over', js: true do
   let(:gpo_confirmation_code) do
     create(
       :gpo_confirmation_code,
-      profile: profile,
+      profile:,
       otp_fingerprint: Pii::Fingerprinter.fingerprint(otp),
     )
   end
   let(:user) { profile.user }
-  let(:fake_analytics) { FakeAnalytics.new(user: user) }
+  let(:fake_analytics) { FakeAnalytics.new(user:) }
 
   before do
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)

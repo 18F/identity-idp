@@ -19,7 +19,7 @@ class ServiceProviderSeeder
         cert_path.read if cert_path.exist?
       end.compact
 
-      ServiceProvider.find_or_create_by!(issuer: issuer) do |sp|
+      ServiceProvider.find_or_create_by!(issuer:) do |sp|
         sp.update(
           approved: true,
           active: true,

@@ -24,7 +24,7 @@ module Idv
         end
 
         @last_date_letter_was_sent = last_date_letter_was_sent
-        @gpo_verify_form = GpoVerifyForm.new(user: current_user, pii: pii)
+        @gpo_verify_form = GpoVerifyForm.new(user: current_user, pii:)
         @code = session[:last_gpo_confirmation_code] if FeatureManagement.reveal_gpo_code?
 
         gpo_mail = Idv::GpoMail.new(current_user)
@@ -123,7 +123,7 @@ module Idv
       def build_gpo_verify_form
         GpoVerifyForm.new(
           user: current_user,
-          pii: pii,
+          pii:,
           otp: params_otp,
         )
       end

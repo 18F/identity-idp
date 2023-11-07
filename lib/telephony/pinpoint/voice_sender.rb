@@ -11,7 +11,7 @@ module Telephony
           Aws::PinpointSMSVoice::Client.new(
             region: voice_config.region,
             retry_limit: 0,
-            credentials: credentials,
+            credentials:,
           )
         end
       end
@@ -34,12 +34,12 @@ module Telephony
               content: {
                 ssml_message: {
                   text: message,
-                  language_code: language_code,
-                  voice_id: voice_id,
+                  language_code:,
+                  voice_id:,
                 },
               },
               destination_phone_number: to,
-              origination_phone_number: origination_phone_number,
+              origination_phone_number:,
             )
             finish = Time.zone.now
             return Response.new(
@@ -47,8 +47,8 @@ module Telephony
               error: nil,
               extra: {
                 message_id: response.message_id,
-                duration_ms: Util.duration_ms(start: start, finish: finish),
-                origination_phone_number: origination_phone_number,
+                duration_ms: Util.duration_ms(start:, finish:),
+                origination_phone_number:,
               },
             )
           rescue Aws::PinpointSMSVoice::Errors::ServiceError,
@@ -61,7 +61,7 @@ module Telephony
               channel: :voice,
               extra: {
                 message_id: response&.message_id,
-                duration_ms: Util.duration_ms(start: start, finish: finish),
+                duration_ms: Util.duration_ms(start:, finish:),
               },
             )
           end
@@ -89,7 +89,7 @@ module Telephony
                       end
 
         Response.new(
-          success: false, error: error_class.new(error_message), extra: { request_id: request_id },
+          success: false, error: error_class.new(error_message), extra: { request_id: },
         )
       end
 

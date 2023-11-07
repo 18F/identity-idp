@@ -54,8 +54,8 @@ class AttributeAsserter
   def ial_context
     @ial_context ||= IalContext.new(
       ial: authn_context,
-      service_provider: service_provider,
-      user: user,
+      service_provider:,
+      user:,
       authn_context_comparison: authn_request&.requested_authn_context_comparison,
     )
   end
@@ -81,7 +81,7 @@ class AttributeAsserter
       elsif attr == :dob
         getter = wrap_with_dob_formatter(getter)
       end
-      attrs[attr] = { getter: getter }
+      attrs[attr] = { getter: }
     end
     add_verified_at(attrs)
   end

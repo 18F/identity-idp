@@ -164,7 +164,7 @@ FactoryBot.define do
       after :build do |user|
         user.save
         otp_secret_key = ROTP::Base32.random_base32
-        user.auth_app_configurations.create(otp_secret_key: otp_secret_key, name: 'My Auth App')
+        user.auth_app_configurations.create(otp_secret_key:, name: 'My Auth App')
       end
     end
 
@@ -193,24 +193,24 @@ FactoryBot.define do
       fully_registered
 
       after :build do |user|
-        create(:profile, :active, :verified, :with_pii, user: user)
+        create(:profile, :active, :verified, :with_pii, user:)
       end
     end
 
     trait :with_pending_in_person_enrollment do
       after :build do |user|
-        profile = create(:profile, :with_pii, :in_person_verification_pending, user: user)
-        create(:in_person_enrollment, :pending, user: user, profile: profile)
+        profile = create(:profile, :with_pii, :in_person_verification_pending, user:)
+        create(:in_person_enrollment, :pending, user:, profile:)
       end
     end
 
     trait :with_pending_gpo_profile do
       after :build do |user|
-        profile = create(:profile, :with_pii, gpo_verification_pending_at: 1.day.ago, user: user)
+        profile = create(:profile, :with_pii, gpo_verification_pending_at: 1.day.ago, user:)
         gpo_code = create(:gpo_confirmation_code)
         profile.gpo_confirmation_codes << gpo_code
-        device = create(:device, user: user)
-        create(:event, user: user, device: device, event_type: :gpo_mail_sent)
+        device = create(:device, user:)
+        create(:event, user:, device:, event_type: :gpo_mail_sent)
       end
     end
 
@@ -220,8 +220,8 @@ FactoryBot.define do
         profile = user.active_profile
         gpo_code = create(:gpo_confirmation_code)
         profile.gpo_confirmation_codes << gpo_code
-        device = create(:device, user: user)
-        create(:event, user: user, device: device, event_type: :gpo_mail_sent)
+        device = create(:device, user:)
+        create(:event, user:, device:, event_type: :gpo_mail_sent)
       end
     end
 
@@ -234,7 +234,7 @@ FactoryBot.define do
           :fraud_review_pending,
           :verified,
           :with_pii,
-          user: user,
+          user:,
         )
       end
     end
@@ -248,7 +248,7 @@ FactoryBot.define do
           :fraud_rejection,
           :verified,
           :with_pii,
-          user: user,
+          user:,
         )
       end
     end
@@ -257,7 +257,7 @@ FactoryBot.define do
       fully_registered
 
       after :build do |user|
-        create(:profile, :password_reset, :with_pii, user: user)
+        create(:profile, :password_reset, :with_pii, user:)
       end
     end
 

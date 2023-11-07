@@ -7,8 +7,8 @@ RSpec.describe 'idv/session_errors/rate_limited.html.erb' do
   before do
     decorated_sp_session = instance_double(
       ServiceProviderSession,
-      sp_name: sp_name,
-      sp_issuer: sp_issuer,
+      sp_name:,
+      sp_issuer:,
     )
     allow(view).to receive(:decorated_sp_session).and_return(decorated_sp_session)
 
@@ -38,7 +38,7 @@ RSpec.describe 'idv/session_errors/rate_limited.html.erb' do
         href: MarketingSite.contact_url,
       )
       expect(rendered).to have_link(
-        t('idv.failure.exit.with_sp', app_name: APP_NAME, sp_name: sp_name),
+        t('idv.failure.exit.with_sp', app_name: APP_NAME, sp_name:),
         href: return_to_sp_failure_to_proof_path(step: 'verify_id', location: 'rate_limited'),
       )
     end

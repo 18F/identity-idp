@@ -49,7 +49,7 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheck::SqsBatchWrapper do
           entries: [
             {
               id: message_id,
-              receipt_handle: receipt_handle,
+              receipt_handle:,
             },
           ],
         },
@@ -76,7 +76,7 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheck::SqsBatchWrapper do
           entries: [
             {
               id: message_id,
-              receipt_handle: receipt_handle,
+              receipt_handle:,
             },
             {
               id: message_id2,

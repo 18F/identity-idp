@@ -79,7 +79,7 @@ RSpec.feature 'Email confirmation during sign up' do
       expect(page.html).to include(t('notices.dap_participation'))
       action = t('devise.confirmations.sign_in')
       expect(page).
-        to have_content t('devise.confirmations.already_confirmed', action: action)
+        to have_content t('devise.confirmations.already_confirmed', action:)
       expect(current_url).to eq new_user_session_url
     end
   end

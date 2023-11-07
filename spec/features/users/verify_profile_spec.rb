@@ -11,10 +11,10 @@ RSpec.feature 'verify profile with OTP' do
       :profile,
       gpo_verification_pending_at: 1.day.ago,
       pii: { ssn: '666-66-1234', dob: '1920-01-01', phone: '+1 703-555-9999' },
-      user: user,
+      user:,
     )
     otp_fingerprint = Pii::Fingerprinter.fingerprint(otp)
-    create(:gpo_confirmation_code, profile: profile, otp_fingerprint: otp_fingerprint)
+    create(:gpo_confirmation_code, profile:, otp_fingerprint:)
   end
 
   context 'GPO letter' do

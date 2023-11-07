@@ -18,7 +18,7 @@ RSpec.describe SamlIdpController do
         success: true,
       )
 
-      delete :logout, params: { path_year: path_year }
+      delete :logout, params: { path_year: }
     end
 
     it 'tracks the event when sp initiated' do
@@ -32,7 +32,7 @@ RSpec.describe SamlIdpController do
         success: true,
       )
 
-      delete :logout, params: { SAMLRequest: 'foo', path_year: path_year }
+      delete :logout, params: { SAMLRequest: 'foo', path_year: }
     end
 
     it 'tracks the event when the saml request is invalid' do
@@ -45,7 +45,7 @@ RSpec.describe SamlIdpController do
         success: true,
       )
 
-      delete :logout, params: { SAMLRequest: 'foo', path_year: path_year }
+      delete :logout, params: { SAMLRequest: 'foo', path_year: }
     end
 
     let(:service_provider) do
@@ -106,7 +106,7 @@ RSpec.describe SamlIdpController do
 
       delete :logout, params: payload.to_h.merge(
         Signature: Base64.encode64(signature),
-        path_year: path_year,
+        path_year:,
       )
 
       expect(response).to be_ok
@@ -115,7 +115,7 @@ RSpec.describe SamlIdpController do
     it 'rejects requests from a wrong cert' do
       delete :logout, params: UriService.params(
         OneLogin::RubySaml::Logoutrequest.new.create(wrong_cert_settings),
-      ).merge(path_year: path_year)
+      ).merge(path_year:)
 
       expect(response).to be_bad_request
     end
@@ -128,7 +128,7 @@ RSpec.describe SamlIdpController do
       result = { service_provider: nil, saml_request_valid: false }
       expect(@analytics).to receive(:track_event).with('Remote Logout initiated', result)
 
-      post :remotelogout, params: { SAMLRequest: 'foo', path_year: path_year }
+      post :remotelogout, params: { SAMLRequest: 'foo', path_year: }
     end
 
     let(:agency) { create(:agency) }
@@ -150,7 +150,7 @@ RSpec.describe SamlIdpController do
     let!(:identity) do
       ServiceProviderIdentity.create(
         service_provider: service_provider.issuer,
-        user: user,
+        user:,
         rails_session_id: session_id,
       )
     end
@@ -163,14 +163,14 @@ RSpec.describe SamlIdpController do
 
     let!(:agency_identity) do
       AgencyIdentity.create!(
-        agency: agency,
-        user: user,
+        agency:,
+        user:,
         uuid: identity.uuid,
       )
     end
     let!(:other_agency_identity) do
       AgencyIdentity.create!(
-        agency: agency,
+        agency:,
         user: other_user,
         uuid: other_identity.uuid,
       )
@@ -259,7 +259,7 @@ RSpec.describe SamlIdpController do
 
       post :remotelogout, params: payload.to_h.merge(
         Signature: Base64.encode64(signature),
-        path_year: path_year,
+        path_year:,
       )
 
       expect(response).to be_ok
@@ -299,7 +299,7 @@ RSpec.describe SamlIdpController do
 
       post :remotelogout, params: payload.to_h.merge(
         Signature: Base64.encode64(signature),
-        path_year: path_year,
+        path_year:,
       )
 
       expect(response).to be_bad_request
@@ -333,7 +333,7 @@ RSpec.describe SamlIdpController do
 
       post :remotelogout, params: payload.to_h.merge(
         Signature: Base64.encode64(signature),
-        path_year: path_year,
+        path_year:,
       )
 
       expect(response).to be_bad_request
@@ -367,7 +367,7 @@ RSpec.describe SamlIdpController do
 
       post :remotelogout, params: payload.to_h.merge(
         Signature: Base64.encode64(signature),
-        path_year: path_year,
+        path_year:,
       )
 
       expect(response).to be_bad_request
@@ -376,7 +376,7 @@ RSpec.describe SamlIdpController do
     it 'rejects requests from a wrong cert' do
       post :remotelogout, params: UriService.params(
         OneLogin::RubySaml::Logoutrequest.new.create(wrong_cert_settings),
-      ).merge(path_year: path_year)
+      ).merge(path_year:)
 
       expect(response).to be_bad_request
     end
@@ -384,7 +384,7 @@ RSpec.describe SamlIdpController do
 
   describe '/api/saml/metadata' do
     before do
-      get :metadata, params: { path_year: path_year }
+      get :metadata, params: { path_year: }
     end
 
     let(:org_name) { 'login.gov' }
@@ -485,7 +485,7 @@ RSpec.describe SamlIdpController do
         saml_settings(
           overrides: {
             issuer: sp1_issuer,
-            authn_context: authn_context,
+            authn_context:,
           },
         )
       end
@@ -503,7 +503,7 @@ RSpec.describe SamlIdpController do
         ial2_authnrequest = saml_authn_request_url(
           overrides: {
             issuer: sp1_issuer,
-            authn_context: authn_context,
+            authn_context:,
           },
         )
         raw_req = CGI.unescape ial2_authnrequest.split('SAMLRequest').last
@@ -511,7 +511,7 @@ RSpec.describe SamlIdpController do
       end
       let(:asserter) do
         AttributeAsserter.new(
-          user: user,
+          user:,
           service_provider: ServiceProvider.find_by(issuer: sp1_issuer),
           authn_request: this_authn_request,
           name_id_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
@@ -522,7 +522,7 @@ RSpec.describe SamlIdpController do
 
       before do
         stub_sign_in(user)
-        IdentityLinker.new(user, sp1).link_identity(ial: ial)
+        IdentityLinker.new(user, sp1).link_identity(ial:)
         user.identities.last.update!(
           verified_attributes: %w[given_name family_name social_security_number address],
         )
@@ -589,7 +589,7 @@ RSpec.describe SamlIdpController do
           })
         expect(@analytics).to receive(:track_event).
           with('SP redirect initiated', {
-            ial: ial,
+            ial:,
             billed_ial: [ial, 2].min,
           })
 
@@ -654,7 +654,7 @@ RSpec.describe SamlIdpController do
       end
       let(:asserter) do
         AttributeAsserter.new(
-          user: user,
+          user:,
           service_provider: ServiceProvider.find_by(issuer: sp1_issuer),
           authn_request: this_authn_request,
           name_id_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
@@ -2028,7 +2028,7 @@ RSpec.describe SamlIdpController do
         expect(@analytics).to receive(:track_event).
           with('SAML Auth', analytics_hash)
 
-        get :auth, params: { path_year: path_year }
+        get :auth, params: { path_year: }
       end
     end
 
@@ -2038,7 +2038,7 @@ RSpec.describe SamlIdpController do
       service_provider.ial = 2
       service_provider.save
       expect(SamlRequestPresenter).to receive(:new).
-        with(request: controller.saml_request, service_provider: service_provider).
+        with(request: controller.saml_request, service_provider:).
         and_return(request_parser)
       allow(request_parser).to receive(:requested_attributes).and_return([:email])
     end

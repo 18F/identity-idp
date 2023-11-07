@@ -25,7 +25,7 @@ module Idv
     def send_phone_confirmation_otp_service
       @send_phone_confirmation_otp_service ||= Idv::SendPhoneConfirmationOtp.new(
         user: current_user,
-        idv_session: idv_session,
+        idv_session:,
       )
     end
 

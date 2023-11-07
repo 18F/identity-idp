@@ -32,7 +32,7 @@ RSpec.describe Reports::DailyDropoffsReport do
           path: 'int/daily-dropoffs-report/2021/2021-03-01.daily-dropoffs-report.csv',
           body: kind_of(String),
           content_type: 'text/csv',
-          bucket: bucket,
+          bucket:,
         ).exactly(1).time.and_call_original
       end
 
@@ -66,7 +66,7 @@ RSpec.describe Reports::DailyDropoffsReport do
           issuer: 'issuer1',
           iaa: 'iaa123',
           friendly_name: 'The App',
-          agency: agency,
+          agency:,
         )
       end
 
@@ -78,7 +78,7 @@ RSpec.describe Reports::DailyDropoffsReport do
         create(
           :doc_auth_log,
           user: started_user,
-          service_provider: service_provider,
+          service_provider:,
           welcome_view_at: timestamp,
         )
 
@@ -86,8 +86,8 @@ RSpec.describe Reports::DailyDropoffsReport do
         [last_step_user, verified_user].each do |user|
           create(
             :doc_auth_log,
-            user: user,
-            service_provider: service_provider,
+            user:,
+            service_provider:,
             agreement_view_at: timestamp,
             welcome_view_at: timestamp,
             document_capture_view_at: timestamp,

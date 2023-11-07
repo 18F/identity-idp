@@ -5,7 +5,7 @@ RSpec.describe GoBackHelper do
 
   describe '#go_back_path' do
     let(:referer) { nil }
-    let(:request) { double('request', referer: referer) }
+    let(:request) { double('request', referer:) }
 
     before do
       allow(helper).to receive(:request).and_return(request)

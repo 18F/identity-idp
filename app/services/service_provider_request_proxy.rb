@@ -29,15 +29,15 @@ class ServiceProviderRequestProxy
   end
 
   def self.find_or_create_by(uuid:)
-    obj = find_by(uuid: uuid)
+    obj = find_by(uuid:)
     return obj if obj
     spr = ServiceProviderRequest.new(
-      uuid: uuid, issuer: nil, url: nil, ial: nil,
+      uuid:, issuer: nil, url: nil, ial: nil,
       aal: nil, requested_attributes: nil
     )
     yield(spr)
     create(
-      uuid: uuid,
+      uuid:,
       issuer: spr.issuer,
       url: spr.url,
       ial: spr.ial,
@@ -82,6 +82,6 @@ class ServiceProviderRequestProxy
   end
 
   def self.hash_to_spr(hash, uuid)
-    ServiceProviderRequest.new(**hash.merge(uuid: uuid))
+    ServiceProviderRequest.new(**hash.merge(uuid:))
   end
 end

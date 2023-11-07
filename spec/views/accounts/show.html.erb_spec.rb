@@ -8,7 +8,7 @@ RSpec.describe 'accounts/show.html.erb' do
     assign(
       :presenter,
       AccountShowPresenter.new(
-        decrypted_pii: nil, personal_key: nil, user: user,
+        decrypted_pii: nil, personal_key: nil, user:,
         sp_session_request_url: nil, sp_name: nil,
         locked_for_session: false
       ),
@@ -62,7 +62,7 @@ RSpec.describe 'accounts/show.html.erb' do
         :profile,
         gpo_verification_pending_at: 2.days.ago,
         created_at: 2.days.ago,
-        user: user,
+        user:,
       )
       allow(user).to receive(:pending_profile).and_return(pending)
     end
@@ -164,7 +164,7 @@ RSpec.describe 'accounts/show.html.erb' do
     end
 
     it 'shows one email if the user has only one email' do
-      create_list(:email_address, 4, user: user)
+      create_list(:email_address, 4, user:)
       user.reload
       expect(user.email_addresses.size).to eq(5)
     end
@@ -176,7 +176,7 @@ RSpec.describe 'accounts/show.html.erb' do
       assign(
         :presenter,
         AccountShowPresenter.new(
-          decrypted_pii: nil, personal_key: 'abc123', user: user,
+          decrypted_pii: nil, personal_key: 'abc123', user:,
           sp_session_request_url: sp.return_to_sp_url, sp_name: sp.friendly_name,
           locked_for_session: false
         ),

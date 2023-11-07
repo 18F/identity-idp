@@ -32,7 +32,7 @@ RSpec.describe Proofing::Aamva::VerificationClient do
         end
 
       verification_client.send_verification_request(
-        applicant: applicant,
+        applicant:,
         session_id: '1234-abcd-efgh',
       )
 
@@ -54,7 +54,7 @@ RSpec.describe Proofing::Aamva::VerificationClient do
 
     let(:response) do
       verification_client.send_verification_request(
-        applicant: applicant,
+        applicant:,
         session_id: '1234-abcd-efgh',
       )
     end

@@ -19,8 +19,8 @@ RSpec.describe 'idv/by_mail/enter_code/index.html.erb' do
     allow(view).to receive(:step_indicator_steps).and_return({})
 
     @gpo_verify_form = GpoVerifyForm.new(
-      user: user,
-      pii: pii,
+      user:,
+      pii:,
       otp: '1234',
     )
 

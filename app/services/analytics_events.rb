@@ -14,7 +14,7 @@ module AnalyticsEvents
   # @param [Boolean] success
   # When a user submits a form to delete their account
   def account_delete_submitted(success:, **extra)
-    track_event('Account Delete submitted', success: success, **extra)
+    track_event('Account Delete submitted', success:, **extra)
   end
 
   # When a user visits the page to delete their account
@@ -25,7 +25,7 @@ module AnalyticsEvents
   # @param [String] request_came_from the controller/action the request came from
   # When a user deletes their account
   def account_deletion(request_came_from:, **extra)
-    track_event('Account Deletion Requested', request_came_from: request_came_from, **extra)
+    track_event('Account Deletion Requested', request_came_from:, **extra)
   end
 
   # @identity.idp.previous_event_name Account Reset
@@ -37,9 +37,9 @@ module AnalyticsEvents
     track_event(
       'Account Reset: cancel',
       {
-        user_id: user_id,
-        message_id: message_id,
-        request_id: request_id,
+        user_id:,
+        message_id:,
+        request_id:,
         **extra,
       }.compact,
     )
@@ -52,8 +52,8 @@ module AnalyticsEvents
   def account_reset_cancel_token_validation(user_id:, errors: nil, **extra)
     track_event(
       'Account Reset: cancel token validation',
-      user_id: user_id,
-      errors: errors,
+      user_id:,
+      errors:,
       **extra,
     )
   end
@@ -78,12 +78,12 @@ module AnalyticsEvents
   )
     track_event(
       'Account Reset: delete',
-      success: success,
-      user_id: user_id,
-      account_age_in_days: account_age_in_days,
-      account_confirmed_at: account_confirmed_at,
-      mfa_method_counts: mfa_method_counts,
-      errors: errors,
+      success:,
+      user_id:,
+      account_age_in_days:,
+      account_confirmed_at:,
+      mfa_method_counts:,
+      errors:,
       **extra,
     )
   end
@@ -95,8 +95,8 @@ module AnalyticsEvents
   def account_reset_granted_token_validation(user_id: nil, errors: nil, **extra)
     track_event(
       'Account Reset: granted token validation',
-      user_id: user_id,
-      errors: errors,
+      user_id:,
+      errors:,
       **extra,
     )
   end
@@ -105,7 +105,7 @@ module AnalyticsEvents
   # @param [Integer] count number of email notifications sent
   # Account reset was performed, logs the number of email notifications sent
   def account_reset_notifications(count:, **extra)
-    track_event('Account Reset: notifications', count: count, **extra)
+    track_event('Account Reset: notifications', count:, **extra)
   end
 
   # Tracks users visiting the recovery options page
@@ -135,13 +135,13 @@ module AnalyticsEvents
     track_event(
       'Account Reset: request',
       {
-        success: success,
-        sms_phone: sms_phone,
-        totp: totp,
-        piv_cac: piv_cac,
-        email_addresses: email_addresses,
-        request_id: request_id,
-        message_id: message_id,
+        success:,
+        sms_phone:,
+        totp:,
+        piv_cac:,
+        email_addresses:,
+        request_id:,
+        message_id:,
         **extra,
       }.compact,
     )
@@ -161,7 +161,7 @@ module AnalyticsEvents
   # @param [String] user_id account the email is linked to
   # A user has clicked the confirmation link in an email
   def add_email_confirmation(user_id:, success: nil, **extra)
-    track_event('Add Email: Email Confirmation', user_id: user_id, success: success, **extra)
+    track_event('Add Email: Email Confirmation', user_id:, success:, **extra)
   end
 
   # @param [Boolean] success
@@ -170,8 +170,8 @@ module AnalyticsEvents
   def add_email_request(success:, errors:, **extra)
     track_event(
       'Add Email Requested',
-      success: success,
-      errors: errors,
+      success:,
+      errors:,
       **extra,
     )
   end
@@ -210,7 +210,7 @@ module AnalyticsEvents
   def automatic_fraud_rejection(fraud_rejection_at:, **extra)
     track_event(
       'Fraud: Automatic Fraud Rejection',
-      fraud_rejection_at: fraud_rejection_at,
+      fraud_rejection_at:,
       **extra,
     )
   end
@@ -220,7 +220,7 @@ module AnalyticsEvents
   def backup_code_created(enabled_mfa_methods_count:, **extra)
     track_event(
       'Backup Code Created',
-      enabled_mfa_methods_count: enabled_mfa_methods_count,
+      enabled_mfa_methods_count:,
       **extra,
     )
   end
@@ -243,9 +243,9 @@ module AnalyticsEvents
   )
     track_event(
       'Backup Code Setup Visited',
-      success: success,
-      errors: errors,
-      error_details: error_details,
+      success:,
+      errors:,
+      error_details:,
       **extra,
     )
   end
@@ -281,10 +281,10 @@ module AnalyticsEvents
   def contact_redirect(redirect_url:, step: nil, location: nil, flow: nil, **extra)
     track_event(
       'Contact Page Redirect',
-      redirect_url: redirect_url,
-      step: step,
-      location: location,
-      flow: flow,
+      redirect_url:,
+      step:,
+      location:,
+      flow:,
       **extra,
     )
   end
@@ -298,9 +298,9 @@ module AnalyticsEvents
                        phone_question_ab_test_bucket: nil, **extra)
     track_event(
       'Doc Auth Warning',
-      message: message,
-      getting_started_ab_test_bucket: getting_started_ab_test_bucket,
-      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
+      message:,
+      getting_started_ab_test_bucket:,
+      phone_question_ab_test_bucket:,
       **extra,
     )
   end
@@ -330,13 +330,13 @@ module AnalyticsEvents
   )
     track_event(
       'Email and Password Authentication',
-      success: success,
-      user_id: user_id,
-      user_locked_out: user_locked_out,
-      bad_password_count: bad_password_count,
-      stored_location: stored_location,
-      sp_request_url_present: sp_request_url_present,
-      remember_device: remember_device,
+      success:,
+      user_id:,
+      user_locked_out:,
+      bad_password_count:,
+      stored_location:,
+      sp_request_url_present:,
+      remember_device:,
       **extra,
     )
   end
@@ -347,8 +347,8 @@ module AnalyticsEvents
   def email_deletion_request(success:, errors:, **extra)
     track_event(
       'Email Deletion Requested',
-      success: success,
-      errors: errors,
+      success:,
+      errors:,
       **extra,
     )
   end
@@ -359,8 +359,8 @@ module AnalyticsEvents
   def email_language_updated(success:, errors:, **extra)
     track_event(
       'Email Language: Updated',
-      success: success,
-      errors: errors,
+      success:,
+      errors:,
       **extra,
     )
   end
@@ -376,8 +376,8 @@ module AnalyticsEvents
   def email_sent(action:, ses_message_id:, **extra)
     track_event(
       'Email Sent',
-      action: action,
-      ses_message_id: ses_message_id,
+      action:,
+      ses_message_id:,
       **extra,
     )
   end
@@ -406,15 +406,15 @@ module AnalyticsEvents
   )
     track_event(
       'Event disavowal visited',
-      success: success,
-      errors: errors,
-      event_created_at: event_created_at,
-      disavowed_device_last_used_at: disavowed_device_last_used_at,
-      disavowed_device_user_agent: disavowed_device_user_agent,
-      disavowed_device_last_ip: disavowed_device_last_ip,
-      event_id: event_id,
-      event_type: event_type,
-      event_ip: event_ip,
+      success:,
+      errors:,
+      event_created_at:,
+      disavowed_device_last_used_at:,
+      disavowed_device_user_agent:,
+      disavowed_device_last_ip:,
+      event_id:,
+      event_type:,
+      event_ip:,
       **extra,
     )
   end
@@ -443,15 +443,15 @@ module AnalyticsEvents
   )
     track_event(
       'Event disavowal password reset',
-      success: success,
-      errors: errors,
-      event_created_at: event_created_at,
-      disavowed_device_last_used_at: disavowed_device_last_used_at,
-      disavowed_device_user_agent: disavowed_device_user_agent,
-      disavowed_device_last_ip: disavowed_device_last_ip,
-      event_id: event_id,
-      event_type: event_type,
-      event_ip: event_ip,
+      success:,
+      errors:,
+      event_created_at:,
+      disavowed_device_last_used_at:,
+      disavowed_device_user_agent:,
+      disavowed_device_last_ip:,
+      event_id:,
+      event_type:,
+      event_ip:,
       **extra,
     )
   end
@@ -480,15 +480,15 @@ module AnalyticsEvents
   )
     track_event(
       'Event disavowal token invalid',
-      success: success,
-      errors: errors,
-      event_created_at: event_created_at,
-      disavowed_device_last_used_at: disavowed_device_last_used_at,
-      disavowed_device_user_agent: disavowed_device_user_agent,
-      disavowed_device_last_ip: disavowed_device_last_ip,
-      event_id: event_id,
-      event_type: event_type,
-      event_ip: event_ip,
+      success:,
+      errors:,
+      event_created_at:,
+      disavowed_device_last_used_at:,
+      disavowed_device_user_agent:,
+      disavowed_device_last_ip:,
+      event_id:,
+      event_type:,
+      event_ip:,
       **extra,
     )
   end
@@ -506,10 +506,10 @@ module AnalyticsEvents
   def external_redirect(redirect_url:, step: nil, location: nil, flow: nil, **extra)
     track_event(
       'External Redirect',
-      redirect_url: redirect_url,
-      step: step,
-      location: location,
-      flow: flow,
+      redirect_url:,
+      step:,
+      location:,
+      flow:,
       **extra,
     )
   end
@@ -538,10 +538,10 @@ module AnalyticsEvents
   )
     track_event(
       'Fraud: Profile review passed',
-      success: success,
-      errors: errors,
-      exception: exception,
-      profile_fraud_review_pending_at: profile_fraud_review_pending_at,
+      success:,
+      errors:,
+      exception:,
+      profile_fraud_review_pending_at:,
       **extra,
     )
   end
@@ -560,10 +560,10 @@ module AnalyticsEvents
   )
     track_event(
       'Fraud: Profile review rejected',
-      success: success,
-      errors: errors,
-      exception: exception,
-      profile_fraud_review_pending_at: profile_fraud_review_pending_at,
+      success:,
+      errors:,
+      exception:,
+      profile_fraud_review_pending_at:,
       **extra,
     )
   end
@@ -597,13 +597,13 @@ module AnalyticsEvents
   )
     track_event(
       'Frontend: IdV: Acuant SDK loaded',
-      acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
-      acuant_version: acuant_version,
-      flow_path: flow_path,
-      isCameraSupported: isCameraSupported,
-      phone_question_ab_test_analytics_bucket: phone_question_ab_test_analytics_bucket,
-      success: success,
-      use_alternate_sdk: use_alternate_sdk,
+      acuant_sdk_upgrade_a_b_testing_enabled:,
+      acuant_version:,
+      flow_path:,
+      isCameraSupported:,
+      phone_question_ab_test_analytics_bucket:,
+      success:,
+      use_alternate_sdk:,
     )
   end
   # rubocop:enable Naming/VariableName,Naming/MethodParameterName
@@ -624,11 +624,11 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: address submitted',
-      success: success,
-      errors: errors,
-      address_edited: address_edited,
-      pii_like_keypaths: pii_like_keypaths,
-      error_details: error_details,
+      success:,
+      errors:,
+      address_edited:,
+      pii_like_keypaths:,
+      error_details:,
       **extra,
     )
   end
@@ -697,32 +697,32 @@ module AnalyticsEvents
   )
     track_event(
       'Frontend: IdV: back image added',
-      acuantCaptureMode: acuantCaptureMode,
-      acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
-      acuant_version: acuant_version,
-      assessment: assessment,
-      attempt: attempt,
-      documentType: documentType,
-      dpi: dpi,
-      failedImageResubmission: failedImageResubmission,
-      fingerprint: fingerprint,
-      flow_path: flow_path,
-      glare: glare,
-      glareScoreThreshold: glareScoreThreshold,
-      height: height,
-      isAssessedAsBlurry: isAssessedAsBlurry,
-      isAssessedAsGlare: isAssessedAsGlare,
-      isAssessedAsUnsupported: isAssessedAsUnsupported,
-      mimeType: mimeType,
-      moire: moire,
-      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
-      phone_with_camera: phone_with_camera,
-      sharpness: sharpness,
-      sharpnessScoreThreshold: sharpnessScoreThreshold,
-      size: size,
-      source: source,
-      use_alternate_sdk: use_alternate_sdk,
-      width: width,
+      acuantCaptureMode:,
+      acuant_sdk_upgrade_a_b_testing_enabled:,
+      acuant_version:,
+      assessment:,
+      attempt:,
+      documentType:,
+      dpi:,
+      failedImageResubmission:,
+      fingerprint:,
+      flow_path:,
+      glare:,
+      glareScoreThreshold:,
+      height:,
+      isAssessedAsBlurry:,
+      isAssessedAsGlare:,
+      isAssessedAsUnsupported:,
+      mimeType:,
+      moire:,
+      phone_question_ab_test_bucket:,
+      phone_with_camera:,
+      sharpness:,
+      sharpnessScoreThreshold:,
+      size:,
+      source:,
+      use_alternate_sdk:,
+      width:,
     )
   end
 
@@ -747,14 +747,14 @@ module AnalyticsEvents
   )
     track_event(
       'Frontend: IdV: back image clicked',
-      acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
-      acuant_version: acuant_version,
-      flow_path: flow_path,
-      isDrop: isDrop,
-      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
-      phone_with_camera: phone_with_camera,
-      source: source,
-      use_alternate_sdk: use_alternate_sdk,
+      acuant_sdk_upgrade_a_b_testing_enabled:,
+      acuant_version:,
+      flow_path:,
+      isDrop:,
+      phone_question_ab_test_bucket:,
+      phone_with_camera:,
+      source:,
+      use_alternate_sdk:,
     )
   end
   # rubocop:enable Naming/VariableName,Naming/MethodParameterName
@@ -777,8 +777,8 @@ module AnalyticsEvents
   def idv_cancellation_confirmed(step:, proofing_components: nil, **extra)
     track_event(
       'IdV: cancellation confirmed',
-      step: step,
-      proofing_components: proofing_components,
+      step:,
+      proofing_components:,
       **extra,
     )
   end
@@ -789,8 +789,8 @@ module AnalyticsEvents
   def idv_cancellation_go_back(step:, proofing_components: nil, **extra)
     track_event(
       'IdV: cancellation go back',
-      step: step,
-      proofing_components: proofing_components,
+      step:,
+      proofing_components:,
       **extra,
     )
   end
@@ -808,9 +808,9 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: cancellation visited',
-      step: step,
-      request_came_from: request_came_from,
-      proofing_components: proofing_components,
+      step:,
+      request_came_from:,
+      proofing_components:,
       **extra,
     )
   end
@@ -828,10 +828,10 @@ module AnalyticsEvents
   )
     track_event(
       'Frontend: IdV: Capture troubleshooting dismissed',
-      acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
-      acuant_version: acuant_version,
-      flow_path: flow_path,
-      use_alternate_sdk: use_alternate_sdk,
+      acuant_sdk_upgrade_a_b_testing_enabled:,
+      acuant_version:,
+      flow_path:,
+      use_alternate_sdk:,
     )
   end
 
@@ -841,7 +841,7 @@ module AnalyticsEvents
   def idv_consent_checkbox_toggled(checked:, **extra)
     track_event(
       'IdV: consent checkbox toggled',
-      checked: checked,
+      checked:,
       **extra,
     )
   end
@@ -875,8 +875,8 @@ module AnalyticsEvents
   def idv_doc_auth_exception_visited(step_name:, remaining_attempts:, **extra)
     track_event(
       'IdV: doc auth exception visited',
-      step_name: step_name,
-      remaining_attempts: remaining_attempts,
+      step_name:,
+      remaining_attempts:,
       **extra,
     )
   end
@@ -885,7 +885,7 @@ module AnalyticsEvents
   def idv_doc_auth_failed_image_resubmitted(side:, **extra)
     track_event(
       'IdV: failed doc image resubmitted',
-      side: side,
+      side:,
       **extra,
     )
   end
@@ -994,17 +994,17 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: doc auth image upload form submitted',
-      success: success,
-      errors: errors,
-      attempts: attempts,
-      remaining_attempts: remaining_attempts,
-      user_id: user_id,
-      flow_path: flow_path,
-      front_image_fingerprint: front_image_fingerprint,
-      back_image_fingerprint: back_image_fingerprint,
-      getting_started_ab_test_bucket: getting_started_ab_test_bucket,
-      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
-      phone_with_camera: phone_with_camera,
+      success:,
+      errors:,
+      attempts:,
+      remaining_attempts:,
+      user_id:,
+      flow_path:,
+      front_image_fingerprint:,
+      back_image_fingerprint:,
+      getting_started_ab_test_bucket:,
+      phone_question_ab_test_bucket:,
+      phone_with_camera:,
       **extra,
     )
   end
@@ -1050,24 +1050,24 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: doc auth image upload vendor submitted',
-      success: success,
-      errors: errors,
-      exception: exception,
-      billed: billed,
-      doc_auth_result: doc_auth_result,
-      state: state,
-      state_id_type: state_id_type,
-      async: async,
-      attempts: attempts,
-      remaining_attempts: remaining_attempts,
-      client_image_metrics: client_image_metrics,
-      flow_path: flow_path,
-      vendor_request_time_in_ms: vendor_request_time_in_ms,
-      front_image_fingerprint: front_image_fingerprint,
-      back_image_fingerprint: back_image_fingerprint,
-      getting_started_ab_test_bucket: getting_started_ab_test_bucket,
-      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
-      phone_with_camera: phone_with_camera,
+      success:,
+      errors:,
+      exception:,
+      billed:,
+      doc_auth_result:,
+      state:,
+      state_id_type:,
+      async:,
+      attempts:,
+      remaining_attempts:,
+      client_image_metrics:,
+      flow_path:,
+      vendor_request_time_in_ms:,
+      front_image_fingerprint:,
+      back_image_fingerprint:,
+      getting_started_ab_test_bucket:,
+      phone_question_ab_test_bucket:,
+      phone_with_camera:,
       **extra,
     )
   end
@@ -1098,16 +1098,16 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: doc auth image upload vendor pii validation',
-      success: success,
-      errors: errors,
-      user_id: user_id,
-      remaining_attempts: remaining_attempts,
-      pii_like_keypaths: pii_like_keypaths,
-      flow_path: flow_path,
-      front_image_fingerprint: front_image_fingerprint,
-      back_image_fingerprint: back_image_fingerprint,
-      getting_started_ab_test_bucket: getting_started_ab_test_bucket,
-      classification_info: classification_info,
+      success:,
+      errors:,
+      user_id:,
+      remaining_attempts:,
+      pii_like_keypaths:,
+      flow_path:,
+      front_image_fingerprint:,
+      back_image_fingerprint:,
+      getting_started_ab_test_bucket:,
+      classification_info:,
       **extra,
     )
   end
@@ -1136,8 +1136,8 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: doc auth warning visited',
-      step_name: step_name,
-      remaining_attempts: remaining_attempts,
+      step_name:,
+      remaining_attempts:,
       **extra,
     )
   end
@@ -1170,13 +1170,13 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: review complete',
-      success: success,
-      deactivation_reason: deactivation_reason,
-      fraud_review_pending: fraud_review_pending,
-      gpo_verification_pending: gpo_verification_pending,
-      in_person_verification_pending: in_person_verification_pending,
-      fraud_rejection: fraud_rejection,
-      proofing_components: proofing_components,
+      success:,
+      deactivation_reason:,
+      fraud_review_pending:,
+      gpo_verification_pending:,
+      in_person_verification_pending:,
+      fraud_rejection:,
+      proofing_components:,
       **extra,
     )
   end
@@ -1193,8 +1193,8 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: review info visited',
-      address_verification_method: address_verification_method,
-      proofing_components: proofing_components,
+      address_verification_method:,
+      proofing_components:,
       **extra,
     )
   end
@@ -1217,12 +1217,12 @@ module AnalyticsEvents
   )
     track_event(
       'Frontend: IdV: exit optional questions',
-      acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
-      acuant_version: acuant_version,
-      flow_path: flow_path,
-      ids: ids,
-      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
-      use_alternate_sdk: use_alternate_sdk,
+      acuant_sdk_upgrade_a_b_testing_enabled:,
+      acuant_version:,
+      flow_path:,
+      ids:,
+      phone_question_ab_test_bucket:,
+      use_alternate_sdk:,
     )
   end
 
@@ -1248,13 +1248,13 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: final resolution',
-      success: success,
-      fraud_review_pending: fraud_review_pending,
-      fraud_rejection: fraud_rejection,
-      gpo_verification_pending: gpo_verification_pending,
-      in_person_verification_pending: in_person_verification_pending,
-      deactivation_reason: deactivation_reason,
-      proofing_components: proofing_components,
+      success:,
+      fraud_review_pending:,
+      fraud_rejection:,
+      gpo_verification_pending:,
+      in_person_verification_pending:,
+      deactivation_reason:,
+      proofing_components:,
       **extra,
     )
   end
@@ -1264,7 +1264,7 @@ module AnalyticsEvents
   def idv_forgot_password(proofing_components: nil, **extra)
     track_event(
       'IdV: forgot password visited',
-      proofing_components: proofing_components,
+      proofing_components:,
       **extra,
     )
   end
@@ -1274,7 +1274,7 @@ module AnalyticsEvents
   def idv_forgot_password_confirmed(proofing_components: nil, **extra)
     track_event(
       'IdV: forgot password confirmed',
-      proofing_components: proofing_components,
+      proofing_components:,
       **extra,
     )
   end
@@ -1338,32 +1338,32 @@ module AnalyticsEvents
   )
     track_event(
       'Frontend: IdV: front image added',
-      acuantCaptureMode: acuantCaptureMode,
-      acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
-      acuant_version: acuant_version,
-      assessment: assessment,
-      attempt: attempt,
-      documentType: documentType,
-      dpi: dpi,
-      failedImageResubmission: failedImageResubmission,
-      fingerprint: fingerprint,
-      flow_path: flow_path,
-      glare: glare,
-      glareScoreThreshold: glareScoreThreshold,
-      height: height,
-      isAssessedAsBlurry: isAssessedAsBlurry,
-      isAssessedAsGlare: isAssessedAsGlare,
-      isAssessedAsUnsupported: isAssessedAsUnsupported,
-      mimeType: mimeType,
-      moire: moire,
-      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
-      phone_with_camera: phone_with_camera,
-      sharpness: sharpness,
-      sharpnessScoreThreshold: sharpnessScoreThreshold,
-      size: size,
-      source: source,
-      use_alternate_sdk: use_alternate_sdk,
-      width: width,
+      acuantCaptureMode:,
+      acuant_sdk_upgrade_a_b_testing_enabled:,
+      acuant_version:,
+      assessment:,
+      attempt:,
+      documentType:,
+      dpi:,
+      failedImageResubmission:,
+      fingerprint:,
+      flow_path:,
+      glare:,
+      glareScoreThreshold:,
+      height:,
+      isAssessedAsBlurry:,
+      isAssessedAsGlare:,
+      isAssessedAsUnsupported:,
+      mimeType:,
+      moire:,
+      phone_question_ab_test_bucket:,
+      phone_with_camera:,
+      sharpness:,
+      sharpnessScoreThreshold:,
+      size:,
+      source:,
+      use_alternate_sdk:,
+      width:,
     )
   end
 
@@ -1388,14 +1388,14 @@ module AnalyticsEvents
   )
     track_event(
       'Frontend: IdV: front image clicked',
-      acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
-      acuant_version: acuant_version,
-      flow_path: flow_path,
-      isDrop: isDrop,
-      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
-      phone_with_camera: phone_with_camera,
-      source: source,
-      use_alternate_sdk: use_alternate_sdk,
+      acuant_sdk_upgrade_a_b_testing_enabled:,
+      acuant_version:,
+      flow_path:,
+      isDrop:,
+      phone_question_ab_test_bucket:,
+      phone_with_camera:,
+      source:,
+      use_alternate_sdk:,
     )
   end
   # rubocop:enable Naming/VariableName,Naming/MethodParameterName
@@ -1419,12 +1419,12 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: USPS address letter enqueued',
-      enqueued_at: enqueued_at,
-      resend: resend,
-      first_letter_requested_at: first_letter_requested_at,
-      hours_since_first_letter: hours_since_first_letter,
-      phone_step_attempts: phone_step_attempts,
-      proofing_components: proofing_components,
+      enqueued_at:,
+      resend:,
+      first_letter_requested_at:,
+      hours_since_first_letter:,
+      phone_step_attempts:,
+      proofing_components:,
       **extra,
     )
   end
@@ -1446,11 +1446,11 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: USPS address letter requested',
-      resend: resend,
+      resend:,
       first_letter_requested_at:,
       hours_since_first_letter:,
       phone_step_attempts:,
-      proofing_components: proofing_components,
+      proofing_components:,
       **extra,
     )
   end
@@ -1468,7 +1468,7 @@ module AnalyticsEvents
   # A GPO reminder email was sent to the user
   # @param [String] user_id UUID of user who we sent a reminder to
   def idv_gpo_reminder_email_sent(user_id:, **extra)
-    track_event('IdV: gpo reminder email sent', user_id: user_id, **extra)
+    track_event('IdV: gpo reminder email sent', user_id:, **extra)
   end
 
   # @param [String] field back or front
@@ -1491,13 +1491,13 @@ module AnalyticsEvents
   )
     track_event(
       'Frontend: IdV: Image capture failed',
-      field: field,
-      acuantCaptureMode: acuantCaptureMode,
-      error: error,
-      acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
-      acuant_version: acuant_version,
-      flow_path: flow_path,
-      use_alternate_sdk: use_alternate_sdk,
+      field:,
+      acuantCaptureMode:,
+      error:,
+      acuant_sdk_upgrade_a_b_testing_enabled:,
+      acuant_version:,
+      flow_path:,
+      use_alternate_sdk:,
     )
   end
   # rubocop:enable Naming/VariableName,Naming/MethodParameterName
@@ -1512,8 +1512,8 @@ module AnalyticsEvents
   )
     track_event(
       'InPerson::EmailReminderJob: Reminder email initiated',
-      email_type: email_type,
-      enrollment_id: enrollment_id,
+      email_type:,
+      enrollment_id:,
       **extra,
     )
   end
@@ -1530,9 +1530,9 @@ module AnalyticsEvents
   )
     track_event(
       'InPerson::EmailReminderJob: Exception raised when attempting to send reminder email',
-      enrollment_id: enrollment_id,
-      exception_class: exception_class,
-      exception_message: exception_message,
+      enrollment_id:,
+      exception_class:,
+      exception_message:,
       **extra,
     )
   end
@@ -1544,8 +1544,8 @@ module AnalyticsEvents
                                        **extra)
     track_event(
       'IdV: in person proofing location submitted',
-      selected_location: selected_location,
-      flow_path: flow_path,
+      selected_location:,
+      flow_path:,
       **extra,
     )
   end
@@ -1555,7 +1555,7 @@ module AnalyticsEvents
   def idv_in_person_location_visited(flow_path:, **extra)
     track_event(
       'IdV: in person proofing location visited',
-      flow_path: flow_path,
+      flow_path:,
       **extra,
     )
   end
@@ -1576,11 +1576,11 @@ module AnalyticsEvents
   )
     track_event(
       'Request USPS IPP locations: request failed',
-      exception_class: exception_class,
-      exception_message: exception_message,
-      response_body_present: response_body_present,
-      response_body: response_body,
-      response_status_code: response_status_code,
+      exception_class:,
+      exception_message:,
+      response_body_present:,
+      response_body:,
+      response_status_code:,
       **extra,
     )
   end
@@ -1603,12 +1603,12 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: in person proofing location search submitted',
-      success: success,
-      result_total: result_total,
-      errors: errors,
-      exception_class: exception_class,
-      exception_message: exception_message,
-      response_status_code: response_status_code,
+      success:,
+      result_total:,
+      errors:,
+      exception_class:,
+      exception_message:,
+      response_status_code:,
       **extra,
     )
   end
@@ -1618,7 +1618,7 @@ module AnalyticsEvents
   def idv_in_person_prepare_submitted(flow_path:, **extra)
     track_event(
       'IdV: in person proofing prepare submitted',
-      flow_path: flow_path,
+      flow_path:,
       **extra,
     )
   end
@@ -1626,7 +1626,7 @@ module AnalyticsEvents
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
   # The user visited the in person proofing prepare step
   def idv_in_person_prepare_visited(flow_path:, **extra)
-    track_event('IdV: in person proofing prepare visited', flow_path: flow_path, **extra)
+    track_event('IdV: in person proofing prepare visited', flow_path:, **extra)
   end
 
   # @param [String] flow_path
@@ -1651,14 +1651,14 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: in person proofing address submitted',
-      flow_path: flow_path,
-      step: step,
-      step_count: step_count,
-      analytics_id: analytics_id,
-      irs_reproofing: irs_reproofing,
-      success: success,
-      errors: errors,
-      same_address_as_id: same_address_as_id,
+      flow_path:,
+      step:,
+      step_count:,
+      analytics_id:,
+      irs_reproofing:,
+      success:,
+      errors:,
+      same_address_as_id:,
       **extra,
     )
   end
@@ -1679,11 +1679,11 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: in person proofing address visited',
-      flow_path: flow_path,
-      step: step,
-      step_count: step_count,
-      analytics_id: analytics_id,
-      irs_reproofing: irs_reproofing,
+      flow_path:,
+      step:,
+      step_count:,
+      analytics_id:,
+      irs_reproofing:,
       **extra,
     )
   end
@@ -1710,14 +1710,14 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: in person proofing cancel_update_address submitted',
-      flow_path: flow_path,
-      step: step,
-      step_count: step_count,
-      analytics_id: analytics_id,
-      irs_reproofing: irs_reproofing,
-      success: success,
-      errors: errors,
-      same_address_as_id: same_address_as_id,
+      flow_path:,
+      step:,
+      step_count:,
+      analytics_id:,
+      irs_reproofing:,
+      success:,
+      errors:,
+      same_address_as_id:,
       **extra,
     )
   end
@@ -1744,14 +1744,14 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: in person proofing cancel_update_state_id submitted',
-      flow_path: flow_path,
-      step: step,
-      step_count: step_count,
-      analytics_id: analytics_id,
-      irs_reproofing: irs_reproofing,
-      success: success,
-      errors: errors,
-      same_address_as_id: same_address_as_id,
+      flow_path:,
+      step:,
+      step_count:,
+      analytics_id:,
+      irs_reproofing:,
+      success:,
+      errors:,
+      same_address_as_id:,
       **extra,
     )
   end
@@ -1820,7 +1820,7 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: in person proofing characters submitted could not be transliterated',
-      nontransliterable_characters: nontransliterable_characters,
+      nontransliterable_characters:,
       **extra,
     )
   end
@@ -1847,14 +1847,14 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: in person proofing redo_state_id submitted',
-      flow_path: flow_path,
-      step: step,
-      step_count: step_count,
-      analytics_id: analytics_id,
-      irs_reproofing: irs_reproofing,
-      success: success,
-      errors: errors,
-      same_address_as_id: same_address_as_id,
+      flow_path:,
+      step:,
+      step_count:,
+      analytics_id:,
+      irs_reproofing:,
+      success:,
+      errors:,
+      same_address_as_id:,
       **extra,
     )
   end
@@ -1885,14 +1885,14 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: in person proofing state_id submitted',
-      flow_path: flow_path,
-      step: step,
-      step_count: step_count,
-      analytics_id: analytics_id,
-      irs_reproofing: irs_reproofing,
-      success: success,
-      errors: errors,
-      same_address_as_id: same_address_as_id,
+      flow_path:,
+      step:,
+      step_count:,
+      analytics_id:,
+      irs_reproofing:,
+      success:,
+      errors:,
+      same_address_as_id:,
       **extra,
     )
   end
@@ -1913,11 +1913,11 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: in person proofing state_id visited',
-      flow_path: flow_path,
-      step: step,
-      step_count: step_count,
-      analytics_id: analytics_id,
-      irs_reproofing: irs_reproofing,
+      flow_path:,
+      step:,
+      step_count:,
+      analytics_id:,
+      irs_reproofing:,
       **extra,
     )
   end
@@ -1936,7 +1936,7 @@ module AnalyticsEvents
                                           **extra)
     track_event(
       'IdV: in person ready to verify visited',
-      proofing_components: proofing_components,
+      proofing_components:,
       **extra,
     )
   end
@@ -1964,10 +1964,10 @@ module AnalyticsEvents
   )
     track_event(
       'SendProofingNotificationJob: in person notification SMS send attempted',
-      success: success,
-      enrollment_code: enrollment_code,
-      enrollment_id: enrollment_id,
-      telephony_response: telephony_response,
+      success:,
+      enrollment_code:,
+      enrollment_id:,
+      telephony_response:,
       **extra,
     )
   end
@@ -1983,8 +1983,8 @@ module AnalyticsEvents
   )
     track_event(
       'SendProofingNotificationJob: job completed',
-      enrollment_code: enrollment_code,
-      enrollment_id: enrollment_id,
+      enrollment_code:,
+      enrollment_id:,
       **extra,
     )
   end
@@ -2004,10 +2004,10 @@ module AnalyticsEvents
   )
     track_event(
       'SendProofingNotificationJob: exception raised',
-      enrollment_code: enrollment_code,
-      enrollment_id: enrollment_id,
-      exception_class: exception_class,
-      exception_message: exception_message,
+      enrollment_code:,
+      enrollment_id:,
+      exception_class:,
+      exception_message:,
       **extra,
     )
   end
@@ -2023,8 +2023,8 @@ module AnalyticsEvents
   )
     track_event(
       'SendProofingNotificationJob: job skipped',
-      enrollment_code: enrollment_code,
-      enrollment_id: enrollment_id,
+      enrollment_code:,
+      enrollment_id:,
       **extra,
     )
   end
@@ -2040,8 +2040,8 @@ module AnalyticsEvents
   )
     track_event(
       'SendProofingNotificationJob: job started',
-      enrollment_code: enrollment_code,
-      enrollment_id: enrollment_id,
+      enrollment_code:,
+      enrollment_id:,
       **extra,
     )
   end
@@ -2049,13 +2049,13 @@ module AnalyticsEvents
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
   # The user submitted the in person proofing switch_back step
   def idv_in_person_switch_back_submitted(flow_path:, **extra)
-    track_event('IdV: in person proofing switch_back submitted', flow_path: flow_path, **extra)
+    track_event('IdV: in person proofing switch_back submitted', flow_path:, **extra)
   end
 
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
   # The user visited the in person proofing switch_back step
   def idv_in_person_switch_back_visited(flow_path:, **extra)
-    track_event('IdV: in person proofing switch_back visited', flow_path: flow_path, **extra)
+    track_event('IdV: in person proofing switch_back visited', flow_path:, **extra)
   end
 
   # An email from USPS with an enrollment code has been received, indicating
@@ -2070,8 +2070,8 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: in person usps proofing enrollment code email received',
-      multi_part: multi_part,
-      part_found: part_found,
+      multi_part:,
+      part_found:,
       **extra,
     )
   end
@@ -2096,13 +2096,13 @@ module AnalyticsEvents
   )
     track_event(
       'GetUspsProofingResultsJob: Job completed',
-      duration_seconds: duration_seconds,
-      enrollments_checked: enrollments_checked,
-      enrollments_errored: enrollments_errored,
-      enrollments_expired: enrollments_expired,
-      enrollments_failed: enrollments_failed,
-      enrollments_in_progress: enrollments_in_progress,
-      enrollments_passed: enrollments_passed,
+      duration_seconds:,
+      enrollments_checked:,
+      enrollments_errored:,
+      enrollments_expired:,
+      enrollments_failed:,
+      enrollments_in_progress:,
+      enrollments_passed:,
       **extra,
     )
   end
@@ -2119,9 +2119,9 @@ module AnalyticsEvents
   )
     track_event(
       'GetUspsProofingResultsJob: Exception raised when attempting to send deadline passed email',
-      enrollment_id: enrollment_id,
-      exception_class: exception_class,
-      exception_message: exception_message,
+      enrollment_id:,
+      exception_class:,
+      exception_message:,
       **extra,
     )
   end
@@ -2134,7 +2134,7 @@ module AnalyticsEvents
   )
     track_event(
       'GetUspsProofingResultsJob: deadline passed email initiated',
-      enrollment_id: enrollment_id,
+      enrollment_id:,
       **extra,
     )
   end
@@ -2147,7 +2147,7 @@ module AnalyticsEvents
   )
     track_event(
       'GetUspsProofingResultsJob: Success or failure email initiated',
-      email_type: email_type,
+      email_type:,
       **extra,
     )
   end
@@ -2166,10 +2166,10 @@ module AnalyticsEvents
   )
     track_event(
       'GetUspsProofingResultsJob: Enrollment incomplete',
-      enrollment_code: enrollment_code,
-      enrollment_id: enrollment_id,
-      minutes_since_established: minutes_since_established,
-      response_message: response_message,
+      enrollment_code:,
+      enrollment_id:,
+      minutes_since_established:,
+      response_message:,
       **extra,
     )
   end
@@ -2192,12 +2192,12 @@ module AnalyticsEvents
   )
     track_event(
       'GetUspsProofingResultsJob: Enrollment status updated',
-      enrollment_code: enrollment_code,
-      enrollment_id: enrollment_id,
-      minutes_since_established: minutes_since_established,
-      fraud_suspected: fraud_suspected,
-      passed: passed,
-      reason: reason,
+      enrollment_code:,
+      enrollment_id:,
+      minutes_since_established:,
+      fraud_suspected:,
+      passed:,
+      reason:,
       **extra,
     )
   end
@@ -2254,29 +2254,29 @@ module AnalyticsEvents
   )
     track_event(
       'GetUspsProofingResultsJob: Exception raised',
-      reason: reason,
-      enrollment_id: enrollment_id,
-      exception_class: exception_class,
-      exception_message: exception_message,
-      enrollment_code: enrollment_code,
-      minutes_since_established: minutes_since_established,
-      minutes_since_last_status_check: minutes_since_last_status_check,
-      minutes_since_last_status_update: minutes_since_last_status_update,
-      minutes_to_completion: minutes_to_completion,
-      fraud_suspected: fraud_suspected,
-      primary_id_type: primary_id_type,
-      secondary_id_type: secondary_id_type,
-      failure_reason: failure_reason,
-      transaction_end_date_time: transaction_end_date_time,
-      transaction_start_date_time: transaction_start_date_time,
-      status: status,
-      assurance_level: assurance_level,
-      proofing_post_office: proofing_post_office,
-      proofing_city: proofing_city,
-      proofing_state: proofing_state,
-      scan_count: scan_count,
-      response_message: response_message,
-      response_status_code: response_status_code,
+      reason:,
+      enrollment_id:,
+      exception_class:,
+      exception_message:,
+      enrollment_code:,
+      minutes_since_established:,
+      minutes_since_last_status_check:,
+      minutes_since_last_status_update:,
+      minutes_to_completion:,
+      fraud_suspected:,
+      primary_id_type:,
+      secondary_id_type:,
+      failure_reason:,
+      transaction_end_date_time:,
+      transaction_start_date_time:,
+      status:,
+      assurance_level:,
+      proofing_post_office:,
+      proofing_city:,
+      proofing_state:,
+      scan_count:,
+      response_message:,
+      response_status_code:,
       **extra,
     )
   end
@@ -2291,8 +2291,8 @@ module AnalyticsEvents
   )
     track_event(
       'GetUspsProofingResultsJob: Job started',
-      enrollments_count: enrollments_count,
-      reprocess_delay_minutes: reprocess_delay_minutes,
+      enrollments_count:,
+      reprocess_delay_minutes:,
       **extra,
     )
   end
@@ -2313,11 +2313,11 @@ module AnalyticsEvents
   )
     track_event(
       'GetUspsProofingResultsJob: Unexpected response received',
-      enrollment_code: enrollment_code,
-      enrollment_id: enrollment_id,
-      minutes_since_established: minutes_since_established,
-      response_message: response_message,
-      reason: reason,
+      enrollment_code:,
+      enrollment_id:,
+      minutes_since_established:,
+      response_message:,
+      reason:,
       **extra,
     )
   end
@@ -2338,11 +2338,11 @@ module AnalyticsEvents
   )
     track_event(
       'USPS IPPaaS enrollment failed',
-      context: context,
-      enrollment_id: enrollment_id,
-      exception_class: exception_class,
-      exception_message: exception_message,
-      reason: reason,
+      context:,
+      enrollment_id:,
+      exception_class:,
+      exception_message:,
+      reason:,
       **extra,
     )
   end
@@ -2358,7 +2358,7 @@ module AnalyticsEvents
   def idv_letter_enqueued_visit(proofing_components: nil, **extra)
     track_event(
       'IdV: letter enqueued visited',
-      proofing_components: proofing_components,
+      proofing_components:,
       **extra,
     )
   end
@@ -2377,10 +2377,10 @@ module AnalyticsEvents
   )
     track_event(
       'Frontend: IdV: Link sent capture doc polling complete',
-      isCancelled: isCancelled,
-      isRateLimited: isRateLimited,
-      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
-      phone_with_camera: phone_with_camera,
+      isCancelled:,
+      isRateLimited:,
+      phone_question_ab_test_bucket:,
+      phone_with_camera:,
     )
   end
   # rubocop:enable Naming/VariableName,Naming/MethodParameterName
@@ -2394,8 +2394,8 @@ module AnalyticsEvents
   )
     track_event(
       'Frontend: IdV: Link sent capture doc polling started',
-      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
-      phone_with_camera: phone_with_camera,
+      phone_question_ab_test_bucket:,
+      phone_with_camera:,
     )
   end
 
@@ -2421,10 +2421,10 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: Mobile device and camera check',
-      is_camera_capable_mobile: is_camera_capable_mobile,
-      camera_present: camera_present,
-      grace_time: grace_time,
-      duration: duration,
+      is_camera_capable_mobile:,
+      camera_present:,
+      grace_time:,
+      duration:,
       **extra,
     )
   end
@@ -2445,10 +2445,10 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: Native camera forced after failed attempts',
-      failed_capture_attempts: failed_capture_attempts,
-      failed_submission_attempts: failed_submission_attempts,
-      field: field,
-      flow_path: flow_path,
+      failed_capture_attempts:,
+      failed_submission_attempts:,
+      field:,
+      flow_path:,
       **extra,
     )
   end
@@ -2466,8 +2466,8 @@ module AnalyticsEvents
   def idv_personal_key_acknowledgment_toggled(checked:, proofing_components:, **extra)
     track_event(
       'IdV: personal key acknowledgment toggled',
-      checked: checked,
-      proofing_components: proofing_components,
+      checked:,
+      proofing_components:,
       **extra,
     )
   end
@@ -2478,7 +2478,7 @@ module AnalyticsEvents
   def idv_personal_key_downloaded(proofing_components: nil, **extra)
     track_event(
       'IdV: personal key downloaded',
-      proofing_components: proofing_components,
+      proofing_components:,
       **extra,
     )
   end
@@ -2499,11 +2499,11 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: personal key submitted',
-      in_person_verification_pending: in_person_verification_pending,
-      deactivation_reason: deactivation_reason,
-      fraud_review_pending: fraud_review_pending,
-      fraud_rejection: fraud_rejection,
-      proofing_components: proofing_components,
+      in_person_verification_pending:,
+      deactivation_reason:,
+      fraud_review_pending:,
+      fraud_rejection:,
+      proofing_components:,
       **extra,
     )
   end
@@ -2513,7 +2513,7 @@ module AnalyticsEvents
   def idv_personal_key_visited(proofing_components: nil, **extra)
     track_event(
       'IdV: personal key visited',
-      proofing_components: proofing_components,
+      proofing_components:,
       **extra,
     )
   end
@@ -2532,10 +2532,10 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: phone confirmation form',
-      success: success,
-      errors: errors,
-      otp_delivery_preference: otp_delivery_preference,
-      proofing_components: proofing_components,
+      success:,
+      errors:,
+      otp_delivery_preference:,
+      proofing_components:,
       **extra,
     )
   end
@@ -2545,7 +2545,7 @@ module AnalyticsEvents
   def idv_phone_confirmation_otp_rate_limit_attempts(proofing_components: nil, **extra)
     track_event(
       'Idv: Phone OTP attempts rate limited',
-      proofing_components: proofing_components,
+      proofing_components:,
       **extra,
     )
   end
@@ -2555,7 +2555,7 @@ module AnalyticsEvents
   def idv_phone_confirmation_otp_rate_limit_locked_out(proofing_components: nil, **extra)
     track_event(
       'Idv: Phone OTP rate limited user',
-      proofing_components: proofing_components,
+      proofing_components:,
       **extra,
     )
   end
@@ -2565,7 +2565,7 @@ module AnalyticsEvents
   def idv_phone_confirmation_otp_rate_limit_sends(proofing_components: nil, **extra)
     track_event(
       'Idv: Phone OTP sends rate limited',
-      proofing_components: proofing_components,
+      proofing_components:,
       **extra,
     )
   end
@@ -2592,14 +2592,14 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: phone confirmation otp resent',
-      success: success,
-      errors: errors,
-      otp_delivery_preference: otp_delivery_preference,
-      country_code: country_code,
-      area_code: area_code,
-      rate_limit_exceeded: rate_limit_exceeded,
-      telephony_response: telephony_response,
-      proofing_components: proofing_components,
+      success:,
+      errors:,
+      otp_delivery_preference:,
+      country_code:,
+      area_code:,
+      rate_limit_exceeded:,
+      telephony_response:,
+      proofing_components:,
       **extra,
     )
   end
@@ -2630,16 +2630,16 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: phone confirmation otp sent',
-      success: success,
-      errors: errors,
-      otp_delivery_preference: otp_delivery_preference,
-      country_code: country_code,
-      area_code: area_code,
-      rate_limit_exceeded: rate_limit_exceeded,
-      phone_fingerprint: phone_fingerprint,
-      telephony_response: telephony_response,
-      adapter: adapter,
-      proofing_components: proofing_components,
+      success:,
+      errors:,
+      otp_delivery_preference:,
+      country_code:,
+      area_code:,
+      rate_limit_exceeded:,
+      phone_fingerprint:,
+      telephony_response:,
+      adapter:,
+      proofing_components:,
       **extra,
     )
   end
@@ -2664,13 +2664,13 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: phone confirmation otp submitted',
-      success: success,
-      errors: errors,
-      code_expired: code_expired,
-      code_matches: code_matches,
-      second_factor_attempts_count: second_factor_attempts_count,
-      second_factor_locked_at: second_factor_locked_at,
-      proofing_components: proofing_components,
+      success:,
+      errors:,
+      code_expired:,
+      code_matches:,
+      second_factor_attempts_count:,
+      second_factor_locked_at:,
+      proofing_components:,
       **extra,
     )
   end
@@ -2680,7 +2680,7 @@ module AnalyticsEvents
   def idv_phone_confirmation_otp_visit(proofing_components: nil, **extra)
     track_event(
       'IdV: phone confirmation otp visited',
-      proofing_components: proofing_components,
+      proofing_components:,
       **extra,
     )
   end
@@ -2697,9 +2697,9 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: phone confirmation vendor',
-      success: success,
-      errors: errors,
-      proofing_components: proofing_components,
+      success:,
+      errors:,
+      proofing_components:,
       **extra,
     )
   end
@@ -2719,10 +2719,10 @@ module AnalyticsEvents
     track_event(
       'IdV: phone error visited',
       {
-        type: type,
-        proofing_components: proofing_components,
-        limiter_expires_at: limiter_expires_at,
-        remaining_attempts: remaining_attempts,
+        type:,
+        proofing_components:,
+        limiter_expires_at:,
+        remaining_attempts:,
         **extra,
       }.compact,
     )
@@ -2733,7 +2733,7 @@ module AnalyticsEvents
   def idv_phone_of_record_visited(proofing_components: nil, **extra)
     track_event(
       'IdV: phone of record visited',
-      proofing_components: proofing_components,
+      proofing_components:,
       **extra,
     )
   end
@@ -2754,11 +2754,11 @@ module AnalyticsEvents
     track_event(
       'IdV: Phone OTP Delivery Selection Submitted',
       {
-        success: success,
-        errors: errors,
-        error_details: error_details,
-        otp_delivery_preference: otp_delivery_preference,
-        proofing_components: proofing_components,
+        success:,
+        errors:,
+        error_details:,
+        otp_delivery_preference:,
+        proofing_components:,
         **extra,
       }.compact,
     )
@@ -2769,7 +2769,7 @@ module AnalyticsEvents
   def idv_phone_otp_delivery_selection_visit(proofing_components: nil, **extra)
     track_event(
       'IdV: Phone OTP delivery Selection Visited',
-      proofing_components: proofing_components,
+      proofing_components:,
       **extra,
     )
   end
@@ -2780,8 +2780,8 @@ module AnalyticsEvents
   def idv_phone_use_different(step:, proofing_components: nil, **extra)
     track_event(
       'IdV: use different phone number',
-      step: step,
-      proofing_components: proofing_components,
+      step:,
+      proofing_components:,
       **extra,
     )
   end
@@ -2792,7 +2792,7 @@ module AnalyticsEvents
   def idv_please_call_visited(proofing_components: nil, **extra)
     track_event(
       'IdV: Verify please call visited',
-      proofing_components: proofing_components,
+      proofing_components:,
       **extra,
     )
   end
@@ -2802,7 +2802,7 @@ module AnalyticsEvents
   def idv_proofing_resolution_result_missing(proofing_components: nil, **extra)
     track_event(
       'IdV: proofing resolution result missing',
-      proofing_components: proofing_components,
+      proofing_components:,
       **extra,
     )
   end
@@ -2816,7 +2816,7 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: request letter visited',
-      letter_already_sent: letter_already_sent,
+      letter_already_sent:,
       **extra,
     )
   end
@@ -2831,8 +2831,8 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: session error visited',
-      type: type,
-      attempts_remaining: attempts_remaining,
+      type:,
+      attempts_remaining:,
       **extra,
     )
   end
@@ -2849,9 +2849,9 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: start over',
-      step: step,
-      location: location,
-      proofing_components: proofing_components,
+      step:,
+      location:,
+      proofing_components:,
       **extra,
     )
   end
@@ -2870,8 +2870,8 @@ module AnalyticsEvents
   def idv_usps_auth_token_refresh_job_network_error(exception_class:, exception_message:, **extra)
     track_event(
       'UspsAuthTokenRefreshJob: Network error',
-      exception_class: exception_class,
-      exception_message: exception_message,
+      exception_class:,
+      exception_message:,
       **extra,
     )
   end
@@ -2912,15 +2912,15 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: enter verify by mail code submitted',
-      success: success,
-      errors: errors,
-      pii_like_keypaths: pii_like_keypaths,
-      enqueued_at: enqueued_at,
-      which_letter: which_letter,
-      letter_count: letter_count,
-      attempts: attempts,
-      pending_in_person_enrollment: pending_in_person_enrollment,
-      fraud_check_failed: fraud_check_failed,
+      success:,
+      errors:,
+      pii_like_keypaths:,
+      enqueued_at:,
+      which_letter:,
+      letter_count:,
+      attempts:,
+      pending_in_person_enrollment:,
+      fraud_check_failed:,
       **extra,
     )
   end
@@ -2935,7 +2935,7 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: enter verify by mail code visited',
-      source: source,
+      source:,
       **extra,
     )
   end
@@ -2946,7 +2946,7 @@ module AnalyticsEvents
                                                           **extra)
     track_event(
       'IdV: verify in person troubleshooting option clicked',
-      flow_path: flow_path,
+      flow_path:,
       **extra,
     )
   end
@@ -2966,11 +2966,11 @@ module AnalyticsEvents
   )
     track_event(
       'Frontend: IdV: warning action triggered',
-      acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
-      acuant_version: acuant_version,
-      flow_path: flow_path,
-      location: location,
-      use_alternate_sdk: use_alternate_sdk,
+      acuant_sdk_upgrade_a_b_testing_enabled:,
+      acuant_version:,
+      flow_path:,
+      location:,
+      use_alternate_sdk:,
     )
   end
 
@@ -2997,15 +2997,15 @@ module AnalyticsEvents
   )
     track_event(
       'Frontend: IdV: warning shown',
-      acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
-      acuant_version: acuant_version,
-      error_message_displayed: error_message_displayed,
-      flow_path: flow_path,
-      heading: heading,
-      location: location,
-      remaining_attempts: remaining_attempts,
-      subheading: subheading,
-      use_alternate_sdk: use_alternate_sdk,
+      acuant_sdk_upgrade_a_b_testing_enabled:,
+      acuant_version:,
+      error_message_displayed:,
+      flow_path:,
+      heading:,
+      location:,
+      remaining_attempts:,
+      subheading:,
+      use_alternate_sdk:,
     )
   end
 
@@ -3019,8 +3019,8 @@ module AnalyticsEvents
   )
     track_event(
       'Invalid Authenticity Token',
-      controller: controller,
-      user_signed_in: user_signed_in,
+      controller:,
+      user_signed_in:,
       **extra,
     )
   end
@@ -3039,10 +3039,10 @@ module AnalyticsEvents
   )
     track_event(
       'IRS Attempt API: Events submitted',
-      rendered_event_count: rendered_event_count,
-      authenticated: authenticated,
-      elapsed_time: elapsed_time,
-      success: success,
+      rendered_event_count:,
+      authenticated:,
+      elapsed_time:,
+      success:,
       **extra,
     )
   end
@@ -3073,16 +3073,16 @@ module AnalyticsEvents
   )
     track_event(
       'Logout Initiated',
-      success: success,
-      client_id: client_id,
-      client_id_parameter_present: client_id_parameter_present,
-      id_token_hint_parameter_present: id_token_hint_parameter_present,
-      errors: errors,
-      error_details: error_details,
-      sp_initiated: sp_initiated,
-      oidc: oidc,
-      saml_request_valid: saml_request_valid,
-      method: method,
+      success:,
+      client_id:,
+      client_id_parameter_present:,
+      id_token_hint_parameter_present:,
+      errors:,
+      error_details:,
+      sp_initiated:,
+      oidc:,
+      saml_request_valid:,
+      method:,
       **extra,
     )
   end
@@ -3122,21 +3122,21 @@ module AnalyticsEvents
   )
     track_event(
       'Multi-Factor Authentication',
-      success: success,
-      errors: errors,
-      context: context,
-      multi_factor_auth_method: multi_factor_auth_method,
-      multi_factor_auth_method_created_at: multi_factor_auth_method_created_at,
-      auth_app_configuration_id: auth_app_configuration_id,
-      piv_cac_configuration_id: piv_cac_configuration_id,
-      key_id: key_id,
-      webauthn_configuration_id: webauthn_configuration_id,
-      confirmation_for_add_phone: confirmation_for_add_phone,
-      phone_configuration_id: phone_configuration_id,
-      pii_like_keypaths: pii_like_keypaths,
-      area_code: area_code,
-      country_code: country_code,
-      phone_fingerprint: phone_fingerprint,
+      success:,
+      errors:,
+      context:,
+      multi_factor_auth_method:,
+      multi_factor_auth_method_created_at:,
+      auth_app_configuration_id:,
+      piv_cac_configuration_id:,
+      key_id:,
+      webauthn_configuration_id:,
+      confirmation_for_add_phone:,
+      phone_configuration_id:,
+      pii_like_keypaths:,
+      area_code:,
+      country_code:,
+      phone_fingerprint:,
       **extra,
     )
   end
@@ -3148,7 +3148,7 @@ module AnalyticsEvents
       'Multi-Factor Authentication: Added phone',
       {
         method_name: :phone,
-        enabled_mfa_methods_count: enabled_mfa_methods_count,
+        enabled_mfa_methods_count:,
         **extra,
       }.compact,
     )
@@ -3215,7 +3215,7 @@ module AnalyticsEvents
   def multi_factor_auth_enter_backup_code_visit(context:, **extra)
     track_event(
       'Multi-Factor Authentication: enter backup code visited',
-      context: context,
+      context:,
       **extra,
     )
   end
@@ -3234,10 +3234,10 @@ module AnalyticsEvents
   )
     track_event(
       'Multi-Factor Authentication: enter OTP visited',
-      context: context,
-      multi_factor_auth_method: multi_factor_auth_method,
-      confirmation_for_add_phone: confirmation_for_add_phone,
-      phone_configuration_id: phone_configuration_id,
+      context:,
+      multi_factor_auth_method:,
+      confirmation_for_add_phone:,
+      phone_configuration_id:,
       **extra,
     )
   end
@@ -3247,7 +3247,7 @@ module AnalyticsEvents
   def multi_factor_auth_enter_personal_key_visit(context:, **extra)
     track_event(
       'Multi-Factor Authentication: enter personal key visited',
-      context: context,
+      context:,
       **extra,
     )
   end
@@ -3265,9 +3265,9 @@ module AnalyticsEvents
   )
     track_event(
       :multi_factor_auth_enter_piv_cac,
-      context: context,
-      multi_factor_auth_method: multi_factor_auth_method,
-      piv_cac_configuration_id: piv_cac_configuration_id,
+      context:,
+      multi_factor_auth_method:,
+      piv_cac_configuration_id:,
       **extra,
     )
   end
@@ -3275,7 +3275,7 @@ module AnalyticsEvents
   # @param ["authentication","reauthentication","confirmation"] context user session context
   # User visited the page to enter a TOTP as their mfa
   def multi_factor_auth_enter_totp_visit(context:, **extra)
-    track_event('Multi-Factor Authentication: enter TOTP visited', context: context, **extra)
+    track_event('Multi-Factor Authentication: enter TOTP visited', context:, **extra)
   end
 
   # @param ["authentication","reauthentication","confirmation"] context user session context
@@ -3292,9 +3292,9 @@ module AnalyticsEvents
   )
     track_event(
       'Multi-Factor Authentication: enter webAuthn authentication visited',
-      context: context,
-      multi_factor_auth_method: multi_factor_auth_method,
-      webauthn_configuration_id: webauthn_configuration_id,
+      context:,
+      multi_factor_auth_method:,
+      webauthn_configuration_id:,
       **extra,
     )
   end
@@ -3316,9 +3316,9 @@ module AnalyticsEvents
   def multi_factor_auth_option_list(success:, errors:, selection:, **extra)
     track_event(
       'Multi-Factor Authentication: option list',
-      success: success,
-      errors: errors,
-      selection: selection,
+      success:,
+      errors:,
+      selection:,
       **extra,
     )
   end
@@ -3348,14 +3348,14 @@ module AnalyticsEvents
                                     **extra)
     track_event(
       'Multi-Factor Authentication: phone setup',
-      success: success,
-      errors: errors,
-      otp_delivery_preference: otp_delivery_preference,
-      area_code: area_code,
-      carrier: carrier,
-      country_code: country_code,
-      phone_type: phone_type,
-      types: types,
+      success:,
+      errors:,
+      otp_delivery_preference:,
+      area_code:,
+      carrier:,
+      country_code:,
+      phone_type:,
+      types:,
       **extra,
     )
   end
@@ -3376,11 +3376,11 @@ module AnalyticsEvents
   )
     track_event(
       'Multi-Factor Authentication Setup',
-      success: success,
-      errors: errors,
-      multi_factor_auth_method: multi_factor_auth_method,
-      in_account_creation_flow: in_account_creation_flow,
-      enabled_mfa_methods_count: enabled_mfa_methods_count,
+      success:,
+      errors:,
+      multi_factor_auth_method:,
+      in_account_creation_flow:,
+      enabled_mfa_methods_count:,
       **extra,
     )
   end
@@ -3397,9 +3397,9 @@ module AnalyticsEvents
   )
     track_event(
       'Multi-region KMS migration: User migrated',
-      success: success,
-      exception: exception,
-      user_id: user_id,
+      success:,
+      exception:,
+      user_id:,
       **extra,
     )
   end
@@ -3416,9 +3416,9 @@ module AnalyticsEvents
   )
     track_event(
       'Multi-region KMS migration: User migration summary',
-      user_count: user_count,
-      success_count: success_count,
-      error_count: error_count,
+      user_count:,
+      success_count:,
+      error_count:,
       **extra,
     )
   end
@@ -3449,16 +3449,16 @@ module AnalyticsEvents
   )
     track_event(
       'OIDC Logout Requested',
-      success: success,
-      client_id: client_id,
-      client_id_parameter_present: client_id_parameter_present,
-      id_token_hint_parameter_present: id_token_hint_parameter_present,
-      errors: errors,
-      error_details: error_details,
-      sp_initiated: sp_initiated,
-      oidc: oidc,
-      saml_request_valid: saml_request_valid,
-      method: method,
+      success:,
+      client_id:,
+      client_id_parameter_present:,
+      id_token_hint_parameter_present:,
+      errors:,
+      error_details:,
+      sp_initiated:,
+      oidc:,
+      saml_request_valid:,
+      method:,
       **extra,
     )
   end
@@ -3489,16 +3489,16 @@ module AnalyticsEvents
   )
     track_event(
       'OIDC Logout Submitted',
-      success: success,
-      client_id: client_id,
-      client_id_parameter_present: client_id_parameter_present,
-      id_token_hint_parameter_present: id_token_hint_parameter_present,
-      errors: errors,
-      error_details: error_details,
-      sp_initiated: sp_initiated,
-      oidc: oidc,
-      saml_request_valid: saml_request_valid,
-      method: method,
+      success:,
+      client_id:,
+      client_id_parameter_present:,
+      id_token_hint_parameter_present:,
+      errors:,
+      error_details:,
+      sp_initiated:,
+      oidc:,
+      saml_request_valid:,
+      method:,
       **extra,
     )
   end
@@ -3529,16 +3529,16 @@ module AnalyticsEvents
   )
     track_event(
       'OIDC Logout Page Visited',
-      success: success,
-      client_id: client_id,
-      client_id_parameter_present: client_id_parameter_present,
-      id_token_hint_parameter_present: id_token_hint_parameter_present,
-      errors: errors,
-      error_details: error_details,
-      sp_initiated: sp_initiated,
-      oidc: oidc,
-      saml_request_valid: saml_request_valid,
-      method: method,
+      success:,
+      client_id:,
+      client_id_parameter_present:,
+      id_token_hint_parameter_present:,
+      errors:,
+      error_details:,
+      sp_initiated:,
+      oidc:,
+      saml_request_valid:,
+      method:,
       **extra,
     )
   end
@@ -3553,8 +3553,8 @@ module AnalyticsEvents
   )
     track_event(
       'OpenID Connect: authorization request handoff',
-      client_id: client_id,
-      code_digest: code_digest,
+      client_id:,
+      code_digest:,
       **extra,
     )
   end
@@ -3567,10 +3567,10 @@ module AnalyticsEvents
   def openid_connect_bearer_token(success:, ial:, client_id:, errors:, **extra)
     track_event(
       'OpenID Connect: bearer token authentication',
-      success: success,
-      ial: ial,
-      client_id: client_id,
-      errors: errors,
+      success:,
+      ial:,
+      client_id:,
+      errors:,
       **extra,
     )
   end
@@ -3591,11 +3591,11 @@ module AnalyticsEvents
   )
     track_event(
       'OpenID Connect: authorization request',
-      client_id: client_id,
-      scope: scope,
-      acr_values: acr_values,
-      unauthorized_scope: unauthorized_scope,
-      user_fully_authenticated: user_fully_authenticated,
+      client_id:,
+      scope:,
+      acr_values:,
+      unauthorized_scope:,
+      user_fully_authenticated:,
       **extra,
     )
   end
@@ -3609,11 +3609,11 @@ module AnalyticsEvents
   def openid_connect_token(client_id:, user_id:, code_digest:, expires_in:, ial:, **extra)
     track_event(
       'OpenID Connect: token',
-      client_id: client_id,
-      user_id: user_id,
-      code_digest: code_digest,
-      expires_in: expires_in,
-      ial: ial,
+      client_id:,
+      user_id:,
+      code_digest:,
+      expires_in:,
+      ial:,
       **extra,
     )
   end
@@ -3636,12 +3636,12 @@ module AnalyticsEvents
   )
     track_event(
       'OTP: Delivery Selection',
-      otp_delivery_preference: otp_delivery_preference,
-      resend: resend,
-      country_code: country_code,
-      area_code: area_code,
-      context: context,
-      pii_like_keypaths: pii_like_keypaths,
+      otp_delivery_preference:,
+      resend:,
+      country_code:,
+      area_code:,
+      context:,
+      pii_like_keypaths:,
       **extra,
     )
   end
@@ -3654,9 +3654,9 @@ module AnalyticsEvents
   def otp_phone_validation_failed(error:, context:, country:, **extra)
     track_event(
       'Vendor Phone Validation failed',
-      error: error,
-      context: context,
-      country: country,
+      error:,
+      context:,
+      country:,
       **extra,
     )
   end
@@ -3665,14 +3665,14 @@ module AnalyticsEvents
   # @param [Hash] errors
   # The user updated their password
   def password_changed(success:, errors:, **extra)
-    track_event('Password Changed', success: success, errors: errors, **extra)
+    track_event('Password Changed', success:, errors:, **extra)
   end
 
   # @param [Boolean] success
   # @param [Hash] errors
   # The user added a password after verifying their email for account creation
   def password_creation(success:, errors:, **extra)
-    track_event('Password Creation', success: success, errors: errors, **extra)
+    track_event('Password Creation', success:, errors:, **extra)
   end
 
   # The user got their password incorrect the max number of times, their session was terminated
@@ -3690,10 +3690,10 @@ module AnalyticsEvents
   def password_reset_email(success:, errors:, confirmed:, active_profile:, **extra)
     track_event(
       'Password Reset: Email Submitted',
-      success: success,
-      errors: errors,
-      confirmed: confirmed,
-      active_profile: active_profile,
+      success:,
+      errors:,
+      confirmed:,
+      active_profile:,
       **extra,
     )
   end
@@ -3706,9 +3706,9 @@ module AnalyticsEvents
   def password_reset_password(success:, errors:, profile_deactivated:, **extra)
     track_event(
       'Password Reset: Password Submitted',
-      success: success,
-      errors: errors,
-      profile_deactivated: profile_deactivated,
+      success:,
+      errors:,
+      profile_deactivated:,
       **extra,
     )
   end
@@ -3720,9 +3720,9 @@ module AnalyticsEvents
   def password_reset_token(success:, errors:, user_id:, **extra)
     track_event(
       'Password Reset: Token Submitted',
-      success: success,
-      errors: errors,
-      user_id: user_id,
+      success:,
+      errors:,
+      user_id:,
       **extra,
     )
   end
@@ -3748,8 +3748,8 @@ module AnalyticsEvents
   def personal_key_alert_about_sign_in(success:, errors:, **extra)
     track_event(
       'Personal key: Alert user about sign in',
-      success: success,
-      errors: errors,
+      success:,
+      errors:,
       **extra,
     )
   end
@@ -3773,9 +3773,9 @@ module AnalyticsEvents
   def personal_key_reactivation_submitted(success:, errors:, pii_like_keypaths:, **extra)
     track_event(
       'Personal key reactivation: Personal key form submitted',
-      success: success,
-      errors: errors,
-      pii_like_keypaths: pii_like_keypaths,
+      success:,
+      errors:,
+      pii_like_keypaths:,
       **extra,
     )
   end
@@ -3790,7 +3790,7 @@ module AnalyticsEvents
   def personal_key_viewed(personal_key_present:, **extra)
     track_event(
       'Personal key viewed',
-      personal_key_present: personal_key_present,
+      personal_key_present:,
       **extra,
     )
   end
@@ -3811,11 +3811,11 @@ module AnalyticsEvents
   )
     track_event(
       'Phone Number Change: Form submitted',
-      success: success,
-      errors: errors,
-      delivery_preference: delivery_preference,
-      phone_configuration_id: phone_configuration_id,
-      make_default_number: make_default_number,
+      success:,
+      errors:,
+      delivery_preference:,
+      phone_configuration_id:,
+      make_default_number:,
       **extra,
     )
   end
@@ -3831,8 +3831,8 @@ module AnalyticsEvents
   def phone_deletion(success:, phone_configuration_id:, **extra)
     track_event(
       'Phone Number Deletion: Submitted',
-      success: success,
-      phone_configuration_id: phone_configuration_id,
+      success:,
+      phone_configuration_id:,
       **extra,
     )
   end
@@ -3851,8 +3851,8 @@ module AnalyticsEvents
   def piv_cac_login(success:, errors:, **extra)
     track_event(
       :piv_cac_login,
-      success: success,
-      errors: errors,
+      success:,
+      errors:,
       **extra,
     )
   end
@@ -3881,10 +3881,10 @@ module AnalyticsEvents
   def policy_redirect(redirect_url:, step: nil, location: nil, flow: nil, **extra)
     track_event(
       'Policy Page Redirect',
-      redirect_url: redirect_url,
-      step: step,
-      location: location,
-      flow: flow,
+      redirect_url:,
+      step:,
+      location:,
+      flow:,
       **extra,
     )
   end
@@ -3892,7 +3892,7 @@ module AnalyticsEvents
   # @param [String] error
   # Tracks if a Profile encryption is invalid
   def profile_encryption_invalid(error:, **extra)
-    track_event('Profile Encryption: Invalid', error: error, **extra)
+    track_event('Profile Encryption: Invalid', error:, **extra)
   end
 
   # @see #profile_personal_key_create_notifications
@@ -3910,9 +3910,9 @@ module AnalyticsEvents
   def profile_personal_key_create_notifications(success:, emails:, sms_message_ids:, **extra)
     track_event(
       'Profile: Created new personal key notifications',
-      success: success,
-      emails: emails,
-      sms_message_ids: sms_message_ids,
+      success:,
+      emails:,
+      sms_message_ids:,
       **extra,
     )
   end
@@ -3942,7 +3942,7 @@ module AnalyticsEvents
   def rate_limit_reached(limiter_type:, **extra)
     track_event(
       'Rate Limit Reached',
-      limiter_type: limiter_type,
+      limiter_type:,
       **extra,
     )
   end
@@ -3950,7 +3950,7 @@ module AnalyticsEvents
   # Rate limit triggered
   # @param [String] type
   def rate_limit_triggered(type:, **extra)
-    track_event('Rate Limit Triggered', type: type, **extra)
+    track_event('Rate Limit Triggered', type:, **extra)
   end
 
   # Account profile reactivation submitted
@@ -4003,8 +4003,8 @@ module AnalyticsEvents
   )
     track_event(
       'Remembered device used for authentication',
-      cookie_created_at: cookie_created_at,
-      cookie_age_seconds: cookie_age_seconds,
+      cookie_created_at:,
+      cookie_age_seconds:,
       **extra,
     )
   end
@@ -4019,8 +4019,8 @@ module AnalyticsEvents
   )
     track_event(
       'Remote Logout completed',
-      service_provider: service_provider,
-      user_id: user_id,
+      service_provider:,
+      user_id:,
       **extra,
     )
   end
@@ -4035,8 +4035,8 @@ module AnalyticsEvents
   )
     track_event(
       'Remote Logout initiated',
-      service_provider: service_provider,
-      saml_request_valid: saml_request_valid,
+      service_provider:,
+      saml_request_valid:,
       **extra,
     )
   end
@@ -4046,7 +4046,7 @@ module AnalyticsEvents
   def resend_add_email_request(success:, **extra)
     track_event(
       'Resend Add Email Requested',
-      success: success,
+      success:,
       **extra,
     )
   end
@@ -4063,9 +4063,9 @@ module AnalyticsEvents
   )
     track_event(
       'Response Timed Out',
-      backtrace: backtrace,
-      exception_message: exception_message,
-      exception_class: exception_class,
+      backtrace:,
+      exception_message:,
+      exception_class:,
       **extra,
     )
   end
@@ -4084,10 +4084,10 @@ module AnalyticsEvents
   )
     track_event(
       'Return to SP: Cancelled',
-      redirect_url: redirect_url,
-      step: step,
-      location: location,
-      flow: flow,
+      redirect_url:,
+      step:,
+      location:,
+      flow:,
       **extra,
     )
   end
@@ -4100,10 +4100,10 @@ module AnalyticsEvents
   def return_to_sp_failure_to_proof(redirect_url:, flow: nil, step: nil, location: nil, **extra)
     track_event(
       'Return to SP: Failed to proof',
-      redirect_url: redirect_url,
-      flow: flow,
-      step: step,
-      location: location,
+      redirect_url:,
+      flow:,
+      step:,
+      location:,
       **extra,
     )
   end
@@ -4114,8 +4114,8 @@ module AnalyticsEvents
   def rules_of_use_submitted(success: nil, errors: nil, **extra)
     track_event(
       'Rules of Use Submitted',
-      success: success,
-      errors: errors,
+      success:,
+      errors:,
       **extra,
     )
   end
@@ -4143,12 +4143,12 @@ module AnalyticsEvents
   )
     track_event(
       'SAML Auth',
-      success: success,
-      errors: errors,
-      nameid_format: nameid_format,
-      authn_context: authn_context,
-      authn_context_comparison: authn_context_comparison,
-      service_provider: service_provider,
+      success:,
+      errors:,
+      nameid_format:,
+      authn_context:,
+      authn_context_comparison:,
+      service_provider:,
       **extra,
     )
   end
@@ -4168,10 +4168,10 @@ module AnalyticsEvents
     track_event(
       'SAML Auth Request',
       {
-        requested_ial: requested_ial,
-        requested_aal_authn_context: requested_aal_authn_context,
-        force_authn: force_authn,
-        service_provider: service_provider,
+        requested_ial:,
+        requested_aal_authn_context:,
+        force_authn:,
+        service_provider:,
         **extra,
       }.compact,
     )
@@ -4206,12 +4206,12 @@ module AnalyticsEvents
   )
     track_event(
       'RISC: Security event received',
-      success: success,
-      error_code: error_code,
-      errors: errors,
-      jti: jti,
-      user_id: user_id,
-      client_id: client_id,
+      success:,
+      error_code:,
+      errors:,
+      jti:,
+      user_id:,
+      client_id:,
       **extra,
     )
   end
@@ -4237,8 +4237,8 @@ module AnalyticsEvents
   def sign_in_page_visit(flash:, stored_location:, **extra)
     track_event(
       'Sign in page visited',
-      flash: flash,
-      stored_location: stored_location,
+      flash:,
+      stored_location:,
       **extra,
     )
   end
@@ -4257,10 +4257,10 @@ module AnalyticsEvents
   )
     track_event(
       'SMS Opt-In: Submitted',
-      success: success,
-      new_user: new_user,
-      has_other_auth_methods: has_other_auth_methods,
-      phone_configuration_id: phone_configuration_id,
+      success:,
+      new_user:,
+      has_other_auth_methods:,
+      phone_configuration_id:,
       **extra,
     )
   end
@@ -4277,9 +4277,9 @@ module AnalyticsEvents
   )
     track_event(
       'SMS Opt-In: Visited',
-      new_user: new_user,
-      has_other_auth_methods: has_other_auth_methods,
-      phone_configuration_id: phone_configuration_id,
+      new_user:,
+      has_other_auth_methods:,
+      phone_configuration_id:,
       **extra,
     )
   end
@@ -4305,8 +4305,8 @@ module AnalyticsEvents
   def sp_redirect_initiated(ial:, billed_ial:, **extra)
     track_event(
       'SP redirect initiated',
-      ial: ial,
-      billed_ial: billed_ial,
+      ial:,
+      billed_ial:,
       **extra,
     )
   end
@@ -4316,7 +4316,7 @@ module AnalyticsEvents
   def sp_revoke_consent_revoked(issuer:, **extra)
     track_event(
       'SP Revoke Consent: Revoked',
-      issuer: issuer,
+      issuer:,
       **extra,
     )
   end
@@ -4326,7 +4326,7 @@ module AnalyticsEvents
   def sp_revoke_consent_visited(issuer:, **extra)
     track_event(
       'SP Revoke Consent: Visited',
-      issuer: issuer,
+      issuer:,
       **extra,
     )
   end
@@ -4357,15 +4357,15 @@ module AnalyticsEvents
     track_event(
       'Telephony: OTP sent',
       {
-        area_code: area_code,
-        country_code: country_code,
-        phone_fingerprint: phone_fingerprint,
-        context: context,
-        otp_delivery_preference: otp_delivery_preference,
-        resend: resend,
-        telephony_response: telephony_response,
-        adapter: adapter,
-        success: success,
+        area_code:,
+        country_code:,
+        phone_fingerprint:,
+        context:,
+        otp_delivery_preference:,
+        resend:,
+        telephony_response:,
+        adapter:,
+        success:,
         **extra,
       },
     )
@@ -4410,9 +4410,9 @@ module AnalyticsEvents
   )
     track_event(
       'Unsafe Redirect',
-      controller: controller,
-      referer: referer,
-      user_signed_in: user_signed_in,
+      controller:,
+      referer:,
+      user_signed_in:,
       **extra,
     )
   end
@@ -4423,8 +4423,8 @@ module AnalyticsEvents
   def user_2fa_reauthentication_required(auth_method:, authenticated_at:, **extra)
     track_event(
       'User 2FA Reauthentication Required',
-      auth_method: auth_method,
-      authenticated_at: authenticated_at,
+      auth_method:,
+      authenticated_at:,
       **extra,
     )
   end
@@ -4434,7 +4434,7 @@ module AnalyticsEvents
   def user_marked_authed(authentication_type:, **extra)
     track_event(
       'User marked authenticated',
-      authentication_type: authentication_type,
+      authentication_type:,
       **extra,
     )
   end
@@ -4445,7 +4445,7 @@ module AnalyticsEvents
   def user_prompted_before_navigation(path:, **extra)
     track_event(
       'User prompted before navigation',
-      path: path,
+      path:,
       **extra,
     )
   end
@@ -4457,8 +4457,8 @@ module AnalyticsEvents
   def user_prompted_before_navigation_and_still_on_page(path:, seconds:, **extra)
     track_event(
       'User prompted before navigation and still on page',
-      path: path,
-      seconds: seconds,
+      path:,
+      seconds:,
       **extra,
     )
   end
@@ -4480,11 +4480,11 @@ module AnalyticsEvents
     track_event(
       'User Registration: 2FA Setup',
       {
-        success: success,
-        errors: errors,
-        selected_mfa_count: selected_mfa_count,
-        enabled_mfa_methods_count: enabled_mfa_methods_count,
-        selection: selection,
+        success:,
+        errors:,
+        selected_mfa_count:,
+        enabled_mfa_methods_count:,
+        selection:,
         **extra,
       }.compact,
     )
@@ -4520,13 +4520,13 @@ module AnalyticsEvents
     )
     track_event(
       'User registration: agency handoff visited',
-      ial2: ial2,
-      ialmax: ialmax,
-      service_provider_name: service_provider_name,
-      page_occurence: page_occurence,
-      needs_completion_screen_reason: needs_completion_screen_reason,
-      sp_request_requested_attributes: sp_request_requested_attributes,
-      sp_session_requested_attributes: sp_session_requested_attributes,
+      ial2:,
+      ialmax:,
+      service_provider_name:,
+      page_occurence:,
+      needs_completion_screen_reason:,
+      sp_request_requested_attributes:,
+      sp_session_requested_attributes:,
       **extra,
     )
   end
@@ -4536,7 +4536,7 @@ module AnalyticsEvents
   def user_registration_cancellation(request_came_from:, **extra)
     track_event(
       'User registration: cancellation visited',
-      request_came_from: request_came_from,
+      request_came_from:,
       **extra,
     )
   end
@@ -4561,13 +4561,13 @@ module AnalyticsEvents
   )
     track_event(
       'User registration: complete',
-      ial2: ial2,
-      ialmax: ialmax,
-      service_provider_name: service_provider_name,
-      page_occurence: page_occurence,
-      needs_completion_screen_reason: needs_completion_screen_reason,
-      sp_request_requested_attributes: sp_request_requested_attributes,
-      sp_session_requested_attributes: sp_session_requested_attributes,
+      ial2:,
+      ialmax:,
+      service_provider_name:,
+      page_occurence:,
+      needs_completion_screen_reason:,
+      sp_request_requested_attributes:,
+      sp_session_requested_attributes:,
       **extra,
     )
   end
@@ -4591,12 +4591,12 @@ module AnalyticsEvents
     track_event(
       'User Registration: Email Submitted',
       {
-        success: success,
-        rate_limited: rate_limited,
-        errors: errors,
-        error_details: error_details,
-        user_id: user_id,
-        domain_name: domain_name,
+        success:,
+        rate_limited:,
+        errors:,
+        error_details:,
+        user_id:,
+        domain_name:,
         **extra,
       }.compact,
     )
@@ -4616,10 +4616,10 @@ module AnalyticsEvents
   )
     track_event(
       'User Registration: Email Confirmation',
-      success: success,
-      errors: errors,
-      error_details: error_details,
-      user_id: user_id,
+      success:,
+      errors:,
+      error_details:,
+      user_id:,
       **extra,
     )
   end
@@ -4646,10 +4646,10 @@ module AnalyticsEvents
     track_event(
       'User Registration: MFA Setup Complete',
       {
-        success: success,
-        mfa_method_counts: mfa_method_counts,
-        enabled_mfa_methods_count: enabled_mfa_methods_count,
-        pii_like_keypaths: pii_like_keypaths,
+        success:,
+        mfa_method_counts:,
+        enabled_mfa_methods_count:,
+        pii_like_keypaths:,
         second_mfa_reminder_conversion:,
         **extra,
       }.compact,
@@ -4661,7 +4661,7 @@ module AnalyticsEvents
   def user_registration_phone_setup_visit(enabled_mfa_methods_count:, **extra)
     track_event(
       'User Registration: phone setup visited',
-      enabled_mfa_methods_count: enabled_mfa_methods_count,
+      enabled_mfa_methods_count:,
       **extra,
     )
   end
@@ -4685,7 +4685,7 @@ module AnalyticsEvents
     track_event(
       'User Registration: User Fully Registered',
       {
-        mfa_method: mfa_method,
+        mfa_method:,
         **extra,
       }.compact,
     )
@@ -4702,8 +4702,8 @@ module AnalyticsEvents
     track_event(
       'User Suspension: Reinstated',
       {
-        success: success,
-        error_message: error_message,
+        success:,
+        error_message:,
         **extra,
       }.compact,
     )
@@ -4720,8 +4720,8 @@ module AnalyticsEvents
     track_event(
       'User Suspension: Suspended',
       {
-        success: success,
-        error_message: error_message,
+        success:,
+        error_message:,
         **extra,
       }.compact,
     )
@@ -4754,10 +4754,10 @@ module AnalyticsEvents
   )
     track_event(
       'USPS IPPaaS enrollment created',
-      enrollment_code: enrollment_code,
-      enrollment_id: enrollment_id,
-      second_address_line_present: second_address_line_present,
-      service_provider: service_provider,
+      enrollment_code:,
+      enrollment_id:,
+      second_address_line_present:,
+      service_provider:,
       **extra,
     )
   end
@@ -4772,8 +4772,8 @@ module AnalyticsEvents
   )
     track_event(
       'Vendor Outage',
-      redirect_from: redirect_from,
-      vendor_status: vendor_status,
+      redirect_from:,
+      vendor_status:,
       **extra,
     )
   end
@@ -4784,9 +4784,9 @@ module AnalyticsEvents
   def webauthn_deleted(success:, mfa_method_counts:, pii_like_keypaths:, **extra)
     track_event(
       'WebAuthn Deleted',
-      success: success,
-      mfa_method_counts: mfa_method_counts,
-      pii_like_keypaths: pii_like_keypaths,
+      success:,
+      mfa_method_counts:,
+      pii_like_keypaths:,
       **extra,
     )
   end
@@ -4798,9 +4798,9 @@ module AnalyticsEvents
   def webauthn_setup_submitted(platform_authenticator:, success:, errors: nil, **extra)
     track_event(
       :webauthn_setup_submitted,
-      platform_authenticator: platform_authenticator,
-      success: success,
-      errors: errors,
+      platform_authenticator:,
+      success:,
+      errors:,
       **extra,
     )
   end
@@ -4811,8 +4811,8 @@ module AnalyticsEvents
   def webauthn_setup_visit(platform_authenticator:, enabled_mfa_methods_count:, **extra)
     track_event(
       'WebAuthn Setup Visited',
-      platform_authenticator: platform_authenticator,
-      enabled_mfa_methods_count: enabled_mfa_methods_count,
+      platform_authenticator:,
+      enabled_mfa_methods_count:,
       **extra,
     )
   end

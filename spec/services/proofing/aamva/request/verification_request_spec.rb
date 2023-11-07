@@ -15,8 +15,8 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
       zipcode: '20176-1234',
     )
     applicant.state_id_data.merge!(
-      state_id_number: state_id_number,
-      state_id_jurisdiction: state_id_jurisdiction,
+      state_id_number:,
+      state_id_jurisdiction:,
       state_id_type: 'drivers_license',
     )
     applicant
@@ -27,10 +27,10 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
 
   subject do
     described_class.new(
-      applicant: applicant,
+      applicant:,
       session_id: transaction_id,
-      auth_token: auth_token,
-      config: config,
+      auth_token:,
+      config:,
     )
   end
 

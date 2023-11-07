@@ -307,9 +307,9 @@ RSpec.describe 'IdvStepConcern' do
         idv_session.resolution_successful = nil
 
         InPersonEnrollment.find_or_create_by(
-          user: user,
+          user:,
         ).update!(
-          selected_location_details: selected_location_details,
+          selected_location_details:,
         )
 
         get :show

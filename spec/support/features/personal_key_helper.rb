@@ -13,7 +13,7 @@ module PersonalKeyHelper
   end
 
   def personal_key_from_pii(user, pii)
-    profile = create(:profile, :active, :verified, user: user)
+    profile = create(:profile, :active, :verified, user:)
     pii_attrs = Pii::Attributes.new_from_hash(pii)
     personal_key = profile.encrypt_pii(pii_attrs, user.password)
     profile.save!

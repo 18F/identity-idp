@@ -16,7 +16,7 @@ RSpec.describe Proofing::Mock::AddressMockClient do
           errors: {},
           exception: nil,
           timed_out: false,
-          transaction_id: transaction_id,
+          transaction_id:,
           reference: '',
           vendor_name: 'AddressMock',
         )
@@ -34,7 +34,7 @@ RSpec.describe Proofing::Mock::AddressMockClient do
           errors: { phone: ['The phone number could not be verified.'] },
           exception: nil,
           timed_out: false,
-          transaction_id: transaction_id,
+          transaction_id:,
           reference: '',
           vendor_name: 'AddressMock',
         )
@@ -52,7 +52,7 @@ RSpec.describe Proofing::Mock::AddressMockClient do
           errors: {},
           exception: RuntimeError.new('Failed to contact proofing vendor'),
           timed_out: false,
-          transaction_id: transaction_id,
+          transaction_id:,
           reference: '',
           vendor_name: 'AddressMock',
         )
@@ -70,7 +70,7 @@ RSpec.describe Proofing::Mock::AddressMockClient do
           errors: {},
           exception: Proofing::TimeoutError.new('address mock timeout'),
           timed_out: true,
-          transaction_id: transaction_id,
+          transaction_id:,
           reference: '',
           vendor_name: 'AddressMock',
         )

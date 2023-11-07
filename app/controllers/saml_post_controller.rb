@@ -11,7 +11,7 @@ class SamlPostController < ApplicationController
 
     form_params = params.permit(:SAMLRequest, :RelayState, :SigAlg, :Signature)
 
-    render 'shared/saml_post_form', locals: { action_url: action_url, form_params: form_params },
+    render 'shared/saml_post_form', locals: { action_url:, form_params: },
                                     layout: false
   end
 

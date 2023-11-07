@@ -15,10 +15,10 @@ RSpec.describe 'idv/doc_auth/_cancel.html.erb' do
 
   context 'with step local' do
     let(:step) { 'first' }
-    let(:locals) { { step: step } }
+    let(:locals) { { step: } }
 
     it 'creates links with step parameter' do
-      expect(subject).to have_link(t('links.cancel', href: idv_cancel_path(step: step)))
+      expect(subject).to have_link(t('links.cancel', href: idv_cancel_path(step:)))
     end
   end
 end

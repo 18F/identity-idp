@@ -20,17 +20,17 @@ module Encryption
 
       def to_s
         {
-          encrypted_password: encrypted_password,
-          encryption_key: encryption_key,
-          password_salt: password_salt,
-          password_cost: password_cost,
+          encrypted_password:,
+          encryption_key:,
+          password_salt:,
+          password_cost:,
         }.to_json
       end
     end
 
     def self.digest(password)
       salt = SecureRandom.hex(32)
-      uak = UserAccessKey.new(password: password, salt: salt)
+      uak = UserAccessKey.new(password:, salt:)
       uak.build
       PasswordDigest.new(
         uak.encrypted_password,
@@ -44,7 +44,7 @@ module Encryption
       return false if password.blank?
       parsed_digest = PasswordDigest.parse_from_string(digest)
       uak = UserAccessKey.new(
-        password: password,
+        password:,
         salt: parsed_digest.password_salt,
         cost: parsed_digest.password_cost,
       )

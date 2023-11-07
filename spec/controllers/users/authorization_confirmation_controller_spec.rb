@@ -6,7 +6,7 @@ RSpec.describe Users::AuthorizationConfirmationController do
   let(:issuer) { sp.issuer }
   let(:sp_request_url) { 'http://example.com/request/url' }
   let(:sp_request_id) { '123abc' }
-  let(:sp_session) { { issuer: issuer, request_url: sp_request_url, request_id: sp_request_id } }
+  let(:sp_session) { { issuer:, request_url: sp_request_url, request_id: sp_request_id } }
 
   before do
     stub_analytics

@@ -4,7 +4,7 @@ RSpec.describe PushNotification::PasswordResetEvent do
   include Rails.application.routes.url_helpers
 
   subject(:event) do
-    described_class.new(user: user)
+    described_class.new(user:)
   end
 
   let(:user) { build(:user) }
@@ -18,7 +18,7 @@ RSpec.describe PushNotification::PasswordResetEvent do
   describe '#payload' do
     let(:iss_sub) { SecureRandom.uuid }
 
-    subject(:payload) { event.payload(iss_sub: iss_sub) }
+    subject(:payload) { event.payload(iss_sub:) }
 
     it 'is a subject with the provided iss_sub ' do
       expect(payload).to eq(

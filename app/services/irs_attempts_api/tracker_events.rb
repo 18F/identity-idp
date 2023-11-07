@@ -8,8 +8,8 @@ module IrsAttemptsApi
     def account_reset_account_deleted(success:, failure_reason: nil)
       track_event(
         :account_reset_account_deleted,
-        success: success,
-        failure_reason: failure_reason,
+        success:,
+        failure_reason:,
       )
     end
 
@@ -25,7 +25,7 @@ module IrsAttemptsApi
     def account_reset_request_submitted(success:)
       track_event(
         :account_reset_request_submitted,
-        success: success,
+        success:,
       )
     end
 
@@ -34,8 +34,8 @@ module IrsAttemptsApi
     def forgot_password_email_confirmed(success:, failure_reason: nil)
       track_event(
         :forgot_password_email_confirmed,
-        success: success,
-        failure_reason: failure_reason,
+        success:,
+        failure_reason:,
       )
     end
 
@@ -44,7 +44,7 @@ module IrsAttemptsApi
     def forgot_password_email_rate_limited(email:)
       track_event(
         :forgot_password_email_rate_limited,
-        email: email,
+        email:,
       )
     end
 
@@ -53,7 +53,7 @@ module IrsAttemptsApi
     def forgot_password_email_sent(email:)
       track_event(
         :forgot_password_email_sent,
-        email: email,
+        email:,
       )
     end
 
@@ -62,8 +62,8 @@ module IrsAttemptsApi
     def forgot_password_new_password_submitted(success:, failure_reason: nil)
       track_event(
         :forgot_password_new_password_submitted,
-        success: success,
-        failure_reason: failure_reason,
+        success:,
+        failure_reason:,
       )
     end
 
@@ -74,9 +74,9 @@ module IrsAttemptsApi
     def fraud_review_adjudicated(decision:, cached_irs_session_id:, cached_login_session_id:)
       track_event(
         :fraud_review_adjudicated,
-        decision: decision,
-        cached_irs_session_id: cached_irs_session_id,
-        cached_login_session_id: cached_login_session_id,
+        decision:,
+        cached_irs_session_id:,
+        cached_login_session_id:,
       )
     end
 
@@ -85,7 +85,7 @@ module IrsAttemptsApi
     def idv_document_upload_method_selected(upload_method:)
       track_event(
         :idv_document_upload_method_selected,
-        upload_method: upload_method,
+        upload_method:,
       )
     end
 
@@ -127,19 +127,19 @@ module IrsAttemptsApi
     )
       track_event(
         :idv_document_upload_submitted,
-        success: success,
-        document_state: document_state,
-        document_number: document_number,
-        document_issued: document_issued,
-        document_expiration: document_expiration,
-        document_front_image_filename: document_front_image_filename,
-        document_back_image_filename: document_back_image_filename,
-        document_image_encryption_key: document_image_encryption_key,
-        first_name: first_name,
-        last_name: last_name,
-        date_of_birth: date_of_birth,
-        address: address,
-        failure_reason: failure_reason,
+        success:,
+        document_state:,
+        document_number:,
+        document_issued:,
+        document_expiration:,
+        document_front_image_filename:,
+        document_back_image_filename:,
+        document_image_encryption_key:,
+        first_name:,
+        last_name:,
+        date_of_birth:,
+        address:,
+        failure_reason:,
       )
     end
 
@@ -148,7 +148,7 @@ module IrsAttemptsApi
     def idv_gpo_letter_requested(resend:)
       track_event(
         :idv_gpo_letter_requested,
-        resend: resend,
+        resend:,
       )
     end
 
@@ -165,8 +165,8 @@ module IrsAttemptsApi
     def idv_gpo_verification_submitted(success:, failure_reason: nil)
       track_event(
         :idv_gpo_verification_submitted,
-        success: success,
-        failure_reason: failure_reason,
+        success:,
+        failure_reason:,
       )
     end
 
@@ -175,7 +175,7 @@ module IrsAttemptsApi
     def idv_password_entered(success:)
       track_event(
         :idv_password_entered,
-        success: success,
+        success:,
       )
     end
 
@@ -194,10 +194,10 @@ module IrsAttemptsApi
     def idv_phone_otp_sent(success:, phone_number:, otp_delivery_method:, failure_reason: nil)
       track_event(
         :idv_phone_otp_sent,
-        success: success,
-        phone_number: phone_number,
-        otp_delivery_method: otp_delivery_method,
-        failure_reason: failure_reason,
+        success:,
+        phone_number:,
+        otp_delivery_method:,
+        failure_reason:,
       )
     end
 
@@ -215,9 +215,9 @@ module IrsAttemptsApi
     def idv_phone_otp_submitted(success:, phone_number:, failure_reason: nil)
       track_event(
         :idv_phone_otp_submitted,
-        success: success,
-        phone_number: phone_number,
-        failure_reason: failure_reason,
+        success:,
+        phone_number:,
+        failure_reason:,
       )
     end
 
@@ -226,7 +226,7 @@ module IrsAttemptsApi
     def idv_phone_otp_submitted_rate_limited(phone_number:)
       track_event(
         :idv_phone_otp_submitted_rate_limited,
-        phone_number: phone_number,
+        phone_number:,
       )
     end
 
@@ -235,7 +235,7 @@ module IrsAttemptsApi
     def idv_phone_send_link_rate_limited(phone_number:)
       track_event(
         :idv_phone_send_link_rate_limited,
-        phone_number: phone_number,
+        phone_number:,
       )
     end
 
@@ -246,9 +246,9 @@ module IrsAttemptsApi
     def idv_phone_submitted(success:, phone_number:, failure_reason: nil)
       track_event(
         :idv_phone_submitted,
-        success: success,
-        phone_number: phone_number,
-        failure_reason: failure_reason,
+        success:,
+        phone_number:,
+        failure_reason:,
       )
     end
 
@@ -263,9 +263,9 @@ module IrsAttemptsApi
     )
       track_event(
         :idv_phone_upload_link_sent,
-        success: success,
-        phone_number: phone_number,
-        failure_reason: failure_reason,
+        success:,
+        phone_number:,
+        failure_reason:,
       )
     end
 
@@ -281,7 +281,7 @@ module IrsAttemptsApi
     def idv_ssn_submitted(ssn:)
       track_event(
         :idv_ssn_submitted,
-        ssn: ssn,
+        ssn:,
       )
     end
 
@@ -292,8 +292,8 @@ module IrsAttemptsApi
     def idv_tmx_fraud_check(success:, failure_reason: nil)
       track_event(
         :idv_tmx_fraud_check,
-        success: success,
-        failure_reason: failure_reason,
+        success:,
+        failure_reason:,
       )
     end
 
@@ -302,7 +302,7 @@ module IrsAttemptsApi
     def idv_verification_rate_limited(limiter_context:)
       track_event(
         :idv_verification_rate_limited,
-        limiter_context: limiter_context,
+        limiter_context:,
       )
     end
 
@@ -333,17 +333,17 @@ module IrsAttemptsApi
     )
       track_event(
         :idv_verification_submitted,
-        success: success,
-        document_state: document_state,
-        document_number: document_number,
-        document_issued: document_issued,
-        document_expiration: document_expiration,
-        first_name: first_name,
-        last_name: last_name,
-        date_of_birth: date_of_birth,
-        address: address,
-        ssn: ssn,
-        failure_reason: failure_reason,
+        success:,
+        document_state:,
+        document_number:,
+        document_issued:,
+        document_expiration:,
+        first_name:,
+        last_name:,
+        date_of_birth:,
+        address:,
+        ssn:,
+        failure_reason:,
       )
     end
 
@@ -352,7 +352,7 @@ module IrsAttemptsApi
     def logged_in_account_purged(success:)
       track_event(
         :logged_in_account_purged,
-        success: success,
+        success:,
       )
     end
 
@@ -362,8 +362,8 @@ module IrsAttemptsApi
     def logged_in_password_change(success:, failure_reason: nil)
       track_event(
         :logged_in_password_change,
-        success: success,
-        failure_reason: failure_reason,
+        success:,
+        failure_reason:,
       )
     end
 
@@ -373,7 +373,7 @@ module IrsAttemptsApi
     def logged_in_profile_change_reauthentication_submitted(success:)
       track_event(
         :logged_in_profile_change_reauthentication_submitted,
-        success: success,
+        success:,
       )
     end
 
@@ -383,8 +383,8 @@ module IrsAttemptsApi
     def login_email_and_password_auth(email:, success:)
       track_event(
         :login_email_and_password_auth,
-        email: email,
-        success: success,
+        email:,
+        success:,
       )
     end
 
@@ -393,7 +393,7 @@ module IrsAttemptsApi
     def login_rate_limited(email:)
       track_event(
         :login_rate_limited,
-        email: email,
+        email:,
       )
     end
 
@@ -402,7 +402,7 @@ module IrsAttemptsApi
     def logout_initiated(success:)
       track_event(
         :logout_initiated,
-        success: success,
+        success:,
       )
     end
 
@@ -411,7 +411,7 @@ module IrsAttemptsApi
     def mfa_enroll_backup_code(success:)
       track_event(
         :mfa_enroll_backup_code,
-        success: success,
+        success:,
       )
     end
 
@@ -421,8 +421,8 @@ module IrsAttemptsApi
     def mfa_enroll_options_selected(success:, mfa_device_types:)
       track_event(
         :mfa_enroll_options_selected,
-        success: success,
-        mfa_device_types: mfa_device_types,
+        success:,
+        mfa_device_types:,
       )
     end
 
@@ -434,9 +434,9 @@ module IrsAttemptsApi
     def mfa_enroll_phone_otp_sent(success:, phone_number:, otp_delivery_method:)
       track_event(
         :mfa_enroll_phone_otp_sent,
-        success: success,
-        phone_number: phone_number,
-        otp_delivery_method: otp_delivery_method,
+        success:,
+        phone_number:,
+        otp_delivery_method:,
       )
     end
 
@@ -445,7 +445,7 @@ module IrsAttemptsApi
     def mfa_enroll_phone_otp_sent_rate_limited(phone_number:)
       track_event(
         :mfa_enroll_phone_otp_sent_rate_limited,
-        phone_number: phone_number,
+        phone_number:,
       )
     end
 
@@ -455,7 +455,7 @@ module IrsAttemptsApi
     def mfa_enroll_phone_otp_submitted(success:)
       track_event(
         :mfa_enroll_phone_otp_submitted,
-        success: success,
+        success:,
       )
     end
 
@@ -470,9 +470,9 @@ module IrsAttemptsApi
     )
       track_event(
         :mfa_enroll_piv_cac,
-        success: success,
-        subject_dn: subject_dn,
-        failure_reason: failure_reason,
+        success:,
+        subject_dn:,
+        failure_reason:,
       )
     end
 
@@ -482,7 +482,7 @@ module IrsAttemptsApi
     def mfa_enroll_rate_limited(mfa_device_type:)
       track_event(
         :mfa_enroll_rate_limited,
-        mfa_device_type: mfa_device_type,
+        mfa_device_type:,
       )
     end
 
@@ -491,7 +491,7 @@ module IrsAttemptsApi
     def mfa_enroll_totp(success:)
       track_event(
         :mfa_enroll_totp,
-        success: success,
+        success:,
       )
     end
 
@@ -500,7 +500,7 @@ module IrsAttemptsApi
     def mfa_enroll_webauthn_platform(success:)
       track_event(
         :mfa_enroll_webauthn_platform,
-        success: success,
+        success:,
       )
     end
 
@@ -509,7 +509,7 @@ module IrsAttemptsApi
     def mfa_enroll_webauthn_roaming(success:)
       track_event(
         :mfa_enroll_webauthn_roaming,
-        success: success,
+        success:,
       )
     end
 
@@ -518,7 +518,7 @@ module IrsAttemptsApi
     def mfa_login_backup_code(success:)
       track_event(
         :mfa_login_backup_code,
-        success: success,
+        success:,
       )
     end
 
@@ -537,11 +537,11 @@ module IrsAttemptsApi
     )
       track_event(
         :mfa_login_phone_otp_sent,
-        success: success,
-        reauthentication: reauthentication,
-        phone_number: phone_number,
-        otp_delivery_method: otp_delivery_method,
-        failure_reason: failure_reason,
+        success:,
+        reauthentication:,
+        phone_number:,
+        otp_delivery_method:,
+        failure_reason:,
       )
     end
 
@@ -550,7 +550,7 @@ module IrsAttemptsApi
     def mfa_login_phone_otp_sent_rate_limited(phone_number:)
       track_event(
         :mfa_login_phone_otp_sent_rate_limited,
-        phone_number: phone_number,
+        phone_number:,
       )
     end
 
@@ -561,8 +561,8 @@ module IrsAttemptsApi
     def mfa_login_phone_otp_submitted(reauthentication:, success:)
       track_event(
         :mfa_login_phone_otp_submitted,
-        reauthentication: reauthentication,
-        success: success,
+        reauthentication:,
+        success:,
       )
     end
 
@@ -577,9 +577,9 @@ module IrsAttemptsApi
     )
       track_event(
         :mfa_login_piv_cac,
-        success: success,
-        subject_dn: subject_dn,
-        failure_reason: failure_reason,
+        success:,
+        subject_dn:,
+        failure_reason:,
       )
     end
 
@@ -589,7 +589,7 @@ module IrsAttemptsApi
     def mfa_login_rate_limited(mfa_device_type:)
       track_event(
         :mfa_login_rate_limited,
-        mfa_device_type: mfa_device_type,
+        mfa_device_type:,
       )
     end
 
@@ -598,7 +598,7 @@ module IrsAttemptsApi
     def mfa_login_totp(success:)
       track_event(
         :mfa_login_totp,
-        success: success,
+        success:,
       )
     end
 
@@ -607,7 +607,7 @@ module IrsAttemptsApi
     def mfa_login_webauthn_platform(success:)
       track_event(
         :mfa_login_webauthn_platform,
-        success: success,
+        success:,
       )
     end
 
@@ -616,7 +616,7 @@ module IrsAttemptsApi
     def mfa_login_webauthn_roaming(success:)
       track_event(
         :mfa_login_webauthn_roaming,
-        success: success,
+        success:,
       )
     end
 
@@ -633,8 +633,8 @@ module IrsAttemptsApi
     def personal_key_reactivation_submitted(success:, failure_reason: nil)
       track_event(
         :personal_key_reactivation_submitted,
-        success: success,
-        failure_reason: failure_reason,
+        success:,
+        failure_reason:,
       )
     end
 
@@ -649,9 +649,9 @@ module IrsAttemptsApi
     )
       track_event(
         :user_registration_email_confirmation,
-        success: success,
-        email: email,
-        failure_reason: failure_reason,
+        success:,
+        email:,
+        failure_reason:,
       )
     end
 
@@ -664,8 +664,8 @@ module IrsAttemptsApi
     )
       track_event(
         :user_registration_email_submission_rate_limited,
-        email: email,
-        email_already_registered: email_already_registered,
+        email:,
+        email_already_registered:,
       )
     end
 
@@ -680,9 +680,9 @@ module IrsAttemptsApi
     )
       track_event(
         :user_registration_email_submitted,
-        success: success,
-        email: email,
-        failure_reason: failure_reason,
+        success:,
+        email:,
+        failure_reason:,
       )
     end
 
@@ -695,8 +695,8 @@ module IrsAttemptsApi
     )
       track_event(
         :user_registration_password_submitted,
-        success: success,
-        failure_reason: failure_reason,
+        success:,
+        failure_reason:,
       )
     end
   end

@@ -4,7 +4,7 @@ RSpec.describe Proofing::Aamva::SoapErrorHandler do
   let(:response_body) { AamvaFixtures.soap_fault_response }
 
   subject do
-    http_response = Faraday::Response.new(status: 200, response_body: response_body)
+    http_response = Faraday::Response.new(status: 200, response_body:)
     described_class.new(http_response)
   end
 

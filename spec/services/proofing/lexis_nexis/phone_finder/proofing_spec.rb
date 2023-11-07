@@ -15,7 +15,7 @@ RSpec.describe Proofing::LexisNexis::PhoneFinder::Proofer do
 
   let(:verification_request) do
     Proofing::LexisNexis::PhoneFinder::VerificationRequest.new(
-      applicant: applicant,
+      applicant:,
       config: LexisNexisFixtures.example_config,
     )
   end

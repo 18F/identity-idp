@@ -18,7 +18,7 @@ module InPerson
         analytics(user: enrollment&.user || AnonymousUser.new).
           idv_in_person_send_proofing_notification_job_skipped(
             enrollment_code: enrollment&.enrollment_code,
-            enrollment_id: enrollment_id,
+            enrollment_id:,
           )
         return
       end
@@ -31,21 +31,21 @@ module InPerson
 
       # send notification and log result when success or failed
       phone = enrollment.notification_phone_configuration.formatted_phone
-      message = notification_message(enrollment: enrollment)
+      message = notification_message(enrollment:)
       response = Telephony.send_notification(
-        to: phone, message: message,
+        to: phone, message:,
         country_code: Phonelib.parse(phone).country
       )
-      handle_telephony_response(enrollment: enrollment, phone: phone, telephony_response: response)
+      handle_telephony_response(enrollment:, phone:, telephony_response: response)
 
       enrollment.update(notification_sent_at: Time.zone.now) if response.success?
 
-      log_job_completed(enrollment: enrollment)
+      log_job_completed(enrollment:)
     rescue StandardError => err
       analytics(user: enrollment&.user || AnonymousUser.new).
         idv_in_person_send_proofing_notification_job_exception(
           enrollment_code: enrollment&.enrollment_code,
-          enrollment_id: enrollment_id,
+          enrollment_id:,
           exception_class: err.class.to_s,
           exception_message: err.message,
         )
@@ -83,7 +83,7 @@ module InPerson
         I18n.t(
           'telephony.confirmation_ipp_enrollment_result.sms',
           app_name: APP_NAME,
-          proof_date: proof_date,
+          proof_date:,
           contact_number: IdentityConfig.store.idv_contact_phone_number,
           reference_string: formatter.format(enrollment.enrollment_code),
         )
@@ -91,7 +91,7 @@ module InPerson
     end
 
     def analytics(user:)
-      Analytics.new(user: user, request: nil, session: {}, sp: nil)
+      Analytics.new(user:, request: nil, session: {}, sp: nil)
     end
   end
 end

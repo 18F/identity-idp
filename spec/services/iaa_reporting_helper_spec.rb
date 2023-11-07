@@ -74,18 +74,18 @@ RSpec.describe IaaReportingHelper do
   def build_iaa_order(order_number:, date_range:, iaa_gtc:)
     create(
       :iaa_order,
-      order_number: order_number,
+      order_number:,
       start_date: date_range.begin,
       end_date: date_range.end,
-      iaa_gtc: iaa_gtc,
+      iaa_gtc:,
     )
   end
 
   def build_integration(issuer:, partner_account:)
     create(
       :integration,
-      issuer: issuer,
-      partner_account: partner_account,
+      issuer:,
+      partner_account:,
     )
   end
 

@@ -8,7 +8,7 @@ module Telephony
           client = build_client(config)
           next if client.nil?
 
-          opt_in_response = client.opt_in_phone_number(phone_number: phone_number)
+          opt_in_response = client.opt_in_phone_number(phone_number:)
 
           Response.new(success: opt_in_response.successful?)
         rescue Aws::SNS::Errors::InvalidParameter
@@ -17,12 +17,12 @@ module Telephony
         rescue Seahorse::Client::NetworkingError,
                Aws::SNS::Errors::ServiceError => error
           PinpointHelper.notify_pinpoint_failover(
-            error: error,
+            error:,
             region: config.region,
             channel: :notification_service,
             extra: {},
           )
-          Response.new(success: false, error: error)
+          Response.new(success: false, error:)
         end.compact
 
         return PinpointHelper.handle_config_failure(:notification_service) if responses.empty?
@@ -60,7 +60,7 @@ module Telephony
         Aws::SNS::Client.new(
           region: config.region,
           retry_limit: 0,
-          credentials: credentials,
+          credentials:,
         )
       end
     end

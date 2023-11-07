@@ -12,7 +12,7 @@ module Idv
 
       def show
         analytics.idv_in_person_ready_to_verify_visit
-        @presenter = ReadyToVerifyPresenter.new(enrollment: enrollment)
+        @presenter = ReadyToVerifyPresenter.new(enrollment:)
       end
 
       private

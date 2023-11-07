@@ -11,7 +11,7 @@ module Idv
       @hybrid_session = hybrid_session?
       @presenter = CancellationsPresenter.new(
         sp_name: decorated_sp_session.sp_name,
-        url_options: url_options,
+        url_options:,
       )
     end
 

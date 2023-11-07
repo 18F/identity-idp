@@ -6,12 +6,12 @@ module TwoFactorAuthentication
     before_action :check_sp_required_mfa
 
     def show
-      analytics.multi_factor_auth_enter_backup_code_visit(context: context)
+      analytics.multi_factor_auth_enter_backup_code_visit(context:)
       @presenter = TwoFactorAuthCode::BackupCodePresenter.new(
         view: view_context,
-        data: { current_user: current_user },
+        data: { current_user: },
         service_provider: current_sp,
-        remember_device_default: remember_device_default,
+        remember_device_default:,
       )
       @backup_code_form = BackupCodeVerificationForm.new(current_user)
     end
@@ -42,7 +42,7 @@ module TwoFactorAuthentication
     def presenter_for_two_factor_authentication_method
       TwoFactorAuthCode::BackupCodePresenter.new(
         view: view_context,
-        data: { current_user: current_user },
+        data: { current_user: },
         service_provider: current_sp,
       )
     end
@@ -53,7 +53,7 @@ module TwoFactorAuthentication
       flash.now[:error] = t('two_factor_authentication.invalid_backup_code')
 
       if current_user.locked_out?
-        handle_second_factor_locked_user(context: context, type: 'backup_code')
+        handle_second_factor_locked_user(context:, type: 'backup_code')
       else
         render_show_after_invalid
       end

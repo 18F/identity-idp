@@ -8,7 +8,7 @@ RSpec.describe SamlRequestValidator do
     let(:comparison) { 'exact' }
     let(:extra) do
       {
-        authn_context: authn_context,
+        authn_context:,
         service_provider: sp&.issuer,
         nameid_format: name_id_format,
         authn_context_comparison: comparison,
@@ -18,7 +18,7 @@ RSpec.describe SamlRequestValidator do
     let(:response) do
       SamlRequestValidator.new.call(
         service_provider: sp,
-        authn_context: authn_context,
+        authn_context:,
         nameid_format: name_id_format,
       )
     end
@@ -57,7 +57,7 @@ RSpec.describe SamlRequestValidator do
 
         expect(response.to_h).to include(
           success: false,
-          errors: errors,
+          errors:,
           error_details: hash_including(*errors.keys),
           **extra,
         )
@@ -73,7 +73,7 @@ RSpec.describe SamlRequestValidator do
 
         expect(response.to_h).to include(
           success: false,
-          errors: errors,
+          errors:,
           error_details: hash_including(*errors.keys),
           **extra,
         )
@@ -112,7 +112,7 @@ RSpec.describe SamlRequestValidator do
         it 'returns a FormResponse with success: true for Comparison=minimum' do
           response = SamlRequestValidator.new.call(
             service_provider: sp,
-            authn_context: authn_context,
+            authn_context:,
             authn_context_comparison: comparison,
             nameid_format: name_id_format,
           )
@@ -131,7 +131,7 @@ RSpec.describe SamlRequestValidator do
         it 'returns a FormResponse with success: true for Comparison=better' do
           response = SamlRequestValidator.new.call(
             service_provider: sp,
-            authn_context: authn_context,
+            authn_context:,
             authn_context_comparison: comparison,
             nameid_format: name_id_format,
           )
@@ -155,7 +155,7 @@ RSpec.describe SamlRequestValidator do
 
           expect(response.to_h).to include(
             success: false,
-            errors: errors,
+            errors:,
             error_details: hash_including(*errors.keys),
             **extra,
           )
@@ -173,7 +173,7 @@ RSpec.describe SamlRequestValidator do
 
           expect(response.to_h).to include(
             success: false,
-            errors: errors,
+            errors:,
             error_details: hash_including(*errors.keys),
             **extra,
           )
@@ -190,7 +190,7 @@ RSpec.describe SamlRequestValidator do
 
           expect(response.to_h).to include(
             success: false,
-            errors: errors,
+            errors:,
             error_details: hash_including(*errors.keys),
             **extra,
           )
@@ -207,7 +207,7 @@ RSpec.describe SamlRequestValidator do
 
           expect(response.to_h).to include(
             success: false,
-            errors: errors,
+            errors:,
             error_details: hash_including(*errors.keys),
             **extra,
           )
@@ -227,7 +227,7 @@ RSpec.describe SamlRequestValidator do
 
         expect(response.to_h).to include(
           success: false,
-          errors: errors,
+          errors:,
           error_details: hash_including(*errors.keys),
           **extra,
         )
@@ -243,7 +243,7 @@ RSpec.describe SamlRequestValidator do
 
         expect(response.to_h).to include(
           success: false,
-          errors: errors,
+          errors:,
           error_details: hash_including(*errors.keys),
           **extra,
         )

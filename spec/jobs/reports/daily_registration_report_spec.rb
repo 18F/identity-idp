@@ -33,7 +33,7 @@ RSpec.describe Reports::DailyRegistrationsReport do
           path: 'int/daily-registrations-report/2021/2021-03-01.daily-registrations-report.json',
           body: kind_of(String),
           content_type: 'application/json',
-          bucket: bucket,
+          bucket:,
         ).exactly(1).time.and_call_original
       end
 
@@ -68,10 +68,10 @@ RSpec.describe Reports::DailyRegistrationsReport do
 
         # fully registered
         create_list(:user, 2, created_at: yesterday).each do |user|
-          RegistrationLog.create(user: user, registered_at: user.created_at)
+          RegistrationLog.create(user:, registered_at: user.created_at)
         end
         create_list(:user, 1, created_at: two_days_ago).each do |user|
-          RegistrationLog.create(user: user, registered_at: user.created_at)
+          RegistrationLog.create(user:, registered_at: user.created_at)
         end
 
         # deleted, counts as total users

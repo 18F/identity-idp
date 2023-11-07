@@ -10,11 +10,11 @@ RSpec.describe DocAuth::LexisNexis::Request do
 
   let(:config) do
     DocAuth::LexisNexis::Config.new(
-      base_url: base_url,
+      base_url:,
       locale: :en,
     )
   end
-  subject(:request) { DocAuth::LexisNexis::Request.new(config: config) }
+  subject(:request) { DocAuth::LexisNexis::Request.new(config:) }
 
   describe '#fetch' do
     before do
@@ -26,7 +26,7 @@ RSpec.describe DocAuth::LexisNexis::Request do
       allow(subject).to receive(:method).and_return(http_method)
       allow(request).to receive(:metric_name).and_return(metric_name)
 
-      stub_request(http_method, full_url).to_return(status: status, body: '')
+      stub_request(http_method, full_url).to_return(status:, body: '')
     end
 
     context 'GET request' do

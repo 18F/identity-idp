@@ -31,7 +31,7 @@ RSpec.describe RecaptchaMockValidator do
             reasons: [],
           },
           evaluated_as_valid: false,
-          score_threshold: score_threshold,
+          score_threshold:,
           recaptcha_version: 3,
           validator_class: 'RecaptchaMockValidator',
         )
@@ -56,7 +56,7 @@ RSpec.describe RecaptchaMockValidator do
             reasons: [],
           },
           evaluated_as_valid: true,
-          score_threshold: score_threshold,
+          score_threshold:,
           recaptcha_version: 3,
           validator_class: 'RecaptchaMockValidator',
         )

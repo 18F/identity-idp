@@ -35,7 +35,7 @@ RSpec.describe 'signing in with remember device and idling on the sign in page' 
         drop: true,
       )
       # Simulate refreshing the page with JS to avoid a CSRF error
-      visit new_user_session_url(request_id: request_id)
+      visit new_user_session_url(request_id:)
 
       expect(page.response_headers['Content-Security-Policy']).
         to(include('form-action \'self\' http://localhost:7654'))

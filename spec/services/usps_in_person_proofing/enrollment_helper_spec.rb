@@ -43,8 +43,8 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
     let!(:enrollment) do
       create(
         :in_person_enrollment,
-        user: user,
-        service_provider: service_provider,
+        user:,
+        service_provider:,
         status: :establishing,
         profile: nil,
       )
@@ -203,7 +203,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
 
         context 'with a service provider' do
           let(:issuer) { 'this-is-an-issuer' }
-          let(:service_provider) { build(:service_provider, issuer: issuer) }
+          let(:service_provider) { build(:service_provider, issuer:) }
 
           it 'logs event' do
             subject.schedule_in_person_enrollment(user, pii)

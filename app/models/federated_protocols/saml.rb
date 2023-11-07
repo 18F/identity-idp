@@ -18,7 +18,7 @@ module FederatedProtocols
 
     def requested_attributes
       @requested_attributes ||= SamlRequestPresenter.new(
-        request: request, service_provider: current_service_provider,
+        request:, service_provider: current_service_provider,
       ).requested_attributes
     end
 
@@ -40,7 +40,7 @@ module FederatedProtocols
 
     def current_service_provider
       return @current_service_provider if defined?(@current_service_provider)
-      @current_service_provider = ServiceProvider.find_by(issuer: issuer)
+      @current_service_provider = ServiceProvider.find_by(issuer:)
     end
   end
 end

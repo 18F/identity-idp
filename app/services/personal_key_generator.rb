@@ -34,7 +34,7 @@ class PersonalKeyGenerator
 
   def encode_code(code:, length:, split:)
     decoded = Base32::Crockford.decode(code)
-    Base32::Crockford.encode(decoded, length: length, split: split).tr('-', ' ')
+    Base32::Crockford.encode(decoded, length:, split:).tr('-', ' ')
   end
 
   def raw_personal_key

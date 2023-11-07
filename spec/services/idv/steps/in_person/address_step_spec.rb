@@ -12,7 +12,7 @@ RSpec.describe Idv::Steps::InPerson::AddressStep do
     instance_double(
       'controller',
       session: { sp: { issuer: service_provider.issuer } },
-      params: params,
+      params:,
       current_user: user,
       url_options: {},
     )

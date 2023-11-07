@@ -8,9 +8,9 @@ RSpec.describe DocumentCaptureSessionResult do
   context 'EncryptedRedisStructStorage' do
     it 'works with EncryptedRedisStructStorage' do
       result = DocumentCaptureSessionResult.new(
-        id: id,
-        success: success,
-        pii: pii,
+        id:,
+        success:,
+        pii:,
         attention_with_barcode: false,
       )
       EncryptedRedisStructStorage.store(result)
@@ -23,9 +23,9 @@ RSpec.describe DocumentCaptureSessionResult do
     end
     it 'add fingerprint with EncryptedRedisStructStorage' do
       result = DocumentCaptureSessionResult.new(
-        id: id,
-        success: success,
-        pii: pii,
+        id:,
+        success:,
+        pii:,
         attention_with_barcode: false,
       )
       result.add_failed_front_image!('abcdefg')

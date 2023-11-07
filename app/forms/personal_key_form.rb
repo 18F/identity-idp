@@ -16,7 +16,7 @@ class PersonalKeyForm
 
     reset_sensitive_fields unless success
 
-    FormResponse.new(success: success, errors: errors, extra: extra_analytics_attributes)
+    FormResponse.new(success:, errors:, extra: extra_analytics_attributes)
   end
 
   private

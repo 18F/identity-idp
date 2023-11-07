@@ -77,7 +77,7 @@ RSpec.describe Users::PasswordsController do
       it 'sends a security event' do
         user = create(:user)
         stub_sign_in(user)
-        security_event = PushNotification::PasswordResetEvent.new(user: user)
+        security_event = PushNotification::PasswordResetEvent.new(user:)
         expect(PushNotification::HttpPush).to receive(:deliver).with(security_event)
 
         params = {
@@ -110,7 +110,7 @@ RSpec.describe Users::PasswordsController do
       let(:password) { 'new' }
       let(:params) do
         {
-          password: password,
+          password:,
           password_confirmation: password,
         }
       end
@@ -174,8 +174,8 @@ RSpec.describe Users::PasswordsController do
 
         let(:params) do
           {
-            password: password,
-            password_confirmation: password_confirmation,
+            password:,
+            password_confirmation:,
           }
         end
 
@@ -220,7 +220,7 @@ RSpec.describe Users::PasswordsController do
       let(:pii) { { first_name: 'Jane' } }
       before do
         user = create(:user)
-        create(:profile, :active, :verified, user: user, pii: pii)
+        create(:profile, :active, :verified, user:, pii:)
         stub_sign_in(user)
       end
 

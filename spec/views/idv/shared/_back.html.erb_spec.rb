@@ -9,11 +9,11 @@ RSpec.describe 'idv/doc_auth/_back.html.erb' do
 
   subject do
     render 'idv/shared/back', {
-      step_url: step_url,
-      action: action,
-      step: step,
+      step_url:,
+      action:,
+      step:,
       class: classes,
-      fallback_path: fallback_path,
+      fallback_path:,
     }
   end
 

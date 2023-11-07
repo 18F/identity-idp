@@ -2,10 +2,10 @@ require 'rails_helper'
 
 RSpec.describe TwoFactorAuthentication::SignInWebauthnSelectionPresenter do
   let(:user) { create(:user) }
-  let(:configuration) { create(:webauthn_configuration, user: user) }
+  let(:configuration) { create(:webauthn_configuration, user:) }
 
   let(:presenter) do
-    described_class.new(user: user, configuration: configuration)
+    described_class.new(user:, configuration:)
   end
 
   describe '#type' do

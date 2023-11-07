@@ -65,10 +65,10 @@ class ApplicationController < ActionController::Base
     @analytics =
       Analytics.new(
         user: analytics_user,
-        request: request,
+        request:,
         sp: current_sp&.issuer,
-        session: session,
-        ahoy: ahoy,
+        session:,
+        ahoy:,
       )
   end
 
@@ -81,7 +81,7 @@ class ApplicationController < ActionController::Base
   end
 
   def user_event_creator
-    @user_event_creator ||= UserEventCreator.new(request: request, current_user: current_user)
+    @user_event_creator ||= UserEventCreator.new(request:, current_user:)
   end
   delegate :create_user_event, :create_user_event_with_disavowal, to: :user_event_creator
   delegate :remember_device_default, to: :decorated_sp_session
@@ -89,9 +89,9 @@ class ApplicationController < ActionController::Base
   def decorated_sp_session
     @decorated_sp_session ||= ServiceProviderSessionCreator.new(
       sp: current_sp,
-      view_context: view_context,
-      sp_session: sp_session,
-      service_provider_request: service_provider_request,
+      view_context:,
+      sp_session:,
+      service_provider_request:,
     ).create_session
   end
 
@@ -117,7 +117,7 @@ class ApplicationController < ActionController::Base
   # These attributes show up in New Relic traces for all requests.
   # https://docs.newrelic.com/docs/agents/manage-apm-agents/agent-data/collect-custom-attributes
   def add_new_relic_trace_attributes
-    ::NewRelic::Agent.add_custom_attributes(amzn_trace_id: amzn_trace_id)
+    ::NewRelic::Agent.add_custom_attributes(amzn_trace_id:)
   end
 
   def amzn_trace_id

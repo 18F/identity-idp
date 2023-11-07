@@ -25,7 +25,7 @@ RSpec.describe Users::PivCacLoginController do
       let(:token) { 'TEST:abcdefg' }
 
       context 'an invalid token' do
-        before { get :new, params: { token: token } }
+        before { get :new, params: { token: } }
         it 'tracks the login attempt' do
           expect(@analytics).to have_received(:track_event).with(
             :piv_cac_login,
@@ -48,7 +48,7 @@ RSpec.describe Users::PivCacLoginController do
         let(:nonce) { SecureRandom.base64(20) }
         let(:data) do
           {
-            nonce: nonce,
+            nonce:,
             uuid: '1234',
             subject: 'subject',
             issuer: 'issuer',
@@ -60,7 +60,7 @@ RSpec.describe Users::PivCacLoginController do
           subject.session[:sp] = sp_session
 
           allow(PivCacService).to receive(:decode_token).with(token) { data }
-          get :new, params: { token: token }
+          get :new, params: { token: }
         end
 
         context 'without a valid user' do
@@ -95,10 +95,10 @@ RSpec.describe Users::PivCacLoginController do
 
         context 'with a valid user' do
           let(:user) { build(:user) }
-          let(:piv_cac_config) { create(:piv_cac_configuration, user: user) }
+          let(:piv_cac_config) { create(:piv_cac_configuration, user:) }
           let(:data) do
             {
-              nonce: nonce,
+              nonce:,
               uuid: piv_cac_config.x509_dn_uuid,
               subject: 'subject',
               issuer: 'issuer',

@@ -24,8 +24,8 @@ RSpec.describe AnalyticsEventsDocumenter do
   subject(:documenter) do
     AnalyticsEventsDocumenter.new(
       database_path: @database_dir,
-      class_name: class_name,
-      require_extra_params: require_extra_params,
+      class_name:,
+      require_extra_params:,
     )
   end
 

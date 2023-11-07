@@ -12,12 +12,12 @@ RSpec.describe Proofing::Mock::DeviceProfilingBackend do
 
   describe '#record_profiling_result' do
     it 'raises with unknown result' do
-      expect { backend.record_profiling_result(session_id: session_id, result: 'aaa') }.
+      expect { backend.record_profiling_result(session_id:, result: 'aaa') }.
         to raise_error(ArgumentError)
     end
 
     it 'sets the value in redis' do
-      backend.record_profiling_result(session_id: session_id, result: 'reject')
+      backend.record_profiling_result(session_id:, result: 'reject')
 
       expect(backend.profiling_result(session_id)).to eq('reject')
 

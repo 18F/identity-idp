@@ -3,17 +3,17 @@ require 'rails_helper'
 RSpec.describe OpenidConnectAuthorizeForm do
   subject(:form) do
     OpenidConnectAuthorizeForm.new(
-      acr_values: acr_values,
-      client_id: client_id,
-      nonce: nonce,
-      prompt: prompt,
-      redirect_uri: redirect_uri,
-      response_type: response_type,
-      scope: scope,
-      state: state,
-      code_challenge: code_challenge,
-      code_challenge_method: code_challenge_method,
-      verified_within: verified_within,
+      acr_values:,
+      client_id:,
+      nonce:,
+      prompt:,
+      redirect_uri:,
+      response_type:,
+      scope:,
+      state:,
+      code_challenge:,
+      code_challenge_method:,
+      verified_within:,
     )
   end
 
@@ -42,7 +42,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
         expect(result.to_h).to eq(
           success: true,
           errors: {},
-          client_id: client_id,
+          client_id:,
           prompt: 'select_account',
           allow_prompt_login: true,
           redirect_uri: nil,
@@ -65,7 +65,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
             success: false,
             errors: { response_type: ['is not included in the list'] },
             error_details: { response_type: [:inclusion] },
-            client_id: client_id,
+            client_id:,
             prompt: 'select_account',
             allow_prompt_login: true,
             redirect_uri: "#{redirect_uri}?error=invalid_request&error_description=" \

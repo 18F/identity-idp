@@ -46,31 +46,31 @@ class SendSignUpEmailConfirmation
 
   def update_email_address_record
     email_address.update!(
-      confirmation_token: confirmation_token,
-      confirmation_sent_at: confirmation_sent_at,
+      confirmation_token:,
+      confirmation_sent_at:,
     )
   end
 
   def send_confirmation_email(request_id, instructions)
-    UserMailer.with(user: user, email_address: email_address).email_confirmation_instructions(
+    UserMailer.with(user:, email_address:).email_confirmation_instructions(
       confirmation_token,
-      request_id: request_id,
-      instructions: instructions,
+      request_id:,
+      instructions:,
     ).deliver_now_or_later
   end
 
   def send_pw_reset_request_unconfirmed_user_email(request_id, instructions)
-    UserMailer.with(user: user, email_address: email_address).unconfirmed_email_instructions(
+    UserMailer.with(user:, email_address:).unconfirmed_email_instructions(
       confirmation_token,
-      request_id: request_id,
-      instructions: instructions,
+      request_id:,
+      instructions:,
     ).deliver_now_or_later
   end
 
   def send_suspended_user_email
     UserMailer.with(
-      user: user,
-      email_address: email_address,
+      user:,
+      email_address:,
     ).suspended_create_account.deliver_now_or_later
   end
 

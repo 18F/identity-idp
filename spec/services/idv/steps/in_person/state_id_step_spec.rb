@@ -11,7 +11,7 @@ RSpec.describe Idv::Steps::InPerson::StateIdStep do
     instance_double(
       'controller',
       session: { sp: { issuer: service_provider.issuer } },
-      params: params,
+      params:,
       current_user: user,
       url_options: {},
     )
@@ -34,11 +34,11 @@ RSpec.describe Idv::Steps::InPerson::StateIdStep do
       let(:state_id_number) { 'ABC123234' }
       let(:submitted_values) do
         {
-          first_name: first_name,
-          last_name: last_name,
-          dob: dob,
-          identity_doc_address_state: identity_doc_address_state,
-          state_id_number: state_id_number,
+          first_name:,
+          last_name:,
+          dob:,
+          identity_doc_address_state:,
+          state_id_number:,
         }
       end
 
@@ -270,8 +270,8 @@ RSpec.describe Idv::Steps::InPerson::StateIdStep do
 
         expect(step.extra_view_variables).to include(
           pii: include(
-            dob: dob,
-            first_name: first_name,
+            dob:,
+            first_name:,
           ),
           parsed_dob: Date.parse(dob),
           updating_state_id: true,
@@ -285,7 +285,7 @@ RSpec.describe Idv::Steps::InPerson::StateIdStep do
 
         expect(step.extra_view_variables).to include(
           pii: include(
-            first_name: first_name,
+            first_name:,
           ),
           parsed_dob: nil,
           updating_state_id: true,
@@ -299,7 +299,7 @@ RSpec.describe Idv::Steps::InPerson::StateIdStep do
 
         expect(step.extra_view_variables).to include(
           pii: include(
-            dob: dob,
+            dob:,
           ),
           parsed_dob: Date.parse(dob),
           updating_state_id: false,
@@ -321,13 +321,13 @@ RSpec.describe Idv::Steps::InPerson::StateIdStep do
     let(:same_address_as_id) { 'true' }
     let(:submitted_values) do
       {
-        dob: dob,
-        identity_doc_address_state: identity_doc_address_state,
-        identity_doc_city: identity_doc_city,
-        identity_doc_address1: identity_doc_address1,
-        identity_doc_address2: identity_doc_address2,
-        identity_doc_zipcode: identity_doc_zipcode,
-        same_address_as_id: same_address_as_id,
+        dob:,
+        identity_doc_address_state:,
+        identity_doc_city:,
+        identity_doc_address1:,
+        identity_doc_address2:,
+        identity_doc_zipcode:,
+        same_address_as_id:,
       }
     end
 

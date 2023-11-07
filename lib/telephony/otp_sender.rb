@@ -19,8 +19,8 @@ module Telephony
       response = adapter.deliver(
         message: authentication_message,
         to: recipient_phone,
-        otp: otp,
-        country_code: country_code,
+        otp:,
+        country_code:,
       )
       log_response(response, context: :authentication)
       response
@@ -30,8 +30,8 @@ module Telephony
       response = adapter.deliver(
         message: confirmation_message,
         to: recipient_phone,
-        otp: otp,
-        country_code: country_code,
+        otp:,
+        country_code:,
       )
       log_response(response, context: :confirmation)
       response
@@ -44,8 +44,8 @@ module Telephony
           app_name: APP_NAME,
           code: otp_transformed_for_channel,
           format_type: otp_format,
-          expiration: expiration,
-          domain: domain,
+          expiration:,
+          domain:,
         ),
       )
     end
@@ -57,8 +57,8 @@ module Telephony
           app_name: APP_NAME,
           code: otp_transformed_for_channel,
           format_type: otp_format,
-          expiration: expiration,
-          domain: domain,
+          expiration:,
+          domain:,
         ),
       )
     end
@@ -84,9 +84,9 @@ module Telephony
       extra = extra_metadata.merge(
         {
           adapter: Telephony.config.adapter,
-          channel: channel,
-          context: context,
-          country_code: country_code,
+          channel:,
+          context:,
+          country_code:,
         },
       )
       output = response.to_h.merge(extra)

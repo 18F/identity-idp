@@ -57,7 +57,7 @@ RSpec.describe SpReturnUrlResolver do
     context 'for an SP without a redirect URI or return URL in the config' do
       it 'returns the ACS URL without a path for a SAML SP' do
         acs_url = 'https://sp.gov/acs_url'
-        sp = build(:service_provider, redirect_uris: [], return_to_sp_url: nil, acs_url: acs_url)
+        sp = build(:service_provider, redirect_uris: [], return_to_sp_url: nil, acs_url:)
 
         resolver = described_class.new(service_provider: sp)
         return_to_sp_url = resolver.return_to_sp_url
@@ -124,7 +124,7 @@ RSpec.describe SpReturnUrlResolver do
 
   describe '#homepage_url' do
     let(:return_to_sp_url) { nil }
-    let(:sp) { build(:service_provider, return_to_sp_url: return_to_sp_url) }
+    let(:sp) { build(:service_provider, return_to_sp_url:) }
     let(:instance) { described_class.new(service_provider: sp) }
     subject(:homepage_url) { instance.homepage_url }
 

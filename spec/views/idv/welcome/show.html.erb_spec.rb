@@ -55,7 +55,7 @@ RSpec.describe 'idv/welcome/show.html.erb' do
         t('idv.troubleshooting.options.learn_more_address_verification_options'),
       )
       expect(rendered).to have_link(
-        t('idv.troubleshooting.options.get_help_at_sp', sp_name: sp_name),
+        t('idv.troubleshooting.options.get_help_at_sp', sp_name:),
         href: return_to_sp_failure_to_proof_url(step: 'welcome', location: 'missing_items'),
       )
     end

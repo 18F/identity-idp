@@ -10,8 +10,8 @@ RSpec.describe OpenidConnectLogoutForm do
   let(:identity) do
     create(
       :service_provider_identity,
-      service_provider: service_provider,
-      user: user,
+      service_provider:,
+      user:,
       access_token: SecureRandom.hex,
       session_uuid: SecureRandom.uuid,
     )
@@ -21,20 +21,20 @@ RSpec.describe OpenidConnectLogoutForm do
 
   let(:valid_id_token_hint) do
     IdTokenBuilder.new(
-      identity: identity,
-      code: code,
+      identity:,
+      code:,
       custom_expiration: 1.day.from_now.to_i,
     ).id_token
   end
 
   subject(:form) do
     OpenidConnectLogoutForm.new(
-      current_user: current_user,
+      current_user:,
       params: {
-        client_id: client_id,
-        id_token_hint: id_token_hint,
-        post_logout_redirect_uri: post_logout_redirect_uri,
-        state: state,
+        client_id:,
+        id_token_hint:,
+        post_logout_redirect_uri:,
+        state:,
       },
     )
   end
@@ -164,8 +164,8 @@ RSpec.describe OpenidConnectLogoutForm do
         context 'with an expired, but otherwise valid id_token_hint' do
           let(:id_token_hint) do
             IdTokenBuilder.new(
-              identity: identity,
-              code: code,
+              identity:,
+              code:,
               custom_expiration: 5.days.ago.to_i,
             ).id_token
           end

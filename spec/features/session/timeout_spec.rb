@@ -5,12 +5,12 @@ RSpec.feature 'Session Timeout' do
     it 'preserves the branded experience' do
       issuer = 'http://localhost:3000'
       sp_request = ServiceProviderRequestProxy.create(
-        issuer: issuer,
+        issuer:,
         url: 'foo',
         uuid: '123',
         ial: '1',
       )
-      sp = ServiceProvider.find_by(issuer: issuer)
+      sp = ServiceProvider.find_by(issuer:)
 
       visit root_url(request_id: sp_request.uuid)
 
@@ -22,8 +22,8 @@ RSpec.feature 'Session Timeout' do
   context 'when SP info is in session' do
     it 'displays the branded experience' do
       issuer = 'http://localhost:3000'
-      sp = ServiceProvider.find_by(issuer: issuer)
-      sp_session = { issuer: issuer, request_url: 'http://localhost:3000/api/saml/auth' }
+      sp = ServiceProvider.find_by(issuer:)
+      sp_session = { issuer:, request_url: 'http://localhost:3000/api/saml/auth' }
       page.set_rack_session(sp: sp_session)
       visit root_path
 

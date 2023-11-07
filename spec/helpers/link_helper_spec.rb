@@ -89,7 +89,7 @@ RSpec.describe LinkHelper do
     let(:css_class) { 'example-class' }
 
     subject do
-      button_or_link_to(text, url, method: method, class: css_class)
+      button_or_link_to(text, url, method:, class: css_class)
     end
 
     context 'without method assigned' do

@@ -2,7 +2,7 @@ RSpec.shared_examples 'an otp delivery preference form' do
   let(:phone) { '+1 (703) 555-5000' }
   let(:params) do
     {
-      phone: phone,
+      phone:,
       otp_delivery_preference: 'voice',
       international_code: 'US',
     }
@@ -12,7 +12,7 @@ RSpec.shared_examples 'an otp delivery preference form' do
     it 'is valid when supported for the phone' do
       update_user = instance_double(UpdateUser)
       attributes = { otp_delivery_preference: 'voice' }
-      allow(UpdateUser).to receive(:new).with(user: user, attributes: attributes).
+      allow(UpdateUser).to receive(:new).with(user:, attributes:).
         and_return(update_user)
       expect(update_user).to receive(:call)
 
@@ -28,7 +28,7 @@ RSpec.shared_examples 'an otp delivery preference form' do
     it 'is invalid when unsupported for the phone' do
       update_user = instance_double(UpdateUser)
       attributes = { otp_delivery_preference: 'voice' }
-      allow(UpdateUser).to receive(:new).with(user: user, attributes: attributes).
+      allow(UpdateUser).to receive(:new).with(user:, attributes:).
         and_return(update_user)
       expect(update_user).to_not receive(:call)
 

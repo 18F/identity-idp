@@ -259,7 +259,7 @@ RSpec.describe Users::PivCacAuthenticationSetupController do
 
         it 'sends a recovery information changed event' do
           expect(PushNotification::HttpPush).to receive(:deliver).
-            with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
+            with(PushNotification::RecoveryInformationChangedEvent.new(user:))
           delete :delete, params: { id: piv_cac_configuration_id }
         end
 

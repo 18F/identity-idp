@@ -191,7 +191,7 @@ RSpec.describe Telephony::Pinpoint::SmsSender do
         response = subject.deliver(
           message: 'This is a test!',
           to: '+1 (604) 456-7890',
-          country_code: country_code,
+          country_code:,
         )
 
         expected_result = {
@@ -223,7 +223,7 @@ RSpec.describe Telephony::Pinpoint::SmsSender do
         response = subject.deliver(
           message: 'This is a test!',
           to: '+1 (414) 456-7890',
-          country_code: country_code,
+          country_code:,
         )
 
         expected_result = {
@@ -257,7 +257,7 @@ RSpec.describe Telephony::Pinpoint::SmsSender do
         response = subject.deliver(
           message: 'This is a test!',
           to: '+1 (939) 456-7890',
-          country_code: country_code,
+          country_code:,
         )
 
         expected_result = {
@@ -291,7 +291,7 @@ RSpec.describe Telephony::Pinpoint::SmsSender do
         response = subject.deliver(
           message: 'This is a test!',
           to: '+525555555555',
-          country_code: country_code,
+          country_code:,
         )
 
         expected_result = {
@@ -510,7 +510,7 @@ RSpec.describe Telephony::Pinpoint::SmsSender do
         pinpoint_client.stub_responses(
           :phone_number_validate,
           number_validate_response: {
-            phone_type: phone_type,
+            phone_type:,
             carrier: 'Example Carrier',
           },
         )
@@ -554,7 +554,7 @@ RSpec.describe Telephony::Pinpoint::SmsSender do
         pinpoint_client.stub_responses(
           :phone_number_validate, [
             Seahorse::Client::NetworkingError.new(Timeout::Error.new),
-            { number_validate_response: { phone_type: phone_type } },
+            { number_validate_response: { phone_type: } },
           ]
         )
       end

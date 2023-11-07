@@ -16,8 +16,8 @@ module Reports
       ].select(&:present?).
         each do |bucket_name|
         upload_file_to_s3_bucket(
-          path: path,
-          body: body,
+          path:,
+          body:,
           content_type: 'application/json',
           bucket: bucket_name,
         )
@@ -34,8 +34,8 @@ module Reports
 
     def report_body
       params = {
-        start: start,
-        finish: finish,
+        start:,
+        finish:,
       }.transform_values { |v| ActiveRecord::Base.connection.quote(v) }
 
       sql = format(<<-SQL, params)
@@ -66,8 +66,8 @@ module Reports
       end
 
       {
-        start: start,
-        finish: finish,
+        start:,
+        finish:,
         results: results.as_json,
       }
     end

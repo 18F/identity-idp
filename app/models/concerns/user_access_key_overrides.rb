@@ -9,7 +9,7 @@ module UserAccessKeyOverrides
 
   def valid_password?(password)
     result = Encryption::PasswordVerifier.new.verify(
-      password: password,
+      password:,
       digest_pair: password_regional_digest_pair,
       user_uuid: uuid,
     )
@@ -69,7 +69,7 @@ module UserAccessKeyOverrides
     return unless Encryption::PasswordVerifier.new.stale_digest?(
       encrypted_password_digest,
     )
-    update!(password: password)
+    update!(password:)
   end
 
   # This is a devise method, which we are overriding. This should not be removed

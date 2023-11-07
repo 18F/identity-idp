@@ -102,13 +102,13 @@ module Idv
     end
 
     def associate_in_person_enrollment_with_profile
-      current_user.establishing_in_person_enrollment.update(profile: profile)
+      current_user.establishing_in_person_enrollment.update(profile:)
     end
 
     def create_gpo_entry(pii)
       confirmation_maker = GpoConfirmationMaker.new(
-        pii: pii, service_provider: service_provider,
-        profile: profile
+        pii:, service_provider:,
+        profile:
       )
       confirmation_maker.perform
 
@@ -227,9 +227,9 @@ module Idv
 
     def build_profile_maker(user_password)
       Idv::ProfileMaker.new(
-        applicant: applicant,
+        applicant:,
         user: current_user,
-        user_password: user_password,
+        user_password:,
         initiating_service_provider: service_provider,
       )
     end

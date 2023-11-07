@@ -7,35 +7,35 @@ RSpec.describe 'Invalid UTF-8 encoding in form input' do
 
   it 'returns 400 when email is bad' do
     params = { user: { email: bad_email } }
-    post new_user_session_path, params: params
+    post(new_user_session_path, params:)
 
     expect(response.status).to eq 400
   end
 
   it 'returns 400 when request_id is bad' do
     params = { user: { email: good_email, request_id: bad_request_id } }
-    post new_user_session_path, params: params
+    post(new_user_session_path, params:)
 
     expect(response.status).to eq 400
   end
 
   it 'returns 400 when email is a hash with a bad email' do
     params = { user: { email: { foo: bad_email }, request_id: bad_request_id } }
-    post new_user_session_path, params: params
+    post(new_user_session_path, params:)
 
     expect(response.status).to eq 400
   end
 
   it 'returns 400 when email is an array with a bad email' do
     params = { user: { email: [bad_email], request_id: bad_request_id } }
-    post new_user_session_path, params: params
+    post(new_user_session_path, params:)
 
     expect(response.status).to eq 400
   end
 
   it 'returns 400 when email is a symbol' do
     params = { user: { email: :foo, request_id: bad_request_id } }
-    post new_user_session_path, params: params
+    post(new_user_session_path, params:)
 
     expect(response.status).to eq 400
   end
@@ -45,7 +45,7 @@ RSpec.describe 'Invalid UTF-8 encoding in form input' do
       password_reset_email_form: { email: 'test@test.com', request_id: "test\xFFbar\xF8" },
     }
 
-    post '/users/password', params: params
+    post('/users/password', params:)
 
     expect(response.status).to eq 400
   end

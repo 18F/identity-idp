@@ -47,9 +47,9 @@ module Proofing
 
       def address_result(success:, errors:, exception:)
         AddressResult.new(
-          success: success,
-          errors: errors,
-          exception: exception,
+          success:,
+          errors:,
+          exception:,
           transaction_id: TRANSACTION_ID,
           vendor_name: 'AddressMock',
         )

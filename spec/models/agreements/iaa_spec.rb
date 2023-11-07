@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Agreements::Iaa do
   let(:gtc) { create(:iaa_gtc, gtc_number: 'LGABC210001') }
   let(:order) { create(:iaa_order, iaa_gtc: gtc, order_number: 1, mod_number: 2) }
-  let(:iaa) { described_class.new(gtc: gtc, order: order) }
+  let(:iaa) { described_class.new(gtc:, order:) }
 
   it { is_expected.to delegate_method(:gtc_number).to(:gtc) }
   it { is_expected.to delegate_method(:mod_number).to(:gtc).with_prefix }
@@ -61,13 +61,13 @@ RSpec.describe Agreements::Iaa do
 
   describe '#==' do
     it 'returns true when both the order and the gtc are equal' do
-      other = described_class.new(gtc: gtc, order: order)
+      other = described_class.new(gtc:, order:)
       expect(iaa).to eq(other)
     end
 
     it 'returns false when the order does not match' do
       other_order = create(:iaa_order, iaa_gtc: gtc)
-      other = described_class.new(gtc: gtc, order: other_order)
+      other = described_class.new(gtc:, order: other_order)
       expect(iaa).not_to eq(other)
     end
   end

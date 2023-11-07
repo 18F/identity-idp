@@ -71,7 +71,7 @@ RSpec.describe UserSeeder do
 
       def create_user_with_email(email)
         user = User.create!
-        EmailAddress.create!(user: user, email: email, confirmed_at: Time.zone.now)
+        EmailAddress.create!(user:, email:, confirmed_at: Time.zone.now)
         user.reset_password('S00per Seekret', 'S00per Seekret')
       end
     end

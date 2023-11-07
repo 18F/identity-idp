@@ -6,8 +6,8 @@ RSpec.describe UserAlerts::AlertUserAboutPasswordChange do
       user = create(:user)
       disavowal_token = 'asdf1234'
       user.email_addresses.destroy_all
-      confirmed_email_addresses = create_list(:email_address, 2, user: user)
-      create(:email_address, user: user, confirmed_at: nil)
+      confirmed_email_addresses = create_list(:email_address, 2, user:)
+      create(:email_address, user:, confirmed_at: nil)
 
       described_class.call(user, disavowal_token)
 

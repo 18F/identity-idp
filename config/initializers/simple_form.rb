@@ -85,11 +85,13 @@ SimpleForm.setup do |config|
     legend_class = 'usa-label' + (bordered ? '' : ' margin-bottom-2')
     input_class = 'usa-radio__input' + (bordered ? ' usa-radio__input--bordered' : '')
 
-    config.wrappers name,
-                    tag: 'fieldset',
-                    wrapper_class: 'usa-fieldset margin-bottom-4',
-                    item_wrapper_tag: nil,
-                    item_label_class: item_label_class do |b|
+    config.wrappers(
+      name,
+      tag: 'fieldset',
+      wrapper_class: 'usa-fieldset margin-bottom-4',
+      item_wrapper_tag: nil,
+      item_label_class:,
+    ) do |b|
       b.use :html5_no_aria_required
       b.wrapper :legend, tag: 'legend', class: legend_class do |ba|
         ba.use :label_text

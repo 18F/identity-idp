@@ -21,7 +21,7 @@ RSpec.describe SamlRequestPresenter do
           phone address1 address2 city state zipcode foo
         ]
         service_provider = ServiceProvider.new(attribute_bundle: all_attributes)
-        presenter = SamlRequestPresenter.new(request: request, service_provider: service_provider)
+        presenter = SamlRequestPresenter.new(request:, service_provider:)
 
         expect(presenter.requested_attributes).to eq(%i[email all_emails verified_at])
       end
@@ -43,7 +43,7 @@ RSpec.describe SamlRequestPresenter do
 
         sp_attributes = %w[email first_name last_name ssn zipcode]
         service_provider = ServiceProvider.new(attribute_bundle: sp_attributes, ial: 2)
-        presenter = SamlRequestPresenter.new(request: request, service_provider: service_provider)
+        presenter = SamlRequestPresenter.new(request:, service_provider:)
 
         expect(presenter.requested_attributes).to eq(
           %i[email given_name family_name social_security_number address],
@@ -67,7 +67,7 @@ RSpec.describe SamlRequestPresenter do
 
         sp_attributes = %w[email first_name last_name ssn zipcode all_emails]
         service_provider = ServiceProvider.new(attribute_bundle: sp_attributes, ial: 1)
-        presenter = SamlRequestPresenter.new(request: request, service_provider: service_provider)
+        presenter = SamlRequestPresenter.new(request:, service_provider:)
 
         expect(presenter.requested_attributes).to eq(%i[email all_emails])
       end
@@ -86,7 +86,7 @@ RSpec.describe SamlRequestPresenter do
             email first_name last_name dob foo ssn phone verified_at
           ],
         )
-        presenter = SamlRequestPresenter.new(request: request, service_provider: service_provider)
+        presenter = SamlRequestPresenter.new(request:, service_provider:)
         valid_attributes = %i[
           email given_name family_name birthdate social_security_number phone verified_at
         ]
@@ -106,7 +106,7 @@ RSpec.describe SamlRequestPresenter do
         service_provider = ServiceProvider.new(
           attribute_bundle: %w[address1 address2 city state zipcode],
         )
-        presenter = SamlRequestPresenter.new(request: request, service_provider: service_provider)
+        presenter = SamlRequestPresenter.new(request:, service_provider:)
 
         expect(presenter.requested_attributes).to eq([:address])
       end

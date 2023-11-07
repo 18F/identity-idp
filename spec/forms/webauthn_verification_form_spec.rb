@@ -12,23 +12,23 @@ RSpec.describe WebauthnVerificationForm do
     return if !user
     create(
       :webauthn_configuration,
-      user: user,
-      credential_id: credential_id,
-      credential_public_key: credential_public_key,
-      platform_authenticator: platform_authenticator,
+      user:,
+      credential_id:,
+      credential_public_key:,
+      platform_authenticator:,
     )
   end
 
   subject(:form) do
     WebauthnVerificationForm.new(
-      user: user,
-      challenge: challenge,
-      protocol: protocol,
-      authenticator_data: authenticator_data,
-      client_data_json: client_data_json,
-      signature: signature,
-      credential_id: credential_id,
-      webauthn_error: webauthn_error,
+      user:,
+      challenge:,
+      protocol:,
+      authenticator_data:,
+      client_data_json:,
+      signature:,
+      credential_id:,
+      webauthn_error:,
     )
   end
 

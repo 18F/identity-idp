@@ -9,9 +9,9 @@ RSpec.describe 'Idv::StepInfo' do
   subject do
     Idv::StepInfo.new(
       key: :my_key,
-      controller: controller,
-      next_steps: next_steps,
-      preconditions: preconditions,
+      controller:,
+      next_steps:,
+      preconditions:,
     )
   end
 

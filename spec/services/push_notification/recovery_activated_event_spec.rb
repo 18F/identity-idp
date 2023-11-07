@@ -4,7 +4,7 @@ RSpec.describe PushNotification::RecoveryActivatedEvent do
   include Rails.application.routes.url_helpers
 
   subject(:event) do
-    PushNotification::RecoveryActivatedEvent.new(user: user)
+    PushNotification::RecoveryActivatedEvent.new(user:)
   end
 
   let(:user) { build(:user) }
@@ -18,7 +18,7 @@ RSpec.describe PushNotification::RecoveryActivatedEvent do
   describe '#payload' do
     let(:iss_sub) { SecureRandom.uuid }
 
-    subject(:payload) { event.payload(iss_sub: iss_sub) }
+    subject(:payload) { event.payload(iss_sub:) }
 
     it 'is a subject with the provided iss_sub ' do
       expect(payload).to eq(

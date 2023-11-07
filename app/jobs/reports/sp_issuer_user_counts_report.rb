@@ -16,8 +16,8 @@ module Reports
         emails.each do |email|
           ReportMailer.sp_issuer_user_counts_report(
             name: REPORT_NAME,
-            email: email,
-            issuer: issuer,
+            email:,
+            issuer:,
             total: user_counts['total'],
             ial1_total: user_counts['ial1_total'],
             ial2_total: user_counts['ial2_total'],

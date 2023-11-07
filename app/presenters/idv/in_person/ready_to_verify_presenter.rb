@@ -92,7 +92,7 @@ module Idv
       end
 
       def sp_return_url_resolver
-        SpReturnUrlResolver.new(service_provider: service_provider)
+        SpReturnUrlResolver.new(service_provider:)
       end
     end
   end

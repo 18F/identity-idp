@@ -4,7 +4,7 @@ RSpec.describe PushNotification::MfaLimitAccountLockedEvent do
   include Rails.application.routes.url_helpers
 
   subject(:event) do
-    PushNotification::MfaLimitAccountLockedEvent.new(user: user)
+    PushNotification::MfaLimitAccountLockedEvent.new(user:)
   end
 
   let(:user) { build(:user) }
@@ -18,7 +18,7 @@ RSpec.describe PushNotification::MfaLimitAccountLockedEvent do
   describe '#payload' do
     let(:iss_sub) { SecureRandom.uuid }
 
-    subject(:payload) { event.payload(iss_sub: iss_sub) }
+    subject(:payload) { event.payload(iss_sub:) }
 
     it 'is a subject with the provided iss_sub ' do
       expect(payload).to eq(

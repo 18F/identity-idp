@@ -8,7 +8,7 @@
 module AccountReset::TrackIrsEvent
   def track_irs_event
     irs_attempts_api_tracker.account_reset_account_deleted(
-      success: success,
+      success:,
       failure_reason: event_failure_reason.presence,
     )
   end

@@ -12,7 +12,7 @@ RSpec.shared_examples 'strong password' do |form_class|
     }
 
     result = form.submit(
-      password: password,
+      password:,
       password_confirmation: password,
     )
 
@@ -33,7 +33,7 @@ RSpec.shared_examples 'strong password' do |form_class|
     }
 
     result = form.submit(
-      password: password,
+      password:,
       password_confirmation: password,
     )
 
@@ -56,7 +56,7 @@ RSpec.shared_examples 'strong password' do |form_class|
     }
 
     result = form.submit(
-      password: password,
+      password:,
       password_confirmation: password,
     )
 
@@ -76,7 +76,7 @@ RSpec.shared_examples 'strong password' do |form_class|
         ' Uncommon words are better'],
     }
     result = form.submit(
-      password: password,
+      password:,
       password_confirmation: password,
     )
 
@@ -94,7 +94,7 @@ RSpec.shared_examples 'strong password' do |form_class|
       password: [t('errors.attributes.password.too_short', count: 12)],
     }
     result = form.submit(
-      password: password,
+      password:,
       password_confirmation: password,
     )
 

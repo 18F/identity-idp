@@ -6,7 +6,7 @@
       </span>
     </button>
     <ul class="usa-nav__primary usa-accordion">
-      <% NavigationPresenter.new(user: current_user, url_options: url_options).navigation_items.each do |nav_item| %>
+      <% NavigationPresenter.new(user: current_user, url_options:).navigation_items.each do |nav_item| %>
         <li class="usa-nav__primary-item">
           <%= link_to nav_item.href, class: current_page?(nav_item.href) ? 'usa-current' : '' do %>
             <strong><%= nav_item.title %></strong>

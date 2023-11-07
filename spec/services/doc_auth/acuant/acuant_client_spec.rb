@@ -8,9 +8,9 @@ RSpec.describe DocAuth::Acuant::AcuantClient do
 
   subject(:client) do
     DocAuth::Acuant::AcuantClient.new(
-      assure_id_url: assure_id_url,
-      facial_match_url: facial_match_url,
-      passlive_url: passlive_url,
+      assure_id_url:,
+      facial_match_url:,
+      passlive_url:,
     )
   end
 
@@ -21,7 +21,7 @@ RSpec.describe DocAuth::Acuant::AcuantClient do
         with(body: hash_including(ImageCroppingMode: DocAuth::Acuant::CroppingModes::NONE)).
         to_return(body: AcuantFixtures.create_document_response)
 
-      result = subject.create_document(image_source: image_source)
+      result = subject.create_document(image_source:)
 
       expect(result.success?).to eq(true)
       expect(result.instance_id).to eq('this-is-a-test-instance-id') # instance ID from fixture
@@ -32,7 +32,7 @@ RSpec.describe DocAuth::Acuant::AcuantClient do
 
       it 'raises an error' do
         message = 'unknown image_source=invalid'
-        expect { subject.create_document(image_source: image_source) }.to raise_error(message)
+        expect { subject.create_document(image_source:) }.to raise_error(message)
       end
     end
   end
@@ -46,7 +46,7 @@ RSpec.describe DocAuth::Acuant::AcuantClient do
       stub_request(:post, url).with(query: { side: 0, light: 0 }).to_return(body: '', status: 201)
 
       result = subject.post_front_image(
-        instance_id: instance_id,
+        instance_id:,
         image: DocAuthImageFixtures.document_front_image,
       )
 
@@ -63,7 +63,7 @@ RSpec.describe DocAuth::Acuant::AcuantClient do
       stub_request(:post, url).with(query: { side: 1, light: 0 }).to_return(body: '', status: 201)
 
       result = subject.post_back_image(
-        instance_id: instance_id,
+        instance_id:,
         image: DocAuthImageFixtures.document_back_image,
       )
 
@@ -93,7 +93,7 @@ RSpec.describe DocAuth::Acuant::AcuantClient do
       stub_request(:get, results_url).to_return(body: AcuantFixtures.get_results_response_success)
 
       allow(subject).to receive(:create_document).and_return(
-        OpenStruct.new('success?' => true, instance_id: instance_id),
+        OpenStruct.new('success?' => true, instance_id:),
       )
     end
 
@@ -102,7 +102,7 @@ RSpec.describe DocAuth::Acuant::AcuantClient do
         result = subject.post_images(
           front_image: DocAuthImageFixtures.document_front_image,
           back_image: DocAuthImageFixtures.document_back_image,
-          image_source: image_source,
+          image_source:,
         )
 
         extra_expected_hash = {
@@ -125,7 +125,7 @@ RSpec.describe DocAuth::Acuant::AcuantClient do
         result = subject.post_images(
           front_image: DocAuthImageFixtures.document_front_image,
           back_image: DocAuthImageFixtures.document_back_image,
-          image_source: image_source,
+          image_source:,
         )
 
         expect(result.success?).to eq(false)
@@ -140,7 +140,7 @@ RSpec.describe DocAuth::Acuant::AcuantClient do
         url = URI.join(assure_id_url, "/AssureIDService/Document/#{instance_id}")
         stub_request(:get, url).to_return(body: AcuantFixtures.get_results_response_success)
 
-        result = subject.get_results(instance_id: instance_id)
+        result = subject.get_results(instance_id:)
 
         expect(result.success?).to eq(true)
       end
@@ -149,7 +149,7 @@ RSpec.describe DocAuth::Acuant::AcuantClient do
         url = URI.join(assure_id_url, "/AssureIDService/Document/#{instance_id}")
         stub_request(:get, url).to_return(body: AcuantFixtures.get_results_response_success)
 
-        result = subject.get_results(instance_id: instance_id)
+        result = subject.get_results(instance_id:)
 
         expect(result.extra).to include(address_line2_present: true)
       end
@@ -161,9 +161,9 @@ RSpec.describe DocAuth::Acuant::AcuantClient do
           body = JSON.parse(AcuantFixtures.get_results_response_success).tap do |json|
             json['Fields'] = json['Fields'].select { |f| f['Name'] != 'Address Line 2' }
           end.to_json
-          stub_request(:get, url).to_return(body: body)
+          stub_request(:get, url).to_return(body:)
 
-          result = subject.get_results(instance_id: instance_id)
+          result = subject.get_results(instance_id:)
 
           expect(result.extra).to include(address_line2_present: false)
         end
@@ -176,7 +176,7 @@ RSpec.describe DocAuth::Acuant::AcuantClient do
         url = URI.join(assure_id_url, "/AssureIDService/Document/#{instance_id}")
         stub_request(:get, url).to_return(body: AcuantFixtures.get_results_response_failure)
 
-        result = subject.get_results(instance_id: instance_id)
+        result = subject.get_results(instance_id:)
 
         expect(result.success?).to eq(false)
       end
@@ -190,7 +190,7 @@ RSpec.describe DocAuth::Acuant::AcuantClient do
 
       expect(NewRelic::Agent).to receive(:notice_error)
 
-      result = subject.create_document(image_source: image_source)
+      result = subject.create_document(image_source:)
 
       expect(result.success?).to eq(false)
       expect(result.errors).to eq(network: true)
@@ -207,7 +207,7 @@ RSpec.describe DocAuth::Acuant::AcuantClient do
 
       expect(NewRelic::Agent).to receive(:notice_error)
 
-      result = subject.create_document(image_source: image_source)
+      result = subject.create_document(image_source:)
 
       expect(result.success?).to eq(false)
       expect(result.errors).to eq(network: true)
@@ -226,11 +226,11 @@ RSpec.describe DocAuth::Acuant::AcuantClient do
         )
         stub_request(:post, url).with(query: { side: 0, light: 0 }).to_return(
           body: '',
-          status: status,
+          status:,
         )
 
         result = subject.post_front_image(
-          instance_id: instance_id,
+          instance_id:,
           image: DocAuthImageFixtures.document_front_image,
         )
         expect(result.exception.message).not_to be_nil

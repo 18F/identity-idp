@@ -25,8 +25,8 @@ class SendAddEmailConfirmation
 
   def update_email_address_record
     email_address.update!(
-      confirmation_token: confirmation_token,
-      confirmation_sent_at: confirmation_sent_at,
+      confirmation_token:,
+      confirmation_sent_at:,
     )
   end
 
@@ -48,14 +48,14 @@ class SendAddEmailConfirmation
 
   def send_email_associated_with_another_account_email
     UserMailer.with(
-      user: user,
-      email_address: email_address,
+      user:,
+      email_address:,
     ).add_email_associated_with_another_account.
       deliver_now_or_later
   end
 
   def send_confirmation_email
-    UserMailer.with(user: user, email_address: email_address).add_email(
+    UserMailer.with(user:, email_address:).add_email(
       confirmation_token,
     ).deliver_now_or_later
   end

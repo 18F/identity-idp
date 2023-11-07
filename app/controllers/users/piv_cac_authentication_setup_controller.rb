@@ -149,7 +149,7 @@ module Users
 
     def good_nickname
       name = params[:name]
-      name.present? && !PivCacConfiguration.exists?(user_id: current_user.id, name: name)
+      name.present? && !PivCacConfiguration.exists?(user_id: current_user.id, name:)
     end
 
     def analytics_properties

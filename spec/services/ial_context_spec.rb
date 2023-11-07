@@ -14,10 +14,10 @@ RSpec.describe IalContext do
 
   subject(:ial_context) do
     IalContext.new(
-      ial: ial,
-      service_provider: service_provider,
-      user: user,
-      authn_context_comparison: authn_context_comparison,
+      ial:,
+      service_provider:,
+      user:,
+      authn_context_comparison:,
     )
   end
 

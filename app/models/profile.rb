@@ -83,7 +83,7 @@ class Profile < ApplicationRecord
     confirm_that_profile_can_be_activated!
 
     now = Time.zone.now
-    is_reproof = Profile.find_by(user_id: user_id, active: true)
+    is_reproof = Profile.find_by(user_id:, active: true)
 
     attrs = {
       active: true,
@@ -93,7 +93,7 @@ class Profile < ApplicationRecord
     attrs[:verified_at] = now unless (reason_deactivated == :password_reset || verified_at)
 
     transaction do
-      Profile.where(user_id: user_id).update_all(active: false)
+      Profile.where(user_id:).update_all(active: false)
       update!(attrs)
     end
     send_push_notifications if is_reproof
@@ -283,7 +283,7 @@ class Profile < ApplicationRecord
   def track_fraud_review_adjudication(decision:)
     fraud_review_request = user.fraud_review_requests.last
     irs_attempts_api_tracker.fraud_review_adjudicated(
-      decision: decision,
+      decision:,
       cached_irs_session_id: fraud_review_request&.irs_session_id,
       cached_login_session_id: fraud_review_request&.login_session_id,
     )
@@ -307,7 +307,7 @@ class Profile < ApplicationRecord
   end
 
   def send_push_notifications
-    event = PushNotification::ReproofCompletedEvent.new(user: user)
+    event = PushNotification::ReproofCompletedEvent.new(user:)
     PushNotification::HttpPush.deliver(event)
   end
 end

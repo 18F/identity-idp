@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe PivCacErrorPresenter do
   let(:view) { double(:view, link_to: '') }
-  let(:presenter) { described_class.new(error: error, view: view, try_again_url: '') }
+  let(:presenter) { described_class.new(error:, view:, try_again_url: '') }
   let(:error) { 'certificate.none' }
 
   describe '#error' do

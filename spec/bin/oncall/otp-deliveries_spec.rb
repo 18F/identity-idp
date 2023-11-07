@@ -4,7 +4,7 @@ load Rails.root.join('bin/oncall/otp-deliveries')
 RSpec.describe OtpDeliveries do
   describe '.parse!' do
     let(:out) { StringIO.new }
-    subject(:parse!) { OtpDeliveries.parse!(argv: argv, out: out) }
+    subject(:parse!) { OtpDeliveries.parse!(argv:, out:) }
 
     context 'with --help' do
       let(:argv) { %w[--help] }

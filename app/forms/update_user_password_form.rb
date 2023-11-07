@@ -15,7 +15,7 @@ class UpdateUserPasswordForm
     @password_confirmation = params[:password_confirmation]
     success = valid?
     process_valid_submission if success
-    FormResponse.new(success: success, errors: errors, extra: extra_analytics_attributes)
+    FormResponse.new(success:, errors:, extra: extra_analytics_attributes)
   end
 
   private
@@ -28,8 +28,8 @@ class UpdateUserPasswordForm
   end
 
   def update_user_password
-    attributes = { password: password }
-    UpdateUser.new(user: user, attributes: attributes).call
+    attributes = { password: }
+    UpdateUser.new(user:, attributes:).call
   end
 
   def encrypt_user_profile_if_active

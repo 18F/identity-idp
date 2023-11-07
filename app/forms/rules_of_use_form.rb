@@ -24,7 +24,7 @@ class RulesOfUseForm
       self.success = false
     end
 
-    FormResponse.new(success: success, errors: errors)
+    FormResponse.new(success:, errors:)
   end
 
   private
@@ -33,6 +33,6 @@ class RulesOfUseForm
 
   def process_successful_submission
     self.success = true
-    UpdateUser.new(user: user, attributes: { accepted_terms_at: Time.zone.now }).call
+    UpdateUser.new(user:, attributes: { accepted_terms_at: Time.zone.now }).call
   end
 end

@@ -8,7 +8,7 @@ module PushNotification
 
     # shorthand for creating an instance then calling #deliver, easier to stub
     def self.deliver(event, now: Time.zone.now)
-      new(event, now: now).deliver
+      new(event, now:).deliver
     end
 
     def initialize(event, now: Time.zone.now)

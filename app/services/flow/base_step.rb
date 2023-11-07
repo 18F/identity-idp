@@ -67,7 +67,7 @@ module Flow
     end
 
     def render_json(json, status: nil)
-      @flow.render_json(json, status: status)
+      @flow.render_json(json, status:)
     end
 
     def reset

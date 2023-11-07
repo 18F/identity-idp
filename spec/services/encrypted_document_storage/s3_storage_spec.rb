@@ -22,7 +22,7 @@ RSpec.describe EncryptedDocumentStorage::S3Storage do
         },
       )
 
-      storage.write_image(encrypted_image: encrypted_image, name: name)
+      storage.write_image(encrypted_image:, name:)
     end
   end
 end

@@ -31,9 +31,9 @@ module Proofing
 
         FormResponse.new(
           success: resolution_success && device_profiling_success,
-          errors: errors,
+          errors:,
           extra: {
-            exception: exception,
+            exception:,
             timed_out: timed_out?,
             threatmetrix_review_status: device_profiling_result.review_status,
             context: {

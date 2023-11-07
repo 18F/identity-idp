@@ -4,9 +4,9 @@ module Encryption
     def self.log(action, key_id:, context: nil)
       output = {
         kms: {
-          action: action,
+          action:,
           encryption_context: context,
-          key_id: key_id,
+          key_id:,
         },
         log_filename: LOG_FILENAME,
       }

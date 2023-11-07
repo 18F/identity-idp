@@ -5,7 +5,7 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController do
 
   let!(:document_capture_session) do
     DocumentCaptureSession.create!(
-      user: user,
+      user:,
       requested_at: document_capture_session_requested_at,
     )
   end
@@ -66,7 +66,7 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController do
         expect(subject).to receive(:render).with(
           :show,
           locals: hash_including(
-            document_capture_session_uuid: document_capture_session_uuid,
+            document_capture_session_uuid:,
           ),
         ).and_call_original
 

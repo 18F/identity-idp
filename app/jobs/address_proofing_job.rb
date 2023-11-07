@@ -22,18 +22,18 @@ class AddressProofingJob < ApplicationJob
       address_proofer.proof(applicant_pii)
     end
 
-    service_provider = ServiceProvider.find_by(issuer: issuer)
+    service_provider = ServiceProvider.find_by(issuer:)
     Db::SpCost::AddSpCost.call(
       service_provider, 2, :lexis_nexis_address, transaction_id: proofer_result.transaction_id
     )
 
-    document_capture_session = DocumentCaptureSession.new(result_id: result_id)
+    document_capture_session = DocumentCaptureSession.new(result_id:)
     document_capture_session.store_proofing_result(proofer_result.to_h)
   ensure
     logger.info(
       {
         name: 'ProofAddress',
-        trace_id: trace_id,
+        trace_id:,
         success: proofer_result&.success?,
         timing: timer.results,
       }.to_json,

@@ -11,13 +11,13 @@ module DocAuth
         @config = config
         super(
           success: success?,
-          errors: errors,
-          pii_from_doc: pii_from_doc,
+          errors:,
+          pii_from_doc:,
           doc_type_supported: id_type_supported?,
           extra: {
-            doc_auth_result: doc_auth_result,
+            doc_auth_result:,
             billed: true,
-            classification_info: classification_info,
+            classification_info:,
           },
         )
       end
@@ -100,8 +100,8 @@ module DocAuth
         exception = DocAuth::RequestError.new(message, status)
         DocAuth::Response.new(
           success: false,
-          errors: errors,
-          exception: exception,
+          errors:,
+          exception:,
           extra: { vendor: 'Mock' },
         )
       end
@@ -110,7 +110,7 @@ module DocAuth
         errors = { network: true }
         DocAuth::Response.new(
           success: false,
-          errors: errors,
+          errors:,
           exception: Faraday::TimeoutError.new,
           extra: { vendor: 'Mock' },
         )
@@ -188,15 +188,15 @@ module DocAuth
         merged_image_metrics = DEFAULT_IMAGE_METRICS.deep_merge(image_metrics)
         {
           vendor: 'Mock',
-          doc_auth_result: doc_auth_result,
+          doc_auth_result:,
           processed_alerts: {
-            passed: passed,
-            failed: failed,
+            passed:,
+            failed:,
           },
           alert_failure_count: failed&.count.to_i,
           image_metrics: merged_image_metrics,
           portrait_match_results: { FaceMatchResult: liveness_result },
-          classification_info: classification_info,
+          classification_info:,
         }
       end
     end

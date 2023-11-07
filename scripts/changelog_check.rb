@@ -80,7 +80,7 @@ def build_structured_git_log(git_log)
     title = title_and_commit_messages.first.first.delete_prefix('title: ')
     messages = title_and_commit_messages[1]
     SquashedCommit.new(
-      title: title,
+      title:,
       commit_messages: messages,
     )
   end
@@ -148,7 +148,7 @@ def generate_changelog(git_log)
     pr_number = %r{\(#(?<pr>\d+)\)}.match(item[:title])
 
     changelog_entry = ChangelogEntry.new(
-      category: category,
+      category:,
       subcategory: change[:subcategory],
       pr_number: pr_number&.named_captures&.fetch('pr'),
       change: change[:change].sub(/./, &:upcase),

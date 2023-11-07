@@ -21,21 +21,21 @@ module AccountReset
     attr_reader :user, :requesting_issuer
 
     def create_request
-      request = AccountResetRequest.create_or_find_by(user: user)
+      request = AccountResetRequest.create_or_find_by(user:)
       request.update!(
         request_token: SecureRandom.uuid,
         requested_at: Time.zone.now,
         cancelled_at: nil,
         granted_at: nil,
         granted_token: nil,
-        requesting_issuer: requesting_issuer,
+        requesting_issuer:,
       )
       request
     end
 
     def notify_user_by_email(request)
       user.confirmed_email_addresses.each do |email_address|
-        UserMailer.with(user: user, email_address: email_address).account_reset_request(request).
+        UserMailer.with(user:, email_address:).account_reset_request(request).
           deliver_now_or_later
       end
     end

@@ -31,7 +31,7 @@ module Proofing
       def unverifiable_result(**errors)
         resolution_result(
           success: false,
-          errors: errors,
+          errors:,
           exception: nil,
         )
       end
@@ -64,9 +64,9 @@ module Proofing
 
       def resolution_result(success:, errors:, exception:)
         Resolution::Result.new(
-          success: success,
-          errors: errors,
-          exception: exception,
+          success:,
+          errors:,
+          exception:,
           transaction_id: TRANSACTION_ID,
           reference: REFERENCE,
           vendor_name: 'ResolutionMock',

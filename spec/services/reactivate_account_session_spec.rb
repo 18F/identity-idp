@@ -7,8 +7,8 @@ RSpec.describe ReactivateAccountSession do
   before do
     user.active_profile.deactivate(:password_reset)
     @reactivate_account_session = ReactivateAccountSession.new(
-      user: user,
-      user_session: user_session,
+      user:,
+      user_session:,
     )
   end
 

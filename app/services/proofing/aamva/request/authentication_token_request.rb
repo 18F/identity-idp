@@ -57,7 +57,7 @@ module Proofing
         attr_writer :security_context_token_identifier, :security_context_token_reference
 
         def http_client
-          Faraday.new(request: { open_timeout: timeout, timeout: timeout }) do |faraday|
+          Faraday.new(request: { open_timeout: timeout, timeout: }) do |faraday|
             faraday.request :instrumentation, name: 'request_metric.faraday'
             faraday.adapter :net_http
           end

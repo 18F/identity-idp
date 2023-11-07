@@ -33,7 +33,7 @@ RSpec.describe NullServiceProviderSession do
     it 'returns view_context.root url' do
       view_context = ActionController::Base.new.view_context
       allow(view_context).to receive(:root_url).and_return('http://www.example.com')
-      null_sp_session = NullServiceProviderSession.new(view_context: view_context)
+      null_sp_session = NullServiceProviderSession.new(view_context:)
 
       expect(null_sp_session.cancel_link_url).to eq 'http://www.example.com'
     end

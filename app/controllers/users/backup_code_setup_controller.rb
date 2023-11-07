@@ -99,10 +99,10 @@ module Users
 
     def set_backup_code_setup_presenter
       @presenter = SetupPresenter.new(
-        current_user: current_user,
+        current_user:,
         user_fully_authenticated: user_fully_authenticated?,
-        user_opted_remember_device_cookie: user_opted_remember_device_cookie,
-        remember_device_default: remember_device_default,
+        user_opted_remember_device_cookie:,
+        remember_device_default:,
       )
     end
 

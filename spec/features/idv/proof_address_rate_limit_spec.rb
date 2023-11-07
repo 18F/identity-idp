@@ -7,7 +7,7 @@ RSpec.feature 'address proofing rate limit' do
   context 'a user is phone rate limited' do
     scenario 'the user does not encounter an error until phone entry and can verify by mail', :js do
       user = user_with_2fa
-      RateLimiter.new(user: user, rate_limit_type: :proof_address).increment_to_limited!
+      RateLimiter.new(user:, rate_limit_type: :proof_address).increment_to_limited!
 
       start_idv_from_sp
       complete_idv_steps_before_phone_step(user)
@@ -76,7 +76,7 @@ RSpec.feature 'address proofing rate limit' do
         :verification_cancelled,
         :letter_sends_rate_limited,
       ).user
-      RateLimiter.new(user: user, rate_limit_type: :proof_address).increment_to_limited!
+      RateLimiter.new(user:, rate_limit_type: :proof_address).increment_to_limited!
 
       start_idv_from_sp
       sign_in_live_with_2fa(user)

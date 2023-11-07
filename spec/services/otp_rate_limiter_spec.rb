@@ -4,10 +4,10 @@ RSpec.describe OtpRateLimiter do
   let(:current_user) { build(:user, :with_phone) }
   let(:phone) { MfaContext.new(current_user).phone_configurations.first.phone }
   subject(:otp_rate_limiter) do
-    OtpRateLimiter.new(phone: phone, user: current_user, phone_confirmed: false)
+    OtpRateLimiter.new(phone:, user: current_user, phone_confirmed: false)
   end
   subject(:otp_rate_limiter_confirmed) do
-    OtpRateLimiter.new(phone: phone, user: current_user, phone_confirmed: true)
+    OtpRateLimiter.new(phone:, user: current_user, phone_confirmed: true)
   end
   let(:phone_fingerprint) { Pii::Fingerprinter.fingerprint(phone) }
 

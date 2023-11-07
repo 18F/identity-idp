@@ -7,7 +7,7 @@ RSpec.describe ResetPasswordForm, type: :model do
   let(:password_confirmation) { password }
   let(:params) do
     {
-      password: password,
+      password:,
       password_confirmation: password,
     }
   end
@@ -30,12 +30,12 @@ RSpec.describe ResetPasswordForm, type: :model do
 
         expect(
           form.submit(
-            password: password,
+            password:,
             password_confirmation: password,
           ).to_h,
         ).to include(
           success: false,
-          errors: errors,
+          errors:,
           error_details: hash_including(*errors.keys),
           **extra,
         )
@@ -64,12 +64,12 @@ RSpec.describe ResetPasswordForm, type: :model do
 
         expect(
           form.submit(
-            password: password,
+            password:,
             password_confirmation: password,
           ).to_h,
         ).to include(
           success: false,
-          errors: errors,
+          errors:,
           error_details: hash_including(*errors.keys),
           **extra,
         )
@@ -85,12 +85,12 @@ RSpec.describe ResetPasswordForm, type: :model do
         password = 'valid password'
         user_updater = instance_double(UpdateUser)
         allow(UpdateUser).to receive(:new).
-          with(user: user, attributes: { password: password }).and_return(user_updater)
+          with(user:, attributes: { password: }).and_return(user_updater)
 
         expect(user_updater).to receive(:call)
         expect(
           form.submit(
-            password: password,
+            password:,
             password_confirmation: password,
           ).to_h,
         ).to eq(
@@ -128,12 +128,12 @@ RSpec.describe ResetPasswordForm, type: :model do
 
         expect(
           form.submit(
-            password: password,
+            password:,
             password_confirmation: password,
           ).to_h,
         ).to include(
           success: false,
-          errors: errors,
+          errors:,
           error_details: hash_including(*errors.keys),
           **extra,
         )
@@ -161,12 +161,12 @@ RSpec.describe ResetPasswordForm, type: :model do
 
         expect(
           form.submit(
-            password: password,
+            password:,
             password_confirmation: password,
           ).to_h,
         ).to include(
           success: false,
-          errors: errors,
+          errors:,
           error_details: hash_including(*errors.keys),
           **extra,
         )

@@ -7,11 +7,11 @@ RSpec.describe OpenidConnectTokenForm do
 
   let(:params) do
     {
-      client_assertion: client_assertion,
-      client_assertion_type: client_assertion_type,
-      code: code,
-      code_verifier: code_verifier,
-      grant_type: grant_type,
+      client_assertion:,
+      client_assertion_type:,
+      code:,
+      code_verifier:,
+      grant_type:,
     }
   end
 
@@ -53,10 +53,10 @@ RSpec.describe OpenidConnectTokenForm do
   let!(:identity) do
     IdentityLinker.new(user, service_provider).
       link_identity(
-        nonce: nonce,
+        nonce:,
         rails_session_id: SecureRandom.hex,
         ial: 1,
-        code_challenge: code_challenge,
+        code_challenge:,
       )
   end
 
@@ -376,7 +376,7 @@ RSpec.describe OpenidConnectTokenForm do
         expect(submission.to_h).to eq(
           success: true,
           errors: {},
-          client_id: client_id,
+          client_id:,
           user_id: user.uuid,
           code_digest: Digest::SHA256.hexdigest(code),
           code_verifier_present: false,

@@ -12,7 +12,7 @@ RSpec.describe Test::DeviceProfilingController do
   describe '#index' do
     it 'sets no_result for the session_id' do
       expect do
-        get :index, params: { session_id: session_id }
+        get :index, params: { session_id: }
       end.to(
         change { Proofing::Mock::DeviceProfilingBackend.new.profiling_result(session_id) }.
         from(nil).to('no_result'),
@@ -25,7 +25,7 @@ RSpec.describe Test::DeviceProfilingController do
 
     it 'sets the result in redis' do
       expect do
-        post :create, params: { session_id: session_id, result: result }
+        post :create, params: { session_id:, result: }
       end.to(
         change { Proofing::Mock::DeviceProfilingBackend.new.profiling_result(session_id) }.
         from(nil).to(result),

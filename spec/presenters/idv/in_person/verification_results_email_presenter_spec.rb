@@ -13,11 +13,11 @@ RSpec.describe Idv::InPerson::VerificationResultsEmailPresenter do
       :pending,
       service_provider: sp,
       selected_location_details: { name: location_name },
-      current_address_matches_id: current_address_matches_id,
+      current_address_matches_id:,
     )
   end
 
-  subject(:presenter) { described_class.new(enrollment: enrollment, url_options: {}) }
+  subject(:presenter) { described_class.new(enrollment:, url_options: {}) }
 
   describe '#location_name' do
     it 'returns the enrollment location name' do
@@ -31,7 +31,7 @@ RSpec.describe Idv::InPerson::VerificationResultsEmailPresenter do
     end
 
     it 'returns a formatted verified date' do
-      enrollment.update(status_updated_at: status_updated_at)
+      enrollment.update(status_updated_at:)
       expect(presenter.formatted_verified_date).to eq 'July 13, 2022'
     end
   end

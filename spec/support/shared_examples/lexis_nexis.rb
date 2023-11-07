@@ -16,7 +16,7 @@ RSpec.shared_examples 'a lexisnexis rdp proofer' do
 
     allow(verification_request).to receive(:send_request).and_return(response)
     allow(verification_request.class).to receive(:new).
-      with(applicant: applicant, config: kind_of(Proofing::LexisNexis::Config)).
+      with(applicant:, config: kind_of(Proofing::LexisNexis::Config)).
       and_return(verification_request)
   end
 

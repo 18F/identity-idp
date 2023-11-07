@@ -7,7 +7,7 @@ RSpec.describe 'shared/_personal_key.html.erb' do
   subject(:rendered) do
     render 'shared/personal_key',
            code: personal_key,
-           personal_key_generated_at: personal_key_generated_at,
+           personal_key_generated_at:,
            update_path: '/test'
   end
 

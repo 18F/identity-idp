@@ -47,7 +47,7 @@ RSpec.describe 'RateLimitConcern' do
 
     context 'with idv_doc_auth rate_limiter (DocumentCapture)' do
       it 'redirects to idv_doc_auth rate limited error page' do
-        rate_limiter = RateLimiter.new(user: user, rate_limit_type: :idv_doc_auth)
+        rate_limiter = RateLimiter.new(user:, rate_limit_type: :idv_doc_auth)
         rate_limiter.increment_to_limited!
 
         get :show
@@ -58,7 +58,7 @@ RSpec.describe 'RateLimitConcern' do
 
     context 'with idv_resolution rate_limiter (VerifyInfo)' do
       it 'redirects to idv_resolution rate limited error page' do
-        rate_limiter = RateLimiter.new(user: user, rate_limit_type: :idv_resolution)
+        rate_limiter = RateLimiter.new(user:, rate_limit_type: :idv_resolution)
         rate_limiter.increment_to_limited!
 
         get :show
@@ -70,7 +70,7 @@ RSpec.describe 'RateLimitConcern' do
     context 'with proof_address rate_limiter (PhoneStep)' do
       context 'when the user is phone rate limited' do
         before do
-          rate_limiter = RateLimiter.new(user: user, rate_limit_type: :proof_address)
+          rate_limiter = RateLimiter.new(user:, rate_limit_type: :proof_address)
           rate_limiter.increment_to_limited!
         end
 
@@ -88,7 +88,7 @@ RSpec.describe 'RateLimitConcern' do
             :profile,
             :verification_cancelled,
             :letter_sends_rate_limited,
-            user: user,
+            user:,
           )
         end
 
@@ -106,9 +106,9 @@ RSpec.describe 'RateLimitConcern' do
             :profile,
             :verification_cancelled,
             :letter_sends_rate_limited,
-            user: user,
+            user:,
           )
-          rate_limiter = RateLimiter.new(user: user, rate_limit_type: :proof_address)
+          rate_limiter = RateLimiter.new(user:, rate_limit_type: :proof_address)
           rate_limiter.increment_to_limited!
         end
 
@@ -156,7 +156,7 @@ RSpec.describe 'RateLimitConcern' do
     end
 
     it 'redirects if the user is rate limited for a step after doc auth' do
-      RateLimiter.new(user: user, rate_limit_type: :idv_resolution).increment_to_limited!
+      RateLimiter.new(user:, rate_limit_type: :idv_resolution).increment_to_limited!
 
       get :show
 
@@ -164,7 +164,7 @@ RSpec.describe 'RateLimitConcern' do
     end
 
     it 'does not redirect if the user is rate limited for doc auth' do
-      RateLimiter.new(user: user, rate_limit_type: :idv_doc_auth).increment_to_limited!
+      RateLimiter.new(user:, rate_limit_type: :idv_doc_auth).increment_to_limited!
 
       get :show
 
@@ -188,7 +188,7 @@ RSpec.describe 'RateLimitConcern' do
     end
 
     it 'redirects if the user is rate limited for phone address verification' do
-      RateLimiter.new(user: user, rate_limit_type: :proof_address).increment_to_limited!
+      RateLimiter.new(user:, rate_limit_type: :proof_address).increment_to_limited!
 
       get :show
 
@@ -196,8 +196,8 @@ RSpec.describe 'RateLimitConcern' do
     end
 
     it 'does not redirect if the user is rate limited for idv resolution' do
-      RateLimiter.new(user: user, rate_limit_type: :idv_doc_auth).increment_to_limited!
-      RateLimiter.new(user: user, rate_limit_type: :idv_resolution).increment_to_limited!
+      RateLimiter.new(user:, rate_limit_type: :idv_doc_auth).increment_to_limited!
+      RateLimiter.new(user:, rate_limit_type: :idv_resolution).increment_to_limited!
 
       get :show
 
@@ -206,7 +206,7 @@ RSpec.describe 'RateLimitConcern' do
     end
 
     it 'does not redirect if the user is rate limited for mail' do
-      create(:profile, :verification_cancelled, :letter_sends_rate_limited, user: user)
+      create(:profile, :verification_cancelled, :letter_sends_rate_limited, user:)
 
       get :show
 

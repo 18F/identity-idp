@@ -4,7 +4,7 @@ class OpenidConnectConfigurationPresenter
   def configuration
     {
       acr_values_supported: Saml::Idp::Constants::VALID_AUTHN_CONTEXTS,
-      claims_supported: claims_supported,
+      claims_supported:,
       grant_types_supported: %w[authorization_code],
       response_types_supported: %w[code],
       scopes_supported: OpenidConnectAttributeScoper::VALID_SCOPES,

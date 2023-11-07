@@ -6,7 +6,7 @@ RSpec.describe 'doc auth IPP VerifyInfo', js: true do
   include InPersonHelper
 
   let(:user) { user_with_2fa }
-  let(:fake_analytics) { FakeAnalytics.new(user: user) }
+  let(:fake_analytics) { FakeAnalytics.new(user:) }
   let(:enrollment) { InPersonEnrollment.new }
 
   before do

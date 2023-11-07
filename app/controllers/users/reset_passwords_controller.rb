@@ -105,17 +105,17 @@ module Users
 
     def create_account_if_email_not_found
       user, result = RequestPasswordReset.new(
-        email: email,
-        request_id: request_id,
-        analytics: analytics,
-        irs_attempts_api_tracker: irs_attempts_api_tracker,
+        email:,
+        request_id:,
+        analytics:,
+        irs_attempts_api_tracker:,
       ).perform
 
       return unless result
 
       analytics.user_registration_email(**result.to_h)
       irs_attempts_api_tracker.user_registration_email_submitted(
-        email: email,
+        email:,
         success: result.success?,
         failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
       )

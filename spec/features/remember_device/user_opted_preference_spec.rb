@@ -110,9 +110,9 @@ RSpec.describe 'Unchecking remember device' do
       before do
         create(
           :webauthn_configuration,
-          user: user,
-          credential_id: credential_id,
-          credential_public_key: credential_public_key,
+          user:,
+          credential_id:,
+          credential_public_key:,
         )
         allow(WebauthnVerificationForm).to receive(:domain_name).and_return('localhost:3000')
         mock_webauthn_verification_challenge

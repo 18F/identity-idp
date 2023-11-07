@@ -88,7 +88,7 @@ RSpec.describe Reporting::AgencyAndSpReport do
       it 'becomes an IDV agency' do
         expect(subject).to match_array(initial_report)
 
-        create(:service_provider, :active, :idv, agency: agency)
+        create(:service_provider, :active, :idv, agency:)
 
         # The report gets memoized, so we need to reconstruct it here:
         new_report = described_class.new(report_date)

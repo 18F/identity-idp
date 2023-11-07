@@ -8,7 +8,7 @@ RSpec.describe AccountReset::NotifyUserOfRequestCancellation do
   describe '#call' do
     it 'sends an email to all of the user email addresses' do
       email_address1 = user.email_addresses.first
-      email_address2 = create(:email_address, user: user)
+      email_address2 = create(:email_address, user:)
 
       subject.call
 
@@ -24,8 +24,8 @@ RSpec.describe AccountReset::NotifyUserOfRequestCancellation do
     end
 
     it 'sends a text to all of the user phone numbers' do
-      phone_config1 = create(:phone_configuration, user: user)
-      phone_config2 = create(:phone_configuration, user: user)
+      phone_config1 = create(:phone_configuration, user:)
+      phone_config2 = create(:phone_configuration, user:)
 
       expect(Telephony).to receive(:send_account_reset_cancellation_notice).
         with(to: phone_config1.phone, country_code: 'US')

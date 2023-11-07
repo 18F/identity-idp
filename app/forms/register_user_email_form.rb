@@ -62,7 +62,7 @@ class RegisterUserEmailForm
     self.success = valid?
     process_successful_submission(request_id, instructions) if success
 
-    FormResponse.new(success: success, errors: errors, extra: extra_analytics_attributes)
+    FormResponse.new(success:, errors:, extra: extra_analytics_attributes)
   end
 
   def email_taken?
@@ -81,8 +81,8 @@ class RegisterUserEmailForm
 
   def build_user_and_email_address_with_email(email:, email_language:)
     self.email_address = user.email_addresses.build(
-      user: user,
-      email: email,
+      user:,
+      email:,
     )
 
     self.email_language = email_language
@@ -115,7 +115,7 @@ class RegisterUserEmailForm
 
   def update_user_language_preference
     if existing_user.email_language != email_language
-      existing_user.update(email_language: email_language)
+      existing_user.update(email_language:)
     end
   end
 
@@ -131,7 +131,7 @@ class RegisterUserEmailForm
   def rate_limit!(rate_limit_type)
     rate_limiter = RateLimiter.new(
       target: digested_base_email,
-      rate_limit_type: rate_limit_type,
+      rate_limit_type:,
     )
 
     rate_limiter.increment!
@@ -146,7 +146,7 @@ class RegisterUserEmailForm
         limiter_type: :reg_unconfirmed_email,
       )
       @attempts_tracker.user_registration_email_submission_rate_limited(
-        email: email, email_already_registered: false,
+        email:, email_already_registered: false,
       )
     else
       user.accepted_terms_at = Time.zone.now
@@ -154,7 +154,7 @@ class RegisterUserEmailForm
 
       SendSignUpEmailConfirmation.new(user).call(
         request_id: email_request_id(request_id),
-        instructions: instructions,
+        instructions:,
         password_reset_requested: password_reset_requested?,
       )
     end
@@ -168,10 +168,10 @@ class RegisterUserEmailForm
         limiter_type: :reg_unconfirmed_email,
       )
       @attempts_tracker.user_registration_email_submission_rate_limited(
-        email: email, email_already_registered: false,
+        email:, email_already_registered: false,
       )
     else
-      SendSignUpEmailConfirmation.new(existing_user).call(request_id: request_id)
+      SendSignUpEmailConfirmation.new(existing_user).call(request_id:)
     end
   end
 
@@ -183,7 +183,7 @@ class RegisterUserEmailForm
         limiter_type: :reg_confirmed_email,
       )
       @attempts_tracker.user_registration_email_submission_rate_limited(
-        email: email, email_already_registered: true,
+        email:, email_already_registered: true,
       )
     else
       UserMailer.with(user: existing_user, email_address: email_address_record).

@@ -30,11 +30,11 @@ RSpec.describe Encryption::UserAccessKey do
     stub_aws_kms_client(random_r, encrypted_random_r)
   end
 
-  subject { described_class.new(scrypt_hash: scrypt_hash) }
+  subject { described_class.new(scrypt_hash:) }
 
   describe '.new' do
     it 'allows creation of a uak using password and salt' do
-      uak = described_class.new(password: password, salt: salt)
+      uak = described_class.new(password:, salt:)
 
       expect(uak.cost).to eq(cost)
       expect(uak.salt).to eq(salt)
@@ -44,7 +44,7 @@ RSpec.describe Encryption::UserAccessKey do
     end
 
     it 'allows creation of a uak using an scrypt hash' do
-      uak = described_class.new(scrypt_hash: scrypt_hash)
+      uak = described_class.new(scrypt_hash:)
 
       expect(uak.cost).to eq(cost)
       expect(uak.salt).to eq(salt)
@@ -68,7 +68,7 @@ RSpec.describe Encryption::UserAccessKey do
       let(:scrypt_hash) { "#{cost}#{digested_salt}$#{z1}#{z2}" }
 
       it 'can successfully create a uak using the password and the salt' do
-        uak = described_class.new(password: password, salt: salt)
+        uak = described_class.new(password:, salt:)
 
         expect(uak.cost).to eq(cost)
         expect(uak.z1).to eq(z1)

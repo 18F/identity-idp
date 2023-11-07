@@ -40,18 +40,18 @@ class MakefileHelpParser
       if target.include?('$(')
         Rule.new(
           target: matching_target(
-            lineno: lineno,
+            lineno:,
             template: target,
-            target_comments: target_comments,
-            expanded_targets: expanded_targets,
+            target_comments:,
+            expanded_targets:,
           ),
           template: target,
-          comment: comment,
+          comment:,
         )
       else
         Rule.new(
-          target: target,
-          comment: comment,
+          target:,
+          comment:,
         )
       end
     end

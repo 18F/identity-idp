@@ -34,7 +34,7 @@ RSpec.describe Reporting::AccountReuseReport do
         issuer: sp_a,
         iaa: 'iaa123',
         friendly_name: 'The App',
-        agency: agency,
+        agency:,
       )
       create(
         :service_provider,

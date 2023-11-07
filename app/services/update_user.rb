@@ -34,7 +34,7 @@ class UpdateUser
   def create_phone_configuration
     return if phone_attributes[:phone].blank? || duplicate_phone?
     phone_configuration = MfaContext.new(user).phone_configurations.create(phone_attributes)
-    event = PushNotification::RecoveryInformationChangedEvent.new(user: user)
+    event = PushNotification::RecoveryInformationChangedEvent.new(user:)
     PushNotification::HttpPush.deliver(event)
     phone_configuration
   end

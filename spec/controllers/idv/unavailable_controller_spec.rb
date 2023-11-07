@@ -12,7 +12,7 @@ RSpec.describe Idv::UnavailableController, type: :controller do
 
     before do
       stub_analytics
-      get :show, params: params
+      get :show, params:
     end
 
     it 'returns 200 OK' do

@@ -100,7 +100,7 @@ RSpec.feature 'signing into an SP with multiple emails enabled' do
       client_id: 'urn:gov:gsa:openidconnect:sp:server',
       response_type: 'code',
       acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-      scope: scope,
+      scope:,
       redirect_uri: 'http://localhost:7654/auth/result',
       state: SecureRandom.hex,
       prompt: 'select_account',
@@ -127,9 +127,9 @@ RSpec.feature 'signing into an SP with multiple emails enabled' do
     page.driver.post(
       api_openid_connect_token_path,
       grant_type: 'authorization_code',
-      code: code,
-      client_assertion_type: client_assertion_type,
-      client_assertion: client_assertion,
+      code:,
+      client_assertion_type:,
+      client_assertion:,
     )
 
     token_response = JSON.parse(page.body).with_indifferent_access

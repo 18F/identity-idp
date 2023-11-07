@@ -24,7 +24,7 @@ module UspsInPersonProofing
         enrollment.enrollment_established_at = Time.zone.now
         enrollment.save!
 
-        analytics(user: user).usps_ippaas_enrollment_created(
+        analytics(user:).usps_ippaas_enrollment_created(
           enrollment_code: enrollment.enrollment_code,
           enrollment_id: enrollment.id,
           second_address_line_present: pii[:address2].present?,
@@ -36,8 +36,8 @@ module UspsInPersonProofing
 
       def send_ready_to_verify_email(user, enrollment)
         user.confirmed_email_addresses.each do |email_address|
-          UserMailer.with(user: user, email_address: email_address).in_person_ready_to_verify(
-            enrollment: enrollment,
+          UserMailer.with(user:, email_address:).in_person_ready_to_verify(
+            enrollment:,
           ).deliver_now_or_later
         end
       end
@@ -55,7 +55,7 @@ module UspsInPersonProofing
 
         applicant = UspsInPersonProofing::Applicant.new(
           {
-            unique_id: unique_id,
+            unique_id:,
             first_name: transliterate(pii[:first_name]),
             last_name: transliterate(pii[:last_name]),
             address: transliterate(pii[:address1]),
@@ -110,7 +110,7 @@ module UspsInPersonProofing
       end
 
       def analytics(user: AnonymousUser.new)
-        Analytics.new(user: user, request: nil, session: {}, sp: nil)
+        Analytics.new(user:, request: nil, session: {}, sp: nil)
       end
 
       def transliterate(value)

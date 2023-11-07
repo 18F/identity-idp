@@ -1,7 +1,7 @@
 class OpenidConnectCertsPresenter
   def certs
     {
-      keys: keys,
+      keys:,
     }
   end
 

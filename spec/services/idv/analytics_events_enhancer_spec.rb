@@ -18,7 +18,7 @@ RSpec.describe Idv::AnalyticsEventsEnhancer do
       end
     end
   end
-  let(:analytics) { analytics_class.new(user: user) }
+  let(:analytics) { analytics_class.new(user:) }
 
   it 'includes decorated methods' do
     expect(analytics.methods).to include(*described_class::DECORATED_METHODS)

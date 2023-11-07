@@ -22,7 +22,7 @@ RSpec.describe SendSignUpEmailConfirmation do
     it 'sends the user an email with a confirmation link and the request id' do
       email_address.update!(confirmed_at: Time.zone.now)
 
-      subject.call(request_id: request_id, instructions: instructions)
+      subject.call(request_id:, instructions:)
       expect_delivered_email_count(1)
       expect_delivered_email(
         to: [user.email_addresses.first.email],
@@ -34,8 +34,8 @@ RSpec.describe SendSignUpEmailConfirmation do
     context 'when resetting a password' do
       it 'sends an email with a link to try another email if the current email is unconfirmed' do
         subject.call(
-          request_id: request_id,
-          instructions: instructions,
+          request_id:,
+          instructions:,
           password_reset_requested: true,
         )
 
@@ -48,7 +48,7 @@ RSpec.describe SendSignUpEmailConfirmation do
     end
 
     it 'updates the confirmation values on the email address for the user' do
-      subject.call(request_id: request_id)
+      subject.call(request_id:)
 
       expect(user.reload.email_addresses.count).to eq(1)
       expect(email_address.reload.email).to eq(user.email)

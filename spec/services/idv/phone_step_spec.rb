@@ -15,7 +15,7 @@ RSpec.describe Idv::PhoneStep do
     idvs = Idv::Session.new(
       user_session: {},
       current_user: user,
-      service_provider: service_provider,
+      service_provider:,
     )
     idvs.applicant = {
       first_name: 'Some',
@@ -42,15 +42,15 @@ RSpec.describe Idv::PhoneStep do
 
   subject do
     described_class.new(
-      idv_session: idv_session,
-      trace_id: trace_id,
-      analytics: analytics,
-      attempts_tracker: attempts_tracker,
+      idv_session:,
+      trace_id:,
+      analytics:,
+      attempts_tracker:,
     )
   end
 
   describe '#submit' do
-    let(:rate_limiter) { RateLimiter.new(rate_limit_type: :proof_address, user: user) }
+    let(:rate_limiter) { RateLimiter.new(rate_limit_type: :proof_address, user:) }
     let(:mock_vendor) do
       {
         vendor_name: 'AddressMock',
@@ -139,7 +139,7 @@ RSpec.describe Idv::PhoneStep do
     end
 
     it 'marks the phone as unconfirmed if it matches 2FA phone' do
-      user.phone_configurations = [build(:phone_configuration, user: user, phone: good_phone)]
+      user.phone_configurations = [build(:phone_configuration, user:, phone: good_phone)]
 
       subject.submit(phone: good_phone)
       expect(subject.async_state.done?).to eq true
@@ -196,7 +196,7 @@ RSpec.describe Idv::PhoneStep do
 
     context 'when there are not idv attempts remaining' do
       it 'returns :fail' do
-        RateLimiter.new(rate_limit_type: :proof_address, user: user).increment_to_limited!
+        RateLimiter.new(rate_limit_type: :proof_address, user:).increment_to_limited!
 
         subject.submit(phone: bad_phone)
         expect(subject.failure_reason).to eq(:fail)

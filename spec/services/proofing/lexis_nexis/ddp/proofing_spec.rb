@@ -24,7 +24,7 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofer do
 
   let(:verification_request) do
     Proofing::LexisNexis::Ddp::VerificationRequest.new(
-      applicant: applicant,
+      applicant:,
       config: LexisNexisFixtures.example_config,
     )
   end
@@ -78,9 +78,9 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofer do
   describe '#proof' do
     before do
       ServiceProvider.create(
-        issuer: issuer,
-        friendly_name: friendly_name,
-        app_id: app_id,
+        issuer:,
+        friendly_name:,
+        app_id:,
       )
       stub_request(
         :post,

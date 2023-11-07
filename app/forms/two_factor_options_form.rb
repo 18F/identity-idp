@@ -21,7 +21,7 @@ class TwoFactorOptionsForm
 
     success = valid?
     update_otp_delivery_preference_for_user if success && user_needs_updating?
-    FormResponse.new(success: success, errors: errors, extra: extra_analytics_attributes)
+    FormResponse.new(success:, errors:, extra: extra_analytics_attributes)
   end
 
   private
@@ -37,7 +37,7 @@ class TwoFactorOptionsForm
 
   def extra_analytics_attributes
     {
-      selection: selection,
+      selection:,
       selected_mfa_count: selection.count,
       enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
     }
@@ -51,7 +51,7 @@ class TwoFactorOptionsForm
   def update_otp_delivery_preference_for_user
     user_attributes = { otp_delivery_preference:
       selection.find { |element| %w[voice sms].include?(element) } }
-    UpdateUser.new(user: user, attributes: user_attributes).call
+    UpdateUser.new(user:, attributes: user_attributes).call
   end
 
   def phone_selected?

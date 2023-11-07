@@ -109,7 +109,7 @@ module Users
         current_user,
       )
       sign_out
-      render_full_width('two_factor_authentication/_locked', locals: { presenter: presenter })
+      render_full_width('two_factor_authentication/_locked', locals: { presenter: })
     end
 
     def handle_valid_authentication
@@ -128,7 +128,7 @@ module Users
 
       success = user_signed_in_and_not_locked_out?(user)
       analytics.email_and_password_auth(
-        success: success,
+        success:,
         user_id: user.uuid,
         user_locked_out: user_locked_out?(user),
         bad_password_count: session[:bad_password_count].to_i,
@@ -137,8 +137,8 @@ module Users
         remember_device: remember_device_cookie.present?,
       )
       irs_attempts_api_tracker.login_email_and_password_auth(
-        email: email,
-        success: success,
+        email:,
+        success:,
       )
     end
 
@@ -153,7 +153,7 @@ module Users
 
     def store_sp_metadata_in_session
       return if sp_session[:issuer] || request_id.blank?
-      StoreSpMetadataInSession.new(session: session, request_id: request_id).call
+      StoreSpMetadataInSession.new(session:, request_id:).call
     end
 
     def request_id

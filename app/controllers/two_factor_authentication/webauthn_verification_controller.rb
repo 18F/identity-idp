@@ -87,7 +87,7 @@ module TwoFactorAuthentication
         view: view_context,
         data: { credentials:, user_opted_remember_device_cookie: },
         service_provider: current_sp,
-        remember_device_default: remember_device_default,
+        remember_device_default:,
         platform_authenticator: platform_authenticator?,
       )
     end
@@ -113,7 +113,7 @@ module TwoFactorAuthentication
                       TwoFactorAuthenticatable::AuthMethod::WEBAUTHN
                     end
       {
-        context: context,
+        context:,
         multi_factor_auth_method: auth_method,
         webauthn_configuration_id: form&.webauthn_configuration&.id,
         multi_factor_auth_method_created_at: form&.webauthn_configuration&.

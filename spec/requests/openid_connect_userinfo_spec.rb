@@ -7,7 +7,7 @@ RSpec.describe 'OpenID Connect UserInfo controller' do
       identity = create(
         :service_provider_identity,
         rails_session_id: SecureRandom.hex,
-        access_token: access_token,
+        access_token:,
         user: create(:user),
       )
       authorization_header = "Bearer #{access_token}"

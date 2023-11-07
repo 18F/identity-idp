@@ -72,10 +72,10 @@ module Features
       nonce = get_piv_cac_nonce_from_link(find_link(t('forms.piv_cac_login.submit')))
       visit_piv_cac_service(
         current_url,
-        nonce: nonce,
+        nonce:,
         uuid: user.piv_cac_configurations.first.x509_dn_uuid,
         subject: 'SomeIgnoredSubject',
-        error: error,
+        error:,
       )
     end
 
@@ -95,8 +95,8 @@ module Features
       nonce = get_piv_cac_nonce_from_link(find_link(t('forms.piv_cac_login.submit')))
       visit_piv_cac_service(
         current_url,
-        nonce: nonce,
-        uuid: uuid,
+        nonce:,
+        uuid:,
         subject: 'SomeIgnoredSubject',
       )
     end
@@ -149,7 +149,7 @@ module Features
       Warden.on_next_request do |proxy|
         session = proxy.env['rack.session']
         sp = ServiceProvider.find_by(issuer: 'http://localhost:3000')
-        session[:sp] = { ial2: ial2, issuer: sp.issuer, request_id: '123' }
+        session[:sp] = { ial2:, issuer: sp.issuer, request_id: '123' }
       end
 
       visit account_path
@@ -371,7 +371,7 @@ module Features
     def ial2_sp_session(request_url: 'http://localhost:3000')
       Warden.on_next_request do |proxy|
         session = proxy.env['rack.session']
-        session[:sp] = { ial2: true, request_url: request_url }
+        session[:sp] = { ial2: true, request_url: }
       end
     end
 
@@ -459,7 +459,7 @@ module Features
     end
 
     def visit_landing_page_and_click_create_account_with_request_id(request_id)
-      visit new_user_session_url(request_id: request_id)
+      visit new_user_session_url(request_id:)
       click_link t('links.create_account')
     end
 
@@ -603,7 +603,7 @@ module Features
       nonce = piv_cac_nonce_from_form_action
       visit_piv_cac_service(
         setup_piv_cac_url,
-        nonce: nonce,
+        nonce:,
         uuid: SecureRandom.uuid,
         subject: 'SomeIgnoredSubject',
       )
@@ -667,7 +667,7 @@ module Features
         user,
         service_provider,
       ).link_identity(
-        ial: ial,
+        ial:,
       )
     end
 

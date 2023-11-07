@@ -56,13 +56,13 @@ module Proofing
     def to_h
       {
         success: success?,
-        errors: errors,
-        exception: exception,
+        errors:,
+        exception:,
         mva_exception: mva_exception?,
         timed_out: timed_out?,
-        transaction_id: transaction_id,
-        vendor_name: vendor_name,
-        verified_attributes: verified_attributes,
+        transaction_id:,
+        vendor_name:,
+        verified_attributes:,
       }
     end
   end

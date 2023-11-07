@@ -40,7 +40,7 @@ module Telephony
       end
 
       def notify_role_failure(error:, region:)
-        error_log = { error: error, region: region }
+        error_log = { error:, region: }
         Telephony.log_warn(event: error_log)
       end
     end

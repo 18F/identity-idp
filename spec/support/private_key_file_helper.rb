@@ -3,7 +3,7 @@ module PrivateKeyFileHelper
   # Identity::Hostdata.in_datacenter? or if the private key file does
   # not exist; otherwise, the private key from the file is returned.
   def private_key_from_store_or(file_name:)
-    file_name = force_tmp_private_key_file_name file_name: file_name
+    file_name = force_tmp_private_key_file_name(file_name:)
 
     if Rails.env.test? && !File.exist?(file_name)
       puts "WARNING: Private key file '#{file_name}' not found!" # rubocop:disable Rails/Output

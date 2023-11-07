@@ -36,15 +36,15 @@ class GpoVerifyForm
     end
     FormResponse.new(
       success: result,
-      errors: errors,
+      errors:,
       extra: {
         enqueued_at: gpo_confirmation_code&.code_sent_at,
-        which_letter: which_letter,
-        letter_count: letter_count,
-        attempts: attempts,
+        which_letter:,
+        letter_count:,
+        attempts:,
         pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
         pending_in_person_enrollment: !!pending_profile&.in_person_enrollment&.pending?,
-        fraud_check_failed: fraud_check_failed,
+        fraud_check_failed:,
       },
     )
   end
@@ -77,7 +77,7 @@ class GpoVerifyForm
   end
 
   def attempts
-    RateLimiter.new(user: user, rate_limit_type: :verify_gpo_key).attempts
+    RateLimiter.new(user:, rate_limit_type: :verify_gpo_key).attempts
   end
 
   def validate_otp_not_expired

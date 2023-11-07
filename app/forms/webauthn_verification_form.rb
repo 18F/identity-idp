@@ -34,8 +34,8 @@ class WebauthnVerificationForm
   def submit
     success = valid?
     FormResponse.new(
-      success: success,
-      errors: errors,
+      success:,
+      errors:,
       extra: extra_analytics_attributes,
       serialize_error_details_only: true,
     )
@@ -43,7 +43,7 @@ class WebauthnVerificationForm
 
   def webauthn_configuration
     return @webauthn_configuration if defined?(@webauthn_configuration)
-    @webauthn_configuration = user&.webauthn_configurations&.find_by(credential_id: credential_id)
+    @webauthn_configuration = user&.webauthn_configurations&.find_by(credential_id:)
   end
 
   # this gives us a hook to override the domain embedded in the attestation test object

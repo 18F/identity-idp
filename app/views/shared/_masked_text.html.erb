@@ -8,7 +8,7 @@ locals:
 %>
 <% id = local_assigns.fetch(:id, "masked-text-#{SecureRandom.hex(6)}")
    checkbox_id = "#{id}-checkbox" %>
-<%= tag.span(id: id) do %>
+<%= tag.span(id:) do %>
   <span class="masked-text__text" data-masked="true">
     <span class="usa-sr-only"><%= accessible_masked_text %></span>
     <span aria-hidden="true" class="text-no-wrap"><%= masked_text %></span>

@@ -3,8 +3,8 @@ require 'rails_helper'
 RSpec.describe AgencySeeder do
   subject(:instance) do
     AgencySeeder.new(
-      rails_env: rails_env,
-      deploy_env: deploy_env,
+      rails_env:,
+      deploy_env:,
       yaml_path: 'spec/fixtures',
     )
   end

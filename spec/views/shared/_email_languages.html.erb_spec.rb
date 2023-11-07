@@ -6,7 +6,7 @@ RSpec.describe 'shared/_email_languages.html.erb' do
   subject(:render_partial) do
     simple_form_for(:user, url: '/') do |f|
       render partial: 'shared/email_languages',
-             locals: { f: f, selection: selection, labelledby: labelledby }
+             locals: { f:, selection:, labelledby: }
     end
   end
 

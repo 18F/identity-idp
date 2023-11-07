@@ -101,7 +101,7 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
   end
 
   def account_reset_url(locale:)
-    account_reset_recovery_options_path(locale: locale)
+    account_reset_recovery_options_path(locale:)
   end
 
   def account_reset_cancel_link

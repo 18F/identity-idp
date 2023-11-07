@@ -39,8 +39,8 @@ RSpec.describe ReportMailer, type: :mailer do
     let(:mail) do
       ReportMailer.warn_error(
         email: 'test@example.com',
-        error: error,
-        env: env,
+        error:,
+        env:,
       )
     end
 
@@ -87,8 +87,8 @@ RSpec.describe ReportMailer, type: :mailer do
         email: 'foo@example.com',
         subject: 'My Report',
         message: 'My Report - Today',
-        env: env,
-        attachment_format: attachment_format,
+        env:,
+        attachment_format:,
         reports: [
           Reporting::EmailableReport.new(table: first_table),
           Reporting::EmailableReport.new(

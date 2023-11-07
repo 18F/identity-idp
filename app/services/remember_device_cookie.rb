@@ -25,7 +25,7 @@ class RememberDeviceCookie
 
   def to_json(*args)
     {
-      user_id: user_id,
+      user_id:,
       created_at: created_at.iso8601,
       role: COOKIE_ROLE,
       entropy: SecureRandom.base64(32),

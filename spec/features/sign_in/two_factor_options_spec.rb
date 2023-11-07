@@ -239,8 +239,8 @@ RSpec.describe '2FA options when signing in' do
   context 'when the user has multiple webauthn keys configured' do
     it 'only displays the webauthn option once' do
       user = create(:user, :fully_registered)
-      create(:webauthn_configuration, user: user)
-      create(:webauthn_configuration, user: user)
+      create(:webauthn_configuration, user:)
+      create(:webauthn_configuration, user:)
       sign_in_user(user)
 
       click_link t('two_factor_authentication.login_options_link_text')
@@ -267,7 +267,7 @@ RSpec.describe '2FA options when signing in' do
   context 'when the user has multiple phones configured' do
     it 'displays sms and voice options for each MFA-enabled phone, and only shows last 4 digits' do
       user = create(:user, :fully_registered)
-      create(:phone_configuration, user: user, phone: '+1 202-555-1213')
+      create(:phone_configuration, user:, phone: '+1 202-555-1213')
       phone_ids = user.reload.phone_configurations.pluck(:id)
       first_id = phone_ids[0]
       second_id = phone_ids[1]

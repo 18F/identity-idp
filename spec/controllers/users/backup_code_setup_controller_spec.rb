@@ -21,7 +21,7 @@ RSpec.describe Users::BackupCodeSetupController do
 
     Funnel::Registration::AddMfa.call(user.id, 'phone', analytics)
     expect(PushNotification::HttpPush).to receive(:deliver).
-      with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
+      with(PushNotification::RecoveryInformationChangedEvent.new(user:))
     expect(@analytics).to receive(:track_event).
       with('User marked authenticated', { authentication_type: :valid_2fa_confirmation })
     expect(@analytics).to receive(:track_event).

@@ -11,7 +11,7 @@ module Reports
 
       email = IdentityConfig.store.system_demand_report_email
       ReportMailer.system_demand_report(
-        email: email,
+        email:,
         data: generate_csv,
         name: REPORT_NAME,
       ).deliver_now

@@ -16,7 +16,7 @@ Capybara.register_driver :headless_chrome do |app|
 
   Capybara::Selenium::Driver.new app,
                                  browser: :chrome,
-                                 options: options
+                                 options:
 end
 Capybara.javascript_driver = :headless_chrome
 
@@ -37,7 +37,7 @@ Capybara.register_driver(:headless_chrome_mobile) do |app|
 
   Capybara::Selenium::Driver.new app,
                                  browser: :chrome,
-                                 options: options
+                                 options:
 end
 
 Capybara.server = :puma, { Silent: true }

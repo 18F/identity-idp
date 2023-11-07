@@ -36,14 +36,14 @@ RSpec.describe Idv::InPersonConfig do
 
         context 'issuer has in-person proofing disabled' do
           before do
-            create(:service_provider, issuer: issuer, in_person_proofing_enabled: false)
+            create(:service_provider, issuer:, in_person_proofing_enabled: false)
           end
           it { expect(enabled_for_issuer).to eq false }
         end
 
         context 'issuer has in-person proofing enabled' do
           before do
-            create(:service_provider, issuer: issuer, in_person_proofing_enabled: true)
+            create(:service_provider, issuer:, in_person_proofing_enabled: true)
           end
           it { expect(enabled_for_issuer).to eq true }
         end

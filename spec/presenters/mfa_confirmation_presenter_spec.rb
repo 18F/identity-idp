@@ -38,7 +38,7 @@ RSpec.describe MfaConfirmationPresenter do
       let(:show_skip_additional_mfa_link) { false }
       let(:presenter) do
         described_class.new(
-          show_skip_additional_mfa_link: show_skip_additional_mfa_link,
+          show_skip_additional_mfa_link:,
         )
       end
 

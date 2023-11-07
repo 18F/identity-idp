@@ -7,7 +7,7 @@ class GoodJobConnectionPoolSize
   def self.calculate_worker_pool_size(queues:, cron_enabled:, max_threads:)
     # LISTEN/NOTIFY requires 1 connection
     connections = 1
-    connections += num_explicit_threads_from_queues(queues: queues, max_threads: max_threads)
+    connections += num_explicit_threads_from_queues(queues:, max_threads:)
 
     # Cron requires two connections
     connections += 2 if cron_enabled
@@ -20,7 +20,7 @@ class GoodJobConnectionPoolSize
   # Each worker thread may need a primary database connection. We may not strictly need
   # one connection for each, but we will start there for safety.
   def self.calculate_primary_pool_size(queues:, max_threads:)
-    num_explicit_threads_from_queues(queues: queues, max_threads: max_threads)
+    num_explicit_threads_from_queues(queues:, max_threads:)
   end
 
   # The '*' queue will have up to `max_threads` threads. Other queues will use their explicitly

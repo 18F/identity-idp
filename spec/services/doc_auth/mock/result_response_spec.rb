@@ -8,7 +8,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       dpi_threshold: 290,
       sharpness_threshold: 40,
       glare_threshold: 40,
-      warn_notifier: warn_notifier,
+      warn_notifier:,
     )
     described_class.new(input, config)
   end

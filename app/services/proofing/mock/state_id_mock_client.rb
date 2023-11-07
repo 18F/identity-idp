@@ -51,7 +51,7 @@ module Proofing
       def unverifiable_result(errors)
         StateIdResult.new(
           success: false,
-          errors: errors,
+          errors:,
           exception: nil,
           vendor_name: 'StateIdMock',
           transaction_id: TRANSACTION_ID,

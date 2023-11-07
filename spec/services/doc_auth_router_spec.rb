@@ -77,7 +77,7 @@ RSpec.describe DocAuthRouter do
       it 'is the default vendor, and logs analytics events' do
         expect(analytics).to receive(:idv_doc_auth_randomizer_defaulted)
 
-        result = DocAuthRouter.doc_auth_vendor(discriminator: discriminator, analytics: analytics)
+        result = DocAuthRouter.doc_auth_vendor(discriminator:, analytics:)
 
         expect(result).to eq(doc_auth_vendor)
       end
@@ -91,7 +91,7 @@ RSpec.describe DocAuthRouter do
       end
 
       it 'is the alternate vendor' do
-        expect(DocAuthRouter.doc_auth_vendor(discriminator: discriminator)).
+        expect(DocAuthRouter.doc_auth_vendor(discriminator:)).
           to eq(doc_auth_vendor_randomize_alternate_vendor)
       end
 
@@ -99,7 +99,7 @@ RSpec.describe DocAuthRouter do
         let(:doc_auth_vendor_randomize) { false }
 
         it 'is the original vendor' do
-          expect(DocAuthRouter.doc_auth_vendor(discriminator: discriminator)).
+          expect(DocAuthRouter.doc_auth_vendor(discriminator:)).
             to eq(doc_auth_vendor)
         end
       end
@@ -113,7 +113,7 @@ RSpec.describe DocAuthRouter do
       end
 
       it 'is the original' do
-        expect(DocAuthRouter.doc_auth_vendor(discriminator: discriminator)).
+        expect(DocAuthRouter.doc_auth_vendor(discriminator:)).
           to eq(doc_auth_vendor)
       end
     end

@@ -10,7 +10,7 @@ module AccountReset
     def call
       @success = valid?
 
-      FormResponse.new(success: success, errors: errors, extra: extra_analytics_attributes)
+      FormResponse.new(success:, errors:, extra: extra_analytics_attributes)
     end
 
     private

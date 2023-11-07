@@ -35,7 +35,7 @@ RSpec.describe Redirect::HelpCenterController do
         expect(response).to redirect_to redirect_url
         expect(@analytics).to have_logged_event(
           'External Redirect',
-          hash_including(redirect_url: redirect_url),
+          hash_including(redirect_url:),
         )
       end
 
@@ -48,7 +48,7 @@ RSpec.describe Redirect::HelpCenterController do
           expect(response).to redirect_to redirect_url
           expect(@analytics).to have_logged_event(
             'External Redirect',
-            hash_including(redirect_url: redirect_url),
+            hash_including(redirect_url:),
           )
         end
       end

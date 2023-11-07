@@ -10,7 +10,7 @@ RSpec.describe Idv::OtpVerificationController do
   let(:phone_confirmation_session_properties) do
     {
       code: phone_confirmation_otp_code,
-      phone: phone,
+      phone:,
       delivery_method: :sms,
     }
   end
@@ -91,7 +91,7 @@ RSpec.describe Idv::OtpVerificationController do
 
     context 'the user is going through in person proofing' do
       before(:each) do
-        create(:in_person_enrollment, :establishing, user: user)
+        create(:in_person_enrollment, :establishing, user:)
         allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).
           and_return(true)
       end
@@ -120,7 +120,7 @@ RSpec.describe Idv::OtpVerificationController do
         let(:phone_confirmation_session_properties) do
           {
             code: phone_confirmation_otp_code,
-            phone: phone,
+            phone:,
             delivery_method: :voice,
           }
         end

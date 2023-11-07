@@ -111,7 +111,7 @@ RSpec.describe Idv::PhoneErrorsController do
   let(:country_code) { 'US' }
   let(:previous_phone_step_params) do
     {
-      phone: phone,
+      phone:,
       international_code: country_code,
     }
   end
@@ -125,7 +125,7 @@ RSpec.describe Idv::PhoneErrorsController do
 
     context 'with rate limit attempts' do
       before do
-        RateLimiter.new(rate_limit_type: :proof_address, user: user).increment!
+        RateLimiter.new(rate_limit_type: :proof_address, user:).increment!
       end
 
       it 'assigns phone' do
@@ -174,7 +174,7 @@ RSpec.describe Idv::PhoneErrorsController do
       let(:user) { create(:user) }
 
       before do
-        RateLimiter.new(rate_limit_type: :proof_address, user: user).increment!
+        RateLimiter.new(rate_limit_type: :proof_address, user:).increment!
       end
 
       it 'assigns remaining count' do
@@ -195,7 +195,7 @@ RSpec.describe Idv::PhoneErrorsController do
       let(:user) { create(:user) }
 
       before do
-        RateLimiter.new(rate_limit_type: :proof_address, user: user).increment!
+        RateLimiter.new(rate_limit_type: :proof_address, user:).increment!
       end
 
       it 'assigns remaining count' do
@@ -224,7 +224,7 @@ RSpec.describe Idv::PhoneErrorsController do
       let(:user) { create(:user) }
 
       it 'renders an error and assigns expiration time' do
-        RateLimiter.new(rate_limit_type: :proof_address, user: user).increment_to_limited!
+        RateLimiter.new(rate_limit_type: :proof_address, user:).increment_to_limited!
         get action
 
         expect(assigns(:expires_at)).to be_kind_of(Time)
@@ -234,7 +234,7 @@ RSpec.describe Idv::PhoneErrorsController do
       it 'logs an event' do
         freeze_time do
           attempted_at = Time.zone.now.utc
-          RateLimiter.new(rate_limit_type: :proof_address, user: user).increment_to_limited!
+          RateLimiter.new(rate_limit_type: :proof_address, user:).increment_to_limited!
           rate_limit_window = RateLimiter.attempt_window_in_minutes(:proof_address).minutes
 
           get action

@@ -84,7 +84,7 @@ RSpec.describe OpenidConnect::UserInfoController do
       let(:identity) do
         create(
           :service_provider_identity, rails_session_id: SecureRandom.hex,
-                                      access_token: access_token, user: create(:user)
+                                      access_token:, user: create(:user)
         )
       end
       before do

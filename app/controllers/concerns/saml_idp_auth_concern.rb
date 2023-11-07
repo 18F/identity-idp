@@ -86,7 +86,7 @@ module SamlIdpAuthConcern
   def store_saml_request
     ServiceProviderRequestHandler.new(
       url: request_url,
-      session: session,
+      session:,
       protocol_request: saml_request,
       protocol: FederatedProtocols::Saml,
     ).call
@@ -160,10 +160,10 @@ module SamlIdpAuthConcern
     AttributeAsserter.new(
       user: principal,
       service_provider: saml_request_service_provider,
-      name_id_format: name_id_format,
+      name_id_format:,
       authn_request: saml_request,
-      decrypted_pii: decrypted_pii,
-      user_session: user_session,
+      decrypted_pii:,
+      user_session:,
     )
   end
 
@@ -180,7 +180,7 @@ module SamlIdpAuthConcern
   def saml_response
     encode_response(
       current_user,
-      name_id_format: name_id_format,
+      name_id_format:,
       authn_context_classref: requested_aal_authn_context,
       reference_id: active_identity.session_uuid,
       encryption: encryption_opts,
@@ -198,7 +198,7 @@ module SamlIdpAuthConcern
       cert = saml_request.service_provider.matching_cert ||
              saml_request_service_provider&.ssl_certs&.first
       {
-        cert: cert,
+        cert:,
         block_encryption: saml_request_service_provider&.block_encryption,
         key_transport: 'rsa-oaep-mgf1p',
       }

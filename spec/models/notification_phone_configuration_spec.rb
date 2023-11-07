@@ -8,7 +8,7 @@ RSpec.describe NotificationPhoneConfiguration do
 
   let(:phone) { '+1 703 555 1212' }
 
-  let(:notification_phone_configuration) { create(:notification_phone_configuration, phone: phone) }
+  let(:notification_phone_configuration) { create(:notification_phone_configuration, phone:) }
 
   describe 'creation' do
     it 'stores an encrypted form of the phone number' do
@@ -33,7 +33,7 @@ RSpec.describe NotificationPhoneConfiguration do
 
   describe '#masked_phone' do
     let(:notification_phone_configuration) do
-      build(:notification_phone_configuration, phone: phone)
+      build(:notification_phone_configuration, phone:)
     end
     let(:phone) { '+1 703 555 1212' }
 

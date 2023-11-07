@@ -21,14 +21,14 @@ module Users
       user_session[:phone_id] = nil
       @new_phone_form = NewPhoneForm.new(
         user: current_user,
-        analytics: analytics,
+        analytics:,
         setup_voice_preference: setup_voice_preference?,
       )
       track_phone_setup_visit
     end
 
     def create
-      @new_phone_form = NewPhoneForm.new(user: current_user, analytics: analytics)
+      @new_phone_form = NewPhoneForm.new(user: current_user, analytics:)
       result = @new_phone_form.submit(new_phone_form_params)
       analytics.multi_factor_auth_phone_setup(**result.to_h)
 
@@ -60,10 +60,10 @@ module Users
 
     def set_setup_presenter
       @presenter = SetupPresenter.new(
-        current_user: current_user,
+        current_user:,
         user_fully_authenticated: user_fully_authenticated?,
-        user_opted_remember_device_cookie: user_opted_remember_device_cookie,
-        remember_device_default: remember_device_default,
+        user_opted_remember_device_cookie:,
+        remember_device_default:,
       )
     end
 

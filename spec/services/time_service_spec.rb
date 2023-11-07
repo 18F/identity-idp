@@ -5,7 +5,7 @@ RSpec.describe TimeService do
     it 'returns a Time instance rounded to the nearest interval' do
       time = Time.zone.at(0)
 
-      rounded_time = TimeService.round_time(time: time, interval: 5.minutes)
+      rounded_time = TimeService.round_time(time:, interval: 5.minutes)
       expect(rounded_time).to eq(time)
 
       plus_3m_rounded = TimeService.round_time(time: time + 3.minutes, interval: 5.minutes)

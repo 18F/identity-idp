@@ -93,7 +93,7 @@ RSpec.feature 'IdV Outage Spec' do
     let(:vendor_status_lexisnexis_phone_finder) { :full_outage }
 
     it 'takes the user through the mail only flow, allowing hybrid', js: true do
-      sign_in_with_idv_required(user: user)
+      sign_in_with_idv_required(user:)
 
       expect(current_path).to eq idv_mail_only_warning_path
 
@@ -120,7 +120,7 @@ RSpec.feature 'IdV Outage Spec' do
     let(:feature_idv_force_gpo_verification_enabled) { true }
 
     it 'shows mail only warning page before idv welcome page', js: true do
-      sign_in_with_idv_required(user: user)
+      sign_in_with_idv_required(user:)
 
       expect(current_path).to eq idv_mail_only_warning_path
 
@@ -136,7 +136,7 @@ RSpec.feature 'IdV Outage Spec' do
     let(:feature_idv_force_gpo_verification_enabled) { true }
 
     it 'shows mail only warning page before idv welcome page' do
-      sign_in_with_idv_required(user: user)
+      sign_in_with_idv_required(user:)
 
       expect(current_path).to eq idv_mail_only_warning_path
 
@@ -151,7 +151,7 @@ RSpec.feature 'IdV Outage Spec' do
     let(:enable_usps_verification) { false }
 
     it 'shows mail only warning page before idv welcome page' do
-      sign_in_with_idv_required(user: user)
+      sign_in_with_idv_required(user:)
 
       expect(current_path).to eq vendor_outage_path
     end
@@ -165,7 +165,7 @@ RSpec.feature 'IdV Outage Spec' do
         let(flag) { :full_outage }
 
         it 'shows mail only warning page before idv welcome page' do
-          sign_in_with_idv_required(user: user, sms_or_totp: :totp)
+          sign_in_with_idv_required(user:, sms_or_totp: :totp)
 
           expect(current_path).to eq idv_mail_only_warning_path
 
@@ -175,7 +175,7 @@ RSpec.feature 'IdV Outage Spec' do
         end
 
         it 'returns to the correct page when clicking to exit' do
-          sign_in_with_idv_required(user: user, sms_or_totp: :totp)
+          sign_in_with_idv_required(user:, sms_or_totp: :totp)
 
           click_on t('links.exit_login', app_name: APP_NAME)
 
@@ -183,7 +183,7 @@ RSpec.feature 'IdV Outage Spec' do
         end
 
         it 'skips the hybrid handoff screen and proceeds to doc capture' do
-          sign_in_with_idv_required(user: user, sms_or_totp: :totp)
+          sign_in_with_idv_required(user:, sms_or_totp: :totp)
           click_idv_continue
           click_idv_continue
           complete_agreement_step
@@ -199,7 +199,7 @@ RSpec.feature 'IdV Outage Spec' do
     let(:user) { user_with_2fa }
 
     it 'shows mail only warning page before idv welcome page' do
-      sign_in_with_idv_required(user: user, sms_or_totp: :sms)
+      sign_in_with_idv_required(user:, sms_or_totp: :sms)
 
       expect(current_path).to eq idv_mail_only_warning_path
 
@@ -209,7 +209,7 @@ RSpec.feature 'IdV Outage Spec' do
     end
 
     it 'still allows the hybrid handoff screen' do
-      sign_in_with_idv_required(user: user, sms_or_totp: :sms)
+      sign_in_with_idv_required(user:, sms_or_totp: :sms)
       click_idv_continue
       click_idv_continue
       complete_agreement_step
@@ -223,13 +223,13 @@ RSpec.feature 'IdV Outage Spec' do
     let(:feature_idv_hybrid_flow_enabled) { false }
 
     it 'does not show the mail only warning page before idv welcome page' do
-      sign_in_with_idv_required(user: user, sms_or_totp: :sms)
+      sign_in_with_idv_required(user:, sms_or_totp: :sms)
 
       expect(current_path).to eq idv_welcome_path
     end
 
     it 'does not show the hybrid handoff screen' do
-      sign_in_with_idv_required(user: user, sms_or_totp: :sms)
+      sign_in_with_idv_required(user:, sms_or_totp: :sms)
       click_idv_continue
       click_idv_continue
       complete_agreement_step
@@ -242,7 +242,7 @@ RSpec.feature 'IdV Outage Spec' do
     let(:user) { user_with_2fa }
 
     it 'prevents an existing ial1 user from verifying their identity' do
-      sign_in_with_idv_required(user: user, sms_or_totp: :sms)
+      sign_in_with_idv_required(user:, sms_or_totp: :sms)
       expect(page).to have_content(
         strip_tags(t('idv.unavailable.idv_explanation.with_sp_html', sp: 'Test SP')),
       )

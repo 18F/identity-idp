@@ -60,7 +60,7 @@ module Idv
       irs_attempts_api_tracker.idv_phone_upload_link_sent(
         success: telephony_result.success?,
         phone_number: formatted_destination_phone,
-        failure_reason: failure_reason,
+        failure_reason:,
       )
 
       if !failure_reason
@@ -82,7 +82,7 @@ module Idv
         to: formatted_destination_phone,
         link: link_for_send_link(session_uuid),
         country_code: Phonelib.parse(formatted_destination_phone).country,
-        sp_or_app_name: sp_or_app_name,
+        sp_or_app_name:,
       )
     end
 
@@ -164,7 +164,7 @@ module Idv
         success: true,
         errors: {},
         extra: {
-          destination: destination,
+          destination:,
           flow_path: idv_session.flow_path,
         },
       )
@@ -194,7 +194,7 @@ module Idv
     # copied from Flow::Failure module
     def failure(message, extra = nil)
       flash[:error] = message
-      form_response_params = { success: false, errors: { message: message } }
+      form_response_params = { success: false, errors: { message: } }
       form_response_params[:extra] = extra unless extra.nil?
       FormResponse.new(**form_response_params)
     end

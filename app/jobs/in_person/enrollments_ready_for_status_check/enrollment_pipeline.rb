@@ -9,7 +9,7 @@ module InPerson::EnrollmentsReadyForStatusCheck
     end
 
     def analytics(user: AnonymousUser.new)
-      Analytics.new(user: user, request: nil, session: {}, sp: nil)
+      Analytics.new(user:, request: nil, session: {}, sp: nil)
     end
 
     # Process a message from USPS indicating that an in-person
@@ -91,7 +91,7 @@ module InPerson::EnrollmentsReadyForStatusCheck
 
         analytics.idv_in_person_usps_proofing_enrollment_code_email_received(
           multi_part: mail.multipart?,
-          part_found: part_found,
+          part_found:,
         )
       rescue StandardError
         report_error(err, **error_extra)

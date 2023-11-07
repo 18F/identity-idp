@@ -166,7 +166,7 @@ RSpec.describe ActionAccount do
           success: true,
           errors: nil,
           exception: nil,
-          profile_fraud_review_pending_at: profile_fraud_review_pending_at,
+          profile_fraud_review_pending_at:,
         )
         expect(analytics).to have_logged_event(
           'Fraud: Profile review rejected',
@@ -224,7 +224,7 @@ RSpec.describe ActionAccount do
           success: true,
           errors: nil,
           exception: nil,
-          profile_fraud_review_pending_at: profile_fraud_review_pending_at,
+          profile_fraud_review_pending_at:,
         )
         expect(analytics).to have_logged_event(
           'Fraud: Profile review passed',

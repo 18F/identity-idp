@@ -10,9 +10,9 @@ RSpec.describe TwoFactorAuthentication::SignInSelectionPresenter do
   end
 
   let(:user) { build(:user) }
-  let(:configuration) { create(:phone_configuration, user: user) }
+  let(:configuration) { create(:phone_configuration, user:) }
 
-  subject(:presenter) { placeholder_presenter_class.new(user: user, configuration: configuration) }
+  subject(:presenter) { placeholder_presenter_class.new(user:, configuration:) }
 
   describe '#render_in' do
     it 'renders captured block content' do

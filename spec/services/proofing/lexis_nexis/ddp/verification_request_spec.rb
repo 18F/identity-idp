@@ -7,7 +7,7 @@ RSpec.describe Proofing::LexisNexis::Ddp::VerificationRequest do
       first_name: 'Testy',
       last_name: 'McTesterson',
       ssn: '123-45-6789',
-      dob: dob,
+      dob:,
       address1: '123 Main St',
       address2: 'Ste 3',
       city: 'Baton Rouge',
@@ -25,7 +25,7 @@ RSpec.describe Proofing::LexisNexis::Ddp::VerificationRequest do
 
   let(:response_body) { LexisNexisFixtures.ddp_success_response_json }
   subject do
-    described_class.new(applicant: applicant, config: LexisNexisFixtures.example_ddp_config)
+    described_class.new(applicant:, config: LexisNexisFixtures.example_ddp_config)
   end
 
   before do

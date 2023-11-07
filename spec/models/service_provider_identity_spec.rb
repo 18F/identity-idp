@@ -138,7 +138,7 @@ RSpec.describe ServiceProviderIdentity do
     let(:user) { create(:user) }
     let(:service_provider) { 'http://localhost:3000' }
     let(:identity) do
-      create(:service_provider_identity, :active, user: user, service_provider: service_provider)
+      create(:service_provider_identity, :active, user:, service_provider:)
     end
 
     context 'for an sp with a return URL' do
@@ -161,7 +161,7 @@ RSpec.describe ServiceProviderIdentity do
     let(:user) { create(:user) }
     let(:service_provider) { 'https://rp1.serviceprovider.com/auth/saml/metadata' }
     let(:identity) do
-      create(:service_provider_identity, :active, user: user, service_provider: service_provider)
+      create(:service_provider_identity, :active, user:, service_provider:)
     end
 
     context 'for an sp with a failure to proof url' do

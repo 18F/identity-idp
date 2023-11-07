@@ -16,7 +16,7 @@ module Idv
       else
         increment_second_factor_attempts
       end
-      FormResponse.new(success: success, extra: extra_analytics_attributes)
+      FormResponse.new(success:, extra: extra_analytics_attributes)
     end
 
     private
@@ -27,7 +27,7 @@ module Idv
     end
 
     def clear_second_factor_attempts
-      UpdateUser.new(user: user, attributes: { second_factor_attempts_count: 0 }).call
+      UpdateUser.new(user:, attributes: { second_factor_attempts_count: 0 }).call
     end
 
     def increment_second_factor_attempts

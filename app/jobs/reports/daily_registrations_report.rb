@@ -18,8 +18,8 @@ module Reports
       ].select(&:present?).
         each do |bucket_name|
         upload_file_to_s3_bucket(
-          path: path,
-          body: body,
+          path:,
+          body:,
           content_type: 'application/json',
           bucket: bucket_name,
         )
@@ -35,7 +35,7 @@ module Reports
         group_by { |row| row['date'] }.
         map do |date, rows|
           {
-            date: date,
+            date:,
             total_users: rows.map { |r| r['total_users'] }.compact.first || 0,
             fully_registered_users: rows.map { |r| r['fully_registered_users'] }.compact.first || 0,
             deleted_users: rows.map { |r| r['deleted_users'] }.compact.first || 0,
@@ -43,7 +43,7 @@ module Reports
         end.sort_by { |elem| elem[:date] }
 
       {
-        finish: finish,
+        finish:,
         results: results.as_json,
       }
     end
@@ -52,7 +52,7 @@ module Reports
     # (includes users who were later deleted)
     def total_users
       params = {
-        finish: finish,
+        finish:,
       }.transform_values { |v| quote(v) }
 
       sql = format(<<-SQL, params)
@@ -83,7 +83,7 @@ module Reports
 
     def fully_registered_users
       params = {
-        finish: finish,
+        finish:,
       }.transform_values { |v| quote(v) }
 
       sql = format(<<-SQL, params)
@@ -105,7 +105,7 @@ module Reports
     # Queries for users who where deleted, groups by the date they were deleted at
     def deleted_users
       params = {
-        finish: finish,
+        finish:,
       }.transform_values { |v| quote(v) }
 
       sql = format(<<-SQL, params)

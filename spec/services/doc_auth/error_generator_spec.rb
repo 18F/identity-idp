@@ -5,7 +5,7 @@ RSpec.describe DocAuth::ErrorGenerator do
 
   let(:config) do
     DocAuth::LexisNexis::Config.new(
-      warn_notifier: warn_notifier,
+      warn_notifier:,
     )
   end
 
@@ -41,13 +41,13 @@ RSpec.describe DocAuth::ErrorGenerator do
       transaction_reason_code: 'testing',
       doc_auth_result: doc_result,
       processed_alerts: {
-        passed: passed,
-        failed: failed,
+        passed:,
+        failed:,
       },
       alert_failure_count: failed&.count.to_i,
       portrait_match_results: { FaceMatchResult: 'Pass' },
-      image_metrics: image_metrics,
-      classification_info: classification_info,
+      image_metrics:,
+      classification_info:,
     }
   end
 

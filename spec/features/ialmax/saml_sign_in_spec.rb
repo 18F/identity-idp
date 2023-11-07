@@ -47,7 +47,7 @@ RSpec.feature 'SAML IALMAX sign in' do
     context 'with an ial2 user' do
       scenario 'piv sign in' do
         pii = { phone: '+12025555555', ssn: '111111111' }
-        user = create(:profile, :active, :verified, pii: pii).user
+        user = create(:profile, :active, :verified, pii:).user
         user.piv_cac_configurations.create(x509_dn_uuid: 'helloworld', name: 'My PIV Card')
         visit_idp_from_saml_sp_with_ialmax
         signin_with_piv(user)
@@ -71,7 +71,7 @@ RSpec.feature 'SAML IALMAX sign in' do
 
       scenario 'password sign in' do
         pii = { phone: '+12025555555', ssn: '111111111' }
-        user = create(:profile, :active, :verified, pii: pii).user
+        user = create(:profile, :active, :verified, pii:).user
         visit_idp_from_saml_sp_with_ialmax
         sign_in_live_with_2fa(user)
         click_submit_default
@@ -150,7 +150,7 @@ RSpec.feature 'SAML IALMAX sign in' do
 
     scenario 'returns an ial1 responses even with an ial2 user' do
       pii = { phone: '+12025555555', ssn: '111111111' }
-      user = create(:profile, :active, :verified, pii: pii).user
+      user = create(:profile, :active, :verified, pii:).user
       visit_idp_from_saml_sp_with_ialmax
       sign_in_live_with_2fa(user)
       click_submit_default

@@ -8,8 +8,8 @@ RSpec.describe Idv::ResendOtpController do
   let(:delivery_method) { 'sms' }
   let(:user_phone_confirmation_session) do
     Idv::PhoneConfirmationSession.start(
-      phone: phone,
-      delivery_method: delivery_method,
+      phone:,
+      delivery_method:,
     )
   end
 
@@ -100,7 +100,7 @@ RSpec.describe Idv::ResendOtpController do
           'IdV: phone confirmation otp resent',
           hash_including(
             success: false,
-            telephony_response: telephony_response,
+            telephony_response:,
           ),
         )
         expect(@analytics).to receive(:track_event).ordered.with(

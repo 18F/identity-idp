@@ -46,7 +46,7 @@ class RiscDeliveryJob < ApplicationJob
         {
           event: 'http_push_error',
           transport: inline? ? 'direct' : 'async',
-          event_type: event_type,
+          event_type:,
           service_provider: issuer,
           status: response.status,
         }.to_json,
@@ -59,7 +59,7 @@ class RiscDeliveryJob < ApplicationJob
       {
         event: 'http_push_error',
         transport: inline? ? 'direct' : 'async',
-        event_type: event_type,
+        event_type:,
         service_provider: issuer,
         error: err.message,
       }.to_json,
@@ -71,7 +71,7 @@ class RiscDeliveryJob < ApplicationJob
       {
         event: 'http_push_rate_limit',
         transport: inline? ? 'direct' : 'async',
-        event_type: event_type,
+        event_type:,
         service_provider: issuer,
         error: err.message,
       }.to_json,

@@ -5,10 +5,10 @@ RSpec.describe DataRequests::Deployed::CreateUserEventsReport do
   describe '#call' do
     it 'returns an array of hashes representing the users events' do
       user = create(:user)
-      event1 = create(:event, created_at: 1.day.ago, disavowed_at: 12.hours.ago, user: user)
+      event1 = create(:event, created_at: 1.day.ago, disavowed_at: 12.hours.ago, user:)
       device = create(:device)
       _event2 = create(
-        :event, event_type: :webauthn_key_added, device: device, ip: '1.2.3.4', user: user
+        :event, event_type: :webauthn_key_added, device:, ip: '1.2.3.4', user:
       )
 
       result = described_class.new(user).call

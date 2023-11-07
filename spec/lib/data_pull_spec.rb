@@ -290,19 +290,19 @@ RSpec.describe DataPull do
     end
 
     let(:agency_identity) do
-      create(:agency_identity, agency: agency, user: user1, uuid: identity.uuid)
+      create(:agency_identity, agency:, user: user1, uuid: identity.uuid)
     end
     let(:other_agency_identity) do
-      create(:agency_identity, agency: agency, user: user2, uuid: other_identity.uuid)
+      create(:agency_identity, agency:, user: user2, uuid: other_identity.uuid)
     end
 
     let(:args) { [user1.uuid, user2.uuid, 'does-not-exist'] }
     let(:include_missing) { true }
-    subject(:result) { subtask.run(args: args, config: config) }
+    subject(:result) { subtask.run(args:, config:) }
 
     describe '#run' do
       context 'without requesting issuers' do
-        let(:config) { ScriptBase::Config.new(include_missing: include_missing) }
+        let(:config) { ScriptBase::Config.new(include_missing:) }
 
         it 'return partner UUIDs for all apps', aggregate_failures: true do
           expected_table = [
@@ -321,7 +321,7 @@ RSpec.describe DataPull do
       context 'with requesting issuers' do
         let(:config) do
           ScriptBase::Config.new(
-            include_missing: include_missing,
+            include_missing:,
             requesting_issuers: [service_provider.issuer],
           )
         end
@@ -350,7 +350,7 @@ RSpec.describe DataPull do
     before do
       create(
         :event,
-        user: user,
+        user:,
         event_type: :account_created,
         ip: '1.2.3.4',
         created_at: Date.new(2023, 1, 1).in_time_zone('UTC'),
@@ -359,7 +359,7 @@ RSpec.describe DataPull do
       create_list(
         :event,
         5,
-        user: user,
+        user:,
         event_type: :account_created,
         ip: '1.2.3.4',
         created_at: Date.new(2023, 1, 2).in_time_zone('UTC'),

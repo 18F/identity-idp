@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe ServiceProviderSeeder do
-  subject(:instance) { ServiceProviderSeeder.new(rails_env: rails_env, deploy_env: deploy_env) }
+  subject(:instance) { ServiceProviderSeeder.new(rails_env:, deploy_env:) }
   let(:rails_env) { 'test' }
   let(:deploy_env) { 'int' }
 

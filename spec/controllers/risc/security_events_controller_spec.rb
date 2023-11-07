@@ -20,7 +20,7 @@ RSpec.describe Risc::SecurityEventsController do
     let(:jwt_payload) do
       {
         iss: identity.service_provider,
-        jti: jti,
+        jti:,
         iat: Time.zone.now.to_i,
         aud: api_risc_security_events_url,
         events: {
@@ -50,10 +50,10 @@ RSpec.describe Risc::SecurityEventsController do
       expect(@analytics).to receive(:track_event).
         with('RISC: Security event received',
              client_id: service_provider.issuer,
-             event_type: event_type,
+             event_type:,
              error_code: nil,
              errors: {},
-             jti: jti,
+             jti:,
              success: true,
              user_id: user.uuid)
 
@@ -80,11 +80,11 @@ RSpec.describe Risc::SecurityEventsController do
         expect(@analytics).to receive(:track_event).
           with('RISC: Security event received',
                client_id: service_provider.issuer,
-               event_type: event_type,
+               event_type:,
                error_code: SecurityEventForm::ErrorCodes::JWT_AUD,
                errors: kind_of(Hash),
                error_details: kind_of(Hash),
-               jti: jti,
+               jti:,
                success: false,
                user_id: user.uuid)
 

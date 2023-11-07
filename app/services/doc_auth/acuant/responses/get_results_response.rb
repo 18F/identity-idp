@@ -65,7 +65,7 @@ module DocAuth
             log_alert_results: log_alert_formatter.log_alerts(alerts),
             image_metrics: processed_image_metrics,
             tamper_result: tamper_result_code&.name,
-            classification_info: classification_info,
+            classification_info:,
             address_line2_present: !pii_from_doc[:address2].blank?,
           }
         end

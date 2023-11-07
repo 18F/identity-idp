@@ -9,7 +9,7 @@
 <div class="margin-bottom-4 card profile-info-box border-bottom border-primary-light">
   <div class="border-bottom border-primary-light">
     <% @presenter.connected_apps.each do |identity| %>
-      <%= render 'accounts/connected_app', identity: identity %>
+      <%= render 'accounts/connected_app', identity: %>
     <% end %>
   </div>
 </div>

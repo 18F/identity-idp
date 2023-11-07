@@ -10,9 +10,9 @@ RSpec.describe DestroyUnusedProviders do
   let(:integration) do
     create(
       :integration,
-      issuer: issuer,
+      issuer:,
       name: 'Integration',
-      partner_account: partner_account,
+      partner_account:,
     )
   end
 

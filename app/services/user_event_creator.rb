@@ -17,13 +17,13 @@ class UserEventCreator
     )
     if existing_device.present?
       create_event_for_existing_device(
-        event_type: event_type, user: user, device: existing_device,
-        disavowal_token: disavowal_token
+        event_type:, user:, device: existing_device,
+        disavowal_token:
       )
     else
       create_event_for_new_device(
-        event_type: event_type, user: user,
-        disavowal_token: disavowal_token
+        event_type:, user:,
+        disavowal_token:
       )
     end
   end
@@ -31,12 +31,12 @@ class UserEventCreator
   # Create an event without a device or IP address
   # @return [Array(Event, String)] an (event, disavowal_token) tuple
   def create_out_of_band_user_event(event_type)
-    create_event_for_device(event_type: event_type, user: current_user, device: nil)
+    create_event_for_device(event_type:, user: current_user, device: nil)
   end
 
   def create_out_of_band_user_event_with_disavowal(event_type)
     create_event_for_device(
-      event_type: event_type,
+      event_type:,
       user: current_user,
       device: nil,
       disavowal_token: build_disavowal_token,
@@ -47,7 +47,7 @@ class UserEventCreator
   def create_user_event_with_disavowal(event_type, user = current_user, device = nil)
     if device
       create_event_for_existing_device(
-        event_type: event_type, user: user, device: device,
+        event_type:, user:, device:,
         disavowal_token: build_disavowal_token
       )
     else
@@ -62,10 +62,10 @@ class UserEventCreator
     Device.transaction do
       device.update_last_used_ip(request.remote_ip)
       create_event_for_device(
-        event_type: event_type,
-        user: user,
-        device: device,
-        disavowal_token: disavowal_token,
+        event_type:,
+        user:,
+        device:,
+        disavowal_token:,
       )
     end
   end
@@ -85,19 +85,19 @@ class UserEventCreator
         [device, event, disavowal_token]
       end
       send_new_device_notification(
-        user: user,
-        device: device,
-        disavowal_token: disavowal_token,
+        user:,
+        device:,
+        disavowal_token:,
       )
       [event, disavowal_token]
     else
       Device.transaction do
         device = create_device_for_user(user)
         create_event_for_device(
-          device: device,
-          event_type: event_type,
-          user: user,
-          disavowal_token: disavowal_token,
+          device:,
+          event_type:,
+          user:,
+          disavowal_token:,
         )
       end
     end
@@ -107,9 +107,9 @@ class UserEventCreator
     cookie_uuid = cookies[:device].presence || SecureRandom.hex(COOKIE_LENGTH / 2)
 
     device = Device.create!(
-      user: user,
+      user:,
       user_agent: request.user_agent.to_s,
-      cookie_uuid: cookie_uuid,
+      cookie_uuid:,
       last_used_at: Time.zone.now,
       last_ip: request.remote_ip,
     )
@@ -134,8 +134,8 @@ class UserEventCreator
       user_id: user.id,
       device_id: device&.id,
       ip: request&.remote_ip,
-      event_type: event_type,
-      disavowal_token_fingerprint: disavowal_token_fingerprint,
+      event_type:,
+      disavowal_token_fingerprint:,
     )
 
     [event, disavowal_token]

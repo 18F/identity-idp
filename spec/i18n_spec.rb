@@ -231,7 +231,7 @@ RSpec.describe 'I18n' do
   def flatten_hash(hash, parent_keys: [], out_hash: {}, &block)
     hash.each do |key, value|
       if value.is_a?(Hash)
-        flatten_hash(value, parent_keys: parent_keys + [key], out_hash: out_hash, &block)
+        flatten_hash(value, parent_keys: parent_keys + [key], out_hash:, &block)
       else
         flat_key = [*parent_keys, key].join('.')
         out_hash[flat_key] = value

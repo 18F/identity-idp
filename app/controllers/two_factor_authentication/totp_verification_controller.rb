@@ -6,7 +6,7 @@ module TwoFactorAuthentication
     before_action :confirm_totp_enabled
 
     def show
-      analytics.multi_factor_auth_enter_totp_visit(context: context)
+      analytics.multi_factor_auth_enter_totp_visit(context:)
 
       @presenter = presenter_for_two_factor_authentication_method
       return unless FeatureManagement.prefill_otp_codes?
@@ -29,7 +29,7 @@ module TwoFactorAuthentication
         handle_remember_device_preference(params[:remember_device])
         redirect_to after_sign_in_path_for(current_user)
       else
-        handle_invalid_otp(context: context, type: 'totp')
+        handle_invalid_otp(context:, type: 'totp')
       end
     end
 
@@ -46,7 +46,7 @@ module TwoFactorAuthentication
         data: authenticator_view_data,
         view: view_context,
         service_provider: current_sp,
-        remember_device_default: remember_device_default,
+        remember_device_default:,
       )
     end
 

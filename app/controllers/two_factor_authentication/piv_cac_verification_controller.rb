@@ -58,7 +58,7 @@ module TwoFactorAuthentication
 
     def handle_invalid_piv_cac
       clear_piv_cac_information
-      handle_invalid_otp(context: context, type: 'piv_cac')
+      handle_invalid_otp(context:, type: 'piv_cac')
     end
 
     # This overrides the method in TwoFactorAuthenticatable so that we
@@ -94,13 +94,13 @@ module TwoFactorAuthentication
         view: view_context,
         data: piv_cac_view_data,
         service_provider: current_sp,
-        remember_device_default: remember_device_default,
+        remember_device_default:,
       )
     end
 
     def analytics_properties
       {
-        context: context,
+        context:,
         multi_factor_auth_method: 'piv_cac',
         piv_cac_configuration_id: piv_cac_verification_form&.piv_cac_configuration&.id,
       }

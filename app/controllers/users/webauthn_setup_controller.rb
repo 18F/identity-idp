@@ -16,16 +16,16 @@ module Users
     def new
       form = WebauthnVisitForm.new(
         user: current_user,
-        url_options: url_options,
+        url_options:,
         in_mfa_selection_flow: in_multi_mfa_selection_flow?,
       )
       result = form.submit(new_params)
       @platform_authenticator = form.platform_authenticator?
       @presenter = WebauthnSetupPresenter.new(
-        current_user: current_user,
+        current_user:,
         user_fully_authenticated: user_fully_authenticated?,
-        user_opted_remember_device_cookie: user_opted_remember_device_cookie,
-        remember_device_default: remember_device_default,
+        user_opted_remember_device_cookie:,
+        remember_device_default:,
         platform_authenticator: @platform_authenticator,
         url_options:,
       )
@@ -61,10 +61,10 @@ module Users
       result = form.submit(request.protocol, confirm_params)
       @platform_authenticator = form.platform_authenticator?
       @presenter = WebauthnSetupPresenter.new(
-        current_user: current_user,
+        current_user:,
         user_fully_authenticated: user_fully_authenticated?,
-        user_opted_remember_device_cookie: user_opted_remember_device_cookie,
-        remember_device_default: remember_device_default,
+        user_opted_remember_device_cookie:,
+        remember_device_default:,
         platform_authenticator: @platform_authenticator,
         url_options:,
       )
@@ -110,10 +110,10 @@ module Users
 
     def set_webauthn_setup_presenter
       @presenter = SetupPresenter.new(
-        current_user: current_user,
+        current_user:,
         user_fully_authenticated: user_fully_authenticated?,
-        user_opted_remember_device_cookie: user_opted_remember_device_cookie,
-        remember_device_default: remember_device_default,
+        user_opted_remember_device_cookie:,
+        remember_device_default:,
       )
     end
 
@@ -149,7 +149,7 @@ module Users
     def track_delete(success)
       counts_hash = MfaContext.new(current_user.reload).enabled_two_factor_configuration_counts_hash
       analytics.webauthn_deleted(
-        success: success,
+        success:,
         mfa_method_counts: counts_hash,
         pii_like_keypaths: [[:mfa_method_counts, :phone]],
       )

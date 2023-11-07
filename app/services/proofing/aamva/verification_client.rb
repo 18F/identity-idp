@@ -10,10 +10,10 @@ module Proofing
 
       def send_verification_request(applicant:, session_id: nil)
         Request::VerificationRequest.new(
-          applicant: applicant,
-          session_id: session_id,
-          auth_token: auth_token,
-          config: config,
+          applicant:,
+          session_id:,
+          auth_token:,
+          config:,
         ).send
       end
 

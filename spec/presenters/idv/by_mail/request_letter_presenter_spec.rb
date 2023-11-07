@@ -68,7 +68,7 @@ RSpec.describe Idv::ByMail::RequestLetterPresenter do
   describe '#fallback_back_path' do
     context 'when the user has a pending profile' do
       it 'returns the verify account path' do
-        create(:profile, user: user, gpo_verification_pending_at: 1.day.ago)
+        create(:profile, user:, gpo_verification_pending_at: 1.day.ago)
         expect(subject.fallback_back_path).to eq(idv_verify_by_mail_enter_code_path)
       end
     end
@@ -81,8 +81,8 @@ RSpec.describe Idv::ByMail::RequestLetterPresenter do
   end
 
   def create_letter_send_event
-    device = create(:device, user: user)
-    create(:event, user: user, device: device, event_type: :gpo_mail_sent)
+    device = create(:device, user:)
+    create(:event, user:, device:, event_type: :gpo_mail_sent)
   end
 
   def user_verified_with_gpo

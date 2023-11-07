@@ -20,7 +20,7 @@ module Idv
       in_person_verification_needed:,
       deactivation_reason: nil
     )
-      profile = Profile.new(user: user, active: false, deactivation_reason: deactivation_reason)
+      profile = Profile.new(user:, active: false, deactivation_reason:)
       profile.initiating_service_provider = initiating_service_provider
       profile.deactivate_for_in_person_verification if in_person_verification_needed
       profile.encrypt_pii(pii_attributes, user_password)

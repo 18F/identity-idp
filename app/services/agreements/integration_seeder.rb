@@ -21,7 +21,7 @@ module Agreements
         PartnerAccount.find_by!(requesting_agency: config['partner_account'])
       config['integration_status'] =
         IntegrationStatus.find_by!(name: config['integration_status'])
-      config['service_provider'] = ServiceProvider.find_by!(issuer: issuer)
+      config['service_provider'] = ServiceProvider.find_by!(issuer:)
 
       permitted_attrs =
         %w[name dashboard_identifier service_provider integration_status partner_account]

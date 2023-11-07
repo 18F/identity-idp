@@ -41,7 +41,7 @@ RSpec.describe JobHelpers::S3Helper do
             expect(context.params[:key]).to eq(prefix)
             expect(context.params[:bucket]).to eq(bucket_name)
 
-            { body: body }
+            { body: }
           end,
         },
       }
@@ -75,7 +75,7 @@ RSpec.describe JobHelpers::S3Helper do
       Aws.config[:s3] = {
         stub_responses: {
           get_object: {
-            body: body,
+            body:,
           },
         },
       }

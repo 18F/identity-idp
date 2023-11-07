@@ -30,7 +30,7 @@ RSpec.describe LocaleHelper do
   end
 
   describe '#with_user_locale' do
-    let(:user) { build_stubbed(:user, email_language: email_language) }
+    let(:user) { build_stubbed(:user, email_language:) }
 
     subject do
       with_user_locale(user) do

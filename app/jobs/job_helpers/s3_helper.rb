@@ -12,7 +12,7 @@ module JobHelpers
         bucket, *_rest = uri.host.split('.')
         _, key, *_rest = uri.path.split('/')
       end
-      resp = s3_client.get_object(bucket: bucket, key: key)
+      resp = s3_client.get_object(bucket:, key:)
       resp.body.read.b
     end
 

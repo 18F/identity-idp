@@ -39,8 +39,8 @@ class ImageUploadResponsePresenter
       { success: true }
     else
       json = { success: false,
-               errors: errors,
-               remaining_attempts: remaining_attempts,
+               errors:,
+               remaining_attempts:,
                doc_type_supported: doc_type_supported? }
       if remaining_attempts&.zero?
         if @form_response.extra[:flow_path] == 'standard'

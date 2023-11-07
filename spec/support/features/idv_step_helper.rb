@@ -124,7 +124,7 @@ module IdvStepHelper
   end
 
   def expect_step_indicator_current_step(text)
-    expect(page).to have_css('.step-indicator__step--current', text: text, wait: 5)
+    expect(page).to have_css('.step-indicator__step--current', text:, wait: 5)
   end
 
   def complete_idv_steps_before_address(user = user_with_2fa)

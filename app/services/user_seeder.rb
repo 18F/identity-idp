@@ -39,10 +39,10 @@ class UserSeeder
         ee = EncryptedAttribute.new_from_decrypted(email)
 
         user = User.create!
-        codes = setup_user(user: user, ee: ee)
+        codes = setup_user(user:, ee:)
         row['codes'] = codes.join('|')
 
-        personal_key = create_profile(user: user, row: row)
+        personal_key = create_profile(user:, row:)
         row['personal_key'] = personal_key
       end
     end
@@ -94,7 +94,7 @@ class UserSeeder
   end
 
   def setup_user(user:, ee:)
-    EmailAddress.create!(user: user, email: ee.decrypted, confirmed_at: Time.zone.now)
+    EmailAddress.create!(user:, email: ee.decrypted, confirmed_at: Time.zone.now)
     user.reset_password(PASSWORD, PASSWORD)
     Event.create(user_id: user.id, event_type: :account_created)
     generator = BackupCodeGenerator.new(user)
@@ -104,7 +104,7 @@ class UserSeeder
   end
 
   def create_profile(user:, row:)
-    profile = Profile.new(user: user)
+    profile = Profile.new(user:)
     pii_hash = row.to_h.slice(*PII_ATTRS).transform_keys(&:to_sym)
     pii = Pii::Attributes.new_from_hash(pii_hash)
     personal_key = profile.encrypt_pii(pii, PASSWORD)

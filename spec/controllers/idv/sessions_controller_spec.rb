@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Idv::SessionsController do
   let(:user) { build(:user) }
-  let(:enrollment) { create(:in_person_enrollment, :pending, user: user) }
+  let(:enrollment) { create(:in_person_enrollment, :pending, user:) }
 
   before do
     stub_sign_in(user)
@@ -108,13 +108,13 @@ RSpec.describe Idv::SessionsController do
       end
 
       it 'cancels establishing in person enrollment' do
-        establishing_enrollment = create(:in_person_enrollment, :establishing, user: user)
-        expect(InPersonEnrollment.where(user: user, status: :establishing).count).to eq(1)
+        establishing_enrollment = create(:in_person_enrollment, :establishing, user:)
+        expect(InPersonEnrollment.where(user:, status: :establishing).count).to eq(1)
         delete :destroy
 
         establishing_enrollment.reload
         expect(establishing_enrollment.status).to eq(InPersonEnrollment::STATUS_CANCELLED)
-        expect(InPersonEnrollment.where(user: user, status: :establishing).count).to eq(0)
+        expect(InPersonEnrollment.where(user:, status: :establishing).count).to eq(0)
       end
     end
   end

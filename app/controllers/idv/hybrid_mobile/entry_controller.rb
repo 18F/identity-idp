@@ -38,7 +38,7 @@ module Idv
 
       def update_sp_session
         return if sp_session[:issuer] || request_id.blank?
-        StoreSpMetadataInSession.new(session: session, request_id: request_id).call
+        StoreSpMetadataInSession.new(session:, request_id:).call
       end
 
       def validate_document_capture_session_id

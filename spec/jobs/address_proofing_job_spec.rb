@@ -4,7 +4,7 @@ RSpec.describe AddressProofingJob, type: :job do
   let(:document_capture_session) { DocumentCaptureSession.new(result_id: SecureRandom.hex) }
   let(:encrypted_arguments) do
     Encryption::Encryptors::BackgroundProofingArgEncryptor.new.encrypt(
-      { applicant_pii: applicant_pii }.to_json,
+      { applicant_pii: }.to_json,
     )
   end
   let(:service_provider) { create(:service_provider) }
@@ -24,8 +24,8 @@ RSpec.describe AddressProofingJob, type: :job do
     it 'stores results' do
       AddressProofingJob.perform_later(
         result_id: document_capture_session.result_id,
-        encrypted_arguments: encrypted_arguments,
-        trace_id: trace_id,
+        encrypted_arguments:,
+        trace_id:,
         issuer: service_provider.issuer,
       )
 
@@ -41,8 +41,8 @@ RSpec.describe AddressProofingJob, type: :job do
     subject(:perform) do
       instance.perform(
         result_id: document_capture_session.result_id,
-        encrypted_arguments: encrypted_arguments,
-        trace_id: trace_id,
+        encrypted_arguments:,
+        trace_id:,
         issuer: service_provider.issuer,
       )
     end

@@ -62,7 +62,7 @@ RSpec.describe UspsInPersonProofing::Transliterator do
       result = transliterator.transliterate(original)
       expect(result).to have_attributes(
         changed?: true,
-        original: original,
+        original:,
         transliterated: '123ssabSScssssHello??',
         unsupported_chars: ['И', 'Љ'],
       )
@@ -73,7 +73,7 @@ RSpec.describe UspsInPersonProofing::Transliterator do
       result = transliterator.transliterate(original)
       expect(result).to have_attributes(
         changed?: true,
-        original: original,
+        original:,
         transliterated: '123 ?a bSSc??Hello? ?',
         unsupported_chars: ['И', 'И', 'И', 'И', 'Љ'],
       )
@@ -108,7 +108,7 @@ RSpec.describe UspsInPersonProofing::Transliterator do
           result = transliterator.transliterate(original)
           expect(result).to have_attributes(
             changed?: true,
-            original: original,
+            original:,
             transliterated: '?Hello?world',
             unsupported_chars: [space, space],
           )

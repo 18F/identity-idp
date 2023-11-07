@@ -6,7 +6,7 @@ RSpec.describe UpdateUserPasswordForm, type: :model do
   let(:password) { 'salty new password' }
   let(:params) do
     {
-      password: password,
+      password:,
       password_confirmation: password,
     }
   end
@@ -37,7 +37,7 @@ RSpec.describe UpdateUserPasswordForm, type: :model do
         expect(ActiveProfileEncryptor).not_to receive(:new)
         expect(subject.submit(params).to_h).to include(
           success: false,
-          errors: errors,
+          errors:,
           error_details: hash_including(:password, :password_confirmation),
         )
       end
@@ -57,7 +57,7 @@ RSpec.describe UpdateUserPasswordForm, type: :model do
       it 'updates the user' do
         user_updater = instance_double(UpdateUser)
         allow(UpdateUser).to receive(:new).
-          with(user: user, attributes: { password: 'salty new password' }).
+          with(user:, attributes: { password: 'salty new password' }).
           and_return(user_updater)
         allow(user_updater).to receive(:call)
 

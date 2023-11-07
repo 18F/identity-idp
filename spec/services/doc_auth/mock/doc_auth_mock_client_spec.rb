@@ -16,14 +16,14 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
     create_document_response = client.create_document
     instance_id = create_document_response.instance_id
     post_front_image_response = client.post_front_image(
-      instance_id: instance_id,
+      instance_id:,
       image: DocAuthImageFixtures.document_front_image,
     )
     post_back_image_response = client.post_back_image(
-      instance_id: instance_id,
+      instance_id:,
       image: DocAuthImageFixtures.document_back_image,
     )
-    get_results_response = client.get_results(instance_id: instance_id)
+    get_results_response = client.get_results(instance_id:)
 
     expect(create_document_response.success?).to eq(true)
     expect(create_document_response.instance_id).to_not be_blank
@@ -75,11 +75,11 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
     create_document_response = client.create_document
     instance_id = create_document_response.instance_id
     client.post_front_image(
-      instance_id: instance_id,
+      instance_id:,
       image: yaml,
     )
     client.post_back_image(
-      instance_id: instance_id,
+      instance_id:,
       image: yaml,
     )
     get_results_response = client.get_results(
@@ -115,11 +115,11 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
     create_document_response = client.create_document
     instance_id = create_document_response.instance_id
     client.post_front_image(
-      instance_id: instance_id,
+      instance_id:,
       image: yaml,
     )
     client.post_back_image(
-      instance_id: instance_id,
+      instance_id:,
       image: yaml,
     )
     get_results_response = client.get_results(
@@ -185,7 +185,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
         back: 500
       YAML
       response = client.post_front_image(
-        image: image,
+        image:,
         instance_id: nil,
       )
       expect(response).to be_a(DocAuth::Response)
@@ -199,7 +199,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
           result: 500
       YAML
       client.post_back_image(
-        image: image,
+        image:,
         instance_id: nil,
       )
       response = client.get_results(instance_id: nil)
@@ -214,7 +214,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
           front: 440
       YAML
       response = client.post_front_image(
-        image: image,
+        image:,
         instance_id: nil,
       )
       expect(response).to be_a(DocAuth::Response)

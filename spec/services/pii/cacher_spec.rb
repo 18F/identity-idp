@@ -2,11 +2,11 @@ require 'rails_helper'
 
 RSpec.describe Pii::Cacher do
   let(:password) { 'salty peanuts are best' }
-  let(:user) { create(:user, :with_phone, password: password) }
+  let(:user) { create(:user, :with_phone, password:) }
   let(:profile) do
     build(
       :profile, :active, :verified,
-      user: user,
+      user:,
       pii: {
         ssn: '1234',
         dob: '1970-01-01',
@@ -16,7 +16,7 @@ RSpec.describe Pii::Cacher do
       }
     )
   end
-  let(:diff_profile) { build(:profile, :verified, user: user, pii: { ssn: '5678' }) }
+  let(:diff_profile) { build(:profile, :verified, user:, pii: { ssn: '5678' }) }
   let(:user_session) { {} }
 
   subject { described_class.new(user, user_session) }
@@ -65,7 +65,7 @@ RSpec.describe Pii::Cacher do
     end
 
     it 'does not attempt to rotate nil attributes' do
-      user = create(:user, password: password)
+      user = create(:user, password:)
       cacher = described_class.new(user, user_session)
       rotate_all_keys
 

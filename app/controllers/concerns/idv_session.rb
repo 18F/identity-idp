@@ -26,7 +26,7 @@ module IdvSession
 
   def idv_session
     @idv_session ||= Idv::Session.new(
-      user_session: user_session,
+      user_session:,
       current_user: idv_session_user,
       service_provider: current_sp,
     )

@@ -53,7 +53,7 @@ namespace :profiles do
       profile_id, deactivation_reason, _timestamp = profile_datum
       Profile.where(id: profile_id).update!(
         in_person_verification_pending_at: nil,
-        deactivation_reason: deactivation_reason,
+        deactivation_reason:,
       )
       warn profile_id
     end

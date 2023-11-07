@@ -20,8 +20,8 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
   before do
     decorated_sp_session = instance_double(
       ServiceProviderSession,
-      sp_name: sp_name,
-      sp_issuer: sp_issuer,
+      sp_name:,
+      sp_issuer:,
     )
     allow(view).to receive(:decorated_sp_session).and_return(decorated_sp_session)
     allow(view).to receive(:url_for).and_return('https://example.com/')
@@ -37,16 +37,16 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
 
   subject(:render_partial) do
     render partial: 'idv/shared/document_capture', locals: {
-      document_capture_session_uuid: document_capture_session_uuid,
-      sp_name: sp_name,
-      flow_path: flow_path,
-      failure_to_proof_url: failure_to_proof_url,
-      acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
-      use_alternate_sdk: use_alternate_sdk,
-      acuant_version: acuant_version,
-      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
-      doc_auth_selfie_capture: doc_auth_selfie_capture,
-      phone_with_camera: phone_with_camera,
+      document_capture_session_uuid:,
+      sp_name:,
+      flow_path:,
+      failure_to_proof_url:,
+      acuant_sdk_upgrade_a_b_testing_enabled:,
+      use_alternate_sdk:,
+      acuant_version:,
+      phone_question_ab_test_bucket:,
+      doc_auth_selfie_capture:,
+      phone_with_camera:,
     }
   end
 

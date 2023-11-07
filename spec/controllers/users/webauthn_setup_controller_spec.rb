@@ -71,7 +71,7 @@ RSpec.describe Users::WebauthnSetupController do
     describe 'patch confirm' do
       let(:params) do
         {
-          attestation_object: attestation_object,
+          attestation_object:,
           client_data_json: setup_client_data_json,
           name: 'mykey',
           transports: 'usb',
@@ -119,12 +119,12 @@ RSpec.describe Users::WebauthnSetupController do
             success: true,
           )
 
-        patch :confirm, params: params
+        patch :confirm, params:
       end
     end
 
     describe 'delete' do
-      let(:webauthn_configuration) { create(:webauthn_configuration, user: user) }
+      let(:webauthn_configuration) { create(:webauthn_configuration, user:) }
 
       it 'creates a webauthn key removed event' do
         delete :delete, params: { id: webauthn_configuration.id }
@@ -161,14 +161,14 @@ RSpec.describe Users::WebauthnSetupController do
 
       it 'sends a recovery information changed event' do
         expect(PushNotification::HttpPush).to receive(:deliver).
-          with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
+          with(PushNotification::RecoveryInformationChangedEvent.new(user:))
 
         delete :delete, params: { id: webauthn_configuration.id }
       end
     end
 
     describe 'show_delete' do
-      let(:webauthn_configuration) { create(:webauthn_configuration, user: user) }
+      let(:webauthn_configuration) { create(:webauthn_configuration, user:) }
 
       it 'renders page when configuration exists' do
         get :show_delete, params: { id: webauthn_configuration.id }
@@ -187,7 +187,7 @@ RSpec.describe Users::WebauthnSetupController do
     let(:user) { create(:user) }
     let(:params) do
       {
-        attestation_object: attestation_object,
+        attestation_object:,
         client_data_json: setup_client_data_json,
         name: 'mykey',
         transports: 'usb',
@@ -241,7 +241,7 @@ RSpec.describe Users::WebauthnSetupController do
 
       context 'with multiple MFA methods chosen on account creation' do
         it 'should direct user to next method confirmation page' do
-          patch :confirm, params: params
+          patch(:confirm, params:)
 
           expect(response).to redirect_to(phone_setup_url)
         end
@@ -250,7 +250,7 @@ RSpec.describe Users::WebauthnSetupController do
       context 'with multiple MFA methods chosen on account creation' do
         let(:params) do
           {
-            attestation_object: attestation_object,
+            attestation_object:,
             client_data_json: setup_client_data_json,
             name: 'mykey',
             transports: 'usb',
@@ -290,14 +290,14 @@ RSpec.describe Users::WebauthnSetupController do
             :mfa_enroll_webauthn_roaming, success: true
           )
 
-          patch :confirm, params: params
+          patch :confirm, params:
         end
       end
 
       context 'with a single MFA method chosen on account creation' do
         let(:mfa_selections) { ['webauthn_platform'] }
         it 'should direct user to second mfa suggestion page' do
-          patch :confirm, params: params
+          patch(:confirm, params:)
 
           expect(response).to redirect_to(auth_method_confirmation_url)
         end
@@ -307,7 +307,7 @@ RSpec.describe Users::WebauthnSetupController do
         let(:mfa_selections) { ['webauthn_platform'] }
         let(:params) do
           {
-            attestation_object: attestation_object,
+            attestation_object:,
             client_data_json: setup_client_data_json,
             name: 'mykey',
             transports: 'internal,hybrid',
@@ -352,7 +352,7 @@ RSpec.describe Users::WebauthnSetupController do
             :mfa_enroll_webauthn_platform, success: true
           )
 
-          patch :confirm, params: params
+          patch :confirm, params:
         end
 
         it 'should log submitted failure' do
@@ -372,7 +372,7 @@ RSpec.describe Users::WebauthnSetupController do
         let(:mfa_selections) { ['webauthn_platform'] }
         let(:params) do
           {
-            attestation_object: attestation_object,
+            attestation_object:,
             client_data_json: setup_client_data_json,
             name: 'mykey',
             transports: 'internal,hybrid',
@@ -408,7 +408,7 @@ RSpec.describe Users::WebauthnSetupController do
             :mfa_enroll_webauthn_platform, success: false
           )
 
-          patch :confirm, params: params
+          patch :confirm, params:
         end
       end
     end
@@ -416,7 +416,7 @@ RSpec.describe Users::WebauthnSetupController do
     context 'Multiple MFA options turned off' do
       context 'with a single MFA method chosen' do
         it 'should direct user to second mfa suggestion page' do
-          patch :confirm, params: params
+          patch(:confirm, params:)
 
           expect(response).to redirect_to(account_url)
         end

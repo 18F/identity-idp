@@ -25,7 +25,7 @@ module Reports
       by_issuer_results = iaas.flat_map do |iaa|
         iaa.issuers.flat_map do |issuer|
           Db::MonthlySpAuthCount::TotalMonthlyAuthCountsWithinIaaWindow.call(
-            issuer: issuer,
+            issuer:,
             iaa_start_date: iaa.start_date,
             iaa_end_date: iaa.end_date,
             iaa: iaa.key,
@@ -34,8 +34,8 @@ module Reports
       end
 
       combine_by_iaa_month(
-        by_iaa_results: by_iaa_results,
-        by_issuer_results: by_issuer_results,
+        by_iaa_results:,
+        by_issuer_results:,
       )
     end
 
@@ -81,7 +81,7 @@ module Reports
 
         by_issuer_iaa_issuer_year_months.each do |iaa_key, issuer_year_months|
           issuer_year_months.each do |issuer, year_months_data|
-            friendly_name = ServiceProvider.find_by(issuer: issuer).friendly_name
+            friendly_name = ServiceProvider.find_by(issuer:).friendly_name
             year_months = year_months_data.keys.sort
 
             year_months.each do |year_month|

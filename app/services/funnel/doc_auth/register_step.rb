@@ -48,10 +48,10 @@ module Funnel
       attr_reader :user_id, :issuer
 
       def find_or_create_doc_auth_log(user_id, token)
-        doc_auth_log = DocAuthLog.find_by(user_id: user_id)
+        doc_auth_log = DocAuthLog.find_by(user_id:)
         return doc_auth_log if doc_auth_log
         return unless token == 'welcome'
-        DocAuthLog.create(user_id: user_id)
+        DocAuthLog.create(user_id:)
       end
     end
   end

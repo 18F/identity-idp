@@ -265,7 +265,7 @@ RSpec.feature 'Sign Up' do
 
       action = t('devise.confirmations.sign_in')
       expect(page).
-        to have_content t('devise.confirmations.already_confirmed', action: action)
+        to have_content t('devise.confirmations.already_confirmed', action:)
     end
   end
 
@@ -379,7 +379,7 @@ RSpec.feature 'Sign Up' do
     it 'does not return an error and redirect to root after confirming and entering password' do
       email = 'test2@test.com'
       User.create!(
-        uuid: 'foo', email: email,
+        uuid: 'foo', email:,
       )
       EmailAddress.delete_all
       travel_to(1.year.from_now) do

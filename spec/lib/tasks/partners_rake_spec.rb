@@ -170,7 +170,7 @@ RSpec.describe 'partners rake tasks' do
         # create data to pass SP validations
         agency = create(:agency)
         File.readlines(ENV['SP_FILE'], chomp: true).each do |i|
-          create(:service_provider, agency: agency, issuer: i)
+          create(:service_provider, agency:, issuer: i)
         end
       end
 

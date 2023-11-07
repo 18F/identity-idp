@@ -238,8 +238,8 @@ RSpec.describe QueryCloudwatch do
         progress: false,
         wait_duration: 0,
         query: 'fields @timestamp, @message',
-        format: format,
-        count_distinct: count_distinct,
+        format:,
+        count_distinct:,
         num_threads: Reporting::CloudwatchClient::DEFAULT_NUM_THREADS,
       )
     end

@@ -109,7 +109,7 @@ RSpec.describe Idv::ByMail::RequestLetterController do
         create(
           :profile,
           :with_pii,
-          user: user,
+          user:,
           created_at: profile_created_at,
         )
       end
@@ -148,7 +148,7 @@ RSpec.describe Idv::ByMail::RequestLetterController do
       end
 
       it 'logs USPS address letter requested analytics event with phone step attempts' do
-        RateLimiter.new(user: user, rate_limit_type: :proof_address).increment!
+        RateLimiter.new(user:, rate_limit_type: :proof_address).increment!
         put :create
 
         expect(@analytics).to have_logged_event(
@@ -199,7 +199,7 @@ RSpec.describe Idv::ByMail::RequestLetterController do
       end
 
       it 'logs USPS address letter analytics events with phone step attempts', :freeze_time do
-        RateLimiter.new(user: user, rate_limit_type: :proof_address).increment!
+        RateLimiter.new(user:, rate_limit_type: :proof_address).increment!
         expect_resend_letter_to_send_letter_and_redirect(otp: false)
 
         expect(@analytics).to have_logged_event(
@@ -256,7 +256,7 @@ RSpec.describe Idv::ByMail::RequestLetterController do
 
     gpo_confirmation_maker = instance_double(GpoConfirmationMaker)
     allow(GpoConfirmationMaker).to receive(:new).
-      with(pii: pii, service_provider: service_provider, profile: pending_profile).
+      with(pii:, service_provider:, profile: pending_profile).
       and_return(gpo_confirmation_maker)
 
     expect(gpo_confirmation_maker).to receive(:perform)

@@ -51,7 +51,7 @@ class ServiceProviderSession
   end
 
   def verification_method_choice
-    I18n.t('idv.messages.select_verification_with_sp', sp_name: sp_name)
+    I18n.t('idv.messages.select_verification_with_sp', sp_name:)
   end
 
   def requested_attributes
@@ -79,7 +79,7 @@ class ServiceProviderSession
     language = I18n.locale.to_s
     alert = sp.help_text.dig(section, language)
     if alert.present?
-      format(alert, sp_name: sp_name, sp_create_link: sp_create_link, app_name: APP_NAME)
+      format(alert, sp_name:, sp_create_link:, app_name: APP_NAME)
     end
   end
 

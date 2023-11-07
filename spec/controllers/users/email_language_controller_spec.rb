@@ -35,7 +35,7 @@ RSpec.describe Users::EmailLanguageController do
 
   describe '#update' do
     subject(:action) do
-      patch :update, params: { user: { email_language: email_language } }
+      patch :update, params: { user: { email_language: } }
     end
 
     context 'with a valid language selection' do

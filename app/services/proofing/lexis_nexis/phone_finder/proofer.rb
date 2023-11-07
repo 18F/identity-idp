@@ -9,14 +9,14 @@ module Proofing
         end
 
         def proof(applicant)
-          response = VerificationRequest.new(config: config, applicant: applicant).send_request
+          response = VerificationRequest.new(config:, applicant:).send_request
           build_result_from_response(response)
         rescue => exception
           NewRelic::Agent.notice_error(exception)
           AddressResult.new(
             success: false,
             errors: {},
-            exception: exception,
+            exception:,
             vendor_name: 'lexisnexis:phone_finder',
           )
         end

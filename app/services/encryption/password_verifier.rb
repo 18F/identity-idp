@@ -18,9 +18,9 @@ module Encryption
 
       def to_s
         {
-          encrypted_password: encrypted_password,
-          password_salt: password_salt,
-          password_cost: password_cost,
+          encrypted_password:,
+          password_salt:,
+          password_cost:,
         }.to_json
       end
 
@@ -42,10 +42,10 @@ module Encryption
     def create_digest_pair(password:, user_uuid:)
       salt = SecureRandom.hex(32)
       cost = IdentityConfig.store.scrypt_cost
-      scrypted_password = scrypt_password_digest(salt: salt, cost: cost, password: password)
+      scrypted_password = scrypt_password_digest(salt:, cost:, password:)
 
       single_region_encrypted_password = single_region_kms_client.encrypt(
-        scrypted_password, kms_encryption_context(user_uuid: user_uuid)
+        scrypted_password, kms_encryption_context(user_uuid:)
       )
       single_region_digest = PasswordDigest.new(
         encrypted_password: single_region_encrypted_password,
@@ -54,7 +54,7 @@ module Encryption
       ).to_s
 
       multi_region_encrypted_password = multi_region_kms_client.encrypt(
-        scrypted_password, kms_encryption_context(user_uuid: user_uuid)
+        scrypted_password, kms_encryption_context(user_uuid:)
       )
       multi_region_digest = PasswordDigest.new(
         encrypted_password: multi_region_encrypted_password,
@@ -74,9 +74,9 @@ module Encryption
       return verify_uak_digest(password, digest) if stale_digest?(digest)
 
       verify_password_against_digest(
-        password: password,
-        password_digest: password_digest,
-        user_uuid: user_uuid,
+        password:,
+        password_digest:,
+        user_uuid:,
       )
     rescue EncryptionError
       false
@@ -92,7 +92,7 @@ module Encryption
 
     def verify_password_against_digest(password:, password_digest:, user_uuid:)
       scrypted_password = scrypt_password_digest(
-        password: password,
+        password:,
         salt: password_digest.password_salt,
         cost: password_digest.password_cost,
       )
@@ -102,7 +102,7 @@ module Encryption
 
     def decrypt_digest_with_kms(encrypted_password, user_uuid)
       multi_region_kms_client.decrypt(
-        encrypted_password, kms_encryption_context(user_uuid: user_uuid)
+        encrypted_password, kms_encryption_context(user_uuid:)
       )
     end
 
@@ -121,7 +121,7 @@ module Encryption
     end
 
     def verify_uak_digest(password, digest)
-      UakPasswordVerifier.verify(password: password, digest: digest)
+      UakPasswordVerifier.verify(password:, digest:)
     end
 
     add_method_tracer :create_digest_pair, "Custom/#{name}/create_digest_pair"

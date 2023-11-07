@@ -104,7 +104,7 @@ RSpec.describe Idv::CancellationsController do
 
   describe '#update' do
     let(:user) { create(:user) }
-    let(:enrollment) { create(:in_person_enrollment, :pending, user: user) }
+    let(:enrollment) { create(:in_person_enrollment, :pending, user:) }
 
     before do
       stub_sign_in(user)
@@ -145,7 +145,7 @@ RSpec.describe Idv::CancellationsController do
 
       before do
         allow(controller).to receive(:user_session).and_return(
-          idv: { go_back_path: go_back_path },
+          idv: { go_back_path: },
         )
       end
 
@@ -238,13 +238,13 @@ RSpec.describe Idv::CancellationsController do
         end
 
         it 'cancels establishing in person enrollment' do
-          establishing_enrollment = create(:in_person_enrollment, :establishing, user: user)
-          expect(InPersonEnrollment.where(user: user, status: :establishing).count).to eq(1)
+          establishing_enrollment = create(:in_person_enrollment, :establishing, user:)
+          expect(InPersonEnrollment.where(user:, status: :establishing).count).to eq(1)
           delete :destroy
 
           establishing_enrollment.reload
           expect(establishing_enrollment.status).to eq(InPersonEnrollment::STATUS_CANCELLED)
-          expect(InPersonEnrollment.where(user: user, status: :establishing).count).to eq(0)
+          expect(InPersonEnrollment.where(user:, status: :establishing).count).to eq(0)
         end
 
         it 'deletes in person flow data' do

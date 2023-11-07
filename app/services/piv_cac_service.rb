@@ -19,7 +19,7 @@ module PivCacService
               URI(randomize_uri(IdentityConfig.store.piv_cac_service_url))
             end
       # add the nonce and redirect uri
-      uri.query = { nonce: nonce, redirect_uri: redirect_uri }.to_query
+      uri.query = { nonce:, redirect_uri: }.to_query
       uri.to_s
     end
 
@@ -66,7 +66,7 @@ module PivCacService
         f.options.write_timeout = IdentityConfig.store.piv_cac_service_timeout
       end.post(
         verify_token_uri,
-        URI.encode_www_form({ token: token }),
+        URI.encode_www_form({ token: }),
         Authentication: authenticate(token),
       ) do |req|
         req.options.context = { service_name: 'piv_cac_token' }

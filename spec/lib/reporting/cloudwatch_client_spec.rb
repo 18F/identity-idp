@@ -62,7 +62,7 @@ RSpec.describe Reporting::CloudwatchClient do
     # @return [Array<Hash>]
     def to_result_fields(hsh)
       hsh.map do |key, value|
-        { field: key, value: value }
+        { field: key, value: }
       end
     end
 
@@ -71,7 +71,7 @@ RSpec.describe Reporting::CloudwatchClient do
 
       Aws.config[:cloudwatchlogs] = {
         stub_responses: {
-          start_query: { query_id: query_id },
+          start_query: { query_id: },
           get_query_results: {
             status: 'Complete',
             results: [

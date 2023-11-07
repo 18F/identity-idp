@@ -19,14 +19,14 @@ module EncryptedRedisStructStorage
   def load(id, type:)
     check_for_id_property!(type)
 
-    ciphertext = REDIS_POOL.with { |client| client.get(key(id, type: type)) }
+    ciphertext = REDIS_POOL.with { |client| client.get(key(id, type:)) }
     return nil if ciphertext.blank?
 
     json = Encryption::Encryptors::BackgroundProofingArgEncryptor.new.decrypt(ciphertext)
     data = JSON.parse(json, symbolize_names: true)
     type.new.tap do |struct|
       struct.id = id
-      init_fields(struct: struct, data: data)
+      init_fields(struct:, data:)
     end
   end
 

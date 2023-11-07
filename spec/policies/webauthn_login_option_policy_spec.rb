@@ -17,9 +17,9 @@ RSpec.describe TwoFactorAuthentication::WebauthnPolicy do
       before do
         create(
           :webauthn_configuration,
-          user: user,
-          credential_id: credential_id,
-          credential_public_key: credential_public_key,
+          user:,
+          credential_id:,
+          credential_public_key:,
         )
       end
 
@@ -41,9 +41,9 @@ RSpec.describe TwoFactorAuthentication::WebauthnPolicy do
       before do
         create(
           :webauthn_configuration,
-          user: user,
-          credential_id: credential_id,
-          credential_public_key: credential_public_key,
+          user:,
+          credential_id:,
+          credential_public_key:,
           platform_authenticator: false,
         )
       end

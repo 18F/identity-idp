@@ -12,18 +12,18 @@ RSpec.describe RateLimiter do
 
   describe '.new' do
     context 'when target is a string' do
-      subject(:for_target) { RateLimiter.new(target: target, rate_limit_type: rate_limit_type) }
+      subject(:for_target) { RateLimiter.new(target:, rate_limit_type:) }
 
       context 'target is not a string' do
         it 'raises an error' do
-          expect { RateLimiter.new(target: 3, rate_limit_type: rate_limit_type) }.
+          expect { RateLimiter.new(target: 3, rate_limit_type:) }.
             to raise_error(ArgumentError)
         end
       end
     end
 
     it 'throws an error when neither user nor target are provided' do
-      expect { RateLimiter.new(rate_limit_type: rate_limit_type) }.
+      expect { RateLimiter.new(rate_limit_type:) }.
         to raise_error(
           ArgumentError,
           'RateLimiter must have a user or a target, but neither were provided',
@@ -31,7 +31,7 @@ RSpec.describe RateLimiter do
     end
 
     it 'throws an error when both user and target are provided' do
-      expect { RateLimiter.new(rate_limit_type: rate_limit_type) }.
+      expect { RateLimiter.new(rate_limit_type:) }.
         to raise_error(
           ArgumentError,
           'RateLimiter must have a user or a target, but neither were provided',
@@ -96,7 +96,7 @@ RSpec.describe RateLimiter do
     let(:max_attempts) { RateLimiter.max_attempts(rate_limit_type) }
     let(:attempt_window_in_minutes) { RateLimiter.attempt_window_in_minutes(rate_limit_type) }
 
-    subject(:rate_limiter) { RateLimiter.new(target: '1', rate_limit_type: rate_limit_type) }
+    subject(:rate_limiter) { RateLimiter.new(target: '1', rate_limit_type:) }
 
     it 'returns true if rate limited' do
       max_attempts.times do
@@ -128,7 +128,7 @@ RSpec.describe RateLimiter do
 
   describe '#expires_at' do
     let(:attempted_at) { nil }
-    let(:rate_limiter) { RateLimiter.new(target: '1', rate_limit_type: rate_limit_type) }
+    let(:rate_limiter) { RateLimiter.new(target: '1', rate_limit_type:) }
 
     context 'without having attempted' do
       it 'returns nil' do
@@ -162,7 +162,7 @@ RSpec.describe RateLimiter do
     let(:target) { '1' }
     let(:subject) { described_class }
 
-    subject(:rate_limiter) { RateLimiter.new(target: target, rate_limit_type: rate_limit_type) }
+    subject(:rate_limiter) { RateLimiter.new(target:, rate_limit_type:) }
 
     it 'resets attempt count to 0' do
       rate_limiter.increment!
@@ -175,7 +175,7 @@ RSpec.describe RateLimiter do
     let(:target) { '1' }
     let(:subject) { described_class }
 
-    subject(:rate_limiter) { RateLimiter.new(target: target, rate_limit_type: rate_limit_type) }
+    subject(:rate_limiter) { RateLimiter.new(target:, rate_limit_type:) }
 
     it 'returns maximium remaining attempts with zero attempts' do
       expect(rate_limiter.remaining_count).to eq(RateLimiter.max_attempts(rate_limit_type))

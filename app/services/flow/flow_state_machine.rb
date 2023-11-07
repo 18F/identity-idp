@@ -115,7 +115,7 @@ module Flow
       step_params = flow.extra_view_variables(step)
       local_params = step_params.merge(
         flow_namespace: @namespace,
-        flow_session: flow_session,
+        flow_session:,
         step_indicator: step_indicator_params,
         step_template: "#{@view || @name}/#{step}",
       )
@@ -170,7 +170,7 @@ module Flow
 
     def redirect_to_step(step)
       flow_finish and return unless next_step
-      redirect_to send(@step_url, step: step)
+      redirect_to send(@step_url, step:)
     end
 
     def analytics_properties

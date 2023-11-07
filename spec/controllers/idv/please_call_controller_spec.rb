@@ -4,7 +4,7 @@ RSpec.describe Idv::PleaseCallController do
   let(:user) { create(:user) }
   let(:fraud_review_pending_date) { profile.fraud_review_pending_at }
   let(:verify_date) { profile.verified_at }
-  let!(:profile) { create(:profile, :verified, :fraud_review_pending, user: user) }
+  let!(:profile) { create(:profile, :verified, :fraud_review_pending, user:) }
 
   before do
     stub_sign_in(user)

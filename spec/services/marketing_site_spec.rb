@@ -139,7 +139,7 @@ RSpec.describe MarketingSite do
     let(:category) {}
     let(:article) {}
     let(:article_anchor) {}
-    let(:url) { MarketingSite.help_center_article_url(category: category, article: article) }
+    let(:url) { MarketingSite.help_center_article_url(category:, article:) }
 
     context 'with invalid article' do
       let(:category) { 'foo' }

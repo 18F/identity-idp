@@ -304,7 +304,7 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheckJob do
       wrapper = instance_double(InPerson::EnrollmentsReadyForStatusCheck::SqsBatchWrapper)
       expect(InPerson::EnrollmentsReadyForStatusCheck::SqsBatchWrapper).to receive(:new).
         with(
-          sqs_client: sqs_client,
+          sqs_client:,
           queue_url:,
           receive_params: {
             queue_url:,

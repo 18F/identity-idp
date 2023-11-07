@@ -13,10 +13,10 @@ RSpec.describe OpenidConnectUserInfoPresenter do
   let(:identity) do
     build(
       :service_provider_identity,
-      rails_session_id: rails_session_id,
+      rails_session_id:,
       user: create(:user, profiles: [profile]),
       service_provider: service_provider.issuer,
-      scope: scope,
+      scope:,
       aal: 2,
       requested_aal_value: Saml::Idp::Constants::AAL2_HSPD12_AUTHN_CONTEXT_CLASSREF,
     )
@@ -91,9 +91,9 @@ RSpec.describe OpenidConnectUserInfoPresenter do
         let(:identity) do
           build(
             :service_provider_identity,
-            rails_session_id: rails_session_id,
+            rails_session_id:,
             user: create(:user, :with_piv_or_cac),
-            scope: scope,
+            scope:,
           )
         end
 

@@ -146,10 +146,10 @@ RSpec.describe Encryption::MultiRegionKmsMigration::UserMigrator do
   )
     password_verifier = Encryption::PasswordVerifier.new
     single_region_digest_pair = Encryption::RegionalCiphertextPair.new(
-      single_region_ciphertext: single_region_ciphertext, multi_region_ciphertext: nil,
+      single_region_ciphertext:, multi_region_ciphertext: nil,
     )
     multi_region_digest_pair = Encryption::RegionalCiphertextPair.new(
-      single_region_ciphertext: nil, multi_region_ciphertext: multi_region_ciphertext,
+      single_region_ciphertext: nil, multi_region_ciphertext:,
     )
 
     aggregate_failures do

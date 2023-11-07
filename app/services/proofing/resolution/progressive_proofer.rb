@@ -31,18 +31,18 @@ module Proofing
         double_address_verification: false
       )
         device_profiling_result = proof_with_threatmetrix_if_needed(
-          applicant_pii: applicant_pii,
-          request_ip: request_ip,
-          threatmetrix_session_id: threatmetrix_session_id,
-          timer: timer,
-          user_email: user_email,
+          applicant_pii:,
+          request_ip:,
+          threatmetrix_session_id:,
+          timer:,
+          user_email:,
         )
 
         residential_instant_verify_result = proof_residential_address_if_needed(
-          applicant_pii: applicant_pii,
-          timer: timer,
-          double_address_verification: double_address_verification,
-          ipp_enrollment_in_progress: ipp_enrollment_in_progress,
+          applicant_pii:,
+          timer:,
+          double_address_verification:,
+          ipp_enrollment_in_progress:,
         )
 
         applicant_pii_transformed = applicant_pii.clone
@@ -52,29 +52,29 @@ module Proofing
 
         instant_verify_result = proof_id_address_with_lexis_nexis_if_needed(
           applicant_pii: applicant_pii_transformed,
-          timer: timer,
-          residential_instant_verify_result: residential_instant_verify_result,
-          double_address_verification: double_address_verification,
-          ipp_enrollment_in_progress: ipp_enrollment_in_progress,
+          timer:,
+          residential_instant_verify_result:,
+          double_address_verification:,
+          ipp_enrollment_in_progress:,
         )
 
         state_id_result = proof_id_with_aamva_if_needed(
           applicant_pii: applicant_pii_transformed,
-          timer: timer,
-          residential_instant_verify_result: residential_instant_verify_result,
-          instant_verify_result: instant_verify_result,
-          should_proof_state_id: should_proof_state_id,
-          double_address_verification: double_address_verification,
-          ipp_enrollment_in_progress: ipp_enrollment_in_progress,
+          timer:,
+          residential_instant_verify_result:,
+          instant_verify_result:,
+          should_proof_state_id:,
+          double_address_verification:,
+          ipp_enrollment_in_progress:,
         )
 
         ResultAdjudicator.new(
-          device_profiling_result: device_profiling_result,
-          double_address_verification: double_address_verification,
-          ipp_enrollment_in_progress: ipp_enrollment_in_progress,
+          device_profiling_result:,
+          double_address_verification:,
+          ipp_enrollment_in_progress:,
           resolution_result: instant_verify_result,
-          should_proof_state_id: should_proof_state_id,
-          state_id_result: state_id_result,
+          should_proof_state_id:,
+          state_id_result:,
           residential_resolution_result: residential_instant_verify_result,
           same_address_as_id: applicant_pii[:same_address_as_id],
         )

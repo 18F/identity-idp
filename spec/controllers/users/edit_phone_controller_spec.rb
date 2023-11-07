@@ -59,7 +59,7 @@ RSpec.describe Users::EditPhoneController do
 
   describe '#destroy' do
     let(:user) { create(:user, :fully_registered) }
-    let(:phone_configuration) { create(:phone_configuration, user: user) }
+    let(:phone_configuration) { create(:phone_configuration, user:) }
 
     it 'deletes the phone configuration' do
       stub_sign_in(user.reload)
@@ -73,7 +73,7 @@ RSpec.describe Users::EditPhoneController do
       expect(@analytics).to receive(:track_event).
         with('Phone Number Deletion: Submitted', attributes)
       expect(PushNotification::HttpPush).to receive(:deliver).
-        with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
+        with(PushNotification::RecoveryInformationChangedEvent.new(user:))
       delete :destroy, params: { id: phone_configuration.id }
 
       expect(response).to redirect_to(account_url)

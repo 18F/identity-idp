@@ -24,7 +24,7 @@ RSpec.feature 'managing email address' do
 
       expired_unconfirmed_email_address = create(
         :email_address,
-        user: user,
+        user:,
         confirmed_at: nil,
         confirmation_sent_at: 36.hours.ago,
       )
@@ -41,7 +41,7 @@ RSpec.feature 'managing email address' do
     it 'does not allow last confirmed email to be deleted' do
       user = create(:user, :fully_registered, email: 'test@example.com ')
       confirmed_email = user.confirmed_email_addresses.first
-      unconfirmed_email = create(:email_address, user: user, confirmed_at: nil)
+      unconfirmed_email = create(:email_address, user:, confirmed_at: nil)
       user.email_addresses.reload
 
       sign_in_and_2fa_user(user)
@@ -58,7 +58,7 @@ RSpec.feature 'managing email address' do
       user = create(:user, :fully_registered, email: 'test@example.com ')
       confirmed_email1 = user.confirmed_email_addresses.first
       confirmed_email2 = create(
-        :email_address, user: user,
+        :email_address, user:,
                         confirmed_at: Time.zone.now
       )
       user.email_addresses.reload
@@ -75,7 +75,7 @@ RSpec.feature 'managing email address' do
     it 'sends notification to all confirmed emails when email address is deleted' do
       user = create(:user, :fully_registered, email: 'test@example.com ')
       confirmed_email1 = user.confirmed_email_addresses.first
-      confirmed_email2 = create(:email_address, user: user, confirmed_at: Time.zone.now)
+      confirmed_email2 = create(:email_address, user:, confirmed_at: Time.zone.now)
 
       sign_in_and_2fa_user(user)
       expect(page).to have_current_path(account_path)
@@ -96,7 +96,7 @@ RSpec.feature 'managing email address' do
       user = create(:user, :fully_registered)
       original_email = user.email
       original_email_address = user.email_addresses.first
-      create(:email_address, user: user)
+      create(:email_address, user:)
 
       sign_in_and_2fa_user(user)
 

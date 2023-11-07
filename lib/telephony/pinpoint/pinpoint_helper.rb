@@ -4,11 +4,11 @@ module Telephony
       def self.notify_pinpoint_failover(error:, region:, channel:, extra:)
         response = Response.new(
           success: false,
-          error: error,
+          error:,
           extra: extra.merge(
             failover: true,
-            region: region,
-            channel: channel,
+            region:,
+            channel:,
           ),
         )
         Telephony.log_warn(event: response.to_h)
@@ -20,7 +20,7 @@ module Telephony
           success: false,
           error: UnknownFailureError.new('Failed to load AWS config'),
           extra: {
-            channel: channel,
+            channel:,
           },
         )
 

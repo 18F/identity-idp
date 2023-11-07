@@ -17,7 +17,7 @@ RSpec.describe PushNotification::HttpPush do
 
   let(:event) do
     PushNotification::IdentifierRecycledEvent.new(
-      user: user,
+      user:,
       email: Faker::Internet.safe_email,
     )
   end
@@ -25,7 +25,7 @@ RSpec.describe PushNotification::HttpPush do
   let(:risc_notifications_active_job_enabled) { false }
   let(:push_notifications_enabled) { true }
 
-  subject(:http_push) { PushNotification::HttpPush.new(event, now: now) }
+  subject(:http_push) { PushNotification::HttpPush.new(event, now:) }
 
   before do
     allow(IdentityConfig.store).to receive(:risc_notifications_active_job_enabled).
@@ -86,7 +86,7 @@ RSpec.describe PushNotification::HttpPush do
     end
 
     context 'with an event that sends agency-specific iss_sub' do
-      let(:event) { PushNotification::AccountPurgedEvent.new(user: user) }
+      let(:event) { PushNotification::AccountPurgedEvent.new(user:) }
 
       let(:agency_uuid) { AgencyIdentityLinker.new(sp_with_push_url_identity).link_identity.uuid }
 

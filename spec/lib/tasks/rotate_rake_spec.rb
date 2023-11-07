@@ -14,7 +14,7 @@ RSpec.describe 'rotate' do
 
   describe 'attribute_encryption_key' do
     it 'runs successfully' do
-      auth_app = create(:auth_app_configuration, user: user)
+      auth_app = create(:auth_app_configuration, user:)
       phone_number_opt_out = PhoneNumberOptOut.create_or_find_with_phone(
         Faker::PhoneNumber.cell_phone,
       )

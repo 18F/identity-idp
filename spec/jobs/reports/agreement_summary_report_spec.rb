@@ -25,7 +25,7 @@ RSpec.describe Reports::AgreementSummaryReport do
         create(
           :iaa_gtc,
           gtc_number: 'gtc1234',
-          partner_account: partner_account,
+          partner_account:,
           start_date: Date.new(2021, 1, 1),
           end_date: Date.new(2021, 12, 31),
         )
@@ -36,7 +36,7 @@ RSpec.describe Reports::AgreementSummaryReport do
       before do
         iaa_order = create(
           :iaa_order,
-          order_number: order_number,
+          order_number:,
           start_date: Date.new(2021, 1, 1),
           end_date: Date.new(2021, 12, 31),
           iaa_gtc: gtc,
@@ -44,12 +44,12 @@ RSpec.describe Reports::AgreementSummaryReport do
         iaa_order.integrations << build(
           :integration,
           issuer: sp1.issuer,
-          partner_account: partner_account,
+          partner_account:,
         )
         iaa_order.integrations << build(
           :integration,
           issuer: sp2.issuer,
-          partner_account: partner_account,
+          partner_account:,
         )
       end
 

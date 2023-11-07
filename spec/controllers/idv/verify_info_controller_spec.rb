@@ -169,7 +169,7 @@ RSpec.describe Idv::VerifyInfoController do
             stages: {
               threatmetrix: {
                 transaction_id: 1,
-                review_status: review_status,
+                review_status:,
                 response_body: {
                   tmx_summary_reason_code: ['Identity_Negative_History'],
                 },
@@ -184,7 +184,7 @@ RSpec.describe Idv::VerifyInfoController do
       end
 
       let(:document_capture_session) do
-        document_capture_session = DocumentCaptureSession.create!(user: user)
+        document_capture_session = DocumentCaptureSession.create!(user:)
         document_capture_session.create_proofing_session
         document_capture_session.store_proofing_result(idv_result)
         document_capture_session
@@ -285,10 +285,10 @@ RSpec.describe Idv::VerifyInfoController do
         # Here we're trying to match the store to redis -> read from redis flow this data travels
         result = Proofing::Resolution::ResultAdjudicator.new(
           state_id_result: Proofing::StateIdResult.new(
-            success: success,
-            errors: errors,
-            exception: exception,
-            vendor_name: vendor_name,
+            success:,
+            errors:,
+            exception:,
+            vendor_name:,
             transaction_id: 'abc123',
             verified_attributes: [],
           ),
@@ -388,7 +388,7 @@ RSpec.describe Idv::VerifyInfoController do
 
     it 'modifies pii as expected' do
       app_id = 'hello-world'
-      sp = create(:service_provider, app_id: app_id)
+      sp = create(:service_provider, app_id:)
       sp_session = { issuer: sp.issuer }
       allow(controller).to receive(:sp_session).and_return(sp_session)
 

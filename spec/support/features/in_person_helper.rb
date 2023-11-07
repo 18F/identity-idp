@@ -117,7 +117,7 @@ module InPersonHelper
   def complete_state_id_step(_user = nil, same_address_as_id: true)
     # Wait for page to load before attempting to fill out form
     expect(page).to have_current_path(idv_in_person_step_path(step: :state_id), wait: 10)
-    fill_out_state_id_form_ok(same_address_as_id: same_address_as_id)
+    fill_out_state_id_form_ok(same_address_as_id:)
     click_idv_continue
     unless same_address_as_id
       expect(page).to have_current_path(idv_in_person_step_path(step: :address), wait: 10)
@@ -126,7 +126,7 @@ module InPersonHelper
   end
 
   def complete_address_step(_user = nil, same_address_as_id: true)
-    fill_out_address_form_ok(same_address_as_id: same_address_as_id)
+    fill_out_address_form_ok(same_address_as_id:)
     click_idv_continue
   end
 
@@ -142,8 +142,8 @@ module InPersonHelper
   def complete_all_in_person_proofing_steps(user = user_with_2fa, same_address_as_id: true)
     complete_prepare_step(user)
     complete_location_step(user)
-    complete_state_id_step(user, same_address_as_id: same_address_as_id)
-    complete_address_step(user, same_address_as_id: same_address_as_id) unless same_address_as_id
+    complete_state_id_step(user, same_address_as_id:)
+    complete_address_step(user, same_address_as_id:) unless same_address_as_id
     complete_ssn_step(user)
     complete_verify_step(user)
   end
@@ -216,8 +216,8 @@ module InPersonHelper
     perform_in_browser(:desktop) do
       expect(page).to have_current_path(idv_in_person_step_path(step: :state_id), wait: 10)
 
-      complete_state_id_step(user, same_address_as_id: same_address_as_id)
-      complete_address_step(user, same_address_as_id: same_address_as_id) unless same_address_as_id
+      complete_state_id_step(user, same_address_as_id:)
+      complete_address_step(user, same_address_as_id:) unless same_address_as_id
       complete_ssn_step(user)
       complete_verify_step(user)
       complete_phone_step(user)

@@ -92,7 +92,7 @@ RSpec.feature 'User profile' do
     it 'allows credentials to be reused for sign up' do
       expect(User.count).to eq 0
       pii = { ssn: '1234', dob: '1920-01-01' }
-      profile = create(:profile, :active, :verified, pii: pii)
+      profile = create(:profile, :active, :verified, pii:)
       expect(User.count).to eq 1
       sign_in_live_with_2fa(profile.user)
       visit account_path
@@ -102,7 +102,7 @@ RSpec.feature 'User profile' do
 
       expect(User.count).to eq 0
 
-      profile = create(:profile, :active, :verified, pii: pii)
+      profile = create(:profile, :active, :verified, pii:)
       sign_in_live_with_2fa(profile.user)
       expect(User.count).to eq 1
       expect(Profile.count).to eq 1

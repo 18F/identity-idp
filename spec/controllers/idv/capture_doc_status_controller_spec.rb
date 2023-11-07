@@ -35,7 +35,7 @@ RSpec.describe Idv::CaptureDocStatusController do
   end
 
   describe '#show' do
-    let(:document_capture_session) { DocumentCaptureSession.create!(user: user) }
+    let(:document_capture_session) { DocumentCaptureSession.create!(user:) }
 
     before do
       subject.idv_session.document_capture_session_uuid = document_capture_session.uuid if user
@@ -75,7 +75,7 @@ RSpec.describe Idv::CaptureDocStatusController do
 
     context 'when the user is rate limited' do
       before do
-        RateLimiter.new(rate_limit_type: :idv_doc_auth, user: user).increment_to_limited!
+        RateLimiter.new(rate_limit_type: :idv_doc_auth, user:).increment_to_limited!
       end
 
       it 'returns rate_limited with redirect' do
@@ -210,7 +210,7 @@ RSpec.describe Idv::CaptureDocStatusController do
     context 'when user opted for in-person proofing' do
       before do
         allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
-        create(:in_person_enrollment, :establishing, user: user, profile: nil)
+        create(:in_person_enrollment, :establishing, user:, profile: nil)
       end
 
       it 'returns success with redirect' do

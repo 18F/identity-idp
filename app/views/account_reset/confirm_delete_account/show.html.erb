@@ -5,7 +5,7 @@
         class: 'alert-icon--centered-top',
       ) %>
   <%= render PageHeadingComponent.new.with_content(t('account_reset.confirm_delete_account.title')) %>
-  <p><%= t('account_reset.confirm_delete_account.info_html', email: email) %></p>
+  <p><%= t('account_reset.confirm_delete_account.info_html', email:) %></p>
   <p class="margin-bottom-0">
     <%= t(
           'account_reset.confirm_delete_account.cta_html',

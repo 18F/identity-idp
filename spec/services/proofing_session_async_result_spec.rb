@@ -7,7 +7,7 @@ RSpec.describe ProofingSessionAsyncResult do
 
   context 'EncryptedRedisStructStorage' do
     it 'works with EncryptedRedisStructStorage' do
-      result = ProofingSessionAsyncResult.new(id: id, status: status, result: idv_result)
+      result = ProofingSessionAsyncResult.new(id:, status:, result: idv_result)
 
       EncryptedRedisStructStorage.store(result)
 

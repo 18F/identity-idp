@@ -6,7 +6,7 @@ RSpec.describe TwoFactorAuthCode::BackupCodePresenter do
   let(:presenter) do
     arguments = {}
     view = ActionController::Base.new.view_context
-    TwoFactorAuthCode::BackupCodePresenter.new(data: arguments, view: view, service_provider: nil)
+    TwoFactorAuthCode::BackupCodePresenter.new(data: arguments, view:, service_provider: nil)
   end
 
   describe '#cancel_link' do

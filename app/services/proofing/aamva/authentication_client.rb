@@ -19,7 +19,7 @@ module Proofing
         sct_request = Request::SecurityTokenRequest.new(config)
         sct_response = sct_request.send
         token_request = Request::AuthenticationTokenRequest.new(
-          config: config,
+          config:,
           security_context_token_identifier: sct_response.security_context_token_identifier,
           security_context_token_reference: sct_response.security_context_token_reference,
           client_hmac_secret: sct_request.nonce,

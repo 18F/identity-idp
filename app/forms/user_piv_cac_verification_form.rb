@@ -14,15 +14,15 @@ class UserPivCacVerificationForm
     errors = error_type ? { type: error_type } : {}
 
     FormResponse.new(
-      success: success,
-      errors: errors,
-      extra: extra_analytics_attributes.merge(error_type ? { key_id: key_id } : {}),
+      success:,
+      errors:,
+      extra: extra_analytics_attributes.merge(error_type ? { key_id: } : {}),
     )
   end
 
   def piv_cac_configuration
     return nil if x509_dn_uuid.blank?
-    @piv_cac_configuration ||= ::PivCacConfiguration.find_by(x509_dn_uuid: x509_dn_uuid)
+    @piv_cac_configuration ||= ::PivCacConfiguration.find_by(x509_dn_uuid:)
   end
 
   private

@@ -4,11 +4,11 @@ RSpec.describe WebauthnSetupForm do
   include WebAuthnHelper
 
   let(:user) { create(:user) }
-  let(:user_session) { { webauthn_challenge: webauthn_challenge } }
+  let(:user_session) { { webauthn_challenge: } }
   let(:domain_name) { 'localhost:3000' }
   let(:params) do
     {
-      attestation_object: attestation_object,
+      attestation_object:,
       client_data_json: setup_client_data_json,
       name: 'mykey',
       platform_authenticator: false,
@@ -54,7 +54,7 @@ RSpec.describe WebauthnSetupForm do
 
       it 'sends a recovery information changed event' do
         expect(PushNotification::HttpPush).to receive(:deliver).
-          with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
+          with(PushNotification::RecoveryInformationChangedEvent.new(user:))
 
         subject.submit(protocol, params)
       end

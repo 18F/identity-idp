@@ -145,7 +145,7 @@ RSpec.describe Idv::WelcomeController do
     end
 
     context 'with previous establishing in-person enrollments' do
-      let!(:enrollment) { create(:in_person_enrollment, :establishing, user: user, profile: nil) }
+      let!(:enrollment) { create(:in_person_enrollment, :establishing, user:, profile: nil) }
 
       before do
         allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)

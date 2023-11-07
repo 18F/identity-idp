@@ -34,7 +34,7 @@ class PhoneNumberOptOut < ApplicationRecord
   end
 
   def self.from_param(uuid)
-    find_by!(uuid: uuid)
+    find_by!(uuid:)
   end
 
   def formatted_phone

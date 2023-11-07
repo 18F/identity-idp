@@ -11,7 +11,7 @@ RSpec.describe TwoFactorAuthentication::SelectionPresenter do
 
   let(:user) { build(:user) }
 
-  subject(:presenter) { described_class.new(user: user) }
+  subject(:presenter) { described_class.new(user:) }
 
   describe '#render_in' do
     it 'renders captured block content' do
@@ -74,7 +74,7 @@ RSpec.describe TwoFactorAuthentication::SelectionPresenter do
     context 'with configuration' do
       let(:single_configuration_only) { true }
       let(:mfa_configuration_count) { 1 }
-      let(:configuration) { create(:phone_configuration, user: user) }
+      let(:configuration) { create(:phone_configuration, user:) }
       before do
         allow(presenter).to receive(:configuration).and_return(configuration)
       end
@@ -109,14 +109,14 @@ RSpec.describe TwoFactorAuthentication::SelectionPresenter do
   describe '#label' do
     context 'with no configuration' do
       it 'raises with missing translation' do
-        expect { placeholder_presenter_class.new(user: user).label }.to raise_error(RuntimeError)
+        expect { placeholder_presenter_class.new(user:).label }.to raise_error(RuntimeError)
       end
     end
 
     context 'with configuration' do
       it 'raises with missing translation' do
         expect do
-          placeholder_presenter_class.new(configuration: 1, user: user).label
+          placeholder_presenter_class.new(configuration: 1, user:).label
         end.to raise_error(RuntimeError)
       end
     end
@@ -125,14 +125,14 @@ RSpec.describe TwoFactorAuthentication::SelectionPresenter do
   describe '#info' do
     context 'with no configuration' do
       it 'raises with missing translation' do
-        expect { placeholder_presenter_class.new(user: user).info }.to raise_error(RuntimeError)
+        expect { placeholder_presenter_class.new(user:).info }.to raise_error(RuntimeError)
       end
     end
 
     context 'with configuration' do
       it 'raises with missing translation' do
         expect do
-          placeholder_presenter_class.new(configuration: 1, user: user).info
+          placeholder_presenter_class.new(configuration: 1, user:).info
         end.to raise_error(RuntimeError)
       end
     end

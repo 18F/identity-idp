@@ -35,7 +35,7 @@ class GetUspsProofingResultsJob < ApplicationJob
 
     analytics.idv_in_person_usps_proofing_results_job_started(
       enrollments_count: enrollments_to_check.count,
-      reprocess_delay_minutes: reprocess_delay_minutes,
+      reprocess_delay_minutes:,
       job_name: self.class.name,
     )
 
@@ -117,7 +117,7 @@ class GetUspsProofingResultsJob < ApplicationJob
     process_enrollment_response(enrollment, response)
   ensure
     # Record the attempt to update the enrollment
-    enrollment.update(status_check_attempted_at: status_check_attempted_at)
+    enrollment.update(status_check_attempted_at:)
   end
 
   def passed_with_unsupported_secondary_id_type?(response)
@@ -126,7 +126,7 @@ class GetUspsProofingResultsJob < ApplicationJob
   end
 
   def analytics(user: AnonymousUser.new)
-    Analytics.new(user: user, request: nil, session: {}, sp: nil)
+    Analytics.new(user:, request: nil, session: {}, sp: nil)
   end
 
   def summary_percent(outcomes_key)
@@ -231,12 +231,12 @@ class GetUspsProofingResultsJob < ApplicationJob
     )
     enrollment.update(
       status: :failed,
-      proofed_at: proofed_at,
+      proofed_at:,
       status_check_completed_at: Time.zone.now,
     )
 
     # send SMS and email
-    send_enrollment_status_sms_notification(enrollment: enrollment)
+    send_enrollment_status_sms_notification(enrollment:)
     send_failed_email(enrollment.user, enrollment)
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_email_initiated(
       **email_analytics_attributes(enrollment),
@@ -250,7 +250,7 @@ class GetUspsProofingResultsJob < ApplicationJob
     analytics(user: enrollment.user).
       idv_in_person_usps_proofing_results_job_enrollment_incomplete(
         **enrollment_analytics_attributes(enrollment, complete: false),
-        response_message: response_message,
+        response_message:,
         job_name: self.class.name,
       )
     enrollment.update(status_check_completed_at: Time.zone.now)
@@ -311,8 +311,8 @@ class GetUspsProofingResultsJob < ApplicationJob
     analytics(user: enrollment.user).
       idv_in_person_usps_proofing_results_job_unexpected_response(
         **enrollment_analytics_attributes(enrollment, complete: cancel),
-        response_message: response_message,
-        reason: reason,
+        response_message:,
+        reason:,
         job_name: self.class.name,
       )
   end
@@ -330,12 +330,12 @@ class GetUspsProofingResultsJob < ApplicationJob
 
     enrollment.update(
       status: :failed,
-      proofed_at: proofed_at,
+      proofed_at:,
       status_check_completed_at: Time.zone.now,
     )
 
     # send SMS and email
-    send_enrollment_status_sms_notification(enrollment: enrollment)
+    send_enrollment_status_sms_notification(enrollment:)
     if response['fraudSuspected']
       send_failed_fraud_email(enrollment.user, enrollment)
       analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_email_initiated(
@@ -366,12 +366,12 @@ class GetUspsProofingResultsJob < ApplicationJob
     enrollment.profile.activate_after_passing_in_person
     enrollment.update(
       status: :passed,
-      proofed_at: proofed_at,
+      proofed_at:,
       status_check_completed_at: Time.zone.now,
     )
 
     # send SMS and email
-    send_enrollment_status_sms_notification(enrollment: enrollment)
+    send_enrollment_status_sms_notification(enrollment:)
     send_verified_email(enrollment.user, enrollment)
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_email_initiated(
       **email_analytics_attributes(enrollment),
@@ -392,11 +392,11 @@ class GetUspsProofingResultsJob < ApplicationJob
     )
     enrollment.update(
       status: :failed,
-      proofed_at: proofed_at,
+      proofed_at:,
       status_check_completed_at: Time.zone.now,
     )
     # send SMS and email
-    send_enrollment_status_sms_notification(enrollment: enrollment)
+    send_enrollment_status_sms_notification(enrollment:)
     send_failed_email(enrollment.user, enrollment)
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_email_initiated(
       **email_analytics_attributes(enrollment),
@@ -430,8 +430,8 @@ class GetUspsProofingResultsJob < ApplicationJob
   def send_verified_email(user, enrollment)
     user.confirmed_email_addresses.each do |email_address|
       # rubocop:disable IdentityIdp/MailLaterLinter
-      UserMailer.with(user: user, email_address: email_address).in_person_verified(
-        enrollment: enrollment,
+      UserMailer.with(user:, email_address:).in_person_verified(
+        enrollment:,
       ).deliver_later(**notification_delivery_params(enrollment))
       # rubocop:enable IdentityIdp/MailLaterLinter
     end
@@ -440,8 +440,8 @@ class GetUspsProofingResultsJob < ApplicationJob
   def send_deadline_passed_email(user, enrollment)
     # rubocop:disable IdentityIdp/MailLaterLinter
     user.confirmed_email_addresses.each do |email_address|
-      UserMailer.with(user: user, email_address: email_address).in_person_deadline_passed(
-        enrollment: enrollment,
+      UserMailer.with(user:, email_address:).in_person_deadline_passed(
+        enrollment:,
       ).deliver_later
       # rubocop:enable IdentityIdp/MailLaterLinter
     end
@@ -450,8 +450,8 @@ class GetUspsProofingResultsJob < ApplicationJob
   def send_failed_email(user, enrollment)
     user.confirmed_email_addresses.each do |email_address|
       # rubocop:disable IdentityIdp/MailLaterLinter
-      UserMailer.with(user: user, email_address: email_address).in_person_failed(
-        enrollment: enrollment,
+      UserMailer.with(user:, email_address:).in_person_failed(
+        enrollment:,
       ).deliver_later(**notification_delivery_params(enrollment))
       # rubocop:enable IdentityIdp/MailLaterLinter
     end
@@ -460,8 +460,8 @@ class GetUspsProofingResultsJob < ApplicationJob
   def send_failed_fraud_email(user, enrollment)
     user.confirmed_email_addresses.each do |email_address|
       # rubocop:disable IdentityIdp/MailLaterLinter
-      UserMailer.with(user: user, email_address: email_address).in_person_failed_fraud(
-        enrollment: enrollment,
+      UserMailer.with(user:, email_address:).in_person_failed_fraud(
+        enrollment:,
       ).deliver_later(**notification_delivery_params(enrollment))
       # rubocop:enable IdentityIdp/MailLaterLinter
     end

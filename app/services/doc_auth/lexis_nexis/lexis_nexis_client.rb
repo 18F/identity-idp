@@ -20,12 +20,12 @@ module DocAuth
         uuid_prefix: nil
       )
         Requests::TrueIdRequest.new(
-          config: config,
-          user_uuid: user_uuid,
-          uuid_prefix: uuid_prefix,
-          front_image: front_image,
-          back_image: back_image,
-          image_source: image_source,
+          config:,
+          user_uuid:,
+          uuid_prefix:,
+          front_image:,
+          back_image:,
+          image_source:,
         ).fetch
       end
     end

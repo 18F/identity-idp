@@ -9,11 +9,11 @@ RSpec.describe AccountShowPresenter do
         last_name = 'Doe'
         birthday = Date.new(2000, 7, 27)
         decrypted_pii = Pii::Attributes.new_from_hash(
-          first_name: first_name, last_name: last_name,
+          first_name:, last_name:,
           dob: birthday
         )
         profile_index = AccountShowPresenter.new(
-          decrypted_pii: decrypted_pii, personal_key: '', user: user,
+          decrypted_pii:, personal_key: '', user:,
           sp_session_request_url: nil, sp_name: nil,
           locked_for_session: false
         )
@@ -28,7 +28,7 @@ RSpec.describe AccountShowPresenter do
         email_address = user.reload.email_addresses.last
         email_address.update!(last_sign_in_at: 1.minute.from_now)
         profile_index = AccountShowPresenter.new(
-          decrypted_pii: {}, personal_key: '', user: user,
+          decrypted_pii: {}, personal_key: '', user:,
           sp_session_request_url: nil, sp_name: nil,
           locked_for_session: false
         )
@@ -47,7 +47,7 @@ RSpec.describe AccountShowPresenter do
         ).to receive(:enabled?).and_return(true)
 
         profile_index = AccountShowPresenter.new(
-          decrypted_pii: {}, personal_key: '', user: user,
+          decrypted_pii: {}, personal_key: '', user:,
           sp_session_request_url: nil, sp_name: nil,
           locked_for_session: false
         )
@@ -63,7 +63,7 @@ RSpec.describe AccountShowPresenter do
           TwoFactorAuthentication::AuthAppPolicy,
         ).to receive(:enabled?).and_return(false)
         profile_index = AccountShowPresenter.new(
-          decrypted_pii: {}, personal_key: '', user: user,
+          decrypted_pii: {}, personal_key: '', user:,
           sp_session_request_url: nil, sp_name: nil,
           locked_for_session: false
         )
@@ -76,8 +76,8 @@ RSpec.describe AccountShowPresenter do
   describe '#backup_codes_generated_at' do
     it 'returns the created_at date of the oldest backup code' do
       user = create(:user)
-      create(:backup_code_configuration, created_at: 1.day.ago, user: user)
-      oldest_code = create(:backup_code_configuration, created_at: 2.days.ago, user: user)
+      create(:backup_code_configuration, created_at: 1.day.ago, user:)
+      oldest_code = create(:backup_code_configuration, created_at: 2.days.ago, user:)
 
       account_show = AccountShowPresenter.new(
         decrypted_pii: {},
@@ -114,16 +114,16 @@ RSpec.describe AccountShowPresenter do
   describe '#pii' do
     let(:user) { build(:user) }
     let(:decrypted_pii) do
-      Pii::Attributes.new_from_hash(dob: dob)
+      Pii::Attributes.new_from_hash(dob:)
     end
 
     subject(:account_show) do
       AccountShowPresenter.new(
-        decrypted_pii: decrypted_pii,
+        decrypted_pii:,
         personal_key: '',
         sp_session_request_url: nil,
         sp_name: nil,
-        user: user,
+        user:,
         locked_for_session: false,
       )
     end
@@ -159,7 +159,7 @@ RSpec.describe AccountShowPresenter do
         profile_index = AccountShowPresenter.new(
           decrypted_pii: {},
           personal_key: '',
-          user: user,
+          user:,
           sp_session_request_url: nil,
           sp_name: nil,
           locked_for_session: false,
@@ -183,7 +183,7 @@ RSpec.describe AccountShowPresenter do
         profile_index = AccountShowPresenter.new(
           decrypted_pii: {},
           personal_key: '',
-          user: user,
+          user:,
           sp_session_request_url: nil,
           sp_name: nil,
           locked_for_session: false,
@@ -202,7 +202,7 @@ RSpec.describe AccountShowPresenter do
         profile_index = AccountShowPresenter.new(
           decrypted_pii: {},
           personal_key: '',
-          user: user,
+          user:,
           sp_session_request_url: nil,
           sp_name: nil,
           locked_for_session: false,

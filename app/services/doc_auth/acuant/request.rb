@@ -91,7 +91,7 @@ module DocAuth
           end,
         }
 
-        Faraday.new(url: url.to_s, headers: headers) do |conn|
+        Faraday.new(url: url.to_s, headers:) do |conn|
           conn.request :authorization, :basic, config.assure_id_username, config.assure_id_password
           conn.request :instrumentation, name: 'request_metric.faraday'
           conn.request :retry, retry_options
@@ -120,8 +120,8 @@ module DocAuth
       def create_error_response(errors, exception)
         DocAuth::Response.new(
           success: false,
-          errors: errors,
-          exception: exception,
+          errors:,
+          exception:,
           extra: { vendor: 'Acuant' },
         )
       end

@@ -52,7 +52,7 @@ module DocAuth
             success: successful_result?,
             errors: error_messages,
             extra: extra_attributes,
-            pii_from_doc: pii_from_doc,
+            pii_from_doc:,
           )
         rescue StandardError => e
           NewRelic::Agent.notice_error(e)
@@ -200,25 +200,25 @@ module DocAuth
           log_alert_formatter = DocAuth::ProcessedAlertToLogAlertFormatter.new
 
           {
-            transaction_status: transaction_status,
-            transaction_reason_code: transaction_reason_code,
-            product_status: product_status,
-            decision_product_status: decision_product_status,
-            doc_auth_result: doc_auth_result,
+            transaction_status:,
+            transaction_reason_code:,
+            product_status:,
+            decision_product_status:,
+            doc_auth_result:,
             processed_alerts: alerts,
             alert_failure_count: alerts[:failed]&.count.to_i,
             log_alert_results: log_alert_formatter.log_alerts(alerts),
             portrait_match_results: true_id_product[:PORTRAIT_MATCH_RESULT],
             image_metrics: parse_image_metrics,
             address_line2_present: !pii_from_doc[:address2].blank?,
-            classification_info: classification_info,
+            classification_info:,
           }
         end
 
         def basic_logging_info
           {
-            conversation_id: conversation_id,
-            reference: reference,
+            conversation_id:,
+            reference:,
             vendor: 'TrueID',
             billed: billed?,
           }

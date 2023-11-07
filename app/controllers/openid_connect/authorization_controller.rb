@@ -154,7 +154,7 @@ module OpenidConnect
     def store_request
       ServiceProviderRequestHandler.new(
         url: request.original_url,
-        session: session,
+        session:,
         protocol_request: @authorize_form,
         protocol: FederatedProtocols::Oidc,
       ).call

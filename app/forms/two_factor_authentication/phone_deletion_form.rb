@@ -16,7 +16,7 @@ module TwoFactorAuthentication
     def submit
       success = configuration.blank? || valid? && configuration_destroyed
 
-      FormResponse.new(success: success, errors: errors, extra: extra_analytics_attributes)
+      FormResponse.new(success:, errors:, extra: extra_analytics_attributes)
     end
 
     private

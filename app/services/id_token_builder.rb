@@ -29,7 +29,7 @@ class IdTokenBuilder
   attr_reader :code
 
   def jwt_payload
-    OpenidConnectUserInfoPresenter.new(identity, session_accessor: session_accessor).
+    OpenidConnectUserInfoPresenter.new(identity, session_accessor:).
       user_info.
       merge(id_token_claims).
       merge(timestamp_claims)
@@ -37,7 +37,7 @@ class IdTokenBuilder
 
   def id_token_claims
     {
-      acr: acr,
+      acr:,
       nonce: identity.nonce,
       aud: identity.service_provider,
       jti: SecureRandom.urlsafe_base64,

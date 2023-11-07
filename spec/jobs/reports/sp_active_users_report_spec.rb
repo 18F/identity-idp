@@ -25,7 +25,7 @@ RSpec.describe Reports::SpActiveUsersReport do
   it 'returns total active user counts per sp broken down by ial1 and ial2' do
     job_date = Date.new(2022, 1, 1)
     authenticated_time = job_date.noon
-    ServiceProvider.create(issuer: issuer, friendly_name: issuer, app_id: 'app')
+    ServiceProvider.create(issuer:, friendly_name: issuer, app_id: 'app')
     ServiceProviderIdentity.create(
       user_id: 1, service_provider: issuer, uuid: 'foo1',
       last_ial1_authenticated_at: authenticated_time, last_ial2_authenticated_at: authenticated_time
@@ -44,8 +44,8 @@ RSpec.describe Reports::SpActiveUsersReport do
     )
     result = [
       {
-        issuer: issuer,
-        app_id: app_id,
+        issuer:,
+        app_id:,
         total_ial1_active: 1,
         total_ial2_active: 3,
       },
@@ -73,7 +73,7 @@ RSpec.describe Reports::SpActiveUsersReport do
     beginning_of_current_fiscal_year = job_date.beginning_of_day
     current_fiscal_year = job_date.change(hour: 12, minute: 30)
 
-    ServiceProvider.create(issuer: issuer, friendly_name: issuer, app_id: 'app')
+    ServiceProvider.create(issuer:, friendly_name: issuer, app_id: 'app')
     ServiceProviderIdentity.create(
       user_id: 1, service_provider: issuer, uuid: 'foo1',
       last_ial1_authenticated_at: beginning_of_last_fiscal_year,
@@ -100,8 +100,8 @@ RSpec.describe Reports::SpActiveUsersReport do
 
     result = [
       {
-        issuer: issuer,
-        app_id: app_id,
+        issuer:,
+        app_id:,
         total_ial1_active: 0,
         total_ial2_active: 3,
       },

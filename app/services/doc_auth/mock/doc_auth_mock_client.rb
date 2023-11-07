@@ -29,7 +29,7 @@ module DocAuth
         return mocked_response_for_method(__method__) if method_mocked?(__method__)
 
         instance_id = SecureRandom.uuid
-        Responses::CreateDocumentResponse.new(success: true, errors: {}, instance_id: instance_id)
+        Responses::CreateDocumentResponse.new(success: true, errors: {}, instance_id:)
       end
 
       # rubocop:disable Lint/UnusedMethodArgument
@@ -63,13 +63,13 @@ module DocAuth
 
         instance_id = document_response.instance_id
 
-        front_image_response = post_front_image(image: front_image, instance_id: instance_id)
+        front_image_response = post_front_image(image: front_image, instance_id:)
         return front_image_response unless front_image_response.success?
 
-        back_image_response = post_back_image(image: back_image, instance_id: instance_id)
+        back_image_response = post_back_image(image: back_image, instance_id:)
         return back_image_response unless back_image_response.success?
 
-        get_results(instance_id: instance_id)
+        get_results(instance_id:)
       end
 
       def get_results(instance_id:)
@@ -142,8 +142,8 @@ module DocAuth
         exception = DocAuth::RequestError.new(message, status)
         DocAuth::Response.new(
           success: false,
-          errors: errors,
-          exception: exception,
+          errors:,
+          exception:,
           extra: { vendor: 'Mock' },
         )
       rescue Psych::SyntaxError

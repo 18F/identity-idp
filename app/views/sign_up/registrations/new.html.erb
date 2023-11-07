@@ -32,7 +32,7 @@
       ) %>
 
   <%= render partial: 'shared/email_languages',
-             locals: { f: f, selection: @register_user_email_form.email_language } %>
+             locals: { f:, selection: @register_user_email_form.email_language } %>
 
   <%= render ValidatedFieldComponent.new(
         form: f,

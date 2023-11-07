@@ -74,7 +74,7 @@ class ScriptBase
     elsif result.json
       stdout.puts result.json.to_json
     else
-      self.class.render_output(result.table, format: config.format, stdout: stdout)
+      self.class.render_output(result.table, format: config.format, stdout:)
     end
   rescue => err
     self.class.render_output(
@@ -83,7 +83,7 @@ class ScriptBase
         [err.class.name, err.message],
       ],
       format: config.format,
-      stdout: stdout,
+      stdout:,
     )
 
     stderr.puts "#{err.class.name}: #{err.message}"

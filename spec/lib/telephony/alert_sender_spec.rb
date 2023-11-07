@@ -43,9 +43,9 @@ RSpec.describe Telephony::AlertSender do
     it 'sends the correct message' do
       subject.send_doc_auth_link(
         to: recipient,
-        link: link,
+        link:,
         country_code: 'US',
-        sp_or_app_name: sp_or_app_name,
+        sp_or_app_name:,
       )
 
       last_message = Telephony::Test::Message.messages.last
@@ -53,9 +53,9 @@ RSpec.describe Telephony::AlertSender do
       expect(last_message.body).to eq(
         I18n.t(
           'telephony.doc_auth_link',
-          app_name: app_name,
-          link: link,
-          sp_or_app_name: sp_or_app_name,
+          app_name:,
+          link:,
+          sp_or_app_name:,
         ),
       )
     end
@@ -73,9 +73,9 @@ RSpec.describe Telephony::AlertSender do
         it 'puts the URL in the first 160 characters, so it stays within a single SMS message' do
           subject.send_doc_auth_link(
             to: recipient,
-            link: link,
+            link:,
             country_code: 'US',
-            sp_or_app_name: sp_or_app_name,
+            sp_or_app_name:,
           )
 
           last_message = Telephony::Test::Message.messages.last
@@ -94,7 +94,7 @@ RSpec.describe Telephony::AlertSender do
         to: recipient,
         link: long_link,
         country_code: 'US',
-        sp_or_app_name: sp_or_app_name,
+        sp_or_app_name:,
       )
     end
   end

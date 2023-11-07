@@ -5,7 +5,7 @@ module AccountReset
       if email.blank?
         redirect_to root_url
       else
-        render :show, locals: { email: email }
+        render :show, locals: { email: }
       end
     end
   end

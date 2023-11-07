@@ -104,7 +104,7 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
   it 'uploads a file to S3 based on the report date' do
     expected_s3_paths.each do |path|
       expect(subject).to receive(:upload_file_to_s3_bucket).with(
-        path: path,
+        path:,
         **s3_metadata,
       ).exactly(1).time.and_call_original
     end

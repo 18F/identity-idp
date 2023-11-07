@@ -13,7 +13,7 @@ class DeleteUserEmailForm
   def submit
     success = valid? && email_address_destroyed
     notify_subscribers if success
-    FormResponse.new(success: success, errors: errors)
+    FormResponse.new(success:, errors:)
   end
 
   private
@@ -27,11 +27,11 @@ class DeleteUserEmailForm
 
   def notify_subscribers
     email = email_address.email
-    identifier_recycled = PushNotification::IdentifierRecycledEvent.new(user: user, email: email)
+    identifier_recycled = PushNotification::IdentifierRecycledEvent.new(user:, email:)
     PushNotification::HttpPush.deliver(identifier_recycled)
-    email_changed = PushNotification::EmailChangedEvent.new(user: user, email: email)
+    email_changed = PushNotification::EmailChangedEvent.new(user:, email:)
     PushNotification::HttpPush.deliver(email_changed)
-    recovery_information_changed = PushNotification::RecoveryInformationChangedEvent.new(user: user)
+    recovery_information_changed = PushNotification::RecoveryInformationChangedEvent.new(user:)
     PushNotification::HttpPush.deliver(recovery_information_changed)
   end
 end

@@ -15,7 +15,7 @@ RSpec.describe IdTokenBuilder do
       # this is a known value from an example developer guide
       # https://www.pingidentity.com/content/developer/en/resources/openid-connect-developers-guide.html
       access_token: 'dNZX1hEZ9wBCzNL40Upu646bdzQA',
-      user: user,
+      user:,
     )
   end
 
@@ -23,10 +23,10 @@ RSpec.describe IdTokenBuilder do
   let(:custom_expiration) { (now + 5.minutes).to_i }
   subject(:builder) do
     IdTokenBuilder.new(
-      identity: identity,
-      code: code,
-      custom_expiration: custom_expiration,
-      now: now,
+      identity:,
+      code:,
+      custom_expiration:,
+      now:,
     )
   end
 

@@ -37,7 +37,7 @@ module Proofing
         build_result_from_response(response)
       rescue => exception
         failed_result = Proofing::StateIdResult.new(
-          success: false, errors: {}, exception: exception, vendor_name: 'aamva:state_id',
+          success: false, errors: {}, exception:, vendor_name: 'aamva:state_id',
           transaction_id: nil, verified_attributes: []
         )
         send_to_new_relic(failed_result)

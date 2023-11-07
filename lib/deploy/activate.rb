@@ -122,13 +122,13 @@ module Deploy
         logger.info("Skipping #{local_path}") && return
       end
       secrets_s3.download_file(
-        s3_path: s3_path,
-        local_path: local_path,
+        s3_path:,
+        local_path:,
       )
     end
 
     def secrets_s3
-      @secrets_s3 ||= Identity::Hostdata.secrets_s3(s3_client: s3_client, logger: logger)
+      @secrets_s3 ||= Identity::Hostdata.secrets_s3(s3_client:, logger:)
     end
 
     def default_logger

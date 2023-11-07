@@ -15,11 +15,11 @@ class DisplayablePiiFormatter
   # @return [FormattedPii]
   def format
     FormattedPii.new(
-      email: email,
-      all_emails: all_emails,
-      verified_at: verified_at,
-      x509_subject: x509_subject,
-      x509_issuer: x509_issuer,
+      email:,
+      all_emails:,
+      verified_at:,
+      x509_subject:,
+      x509_issuer:,
     ).tap do |formatted_pii|
       if pii.any?
         formatted_pii.full_name = full_name

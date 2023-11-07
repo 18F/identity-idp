@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe UserPivCacSetupForm do
-  let(:form) { described_class.new(user: user, token: token, nonce: nonce, name: 'Card 1') }
+  let(:form) { described_class.new(user:, token:, nonce:, name: 'Card 1') }
 
   let(:nonce) { 'nonce' }
   let(:user) { create(:user) }
@@ -28,7 +28,7 @@ RSpec.describe UserPivCacSetupForm do
         extra = { multi_factor_auth_method: 'piv_cac' }
 
         expect(FormResponse).to receive(:new).
-          with(success: true, errors: {}, extra: extra).and_return(result)
+          with(success: true, errors: {}, extra:).and_return(result)
         expect(form.submit).to eq result
         user.reload
         expect(TwoFactorAuthentication::PivCacPolicy.new(user).enabled?).to eq true
@@ -37,7 +37,7 @@ RSpec.describe UserPivCacSetupForm do
 
       it 'sends a recovery information changed event' do
         expect(PushNotification::HttpPush).to receive(:deliver).
-          with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
+          with(PushNotification::RecoveryInformationChangedEvent.new(user:))
 
         form.submit
       end
@@ -50,7 +50,7 @@ RSpec.describe UserPivCacSetupForm do
           extra = { multi_factor_auth_method: 'piv_cac' }
 
           expect(FormResponse).to receive(:new).
-            with(success: true, errors: {}, extra: extra).and_return(result)
+            with(success: true, errors: {}, extra:).and_return(result)
           expect(form.submit).to eq result
           expect(TwoFactorAuthentication::PivCacPolicy.new(user.reload).enabled?).to eq true
         end
@@ -66,7 +66,7 @@ RSpec.describe UserPivCacSetupForm do
 
           expect(FormResponse).to receive(:new).
             with(success: false, errors: { type: 'piv_cac.already_associated' },
-                 extra: extra).and_return(result)
+                 extra:).and_return(result)
           expect(form.submit).to eq result
           expect(TwoFactorAuthentication::PivCacPolicy.new(user.reload).enabled?).to eq false
           expect(form.error_type).to eq 'piv_cac.already_associated'
@@ -85,7 +85,7 @@ RSpec.describe UserPivCacSetupForm do
         extra = { multi_factor_auth_method: 'piv_cac', key_id: 'foo' }
 
         expect(FormResponse).to receive(:new).
-          with(success: false, errors: { type: 'token.bad' }, extra: extra).and_return(result)
+          with(success: false, errors: { type: 'token.bad' }, extra:).and_return(result)
         expect(form.submit).to eq result
         expect(TwoFactorAuthentication::PivCacPolicy.new(user.reload).enabled?).to eq false
         expect(form.error_type).to eq 'token.bad'
@@ -104,7 +104,7 @@ RSpec.describe UserPivCacSetupForm do
         extra = { multi_factor_auth_method: 'piv_cac', key_id: 'foo' }
 
         expect(FormResponse).to receive(:new).
-          with(success: false, errors: { type: 'token.invalid' }, extra: extra).and_return(result)
+          with(success: false, errors: { type: 'token.invalid' }, extra:).and_return(result)
         expect(form.submit).to eq result
         expect(form.error_type).to eq 'token.invalid'
       end
@@ -118,7 +118,7 @@ RSpec.describe UserPivCacSetupForm do
         extra = { multi_factor_auth_method: 'piv_cac' }
 
         expect(FormResponse).to receive(:new).
-          with(success: false, errors: {}, extra: extra).and_return(result)
+          with(success: false, errors: {}, extra:).and_return(result)
         expect(form.submit).to eq result
         expect(TwoFactorAuthentication::PivCacPolicy.new(user.reload).enabled?).to eq false
       end

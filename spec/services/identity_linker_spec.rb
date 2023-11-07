@@ -35,11 +35,11 @@ RSpec.describe IdentityLinker do
       verified_attributes = %w[address email]
 
       IdentityLinker.new(user, service_provider).link_identity(
-        rails_session_id: rails_session_id,
-        nonce: nonce,
-        ial: ial,
-        scope: scope,
-        code_challenge: code_challenge,
+        rails_session_id:,
+        nonce:,
+        ial:,
+        scope:,
+        code_challenge:,
         verified_attributes: verified_attributes.map(&:to_sym),
       )
       user.reload
@@ -107,7 +107,7 @@ RSpec.describe IdentityLinker do
 
       subject(:link_identity) do
         IdentityLinker.new(user, service_provider).
-          link_identity(clear_deleted_at: clear_deleted_at)
+          link_identity(clear_deleted_at:)
       end
 
       context ':clear_deleted_at is nil' do
@@ -146,8 +146,8 @@ RSpec.describe IdentityLinker do
       service_provider1 = build(:service_provider, issuer: 'client1')
       service_provider2 = build(:service_provider, issuer: 'client2')
 
-      IdentityLinker.new(user, service_provider1).link_identity(rails_session_id: rails_session_id)
-      IdentityLinker.new(user, service_provider2).link_identity(rails_session_id: rails_session_id)
+      IdentityLinker.new(user, service_provider1).link_identity(rails_session_id:)
+      IdentityLinker.new(user, service_provider2).link_identity(rails_session_id:)
     end
   end
 end

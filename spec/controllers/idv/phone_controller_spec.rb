@@ -98,7 +98,7 @@ RSpec.describe Idv::PhoneController do
 
     context 'when the user is rate limited' do
       before do
-        RateLimiter.new(rate_limit_type: :proof_address, user: user).increment_to_limited!
+        RateLimiter.new(rate_limit_type: :proof_address, user:).increment_to_limited!
       end
 
       it 'redirects to fail' do
@@ -110,7 +110,7 @@ RSpec.describe Idv::PhoneController do
 
     context 'when the user has chosen to use a different number' do
       let(:step) { 'path_where_user_asked_to_use_different_number' }
-      let(:params) { { step: step } }
+      let(:params) { { step: } }
 
       before do
         stub_analytics
@@ -118,11 +118,11 @@ RSpec.describe Idv::PhoneController do
       end
 
       it 'logs an event showing that the user wants to choose a different number' do
-        get :new, params: params
+        get(:new, params:)
 
         expect(@analytics).to have_received(:track_event).with(
           'IdV: use different phone number',
-          step: step,
+          step:,
           proofing_components: nil,
         )
       end
@@ -166,7 +166,7 @@ RSpec.describe Idv::PhoneController do
 
       before do
         subject.idv_session.previous_phone_step_params = {
-          phone: phone, international_code: 'US', otp_delivery_preference: 'sms'
+          phone:, international_code: 'US', otp_delivery_preference: 'sms'
         }
         document_capture_session = DocumentCaptureSession.create(
           user_id: user.id,
@@ -175,7 +175,7 @@ RSpec.describe Idv::PhoneController do
         document_capture_session.create_proofing_session
         subject.idv_session.idv_phone_step_document_capture_session_uuid =
           document_capture_session.uuid
-        proofing_result = Proofing::Mock::AddressMockClient.new.proof(phone: phone)
+        proofing_result = Proofing::Mock::AddressMockClient.new.proof(phone:)
         document_capture_session.store_proofing_result(proofing_result)
       end
 
@@ -191,13 +191,13 @@ RSpec.describe Idv::PhoneController do
 
         context 'the user submited their last attempt' do
           it 'redirects to the OTP confirmation and the rate limiter is maxed' do
-            RateLimiter.new(user: user, rate_limit_type: :proof_address).increment_to_limited!
+            RateLimiter.new(user:, rate_limit_type: :proof_address).increment_to_limited!
 
             get :new
 
             expect(response).to redirect_to(idv_otp_verification_url)
             expect(Telephony::Test::Message.messages.length).to eq(1)
-            expect(RateLimiter.new(user: user, rate_limit_type: :proof_address).maxed?).to eq(true)
+            expect(RateLimiter.new(user:, rate_limit_type: :proof_address).maxed?).to eq(true)
           end
         end
       end
@@ -217,13 +217,13 @@ RSpec.describe Idv::PhoneController do
 
         context 'the user submited their last attempt' do
           it 'it redirects to the failure page and the rate limiter is maxed' do
-            RateLimiter.new(user: user, rate_limit_type: :proof_address).increment_to_limited!
+            RateLimiter.new(user:, rate_limit_type: :proof_address).increment_to_limited!
 
             get :new
 
             expect(response).to redirect_to(idv_phone_errors_failure_url)
             expect(Telephony::Test::Message.messages.length).to eq(0)
-            expect(RateLimiter.new(user: user, rate_limit_type: :proof_address).maxed?).to eq(true)
+            expect(RateLimiter.new(user:, rate_limit_type: :proof_address).maxed?).to eq(true)
           end
         end
       end
@@ -607,7 +607,7 @@ RSpec.describe Idv::PhoneController do
           user = create(:user, with: { phone: '+1 (415) 555-0130' })
           stub_verify_steps_one_and_two(user)
 
-          rate_limiter = RateLimiter.new(rate_limit_type: :proof_address, user: user)
+          rate_limiter = RateLimiter.new(rate_limit_type: :proof_address, user:)
           rate_limiter.increment_to_limited!
 
           put :create, params: { idv_phone_form: { phone: bad_phone } }

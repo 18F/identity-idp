@@ -23,8 +23,7 @@ module Idv
 
     def phone_question_ab_test_analytics_bucket
       {
-        phone_question_ab_test_bucket:
-          phone_question_ab_test_bucket,
+        phone_question_ab_test_bucket:,
       }
     end
   end

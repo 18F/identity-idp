@@ -10,9 +10,9 @@ RSpec.feature 'reset password with pending profile' do
       :profile,
       gpo_verification_pending_at: 1.day.ago,
       pii: { ssn: '666-66-1234', dob: '1920-01-01', phone: '+1 703-555-9999' },
-      user: user,
+      user:,
     )
-    create(:gpo_confirmation_code, profile: profile)
+    create(:gpo_confirmation_code, profile:)
 
     trigger_reset_password_and_click_email_link(user.email)
 

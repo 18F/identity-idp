@@ -6,7 +6,7 @@ RSpec.describe TwoFactorAuthCode::PivCacAuthenticationPresenter do
 
   let(:user_email) { 'user@example.com' }
   let(:reauthn) {}
-  let(:presenter) { presenter_with(reauthn: reauthn) }
+  let(:presenter) { presenter_with(reauthn:) }
 
   let(:phishing_resistant_required) { true }
   let(:piv_cac_required) { false }
@@ -30,7 +30,7 @@ RSpec.describe TwoFactorAuthCode::PivCacAuthenticationPresenter do
       let(:reauthn) { true }
 
       it 'returns the account path' do
-        expect(presenter.cancel_link).to eq account_path(locale: locale)
+        expect(presenter.cancel_link).to eq account_path(locale:)
       end
     end
 
@@ -38,7 +38,7 @@ RSpec.describe TwoFactorAuthCode::PivCacAuthenticationPresenter do
       let(:reauthn) { false }
 
       it 'returns the sign out path' do
-        expect(presenter.cancel_link).to eq sign_out_path(locale: locale)
+        expect(presenter.cancel_link).to eq sign_out_path(locale:)
       end
     end
   end
@@ -46,7 +46,7 @@ RSpec.describe TwoFactorAuthCode::PivCacAuthenticationPresenter do
   def presenter_with(arguments = {}, view = ActionController::Base.new.view_context)
     TwoFactorAuthCode::PivCacAuthenticationPresenter.new(
       data: arguments,
-      view: view,
+      view:,
       service_provider: nil,
     )
   end

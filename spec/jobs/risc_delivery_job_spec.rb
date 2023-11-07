@@ -17,11 +17,11 @@ RSpec.describe RiscDeliveryJob do
     let(:job) { RiscDeliveryJob.new }
     subject(:perform) do
       job.perform(
-        push_notification_url: push_notification_url,
-        jwt: jwt,
-        event_type: event_type,
-        issuer: issuer,
-        now: now,
+        push_notification_url:,
+        jwt:,
+        event_type:,
+        issuer:,
+        now:,
       )
     end
 

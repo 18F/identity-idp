@@ -23,7 +23,7 @@ class OtpDeliverySelectionForm
       change_otp_delivery_preference_to_sms
     end
 
-    FormResponse.new(success: success, errors: errors, extra: extra_analytics_attributes)
+    FormResponse.new(success:, errors:, extra: extra_analytics_attributes)
   end
 
   private
@@ -34,16 +34,16 @@ class OtpDeliverySelectionForm
 
   def change_otp_delivery_preference_to_sms
     user_attributes = { otp_delivery_preference: 'sms' }
-    UpdateUser.new(user: user, attributes: user_attributes).call
+    UpdateUser.new(user:, attributes: user_attributes).call
   end
 
   def extra_analytics_attributes
     {
-      otp_delivery_preference: otp_delivery_preference,
-      resend: resend,
+      otp_delivery_preference:,
+      resend:,
       country_code: parsed_phone.country,
       area_code: parsed_phone.area_code,
-      context: context,
+      context:,
       pii_like_keypaths: [[:errors, :phone], [:error_details, :phone]],
     }
   end

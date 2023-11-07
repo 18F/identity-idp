@@ -222,7 +222,7 @@ class User < ApplicationRecord
   def should_receive_in_person_completion_survey?(issuer)
     Idv::InPersonConfig.enabled_for_issuer?(issuer) &&
       in_person_enrollments.
-        where(issuer: issuer, status: :passed).order(created_at: :desc).
+        where(issuer:, status: :passed).order(created_at: :desc).
         pick(:follow_up_survey_sent) == false
   end
 
@@ -231,7 +231,7 @@ class User < ApplicationRecord
   # @param [String] issuer
   def mark_in_person_completion_survey_sent(issuer)
     enrollment_id, follow_up_survey_sent = in_person_enrollments.
-      where(issuer: issuer, status: :passed).
+      where(issuer:, status: :passed).
       order(created_at: :desc).
       pick(:id, :follow_up_survey_sent)
 
@@ -334,7 +334,7 @@ class User < ApplicationRecord
   end
 
   def identity_verified?(service_provider: nil)
-    active_profile.present? && !reproof_for_irs?(service_provider: service_provider)
+    active_profile.present? && !reproof_for_irs?(service_provider:)
   end
 
   def reproof_for_irs?(service_provider:)
@@ -353,7 +353,7 @@ class User < ApplicationRecord
   def qrcode(otp_secret_key)
     options = {
       issuer: APP_NAME,
-      otp_secret_key: otp_secret_key,
+      otp_secret_key:,
       digits: TwoFactorAuthenticatable::OTP_LENGTH,
       interval: IdentityConfig.store.totp_code_interval,
     }
@@ -465,7 +465,7 @@ class User < ApplicationRecord
     confirmed_email_addresses.each do |email_address|
       UserMailer.with(
         user: self,
-        email_address: email_address,
+        email_address:,
       ).send(user_mailer_template).
         deliver_now_or_later
     end

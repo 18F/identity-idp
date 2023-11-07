@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Idv::InPerson::VerifyInfoController do
   let(:pii_from_user) { Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID.dup }
   let(:flow_session) do
-    { pii_from_user: pii_from_user,
+    { pii_from_user:,
       flow_path: 'standard' }
   end
 
@@ -91,7 +91,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
             stages: {
               threatmetrix: {
                 transaction_id: 1,
-                review_status: review_status,
+                review_status:,
                 response_body: {
                   tmx_summary_reason_code: ['Identity_Negative_History'],
                 },

@@ -16,7 +16,7 @@ RSpec.describe Db::Identity::SpActiveUserCounts do
     end
 
     it 'returns total active user counts per sp broken down by ial1 and ial2 for ial1 only sps' do
-      ServiceProvider.create(issuer: issuer, friendly_name: issuer, app_id: 'app1')
+      ServiceProvider.create(issuer:, friendly_name: issuer, app_id: 'app1')
       ServiceProvider.create(issuer: issuer2, friendly_name: issuer2, app_id: 'app2')
       ServiceProviderIdentity.create(
         user_id: 1, service_provider: issuer, uuid: 'foo1',
@@ -30,7 +30,7 @@ RSpec.describe Db::Identity::SpActiveUserCounts do
         user_id: 3, service_provider: issuer2, uuid: 'foo3',
         last_ial1_authenticated_at: now
       )
-      result = { issuer: issuer,
+      result = { issuer:,
                  app_id: app_id1,
                  total_ial1_active: 2,
                  total_ial2_active: 0 }.to_json
@@ -46,7 +46,7 @@ RSpec.describe Db::Identity::SpActiveUserCounts do
     end
 
     it 'returns total active user counts per sp broken down by ial1 and ial2 for ial2 only sps' do
-      ServiceProvider.create(issuer: issuer, friendly_name: issuer, app_id: 'app1')
+      ServiceProvider.create(issuer:, friendly_name: issuer, app_id: 'app1')
       ServiceProvider.create(issuer: issuer2, friendly_name: issuer2, app_id: 'app2')
       ServiceProviderIdentity.create(
         user_id: 1, service_provider: issuer, uuid: 'foo1',
@@ -60,7 +60,7 @@ RSpec.describe Db::Identity::SpActiveUserCounts do
         user_id: 3, service_provider: issuer2, uuid: 'foo3',
         last_ial2_authenticated_at: now
       )
-      result = { issuer: issuer,
+      result = { issuer:,
                  app_id: app_id1,
                  total_ial1_active: 0,
                  total_ial2_active: 2 }.to_json
@@ -76,7 +76,7 @@ RSpec.describe Db::Identity::SpActiveUserCounts do
     end
 
     it 'returns total active user counts per sp broken down by ial1 and ial2 for ial1 ial2 sps' do
-      ServiceProvider.create(issuer: issuer, friendly_name: issuer, app_id: 'app1')
+      ServiceProvider.create(issuer:, friendly_name: issuer, app_id: 'app1')
       ServiceProvider.create(issuer: issuer2, friendly_name: issuer2, app_id: 'app2')
       ServiceProviderIdentity.create(
         user_id: 1, service_provider: issuer, uuid: 'foo1',
@@ -94,7 +94,7 @@ RSpec.describe Db::Identity::SpActiveUserCounts do
         user_id: 4, service_provider: issuer2, uuid: 'foo4',
         last_ial2_authenticated_at: now
       )
-      result = { issuer: issuer,
+      result = { issuer:,
                  app_id: app_id1,
                  total_ial1_active: 1,
                  total_ial2_active: 1 }.to_json

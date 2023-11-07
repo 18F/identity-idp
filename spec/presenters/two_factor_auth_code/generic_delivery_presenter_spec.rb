@@ -33,7 +33,7 @@ RSpec.describe TwoFactorAuthCode::GenericDeliveryPresenter do
   def presenter_with(arguments = {}, view = ActionController::Base.new.view_context)
     TwoFactorAuthCode::GenericDeliveryPresenter.new(
       data: arguments,
-      view: view,
+      view:,
       service_provider: nil,
     )
   end

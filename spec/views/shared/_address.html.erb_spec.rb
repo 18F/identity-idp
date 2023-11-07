@@ -13,7 +13,7 @@ RSpec.describe 'shared/_address.html.erb' do
 
   context 'an address' do
     it 'renders all the fields of the address' do
-      render 'shared/address', address: address
+      render('shared/address', address:)
 
       expect(rendered.split('<br>').map(&:strip)).to eq(
         [
@@ -29,7 +29,7 @@ RSpec.describe 'shared/_address.html.erb' do
     let(:address) { super().merge(address2: nil) }
 
     it 'renders 1 fewer line break' do
-      render 'shared/address', address: address
+      render('shared/address', address:)
 
       expect(rendered.split('<br>').size).to eq(2)
     end

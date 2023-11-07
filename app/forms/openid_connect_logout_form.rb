@@ -49,7 +49,7 @@ class OpenidConnectLogoutForm
 
     identity&.deactivate if success
 
-    FormResponse.new(success: success, errors: errors, extra: extra_analytics_attributes)
+    FormResponse.new(success:, errors:, extra: extra_analytics_attributes)
   end
 
   # Used by RedirectUriValidator
@@ -138,7 +138,7 @@ class OpenidConnectLogoutForm
       client_id_parameter_present: client_id.present?,
       id_token_hint_parameter_present: id_token_hint.present?,
       client_id: service_provider&.issuer,
-      redirect_uri: redirect_uri,
+      redirect_uri:,
       sp_initiated: true,
       oidc: true,
     }
@@ -152,7 +152,7 @@ class OpenidConnectLogoutForm
     return nil if errors.include?(:redirect_uri)
     return post_logout_redirect_uri unless state.present?
 
-    UriService.add_params(post_logout_redirect_uri, state: state)
+    UriService.add_params(post_logout_redirect_uri, state:)
   end
 
   def error_redirect_uri
@@ -162,7 +162,7 @@ class OpenidConnectLogoutForm
       uri,
       error: 'invalid_request',
       error_description: errors.full_messages.join(' '),
-      state: state,
+      state:,
     )
   end
 end

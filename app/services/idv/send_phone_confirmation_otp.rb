@@ -52,8 +52,8 @@ module Idv
 
     def otp_rate_limiter
       @otp_rate_limiter ||= OtpRateLimiter.new(
-        user: user,
-        phone: phone,
+        user:,
+        phone:,
         phone_confirmed: true,
       )
     end

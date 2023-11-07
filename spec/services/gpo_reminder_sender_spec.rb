@@ -127,7 +127,7 @@ RSpec.describe GpoReminderSender do
       end
 
       context 'but the user has cancelled gpo verification' do
-        before { Idv::CancelVerificationAttempt.new(user: user).call }
+        before { Idv::CancelVerificationAttempt.new(user:).call }
 
         include_examples 'sends no emails'
       end
@@ -153,9 +153,9 @@ RSpec.describe GpoReminderSender do
           ]
 
           GpoVerifyForm.new(
-            user: user,
+            user:,
             pii: Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE,
-            otp: otp,
+            otp:,
           ).submit
         end
 

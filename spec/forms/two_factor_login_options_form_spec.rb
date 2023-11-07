@@ -34,7 +34,7 @@ RSpec.describe TwoFactorLoginOptionsForm do
 
         expect(subject.submit(selection: 'foo').to_h).to include(
           success: false,
-          errors: errors,
+          errors:,
           error_details: hash_including(*errors.keys),
           **extra,
         )

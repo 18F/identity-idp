@@ -6,7 +6,7 @@ module TwoFactorAuthentication
     before_action :check_personal_key_enabled
 
     def show
-      analytics.multi_factor_auth_enter_personal_key_visit(context: context)
+      analytics.multi_factor_auth_enter_personal_key_visit(context:)
       @presenter = TwoFactorAuthCode::PersonalKeyPresenter.new
       @personal_key_form = PersonalKeyForm.new(current_user)
     end
@@ -48,7 +48,7 @@ module TwoFactorAuthentication
         generate_new_personal_key_for_verified_users_otherwise_retire_the_key_and_ensure_two_mfa
         handle_valid_otp
       else
-        handle_invalid_otp(context: context, type: 'personal_key')
+        handle_invalid_otp(context:, type: 'personal_key')
       end
     end
 
@@ -76,7 +76,7 @@ module TwoFactorAuthentication
 
     def re_encrypt_profile_recovery_pii
       analytics.personal_key_reactivation_sign_in
-      Pii::ReEncryptor.new(pii: pii, profile: password_reset_profile).perform
+      Pii::ReEncryptor.new(pii:, profile: password_reset_profile).perform
       user_session[:personal_key] = password_reset_profile.personal_key
     end
 

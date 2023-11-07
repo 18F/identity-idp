@@ -12,7 +12,7 @@ RSpec.describe 'sign_up/completions/show.html.erb' do
   let(:decorated_sp_session) do
     ServiceProviderSession.new(
       sp: service_provider,
-      view_context: view_context,
+      view_context:,
       sp_session: {},
       service_provider_request: ServiceProviderRequestProxy.new,
     )
@@ -22,10 +22,10 @@ RSpec.describe 'sign_up/completions/show.html.erb' do
     CompletionsPresenter.new(
       current_user: user,
       current_sp: service_provider,
-      decrypted_pii: decrypted_pii,
-      requested_attributes: requested_attributes,
-      ial2_requested: ial2_requested,
-      completion_context: completion_context,
+      decrypted_pii:,
+      requested_attributes:,
+      ial2_requested:,
+      completion_context:,
     )
   end
 
@@ -63,7 +63,7 @@ RSpec.describe 'sign_up/completions/show.html.erb' do
     let(:requested_attributes) { [:email, :all_emails] }
 
     it 'renders all of the user email addresses' do
-      create(:email_address, user: user)
+      create(:email_address, user:)
       user.reload
 
       render

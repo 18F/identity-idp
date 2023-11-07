@@ -69,10 +69,10 @@ module Reporting
 
       # reuse_stats and total_stats
       @total_reuse_report = {
-        reuse_stats: reuse_stats,
+        reuse_stats:,
         total_users: reuse_total_users,
         total_percentage: reuse_total_percentage,
-        total_proofed: total_proofed,
+        total_proofed:,
       }
     end
 

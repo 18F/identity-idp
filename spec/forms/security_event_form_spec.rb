@@ -20,7 +20,7 @@ RSpec.describe SecurityEventForm do
   let(:jwt_payload) do
     {
       iss: identity.service_provider,
-      jti: jti,
+      jti:,
       iat: Time.zone.now.to_i,
       aud: api_risc_security_events_url,
       events: {
@@ -144,8 +144,8 @@ RSpec.describe SecurityEventForm do
       context 'with a jti that has already been recorded for that same user and issuer' do
         before do
           SecurityEvent.create!(
-            user: user,
-            jti: jti,
+            user:,
+            jti:,
             event_type: SecurityEvent::AUTHORIZATION_FRAUD_DETECTED,
             issuer: service_provider.issuer,
           )
@@ -167,8 +167,8 @@ RSpec.describe SecurityEventForm do
       context 'with a jti that has already been recorded for that same user, different issuer' do
         before do
           SecurityEvent.create!(
-            user: user,
-            jti: jti,
+            user:,
+            jti:,
             event_type: SecurityEvent::AUTHORIZATION_FRAUD_DETECTED,
             issuer: 'issuer2',
           )

@@ -12,7 +12,7 @@ module DataRequests
         {
           user_id: user.id,
           login_uuid: user.uuid,
-          requesting_issuer_uuid: requesting_issuer_uuid,
+          requesting_issuer_uuid:,
           email_addresses: email_addresses_report,
           mfa_configurations: mfa_configurations_report,
           user_events: user_events_report,

@@ -13,6 +13,6 @@ namespace :newrelic do
   task deployment: :environment do
     require 'new_relic/cli/command'
     revision = `git rev-parse HEAD`.chomp
-    NewRelic::Cli::Deployments.new(revision: revision).run
+    NewRelic::Cli::Deployments.new(revision:).run
   end
 end

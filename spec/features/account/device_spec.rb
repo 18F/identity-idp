@@ -7,7 +7,7 @@ RSpec.describe 'Devices' do
     sign_in_and_2fa_user(user)
     create(
       :device,
-      user: user,
+      user:,
       cookie_uuid: 'foo',
       user_agent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) \
 AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36',

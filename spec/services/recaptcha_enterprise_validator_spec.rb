@@ -121,7 +121,7 @@ RSpec.describe RecaptchaEnterpriseValidator do
             reasons: ['EXPIRED'],
           },
           evaluated_as_valid: false,
-          score_threshold: score_threshold,
+          score_threshold:,
           recaptcha_version: 3,
           validator_class: 'RecaptchaEnterpriseValidator',
         )
@@ -155,7 +155,7 @@ RSpec.describe RecaptchaEnterpriseValidator do
             reasons: [],
           },
           evaluated_as_valid: true,
-          score_threshold: score_threshold,
+          score_threshold:,
           recaptcha_version: 3,
           validator_class: 'RecaptchaEnterpriseValidator',
         )
@@ -177,7 +177,7 @@ RSpec.describe RecaptchaEnterpriseValidator do
         expect(analytics).to have_logged_event(
           'reCAPTCHA verify result received',
           evaluated_as_valid: true,
-          score_threshold: score_threshold,
+          score_threshold:,
           recaptcha_version: 3,
           validator_class: 'RecaptchaEnterpriseValidator',
           exception_class: 'Faraday::ConnectionFailed',
@@ -215,7 +215,7 @@ RSpec.describe RecaptchaEnterpriseValidator do
             errors: [],
           },
           evaluated_as_valid: false,
-          score_threshold: score_threshold,
+          score_threshold:,
           recaptcha_version: 3,
           validator_class: 'RecaptchaEnterpriseValidator',
         )
@@ -252,7 +252,7 @@ RSpec.describe RecaptchaEnterpriseValidator do
             errors: [],
           },
           evaluated_as_valid: true,
-          score_threshold: score_threshold,
+          score_threshold:,
           recaptcha_version: 3,
           validator_class: 'RecaptchaEnterpriseValidator',
         )
@@ -289,7 +289,7 @@ RSpec.describe RecaptchaEnterpriseValidator do
               errors: [],
             },
             evaluated_as_valid: true,
-            score_threshold: score_threshold,
+            score_threshold:,
             recaptcha_version: 3,
             validator_class: 'RecaptchaEnterpriseValidator',
             extra: true,

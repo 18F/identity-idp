@@ -52,9 +52,9 @@ RSpec.describe IdvController do
         user = create(:user)
         profile = create(
           :profile,
-          user: user,
+          user:,
         )
-        RateLimiter.new(rate_limit_type: :idv_resolution, user: user).increment_to_limited!
+        RateLimiter.new(rate_limit_type: :idv_resolution, user:).increment_to_limited!
 
         stub_sign_in(profile.user)
       end
@@ -79,9 +79,9 @@ RSpec.describe IdvController do
         user = create(:user)
         profile = create(
           :profile,
-          user: user,
+          user:,
         )
-        RateLimiter.new(rate_limit_type: :idv_doc_auth, user: user).increment_to_limited!
+        RateLimiter.new(rate_limit_type: :idv_doc_auth, user:).increment_to_limited!
 
         stub_sign_in(profile.user)
       end
@@ -98,9 +98,9 @@ RSpec.describe IdvController do
         user = create(:user)
         profile = create(
           :profile,
-          user: user,
+          user:,
         )
-        RateLimiter.new(rate_limit_type: :proof_address, user: user).increment_to_limited!
+        RateLimiter.new(rate_limit_type: :proof_address, user:).increment_to_limited!
 
         stub_sign_in(profile.user)
       end
@@ -118,7 +118,7 @@ RSpec.describe IdvController do
         profile = create(
           :profile,
           :letter_sends_rate_limited,
-          user: user,
+          user:,
         )
 
         stub_sign_in(profile.user)
@@ -137,9 +137,9 @@ RSpec.describe IdvController do
         profile = create(
           :profile,
           :letter_sends_rate_limited,
-          user: user,
+          user:,
         )
-        RateLimiter.new(rate_limit_type: :proof_address, user: user).increment_to_limited!
+        RateLimiter.new(rate_limit_type: :proof_address, user:).increment_to_limited!
 
         stub_sign_in(profile.user)
       end

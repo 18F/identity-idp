@@ -3,7 +3,7 @@ def encrypt_and_stub_s3(body:, url:, iv:, key:)
 
   @responses ||= {}
   @responses[prefix] = JobHelpers::EncryptionHelper.new.encrypt(
-    data: body, iv: iv, key: key,
+    data: body, iv:, key:,
   )
 
   Aws.config[:s3] = {

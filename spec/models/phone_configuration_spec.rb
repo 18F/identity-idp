@@ -8,7 +8,7 @@ RSpec.describe PhoneConfiguration do
 
   let(:phone) { '+1 703 555 1212' }
 
-  let(:phone_configuration) { create(:phone_configuration, phone: phone) }
+  let(:phone_configuration) { create(:phone_configuration, phone:) }
 
   describe 'creation' do
     it 'stores an encrypted form of the phone number' do
@@ -32,7 +32,7 @@ RSpec.describe PhoneConfiguration do
   end
 
   describe '#masked_phone' do
-    let(:phone_configuration) { build(:phone_configuration, phone: phone) }
+    let(:phone_configuration) { build(:phone_configuration, phone:) }
     let(:phone) { '+1 703 555 1212' }
 
     subject(:masked_phone) { phone_configuration.masked_phone }

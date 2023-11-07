@@ -4,13 +4,13 @@ RSpec.describe VerifyPersonalKeyForm do
   let(:user) { create(:user) }
 
   let!(:profile) do
-    create(:profile, :verified, :password_reset, user: user, pii: { ssn: '123456789' })
+    create(:profile, :verified, :password_reset, user:, pii: { ssn: '123456789' })
   end
 
   subject(:form) do
     VerifyPersonalKeyForm.new(
-      user: user,
-      personal_key: personal_key,
+      user:,
+      personal_key:,
     )
   end
 

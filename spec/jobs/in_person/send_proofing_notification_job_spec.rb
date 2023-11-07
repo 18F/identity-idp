@@ -276,7 +276,7 @@ RSpec.describe InPerson::SendProofingNotificationJob do
             enrollment_code: passed_enrollment.enrollment_code,
             enrollment_id: passed_enrollment.id,
             exception_class: 'Telephony::SmsUnsupportedError',
-            exception_message: exception_message,
+            exception_message:,
           )
         end
       end

@@ -10,12 +10,12 @@ RSpec.describe 'two_factor_authentication/options/index.html.erb' do
     allow(view).to receive(:current_user).and_return(User.new)
 
     @presenter = TwoFactorLoginOptionsPresenter.new(
-      user: user,
-      view: view,
+      user:,
+      view:,
       reauthentication_context: false,
       service_provider: nil,
-      phishing_resistant_required: phishing_resistant_required,
-      piv_cac_required: piv_cac_required,
+      phishing_resistant_required:,
+      piv_cac_required:,
     )
     @two_factor_options_form = TwoFactorLoginOptionsForm.new(user)
   end
@@ -43,7 +43,7 @@ RSpec.describe 'two_factor_authentication/options/index.html.erb' do
 
   context 'phone vendor outage' do
     before do
-      create(:phone_configuration, user: user, phone: '(202) 555-1111')
+      create(:phone_configuration, user:, phone: '(202) 555-1111')
       allow_any_instance_of(OutageStatus).to receive(:vendor_outage?).and_return(false)
       allow_any_instance_of(OutageStatus).to receive(:vendor_outage?).with(:sms).and_return(true)
 

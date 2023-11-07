@@ -5,7 +5,7 @@ module DocAuth
         attr_reader :instance_id
 
         def initialize(config:, instance_id:)
-          super(config: config)
+          super(config:)
           @instance_id = instance_id
         end
 

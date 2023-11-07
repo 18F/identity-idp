@@ -59,7 +59,7 @@ module Idv
     end
 
     def set_otp_verification_presenter
-      @presenter = OtpVerificationPresenter.new(idv_session: idv_session)
+      @presenter = OtpVerificationPresenter.new(idv_session:)
     end
 
     def handle_otp_confirmation_failure
@@ -96,7 +96,7 @@ module Idv
       @phone_confirmation_otp_verification_form ||= PhoneConfirmationOtpVerificationForm.new(
         user: current_user,
         user_phone_confirmation_session: idv_session.user_phone_confirmation_session,
-        irs_attempts_api_tracker: irs_attempts_api_tracker,
+        irs_attempts_api_tracker:,
       )
     end
   end

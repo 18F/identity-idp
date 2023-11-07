@@ -4,14 +4,14 @@ module Telephony
 
     def send_account_reset_notice(to:, country_code:)
       message = I18n.t('telephony.account_reset_notice', app_name: APP_NAME)
-      response = adapter.deliver(message: message, to: to, country_code: country_code)
+      response = adapter.deliver(message:, to:, country_code:)
       log_response(response, context: __method__.to_s.gsub(/^send_/, ''))
       response
     end
 
     def send_account_reset_cancellation_notice(to:, country_code:)
       message = I18n.t('telephony.account_reset_cancellation_notice', app_name: APP_NAME)
-      response = adapter.deliver(message: message, to: to, country_code: country_code)
+      response = adapter.deliver(message:, to:, country_code:)
       log_response(response, context: __method__.to_s.gsub(/^send_/, ''))
       response
     end
@@ -20,34 +20,34 @@ module Telephony
       message = I18n.t(
         'telephony.doc_auth_link',
         app_name: APP_NAME,
-        sp_or_app_name: sp_or_app_name,
-        link: link,
+        sp_or_app_name:,
+        link:,
       )
-      response = adapter.deliver(message: message, to: to, country_code: country_code)
+      response = adapter.deliver(message:, to:, country_code:)
       context = __method__.to_s.gsub(/^send_/, '')
       if link.length > SMS_MAX_LENGTH
-        log_warning("link longer than #{SMS_MAX_LENGTH} characters", context: context)
+        log_warning("link longer than #{SMS_MAX_LENGTH} characters", context:)
       end
-      log_response(response, context: context)
+      log_response(response, context:)
       response
     end
 
     def send_personal_key_regeneration_notice(to:, country_code:)
       message = I18n.t('telephony.personal_key_regeneration_notice', app_name: APP_NAME)
-      response = adapter.deliver(message: message, to: to, country_code: country_code)
+      response = adapter.deliver(message:, to:, country_code:)
       log_response(response, context: __method__.to_s.gsub(/^send_/, ''))
       response
     end
 
     def send_personal_key_sign_in_notice(to:, country_code:)
       message = I18n.t('telephony.personal_key_sign_in_notice', app_name: APP_NAME)
-      response = adapter.deliver(message: message, to: to, country_code: country_code)
+      response = adapter.deliver(message:, to:, country_code:)
       log_response(response, context: __method__.to_s.gsub(/^send_/, ''))
       response
     end
 
     def send_raw_message(to:, message:, country_code:)
-      response = adapter.deliver(message: message, to: to, country_code: country_code)
+      response = adapter.deliver(message:, to:, country_code:)
       log_response(response, context: __method__.to_s.gsub(/^send_/, ''))
       response
     end
@@ -69,7 +69,7 @@ module Telephony
       extra = {
         adapter: Telephony.config.adapter,
         channel: :sms,
-        context: context,
+        context:,
       }
       output = response.to_h.merge(extra)
       Telephony.log_info(event: output)
@@ -78,10 +78,10 @@ module Telephony
     def log_warning(alert, context:)
       Telephony.log_warn(
         event: {
-          alert: alert,
+          alert:,
           adapter: Telephony.config.adapter,
           channel: :sms,
-          context: context,
+          context:,
         },
       )
     end

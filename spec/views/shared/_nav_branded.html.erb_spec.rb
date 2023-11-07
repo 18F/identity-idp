@@ -10,7 +10,7 @@ RSpec.describe 'shared/_nav_branded.html.erb' do
       )
       decorated_sp_session = ServiceProviderSession.new(
         sp: sp_with_logo,
-        view_context: view_context,
+        view_context:,
         sp_session: {},
         service_provider_request: nil,
       )
@@ -41,7 +41,7 @@ RSpec.describe 'shared/_nav_branded.html.erb' do
       allow(FeatureManagement).to receive(:logo_upload_enabled?).and_return(true)
       decorated_sp_session = ServiceProviderSession.new(
         sp: sp_with_s3_logo,
-        view_context: view_context,
+        view_context:,
         sp_session: {},
         service_provider_request: nil,
       )
@@ -60,7 +60,7 @@ RSpec.describe 'shared/_nav_branded.html.erb' do
       sp_without_logo = build_stubbed(:service_provider, friendly_name: 'No logo no problem')
       decorated_sp_session = ServiceProviderSession.new(
         sp: sp_without_logo,
-        view_context: view_context,
+        view_context:,
         sp_session: {},
         service_provider_request: nil,
       )

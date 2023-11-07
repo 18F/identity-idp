@@ -13,7 +13,7 @@ class FraudRejectionDailyJob < ApplicationJob
   private
 
   def analytics(user: AnonymousUser.new)
-    Analytics.new(user: user, request: nil, session: {}, sp: nil)
+    Analytics.new(user:, request: nil, session: {}, sp: nil)
   end
 
   def profiles_eligible_for_fraud_rejection

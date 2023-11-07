@@ -11,7 +11,7 @@ class SamlRequestValidator
     self.authn_context_comparison = authn_context_comparison || 'exact'
     self.nameid_format = nameid_format
 
-    FormResponse.new(success: valid?, errors: errors, extra: extra_analytics_attributes)
+    FormResponse.new(success: valid?, errors:, extra: extra_analytics_attributes)
   end
 
   private
@@ -20,9 +20,9 @@ class SamlRequestValidator
 
   def extra_analytics_attributes
     {
-      nameid_format: nameid_format,
-      authn_context: authn_context,
-      authn_context_comparison: authn_context_comparison,
+      nameid_format:,
+      authn_context:,
+      authn_context_comparison:,
       service_provider: service_provider&.issuer,
     }
   end

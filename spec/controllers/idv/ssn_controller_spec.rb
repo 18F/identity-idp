@@ -133,7 +133,7 @@ RSpec.describe Idv::SsnController do
 
   describe '#update' do
     context 'with valid ssn' do
-      let(:params) { { doc_auth: { ssn: ssn } } }
+      let(:params) { { doc_auth: { ssn: } } }
       let(:analytics_name) { 'IdV: doc auth ssn submitted' }
       let(:analytics_args) do
         {
@@ -148,7 +148,7 @@ RSpec.describe Idv::SsnController do
       end
 
       it 'updates idv_session.ssn' do
-        expect { put :update, params: params }.to change { subject.idv_session.ssn }.
+        expect { put :update, params: }.to change { subject.idv_session.ssn }.
           from(nil).to(ssn)
       end
 
@@ -156,7 +156,7 @@ RSpec.describe Idv::SsnController do
         it 'redirects to address controller after user enters their SSN' do
           subject.idv_session.pii_from_doc[:state] = 'PR'
 
-          put :update, params: params
+          put(:update, params:)
 
           expect(response).to redirect_to(idv_address_url)
         end
@@ -165,7 +165,7 @@ RSpec.describe Idv::SsnController do
           subject.idv_session.ssn = ssn
           subject.idv_session.pii_from_doc[:state] = 'PR'
 
-          put :update, params: params
+          put(:update, params:)
 
           expect(response).to redirect_to(idv_verify_info_url)
         end
@@ -173,16 +173,16 @@ RSpec.describe Idv::SsnController do
 
       it 'logs attempts api event' do
         expect(@irs_attempts_api_tracker).to receive(:idv_ssn_submitted).with(
-          ssn: ssn,
+          ssn:,
         )
-        put :update, params: params
+        put :update, params:
       end
 
       context 'with existing session applicant' do
         it 'clears applicant' do
           subject.idv_session.applicant = Idp::Constants::MOCK_IDV_APPLICANT
 
-          put :update, params: params
+          put(:update, params:)
 
           expect(subject.idv_session.applicant).to be_blank
         end
@@ -190,7 +190,7 @@ RSpec.describe Idv::SsnController do
 
       it 'does not change threatmetrix_session_id when updating ssn' do
         subject.idv_session.ssn = ssn
-        put :update, params: params
+        put(:update, params:)
         session_id = subject.idv_session.threatmetrix_session_id
         subject.threatmetrix_view_variables
         expect(subject.idv_session.threatmetrix_session_id).to eq(session_id)
@@ -199,7 +199,7 @@ RSpec.describe Idv::SsnController do
 
     context 'with invalid ssn' do
       let(:ssn) { 'i am not an ssn' }
-      let(:params) { { doc_auth: { ssn: ssn } } }
+      let(:params) { { doc_auth: { ssn: } } }
       let(:analytics_name) { 'IdV: doc auth ssn submitted' }
       let(:analytics_args) do
         {
@@ -219,7 +219,7 @@ RSpec.describe Idv::SsnController do
       render_views
 
       it 'renders the show template with an error message' do
-        put :update, params: params
+        put(:update, params:)
 
         expect(response).to have_rendered('idv/shared/ssn')
         expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)

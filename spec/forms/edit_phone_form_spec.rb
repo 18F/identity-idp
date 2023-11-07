@@ -69,7 +69,7 @@ RSpec.describe EditPhoneForm do
 
     describe 'default phone selection' do
       before do
-        create(:phone_configuration, user: user, made_default_at: Time.zone.now)
+        create(:phone_configuration, user:, made_default_at: Time.zone.now)
       end
 
       context 'when the make_default_number param is true' do
@@ -120,7 +120,7 @@ RSpec.describe EditPhoneForm do
 
     context 'when editing a form with multiple numbers set up' do
       before do
-        create(:phone_configuration, user: user, made_default_at: Time.zone.now)
+        create(:phone_configuration, user:, made_default_at: Time.zone.now)
       end
 
       it 'recognizes that there are multiple phone methods set up' do

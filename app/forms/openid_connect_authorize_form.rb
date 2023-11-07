@@ -63,7 +63,7 @@ class OpenidConnectAuthorizeForm
   def submit
     @success = valid?
 
-    FormResponse.new(success: success, errors: errors, extra: extra_analytics_attributes)
+    FormResponse.new(success:, errors:, extra: extra_analytics_attributes)
   end
 
   def verified_at_requested?
@@ -82,13 +82,13 @@ class OpenidConnectAuthorizeForm
   def link_identity_to_service_provider(current_user, rails_session_id)
     identity_linker = IdentityLinker.new(current_user, service_provider)
     @identity = identity_linker.link_identity(
-      nonce: nonce,
-      rails_session_id: rails_session_id,
+      nonce:,
+      rails_session_id:,
       ial: ial_context.ial,
-      aal: aal,
-      requested_aal_value: requested_aal_value,
+      aal:,
+      requested_aal_value:,
       scope: scope.join(' '),
-      code_challenge: code_challenge,
+      code_challenge:,
     )
   end
 
@@ -96,7 +96,7 @@ class OpenidConnectAuthorizeForm
     return if cannot_validate_redirect_uri?
     code = identity&.session_uuid
 
-    UriService.add_params(redirect_uri, code: code, state: state) if code
+    UriService.add_params(redirect_uri, code:, state:) if code
   end
 
   def ial_values
@@ -104,7 +104,7 @@ class OpenidConnectAuthorizeForm
   end
 
   def ial_context
-    @ial_context ||= IalContext.new(ial: ial, service_provider: service_provider)
+    @ial_context ||= IalContext.new(ial:, service_provider:)
   end
 
   def ial
@@ -225,8 +225,8 @@ class OpenidConnectAuthorizeForm
 
   def extra_analytics_attributes
     {
-      client_id: client_id,
-      prompt: prompt,
+      client_id:,
+      prompt:,
       allow_prompt_login: service_provider&.allow_prompt_login,
       redirect_uri: result_uri,
       scope: scope&.sort&.join(' '),
@@ -249,7 +249,7 @@ class OpenidConnectAuthorizeForm
       redirect_uri,
       error: 'invalid_request',
       error_description: errors.full_messages.join(' '),
-      state: state,
+      state:,
     )
   end
 

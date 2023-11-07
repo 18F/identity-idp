@@ -23,9 +23,9 @@ RSpec.describe Deploy::Activate do
 
   let(:subject) do
     Deploy::Activate.new(
-      logger: logger,
-      s3_client: s3_client,
-      root: root,
+      logger:,
+      s3_client:,
+      root:,
     )
   end
 
@@ -51,7 +51,7 @@ RSpec.describe Deploy::Activate do
           key = context.params[:key]
           body = s3_contents[key]
           if body.present?
-            { body: body }
+            { body: }
           else
             raise Aws::S3::Errors::NoSuchKey.new(nil, nil)
           end
@@ -107,7 +107,7 @@ RSpec.describe Deploy::Activate do
     end
 
     it 'uses a default logger with a progname' do
-      subject = Deploy::Activate.new(s3_client: s3_client)
+      subject = Deploy::Activate.new(s3_client:)
 
       expect(subject.logger.progname).to eq('deploy/activate')
     end

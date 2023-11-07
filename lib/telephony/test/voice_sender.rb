@@ -9,7 +9,7 @@ module Telephony
       def deliver(message:, to:, country_code:, otp: nil)
         error = ErrorSimulator.new.error_for_number(to)
         if error.nil?
-          Call.calls.push(Call.new(body: message, to: to, otp: otp))
+          Call.calls.push(Call.new(body: message, to:, otp:))
           Response.new(
             success: true,
             extra: {
@@ -20,7 +20,7 @@ module Telephony
         else
           Response.new(
             success: false,
-            error: error,
+            error:,
             extra: {
               request_id: 'fake-message-request-id',
               origination_phone_number: ORIGINATION_PHONE_NUMBER,

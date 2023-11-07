@@ -15,8 +15,8 @@ class ServiceProviderRequestHandler
 
     service_provider_request = ServiceProviderRequestProxy.create!(attributes)
 
-    StoreSpMetadataInSession.new(session: session, request_id: request_id).call(
-      service_provider_request: service_provider_request,
+    StoreSpMetadataInSession.new(session:, request_id:).call(
+      service_provider_request:,
       requested_service_provider: protocol.service_provider,
     )
   end
@@ -65,7 +65,7 @@ class ServiceProviderRequestHandler
       aal: protocol.aal,
       requested_attributes: protocol.requested_attributes,
       uuid: request_id,
-      url: url,
+      url:,
     }
   end
 

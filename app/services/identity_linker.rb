@@ -27,13 +27,13 @@ class IdentityLinker
 
     identity.update!(
       identity_attributes.merge(
-        code_challenge: code_challenge,
-        ial: ial,
-        aal: aal,
-        requested_aal_value: requested_aal_value,
-        nonce: nonce,
-        rails_session_id: rails_session_id,
-        scope: scope,
+        code_challenge:,
+        ial:,
+        aal:,
+        requested_aal_value:,
+        nonce:,
+        rails_session_id:,
+        scope:,
         verified_attributes: combined_verified_attributes(verified_attributes),
       ).tap do |hash|
         hash[:last_consented_at] = last_consented_at if last_consented_at

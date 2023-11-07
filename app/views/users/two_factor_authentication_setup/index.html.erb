@@ -42,7 +42,7 @@
       <% @presenter.options.each do |option| %>
         <%= render(option) do %>
           <%= render partial: 'partials/multi_factor_authentication/mfa_selection',
-                     locals: { option: option } %>
+                     locals: { option: } %>
         <% end %>
       <% end %>
     </fieldset>

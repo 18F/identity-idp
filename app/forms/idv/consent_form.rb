@@ -14,7 +14,7 @@ module Idv
     def submit(params)
       @idv_consent_given = params[:idv_consent_given] == '1'
 
-      FormResponse.new(success: valid?, errors: errors)
+      FormResponse.new(success: valid?, errors:)
     end
   end
 end

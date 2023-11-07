@@ -21,7 +21,7 @@ module AccountReset
 
       handle_successful_submission if success
 
-      FormResponse.new(success: success, errors: errors, extra: extra)
+      FormResponse.new(success:, errors:, extra:)
     end
 
     private
@@ -53,14 +53,14 @@ module AccountReset
     end
 
     def send_push_notifications
-      event = PushNotification::AccountPurgedEvent.new(user: user)
+      event = PushNotification::AccountPurgedEvent.new(user:)
       PushNotification::HttpPush.deliver(event)
     end
 
     # rubocop:disable IdentityIdp/MailLaterLinter
     def notify_user_via_email_of_deletion
       user.confirmed_email_addresses.each do |email_address|
-        UserMailer.with(user: user, email_address: email_address).
+        UserMailer.with(user:, email_address:).
           account_reset_complete.deliver_now
       end
     end
@@ -72,7 +72,7 @@ module AccountReset
         email: user.email_addresses.take&.email,
         account_age_in_days: account_age,
         account_confirmed_at: user.confirmed_at,
-        mfa_method_counts: mfa_method_counts,
+        mfa_method_counts:,
         pii_like_keypaths: [[:mfa_method_counts, :phone]],
       }
     end

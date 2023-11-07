@@ -25,7 +25,7 @@ RSpec.describe Redirect::ReturnToSpController do
         redirect_uri = 'https://sp.gov/result'
         state = '123abc'
         sp_request_url = UriService.add_params(
-          'https://example.gov/authorize', state: state, redirect_uri: redirect_uri
+          'https://example.gov/authorize', state:, redirect_uri:
         )
         session[:sp] = { request_url: sp_request_url }
 
@@ -47,7 +47,7 @@ RSpec.describe Redirect::ReturnToSpController do
         redirect_uri = 'https://sp.gov/result'
         state = '123abc'
         sp_request_url = UriService.add_params(
-          'https://example.gov/authorize', state: state, redirect_uri: redirect_uri
+          'https://example.gov/authorize', state:, redirect_uri:
         )
         sp_request = ServiceProviderRequest.new(url: sp_request_url)
         allow(subject).to receive(:service_provider_request).and_return(sp_request)

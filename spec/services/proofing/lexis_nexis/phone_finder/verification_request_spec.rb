@@ -13,7 +13,7 @@ RSpec.describe Proofing::LexisNexis::PhoneFinder::VerificationRequest do
     }
   end
   let(:response_body) { LexisNexisFixtures.phone_finder_rdp1_success_response_json }
-  subject { described_class.new(applicant: applicant, config: LexisNexisFixtures.example_config) }
+  subject { described_class.new(applicant:, config: LexisNexisFixtures.example_config) }
 
   it_behaves_like 'a lexisnexis request'
 

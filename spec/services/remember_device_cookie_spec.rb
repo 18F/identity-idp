@@ -2,10 +2,10 @@ require 'rails_helper'
 
 RSpec.describe RememberDeviceCookie do
   let(:remember_device_revoked_at) { nil }
-  let(:user) { create(:user, :with_phone, remember_device_revoked_at: remember_device_revoked_at) }
+  let(:user) { create(:user, :with_phone, remember_device_revoked_at:) }
   let(:created_at) { Time.zone.now }
 
-  subject { described_class.new(user_id: user.id, created_at: created_at) }
+  subject { described_class.new(user_id: user.id, created_at:) }
 
   describe '.from_json(json)' do
     it 'should parse a JSON string' do
@@ -65,8 +65,8 @@ RSpec.describe RememberDeviceCookie do
     let(:expiration_interval) { 30.days }
 
     subject do
-      cookie = described_class.new(user_id: user.id, created_at: created_at)
-      cookie.valid_for_user?(user: user, expiration_interval: expiration_interval)
+      cookie = described_class.new(user_id: user.id, created_at:)
+      cookie.valid_for_user?(user:, expiration_interval:)
     end
 
     context 'when the token is valid' do
@@ -82,10 +82,10 @@ RSpec.describe RememberDeviceCookie do
     context 'when the token does not refer to the current user' do
       it 'returns false' do
         other_user = create(:user, :with_phone, with: { confirmed_at: 90.days.ago })
-        cookie = described_class.new(user_id: user.id, created_at: created_at)
+        cookie = described_class.new(user_id: user.id, created_at:)
 
         expect(
-          cookie.valid_for_user?(user: other_user, expiration_interval: expiration_interval),
+          cookie.valid_for_user?(user: other_user, expiration_interval:),
         ).to eq(false)
       end
     end

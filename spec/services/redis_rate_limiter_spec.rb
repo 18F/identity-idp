@@ -15,9 +15,9 @@ RSpec.describe RedisRateLimiter do
 
   subject(:rate_limiter) do
     RedisRateLimiter.new(
-      key: key,
-      max_requests: max_requests,
-      interval: interval,
+      key:,
+      max_requests:,
+      interval:,
     )
   end
 

@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Idv::DocAuthFormResponse do
   let(:extra) { {} }
-  subject(:response) { described_class.new(success: true, extra: extra) }
+  subject(:response) { described_class.new(success: true, extra:) }
 
   describe '#pii_from_doc' do
     it 'defaults to empty hash' do

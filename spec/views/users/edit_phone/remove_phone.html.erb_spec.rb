@@ -6,7 +6,7 @@ RSpec.describe 'users/edit_phone/_remove_phone.html.erb' do
   let(:user) { create(:user, :with_phone) }
 
   context 'when there are only 2 phone configurations' do
-    let(:phone_configuration) { create(:phone_configuration, user: user, phone: '+1 703-555-1214') }
+    let(:phone_configuration) { create(:phone_configuration, user:, phone: '+1 703-555-1214') }
     before do
       allow(view).to receive(:current_user).and_return(user)
       assign(:phone_configuration, phone_configuration)

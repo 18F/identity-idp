@@ -44,7 +44,7 @@ class BackupCodeGenerator
   # @return [Array<String>]
   def save(codes, salt: SecureRandom.hex(32))
     delete_existing_codes
-    codes.each { |code| save_code(code: code, salt: salt) }
+    codes.each { |code| save_code(code:, salt:) }
   end
 
   private
@@ -65,12 +65,12 @@ class BackupCodeGenerator
     @user.backup_code_configurations.create!(
       code_salt: salt,
       code_cost: cost,
-      code: code,
+      code:,
     )
   end
 
   def backup_code
-    RandomPhrase.new(num_words: num_words, separator: nil).to_s
+    RandomPhrase.new(num_words:, separator: nil).to_s
   end
 
   def result

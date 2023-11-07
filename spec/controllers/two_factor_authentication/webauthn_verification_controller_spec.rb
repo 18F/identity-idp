@@ -112,10 +112,10 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
     describe 'patch confirm' do
       let(:params) do
         {
-          authenticator_data: authenticator_data,
+          authenticator_data:,
           client_data_json: verification_client_data_json,
-          signature: signature,
-          credential_id: credential_id,
+          signature:,
+          credential_id:,
           platform: '',
         }
       end
@@ -128,8 +128,8 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
           create(
             :webauthn_configuration,
             user: controller.current_user,
-            credential_id: credential_id,
-            credential_public_key: credential_public_key,
+            credential_id:,
+            credential_public_key:,
           )
           controller.current_user.webauthn_configurations.first
         end
@@ -159,7 +159,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
           )
 
           freeze_time do
-            patch :confirm, params: params
+            patch(:confirm, params:)
 
             expect(subject.user_session[:auth_events]).to eq(
               [
@@ -177,8 +177,8 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
               :webauthn_configuration,
               :platform_authenticator,
               user: controller.current_user,
-              credential_id: credential_id,
-              credential_public_key: credential_public_key,
+              credential_id:,
+              credential_public_key:,
             )
             controller.current_user.webauthn_configurations.first
           end
@@ -196,7 +196,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
             )
 
             freeze_time do
-              patch :confirm, params: params
+              patch(:confirm, params:)
               expect(subject.user_session[:auth_events]).to eq(
                 [
                   auth_method: TwoFactorAuthenticatable::AuthMethod::WEBAUTHN_PLATFORM,
@@ -215,8 +215,8 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
         create(
           :webauthn_configuration,
           user: controller.current_user,
-          credential_id: credential_id,
-          credential_public_key: credential_public_key,
+          credential_id:,
+          credential_public_key:,
         )
 
         webauthn_configuration = controller.current_user.webauthn_configurations.first
@@ -230,7 +230,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
         expect(@analytics).to receive(:track_mfa_submit_event).
           with(result)
 
-        patch :confirm, params: params
+        patch :confirm, params:
       end
 
       context 'webauthn_platform returns an error from frontend API' do
@@ -242,7 +242,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
             signature: '',
             credential_id: '',
             platform: true,
-            webauthn_error: webauthn_error,
+            webauthn_error:,
           }
         end
 
@@ -259,14 +259,14 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
         end
 
         it 'redirects to webauthn show page' do
-          patch :confirm, params: params
+          patch(:confirm, params:)
           expect(response).to redirect_to login_two_factor_webauthn_url(platform: true)
           expect(subject.user_session[:auth_events]).to eq nil
           expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq true
         end
 
         it 'displays flash error message' do
-          patch :confirm, params: params
+          patch(:confirm, params:)
           expect(flash[:error]).to eq t(
             'two_factor_authentication.webauthn_error.try_again',
             link: view_context.link_to(
@@ -293,7 +293,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
             webauthn_configuration_id: nil,
           )
 
-          patch :confirm, params: params
+          patch :confirm, params:
         end
       end
     end

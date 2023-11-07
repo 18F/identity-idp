@@ -66,7 +66,7 @@ RSpec.describe 'redirect_uri validation' do
   context 'when new non-SP request with redirect_uri is made after initial SP request' do
     it 'does not provide a link to the new redirect_uri' do
       state = SecureRandom.hex
-      visit_idp_from_sp_with_ial1_with_valid_redirect_uri(state: state)
+      visit_idp_from_sp_with_ial1_with_valid_redirect_uri(state:)
       visit new_user_session_path(request_id: '123', redirect_uri: 'evil.com')
       sp_redirect_uri = "http://localhost:7654/auth/result?error=access_denied&state=#{state}"
 
@@ -181,14 +181,14 @@ RSpec.describe 'redirect_uri validation' do
     nonce = SecureRandom.hex
 
     visit openid_connect_authorize_path(
-      client_id: client_id,
+      client_id:,
       response_type: 'code',
       acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
       scope: 'openid email',
       redirect_uri: 'https://example.com.evil.com/auth/result',
-      state: state,
+      state:,
       prompt: 'select_account',
-      nonce: nonce,
+      nonce:,
     )
   end
 
@@ -197,14 +197,14 @@ RSpec.describe 'redirect_uri validation' do
     nonce = SecureRandom.hex
 
     visit openid_connect_authorize_path(
-      client_id: client_id,
+      client_id:,
       response_type: 'code',
       acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
       scope: 'openid email',
       redirect_uri: ':aaaa',
-      state: state,
+      state:,
       prompt: 'select_account',
-      nonce: nonce,
+      nonce:,
     )
   end
 
@@ -213,14 +213,14 @@ RSpec.describe 'redirect_uri validation' do
     nonce = SecureRandom.hex
 
     visit openid_connect_authorize_path(
-      client_id: client_id,
+      client_id:,
       response_type: 'code',
       acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
       scope: 'openid email',
       redirect_uri: 'http://localhost:7654/auth/result',
-      state: state,
+      state:,
       prompt: 'select_account',
-      nonce: nonce,
+      nonce:,
     )
   end
 
@@ -229,14 +229,14 @@ RSpec.describe 'redirect_uri validation' do
     nonce = SecureRandom.hex
 
     visit openid_connect_authorize_path(
-      client_id: client_id,
+      client_id:,
       response_type: 'code',
       acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
       scope: 'openid profile',
       redirect_uri: 'gov.gsa.openidconnect.test://result',
-      state: state,
+      state:,
       prompt: 'select_account',
-      nonce: nonce,
+      nonce:,
     )
   end
 
@@ -245,14 +245,14 @@ RSpec.describe 'redirect_uri validation' do
     nonce = SecureRandom.hex
 
     visit openid_connect_authorize_path(
-      client_id: client_id,
+      client_id:,
       response_type: 'code',
       acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
       scope: 'openid email',
       redirect_uri: 'http://localhost:7654/auth/result',
-      state: state,
+      state:,
       prompt: 'select_account',
-      nonce: nonce,
+      nonce:,
     )
   end
 
@@ -261,14 +261,14 @@ RSpec.describe 'redirect_uri validation' do
     nonce = SecureRandom.hex
 
     visit openid_connect_authorize_path(
-      client_id: client_id,
+      client_id:,
       response_type: 'code',
       acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
       scope: 'openid email',
       redirect_uri: 'https://example.com',
-      state: state,
+      state:,
       prompt: 'select_account',
-      nonce: nonce,
+      nonce:,
     )
   end
 
@@ -277,14 +277,14 @@ RSpec.describe 'redirect_uri validation' do
     nonce = SecureRandom.hex
 
     visit openid_connect_authorize_path(
-      client_id: client_id,
+      client_id:,
       response_type: 'code',
       acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
       scope: 'openid email',
       redirect_uri: 'http://test.host',
-      state: state,
+      state:,
       prompt: 'select_account',
-      nonce: nonce,
+      nonce:,
     )
   end
 end

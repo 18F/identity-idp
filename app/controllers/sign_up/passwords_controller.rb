@@ -44,7 +44,7 @@ module SignUp
       analytics.password_creation(**result.to_h)
       irs_attempts_api_tracker.user_registration_password_submitted(
         success: result.success?,
-        failure_reason: failure_reason,
+        failure_reason:,
       )
     end
 
@@ -59,7 +59,7 @@ module SignUp
       now = Time.zone.now
       UpdateUser.new(
         user: @user,
-        attributes: { password: password, confirmed_at: now },
+        attributes: { password:, confirmed_at: now },
       ).call
       @user.email_addresses.take.update(confirmed_at: now)
 

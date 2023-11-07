@@ -22,7 +22,7 @@ class ResetUserPassword
   def forget_all_browsers
     ForgetAllBrowsers.new(
       user,
-      remember_device_revoked_at: remember_device_revoked_at,
+      remember_device_revoked_at:,
     ).call
   end
 
@@ -33,7 +33,7 @@ class ResetUserPassword
 
   def notify_user
     user.email_addresses.each do |email_address|
-      UserMailer.with(user: user, email_address: email_address).please_reset_password.
+      UserMailer.with(user:, email_address:).please_reset_password.
         deliver_now_or_later
     end
   end

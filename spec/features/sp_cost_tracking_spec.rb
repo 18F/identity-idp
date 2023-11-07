@@ -55,7 +55,7 @@ RSpec.feature 'SP Costing', :email do
       lexis_nexis_resolution
       lexis_nexis_address
     ].each do |cost_type|
-      sp_costs = SpCost.where(cost_type: cost_type)
+      sp_costs = SpCost.where(cost_type:)
       expect(sp_costs.count).to eq(2)
       sp_costs.each do |sp_cost|
         expect(sp_cost.ial).to eq(2)

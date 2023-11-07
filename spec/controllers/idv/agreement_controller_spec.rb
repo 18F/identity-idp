@@ -120,26 +120,26 @@ RSpec.describe Idv::AgreementController do
         doc_auth: {
           idv_consent_given: 1,
         },
-        skip_hybrid_handoff: skip_hybrid_handoff,
+        skip_hybrid_handoff:,
       }.compact
     end
 
     it 'sends analytics_submitted event with consent given' do
-      put :update, params: params
+      put(:update, params:)
 
       expect(@analytics).to have_logged_event(analytics_name, analytics_args)
     end
 
     it 'does not set flow_path' do
       expect do
-        put :update, params: params
+        put :update, params:
       end.not_to change {
         subject.idv_session.flow_path
       }.from(nil)
     end
 
     it 'redirects to hybrid handoff' do
-      put :update, params: params
+      put(:update, params:)
       expect(response).to redirect_to(idv_hybrid_handoff_url)
     end
 
@@ -147,7 +147,7 @@ RSpec.describe Idv::AgreementController do
       let(:skip_hybrid_handoff) { '' }
       it 'sets flow_path to standard' do
         expect do
-          put :update, params: params
+          put :update, params:
         end.to change {
           subject.idv_session.flow_path
         }.from(nil).to('standard').and change {
@@ -156,7 +156,7 @@ RSpec.describe Idv::AgreementController do
       end
 
       it 'redirects to hybrid handoff' do
-        put :update, params: params
+        put(:update, params:)
         expect(response).to redirect_to(idv_hybrid_handoff_url)
       end
     end

@@ -36,11 +36,11 @@ module Agreements
       @associated_integrations.each do |(iaa_gtc_id, order_number), integrations|
         next if integrations.blank?
 
-        order = IaaOrder.find_by!(iaa_gtc_id: iaa_gtc_id, order_number: order_number)
+        order = IaaOrder.find_by!(iaa_gtc_id:, order_number:)
 
         integrations.each do |issuer|
-          integration = Integration.find_by!(issuer: issuer)
-          IntegrationUsage.find_or_create_by!(iaa_order: order, integration: integration)
+          integration = Integration.find_by!(issuer:)
+          IntegrationUsage.find_or_create_by!(iaa_order: order, integration:)
         rescue ActiveRecord::RecordNotFound => e
           gtc = order.iaa_gtc.gtc_number
           message =

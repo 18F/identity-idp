@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe ReactivateAccountController do
-  let(:user) { create(:user, profiles: profiles) }
+  let(:user) { create(:user, profiles:) }
   let(:profiles) { [] }
 
   before { stub_sign_in(user) }

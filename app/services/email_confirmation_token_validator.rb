@@ -16,7 +16,7 @@ class EmailConfirmationTokenValidator
   def submit
     @success = valid? && @email_address.present?
 
-    FormResponse.new(success: success, errors: errors, extra: extra_analytics_attributes)
+    FormResponse.new(success:, errors:, extra: extra_analytics_attributes)
   end
 
   def email_address_already_confirmed?

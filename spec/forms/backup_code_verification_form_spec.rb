@@ -6,7 +6,7 @@ RSpec.describe BackupCodeVerificationForm do
   let(:user) { create(:user) }
   let(:backup_codes) { BackupCodeGenerator.new(user).create }
   let(:backup_code_config) do
-    BackupCodeConfiguration.find_with_code(code: code, user_id: user.id)
+    BackupCodeConfiguration.find_with_code(code:, user_id: user.id)
   end
 
   describe '#submit' do

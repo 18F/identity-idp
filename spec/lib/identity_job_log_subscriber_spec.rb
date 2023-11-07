@@ -25,7 +25,7 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
 
     AddressProofingJob.perform_later(
       result_id: document_capture_session.result_id,
-      encrypted_arguments: encrypted_arguments,
+      encrypted_arguments:,
       trace_id: nil,
       user_id: SecureRandom.random_number(1000),
       issuer: build(:service_provider).issuer,
@@ -81,7 +81,7 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
         'RetryEvent',
         payload: {
           wait: 1,
-          job: job,
+          job:,
           error: double('Exception'),
         },
         duration: 1,
@@ -104,7 +104,7 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
         now,
         now,
         event_uuid,
-        job: job,
+        job:,
         exception_object: ActiveRecord::RecordNotUnique.new(<<~ERR),
           PG::UniqueViolation: ERROR: duplicate key value violates unique constraint "index_good_jobs_on_cron_key_and_cron_at"
           DETAIL: Key (cron_key, cron_at)=(heartbeat_job, 2022-01-28 17:35:00) already exists.
@@ -143,7 +143,7 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
         now,
         now,
         event_uuid,
-        job: job,
+        job:,
         exception_object: Errno::ECONNREFUSED.new,
       )
 
@@ -179,7 +179,7 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
         now,
         now,
         event_uuid,
-        job: job,
+        job:,
         exception_object: nil,
         aborted: true,
       )
@@ -216,7 +216,7 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
         now,
         now,
         event_uuid,
-        job: job,
+        job:,
         exception_object: nil,
       )
 
@@ -254,7 +254,7 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
         now,
         now,
         event_uuid,
-        job: job,
+        job:,
         exception_object: ActiveRecord::RecordNotUnique.new(<<~ERR),
           PG::UniqueViolation: ERROR: duplicate key value violates unique constraint "index_good_jobs_on_cron_key_and_cron_at"
           DETAIL: Key (cron_key, cron_at)=(heartbeat_job, 2022-01-28 17:35:00) already exists.
@@ -279,7 +279,7 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
         now,
         now,
         event_uuid,
-        job: job,
+        job:,
         exception_object: Errno::ECONNREFUSED.new,
       )
 
@@ -321,7 +321,7 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
         now,
         now,
         event_uuid,
-        job: job,
+        job:,
         exception_object: Errno::ECONNREFUSED.new,
       )
 
@@ -336,7 +336,7 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
         now,
         now,
         event_uuid,
-        job: job,
+        job:,
         exception_object: nil,
         aborted: true,
       )
@@ -373,7 +373,7 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
         now,
         now,
         event_uuid,
-        job: job,
+        job:,
         exception_object: nil,
       )
 
@@ -415,7 +415,7 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
         now,
         now,
         event_uuid,
-        job: job,
+        job:,
         error: Errno::ECONNREFUSED.new,
       )
 

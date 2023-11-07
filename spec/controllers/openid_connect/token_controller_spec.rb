@@ -7,10 +7,10 @@ RSpec.describe OpenidConnect::TokenController do
     subject(:action) do
       post :create,
            params: {
-             grant_type: grant_type,
-             code: code,
+             grant_type:,
+             code:,
              client_assertion_type: OpenidConnectTokenForm::CLIENT_ASSERTION_TYPE,
-             client_assertion: client_assertion,
+             client_assertion:,
            }
     end
 
@@ -55,7 +55,7 @@ RSpec.describe OpenidConnect::TokenController do
         expect(@analytics).to receive(:track_event).
           with('OpenID Connect: token', {
             success: true,
-            client_id: client_id,
+            client_id:,
             user_id: user.uuid,
             errors: {},
             code_digest: kind_of(String),
@@ -85,7 +85,7 @@ RSpec.describe OpenidConnect::TokenController do
         expect(@analytics).to receive(:track_event).
           with('OpenID Connect: token', {
             success: false,
-            client_id: client_id,
+            client_id:,
             user_id: user.uuid,
             errors: hash_including(:grant_type),
             code_digest: kind_of(String),

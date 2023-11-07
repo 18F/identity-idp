@@ -10,7 +10,7 @@ class SamlCompletionController < ApplicationController
   def index
     request_url = URI(sp_session[:request_url])
     path_year = request_url.path[-4..-1]
-    action_path = api_saml_finalauthpost_path(path_year: path_year)
+    action_path = api_saml_finalauthpost_path(path_year:)
     if !valid_path?(action_path)
       render_not_found
       return
@@ -22,7 +22,7 @@ class SamlCompletionController < ApplicationController
     # already responded with a 400 status before reaching this point.
     form_params = UriService.params(request_url)
 
-    render 'shared/saml_post_form', locals: { action_url: action_path, form_params: form_params },
+    render 'shared/saml_post_form', locals: { action_url: action_path, form_params: },
                                     layout: false
   end
 

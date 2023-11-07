@@ -20,9 +20,9 @@ RSpec.describe Reports::DeletedUserAccountsReport do
     create(
       :service_provider_identity,
       service_provider: issuer,
-      user: user,
-      uuid: uuid,
-      last_authenticated_at: last_authenticated_at,
+      user:,
+      uuid:,
+      last_authenticated_at:,
     )
     user.destroy!
 
@@ -33,7 +33,7 @@ RSpec.describe Reports::DeletedUserAccountsReport do
 
     report = "#{last_authenticated_at},#{uuid}\r\n"
     expect(ReportMailer).to receive(:deleted_user_accounts_report).with(
-      email: email, name: name, issuers: [issuer], data: report,
+      email:, name:, issuers: [issuer], data: report,
     )
 
     subject.perform(Time.zone.today)

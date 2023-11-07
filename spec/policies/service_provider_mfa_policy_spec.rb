@@ -11,12 +11,12 @@ RSpec.describe ServiceProviderMfaPolicy do
 
   subject(:policy) do
     described_class.new(
-      user: user,
-      service_provider: service_provider,
-      auth_methods_session: auth_methods_session,
-      aal_level_requested: aal_level_requested,
-      piv_cac_requested: piv_cac_requested,
-      phishing_resistant_requested: phishing_resistant_requested,
+      user:,
+      service_provider:,
+      auth_methods_session:,
+      aal_level_requested:,
+      piv_cac_requested:,
+      phishing_resistant_requested:,
     )
   end
 

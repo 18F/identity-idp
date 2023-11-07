@@ -70,7 +70,7 @@ module DocAuth
       if alert_error_count < 1
         config.warn_notifier&.call(
           message: 'DocAuth failure escaped without useful errors',
-          response_info: response_info,
+          response_info:,
         )
 
         error = Errors::GENERAL_ERROR
@@ -203,8 +203,8 @@ module DocAuth
 
       config.warn_notifier&.call(
         message: 'DocAuth vendor responded with alert name(s) we do not handle',
-        unknown_alerts: unknown_alerts,
-        response_info: response_info,
+        unknown_alerts:,
+        response_info:,
       )
 
       unknown_fail_count

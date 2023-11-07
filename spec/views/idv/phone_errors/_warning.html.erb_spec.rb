@@ -6,7 +6,7 @@ RSpec.describe 'idv/phone_errors/_warning.html.erb' do
   let(:assigns) { {} }
 
   before do
-    decorated_sp_session = instance_double(ServiceProviderSession, sp_name: sp_name)
+    decorated_sp_session = instance_double(ServiceProviderSession, sp_name:)
     allow(view).to receive(:decorated_sp_session).and_return(decorated_sp_session)
 
     render('idv/phone_errors/warning', assigns) { text }
@@ -49,7 +49,7 @@ RSpec.describe 'idv/phone_errors/_warning.html.erb' do
   context 'without an SP' do
     it 'renders a list of troubleshooting options' do
       expect(rendered).not_to have_link(
-        t('idv.troubleshooting.options.get_help_at_sp', sp_name: sp_name),
+        t('idv.troubleshooting.options.get_help_at_sp', sp_name:),
         href: return_to_sp_failure_to_proof_path,
       )
     end
@@ -60,7 +60,7 @@ RSpec.describe 'idv/phone_errors/_warning.html.erb' do
 
     it 'renders a list of troubleshooting options' do
       expect(rendered).to have_link(
-        t('idv.troubleshooting.options.get_help_at_sp', sp_name: sp_name),
+        t('idv.troubleshooting.options.get_help_at_sp', sp_name:),
         href: return_to_sp_failure_to_proof_path(step: 'phone', location: 'warning'),
       )
     end
@@ -68,7 +68,7 @@ RSpec.describe 'idv/phone_errors/_warning.html.erb' do
     context 'without a name' do
       it 'renders failure to proof url with default location' do
         expect(rendered).to have_link(
-          t('idv.troubleshooting.options.get_help_at_sp', sp_name: sp_name),
+          t('idv.troubleshooting.options.get_help_at_sp', sp_name:),
           href: return_to_sp_failure_to_proof_path(step: 'phone', location: 'warning'),
         )
       end
@@ -79,7 +79,7 @@ RSpec.describe 'idv/phone_errors/_warning.html.erb' do
 
       it 'renders failure to proof url with name as location' do
         expect(rendered).to have_link(
-          t('idv.troubleshooting.options.get_help_at_sp', sp_name: sp_name),
+          t('idv.troubleshooting.options.get_help_at_sp', sp_name:),
           href: return_to_sp_failure_to_proof_path(step: 'phone', location: 'fail'),
         )
       end

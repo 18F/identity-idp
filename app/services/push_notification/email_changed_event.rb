@@ -17,7 +17,7 @@ module PushNotification
       {
         subject: {
           subject_type: 'email',
-          email: email,
+          email:,
         },
       }
     end

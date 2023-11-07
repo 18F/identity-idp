@@ -30,7 +30,7 @@ RSpec.describe Users::EmailsController do
 
         while EmailPolicy.new(user).can_add_email?
           email = Faker::Internet.safe_email
-          user.email_addresses.create(email: email, confirmed_at: Time.zone.now)
+          user.email_addresses.create(email:, confirmed_at: Time.zone.now)
         end
       end
       it 'displays error if email exceeds limit' do
@@ -65,7 +65,7 @@ RSpec.describe Users::EmailsController do
           { success: true },
         )
 
-        post :add, params: { user: { email: email } }
+        post :add, params: { user: { email: } }
         expect(last_email_sent).to have_subject(
           t('user_mailer.email_confirmation_instructions.subject'),
         )

@@ -42,7 +42,7 @@ class NewPhoneForm
     success = valid?
     @phone = submitted_phone unless success
 
-    FormResponse.new(success: success, errors: errors, extra: extra_analytics_attributes)
+    FormResponse.new(success:, errors:, extra: extra_analytics_attributes)
   end
 
   def delivery_preference_sms?
@@ -83,7 +83,7 @@ class NewPhoneForm
 
   def extra_analytics_attributes
     {
-      otp_delivery_preference: otp_delivery_preference,
+      otp_delivery_preference:,
       phone_type: phone_info&.type, # comes from pinpoint API
       types: parsed_phone.types, # comes from Phonelib gem
       carrier: phone_info&.carrier,

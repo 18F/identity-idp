@@ -70,7 +70,7 @@ module DataRequests
         @cloudwatch_client ||= Reporting::CloudwatchClient.new(
           ensure_complete_logs: true,
           slice_interval: false,
-          logger: logger,
+          logger:,
           **cloudwatch_client_options,
         )
       end

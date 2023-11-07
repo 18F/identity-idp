@@ -50,8 +50,8 @@ module DocAuth
     def to_h
       {
         success: success?,
-        errors: errors,
-        exception: exception,
+        errors:,
+        exception:,
         attention_with_barcode: attention_with_barcode?,
         doc_type_supported: doc_type_supported?,
       }.merge(extra)

@@ -8,7 +8,7 @@ RSpec.describe PasswordCaptureController do
       let(:pii) { { first_name: 'Jane', ssn: '111-11-1111' } }
 
       it 'decrypts PII and redirects' do
-        create(:profile, :active, :verified, user: user, pii: pii)
+        create(:profile, :active, :verified, user:, pii:)
         stub_sign_in(user)
 
         expect(controller.user_session[:decrypted_pii]).to be nil

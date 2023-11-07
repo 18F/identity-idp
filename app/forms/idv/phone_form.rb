@@ -44,7 +44,7 @@ module Idv
       success = valid?
       self.phone = params[:phone] unless success
 
-      FormResponse.new(success: success, errors: errors, extra: extra_analytics_attributes)
+      FormResponse.new(success:, errors:, extra: extra_analytics_attributes)
     end
 
     private
@@ -124,7 +124,7 @@ module Idv
 
     def valid_phone?(phone, phone_confirmed:)
       return false if !valid_phone_for_allowed_countries?(phone)
-      capabilities = PhoneNumberCapabilities.new(phone, phone_confirmed: phone_confirmed)
+      capabilities = PhoneNumberCapabilities.new(phone, phone_confirmed:)
       unsupported_delivery_methods(capabilities).blank?
     end
 
@@ -146,7 +146,7 @@ module Idv
         country_code: parsed_phone.country,
         area_code: parsed_phone.area_code,
         pii_like_keypaths: [[:errors, :phone], [:error_details, :phone]], # see errors.add(:phone)
-        otp_delivery_preference: otp_delivery_preference,
+        otp_delivery_preference:,
       }.tap do |extra|
         extra[:warn] = @warning_message if @warning_message
       end

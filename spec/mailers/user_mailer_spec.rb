@@ -4,10 +4,10 @@ RSpec.describe UserMailer, type: :mailer do
   let(:user) { build(:user) }
   let(:email_address) { user.email_addresses.first }
   let(:banned_email) { 'banned_email+123abc@gmail.com' }
-  let(:banned_email_address) { create(:email_address, email: banned_email, user: user) }
+  let(:banned_email_address) { create(:email_address, email: banned_email, user:) }
 
   describe '#validate_user_and_email_address' do
-    let(:mail) { UserMailer.with(user: user, email_address: email_address).signup_with_your_email }
+    let(:mail) { UserMailer.with(user:, email_address:).signup_with_your_email }
 
     context 'with user and email address match' do
       it 'does not raise an error' do
@@ -27,7 +27,7 @@ RSpec.describe UserMailer, type: :mailer do
 
   describe '#add_email' do
     let(:token) { SecureRandom.hex }
-    let(:mail) { UserMailer.with(user: user, email_address: email_address).add_email(token) }
+    let(:mail) { UserMailer.with(user:, email_address:).add_email(token) }
 
     it_behaves_like 'a system email'
     it_behaves_like 'an email that respects user email locale preference'
@@ -42,7 +42,7 @@ RSpec.describe UserMailer, type: :mailer do
 
   describe '#email_deleted' do
     let(:mail) do
-      UserMailer.with(user: user, email_address: email_address).email_deleted
+      UserMailer.with(user:, email_address:).email_deleted
     end
 
     it_behaves_like 'a system email'
@@ -66,7 +66,7 @@ RSpec.describe UserMailer, type: :mailer do
 
   describe '#add_email_associated_with_another_account' do
     let(:mail) do
-      UserMailer.with(user: user, email_address: email_address).
+      UserMailer.with(user:, email_address:).
         add_email_associated_with_another_account
     end
 
@@ -89,8 +89,8 @@ RSpec.describe UserMailer, type: :mailer do
   describe '#password_changed' do
     let(:mail) do
       UserMailer.with(
-        user: user,
-        email_address: email_address,
+        user:,
+        email_address:,
       ).password_changed(disavowal_token: '123abc')
     end
 
@@ -116,7 +116,7 @@ RSpec.describe UserMailer, type: :mailer do
     end
 
     it 'does not send mail to emails in nonessential email banlist' do
-      mail = UserMailer.with(user: user, email_address: banned_email_address).
+      mail = UserMailer.with(user:, email_address: banned_email_address).
         password_changed(disavowal_token: '123abc')
       expect(mail.to).to eq(nil)
     end
@@ -124,7 +124,7 @@ RSpec.describe UserMailer, type: :mailer do
 
   describe '#personal_key_sign_in' do
     let(:mail) do
-      UserMailer.with(user: user, email_address: user.email_addresses.first).
+      UserMailer.with(user:, email_address: user.email_addresses.first).
         personal_key_sign_in(disavowal_token: 'asdf1234')
     end
 
@@ -149,7 +149,7 @@ RSpec.describe UserMailer, type: :mailer do
     end
 
     it 'does not send mail to emails in nonessential email banlist' do
-      mail = UserMailer.with(user: user, email_address: banned_email_address).
+      mail = UserMailer.with(user:, email_address: banned_email_address).
         personal_key_sign_in(disavowal_token: 'asdf1234')
 
       expect(mail.to).to eq(nil)
@@ -162,11 +162,11 @@ RSpec.describe UserMailer, type: :mailer do
     let(:token) { 'asdf123' }
 
     let(:mail) do
-      UserMailer.with(user: user, email_address: user.email_addresses.first).
+      UserMailer.with(user:, email_address: user.email_addresses.first).
         email_confirmation_instructions(
           token,
-          request_id: request_id,
-          instructions: instructions,
+          request_id:,
+          instructions:,
         )
     end
 
@@ -179,10 +179,10 @@ RSpec.describe UserMailer, type: :mailer do
     location = 'Washington, DC'
     disavowal_token = 'asdf1234'
     let(:mail) do
-      UserMailer.with(user: user, email_address: email_address).new_device_sign_in(
-        date: date,
-        location: location,
-        disavowal_token: disavowal_token,
+      UserMailer.with(user:, email_address:).new_device_sign_in(
+        date:,
+        location:,
+        disavowal_token:,
       )
     end
 
@@ -202,7 +202,7 @@ RSpec.describe UserMailer, type: :mailer do
           strip_tags(
             t(
               'user_mailer.new_device_sign_in.info_html',
-              date: date, location: location, app_name: APP_NAME,
+              date:, location:, app_name: APP_NAME,
             ),
           ),
         )
@@ -214,10 +214,10 @@ RSpec.describe UserMailer, type: :mailer do
 
     it 'does not send mail to emails in nonessential email banlist' do
       email_address = EmailAddress.new(email: banned_email)
-      mail = UserMailer.with(user: user, email_address: email_address).new_device_sign_in(
-        date: date,
-        location: location,
-        disavowal_token: disavowal_token,
+      mail = UserMailer.with(user:, email_address:).new_device_sign_in(
+        date:,
+        location:,
+        disavowal_token:,
       )
       expect(mail.to).to eq(nil)
     end
@@ -225,7 +225,7 @@ RSpec.describe UserMailer, type: :mailer do
 
   describe '#personal_key_regenerated' do
     let(:mail) do
-      UserMailer.with(user: user, email_address: email_address).personal_key_regenerated
+      UserMailer.with(user:, email_address:).personal_key_regenerated
     end
 
     it_behaves_like 'a system email'
@@ -246,7 +246,7 @@ RSpec.describe UserMailer, type: :mailer do
     end
 
     it 'does not send mail to emails in nonessential email banlist' do
-      mail = UserMailer.with(user: user, email_address: banned_email_address).
+      mail = UserMailer.with(user:, email_address: banned_email_address).
         personal_key_regenerated
       expect(mail.to).to eq(nil)
     end
@@ -254,7 +254,7 @@ RSpec.describe UserMailer, type: :mailer do
 
   describe '#signup_with_your_email' do
     let(:mail) do
-      UserMailer.with(user: user, email_address: user.email_addresses.first).signup_with_your_email
+      UserMailer.with(user:, email_address: user.email_addresses.first).signup_with_your_email
     end
 
     it_behaves_like 'a system email'
@@ -290,8 +290,8 @@ RSpec.describe UserMailer, type: :mailer do
   describe '#phone_added' do
     disavowal_token = 'i_am_disavowal_token'
     let(:mail) do
-      UserMailer.with(user: user, email_address: email_address).
-        phone_added(disavowal_token: disavowal_token)
+      UserMailer.with(user:, email_address:).
+        phone_added(disavowal_token:)
     end
 
     it_behaves_like 'a system email'
@@ -312,8 +312,8 @@ RSpec.describe UserMailer, type: :mailer do
     end
 
     it 'does not send mail to emails in nonessential email banlist' do
-      mail = UserMailer.with(user: user, email_address: banned_email_address).
-        phone_added(disavowal_token: disavowal_token)
+      mail = UserMailer.with(user:, email_address: banned_email_address).
+        phone_added(disavowal_token:)
       expect(mail.to).to eq(nil)
     end
   end
@@ -329,7 +329,7 @@ RSpec.describe UserMailer, type: :mailer do
 
   describe '#account_reset_request' do
     let(:mail) do
-      UserMailer.with(user: user, email_address: email_address).account_reset_request(account_reset)
+      UserMailer.with(user:, email_address:).account_reset_request(account_reset)
     end
 
     let(:account_reset) { user.account_reset_request }
@@ -372,7 +372,7 @@ RSpec.describe UserMailer, type: :mailer do
 
   describe '#account_reset_granted' do
     let(:mail) do
-      UserMailer.with(user: user, email_address: email_address).
+      UserMailer.with(user:, email_address:).
         account_reset_granted(user.account_reset_request)
     end
 
@@ -397,7 +397,7 @@ RSpec.describe UserMailer, type: :mailer do
 
   describe '#account_reset_complete' do
     let(:mail) do
-      UserMailer.with(user: user, email_address: email_address).
+      UserMailer.with(user:, email_address:).
         account_reset_complete
     end
 
@@ -422,7 +422,7 @@ RSpec.describe UserMailer, type: :mailer do
 
   describe '#account_reset_cancel' do
     let(:mail) do
-      UserMailer.with(user: user, email_address: email_address).
+      UserMailer.with(user:, email_address:).
         account_reset_cancel
     end
 
@@ -446,7 +446,7 @@ RSpec.describe UserMailer, type: :mailer do
   end
 
   describe '#please_reset_password' do
-    let(:mail) { UserMailer.with(user: user, email_address: email_address).please_reset_password }
+    let(:mail) { UserMailer.with(user:, email_address:).please_reset_password }
 
     it_behaves_like 'a system email'
     it_behaves_like 'an email that respects user email locale preference'
@@ -471,7 +471,7 @@ RSpec.describe UserMailer, type: :mailer do
   end
 
   describe '#letter_reminder' do
-    let(:mail) { UserMailer.with(user: user, email_address: email_address).letter_reminder }
+    let(:mail) { UserMailer.with(user:, email_address:).letter_reminder }
 
     it_behaves_like 'a system email'
     it_behaves_like 'an email that respects user email locale preference'
@@ -490,7 +490,7 @@ RSpec.describe UserMailer, type: :mailer do
     end
 
     it 'does not send mail to emails in nonessential email banlist' do
-      mail = UserMailer.with(user: user, email_address: banned_email_address).letter_reminder
+      mail = UserMailer.with(user:, email_address: banned_email_address).letter_reminder
       expect(mail.to).to eq(nil)
     end
   end
@@ -500,10 +500,10 @@ RSpec.describe UserMailer, type: :mailer do
     let(:sp_name) { '' }
     let(:date_time) { Time.zone.now }
     let(:mail) do
-      UserMailer.with(user: user, email_address: email_address).
+      UserMailer.with(user:, email_address:).
         account_verified(
-          date_time: date_time, sp_name: sp_name,
-          disavowal_token: disavowal_token
+          date_time:, sp_name:,
+          disavowal_token:
         )
     end
 
@@ -515,15 +515,15 @@ RSpec.describe UserMailer, type: :mailer do
     end
 
     it 'renders the subject' do
-      expect(mail.subject).to eq t('user_mailer.account_verified.subject', sp_name: sp_name)
+      expect(mail.subject).to eq t('user_mailer.account_verified.subject', sp_name:)
     end
 
     it 'does not send mail to emails in nonessential email banlist' do
-      mail = UserMailer.with(user: user, email_address: banned_email_address).
+      mail = UserMailer.with(user:, email_address: banned_email_address).
         account_verified(
-          date_time: date_time,
-          sp_name: sp_name,
-          disavowal_token: disavowal_token,
+          date_time:,
+          sp_name:,
+          disavowal_token:,
         )
       expect(mail.to).to eq(nil)
     end
@@ -541,14 +541,14 @@ RSpec.describe UserMailer, type: :mailer do
         :pending,
         selected_location_details: { name: 'FRIENDSHIP' },
         status_updated_at: Time.zone.now - 2.hours,
-        current_address_matches_id: current_address_matches_id,
+        current_address_matches_id:,
       )
     end
 
     describe '#in_person_ready_to_verify' do
       let(:mail) do
-        UserMailer.with(user: user, email_address: email_address).in_person_ready_to_verify(
-          enrollment: enrollment,
+        UserMailer.with(user:, email_address:).in_person_ready_to_verify(
+          enrollment:,
         )
       end
 
@@ -615,10 +615,10 @@ RSpec.describe UserMailer, type: :mailer do
     describe '#in_person_ready_to_verify_reminder' do
       let(:mail) do
         UserMailer.with(
-          user: user,
-          email_address: email_address,
+          user:,
+          email_address:,
         ).in_person_ready_to_verify_reminder(
-          enrollment: enrollment,
+          enrollment:,
         )
       end
 
@@ -643,8 +643,8 @@ RSpec.describe UserMailer, type: :mailer do
       end
 
       let(:mail) do
-        UserMailer.with(user: user, email_address: email_address).in_person_verified(
-          enrollment: enrollment,
+        UserMailer.with(user:, email_address:).in_person_verified(
+          enrollment:,
         )
       end
 
@@ -658,13 +658,13 @@ RSpec.describe UserMailer, type: :mailer do
           :in_person_enrollment,
           selected_location_details: { name: 'FRIENDSHIP' },
           status_updated_at: Time.zone.now - 2.hours,
-          current_address_matches_id: current_address_matches_id,
+          current_address_matches_id:,
         )
       end
 
       let(:mail) do
-        UserMailer.with(user: user, email_address: email_address).in_person_failed(
-          enrollment: enrollment,
+        UserMailer.with(user:, email_address:).in_person_failed(
+          enrollment:,
         )
       end
 
@@ -682,8 +682,8 @@ RSpec.describe UserMailer, type: :mailer do
       end
 
       let(:mail) do
-        UserMailer.with(user: user, email_address: email_address).in_person_failed_fraud(
-          enrollment: enrollment,
+        UserMailer.with(user:, email_address:).in_person_failed_fraud(
+          enrollment:,
         )
       end
 
@@ -693,7 +693,7 @@ RSpec.describe UserMailer, type: :mailer do
 
     describe '#in_person_completion_survey' do
       let(:mail) do
-        UserMailer.with(user: user, email_address: email_address).in_person_completion_survey
+        UserMailer.with(user:, email_address:).in_person_completion_survey
       end
 
       it_behaves_like 'a system email'
@@ -732,7 +732,7 @@ RSpec.describe UserMailer, type: :mailer do
 
   describe '#suspended_reset_password' do
     let(:mail) do
-      UserMailer.with(user: user, email_address: email_address).
+      UserMailer.with(user:, email_address:).
         suspended_reset_password
     end
 
@@ -761,7 +761,7 @@ RSpec.describe UserMailer, type: :mailer do
 
   describe '#suspended_create_account' do
     let(:mail) do
-      UserMailer.with(user: user, email_address: email_address).suspended_create_account
+      UserMailer.with(user:, email_address:).suspended_create_account
     end
 
     it_behaves_like 'a system email'
@@ -792,7 +792,7 @@ RSpec.describe UserMailer, type: :mailer do
     it 'does not queue email if it potentially contains sensitive value' do
       user = create(:user)
       mailer = UserMailer.with(
-        user: user,
+        user:,
         email_address: user.email_addresses.first,
       ).add_email(Idp::Constants::MOCK_IDV_APPLICANT[:last_name])
       expect { mailer.deliver_later }.to raise_error(
@@ -802,7 +802,7 @@ RSpec.describe UserMailer, type: :mailer do
 
     it 'does not queue email if it potentially contains sensitive keys' do
       user = create(:user)
-      mailer = UserMailer.with(user: user, email_address: user.email_addresses.first).add_email(
+      mailer = UserMailer.with(user:, email_address: user.email_addresses.first).add_email(
         {
           first_name: nil,
         },
@@ -823,7 +823,7 @@ RSpec.describe UserMailer, type: :mailer do
     end
 
     let(:mail) do
-      UserMailer.with(user: user, email_address: email_address).gpo_reminder
+      UserMailer.with(user:, email_address:).gpo_reminder
     end
 
     it_behaves_like 'a system email'
@@ -890,7 +890,7 @@ RSpec.describe UserMailer, type: :mailer do
 
   describe '#suspension_confirmed' do
     let(:mail) do
-      UserMailer.with(user: user, email_address: email_address).suspension_confirmed
+      UserMailer.with(user:, email_address:).suspension_confirmed
     end
 
     it_behaves_like 'a system email'
@@ -914,7 +914,7 @@ RSpec.describe UserMailer, type: :mailer do
 
   describe '#account_reinstated' do
     let(:mail) do
-      UserMailer.with(user: user, email_address: email_address).account_reinstated
+      UserMailer.with(user:, email_address:).account_reinstated
     end
 
     it_behaves_like 'a system email'

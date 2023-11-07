@@ -18,18 +18,18 @@ module Idv
     def self.start(phone:, delivery_method:)
       new(
         code: generate_code,
-        phone: phone,
+        phone:,
         sent_at: Time.zone.now,
-        delivery_method: delivery_method,
+        delivery_method:,
       )
     end
 
     def regenerate_otp
       self.class.new(
         code: self.class.generate_code,
-        phone: phone,
+        phone:,
         sent_at: Time.zone.now,
-        delivery_method: delivery_method,
+        delivery_method:,
       )
     end
 
@@ -56,10 +56,10 @@ module Idv
 
     def to_h
       {
-        code: code,
-        phone: phone,
+        code:,
+        phone:,
         sent_at: sent_at.to_i,
-        delivery_method: delivery_method,
+        delivery_method:,
       }
     end
 

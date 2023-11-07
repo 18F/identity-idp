@@ -15,15 +15,15 @@ RSpec.describe Proofing::LexisNexis::RequestSigner do
 
   subject do
     Proofing::LexisNexis::RequestSigner.new(
-      config: config,
-      message_body: message_body,
-      path: path,
+      config:,
+      message_body:,
+      path:,
     )
   end
 
   describe 'generating a valid hmac authorization' do
     it 'succeeds' do
-      authorization = subject.hmac_authorization(timestamp: timestamp, nonce: nonce)
+      authorization = subject.hmac_authorization(timestamp:, nonce:)
       regex = %r{
         HMAC-SHA256\s
         keyid=#{config.hmac_key_id},\s

@@ -7,9 +7,9 @@ module DocAuth
         def initialize(instance_id:, success: true, errors: [], exception: nil)
           @instance_id = instance_id
           super(
-            success: success,
-            errors: errors,
-            exception: exception,
+            success:,
+            errors:,
+            exception:,
           )
         end
       end

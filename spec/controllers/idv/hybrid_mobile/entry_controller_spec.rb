@@ -6,7 +6,7 @@ RSpec.describe Idv::HybridMobile::EntryController do
 
     let!(:document_capture_session) do
       DocumentCaptureSession.create!(
-        user: user,
+        user:,
         requested_at: Time.zone.now,
       )
     end
@@ -98,7 +98,7 @@ RSpec.describe Idv::HybridMobile::EntryController do
       context 'but we already had a session' do
         let!(:different_document_capture_session) do
           DocumentCaptureSession.create!(
-            user: user,
+            user:,
             requested_at: Time.zone.now,
           )
         end

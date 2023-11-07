@@ -3,9 +3,9 @@ module Db
     def self.create(user, otp_secret_key, totp_timestamp, name = Time.zone.now.to_s)
       user.save
       user.auth_app_configurations.create(
-        otp_secret_key: otp_secret_key,
-        totp_timestamp: totp_timestamp,
-        name: name,
+        otp_secret_key:,
+        totp_timestamp:,
+        name:,
       )
     end
 

@@ -18,7 +18,7 @@ class EditPhoneForm
     ingest_submitted_params(params)
     success = valid?
     update_phone_configuration if success
-    FormResponse.new(success: success, errors: errors, extra: extra_analytics_attributes)
+    FormResponse.new(success:, errors:, extra: extra_analytics_attributes)
   end
 
   def delivery_preference_sms?
@@ -43,8 +43,8 @@ class EditPhoneForm
 
   def extra_analytics_attributes
     {
-      delivery_preference: delivery_preference,
-      make_default_number: make_default_number,
+      delivery_preference:,
+      make_default_number:,
       phone_configuration_id: phone_configuration.id,
     }
   end
@@ -58,7 +58,7 @@ class EditPhoneForm
   end
 
   def update_phone_configuration
-    update_params = { delivery_preference: delivery_preference }
+    update_params = { delivery_preference: }
     update_params[:made_default_at] = Time.zone.now if make_default_number
     phone_configuration.update!(update_params)
   end

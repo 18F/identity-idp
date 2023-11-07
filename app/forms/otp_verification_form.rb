@@ -22,8 +22,8 @@ class OtpVerificationForm
     user.clear_direct_otp if success
 
     FormResponse.new(
-      success: success,
-      errors: errors,
+      success:,
+      errors:,
       extra: extra_analytics_attributes,
       serialize_error_details_only: true,
     )
@@ -65,7 +65,7 @@ class OtpVerificationForm
 
     {
       multi_factor_auth_method: 'otp_code',
-      multi_factor_auth_method_created_at: multi_factor_auth_method_created_at,
+      multi_factor_auth_method_created_at:,
     }
   end
 end

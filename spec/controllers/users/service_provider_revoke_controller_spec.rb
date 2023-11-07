@@ -22,7 +22,7 @@ RSpec.describe Users::ServiceProviderRevokeController do
   end
 
   describe '#show' do
-    subject { get :show, params: { sp_id: sp_id } }
+    subject { get :show, params: { sp_id: } }
 
     it 'renders' do
       subject
@@ -58,7 +58,7 @@ RSpec.describe Users::ServiceProviderRevokeController do
 
   describe '#destroy' do
     let(:now) { Time.zone.now }
-    subject { delete :destroy, params: { sp_id: sp_id } }
+    subject { delete :destroy, params: { sp_id: } }
 
     it 'marks the identity as deleted and redirects' do
       expect do

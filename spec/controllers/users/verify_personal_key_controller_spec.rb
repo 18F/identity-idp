@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Users::VerifyPersonalKeyController do
-  let(:user) { create(:user, personal_key: personal_key) }
+  let(:user) { create(:user, personal_key:) }
   let!(:profiles) { [] }
   let(:personal_key) { 'key' }
 
@@ -22,7 +22,7 @@ RSpec.describe Users::VerifyPersonalKeyController do
     end
 
     context 'with password reset profile' do
-      let!(:profiles) { [create(:profile, :verified, :password_reset, user: user)] }
+      let!(:profiles) { [create(:profile, :verified, :password_reset, user:)] }
 
       it 'renders the `new` template' do
         get :new
@@ -37,7 +37,7 @@ RSpec.describe Users::VerifyPersonalKeyController do
       end
 
       it 'shows rate limited page after being rate limited' do
-        RateLimiter.new(rate_limit_type: :verify_personal_key, user: user).increment_to_limited!
+        RateLimiter.new(rate_limit_type: :verify_personal_key, user:).increment_to_limited!
 
         get :new
 
@@ -46,10 +46,10 @@ RSpec.describe Users::VerifyPersonalKeyController do
     end
 
     context 'with rate limit reached' do
-      let!(:profiles) { [create(:profile, :verified, :password_reset, user: user)] }
+      let!(:profiles) { [create(:profile, :verified, :password_reset, user:)] }
 
       before do
-        RateLimiter.new(rate_limit_type: :verify_personal_key, user: user).increment_to_limited!
+        RateLimiter.new(rate_limit_type: :verify_personal_key, user:).increment_to_limited!
       end
 
       it 'renders rate limited page' do
@@ -79,7 +79,7 @@ RSpec.describe Users::VerifyPersonalKeyController do
           :profile,
           :verified,
           :password_reset,
-          user: user,
+          user:,
           pii: { ssn: '123456789' },
         ),
       ]

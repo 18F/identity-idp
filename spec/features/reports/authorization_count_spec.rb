@@ -3,7 +3,7 @@ require 'rails_helper'
 def visit_idp_from_ial1_saml_sp(issuer:)
   visit_saml_authn_request_url(
     overrides: {
-      issuer: issuer,
+      issuer:,
       name_identifier_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
       authn_context: [
         Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
@@ -19,7 +19,7 @@ end
 def visit_idp_from_ial2_saml_sp(issuer:)
   visit_saml_authn_request_url(
     overrides: {
-      issuer: issuer,
+      issuer:,
       name_identifier_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
       authn_context: [
         Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
@@ -68,7 +68,7 @@ RSpec.describe 'authorization count' do
         click_agree_and_continue
         expect_ial1_count_only(client_id_1)
 
-        create(:profile, :active, :verified, :with_pii, user: user)
+        create(:profile, :active, :verified, :with_pii, user:)
         visit_idp_from_ial2_oidc_sp(client_id: client_id_1)
         fill_in t('account.index.password'), with: user.password
         click_submit_default
@@ -117,7 +117,7 @@ RSpec.describe 'authorization count' do
         click_submit_default
         expect_ial1_count_only(issuer_1)
 
-        create(:profile, :active, :verified, :with_pii, user: user)
+        create(:profile, :active, :verified, :with_pii, user:)
         visit_idp_from_ial2_saml_sp(issuer: issuer_1)
         fill_in t('account.index.password'), with: user.password
         click_submit_default_twice
@@ -380,29 +380,29 @@ RSpec.describe 'authorization count' do
   end
 
   def expect_ial1_count_only(issuer)
-    ial1_return_logs = SpReturnLog.where(issuer: issuer, billable: true, ial: 1)
-    ial2_return_logs = SpReturnLog.where(issuer: issuer, billable: true, ial: 2)
+    ial1_return_logs = SpReturnLog.where(issuer:, billable: true, ial: 1)
+    ial2_return_logs = SpReturnLog.where(issuer:, billable: true, ial: 2)
     expect(ial1_return_logs.count).to eq(1)
     expect(ial2_return_logs.count).to eq(0)
   end
 
   def expect_ial2_count_only(issuer)
-    ial1_return_logs = SpReturnLog.where(issuer: issuer, billable: true, ial: 1)
-    ial2_return_logs = SpReturnLog.where(issuer: issuer, billable: true, ial: 2)
+    ial1_return_logs = SpReturnLog.where(issuer:, billable: true, ial: 1)
+    ial2_return_logs = SpReturnLog.where(issuer:, billable: true, ial: 2)
     expect(ial1_return_logs.count).to eq(0)
     expect(ial2_return_logs.count).to eq(1)
   end
 
   def expect_ial1_and_ial2_count(issuer)
-    ial1_return_logs = SpReturnLog.where(issuer: issuer, billable: true, ial: 1)
-    ial2_return_logs = SpReturnLog.where(issuer: issuer, billable: true, ial: 2)
+    ial1_return_logs = SpReturnLog.where(issuer:, billable: true, ial: 1)
+    ial2_return_logs = SpReturnLog.where(issuer:, billable: true, ial: 2)
     expect(ial1_return_logs.count).to eq(1)
     expect(ial2_return_logs.count).to eq(1)
   end
 
   def expect_no_counts(issuer)
-    ial1_return_logs = SpReturnLog.where(issuer: issuer, billable: true, ial: 1)
-    ial2_return_logs = SpReturnLog.where(issuer: issuer, billable: true, ial: 2)
+    ial1_return_logs = SpReturnLog.where(issuer:, billable: true, ial: 1)
+    ial2_return_logs = SpReturnLog.where(issuer:, billable: true, ial: 2)
     expect(ial1_return_logs.count).to eq(0)
     expect(ial2_return_logs.count).to eq(0)
   end

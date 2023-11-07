@@ -225,7 +225,7 @@ module Rack
         findtime = IdentityConfig.store.logins_per_email_and_ip_period
         bantime = IdentityConfig.store.logins_per_email_and_ip_bantime
 
-        Allow2Ban.filter(email_and_ip, maxretry: maxretry, findtime: findtime, bantime: bantime) do
+        Allow2Ban.filter(email_and_ip, maxretry:, findtime:, bantime:) do
           # The count for the email and IP combination is incremented if the return value is truthy.
           SIGN_IN_PATHS.include?(req.path) && req.post?
         end
@@ -257,6 +257,6 @@ ActiveSupport::Notifications.subscribe(
 ) do |_name, _start, _finish, _request_id, payload|
   req = payload[:request]
   user = req.env['warden'].user || AnonymousUser.new
-  analytics = Analytics.new(user: user, request: req, session: {}, sp: nil)
+  analytics = Analytics.new(user:, request: req, session: {}, sp: nil)
   analytics.rate_limit_triggered(type: req.env['rack.attack.matched'])
 end

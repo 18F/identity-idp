@@ -8,7 +8,7 @@ RSpec.describe Idv::CancellationsPresenter do
 
   let(:sp_name) { nil }
 
-  subject(:presenter) { described_class.new(sp_name: sp_name, url_options: {}) }
+  subject(:presenter) { described_class.new(sp_name:, url_options: {}) }
 
   describe '#exit_heading' do
     subject(:exit_heading) { presenter.exit_heading }
@@ -24,7 +24,7 @@ RSpec.describe Idv::CancellationsPresenter do
         expect(exit_heading).to eq t(
           'idv.cancel.headings.exit.with_sp',
           app_name: APP_NAME,
-          sp_name: sp_name,
+          sp_name:,
         )
       end
     end
@@ -48,7 +48,7 @@ RSpec.describe Idv::CancellationsPresenter do
         expect(exit_description).to eq t(
           'idv.cancel.description.exit.with_sp_html',
           app_name: APP_NAME,
-          sp_name: sp_name,
+          sp_name:,
           account_page_link_html: link_to(t('idv.cancel.description.account_page'), account_path),
         )
       end

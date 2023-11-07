@@ -33,12 +33,12 @@ class ServiceProviderUpdater
     if service_provider['active'] == true
       create_or_update_service_provider(issuer, service_provider)
     else
-      ServiceProvider.where(issuer: issuer).destroy_all
+      ServiceProvider.where(issuer:).destroy_all
     end
   end
 
   def create_or_update_service_provider(issuer, service_provider)
-    sp = ServiceProvider.find_by(issuer: issuer)
+    sp = ServiceProvider.find_by(issuer:)
     sync_model(sp, cleaned_service_provider(service_provider))
   end
 

@@ -18,12 +18,12 @@ RSpec.describe Idv::InPerson::CompletionSurveySender do
         allow(user).to receive(:should_receive_in_person_completion_survey?).
           with(issuer).and_return(true)
 
-        create(:service_provider, issuer: issuer)
-        create(:in_person_enrollment, user: user, issuer: issuer, status: :passed)
+        create(:service_provider, issuer:)
+        create(:in_person_enrollment, user:, issuer:, status: :passed)
       end
 
       it 'sends a survey to the user\'s confirmed email addresses' do
-        create(:email_address, user: user)
+        create(:email_address, user:)
         described_class.send_completion_survey(user, issuer)
 
         expect_delivered_email_count(2)
@@ -38,7 +38,7 @@ RSpec.describe Idv::InPerson::CompletionSurveySender do
       end
       it 'marks the user as having received a survey' do
         described_class.send_completion_survey(user, issuer)
-        expect(user.in_person_enrollments.find_by(issuer: issuer).follow_up_survey_sent).to eq true
+        expect(user.in_person_enrollments.find_by(issuer:).follow_up_survey_sent).to eq true
       end
     end
   end

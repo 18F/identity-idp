@@ -97,16 +97,16 @@ RSpec.describe Idv::StepIndicatorConcern, type: :controller do
         end
 
         it 'returns in person gpo steps' do
-          ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
-          create(:in_person_enrollment, :establishing, user: user)
+          ProofingComponent.create(user:, document_check: Idp::Constants::Vendors::USPS)
+          create(:in_person_enrollment, :establishing, user:)
           expect(steps).to eq in_person_step_indicator_steps_gpo
         end
       end
 
       context 'via current idv session' do
         before do
-          ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
-          create(:in_person_enrollment, :establishing, user: user)
+          ProofingComponent.create(user:, document_check: Idp::Constants::Vendors::USPS)
+          create(:in_person_enrollment, :establishing, user:)
         end
 
         it 'returns in person steps' do

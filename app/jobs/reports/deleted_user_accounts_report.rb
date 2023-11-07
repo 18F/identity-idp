@@ -14,9 +14,9 @@ module Reports
         report = deleted_user_accounts_data_for_issuers(issuers)
         emails.each do |email|
           ReportMailer.deleted_user_accounts_report(
-            email: email,
-            name: name,
-            issuers: issuers,
+            email:,
+            name:,
+            issuers:,
             data: report,
           ).deliver_now
         end

@@ -11,13 +11,13 @@ module DocAuth
       def create_document(image_source:)
         raise "unknown image_source=#{image_source}" if !ImageSources::ALL.include?(image_source)
 
-        Requests::CreateDocumentRequest.new(config: config, image_source: image_source).fetch
+        Requests::CreateDocumentRequest.new(config:, image_source:).fetch
       end
 
       def post_front_image(image:, instance_id:)
         Requests::UploadImageRequest.new(
-          config: config,
-          instance_id: instance_id,
+          config:,
+          instance_id:,
           image_data: image,
           side: :front,
         ).fetch
@@ -25,15 +25,15 @@ module DocAuth
 
       def post_back_image(image:, instance_id:)
         Requests::UploadImageRequest.new(
-          config: config,
-          instance_id: instance_id,
+          config:,
+          instance_id:,
           image_data: image,
           side: :back,
         ).fetch
       end
 
       def get_results(instance_id:)
-        Requests::GetResultsRequest.new(config: config, instance_id: instance_id).fetch
+        Requests::GetResultsRequest.new(config:, instance_id:).fetch
       end
 
       # rubocop:disable Lint/UnusedMethodArgument
@@ -44,18 +44,18 @@ module DocAuth
         user_uuid: nil,
         uuid_prefix: nil
       )
-        document_response = create_document(image_source: image_source)
+        document_response = create_document(image_source:)
         return document_response unless document_response.success?
 
         instance_id = document_response.instance_id
 
-        front_image_response = post_front_image(image: front_image, instance_id: instance_id)
+        front_image_response = post_front_image(image: front_image, instance_id:)
         return front_image_response unless front_image_response.success?
 
-        back_image_response = post_back_image(image: back_image, instance_id: instance_id)
+        back_image_response = post_back_image(image: back_image, instance_id:)
         return back_image_response unless back_image_response.success?
 
-        results_response = get_results(instance_id: instance_id)
+        results_response = get_results(instance_id:)
         return results_response unless results_response.success?
 
         results_response

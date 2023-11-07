@@ -8,7 +8,7 @@ RSpec.describe Idv::PhoneConfirmationOtpVerificationForm do
   let(:user_phone_confirmation_session) do
     Idv::PhoneConfirmationSession.new(
       code: phone_confirmation_otp_code,
-      phone: phone,
+      phone:,
       sent_at: phone_confirmation_otp_sent_at,
       delivery_method: :sms,
     )
@@ -29,10 +29,10 @@ RSpec.describe Idv::PhoneConfirmationOtpVerificationForm do
   describe '#submit' do
     def try_submit(code)
       described_class.new(
-        user: user,
-        user_phone_confirmation_session: user_phone_confirmation_session,
-        irs_attempts_api_tracker: irs_attempts_api_tracker,
-      ).submit(code: code)
+        user:,
+        user_phone_confirmation_session:,
+        irs_attempts_api_tracker:,
+      ).submit(code:)
     end
 
     context 'when the code matches' do

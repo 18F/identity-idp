@@ -5,7 +5,7 @@ RSpec.describe Analytics do
     {
       user_id: current_user.uuid,
       new_event: true,
-      path: path,
+      path:,
       session_duration: nil,
       locale: I18n.locale,
       git_sha: IdentityConfig::GIT_SHA,
@@ -41,10 +41,10 @@ RSpec.describe Analytics do
   subject(:analytics) do
     Analytics.new(
       user: current_user,
-      request: request,
+      request:,
       sp: 'http://localhost:3000',
       session: {},
-      ahoy: ahoy,
+      ahoy:,
     )
   end
 
@@ -103,7 +103,7 @@ RSpec.describe Analytics do
 
       expect(ahoy).to receive(:track).with(
         'Trackable Event',
-        analytics_attributes.merge(locale: locale),
+        analytics_attributes.merge(locale:),
       )
 
       analytics.track_event('Trackable Event')
@@ -166,10 +166,10 @@ RSpec.describe Analytics do
     freeze_time do
       analytics = Analytics.new(
         user: current_user,
-        request: request,
+        request:,
         sp: 'http://localhost:3000',
         session: { session_started_at: 7.seconds.ago },
-        ahoy: ahoy,
+        ahoy:,
       )
 
       expect(ahoy).to receive(:track).with(

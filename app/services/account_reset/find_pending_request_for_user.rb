@@ -8,7 +8,7 @@ module AccountReset
 
     def call
       AccountResetRequest.where(
-        user: user,
+        user:,
         granted_at: nil,
         cancelled_at: nil,
       ).where(

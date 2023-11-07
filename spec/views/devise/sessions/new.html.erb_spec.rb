@@ -86,8 +86,8 @@ RSpec.describe 'devise/sessions/new.html.erb' do
     before do
       view_context = ActionController::Base.new.view_context
       @decorated_sp_session = ServiceProviderSessionCreator.new(
-        sp: sp,
-        view_context: view_context,
+        sp:,
+        view_context:,
         sp_session: {},
         service_provider_request: ServiceProviderRequest.new,
       ).create_session

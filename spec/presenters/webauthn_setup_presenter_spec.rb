@@ -12,10 +12,10 @@ RSpec.describe WebauthnSetupPresenter do
   let(:presenter) do
     described_class.new(
       current_user: user,
-      user_fully_authenticated: user_fully_authenticated,
-      user_opted_remember_device_cookie: user_opted_remember_device_cookie,
-      remember_device_default: remember_device_default,
-      platform_authenticator: platform_authenticator,
+      user_fully_authenticated:,
+      user_opted_remember_device_cookie:,
+      remember_device_default:,
+      platform_authenticator:,
       url_options: {},
     )
   end

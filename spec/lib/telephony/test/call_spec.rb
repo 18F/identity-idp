@@ -2,7 +2,7 @@ RSpec.describe Telephony::Test::Call do
   let(:body) { 'The code is 1, 2, 3, 4, 5, 6' }
   let(:otp) { '123456' }
 
-  subject { described_class.new(to: '+1 (555) 555-5000', body: body, otp: otp) }
+  subject { described_class.new(to: '+1 (555) 555-5000', body:, otp:) }
 
   describe '#otp' do
     context 'the call contains an OTP' do

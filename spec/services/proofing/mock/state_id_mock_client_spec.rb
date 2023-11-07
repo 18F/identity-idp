@@ -20,7 +20,7 @@ RSpec.describe Proofing::Mock::StateIdMockClient do
           exception: nil,
           mva_exception: nil,
           timed_out: false,
-          transaction_id: transaction_id,
+          transaction_id:,
           vendor_name: 'StateIdMock',
           verified_attributes: [],
         )
@@ -44,7 +44,7 @@ RSpec.describe Proofing::Mock::StateIdMockClient do
           exception: nil,
           mva_exception: nil,
           timed_out: false,
-          transaction_id: transaction_id,
+          transaction_id:,
           vendor_name: 'StateIdMock',
           verified_attributes: [],
         )
@@ -66,7 +66,7 @@ RSpec.describe Proofing::Mock::StateIdMockClient do
           exception: an_instance_of(Proofing::TimeoutError),
           mva_exception: true,
           timed_out: true,
-          transaction_id: transaction_id,
+          transaction_id:,
           vendor_name: 'StateIdMock',
           verified_attributes: [],
         )

@@ -9,10 +9,10 @@ module TwoFactorAuthCode
                    platform_authenticator: false)
       @platform_authenticator = platform_authenticator
       super(
-        data: data,
-        view: view,
-        service_provider: service_provider,
-        remember_device_default: remember_device_default,
+        data:,
+        view:,
+        service_provider:,
+        remember_device_default:,
       )
     end
 

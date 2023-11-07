@@ -75,7 +75,7 @@ RSpec.describe Users::PersonalKeysController do
         controller.session[:sp] = { ial2: false }
 
         user = create(:user, :fully_registered)
-        create(:profile, :active, :verified, user: user, pii: { first_name: 'Jane' })
+        create(:profile, :active, :verified, user:, pii: { first_name: 'Jane' })
         user.active_profile.deactivate(:password_reset)
         sign_in user
 
@@ -89,7 +89,7 @@ RSpec.describe Users::PersonalKeysController do
         controller.session[:sp] = { ial2: true }
 
         user = create(:user, :fully_registered)
-        create(:profile, :active, :verified, user: user, pii: { first_name: 'Jane' })
+        create(:profile, :active, :verified, user:, pii: { first_name: 'Jane' })
         user.active_profile.deactivate(:password_reset)
         sign_in user
 

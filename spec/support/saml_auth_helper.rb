@@ -71,14 +71,14 @@ module SamlAuthHelper
 
   def saml_authn_request_url(overrides: {}, params: {})
     @saml_authn_request = auth_request.create(
-      saml_settings(overrides: overrides),
+      saml_settings(overrides:),
       params,
     )
   end
 
   def saml_logout_request_url(overrides: {}, params: {})
     logout_request.create(
-      saml_settings(overrides: overrides),
+      saml_settings(overrides:),
       params,
     )
   end
@@ -89,23 +89,23 @@ module SamlAuthHelper
     )
 
     logout_request.create(
-      saml_settings(overrides: overrides),
+      saml_settings(overrides:),
       params,
     )
   end
 
   def visit_saml_authn_request_url(overrides: {}, params: {})
-    authn_request_url = saml_authn_request_url(overrides: overrides, params: params)
+    authn_request_url = saml_authn_request_url(overrides:, params:)
     visit authn_request_url
   end
 
   def visit_saml_logout_request_url(overrides: {}, params: {})
-    logout_request_url = saml_logout_request_url(overrides: overrides, params: params)
+    logout_request_url = saml_logout_request_url(overrides:, params:)
     visit logout_request_url
   end
 
   def send_saml_remote_logout_request(overrides: {}, params: {})
-    remote_logout_request_url = saml_remote_logout_request_url(overrides: overrides, params: params)
+    remote_logout_request_url = saml_remote_logout_request_url(overrides:, params:)
     page.driver.post remote_logout_request_url
   end
 
@@ -266,20 +266,20 @@ module SamlAuthHelper
 
   def visit_idp_from_oidc_sp_with_ial1(client_id:, nonce:, state: SecureRandom.hex)
     visit openid_connect_authorize_path(
-      client_id: client_id,
+      client_id:,
       response_type: 'code',
       acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
       scope: 'openid email',
       redirect_uri: 'http://localhost:7654/auth/result',
-      state: state,
+      state:,
       prompt: 'select_account',
-      nonce: nonce,
+      nonce:,
     )
   end
 
   def visit_idp_from_oidc_sp_with_ial1_aal2(client_id:, nonce:, state: SecureRandom.hex)
     visit openid_connect_authorize_path(
-      client_id: client_id,
+      client_id:,
       response_type: 'code',
       acr_values: [
         Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
@@ -287,9 +287,9 @@ module SamlAuthHelper
       ].join(' '),
       scope: 'openid email',
       redirect_uri: 'http://localhost:7654/auth/result',
-      state: state,
+      state:,
       prompt: 'select_account',
-      nonce: nonce,
+      nonce:,
     )
   end
 
@@ -298,14 +298,14 @@ module SamlAuthHelper
     client_id = 'urn:gov:gsa:openidconnect:sp:server'
     nonce = SecureRandom.hex
     visit openid_connect_authorize_path(
-      client_id: client_id,
+      client_id:,
       response_type: 'code',
       acr_values: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
       scope: 'openid email',
       redirect_uri: 'http://localhost:7654/auth/result',
-      state: state,
+      state:,
       prompt: 'login',
-      nonce: nonce,
+      nonce:,
     )
   end
 
@@ -314,15 +314,15 @@ module SamlAuthHelper
     client_id = 'urn:gov:gsa:openidconnect:sp:server'
     nonce = SecureRandom.hex
     visit openid_connect_authorize_path(
-      client_id: client_id,
+      client_id:,
       response_type: 'code',
       acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF + ' ' +
         Saml::Idp::Constants::AAL2_HSPD12_AUTHN_CONTEXT_CLASSREF,
       scope: 'openid email x509 x509:presented',
       redirect_uri: 'http://localhost:7654/auth/result',
-      state: state,
+      state:,
       prompt: 'select_account',
-      nonce: nonce,
+      nonce:,
     )
   end
 
@@ -344,14 +344,14 @@ module SamlAuthHelper
     client_id = 'urn:gov:gsa:openidconnect:sp:server'
     nonce = SecureRandom.hex
     visit openid_connect_authorize_path(
-      client_id: client_id,
+      client_id:,
       response_type: 'code',
       acr_values: Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF,
       scope: 'openid email profile:name social_security_number',
       redirect_uri: 'http://localhost:7654/auth/result',
-      state: state,
+      state:,
       prompt: 'login',
-      nonce: nonce,
+      nonce:,
     )
   end
 end

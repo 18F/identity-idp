@@ -98,7 +98,7 @@ RSpec.describe 'In Person Proofing', js: true do
       expect(page).to have_content(t('in_person_proofing.headings.barcode').tr(' ', ' '))
       expect(page).to have_content(Idv::InPerson::EnrollmentCodeFormatter.format(enrollment_code))
       expect(page).to have_content(
-        t('in_person_proofing.body.barcode.deadline', deadline: deadline),
+        t('in_person_proofing.body.barcode.deadline', deadline:),
       )
       expect(page).to have_content('MILWAUKEE')
       expect(page).to have_content('Sunday: Closed')
@@ -226,7 +226,7 @@ RSpec.describe 'In Person Proofing', js: true do
     expect(page).to have_css("img[alt='#{APP_NAME}']")
     expect(page).to have_content(t('in_person_proofing.headings.barcode').tr(' ', ' '))
     expect(page).to have_content(Idv::InPerson::EnrollmentCodeFormatter.format(enrollment_code))
-    expect(page).to have_content(t('in_person_proofing.body.barcode.deadline', deadline: deadline))
+    expect(page).to have_content(t('in_person_proofing.body.barcode.deadline', deadline:))
     expect(page).to have_content('MILWAUKEE')
     expect(page).to have_content('Sunday: Closed')
 
@@ -899,7 +899,7 @@ RSpec.describe 'In Person Proofing', js: true do
       expect(page).to have_content(t('in_person_proofing.headings.barcode').tr(' ', ' '))
       expect(page).to have_content(Idv::InPerson::EnrollmentCodeFormatter.format(enrollment_code))
       expect(page).to have_content(
-        t('in_person_proofing.body.barcode.deadline', deadline: deadline),
+        t('in_person_proofing.body.barcode.deadline', deadline:),
       )
       expect(page).to have_content('MILWAUKEE')
       expect(page).to have_content('Sunday: Closed')

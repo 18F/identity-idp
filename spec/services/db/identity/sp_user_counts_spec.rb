@@ -14,7 +14,7 @@ RSpec.describe Db::Identity::SpUserCounts do
     end
 
     it 'returns the total user counts per sp broken down by ial1 and ial2' do
-      ServiceProvider.create(issuer: issuer, friendly_name: issuer, app_id: app_id)
+      ServiceProvider.create(issuer:, friendly_name: issuer, app_id:)
       ServiceProvider.create(issuer: issuer2, friendly_name: issuer2, app_id: app_id2)
       ServiceProviderIdentity.create(user_id: 1, service_provider: issuer, uuid: 'foo1')
       ServiceProviderIdentity.create(user_id: 2, service_provider: issuer, uuid: 'foo2')
@@ -26,7 +26,7 @@ RSpec.describe Db::Identity::SpUserCounts do
         user_id: 4, service_provider: issuer2, uuid: 'foo4',
         verified_at: Time.zone.now
       )
-      result = { issuer: issuer, total: 3, ial1_total: 2, ial2_total: 1, app_id: app_id }.to_json
+      result = { issuer:, total: 3, ial1_total: 2, ial2_total: 1, app_id: }.to_json
       result2 = { issuer: issuer2, total: 1, ial1_total: 0, ial2_total: 1, app_id: app_id2 }.to_json
 
       tuples = subject.by_issuer

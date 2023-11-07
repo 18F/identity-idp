@@ -558,7 +558,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
             select { |f| f['Name'] == 'Fields_CountryCode' && f['Group'] == 'IDAUTH_FIELD_DATA' }
           doc_class_node.first['Values'].first['Value'] = 'CAN'
         end.to_json
-        instance_double(Faraday::Response, status: 200, body: body)
+        instance_double(Faraday::Response, status: 200, body:)
       end
       it 'identify as unsupported doc type' do
         is_expected.to eq(false)

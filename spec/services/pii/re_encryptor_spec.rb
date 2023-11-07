@@ -16,7 +16,7 @@ RSpec.describe Pii::ReEncryptor do
         with(pii_attributes).and_call_original
       expect(user.active_profile).to receive(:save!).and_call_original
 
-      Pii::ReEncryptor.new(user: user, user_session: user_session).perform
+      Pii::ReEncryptor.new(user:, user_session:).perform
     end
 
     it 're-encrypts PII when supplied with raw PII and explicit profile' do
@@ -27,7 +27,7 @@ RSpec.describe Pii::ReEncryptor do
         with(pii_attributes).and_call_original
       expect(profile).to receive(:save!).and_call_original
 
-      Pii::ReEncryptor.new(profile: profile, pii: pii_attributes).perform
+      Pii::ReEncryptor.new(profile:, pii: pii_attributes).perform
     end
   end
 end

@@ -23,7 +23,7 @@ RSpec.describe FormResponse do
     context 'initialized with hash' do
       it 'returns the value of the errors argument' do
         errors = { foo: 'bar' }
-        response = FormResponse.new(success: true, errors: errors)
+        response = FormResponse.new(success: true, errors:)
 
         expect(response.errors).to eq errors
       end
@@ -33,7 +33,7 @@ RSpec.describe FormResponse do
       it 'returns the messages value of the errors argument' do
         errors = ActiveModel::Errors.new(build_stubbed(:user))
         errors.add(:email_language, :blank, message: 'Language cannot be blank')
-        response = FormResponse.new(success: false, errors: errors)
+        response = FormResponse.new(success: false, errors:)
 
         expect(response.errors).to eq errors.messages
       end
@@ -109,10 +109,10 @@ RSpec.describe FormResponse do
     context 'when the extra argument is nil' do
       it 'returns a hash with success and errors keys' do
         errors = { foo: 'bar' }
-        response = FormResponse.new(success: true, errors: errors)
+        response = FormResponse.new(success: true, errors:)
         response_hash = {
           success: true,
-          errors: errors,
+          errors:,
         }
 
         expect(response.to_h).to eq response_hash
@@ -123,10 +123,10 @@ RSpec.describe FormResponse do
       it 'returns a hash with success and errors keys, and any keys from the extra hash' do
         errors = { foo: 'bar' }
         extra = { user_id: 1, context: 'confirmation' }
-        response = FormResponse.new(success: true, errors: errors, extra: extra)
+        response = FormResponse.new(success: true, errors:, extra:)
         response_hash = {
           success: true,
-          errors: errors,
+          errors:,
           user_id: 1,
           context: 'confirmation',
         }
@@ -139,7 +139,7 @@ RSpec.describe FormResponse do
       it 'returns a hash with success, errors, and error_details keys' do
         errors = ActiveModel::Errors.new(build_stubbed(:user))
         errors.add(:email_language, :blank, message: 'Language cannot be blank')
-        response = FormResponse.new(success: false, errors: errors)
+        response = FormResponse.new(success: false, errors:)
         response_hash = {
           success: false,
           errors: {
@@ -155,7 +155,7 @@ RSpec.describe FormResponse do
 
       it 'omits details if errors are empty' do
         errors = ActiveModel::Errors.new(build_stubbed(:user))
-        response = FormResponse.new(success: true, errors: errors)
+        response = FormResponse.new(success: true, errors:)
         response_hash = {
           success: true,
           errors: {},
@@ -166,8 +166,8 @@ RSpec.describe FormResponse do
 
       it 'omits details if merged errors are empty' do
         errors = ActiveModel::Errors.new(build_stubbed(:user))
-        response1 = FormResponse.new(success: true, errors: errors)
-        response2 = FormResponse.new(success: true, errors: errors)
+        response1 = FormResponse.new(success: true, errors:)
+        response2 = FormResponse.new(success: true, errors:)
         combined_response = response1.merge(response2)
         response_hash = {
           success: true,
@@ -183,7 +183,7 @@ RSpec.describe FormResponse do
           errors.add(:email_language, :blank, message: 'Language cannot be blank')
           response = FormResponse.new(
             success: false,
-            errors: errors,
+            errors:,
             serialize_error_details_only: true,
           )
 
@@ -201,7 +201,7 @@ RSpec.describe FormResponse do
   describe '#extra' do
     it 'returns the extra hash' do
       extra = { foo: 'bar' }
-      response = FormResponse.new(success: true, errors: {}, extra: extra)
+      response = FormResponse.new(success: true, errors: {}, extra:)
 
       expect(response.extra).to eq extra
     end

@@ -53,8 +53,8 @@ module Reports
     def upload_file_to_s3_timestamped_and_latest(report_name, body, extension)
       latest_path, path = generate_s3_paths(report_name, extension)
       content_type = Mime::Type.lookup_by_extension(extension).to_s
-      url = upload_file_to_s3_bucket(path: path, body: body, content_type: content_type)
-      upload_file_to_s3_bucket(path: latest_path, body: body, content_type: content_type)
+      url = upload_file_to_s3_bucket(path:, body:, content_type:)
+      upload_file_to_s3_bucket(path: latest_path, body:, content_type:)
       url
     end
 
@@ -85,7 +85,7 @@ module Reports
       url = "s3://#{bucket}/#{path}"
       logger.info("#{class_name}: uploading to #{url}")
       obj = Aws::S3::Resource.new(client: s3_client).bucket(bucket).object(path)
-      obj.put(body: body, acl: 'private', content_type: content_type)
+      obj.put(body:, acl: 'private', content_type:)
       logger.debug("#{class_name}: upload completed to #{url}")
       url
     end

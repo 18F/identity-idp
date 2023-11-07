@@ -173,8 +173,8 @@ RSpec.feature 'Accessibility on pages that require authentication', :js do
 
   scenario 'device events page' do
     user = sign_in_and_2fa_user
-    device = create(:device, user: user)
-    create(:event, user: user)
+    device = create(:device, user:)
+    create(:event, user:)
 
     visit account_events_path(id: device.id)
 

@@ -15,7 +15,7 @@ module EventDisavowal
 
       success = valid?
       handle_valid_password if success
-      FormResponse.new(success: success, errors: errors, extra: extra_analytics_attributes)
+      FormResponse.new(success:, errors:, extra: extra_analytics_attributes)
     end
 
     private
@@ -26,8 +26,8 @@ module EventDisavowal
     end
 
     def update_user
-      attributes = { password: password }
-      UpdateUser.new(user: user, attributes: attributes).call
+      attributes = { password: }
+      UpdateUser.new(user:, attributes:).call
     end
 
     def mark_profile_inactive

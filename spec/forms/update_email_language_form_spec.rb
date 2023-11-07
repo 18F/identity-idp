@@ -6,7 +6,7 @@ RSpec.describe UpdateEmailLanguageForm do
   subject(:form) { UpdateEmailLanguageForm.new(user) }
 
   describe '#submit' do
-    subject(:submit) { form.submit(email_language: email_language) }
+    subject(:submit) { form.submit(email_language:) }
 
     context 'with a valid email_language' do
       let(:email_language) { 'es' }

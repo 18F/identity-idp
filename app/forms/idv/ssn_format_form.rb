@@ -21,7 +21,7 @@ module Idv
 
       FormResponse.new(
         success: valid?,
-        errors: errors,
+        errors:,
         extra: { pii_like_keypaths: [[:same_address_as_id], [:errors, :ssn],
                                      [:error_details, :ssn]] },
       )

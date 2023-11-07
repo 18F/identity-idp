@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe ResetUserPassword do
   subject(:reset_user_password) do
-    ResetUserPassword.new(user: user, remember_device_revoked_at: now)
+    ResetUserPassword.new(user:, remember_device_revoked_at: now)
   end
   let(:user) { create(:user, :with_multiple_emails, encrypted_password_digest: 30.days.from_now) }
   let(:now) { Time.zone.now }

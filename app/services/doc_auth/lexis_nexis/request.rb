@@ -53,7 +53,7 @@ module DocAuth
         DocAuth::Response.new(
           success: false,
           errors: { network: true },
-          exception: exception,
+          exception:,
           extra: { vendor: 'TrueID' },
         )
       end
@@ -123,9 +123,9 @@ module DocAuth
       # Example HMAC auth header from RDP_REST_V3_DecisioningGuide_March22.pdf, page 21
       def hmac_authorization
         Proofing::LexisNexis::RequestSigner.new(
-          config: config,
+          config:,
           message_body: body,
-          path: path,
+          path:,
         ).hmac_authorization
       end
 

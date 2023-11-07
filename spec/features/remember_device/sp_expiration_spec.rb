@@ -115,11 +115,11 @@ RSpec.feature 'remember device sp expiration' do
 
     ServiceProvider.find_by(issuer: OidcAuthHelper::OIDC_IAL1_ISSUER).update!(
       default_aal: aal,
-      ial: ial,
+      ial:,
     )
     ServiceProvider.find_by(issuer: 'http://localhost:3000').update!(
       default_aal: aal,
-      ial: ial,
+      ial:,
     )
   end
 

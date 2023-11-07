@@ -3,7 +3,7 @@ RSpec.shared_examples 'sp requesting attributes' do |sp|
   include IdvStepHelper
 
   let(:user) { user_with_2fa }
-  let(:profile) { create(:profile, :active, :verified, user: user, pii: saved_pii) }
+  let(:profile) { create(:profile, :active, :verified, user:, pii: saved_pii) }
   let(:saved_pii) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE }
 
   context 'visiting an SP for the first time' do
@@ -79,7 +79,7 @@ RSpec.shared_examples 'sp requesting attributes' do |sp|
 
   context 'siging in from an SP after creating a verified account directly' do
     it 'displays the correct values' do
-      create(:profile, :active, :verified, user: user, pii: saved_pii)
+      create(:profile, :active, :verified, user:, pii: saved_pii)
       visit_idp_from_sp_with_ial2(sp)
       sign_in_user(user)
       uncheck(t('forms.messages.remember_device'))

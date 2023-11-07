@@ -88,14 +88,14 @@ RSpec.describe Idv::GpoMail do
   def enqueue_gpo_letter_for(user, at_time: Time.zone.now)
     profile = create(
       :profile,
-      user: user,
+      user:,
       gpo_verification_pending_at: at_time,
     )
 
     GpoConfirmationMaker.new(
       pii: {},
       service_provider: nil,
-      profile: profile,
+      profile:,
     ).perform
 
     profile.gpo_confirmation_codes.last.update(

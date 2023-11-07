@@ -21,7 +21,7 @@ module RememberDeviceConcern
       expiration_interval: decorated_sp_session.mfa_expiration_interval,
     )
 
-    handle_valid_remember_device_cookie(remember_device_cookie: remember_device_cookie)
+    handle_valid_remember_device_cookie(remember_device_cookie:)
   end
 
   def remember_device_cookie
@@ -45,7 +45,7 @@ module RememberDeviceConcern
 
   def revoke_remember_device(user)
     UpdateUser.new(
-      user: user,
+      user:,
       attributes: { remember_device_revoked_at: Time.zone.now },
     ).call
   end
@@ -58,7 +58,7 @@ module RememberDeviceConcern
     return true if remember_cookie.nil?
 
     !remember_cookie.valid_for_user?(
-      user: user,
+      user:,
       expiration_interval: interval,
     )
   end
@@ -79,7 +79,7 @@ module RememberDeviceConcern
 
   def handle_valid_remember_device_analytics(cookie_created_at:)
     analytics.remembered_device_used_for_authentication(
-      cookie_created_at: cookie_created_at,
+      cookie_created_at:,
       cookie_age_seconds: (Time.zone.now - cookie_created_at).to_i,
     )
   end

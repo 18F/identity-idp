@@ -30,7 +30,7 @@ RSpec.describe PersonalKeyForm do
 
         expect(form.submit.to_h).to include(
           success: false,
-          errors: errors,
+          errors:,
           error_details: hash_including(*errors.keys),
           **extra,
         )

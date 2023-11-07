@@ -59,7 +59,7 @@ Renders a page asking the user to enter their SSN or update their SSN if they ha
       html: { autocomplete: 'off' },
     ) do |f| %>
   <div class="tablet:grid-col-8">
-    <%= render 'shared/ssn_field', f: f %>
+    <%= render 'shared/ssn_field', f: %>
   </div>
 
   <%= f.submit class: 'display-block margin-y-5' do %>

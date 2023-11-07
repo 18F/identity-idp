@@ -8,7 +8,7 @@ RSpec.describe 'partials/multi_factor_authentication/_mfa_selection.html.erb' do
   let(:view_context) { ActionView::Base.new(lookup_context, {}, controller) }
   let(:user) { create(:user) }
   let(:form_object) { user }
-  let(:presenter) { TwoFactorOptionsPresenter.new(user_agent: nil, user: user) }
+  let(:presenter) { TwoFactorOptionsPresenter.new(user_agent: nil, user:) }
   let(:form_builder) do
     SimpleForm::FormBuilder.new(form_object.model_name.param_key, form_object, view_context, {})
   end
@@ -33,7 +33,7 @@ RSpec.describe 'partials/multi_factor_authentication/_mfa_selection.html.erb' do
   context 'user already setup an auth app mfa configuration and is returning to create a second' do
     let(:user) { create(:user, :with_authentication_app) }
     let(:form_object) { user }
-    let(:presenter) { TwoFactorOptionsPresenter.new(user_agent: nil, user: user) }
+    let(:presenter) { TwoFactorOptionsPresenter.new(user_agent: nil, user:) }
     let(:form_builder) do
       SimpleForm::FormBuilder.new(form_object.model_name.param_key, form_object, view_context, {})
     end
@@ -71,7 +71,7 @@ RSpec.describe 'partials/multi_factor_authentication/_mfa_selection.html.erb' do
   context 'user has setup a backup codes mfa configuration and is returning to create a second' do
     let(:user) { create(:user, :with_backup_code) }
     let(:form_object) { user }
-    let(:presenter) { TwoFactorOptionsPresenter.new(user_agent: nil, user: user) }
+    let(:presenter) { TwoFactorOptionsPresenter.new(user_agent: nil, user:) }
     let(:form_builder) do
       SimpleForm::FormBuilder.new(form_object.model_name.param_key, form_object, view_context, {})
     end
@@ -109,7 +109,7 @@ RSpec.describe 'partials/multi_factor_authentication/_mfa_selection.html.erb' do
   context 'user already setup a piv/cac mfa configuration and is returning to create a second' do
     let(:user) { create(:user, :with_piv_or_cac) }
     let(:form_object) { user }
-    let(:presenter) { TwoFactorOptionsPresenter.new(user_agent: nil, user: user) }
+    let(:presenter) { TwoFactorOptionsPresenter.new(user_agent: nil, user:) }
     let(:form_builder) do
       SimpleForm::FormBuilder.new(form_object.model_name.param_key, form_object, view_context, {})
     end

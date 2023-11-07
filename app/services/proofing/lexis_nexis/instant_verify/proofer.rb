@@ -9,12 +9,12 @@ module Proofing
         end
 
         def proof(applicant)
-          response = VerificationRequest.new(config: config, applicant: applicant).send_request
+          response = VerificationRequest.new(config:, applicant:).send_request
           build_result_from_response(response)
         rescue => exception
           NewRelic::Agent.notice_error(exception)
           Resolution::Result.new(
-            success: false, errors: {}, exception: exception,
+            success: false, errors: {}, exception:,
             vendor_name: 'lexisnexis:instant_verify',
             vendor_workflow: config.instant_verify_workflow
           )

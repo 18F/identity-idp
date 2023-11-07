@@ -2,27 +2,27 @@ require 'rails_helper'
 
 RSpec.describe 'Account history' do
   let(:user) { create(:user, :fully_registered, created_at: Time.zone.now - 100.days) }
-  let(:account_created_event) { create(:event, user: user, created_at: Time.zone.now - 98.days) }
+  let(:account_created_event) { create(:event, user:, created_at: Time.zone.now - 98.days) }
   let(:gpo_mail_sent_event) do
-    create(:event, user: user, event_type: :gpo_mail_sent, created_at: Time.zone.now - 90.days)
+    create(:event, user:, event_type: :gpo_mail_sent, created_at: Time.zone.now - 90.days)
   end
   let(:identity_with_link) do
     create(
       :service_provider_identity,
       :active,
-      user: user,
+      user:,
       last_authenticated_at: Time.zone.now - 80.days,
       service_provider: 'http://localhost:3000',
     )
   end
   let(:gpo_mail_sent_again_event) do
-    create(:event, user: user, event_type: :gpo_mail_sent, created_at: Time.zone.now - 60.days)
+    create(:event, user:, event_type: :gpo_mail_sent, created_at: Time.zone.now - 60.days)
   end
   let(:identity_without_link) do
     create(
       :service_provider_identity,
       :active,
-      user: user,
+      user:,
       last_authenticated_at: Time.zone.now - 50.days,
       service_provider: 'https://rp2.serviceprovider.com/auth/saml/metadata',
     )
@@ -39,13 +39,13 @@ RSpec.describe 'Account history' do
   let(:new_personal_key_event) do
     create(
       :event, event_type: :new_personal_key,
-              user: user, created_at: Time.zone.now - 40.days
+              user:, created_at: Time.zone.now - 40.days
     )
   end
   let(:password_changed_event) do
     create(
       :event, event_type: :password_changed,
-              user: user, created_at: Time.zone.now - 30.days
+              user:, created_at: Time.zone.now - 30.days
     )
   end
 

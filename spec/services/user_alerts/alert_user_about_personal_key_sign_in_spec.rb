@@ -6,11 +6,11 @@ RSpec.describe UserAlerts::AlertUserAboutPersonalKeySignIn do
       user = create(:user)
       disavowal_token = 'asdf1234'
       user.email_addresses.destroy_all
-      confirmed_email_addresses = create_list(:email_address, 2, user: user)
-      create(:email_address, user: user, confirmed_at: nil)
+      confirmed_email_addresses = create_list(:email_address, 2, user:)
+      create(:email_address, user:, confirmed_at: nil)
       phone_configurations = [
-        create(:phone_configuration, user: user, phone: '(202) 111-1111'),
-        create(:phone_configuration, user: user, phone: '(202) 222-2222'),
+        create(:phone_configuration, user:, phone: '(202) 111-1111'),
+        create(:phone_configuration, user:, phone: '(202) 222-2222'),
       ]
 
       allow(Telephony).to receive(:send_personal_key_sign_in_notice)

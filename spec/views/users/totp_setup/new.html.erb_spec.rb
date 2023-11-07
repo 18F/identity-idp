@@ -63,7 +63,7 @@ RSpec.describe 'users/totp_setup/new.html.erb' do
       @code = 'D4C2L47CVZ3JJHD7'
       @qrcode = 'qrcode.png'
       @presenter = TwoFactorAuthCode::AuthenticatorDeliveryPresenter.new(
-        view: view,
+        view:,
         data: { current_user: user },
         service_provider: nil,
       )

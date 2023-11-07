@@ -39,22 +39,22 @@ class ResolutionProofingJob < ApplicationJob
     user = User.find_by(id: user_id)
 
     callback_log_data = make_vendor_proofing_requests(
-      timer: timer,
-      user: user,
-      applicant_pii: applicant_pii,
-      threatmetrix_session_id: threatmetrix_session_id,
-      request_ip: request_ip,
-      should_proof_state_id: should_proof_state_id,
-      double_address_verification: double_address_verification,
-      ipp_enrollment_in_progress: ipp_enrollment_in_progress,
+      timer:,
+      user:,
+      applicant_pii:,
+      threatmetrix_session_id:,
+      request_ip:,
+      should_proof_state_id:,
+      double_address_verification:,
+      ipp_enrollment_in_progress:,
     )
 
-    document_capture_session = DocumentCaptureSession.new(result_id: result_id)
+    document_capture_session = DocumentCaptureSession.new(result_id:)
     document_capture_session.store_proofing_result(callback_log_data.result)
   ensure
     logger_info_hash(
       name: 'ProofResolution',
-      trace_id: trace_id,
+      trace_id:,
       resolution_success: callback_log_data&.resolution_success,
       residential_resolution_success: callback_log_data&.residential_resolution_success,
       state_id_success: callback_log_data&.state_id_success,
@@ -77,14 +77,14 @@ class ResolutionProofingJob < ApplicationJob
     ipp_enrollment_in_progress:
   )
     result = resolution_proofer.proof(
-      applicant_pii: applicant_pii,
+      applicant_pii:,
       user_email: user&.confirmed_email_addresses&.first&.email,
-      threatmetrix_session_id: threatmetrix_session_id,
-      request_ip: request_ip,
-      should_proof_state_id: should_proof_state_id,
-      double_address_verification: double_address_verification,
-      ipp_enrollment_in_progress: ipp_enrollment_in_progress,
-      timer: timer,
+      threatmetrix_session_id:,
+      request_ip:,
+      should_proof_state_id:,
+      double_address_verification:,
+      ipp_enrollment_in_progress:,
+      timer:,
     )
 
     log_threatmetrix_info(result.device_profiling_result, user)
@@ -118,7 +118,7 @@ class ResolutionProofingJob < ApplicationJob
 
   def add_threatmetrix_proofing_component(user_id, threatmetrix_result)
     ProofingComponent.
-      create_or_find_by(user_id: user_id).
+      create_or_find_by(user_id:).
       update(threatmetrix: FeatureManagement.proofing_device_profiling_collecting_enabled?,
              threatmetrix_review_status: threatmetrix_result.review_status)
   end

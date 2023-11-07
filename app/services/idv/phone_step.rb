@@ -51,7 +51,7 @@ module Idv
 
       delete_async
       FormResponse.new(
-        success: success, errors: idv_result[:errors],
+        success:, errors: idv_result[:errors],
         extra: extra_analytics_attributes
       )
     end
@@ -81,7 +81,7 @@ module Idv
     def applicant
       @applicant ||= idv_session.applicant.merge(
         phone: normalized_phone,
-        uuid_prefix: uuid_prefix,
+        uuid_prefix:,
       )
     end
 
@@ -160,7 +160,7 @@ module Idv
     def run_job(document_capture_session)
       Idv::Agent.new(applicant).proof_address(
         document_capture_session,
-        trace_id: trace_id,
+        trace_id:,
         issuer: idv_session.service_provider&.issuer,
         user_id: idv_session.current_user.id,
       )

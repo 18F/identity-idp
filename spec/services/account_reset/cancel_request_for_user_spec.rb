@@ -2,14 +2,14 @@ require 'rails_helper'
 
 RSpec.describe AccountReset::CancelRequestForUser do
   let(:user) { create(:user) }
-  let!(:account_reset_request) { AccountResetRequest.create(user: user, requested_at: 1.hour.ago) }
+  let!(:account_reset_request) { AccountResetRequest.create(user:, requested_at: 1.hour.ago) }
 
   subject { described_class.new(user) }
 
   describe '#call' do
     let(:now) { Time.zone.now }
     it 'cancels the account reset request' do
-      subject.call(now: now)
+      subject.call(now:)
 
       expect(account_reset_request.reload.cancelled_at.to_i).to eq(now.to_i)
     end

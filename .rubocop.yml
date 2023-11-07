@@ -1139,7 +1139,7 @@ Style/HashExcept:
 
 Style/HashSyntax:
   EnforcedStyle: ruby19
-  EnforcedShorthandSyntax: either
+  EnforcedShorthandSyntax: always
 
 Style/IdenticalConditionalBranches:
   Enabled: true

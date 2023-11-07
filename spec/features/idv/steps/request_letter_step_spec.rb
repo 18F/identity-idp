@@ -102,8 +102,8 @@ RSpec.feature 'idv request letter step' do
 
     context 'logged in with PIV/CAC and no password' do
       it 'does not 500' do
-        create(:profile, :with_pii, user: user, gpo_verification_pending_at: 1.day.ago)
-        create(:piv_cac_configuration, user: user, x509_dn_uuid: 'helloworld', name: 'My PIV Card')
+        create(:profile, :with_pii, user:, gpo_verification_pending_at: 1.day.ago)
+        create(:piv_cac_configuration, user:, x509_dn_uuid: 'helloworld', name: 'My PIV Card')
 
         signin_with_piv(user)
         fill_in t('account.index.password'), with: user.password

@@ -45,7 +45,7 @@ class UserMailer < ActionMailer::Base
   end
 
   def add_metadata
-    message.instance_variable_set(:@_metadata, { user: user, action: action_name })
+    message.instance_variable_set(:@_metadata, { user:, action: action_name })
   end
 
   def email_confirmation_instructions(token, request_id:, instructions:)
@@ -262,8 +262,8 @@ class UserMailer < ActionMailer::Base
     with_user_locale(user) do
       @header = t('user_mailer.in_person_deadline_passed.header')
       @presenter = Idv::InPerson::VerificationResultsEmailPresenter.new(
-        enrollment: enrollment,
-        url_options: url_options,
+        enrollment:,
+        url_options:,
       )
       mail(
         to: email_address.email,
@@ -283,7 +283,7 @@ class UserMailer < ActionMailer::Base
                     IdentityConfig.store.in_person_outage_expected_update_date.present?
       @header = t('in_person_proofing.headings.barcode')
       @presenter = Idv::InPerson::ReadyToVerifyPresenter.new(
-        enrollment: enrollment,
+        enrollment:,
         barcode_image_url: attachments['barcode.png'].url,
       )
       mail(
@@ -300,7 +300,7 @@ class UserMailer < ActionMailer::Base
 
     with_user_locale(user) do
       @presenter = Idv::InPerson::ReadyToVerifyPresenter.new(
-        enrollment: enrollment,
+        enrollment:,
         barcode_image_url: attachments['barcode.png'].url,
       )
       @header = t(
@@ -321,8 +321,8 @@ class UserMailer < ActionMailer::Base
     with_user_locale(user) do
       @hide_title = true
       @presenter = Idv::InPerson::VerificationResultsEmailPresenter.new(
-        enrollment: enrollment,
-        url_options: url_options,
+        enrollment:,
+        url_options:,
       )
       mail(
         to: email_address.email,
@@ -334,8 +334,8 @@ class UserMailer < ActionMailer::Base
   def in_person_failed(enrollment:)
     with_user_locale(user) do
       @presenter = Idv::InPerson::VerificationResultsEmailPresenter.new(
-        enrollment: enrollment,
-        url_options: url_options,
+        enrollment:,
+        url_options:,
       )
       mail(
         to: email_address.email,
@@ -347,8 +347,8 @@ class UserMailer < ActionMailer::Base
   def in_person_failed_fraud(enrollment:)
     with_user_locale(user) do
       @presenter = Idv::InPerson::VerificationResultsEmailPresenter.new(
-        enrollment: enrollment,
-        url_options: url_options,
+        enrollment:,
+        url_options:,
       )
       mail(
         to: email_address.email,
@@ -360,8 +360,8 @@ class UserMailer < ActionMailer::Base
   def in_person_outage_notification(enrollment:)
     with_user_locale(user) do
       @presenter = Idv::InPerson::VerificationResultsEmailPresenter.new(
-        enrollment: enrollment,
-        url_options: url_options,
+        enrollment:,
+        url_options:,
       )
       mail(
         to: email_address.email,

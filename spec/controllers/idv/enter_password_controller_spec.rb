@@ -357,7 +357,7 @@ RSpec.describe Idv::EnterPasswordController do
 
         context 'with in person profile' do
           let!(:enrollment) do
-            create(:in_person_enrollment, :establishing, user: user, profile: nil)
+            create(:in_person_enrollment, :establishing, user:, profile: nil)
           end
           let(:stub_usps_response) do
             stub_request_enroll
@@ -369,7 +369,7 @@ RSpec.describe Idv::EnterPasswordController do
           before do
             stub_request_token
             stub_usps_response
-            ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
+            ProofingComponent.create(user:, document_check: Idp::Constants::Vendors::USPS)
             allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
           end
 
@@ -676,7 +676,7 @@ RSpec.describe Idv::EnterPasswordController do
         end
 
         it 'logs USPS address letter enqueued event with phone_step_attempts', :freeze_time do
-          RateLimiter.new(user: user, rate_limit_type: :proof_address).increment!
+          RateLimiter.new(user:, rate_limit_type: :proof_address).increment!
           put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
 
           expect(@analytics).to have_logged_event(
@@ -694,7 +694,7 @@ RSpec.describe Idv::EnterPasswordController do
         context 'when user is rate limited' do
           it 'logs USPS address letter enqueued event with phone_step_attempts', :freeze_time do
             rate_limit_type = :proof_address
-            rate_limiter = RateLimiter.new(user: user, rate_limit_type: rate_limit_type)
+            rate_limiter = RateLimiter.new(user:, rate_limit_type:)
             rate_limiter.increment_to_limited!
             put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
 

@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe RevokeServiceProviderConsent do
   let(:now) { Time.zone.now }
 
-  subject(:service) { RevokeServiceProviderConsent.new(identity, now: now) }
+  subject(:service) { RevokeServiceProviderConsent.new(identity, now:) }
 
   describe '#call' do
     let!(:identity) do

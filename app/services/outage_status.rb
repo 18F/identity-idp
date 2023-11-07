@@ -98,7 +98,7 @@ class OutageStatus
         voice: IdentityConfig.store.vendor_status_voice,
         idv_scheduled_maintenance: idv_scheduled_maintenance_status,
       },
-      redirect_from: redirect_from,
+      redirect_from:,
     )
   end
 end

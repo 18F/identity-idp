@@ -46,17 +46,16 @@ module Proofing
       def to_h
         {
           success: success?,
-          errors: errors,
-          exception: exception,
+          errors:,
+          exception:,
           timed_out: timed_out?,
-          transaction_id: transaction_id,
-          reference: reference,
+          transaction_id:,
+          reference:,
           can_pass_with_additional_verification:
             failed_result_can_pass_with_additional_verification,
-          attributes_requiring_additional_verification:
-            attributes_requiring_additional_verification,
-          vendor_name: vendor_name,
-          vendor_workflow: vendor_workflow,
+          attributes_requiring_additional_verification:,
+          vendor_name:,
+          vendor_workflow:,
         }
       end
 

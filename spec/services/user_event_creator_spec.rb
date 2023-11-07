@@ -14,15 +14,15 @@ RSpec.describe UserEventCreator do
   let(:request) do
     double(
       remote_ip: ip_address,
-      user_agent: user_agent,
-      cookie_jar: cookie_jar,
+      user_agent:,
+      cookie_jar:,
     )
   end
   let(:user) { create(:user, :fully_registered) }
-  let(:device) { create(:device, user: user, cookie_uuid: existing_device_cookie) }
+  let(:device) { create(:device, user:, cookie_uuid: existing_device_cookie) }
   let(:event_type) { 'account_created' }
 
-  subject { UserEventCreator.new(request: request, current_user: user) }
+  subject { UserEventCreator.new(request:, current_user: user) }
 
   before do
     # Memoize user and device before specs run
@@ -60,7 +60,7 @@ RSpec.describe UserEventCreator do
 
       it 'alerts the user if they have other devices' do
         allow(UserAlerts::AlertUserAboutNewDevice).to receive(:call)
-        create(:device, user: user)
+        create(:device, user:)
 
         event, _disavowal_token = subject.create_user_event(event_type, user)
 
@@ -96,7 +96,7 @@ RSpec.describe UserEventCreator do
 
       it 'alerts the user if they have other devices' do
         allow(UserAlerts::AlertUserAboutNewDevice).to receive(:call)
-        create(:device, user: user)
+        create(:device, user:)
 
         event, _disavowal_token = subject.create_user_event(event_type, user)
 

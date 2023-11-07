@@ -3,14 +3,14 @@ require 'rails_helper'
 RSpec.describe Profile do
   let(:user) { create(:user, :fully_registered, password: 'a really long sekrit') }
   let(:another_user) { create(:user, :fully_registered) }
-  let(:profile) { create(:profile, user: user) }
+  let(:profile) { create(:profile, user:) }
 
   let(:dob) { '1920-01-01' }
   let(:ssn) { '666-66-1234' }
   let(:pii) do
     Pii::Attributes.new_from_hash(
-      dob: dob,
-      ssn: ssn,
+      dob:,
+      ssn:,
       first_name: 'Jane',
       last_name: 'Doe',
       zipcode: '20001',
@@ -22,7 +22,7 @@ RSpec.describe Profile do
   it { is_expected.to have_one(:in_person_enrollment).dependent(:destroy) }
 
   describe '#proofing_components' do
-    let(:profile) { create(:profile, proofing_components: proofing_components) }
+    let(:profile) { create(:profile, proofing_components:) }
 
     context 'when the value is nil' do
       let(:proofing_components) { nil }
@@ -71,7 +71,7 @@ RSpec.describe Profile do
       profile = create(
         :profile,
         :in_person_verification_pending,
-        user: user,
+        user:,
       )
 
       allow(profile).to receive(:update!).and_raise(RuntimeError)
@@ -307,7 +307,7 @@ RSpec.describe Profile do
 
   describe '#activate' do
     it 'activates current Profile, de-activates all other Profile for the user' do
-      active_profile = create(:profile, :active, user: user)
+      active_profile = create(:profile, :active, user:)
 
       # profile before
       expect(profile.activated_at).to be_nil # to change
@@ -356,9 +356,9 @@ RSpec.describe Profile do
     end
 
     it 'sends a reproof completed push event' do
-      profile = create(:profile, :active, user: user)
+      profile = create(:profile, :active, user:)
       expect(PushNotification::HttpPush).to receive(:deliver).
-        with(PushNotification::ReproofCompletedEvent.new(user: user))
+        with(PushNotification::ReproofCompletedEvent.new(user:))
 
       expect(profile.activated_at).to be_present
       expect(profile.active).to eq(true)
@@ -531,7 +531,7 @@ RSpec.describe Profile do
 
     context 'When a profile already has a verified_at timestamp' do
       it 'does not update the timestamp when #activate is called' do
-        profile = create(:profile, :verified, user: user)
+        profile = create(:profile, :verified, user:)
         original_timestamp = profile.verified_at
         expect(profile.reason_not_to_activate).to be_nil
         profile.activate
@@ -544,7 +544,7 @@ RSpec.describe Profile do
     let(:deactivation_reason) { :password_reset }
 
     it 'sets active flag to false and assigns deactivation_reason' do
-      profile = create(:profile, :active, user: user)
+      profile = create(:profile, :active, user:)
 
       expect(profile.activated_at).to be_present
       expect(profile.active).to eq(true) # to change
@@ -607,7 +607,7 @@ RSpec.describe Profile do
       profile = create(
         :profile,
         :password_reset,
-        user: user,
+        user:,
       )
 
       # profile.initiating_service_provider is nil before and after because
@@ -640,7 +640,7 @@ RSpec.describe Profile do
         :profile,
         :active,
         :password_reset,
-        user: user,
+        user:,
       )
       verified_at = profile.verified_at
 
@@ -671,7 +671,7 @@ RSpec.describe Profile do
         :profile,
         :password_reset,
         :fraud_review_pending,
-        user: user,
+        user:,
       )
 
       expect(profile.activated_at).to be_nil
@@ -704,7 +704,7 @@ RSpec.describe Profile do
       profile = create(
         :profile,
         :encryption_error,
-        user: user,
+        user:,
       )
 
       expect(profile.activated_at).to be_nil
@@ -732,7 +732,7 @@ RSpec.describe Profile do
       profile = create(
         :profile,
         :password_reset,
-        user: user,
+        user:,
       )
 
       allow(profile).to receive(:update!).and_raise(RuntimeError)
@@ -770,7 +770,7 @@ RSpec.describe Profile do
         :profile,
         :fraud_review_pending,
         :in_person_verification_pending,
-        user: user,
+        user:,
       )
 
       expect(profile.activated_at).to be_nil # to change
@@ -804,7 +804,7 @@ RSpec.describe Profile do
         :profile,
         :in_person_verification_pending,
         :fraud_review_pending,
-        user: user,
+        user:,
       )
 
       allow(profile).to receive(:update!).and_raise(RuntimeError)
@@ -838,7 +838,7 @@ RSpec.describe Profile do
 
   describe '#activate_after_passing_review' do
     it 'activates a profile if it passes fraud review' do
-      profile = create(:profile, :fraud_review_pending, user: user)
+      profile = create(:profile, :fraud_review_pending, user:)
 
       expect(profile.activated_at).to be_nil # to change
       expect(profile.active).to eq(false) # to change
@@ -868,7 +868,7 @@ RSpec.describe Profile do
     it 'does not activate a profile if transaction raises an error' do
       profile = create(
         :profile,
-        user: user,
+        user:,
         active: false,
         fraud_review_pending_at: 1.day.ago,
       )
@@ -888,7 +888,7 @@ RSpec.describe Profile do
       let(:profile) do
         create(
           :profile,
-          user: user,
+          user:,
           active: false,
           fraud_review_pending_at: 1.day.ago,
           initiating_service_provider: sp,
@@ -916,7 +916,7 @@ RSpec.describe Profile do
 
   describe '#activate_after_fraud_review_unnecessary' do
     it 'activates a profile if fraud review is unnecessary' do
-      profile = create(:profile, :fraud_review_pending, user: user)
+      profile = create(:profile, :fraud_review_pending, user:)
 
       expect(profile.activated_at).to be_nil # to change
       expect(profile.active).to eq(false) # to change
@@ -948,7 +948,7 @@ RSpec.describe Profile do
     end
 
     it 'does not activate a profile if transaction raises an error' do
-      profile = create(:profile, :fraud_review_pending, user: user)
+      profile = create(:profile, :fraud_review_pending, user:)
 
       allow(profile).to receive(:update!).and_raise(RuntimeError)
 
@@ -965,7 +965,7 @@ RSpec.describe Profile do
   # TODO: related: should we test against an active profile here?
   describe 'deactivate_for_in_person_verification' do
     it 'deactivates a profile for in_person_verification' do
-      profile = create(:profile, user: user)
+      profile = create(:profile, user:)
 
       expect(profile.activated_at).to be_nil
       expect(profile.active).to eq(false)
@@ -993,7 +993,7 @@ RSpec.describe Profile do
   # TODO: related: should we test against an active profile here?
   describe '#deactivate_for_gpo_verification' do
     it 'sets a timestamp for gpo_verification_pending_at' do
-      profile = create(:profile, user: user)
+      profile = create(:profile, user:)
 
       expect(profile.activated_at).to be_nil
       expect(profile.active).to eq(false) # ???
@@ -1024,7 +1024,7 @@ RSpec.describe Profile do
   # TODO: related: should we test against an active profile here?
   describe '#deactivate_for_fraud_review' do
     it 'sets fraud_review_pending to true and sets fraud_pending_reason' do
-      profile = create(:profile, user: user)
+      profile = create(:profile, user:)
 
       expect(profile.activated_at).to be_nil
       expect(profile.active).to eq(false) # ???
@@ -1068,7 +1068,7 @@ RSpec.describe Profile do
 
     context 'it notifies the user' do
       let(:profile) do
-        profile = create(:profile, :fraud_review_pending, user: user)
+        profile = create(:profile, :fraud_review_pending, user:)
         profile.reject_for_fraud(notify_user: true)
         profile
       end
@@ -1088,7 +1088,7 @@ RSpec.describe Profile do
 
     context 'it does not notify the user' do
       let(:profile) do
-        profile = create(:profile, :fraud_review_pending, user: user)
+        profile = create(:profile, :fraud_review_pending, user:)
         profile.reject_for_fraud(notify_user: false)
         profile
       end

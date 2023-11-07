@@ -95,9 +95,9 @@ module Reporting
       else
         {
           time_range: time_range(date:, period:),
-          issuers: issuers,
-          verbose: verbose,
-          progress: progress,
+          issuers:,
+          verbose:,
+          progress:,
           slice: slice || 3.hours,
           threads: threads || 5,
         }

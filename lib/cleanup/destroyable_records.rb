@@ -6,11 +6,11 @@ class DestroyableRecords
     @stdout = stdout
 
     @issuer = issuer
-    @service_provider = ServiceProvider.includes(:in_person_enrollments).find_by(issuer: issuer)
+    @service_provider = ServiceProvider.includes(:in_person_enrollments).find_by(issuer:)
     @integration = Agreements::Integration.includes(
       :partner_account,
       iaa_orders: [:iaa_gtc],
-    ).find_by(issuer: issuer)
+    ).find_by(issuer:)
   end
 
   def print_data

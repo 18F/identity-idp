@@ -60,7 +60,7 @@ module OpenidConnect
     def build_logout_form
       OpenidConnectLogoutForm.new(
         params: logout_params,
-        current_user: current_user,
+        current_user:,
       )
     end
 

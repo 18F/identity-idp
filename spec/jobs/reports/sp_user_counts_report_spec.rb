@@ -23,7 +23,7 @@ RSpec.describe Reports::SpUserCountsReport do
   end
 
   it 'returns the total user counts per sp broken down by ial1 and ial2' do
-    create(:service_provider, issuer: issuer, app_id: app_id)
+    create(:service_provider, issuer:, app_id:)
     create(:service_provider_identity, user_id: 1, service_provider: issuer)
     create(:service_provider_identity, user_id: 2, service_provider: issuer)
     create(
@@ -37,11 +37,11 @@ RSpec.describe Reports::SpUserCountsReport do
 
     expected = [
       {
-        issuer: issuer,
+        issuer:,
         total: 3,
         ial1_total: 2,
         ial2_total: 1,
-        app_id: app_id,
+        app_id:,
       },
       {
         issuer: issuer2,

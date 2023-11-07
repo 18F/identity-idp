@@ -18,8 +18,8 @@ class UserPivCacSetupForm
     errors = error_type ? { type: error_type } : {}
     FormResponse.new(
       success: success && process_valid_submission,
-      errors: errors,
-      extra: extra_analytics_attributes.merge(error_type ? { key_id: key_id } : {}),
+      errors:,
+      extra: extra_analytics_attributes.merge(error_type ? { key_id: } : {}),
     )
   end
 
@@ -27,7 +27,7 @@ class UserPivCacSetupForm
 
   def process_valid_submission
     Db::PivCacConfiguration.create(user, x509_dn_uuid, @name, x509_issuer)
-    event = PushNotification::RecoveryInformationChangedEvent.new(user: user)
+    event = PushNotification::RecoveryInformationChangedEvent.new(user:)
     PushNotification::HttpPush.deliver(event)
     true
   rescue PG::UniqueViolation

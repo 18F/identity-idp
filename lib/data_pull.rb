@@ -15,7 +15,7 @@ class DataPull
       stdout:,
       stderr:,
       subtask_class: subtask(argv.shift),
-      banner: banner,
+      banner:,
     )
   end
 
@@ -283,7 +283,7 @@ class DataPull
       SQL
 
       results = ActiveRecord::Base.connection.execute(
-        ApplicationRecord.sanitize_sql_array([sql, { uuids: uuids }]),
+        ApplicationRecord.sanitize_sql_array([sql, { uuids: }]),
       )
 
       table = []

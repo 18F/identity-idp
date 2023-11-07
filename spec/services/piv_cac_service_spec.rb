@@ -82,8 +82,8 @@ RSpec.describe PivCacService do
 
           it do
             link = PivCacService.piv_cac_service_link(
-              nonce: nonce,
-              redirect_uri: redirect_uri,
+              nonce:,
+              redirect_uri:,
             )
             expect(link).to eq url_with_nonce
           end
@@ -97,10 +97,10 @@ RSpec.describe PivCacService do
           let(:redirect_uri) { 'http://example.com/asdf' }
 
           it 'directs the user to a local page' do
-            test_url = test_piv_cac_entry_url(nonce: nonce, redirect_uri: redirect_uri)
+            test_url = test_piv_cac_entry_url(nonce:, redirect_uri:)
             link = PivCacService.piv_cac_service_link(
-              nonce: nonce,
-              redirect_uri: redirect_uri,
+              nonce:,
+              redirect_uri:,
             )
             expect(test_url).to eq link
           end

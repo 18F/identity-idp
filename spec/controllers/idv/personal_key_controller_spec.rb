@@ -8,8 +8,8 @@ RSpec.describe Idv::PersonalKeyController do
     stub_sign_in(user)
     idv_session.applicant = applicant
     profile_maker = Idv::ProfileMaker.new(
-      applicant: applicant,
-      user: user,
+      applicant:,
+      user:,
       user_password: password,
     )
     profile = profile_maker.save_profile(
@@ -26,7 +26,7 @@ RSpec.describe Idv::PersonalKeyController do
   end
 
   let(:password) { 'sekrit phrase' }
-  let(:user) { create(:user, :fully_registered, password: password) }
+  let(:user) { create(:user, :fully_registered, password:) }
   let(:applicant) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE }
   let(:profile) { subject.idv_session.profile }
   let(:idv_session) do
@@ -240,10 +240,10 @@ RSpec.describe Idv::PersonalKeyController do
     end
 
     context 'with in person profile' do
-      let!(:enrollment) { create(:in_person_enrollment, :pending, user: user, profile: profile) }
+      let!(:enrollment) { create(:in_person_enrollment, :pending, user:, profile:) }
 
       before do
-        ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
+        ProofingComponent.create(user:, document_check: Idp::Constants::Vendors::USPS)
         allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
       end
 

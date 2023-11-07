@@ -22,7 +22,7 @@ DeviceDecorator = Struct.new(:device) do
     I18n.t(
       'account.index.device',
       browser: "#{browser.name} #{browser.version}",
-      os: os,
+      os:,
     )
   end
 end

@@ -23,7 +23,7 @@ RSpec.describe Telephony::Response do
 
   context 'for a failed response' do
     let(:error) { StandardError.new('hello') }
-    subject { described_class.new(success: false, error: error, extra: { test: '1234' }) }
+    subject { described_class.new(success: false, error:, extra: { test: '1234' }) }
 
     it 'is not successful' do
       expect(subject.success?).to eq(false)

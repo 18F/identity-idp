@@ -343,7 +343,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
             expect(
               remember_device_cookie.valid_for_user?(
                 user: subject.current_user,
-                expiration_interval: expiration_interval,
+                expiration_interval:,
               ),
             ).to eq true
           end
@@ -705,7 +705,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
             expect(
               remember_device_cookie.valid_for_user?(
                 user: subject.current_user,
-                expiration_interval: expiration_interval,
+                expiration_interval:,
               ),
             ).to eq true
           end

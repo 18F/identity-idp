@@ -19,7 +19,7 @@ RSpec.describe OpenidConnect::LogoutController do
     create(
       :service_provider_identity,
       service_provider: service_provider.issuer,
-      user: user,
+      user:,
       access_token: SecureRandom.hex,
       session_uuid: SecureRandom.uuid,
     )
@@ -27,8 +27,8 @@ RSpec.describe OpenidConnect::LogoutController do
 
   let(:valid_id_token_hint) do
     IdTokenBuilder.new(
-      identity: identity,
-      code: code,
+      identity:,
+      code:,
       custom_expiration: 1.day.from_now.to_i,
     ).id_token
   end
@@ -46,9 +46,9 @@ RSpec.describe OpenidConnect::LogoutController do
         subject(:action) do
           get :index,
               params: {
-                id_token_hint: id_token_hint,
-                post_logout_redirect_uri: post_logout_redirect_uri,
-                state: state,
+                id_token_hint:,
+                post_logout_redirect_uri:,
+                state:,
               }
         end
 
@@ -134,7 +134,7 @@ RSpec.describe OpenidConnect::LogoutController do
                   client_id: service_provider.issuer,
                   client_id_parameter_present: false,
                   id_token_hint_parameter_present: true,
-                  errors: errors,
+                  errors:,
                   error_details: hash_including(*errors.keys),
                   sp_initiated: true,
                   oidc: true,
@@ -186,8 +186,8 @@ RSpec.describe OpenidConnect::LogoutController do
           get :index,
               params: {
                 client_id: service_provider.issuer,
-                post_logout_redirect_uri: post_logout_redirect_uri,
-                state: state,
+                post_logout_redirect_uri:,
+                state:,
               }
         end
 
@@ -261,7 +261,7 @@ RSpec.describe OpenidConnect::LogoutController do
                     client_id: service_provider.issuer,
                     client_id_parameter_present: true,
                     id_token_hint_parameter_present: false,
-                    errors: errors,
+                    errors:,
                     error_details: hash_including(*errors.keys),
                     sp_initiated: true,
                     oidc: true,
@@ -291,8 +291,8 @@ RSpec.describe OpenidConnect::LogoutController do
           delete :delete,
                  params: {
                    client_id: service_provider.issuer,
-                   post_logout_redirect_uri: post_logout_redirect_uri,
-                   state: state,
+                   post_logout_redirect_uri:,
+                   state:,
                  }
         end
 
@@ -319,9 +319,9 @@ RSpec.describe OpenidConnect::LogoutController do
         subject(:action) do
           delete :delete,
                  params: {
-                   id_token_hint: id_token_hint,
-                   post_logout_redirect_uri: post_logout_redirect_uri,
-                   state: state,
+                   id_token_hint:,
+                   post_logout_redirect_uri:,
+                   state:,
                  }
         end
 
@@ -357,9 +357,9 @@ RSpec.describe OpenidConnect::LogoutController do
         get :index,
             params: {
               client_id: service_provider.issuer,
-              id_token_hint: id_token_hint,
-              post_logout_redirect_uri: post_logout_redirect_uri,
-              state: state,
+              id_token_hint:,
+              post_logout_redirect_uri:,
+              state:,
             }
       end
 
@@ -435,7 +435,7 @@ RSpec.describe OpenidConnect::LogoutController do
                 client_id: service_provider.issuer,
                 client_id_parameter_present: true,
                 id_token_hint_parameter_present: true,
-                errors: errors,
+                errors:,
                 error_details: hash_including(*errors.keys),
                 sp_initiated: true,
                 oidc: true,
@@ -475,7 +475,7 @@ RSpec.describe OpenidConnect::LogoutController do
                 client_id: service_provider.issuer,
                 client_id_parameter_present: true,
                 id_token_hint_parameter_present: false,
-                errors: errors,
+                errors:,
                 error_details: hash_including(*errors.keys),
                 sp_initiated: true,
                 oidc: true,
@@ -503,8 +503,8 @@ RSpec.describe OpenidConnect::LogoutController do
           delete :delete,
                  params: {
                    client_id: service_provider.issuer,
-                   post_logout_redirect_uri: post_logout_redirect_uri,
-                   state: state,
+                   post_logout_redirect_uri:,
+                   state:,
                  }
         end
 
@@ -571,9 +571,9 @@ RSpec.describe OpenidConnect::LogoutController do
         subject(:action) do
           delete :delete,
                  params: {
-                   id_token_hint: id_token_hint,
-                   post_logout_redirect_uri: post_logout_redirect_uri,
-                   state: state,
+                   id_token_hint:,
+                   post_logout_redirect_uri:,
+                   state:,
                  }
         end
 

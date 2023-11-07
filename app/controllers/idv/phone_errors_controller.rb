@@ -58,7 +58,7 @@ module Idv
     end
 
     def track_event(type:)
-      attributes = { type: type }.merge(ab_test_analytics_buckets)
+      attributes = { type: }.merge(ab_test_analytics_buckets)
       if type == :failure
         attributes[:limiter_expires_at] = @expires_at
       else

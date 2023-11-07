@@ -87,7 +87,7 @@ module Reporting
                 (end_date - slice_start.days).beginning_of_day,
                 (end_date - slice_end.days).beginning_of_day,
               ),
-              cloudwatch_client: cloudwatch_client,
+              cloudwatch_client:,
             ).tap(&:data)
           end.tap do |thread|
             thread.report_on_exception = false
@@ -147,7 +147,7 @@ module Reporting
         ensure_complete_logs: true,
         progress: false,
         logger: verbose? ? Logger.new(STDERR) : nil,
-        wait_duration: wait_duration,
+        wait_duration:,
       )
     end
   end
@@ -164,9 +164,9 @@ if __FILE__ == $PROGRAM_NAME
   verbose = ARGV.include?('--verbose')
 
   puts Reporting::ProofingRateReport.new(
-    end_date: end_date,
-    progress: progress,
-    verbose: verbose,
+    end_date:,
+    progress:,
+    verbose:,
   ).to_csv
 end
 # rubocop:enable Rails/Output

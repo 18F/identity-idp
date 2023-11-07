@@ -22,8 +22,8 @@ module Idv
 
       {
         acuant_sdk_upgrade_a_b_testing_enabled: testing_enabled,
-        use_alternate_sdk: use_alternate_sdk,
-        acuant_version: acuant_version,
+        use_alternate_sdk:,
+        acuant_version:,
       }
     end
 

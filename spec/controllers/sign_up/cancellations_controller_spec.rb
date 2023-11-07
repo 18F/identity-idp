@@ -82,7 +82,7 @@ RSpec.describe SignUp::CancellationsController do
             :email_address,
             confirmed_at: nil,
             confirmation_sent_at: invalid_confirmation_sent_at,
-            confirmation_token: confirmation_token,
+            confirmation_token:,
           ),
         ]
       )

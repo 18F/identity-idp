@@ -144,7 +144,7 @@ RSpec.describe Idv::SessionErrorsController do
     let(:template) { 'idv/session_errors/exception' }
     let(:params) { {} }
 
-    subject(:response) { get action, params: params }
+    subject(:response) { get action, params: }
 
     it_behaves_like 'an idv session errors controller action'
     it_behaves_like 'non-authenticated idv session errors controller action'
@@ -155,7 +155,7 @@ RSpec.describe Idv::SessionErrorsController do
     let(:template) { 'idv/session_errors/warning' }
     let(:params) { {} }
 
-    subject(:response) { get :warning, params: params }
+    subject(:response) { get :warning, params: }
 
     it_behaves_like 'an idv session errors controller action'
     it_behaves_like 'non-authenticated idv session errors controller action'
@@ -164,7 +164,7 @@ RSpec.describe Idv::SessionErrorsController do
       let(:user) { create(:user) }
 
       before do
-        RateLimiter.new(rate_limit_type: :idv_resolution, user: user).increment!
+        RateLimiter.new(rate_limit_type: :idv_resolution, user:).increment!
       end
 
       it 'assigns remaining count' do
@@ -207,7 +207,7 @@ RSpec.describe Idv::SessionErrorsController do
     let(:template) { 'idv/session_errors/state_id_warning' }
     let(:params) { {} }
 
-    subject(:response) { get action, params: params }
+    subject(:response) { get action, params: }
 
     it_behaves_like 'an idv session errors controller action'
     it_behaves_like 'non-authenticated idv session errors controller action'
@@ -242,7 +242,7 @@ RSpec.describe Idv::SessionErrorsController do
       let(:user) { create(:user) }
 
       before do
-        RateLimiter.new(rate_limit_type: :idv_resolution, user: user).increment_to_limited!
+        RateLimiter.new(rate_limit_type: :idv_resolution, user:).increment_to_limited!
       end
 
       it 'assigns expiration time' do
@@ -324,7 +324,7 @@ RSpec.describe Idv::SessionErrorsController do
       let(:user) { create(:user) }
 
       before do
-        RateLimiter.new(rate_limit_type: :idv_doc_auth, user: user).increment_to_limited!
+        RateLimiter.new(rate_limit_type: :idv_doc_auth, user:).increment_to_limited!
       end
 
       it 'assigns expiration time' do

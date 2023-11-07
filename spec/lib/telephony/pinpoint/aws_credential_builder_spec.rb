@@ -19,7 +19,7 @@ RSpec.describe Telephony::Pinpoint::AwsCredentialBuilder do
 
     let(:config) do
       Telephony::PinpointSmsConfiguration.new(
-        region: region,
+        region:,
         credential_role_session_name: 'arn:123',
         credential_role_arn: 'identity-idp',
         credential_external_id: 'asdf1234',
@@ -28,7 +28,7 @@ RSpec.describe Telephony::Pinpoint::AwsCredentialBuilder do
 
     it 'returns an assumed role credential' do
       sts_client = double(Aws::STS::Client)
-      allow(Aws::STS::Client).to receive(:new).with(region: region).and_return(sts_client)
+      allow(Aws::STS::Client).to receive(:new).with(region:).and_return(sts_client)
       expected_credential = instance_double(Aws::AssumeRoleCredentials)
       expect(Aws::AssumeRoleCredentials).to receive(:new).with(
         role_session_name: credential_role_session_name,
@@ -59,9 +59,9 @@ RSpec.describe Telephony::Pinpoint::AwsCredentialBuilder do
 
     let(:config) do
       Telephony::PinpointVoiceConfiguration.new(
-        region: region,
-        access_key_id: access_key_id,
-        secret_access_key: secret_access_key,
+        region:,
+        access_key_id:,
+        secret_access_key:,
       )
     end
 
@@ -75,7 +75,7 @@ RSpec.describe Telephony::Pinpoint::AwsCredentialBuilder do
   end
 
   context 'with no credentials in the config' do
-    let(:config) { Telephony::PinpointVoiceConfiguration.new(region: region) }
+    let(:config) { Telephony::PinpointVoiceConfiguration.new(region:) }
 
     it 'returns nil' do
       result = credential_builder.call

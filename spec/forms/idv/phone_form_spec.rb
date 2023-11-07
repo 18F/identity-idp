@@ -3,16 +3,16 @@ require 'rails_helper'
 RSpec.describe Idv::PhoneForm do
   let(:user) { build_stubbed(:user, :fully_registered) }
   let(:phone) { '703-555-5000' }
-  let(:params) { { phone: phone } }
+  let(:params) { { phone: } }
   let(:previous_params) { nil }
   let(:allowed_countries) { nil }
   let(:optional_params) { {} }
 
   subject do
     Idv::PhoneForm.new(
-      user: user,
-      previous_params: previous_params,
-      allowed_countries: allowed_countries,
+      user:,
+      previous_params:,
+      allowed_countries:,
       **optional_params,
     )
   end
@@ -47,7 +47,7 @@ RSpec.describe Idv::PhoneForm do
 
     context 'with user phone number' do
       let(:phone) { '7035551234' }
-      let(:user) { build_stubbed(:user, :fully_registered, with: { phone: phone }) }
+      let(:user) { build_stubbed(:user, :fully_registered, with: { phone: }) }
 
       it 'uses the formatted phone number as the initial phone value' do
         expect(subject.phone).to eq('+1 703-555-1234')
@@ -135,7 +135,7 @@ RSpec.describe Idv::PhoneForm do
         let(:user_phone) { '2025555000' }
         let(:hybrid_handoff_phone_number) { '2025551234' }
         let(:user) { build_stubbed(:user, :fully_registered, with: { phone: user_phone }) }
-        let(:optional_params) { { hybrid_handoff_phone_number: hybrid_handoff_phone_number } }
+        let(:optional_params) { { hybrid_handoff_phone_number: } }
 
         it 'uses the user phone as the initial value' do
           expect(subject.phone).to eq(PhoneFormatter.format(user_phone))
@@ -145,7 +145,7 @@ RSpec.describe Idv::PhoneForm do
       context 'without a phone number on the user record' do
         let(:hybrid_handoff_phone_number) { '2025551234' }
         let(:user) { build_stubbed(:user) }
-        let(:optional_params) { { hybrid_handoff_phone_number: hybrid_handoff_phone_number } }
+        let(:optional_params) { { hybrid_handoff_phone_number: } }
 
         it 'uses the hybrid handoff phone as the initial value' do
           expect(subject.phone).to eq(PhoneFormatter.format(hybrid_handoff_phone_number))
@@ -190,14 +190,14 @@ RSpec.describe Idv::PhoneForm do
       it 'validates to only allow numbers from permitted countries' do
         invalid_phones = ['+81 54 354 3643', '+12423270143']
         invalid_phones.each do |phone|
-          result = subject.submit(phone: phone)
+          result = subject.submit(phone:)
 
           expect(result.success?).to eq(false)
           expect(result.errors[:phone]).to include(t('errors.messages.improbable_phone'))
         end
         valid_phones = ['+1 (939) 555-0123']
         valid_phones.each do |phone|
-          result = subject.submit(phone: phone)
+          result = subject.submit(phone:)
 
           expect(result.success?).to eq(true)
         end
@@ -209,14 +209,14 @@ RSpec.describe Idv::PhoneForm do
         it 'validates to only allow numbers from permitted countries' do
           invalid_phones = ['+81 54 354 3643', '+12423270143']
           invalid_phones.each do |phone|
-            result = subject.submit(phone: phone)
+            result = subject.submit(phone:)
 
             expect(result.success?).to eq(false)
             expect(result.errors[:phone]).to include(t('errors.messages.improbable_phone'))
           end
           valid_phones = ['7035551234']
           valid_phones.each do |phone|
-            result = subject.submit(phone: phone)
+            result = subject.submit(phone:)
 
             expect(result.success?).to eq(true)
           end
@@ -233,10 +233,10 @@ RSpec.describe Idv::PhoneForm do
           Canada: '3065551234',
         }
         invalid_phones.each do |location, phone|
-          result = subject.submit(phone: phone)
+          result = subject.submit(phone:)
           message = t(
             'two_factor_authentication.otp_delivery_preference.voice_unsupported',
-            location: location,
+            location:,
           )
 
           expect(result.success?).to eq(false)
@@ -244,7 +244,7 @@ RSpec.describe Idv::PhoneForm do
         end
         valid_phones = ['5135551234']
         valid_phones.each do |phone|
-          result = subject.submit(phone: phone)
+          result = subject.submit(phone:)
 
           expect(result.success?).to eq(true)
         end

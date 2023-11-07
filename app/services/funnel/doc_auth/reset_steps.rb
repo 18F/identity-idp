@@ -4,7 +4,7 @@ module Funnel
       SKIP_FIELDS = %w[id user_id created_at updated_at].freeze
 
       def self.call(user_id)
-        doc_auth_log = DocAuthLog.find_by(user_id: user_id)
+        doc_auth_log = DocAuthLog.find_by(user_id:)
         return unless doc_auth_log
         DocAuthLog.new.attributes.keys.each do |attribute|
           next if SKIP_FIELDS.index(attribute)

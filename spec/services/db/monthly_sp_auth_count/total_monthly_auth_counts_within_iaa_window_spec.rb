@@ -44,9 +44,9 @@ RSpec.describe Db::MonthlySpAuthCount::TotalMonthlyAuthCountsWithinIaaWindow do
         2.times do
           create(
             :sp_return_log,
-            user: user,
+            user:,
             ial: 1,
-            service_provider: service_provider,
+            service_provider:,
             requested_at: partial_month_date,
             returned_at: partial_month_date,
             billable: true,
@@ -56,9 +56,9 @@ RSpec.describe Db::MonthlySpAuthCount::TotalMonthlyAuthCountsWithinIaaWindow do
         # non-billable event during partial month, should be ignored
         create(
           :sp_return_log,
-          user: user,
+          user:,
           ial: 1,
-          service_provider: service_provider,
+          service_provider:,
           requested_at: partial_month_date,
           returned_at: partial_month_date,
           billable: false,
@@ -68,8 +68,8 @@ RSpec.describe Db::MonthlySpAuthCount::TotalMonthlyAuthCountsWithinIaaWindow do
         11.times do
           create(
             :sp_return_log,
-            user: user,
-            service_provider: service_provider,
+            user:,
+            service_provider:,
             ial: 1,
             requested_at: full_month_date,
             returned_at: full_month_date,

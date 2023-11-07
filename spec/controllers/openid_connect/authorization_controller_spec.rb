@@ -15,9 +15,9 @@ RSpec.describe OpenidConnect::AuthorizationController do
   let(:params) do
     {
       acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-      client_id: client_id,
+      client_id:,
       nonce: SecureRandom.hex,
-      prompt: prompt,
+      prompt:,
       redirect_uri: 'gov.gsa.openidconnect.test://result',
       response_type: 'code',
       scope: 'openid profile',
@@ -26,7 +26,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
   end
 
   describe '#index' do
-    subject(:action) { get :index, params: params }
+    subject(:action) { get :index, params: }
 
     context 'with prompt=login' do
       let(:prompt) { 'login' }
@@ -65,7 +65,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
           expect(@analytics).to receive(:track_event).
             with('OpenID Connect: authorization request',
                  success: true,
-                 client_id: client_id,
+                 client_id:,
                  prompt: 'select_account',
                  referer: nil,
                  allow_prompt_login: true,
@@ -79,7 +79,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
           expect(@analytics).to receive(:track_event).
             with('OpenID Connect: authorization request handoff',
                  success: true,
-                 client_id: client_id,
+                 client_id:,
                  user_sp_authorized: true,
                  code_digest: kind_of(String))
           expect(@analytics).to receive(:track_event).
@@ -135,7 +135,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
               expect(@analytics).to receive(:track_event).
                 with('OpenID Connect: authorization request',
                      success: true,
-                     client_id: client_id,
+                     client_id:,
                      prompt: 'select_account',
                      referer: nil,
                      allow_prompt_login: true,
@@ -149,7 +149,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
               expect(@analytics).to receive(:track_event).
                 with('OpenID Connect: authorization request handoff',
                      success: true,
-                     client_id: client_id,
+                     client_id:,
                      user_sp_authorized: true,
                      code_digest: kind_of(String))
               expect(@analytics).to receive(:track_event).
@@ -299,7 +299,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                 expect(@analytics).to receive(:track_event).
                   with('OpenID Connect: authorization request',
                        success: true,
-                       client_id: client_id,
+                       client_id:,
                        prompt: 'select_account',
                        referer: nil,
                        allow_prompt_login: true,
@@ -313,7 +313,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                 expect(@analytics).to receive(:track_event).
                   with('OpenID Connect: authorization request handoff',
                        success: true,
-                       client_id: client_id,
+                       client_id:,
                        user_sp_authorized: true,
                        code_digest: kind_of(String))
                 expect(@analytics).to receive(:track_event).
@@ -351,7 +351,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                 expect(@analytics).to receive(:track_event).
                   with('OpenID Connect: authorization request',
                        success: true,
-                       client_id: client_id,
+                       client_id:,
                        prompt: 'select_account',
                        referer: nil,
                        allow_prompt_login: true,
@@ -365,7 +365,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                 expect(@analytics).to receive(:track_event).
                   with('OpenID Connect: authorization request handoff',
                        success: true,
-                       client_id: client_id,
+                       client_id:,
                        user_sp_authorized: true,
                        code_digest: kind_of(String))
                 expect(@analytics).to receive(:track_event).
@@ -404,7 +404,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                 expect(@analytics).to receive(:track_event).
                   with('OpenID Connect: authorization request',
                        success: true,
-                       client_id: client_id,
+                       client_id:,
                        prompt: 'select_account',
                        referer: nil,
                        allow_prompt_login: true,
@@ -418,7 +418,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                 expect(@analytics).to receive(:track_event).
                   with('OpenID Connect: authorization request handoff',
                        success: true,
-                       client_id: client_id,
+                       client_id:,
                        user_sp_authorized: true,
                        code_digest: kind_of(String))
                 expect(@analytics).to receive(:track_event).
@@ -493,7 +493,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
           expect(@analytics).to receive(:track_event).
             with('OpenID Connect: authorization request',
                  success: false,
-                 client_id: client_id,
+                 client_id:,
                  prompt: '',
                  referer: nil,
                  allow_prompt_login: true,
@@ -590,7 +590,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
         expect(@analytics).to receive(:track_event).
           with('OpenID Connect: authorization request',
                success: true,
-               client_id: client_id,
+               client_id:,
                prompt: 'select_account',
                referer: nil,
                allow_prompt_login: true,

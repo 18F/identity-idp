@@ -4,7 +4,7 @@ RSpec.describe 'layouts/user_mailer.html.erb' do
   let(:user) { build_stubbed(:user) }
 
   before do
-    @mail = UserMailer.with(user: user, email_address: user.email_addresses.first).email_added
+    @mail = UserMailer.with(user:, email_address: user.email_addresses.first).email_added
     allow(view).to receive(:message).and_return(@mail)
     allow(view).to receive(:attachments).and_return(@mail.attachments)
 

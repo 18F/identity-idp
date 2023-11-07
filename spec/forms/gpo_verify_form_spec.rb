@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe GpoVerifyForm do
   subject(:form) do
-    GpoVerifyForm.new(user: user, pii: applicant, otp: entered_otp)
+    GpoVerifyForm.new(user:, pii: applicant, otp: entered_otp)
   end
 
   let(:user) { create(:user, :fully_registered) }
@@ -14,8 +14,8 @@ RSpec.describe GpoVerifyForm do
     create(
       :profile,
       :verify_by_mail_pending,
-      user: user,
-      proofing_components: proofing_components,
+      user:,
+      proofing_components:,
     )
   end
   let(:proofing_components) { nil }
@@ -26,7 +26,7 @@ RSpec.describe GpoVerifyForm do
     create(
       :gpo_confirmation_code,
       otp_fingerprint: Pii::Fingerprinter.fingerprint(otp),
-      code_sent_at: code_sent_at,
+      code_sent_at:,
       profile: pending_profile,
     )
   end
@@ -130,12 +130,12 @@ RSpec.describe GpoVerifyForm do
             :in_person_enrollment,
             :establishing,
             profile: pending_profile,
-            user: user,
+            user:,
           )
         end
 
         let(:proofing_components) do
-          ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
+          ProofingComponent.create(user:, document_check: Idp::Constants::Vendors::USPS)
         end
 
         before do
@@ -168,12 +168,12 @@ RSpec.describe GpoVerifyForm do
             :in_person_enrollment,
             :pending,
             profile: pending_profile,
-            user: user,
+            user:,
           )
         end
 
         let(:proofing_components) do
-          ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
+          ProofingComponent.create(user:, document_check: Idp::Constants::Vendors::USPS)
         end
 
         before do
@@ -193,7 +193,7 @@ RSpec.describe GpoVerifyForm do
 
       context 'ThreatMetrix rejection' do
         let(:pending_profile) do
-          create(:profile, :verify_by_mail_pending, :fraud_pending_reason, user: user)
+          create(:profile, :verify_by_mail_pending, :fraud_pending_reason, user:)
         end
 
         before do

@@ -33,8 +33,8 @@ module MultiRegionKmsMigration
       end
       analytics.multi_region_kms_migration_user_migration_summary(
         user_count: users.size,
-        success_count: success_count,
-        error_count: error_count,
+        success_count:,
+        error_count:,
       )
     end
 

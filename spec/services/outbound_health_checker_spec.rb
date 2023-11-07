@@ -22,7 +22,7 @@ RSpec.describe OutboundHealthChecker do
     context 'successful connection to endpoint' do
       before do
         stub_request(:head, IdentityConfig.store.outbound_connection_check_url).
-          to_return(status: status)
+          to_return(status:)
       end
 
       context '200 response from endpoint' do
@@ -32,7 +32,7 @@ RSpec.describe OutboundHealthChecker do
           expect(check).to be_healthy
           expect(check.result).to eq(
             url: IdentityConfig.store.outbound_connection_check_url,
-            status: status,
+            status:,
           )
         end
       end
@@ -44,7 +44,7 @@ RSpec.describe OutboundHealthChecker do
           expect(check).to be_healthy
           expect(check.result).to eq(
             url: IdentityConfig.store.outbound_connection_check_url,
-            status: status,
+            status:,
           )
         end
       end

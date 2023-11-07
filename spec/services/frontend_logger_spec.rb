@@ -4,7 +4,7 @@ RSpec.describe FrontendLogger do
   let(:example_analytics_mixin) do
     Module.new do
       def example_method_handler(ok:, **rest)
-        track_event('example', ok: ok, rest: rest)
+        track_event('example', ok:, rest:)
       end
     end
   end
@@ -26,7 +26,7 @@ RSpec.describe FrontendLogger do
       end,
     }
   end
-  let(:logger) { described_class.new(analytics: analytics, event_map: event_map) }
+  let(:logger) { described_class.new(analytics:, event_map:) }
 
   describe '#track_event' do
     let(:name) { nil }

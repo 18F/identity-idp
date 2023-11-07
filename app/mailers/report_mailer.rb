@@ -75,7 +75,7 @@ class ReportMailer < ActionMailer::Base
         @reports.each do |report|
           name = report.title.byteslice(0...31)
 
-          package.workbook.add_worksheet(name: name) do |sheet|
+          package.workbook.add_worksheet(name:) do |sheet|
             report.table.each do |row|
               sheet.add_row(row)
             end

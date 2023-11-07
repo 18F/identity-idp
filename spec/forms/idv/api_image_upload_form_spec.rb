@@ -7,15 +7,15 @@ RSpec.describe Idv::ApiImageUploadForm do
     Idv::ApiImageUploadForm.new(
       ActionController::Parameters.new(
         front: front_image,
-        front_image_metadata: front_image_metadata,
+        front_image_metadata:,
         back: back_image,
-        back_image_metadata: back_image_metadata,
-        document_capture_session_uuid: document_capture_session_uuid,
+        back_image_metadata:,
+        document_capture_session_uuid:,
       ),
       service_provider: build(:service_provider, issuer: 'test_issuer'),
       analytics: fake_analytics,
-      irs_attempts_api_tracker: irs_attempts_api_tracker,
-      store_encrypted_images: store_encrypted_images,
+      irs_attempts_api_tracker:,
+      store_encrypted_images:,
     )
   end
 
@@ -294,7 +294,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           success: false,
           errors: { doc_pii: 'bad' },
           extra: {
-            pii_like_keypaths: pii_like_keypaths,
+            pii_like_keypaths:,
             attention_with_barcode: false,
           },
         )
@@ -413,17 +413,17 @@ RSpec.describe Idv::ApiImageUploadForm do
     describe 'image source' do
       let(:source) { nil }
       let(:front_image_metadata) do
-        { width: 40, height: 40, mimeType: 'image/png', source: source }.to_json
+        { width: 40, height: 40, mimeType: 'image/png', source: }.to_json
       end
       let(:back_image_metadata) do
-        { width: 20, height: 20, mimeType: 'image/png', source: source }.to_json
+        { width: 20, height: 20, mimeType: 'image/png', source: }.to_json
       end
       let(:image_source) { nil }
 
       before do
         expect_any_instance_of(DocAuth::Mock::DocAuthMockClient).
           to receive(:post_images).
-          with(hash_including(image_source: image_source)).
+          with(hash_including(image_source:)).
           and_call_original
       end
 

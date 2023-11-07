@@ -20,8 +20,7 @@ module Idv
 
     def getting_started_ab_test_analytics_bucket
       {
-        getting_started_ab_test_bucket:
-          getting_started_ab_test_bucket,
+        getting_started_ab_test_bucket:,
       }
     end
   end

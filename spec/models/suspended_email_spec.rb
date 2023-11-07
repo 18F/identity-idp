@@ -33,7 +33,7 @@ RSpec.describe SuspendedEmail, type: :model do
         digested_base_email = SuspendedEmail.generate_email_digest('blocked@example.com')
         suspended_email = FactoryBot.create(
           :suspended_email,
-          digested_base_email: digested_base_email,
+          digested_base_email:,
           email_address: blocked_email,
         )
 
@@ -58,7 +58,7 @@ RSpec.describe SuspendedEmail, type: :model do
         digested_base_email = SuspendedEmail.generate_email_digest('blocked@example.com')
         suspended_email = FactoryBot.create(
           :suspended_email,
-          digested_base_email: digested_base_email,
+          digested_base_email:,
           email_address: blocked_email,
         )
 

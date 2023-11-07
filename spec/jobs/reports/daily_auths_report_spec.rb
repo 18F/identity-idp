@@ -33,7 +33,7 @@ RSpec.describe Reports::DailyAuthsReport do
           path: 'int/daily-auths-report/2021/2021-03-01.daily-auths-report.json',
           body: kind_of(String),
           content_type: 'application/json',
-          bucket: bucket,
+          bucket:,
         ).exactly(1).time.and_call_original
       end
 
@@ -68,7 +68,7 @@ RSpec.describe Reports::DailyAuthsReport do
           issuer: 'a',
           iaa: 'iaa123',
           friendly_name: 'The App',
-          agency: agency,
+          agency:,
         )
         # rubocop:disable Layout/LineLength
         create(:sp_return_log, ial: 1, issuer: 'a', requested_at: timestamp, returned_at: timestamp, billable: true)

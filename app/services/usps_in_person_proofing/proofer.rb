@@ -110,7 +110,7 @@ module UspsInPersonProofing
         expires_in -= AUTH_TOKEN_PREEMPTIVE_EXPIRY_MINUTES
       end
       token = "#{body['token_type']} #{body['access_token']}"
-      Rails.cache.write(AUTH_TOKEN_CACHE_KEY, token, expires_in: expires_in)
+      Rails.cache.write(AUTH_TOKEN_CACHE_KEY, token, expires_in:)
       token
     end
 

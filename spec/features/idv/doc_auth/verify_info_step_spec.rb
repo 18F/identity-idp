@@ -174,7 +174,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
 
       click_idv_continue
       expect(page).to have_current_path(idv_session_errors_failure_path)
-      expect(page).not_to have_css('.step-indicator__step--current', text: text, wait: 5)
+      expect(page).not_to have_css('.step-indicator__step--current', text:, wait: 5)
       expect(fake_analytics).to have_logged_event(
         'Rate Limit Reached',
         limiter_type: :idv_resolution,
@@ -190,7 +190,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
         click_idv_continue
 
         expect(page).to have_current_path(idv_phone_path)
-        expect(RateLimiter.new(user: user, rate_limit_type: :idv_resolution)).to be_limited
+        expect(RateLimiter.new(user:, rate_limit_type: :idv_resolution)).to be_limited
       end
     end
 

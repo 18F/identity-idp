@@ -126,7 +126,7 @@ class CompletionsPresenter
 
   def displayable_pii
     @displayable_pii ||= DisplayablePiiFormatter.new(
-      current_user: current_user,
+      current_user:,
       pii: decrypted_pii,
     ).format
   end

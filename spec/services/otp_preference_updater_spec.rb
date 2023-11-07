@@ -15,11 +15,11 @@ RSpec.describe OtpPreferenceUpdater do
         it 'does not update the user' do
           user = create(:user, email: 'test1@test.com')
           phone = create(
-            :phone_configuration, user: user,
+            :phone_configuration, user:,
                                   phone: '+1 111 111 1111',
                                   delivery_preference: 'sms'
           )
-          updater = OtpPreferenceUpdater.new(user: user, preference: 'sms', phone_id: phone.id)
+          updater = OtpPreferenceUpdater.new(user:, preference: 'sms', phone_id: phone.id)
           expect(UpdateUser).to_not receive(:new)
           updater.call
         end
@@ -29,7 +29,7 @@ RSpec.describe OtpPreferenceUpdater do
         it 'updates the user' do
           user = build_stubbed(:user, :with_phone, otp_delivery_preference: 'voice')
           updater = OtpPreferenceUpdater.new(
-            user: user,
+            user:,
             preference: 'sms',
             phone_id: 1,
           )
@@ -39,7 +39,7 @@ RSpec.describe OtpPreferenceUpdater do
 
           updated_user = instance_double(UpdateUser)
           allow(UpdateUser).to receive(:new).
-            with(user: user, attributes: attributes).and_return(updated_user)
+            with(user:, attributes:).and_return(updated_user)
 
           expect(updated_user).to receive(:call)
 

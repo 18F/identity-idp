@@ -48,7 +48,7 @@ RSpec.describe OpenidConnectAttributeScoper do
           postal_code: '12345',
         },
         social_security_number: '666661234',
-        verified_at: verified_at,
+        verified_at:,
       }
     end
 

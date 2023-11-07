@@ -31,11 +31,11 @@ module Idv
           call(:verify_phone, :view, true)
 
         analytics.idv_phone_of_record_visited(**ab_test_analytics_buckets)
-        render :new, locals: { gpo_letter_available: gpo_letter_available }
+        render :new, locals: { gpo_letter_available: }
       elsif async_state.missing?
         analytics.proofing_address_result_missing
         flash.now[:error] = I18n.t('idv.failure.timeout')
-        render :new, locals: { gpo_letter_available: gpo_letter_available }
+        render :new, locals: { gpo_letter_available: }
       end
     end
 
@@ -55,7 +55,7 @@ module Idv
         redirect_to idv_phone_path
       else
         flash.now[:error] = result.first_error_message
-        render :new, locals: { gpo_letter_available: gpo_letter_available }
+        render :new, locals: { gpo_letter_available: }
       end
     end
 
@@ -123,9 +123,9 @@ module Idv
 
     def step
       @step ||= Idv::PhoneStep.new(
-        idv_session: idv_session,
+        idv_session:,
         trace_id: amzn_trace_id,
-        analytics: analytics,
+        analytics:,
         attempts_tracker: irs_attempts_api_tracker,
       )
     end

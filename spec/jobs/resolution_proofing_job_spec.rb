@@ -31,12 +31,12 @@ RSpec.describe ResolutionProofingJob, type: :job do
     subject(:perform) do
       instance.perform(
         result_id: document_capture_session.result_id,
-        should_proof_state_id: should_proof_state_id,
-        encrypted_arguments: encrypted_arguments,
-        trace_id: trace_id,
+        should_proof_state_id:,
+        encrypted_arguments:,
+        trace_id:,
         user_id: user.id,
-        threatmetrix_session_id: threatmetrix_session_id,
-        request_ip: request_ip,
+        threatmetrix_session_id:,
+        request_ip:,
       )
     end
 
@@ -325,12 +325,12 @@ RSpec.describe ResolutionProofingJob, type: :job do
       subject(:perform) do
         instance.perform(
           result_id: document_capture_session.result_id,
-          should_proof_state_id: should_proof_state_id,
-          encrypted_arguments: encrypted_arguments,
-          trace_id: trace_id,
+          should_proof_state_id:,
+          encrypted_arguments:,
+          trace_id:,
           user_id: user.id,
-          threatmetrix_session_id: threatmetrix_session_id,
-          request_ip: request_ip,
+          threatmetrix_session_id:,
+          request_ip:,
           ipp_enrollment_in_progress: true,
         )
       end

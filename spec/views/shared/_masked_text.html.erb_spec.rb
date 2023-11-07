@@ -9,9 +9,9 @@ RSpec.describe 'shared/_masked_text.html.erb' do
 
   before do
     local_assigns = {
-      text: text,
-      masked_text: masked_text,
-      accessible_masked_text: accessible_masked_text,
+      text:,
+      masked_text:,
+      accessible_masked_text:,
     }
     local_assigns[:id] = id if id
     local_assigns[:toggle_label] = toggle_label if toggle_label
@@ -20,7 +20,7 @@ RSpec.describe 'shared/_masked_text.html.erb' do
   end
 
   it 'renders texts' do
-    expect(rendered).to have_css('.display-none', text: text)
+    expect(rendered).to have_css('.display-none', text:)
     expect(rendered).to have_css('[aria-hidden]', text: masked_text)
     expect(rendered).to have_css('.usa-sr-only', text: accessible_masked_text)
   end

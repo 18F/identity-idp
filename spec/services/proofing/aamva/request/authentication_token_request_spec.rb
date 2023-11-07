@@ -12,11 +12,11 @@ RSpec.describe Proofing::Aamva::Request::AuthenticationTokenRequest do
 
   subject do
     described_class.new(
-      config: config,
-      security_context_token_identifier: security_context_token_identifier,
-      security_context_token_reference: security_context_token_reference,
-      client_hmac_secret: client_hmac_secret,
-      server_hmac_secret: server_hmac_secret,
+      config:,
+      security_context_token_identifier:,
+      security_context_token_reference:,
+      client_hmac_secret:,
+      server_hmac_secret:,
     )
   end
 

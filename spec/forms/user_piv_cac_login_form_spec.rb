@@ -7,7 +7,7 @@ RSpec.describe UserPivCacLoginForm do
   end
   let(:nonce) { 'nonce' }
   let(:piv_cac_required) { false }
-  let(:form) { described_class.new(token: token, nonce: nonce, piv_cac_required: piv_cac_required) }
+  let(:form) { described_class.new(token:, nonce:, piv_cac_required:) }
 
   describe '#submit' do
     before(:each) do

@@ -36,8 +36,8 @@ RSpec.describe DocAuth::Acuant::Requests::CreateDocumentRequest do
 
     let(:config) do
       DocAuth::Acuant::Config.new(
-        assure_id_url: assure_id_url,
-        assure_id_subscription_id: assure_id_subscription_id,
+        assure_id_url:,
+        assure_id_subscription_id:,
       )
     end
 
@@ -53,7 +53,7 @@ RSpec.describe DocAuth::Acuant::Requests::CreateDocumentRequest do
           body: response_body,
         )
 
-        response = described_class.new(config: config, image_source: image_source).fetch
+        response = described_class.new(config:, image_source:).fetch
 
         expect(response.success?).to eq(true)
         expect(response.errors).to eq({})
@@ -75,7 +75,7 @@ RSpec.describe DocAuth::Acuant::Requests::CreateDocumentRequest do
           body: response_body,
         )
 
-        response = described_class.new(config: config, image_source: image_source).fetch
+        response = described_class.new(config:, image_source:).fetch
 
         expect(response.success?).to eq(true)
         expect(response.errors).to eq({})

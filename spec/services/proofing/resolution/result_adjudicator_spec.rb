@@ -11,7 +11,7 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
       exception: nil,
       vendor_name: 'test-resolution-vendor',
       failed_result_can_pass_with_additional_verification: can_pass_with_additional_verification,
-      attributes_requiring_additional_verification: attributes_requiring_additional_verification,
+      attributes_requiring_additional_verification:,
     )
   end
   let(:residential_resolution_result) { resolution_result }
@@ -47,14 +47,14 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
 
   subject do
     described_class.new(
-      resolution_result: resolution_result,
-      residential_resolution_result: residential_resolution_result,
-      state_id_result: state_id_result,
-      should_proof_state_id: should_proof_state_id,
-      ipp_enrollment_in_progress: ipp_enrollment_in_progress,
-      double_address_verification: double_address_verification,
-      device_profiling_result: device_profiling_result,
-      same_address_as_id: same_address_as_id,
+      resolution_result:,
+      residential_resolution_result:,
+      state_id_result:,
+      should_proof_state_id:,
+      ipp_enrollment_in_progress:,
+      double_address_verification:,
+      device_profiling_result:,
+      same_address_as_id:,
     )
   end
 
@@ -70,8 +70,7 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
             vendor_name: 'test-resolution-vendor',
             failed_result_can_pass_with_additional_verification:
             can_pass_with_additional_verification,
-            attributes_requiring_additional_verification:
-            attributes_requiring_additional_verification,
+            attributes_requiring_additional_verification:,
           )
         end
         it 'returns a failed response' do

@@ -10,7 +10,7 @@ RSpec.describe ImageUploadResponsePresenter do
   let(:form_response) do
     FormResponse.new(success: true, errors: {}, extra: extra_attributes)
   end
-  let(:presenter) { described_class.new(form_response: form_response, url_options: {}) }
+  let(:presenter) { described_class.new(form_response:, url_options: {}) }
 
   describe '#success?' do
     context 'failure' do

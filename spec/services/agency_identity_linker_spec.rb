@@ -98,7 +98,7 @@ RSpec.describe AgencyIdentityLinker do
     let(:agency) { sp.agency }
     let(:uuid) { SecureRandom.uuid }
 
-    subject { described_class.for(user: user, service_provider: sp) }
+    subject { described_class.for(user:, service_provider: sp) }
 
     context 'when there is already an agency identity' do
       before { create_agency_identity(user, agency, uuid) }
@@ -123,7 +123,7 @@ RSpec.describe AgencyIdentityLinker do
 
         it 'persists the service provider identity as an agency identity' do
           expect(subject.uuid).to eq uuid
-          ai = AgencyIdentity.where(user: user, agency: agency).take
+          ai = AgencyIdentity.where(user:, agency:).take
           expect(subject).to eq ai
         end
       end
@@ -142,10 +142,10 @@ RSpec.describe AgencyIdentityLinker do
   end
 
   def create_service_provider_identity(user, service_provider, uuid)
-    ServiceProviderIdentity.create(user_id: user.id, service_provider: service_provider, uuid: uuid)
+    ServiceProviderIdentity.create(user_id: user.id, service_provider:, uuid:)
   end
 
   def create_agency_identity(user, agency, uuid)
-    AgencyIdentity.create!(user: user, agency: agency, uuid: uuid)
+    AgencyIdentity.create!(user:, agency:, uuid:)
   end
 end

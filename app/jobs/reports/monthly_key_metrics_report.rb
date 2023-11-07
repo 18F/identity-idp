@@ -28,7 +28,7 @@ module Reports
       ReportMailer.tables_report(
         email: email_addresses,
         subject: "Monthly Key Metrics Report - #{date}",
-        reports: reports,
+        reports:,
         message: preamble,
         attachment_format: :xlsx,
       ).deliver_now
@@ -114,7 +114,7 @@ module Reports
 
       if bucket_name.present?
         upload_file_to_s3_bucket(
-          path: path,
+          path:,
           body: csv_file(report_body),
           content_type: 'text/csv',
           bucket: bucket_name,

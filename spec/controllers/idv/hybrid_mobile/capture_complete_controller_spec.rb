@@ -5,7 +5,7 @@ RSpec.describe Idv::HybridMobile::CaptureCompleteController do
 
   let!(:document_capture_session) do
     DocumentCaptureSession.create!(
-      user: user,
+      user:,
       requested_at: Time.zone.now,
     )
   end

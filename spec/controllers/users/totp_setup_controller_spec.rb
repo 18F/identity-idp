@@ -101,7 +101,7 @@ RSpec.describe Users::TotpSetupController, devise: true do
           allow(@irs_attempts_api_tracker).to receive(:track_event)
           subject.user_session[:new_totp_secret] = 'abcdehij'
 
-          patch :confirm, params: { name: name, code: 123 }
+          patch :confirm, params: { name:, code: 123 }
         end
 
         it 'redirects with an error message' do
@@ -139,7 +139,7 @@ RSpec.describe Users::TotpSetupController, devise: true do
           allow(@irs_attempts_api_tracker).to receive(:track_event)
           subject.user_session[:new_totp_secret] = secret
 
-          patch :confirm, params: { name: name, code: generate_totp_code(secret) }
+          patch :confirm, params: { name:, code: generate_totp_code(secret) }
         end
 
         it 'redirects to account_path with a success message' do
@@ -176,7 +176,7 @@ RSpec.describe Users::TotpSetupController, devise: true do
           allow(@irs_attempts_api_tracker).to receive(:track_event)
           subject.user_session[:new_totp_secret] = secret
 
-          patch :confirm, params: { name: name }
+          patch :confirm, params: { name: }
         end
 
         it 'redirects with an error message' do
@@ -253,7 +253,7 @@ RSpec.describe Users::TotpSetupController, devise: true do
           allow(@irs_attempts_api_tracker).to receive(:track_event)
           subject.user_session[:new_totp_secret] = 'abcdehij'
 
-          patch :confirm, params: { name: name, code: 123 }
+          patch :confirm, params: { name:, code: 123 }
         end
 
         it 'redirects with an error message' do
@@ -292,7 +292,7 @@ RSpec.describe Users::TotpSetupController, devise: true do
           subject.user_session[:mfa_selections] = mfa_selections
           subject.user_session[:in_account_creation_flow] = true
 
-          patch :confirm, params: { name: name, code: generate_totp_code(secret) }
+          patch :confirm, params: { name:, code: generate_totp_code(secret) }
         end
 
         context 'when user selected only one method on account creation' do
@@ -353,7 +353,7 @@ RSpec.describe Users::TotpSetupController, devise: true do
           stub_attempts_tracker
           allow(@irs_attempts_api_tracker).to receive(:track_event)
 
-          patch :confirm, params: { name: name, code: 123 }
+          patch :confirm, params: { name:, code: 123 }
         end
 
         it 'redirects with an error message' do
@@ -393,7 +393,7 @@ RSpec.describe Users::TotpSetupController, devise: true do
         stub_analytics
         allow(@analytics).to receive(:track_event)
         expect(PushNotification::HttpPush).to receive(:deliver).
-          with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
+          with(PushNotification::RecoveryInformationChangedEvent.new(user:))
         allow(subject).to receive(:create_user_event)
 
         delete :disable, params: { id: totp_app.id }

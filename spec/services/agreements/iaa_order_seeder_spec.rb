@@ -19,7 +19,7 @@ RSpec.describe Agreements::IaaOrderSeeder do
     it 'raises the appropriate error message if the integration issuer is invalid' do
       issuer = 'https://rp1.serviceprovider.com/auth/saml/metadata'
       Agreements::IntegrationUsage.delete_all
-      Agreements::Integration.find_by!(issuer: issuer).delete
+      Agreements::Integration.find_by!(issuer:).delete
 
       expect { seeder.run }.to \
         raise_error(ActiveRecord::RecordNotFound, /iaa_orders.yml.+#{issuer}/)

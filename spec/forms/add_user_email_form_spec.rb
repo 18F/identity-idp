@@ -27,7 +27,7 @@ RSpec.describe AddUserEmailForm do
         create(
           :email_address,
           email: new_email,
-          user: user,
+          user:,
           confirmed_at: nil,
           confirmation_sent_at: 1.month.ago,
         )

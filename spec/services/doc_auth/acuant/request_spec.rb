@@ -33,14 +33,14 @@ RSpec.describe DocAuth::Acuant::Request do
 
   let(:config) do
     DocAuth::Acuant::Config.new(
-      assure_id_url: assure_id_url,
-      assure_id_username: assure_id_username,
-      assure_id_password: assure_id_password,
+      assure_id_url:,
+      assure_id_username:,
+      assure_id_password:,
     )
   end
 
   subject do
-    request = simple_acuant_request.new(config: config)
+    request = simple_acuant_request.new(config:)
     allow(request).to receive(:path).and_return(path)
     allow(request).to receive(:body).and_return(request_body)
     allow(request).to receive(:method).and_return(request_method)

@@ -14,7 +14,7 @@ RSpec.describe Reporting::CommandLineOptions do
     let(:argv) { [] }
     let(:require_issuer) { true }
 
-    subject(:parse!) { instance.parse!(argv, out: stdout, require_issuer: require_issuer) }
+    subject(:parse!) { instance.parse!(argv, out: stdout, require_issuer:) }
 
     context 'with no arguments' do
       let(:argv) { [] }

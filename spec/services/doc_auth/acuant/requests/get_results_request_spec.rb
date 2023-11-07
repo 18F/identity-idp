@@ -9,12 +9,12 @@ RSpec.describe DocAuth::Acuant::Requests::GetResultsRequest do
     let(:response_body) { AcuantFixtures.get_results_response_success }
 
     let(:assure_id_url) { 'https://acuant.assureid.example.com' }
-    let(:config) { DocAuth::Acuant::Config.new(assure_id_url: assure_id_url) }
+    let(:config) { DocAuth::Acuant::Config.new(assure_id_url:) }
 
     it 'sends a request and return the response' do
       request_stub = stub_request(:get, url).to_return(body: response_body)
 
-      response = described_class.new(config: config, instance_id: instance_id).fetch
+      response = described_class.new(config:, instance_id:).fetch
 
       expect(response.success?).to eq(true)
       expect(response.errors).to eq({})
@@ -25,14 +25,14 @@ RSpec.describe DocAuth::Acuant::Requests::GetResultsRequest do
 
     it 'get general error for 4xx' do
       stub_request(:get, url).to_return(status: 440)
-      response = described_class.new(config: config, instance_id: instance_id).fetch
+      response = described_class.new(config:, instance_id:).fetch
       expect(response.errors).to include(:general, :front, :back)
       expect(response.network_error?).to eq(false)
     end
 
     it 'get network error for 500' do
       stub_request(:get, url).to_return(status: 500)
-      response = described_class.new(config: config, instance_id: instance_id).fetch
+      response = described_class.new(config:, instance_id:).fetch
       expect(response.errors).to have_key(:network)
       expect(response.network_error?).to eq(true)
     end

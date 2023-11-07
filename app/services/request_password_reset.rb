@@ -7,10 +7,10 @@ RequestPasswordReset = RedactedStruct.new(
     if user_should_receive_registration_email?
       form = RegisterUserEmailForm.new(
         password_reset_requested: true,
-        analytics: analytics,
+        analytics:,
         attempts_tracker: irs_attempts_api_tracker,
       )
-      result = form.submit({ email: email, terms_accepted: '1' }, instructions)
+      result = form.submit({ email:, terms_accepted: '1' }, instructions)
       [form.user, result]
     else
       send_reset_password_instructions
@@ -21,27 +21,27 @@ RequestPasswordReset = RedactedStruct.new(
   private
 
   def send_reset_password_instructions
-    rate_limiter = RateLimiter.new(user: user, rate_limit_type: :reset_password_email)
+    rate_limiter = RateLimiter.new(user:, rate_limit_type: :reset_password_email)
     rate_limiter.increment!
     if rate_limiter.limited?
       analytics.rate_limit_reached(limiter_type: :reset_password_email)
-      irs_attempts_api_tracker.forgot_password_email_rate_limited(email: email)
+      irs_attempts_api_tracker.forgot_password_email_rate_limited(email:)
     elsif user.suspended?
       UserMailer.with(
-        user: user,
+        user:,
         email_address: email_address_record,
       ).suspended_reset_password.deliver_now_or_later
     else
       token = user.set_reset_password_token
-      UserMailer.with(user: user, email_address: email_address_record).reset_password_instructions(
-        token: token,
-        request_id: request_id,
+      UserMailer.with(user:, email_address: email_address_record).reset_password_instructions(
+        token:,
+        request_id:,
       ).deliver_now_or_later
 
-      event = PushNotification::RecoveryActivatedEvent.new(user: user)
+      event = PushNotification::RecoveryActivatedEvent.new(user:)
       PushNotification::HttpPush.deliver(event)
 
-      irs_attempts_api_tracker.forgot_password_email_sent(email: email)
+      irs_attempts_api_tracker.forgot_password_email_sent(email:)
     end
   end
 

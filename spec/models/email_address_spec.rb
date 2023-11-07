@@ -8,12 +8,12 @@ RSpec.describe EmailAddress do
   end
 
   let(:email) { 'jd@example.com' }
-  let(:email_address) { create(:email_address, email: email) }
+  let(:email_address) { create(:email_address, email:) }
   let(:valid_for_hours) { IdentityConfig.store.add_email_link_valid_for_hours.hours }
 
   describe '.find_with_email' do
     it 'finds by email' do
-      create(:email_address, email: email)
+      create(:email_address, email:)
 
       expect(EmailAddress.find_with_email(email)).to be
 
@@ -24,7 +24,7 @@ RSpec.describe EmailAddress do
       before do
         create(
           :email_address,
-          email: email,
+          email:,
           email_fingerprint: Pii::Fingerprinter.previous_fingerprints(email).first,
         )
       end
@@ -39,13 +39,13 @@ RSpec.describe EmailAddress do
       it 'updates attributes and can look up by previous fingerprints' do
         record = create(
           :email_address,
-          email: email,
+          email:,
           user_id: user.id,
           email_fingerprint: Pii::Fingerprinter.previous_fingerprints(email).first,
         )
 
         expect do
-          EmailAddress.update_last_sign_in_at_on_user_id_and_email(user_id: user.id, email: email)
+          EmailAddress.update_last_sign_in_at_on_user_id_and_email(user_id: user.id, email:)
         end.to(change { record.reload.last_sign_in_at })
       end
     end

@@ -70,7 +70,7 @@ end
 RSpec.shared_examples 'signing in as IAL2 with personal key' do |sp|
   it 'does not present personal key as an MFA option' do
     user = create(:user, :fully_registered)
-    _profile = create(:profile, :active, :verified, :with_pii, user: user)
+    _profile = create(:profile, :active, :verified, :with_pii, user:)
 
     visit_idp_from_sp_with_ial2(sp)
     fill_in_credentials_and_submit(user.email, user.password)
@@ -208,7 +208,7 @@ RSpec.shared_examples 'signing in as proofed account with broken personal key' d
 
   def user_with_broken_personal_key(scenario)
     user = create(:user, :fully_registered)
-    _profile = create(:profile, :active, :verified, :with_pii, user: user)
+    _profile = create(:profile, :active, :verified, :with_pii, user:)
 
     case scenario
     when :broken_personal_key_window
@@ -221,8 +221,8 @@ RSpec.shared_examples 'signing in as proofed account with broken personal key' d
           personal_key,
         ).encrypt('null', user_uuid: user.uuid)
       user.active_profile.update(
-        encrypted_pii_recovery: encrypted_pii_recovery,
-        encrypted_pii_recovery_multi_region: encrypted_pii_recovery_multi_region,
+        encrypted_pii_recovery:,
+        encrypted_pii_recovery_multi_region:,
       )
     else
       raise "unknown scenario #{scenario}"
@@ -270,7 +270,7 @@ RSpec.shared_examples 'signing in as proofed account with broken personal key' d
         it 'prompts for password when signing in via PIV/CAC' do
           user = user_with_broken_personal_key(scenario)
 
-          create(:piv_cac_configuration, user: user)
+          create(:piv_cac_configuration, user:)
 
           visit_idp_from_sp_with_ial1(protocol)
           click_on t('account.login.piv_cac')
@@ -393,7 +393,7 @@ end
 
 def ial2_sign_in_with_piv_cac_gets_bad_password_error(sp)
   user = create(:user, :fully_registered)
-  _profile = create(:profile, :active, :verified, :with_pii, user: user)
+  _profile = create(:profile, :active, :verified, :with_pii, user:)
   user.piv_cac_configurations.create(x509_dn_uuid: 'some-uuid-to-identify-account', name: 'foo')
 
   visit_idp_from_sp_with_ial2(sp)

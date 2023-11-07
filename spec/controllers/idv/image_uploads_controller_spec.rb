@@ -8,11 +8,11 @@ RSpec.describe Idv::ImageUploadsController do
 
   describe '#create' do
     subject(:action) do
-      post :create, params: params
+      post :create, params:
     end
 
     let(:user) { create(:user) }
-    let!(:document_capture_session) { user.document_capture_sessions.create!(user: user) }
+    let!(:document_capture_session) { user.document_capture_sessions.create!(user:) }
     let(:flow_path) { 'standard' }
     let(:params) do
       {
@@ -21,7 +21,7 @@ RSpec.describe Idv::ImageUploadsController do
         back: DocAuthImageFixtures.document_back_image_multipart,
         back_image_metadata: '{"glare":99.99}',
         document_capture_session_uuid: document_capture_session.uuid,
-        flow_path: flow_path,
+        flow_path:,
       }
     end
     let(:json) { JSON.parse(response.body, symbolize_names: true) }
@@ -67,7 +67,7 @@ RSpec.describe Idv::ImageUploadsController do
           user_id: user.uuid,
           attempts: 1,
           remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
-          pii_like_keypaths: pii_like_keypaths,
+          pii_like_keypaths:,
           flow_path: 'standard',
         ).exactly(0).times
 
@@ -128,7 +128,7 @@ RSpec.describe Idv::ImageUploadsController do
           user_id: user.uuid,
           attempts: 1,
           remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
-          pii_like_keypaths: pii_like_keypaths,
+          pii_like_keypaths:,
           flow_path: 'standard',
           front_image_fingerprint: nil,
           back_image_fingerprint: an_instance_of(String),
@@ -193,7 +193,7 @@ RSpec.describe Idv::ImageUploadsController do
     context 'throttling' do
       it 'returns remaining_attempts with error' do
         params.delete(:front)
-        RateLimiter.new(rate_limit_type: :idv_doc_auth, user: user).increment!
+        RateLimiter.new(rate_limit_type: :idv_doc_auth, user:).increment!
 
         action
 
@@ -227,7 +227,7 @@ RSpec.describe Idv::ImageUploadsController do
         end
 
         before do
-          RateLimiter.new(rate_limit_type: :idv_doc_auth, user: user).increment_to_limited!
+          RateLimiter.new(rate_limit_type: :idv_doc_auth, user:).increment_to_limited!
 
           action
         end
@@ -249,7 +249,7 @@ RSpec.describe Idv::ImageUploadsController do
       end
 
       it 'tracks events' do
-        RateLimiter.new(rate_limit_type: :idv_doc_auth, user: user).increment_to_limited!
+        RateLimiter.new(rate_limit_type: :idv_doc_auth, user:).increment_to_limited!
 
         stub_analytics
         stub_attempts_tracker
@@ -266,7 +266,7 @@ RSpec.describe Idv::ImageUploadsController do
           user_id: user.uuid,
           attempts: IdentityConfig.store.doc_auth_max_attempts,
           remaining_attempts: 0,
-          pii_like_keypaths: pii_like_keypaths,
+          pii_like_keypaths:,
           flow_path: 'standard',
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
@@ -322,13 +322,13 @@ RSpec.describe Idv::ImageUploadsController do
         exception = DocAuth::RequestError.new(message, status)
         response = DocAuth::Response.new(
           success: false,
-          errors: errors,
-          exception: exception,
+          errors:,
+          exception:,
           extra: { vendor: 'Mock' },
         )
         DocAuth::Mock::DocAuthMockClient.mock_response!(
           method: :post_front_image,
-          response: response,
+          response:,
         )
       end
 
@@ -370,7 +370,7 @@ RSpec.describe Idv::ImageUploadsController do
           user_id: user.uuid,
           attempts: 1,
           remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
-          pii_like_keypaths: pii_like_keypaths,
+          pii_like_keypaths:,
           flow_path: 'standard',
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
@@ -397,7 +397,7 @@ RSpec.describe Idv::ImageUploadsController do
             front: { glare: 99.99 },
             back: { glare: 99.99 },
           },
-          pii_like_keypaths: pii_like_keypaths,
+          pii_like_keypaths:,
           flow_path: 'standard',
           vendor_request_time_in_ms: a_kind_of(Float),
           front_image_fingerprint: an_instance_of(String),
@@ -416,7 +416,7 @@ RSpec.describe Idv::ImageUploadsController do
           user_id: user.uuid,
           attempts: 1,
           remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
-          pii_like_keypaths: pii_like_keypaths,
+          pii_like_keypaths:,
           flow_path: 'standard',
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
@@ -502,14 +502,14 @@ RSpec.describe Idv::ImageUploadsController do
                 },
               },
               pii_from_doc: {
-                first_name: first_name,
-                last_name: last_name,
-                address1: address1,
-                state: state,
-                state_id_type: state_id_type,
-                dob: dob,
+                first_name:,
+                last_name:,
+                address1:,
+                state:,
+                state_id_type:,
+                dob:,
                 state_id_jurisdiction: jurisdiction,
-                zipcode: zipcode,
+                zipcode:,
               },
             ),
           )
@@ -558,7 +558,7 @@ RSpec.describe Idv::ImageUploadsController do
               user_id: user.uuid,
               attempts: 1,
               remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
-              pii_like_keypaths: pii_like_keypaths,
+              pii_like_keypaths:,
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
@@ -585,7 +585,7 @@ RSpec.describe Idv::ImageUploadsController do
                 front: { glare: 99.99 },
                 back: { glare: 99.99 },
               },
-              pii_like_keypaths: pii_like_keypaths,
+              pii_like_keypaths:,
               flow_path: 'standard',
               vendor_request_time_in_ms: a_kind_of(Float),
               front_image_fingerprint: an_instance_of(String),
@@ -609,7 +609,7 @@ RSpec.describe Idv::ImageUploadsController do
               user_id: user.uuid,
               attempts: 1,
               remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
-              pii_like_keypaths: pii_like_keypaths,
+              pii_like_keypaths:,
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
@@ -658,7 +658,7 @@ RSpec.describe Idv::ImageUploadsController do
               user_id: user.uuid,
               attempts: 1,
               remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
-              pii_like_keypaths: pii_like_keypaths,
+              pii_like_keypaths:,
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
@@ -685,7 +685,7 @@ RSpec.describe Idv::ImageUploadsController do
                 front: { glare: 99.99 },
                 back: { glare: 99.99 },
               },
-              pii_like_keypaths: pii_like_keypaths,
+              pii_like_keypaths:,
               flow_path: 'standard',
               vendor_request_time_in_ms: a_kind_of(Float),
               front_image_fingerprint: an_instance_of(String),
@@ -709,7 +709,7 @@ RSpec.describe Idv::ImageUploadsController do
               user_id: user.uuid,
               attempts: 1,
               remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
-              pii_like_keypaths: pii_like_keypaths,
+              pii_like_keypaths:,
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
@@ -758,7 +758,7 @@ RSpec.describe Idv::ImageUploadsController do
               user_id: user.uuid,
               attempts: 1,
               remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
-              pii_like_keypaths: pii_like_keypaths,
+              pii_like_keypaths:,
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
@@ -785,7 +785,7 @@ RSpec.describe Idv::ImageUploadsController do
                 front: { glare: 99.99 },
                 back: { glare: 99.99 },
               },
-              pii_like_keypaths: pii_like_keypaths,
+              pii_like_keypaths:,
               flow_path: 'standard',
               vendor_request_time_in_ms: a_kind_of(Float),
               front_image_fingerprint: an_instance_of(String),
@@ -809,7 +809,7 @@ RSpec.describe Idv::ImageUploadsController do
               user_id: user.uuid,
               attempts: 1,
               remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
-              pii_like_keypaths: pii_like_keypaths,
+              pii_like_keypaths:,
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
@@ -878,7 +878,7 @@ RSpec.describe Idv::ImageUploadsController do
           user_id: user.uuid,
           attempts: 1,
           remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
-          pii_like_keypaths: pii_like_keypaths,
+          pii_like_keypaths:,
           flow_path: 'standard',
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
@@ -907,7 +907,7 @@ RSpec.describe Idv::ImageUploadsController do
             back: { glare: 99.99 },
           },
           doc_auth_result: nil,
-          pii_like_keypaths: pii_like_keypaths,
+          pii_like_keypaths:,
           flow_path: 'standard',
           vendor_request_time_in_ms: a_kind_of(Float),
           front_image_fingerprint: an_instance_of(String),
@@ -952,7 +952,7 @@ RSpec.describe Idv::ImageUploadsController do
           user_id: user.uuid,
           attempts: 1,
           remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
-          pii_like_keypaths: pii_like_keypaths,
+          pii_like_keypaths:,
           flow_path: 'standard',
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
@@ -983,7 +983,7 @@ RSpec.describe Idv::ImageUploadsController do
             front: { glare: 99.99 },
             back: { glare: 99.99 },
           },
-          pii_like_keypaths: pii_like_keypaths,
+          pii_like_keypaths:,
           flow_path: 'standard',
           vendor_request_time_in_ms: a_kind_of(Float),
           front_image_fingerprint: an_instance_of(String),

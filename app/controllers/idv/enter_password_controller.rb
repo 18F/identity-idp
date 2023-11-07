@@ -20,7 +20,7 @@ module Idv
       Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
         call(:encrypt, :view, true)
       analytics.idv_enter_password_visited(
-        address_verification_method: address_verification_method,
+        address_verification_method:,
         **ab_test_analytics_buckets,
       )
 
@@ -125,7 +125,7 @@ module Idv
           enqueued_at: Time.zone.now,
           resend: false,
           phone_step_attempts: gpo_mail_service.phone_step_attempts,
-          first_letter_requested_at: first_letter_requested_at,
+          first_letter_requested_at:,
           hours_since_first_letter:
             gpo_mail_service.hours_since_first_letter(first_letter_requested_at),
           **ab_test_analytics_buckets,
@@ -178,7 +178,7 @@ module Idv
 
     def handle_request_enroll_exception(err)
       analytics.idv_in_person_usps_request_enroll_exception(
-        context: context,
+        context:,
         enrollment_id: err.enrollment_id,
         exception_class: err.class.to_s,
         original_exception_class: err.exception_class,

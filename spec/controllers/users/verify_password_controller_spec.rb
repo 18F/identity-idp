@@ -4,7 +4,7 @@ RSpec.describe Users::VerifyPasswordController do
   let(:key) { 'key' }
   let(:profiles) { [] }
   let(:recovery_hash) { { personal_key: key } }
-  let(:user) { create(:user, profiles: profiles, **recovery_hash) }
+  let(:user) { create(:user, profiles:, **recovery_hash) }
 
   before do
     stub_sign_in(user)

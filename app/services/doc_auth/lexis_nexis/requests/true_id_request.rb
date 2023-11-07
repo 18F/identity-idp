@@ -12,7 +12,7 @@ module DocAuth
           back_image:,
           image_source: nil
         )
-          super(config: config, user_uuid: user_uuid, uuid_prefix: uuid_prefix)
+          super(config:, user_uuid:, uuid_prefix:)
           @front_image = front_image
           @back_image = back_image
           @image_source = image_source

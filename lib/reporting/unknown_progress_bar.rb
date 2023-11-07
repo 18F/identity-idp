@@ -8,10 +8,10 @@ module Reporting
     def self.wrap(show_bar:, title: 'Waiting', output: STDERR)
       if show_bar
         bar = ProgressBar.create(
-          title: title,
+          title:,
           total: nil,
           format: '[ %t ] %B %a',
-          output: output,
+          output:,
         )
         thread = Thread.fork do
           loop do

@@ -28,7 +28,7 @@ RSpec.describe 'users/emails/verify.html.erb' do
   context 'when enable_load_testing_mode? is true and email address found' do
     before do
       allow(FeatureManagement).to receive(:enable_load_testing_mode?).and_return(true)
-      create(:email_address, confirmation_token: 'some_token', email: email)
+      create(:email_address, confirmation_token: 'some_token', email:)
 
       render
     end

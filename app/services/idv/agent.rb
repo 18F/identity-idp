@@ -20,13 +20,13 @@ module Idv
       )
 
       job_arguments = {
-        encrypted_arguments: encrypted_arguments,
-        should_proof_state_id: should_proof_state_id,
-        trace_id: trace_id,
+        encrypted_arguments:,
+        should_proof_state_id:,
+        trace_id:,
         result_id: document_capture_session.result_id,
-        user_id: user_id,
-        threatmetrix_session_id: threatmetrix_session_id,
-        request_ip: request_ip,
+        user_id:,
+        threatmetrix_session_id:,
+        request_ip:,
         double_address_verification: ipp_enrollment_in_progress,
       }
 
@@ -44,11 +44,11 @@ module Idv
       )
 
       job_arguments = {
-        user_id: user_id,
-        issuer: issuer,
-        encrypted_arguments: encrypted_arguments,
+        user_id:,
+        issuer:,
+        encrypted_arguments:,
         result_id: document_capture_session.result_id,
-        trace_id: trace_id,
+        trace_id:,
       }
 
       if IdentityConfig.store.ruby_workers_idv_enabled

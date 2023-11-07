@@ -5,7 +5,7 @@ class EncryptedAttribute
 
   def self.new_from_decrypted(decrypted)
     encrypted = Encryption::Encryptors::AttributeEncryptor.new.encrypt(decrypted)
-    new(encrypted, decrypted: decrypted)
+    new(encrypted, decrypted:)
   end
 
   def initialize(encrypted, decrypted: nil)

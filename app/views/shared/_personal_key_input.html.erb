@@ -3,7 +3,7 @@ locals:
 * form: SimpleForm form builder
 %>
 <%= render ValidatedFieldComponent.new(
-      form: form,
+      form:,
       name: :personal_key,
       error_messages: {
         patternMismatch: t('users.personal_key.confirmation_error'),

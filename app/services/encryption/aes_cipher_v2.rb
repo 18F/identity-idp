@@ -33,7 +33,7 @@ module Encryption
       ciphertext = cipher.update(plaintext) << cipher.final
       tag = cipher.auth_tag
 
-      { iv: iv, ciphertext: ciphertext, tag: tag }.to_msgpack
+      { iv:, ciphertext:, tag: }.to_msgpack
     end
 
     def decipher(payload)

@@ -49,8 +49,8 @@ RSpec.describe 'webauthn management' do
 
   context 'with webauthn roaming associations' do
     it 'displays the user supplied names of the security keys' do
-      webauthn_config1 = create(:webauthn_configuration, user: user)
-      webauthn_config2 = create(:webauthn_configuration, user: user)
+      webauthn_config1 = create(:webauthn_configuration, user:)
+      webauthn_config2 = create(:webauthn_configuration, user:)
 
       sign_in_and_2fa_user(user)
       visit account_two_factor_authentication_path
@@ -61,7 +61,7 @@ RSpec.describe 'webauthn management' do
 
     it 'allows the user to setup another key' do
       mock_webauthn_setup_challenge
-      create(:webauthn_configuration, user: user)
+      create(:webauthn_configuration, user:)
 
       sign_in_and_2fa_user(user)
 
@@ -76,7 +76,7 @@ RSpec.describe 'webauthn management' do
     end
 
     it 'allows user to delete security key when another 2FA option is set up' do
-      webauthn_config = create(:webauthn_configuration, user: user)
+      webauthn_config = create(:webauthn_configuration, user:)
 
       sign_in_and_2fa_user(user)
       visit account_two_factor_authentication_path
@@ -95,7 +95,7 @@ RSpec.describe 'webauthn management' do
     end
 
     it 'allows the user to cancel deletion of the security key' do
-      webauthn_config = create(:webauthn_configuration, user: user)
+      webauthn_config = create(:webauthn_configuration, user:)
 
       sign_in_and_2fa_user(user)
       visit account_two_factor_authentication_path
@@ -112,7 +112,7 @@ RSpec.describe 'webauthn management' do
     end
 
     it 'prevents a user from deleting the last key' do
-      webauthn_config = create(:webauthn_configuration, user: user)
+      webauthn_config = create(:webauthn_configuration, user:)
 
       sign_in_and_2fa_user(user)
       PhoneConfiguration.first.update(mfa_enabled: false)
@@ -126,7 +126,7 @@ RSpec.describe 'webauthn management' do
     end
 
     it 'gives an error if name is taken and stays on the configuration screen' do
-      webauthn_config = create(:webauthn_configuration, user: user)
+      webauthn_config = create(:webauthn_configuration, user:)
 
       mock_webauthn_setup_challenge
       sign_in_and_2fa_user(user)

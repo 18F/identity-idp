@@ -4,12 +4,12 @@ RSpec.describe SignUp::PasswordsController do
   let(:token) { 'new token' }
 
   describe '#create' do
-    subject(:response) { post :create, params: params }
+    subject(:response) { post :create, params: }
     let(:params) do
       {
         password_form: {
-          password: password,
-          password_confirmation: password_confirmation,
+          password:,
+          password_confirmation:,
         },
         confirmation_token: token,
       }
@@ -64,8 +64,8 @@ RSpec.describe SignUp::PasswordsController do
       let(:analytics_hash) do
         {
           success: false,
-          errors: errors,
-          error_details: error_details,
+          errors:,
+          error_details:,
           user_id: user.uuid,
           request_id_present: false,
         }

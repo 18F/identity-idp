@@ -4,10 +4,10 @@ RSpec.describe ServiceProviderSession do
   let(:view_context) { ActionController::Base.new.view_context }
   subject(:session_decorator) do
     ServiceProviderSession.new(
-      sp: sp,
-      view_context: view_context,
+      sp:,
+      view_context:,
       sp_session: {},
-      service_provider_request: service_provider_request,
+      service_provider_request:,
     )
   end
   let(:sp) { build_stubbed(:service_provider) }
@@ -37,7 +37,7 @@ RSpec.describe ServiceProviderSession do
   describe '#verification_method_choice' do
     it 'returns the correct string' do
       expect(subject.verification_method_choice).to eq(
-        I18n.t('idv.messages.select_verification_with_sp', sp_name: sp_name),
+        I18n.t('idv.messages.select_verification_with_sp', sp_name:),
       )
     end
   end
@@ -87,8 +87,8 @@ RSpec.describe ServiceProviderSession do
     it 'returns the agency name if friendly name is not present' do
       sp = build_stubbed(:service_provider, friendly_name: nil)
       subject = ServiceProviderSession.new(
-        sp: sp,
-        view_context: view_context,
+        sp:,
+        view_context:,
         sp_session: {},
         service_provider_request: ServiceProviderRequestProxy.new,
       )
@@ -104,8 +104,8 @@ RSpec.describe ServiceProviderSession do
         sp = build_stubbed(:service_provider, logo: sp_logo)
 
         subject = ServiceProviderSession.new(
-          sp: sp,
-          view_context: view_context,
+          sp:,
+          view_context:,
           sp_session: {},
           service_provider_request: ServiceProviderRequestProxy.new,
         )
@@ -119,8 +119,8 @@ RSpec.describe ServiceProviderSession do
         sp = build_stubbed(:service_provider, logo: nil)
 
         subject = ServiceProviderSession.new(
-          sp: sp,
-          view_context: view_context,
+          sp:,
+          view_context:,
           sp_session: {},
           service_provider_request: ServiceProviderRequestProxy.new,
         )
@@ -137,8 +137,8 @@ RSpec.describe ServiceProviderSession do
         sp = build_stubbed(:service_provider, logo: sp_logo)
 
         subject = ServiceProviderSession.new(
-          sp: sp,
-          view_context: view_context,
+          sp:,
+          view_context:,
           sp_session: {},
           service_provider_request: ServiceProviderRequestProxy.new,
         )
@@ -152,8 +152,8 @@ RSpec.describe ServiceProviderSession do
         sp = build_stubbed(:service_provider, logo: nil)
 
         subject = ServiceProviderSession.new(
-          sp: sp,
-          view_context: view_context,
+          sp:,
+          view_context:,
           sp_session: {},
           service_provider_request: ServiceProviderRequestProxy.new,
         )
@@ -167,8 +167,8 @@ RSpec.describe ServiceProviderSession do
         sp = build_stubbed(:service_provider, logo: 'abc')
 
         subject = ServiceProviderSession.new(
-          sp: sp,
-          view_context: view_context,
+          sp:,
+          view_context:,
           sp_session: {},
           service_provider_request: ServiceProviderRequestProxy.new,
         )
@@ -181,8 +181,8 @@ RSpec.describe ServiceProviderSession do
   describe '#cancel_link_url' do
     subject(:decorator) do
       ServiceProviderSession.new(
-        sp: sp,
-        view_context: view_context,
+        sp:,
+        view_context:,
         sp_session: { request_id: 'foo' },
         service_provider_request: ServiceProviderRequestProxy.new,
       )
@@ -228,7 +228,7 @@ RSpec.describe ServiceProviderSession do
     before do
       allow(view_context).to receive(:current_user).and_return(user)
       allow(session_decorator).to receive(:authorize_form).
-        and_return(OpenidConnectAuthorizeForm.new(verified_within: verified_within))
+        and_return(OpenidConnectAuthorizeForm.new(verified_within:))
     end
 
     subject(:requested_more_recent_verification?) do
@@ -248,7 +248,7 @@ RSpec.describe ServiceProviderSession do
 
       context 'the verified_at is newer than the verified_within ' do
         before do
-          create(:profile, :active, user: user, verified_at: 15.days.ago)
+          create(:profile, :active, user:, verified_at: 15.days.ago)
         end
 
         it 'is false' do
@@ -258,7 +258,7 @@ RSpec.describe ServiceProviderSession do
 
       context 'the verified_at is older than the verified_at' do
         before do
-          create(:profile, :active, user: user, verified_at: 60.days.ago)
+          create(:profile, :active, user:, verified_at: 60.days.ago)
         end
 
         it 'is true' do
@@ -278,7 +278,7 @@ RSpec.describe ServiceProviderSession do
     context 'with url params' do
       let(:service_provider_request) do
         url = 'https://example.com/auth?param0=p0&param1=p1&param2=p2'
-        ServiceProviderRequest.new(url: url)
+        ServiceProviderRequest.new(url:)
       end
       let(:expected_hash) { { 'param0' => 'p0', 'param1' => 'p1', 'param2' => 'p2' } }
 

@@ -30,7 +30,7 @@ RSpec.describe SamlCompletionController do
       end
 
       it 'renders the appropriate form' do
-        get :index, params: { path_year: path_year }
+        get :index, params: { path_year: }
 
         expect(response.body).to match(form_action_regex)
         expect(response.body).to match(hidden_field_tag('SAMLRequest', saml_request))
@@ -44,7 +44,7 @@ RSpec.describe SamlCompletionController do
       before { expect(controller).to receive(:sp_session).at_least(:once).and_return({}) }
 
       it 'renders 404 not found' do
-        get :index, params: { path_year: path_year }
+        get :index, params: { path_year: }
         expect(response).to be_not_found
       end
     end
@@ -68,7 +68,7 @@ RSpec.describe SamlCompletionController do
       before { expect(controller).to receive(:sp_from_sp_session).and_return nil }
 
       it 'renders 404 not found' do
-        get :index, params: { path_year: path_year }
+        get :index, params: { path_year: }
         expect(response).to be_not_found
       end
     end

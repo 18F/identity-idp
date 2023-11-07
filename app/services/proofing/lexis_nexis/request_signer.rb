@@ -15,8 +15,8 @@ module Proofing
       def hmac_authorization(timestamp: Time.zone.now.strftime('%s%L'), nonce: SecureRandom.uuid)
         hmac = OpenSSL::HMAC.base64digest('SHA256', config.hmac_secret_key, message_body)
         signature = build_signature(
-          timestamp: timestamp,
-          nonce: nonce,
+          timestamp:,
+          nonce:,
           body_hash: hmac,
         )
         %W[

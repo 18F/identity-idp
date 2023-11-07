@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe GpoConfirmationMaker do
   let(:otp) { '123ABC' }
   let(:issuer) { 'this-is-an-issuer' }
-  let(:service_provider) { build(:service_provider, issuer: issuer) }
+  let(:service_provider) { build(:service_provider, issuer:) }
   let(:zipcode) { '12345' }
   let(:decrypted_attributes) do
     {
@@ -11,11 +11,11 @@ RSpec.describe GpoConfirmationMaker do
       address2: '',
       city: 'Baton Rouge',
       state: 'Louisiana',
-      zipcode: zipcode,
+      zipcode:,
       first_name: 'Robert',
       last_name: 'Robertson',
-      otp: otp,
-      issuer: issuer,
+      otp:,
+      issuer:,
     }
   end
   let(:pii) do
@@ -28,7 +28,7 @@ RSpec.describe GpoConfirmationMaker do
   end
   let(:profile) { create(:profile) }
 
-  subject { described_class.new(pii: pii, service_provider: service_provider, profile: profile) }
+  subject { described_class.new(pii:, service_provider:, profile:) }
 
   describe '#perform' do
     before do

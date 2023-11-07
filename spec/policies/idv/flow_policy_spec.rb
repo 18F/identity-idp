@@ -16,7 +16,7 @@ RSpec.describe 'Idv::FlowPolicy' do
   let(:user_phone_confirmation_session) { nil }
   let(:has_gpo_pending_profile) { nil }
 
-  subject { Idv::FlowPolicy.new(idv_session: idv_session, user: user) }
+  subject { Idv::FlowPolicy.new(idv_session:, user:) }
 
   context '#controller_allowed?' do
     it 'allows the welcome step' do

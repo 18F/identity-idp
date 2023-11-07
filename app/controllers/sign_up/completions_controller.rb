@@ -41,8 +41,8 @@ module SignUp
 
     def completions_presenter
       CompletionsPresenter.new(
-        current_user: current_user,
-        current_sp: current_sp,
+        current_user:,
+        current_sp:,
         decrypted_pii: pii,
         requested_attributes: decorated_sp_session.requested_attributes.map(&:to_sym),
         ial2_requested: ial2_requested?,
@@ -87,9 +87,9 @@ module SignUp
         service_provider_name: decorated_sp_session.sp_name,
         sp_session_requested_attributes: sp_session[:requested_attributes],
         sp_request_requested_attributes: service_provider_request.requested_attributes,
-        page_occurence: page_occurence,
+        page_occurence:,
         in_account_creation_flow: user_session[:in_account_creation_flow] || false,
-        needs_completion_screen_reason: needs_completion_screen_reason,
+        needs_completion_screen_reason:,
       }
     end
 

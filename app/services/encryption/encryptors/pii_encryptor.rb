@@ -19,8 +19,8 @@ module Encryption
         def to_s
           {
             encrypted_data: encode(encrypted_data),
-            salt: salt,
-            cost: cost,
+            salt:,
+            cost:,
           }.to_json
         end
 
@@ -47,25 +47,25 @@ module Encryption
       def encrypt(plaintext, user_uuid: nil)
         salt = SecureRandom.hex(32)
         cost = IdentityConfig.store.scrypt_cost
-        aes_encryption_key = scrypt_password_digest(salt: salt, cost: cost)
+        aes_encryption_key = scrypt_password_digest(salt:, cost:)
         aes_encrypted_ciphertext = aes_cipher.encrypt(plaintext, aes_encryption_key)
         single_region_kms_encrypted_ciphertext = single_region_kms_client.encrypt(
-          aes_encrypted_ciphertext, kms_encryption_context(user_uuid: user_uuid)
+          aes_encrypted_ciphertext, kms_encryption_context(user_uuid:)
         )
         single_region_ciphertext = Ciphertext.new(
           single_region_kms_encrypted_ciphertext, salt, cost
         ).to_s
 
         multi_region_kms_encrypted_ciphertext = multi_region_kms_client.encrypt(
-          aes_encrypted_ciphertext, kms_encryption_context(user_uuid: user_uuid)
+          aes_encrypted_ciphertext, kms_encryption_context(user_uuid:)
         )
         multi_region_ciphertext = Ciphertext.new(
           multi_region_kms_encrypted_ciphertext, salt, cost
         ).to_s
 
         RegionalCiphertextPair.new(
-          single_region_ciphertext: single_region_ciphertext,
-          multi_region_ciphertext: multi_region_ciphertext,
+          single_region_ciphertext:,
+          multi_region_ciphertext:,
         )
       end
 
@@ -73,7 +73,7 @@ module Encryption
         ciphertext_string = ciphertext_pair.multi_or_single_region_ciphertext
         ciphertext = Ciphertext.parse_from_string(ciphertext_string)
         aes_encrypted_ciphertext = multi_region_kms_client.decrypt(
-          ciphertext.encrypted_data, kms_encryption_context(user_uuid: user_uuid)
+          ciphertext.encrypted_data, kms_encryption_context(user_uuid:)
         )
         aes_encryption_key = scrypt_password_digest(salt: ciphertext.salt, cost: ciphertext.cost)
         aes_cipher.decrypt(aes_encrypted_ciphertext, aes_encryption_key)

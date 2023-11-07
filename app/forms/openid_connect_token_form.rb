@@ -41,12 +41,12 @@ class OpenidConnectTokenForm
 
     clear_authorization_code if success
 
-    FormResponse.new(success: success, errors: errors, extra: extra_analytics_attributes)
+    FormResponse.new(success:, errors:, extra: extra_analytics_attributes)
   end
 
   def response
     if valid?
-      id_token_builder = IdTokenBuilder.new(identity: identity, code: code)
+      id_token_builder = IdTokenBuilder.new(identity:, code:)
       @ttl = id_token_builder.ttl
 
       {
@@ -196,7 +196,7 @@ class OpenidConnectTokenForm
 
   def extra_analytics_attributes
     {
-      client_id: client_id,
+      client_id:,
       user_id: identity&.user&.uuid,
       code_digest: code ? Digest::SHA256.hexdigest(code) : nil,
       code_verifier_present: code_verifier.present?,

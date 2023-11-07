@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe TwoFactorAuthentication::VoiceSelectionPresenter do
-  let(:subject) { described_class.new(configuration: phone, user: user) }
+  let(:subject) { described_class.new(configuration: phone, user:) }
   let(:user) { build(:user) }
   describe '#type' do
     context 'when a user has only one phone configuration' do
@@ -16,7 +16,7 @@ RSpec.describe TwoFactorAuthentication::VoiceSelectionPresenter do
     context 'when a user has more than one phone configuration' do
       let(:user) { create(:user, :with_phone) }
       let(:phone) do
-        record = create(:phone_configuration, user: user)
+        record = create(:phone_configuration, user:)
         user.reload
         record
       end

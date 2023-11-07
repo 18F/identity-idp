@@ -51,7 +51,7 @@ class SamlRequestPresenter
   def ial_context
     @ial_context ||= IalContext.new(
       ial: request.requested_ial_authn_context || default_ial_context,
-      service_provider: service_provider,
+      service_provider:,
       authn_context_comparison: request.requested_authn_context_comparison,
     )
   end

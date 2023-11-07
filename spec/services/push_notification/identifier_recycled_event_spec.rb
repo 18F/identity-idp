@@ -3,8 +3,8 @@ require 'rails_helper'
 RSpec.describe PushNotification::IdentifierRecycledEvent do
   subject(:event) do
     PushNotification::IdentifierRecycledEvent.new(
-      user: user,
-      email: email,
+      user:,
+      email:,
     )
   end
 
@@ -22,7 +22,7 @@ RSpec.describe PushNotification::IdentifierRecycledEvent do
       expect(event.payload).to eq(
         subject: {
           subject_type: 'email',
-          email: email,
+          email:,
         },
       )
     end

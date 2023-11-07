@@ -20,7 +20,7 @@ RSpec.describe 'two_factor_authentication/otp_verification/show.html.erb' do
 
       @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(
         data: presenter_data,
-        view: view,
+        view:,
         service_provider: nil,
       )
       allow(@presenter).to receive(:reauthn).and_return(false)
@@ -109,8 +109,8 @@ RSpec.describe 'two_factor_authentication/otp_verification/show.html.erb' do
         allow(view).to receive(:current_user).and_return(user)
         data = presenter_data.merge(confirmation_for_add_phone: true)
         @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(
-          data: data,
-          view: view,
+          data:,
+          view:,
           service_provider: nil,
         )
 
@@ -128,7 +128,7 @@ RSpec.describe 'two_factor_authentication/otp_verification/show.html.erb' do
         totp_data = presenter_data.merge(totp_enabled: true)
         @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(
           data: totp_data,
-          view: view,
+          view:,
           service_provider: nil,
         )
 
@@ -157,7 +157,7 @@ RSpec.describe 'two_factor_authentication/otp_verification/show.html.erb' do
 
         resend_path = otp_send_path(
           otp_delivery_selection_form: {
-            otp_delivery_preference: otp_delivery_preference,
+            otp_delivery_preference:,
             resend: true,
           },
         )
@@ -183,10 +183,10 @@ RSpec.describe 'two_factor_authentication/otp_verification/show.html.erb' do
 
       before do
         controller.request.path_parameters[:otp_delivery_preference] = otp_delivery_preference
-        voice_data = presenter_data.merge(otp_delivery_preference: otp_delivery_preference)
+        voice_data = presenter_data.merge(otp_delivery_preference:)
         @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(
           data: voice_data,
-          view: view,
+          view:,
           service_provider: nil,
         )
       end
@@ -196,7 +196,7 @@ RSpec.describe 'two_factor_authentication/otp_verification/show.html.erb' do
 
         resend_path = otp_send_path(
           otp_delivery_selection_form: {
-            otp_delivery_preference: otp_delivery_preference,
+            otp_delivery_preference:,
             resend: true,
           },
         )
@@ -222,8 +222,8 @@ RSpec.describe 'two_factor_authentication/otp_verification/show.html.erb' do
         data = presenter_data.merge(unconfirmed_phone: true)
 
         @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(
-          data: data,
-          view: view,
+          data:,
+          view:,
           service_provider: nil,
         )
 
@@ -238,8 +238,8 @@ RSpec.describe 'two_factor_authentication/otp_verification/show.html.erb' do
         data = presenter_data.merge(unconfirmed_phone: true)
 
         @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(
-          data: data,
-          view: view,
+          data:,
+          view:,
           service_provider: nil,
         )
 
@@ -303,8 +303,8 @@ RSpec.describe 'two_factor_authentication/otp_verification/show.html.erb' do
           data = presenter_data.merge(unconfirmed_phone: true)
 
           @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(
-            data: data,
-            view: view,
+            data:,
+            view:,
             service_provider: nil,
           )
 

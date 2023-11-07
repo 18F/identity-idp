@@ -73,7 +73,7 @@ class SamlIdpController < ApplicationController
 
     return head(:bad_request) unless user_id.present?
 
-    handle_valid_sp_remote_logout_request(user_id: user_id, issuer: issuer)
+    handle_valid_sp_remote_logout_request(user_id:, issuer:)
   end
 
   def external_saml_request?
@@ -117,7 +117,7 @@ class SamlIdpController < ApplicationController
       endpoint: api_saml_auth_path(path_year: params[:path_year]),
       idv: identity_needs_verification?,
       finish_profile: user_has_pending_profile?,
-      requested_ial: requested_ial,
+      requested_ial:,
       request_signed: saml_request.signed?,
       matching_cert_serial: saml_request.service_provider.matching_cert&.serial&.to_s,
     )
@@ -128,7 +128,7 @@ class SamlIdpController < ApplicationController
     return unless external_saml_request?
 
     analytics.saml_auth_request(
-      requested_ial: requested_ial,
+      requested_ial:,
       requested_aal_authn_context: saml_request&.requested_aal_authn_context,
       force_authn: saml_request&.force_authn?,
       final_auth_request: sp_session[:final_auth_request],
@@ -161,7 +161,7 @@ class SamlIdpController < ApplicationController
 
     render(
       template: 'saml_idp/shared/saml_post_binding',
-      locals: { action_url: action_url, message: message, type: type, csp_uris: csp_uris },
+      locals: { action_url:, message:, type:, csp_uris: },
       layout: false,
     )
   end

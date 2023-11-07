@@ -12,7 +12,7 @@ RSpec.describe Reports::TotalMonthlyAuthsReport do
   end
 
   it 'returns the total monthly auths' do
-    ServiceProvider.create(issuer: issuer, friendly_name: issuer, app_id: app_id)
+    ServiceProvider.create(issuer:, friendly_name: issuer, app_id:)
     [
       { user_id: 2, count: 7 },
       { user_id: 3, count: 3 },
@@ -21,7 +21,7 @@ RSpec.describe Reports::TotalMonthlyAuthsReport do
         create(
           :sp_return_log,
           user_id: config[:user_id],
-          issuer: issuer,
+          issuer:,
           ial: 1,
           billable: true,
           returned_at: Date.new(2019, 1, 15).to_date,
@@ -30,7 +30,7 @@ RSpec.describe Reports::TotalMonthlyAuthsReport do
       end
     end
 
-    result = [{ issuer: 'foo', ial: 1, year_month: '201901', total: 10, app_id: app_id }].to_json
+    result = [{ issuer: 'foo', ial: 1, year_month: '201901', total: 10, app_id: }].to_json
 
     expect(subject.perform(Time.zone.today)).to eq(result)
   end

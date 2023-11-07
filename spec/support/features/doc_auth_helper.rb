@@ -58,7 +58,7 @@ module DocAuthHelper
   end
 
   def complete_doc_auth_steps_before_agreement_step(expect_accessible: false)
-    complete_doc_auth_steps_before_welcome_step(expect_accessible: expect_accessible)
+    complete_doc_auth_steps_before_welcome_step(expect_accessible:)
     complete_welcome_step
     expect_page_to_have_no_accessibility_violations(page) if expect_accessible
   end
@@ -89,7 +89,7 @@ module DocAuthHelper
   end
 
   def complete_doc_auth_steps_before_hybrid_handoff_step(expect_accessible: false)
-    complete_doc_auth_steps_before_agreement_step(expect_accessible: expect_accessible)
+    complete_doc_auth_steps_before_agreement_step(expect_accessible:)
     complete_agreement_step
     expect_page_to_have_no_accessibility_violations(page) if expect_accessible
   end
@@ -102,7 +102,7 @@ module DocAuthHelper
   end
 
   def complete_doc_auth_steps_before_document_capture_step(expect_accessible: false)
-    complete_doc_auth_steps_before_hybrid_handoff_step(expect_accessible: expect_accessible)
+    complete_doc_auth_steps_before_hybrid_handoff_step(expect_accessible:)
     # JavaScript-enabled mobile devices will skip directly to document capture, so stop as complete.
     return if page.current_path == idv_document_capture_path
     complete_hybrid_handoff_step
@@ -122,7 +122,7 @@ module DocAuthHelper
   end
 
   def complete_doc_auth_steps_before_phone_otp_step(expect_accessible: false)
-    complete_doc_auth_steps_before_verify_step(expect_accessible: expect_accessible)
+    complete_doc_auth_steps_before_verify_step(expect_accessible:)
     click_idv_continue
     expect_page_to_have_no_accessibility_violations(page) if expect_accessible
     click_idv_continue
@@ -133,7 +133,7 @@ module DocAuthHelper
   end
 
   def complete_doc_auth_steps_before_ssn_step(expect_accessible: false)
-    complete_doc_auth_steps_before_document_capture_step(expect_accessible: expect_accessible)
+    complete_doc_auth_steps_before_document_capture_step(expect_accessible:)
     complete_document_capture_step
     expect_page_to_have_no_accessibility_violations(page) if expect_accessible
   end
@@ -144,7 +144,7 @@ module DocAuthHelper
   end
 
   def complete_doc_auth_steps_before_verify_step(expect_accessible: false)
-    complete_doc_auth_steps_before_ssn_step(expect_accessible: expect_accessible)
+    complete_doc_auth_steps_before_ssn_step(expect_accessible:)
     complete_ssn_step
     expect_page_to_have_no_accessibility_violations(page) if expect_accessible
   end
@@ -181,13 +181,13 @@ module DocAuthHelper
   end
 
   def complete_all_doc_auth_steps(expect_accessible: false)
-    complete_doc_auth_steps_before_verify_step(expect_accessible: expect_accessible)
+    complete_doc_auth_steps_before_verify_step(expect_accessible:)
     complete_verify_step
     expect_page_to_have_no_accessibility_violations(page) if expect_accessible
   end
 
   def complete_all_doc_auth_steps_before_password_step(expect_accessible: false)
-    complete_all_doc_auth_steps(expect_accessible: expect_accessible)
+    complete_all_doc_auth_steps(expect_accessible:)
     fill_out_phone_form_ok if find('#idv_phone_form_phone').value.blank?
     click_continue
     verify_phone_otp
@@ -207,7 +207,7 @@ module DocAuthHelper
     pii_with_no_name = Idp::Constants::MOCK_IDV_APPLICANT.dup
     pii_with_no_name[:last_name] = nil
     DocAuth::Mock::DocAuthMockClient.mock_response!(
-      method: method,
+      method:,
       response: DocAuth::Response.new(
         pii_from_doc: pii_with_no_name,
         extra: {
@@ -222,7 +222,7 @@ module DocAuthHelper
 
   def mock_general_doc_auth_client_error(method)
     DocAuth::Mock::DocAuthMockClient.mock_response!(
-      method: method,
+      method:,
       response: DocAuth::Response.new(
         success: false,
         errors: { error: I18n.t('doc_auth.errors.general.no_liveness') },
@@ -248,7 +248,7 @@ module DocAuthHelper
   def mock_doc_auth_trueid_http_non2xx_status(status)
     network_error_response = instance_double(
       Faraday::Response,
-      status: status,
+      status:,
       body: '{}',
     )
     DocAuth::Mock::DocAuthMockClient.mock_response!(
@@ -263,14 +263,14 @@ module DocAuthHelper
   # @param [Object] status one of 440, 438, 439
   def mock_doc_auth_acuant_http_4xx_status(status, method = :post_front_image)
     DocAuth::Mock::DocAuthMockClient.mock_response!(
-      method: method,
+      method:,
       response: DocAuth::Mock::ResultResponse.create_image_error_response(status, 'front'),
     )
   end
 
   def mock_doc_auth_acuant_http_5xx_status(method = :post_front_image)
     DocAuth::Mock::DocAuthMockClient.mock_response!(
-      method: method,
+      method:,
       response: DocAuth::Mock::ResultResponse.create_network_error_response,
     )
   end

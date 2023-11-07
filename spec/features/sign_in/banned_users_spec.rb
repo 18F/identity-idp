@@ -8,7 +8,7 @@ RSpec.feature 'Banning users for an SP' do
     it 'does not let the user sign in to any SP' do
       user = create(:user, :fully_registered)
 
-      SignInRestriction.create(user: user)
+      SignInRestriction.create(user:)
 
       sign_in_user(user)
       expect_user_to_be_banned
@@ -27,7 +27,7 @@ RSpec.feature 'Banning users for an SP' do
     it 'bans the user from signing in to the banned SP but allows other sign ins' do
       user = create(:user, :fully_registered)
 
-      SignInRestriction.create(user: user, service_provider: 'http://localhost:3000')
+      SignInRestriction.create(user:, service_provider: 'http://localhost:3000')
 
       sign_in_live_with_2fa(user)
       expect(current_path).to eq(account_path)
@@ -46,7 +46,7 @@ RSpec.feature 'Banning users for an SP' do
     it 'bans the user from signing in to the banned SP but allows other sign ins' do
       user = create(:user, :fully_registered)
 
-      SignInRestriction.create(user: user, service_provider: OidcAuthHelper::OIDC_IAL1_ISSUER)
+      SignInRestriction.create(user:, service_provider: OidcAuthHelper::OIDC_IAL1_ISSUER)
 
       sign_in_live_with_2fa(user)
       expect(current_path).to eq(account_path)

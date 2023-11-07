@@ -13,13 +13,13 @@ RSpec.describe TwoFactorAuthCode::PhoneDeliveryPresenter do
       code_value: '999999',
       otp_delivery_preference: 'sms',
       totp_enabled: false,
-      unconfirmed_phone: unconfirmed_phone,
+      unconfirmed_phone:,
     }
   end
   let(:presenter) do
     TwoFactorAuthCode::PhoneDeliveryPresenter.new(
-      data: data,
-      view: view,
+      data:,
+      view:,
       service_provider: nil,
     )
   end

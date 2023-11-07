@@ -20,7 +20,7 @@ module Telephony
     end
 
     def to_h
-      { success: success, errors: errors }.merge!(extra)
+      { success:, errors: }.merge!(extra)
     end
 
     private

@@ -273,8 +273,8 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           reset_password_sent_at: Time.zone.now,
         )
         form_params = {
-          password: password,
-          password_confirmation: password_confirmation,
+          password:,
+          password_confirmation:,
           reset_password_token: raw_reset_token,
         }
         analytics_hash = {
@@ -330,8 +330,8 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           reset_password_sent_at: Time.zone.now,
         )
         form_params = {
-          password: password,
-          password_confirmation: password_confirmation,
+          password:,
+          password_confirmation:,
           reset_password_token: raw_reset_token,
         }
         analytics_hash = {
@@ -377,7 +377,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           reset_password_sent_at: Time.zone.now,
         )
         form_params = {
-          password: password,
+          password:,
           password_confirmation: password,
           reset_password_token: raw_reset_token,
         }
@@ -411,7 +411,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           old_confirmed_at = user.reload.confirmed_at
           allow(user).to receive(:active_profile).and_return(nil)
 
-          security_event = PushNotification::PasswordResetEvent.new(user: user)
+          security_event = PushNotification::PasswordResetEvent.new(user:)
           expect(PushNotification::HttpPush).to receive(:deliver).with(security_event)
 
           stub_user_mailer(user)
@@ -421,7 +421,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           ).with(success_properties)
 
           params = {
-            password: password,
+            password:,
             password_confirmation: password,
             reset_password_token: raw_reset_token,
           }
@@ -464,9 +464,9 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           reset_password_token: db_confirmation_token,
           reset_password_sent_at: Time.zone.now,
         )
-        _profile = create(:profile, :active, :verified, user: user)
+        _profile = create(:profile, :active, :verified, user:)
 
-        security_event = PushNotification::PasswordResetEvent.new(user: user)
+        security_event = PushNotification::PasswordResetEvent.new(user:)
         expect(PushNotification::HttpPush).to receive(:deliver).with(security_event)
 
         stub_user_mailer(user)
@@ -477,7 +477,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
 
         get :edit, params: { reset_password_token: raw_reset_token }
         params = {
-          password: password,
+          password:,
           password_confirmation: password,
           reset_password_token: raw_reset_token,
         }
@@ -518,7 +518,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           reset_password_sent_at: Time.zone.now,
         )
 
-        security_event = PushNotification::PasswordResetEvent.new(user: user)
+        security_event = PushNotification::PasswordResetEvent.new(user:)
         expect(PushNotification::HttpPush).to receive(:deliver).with(security_event)
 
         stub_user_mailer(user)
@@ -528,7 +528,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
         )
 
         params = {
-          password: password,
+          password:,
           password_confirmation: password,
           reset_password_token: raw_reset_token,
         }
@@ -562,13 +562,13 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
         stub_attempts_tracker
 
         expect(@irs_attempts_api_tracker).to receive(:user_registration_email_submitted).with(
-          email: email,
+          email:,
           **success_properties,
         )
 
         expect do
           put :create, params: {
-            password_reset_email_form: { email: email },
+            password_reset_email_form: { email: },
           }
         end.to(change { ActionMailer::Base.deliveries.count }.by(1))
 
@@ -600,7 +600,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
 
     context 'user exists' do
       let(:email) { 'test@example.com' }
-      let(:email_param) { { email: email } }
+      let(:email_param) { { email: } }
       let!(:user) { create(:user, :fully_registered, **email_param) }
       let(:analytics_hash) do
         {
@@ -663,7 +663,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           email: user.email,
         )
 
-        expect { put :create, params: params }.
+        expect { put :create, params: }.
           to change { ActionMailer::Base.deliveries.count }.by(1)
 
         expect(@analytics).to have_received(:track_event).
@@ -681,7 +681,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
         stub_attempts_tracker
 
         user = create(:user, :fully_registered)
-        create(:profile, :active, :verified, user: user)
+        create(:profile, :active, :verified, user:)
 
         analytics_hash = {
           success: true,
@@ -698,7 +698,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
         )
 
         params = { password_reset_email_form: { email: user.email } }
-        put :create, params: params
+        put :create, params:
       end
     end
 
@@ -719,7 +719,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           with('Password Reset: Email Submitted', analytics_hash)
 
         params = { password_reset_email_form: { email: 'foo' } }
-        expect { put :create, params: params }.
+        expect { put :create, params: }.
           to change { ActionMailer::Base.deliveries.count }.by(0)
 
         expect(response).to render_template :new

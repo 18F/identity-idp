@@ -75,8 +75,8 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
             expiration_interval = IdentityConfig.store.remember_device_expiration_hours_aal_1.hours
             expect(
               remember_device_cookie.valid_for_user?(
-                user: user,
-                expiration_interval: expiration_interval,
+                user:,
+                expiration_interval:,
               ),
             ).to eq true
           end

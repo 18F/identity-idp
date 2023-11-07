@@ -153,7 +153,7 @@ module DocAuthRouter
   # rubocop:disable Layout/LineLength
   # @param [Proc,nil] warn_notifier proc takes a hash, and should log that hash to events.log
   def self.client(vendor_discriminator: nil, warn_notifier: nil, analytics: nil)
-    case doc_auth_vendor(discriminator: vendor_discriminator, analytics: analytics)
+    case doc_auth_vendor(discriminator: vendor_discriminator, analytics:)
     when Idp::Constants::Vendors::ACUANT
       DocAuthErrorTranslatorProxy.new(
         DocAuth::Acuant::AcuantClient.new(
@@ -163,7 +163,7 @@ module DocAuthRouter
           assure_id_username: IdentityConfig.store.acuant_assure_id_username,
           facial_match_url: IdentityConfig.store.acuant_facial_match_url,
           passlive_url: IdentityConfig.store.acuant_passlive_url,
-          warn_notifier: warn_notifier,
+          warn_notifier:,
           dpi_threshold: IdentityConfig.store.doc_auth_error_dpi_threshold,
           sharpness_threshold: IdentityConfig.store.doc_auth_error_sharpness_threshold,
           glare_threshold: IdentityConfig.store.doc_auth_error_glare_threshold,
@@ -182,7 +182,7 @@ module DocAuthRouter
           trueid_username: IdentityConfig.store.lexisnexis_trueid_username,
           hmac_key_id: IdentityConfig.store.lexisnexis_trueid_hmac_key_id,
           hmac_secret_key: IdentityConfig.store.lexisnexis_trueid_hmac_secret_key,
-          warn_notifier: warn_notifier,
+          warn_notifier:,
           locale: I18n.locale,
           dpi_threshold: IdentityConfig.store.doc_auth_error_dpi_threshold,
           sharpness_threshold: IdentityConfig.store.doc_auth_error_sharpness_threshold,
@@ -192,7 +192,7 @@ module DocAuthRouter
     when Idp::Constants::Vendors::MOCK
       DocAuthErrorTranslatorProxy.new(
         DocAuth::Mock::DocAuthMockClient.new(
-          warn_notifier: warn_notifier,
+          warn_notifier:,
         ),
       )
     else

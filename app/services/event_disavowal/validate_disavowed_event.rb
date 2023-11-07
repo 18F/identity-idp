@@ -22,7 +22,7 @@ module EventDisavowal
     def call
       FormResponse.new(
         success: valid?,
-        errors: errors,
+        errors:,
         extra: EventDisavowal::BuildDisavowedEventAnalyticsAttributes.call(event),
       )
     end

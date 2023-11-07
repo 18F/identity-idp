@@ -6,7 +6,7 @@ RSpec.describe 'Account connected applications' do
     create(
       :service_provider_identity,
       :active,
-      user: user,
+      user:,
       created_at: Time.zone.now - 80.days,
       service_provider: 'http://localhost:3000',
     )
@@ -15,7 +15,7 @@ RSpec.describe 'Account connected applications' do
     create(
       :service_provider_identity,
       :active,
-      user: user,
+      user:,
       created_at: Time.zone.now - 50.days,
       service_provider: 'https://rp2.serviceprovider.com/auth/saml/metadata',
     )

@@ -42,7 +42,7 @@ module Proofing
 
       def hmac_authorization
         Proofing::LexisNexis::RequestSigner.new(
-          config: config,
+          config:,
           message_body: body,
           path: url_request_path,
         ).hmac_authorization

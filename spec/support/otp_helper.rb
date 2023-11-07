@@ -1,10 +1,10 @@
 module OtpHelper
   def last_sms_otp(phone: nil)
-    Telephony::Test::Message.last_otp(phone: phone)
+    Telephony::Test::Message.last_otp(phone:)
   end
 
   def last_voice_otp(phone: nil)
-    Telephony::Test::Call.last_otp(phone: phone)
+    Telephony::Test::Call.last_otp(phone:)
   end
 
   def last_phone_otp

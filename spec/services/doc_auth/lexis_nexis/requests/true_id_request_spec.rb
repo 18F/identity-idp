@@ -11,17 +11,17 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
   let(:config) do
     DocAuth::LexisNexis::Config.new(
       trueid_account_id: account_id,
-      base_url: base_url,
+      base_url:,
       trueid_noliveness_cropping_workflow: 'test_workflow_cropping',
       trueid_noliveness_nocropping_workflow: 'test_workflow',
     )
   end
   let(:subject) do
     described_class.new(
-      config: config,
+      config:,
       front_image: DocAuthImageFixtures.document_front_image,
       back_image: DocAuthImageFixtures.document_back_image,
-      image_source: image_source,
+      image_source:,
       user_uuid: applicant[:uuid],
       uuid_prefix: applicant[:uuid_prefix],
     )

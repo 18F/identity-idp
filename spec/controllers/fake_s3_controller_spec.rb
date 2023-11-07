@@ -9,7 +9,7 @@ RSpec.describe Test::FakeS3Controller do
   let(:data) { SecureRandom.random_bytes }
 
   describe '#show' do
-    subject(:action) { get :show, params: { key: key } }
+    subject(:action) { get :show, params: { key: } }
 
     context 'with a valid key' do
       before { Test::FakeS3Controller.data[key] = data }
@@ -32,7 +32,7 @@ RSpec.describe Test::FakeS3Controller do
 
   describe '#update' do
     subject(:action) do
-      post :update, body: data, params: { key: key }
+      post :update, body: data, params: { key: }
     end
 
     it 'stores the data in memory' do

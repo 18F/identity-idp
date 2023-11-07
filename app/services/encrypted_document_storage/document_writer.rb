@@ -17,8 +17,8 @@ module EncryptedDocumentStorage
       storage.write_image(encrypted_image: encrypted_back_image, name: back_filename)
 
       WriteDocumentResult.new(
-        front_filename: front_filename,
-        back_filename: back_filename,
+        front_filename:,
+        back_filename:,
         encryption_key: Base64.strict_encode64(key),
       )
     end

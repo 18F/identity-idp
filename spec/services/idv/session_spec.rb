@@ -5,7 +5,7 @@ RSpec.describe Idv::Session do
   let(:user_session) { {} }
 
   subject do
-    Idv::Session.new(user_session: user_session, current_user: user, service_provider: nil)
+    Idv::Session.new(user_session:, current_user: user, service_provider: nil)
   end
 
   describe '#initialize' do
@@ -152,11 +152,11 @@ RSpec.describe Idv::Session do
 
       context 'with establishing in person enrollment' do
         let!(:enrollment) do
-          create(:in_person_enrollment, :establishing, user: user, profile: nil)
+          create(:in_person_enrollment, :establishing, user:, profile: nil)
         end
 
         before do
-          ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
+          ProofingComponent.create(user:, document_check: Idp::Constants::Vendors::USPS)
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
           subject.user_phone_confirmation = true
           subject.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.with_indifferent_access

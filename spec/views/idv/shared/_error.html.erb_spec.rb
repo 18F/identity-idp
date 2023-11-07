@@ -11,17 +11,17 @@ RSpec.describe 'idv/shared/_error.html.erb' do
   let(:step_indicator_steps) { nil }
   let(:params) do
     {
-      type: type,
-      heading: heading,
-      action: action,
-      action_secondary: action_secondary,
-      current_step: current_step,
-      options: options,
+      type:,
+      heading:,
+      action:,
+      action_secondary:,
+      current_step:,
+      options:,
     }
   end
 
   before do
-    decorated_sp_session = instance_double(ServiceProviderSession, sp_name: sp_name)
+    decorated_sp_session = instance_double(ServiceProviderSession, sp_name:)
     allow(view).to receive(:decorated_sp_session).and_return(decorated_sp_session)
 
     if step_indicator_steps
@@ -95,7 +95,7 @@ RSpec.describe 'idv/shared/_error.html.erb' do
 
   describe 'title' do
     context 'without title' do
-      let(:params) { { heading: heading } }
+      let(:params) { { heading: } }
 
       it 'sets title as defaulting to heading' do
         expect(view).to receive(:title=).with(heading)
@@ -106,7 +106,7 @@ RSpec.describe 'idv/shared/_error.html.erb' do
 
     context 'with title' do
       let(:title) { 'Example Title' }
-      let(:params) { { heading: heading, title: title } }
+      let(:params) { { heading:, title: } }
 
       it 'sets title' do
         expect(view).to receive(:title=).with(title)
@@ -136,7 +136,7 @@ RSpec.describe 'idv/shared/_error.html.erb' do
 
   describe 'type' do
     context 'absent' do
-      let(:params) { { heading: heading } }
+      let(:params) { { heading: } }
 
       it 'defaults to error' do
         expect(rendered).to have_css('[src*="error"]')

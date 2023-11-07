@@ -6,7 +6,7 @@ Warden::Manager.after_set_user(except: :fetch) do |record, warden, options|
   if warden.authenticated?(options[:scope])
     unique_session_id = Devise.friendly_token
     warden.session(options[:scope])['unique_session_id'] = unique_session_id
-    UpdateUser.new(user: record, attributes: { unique_session_id: unique_session_id }).call
+    UpdateUser.new(user: record, attributes: { unique_session_id: }).call
   end
 end
 
@@ -21,7 +21,7 @@ Warden::Manager.after_set_user(only: :fetch) do |record, warden, options|
     if record.unique_session_id != current_session_id
       warden.raw_session.clear
       warden.logout(scope)
-      throw :warden, scope: scope, message: :session_limited
+      throw :warden, scope:, message: :session_limited
     end
   end
 end

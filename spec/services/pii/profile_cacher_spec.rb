@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Pii::ProfileCacher do
   let(:password) { 'salty peanuts are best' }
-  let(:user) { create(:user, :with_phone, password: password) }
+  let(:user) { create(:user, :with_phone, password:) }
   let(:user_session) { {}.with_indifferent_access }
 
   let(:active_pii) do
@@ -15,7 +15,7 @@ RSpec.describe Pii::ProfileCacher do
     )
   end
   let(:active_profile) do
-    profile = create(:profile, :active, :verified, user: user)
+    profile = create(:profile, :active, :verified, user:)
     profile.encrypt_pii(active_pii, password)
     profile
   end
@@ -30,7 +30,7 @@ RSpec.describe Pii::ProfileCacher do
     )
   end
   let(:pending_profile) do
-    profile = create(:profile, :verified, :verify_by_mail_pending, user: user)
+    profile = create(:profile, :verified, :verify_by_mail_pending, user:)
     profile.encrypt_pii(pending_pii, password)
     profile
   end

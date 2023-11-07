@@ -75,7 +75,7 @@ RSpec.feature 'adding email address' do
 
     expect(page).to have_current_path(root_path)
     action = t('devise.confirmations.sign_in')
-    expect(page).to have_content(t('devise.confirmations.already_confirmed', action: action))
+    expect(page).to have_content(t('devise.confirmations.already_confirmed', action:))
 
     expect_delivered_email_count(3)
     expect_delivered_email(
@@ -107,7 +107,7 @@ RSpec.feature 'adding email address' do
     sign_in_user_and_add_email(user)
 
     email_to_click_on = last_email_sent
-    create(:user, :fully_registered, email: email)
+    create(:user, :fully_registered, email:)
     click_on_link_in_confirmation_email(email_to_click_on)
 
     expect(page).to have_current_path(account_path)
@@ -123,7 +123,7 @@ RSpec.feature 'adding email address' do
   end
 
   it 'notifies user they are already confirmed on another account via email' do
-    initial_user = create(:user, :fully_registered, email: email)
+    initial_user = create(:user, :fully_registered, email:)
 
     user = create(:user, :fully_registered)
     sign_in_user_and_add_email(user, false)

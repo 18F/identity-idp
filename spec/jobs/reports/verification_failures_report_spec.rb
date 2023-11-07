@@ -28,7 +28,7 @@ RSpec.describe Reports::VerificationFailuresReport do
   end
 
   it 'sends out an abandon code on a user lands on welcome and leaves' do
-    DocAuthLog.create(user_id: user.id, welcome_view_at: now, issuer: issuer)
+    DocAuthLog.create(user_id: user.id, welcome_view_at: now, issuer:)
 
     reports = run_reports
     expect(reports.length).to eq(1)
@@ -53,7 +53,7 @@ RSpec.describe Reports::VerificationFailuresReport do
       user_id: user.id,
       welcome_view_at: now,
       document_capture_submit_at: now + 1.second,
-      issuer: issuer,
+      issuer:,
     )
 
     reports = run_reports
@@ -69,7 +69,7 @@ RSpec.describe Reports::VerificationFailuresReport do
       user_id: user.id,
       welcome_view_at: now,
       back_image_submit_at: now + 1.second,
-      issuer: issuer,
+      issuer:,
     )
 
     reports = run_reports
@@ -85,7 +85,7 @@ RSpec.describe Reports::VerificationFailuresReport do
       user_id: user.id,
       welcome_view_at: now,
       capture_mobile_back_image_submit_at: now + 1.second,
-      issuer: issuer,
+      issuer:,
     )
 
     reports = run_reports
@@ -101,7 +101,7 @@ RSpec.describe Reports::VerificationFailuresReport do
       user_id: user.id,
       welcome_view_at: now,
       mobile_back_image_submit_at: now + 1.second,
-      issuer: issuer,
+      issuer:,
     )
 
     reports = run_reports
@@ -117,7 +117,7 @@ RSpec.describe Reports::VerificationFailuresReport do
       user_id: user.id,
       welcome_view_at: now,
       verify_submit_at: now + 1.second,
-      issuer: issuer,
+      issuer:,
     )
 
     reports = run_reports
@@ -133,7 +133,7 @@ RSpec.describe Reports::VerificationFailuresReport do
       user_id: user.id,
       welcome_view_at: now,
       verify_phone_submit_at: now + 1.second,
-      issuer: issuer,
+      issuer:,
     )
 
     reports = run_reports
@@ -145,13 +145,13 @@ RSpec.describe Reports::VerificationFailuresReport do
   end
 
   it 'sends more than one user' do
-    DocAuthLog.create(user_id: user2.id, welcome_view_at: now, issuer: issuer)
+    DocAuthLog.create(user_id: user2.id, welcome_view_at: now, issuer:)
     AgencyIdentity.create(agency_id: 1, user_id: user2.id, uuid: uuid2)
     DocAuthLog.create(
       user_id: user.id,
       welcome_view_at: now,
       document_capture_submit_at: now + 1.second,
-      issuer: issuer,
+      issuer:,
     )
 
     reports = run_reports
@@ -168,7 +168,7 @@ RSpec.describe Reports::VerificationFailuresReport do
       user_id: user.id,
       welcome_view_at: now,
       mobile_back_image_submit_at: now - 12.hours,
-      issuer: issuer,
+      issuer:,
     )
 
     reports = run_reports
@@ -184,7 +184,7 @@ RSpec.describe Reports::VerificationFailuresReport do
       user_id: user.id,
       welcome_view_at: now,
       document_capture_submit_at: now - 24.hours,
-      issuer: issuer,
+      issuer:,
     )
 
     reports = run_reports
@@ -196,8 +196,8 @@ RSpec.describe Reports::VerificationFailuresReport do
   end
 
   def run_reports
-    ServiceProvider.create(issuer: issuer, agency_id: 1, friendly_name: issuer)
-    AgencyIdentity.create(agency_id: 1, user_id: user.id, uuid: uuid)
+    ServiceProvider.create(issuer:, agency_id: 1, friendly_name: issuer)
+    AgencyIdentity.create(agency_id: 1, user_id: user.id, uuid:)
 
     allow(IdentityConfig.store).to receive(:verification_errors_report_configs).and_return(
       [{ 'name' => name, 'issuers' => [issuer], 'emails' => [email] }],

@@ -37,9 +37,9 @@ module Idv
       end
 
       response = determine_response(
-        form_response: form_response,
-        client_response: client_response,
-        doc_pii_response: doc_pii_response,
+        form_response:,
+        client_response:,
+        doc_pii_response:,
       )
 
       failed_fingerprints = store_failed_images(client_response, doc_pii_response)
@@ -64,8 +64,8 @@ module Idv
       track_rate_limited if rate_limited?
 
       response = Idv::DocAuthFormResponse.new(
-        success: success,
-        errors: errors,
+        success:,
+        errors:,
         extra: extra_attributes,
       )
 
@@ -80,9 +80,9 @@ module Idv
         doc_auth_client.post_images(
           front_image: front_image_bytes,
           back_image: back_image_bytes,
-          image_source: image_source,
-          user_uuid: user_uuid,
-          uuid_prefix: uuid_prefix,
+          image_source:,
+          user_uuid:,
+          uuid_prefix:,
         )
       end
 
@@ -136,12 +136,12 @@ module Idv
       return @extra_attributes if defined?(@extra_attributes) &&
                                   @extra_attributes&.dig('attempts') == attempts
       @extra_attributes = {
-        attempts: attempts,
-        remaining_attempts: remaining_attempts,
+        attempts:,
+        remaining_attempts:,
         user_id: user_uuid,
         pii_like_keypaths: DocPiiForm.pii_like_keypaths,
         flow_path: params[:flow_path],
-        phone_with_camera: phone_with_camera,
+        phone_with_camera:,
       }
 
       @extra_attributes[:front_image_fingerprint] = front_image_fingerprint
@@ -301,8 +301,8 @@ module Idv
           client_image_metrics: image_metadata,
           async: false,
           flow_path: params[:flow_path],
-          phone_with_camera: phone_with_camera,
-          vendor_request_time_in_ms: vendor_request_time_in_ms,
+          phone_with_camera:,
+          vendor_request_time_in_ms:,
         ).except(:classification_info).
         merge(acuant_sdk_upgrade_ab_test_data).
         merge(getting_started_ab_test_analytics_bucket).
@@ -371,8 +371,8 @@ module Idv
 
     def add_costs(response)
       Db::AddDocumentVerificationAndSelfieCosts.
-        new(user_id: user_id,
-            service_provider: service_provider).
+        new(user_id:,
+            service_provider:).
         call(response)
     end
 

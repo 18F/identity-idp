@@ -25,8 +25,8 @@ RSpec.describe PasswordConfirmationComponent, type: :component do
     subject(:rendered) do
       render_inline PasswordConfirmationComponent.new(
         form:,
-        password_label: password_label,
-        confirmation_label: confirmation_label,
+        password_label:,
+        confirmation_label:,
       )
     end
     let(:password_label) { 'edited password label' }

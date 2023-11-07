@@ -40,7 +40,7 @@ module DocumentCaptureStepHelper
 
   def image_upload_api_payload
     {
-      document_capture_session_uuid: document_capture_session_uuid,
+      document_capture_session_uuid:,
       front: api_image_submission_test_credential_part,
       back: api_image_submission_test_credential_part,
     }

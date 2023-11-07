@@ -31,7 +31,7 @@ RSpec.describe Encryption::UakPasswordVerifier do
 
       digest = described_class.digest('saltypickles')
 
-      uak = Encryption::UserAccessKey.new(password: 'saltypickles', salt: salt)
+      uak = Encryption::UserAccessKey.new(password: 'saltypickles', salt:)
       parsed_digest = JSON.parse(digest, symbolize_names: true)
       uak.unlock(parsed_digest[:encryption_key])
 
@@ -47,14 +47,14 @@ RSpec.describe Encryption::UakPasswordVerifier do
       password = 'saltypickles'
 
       digest = described_class.digest(password)
-      result = described_class.verify(password: password, digest: digest)
+      result = described_class.verify(password:, digest:)
 
       expect(result).to eq(true)
     end
 
     it 'returns false if the password does not match' do
       digest = described_class.digest('saltypickles')
-      result = described_class.verify(password: 'pepperpickles', digest: digest)
+      result = described_class.verify(password: 'pepperpickles', digest:)
 
       expect(result).to eq(false)
     end
@@ -85,7 +85,7 @@ RSpec.describe Encryption::UakPasswordVerifier do
         password_cost: '4000$8$4$',
       }.to_json
 
-      result = described_class.verify(password: password, digest: legacy_password_digest)
+      result = described_class.verify(password:, digest: legacy_password_digest)
 
       expect(result).to eq(true)
     end

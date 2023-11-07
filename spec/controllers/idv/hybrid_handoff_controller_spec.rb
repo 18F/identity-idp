@@ -221,7 +221,7 @@ RSpec.describe Idv::HybridHandoffController do
       let(:document_capture_session_uuid) { '09228b6d-dd39-4925-bf82-b69104095517' }
 
       it 'sends analytics_submitted event for hybrid' do
-        put :update, params: params
+        put(:update, params:)
 
         expect(subject.idv_session.phone_for_mobile_flow).to eq('+1 202-555-5555')
         expect(@analytics).to have_logged_event(analytics_name, analytics_args)
@@ -238,7 +238,7 @@ RSpec.describe Idv::HybridHandoffController do
           ),
         ).and_call_original
 
-        put :update, params: params
+        put :update, params:
       end
     end
 
@@ -264,7 +264,7 @@ RSpec.describe Idv::HybridHandoffController do
       end
 
       it 'sends analytics_submitted event for desktop' do
-        put :update, params: params
+        put(:update, params:)
 
         expect(@analytics).to have_logged_event(analytics_name, analytics_args)
       end

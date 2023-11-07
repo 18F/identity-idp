@@ -48,7 +48,7 @@ Rails.application.configure do
       :account_reset_request,
       :registration_log,
     ].each do |association|
-      Bullet.add_safelist(type: :n_plus_one_query, class_name: 'User', association: association)
+      Bullet.add_safelist(type: :n_plus_one_query, class_name: 'User', association:)
     end
   end
 

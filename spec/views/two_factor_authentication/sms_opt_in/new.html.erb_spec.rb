@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe 'two_factor_authentication/sms_opt_in/new.html.erb' do
   let(:phone) { '1-888-867-5309' }
-  let(:phone_configuration) { build(:phone_configuration, phone: phone) }
+  let(:phone_configuration) { build(:phone_configuration, phone:) }
   let(:phone_number_opt_out) { PhoneNumberOptOut.create_or_find_with_phone(phone) }
   let(:other_mfa_options_url) { nil }
   let(:cancel_url) { '/account' }

@@ -8,7 +8,7 @@ RSpec.describe DestroyableRecords do
   let(:iaa_order) { iu.iaa_order }
   let(:integration) { iu.integration }
   let(:service_provider) { integration.service_provider }
-  let(:in_person_enrollment) {  create(:in_person_enrollment, service_provider: service_provider) }
+  let(:in_person_enrollment) {  create(:in_person_enrollment, service_provider:) }
 
   subject(:destroyable_records) { described_class.new(service_provider.issuer, stdout:, stdin:) }
 
@@ -82,7 +82,7 @@ RSpec.describe DestroyableRecords do
   end
 
   describe '#destroy_records' do
-    let!(:iu2) { create(:integration_usage, iaa_order: iaa_order) }
+    let!(:iu2) { create(:integration_usage, iaa_order:) }
 
     before { subject.destroy_records }
 

@@ -37,19 +37,19 @@ RSpec.describe Idv::AddressController do
     end
 
     it 'redirects to verify info on success' do
-      put :update, params: params
+      put(:update, params:)
       expect(response).to redirect_to(idv_verify_info_url)
     end
 
     it 'sets address_edited in idv_session' do
       expect do
-        put :update, params: params
+        put :update, params:
       end.to change { subject.idv_session.address_edited }.from(nil).to eql(true)
     end
 
     it 'updates pii_from_doc in idv_session' do
       expect do
-        put :update, params: params
+        put :update, params:
       end.to change { subject.idv_session.pii_from_doc }.to eql(
         pii_from_doc.merge(
           {
@@ -64,7 +64,7 @@ RSpec.describe Idv::AddressController do
     end
 
     it 'logs an analytics event' do
-      put :update, params: params
+      put(:update, params:)
       expect(@analytics).to have_logged_event(
         'IdV: address submitted',
         { success: true,

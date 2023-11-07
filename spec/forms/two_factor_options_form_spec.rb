@@ -6,9 +6,9 @@ RSpec.describe TwoFactorOptionsForm do
   let(:piv_cac_required) { false }
   subject do
     described_class.new(
-      user: user,
-      phishing_resistant_required: phishing_resistant_required,
-      piv_cac_required: piv_cac_required,
+      user:,
+      phishing_resistant_required:,
+      piv_cac_required:,
     )
   end
 
@@ -42,14 +42,14 @@ RSpec.describe TwoFactorOptionsForm do
     end
 
     it 'is successful if user has existing method and does not select any options' do
-      create(:phone_configuration, user: user)
+      create(:phone_configuration, user:)
 
       result = subject.submit(selection: [])
       expect(result.success?).to eq true
     end
 
     it 'is unsuccessful if user has 1 method and its platform auth and no option' do
-      create(:webauthn_configuration, :platform_authenticator, user: user)
+      create(:webauthn_configuration, :platform_authenticator, user:)
 
       result = subject.submit(selection: [])
       expect(result.success?).to eq false
@@ -68,7 +68,7 @@ RSpec.describe TwoFactorOptionsForm do
         allow(UpdateUser).
           to receive(:new).
           with(
-            user: user,
+            user:,
             attributes: { otp_delivery_preference: 'voice' },
           ).
           and_return(user_updater)

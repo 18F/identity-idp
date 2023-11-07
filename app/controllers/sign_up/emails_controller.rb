@@ -9,7 +9,7 @@ module SignUp
         email = session.delete(:email)
         @resend_email_confirmation_form = ResendEmailConfirmationForm.new(email:)
 
-        render :show, locals: { email: email }
+        render :show, locals: { email: }
       end
     end
   end

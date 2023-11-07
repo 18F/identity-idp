@@ -15,7 +15,7 @@ RSpec.describe BannedUserResolver do
       user = create(:user)
       sp = create(:service_provider)
 
-      SignInRestriction.create(user: user, service_provider: sp.issuer)
+      SignInRestriction.create(user:, service_provider: sp.issuer)
 
       expect(described_class.new(user).banned_for_sp?(issuer: sp.issuer)).to eq(true)
     end
@@ -25,7 +25,7 @@ RSpec.describe BannedUserResolver do
       sp = create(:service_provider)
       banned_sp = create(:service_provider)
 
-      SignInRestriction.create(user: user, service_provider: banned_sp.issuer)
+      SignInRestriction.create(user:, service_provider: banned_sp.issuer)
 
       expect(described_class.new(user).banned_for_sp?(issuer: sp.issuer)).to eq(false)
     end
@@ -37,7 +37,7 @@ RSpec.describe BannedUserResolver do
       sp1 = create(:service_provider)
       sp2 = create(:service_provider)
 
-      SignInRestriction.create(user: user, service_provider: nil)
+      SignInRestriction.create(user:, service_provider: nil)
 
       expect(described_class.new(user).banned_for_sp?(issuer: sp1.issuer)).to eq(true)
       expect(described_class.new(user).banned_for_sp?(issuer: sp2.issuer)).to eq(true)

@@ -4,7 +4,7 @@ load Rails.root.join('bin/oncall/download-piv-certs')
 RSpec.describe DownloadPivCerts do
   describe '.parse!' do
     let(:out) { StringIO.new }
-    subject(:parse!) { DownloadPivCerts.parse!(argv: argv, stdout: out) }
+    subject(:parse!) { DownloadPivCerts.parse!(argv:, stdout: out) }
 
     context 'with --help' do
       let(:argv) { %w[--help] }
@@ -53,7 +53,7 @@ RSpec.describe DownloadPivCerts do
         uuids: %w[abc123],
         out_dir: @out_dir,
         progress_bar: false,
-        stdout: stdout,
+        stdout:,
       )
     end
     let(:stdout) { StringIO.new }

@@ -11,7 +11,7 @@ RSpec.describe 'idv/phone_errors/warning.html.erb' do
   let(:formatted_phone) { '+1 360-234-5678' }
 
   before do
-    decorated_sp_session = instance_double(ServiceProviderSession, sp_name: sp_name)
+    decorated_sp_session = instance_double(ServiceProviderSession, sp_name:)
     allow(view).to receive(:decorated_sp_session).and_return(decorated_sp_session)
     assign(:gpo_letter_available, gpo_letter_available)
     assign(:remaining_attempts, remaining_attempts)
@@ -69,7 +69,7 @@ RSpec.describe 'idv/phone_errors/warning.html.erb' do
     let(:sp_name) { nil }
     it 'does not prompt user to get help at sp' do
       expect(rendered).not_to have_link(
-        t('idv.troubleshooting.options.get_help_at_sp', sp_name: sp_name),
+        t('idv.troubleshooting.options.get_help_at_sp', sp_name:),
         href: return_to_sp_failure_to_proof_path(step: 'phone', location: 'warning'),
       )
     end

@@ -14,7 +14,7 @@ module Idv
 
     def exit_heading
       if sp?
-        t('idv.cancel.headings.exit.with_sp', app_name: APP_NAME, sp_name: sp_name)
+        t('idv.cancel.headings.exit.with_sp', app_name: APP_NAME, sp_name:)
       else
         t('idv.cancel.headings.exit.without_sp')
       end
@@ -25,7 +25,7 @@ module Idv
         t(
           'idv.cancel.description.exit.with_sp_html',
           app_name: APP_NAME,
-          sp_name: sp_name,
+          sp_name:,
           account_page_link_html: link_to(t('idv.cancel.description.account_page'), account_path),
         )
       else

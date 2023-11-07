@@ -19,7 +19,7 @@ class TotpSetupForm
 
     process_valid_submission if success
 
-    FormResponse.new(success: success, errors: errors, extra: extra_analytics_attributes)
+    FormResponse.new(success:, errors:, extra: extra_analytics_attributes)
   end
 
   private
@@ -32,7 +32,7 @@ class TotpSetupForm
     new_timestamp = Db::AuthAppConfiguration.confirm(secret, code)
     if new_timestamp
       create_auth_app(user, secret, new_timestamp, name) if new_timestamp
-      event = PushNotification::RecoveryInformationChangedEvent.new(user: user)
+      event = PushNotification::RecoveryInformationChangedEvent.new(user:)
       PushNotification::HttpPush.deliver(event)
     end
     new_timestamp.present?

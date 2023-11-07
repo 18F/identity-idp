@@ -57,12 +57,12 @@ module Idv
       end
 
       def add_cost(token, transaction_id: nil)
-        Db::SpCost::AddSpCost.call(current_sp, 2, token, transaction_id: transaction_id)
+        Db::SpCost::AddSpCost.call(current_sp, 2, token, transaction_id:)
       end
 
       def add_costs(result)
         Db::AddDocumentVerificationAndSelfieCosts.
-          new(user_id: user_id,
+          new(user_id:,
               service_provider: current_sp).
           call(result)
       end
@@ -73,7 +73,7 @@ module Idv
 
       def create_document_capture_session(key)
         document_capture_session = DocumentCaptureSession.create(
-          user_id: user_id,
+          user_id:,
           issuer: sp_session[:issuer],
         )
         flow_session[key] = document_capture_session.uuid

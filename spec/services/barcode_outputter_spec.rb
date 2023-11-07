@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe BarcodeOutputter do
   let(:code) { '1234' }
-  subject(:outputter) { BarcodeOutputter.new(code: code) }
+  subject(:outputter) { BarcodeOutputter.new(code:) }
 
   describe '#image_data' do
     subject(:image_data) { outputter.image_data }

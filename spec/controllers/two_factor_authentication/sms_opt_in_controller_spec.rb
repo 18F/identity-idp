@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe TwoFactorAuthentication::SmsOptInController do
   describe '#new' do
-    subject(:action) { get :new, params: { opt_out_uuid: opt_out_uuid } }
+    subject(:action) { get :new, params: { opt_out_uuid: } }
 
     context 'when loaded while using an existing phone' do
       let(:opt_out_uuid) do
@@ -15,7 +15,7 @@ RSpec.describe TwoFactorAuthentication::SmsOptInController do
         stub_sign_in_before_2fa(user)
         stub_analytics
         allow(controller).to receive(:decorated_sp_session).
-          and_return(instance_double('NullServiceProviderSession', sp_name: sp_name))
+          and_return(instance_double('NullServiceProviderSession', sp_name:))
       end
 
       it 'tracks a visit event' do
@@ -80,7 +80,7 @@ RSpec.describe TwoFactorAuthentication::SmsOptInController do
   end
 
   describe '#create' do
-    subject(:action) { post :create, params: { opt_out_uuid: opt_out_uuid } }
+    subject(:action) { post :create, params: { opt_out_uuid: } }
 
     context 'when loaded while using an existing phone' do
       let(:opt_out_uuid) do

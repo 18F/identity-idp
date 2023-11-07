@@ -14,11 +14,11 @@ class AgencyIdentityLinker
   def self.for(user:, service_provider:)
     agency = service_provider.agency
 
-    ai = AgencyIdentity.where(user: user, agency: agency).take
+    ai = AgencyIdentity.where(user:, agency:).take
     return ai if ai.present?
 
     spi = ServiceProviderIdentity.where(
-      user: user, service_provider: service_provider.issuer,
+      user:, service_provider: service_provider.issuer,
     ).take
 
     return nil unless spi.present?
@@ -26,11 +26,11 @@ class AgencyIdentityLinker
   end
 
   def self.sp_identity_from_uuid_and_sp(uuid, service_provider)
-    ai = AgencyIdentity.where(uuid: uuid).take
+    ai = AgencyIdentity.where(uuid:).take
     criteria = if ai
-                 { user_id: ai.user_id, service_provider: service_provider }
+                 { user_id: ai.user_id, service_provider: }
                else
-                 { uuid: uuid, service_provider: service_provider }
+                 { uuid:, service_provider: }
                end
     ServiceProviderIdentity.where(criteria).take
   end
@@ -44,7 +44,7 @@ class AgencyIdentityLinker
   def create_agency_identity_for_sp
     return unless agency_id
     AgencyIdentity.create(
-      agency_id: agency_id,
+      agency_id:,
       user_id: @sp_identity.user_id,
       uuid: @sp_identity.uuid,
     )
@@ -55,7 +55,7 @@ class AgencyIdentityLinker
     return ai if ai
     sp = ServiceProvider.where(issuer: @sp_identity.service_provider).take
     return unless agency_id(sp)
-    AgencyIdentity.where(agency_id: agency_id, user_id: @sp_identity.user_id).take
+    AgencyIdentity.where(agency_id:, user_id: @sp_identity.user_id).take
   end
 
   def agency_id(service_provider = nil)

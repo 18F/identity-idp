@@ -32,7 +32,7 @@ class GpoConfirmationMaker
       address1: pii[:address1],
       address2: pii[:address2],
       city: pii[:city],
-      otp: otp,
+      otp:,
       first_name: pii[:first_name],
       last_name: pii[:last_name],
       state: pii[:state],

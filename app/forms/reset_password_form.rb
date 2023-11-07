@@ -22,7 +22,7 @@ class ResetPasswordForm
 
     handle_valid_password if success
 
-    FormResponse.new(success: success, errors: errors, extra: extra_analytics_attributes)
+    FormResponse.new(success:, errors:, extra: extra_analytics_attributes)
   end
 
   private
@@ -45,7 +45,7 @@ class ResetPasswordForm
   end
 
   def update_user
-    attributes = { password: password }
+    attributes = { password: }
 
     ActiveRecord::Base.transaction do
       unless user.confirmed?
@@ -55,7 +55,7 @@ class ResetPasswordForm
       end
     end
 
-    UpdateUser.new(user: user, attributes: attributes).call
+    UpdateUser.new(user:, attributes:).call
   end
 
   def mark_profile_inactive

@@ -54,7 +54,7 @@ module TwoFactorAuthenticatableMethods
       current_user,
     )
     sign_out
-    render_full_width('two_factor_authentication/_locked', locals: { presenter: presenter })
+    render_full_width('two_factor_authentication/_locked', locals: { presenter: })
   end
 
   def check_already_authenticated
@@ -103,7 +103,7 @@ module TwoFactorAuthenticatableMethods
     flash.now[:error] = invalid_otp_error(type)
 
     if current_user.locked_out?
-      handle_second_factor_locked_user(context: context, type: type)
+      handle_second_factor_locked_user(context:, type:)
     else
       render_show_after_invalid
     end
@@ -171,7 +171,7 @@ module TwoFactorAuthenticatableMethods
 
   def mark_user_session_authenticated_analytics(authentication_type)
     analytics.user_marked_authed(
-      authentication_type: authentication_type,
+      authentication_type:,
     )
   end
 
@@ -186,7 +186,7 @@ module TwoFactorAuthenticatableMethods
 
   def generic_data
     {
-      user_opted_remember_device_cookie: user_opted_remember_device_cookie,
+      user_opted_remember_device_cookie:,
       reauthn: UserSessionContext.reauthentication_context?(user_session[:context]),
     }
   end

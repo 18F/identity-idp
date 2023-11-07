@@ -1,8 +1,8 @@
 <%= render PageHeadingComponent.new.with_content(t('forms.personal_key_partial.header')) %>
 <div class="full-width-box margin-y-5">
   <%= render 'partials/personal_key/key',
-             code: code,
-             personal_key_generated_at: personal_key_generated_at,
+             code:,
+             personal_key_generated_at:,
              show_save_buttons: true
     %>
 </div>

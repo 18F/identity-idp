@@ -66,8 +66,8 @@ RSpec.describe MfaContext do
       end
 
       it 'returns does not return unused backup codes' do
-        create_list(:backup_code_configuration, 5, user: user)
-        create_list(:backup_code_configuration, 5, user: user, used_at: 1.day.ago)
+        create_list(:backup_code_configuration, 5, user:)
+        create_list(:backup_code_configuration, 5, user:, used_at: 1.day.ago)
         user.reload
 
         expect(mfa.backup_code_configurations.length).to eq(5)
@@ -162,7 +162,7 @@ RSpec.describe MfaContext do
       let(:user) { create(:user, :with_phone) }
 
       it 'returns 1 for phone and 2 for webauthn' do
-        create_list(:webauthn_configuration, 2, user: user)
+        create_list(:webauthn_configuration, 2, user:)
         hash = { phone: 1, webauthn: 2 }
 
         expect(count_hash).to eq hash
@@ -172,8 +172,8 @@ RSpec.describe MfaContext do
     context 'with 2 phones and 2 webauthn configurations' do
       it 'returns 2 for each' do
         user = create(:user, :with_phone)
-        create(:phone_configuration, user: user, phone: '+1 703-555-1213')
-        create_list(:webauthn_configuration, 2, user: user)
+        create(:phone_configuration, user:, phone: '+1 703-555-1213')
+        create_list(:webauthn_configuration, 2, user:)
         count_hash = MfaContext.new(user.reload).enabled_two_factor_configuration_counts_hash
         hash = { phone: 2, webauthn: 2 }
 
@@ -184,7 +184,7 @@ RSpec.describe MfaContext do
     context 'with 1 phone and 10 backups codes' do
       it 'returns 1 for phone and 10 for backup codes' do
         user = create(:user, :with_phone)
-        create_list(:backup_code_configuration, 10, user: user)
+        create_list(:backup_code_configuration, 10, user:)
         count_hash = MfaContext.new(user.reload).enabled_two_factor_configuration_counts_hash
         hash = { phone: 1, backup_codes: 10 }
 
@@ -195,7 +195,7 @@ RSpec.describe MfaContext do
     context 'with 1 phone and 10 used backup codes' do
       it 'returns 1 for phone and no backup codes' do
         user = create(:user, :with_phone)
-        create_list(:backup_code_configuration, 10, user: user, used_at: 1.day.ago)
+        create_list(:backup_code_configuration, 10, user:, used_at: 1.day.ago)
         count_hash = MfaContext.new(user.reload).enabled_two_factor_configuration_counts_hash
         hash = { phone: 1 }
 
@@ -208,7 +208,7 @@ RSpec.describe MfaContext do
     context 'with 2 phones' do
       it 'returns 2' do
         user = create(:user, :with_phone)
-        create(:phone_configuration, user: user, phone: '+1 703-555-1213')
+        create(:phone_configuration, user:, phone: '+1 703-555-1213')
         subject = described_class.new(user.reload)
 
         expect(subject.enabled_mfa_methods_count).to eq(2)
@@ -218,7 +218,7 @@ RSpec.describe MfaContext do
     context 'with 2 webauthn tokens' do
       it 'returns 2' do
         user = create(:user)
-        create_list(:webauthn_configuration, 2, user: user)
+        create_list(:webauthn_configuration, 2, user:)
         subject = described_class.new(user.reload)
 
         expect(subject.enabled_mfa_methods_count).to eq(2)
@@ -228,8 +228,8 @@ RSpec.describe MfaContext do
     context 'with 1 webauthn roaming authenticator and one platform authenticator' do
       it 'returns 2' do
         user = create(:user)
-        create(:webauthn_configuration, user: user)
-        create(:webauthn_configuration, :platform_authenticator, user: user)
+        create(:webauthn_configuration, user:)
+        create(:webauthn_configuration, :platform_authenticator, user:)
         subject = described_class.new(user.reload)
 
         expect(subject.enabled_mfa_methods_count).to eq(2)
@@ -239,7 +239,7 @@ RSpec.describe MfaContext do
     context 'with a phone and a webauthn token' do
       it 'returns 2' do
         user = create(:user, :with_phone)
-        create(:webauthn_configuration, user: user)
+        create(:webauthn_configuration, user:)
         subject = described_class.new(user.reload)
 
         expect(subject.enabled_mfa_methods_count).to eq(2)
@@ -249,7 +249,7 @@ RSpec.describe MfaContext do
     context 'with a phone and 10 backup codes' do
       it 'returns 2' do
         user = create(:user, :with_phone)
-        create_list(:backup_code_configuration, 10, user: user)
+        create_list(:backup_code_configuration, 10, user:)
         subject = described_class.new(user.reload)
 
         expect(subject.enabled_mfa_methods_count).to eq(2)
@@ -259,7 +259,7 @@ RSpec.describe MfaContext do
     context 'with a phone and 10 used backup codes' do
       it 'returns 1' do
         user = create(:user, :with_phone)
-        create_list(:backup_code_configuration, 10, user: user, used_at: 1.day.ago)
+        create_list(:backup_code_configuration, 10, user:, used_at: 1.day.ago)
         subject = described_class.new(user.reload)
 
         expect(subject.enabled_mfa_methods_count).to eq(1)

@@ -9,10 +9,10 @@ RSpec.describe Idv::ProfileMaker do
 
     subject do
       described_class.new(
-        applicant: applicant,
-        user: user,
-        user_password: user_password,
-        initiating_service_provider: initiating_service_provider,
+        applicant:,
+        user:,
+        user_password:,
+        initiating_service_provider:,
       )
     end
 

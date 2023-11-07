@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe GpoConfirmationExporter do
   let(:issuer) { 'http://localhost:3000' }
-  let(:service_provider) { ServiceProvider.find_by(issuer: issuer) }
+  let(:service_provider) { ServiceProvider.find_by(issuer:) }
   let(:confirmations) do
     [
       GpoConfirmation.new(
@@ -15,7 +15,7 @@ RSpec.describe GpoConfirmationExporter do
           state: 'WA',
           zipcode: '98021',
           otp: 'ZYX987',
-          issuer: issuer,
+          issuer:,
         },
         created_at: Time.zone.parse('2018-06-29T01:02:03Z'),
       ),

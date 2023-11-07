@@ -17,7 +17,7 @@ class StoreSpMetadataInSession
   attr_reader :session, :request_id
 
   def ial_context
-    @ial_context ||= IalContext.new(ial: sp_request.ial, service_provider: service_provider)
+    @ial_context ||= IalContext.new(ial: sp_request.ial, service_provider:)
   end
 
   def sp_request
@@ -32,7 +32,7 @@ class StoreSpMetadataInSession
       ialmax: ial_context.ialmax_requested?,
       aal_level_requested: aal_requested,
       piv_cac_requested: hspd12_requested,
-      phishing_resistant_requested: phishing_resistant_requested,
+      phishing_resistant_requested:,
       request_url: sp_request.url,
       request_id: sp_request.uuid,
       requested_attributes: sp_request.requested_attributes,

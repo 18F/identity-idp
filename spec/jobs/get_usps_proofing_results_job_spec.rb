@@ -30,7 +30,7 @@ RSpec.shared_examples 'enrollment_with_a_status_update' do |passed:,
         minutes_since_last_status_update: 2.days.in_minutes,
         minutes_to_completion: 3.days.in_minutes,
         minutes_since_established: 3.days.in_minutes,
-        passed: passed,
+        passed:,
         primary_id_type: response['primaryIdType'],
         proofing_city: response['proofingCity'],
         proofing_post_office: response['proofingPostOffice'],
@@ -64,7 +64,7 @@ RSpec.shared_examples 'enrollment_with_a_status_update' do |passed:,
       else
         expect(job_analytics).to have_logged_event(
           'GetUspsProofingResultsJob: Success or failure email initiated',
-          email_type: email_type,
+          email_type:,
           enrollment_code: pending_enrollment.enrollment_code,
           wait_until: anything,
           service_provider: pending_enrollment.issuer,
@@ -109,11 +109,11 @@ RSpec.shared_examples 'enrollment_encountering_an_exception' do |exception_class
       hash_including(
         enrollment_code: pending_enrollment.enrollment_code,
         enrollment_id: pending_enrollment.id,
-        exception_class: exception_class,
-        exception_message: exception_message,
-        reason: reason,
-        response_message: response_message,
-        response_status_code: response_status_code,
+        exception_class:,
+        exception_message:,
+        reason:,
+        response_message:,
+        response_status_code:,
         job_name: 'GetUspsProofingResultsJob',
       ),
     )
@@ -227,7 +227,7 @@ RSpec.describe GetUspsProofingResultsJob do
               :pending,
               :with_notification_phone_configuration,
               issuer: 'http://localhost:3000',
-              selected_location_details: { name: name },
+              selected_location_details: { name: },
             )
           end
         end
@@ -488,7 +488,7 @@ RSpec.describe GetUspsProofingResultsJob do
               expect do
                 job.perform(Time.zone.now)
               end.to have_enqueued_mail(UserMailer, :in_person_failed).with(
-                params: { user: user, email_address: user.email_addresses.first },
+                params: { user:, email_address: user.email_addresses.first },
                 args: [{ enrollment: pending_enrollment }],
               )
             end
@@ -502,7 +502,7 @@ RSpec.describe GetUspsProofingResultsJob do
               expect do
                 job.perform(Time.zone.now)
               end.to have_enqueued_mail(UserMailer, :in_person_deadline_passed).with(
-                params: { user: user, email_address: user.email_addresses.first },
+                params: { user:, email_address: user.email_addresses.first },
                 args: [{ enrollment: pending_enrollment }],
               ).at(:no_wait).on_queue(:default)
               pending_enrollment.reload
@@ -528,7 +528,7 @@ RSpec.describe GetUspsProofingResultsJob do
               expect do
                 job.perform(Time.zone.now)
               end.to have_enqueued_mail(UserMailer, :in_person_failed_fraud).with(
-                params: { user: user, email_address: user.email_addresses.first },
+                params: { user:, email_address: user.email_addresses.first },
                 args: [{ enrollment: pending_enrollment }],
               )
             end
@@ -543,7 +543,7 @@ RSpec.describe GetUspsProofingResultsJob do
               expect do
                 job.perform(Time.zone.now)
               end.to have_enqueued_mail(UserMailer, :in_person_verified).with(
-                params: { user: user, email_address: user.email_addresses.first },
+                params: { user:, email_address: user.email_addresses.first },
                 args: [{ enrollment: pending_enrollment }],
               )
             end
@@ -571,7 +571,7 @@ RSpec.describe GetUspsProofingResultsJob do
                 expect do
                   job.perform(Time.zone.now)
                 end.to have_enqueued_mail(UserMailer, :in_person_verified).with(
-                  params: { user: user, email_address: user.email_addresses.first },
+                  params: { user:, email_address: user.email_addresses.first },
                   args: [{ enrollment: pending_enrollment }],
                 ).at(wait_until).on_queue(:intentionally_delayed)
               end
@@ -582,7 +582,7 @@ RSpec.describe GetUspsProofingResultsJob do
                 enrollment_code: pending_enrollment.enrollment_code,
                 service_provider: anything,
                 timestamp: anything,
-                wait_until: wait_until,
+                wait_until:,
                 job_name: 'GetUspsProofingResultsJob',
               )
             end
@@ -597,7 +597,7 @@ RSpec.describe GetUspsProofingResultsJob do
                 expect do
                   job.perform(Time.zone.now)
                 end.to have_enqueued_mail(UserMailer, :in_person_failed).with(
-                  params: { user: user, email_address: user.email_addresses.first },
+                  params: { user:, email_address: user.email_addresses.first },
                   args: [{ enrollment: pending_enrollment }],
                 ).at(wait_until).on_queue(:intentionally_delayed)
               end
@@ -608,7 +608,7 @@ RSpec.describe GetUspsProofingResultsJob do
                 enrollment_code: pending_enrollment.enrollment_code,
                 service_provider: anything,
                 timestamp: anything,
-                wait_until: wait_until,
+                wait_until:,
                 job_name: 'GetUspsProofingResultsJob',
               )
             end
@@ -625,7 +625,7 @@ RSpec.describe GetUspsProofingResultsJob do
               expect do
                 job.perform(Time.zone.now)
               end.to have_enqueued_mail(UserMailer, :in_person_verified).with(
-                params: { user: user, email_address: user.email_addresses.first },
+                params: { user:, email_address: user.email_addresses.first },
                 args: [{ enrollment: pending_enrollment }],
               ).at(:no_wait).on_queue(:default)
             end

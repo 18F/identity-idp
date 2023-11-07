@@ -3,7 +3,7 @@ module DocAuth
     module Requests
       class CreateDocumentRequest < DocAuth::Acuant::Request
         def initialize(config:, image_source:)
-          super(config: config)
+          super(config:)
 
           # @see DocAuth::ImageSources
           @image_source = image_source

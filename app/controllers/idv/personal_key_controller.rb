@@ -12,7 +12,7 @@ module Idv
 
     def show
       analytics.idv_personal_key_visited(
-        address_verification_method: address_verification_method,
+        address_verification_method:,
         in_person_verification_pending: idv_session.profile&.in_person_verification_pending?,
       )
       add_proofing_component
@@ -24,7 +24,7 @@ module Idv
       user_session[:need_personal_key_confirmation] = false
 
       analytics.idv_personal_key_submitted(
-        address_verification_method: address_verification_method,
+        address_verification_method:,
         deactivation_reason: idv_session.profile&.deactivation_reason,
         in_person_verification_pending: idv_session.profile&.in_person_verification_pending?,
         fraud_review_pending: fraud_review_pending?,

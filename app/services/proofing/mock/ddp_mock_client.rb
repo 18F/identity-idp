@@ -47,7 +47,7 @@ module Proofing
         result.transaction_id = TRANSACTION_ID
 
         review_status = review_status_for(session_id: applicant[:threatmetrix_session_id])
-        response_body = response_body_json(review_status: review_status)
+        response_body = response_body_json(review_status:)
         request_result = response_body['request_result']
 
         return exception_result if review_status.nil?

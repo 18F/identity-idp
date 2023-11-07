@@ -181,8 +181,8 @@ RSpec.describe User do
     describe '#active_profile' do
       it 'returns the only active profile' do
         user = create(:user, :fully_registered)
-        profile1 = create(:profile, :active, :verified, user: user, pii: { first_name: 'Jane' })
-        _profile2 = create(:profile, :verified, user: user, pii: { first_name: 'Susan' })
+        profile1 = create(:profile, :active, :verified, user:, pii: { first_name: 'Jane' })
+        _profile2 = create(:profile, :verified, user:, pii: { first_name: 'Susan' })
 
         expect(user.active_profile).to eq profile1
       end
@@ -193,13 +193,13 @@ RSpec.describe User do
     let(:user) { create(:user, :fully_registered) }
 
     let(:failed_enrollment_profile) do
-      create(:profile, :verification_cancelled, user: user, pii: { first_name: 'Jane' })
+      create(:profile, :verification_cancelled, user:, pii: { first_name: 'Jane' })
     end
     let(:pending_enrollment_profile) do
       create(
         :profile,
         gpo_verification_pending_at: 1.day.ago,
-        user: user,
+        user:,
         pii: { first_name: 'Susan' },
       )
     end
@@ -208,22 +208,22 @@ RSpec.describe User do
       create(
         :profile,
         gpo_verification_pending_at: 1.day.ago,
-        user: user,
+        user:,
         pii: { first_name: 'Susan' },
       )
     end
 
     let!(:failed_enrollment) do
-      create(:in_person_enrollment, :failed, user: user, profile: failed_enrollment_profile)
+      create(:in_person_enrollment, :failed, user:, profile: failed_enrollment_profile)
     end
     let!(:pending_enrollment) do
-      create(:in_person_enrollment, :pending, user: user, profile: pending_enrollment_profile)
+      create(:in_person_enrollment, :pending, user:, profile: pending_enrollment_profile)
     end
     let!(:establishing_enrollment) do
       create(
         :in_person_enrollment,
         :establishing,
-        user: user,
+        user:,
         profile: establishing_enrollment_profile,
       )
     end
@@ -317,7 +317,7 @@ RSpec.describe User do
 
     describe '#has_in_person_enrollment?' do
       it 'returns the establishing IPP enrollment that has an address' do
-        ProofingComponent.find_or_create_by(user: user).
+        ProofingComponent.find_or_create_by(user:).
           update!(document_check: Idp::Constants::Vendors::USPS)
 
         expect(user.has_in_person_enrollment?).to eq(true)
@@ -334,7 +334,7 @@ RSpec.describe User do
           :profile,
           :verify_by_mail_pending,
           user: new_user,
-          proofing_components: proofing_components,
+          proofing_components:,
         )
       end
       let!(:establishing_enrollment) do
@@ -361,7 +361,7 @@ RSpec.describe User do
       )
       user_id = user.id
       user.destroy!
-      expect(ServiceProviderIdentity.where(user_id: user_id).length).to eq 1
+      expect(ServiceProviderIdentity.where(user_id:).length).to eq 1
     end
   end
 
@@ -529,7 +529,7 @@ RSpec.describe User do
     let(:rules_of_use_horizon_years) { 6 }
     let(:rules_of_use_updated_at) { 1.day.ago }
     let(:accepted_terms_at) { nil }
-    let(:user) { create(:user, :fully_registered, accepted_terms_at: accepted_terms_at) }
+    let(:user) { create(:user, :fully_registered, accepted_terms_at:) }
     before do
       allow(IdentityConfig.store).to receive(:rules_of_use_horizon_years).
         and_return(rules_of_use_horizon_years)
@@ -614,7 +614,7 @@ RSpec.describe User do
           :profile,
           gpo_verification_pending_at: 2.days.ago,
           created_at: 2.days.ago,
-          user: user,
+          user:,
         )
       end
 
@@ -637,7 +637,7 @@ RSpec.describe User do
         create(
           :profile,
           deactivation_reason: :encryption_error,
-          user: user,
+          user:,
         )
 
         expect(user.pending_profile).to be_nil
@@ -651,7 +651,7 @@ RSpec.describe User do
           :profile,
           gpo_verification_pending_at: Time.zone.now,
           deactivation_reason: :verification_cancelled,
-          user: user,
+          user:,
         )
 
         expect(user.pending_profile).to be_nil
@@ -665,7 +665,7 @@ RSpec.describe User do
           :profile,
           gpo_verification_pending_at: Time.zone.now,
           deactivation_reason: :password_reset,
-          user: user,
+          user:,
         )
 
         expect(user.pending_profile).to be_nil
@@ -680,7 +680,7 @@ RSpec.describe User do
         profile = create(
           :profile,
           gpo_verification_pending_at: Time.zone.now,
-          user: user,
+          user:,
         )
 
         expect(user.gpo_verification_pending_profile).to eq profile
@@ -695,12 +695,12 @@ RSpec.describe User do
           :verified,
           :password_reset,
           created_at: 1.day.ago,
-          user: user,
+          user:,
         )
         create(
           :profile,
           deactivation_reason: :encryption_error,
-          user: user,
+          user:,
         )
 
         expect(user.gpo_verification_pending_profile).to be_nil
@@ -711,7 +711,7 @@ RSpec.describe User do
   describe '#fraud_review_pending?' do
     it 'returns true if fraud review is pending' do
       user = create(:user)
-      create(:profile, :fraud_review_pending, user: user)
+      create(:profile, :fraud_review_pending, user:)
 
       expect(user.fraud_review_pending?).to eq true
     end
@@ -720,7 +720,7 @@ RSpec.describe User do
   describe '#fraud_rejection?' do
     it 'returns true if fraud rejection' do
       user = create(:user)
-      create(:profile, :fraud_rejection, user: user)
+      create(:profile, :fraud_rejection, user:)
 
       expect(user.fraud_rejection?).to eq true
     end
@@ -730,7 +730,7 @@ RSpec.describe User do
     context 'with a fraud review pending profile' do
       it 'returns the profile pending review' do
         user = create(:user)
-        profile = create(:profile, :fraud_review_pending, user: user)
+        profile = create(:profile, :fraud_review_pending, user:)
 
         expect(user.fraud_review_pending_profile).to eq(profile)
       end
@@ -746,7 +746,7 @@ RSpec.describe User do
     context 'with a fraud rejection profile' do
       it 'returns the profile with rejection' do
         user = create(:user)
-        profile = create(:profile, :fraud_rejection, user: user)
+        profile = create(:profile, :fraud_rejection, user:)
 
         expect(user.fraud_rejection_profile).to eq(profile)
       end
@@ -780,7 +780,7 @@ RSpec.describe User do
           :profile,
           :active,
           :verified,
-          user: user,
+          user:,
         )
       end
 
@@ -802,7 +802,7 @@ RSpec.describe User do
         create(
           :profile,
           :verified,
-          user: user,
+          user:,
         )
       end
 
@@ -810,7 +810,7 @@ RSpec.describe User do
         create(
           :profile,
           :verification_cancelled,
-          user: user,
+          user:,
         )
       end
 
@@ -899,7 +899,7 @@ RSpec.describe User do
       context 'user is not already suspended' do
         let(:mock_session_id) { SecureRandom.uuid }
         before do
-          UpdateUser.new(user: user, attributes: { unique_session_id: mock_session_id }).call
+          UpdateUser.new(user:, attributes: { unique_session_id: mock_session_id }).call
         end
 
         it 'creates SuspendedEmail records for each email address' do
@@ -1030,7 +1030,7 @@ RSpec.describe User do
       let(:other_service_provider) { create(:service_provider, issuer: 'otherissuer') }
       let!(:enrollment) do
         create(
-          :in_person_enrollment, user: user, issuer: other_service_provider.issuer,
+          :in_person_enrollment, user:, issuer: other_service_provider.issuer,
                                  status: :passed
         )
       end
@@ -1041,11 +1041,11 @@ RSpec.describe User do
     context 'user has completed survey for other issuer and enrollments for both issuers' do
       let(:other_service_provider) { create(:service_provider, issuer: 'otherissuer') }
       let!(:enrollment) do
-        create(:in_person_enrollment, user: user, issuer: issuer, status: :passed)
+        create(:in_person_enrollment, user:, issuer:, status: :passed)
       end
       let!(:enrollment2) do
         create(
-          :in_person_enrollment, user: user, issuer: other_service_provider.issuer,
+          :in_person_enrollment, user:, issuer: other_service_provider.issuer,
                                  status: :passed, follow_up_survey_sent: true
         )
       end
@@ -1061,7 +1061,7 @@ RSpec.describe User do
     end
     context 'user has completed enrollment but no survey' do
       let!(:enrollment) do
-        create(:in_person_enrollment, user: user, issuer: issuer, status: :passed)
+        create(:in_person_enrollment, user:, issuer:, status: :passed)
       end
       it 'should send survey' do
         it_should_send_survey
@@ -1069,11 +1069,11 @@ RSpec.describe User do
     end
     context 'user has multiple enrollments but only completed a survey for the last one' do
       let!(:enrollment) do
-        create(:in_person_enrollment, user: user, issuer: issuer, status: :passed)
+        create(:in_person_enrollment, user:, issuer:, status: :passed)
       end
       let!(:enrollment2) do
         create(
-          :in_person_enrollment, user: user, issuer: issuer, status: :passed,
+          :in_person_enrollment, user:, issuer:, status: :passed,
                                  follow_up_survey_sent: true
         )
       end
@@ -1083,7 +1083,7 @@ RSpec.describe User do
     end
     context 'user has completed enrollment but no survey and feature is disabled' do
       let!(:enrollment) do
-        create(:in_person_enrollment, user: user, issuer: issuer, status: :passed)
+        create(:in_person_enrollment, user:, issuer:, status: :passed)
       end
 
       before do
@@ -1098,7 +1098,7 @@ RSpec.describe User do
     context 'user has completed enrollment and survey' do
       let!(:enrollment) do
         create(
-          :in_person_enrollment, user: user, issuer: issuer, status: :passed,
+          :in_person_enrollment, user:, issuer:, status: :passed,
                                  follow_up_survey_sent: true
         )
       end
@@ -1125,7 +1125,7 @@ RSpec.describe User do
 
     context 'for a user with a profile that is not verified' do
       before do
-        create(:profile, user: user, activated_at: nil, verified_at: nil)
+        create(:profile, user:, activated_at: nil, verified_at: nil)
       end
 
       it { expect(user.broken_personal_key?).to eq(false) }
@@ -1135,7 +1135,7 @@ RSpec.describe User do
       before do
         create(
           :profile,
-          user: user,
+          user:,
           active: true,
           activated_at: 5.days.ago,
           verified_at: 5.days.ago,
@@ -1147,7 +1147,7 @@ RSpec.describe User do
 
     context 'for a user with a profile verified after the broken key window' do
       before do
-        create(:profile, :active, :verified, user: user)
+        create(:profile, :active, :verified, user:)
       end
 
       it { expect(user.broken_personal_key?).to eq(false) }
@@ -1164,10 +1164,10 @@ RSpec.describe User do
       before do
         create(
           :profile,
-          user: user,
+          user:,
           active: true,
           activated_at: verified_at,
-          verified_at: verified_at,
+          verified_at:,
         )
       end
 
@@ -1202,11 +1202,11 @@ RSpec.describe User do
 
         create(
           :profile,
-          user: user,
+          user:,
           active: true,
           verified_at: Time.zone.now,
-          encrypted_pii_recovery: encrypted_pii_recovery,
-          encrypted_pii_recovery_multi_region: encrypted_pii_recovery_multi_region,
+          encrypted_pii_recovery:,
+          encrypted_pii_recovery_multi_region:,
         )
       end
 
@@ -1220,7 +1220,7 @@ RSpec.describe User do
     let!(:unconfirmed_expired_email_address) do
       create(
         :email_address,
-        user: user,
+        user:,
         confirmed_at: nil,
         confirmation_sent_at: 36.hours.ago,
       )
@@ -1228,7 +1228,7 @@ RSpec.describe User do
     let!(:unconfirmed_unexpired_email_address) do
       create(
         :email_address,
-        user: user,
+        user:,
         confirmed_at: nil,
         confirmation_sent_at: 5.minutes.ago,
       )
@@ -1248,7 +1248,7 @@ RSpec.describe User do
   end
 
   describe '#email_language_preference_description' do
-    let(:user) { build_stubbed(:user, email_language: email_language) }
+    let(:user) { build_stubbed(:user, email_language:) }
 
     subject(:description) { user.email_language_preference_description }
 
@@ -1389,17 +1389,17 @@ RSpec.describe User do
   describe '#recent_events' do
     let!(:user) { create(:user, :fully_registered, created_at: Time.zone.now - 100.days) }
 
-    let!(:event) { create(:event, user: user, created_at: Time.zone.now - 98.days) }
+    let!(:event) { create(:event, user:, created_at: Time.zone.now - 98.days) }
     let!(:identity) do
       create(
         :service_provider_identity,
         :active,
-        user: user,
+        user:,
         last_authenticated_at: Time.zone.now - 60.days,
       )
     end
     let!(:another_event) do
-      create(:event, user: user, event_type: :email_changed, created_at: Time.zone.now - 30.days)
+      create(:event, user:, event_type: :email_changed, created_at: Time.zone.now - 30.days)
     end
 
     it 'interleaves identities and events, decorates events, and sorts them in descending order' do
@@ -1509,9 +1509,9 @@ RSpec.describe User do
   describe '#second_last_signed_in_at' do
     it 'returns second most recent full authentication event' do
       user = create(:user)
-      _event1 = create(:event, user: user, event_type: 'sign_in_after_2fa')
-      event2 = create(:event, user: user, event_type: 'sign_in_after_2fa')
-      _event3 = create(:event, user: user, event_type: 'sign_in_after_2fa')
+      _event1 = create(:event, user:, event_type: 'sign_in_after_2fa')
+      event2 = create(:event, user:, event_type: 'sign_in_after_2fa')
+      _event3 = create(:event, user:, event_type: 'sign_in_after_2fa')
 
       expect(user.second_last_signed_in_at).to eq(event2.reload.created_at)
     end
@@ -1523,7 +1523,7 @@ RSpec.describe User do
     it 'returns false if the service provider is not an attempts API service provider' do
       user = create(:user, :proofed)
 
-      expect(user.reproof_for_irs?(service_provider: service_provider)).to be_falsy
+      expect(user.reproof_for_irs?(service_provider:)).to be_falsy
     end
 
     context 'an attempts API service provider' do
@@ -1532,7 +1532,7 @@ RSpec.describe User do
       it 'returns false if the user has not proofed before' do
         user = create(:user)
 
-        expect(user.reproof_for_irs?(service_provider: service_provider)).to be_falsy
+        expect(user.reproof_for_irs?(service_provider:)).to be_falsy
       end
 
       it 'returns false if the active profile initiating SP was an attempts API SP' do
@@ -1540,13 +1540,13 @@ RSpec.describe User do
 
         user.active_profile.update!(initiating_service_provider: service_provider)
 
-        expect(user.reproof_for_irs?(service_provider: service_provider)).to be_falsy
+        expect(user.reproof_for_irs?(service_provider:)).to be_falsy
       end
 
       it 'returns true if the active profile initiating SP was not an attempts API SP' do
         user = create(:user, :proofed)
 
-        expect(user.reproof_for_irs?(service_provider: service_provider)).to be_truthy
+        expect(user.reproof_for_irs?(service_provider:)).to be_truthy
       end
     end
   end

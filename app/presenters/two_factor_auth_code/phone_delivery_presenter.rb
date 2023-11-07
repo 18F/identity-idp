@@ -61,11 +61,11 @@ module TwoFactorAuthCode
     def cancel_link
       locale = LinkLocaleResolver.locale
       if in_multi_mfa_selection_flow
-        authentication_methods_setup_path(locale: locale)
+        authentication_methods_setup_path(locale:)
       elsif confirmation_for_add_phone || reauthn
-        account_path(locale: locale)
+        account_path(locale:)
       else
-        sign_out_path(locale: locale)
+        sign_out_path(locale:)
       end
     end
 

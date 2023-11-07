@@ -3,8 +3,8 @@ require 'rails_helper'
 RSpec.describe PushNotification::EmailChangedEvent do
   subject(:event) do
     PushNotification::EmailChangedEvent.new(
-      user: user,
-      email: email,
+      user:,
+      email:,
     )
   end
 
@@ -22,7 +22,7 @@ RSpec.describe PushNotification::EmailChangedEvent do
       expect(event.payload).to eq(
         subject: {
           subject_type: 'email',
-          email: email,
+          email:,
         },
       )
     end

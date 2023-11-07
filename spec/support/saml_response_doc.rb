@@ -43,7 +43,7 @@ class SamlResponseDoc
   def saml_response(settings)
     @saml_response ||= OneLogin::RubySaml::Response.new(
       raw_xml_response,
-      settings: settings,
+      settings:,
     )
   end
 

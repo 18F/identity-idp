@@ -17,7 +17,7 @@ RSpec.feature 'welcome step' do
   end
 
   it 'logs return to sp link click' do
-    click_on t('idv.troubleshooting.options.get_help_at_sp', sp_name: sp_name)
+    click_on t('idv.troubleshooting.options.get_help_at_sp', sp_name:)
 
     expect(fake_analytics).to have_logged_event(
       'Return to SP: Failed to proof',
