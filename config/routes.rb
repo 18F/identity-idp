@@ -390,6 +390,9 @@ Rails.application.routes.draw do
       get '/in_person/:step' => 'in_person#show', as: :in_person_step
       put '/in_person/:step' => 'in_person#update'
 
+      get '/opt_in_ipp' => 'opt_in_ipp#show'
+      put '/opt_in_ipp' => 'opt_in_ipp#update'
+
       get '/by_mail/enter_code' => 'by_mail/enter_code#index', as: :verify_by_mail_enter_code
       post '/by_mail/enter_code' => 'by_mail/enter_code#create'
       get '/by_mail/enter_code/rate_limited' => 'by_mail/enter_code_rate_limited#index',

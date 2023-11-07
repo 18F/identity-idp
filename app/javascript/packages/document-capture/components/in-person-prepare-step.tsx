@@ -3,6 +3,7 @@ import { Link, PageHeading, ProcessList, ProcessListItem } from '@18f/identity-c
 import { getConfigValue } from '@18f/identity-config';
 import { useI18n } from '@18f/identity-react-i18n';
 import { FormStepsButton } from '@18f/identity-form-steps';
+import { forceRedirect } from '@18f/identity-url';
 import UploadContext from '../context/upload';
 import MarketingSiteContext from '../context/marketing-site';
 import BackButton from './back-button';
@@ -14,8 +15,22 @@ function InPersonPrepareStep({ toPreviousStep }) {
   const { t } = useI18n();
   const { flowPath } = useContext(UploadContext);
   const { securityAndPrivacyHowItWorksURL } = useContext(MarketingSiteContext);
-  const { inPersonURL, inPersonOutageMessageEnabled, inPersonOutageExpectedUpdateDate } =
-    useContext(InPersonContext);
+  const {
+    inPersonURL,
+    inPersonOutageMessageEnabled,
+    inPersonOutageExpectedUpdateDate,
+    skipDocAuth,
+    howToVerifyURL,
+  } = useContext(InPersonContext);
+
+  console.log(howToVerifyURL);
+  function goBack() {
+    if (skipDocAuth == 'true') {
+      forceRedirect(howToVerifyURL);
+    } else {
+      toPreviousStep();
+    }
+  }
 
   return (
     <>
@@ -63,7 +78,7 @@ function InPersonPrepareStep({ toPreviousStep }) {
         )}
       </p>
       <InPersonTroubleshootingOptions />
-      <BackButton role="link" includeBorder onClick={toPreviousStep} />
+      <BackButton role="link" includeBorder onClick={goBack} />
     </>
   );
 }

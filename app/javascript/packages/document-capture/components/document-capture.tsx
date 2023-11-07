@@ -22,6 +22,7 @@ import SuspenseErrorBoundary from './suspense-error-boundary';
 import SubmissionInterstitial from './submission-interstitial';
 import withProps from '../higher-order/with-props';
 import { InPersonContext } from '../context';
+import OptInIpp from './opt-in-ipp';
 
 interface DocumentCaptureProps {
   /**
@@ -37,8 +38,15 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
   const { t } = useI18n();
   const { flowPath, phoneWithCamera } = useContext(UploadContext);
   const { trackSubmitEvent, trackVisitEvent } = useContext(AnalyticsContext);
-  const { inPersonFullAddressEntryEnabled, inPersonURL } = useContext(InPersonContext);
+  const { inPersonFullAddressEntryEnabled, inPersonURL, skipDocAuth, howToVerifyURL } =
+    useContext(InPersonContext);
   const appName = getConfigValue('appName');
+
+  // If the user got here by opting-in to in-person proofing then skip rendering the document capture
+  // component and just render the in-person page
+  if (skipDocAuth == 'true') {
+    return <OptInIpp onStepChange={onStepChange} />;
+  }
 
   useDidUpdateEffect(onStepChange, [stepName]);
   useEffect(() => {

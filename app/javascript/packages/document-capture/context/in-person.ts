@@ -5,6 +5,8 @@ export interface InPersonContextProps {
    * URL to in-person proofing alternative flow, if enabled.
    */
   inPersonURL?: string;
+  skipDocAuth: boolean;
+  howToVerifyURL: string;
 
   /**
    * Post Office location search endpoint URL
@@ -44,6 +46,8 @@ const InPersonContext = createContext<InPersonContextProps>({
   inPersonOutageMessageEnabled: false,
   inPersonFullAddressEntryEnabled: false,
   usStatesTerritories: [],
+  skipDocAuth: false,
+  howToVerifyURL: '',
 });
 
 InPersonContext.displayName = 'InPersonContext';

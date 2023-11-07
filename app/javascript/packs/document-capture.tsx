@@ -33,6 +33,8 @@ interface AppRootData {
   exitUrl: string;
   idvInPersonUrl?: string;
   securityAndPrivacyHowItWorksUrl: string;
+  skipDocAuth: string;
+  howToVerifyURL: string;
 }
 
 const appRoot = document.getElementById('document-capture-form')!;
@@ -99,6 +101,8 @@ const {
   inPersonOutageExpectedUpdateDate,
   usStatesTerritories = '',
   phoneWithCamera = '',
+  skipDocAuth,
+  howToVerifyUrl,
 } = appRoot.dataset as DOMStringMap & AppRootData;
 
 let parsedUsStatesTerritories = [];
@@ -120,6 +124,8 @@ const App = composeComponents(
         inPersonOutageExpectedUpdateDate,
         inPersonFullAddressEntryEnabled: inPersonFullAddressEntryEnabled === 'true',
         usStatesTerritories: parsedUsStatesTerritories,
+        skipDocAuth,
+        howToVerifyURL: howToVerifyUrl,
       },
     },
   ],

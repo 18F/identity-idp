@@ -23,7 +23,9 @@ module Idv
         if how_to_verify_form_params['selection'] == Idv::HowToVerifyForm::REMOTE
           redirect_to idv_hybrid_handoff_url
         else
-          redirect_to idv_document_capture_url
+          # todo: is this necessary?
+          idv_session.flow_path = 'standard'
+          redirect_to idv_opt_in_ipp_url
         end
       else
         flash[:error] = result.first_error_message
