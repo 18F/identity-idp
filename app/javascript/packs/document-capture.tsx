@@ -10,6 +10,7 @@ import {
   FailedCaptureAttemptsContextProvider,
   MarketingSiteContextProvider,
   InPersonContext,
+  FeatureFlagContext,
 } from '@18f/identity-document-capture';
 import { isCameraCapableMobile } from '@18f/identity-device';
 import { FlowContext } from '@18f/identity-verify-flow';
@@ -33,6 +34,7 @@ interface AppRootData {
   exitUrl: string;
   idvInPersonUrl?: string;
   securityAndPrivacyHowItWorksUrl: string;
+  uiNotReadySectionEnabled: string;
 }
 
 const appRoot = document.getElementById('document-capture-form')!;
@@ -99,6 +101,7 @@ const {
   inPersonOutageExpectedUpdateDate,
   usStatesTerritories = '',
   phoneWithCamera = '',
+  uiNotReadySectionEnabled = '',
 } = appRoot.dataset as DOMStringMap & AppRootData;
 
 let parsedUsStatesTerritories = [];
@@ -173,6 +176,14 @@ const App = composeComponents(
     {
       maxCaptureAttemptsBeforeNativeCamera: Number(maxCaptureAttemptsBeforeNativeCamera),
       maxSubmissionAttemptsBeforeNativeCamera: Number(maxSubmissionAttemptsBeforeNativeCamera),
+    },
+  ],
+  [
+    FeatureFlagContext.Provider,
+    {
+      value: {
+        notReadySectionEnabled: String(uiNotReadySectionEnabled) === 'true',
+      },
     },
   ],
   [
