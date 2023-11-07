@@ -56,20 +56,24 @@ If not using macOS:
 
     You should now be able to go to open up your favorite browser, go to `localhost:3000` and see your local development environment running.
 
-### Running a sample partner application
+### Simulating a partner authentication request
 
 Typically, a person who uses Login.gov will arrive from a partner application, and their experience
 on Login.gov will be customized to incorporate the name and logo of the partner. They will also be
 asked to consent to share their information with the partner before being sent back.
 
-To simulate a true end-to-end user experience, you can use one of the sample partner applications,
-which are configured by default to work with your local IdP instance.
+To simulate a true end-to-end user experience, you can either...
 
-- OIDC: https://github.com/18F/identity-oidc-sinatra
-- SAML: https://github.com/18F/identity-saml-sinatra
+- Use the built-in test controller for SAML logins at http://localhost:3000/test/saml/login
+- Or, run a sample partner application, which is configured by default to run with your local IdP instance:
+   - OIDC: https://github.com/18F/identity-oidc-sinatra
+      - Runs at http://localhost:9292/
+   - SAML: https://github.com/18F/identity-saml-sinatra
+      - Runs at http://localhost:4567/
 
-When running a sample application, you can visit either http://localhost:9292/ (OIDC) or
-http://localhost:4567/ (SAML) and click "Sign in" to begin the sign-in process using the IdP.
+Running the sample application requires a few additional steps, but can be useful if you want to
+test the experience of a user being redirected to an external site, or if you want to configure
+different options of the authentication request, such as AAL or IAL.
 
 ### Running tests locally
 
