@@ -48,7 +48,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
       expect(page).to have_content('12345')
       expect(page).to have_content('Apt 3E')
 
-      click_idv_continue
+      click_idv_submit_default
 
       expect(fake_analytics).to have_logged_event(
         'IdV: doc auth verify proofing results',
@@ -90,7 +90,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
         **fake_pii_details,
         ssn: DocAuthHelper::GOOD_SSN,
       )
-      click_idv_continue
+      click_idv_submit_default
 
       expect(fake_analytics).to have_logged_event(
         'IdV: doc auth verify proofing results',
@@ -108,7 +108,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
     )
     fill_out_ssn_form_with_ssn_that_fails_resolution
     click_idv_continue
-    click_idv_continue
+    click_idv_submit_default
 
     expect(page).to have_current_path(idv_session_errors_warning_path)
     expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
@@ -127,7 +127,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
     fill_out_ssn_form_with_ssn_that_raises_exception
 
     click_idv_continue
-    click_idv_continue
+    click_idv_submit_default
 
     expect(fake_analytics).to have_logged_event(
       'IdV: doc auth exception visited',
@@ -157,13 +157,13 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
         with({ limiter_context: 'single-session' })
 
       (max_resolution_attempts - 2).times do
-        click_idv_continue
+        click_idv_submit_default
         expect(page).to have_current_path(idv_session_errors_warning_path)
         click_try_again
       end
 
       # Check that last attempt shows correct warning text
-      click_idv_continue
+      click_idv_submit_default
       expect(page).to have_current_path(idv_session_errors_warning_path)
       expect(page).to have_content(
         strip_tags(
@@ -172,7 +172,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
       )
       click_try_again
 
-      click_idv_continue
+      click_idv_submit_default
       expect(page).to have_current_path(idv_session_errors_failure_path)
       expect(page).not_to have_css('.step-indicator__step--current', text: text, wait: 5)
       expect(fake_analytics).to have_logged_event(
@@ -187,7 +187,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
       travel_to(IdentityConfig.store.idv_attempt_window_in_hours.hours.from_now + 1) do
         sign_in_and_2fa_user(user)
         complete_doc_auth_steps_before_verify_step
-        click_idv_continue
+        click_idv_submit_default
 
         expect(page).to have_current_path(idv_phone_path)
         expect(RateLimiter.new(user: user, rate_limit_type: :idv_resolution)).to be_limited
@@ -215,7 +215,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
       fill_out_ssn_form_with_ssn_that_fails_resolution
       click_idv_continue
       (max_ssn_attempts - 1).times do
-        click_idv_continue
+        click_idv_submit_default
         expect(page).to have_current_path(idv_session_errors_warning_path)
         click_try_again
       end
@@ -224,7 +224,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
     it 'rate limits ssn and continues when it expires' do
       expect(fake_attempts_tracker).to receive(:idv_verification_rate_limited).at_least(1).times.
         with({ limiter_context: 'multi-session' })
-      click_idv_continue
+      click_idv_submit_default
       expect(page).to have_current_path(idv_session_errors_ssn_failure_path)
       expect(fake_analytics).to have_logged_event(
         'Rate Limit Reached',
@@ -238,7 +238,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
       travel_to(IdentityConfig.store.idv_attempt_window_in_hours.hours.from_now + 1) do
         sign_in_and_2fa_user(user)
         complete_doc_auth_steps_before_verify_step
-        click_idv_continue
+        click_idv_submit_default
 
         expect(page).to have_current_path(idv_phone_path)
       end
@@ -256,7 +256,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
 
       fill_in t('idv.form.ssn_label'), with: '900456789'
       click_button t('forms.buttons.submit.update')
-      click_idv_continue
+      click_idv_submit_default
 
       expect(page).to have_current_path(idv_phone_path)
       expect(fake_analytics).not_to have_logged_event(
@@ -297,7 +297,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
 
         sign_in_and_2fa_user(user)
         complete_doc_auth_steps_before_verify_step
-        click_idv_continue
+        click_idv_submit_default
 
         expect(DocAuthLog.find_by(user_id: user.id).aamva).not_to be_nil
       end
@@ -321,7 +321,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
 
         sign_in_and_2fa_user(user)
         complete_doc_auth_steps_before_verify_step
-        click_idv_continue
+        click_idv_submit_default
 
         expect(DocAuthLog.find_by(user_id: user.id).aamva).to be_nil
       end
@@ -344,7 +344,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
         visit_idp_from_sp_with_ial1(:oidc)
         sign_in_and_2fa_user(user)
         complete_doc_auth_steps_before_verify_step
-        click_idv_continue
+        click_idv_submit_default
 
         expect(DocAuthLog.find_by(user_id: user.id).aamva).to be_nil
       end
@@ -359,12 +359,12 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
       allow(DocumentCaptureSession).to receive(:find_by).
         and_return(nil)
 
-      click_idv_continue
+      click_idv_submit_default
       expect(fake_analytics).to have_logged_event('IdV: proofing resolution result missing')
       expect(page).to have_content(t('idv.failure.timeout'))
       expect(page).to have_current_path(idv_verify_info_path)
       allow(DocumentCaptureSession).to receive(:find_by).and_call_original
-      click_idv_continue
+      click_idv_submit_default
       expect(page).to have_current_path(idv_phone_path)
     end
 
@@ -381,7 +381,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
       allow(DocumentCaptureSession).to receive(:find_by).
         and_return(nil)
 
-      click_idv_continue
+      click_idv_submit_default
       expect(page).to have_content(t('idv.failure.timeout'))
       expect(page).to have_current_path(idv_verify_info_path)
       allow(DocumentCaptureSession).to receive(:find_by).and_call_original
@@ -396,11 +396,11 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
       allow(DocumentCaptureSession).to receive(:find_by).
         and_return(nil)
 
-      click_idv_continue
+      click_idv_submit_default
       expect(page).to have_content(t('idv.failure.timeout'))
       expect(page).to have_current_path(idv_verify_info_path)
       allow(DocumentCaptureSession).to receive(:find_by).and_call_original
-      click_idv_continue
+      click_idv_submit_default
       expect(page).to have_current_path(idv_phone_path)
     end
   end
@@ -418,7 +418,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
     end
 
     it 'redirects to the gpo page when continuing from verify info page' do
-      click_idv_continue
+      click_idv_submit_default
       expect(page).to have_current_path(idv_request_letter_path)
 
       click_on 'Cancel'

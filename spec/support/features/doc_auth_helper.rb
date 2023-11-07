@@ -134,7 +134,7 @@ module DocAuthHelper
   end
 
   def complete_verify_step
-    click_submit_default
+    click_idv_submit_default
   end
 
   def complete_doc_auth_steps_before_address_step(expect_accessible: false)
