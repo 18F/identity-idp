@@ -14,6 +14,7 @@ production:
   database_worker_jobs_password: ['env', 'POSTGRES_WORKER_PASSWORD']
   database_worker_jobs_sslmode: ['env', 'POSTGRES_WORKER_SSLMODE']
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
+  rails_mailer_previews_enabled: true
   redis_throttle_url: ['env', 'REDIS_THROTTLE_URL']
   redis_url: ['env', 'REDIS_URL']
   password_pepper: f22d4b2cafac9066fe2f4416f5b7a32c
