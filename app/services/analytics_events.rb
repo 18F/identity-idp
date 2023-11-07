@@ -3187,24 +3187,6 @@ module AnalyticsEvents
     )
   end
 
-  # Tracks when the user has added the MFA method webauthn to their account
-  # @param [Boolean] platform_authenticator indicates if webauthn_platform was used
-  # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
-  def multi_factor_auth_added_webauthn(
-    platform_authenticator:,
-    enabled_mfa_methods_count:, **extra
-  )
-    track_event(
-      'Multi-Factor Authentication: Added webauthn',
-      {
-        method_name: :webauthn,
-        platform_authenticator: platform_authenticator,
-        enabled_mfa_methods_count: enabled_mfa_methods_count,
-        **extra,
-      }.compact,
-    )
-  end
-
   # A user has downloaded their backup codes
   def multi_factor_auth_backup_code_download
     track_event('Multi-Factor Authentication: download backup code')
@@ -4810,18 +4792,27 @@ module AnalyticsEvents
   end
 
   # @param [Hash] platform_authenticator
-  # @param [Hash] errors
-  # @param [Integer] enabled_mfa_methods_count
   # @param [Boolean] success
+  # @param [Hash, nil] errors
+  # Tracks whether or not Webauthn setup was successful
+  def webauthn_setup_submitted(platform_authenticator:, success:, errors: nil, **extra)
+    track_event(
+      :webauthn_setup_submitted,
+      platform_authenticator: platform_authenticator,
+      success: success,
+      errors: errors,
+      **extra,
+    )
+  end
+
+  # @param [Hash] platform_authenticator
+  # @param [Integer] enabled_mfa_methods_count
   # Tracks when WebAuthn setup is visited
-  def webauthn_setup_visit(platform_authenticator:, errors:, enabled_mfa_methods_count:, success:,
-                           **extra)
+  def webauthn_setup_visit(platform_authenticator:, enabled_mfa_methods_count:, **extra)
     track_event(
       'WebAuthn Setup Visited',
       platform_authenticator: platform_authenticator,
-      errors: errors,
       enabled_mfa_methods_count: enabled_mfa_methods_count,
-      success: success,
       **extra,
     )
   end
