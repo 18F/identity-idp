@@ -11,6 +11,7 @@ class BrowserSupport
     firefox: ->(browser, version) { browser.firefox?(version) },
     ios_saf: ->(browser, version) { browser.ios? && browser.safari?(version) },
     op_mini: ->(browser, version) { browser.opera_mini?(version) },
+    op_mob: ->(browser, version) { browser.platform.android? && browser.opera?(version) },
     opera: ->(browser, version) { browser.opera?(version) },
     safari: ->(browser, version) { browser.safari?(version) },
     samsung: ->(browser, version) { browser.samsung_browser?(version) },
