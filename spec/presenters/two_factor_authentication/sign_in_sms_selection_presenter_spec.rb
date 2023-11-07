@@ -38,7 +38,7 @@ RSpec.describe TwoFactorAuthentication::SignInSmsSelectionPresenter do
         t(
           'two_factor_authentication.login_options.sms_info_html',
           phone: configuration.masked_phone,
-        )
+        ),
       )
     end
   end
