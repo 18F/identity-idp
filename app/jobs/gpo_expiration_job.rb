@@ -5,8 +5,8 @@ class GpoExpirationJob < ApplicationJob
     @analytics = analytics
   end
 
-  def perform(as_of: Time.zone.now, limit: nil)
-    profiles = gpo_profiles_that_should_be_expired(as_of: as_of)
+  def perform(now: Time.zone.now, limit: nil)
+    profiles = gpo_profiles_that_should_be_expired(as_of: now)
 
     if limit.present?
       profiles = profiles.limit(limit)
