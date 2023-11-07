@@ -19,9 +19,21 @@
 <% end %>
 
 <div class="margin-top-4 text-center">
-  <%= button_to(user_authorization_confirmation_path, class: 'usa-button usa-button--big usa-button--wide', method: :post) { t('user_authorization_confirmation.continue') } %>
+  <%= render ButtonComponent.new(
+        action: ->(**tag_options, &block) do
+          button_to(user_authorization_confirmation_path, method: :post, **tag_options, &block)
+        end,
+        big: true,
+        wide: true,
+      ).with_content(t('user_authorization_confirmation.continue')) %>
   <div class="margin-y-4">
     <%= t('user_authorization_confirmation.or') %>
   </div>
-  <%= button_to(reset_user_authorization_path, class: 'usa-button usa-button--big usa-button--wide', method: :delete) { t('user_authorization_confirmation.sign_in') } %>
+  <%= render ButtonComponent.new(
+        action: ->(**tag_options, &block) do
+          button_to(reset_user_authorization_path, method: :delete, **tag_options, &block)
+        end,
+        big: true,
+        wide: true,
+      ).with_content(t('user_authorization_confirmation.sign_in')) %>
 </div>
