@@ -26,6 +26,7 @@ en:
         the box below and then click continue.
       doc_type_not_supported_heading: We only accept a driver’s license or a state ID
       document_capture_cancelled: You have cancelled uploading photos of your ID on your phone.
+      how_to_verify_form: Select a way to verify your identity.
       phone_step_incomplete: You must go to your phone and upload photos of your ID
         before continuing. We sent you a link with instructions.
       rate_limited_heading: We couldn’t verify your ID
@@ -35,6 +36,9 @@ en:
         %{timeout}.</strong>'
       send_link_limited: You tried too many times, please try again in %{timeout}. You
         can also go back and choose to use your computer instead.
+    enter_code:
+      rate_limited_html: You entered an incorrect verification code too many times.
+        <strong>Try again in %{timeout}.</strong>
     general: Oops, something went wrong. Please try again.
     invalid_totp: Invalid code. Please try again.
     max_password_attempts_reached: You’ve entered too many incorrect passwords. You
@@ -111,8 +115,6 @@ en:
       must_select_additional_option: Select an additional authentication method.
       must_select_option: Select an authentication method.
     verify_personal_key:
-      rate_limited: You tried too many times, please try again in %{timeout}.
-    verify_profile:
       rate_limited: You tried too many times, please try again in %{timeout}.
     webauthn_platform_setup:
       account_setup_error: We were unable to add face or touch unlock. Please try again or %{link}.

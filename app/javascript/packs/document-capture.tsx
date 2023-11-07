@@ -98,6 +98,7 @@ const {
   inPersonOutageMessageEnabled,
   inPersonOutageExpectedUpdateDate,
   usStatesTerritories = '',
+  phoneWithCamera = '',
 } = appRoot.dataset as DOMStringMap & AppRootData;
 
 let parsedUsStatesTerritories = [];
@@ -128,6 +129,10 @@ const App = composeComponents(
     {
       sdkSrc: acuantVersion && `/acuant/${acuantVersion}/AcuantJavascriptWebSdk.min.js`,
       cameraSrc: acuantVersion && `/acuant/${acuantVersion}/AcuantCamera.min.js`,
+      passiveLivenessOpenCVSrc: acuantVersion && `/acuant/${acuantVersion}/opencv.min.js`,
+      passiveLivenessSrc: getSelfieCaptureEnabled()
+        ? acuantVersion && `/acuant/${acuantVersion}/AcuantPassiveLiveness.min.js`
+        : undefined,
       credentials: getMetaContent('acuant-sdk-initialization-creds'),
       endpoint: getMetaContent('acuant-sdk-initialization-endpoint'),
       glareThreshold,
@@ -143,6 +148,7 @@ const App = composeComponents(
       isMockClient,
       formData,
       flowPath,
+      phoneWithCamera,
     },
   ],
   [

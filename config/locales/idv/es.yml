@@ -100,6 +100,9 @@ es:
       exit:
         with_sp: Salir de %{app_name} y volver a %{sp_name}
         without_sp: Salir de la verificación de identidad e ir a la página de su cuenta
+      gpo:
+        rate_limited:
+          heading: Inténtelo de nuevo más tarde
       phone:
         heading: No pudimos encontrar coincidencias entre este número de teléfono y
           otros registros

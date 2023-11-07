@@ -141,6 +141,7 @@ module Idv
         user_id: user_uuid,
         pii_like_keypaths: DocPiiForm.pii_like_keypaths,
         flow_path: params[:flow_path],
+        phone_with_camera: phone_with_camera,
       }
 
       @extra_attributes[:front_image_fingerprint] = front_image_fingerprint
@@ -300,6 +301,7 @@ module Idv
           client_image_metrics: image_metadata,
           async: false,
           flow_path: params[:flow_path],
+          phone_with_camera: phone_with_camera,
           vendor_request_time_in_ms: vendor_request_time_in_ms,
         ).except(:classification_info).
         merge(acuant_sdk_upgrade_ab_test_data).
@@ -472,6 +474,15 @@ module Idv
 
     def image_resubmission_check?
       IdentityConfig.store.doc_auth_check_failed_image_resubmission_enabled
+    end
+
+    def phone_with_camera
+      case params[:phone_with_camera]
+      when 'true'
+        true
+      when 'false'
+        false
+      end
     end
   end
 end

@@ -319,6 +319,8 @@ Rails.application.routes.draw do
       post '/forgot_password' => 'forgot_password#update'
       get '/agreement' => 'agreement#show'
       put '/agreement' => 'agreement#update'
+      get '/how_to_verify' => 'how_to_verify#show'
+      put '/how_to_verify' => 'how_to_verify#update'
       get '/document_capture' => 'document_capture#show'
       put '/document_capture' => 'document_capture#update'
       # This route is included in SMS messages sent to users who start the IdV hybrid flow. It
@@ -390,6 +392,8 @@ Rails.application.routes.draw do
 
       get '/by_mail/enter_code' => 'by_mail/enter_code#index', as: :verify_by_mail_enter_code
       post '/by_mail/enter_code' => 'by_mail/enter_code#create'
+      get '/by_mail/enter_code/rate_limited' => 'by_mail/enter_code_rate_limited#index',
+          as: :enter_code_rate_limited
       get '/by_mail/confirm_start_over' => 'confirm_start_over#index',
           as: :confirm_start_over
       get '/by_mail/confirm_start_over/before_letter' => 'confirm_start_over#before_letter',

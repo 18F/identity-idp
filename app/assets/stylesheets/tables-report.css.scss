@@ -7,3 +7,11 @@
   font-variant-numeric: tabular-nums;
   text-align: right;
 }
+
+.usa-alert.usa-alert--info.usa-alert--email {
+  .usa-alert__body {
+    &:before {
+      background-image: url('email/info.png');
+    }
+  }
+}

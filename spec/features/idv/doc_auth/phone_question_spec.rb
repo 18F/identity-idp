@@ -21,7 +21,7 @@ RSpec.feature 'phone question step' do
     complete_doc_auth_steps_before_hybrid_handoff_step
   end
 
-  context 'phone question answered' do
+  context 'phone question answered', :js do
     let(:analytics_name) { 'IdV: doc auth phone question submitted' }
 
     describe '#camera_with_phone' do
@@ -47,6 +47,16 @@ RSpec.feature 'phone question step' do
         expect(current_path).to eq(idv_cancel_path)
         click_on t('idv.cancel.actions.keep_going')
         expect(page).to have_current_path(idv_hybrid_handoff_path(redo: true))
+        complete_hybrid_handoff_step
+        attach_and_submit_images
+        expect(fake_analytics).to have_logged_event(
+          'IdV: doc auth image upload form submitted',
+          hash_including(phone_with_camera: true),
+        )
+        expect(fake_analytics).to have_logged_event(
+          'IdV: doc auth image upload vendor submitted',
+          hash_including(phone_with_camera: true),
+        )
       end
     end
 
@@ -57,6 +67,15 @@ RSpec.feature 'phone question step' do
         expect(fake_analytics).to have_logged_event(
           :idv_doc_auth_phone_question_submitted,
           hash_including(step: 'phone_question', phone_with_camera: false),
+        )
+        attach_and_submit_images
+        expect(fake_analytics).to have_logged_event(
+          'IdV: doc auth image upload form submitted',
+          hash_including(phone_with_camera: false),
+        )
+        expect(fake_analytics).to have_logged_event(
+          'IdV: doc auth image upload vendor submitted',
+          hash_including(phone_with_camera: false),
         )
       end
     end

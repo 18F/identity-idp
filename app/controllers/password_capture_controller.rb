@@ -36,7 +36,7 @@ class PasswordCaptureController < ApplicationController
   end
 
   def handle_valid_password
-    cache_active_profile(password)
+    cache_profiles(password)
     session[:password_attempts] = 0
     redirect_to after_sign_in_path_for(current_user)
   end
