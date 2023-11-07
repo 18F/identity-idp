@@ -169,6 +169,9 @@ GEM
       aws-sdk-core (~> 3, >= 3.179.0)
       aws-sdk-kms (~> 1)
       aws-sigv4 (~> 1.6)
+    aws-sdk-secretsmanager (1.82.0)
+      aws-sdk-core (~> 3, >= 3.177.0)
+      aws-sigv4 (~> 1.1)
     aws-sdk-ses (1.44.0)
       aws-sdk-core (~> 3, >= 3.122.0)
       aws-sigv4 (~> 1.1)
@@ -736,6 +739,7 @@ DEPENDENCIES
   aws-sdk-kms (~> 1.4)
   aws-sdk-pinpoint
   aws-sdk-pinpointsmsvoice
+  aws-sdk-secretsmanager
   aws-sdk-ses (~> 1.6)
   aws-sdk-sns
   aws-sdk-sqs

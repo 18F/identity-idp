@@ -15,9 +15,12 @@ class IdentityConfig
     # database_host: ['env', 'DATABASE_HOST']
     # To use a string value directly, you can specify a string explicitly:
     # database_host: 'localhost'
-    string: proc do |value|
+    string: proc do |value, options: {}|
       if value.is_a?(Array) && value.length == 2 && value.first == 'env'
         ENV.fetch(value[1])
+      elsif value.is_a?(Array) && value.length == 2 && value.first == 'secretsmanager'
+        hash = options[:secrets_manager].call
+        hash.fetch(value[1])
       elsif value.is_a?(String)
         value
       else
@@ -71,6 +74,10 @@ class IdentityConfig
 
     @key_types[key] = type
 
+    options[:secrets_manager] = proc do
+      idp_secrets_manager_value
+    end
+
     converted_value = CONVERTERS.fetch(type).call(value, options: options) if !value.nil?
     raise "#{key} is required but is not present" if converted_value.nil? && !allow_nil
     if enum && !(enum.include?(converted_value) || (converted_value.nil? && allow_nil))
@@ -79,6 +86,13 @@ class IdentityConfig
 
     @written_env[key] = converted_value
     @written_env
+
+    def idp_secrets_manager_value
+      return @idp_secrets_manager_value if defined?(@idp_secrets_manager_value)
+      client = Aws::SecretsManager::Client.new(region: 'us-west-2')
+      get_secret_value_response = client.get_secret_value(secret_id: 'mhenke/idp/configuration').secret_string
+      @idp_secrets_manager_value = JSON.parse(get_secret_value_response)
+    end
   end
 
   attr_reader :written_env
