@@ -623,8 +623,6 @@ ActiveRecord::Schema[7.1].define(version: 2023_11_02_211426) do
     t.datetime "updated_at", precision: nil, null: false
     t.datetime "bounced_at", precision: nil
     t.datetime "reminder_sent_at", precision: nil
-    t.datetime "expiration_notice_sent_at", precision: nil
-    t.index ["expiration_notice_sent_at"], name: "index_usps_confirmation_codes_on_expiration_notice_sent_at"
     t.index ["otp_fingerprint"], name: "index_usps_confirmation_codes_on_otp_fingerprint"
     t.index ["profile_id"], name: "index_usps_confirmation_codes_on_profile_id"
     t.index ["reminder_sent_at"], name: "index_usps_confirmation_codes_on_reminder_sent_at"
