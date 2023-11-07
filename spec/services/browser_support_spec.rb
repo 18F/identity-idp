@@ -42,8 +42,9 @@ RSpec.describe BrowserSupport do
 
     context 'with valid browser support config' do
       before do
-        allow(BrowserSupport).to receive(:browser_support_config).
-          and_return(['chrome 109', 'and_chr 108', 'ios_saf 14.5-14.8', 'op_mini all'])
+        allow(BrowserSupport).to receive(:browser_support_config).and_return(
+          ['chrome 109', 'and_chr 108', 'ios_saf 14.5-14.8', 'op_mini all', 'android 119'],
+        )
       end
 
       context 'with nil user agent' do
@@ -112,16 +113,39 @@ RSpec.describe BrowserSupport do
           it { expect(supported).to eq(true) }
         end
       end
-    end
 
-    context 'with user agent for platform-specific version support' do
-      let(:user_agent) do
-        # Android Chrome v108
-        'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) ' \
-          'Chrome/108.0.5481.153 Mobile Safari/537.36'
+      context 'with user agent for platform-specific version support' do
+        let(:user_agent) do
+          # Android Chrome v108
+          'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) ' \
+            'Chrome/108.0.5481.153 Mobile Safari/537.36'
+        end
+
+        it { expect(supported).to eq(true) }
       end
 
-      it { expect(supported).to eq(true) }
+      context 'with user agent for webview parsed as chrome' do
+        context 'with version below supported range' do
+          let(:user_agent) do
+            # Android WebView v109
+            'Mozilla/5.0 (Linux; Android 7.0; mione A55 Build/NRD90M; wv) AppleWebKit/537.36 ' \
+              '(KHTML, like Gecko) Version/4.0 Chrome/109.0.5414.85 Mobile Safari/537.36'
+          end
+
+          it { expect(supported).to eq(false) }
+        end
+
+        context 'with version within supported range' do
+          let(:user_agent) do
+            # Android WebView v119
+            'Mozilla/5.0 (Linux; Android 13; SM-A546B Build/TP1A.220624.014; wv) ' \
+              'AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/119.0.6045.66 Mobile ' \
+              'Safari/537.36'
+          end
+
+          it { expect(supported).to eq(true) }
+        end
+      end
     end
   end
 end
