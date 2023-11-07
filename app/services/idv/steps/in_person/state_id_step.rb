@@ -32,7 +32,7 @@ module Idv
           if initial_state_of_same_address_as_id == 'true' &&
              pii_from_user[:same_address_as_id] == 'false'
             clear_residential_address(pii_from_user)
-            flow_session['Idv::Steps::InPerson::AddressStep'] = false
+            flow_session.delete('Idv::Steps::InPerson::AddressStep')
          end
 
           if flow_session['Idv::Steps::InPerson::AddressStep']
