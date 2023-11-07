@@ -477,6 +477,8 @@ class IdentityConfig
     config.add(:vendor_status_lexisnexis_trueid, type: :symbol, enum: VENDOR_STATUS_OPTIONS)
     config.add(:vendor_status_sms, type: :symbol, enum: VENDOR_STATUS_OPTIONS)
     config.add(:vendor_status_voice, type: :symbol, enum: VENDOR_STATUS_OPTIONS)
+    config.add(:vendor_status_idv_scheduled_maintenance_start, type: :string)
+    config.add(:vendor_status_idv_scheduled_maintenance_finish, type: :string)
     config.add(:verification_errors_report_configs, type: :json)
     config.add(:verify_gpo_key_attempt_window_in_minutes, type: :integer)
     config.add(:verify_gpo_key_max_attempts, type: :integer)
