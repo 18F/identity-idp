@@ -5,8 +5,8 @@ class GpoExpirationJob < ApplicationJob
     @analytics = analytics
   end
 
-  def perform(now: Time.zone.now, limit: nil)
-    profiles = gpo_profiles_that_should_be_expired(as_of: now)
+  def perform(now: Time.zone.now, limit: nil, min_profile_age: nil)
+    profiles = gpo_profiles_that_should_be_expired(as_of: now, min_profile_age: min_profile_age)
 
     if limit.present?
       profiles = profiles.limit(limit)
@@ -26,17 +26,26 @@ class GpoExpirationJob < ApplicationJob
     end
   end
 
-  def gpo_profiles_that_should_be_expired(as_of:)
+  def gpo_profiles_that_should_be_expired(as_of:, min_profile_age: nil)
     Profile.
       and(are_pending_gpo_verification).
       and(user_cant_request_more_letters(as_of: as_of)).
-      and(most_recent_code_has_expired(as_of: as_of))
+      and(most_recent_code_has_expired(as_of: as_of)).
+      and(are_old_enough(as_of: as_of, min_profile_age: min_profile_age))
   end
 
   private
 
   def analytics
     @analytics ||= Analytics.new(user: AnonymousUser.new, request: nil, session: {}, sp: nil)
+  end
+
+  def are_old_enough(as_of:, min_profile_age:)
+    return Profile.where('1=1') if min_profile_age.blank?
+
+    max_created_at = as_of - min_profile_age
+
+    return Profile.where(created_at: ..max_created_at)
   end
 
   def are_pending_gpo_verification

@@ -66,6 +66,25 @@ RSpec.describe GpoExpirationJob do
         expect(profiles.count).to eql(0)
       end
     end
+
+    context 'when we are enforcing a minimum profile age' do
+      let!(:really_old_user) do
+        create(
+          :user,
+          :with_pending_gpo_profile,
+          created_at: expired_timestamp - 5.years,
+        )
+      end
+      it 'only wants to expire the really old profile' do
+        profiles = job.gpo_profiles_that_should_be_expired(
+          as_of: Time.zone.now,
+          min_profile_age: 2.years,
+        )
+        expect(profiles.map(&:user)).to contain_exactly(
+          really_old_user,
+        )
+      end
+    end
   end
 
   describe '#perform' do
