@@ -154,7 +154,7 @@ RSpec.describe BrowserSupport do
             'Chrome/103.0.5046.0 Safari/537.36 OPR/83.0.4254.70'
         end
 
-        context 'with version within opera mobile supported range, but no support for desktop' do
+        context 'with opera mobile supported range, but no support for desktop' do
           before do
             allow(BrowserSupport).to receive(:browser_support_config).and_return(['op_mob 73'])
           end
@@ -164,23 +164,25 @@ RSpec.describe BrowserSupport do
       end
 
       context 'with opera mobile user agent' do
-        let(:user_agent) do
-          # Opera Mobile 72
-          'Mozilla/5.0 (Linux; Android 6.0.1; TX2) AppleWebKit/537.36 (KHTML, like Gecko) ' \
-            'Chrome/106.0.5249.126 Safari/537.36 OPR/72.9.3767.72992'
+        before do
+          allow(BrowserSupport).to receive(:browser_support_config).and_return(['op_mob 72'])
         end
 
         context 'with version within supported range' do
-          before do
-            allow(BrowserSupport).to receive(:browser_support_config).and_return(['op_mob 72'])
+          let(:user_agent) do
+            # Opera Mobile 72
+            'Mozilla/5.0 (Linux; Android 6.0.1; TX2) AppleWebKit/537.36 (KHTML, like Gecko) ' \
+              'Chrome/106.0.5249.126 Safari/537.36 OPR/72.9.3767.72992'
           end
 
           it { expect(supported).to eq(true) }
         end
 
         context 'with version below supported range' do
-          before do
-            allow(BrowserSupport).to receive(:browser_support_config).and_return(['op_mob 73'])
+          let(:user_agent) do
+            # Opera Mobile 71
+            'Mozilla/5.0 (Linux; Android 7.1.2; Nexus 7) AppleWebKit/537.36 (KHTML, like Gecko) ' \
+              'Chrome/104.0.5112.97 Safari/537.36 OPR/71.3.3718.67322'
           end
 
           it { expect(supported).to eq(false) }
