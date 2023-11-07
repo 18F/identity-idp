@@ -976,6 +976,7 @@ module AnalyticsEvents
   # @param [String] back_image_fingerprint Fingerprint of back image data
   # @param [String] getting_started_ab_test_bucket Which initial IdV screen the user saw
   # @param [String] phone_question_ab_test_bucket Prompt user with phone question before doc auth
+  # @param [String] phone_with_camera the result of the phone question a/b test
   # The document capture image uploaded was locally validated during the IDV process
   def idv_doc_auth_submitted_image_upload_form(
     success:,
@@ -988,6 +989,7 @@ module AnalyticsEvents
     back_image_fingerprint: nil,
     getting_started_ab_test_bucket: nil,
     phone_question_ab_test_bucket: nil,
+    phone_with_camera: nil,
     **extra
   )
     track_event(
@@ -1002,6 +1004,7 @@ module AnalyticsEvents
       back_image_fingerprint: back_image_fingerprint,
       getting_started_ab_test_bucket: getting_started_ab_test_bucket,
       phone_question_ab_test_bucket: phone_question_ab_test_bucket,
+      phone_with_camera: phone_with_camera,
       **extra,
     )
   end
@@ -1023,6 +1026,7 @@ module AnalyticsEvents
   # @param [String] back_image_fingerprint Fingerprint of back image data
   # @param [String] getting_started_ab_test_bucket Which initial IdV screen the user saw
   # @param [String] phone_question_ab_test_bucket Prompt user with phone question before doc auth
+  # @param [String] phone_with_camera the result of the phone question a/b test
   # The document capture image was uploaded to vendor during the IDV process
   def idv_doc_auth_submitted_image_upload_vendor(
     success:,
@@ -1041,6 +1045,7 @@ module AnalyticsEvents
     back_image_fingerprint: nil,
     getting_started_ab_test_bucket: nil,
     phone_question_ab_test_bucket: nil,
+    phone_with_camera: nil,
     **extra
   )
     track_event(
@@ -1062,6 +1067,7 @@ module AnalyticsEvents
       back_image_fingerprint: back_image_fingerprint,
       getting_started_ab_test_bucket: getting_started_ab_test_bucket,
       phone_question_ab_test_bucket: phone_question_ab_test_bucket,
+      phone_with_camera: phone_with_camera,
       **extra,
     )
   end
