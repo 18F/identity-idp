@@ -23,7 +23,6 @@ function InPersonPrepareStep({ toPreviousStep }) {
     howToVerifyURL,
   } = useContext(InPersonContext);
 
-  console.log(howToVerifyURL);
   function goBack() {
     if (skipDocAuth == 'true') {
       forceRedirect(howToVerifyURL);
