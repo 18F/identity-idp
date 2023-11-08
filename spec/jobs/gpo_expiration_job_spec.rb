@@ -11,9 +11,9 @@ RSpec.describe GpoExpirationJob do
 
   let(:gpo_max_profile_age_to_send_letter_in_days) { 30 }
 
-  let(:expired_timestamp) { Time.zone.now - usps_confirmation_max_days.days - 1.hour }
+  let(:expired_timestamp) { Time.zone.now.round - usps_confirmation_max_days.days - 1.hour }
 
-  let(:not_expired_timestamp) { Time.zone.now - (usps_confirmation_max_days / 2).days }
+  let(:not_expired_timestamp) { Time.zone.now.round - (usps_confirmation_max_days / 2).days }
 
   let!(:users) do
     {
@@ -109,7 +109,7 @@ RSpec.describe GpoExpirationJob do
         user_id: users[:user_with_one_expired_gpo_profile].uuid,
         user_has_active_profile: false,
         letters_sent: 1,
-        gpo_verification_pending_at: expired_timestamp,
+        gpo_verification_pending_at: be_within(1.second).of(expired_timestamp),
       )
     end
 
@@ -125,7 +125,7 @@ RSpec.describe GpoExpirationJob do
           user_id: users[:user_with_one_expired_gpo_profile].uuid,
           user_has_active_profile: true,
           letters_sent: 1,
-          gpo_verification_pending_at: expired_timestamp,
+          gpo_verification_pending_at: be_within(1.second).of(expired_timestamp),
         )
       end
     end
@@ -147,7 +147,7 @@ RSpec.describe GpoExpirationJob do
           user_id: users[:user_with_one_expired_gpo_profile].uuid,
           user_has_active_profile: false,
           letters_sent: 2,
-          gpo_verification_pending_at: expired_timestamp,
+          gpo_verification_pending_at: be_within(1.second).of(expired_timestamp),
         )
       end
     end
