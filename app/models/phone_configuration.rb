@@ -22,13 +22,13 @@ class PhoneConfiguration < ApplicationRecord
     capabilities = PhoneNumberCapabilities.new(phone, phone_confirmed: !!confirmed_at?)
 
     if capabilities.supports_sms?
-      options << TwoFactorAuthentication::SignInSmsSelectionPresenter.
-        new(user:, configuration: self)
+      options << TwoFactorAuthentication::SignInPhoneSelectionPresenter.
+        new(user:, configuration: self, method: :sms)
     end
 
     if capabilities.supports_voice?
-      options << TwoFactorAuthentication::SignInVoiceSelectionPresenter.
-        new(user:, configuration: self)
+      options << TwoFactorAuthentication::SignInPhoneSelectionPresenter.
+        new(user:, configuration: self, method: :voice)
     end
 
     options
