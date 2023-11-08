@@ -39,5 +39,27 @@ RSpec.describe 'doc auth In person proofing residential address step', js: true 
       click_on t('idv.cancel.actions.keep_going')
       expect(page).to have_current_path(idv_in_person_proofing_address_url)
     end
+
+    it 'allows user to submit valid inputs on form', allow_browser_log: true do
+      user = user_with_2fa
+      complete_idv_steps_before_address(user)
+
+      # fill in form
+      fill_out_address_form_ok
+
+      # submit
+      click_idv_continue
+      # ssn step
+      expect(page).to have_current_path(idv_in_person_ssn_url, wait: 10)
+      complete_ssn_step(user)
+
+      # verify step has valid inputs from form
+      expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
+      expect(page).to have_current_path(idv_in_person_verify_info_url)
+      expect(page).to have_text(InPersonHelper::GOOD_ADDRESS1)
+      expect(page).to have_text(InPersonHelper::GOOD_ADDRESS2)
+      expect(page).to have_text(InPersonHelper::GOOD_CITY)
+      expect(page).to have_text(InPersonHelper::GOOD_ZIPCODE)
+    end
   end
 end

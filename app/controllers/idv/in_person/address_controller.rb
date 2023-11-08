@@ -8,6 +8,8 @@ module Idv
       before_action :confirm_in_person_address_step_needed, only: :show
       before_action :confirm_ssn_step_needed
 
+      attr_accessor :error_message
+
       def show
         analytics.idv_in_person_proofing_address_visited(**analytics_arguments)
 
@@ -28,10 +30,11 @@ module Idv
 
         analytics.idv_in_person_proofing_residential_address_submitted(**analytics_arguments.merge(**form_result.to_h))
 
-        if updating_address?
+        if form_result.success?
+          redirect_to idv_in_person_ssn_url unless updating_address?
           redirect_to idv_in_person_verify_info_url
         else
-          redirect_to idv_in_person_ssn_url
+          render :show, locals: extra_view_variables
         end
       end
 
