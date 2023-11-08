@@ -10,8 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_08_31_124437) do
+ActiveRecord::Schema[7.1].define(version: 2023_10_24_172229) do
   # These are extensions that must be enabled in order to support this database
+  enable_extension "citext"
   enable_extension "pg_stat_statements"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -92,6 +93,11 @@ ActiveRecord::Schema[7.1].define(version: 2023_08_31_124437) do
     t.datetime "updated_at", precision: nil, null: false
     t.index ["cookie_uuid"], name: "index_devices_on_cookie_uuid"
     t.index ["user_id", "last_used_at"], name: "index_device_user_id_last_used_at"
+  end
+
+  create_table "disposable_domains", force: :cascade do |t|
+    t.citext "name", null: false
+    t.index ["name"], name: "index_disposable_domains_on_name", unique: true
   end
 
   create_table "doc_auth_logs", force: :cascade do |t|

@@ -30,6 +30,7 @@ RSpec.describe Idv::UnavailableController, type: :controller do
           lexisnexis_trueid: :operational,
           sms: :operational,
           voice: :operational,
+          idv_scheduled_maintenance: :operational,
         },
       )
     end
@@ -52,6 +53,7 @@ RSpec.describe Idv::UnavailableController, type: :controller do
             lexisnexis_trueid: :operational,
             sms: :operational,
             voice: :operational,
+            idv_scheduled_maintenance: :operational,
           },
         )
       end
