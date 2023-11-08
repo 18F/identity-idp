@@ -1,4 +1,3 @@
-# rubocop:disable Metrics/BlockLength
 namespace :profiles do
   desc 'Backfill the gpo_verification_expired_at value'
 
@@ -54,11 +53,10 @@ namespace :profiles do
     profile_data.each do |profile_datum|
       profile_id, gpo_verification_pending_at = profile_datum
       Profile.where(id: profile_id).update!(
-        gpo_verification_pending_at: Time.parse(gpo_verification_pending_at),
+        gpo_verification_pending_at: Time.zone.parse(gpo_verification_pending_at),
         gpo_verification_expired_at: nil,
       )
       warn profile_id
     end
   end
 end
-# rubocop:enable Metrics/BlockLength
