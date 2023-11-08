@@ -5,6 +5,19 @@ class GpoExpirationJob < ApplicationJob
     @analytics = analytics
   end
 
+  def expire_profile(profile:)
+    gpo_verification_pending_at = profile.gpo_verification_pending_at
+
+    profile.deactivate_due_to_gpo_expiration
+
+    analytics.idv_gpo_expired(
+      user_id: profile.user.uuid,
+      user_has_active_profile: profile.user.active_profile.present?,
+      letters_sent: profile.gpo_confirmation_codes.count,
+      gpo_verification_pending_at: gpo_verification_pending_at,
+    )
+  end
+
   def perform(now: Time.zone.now, limit: nil, min_profile_age: nil)
     profiles = gpo_profiles_that_should_be_expired(as_of: now, min_profile_age: min_profile_age)
 
@@ -13,16 +26,7 @@ class GpoExpirationJob < ApplicationJob
     end
 
     profiles.find_each do |profile|
-      gpo_verification_pending_at = profile.gpo_verification_pending_at
-
-      profile.deactivate_due_to_gpo_expiration
-
-      analytics.idv_gpo_expired(
-        user_id: profile.user.uuid,
-        user_has_active_profile: profile.user.active_profile.present?,
-        letters_sent: profile.gpo_confirmation_codes.count,
-        gpo_verification_pending_at: gpo_verification_pending_at,
-      )
+      expire_profile(profile: profile)
     end
   end
 
