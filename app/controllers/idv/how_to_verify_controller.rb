@@ -21,12 +21,15 @@ module Idv
 
       if result.success?
         if how_to_verify_form_params['selection'] == Idv::HowToVerifyForm::REMOTE
+          # todo: think about resetting this value if the user cancels/goes back
+          idv_session.skip_doc_auth = false
           redirect_to idv_hybrid_handoff_url
         else
-          # todo: is this necessary?
-          idv_session.flow_path = 'standard'
-          redirect_to idv_opt_in_ipp_url
+          idv_session.flow_path = "standard"
+          idv_session.skip_doc_auth = true
+          redirect_to idv_document_capture_url
         end
+
       else
         flash[:error] = result.first_error_message
         redirect_to idv_how_to_verify_url

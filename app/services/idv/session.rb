@@ -29,6 +29,7 @@ module Idv
       vendor_phone_confirmation
       verify_info_step_document_capture_session_uuid
       welcome_visited
+      skip_doc_auth
     ].freeze
 
     attr_reader :current_user, :gpo_otp, :service_provider
