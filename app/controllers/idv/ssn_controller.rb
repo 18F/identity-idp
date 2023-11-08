@@ -16,6 +16,9 @@ module Idv
     def show
       @step_indicator_steps = step_indicator_steps
       @ssn_form = Idv::SsnFormatForm.new(idv_session.ssn)
+      @cancellations_presenter = Idv::CancellationsPresenter.new(
+        sp_name: decorated_sp_session.sp_name, url_options: nil,
+      )
 
       analytics.idv_doc_auth_redo_ssn_submitted(**analytics_arguments) if @ssn_form.updating_ssn?
       analytics.idv_doc_auth_ssn_visited(**analytics_arguments)

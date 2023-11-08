@@ -26,6 +26,15 @@ Renders a page asking the user to enter their SSN or update their SSN if they ha
   <% end %>
 </p>
 
+<h3><%= t('doc_auth.headings.no_ssn') %></h3>
+<p>
+  <%= t('doc_auth.info.no_ssn') %>
+  <%= link_to(
+        @cancellations_presenter.exit_heading,
+        idv_cancel_url,
+      ) %>
+</p>
+
 <% if FeatureManagement.proofing_device_profiling_collecting_enabled? %>
   <% if threatmetrix_session_id.present? %>
     <% threatmetrix_javascript_urls.each do |threatmetrix_javascript_url| %>
