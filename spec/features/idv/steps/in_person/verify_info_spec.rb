@@ -145,7 +145,7 @@ RSpec.describe 'doc auth IPP VerifyInfo', js: true do
     complete_state_id_step(user)
     fill_out_ssn_form_with_ssn_that_fails_resolution
     click_idv_continue
-    click_idv_continue
+    complete_verify_step(user)
 
     expect(page).to have_current_path(idv_session_errors_warning_path(flow: 'in_person'))
     click_on t('idv.failure.button.warning')
@@ -161,7 +161,7 @@ RSpec.describe 'doc auth IPP VerifyInfo', js: true do
     complete_location_step(user)
     complete_state_id_step(user)
     complete_ssn_step(user)
-    click_idv_continue
+    complete_verify_step(user)
 
     expect(page).to have_content(t('titles.idv.phone'))
     expect(fake_analytics).to have_logged_event(

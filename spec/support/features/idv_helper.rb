@@ -39,6 +39,10 @@ module IdvHelper
     click_spinner_button_and_wait t('forms.buttons.continue')
   end
 
+  def click_idv_submit_default
+    click_spinner_button_and_wait t('forms.buttons.submit.default')
+  end
+
   def click_idv_update
     click_on t('forms.buttons.submit.update')
   end
