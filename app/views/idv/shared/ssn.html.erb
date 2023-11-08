@@ -31,7 +31,7 @@ Renders a page asking the user to enter their SSN or update their SSN if they ha
   <%= t('doc_auth.info.no_ssn') %>
   <%= link_to(
         @ssn_presenter.exit_text,
-        idv_cancel_url,
+        idv_cancel_url(step: 'ssn_offramp'),
       ) %>
 </p>
 
