@@ -129,7 +129,7 @@ build-review-image:
       --cache-ttl=168h
       --cache=true
       --compressed-caching=false
-      --build-arg "http_proxy=${http_proxy}" --build-arg "https_proxy=${https_proxy}" --build-arg "no_proxy=${no_proxy}" --build-arg "CI_ENVIRONMENT_SLUG=${CI_ENVIRONMENT_SLUG}"
+      --build-arg "http_proxy=${http_proxy}" --build-arg "https_proxy=${https_proxy}" --build-arg "no_proxy=${no_proxy}" --build-arg CI_ENVIRONMENT_SLUG
 
 check_changelog:
   stage: test
