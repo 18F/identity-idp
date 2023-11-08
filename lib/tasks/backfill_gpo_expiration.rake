@@ -21,7 +21,11 @@ namespace :profiles do
       min_profile_age: min_profile_age,
     )
 
+    count = 0
+
     profiles.find_each do |profile|
+      count += 1
+
       gpo_verification_pending_at = profile.gpo_verification_pending_at
 
       if gpo_verification_pending_at.blank?
@@ -31,7 +35,10 @@ namespace :profiles do
       puts "#{profile.id},#{gpo_verification_pending_at.iso8601}"
 
       if update_profiles
+        warn "Expired #{count} profiles" if count % 100 == 0
         job.expire_profile(profile: profile)
+      elsif count % 100 == 0
+        warn "Found #{count} profiles"
       end
     end
   end
