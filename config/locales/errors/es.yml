@@ -137,8 +137,9 @@ es:
       choose_another_method: elija otro método de autenticación
       general_error: No pudimos agregar el desbloqueo con la cara o con la huella
         digital. Inténtelo de nuevo o elija otro método de autenticación.
-      not_supported: Lo sentimos, pero su navegador no es compatible con el desbloqueo
-        facial o táctil.
+      not_supported: Su navegador no permite el desbloqueo facial o con la huella
+        digital. Use la última versión de Google Chrome, Microsoft Edge o Safari
+        para usar el desbloqueo facial o con la huella digital.
       unique_name: Ese nombre de dispositivo ha sido utilizado. Por favor, seleccione
         un nombre de dispositivo diferente.
     webauthn_setup:
@@ -153,7 +154,7 @@ es:
         %{link}.
       general_error_html: No hemos podido añadir la clave de seguridad. Inténtelo de
         nuevo o %{link_html}.
-      not_supported: Lo sentimos, su navegador no admite las claves de seguridad FIDO.
-        Las últimas versiones de Chrome, Firefox, Edge y Safari son compatibles
-        con las claves de seguridad FIDO.
+      not_supported: Tu navegador no es compatible con llaves de seguridad. Utiliza la
+        última versión de Google Chrome, Microsoft Edge, Mozilla Firefox o
+        Safari para utilizar llaves de seguridad.
       unique_name: El nombre ya fue escogido. Por favor, elija un nombre diferente.
