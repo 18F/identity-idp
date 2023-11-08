@@ -45,7 +45,7 @@ class GpoExpirationJob < ApplicationJob
   end
 
   def are_old_enough(as_of:, min_profile_age:)
-    return Profile.where('1=1') if min_profile_age.blank?
+    return Profile.all if min_profile_age.blank?
 
     max_created_at = as_of - min_profile_age
 
