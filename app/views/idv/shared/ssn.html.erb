@@ -4,7 +4,7 @@ Renders a page asking the user to enter their SSN or update their SSN if they ha
 %>
 <% content_for(:pre_flash_content) do %>
   <%= render StepIndicatorComponent.new(
-        steps: @step_indicator_steps,
+        steps: @ssn_presenter.step_indicator_steps,
         current_step: :verify_info,
         locale_scope: 'idv',
         class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',

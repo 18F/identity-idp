@@ -17,10 +17,10 @@ module Idv
       # Keep this code in sync with Idv::SsnController
 
       def show
-        @step_indicator_steps = step_indicator_steps
         @ssn_presenter = Idv::SsnPresenter.new(
           sp_name: decorated_sp_session.sp_name,
           ssn_form: Idv::SsnFormatForm.new(idv_session.ssn),
+          step_indicator_steps: step_indicator_steps,
         )
 
         if ssn_presenter.updating_ssn?
@@ -40,6 +40,7 @@ module Idv
         @ssn_presenter = Idv::SsnPresenter.new(
           sp_name: decorated_sp_session.sp_name,
           ssn_form: ssn_form,
+          step_indicator_steps: step_indicator_steps,
         )
         analytics.idv_doc_auth_ssn_submitted(
           **analytics_arguments.merge(form_response.to_h),
@@ -55,7 +56,6 @@ module Idv
           redirect_to next_url
         else
           flash[:error] = form_response.first_error_message
-          @step_indicator_steps = step_indicator_steps
           render 'idv/shared/ssn', locals: threatmetrix_view_variables(ssn_presenter.updating_ssn?)
         end
       end

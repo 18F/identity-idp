@@ -26,11 +26,12 @@ RSpec.describe 'idv/shared/ssn.html.erb' do
     allow(IdentityConfig.store).
       to receive(:lexisnexis_threatmetrix_org_id).and_return(lexisnexis_threatmetrix_org_id)
 
-    assign(:ssn_form, Idv::SsnFormatForm.new(nil))
-    assign(:step_indicator_steps, Idv::Flows::InPersonFlow::STEP_INDICATOR_STEPS)
     assign(
       :ssn_presenter,
-      Idv::SsnPresenter.new(sp_name: sp_name, ssn_form: Idv::SsnFormatForm.new(nil)),
+      Idv::SsnPresenter.new(
+        sp_name: sp_name, ssn_form: Idv::SsnFormatForm.new(nil),
+        step_indicator_steps: Idv::Flows::InPersonFlow::STEP_INDICATOR_STEPS
+      ),
     )
     render template: 'idv/shared/ssn', locals: {
       threatmetrix_session_id: session_id,

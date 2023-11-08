@@ -2,11 +2,12 @@ module Idv
   class SsnPresenter
     include ActionView::Helpers::TranslationHelper
 
-    attr_reader :sp_name, :ssn_form
+    attr_reader :sp_name, :ssn_form, :step_indicator_steps
 
-    def initialize(sp_name:, ssn_form:)
+    def initialize(sp_name:, ssn_form:, step_indicator_steps:)
       @sp_name = sp_name
       @ssn_form = ssn_form
+      @step_indicator_steps = step_indicator_steps
     end
 
     def exit_text
