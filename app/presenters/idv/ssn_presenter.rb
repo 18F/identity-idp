@@ -1,37 +1,24 @@
 module Idv
-  class CancellationsPresenter
-    include Rails.application.routes.url_helpers
-    include ActionView::Helpers::UrlHelper
-    include ActionView::Helpers::TagHelper
+  class SsnPresenter
     include ActionView::Helpers::TranslationHelper
 
-    attr_reader :sp_name, :url_options
+    attr_reader :sp_name, :ssn_form
 
-    def initialize(sp_name:, url_options:)
+    def initialize(sp_name:, ssn_form:)
       @sp_name = sp_name
-      @url_options = url_options
+      @ssn_form = ssn_form
     end
 
-    def exit_heading
-      if sp?
-        t('idv.cancel.headings.exit.with_sp', app_name: APP_NAME, sp_name: sp_name)
+    def exit_text
+      if sp_name.present?
+        t('doc_auth.info.exit.with_sp', app_name: APP_NAME, sp_name: sp_name)
       else
-        t('idv.cancel.headings.exit.without_sp')
+        t('doc_auth.info.exit.without_sp')
       end
     end
 
-    def exit_action_text
-      if sp?
-        t('idv.cancel.actions.exit', app_name: APP_NAME)
-      else
-        t('idv.cancel.actions.account_page')
-      end
-    end
-
-    private
-
-    def sp?
-      sp_name.present?
+    def updating_ssn?
+      ssn_form.updating_ssn?
     end
   end
 end

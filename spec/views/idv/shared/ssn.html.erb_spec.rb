@@ -29,8 +29,8 @@ RSpec.describe 'idv/shared/ssn.html.erb' do
     assign(:ssn_form, Idv::SsnFormatForm.new(nil))
     assign(:step_indicator_steps, Idv::Flows::InPersonFlow::STEP_INDICATOR_STEPS)
     assign(
-      :cancellations_presenter,
-      Idv::CancellationsPresenter.new(sp_name: sp_name, url_options: nil),
+      :ssn_presenter,
+      Idv::SsnPresenter.new(sp_name: sp_name, ssn_form: Idv::SsnFormatForm.new(nil)),
     )
     render template: 'idv/shared/ssn', locals: {
       threatmetrix_session_id: session_id,
@@ -44,8 +44,8 @@ RSpec.describe 'idv/shared/ssn.html.erb' do
       expect(rendered).to have_content(t('doc_auth.info.no_ssn'))
       expect(rendered).to have_content(
         t(
-          'idv.cancel.headings.exit.with_sp', app_name: APP_NAME,
-                                              sp_name: 'SP'
+          'doc_auth.info.exit.with_sp', app_name: APP_NAME,
+                                        sp_name: 'SP'
         ),
       )
     end
@@ -56,7 +56,7 @@ RSpec.describe 'idv/shared/ssn.html.erb' do
 
     it 'contains a no-ssn exit link' do
       expect(rendered).to have_content(t('doc_auth.info.no_ssn'))
-      expect(rendered).to have_content(t('idv.cancel.headings.exit.without_sp'))
+      expect(rendered).to have_content(t('doc_auth.info.exit.without_sp'))
     end
   end
 

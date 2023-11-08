@@ -13,7 +13,7 @@ Renders a page asking the user to enter their SSN or update their SSN if they ha
 
 <% self.title = t('titles.doc_auth.ssn') %>
 
-<% if @ssn_form.updating_ssn? %>
+<% if @ssn_presenter.updating_ssn? %>
   <%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.ssn_update')) %>
 <% else %>
   <%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.ssn')) %>
@@ -30,7 +30,7 @@ Renders a page asking the user to enter their SSN or update their SSN if they ha
 <p>
   <%= t('doc_auth.info.no_ssn') %>
   <%= link_to(
-        @cancellations_presenter.exit_heading,
+        @ssn_presenter.exit_text,
         idv_cancel_url,
       ) %>
 </p>
@@ -62,7 +62,7 @@ Renders a page asking the user to enter their SSN or update their SSN if they ha
 <% end %>
 
 <%= simple_form_for(
-      @ssn_form,
+      @ssn_presenter.ssn_form,
       url: url_for,
       method: :put,
       html: { autocomplete: 'off' },
@@ -72,7 +72,7 @@ Renders a page asking the user to enter their SSN or update their SSN if they ha
   </div>
 
   <%= f.submit class: 'display-block margin-y-5' do %>
-    <% if @ssn_form.updating_ssn? %>
+    <% if @ssn_presenter.updating_ssn? %>
       <%= t('forms.buttons.submit.update') %>
     <% else %>
       <%= t('forms.buttons.continue') %>
@@ -80,7 +80,7 @@ Renders a page asking the user to enter their SSN or update their SSN if they ha
   <% end %>
 <% end %>
 
-<% if @ssn_form.updating_ssn? %>
+<% if @ssn_presenter.updating_ssn? %>
   <%= render 'idv/shared/back', fallback_path: idv_verify_info_path %>
 <% else %>
   <%= render 'idv/doc_auth/cancel', step: 'ssn' %>

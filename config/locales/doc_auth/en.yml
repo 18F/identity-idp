@@ -210,6 +210,9 @@ en:
       document_capture_intro_acknowledgment: We’ll collect information about you by
         reading your driver’s license or state ID card. We use this information
         to verify your identity.
+      exit:
+        with_sp: Exit %{app_name} and return to %{sp_name}
+        without_sp: Exit identity verification and go to your account page
       getting_started_html: '%{sp_name} needs to make sure you are you — not someone
         pretending to be you. %{link_html}'
       getting_started_learn_more: Learn more about what you need to verify your identity
