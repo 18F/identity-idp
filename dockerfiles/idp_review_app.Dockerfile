@@ -1,7 +1,8 @@
 FROM ruby:3.2.2-slim
 
 # Set environment variables
-ARG CI_ENVIRONMENT_SLUG="placeholder"
+ARG ARG_CI_ENVIRONMENT_SLUG="placeholder"
+ENV CI_ENVIRONMENT_SLUG=${ARG_CI_ENVIRONMENT_SLUG}
 ENV RAILS_ROOT /app
 ENV RAILS_ENV production
 ENV NODE_ENV production
@@ -30,6 +31,8 @@ ENV ASSET_HOST http://localhost:3000
 ENV DOMAIN_NAME localhost:3000
 ENV PIV_CAC_SERVICE_URL https://localhost:8443/
 ENV PIV_CAC_VERIFY_TOKEN_URL https://localhost:8443/ 
+
+RUN echo Env Value : $CI_ENVIRONMENT_SLUG
 
 # Prevent documentation installation
 RUN echo 'path-exclude=/usr/share/doc/*' > /etc/dpkg/dpkg.cfg.d/00_nodoc && \

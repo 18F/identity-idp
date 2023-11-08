@@ -95,6 +95,8 @@ install:
 build-review-image:
   stage: review
   needs: []
+  environment:
+    name: review/$CI_COMMIT_REF_NAME
   interruptible: true
   variables:
     BRANCH_TAGGING_STRING: ''
@@ -112,6 +114,8 @@ build-review-image:
     entrypoint: ['']
   script:
     - mkdir -p /kaniko/.docker
+    - echo ${CI_ENVIRONMENT_SLUG}
+    - echo $CI_ENVIRONMENT_SLUG
     - |-
       KANIKOCFG="\"credsStore\":\"ecr-login\""
       if [ "x${http_proxy}" != "x" -o "x${https_proxy}" != "x" ]; then
@@ -129,7 +133,7 @@ build-review-image:
       --cache-ttl=168h
       --cache=true
       --compressed-caching=false
-      --build-arg "http_proxy=${http_proxy}" --build-arg "https_proxy=${https_proxy}" --build-arg "no_proxy=${no_proxy}" --build-arg CI_ENVIRONMENT_SLUG
+      --build-arg "http_proxy=${http_proxy}" --build-arg "https_proxy=${https_proxy}" --build-arg "no_proxy=${no_proxy}" --build-arg "ARG_CI_ENVIRONMENT_SLUG=${CI_ENVIRONMENT_SLUG}"
 
 check_changelog:
   stage: test
