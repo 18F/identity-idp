@@ -1,6 +1,7 @@
 FROM ruby:3.2.2-slim
 
 # Set environment variables
+ARG CI_ENVIRONMENT_SLUG="placeholder"
 ENV RAILS_ROOT /app
 ENV RAILS_ENV production
 ENV NODE_ENV production
