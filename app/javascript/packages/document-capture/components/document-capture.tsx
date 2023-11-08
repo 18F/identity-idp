@@ -38,12 +38,12 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
   const { t } = useI18n();
   const { flowPath, phoneWithCamera } = useContext(UploadContext);
   const { trackSubmitEvent, trackVisitEvent } = useContext(AnalyticsContext);
-  const { inPersonFullAddressEntryEnabled, inPersonURL, skipDocAuth, howToVerifyURL } =
-    useContext(InPersonContext);
+  const { inPersonFullAddressEntryEnabled, inPersonURL, skipDocAuth } = useContext(InPersonContext);
   const appName = getConfigValue('appName');
 
   // If the user got here by opting-in to in-person proofing then skip rendering the document capture
   // component and just render the in-person page
+  // todo: fix the type error below. We should coerce 'true' to a boolean type at some point
   if (skipDocAuth == 'true') {
     return <OptInIpp onStepChange={onStepChange} />;
   }
