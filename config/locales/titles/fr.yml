@@ -81,7 +81,6 @@ fr:
       new: Ajouter une application d’authentification
     two_factor_setup: Configuration de l’authentification à deux facteurs
     verify_email: Vérifiez votre courriel
-    verify_profile: Activez votre compte
     visitors:
       index: Bienvenue
     webauthn_setup: Ajoutez votre clé de sécurité

@@ -100,6 +100,9 @@ es:
       exit:
         with_sp: Salir de %{app_name} y volver a %{sp_name}
         without_sp: Salir de la verificación de identidad e ir a la página de su cuenta
+      gpo:
+        rate_limited:
+          heading: Inténtelo de nuevo más tarde
       phone:
         heading: No pudimos encontrar coincidencias entre este número de teléfono y
           otros registros
@@ -304,6 +307,8 @@ es:
           ellos.
         no_pii: SITIO DE PRUEBA - No utilice información personal real (sólo para
           propósitos de demostración) - SITIO DE PRUEBA
+      verify_info: Leímos sus datos en su identificación. Revíselos y modifíquelos si
+        es necesario antes de enviarlos para la verificación.
       verifying: Verificando…
     titles:
       activated: Ya se verificó tu identidad.

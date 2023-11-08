@@ -238,17 +238,35 @@ RSpec.feature 'IdV Outage Spec' do
     end
   end
 
+  shared_examples_for 'IDV is unavailable' do
+    let(:user) { user_with_2fa }
+
+    it 'prevents an existing ial1 user from verifying their identity' do
+      sign_in_with_idv_required(user: user, sms_or_totp: :sms)
+      expect(page).to have_content(
+        strip_tags(t('idv.unavailable.idv_explanation.with_sp_html', sp: 'Test SP')),
+      )
+    end
+
+    it 'prevents a user from creating an account' do
+      visit_idp_from_sp_with_ial2(:oidc)
+      click_link t('links.create_account')
+      expect(page).to have_content(
+        strip_tags(
+          t(
+            'idv.unavailable.idv_explanation.with_sp_html',
+            sp: 'Test SP',
+          ),
+        ),
+      )
+    end
+  end
+
   %w[acuant lexisnexis_instant_verify lexisnexis_trueid].each do |service|
     context "vendor_status_#{service} set to full_outage", js: true do
-      let(:user) { user_with_2fa }
       let("vendor_status_#{service}".to_sym) { :full_outage }
 
-      it 'prevents an existing ial1 user from verifying their identity' do
-        sign_in_with_idv_required(user: user, sms_or_totp: :sms)
-        expect(page).to have_content(
-          strip_tags(t('idv.unavailable.idv_explanation.with_sp_html', sp: 'Test SP')),
-        )
-      end
+      it_behaves_like 'IDV is unavailable'
 
       it 'prevents a user who reset their password from reactivating profile with no personal key',
          email: true do
@@ -267,19 +285,19 @@ RSpec.feature 'IdV Outage Spec' do
 
         expect(page).to have_content(t('idv.unavailable.idv_explanation.without_sp'))
       end
-
-      it 'prevents a user from creating an account' do
-        visit_idp_from_sp_with_ial2(:oidc)
-        click_link t('links.create_account')
-        expect(page).to have_content(
-          strip_tags(
-            t(
-              'idv.unavailable.idv_explanation.with_sp_html',
-              sp: 'Test SP',
-            ),
-          ),
-        )
-      end
     end
+  end
+
+  context 'during an IDV maintenance window', js: true do
+    before do
+      allow(IdentityConfig.store).to receive(:vendor_status_idv_scheduled_maintenance_start).
+        and_return('2023-01-01T00:00:00Z')
+      allow(IdentityConfig.store).to receive(:vendor_status_idv_scheduled_maintenance_finish).
+        and_return('2023-01-01T23:59:59Z')
+
+      travel_to(Time.zone.parse('2023-01-01T12:00:00Z'))
+    end
+
+    it_behaves_like 'IDV is unavailable'
   end
 end

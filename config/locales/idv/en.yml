@@ -94,6 +94,9 @@ en:
       exit:
         with_sp: Exit %{app_name} and return to %{sp_name}
         without_sp: Exit identity verification and go to your account page
+      gpo:
+        rate_limited:
+          heading: Try again later
       phone:
         heading: We could not match this phone number to other records
         jobfail: Something went wrong and we cannot process your request at this time.
@@ -286,6 +289,8 @@ en:
           it.
         no_pii: TEST SITE - Do not use real personal information (demo purposes only) -
           TEST SITE
+      verify_info: We read your information from your ID. Review it and make any
+        updates before submitting for verification.
       verifying: Verifying…
     titles:
       activated: Your identity has already been verified

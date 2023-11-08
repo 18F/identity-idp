@@ -12,25 +12,24 @@ module Idv
       before_action :confirm_repeat_ssn, only: :show
       before_action :override_csp_for_threat_metrix
 
-      attr_accessor :error_message
+      # Keep this code in sync with Idv::SsnController
 
       def show
-        @ssn_form = Idv::SsnFormatForm.new(current_user, idv_session.ssn)
+        @step_indicator_steps = step_indicator_steps
+        @ssn_form = Idv::SsnFormatForm.new(idv_session.ssn)
 
-        analytics.idv_doc_auth_redo_ssn_submitted(**analytics_arguments) if updating_ssn?
+        analytics.idv_doc_auth_redo_ssn_submitted(**analytics_arguments) if @ssn_form.updating_ssn?
         analytics.idv_doc_auth_ssn_visited(**analytics_arguments)
 
         Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
           call('ssn', :view, true)
 
-        render :show, locals: extra_view_variables
+        render 'idv/shared/ssn', locals: threatmetrix_view_variables
       end
 
       def update
-        @error_message = nil
-        @ssn_form = Idv::SsnFormatForm.new(current_user, idv_session.ssn)
-        ssn = params.require(:doc_auth).permit(:ssn)
-        form_response = @ssn_form.submit(ssn)
+        @ssn_form = Idv::SsnFormatForm.new(idv_session.ssn)
+        form_response = @ssn_form.submit(params.require(:doc_auth).permit(:ssn))
 
         analytics.idv_doc_auth_ssn_submitted(
           **analytics_arguments.merge(form_response.to_h),
@@ -43,18 +42,12 @@ module Idv
         if form_response.success?
           idv_session.ssn = params[:doc_auth][:ssn]
           idv_session.invalidate_steps_after_ssn!
-          redirect_to idv_in_person_verify_info_url
+          redirect_to next_url
         else
-          @error_message = form_response.first_error_message
-          render :show, locals: extra_view_variables
+          flash[:error] = form_response.first_error_message
+          @step_indicator_steps = step_indicator_steps
+          render 'idv/shared/ssn', locals: threatmetrix_view_variables
         end
-      end
-
-      def extra_view_variables
-        {
-          updating_ssn: updating_ssn?,
-          **threatmetrix_view_variables,
-        }
       end
 
       private
@@ -63,28 +56,24 @@ module Idv
         user_session.fetch('idv/in_person', {})
       end
 
-      def flow_path
-        flow_session[:flow_path]
-      end
-
       def confirm_repeat_ssn
         return if !idv_session.ssn
         return if request.referer == idv_in_person_verify_info_url
         redirect_to idv_in_person_verify_info_url
       end
 
+      def next_url
+        idv_in_person_verify_info_url
+      end
+
       def analytics_arguments
         {
-          flow_path: flow_path,
+          flow_path: idv_session.flow_path,
           step: 'ssn',
           analytics_id: 'In Person Proofing',
           irs_reproofing: irs_reproofing?,
         }.merge(ab_test_analytics_buckets).
           merge(**extra_analytics_properties)
-      end
-
-      def updating_ssn?
-        idv_session.ssn.present?
       end
 
       def confirm_in_person_address_step_complete

@@ -104,6 +104,9 @@ fr:
       exit:
         with_sp: Quittez %{app_name} et retournez à %{sp_name}
         without_sp: Quittez la vérification d’identité et accédez à la page de votre compte
+      gpo:
+        rate_limited:
+          heading: Réessayez plus tard
       phone:
         heading: Nous n’avons pas pu faire correspondre ce numéro de téléphone à
           d’autres enregistrements
@@ -314,6 +317,9 @@ fr:
           y accéder.
         no_pii: SITE DE TEST - N’utilisez pas de véritables données personnelles (il
           s’agit d’une démonstration seulement) - SITE DE TEST
+      verify_info: Nous lisons vos informations à partir de votre pièce d’identité.
+        Passez-les en revue et mettez-les à jour avant de les soumettre pour
+        vérification.
       verifying: Vérification…
     titles:
       activated: Votre identité a déjà été vérifiée

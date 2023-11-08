@@ -29,8 +29,11 @@ module Users
         platform_authenticator: @platform_authenticator,
         url_options:,
       )
-      properties = result.to_h.merge(analytics_properties)
-      analytics.webauthn_setup_visit(**properties)
+      analytics.webauthn_setup_visit(
+        platform_authenticator: result.extra[:platform_authenticator],
+        in_account_creation_flow: user_session[:in_account_creation_flow] || false,
+        enabled_mfa_methods_count: result.extra[:enabled_mfa_methods_count],
+      )
       save_challenge_in_session
       @exclude_credentials = exclude_credentials
       @need_to_set_up_additional_mfa = need_to_set_up_additional_mfa?
@@ -40,6 +43,14 @@ module Users
         else
           irs_attempts_api_tracker.mfa_enroll_webauthn_roaming(success: false)
         end
+      end
+
+      if result.errors.present?
+        analytics.webauthn_setup_submitted(
+          platform_authenticator: form.platform_authenticator?,
+          errors: result.errors,
+          success: false,
+        )
       end
 
       flash_error(result.errors) unless result.success?
@@ -151,10 +162,9 @@ module Users
 
     def process_valid_webauthn(form)
       create_user_event(:webauthn_key_added)
-      mfa_user = MfaContext.new(current_user)
-      analytics.multi_factor_auth_added_webauthn(
+      analytics.webauthn_setup_submitted(
         platform_authenticator: form.platform_authenticator?,
-        enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
+        success: true,
       )
       handle_remember_device_preference(params[:remember_device])
       if form.platform_authenticator?

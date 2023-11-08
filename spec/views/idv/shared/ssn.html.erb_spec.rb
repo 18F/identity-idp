@@ -1,12 +1,11 @@
 require 'rails_helper'
 
-RSpec.describe 'idv/in_person/ssn/show.html.erb' do
+RSpec.describe 'idv/shared/ssn.html.erb' do
   include Devise::Test::ControllerHelpers
 
   let(:threatmetrix_enabled) { nil }
   let(:lexisnexis_threatmetrix_org_id) { 'test_org_id' }
   let(:session_id) { 'ABCD-1234' }
-  let(:updating_ssn) { false }
   let(:js_domain) { 'h.online-metrix.net' }
 
   let(:tags_js_url) do
@@ -25,10 +24,10 @@ RSpec.describe 'idv/in_person/ssn/show.html.erb' do
     allow(IdentityConfig.store).
       to receive(:lexisnexis_threatmetrix_org_id).and_return(lexisnexis_threatmetrix_org_id)
 
-    render template: 'idv/in_person/ssn/show', locals: {
-      flow_session: {},
+    assign(:ssn_form, Idv::SsnFormatForm.new(nil))
+    assign(:step_indicator_steps, Idv::Flows::InPersonFlow::STEP_INDICATOR_STEPS)
+    render template: 'idv/shared/ssn', locals: {
       threatmetrix_session_id: session_id,
-      updating_ssn: updating_ssn,
       threatmetrix_javascript_urls: [tags_js_url],
       threatmetrix_iframe_url: tags_iframe_url,
     }
