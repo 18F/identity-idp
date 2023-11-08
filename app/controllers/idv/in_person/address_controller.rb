@@ -18,21 +18,19 @@ module Idv
 
       def update
         flow_session['Idv::Steps::InPerson::AddressStep'] = true
-        attrs = Idv::InPerson::AddressForm::ATTRIBUTES
 
+        attrs = Idv::InPerson::AddressForm::ATTRIBUTES
         attrs = attrs.difference([:same_address_as_id])
         pii_from_user[:same_address_as_id] = 'false' if updating_address?
-        attrs.each do |attr|
-          pii_from_user[attr] = flow_params[attr]
-        end
-
         form_result = form.submit(flow_params)
 
         analytics.idv_in_person_proofing_residential_address_submitted(**analytics_arguments.merge(**form_result.to_h))
 
         if form_result.success?
-          redirect_to idv_in_person_ssn_url unless updating_address?
-          redirect_to idv_in_person_verify_info_url
+          attrs.each do |attr|
+            pii_from_user[attr] = flow_params[attr]
+          end
+          redirect_to_next_page
         else
           render :show, locals: extra_view_variables
         end
@@ -79,6 +77,14 @@ module Idv
           analytics_id: 'In Person Proofing',
           irs_reproofing: irs_reproofing?,
         }
+      end
+
+      def redirect_to_next_page
+        if updating_address?
+          redirect_to idv_in_person_ssn_url
+        else
+          redirect_to idv_in_person_verify_info_url
+        end
       end
 
       def render_404_if_in_person_residential_address_controller_enabled_not_set
