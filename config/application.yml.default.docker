@@ -35,3 +35,4 @@ production:
   usps_auth_token_refresh_job_enabled: false
   lexisnexis_threatmetrix_mock_enabled: true
   enable_usps_verification: true
+  seed_agreements_data: false

@@ -10,6 +10,7 @@ variables:
   ECR_REGISTRY: '${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com'
   IDP_CI_SHA: 'sha256:26bcd68d39085d0e9dbfe272ec3f95158a272dcc2e25f5152b1d8e4600cf1cac'
   PKI_IMAGE_TAG: 'main'
+  DASHBOARD_IMAGE_TAG: 'ab661426de8de0b4cce094f8c862ad3ce6d97274'
 
 default:
   image: '${ECR_REGISTRY}/idp/ci@${IDP_CI_SHA}'
@@ -95,6 +96,8 @@ install:
 build-review-image:
   stage: review
   needs: []
+  environment:
+    name: review/$CI_COMMIT_REF_NAME
   interruptible: true
   variables:
     BRANCH_TAGGING_STRING: ''
@@ -112,6 +115,8 @@ build-review-image:
     entrypoint: ['']
   script:
     - mkdir -p /kaniko/.docker
+    - echo ${CI_ENVIRONMENT_SLUG}
+    - echo $CI_ENVIRONMENT_SLUG
     - |-
       KANIKOCFG="\"credsStore\":\"ecr-login\""
       if [ "x${http_proxy}" != "x" -o "x${https_proxy}" != "x" ]; then
@@ -129,7 +134,7 @@ build-review-image:
       --cache-ttl=168h
       --cache=true
       --compressed-caching=false
-      --build-arg "http_proxy=${http_proxy}" --build-arg "https_proxy=${https_proxy}" --build-arg "no_proxy=${no_proxy}"
+      --build-arg "http_proxy=${http_proxy}" --build-arg "https_proxy=${https_proxy}" --build-arg "no_proxy=${no_proxy}" --build-arg "ARG_CI_ENVIRONMENT_SLUG=${CI_ENVIRONMENT_SLUG}"
 
 check_changelog:
   stage: test
@@ -345,6 +350,7 @@ trigger_devops:
     - if: $CI_COMMIT_BRANCH == "main"
   trigger: lg/identity-devops
 
+
 review-app:
   stage: review
   allow_failure: true
@@ -382,7 +388,8 @@ review-app:
         {"name": "LOGIN_HOST_ROLE", "value": "idp" },
         {"name": "LOGIN_SKIP_REMOTE_CONFIG", "value": "true" },
         {"name": "PIV_CAC_SERVICE_URL", "value": "https://$CI_ENVIRONMENT_SLUG-review-app.pivcac.identitysandbox.gov/"},
-        {"name": "PIV_CAC_VERIFY_TOKEN_URL", "value": "https://$CI_ENVIRONMENT_SLUG-review-app.pivcac.identitysandbox.gov/"}
+        {"name": "PIV_CAC_VERIFY_TOKEN_URL", "value": "https://$CI_ENVIRONMENT_SLUG-review-app.pivcac.identitysandbox.gov/"},
+        {"name": "DASHBOARD_URL", "value": "https://$CI_ENVIRONMENT_SLUG-review-app-dashboard.review-app.identitysandbox.gov"}
       ]
       EOF
       )
@@ -429,6 +436,23 @@ review-app:
       ]
       EOF
       )
+    - |-
+      export DASHBOARD_ENV=$(cat <<EOF
+      [
+        {"name": "POSTGRES_SSLMODE", "value": "prefer"},
+        {"name": "POSTGRES_DB", "value": "dashboard"},
+        {"name": "POSTGRES_HOST","value": "$CI_ENVIRONMENT_SLUG-login-chart-dashboard-pg.review-apps"},
+        {"name": "POSTGRES_USERNAME", "value": "postgres"},
+        {"name": "POSTGRES_PASSWORD", "value": "postgres"},
+        {"name": "NEW_RELIC_ENABLED", "value": "false"},
+        {"name": "SAML_SP_ISSUER", "value": "https://$CI_ENVIRONMENT_SLUG-review-app-dashboard.review-app.identitysandbox.gov"},
+        {"name": "IDP_URL", "value": "https://$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov"},
+        {"name": "IDP_SP_URL", "value": "https://$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov"},
+        {"name": "POST_LOGOUT_URL", "value": "https://$CI_ENVIRONMENT_SLUG-review-app-dashboard.review-app.identitysandbox.gov"},
+        {"name": "DOMAIN_NAME", "value": "$CI_ENVIRONMENT_SLUG-review-app-dashboard.review-app.identitysandbox.gov"}
+      ]
+      EOF
+      )
     - git clone -b main --single-branch https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.login.gov/lg-public/identity-idp-helm-chart.git
     - >-
       helm upgrade --install --namespace review-apps
@@ -439,11 +463,16 @@ review-app:
       --set worker.image.tag="${CI_COMMIT_SHA}"
       --set pivcac.image.repository="${ECR_REGISTRY}/identity-pivcac/review"
       --set pivcac.image.tag="${PKI_IMAGE_TAG}"
+      --set dashboard.image.repository="${ECR_REGISTRY}/identity-dashboard/review"
+      --set dashboard.image.tag="${DASHBOARD_IMAGE_TAG}"
+      --set-json dashboard.env="$DASHBOARD_ENV"
+      --set-json dashboard.enabled=true
       --set-json idp.env="$IDP_ENV"
       --set-json worker.env="$WORKER_ENV"
       --set-json pivcac.env="$PIVCAC_ENV"
       --set-json idp.ingress.hosts="[{\"host\": \"$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov\", \"paths\": [{\"path\": \"/\", \"pathType\": \"Prefix\"}]}]"
       --set-json pivcac.ingress.hosts="[{\"host\": \"$CI_ENVIRONMENT_SLUG-review-app.pivcac.identitysandbox.gov\", \"paths\": [{\"path\": \"/\", \"pathType\": \"Prefix\"}]}]"
+      --set-json dashboard.ingress.hosts="[{\"host\": \"$CI_ENVIRONMENT_SLUG-review-app-dashboard.review-app.identitysandbox.gov\", \"paths\": [{\"path\": \"/\", \"pathType\": \"Prefix\"}]}]"
       $CI_ENVIRONMENT_SLUG ./identity-idp-helm-chart
     - echo "DNS may take a while to propagate, so be patient if it doesn't show up right away"
     - echo "To access the rails console, first run 'aws-vault exec sandbox-power -- aws eks update-kubeconfig --name review_app'"
@@ -452,6 +481,8 @@ review-app:
     - echo https://$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov
     - echo "Address of PIVCAC review app:"
     - echo https://$CI_ENVIRONMENT_SLUG-review-app.pivcac.identitysandbox.gov
+    - echo "Address of Dashboard review app:"
+    - echo https://$CI_ENVIRONMENT_SLUG-review-app-dashboard.review-app.identitysandbox.gov
   environment:
     name: review/$CI_COMMIT_REF_NAME
     url: https://$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov
