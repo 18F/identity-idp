@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe Idv::InPerson::AddressController do
   include InPersonHelper
   let(:in_person_residential_address_controller_enabled) { true }
+  let(:usps_ipp_transliteration_enabled) { true }
   let(:pii_from_user) { Idp::Constants::MOCK_IPP_APPLICANT_SAME_ADDRESS_AS_ID_FALSE.dup }
   let(:user) { build(:user) }
   let(:flow_session) do
@@ -15,6 +16,8 @@ RSpec.describe Idv::InPerson::AddressController do
 
   before(:each) do
     allow(IdentityConfig.store).to receive(:in_person_residential_address_controller_enabled).
+      and_return(true)
+    allow(IdentityConfig.store).to receive(:usps_ipp_transliteration_enabled).
       and_return(true)
     allow(subject).to receive(:current_user).
       and_return(user)
@@ -137,83 +140,120 @@ RSpec.describe Idv::InPerson::AddressController do
   end
 
   describe '#update' do
-    let(:address1) { '1 FAKE RD' }
-    let(:address2) { 'APT 1B' }
-    let(:city) { 'GREAT FALLS' }
-    let(:zipcode) { '59010' }
-    let(:state) { 'Montana' }
-    let(:params) do
-      { in_person_address: {
-        address1: address1,
-        address2: address2,
-        city: city,
-        zipcode: zipcode,
-        state: state,
-      } }
-    end
-    let(:user_session) do
-      { idv: { ssn: '900123456' } }
-    end
-    let(:analytics_name) { 'IdV: in person proofing residential address submitted' }
-    let(:analytics_args) do
-      {
-        success: true,
-        errors: {},
-        analytics_id: 'In Person Proofing',
-        flow_path: 'standard',
-        irs_reproofing: false,
-        step: 'address',
-      }
-    end
-
-    it 'sets values in the flow session' do
-      put :update, params: params
-
-      expect(flow_session[:pii_from_user]).to include(
-        address1:,
-        address2:,
-        city:,
-        zipcode:,
-        state:,
-      )
-    end
-
-    it 'logs idv_in_person_proofing_address_visited' do
-      put :update, params: params
-
-      expect(@analytics).to have_received(
-        :track_event,
-      ).with(analytics_name, analytics_args)
-    end
-
-    context 'when updating the residential address' do
-      before(:each) do
-        flow_session[:pii_from_user][:address1] = '123 New Residential Ave'
-        allow(subject).to receive(:user_session).and_return(user_session)
+    context 'valid address details' do
+      let(:address1) { '1 FAKE RD' }
+      let(:address2) { 'APT 1B' }
+      let(:city) { 'GREAT FALLS' }
+      let(:zipcode) { '59010' }
+      let(:state) { 'Montana' }
+      let(:params) do
+        { in_person_address: {
+          address1: address1,
+          address2: address2,
+          city: city,
+          zipcode: zipcode,
+          state: state,
+        } }
+      end
+      let(:user_session) do
+        { idv: { ssn: '900123456' } }
+      end
+      let(:analytics_name) { 'IdV: in person proofing residential address submitted' }
+      let(:analytics_args) do
+        {
+          success: true,
+          errors: {},
+          analytics_id: 'In Person Proofing',
+          flow_path: 'standard',
+          irs_reproofing: false,
+          step: 'address',
+        }
       end
 
-      context 'user previously selected that the residential address matched state ID' do
-        before(:each) do
-          flow_session[:pii_from_user][:same_address_as_id] = 'true'
-        end
+      it 'sets values in the flow session' do
+        put :update, params: params
 
-        it 'infers and sets the "same_address_as_id" in the flow session to false' do
-          put :update, params: params
-
-          expect(flow_session[:pii_from_user][:same_address_as_id]).to eq('false')
-        end
+        expect(flow_session[:pii_from_user]).to include(
+          address1:,
+          address2:,
+          city:,
+          zipcode:,
+          state:,
+        )
       end
 
-      context 'user previously selected that the residential address did not match state ID' do
+      it 'logs idv_in_person_proofing_address_visited' do
+        put :update, params: params
+
+        expect(@analytics).to have_received(
+          :track_event,
+        ).with(analytics_name, analytics_args)
+      end
+
+      context 'when updating the residential address' do
         before(:each) do
-          flow_session[:pii_from_user][:same_address_as_id] = 'false'
+          flow_session[:pii_from_user][:address1] = '123 New Residential Ave'
+          allow(subject).to receive(:user_session).and_return(user_session)
         end
 
-        it 'leaves the "same_address_as_id" in the flow session as false' do
-          put :update, params: params
+        context 'user previously selected that the residential address matched state ID' do
+          before(:each) do
+            flow_session[:pii_from_user][:same_address_as_id] = 'true'
+          end
 
-          expect(flow_session[:pii_from_user][:same_address_as_id]).to eq('false')
+          it 'infers and sets the "same_address_as_id" in the flow session to false' do
+            put :update, params: params
+
+            expect(flow_session[:pii_from_user][:same_address_as_id]).to eq('false')
+          end
         end
+
+        context 'user previously selected that the residential address did not match state ID' do
+          before(:each) do
+            flow_session[:pii_from_user][:same_address_as_id] = 'false'
+          end
+
+          it 'leaves the "same_address_as_id" in the flow session as false' do
+            put :update, params: params
+
+            expect(flow_session[:pii_from_user][:same_address_as_id]).to eq('false')
+          end
+        end
+      end
+    end
+
+    context 'invalid address details' do
+      let(:address1) { '1 F@KE RD' }
+      let(:address2) { '@?T 1B' }
+      let(:city) { 'GR3AT F&LLS' }
+      let(:zipcode) { '59010' }
+      let(:state) { 'Montana' }
+      let(:params) do
+        { in_person_address: {
+          address1: address1,
+          address2: address2,
+          city: city,
+          zipcode: zipcode,
+          state: state,
+        } }
+      end
+      let(:analytics_name) { 'IdV: in person proofing residential address submitted' }
+      let(:analytics_args) do
+        {
+          success: false,
+          errors: {},
+          analytics_id: 'In Person Proofing',
+          flow_path: 'standard',
+          irs_reproofing: false,
+          step: 'address',
+        }
+      end
+
+      it 'does not proceed to next page' do
+        put :update, params: params
+
+        expect(response).to have_rendered(:show)
+        expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
       end
     end
   end
