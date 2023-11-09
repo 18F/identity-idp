@@ -22,15 +22,12 @@ module RuboCop
         PATTERN
 
         def on_send(node)
-          unless node.arguments.last.type == :hash || errors_add_match?(node).nil?
-            return add_offense(node, location: :expression)
-          end
-          errors_add_match?(node) do |arguments|
-            type_node = arguments.last.pairs.find do |pair|
-              pair.key.sym_type? && pair.key.source == 'type'
-            end
-            add_offense(node, location: :expression) unless type_node
-          end
+          return unless errors_add_match?(node)
+          _attr, type, options = node.arguments
+          return if type && type.type == :sym
+          options = type if type && type.type == :hash
+          return if options && options.type == :hash && options.keys.map(&:value).include?(:type)
+          add_offense(node, location: :expression)
         end
       end
     end
