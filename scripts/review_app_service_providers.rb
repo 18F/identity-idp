@@ -18,8 +18,8 @@ hash = {
         dashboard_url,
       ],
       'push_notification_url' => "#{dashboard_url}/api/security_events",
-    }
-  }
+    },
+  },
 }
 
 puts hash.to_yaml
