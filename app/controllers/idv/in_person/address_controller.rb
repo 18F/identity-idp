@@ -24,7 +24,8 @@ module Idv
         pii_from_user[:same_address_as_id] = 'false' if updating_address?
         form_result = form.submit(flow_params)
 
-        analytics.idv_in_person_proofing_residential_address_submitted(**analytics_arguments.merge(**form_result.to_h))
+        analytics.idv_in_person_proofing_residential_address_submitted(
+          **analytics_arguments.merge(**form_result.to_h))
 
         if form_result.success?
           attrs.each do |attr|
