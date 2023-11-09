@@ -52,7 +52,7 @@ RSpec.describe TwoFactorAuthentication::SignInPhoneSelectionPresenter do
     let(:user_without_mfa) { create(:user) }
     let(:phone) { build(:phone_configuration, phone: '+1 888 867-5309') }
     let(:presenter_without_mfa) do
-      described_class.new(configuration: phone, user: user_without_mfa, method: 'sms')
+      described_class.new(configuration: phone, user: user_without_mfa, method: 'phone')
     end
     it { expect(presenter_without_mfa.disabled?).to eq(false) }
 
