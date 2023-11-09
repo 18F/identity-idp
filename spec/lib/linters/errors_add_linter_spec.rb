@@ -66,7 +66,7 @@ RSpec.describe RuboCop::Cop::IdentityIdp::ErrorsAddLinter do
     RUBY
   end
 
-  it 'registers no offense when defining hash as second argumetn including "type"' do
+  it 'registers no offense when defining hash as second argument including "type"' do
     expect_no_offenses(<<~RUBY)
       class MyModel
         def validate
