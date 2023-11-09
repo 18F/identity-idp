@@ -9,14 +9,6 @@ module TwoFactorAuthentication
       :phone
     end
 
-    def type
-      if MfaContext.new(user).phone_configurations.many?
-        "#{super}_#{configuration.id}"
-      else
-        super
-      end
-    end
-
     def label
       t('two_factor_authentication.two_factor_choice_options.phone')
     end
