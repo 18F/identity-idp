@@ -68,7 +68,6 @@ database_worker_jobs_sslmode: 'verify-full'
 deliver_mail_async: false
 deleted_user_accounts_report_configs: '[]'
 development_mailer_deliver_method: letter_opener
-disable_csp_unsafe_inline: true
 disable_email_sending: true
 disable_logout_get_request: true
 disallow_all_web_crawlers: true
