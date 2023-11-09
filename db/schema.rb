@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_10_24_172229) do
+ActiveRecord::Schema[7.1].define(version: 2023_11_02_211426) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -456,9 +456,11 @@ ActiveRecord::Schema[7.1].define(version: 2023_10_24_172229) do
     t.datetime "in_person_verification_pending_at"
     t.text "encrypted_pii_multi_region"
     t.text "encrypted_pii_recovery_multi_region"
+    t.datetime "gpo_verification_expired_at"
     t.index ["fraud_pending_reason"], name: "index_profiles_on_fraud_pending_reason"
     t.index ["fraud_rejection_at"], name: "index_profiles_on_fraud_rejection_at"
     t.index ["fraud_review_pending_at"], name: "index_profiles_on_fraud_review_pending_at"
+    t.index ["gpo_verification_expired_at"], name: "index_profiles_on_gpo_verification_expired_at"
     t.index ["gpo_verification_pending_at"], name: "index_profiles_on_gpo_verification_pending_at"
     t.index ["name_zip_birth_year_signature"], name: "index_profiles_on_name_zip_birth_year_signature"
     t.index ["ssn_signature"], name: "index_profiles_on_ssn_signature"
@@ -627,6 +629,8 @@ ActiveRecord::Schema[7.1].define(version: 2023_10_24_172229) do
     t.datetime "updated_at", precision: nil, null: false
     t.datetime "bounced_at", precision: nil
     t.datetime "reminder_sent_at", precision: nil
+    t.datetime "expiration_notice_sent_at", precision: nil
+    t.index ["expiration_notice_sent_at"], name: "index_usps_confirmation_codes_on_expiration_notice_sent_at"
     t.index ["otp_fingerprint"], name: "index_usps_confirmation_codes_on_otp_fingerprint"
     t.index ["profile_id"], name: "index_usps_confirmation_codes_on_profile_id"
     t.index ["reminder_sent_at"], name: "index_usps_confirmation_codes_on_reminder_sent_at"
