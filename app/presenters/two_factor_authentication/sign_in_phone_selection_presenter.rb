@@ -23,23 +23,31 @@ module TwoFactorAuthentication
     end
 
     def info
-      if method.to_s == 'sms'
+      case method.to_s
+      when 'sms'
         t(
           'two_factor_authentication.login_options.sms_info_html',
           phone: configuration.masked_phone,
         )
-      elsif method.to_s == 'voice'
-        t(
-          'two_factor_authentication.login_options.voice_info_html',
-          phone: configuration.masked_phone,
-        )
+      when 'voice'
+      t(
+        'two_factor_authentication.login_options.voice_info_html',
+        phone: configuration.masked_phone,
+      )
       else
         t('two_factor_authentication.two_factor_choice_options.phone_info')
       end
     end
 
     def disabled?
-      OutageStatus.new.all_phone_vendor_outage?
+      case method.to_s
+      when 'sms'
+        OutageStatus.new.vendor_outage?(:sms)
+      when 'voice'
+        OutageStatus.new.vendor_outage?(:voice)
+      else
+        OutageStatus.new.all_phone_vendor_outage?
+      end
     end
   end
 end
