@@ -146,14 +146,14 @@ RUN openssl req -x509 -sha256 -nodes -newkey rsa:2048 -days 1825 \
 RUN bundle exec rake assets:precompile --trace
 
 # Setup config files
-COPY --chown=app:app config/agencies.localdev.yml $RAILS_ROOT/config/agencies.yaml
-COPY --chown=app:app config/iaa_gtcs.localdev.yml $RAILS_ROOT/config/iaa_gtcs.yaml
-COPY --chown=app:app config/iaa_orders.localdev.yml $RAILS_ROOT/config/iaa_orders.yaml
-COPY --chown=app:app config/iaa_statuses.localdev.yml $RAILS_ROOT/config/iaa_statuses.yaml
-COPY --chown=app:app config/integration_statuses.localdev.yml $RAILS_ROOT/config/integration_statuses.yaml
-COPY --chown=app:app config/integrations.localdev.yml $RAILS_ROOT/config/integrations.yaml
-COPY --chown=app:app config/partner_account_statuses.localdev.yml $RAILS_ROOT/config/partner_account_statuses.yaml
-COPY --chown=app:app config/partner_accounts.localdev.yml $RAILS_ROOT/config/partner_accounts.yaml
+COPY --chown=app:app config/agencies.localdev.yml $RAILS_ROOT/config/agencies.yml
+COPY --chown=app:app config/iaa_gtcs.localdev.yml $RAILS_ROOT/config/iaa_gtcs.yml
+COPY --chown=app:app config/iaa_orders.localdev.yml $RAILS_ROOT/config/iaa_orders.yml
+COPY --chown=app:app config/iaa_statuses.localdev.yml $RAILS_ROOT/config/iaa_statuses.yml
+COPY --chown=app:app config/integration_statuses.localdev.yml $RAILS_ROOT/config/integration_statuses.yml
+COPY --chown=app:app config/integrations.localdev.yml $RAILS_ROOT/config/integrations.yml
+COPY --chown=app:app config/partner_account_statuses.localdev.yml $RAILS_ROOT/config/partner_account_statuses.yml
+COPY --chown=app:app config/partner_accounts.localdev.yml $RAILS_ROOT/config/partner_accounts.yml
 RUN ./scripts/review_app_service_providers.rb > $RAILS_ROOT/config/service_providers.yml
 
 # Expose the port the app runs on
