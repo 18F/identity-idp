@@ -76,8 +76,8 @@ RSpec.describe SignUp::PasswordsController do
             with(
               success: false,
               failure_reason: {
-                password: [:too_short],
-                password_confirmation: [:too_short],
+                password: { too_short: true },
+                password_confirmation: { too_short: true },
               },
             )
           expect(@irs_attempts_api_tracker).not_to receive(:user_registration_email_confirmation)

@@ -135,8 +135,8 @@ RSpec.describe Users::PasswordsController do
           expect(@irs_attempts_api_tracker).to receive(:logged_in_password_change).with(
             success: false,
             failure_reason: {
-              password: [:too_short],
-              password_confirmation: [:too_short],
+              password: { too_short: true },
+              password_confirmation: { too_short: true },
             },
           )
 
@@ -191,7 +191,7 @@ RSpec.describe Users::PasswordsController do
           expect(@irs_attempts_api_tracker).to receive(:logged_in_password_change).with(
             success: false,
             failure_reason: {
-              password_confirmation: [:mismatch],
+              password_confirmation: { mismatch: true },
             },
           )
 

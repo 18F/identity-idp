@@ -169,7 +169,7 @@ RSpec.describe SignUp::RegistrationsController, devise: true do
         :user_registration_email_submitted,
         email: 'invalid@',
         success: false,
-        failure_reason: { email: [:invalid] },
+        failure_reason: { email: { invalid: true } },
       )
 
       post :create, params: { user: { email: 'invalid@', request_id: '', terms_accepted: '1' } }

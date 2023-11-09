@@ -48,7 +48,7 @@ module Idv
       irs_attempts_api_tracker.idv_phone_submitted(
         success: result.success?,
         phone_number: step_params[:phone],
-        failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
+        failure_reason: result.to_h[:error_details],
       )
       if result.success?
         submit_proofing_attempt

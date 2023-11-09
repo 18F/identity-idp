@@ -280,8 +280,8 @@ RSpec.describe Idv::PhoneController do
           success: false,
           phone_number: improbable_phone_number,
           failure_reason: {
-            phone: [:improbable_phone],
-            otp_delivery_preference: [:inclusion],
+            phone: { improbable_phone: true },
+            otp_delivery_preference: { inclusion: true },
           },
         )
 

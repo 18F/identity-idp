@@ -390,7 +390,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
           pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
         )
         expect(@irs_attempts_api_tracker).to receive(:idv_gpo_verification_submitted).
-          with(success: false, failure_reason: { otp: [:confirmation_code_incorrect] })
+          with(success: false, failure_reason: { otp: { confirmation_code_incorrect: true } })
 
         action
 
