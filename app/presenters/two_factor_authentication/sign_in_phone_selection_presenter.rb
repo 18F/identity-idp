@@ -30,10 +30,10 @@ module TwoFactorAuthentication
           phone: configuration.masked_phone,
         )
       when 'voice'
-      t(
-        'two_factor_authentication.login_options.voice_info_html',
-        phone: configuration.masked_phone,
-      )
+        t(
+          'two_factor_authentication.login_options.voice_info_html',
+          phone: configuration.masked_phone,
+        )
       else
         t('two_factor_authentication.two_factor_choice_options.phone_info')
       end
