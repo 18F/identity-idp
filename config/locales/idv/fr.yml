@@ -195,9 +195,6 @@ fr:
       alert_rate_limit_warning_html: Vous ne pouvez pas demander d’autres lettres pour
         le moment. Votre précédente demande de lettre a été effectuée le
         <strong>%{date_letter_was_sent}</strong>.
-      change_to_verification_code_html: 'Le <strong>code à usage unique</strong>
-        figurant dans votre lettre est désormais appelé <strong>code de
-        vérification</strong>.'
       clear_and_start_over: Supprimez vos données et recommencez
       did_not_receive_letter:
         form:
