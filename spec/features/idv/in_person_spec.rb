@@ -8,6 +8,8 @@ RSpec.describe 'In Person Proofing', js: true do
 
   before do
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+    allow(IdentityConfig.store).to receive(:in_person_residential_address_controller_enabled).
+      and_return(false)
   end
 
   context 'ThreatMetrix review pending' do
