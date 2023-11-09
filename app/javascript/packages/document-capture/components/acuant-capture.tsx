@@ -600,6 +600,7 @@ function AcuantCapture(
     <div className={[className, 'document-capture-acuant-capture'].filter(Boolean).join(' ')}>
       {isCapturingEnvironment && (
         <AcuantCamera
+          selfieMode={name === 'selfie'}
           onCropStart={() => setHasStartedCropping(true)}
           onImageCaptureSuccess={onAcuantImageCaptureSuccess}
           onImageCaptureFailure={onAcuantImageCaptureFailure}

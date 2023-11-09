@@ -10,7 +10,7 @@ import UploadContext from '../context/upload';
 import TipList from './tip-list';
 
 /**
- * @typedef {'front'|'back'} DocumentSide
+ * @typedef {'front'|'back'|'selfie'} DocumentSide
  */
 
 /**
@@ -27,7 +27,7 @@ import TipList from './tip-list';
  *
  * @type {DocumentSide[]}
  */
-const DOCUMENT_SIDES = ['front', 'back'];
+const DOCUMENT_SIDES = ['front', 'back', 'selfie'];
 
 /**
  * @param {import('@18f/identity-form-steps').FormStepComponentProps<DocumentsStepValue>} props Props object.

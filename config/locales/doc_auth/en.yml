@@ -169,7 +169,9 @@ en:
       document_capture: Add photos of your ID
       document_capture_back: Back of your ID
       document_capture_front: Front of your ID
+      document_capture_selfie: Selfie
       front: Front of your driver’s license or state ID
+      selfie: Front of your driver’s license or state ID
       getting_started: Let’s verify your identity for %{sp_name}
       how_to_verify: Choose how you want to verify your identity
       hybrid_handoff: How would you like to add your ID?

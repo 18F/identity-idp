@@ -280,6 +280,10 @@ interface AcuantCameraContextProps {
    */
   onCropStart: () => void;
   /**
+   * Whether this camera is for selfie mode (other option is captureing an id)
+   */
+  selfieMode: boolean;
+  /**
    * React children node
    */
   children: ReactNode;
@@ -320,6 +324,7 @@ function AcuantCamera({
   onImageCaptureSuccess = () => {},
   onImageCaptureFailure = () => {},
   onCropStart = () => {},
+  selfieMode = false,
   children,
 }: AcuantCameraContextProps) {
   const { isReady, setIsActive } = useContext(AcuantContext);
@@ -394,7 +399,6 @@ function AcuantCamera({
       FACE_CLOSE_TO_BORDER: 'TOO CLOSE TO THE FRAME',
     };
 
-    const selfieMode = true;
     const cleanupCamera = () => {
       window.AcuantCameraUI.end();
       setIsActive(false);
