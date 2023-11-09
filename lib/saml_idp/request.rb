@@ -132,28 +132,28 @@ module SamlIdp
 
       unless service_provider?
         log "Unable to find service provider for issuer #{issuer}"
-        @errors.push('Issuer is missing or invalid')
+        errors.push(:issuer_missing_or_invald)
       end
 
       if authn_request? && logout_request?
         log 'One and only one of authnrequest and logout request is required.'
-        @errors.push('Request must ONLY have an AuthnRequest OR LogoutRequest tag, this request has both')
+        errors.push(:both_auth_and_logout_request)
       end
 
       unless authn_request? || logout_request?
         log "One and only one of authnrequest and logout request is required. authnrequest: #{authn_request?} logout_request: #{logout_request?} "
-        @errors.push('Request must have either an AuthnRequest or LogoutRequest tag')
+        errors.push(:no_auth_or_logout_request)
       end
 
       if service_provider? && response_url.blank?
         log "Unable to find response url for #{issuer}: #{raw_xml}"
-        @errors.push('No response URL found')
+        errors.push(:no_response_url)
       end
 
       unless service_provider? && valid_signature?
         log "Signature is invalid in #{raw_xml}"
         # TODO: We should get more specific errors
-        @errors.push('Signature is invalid')
+        errors.push(:invalid_signature)
       end
 
       errors.blank?

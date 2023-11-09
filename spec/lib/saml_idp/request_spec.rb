@@ -261,7 +261,7 @@ module SamlIdp
 
           it 'adds an error to the request object' do
             subject.valid?
-            expect(subject.errors.first).to eq 'Issuer is missing or invalid'
+            expect(subject.errors.first).to eq :issuer_missing_or_invald
           end
         end
 
@@ -276,7 +276,7 @@ module SamlIdp
 
           it 'adds an error to request object' do
             subject.valid?
-            expect(subject.errors.first).to eq 'Request must have either an AuthnRequest or LogoutRequest tag'
+            expect(subject.errors.first).to eq :no_auth_or_logout_request
           end
         end
 
@@ -293,7 +293,7 @@ module SamlIdp
 
           it 'adds an error to request object' do
             subject.valid?
-            expect(subject.errors.first).to eq 'Request must ONLY have an AuthnRequest OR LogoutRequest tag, this request has both'
+            expect(subject.errors.first).to eq :both_auth_and_logout_request
           end
         end
 
@@ -309,7 +309,7 @@ module SamlIdp
 
             it 'adds an error to request object' do
               subject.valid?
-              expect(subject.errors.first).to eq 'No response URL found'
+              expect(subject.errors.first).to eq :no_response_url
             end
           end
 
@@ -325,7 +325,7 @@ module SamlIdp
 
             it 'adds an error to request object' do
               subject.valid?
-              expect(subject.errors.first).to eq 'No response URL found'
+              expect(subject.errors.first).to eq :no_response_url
             end
           end
         end
@@ -342,7 +342,7 @@ module SamlIdp
 
           it 'adds an error to request object' do
             subject.valid?
-            expect(subject.errors.include?('Signature is invalid')).to be true
+            expect(subject.errors.include?(:invalid_signature)).to be true
           end
         end
       end
