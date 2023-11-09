@@ -3,11 +3,9 @@ require 'rails_helper'
 RSpec.describe TwoFactorAuthentication::SignInPhoneSelectionPresenter do
   let(:user) { create(:user, :with_phone) }
   let(:configuration) { create(:phone_configuration, user: user) }
-  let(:method) do
-    method = 'phone'
-  end
+
   let(:presenter) do
-    described_class.new(user: user, configuration: configuration, method: method)
+    described_class.new(user: user, configuration: configuration, method: 'phone')
   end
 
   describe '#type' do
@@ -23,28 +21,28 @@ RSpec.describe TwoFactorAuthentication::SignInPhoneSelectionPresenter do
       )
     end
     context('with sms method') do
-      let(:method) do
-        method = 'sms'
+      let(:presenter) do
+        described_class.new(user: user, configuration: configuration, method: 'sms')
       end
       it('returns the correct translation for sms') do
         expect(presenter.info).to eq(
           t(
             'two_factor_authentication.login_options.sms_info_html',
             phone: configuration.masked_phone,
-          )
+          ),
         )
       end
     end
     context('with voice method') do
-      let(:method) do
-        method = 'voice'
+      let(:presenter) do
+        described_class.new(user: user, configuration: configuration, method: 'voice')
       end
       it('returns the correct translation for voice') do
         expect(presenter.info).to eq(
           t(
             'two_factor_authentication.login_options.voice_info_html',
             phone: configuration.masked_phone,
-          )
+          ),
         )
       end
     end
@@ -57,7 +55,7 @@ RSpec.describe TwoFactorAuthentication::SignInPhoneSelectionPresenter do
       described_class.new(configuration: phone, user: user_without_mfa, method: 'sms')
     end
     it { expect(presenter_without_mfa.disabled?).to eq(false) }
-    
+
     context 'all phone vendor outage' do
       before do
         allow_any_instance_of(OutageStatus).to receive(:all_phone_vendor_outage?).and_return(true)
