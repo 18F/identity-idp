@@ -154,12 +154,6 @@ RSpec.feature 'idv enter letter code step' do
 
       expect(current_path).to eq idv_verify_by_mail_enter_code_path
       expect(page).to have_content t('idv.gpo.alert_info')
-      # The following test ensures that removed content is actually removed. The text
-      # is hardcoded since the i18n entries have been removed. Once we're satisfied,
-      # this can be removed.
-      expect(page).not_to have_content(
-        'The one-time code from your letter is now referred to as verification code',
-      )
       expect(page).to have_content t('idv.gpo.wrong_address')
       expect(page).to have_content Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE[:address1]
       verify_no_rate_limit_banner
