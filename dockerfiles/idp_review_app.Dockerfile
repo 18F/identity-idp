@@ -154,6 +154,7 @@ COPY --chown=app:app config/integration_statuses.localdev.yml $RAILS_ROOT/config
 COPY --chown=app:app config/integrations.localdev.yml $RAILS_ROOT/config/integrations.yml
 COPY --chown=app:app config/partner_account_statuses.localdev.yml $RAILS_ROOT/config/partner_account_statuses.yml
 COPY --chown=app:app config/partner_accounts.localdev.yml $RAILS_ROOT/config/partner_accounts.yml
+COPY --chown=app:app certs.example $RAILS_ROOT/certs
 RUN ./scripts/review_app_service_providers.rb > $RAILS_ROOT/config/service_providers.yml
 
 # Expose the port the app runs on
