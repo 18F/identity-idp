@@ -177,6 +177,25 @@ RSpec.describe FormResponse do
         expect(combined_response.to_h).to eq response_hash
       end
 
+      context 'with error detail symbol defined as type option on error' do
+        it 'returns a hash with success, errors, and error_details keys' do
+          errors = ActiveModel::Errors.new(build_stubbed(:user))
+          errors.add(:email_language, 'Language cannot be blank', type: :blank)
+          response = FormResponse.new(success: false, errors: errors)
+          response_hash = {
+            success: false,
+            errors: {
+              email_language: ['Language cannot be blank'],
+            },
+            error_details: {
+              email_language: [:blank],
+            },
+          }
+
+          expect(response.to_h).to eq response_hash
+        end
+      end
+
       context 'with serialize_error_details_only' do
         it 'excludes errors from the hash' do
           errors = ActiveModel::Errors.new(build_stubbed(:user))
