@@ -25,11 +25,6 @@ Rails.application.config.content_security_policy do |policy|
     script_src << "localhost:#{ENV['WEBPACK_PORT']}"
   end
 
-  if !IdentityConfig.store.disable_csp_unsafe_inline
-    script_src << :unsafe_inline
-    style_src << :unsafe_inline
-  end
-
   if IdentityConfig.store.rails_mailer_previews_enabled
     style_src << :unsafe_inline
     # CSP 2.0 only; overriden by x_frame_options in some browsers
