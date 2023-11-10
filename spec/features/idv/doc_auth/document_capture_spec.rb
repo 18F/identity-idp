@@ -136,6 +136,21 @@ RSpec.feature 'document capture step', :js do
 
       expect(DocAuthLog.find_by(user_id: user.id).state).to be_nil
     end
+
+    it 'return to sp when click on exit link', :js do
+      click_sp_exit_link(sp_name: sp_name)
+      expect(current_url).to start_with('http://localhost:7654/auth/result?error=access_denied')
+    end
+
+    it 'logs event and return to sp when click on submit and exit button', :js do
+      click_submit_exit_button
+      expect(fake_analytics).to have_logged_event(
+        'Frontend: IdV: exit optional questions',
+        hash_including(:ids),
+      )
+      expect(current_url).to start_with('http://localhost:7654/auth/result?error=access_denied')
+    end
+
     context 'not ready section' do
       it 'renders not ready section when enabled' do
         expect(page).to have_content(

@@ -68,6 +68,7 @@ describe('DocumentCaptureReviewIssues', () => {
       expect(backCapture).to.be.ok();
       expect(getByText('back side error')).to.be.ok();
       expect(getByRole('button', { name: 'forms.buttons.submit.default' })).to.be.ok();
+      expect(getByRole('button', { name: 'doc_auth.exit_survey.optional.button' })).to.be.ok();
     });
 
     it('renders for a doc type failure', () => {
@@ -114,6 +115,7 @@ describe('DocumentCaptureReviewIssues', () => {
       expect(backCapture).to.be.ok();
       expect(getByText('back side doc type error')).to.be.ok();
       expect(getByRole('button', { name: 'forms.buttons.submit.default' })).to.be.ok();
+      expect(getByRole('button', { name: 'doc_auth.exit_survey.optional.button' })).to.be.ok();
     });
   });
 });
