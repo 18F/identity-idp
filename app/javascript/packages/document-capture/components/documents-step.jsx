@@ -46,7 +46,7 @@ function DocumentsStep({
   const { isMobile } = useContext(DeviceContext);
   const { isLastStep } = useContext(FormStepsContext);
   const { flowPath } = useContext(UploadContext);
-  const { notReadySectionEnabled } = useContext(FeatureFlagContext);
+  const { notReadySectionEnabled, exitQuestionSectionEnabled } = useContext(FeatureFlagContext);
   return (
     <>
       {flowPath === 'hybrid' && <HybridDocCaptureWarning className="margin-bottom-4" />}
@@ -74,7 +74,7 @@ function DocumentsStep({
       ))}
       {isLastStep ? <FormStepsButton.Submit /> : <FormStepsButton.Continue />}
       {notReadySectionEnabled && <DocumentCaptureNotReady />}
-      <DocumentCaptureAbandon />
+      {exitQuestionSectionEnabled && <DocumentCaptureAbandon />}
       <Cancel />
     </>
   );

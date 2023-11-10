@@ -81,6 +81,7 @@ doc_auth_s3_request_timeout: 5
 doc_auth_error_dpi_threshold: 290
 doc_auth_error_glare_threshold: 40
 doc_auth_error_sharpness_threshold: 40
+doc_auth_exit_question_enabled: false
 doc_auth_max_attempts: 5
 doc_auth_max_capture_attempts_before_native_camera: 3
 doc_auth_max_submission_attempts_before_native_camera: 3
@@ -381,6 +382,7 @@ development:
   database_worker_jobs_username: ''
   database_worker_jobs_host: ''
   database_worker_jobs_password: ''
+  doc_auth_exit_question_enabled: true
   doc_auth_selfie_capture: '{"enabled":false}'
   doc_auth_vendor: 'mock'
   doc_auth_vendor_randomize: false

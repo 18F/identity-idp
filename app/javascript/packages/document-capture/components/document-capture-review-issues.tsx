@@ -47,7 +47,7 @@ function DocumentCaptureReviewIssues({
   hasDismissed,
 }: DocumentCaptureReviewIssuesProps) {
   const { t } = useI18n();
-  const { notReadySectionEnabled } = useContext(FeatureFlagContext);
+  const { notReadySectionEnabled, exitQuestionSectionEnabled } = useContext(FeatureFlagContext);
   return (
     <>
       <PageHeading>{t('doc_auth.headings.review_issues')}</PageHeading>
@@ -84,7 +84,7 @@ function DocumentCaptureReviewIssues({
       ))}
       <FormStepsButton.Submit />
       {notReadySectionEnabled && <DocumentCaptureNotReady />}
-      <DocumentCaptureAbandon />
+      {exitQuestionSectionEnabled && <DocumentCaptureAbandon />}
       <Cancel />
     </>
   );

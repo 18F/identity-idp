@@ -7,6 +7,7 @@ import {
   UploadContextProvider,
   FailedCaptureAttemptsContextProvider,
   FeatureFlagContext,
+  InPersonContext,
 } from '@18f/identity-document-capture';
 import DocumentsStep from '@18f/identity-document-capture/components/documents-step';
 import { composeComponents } from '@18f/identity-compose-components';
@@ -86,14 +87,29 @@ describe('document-capture/components/documents-step', () => {
     expect(queryByText(notExpectedText)).to.not.exist();
   });
 
-  it('renders optional question part', () => {
-    const { getByRole, getByText } = render(
-      <DeviceContext.Provider value={{ isMobile: true }}>
-        <UploadContextProvider flowPath="standard">
-          <DocumentsStep />
-        </UploadContextProvider>
-      </DeviceContext.Provider>,
+  it('renders optional question part and not ready section', () => {
+    const App = composeComponents(
+      [
+        FeatureFlagContext.Provider,
+        {
+          value: {
+            notReadySectionEnabled: true,
+            exitQuestionSectionEnabled: true,
+          },
+        },
+      ],
+      [
+        InPersonContext.Provider,
+        {
+          value: {
+            inPersonURL: '/verify/doc_capture',
+          },
+        },
+      ],
+      [DocumentsStep],
     );
+    const { getByRole, getByText } = render(<App />);
+    expect(getByRole('heading', { name: 'doc_auth.not_ready.header', level: 2 })).to.be.ok();
     expect(getByRole('heading', { name: 'doc_auth.exit_survey.header', level: 2 })).to.be.ok();
     expect(getByText('doc_auth.exit_survey.optional.button')).to.be.ok();
   });
