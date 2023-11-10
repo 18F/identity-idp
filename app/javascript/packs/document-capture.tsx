@@ -94,6 +94,7 @@ const {
   flowPath,
   cancelUrl: cancelURL,
   exitUrl: exitURL,
+  accountUrl: accountURL,
   idvInPersonUrl: inPersonURL,
   securityAndPrivacyHowItWorksUrl: securityAndPrivacyHowItWorksURL,
   inPersonFullAddressEntryEnabled,
@@ -158,6 +159,7 @@ const App = composeComponents(
     FlowContext.Provider,
     {
       value: {
+        accountURL,
         cancelURL,
         exitURL,
         currentStep: 'document_capture',
