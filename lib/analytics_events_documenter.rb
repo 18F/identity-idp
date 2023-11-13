@@ -158,7 +158,8 @@ class AnalyticsEventsDocumenter
 
   # Naive attempt to pull tracked event string from source code
   def extract_event_name(method_object)
-    m = /track_event\(\s*[:"'](?<event_name>[^"']+)["',)]/.match(method_object.source)
+    m = /track_event\(\s*["'](?<event_name>[^"']+)["',)]/.match(method_object.source)
+    m ||= /track_event\(\s*:(?<event_name>[^,]+)[,)]/.match(method_object.source)
     m && m[:event_name]
   end
 
