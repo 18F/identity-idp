@@ -10,11 +10,14 @@ RSpec.feature 'document capture step', :js do
   let(:fake_analytics) { FakeAnalytics.new }
   let(:sp_name) { 'Test SP' }
   let(:enable_not_ready) { true }
+  let(:enable_exit_question) { true }
   before do
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
     allow_any_instance_of(ServiceProviderSession).to receive(:sp_name).and_return(sp_name)
     allow(IdentityConfig.store).to receive(:doc_auth_not_ready_section_enabled).
       and_return(enable_not_ready)
+    allow(IdentityConfig.store).to receive(:doc_auth_exit_question_section_enabled).
+      and_return(enable_exit_question)
     visit_idp_from_oidc_sp_with_ial2
 
     sign_in_and_2fa_user(user)
