@@ -30,6 +30,10 @@ interface AcuantSelfieCameraContextProps {
    */
   onImageCaptureSuccess: any;
   /**
+   * Failure callback
+   */
+  onImageCaptureFailure: any;
+  /**
    * React children node
    */
   children: ReactNode;
@@ -40,7 +44,7 @@ interface FaceCaptureCallback {
   onDetection: (text) => void;
   onOpened: () => void;
   onClosed: () => void;
-  onError: () => void;
+  onError: (error) => void;
   onPhotoTaken: () => void;
   onPhotoRetake: () => void;
   onCaptured: (base64Image: Blob) => void;
@@ -57,6 +61,7 @@ interface FaceDetectionStates {
 
 function AcuantCamera({
   onImageCaptureSuccess = () => {},
+  onImageCaptureFailure = () => {},
   children,
 }: AcuantSelfieCameraContextProps) {
   const { isReady, setIsActive } = useContext(AcuantContext);
@@ -84,6 +89,7 @@ function AcuantCamera({
       // Error occurred. Camera permission not granted will
       // manifest here with 1 as error code. Unexpected errors will have 2 as error code.
       console.log('onError', error);
+      onImageCaptureFailure({ error });
     },
     onPhotoTaken: () => {
       // The photo has been taken and it's showing a preview with a button to accept or retake the image.

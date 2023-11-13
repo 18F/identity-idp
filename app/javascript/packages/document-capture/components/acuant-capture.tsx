@@ -498,6 +498,25 @@ function AcuantCapture(
     setIsCapturingEnvironment(false);
   }
 
+  function onSelfieCaptureFailure({ error }: { error: any }) {
+    // Internally, Acuant sets a cookie to bail on guided capture if initialization had
+    // previously failed for any reason, including declined permission. Since the cookie
+    // never expires, and since we want to re-prompt even if the user had previously
+    // declined, unset the cookie value when failure occurs for permissions.
+    setAcuantFailureCookie(null);
+    onCameraAccessDeclined();
+
+    // Due to a bug with Safari on iOS we force the page to refresh on the third
+    // time a user denies permissions.
+    onFailedCameraPermissionAttempt();
+    if (failedCameraPermissionAttempts > 2) {
+      removeUnloadProtection();
+      window.location.reload();
+    }
+    // TODO trackEvent and analytics
+    setIsCapturingEnvironment(false);
+  }
+
   function onAcuantImageCaptureSuccess(
     nextCapture: AcuantSuccessResponse | LegacyAcuantSuccessResponse,
   ) {
@@ -626,7 +645,10 @@ function AcuantCapture(
         </AcuantCamera>
       )}
       {isCapturingEnvironment && selfieCapture && (
-        <AcuantSelfieCamera onImageCaptureSuccess={onSelfieCaptureSuccess}>
+        <AcuantSelfieCamera
+          onImageCaptureSuccess={onSelfieCaptureSuccess}
+          onImageCaptureFailure={onSelfieCaptureFailure}
+        >
           <div id="acuant-face-capture-container" />
         </AcuantSelfieCamera>
       )}
