@@ -4,11 +4,14 @@ import AcuantContext from '../context/acuant';
 
 declare global {
   interface Window {
-    AcuantPassiveLiveness: any;
+    AcuantPassiveLiveness: AcuantPassiveLivenessInterface;
   }
 }
 
-type AcuantPassiveLivenessStart = () => void;
+type AcuantPassiveLivenessStart = (
+  faceCaptureCallback: FaceCaptureCallback,
+  faceDetectionStates: FaceDetectionStates,
+) => void;
 
 interface AcuantPassiveLivenessInterface {
   /**
@@ -21,22 +24,7 @@ interface AcuantPassiveLivenessInterface {
   end: () => void;
 }
 
-interface AcuantImage {
-  /**
-   * Base64-encoded image data
-   */
-  data: string;
-  /**
-   * Image width
-   */
-  width: number;
-  /**
-   * Image height
-   */
-  height: number;
-}
-
-interface AcuantCameraContextProps {
+interface AcuantSelfieCameraContextProps {
   /**
    * Success callback
    */
@@ -47,9 +35,32 @@ interface AcuantCameraContextProps {
   children: ReactNode;
 }
 
-function AcuantCamera({ onImageCaptureSuccess = () => {}, children }: AcuantCameraContextProps) {
+interface FaceCaptureCallback {
+  onDetectorInitialized: () => void;
+  onDetection: (text) => void;
+  onOpened: () => void;
+  onClosed: () => void;
+  onError: () => void;
+  onPhotoTaken: () => void;
+  onPhotoRetake: () => void;
+  onCaptured: (base64Image: Blob) => void;
+}
+
+interface FaceDetectionStates {
+  FACE_NOT_FOUND: string;
+  TOO_MANY_FACES: string;
+  FACE_ANGLE_TOO_LARGE: string;
+  PROBABILITY_TOO_SMALL: string;
+  FACE_TOO_SMALL: string;
+  FACE_CLOSE_TO_BORDER: string;
+}
+
+function AcuantCamera({
+  onImageCaptureSuccess = () => {},
+  children,
+}: AcuantSelfieCameraContextProps) {
   const { isReady, setIsActive } = useContext(AcuantContext);
-  const faceCaptureCallback = {
+  const faceCaptureCallback: FaceCaptureCallback = {
     onDetectorInitialized: () => {
       console.log('onDetectorInitialized');
       // This callback is triggered when the face detector is ready.
@@ -89,7 +100,7 @@ function AcuantCamera({ onImageCaptureSuccess = () => {}, children }: AcuantCame
         image: { data: `data:image/jpeg;base64,${base64Image}`, width: 0, height: 0 },
         cardType: 1, // TODO Drivers license, this is incorrect for selfie
         sharpness: 100, // TODO
-        glare: 100, //TODO
+        glare: 100, // TODO
       });
     },
   };
@@ -107,9 +118,10 @@ function AcuantCamera({ onImageCaptureSuccess = () => {}, children }: AcuantCame
       window.AcuantPassiveLiveness.end();
       setIsActive(false);
     };
+
     const startSelfieCamera = () => {
       // TODO This opens the native camera
-      //window.AcuantPassiveLiveness.startManualCapture((image) => console.log('image', image));
+      // window.AcuantPassiveLiveness.startManualCapture((image) => console.log('image', image));
       window.AcuantPassiveLiveness.start(faceCaptureCallback, faceDetectionStates);
       setIsActive(true);
     };
@@ -117,11 +129,8 @@ function AcuantCamera({ onImageCaptureSuccess = () => {}, children }: AcuantCame
     if (isReady) {
       startSelfieCamera();
     }
-    return () => {
-      if (isReady) {
-        cleanupSelfieCamera();
-      }
-    };
+    // Cleanup when the AcuantSelfieCamera component is unmounted
+    return () => (isReady ? cleanupSelfieCamera() : undefined);
   }, [isReady]);
 
   return <>{children}</>;
