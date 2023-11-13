@@ -3,7 +3,7 @@
 module IrsAttemptsApi
   module TrackerEvents
     # @param [Boolean] success True if Account Successfully Deleted
-    # @param [Hash<Symbol, Hash<Symbol, Boolean>>] failure_reason displays why account deletion failed
+    # @param [Hash<Symbol, Hash>] failure_reason displays why account deletion failed
     # A User confirms and deletes their Login.gov account after 24 hour period
     def account_reset_account_deleted(success:, failure_reason: nil)
       track_event(
