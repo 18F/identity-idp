@@ -69,10 +69,11 @@ RSpec.describe Idv::InPerson::AddressController do
 
     context '#confirm_in_person_address_step_needed' do
       it 'remains on page when referer is verify info' do
-        request = idv_in_person_verify_info_url
+        subject.request = idv_in_person_verify_info_url
         get :show
 
         expect(response).to render_template :show
+        expect(response).to_not redirect_to(idv_in_person_ssn_url)
       end
 
       context 'with ssn' do
