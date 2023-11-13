@@ -86,7 +86,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
     it 'logs analytics and attempts tracker events on submit' do
       expect(fake_attempts_tracker).to receive(:idv_verification_submitted).with(
         success: true,
-        failure_reason: nil,
+        failure_reason: {},
         **fake_pii_details,
         ssn: DocAuthHelper::GOOD_SSN,
       )
@@ -120,7 +120,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
   it 'does not proceed to the next page if resolution raises an exception' do
     expect(fake_attempts_tracker).to receive(:idv_verification_submitted).with(
       success: false,
-      failure_reason: nil,
+      failure_reason: {},
       **fake_pii_details,
       ssn: DocAuthHelper::SSN_THAT_RAISES_EXCEPTION,
     )
