@@ -126,7 +126,7 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController do
         expect(@irs_attempts_api_tracker).to receive(:mfa_login_piv_cac).with(
           success: true,
           subject_dn: x509_subject,
-          failure_reason: nil,
+          failure_reason: {},
         )
 
         expect(@analytics).to receive(:track_event).

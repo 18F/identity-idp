@@ -132,7 +132,7 @@ RSpec.describe Users::PivCacAuthenticationSetupController do
                 :mfa_enroll_piv_cac,
                 success: true,
                 subject_dn: 'some dn',
-                failure_reason: nil,
+                failure_reason: {},
               )
 
               get :new, params: { token: good_token }
@@ -156,7 +156,7 @@ RSpec.describe Users::PivCacAuthenticationSetupController do
                 :mfa_enroll_piv_cac,
                 success: true,
                 subject_dn: 'some dn',
-                failure_reason: nil,
+                failure_reason: {},
               )
 
               get :new, params: { token: good_token }
@@ -172,7 +172,7 @@ RSpec.describe Users::PivCacAuthenticationSetupController do
                 :mfa_enroll_piv_cac,
                 success: true,
                 subject_dn: 'some dn',
-                failure_reason: nil,
+                failure_reason: {},
               )
 
               get :new, params: { token: good_token }
@@ -185,7 +185,7 @@ RSpec.describe Users::PivCacAuthenticationSetupController do
                 :mfa_enroll_piv_cac,
                 success: true,
                 subject_dn: 'some dn',
-                failure_reason: nil,
+                failure_reason: {},
               )
 
               get :new, params: { token: good_token }

@@ -227,7 +227,7 @@ RSpec.describe SignUp::EmailConfirmationsController do
       expect(@irs_attempts_api_tracker).to receive(:user_registration_email_confirmation).with(
         email: email_address.email,
         success: true,
-        failure_reason: nil,
+        failure_reason: {},
       )
 
       get :create, params: { confirmation_token: 'foo' }
