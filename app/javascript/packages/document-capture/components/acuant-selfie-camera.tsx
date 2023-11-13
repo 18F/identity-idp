@@ -96,12 +96,7 @@ function AcuantCamera({
     onCaptured: (base64Image) => {
       // Triggered when accept button is tapped
       console.log('onCaptured', base64Image);
-      onImageCaptureSuccess({
-        image: { data: `data:image/jpeg;base64,${base64Image}`, width: 0, height: 0 },
-        cardType: 1, // TODO Drivers license, this is incorrect for selfie
-        sharpness: 100, // TODO
-        glare: 100, // TODO
-      });
+      onImageCaptureSuccess({ image: `data:image/jpeg;base64,${base64Image}` });
     },
   };
 

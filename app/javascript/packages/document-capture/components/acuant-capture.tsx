@@ -490,6 +490,14 @@ function AcuantCapture(
     }
   }
 
+  function onSelfieCaptureSuccess({ image }: { image: string }) {
+    // TODO analytics
+    // TODO are there possible errors here?
+    onChangeAndResetError(image);
+    onResetFailedCaptureAttempts();
+    setIsCapturingEnvironment(false);
+  }
+
   function onAcuantImageCaptureSuccess(
     nextCapture: AcuantSuccessResponse | LegacyAcuantSuccessResponse,
   ) {
@@ -618,7 +626,7 @@ function AcuantCapture(
         </AcuantCamera>
       )}
       {isCapturingEnvironment && selfieCapture && (
-        <AcuantSelfieCamera onImageCaptureSuccess={onAcuantImageCaptureSuccess}>
+        <AcuantSelfieCamera onImageCaptureSuccess={onSelfieCaptureSuccess}>
           <div id="acuant-face-capture-container" />
         </AcuantSelfieCamera>
       )}
