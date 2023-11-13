@@ -98,12 +98,14 @@ module SamlIdp
       def find_base64_cert(options)
         cert_element = REXML::XPath.first(self, "//ds:X509Certificate", { "ds"=>DSIG })
         if cert_element
-          base64_cert = cert_element.text
+          return cert_element.text unless cert_element.text.blank?
+
+          raise ValidationError.new("Certificate element present in response (ds:X509Certificate) but evaluating to nil")
         elsif options[:cert]
           if options[:cert].is_a?(String)
-            base64_cert = options[:cert]
+            options[:cert]
           elsif options[:cert].is_a?(OpenSSL::X509::Certificate)
-            base64_cert = Base64.encode64(options[:cert].to_pem)
+            Base64.encode64(options[:cert].to_pem)
           else
             raise ValidationError.new("options[:cert] must be Base64-encoded String or OpenSSL::X509::Certificate")
           end
