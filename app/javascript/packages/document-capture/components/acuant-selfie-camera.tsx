@@ -86,7 +86,7 @@ function AcuantCamera({ onImageCaptureSuccess = () => {}, children }: AcuantCame
       // Triggered when accept button is tapped
       console.log('onCaptured', base64Image);
       onImageCaptureSuccess({
-        image: { data: base64Image },
+        image: { data: `data:image/jpeg;base64,${base64Image}`, width: 0, height: 0 },
         cardType: 1, // TODO Drivers license, this is incorrect for selfie
         sharpness: 100, // TODO
         glare: 100, //TODO
@@ -104,7 +104,6 @@ function AcuantCamera({ onImageCaptureSuccess = () => {}, children }: AcuantCame
       FACE_CLOSE_TO_BORDER: 'TOO CLOSE TO THE FRAME',
     };
     const cleanupSelfieCamera = () => {
-      console.log('cleanupSelfieCamera');
       window.AcuantPassiveLiveness.end();
       setIsActive(false);
     };

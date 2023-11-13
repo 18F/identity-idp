@@ -618,7 +618,7 @@ function AcuantCapture(
         </AcuantCamera>
       )}
       {isCapturingEnvironment && selfieCapture && (
-        <AcuantSelfieCamera onImageCaptureSuccess={() => {}}>
+        <AcuantSelfieCamera onImageCaptureSuccess={onAcuantImageCaptureSuccess}>
           <div id="acuant-face-capture-container" />
         </AcuantSelfieCamera>
       )}
