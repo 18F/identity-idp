@@ -5,11 +5,13 @@ import {
   AnalyticsContext,
   InPersonContext,
   FailedCaptureAttemptsContextProvider,
+  FeatureFlagContext,
 } from '@18f/identity-document-capture';
 import { I18n } from '@18f/identity-i18n';
 import { I18nContext } from '@18f/identity-react-i18n';
 import ReviewIssuesStep from '@18f/identity-document-capture/components/review-issues-step';
 import { toFormEntryError } from '@18f/identity-document-capture/services/upload';
+import { composeComponents } from '@18f/identity-compose-components';
 import { render } from '../../../support/document-capture';
 import { getFixtureFile } from '../../../support/file';
 
@@ -344,8 +346,19 @@ describe('document-capture/components/review-issues-step', () => {
   });
 
   it('renders optional questions', async () => {
-    const { getByText, getByRole } = render(<ReviewIssuesStep {...DEFAULT_PROPS} />);
-
+    const App = composeComponents(
+      [
+        FeatureFlagContext.Provider,
+        {
+          value: {
+            notReadySectionEnabled: true,
+            exitQuestionSectionEnabled: true,
+          },
+        },
+      ],
+      [ReviewIssuesStep, DEFAULT_PROPS],
+    );
+    const { getByText, getByRole } = render(<App />);
     await userEvent.click(getByRole('button', { name: 'idv.failure.button.warning' }));
     expect(getByRole('heading', { name: 'doc_auth.exit_survey.header', level: 2 })).to.be.ok();
     expect(getByText('doc_auth.exit_survey.optional.button')).to.be.ok();
