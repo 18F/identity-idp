@@ -150,7 +150,7 @@ module DocAuthHelper
   end
 
   def complete_verify_step
-    click_idv_continue
+    click_idv_submit_default
   end
 
   def complete_doc_auth_steps_before_address_step(expect_accessible: false)
@@ -331,7 +331,7 @@ module DocAuthHelper
     complete_doc_auth_steps_before_ssn_step
     select threatmetrix, from: :mock_profiling_result
     complete_ssn_step
-    click_idv_continue
+    complete_verify_step
     complete_phone_step(user)
     complete_enter_password_step(user)
     acknowledge_and_confirm_personal_key

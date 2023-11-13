@@ -79,7 +79,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
       click_idv_continue
 
       expect(page).to have_content(t('headings.verify'))
-      click_idv_continue
+      complete_verify_step
 
       prefilled_phone = page.find(id: 'idv_phone_form_phone').value
 
@@ -252,7 +252,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
         expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT[:last_name])
         expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT[:address1])
 
-        click_idv_continue
+        complete_verify_step
       end
     end
   end
@@ -308,7 +308,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
         expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT[:last_name])
         expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT[:address1])
 
-        click_idv_continue
+        complete_verify_step
       end
     end
   end
@@ -342,7 +342,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
       click_idv_continue
 
       expect(page).to have_content(t('headings.verify'))
-      click_idv_continue
+      complete_verify_step
 
       prefilled_phone = page.find(id: 'idv_phone_form_phone').value
 

@@ -339,6 +339,15 @@ fr:
           lettre à votre adresse personnelle. Cela prend <strong>5 à 10
           jours</strong>.'
       welcome: 'Vous aurez besoin de votre:'
+    not_ready:
+      button_nosp: Annuler et revenir à votre profil
+      button_sp: Quittez %{app_name} et retournez à %{sp_name}
+      content_nosp: Si vous quittez %{app_name}, votre identité n’aura pas été
+        vérifiée. Vous pourrez revenir plus tard pour terminer ce processus.
+      content_sp: Si vous quittez %{app_name} maintenant et revenez sur %{sp_name},
+        votre identité n’aura pas été vérifiée. Vous pourrez revenir plus tard
+        pour terminer ce processus.
+      header: Vous n’êtes pas prêt à ajouter des photos?
     phone_question:
       do_not_have: Je n’ai pas de téléphone
     tips:

@@ -190,8 +190,6 @@ es:
       alert_rate_limit_warning_html: No puede solicitar más cartas ahora mismo. Su
         solicitud de carta anterior la hizo el
         <strong>%{date_letter_was_sent}</strong>.
-      change_to_verification_code_html: 'El <strong>código único</strong> de su carta
-        ahora se conoce como <strong>código de verificación</strong>.'
       clear_and_start_over: Borrar su información y empezar de nuevo
       did_not_receive_letter:
         form:
@@ -307,6 +305,8 @@ es:
           ellos.
         no_pii: SITIO DE PRUEBA - No utilice información personal real (sólo para
           propósitos de demostración) - SITIO DE PRUEBA
+      verify_info: Leímos sus datos en su identificación. Revíselos y modifíquelos si
+        es necesario antes de enviarlos para la verificación.
       verifying: Verificando…
     titles:
       activated: Ya se verificó tu identidad.

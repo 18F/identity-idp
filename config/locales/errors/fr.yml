@@ -148,8 +148,10 @@ fr:
       general_error: Nous n’avons pas pu ajouter le déverrouillage facial ni le
         déverrouillage tactile. Veuillez réessayer ou choisir une autre méthode
         d’authentification.
-      not_supported: Nous sommes désolés, mais votre navigateur ne prend pas en charge
-        le déverrouillage du visage ou du toucher.
+      not_supported: Votre navigateur ne prend pas en charge le déverrouillage par
+        reconnaissance faciale ou tactile. Utilisez la dernière version de
+        Google Chrome, Microsoft Edge ou Safari pour utiliser le déverrouillage
+        par reconnaissance faciale ou tactile.
       unique_name: Ce nom d’appareil a été utilisé. Veuillez sélectionner un autre nom
         d’appareil.
     webauthn_setup:
@@ -163,7 +165,7 @@ fr:
         %{link}.
       general_error_html: Nous n’avons pas pu ajouter la clé de sécurité. Veuillez
         réessayer ou %{link_html}.
-      not_supported: Désolé, votre navigateur ne supporte pas les clés de sécurité
-        FIDO. Les dernières versions de Chrome, Firefox, Edge et Safari prennent
-        en charge les clés de sécurité FIDO.
+      not_supported: Votre navigateur ne prend pas en charge les clés de sécurité.
+        Utilisez la dernière version de Google Chrome, Microsoft Edge, Mozilla
+        Firefox ou Safari pour utiliser les clés de sécurité.
       unique_name: Ce nom est déjà pris. Veuillez choisir un autre nom.
