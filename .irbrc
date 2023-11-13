@@ -1,5 +1,3 @@
-IRB.conf[:USE_AUTOCOMPLETE] = false
+require_relative './lib/env_irb_prompt.rb'
 
-on_deployed_box = File.directory?('/srv/idp/releases/')
-
-IRB.conf[:SAVE_HISTORY] = on_deployed_box ? nil : 1000
+EnvIrbPrompt.new.configure!
