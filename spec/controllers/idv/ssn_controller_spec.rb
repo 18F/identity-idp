@@ -226,6 +226,8 @@ RSpec.describe Idv::SsnController do
 
     context 'when pii_from_doc is not present' do
       before do
+        subject.idv_session.welcome_visited = true
+        subject.idv_session.idv_consent_given = true
         subject.idv_session.flow_path = 'standard'
         subject.idv_session.pii_from_doc = nil
       end

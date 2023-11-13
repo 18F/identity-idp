@@ -8,8 +8,7 @@ module Idv
 
     before_action :confirm_not_rate_limited, except: [:update]
     before_action :confirm_step_allowed
-    before_action :confirm_hybrid_handoff_complete
-    before_action :confirm_document_capture_needed
+    before_action :confirm_verify_info_step_needed
     before_action :override_csp_to_allow_acuant
 
     def show
@@ -58,7 +57,7 @@ module Idv
       Idv::StepInfo.new(
         key: :document_capture,
         controller: controller_name,
-        next_steps: [:success], # [:ssn],
+        next_steps: [:ssn], # :ipp_state_id
         preconditions: ->(idv_session:, user:) { idv_session.flow_path == 'standard' },
       )
     end
@@ -69,14 +68,6 @@ module Idv
       return if idv_session.flow_path.present?
 
       redirect_to idv_hybrid_handoff_url
-    end
-
-    def confirm_document_capture_needed
-      return if idv_session.redo_document_capture
-
-      return if idv_session.pii_from_doc.blank? && !idv_session.verify_info_step_complete?
-
-      redirect_to idv_ssn_url
     end
 
     def cancel_establishing_in_person_enrollments

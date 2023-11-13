@@ -47,6 +47,7 @@ module Idv
         hybrid_handoff: Idv::HybridHandoffController.step_info,
         link_sent: Idv::LinkSentController.step_info,
         document_capture: Idv::DocumentCaptureController.step_info,
+        ssn: Idv::SsnController.step_info,
       }
     end
 

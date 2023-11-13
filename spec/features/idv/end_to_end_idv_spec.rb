@@ -16,22 +16,22 @@ RSpec.describe 'Identity verification', :js do
     complete_welcome_step
 
     validate_agreement_page
-    go_back_from_agreement
+    test_go_back_from_agreement
     try_to_skip_ahead_from_agreement
     complete_agreement_step
 
     validate_hybrid_handoff_page
-    go_back_from_hybrid_handoff
+    test_go_back_from_hybrid_handoff
     try_to_skip_ahead_from_hybrid_handoff
     complete_hybrid_handoff_step # upload photos
 
     validate_document_capture_page
-    go_back_from_document_capture
+    test_go_back_from_document_capture
     complete_document_capture_step
     validate_document_capture_submit(user)
 
+    test_go_back_from_ssn_page
     validate_ssn_page
-    go_back_from_ssn_page
     complete_ssn_step
 
     try_to_go_back_from_verify_info
@@ -357,7 +357,7 @@ RSpec.describe 'Identity verification', :js do
     expect(page).to have_current_path(idv_phone_path)
   end
 
-  def go_back_from_agreement
+  def test_go_back_from_agreement
     go_back
     expect(current_path).to eq(idv_welcome_path)
     complete_welcome_step
@@ -368,7 +368,7 @@ RSpec.describe 'Identity verification', :js do
     )
   end
 
-  def go_back_from_hybrid_handoff
+  def test_go_back_from_hybrid_handoff
     go_back
     expect(current_path).to eql(idv_agreement_path)
     expect(page).to have_checked_field(
@@ -386,7 +386,7 @@ RSpec.describe 'Identity verification', :js do
     complete_agreement_step
   end
 
-  def go_back_from_document_capture
+  def test_go_back_from_document_capture
     go_back
     go_back
     expect(page).to have_current_path(idv_agreement_path)
@@ -397,10 +397,15 @@ RSpec.describe 'Identity verification', :js do
 
     go_forward
     expect(page).to have_current_path(idv_hybrid_handoff_path)
-    visit(idv_document_capture_url)
+    go_forward
+    expect(page).to have_content(t('doc_auth.headings.front'))
+    expect(page).to have_content(t('doc_auth.headings.back'))
   end
 
-  def go_back_from_ssn_page
+  def test_go_back_from_ssn_page
+    go_back
+    expect(page).to have_current_path(idv_document_capture_path)
+    go_forward
   end
 
   def try_to_go_back_from_verify_info

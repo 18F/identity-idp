@@ -6,6 +6,7 @@ module Idv
     include ThreatMetrixConcern
 
     before_action :confirm_not_rate_limited_after_doc_auth
+    before_action :confirm_step_allowed
     before_action :confirm_verify_info_step_needed
     before_action :confirm_document_capture_complete
     before_action :confirm_repeat_ssn, only: :show
@@ -56,6 +57,15 @@ module Idv
         flash[:error] = form_response.first_error_message
         render 'idv/shared/ssn', locals: threatmetrix_view_variables(ssn_presenter.updating_ssn?)
       end
+    end
+
+    def self.step_info
+      Idv::StepInfo.new(
+        key: :ssn,
+        controller: controller_name,
+        next_steps: [:success], # [:verify_info],
+        preconditions: ->(idv_session:, user:) { idv_session.document_capture_complete? },
+      )
     end
 
     private
