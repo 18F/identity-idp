@@ -1,8 +1,8 @@
 module Idv
   module Steps
     module ThreatMetrixStepHelper
-      def threatmetrix_view_variables
-        session_id = generate_threatmetrix_session_id
+      def threatmetrix_view_variables(updating_ssn)
+        session_id = generate_threatmetrix_session_id(updating_ssn)
 
         {
           threatmetrix_session_id: session_id,
@@ -11,8 +11,8 @@ module Idv
         }
       end
 
-      def generate_threatmetrix_session_id
-        idv_session.threatmetrix_session_id = SecureRandom.uuid if !@ssn_form.updating_ssn?
+      def generate_threatmetrix_session_id(updating_ssn)
+        idv_session.threatmetrix_session_id = SecureRandom.uuid if !updating_ssn
         idv_session.threatmetrix_session_id
       end
 

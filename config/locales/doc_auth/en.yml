@@ -175,6 +175,7 @@ en:
       hybrid_handoff: How would you like to add your ID?
       interstitial: We are processing your images
       lets_go: How verifying your identity works
+      no_ssn: Don’t have a Social Security number?
       phone_question: Do you have a phone you can use to take photos of your ID?
       review_issues: Check your images and try again
       secure_account: Secure your account
@@ -209,6 +210,9 @@ en:
       document_capture_intro_acknowledgment: We’ll collect information about you by
         reading your driver’s license or state ID card. We use this information
         to verify your identity.
+      exit:
+        with_sp: Exit %{app_name} and return to %{sp_name}
+        without_sp: Exit identity verification and go to your account page
       getting_started_html: '%{sp_name} needs to make sure you are you — not someone
         pretending to be you. %{link_html}'
       getting_started_learn_more: Learn more about what you need to verify your identity
@@ -229,6 +233,7 @@ en:
         your state‑issued ID.
       link_sent_complete_no_polling: When you are done, click Continue here to finish verifying your identity.
       link_sent_complete_polling: The next step will load automatically.
+      no_ssn: You must have a Social Security number to finish verifying your identity.
       privacy: '%{app_name} is a secure, government website that adheres to the
         highest standards in data protection. We use your data to verify your
         identity.'

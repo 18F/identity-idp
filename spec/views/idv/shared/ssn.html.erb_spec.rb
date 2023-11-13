@@ -16,6 +16,8 @@ RSpec.describe 'idv/shared/ssn.html.erb' do
     "https://#{js_domain}/fp/tags?org_id=#{lexisnexis_threatmetrix_org_id}&session_id=#{session_id}"
   end
 
+  let(:sp_name) { 'SP' }
+
   before :each do
     allow(view).to receive(:url_for).and_return('https://example.com/')
 
@@ -24,13 +26,39 @@ RSpec.describe 'idv/shared/ssn.html.erb' do
     allow(IdentityConfig.store).
       to receive(:lexisnexis_threatmetrix_org_id).and_return(lexisnexis_threatmetrix_org_id)
 
-    assign(:ssn_form, Idv::SsnFormatForm.new(nil))
-    assign(:step_indicator_steps, Idv::Flows::InPersonFlow::STEP_INDICATOR_STEPS)
+    assign(
+      :ssn_presenter,
+      Idv::SsnPresenter.new(
+        sp_name: sp_name, ssn_form: Idv::SsnFormatForm.new(nil),
+        step_indicator_steps: Idv::Flows::InPersonFlow::STEP_INDICATOR_STEPS
+      ),
+    )
     render template: 'idv/shared/ssn', locals: {
       threatmetrix_session_id: session_id,
       threatmetrix_javascript_urls: [tags_js_url],
       threatmetrix_iframe_url: tags_iframe_url,
     }
+  end
+
+  context 'with a service provider' do
+    it 'contains a no-ssn exit link' do
+      expect(rendered).to have_content(t('doc_auth.info.no_ssn'))
+      expect(rendered).to have_content(
+        t(
+          'doc_auth.info.exit.with_sp', app_name: APP_NAME,
+                                        sp_name: 'SP'
+        ),
+      )
+    end
+  end
+
+  context 'without a service provider' do
+    let(:sp_name) { nil }
+
+    it 'contains a no-ssn exit link' do
+      expect(rendered).to have_content(t('doc_auth.info.no_ssn'))
+      expect(rendered).to have_content(t('doc_auth.info.exit.without_sp'))
+    end
   end
 
   context 'when threatmetrix collection enabled' do
