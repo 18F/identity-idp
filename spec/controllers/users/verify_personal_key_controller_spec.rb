@@ -127,7 +127,7 @@ RSpec.describe Users::VerifyPersonalKeyController do
         stub_attempts_tracker
 
         expect(@irs_attempts_api_tracker).to receive(:personal_key_reactivation_submitted).with(
-          failure_reason: nil,
+          failure_reason: {},
           success: true,
         ).once
 

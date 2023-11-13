@@ -275,7 +275,7 @@ RSpec.describe Users::TwoFactorAuthenticationController do
         { **valid_phone_number, otp_delivery_method: 'sms' }
       end
       let(:success_parameters) do
-        { success: true, **default_parameters, failure_reason: nil }
+        { success: true, **default_parameters, failure_reason: {} }
       end
 
       before do

@@ -204,7 +204,7 @@ module Idv
       )
       log_idv_verification_submitted_event(
         success: form_response.success?,
-        failure_reason: form_response.to_h[:error_details],
+        failure_reason: form_response.errors,
       )
 
       form_response.extra[:ssn_is_unique] = DuplicateSsnFinder.new(
