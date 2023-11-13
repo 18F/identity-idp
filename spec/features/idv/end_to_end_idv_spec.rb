@@ -16,25 +16,20 @@ RSpec.describe 'Identity verification', :js do
     complete_welcome_step
 
     validate_agreement_page
-    test_go_back_from_agreement
     try_to_skip_ahead_from_agreement
     complete_agreement_step
 
     validate_hybrid_handoff_page
-    test_go_back_from_hybrid_handoff
     try_to_skip_ahead_from_hybrid_handoff
     complete_hybrid_handoff_step # upload photos
 
     validate_document_capture_page
-    test_go_back_from_document_capture
     complete_document_capture_step
     validate_document_capture_submit(user)
 
-    test_go_back_from_ssn_page
     validate_ssn_page
     complete_ssn_step
 
-    try_to_go_back_from_verify_info
     validate_verify_info_page
     complete_verify_step
     validate_verify_info_submit(user)
@@ -52,6 +47,40 @@ RSpec.describe 'Identity verification', :js do
     acknowledge_and_confirm_personal_key
 
     validate_idv_completed_page(user)
+    click_agree_and_continue
+
+    validate_return_to_sp
+  end
+
+  scenario 'Unsupervised proofing back button' do
+    visit_idp_from_sp_with_ial2(sp)
+    user = sign_up_and_2fa_ial1_user
+
+    complete_welcome_step
+
+    test_go_back_from_agreement
+    complete_agreement_step
+
+    test_go_back_from_hybrid_handoff
+    complete_hybrid_handoff_step # upload photos
+
+    test_go_back_from_document_capture
+    complete_document_capture_step
+
+    test_go_back_from_ssn_page
+    complete_ssn_step
+
+    test_go_back_from_verify_info
+    complete_verify_step
+
+    validate_phone_page
+    visit_by_mail_and_return
+    complete_otp_verification_page(user)
+
+    complete_enter_password_step(user)
+
+    acknowledge_and_confirm_personal_key
+
     click_agree_and_continue
 
     validate_return_to_sp
@@ -383,7 +412,7 @@ RSpec.describe 'Identity verification', :js do
       t('doc_auth.instructions.consent', app_name: APP_NAME),
       visible: :all,
     )
-    complete_agreement_step
+    click_on t('doc_auth.buttons.continue')
   end
 
   def test_go_back_from_document_capture
@@ -408,7 +437,7 @@ RSpec.describe 'Identity verification', :js do
     go_forward
   end
 
-  def try_to_go_back_from_verify_info
+  def test_go_back_from_verify_info
     visit(idv_document_capture_url)
     expect(page).to have_current_path(idv_verify_info_path)
     visit(idv_welcome_path)
