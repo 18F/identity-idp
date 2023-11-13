@@ -30,7 +30,6 @@ RSpec.describe Idv::InPerson::AddressController do
     allow(@analytics).to receive(:track_event)
   end
 
-  # TODO: Update before actions
   describe 'before_actions' do
     context '#render_404_if_in_person_residential_address_controller_enabled not set' do
       context 'flag not set' do

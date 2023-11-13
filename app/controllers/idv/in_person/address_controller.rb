@@ -8,8 +8,6 @@ module Idv
       before_action :confirm_in_person_address_step_needed, only: :show
       before_action :confirm_ssn_step_needed
 
-      attr_accessor :error_message
-
       def show
         analytics.idv_in_person_proofing_address_visited(**analytics_arguments)
 
@@ -19,8 +17,7 @@ module Idv
       def update
         flow_session['Idv::Steps::InPerson::AddressStep'] = true
 
-        attrs = Idv::InPerson::AddressForm::ATTRIBUTES
-        attrs = attrs.difference([:same_address_as_id])
+        attrs = Idv::InPerson::AddressForm::ATTRIBUTES.difference([:same_address_as_id])
         pii_from_user[:same_address_as_id] = 'false' if updating_address?
         form_result = form.submit(flow_params)
 
