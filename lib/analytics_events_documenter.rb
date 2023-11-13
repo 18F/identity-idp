@@ -156,10 +156,12 @@ class AnalyticsEventsDocumenter
 
   private
 
-  # Naive attempt to pull tracked event string from source code
+  # Naive attempt to pull tracked event string or symbol from source code
   def extract_event_name(method_object)
+    # track_event("some event name")
     m = /track_event\(\s*["'](?<event_name>[^"']+)["',)]/.match(method_object.source)
-    m ||= /track_event\(\s*:(?<event_name>[^,]+)[,)]/.match(method_object.source)
+    # track_event(:some_event_name)
+    m ||= /track_event\(\s*:(?<event_name>[\w_]+)[,)]/.match(method_object.source)
     m && m[:event_name]
   end
 
