@@ -15,6 +15,7 @@ import { useDidUpdateEffect } from '@18f/identity-react-hooks';
 import { useI18n } from '@18f/identity-react-i18n';
 import { removeUnloadProtection } from '@18f/identity-url';
 import AcuantCamera, { AcuantDocumentType } from './acuant-camera';
+import AcuantSelfieCamera from './acuant-selfie-camera';
 import type {
   AcuantCaptureFailureError,
   AcuantSuccessResponse,
@@ -335,6 +336,7 @@ function AcuantCapture(
   const [attempt, incrementAttempt] = useCounter(1);
   const [acuantFailureCookie, setAcuantFailureCookie, refreshAcuantFailureCookie] =
     useCookie('AcuantCameraHasFailed');
+  const selfieCapture = name === 'selfie';
 
   const {
     failedCaptureAttempts,
@@ -598,7 +600,7 @@ function AcuantCapture(
 
   return (
     <div className={[className, 'document-capture-acuant-capture'].filter(Boolean).join(' ')}>
-      {isCapturingEnvironment && (
+      {isCapturingEnvironment && !selfieCapture && (
         <AcuantCamera
           onCropStart={() => setHasStartedCropping(true)}
           onImageCaptureSuccess={onAcuantImageCaptureSuccess}
@@ -614,6 +616,11 @@ function AcuantCapture(
             </FullScreen>
           )}
         </AcuantCamera>
+      )}
+      {isCapturingEnvironment && selfieCapture && (
+        <AcuantSelfieCamera onImageCaptureSuccess={() => {}}>
+          <div id="acuant-face-capture-container" />
+        </AcuantSelfieCamera>
       )}
       <FileInput
         ref={inputRef}
