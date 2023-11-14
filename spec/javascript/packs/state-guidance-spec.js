@@ -1,6 +1,6 @@
-import { showOrHidePuertoRicoExtras } from '../../../app/javascript/packs/puerto-rico-guidance';
+import { showOrHidePuertoRicoExtras } from '../../../app/javascript/packs/state-guidance';
 
-describe('puerto-rico-guidance', () => {
+describe('state-guidance', () => {
   describe('showOrHidePuertoRicoExtras', () => {
     beforeEach(() => {
       document.body.innerHTML = `
