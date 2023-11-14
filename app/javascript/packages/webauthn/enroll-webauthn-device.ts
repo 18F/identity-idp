@@ -86,8 +86,9 @@ async function enrollWebauthnDevice({
       timeout: 800000,
       attestation: 'none',
       authenticatorSelection: {
+        // Note: Disabled for testing
         // Prevents user from needing to use PIN with Security Key
-        userVerification: 'discouraged',
+        // userVerification: 'discouraged',
         authenticatorAttachment,
       },
       excludeCredentials,
