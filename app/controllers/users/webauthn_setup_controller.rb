@@ -21,6 +21,10 @@ module Users
       )
       result = form.submit(new_params)
       @platform_authenticator = form.platform_authenticator?
+      if @platform_authenticator && in_account_creation_flow? &&
+         current_user.webauthn_configurations.platform_authenticators.present?
+        redirect_to authentication_methods_setup_path
+      end
       @presenter = WebauthnSetupPresenter.new(
         current_user: current_user,
         user_fully_authenticated: user_fully_authenticated?,
