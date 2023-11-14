@@ -49,6 +49,7 @@ module Idv
         document_capture: Idv::DocumentCaptureController.step_info,
         ssn: Idv::SsnController.step_info,
         verify_info: Idv::VerifyInfoController.step_info,
+        address: Idv::AddressController.step_info,
       }
     end
 

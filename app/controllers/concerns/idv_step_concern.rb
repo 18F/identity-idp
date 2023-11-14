@@ -61,18 +61,6 @@ module IdvStepConcern
 
   private
 
-  def confirm_document_capture_complete
-    return if idv_session.pii_from_doc.present?
-
-    if flow_path == 'standard'
-      redirect_to idv_document_capture_url
-    elsif flow_path == 'hybrid'
-      redirect_to idv_link_sent_url
-    else # no flow_path
-      redirect_to idv_hybrid_handoff_path
-    end
-  end
-
   def confirm_verify_info_step_complete
     return if idv_session.verify_info_step_complete?
 

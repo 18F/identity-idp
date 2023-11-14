@@ -9,8 +9,16 @@ RSpec.describe Idv::AddressController do
     stub_sign_in(user)
     stub_analytics
     stub_idv_steps_before_verify_step(user)
+    subject.idv_session.welcome_visited = true
+    subject.idv_session.idv_consent_given = true
     subject.idv_session.flow_path = 'standard'
     subject.idv_session.pii_from_doc = pii_from_doc
+  end
+
+  describe '#step_info' do
+    it 'returns a valid StepInfo object' do
+      expect(Idv::AddressController.step_info).to be_valid
+    end
   end
 
   describe '#new' do

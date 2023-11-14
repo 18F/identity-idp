@@ -40,13 +40,6 @@ RSpec.describe Idv::SsnController do
       )
     end
 
-    it 'checks that the previous step is complete' do
-      expect(subject).to have_actions(
-        :before,
-        :confirm_document_capture_complete,
-      )
-    end
-
     it 'overrides CSPs for ThreatMetrix' do
       expect(subject).to have_actions(
         :before,

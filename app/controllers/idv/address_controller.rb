@@ -3,7 +3,7 @@ module Idv
     include IdvStepConcern
 
     before_action :confirm_not_rate_limited_after_doc_auth
-    before_action :confirm_document_capture_complete
+    before_action :confirm_step_allowed
 
     def new
       analytics.idv_address_visit
@@ -20,6 +20,15 @@ module Idv
       else
         failure
       end
+    end
+
+    def self.step_info
+      Idv::StepInfo.new(
+        key: :address,
+        controller: controller_name,
+        next_steps: [:verify_info],
+        preconditions: ->(idv_session:, user:) { idv_session.document_capture_complete? },
+      )
     end
 
     private
