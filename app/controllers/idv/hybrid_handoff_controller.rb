@@ -24,6 +24,7 @@ module Idv
     end
 
     def update
+      flow_policy.undo_steps_from!(step: :hybrid_handoff)
       irs_attempts_api_tracker.idv_document_upload_method_selected(
         upload_method: params[:type],
       )

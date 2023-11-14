@@ -123,6 +123,12 @@ RSpec.describe Idv::LinkSentController do
       }.merge(ab_test_args)
     end
 
+    it 'invalidates future steps' do
+      expect(subject.flow_policy).to receive(:undo_steps_from!).with(step: :link_sent)
+
+      put :update
+    end
+
     it 'sends analytics_submitted event' do
       put :update
 

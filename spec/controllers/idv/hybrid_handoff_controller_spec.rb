@@ -90,7 +90,7 @@ RSpec.describe Idv::HybridHandoffController do
     end
 
     context 'hybrid_handoff already visited' do
-      it 'shows hybrid_handoff' do
+      it 'shows hybrid_handoff for standard' do
         subject.idv_session.flow_path = 'standard'
 
         get :show
@@ -98,7 +98,7 @@ RSpec.describe Idv::HybridHandoffController do
         expect(response).to render_template :show
       end
 
-      it 'shows hybrid_handoff' do
+      it 'shows hybrid_handoff for hybrid' do
         subject.idv_session.flow_path = 'hybrid'
 
         get :show
@@ -219,6 +219,12 @@ RSpec.describe Idv::HybridHandoffController do
       end
 
       let(:document_capture_session_uuid) { '09228b6d-dd39-4925-bf82-b69104095517' }
+
+      it 'invalidates future steps' do
+        expect(subject.flow_policy).to receive(:undo_steps_from!).with(step: :hybrid_handoff)
+
+        put :update, params: params
+      end
 
       it 'sends analytics_submitted event for hybrid' do
         put :update, params: params

@@ -33,4 +33,12 @@ RSpec.describe Idv::HowToVerifyController do
       expect(response).to render_template :show
     end
   end
+
+  describe '#update' do
+    it 'invalidates future steps' do
+      expect(subject.flow_policy).to receive(:undo_steps_from!).with(step: :how_to_verify)
+
+      put :update
+    end
+  end
 end
