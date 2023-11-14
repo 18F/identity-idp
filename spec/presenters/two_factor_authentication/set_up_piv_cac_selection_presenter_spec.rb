@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe TwoFactorAuthentication::SetUpPivCacSelectionPresenter do
-  let(:configuration) {}
   let(:user_without_mfa) { create(:user) }
   let(:user_with_mfa) { create(:user, :with_piv_or_cac) }
   let(:presenter_without_mfa) do
