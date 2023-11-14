@@ -166,9 +166,9 @@ RSpec.describe Idv::DocumentCaptureController do
     let(:result) { { success: true, errors: {} } }
 
     it 'invalidates future steps' do
-      expect(subject.flow_policy).to receive(:undo_steps_from!).with(step: :document_capture)
+      expect(subject).to receive(:undo_steps_from!).with(step: :document_capture)
 
-      put :update 
+      put :update
     end
 
     it 'sends analytics_submitted event' do

@@ -22,7 +22,7 @@ module Idv
     end
 
     def update
-      flow_policy.undo_steps_from!(step: :document_capture)
+      undo_steps_from!(step: :document_capture)
       idv_session.redo_document_capture = nil # done with this redo
       # Not used in standard flow, here for data consistency with hybrid flow.
       document_capture_session.confirm_ocr

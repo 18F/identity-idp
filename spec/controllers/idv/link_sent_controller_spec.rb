@@ -124,7 +124,7 @@ RSpec.describe Idv::LinkSentController do
     end
 
     it 'invalidates future steps' do
-      expect(subject.flow_policy).to receive(:undo_steps_from!).with(step: :link_sent)
+      expect(subject).to receive(:undo_steps_from!).with(step: :link_sent)
 
       put :update
     end

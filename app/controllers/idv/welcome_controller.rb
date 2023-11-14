@@ -23,7 +23,7 @@ module Idv
     end
 
     def update
-      flow_policy.undo_steps_from!(step: :welcome)
+      undo_steps_from!(step: :welcome)
       analytics.idv_doc_auth_welcome_submitted(**analytics_arguments)
 
       create_document_capture_session

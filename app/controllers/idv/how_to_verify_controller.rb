@@ -13,7 +13,7 @@ module Idv
     end
 
     def update
-      flow_policy.undo_steps_from!(step: :how_to_verify)
+      undo_steps_from!(step: :how_to_verify)
       result = Idv::HowToVerifyForm.new.submit(how_to_verify_form_params)
 
       analytics.idv_doc_auth_how_to_verify_submitted(
