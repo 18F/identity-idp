@@ -6,7 +6,7 @@ module Idv
 
     validates :controller, presence: true
     validates :action, presence: true
-    validate :next_steps_validation, :preconditions_validation
+    validate :next_steps_validation, :preconditions_validation, :undo_step_validation
 
     def initialize(key:, controller:, next_steps:, preconditions:, undo_step:, action: :show)
       @key = key
