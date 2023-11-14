@@ -1,5 +1,8 @@
 module TwoFactorAuthentication
   class SignInPhoneSelectionPresenter < SignInSelectionPresenter
+    
+    attr_reader :configuration, :user, :method
+
     def initialize(user:, configuration:, method:)
       @user = user
       @configuration = configuration
