@@ -18,6 +18,16 @@ module Idv
       steps[latest_step]
     end
 
+    def undo_steps_from(step:)
+      return if step == :success
+
+      steps[step].undo_step.call(idv_session: idv_session, user: user)
+
+      steps[step].next_steps.each do |next_step|
+        undo_steps_from(step: next_step)
+      end
+    end
+
     private
 
     def latest_step(current_step: :root)
@@ -39,6 +49,7 @@ module Idv
           controller: AccountsController.controller_name,
           next_steps: [:welcome],
           preconditions: ->(idv_session:, user:) { true },
+          undo_step: ->(idv_session:, user:) { true },
         ),
         welcome: Idv::WelcomeController.step_info,
         agreement: Idv::AgreementController.step_info,

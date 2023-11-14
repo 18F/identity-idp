@@ -46,6 +46,7 @@ module Idv
         controller: controller_name,
         next_steps: [:success], # [:ssn],
         preconditions: ->(idv_session:, user:) { idv_session.flow_path == 'hybrid' },
+        undo_step: ->(idv_session:, user:) { true },
       )
     end
 

@@ -39,6 +39,7 @@ module Idv
         preconditions: ->(idv_session:, user:) do
           self.enabled?
         end,
+        undo_step: ->(idv_session:, user:) { true }, # clear any saved data
       )
     end
 

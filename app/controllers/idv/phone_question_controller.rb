@@ -39,6 +39,7 @@ module Idv
           AbTests::IDV_PHONE_QUESTION.bucket(user.uuid) == :show_phone_question &&
             idv_session.idv_consent_given
         end,
+        undo_step: ->(idv_session:, user:) { idv_session.phone_with_camera = nil },
       )
     end
 

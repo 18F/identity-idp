@@ -39,6 +39,7 @@ module Idv
         controller: controller_name,
         next_steps: [:agreement],
         preconditions: ->(idv_session:, user:) { true },
+        undo_step: ->(idv_session:, user:) { true },
       )
     end
 
