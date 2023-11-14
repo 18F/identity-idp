@@ -118,7 +118,7 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
               TwoFactorAuthentication::VoiceSelectionPresenter,
               TwoFactorAuthentication::SignInWebauthnSelectionPresenter,
               TwoFactorAuthentication::SignInBackupCodeSelectionPresenter,
-              TwoFactorAuthentication::PivCacSelectionPresenter,
+              TwoFactorAuthentication::SignInPivCacSelectionPresenter,
               TwoFactorAuthentication::SignInAuthAppSelectionPresenter,
               TwoFactorAuthentication::SignInPersonalKeySelectionPresenter,
             ],
@@ -134,7 +134,7 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
         expect(options_classes).to eq(
           [
             TwoFactorAuthentication::SignInWebauthnSelectionPresenter,
-            TwoFactorAuthentication::PivCacSelectionPresenter,
+            TwoFactorAuthentication::SignInPivCacSelectionPresenter,
           ],
         )
       end
@@ -149,7 +149,7 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
               TwoFactorAuthentication::VoiceSelectionPresenter,
               TwoFactorAuthentication::SignInWebauthnSelectionPresenter,
               TwoFactorAuthentication::SignInBackupCodeSelectionPresenter,
-              TwoFactorAuthentication::PivCacSelectionPresenter,
+              TwoFactorAuthentication::SignInPivCacSelectionPresenter,
               TwoFactorAuthentication::SignInAuthAppSelectionPresenter,
               TwoFactorAuthentication::SignInPersonalKeySelectionPresenter,
             ],
