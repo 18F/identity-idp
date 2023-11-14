@@ -86,7 +86,7 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
           TwoFactorAuthentication::VoiceSelectionPresenter,
           TwoFactorAuthentication::SignInWebauthnSelectionPresenter,
           TwoFactorAuthentication::SignInBackupCodeSelectionPresenter,
-          TwoFactorAuthentication::PivCacSelectionPresenter,
+          TwoFactorAuthentication::SignInPivCacSelectionPresenter,
           TwoFactorAuthentication::SignInAuthAppSelectionPresenter,
           TwoFactorAuthentication::SignInPersonalKeySelectionPresenter,
         ],
