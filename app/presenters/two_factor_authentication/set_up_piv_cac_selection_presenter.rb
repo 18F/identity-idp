@@ -1,5 +1,5 @@
 module TwoFactorAuthentication
-  class SetPivCacSelectionPresenter < SetUpSelectionPresenter
+  class SetUpPivCacSelectionPresenter < SetUpSelectionPresenter
     def method
       :piv_cac
     end
