@@ -47,9 +47,6 @@ module IdvStepConcern
   def confirm_hybrid_handoff_needed
     if params[:redo]
       idv_session.redo_document_capture = true
-    elsif idv_session.document_capture_complete?
-      redirect_to idv_ssn_url
-      return
     end
 
     # If we previously skipped hybrid handoff, keep doing that.
@@ -63,12 +60,6 @@ module IdvStepConcern
   end
 
   private
-
-  def confirm_document_capture_not_complete
-    return unless idv_session.document_capture_complete?
-
-    redirect_to idv_ssn_url
-  end
 
   def confirm_ssn_step_complete
     return if pii.present? && idv_session.ssn.present?

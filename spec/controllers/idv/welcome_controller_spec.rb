@@ -81,14 +81,17 @@ RSpec.describe Idv::WelcomeController do
         expect(response).to render_template('idv/welcome/show')
       end
 
-      context 'and document capture already completed' do
+      context 'and verify info already completed' do
         before do
+          subject.idv_session.flow_path = 'standard'
           subject.idv_session.pii_from_doc = { first_name: 'Susan' }
+          subject.idv_session.ssn = '123-45-6789'
+          subject.idv_session.resolution_successful = true
         end
 
-        it 'redirects to ssn step' do
+        it 'redirects to enter password step' do
           get :show
-          expect(response).to redirect_to(idv_ssn_url)
+          expect(response).to redirect_to(idv_enter_password_url)
         end
       end
     end

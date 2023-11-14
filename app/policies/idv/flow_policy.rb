@@ -48,6 +48,7 @@ module Idv
         link_sent: Idv::LinkSentController.step_info,
         document_capture: Idv::DocumentCaptureController.step_info,
         ssn: Idv::SsnController.step_info,
+        verify_info: Idv::VerifyInfoController.step_info,
       }
     end
 

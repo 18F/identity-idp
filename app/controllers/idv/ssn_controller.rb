@@ -63,7 +63,7 @@ module Idv
       Idv::StepInfo.new(
         key: :ssn,
         controller: controller_name,
-        next_steps: [:success], # [:verify_info],
+        next_steps: [:verify_info],
         preconditions: ->(idv_session:, user:) { idv_session.document_capture_complete? },
       )
     end

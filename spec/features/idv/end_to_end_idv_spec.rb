@@ -438,9 +438,14 @@ RSpec.describe 'Identity verification', :js do
   end
 
   def test_go_back_from_verify_info
-    visit(idv_document_capture_url)
-    expect(page).to have_current_path(idv_verify_info_path)
-    visit(idv_welcome_path)
+    go_back
+    go_back
+    expect(page).to have_current_path(idv_document_capture_path)
+    go_back
+    go_back
+    go_back
+    expect(page).to have_current_path(idv_welcome_path)
+    visit(idv_verify_info_path)
     expect(page).to have_current_path(idv_verify_info_path)
   end
 
