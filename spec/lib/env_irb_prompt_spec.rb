@@ -32,7 +32,8 @@ RSpec.describe EnvIrbPrompt do
 
       it 'sets the prompt with the environment name' do
         configure
-        expect(irb_conf[:PROMPT][:ENV_PROMPT][:PROMPT_I]).to include(prompt.bold('dev'))
+        expect(irb_conf[:PROMPT][:ENV_PROMPT][:PROMPT_I]).
+          to include(prompt.bold(prompt.color_green('dev')))
       end
     end
 
@@ -51,7 +52,8 @@ RSpec.describe EnvIrbPrompt do
 
       it 'sets the prompt with local' do
         configure
-        expect(irb_conf[:PROMPT][:ENV_PROMPT][:PROMPT_I]).to include(prompt.bold('local'))
+        expect(irb_conf[:PROMPT][:ENV_PROMPT][:PROMPT_I]).
+          to include(prompt.bold(prompt.color_blue('local')))
       end
     end
   end
