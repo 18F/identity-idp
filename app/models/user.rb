@@ -122,6 +122,10 @@ class User < ApplicationRecord
     OutOfBandSessionAccessor.new(unique_session_id).destroy if unique_session_id
     update!(suspended_at: Time.zone.now, unique_session_id: nil)
     analytics.user_suspended(success: true)
+
+    event = PushNotification::AccountSuspendedEvent.new(user: self)
+    PushNotification::HttpPush.deliver(event)
+
     email_addresses.map do |email_address|
       SuspendedEmail.create_from_email_address!(email_address)
     end
@@ -134,6 +138,10 @@ class User < ApplicationRecord
     end
     update!(reinstated_at: Time.zone.now)
     analytics.user_reinstated(success: true)
+
+    event = PushNotification::AccountReinstatedEvent.new(user: self)
+    PushNotification::HttpPush.deliver(event)
+
     email_addresses.map do |email_address|
       SuspendedEmail.find_with_email(email_address.email)&.destroy
     end

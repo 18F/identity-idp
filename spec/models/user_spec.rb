@@ -923,6 +923,14 @@ RSpec.describe User do
           user.suspend!
         end
 
+        it 'send account suspension push event' do
+          expect(PushNotification::HttpPush).to receive(:deliver).once.
+            with(PushNotification::AccountSuspendedEvent.new(
+              user: user,
+            )).ordered
+          user.suspend!
+        end
+
         it 'logs out the suspended user from the active session' do
           # Add information to session store to allow `exists?` check to work as desired
           OutOfBandSessionAccessor.new(mock_session_id).put_pii(
@@ -981,6 +989,14 @@ RSpec.describe User do
 
       it 'tracks the user reinstatement' do
         expect(user.analytics).to receive(:user_reinstated).with(success: true)
+        user.reinstate!
+      end
+
+      it 'send account suspension push event' do
+        expect(PushNotification::HttpPush).to receive(:deliver).once.
+          with(PushNotification::AccountReinstatedEvent.new(
+            user: user,
+          )).ordered
         user.reinstate!
       end
 
