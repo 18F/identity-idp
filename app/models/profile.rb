@@ -173,6 +173,15 @@ class Profile < ApplicationRecord
     in_person_verification_pending_at.present?
   end
 
+  def deactivate_due_to_gpo_expiration
+    raise 'Profile is not pending GPO verification' if gpo_verification_pending_at.nil?
+    update!(
+      active: false,
+      gpo_verification_pending_at: nil,
+      gpo_verification_expired_at: Time.zone.now,
+    )
+  end
+
   def deactivate_for_in_person_verification
     update!(active: false, in_person_verification_pending_at: Time.zone.now)
   end

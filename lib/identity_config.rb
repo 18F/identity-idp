@@ -6,7 +6,7 @@ class IdentityConfig
   VENDOR_STATUS_OPTIONS = %i[operational partial_outage full_outage]
 
   class << self
-    attr_reader :store, :key_types
+    attr_reader :store, :key_types, :unused_keys
   end
 
   CONVERTERS = {
@@ -168,7 +168,6 @@ class IdentityConfig
     config.add(:deleted_user_accounts_report_configs, type: :json)
     config.add(:deliver_mail_async, type: :boolean)
     config.add(:development_mailer_deliver_method, type: :symbol, enum: [:file, :letter_opener])
-    config.add(:disable_csp_unsafe_inline, type: :boolean)
     config.add(:disable_email_sending, type: :boolean)
     config.add(:disable_logout_get_request, type: :boolean)
     config.add(:disallow_all_web_crawlers, type: :boolean)
@@ -493,6 +492,7 @@ class IdentityConfig
     config.add(:weekly_auth_funnel_report_config, type: :json)
 
     @key_types = config.key_types
+    @unused_keys = config_map.keys - config.written_env.keys
     @store = RedactedStruct.new('IdentityConfig', *config.written_env.keys, keyword_init: true).
       new(**config.written_env)
   end

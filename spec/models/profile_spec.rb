@@ -1054,6 +1054,45 @@ RSpec.describe Profile do
     end
   end
 
+  describe '#deactivate_due_to_gpo_expiration' do
+    let(:profile) { create(:profile, :verify_by_mail_pending, user: user) }
+
+    it 'sets gpo_verification_expired_at' do
+      freeze_time do
+        expect do
+          profile.deactivate_due_to_gpo_expiration
+        end.to change { profile.gpo_verification_expired_at }.to eql(Time.zone.now)
+      end
+    end
+
+    it 'clears gpo_verification_pending_at' do
+      expect do
+        profile.deactivate_due_to_gpo_expiration
+      end.to change { profile.gpo_verification_pending_at }.to eql(nil)
+    end
+
+    it 'maintains active = false' do
+      expect do
+        profile.deactivate_due_to_gpo_expiration
+      end.not_to change { profile.active }.from(false)
+    end
+
+    it 'does not set a deactivation_reason' do
+      expect do
+        profile.deactivate_due_to_gpo_expiration
+      end.not_to change { profile.deactivation_reason }.from(nil)
+    end
+
+    context 'not pending gpo' do
+      let(:profile) { create(:profile, user: user) }
+      it 'raises' do
+        expect do
+          profile.deactivate_due_to_gpo_expiration
+        end.to raise_error
+      end
+    end
+  end
+
   describe '#reject_for_fraud' do
     before do
       # This is necessary because UserMailer reaches into the

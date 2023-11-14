@@ -46,7 +46,7 @@ module Idv
 
       redirect_to next_step
 
-      analytics.idv_enter_password_complete(
+      analytics.idv_enter_password_submitted(
         success: true,
         fraud_review_pending: idv_session.profile.fraud_review_pending?,
         fraud_rejection: idv_session.profile.fraud_rejection?,
@@ -93,7 +93,7 @@ module Idv
     def confirm_current_password
       return if valid_password?
 
-      analytics.idv_enter_password_complete(
+      analytics.idv_enter_password_submitted(
         success: false,
         gpo_verification_pending: current_user.gpo_verification_pending_profile?,
         # note: this always returns false as of 8/23

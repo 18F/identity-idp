@@ -1158,7 +1158,7 @@ module AnalyticsEvents
   # @param [Boolean] in_person_verification_pending
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [String, nil] deactivation_reason Reason user's profile was deactivated, if any.
-  def idv_enter_password_complete(
+  def idv_enter_password_submitted(
     success:,
     fraud_review_pending:,
     fraud_rejection:,
@@ -1169,7 +1169,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'IdV: review complete',
+      :idv_enter_password_submitted,
       success: success,
       deactivation_reason: deactivation_reason,
       fraud_review_pending: fraud_review_pending,
@@ -1192,7 +1192,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'IdV: review info visited',
+      :idv_enter_password_visited,
       address_verification_method: address_verification_method,
       proofing_components: proofing_components,
       **extra,
@@ -1463,6 +1463,28 @@ module AnalyticsEvents
   # The user visited the gpo confirm cancellation screen
   def idv_gpo_confirm_start_over_visited(**extra)
     track_event('IdV: gpo confirm start over visited', **extra)
+  end
+
+  # The user ran out of time to complete their address verification by mail.
+  # @param [String] user_id UUID of the user who expired
+  # @param [Boolean] user_has_active_profile Whether the user currently has an active profile
+  # @param [Integer] letters_sent Total # of GPO letters sent for this profile
+  # @param [Time] gpo_verification_pending_at Date/time when profile originally entered GPO flow
+  def idv_gpo_expired(
+    user_id:,
+    user_has_active_profile:,
+    letters_sent:,
+    gpo_verification_pending_at:,
+    **extra
+  )
+    track_event(
+      :idv_gpo_expired,
+      user_id: user_id,
+      user_has_active_profile: user_has_active_profile,
+      letters_sent: letters_sent,
+      gpo_verification_pending_at: gpo_verification_pending_at,
+      **extra,
+    )
   end
 
   # A GPO reminder email was sent to the user
