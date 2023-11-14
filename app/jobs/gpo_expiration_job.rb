@@ -64,7 +64,10 @@ class GpoExpirationJob < ApplicationJob
 
   def with_statement_timeout(timeout)
     ActiveRecord::Base.transaction do
-      ActiveRecord::Base.connection.execute("SET LOCAL statement_timeout = '#{timeout.seconds}s'")
+      quoted_timeout = ActiveRecord::Base.connection.quote("#{timeout.seconds}s")
+      ActiveRecord::Base.connection.execute(
+        "SET LOCAL statement_timeout = #{quoted_timeout}",
+      )
       yield
     end
   end
