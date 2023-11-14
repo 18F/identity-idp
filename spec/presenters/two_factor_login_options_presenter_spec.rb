@@ -105,7 +105,7 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
       let(:piv_cac_required) { true }
 
       it 'filters to piv method' do
-        expect(options_classes).to eq([TwoFactorAuthentication::PivCacSelectionPresenter])
+        expect(options_classes).to eq([TwoFactorAuthentication::SignInPivCacSelectionPresenter])
       end
 
       context 'in reauthentication context' do
