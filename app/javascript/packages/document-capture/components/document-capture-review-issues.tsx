@@ -13,6 +13,7 @@ import TipList from './tip-list';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
 import DocumentCaptureNotReady from './document-capture-not-ready';
 import { FeatureFlagContext } from '../context';
+import DocumentCaptureAbandon from './document-capture-abandon';
 
 interface DocumentCaptureReviewIssuesProps {
   isFailedDocType: boolean;
@@ -46,7 +47,7 @@ function DocumentCaptureReviewIssues({
   hasDismissed,
 }: DocumentCaptureReviewIssuesProps) {
   const { t } = useI18n();
-  const { notReadySectionEnabled } = useContext(FeatureFlagContext);
+  const { notReadySectionEnabled, exitQuestionSectionEnabled } = useContext(FeatureFlagContext);
   return (
     <>
       <PageHeading>{t('doc_auth.headings.review_issues')}</PageHeading>
@@ -83,6 +84,7 @@ function DocumentCaptureReviewIssues({
       ))}
       <FormStepsButton.Submit />
       {notReadySectionEnabled && <DocumentCaptureNotReady />}
+      {exitQuestionSectionEnabled && <DocumentCaptureAbandon />}
       <Cancel />
     </>
   );
