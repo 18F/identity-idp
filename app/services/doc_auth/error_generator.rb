@@ -109,12 +109,15 @@ module DocAuth
       %w[Front Back].each do |side|
         side_class = classification_info.with_indifferent_access.dig(side, 'ClassName')
         side_country = classification_info.with_indifferent_access.dig(side, 'CountryCode')
+        side_issuer_type = classification_info.with_indifferent_access.dig(side, 'IssuerType')
+
         side_ok = !side_class.present? ||
                   SUPPORTED_ID_CLASSNAME.include?(side_class) ||
                   side_class == 'Unknown'
         country_ok = !side_country.present? || supported_country_codes.include?(side_country)
-        both_side_ok &&= side_ok && country_ok
-        error_result.add_side(side.downcase.to_sym) unless side_ok && country_ok
+        issuer_type_ok = side_issuer_type == 'StateProvince'
+        both_side_ok &&= issuer_type_ok && side_ok && country_ok
+        error_result.add_side(side.downcase.to_sym) unless side_ok && issuer_type_ok && country_ok
       end
       unless both_side_ok
         error_result.set_error(Errors::DOC_TYPE_CHECK)

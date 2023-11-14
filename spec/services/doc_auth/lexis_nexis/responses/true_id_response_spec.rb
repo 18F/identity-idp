@@ -133,8 +133,8 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         'DocAuthTamperResult' => 'Passed',
         'DocAuthTamperSensitivity' => 'Normal',
         classification_info: {
-          Front: a_hash_including(:ClassName, :CountryCode),
-          Back: a_hash_including(:ClassName, :CountryCode),
+          Front: a_hash_including(:ClassName, :CountryCode, :IssuerType),
+          Back: a_hash_including(:ClassName, :CountryCode, :IssuerType),
         },
       )
       passed_alerts = response_hash.dig(:processed_alerts, :passed)
@@ -159,6 +159,23 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
 
     it 'mark doc type as supported' do
       expect(response.doc_type_supported?).to eq(true)
+    end
+
+    context 'when identification card issued by a country' do
+      let(:success_response) do
+        body = JSON.parse(LexisNexisFixtures.true_id_response_success_3).tap do |json|
+          doc_class_node = json['Products'].first['ParameterDetails'].
+            select { |f| f['Name'] == 'DocClassName' && f['Group'] == 'AUTHENTICATION_RESULT' }
+          doc_class_node.first['Values'].first['Value'] = 'Identification Card'
+          doc_issuer_type = json['Products'].first['ParameterDetails'].
+            select { |f| f['Name'] == 'DocIssuerType' && f['Group'] == 'AUTHENTICATION_RESULT' }
+          doc_issuer_type.first['Values'].first['Value'] = 'Country'
+        end.to_json
+        instance_double(Faraday::Response, status: 200, body: body)
+      end
+      it 'mark doc type as not supported' do
+        expect(response.doc_type_supported?).to eq(false)
+      end
     end
   end
 
@@ -310,7 +327,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
           hints: true,
         },
         attention_with_barcode: false,
-        doc_type_supported: true,
+        doc_type_supported: false, # todo: check failure document need update?
         conversation_id: a_kind_of(String),
         reference: a_kind_of(String),
         vendor: 'TrueID',
@@ -345,8 +362,8 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         'OrientationChanged' => 'false',
         'PresentationChanged' => 'false',
         classification_info: {
-          Front: a_hash_including(:ClassName, :CountryCode),
-          Back: a_hash_including(:ClassName, :CountryCode),
+          Front: a_hash_including(:ClassName, :CountryCode, :IssuerType),
+          Back: a_hash_including(:ClassName, :CountryCode, :IssuerType),
         },
       )
     end
@@ -554,9 +571,26 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     context 'when country code is not supported' do
       let(:success_response) do
         body = JSON.parse(LexisNexisFixtures.true_id_response_success_3).tap do |json|
-          doc_class_node = json['Products'].first['ParameterDetails'].
+          doc_country_node = json['Products'].first['ParameterDetails'].
             select { |f| f['Name'] == 'Fields_CountryCode' && f['Group'] == 'IDAUTH_FIELD_DATA' }
-          doc_class_node.first['Values'].first['Value'] = 'CAN'
+          doc_country_node.first['Values'].first['Value'] = 'CAN'
+        end.to_json
+        instance_double(Faraday::Response, status: 200, body: body)
+      end
+      it 'identify as unsupported doc type' do
+        is_expected.to eq(false)
+      end
+    end
+
+    context 'when id is federal identification card' do
+      let(:success_response) do
+        body = JSON.parse(LexisNexisFixtures.true_id_response_success_3).tap do |json|
+          doc_class_node = json['Products'].first['ParameterDetails'].
+            select { |f| f['Name'] == 'DocClassName' && f['Group'] == 'AUTHENTICATION_RESULT' }
+          doc_class_node.first['Values'].first['Value'] = 'Identification Card'
+          doc_issuer_type = json['Products'].first['ParameterDetails'].
+            select { |f| f['Name'] == 'DocIssuerType' && f['Group'] == 'AUTHENTICATION_RESULT' }
+          doc_issuer_type.first['Values'].first['Value'] = 'Country'
         end.to_json
         instance_double(Faraday::Response, status: 200, body: body)
       end
