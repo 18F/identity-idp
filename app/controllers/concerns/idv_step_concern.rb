@@ -61,11 +61,6 @@ module IdvStepConcern
 
   private
 
-  def confirm_ssn_step_complete
-    return if pii.present? && idv_session.ssn.present?
-    redirect_to prev_url
-  end
-
   def confirm_document_capture_complete
     return if idv_session.pii_from_doc.present?
 
