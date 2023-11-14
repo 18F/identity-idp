@@ -14,33 +14,31 @@ namespace :profiles do
     min_profile_age = (ENV['MIN_PROFILE_AGE_IN_DAYS'].to_i || 100).days
     update_profiles = ENV['UPDATE_PROFILES'] == 'true'
 
-    job = GpoExpirationJob.new
-
-    profiles = job.gpo_profiles_that_should_be_expired(
-      as_of: Time.zone.now,
-      min_profile_age: min_profile_age,
-    )
-
     count = 0
+    earliest = nil
+    latest = nil
 
-    profiles.find_each do |profile|
+    on_profile_expired = ->(profile:, gpo_verification_pending_at:) do
       count += 1
 
-      gpo_verification_pending_at = profile.gpo_verification_pending_at
-
-      if gpo_verification_pending_at.blank?
-        raise "Profile #{profile.id} does not have gpo_verification_pending_at"
-      end
+      earliest = [earliest, gpo_verification_pending_at].compact.min
+      latest = [latest, gpo_verification_pending_at].compact.max
 
       puts "#{profile.id},#{gpo_verification_pending_at.iso8601}"
 
-      if update_profiles
-        warn "Expired #{count} profiles" if count % 100 == 0
-        job.expire_profile(profile: profile)
-      elsif count % 100 == 0
-        warn "Found #{count} profiles"
+      if count % 100 == 0
+        verb = update_profiles ? 'Expired' : 'Found'
+        warn "#{verb} #{count} profiles (earliest: #{earliest}, latest: #{latest})"
       end
     end
+
+    job = GpoExpirationJob.new(on_profile_expired: on_profile_expired)
+
+    job.perform(
+      now: Time.zone.now,
+      min_profile_age: min_profile_age,
+      dry_run: !update_profiles,
+    )
   end
 
   ##

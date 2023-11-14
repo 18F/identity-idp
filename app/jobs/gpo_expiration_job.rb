@@ -1,9 +1,53 @@
 class GpoExpirationJob < ApplicationJob
   queue_as :low
 
-  def initialize(analytics: nil)
+  def initialize(analytics: nil, on_profile_expired: nil)
     @analytics = analytics
+    @on_profile_expired = on_profile_expired
   end
+
+  def perform(
+    dry_run: false,
+    limit: nil,
+    min_profile_age: nil,
+    now: Time.zone.now,
+    statement_timeout: 10.minutes
+  )
+    profiles = gpo_profiles_that_should_be_expired(as_of: now, min_profile_age: min_profile_age)
+
+    if limit.present?
+      profiles = profiles.limit(limit)
+    end
+
+    with_statement_timeout(statement_timeout) do
+      profiles.find_each do |profile|
+        gpo_verification_pending_at = profile.gpo_verification_pending_at
+
+        if gpo_verification_pending_at.blank?
+          raise "Profile #{profile.id} does not have gpo_verification_pending_at"
+        end
+
+        expire_profile(profile: profile) unless dry_run
+
+        on_profile_expired&.call(
+          profile: profile,
+          gpo_verification_pending_at: gpo_verification_pending_at,
+        )
+      end
+    end
+  end
+
+  def gpo_profiles_that_should_be_expired(as_of:, min_profile_age: nil)
+    Profile.
+      and(are_pending_gpo_verification).
+      and(user_cant_request_more_letters(as_of: as_of)).
+      and(most_recent_code_has_expired(as_of: as_of)).
+      and(are_old_enough(as_of: as_of, min_profile_age: min_profile_age))
+  end
+
+  private
+
+  attr_reader :on_profile_expired
 
   def expire_profile(profile:)
     gpo_verification_pending_at = profile.gpo_verification_pending_at
@@ -18,27 +62,12 @@ class GpoExpirationJob < ApplicationJob
     )
   end
 
-  def perform(now: Time.zone.now, limit: nil, min_profile_age: nil)
-    profiles = gpo_profiles_that_should_be_expired(as_of: now, min_profile_age: min_profile_age)
-
-    if limit.present?
-      profiles = profiles.limit(limit)
-    end
-
-    profiles.find_each do |profile|
-      expire_profile(profile: profile)
+  def with_statement_timeout(timeout)
+    ActiveRecord::Base.transaction do
+      ActiveRecord::Base.connection.execute("SET LOCAL statement_timeout = '#{timeout.seconds}s'")
+      yield
     end
   end
-
-  def gpo_profiles_that_should_be_expired(as_of:, min_profile_age: nil)
-    Profile.
-      and(are_pending_gpo_verification).
-      and(user_cant_request_more_letters(as_of: as_of)).
-      and(most_recent_code_has_expired(as_of: as_of)).
-      and(are_old_enough(as_of: as_of, min_profile_age: min_profile_age))
-  end
-
-  private
 
   def analytics
     @analytics ||= Analytics.new(user: AnonymousUser.new, request: nil, session: {}, sp: nil)
