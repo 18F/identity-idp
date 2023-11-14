@@ -96,27 +96,14 @@ RSpec.describe Idv::SsnController do
     end
 
     context 'with an ssn in idv_session' do
-      let(:referer) { idv_document_capture_url }
       before do
         subject.idv_session.ssn = ssn
-        request.env['HTTP_REFERER'] = referer
       end
 
-      context 'referer is not verify_info' do
-        it 'redirects to verify_info' do
-          get :show
+      it 'does not redirect and allows the back button' do
+        get :show
 
-          expect(response).to redirect_to(idv_verify_info_url)
-        end
-      end
-
-      context 'referer is verify_info' do
-        let(:referer) { idv_verify_info_url }
-        it 'does not redirect' do
-          get :show
-
-          expect(response).to render_template 'idv/shared/ssn'
-        end
+        expect(response).to render_template 'idv/shared/ssn'
       end
     end
 

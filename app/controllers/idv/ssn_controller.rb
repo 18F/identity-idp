@@ -9,7 +9,6 @@ module Idv
     before_action :confirm_step_allowed
     before_action :confirm_verify_info_step_needed
     before_action :confirm_document_capture_complete
-    before_action :confirm_repeat_ssn, only: :show
     before_action :override_csp_for_threat_metrix
 
     attr_reader :ssn_presenter
@@ -69,13 +68,6 @@ module Idv
     end
 
     private
-
-    def confirm_repeat_ssn
-      return if !idv_session.ssn
-      return if request.referer == idv_verify_info_url
-
-      redirect_to idv_verify_info_url
-    end
 
     def next_url
       if idv_session.pii_from_doc[:state] == 'PR' && !ssn_presenter.updating_ssn?
