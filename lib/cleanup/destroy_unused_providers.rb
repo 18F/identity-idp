@@ -8,6 +8,15 @@ require './lib/cleanup/destroyable_records'
 #
 # This script iterates over a list of those issuers, outputs the data that is to be deleted, and
 # then requires user confirmation before deleting the issuer and associated models.
+#
+#
+# As of 11/2/2023: The rake task isn't working, to remove unused providers log into a box in the
+# environment you want to remove unused providers from. Enter into a rails console and enter the
+# following commands:
+# > require 'cleanup/destroy_unused_providers'
+# > issuers=['list','of','issuers','to','remove']
+# > dup = DestroyUnusedProviders.new(issuers)
+# > dup.run
 
 class DestroyUnusedProviders
   attr_reader :destroy_list, :stdin, :stdout

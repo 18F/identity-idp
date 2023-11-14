@@ -35,6 +35,7 @@ interface AppRootData {
   idvInPersonUrl?: string;
   securityAndPrivacyHowItWorksUrl: string;
   uiNotReadySectionEnabled: string;
+  uiExitQuestionSectionEnabled: string;
 }
 
 const appRoot = document.getElementById('document-capture-form')!;
@@ -102,6 +103,7 @@ const {
   usStatesTerritories = '',
   phoneWithCamera = '',
   uiNotReadySectionEnabled = '',
+  uiExitQuestionSectionEnabled = '',
 } = appRoot.dataset as DOMStringMap & AppRootData;
 
 let parsedUsStatesTerritories = [];
@@ -183,6 +185,7 @@ const App = composeComponents(
     {
       value: {
         notReadySectionEnabled: String(uiNotReadySectionEnabled) === 'true',
+        exitQuestionSectionEnabled: String(uiExitQuestionSectionEnabled) === 'true',
       },
     },
   ],

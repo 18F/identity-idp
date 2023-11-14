@@ -252,7 +252,7 @@ RSpec.describe Idv::EnterPasswordController do
         expect(response).to redirect_to idv_enter_password_path
 
         expect(@analytics).to have_logged_event(
-          'IdV: review complete',
+          :idv_enter_password_submitted,
           success: false,
           fraud_review_pending: false,
           fraud_rejection: false,
@@ -276,7 +276,7 @@ RSpec.describe Idv::EnterPasswordController do
         put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
 
         expect(@analytics).to have_logged_event(
-          'IdV: review complete',
+          :idv_enter_password_submitted,
           success: true,
           fraud_review_pending: false,
           fraud_rejection: false,
@@ -612,7 +612,7 @@ RSpec.describe Idv::EnterPasswordController do
                   it 'logs events' do
                     put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
                     expect(@analytics).to have_logged_event(
-                      'IdV: review complete',
+                      :idv_enter_password_submitted,
                       success: true,
                       fraud_review_pending: fraud_review_pending?,
                       fraud_rejection: false,
