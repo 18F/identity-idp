@@ -13,6 +13,7 @@ namespace :profiles do
   task backfill_gpo_expiration: :environment do |_task, _args|
     min_profile_age = (ENV['MIN_PROFILE_AGE_IN_DAYS'].to_i || 100).days
     update_profiles = ENV['UPDATE_PROFILES'] == 'true'
+    statement_timeout = ENV['STATEMENT_TIMEOUT_IN_SECONDS'].to_i.seconds || 10.minutes
 
     count = 0
     earliest = nil
@@ -38,6 +39,7 @@ namespace :profiles do
       now: Time.zone.now,
       min_profile_age: min_profile_age,
       dry_run: !update_profiles,
+      statement_timeout: statement_timeout,
     )
   end
 
