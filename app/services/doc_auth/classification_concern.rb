@@ -11,7 +11,9 @@ module DocAuth
         info,
         'Front',
       ) && doc_issuing_country_ok?(info, 'Back')
-      type_ok && issuing_country_ok
+
+      issuer_type_ok = doc_issuer_type_ok?(info, :Front) && doc_issuer_type_ok?(info, :Back)
+      type_ok && issuing_country_ok && issuer_type_ok
     end
 
     alias_method :doc_type_supported?, :id_type_supported?
@@ -21,7 +23,7 @@ module DocAuth
     # @param [Object] classification_info assureid classification info
     # @param [String] doc_side value of ['Front', 'Back']
     def doc_side_class_ok?(classification_info, doc_side)
-      side_type = classification_info&.with_indifferent_access&.dig(doc_side, 'ClassName')
+      side_type = classification_info&.with_indifferent_access&.dig(doc_side, :ClassName)
       !side_type&.present? ||
         DocAuth::Response::ID_TYPE_SLUGS.key?(side_type) ||
         side_type == 'Unknown'
@@ -30,9 +32,14 @@ module DocAuth
     # @param [Object] classification_info assureid classification info
     # @param [String] doc_side value of ['Front', 'Back']
     def doc_issuing_country_ok?(classification_info, doc_side)
-      side_country = classification_info&.with_indifferent_access&.dig(doc_side, 'CountryCode')
+      side_country = classification_info&.with_indifferent_access&.dig(doc_side, :CountryCode)
       !side_country&.present? ||
         supported_country_codes.include?(side_country)
+    end
+
+    def doc_issuer_type_ok?(classification_info, doc_side)
+      side_issuer_type = classification_info&.with_indifferent_access&.dig(doc_side, :IssuerType)
+      side_issuer_type == 'StateProvince'
     end
 
     def supported_country_codes

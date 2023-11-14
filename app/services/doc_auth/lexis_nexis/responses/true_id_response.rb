@@ -247,6 +247,10 @@ module DocAuth
           true_id_product&.dig(:AUTHENTICATION_RESULT, :DocClassName)
         end
 
+        def doc_issuer_type
+          true_id_product&.dig(:AUTHENTICATION_RESULT, :DocIssuerType)
+        end
+
         def classification_info
           # Acuent response has both sides info, here simulate that
           doc_class = doc_class_name
@@ -254,10 +258,12 @@ module DocAuth
           {
             Front: {
               ClassName: doc_class,
+              IssuerType: doc_issuer_type,
               CountryCode: issuing_country,
             },
             Back: {
               ClassName: doc_class,
+              IssuerType: doc_issuer_type,
               CountryCode: issuing_country,
             },
           }
