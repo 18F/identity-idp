@@ -18,13 +18,13 @@ module Idv
       steps[latest_step]
     end
 
-    def undo_steps_from(step:)
+    def undo_steps_from!(step:)
       return if step == :success
 
       steps[step].undo_step.call(idv_session: idv_session, user: user)
 
       steps[step].next_steps.each do |next_step|
-        undo_steps_from(step: next_step)
+        undo_steps_from!(step: next_step)
       end
     end
 

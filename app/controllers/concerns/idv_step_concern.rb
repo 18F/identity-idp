@@ -44,6 +44,10 @@ module IdvStepConcern
     idv_session.flow_path
   end
 
+  def flow_policy
+    @flow_policy ||= Idv::FlowPolicy.new(idv_session: idv_session, user: current_user)
+  end
+
   def confirm_hybrid_handoff_needed
     if params[:redo]
       idv_session.redo_document_capture = true
@@ -118,10 +122,6 @@ module IdvStepConcern
         flow_session[:pii_from_user][:same_address_as_id].to_s == 'true'
     end
     extra
-  end
-
-  def flow_policy
-    @flow_policy ||= Idv::FlowPolicy.new(idv_session: idv_session, user: current_user)
   end
 
   def confirm_step_allowed
