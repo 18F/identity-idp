@@ -927,7 +927,7 @@ RSpec.describe User do
           expect(PushNotification::HttpPush).to receive(:deliver).once.
             with(PushNotification::AccountSuspendedEvent.new(
               user: user,
-            )).ordered
+            ))
           user.suspend!
         end
 
@@ -996,7 +996,7 @@ RSpec.describe User do
         expect(PushNotification::HttpPush).to receive(:deliver).once.
           with(PushNotification::AccountReinstatedEvent.new(
             user: user,
-          )).ordered
+          ))
         user.reinstate!
       end
 
