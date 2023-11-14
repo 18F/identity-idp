@@ -140,7 +140,7 @@ RSpec.describe Idv::WelcomeController do
     end
 
     it 'invalidates future steps' do
-      expect(subject.flow_policy).to receive(:undo_steps_from).with(step: :welcome)
+      expect(subject.flow_policy).to receive(:undo_steps_from!).with(step: :welcome)
 
       put :update
     end

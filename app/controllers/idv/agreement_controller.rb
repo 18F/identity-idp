@@ -21,6 +21,7 @@ module Idv
     end
 
     def update
+      flow_policy.undo_steps_from!(step: :agreement)
       skip_to_capture if params[:skip_hybrid_handoff]
 
       result = Idv::ConsentForm.new.submit(consent_form_params)

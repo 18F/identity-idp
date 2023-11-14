@@ -124,6 +124,12 @@ RSpec.describe Idv::AgreementController do
       }.compact
     end
 
+    it 'invalidates future steps' do
+      expect(subject.flow_policy).to receive(:undo_steps_from!).with(step: :agreement)
+
+      put :update, params: params
+    end
+
     it 'sends analytics_submitted event with consent given' do
       put :update, params: params
 
