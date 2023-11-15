@@ -27,12 +27,12 @@ interface DocumentCaptureReviewIssuesProps {
   hasDismissed: boolean;
 }
 
-type DocumentSide = 'front' | 'back';
+type DocumentSide = 'front' | 'back' | 'selfie';
 
 /**
  * Sides of the document to present as file input.
  */
-const DOCUMENT_SIDES: DocumentSide[] = ['front', 'back'];
+const DOCUMENT_SIDES: DocumentSide[] = ['front', 'back', 'selfie'];
 function DocumentCaptureReviewIssues({
   isFailedDocType,
   remainingAttempts = Infinity,
