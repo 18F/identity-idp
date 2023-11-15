@@ -10,6 +10,7 @@ import {
   FailedCaptureAttemptsContextProvider,
   MarketingSiteContextProvider,
   InPersonContext,
+  FeatureFlagContext,
 } from '@18f/identity-document-capture';
 import { isCameraCapableMobile } from '@18f/identity-device';
 import { FlowContext } from '@18f/identity-verify-flow';
@@ -35,6 +36,8 @@ interface AppRootData {
   securityAndPrivacyHowItWorksUrl: string;
   skipDocAuth: string;
   howToVerifyURL: string;
+  uiNotReadySectionEnabled: string;
+  uiExitQuestionSectionEnabled: string;
 }
 
 const appRoot = document.getElementById('document-capture-form')!;
@@ -94,6 +97,7 @@ const {
   flowPath,
   cancelUrl: cancelURL,
   exitUrl: exitURL,
+  accountUrl: accountURL,
   idvInPersonUrl: inPersonURL,
   securityAndPrivacyHowItWorksUrl: securityAndPrivacyHowItWorksURL,
   inPersonFullAddressEntryEnabled,
@@ -103,6 +107,8 @@ const {
   phoneWithCamera = '',
   skipDocAuth,
   howToVerifyUrl,
+  uiNotReadySectionEnabled = '',
+  uiExitQuestionSectionEnabled = '',
 } = appRoot.dataset as DOMStringMap & AppRootData;
 
 let parsedUsStatesTerritories = [];
@@ -161,6 +167,7 @@ const App = composeComponents(
     FlowContext.Provider,
     {
       value: {
+        accountURL,
         cancelURL,
         exitURL,
         currentStep: 'document_capture',
@@ -179,6 +186,15 @@ const App = composeComponents(
     {
       maxCaptureAttemptsBeforeNativeCamera: Number(maxCaptureAttemptsBeforeNativeCamera),
       maxSubmissionAttemptsBeforeNativeCamera: Number(maxSubmissionAttemptsBeforeNativeCamera),
+    },
+  ],
+  [
+    FeatureFlagContext.Provider,
+    {
+      value: {
+        notReadySectionEnabled: String(uiNotReadySectionEnabled) === 'true',
+        exitQuestionSectionEnabled: String(uiExitQuestionSectionEnabled) === 'true',
+      },
     },
   ],
   [

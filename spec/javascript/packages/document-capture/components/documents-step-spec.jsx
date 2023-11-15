@@ -1,12 +1,16 @@
 import userEvent from '@testing-library/user-event';
 import sinon from 'sinon';
+import { expect } from 'chai';
 import { t } from '@18f/identity-i18n';
 import {
   DeviceContext,
   UploadContextProvider,
   FailedCaptureAttemptsContextProvider,
+  FeatureFlagContext,
+  InPersonContext,
 } from '@18f/identity-document-capture';
 import DocumentsStep from '@18f/identity-document-capture/components/documents-step';
+import { composeComponents } from '@18f/identity-compose-components';
 import { render } from '../../../support/document-capture';
 import { getFixtureFile } from '../../../support/file';
 
@@ -81,5 +85,67 @@ describe('document-capture/components/documents-step', () => {
     const notExpectedText = t('doc_auth.hybrid_flow_warning.explanation_non_sp_html');
 
     expect(queryByText(notExpectedText)).to.not.exist();
+  });
+
+  it('renders optional question part and not ready section', () => {
+    const App = composeComponents(
+      [
+        FeatureFlagContext.Provider,
+        {
+          value: {
+            notReadySectionEnabled: true,
+            exitQuestionSectionEnabled: true,
+          },
+        },
+      ],
+      [
+        InPersonContext.Provider,
+        {
+          value: {
+            inPersonURL: '/verify/doc_capture',
+          },
+        },
+      ],
+      [DocumentsStep],
+    );
+    const { getByRole, getByText } = render(<App />);
+    expect(getByRole('heading', { name: 'doc_auth.not_ready.header', level: 2 })).to.be.ok();
+    expect(getByRole('heading', { name: 'doc_auth.exit_survey.header', level: 2 })).to.be.ok();
+    expect(getByText('doc_auth.exit_survey.optional.button')).to.be.ok();
+  });
+
+  context('not ready section', () => {
+    it('is rendered when enabled', () => {
+      const App = composeComponents(
+        [
+          FeatureFlagContext.Provider,
+          {
+            value: {
+              notReadySectionEnabled: true,
+            },
+          },
+        ],
+        [DocumentsStep],
+      );
+      const { getByRole } = render(<App />);
+      expect(getByRole('heading', { name: 'doc_auth.not_ready.header', level: 2 })).to.be.ok();
+      const button = getByRole('button', { name: 'doc_auth.not_ready.button_nosp' });
+      expect(button).to.be.ok();
+    });
+    it('is not rendered when disabled', () => {
+      const App = composeComponents(
+        [
+          FeatureFlagContext.Provider,
+          {
+            value: {
+              notReadySectionEnabled: false,
+            },
+          },
+        ],
+        [DocumentsStep],
+      );
+      const { queryByRole } = render(<App />);
+      expect(queryByRole('heading', { name: 'doc_auth.not_ready.header', level: 2 })).to.be.null();
+    });
   });
 });

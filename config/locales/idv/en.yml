@@ -180,8 +180,6 @@ en:
       alert_info: 'We sent a letter with your verification code to:'
       alert_rate_limit_warning_html: You can’t request more letters right now. Your
         previous letter request was on <strong>%{date_letter_was_sent}</strong>.
-      change_to_verification_code_html: 'The <strong>one-time code</strong> from your
-        letter is now referred to as <strong>verification code</strong>.'
       clear_and_start_over: Clear your information and start over
       did_not_receive_letter:
         form:
@@ -289,6 +287,8 @@ en:
           it.
         no_pii: TEST SITE - Do not use real personal information (demo purposes only) -
           TEST SITE
+      verify_info: We read your information from your ID. Review it and make any
+        updates before submitting for verification.
       verifying: Verifying…
     titles:
       activated: Your identity has already been verified

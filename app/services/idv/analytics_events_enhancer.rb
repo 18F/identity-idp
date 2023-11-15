@@ -29,7 +29,7 @@ module Idv
       idv_phone_otp_delivery_selection_visit
       idv_phone_otp_delivery_selection_submitted
       idv_proofing_resolution_result_missing
-      idv_enter_password_complete
+      idv_enter_password_submitted
       idv_enter_password_visited
       idv_please_call_visited
       idv_start_over
