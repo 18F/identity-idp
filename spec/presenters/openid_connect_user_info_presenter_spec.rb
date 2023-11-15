@@ -140,11 +140,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
       end
 
       before do
-        OutOfBandSessionAccessor.new(rails_session_id).put_pii(
-          profile_id: profile.id,
-          pii: pii,
-          expiration: 5.minutes.to_i,
-        )
+        OutOfBandSessionAccessor.new(rails_session_id).put_pii(profile.id, pii, 5.minutes.to_i)
       end
 
       context 'when the identity has ial2 access' do
