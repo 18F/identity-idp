@@ -8,7 +8,7 @@ module Idv
     end
 
     def controller_allowed?(controller:)
-      controller_name = controller.ancestors.include?(ApplicationController) ?
+      controller_name = controller < ApplicationController ?
                           controller.controller_name : controller
       key = controller_to_key(controller: controller_name)
       step_allowed?(key: key)
@@ -19,7 +19,7 @@ module Idv
     end
 
     def undo_steps_from_controller!(controller:)
-      controller_name = controller.ancestors.include?(ApplicationController) ?
+      controller_name = controller < ApplicationController ?
                         controller.controller_name : controller
       key = controller_to_key(controller: controller_name)
       undo_steps_from!(key: key)
