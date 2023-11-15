@@ -31,7 +31,7 @@ module Idv
         fraud_rejection: fraud_rejection?,
       )
 
-      idv_session.acknowledge_personal_key
+      idv_session.acknowledge_personal_key!
 
       redirect_to next_step
     end

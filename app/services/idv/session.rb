@@ -86,7 +86,7 @@ module Idv
       end
     end
 
-    def acknowledge_personal_key
+    def acknowledge_personal_key!
       session.delete(:personal_key)
       session[:personal_key_acknowledged] = true
     end

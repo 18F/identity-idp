@@ -75,17 +75,17 @@ RSpec.describe Idv::Session do
     end
   end
 
-  describe '#acknowledge_personal_key' do
+  describe '#acknowledge_personal_key!' do
     before do
       subject.personal_key = 'ABCD1234'
     end
     it 'clears personal_key' do
-      expect { subject.acknowledge_personal_key }.to change { subject.personal_key }.to eql(nil)
+      expect { subject.acknowledge_personal_key! }.to change { subject.personal_key }.to eql(nil)
     end
     it 'sets personal_key_acknowledged' do
-      expect { subject.acknowledge_personal_key }.to change {
-                                                       subject.personal_key_acknowledged
-                                                     }.from(nil).to eql(true)
+      expect { subject.acknowledge_personal_key! }.to change {
+                                                        subject.personal_key_acknowledged
+                                                      }.from(nil).to eql(true)
     end
   end
 
