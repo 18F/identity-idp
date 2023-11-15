@@ -655,6 +655,7 @@ function AcuantCapture(
           <AcuantSelfieCaptureCanvas
             loading={!isReady}
             fullScreenRef={fullScreenRef}
+            fullScreenLabel={t('doc_auth.accessible_labels.document_capture_dialog')}
             onRequestClose={() => setIsCapturingEnvironment(false)}
           />
         </AcuantSelfieCamera>
