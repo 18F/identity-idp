@@ -99,7 +99,8 @@ module SignUp
     end
 
     def pii
-      Pii::Cacher.new(current_user, user_session).fetch || Pii::Attributes.new
+      Pii::Cacher.new(current_user, user_session).fetch(current_user.active_profile&.id) ||
+        Pii::Attributes.new
     end
 
     def send_in_person_completion_survey
