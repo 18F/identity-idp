@@ -61,7 +61,8 @@ class OutOfBandSessionAccessor
   # @api private
   # Only used for convenience in tests
   # @param [Pii::Attributes] pii
-  def put_pii(profile_id, pii, expiration = 5.minutes)
+  # @param [#to_s] profile_id
+  def put_pii(profile_id:, pii:, expiration: 5.minutes)
     data = {
       decrypted_pii: pii.to_h.to_json,
       encrypted_profiles: { profile_id.to_s => SessionEncryptor.new.kms_encrypt(pii.to_h.to_json) },
