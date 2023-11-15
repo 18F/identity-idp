@@ -30,7 +30,7 @@ RSpec.describe TwoFactorOptionsPresenter do
         TwoFactorAuthentication::PhoneSelectionPresenter,
         TwoFactorAuthentication::SetUpBackupCodeSelectionPresenter,
         TwoFactorAuthentication::SetUpWebauthnSelectionPresenter,
-        TwoFactorAuthentication::PivCacSelectionPresenter,
+        TwoFactorAuthentication::SetUpPivCacSelectionPresenter,
       ]
     end
 
@@ -46,7 +46,7 @@ RSpec.describe TwoFactorOptionsPresenter do
         expect(presenter.options.map(&:class)).to eq [
           TwoFactorAuthentication::SetUpWebauthnPlatformSelectionPresenter,
           TwoFactorAuthentication::SetUpWebauthnSelectionPresenter,
-          TwoFactorAuthentication::PivCacSelectionPresenter,
+          TwoFactorAuthentication::SetUpPivCacSelectionPresenter,
         ]
       end
     end
@@ -62,7 +62,7 @@ RSpec.describe TwoFactorOptionsPresenter do
           TwoFactorAuthentication::SetUpAuthAppSelectionPresenter,
           TwoFactorAuthentication::SetUpBackupCodeSelectionPresenter,
           TwoFactorAuthentication::SetUpWebauthnSelectionPresenter,
-          TwoFactorAuthentication::PivCacSelectionPresenter,
+          TwoFactorAuthentication::SetUpPivCacSelectionPresenter,
         ]
       end
     end
@@ -79,7 +79,7 @@ RSpec.describe TwoFactorOptionsPresenter do
           TwoFactorAuthentication::PhoneSelectionPresenter,
           TwoFactorAuthentication::SetUpBackupCodeSelectionPresenter,
           TwoFactorAuthentication::SetUpWebauthnSelectionPresenter,
-          TwoFactorAuthentication::PivCacSelectionPresenter,
+          TwoFactorAuthentication::SetUpPivCacSelectionPresenter,
         ]
       end
     end

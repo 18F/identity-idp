@@ -23,6 +23,7 @@ module Idv
     end
 
     def update
+      clear_invalid_steps!
       analytics.idv_doc_auth_welcome_submitted(**analytics_arguments)
 
       create_document_capture_session
@@ -39,6 +40,7 @@ module Idv
         controller: controller_name,
         next_steps: [:agreement],
         preconditions: ->(idv_session:, user:) { true },
+        undo_step: ->(idv_session:, user:) { idv_session.welcome_visited = nil },
       )
     end
 

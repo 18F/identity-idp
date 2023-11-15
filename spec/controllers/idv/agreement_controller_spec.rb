@@ -127,6 +127,12 @@ RSpec.describe Idv::AgreementController do
       }.compact
     end
 
+    it 'invalidates future steps' do
+      expect(subject).to receive(:clear_invalid_steps!)
+
+      put :update, params: params
+    end
+
     it 'sends analytics_submitted event with consent given' do
       put :update, params: params
 

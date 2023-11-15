@@ -16,6 +16,7 @@ module Idv
     end
 
     def phone_with_camera
+      clear_invalid_steps!
       idv_session.phone_with_camera = true
       analytics.idv_doc_auth_phone_question_submitted(**analytics_arguments)
 
@@ -23,6 +24,7 @@ module Idv
     end
 
     def phone_without_camera
+      clear_invalid_steps!
       idv_session.flow_path = 'standard'
       idv_session.phone_with_camera = false
       analytics.idv_doc_auth_phone_question_submitted(**analytics_arguments)
@@ -39,6 +41,7 @@ module Idv
           AbTests::IDV_PHONE_QUESTION.bucket(user.uuid) == :show_phone_question &&
             idv_session.idv_consent_given
         end,
+        undo_step: ->(idv_session:, user:) { idv_session.phone_with_camera = nil },
       )
     end
 
