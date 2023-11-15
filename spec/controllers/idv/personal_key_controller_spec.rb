@@ -209,6 +209,12 @@ RSpec.describe Idv::PersonalKeyController do
         expect(subject.user_session[:need_personal_key_confirmation]).to eq(false)
       end
 
+      it 'sets idv_session.personal_key_acknowledged' do
+        expect { patch :update }.to change {
+                                      idv_session.personal_key_acknowledged
+                                    }.from(nil).to eql(true)
+      end
+
       it 'logs key submitted event' do
         patch :update
 
