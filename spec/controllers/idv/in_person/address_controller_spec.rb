@@ -8,12 +8,9 @@ RSpec.describe Idv::InPerson::AddressController do
   let(:flow_session) do
     { pii_from_user: pii_from_user }
   end
-  let(:flow_path) { 'standard' }
-  let(:user_session) do
-    { idv: {} }
-  end
+  let(:ssn) { nil }
 
-  before(:each) do
+  before do
     allow(IdentityConfig.store).to receive(:in_person_residential_address_controller_enabled).
       and_return(true)
     allow(IdentityConfig.store).to receive(:usps_ipp_transliteration_enabled).
@@ -22,9 +19,9 @@ RSpec.describe Idv::InPerson::AddressController do
       and_return(user)
     allow(subject).to receive(:pii_from_user).and_return(pii_from_user)
     allow(subject).to receive(:flow_session).and_return(flow_session)
-    allow(subject).to receive(:flow_path).and_return(flow_path)
-    allow(subject).to receive(:user_session).and_return(user_session)
     stub_sign_in(user)
+    subject.idv_session.flow_path = 'standard'
+    subject.idv_session.ssn = ssn
     stub_analytics
     allow(@analytics).to receive(:track_event)
   end
@@ -74,16 +71,6 @@ RSpec.describe Idv::InPerson::AddressController do
         expect(response).to_not redirect_to(idv_in_person_ssn_url)
       end
     end
-
-    context '#confirm_ssn_step_needed' do
-      it 'redirects to ssn page when address1 present' do
-        flow_session[:pii_from_user][:address1] = '123 Main St'
-        user_session[:idv] = {}
-        get :show
-
-        expect(response).to redirect_to idv_in_person_ssn_url
-      end
-    end
   end
 
   describe '#show' do
@@ -91,7 +78,7 @@ RSpec.describe Idv::InPerson::AddressController do
     let(:analytics_args) do
       {
         analytics_id: 'In Person Proofing',
-        flow_path: flow_path,
+        flow_path: 'standard',
         irs_reproofing: false,
         step: 'address',
         step_count: nil,
@@ -103,6 +90,14 @@ RSpec.describe Idv::InPerson::AddressController do
         get :show
 
         expect(response).to render_template :show
+      end
+
+      it 'redirects to ssn page when address1 present' do
+        flow_session[:pii_from_user][:address1] = '123 Main St'
+
+        get :show
+
+        expect(response).to redirect_to idv_in_person_ssn_url
       end
 
       it 'logs idv_in_person_proofing_address_visited' do
@@ -142,9 +137,7 @@ RSpec.describe Idv::InPerson::AddressController do
           state: state,
         } }
       end
-      let(:user_session) do
-        { idv: { ssn: '900123456' } }
-      end
+      let(:ssn) { '900123456' }
       let(:analytics_name) { 'IdV: in person proofing residential address submitted' }
       let(:analytics_args) do
         {
@@ -178,13 +171,12 @@ RSpec.describe Idv::InPerson::AddressController do
       end
 
       context 'when updating the residential address' do
-        before(:each) do
+        before do
           flow_session[:pii_from_user][:address1] = '123 New Residential Ave'
-          allow(subject).to receive(:user_session).and_return(user_session)
         end
 
         context 'user previously selected that the residential address matched state ID' do
-          before(:each) do
+          before do
             flow_session[:pii_from_user][:same_address_as_id] = 'true'
           end
 
@@ -196,7 +188,7 @@ RSpec.describe Idv::InPerson::AddressController do
         end
 
         context 'user previously selected that the residential address did not match state ID' do
-          before(:each) do
+          before do
             flow_session[:pii_from_user][:same_address_as_id] = 'false'
           end
 
