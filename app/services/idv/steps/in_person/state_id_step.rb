@@ -13,7 +13,6 @@ module Idv
         end
 
         def call
-          flow_session[:flow_path] = @flow.flow_path
           pii_from_user = flow_session[:pii_from_user]
           initial_state_of_same_address_as_id = flow_session[:pii_from_user][:same_address_as_id]
           Idv::StateIdForm::ATTRIBUTES.each do |attr|

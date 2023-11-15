@@ -69,7 +69,7 @@ module Idv
 
       def analytics_arguments
         {
-          flow_path: flow_path,
+          flow_path: idv_session.flow_path,
           step: 'address',
           analytics_id: 'In Person Proofing',
           irs_reproofing: irs_reproofing?,
