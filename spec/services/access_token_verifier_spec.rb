@@ -52,9 +52,9 @@ RSpec.describe AccessTokenVerifier do
       before do
         identity.save!
         OutOfBandSessionAccessor.new(identity.rails_session_id).put_pii(
-          profile_id: 123,
-          pii: {},
-          expiration: 5,
+          123,
+          {},
+          5,
         )
       end
 

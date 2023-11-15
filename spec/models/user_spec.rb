@@ -926,9 +926,9 @@ RSpec.describe User do
         it 'logs out the suspended user from the active session' do
           # Add information to session store to allow `exists?` check to work as desired
           OutOfBandSessionAccessor.new(mock_session_id).put_pii(
-            profile_id: 123,
-            pii: { first_name: 'Mario' },
-            expiration: 5.minutes.to_i,
+            123,
+            { first_name: 'Mario' },
+            5.minutes.to_i,
           )
 
           expect(OutOfBandSessionAccessor.new(mock_session_id).exists?).to eq true
