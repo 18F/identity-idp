@@ -13,7 +13,7 @@ RSpec.describe OutOfBandSessionAccessor do
 
   describe '#ttl' do
     it 'returns the remaining time-to-live of the session data in redis' do
-      store.put_pii({ first_name: 'Fakey' }, 5.minutes.to_i)
+      store.put_pii(123, { first_name: 'Fakey' }, 5.minutes.to_i)
 
       expect(store.ttl).to be_within(1).of(5.minutes.to_i)
     end
@@ -21,9 +21,9 @@ RSpec.describe OutOfBandSessionAccessor do
 
   describe '#load_pii' do
     it 'loads PII from the session' do
-      store.put_pii({ dob: '1970-01-01' }, 5.minutes.to_i)
+      store.put_pii(123, { dob: '1970-01-01' }, 5.minutes.to_i)
 
-      pii = store.load_pii
+      pii = store.load_pii(123)
       expect(pii).to be_kind_of(Pii::Attributes)
       expect(pii.dob).to eq('1970-01-01')
     end
@@ -41,10 +41,10 @@ RSpec.describe OutOfBandSessionAccessor do
 
   describe '#destroy' do
     it 'destroys the session' do
-      store.put_pii({ first_name: 'Fakey' }, 5.minutes.to_i)
+      store.put_pii(123, { first_name: 'Fakey' }, 5.minutes.to_i)
       store.destroy
 
-      expect(store.load_pii).to be_nil
+      expect(store.load_pii(123)).to be_nil
     end
   end
 end
