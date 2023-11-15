@@ -1,4 +1,5 @@
 import { Button, FullScreen } from '@18f/identity-components';
+import { getAssetPath } from '@18f/identity-assets';
 import type { MouseEvent, ReactNode, Ref } from 'react';
 import {
   forwardRef,
@@ -651,6 +652,7 @@ function AcuantCapture(
           onImageCaptureOpen={() => setIsCapturingEnvironment(true)}
           onImageCaptureClose={() => setIsCapturingEnvironment(false)}
         >
+          <AcuantSelfieCaptureCanvas loading={!isReady} />
           <div id="acuant-face-capture-container" />
         </AcuantSelfieCamera>
       )}
@@ -704,6 +706,23 @@ function AcuantCapture(
       </div>
     </div>
   );
+}
+
+// This loading spinner needs to disappear when isReady changes
+// Also, it needs to appear in a fullscreen (cancelable mode)
+function LoadingSpinner() {
+  return (
+    <img
+      src={getAssetPath('loading-badge.gif')}
+      alt=""
+      width="144"
+      height="144"
+      className="acuant-capture-canvas__spinner"
+    />
+  );
+}
+function AcuantSelfieCaptureCanvas({ loading }) {
+  return loading ? <div id="acuant-face-capture-container" /> : <LoadingSpinner />
 }
 
 export default forwardRef(AcuantCapture);
