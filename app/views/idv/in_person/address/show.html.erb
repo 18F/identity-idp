@@ -87,7 +87,7 @@
 <% end %>
 
 <% if updating_address %>
-  <%= render 'idv/shared/back', action: 'cancel_update_address' %>
+  <%= render 'idv/shared/back', fallback_path: idv_in_person_verify_info_path %>
 <% else %>
   <%= render 'idv/doc_auth/cancel', step: 'address' %>
 <% end %>
