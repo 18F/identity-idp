@@ -76,7 +76,9 @@ RSpec.feature 'doc auth redo document capture', js: true do
       complete_hybrid_handoff_step
 
       visit idv_verify_info_url
-
+      expect(page).to have_current_path(idv_document_capture_path)
+      DocAuth::Mock::DocAuthMockClient.reset!
+      attach_and_submit_images
       complete_verify_step
 
       expect(page).to have_current_path(idv_phone_path)
