@@ -37,7 +37,7 @@ class EnvIrbPrompt
     when 'prod'
       color_red(str)
     when 'staging'
-      color_cyan(str)
+      color_yellowy_orange(str)
     else
       color_green(str)
     end
@@ -49,8 +49,8 @@ class EnvIrbPrompt
   end
 
   # @api private
-  def color_cyan(str)
-    "\e[36m#{str}\e[0m"
+  def color_yellowy_orange(str)
+    "\e[33m#{str}\e[0m"
   end
 
   # @api private
