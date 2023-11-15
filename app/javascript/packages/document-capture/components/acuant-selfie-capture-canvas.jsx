@@ -1,5 +1,7 @@
+import { useContext } from 'react';
 import { getAssetPath } from '@18f/identity-assets';
 import { FullScreen } from '@18f/identity-components';
+import AcuantContext from '../context/acuant';
 
 function FullScreenLoadingSpinner({ fullScreenRef, onRequestClose, fullScreenLabel }) {
   return (
@@ -15,8 +17,9 @@ function FullScreenLoadingSpinner({ fullScreenRef, onRequestClose, fullScreenLab
   );
 }
 
-function AcuantSelfieCaptureCanvas({ loading, fullScreenRef, onRequestClose, fullScreenLabel }) {
-  return loading ? (
+function AcuantSelfieCaptureCanvas({ fullScreenRef, onRequestClose, fullScreenLabel }) {
+  const { isReady } = useContext(AcuantContext);
+  return !isReady ? (
     <FullScreenLoadingSpinner
       fullScreenRef={fullScreenRef}
       onRequestClose={onRequestClose}

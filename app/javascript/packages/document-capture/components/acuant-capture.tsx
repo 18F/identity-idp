@@ -481,6 +481,7 @@ function AcuantCapture(
         event.preventDefault();
       }
 
+      console.log('should be true', shouldStartAcuantCapture && !isAcuantInstanceActive);
       if (shouldStartAcuantCapture && !isAcuantInstanceActive) {
         setIsCapturingEnvironment(true);
       }
@@ -653,7 +654,6 @@ function AcuantCapture(
           onImageCaptureClose={() => setIsCapturingEnvironment(false)}
         >
           <AcuantSelfieCaptureCanvas
-            loading={!isReady}
             fullScreenRef={fullScreenRef}
             fullScreenLabel={t('doc_auth.accessible_labels.document_capture_dialog')}
             onRequestClose={() => setIsCapturingEnvironment(false)}
