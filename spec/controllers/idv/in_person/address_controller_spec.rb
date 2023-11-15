@@ -2,8 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Idv::InPerson::AddressController do
   include InPersonHelper
-  let(:in_person_residential_address_controller_enabled) { true }
-  let(:usps_ipp_transliteration_enabled) { true }
+
   let(:pii_from_user) { Idp::Constants::MOCK_IPP_APPLICANT_SAME_ADDRESS_AS_ID_FALSE.dup }
   let(:user) { build(:user) }
   let(:flow_session) do
