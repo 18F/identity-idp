@@ -40,7 +40,10 @@ module Idv
         controller: controller_name,
         next_steps: [:agreement],
         preconditions: ->(idv_session:, user:) { true },
-        undo_step: ->(idv_session:, user:) { idv_session.welcome_visited = nil },
+        undo_step: ->(idv_session:, user:) do
+          idv_session.welcome_visited = nil
+          idv_session.document_capture_session_uuid = nil
+        end,
       )
     end
 

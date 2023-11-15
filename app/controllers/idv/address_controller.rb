@@ -12,6 +12,7 @@ module Idv
     end
 
     def update
+      clear_invalid_steps!
       form_result = idv_form.submit(profile_params)
       analytics.idv_address_submitted(**form_result.to_h)
       capture_address_edited(form_result)
@@ -26,8 +27,9 @@ module Idv
       Idv::StepInfo.new(
         key: :address,
         controller: controller_name,
-        next_steps: [:verify_info],
+        next_steps: [:success], # Goes back to verify_info, and don't want a loop
         preconditions: ->(idv_session:, user:) { idv_session.document_capture_complete? },
+        undo_step: ->(idv_session:, user:) { idv_session.address_edited = nil },
       )
     end
 

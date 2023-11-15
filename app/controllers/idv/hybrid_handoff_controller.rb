@@ -42,7 +42,10 @@ module Idv
         controller: controller_name,
         next_steps: [:link_sent, :document_capture],
         preconditions: ->(idv_session:, user:) { idv_session.idv_consent_given },
-        undo_step: ->(idv_session:, user:) { idv_session.flow_path = nil },
+        undo_step: ->(idv_session:, user:) do
+          idv_session.flow_path = nil
+          idv_session.phone_for_mobile_flow = nil
+        end,
       )
     end
 

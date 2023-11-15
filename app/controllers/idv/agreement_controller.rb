@@ -49,7 +49,10 @@ module Idv
         controller: controller_name,
         next_steps: [:hybrid_handoff, :document_capture, :phone_question, :how_to_verify],
         preconditions: ->(idv_session:, user:) { idv_session.welcome_visited },
-        undo_step: ->(idv_session:, user:) { idv_session.idv_consent_given = nil },
+        undo_step: ->(idv_session:, user:) do
+          idv_session.idv_consent_given = nil
+          idv_session.skip_hybrid_handoff = nil
+        end,
       )
     end
 

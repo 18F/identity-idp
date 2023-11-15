@@ -33,6 +33,7 @@ module Idv
     end
 
     def update
+      clear_invalid_steps!
       ssn_form = Idv::SsnFormatForm.new(idv_session.ssn)
       form_response = ssn_form.submit(params.require(:doc_auth).permit(:ssn))
       @ssn_presenter = Idv::SsnPresenter.new(
@@ -63,6 +64,10 @@ module Idv
         controller: controller_name,
         next_steps: [:verify_info],
         preconditions: ->(idv_session:, user:) { idv_session.document_capture_complete? },
+        undo_step: ->(idv_session:, user:) do
+          idv_session.ssn = nil
+          idv_session.threatmetrix_session_id = nil
+        end,
       )
     end
 
