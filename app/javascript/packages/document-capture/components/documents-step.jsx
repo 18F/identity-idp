@@ -10,6 +10,7 @@ import UploadContext from '../context/upload';
 import TipList from './tip-list';
 import DocumentCaptureNotReady from './document-capture-not-ready';
 import { FeatureFlagContext } from '../context';
+import DocumentCaptureAbandon from './document-capture-abandon';
 
 /**
  * @typedef {'front'|'back'} DocumentSide
@@ -45,7 +46,7 @@ function DocumentsStep({
   const { isMobile } = useContext(DeviceContext);
   const { isLastStep } = useContext(FormStepsContext);
   const { flowPath } = useContext(UploadContext);
-  const { notReadySectionEnabled } = useContext(FeatureFlagContext);
+  const { notReadySectionEnabled, exitQuestionSectionEnabled } = useContext(FeatureFlagContext);
   return (
     <>
       {flowPath === 'hybrid' && <HybridDocCaptureWarning className="margin-bottom-4" />}
@@ -73,6 +74,7 @@ function DocumentsStep({
       ))}
       {isLastStep ? <FormStepsButton.Submit /> : <FormStepsButton.Continue />}
       {notReadySectionEnabled && <DocumentCaptureNotReady />}
+      {exitQuestionSectionEnabled && <DocumentCaptureAbandon />}
       <Cancel />
     </>
   );
