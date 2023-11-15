@@ -34,6 +34,16 @@ interface AcuantSelfieCameraContextProps {
    */
   onImageCaptureFailure: any;
   /**
+   * Capture open callback, tells the rest of the page
+   * when the fullscreen selfie capture page is open
+   */
+  onImageCaptureOpen: any;
+  /**
+   * Capture close callback, tells the rest of the page
+   * when the fullscreen selfie capture page has been closed
+   */
+  onImageCaptureClose: any;
+  /**
    * React children node
    */
   children: ReactNode;
@@ -62,8 +72,8 @@ interface FaceDetectionStates {
 function AcuantCamera({
   onImageCaptureSuccess = () => {},
   onImageCaptureFailure = () => {},
-  onSelfieCaptureOpen = () => {},
-  onSelfieCaptureClose = () => {},
+  onImageCaptureOpen = () => {},
+  onImageCaptureClose = () => {},
   children,
 }: AcuantSelfieCameraContextProps) {
   const { isReady, setIsActive } = useContext(AcuantContext);
@@ -82,12 +92,12 @@ function AcuantCamera({
     onOpened: () => {
       // Camera has opened
       console.log('onOpened');
-      onSelfieCaptureOpen();
+      onImageCaptureOpen();
     },
     onClosed: () => {
       // Camera has closed
       console.log('onClosed');
-      onSelfieCaptureClose();
+      onImageCaptureClose();
     },
     onError: (error) => {
       // Error occurred. Camera permission not granted will
