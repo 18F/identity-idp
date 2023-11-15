@@ -6,7 +6,6 @@ module Idv
       before_action :render_404_if_in_person_residential_address_controller_enabled_not_set
       before_action :confirm_in_person_state_id_step_complete
       before_action :confirm_in_person_address_step_needed, only: :show
-      before_action :confirm_ssn_step_needed
 
       def show
         analytics.idv_in_person_proofing_address_visited(**analytics_arguments)
@@ -15,8 +14,6 @@ module Idv
       end
 
       def update
-        flow_session['Idv::Steps::InPerson::AddressStep'] = true
-
         attrs = Idv::InPerson::AddressForm::ATTRIBUTES.difference([:same_address_as_id])
         pii_from_user[:same_address_as_id] = 'false' if updating_address?
         form_result = form.submit(flow_params)
@@ -29,6 +26,7 @@ module Idv
           attrs.each do |attr|
             pii_from_user[attr] = flow_params[attr]
           end
+          flow_session['Idv::Steps::InPerson::AddressStep'] = true
           redirect_to_next_page
         else
           render :show, locals: extra_view_variables
@@ -80,9 +78,9 @@ module Idv
 
       def redirect_to_next_page
         if updating_address?
-          redirect_to idv_in_person_ssn_url
-        else
           redirect_to idv_in_person_verify_info_url
+        else
+          redirect_to idv_in_person_ssn_url
         end
       end
 
@@ -100,13 +98,7 @@ module Idv
         return if pii_from_user && pii_from_user[:same_address_as_id] == 'false' &&
                   !pii_from_user.has_key?(:address1)
         return if request.referer == idv_in_person_verify_info_url
-        redirect_to idv_in_person_verify_info_url unless !user_session[:idv][:ssn]
-      end
-
-      def confirm_ssn_step_needed
-        if pii_from_user&.has_key?(:address1) && !user_session[:idv][:ssn]
-          redirect_to idv_in_person_ssn_url
-        end
+        redirect_to idv_in_person_ssn_url
       end
     end
   end

@@ -74,18 +74,6 @@ RSpec.describe Idv::InPerson::AddressController do
         expect(response).to render_template :show
         expect(response).to_not redirect_to(idv_in_person_ssn_url)
       end
-
-      context 'with ssn' do
-        before do
-          subject.idv_session.ssn = '900123456'
-          pii_from_user[:address1] = '123 main st'
-        end
-        it 'redirects to verify info if ssn is present and not coming from verify pg' do
-          get :show
-
-          expect(response).to redirect_to idv_in_person_verify_info_url
-        end
-      end
     end
 
     context '#confirm_ssn_step_needed' do
