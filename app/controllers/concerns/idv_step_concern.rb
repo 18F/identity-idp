@@ -135,7 +135,7 @@ module IdvStepConcern
     url_for(controller: step_info.controller, action: step_info.action)
   end
 
-  def undo_steps_from_controller!
+  def clear_invalid_steps!
     flow_policy.undo_steps_from_controller!(controller: self.class)
   end
 end

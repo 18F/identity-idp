@@ -16,7 +16,7 @@ module Idv
     end
 
     def phone_with_camera
-      undo_steps_from_controller!
+      clear_invalid_steps!
       idv_session.phone_with_camera = true
       analytics.idv_doc_auth_phone_question_submitted(**analytics_arguments)
 
@@ -24,7 +24,7 @@ module Idv
     end
 
     def phone_without_camera
-      undo_steps_from_controller!
+      clear_invalid_steps!
       idv_session.flow_path = 'standard'
       idv_session.phone_with_camera = false
       analytics.idv_doc_auth_phone_question_submitted(**analytics_arguments)

@@ -13,7 +13,7 @@ module Idv
     end
 
     def update
-      undo_steps_from_controller!
+      clear_invalid_steps!
       result = Idv::HowToVerifyForm.new.submit(how_to_verify_form_params)
 
       analytics.idv_doc_auth_how_to_verify_submitted(
