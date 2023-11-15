@@ -652,6 +652,20 @@ function AcuantCapture(
           onImageCaptureOpen={() => setIsCapturingEnvironment(true)}
           onImageCaptureClose={() => setIsCapturingEnvironment(false)}
         >
+          {/* TODO Bug (hooks related)
+          Reproduction steps:
+          - Tap the selfie upload box (without tapping any other boxes)
+          - Selfie cam opens full screen, deny the camera permissions.
+          - Try to reopen the selfie upload. It will open and close very quickly
+              rather than displaying the permission prompt again as desired.
+
+          Bug does not appear if you at any point tap any of the other
+          upload boxes.
+
+          Bug is fixed by including a FullScreen component around the selfie
+          div, but that causes other bugs (related to the close functionality of
+            full screen)
+          */}
           <AcuantSelfieCaptureCanvas
             fullScreenRef={fullScreenRef}
             fullScreenLabel={t('doc_auth.accessible_labels.document_capture_dialog')}
