@@ -21,8 +21,7 @@ module Users
       )
       result = form.submit(new_params)
       @platform_authenticator = form.platform_authenticator?
-      if @platform_authenticator && in_account_creation_flow? &&
-         current_user.webauthn_configurations.platform_authenticators.present?
+      if ft_unlock_setup_successful_on_account_setup?
         redirect_to authentication_methods_setup_path
       end
       @presenter = WebauthnSetupPresenter.new(
@@ -111,6 +110,11 @@ module Users
     end
 
     private
+
+    def ft_unlock_setup_successful_on_account_setup?
+      @platform_authenticator && in_account_creation_flow? &&
+        current_user.webauthn_configurations.platform_authenticators.present?
+    end
 
     def set_webauthn_setup_presenter
       @presenter = SetupPresenter.new(
