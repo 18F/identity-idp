@@ -13,8 +13,7 @@ module Idv
     validate :limit_if_rate_limited
 
     def initialize(params, service_provider:, analytics: nil,
-                   uuid_prefix: nil, irs_attempts_api_tracker: nil, store_encrypted_images: false,
-                   liveness_checking_enabled: false)
+                   uuid_prefix: nil, irs_attempts_api_tracker: nil, store_encrypted_images: false)
       @params = params
       @service_provider = service_provider
       @analytics = analytics
@@ -22,8 +21,6 @@ module Idv
       @uuid_prefix = uuid_prefix
       @irs_attempts_api_tracker = irs_attempts_api_tracker
       @store_encrypted_images = store_encrypted_images
-      # todo: use config item
-      @liveness_checking_enabled = liveness_checking_enabled
     end
 
     def submit
@@ -53,7 +50,8 @@ module Idv
     end
 
     def liveness_checking_enabled?
-      @liveness_checking_enabled
+      # todo: use config item incorp UI options
+      IdentityConfig.store.doc_auth_selfie_capture['enabled']
     end
 
     private
