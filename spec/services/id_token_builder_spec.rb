@@ -102,7 +102,9 @@ RSpec.describe IdTokenBuilder do
       let(:custom_expiration) { nil }
       let(:expiration) { 100 }
 
-      before { OutOfBandSessionAccessor.new(identity.rails_session_id).put_pii(nil, expiration) }
+      before do
+        OutOfBandSessionAccessor.new(identity.rails_session_id).put_empty_user_session(expiration)
+      end
 
       it 'sets the expiration to the ttl of the session key in redis' do
         expect(decoded_payload[:exp]).to be_within(3.seconds).of(now.to_i + expiration)

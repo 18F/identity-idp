@@ -22,6 +22,7 @@ module Idv
     end
 
     def update
+      clear_invalid_steps!
       idv_session.redo_document_capture = nil # done with this redo
       # Not used in standard flow, here for data consistency with hybrid flow.
       document_capture_session.confirm_ocr
@@ -60,6 +61,10 @@ module Idv
         controller: controller_name,
         next_steps: [:success], # [:ssn],
         preconditions: ->(idv_session:, user:) { idv_session.flow_path == 'standard' },
+        undo_step: ->(idv_session:, user:) do
+          idv_session.pii_from_doc = nil
+          idv_session.invalidate_in_person_pii_from_user!
+        end,
       )
     end
 

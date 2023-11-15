@@ -139,6 +139,12 @@ RSpec.describe Idv::WelcomeController do
       expect(@analytics).to have_logged_event(analytics_name, analytics_args)
     end
 
+    it 'invalidates future steps' do
+      expect(subject).to receive(:clear_invalid_steps!)
+
+      put :update
+    end
+
     it 'creates a document capture session' do
       expect { put :update }.
         to change { subject.idv_session.document_capture_session_uuid }.from(nil)

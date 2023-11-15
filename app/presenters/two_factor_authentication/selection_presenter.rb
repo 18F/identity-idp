@@ -69,8 +69,6 @@ module TwoFactorAuthentication
 
     def login_label(type)
       case type
-      when 'piv_cac'
-        t('two_factor_authentication.login_options.piv_cac')
       when 'sms'
         t('two_factor_authentication.login_options.sms')
       when 'voice'
@@ -82,8 +80,6 @@ module TwoFactorAuthentication
 
     def setup_label(type)
       case type
-      when 'piv_cac'
-        t('two_factor_authentication.two_factor_choice_options.piv_cac')
       when 'phone'
         t('two_factor_authentication.two_factor_choice_options.phone')
       when 'sms'

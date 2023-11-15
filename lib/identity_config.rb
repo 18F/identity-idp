@@ -6,7 +6,7 @@ class IdentityConfig
   VENDOR_STATUS_OPTIONS = %i[operational partial_outage full_outage]
 
   class << self
-    attr_reader :store, :key_types
+    attr_reader :store, :key_types, :unused_keys
   end
 
   CONVERTERS = {
@@ -179,6 +179,7 @@ class IdentityConfig
     config.add(:doc_auth_error_dpi_threshold, type: :integer)
     config.add(:doc_auth_error_glare_threshold, type: :integer)
     config.add(:doc_auth_error_sharpness_threshold, type: :integer)
+    config.add(:doc_auth_exit_question_section_enabled, type: :boolean)
     config.add(:doc_auth_not_ready_section_enabled, type: :boolean)
     config.add(:doc_auth_max_attempts, type: :integer)
     config.add(:doc_auth_max_capture_attempts_before_native_camera, type: :integer)
@@ -492,6 +493,7 @@ class IdentityConfig
     config.add(:weekly_auth_funnel_report_config, type: :json)
 
     @key_types = config.key_types
+    @unused_keys = config_map.keys - config.written_env.keys
     @store = RedactedStruct.new('IdentityConfig', *config.written_env.keys, keyword_init: true).
       new(**config.written_env)
   end

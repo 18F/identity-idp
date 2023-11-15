@@ -143,6 +143,12 @@ module Idv
       user_session.dig('idv/in_person', :pii_from_user)
     end
 
+    def invalidate_in_person_pii_from_user!
+      if user_session.dig('idv/in_person', :pii_from_user)
+        user_session['idv/in_person'][:pii_from_user] = nil
+      end
+    end
+
     def document_capture_complete?
       pii_from_doc || has_pii_from_user_in_flow_session || verify_info_step_complete?
     end
