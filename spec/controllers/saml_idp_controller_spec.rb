@@ -230,7 +230,7 @@ RSpec.describe SamlIdpController do
     it 'accepts requests with correct cert and correct session index and renders logout response' do
       REDIS_POOL.with { |client| client.flushdb }
       session_accessor = OutOfBandSessionAccessor.new(session_id)
-      session_accessor.put_pii(123, foo: 'bar')
+      session_accessor.put_pii(profile_id: 123, pii: { foo: 'bar' })
       saml_request = OneLogin::RubySaml::Logoutrequest.new
       encoded_saml_request = UriService.params(
         saml_request.create(right_cert_settings),
