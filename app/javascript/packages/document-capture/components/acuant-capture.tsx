@@ -481,7 +481,6 @@ function AcuantCapture(
         event.preventDefault();
       }
 
-      console.log('should be true', shouldStartAcuantCapture && !isAcuantInstanceActive);
       if (shouldStartAcuantCapture && !isAcuantInstanceActive) {
         setIsCapturingEnvironment(true);
       }
