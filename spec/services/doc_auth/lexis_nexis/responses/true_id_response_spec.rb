@@ -327,7 +327,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
           hints: true,
         },
         attention_with_barcode: false,
-        doc_type_supported: false, # todo: check failure document need update?
+        doc_type_supported: true, # todo: check failure document need update?
         conversation_id: a_kind_of(String),
         reference: a_kind_of(String),
         vendor: 'TrueID',
@@ -596,6 +596,30 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       end
       it 'identify as unsupported doc type' do
         is_expected.to eq(false)
+      end
+    end
+    context 'when id is federal ID and image dpi is low' do
+      let(:error_response) do
+        body = JSON.parse(LexisNexisFixtures.true_id_response_success_3).tap do |json|
+          doc_class_node = json['Products'].first['ParameterDetails'].
+            select { |f| f['Name'] == 'DocClassName' && f['Group'] == 'AUTHENTICATION_RESULT' }
+          doc_class_node.first['Values'].first['Value'] = 'Identification Card'
+          doc_issuer_type = json['Products'].first['ParameterDetails'].
+            select { |f| f['Name'] == 'DocIssuerType' && f['Group'] == 'AUTHENTICATION_RESULT' }
+          doc_issuer_type.first['Values'].first['Value'] = 'Country'
+
+          image_metric_resolution = json['Products'].first['ParameterDetails'].
+            select do |f|
+            f['Group'] == 'IMAGE_METRICS_RESULT' &&
+              f['Name'] == 'HorizontalResolution'
+          end
+          image_metric_resolution.first['Values'].first['Value'] = 50
+        end.to_json
+        instance_double(Faraday::Response, status: 200, body: body)
+      end
+      it 'mark doc type as not supported' do
+        response = described_class.new(error_response, config)
+        expect(response.doc_type_supported?).to eq(false)
       end
     end
   end
