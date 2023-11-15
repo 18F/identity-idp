@@ -490,6 +490,12 @@ function AcuantCapture(
     }
   }
 
+  function onSelfieCaptureOpen() {
+    setIsCapturingEnvironment(true);
+  }
+  function onSelfieCaptureClose() {
+    setIsCapturingEnvironment(false);
+  }
   function onSelfieCaptureSuccess({ image }: { image: string }) {
     // TODO analytics
     // TODO are there possible errors here?
@@ -648,6 +654,8 @@ function AcuantCapture(
         <AcuantSelfieCamera
           onImageCaptureSuccess={onSelfieCaptureSuccess}
           onImageCaptureFailure={onSelfieCaptureFailure}
+          onSelfieCaptureOpen={onSelfieCaptureOpen}
+          onSelfieCaptureClose={onSelfieCaptureClose}
         >
           <div id="acuant-face-capture-container" />
         </AcuantSelfieCamera>

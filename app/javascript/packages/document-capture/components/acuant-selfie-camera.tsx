@@ -62,6 +62,8 @@ interface FaceDetectionStates {
 function AcuantCamera({
   onImageCaptureSuccess = () => {},
   onImageCaptureFailure = () => {},
+  onSelfieCaptureOpen = () => {},
+  onSelfieCaptureClose = () => {},
   children,
 }: AcuantSelfieCameraContextProps) {
   const { isReady, setIsActive } = useContext(AcuantContext);
@@ -80,10 +82,12 @@ function AcuantCamera({
     onOpened: () => {
       // Camera has opened
       console.log('onOpened');
+      onSelfieCaptureOpen();
     },
     onClosed: () => {
       // Camera has closed
       console.log('onClosed');
+      onSelfieCaptureClose();
     },
     onError: (error) => {
       // Error occurred. Camera permission not granted will
