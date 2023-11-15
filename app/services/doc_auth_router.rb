@@ -209,11 +209,18 @@ module DocAuthRouter
   def self.doc_auth_vendor(discriminator: nil, analytics: nil)
     case AbTests::DOC_AUTH_VENDOR.bucket(discriminator)
     when :alternate_vendor
-      IdentityConfig.store.doc_auth_vendor_randomize_alternate_vendor
+      vendor = IdentityConfig.store.doc_auth_vendor_randomize_alternate_vendor
     else
       analytics&.idv_doc_auth_randomizer_defaulted if discriminator.blank?
 
-      IdentityConfig.store.doc_auth_vendor
+      vendor = IdentityConfig.store.doc_auth_vendor
     end
+
+    # if vendor is not set to mock and selfie enabled use lexisnexis
+    if IdentityConfig.store.doc_auth_selfie_capture[:enabled] &&
+       vendor != Idp::Constants::Vendors::MOCK
+      vendor = Idp::Constants::Vendors::LEXIS_NEXIS
+    end
+    vendor
   end
 end

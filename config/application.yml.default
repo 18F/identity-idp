@@ -78,7 +78,7 @@ doc_auth_check_failed_image_resubmission_enabled: true
 doc_auth_client_glare_threshold: 50
 doc_auth_client_sharpness_threshold: 50
 doc_auth_s3_request_timeout: 5
-doc_auth_selfie_capture: '{"enabled": false, "required": false}'
+doc_auth_selfie_capture: '{"enabled": false}'
 doc_auth_error_dpi_threshold: 290
 doc_auth_error_glare_threshold: 40
 doc_auth_error_sharpness_threshold: 40
@@ -391,6 +391,7 @@ development:
   doc_auth_vendor_randomize_alternate_vendor: ''
   doc_auth_selfie_capture: '{"enabled": true, "required": false}'
   doc_auth_not_ready_section_enabled: true
+  doc_auth_selfie_capture: '{"enabled": true}'
   domain_name: localhost:3000
   enable_rate_limiting: false
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c

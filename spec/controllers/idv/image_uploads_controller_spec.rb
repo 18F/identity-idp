@@ -1010,7 +1010,7 @@ RSpec.describe Idv::ImageUploadsController do
     context 'when liveness checking enabled' do
       before do
         allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture).
-          and_return('{"enabled": true}')
+          and_return({ enabled: true })
       end
       let(:selfie_img) { DocAuthImageFixtures.selfie_image_multipart }
       it 'returns a successful response' do

@@ -35,7 +35,7 @@ module Idv
 
     def liveness_checking_enabled?
       # todo: use config item,  UI options and sp configuration(ial_context)
-      IdentityConfig.store.doc_auth_selfie_capture['enabled']
+      IdentityConfig.store.doc_auth_selfie_capture[:enabled]
     end
 
     def ial_context
