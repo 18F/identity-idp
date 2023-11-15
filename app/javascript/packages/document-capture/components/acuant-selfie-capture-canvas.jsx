@@ -3,30 +3,24 @@ import { getAssetPath } from '@18f/identity-assets';
 import { FullScreen } from '@18f/identity-components';
 import AcuantContext from '../context/acuant';
 
-function FullScreenLoadingSpinner({ fullScreenRef, onRequestClose, fullScreenLabel }) {
+function LoadingSpinner() {
   return (
-    <FullScreen ref={fullScreenRef} label={fullScreenLabel} onRequestClose={onRequestClose}>
-      <img
-        src={getAssetPath('loading-badge.gif')}
-        alt=""
-        width="144"
-        height="144"
-        className="acuant-capture-canvas__spinner"
-      />
-    </FullScreen>
+    <img
+      src={getAssetPath('loading-badge.gif')}
+      alt=""
+      width="144"
+      height="144"
+      className="acuant-capture-canvas__spinner"
+    />
   );
 }
 
 function AcuantSelfieCaptureCanvas({ fullScreenRef, onRequestClose, fullScreenLabel }) {
   const { isReady } = useContext(AcuantContext);
-  return !isReady ? (
-    <FullScreenLoadingSpinner
-      fullScreenRef={fullScreenRef}
-      onRequestClose={onRequestClose}
-      fullScreenLabel={fullScreenLabel}
-    />
-  ) : (
-    <div id="acuant-face-capture-container" />
+  return (
+    <FullScreen ref={fullScreenRef} label={fullScreenLabel} onRequestClose={onRequestClose}>
+      {!isReady ? <LoadingSpinner /> : <div id="acuant-face-capture-container" />}
+    </FullScreen>
   );
 }
 
