@@ -16,10 +16,16 @@ RSpec.describe PushNotification::AccountReinstatedEvent do
   end
 
   describe '#payload' do
-    it 'is a subject' do
-      expect(event.payload).to eq(
+    let(:iss_sub) { SecureRandom.uuid }
+
+    subject(:payload) { event.payload(iss_sub: iss_sub) }
+
+    it 'is a subject with the provided iss_sub ' do
+      expect(payload).to eq(
         subject: {
-          subject_type: 'account-suspension',
+          subject_type: 'iss-sub',
+          sub: iss_sub,
+          iss: root_url,
         },
       )
     end

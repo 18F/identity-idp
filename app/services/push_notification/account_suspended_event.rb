@@ -1,6 +1,6 @@
 module PushNotification
   class AccountSuspendedEvent
-    EVENT_TYPE = 'https://schemas.openid.net/secevent/risc/event-type/account-suspended'.freeze
+    EVENT_TYPE = 'https://schemas.openid.net/secevent/risc/event-type/account-disabled'.freeze
 
     attr_reader :user
 
@@ -12,11 +12,14 @@ module PushNotification
       EVENT_TYPE
     end
 
-    def payload(*)
+    def payload(iss_sub:)
       {
         subject: {
-          subject_type: 'account-suspension',
+          subject_type: 'iss-sub',
+          iss: Rails.application.routes.url_helpers.root_url,
+          sub: iss_sub,
         },
+        reason: 'account-suspension',
       }
     end
 

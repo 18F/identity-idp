@@ -1,6 +1,8 @@
 module PushNotification
   class AccountReinstatedEvent
-    EVENT_TYPE = 'https://schemas.openid.net/secevent/risc/event-type/account-reinstated'.freeze
+    include IssSubEvent
+
+    EVENT_TYPE = 'https://schemas.openid.net/secevent/risc/event-type/account-enabled'.freeze
 
     attr_reader :user
 
@@ -10,18 +12,6 @@ module PushNotification
 
     def event_type
       EVENT_TYPE
-    end
-
-    def payload(*)
-      {
-        subject: {
-          subject_type: 'account-suspension',
-        },
-      }
-    end
-
-    def ==(other)
-      self.class == other.class && user == other.user
     end
   end
 end
