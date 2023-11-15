@@ -5,7 +5,7 @@ module Idv
 
     validates_presence_of :front
     validates_presence_of :back
-    validates_presence_of :selfie, if: :liveness_checking_enabled?
+    validates_presence_of :selfie, if: :liveness_checking_required?
     validates_presence_of :document_capture_session
 
     validate :validate_images
@@ -52,6 +52,11 @@ module Idv
     def liveness_checking_enabled?
       # todo: use config item incorp UI options
       IdentityConfig.store.doc_auth_selfie_capture['enabled']
+    end
+
+    def liveness_checking_required?
+      # todo: use config item incorp UI options
+      IdentityConfig.store.doc_auth_selfie_capture['required']
     end
 
     private

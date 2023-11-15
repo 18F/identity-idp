@@ -10,7 +10,7 @@ module DocAuth
           uuid_prefix:,
           front_image:,
           back_image:,
-          selfie_image:,
+          selfie_image: nil,
           image_source: nil,
           liveness_checking_enabled: false
         )
@@ -32,7 +32,10 @@ module DocAuth
               DocumentType: 'DriversLicense',
             },
           }
-          document[:Document][:Selfie] = encode(selfie_image) if liveness_checking_enabled
+          if liveness_checking_enabled && !selfie_image.blank?
+            document[:Document][:Selfie] =
+              encode(selfie_image)
+          end
 
           settings.merge(document).to_json
         end
