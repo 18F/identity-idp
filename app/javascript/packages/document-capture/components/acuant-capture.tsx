@@ -1,5 +1,4 @@
 import { Button, FullScreen } from '@18f/identity-components';
-import { getAssetPath } from '@18f/identity-assets';
 import type { MouseEvent, ReactNode, Ref } from 'react';
 import {
   forwardRef,
@@ -17,6 +16,7 @@ import { useI18n } from '@18f/identity-react-i18n';
 import { removeUnloadProtection } from '@18f/identity-url';
 import AcuantCamera, { AcuantDocumentType } from './acuant-camera';
 import AcuantSelfieCamera from './acuant-selfie-camera';
+import AcuantSelfieCaptureCanvas from './acuant-selfie-capture-canvas';
 import type {
   AcuantCaptureFailureError,
   AcuantSuccessResponse,
@@ -657,7 +657,6 @@ function AcuantCapture(
             fullScreenRef={fullScreenRef}
             setIsCapturingEnvironment={setIsCapturingEnvironment}
           />
-          <div id="acuant-face-capture-container" />
         </AcuantSelfieCamera>
       )}
       <FileInput
@@ -709,37 +708,6 @@ function AcuantCapture(
           })}
       </div>
     </div>
-  );
-}
-
-// This loading spinner needs to disappear when isReady changes
-// Also, it needs to appear in a fullscreen (cancelable mode)
-function SelfieLoadingSpinner({ fullScreenRef, setIsCapturingEnvironment }) {
-  const { t } = useI18n();
-  return (
-    <FullScreen
-      ref={fullScreenRef}
-      label={t('doc_auth.accessible_labels.document_capture_dialog')}
-      onRequestClose={() => setIsCapturingEnvironment(false)}
-    >
-      <img
-        src={getAssetPath('loading-badge.gif')}
-        alt=""
-        width="144"
-        height="144"
-        className="acuant-capture-canvas__spinner"
-      />
-    </FullScreen>
-  );
-}
-function AcuantSelfieCaptureCanvas({ loading, fullScreenRef, setIsCapturingEnvironment }) {
-  return loading ? (
-    <SelfieLoadingSpinner
-      fullScreenRef={fullScreenRef}
-      setIsCapturingEnvironment={setIsCapturingEnvironment}
-    />
-  ) : (
-    <div id="acuant-face-capture-container" />
   );
 }
 
