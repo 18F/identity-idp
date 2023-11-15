@@ -655,7 +655,7 @@ function AcuantCapture(
           <AcuantSelfieCaptureCanvas
             loading={!isReady}
             fullScreenRef={fullScreenRef}
-            setIsCapturingEnvironment={setIsCapturingEnvironment}
+            onRequestClose={() => setIsCapturingEnvironment(false)}
           />
         </AcuantSelfieCamera>
       )}

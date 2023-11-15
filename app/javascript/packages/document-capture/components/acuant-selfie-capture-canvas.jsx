@@ -2,14 +2,14 @@ import { useI18n } from '@18f/identity-react-i18n';
 import { getAssetPath } from '@18f/identity-assets';
 import { FullScreen } from '@18f/identity-components';
 
-function FullScreenLoadingSpinner({ fullScreenRef, setIsCapturingEnvironment }) {
+function FullScreenLoadingSpinner({ fullScreenRef, onRequestClose }) {
   const { t } = useI18n();
 
   return (
     <FullScreen
       ref={fullScreenRef}
       label={t('doc_auth.accessible_labels.document_capture_dialog')}
-      onRequestClose={() => setIsCapturingEnvironment(false)}
+      onRequestClose={onRequestClose}
     >
       <img
         src={getAssetPath('loading-badge.gif')}
@@ -22,12 +22,9 @@ function FullScreenLoadingSpinner({ fullScreenRef, setIsCapturingEnvironment }) 
   );
 }
 
-function AcuantSelfieCaptureCanvas({ loading, fullScreenRef, setIsCapturingEnvironment }) {
+function AcuantSelfieCaptureCanvas({ loading, fullScreenRef, onRequestClose }) {
   return loading ? (
-    <FullScreenLoadingSpinner
-      fullScreenRef={fullScreenRef}
-      setIsCapturingEnvironment={setIsCapturingEnvironment}
-    />
+    <FullScreenLoadingSpinner fullScreenRef={fullScreenRef} onRequestClose={onRequestClose} />
   ) : (
     <div id="acuant-face-capture-container" />
   );
