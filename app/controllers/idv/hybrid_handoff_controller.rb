@@ -24,7 +24,7 @@ module Idv
     end
 
     def update
-      undo_steps_from!(step: :hybrid_handoff)
+      undo_steps_from_controller!
       irs_attempts_api_tracker.idv_document_upload_method_selected(
         upload_method: params[:type],
       )

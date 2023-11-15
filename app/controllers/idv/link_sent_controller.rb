@@ -20,7 +20,7 @@ module Idv
     end
 
     def update
-      undo_steps_from!(step: :link_sent)
+      undo_steps_from_controller!
       analytics.idv_doc_auth_link_sent_submitted(**analytics_arguments)
 
       return render_document_capture_cancelled if document_capture_session&.cancelled_at

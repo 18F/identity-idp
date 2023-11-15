@@ -21,7 +21,7 @@ module Idv
     end
 
     def update
-      undo_steps_from!(step: :agreement)
+      undo_steps_from_controller!
       skip_to_capture if params[:skip_hybrid_handoff]
 
       result = Idv::ConsentForm.new.submit(consent_form_params)

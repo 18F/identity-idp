@@ -166,7 +166,7 @@ RSpec.describe Idv::DocumentCaptureController do
     let(:result) { { success: true, errors: {} } }
 
     it 'invalidates future steps' do
-      expect(subject).to receive(:undo_steps_from!).with(step: :document_capture)
+      expect(subject).to receive(:undo_steps_from_controller!)
 
       put :update
     end

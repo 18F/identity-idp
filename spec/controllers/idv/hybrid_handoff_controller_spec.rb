@@ -221,7 +221,7 @@ RSpec.describe Idv::HybridHandoffController do
       let(:document_capture_session_uuid) { '09228b6d-dd39-4925-bf82-b69104095517' }
 
       it 'invalidates future steps' do
-        expect(subject).to receive(:undo_steps_from!).with(step: :hybrid_handoff)
+        expect(subject).to receive(:undo_steps_from_controller!)
 
         put :update, params: params
       end

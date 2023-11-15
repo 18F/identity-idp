@@ -18,14 +18,11 @@ module Idv
       steps[latest_step]
     end
 
-    def undo_steps_from!(step:)
-      return if step == :success
-
-      steps[step].undo_step.call(idv_session: idv_session, user: user)
-
-      steps[step].next_steps.each do |next_step|
-        undo_steps_from!(step: next_step)
-      end
+    def undo_steps_from_controller!(controller:)
+      controller_name = controller.ancestors.include?(ApplicationController) ?
+                        controller.controller_name : controller
+      key = controller_to_key(controller: controller_name)
+      undo_steps_from!(key: key)
     end
 
     private
@@ -63,6 +60,16 @@ module Idv
 
     def step_allowed?(key:)
       steps[key].preconditions.call(idv_session: idv_session, user: user)
+    end
+
+    def undo_steps_from!(key:)
+      return if key == :success
+
+      steps[key].undo_step.call(idv_session: idv_session, user: user)
+
+      steps[key].next_steps.each do |next_step|
+        undo_steps_from!(key: next_step)
+      end
     end
 
     def controller_to_key(controller:)
