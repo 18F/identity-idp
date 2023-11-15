@@ -16,6 +16,12 @@ RSpec.describe Idv::LinkSentController do
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 
+  describe '#step_info' do
+    it 'returns a valid StepInfo object' do
+      expect(Idv::LinkSentController.step_info).to be_valid
+    end
+  end
+
   describe 'before_actions' do
     it 'includes authentication before_action' do
       expect(subject).to have_actions(
@@ -73,6 +79,8 @@ RSpec.describe Idv::LinkSentController do
     context '#confirm_hybrid_handoff_complete' do
       context 'no flow_path' do
         it 'redirects to idv_hybrid_handoff_url' do
+          subject.idv_session.welcome_visited = true
+          subject.idv_session.idv_consent_given = true
           subject.idv_session.flow_path = nil
 
           get :show
@@ -83,6 +91,8 @@ RSpec.describe Idv::LinkSentController do
 
       context 'flow_path is standard' do
         it 'redirects to idv_document_capture_url' do
+          subject.idv_session.welcome_visited = true
+          subject.idv_session.idv_consent_given = true
           subject.idv_session.flow_path = 'standard'
 
           get :show
@@ -111,6 +121,12 @@ RSpec.describe Idv::LinkSentController do
         irs_reproofing: false,
         step: 'link_sent',
       }.merge(ab_test_args)
+    end
+
+    it 'invalidates future steps' do
+      expect(subject).to receive(:clear_invalid_steps!)
+
+      put :update
     end
 
     it 'sends analytics_submitted event' do

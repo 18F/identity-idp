@@ -24,6 +24,14 @@ RSpec.feature 'hybrid_handoff step send link and errors' do
       complete_doc_auth_steps_before_hybrid_handoff_step
     end
 
+    it 'has the forms with the expected aria attributes' do
+      mobile_form = find('#form-to-submit-photos-through-mobile')
+      desktop_form = find('#form-to-submit-photos-through-desktop')
+
+      expect(mobile_form).to have_name(t('forms.buttons.send_link'))
+      expect(desktop_form).to have_name(t('forms.buttons.upload_photos'))
+    end
+
     it 'proceeds to link sent page when user chooses to use phone' do
       expect(fake_attempts_tracker).to receive(
         :idv_document_upload_method_selected,
@@ -180,8 +188,7 @@ RSpec.feature 'hybrid_handoff step send link and errors' do
 
     context 'PhoneQuestion page' do
       before do
-        allow_any_instance_of(Idv::HybridHandoffController).
-          to receive(:phone_question_ab_test_bucket).and_return(:show_phone_question)
+        allow(AbTests::IDV_PHONE_QUESTION).to receive(:bucket).and_return(:show_phone_question)
       end
 
       it 'rate limits sending the link' do

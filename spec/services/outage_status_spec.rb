@@ -124,6 +124,38 @@ RSpec.describe OutageStatus do
     end
   end
 
+  describe '#idv_scheduled_maintenance_status' do
+    let(:start) { '2023-01-01T00:00:00Z' }
+    let(:finish) { '2023-01-01T23:59:59Z' }
+
+    subject(:status) { vendor_status.idv_scheduled_maintenance_status }
+
+    before do
+      allow(IdentityConfig.store).to receive(:vendor_status_idv_scheduled_maintenance_start).
+        and_return(start)
+      allow(IdentityConfig.store).to receive(:vendor_status_idv_scheduled_maintenance_finish).
+        and_return(finish)
+
+      travel_to(now)
+    end
+
+    context 'outside of a scheduled maintenance window' do
+      let(:now) { Time.zone.parse('2023-03-01T00:00:00Z') }
+
+      it { is_expected.to eq(:operational) }
+    end
+
+    context 'inside of a scheduled maintenance window' do
+      let(:now) { Time.zone.parse('2023-01-01T12:00:00Z') }
+
+      it { is_expected.to eq(:full_outage) }
+
+      it 'is reported as an IDV outage' do
+        expect(vendor_status.any_idv_vendor_outage?).to eq(true)
+      end
+    end
+  end
+
   describe '#outage_message' do
     subject(:outage_message) { vendor_status.outage_message }
 

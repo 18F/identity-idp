@@ -136,7 +136,7 @@ module InPersonHelper
   end
 
   def complete_verify_step(_user = nil)
-    click_idv_continue
+    click_idv_submit_default
   end
 
   def complete_all_in_person_proofing_steps(user = user_with_2fa, same_address_as_id: true)

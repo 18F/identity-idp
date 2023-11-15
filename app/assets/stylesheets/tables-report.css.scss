@@ -1,8 +1,17 @@
 @forward 'uswds-core';
 @forward 'usa-prose';
 @forward 'usa-table';
+@forward 'usa-alert';
 
 .table-number {
   font-variant-numeric: tabular-nums;
   text-align: right;
+}
+
+.usa-alert.usa-alert--info.usa-alert--email {
+  .usa-alert__body {
+    &:before {
+      background-image: url('email/info.png');
+    }
+  }
 }

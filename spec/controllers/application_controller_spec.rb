@@ -167,26 +167,69 @@ RSpec.describe ApplicationController do
   end
 
   describe '#append_info_to_payload' do
-    let(:payload) { {} }
+    let(:payload_controller) { 'Users::SessionsController' }
+    let(:action) { 'new' }
+    let(:payload) { { controller: payload_controller, action: } }
     let(:user) { create(:user) }
+    let(:git_sha) { 'example_sha' }
+    let(:git_branch) { 'example_branch' }
 
     before do
       allow(controller).to receive(:analytics_user).and_return(user)
+      stub_const('IdentityConfig::GIT_SHA', git_sha)
+      stub_const('IdentityConfig::GIT_BRANCH', git_branch)
     end
 
     it 'adds user_uuid and git metadata to the lograge output' do
-      stub_const(
-        'IdentityConfig::GIT_BRANCH',
-        'my branch',
-      )
-
       controller.append_info_to_payload(payload)
 
       expect(payload).to eq(
-        user_id: user.uuid,
-        git_sha: IdentityConfig::GIT_SHA,
-        git_branch: IdentityConfig::GIT_BRANCH,
+        controller: payload_controller, action:, user_id: user.uuid, git_sha:, git_branch:,
       )
+    end
+
+    describe 'lograge ignored actions' do
+      let(:ignore_actions) {}
+
+      before do
+        allow(Lograge.lograge_config).to receive(:ignore_actions).and_return(ignore_actions)
+      end
+
+      context 'without configured ignored actions' do
+        let(:ignore_actions) { nil }
+
+        it 'adds metadata to the lograge output' do
+          controller.append_info_to_payload(payload)
+
+          expect(payload).to eq(
+            controller: payload_controller, action:, user_id: user.uuid, git_sha:, git_branch:,
+          )
+        end
+      end
+
+      context 'with configured ignored actions' do
+        let(:ignore_actions) { ['Users::SessionsController#update'] }
+
+        context 'for a payload that should not be ignored' do
+          it 'adds metadata to the lograge output' do
+            controller.append_info_to_payload(payload)
+
+            expect(payload).to eq(
+              controller: payload_controller, action:, user_id: user.uuid, git_sha:, git_branch:,
+            )
+          end
+        end
+
+        context 'with a payload that should be ignored' do
+          let(:action) { 'update' }
+
+          it 'does not add metadata to the lograge output' do
+            controller.append_info_to_payload(payload)
+
+            expect(payload).to eq(controller: payload_controller, action:)
+          end
+        end
+      end
     end
   end
 

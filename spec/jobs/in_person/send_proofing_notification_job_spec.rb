@@ -12,6 +12,7 @@ RSpec.describe InPerson::SendProofingNotificationJob do
       :passed,
       :with_notification_phone_configuration,
       proofed_at: Time.zone.now - 3.days,
+      enrollment_code: '1234567890123456',
     )
   end
   let(:failing_enrollment) do
@@ -145,28 +146,76 @@ RSpec.describe InPerson::SendProofingNotificationJob do
           end
         end
 
-        it 'sends a message that respects the user email locale preference' do
-          allow(Telephony).to receive(:send_notification).and_return(sms_success_response)
+        context 'sends a message that respects the user email locale preference' do
+          let(:proofed_date) { Time.zone.now.strftime('%m/%d/%Y') }
+          let(:phone_number) { passed_enrollment.notification_phone_configuration.formatted_phone }
+          let(:contact_number) { '(844) 555-5555' }
+          let(:reference_string) { passed_enrollment.enrollment_code }
+          let(:formatted_string) { '1234-5678-9012-3456' }
 
-          passed_enrollment.user.update!(email_language: 'fr')
-          passed_enrollment.update!(proofed_at: Time.zone.now)
-          proofed_date = Time.zone.now.strftime('%m/%d/%Y')
-          phone_number = passed_enrollment.notification_phone_configuration.formatted_phone
-          contact_number = '(844) 555-5555'
+          before do
+            allow(Telephony).to receive(:send_notification).and_return(sms_success_response)
+            allow(Idv::InPerson::EnrollmentCodeFormatter).to receive(:format).
+              and_return(formatted_string)
+          end
 
-          expect(Telephony).
-            to(
-              receive(:send_notification).
-              with(
-                to: phone_number,
-                message: "Login.gov: Vous avez visité le bureau de poste le #{proofed_date}." \
-                         " Vérifiez votre e-mail pour votre résultat. Ce n'est pas vous?" \
-                          " Signalez-le immédiatement: #{contact_number}",
-                country_code: Phonelib.parse(phone_number).country,
-              ),
-            )
+          it 'handles English language preference' do
+            passed_enrollment.user.update!(email_language: 'en')
+            passed_enrollment.update!(proofed_at: Time.zone.now)
 
-          job.perform(passed_enrollment.id)
+            expect(Telephony).
+              to(
+                receive(:send_notification).
+                  with(
+                    to: phone_number,
+                    message: "Login.gov: You visited the Post Office on #{proofed_date}." \
+                      " Check email for your result." \
+                      " Not you? Report this right away: #{contact_number}." \
+                      " Ref: #{formatted_string}",
+                    country_code: Phonelib.parse(phone_number).country,
+                  ),
+              )
+
+            job.perform(passed_enrollment.id)
+          end
+
+          it 'handles French language preference' do
+            passed_enrollment.user.update!(email_language: 'fr')
+            passed_enrollment.update!(proofed_at: Time.zone.now)
+
+            expect(Telephony).
+              to(
+                receive(:send_notification).
+                  with(
+                    to: phone_number,
+                    message: "Login.gov: Vous avez visité le bureau de poste le #{proofed_date}." \
+                      " Vérifiez votre e-mail. Ce n'est pas vous? Signalez-le: #{contact_number}." \
+                      " Réf: #{formatted_string}",
+                    country_code: Phonelib.parse(phone_number).country,
+                  ),
+              )
+
+            job.perform(passed_enrollment.id)
+          end
+
+          it 'handles Spanish language preference' do
+            passed_enrollment.user.update!(email_language: 'es')
+            passed_enrollment.update!(proofed_at: Time.zone.now)
+
+            expect(Telephony).
+              to(
+                receive(:send_notification).
+                  with(
+                    to: phone_number,
+                    message: "Login.gov: Visitó la oficina de correos el #{proofed_date}." \
+                      " Revise su correo electrónico. ¿No fue usted? Llame: #{contact_number}." \
+                      " Ref: #{formatted_string}",
+                    country_code: Phonelib.parse(phone_number).country,
+                  ),
+              )
+
+            job.perform(passed_enrollment.id)
+          end
         end
       end
 

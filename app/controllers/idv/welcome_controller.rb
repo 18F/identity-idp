@@ -23,6 +23,7 @@ module Idv
     end
 
     def update
+      clear_invalid_steps!
       analytics.idv_doc_auth_welcome_submitted(**analytics_arguments)
 
       create_document_capture_session
@@ -31,6 +32,16 @@ module Idv
       idv_session.welcome_visited = true
 
       redirect_to idv_agreement_url
+    end
+
+    def self.step_info
+      Idv::StepInfo.new(
+        key: :welcome,
+        controller: controller_name,
+        next_steps: [:agreement],
+        preconditions: ->(idv_session:, user:) { true },
+        undo_step: ->(idv_session:, user:) { idv_session.welcome_visited = nil },
+      )
     end
 
     private

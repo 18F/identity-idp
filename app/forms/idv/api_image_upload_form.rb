@@ -111,14 +111,25 @@ module Idv
         attention_with_barcode: client_response.attention_with_barcode?,
       ).submit
       response.extra.merge!(extra_attributes)
+      side_classification = doc_side_classification(client_response)
+      response_with_classification =
+        response.to_h.merge(side_classification)
 
-      analytics.idv_doc_auth_submitted_pii_validation(**response.to_h)
+      analytics.idv_doc_auth_submitted_pii_validation(**response_with_classification)
 
       if client_response.success? && response.success?
         store_pii(client_response)
       end
 
       response
+    end
+
+    def doc_side_classification(client_response)
+      side_info = {}.merge(client_response&.extra&.[](:classification_info) || {})
+      side_info.transform_keys(&:downcase).symbolize_keys
+      {
+        classification_info: side_info,
+      }
     end
 
     def extra_attributes
@@ -128,8 +139,9 @@ module Idv
         attempts: attempts,
         remaining_attempts: remaining_attempts,
         user_id: user_uuid,
-        pii_like_keypaths: [[:pii]],
+        pii_like_keypaths: DocPiiForm.pii_like_keypaths,
         flow_path: params[:flow_path],
+        phone_with_camera: phone_with_camera,
       }
 
       @extra_attributes[:front_image_fingerprint] = front_image_fingerprint
@@ -289,8 +301,10 @@ module Idv
           client_image_metrics: image_metadata,
           async: false,
           flow_path: params[:flow_path],
+          phone_with_camera: phone_with_camera,
           vendor_request_time_in_ms: vendor_request_time_in_ms,
-        ).merge(acuant_sdk_upgrade_ab_test_data).
+        ).except(:classification_info).
+        merge(acuant_sdk_upgrade_ab_test_data).
         merge(getting_started_ab_test_analytics_bucket).
         merge(phone_question_ab_test_analytics_bucket),
       )
@@ -460,6 +474,15 @@ module Idv
 
     def image_resubmission_check?
       IdentityConfig.store.doc_auth_check_failed_image_resubmission_enabled
+    end
+
+    def phone_with_camera
+      case params[:phone_with_camera]
+      when 'true'
+        true
+      when 'false'
+        false
+      end
     end
   end
 end

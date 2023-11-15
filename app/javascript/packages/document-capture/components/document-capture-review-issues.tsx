@@ -1,3 +1,4 @@
+import { useContext } from 'react';
 import { PageHeading } from '@18f/identity-components';
 import {
   FormStepError,
@@ -10,6 +11,8 @@ import { useI18n } from '@18f/identity-react-i18n';
 import UnknownError from './unknown-error';
 import TipList from './tip-list';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
+import DocumentCaptureNotReady from './document-capture-not-ready';
+import { FeatureFlagContext } from '../context';
 import DocumentCaptureAbandon from './document-capture-abandon';
 
 interface DocumentCaptureReviewIssuesProps {
@@ -44,6 +47,7 @@ function DocumentCaptureReviewIssues({
   hasDismissed,
 }: DocumentCaptureReviewIssuesProps) {
   const { t } = useI18n();
+  const { notReadySectionEnabled, exitQuestionSectionEnabled } = useContext(FeatureFlagContext);
   return (
     <>
       <PageHeading>{t('doc_auth.headings.review_issues')}</PageHeading>
@@ -79,7 +83,8 @@ function DocumentCaptureReviewIssues({
         />
       ))}
       <FormStepsButton.Submit />
-      <DocumentCaptureAbandon />
+      {notReadySectionEnabled && <DocumentCaptureNotReady />}
+      {exitQuestionSectionEnabled && <DocumentCaptureAbandon />}
       <Cancel />
     </>
   );

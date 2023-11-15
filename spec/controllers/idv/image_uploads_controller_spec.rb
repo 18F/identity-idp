@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Idv::ImageUploadsController do
+  include DocPiiHelper
+
   let(:document_filename_regex) { /^[a-f0-9]{8}-([a-f0-9]{4}-){3}[a-f0-9]{12}\.[a-z]+$/ }
   let(:base64_regex) { /^[a-z0-9+\/]+=*$/i }
 
@@ -65,7 +67,7 @@ RSpec.describe Idv::ImageUploadsController do
           user_id: user.uuid,
           attempts: 1,
           remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
-          pii_like_keypaths: [[:pii]],
+          pii_like_keypaths: pii_like_keypaths,
           flow_path: 'standard',
         ).exactly(0).times
 
@@ -126,12 +128,13 @@ RSpec.describe Idv::ImageUploadsController do
           user_id: user.uuid,
           attempts: 1,
           remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
-          pii_like_keypaths: [[:pii]],
+          pii_like_keypaths: pii_like_keypaths,
           flow_path: 'standard',
           front_image_fingerprint: nil,
           back_image_fingerprint: an_instance_of(String),
           getting_started_ab_test_bucket: :welcome_default,
           phone_question_ab_test_bucket: :bypass_phone_question,
+          phone_with_camera: nil,
         )
 
         expect(@irs_attempts_api_tracker).to receive(:track_event).with(
@@ -263,12 +266,13 @@ RSpec.describe Idv::ImageUploadsController do
           user_id: user.uuid,
           attempts: IdentityConfig.store.doc_auth_max_attempts,
           remaining_attempts: 0,
-          pii_like_keypaths: [[:pii]],
+          pii_like_keypaths: pii_like_keypaths,
           flow_path: 'standard',
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
           getting_started_ab_test_bucket: :welcome_default,
           phone_question_ab_test_bucket: :bypass_phone_question,
+          phone_with_camera: nil,
         )
 
         expect(@irs_attempts_api_tracker).to receive(:track_event).with(
@@ -366,12 +370,13 @@ RSpec.describe Idv::ImageUploadsController do
           user_id: user.uuid,
           attempts: 1,
           remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
-          pii_like_keypaths: [[:pii]],
+          pii_like_keypaths: pii_like_keypaths,
           flow_path: 'standard',
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
           getting_started_ab_test_bucket: :welcome_default,
           phone_question_ab_test_bucket: :bypass_phone_question,
+          phone_with_camera: nil,
         )
 
         expect(@analytics).to receive(:track_event).with(
@@ -392,13 +397,14 @@ RSpec.describe Idv::ImageUploadsController do
             front: { glare: 99.99 },
             back: { glare: 99.99 },
           },
-          pii_like_keypaths: [[:pii]],
+          pii_like_keypaths: pii_like_keypaths,
           flow_path: 'standard',
           vendor_request_time_in_ms: a_kind_of(Float),
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
           getting_started_ab_test_bucket: :welcome_default,
           phone_question_ab_test_bucket: :bypass_phone_question,
+          phone_with_camera: nil,
           doc_type_supported: boolean,
         )
 
@@ -410,12 +416,14 @@ RSpec.describe Idv::ImageUploadsController do
           user_id: user.uuid,
           attempts: 1,
           remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
-          pii_like_keypaths: [[:pii]],
+          pii_like_keypaths: pii_like_keypaths,
           flow_path: 'standard',
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
           getting_started_ab_test_bucket: :welcome_default,
           phone_question_ab_test_bucket: :bypass_phone_question,
+          phone_with_camera: nil,
+          classification_info: a_kind_of(Hash),
         )
 
         expect(@irs_attempts_api_tracker).to receive(:track_event).with(
@@ -468,6 +476,10 @@ RSpec.describe Idv::ImageUploadsController do
         let(:state) { 'ND' }
         let(:state_id_type) { 'drivers_license' }
         let(:dob) { '10/06/1938' }
+        let(:jurisdiction) { 'ND' }
+        let(:zipcode) { '12345' }
+        let(:country_code) { 'USA' }
+        let(:class_name) { 'Identification Card' }
 
         before do
           DocAuth::Mock::DocAuthMockClient.mock_response!(
@@ -475,7 +487,20 @@ RSpec.describe Idv::ImageUploadsController do
             response: DocAuth::Response.new(
               success: true,
               errors: {},
-              extra: { doc_auth_result: 'Passed', billed: true },
+              extra: {
+                doc_auth_result: 'Passed',
+                billed: true,
+                classification_info: {
+                  Front: {
+                    CountryCode: country_code,
+                    ClassName: class_name,
+                  },
+                  Back: {
+                    CountryCode: country_code,
+                    ClassName: class_name,
+                  },
+                },
+              },
               pii_from_doc: {
                 first_name: first_name,
                 last_name: last_name,
@@ -483,6 +508,8 @@ RSpec.describe Idv::ImageUploadsController do
                 state: state,
                 state_id_type: state_id_type,
                 dob: dob,
+                state_id_jurisdiction: jurisdiction,
+                zipcode: zipcode,
               },
             ),
           )
@@ -498,7 +525,7 @@ RSpec.describe Idv::ImageUploadsController do
             expect(@irs_attempts_api_tracker).to receive(:track_event).with(
               :idv_document_upload_submitted,
               success: false,
-              failure_reason: { pii:
+              failure_reason: { name:
                 ['We couldn’t read the full name on your ID. Try taking new pictures.'] },
               document_state: 'ND',
               document_number: nil,
@@ -531,12 +558,13 @@ RSpec.describe Idv::ImageUploadsController do
               user_id: user.uuid,
               attempts: 1,
               remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
-              pii_like_keypaths: [[:pii]],
+              pii_like_keypaths: pii_like_keypaths,
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
               getting_started_ab_test_bucket: :welcome_default,
               phone_question_ab_test_bucket: :bypass_phone_question,
+              phone_with_camera: nil,
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -557,13 +585,14 @@ RSpec.describe Idv::ImageUploadsController do
                 front: { glare: 99.99 },
                 back: { glare: 99.99 },
               },
-              pii_like_keypaths: [[:pii]],
+              pii_like_keypaths: pii_like_keypaths,
               flow_path: 'standard',
               vendor_request_time_in_ms: a_kind_of(Float),
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
               getting_started_ab_test_bucket: :welcome_default,
               phone_question_ab_test_bucket: :bypass_phone_question,
+              phone_with_camera: nil,
               doc_type_supported: boolean,
             )
 
@@ -571,27 +600,32 @@ RSpec.describe Idv::ImageUploadsController do
               'IdV: doc auth image upload vendor pii validation',
               success: false,
               errors: {
-                pii: [I18n.t('doc_auth.errors.alerts.full_name_check')],
+                name: [I18n.t('doc_auth.errors.alerts.full_name_check')],
               },
               error_details: {
-                pii: [I18n.t('doc_auth.errors.alerts.full_name_check')],
+                name: [I18n.t('doc_auth.errors.alerts.full_name_check')],
               },
               attention_with_barcode: false,
               user_id: user.uuid,
               attempts: 1,
               remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
-              pii_like_keypaths: [[:pii]],
+              pii_like_keypaths: pii_like_keypaths,
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
               getting_started_ab_test_bucket: :welcome_default,
               phone_question_ab_test_bucket: :bypass_phone_question,
+              phone_with_camera: nil,
+              classification_info: hash_including(
+                Front: hash_including(ClassName: 'Identification Card', CountryCode: 'USA'),
+                Back: hash_including(ClassName: 'Identification Card', CountryCode: 'USA'),
+              ),
             )
 
             expect(@irs_attempts_api_tracker).to receive(:track_event).with(
               :idv_document_upload_submitted,
               success: false,
-              failure_reason: { pii:
+              failure_reason: { name:
                 ['We couldn’t read the full name on your ID. Try taking new pictures.'] },
               document_state: 'ND',
               document_number: nil,
@@ -624,12 +658,13 @@ RSpec.describe Idv::ImageUploadsController do
               user_id: user.uuid,
               attempts: 1,
               remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
-              pii_like_keypaths: [[:pii]],
+              pii_like_keypaths: pii_like_keypaths,
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
               getting_started_ab_test_bucket: :welcome_default,
               phone_question_ab_test_bucket: :bypass_phone_question,
+              phone_with_camera: nil,
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -650,13 +685,14 @@ RSpec.describe Idv::ImageUploadsController do
                 front: { glare: 99.99 },
                 back: { glare: 99.99 },
               },
-              pii_like_keypaths: [[:pii]],
+              pii_like_keypaths: pii_like_keypaths,
               flow_path: 'standard',
               vendor_request_time_in_ms: a_kind_of(Float),
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
               getting_started_ab_test_bucket: :welcome_default,
               phone_question_ab_test_bucket: :bypass_phone_question,
+              phone_with_camera: nil,
               doc_type_supported: boolean,
             )
 
@@ -664,27 +700,32 @@ RSpec.describe Idv::ImageUploadsController do
               'IdV: doc auth image upload vendor pii validation',
               success: false,
               errors: {
-                pii: [I18n.t('doc_auth.errors.general.no_liveness')],
+                state: [I18n.t('doc_auth.errors.general.no_liveness')],
               },
               error_details: {
-                pii: [I18n.t('doc_auth.errors.general.no_liveness')],
+                state: [:wrong_length],
               },
               attention_with_barcode: false,
               user_id: user.uuid,
               attempts: 1,
               remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
-              pii_like_keypaths: [[:pii]],
+              pii_like_keypaths: pii_like_keypaths,
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
               getting_started_ab_test_bucket: :welcome_default,
               phone_question_ab_test_bucket: :bypass_phone_question,
+              phone_with_camera: nil,
+              classification_info: hash_including(
+                Front: hash_including(ClassName: 'Identification Card', CountryCode: 'USA'),
+                Back: hash_including(ClassName: 'Identification Card', CountryCode: 'USA'),
+              ),
             )
 
             expect(@irs_attempts_api_tracker).to receive(:track_event).with(
               :idv_document_upload_submitted,
               success: false,
-              failure_reason: { pii:
+              failure_reason: { state:
                 ['Try taking new pictures.'] },
               document_state: 'Maryland',
               document_number: nil,
@@ -717,12 +758,13 @@ RSpec.describe Idv::ImageUploadsController do
               user_id: user.uuid,
               attempts: 1,
               remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
-              pii_like_keypaths: [[:pii]],
+              pii_like_keypaths: pii_like_keypaths,
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
               getting_started_ab_test_bucket: :welcome_default,
               phone_question_ab_test_bucket: :bypass_phone_question,
+              phone_with_camera: nil,
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -743,13 +785,14 @@ RSpec.describe Idv::ImageUploadsController do
                 front: { glare: 99.99 },
                 back: { glare: 99.99 },
               },
-              pii_like_keypaths: [[:pii]],
+              pii_like_keypaths: pii_like_keypaths,
               flow_path: 'standard',
               vendor_request_time_in_ms: a_kind_of(Float),
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
               getting_started_ab_test_bucket: :welcome_default,
               phone_question_ab_test_bucket: :bypass_phone_question,
+              phone_with_camera: nil,
               doc_type_supported: boolean,
             )
 
@@ -757,27 +800,29 @@ RSpec.describe Idv::ImageUploadsController do
               'IdV: doc auth image upload vendor pii validation',
               success: false,
               errors: {
-                pii: [I18n.t('doc_auth.errors.alerts.birth_date_checks')],
+                dob: [I18n.t('doc_auth.errors.alerts.birth_date_checks')],
               },
               error_details: {
-                pii: [I18n.t('doc_auth.errors.alerts.birth_date_checks')],
+                dob: [I18n.t('doc_auth.errors.alerts.birth_date_checks')],
               },
               attention_with_barcode: false,
               user_id: user.uuid,
               attempts: 1,
               remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
-              pii_like_keypaths: [[:pii]],
+              pii_like_keypaths: pii_like_keypaths,
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
               getting_started_ab_test_bucket: :welcome_default,
               phone_question_ab_test_bucket: :bypass_phone_question,
+              phone_with_camera: nil,
+              classification_info: hash_including(:Front, :Back),
             )
 
             expect(@irs_attempts_api_tracker).to receive(:track_event).with(
               :idv_document_upload_submitted,
               success: false,
-              failure_reason: { pii:
+              failure_reason: { dob:
                 ['We couldn’t read the birth date on your ID. Try taking new pictures.'] },
               document_back_image_filename: nil,
               document_front_image_filename: nil,
@@ -833,12 +878,13 @@ RSpec.describe Idv::ImageUploadsController do
           user_id: user.uuid,
           attempts: 1,
           remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
-          pii_like_keypaths: [[:pii]],
+          pii_like_keypaths: pii_like_keypaths,
           flow_path: 'standard',
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
           getting_started_ab_test_bucket: :welcome_default,
           phone_question_ab_test_bucket: :bypass_phone_question,
+          phone_with_camera: nil,
         )
 
         expect(@analytics).to receive(:track_event).with(
@@ -861,13 +907,14 @@ RSpec.describe Idv::ImageUploadsController do
             back: { glare: 99.99 },
           },
           doc_auth_result: nil,
-          pii_like_keypaths: [[:pii]],
+          pii_like_keypaths: pii_like_keypaths,
           flow_path: 'standard',
           vendor_request_time_in_ms: a_kind_of(Float),
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
           getting_started_ab_test_bucket: :welcome_default,
           phone_question_ab_test_bucket: :bypass_phone_question,
+          phone_with_camera: nil,
           doc_type_supported: boolean,
         )
 
@@ -905,12 +952,13 @@ RSpec.describe Idv::ImageUploadsController do
           user_id: user.uuid,
           attempts: 1,
           remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
-          pii_like_keypaths: [[:pii]],
+          pii_like_keypaths: pii_like_keypaths,
           flow_path: 'standard',
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
           getting_started_ab_test_bucket: :welcome_default,
           phone_question_ab_test_bucket: :bypass_phone_question,
+          phone_with_camera: nil,
         )
 
         expect(@analytics).to receive(:track_event).with(
@@ -935,13 +983,14 @@ RSpec.describe Idv::ImageUploadsController do
             front: { glare: 99.99 },
             back: { glare: 99.99 },
           },
-          pii_like_keypaths: [[:pii]],
+          pii_like_keypaths: pii_like_keypaths,
           flow_path: 'standard',
           vendor_request_time_in_ms: a_kind_of(Float),
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
           getting_started_ab_test_bucket: :welcome_default,
           phone_question_ab_test_bucket: :bypass_phone_question,
+          phone_with_camera: nil,
           doc_type_supported: boolean,
         )
 
@@ -962,7 +1011,7 @@ RSpec.describe Idv::ImageUploadsController do
         expect(json[:remaining_attempts]).to be_a_kind_of(Numeric)
         expect(json[:errors]).to eq [
           {
-            field: 'pii',
+            field: 'dob',
             message: I18n.t('doc_auth.errors.alerts.birth_date_checks'),
           },
         ]

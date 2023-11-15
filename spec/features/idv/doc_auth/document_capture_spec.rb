@@ -9,10 +9,15 @@ RSpec.feature 'document capture step', :js do
   let(:user) { user_with_2fa }
   let(:fake_analytics) { FakeAnalytics.new }
   let(:sp_name) { 'Test SP' }
+  let(:enable_not_ready) { true }
+  let(:enable_exit_question) { true }
   before do
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
     allow_any_instance_of(ServiceProviderSession).to receive(:sp_name).and_return(sp_name)
-
+    allow(IdentityConfig.store).to receive(:doc_auth_not_ready_section_enabled).
+      and_return(enable_not_ready)
+    allow(IdentityConfig.store).to receive(:doc_auth_exit_question_section_enabled).
+      and_return(enable_exit_question)
     visit_idp_from_oidc_sp_with_ial2
 
     sign_in_and_2fa_user(user)
@@ -144,9 +149,20 @@ RSpec.feature 'document capture step', :js do
       click_submit_exit_button
       expect(fake_analytics).to have_logged_event(
         'Frontend: IdV: exit optional questions',
-        hash_including('ids'),
+        hash_including(:ids),
       )
       expect(current_url).to start_with('http://localhost:7654/auth/result?error=access_denied')
+    end
+
+    context 'not ready section' do
+      it 'renders not ready section when enabled' do
+        expect(page).to have_content(
+          I18n.t(
+            'doc_auth.not_ready.content_sp', sp_name: sp_name,
+                                             app_name: APP_NAME
+          ),
+        )
+      end
     end
   end
 
@@ -174,16 +190,6 @@ RSpec.feature 'document capture step', :js do
         expect(page).to have_current_path(idv_phone_url)
         visit(idv_document_capture_url)
         expect(page).to have_current_path(idv_phone_url)
-      end
-    end
-
-    it 'return to sp when click on exit link', :js do
-      perform_in_browser(:mobile) do
-        visit_idp_from_oidc_sp_with_ial2
-        sign_in_and_2fa_user(user)
-        complete_doc_auth_steps_before_document_capture_step
-        click_sp_exit_link(sp_name: sp_name)
-        expect(current_url).to start_with('http://localhost:7654/auth/result?error=access_denied')
       end
     end
   end

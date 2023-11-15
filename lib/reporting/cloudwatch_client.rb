@@ -53,6 +53,7 @@ module Reporting
     #   @return [nil]
     def fetch(query:, from: nil, to: nil, time_slices: nil)
       results = Concurrent::Array.new if !block_given?
+      errors = Concurrent::Array.new
       each_result_queue = Queue.new if block_given?
       in_progress = Concurrent::Hash.new(0)
 
@@ -67,6 +68,7 @@ module Reporting
       end
 
       if show_progress?
+        @progress_bar_mutex = Mutex.new
         @progress_bar = ProgressBar.create(
           starting_at: 0,
           total: queue.size,
@@ -86,7 +88,7 @@ module Reporting
             end_time = range.end.to_i
 
             response = fetch_one(query:, start_time:, end_time:)
-            @progress_bar&.increment
+            with_progress_bar(&:increment)
 
             if ensure_complete_logs? && has_more_results?(response.results.size)
               log(:info, "more results, bisecting: start_time=#{start_time} end_time=#{end_time}")
@@ -95,7 +97,7 @@ module Reporting
               # -1 for current work finishing, +2 for new threads enqueued
               in_progress[range_id] += 1
 
-              @progress_bar&.total += 2
+              with_progress_bar { |progress_bar| progress_bar.total += 2 }
 
               queue << [(start_time..(mid - 1)), range_id]
               queue << [(mid..end_time), range_id]
@@ -116,8 +118,12 @@ module Reporting
           log(:debug, "thread done thread_idx=#{thread_idx}")
 
           nil
+        rescue => err
+          errors << err
+          queue.clear
+          in_progress.clear
         end.tap do |thread|
-          thread.abort_on_exception = true
+          thread.report_on_exception = false
         end
       end
       # rubocop:enable Metrics/BlockLength
@@ -127,11 +133,13 @@ module Reporting
           while (row = each_result_queue.pop)
             yield row
           end
+        end.tap do |thread|
+          thread.report_on_exception = false
         end
       end
 
       until (num_in_progress = in_progress.sum(&:last)).zero?
-        @progress_bar&.refresh
+        with_progress_bar(&:refresh)
         log(:debug, "waiting, num_in_progress=#{num_in_progress}, queue_size=#{queue.size}")
         sleep wait_duration
       end
@@ -141,9 +149,13 @@ module Reporting
       each_result_queue&.close
       result_thread&.value
 
-      @progress_bar&.finish
+      with_progress_bar(&:finish)
 
-      results
+      if errors.blank?
+        results
+      else
+        raise errors.first
+      end
     ensure
       threads&.each(&:kill)
     end
@@ -163,16 +175,19 @@ module Reporting
       ).query_id
 
       wait_for_query_result(query_id)
-    rescue Aws::CloudWatchLogs::Errors::InvalidParameterException => err
-      if err.message.match?(/End time should not be before the service was generally available/)
-        # rubocop:disable Layout/LineLength, Rails/TimeZone
+    # rubocop:disable Layout/LineLength, Rails/TimeZone
+    rescue Aws::CloudWatchLogs::Errors::InvalidParameterException, Aws::CloudWatchLogs::Errors::MalformedQueryException => err
+      if err.message.include?('End time should not be before the service was generally available')
         log(:warn, "query end_time=#{end_time} (#{Time.at(end_time)}) is before Cloudwatch Insights availability, skipping")
-        # rubocop:enable Layout/LineLength, Rails/TimeZone
+        Aws::CloudWatchLogs::Types::GetQueryResultsResponse.new(results: [])
+      elsif err.message.include?('end date and time is either before the log groups creation time or exceeds the log groups log retention settings')
+        log(:warn, "query end_time=#{end_time} (#{Time.at(end_time)}) is before the log groups creation time or exceeds the log groups log retention settings")
         Aws::CloudWatchLogs::Types::GetQueryResultsResponse.new(results: [])
       else
         raise err
       end
     end
+    # rubocop:enable Layout/LineLength, Rails/TimeZone
 
     def ensure_complete_logs?
       @ensure_complete_logs
@@ -195,7 +210,9 @@ module Reporting
       if logger
         int_level = Logger.const_get(level.upcase)
         if @progress_bar && int_level >= logger.level
-          @progress_bar.log("#{level.upcase}: #{message}")
+          with_progress_bar do |progress_bar|
+            progress_bar.log("#{level.upcase}: #{message}")
+          end
         else
           logger.add(int_level) { message }
         end
@@ -269,6 +286,13 @@ module Reporting
       end
     end
     # rubocop:enable Rails/TimeZone
+
+    # @yield [ProgressBar]
+    def with_progress_bar
+      @progress_bar_mutex&.synchronize do
+        yield @progress_bar
+      end
+    end
 
     def aws_client
       @aws_client ||= Aws::CloudWatchLogs::Client.new(region: 'us-west-2')

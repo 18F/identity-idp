@@ -10,6 +10,7 @@ const UploadContext = createContext({
   statusPollInterval: undefined as number | undefined,
   isMockClient: false,
   flowPath: 'standard' as FlowPath,
+  phoneWithCamera: '' as string,
   formData: {} as Record<string, any>,
 });
 
@@ -148,6 +149,12 @@ interface UploadContextProviderProps {
   flowPath: FlowPath;
 
   /**
+   * A variable indicating the answer to an ab test question about whether
+   * the user has a phone with camera (smartphone)
+   */
+  phoneWithCamera: string;
+
+  /**
    *  Child elements.
    */
   children: ReactNode;
@@ -167,6 +174,7 @@ function UploadContextProvider({
   statusPollInterval,
   formData = DEFAULT_FORM_DATA,
   flowPath,
+  phoneWithCamera,
   children,
 }: UploadContextProviderProps) {
   const uploadWithFormData = (payload) => upload({ ...payload, ...formData }, { endpoint });
@@ -182,6 +190,7 @@ function UploadContextProvider({
     statusPollInterval,
     isMockClient,
     flowPath,
+    phoneWithCamera,
     formData,
   });
 

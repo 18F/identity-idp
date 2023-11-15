@@ -10,6 +10,7 @@ import {
   FailedCaptureAttemptsContextProvider,
   MarketingSiteContextProvider,
   InPersonContext,
+  FeatureFlagContext,
 } from '@18f/identity-document-capture';
 import { isCameraCapableMobile } from '@18f/identity-device';
 import { FlowContext } from '@18f/identity-verify-flow';
@@ -33,6 +34,8 @@ interface AppRootData {
   exitUrl: string;
   idvInPersonUrl?: string;
   securityAndPrivacyHowItWorksUrl: string;
+  uiNotReadySectionEnabled: string;
+  uiExitQuestionSectionEnabled: string;
 }
 
 const appRoot = document.getElementById('document-capture-form')!;
@@ -44,6 +47,12 @@ function getServiceProvider() {
   const { spName: name = null, failureToProofUrl: failureToProofURL = '' } = appRoot.dataset;
 
   return { name, failureToProofURL };
+}
+
+function getSelfieCaptureEnabled() {
+  const { docAuthSelfieCapture } = appRoot.dataset;
+  const docAuthSelfieCaptureObject = docAuthSelfieCapture ? JSON.parse(docAuthSelfieCapture) : {};
+  return !!docAuthSelfieCaptureObject?.enabled;
 }
 
 function getMetaContent(name): string | null {
@@ -60,6 +69,7 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
     useAlternateSdk,
     acuantVersion,
     phoneQuestionAbTestBucket,
+    phoneWithCamera,
   } = appRoot.dataset;
   return baseTrackEvent(event, {
     ...payload,
@@ -68,6 +78,7 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
     use_alternate_sdk: useAlternateSdk,
     acuant_version: acuantVersion,
     phone_question_ab_test_bucket: phoneQuestionAbTestBucket,
+    phone_with_camera: phoneWithCamera,
   });
 };
 
@@ -84,12 +95,16 @@ const {
   flowPath,
   cancelUrl: cancelURL,
   exitUrl: exitURL,
+  accountUrl: accountURL,
   idvInPersonUrl: inPersonURL,
   securityAndPrivacyHowItWorksUrl: securityAndPrivacyHowItWorksURL,
   inPersonFullAddressEntryEnabled,
   inPersonOutageMessageEnabled,
   inPersonOutageExpectedUpdateDate,
   usStatesTerritories = '',
+  phoneWithCamera = '',
+  uiNotReadySectionEnabled = '',
+  uiExitQuestionSectionEnabled = '',
 } = appRoot.dataset as DOMStringMap & AppRootData;
 
 let parsedUsStatesTerritories = [];
@@ -120,6 +135,10 @@ const App = composeComponents(
     {
       sdkSrc: acuantVersion && `/acuant/${acuantVersion}/AcuantJavascriptWebSdk.min.js`,
       cameraSrc: acuantVersion && `/acuant/${acuantVersion}/AcuantCamera.min.js`,
+      passiveLivenessOpenCVSrc: acuantVersion && `/acuant/${acuantVersion}/opencv.min.js`,
+      passiveLivenessSrc: getSelfieCaptureEnabled()
+        ? acuantVersion && `/acuant/${acuantVersion}/AcuantPassiveLiveness.min.js`
+        : undefined,
       credentials: getMetaContent('acuant-sdk-initialization-creds'),
       endpoint: getMetaContent('acuant-sdk-initialization-endpoint'),
       glareThreshold,
@@ -135,24 +154,41 @@ const App = composeComponents(
       isMockClient,
       formData,
       flowPath,
+      phoneWithCamera,
     },
   ],
   [
     FlowContext.Provider,
     {
       value: {
+        accountURL,
         cancelURL,
         exitURL,
         currentStep: 'document_capture',
       },
     },
   ],
-  [ServiceProviderContextProvider, { value: getServiceProvider() }],
+  [
+    ServiceProviderContextProvider,
+    {
+      value: getServiceProvider(),
+      selfieCaptureEnabled: getSelfieCaptureEnabled(),
+    },
+  ],
   [
     FailedCaptureAttemptsContextProvider,
     {
       maxCaptureAttemptsBeforeNativeCamera: Number(maxCaptureAttemptsBeforeNativeCamera),
       maxSubmissionAttemptsBeforeNativeCamera: Number(maxSubmissionAttemptsBeforeNativeCamera),
+    },
+  ],
+  [
+    FeatureFlagContext.Provider,
+    {
+      value: {
+        notReadySectionEnabled: String(uiNotReadySectionEnabled) === 'true',
+        exitQuestionSectionEnabled: String(uiExitQuestionSectionEnabled) === 'true',
+      },
     },
   ],
   [

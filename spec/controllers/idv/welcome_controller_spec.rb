@@ -13,6 +13,12 @@ RSpec.describe Idv::WelcomeController do
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 
+  describe '#step_info' do
+    it 'returns a valid StepInfo object' do
+      expect(Idv::WelcomeController.step_info).to be_valid
+    end
+  end
+
   describe 'before_actions' do
     it 'includes authentication before_action' do
       expect(subject).to have_actions(
@@ -131,6 +137,12 @@ RSpec.describe Idv::WelcomeController do
       put :update
 
       expect(@analytics).to have_logged_event(analytics_name, analytics_args)
+    end
+
+    it 'invalidates future steps' do
+      expect(subject).to receive(:clear_invalid_steps!)
+
+      put :update
     end
 
     it 'creates a document capture session' do

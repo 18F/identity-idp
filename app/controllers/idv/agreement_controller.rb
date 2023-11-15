@@ -4,7 +4,7 @@ module Idv
     include StepIndicatorConcern
 
     before_action :confirm_not_rate_limited
-    before_action :confirm_welcome_step_complete
+    before_action :confirm_step_allowed
     before_action :confirm_document_capture_not_complete
 
     def show
@@ -21,6 +21,7 @@ module Idv
     end
 
     def update
+      clear_invalid_steps!
       skip_to_capture if params[:skip_hybrid_handoff]
 
       result = Idv::ConsentForm.new.submit(consent_form_params)
@@ -32,10 +33,24 @@ module Idv
       if result.success?
         idv_session.idv_consent_given = true
 
-        redirect_to idv_hybrid_handoff_url
+        if IdentityConfig.store.in_person_proofing_opt_in_enabled
+          redirect_to idv_how_to_verify_url
+        else
+          redirect_to idv_hybrid_handoff_url
+        end
       else
         redirect_to idv_agreement_url
       end
+    end
+
+    def self.step_info
+      Idv::StepInfo.new(
+        key: :agreement,
+        controller: controller_name,
+        next_steps: [:hybrid_handoff, :document_capture, :phone_question, :how_to_verify],
+        preconditions: ->(idv_session:, user:) { idv_session.welcome_visited },
+        undo_step: ->(idv_session:, user:) { idv_session.idv_consent_given = nil },
+      )
     end
 
     private
@@ -59,18 +74,6 @@ module Idv
 
     def consent_form_params
       params.require(:doc_auth).permit(:idv_consent_given)
-    end
-
-    def confirm_welcome_step_complete
-      return if idv_session.welcome_visited
-
-      redirect_to idv_welcome_url
-    end
-
-    def confirm_agreement_needed
-      return unless idv_session.idv_consent_given
-
-      redirect_to idv_hybrid_handoff_url
     end
   end
 end

@@ -209,9 +209,11 @@ fr:
       document_capture_front: Recto de votre carte d’identité
       front: Recto de votre permis de conduire ou de votre carte d’identité de l’État
       getting_started: Vérifions votre identité pour %{sp_name}
+      how_to_verify: Choisissez la manière dont vous souhaitez confirmer votre identité
       hybrid_handoff: Comment voulez-vous ajouter votre identifiant ?
       interstitial: Nous traitons vos images
       lets_go: Comment fonctionne la vérification de votre identité
+      no_ssn: Vous n’avez pas de numéro de sécurité sociale?
       phone_question: Avez-vous un téléphone que vous pouvez utiliser pour prendre des
         photos de votre identifiant?
       review_issues: Vérifiez vos images et essayez à nouveau
@@ -222,7 +224,9 @@ fr:
       text_message: Nous avons envoyé un message à votre téléphone
       upload_from_computer: Continuer sur cet ordinateur
       upload_from_phone: Utilisez votre téléphone pour prendre des photos
+      verify_at_post_office: Confirmez votre identité un bureau de poste
       verify_identity: Vérifier votre identité
+      verify_online: Confirmez votre identité en ligne
       welcome: Commencez à vérifier votre identité
     hybrid_flow_warning:
       explanation_html: Vous utilisez <strong>%{app_name}</strong> pour vérifier votre
@@ -247,9 +251,15 @@ fr:
       document_capture_intro_acknowledgment: Nous recueillons des informations sur
         vous en lisant votre permis de conduire ou votre carte d’identité de
         l’État. Nous utilisons ces informations pour vérifier votre identité.
+      exit:
+        with_sp: Quittez %{app_name} et retournez à %{sp_name}
+        without_sp: Quittez la vérification d’identité et accédez à la page de votre compte
       getting_started_html: '%{sp_name} doit s’assurer que c’est bien vous — et non
         quelqu’un qui se fait passer pour vous. %{link_html}'
       getting_started_learn_more: En savoir plus sur ce dont vous avez besoin pour vérifier votre identité
+      how_to_verify: Vous avez la possibilité de confirmer votre identité en ligne ou
+        en personne dans un bureau de poste participant.
+      how_to_verify_troubleshooting_options_header: Vous voulez en savoir plus sur la façon de vérifier votre identité?
       hybrid_handoff: Nous recueillons des informations sur vous en lisant votre carte
         d’identité délivrée par l’État.
       image_loaded: Image chargée
@@ -269,6 +279,8 @@ fr:
       link_sent_complete_polling: L’étape suivante se chargera automatiquement une
         fois que vous aurez confirmé votre identifiant à l’aide de votre
         téléphone.
+      no_ssn: Vous devez avoir un numéro de sécurité sociale pour terminer la
+        vérification de votre identité.
       privacy: '%{app_name} est un site gouvernemental sécurisé qui respecte les
         normes les plus strictes en matière de protection des données. Nous
         utilisons vos données pour vérifier votre identité.'
@@ -284,8 +296,22 @@ fr:
       upload_from_phone: Vous n’aurez pas à vous reconnecter. Vous reviendrez sur cet
         ordinateur après avoir pris des photos. Votre téléphone portable doit
         être équipé d’un appareil photo et d’un navigateur web.
+      verify_at_post_office_description: Cette option est préférable si vous ne
+        disposez pas d’un appareil mobile ou d’un moyen facile de prendre des
+        photos de votre pièce d’identité.
+      verify_at_post_office_instruction: Vous saisissez vos données d’identification
+        en ligne et confirmez votre identité en personne dans un bureau de poste
+        participant.
+      verify_at_post_office_link_text: En savoir plus sur la confirmation en personne
       verify_identity: Nous vous demanderons vos informations personnelles afin de
         vérifier votre identité par rapport aux registres publics.
+      verify_online_description: La plupart des utilisateurs terminent ce processus en
+        une seule fois. Cette option est préférable si vous disposez d’un
+        appareil mobile ou d’un moyen de prendre des photos de votre pièce
+        d’identité.
+      verify_online_instruction: Vous prendrez des photos de votre pièce d’identité
+        pour confirmer votre identité entièrement en ligne.
+      verify_online_link_text: En savoir plus sur la confirmation en ligne
       welcome: '%{sp_name} doit s’assurer que vous êtes bien vous, et non quelqu’un
         qui se fait passer pour vous.'
       you_entered: 'Tu as soumis:'
@@ -313,7 +339,15 @@ fr:
           lettre à votre adresse personnelle. Cela prend <strong>5 à 10
           jours</strong>.'
       welcome: 'Vous aurez besoin de votre:'
-
+    not_ready:
+      button_nosp: Annuler et revenir à votre profil
+      button_sp: Quittez %{app_name} et retournez à %{sp_name}
+      content_nosp: Si vous quittez %{app_name}, votre identité n’aura pas été
+        vérifiée. Vous pourrez revenir plus tard pour terminer ce processus.
+      content_sp: Si vous quittez %{app_name} maintenant et revenez sur %{sp_name},
+        votre identité n’aura pas été vérifiée. Vous pourrez revenir plus tard
+        pour terminer ce processus.
+      header: Vous n’êtes pas prêt à ajouter des photos?
     phone_question:
       do_not_have: Je n’ai pas de téléphone
     tips:
@@ -323,6 +357,7 @@ fr:
       document_capture_id_text2: Prenez la photo sur une surface plane
       document_capture_id_text3: N’utilisez pas le flash de votre appareil photo
       document_capture_id_text4: La taille du fichier doit être d’au moins 2 Mo
+      most_common: Le plus commun
       review_issues_id_header_text: 'Examinez les images de votre carte d’identité délivrée par l’État:'
       review_issues_id_text1: Avez-vous utilisé un fond sombre?
       review_issues_id_text2: Avez-vous pris la photo sur une surface plane?

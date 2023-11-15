@@ -26,38 +26,6 @@ RSpec.describe DocAuth::LexisNexis::LexisNexisClient do
     end
   end
 
-  describe '#post_front_image' do
-    it 'raises a NotImplemented error' do
-      expect do
-        client.post_front_image(
-          instance_id: 123,
-          image: DocAuthImageFixtures.document_front_image,
-        )
-      end.to raise_error(NotImplementedError)
-    end
-  end
-
-  describe '#post_back_image' do
-    it 'raises a NotImplemented error' do
-      expect do
-        client.post_back_image(
-          instance_id: 123,
-          image: DocAuthImageFixtures.document_back_image,
-        )
-      end.to raise_error(NotImplementedError)
-    end
-  end
-
-  describe '#get_results' do
-    it 'raises a NotImplemented error' do
-      expect do
-        client.get_results(
-          instance_id: 123,
-        )
-      end.to raise_error(NotImplementedError)
-    end
-  end
-
   describe '#post_images' do
     before do
       stub_request(:post, image_upload_url).to_return(

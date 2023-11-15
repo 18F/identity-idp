@@ -6,6 +6,7 @@ module Idv
     include PhoneQuestionAbTestConcern
 
     before_action :confirm_not_rate_limited
+    before_action :confirm_step_allowed
     before_action :confirm_hybrid_handoff_complete
     before_action :confirm_document_capture_needed
 
@@ -19,6 +20,7 @@ module Idv
     end
 
     def update
+      clear_invalid_steps!
       analytics.idv_doc_auth_link_sent_submitted(**analytics_arguments)
 
       return render_document_capture_cancelled if document_capture_session&.cancelled_at
@@ -35,6 +37,20 @@ module Idv
     def extra_view_variables
       { phone: idv_session.phone_for_mobile_flow }.merge(
         phone_question_ab_test_analytics_bucket,
+        phone_with_camera: idv_session.phone_with_camera,
+      )
+    end
+
+    def self.step_info
+      Idv::StepInfo.new(
+        key: :link_sent,
+        controller: controller_name,
+        next_steps: [:success], # [:ssn],
+        preconditions: ->(idv_session:, user:) { idv_session.flow_path == 'hybrid' },
+        undo_step: ->(idv_session:, user:) do
+          idv_session.pii_from_doc = nil
+          idv_session.invalidate_in_person_pii_from_user!
+        end,
       )
     end
 

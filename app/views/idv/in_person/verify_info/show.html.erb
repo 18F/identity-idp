@@ -19,7 +19,7 @@ locals:
   <!-- Needed by form steps wait javascript -->
 </div>
 
-<% title t('titles.idv.verify_info') %>
+<% self.title = t('titles.idv.verify_info') %>
 
 <%= render PageHeadingComponent.new.with_content(t('headings.verify')) %>
 <div class='margin-top-4 margin-bottom-2'>
@@ -168,7 +168,7 @@ locals:
                 poll_interval_ms: IdentityConfig.store.poll_rate_for_verify_in_seconds * 1000,
               },
             },
-          ).with_content(t('forms.buttons.continue')) %>
+          ).with_content(t('forms.buttons.submit.default')) %>
   </div>
 </div>
 

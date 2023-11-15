@@ -1,0 +1,90 @@
+<%#
+Renders a page asking the user to enter their SSN or update their SSN if they had previously entered it.
+This template is used from both the remote and in person (IPP) SsnControllers.
+
+locals:
+  @ssn_presenter - contains step_indicator_steps and ssn_form
+%>
+<% content_for(:pre_flash_content) do %>
+  <%= render StepIndicatorComponent.new(
+        steps: @ssn_presenter.step_indicator_steps,
+        current_step: :verify_info,
+        locale_scope: 'idv',
+        class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
+      ) %>
+<% end %>
+
+<% self.title = t('titles.doc_auth.ssn') %>
+
+<% if @ssn_presenter.updating_ssn? %>
+  <%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.ssn_update')) %>
+<% else %>
+  <%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.ssn')) %>
+<% end %>
+
+<p>
+  <%= t('doc_auth.info.ssn') %>
+  <%= new_tab_link_to(MarketingSite.security_and_privacy_practices_url, class: 'display-inline') do %>
+    <%= t('doc_auth.info.learn_more') %>
+  <% end %>
+</p>
+
+<h2 class="h3"><%= t('doc_auth.headings.no_ssn') %></h2>
+<p>
+  <%= t('doc_auth.info.no_ssn') %>
+  <%= link_to(
+        @ssn_presenter.exit_text,
+        idv_cancel_url(step: 'ssn_offramp'),
+      ) %>
+</p>
+
+<% if FeatureManagement.proofing_device_profiling_collecting_enabled? %>
+  <% if threatmetrix_session_id.present? %>
+    <% threatmetrix_javascript_urls.each do |threatmetrix_javascript_url| %>
+      <%= javascript_include_tag threatmetrix_javascript_url, nonce: true %>
+    <% end %>
+    <noscript>
+      <%= content_tag(
+            :iframe,
+            '',
+            src: threatmetrix_iframe_url,
+            style: 'width: 100px; height: 100px; border: 0; position: absolute; top: -5000px;',
+          ) %>
+    </noscript>
+  <% end %>
+<% end %>
+
+<% if IdentityConfig.store.proofer_mock_fallback %>
+  <div class="usa-alert usa-alert--info margin-bottom-4" role="status">
+    <div class="usa-alert__body">
+      <p class="usa-alert__text">
+        <%= t('doc_auth.instructions.test_ssn') %>
+      </p>
+    </div>
+  </div>
+<% end %>
+
+<%= simple_form_for(
+      @ssn_presenter.ssn_form,
+      url: url_for,
+      method: :put,
+      html: { autocomplete: 'off' },
+    ) do |f| %>
+  <div class="tablet:grid-col-8">
+    <%= render 'shared/ssn_field', f: f %>
+  </div>
+
+  <%= f.submit class: 'display-block margin-y-5' do %>
+    <% if @ssn_presenter.updating_ssn? %>
+      <%= t('forms.buttons.submit.update') %>
+    <% else %>
+      <%= t('forms.buttons.continue') %>
+    <% end %>
+  <% end %>
+<% end %>
+
+<% if @ssn_presenter.updating_ssn? %>
+  <%= render 'idv/shared/back', fallback_path: idv_verify_info_path %>
+<% else %>
+  <%= render 'idv/doc_auth/cancel', step: 'ssn' %>
+<% end %>

@@ -72,6 +72,22 @@ module DocAuthHelper
     click_on t('doc_auth.buttons.continue')
   end
 
+  def complete_how_to_verify_step(remote: true)
+    text_for_method = remote ? t(
+      'doc_auth.headings.verify_online',
+      app_name: APP_NAME,
+    ) : t(
+      'doc_auth.headings.verify_at_post_office',
+      app_name: APP_NAME,
+    )
+    find(
+      'label',
+      text: text_for_method,
+      wait: 5,
+    ).click
+    click_on t('doc_auth.buttons.continue')
+  end
+
   def complete_doc_auth_steps_before_hybrid_handoff_step(expect_accessible: false)
     complete_doc_auth_steps_before_agreement_step(expect_accessible: expect_accessible)
     complete_agreement_step
@@ -134,7 +150,7 @@ module DocAuthHelper
   end
 
   def complete_verify_step
-    click_idv_continue
+    click_idv_submit_default
   end
 
   def complete_doc_auth_steps_before_address_step(expect_accessible: false)
@@ -315,7 +331,7 @@ module DocAuthHelper
     complete_doc_auth_steps_before_ssn_step
     select threatmetrix, from: :mock_profiling_result
     complete_ssn_step
-    click_idv_continue
+    complete_verify_step
     complete_phone_step(user)
     complete_enter_password_step(user)
     acknowledge_and_confirm_personal_key

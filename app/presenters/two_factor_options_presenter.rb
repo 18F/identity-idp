@@ -32,12 +32,12 @@ class TwoFactorOptionsPresenter
   # add additional MFA page
   def all_user_selected_options
     [
-      TwoFactorAuthentication::WebauthnPlatformSelectionPresenter.new(user: user),
+      TwoFactorAuthentication::SetUpWebauthnPlatformSelectionPresenter.new(user: user),
       TwoFactorAuthentication::SetUpAuthAppSelectionPresenter.new(user: user),
       TwoFactorAuthentication::PhoneSelectionPresenter.new(user: user),
-      TwoFactorAuthentication::BackupCodeSelectionPresenter.new(user: user),
-      TwoFactorAuthentication::WebauthnSelectionPresenter.new(user: user),
-      TwoFactorAuthentication::PivCacSelectionPresenter.new(user: user),
+      TwoFactorAuthentication::SetUpBackupCodeSelectionPresenter.new(user: user),
+      TwoFactorAuthentication::SetUpWebauthnSelectionPresenter.new(user: user),
+      TwoFactorAuthentication::SetUpPivCacSelectionPresenter.new(user: user),
     ]
   end
 
@@ -99,17 +99,17 @@ class TwoFactorOptionsPresenter
 
   def piv_cac_option
     return [] unless current_device_is_desktop?
-    [TwoFactorAuthentication::PivCacSelectionPresenter.new(user: user)]
+    [TwoFactorAuthentication::SetUpPivCacSelectionPresenter.new(user: user)]
   end
 
   def webauthn_option
     return [] if piv_cac_required?
-    [TwoFactorAuthentication::WebauthnSelectionPresenter.new(user: user)]
+    [TwoFactorAuthentication::SetUpWebauthnSelectionPresenter.new(user: user)]
   end
 
   def webauthn_platform_option
-    return [] if piv_cac_required? || !IdentityConfig.store.platform_auth_set_up_enabled
-    [TwoFactorAuthentication::WebauthnPlatformSelectionPresenter.new(user: user)]
+    return [] if piv_cac_required?
+    [TwoFactorAuthentication::SetUpWebauthnPlatformSelectionPresenter.new(user: user)]
   end
 
   def phone_options
@@ -127,7 +127,7 @@ class TwoFactorOptionsPresenter
 
   def backup_code_option
     return [] if piv_cac_required? || phishing_resistant_only?
-    [TwoFactorAuthentication::BackupCodeSelectionPresenter.new(user: user)]
+    [TwoFactorAuthentication::SetUpBackupCodeSelectionPresenter.new(user: user)]
   end
 
   def current_device_is_desktop?

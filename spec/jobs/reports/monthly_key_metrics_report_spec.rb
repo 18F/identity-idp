@@ -9,22 +9,19 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
   let(:report_folder) do
     'int/monthly-key-metrics-report/2021/2021-03-02.monthly-key-metrics-report'
   end
-  let(:account_reuse_s3_path) { "#{report_folder}/account_reuse.csv" }
-  let(:total_profiles_s3_path) { "#{report_folder}/total_profiles.csv" }
-  let(:document_upload_proofing_s3_path) { "#{report_folder}/document_upload_proofing.csv" }
-  let(:account_deletion_rate_s3_path) { "#{report_folder}/account_deletion_rate.csv" }
-  let(:total_user_count_s3_path) { "#{report_folder}/total_user_count.csv" }
-  let(:active_users_count_s3_path) { "#{report_folder}/active_users_count.csv" }
+
   let(:expected_s3_paths) do
     [
-      account_reuse_s3_path,
-      total_profiles_s3_path,
-      account_deletion_rate_s3_path,
-      total_user_count_s3_path,
-      document_upload_proofing_s3_path,
-      active_users_count_s3_path,
+      "#{report_folder}/account_reuse.csv",
+      "#{report_folder}/account_deletion_rate.csv",
+      "#{report_folder}/total_user_count.csv",
+      "#{report_folder}/active_users_count.csv",
+      "#{report_folder}/proofing_rate_metrics.csv",
+      "#{report_folder}/agency_and_sp_counts.csv",
+      "#{report_folder}/active_users_count_apg.csv",
     ]
   end
+
   let(:s3_metadata) do
     {
       body: anything,
@@ -36,6 +33,12 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
   let(:mock_proofing_report_data) do
     [
       ['metric', 'num_users', 'percent'],
+    ]
+  end
+
+  let(:mock_proofing_rate_data) do
+    [
+      ['Metric', 'Trailing 30d', 'Trailing 60d', 'Trailing 90d'],
     ]
   end
 
@@ -52,11 +55,11 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
       },
     }
 
-    allow(report.monthly_proofing_report).to receive(:proofing_report).
-      and_return(mock_proofing_report_data)
+    allow(report.proofing_rate_report).to receive(:as_csv).
+      and_return(mock_proofing_rate_data)
   end
 
-  it 'sends out a report to the email listed with one total user' do
+  it 'sends out a report to just to team agnes' do
     expect(ReportMailer).to receive(:tables_report).once.with(
       email: [IdentityConfig.store.team_agnes_email],
       subject: 'Monthly Key Metrics Report - 2021-03-02',
@@ -68,29 +71,30 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
     report.perform(report_date)
   end
 
-  it 'sends out a report to the emails listed with two users' do
-    first_of_month_date = report_date - 1
+  context 'when queued from the first of the month' do
+    let(:report_date) { Date.new(2021, 3, 1).prev_day }
 
-    expect(ReportMailer).to receive(:tables_report).once.with(
-      email: [
-        IdentityConfig.store.team_agnes_email,
-        IdentityConfig.store.team_all_feds_email,
-        IdentityConfig.store.team_all_contractors_email,
-      ],
-      subject: 'Monthly Key Metrics Report - 2021-03-01',
-      reports: anything,
-      message: report.preamble,
-      attachment_format: :xlsx,
-    ).and_call_original
+    it 'sends out a report to everybody' do
+      expect(ReportMailer).to receive(:tables_report).once.with(
+        email: [
+          IdentityConfig.store.team_agnes_email,
+          IdentityConfig.store.team_all_feds_email,
+          IdentityConfig.store.team_all_contractors_email,
+        ],
+        subject: 'Monthly Key Metrics Report - 2021-02-28',
+        reports: anything,
+        message: report.preamble,
+        attachment_format: :xlsx,
+      ).and_call_original
 
-    report.perform(first_of_month_date)
+      report.perform(report_date)
+    end
   end
 
   it 'does not send out a report with no emails' do
     allow(IdentityConfig.store).to receive(:team_agnes_email).and_return('')
 
-    expect_any_instance_of(Reporting::AccountReuseAndTotalIdentitiesReport).
-      not_to receive(:total_identities_report)
+    expect(report).to_not receive(:reports)
 
     expect(ReportMailer).not_to receive(:tables_report)
 
@@ -109,12 +113,26 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
   end
 
   describe '#preamble' do
-    subject(:preamble) { report.preamble }
+    let(:env) { 'prod' }
+    subject(:preamble) { report.preamble(env:) }
 
     it 'has a preamble that is valid HTML' do
       expect(preamble).to be_html_safe
 
       expect { Nokogiri::XML(preamble) { |config| config.strict } }.to_not raise_error
+    end
+
+    context 'in a non-prod environment' do
+      let(:env) { 'staging' }
+
+      it 'has an alert with the environment name' do
+        expect(preamble).to be_html_safe
+
+        doc = Nokogiri::XML(preamble)
+
+        alert = doc.at_css('.usa-alert')
+        expect(alert.text).to include(env)
+      end
     end
   end
 end

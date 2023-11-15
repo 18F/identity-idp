@@ -180,6 +180,16 @@ RSpec.describe 'Identity verification', :js do
     expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
 
     expect(page.find_field(t('idv.form.ssn_label'))['aria-invalid']).to eq('false')
+    expect(page).to have_content(t('doc_auth.info.no_ssn'))
+    click_link(
+      t(
+        'doc_auth.info.exit.with_sp', app_name: APP_NAME,
+                                      sp_name: 'Test SP'
+      ),
+    )
+
+    expect(page).to have_current_path(idv_cancel_path(step: 'ssn_offramp'))
+    click_on t('idv.cancel.actions.keep_going')
 
     # shows error message on invalid ssn
     fill_out_ssn_form_fail
@@ -368,7 +378,7 @@ RSpec.describe 'Identity verification', :js do
     expect(current_path).to eql(idv_welcome_path)
     complete_welcome_step
     expect(page).to have_current_path(idv_agreement_path)
-    expect(page).to have_checked_field(
+    expect(page).not_to have_checked_field(
       t('doc_auth.instructions.consent', app_name: APP_NAME),
       visible: :all,
     )

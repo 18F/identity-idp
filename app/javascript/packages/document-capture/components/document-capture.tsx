@@ -35,7 +35,7 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
   const [submissionError, setSubmissionError] = useState<Error | undefined>(undefined);
   const [stepName, setStepName] = useState<string | undefined>(undefined);
   const { t } = useI18n();
-  const { flowPath } = useContext(UploadContext);
+  const { flowPath, phoneWithCamera } = useContext(UploadContext);
   const { trackSubmitEvent, trackVisitEvent } = useContext(AnalyticsContext);
   const { inPersonFullAddressEntryEnabled, inPersonURL } = useContext(InPersonContext);
   const appName = getConfigValue('appName');
@@ -62,8 +62,9 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
       formValues && {
         ...formValues,
         flow_path: flowPath,
+        phone_with_camera: phoneWithCamera,
       },
-    [formValues, flowPath],
+    [formValues, flowPath, phoneWithCamera],
   );
 
   let initialActiveErrors;

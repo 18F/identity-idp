@@ -887,4 +887,37 @@ RSpec.describe UserMailer, type: :mailer do
       )
     end
   end
+
+  describe '#suspension_confirmed' do
+    let(:mail) do
+      UserMailer.with(user: user, email_address: email_address).suspension_confirmed
+    end
+
+    it_behaves_like 'a system email'
+    it_behaves_like 'an email that respects user email locale preference'
+
+    it 'does not link to the help center' do
+      expect(mail.html_part.body).to_not include(MarketingSite.nice_help_url)
+    end
+
+    context 'in another language' do
+      let(:user) { build(:user, email_language: :es) }
+
+      it 'translates the footer help text correctly' do
+        expect(mail.html_part.body).
+          to include(t('user_mailer.suspension_confirmed.contact_agency', locale: :es))
+        expect(mail.html_part.body).
+          to_not include(t('user_mailer.suspension_confirmed.contact_agency', locale: :en))
+      end
+    end
+  end
+
+  describe '#account_reinstated' do
+    let(:mail) do
+      UserMailer.with(user: user, email_address: email_address).account_reinstated
+    end
+
+    it_behaves_like 'a system email'
+    it_behaves_like 'an email that respects user email locale preference'
+  end
 end

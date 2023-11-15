@@ -6,7 +6,7 @@ class IdentityConfig
   VENDOR_STATUS_OPTIONS = %i[operational partial_outage full_outage]
 
   class << self
-    attr_reader :store, :key_types
+    attr_reader :store, :key_types, :unused_keys
   end
 
   CONVERTERS = {
@@ -168,7 +168,6 @@ class IdentityConfig
     config.add(:deleted_user_accounts_report_configs, type: :json)
     config.add(:deliver_mail_async, type: :boolean)
     config.add(:development_mailer_deliver_method, type: :symbol, enum: [:file, :letter_opener])
-    config.add(:disable_csp_unsafe_inline, type: :boolean)
     config.add(:disable_email_sending, type: :boolean)
     config.add(:disable_logout_get_request, type: :boolean)
     config.add(:disallow_all_web_crawlers, type: :boolean)
@@ -180,10 +179,13 @@ class IdentityConfig
     config.add(:doc_auth_error_dpi_threshold, type: :integer)
     config.add(:doc_auth_error_glare_threshold, type: :integer)
     config.add(:doc_auth_error_sharpness_threshold, type: :integer)
+    config.add(:doc_auth_exit_question_section_enabled, type: :boolean)
+    config.add(:doc_auth_not_ready_section_enabled, type: :boolean)
     config.add(:doc_auth_max_attempts, type: :integer)
     config.add(:doc_auth_max_capture_attempts_before_native_camera, type: :integer)
     config.add(:doc_auth_max_submission_attempts_before_native_camera, type: :integer)
     config.add(:doc_auth_s3_request_timeout, type: :integer)
+    config.add(:doc_auth_selfie_capture, type: :json, options: { symbolize_names: true })
     config.add(:doc_auth_supported_country_codes, type: :json)
     config.add(:doc_auth_vendor, type: :string)
     config.add(:doc_auth_vendor_randomize, type: :boolean)
@@ -254,6 +256,7 @@ class IdentityConfig
     config.add(:in_person_outage_expected_update_date, type: :string)
     config.add(:in_person_outage_message_enabled, type: :boolean)
     config.add(:in_person_proofing_enabled, type: :boolean)
+    config.add(:in_person_proofing_opt_in_enabled, type: :boolean)
     config.add(:in_person_public_address_search_enabled, type: :boolean)
     config.add(:in_person_residential_address_controller_enabled, type: :boolean)
     config.add(:in_person_results_delay_in_hours, type: :integer)
@@ -357,7 +360,6 @@ class IdentityConfig
     config.add(:piv_cac_service_url, type: :string)
     config.add(:piv_cac_verify_token_secret)
     config.add(:piv_cac_verify_token_url, type: :string)
-    config.add(:platform_auth_set_up_enabled, type: :boolean)
     config.add(:poll_rate_for_verify_in_seconds, type: :integer)
     config.add(:proof_address_max_attempt_window_in_minutes, type: :integer)
     config.add(:proof_address_max_attempts, type: :integer)
@@ -374,6 +376,7 @@ class IdentityConfig
     config.add(:rack_mini_profiler, type: :boolean)
     config.add(:rack_timeout_service_timeout_seconds, type: :integer)
     config.add(:rails_mailer_previews_enabled, type: :boolean)
+    config.add(:raise_on_missing_title, type: :boolean)
     config.add(:reauthn_window, type: :integer)
     config.add(:recaptcha_enterprise_api_key, type: :string)
     config.add(:recaptcha_enterprise_project_id, type: :string)
@@ -426,6 +429,8 @@ class IdentityConfig
     config.add(:ses_configuration_set_name, type: :string)
     config.add(:session_check_delay, type: :integer)
     config.add(:session_check_frequency, type: :integer)
+    config.add(:session_encrypted_profiles_read_enabled, type: :boolean)
+    config.add(:session_encrypted_profiles_write_enabled, type: :boolean)
     config.add(:session_encryption_key, type: :string)
     config.add(:session_encryptor_alert_enabled, type: :boolean)
     config.add(:session_timeout_in_minutes, type: :integer)
@@ -473,6 +478,8 @@ class IdentityConfig
     config.add(:vendor_status_lexisnexis_trueid, type: :symbol, enum: VENDOR_STATUS_OPTIONS)
     config.add(:vendor_status_sms, type: :symbol, enum: VENDOR_STATUS_OPTIONS)
     config.add(:vendor_status_voice, type: :symbol, enum: VENDOR_STATUS_OPTIONS)
+    config.add(:vendor_status_idv_scheduled_maintenance_start, type: :string)
+    config.add(:vendor_status_idv_scheduled_maintenance_finish, type: :string)
     config.add(:verification_errors_report_configs, type: :json)
     config.add(:verify_gpo_key_attempt_window_in_minutes, type: :integer)
     config.add(:verify_gpo_key_max_attempts, type: :integer)
@@ -486,6 +493,7 @@ class IdentityConfig
     config.add(:weekly_auth_funnel_report_config, type: :json)
 
     @key_types = config.key_types
+    @unused_keys = config_map.keys - config.written_env.keys
     @store = RedactedStruct.new('IdentityConfig', *config.written_env.keys, keyword_init: true).
       new(**config.written_env)
   end

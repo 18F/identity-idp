@@ -99,8 +99,8 @@ module SignUp
     end
 
     def pii
-      pii_string = Pii::Cacher.new(current_user, user_session).fetch_string
-      JSON.parse(pii_string || '{}', symbolize_names: true)
+      Pii::Cacher.new(current_user, user_session).fetch(current_user.active_profile&.id) ||
+        Pii::Attributes.new
     end
 
     def send_in_person_completion_survey

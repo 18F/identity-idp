@@ -69,20 +69,10 @@ module TwoFactorAuthentication
 
     def login_label(type)
       case type
-      when 'backup_code'
-        t('two_factor_authentication.login_options.backup_code')
-      when 'personal_key'
-        t('two_factor_authentication.login_options.personal_key')
-      when 'piv_cac'
-        t('two_factor_authentication.login_options.piv_cac')
       when 'sms'
         t('two_factor_authentication.login_options.sms')
       when 'voice'
         t('two_factor_authentication.login_options.voice')
-      when 'webauthn'
-        t('two_factor_authentication.login_options.webauthn')
-      when 'webauthn_platform'
-        t('two_factor_authentication.login_options.webauthn_platform')
       else
         raise "Unsupported login method: #{type}"
       end
@@ -90,20 +80,12 @@ module TwoFactorAuthentication
 
     def setup_label(type)
       case type
-      when 'backup_code'
-        t('two_factor_authentication.two_factor_choice_options.backup_code')
-      when 'piv_cac'
-        t('two_factor_authentication.two_factor_choice_options.piv_cac')
       when 'phone'
         t('two_factor_authentication.two_factor_choice_options.phone')
       when 'sms'
         t('two_factor_authentication.two_factor_choice_options.sms')
       when 'voice'
         t('two_factor_authentication.two_factor_choice_options.voice')
-      when 'webauthn'
-        t('two_factor_authentication.two_factor_choice_options.webauthn')
-      when 'webauthn_platform'
-        t('two_factor_authentication.two_factor_choice_options.webauthn_platform')
       else
         raise "Unsupported setup method: #{type}"
       end
@@ -115,8 +97,6 @@ module TwoFactorAuthentication
         t('two_factor_authentication.login_options.auth_app_info')
       when 'backup_code'
         t('two_factor_authentication.login_options.backup_code_info')
-      when 'personal_key'
-        t('two_factor_authentication.login_options.personal_key_info')
       when 'piv_cac'
         t('two_factor_authentication.login_options.piv_cac_info')
       when 'webauthn'

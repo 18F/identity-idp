@@ -17,7 +17,6 @@ RSpec.describe Idv::PersonalKeyController do
       gpo_verification_needed: false,
       in_person_verification_needed: false,
     )
-    idv_session.pii = profile_maker.pii_attributes
     idv_session.profile_id = profile.id
     idv_session.personal_key = profile.personal_key
     subject.idv_session.address_verification_mechanism = 'phone'
@@ -155,7 +154,7 @@ RSpec.describe Idv::PersonalKeyController do
 
       expect(PersonalKeyGenerator.new(user).verify(code)).to eq true
       expect(user.profiles.first.recover_pii(normalize_personal_key(code))).to eq(
-        subject.idv_session.pii,
+        Pii::Attributes.new_from_hash(applicant),
       )
     end
 
@@ -208,6 +207,12 @@ RSpec.describe Idv::PersonalKeyController do
         patch :update
 
         expect(subject.user_session[:need_personal_key_confirmation]).to eq(false)
+      end
+
+      it 'sets idv_session.personal_key_acknowledged' do
+        expect { patch :update }.to change {
+                                      idv_session.personal_key_acknowledged
+                                    }.from(nil).to eql(true)
       end
 
       it 'logs key submitted event' do

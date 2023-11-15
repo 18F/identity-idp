@@ -94,6 +94,9 @@ en:
       exit:
         with_sp: Exit %{app_name} and return to %{sp_name}
         without_sp: Exit identity verification and go to your account page
+      gpo:
+        rate_limited:
+          heading: Try again later
       phone:
         heading: We could not match this phone number to other records
         jobfail: Something went wrong and we cannot process your request at this time.
@@ -175,10 +178,8 @@ en:
         JavaScript to continue this process.'
     gpo:
       alert_info: 'We sent a letter with your verification code to:'
-      alert_spam_warning_html: You can’t request more letters right now. Your previous
-        letter request was on <strong>%{date_letter_was_sent}</strong>.
-      change_to_verification_code_html: 'The <strong>one-time code</strong> from your
-        letter is now referred to as <strong>verification code</strong>.'
+      alert_rate_limit_warning_html: You can’t request more letters right now. Your
+        previous letter request was on <strong>%{date_letter_was_sent}</strong>.
       clear_and_start_over: Clear your information and start over
       did_not_receive_letter:
         form:
@@ -286,6 +287,8 @@ en:
           it.
         no_pii: TEST SITE - Do not use real personal information (demo purposes only) -
           TEST SITE
+      verify_info: We read your information from your ID. Review it and make any
+        updates before submitting for verification.
       verifying: Verifying…
     titles:
       activated: Your identity has already been verified

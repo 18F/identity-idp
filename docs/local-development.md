@@ -24,7 +24,7 @@ If not using macOS:
     - Ruby. Choose the version [in the `.ruby-version` file](../.ruby-version)
     - [PostgreSQL](http://www.postgresql.org/download/)
     - [PostGIS](https://postgis.net/documentation/getting_started/#installing-postgis)
-        - Note: if you run into errors installing `postgis` or creating the databse, check [the troubleshooting docs](./troubleshooting.md#errors-related-to-the-databse).
+        - Note: if you run into errors installing `postgis` or creating the database, check [the troubleshooting docs](./troubleshooting.md#errors-related-to-the-databse).
     - [Redis 7+](http://redis.io/)
     - [Node.js v18](https://nodejs.org)
     - [Yarn](https://yarnpkg.com/en/)
@@ -56,6 +56,25 @@ If not using macOS:
 
     You should now be able to go to open up your favorite browser, go to `localhost:3000` and see your local development environment running.
 
+### Simulating a partner authentication request
+
+Typically, a person who uses Login.gov will arrive from a partner application, and their experience
+on Login.gov will be customized to incorporate the name and logo of the partner. They will also be
+asked to consent to share their information with the partner before being sent back.
+
+To simulate a true end-to-end user experience, you can either...
+
+- Use the built-in test controller for SAML logins at http://localhost:3000/test/saml/login
+- Or, run a sample partner application, which is configured by default to run with your local IdP instance:
+   - OIDC: https://github.com/18F/identity-oidc-sinatra
+      - Runs at http://localhost:9292/
+   - SAML: https://github.com/18F/identity-saml-sinatra
+      - Runs at http://localhost:4567/
+
+Running the sample application requires a few additional steps, but can be useful if you want to
+test the experience of a user being redirected to an external site, or if you want to configure
+different options of the authentication request, such as AAL or IAL.
+
 ### Running tests locally
 
   Login.gov uses the following tools for our testing:
@@ -75,7 +94,7 @@ If not using macOS:
   $ make fast_test
   ```
 
-  Check out our Makefile commands learn more about how you can customize this command to run specific tests using rspec: https://github.com/18F/identity-idp/blob/main/Makefile#L41
+  Check out our Makefile commands and learn more about how you can customize this command to run specific tests using rspec: https://github.com/18F/identity-idp/blob/main/Makefile#L41
 
   To test a specific spec file with rspec, you may need to add the following configuration to `/config/application.yml` so the tests do not crash:
   ```

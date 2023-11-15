@@ -201,9 +201,11 @@ es:
       document_capture_front: Parte delantera de su documento de identidad
       front: Anverso de su licencia de conducir o identificación estatal
       getting_started: Vamos a verificar su identidad para %{sp_name}
+      how_to_verify: Elija cómo quiere verificar su identidad
       hybrid_handoff: '¿Cómo desea añadir su documento de identidad?'
       interstitial: Estamos procesando sus imágenes
       lets_go: Cómo funciona la verificación de su identidad
+      no_ssn: ¿No tiene un número de Seguro Social?
       phone_question: ¿Tiene un teléfono con el que pueda tomar fotos de su documento
         de identidad?
       review_issues: Revise sus imágenes e inténtelo de nuevo
@@ -214,7 +216,9 @@ es:
       text_message: Enviamos un mensaje a su teléfono
       upload_from_computer: Continuar en esta computadora
       upload_from_phone: Utilice su teléfono para tomar las fotos
+      verify_at_post_office: Verifique su identidad en una oficina de correos
       verify_identity: Verifique su identidad
+      verify_online: Verifique su identidad en línea
       welcome: Comience a verificar su identidad
     hybrid_flow_warning:
       explanation_html: Usted está utilizando <strong>%{app_name}</strong> para
@@ -240,9 +244,15 @@ es:
       document_capture_intro_acknowledgment: Recopilaremos información sobre usted
         leyendo su licencia de conducir o identificación estatal. Usamos esta
         información para verificar su identidad.
+      exit:
+        with_sp: Salir de %{app_name} y volver a %{sp_name}
+        without_sp: Salir de la verificación de identidad e ir a la página de su cuenta
       getting_started_html: '%{sp_name} necesita asegurarse de que es usted realmente
         y no alguien que se hace pasar por usted. %{link_html}'
       getting_started_learn_more: Obtenga más información sobre lo que necesita para verificar su identidad
+      how_to_verify: Tiene la opción de verificar su identidad en línea o en persona
+        en una oficina de correos participante.
+      how_to_verify_troubleshooting_options_header: ¿Quiere saber más sobre cómo verificar su identidad?
       hybrid_handoff: Recopilaremos información sobre usted leyendo su documento de
         identidad expedido por el estado.
       image_loaded: Imagen cargada
@@ -260,6 +270,8 @@ es:
         completar la verificación de tu identidad.
       link_sent_complete_polling: El siguiente paso se cargará automáticamente una vez
         que verifiques tu identidad a través de tu teléfono.
+      no_ssn: Debe tener un número de Seguro Social para finalizar la verificación de
+        su identidad.
       privacy: '%{app_name} es un sitio web gubernamental seguro que cumple con las
         normas más estrictas de protección de datos. Utilizamos sus datos para
         verificar su identidad.'
@@ -275,8 +287,21 @@ es:
       upload_from_phone: No tendrá que volver a iniciar sesión y volverá a cambiar a
         esta computadora después de tomar las fotos. Su teléfono móvil debe
         tener una cámara y un navegador web.
+      verify_at_post_office_description: Esta opción es mejor si no tiene un
+        dispositivo móvil o una manera fácil de tomar fotografías de su
+        identificación.
+      verify_at_post_office_instruction: Ingresará su información de identificación en
+        línea y verificará tu identidad en persona en una oficina de correos
+        participante.
+      verify_at_post_office_link_text: Obtenga más información sobre la verificación en persona
       verify_identity: Le preguntaremos sus datos personales para verificar su
         identidad comparándola con los registros públicos.
+      verify_online_description: La mayoría de los usuarios finalizan este proceso de
+        una sola vez. Esta opción es mejor si tiene un dispositivo móvil o una
+        forma de tomar fotografías de su identificación.
+      verify_online_instruction: Tomará fotografías de tu identificación para
+        verificar tu identidad completamente en línea.
+      verify_online_link_text: Obtenga más información sobre la verificación en línea
       welcome: '%{sp_name} necesita asegurarse de que es usted y no es alguien que se
         hace pasar por usted.'
       you_entered: 'Ud. entregó:'
@@ -302,6 +327,15 @@ es:
         - '<strong>Verificar por correo</strong>: Le enviaremos una carta a su
           domicilio. Esto tarda entre <strong>5 y 10 días</strong>.'
       welcome: 'Necesitará su:'
+    not_ready:
+      button_nosp: Cancelar y volver a su perfil
+      button_sp: Salir de %{app_name} y volver a %{sp_name}
+      content_nosp: Si sale ahora de %{app_name}, no habrá verificado su identidad.
+        Puede volver más tarde para completar este proceso.
+      content_sp: Si sale ahora de %{app_name} y regresa a %{sp_name}, no habrá
+        verificado su identidad. Puede volver más tarde para completar este
+        proceso.
+      header: ¿No está listo para enviar las fotos?
     phone_question:
       do_not_have: No tengo teléfono
     tips:
@@ -311,6 +345,7 @@ es:
       document_capture_id_text2: Tome la foto en una superficie plana
       document_capture_id_text3: No use el flash de su cámara
       document_capture_id_text4: El tamaño del archivo debe ser de al menos 2 MB
+      most_common: Más común
       review_issues_id_header_text: 'Revise las imágenes de su documento de identidad
         expedido por el estado:'
       review_issues_id_text1: '¿Ha usado un fondo oscuro?'

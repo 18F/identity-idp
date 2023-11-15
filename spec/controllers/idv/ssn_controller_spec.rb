@@ -63,7 +63,7 @@ RSpec.describe Idv::SsnController do
     it 'renders the show template' do
       get :show
 
-      expect(response).to render_template :show
+      expect(response).to render_template 'idv/shared/ssn'
     end
 
     it 'sends analytics_visited event' do
@@ -82,6 +82,11 @@ RSpec.describe Idv::SsnController do
 
     it 'adds a threatmetrix session id to idv_session' do
       expect { get :show }.to change { subject.idv_session.threatmetrix_session_id }.from(nil)
+    end
+
+    it 'does not change threatmetrix_session_id when updating ssn' do
+      subject.idv_session.ssn = ssn
+      expect { get :show }.not_to change { subject.idv_session.threatmetrix_session_id }
     end
 
     context 'with an ssn in idv_session' do
@@ -104,7 +109,7 @@ RSpec.describe Idv::SsnController do
         it 'does not redirect' do
           get :show
 
-          expect(response).to render_template :show
+          expect(response).to render_template 'idv/shared/ssn'
         end
       end
     end
@@ -187,14 +192,6 @@ RSpec.describe Idv::SsnController do
           expect(subject.idv_session.applicant).to be_blank
         end
       end
-
-      it 'does not change threatmetrix_session_id when updating ssn' do
-        subject.idv_session.ssn = ssn
-        put :update, params: params
-        session_id = subject.idv_session.threatmetrix_session_id
-        subject.threatmetrix_view_variables
-        expect(subject.idv_session.threatmetrix_session_id).to eq(session_id)
-      end
     end
 
     context 'with invalid ssn' do
@@ -221,7 +218,7 @@ RSpec.describe Idv::SsnController do
       it 'renders the show template with an error message' do
         put :update, params: params
 
-        expect(response).to have_rendered(:show)
+        expect(response).to have_rendered('idv/shared/ssn')
         expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
         expect(response.body).to include(t('idv.errors.pattern_mismatch.ssn'))
       end

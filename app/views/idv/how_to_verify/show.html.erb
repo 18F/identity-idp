@@ -1,0 +1,89 @@
+<% self.title = t('doc_auth.headings.how_to_verify') %>
+
+<%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.how_to_verify')) %>
+<p id='how-to-verify-info'><%= t('doc_auth.info.how_to_verify') %></p>
+
+<%= simple_form_for(
+      @idv_how_to_verify_form,
+      html: { autocomplete: 'off' },
+      method: :put,
+      url: idv_how_to_verify_url,
+    ) do |f|
+%>
+  <div role="group" aria-labelledby="how-to-verify-info">
+    <%= f.radio_button(
+          :selection,
+          Idv::HowToVerifyForm::REMOTE,
+          class: 'usa-radio__input usa-radio__input--tile',
+        ) %>
+    <%= f.label(
+          :selection_remote,
+          class: 'usa-radio__label usa-radio__label--illustrated usa-radio__label-illustrated-large',
+        ) do %>
+          <%= image_tag asset_url('idv/remote.svg'),
+                        width: 88,
+                        height: 92,
+                        class: 'usa-radio__image',
+                        alt: t('image_description.laptop_and_phone')
+          %>
+          <div class="usa-radio__label--text">
+            <span class="usa-tag usa-tag--informative">
+              <%= t('doc_auth.tips.most_common') %>
+            </span>
+            <h3><%= t('doc_auth.headings.verify_online') %></h3>
+            <span class="usa-radio__label-description">
+              <p><%= t('doc_auth.info.verify_online_instruction') %></p>
+              <p><%= t('doc_auth.info.verify_online_description') %></p>
+            </span>
+          </div>
+        <% end %>
+    <%= f.radio_button(
+          :selection,
+          Idv::HowToVerifyForm::IPP,
+          class: 'usa-radio__input usa-radio__input--tile',
+        ) %>
+    <%= f.label(
+          :selection_ipp,
+          class: 'usa-radio__label usa-radio__label--illustrated usa-radio__label-illustrated-large',
+        ) do %>
+          <%= image_tag asset_url('idv/in-person.svg'),
+                        width: 88,
+                        height: 92,
+                        class: 'usa-radio__image',
+                        alt: t('image_description.post_office')
+          %>
+          <div class="usa-radio__label--text">
+            <h3><%= t('doc_auth.headings.verify_at_post_office') %></h3>
+            <span class="usa-radio__label-description">
+              <p><%= t('doc_auth.info.verify_at_post_office_instruction') %></p>
+              <p><%= t('doc_auth.info.verify_at_post_office_description') %></p>
+            </span>
+          </div>
+        <% end %>
+  </div>
+  <%= f.submit t('forms.buttons.continue'), class: 'display-block margin-y-5' %>
+<% end %>
+
+<%= render(
+      'shared/troubleshooting_options',
+      heading_tag: :h3,
+      heading: t('doc_auth.info.how_to_verify_troubleshooting_options_header'),
+      options: [
+        {
+          url: MarketingSite.help_center_article_url(
+            category: 'verify-your-identity',
+            article: 'how-to-verify-your-identity',
+          ),
+          text: t('doc_auth.info.verify_online_link_text'),
+          new_tab: true,
+        },
+        {
+          url: MarketingSite.help_center_article_url(
+            category: 'verify-your-identity',
+            article: 'verify-your-identity-in-person',
+          ),
+          text: t('doc_auth.info.verify_at_post_office_link_text'),
+          new_tab: true,
+        },
+      ],
+    ) %>

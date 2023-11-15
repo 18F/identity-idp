@@ -75,6 +75,20 @@ RSpec.describe Idv::Session do
     end
   end
 
+  describe '#acknowledge_personal_key!' do
+    before do
+      subject.personal_key = 'ABCD1234'
+    end
+    it 'clears personal_key' do
+      expect { subject.acknowledge_personal_key! }.to change { subject.personal_key }.to eql(nil)
+    end
+    it 'sets personal_key_acknowledged' do
+      expect { subject.acknowledge_personal_key! }.to change {
+                                                        subject.personal_key_acknowledged
+                                                      }.from(nil).to eql(true)
+    end
+  end
+
   describe '#add_failed_phone_step_number' do
     it 'adds uniq phone numbers in e164 format' do
       subject.add_failed_phone_step_number('+1703-555-1212')
@@ -108,7 +122,6 @@ RSpec.describe Idv::Session do
         subject.address_verification_mechanism = 'phone'
         subject.vendor_phone_confirmation = true
         subject.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE
-        allow(subject).to receive(:move_pii_to_user_session)
       end
 
       it 'completes the profile if the user has completed OTP phone confirmation' do
@@ -119,7 +132,6 @@ RSpec.describe Idv::Session do
           subject.create_profile_from_applicant_with_password(user.password)
           profile = subject.profile
 
-          expect(subject).to have_received(:move_pii_to_user_session)
           expect(profile.activated_at).to eq now
           expect(profile.active).to eq true
           expect(profile.deactivation_reason).to eq nil
@@ -127,6 +139,10 @@ RSpec.describe Idv::Session do
           expect(profile.gpo_verification_pending_at.present?).to eq false
           expect(profile.initiating_service_provider).to eq nil
           expect(profile.verified_at).to eq now
+
+          pii_from_session = Pii::Cacher.new(user, user_session).fetch
+          expect(pii_from_session).to_not be_nil
+          expect(pii_from_session.ssn).to eq(Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn])
         end
       end
 
@@ -135,7 +151,6 @@ RSpec.describe Idv::Session do
         subject.create_profile_from_applicant_with_password(user.password)
         profile = subject.profile
 
-        expect(subject).not_to have_received(:move_pii_to_user_session)
         expect(profile.activated_at).to eq nil
         expect(profile.active).to eq false
         expect(profile.deactivation_reason).to eq nil
@@ -143,6 +158,10 @@ RSpec.describe Idv::Session do
         expect(profile.gpo_verification_pending_at.present?).to eq true
         expect(profile.initiating_service_provider).to eq nil
         expect(profile.verified_at).to eq nil
+
+        pii_from_session = Pii::Cacher.new(user, user_session).fetch
+        expect(pii_from_session).to_not be_nil
+        expect(pii_from_session.ssn).to eq(Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn])
       end
 
       context 'with establishing in person enrollment' do
@@ -161,7 +180,6 @@ RSpec.describe Idv::Session do
           subject.create_profile_from_applicant_with_password(user.password)
           profile = subject.profile
 
-          expect(subject).not_to have_received(:move_pii_to_user_session)
           expect(profile.activated_at).to eq nil
           expect(profile.active).to eq false
           expect(profile.in_person_verification_pending?).to eq(true)
@@ -169,6 +187,10 @@ RSpec.describe Idv::Session do
           expect(profile.gpo_verification_pending_at.present?).to eq false
           expect(profile.initiating_service_provider).to eq nil
           expect(profile.verified_at).to eq nil
+
+          pii_from_session = Pii::Cacher.new(user, user_session).fetch
+          expect(pii_from_session).to_not be_nil
+          expect(pii_from_session.ssn).to eq(Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE[:ssn])
         end
 
         it 'creates a USPS enrollment' do
@@ -195,14 +217,12 @@ RSpec.describe Idv::Session do
       before do
         subject.address_verification_mechanism = 'gpo'
         subject.vendor_phone_confirmation = false
-        allow(subject).to receive(:move_pii_to_user_session)
       end
 
       it 'sets profile to pending gpo verification' do
         subject.create_profile_from_applicant_with_password(user.password)
         profile = subject.profile
 
-        expect(subject).to have_received(:move_pii_to_user_session)
         expect(profile.activated_at).to eq nil
         expect(profile.active).to eq false
         expect(profile.deactivation_reason).to eq nil
@@ -210,6 +230,10 @@ RSpec.describe Idv::Session do
         expect(profile.gpo_verification_pending_at.present?).to eq true
         expect(profile.initiating_service_provider).to eq nil
         expect(profile.verified_at).to eq nil
+
+        pii_from_session = Pii::Cacher.new(user, user_session).fetch
+        expect(pii_from_session).to_not be_nil
+        expect(pii_from_session.ssn).to eq(Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn])
       end
     end
 
@@ -217,14 +241,12 @@ RSpec.describe Idv::Session do
       before do
         subject.address_verification_mechanism = 'phone'
         subject.vendor_phone_confirmation = false
-        allow(subject).to receive(:move_pii_to_user_session)
       end
 
       it 'does not complete the user profile' do
         subject.create_profile_from_applicant_with_password(user.password)
         profile = subject.profile
 
-        expect(subject).not_to have_received(:move_pii_to_user_session)
         expect(profile.activated_at).to eq nil
         expect(profile.active).to eq false
         expect(profile.deactivation_reason).to eq nil
@@ -232,6 +254,10 @@ RSpec.describe Idv::Session do
         expect(profile.gpo_verification_pending_at.present?).to eq true
         expect(profile.initiating_service_provider).to eq nil
         expect(profile.verified_at).to eq nil
+
+        pii_from_session = Pii::Cacher.new(user, user_session).fetch
+        expect(pii_from_session).to_not be_nil
+        expect(pii_from_session.ssn).to eq(Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn])
       end
     end
   end

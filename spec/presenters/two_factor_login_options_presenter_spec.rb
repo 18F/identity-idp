@@ -84,18 +84,18 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
         [
           TwoFactorAuthentication::SmsSelectionPresenter,
           TwoFactorAuthentication::VoiceSelectionPresenter,
-          TwoFactorAuthentication::WebauthnSelectionPresenter,
-          TwoFactorAuthentication::BackupCodeSelectionPresenter,
-          TwoFactorAuthentication::PivCacSelectionPresenter,
+          TwoFactorAuthentication::SignInWebauthnSelectionPresenter,
+          TwoFactorAuthentication::SignInBackupCodeSelectionPresenter,
+          TwoFactorAuthentication::SignInPivCacSelectionPresenter,
           TwoFactorAuthentication::SignInAuthAppSelectionPresenter,
-          TwoFactorAuthentication::PersonalKeySelectionPresenter,
+          TwoFactorAuthentication::SignInPersonalKeySelectionPresenter,
         ],
       )
     end
 
     it 'has only one webauthn selection presenter' do
       webauthn_selection_presenter_count = options_classes.count do |klass|
-        klass == TwoFactorAuthentication::WebauthnSelectionPresenter
+        klass == TwoFactorAuthentication::SignInWebauthnSelectionPresenter
       end
 
       expect(webauthn_selection_presenter_count).to eq 1
@@ -105,7 +105,7 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
       let(:piv_cac_required) { true }
 
       it 'filters to piv method' do
-        expect(options_classes).to eq([TwoFactorAuthentication::PivCacSelectionPresenter])
+        expect(options_classes).to eq([TwoFactorAuthentication::SignInPivCacSelectionPresenter])
       end
 
       context 'in reauthentication context' do
@@ -116,11 +116,11 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
             [
               TwoFactorAuthentication::SmsSelectionPresenter,
               TwoFactorAuthentication::VoiceSelectionPresenter,
-              TwoFactorAuthentication::WebauthnSelectionPresenter,
-              TwoFactorAuthentication::BackupCodeSelectionPresenter,
-              TwoFactorAuthentication::PivCacSelectionPresenter,
+              TwoFactorAuthentication::SignInWebauthnSelectionPresenter,
+              TwoFactorAuthentication::SignInBackupCodeSelectionPresenter,
+              TwoFactorAuthentication::SignInPivCacSelectionPresenter,
               TwoFactorAuthentication::SignInAuthAppSelectionPresenter,
-              TwoFactorAuthentication::PersonalKeySelectionPresenter,
+              TwoFactorAuthentication::SignInPersonalKeySelectionPresenter,
             ],
           )
         end
@@ -133,8 +133,8 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
       it 'filters to phishing resistant methods' do
         expect(options_classes).to eq(
           [
-            TwoFactorAuthentication::WebauthnSelectionPresenter,
-            TwoFactorAuthentication::PivCacSelectionPresenter,
+            TwoFactorAuthentication::SignInWebauthnSelectionPresenter,
+            TwoFactorAuthentication::SignInPivCacSelectionPresenter,
           ],
         )
       end
@@ -147,11 +147,11 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
             [
               TwoFactorAuthentication::SmsSelectionPresenter,
               TwoFactorAuthentication::VoiceSelectionPresenter,
-              TwoFactorAuthentication::WebauthnSelectionPresenter,
-              TwoFactorAuthentication::BackupCodeSelectionPresenter,
-              TwoFactorAuthentication::PivCacSelectionPresenter,
+              TwoFactorAuthentication::SignInWebauthnSelectionPresenter,
+              TwoFactorAuthentication::SignInBackupCodeSelectionPresenter,
+              TwoFactorAuthentication::SignInPivCacSelectionPresenter,
               TwoFactorAuthentication::SignInAuthAppSelectionPresenter,
-              TwoFactorAuthentication::PersonalKeySelectionPresenter,
+              TwoFactorAuthentication::SignInPersonalKeySelectionPresenter,
             ],
           )
         end

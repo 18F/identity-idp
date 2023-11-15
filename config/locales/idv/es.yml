@@ -100,6 +100,9 @@ es:
       exit:
         with_sp: Salir de %{app_name} y volver a %{sp_name}
         without_sp: Salir de la verificación de identidad e ir a la página de su cuenta
+      gpo:
+        rate_limited:
+          heading: Inténtelo de nuevo más tarde
       phone:
         heading: No pudimos encontrar coincidencias entre este número de teléfono y
           otros registros
@@ -184,10 +187,9 @@ es:
         habilitar JavaScript para continuar con este proceso.'
     gpo:
       alert_info: 'Enviamos una carta con su código de verificación a:'
-      alert_spam_warning_html: No puede solicitar más cartas ahora mismo. Su solicitud
-        de carta anterior la hizo el <strong>%{date_letter_was_sent}</strong>.
-      change_to_verification_code_html: 'El <strong>código único</strong> de su carta
-        ahora se conoce como <strong>código de verificación</strong>.'
+      alert_rate_limit_warning_html: No puede solicitar más cartas ahora mismo. Su
+        solicitud de carta anterior la hizo el
+        <strong>%{date_letter_was_sent}</strong>.
       clear_and_start_over: Borrar su información y empezar de nuevo
       did_not_receive_letter:
         form:
@@ -303,6 +305,8 @@ es:
           ellos.
         no_pii: SITIO DE PRUEBA - No utilice información personal real (sólo para
           propósitos de demostración) - SITIO DE PRUEBA
+      verify_info: Leímos sus datos en su identificación. Revíselos y modifíquelos si
+        es necesario antes de enviarlos para la verificación.
       verifying: Verificando…
     titles:
       activated: Ya se verificó tu identidad.

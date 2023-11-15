@@ -17,7 +17,7 @@ else
   troubleshooting_heading = t('components.troubleshooting_options.default_heading')
 end %>
 
-<% title local_assigns.fetch(:title, heading) %>
+<% self.title = local_assigns.fetch(:title, heading) %>
 
 <% if local_assigns[:current_step] and defined?(step_indicator_steps) %>
   <% content_for(:pre_flash_content) do %>

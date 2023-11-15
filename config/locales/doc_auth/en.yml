@@ -171,9 +171,11 @@ en:
       document_capture_front: Front of your ID
       front: Front of your driver’s license or state ID
       getting_started: Let’s verify your identity for %{sp_name}
+      how_to_verify: Choose how you want to verify your identity
       hybrid_handoff: How would you like to add your ID?
       interstitial: We are processing your images
       lets_go: How verifying your identity works
+      no_ssn: Don’t have a Social Security number?
       phone_question: Do you have a phone you can use to take photos of your ID?
       review_issues: Check your images and try again
       secure_account: Secure your account
@@ -183,7 +185,9 @@ en:
       text_message: We sent a message to your phone
       upload_from_computer: Continue on this computer
       upload_from_phone: Use your phone to take photos
+      verify_at_post_office: Verify your identity at a Post Office
       verify_identity: Verify your identity
+      verify_online: Verify your identity online
       welcome: Get started verifying your identity
     hybrid_flow_warning:
       explanation_html: You’re using <strong>%{app_name}</strong> to verify your
@@ -206,9 +210,15 @@ en:
       document_capture_intro_acknowledgment: We’ll collect information about you by
         reading your driver’s license or state ID card. We use this information
         to verify your identity.
+      exit:
+        with_sp: Exit %{app_name} and return to %{sp_name}
+        without_sp: Exit identity verification and go to your account page
       getting_started_html: '%{sp_name} needs to make sure you are you — not someone
         pretending to be you. %{link_html}'
       getting_started_learn_more: Learn more about what you need to verify your identity
+      how_to_verify: You have the option to verify your identity online, or in person
+        at a participating Post Office
+      how_to_verify_troubleshooting_options_header: Want to learn more about how to verify your identity?
       hybrid_handoff: We’ll collect information about you by reading your state‑issued ID.
       image_loaded: Image loaded
       image_loading: Image loading
@@ -223,6 +233,7 @@ en:
         your state‑issued ID.
       link_sent_complete_no_polling: When you are done, click Continue here to finish verifying your identity.
       link_sent_complete_polling: The next step will load automatically.
+      no_ssn: You must have a Social Security number to finish verifying your identity.
       privacy: '%{app_name} is a secure, government website that adheres to the
         highest standards in data protection. We use your data to verify your
         identity.'
@@ -237,8 +248,18 @@ en:
       upload_from_phone: You won’t have to sign in again, and you’ll switch back to
         this computer after you take photos. Your mobile phone must have a
         camera and a web browser.
+      verify_at_post_office_description: This option is better if you don’t have a
+        mobile device or an easy way to take photos of your ID.
+      verify_at_post_office_instruction: You’ll enter your ID information online, and
+        verify your identity in person at a participating Post Office.
+      verify_at_post_office_link_text: Learn more about verifying in person
       verify_identity: We’ll ask for your personal information to verify your identity
         against public records.
+      verify_online_description: This option is better if you have a mobile device or
+        a way to take photos of your ID.
+      verify_online_instruction: You’ll take photos of your ID to verify your identity
+        fully online. Most users finish this process in one sitting.
+      verify_online_link_text: Learn more about verifying online
       welcome: '%{sp_name} needs to make sure you are you — not someone pretending to
         be you.'
       you_entered: 'You entered:'
@@ -263,6 +284,15 @@ en:
         - '<strong>Verify by mail</strong>: We’ll mail a letter to your home
           address. This takes <strong>5 to 10 days</strong>.'
       welcome: 'You will need your:'
+    not_ready:
+      button_nosp: Cancel and return to your profile
+      button_sp: Exit %{app_name} and return to %{sp_name}
+      content_nosp: If you exit %{app_name} now, you will not have verified your
+        identity. You can return later to finish this process.
+      content_sp: If you exit %{app_name} now and return to %{sp_name}, you will not
+        have verified your identity. You can return later to finish this
+        process.
+      header: Not ready to add photos?
     phone_question:
       do_not_have: I don’t have a phone
     tips:
@@ -272,6 +302,7 @@ en:
       document_capture_id_text2: Take the photo on a flat surface
       document_capture_id_text3: Do not use the flash on your camera
       document_capture_id_text4: File size should be at least 2 MB
+      most_common: Most Common
       review_issues_id_header_text: 'Review the images of your state‑issued ID:'
       review_issues_id_text1: Did you use a dark background?
       review_issues_id_text2: Did you take the photo on a flat surface?

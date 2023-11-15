@@ -23,6 +23,13 @@ RSpec.describe Idv::PhoneQuestionController do
     subject.user_session['idv/doc_auth'] = {}
     subject.idv_session.idv_consent_given = true
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
+    allow(AbTests::IDV_PHONE_QUESTION).to receive(:bucket).and_return(:show_phone_question)
+  end
+
+  describe '#step_info' do
+    it 'returns a valid StepInfo object' do
+      expect(Idv::PhoneQuestionController.step_info).to be_valid
+    end
   end
 
   describe 'before_actions' do
@@ -37,13 +44,6 @@ RSpec.describe Idv::PhoneQuestionController do
       expect(subject).to have_actions(
         :before,
         :check_for_mail_only_outage,
-      )
-    end
-
-    it 'checks that agreement step is complete' do
-      expect(subject).to have_actions(
-        :before,
-        :confirm_agreement_step_complete,
       )
     end
 
@@ -82,6 +82,7 @@ RSpec.describe Idv::PhoneQuestionController do
 
     context 'agreement step is not complete' do
       before do
+        subject.idv_session.welcome_visited = true
         subject.idv_session.idv_consent_given = nil
       end
 
@@ -89,6 +90,12 @@ RSpec.describe Idv::PhoneQuestionController do
         get :show
 
         expect(response).to redirect_to(idv_agreement_url)
+      end
+
+      it 'phone_with_camera not set in idv_session' do
+        get :phone_with_camera
+
+        expect(subject.idv_session.phone_with_camera).to be_nil
       end
     end
 
@@ -137,6 +144,12 @@ RSpec.describe Idv::PhoneQuestionController do
   describe '#phone_with_camera' do
     let(:analytics_name) { :idv_doc_auth_phone_question_submitted }
 
+    it 'invalidates future steps' do
+      expect(subject).to receive(:clear_invalid_steps!)
+
+      get :phone_with_camera
+    end
+
     it 'redirects to hybrid handoff' do
       get :phone_with_camera
 
@@ -147,12 +160,23 @@ RSpec.describe Idv::PhoneQuestionController do
       get :phone_with_camera
 
       expect(@analytics).
-        to have_logged_event(analytics_name, analytics_args.merge!(phone_with_camera: true))
+        to have_logged_event(analytics_name, analytics_args)
+    end
+
+    it 'phone_with_camera set in idv_session' do
+      expect { get :phone_with_camera }.
+        to change { subject.idv_session.phone_with_camera }.from(nil).to true
     end
   end
 
   describe '#phone_without_camera' do
     let(:analytics_name) { :idv_doc_auth_phone_question_submitted }
+
+    it 'invalidates future steps' do
+      expect(subject).to receive(:clear_invalid_steps!)
+
+      get :phone_without_camera
+    end
 
     it 'redirects to document_capture' do
       get :phone_without_camera
@@ -164,12 +188,17 @@ RSpec.describe Idv::PhoneQuestionController do
       get :phone_without_camera
 
       expect(@analytics).
-        to have_logged_event(analytics_name, analytics_args.merge!(phone_with_camera: false))
+        to have_logged_event(analytics_name, analytics_args)
     end
 
     it 'set idv_session flow path to standard' do
       expect { get :phone_without_camera }.
         to change { subject.idv_session.flow_path }.from(nil).to 'standard'
+    end
+
+    it 'phone_with_camera set in idv_session' do
+      expect { get :phone_without_camera }.
+        to change { subject.idv_session.phone_with_camera }.from(nil).to false
     end
   end
 end
