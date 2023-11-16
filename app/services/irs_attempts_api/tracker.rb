@@ -6,7 +6,7 @@ module IrsAttemptsApi
     end
 
     def parse_failure_reason(result)
-      return result.to_h[:error_details] || result.errors.presence
+      return result.to_h[:error_details]&.transform_values(&:keys) || result.errors.presence
     end
   end
 end

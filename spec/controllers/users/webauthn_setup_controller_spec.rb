@@ -392,10 +392,7 @@ RSpec.describe Users::WebauthnSetupController do
                 'errors.webauthn_platform_setup.attestation_error',
                 link: MarketingSite.contact_url,
               )] },
-              error_details: { name: [I18n.t(
-                'errors.webauthn_platform_setup.attestation_error',
-                link: MarketingSite.contact_url,
-              )] },
+              error_details: { name: { attestation_error: true } },
               in_account_creation_flow: false,
               mfa_method_counts: {},
               multi_factor_auth_method: 'webauthn_platform',

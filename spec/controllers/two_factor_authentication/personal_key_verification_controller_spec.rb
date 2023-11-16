@@ -158,7 +158,7 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
         properties = {
           success: false,
           errors: { personal_key: [t('errors.messages.personal_key_incorrect')] },
-          error_details: { personal_key: [:personal_key_incorrect] },
+          error_details: { personal_key: { personal_key_incorrect: true } },
           multi_factor_auth_method: 'personal-key',
           multi_factor_auth_method_created_at: personal_key_generated_at.strftime('%s%L'),
         }

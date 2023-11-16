@@ -132,14 +132,12 @@ RSpec.describe Users::PasswordsController do
         end
 
         it 'renders edit' do
-          password_short_error = {
-            password: [:too_short],
-            password_confirmation: [:too_short],
-          }
-
           expect(@irs_attempts_api_tracker).to receive(:logged_in_password_change).with(
             success: false,
-            failure_reason: password_short_error,
+            failure_reason: {
+              password: [:too_short],
+              password_confirmation: [:too_short],
+            },
           )
 
           patch :update, params: { update_user_password_form: params }
@@ -159,7 +157,10 @@ RSpec.describe Users::PasswordsController do
                 count: Devise.password_length.first,
               )],
             },
-            error_details: password_short_error,
+            error_details: {
+              password: { too_short: true },
+              password_confirmation: { too_short: true },
+            },
             pending_profile_present: false,
             active_profile_present: false,
             user_id: subject.current_user.uuid,
@@ -190,7 +191,7 @@ RSpec.describe Users::PasswordsController do
           expect(@irs_attempts_api_tracker).to receive(:logged_in_password_change).with(
             success: false,
             failure_reason: {
-              password_confirmation: [t('errors.messages.password_mismatch')],
+              password_confirmation: [:mismatch],
             },
           )
 
@@ -203,7 +204,7 @@ RSpec.describe Users::PasswordsController do
               password_confirmation: [t('errors.messages.password_mismatch')],
             },
             error_details: {
-              password_confirmation: [t('errors.messages.password_mismatch')],
+              password_confirmation: { mismatch: true },
             },
             pending_profile_present: false,
             active_profile_present: false,

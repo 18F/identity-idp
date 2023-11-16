@@ -2,12 +2,10 @@ require 'rails_helper'
 
 RSpec.describe SignUp::EmailConfirmationsController do
   describe '#create' do
-    let(:token_not_found_error) { { confirmation_token: [:not_found] } }
-    let(:token_expired_error) { { confirmation_token: [:expired] } }
     let(:analytics_token_error_hash) do
       {
         success: false,
-        error_details: token_not_found_error,
+        error_details: { confirmation_token: { not_found: true } },
         errors: { confirmation_token: ['not found'] },
         user_id: nil,
       }
@@ -16,7 +14,7 @@ RSpec.describe SignUp::EmailConfirmationsController do
       {
         email: nil,
         success: false,
-        failure_reason: token_not_found_error,
+        failure_reason: { confirmation_token: [:not_found] },
       }
     end
 
@@ -117,7 +115,7 @@ RSpec.describe SignUp::EmailConfirmationsController do
       analytics_hash = {
         success: false,
         errors: { confirmation_token: [t('errors.messages.expired')] },
-        error_details: token_expired_error,
+        error_details: { confirmation_token: { expired: true } },
         user_id: email_address.user.uuid,
       }
 
@@ -127,7 +125,7 @@ RSpec.describe SignUp::EmailConfirmationsController do
       expect(@irs_attempts_api_tracker).to receive(:user_registration_email_confirmation).with(
         email: email_address.email,
         success: false,
-        failure_reason: token_expired_error,
+        failure_reason: { confirmation_token: [:expired] },
       )
 
       get :create, params: { confirmation_token: 'foo' }
@@ -149,7 +147,7 @@ RSpec.describe SignUp::EmailConfirmationsController do
       analytics_hash = {
         success: false,
         errors: { confirmation_token: [t('errors.messages.expired')] },
-        error_details: token_expired_error,
+        error_details: { confirmation_token: { expired: true } },
         user_id: user.uuid,
       }
 
@@ -159,7 +157,7 @@ RSpec.describe SignUp::EmailConfirmationsController do
       expect(@irs_attempts_api_tracker).to receive(:user_registration_email_confirmation).with(
         email: email_address.email,
         success: false,
-        failure_reason: token_expired_error,
+        failure_reason: { confirmation_token: [:expired] },
       )
 
       get :create, params: { confirmation_token: 'foo' }

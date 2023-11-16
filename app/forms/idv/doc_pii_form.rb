@@ -49,10 +49,10 @@ module Idv
     def self.pii_like_keypaths
       keypaths = [[:pii]]
       attrs = %i[name dob dob_min_age address1 state zipcode jurisdiction]
-      keypaths << attrs
       attrs.each do |k|
         keypaths << [:errors, k]
         keypaths << [:error_details, k]
+        keypaths << [:error_details, k, k]
       end
       keypaths
     end

@@ -93,16 +93,7 @@ RSpec.describe Idv::PhoneForm do
           unregistered_phone = '+400258567234'
           result = subject.submit(phone: unregistered_phone)
           expect(result.success?).to eq false
-          expect(result.to_h).to include(
-            {
-              error_details: {
-                phone: [t(
-                  'two_factor_authentication.otp_delivery_preference.sms_unsupported',
-                  location: 'Romania',
-                )],
-              },
-            },
-          )
+          expect(result.to_h).to include(error_details: { phone: { sms_unsupported: true } })
         end
       end
 
