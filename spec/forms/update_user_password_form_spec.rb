@@ -34,7 +34,7 @@ RSpec.describe UpdateUserPasswordForm, type: :model do
         }
 
         expect(UpdateUser).not_to receive(:new)
-        expect(ActiveProfileEncryptor).not_to receive(:new)
+        expect(UserProfilesEncryptor).not_to receive(:new)
         expect(subject.submit(params).to_h).to include(
           success: false,
           errors: errors,
@@ -70,11 +70,15 @@ RSpec.describe UpdateUserPasswordForm, type: :model do
     context 'when the user has an active profile' do
       let(:profile) { create(:profile, :active, :verified, pii: { ssn: '1234' }) }
       let(:user) { profile.user }
-      let(:user_session) { { decrypted_pii: { ssn: '1234' }.to_json } }
+      let(:user_session) { {} }
+
+      before do
+        Pii::Cacher.new(user, user_session).save_decrypted_pii({ ssn: '1234' }, profile.id)
+      end
 
       it 'encrypts the active profile' do
-        encryptor = instance_double(ActiveProfileEncryptor)
-        allow(ActiveProfileEncryptor).to receive(:new).
+        encryptor = instance_double(UserProfilesEncryptor)
+        allow(UserProfilesEncryptor).to receive(:new).
           with(user, user_session, password).and_return(encryptor)
         allow(encryptor).to receive(:call)
 
@@ -96,11 +100,21 @@ RSpec.describe UpdateUserPasswordForm, type: :model do
     context 'the user has a pending profile' do
       let(:profile) { create(:profile, :verify_by_mail_pending, :verified, pii: { ssn: '1234' }) }
       let(:user) { profile.user }
+      let(:user_session) { {} }
 
-      it 'does not call ActiveProfileEncryptor' do
-        expect(ActiveProfileEncryptor).to_not receive(:new)
+      before do
+        Pii::Cacher.new(user, user_session).save_decrypted_pii({ ssn: '1234' }, profile.id)
+      end
+
+      it 'encrypts the pending profile' do
+        encryptor = instance_double(UserProfilesEncryptor)
+        allow(UserProfilesEncryptor).to receive(:new).
+          with(user, user_session, password).and_return(encryptor)
+        allow(encryptor).to receive(:call)
 
         subject.submit(params)
+
+        expect(encryptor).to have_received(:call)
       end
 
       it 'logs that the user has a pending profile' do
@@ -114,8 +128,8 @@ RSpec.describe UpdateUserPasswordForm, type: :model do
     end
 
     context 'when the user does not have a profile' do
-      it 'does not call ActiveProfileEncryptor' do
-        expect(ActiveProfileEncryptor).to_not receive(:new)
+      it 'does not call UserProfilesEncryptor' do
+        expect(UserProfilesEncryptor).to_not receive(:new)
 
         subject.submit(params)
       end

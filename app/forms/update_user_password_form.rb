@@ -24,7 +24,7 @@ class UpdateUserPasswordForm
 
   def process_valid_submission
     update_user_password
-    encrypt_user_profile_if_active
+    encrypt_user_profiles
   end
 
   def update_user_password
@@ -32,15 +32,14 @@ class UpdateUserPasswordForm
     UpdateUser.new(user: user, attributes: attributes).call
   end
 
-  def encrypt_user_profile_if_active
-    active_profile = user.active_profile
-    return if active_profile.blank?
+  def encrypt_user_profiles
+    return if user.active_or_pending_profile.blank?
 
     encryptor.call
   end
 
   def encryptor
-    @encryptor ||= ActiveProfileEncryptor.new(user, user_session, password)
+    @encryptor ||= UserProfilesEncryptor.new(user, user_session, password)
   end
 
   def extra_analytics_attributes
