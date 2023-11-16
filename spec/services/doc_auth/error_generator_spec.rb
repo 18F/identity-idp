@@ -508,7 +508,7 @@ RSpec.describe DocAuth::ErrorGenerator do
     end
   end
 
-  context 'The correct errors are delivered for selfie' do
+  context 'The correct errors are delivered for selfie with metric error' do
     let(:metrics) do
       {
         front: {
@@ -529,10 +529,14 @@ RSpec.describe DocAuth::ErrorGenerator do
       let(:liveness_enabled) { true }
       context 'when liveness check passed' do
         let(:face_match_result) { 'Pass' }
-        it 'generate no error' do
-          error_info = build_error_info(doc_result: 'Failed', image_metrics: metrics)
-          errors = described_class.new(config).generate_doc_auth_errors(error_info)
-          expect(errors).to be_empty
+        it 'DocAuthResult is Passed with no other error' do
+          error_info = build_error_info(doc_result: 'Passed', image_metrics: metrics)
+
+          # this is an edge case, the generate_doc_auth_errors function should no be
+          # called when everything is successful
+          expect(warn_notifier).to receive(:call).
+            with(hash_including(:response_info, :message)).once
+          described_class.new(config).generate_doc_auth_errors(error_info)
         end
       end
 
