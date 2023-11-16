@@ -387,6 +387,7 @@ function AcuantCapture(
   async function onUpload(nextValue: File | null) {
     let analyticsPayload: ImageAnalyticsPayload | undefined;
     let hasFailed = false;
+    const acuantCaptureMode = null;
     if (nextValue) {
       const { width, height, fingerprint } = await getImageMetadata(nextValue);
       hasFailed = failedSubmissionImageFingerprints[name]?.includes(fingerprint);
@@ -399,7 +400,7 @@ function AcuantCapture(
         size: nextValue.size,
         failedImageResubmission: hasFailed,
       });
-      trackEvent(`IdV: ${name} image added`, analyticsPayload);
+      trackEvent(`IdV: ${name} image added`, { ...analyticsPayload, acuantCaptureMode });
     }
 
     onChangeAndResetError(nextValue, analyticsPayload);
