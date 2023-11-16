@@ -10,6 +10,7 @@ module Users
     before_action :apply_secure_headers_override
     before_action :set_webauthn_setup_presenter
     before_action :confirm_recently_authenticated_2fa
+    before_action :confirm_already_set_ft
 
     helper_method :in_multi_mfa_selection_flow?
 
@@ -21,9 +22,6 @@ module Users
       )
       result = form.submit(new_params)
       @platform_authenticator = form.platform_authenticator?
-      if ft_unlock_setup_successful_on_account_setup?
-        redirect_to authentication_methods_setup_path
-      end
       @presenter = WebauthnSetupPresenter.new(
         current_user: current_user,
         user_fully_authenticated: user_fully_authenticated?,
@@ -111,9 +109,18 @@ module Users
 
     private
 
-    def ft_unlock_setup_successful_on_account_setup?
-      @platform_authenticator && in_account_creation_flow? &&
-        current_user.webauthn_configurations.platform_authenticators.present?
+    def confirm_already_set_ft
+      form = WebauthnVisitForm.new(
+        user: current_user,
+        url_options: url_options,
+        in_mfa_selection_flow: in_multi_mfa_selection_flow?,
+      )
+      result = form.submit(new_params)
+      @platform_authenticator = form.platform_authenticator?
+      if @platform_authenticator && in_account_creation_flow? && result &&
+         current_user.webauthn_configurations.platform_authenticators.present?
+        redirect_to authentication_methods_setup_path
+      end
     end
 
     def set_webauthn_setup_presenter
