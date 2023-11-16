@@ -150,8 +150,8 @@ fr:
           class='usa-sr-only'>des astérisques, </span><span
           aria-hidden='true'>*</span> <span class='usa-sr-only'>des
           tirets</span><span aria-hidden='true'>-</span>"
-        state_id_number_texas_hint: Il s'agit du numéro à huit chiffres figurant sur votre
-          carte d'identité. Entrez uniquement des chiffres dans ce champ.
+        state_id_number_texas_hint: Il s’agit du numéro à huit chiffres figurant sur
+          votre carte d’identité. Entrez uniquement des chiffres dans ce champ.
         zipcode: Code postal
     headings:
       address: Indiquez votre adresse résidentielle actuelle
