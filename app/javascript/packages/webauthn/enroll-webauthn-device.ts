@@ -94,6 +94,10 @@ async function enrollWebauthnDevice({
     },
   })) as PublicKeyCredential;
 
+  if (PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable()) {
+    
+  };
+
   const response = credential.response as AuthenticatorAttestationResponseBrowserSupport;
   const authenticatorData = response.getAuthenticatorData?.();
   const authenticatorDataFlagsValue = authenticatorData
