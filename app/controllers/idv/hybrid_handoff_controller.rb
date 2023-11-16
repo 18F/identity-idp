@@ -62,7 +62,7 @@ module Idv
         phone_number: formatted_destination_phone,
       )
 
-      if !telephony_result.success?
+      if telephony_result.success?
         redirect_to idv_link_sent_url
       else
         redirect_to idv_hybrid_handoff_url
