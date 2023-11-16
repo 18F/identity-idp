@@ -1,7 +1,5 @@
 module Idv
   class EnterPasswordController < ApplicationController
-    before_action :personal_key_confirmed
-
     include IdvStepConcern
     include StepIndicatorConcern
     include PhoneConfirmation
@@ -9,6 +7,7 @@ module Idv
 
     before_action :confirm_verify_info_step_complete
     before_action :confirm_address_step_complete
+    before_action :confirm_no_profile_yet
     before_action :confirm_current_password, only: [:create]
 
     helper_method :step_indicator_step
@@ -152,14 +151,22 @@ module Idv
       params.fetch(:user, {})[:password].presence
     end
 
-    def personal_key_confirmed
-      return unless current_user
-      return unless current_user.active_profile.present? && need_personal_key_confirmation?
-      redirect_to next_step
-    end
+    def confirm_no_profile_yet
+      # When no profile has been minted yet, keep them on this page.
+      return if !idv_session.profile.present?
 
-    def need_personal_key_confirmation?
-      user_session[:need_personal_key_confirmation]
+      # If the user is in the IPP flow, but we haven't actually managed to
+      # set up their enrollment (due to exception), allow them to
+      # see this page so they can re-submit and attempt to establish the
+      # enrollment.
+      is_ipp_and_needs_to_enroll_with_usps =
+        idv_session.profile.in_person_verification_pending? &&
+        idv_session.profile.in_person_enrollment&.establishing?
+
+      return if is_ipp_and_needs_to_enroll_with_usps
+
+      # Otherwise, move the user on
+      redirect_to next_step
     end
 
     def next_step

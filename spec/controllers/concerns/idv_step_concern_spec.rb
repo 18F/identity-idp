@@ -126,10 +126,35 @@ RSpec.describe 'IdvStepConcern' do
         allow(subject).to receive(:current_user).and_return(user)
       end
 
-      it 'redirects to activated page' do
-        get :show
+      context 'and user has not yet acknowledged personal key' do
+        before do
+          idv_session.personal_key = 'ABCD-1234'
+        end
+        it 'does not redirect' do
+          get :show
+          expect(response).not_to redirect_to idv_activated_url
+        end
 
-        expect(response).to redirect_to idv_activated_url
+        context 'but they do not have a personal key to acknowledge' do
+          before do
+            idv_session.personal_key = nil
+          end
+          it 'redirects to activated page' do
+            get :show
+            expect(response).to redirect_to idv_activated_url
+          end
+        end
+      end
+
+      context 'and user has acknowledged personal key' do
+        before do
+          idv_session.acknowledge_personal_key!
+        end
+        it 'redirects to activated page' do
+          get :show
+
+          expect(response).to redirect_to idv_activated_url
+        end
       end
     end
 
