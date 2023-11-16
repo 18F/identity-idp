@@ -35,8 +35,6 @@ module Idv
 
       init_profile
 
-      user_session[:need_personal_key_confirmation] = true
-
       flash[:success] =
         if gpo_user_flow?
           t('idv.messages.gpo.letter_on_the_way')

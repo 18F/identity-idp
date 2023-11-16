@@ -21,8 +21,6 @@ module Idv
     end
 
     def update
-      user_session[:need_personal_key_confirmation] = false
-
       analytics.idv_personal_key_submitted(
         address_verification_method: address_verification_method,
         deactivation_reason: idv_session.profile&.deactivation_reason,

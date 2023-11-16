@@ -296,8 +296,6 @@ RSpec.describe Idv::EnterPasswordController do
       it 'redirects to confirmation path after user presses the back button' do
         put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
 
-        expect(subject.user_session[:need_personal_key_confirmation]).to eq(true)
-
         allow_any_instance_of(User).to receive(:active_profile).and_return(true)
         get :new
         expect(response).to redirect_to idv_personal_key_path
