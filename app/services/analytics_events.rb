@@ -3781,13 +3781,6 @@ module AnalyticsEvents
     track_event('Personal key reactivation: Account reactivated with personal key')
   end
 
-  # Account reactivated with personal key as MFA
-  def personal_key_reactivation_sign_in
-    track_event(
-      'Personal key reactivation: Account reactivated with personal key as MFA',
-    )
-  end
-
   # @param [Boolean] success
   # @param [Hash] errors
   # @param [Hash] pii_like_keypaths
