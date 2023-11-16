@@ -11,7 +11,7 @@ function jurisdictionExtrasHintText(jurisdiction) {
 
 export function showOrHideJurisdictionExtras(jurisdictionCode) {
   document.querySelectorAll('.jurisdiction-extras').forEach((element) => {
-    element.innerHTML = jurisdictionExtrasHintText(jurisdictionCode);
+    element.textContent = jurisdictionExtrasHintText(jurisdictionCode);
   });
 }
 
