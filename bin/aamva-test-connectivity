@@ -4,4 +4,4 @@ ENV['LOGIN_TASK_LOG_LEVEL'] ||= 'warn'
 require_relative '../config/environment.rb'
 require 'aamva_test'
 
-puts AamvaTest.new.test_connectivity
+p AamvaTest.new.test_connectivity
