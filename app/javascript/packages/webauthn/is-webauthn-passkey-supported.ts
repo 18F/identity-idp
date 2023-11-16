@@ -25,6 +25,6 @@ function isQualifyingAndroidDevice(): boolean {
 }
 
 const isWebauthnPasskeySupported: IsWebauthnPasskeySupported = () =>
-  (isQualifyingIOSDevice() || isQualifyingAndroidDevice());
+  isQualifyingIOSDevice() || isQualifyingAndroidDevice();
 
 export default isWebauthnPasskeySupported;

@@ -14,7 +14,10 @@ export class WebauthnInputElement extends HTMLElement {
   }
 
   async isPublicKeyCredentialSupported() {
-    return window.PublicKeyCredential && await window.PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable()
+    return (
+      window.PublicKeyCredential &&
+      (await window.PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable())
+    );
   }
 
   toggleVisibleIfPasskeySupported() {
