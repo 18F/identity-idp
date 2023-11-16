@@ -20,12 +20,12 @@ module Idv
       )
 
       if result.success?
-        if how_to_verify_form_params['selection'] == Idv::HowToVerifyForm::REMOTE
+        if how_to_verify_form_params['selection'] == 'remote'
           # todo: think about resetting this value if the user cancels/goes back
           idv_session.skip_doc_auth = false
           redirect_to idv_hybrid_handoff_url
         else
-          idv_session.flow_path = "standard"
+          idv_session.flow_path = 'standard'
           idv_session.skip_doc_auth = true
           redirect_to idv_document_capture_url
         end
@@ -61,9 +61,7 @@ module Idv
     end
 
     def how_to_verify_form_params
-      params.require(:idv_how_to_verify_form).permit(:selection, selection: [])
-    rescue ActionController::ParameterMissing
-      ActionController::Parameters.new(selection: [])
+      params.permit(:selection)
     end
   end
 end

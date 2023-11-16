@@ -33,4 +33,29 @@ RSpec.describe Idv::HowToVerifyController do
       expect(response).to render_template :show
     end
   end
+
+  describe '#update' do
+    let(:params) do
+      { selection: selection }
+    end
+    let(:selection) { 'remote' }
+
+    context 'remote' do
+      it 'redirects to hybrid handoff' do
+        put :update, params: params
+
+        expect(response).to redirect_to(idv_hybrid_handoff_url)
+      end
+    end
+
+    context 'ipp' do
+      let(:selection) { 'ipp' }
+
+      it 'redirects to document capture' do
+        put :update, params: params
+
+        expect(response).to redirect_to(idv_document_capture_url)
+      end
+    end
+  end
 end
