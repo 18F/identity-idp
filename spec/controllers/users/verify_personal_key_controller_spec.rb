@@ -87,7 +87,7 @@ RSpec.describe Users::VerifyPersonalKeyController do
     let(:error_text) { 'Incorrect personal key' }
     let(:personal_key_bad_params) { { personal_key: 'baaad' } }
     let(:personal_key_error) { { personal_key: [error_text] } }
-    let(:failure_properties) { { success: false, failure_reason: personal_key_error } }
+    let(:failure_properties) { { success: false } }
     let(:pii_like_keypaths_errors) do
       [
         [:errors, :personal_key],
@@ -127,7 +127,6 @@ RSpec.describe Users::VerifyPersonalKeyController do
         stub_attempts_tracker
 
         expect(@irs_attempts_api_tracker).to receive(:personal_key_reactivation_submitted).with(
-          failure_reason: {},
           success: true,
         ).once
 

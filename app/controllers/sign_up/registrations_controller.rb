@@ -30,7 +30,6 @@ module SignUp
       irs_attempts_api_tracker.user_registration_email_submitted(
         email: permitted_params[:email],
         success: result.success?,
-        failure_reason: result.to_h[:error_details],
       )
 
       if result.success?

@@ -166,7 +166,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
 
   describe '#create' do
     let(:otp_code_error_message) { { otp: [t('errors.messages.confirmation_code_incorrect')] } }
-    let(:success_properties) { { success: true, failure_reason: nil } }
+    let(:success_properties) { { success: true } }
 
     subject(:action) do
       post(
@@ -390,7 +390,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
           pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
         )
         expect(@irs_attempts_api_tracker).to receive(:idv_gpo_verification_submitted).
-          with(success: false, failure_reason: { otp: { confirmation_code_incorrect: true } })
+          with(success: false)
 
         action
 

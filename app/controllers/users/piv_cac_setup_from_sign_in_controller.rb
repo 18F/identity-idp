@@ -43,7 +43,6 @@ module Users
       irs_attempts_api_tracker.mfa_enroll_piv_cac(
         success: result.success?,
         subject_dn: user_piv_cac_form.x509_dn,
-        failure_reason: result.to_h[:error_details],
       )
       if result.success?
         process_valid_submission

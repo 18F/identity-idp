@@ -31,7 +31,6 @@ module Users
         analytics.password_reset_token(**result.to_h)
         irs_attempts_api_tracker.forgot_password_email_confirmed(
           success: result.success?,
-          failure_reason: result.to_h[:error_details],
         )
         if result.success?
           @reset_password_form = ResetPasswordForm.new(build_user)
@@ -52,7 +51,6 @@ module Users
       analytics.password_reset_password(**result.to_h)
       irs_attempts_api_tracker.forgot_password_new_password_submitted(
         success: result.success?,
-        failure_reason: result.to_h[:error_details],
       )
 
       if result.success?
@@ -117,7 +115,6 @@ module Users
       irs_attempts_api_tracker.user_registration_email_submitted(
         email: email,
         success: result.success?,
-        failure_reason: result.to_h[:error_details],
       )
       create_user_event(:account_created, user)
     end

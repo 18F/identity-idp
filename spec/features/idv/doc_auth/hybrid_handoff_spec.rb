@@ -52,7 +52,6 @@ RSpec.feature 'hybrid_handoff step send link and errors' do
       ).with(
         success: true,
         phone_number: '+1 415-555-0199',
-        failure_reason: nil,
       )
 
       expect(Telephony).to receive(:send_doc_auth_link).
@@ -92,7 +91,6 @@ RSpec.feature 'hybrid_handoff step send link and errors' do
       expect(fake_attempts_tracker).to receive(:idv_phone_upload_link_sent).with(
         success: false,
         phone_number: '+1 225-555-1000',
-        failure_reason: { telephony: ['TelephonyError'] },
       )
       fill_in :doc_auth_phone, with: '225-555-1000'
 

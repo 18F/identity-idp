@@ -48,7 +48,6 @@ module Idv
       irs_attempts_api_tracker.idv_phone_submitted(
         success: result.success?,
         phone_number: step_params[:phone],
-        failure_reason: result.to_h[:error_details],
       )
       if result.success?
         submit_proofing_attempt
@@ -96,7 +95,6 @@ module Idv
         phone_number: @idv_phone,
         success: result.success?,
         otp_delivery_method: idv_session.previous_phone_step_params[:otp_delivery_preference],
-        failure_reason: result.success? ? {} : otp_sent_tracker_error(result),
       )
       if result.success?
         redirect_to idv_otp_verification_url

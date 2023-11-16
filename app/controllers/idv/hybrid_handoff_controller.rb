@@ -54,18 +54,15 @@ module Idv
       telephony_result = send_link
       telephony_form_response = build_telephony_form_response(telephony_result)
 
-      failure_reason = nil
       if !telephony_result.success?
-        failure_reason = { telephony: [telephony_result.error.class.name.demodulize] }
         failure(telephony_form_response.errors[:message])
       end
       irs_attempts_api_tracker.idv_phone_upload_link_sent(
         success: telephony_result.success?,
         phone_number: formatted_destination_phone,
-        failure_reason: failure_reason,
       )
 
-      if !failure_reason
+      if !telephony_result.success?
         redirect_to idv_link_sent_url
       else
         redirect_to idv_hybrid_handoff_url
