@@ -1188,7 +1188,7 @@ describe('document-capture/components/acuant-capture', () => {
         mimeType: 'image/jpeg',
         size: sinon.match.number,
         attempt: sinon.match.number,
-        acuantCaptureMode: 'AUTO',
+        acuantCaptureMode: null,
       }),
     );
   });
