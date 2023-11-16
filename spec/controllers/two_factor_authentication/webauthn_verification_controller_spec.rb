@@ -291,6 +291,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
             multi_factor_auth_method_created_at:
               second_webauthn_platform_configuration.created_at.strftime('%s%L'),
             webauthn_configuration_id: nil,
+            frontend_error: 'NotAllowedError',
           )
 
           patch :confirm, params: params
