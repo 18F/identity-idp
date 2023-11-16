@@ -8,7 +8,6 @@ module Idv
       prepend_before_action :note_if_user_did_not_receive_letter
       before_action :confirm_two_factor_authenticated
       before_action :confirm_verification_needed
-      before_action :confirm_letter_recently_enqueued
 
       def index
         # GPO reminder emails include an "I did not receive my letter!" link that results in
@@ -136,15 +135,6 @@ module Idv
       def confirm_verification_needed
         return if current_user.gpo_verification_pending_profile?
         redirect_to account_url
-      end
-
-      def confirm_letter_recently_enqueued
-        # idv session should be clear when user returns to enter code
-        redirect_to idv_letter_enqueued_url if letter_recently_enqueued?
-      end
-
-      def letter_recently_enqueued?
-        idv_session.address_verification_mechanism == 'gpo'
       end
 
       def threatmetrix_enabled?
