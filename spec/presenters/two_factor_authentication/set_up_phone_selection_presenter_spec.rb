@@ -3,8 +3,8 @@ require 'rails_helper'
 RSpec.describe TwoFactorAuthentication::SetUpPhoneSelectionPresenter do
   let(:user_without_mfa) { create(:user) }
   let(:user_with_mfa) { create(:user, :with_phone) }
-  let(:presenter_with_mfa) { described_class.new(configuration: phone, user: user_with_mfa) }
-  let(:presenter_without_mfa) { described_class.new(configuration: phone, user: user_without_mfa) }
+  let(:presenter_with_mfa) { described_class.new(user: user_with_mfa) }
+  let(:presenter_without_mfa) { described_class.new(user: user_without_mfa) }
 
   describe '#info' do
     context 'when a user does not have a phone configuration (first time)' do
