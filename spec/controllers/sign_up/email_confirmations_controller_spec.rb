@@ -14,7 +14,6 @@ RSpec.describe SignUp::EmailConfirmationsController do
       {
         email: nil,
         success: false,
-        failure_reason: { confirmation_token: [:not_found] },
       }
     end
 
@@ -95,7 +94,6 @@ RSpec.describe SignUp::EmailConfirmationsController do
       expect(@irs_attempts_api_tracker).to receive(:user_registration_email_confirmation).with(
         email: email_address.email,
         success: false,
-        failure_reason: { email: [:already_confirmed] },
       )
 
       get :create, params: { confirmation_token: 'foo' }
@@ -125,7 +123,6 @@ RSpec.describe SignUp::EmailConfirmationsController do
       expect(@irs_attempts_api_tracker).to receive(:user_registration_email_confirmation).with(
         email: email_address.email,
         success: false,
-        failure_reason: { confirmation_token: [:expired] },
       )
 
       get :create, params: { confirmation_token: 'foo' }
@@ -157,7 +154,6 @@ RSpec.describe SignUp::EmailConfirmationsController do
       expect(@irs_attempts_api_tracker).to receive(:user_registration_email_confirmation).with(
         email: email_address.email,
         success: false,
-        failure_reason: { confirmation_token: [:expired] },
       )
 
       get :create, params: { confirmation_token: 'foo' }
@@ -227,7 +223,6 @@ RSpec.describe SignUp::EmailConfirmationsController do
       expect(@irs_attempts_api_tracker).to receive(:user_registration_email_confirmation).with(
         email: email_address.email,
         success: true,
-        failure_reason: nil,
       )
 
       get :create, params: { confirmation_token: 'foo' }

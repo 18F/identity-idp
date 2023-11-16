@@ -89,7 +89,6 @@ RSpec.describe Idv::ApiImageUploadForm do
             document_issued: '2019-12-31',
             document_number: '1111111111111',
             document_state: 'MT',
-            failure_reason: nil,
             first_name: 'FAKEY',
             last_name: 'MCFAKERSON',
             success: true,

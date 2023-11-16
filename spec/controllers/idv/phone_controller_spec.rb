@@ -279,10 +279,6 @@ RSpec.describe Idv::PhoneController do
         expect(@irs_attempts_api_tracker).to receive(:idv_phone_submitted).with(
           success: false,
           phone_number: improbable_phone_number,
-          failure_reason: {
-            phone: [:improbable_phone],
-            otp_delivery_preference: [:inclusion],
-          },
         )
 
         put :create, params: improbable_phone_form
@@ -329,7 +325,6 @@ RSpec.describe Idv::PhoneController do
         expect(@irs_attempts_api_tracker).to receive(:idv_phone_submitted).with(
           success: true,
           phone_number: good_phone,
-          failure_reason: nil,
         )
 
         phone_params = {

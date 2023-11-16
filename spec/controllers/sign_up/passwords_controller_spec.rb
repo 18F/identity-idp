@@ -16,7 +16,7 @@ RSpec.describe SignUp::PasswordsController do
     end
     let(:password) { 'NewVal!dPassw0rd' }
     let(:password_confirmation) { password }
-    let(:success_properties) { { success: true, failure_reason: nil } }
+    let(:success_properties) { { success: true } }
 
     context 'with valid password' do
       let!(:user) { create(:user, :unconfirmed, confirmation_token: token) }
@@ -75,10 +75,6 @@ RSpec.describe SignUp::PasswordsController do
           expect(@irs_attempts_api_tracker).to receive(:user_registration_password_submitted).
             with(
               success: false,
-              failure_reason: {
-                password: [:too_short],
-                password_confirmation: [:too_short],
-              },
             )
           expect(@irs_attempts_api_tracker).not_to receive(:user_registration_email_confirmation)
 

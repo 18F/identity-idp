@@ -4,7 +4,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
   let(:password_error_message) do
     t('errors.attributes.password.too_short.other', count: Devise.password_length.first)
   end
-  let(:success_properties) { { success: true, failure_reason: nil } }
+  let(:success_properties) { { success: true } }
   describe '#edit' do
     let(:user) { instance_double('User', uuid: '123') }
     let(:email_address) { instance_double('EmailAddress') }
@@ -39,7 +39,6 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
       it 'redirects to page where user enters email for password reset token' do
         expect(@irs_attempts_api_tracker).to receive(:forgot_password_email_confirmed).with(
           success: false,
-          failure_reason: { user: [:blank] },
         )
 
         get :edit
@@ -89,7 +88,6 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
         it 'redirects to page where user enters email for password reset token' do
           expect(@irs_attempts_api_tracker).to receive(:forgot_password_email_confirmed).with(
             success: false,
-            failure_reason: { user: [:blank] },
           )
 
           get :edit
@@ -120,7 +118,6 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
         it 'redirects to page where user enters email for password reset token' do
           expect(@irs_attempts_api_tracker).to receive(:forgot_password_email_confirmed).with(
             success: false,
-            failure_reason: { user: [:token_expired] },
           )
 
           get :edit
@@ -195,11 +192,6 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
 
         expect(@irs_attempts_api_tracker).to receive(:forgot_password_new_password_submitted).with(
           success: false,
-          failure_reason: {
-            password: [:too_short],
-            password_confirmation: [:too_short],
-            reset_password_token: [:token_expired],
-          },
         )
 
         raw_reset_token, db_confirmation_token =
@@ -292,10 +284,6 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           with('Password Reset: Password Submitted', analytics_hash)
         expect(@irs_attempts_api_tracker).to receive(:forgot_password_new_password_submitted).with(
           success: false,
-          failure_reason: {
-            password: [:too_short],
-            password_confirmation: [:too_short],
-          },
         )
 
         put :update, params: { reset_password_form: form_params }
@@ -344,9 +332,6 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           with('Password Reset: Password Submitted', analytics_hash)
         expect(@irs_attempts_api_tracker).to receive(:forgot_password_new_password_submitted).with(
           success: false,
-          failure_reason: {
-            password_confirmation: [:mismatch],
-          },
         )
 
         put :update, params: { reset_password_form: form_params }

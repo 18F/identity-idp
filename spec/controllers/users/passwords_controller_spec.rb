@@ -22,7 +22,7 @@ RSpec.describe Users::PasswordsController do
         allow(@analytics).to receive(:track_event)
 
         expect(@irs_attempts_api_tracker).to receive(:logged_in_password_change).
-          with(failure_reason: nil, success: true)
+          with(success: true)
 
         params = {
           password: 'salty new password',
@@ -134,10 +134,6 @@ RSpec.describe Users::PasswordsController do
         it 'renders edit' do
           expect(@irs_attempts_api_tracker).to receive(:logged_in_password_change).with(
             success: false,
-            failure_reason: {
-              password: [:too_short],
-              password_confirmation: [:too_short],
-            },
           )
 
           patch :update, params: { update_user_password_form: params }
@@ -190,9 +186,6 @@ RSpec.describe Users::PasswordsController do
         it 'renders edit' do
           expect(@irs_attempts_api_tracker).to receive(:logged_in_password_change).with(
             success: false,
-            failure_reason: {
-              password_confirmation: [:mismatch],
-            },
           )
 
           patch :update, params: { update_user_password_form: params }
