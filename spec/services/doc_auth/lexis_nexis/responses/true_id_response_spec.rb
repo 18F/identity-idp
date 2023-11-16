@@ -328,7 +328,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
           hints: true,
         },
         attention_with_barcode: false,
-        doc_type_supported: true, # todo: check failure document need update?
+        doc_type_supported: true,
         conversation_id: a_kind_of(String),
         reference: a_kind_of(String),
         vendor: 'TrueID',
@@ -356,6 +356,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         'DocClassName' => 'Drivers License',
         'DocumentName' => 'Connecticut (CT) Driver License',
         'DocIssuerCode' => 'CT',
+        'DocIssuerType' => 'StateProvince',
         'DocIssuerName' => 'Connecticut',
         'DocIssue' => '2009',
         'DocIssueType' => 'Driver License',
