@@ -35,6 +35,8 @@ module DocAuth
             passed = file_data.dig('passed_alerts')
             liveness_result = file_data.dig('liveness_result')
             classification_info = file_data.dig('classification_info')
+            # Pass and doc type is ok
+            return {} if doc_auth_result == 'Passed' && doc_type_supported?
 
             if [doc_auth_result, image_metrics, failed, passed,
                 liveness_result, classification_info].any?(&:present?)
@@ -67,7 +69,7 @@ module DocAuth
       end
 
       def success?
-        errors.blank? || attention_with_barcode?
+        (errors.blank? || attention_with_barcode?) && id_type_supported?
       end
 
       def attention_with_barcode?

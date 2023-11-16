@@ -65,7 +65,7 @@ module DocAuth
         end
 
         def successful_result?
-          all_passed? || attention_with_barcode?
+          (all_passed? || attention_with_barcode?) && id_type_supported?
         end
 
         def error_messages

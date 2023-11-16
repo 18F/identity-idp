@@ -529,7 +529,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
           Back:
             ClassName: Identification Card
             CountryCode: USA
-            IssuerType: Country
+            IssuerType: StateProvince
         image_metrics:
           front:
             HorizontalResolution: 50
@@ -548,10 +548,10 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.errors).to eq(
         general: [DocAuth::Errors::DOC_TYPE_CHECK],
         front: [DocAuth::Errors::CARD_TYPE],
-        back: [DocAuth::Errors::CARD_TYPE],
         hints: true,
       )
       expect(response.exception).to be_nil
+      expect(response.success?).to eq(false)
     end
   end
 

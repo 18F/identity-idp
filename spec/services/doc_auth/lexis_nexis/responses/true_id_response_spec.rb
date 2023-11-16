@@ -175,6 +175,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       end
       it 'mark doc type as not supported' do
         expect(response.doc_type_supported?).to eq(false)
+        expect(response.success?).to eq(false)
       end
     end
   end
