@@ -923,9 +923,9 @@ RSpec.describe User do
           user.suspend!
         end
 
-        it 'send account suspension push event' do
+        it 'send account disabled push event' do
           expect(PushNotification::HttpPush).to receive(:deliver).once.
-            with(PushNotification::AccountSuspendedEvent.new(
+            with(PushNotification::AccountDisabledEvent.new(
               user: user,
             ))
           user.suspend!
@@ -992,9 +992,9 @@ RSpec.describe User do
         user.reinstate!
       end
 
-      it 'send account suspension push event' do
+      it 'send account enabled push event' do
         expect(PushNotification::HttpPush).to receive(:deliver).once.
-          with(PushNotification::AccountReinstatedEvent.new(
+          with(PushNotification::AccountEnabledEvent.new(
             user: user,
           ))
         user.reinstate!

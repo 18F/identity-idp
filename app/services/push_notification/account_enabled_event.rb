@@ -1,5 +1,6 @@
 module PushNotification
-  class AccountReinstatedEvent
+  # This is used for account reinstatement
+  class AccountEnabledEvent
     include IssSubEvent
 
     EVENT_TYPE = 'https://schemas.openid.net/secevent/risc/event-type/account-enabled'.freeze

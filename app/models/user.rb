@@ -123,7 +123,7 @@ class User < ApplicationRecord
     update!(suspended_at: Time.zone.now, unique_session_id: nil)
     analytics.user_suspended(success: true)
 
-    event = PushNotification::AccountSuspendedEvent.new(user: self)
+    event = PushNotification::AccountDisabledEvent.new(user: self)
     PushNotification::HttpPush.deliver(event)
 
     email_addresses.map do |email_address|
@@ -139,7 +139,7 @@ class User < ApplicationRecord
     update!(reinstated_at: Time.zone.now)
     analytics.user_reinstated(success: true)
 
-    event = PushNotification::AccountReinstatedEvent.new(user: self)
+    event = PushNotification::AccountEnabledEvent.new(user: self)
     PushNotification::HttpPush.deliver(event)
 
     email_addresses.map do |email_address|

@@ -1,5 +1,6 @@
 module PushNotification
-  class AccountSuspendedEvent
+  # This is used for account suspension
+  class AccountDisabledEvent
     EVENT_TYPE = 'https://schemas.openid.net/secevent/risc/event-type/account-disabled'.freeze
 
     attr_reader :user

@@ -1,17 +1,17 @@
 require 'rails_helper'
 
-RSpec.describe PushNotification::AccountReinstatedEvent do
+RSpec.describe PushNotification::AccountEnabledEvent do
   include Rails.application.routes.url_helpers
 
   subject(:event) do
-    PushNotification::AccountReinstatedEvent.new(user: user)
+    PushNotification::AccountEnabledEvent.new(user: user)
   end
 
   let(:user) { build(:user) }
 
   describe '#event_type' do
     it 'is the RISC event type' do
-      expect(event.event_type).to eq(PushNotification::AccountReinstatedEvent::EVENT_TYPE)
+      expect(event.event_type).to eq(PushNotification::AccountEnabledEvent::EVENT_TYPE)
     end
   end
 
