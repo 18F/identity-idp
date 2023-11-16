@@ -2,6 +2,9 @@ module Idv
   class HowToVerifyForm
     include ActiveModel::Model
 
+    REMOTE = 'remote'.freeze
+    IPP = 'ipp'.freeze
+
     attr_reader :selection
 
     validates :selection,
