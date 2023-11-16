@@ -24,11 +24,7 @@ function isQualifyingAndroidDevice(): boolean {
   );
 }
 
-function isCredentialSupported(): boolean {
-  return this.window.PasswordCredential || this.window.FederatedCredential
-}
-
 const isWebauthnPasskeySupported: IsWebauthnPasskeySupported = () =>
-  (isQualifyingIOSDevice() || isQualifyingAndroidDevice()) && isCredentialSupported() ;
+  (isQualifyingIOSDevice() || isQualifyingAndroidDevice());
 
 export default isWebauthnPasskeySupported;

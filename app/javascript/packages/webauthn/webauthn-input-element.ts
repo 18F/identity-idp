@@ -13,12 +13,12 @@ export class WebauthnInputElement extends HTMLElement {
     return this.hasAttribute('show-unsupported-passkey');
   }
 
-  toggleVisibleIfPasskeySupported() {
+  async toggleVisibleIfPasskeySupported() {
     if (!this.hasAttribute('hidden')) {
       return;
     }
 
-    if (isWebauthnPasskeySupported()) {
+    if (isWebauthnPasskeySupported() && window.PublicKeyCredential && window.PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable()) {
       this.hidden = false;
     } else if (this.showUnsupportedPasskey) {
       this.hidden = false;
