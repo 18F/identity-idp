@@ -150,6 +150,8 @@ es:
           class='usa-sr-only'>asteriscos, </span><span
           aria-hidden='true'>*</span> <span
           class='usa-sr-only'>guiones</span><span aria-hidden='true'>-</span>"
+        state_id_number_texas_hint: Este es el número de 8 dígitos de su ID.
+          Introduzca sólo números en este campos.
         zipcode: Código postal
     headings:
       address: Ingresa tu domicilio actual
