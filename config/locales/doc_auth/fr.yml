@@ -208,6 +208,8 @@ fr:
       document_capture_back: Verso de votre carte d’identité
       document_capture_front: Recto de votre carte d’identité
       front: Recto de votre permis de conduire ou de votre carte d’identité de l’État
+      document_capture_selfie:
+      selfie:
       getting_started: Vérifions votre identité pour %{sp_name}
       how_to_verify: Choisissez la manière dont vous souhaitez confirmer votre identité
       hybrid_handoff: Comment voulez-vous ajouter votre identifiant ?
