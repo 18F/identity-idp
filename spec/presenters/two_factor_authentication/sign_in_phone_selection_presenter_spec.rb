@@ -22,7 +22,7 @@ RSpec.describe TwoFactorAuthentication::SignInPhoneSelectionPresenter do
     end
     context 'with sms method' do
       let(:presenter) do
-        described_class.new(user: user, configuration: configuration, method: 'sms')
+        described_class.new(user: user, configuration: configuration, method: :sms)
       end
       it 'returns the correct translation for sms' do
         expect(presenter.info).to eq(
@@ -35,7 +35,7 @@ RSpec.describe TwoFactorAuthentication::SignInPhoneSelectionPresenter do
     end
     context 'with voice method' do
       let(:presenter) do
-        described_class.new(user: user, configuration: configuration, method: 'voice')
+        described_class.new(user: user, configuration: configuration, method: :voice)
       end
       it 'returns the correct translation for voice' do
         expect(presenter.info).to eq(
@@ -68,7 +68,7 @@ RSpec.describe TwoFactorAuthentication::SignInPhoneSelectionPresenter do
       let(:presenter_without_mfa) do
         described_class.new(configuration: phone, user: user, method: method)
       end
-      let(:method) { 'voice' }
+      let(:method) { :voice }
       before do
         allow_any_instance_of(OutageStatus).to receive(:vendor_outage?).with(:voice).
           and_return(true)
@@ -81,7 +81,7 @@ RSpec.describe TwoFactorAuthentication::SignInPhoneSelectionPresenter do
       let(:presenter_without_mfa) do
         described_class.new(configuration: phone, user: user, method: method)
       end
-      let(:method) { 'sms' }
+      let(:method) { :sms }
       before do
         allow_any_instance_of(OutageStatus).to receive(:vendor_outage?).with(:sms).and_return(true)
       end

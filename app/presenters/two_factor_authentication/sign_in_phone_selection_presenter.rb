@@ -25,13 +25,13 @@ module TwoFactorAuthentication
     end
 
     def info
-      case method.to_s
-      when 'sms'
+      case method
+      when :sms
         t(
           'two_factor_authentication.login_options.sms_info_html',
           phone: configuration.masked_phone,
         )
-      when 'voice'
+      when :voice
         t(
           'two_factor_authentication.login_options.voice_info_html',
           phone: configuration.masked_phone,
@@ -42,10 +42,10 @@ module TwoFactorAuthentication
     end
 
     def disabled?
-      case method.to_s
-      when 'sms'
+      case method
+      when :sms
         OutageStatus.new.vendor_outage?(:sms)
-      when 'voice'
+      when :voice
         OutageStatus.new.vendor_outage?(:voice)
       else
         OutageStatus.new.all_phone_vendor_outage?
