@@ -115,7 +115,7 @@ module IrsAttemptsApi
       first_name: nil,
       last_name: nil,
       date_of_birth: nil,
-      address: nil,
+      address: nil
     )
       track_event(
         :idv_document_upload_submitted,
@@ -240,7 +240,7 @@ module IrsAttemptsApi
     # The phone number that the link was sent to during the IDV process
     def idv_phone_upload_link_sent(
       success:,
-      phone_number:,
+      phone_number:
     )
       track_event(
         :idv_phone_upload_link_sent,
@@ -305,7 +305,7 @@ module IrsAttemptsApi
       last_name: nil,
       date_of_birth: nil,
       address: nil,
-      ssn: nil,
+      ssn: nil
     )
       track_event(
         :idv_verification_submitted,
@@ -437,7 +437,7 @@ module IrsAttemptsApi
     # @param [String] subject_dn
     def mfa_enroll_piv_cac(
       success:,
-      subject_dn: nil,
+      subject_dn: nil
     )
       track_event(
         :mfa_enroll_piv_cac,
@@ -501,7 +501,7 @@ module IrsAttemptsApi
       success:,
       reauthentication:,
       phone_number:,
-      otp_delivery_method:,
+      otp_delivery_method:
     )
       track_event(
         :mfa_login_phone_otp_sent,
@@ -538,7 +538,7 @@ module IrsAttemptsApi
     # @param [String] subject_dn
     def mfa_login_piv_cac(
       success:,
-      subject_dn: nil,
+      subject_dn: nil
     )
       track_event(
         :mfa_login_piv_cac,
@@ -605,7 +605,7 @@ module IrsAttemptsApi
     # @param [String] email
     def user_registration_email_confirmation(
       success:,
-      email: nil,
+      email: nil
     )
       track_event(
         :user_registration_email_confirmation,
@@ -631,10 +631,7 @@ module IrsAttemptsApi
     # Tracks when user submits registration email
     # @param [Boolean] success
     # @param [String] email
-    def user_registration_email_submitted(
-      success:,
-      email:,
-    )
+    def user_registration_email_submitted(success:, email:)
       track_event(
         :user_registration_email_submitted,
         success: success,
@@ -644,9 +641,7 @@ module IrsAttemptsApi
 
     # Tracks when user submits registration password
     # @param [Boolean] success
-    def user_registration_password_submitted(
-      success:,
-    )
+    def user_registration_password_submitted(success:)
       track_event(
         :user_registration_password_submitted,
         success: success,
