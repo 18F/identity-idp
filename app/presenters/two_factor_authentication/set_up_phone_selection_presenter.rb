@@ -1,8 +1,7 @@
 module TwoFactorAuthentication
   class SetUpPhoneSelectionPresenter < SetUpSelectionPresenter
-    def initialize(user:, configuration: nil)
+    def initialize(user:)
       @user = user
-      @configuration = configuration
     end
 
     def method
