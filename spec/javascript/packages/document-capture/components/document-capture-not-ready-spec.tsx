@@ -39,6 +39,7 @@ describe('DocumentCaptureNotReady', () => {
             <FlowContext.Provider
               value={{
                 currentStep: 'document_capture',
+                accountURL: '/account',
                 cancelURL: '',
                 exitURL: '',
               }}
@@ -89,6 +90,7 @@ describe('DocumentCaptureNotReady', () => {
             <FlowContext.Provider
               value={{
                 currentStep: 'document_capture',
+                accountURL: '/account',
                 cancelURL: '',
                 exitURL: '',
               }}

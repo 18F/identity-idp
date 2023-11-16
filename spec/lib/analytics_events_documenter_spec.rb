@@ -288,5 +288,29 @@ RSpec.describe AnalyticsEventsDocumenter do
         )
       end
     end
+
+    context 'with a symbol name in a multi-line method call' do
+      let(:source_code) { <<~RUBY }
+        class AnalyticsEvents
+          # User submitted IDV password confirm page
+          # @param [Boolean] success
+          def idv_enter_password_submitted(
+            success:,
+            **extra
+          )
+            track_event(
+              :idv_enter_password_submitted,
+              success: success,
+              **extra,
+            )
+          end
+        end
+      RUBY
+
+      it 'parses the name correctly' do
+        expect(documenter.as_json[:events].first[:event_name]).
+          to eq('idv_enter_password_submitted')
+      end
+    end
   end
 end

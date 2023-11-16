@@ -24,6 +24,24 @@ RSpec.describe 'Idv::FlowPolicy' do
     end
   end
 
+  context '#undo_steps_from_controller!' do
+    context 'user is on document_capture step' do
+      before do
+        idv_session.welcome_visited = true
+        idv_session.idv_consent_given = true
+        idv_session.flow_path = 'standard'
+      end
+
+      it 'user goes back and submits welcome' do
+        subject.undo_steps_from_controller!(controller: Idv::WelcomeController)
+
+        expect(idv_session.welcome_visited).to be_nil
+        expect(idv_session.idv_consent_given).to be_nil
+        expect(idv_session.flow_path).to be_nil
+      end
+    end
+  end
+
   context 'each step in the flow' do
     before do
       allow(Idv::PhoneConfirmationSession).to receive(:from_h).

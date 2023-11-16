@@ -144,6 +144,12 @@ RSpec.describe Idv::PhoneQuestionController do
   describe '#phone_with_camera' do
     let(:analytics_name) { :idv_doc_auth_phone_question_submitted }
 
+    it 'invalidates future steps' do
+      expect(subject).to receive(:clear_invalid_steps!)
+
+      get :phone_with_camera
+    end
+
     it 'redirects to hybrid handoff' do
       get :phone_with_camera
 
@@ -165,6 +171,12 @@ RSpec.describe Idv::PhoneQuestionController do
 
   describe '#phone_without_camera' do
     let(:analytics_name) { :idv_doc_auth_phone_question_submitted }
+
+    it 'invalidates future steps' do
+      expect(subject).to receive(:clear_invalid_steps!)
+
+      get :phone_without_camera
+    end
 
     it 'redirects to document_capture' do
       get :phone_without_camera

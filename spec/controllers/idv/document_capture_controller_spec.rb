@@ -165,6 +165,12 @@ RSpec.describe Idv::DocumentCaptureController do
     end
     let(:result) { { success: true, errors: {} } }
 
+    it 'invalidates future steps' do
+      expect(subject).to receive(:clear_invalid_steps!)
+
+      put :update
+    end
+
     it 'sends analytics_submitted event' do
       allow(result).to receive(:success?).and_return(true)
       allow(subject).to receive(:handle_stored_result).and_return(result)

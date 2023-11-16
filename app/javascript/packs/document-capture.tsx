@@ -35,6 +35,7 @@ interface AppRootData {
   idvInPersonUrl?: string;
   securityAndPrivacyHowItWorksUrl: string;
   uiNotReadySectionEnabled: string;
+  uiExitQuestionSectionEnabled: string;
 }
 
 const appRoot = document.getElementById('document-capture-form')!;
@@ -94,6 +95,7 @@ const {
   flowPath,
   cancelUrl: cancelURL,
   exitUrl: exitURL,
+  accountUrl: accountURL,
   idvInPersonUrl: inPersonURL,
   securityAndPrivacyHowItWorksUrl: securityAndPrivacyHowItWorksURL,
   inPersonFullAddressEntryEnabled,
@@ -102,6 +104,7 @@ const {
   usStatesTerritories = '',
   phoneWithCamera = '',
   uiNotReadySectionEnabled = '',
+  uiExitQuestionSectionEnabled = '',
 } = appRoot.dataset as DOMStringMap & AppRootData;
 
 let parsedUsStatesTerritories = [];
@@ -158,6 +161,7 @@ const App = composeComponents(
     FlowContext.Provider,
     {
       value: {
+        accountURL,
         cancelURL,
         exitURL,
         currentStep: 'document_capture',
@@ -183,6 +187,7 @@ const App = composeComponents(
     {
       value: {
         notReadySectionEnabled: String(uiNotReadySectionEnabled) === 'true',
+        exitQuestionSectionEnabled: String(uiExitQuestionSectionEnabled) === 'true',
       },
     },
   ],

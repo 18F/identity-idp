@@ -134,4 +134,8 @@ module IdvStepConcern
     step_info = flow_policy.info_for_latest_step
     url_for(controller: step_info.controller, action: step_info.action)
   end
+
+  def clear_invalid_steps!
+    flow_policy.undo_steps_from_controller!(controller: self.class)
+  end
 end

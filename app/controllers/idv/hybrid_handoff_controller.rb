@@ -24,6 +24,7 @@ module Idv
     end
 
     def update
+      clear_invalid_steps!
       irs_attempts_api_tracker.idv_document_upload_method_selected(
         upload_method: params[:type],
       )
@@ -41,6 +42,7 @@ module Idv
         controller: controller_name,
         next_steps: [:link_sent, :document_capture],
         preconditions: ->(idv_session:, user:) { idv_session.idv_consent_given },
+        undo_step: ->(idv_session:, user:) { idv_session.flow_path = nil },
       )
     end
 

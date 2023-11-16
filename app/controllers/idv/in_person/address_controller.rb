@@ -5,12 +5,32 @@ module Idv
 
       before_action :render_404_if_in_person_residential_address_controller_enabled_not_set
       before_action :confirm_in_person_state_id_step_complete
-      before_action :confirm_in_person_address_step_needed
+      before_action :confirm_in_person_address_step_needed, only: :show
 
       def show
         analytics.idv_in_person_proofing_address_visited(**analytics_arguments)
 
         render :show, locals: extra_view_variables
+      end
+
+      def update
+        attrs = Idv::InPerson::AddressForm::ATTRIBUTES.difference([:same_address_as_id])
+        pii_from_user[:same_address_as_id] = 'false' if updating_address?
+        form_result = form.submit(flow_params)
+
+        analytics.idv_in_person_proofing_residential_address_submitted(
+          **analytics_arguments.merge(**form_result.to_h),
+        )
+
+        if form_result.success?
+          attrs.each do |attr|
+            pii_from_user[attr] = flow_params[attr]
+          end
+          flow_session['Idv::Steps::InPerson::AddressStep'] = true
+          redirect_to_next_page
+        else
+          render :show, locals: extra_view_variables
+        end
       end
 
       def extra_view_variables
@@ -47,17 +67,21 @@ module Idv
         )
       end
 
-      def form_submit
-        form.submit(flow_params)
-      end
-
       def analytics_arguments
         {
-          flow_path: flow_path,
+          flow_path: idv_session.flow_path,
           step: 'address',
           analytics_id: 'In Person Proofing',
           irs_reproofing: irs_reproofing?,
         }
+      end
+
+      def redirect_to_next_page
+        if updating_address?
+          redirect_to idv_in_person_verify_info_url
+        else
+          redirect_to idv_in_person_ssn_url
+        end
       end
 
       def render_404_if_in_person_residential_address_controller_enabled_not_set
@@ -73,6 +97,7 @@ module Idv
       def confirm_in_person_address_step_needed
         return if pii_from_user && pii_from_user[:same_address_as_id] == 'false' &&
                   !pii_from_user.has_key?(:address1)
+        return if request.referer == idv_in_person_verify_info_url
         redirect_to idv_in_person_ssn_url
       end
     end
