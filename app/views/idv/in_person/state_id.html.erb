@@ -110,7 +110,7 @@
         ) %>
   </div>
   <div class="margin-bottom-5">
-    <% state_id_hint = capture do %>
+    <% state_id_number_hint = capture do %>
       <%= t('in_person_proofing.form.state_id.state_id_number_hint') %>
       <% [
            [t('in_person_proofing.form.state_id.state_id_number_hint_spaces'), ' '],
@@ -126,7 +126,7 @@
     <%= render ValidatedFieldComponent.new(
           name: :state_id_number,
           form: f,
-          hint: state_id_hint,
+          hint: state_id_number_hint,
           hint_html: { class: 'tablet:grid-col-10' },
           input_html: { value: pii[:state_id_number] },
           label: t('in_person_proofing.form.state_id.state_id_number'),
