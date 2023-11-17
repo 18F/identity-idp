@@ -284,7 +284,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
               client_data_json: { blank: true },
               signature: { blank: true },
               webauthn_configuration: { blank: true },
-              webauthn_error: { webauthn_error: true },
+              webauthn_error: { present: true },
             },
             context: UserSessionContext::AUTHENTICATION_CONTEXT,
             multi_factor_auth_method: 'webauthn_platform',
