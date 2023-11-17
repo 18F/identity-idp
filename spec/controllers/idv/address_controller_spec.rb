@@ -22,12 +22,21 @@ RSpec.describe Idv::AddressController do
   end
 
   describe '#new' do
-    before do
+    it 'logs an analytics event' do
       get :new
+      expect(@analytics).to have_logged_event('IdV: address visited')
     end
 
-    it 'logs an analytics event' do
-      expect(@analytics).to have_logged_event('IdV: address visited')
+    context 'verify_info already submitted' do
+      before do
+        subject.idv_session.resolution_successful = true
+      end
+
+      it 'redirects to enter_password' do
+        get :new
+
+        expect(response).to redirect_to(idv_enter_password_url)
+      end
     end
   end
 

@@ -4,6 +4,7 @@ module Idv
 
     before_action :confirm_not_rate_limited_after_doc_auth
     before_action :confirm_step_allowed
+    before_action :confirm_verify_info_step_needed
 
     def new
       analytics.idv_address_visit
