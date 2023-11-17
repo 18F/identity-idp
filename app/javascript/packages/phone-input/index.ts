@@ -128,17 +128,19 @@ export class PhoneInputElement extends HTMLElement {
    * Logs an event when the country code has been changed.
    */
   trackCountryChangeEvent() {
-    const { iso2 } = this.iti.getSelectedCountryData();
-    trackEvent('phone_input_country_changed', { country_code: iso2.toUpperCase() });
+    const countryCode = this.getSelectedCountryCode();
+    if (countryCode) {
+      trackEvent('phone_input_country_changed', { country_code: countryCode });
+    }
   }
 
   /**
    * Mirrors country change to the hidden select field, which holds the value for form submission.
    */
   syncCountryToCodeInput({ fireChangeEvent = true }: { fireChangeEvent?: boolean } = {}) {
-    const country = this.iti.getSelectedCountryData();
-    if (country.iso2 && this.codeInput) {
-      this.codeInput.value = country.iso2.toUpperCase();
+    const countryCode = this.getSelectedCountryCode();
+    if (countryCode) {
+      this.codeInput.value = countryCode;
       if (this.hasDropdown) {
         // Move value text from title attribute to the flag's hidden text element.
         // See: https://github.com/jackocnr/intl-tel-input/blob/d54b127/src/js/intlTelInput.js#L1191-L1197
@@ -267,16 +269,20 @@ export class PhoneInputElement extends HTMLElement {
   }
 
   handleCaptchaChallenge = (event: Event) => {
-    const { iso2 = 'us' } = this.iti.getSelectedCountryData();
+    const countryCode = this.getSelectedCountryCode();
     const isExempt =
       typeof this.captchaExemptCountries === 'boolean'
         ? this.captchaExemptCountries
-        : this.captchaExemptCountries.includes(iso2.toUpperCase());
+        : !countryCode || this.captchaExemptCountries.includes(countryCode);
 
     if (isExempt) {
       event.preventDefault();
     }
   };
+
+  getSelectedCountryCode(): string | undefined {
+    return (this.iti.getSelectedCountryData().iso2 as string | undefined)?.toUpperCase();
+  }
 }
 
 declare global {

@@ -203,6 +203,10 @@ describe('PhoneInput', () => {
     expect(analytics.trackEvent).to.have.been.calledWith('phone_input_country_changed', {
       country_code: 'US',
     });
+
+    await userEvent.clear(phoneNumber);
+    await userEvent.type(phoneNumber, '+6');
+    expect(analytics.trackEvent).to.have.callCount(2);
   });
 
   it('renders as an accessible combobox', () => {
