@@ -85,7 +85,6 @@ describe('state-guidance', () => {
     it('includes default hint text when a state without a state specific hint is selected', () => {
       const jurisdictionCode = 'NY';
       showOrHideJurisdictionExtras(jurisdictionCode);
-      const elementInnerHtml = document.querySelector('.jurisdiction-extras')?.textContent;
 
       const allHintTexts = document.querySelectorAll('.jurisdiction-extras [data-state]');
       const defaultText = document.querySelectorAll('.jurisdiction-extras [data-state=default]');

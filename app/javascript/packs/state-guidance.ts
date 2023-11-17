@@ -1,7 +1,7 @@
 export function showOrHideJurisdictionExtras(jurisdictionCode) {
   const hasJurisdictionSpecificHint =
     jurisdictionCode &&
-  document.querySelectorAll(`.jurisdiction-extras [data-state=${jurisdictionCode}]`).length > 0;
+    document.querySelectorAll(`.jurisdiction-extras [data-state=${jurisdictionCode}]`).length > 0;
 
   document.querySelectorAll<HTMLElement>(`.jurisdiction-extras [data-state]`).forEach((element) => {
     const shouldShow =
