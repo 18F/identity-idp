@@ -141,6 +141,7 @@ class WebauthnVerificationForm
     {
       multi_factor_auth_method: auth_method,
       webauthn_configuration_id: webauthn_configuration&.id,
-    }
+      frontend_error: webauthn_error.presence,
+    }.compact
   end
 end

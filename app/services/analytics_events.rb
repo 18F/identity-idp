@@ -3123,6 +3123,7 @@ module AnalyticsEvents
   # @param [String] area_code
   # @param [String] country_code
   # @param [String] phone_fingerprint the hmac fingerprint of the phone number formatted as e164
+  # @param [String] frontend_error Name of error that occurred in frontend during submission
   # Multi-Factor Authentication
   def multi_factor_auth(
     success:,
@@ -3140,6 +3141,7 @@ module AnalyticsEvents
     area_code: nil,
     country_code: nil,
     phone_fingerprint: nil,
+    frontend_error: nil,
     **extra
   )
     track_event(
@@ -3159,6 +3161,7 @@ module AnalyticsEvents
       area_code: area_code,
       country_code: country_code,
       phone_fingerprint: phone_fingerprint,
+      frontend_error:,
       **extra,
     )
   end
