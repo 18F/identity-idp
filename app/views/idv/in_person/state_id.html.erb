@@ -110,10 +110,23 @@
         ) %>
   </div>
   <div class="margin-bottom-5">
+    <% state_id_hint = capture do %>
+      <%= t('in_person_proofing.form.state_id.state_id_number_hint') %>
+      <% [
+           [t('in_person_proofing.form.state_id.state_id_number_hint_spaces'), ' '],
+           [t('in_person_proofing.form.state_id.state_id_number_hint_forward_slashes'), '/'],
+           [t('in_person_proofing.form.state_id.state_id_number_hint_asterisks'), '*'],
+           [t('in_person_proofing.form.state_id.state_id_number_hint_dashes'), '-', true],
+         ].each do |text, symbol, last| %>
+         <span class="usa-sr-only"><%= text %><%= ',' if !last %></span>
+         <span aria-hidden="true"><%= symbol %></span>
+      <% end %>
+    <% end %>
+
     <%= render ValidatedFieldComponent.new(
           name: :state_id_number,
           form: f,
-          hint: t('in_person_proofing.form.state_id.state_id_number_hint_html'),
+          hint: state_id_hint,
           hint_html: { class: 'tablet:grid-col-10' },
           input_html: { value: pii[:state_id_number] },
           label: t('in_person_proofing.form.state_id.state_id_number'),
