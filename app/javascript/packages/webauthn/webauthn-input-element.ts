@@ -13,19 +13,14 @@ export class WebauthnInputElement extends HTMLElement {
     return this.hasAttribute('show-unsupported-passkey');
   }
 
-  async isPublicKeyCredentialSupported() {
-    return (
-      window.PublicKeyCredential &&
-      (await window.PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable())
-    );
-  }
-
-  toggleVisibleIfPasskeySupported() {
+  async toggleVisibleIfPasskeySupported() {
     if (!this.hasAttribute('hidden')) {
       return;
     }
-
-    if (isWebauthnPasskeySupported() && this.isPublicKeyCredentialSupported()) {
+    const isPublicKeyCredentialSupported =
+      window.PublicKeyCredential &&
+      (await window.PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable());
+    if (isWebauthnPasskeySupported() && isPublicKeyCredentialSupported) {
       this.hidden = false;
     } else if (this.showUnsupportedPasskey) {
       this.hidden = false;
