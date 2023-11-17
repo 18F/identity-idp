@@ -252,7 +252,7 @@ module DocAuth
         end
 
         def classification_info
-          # Acuent response has both sides info, here simulate that
+          # Acuant response has both sides info, here simulate that
           doc_class = doc_class_name
           issuing_country = pii_from_doc[:issuing_country_code]
           {

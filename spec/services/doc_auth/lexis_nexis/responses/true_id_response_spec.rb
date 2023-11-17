@@ -600,6 +600,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         is_expected.to eq(false)
       end
     end
+
     context 'when id is federal ID and image dpi is low' do
       let(:error_response) do
         body = JSON.parse(LexisNexisFixtures.true_id_response_success_3).tap do |json|
