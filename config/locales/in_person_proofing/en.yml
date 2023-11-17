@@ -136,6 +136,8 @@ en:
         state_id_number_hint_dashes: dashes
         state_id_number_hint_forward_slashes: forward slashes
         state_id_number_hint_spaces: spaces
+        state_id_number_texas_hint: This is the 8-digit number on your ID. Enter only
+          numbers in this field.
         zipcode: ZIP Code
     headings:
       address: Enter your current residential address

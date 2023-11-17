@@ -158,7 +158,7 @@ RSpec.describe WebauthnVerificationForm do
         it 'returns unsuccessful result including client-side webauthn error text' do
           expect(result.to_h).to eq(
             success: false,
-            error_details: { webauthn_error: { webauthn_error: true } },
+            error_details: { webauthn_error: { present: true } },
             multi_factor_auth_method: 'webauthn',
             webauthn_configuration_id: webauthn_configuration.id,
             frontend_error: webauthn_error,

@@ -148,6 +148,8 @@ es:
         state_id_number_hint_dashes: guiones
         state_id_number_hint_forward_slashes: 'barras diagonal'
         state_id_number_hint_spaces: 'espacios'
+        state_id_number_texas_hint: Este es el número de 8 dígitos de su ID. Introduzca
+          sólo números en este campo.
         zipcode: Código postal
     headings:
       address: Ingresa tu domicilio actual

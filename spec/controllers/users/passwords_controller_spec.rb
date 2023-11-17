@@ -48,6 +48,7 @@ RSpec.describe Users::PasswordsController do
         stub_sign_in(user)
         Pii::Cacher.new(user, controller.user_session).save_decrypted_pii(
           Pii::Attributes.new(ssn: '111-222-3333'),
+          user.active_profile.id,
         )
 
         params = {

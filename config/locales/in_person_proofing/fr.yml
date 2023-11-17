@@ -148,6 +148,8 @@ fr:
         state_id_number_hint_dashes: 'des tirets'
         state_id_number_hint_forward_slashes: 'des barres obliques'
         state_id_number_hint_spaces: 'des espaces'
+        state_id_number_texas_hint: Il s’agit du numéro à huit chiffres figurant sur
+          votre carte d’identité. Entrez uniquement des chiffres dans ce champ.
         zipcode: Code postal
     headings:
       address: Indiquez votre adresse résidentielle actuelle
