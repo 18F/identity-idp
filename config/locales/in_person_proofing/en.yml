@@ -132,7 +132,8 @@ en:
         state_id_jurisdiction_prompt: '- Select -'
         state_id_number: ID number
         state_id_number_hint: 'May include letters, numbers, and the following symbols: /  *-'
-        state_id_number_texas_hint: This is the 8-digit number on your ID. Enter only numbers in this field.
+        state_id_number_texas_hint: This is the 8-digit number on your ID. Enter only
+          numbers in this field.
         zipcode: ZIP Code
     headings:
       address: Enter your current residential address
