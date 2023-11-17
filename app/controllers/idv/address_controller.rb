@@ -28,7 +28,7 @@ module Idv
       Idv::StepInfo.new(
         key: :address,
         controller: controller_name,
-        next_steps: [:success], # Goes back to verify_info, and don't want a loop
+        next_steps: [:verify_info],
         preconditions: ->(idv_session:, user:) { idv_session.document_capture_complete? },
         undo_step: ->(idv_session:, user:) {},
       )
