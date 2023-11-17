@@ -134,14 +134,14 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
       ].filter(Boolean) as FormStep[]);
 
   // If the user got here by opting-in to in-person proofing, when skipDocAuth === 'true',
-  // then set steps to inPersonSteps 
-  const steps: FormStep[] = skipDocAuth === 'true'
-    ? inPersonSteps : defaultSteps;
+  // then set steps to inPersonSteps
+  const steps: FormStep[] = skipDocAuth === 'true' ? inPersonSteps : defaultSteps;
 
   // If the user got here by opting-in to in-person proofing, when skipDocAuth === 'true',
   // then set stepIndicatorPath to VerifyFlowPath.IN_PERSON
   const stepIndicatorPath =
-    (stepName && ['location', 'prepare', 'switch_back'].includes(stepName)) || skipDocAuth === 'true'
+    (stepName && ['location', 'prepare', 'switch_back'].includes(stepName)) ||
+    skipDocAuth === 'true'
       ? VerifyFlowPath.IN_PERSON
       : VerifyFlowPath.DEFAULT;
 

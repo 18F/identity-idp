@@ -1,7 +1,6 @@
 import { createContext } from 'react';
 
 export interface InPersonContextProps {
-
   /**
    * Post Office location search endpoint URL
    */

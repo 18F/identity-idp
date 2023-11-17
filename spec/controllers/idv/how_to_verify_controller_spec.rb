@@ -36,9 +36,9 @@ RSpec.describe Idv::HowToVerifyController do
 
   describe '#update' do
     let(:params) do
-      { 
+      {
         idv_how_to_verify_form:
-        { selection: selection }
+        { selection: selection },
       }
     end
     let(:selection) { 'remote' }
