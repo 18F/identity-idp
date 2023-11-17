@@ -1,6 +1,6 @@
 module TwoFactorAuthentication
   class SetUpPhoneSelectionPresenter < SetUpSelectionPresenter
-    def method
+    def type
       :phone
     end
 

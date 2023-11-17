@@ -10,7 +10,7 @@ RSpec.describe TwoFactorAuthentication::SignInPhoneSelectionPresenter do
 
   describe '#type' do
     it 'returns phone appended with configuration id' do
-      expect(presenter.type).to eq "phone_#{configuration.id}"
+      expect(presenter.type).to eq "phone_#{configuration.id}".to_sym
     end
   end
 

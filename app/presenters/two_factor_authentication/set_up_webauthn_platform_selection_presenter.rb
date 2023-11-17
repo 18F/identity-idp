@@ -5,7 +5,7 @@ module TwoFactorAuthentication
       @configuration = configuration
     end
 
-    def method
+    def type
       :webauthn_platform
     end
 

@@ -10,9 +10,9 @@ module TwoFactorAuthentication
 
     def type
       if MfaContext.new(configuration&.user).phone_configurations.many?
-        "#{super}_#{configuration.id}"
+        "#{method}_#{configuration.id}".to_sym
       else
-        super
+        method
       end
     end
 

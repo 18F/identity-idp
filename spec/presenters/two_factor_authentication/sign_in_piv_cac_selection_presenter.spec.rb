@@ -10,7 +10,7 @@ RSpec.describe TwoFactorAuthentication::SignInPivCacSelectionPresenter do
 
   describe '#type' do
     it 'returns piv_cac' do
-      expect(presenter.type).to eq 'piv_cac'
+      expect(presenter.type).to eq :piv_cac
     end
   end
 
