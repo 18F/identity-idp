@@ -25,12 +25,6 @@ import DocumentCaptureAbandon from './document-capture-abandon';
  * @prop {string=} back_image_metadata Back image metadata.
  */
 
-/**
- * Sides of document to present as file input.
- *
- * @type {DocumentSide[]}
- */
-const DOCUMENT_SIDES = ['front', 'back', 'selfie'];
 
 /**
  * @param {import('@18f/identity-form-steps').FormStepComponentProps<DocumentsStepValue>} props Props object.
@@ -46,7 +40,16 @@ function DocumentsStep({
   const { isMobile } = useContext(DeviceContext);
   const { isLastStep } = useContext(FormStepsContext);
   const { flowPath } = useContext(UploadContext);
-  const { notReadySectionEnabled, exitQuestionSectionEnabled } = useContext(FeatureFlagContext);
+  const { notReadySectionEnabled, exitQuestionSectionEnabled, selfieCaptureEnabled } =
+    useContext(FeatureFlagContext);
+
+  /**
+   * Sides of document to present as file input.
+   *
+   * @type {DocumentSide[]}
+   */
+  const documentSides = selfieCaptureEnabled ? ['front', 'back', 'selfie'] : ['front', 'back'];
+
   return (
     <>
       {flowPath === 'hybrid' && <HybridDocCaptureWarning className="margin-bottom-4" />}
@@ -61,7 +64,7 @@ function DocumentsStep({
           t('doc_auth.tips.document_capture_id_text3'),
         ].concat(!isMobile ? [t('doc_auth.tips.document_capture_id_text4')] : [])}
       />
-      {DOCUMENT_SIDES.map((side) => (
+      {documentSides.map((side) => (
         <DocumentSideAcuantCapture
           key={side}
           side={side}
