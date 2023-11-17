@@ -86,7 +86,6 @@ describe('enrollWebauthnDevice', () => {
           attestation: 'none',
           authenticatorSelection: {
             authenticatorAttachment: 'cross-platform',
-            userVerification: 'discouraged',
           },
           excludeCredentials: [
             {
