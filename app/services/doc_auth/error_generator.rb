@@ -111,11 +111,11 @@ module DocAuth
         side_country = classification_info.with_indifferent_access.dig(side, 'CountryCode')
         side_issuer_type = classification_info.with_indifferent_access.dig(side, 'IssuerType')
 
-        side_ok = !side_class.present? ||
+        side_ok = !side_class&.present? ||
                   SUPPORTED_ID_CLASSNAME.include?(side_class) ||
                   side_class == 'Unknown'
-        country_ok = !side_country.present? || supported_country_codes.include?(side_country)
-        issuer_type_ok = !side_issuer_type.present? ||
+        country_ok = !side_country&.present? || supported_country_codes.include?(side_country)
+        issuer_type_ok = !side_issuer_type&.present? ||
                          side_issuer_type == DocAuth::Acuant::IssuerTypes::STATE_OR_PROVINCE.name ||
                          side_issuer_type == DocAuth::Acuant::IssuerTypes::UNKNOWN.name
         both_side_ok &&= issuer_type_ok && side_ok && country_ok
