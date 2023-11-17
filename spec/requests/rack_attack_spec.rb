@@ -163,6 +163,39 @@ RSpec.describe 'throttling requests' do
         expect(analytics).
           to have_received(:track_event).with('Rate Limit Triggered', type: 'req/ip')
       end
+
+      it 'logs the service provider' do
+        analytics = FakeAnalytics.new
+        allow(Analytics).to receive(:new).and_return(analytics)
+        allow(analytics).to receive(:track_event)
+
+        client_id = 'urn:gov:gsa:openidconnect:sp:server'
+        state = SecureRandom.hex
+        nonce = SecureRandom.hex
+        params = {
+          client_id: client_id,
+          response_type: 'code',
+          acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+          scope: 'openid email profile:name social_security_number',
+          redirect_uri: 'http://localhost:7654/auth/result',
+          state: state,
+          nonce: nonce,
+          prompt: 'select_account',
+        }
+
+        get(
+          openid_connect_authorize_path,
+          params: params,
+          headers: { REMOTE_ADDR: '1.2.3.4' },
+        )
+        requests_per_ip_limit.times do
+          get '/', headers: { REMOTE_ADDR: '1.2.3.4' }
+        end
+
+        expect(Analytics).to have_received(:new).with(include(sp: client_id)).at_least(:once)
+        expect(analytics).
+          to have_received(:track_event).with('Rate Limit Triggered', type: 'req/ip')
+      end
     end
   end
 
