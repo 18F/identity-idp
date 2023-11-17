@@ -169,6 +169,12 @@ interface FormStepsProps {
    * Format string for page title, interpolated with step title as `%{step}` parameter.
    */
   titleFormat?: string;
+
+  /**
+   * If the user got here by opting-in to in-person proofing, skipDocAuth === 'true',
+   * then set step name to the first step in the IPP flow (prepare)
+   */
+  skipDocAuth?: string;
 }
 
 interface PreviousStepErrorsLookup {
@@ -230,6 +236,7 @@ function FormSteps({
   autoFocus,
   promptOnNavigate = true,
   titleFormat,
+  skipDocAuth,
 }: FormStepsProps) {
   const [values, setValues] = useState(initialValues);
   const [activeErrors, setActiveErrors] = useState(initialActiveErrors);
@@ -242,6 +249,15 @@ function FormSteps({
   const didSubmitWithErrors = useRef(false);
   const forceRender = useForceRender();
   const ifStillMounted = useIfStillMounted();
+
+  useEffect(() => {
+    // TO DO: I think I should check for flag?
+    // TO DO: Can we make prepare dynamic?
+    if (skipDocAuth === 'true') {
+      // setting stepName to the first step in IPP flow will set the url, ie: /verify/document_capture#prepare
+      setStepName('prepare');
+    }
+  }, []);
 
   useEffect(() => {
     if (activeErrors.length && didSubmitWithErrors.current) {

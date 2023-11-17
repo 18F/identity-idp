@@ -22,7 +22,6 @@ import SuspenseErrorBoundary from './suspense-error-boundary';
 import SubmissionInterstitial from './submission-interstitial';
 import withProps from '../higher-order/with-props';
 import { InPersonContext } from '../context';
-import OptInIpp from './opt-in-ipp';
 
 interface DocumentCaptureProps {
   /**
@@ -40,13 +39,6 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
   const { trackSubmitEvent, trackVisitEvent } = useContext(AnalyticsContext);
   const { inPersonFullAddressEntryEnabled, inPersonURL, skipDocAuth } = useContext(InPersonContext);
   const appName = getConfigValue('appName');
-
-  // If the user got here by opting-in to in-person proofing then skip rendering the document capture
-  // component and just render the in-person page
-  // todo: fix the type error below. We should coerce 'true' to a boolean type at some point
-  if (skipDocAuth == 'true') {
-    return <OptInIpp onStepChange={onStepChange} />;
-  }
 
   useDidUpdateEffect(onStepChange, [stepName]);
   useEffect(() => {
@@ -113,7 +105,7 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
           },
         ].filter(Boolean) as FormStep[]);
 
-  const steps: FormStep[] = submissionError
+  const defaultSteps: FormStep[] = submissionError
     ? (
         [
           {
@@ -141,8 +133,15 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
         },
       ].filter(Boolean) as FormStep[]);
 
+  // If the user got here by opting-in to in-person proofing, when skipDocAuth === 'true',
+  // then set steps to inPersonSteps 
+  const steps: FormStep[] = skipDocAuth === 'true'
+    ? inPersonSteps : defaultSteps;
+
+  // If the user got here by opting-in to in-person proofing, when skipDocAuth === 'true',
+  // then set stepIndicatorPath to VerifyFlowPath.IN_PERSON
   const stepIndicatorPath =
-    stepName && ['location', 'prepare', 'switch_back'].includes(stepName)
+    (stepName && ['location', 'prepare', 'switch_back'].includes(stepName)) || skipDocAuth === 'true'
       ? VerifyFlowPath.IN_PERSON
       : VerifyFlowPath.DEFAULT;
 
@@ -181,6 +180,7 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
             onStepSubmit={trackSubmitEvent}
             autoFocus={!!submissionError}
             titleFormat={`%{step} - ${appName}`}
+            skipDocAuth={skipDocAuth}
           />
         </>
       )}
