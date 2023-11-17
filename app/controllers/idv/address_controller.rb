@@ -13,7 +13,7 @@ module Idv
     end
 
     def update
-      clear_invalid_steps!
+      clear_future_invalid_steps!
       form_result = idv_form.submit(profile_params)
       analytics.idv_address_submitted(**form_result.to_h)
       capture_address_edited(form_result)

@@ -162,6 +162,12 @@ RSpec.describe Idv::SsnController do
         end
       end
 
+      it 'invalidates future steps' do
+        expect(subject).to receive(:clear_future_invalid_steps!)
+
+        put :update, params: params
+      end
+
       it 'logs attempts api event' do
         expect(@irs_attempts_api_tracker).to receive(:idv_ssn_submitted).with(
           ssn: ssn,

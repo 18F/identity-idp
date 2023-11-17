@@ -372,6 +372,12 @@ RSpec.describe Idv::VerifyInfoController do
   end
 
   describe '#update' do
+    it 'invalidates future steps' do
+      expect(subject).to receive(:clear_future_invalid_steps!)
+
+      put :update
+    end
+
     it 'logs the correct analytics event' do
       put :update
 

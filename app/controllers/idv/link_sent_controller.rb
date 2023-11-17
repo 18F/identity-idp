@@ -19,7 +19,7 @@ module Idv
     end
 
     def update
-      clear_invalid_steps!
+      clear_future_invalid_steps!
       analytics.idv_doc_auth_link_sent_submitted(**analytics_arguments)
 
       return render_document_capture_cancelled if document_capture_session&.cancelled_at

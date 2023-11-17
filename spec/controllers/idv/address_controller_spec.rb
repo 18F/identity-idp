@@ -80,6 +80,12 @@ RSpec.describe Idv::AddressController do
       )
     end
 
+    it 'invalidates future steps' do
+      expect(subject).to receive(:clear_future_invalid_steps!)
+
+      put :update, params: params
+    end
+
     it 'logs an analytics event' do
       put :update, params: params
       expect(@analytics).to have_logged_event(

@@ -21,7 +21,7 @@ module Idv
     end
 
     def update
-      clear_invalid_steps!
+      clear_future_invalid_steps!
       idv_session.redo_document_capture = nil # done with this redo
       # Not used in standard flow, here for data consistency with hybrid flow.
       document_capture_session.confirm_ocr

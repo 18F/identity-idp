@@ -24,7 +24,7 @@ module Idv
     end
 
     def update
-      clear_invalid_steps!
+      clear_future_invalid_steps!
       irs_attempts_api_tracker.idv_document_upload_method_selected(
         upload_method: params[:type],
       )

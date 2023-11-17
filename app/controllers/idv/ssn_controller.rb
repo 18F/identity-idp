@@ -33,7 +33,7 @@ module Idv
     end
 
     def update
-      clear_invalid_steps!
+      clear_future_invalid_steps!
       ssn_form = Idv::SsnFormatForm.new(idv_session.ssn)
       form_response = ssn_form.submit(params.require(:doc_auth).permit(:ssn))
       @ssn_presenter = Idv::SsnPresenter.new(
