@@ -192,8 +192,7 @@ RSpec.describe 'throttling requests' do
         end
 
         expect(Analytics).to have_received(:new).with(include(sp: client_id)).at_least(:once)
-        expect(analytics).
-          to have_logged_event('Rate Limit Triggered', type: 'req/ip')
+        expect(analytics).to have_logged_event('Rate Limit Triggered', type: 'req/ip')
       end
     end
   end
