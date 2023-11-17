@@ -127,8 +127,6 @@ function AcuantCamera({
     };
 
     const startSelfieCamera = () => {
-      // TODO This opens the native camera
-      // window.AcuantPassiveLiveness.startManualCapture((image) => console.log('image', image));
       window.AcuantPassiveLiveness.start(faceCaptureCallback, faceDetectionStates);
       setIsActive(true);
     };
