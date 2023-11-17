@@ -10,7 +10,7 @@ class FrontendLogController < ApplicationController
 
   # Please try to keep this list alphabetical as well!
   # rubocop:disable Layout/LineLength
-  EVENT_MAP = {
+  LEGACY_EVENT_MAP = {
     'Frontend Error' => FrontendErrorLogger.method(:track_error),
     'IdV: Acuant SDK loaded' => :idv_acuant_sdk_loaded,
     'IdV: back image added' => :idv_back_image_added,
@@ -45,6 +45,11 @@ class FrontendLogController < ApplicationController
     'User prompted before navigation and still on page' => :user_prompted_before_navigation_and_still_on_page,
   }.freeze
   # rubocop:enable Layout/LineLength
+
+  ALLOWED_EVENTS = [
+  ].freeze
+
+  EVENT_MAP = ALLOWED_EVENTS.index_by(&:to_s).merge(LEGACY_EVENT_MAP).freeze
 
   def create
     result = frontend_logger.track_event(log_params[:event], log_params[:payload].to_h)
