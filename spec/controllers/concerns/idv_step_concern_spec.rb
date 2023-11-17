@@ -64,9 +64,9 @@ RSpec.describe 'IdvStepConcern' do
         idv_session.pii_from_doc = { first_name: 'Susan' }
       end
 
-      it 'redirects to ssn screen' do
+      it 'allows the back button and stays on page' do
         get :show
-        expect(response).to redirect_to(idv_ssn_url)
+        expect(response).to have_http_status(200)
       end
 
       context 'and redo specified' do

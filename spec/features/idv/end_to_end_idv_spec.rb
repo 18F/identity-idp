@@ -412,7 +412,7 @@ RSpec.describe 'Identity verification', :js do
       t('doc_auth.instructions.consent', app_name: APP_NAME),
       visible: :all,
     )
-    click_on t('doc_auth.buttons.continue')
+    complete_agreement_step
   end
 
   def test_go_back_from_document_capture

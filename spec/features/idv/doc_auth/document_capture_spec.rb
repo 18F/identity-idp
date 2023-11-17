@@ -182,7 +182,6 @@ RSpec.feature 'document capture step', :js do
         expect_costing_for_document
         expect(DocAuthLog.find_by(user_id: user.id).state).to eq('MT')
 
-        visit(idv_document_capture_url)
         expect(page).to have_current_path(idv_ssn_url)
         fill_out_ssn_form_ok
         click_idv_continue
