@@ -28,7 +28,7 @@ interface AcuantSelfieCameraContextProps {
   /**
    * Success callback
    */
-  onImageCaptureSuccess: any;
+  onImageCaptureSuccess: ({ image }: { image: string }) => void;
   /**
    * Failure callback
    */
@@ -37,12 +37,12 @@ interface AcuantSelfieCameraContextProps {
    * Capture open callback, tells the rest of the page
    * when the fullscreen selfie capture page is open
    */
-  onImageCaptureOpen: any;
+  onImageCaptureOpen: () => void;
   /**
    * Capture close callback, tells the rest of the page
    * when the fullscreen selfie capture page has been closed
    */
-  onImageCaptureClose: any;
+  onImageCaptureClose: () => void;
   /**
    * React children node
    */
