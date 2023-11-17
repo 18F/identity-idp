@@ -47,7 +47,6 @@ module Idv
         end,
         undo_step: ->(idv_session:, user:) do
           idv_session.resolution_successful = nil
-          idv_session.redo_document_capture = nil
         end,
       )
     end
