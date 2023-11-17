@@ -1,13 +1,13 @@
 class UserProfilesEncryptor
   attr_reader :personal_key
 
-  def initialize(user, user_session, password)
+  def initialize(user:, user_session:, password:)
     @user = user
     @user_session = user_session
     @password = password
   end
 
-  def call
+  def encrypt
     if user.active_profile.present?
       encrypt_pii_for_profile(user.active_profile)
     end

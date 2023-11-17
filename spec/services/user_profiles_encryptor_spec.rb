@@ -14,8 +14,12 @@ RSpec.describe UserProfilesEncryptor do
 
     context 'when the user has an active profile' do
       it 'encrypts the PII for the active profile with the password' do
-        encryptor = UserProfilesEncryptor.new(user, user_session, password)
-        encryptor.call
+        encryptor = UserProfilesEncryptor.new(
+          user: user,
+          user_session: user_session,
+          password: password,
+        )
+        encryptor.encrypt
 
         profile.reload
 
@@ -34,8 +38,12 @@ RSpec.describe UserProfilesEncryptor do
       let(:profile) { create(:profile, :verify_by_mail_pending, :verified, pii: pii.to_h) }
 
       it 'encrypts the PII for the pending profile with the password' do
-        encryptor = UserProfilesEncryptor.new(user, user_session, password)
-        encryptor.call
+        encryptor = UserProfilesEncryptor.new(
+          user: user,
+          user_session: user_session,
+          password: password,
+        )
+        encryptor.encrypt
 
         profile.reload
 
@@ -69,8 +77,12 @@ RSpec.describe UserProfilesEncryptor do
       end
 
       it 'encrypts the PII for both profiles with the password' do
-        encryptor = UserProfilesEncryptor.new(user, user_session, password)
-        encryptor.call
+        encryptor = UserProfilesEncryptor.new(
+          user: user,
+          user_session: user_session,
+          password: password,
+        )
+        encryptor.encrypt
 
         active_profile.reload
         pending_profile.reload
@@ -83,8 +95,12 @@ RSpec.describe UserProfilesEncryptor do
       end
 
       it 'sets the pending profile personal key as the personal key' do
-        encryptor = UserProfilesEncryptor.new(user, user_session, password)
-        encryptor.call
+        encryptor = UserProfilesEncryptor.new(
+          user: user,
+          user_session: user_session,
+          password: password,
+        )
+        encryptor.encrypt
 
         active_profile.reload
         pending_profile.reload

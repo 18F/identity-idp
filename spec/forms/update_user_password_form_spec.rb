@@ -79,12 +79,12 @@ RSpec.describe UpdateUserPasswordForm, type: :model do
       it 'encrypts the active profile' do
         encryptor = instance_double(UserProfilesEncryptor)
         allow(UserProfilesEncryptor).to receive(:new).
-          with(user, user_session, password).and_return(encryptor)
-        allow(encryptor).to receive(:call)
+          with(user: user, user_session: user_session, password: password).and_return(encryptor)
+        allow(encryptor).to receive(:encrypt)
 
         subject.submit(params)
 
-        expect(encryptor).to have_received(:call)
+        expect(encryptor).to have_received(:encrypt)
       end
 
       it 'logs that the user has an active profile' do
@@ -109,12 +109,12 @@ RSpec.describe UpdateUserPasswordForm, type: :model do
       it 'encrypts the pending profile' do
         encryptor = instance_double(UserProfilesEncryptor)
         allow(UserProfilesEncryptor).to receive(:new).
-          with(user, user_session, password).and_return(encryptor)
-        allow(encryptor).to receive(:call)
+          with(user: user, user_session: user_session, password: password).and_return(encryptor)
+        allow(encryptor).to receive(:encrypt)
 
         subject.submit(params)
 
-        expect(encryptor).to have_received(:call)
+        expect(encryptor).to have_received(:encrypt)
       end
 
       it 'logs that the user has a pending profile' do

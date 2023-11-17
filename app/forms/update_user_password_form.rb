@@ -35,11 +35,15 @@ class UpdateUserPasswordForm
   def encrypt_user_profiles
     return if user.active_or_pending_profile.blank?
 
-    encryptor.call
+    encryptor.encrypt
   end
 
   def encryptor
-    @encryptor ||= UserProfilesEncryptor.new(user, user_session, password)
+    @encryptor ||= UserProfilesEncryptor.new(
+      user: user,
+      user_session: user_session,
+      password: password,
+    )
   end
 
   def extra_analytics_attributes
