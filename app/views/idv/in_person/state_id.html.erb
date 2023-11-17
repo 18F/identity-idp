@@ -111,7 +111,7 @@
         ) %>
   </div>
   <div class="margin-bottom-5">
-    <% state_id_number_hint = capture do %>
+    <% state_id_number_hint_default = capture do %>
       <%= t('in_person_proofing.form.state_id.state_id_number_hint') %>
       <% [
            [t('in_person_proofing.form.state_id.state_id_number_hint_spaces'), ' '],
@@ -121,6 +121,20 @@
          ].each do |text, symbol, last| %>
          <span class="usa-sr-only"><%= text %><%= ',' if !last %></span>
          <span aria-hidden="true"><%= symbol %></span>
+      <% end %>
+    <% end %>
+
+    <% state_id_number_hint = capture do %>
+      <% [
+        [:default, state_id_number_hint_default],
+        ['TX', t('in_person_proofing.form.state_id.state_id_number_texas_hint')],
+      ].each do |state, hint| %>
+        <%= content_tag(
+              :span,
+              hint,
+              class: state == :default ? nil : 'display-none',
+              data: { state: },
+            ) %>
       <% end %>
     <% end %>
 
