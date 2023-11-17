@@ -7,6 +7,7 @@ RSpec.describe WebauthnVerificationForm do
   let(:user) { create(:user) }
   let(:challenge) { webauthn_challenge }
   let(:webauthn_error) { nil }
+  let(:screen_lock_error) { nil }
   let(:platform_authenticator) { false }
   let(:client_data_json) { verification_client_data_json }
   let!(:webauthn_configuration) do
@@ -32,6 +33,7 @@ RSpec.describe WebauthnVerificationForm do
       signature: signature,
       credential_id: credential_id,
       webauthn_error: webauthn_error,
+      screen_lock_error:,
     )
   end
 
@@ -163,6 +165,112 @@ RSpec.describe WebauthnVerificationForm do
             webauthn_configuration_id: webauthn_configuration.id,
             frontend_error: webauthn_error,
           )
+        end
+      end
+
+      context 'when a screen lock error is present' do
+        let(:screen_lock_error) { 'true' }
+
+        context 'user does not have another authentication method available' do
+          it 'returns unsuccessful result' do
+            expect(result.to_h).to eq(
+              success: false,
+              error_details: {
+                screen_lock_error: { present: true },
+              },
+              multi_factor_auth_method: 'webauthn',
+              webauthn_configuration_id: webauthn_configuration.id,
+            )
+          end
+
+          it 'provides error message not suggesting other method' do
+            expect(result.first_error_message).to eq t(
+              'two_factor_authentication.webauthn_error.screen_lock_no_other_mfa',
+              link_html: link_to(
+                t('two_factor_authentication.webauthn_error.use_a_different_method'),
+                login_two_factor_options_path,
+              ),
+            )
+          end
+        end
+
+        context 'user has another WebAuthn method available' do
+          context 'the other MFA method is WebAuthn of the same attachment' do
+            let(:platform_authenticator) { false }
+            let(:user) { create(:user, :with_webauthn) }
+
+            it 'returns unsuccessful result' do
+              expect(result.to_h).to eq(
+                success: false,
+                error_details: {
+                  screen_lock_error: { present: true },
+                },
+                multi_factor_auth_method: 'webauthn',
+                webauthn_configuration_id: webauthn_configuration.id,
+              )
+            end
+
+            it 'provides error message not suggesting other method' do
+              expect(result.first_error_message).to eq t(
+                'two_factor_authentication.webauthn_error.screen_lock_no_other_mfa',
+                link_html: link_to(
+                  t('two_factor_authentication.webauthn_error.use_a_different_method'),
+                  login_two_factor_options_path,
+                ),
+              )
+            end
+          end
+
+          context 'the other MFA method is WebAuthn of a different attachment' do
+            let(:platform_authenticator) { false }
+            let(:user) { create(:user, :with_webauthn_platform) }
+
+            it 'returns unsuccessful result' do
+              expect(result.to_h).to eq(
+                success: false,
+                error_details: {
+                  screen_lock_error: { present: true },
+                },
+                multi_factor_auth_method: 'webauthn',
+                webauthn_configuration_id: webauthn_configuration.id,
+              )
+            end
+
+            it 'provides error message suggesting other method' do
+              expect(result.first_error_message).to eq t(
+                'two_factor_authentication.webauthn_error.screen_lock_other_mfa',
+                link_html: link_to(
+                  t('two_factor_authentication.webauthn_error.use_a_different_method'),
+                  login_two_factor_options_path,
+                ),
+              )
+            end
+          end
+
+          context 'the other MFA method is not a WebAuthn method' do
+            let(:user) { create(:user, :with_phone) }
+
+            it 'returns unsuccessful result' do
+              expect(result.to_h).to eq(
+                success: false,
+                error_details: {
+                  screen_lock_error: { present: true },
+                },
+                multi_factor_auth_method: 'webauthn',
+                webauthn_configuration_id: webauthn_configuration.id,
+              )
+            end
+
+            it 'provides error message suggesting other method' do
+              expect(result.first_error_message).to eq t(
+                'two_factor_authentication.webauthn_error.screen_lock_other_mfa',
+                link_html: link_to(
+                  t('two_factor_authentication.webauthn_error.use_a_different_method'),
+                  login_two_factor_options_path,
+                ),
+              )
+            end
+          end
         end
       end
 

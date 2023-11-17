@@ -178,7 +178,14 @@ en:
       additional_methods_link: choose another authentication method
       connect_html: We were unable to connect the security key. Please try again or
         %{link_html}.
+      screen_lock_no_other_mfa: We couldn’t authenticate with face or touch unlock.
+        Try signing in on the device where you first set up face or touch
+        unlock.
+      screen_lock_other_mfa: We couldn’t authenticate with face or touch unlock.
+        %{link_html}, or try signing in on the device where you first set up
+        face or touch unlock.
       try_again: Face or touch unlock was unsuccessful. Please try again or %{link}.
+      use_a_different_method: Use a different authentication method
     webauthn_header_text: Connect your security key
     webauthn_platform_header_text: Use face or touch unlock
     webauthn_platform_use_key: Use face or touch unlock
