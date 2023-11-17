@@ -96,7 +96,7 @@ RSpec.describe 'Idv::FlowPolicy' do
         idv_session.flow_path = 'standard'
         expect(subject.info_for_latest_step.key).to eq(:document_capture)
         expect(subject.controller_allowed?(controller: Idv::DocumentCaptureController)).to be
-        # expect(subject.controller_allowed?(controller: Idv::SsnController)).not_to be
+        expect(subject.controller_allowed?(controller: Idv::SsnController)).not_to be
       end
     end
 
@@ -107,7 +107,43 @@ RSpec.describe 'Idv::FlowPolicy' do
         idv_session.flow_path = 'hybrid'
         expect(subject.info_for_latest_step.key).to eq(:link_sent)
         expect(subject.controller_allowed?(controller: Idv::LinkSentController)).to be
-        # expect(subject.controller_allowed?(controller: Idv::SsnController)).not_to be
+        expect(subject.controller_allowed?(controller: Idv::SsnController)).not_to be
+      end
+    end
+
+    context 'preconditions for ssn are present' do
+      before do
+        idv_session.welcome_visited = true
+        idv_session.idv_consent_given = true
+        idv_session.flow_path = 'standard'
+        idv_session.pii_from_doc = { pii: 'value' }
+      end
+
+      it 'returns ssn for standard flow' do
+        expect(subject.info_for_latest_step.key).to eq(:ssn)
+        expect(subject.controller_allowed?(controller: Idv::SsnController)).to be
+        expect(subject.controller_allowed?(controller: Idv::VerifyInfoController)).not_to be
+      end
+
+      it 'returns ssn for hybrid flow' do
+        idv_session.flow_path = 'hybrid'
+        expect(subject.info_for_latest_step.key).to eq(:ssn)
+        expect(subject.controller_allowed?(controller: Idv::SsnController)).to be
+        expect(subject.controller_allowed?(controller: Idv::VerifyInfoController)).not_to be
+      end
+    end
+
+    context 'preconditions for verify_info are present' do
+      it 'returns verify_info' do
+        idv_session.welcome_visited = true
+        idv_session.idv_consent_given = true
+        idv_session.flow_path = 'standard'
+        idv_session.pii_from_doc = { pii: 'value' }
+        idv_session.ssn = '666666666'
+
+        expect(subject.info_for_latest_step.key).to eq(:verify_info)
+        expect(subject.controller_allowed?(controller: Idv::VerifyInfoController)).to be
+        # expect(subject.controller_allowed?(controller: Idv::PhoneController)).not_to be
       end
     end
   end
