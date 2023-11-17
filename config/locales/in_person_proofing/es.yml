@@ -145,7 +145,7 @@ es:
         state_id_number: Número de identidad
         state_id_number_hint: 'Puede incluir letras, números y los siguientes símbolos: /  *-'
         state_id_number_texas_hint: Este es el número de 8 dígitos de su ID. Introduzca
-          sólo números en este campos.
+          sólo números en este campo.
         zipcode: Código postal
     headings:
       address: Ingresa tu domicilio actual
