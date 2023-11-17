@@ -7,13 +7,13 @@ module DocAuth
       info = classification_info
       return true if info.nil?
       type_ok = doc_side_class_ok?(info, 'Front') && doc_side_class_ok?(info, 'Back')
+      return false unless type_ok
       issuing_country_ok = doc_issuing_country_ok?(
         info,
         'Front',
       ) && doc_issuing_country_ok?(info, 'Back')
-
-      issuer_type_ok = doc_issuer_type_ok?(info, :Front) && doc_issuer_type_ok?(info, :Back)
-      type_ok && issuing_country_ok && issuer_type_ok
+      return false unless issuing_country_ok
+      doc_issuer_type_ok?(info, :Front) && doc_issuer_type_ok?(info, :Back)
     end
 
     alias_method :doc_type_supported?, :id_type_supported?
@@ -41,7 +41,7 @@ module DocAuth
       side_issuer_type = classification_info&.with_indifferent_access&.dig(doc_side, :IssuerType)
       side_issuer_type == DocAuth::Acuant::IssuerTypes::STATE_OR_PROVINCE.name ||
         side_issuer_type == DocAuth::Acuant::IssuerTypes::UNKNOWN.name ||
-        !side_issuer_type.present?
+        !side_issuer_type&.present?
     end
 
     def supported_country_codes

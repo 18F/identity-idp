@@ -22,6 +22,7 @@ module DocAuth
       ].freeze
 
       BY_CODE = ALL.index_by(&:code).freeze
+
       def self.from_int(code)
         BY_CODE[code]
       end
