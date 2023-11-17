@@ -5,6 +5,7 @@ import type { CountryCode } from 'libphonenumber-js';
 import type { Plugin as IntlTelInputPlugin, Options } from 'intl-tel-input';
 import { replaceVariables } from '@18f/identity-i18n';
 import { CAPTCHA_EVENT_NAME } from '@18f/identity-captcha-submit-button/captcha-submit-button-element';
+import { trackEvent } from '@18f/identity-analytics';
 
 interface PhoneInputStrings {
   country_code_label: string;
@@ -61,6 +62,7 @@ export class PhoneInputElement extends HTMLElement {
     this.initializeIntlTelInput();
 
     this.textInput.addEventListener('countrychange', () => this.syncCountryToCodeInput());
+    this.textInput.addEventListener('countrychange', () => this.trackCountryChangeEvent());
     this.textInput.addEventListener('input', () => this.validate());
     this.codeInput.addEventListener('change', () => this.formatTextInput());
     this.codeInput.addEventListener('change', () => this.validate());
@@ -120,6 +122,14 @@ export class PhoneInputElement extends HTMLElement {
     } catch {
       return true;
     }
+  }
+
+  /**
+   * Logs an event when the country code has been changed.
+   */
+  trackCountryChangeEvent() {
+    const { iso2 } = this.iti.getSelectedCountryData();
+    trackEvent('phone_input_country_changed', { country_code: iso2.toUpperCase() });
   }
 
   /**

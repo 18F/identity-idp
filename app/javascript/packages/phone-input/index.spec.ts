@@ -2,6 +2,7 @@ import { getByLabelText, getByRole, getAllByRole } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
 import { computeAccessibleName } from 'dom-accessibility-api';
 import type { SinonStub } from 'sinon';
+import * as analytics from '@18f/identity-analytics';
 import { useSandbox } from '@18f/identity-test-helpers';
 import { CAPTCHA_EVENT_NAME } from '@18f/identity-captcha-submit-button/captcha-submit-button-element';
 
@@ -29,6 +30,10 @@ describe('PhoneInput', () => {
     await import('intl-tel-input/build/js/utils.js');
     window.intlTelInputUtils = global.intlTelInputUtils;
     await import('./index');
+  });
+
+  beforeEach(() => {
+    sandbox.stub(analytics, 'trackEvent');
   });
 
   function createAndConnectElement({
@@ -178,6 +183,26 @@ describe('PhoneInput', () => {
 
     await userEvent.selectOptions(countryCode, 'US');
     expect(phoneNumber.value).to.equal('+1 071');
+  });
+
+  it('tracks event on country change', async () => {
+    const input = createAndConnectElement();
+    const iti = input.querySelector('.iti') as HTMLElement;
+
+    const phoneNumber = getByLabelText(input, 'Phone number') as HTMLInputElement;
+
+    await userEvent.type(phoneNumber, '+1306');
+    expect(analytics.trackEvent).to.have.been.calledOnceWith('phone_input_country_changed', {
+      country_code: 'CA',
+    });
+
+    const dropdownButton = getByRole(iti, 'combobox', { name: 'Country code' });
+    await userEvent.click(dropdownButton);
+    const usOption = getByRole(iti, 'option', { name: 'United States +1' });
+    await userEvent.click(usOption);
+    expect(analytics.trackEvent).to.have.been.calledWith('phone_input_country_changed', {
+      country_code: 'US',
+    });
   });
 
   it('renders as an accessible combobox', () => {
