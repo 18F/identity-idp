@@ -17,9 +17,9 @@ module TwoFactorAuthentication
     end
 
     def label
-      if method.to_s == 'sms'
+      if method == :sms
         t('two_factor_authentication.login_options.sms')
-      elsif method.to_s == 'voice'
+      elsif method == :voice
         t('two_factor_authentication.login_options.voice')
       end
     end
