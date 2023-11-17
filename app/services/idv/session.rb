@@ -14,6 +14,7 @@ module Idv
       idv_phone_step_document_capture_session_uuid
       mail_only_warning_shown
       personal_key
+      personal_key_acknowledged
       phone_for_mobile_flow
       phone_with_camera
       pii_from_doc
@@ -83,6 +84,11 @@ module Idv
           profile_maker.pii_attributes,
         )
       end
+    end
+
+    def acknowledge_personal_key!
+      session.delete(:personal_key)
+      session[:personal_key_acknowledged] = true
     end
 
     def gpo_verification_needed?
