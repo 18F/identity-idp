@@ -17,11 +17,11 @@ module TwoFactorAuthentication
     end
 
     def label
-      raise "Unsupported setup method: #{type}"
+      raise NotImplementedError
     end
 
     def info
-      raise "Unsupported setup method: #{type}"
+      raise NotImplementedError
     end
 
     def mfa_added_label

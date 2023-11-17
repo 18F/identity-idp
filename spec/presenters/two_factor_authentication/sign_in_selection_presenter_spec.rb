@@ -27,10 +27,8 @@ RSpec.describe TwoFactorAuthentication::SignInSelectionPresenter do
   end
 
   describe '#label' do
-    it 'raises with missing translation' do
-      expect do
-        presenter.label
-      end.to raise_error(RuntimeError)
+    it 'raises with missing implementation' do
+      expect { presenter.label }.to raise_error(NotImplementedError)
     end
   end
 
@@ -41,10 +39,8 @@ RSpec.describe TwoFactorAuthentication::SignInSelectionPresenter do
   end
 
   describe '#info' do
-    it 'raises with missing translation' do
-      expect do
-        presenter.info
-      end.to raise_error(RuntimeError)
+    it 'raises with missing implementation' do
+      expect { presenter.info }.to raise_error(NotImplementedError)
     end
   end
 end

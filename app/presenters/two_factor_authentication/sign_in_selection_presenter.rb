@@ -18,11 +18,11 @@ module TwoFactorAuthentication
     end
 
     def label
-      raise "Unsupported login method: #{type}"
+      raise NotImplementedError
     end
 
     def info
-      raise "Unsupported login method: #{type}"
+      raise NotImplementedError
     end
 
     def disabled?

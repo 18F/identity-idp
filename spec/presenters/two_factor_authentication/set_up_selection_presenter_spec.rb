@@ -94,14 +94,14 @@ RSpec.describe TwoFactorAuthentication::SetUpSelectionPresenter do
   end
 
   describe '#label' do
-    it 'raises with missing translation' do
-      expect { placeholder_presenter_class.new(user: user).label }.to raise_error(RuntimeError)
+    it 'raises with missing implementation' do
+      expect { placeholder_presenter_class.new(user:).label }.to raise_error(NotImplementedError)
     end
   end
 
   describe '#info' do
-    it 'raises with missing translation' do
-      expect { placeholder_presenter_class.new(user: user).info }.to raise_error(RuntimeError)
+    it 'raises with missing implementation' do
+      expect { placeholder_presenter_class.new(user:).info }.to raise_error(NotImplementedError)
     end
   end
 end
