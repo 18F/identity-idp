@@ -23,7 +23,7 @@ module Idv
     end
 
     def update
-      clear_future_invalid_steps!
+      clear_future_steps!
       success = shared_update
 
       if success

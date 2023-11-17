@@ -81,7 +81,7 @@ RSpec.describe Idv::AddressController do
     end
 
     it 'invalidates future steps' do
-      expect(subject).to receive(:clear_future_invalid_steps!)
+      expect(subject).to receive(:clear_future_steps!)
 
       put :update, params: params
     end

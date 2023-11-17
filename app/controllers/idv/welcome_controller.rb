@@ -23,7 +23,7 @@ module Idv
     end
 
     def update
-      clear_future_invalid_steps!
+      clear_future_steps!
       analytics.idv_doc_auth_welcome_submitted(**analytics_arguments)
 
       create_document_capture_session
