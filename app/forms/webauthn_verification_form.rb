@@ -11,8 +11,9 @@ class WebauthnVerificationForm
             :signature,
             :webauthn_configuration,
             presence: { message: proc { |object| object.instance_eval { generic_error_message } } }
+  validates :webauthn_error,
+            absence: { message: proc { |object| object.instance_eval { generic_error_message } } }
   validate :validate_assertion_response
-  validate :validate_webauthn_error
 
   attr_reader :url_options, :platform_authenticator
 
@@ -77,11 +78,6 @@ class WebauthnVerificationForm
   def validate_assertion_response
     return if webauthn_error.present? || webauthn_configuration.blank? || valid_assertion_response?
     errors.add(:authenticator_data, :invalid_authenticator_data, message: generic_error_message)
-  end
-
-  def validate_webauthn_error
-    return if webauthn_error.blank?
-    errors.add(:webauthn_error, :webauthn_error, message: generic_error_message)
   end
 
   def valid_assertion_response?
