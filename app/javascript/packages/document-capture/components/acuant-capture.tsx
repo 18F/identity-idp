@@ -501,7 +501,7 @@ function AcuantCapture(
     setIsCapturingEnvironment(false);
   }
 
-  function onSelfieCaptureFailure({ error }: { error: any }) {
+  function onSelfieCaptureFailure() {
     // Internally, Acuant sets a cookie to bail on guided capture if initialization had
     // previously failed for any reason, including declined permission. Since the cookie
     // never expires, and since we want to re-prompt even if the user had previously

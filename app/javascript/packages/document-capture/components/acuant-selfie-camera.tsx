@@ -83,7 +83,7 @@ function AcuantCamera({
       // Until then, no actions are executed and the user sees only the camera stream.
       // You can opt to display an alert before the callback is triggered.
     },
-    onDetection: (text) => {
+    onDetection: () => {
       // Triggered when the face does not pass the scan. The UI element
       // should be updated here to provide guidence to the user
     },
