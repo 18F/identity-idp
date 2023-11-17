@@ -29,7 +29,7 @@ module Idv
         controller: controller_name,
         next_steps: [:success], # Goes back to verify_info, and don't want a loop
         preconditions: ->(idv_session:, user:) { idv_session.document_capture_complete? },
-        undo_step: ->(idv_session:, user:) { idv_session.address_edited = nil },
+        undo_step: ->(idv_session:, user:) {},
       )
     end
 

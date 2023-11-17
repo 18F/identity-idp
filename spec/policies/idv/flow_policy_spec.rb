@@ -34,13 +34,19 @@ RSpec.describe 'Idv::FlowPolicy' do
         idv_session.skip_hybrid_handoff = true
 
         idv_session.flow_path = 'standard'
+        idv_session.phone_for_mobile_flow = '201-555-1212'
 
         idv_session.pii_from_doc = Idp::Constants::MOCK_IDV_APPLICANT
+        idv_session.had_barcode_read_failure = true
+        idv_session.had_barcode_attention_error = true
 
         idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]
+        idv_session.threatmetrix_session_id = SecureRandom.uuid
+
+        idv_session.address_edited = true
       end
 
-      it 'user goes back and submits welcome' do
+      it 'clears future steps when user goes back and submits welcome' do
         subject.undo_future_steps_from_controller!(controller: Idv::WelcomeController)
 
         expect(idv_session.welcome_visited).not_to be_nil
@@ -50,10 +56,16 @@ RSpec.describe 'Idv::FlowPolicy' do
         expect(idv_session.skip_hybrid_handoff).to be_nil
 
         expect(idv_session.flow_path).to be_nil
+        expect(idv_session.phone_for_mobile_flow).to be_nil
 
         expect(idv_session.pii_from_doc).to be_nil
+        expect(idv_session.had_barcode_read_failure).to be_nil
+        expect(idv_session.had_barcode_attention_error).to be_nil
 
         expect(idv_session.ssn).to be_nil
+        expect(idv_session.threatmetrix_session_id).to be_nil
+
+        expect(idv_session.address_edited).to be_nil
       end
     end
   end

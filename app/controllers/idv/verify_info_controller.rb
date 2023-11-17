@@ -47,6 +47,7 @@ module Idv
         end,
         undo_step: ->(idv_session:, user:) do
           idv_session.resolution_successful = nil
+          idv_session.address_edited = nil
         end,
       )
     end
