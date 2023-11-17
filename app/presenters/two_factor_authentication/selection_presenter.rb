@@ -68,27 +68,11 @@ module TwoFactorAuthentication
     private
 
     def login_label(type)
-      case type
-      when 'sms'
-        t('two_factor_authentication.login_options.sms')
-      when 'voice'
-        t('two_factor_authentication.login_options.voice')
-      else
-        raise "Unsupported login method: #{type}"
-      end
+      raise "Unsupported login method: #{type}"
     end
 
     def setup_label(type)
-      case type
-      when 'phone'
-        t('two_factor_authentication.two_factor_choice_options.phone')
-      when 'sms'
-        t('two_factor_authentication.two_factor_choice_options.sms')
-      when 'voice'
-        t('two_factor_authentication.two_factor_choice_options.voice')
-      else
-        raise "Unsupported setup method: #{type}"
-      end
+      raise "Unsupported setup method: #{type}"
     end
 
     def login_info(type)

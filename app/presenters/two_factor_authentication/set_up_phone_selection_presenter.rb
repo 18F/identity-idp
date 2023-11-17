@@ -1,15 +1,11 @@
 module TwoFactorAuthentication
-  class PhoneSelectionPresenter < SelectionPresenter
+  class SetUpPhoneSelectionPresenter < SetUpSelectionPresenter
     def method
       :phone
     end
 
-    def type
-      if MfaContext.new(configuration&.user).phone_configurations.many?
-        "#{super}_#{configuration.id}"
-      else
-        super
-      end
+    def label
+      t('two_factor_authentication.two_factor_choice_options.phone')
     end
 
     def info

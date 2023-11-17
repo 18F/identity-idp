@@ -163,8 +163,6 @@ en:
         (toll) phone numbers.
       piv_cac: Government employee ID
       piv_cac_info: PIV/CAC cards for government and military employees. Desktop only.
-      sms: Text message / SMS
-      voice: Phone call
       webauthn: Security key
       webauthn_info: A physical device, often shaped like a USB drive, that you plug
         in to your device.
