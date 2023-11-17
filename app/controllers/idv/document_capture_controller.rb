@@ -71,12 +71,6 @@ module Idv
 
     private
 
-    def confirm_hybrid_handoff_complete
-      return if idv_session.flow_path.present?
-
-      redirect_to idv_hybrid_handoff_url
-    end
-
     def cancel_establishing_in_person_enrollments
       UspsInPersonProofing::EnrollmentHelper.
         cancel_stale_establishing_enrollments_for_user(current_user)

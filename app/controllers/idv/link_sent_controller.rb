@@ -7,8 +7,7 @@ module Idv
 
     before_action :confirm_not_rate_limited
     before_action :confirm_step_allowed
-    before_action :confirm_hybrid_handoff_complete
-    before_action :confirm_document_capture_needed
+    before_action :confirm_verify_info_step_needed
 
     def show
       analytics.idv_doc_auth_link_sent_visited(**analytics_arguments)
@@ -57,24 +56,6 @@ module Idv
     end
 
     private
-
-    def confirm_hybrid_handoff_complete
-      return if idv_session.flow_path == 'hybrid'
-
-      if idv_session.flow_path == 'standard'
-        redirect_to idv_document_capture_url
-      else
-        redirect_to idv_hybrid_handoff_url
-      end
-    end
-
-    def confirm_document_capture_needed
-      return if idv_session.redo_document_capture
-
-      return if idv_session.pii_from_doc.blank? && !idv_session.verify_info_step_complete?
-
-      redirect_to idv_ssn_url
-    end
 
     def analytics_arguments
       {
