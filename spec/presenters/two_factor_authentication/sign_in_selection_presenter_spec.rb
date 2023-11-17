@@ -2,11 +2,7 @@ require 'rails_helper'
 
 RSpec.describe TwoFactorAuthentication::SignInSelectionPresenter do
   let(:placeholder_presenter_class) do
-    Class.new(TwoFactorAuthentication::SignInSelectionPresenter) do
-      def method
-        :missing
-      end
-    end
+    Class.new(TwoFactorAuthentication::SignInSelectionPresenter)
   end
 
   let(:user) { build(:user) }
@@ -33,8 +29,8 @@ RSpec.describe TwoFactorAuthentication::SignInSelectionPresenter do
   end
 
   describe '#type' do
-    it 'returns missing as type' do
-      expect(presenter.type).to eq('missing')
+    it 'raises with missing implementation' do
+      expect { presenter.type }.to raise_error(NotImplementedError)
     end
   end
 

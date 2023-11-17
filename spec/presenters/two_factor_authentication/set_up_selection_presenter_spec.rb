@@ -2,11 +2,7 @@ require 'rails_helper'
 
 RSpec.describe TwoFactorAuthentication::SetUpSelectionPresenter do
   let(:placeholder_presenter_class) do
-    Class.new(TwoFactorAuthentication::SetUpSelectionPresenter) do
-      def method
-        :missing
-      end
-    end
+    Class.new(TwoFactorAuthentication::SetUpSelectionPresenter)
   end
 
   let(:user) { build(:user) }
@@ -90,6 +86,12 @@ RSpec.describe TwoFactorAuthentication::SetUpSelectionPresenter do
       it 'is an empty string' do
         expect(presenter.mfa_added_label).to eq('')
       end
+    end
+  end
+
+  describe '#type' do
+    it 'raises with missing implementation' do
+      expect { placeholder_presenter_class.new(user:).type }.to raise_error(NotImplementedError)
     end
   end
 

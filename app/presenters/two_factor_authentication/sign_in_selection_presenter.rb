@@ -14,7 +14,7 @@ module TwoFactorAuthentication
     end
 
     def type
-      method.to_s
+      raise NotImplementedError
     end
 
     def label
