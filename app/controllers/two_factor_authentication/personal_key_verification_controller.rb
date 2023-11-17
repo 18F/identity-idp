@@ -45,7 +45,7 @@ module TwoFactorAuthentication
       if result.success?
         _event, disavowal_token = create_user_event_with_disavowal(:personal_key_used)
         alert_user_about_personal_key_sign_in(disavowal_token)
-        generate_new_personal_key_for_verified_users_otherwise_retire_the_key_and_ensure_two_mfa
+        remove_personal_key
         handle_valid_otp
       else
         handle_invalid_otp(context: context, type: 'personal_key')
@@ -57,16 +57,6 @@ module TwoFactorAuthentication
       analytics.personal_key_alert_about_sign_in(**response.to_h)
     end
 
-    def generate_new_personal_key_for_verified_users_otherwise_retire_the_key_and_ensure_two_mfa
-      if password_reset_profile.present?
-        re_encrypt_profile_recovery_pii
-      elsif current_user.identity_verified?
-        user_session[:personal_key] = PersonalKeyGenerator.new(current_user).create
-      else
-        remove_personal_key
-      end
-    end
-
     def remove_personal_key
       # for now we will regenerate a key and not show it to them so retire personal key page shows
       current_user.personal_key = PersonalKeyGenerator.new(current_user).create
@@ -74,26 +64,8 @@ module TwoFactorAuthentication
       user_session.delete(:personal_key)
     end
 
-    def re_encrypt_profile_recovery_pii
-      analytics.personal_key_reactivation_sign_in
-      Pii::ReEncryptor.new(pii: pii, profile: password_reset_profile).perform
-      user_session[:personal_key] = password_reset_profile.personal_key
-    end
-
-    def password_reset_profile
-      @password_reset_profile ||= current_user.password_reset_profile
-    end
-
-    def pii
-      @pii ||= password_reset_profile.recover_pii(normalized_personal_key)
-    end
-
     def personal_key_param
       params[:personal_key_form][:personal_key]
-    end
-
-    def normalized_personal_key
-      @personal_key_form.personal_key
     end
 
     def handle_valid_otp

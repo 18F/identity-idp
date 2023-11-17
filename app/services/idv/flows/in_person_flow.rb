@@ -47,7 +47,10 @@ module Idv
 
       def extra_analytics_properties
         extra = {
-          pii_like_keypaths: [[:same_address_as_id], [:state_id, :state_id_jurisdiction]],
+          pii_like_keypaths: [
+            [:same_address_as_id],
+            [:proofing_results, :context, :stages, :state_id, :state_id_jurisdiction],
+          ],
         }
         unless @flow_session[:pii_from_user]&.[](:same_address_as_id).nil?
           extra[:same_address_as_id] =

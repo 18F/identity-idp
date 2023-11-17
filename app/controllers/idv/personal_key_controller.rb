@@ -30,7 +30,9 @@ module Idv
         fraud_review_pending: fraud_review_pending?,
         fraud_rejection: fraud_rejection?,
       )
-      idv_session.personal_key = nil
+
+      idv_session.acknowledge_personal_key!
+
       redirect_to next_step
     end
 

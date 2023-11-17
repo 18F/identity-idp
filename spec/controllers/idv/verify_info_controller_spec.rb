@@ -190,8 +190,6 @@ RSpec.describe Idv::VerifyInfoController do
         document_capture_session
       end
 
-      let(:expected_failure_reason) { DocAuthHelper::SAMPLE_TMX_SUMMARY_REASON_CODE }
-
       before do
         controller.
           idv_session.verify_info_step_document_capture_session_uuid = document_capture_session.uuid
@@ -209,7 +207,6 @@ RSpec.describe Idv::VerifyInfoController do
         it 'it logs IRS idv_tmx_fraud_check event' do
           expect(@irs_attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
             success: true,
-            failure_reason: nil,
           )
           get :show
         end
@@ -226,7 +223,6 @@ RSpec.describe Idv::VerifyInfoController do
         it 'it logs IRS idv_tmx_fraud_check event' do
           expect(@irs_attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
             success: false,
-            failure_reason: expected_failure_reason,
           )
           get :show
         end
@@ -243,7 +239,6 @@ RSpec.describe Idv::VerifyInfoController do
         it 'it logs IRS idv_tmx_fraud_check event' do
           expect(@irs_attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
             success: false,
-            failure_reason: expected_failure_reason,
           )
           get :show
         end
@@ -260,7 +255,6 @@ RSpec.describe Idv::VerifyInfoController do
         it 'it logs IRS idv_tmx_fraud_check event' do
           expect(@irs_attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
             success: false,
-            failure_reason: expected_failure_reason,
           )
           get :show
         end

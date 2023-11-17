@@ -123,6 +123,12 @@ RSpec.describe Idv::LinkSentController do
       }.merge(ab_test_args)
     end
 
+    it 'invalidates future steps' do
+      expect(subject).to receive(:clear_invalid_steps!)
+
+      put :update
+    end
+
     it 'sends analytics_submitted event' do
       put :update
 

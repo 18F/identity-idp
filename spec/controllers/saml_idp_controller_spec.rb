@@ -230,7 +230,7 @@ RSpec.describe SamlIdpController do
     it 'accepts requests with correct cert and correct session index and renders logout response' do
       REDIS_POOL.with { |client| client.flushdb }
       session_accessor = OutOfBandSessionAccessor.new(session_id)
-      session_accessor.put_pii(foo: 'bar')
+      session_accessor.put_pii(profile_id: 123, pii: { foo: 'bar' })
       saml_request = OneLogin::RubySaml::Logoutrequest.new
       encoded_saml_request = UriService.params(
         saml_request.create(right_cert_settings),
@@ -263,7 +263,7 @@ RSpec.describe SamlIdpController do
       )
 
       expect(response).to be_ok
-      expect(session_accessor.load_pii).to be_nil
+      expect(OutOfBandSessionAccessor.new(session_id).load_pii(123)).to be_nil
 
       logout_response = OneLogin::RubySaml::Logoutresponse.new(response.body)
       expect(logout_response.success?).to eq(true)
@@ -765,7 +765,7 @@ RSpec.describe SamlIdpController do
         analytics_hash = {
           success: false,
           errors: { authn_context: [t('errors.messages.unauthorized_authn_context')] },
-          error_details: { authn_context: [:unauthorized_authn_context] },
+          error_details: { authn_context: { unauthorized_authn_context: true } },
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: ['http://idmanagement.gov/ns/assurance/loa/5'],
           authn_context_comparison: 'exact',
@@ -984,7 +984,7 @@ RSpec.describe SamlIdpController do
         analytics_hash = {
           success: false,
           errors: { service_provider: [t('errors.messages.unauthorized_service_provider')] },
-          error_details: { service_provider: [:unauthorized_service_provider] },
+          error_details: { service_provider: { unauthorized_service_provider: true } },
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: request_authn_contexts,
           authn_context_comparison: 'exact',
@@ -1026,8 +1026,8 @@ RSpec.describe SamlIdpController do
             authn_context: [t('errors.messages.unauthorized_authn_context')],
           },
           error_details: {
-            authn_context: [:unauthorized_authn_context],
-            service_provider: [:unauthorized_service_provider],
+            authn_context: { unauthorized_authn_context: true },
+            service_provider: { unauthorized_service_provider: true },
           },
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: ['http://idmanagement.gov/ns/assurance/loa/5'],
@@ -1417,7 +1417,7 @@ RSpec.describe SamlIdpController do
         analytics_hash = {
           success: false,
           errors: { nameid_format: [t('errors.messages.unauthorized_nameid_format')] },
-          error_details: { nameid_format: [:unauthorized_nameid_format] },
+          error_details: { nameid_format: { unauthorized_nameid_format: true } },
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL,
           authn_context: request_authn_contexts,
           authn_context_comparison: 'exact',

@@ -207,6 +207,7 @@ es:
       hybrid_handoff: '¿Cómo desea añadir su documento de identidad?'
       interstitial: Estamos procesando sus imágenes
       lets_go: Cómo funciona la verificación de su identidad
+      no_ssn: ¿No tiene un número de Seguro Social?
       phone_question: ¿Tiene un teléfono con el que pueda tomar fotos de su documento
         de identidad?
       review_issues: Revise sus imágenes e inténtelo de nuevo
@@ -245,6 +246,9 @@ es:
       document_capture_intro_acknowledgment: Recopilaremos información sobre usted
         leyendo su licencia de conducir o identificación estatal. Usamos esta
         información para verificar su identidad.
+      exit:
+        with_sp: Salir de %{app_name} y volver a %{sp_name}
+        without_sp: Salir de la verificación de identidad e ir a la página de su cuenta
       getting_started_html: '%{sp_name} necesita asegurarse de que es usted realmente
         y no alguien que se hace pasar por usted. %{link_html}'
       getting_started_learn_more: Obtenga más información sobre lo que necesita para verificar su identidad
@@ -268,6 +272,8 @@ es:
         completar la verificación de tu identidad.
       link_sent_complete_polling: El siguiente paso se cargará automáticamente una vez
         que verifiques tu identidad a través de tu teléfono.
+      no_ssn: Debe tener un número de Seguro Social para finalizar la verificación de
+        su identidad.
       privacy: '%{app_name} es un sitio web gubernamental seguro que cumple con las
         normas más estrictas de protección de datos. Utilizamos sus datos para
         verificar su identidad.'

@@ -68,7 +68,7 @@ RSpec.describe WebauthnVerificationForm do
         it 'returns unsuccessful result' do
           expect(result.to_h).to eq(
             success: false,
-            error_details: { user: [:blank], webauthn_configuration: [:blank] },
+            error_details: { user: { blank: true }, webauthn_configuration: { blank: true } },
             multi_factor_auth_method: 'webauthn',
             webauthn_configuration_id: nil,
           )
@@ -82,8 +82,8 @@ RSpec.describe WebauthnVerificationForm do
           expect(result.to_h).to eq(
             success: false,
             error_details: {
-              challenge: [:blank],
-              authenticator_data: ['invalid_authenticator_data'],
+              challenge: { blank: true },
+              authenticator_data: { invalid_authenticator_data: true },
             },
             multi_factor_auth_method: 'webauthn',
             webauthn_configuration_id: webauthn_configuration.id,
@@ -98,7 +98,7 @@ RSpec.describe WebauthnVerificationForm do
           expect(result.to_h).to eq(
             success: false,
             error_details: {
-              authenticator_data: [:blank, 'invalid_authenticator_data'],
+              authenticator_data: { blank: true, invalid_authenticator_data: true },
             },
             multi_factor_auth_method: 'webauthn',
             webauthn_configuration_id: webauthn_configuration.id,
@@ -113,8 +113,8 @@ RSpec.describe WebauthnVerificationForm do
           expect(result.to_h).to eq(
             success: false,
             error_details: {
-              client_data_json: [:blank],
-              authenticator_data: ['invalid_authenticator_data'],
+              client_data_json: { blank: true },
+              authenticator_data: { invalid_authenticator_data: true },
             },
             multi_factor_auth_method: 'webauthn',
             webauthn_configuration_id: webauthn_configuration.id,
@@ -129,8 +129,8 @@ RSpec.describe WebauthnVerificationForm do
           expect(result.to_h).to eq(
             success: false,
             error_details: {
-              signature: [:blank],
-              authenticator_data: ['invalid_authenticator_data'],
+              signature: { blank: true },
+              authenticator_data: { invalid_authenticator_data: true },
             },
             multi_factor_auth_method: 'webauthn',
             webauthn_configuration_id: webauthn_configuration.id,
@@ -144,7 +144,7 @@ RSpec.describe WebauthnVerificationForm do
         it 'returns unsuccessful result' do
           expect(result.to_h).to eq(
             success: false,
-            error_details: { webauthn_configuration: [:blank] },
+            error_details: { webauthn_configuration: { blank: true } },
             multi_factor_auth_method: 'webauthn',
             webauthn_configuration_id: nil,
           )
@@ -157,7 +157,7 @@ RSpec.describe WebauthnVerificationForm do
         it 'returns unsuccessful result including client-side webauthn error text' do
           expect(result.to_h).to eq(
             success: false,
-            error_details: { webauthn_error: [webauthn_error] },
+            error_details: { webauthn_error: { webauthn_error: true } },
             multi_factor_auth_method: 'webauthn',
             webauthn_configuration_id: webauthn_configuration.id,
           )
@@ -172,7 +172,7 @@ RSpec.describe WebauthnVerificationForm do
         it 'returns unsuccessful result' do
           expect(result.to_h).to eq(
             success: false,
-            error_details: { authenticator_data: ['invalid_authenticator_data'] },
+            error_details: { authenticator_data: { invalid_authenticator_data: true } },
             multi_factor_auth_method: 'webauthn',
             webauthn_configuration_id: webauthn_configuration.id,
           )
@@ -188,7 +188,7 @@ RSpec.describe WebauthnVerificationForm do
         it 'returns unsucessful result' do
           expect(result.to_h).to eq(
             success: false,
-            error_details: { authenticator_data: ['invalid_authenticator_data'] },
+            error_details: { authenticator_data: { invalid_authenticator_data: true } },
             multi_factor_auth_method: 'webauthn',
             webauthn_configuration_id: webauthn_configuration.id,
           )

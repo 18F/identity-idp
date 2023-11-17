@@ -41,7 +41,7 @@ RSpec.describe AccountReset::DeleteAccountController do
         user_id: 'anonymous-uuid',
         success: false,
         errors: invalid_token_error,
-        error_details: invalid_token_error,
+        error_details: { token: { granted_token_invalid: true } },
         mfa_method_counts: {},
         pii_like_keypaths: [[:mfa_method_counts, :phone]],
         account_age_in_days: 0,
@@ -60,7 +60,7 @@ RSpec.describe AccountReset::DeleteAccountController do
         user_id: 'anonymous-uuid',
         success: false,
         errors: { token: [t('errors.account_reset.granted_token_missing', app_name: APP_NAME)] },
-        error_details: { token: [:blank] },
+        error_details: { token: { blank: true } },
         mfa_method_counts: {},
         pii_like_keypaths: [[:mfa_method_counts, :phone]],
         account_age_in_days: 0,
@@ -86,9 +86,7 @@ RSpec.describe AccountReset::DeleteAccountController do
         user_id: user.uuid,
         success: false,
         errors: { token: [t('errors.account_reset.granted_token_expired', app_name: APP_NAME)] },
-        error_details: {
-          token: [t('errors.account_reset.granted_token_expired', app_name: APP_NAME)],
-        },
+        error_details: { token: { granted_token_expired: true } },
         mfa_method_counts: {},
         pii_like_keypaths: [[:mfa_method_counts, :phone]],
         account_age_in_days: 2,
@@ -114,7 +112,7 @@ RSpec.describe AccountReset::DeleteAccountController do
         user_id: 'anonymous-uuid',
         success: false,
         errors: invalid_token_error,
-        error_details: invalid_token_error,
+        error_details: { token: { granted_token_invalid: true } },
       }
       expect(@analytics).to receive(:track_event).
         with('Account Reset: granted token validation', properties)
@@ -134,9 +132,7 @@ RSpec.describe AccountReset::DeleteAccountController do
         user_id: user.uuid,
         success: false,
         errors: { token: [t('errors.account_reset.granted_token_expired', app_name: APP_NAME)] },
-        error_details: {
-          token: [t('errors.account_reset.granted_token_expired', app_name: APP_NAME)],
-        },
+        error_details: { token: { granted_token_expired: true } },
       }
       expect(@analytics).to receive(:track_event).
         with('Account Reset: granted token validation', properties)

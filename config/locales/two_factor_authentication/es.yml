@@ -173,8 +173,6 @@ es:
       piv_cac: Identificación de empleado gubernamental
       piv_cac_info: Credenciales PIV/CAC para empleados gubernamentales y del
         ejército. Únicamente versión de escritorio.
-      sms: Mensaje de texto / SMS
-      voice: Llamada telefónica
       webauthn: Clave de seguridad
       webauthn_info: Un dispositivo físico que suele tener la forma de una unidad USB
         y se conecta a su dispositivo.

@@ -75,7 +75,10 @@ RSpec.describe Idv::InPerson::SsnController do
         irs_reproofing: false,
         step: 'ssn',
         same_address_as_id: true,
-        pii_like_keypaths: [[:same_address_as_id], [:state_id, :state_id_jurisdiction]],
+        pii_like_keypaths: [
+          [:same_address_as_id],
+          [:proofing_results, :context, :stages, :state_id, :state_id_jurisdiction],
+        ],
       }.merge(ab_test_args)
     end
 
@@ -101,6 +104,11 @@ RSpec.describe Idv::InPerson::SsnController do
 
     it 'adds a threatmetrix session id to idv_session' do
       expect { get :show }.to change { subject.idv_session.threatmetrix_session_id }.from(nil)
+    end
+
+    it 'does not change threatmetrix_session_id when updating ssn' do
+      subject.idv_session.ssn = ssn
+      expect { get :show }.not_to change { subject.idv_session.threatmetrix_session_id }
     end
 
     context 'with an ssn in idv_session' do
@@ -179,14 +187,6 @@ RSpec.describe Idv::InPerson::SsnController do
 
         expect(response).to redirect_to idv_in_person_verify_info_url
       end
-
-      it 'does not change threatmetrix_session_id when updating ssn' do
-        subject.idv_session.ssn = ssn
-        put :update, params: params
-        session_id = subject.idv_session.threatmetrix_session_id
-        subject.threatmetrix_view_variables
-        expect(subject.idv_session.threatmetrix_session_id).to eq(session_id)
-      end
     end
 
     context 'invalid ssn' do
@@ -202,7 +202,7 @@ RSpec.describe Idv::InPerson::SsnController do
           errors: {
             ssn: ['Enter a nine-digit Social Security number'],
           },
-          error_details: { ssn: [:invalid] },
+          error_details: { ssn: { invalid: true } },
           same_address_as_id: true,
           pii_like_keypaths: [[:same_address_as_id], [:errors, :ssn], [:error_details, :ssn]],
         }.merge(ab_test_args)

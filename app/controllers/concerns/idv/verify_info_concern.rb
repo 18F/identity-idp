@@ -176,7 +176,6 @@ module Idv
 
         log_idv_verification_submitted_event(
           success: false,
-          failure_reason: { idv_verification: [:timeout] },
         )
       end
     end
@@ -192,14 +191,18 @@ module Idv
         extra: {
           address_edited: !!idv_session.address_edited,
           address_line2_present: !pii[:address2].blank?,
-          pii_like_keypaths: [[:errors, :ssn], [:response_body, :first_name],
-                              [:same_address_as_id],
-                              [:state_id, :state_id_jurisdiction]],
+          pii_like_keypaths: [
+            [:errors, :ssn],
+            [:proofing_results, :context, :stages, :resolution, :errors, :ssn],
+            [:proofing_results, :context, :stages, :residential_address, :errors, :ssn],
+            [:proofing_results, :context, :stages, :threatmetrix, :response_body, :first_name],
+            [:same_address_as_id],
+            [:proofing_results, :context, :stages, :state_id, :state_id_jurisdiction],
+          ],
         },
       )
       log_idv_verification_submitted_event(
         success: form_response.success?,
-        failure_reason: irs_attempts_api_tracker.parse_failure_reason(form_response),
       )
 
       form_response.extra[:ssn_is_unique] = DuplicateSsnFinder.new(
@@ -292,7 +295,7 @@ module Idv
       )
     end
 
-    def log_idv_verification_submitted_event(success: false, failure_reason: nil)
+    def log_idv_verification_submitted_event(success: false)
       pii_from_doc = pii || {}
       irs_attempts_api_tracker.idv_verification_submitted(
         success: success,
@@ -305,7 +308,6 @@ module Idv
         date_of_birth: pii_from_doc[:dob],
         address: pii_from_doc[:address1],
         ssn: idv_session.ssn,
-        failure_reason: failure_reason,
       )
     end
 

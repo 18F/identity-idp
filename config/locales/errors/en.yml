@@ -127,9 +127,9 @@ en:
       choose_another_method: choose another authentication method
       general_error: We were unable to add face or touch unlock. Please try again or
         choose another method.
-      not_supported: Sorry, your browser does not support FIDO platform
-        authenticators. The latest versions of Chrome, Firefox, Edge, and Safari
-        support FIDO platform authenticators.
+      not_supported: Your browser doesn’t support face or touch unlock. Use the latest
+        version of Google Chrome, Microsoft Edge or Safari to use face or touch
+        unlock.
       unique_name: That name is already taken. Please choose a different name.
     webauthn_setup:
       additional_methods_link: choose another authentication method
@@ -139,7 +139,7 @@ en:
         https://fidoalliance.org/certification/fido-certified-products/ and if
         you believe this is our error, please contact at %{link}.
       general_error_html: We were unable to add the security key. Please try again or %{link_html}.
-      not_supported: Sorry, your browser does not support FIDO security keys. The
-        latest versions of Chrome, Firefox, Edge, and Safari support FIDO
-        security keys.
+      not_supported: Your browser doesn’t support security keys. Use the latest
+        version of Google Chrome, Microsoft Edge, Mozilla Firefox or Safari to
+        use security keys.
       unique_name: That name is already taken. Please choose a different name.

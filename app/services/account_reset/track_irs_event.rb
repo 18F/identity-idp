@@ -9,7 +9,6 @@ module AccountReset::TrackIrsEvent
   def track_irs_event
     irs_attempts_api_tracker.account_reset_account_deleted(
       success: success,
-      failure_reason: event_failure_reason.presence,
     )
   end
 
@@ -19,9 +18,5 @@ module AccountReset::TrackIrsEvent
 
   def cookies
     request.cookie_jar
-  end
-
-  def event_failure_reason
-    errors.is_a?(ActiveModel::Errors) ? errors.messages.to_hash : errors
   end
 end

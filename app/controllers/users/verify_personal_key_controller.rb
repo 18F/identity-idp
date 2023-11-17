@@ -29,11 +29,14 @@ module Users
 
         analytics.personal_key_reactivation_submitted(
           **result.to_h,
-          pii_like_keypaths: [[:errors, :personal_key], [:error_details, :personal_key]],
+          pii_like_keypaths: [
+            [:errors, :personal_key],
+            [:error_details, :personal_key],
+            [:error_details, :personal_key, :personal_key],
+          ],
         )
         irs_attempts_api_tracker.personal_key_reactivation_submitted(
           success: result.success?,
-          failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
         )
         if result.success?
           handle_success(decrypted_pii: personal_key_form.decrypted_pii)

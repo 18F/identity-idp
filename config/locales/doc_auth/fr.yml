@@ -215,6 +215,7 @@ fr:
       hybrid_handoff: Comment voulez-vous ajouter votre identifiant ?
       interstitial: Nous traitons vos images
       lets_go: Comment fonctionne la vérification de votre identité
+      no_ssn: Vous n’avez pas de numéro de sécurité sociale?
       phone_question: Avez-vous un téléphone que vous pouvez utiliser pour prendre des
         photos de votre identifiant?
       review_issues: Vérifiez vos images et essayez à nouveau
@@ -252,6 +253,9 @@ fr:
       document_capture_intro_acknowledgment: Nous recueillons des informations sur
         vous en lisant votre permis de conduire ou votre carte d’identité de
         l’État. Nous utilisons ces informations pour vérifier votre identité.
+      exit:
+        with_sp: Quittez %{app_name} et retournez à %{sp_name}
+        without_sp: Quittez la vérification d’identité et accédez à la page de votre compte
       getting_started_html: '%{sp_name} doit s’assurer que c’est bien vous — et non
         quelqu’un qui se fait passer pour vous. %{link_html}'
       getting_started_learn_more: En savoir plus sur ce dont vous avez besoin pour vérifier votre identité
@@ -277,6 +281,8 @@ fr:
       link_sent_complete_polling: L’étape suivante se chargera automatiquement une
         fois que vous aurez confirmé votre identifiant à l’aide de votre
         téléphone.
+      no_ssn: Vous devez avoir un numéro de sécurité sociale pour terminer la
+        vérification de votre identité.
       privacy: '%{app_name} est un site gouvernemental sécurisé qui respecte les
         normes les plus strictes en matière de protection des données. Nous
         utilisons vos données pour vérifier votre identité.'

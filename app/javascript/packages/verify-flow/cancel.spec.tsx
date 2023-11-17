@@ -14,6 +14,7 @@ describe('Cancel', () => {
       const { getByText } = render(
         <FlowContext.Provider
           value={{
+            accountURL: 'http://example.test/account',
             cancelURL: 'http://example.test/cancel',
             exitURL: 'http://example.test/exit',
             currentStep: 'one',

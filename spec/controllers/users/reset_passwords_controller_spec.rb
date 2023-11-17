@@ -4,8 +4,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
   let(:password_error_message) do
     t('errors.attributes.password.too_short.other', count: Devise.password_length.first)
   end
-  let(:success_properties) { { success: true, failure_reason: nil } }
-  let(:token_expired_error) { 'token_expired' }
+  let(:success_properties) { { success: true } }
   describe '#edit' do
     let(:user) { instance_double('User', uuid: '123') }
     let(:email_address) { instance_double('EmailAddress') }
@@ -24,7 +23,6 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
     end
 
     context 'no user matches token' do
-      let(:user_blank_error) { { user: [:blank] } }
       let(:token) { 'foo' }
       before do
         session[:reset_password_token] = token
@@ -33,7 +31,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
         {
           success: false,
           errors: { user: ['invalid_token'] },
-          error_details: user_blank_error,
+          error_details: { user: { blank: true } },
           user_id: nil,
         }
       end
@@ -41,7 +39,6 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
       it 'redirects to page where user enters email for password reset token' do
         expect(@irs_attempts_api_tracker).to receive(:forgot_password_email_confirmed).with(
           success: false,
-          failure_reason: user_blank_error,
         )
 
         get :edit
@@ -54,7 +51,6 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
     end
 
     context 'token expired' do
-      let(:user_token_error) { { user: [token_expired_error] } }
       let(:token) { 'foo' }
       before do
         session[:reset_password_token] = token
@@ -62,8 +58,8 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
       let(:analytics_hash) do
         {
           success: false,
-          errors: user_token_error,
-          error_details: user_token_error,
+          errors: { user: ['token_expired'] },
+          error_details: { user: { token_expired: true } },
           user_id: '123',
         }
       end
@@ -76,12 +72,11 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
       end
 
       context 'no user matches token' do
-        let(:user_blank_error) { { user: [:blank] } }
         let(:analytics_hash) do
           {
             success: false,
             errors: { user: ['invalid_token'] },
-            error_details: user_blank_error,
+            error_details: { user: { blank: true } },
             user_id: nil,
           }
         end
@@ -93,7 +88,6 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
         it 'redirects to page where user enters email for password reset token' do
           expect(@irs_attempts_api_tracker).to receive(:forgot_password_email_confirmed).with(
             success: false,
-            failure_reason: user_blank_error,
           )
 
           get :edit
@@ -106,12 +100,11 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
       end
 
       context 'token expired' do
-        let(:user_token_error) { { user: [token_expired_error] } }
         let(:analytics_hash) do
           {
             success: false,
-            errors: user_token_error,
-            error_details: user_token_error,
+            errors: { user: ['token_expired'] },
+            error_details: { user: { token_expired: true } },
             user_id: '123',
           }
         end
@@ -125,7 +118,6 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
         it 'redirects to page where user enters email for password reset token' do
           expect(@irs_attempts_api_tracker).to receive(:forgot_password_email_confirmed).with(
             success: false,
-            failure_reason: user_token_error,
           )
 
           get :edit
@@ -192,18 +184,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
   end
 
   describe '#update' do
-    let(:password_short_error) { { password: [:too_short] } }
-
-    let(:password_token_error) { { reset_password_token: [token_expired_error] } }
     context 'user submits new password after token expires' do
-      let(:reset_password_error_details) do
-        {
-          **password_short_error,
-          password_confirmation: [:too_short],
-          **password_token_error,
-        }
-      end
-
       it 'redirects to page where user enters email for password reset token' do
         stub_analytics
         stub_attempts_tracker
@@ -211,7 +192,6 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
 
         expect(@irs_attempts_api_tracker).to receive(:forgot_password_new_password_submitted).with(
           success: false,
-          failure_reason: reset_password_error_details,
         )
 
         raw_reset_token, db_confirmation_token =
@@ -240,9 +220,13 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
               'errors.messages.too_short.other',
               count: Devise.password_length.first,
             )],
-            **password_token_error,
+            reset_password_token: ['token_expired'],
           },
-          error_details: reset_password_error_details,
+          error_details: {
+            password: { too_short: true },
+            password_confirmation: { too_short: true },
+            reset_password_token: { token_expired: true },
+          },
           user_id: user.uuid,
           profile_deactivated: false,
           pending_profile_invalidated: false,
@@ -287,8 +271,8 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
             )],
           },
           error_details: {
-            password: [:too_short],
-            password_confirmation: [:too_short],
+            password: { too_short: true },
+            password_confirmation: { too_short: true },
           },
           user_id: user.uuid,
           profile_deactivated: false,
@@ -300,10 +284,6 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           with('Password Reset: Password Submitted', analytics_hash)
         expect(@irs_attempts_api_tracker).to receive(:forgot_password_new_password_submitted).with(
           success: false,
-          failure_reason: {
-            password: [:too_short],
-            password_confirmation: [:too_short],
-          },
         )
 
         put :update, params: { reset_password_form: form_params }
@@ -340,7 +320,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
             password_confirmation: [t('errors.messages.password_mismatch')],
           },
           error_details: {
-            password_confirmation: [t('errors.messages.password_mismatch')],
+            password_confirmation: { mismatch: true },
           },
           user_id: user.uuid,
           profile_deactivated: false,
@@ -352,9 +332,6 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           with('Password Reset: Password Submitted', analytics_hash)
         expect(@irs_attempts_api_tracker).to receive(:forgot_password_new_password_submitted).with(
           success: false,
-          failure_reason: {
-            password_confirmation: [t('errors.messages.password_mismatch')],
-          },
         )
 
         put :update, params: { reset_password_form: form_params }
@@ -709,7 +686,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
         analytics_hash = {
           success: false,
           errors: { email: [t('valid_email.validations.email.invalid')] },
-          error_details: { email: [:invalid] },
+          error_details: { email: { invalid: true } },
           user_id: 'nonexistent-uuid',
           confirmed: false,
           active_profile: false,

@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+
+ENV['LOGIN_TASK_LOG_LEVEL'] ||= 'warn'
+require_relative '../config/environment.rb'
+require 'aamva_test'
+
+p AamvaTest.new.test_connectivity

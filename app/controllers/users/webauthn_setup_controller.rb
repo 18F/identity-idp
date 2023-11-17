@@ -10,6 +10,7 @@ module Users
     before_action :apply_secure_headers_override
     before_action :set_webauthn_setup_presenter
     before_action :confirm_recently_authenticated_2fa
+    before_action :validate_existing_platform_authenticator
 
     helper_method :in_multi_mfa_selection_flow?
 
@@ -107,6 +108,17 @@ module Users
     end
 
     private
+
+    def validate_existing_platform_authenticator
+      if platform_authenticator? && in_account_creation_flow? &&
+         current_user.webauthn_configurations.platform_authenticators.present?
+        redirect_to authentication_methods_setup_path
+     end
+    end
+
+    def platform_authenticator?
+      params[:platform] == 'true'
+    end
 
     def set_webauthn_setup_presenter
       @presenter = SetupPresenter.new(

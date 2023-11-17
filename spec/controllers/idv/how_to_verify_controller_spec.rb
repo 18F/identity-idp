@@ -33,4 +33,12 @@ RSpec.describe Idv::HowToVerifyController do
       expect(response).to render_template :show
     end
   end
+
+  describe '#update' do
+    it 'invalidates future steps' do
+      expect(subject).to receive(:clear_invalid_steps!)
+
+      put :update
+    end
+  end
 end

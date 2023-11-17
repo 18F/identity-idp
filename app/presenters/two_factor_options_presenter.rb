@@ -34,10 +34,10 @@ class TwoFactorOptionsPresenter
     [
       TwoFactorAuthentication::SetUpWebauthnPlatformSelectionPresenter.new(user: user),
       TwoFactorAuthentication::SetUpAuthAppSelectionPresenter.new(user: user),
-      TwoFactorAuthentication::PhoneSelectionPresenter.new(user: user),
+      TwoFactorAuthentication::SetUpPhoneSelectionPresenter.new(user: user),
       TwoFactorAuthentication::SetUpBackupCodeSelectionPresenter.new(user: user),
       TwoFactorAuthentication::SetUpWebauthnSelectionPresenter.new(user: user),
-      TwoFactorAuthentication::PivCacSelectionPresenter.new(user: user),
+      TwoFactorAuthentication::SetUpPivCacSelectionPresenter.new(user: user),
     ]
   end
 
@@ -99,7 +99,7 @@ class TwoFactorOptionsPresenter
 
   def piv_cac_option
     return [] unless current_device_is_desktop?
-    [TwoFactorAuthentication::PivCacSelectionPresenter.new(user: user)]
+    [TwoFactorAuthentication::SetUpPivCacSelectionPresenter.new(user: user)]
   end
 
   def webauthn_option
@@ -116,7 +116,7 @@ class TwoFactorOptionsPresenter
     if piv_cac_required? || phishing_resistant_only? || IdentityConfig.store.hide_phone_mfa_signup
       return []
     else
-      [TwoFactorAuthentication::PhoneSelectionPresenter.new(user: user)]
+      [TwoFactorAuthentication::SetUpPhoneSelectionPresenter.new(user: user)]
     end
   end
 

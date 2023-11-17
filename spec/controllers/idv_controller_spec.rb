@@ -222,6 +222,24 @@ RSpec.describe IdvController do
 
         expect(response).to render_template(:activated)
       end
+
+      context 'user still has personal_key in idv_session' do
+        it 'redirects user to personal key acknowledgement' do
+          user = create(:profile, :active, :verified).user
+          idv_session = Idv::Session.new(
+            user_session: {},
+            current_user: user,
+            service_provider: nil,
+          )
+          allow(controller).to receive(:idv_session).and_return(idv_session)
+          stub_sign_in(user)
+          idv_session.personal_key = 'a-really-secure-key'
+
+          get :activated
+
+          expect(response).to redirect_to idv_personal_key_url
+        end
+      end
     end
 
     context 'user does not have an active profile' do
