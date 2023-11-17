@@ -10,7 +10,8 @@ RSpec.describe 'idv/in_person/state_id.html.erb' do
   end
 
   subject(:render_template) do
-    render template: 'idv/in_person/state_id', locals: { updating_state_id: true, form: form, pii: pii, parsed_dob: parsed_dob }
+    render template: 'idv/in_person/state_id',
+           locals: { updating_state_id: true, form: form, pii: pii, parsed_dob: parsed_dob }
   end
 
   it 'renders state ID hint text with correct screenreader tags', aggregate_failures: true do
