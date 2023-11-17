@@ -24,20 +24,36 @@ RSpec.describe 'Idv::FlowPolicy' do
     end
   end
 
-  context '#undo_steps_from_controller!' do
-    context 'user is on document_capture step' do
+  context '#undo_future_steps_from_controller!' do
+    context 'user is on verify_info step' do
       before do
         idv_session.welcome_visited = true
+        idv_session.document_capture_session_uuid = SecureRandom.uuid
+
         idv_session.idv_consent_given = true
+        idv_session.skip_hybrid_handoff = true
+
         idv_session.flow_path = 'standard'
+
+        idv_session.pii_from_doc = Idp::Constants::MOCK_IDV_APPLICANT
+
+        idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]
       end
 
       it 'user goes back and submits welcome' do
-        subject.undo_steps_from_controller!(controller: Idv::WelcomeController)
+        subject.undo_future_steps_from_controller!(controller: Idv::WelcomeController)
 
-        expect(idv_session.welcome_visited).to be_nil
+        expect(idv_session.welcome_visited).not_to be_nil
+        expect(idv_session.document_capture_session_uuid).not_to be_nil
+
         expect(idv_session.idv_consent_given).to be_nil
+        expect(idv_session.skip_hybrid_handoff).to be_nil
+
         expect(idv_session.flow_path).to be_nil
+
+        expect(idv_session.pii_from_doc).to be_nil
+
+        expect(idv_session.ssn).to be_nil
       end
     end
   end

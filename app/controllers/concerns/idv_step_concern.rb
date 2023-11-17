@@ -110,6 +110,6 @@ module IdvStepConcern
   end
 
   def clear_invalid_steps!
-    flow_policy.undo_steps_from_controller!(controller: self.class)
+    flow_policy.undo_future_steps_from_controller!(controller: self.class)
   end
 end
