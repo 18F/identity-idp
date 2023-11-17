@@ -45,7 +45,10 @@ module Idv
         preconditions: ->(idv_session:, user:) do
           idv_session.ssn && idv_session.document_capture_complete?
         end,
-        undo_step: ->(idv_session:, user:) { idv_session.resolution_successful = nil },
+        undo_step: ->(idv_session:, user:) do
+          idv_session.resolution_successful = nil
+          idv_session.redo_document_capture = nil
+        end,
       )
     end
 

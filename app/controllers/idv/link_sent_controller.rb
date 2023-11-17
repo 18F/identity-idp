@@ -50,6 +50,8 @@ module Idv
         undo_step: ->(idv_session:, user:) do
           idv_session.pii_from_doc = nil
           idv_session.invalidate_in_person_pii_from_user!
+          idv_session.had_barcode_attention_error = nil
+          idv_session.had_barcode_read_failure = nil
         end,
       )
     end
