@@ -25,7 +25,6 @@ import DocumentCaptureAbandon from './document-capture-abandon';
  * @prop {string=} back_image_metadata Back image metadata.
  */
 
-
 /**
  * @param {import('@18f/identity-form-steps').FormStepComponentProps<DocumentsStepValue>} props Props object.
  */

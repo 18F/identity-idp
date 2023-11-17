@@ -169,9 +169,8 @@ en:
       document_capture: Add photos of your ID
       document_capture_back: Back of your ID
       document_capture_front: Front of your ID
-      front: Front of your driver’s license or state ID
       document_capture_selfie: Selfie
-      selfie: Photo 
+      front: Front of your driver’s license or state ID
       getting_started: Let’s verify your identity for %{sp_name}
       how_to_verify: Choose how you want to verify your identity
       hybrid_handoff: How would you like to add your ID?
@@ -181,6 +180,7 @@ en:
       phone_question: Do you have a phone you can use to take photos of your ID?
       review_issues: Check your images and try again
       secure_account: Secure your account
+      selfie: Photo
       ssn: Enter your Social Security number
       ssn_update: Update your Social Security number
       switch_to_phone: Switch to your phone
