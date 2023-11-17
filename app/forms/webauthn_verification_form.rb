@@ -1,19 +1,28 @@
 # The WebauthnVerificationForm class is responsible for validating webauthn verification input
 class WebauthnVerificationForm
   include ActiveModel::Model
+  include ActionView::Helpers::UrlHelper
+  include ActionView::Helpers::TranslationHelper
+  include Rails.application.routes.url_helpers
 
-  validates :user, presence: true
-  validates :challenge, presence: true
-  validates :authenticator_data, presence: true
-  validates :client_data_json, presence: true
-  validates :signature, presence: true
-  validates :webauthn_configuration, presence: true
+  validates :challenge,
+            :authenticator_data,
+            :client_data_json,
+            :signature,
+            :webauthn_configuration,
+            presence: { message: proc { |object| object.instance_eval { generic_error_message } } }
   validate :validate_assertion_response
   validate :validate_webauthn_error
 
+  attr_reader :url_options, :platform_authenticator
+
+  alias_method :platform_authenticator?, :platform_authenticator
+
   def initialize(
+    user:,
+    platform_authenticator:,
+    url_options:,
     protocol:,
-    user: nil,
     challenge: nil,
     authenticator_data: nil,
     client_data_json: nil,
@@ -22,6 +31,9 @@ class WebauthnVerificationForm
     webauthn_error: nil
   )
     @user = user
+    @platform_authenticator = platform_authenticator
+    @url_options = url_options
+    @protocol = protocol
     @challenge = challenge
     @protocol = protocol
     @authenticator_data = authenticator_data
@@ -43,7 +55,7 @@ class WebauthnVerificationForm
 
   def webauthn_configuration
     return @webauthn_configuration if defined?(@webauthn_configuration)
-    @webauthn_configuration = user&.webauthn_configurations&.find_by(credential_id: credential_id)
+    @webauthn_configuration = user.webauthn_configurations.find_by(credential_id: credential_id)
   end
 
   # this gives us a hook to override the domain embedded in the attestation test object
@@ -64,12 +76,12 @@ class WebauthnVerificationForm
 
   def validate_assertion_response
     return if webauthn_error.present? || webauthn_configuration.blank? || valid_assertion_response?
-    errors.add(:authenticator_data, 'invalid_authenticator_data', type: :invalid_authenticator_data)
+    errors.add(:authenticator_data, :invalid_authenticator_data, message: generic_error_message)
   end
 
   def validate_webauthn_error
     return if webauthn_error.blank?
-    errors.add(:webauthn_error, webauthn_error, type: :webauthn_error)
+    errors.add(:webauthn_error, :webauthn_error, message: generic_error_message)
   end
 
   def valid_assertion_response?
@@ -97,6 +109,26 @@ class WebauthnVerificationForm
 
   def public_key
     webauthn_configuration&.credential_public_key
+  end
+
+  def generic_error_message
+    if platform_authenticator?
+      t(
+        'two_factor_authentication.webauthn_error.try_again',
+        link: link_to(
+          t('two_factor_authentication.webauthn_error.additional_methods_link'),
+          login_two_factor_options_path,
+        ),
+      )
+    else
+      t(
+        'two_factor_authentication.webauthn_error.connect_html',
+        link_html: link_to(
+          t('two_factor_authentication.webauthn_error.additional_methods_link'),
+          login_two_factor_options_path,
+        ),
+      )
+    end
   end
 
   def extra_analytics_attributes

@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe WebauthnVerificationForm do
+  include Rails.application.routes.url_helpers
   include WebAuthnHelper
 
   let(:user) { create(:user) }
@@ -22,6 +23,8 @@ RSpec.describe WebauthnVerificationForm do
   subject(:form) do
     WebauthnVerificationForm.new(
       user: user,
+      platform_authenticator:,
+      url_options: {},
       challenge: challenge,
       protocol: protocol,
       authenticator_data: authenticator_data,
@@ -62,19 +65,6 @@ RSpec.describe WebauthnVerificationForm do
     end
 
     context 'when the input is invalid' do
-      context 'when user is missing' do
-        let(:user) { nil }
-
-        it 'returns unsuccessful result' do
-          expect(result.to_h).to eq(
-            success: false,
-            error_details: { user: { blank: true }, webauthn_configuration: { blank: true } },
-            multi_factor_auth_method: 'webauthn',
-            webauthn_configuration_id: nil,
-          )
-        end
-      end
-
       context 'when challenge is missing' do
         let(:challenge) { nil }
 
