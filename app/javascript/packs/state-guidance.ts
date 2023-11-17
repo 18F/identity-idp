@@ -1,3 +1,20 @@
+import { t } from '@18f/identity-i18n';
+
+function jurisdictionExtrasHintText(jurisdiction) {
+  switch (jurisdiction) {
+    case 'TX':
+      return t('in_person_proofing.form.state_id.state_id_number_texas_hint');
+    default:
+      return t('in_person_proofing.form.state_id.state_id_number_hint');
+  }
+}
+
+export function showOrHideJurisdictionExtras(jurisdictionCode) {
+  document.querySelectorAll('.jurisdiction-extras').forEach((element) => {
+    element.textContent = jurisdictionExtrasHintText(jurisdictionCode);
+  });
+}
+
 export function showOrHidePuertoRicoExtras(forStateCode) {
   const isPuertoRico = forStateCode === 'PR';
 
@@ -15,6 +32,7 @@ function onStateSelectionChange() {
     document.getElementById('idv_form_state')
   );
   showOrHidePuertoRicoExtras(stateSelector?.value);
+  showOrHideJurisdictionExtras(stateSelector?.value);
 }
 
 function onIdentityDocStateSelection() {
@@ -29,9 +47,22 @@ function onIdentityDocStateSelection() {
   });
 }
 
+function onIdentityDocJurisdictionSelection() {
+  const stateSelectors = document.querySelectorAll('.jurisdiction-state-selector');
+  stateSelectors.forEach((stateSelector) => {
+    if (stateSelector instanceof HTMLSelectElement) {
+      stateSelector.addEventListener('change', () =>
+        showOrHideJurisdictionExtras(stateSelector.value),
+      );
+      showOrHideJurisdictionExtras(stateSelector.value);
+    }
+  });
+}
+
 document.getElementById('idv_form_state')?.addEventListener('change', onStateSelectionChange);
 
 document.addEventListener('DOMContentLoaded', () => {
   onStateSelectionChange();
   onIdentityDocStateSelection();
+  onIdentityDocJurisdictionSelection();
 });
