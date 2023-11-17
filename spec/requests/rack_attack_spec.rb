@@ -167,7 +167,6 @@ RSpec.describe 'throttling requests' do
       it 'logs the service provider' do
         analytics = FakeAnalytics.new
         allow(Analytics).to receive(:new).and_return(analytics)
-        allow(analytics).to receive(:track_event)
 
         client_id = 'urn:gov:gsa:openidconnect:sp:server'
         state = SecureRandom.hex
@@ -194,7 +193,7 @@ RSpec.describe 'throttling requests' do
 
         expect(Analytics).to have_received(:new).with(include(sp: client_id)).at_least(:once)
         expect(analytics).
-          to have_received(:track_event).with('Rate Limit Triggered', type: 'req/ip')
+          to have_logged_event('Rate Limit Triggered', type: 'req/ip')
       end
     end
   end
