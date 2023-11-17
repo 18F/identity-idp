@@ -5,7 +5,7 @@ function jurisdictionExtrasHintText(jurisdiction) {
     case 'TX':
       return t('in_person_proofing.form.state_id.state_id_number_texas_hint');
     default:
-      return t('in_person_proofing.form.state_id.state_id_number_hint_html');
+      return t('in_person_proofing.form.state_id.state_id_number_hint');
   }
 }
 

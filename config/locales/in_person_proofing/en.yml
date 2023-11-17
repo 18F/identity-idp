@@ -131,13 +131,7 @@ en:
         state_id_jurisdiction_hint: This is the state that issued your ID
         state_id_jurisdiction_prompt: '- Select -'
         state_id_number: ID number
-        state_id_number_hint_html: "May include letters, numbers, and the following
-          symbols: <span class='usa-sr-only'>spaces,</span><span
-          aria-hidden='true'> </span> <span class='usa-sr-only'>forward
-          slashes,</span><span aria-hidden='true'>/</span> <span
-          class='usa-sr-only'>asterisks,</span><span aria-hidden='true'>*</span>
-          <span class='usa-sr-only'>dashes</span><span
-          aria-hidden='true'>-</span>"
+        state_id_number_hint: 'May include letters, numbers, and the following symbols: /  *-'
         state_id_number_texas_hint: This is the 8-digit number on your ID. Enter only numbers in this field
         zipcode: ZIP Code
     headings:

@@ -59,7 +59,7 @@ describe('state-guidance', () => {
       showOrHideJurisdictionExtras(jurisdictionCode);
       const elementInnerHtml = document.querySelector('.jurisdiction-extras')?.textContent;
 
-      expect(elementInnerHtml).to.eq('in_person_proofing.form.state_id.state_id_number_hint_html');
+      expect(elementInnerHtml).to.eq('in_person_proofing.form.state_id.state_id_number_hint');
     });
 
     it('includes default hint text when a state without a state specific hint is selected', () => {
@@ -67,7 +67,7 @@ describe('state-guidance', () => {
       showOrHideJurisdictionExtras(jurisdictionCode);
       const elementInnerHtml = document.querySelector('.jurisdiction-extras')?.textContent;
 
-      expect(elementInnerHtml).to.eq('in_person_proofing.form.state_id.state_id_number_hint_html');
+      expect(elementInnerHtml).to.eq('in_person_proofing.form.state_id.state_id_number_hint');
     });
   });
 });
