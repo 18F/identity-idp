@@ -1,31 +1,31 @@
 module TwoFactorAuthentication
   class SignInPhoneSelectionPresenter < SignInSelectionPresenter
-    attr_reader :configuration, :user, :method
+    attr_reader :configuration, :user, :delivery_method
 
-    def initialize(user:, configuration:, method:)
+    def initialize(user:, configuration:, delivery_method:)
       @user = user
       @configuration = configuration
-      @method = method
+      @delivery_method = delivery_method
     end
 
     def type
       if MfaContext.new(configuration&.user).phone_configurations.many?
-        "#{super}_#{configuration.id}"
+        "#{delivery_method}_#{configuration.id}".to_sym
       else
-        super
+        delivery_method || :phone
       end
     end
 
     def label
-      if method.to_s == 'sms'
+      if delivery_method == :sms
         t('two_factor_authentication.login_options.sms')
-      elsif method.to_s == 'voice'
+      elsif delivery_method == :voice
         t('two_factor_authentication.login_options.voice')
       end
     end
 
     def info
-      case method
+      case delivery_method
       when :sms
         t(
           'two_factor_authentication.login_options.sms_info_html',
@@ -42,7 +42,7 @@ module TwoFactorAuthentication
     end
 
     def disabled?
-      case method
+      case delivery_method
       when :sms
         OutageStatus.new.vendor_outage?(:sms)
       when :voice

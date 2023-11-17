@@ -1,6 +1,6 @@
 module TwoFactorAuthentication
   class SignInBackupCodeSelectionPresenter < SignInSelectionPresenter
-    def method
+    def type
       :backup_code
     end
 

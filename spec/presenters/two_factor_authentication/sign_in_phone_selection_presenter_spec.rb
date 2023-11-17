@@ -1,29 +1,56 @@
 require 'rails_helper'
 
 RSpec.describe TwoFactorAuthentication::SignInPhoneSelectionPresenter do
-  let(:user) { create(:user, :with_phone) }
+  let(:user) { create(:user) }
   let(:configuration) { create(:phone_configuration, user: user) }
+  let(:delivery_method) { nil }
 
   let(:presenter) do
-    described_class.new(user: user, configuration: configuration, method: 'phone')
+    described_class.new(user:, configuration:, delivery_method:)
   end
 
   describe '#type' do
-    it 'returns phone appended with configuration id' do
-      expect(presenter.type).to eq "phone_#{configuration.id}"
+    context 'without a defined delivery method' do
+      let(:delivery_method) { nil }
+
+      it 'returns generic phone type' do
+        expect(presenter.type).to eq :phone
+      end
+    end
+
+    context 'with delivery method' do
+      let(:delivery_method) { :sms }
+
+      context 'with user having a single configuration' do
+        it 'returns delivery method' do
+          expect(presenter.type).to eq :sms
+        end
+      end
+
+      context 'with user having multiple configurations' do
+        let(:user) { create(:user, :with_phone) }
+
+        it 'returns delivery method appended with configuration id' do
+          expect(presenter.type).to eq "sms_#{configuration.id}".to_sym
+        end
+      end
     end
   end
 
   describe '#info' do
-    it 'raises with missing translation' do
-      expect(presenter.info).to eq(
-        t('two_factor_authentication.two_factor_choice_options.phone_info'),
-      )
-    end
-    context 'with sms method' do
-      let(:presenter) do
-        described_class.new(user: user, configuration: configuration, method: :sms)
+    context 'without a defined delivery method' do
+      let(:delivery_method) { nil }
+
+      it 'returns the correct translation for setup' do
+        expect(presenter.info).to eq(
+          t('two_factor_authentication.two_factor_choice_options.phone_info'),
+        )
       end
+    end
+
+    context 'with sms delivery method' do
+      let(:delivery_method) { :sms }
+
       it 'returns the correct translation for sms' do
         expect(presenter.info).to eq(
           t(
@@ -33,10 +60,10 @@ RSpec.describe TwoFactorAuthentication::SignInPhoneSelectionPresenter do
         )
       end
     end
-    context 'with voice method' do
-      let(:presenter) do
-        described_class.new(user: user, configuration: configuration, method: :voice)
-      end
+
+    context 'with voice delivery method' do
+      let(:delivery_method) { :voice }
+
       it 'returns the correct translation for voice' do
         expect(presenter.info).to eq(
           t(
@@ -49,44 +76,50 @@ RSpec.describe TwoFactorAuthentication::SignInPhoneSelectionPresenter do
   end
 
   describe '#disabled?' do
-    let(:user_without_mfa) { create(:user) }
     let(:phone) { build(:phone_configuration, phone: '+1 888 867-5309') }
-    let(:presenter_without_mfa) do
-      described_class.new(configuration: phone, user: user_without_mfa, method: 'phone')
-    end
-    it { expect(presenter_without_mfa.disabled?).to eq(false) }
 
-    context 'all phone vendor outage' do
-      before do
-        allow_any_instance_of(OutageStatus).to receive(:all_phone_vendor_outage?).and_return(true)
+    context 'without a defined delivery method' do
+      let(:delivery_method) { nil }
+
+      it { expect(presenter.disabled?).to eq(false) }
+
+      context 'all phone vendor outage' do
+        before do
+          allow_any_instance_of(OutageStatus).to receive(:all_phone_vendor_outage?).and_return(true)
+        end
+
+        it { expect(presenter.disabled?).to eq(true) }
       end
-
-      it { expect(presenter_without_mfa.disabled?).to eq(true) }
-    end
-
-    context 'voice vendor outage' do
-      let(:presenter_without_mfa) do
-        described_class.new(configuration: phone, user: user, method: method)
-      end
-      let(:method) { :voice }
-      before do
-        allow_any_instance_of(OutageStatus).to receive(:vendor_outage?).with(:voice).
-          and_return(true)
-      end
-
-      it { expect(presenter_without_mfa.disabled?).to eq(true) }
     end
 
-    context 'sms vendor outage' do
-      let(:presenter_without_mfa) do
-        described_class.new(configuration: phone, user: user, method: method)
-      end
-      let(:method) { :sms }
-      before do
-        allow_any_instance_of(OutageStatus).to receive(:vendor_outage?).with(:sms).and_return(true)
-      end
+    context 'with sms delivery method' do
+      let(:delivery_method) { :sms }
 
-      it { expect(presenter_without_mfa.disabled?).to eq(true) }
+      it { expect(presenter.disabled?).to eq(false) }
+
+      context 'sms vendor outage' do
+        before do
+          allow_any_instance_of(OutageStatus).to receive(:vendor_outage?).with(:sms).
+            and_return(true)
+        end
+
+        it { expect(presenter.disabled?).to eq(true) }
+      end
+    end
+
+    context 'with voice delivery method' do
+      let(:delivery_method) { :voice }
+
+      it { expect(presenter.disabled?).to eq(false) }
+
+      context 'voice vendor outage' do
+        before do
+          allow_any_instance_of(OutageStatus).to receive(:vendor_outage?).with(:voice).
+            and_return(true)
+        end
+
+        it { expect(presenter.disabled?).to eq(true) }
+      end
     end
   end
 end

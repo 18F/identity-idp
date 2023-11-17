@@ -10,7 +10,7 @@ RSpec.describe TwoFactorAuthentication::SignInWebauthnSelectionPresenter do
 
   describe '#type' do
     it 'returns webauthn' do
-      expect(presenter.type).to eq 'webauthn'
+      expect(presenter.type).to eq :webauthn
     end
   end
 

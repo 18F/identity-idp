@@ -10,7 +10,7 @@ RSpec.describe TwoFactorAuthentication::SignInPersonalKeySelectionPresenter do
     subject(:type) { presenter.type }
 
     it 'returns personal key type' do
-      expect(type).to eq 'personal_key'
+      expect(type).to eq :personal_key
     end
   end
 
