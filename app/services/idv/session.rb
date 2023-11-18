@@ -159,6 +159,10 @@ module Idv
       pii_from_doc || has_pii_from_user_in_flow_session || verify_info_step_complete?
     end
 
+    def ssn_step_complete?
+      ssn || verify_info_step_complete?
+    end
+
     def verify_info_step_complete?
       resolution_successful
     end

@@ -64,6 +64,7 @@ module Idv
       Idv::StepInfo.new(
         key: :phone,
         controller: controller_name,
+        action: :new,
         next_steps: [:otp_verification],
         preconditions: ->(idv_session:, user:) { idv_session.verify_info_step_complete? },
         undo_step: ->(idv_session:, user:) do

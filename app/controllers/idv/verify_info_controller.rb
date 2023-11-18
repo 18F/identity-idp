@@ -43,7 +43,7 @@ module Idv
         controller: controller_name,
         next_steps: [:phone],
         preconditions: ->(idv_session:, user:) do
-          idv_session.ssn && idv_session.document_capture_complete?
+          idv_session.ssn_step_complete? && idv_session.document_capture_complete?
         end,
         undo_step: ->(idv_session:, user:) do
           idv_session.resolution_successful = nil
