@@ -143,8 +143,11 @@ fr:
         state_id_jurisdiction_hint: Il s’agit de l’État qui a émis votre pièce d’identité
         state_id_jurisdiction_prompt: '- Sélectionnez -'
         state_id_number: Numéro d’identification
-        state_id_number_hint: 'Il peut s’agir de lettres, de chiffres et des symboles
-          suivants: /  *-'
+        state_id_number_hint: 'Il peut s’agir de lettres, de chiffres et des symboles suivants:'
+        state_id_number_hint_asterisks: 'des astérisques'
+        state_id_number_hint_dashes: 'des tirets'
+        state_id_number_hint_forward_slashes: 'des barres obliques'
+        state_id_number_hint_spaces: 'des espaces'
         state_id_number_texas_hint: Il s’agit du numéro à huit chiffres figurant sur
           votre carte d’identité. Entrez uniquement des chiffres dans ce champ.
         zipcode: Code postal

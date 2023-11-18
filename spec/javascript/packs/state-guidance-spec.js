@@ -41,7 +41,11 @@ describe('state-guidance', () => {
           <div>
             <select class="jurisdiction-state-selector">Select Dropdown</select>
           </div>
-          <div class="jurisdiction-extras"></div>
+          <div class="jurisdiction-extras">
+            <span data-state="default">Default help text</span>
+            <span data-state="CA" class="display-none">CA help text</span>
+            <span data-state="TX" class="display-none">TX help text</span>
+          </div>
         </div>
       `;
     });
@@ -49,25 +53,49 @@ describe('state-guidance', () => {
     it('includes Texas specific hint text when Texas is selected', () => {
       const jurisdictionCode = 'TX';
       showOrHideJurisdictionExtras(jurisdictionCode);
-      const elementInnerHtml = document.querySelector('.jurisdiction-extras')?.textContent;
 
-      expect(elementInnerHtml).to.eq('in_person_proofing.form.state_id.state_id_number_texas_hint');
+      const allHintTexts = document.querySelectorAll('.jurisdiction-extras [data-state]');
+      const texasText = document.querySelectorAll('.jurisdiction-extras [data-state=TX]');
+      const nonTexasText = document.querySelectorAll(
+        '.jurisdiction-extras [data-state].display-none',
+      );
+
+      expect(texasText.length).to.eq(1);
+      expect(texasText[0].classList.contains('display-none')).to.eq(false);
+
+      expect(nonTexasText.length + texasText.length).to.eq(allHintTexts.length);
     });
 
     it('includes default hint text when no state is selected', () => {
-      const jurisdictionCode = ' ';
+      const jurisdictionCode = '';
       showOrHideJurisdictionExtras(jurisdictionCode);
-      const elementInnerHtml = document.querySelector('.jurisdiction-extras')?.textContent;
 
-      expect(elementInnerHtml).to.eq('in_person_proofing.form.state_id.state_id_number_hint');
+      const allHintTexts = document.querySelectorAll('.jurisdiction-extras [data-state]');
+      const defaultText = document.querySelectorAll('.jurisdiction-extras [data-state=default]');
+      const nonDefaultText = document.querySelectorAll(
+        '.jurisdiction-extras [data-state].display-none',
+      );
+
+      expect(defaultText.length).to.eq(1);
+      expect(defaultText[0].classList.contains('display-none')).to.eq(false);
+
+      expect(nonDefaultText.length + defaultText.length).to.eq(allHintTexts.length);
     });
 
     it('includes default hint text when a state without a state specific hint is selected', () => {
       const jurisdictionCode = 'NY';
       showOrHideJurisdictionExtras(jurisdictionCode);
-      const elementInnerHtml = document.querySelector('.jurisdiction-extras')?.textContent;
 
-      expect(elementInnerHtml).to.eq('in_person_proofing.form.state_id.state_id_number_hint');
+      const allHintTexts = document.querySelectorAll('.jurisdiction-extras [data-state]');
+      const defaultText = document.querySelectorAll('.jurisdiction-extras [data-state=default]');
+      const nonDefaultText = document.querySelectorAll(
+        '.jurisdiction-extras [data-state].display-none',
+      );
+
+      expect(defaultText.length).to.eq(1);
+      expect(defaultText[0].classList.contains('display-none')).to.eq(false);
+
+      expect(nonDefaultText.length + defaultText.length).to.eq(allHintTexts.length);
     });
   });
 });

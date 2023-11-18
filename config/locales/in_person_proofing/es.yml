@@ -143,7 +143,11 @@ es:
         state_id_jurisdiction_hint: Este es el estado que emitió su identificación
         state_id_jurisdiction_prompt: '- Seleccione -'
         state_id_number: Número de identidad
-        state_id_number_hint: 'Puede incluir letras, números y los siguientes símbolos: /  *-'
+        state_id_number_hint: 'Puede incluir letras, números y los siguientes símbolos:'
+        state_id_number_hint_asterisks: 'asteriscos'
+        state_id_number_hint_dashes: guiones
+        state_id_number_hint_forward_slashes: 'barras diagonal'
+        state_id_number_hint_spaces: 'espacios'
         state_id_number_texas_hint: Este es el número de 8 dígitos de su ID. Introduzca
           sólo números en este campo.
         zipcode: Código postal

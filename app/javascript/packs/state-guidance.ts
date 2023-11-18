@@ -1,17 +1,13 @@
-import { t } from '@18f/identity-i18n';
-
-function jurisdictionExtrasHintText(jurisdiction) {
-  switch (jurisdiction) {
-    case 'TX':
-      return t('in_person_proofing.form.state_id.state_id_number_texas_hint');
-    default:
-      return t('in_person_proofing.form.state_id.state_id_number_hint');
-  }
-}
-
 export function showOrHideJurisdictionExtras(jurisdictionCode) {
-  document.querySelectorAll('.jurisdiction-extras').forEach((element) => {
-    element.textContent = jurisdictionExtrasHintText(jurisdictionCode);
+  const hasJurisdictionSpecificHint =
+    jurisdictionCode &&
+    document.querySelectorAll(`.jurisdiction-extras [data-state=${jurisdictionCode}]`).length > 0;
+
+  document.querySelectorAll<HTMLElement>(`.jurisdiction-extras [data-state]`).forEach((element) => {
+    const shouldShow =
+      element.dataset.state === jurisdictionCode ||
+      (!hasJurisdictionSpecificHint && element.dataset.state === 'default');
+    element.classList.toggle('display-none', !shouldShow);
   });
 }
 
