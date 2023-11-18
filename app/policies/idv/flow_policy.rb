@@ -58,6 +58,8 @@ module Idv
         ssn: Idv::SsnController.step_info,
         verify_info: Idv::VerifyInfoController.step_info,
         address: Idv::AddressController.step_info,
+        phone: Idv::PhoneController.step_info,
+        otp_verification: Idv::OtpVerificationController.step_info,
       }
     end
 
