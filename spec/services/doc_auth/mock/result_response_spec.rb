@@ -514,6 +514,12 @@ RSpec.describe DocAuth::Mock::ResultResponse do
     end
     it 'returns doc type as not supported' do
       expect(response.doc_type_supported?).to eq(false)
+      expect(response.errors).to eq(
+        general: [DocAuth::Errors::DOC_TYPE_CHECK],
+        front: [DocAuth::Errors::CARD_TYPE],
+        back: [DocAuth::Errors::CARD_TYPE],
+        hints: true,
+      )
     end
   end
 

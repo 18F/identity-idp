@@ -36,8 +36,6 @@ module DocAuth
             liveness_result = file_data.dig('liveness_result')
             classification_info = file_data.dig('classification_info')
             # Pass and doc type is ok
-            return {} if doc_auth_result == 'Passed' && doc_type_supported?
-
             if [doc_auth_result, image_metrics, failed, passed,
                 liveness_result, classification_info].any?(&:present?)
               # Error generator is not to be called when it's not failure
