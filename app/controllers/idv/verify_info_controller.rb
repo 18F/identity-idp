@@ -42,13 +42,15 @@ module Idv
       Idv::StepInfo.new(
         key: :verify_info,
         controller: controller_name,
-        next_steps: [:success], # [:phone],
+        next_steps: [:phone],
         preconditions: ->(idv_session:, user:) do
           idv_session.ssn && idv_session.document_capture_complete?
         end,
         undo_step: ->(idv_session:, user:) do
           idv_session.resolution_successful = nil
           idv_session.address_edited = nil
+          idv_session.verify_info_step_document_capture_session_uuid = nil
+          idv_session.threatmetrix_review_status = nil
         end,
       )
     end

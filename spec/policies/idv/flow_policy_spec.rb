@@ -155,7 +155,40 @@ RSpec.describe 'Idv::FlowPolicy' do
 
         expect(subject.info_for_latest_step.key).to eq(:verify_info)
         expect(subject.controller_allowed?(controller: Idv::VerifyInfoController)).to be
-        # expect(subject.controller_allowed?(controller: Idv::PhoneController)).not_to be
+        expect(subject.controller_allowed?(controller: Idv::PhoneController)).not_to be
+      end
+    end
+
+    context 'preconditions for phone are present' do
+      it 'returns phone' do
+        idv_session.welcome_visited = true
+        idv_session.idv_consent_given = true
+        idv_session.flow_path = 'standard'
+        idv_session.applicant = { pii: 'value' }
+        idv_session.ssn = '666666666'
+        idv_session.resolution_successful = true
+
+        expect(subject.info_for_latest_step.key).to eq(:phone)
+        expect(subject.controller_allowed?(controller: Idv::PhoneController)).to be
+        expect(subject.controller_allowed?(controller: Idv::OtpVerificationController)).not_to be
+      end
+    end
+
+    context 'preconditions for otp_verification are present' do
+      let(:user_phone_confirmation_session) { { code: 'abcde' } }
+
+      it 'returns otp_verification' do
+        idv_session.welcome_visited = true
+        idv_session.idv_consent_given = true
+        idv_session.flow_path = 'standard'
+        idv_session.applicant = { pii: 'value' }
+        idv_session.ssn = '666666666'
+        idv_session.resolution_successful = true
+        idv_session.user_phone_confirmation_session = user_phone_confirmation_session
+
+        expect(subject.info_for_latest_step.key).to eq(:otp_verification)
+        expect(subject.controller_allowed?(controller: Idv::OtpVerificationController)).to be
+        # expect(subject.controller_allowed?(controller: Idv::EnterPasswordController)).not_to be
       end
     end
   end
