@@ -65,7 +65,7 @@ module DocAuth
         end
 
         def successful_result?
-          all_passed? || attention_with_barcode?
+          (all_passed? || attention_with_barcode?) && id_type_supported?
         end
 
         def error_messages
@@ -247,17 +247,23 @@ module DocAuth
           true_id_product&.dig(:AUTHENTICATION_RESULT, :DocClassName)
         end
 
+        def doc_issuer_type
+          true_id_product&.dig(:AUTHENTICATION_RESULT, :DocIssuerType)
+        end
+
         def classification_info
-          # Acuent response has both sides info, here simulate that
+          # Acuant response has both sides info, here simulate that
           doc_class = doc_class_name
           issuing_country = pii_from_doc[:issuing_country_code]
           {
             Front: {
               ClassName: doc_class,
+              IssuerType: doc_issuer_type,
               CountryCode: issuing_country,
             },
             Back: {
               ClassName: doc_class,
+              IssuerType: doc_issuer_type,
               CountryCode: issuing_country,
             },
           }
