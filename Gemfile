@@ -122,7 +122,7 @@ group :test do
   gem 'simplecov-cobertura'
   gem 'simplecov_json_formatter'
   gem 'email_spec'
-  gem 'factory_bot_rails', '>= 6.2.0'
+  gem 'factory_bot_rails', '>= 6.3.0'
   gem 'rack_session_access', '>= 0.2.0'
   gem 'rack-test', '>= 1.1.0'
   gem 'rails-controller-testing', '>= 1.0.4'
