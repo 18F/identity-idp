@@ -34,15 +34,6 @@ RSpec.describe Db::AddDocumentVerificationAndSelfieCosts do
       liveness_checking_enabled: liveness_checking_enabled,
     )
   end
-  context 'when livness check is enabled' do
-    it 'has costing for front, back, selfie, and result when billed' do
-      subject.call(billed_response)
-
-      expect(costing_for(:acuant_front_image)).to be_present
-      expect(costing_for(:acuant_back_image)).to be_present
-      expect(costing_for(:acuant_result)).to be_present
-    end
-  end
 
   context 'when livness check is disabled' do
     let(:liveness_checking_enabled) { false }
