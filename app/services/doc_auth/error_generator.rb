@@ -52,7 +52,6 @@ module DocAuth
     SUPPORTED_ID_CLASSNAME = ['Identification Card', 'Drivers License'].freeze
 
     def generate_doc_auth_errors(response_info)
-      liveness_enabled = response_info[:liveness_enabled]
       alert_error_count = response_info[:doc_auth_result] == 'Passed' ?
         0 : response_info[:alert_failure_count]
 
@@ -65,7 +64,9 @@ module DocAuth
       image_metric_errors = get_image_metric_errors(response_info[:image_metrics])
       return image_metric_errors.to_h unless image_metric_errors.empty?
 
+      liveness_enabled = response_info[:liveness_enabled]
       alert_errors = get_error_messages(liveness_enabled, response_info)
+      alert_error_count += 1 if alert_errors.include?(SELFIE)
 
       error = ''
       side = nil
@@ -189,7 +190,7 @@ module DocAuth
       end
 
       portrait_match_results = response_info[:portrait_match_results] || {}
-      if liveness_enabled && portrait_match_results.dig(:FaceMatchResult) != 'Pass'
+      if !!liveness_enabled && portrait_match_results&.dig(:FaceMatchResult) != 'Pass'
         errors[SELFIE] << Errors::SELFIE_FAILURE
       end
 
