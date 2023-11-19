@@ -40,7 +40,6 @@ RSpec.describe Db::AddDocumentVerificationAndSelfieCosts do
 
       expect(costing_for(:acuant_front_image)).to be_present
       expect(costing_for(:acuant_back_image)).to be_present
-      expect(costing_for(:acuant_selfie)).to be_present
       expect(costing_for(:acuant_result)).to be_present
     end
   end
@@ -52,7 +51,6 @@ RSpec.describe Db::AddDocumentVerificationAndSelfieCosts do
 
       expect(costing_for(:acuant_front_image)).to be_present
       expect(costing_for(:acuant_back_image)).to be_present
-      expect(costing_for(:acuant_selfie)).not_to be_present
       expect(costing_for(:acuant_result)).to be_present
     end
   end
@@ -62,7 +60,6 @@ RSpec.describe Db::AddDocumentVerificationAndSelfieCosts do
 
     expect(costing_for(:acuant_front_image)).to be_present
     expect(costing_for(:acuant_back_image)).to be_present
-    expect(costing_for(:acuant_selfie)).to be_present
     expect(costing_for(:acuant_result)).to be_nil
   end
 

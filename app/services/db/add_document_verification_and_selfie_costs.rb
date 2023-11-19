@@ -9,7 +9,6 @@ module Db
     def call(client_response)
       add_cost(:acuant_front_image)
       add_cost(:acuant_back_image)
-      add_cost(:acuant_selfie) if liveness_checking_enabled
       add_cost(:acuant_result) if client_response.to_h[:billed]
     end
 
