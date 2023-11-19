@@ -5,7 +5,7 @@ module Idv
 
     validates_presence_of :front
     validates_presence_of :back
-    validates_presence_of :selfie, if: :liveness_checking_enabled?
+    validates_presence_of :selfie, if: :liveness_checking_enabled
     validates_presence_of :document_capture_session
 
     validate :validate_images
@@ -14,7 +14,7 @@ module Idv
 
     def initialize(params, service_provider:, analytics: nil,
                    uuid_prefix: nil, irs_attempts_api_tracker: nil, store_encrypted_images: false,
-                   ial_context: nil)
+                   liveness_checking_enabled: false)
       @params = params
       @service_provider = service_provider
       @analytics = analytics
@@ -22,7 +22,7 @@ module Idv
       @uuid_prefix = uuid_prefix
       @irs_attempts_api_tracker = irs_attempts_api_tracker
       @store_encrypted_images = store_encrypted_images
-      @ial_context = ial_context
+      @liveness_checking_enabled = liveness_checking_enabled
     end
 
     def submit
@@ -51,15 +51,10 @@ module Idv
       response
     end
 
-    def liveness_checking_enabled?
-      # todo: use config item incorp UI options
-      IdentityConfig.store.doc_auth_selfie_capture['enabled']
-    end
-
     private
 
     attr_reader :params, :analytics, :service_provider, :form_response, :uuid_prefix,
-                :irs_attempts_api_tracker
+                :irs_attempts_api_tracker, :liveness_checking_enabled
 
     def increment_rate_limiter!
       return unless document_capture_session
@@ -88,11 +83,11 @@ module Idv
         doc_auth_client.post_images(
           front_image: front_image_bytes,
           back_image: back_image_bytes,
-          selfie_image: liveness_checking_enabled? ? selfie_image_bytes : nil,
+          selfie_image: liveness_checking_enabled ? selfie_image_bytes : nil,
           image_source: image_source,
           user_uuid: user_uuid,
           uuid_prefix: uuid_prefix,
-          liveness_checking_enabled: liveness_checking_enabled?,
+          liveness_checking_enabled: liveness_checking_enabled,
         )
       end
 
@@ -396,7 +391,8 @@ module Idv
     def add_costs(response)
       Db::AddDocumentVerificationAndSelfieCosts.
         new(user_id: user_id,
-            service_provider: service_provider).
+            service_provider: service_provider,
+            liveness_checking_enabled: liveness_checking_enabled).
         call(response)
     end
 

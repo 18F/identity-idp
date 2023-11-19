@@ -12,12 +12,14 @@ module DocAuth
     ID = :id
     FRONT = :front
     BACK = :back
+    SELFIE = :selfie
     GENERAL = :general
 
     ERROR_KEYS = [
       ID,
       FRONT,
       BACK,
+      SELFIE,
       GENERAL,
     ].to_set.freeze
 
@@ -50,6 +52,7 @@ module DocAuth
     SUPPORTED_ID_CLASSNAME = ['Identification Card', 'Drivers License'].freeze
 
     def generate_doc_auth_errors(response_info)
+      liveness_enabled = response_info[:liveness_enabled]
       alert_error_count = response_info[:doc_auth_result] == 'Passed' ?
         0 : response_info[:alert_failure_count]
 
@@ -62,7 +65,7 @@ module DocAuth
       image_metric_errors = get_image_metric_errors(response_info[:image_metrics])
       return image_metric_errors.to_h unless image_metric_errors.empty?
 
-      alert_errors = get_error_messages(response_info)
+      alert_errors = get_error_messages(liveness_enabled, response_info)
 
       error = ''
       side = nil
@@ -171,7 +174,7 @@ module DocAuth
       error_result
     end
 
-    def get_error_messages(response_info)
+    def get_error_messages(liveness_enabled, response_info)
       errors = Hash.new { |hash, key| hash[key] = Set.new }
 
       if response_info[:doc_auth_result] != 'Passed'
@@ -183,6 +186,11 @@ module DocAuth
             errors[field_type.to_sym] << alert_msg_hash[:msg_key]
           end
         end
+      end
+
+      portrait_match_results = response_info[:portrait_match_results] || {}
+      if liveness_enabled && portrait_match_results.dig(:FaceMatchResult) != 'Pass'
+        errors[SELFIE] << Errors::SELFIE_FAILURE
       end
 
       errors
@@ -215,8 +223,13 @@ module DocAuth
       unknown_fail_count
     end
 
-    def self.wrapped_general_error
-      { general: [Errors::GENERAL_ERROR], hints: true }
+    def self.general_error(_liveness_enabled)
+      # May have different general error for liveness or non-liveness
+      Errors::GENERAL_ERROR
+    end
+
+    def self.wrapped_general_error(liveness_enabled)
+      { general: [ErrorGenerator.general_error(liveness_enabled)], hints: true }
     end
 
     def supported_country_codes

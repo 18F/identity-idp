@@ -54,6 +54,8 @@ module DocAuthRouter
     # i18n-tasks-use t('doc_auth.errors.alerts.ref_control_number_check')
     DocAuth::Errors::REF_CONTROL_NUMBER_CHECK =>
       'doc_auth.errors.alerts.ref_control_number_check',
+    # i18n-tasks-use t('doc_auth.errors.alerts.selfie_failure')
+    DocAuth::Errors::SELFIE_FAILURE => 'doc_auth.errors.alerts.selfie_failure',
     # i18n-tasks-use t('doc_auth.errors.alerts.sex_check')
     DocAuth::Errors::SEX_CHECK => 'doc_auth.errors.alerts.sex_check',
     # i18n-tasks-use t('doc_auth.errors.alerts.visible_color_check')
@@ -126,6 +128,7 @@ module DocAuthRouter
 
     def translate_doc_auth_errors!(response)
       error_keys = DocAuth::ErrorGenerator::ERROR_KEYS.dup
+      error_keys.delete(:selfie) if @client.is_a?(DocAuth::Acuant::AcuantClient)
 
       error_keys.each do |category|
         cat_errors = response.errors[category]

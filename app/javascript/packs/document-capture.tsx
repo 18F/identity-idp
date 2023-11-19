@@ -44,7 +44,11 @@ const glareThreshold = Number(appRoot.getAttribute('data-glare-threshold')) ?? u
 const sharpnessThreshold = Number(appRoot.getAttribute('data-sharpness-threshold')) ?? undefined;
 
 function getServiceProvider() {
-  const { spName: name = null, failureToProofUrl: failureToProofURL = '' } = appRoot.dataset;
+  const {
+    spName: name = null,
+    failureToProofUrl: failureToProofURL = '',
+    ialLevel,
+  } = appRoot.dataset;
 
   return { name, failureToProofURL };
 }

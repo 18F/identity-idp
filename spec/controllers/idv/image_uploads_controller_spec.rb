@@ -5,7 +5,7 @@ RSpec.describe Idv::ImageUploadsController do
 
   let(:document_filename_regex) { /^[a-f0-9]{8}-([a-f0-9]{4}-){3}[a-f0-9]{12}\.[a-z]+$/ }
   let(:base64_regex) { /^[a-z0-9+\/]+=*$/i }
-
+  let(:selfie_img) { nil }
   describe '#create' do
     subject(:action) do
       post :create, params: params
@@ -19,10 +19,11 @@ RSpec.describe Idv::ImageUploadsController do
         front: DocAuthImageFixtures.document_front_image_multipart,
         front_image_metadata: '{"glare":99.99}',
         back: DocAuthImageFixtures.document_back_image_multipart,
+        selfie: (selfie_img unless selfie_img.nil?),
         back_image_metadata: '{"glare":99.99}',
         document_capture_session_uuid: document_capture_session.uuid,
         flow_path: flow_path,
-      }
+      }.compact
     end
     let(:json) { JSON.parse(response.body, symbolize_names: true) }
 
@@ -1003,6 +1004,20 @@ RSpec.describe Idv::ImageUploadsController do
             message: I18n.t('doc_auth.errors.alerts.birth_date_checks'),
           },
         ]
+      end
+    end
+
+    context 'when liveness checking enabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture).
+          and_return('{"enabled": true}')
+      end
+      let(:selfie_img) { DocAuthImageFixtures.selfie_image_multipart }
+      it 'returns a successful response' do
+        action
+        expect(response.status).to eq(200)
+        expect(json[:success]).to eq(true)
+        expect(document_capture_session.reload.load_result.success?).to eq(true)
       end
     end
   end
