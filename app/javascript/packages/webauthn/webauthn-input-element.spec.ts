@@ -1,7 +1,7 @@
 import sinon from 'sinon';
 import quibble from 'quibble';
-import { useSandbox, useDefineProperty } from '@18f/identity-test-helpers';
 import type { IsWebauthnPasskeySupported } from './is-webauthn-passkey-supported';
+import type { isWebauthnPlatformAvailable } from './is-webauthn-platform-authenticator-available';
 
 describe('WebauthnInputElement', () => {
   const isWebauthnPasskeySupported = sinon.stub<
@@ -9,8 +9,10 @@ describe('WebauthnInputElement', () => {
     ReturnType<IsWebauthnPasskeySupported>
   >();
 
-  const defineProperty = useDefineProperty();
-  const sandbox = useSandbox();
+  const isWebauthnPlatformAvailable = sinon.stub<
+    Parameters<isWebauthnPlatformAvailable>,
+    ReturnType<isWebauthnPlatformAvailable>
+  >();
 
   before(async () => {
     quibble('./is-webauthn-passkey-supported', isWebauthnPasskeySupported);
@@ -24,13 +26,8 @@ describe('WebauthnInputElement', () => {
   context('device does not support passkey', () => {
     context('unsupported passkey not shown', () => {
       beforeEach(() => {
-        defineProperty(window, 'PublicKeyCredential', {
-          configurable: true,
-          value: {
-            isUserVerifyingPlatformAuthenticatorAvailable: sandbox.stub().resolves(true),
-          },
-        });
         isWebauthnPasskeySupported.returns(false);
+        isWebauthnPlatformAvailable.returns(Promise.resolve(false));
         document.body.innerHTML = `<lg-webauthn-input hidden></lg-webauthn-input>`;
       });
 
@@ -44,6 +41,7 @@ describe('WebauthnInputElement', () => {
     context('unsupported passkey shown', () => {
       beforeEach(() => {
         isWebauthnPasskeySupported.returns(false);
+        isWebauthnPlatformAvailable.returns(Promise.resolve(false));
         document.body.innerHTML = `<lg-webauthn-input show-unsupported-passkey hidden></lg-webauthn-input>`;
       });
 
@@ -59,16 +57,12 @@ describe('WebauthnInputElement', () => {
   context('device supports passkey', () => {
     context('unsupported publickeycredential not shown', () => {
       beforeEach(() => {
-        defineProperty(window, 'PublicKeyCredential', {
-          configurable: true,
-          value: undefined,
-        });
-
+        isWebauthnPlatformAvailable.returns(Promise.resolve(false));
         isWebauthnPasskeySupported.returns(true);
         document.body.innerHTML = `<lg-webauthn-input hidden></lg-webauthn-input>`;
       });
 
-      it('becomes visible', () => {
+      it('stays hidden', () => {
         const element = document.querySelector('lg-webauthn-input')!;
 
         expect(element.hidden).to.be.true();
@@ -77,13 +71,7 @@ describe('WebauthnInputElement', () => {
 
     context('publickeycredential input is shown', () => {
       beforeEach(() => {
-        defineProperty(window, 'PublicKeyCredential', {
-          configurable: true,
-          value: {
-            isUserVerifyingPlatformAuthenticatorAvailable: sandbox.stub().resolves(true),
-          },
-        });
-
+        isWebauthnPlatformAvailable.returns(Promise.resolve(true));
         isWebauthnPasskeySupported.returns(true);
         document.body.innerHTML = `<lg-webauthn-input hidden></lg-webauthn-input>`;
       });
