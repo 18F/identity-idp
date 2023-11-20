@@ -36,6 +36,17 @@ export interface InPersonContextProps {
    * Each item is [Long name, abbreviation], e.g. ['Ohio', 'OH']
    */
   usStatesTerritories: Array<[string, string]>;
+
+  /**
+   * When true users are directed to the beginning of the IPP flow if they choose
+   * Opt-in IPP if in_person_proofing_opt_in_enabled is enabled
+   */
+  skipDocAuth?: boolean;
+
+  /**
+   * URL for Opt-in IPP, used when in_person_proofing_opt_in_enabled is enabled
+   */
+  howToVerifyURL?: string;
 }
 
 const InPersonContext = createContext<InPersonContextProps>({
