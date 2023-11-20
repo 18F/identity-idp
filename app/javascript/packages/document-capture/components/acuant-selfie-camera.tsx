@@ -69,7 +69,7 @@ interface FaceDetectionStates {
   FACE_CLOSE_TO_BORDER: string;
 }
 
-function AcuantCamera({
+function AcuantSelfieCamera({
   onImageCaptureSuccess = () => {},
   onImageCaptureFailure = () => {},
   onImageCaptureOpen = () => {},
@@ -77,42 +77,43 @@ function AcuantCamera({
   children,
 }: AcuantSelfieCameraContextProps) {
   const { isReady, setIsActive } = useContext(AcuantContext);
-  const faceCaptureCallback: FaceCaptureCallback = {
-    onDetectorInitialized: () => {
-      // This callback is triggered when the face detector is ready.
-      // Until then, no actions are executed and the user sees only the camera stream.
-      // You can opt to display an alert before the callback is triggered.
-    },
-    onDetection: () => {
-      // Triggered when the face does not pass the scan. The UI element
-      // should be updated here to provide guidence to the user
-    },
-    onOpened: () => {
-      // Camera has opened
-      onImageCaptureOpen();
-    },
-    onClosed: () => {
-      // Camera has closed
-      onImageCaptureClose();
-    },
-    onError: (error) => {
-      // Error occurred. Camera permission not granted will
-      // manifest here with 1 as error code. Unexpected errors will have 2 as error code.
-      onImageCaptureFailure({ error });
-    },
-    onPhotoTaken: () => {
-      // The photo has been taken and it's showing a preview with a button to accept or retake the image.
-    },
-    onPhotoRetake: () => {
-      // Triggered when retake button is tapped
-    },
-    onCaptured: (base64Image) => {
-      // Triggered when accept button is tapped
-      onImageCaptureSuccess({ image: `data:image/jpeg;base64,${base64Image}` });
-    },
-  };
 
   useEffect(() => {
+    const faceCaptureCallback: FaceCaptureCallback = {
+      onDetectorInitialized: () => {
+        // This callback is triggered when the face detector is ready.
+        // Until then, no actions are executed and the user sees only the camera stream.
+        // You can opt to display an alert before the callback is triggered.
+      },
+      onDetection: () => {
+        // Triggered when the face does not pass the scan. The UI element
+        // should be updated here to provide guidence to the user
+      },
+      onOpened: () => {
+        // Camera has opened
+        onImageCaptureOpen();
+      },
+      onClosed: () => {
+        // Camera has closed
+        onImageCaptureClose();
+      },
+      onError: (error) => {
+        // Error occurred. Camera permission not granted will
+        // manifest here with 1 as error code. Unexpected errors will have 2 as error code.
+        onImageCaptureFailure({ error });
+      },
+      onPhotoTaken: () => {
+        // The photo has been taken and it's showing a preview with a button to accept or retake the image.
+      },
+      onPhotoRetake: () => {
+        // Triggered when retake button is tapped
+      },
+      onCaptured: (base64Image) => {
+        // Triggered when accept button is tapped
+        onImageCaptureSuccess({ image: `data:image/jpeg;base64,${base64Image}` });
+      },
+    };
+
     const faceDetectionStates = {
       FACE_NOT_FOUND: 'FACE NOT FOUND',
       TOO_MANY_FACES: 'TOO MANY FACES',
@@ -141,4 +142,4 @@ function AcuantCamera({
   return children;
 }
 
-export default AcuantCamera;
+export default AcuantSelfieCamera;
