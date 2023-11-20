@@ -25,7 +25,7 @@ function InPersonPrepareStep({ toPreviousStep }) {
 
   function goBack() {
     // todo: fix the type error on the next line. We should coerce 'true' to a boolean
-    if (skipDocAuth === 'true') {
+    if (skipDocAuth === 'true' && howToVerifyURL) {
       forceRedirect(howToVerifyURL);
     } else {
       toPreviousStep();
