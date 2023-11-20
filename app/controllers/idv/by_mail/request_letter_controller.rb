@@ -6,6 +6,7 @@ module Idv
       skip_before_action :confirm_no_pending_gpo_profile
       include Idv::StepIndicatorConcern
 
+      before_action :confirm_step_allowed
       before_action :confirm_user_completed_idv_profile_step
       before_action :confirm_mail_not_rate_limited
       before_action :confirm_profile_not_too_old
@@ -39,6 +40,17 @@ module Idv
 
       def gpo_mail_service
         @gpo_mail_service ||= Idv::GpoMail.new(current_user)
+      end
+
+      def self.step_info
+        Idv::StepInfo.new(
+          key: :request_letter,
+          controller: controller_name,
+          action: :index,
+          next_steps: [:success],
+          preconditions: ->(idv_session:, user:) { idv_session.verify_info_step_complete? },
+          undo_step: ->(idv_session:, user:) { idv_session.address_verification_mechanism = nil },
+        )
       end
 
       private

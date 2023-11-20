@@ -187,6 +187,11 @@ RSpec.describe Idv::ByMail::RequestLetterController do
         stub_sign_in(user)
         stub_user_with_pending_profile(user)
         allow(user).to receive(:gpo_verification_pending_profile?).and_return(true)
+        subject.idv_session.welcome_visited = true
+        subject.idv_session.idv_consent_given = true
+        subject.idv_session.flow_path = 'standard'
+        subject.idv_session.resolution_successful = true
+        subject.idv_session.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN
       end
 
       it 'calls the GpoConfirmationMaker to send another letter and redirects' do

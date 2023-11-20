@@ -60,6 +60,7 @@ module Idv
         address: Idv::AddressController.step_info,
         phone: Idv::PhoneController.step_info,
         otp_verification: Idv::OtpVerificationController.step_info,
+        request_letter: Idv::ByMail::RequestLetterController.step_info,
       }
     end
 
