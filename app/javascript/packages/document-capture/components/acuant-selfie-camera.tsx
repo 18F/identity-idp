@@ -139,7 +139,7 @@ function AcuantSelfieCamera({
     return () => (isReady ? cleanupSelfieCamera() : undefined);
   }, [isReady]);
 
-  return { children };
+  return <>{children}</>;
 }
 
 export default AcuantSelfieCamera;
