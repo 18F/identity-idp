@@ -251,8 +251,8 @@ function FormSteps({
   const ifStillMounted = useIfStillMounted();
 
   useEffect(() => {
-    const firstStep = steps[0].name;
     if (skipDocAuth === 'true') {
+      const firstStep = steps[0].name;
       setStepName(firstStep);
     }
   }, []);
