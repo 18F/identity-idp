@@ -224,7 +224,7 @@ RSpec.describe Users::TotpSetupController, devise: true do
 
           result = {
             success: false,
-            error_details: { name: [:blank] },
+            error_details: { name: { blank: true } },
             errors: { name: [t('errors.messages.blank')] },
             totp_secret_present: true,
             multi_factor_auth_method: 'totp',

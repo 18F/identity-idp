@@ -14,13 +14,13 @@ export interface DocumentCaptureNotReadyProps {
 function DocumentCaptureNotReady({ navigate }: DocumentCaptureNotReadyProps) {
   const { t } = useI18n();
   const { trackEvent } = useContext(AnalyticsContext);
-  const { currentStep } = useContext(FlowContext);
+  const { currentStep, accountURL } = useContext(FlowContext);
   const { name: spName, failureToProofURL } = useContext(ServiceProviderContext);
   const appName = getConfigValue('appName');
   const handleExit = () => {
     trackEvent('IdV: docauth not ready link clicked');
     forceRedirect(
-      addSearchParams(spName ? failureToProofURL : '/account', {
+      addSearchParams(spName ? failureToProofURL : accountURL, {
         step: currentStep,
         location: 'not_ready',
       }),

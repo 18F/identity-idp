@@ -75,6 +75,20 @@ RSpec.describe Idv::Session do
     end
   end
 
+  describe '#acknowledge_personal_key!' do
+    before do
+      subject.personal_key = 'ABCD1234'
+    end
+    it 'clears personal_key' do
+      expect { subject.acknowledge_personal_key! }.to change { subject.personal_key }.to eql(nil)
+    end
+    it 'sets personal_key_acknowledged' do
+      expect { subject.acknowledge_personal_key! }.to change {
+                                                        subject.personal_key_acknowledged
+                                                      }.from(nil).to eql(true)
+    end
+  end
+
   describe '#add_failed_phone_step_number' do
     it 'adds uniq phone numbers in e164 format' do
       subject.add_failed_phone_step_number('+1703-555-1212')

@@ -1,6 +1,6 @@
 module TwoFactorAuthentication
   class SetUpWebauthnSelectionPresenter < SetUpSelectionPresenter
-    def method
+    def type
       :webauthn
     end
 
@@ -13,7 +13,7 @@ module TwoFactorAuthentication
     end
 
     def info
-      t('two_factor_authentication.login_options.webauthn_info')
+      t('two_factor_authentication.two_factor_choice_options.webauthn_info')
     end
 
     def mfa_configuration_count

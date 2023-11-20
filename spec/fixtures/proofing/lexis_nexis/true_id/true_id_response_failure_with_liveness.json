@@ -39,6 +39,11 @@
         },
         {
           "Group": "AUTHENTICATION_RESULT",
+          "Name": "DocIssuerType",
+          "Values": [{"Value": "StateProvince"}]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
           "Name": "DocClassCode",
           "Values": [{"Value": "DriversLicense"}]
         },

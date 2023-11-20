@@ -113,8 +113,8 @@ class OpenidConnectUserInfoPresenter
 
   def ial2_data
     @ial2_data ||= begin
-      if ial2_session? || ialmax_session?
-        out_of_band_session_accessor.load_pii
+      if (ial2_session? || ialmax_session?) && active_profile.present?
+        out_of_band_session_accessor.load_pii(active_profile.id)
       else
         Pii::Attributes.new_from_hash({})
       end
@@ -143,10 +143,14 @@ class OpenidConnectUserInfoPresenter
     identity.piv_cac_enabled?
   end
 
+  def active_profile
+    identity.user&.active_profile
+  end
+
   def verified_at
     return if identity&.service_provider_record&.ial.to_i < 2
 
-    identity.user.active_profile&.verified_at&.to_i
+    active_profile&.verified_at&.to_i
   end
 
   def out_of_band_session_accessor

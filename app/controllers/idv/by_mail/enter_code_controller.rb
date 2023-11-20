@@ -58,7 +58,6 @@ module Idv
         analytics.idv_verify_by_mail_enter_code_submitted(**result.to_h)
         irs_attempts_api_tracker.idv_gpo_verification_submitted(
           success: result.success?,
-          failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
         )
 
         if !result.success?

@@ -1,6 +1,6 @@
 module TwoFactorAuthentication
   class SignInAuthAppSelectionPresenter < SignInSelectionPresenter
-    def method
+    def type
       :auth_app
     end
 

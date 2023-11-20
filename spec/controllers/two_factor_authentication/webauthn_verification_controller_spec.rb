@@ -223,7 +223,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
         result = { context: 'authentication',
                    multi_factor_auth_method: 'webauthn',
                    success: false,
-                   error_details: { authenticator_data: ['invalid_authenticator_data'] },
+                   error_details: { authenticator_data: { invalid_authenticator_data: true } },
                    webauthn_configuration_id: webauthn_configuration.id,
                    multi_factor_auth_method_created_at: webauthn_configuration.created_at.
                      strftime('%s%L') }
@@ -280,17 +280,18 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
           expect(@analytics).to receive(:track_mfa_submit_event).with(
             success: false,
             error_details: {
-              authenticator_data: [:blank],
-              client_data_json: [:blank],
-              signature: [:blank],
-              webauthn_configuration: [:blank],
-              webauthn_error: [webauthn_error],
+              authenticator_data: { blank: true },
+              client_data_json: { blank: true },
+              signature: { blank: true },
+              webauthn_configuration: { blank: true },
+              webauthn_error: { present: true },
             },
             context: UserSessionContext::AUTHENTICATION_CONTEXT,
             multi_factor_auth_method: 'webauthn_platform',
             multi_factor_auth_method_created_at:
               second_webauthn_platform_configuration.created_at.strftime('%s%L'),
             webauthn_configuration_id: nil,
+            frontend_error: 'NotAllowedError',
           )
 
           patch :confirm, params: params

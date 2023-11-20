@@ -110,7 +110,10 @@ module IdvStepConcern
 
   def extra_analytics_properties
     extra = {
-      pii_like_keypaths: [[:same_address_as_id], [:state_id, :state_id_jurisdiction]],
+      pii_like_keypaths: [
+        [:same_address_as_id],
+        [:proofing_results, :context, :stages, :state_id, :state_id_jurisdiction],
+      ],
     }
 
     unless flow_session.dig(:pii_from_user, :same_address_as_id).nil?
@@ -133,5 +136,9 @@ module IdvStepConcern
   def url_for_latest_step
     step_info = flow_policy.info_for_latest_step
     url_for(controller: step_info.controller, action: step_info.action)
+  end
+
+  def clear_invalid_steps!
+    flow_policy.undo_steps_from_controller!(controller: self.class)
   end
 end

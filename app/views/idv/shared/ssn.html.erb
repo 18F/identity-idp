@@ -1,10 +1,13 @@
 <%#
 Renders a page asking the user to enter their SSN or update their SSN if they had previously entered it.
+This template is used from both the remote and in person (IPP) SsnControllers.
 
+locals:
+  @ssn_presenter - contains step_indicator_steps and ssn_form
 %>
 <% content_for(:pre_flash_content) do %>
   <%= render StepIndicatorComponent.new(
-        steps: @step_indicator_steps,
+        steps: @ssn_presenter.step_indicator_steps,
         current_step: :verify_info,
         locale_scope: 'idv',
         class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
@@ -13,7 +16,7 @@ Renders a page asking the user to enter their SSN or update their SSN if they ha
 
 <% self.title = t('titles.doc_auth.ssn') %>
 
-<% if @ssn_form.updating_ssn? %>
+<% if @ssn_presenter.updating_ssn? %>
   <%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.ssn_update')) %>
 <% else %>
   <%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.ssn')) %>
@@ -24,6 +27,15 @@ Renders a page asking the user to enter their SSN or update their SSN if they ha
   <%= new_tab_link_to(MarketingSite.security_and_privacy_practices_url, class: 'display-inline') do %>
     <%= t('doc_auth.info.learn_more') %>
   <% end %>
+</p>
+
+<h2 class="h3"><%= t('doc_auth.headings.no_ssn') %></h2>
+<p>
+  <%= t('doc_auth.info.no_ssn') %>
+  <%= link_to(
+        @ssn_presenter.exit_text,
+        idv_cancel_url(step: 'ssn_offramp'),
+      ) %>
 </p>
 
 <% if FeatureManagement.proofing_device_profiling_collecting_enabled? %>
@@ -53,7 +65,7 @@ Renders a page asking the user to enter their SSN or update their SSN if they ha
 <% end %>
 
 <%= simple_form_for(
-      @ssn_form,
+      @ssn_presenter.ssn_form,
       url: url_for,
       method: :put,
       html: { autocomplete: 'off' },
@@ -63,7 +75,7 @@ Renders a page asking the user to enter their SSN or update their SSN if they ha
   </div>
 
   <%= f.submit class: 'display-block margin-y-5' do %>
-    <% if @ssn_form.updating_ssn? %>
+    <% if @ssn_presenter.updating_ssn? %>
       <%= t('forms.buttons.submit.update') %>
     <% else %>
       <%= t('forms.buttons.continue') %>
@@ -71,7 +83,7 @@ Renders a page asking the user to enter their SSN or update their SSN if they ha
   <% end %>
 <% end %>
 
-<% if @ssn_form.updating_ssn? %>
+<% if @ssn_presenter.updating_ssn? %>
   <%= render 'idv/shared/back', fallback_path: idv_verify_info_path %>
 <% else %>
   <%= render 'idv/doc_auth/cancel', step: 'ssn' %>

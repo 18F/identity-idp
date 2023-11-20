@@ -15,7 +15,8 @@ RSpec.describe DocAuth::ErrorGenerator do
       IssueType: 'ePassport',
       Name: 'United States (USA) ePassport',
       IssuerCode: 'USA',
-      IssuerName: 'United States' }
+      IssuerName: 'United States',
+      IssuerType: 'Country' }
   end
   let(:unknown_classification_details) do
     { ClassName: 'Unknown',
@@ -24,6 +25,15 @@ RSpec.describe DocAuth::ErrorGenerator do
       Name: 'Unknown',
       IssuerCode: nil,
       IssuerName: nil }
+  end
+  let(:vhic_classification_details) do
+    { ClassName: 'Identification Card',
+      Issue: '2020',
+      IssueType: 'Veteran Health Identification Card',
+      Name: 'United States (USA) Veteran Health Identification Card',
+      IssuerCode: 'USA',
+      IssuerName: 'United States',
+      IssuerType: 'Country' }
   end
 
   def build_error_info(
@@ -262,6 +272,28 @@ RSpec.describe DocAuth::ErrorGenerator do
       expect(output[:front]).to contain_exactly(DocAuth::Errors::CARD_TYPE)
       expect(output[:hints]).to eq(true)
     end
+
+    it 'DocAuthResult is success with VHIC' do
+      error_info = build_error_info(
+        doc_result: 'Passed',
+        passed: [{ name: 'Not a known alert', result: 'Passed' }],
+        failed: [],
+        classification_info: { Back: vhic_classification_details,
+                               Front: vhic_classification_details },
+      )
+
+      expect(warn_notifier).to receive(:call).
+        with(hash_including(:response_info, :message, :unknown_alerts)).once
+
+      output = described_class.new(config).generate_doc_auth_errors(error_info)
+
+      expect(output.keys).to contain_exactly(:general, :front, :back, :hints)
+      expect(output[:general]).to contain_exactly(DocAuth::Errors::DOC_TYPE_CHECK)
+      expect(output[:front]).to contain_exactly(DocAuth::Errors::CARD_TYPE)
+      expect(output[:back]).to contain_exactly(DocAuth::Errors::CARD_TYPE)
+      expect(output[:hints]).to eq(true)
+    end
+
     it 'DocAuthResult is failed with unknown doc type' do
       error_info = build_error_info(
         doc_result: 'Failed',
@@ -465,6 +497,43 @@ RSpec.describe DocAuth::ErrorGenerator do
       expect(output[:general]).to contain_exactly(DocAuth::Errors::SHARP_LOW_ONE_SIDE)
       expect(output[:back]).to contain_exactly(DocAuth::Errors::SHARP_LOW_FIELD)
       expect(output[:hints]).to eq(false)
+    end
+  end
+
+  context 'with both doc type error and image metric error' do
+    let(:metrics) do
+      {
+        front: {
+          'HorizontalResolution' => 300,
+          'VerticalResolution' => 300,
+          'SharpnessMetric' => 50,
+          'GlareMetric' => 50,
+        },
+        back: {
+          'HorizontalResolution' => 300,
+          'VerticalResolution' => 300,
+          'SharpnessMetric' => 50,
+          'GlareMetric' => 50,
+        },
+      }
+    end
+    it 'generate doc type error' do
+      metrics[:front]['HorizontalResolution'] = 50
+      error_info = build_error_info(
+        doc_result: 'Failed',
+        failed: [{ name: '2D Barcode Read', result: 'Attention' }],
+        classification_info: { Back: vhic_classification_details,
+                               Front: vhic_classification_details },
+        image_metrics: metrics,
+      )
+
+      output = described_class.new(config).generate_doc_auth_errors(error_info)
+      expect(output.keys).to contain_exactly(:general, :front, :back, :hints)
+
+      expect(output[:general]).to contain_exactly(DocAuth::Errors::DOC_TYPE_CHECK)
+      expect(output[:back]).to contain_exactly(DocAuth::Errors::CARD_TYPE)
+      expect(output[:front]).to contain_exactly(DocAuth::Errors::CARD_TYPE)
+      expect(output[:hints]).to eq(true)
     end
   end
 end

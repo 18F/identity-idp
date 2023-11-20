@@ -182,8 +182,6 @@ fr:
       piv_cac: Carte d’identification des employés du gouvernement
       piv_cac_info: Cartes PIV/CAC pour les fonctionnaires et les militaires. Bureau
         uniquement.
-      sms: SMS
-      voice: Appel téléphonique
       webauthn: Clef de sécurité
       webauthn_info: Un appareil physique, souvent en forme de clé USB, que vous
         branchez sur votre appareil.

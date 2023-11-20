@@ -107,10 +107,8 @@ RSpec.feature 'SAML Authorization Confirmation' do
       perform_in_browser(:two) do
         confirm_email_in_a_different_browser(email)
         expect(current_path).to eq sign_up_completed_path
-        within('.requested-attributes') do
-          expect(page).to have_content t('help_text.requested_attributes.email')
-          expect(page).to have_content email
-        end
+        expect(page).to have_content t('help_text.requested_attributes.email')
+        expect(page).to have_content email
 
         click_agree_and_continue
 

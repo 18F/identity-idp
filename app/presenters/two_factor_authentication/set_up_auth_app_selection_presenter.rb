@@ -1,6 +1,6 @@
 module TwoFactorAuthentication
   class SetUpAuthAppSelectionPresenter < SetUpSelectionPresenter
-    def method
+    def type
       :auth_app
     end
 
