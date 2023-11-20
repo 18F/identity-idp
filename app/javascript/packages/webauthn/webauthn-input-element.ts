@@ -1,4 +1,5 @@
 import isWebauthnPasskeySupported from './is-webauthn-passkey-supported';
+import isPublicKeyCredentialSupported from './is-public-key-credential-supported';
 
 export class WebauthnInputElement extends HTMLElement {
   connectedCallback() {
@@ -17,10 +18,8 @@ export class WebauthnInputElement extends HTMLElement {
     if (!this.hasAttribute('hidden')) {
       return;
     }
-    const isPublicKeyCredentialSupported =
-      window.PublicKeyCredential &&
-      (await window.PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable());
-    if (isWebauthnPasskeySupported() && isPublicKeyCredentialSupported) {
+
+    if (isWebauthnPasskeySupported() && (await isPublicKeyCredentialSupported())) {
       this.hidden = false;
     } else if (this.showUnsupportedPasskey) {
       this.hidden = false;
