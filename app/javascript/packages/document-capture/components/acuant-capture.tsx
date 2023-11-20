@@ -62,7 +62,7 @@ interface ImageAnalyticsPayload {
    * Whether the Acuant SDK captured the image automatically, or using the tap to
    * capture functionality
    */
-  acuantCaptureMode?: AcuantCaptureMode;
+  acuantCaptureMode?: AcuantCaptureMode | null;
 
   /**
    * Fingerprint of the image, base64 encoded SHA-256 digest
@@ -376,7 +376,11 @@ function AcuantCapture(
   function getAddAttemptAnalyticsPayload<
     P extends ImageAnalyticsPayload | AcuantImageAnalyticsPayload,
   >(payload: P): P {
-    const enhancedPayload = { ...payload, attempt, acuantCaptureMode };
+    const enhancedPayload = {
+      ...payload,
+      attempt,
+      acuantCaptureMode: payload.source === 'upload' ? null : acuantCaptureMode,
+    };
     incrementAttempt();
     return enhancedPayload;
   }
@@ -387,6 +391,7 @@ function AcuantCapture(
   async function onUpload(nextValue: File | null) {
     let analyticsPayload: ImageAnalyticsPayload | undefined;
     let hasFailed = false;
+
     if (nextValue) {
       const { width, height, fingerprint } = await getImageMetadata(nextValue);
       hasFailed = failedSubmissionImageFingerprints[name]?.includes(fingerprint);
