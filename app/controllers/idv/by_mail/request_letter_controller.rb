@@ -47,6 +47,7 @@ module Idv
           key: :request_letter,
           controller: controller_name,
           action: :index,
+          controller_module: 'idv/by_mail',
           next_steps: [:success],
           preconditions: ->(idv_session:, user:) { idv_session.verify_info_step_complete? },
           undo_step: ->(idv_session:, user:) { idv_session.address_verification_mechanism = nil },

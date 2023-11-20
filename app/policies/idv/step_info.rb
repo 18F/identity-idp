@@ -3,18 +3,29 @@ module Idv
     include ActiveModel::Validations
 
     attr_reader :key, :controller, :action, :next_steps, :preconditions, :undo_step
+    attr_reader :controller_module
 
     validates :controller, presence: true
     validates :action, presence: true
+    validates :controller_module, presence: true
     validate :next_steps_validation, :preconditions_validation, :undo_step_validation
 
-    def initialize(key:, controller:, next_steps:, preconditions:, undo_step:, action: :show)
+    def initialize(
+      key:,
+      controller:,
+      next_steps:,
+      preconditions:,
+      undo_step:,
+      action: :show,
+      controller_module: 'idv'
+    )
       @key = key
       @controller = controller
-      @action = action
       @next_steps = next_steps
       @preconditions = preconditions
       @undo_step = undo_step
+      @action = action
+      @controller_module = controller_module
 
       raise ArgumentError unless valid?
     end
