@@ -9,8 +9,9 @@ class AccountsController < ApplicationController
     analytics.account_visit
     session[:account_redirect_path] = account_path
     cacher = Pii::Cacher.new(current_user, user_session)
+    profile_id = current_user.active_profile&.id || current_user.pending_profile&.id
     @presenter = AccountShowPresenter.new(
-      decrypted_pii: cacher.fetch,
+      decrypted_pii: cacher.fetch(profile_id),
       personal_key: flash[:personal_key],
       sp_session_request_url: sp_session_request_url_with_updated_params,
       sp_name: decorated_sp_session.sp_name,
