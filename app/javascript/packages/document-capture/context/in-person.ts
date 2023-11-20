@@ -1,6 +1,11 @@
 import { createContext } from 'react';
 
 export interface InPersonContextProps {
+    /**
+   * URL to in-person proofing alternative flow, if enabled.
+   */
+    inPersonURL?: string;
+
   /**
    * Post Office location search endpoint URL
    */
