@@ -203,9 +203,9 @@ fr:
         l’appareil sur lequel vous avez configuré le déverrouillage facial ou
         tactile.
       screen_lock_other_mfa: Nous n’avons pas pu nous authentifier avec le
-        déverrouillage facial ou tactile. %{link_html} ou essayez de vous
-        connecter sur l’appareil sur lequel vous avez configuré le
-        déverrouillage du visage ou du toucher.
+        déverrouillage facial ou tactile. %{link} ou essayez de vous connecter
+        sur l’appareil sur lequel vous avez configuré le déverrouillage du
+        visage ou du toucher.
       try_again: Le déverrouillage facial ou tactile n’a pas fonctionné. Veuillez
         réessayer ou %{link}.
       use_a_different_method: Utilisez un autre moyen d’authentification

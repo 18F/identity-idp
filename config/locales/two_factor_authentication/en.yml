@@ -182,8 +182,8 @@ en:
         Try signing in on the device where you first set up face or touch
         unlock.
       screen_lock_other_mfa: We couldn’t authenticate with face or touch unlock.
-        %{link_html}, or try signing in on the device where you first set up
-        face or touch unlock.
+        %{link}, or try signing in on the device where you first set up face or
+        touch unlock.
       try_again: Face or touch unlock was unsuccessful. Please try again or %{link}.
       use_a_different_method: Use a different authentication method
     webauthn_header_text: Connect your security key

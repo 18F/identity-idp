@@ -193,7 +193,7 @@ es:
         desbloqueo facial o táctil. Intente iniciar sesión en el dispositivo
         donde configuró por primera vez el desbloqueo facial o táctil.
       screen_lock_other_mfa: No pudimos comprobar la autenticidad mediante desbloqueo
-        facial o táctil. %{link_html} o intente iniciar sesión en el dispositivo
+        facial o táctil. %{link} o intente iniciar sesión en el dispositivo
         donde configuró por primera vez el desbloqueo facial o táctil.
       try_again: El desbloqueo facial o táctil no fue exitoso. Por favor, inténtelo de
         nuevo o %{link}.
