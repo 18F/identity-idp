@@ -4,6 +4,7 @@ module Idv
     include RenderConditionConcern
 
     before_action :confirm_step_allowed
+    before_action :confirm_document_capture_not_complete
 
     check_or_render_not_found -> { self.class.enabled? }
 
@@ -22,7 +23,6 @@ module Idv
 
       if result.success?
         if how_to_verify_form_params['selection'] == 'remote'
-          # todo: think about resetting this value if the user cancels/goes back
           idv_session.skip_doc_auth = false
           redirect_to idv_hybrid_handoff_url
         else
@@ -45,7 +45,7 @@ module Idv
         preconditions: ->(idv_session:, user:) do
           self.enabled?
         end,
-        undo_step: ->(idv_session:, user:) {}, # clear any saved data
+        undo_step: ->(idv_session:, user:) { idv_session.skip_doc_auth = nil },
       )
     end
 
