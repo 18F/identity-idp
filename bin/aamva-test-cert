@@ -1,0 +1,53 @@
+#!/usr/bin/env ruby
+
+ENV['LOGIN_TASK_LOG_LEVEL'] ||= 'warn'
+require_relative '../config/environment.rb'
+require 'aamva_test'
+require 'optparse'
+require 'pp'
+
+class AamvaTestCert
+  def run(out: STDOUT, argv: ARGV)
+    auth_url = nil
+    verification_url = nil
+    show_help = false
+
+    parser = OptionParser.new do |opts|
+      opts.banner = <<~EOM
+        Usage: #{$PROGRAM_NAME} --auth-url=AUTH_URL --verification-url=VERIFICATION_URL
+
+        Tests AAMVA certificate against cert environment
+
+        Options:
+      EOM
+
+      opts.on('--auth-url=AUTH_URL', 'sets the auth url') do |url|
+        auth_url = url
+      end
+
+      opts.on('--verification-url=VERIFICATION_URL', 'sets the verification url') do |url|
+        verification_url = url
+      end
+
+      opts.on('--help', 'prints this help message') do
+        show_help = true
+      end
+    end
+
+    parser.parse!(argv)
+
+    if show_help
+      out.puts parser
+      exit 0
+    elsif !auth_url || !verification_url
+      out.puts parser
+      exit 1
+    else
+      PP.pp(AamvaTest.new.test_cert(auth_url:, verification_url:), out)
+    end
+  end
+end
+
+if $PROGRAM_NAME == __FILE__
+  AamvaTestCert.new.run
+end

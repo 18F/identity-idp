@@ -22,7 +22,6 @@ module Users
       analytics.password_changed(**result.to_h)
       irs_attempts_api_tracker.logged_in_password_change(
         success: result.success?,
-        failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
       )
 
       if result.success?

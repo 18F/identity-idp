@@ -30,17 +30,17 @@ module DocAuth
             {}
           else
             doc_auth_result = file_data.dig('doc_auth_result')
-            # Error generator is not to be called when it's not failure
-            # allows us to test successful results
-            return {} if doc_auth_result == 'Passed'
             image_metrics = file_data.dig('image_metrics')
             failed = file_data.dig('failed_alerts')
             passed = file_data.dig('passed_alerts')
             liveness_result = file_data.dig('liveness_result')
             classification_info = file_data.dig('classification_info')
-
+            # Pass and doc type is ok
             if [doc_auth_result, image_metrics, failed, passed,
                 liveness_result, classification_info].any?(&:present?)
+              # Error generator is not to be called when it's not failure
+              # allows us to test successful results
+              return {} if doc_auth_result == 'Passed' && id_type_supported?
               mock_args = {}
               mock_args[:doc_auth_result] = doc_auth_result if doc_auth_result.present?
               mock_args[:image_metrics] = image_metrics.symbolize_keys if image_metrics.present?
@@ -48,7 +48,6 @@ module DocAuth
               mock_args[:passed] = passed.map!(&:symbolize_keys) if passed.present?
               mock_args[:liveness_result] = liveness_result if liveness_result.present?
               mock_args[:classification_info] = classification_info if classification_info.present?
-
               fake_response_info = create_response_info(**mock_args)
               ErrorGenerator.new(config).generate_doc_auth_errors(fake_response_info)
             elsif file_data.include?(:general) # general is the key for errors from parsing
@@ -68,7 +67,7 @@ module DocAuth
       end
 
       def success?
-        errors.blank? || attention_with_barcode?
+        (errors.blank? || attention_with_barcode?) && id_type_supported?
       end
 
       def attention_with_barcode?

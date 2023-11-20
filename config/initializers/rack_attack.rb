@@ -257,6 +257,7 @@ ActiveSupport::Notifications.subscribe(
 ) do |_name, _start, _finish, _request_id, payload|
   req = payload[:request]
   user = req.env['warden'].user || AnonymousUser.new
-  analytics = Analytics.new(user: user, request: req, session: {}, sp: nil)
+  sp = req.env.fetch('rack.session', {}).dig('sp', 'issuer')
+  analytics = Analytics.new(user: user, request: req, session: {}, sp: sp)
   analytics.rate_limit_triggered(type: req.env['rack.attack.matched'])
 end

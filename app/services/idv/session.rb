@@ -14,6 +14,7 @@ module Idv
       idv_phone_step_document_capture_session_uuid
       mail_only_warning_shown
       personal_key
+      personal_key_acknowledged
       phone_for_mobile_flow
       phone_with_camera
       pii_from_doc
@@ -86,6 +87,11 @@ module Idv
       end
     end
 
+    def acknowledge_personal_key!
+      session.delete(:personal_key)
+      session[:personal_key_acknowledged] = true
+    end
+
     def gpo_verification_needed?
       !phone_confirmed? || address_verification_mechanism == 'gpo'
     end
@@ -142,6 +148,12 @@ module Idv
 
     def has_pii_from_user_in_flow_session
       user_session.dig('idv/in_person', :pii_from_user)
+    end
+
+    def invalidate_in_person_pii_from_user!
+      if user_session.dig('idv/in_person', :pii_from_user)
+        user_session['idv/in_person'][:pii_from_user] = nil
+      end
     end
 
     def document_capture_complete?

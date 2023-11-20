@@ -43,6 +43,12 @@ RSpec.describe Idv::HowToVerifyController do
     end
     let(:selection) { 'remote' }
 
+    it 'invalidates future steps' do
+      expect(subject).to receive(:clear_invalid_steps!)
+
+      put :update
+    end
+
     context 'remote' do
       it 'redirects to hybrid handoff' do
         put :update, params: params

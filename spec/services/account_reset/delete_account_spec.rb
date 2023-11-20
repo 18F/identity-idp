@@ -3,10 +3,6 @@ require 'rails_helper'
 RSpec.describe AccountReset::DeleteAccount do
   include AccountResetHelper
 
-  let(:expired_token_message) do
-    t('errors.account_reset.granted_token_expired', app_name: APP_NAME)
-  end
-  let(:expired_token_error) { { token: [expired_token_message] } }
   let(:user) { create(:user) }
   let(:request) { FakeRequest.new }
   let(:analytics) { FakeAnalytics.new }
@@ -57,7 +53,6 @@ RSpec.describe AccountReset::DeleteAccount do
       it 'logs attempts api event with success true if the token is good' do
         expect(fake_attempts_tracker).to receive(:account_reset_account_deleted).with(
           success: true,
-          failure_reason: nil,
         )
 
         create_account_reset_request_for(user, service_provider.issuer)
@@ -69,7 +64,6 @@ RSpec.describe AccountReset::DeleteAccount do
       it 'logs attempts api event with failure reason if the token is expired' do
         expect(fake_attempts_tracker).to receive(:account_reset_account_deleted).with(
           success: false,
-          failure_reason: expired_token_error,
         )
 
         create_account_reset_request_for(user, service_provider.issuer)

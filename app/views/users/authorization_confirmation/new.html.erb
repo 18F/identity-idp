@@ -6,30 +6,34 @@
   <%= render PageHeadingComponent.new.with_content(decorated_sp_session.new_session_heading) %>
 <% end %>
 
-<div class='margin-top-4'>
-  <div class='margin-left-1 margin-bottom-1 text-bold'>
-    <%= t('user_authorization_confirmation.currently_logged_in') %>
-  </div>
-  <div class='tablet:margin-left-1 tablet:margin-right-1' >
-    <ul class='margin-bottom-4 usa-list--unstyled border-bottom border-primary-light success-bullets requested-attributes'>
-      <li class='success-bullet border-top border-primary-light'>
-        <span class='text-bold'>
-          <%= t('help_text.requested_attributes.email') %>
-        </span>
-        <span class='padding-left-2'>
-          <%= @email %>
-        </span>
-      </li>
-    </ul>
-  </div>
+<div class="text-bold margin-top-4 margin-bottom-1">
+  <%= t('user_authorization_confirmation.currently_logged_in') %>
+</div>
+<%= render IconListComponent.new(icon: :check_circle, color: :success, class: 'border-bottom border-primary-light') do |c| %>
+  <% c.with_item(class: 'padding-y-2 border-top border-primary-light') do %>
+    <span class="text-bold padding-right-2">
+      <%= t('help_text.requested_attributes.email') %>
+    </span>
+    <%= @email %>
+  <% end %>
+<% end %>
 
-  <div class='margin-top-4 text-center'>
-    <%= button_to(user_authorization_confirmation_path, class: 'usa-button usa-button--big usa-button--wide', method: :post) { t('user_authorization_confirmation.continue') } %>
-  </div>
-  <div class='margin-top-4 text-center'>
+<div class="margin-top-4 text-center">
+  <%= render ButtonComponent.new(
+        action: ->(**tag_options, &block) do
+          button_to(user_authorization_confirmation_path, method: :post, **tag_options, &block)
+        end,
+        big: true,
+        wide: true,
+      ).with_content(t('user_authorization_confirmation.continue')) %>
+  <div class="margin-y-4">
     <%= t('user_authorization_confirmation.or') %>
   </div>
-  <div class='margin-top-4 text-center'>
-    <%= button_to(reset_user_authorization_path, class: 'usa-button usa-button--big usa-button--wide', method: :delete) { t('user_authorization_confirmation.sign_in') } %>
-  </div>
+  <%= render ButtonComponent.new(
+        action: ->(**tag_options, &block) do
+          button_to(reset_user_authorization_path, method: :delete, **tag_options, &block)
+        end,
+        big: true,
+        wide: true,
+      ).with_content(t('user_authorization_confirmation.sign_in')) %>
 </div>

@@ -56,7 +56,7 @@ class FakeAnalytics < Analytics
               ERROR
             end
 
-            check_recursive.call(val, [key])
+            check_recursive.call(val, current_keypath)
           end
         when Array
           value.each { |val| check_recursive.call(val, keypath) }

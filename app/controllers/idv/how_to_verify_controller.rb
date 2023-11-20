@@ -13,6 +13,7 @@ module Idv
     end
 
     def update
+      clear_invalid_steps!
       result = Idv::HowToVerifyForm.new.submit(how_to_verify_form_params)
 
       analytics.idv_doc_auth_how_to_verify_submitted(
@@ -44,6 +45,7 @@ module Idv
         preconditions: ->(idv_session:, user:) do
           self.enabled?
         end,
+        undo_step: ->(idv_session:, user:) {}, # clear any saved data
       )
     end
 

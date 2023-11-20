@@ -78,7 +78,9 @@ RSpec.describe FormResponse do
       response2 = FormResponse.new(success: false, errors: errors2)
 
       combined_response = response1.merge(response2)
-      expect(combined_response.to_h[:error_details]).to eq(email_language: [:blank, :invalid])
+      expect(combined_response.to_h[:error_details]).to eq(
+        email_language: { blank: true, invalid: true },
+      )
     end
 
     it 'merges hash and ActiveModel::Errors' do
@@ -93,7 +95,7 @@ RSpec.describe FormResponse do
       expect(combined_response.errors).to eq(
         email_language: ['Language cannot be blank', 'Language is not valid'],
       )
-      expect(combined_response.to_h[:error_details]).to eq(email_language: [:blank])
+      expect(combined_response.to_h[:error_details]).to eq(email_language: { blank: true })
     end
 
     it 'returns true if one is false and one is true' do
@@ -146,11 +148,30 @@ RSpec.describe FormResponse do
             email_language: ['Language cannot be blank'],
           },
           error_details: {
-            email_language: [:blank],
+            email_language: { blank: true },
           },
         }
 
         expect(response.to_h).to eq response_hash
+      end
+
+      context 'without error type' do
+        it 'falls back to message as key for details' do
+          errors = ActiveModel::Errors.new(build_stubbed(:user))
+          errors.add(:email_language, :blank)
+          response = FormResponse.new(success: false, errors: errors)
+          response_hash = {
+            success: false,
+            errors: {
+              email_language: [t('errors.messages.blank')],
+            },
+            error_details: {
+              email_language: { blank: true },
+            },
+          }
+
+          expect(response.to_h).to eq response_hash
+        end
       end
 
       it 'omits details if errors are empty' do
@@ -177,6 +198,25 @@ RSpec.describe FormResponse do
         expect(combined_response.to_h).to eq response_hash
       end
 
+      context 'with error detail symbol defined as type option on error' do
+        it 'returns a hash with success, errors, and error_details keys' do
+          errors = ActiveModel::Errors.new(build_stubbed(:user))
+          errors.add(:email_language, 'Language cannot be blank', type: :blank)
+          response = FormResponse.new(success: false, errors: errors)
+          response_hash = {
+            success: false,
+            errors: {
+              email_language: ['Language cannot be blank'],
+            },
+            error_details: {
+              email_language: { blank: true },
+            },
+          }
+
+          expect(response.to_h).to eq response_hash
+        end
+      end
+
       context 'with serialize_error_details_only' do
         it 'excludes errors from the hash' do
           errors = ActiveModel::Errors.new(build_stubbed(:user))
@@ -190,7 +230,7 @@ RSpec.describe FormResponse do
           expect(response.to_h).to eq(
             success: false,
             error_details: {
-              email_language: [:blank],
+              email_language: { blank: true },
             },
           )
         end

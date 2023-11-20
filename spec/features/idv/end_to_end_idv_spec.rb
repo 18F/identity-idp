@@ -378,7 +378,7 @@ RSpec.describe 'Identity verification', :js do
     expect(current_path).to eql(idv_welcome_path)
     complete_welcome_step
     expect(page).to have_current_path(idv_agreement_path)
-    expect(page).to have_checked_field(
+    expect(page).not_to have_checked_field(
       t('doc_auth.instructions.consent', app_name: APP_NAME),
       visible: :all,
     )

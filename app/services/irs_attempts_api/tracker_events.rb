@@ -3,13 +3,11 @@
 module IrsAttemptsApi
   module TrackerEvents
     # @param [Boolean] success True if Account Successfully Deleted
-    # @param [Hash<Key, Array<String>>] failure_reason displays why account deletion failed
     # A User confirms and deletes their Login.gov account after 24 hour period
-    def account_reset_account_deleted(success:, failure_reason: nil)
+    def account_reset_account_deleted(success:)
       track_event(
         :account_reset_account_deleted,
         success: success,
-        failure_reason: failure_reason,
       )
     end
 
@@ -30,12 +28,10 @@ module IrsAttemptsApi
     end
 
     # @param [Boolean] success
-    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
-    def forgot_password_email_confirmed(success:, failure_reason: nil)
+    def forgot_password_email_confirmed(success:)
       track_event(
         :forgot_password_email_confirmed,
         success: success,
-        failure_reason: failure_reason,
       )
     end
 
@@ -58,12 +54,10 @@ module IrsAttemptsApi
     end
 
     # @param [Boolean] success
-    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
-    def forgot_password_new_password_submitted(success:, failure_reason: nil)
+    def forgot_password_new_password_submitted(success:)
       track_event(
         :forgot_password_new_password_submitted,
         success: success,
-        failure_reason: failure_reason,
       )
     end
 
@@ -108,7 +102,6 @@ module IrsAttemptsApi
     # @param [String] last_name
     # @param [String] date_of_birth
     # @param [String] address
-    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
     # The document was uploaded during the IDV process
     def idv_document_upload_submitted(
       success:,
@@ -122,8 +115,7 @@ module IrsAttemptsApi
       first_name: nil,
       last_name: nil,
       date_of_birth: nil,
-      address: nil,
-      failure_reason: nil
+      address: nil
     )
       track_event(
         :idv_document_upload_submitted,
@@ -139,7 +131,6 @@ module IrsAttemptsApi
         last_name: last_name,
         date_of_birth: date_of_birth,
         address: address,
-        failure_reason: failure_reason,
       )
     end
 
@@ -160,13 +151,11 @@ module IrsAttemptsApi
     end
 
     # @param [Boolean] success
-    # @param [Hash<Key, Array<String>>] failure_reason displays GPO submission failed
     # GPO verification submitted from Letter sent to verify address
-    def idv_gpo_verification_submitted(success:, failure_reason: nil)
+    def idv_gpo_verification_submitted(success:)
       track_event(
         :idv_gpo_verification_submitted,
         success: success,
-        failure_reason: failure_reason,
       )
     end
 
@@ -189,15 +178,13 @@ module IrsAttemptsApi
     # @param [Boolean] success
     # @param [String] phone_number
     # @param [String] otp_delivery_method - Either SMS or Voice
-    # @param [Hash<Key, Array<String>>] failure_reason
     # Track when OTP is sent and what method chosen during idv flow.
-    def idv_phone_otp_sent(success:, phone_number:, otp_delivery_method:, failure_reason: nil)
+    def idv_phone_otp_sent(success:, phone_number:, otp_delivery_method:)
       track_event(
         :idv_phone_otp_sent,
         success: success,
         phone_number: phone_number,
         otp_delivery_method: otp_delivery_method,
-        failure_reason: failure_reason,
       )
     end
 
@@ -211,13 +198,11 @@ module IrsAttemptsApi
     # Tracks when a user submits OTP code sent to their phone
     # @param [Boolean] success
     # @param [String] phone_number
-    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
-    def idv_phone_otp_submitted(success:, phone_number:, failure_reason: nil)
+    def idv_phone_otp_submitted(success:, phone_number:)
       track_event(
         :idv_phone_otp_submitted,
         success: success,
         phone_number: phone_number,
-        failure_reason: failure_reason,
       )
     end
 
@@ -242,30 +227,25 @@ module IrsAttemptsApi
     # Tracks when the user submits their idv phone number
     # @param [Boolean] success
     # @param [String] phone_number
-    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
-    def idv_phone_submitted(success:, phone_number:, failure_reason: nil)
+    def idv_phone_submitted(success:, phone_number:)
       track_event(
         :idv_phone_submitted,
         success: success,
         phone_number: phone_number,
-        failure_reason: failure_reason,
       )
     end
 
     # @param [Boolean] success
     # @param [String] phone_number
-    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
     # The phone number that the link was sent to during the IDV process
     def idv_phone_upload_link_sent(
       success:,
-      phone_number:,
-      failure_reason: nil
+      phone_number:
     )
       track_event(
         :idv_phone_upload_link_sent,
         success: success,
         phone_number: phone_number,
-        failure_reason: failure_reason,
       )
     end
 
@@ -286,14 +266,12 @@ module IrsAttemptsApi
     end
 
     # @param [Boolean] success
-    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
     # This event will capture the result of the TMX fraud check
     # during Identity Verification
-    def idv_tmx_fraud_check(success:, failure_reason: nil)
+    def idv_tmx_fraud_check(success:)
       track_event(
         :idv_tmx_fraud_check,
         success: success,
-        failure_reason: failure_reason,
       )
     end
 
@@ -316,7 +294,6 @@ module IrsAttemptsApi
     # @param [String] date_of_birth
     # @param [String] address
     # @param [String] ssn
-    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
     # The verification was submitted during the IDV process
     def idv_verification_submitted(
       success:,
@@ -328,8 +305,7 @@ module IrsAttemptsApi
       last_name: nil,
       date_of_birth: nil,
       address: nil,
-      ssn: nil,
-      failure_reason: nil
+      ssn: nil
     )
       track_event(
         :idv_verification_submitted,
@@ -343,7 +319,6 @@ module IrsAttemptsApi
         date_of_birth: date_of_birth,
         address: address,
         ssn: ssn,
-        failure_reason: failure_reason,
       )
     end
 
@@ -357,13 +332,11 @@ module IrsAttemptsApi
     end
 
     # @param [Boolean] success True if the password was successfully changed
-    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
     # A logged-in user has attempted to change their password
-    def logged_in_password_change(success:, failure_reason: nil)
+    def logged_in_password_change(success:)
       track_event(
         :logged_in_password_change,
         success: success,
-        failure_reason: failure_reason,
       )
     end
 
@@ -462,17 +435,14 @@ module IrsAttemptsApi
     # Tracks when the user has attempted to enroll the piv cac MFA method to their account
     # @param [Boolean] success
     # @param [String] subject_dn
-    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
     def mfa_enroll_piv_cac(
       success:,
-      subject_dn: nil,
-      failure_reason: nil
+      subject_dn: nil
     )
       track_event(
         :mfa_enroll_piv_cac,
         success: success,
         subject_dn: subject_dn,
-        failure_reason: failure_reason,
       )
     end
 
@@ -526,14 +496,12 @@ module IrsAttemptsApi
     # @param [Boolean] reauthentication - True if the user was already logged in
     # @param [String] phone_number - The user's phone_number used for multi-factor authentication
     # @param [String] otp_delivery_method - Either SMS or Voice
-    # @param [Hash<Symbol,Array<Symbol>>] failure_reason - reason for failure if success is false
     # During a login attempt, an OTP code has been sent via SMS or Voice.
     def mfa_login_phone_otp_sent(
       success:,
       reauthentication:,
       phone_number:,
-      otp_delivery_method:,
-      failure_reason:
+      otp_delivery_method:
     )
       track_event(
         :mfa_login_phone_otp_sent,
@@ -541,7 +509,6 @@ module IrsAttemptsApi
         reauthentication: reauthentication,
         phone_number: phone_number,
         otp_delivery_method: otp_delivery_method,
-        failure_reason: failure_reason,
       )
     end
 
@@ -569,17 +536,14 @@ module IrsAttemptsApi
     # Tracks when the user has attempted to log in with the piv cac MFA method to their account
     # @param [Boolean] success
     # @param [String] subject_dn
-    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
     def mfa_login_piv_cac(
       success:,
-      subject_dn: nil,
-      failure_reason: nil
+      subject_dn: nil
     )
       track_event(
         :mfa_login_piv_cac,
         success: success,
         subject_dn: subject_dn,
-        failure_reason: failure_reason,
       )
     end
 
@@ -629,29 +593,24 @@ module IrsAttemptsApi
 
     # Tracks when user has entered personal key after forgot password steps
     # @param [Boolean] success
-    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
-    def personal_key_reactivation_submitted(success:, failure_reason: nil)
+    def personal_key_reactivation_submitted(success:)
       track_event(
         :personal_key_reactivation_submitted,
         success: success,
-        failure_reason: failure_reason,
       )
     end
 
     # Tracks when user confirms registration email
     # @param [Boolean] success
     # @param [String] email
-    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
     def user_registration_email_confirmation(
       success:,
-      email: nil,
-      failure_reason: nil
+      email: nil
     )
       track_event(
         :user_registration_email_confirmation,
         success: success,
         email: email,
-        failure_reason: failure_reason,
       )
     end
 
@@ -672,31 +631,20 @@ module IrsAttemptsApi
     # Tracks when user submits registration email
     # @param [Boolean] success
     # @param [String] email
-    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
-    def user_registration_email_submitted(
-      success:,
-      email:,
-      failure_reason: nil
-    )
+    def user_registration_email_submitted(success:, email:)
       track_event(
         :user_registration_email_submitted,
         success: success,
         email: email,
-        failure_reason: failure_reason,
       )
     end
 
     # Tracks when user submits registration password
     # @param [Boolean] success
-    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
-    def user_registration_password_submitted(
-      success:,
-      failure_reason: nil
-    )
+    def user_registration_password_submitted(success:)
       track_event(
         :user_registration_password_submitted,
         success: success,
-        failure_reason: failure_reason,
       )
     end
   end

@@ -409,7 +409,11 @@ RSpec.describe OpenidConnectTokenForm do
 
     context 'with valid params' do
       before do
-        OutOfBandSessionAccessor.new(identity.rails_session_id).put_pii({}, 5.minutes.to_i)
+        OutOfBandSessionAccessor.new(
+          identity.rails_session_id,
+        ).put_empty_user_session(
+          5.minutes.to_i,
+        )
       end
 
       it 'has a properly-encoded id_token with an expiration that matches the expires_in' do

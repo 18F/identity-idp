@@ -62,7 +62,7 @@ RSpec.describe Idv::ImageUploadsController do
             front: ['Please fill in this field.'],
           },
           error_details: {
-            front: [:blank],
+            front: { blank: true },
           },
           user_id: user.uuid,
           attempts: 1,
@@ -123,7 +123,7 @@ RSpec.describe Idv::ImageUploadsController do
             front: [I18n.t('doc_auth.errors.not_a_file')],
           },
           error_details: {
-            front: [I18n.t('doc_auth.errors.not_a_file')],
+            front: { not_a_file: true },
           },
           user_id: user.uuid,
           attempts: 1,
@@ -148,7 +148,6 @@ RSpec.describe Idv::ImageUploadsController do
             document_issued: nil,
             document_number: nil,
             document_state: nil,
-            failure_reason: { front: ['The selection was not a valid file.'] },
             first_name: nil,
             last_name: nil,
             success: false },
@@ -261,7 +260,7 @@ RSpec.describe Idv::ImageUploadsController do
             limit: [I18n.t('errors.doc_auth.rate_limited_heading')],
           },
           error_details: {
-            limit: [I18n.t('errors.doc_auth.rate_limited_heading')],
+            limit: { rate_limited: true },
           },
           user_id: user.uuid,
           attempts: IdentityConfig.store.doc_auth_max_attempts,
@@ -292,7 +291,6 @@ RSpec.describe Idv::ImageUploadsController do
             document_issued: nil,
             document_number: nil,
             document_state: nil,
-            failure_reason: { limit: ['We couldn’t verify your ID'] },
             first_name: nil,
             last_name: nil,
             success: false },
@@ -429,7 +427,6 @@ RSpec.describe Idv::ImageUploadsController do
         expect(@irs_attempts_api_tracker).to receive(:track_event).with(
           :idv_document_upload_submitted,
           success: true,
-          failure_reason: nil,
           document_back_image_filename: nil,
           document_front_image_filename: nil,
           document_image_encryption_key: nil,
@@ -458,7 +455,6 @@ RSpec.describe Idv::ImageUploadsController do
             :idv_document_upload_submitted,
             hash_including(
               success: true,
-              failure_reason: nil,
               document_back_image_filename: match(document_filename_regex),
               document_front_image_filename: match(document_filename_regex),
               document_image_encryption_key: match(base64_regex),
@@ -525,8 +521,6 @@ RSpec.describe Idv::ImageUploadsController do
             expect(@irs_attempts_api_tracker).to receive(:track_event).with(
               :idv_document_upload_submitted,
               success: false,
-              failure_reason: { name:
-                ['We couldn’t read the full name on your ID. Try taking new pictures.'] },
               document_state: 'ND',
               document_number: nil,
               document_issued: nil,
@@ -603,7 +597,7 @@ RSpec.describe Idv::ImageUploadsController do
                 name: [I18n.t('doc_auth.errors.alerts.full_name_check')],
               },
               error_details: {
-                name: [I18n.t('doc_auth.errors.alerts.full_name_check')],
+                name: { name: true },
               },
               attention_with_barcode: false,
               user_id: user.uuid,
@@ -625,8 +619,6 @@ RSpec.describe Idv::ImageUploadsController do
             expect(@irs_attempts_api_tracker).to receive(:track_event).with(
               :idv_document_upload_submitted,
               success: false,
-              failure_reason: { name:
-                ['We couldn’t read the full name on your ID. Try taking new pictures.'] },
               document_state: 'ND',
               document_number: nil,
               document_issued: nil,
@@ -703,7 +695,7 @@ RSpec.describe Idv::ImageUploadsController do
                 state: [I18n.t('doc_auth.errors.general.no_liveness')],
               },
               error_details: {
-                state: [:wrong_length],
+                state: { wrong_length: true },
               },
               attention_with_barcode: false,
               user_id: user.uuid,
@@ -725,8 +717,6 @@ RSpec.describe Idv::ImageUploadsController do
             expect(@irs_attempts_api_tracker).to receive(:track_event).with(
               :idv_document_upload_submitted,
               success: false,
-              failure_reason: { state:
-                ['Try taking new pictures.'] },
               document_state: 'Maryland',
               document_number: nil,
               document_issued: nil,
@@ -803,7 +793,7 @@ RSpec.describe Idv::ImageUploadsController do
                 dob: [I18n.t('doc_auth.errors.alerts.birth_date_checks')],
               },
               error_details: {
-                dob: [I18n.t('doc_auth.errors.alerts.birth_date_checks')],
+                dob: { dob: true },
               },
               attention_with_barcode: false,
               user_id: user.uuid,
@@ -822,8 +812,6 @@ RSpec.describe Idv::ImageUploadsController do
             expect(@irs_attempts_api_tracker).to receive(:track_event).with(
               :idv_document_upload_submitted,
               success: false,
-              failure_reason: { dob:
-                ['We couldn’t read the birth date on your ID. Try taking new pictures.'] },
               document_back_image_filename: nil,
               document_front_image_filename: nil,
               document_image_encryption_key: nil,

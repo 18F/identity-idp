@@ -1,6 +1,6 @@
 module TwoFactorAuthentication
-  class SignInWebauthnPlatformSelectionPresenter < SelectionPresenter
-    def method
+  class SignInWebauthnPlatformSelectionPresenter < SignInSelectionPresenter
+    def type
       :webauthn_platform
     end
 

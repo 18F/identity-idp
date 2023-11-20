@@ -1,6 +1,6 @@
 module TwoFactorAuthentication
-  class SignInPersonalKeySelectionPresenter < SelectionPresenter
-    def method
+  class SignInPersonalKeySelectionPresenter < SignInSelectionPresenter
+    def type
       :personal_key
     end
 

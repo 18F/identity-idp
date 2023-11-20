@@ -64,7 +64,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
           expect(result.to_h).to eq(
             success: false,
             errors: { response_type: ['is not included in the list'] },
-            error_details: { response_type: [:inclusion] },
+            error_details: { response_type: { inclusion: true } },
             client_id: client_id,
             prompt: 'select_account',
             allow_prompt_login: true,

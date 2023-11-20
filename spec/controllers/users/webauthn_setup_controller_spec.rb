@@ -230,6 +230,18 @@ RSpec.describe Users::WebauthnSetupController do
           expect(additional_mfa_check).to be_truthy
         end
       end
+
+      context 'when the back button is clicked after platform is added' do
+        let(:user) { create(:user, :with_webauthn_platform) }
+        before do
+          controller.user_session[:in_account_creation_flow] = true
+        end
+        it 'should redirect to authentication methods setup' do
+          get :new, params: { platform: true }
+
+          expect(response).to redirect_to(authentication_methods_setup_path)
+        end
+      end
     end
 
     describe 'multiple MFA handling' do
@@ -392,10 +404,7 @@ RSpec.describe Users::WebauthnSetupController do
                 'errors.webauthn_platform_setup.attestation_error',
                 link: MarketingSite.contact_url,
               )] },
-              error_details: { name: [I18n.t(
-                'errors.webauthn_platform_setup.attestation_error',
-                link: MarketingSite.contact_url,
-              )] },
+              error_details: { name: { attestation_error: true } },
               in_account_creation_flow: false,
               mfa_method_counts: {},
               multi_factor_auth_method: 'webauthn_platform',

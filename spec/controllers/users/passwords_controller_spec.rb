@@ -22,7 +22,7 @@ RSpec.describe Users::PasswordsController do
         allow(@analytics).to receive(:track_event)
 
         expect(@irs_attempts_api_tracker).to receive(:logged_in_password_change).
-          with(failure_reason: nil, success: true)
+          with(success: true)
 
         params = {
           password: 'salty new password',
@@ -48,6 +48,7 @@ RSpec.describe Users::PasswordsController do
         stub_sign_in(user)
         Pii::Cacher.new(user, controller.user_session).save_decrypted_pii(
           Pii::Attributes.new(ssn: '111-222-3333'),
+          user.active_profile.id,
         )
 
         params = {
@@ -132,14 +133,8 @@ RSpec.describe Users::PasswordsController do
         end
 
         it 'renders edit' do
-          password_short_error = {
-            password: [:too_short],
-            password_confirmation: [:too_short],
-          }
-
           expect(@irs_attempts_api_tracker).to receive(:logged_in_password_change).with(
             success: false,
-            failure_reason: password_short_error,
           )
 
           patch :update, params: { update_user_password_form: params }
@@ -159,7 +154,10 @@ RSpec.describe Users::PasswordsController do
                 count: Devise.password_length.first,
               )],
             },
-            error_details: password_short_error,
+            error_details: {
+              password: { too_short: true },
+              password_confirmation: { too_short: true },
+            },
             pending_profile_present: false,
             active_profile_present: false,
             user_id: subject.current_user.uuid,
@@ -189,9 +187,6 @@ RSpec.describe Users::PasswordsController do
         it 'renders edit' do
           expect(@irs_attempts_api_tracker).to receive(:logged_in_password_change).with(
             success: false,
-            failure_reason: {
-              password_confirmation: [t('errors.messages.password_mismatch')],
-            },
           )
 
           patch :update, params: { update_user_password_form: params }
@@ -203,7 +198,7 @@ RSpec.describe Users::PasswordsController do
               password_confirmation: [t('errors.messages.password_mismatch')],
             },
             error_details: {
-              password_confirmation: [t('errors.messages.password_mismatch')],
+              password_confirmation: { mismatch: true },
             },
             pending_profile_present: false,
             active_profile_present: false,

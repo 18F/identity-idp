@@ -13,7 +13,7 @@ RSpec.describe TwoFactorAuthentication::SetUpAuthAppSelectionPresenter do
 
   describe '#type' do
     it 'returns auth_app' do
-      expect(presenter_without_mfa.type).to eq 'auth_app'
+      expect(presenter_without_mfa.type).to eq :auth_app
     end
   end
 

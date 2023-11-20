@@ -114,7 +114,7 @@ module DocAuth
           return unless classification_details.present?
 
           classification_details.transform_values do |classification_detail|
-            classification_detail.slice(
+            detail = classification_detail.slice(
               'ClassName',
               'Issue',
               'IssueType',
@@ -122,8 +122,12 @@ module DocAuth
               'IssuerCode',
               'IssuerName',
               'CountryCode',
+              'IssuerType',
             )
-          end
+            # code to value
+            detail['IssuerType'] = DocAuth::Acuant::IssuerTypes.from_int(detail['IssuerType']).name
+            detail
+          end.deep_symbolize_keys
         end
 
         def successful_result?

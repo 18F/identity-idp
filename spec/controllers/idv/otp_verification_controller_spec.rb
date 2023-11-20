@@ -170,7 +170,6 @@ RSpec.describe Idv::OtpVerificationController do
           expect(@irs_attempts_api_tracker).to receive(:idv_phone_otp_submitted).with(
             success: true,
             **phone_property,
-            failure_reason: {},
           )
 
           put :update, params: otp_code_param
@@ -183,9 +182,6 @@ RSpec.describe Idv::OtpVerificationController do
           expect(@irs_attempts_api_tracker).to receive(:idv_phone_otp_submitted).with(
             success: false,
             **phone_property,
-            failure_reason: {
-              code_matches: false,
-            },
           )
 
           put :update, params: invalid_otp_code_param
@@ -208,9 +204,6 @@ RSpec.describe Idv::OtpVerificationController do
           expect(@irs_attempts_api_tracker).to receive(:idv_phone_otp_submitted).with(
             success: false,
             **phone_property,
-            failure_reason: {
-              code_expired: true,
-            },
           )
 
           put :update, params: otp_code_param

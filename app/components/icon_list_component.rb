@@ -19,11 +19,12 @@ class IconListComponent < BaseComponent
   end
 
   class IconListItemComponent < BaseComponent
-    attr_reader :icon, :color
+    attr_reader :icon, :color, :tag_options
 
-    def initialize(icon:, color:)
+    def initialize(icon:, color:, **tag_options)
       @icon = icon
       @color = color
+      @tag_options = tag_options
     end
 
     def icon_css_class
