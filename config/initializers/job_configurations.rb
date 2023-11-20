@@ -188,6 +188,11 @@ else
         cron: cron_24h,
         args: -> { [14.days.ago] },
       },
+      # Expire old GPO profiles
+      expire_gpo_profiles: {
+        class: 'GpoExpirationJob',
+        cron: cron_24h,
+      },
       # Monthly report checking in on key metrics
       monthly_key_metrics_report: {
         class: 'Reports::MonthlyKeyMetricsReport',

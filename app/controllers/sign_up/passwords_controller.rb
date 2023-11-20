@@ -39,12 +39,9 @@ module SignUp
     end
 
     def track_analytics(result)
-      failure_reason = irs_attempts_api_tracker.parse_failure_reason(result)
-
       analytics.password_creation(**result.to_h)
       irs_attempts_api_tracker.user_registration_password_submitted(
         success: result.success?,
-        failure_reason: failure_reason,
       )
     end
 

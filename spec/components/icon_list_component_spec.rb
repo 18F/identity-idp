@@ -16,9 +16,11 @@ RSpec.describe IconListComponent, type: :component do
   end
 
   context 'with additional tag options' do
-    it 'applies tag options to wrapper element' do
-      rendered = render_inline IconListComponent.new(class: 'custom-class', data: { foo: 'bar' })
+    subject(:rendered) do
+      render_inline IconListComponent.new(class: 'custom-class', data: { foo: 'bar' })
+    end
 
+    it 'applies tag options to wrapper element' do
       expect(rendered).to have_css('.usa-icon-list.custom-class[data-foo="bar"]')
     end
   end
@@ -63,6 +65,18 @@ RSpec.describe IconListComponent, type: :component do
         expect(rendered).to have_css('.usa-icon use[href$=".svg#check_circle"]', count: 1)
         expect(rendered).to have_css('.usa-icon-list__icon.text-error', count: 1)
         expect(rendered).to have_css('.usa-icon use[href$=".svg#cancel"]', count: 1)
+      end
+    end
+
+    context 'with additional tag options on item' do
+      subject(:rendered) do
+        render_inline IconListComponent.new(icon: :cancel) do |c|
+          c.with_item(class: 'custom-class', data: { foo: 'bar' }) { 'First' }
+        end
+      end
+
+      it 'applies tag options to wrapper element' do
+        expect(rendered).to have_css('.usa-icon-list__item.custom-class[data-foo="bar"]')
       end
     end
   end

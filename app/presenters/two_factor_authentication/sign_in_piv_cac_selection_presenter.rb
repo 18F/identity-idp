@@ -1,6 +1,6 @@
 module TwoFactorAuthentication
   class SignInPivCacSelectionPresenter < SignInSelectionPresenter
-    def method
+    def type
       :piv_cac
     end
 

@@ -56,11 +56,11 @@ module DocAuth
       unknown_fail_count = scan_for_unknown_alerts(response_info)
       alert_error_count -= unknown_fail_count
 
-      image_metric_errors = get_image_metric_errors(response_info[:image_metrics])
-      return image_metric_errors.to_h unless image_metric_errors.empty?
-
       doc_type_errors = get_id_type_errors(response_info[:classification_info])
       return doc_type_errors.to_h unless doc_type_errors.nil? || doc_type_errors.empty?
+
+      image_metric_errors = get_image_metric_errors(response_info[:image_metrics])
+      return image_metric_errors.to_h unless image_metric_errors.empty?
 
       alert_errors = get_error_messages(response_info)
 
@@ -109,12 +109,17 @@ module DocAuth
       %w[Front Back].each do |side|
         side_class = classification_info.with_indifferent_access.dig(side, 'ClassName')
         side_country = classification_info.with_indifferent_access.dig(side, 'CountryCode')
+        side_issuer_type = classification_info.with_indifferent_access.dig(side, 'IssuerType')
+
         side_ok = !side_class.present? ||
                   SUPPORTED_ID_CLASSNAME.include?(side_class) ||
                   side_class == 'Unknown'
         country_ok = !side_country.present? || supported_country_codes.include?(side_country)
-        both_side_ok &&= side_ok && country_ok
-        error_result.add_side(side.downcase.to_sym) unless side_ok && country_ok
+        issuer_type_ok = !side_issuer_type.present? ||
+                         side_issuer_type == DocAuth::Acuant::IssuerTypes::STATE_OR_PROVINCE.name ||
+                         side_issuer_type == DocAuth::Acuant::IssuerTypes::UNKNOWN.name
+        both_side_ok &&= issuer_type_ok && side_ok && country_ok
+        error_result.add_side(side.downcase.to_sym) unless side_ok && issuer_type_ok && country_ok
       end
       unless both_side_ok
         error_result.set_error(Errors::DOC_TYPE_CHECK)

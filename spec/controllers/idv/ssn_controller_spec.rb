@@ -200,7 +200,7 @@ RSpec.describe Idv::SsnController do
           errors: {
             ssn: [t('idv.errors.pattern_mismatch.ssn')],
           },
-          error_details: { ssn: [:invalid] },
+          error_details: { ssn: { invalid: true } },
           pii_like_keypaths: [[:same_address_as_id], [:errors, :ssn], [:error_details, :ssn]],
         }.merge(ab_test_args)
       end

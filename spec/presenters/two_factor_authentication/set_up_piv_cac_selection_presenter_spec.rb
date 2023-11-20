@@ -12,7 +12,7 @@ RSpec.describe TwoFactorAuthentication::SetUpPivCacSelectionPresenter do
 
   describe '#type' do
     it 'returns piv_cac' do
-      expect(presenter_without_mfa.type).to eq 'piv_cac'
+      expect(presenter_without_mfa.type).to eq :piv_cac
     end
   end
 

@@ -16,7 +16,7 @@ RSpec.describe SignUp::PasswordsController do
     end
     let(:password) { 'NewVal!dPassw0rd' }
     let(:password_confirmation) { password }
-    let(:success_properties) { { success: true, failure_reason: nil } }
+    let(:success_properties) { { success: true } }
 
     context 'with valid password' do
       let!(:user) { create(:user, :unconfirmed, confirmation_token: token) }
@@ -61,15 +61,6 @@ RSpec.describe SignUp::PasswordsController do
 
     context 'with an invalid password' do
       let!(:user) { create(:user, :unconfirmed, confirmation_token: token) }
-      let(:analytics_hash) do
-        {
-          success: false,
-          errors: errors,
-          error_details: error_details,
-          user_id: user.uuid,
-          request_id_present: false,
-        }
-      end
 
       before do
         stub_analytics
@@ -79,70 +70,70 @@ RSpec.describe SignUp::PasswordsController do
       context 'with a password that is too short' do
         let(:password) { 'NewVal' }
         let(:password_confirmation) { 'NewVal' }
-        let(:errors) do
-          {
-            password:
-              [t(
-                'errors.attributes.password.too_short',
-                count: Devise.password_length.first,
-              )],
-            password_confirmation:
-              [I18n.t('errors.messages.too_short', count: Devise.password_length.first)],
-          }
-        end
-        let(:error_details) do
-          {
-            password: [:too_short],
-            password_confirmation: [:too_short],
-          }
-        end
 
         it 'tracks an invalid password event' do
-          expect(@analytics).to receive(:track_event).
-            with(
-              'User Registration: Email Confirmation',
-              { errors: {}, error_details: nil, success: true, user_id: user.uuid },
-            )
-          expect(@analytics).to receive(:track_event).
-            with('Password Creation', analytics_hash)
-
           expect(@irs_attempts_api_tracker).to receive(:user_registration_password_submitted).
             with(
               success: false,
-              failure_reason: error_details,
             )
           expect(@irs_attempts_api_tracker).not_to receive(:user_registration_email_confirmation)
 
           subject
+
+          expect(@analytics).to have_logged_event(
+            'User Registration: Email Confirmation',
+            errors: {},
+            error_details: nil,
+            success: true,
+            user_id: user.uuid,
+          )
+          expect(@analytics).to have_logged_event(
+            'Password Creation',
+            success: false,
+            errors: {
+              password: [
+                t('errors.attributes.password.too_short', count: Devise.password_length.first),
+              ],
+              password_confirmation: [
+                t('errors.messages.too_short', count: Devise.password_length.first),
+              ],
+            },
+            error_details: {
+              password: { too_short: true },
+              password_confirmation: { too_short: true },
+            },
+            user_id: user.uuid,
+            request_id_present: false,
+          )
         end
       end
 
       context 'when password confirmation does not match' do
         let(:password) { 'NewVal!dPassw0rd' }
         let(:password_confirmation) { 'bad match password' }
-        let(:errors) do
-          {
-            password_confirmation:
-              [t('errors.messages.password_mismatch')],
-          }
-        end
-        let(:error_details) do
-          {
-            password_confirmation: [t('errors.messages.password_mismatch')],
-          }
-        end
 
         it 'tracks invalid password_confirmation error' do
-          expect(@analytics).to receive(:track_event).
-            with(
-              'User Registration: Email Confirmation',
-              { errors: {}, error_details: nil, success: true, user_id: user.uuid },
-            )
-
-          expect(@analytics).to receive(:track_event).
-            with('Password Creation', analytics_hash)
-
           subject
+
+          expect(@analytics).to have_logged_event(
+            'User Registration: Email Confirmation',
+            errors: {},
+            error_details: nil,
+            success: true,
+            user_id: user.uuid,
+          )
+          expect(@analytics).to have_logged_event(
+            'Password Creation',
+            success: false,
+            errors: {
+              password_confirmation: [t('errors.messages.password_mismatch')],
+            },
+            error_details: {
+              password_confirmation: { mismatch: true },
+            },
+            user_id: user.uuid,
+            request_id_present: false,
+          )
         end
       end
     end

@@ -3123,6 +3123,7 @@ module AnalyticsEvents
   # @param [String] area_code
   # @param [String] country_code
   # @param [String] phone_fingerprint the hmac fingerprint of the phone number formatted as e164
+  # @param [String] frontend_error Name of error that occurred in frontend during submission
   # Multi-Factor Authentication
   def multi_factor_auth(
     success:,
@@ -3140,6 +3141,7 @@ module AnalyticsEvents
     area_code: nil,
     country_code: nil,
     phone_fingerprint: nil,
+    frontend_error: nil,
     **extra
   )
     track_event(
@@ -3159,6 +3161,7 @@ module AnalyticsEvents
       area_code: area_code,
       country_code: country_code,
       phone_fingerprint: phone_fingerprint,
+      frontend_error:,
       **extra,
     )
   end
@@ -3781,13 +3784,6 @@ module AnalyticsEvents
     track_event('Personal key reactivation: Account reactivated with personal key')
   end
 
-  # Account reactivated with personal key as MFA
-  def personal_key_reactivation_sign_in
-    track_event(
-      'Personal key reactivation: Account reactivated with personal key as MFA',
-    )
-  end
-
   # @param [Boolean] success
   # @param [Hash] errors
   # @param [Hash] pii_like_keypaths
@@ -3857,6 +3853,12 @@ module AnalyticsEvents
       phone_configuration_id: phone_configuration_id,
       **extra,
     )
+  end
+
+  # @param [String] country_code The new selected country code
+  # User changes the selected country in the frontend phone input component
+  def phone_input_country_changed(country_code:, **extra)
+    track_event(:phone_input_country_changed, country_code:, **extra)
   end
 
   # @identity.idp.previous_event_name User Registration: piv cac disabled

@@ -102,6 +102,7 @@
           collection: us_states_territories,
           form: f,
           hint: t('in_person_proofing.form.state_id.state_id_jurisdiction_hint'),
+          input_html: { class: 'jurisdiction-state-selector' },
           label: t('in_person_proofing.form.state_id.state_id_jurisdiction'),
           label_html: { class: 'usa-label' },
           prompt: t('in_person_proofing.form.state_id.state_id_jurisdiction_prompt'),
@@ -110,11 +111,38 @@
         ) %>
   </div>
   <div class="margin-bottom-5">
+    <% state_id_number_hint_default = capture do %>
+      <%= t('in_person_proofing.form.state_id.state_id_number_hint') %>
+      <% [
+           [t('in_person_proofing.form.state_id.state_id_number_hint_spaces'), ' '],
+           [t('in_person_proofing.form.state_id.state_id_number_hint_forward_slashes'), '/'],
+           [t('in_person_proofing.form.state_id.state_id_number_hint_asterisks'), '*'],
+           [t('in_person_proofing.form.state_id.state_id_number_hint_dashes'), '-', true],
+         ].each do |text, symbol, last| %>
+         <span class="usa-sr-only"><%= text %><%= ',' if !last %></span>
+         <span aria-hidden="true"><%= symbol %></span>
+      <% end %>
+    <% end %>
+
+    <% state_id_number_hint = capture do %>
+      <% [
+           [:default, state_id_number_hint_default],
+           ['TX', t('in_person_proofing.form.state_id.state_id_number_texas_hint')],
+         ].each do |state, hint| %>
+        <%= content_tag(
+              :span,
+              hint,
+              class: state == :default ? nil : 'display-none',
+              data: { state: },
+            ) %>
+      <% end %>
+    <% end %>
+
     <%= render ValidatedFieldComponent.new(
           name: :state_id_number,
           form: f,
-          hint: t('in_person_proofing.form.state_id.state_id_number_hint_html'),
-          hint_html: { class: 'tablet:grid-col-10' },
+          hint: state_id_number_hint,
+          hint_html: { class: ['tablet:grid-col-10', 'jurisdiction-extras'] },
           input_html: { value: pii[:state_id_number] },
           label: t('in_person_proofing.form.state_id.state_id_number'),
           label_html: { class: 'usa-label' },
@@ -211,4 +239,4 @@
 <% else %>
   <%= render 'idv/doc_auth/cancel', step: 'state_id' %>
 <% end %>
-<%= javascript_packs_tag_once('formatted-fields', 'puerto-rico-guidance') %>
+<%= javascript_packs_tag_once('formatted-fields', 'state-guidance') %>

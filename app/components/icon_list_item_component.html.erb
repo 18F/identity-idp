@@ -1,6 +1,6 @@
-<li class="usa-icon-list__item">
+<%= content_tag(:li, **tag_options, class: [*tag_options[:class], 'usa-icon-list__item']) do %>
   <%= content_tag(:div, class: icon_css_class) do %>
     <%= render IconComponent.new(icon: icon) %>
   <% end %>
   <div class="usa-icon-list__content"><%= content %></div>
-</li>
+<% end %>

@@ -87,8 +87,14 @@ RSpec.describe Users::VerifyPersonalKeyController do
     let(:error_text) { 'Incorrect personal key' }
     let(:personal_key_bad_params) { { personal_key: 'baaad' } }
     let(:personal_key_error) { { personal_key: [error_text] } }
-    let(:failure_properties) { { success: false, failure_reason: personal_key_error } }
-    let(:pii_like_keypaths_errors) { [[:errors, :personal_key], [:error_details, :personal_key]] }
+    let(:failure_properties) { { success: false } }
+    let(:pii_like_keypaths_errors) do
+      [
+        [:errors, :personal_key],
+        [:error_details, :personal_key],
+        [:error_details, :personal_key, :personal_key],
+      ]
+    end
     let(:response_ok) { FormResponse.new(success: true, errors: {}) }
     let(:response_bad) { FormResponse.new(success: false, errors: personal_key_error, extra: {}) }
 
@@ -121,7 +127,6 @@ RSpec.describe Users::VerifyPersonalKeyController do
         stub_attempts_tracker
 
         expect(@irs_attempts_api_tracker).to receive(:personal_key_reactivation_submitted).with(
-          failure_reason: nil,
           success: true,
         ).once
 
@@ -163,7 +168,7 @@ RSpec.describe Users::VerifyPersonalKeyController do
         expect(@analytics).to receive(:track_event).with(
           'Personal key reactivation: Personal key form submitted',
           errors: { personal_key: ['Please fill in this field.', error_text] },
-          error_details: { personal_key: [:blank, :personal_key_incorrect] },
+          error_details: { personal_key: { blank: true, personal_key: true } },
           success: false,
           pii_like_keypaths: pii_like_keypaths_errors,
         ).once
