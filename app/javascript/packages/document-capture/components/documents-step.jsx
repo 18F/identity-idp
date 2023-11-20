@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
 import { FormStepsButton, FormStepsContext } from '@18f/identity-form-steps';
 import { PageHeading } from '@18f/identity-components';
@@ -47,6 +47,10 @@ function DocumentsStep({
   const { isLastStep } = useContext(FormStepsContext);
   const { flowPath } = useContext(UploadContext);
   const { notReadySectionEnabled, exitQuestionSectionEnabled } = useContext(FeatureFlagContext);
+  const [ pageNumber, setPageNumber ] = useState(0);
+  const side = DOCUMENT_SIDES[pageNumber];
+  const nextStep = () => setPageNumber(pageNumber+1);
+
   return (
     <>
       {flowPath === 'hybrid' && <HybridDocCaptureWarning className="margin-bottom-4" />}
@@ -61,18 +65,16 @@ function DocumentsStep({
           t('doc_auth.tips.document_capture_id_text3'),
         ].concat(!isMobile ? [t('doc_auth.tips.document_capture_id_text4')] : [])}
       />
-      {DOCUMENT_SIDES.map((side) => (
-        <DocumentSideAcuantCapture
-          key={side}
-          side={side}
-          registerField={registerField}
-          value={value[side]}
-          onChange={onChange}
-          errors={errors}
-          onError={onError}
-        />
-      ))}
-      {isLastStep ? <FormStepsButton.Submit /> : <FormStepsButton.Continue />}
+      <DocumentSideAcuantCapture
+        key={side}
+        side={side}
+        registerField={registerField}
+        value={value[side]}
+        onChange={onChange}
+        errors={errors}
+        onError={onError}
+      />
+      <button onClick={nextStep}>Next</button>
       {notReadySectionEnabled && <DocumentCaptureNotReady />}
       {exitQuestionSectionEnabled && <DocumentCaptureAbandon />}
       <Cancel />
