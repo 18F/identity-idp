@@ -3855,6 +3855,12 @@ module AnalyticsEvents
     )
   end
 
+  # @param [String] country_code The new selected country code
+  # User changes the selected country in the frontend phone input component
+  def phone_input_country_changed(country_code:, **extra)
+    track_event(:phone_input_country_changed, country_code:, **extra)
+  end
+
   # @identity.idp.previous_event_name User Registration: piv cac disabled
   # @identity.idp.previous_event_name PIV CAC disabled
   # Tracks when user's piv cac is disabled

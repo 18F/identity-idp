@@ -12,7 +12,7 @@ Track an event or error from your code using exported function members.
 import { trackEvent, trackError } from '@18f/identity-analytics';
 
 button.addEventListener('click', () => {
-  trackEvent('Button clicked', { success: true });
+  trackEvent('button_clicked', { success: true });
 });
 
 try {
@@ -33,7 +33,7 @@ import '@18f/identity-analytics/click-observer-element';
 The custom element will implement the analytics logging behavior, but all markup must already exist.
 
 ```html
-<lg-click-observer event-name="Button clicked">
+<lg-click-observer event-name="button_clicked">
   <button type="button">Click me!</button>
 </lg-click-observer>
 ```
