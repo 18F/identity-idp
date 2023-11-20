@@ -2,7 +2,7 @@
   "name": "@18f/identity-normalize-yaml",
   "private": false,
   "description": "Normalizes YAML files to ensure consistency and typographical quality",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "type": "module",
   "main": "./index.js",
   "types": "./types/index.d.ts",
