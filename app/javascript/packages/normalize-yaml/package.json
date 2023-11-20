@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "smartquotes": "^2.3.2",
-    "yaml": "^2.3.1"
+    "yaml": "^2.3.4"
   },
   "peerDependencies": {
     "prettier": ">=3"
