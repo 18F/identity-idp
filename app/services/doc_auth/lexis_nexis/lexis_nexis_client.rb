@@ -19,7 +19,7 @@ module DocAuth
         image_source: nil,
         user_uuid: nil,
         uuid_prefix: nil,
-        liveness_checking_enabled: nil
+        liveness_checking_enabled: false
       )
         Requests::TrueIdRequest.new(
           config: config,
