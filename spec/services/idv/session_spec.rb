@@ -292,6 +292,29 @@ RSpec.describe Idv::Session do
     end
   end
 
+  describe '#profile' do
+    it 'is nil by default' do
+      expect(subject.profile).to eql(nil)
+    end
+
+    it 'can be set via profile_id' do
+      profile = create(:profile)
+      subject.profile_id = profile.id
+      expect(subject.profile).to eql(profile)
+    end
+
+    it 'can be changed' do
+      profile1 = create(:profile)
+      profile2 = create(:profile)
+
+      subject.profile_id = profile1.id
+      expect(subject.profile).to eql(profile1)
+
+      subject.profile_id = profile2.id
+      expect(subject.profile).to eql(profile2)
+    end
+  end
+
   describe '#address_mechanism_chosen?' do
     context 'phone verification chosen' do
       before do
