@@ -251,11 +251,9 @@ function FormSteps({
   const ifStillMounted = useIfStillMounted();
 
   useEffect(() => {
-    // TO DO: I think I should check for flag?
-    // TO DO: Can we make prepare dynamic?
+    const firstStep = steps[0].name;
     if (skipDocAuth === 'true') {
-      // setting stepName to the first step in IPP flow will set the url, ie: /verify/document_capture#prepare
-      setStepName('prepare');
+      setStepName(firstStep);
     }
   }, []);
 
