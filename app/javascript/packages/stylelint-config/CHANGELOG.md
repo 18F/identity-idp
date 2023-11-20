@@ -1,11 +1,16 @@
-## Unreleased
+## 3.0.0
 
 ### Breaking Changes
 
 - Breaking changes included in updated dependencies:
   - [`stylelint-prettier`](https://github.com/prettier/stylelint-prettier/blob/main/CHANGELOG.md):
-    - Minimum supported `prettier` version is now `v3.0.0`.
-    - Minimum supported `stylelint` version is now `v15.8.0`.
+    - Dropped support for `prettier` versions below `v3.0.0`.
+    - Dropped support for `stylelint` versions below `v15.8.0`.
+  - [`stylelint-config-recommended-scss`](https://github.com/stylelint-scss/stylelint-config-recommended-scss/blob/master/CHANGELOG.md)
+    - Dropped support for `stylelint` versions below `v15.10.0`.
+  - [`stylelint-config-recommended`](https://github.com/stylelint/stylelint-config-recommended/blob/main/CHANGELOG.md)
+    - Changed defaults may identify new issues in your existing code:
+      - [`stylelint-config-recommended@13.0.0`](https://github.com/stylelint/stylelint-config-recommended/releases/tag/13.0.0) added `media-query-no-invalid`
 
 ## 2.0.0
 
