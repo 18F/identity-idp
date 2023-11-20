@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import AcuantContext from '../context/acuant';
 
