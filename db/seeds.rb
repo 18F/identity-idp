@@ -1,5 +1,13 @@
 # add config/service_providers.yml
-ServiceProviderSeeder.new.run
+if ENV['KUBERNETES_REVIEW_APP'] == 'true' && ENV['DASHBOARD_URL'].present?
+  dashboard_url = ENV['DASHBOARD_URL']
+
+  service_provider_seeder = ServiceProviderSeeder.new
+  service_provider_seeder.write_review_app_yaml(dashboard_url: dashboard_url)
+  service_provider_seeder.run
+else
+  ServiceProviderSeeder.new.run
+end
 
 # add config/agencies.yml
 AgencySeeder.new.run

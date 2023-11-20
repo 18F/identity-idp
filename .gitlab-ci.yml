@@ -366,6 +366,7 @@ review-app:
     - |-
       export IDP_ENV=$(cat <<EOF
       [
+        {"name": "KUBERNETES_REVIEW_APP", "value": "true"},
         {"name": "POSTGRES_SSLMODE", "value": "prefer"},
         {"name": "POSTGRES_NAME", "value": "idp"},
         {"name": "POSTGRES_HOST","value": "$CI_ENVIRONMENT_SLUG-login-chart-pg.review-apps"},
@@ -396,6 +397,7 @@ review-app:
     - |-
       export WORKER_ENV=$(cat <<EOF
       [
+        {"name": "KUBERNETES_REVIEW_APP", "value": "true"},
         {"name": "POSTGRES_SSLMODE", "value": "prefer"},
         {"name": "POSTGRES_NAME", "value": "idp"},
         {"name": "POSTGRES_HOST", "value": "$CI_ENVIRONMENT_SLUG-login-chart-pg.review-apps"},
@@ -425,6 +427,7 @@ review-app:
     - |-
       export PIVCAC_ENV=$(cat <<EOF
       [
+        {"name": "KUBERNETES_REVIEW_APP", "value": "true"},
         {"name": "CLIENT_CERT_S3_BUCKET", "value": "login-gov-pivcac-public-cert-reviewapp.894947205914-us-west-2"},
         {"name": "POSTGRES_SSLMODE", "value": "prefer"},
         {"name": "POSTGRES_NAME", "value": "identity_pki_production"},
@@ -439,6 +442,7 @@ review-app:
     - |-
       export DASHBOARD_ENV=$(cat <<EOF
       [
+        {"name": "KUBERNETES_REVIEW_APP", "value": "true"},
         {"name": "POSTGRES_SSLMODE", "value": "prefer"},
         {"name": "POSTGRES_DB", "value": "dashboard"},
         {"name": "POSTGRES_HOST","value": "$CI_ENVIRONMENT_SLUG-login-chart-dashboard-pg.review-apps"},

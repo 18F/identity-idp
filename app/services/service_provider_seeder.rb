@@ -36,6 +36,28 @@ class ServiceProviderSeeder
     end
   end
 
+  def write_review_app_yaml(dashboard_url:)
+    hash = {
+      @rails_env.to_s => {
+        'urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:dashboard' => {
+          'friendly_name' => 'Dashboard',
+          'agency' => 'GSA',
+          'agency_id' => 2,
+          'logo' => '18f.svg',
+          'certs' => ['identity_dashboard_cert'],
+          'return_to_sp_url' => dashboard_url,
+          'redirect_uris' => [
+            "#{dashboard_url}/auth/logindotgov/callback",
+            dashboard_url,
+          ],
+          'push_notification_url' => "#{dashboard_url}/api/security_events",
+        },
+      },
+    }
+
+    File.write(Rails.root.join(@yaml_path, 'service_providers.yml'), hash.to_yaml)
+  end
+
   private
 
   attr_reader :rails_env, :deploy_env
