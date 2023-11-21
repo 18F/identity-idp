@@ -16,9 +16,9 @@ RSpec.describe Idv::VerifyInfoController do
   end
 
   before do
+    stub_sign_in(user)
     stub_analytics
     stub_attempts_tracker
-    stub_idv_steps_before_verify_step(user)
     subject.idv_session.welcome_visited = true
     subject.idv_session.idv_consent_given = true
     subject.idv_session.flow_path = 'standard'
