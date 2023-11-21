@@ -7,7 +7,6 @@ module Idv
       include ThreatMetrixConcern
 
       before_action :confirm_not_rate_limited_after_doc_auth
-      before_action :confirm_verify_info_step_needed
       before_action :confirm_in_person_address_step_complete
       before_action :confirm_repeat_ssn, only: :show
       before_action :override_csp_for_threat_metrix
@@ -19,7 +18,7 @@ module Idv
       def show
         @ssn_presenter = Idv::SsnPresenter.new(
           sp_name: decorated_sp_session.sp_name,
-          ssn_form: Idv::SsnFormatForm.new(idv_session.ssn),
+          ssn_form: Idv::SsnFormatForm.new(idv_session.ssn_or_applicant_ssn),
           step_indicator_steps: step_indicator_steps,
         )
 

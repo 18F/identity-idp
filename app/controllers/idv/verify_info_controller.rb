@@ -7,11 +7,10 @@ module Idv
 
     before_action :confirm_not_rate_limited_after_doc_auth, except: [:show]
     before_action :confirm_step_allowed
-    before_action :confirm_verify_info_step_needed
 
     def show
       @step_indicator_steps = step_indicator_steps
-      @ssn = idv_session.ssn
+      @ssn = idv_session.ssn_or_applicant_ssn
       @pii = pii
 
       analytics.idv_doc_auth_verify_visited(**analytics_arguments)
@@ -75,7 +74,7 @@ module Idv
     end
 
     def pii
-      @pii = idv_session.pii_from_doc
+      @pii = idv_session.pii_from_doc_or_applicant
     end
   end
 end

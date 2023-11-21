@@ -14,10 +14,10 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
   end
 
   before do
-    allow(subject).to receive(:flow_session).and_return(flow_session)
     stub_sign_in(user)
     subject.idv_session.flow_path = 'standard'
     subject.idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID[:ssn]
+    subject.user_session['idv/in_person'] = flow_session
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 
@@ -40,13 +40,6 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
       expect(subject).to have_actions(
         :before,
         :confirm_ssn_step_complete,
-      )
-    end
-
-    it 'confirms verify step needed' do
-      expect(subject).to have_actions(
-        :before,
-        :confirm_verify_info_step_needed,
       )
     end
   end

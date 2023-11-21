@@ -8,11 +8,10 @@ module Idv
 
       before_action :confirm_not_rate_limited_after_doc_auth, except: [:show]
       before_action :confirm_ssn_step_complete
-      before_action :confirm_verify_info_step_needed
 
       def show
         @step_indicator_steps = step_indicator_steps
-        @ssn = idv_session.ssn
+        @ssn = idv_session.ssn_or_applicant_ssn
 
         analytics.idv_doc_auth_verify_visited(**analytics_arguments)
         Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
@@ -40,11 +39,11 @@ module Idv
       # between various ID types and driver's license is the most common one that will
       # be supported. See also LG-3852 and related findings document.
       def set_state_id_type
-        pii[:state_id_type] = 'drivers_license' unless invalid_state?
+        pii_from_user[:state_id_type] = 'drivers_license' unless invalid_state?
       end
 
       def invalid_state?
-        pii.blank?
+        pii_from_user.blank?
       end
 
       def prev_url
@@ -52,7 +51,7 @@ module Idv
       end
 
       def pii
-        @pii = flow_session[:pii_from_user]
+        @pii = idv_session.pii_from_user_or_applicant
       end
 
       # override IdvSession concern
@@ -71,7 +70,7 @@ module Idv
       end
 
       def confirm_ssn_step_complete
-        return if pii.present? && idv_session.ssn.present?
+        return if pii.present? && idv_session.ssn_or_applicant_ssn.present?
         redirect_to prev_url
       end
     end

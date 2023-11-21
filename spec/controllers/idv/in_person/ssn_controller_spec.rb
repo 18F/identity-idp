@@ -134,6 +134,19 @@ RSpec.describe Idv::InPerson::SsnController do
           expect(response).to render_template 'idv/shared/ssn'
         end
       end
+
+      context 'when the user has already verified their info' do
+        it 'renders show with the contents of idv_session.applicant' do
+          subject.idv_session.resolution_successful = true
+          subject.idv_session.pii_from_doc = nil
+          subject.idv_session.ssn = nil
+          subject.idv_session.applicant = Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID
+
+          get :show
+
+          expect(response).to render_template 'idv/shared/ssn'
+        end
+      end
     end
   end
 
