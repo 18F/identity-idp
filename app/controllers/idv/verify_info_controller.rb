@@ -24,6 +24,7 @@ module Idv
 
     def update
       clear_future_steps!
+      clear_current_step!
       success = shared_update
 
       if success
@@ -50,6 +51,7 @@ module Idv
           idv_session.address_edited = nil
           idv_session.verify_info_step_document_capture_session_uuid = nil
           idv_session.threatmetrix_review_status = nil
+          idv_session.restore_pii_from_doc
         end,
       )
     end
@@ -75,7 +77,7 @@ module Idv
     end
 
     def pii
-      @pii = idv_session.pii_from_doc_or_applicant
+      idv_session.pii_from_doc_or_applicant
     end
   end
 end

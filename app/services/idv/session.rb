@@ -146,6 +146,14 @@ module Idv
       failed_phone_step_numbers << phone_e164 if !failed_phone_step_numbers.include?(phone_e164)
     end
 
+    def pii_from_user
+      user_session['idv/in_person'][:pii_from_user]
+    end
+
+    def pii_from_user=(value)
+      user_session['idv/in_person'][:pii_from_user] = value
+    end
+
     def has_pii_from_user_in_flow_session
       user_session.dig('idv/in_person', :pii_from_user)
     end
@@ -165,7 +173,23 @@ module Idv
     end
 
     def pii_from_user_or_applicant
-      verify_info_step_complete? ? applicant : user_session['idv/in_person'][:pii_from_user]
+      verify_info_step_complete? ? applicant : pii_from_user
+    end
+
+    def restore_pii_from_doc
+      if applicant
+        session[:pii_from_doc] = applicant
+        session[:ssn] = session[:pii_from_doc].delete(:ssn)
+        session[:applicant] = nil
+      end
+    end
+
+    def restore_pii_from_user
+      if applicant
+        pii_from_user = applicant
+        session[:ssn] = pii_from_user.delete(:ssn)
+        session[:applicant] = nil
+      end
     end
 
     def document_capture_complete?
