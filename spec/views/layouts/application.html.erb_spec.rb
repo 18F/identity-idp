@@ -160,7 +160,7 @@ RSpec.describe 'layouts/application.html.erb' do
           service_provider_request: nil,
         ).create_session,
       )
-      allow(FeatureManagement).to receive(:participate_in_dap?).and_return(true)
+      allow(IdentityConfig.store).to receive(:dap_measurement_id).and_return('G-XXXXXXXXXX')
 
       render
 
@@ -170,7 +170,7 @@ RSpec.describe 'layouts/application.html.erb' do
 
   context 'user is fully authenticated' do
     it 'does not render the DAP analytics' do
-      allow(FeatureManagement).to receive(:participate_in_dap?).and_return(true)
+      allow(IdentityConfig.store).to receive(:dap_measurement_id).and_return('G-XXXXXXXXXX')
 
       render
 
@@ -185,7 +185,7 @@ RSpec.describe 'layouts/application.html.erb' do
     end
 
     it 'does not render the DAP analytics' do
-      allow(FeatureManagement).to receive(:participate_in_dap?).and_return(true)
+      allow(IdentityConfig.store).to receive(:dap_measurement_id).and_return('G-XXXXXXXXXX')
 
       render
 
