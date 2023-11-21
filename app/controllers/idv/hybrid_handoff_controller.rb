@@ -39,7 +39,7 @@ module Idv
     def self.step_info
       Idv::StepInfo.new(
         key: :hybrid_handoff,
-        controller: controller_name,
+        controller: self,
         next_steps: [:link_sent, :document_capture],
         preconditions: ->(idv_session:, user:) { idv_session.idv_consent_given },
         undo_step: ->(idv_session:, user:) do

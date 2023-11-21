@@ -150,10 +150,6 @@ module Idv
       user_session['idv/in_person'][:pii_from_user]
     end
 
-    def pii_from_user=(value)
-      user_session['idv/in_person'][:pii_from_user] = value
-    end
-
     def has_pii_from_user_in_flow_session
       user_session.dig('idv/in_person', :pii_from_user)
     end
@@ -186,7 +182,7 @@ module Idv
 
     def restore_pii_from_user
       if applicant
-        pii_from_user = applicant
+        user_session['idv/in_person'][:pii_from_user] = applicant
         session[:ssn] = pii_from_user.delete(:ssn)
         session[:applicant] = nil
       end
@@ -194,6 +190,14 @@ module Idv
 
     def document_capture_complete?
       pii_from_doc || has_pii_from_user_in_flow_session || verify_info_step_complete?
+    end
+
+    def remote_document_capture_complete?
+      pii_from_doc || verify_info_step_complete?
+    end
+
+    def ipp_document_capture_complete?
+      has_pii_from_user_in_flow_session || verify_info_step_complete?
     end
 
     def ssn_step_complete?

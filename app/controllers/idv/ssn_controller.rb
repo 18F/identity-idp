@@ -61,9 +61,9 @@ module Idv
     def self.step_info
       Idv::StepInfo.new(
         key: :ssn,
-        controller: controller_name,
+        controller: self,
         next_steps: [:verify_info],
-        preconditions: ->(idv_session:, user:) { idv_session.document_capture_complete? },
+        preconditions: ->(idv_session:, user:) { idv_session.remote_document_capture_complete? },
         undo_step: ->(idv_session:, user:) do
           idv_session.ssn = nil
           idv_session.threatmetrix_session_id = nil

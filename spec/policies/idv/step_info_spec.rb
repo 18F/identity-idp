@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe 'Idv::StepInfo' do
-  let(:controller) { ApplicationController.controller_name }
+  let(:controller) { ApplicationController.class }
   let(:next_steps) { [] }
   let(:preconditions) { ->(idv_session:, user:) { true } }
   let(:undo_step) { ->(idv_session:, user:) { true } }

@@ -5,9 +5,11 @@ RSpec.describe 'Idv::FlowPolicy' do
 
   let(:user) { create(:user) }
 
+  let(:user_session) { { 'idv/in_person' => {} } }
+
   let(:idv_session) do
     Idv::Session.new(
-      user_session: {},
+      user_session: user_session,
       current_user: user,
       service_provider: nil,
     )
@@ -200,6 +202,22 @@ RSpec.describe 'Idv::FlowPolicy' do
       end
     end
 
+    context 'preconditions for in_person ssn are present' do
+      before do
+        idv_session.welcome_visited = true
+        idv_session.idv_consent_given = true
+        idv_session.flow_path = 'standard'
+        idv_session.send(:user_session)['idv/in_person'][:pii_from_user] = { pii: 'value' }
+      end
+
+      it 'returns ipp_ssn' do
+        expect(subject.info_for_latest_step.key).to eq(:ipp_ssn)
+        expect(subject.controller_allowed?(controller: Idv::InPerson::SsnController)).to be
+        expect(subject.controller_allowed?(controller: Idv::InPerson::VerifyInfoController)).
+          not_to be
+      end
+    end
+
     context 'preconditions for verify_info are present' do
       it 'returns verify_info' do
         idv_session.welcome_visited = true
@@ -210,6 +228,20 @@ RSpec.describe 'Idv::FlowPolicy' do
 
         expect(subject.info_for_latest_step.key).to eq(:verify_info)
         expect(subject.controller_allowed?(controller: Idv::VerifyInfoController)).to be
+        expect(subject.controller_allowed?(controller: Idv::PhoneController)).not_to be
+      end
+    end
+
+    context 'preconditions for in_person verify_info are present' do
+      it 'returns ipp_verify_info' do
+        idv_session.welcome_visited = true
+        idv_session.idv_consent_given = true
+        idv_session.flow_path = 'standard'
+        idv_session.send(:user_session)['idv/in_person'][:pii_from_user] = { pii: 'value' }
+        idv_session.ssn = '666666666'
+
+        expect(subject.info_for_latest_step.key).to eq(:ipp_verify_info)
+        expect(subject.controller_allowed?(controller: Idv::InPerson::VerifyInfoController)).to be
         expect(subject.controller_allowed?(controller: Idv::PhoneController)).not_to be
       end
     end

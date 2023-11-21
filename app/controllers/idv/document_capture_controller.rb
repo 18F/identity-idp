@@ -58,8 +58,8 @@ module Idv
     def self.step_info
       Idv::StepInfo.new(
         key: :document_capture,
-        controller: controller_name,
-        next_steps: [:ssn], # :ipp_state_id
+        controller: self,
+        next_steps: [:ssn, :ipp_ssn], # :ipp_state_id
         preconditions: ->(idv_session:, user:) { idv_session.flow_path == 'standard' },
         undo_step: ->(idv_session:, user:) do
           idv_session.pii_from_doc = nil

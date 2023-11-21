@@ -35,7 +35,7 @@ module Idv
     def self.step_info
       Idv::StepInfo.new(
         key: :phone_question,
-        controller: controller_name,
+        controller: self,
         next_steps: [:hybrid_handoff, :document_capture],
         preconditions: ->(idv_session:, user:) do
           AbTests::IDV_PHONE_QUESTION.bucket(user.uuid) == :show_phone_question &&
