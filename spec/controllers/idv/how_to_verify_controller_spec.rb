@@ -30,6 +30,7 @@ RSpec.describe Idv::HowToVerifyController do
     it 'renders the show template' do
       get :show
 
+      expect(subject.idv_session.skip_doc_auth).to be_nil
       expect(response).to render_template :show
     end
   end
@@ -50,9 +51,10 @@ RSpec.describe Idv::HowToVerifyController do
     end
 
     context 'remote' do
-      it 'redirects to hybrid handoff' do
+      it 'sets skip doc auth on idv session to false and redirects to hybrid handoff' do
         put :update, params: params
 
+        expect(subject.idv_session.skip_doc_auth).to be false
         expect(response).to redirect_to(idv_hybrid_handoff_url)
       end
     end
@@ -60,10 +62,20 @@ RSpec.describe Idv::HowToVerifyController do
     context 'ipp' do
       let(:selection) { 'ipp' }
 
-      it 'redirects to document capture' do
+      it 'sets skip doc auth on idv session to true and redirects to document capture' do
         put :update, params: params
 
+        expect(subject.idv_session.skip_doc_auth).to be true
         expect(response).to redirect_to(idv_document_capture_url)
+      end
+    end
+
+    context 'undo/back' do
+      it 'sets skip_doc_auth to nil and does not redirect' do
+        put :update, params: { undo_step: true }
+
+        expect(subject.idv_session.skip_doc_auth).to be_nil
+        expect(response).to redirect_to(idv_how_to_verify_url)
       end
     end
   end
