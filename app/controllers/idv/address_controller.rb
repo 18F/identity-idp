@@ -5,7 +5,6 @@ module Idv
 
     before_action :confirm_not_rate_limited_after_doc_auth
     before_action :confirm_step_allowed
-    before_action :confirm_verify_info_step_needed
 
     def new
       analytics.idv_address_visit
@@ -29,8 +28,9 @@ module Idv
       Idv::StepInfo.new(
         key: :address,
         controller: self,
+        action: :new,
         next_steps: [:verify_info],
-        preconditions: ->(idv_session:, user:) { idv_session.document_capture_complete? },
+        preconditions: ->(idv_session:, user:) { idv_session.remote_document_capture_complete? },
         undo_step: ->(idv_session:, user:) {},
       )
     end
@@ -38,7 +38,7 @@ module Idv
     private
 
     def idv_form
-      Idv::AddressForm.new(idv_session.pii_from_doc)
+      Idv::AddressForm.new(idv_session.pii_from_doc_or_applicant)
     end
 
     def success
