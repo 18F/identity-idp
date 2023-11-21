@@ -121,6 +121,7 @@ module TwoFactorAuthentication
         signature: params[:signature],
         credential_id: params[:credential_id],
         webauthn_error: params[:webauthn_error],
+        screen_lock_error: params[:screen_lock_error],
       )
     end
 
