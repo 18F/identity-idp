@@ -4,5 +4,5 @@
 window.dataLayer = window.dataLayer || [];
 function gtag() { dataLayer.push(arguments); }
 gtag('js', new Date());
-gtag('config', '<%= IdentityConfig.store.dap_measurement_id %>');
+gtag('config', '<%= j(IdentityConfig.store.dap_measurement_id) %>');
 <% end %>
