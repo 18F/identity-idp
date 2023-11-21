@@ -36,7 +36,7 @@ module Idv
     def self.step_info
       Idv::StepInfo.new(
         key: :welcome,
-        controller: controller_name,
+        controller: self,
         next_steps: [:agreement],
         preconditions: ->(idv_session:, user:) { true },
         undo_step: ->(idv_session:, user:) do

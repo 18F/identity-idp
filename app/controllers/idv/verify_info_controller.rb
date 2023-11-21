@@ -40,10 +40,10 @@ module Idv
     def self.step_info
       Idv::StepInfo.new(
         key: :verify_info,
-        controller: controller_name,
+        controller: self,
         next_steps: [:phone],
         preconditions: ->(idv_session:, user:) do
-          idv_session.ssn_step_complete? && idv_session.document_capture_complete?
+          idv_session.ssn_step_complete? && idv_session.remote_document_capture_complete?
         end,
         undo_step: ->(idv_session:, user:) do
           idv_session.resolution_successful = nil

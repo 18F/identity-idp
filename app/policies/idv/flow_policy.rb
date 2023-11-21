@@ -9,7 +9,7 @@ module Idv
 
     def controller_allowed?(controller:)
       controller_name = controller < ApplicationController ?
-                          controller.controller_name : controller
+                          StepInfo.full_controller_name(controller) : controller
       key = controller_to_key(controller: controller_name)
       step_allowed?(key: key)
     end
@@ -20,7 +20,7 @@ module Idv
 
     def undo_future_steps_from_controller!(controller:)
       controller_name = controller < ApplicationController ?
-                        controller.controller_name : controller
+                          StepInfo.full_controller_name(controller) : controller
       key = controller_to_key(controller: controller_name)
       undo_future_steps!(key: key)
     end
@@ -43,7 +43,7 @@ module Idv
       {
         root: Idv::StepInfo.new(
           key: :root,
-          controller: AccountsController.controller_name,
+          controller: AccountsController,
           next_steps: [:welcome],
           preconditions: ->(idv_session:, user:) { true },
           undo_step: ->(idv_session:, user:) { true },
@@ -56,7 +56,9 @@ module Idv
         link_sent: Idv::LinkSentController.step_info,
         document_capture: Idv::DocumentCaptureController.step_info,
         ssn: Idv::SsnController.step_info,
+        ipp_ssn: Idv::InPerson::SsnController.step_info,
         verify_info: Idv::VerifyInfoController.step_info,
+        ipp_verify_info: Idv::InPerson::VerifyInfoController.step_info,
         address: Idv::AddressController.step_info,
         phone: Idv::PhoneController.step_info,
         otp_verification: Idv::OtpVerificationController.step_info,

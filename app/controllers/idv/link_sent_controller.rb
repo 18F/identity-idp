@@ -43,7 +43,7 @@ module Idv
     def self.step_info
       Idv::StepInfo.new(
         key: :link_sent,
-        controller: controller_name,
+        controller: self,
         next_steps: [:ssn],
         preconditions: ->(idv_session:, user:) { idv_session.flow_path == 'hybrid' },
         undo_step: ->(idv_session:, user:) do
