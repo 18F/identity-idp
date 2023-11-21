@@ -494,8 +494,6 @@ function AcuantCapture(
   }
 
   function onSelfieCaptureSuccess({ image }: { image: string }) {
-    // TODO analytics
-    // TODO are there possible errors here?
     onChangeAndResetError(image);
     onResetFailedCaptureAttempts();
     setIsCapturingEnvironment(false);
