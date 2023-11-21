@@ -18,11 +18,11 @@ module IdvStepConcern
 
   def confirm_letter_recently_enqueued
     # idv session should be clear when user returns to enter code
-    redirect_to idv_letter_enqueued_url if letter_recently_enqueued?
+    return redirect_to idv_letter_enqueued_url if letter_recently_enqueued?
   end
 
   def confirm_no_pending_gpo_profile
-    redirect_to idv_verify_by_mail_enter_code_url if current_user&.gpo_verification_pending_profile?
+    redirect_to idv_verify_by_mail_enter_code_url if letter_not_recently_enqueued?
   end
 
   def confirm_no_pending_in_person_enrollment
@@ -129,6 +129,11 @@ module IdvStepConcern
   def letter_recently_enqueued?
     current_user&.gpo_verification_pending_profile? &&
       idv_session.address_verification_mechanism == 'gpo'
+  end
+
+  def letter_not_recently_enqueued?
+    current_user&.gpo_verification_pending_profile? &&
+      !idv_session.address_verification_mechanism
   end
 
   def flow_policy

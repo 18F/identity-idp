@@ -76,6 +76,7 @@ RSpec.describe 'Identity verification', :js do
 
       complete_enter_password_step(user)
 
+      try_to_go_back_from_come_back_later
       validate_come_back_later_page
       complete_come_back_later
       validate_return_to_sp
@@ -393,6 +394,13 @@ RSpec.describe 'Identity verification', :js do
     expect(page).to have_current_path(idv_verify_info_path)
     visit(idv_welcome_path)
     expect(page).to have_current_path(idv_verify_info_path)
+  end
+
+  def try_to_go_back_from_come_back_later
+    visit(idv_enter_password_path)
+    expect(page).to have_current_path(idv_letter_enqueued_path)
+    visit(idv_welcome_path)
+    expect(page).to have_current_path(idv_letter_enqueued_path)
   end
 
   def same_phone?(phone1, phone2)
