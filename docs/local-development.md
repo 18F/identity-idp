@@ -26,7 +26,7 @@ If not using macOS:
     - [PostGIS](https://postgis.net/documentation/getting_started/#installing-postgis)
         - Note: if you run into errors installing `postgis` or creating the database, check [the troubleshooting docs](./troubleshooting.md#errors-related-to-the-databse).
     - [Redis 7+](http://redis.io/)
-    - [Node.js v18](https://nodejs.org)
+    - [Node.js v20](https://nodejs.org)
     - [Yarn](https://yarnpkg.com/en/)
     - [chromedriver](https://formulae.brew.sh/cask/chromedriver)
 
