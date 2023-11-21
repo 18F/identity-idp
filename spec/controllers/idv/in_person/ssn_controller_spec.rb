@@ -26,6 +26,12 @@ RSpec.describe Idv::InPerson::SsnController do
     subject.idv_session.flow_path = 'standard'
   end
 
+  describe '#step_info' do
+    it 'returns a valid StepInfo object' do
+      expect(Idv::InPerson::SsnController.step_info).to be_valid
+    end
+  end
+
   describe 'before_actions' do
     context('#confirm_in_person_address_step_complete') do
       context 'residential address controller flag not enabled' do
