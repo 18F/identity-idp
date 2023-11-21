@@ -68,6 +68,61 @@ RSpec.describe 'Idv::FlowPolicy' do
         expect(idv_session.address_edited).to be_nil
       end
     end
+
+    context 'user is on phone step' do
+      before do
+        idv_session.welcome_visited = true
+        idv_session.document_capture_session_uuid = SecureRandom.uuid
+
+        idv_session.idv_consent_given = true
+        idv_session.skip_hybrid_handoff = true
+
+        idv_session.flow_path = 'standard'
+        idv_session.phone_for_mobile_flow = '201-555-1212'
+
+        idv_session.pii_from_doc = nil
+        idv_session.had_barcode_read_failure = true
+        idv_session.had_barcode_attention_error = true
+
+        idv_session.ssn = nil
+        idv_session.threatmetrix_session_id = SecureRandom.uuid
+
+        idv_session.address_edited = true
+
+        idv_session.verify_info_step_document_capture_session_uuid = SecureRandom.uuid
+        idv_session.threatmetrix_review_status = 'pass'
+        idv_session.resolution_successful = true
+        idv_session.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.dup
+      end
+
+      it 'does not clear earlier steps when user goes back and submits ssn' do
+        expect do
+          subject.undo_future_steps_from_controller!(controller: Idv::SsnController)
+        end.not_to change {
+          idv_session.welcome_visited
+          idv_session.document_capture_session_uuid
+          idv_session.idv_consent_given
+          idv_session.skip_hybrid_handoff
+
+          idv_session.flow_path
+          idv_session.phone_for_mobile_flow
+
+          idv_session.had_barcode_read_failure
+          idv_session.had_barcode_attention_error
+
+          idv_session.threatmetrix_session_id
+        }
+      end
+
+      it 'restores pii_from_doc and clear future steps when user resubmits ssn' do
+        subject.undo_future_steps_from_controller!(controller: Idv::SsnController)
+
+        expect(idv_session.pii_from_doc).to eq(Idp::Constants::MOCK_IDV_APPLICANT)
+        expect(idv_session.ssn).to eq(Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn])
+
+        expect(idv_session.address_edited).to be_nil
+      end
+    end
   end
 
   context 'each step in the flow' do

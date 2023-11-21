@@ -42,10 +42,6 @@ module IdvStepConcern
     redirect_to idv_mail_only_warning_url
   end
 
-  def pii_from_user
-    flow_session['pii_from_user']
-  end
-
   def flow_path
     idv_session.flow_path
   end
@@ -132,5 +128,9 @@ module IdvStepConcern
 
   def clear_future_steps!
     flow_policy.undo_future_steps_from_controller!(controller: self.class)
+  end
+
+  def clear_current_step!
+    self.class.step_info.undo_step.call(idv_session: idv_session, user: current_user)
   end
 end
