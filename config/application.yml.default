@@ -59,6 +59,7 @@ broken_personal_key_window_start: '2021-07-29T00:00:00Z'
 broken_personal_key_window_finish: '2021-09-22T00:00:00Z'
 component_previews_enabled: false
 country_phone_number_overrides: '{}'
+dap_measurement_id:
 database_pool_idp: 5
 database_socket: ''
 database_sslmode: 'verify-full'
@@ -220,7 +221,6 @@ otps_per_ip_track_only_mode: true
 outbound_connection_check_retry_count: 2
 outbound_connection_check_timeout: 5
 outbound_connection_check_url: 'https://checkip.amazonaws.com'
-participate_in_dap: false
 password_max_attempts: 3
 personal_key_retired: true
 phone_carrier_registration_blocklist: ''
@@ -471,7 +471,6 @@ production:
   newrelic_license_key: ''
   nonessential_email_banlist: '[]'
   otp_delivery_blocklist_findtime: 5
-  participate_in_dap: true
   password_pepper:
   phone_recaptcha_mock_validator: false
   piv_cac_verify_token_secret:

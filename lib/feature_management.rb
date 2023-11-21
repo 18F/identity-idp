@@ -121,6 +121,10 @@ class FeatureManagement
       IdentityConfig.store.recaptcha_enterprise_project_id.present?
   end
 
+  def self.participate_in_dap?
+    IdentityConfig.store.dap_measurement_id.present?
+  end
+
   # Manual allowlist for VOIPs, should only include known VOIPs that we use for smoke tests
   # @return [Set<String>] set of phone numbers normalized to e164
   def self.voip_allowed_phones

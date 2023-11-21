@@ -7,7 +7,7 @@ RSpec.feature 'Password Recovery' do
 
   context 'user enters valid email in forgot password form', email: true do
     it 'redirects to forgot_password path and sends an email to the user' do
-      allow(IdentityConfig.store).to receive(:participate_in_dap).and_return(true)
+      allow(FeatureManagement).to receive(:participate_in_dap?).and_return(true)
       user = create(:user, :fully_registered)
 
       visit root_path

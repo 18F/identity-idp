@@ -339,6 +339,28 @@ RSpec.describe 'FeatureManagement' do
     end
   end
 
+  describe '.participate_in_dap?' do
+    let(:dap_measurement_id) {}
+
+    subject(:participate_in_dap) { FeatureManagement.participate_in_dap? }
+
+    before do
+      allow(IdentityConfig.store).to receive(:dap_measurement_id).and_return(dap_measurement_id)
+    end
+
+    context 'without configured dap measurement id' do
+      let(:dap_measurement_id) { nil }
+
+      it { expect(participate_in_dap).to eq(false) }
+    end
+
+    context 'with configured dap measurement id' do
+      let(:dap_measurement_id) { 'G-XXXXXXXXXX' }
+
+      it { expect(participate_in_dap).to eq(true) }
+    end
+  end
+
   describe '.voip_allowed_phones' do
     before do
       # clear memoization

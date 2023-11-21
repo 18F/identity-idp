@@ -110,7 +110,7 @@
   <%= javascript_packs_tag_once('track-errors') if BrowserSupport.supported?(request.user_agent) %>
   <%= render_javascript_pack_once_tags %>
 
-  <%= render 'shared/dap_analytics' if IdentityConfig.store.participate_in_dap && !session_with_trust? %>
+  <%= render 'shared/dap_analytics' if FeatureManagement.participate_in_dap? && !session_with_trust? %>
 </body>
 
 </html>
