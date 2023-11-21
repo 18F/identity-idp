@@ -321,7 +321,6 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
 
     it 'returns Failed for livness failure' do
       output = described_class.new(failure_response_with_liveness, config).to_h
-      Rails.logger.debug output.to_h.to_json
       expect(output[:success]).to eq(false)
     end
 
