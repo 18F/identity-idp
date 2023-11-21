@@ -274,9 +274,7 @@ RSpec.describe Users::TwoFactorAuthenticationController do
       let(:default_parameters) do
         { **valid_phone_number, otp_delivery_method: 'sms' }
       end
-      let(:success_parameters) do
-        { success: true, **default_parameters, failure_reason: nil }
-      end
+      let(:success_parameters) { { success: true, **default_parameters } }
 
       before do
         @user = create(:user, :with_phone)
@@ -402,9 +400,7 @@ RSpec.describe Users::TwoFactorAuthenticationController do
           stub_attempts_tracker
 
           expect(@irs_attempts_api_tracker).to receive(:mfa_login_phone_otp_sent).
-            with(reauthentication: false, **default_parameters, success: false, failure_reason: {
-              telephony: 'Telephony::OptOutError - Telephony::OptOutError',
-            })
+            with(reauthentication: false, **default_parameters, success: false)
 
           get :send_code, params: otp_delivery_form_sms
         end

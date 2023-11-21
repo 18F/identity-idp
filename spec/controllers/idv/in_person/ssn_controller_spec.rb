@@ -75,7 +75,10 @@ RSpec.describe Idv::InPerson::SsnController do
         irs_reproofing: false,
         step: 'ssn',
         same_address_as_id: true,
-        pii_like_keypaths: [[:same_address_as_id], [:state_id, :state_id_jurisdiction]],
+        pii_like_keypaths: [
+          [:same_address_as_id],
+          [:proofing_results, :context, :stages, :state_id, :state_id_jurisdiction],
+        ],
       }.merge(ab_test_args)
     end
 
@@ -199,7 +202,7 @@ RSpec.describe Idv::InPerson::SsnController do
           errors: {
             ssn: ['Enter a nine-digit Social Security number'],
           },
-          error_details: { ssn: [:invalid] },
+          error_details: { ssn: { invalid: true } },
           same_address_as_id: true,
           pii_like_keypaths: [[:same_address_as_id], [:errors, :ssn], [:error_details, :ssn]],
         }.merge(ab_test_args)

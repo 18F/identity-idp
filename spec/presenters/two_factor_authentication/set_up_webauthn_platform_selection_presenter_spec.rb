@@ -19,7 +19,7 @@ RSpec.describe TwoFactorAuthentication::SetUpWebauthnPlatformSelectionPresenter 
 
   describe '#type' do
     it 'returns webauthn_platform' do
-      expect(presenter_without_mfa.type).to eq 'webauthn_platform'
+      expect(presenter_without_mfa.type).to eq :webauthn_platform
     end
   end
 

@@ -198,7 +198,7 @@ class ApplicationController < ActionController::Base
     if pii_unlocked
       cacher = Pii::Cacher.new(current_user, user_session)
       profile = current_user.active_profile
-      user_session[:personal_key] = profile.encrypt_recovery_pii(cacher.fetch)
+      user_session[:personal_key] = profile.encrypt_recovery_pii(cacher.fetch(profile.id))
       profile.save!
 
       analytics.broken_personal_key_regenerated

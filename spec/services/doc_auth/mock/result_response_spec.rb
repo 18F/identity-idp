@@ -514,8 +514,53 @@ RSpec.describe DocAuth::Mock::ResultResponse do
     end
     it 'returns doc type as not supported' do
       expect(response.doc_type_supported?).to eq(false)
+      expect(response.errors).to eq(
+        general: [DocAuth::Errors::DOC_TYPE_CHECK],
+        front: [DocAuth::Errors::CARD_TYPE],
+        back: [DocAuth::Errors::CARD_TYPE],
+        hints: true,
+      )
     end
   end
+
+  context 'with a passed yaml file containing unsupported doc type and bad image metrics' do
+    let(:input) do
+      <<~YAML
+        doc_auth_result: Passed
+        classification_info:
+          Front:
+            ClassName: Identification Card
+            CountryCode: USA
+            IssuerType: Country
+          Back:
+            ClassName: Identification Card
+            CountryCode: USA
+            IssuerType: StateProvince
+        image_metrics:
+          front:
+            HorizontalResolution: 50
+            VerticalResolution: 300
+            SharpnessMetric: 50
+            GlareMetric: 50
+          back:
+            HorizontalResolution: 300
+            VerticalResolution: 300,
+            SharpnessMetric: 50,
+            GlareMetric: 50   
+      YAML
+    end
+    it 'returns doc type as not supported and generate errors for doc type' do
+      expect(response.doc_type_supported?).to eq(false)
+      expect(response.errors).to eq(
+        general: [DocAuth::Errors::DOC_TYPE_CHECK],
+        front: [DocAuth::Errors::CARD_TYPE],
+        hints: true,
+      )
+      expect(response.exception).to be_nil
+      expect(response.success?).to eq(false)
+    end
+  end
+
   context 'with a yaml file that does not include classification info' do
     let(:input) do
       <<~YAML

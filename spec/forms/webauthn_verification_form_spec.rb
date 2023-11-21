@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe WebauthnVerificationForm do
+  include Rails.application.routes.url_helpers
   include WebAuthnHelper
 
   let(:user) { create(:user) }
@@ -22,6 +23,8 @@ RSpec.describe WebauthnVerificationForm do
   subject(:form) do
     WebauthnVerificationForm.new(
       user: user,
+      platform_authenticator:,
+      url_options: {},
       challenge: challenge,
       protocol: protocol,
       authenticator_data: authenticator_data,
@@ -59,22 +62,21 @@ RSpec.describe WebauthnVerificationForm do
           )
         end
       end
-    end
 
-    context 'when the input is invalid' do
-      context 'when user is missing' do
-        let(:user) { nil }
+      context 'with client-side webauthn error as blank string' do
+        let(:webauthn_error) { '' }
 
-        it 'returns unsuccessful result' do
+        it 'returns successful result excluding frontend_error' do
           expect(result.to_h).to eq(
-            success: false,
-            error_details: { user: [:blank], webauthn_configuration: [:blank] },
+            success: true,
             multi_factor_auth_method: 'webauthn',
-            webauthn_configuration_id: nil,
+            webauthn_configuration_id: webauthn_configuration.id,
           )
         end
       end
+    end
 
+    context 'when the input is invalid' do
       context 'when challenge is missing' do
         let(:challenge) { nil }
 
@@ -82,8 +84,8 @@ RSpec.describe WebauthnVerificationForm do
           expect(result.to_h).to eq(
             success: false,
             error_details: {
-              challenge: [:blank],
-              authenticator_data: ['invalid_authenticator_data'],
+              challenge: { blank: true },
+              authenticator_data: { invalid_authenticator_data: true },
             },
             multi_factor_auth_method: 'webauthn',
             webauthn_configuration_id: webauthn_configuration.id,
@@ -98,7 +100,7 @@ RSpec.describe WebauthnVerificationForm do
           expect(result.to_h).to eq(
             success: false,
             error_details: {
-              authenticator_data: [:blank, 'invalid_authenticator_data'],
+              authenticator_data: { blank: true, invalid_authenticator_data: true },
             },
             multi_factor_auth_method: 'webauthn',
             webauthn_configuration_id: webauthn_configuration.id,
@@ -113,8 +115,8 @@ RSpec.describe WebauthnVerificationForm do
           expect(result.to_h).to eq(
             success: false,
             error_details: {
-              client_data_json: [:blank],
-              authenticator_data: ['invalid_authenticator_data'],
+              client_data_json: { blank: true },
+              authenticator_data: { invalid_authenticator_data: true },
             },
             multi_factor_auth_method: 'webauthn',
             webauthn_configuration_id: webauthn_configuration.id,
@@ -129,8 +131,8 @@ RSpec.describe WebauthnVerificationForm do
           expect(result.to_h).to eq(
             success: false,
             error_details: {
-              signature: [:blank],
-              authenticator_data: ['invalid_authenticator_data'],
+              signature: { blank: true },
+              authenticator_data: { invalid_authenticator_data: true },
             },
             multi_factor_auth_method: 'webauthn',
             webauthn_configuration_id: webauthn_configuration.id,
@@ -144,22 +146,22 @@ RSpec.describe WebauthnVerificationForm do
         it 'returns unsuccessful result' do
           expect(result.to_h).to eq(
             success: false,
-            error_details: { webauthn_configuration: [:blank] },
+            error_details: { webauthn_configuration: { blank: true } },
             multi_factor_auth_method: 'webauthn',
-            webauthn_configuration_id: nil,
           )
         end
       end
 
       context 'when a client-side webauthn error is present' do
-        let(:webauthn_error) { 'Unexpected error!' }
+        let(:webauthn_error) { 'NotAllowedError' }
 
         it 'returns unsuccessful result including client-side webauthn error text' do
           expect(result.to_h).to eq(
             success: false,
-            error_details: { webauthn_error: [webauthn_error] },
+            error_details: { webauthn_error: { present: true } },
             multi_factor_auth_method: 'webauthn',
             webauthn_configuration_id: webauthn_configuration.id,
+            frontend_error: webauthn_error,
           )
         end
       end
@@ -172,7 +174,7 @@ RSpec.describe WebauthnVerificationForm do
         it 'returns unsuccessful result' do
           expect(result.to_h).to eq(
             success: false,
-            error_details: { authenticator_data: ['invalid_authenticator_data'] },
+            error_details: { authenticator_data: { invalid_authenticator_data: true } },
             multi_factor_auth_method: 'webauthn',
             webauthn_configuration_id: webauthn_configuration.id,
           )
@@ -188,7 +190,7 @@ RSpec.describe WebauthnVerificationForm do
         it 'returns unsucessful result' do
           expect(result.to_h).to eq(
             success: false,
-            error_details: { authenticator_data: ['invalid_authenticator_data'] },
+            error_details: { authenticator_data: { invalid_authenticator_data: true } },
             multi_factor_auth_method: 'webauthn',
             webauthn_configuration_id: webauthn_configuration.id,
           )

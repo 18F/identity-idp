@@ -13,15 +13,15 @@ module TwoFactorAuthentication
     end
 
     def type
-      method.to_s
+      raise NotImplementedError
     end
 
     def label
-      raise "Unsupported setup method: #{type}"
+      raise NotImplementedError
     end
 
     def info
-      raise "Unsupported setup method: #{type}"
+      raise NotImplementedError
     end
 
     def mfa_added_label

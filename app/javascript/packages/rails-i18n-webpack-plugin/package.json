@@ -5,7 +5,7 @@
   "main": "rails-i18n-webpack-plugin.js",
   "dependencies": {
     "webpack-sources": "^2.3.0",
-    "yaml": "^2.3.1"
+    "yaml": "^2.3.4"
   },
   "peerDependencies": {
     "sinon": "*",
