@@ -24,7 +24,7 @@ function InPersonPrepareStep({ toPreviousStep }) {
   } = useContext(InPersonContext);
 
   function goBack() {
-    if (skipDocAuth === 'true' && howToVerifyURL) {
+    if (skipDocAuth && howToVerifyURL) {
       forceRedirect(howToVerifyURL);
     } else {
       toPreviousStep();

@@ -130,7 +130,7 @@ const App = composeComponents(
         inPersonOutageExpectedUpdateDate,
         inPersonFullAddressEntryEnabled: inPersonFullAddressEntryEnabled === 'true',
         usStatesTerritories: parsedUsStatesTerritories,
-        skipDocAuth,
+        skipDocAuth: skipDocAuth === 'true',
         howToVerifyURL: howToVerifyUrl,
       },
     },

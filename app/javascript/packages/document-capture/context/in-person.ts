@@ -41,7 +41,7 @@ export interface InPersonContextProps {
    * When true users are directed to the beginning of the IPP flow if they choose
    * Opt-in IPP if in_person_proofing_opt_in_enabled is enabled
    */
-  skipDocAuth?: string;
+  skipDocAuth?: boolean;
 
   /**
    * URL for Opt-in IPP, used when in_person_proofing_opt_in_enabled is enabled
