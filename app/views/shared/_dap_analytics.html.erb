@@ -1,5 +1,5 @@
 <!-- <%= t('notices.dap_participation') %> -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=<%= IdentityConfig.store.dap_measurement_id %>"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=<%= CGI.escapeURIComponent(IdentityConfig.store.dap_measurement_id) %>"></script>
 <%= javascript_tag(nonce: true) do %>
 window.dataLayer = window.dataLayer || [];
 function gtag() { dataLayer.push(arguments); }
