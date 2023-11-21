@@ -135,12 +135,13 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
       expect(Idv::Agent).to receive(:new).
         with(hash_including(uuid_prefix: service_provider.app_id)).and_call_original
       # our test data already has the expected value by default
-      flow_session[:pii_from_user].delete(:state_id_type)
-
+      subject.user_session['idv/in_person'][:pii_from_user].delete(:state_id_type)
       put :update
 
-      expect(flow_session[:pii_from_user][:state_id_type]).to eq 'drivers_license'
-      expect(flow_session[:pii_from_user][:uuid_prefix]).to eq service_provider.app_id
+      expect(subject.user_session['idv/in_person'][:pii_from_user][:state_id_type]).
+        to eq 'drivers_license'
+      expect(subject.user_session['idv/in_person'][:pii_from_user][:uuid_prefix]).
+        to eq service_provider.app_id
     end
 
     context 'a user does not have an establishing in person enrollment associated with them' do
