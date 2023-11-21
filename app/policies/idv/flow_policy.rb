@@ -71,11 +71,11 @@ module Idv
     def undo_steps_from!(key:)
       return if key == :success
 
-      steps[key].undo_step.call(idv_session: idv_session, user: user)
-
       steps[key].next_steps.each do |next_step|
         undo_steps_from!(key: next_step)
       end
+
+      steps[key].undo_step.call(idv_session: idv_session, user: user)
     end
 
     def undo_future_steps!(key:)
