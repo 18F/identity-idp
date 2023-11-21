@@ -2,7 +2,7 @@ module DocAuth
   module LexisNexis
     module Requests
       class TrueIdRequest < DocAuth::LexisNexis::Request
-        attr_reader :front_image, :back_image, :selfie_image, :liveness_checking_enabled
+        attr_reader :front_image, :back_image, :selfie_image, :liveness_checking_required
 
         def initialize(
           config:,
@@ -12,14 +12,15 @@ module DocAuth
           back_image:,
           selfie_image: nil,
           image_source: nil,
-          liveness_checking_enabled: false
+          liveness_checking_required: false
         )
           super(config: config, user_uuid: user_uuid, uuid_prefix: uuid_prefix)
           @front_image = front_image
           @back_image = back_image
           @selfie_image = selfie_image
           @image_source = image_source
-          @liveness_checking_enabled = liveness_checking_enabled
+          # when set to required, be sure to pass in selfie_image
+          @liveness_checking_required = liveness_checking_required
         end
 
         private
@@ -40,7 +41,7 @@ module DocAuth
         def handle_http_response(http_response)
           LexisNexis::Responses::TrueIdResponse.new(
             http_response,
-            liveness_checking_enabled,
+            liveness_checking_required,
             config,
           )
         end
@@ -90,7 +91,7 @@ module DocAuth
         end
 
         def include_liveness?
-          liveness_checking_enabled && !selfie_image.nil?
+          liveness_checking_required
         end
       end
     end

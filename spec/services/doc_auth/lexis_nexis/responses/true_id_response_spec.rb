@@ -319,7 +319,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         to match(a_hash_including(visible_pattern: { no_side: 'Failed' }))
     end
 
-    it 'returns Failed for livness failure' do
+    it 'returns Failed for liveness failure' do
       output = described_class.new(failure_response_with_liveness, config).to_h
       expect(output[:success]).to eq(false)
     end

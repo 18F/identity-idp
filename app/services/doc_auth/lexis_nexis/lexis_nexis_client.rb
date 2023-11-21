@@ -29,7 +29,7 @@ module DocAuth
           back_image: back_image,
           selfie_image: selfie_image,
           image_source: image_source,
-          liveness_checking_enabled: liveness_checking_enabled,
+          liveness_checking_required: liveness_checking_enabled,
         ).fetch
       end
     end

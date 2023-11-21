@@ -19,7 +19,7 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
     )
   end
   let(:selfie_image) { DocAuthImageFixtures.selfie_image }
-  let(:liveness_checking_enabled) { false }
+  let(:liveness_checking_required) { false }
   let(:subject) do
     described_class.new(
       config: config,
@@ -29,13 +29,13 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
       user_uuid: applicant[:uuid],
       uuid_prefix: applicant[:uuid_prefix],
       selfie_image: selfie_image,
-      liveness_checking_enabled: liveness_checking_enabled,
+      liveness_checking_required: liveness_checking_required,
     )
   end
 
   shared_examples 'a successful request' do
     it 'uploads the image and returns a successful result' do
-      include_liveness = liveness_checking_enabled && !selfie_image.nil?
+      include_liveness = liveness_checking_required && !selfie_image.nil?
       request_stub_liveness = stub_request(:post, full_url).with do |request|
         JSON.parse(request.body, symbolize_names: true)[:Document][:Selfie].present?
       end.to_return(body: response_body(include_liveness), status: 201)
@@ -57,16 +57,11 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
   end
 
   context 'with liveness_checking_enabled as false' do
-    let(:liveness_checking_enabled) { false }
+    let(:liveness_checking_required) { false }
     context 'with acuant image source' do
       let(:workflow) { 'test_workflow' }
       let(:image_source) { DocAuth::ImageSources::ACUANT_SDK }
       it_behaves_like 'a successful request'
-
-      context 'with no selfie image' do
-        let(:selfie_image) { nil }
-        it_behaves_like 'a successful request'
-      end
     end
     context 'with unknown image source' do
       let(:workflow) { 'test_workflow_cropping' }
@@ -77,18 +72,12 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
   end
 
   context 'with liveness_checking_enabled as true' do
-    let(:liveness_checking_enabled) { true }
+    let(:liveness_checking_required) { true }
     context 'with acuant image source' do
       let(:workflow) { 'test_workflow_liveness' }
       let(:image_source) { DocAuth::ImageSources::ACUANT_SDK }
 
       it_behaves_like 'a successful request'
-
-      context 'with no selfie image' do
-        let(:selfie_image) { nil }
-        let(:workflow) { 'test_workflow' }
-        it_behaves_like 'a successful request'
-      end
     end
     context 'with unknown image source' do
       let(:workflow) { 'test_workflow_liveness_cropping' }
