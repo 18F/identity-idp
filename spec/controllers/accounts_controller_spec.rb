@@ -27,7 +27,6 @@ RSpec.describe AccountsController do
       let(:pii_cacher) { Pii::Cacher.new(user, {}) }
       let(:active_profile) { create(:profile, :active) }
       let(:pending_profile) { create(:profile, :verify_by_mail_pending) }
-      let(:profiles) { [] }
       let(:user) { create(:user, :fully_registered, profiles: profiles) }
 
       before do
@@ -39,6 +38,8 @@ RSpec.describe AccountsController do
       end
 
       context 'when the user has no profiles' do
+        let(:profiles) { [] }
+
         it 'uses no PII' do
           expect(pii_cacher).to have_received(:fetch).with(nil)
         end
