@@ -2,7 +2,7 @@ import sinon from 'sinon';
 import quibble from 'quibble';
 import { waitFor } from '@testing-library/dom';
 import type { IsWebauthnPasskeySupported } from './is-webauthn-passkey-supported';
-import type { isWebauthnPlatformAvailable } from './is-webauthn-platform-authenticator-available';
+import type { IsWebauthnPlatformAvailable } from './is-webauthn-platform-authenticator-available';
 
 describe('WebauthnInputElement', () => {
   const isWebauthnPasskeySupported = sinon.stub<
@@ -11,8 +11,8 @@ describe('WebauthnInputElement', () => {
   >();
 
   const isWebauthnPlatformAvailable = sinon.stub<
-    Parameters<isWebauthnPlatformAvailable>,
-    ReturnType<isWebauthnPlatformAvailable>
+    Parameters<IsWebauthnPlatformAvailable>,
+    ReturnType<IsWebauthnPlatformAvailable>
   >();
 
   before(async () => {
