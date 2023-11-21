@@ -238,7 +238,7 @@ RSpec.describe WebauthnVerificationForm do
 
             it 'provides error message suggesting other method' do
               expect(result.first_error_message).to eq t(
-                'two_factor_authentication.webauthn_error.screen_lock_other_mfa',
+                'two_factor_authentication.webauthn_error.screen_lock_other_mfa_html',
                 link_html: link_to(
                   t('two_factor_authentication.webauthn_error.use_a_different_method'),
                   login_two_factor_options_path,
@@ -263,7 +263,7 @@ RSpec.describe WebauthnVerificationForm do
 
             it 'provides error message suggesting other method' do
               expect(result.first_error_message).to eq t(
-                'two_factor_authentication.webauthn_error.screen_lock_other_mfa',
+                'two_factor_authentication.webauthn_error.screen_lock_other_mfa_html',
                 link_html: link_to(
                   t('two_factor_authentication.webauthn_error.use_a_different_method'),
                   login_two_factor_options_path,

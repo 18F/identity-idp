@@ -135,8 +135,8 @@ class WebauthnVerificationForm
   def screen_lock_error_message
     if user_has_other_authentication_method?
       t(
-        'two_factor_authentication.webauthn_error.screen_lock_other_mfa',
-        link: link_to(
+        'two_factor_authentication.webauthn_error.screen_lock_other_mfa_html',
+        link_html: link_to(
           t('two_factor_authentication.webauthn_error.use_a_different_method'),
           login_two_factor_options_path,
         ),
@@ -144,7 +144,7 @@ class WebauthnVerificationForm
     else
       t(
         'two_factor_authentication.webauthn_error.screen_lock_no_other_mfa',
-        link: link_to(
+        link_html: link_to(
           t('two_factor_authentication.webauthn_error.use_a_different_method'),
           login_two_factor_options_path,
         ),
