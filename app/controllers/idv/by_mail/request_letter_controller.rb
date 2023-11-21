@@ -47,7 +47,7 @@ module Idv
           key: :request_letter,
           controller: self,
           action: :index,
-          next_steps: [:success],
+          next_steps: [:success], # :enter_password
           preconditions: ->(idv_session:, user:) { idv_session.verify_info_step_complete? },
           undo_step: ->(idv_session:, user:) { idv_session.address_verification_mechanism = nil },
         )
