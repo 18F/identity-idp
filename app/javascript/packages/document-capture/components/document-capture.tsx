@@ -179,8 +179,7 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
             onStepSubmit={trackSubmitEvent}
             autoFocus={!!submissionError}
             titleFormat={`%{step} - ${appName}`}
-            skipDocAuth={skipDocAuth}
-            inPersonFirstStep={skipDocAuth ? steps[0].name : undefined}
+            initialStep={skipDocAuth ? steps[0].name : undefined}
           />
         </>
       )}

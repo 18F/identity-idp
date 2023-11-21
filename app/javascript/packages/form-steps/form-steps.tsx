@@ -169,17 +169,6 @@ interface FormStepsProps {
    * Format string for page title, interpolated with step title as `%{step}` parameter.
    */
   titleFormat?: string;
-
-  /**
-   * If the user got here by opting-in to in-person proofing, skipDocAuth === true
-   */
-  skipDocAuth?: boolean;
-
-  /**
-   * If the user got here by opting-in to in-person proofing, skipDocAuth === true,
-   * then set step name to the first step in the IPP flow (prepare)
-   */
-  inPersonFirstStep?: string;
 }
 
 interface PreviousStepErrorsLookup {
@@ -241,8 +230,6 @@ function FormSteps({
   autoFocus,
   promptOnNavigate = true,
   titleFormat,
-  skipDocAuth,
-  inPersonFirstStep,
 }: FormStepsProps) {
   const [values, setValues] = useState(initialValues);
   const [activeErrors, setActiveErrors] = useState(initialActiveErrors);
@@ -255,14 +242,6 @@ function FormSteps({
   const didSubmitWithErrors = useRef(false);
   const forceRender = useForceRender();
   const ifStillMounted = useIfStillMounted();
-
-  useEffect(() => {
-    // If the user got here by opting-in to in-person proofing, when skipDocAuth === true,
-    // then set step name to the first step IPP. This will set url to /verify/document_capture#prepare
-    if (skipDocAuth) {
-      setStepName(inPersonFirstStep);
-    }
-  }, []);
 
   useEffect(() => {
     if (activeErrors.length && didSubmitWithErrors.current) {
