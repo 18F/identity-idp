@@ -17,8 +17,8 @@ RSpec.describe Idv::InPerson::SsnController do
 
   before do
     allow(subject).to receive(:pii_from_user).and_return(pii_from_user)
-    allow(subject).to receive(:flow_session).and_return(flow_session)
     stub_sign_in(user)
+    subject.user_session['idv/in_person'] = flow_session
     stub_analytics
     stub_attempts_tracker
     allow(@analytics).to receive(:track_event)
@@ -235,6 +235,12 @@ RSpec.describe Idv::InPerson::SsnController do
         expect(response).to have_rendered('idv/shared/ssn')
         expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
         expect(response.body).to include('Enter a nine-digit Social Security number')
+      end
+
+      it 'invalidates future steps' do
+        expect(subject).to receive(:clear_future_steps!)
+
+        put :update, params: params
       end
     end
   end

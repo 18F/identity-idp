@@ -23,7 +23,7 @@ module Idv
 
     def update
       clear_future_steps!
-      clear_current_step!
+      idv_session.restore_pii_from_doc
       success = shared_update
 
       if success

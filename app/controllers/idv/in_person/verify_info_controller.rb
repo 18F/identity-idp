@@ -22,6 +22,8 @@ module Idv
       end
 
       def update
+        clear_future_steps!
+        idv_session.restore_pii_from_user
         success = shared_update
 
         if success

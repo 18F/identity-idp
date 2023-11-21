@@ -6,7 +6,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
     { pii_from_user: pii_from_user }
   end
 
-  let(:user) { build(:user, :with_phone, with: { phone: '+1 (415) 555-0130' }) }
+  let(:user) { create(:user, :with_phone, with: { phone: '+1 (415) 555-0130' }) }
   let(:service_provider) { create(:service_provider) }
 
   let(:ab_test_args) do
@@ -243,6 +243,12 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
         expect_any_instance_of(Idv::Agent).to_not receive(:proof_resolution)
         expect(response).to redirect_to(idv_session_errors_ssn_failure_url)
       end
+    end
+
+    it 'invalidates future steps' do
+      expect(subject).to receive(:clear_future_steps!)
+
+      put :update
     end
   end
 end
