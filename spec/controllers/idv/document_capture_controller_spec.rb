@@ -113,7 +113,7 @@ RSpec.describe Idv::DocumentCaptureController do
     end
 
     context 'verify info step is complete' do
-      it 'redirects to enter password step' do
+      it 'renders show' do
         subject.idv_session.welcome_visited = true
         subject.idv_session.idv_consent_given = true
         subject.idv_session.flow_path = 'standard'
@@ -123,7 +123,7 @@ RSpec.describe Idv::DocumentCaptureController do
 
         get :show
 
-        expect(response).to redirect_to(idv_enter_password_url)
+        expect(response).to render_template :show
       end
     end
 

@@ -151,9 +151,21 @@ module Idv
     end
 
     def invalidate_in_person_pii_from_user!
-      if user_session.dig('idv/in_person', :pii_from_user)
+      if has_pii_from_user_in_flow_session
         user_session['idv/in_person'][:pii_from_user] = nil
       end
+    end
+
+    def ssn_or_applicant_ssn
+      verify_info_step_complete? ? applicant[:ssn] : ssn
+    end
+
+    def pii_from_doc_or_applicant
+      verify_info_step_complete? ? applicant : pii_from_doc
+    end
+
+    def pii_from_user_or_applicant
+      verify_info_step_complete? ? applicant : user_session['idv/in_person'][:pii_from_user]
     end
 
     def document_capture_complete?

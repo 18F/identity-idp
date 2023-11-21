@@ -9,7 +9,6 @@ module Idv
 
     before_action :confirm_not_rate_limited, except: [:update]
     before_action :confirm_step_allowed
-    before_action :confirm_verify_info_step_needed
     before_action :override_csp_to_allow_acuant
 
     def show

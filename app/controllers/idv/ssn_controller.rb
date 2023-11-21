@@ -8,7 +8,6 @@ module Idv
 
     before_action :confirm_not_rate_limited_after_doc_auth
     before_action :confirm_step_allowed
-    before_action :confirm_verify_info_step_needed
     before_action :override_csp_for_threat_metrix
 
     attr_reader :ssn_presenter
@@ -18,7 +17,7 @@ module Idv
     def show
       @ssn_presenter = Idv::SsnPresenter.new(
         sp_name: decorated_sp_session.sp_name,
-        ssn_form: Idv::SsnFormatForm.new(idv_session.ssn),
+        ssn_form: Idv::SsnFormatForm.new(idv_session.ssn_or_applicant_ssn),
         step_indicator_steps: step_indicator_steps,
       )
 
