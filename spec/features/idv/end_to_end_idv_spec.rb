@@ -76,9 +76,9 @@ RSpec.describe 'Identity verification', :js do
 
       complete_enter_password_step(user)
 
-      try_to_go_back_from_come_back_later
-      validate_come_back_later_page
-      complete_come_back_later
+      try_to_go_back_from_letter_enqueued
+      validate_letter_enqueued_page
+      complete_letter_enqueued
       validate_return_to_sp
 
       visit sign_out_url
@@ -276,7 +276,7 @@ RSpec.describe 'Identity verification', :js do
     expect(GpoConfirmation.count).to eq(0)
   end
 
-  def validate_come_back_later_page
+  def validate_letter_enqueued_page
     expect(page).to have_current_path(idv_letter_enqueued_path)
     expect_in_person_gpo_step_indicator_current_step(t('step_indicator.flows.idv.get_a_letter'))
     expect(page).to have_content(t('idv.titles.come_back_later'))
@@ -396,8 +396,8 @@ RSpec.describe 'Identity verification', :js do
     expect(page).to have_current_path(idv_verify_info_path)
   end
 
-  def try_to_go_back_from_come_back_later
-    visit(idv_enter_password_path)
+  def try_to_go_back_from_letter_enqueued
+    go_back
     expect(page).to have_current_path(idv_letter_enqueued_path)
     visit(idv_welcome_path)
     expect(page).to have_current_path(idv_letter_enqueued_path)
