@@ -11,11 +11,17 @@ module Idv
       before_action :confirm_in_person_session
 
       def show
-        analytics.idv_in_person_ready_to_verify_visit
+        analytics.idv_in_person_ready_to_verify_visit(**extra_analytics_properties)
         @presenter = ReadyToVerifyPresenter.new(enrollment: enrollment)
       end
 
       private
+
+      def extra_analytics_properties
+        {
+          opted_in_to_in_person_proofing: idv_session.opted_in_to_in_person_proofing,
+        }
+      end
 
       def confirm_in_person_session
         redirect_to account_url unless enrollment.present?

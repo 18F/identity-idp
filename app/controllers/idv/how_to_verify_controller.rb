@@ -22,7 +22,7 @@ module Idv
 
       if result.success?
         if how_to_verify_form_params['selection'] == Idv::HowToVerifyForm::REMOTE
-          idv_session.opted_in_to_in_person_proofing = nil
+          idv_session.opted_in_to_in_person_proofing = false
           redirect_to idv_hybrid_handoff_url
         else
           idv_session.opted_in_to_in_person_proofing = true

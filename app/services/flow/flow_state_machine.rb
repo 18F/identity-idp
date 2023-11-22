@@ -179,6 +179,7 @@ module Flow
         step: current_step,
         step_count: current_flow_step_counts[current_step_name],
         analytics_id: @analytics_id,
+        opted_in_to_in_person_proofing: idv_session.opted_in_to_in_person_proofing,
         irs_reproofing: effective_user&.reproof_for_irs?(
           service_provider: current_sp,
         ).present?,

@@ -72,6 +72,7 @@ module Idv
           flow_path: idv_session.flow_path,
           step: 'address',
           analytics_id: 'In Person Proofing',
+          opted_in_to_in_person_proofing: idv_session.opted_in_to_in_person_proofing,
           irs_reproofing: irs_reproofing?,
         }
       end
