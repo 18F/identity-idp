@@ -113,22 +113,6 @@ RSpec.describe GpoExpirationJob do
       )
     end
 
-    context 'when a callback is provided' do
-      it 'calls it for expired profiles' do
-        profile = users[:user_with_one_expired_gpo_profile].reload.gpo_verification_pending_profile
-        gpo_verification_pending_at = profile.gpo_verification_pending_at
-
-        on_profile_expired = spy
-        expect(on_profile_expired).to receive(:call).with(
-          profile: profile,
-          gpo_verification_pending_at: gpo_verification_pending_at,
-        )
-
-        job = described_class.new(analytics: analytics, on_profile_expired: on_profile_expired)
-        job.perform
-      end
-    end
-
     context('when dry_run is specified') do
       it 'does not write changes' do
         job.perform(dry_run: true)
