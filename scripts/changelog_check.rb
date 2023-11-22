@@ -235,6 +235,9 @@ def main(args)
   abort(optparse.help) if options[:source_branch].nil?
 
   git_log = get_git_log(options[:base_branch], options[:source_branch])
+  puts options[:base_branch]
+  puts options[:source_branch]
+  puts git_log
   changelog_entries = generate_changelog(git_log)
   invalid_changelog_entries = generate_invalid_changes(git_log)
 
