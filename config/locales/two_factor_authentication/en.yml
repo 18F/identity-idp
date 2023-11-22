@@ -46,6 +46,9 @@ en:
       authentication method.
     learn_more: Learn more about authentication options
     login_intro: You set these up when you created your account.
+    login_intro_reauthentication: Before you can make changes to your account, we
+      need to make sure it’s really you by using one of your authentication
+      methods.
     login_options:
       auth_app: Authentication app
       auth_app_info: Use your authentication application to get a security code.
@@ -66,6 +69,7 @@ en:
       webauthn_platform_info: Use your face or fingerprint to access your account
         without a one-time code.
     login_options_link_text: Choose another authentication method
+    login_options_reauthentication_title: Reauthentication required
     login_options_title: Select your authentication method
     max_backup_code_login_attempts_reached: For your security, your account is
       temporarily locked because you have entered the backup code incorrectly
@@ -178,7 +182,14 @@ en:
       additional_methods_link: choose another authentication method
       connect_html: We were unable to connect the security key. Please try again or
         %{link_html}.
+      screen_lock_no_other_mfa: We couldn’t authenticate with face or touch unlock.
+        Try signing in on the device where you first set up face or touch
+        unlock.
+      screen_lock_other_mfa_html: We couldn’t authenticate with face or touch unlock.
+        %{link_html}, or try signing in on the device where you first set up
+        face or touch unlock.
       try_again: Face or touch unlock was unsuccessful. Please try again or %{link}.
+      use_a_different_method: Use a different authentication method
     webauthn_header_text: Connect your security key
     webauthn_platform_header_text: Use face or touch unlock
     webauthn_platform_use_key: Use face or touch unlock

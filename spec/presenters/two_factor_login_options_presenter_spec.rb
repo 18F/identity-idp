@@ -26,9 +26,32 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
       t('two_factor_authentication.login_options_title')
   end
 
-  it 'supplies a heading' do
-    expect(presenter.heading).to eq \
-      t('two_factor_authentication.login_options_title')
+  describe '#heading' do
+    subject { presenter.heading }
+
+    context 'default user session context' do
+      it { should eq t('two_factor_authentication.login_options_title') }
+    end
+
+    context 'reauthentication user session context' do
+      let(:reauthentication_context) { true }
+
+      it { should eq t('two_factor_authentication.login_options_reauthentication_title') }
+    end
+  end
+
+  describe '#info' do
+    subject { presenter.info }
+
+    context 'default user session context' do
+      it { should eq t('two_factor_authentication.login_intro') }
+    end
+
+    context 'reauthentication user session context' do
+      let(:reauthentication_context) { true }
+
+      it { should eq t('two_factor_authentication.login_intro_reauthentication') }
+    end
   end
 
   it 'supplies a cancel link when the token is valid' do

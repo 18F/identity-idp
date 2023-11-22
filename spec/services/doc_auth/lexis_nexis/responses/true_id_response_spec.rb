@@ -6,6 +6,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     instance_double(Faraday::Response, status: 200, body: success_response_body)
   end
   let(:failure_body_no_liveness) { LexisNexisFixtures.true_id_response_failure_no_liveness }
+  let(:failure_body_with_liveness) { LexisNexisFixtures.true_id_response_failure_with_liveness }
   let(:failure_body_with_all_failures) do
     LexisNexisFixtures.true_id_response_failure_with_all_failures
   end
@@ -20,6 +21,9 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   # rubocop:disable Layout/LineLength
   let(:failure_response_no_liveness) do
     instance_double(Faraday::Response, status: 200, body: failure_body_no_liveness)
+  end
+  let(:failure_response_with_liveness) do
+    instance_double(Faraday::Response, status: 200, body: failure_body_with_liveness)
   end
   let(:failure_response_tampering) do
     instance_double(Faraday::Response, status: 200, body: failure_body_tampering)
@@ -313,6 +317,11 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       output = described_class.new(failure_response_no_liveness, config).to_h
       expect(output.to_h[:log_alert_results]).
         to match(a_hash_including(visible_pattern: { no_side: 'Failed' }))
+    end
+
+    it 'returns Failed for liveness failure' do
+      output = described_class.new(failure_response_with_liveness, config).to_h
+      expect(output[:success]).to eq(false)
     end
 
     it 'produces expected hash output' do
