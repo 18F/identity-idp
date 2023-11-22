@@ -46,6 +46,9 @@ en:
       authentication method.
     learn_more: Learn more about authentication options
     login_intro: You set these up when you created your account.
+    login_intro_reauthentication: Before you can make changes to your account, we
+      need to make sure it’s really you by using one of your authentication
+      methods.
     login_options:
       auth_app: Authentication app
       auth_app_info: Use your authentication application to get a security code.
@@ -66,6 +69,7 @@ en:
       webauthn_platform_info: Use your face or fingerprint to access your account
         without a one-time code.
     login_options_link_text: Choose another authentication method
+    login_options_reauthentication_title: Reauthentication required
     login_options_title: Select your authentication method
     max_backup_code_login_attempts_reached: For your security, your account is
       temporarily locked because you have entered the backup code incorrectly
