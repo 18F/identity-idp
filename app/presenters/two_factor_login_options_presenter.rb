@@ -28,11 +28,19 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
   end
 
   def heading
-    t('two_factor_authentication.login_options_title')
+    if reauthentication_context?
+      t('two_factor_authentication.login_options_reauthentication_title')
+    else
+      t('two_factor_authentication.login_options_title')
+    end
   end
 
   def info
-    t('two_factor_authentication.login_intro')
+    if reauthentication_context?
+      t('two_factor_authentication.login_intro_reauthentication')
+    else
+      t('two_factor_authentication.login_intro')
+    end
   end
 
   def restricted_options_warning_text
@@ -77,7 +85,7 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
   end
 
   def cancel_link
-    if @reauthentication_context
+    if reauthentication_context?
       account_path
     else
       sign_out_path

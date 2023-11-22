@@ -61,11 +61,8 @@ class OtpVerificationForm
   end
 
   def extra_analytics_attributes
-    multi_factor_auth_method_created_at = phone_configuration&.created_at&.strftime('%s%L')
-
     {
-      multi_factor_auth_method: 'otp_code',
-      multi_factor_auth_method_created_at: multi_factor_auth_method_created_at,
+      multi_factor_auth_method_created_at: phone_configuration&.created_at&.strftime('%s%L'),
     }
   end
 end

@@ -9,6 +9,7 @@ RSpec.describe Idv::HowToVerifyController do
     stub_sign_in(user)
     stub_analytics
     subject.idv_session.welcome_visited = true
+    subject.idv_session.idv_consent_given = true
   end
 
   describe '#step_info' do
@@ -32,6 +33,18 @@ RSpec.describe Idv::HowToVerifyController do
 
       expect(subject.idv_session.skip_doc_auth).to be_nil
       expect(response).to render_template :show
+    end
+
+    context 'agreement step not completed' do
+      before do
+        subject.idv_session.idv_consent_given = nil
+      end
+
+      it 'redirects to agreement path' do
+        get :show
+
+        expect(response).to redirect_to idv_agreement_path
+      end
     end
   end
 
