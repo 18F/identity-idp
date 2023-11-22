@@ -21,10 +21,8 @@ module SamlIdp
     end
 
     def valid_signature?(doc, require_signature = false, options = {})
-      Array(certs).each do |cert|
-        if doc.valid_signature?(fingerprint_cert(cert), options.merge(cert: cert))
-          @matching_cert = cert
-        end
+      @matching_cert = Array(certs).find do |cert|
+        doc.valid_signature?(fingerprint_cert(cert), options.merge(cert: cert))
       end
 
       if require_signature || should_validate_signature?
