@@ -39,7 +39,6 @@ module DocAuth
         end
 
         def handle_http_response(http_response)
-          byebug
           LexisNexis::Responses::TrueIdResponse.new(
             http_response,
             config,
