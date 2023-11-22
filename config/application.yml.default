@@ -384,7 +384,7 @@ development:
   database_worker_jobs_password: ''
   doc_auth_exit_question_section_enabled: true
   doc_auth_not_ready_section_enabled: true
-  doc_auth_selfie_capture: '{"enabled": true}'
+  doc_auth_selfie_capture: '{"enabled": false}'
   doc_auth_vendor: 'mock'
   doc_auth_vendor_randomize: false
   doc_auth_vendor_randomize_percent: 0
