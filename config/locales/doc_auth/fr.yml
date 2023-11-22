@@ -207,7 +207,7 @@ fr:
       document_capture: Ajoutez des photos de votre pièce d’identité
       document_capture_back: Verso de votre carte d’identité
       document_capture_front: Recto de votre carte d’identité
-      document_capture_selfie:
+      document_capture_selfie: selfie
       front: Recto de votre permis de conduire ou de votre carte d’identité de l’État
       getting_started: Vérifions votre identité pour %{sp_name}
       how_to_verify: Choisissez la manière dont vous souhaitez confirmer votre identité
@@ -219,7 +219,7 @@ fr:
         photos de votre identifiant?
       review_issues: Vérifiez vos images et essayez à nouveau
       secure_account: Sécuriser votre compte
-      selfie:
+      selfie: Photo
       ssn: Saisissez votre numéro de sécurité sociale
       ssn_update: Mettre à jour votre numéro de Sécurité Sociale
       switch_to_phone: Basculez vers votre téléphone
