@@ -22,6 +22,7 @@ module Idv
       profile_id
       redo_document_capture
       resolution_successful
+      skip_doc_auth
       skip_hybrid_handoff
       ssn
       threatmetrix_review_status
@@ -30,7 +31,6 @@ module Idv
       vendor_phone_confirmation
       verify_info_step_document_capture_session_uuid
       welcome_visited
-      skip_doc_auth
     ].freeze
 
     attr_reader :current_user, :gpo_otp, :service_provider
