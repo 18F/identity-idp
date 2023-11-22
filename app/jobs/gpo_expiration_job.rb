@@ -1,9 +1,10 @@
 class GpoExpirationJob < ApplicationJob
   queue_as :low
 
-  def initialize(analytics: nil, on_profile_expired: nil)
+  def initialize(*args, analytics: nil, on_profile_expired: nil, **rest)
     @analytics = analytics
     @on_profile_expired = on_profile_expired
+    super(*args, **rest)
   end
 
   def perform(
