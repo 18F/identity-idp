@@ -66,9 +66,9 @@ module Idv
           step: 'verify',
           analytics_id: 'In Person Proofing',
           irs_reproofing: irs_reproofing?,
-          opted_in_to_in_person_proofing: idv_session.opted_in_to_in_person_proofing,
         }.merge(ab_test_analytics_buckets).
-          merge(**extra_analytics_properties)
+          merge(**extra_analytics_properties).
+          merge(**opt_in_analytics_properties)
       end
     end
   end

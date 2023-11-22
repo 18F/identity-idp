@@ -11,16 +11,18 @@ module Idv
       before_action :confirm_in_person_session
 
       def show
-        analytics.idv_in_person_ready_to_verify_visit(**extra_analytics_properties)
+        analytics.idv_in_person_ready_to_verify_visit(**opt_in_analytics_properties)
         @presenter = ReadyToVerifyPresenter.new(enrollment: enrollment)
       end
 
       private
 
-      def extra_analytics_properties
-        {
-          opted_in_to_in_person_proofing: idv_session.opted_in_to_in_person_proofing,
-        }
+      def opt_in_analytics_properties
+        extra = {}
+        if IdentityConfig.store.in_person_proofing_opt_in_enabled
+          extra.merge(opted_in_to_in_person_proofing: idv_session.opted_in_to_in_person_proofing)
+        end
+        extra
       end
 
       def confirm_in_person_session

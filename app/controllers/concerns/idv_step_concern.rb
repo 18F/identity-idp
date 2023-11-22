@@ -123,6 +123,14 @@ module IdvStepConcern
     extra
   end
 
+  def opt_in_analytics_properties
+    extra = {}
+    if IdentityConfig.store.in_person_proofing_opt_in_enabled
+      extra.merge(opted_in_to_in_person_proofing: idv_session.opted_in_to_in_person_proofing)
+    end
+    extra
+  end
+
   def flow_policy
     @flow_policy ||= Idv::FlowPolicy.new(idv_session: idv_session, user: current_user)
   end

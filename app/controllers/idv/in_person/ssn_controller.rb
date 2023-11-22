@@ -81,10 +81,10 @@ module Idv
           flow_path: idv_session.flow_path,
           step: 'ssn',
           analytics_id: 'In Person Proofing',
-          opted_in_to_in_person_proofing: idv_session.opted_in_to_in_person_proofing,
           irs_reproofing: irs_reproofing?,
         }.merge(ab_test_analytics_buckets).
-          merge(**extra_analytics_properties)
+          merge(**extra_analytics_properties).
+          merge(**opt_in_analytics_properties)
       end
 
       def confirm_in_person_address_step_complete
