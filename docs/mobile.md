@@ -82,6 +82,10 @@ These instructions work only if your development computer is an Apple product. Y
 
 5. Revisit the Safari **Develop** menu of your laptop. You'll see a menu item that wasn't there before: the name of your phone.
 
-6. Within that menu item, you'll find a list of Safari browser tabs open on your iPhone. To see them, the iPhone must be unlocked, and the Safari browser must be displayed on the phone's screen.
+6. In that menu item, click the "Connect via Network" option. Once you've done this you should be able to unplug the USB cable and continue with these steps. A screenshot:
 
-7. Click on the tab you wish to inspect. You will see browser debugging tools like Elements, Console, and Layers. (Unlike the above Android instructions, you will not see a picture of your phone's browser screen on your laptop's screen.)
+  ![develop-over-network](https://github.com/18F/identity-idp/assets/6818839/a672e33c-da63-4bd0-8e87-60bc6e89027c)
+
+7. Within that menu item, you'll find a list of Safari browser tabs open on your iPhone. To see them, the iPhone must be unlocked, and the Safari browser must be displayed on the phone's screen.
+
+8. Click on the tab you wish to inspect. You will see browser debugging tools like Elements, Console, and Layers. (Unlike the above Android instructions, you will not see a picture of your phone's browser screen on your laptop's screen.)
