@@ -3,9 +3,9 @@
 /* eslint-disable no-console */
 
 import { mkdir } from 'node:fs/promises';
+import { parseArgs } from 'node:util';
 import { watch } from 'chokidar';
 import { fileURLToPath } from 'url';
-import { parseArgs } from '@pkgjs/parseargs'; // Note: Use native util.parseArgs after Node v18
 import { buildFile } from './index.js';
 import getDefaultLoadPaths from './get-default-load-paths.js';
 import getErrorSassStackPaths from './get-error-sass-stack-paths.js';
@@ -26,9 +26,8 @@ const { values: flags, positionals: fileArgs } = parseArgs({
   },
 });
 
-const isWatching = flags.watch;
-const outDir = flags['out-dir'];
-const loadPaths = [...flags['load-path'], ...getDefaultLoadPaths()];
+const { watch: isWatching, 'out-dir': outDir, 'load-path': loadPaths = [] } = flags;
+loadPaths.push(...getDefaultLoadPaths());
 
 /** @type {BuildOptions & SyncSassOptions} */
 const options = { outDir, loadPaths, optimize: isProduction };
