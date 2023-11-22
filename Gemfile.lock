@@ -817,7 +817,7 @@ DEPENDENCIES
   rotp (~> 6.1)
   rqrcode
   rspec (~> 3.12.0)
-  rspec-rails (~> 6.0, >= 6.0.4)
+  rspec-rails (~> 6.0)
   rspec-retry
   rspec_junit_formatter
   rubocop (~> 1.55.1)
@@ -852,7 +852,7 @@ DEPENDENCIES
   zxcvbn (= 0.1.9)
 
 RUBY VERSION
-   ruby 2.7.8p225
+   ruby 3.2.2p53
 
 BUNDLED WITH
    2.4.20
