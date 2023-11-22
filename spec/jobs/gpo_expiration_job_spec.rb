@@ -45,6 +45,7 @@ RSpec.describe GpoExpirationJob do
     allow(IdentityConfig.store).to receive(:usps_confirmation_max_days).and_return(
       usps_confirmation_max_days,
     )
+    allow(subject).to receive(:analytics).and_return(analytics)
   end
 
   describe '#gpo_profiles_that_should_be_expired' do

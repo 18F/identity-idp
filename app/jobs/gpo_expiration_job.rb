@@ -1,11 +1,6 @@
 class GpoExpirationJob < ApplicationJob
   queue_as :low
 
-  def initialize(*args, analytics: nil, **rest)
-    @analytics = analytics
-    super(*args, **rest)
-  end
-
   def perform(
     dry_run: false,
     limit: nil,
