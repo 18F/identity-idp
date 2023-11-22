@@ -73,7 +73,6 @@ module Idv
 
     def confirm_hybrid_handoff_complete
       return if idv_session.flow_path.present?
-      return if idv_session.skip_doc_auth == true
 
       redirect_to idv_hybrid_handoff_url
     end
