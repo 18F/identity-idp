@@ -6,7 +6,7 @@ RSpec.describe Idv::HowToVerifyForm do
   describe '#submit' do
     context 'when the form is valid' do
       it 'returns a successful form response' do
-        result = subject.submit(selection: 'remote')
+        result = subject.submit(selection: Idv::HowToVerifyForm::REMOTE)
 
         expect(result).to be_kind_of(FormResponse)
         expect(result.success?).to eq(true)

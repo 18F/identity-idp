@@ -22,7 +22,7 @@ module Idv
       )
 
       if result.success?
-        if how_to_verify_form_params['selection'] == 'remote'
+        if how_to_verify_form_params['selection'] == Idv::HowToVerifyForm::REMOTE
           idv_session.skip_doc_auth = false
           redirect_to idv_hybrid_handoff_url
         else
