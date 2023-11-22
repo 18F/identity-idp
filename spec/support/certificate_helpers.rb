@@ -37,4 +37,8 @@ module CertificateHelpers
   def encrypted_secret_key_password
     'im a secret password.'
   end
+
+  def invalid_cert
+    OpenSSL::X509::Certificate.new(File.read('spec/support/certificates/too_short_cert.crt'))
+  end
 end
