@@ -7,6 +7,7 @@ module Db
         aamva
         acuant_front_image
         acuant_back_image
+        acuant_selfie
         acuant_result
         lexis_nexis_resolution
         lexis_nexis_address
