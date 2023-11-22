@@ -350,8 +350,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
 
   context 'async missing' do
     it 'allows resubmitting form' do
-      sign_in_and_2fa_user(user)
-      complete_doc_auth_steps_before_verify_step
+      complete_ssn_step
 
       allow(DocumentCaptureSession).to receive(:find_by).
         and_return(nil)
@@ -386,8 +385,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
 
   context 'async timed out' do
     it 'allows resubmitting form' do
-      sign_in_and_2fa_user(user)
-      complete_doc_auth_steps_before_verify_step
+      complete_ssn_step
 
       allow(DocumentCaptureSession).to receive(:find_by).
         and_return(nil)

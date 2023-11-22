@@ -4,6 +4,7 @@ RSpec.describe 'two_factor_authentication/options/index.html.erb' do
   let(:user) { User.new }
   let(:phishing_resistant_required) { false }
   let(:piv_cac_required) { false }
+  let(:reauthentication_context) { false }
 
   before do
     allow(view).to receive(:user_session).and_return({})
@@ -12,7 +13,7 @@ RSpec.describe 'two_factor_authentication/options/index.html.erb' do
     @presenter = TwoFactorLoginOptionsPresenter.new(
       user: user,
       view: view,
-      reauthentication_context: false,
+      reauthentication_context: reauthentication_context,
       service_provider: nil,
       phishing_resistant_required: phishing_resistant_required,
       piv_cac_required: piv_cac_required,
@@ -33,6 +34,13 @@ RSpec.describe 'two_factor_authentication/options/index.html.erb' do
 
     expect(rendered).to have_content \
       t('two_factor_authentication.login_options_title')
+  end
+
+  it 'has a localized intro text' do
+    render
+
+    expect(rendered).to have_content \
+      t('two_factor_authentication.login_intro')
   end
 
   it 'has a cancel link' do
@@ -95,6 +103,24 @@ RSpec.describe 'two_factor_authentication/options/index.html.erb' do
           t('two_factor_authentication.aal2_request.piv_cac_only_html', sp_name: APP_NAME),
         ),
       )
+    end
+  end
+
+  context 'with context reauthentication' do
+    let(:reauthentication_context) { true }
+
+    it 'has a localized heading' do
+      render
+
+      expect(rendered).to have_content \
+        t('two_factor_authentication.login_options_reauthentication_title')
+    end
+
+    it 'has a localized intro text' do
+      render
+
+      expect(rendered).to have_content \
+        t('two_factor_authentication.login_intro_reauthentication')
     end
   end
 end

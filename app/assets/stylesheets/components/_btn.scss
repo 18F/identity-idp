@@ -7,10 +7,12 @@
   margin-right: 0;
 }
 
+// Upstream: https://github.com/uswds/uswds/pull/5631
 .usa-button--unstyled {
   // Temporary: To be backported to design system. Unstyled buttons should inherit the appearance
   // of a link.
   display: inline;
+  width: auto;
 }
 
 .usa-button:disabled.usa-button--active,

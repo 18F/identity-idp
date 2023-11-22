@@ -9,14 +9,20 @@ module IdvStepConcern
   included do
     before_action :confirm_two_factor_authenticated
     before_action :confirm_idv_needed
+    before_action :confirm_letter_recently_enqueued
     before_action :confirm_no_pending_gpo_profile
     before_action :confirm_no_pending_in_person_enrollment
     before_action :handle_fraud
     before_action :check_for_mail_only_outage
   end
 
+  def confirm_letter_recently_enqueued
+    # idv session should be clear when user returns to enter code
+    return redirect_to idv_letter_enqueued_url if letter_recently_enqueued?
+  end
+
   def confirm_no_pending_gpo_profile
-    redirect_to idv_verify_by_mail_enter_code_url if current_user&.gpo_verification_pending_profile?
+    redirect_to idv_verify_by_mail_enter_code_url if letter_not_recently_enqueued?
   end
 
   def confirm_no_pending_in_person_enrollment
@@ -95,6 +101,16 @@ module IdvStepConcern
         flow_session[:pii_from_user][:same_address_as_id].to_s == 'true'
     end
     extra
+  end
+
+  def letter_recently_enqueued?
+    current_user&.gpo_verification_pending_profile? &&
+      idv_session.address_verification_mechanism == 'gpo'
+  end
+
+  def letter_not_recently_enqueued?
+    current_user&.gpo_verification_pending_profile? &&
+      !idv_session.address_verification_mechanism
   end
 
   def flow_policy

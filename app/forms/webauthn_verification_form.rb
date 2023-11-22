@@ -5,14 +5,16 @@ class WebauthnVerificationForm
   include ActionView::Helpers::TranslationHelper
   include Rails.application.routes.url_helpers
 
+  validates :screen_lock_error,
+            absence: { message: proc { |object| object.send(:screen_lock_error_message) } }
   validates :challenge,
             :authenticator_data,
             :client_data_json,
             :signature,
             :webauthn_configuration,
-            presence: { message: proc { |object| object.instance_eval { generic_error_message } } }
+            presence: { message: proc { |object| object.send(:generic_error_message) } }
   validates :webauthn_error,
-            absence: { message: proc { |object| object.instance_eval { generic_error_message } } }
+            absence: { message: proc { |object| object.send(:generic_error_message) } }
   validate :validate_assertion_response
 
   attr_reader :url_options, :platform_authenticator
@@ -29,7 +31,8 @@ class WebauthnVerificationForm
     client_data_json: nil,
     signature: nil,
     credential_id: nil,
-    webauthn_error: nil
+    webauthn_error: nil,
+    screen_lock_error: nil
   )
     @user = user
     @platform_authenticator = platform_authenticator
@@ -42,6 +45,7 @@ class WebauthnVerificationForm
     @signature = signature
     @credential_id = credential_id
     @webauthn_error = webauthn_error
+    @screen_lock_error = screen_lock_error
   end
 
   def submit
@@ -73,7 +77,8 @@ class WebauthnVerificationForm
               :client_data_json,
               :signature,
               :credential_id,
-              :webauthn_error
+              :webauthn_error,
+              :screen_lock_error
 
   def validate_assertion_response
     return if webauthn_error.present? || webauthn_configuration.blank? || valid_assertion_response?
@@ -127,13 +132,42 @@ class WebauthnVerificationForm
     end
   end
 
-  def extra_analytics_attributes
-    auth_method = if webauthn_configuration&.platform_authenticator
-                    'webauthn_platform'
-                  else
-                    'webauthn'
-                  end
+  def screen_lock_error_message
+    if user_has_other_authentication_method?
+      t(
+        'two_factor_authentication.webauthn_error.screen_lock_other_mfa_html',
+        link_html: link_to(
+          t('two_factor_authentication.webauthn_error.use_a_different_method'),
+          login_two_factor_options_path,
+        ),
+      )
+    else
+      t(
+        'two_factor_authentication.webauthn_error.screen_lock_no_other_mfa',
+        link_html: link_to(
+          t('two_factor_authentication.webauthn_error.use_a_different_method'),
+          login_two_factor_options_path,
+        ),
+      )
+    end
+  end
 
+  def auth_method
+    if platform_authenticator?
+      'webauthn_platform'
+    else
+      'webauthn'
+    end
+  end
+
+  def user_has_other_authentication_method?
+    MfaContext.new(user).two_factor_configurations.any? do |configuration|
+      !configuration.is_a?(WebauthnConfiguration) ||
+        configuration.platform_authenticator? != platform_authenticator?
+    end
+  end
+
+  def extra_analytics_attributes
     {
       multi_factor_auth_method: auth_method,
       webauthn_configuration_id: webauthn_configuration&.id,

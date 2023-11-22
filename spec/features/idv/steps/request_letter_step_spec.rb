@@ -87,13 +87,16 @@ RSpec.feature 'idv request letter step' do
 
         # Confirm that user cannot visit other IdV pages while unverified
         visit idv_agreement_path
-        expect(page).to have_current_path(idv_verify_by_mail_enter_code_path)
+        expect(page).to have_current_path(idv_letter_enqueued_path)
         visit idv_ssn_url
-        expect(page).to have_current_path(idv_verify_by_mail_enter_code_path)
+        expect(page).to have_current_path(idv_letter_enqueued_path)
         visit idv_verify_info_url
-        expect(page).to have_current_path(idv_verify_by_mail_enter_code_path)
+        expect(page).to have_current_path(idv_letter_enqueued_path)
 
         # complete verification: end to end gpo test
+        sign_out
+        sign_in_live_with_2fa(user)
+
         complete_gpo_verification(user)
         expect(user.identity_verified?).to be(true)
         expect(page).to_not have_content(t('account.index.verification.reactivate_button'))
@@ -158,7 +161,7 @@ RSpec.feature 'idv request letter step' do
   context 'GPO verified user has reset their password and needs to re-verify with GPO again', :js do
     let(:user) { user_verified_with_gpo }
 
-    it 'shows the user a GPO index screen asking to send a letter' do
+    it 'shows the user the request letter page' do
       visit_idp_from_ial2_oidc_sp
       trigger_reset_password_and_click_email_link(user.email)
       reset_password_and_sign_back_in(user)
