@@ -143,6 +143,8 @@ check_changelog:
   script:
     - echo "$CI_PIPELINE_SOURCE"
     - git --version
+    - git rev-parse origin/main
+    - git rev-parse origin/"${CI_EXTERNAL_PULL_REQUEST_SOURCE_BRANCH_NAME}"
     - |
       if [ "$CI_MERGE_REQUEST_TARGET_BRANCH_NAME" == "main" ]
       then
