@@ -514,7 +514,6 @@ function AcuantCapture(
       removeUnloadProtection();
       window.location.reload();
     }
-    // TODO trackEvent and analytics
     setIsCapturingEnvironment(false);
   }
 
