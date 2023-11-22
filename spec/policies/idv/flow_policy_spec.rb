@@ -251,6 +251,7 @@ RSpec.describe 'Idv::FlowPolicy' do
         idv_session.welcome_visited = true
         idv_session.idv_consent_given = true
         idv_session.flow_path = 'standard'
+        idv_session.pii_from_doc = { pii: 'value' }
         idv_session.applicant = { pii: 'value' }
         idv_session.ssn = '666666666'
         idv_session.resolution_successful = true
@@ -268,6 +269,7 @@ RSpec.describe 'Idv::FlowPolicy' do
         idv_session.welcome_visited = true
         idv_session.idv_consent_given = true
         idv_session.flow_path = 'standard'
+        idv_session.pii_from_doc = { pii: 'value' }
         idv_session.applicant = { pii: 'value' }
         idv_session.ssn = '666666666'
         idv_session.resolution_successful = true

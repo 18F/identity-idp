@@ -3,10 +3,6 @@ require 'rails_helper'
 RSpec.describe Idv::InPerson::SsnController do
   let(:pii_from_user) { Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID_WITH_NO_SSN.dup }
 
-  let(:flow_session) do
-    { pii_from_user: pii_from_user }
-  end
-
   let(:ssn) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn] }
 
   let(:user) { create(:user) }
@@ -16,9 +12,8 @@ RSpec.describe Idv::InPerson::SsnController do
   end
 
   before do
-    allow(subject).to receive(:pii_from_user).and_return(pii_from_user)
     stub_sign_in(user)
-    subject.user_session['idv/in_person'] = flow_session
+    subject.user_session['idv/in_person'] = { pii_from_user: pii_from_user }
     stub_analytics
     stub_attempts_tracker
     allow(@analytics).to receive(:track_event)
@@ -33,7 +28,7 @@ RSpec.describe Idv::InPerson::SsnController do
   end
 
   describe 'before_actions' do
-    context('#confirm_in_person_address_step_complete') do
+    context '#confirm_in_person_address_step_complete' do
       context 'residential address controller flag not enabled' do
         before do
           allow(IdentityConfig.store).to receive(:in_person_residential_address_controller_enabled).
@@ -41,6 +36,7 @@ RSpec.describe Idv::InPerson::SsnController do
         end
         it 'redirects if the user hasn\'t completed the address page' do
           # delete address attributes on session
+          flow_session = subject.send(:flow_session)
           flow_session[:pii_from_user].delete(:address1)
           flow_session[:pii_from_user].delete(:address2)
           flow_session[:pii_from_user].delete(:city)
@@ -59,6 +55,7 @@ RSpec.describe Idv::InPerson::SsnController do
         end
         it 'redirects if address page not completed' do
           # delete address attributes on session
+          flow_session = subject.send(:flow_session)
           flow_session[:pii_from_user].delete(:address1)
           flow_session[:pii_from_user].delete(:address2)
           flow_session[:pii_from_user].delete(:city)
