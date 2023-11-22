@@ -55,7 +55,7 @@ end
 def get_git_log(base_branch, source_branch)
   format = '--pretty=title: %s%nbody:%b%nDELIMITER'
   log, status = Open3.capture2(
-    'git', 'log', format, "#{base_branch}..#{source_branch}"
+    'git', 'log', format, '--cherry', "#{base_branch}..#{source_branch}"
   )
 
   raise 'git log failed' unless status.success?
