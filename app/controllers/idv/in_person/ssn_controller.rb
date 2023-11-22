@@ -53,7 +53,6 @@ module Idv
 
         if form_response.success?
           idv_session.ssn = params[:doc_auth][:ssn]
-          idv_session.invalidate_steps_after_ssn!
           redirect_to next_url
         else
           flash[:error] = form_response.first_error_message
@@ -101,7 +100,7 @@ module Idv
       end
 
       def confirm_in_person_address_step_complete
-        return if pii_from_user && pii_from_user[:address1].present?
+        return if flow_session[:pii_from_user] && flow_session[:pii_from_user][:address1].present?
         if IdentityConfig.store.in_person_residential_address_controller_enabled
           redirect_to idv_in_person_proofing_address_url
         else

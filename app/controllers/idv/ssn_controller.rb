@@ -50,7 +50,6 @@ module Idv
 
       if form_response.success?
         idv_session.ssn = params[:doc_auth][:ssn]
-        idv_session.invalidate_steps_after_ssn!
         redirect_to next_url
       else
         flash[:error] = form_response.first_error_message

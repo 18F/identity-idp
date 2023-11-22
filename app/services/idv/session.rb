@@ -189,15 +189,15 @@ module Idv
     end
 
     def document_capture_complete?
-      pii_from_doc || has_pii_from_user_in_flow_session || verify_info_step_complete?
+      pii_from_doc || has_pii_from_user_in_flow_session || applicant
     end
 
     def remote_document_capture_complete?
-      pii_from_doc || verify_info_step_complete?
+      pii_from_doc || applicant
     end
 
     def ipp_document_capture_complete?
-      has_pii_from_user_in_flow_session || verify_info_step_complete?
+      has_pii_from_user_in_flow_session || applicant
     end
 
     def ssn_step_complete?
@@ -226,14 +226,6 @@ module Idv
 
     def address_confirmed!
       session[:gpo_code_verified] = true
-    end
-
-    def invalidate_steps_after_ssn!
-      # Guard against unvalidated attributes from in-person flow in review controller
-      clear_applicant!
-
-      invalidate_verify_info_step!
-      invalidate_phone_step!
     end
 
     def clear_applicant!
