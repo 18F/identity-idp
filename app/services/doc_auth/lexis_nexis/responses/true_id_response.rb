@@ -44,10 +44,10 @@ module DocAuth
         }.freeze
         attr_reader :config, :http_response
 
-        def initialize(http_response, config, liveness_checking_enabled = false)
+        def initialize(http_response, config)
           @config = config
           @http_response = http_response
-          @liveness_checking_enabled = liveness_checking_enabled
+
           super(
             success: successful_result?,
             errors: error_messages,
@@ -74,7 +74,7 @@ module DocAuth
           if true_id_product&.dig(:AUTHENTICATION_RESULT).present?
             ErrorGenerator.new(config).generate_doc_auth_errors(response_info)
           elsif true_id_product.present?
-            ErrorGenerator.wrapped_general_error(@liveness_checking_enabled)
+            ErrorGenerator.wrapped_general_error
           else
             { network: true } # return a generic technical difficulties error to user
           end

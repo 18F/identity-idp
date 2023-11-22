@@ -5,7 +5,6 @@ module Idv
 
     validates_presence_of :front
     validates_presence_of :back
-    validates_presence_of :selfie, if: :liveness_checking_enabled
     validates_presence_of :document_capture_session
 
     validate :validate_images
@@ -13,8 +12,7 @@ module Idv
     validate :limit_if_rate_limited
 
     def initialize(params, service_provider:, analytics: nil,
-                   uuid_prefix: nil, irs_attempts_api_tracker: nil, store_encrypted_images: false,
-                   liveness_checking_enabled: false)
+                   uuid_prefix: nil, irs_attempts_api_tracker: nil, store_encrypted_images: false)
       @params = params
       @service_provider = service_provider
       @analytics = analytics
@@ -22,7 +20,6 @@ module Idv
       @uuid_prefix = uuid_prefix
       @irs_attempts_api_tracker = irs_attempts_api_tracker
       @store_encrypted_images = store_encrypted_images
-      @liveness_checking_enabled = liveness_checking_enabled
     end
 
     def submit
@@ -54,7 +51,7 @@ module Idv
     private
 
     attr_reader :params, :analytics, :service_provider, :form_response, :uuid_prefix,
-                :irs_attempts_api_tracker, :liveness_checking_enabled
+                :irs_attempts_api_tracker
 
     def increment_rate_limiter!
       return unless document_capture_session
@@ -83,11 +80,9 @@ module Idv
         doc_auth_client.post_images(
           front_image: front_image_bytes,
           back_image: back_image_bytes,
-          selfie_image: liveness_checking_enabled ? selfie_image_bytes : nil,
           image_source: image_source,
           user_uuid: user_uuid,
           uuid_prefix: uuid_prefix,
-          liveness_checking_enabled: liveness_checking_enabled,
         )
       end
 
@@ -108,10 +103,6 @@ module Idv
 
     def back_image_bytes
       @back_image_bytes ||= back.read
-    end
-
-    def selfie_image_bytes
-      @selfie_image_bytes ||= selfie.read
     end
 
     def validate_pii_from_doc(client_response)
@@ -210,10 +201,6 @@ module Idv
       as_readable(:back)
     end
 
-    def selfie
-      as_readable(:selfie)
-    end
-
     def document_capture_session
       @document_capture_session ||= DocumentCaptureSession.find_by(
         uuid: document_capture_session_uuid,
@@ -230,12 +217,6 @@ module Idv
       if back.is_a? DataUrlImage::InvalidUrlFormatError
         errors.add(
           :back, t('doc_auth.errors.not_a_file'),
-          type: :not_a_file
-        )
-      end
-      if selfie.is_a? DataUrlImage::InvalidUrlFormatError
-        errors.add(
-          :selfie, t('doc_auth.errors.not_a_file'),
           type: :not_a_file
         )
       end
@@ -391,8 +372,7 @@ module Idv
     def add_costs(response)
       Db::AddDocumentVerificationAndSelfieCosts.
         new(user_id: user_id,
-            service_provider: service_provider,
-            liveness_checking_enabled: liveness_checking_enabled).
+            service_provider: service_provider).
         call(response)
     end
 

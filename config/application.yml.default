@@ -383,12 +383,12 @@ development:
   database_worker_jobs_host: ''
   database_worker_jobs_password: ''
   doc_auth_exit_question_section_enabled: true
-  doc_auth_not_ready_section_enabled: true
-  doc_auth_selfie_capture: '{"enabled": true}'
+  doc_auth_selfie_capture: '{"enabled":false}'
   doc_auth_vendor: 'mock'
   doc_auth_vendor_randomize: false
   doc_auth_vendor_randomize_percent: 0
   doc_auth_vendor_randomize_alternate_vendor: ''
+  doc_auth_not_ready_section_enabled: true
   domain_name: localhost:3000
   enable_rate_limiting: false
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
@@ -523,11 +523,11 @@ test:
   database_worker_jobs_host: ''
   database_worker_jobs_password: ''
   doc_auth_max_attempts: 4
-  doc_auth_selfie_capture: '{"enabled":false}'
   doc_auth_vendor: 'mock'
   doc_auth_vendor_randomize: false
   doc_auth_vendor_randomize_percent: 0
   doc_auth_vendor_randomize_alternate_vendor: ''
+  doc_auth_selfie_capture: '{"enabled":false}'
   doc_capture_polling_enabled: false
   domain_name: www.example.com
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c

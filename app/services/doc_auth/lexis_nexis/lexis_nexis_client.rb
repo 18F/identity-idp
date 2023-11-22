@@ -15,11 +15,9 @@ module DocAuth
       def post_images(
         front_image:,
         back_image:,
-        selfie_image: nil,
         image_source: nil,
         user_uuid: nil,
-        uuid_prefix: nil,
-        liveness_checking_enabled: false
+        uuid_prefix: nil
       )
         Requests::TrueIdRequest.new(
           config: config,
@@ -27,9 +25,7 @@ module DocAuth
           uuid_prefix: uuid_prefix,
           front_image: front_image,
           back_image: back_image,
-          selfie_image: selfie_image,
           image_source: image_source,
-          liveness_checking_required: liveness_checking_enabled,
         ).fetch
       end
     end

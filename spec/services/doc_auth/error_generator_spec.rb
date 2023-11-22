@@ -36,14 +36,6 @@ RSpec.describe DocAuth::ErrorGenerator do
       IssuerType: 'Country' }
   end
 
-  let(:liveness_enabled) { nil }
-  let(:face_match_result) { 'Pass' }
-  let(:portrait_match_results) do
-    {
-      FaceMatchResult: face_match_result,
-    }
-  end
-
   def build_error_info(
     doc_result: nil,
     passed: [],
@@ -54,7 +46,7 @@ RSpec.describe DocAuth::ErrorGenerator do
     {
       conversation_id: 31000406181234,
       reference: 'Reference1',
-      liveness_enabled: liveness_enabled,
+      liveness_enabled: false,
       vendor: 'Test',
       transaction_reason_code: 'testing',
       doc_auth_result: doc_result,
@@ -63,7 +55,7 @@ RSpec.describe DocAuth::ErrorGenerator do
         failed: failed,
       },
       alert_failure_count: failed&.count.to_i,
-      portrait_match_results: portrait_match_results,
+      portrait_match_results: { FaceMatchResult: 'Pass' },
       image_metrics: image_metrics,
       classification_info: classification_info,
     }
@@ -505,49 +497,6 @@ RSpec.describe DocAuth::ErrorGenerator do
       expect(output[:general]).to contain_exactly(DocAuth::Errors::SHARP_LOW_ONE_SIDE)
       expect(output[:back]).to contain_exactly(DocAuth::Errors::SHARP_LOW_FIELD)
       expect(output[:hints]).to eq(false)
-    end
-  end
-
-  context 'The correct errors are delivered for selfie with metric error' do
-    let(:metrics) do
-      {
-        front: {
-          'HorizontalResolution' => 300,
-          'VerticalResolution' => 300,
-          'SharpnessMetric' => 50,
-          'GlareMetric' => 50,
-        },
-        back: {
-          'HorizontalResolution' => 300,
-          'VerticalResolution' => 300,
-          'SharpnessMetric' => 50,
-          'GlareMetric' => 50,
-        },
-      }
-    end
-    context 'when liveness is enabled' do
-      let(:liveness_enabled) { true }
-      context 'when liveness check passed' do
-        let(:face_match_result) { 'Pass' }
-        it 'DocAuthResult is Passed with no other error' do
-          error_info = build_error_info(doc_result: 'Passed', image_metrics: metrics)
-
-          # this is an edge case, the generate_doc_auth_errors function should no be
-          # called when everything is successful
-          expect(warn_notifier).to receive(:call).
-            with(hash_including(:response_info, :message)).once
-          described_class.new(config).generate_doc_auth_errors(error_info)
-        end
-      end
-
-      context 'when liveness check failed' do
-        let(:face_match_result) { 'Failure' }
-        it 'DocAuthResult is failed with selfie error' do
-          error_info = build_error_info(doc_result: 'Failed', image_metrics: metrics)
-          errors = described_class.new(config).generate_doc_auth_errors(error_info)
-          expect(errors.keys).to contain_exactly(:general, :selfie, :hints)
-        end
-      end
     end
   end
 
