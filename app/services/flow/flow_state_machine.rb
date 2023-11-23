@@ -173,17 +173,25 @@ module Flow
       redirect_to send(@step_url, step: step)
     end
 
+    def opt_in_analytics_properties
+      extra = {}
+      if IdentityConfig.store.in_person_proofing_opt_in_enabled
+        extra = { opted_in_to_in_person_proofing: idv_session.opted_in_to_in_person_proofing }
+      end
+      extra
+    end
+
     def analytics_properties
       {
         flow_path: flow.flow_path,
         step: current_step,
         step_count: current_flow_step_counts[current_step_name],
         analytics_id: @analytics_id,
-        opted_in_to_in_person_proofing: idv_session.opted_in_to_in_person_proofing,
         irs_reproofing: effective_user&.reproof_for_irs?(
           service_provider: current_sp,
         ).present?,
-      }.merge(flow.extra_analytics_properties)
+      }.merge(flow.extra_analytics_properties).
+        merge(**opt_in_analytics_properties)
     end
 
     def current_step_name
