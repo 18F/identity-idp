@@ -3,7 +3,7 @@ class WebauthnSetupPresenter < SetupPresenter
   include ActionView::Helpers::UrlHelper
   include ActionView::Helpers::TranslationHelper
 
-  attr_reader :url_options
+  attr_reader :url_options, :user
 
   def initialize(
     current_user:,
@@ -20,6 +20,7 @@ class WebauthnSetupPresenter < SetupPresenter
       remember_device_default: remember_device_default,
     )
 
+    @user = current_user
     @platform_authenticator = platform_authenticator
     @url_options = url_options
   end
@@ -82,6 +83,14 @@ class WebauthnSetupPresenter < SetupPresenter
     end
   end
 
+  def device_nickname
+    if @platform_authenticator
+      recent_devices.first.nice_name
+    else
+      nil
+    end
+  end
+
   def button_text
     if @platform_authenticator
       t('forms.webauthn_platform_setup.continue')
@@ -89,4 +98,6 @@ class WebauthnSetupPresenter < SetupPresenter
       t('forms.webauthn_setup.continue')
     end
   end
+
+  delegate :recent_devices, to: :user
 end
