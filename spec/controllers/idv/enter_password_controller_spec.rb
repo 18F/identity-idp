@@ -50,35 +50,6 @@ RSpec.describe Idv::EnterPasswordController do
     end
   end
 
-  describe '#confirm_idv_steps_complete' do
-    controller do
-      before_action :confirm_idv_steps_complete
-
-      def show
-        render plain: 'Hello'
-      end
-    end
-
-    before(:each) do
-      stub_sign_in(user)
-      routes.draw do
-        get 'show' => 'idv/enter_password#show'
-      end
-    end
-
-    context 'user has missed address step' do
-      before do
-        idv_session.vendor_phone_confirmation = false
-      end
-
-      it 'redirects to address step' do
-        get :show
-
-        expect(response).to redirect_to idv_otp_verification_url
-      end
-    end
-  end
-
   describe '#confirm_current_password' do
     let(:applicant) do
       Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(phone_confirmed_at: Time.zone.now)
@@ -98,7 +69,6 @@ RSpec.describe Idv::EnterPasswordController do
       routes.draw do
         post 'show' => 'idv/enter_password#show'
       end
-      allow(subject).to receive(:confirm_idv_steps_complete).and_return(true)
       allow(subject).to receive(:idv_session).and_return(idv_session)
       allow(@irs_attempts_api_tracker).to receive(:track_event)
     end
