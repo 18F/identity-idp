@@ -131,7 +131,7 @@ module IdvStepConcern
 
   def letter_recently_enqueued?
     current_user&.gpo_verification_pending_profile? &&
-      idv_session.address_verification_mechanism == 'gpo'
+      idv_session.verify_by_mail?
   end
 
   def letter_not_recently_enqueued?

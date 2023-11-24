@@ -25,7 +25,7 @@ module Idv
       @title = title
       @heading = heading
 
-      @verifying_by_mail = idv_session.address_verification_mechanism == 'gpo'
+      @verify_by_mail = idv_session.verify_by_mail?
     end
 
     def create
@@ -70,7 +70,7 @@ module Idv
     end
 
     def step_indicator_step
-      return :secure_account unless idv_session.address_verification_mechanism == 'gpo'
+      return :secure_account unless idv_session.verify_by_mail?
       :get_a_letter
     end
 
@@ -113,7 +113,7 @@ module Idv
     def init_profile
       idv_session.create_profile_from_applicant_with_password(password)
 
-      if idv_session.address_verification_mechanism == 'gpo'
+      if idv_session.verify_by_mail?
         current_user.send_email_to_all_addresses(:letter_reminder)
         analytics.idv_gpo_address_letter_enqueued(
           enqueued_at: Time.zone.now,
@@ -167,7 +167,7 @@ module Idv
     end
 
     def gpo_user_flow?
-      idv_session.address_verification_mechanism == 'gpo'
+      idv_session.verify_by_mail?
     end
 
     def handle_request_enroll_exception(err)
