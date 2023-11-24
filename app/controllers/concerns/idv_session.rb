@@ -11,7 +11,10 @@ module IdvSession
               decorated_sp_session.requested_more_recent_verification? ||
               idv_session_user.reproof_for_irs?(service_provider: current_sp)
 
-    return if !idv_session.personal_key_acknowledged && idv_session.personal_key.present?
+    if !idv_session.personal_key_acknowledged && idv_session.personal_key.present?
+      redirect_to idv_personal_key_url
+      return
+    end
 
     redirect_to idv_activated_url
   end
