@@ -36,7 +36,7 @@ module Idv
       user_session[:need_personal_key_confirmation] = true
 
       flash[:success] =
-        if gpo_user_flow?
+        if idv_session.verify_by_mail?
           t('idv.messages.gpo.letter_on_the_way')
         else
           t('idv.messages.confirm')
@@ -77,11 +77,13 @@ module Idv
     private
 
     def title
-      gpo_user_flow? ? t('titles.idv.enter_password_letter') : t('titles.idv.enter_password')
+      idv_session.verify_by_mail? ?
+        t('titles.idv.enter_password_letter')
+        : t('titles.idv.enter_password')
     end
 
     def heading
-      if gpo_user_flow?
+      if idv_session.verify_by_mail?
         t('idv.titles.session.enter_password_letter', app_name: APP_NAME)
       else
         t('idv.titles.session.enter_password', app_name: APP_NAME)
@@ -159,15 +161,11 @@ module Idv
     end
 
     def next_step
-      if gpo_user_flow?
+      if idv_session.verify_by_mail?
         idv_letter_enqueued_url
       else
         idv_personal_key_url
       end
-    end
-
-    def gpo_user_flow?
-      idv_session.verify_by_mail?
     end
 
     def handle_request_enroll_exception(err)
