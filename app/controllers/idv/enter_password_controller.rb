@@ -7,8 +7,7 @@ module Idv
     include IdvStepConcern
     include StepIndicatorConcern
 
-    before_action :confirm_verify_info_step_complete
-    before_action :confirm_address_step_complete
+    before_action :confirm_step_allowed
     before_action :confirm_current_password, only: [:create]
 
     helper_method :step_indicator_step
