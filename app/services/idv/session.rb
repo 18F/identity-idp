@@ -99,6 +99,11 @@ module Idv
       applicant.merge('uuid' => current_user.uuid)
     end
 
+    def profile_id=(value)
+      session[:profile_id] = value
+      @profile = nil
+    end
+
     def profile
       @profile ||= Profile.find_by(id: profile_id)
     end
