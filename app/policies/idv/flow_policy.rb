@@ -63,6 +63,7 @@ module Idv
         phone: Idv::PhoneController.step_info,
         otp_verification: Idv::OtpVerificationController.step_info,
         request_letter: Idv::ByMail::RequestLetterController.step_info,
+        enter_password: Idv::EnterPasswordController.step_info,
       }
     end
 
