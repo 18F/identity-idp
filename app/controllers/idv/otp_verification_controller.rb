@@ -41,7 +41,7 @@ module Idv
       Idv::StepInfo.new(
         key: :otp_verification,
         controller: self,
-        next_steps: [:success], # [:enter_password],
+        next_steps: [:enter_password],
         preconditions: ->(idv_session:, user:) { idv_session.phone_otp_sent? },
         undo_step: ->(idv_session:, user:) { idv_session.user_phone_confirmation = nil },
       )

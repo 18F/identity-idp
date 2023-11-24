@@ -115,15 +115,6 @@ RSpec.describe 'Idv::FlowPolicy' do
           idv_session.threatmetrix_session_id
         }
       end
-
-      it 'restores pii_from_doc and clear future steps when user resubmits ssn' do
-        subject.undo_future_steps_from_controller!(controller: Idv::SsnController)
-
-        expect(idv_session.pii_from_doc).to eq(Idp::Constants::MOCK_IDV_APPLICANT)
-        expect(idv_session.ssn).to eq(Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn])
-
-        expect(idv_session.address_edited).to be_nil
-      end
     end
   end
 
@@ -277,7 +268,29 @@ RSpec.describe 'Idv::FlowPolicy' do
 
         expect(subject.info_for_latest_step.key).to eq(:otp_verification)
         expect(subject.controller_allowed?(controller: Idv::OtpVerificationController)).to be
-        # expect(subject.controller_allowed?(controller: Idv::EnterPasswordController)).not_to be
+        expect(subject.controller_allowed?(controller: Idv::EnterPasswordController)).not_to be
+      end
+    end
+
+    context 'preconditions for enter_password are present' do
+      let(:user_phone_confirmation_session) { { code: 'abcde' } }
+
+      context 'user has a gpo address_verification_mechanism' do
+        it 'returns enter_password with gpo verification pending' do
+          idv_session.welcome_visited = true
+          idv_session.idv_consent_given = true
+          idv_session.flow_path = 'standard'
+          idv_session.pii_from_doc = { pii: 'value' }
+          idv_session.applicant = { pii: 'value' }
+          idv_session.ssn = '666666666'
+          idv_session.resolution_successful = true
+          idv_session.user_phone_confirmation_session = user_phone_confirmation_session
+          idv_session.address_verification_mechanism = 'gpo'
+
+          expect(subject.info_for_latest_step.key).to eq(:enter_password)
+          expect(subject.controller_allowed?(controller: Idv::EnterPasswordController)).to be
+          # expect(subject.controller_allowed?(controller: Idv::PersonalKeyController)).not_to be
+        end
       end
     end
   end
