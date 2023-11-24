@@ -34,7 +34,6 @@ RSpec.describe Idv::EnterPasswordController do
     stub_sign_in(user)
     stub_attempts_tracker
     allow(@irs_attempts_api_tracker).to receive(:track_event)
-    allow(IdentityConfig.store).to receive(:usps_mock_fallback).and_return(false)
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 
@@ -319,6 +318,7 @@ RSpec.describe Idv::EnterPasswordController do
             stub_request_enroll
             ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
             allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+            allow(IdentityConfig.store).to receive(:usps_mock_fallback).and_return(false)
           end
 
           it 'redirects to personal key path' do
