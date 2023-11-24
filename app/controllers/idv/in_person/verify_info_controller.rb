@@ -11,7 +11,7 @@ module Idv
 
       def show
         @step_indicator_steps = step_indicator_steps
-        @ssn = idv_session.ssn_or_applicant_ssn
+        @ssn = idv_session.ssn
         @pii = pii
 
         analytics.idv_doc_auth_verify_visited(**analytics_arguments)
@@ -23,7 +23,6 @@ module Idv
 
       def update
         clear_future_steps!
-        idv_session.restore_pii_from_user
         success = shared_update
 
         if success
@@ -44,7 +43,7 @@ module Idv
             idv_session.address_edited = nil
             idv_session.verify_info_step_document_capture_session_uuid = nil
             idv_session.threatmetrix_review_status = nil
-            idv_session.restore_pii_from_user
+            idv_session.applicant = nil
           end,
         )
       end
@@ -76,7 +75,7 @@ module Idv
       end
 
       def pii
-        idv_session.pii_from_user_or_applicant
+        user_session['idv/in_person'][:pii_from_user]
       end
 
       # override IdvSession concern
@@ -95,7 +94,7 @@ module Idv
       end
 
       def confirm_ssn_step_complete
-        return if pii.present? && idv_session.ssn_or_applicant_ssn.present?
+        return if pii.present? && idv_session.ssn.present?
         redirect_to prev_url
       end
     end

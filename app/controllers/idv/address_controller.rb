@@ -37,7 +37,7 @@ module Idv
     private
 
     def idv_form
-      Idv::AddressForm.new(idv_session.pii_from_doc_or_applicant)
+      Idv::AddressForm.new(idv_session.pii_from_doc)
     end
 
     def success
