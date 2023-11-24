@@ -163,7 +163,7 @@ module Idv
       resolution_successful
     end
 
-    def address_step_complete?
+    def phone_or_address_step_complete?
       if address_verification_mechanism == 'gpo'
         true
       else
