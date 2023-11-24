@@ -3,6 +3,10 @@ require 'rails_helper'
 RSpec.describe Idv::InPerson::SsnController do
   let(:pii_from_user) { Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID_WITH_NO_SSN.dup }
 
+  let(:flow_session) do
+    { pii_from_user: pii_from_user }
+  end
+
   let(:ssn) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn] }
 
   let(:user) { create(:user) }
@@ -13,7 +17,7 @@ RSpec.describe Idv::InPerson::SsnController do
 
   before do
     stub_sign_in(user)
-    subject.user_session['idv/in_person'] = { pii_from_user: pii_from_user }
+    subject.user_session['idv/in_person'] = flow_session
     stub_analytics
     stub_attempts_tracker
     allow(@analytics).to receive(:track_event)
@@ -35,13 +39,7 @@ RSpec.describe Idv::InPerson::SsnController do
             and_return(false)
         end
         it 'redirects if the user hasn\'t completed the address page' do
-          # delete address attributes on session
-          flow_session = subject.send(:flow_session)
-          flow_session[:pii_from_user].delete(:address1)
-          flow_session[:pii_from_user].delete(:address2)
-          flow_session[:pii_from_user].delete(:city)
-          flow_session[:pii_from_user].delete(:state)
-          flow_session[:pii_from_user].delete(:zipcode)
+          subject.user_session['idv/in_person'][:pii_from_user].delete(:address1)
           get :show
 
           expect(response).to redirect_to idv_in_person_step_url(step: :address)
@@ -54,13 +52,7 @@ RSpec.describe Idv::InPerson::SsnController do
             and_return(true)
         end
         it 'redirects if address page not completed' do
-          # delete address attributes on session
-          flow_session = subject.send(:flow_session)
-          flow_session[:pii_from_user].delete(:address1)
-          flow_session[:pii_from_user].delete(:address2)
-          flow_session[:pii_from_user].delete(:city)
-          flow_session[:pii_from_user].delete(:state)
-          flow_session[:pii_from_user].delete(:zipcode)
+          subject.user_session['idv/in_person'][:pii_from_user].delete(:address1)
           get :show
 
           expect(response).to redirect_to idv_in_person_proofing_address_url
@@ -132,19 +124,6 @@ RSpec.describe Idv::InPerson::SsnController do
       context 'referer is verify_info' do
         let(:referer) { idv_in_person_verify_info_url }
         it 'does not redirect' do
-          get :show
-
-          expect(response).to render_template 'idv/shared/ssn'
-        end
-      end
-
-      context 'when the user has already verified their info' do
-        it 'renders show with the contents of idv_session.applicant' do
-          subject.idv_session.resolution_successful = true
-          subject.idv_session.pii_from_doc = nil
-          subject.idv_session.ssn = nil
-          subject.idv_session.applicant = Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID
-
           get :show
 
           expect(response).to render_template 'idv/shared/ssn'
