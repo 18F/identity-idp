@@ -4,7 +4,6 @@ module Idv
 
     include IdvStepConcern
     include StepIndicatorConcern
-    include FraudReviewConcern
 
     before_action :confirm_verify_info_step_complete
     before_action :confirm_address_step_complete
