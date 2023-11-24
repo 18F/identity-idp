@@ -31,6 +31,9 @@ RSpec.describe Idv::EnterPasswordController do
 
   before do
     stub_analytics
+    stub_sign_in(user)
+    stub_attempts_tracker
+    allow(@irs_attempts_api_tracker).to receive(:track_event)
     allow(IdentityConfig.store).to receive(:usps_mock_fallback).and_return(false)
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
@@ -59,9 +62,7 @@ RSpec.describe Idv::EnterPasswordController do
       end
     end
 
-    before(:each) do
-      stub_sign_in(user)
-      stub_attempts_tracker
+    before do
       routes.draw do
         post 'show' => 'idv/enter_password#show'
       end
@@ -106,10 +107,6 @@ RSpec.describe Idv::EnterPasswordController do
   end
 
   describe '#new' do
-    before do
-      stub_sign_in(user)
-    end
-
     context 'user has completed all steps' do
       before do
         idv_session
@@ -197,11 +194,6 @@ RSpec.describe Idv::EnterPasswordController do
   end
 
   describe '#create' do
-    before do
-      stub_sign_in(user)
-      allow(subject).to receive(:confirm_idv_applicant_created).and_return(true)
-    end
-
     context 'user fails to supply correct password' do
       before do
         idv_session
@@ -229,8 +221,6 @@ RSpec.describe Idv::EnterPasswordController do
     context 'user has completed all steps' do
       before do
         idv_session
-        stub_attempts_tracker
-        allow(@irs_attempts_api_tracker).to receive(:track_event)
       end
 
       it 'redirects to personal key path' do
@@ -558,9 +548,6 @@ RSpec.describe Idv::EnterPasswordController do
                     allow(IdentityConfig.store).to receive(:proofing_device_profiling).
                       and_return(proofing_device_profiling_state)
                     idv_session.threatmetrix_review_status = review_status
-                  end
-
-                  before(:each) do
                     stub_request_token
                   end
 
