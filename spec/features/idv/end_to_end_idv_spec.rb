@@ -102,11 +102,13 @@ RSpec.describe 'Identity verification', :js do
       complete_all_in_person_proofing_steps(user)
 
       enter_gpo_flow
-      gpo_step
+      test_go_back_from_request_letter
+      complete_request_letter
 
+      test_go_back_from_enter_password
       complete_enter_password_step(user)
 
-      try_to_go_back_from_letter_enqueued
+      test_go_back_from_letter_enqueued
       validate_letter_enqueued_page
       complete_letter_enqueued
       validate_return_to_sp
@@ -463,7 +465,25 @@ RSpec.describe 'Identity verification', :js do
     expect(page).to have_current_path(idv_phone_path)
   end
 
-  def try_to_go_back_from_letter_enqueued
+  def test_go_back_from_enter_password
+    go_back
+    expect(page).to have_current_path(idv_request_letter_path)
+    go_back
+    go_back
+    expect(page).to have_current_path(idv_in_person_verify_info_path)
+    3.times { go_forward }
+  end
+
+  def test_go_back_from_request_letter
+    go_back
+    expect(page).to have_current_path(idv_phone_path)
+    go_back
+    expect(page).to have_current_path(idv_in_person_verify_info_path)
+    2.times { go_forward }
+    expect(page).to have_current_path(idv_request_letter_path)
+  end
+
+  def test_go_back_from_letter_enqueued
     go_back
     expect(page).to have_current_path(idv_letter_enqueued_path)
     visit(idv_welcome_path)
