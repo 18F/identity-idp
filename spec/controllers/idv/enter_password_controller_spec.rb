@@ -108,7 +108,6 @@ RSpec.describe Idv::EnterPasswordController do
   describe '#new' do
     before do
       stub_sign_in(user)
-      allow(subject).to receive(:confirm_idv_applicant_created).and_return(true)
     end
 
     context 'user has completed all steps' do
