@@ -127,8 +127,4 @@ module IdvStepConcern
   def clear_future_steps!
     flow_policy.undo_future_steps_from_controller!(controller: self.class)
   end
-
-  def clear_current_step!
-    self.step_info.undo_step.call(idv_session: idv_session, user: current_user)
-  end
 end
