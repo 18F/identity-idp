@@ -18,14 +18,14 @@ module Idv
       Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
         call(:encrypt, :view, true)
       analytics.idv_enter_password_visited(
-        address_verification_method: address_verification_method,
+        address_verification_method: idv_session.address_verification_mechanism,
         **ab_test_analytics_buckets,
       )
 
       @title = title
       @heading = heading
 
-      @verifying_by_mail = address_verification_method == 'gpo'
+      @verifying_by_mail = idv_session.address_verification_mechanism == 'gpo'
     end
 
     def create
@@ -70,7 +70,7 @@ module Idv
     end
 
     def step_indicator_step
-      return :secure_account unless address_verification_method == 'gpo'
+      return :secure_account unless idv_session.address_verification_mechanism == 'gpo'
       :get_a_letter
     end
 
@@ -108,10 +108,6 @@ module Idv
 
     def gpo_mail_service
       @gpo_mail_service ||= Idv::GpoMail.new(current_user)
-    end
-
-    def address_verification_method
-      user_session.with_indifferent_access.dig('idv', 'address_verification_mechanism')
     end
 
     def init_profile
