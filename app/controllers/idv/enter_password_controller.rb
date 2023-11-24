@@ -80,7 +80,7 @@ module Idv
         key: :enter_password,
         controller: self,
         action: :new,
-        next_steps: [:success],
+        next_steps: [FlowPolicy::FINAL],
         preconditions: ->(idv_session:, user:) do
           idv_session.phone_or_address_step_complete?
         end,

@@ -2,6 +2,8 @@ module Idv
   class FlowPolicy
     attr_reader :idv_session, :user
 
+    FINAL = :final
+
     def initialize(idv_session:, user:)
       @idv_session = idv_session
       @user = user
@@ -29,7 +31,7 @@ module Idv
 
     def latest_step(current_step: :root)
       return nil if steps[current_step]&.next_steps.blank?
-      return current_step if steps[current_step].next_steps == [:success]
+      return current_step if steps[current_step].next_steps == [FINAL]
 
       steps[current_step].next_steps.each do |key|
         if step_allowed?(key: key)
@@ -72,7 +74,7 @@ module Idv
     end
 
     def undo_steps_from!(key:)
-      return if key == :success
+      return if key == FINAL
 
       steps[key].next_steps.each do |next_step|
         undo_steps_from!(key: next_step)
