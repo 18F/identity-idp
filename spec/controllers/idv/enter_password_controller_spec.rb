@@ -51,10 +51,6 @@ RSpec.describe Idv::EnterPasswordController do
   end
 
   describe '#confirm_current_password' do
-    let(:applicant) do
-      Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(phone_confirmed_at: Time.zone.now)
-    end
-
     controller do
       before_action :confirm_current_password
 
@@ -208,10 +204,6 @@ RSpec.describe Idv::EnterPasswordController do
     end
 
     context 'user fails to supply correct password' do
-      let(:applicant) do
-        Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(phone_confirmed_at: Time.zone.now)
-      end
-
       before do
         idv_session
       end
