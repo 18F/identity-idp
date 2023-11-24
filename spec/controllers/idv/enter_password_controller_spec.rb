@@ -316,16 +316,13 @@ RSpec.describe Idv::EnterPasswordController do
           let!(:enrollment) do
             create(:in_person_enrollment, :establishing, user: user, profile: nil)
           end
-          let(:stub_usps_response) do
-            stub_request_enroll
-          end
           let(:applicant) do
             Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID_WITH_PHONE
           end
 
           before do
             stub_request_token
-            stub_usps_response
+            stub_request_enroll
             ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
             allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
           end
@@ -386,7 +383,7 @@ RSpec.describe Idv::EnterPasswordController do
           end
 
           context 'when there is a 4xx error' do
-            let(:stub_usps_response) do
+            before do
               stub_request_enroll_bad_request_response
             end
 
@@ -416,7 +413,7 @@ RSpec.describe Idv::EnterPasswordController do
           end
 
           context 'when there is 5xx error' do
-            let(:stub_usps_response) do
+            before do
               stub_request_enroll_internal_server_error_response
             end
 
@@ -466,7 +463,7 @@ RSpec.describe Idv::EnterPasswordController do
           end
 
           context 'when the USPS response is not a hash' do
-            let(:stub_usps_response) do
+            before do
               stub_request_enroll_non_hash_response
             end
 
@@ -486,7 +483,7 @@ RSpec.describe Idv::EnterPasswordController do
           end
 
           context 'when the USPS response is missing an enrollment code' do
-            let(:stub_usps_response) do
+            before do
               stub_request_enroll_invalid_response
             end
 
