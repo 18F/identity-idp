@@ -85,8 +85,6 @@ RSpec.describe Idv::PhoneController do
       before do
         subject.idv_session.applicant = nil
         subject.idv_session.resolution_successful = nil
-
-        allow(controller).to receive(:confirm_idv_applicant_created).and_call_original
       end
 
       it 'redirects to the verify step' do
