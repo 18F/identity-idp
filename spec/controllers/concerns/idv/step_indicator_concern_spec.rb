@@ -14,9 +14,7 @@ RSpec.describe Idv::StepIndicatorConcern, type: :controller do
   describe '#step_indicator_steps' do
     def force_gpo
       idv_session = instance_double(Idv::Session)
-      allow(idv_session).to receive(:method_missing).
-        with(:address_verification_mechanism).
-        and_return('gpo')
+      allow(idv_session).to receive(:method_missing).with(:verify_by_mail?).and_return(true)
       allow(controller).to receive(:idv_session).and_return(idv_session)
     end
 
