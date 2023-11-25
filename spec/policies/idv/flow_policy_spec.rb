@@ -272,6 +272,21 @@ RSpec.describe 'Idv::FlowPolicy' do
       end
     end
 
+    context 'preconditions for request_letter are present' do
+      it 'returns enter_password with gpo verification pending' do
+        idv_session.welcome_visited = true
+        idv_session.idv_consent_given = true
+        idv_session.flow_path = 'standard'
+        idv_session.pii_from_doc = { pii: 'value' }
+        idv_session.applicant = { pii: 'value' }
+        idv_session.ssn = '666666666'
+        idv_session.resolution_successful = true
+
+        expect(subject.controller_allowed?(controller: Idv::ByMail::RequestLetterController)).to be
+        expect(subject.controller_allowed?(controller: Idv::EnterPasswordController)).not_to be
+      end
+    end
+
     context 'preconditions for enter_password are present' do
       let(:user_phone_confirmation_session) { { code: 'abcde' } }
 
@@ -286,6 +301,25 @@ RSpec.describe 'Idv::FlowPolicy' do
           idv_session.resolution_successful = true
           idv_session.user_phone_confirmation_session = user_phone_confirmation_session
           idv_session.address_verification_mechanism = 'gpo'
+
+          expect(subject.info_for_latest_step.key).to eq(:enter_password)
+          expect(subject.controller_allowed?(controller: Idv::EnterPasswordController)).to be
+          # expect(subject.controller_allowed?(controller: Idv::PersonalKeyController)).not_to be
+        end
+      end
+
+      context 'user passed phone step' do
+        it 'returns enter_password' do
+          idv_session.welcome_visited = true
+          idv_session.idv_consent_given = true
+          idv_session.flow_path = 'standard'
+          idv_session.pii_from_doc = { pii: 'value' }
+          idv_session.applicant = { pii: 'value' }
+          idv_session.ssn = '666666666'
+          idv_session.resolution_successful = true
+          idv_session.user_phone_confirmation_session = user_phone_confirmation_session
+          idv_session.vendor_phone_confirmation = true
+          idv_session.user_phone_confirmation = true
 
           expect(subject.info_for_latest_step.key).to eq(:enter_password)
           expect(subject.controller_allowed?(controller: Idv::EnterPasswordController)).to be
