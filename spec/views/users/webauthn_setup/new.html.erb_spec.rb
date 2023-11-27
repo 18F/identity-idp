@@ -4,7 +4,7 @@ RSpec.describe 'users/webauthn_setup/new.html.erb' do
   let(:user) { create(:user, :fully_registered) }
   let(:device) { create(:device) }
   subject(:decorator) { DeviceDecorator.new(device) }
-  
+
   context 'webauthn platform' do
     let(:platform_authenticator) { true }
     let(:user_session) do
