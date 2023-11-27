@@ -29,6 +29,10 @@ const { values: flags, positionals: fileArgs } = parseArgs({
 const { watch: isWatching, 'out-dir': outDir, 'load-path': loadPaths = [] } = flags;
 loadPaths.push(...getDefaultLoadPaths());
 
+if (!outDir) {
+  throw new TypeError('Output directory must be provided using the `--out-dir` option.');
+}
+
 /** @type {BuildOptions & SyncSassOptions} */
 const options = { outDir, loadPaths, optimize: isProduction };
 
