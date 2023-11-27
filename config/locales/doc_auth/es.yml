@@ -183,6 +183,7 @@ es:
       document_capture_back: Parte trasera de su documento de identidad
       document_capture_front: Parte delantera de su documento de identidad
       front: Anverso de su licencia de conducir o identificación estatal
+      getting_started: Vamos a verificar su identidad para %{sp_name}
       how_to_verify: Elija cómo quiere verificar su identidad
       hybrid_handoff: '¿Cómo desea añadir su documento de identidad?'
       interstitial: Estamos procesando sus imágenes
