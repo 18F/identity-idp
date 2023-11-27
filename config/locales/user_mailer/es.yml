@@ -223,7 +223,8 @@ es:
       help_html: Si no realizó este cambio, %{disavowal_link_html}. Para más ayuda,
         visite el %{app_name_html} %{help_link_html} o el %{contact_link_html}.
       info_html: '<p>Su cuenta %{app_name} acaba de iniciar sesión en un nuevo
-        dispositivo.</p><br/><p><strong>%{date}<br/>%{location}</strong></p>'
+        dispositivo.</p><br/><p><strong>%{date}<br/>%{location},
+        %{device_name}</strong></p>'
       subject: Nuevo initio de sesion con su %{app_name} cuenta
     password_changed:
       disavowal_link: restablecer su contraseña
