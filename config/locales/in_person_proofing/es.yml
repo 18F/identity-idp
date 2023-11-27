@@ -22,8 +22,8 @@ es:
         what_to_expect: Qué esperar en la oficina de correos
       cta:
         button: Inténtelo en persona
-        prompt_detail: Es posible que pueda verificar su documento de identidad en
-          persona en una oficina de correos participante cercana.
+        prompt_detail: Es posible que pueda verificar su identidad en una oficina postal
+          participante cercana.
       expect:
         heading: Qué esperar después de la visita
         info: Le enviaremos un correo electrónico para informarle si su verificación de

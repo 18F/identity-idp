@@ -23,8 +23,8 @@ fr:
         what_to_expect: À quoi s’attendre au bureau de poste
       cta:
         button: Essayer en personne
-        prompt_detail: Vous pourrez peut-être faire vérifier votre pièce d’identité en
-          personne dans un bureau de poste participant près de chez vous.
+        prompt_detail: Vous pourrez peut-être vérifier votre identité dans un bureau de
+          poste participant près de chez vous.
       expect:
         heading: Que faire après votre visite
         info: Dans les 24 heures suivant votre visite au bureau de poste, nous vous

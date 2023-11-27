@@ -20,8 +20,8 @@ en:
         what_to_expect: What to expect at the Post Office
       cta:
         button: Try in person
-        prompt_detail: You may be able to verify your ID in person at a participating
-          Post Office near you.
+        prompt_detail: You may be able to verify your identity at a participating Post
+          Office near you.
       expect:
         heading: What to expect after your visit
         info: We’ll send you an email to let you know if your identity verification was
