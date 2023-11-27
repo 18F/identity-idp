@@ -31,7 +31,9 @@ RSpec.describe Idv::EnterPasswordController do
 
   before do
     stub_analytics
-    allow(IdentityConfig.store).to receive(:usps_mock_fallback).and_return(false)
+    stub_sign_in(user)
+    stub_attempts_tracker
+    allow(@irs_attempts_api_tracker).to receive(:track_event)
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 
@@ -50,40 +52,7 @@ RSpec.describe Idv::EnterPasswordController do
     end
   end
 
-  describe '#confirm_idv_steps_complete' do
-    controller do
-      before_action :confirm_idv_steps_complete
-
-      def show
-        render plain: 'Hello'
-      end
-    end
-
-    before(:each) do
-      stub_sign_in(user)
-      routes.draw do
-        get 'show' => 'idv/enter_password#show'
-      end
-    end
-
-    context 'user has missed address step' do
-      before do
-        idv_session.vendor_phone_confirmation = false
-      end
-
-      it 'redirects to address step' do
-        get :show
-
-        expect(response).to redirect_to idv_otp_verification_url
-      end
-    end
-  end
-
   describe '#confirm_current_password' do
-    let(:applicant) do
-      Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(phone_confirmed_at: Time.zone.now)
-    end
-
     controller do
       before_action :confirm_current_password
 
@@ -92,13 +61,10 @@ RSpec.describe Idv::EnterPasswordController do
       end
     end
 
-    before(:each) do
-      stub_sign_in(user)
-      stub_attempts_tracker
+    before do
       routes.draw do
         post 'show' => 'idv/enter_password#show'
       end
-      allow(subject).to receive(:confirm_idv_steps_complete).and_return(true)
       allow(subject).to receive(:idv_session).and_return(idv_session)
       allow(@irs_attempts_api_tracker).to receive(:track_event)
     end
@@ -140,11 +106,6 @@ RSpec.describe Idv::EnterPasswordController do
   end
 
   describe '#new' do
-    before do
-      stub_sign_in(user)
-      allow(subject).to receive(:confirm_idv_applicant_created).and_return(true)
-    end
-
     context 'user has completed all steps' do
       before do
         idv_session
@@ -232,16 +193,7 @@ RSpec.describe Idv::EnterPasswordController do
   end
 
   describe '#create' do
-    before do
-      stub_sign_in(user)
-      allow(subject).to receive(:confirm_idv_applicant_created).and_return(true)
-    end
-
     context 'user fails to supply correct password' do
-      let(:applicant) do
-        Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(phone_confirmed_at: Time.zone.now)
-      end
-
       before do
         idv_session
       end
@@ -268,8 +220,6 @@ RSpec.describe Idv::EnterPasswordController do
     context 'user has completed all steps' do
       before do
         idv_session
-        stub_attempts_tracker
-        allow(@irs_attempts_api_tracker).to receive(:track_event)
       end
 
       it 'redirects to personal key path' do
@@ -359,18 +309,16 @@ RSpec.describe Idv::EnterPasswordController do
           let!(:enrollment) do
             create(:in_person_enrollment, :establishing, user: user, profile: nil)
           end
-          let(:stub_usps_response) do
-            stub_request_enroll
-          end
           let(:applicant) do
             Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID_WITH_PHONE
           end
 
           before do
             stub_request_token
-            stub_usps_response
+            stub_request_enroll
             ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
             allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+            allow(IdentityConfig.store).to receive(:usps_mock_fallback).and_return(false)
           end
 
           it 'redirects to personal key path' do
@@ -429,7 +377,7 @@ RSpec.describe Idv::EnterPasswordController do
           end
 
           context 'when there is a 4xx error' do
-            let(:stub_usps_response) do
+            before do
               stub_request_enroll_bad_request_response
             end
 
@@ -459,7 +407,7 @@ RSpec.describe Idv::EnterPasswordController do
           end
 
           context 'when there is 5xx error' do
-            let(:stub_usps_response) do
+            before do
               stub_request_enroll_internal_server_error_response
             end
 
@@ -509,7 +457,7 @@ RSpec.describe Idv::EnterPasswordController do
           end
 
           context 'when the USPS response is not a hash' do
-            let(:stub_usps_response) do
+            before do
               stub_request_enroll_non_hash_response
             end
 
@@ -529,7 +477,7 @@ RSpec.describe Idv::EnterPasswordController do
           end
 
           context 'when the USPS response is missing an enrollment code' do
-            let(:stub_usps_response) do
+            before do
               stub_request_enroll_invalid_response
             end
 
@@ -597,9 +545,6 @@ RSpec.describe Idv::EnterPasswordController do
                     allow(IdentityConfig.store).to receive(:proofing_device_profiling).
                       and_return(proofing_device_profiling_state)
                     idv_session.threatmetrix_review_status = review_status
-                  end
-
-                  before(:each) do
                     stub_request_token
                   end
 
