@@ -33,7 +33,7 @@ module Idv
         key: :welcome,
         controller: self,
         next_steps: [:agreement],
-        preconditions: ->(idv_session:, user:) { true },
+        preconditions: ->(idv_session:, user:) { !user.gpo_verification_pending_profile? },
         undo_step: ->(idv_session:, user:) do
           idv_session.welcome_visited = nil
           idv_session.document_capture_session_uuid = nil
