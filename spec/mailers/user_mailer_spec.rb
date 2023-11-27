@@ -177,11 +177,13 @@ RSpec.describe UserMailer, type: :mailer do
   describe '#new_device_sign_in' do
     date = 'February 25, 2019 15:02'
     location = 'Washington, DC'
+    device_name = 'Chrome 119 on macOS 10'
     disavowal_token = 'asdf1234'
     let(:mail) do
       UserMailer.with(user: user, email_address: email_address).new_device_sign_in(
         date: date,
         location: location,
+        device_name: device_name,
         disavowal_token: disavowal_token,
       )
     end
@@ -202,7 +204,10 @@ RSpec.describe UserMailer, type: :mailer do
           strip_tags(
             t(
               'user_mailer.new_device_sign_in.info_html',
-              date: date, location: location, app_name: APP_NAME,
+              date: date,
+              location: location,
+              device_name: device_name,
+              app_name: APP_NAME,
             ),
           ),
         )
@@ -217,6 +222,7 @@ RSpec.describe UserMailer, type: :mailer do
       mail = UserMailer.with(user: user, email_address: email_address).new_device_sign_in(
         date: date,
         location: location,
+        device_name: device_name,
         disavowal_token: disavowal_token,
       )
       expect(mail.to).to eq(nil)
