@@ -24,14 +24,12 @@ describe('InPersonPrepareStep', () => {
     expect(getByText('in_person_proofing.body.prepare.verify_step_post_office')).to.exist();
     expect(getByText('in_person_proofing.body.prepare.verify_step_enter_pii')).to.exist();
     expect(getByText('in_person_proofing.body.prepare.verify_step_enter_phone')).to.exist();
-    expect(getByText('in_person_proofing.body.prepare.verify_step_visit_post_office')).to.exist();
   });
 
   it('renders about and additional information steps', () => {
     const { getByText } = render(<InPersonPrepareStep {...DEFAULT_PROPS} />);
 
     expect(getByText('in_person_proofing.body.prepare.verify_step_about')).to.exist();
-    expect(getByText('in_person_proofing.body.prepare.additional_information')).to.exist();
   });
 
   context('Outage message', () => {

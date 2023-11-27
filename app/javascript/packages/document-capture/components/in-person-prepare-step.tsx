@@ -38,12 +38,7 @@ function InPersonPrepareStep({ toPreviousStep }) {
           heading={t('in_person_proofing.body.prepare.verify_step_enter_phone')}
           headingUnstyled
         />
-        <ProcessListItem
-          heading={t('in_person_proofing.body.prepare.verify_step_visit_post_office')}
-          headingUnstyled
-        />
       </ProcessList>
-      <p>{t('in_person_proofing.body.prepare.additional_information')}</p>
       {inPersonURL && flowPath === 'standard' ? (
         <FormStepsButton.Continue className="margin-y-5" />
       ) : (
