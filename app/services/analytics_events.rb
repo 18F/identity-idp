@@ -290,16 +290,14 @@ module AnalyticsEvents
   end
 
   # @param [String] message the warning
-  # @param [String] getting_started_ab_test_bucket Which initial IdV screen the user saw
   # @param [String] phone_question_ab_test_bucket Prompt user with phone question before doc auth
   # Logged when there is a non-user-facing error in the doc auth process, such as an unrecognized
   # field from a vendor
-  def doc_auth_warning(message: nil, getting_started_ab_test_bucket: nil,
+  def doc_auth_warning(message: nil,
                        phone_question_ab_test_bucket: nil, **extra)
     track_event(
       'Doc Auth Warning',
       message: message,
-      getting_started_ab_test_bucket: getting_started_ab_test_bucket,
       phone_question_ab_test_bucket: phone_question_ab_test_bucket,
       **extra,
     )
@@ -890,14 +888,6 @@ module AnalyticsEvents
     )
   end
 
-  def idv_doc_auth_getting_started_submitted(**extra)
-    track_event('IdV: doc auth getting_started submitted', **extra)
-  end
-
-  def idv_doc_auth_getting_started_visited(**extra)
-    track_event('IdV: doc auth getting_started visited', **extra)
-  end
-
   def idv_doc_auth_how_to_verify_submitted(**extra)
     track_event(:idv_doc_auth_how_to_verify_submitted, **extra)
   end
@@ -974,7 +964,6 @@ module AnalyticsEvents
   # @param [String] flow_path
   # @param [String] front_image_fingerprint Fingerprint of front image data
   # @param [String] back_image_fingerprint Fingerprint of back image data
-  # @param [String] getting_started_ab_test_bucket Which initial IdV screen the user saw
   # @param [String] phone_question_ab_test_bucket Prompt user with phone question before doc auth
   # @param [String] phone_with_camera the result of the phone question a/b test
   # The document capture image uploaded was locally validated during the IDV process
@@ -987,7 +976,6 @@ module AnalyticsEvents
     user_id: nil,
     front_image_fingerprint: nil,
     back_image_fingerprint: nil,
-    getting_started_ab_test_bucket: nil,
     phone_question_ab_test_bucket: nil,
     phone_with_camera: nil,
     **extra
@@ -1002,7 +990,6 @@ module AnalyticsEvents
       flow_path: flow_path,
       front_image_fingerprint: front_image_fingerprint,
       back_image_fingerprint: back_image_fingerprint,
-      getting_started_ab_test_bucket: getting_started_ab_test_bucket,
       phone_question_ab_test_bucket: phone_question_ab_test_bucket,
       phone_with_camera: phone_with_camera,
       **extra,
@@ -1024,7 +1011,6 @@ module AnalyticsEvents
   # @param [Float] vendor_request_time_in_ms Time it took to upload images & get a response.
   # @param [String] front_image_fingerprint Fingerprint of front image data
   # @param [String] back_image_fingerprint Fingerprint of back image data
-  # @param [String] getting_started_ab_test_bucket Which initial IdV screen the user saw
   # @param [String] phone_question_ab_test_bucket Prompt user with phone question before doc auth
   # @param [String] phone_with_camera the result of the phone question a/b test
   # The document capture image was uploaded to vendor during the IDV process
@@ -1043,7 +1029,6 @@ module AnalyticsEvents
     vendor_request_time_in_ms: nil,
     front_image_fingerprint: nil,
     back_image_fingerprint: nil,
-    getting_started_ab_test_bucket: nil,
     phone_question_ab_test_bucket: nil,
     phone_with_camera: nil,
     **extra
@@ -1065,7 +1050,6 @@ module AnalyticsEvents
       vendor_request_time_in_ms: vendor_request_time_in_ms,
       front_image_fingerprint: front_image_fingerprint,
       back_image_fingerprint: back_image_fingerprint,
-      getting_started_ab_test_bucket: getting_started_ab_test_bucket,
       phone_question_ab_test_bucket: phone_question_ab_test_bucket,
       phone_with_camera: phone_with_camera,
       **extra,
@@ -1080,7 +1064,6 @@ module AnalyticsEvents
   # @param [String] flow_path
   # @param [String] front_image_fingerprint Fingerprint of front image data
   # @param [String] back_image_fingerprint Fingerprint of back image data
-  # @param [String] getting_started_ab_test_bucket Which initial IdV screen the user saw
   # @param [Hash] classification_info document image side information, issuing country and type etc
   # The PII that came back from the document capture vendor was validated
   def idv_doc_auth_submitted_pii_validation(
@@ -1092,7 +1075,6 @@ module AnalyticsEvents
     user_id: nil,
     front_image_fingerprint: nil,
     back_image_fingerprint: nil,
-    getting_started_ab_test_bucket: nil,
     classification_info: {},
     **extra
   )
@@ -1106,7 +1088,6 @@ module AnalyticsEvents
       flow_path: flow_path,
       front_image_fingerprint: front_image_fingerprint,
       back_image_fingerprint: back_image_fingerprint,
-      getting_started_ab_test_bucket: getting_started_ab_test_bucket,
       classification_info: classification_info,
       **extra,
     )

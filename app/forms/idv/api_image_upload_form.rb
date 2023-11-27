@@ -155,7 +155,6 @@ module Idv
 
       @extra_attributes[:front_image_fingerprint] = front_image_fingerprint
       @extra_attributes[:back_image_fingerprint] = back_image_fingerprint
-      @extra_attributes.merge!(getting_started_ab_test_analytics_bucket)
       @extra_attributes.merge!(phone_question_ab_test_analytics_bucket)
       @extra_attributes
     end
@@ -286,7 +285,6 @@ module Idv
         warn_notifier: proc do |attrs|
           analytics&.doc_auth_warning(
             **attrs.
-                        merge(getting_started_ab_test_analytics_bucket).
                         merge(phone_question_ab_test_analytics_bucket),
           )
         end,
@@ -324,7 +322,6 @@ module Idv
           vendor_request_time_in_ms: vendor_request_time_in_ms,
         ).except(:classification_info).
         merge(acuant_sdk_upgrade_ab_test_data).
-        merge(getting_started_ab_test_analytics_bucket).
         merge(phone_question_ab_test_analytics_bucket),
       )
     end
@@ -353,13 +350,6 @@ module Idv
       {
         acuant_sdk_upgrade_ab_test_bucket:
           AbTests::ACUANT_SDK.bucket(document_capture_session.uuid),
-      }
-    end
-
-    def getting_started_ab_test_analytics_bucket
-      {
-        getting_started_ab_test_bucket:
-          AbTests::IDV_GETTING_STARTED.bucket(user_uuid),
       }
     end
 
