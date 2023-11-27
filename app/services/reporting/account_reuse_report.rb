@@ -6,6 +6,13 @@ module Reporting
       @report_date = report_date
     end
 
+    RSpec.configure do |rspec|
+      rspec.expect_with :rspec do |c|
+        # Or a very large value, if you do want to truncate at some point
+        c.max_formatted_output_length = nil
+      end
+    end
+
     # Return array of arrays
     def account_reuse_report
       account_reuse_table = []
@@ -19,7 +26,6 @@ module Reporting
 
       total_metric = ''
       total_reuse_report.each do |report_key, report_value|
-        puts("1 - #{report_value.inspect()}")
         report_results = report_value[:results]
 
         individual_metric = ''
@@ -151,7 +157,6 @@ module Reporting
 
       [sp_reuse_stats, agency_reuse_stats].each do |stats|
         if !stats[:results].nil? && !stats[:results].empty?
-
           # Count how many total users have multiples for both sps and agencies
           stats[:results].each do |result_entry|
             stats[:total_all_users] += result_entry[:num_all_users]
@@ -208,8 +213,6 @@ module Reporting
         ActiveRecord::Base.connection.execute(sp_all_sql)
       end
 
-      puts("2 - #{sp_all_results.as_json.inspect()}")
-
       sp_all_results.as_json
     end
 
@@ -242,8 +245,6 @@ module Reporting
       sp_idv_results = Reports::BaseReport.transaction_with_timeout do
         ActiveRecord::Base.connection.execute(sp_idv_sql)
       end
-
-      puts("3 - #{sp_idv_results.as_json.inspect()}")
 
       sp_idv_results.as_json
     end
@@ -279,8 +280,6 @@ module Reporting
       agency_all_results = Reports::BaseReport.transaction_with_timeout do
         ActiveRecord::Base.connection.execute(agency_all_sql)
       end
-
-      puts("4 - #{agency_all_results.as_json.inspect()}")
 
       agency_all_results.as_json
     end
@@ -318,8 +317,6 @@ module Reporting
       agency_idv_results = Reports::BaseReport.transaction_with_timeout do
         ActiveRecord::Base.connection.execute(agency_idv_sql)
       end
-
-      puts("5 - #{agency_idv_results.as_json.inspect()}")
 
       agency_idv_results.as_json
     end

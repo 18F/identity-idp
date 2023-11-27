@@ -94,12 +94,12 @@ RSpec.describe Reporting::AccountReuseReport do
     describe '#account_reuse_emailable_report' do
       it 'has the correct data' do
         expected_csv = [
-          ["Metric", "Num. all users", "% of accounts", "Num. IDV users", "% of accounts"],
-          ["2 apps", 3, 0.3, 3, 0.3],
-          ["3 apps", 2, 0.2, 2, 0.2],
-          ["2+ apps", 5, 0.5, 5, 0.5],
-          ["2 agencies", 5, 0.5, 5, 0.5],
-          ["2+ agencies", 5, 0.5, 5, 0.5],
+          ['Metric', 'Num. all users', '% of accounts', 'Num. IDV users', '% of accounts'],
+          ['2 apps', 3, 0.3, 3, 0.3],
+          ['3 apps', 2, 0.2, 2, 0.2],
+          ['2+ apps', 5, 0.5, 5, 0.5],
+          ['2 agencies', 5, 0.5, 5, 0.5],
+          ['2+ agencies', 5, 0.5, 5, 0.5],
         ]
 
         aggregate_failures do
@@ -107,7 +107,6 @@ RSpec.describe Reporting::AccountReuseReport do
             expect(actual).to eq(expected)
           end
         end
-  
       end
     end
   end
