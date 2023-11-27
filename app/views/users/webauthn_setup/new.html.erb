@@ -30,8 +30,11 @@
   <%= hidden_field_tag :client_data_json, '', id: 'client_data_json' %>
   <%= hidden_field_tag :authenticator_data_value, '', id: 'authenticator_data_value' %>
   <%= hidden_field_tag :transports, '', id: 'transports' %>
+
   <%= hidden_field_tag :platform_authenticator, @platform_authenticator, id: 'platform_authenticator' %>
-  
+  <% if @platform_authenticator %>
+    <%= hidden_field_tag 'name', @presenter.device_nickname, id: 'nickname' %>
+  <% else %>
       <%= render ValidatedFieldComponent.new(
             form: f,
             name: :name,
@@ -46,7 +49,7 @@
               value: @presenter.device_nickname,
             },
           ) %>
-    
+  <% end %> 
   <div class="margin-y-4 text-center" id="spinner" hidden>
     <%= image_tag(
           asset_url('loading-badge.gif'),

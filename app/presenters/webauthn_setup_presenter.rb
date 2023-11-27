@@ -86,8 +86,6 @@ class WebauthnSetupPresenter < SetupPresenter
   def device_nickname
     if @platform_authenticator
       recent_devices.first.nice_name
-    else
-      nil
     end
   end
 
