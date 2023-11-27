@@ -36,7 +36,7 @@ RSpec.describe Idv::OtpVerificationController do
 
   describe 'before_actions' do
     it 'includes before_actions from IdvSession' do
-      expect(subject).to have_actions(:before, :redirect_if_sp_context_needed)
+      expect(subject).to have_actions(:before, :redirect_unless_sp_requested_verification)
     end
   end
 
