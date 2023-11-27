@@ -5,7 +5,6 @@ module Idv
     include StepIndicatorConcern
 
     before_action :confirm_not_rate_limited
-    before_action :confirm_verify_info_step_needed
 
     def show
       analytics.idv_doc_auth_welcome_visited(**analytics_arguments)
