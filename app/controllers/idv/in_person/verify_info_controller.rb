@@ -55,10 +55,6 @@ module Idv
         'in_person'
       end
 
-      def pii_from_user
-        flow_session['pii_from_user']
-      end
-
       # state_id_type is hard-coded here because it's required for proofing against
       # AAMVA. We're sticking with driver's license because most states don't discern
       # between various ID types and driver's license is the most common one that will

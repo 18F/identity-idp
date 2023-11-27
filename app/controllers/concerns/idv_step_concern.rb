@@ -42,6 +42,10 @@ module IdvStepConcern
     redirect_to idv_mail_only_warning_url
   end
 
+  def pii_from_user
+    user_session.dig('idv/in_person', 'pii_from_user')
+  end
+
   def flow_path
     idv_session.flow_path
   end
