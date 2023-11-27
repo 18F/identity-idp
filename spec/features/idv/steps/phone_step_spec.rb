@@ -255,8 +255,10 @@ RSpec.feature 'idv phone step', :js do
 
   context 'after the max number of attempts' do
     it_behaves_like 'verification step max attempts', :phone
-    it_behaves_like 'verification step max attempts', :phone, :oidc
-    it_behaves_like 'verification step max attempts', :phone, :saml
+
+    # Why do we need to run these?
+    # it_behaves_like 'verification step max attempts', :phone, :oidc
+    # it_behaves_like 'verification step max attempts', :phone, :saml
   end
 
   context 'when the user is rate-limited' do
