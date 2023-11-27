@@ -84,7 +84,7 @@ These instructions work only if your development computer is an Apple product. Y
 
 6. In that menu item, click the "Connect via Network" option. Once you've done this you should be able to unplug the USB cable and continue with these steps. A screenshot:
 
-  ![develop-over-network](https://github.com/18F/identity-idp/assets/6818839/a672e33c-da63-4bd0-8e87-60bc6e89027c)
+   ![develop-over-network](https://github.com/18F/identity-idp/assets/6818839/a672e33c-da63-4bd0-8e87-60bc6e89027c)
 
 7. Within that menu item, you'll find a list of Safari browser tabs open on your iPhone. To see them, the iPhone must be unlocked, and the Safari browser must be displayed on the phone's screen.
 
