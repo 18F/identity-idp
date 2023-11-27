@@ -17,38 +17,36 @@ module Reporting
         '% of accounts',
       ]
 
+      total_metric = ''
       total_reuse_report.each do |report_key, report_value|
-        if account_reuse_table.length > 1
-          # Add a separator between the report sections
-          account_reuse_table <<
-            ['-----------', '--------------', '--------------', '---------------', '--------------']
-        end
-
         report_results = report_value[:results]
-        total_metric = ''
-        if report_key == :sp_reuse_stats
-          report_results.each do |result|
-            account_reuse_table <<
-              ["#{result[:num_sps]} apps", result[:num_all_users], result[:all_percent],
-               result[:num_idv_users], result[:idv_percent]]
+
+        individual_metric = ''
+        report_results.each do |result|
+          if report_key == :sp_reuse_stats
+            individual_metric = "#{result[:num_sps]} apps"
+            total_metric = '2+ apps'
+          elsif report_key == :agency_reuse_stats
+            individual_metric = "#{result[:num_agencies]} agencies"
+            total_metric = '2+ agencies'
           end
 
-          total_metric = '2+ apps'
+          account_reuse_table << [
+            individual_metric,
+            result[:num_all_users],
+            result[:all_percent],
+            result[:num_idv_users],
+            result[:idv_percent],
+          ]
         end
 
-        if report_key == :agency_reuse_stats
-          report_results.each do |result|
-            account_reuse_table <<
-              ["#{result[:num_agencies]} agencies", result[:num_all_users], result[:all_percent],
-               result[:num_idv_users], result[:idv_percent]]
-          end
-
-          total_metric = '2+ agencies'
-        end
-
-        account_reuse_table <<
-          [total_metric, report_value[:total_all_users], report_value[:total_all_percent],
-           report_value[:total_idv_users], report_value[:total_idv_percent]]
+        account_reuse_table << [
+          total_metric,
+          report_value[:total_all_users],
+          report_value[:total_all_percent],
+          report_value[:total_idv_users],
+          report_value[:total_idv_percent],
+        ]
       end
 
       account_reuse_table
@@ -150,7 +148,6 @@ module Reporting
       total_proofed = num_active_profiles
 
       [sp_reuse_stats, agency_reuse_stats].each do |stats|
-
         if !stats[:results].nil? && !stats[:results].empty?
 
           # Count how many total users have multiples for both sps and agencies
