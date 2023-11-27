@@ -54,10 +54,13 @@ RSpec.feature 'doc auth redo document capture', js: true do
       DocAuth::Mock::DocAuthMockClient.reset!
       attach_and_submit_images
 
+      expect(current_path).to eq(idv_ssn_path)
+      expect(page).to have_css('[role="status"]') # We verified your ID
+      complete_ssn_step
+
       expect(current_path).to eq(idv_verify_info_path)
       check t('forms.ssn.show')
       expect(page).to have_content(DocAuthHelper::GOOD_SSN)
-      expect(page).to have_css('[role="status"]') # We verified your ID
     end
 
     it 'document capture cannot be reached after submitting verify info step' do
@@ -79,6 +82,7 @@ RSpec.feature 'doc auth redo document capture', js: true do
       expect(page).to have_current_path(idv_document_capture_path)
       DocAuth::Mock::DocAuthMockClient.reset!
       attach_and_submit_images
+      complete_ssn_step
       complete_verify_step
 
       expect(page).to have_current_path(idv_phone_path)
@@ -142,10 +146,13 @@ RSpec.feature 'doc auth redo document capture', js: true do
         DocAuth::Mock::DocAuthMockClient.reset!
         attach_and_submit_images
 
+        expect(current_path).to eq(idv_ssn_path)
+        expect(page).to have_css('[role="status"]') # We verified your ID
+        complete_ssn_step
+
         expect(current_path).to eq(idv_verify_info_path)
         check t('forms.ssn.show')
         expect(page).to have_content(DocAuthHelper::GOOD_SSN)
-        expect(page).to have_css('[role="status"]') # We verified your ID
       end
     end
   end

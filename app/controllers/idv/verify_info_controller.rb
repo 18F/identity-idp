@@ -6,12 +6,13 @@ module Idv
     include Steps::ThreatMetrixStepHelper
 
     before_action :confirm_not_rate_limited_after_doc_auth, except: [:show]
-    before_action :confirm_ssn_step_complete
+    before_action :confirm_step_allowed
     before_action :confirm_verify_info_step_needed
 
     def show
       @step_indicator_steps = step_indicator_steps
       @ssn = idv_session.ssn
+      @pii = pii
 
       analytics.idv_doc_auth_verify_visited(**analytics_arguments)
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
@@ -22,6 +23,7 @@ module Idv
     end
 
     def update
+      clear_future_steps!
       success = shared_update
 
       if success
@@ -33,6 +35,21 @@ module Idv
 
         redirect_to idv_verify_info_url
       end
+    end
+
+    def self.step_info
+      Idv::StepInfo.new(
+        key: :verify_info,
+        controller: controller_name,
+        next_steps: [:success], # [:phone],
+        preconditions: ->(idv_session:, user:) do
+          idv_session.ssn && idv_session.document_capture_complete?
+        end,
+        undo_step: ->(idv_session:, user:) do
+          idv_session.resolution_successful = nil
+          idv_session.address_edited = nil
+        end,
+      )
     end
 
     private

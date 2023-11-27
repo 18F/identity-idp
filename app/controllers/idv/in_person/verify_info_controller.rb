@@ -69,6 +69,11 @@ module Idv
         }.merge(ab_test_analytics_buckets).
           merge(**extra_analytics_properties)
       end
+
+      def confirm_ssn_step_complete
+        return if pii.present? && idv_session.ssn.present?
+        redirect_to prev_url
+      end
     end
   end
 end

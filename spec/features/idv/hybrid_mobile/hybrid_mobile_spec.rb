@@ -241,7 +241,9 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
       end
 
       perform_in_browser(:desktop) do
-        expect(page).to have_current_path(idv_verify_info_path, wait: 10)
+        expect(page).to have_current_path(idv_ssn_path, wait: 10)
+        complete_ssn_step
+        expect(page).to have_current_path(idv_verify_info_path)
 
         # verify orig pii no longer displayed
         expect(page).not_to have_text('DAVID')
@@ -297,7 +299,9 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
       end
 
       perform_in_browser(:desktop) do
-        expect(page).to have_current_path(idv_verify_info_path, wait: 10)
+        expect(page).to have_current_path(idv_ssn_path, wait: 10)
+        complete_ssn_step
+        expect(page).to have_current_path(idv_verify_info_path)
 
         # verify orig pii no longer displayed
         expect(page).not_to have_text('DAVID')

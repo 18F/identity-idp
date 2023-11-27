@@ -3,7 +3,7 @@ module Idv
     include IdvStepConcern
 
     before_action :confirm_not_rate_limited
-    before_action :confirm_document_capture_not_complete
+    before_action :confirm_verify_info_step_needed
 
     def show
       analytics.idv_doc_auth_getting_started_visited(**analytics_arguments)
