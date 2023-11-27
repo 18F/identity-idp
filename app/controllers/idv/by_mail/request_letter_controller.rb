@@ -1,6 +1,7 @@
 module Idv
   module ByMail
     class RequestLetterController < ApplicationController
+      include Idv::AvailabilityConcern
       include IdvStepConcern
       skip_before_action :confirm_no_pending_gpo_profile
       include Idv::StepIndicatorConcern

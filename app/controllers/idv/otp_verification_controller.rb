@@ -1,5 +1,6 @@
 module Idv
   class OtpVerificationController < ApplicationController
+    include Idv::AvailabilityConcern
     include IdvSession
     include StepIndicatorConcern
     include PhoneOtpRateLimitable

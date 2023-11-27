@@ -1,6 +1,7 @@
 module Idv
   module InPerson
     class SsnController < ApplicationController
+      include Idv::AvailabilityConcern
       include IdvStepConcern
       include StepIndicatorConcern
       include Steps::ThreatMetrixStepHelper

@@ -1,5 +1,6 @@
 module Idv
   class DocumentCaptureController < ApplicationController
+    include Idv::AvailabilityConcern
     include AcuantConcern
     include DocumentCaptureConcern
     include IdvStepConcern

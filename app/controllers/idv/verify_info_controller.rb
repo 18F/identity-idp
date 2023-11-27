@@ -1,5 +1,6 @@
 module Idv
   class VerifyInfoController < ApplicationController
+    include Idv::AvailabilityConcern
     include IdvStepConcern
     include StepIndicatorConcern
     include VerifyInfoConcern

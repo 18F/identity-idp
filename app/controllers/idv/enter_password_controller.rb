@@ -1,5 +1,7 @@
 module Idv
   class EnterPasswordController < ApplicationController
+    include Idv::AvailabilityConcern
+
     before_action :personal_key_confirmed
 
     include IdvStepConcern

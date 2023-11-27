@@ -1,5 +1,6 @@
 module Idv
   class HowToVerifyController < ApplicationController
+    include Idv::AvailabilityConcern
     include IdvStepConcern
     include RenderConditionConcern
 

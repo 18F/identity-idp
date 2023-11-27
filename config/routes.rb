@@ -307,11 +307,6 @@ Rails.application.routes.draw do
       get '/activated' => 'idv#activated'
     end
     scope '/verify', module: 'idv', as: 'idv' do
-      if !FeatureManagement.idv_available?
-        # IdV has been disabled.
-        match '/*path' => 'unavailable#show', via: %i[get post]
-      end
-
       get '/mail_only_warning' => 'mail_only_warning#show'
       get '/personal_key' => 'personal_key#show'
       post '/personal_key' => 'personal_key#update'

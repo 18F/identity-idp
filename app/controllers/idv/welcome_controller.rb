@@ -1,5 +1,6 @@
 module Idv
   class WelcomeController < ApplicationController
+    include Idv::AvailabilityConcern
     include IdvStepConcern
     include StepIndicatorConcern
 
