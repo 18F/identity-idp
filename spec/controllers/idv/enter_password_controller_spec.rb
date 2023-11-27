@@ -43,8 +43,7 @@ RSpec.describe Idv::EnterPasswordController do
       expect(subject).to have_actions(
         :before,
         :confirm_two_factor_authenticated,
-        :confirm_verify_info_step_complete,
-        :confirm_address_step_complete,
+        :confirm_step_allowed,
       )
     end
 
@@ -178,12 +177,12 @@ RSpec.describe Idv::EnterPasswordController do
       end
     end
 
-    it 'redirects to the verify info controller if the user has not completed it' do
-      subject.idv_session.resolution_successful = nil
+    it 'redirects to phone step if the user has not completed it' do
+      subject.idv_session.user_phone_confirmation = nil
 
       get :new
 
-      expect(response).to redirect_to(idv_verify_info_url)
+      expect(response).to redirect_to(idv_phone_url)
     end
   end
 
