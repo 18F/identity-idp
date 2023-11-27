@@ -145,7 +145,7 @@ RSpec.describe Idv::PhoneQuestionController do
     let(:analytics_name) { :idv_doc_auth_phone_question_submitted }
 
     it 'invalidates future steps' do
-      expect(subject).to receive(:clear_invalid_steps!)
+      expect(subject).to receive(:clear_future_steps!)
 
       get :phone_with_camera
     end
@@ -173,7 +173,7 @@ RSpec.describe Idv::PhoneQuestionController do
     let(:analytics_name) { :idv_doc_auth_phone_question_submitted }
 
     it 'invalidates future steps' do
-      expect(subject).to receive(:clear_invalid_steps!)
+      expect(subject).to receive(:clear_future_steps!)
 
       get :phone_without_camera
     end

@@ -60,7 +60,7 @@ module Idv
       profile_maker = build_profile_maker(user_password)
       profile = profile_maker.save_profile(
         fraud_pending_reason: threatmetrix_fraud_pending_reason,
-        gpo_verification_needed: gpo_verification_needed?,
+        gpo_verification_needed: !phone_confirmed? || verify_by_mail?,
         in_person_verification_needed: current_user.has_in_person_enrollment?,
       )
 
@@ -91,8 +91,8 @@ module Idv
       session[:personal_key_acknowledged] = true
     end
 
-    def gpo_verification_needed?
-      !phone_confirmed? || address_verification_mechanism == 'gpo'
+    def verify_by_mail?
+      address_verification_mechanism == 'gpo'
     end
 
     def vendor_params
@@ -168,16 +168,12 @@ module Idv
       resolution_successful
     end
 
-    def address_step_complete?
-      if address_verification_mechanism == 'gpo'
-        true
-      else
-        phone_confirmed?
-      end
+    def phone_or_address_step_complete?
+      verify_by_mail? || phone_confirmed?
     end
 
     def address_mechanism_chosen?
-      vendor_phone_confirmation == true || address_verification_mechanism == 'gpo'
+      vendor_phone_confirmation == true || verify_by_mail?
     end
 
     def phone_confirmed?

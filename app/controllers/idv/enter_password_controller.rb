@@ -2,8 +2,6 @@ module Idv
   class EnterPasswordController < ApplicationController
     include IdvStepConcern
     include StepIndicatorConcern
-    include PhoneConfirmation
-    include FraudReviewConcern
 
     before_action :confirm_verify_info_step_complete
     before_action :confirm_address_step_complete
@@ -19,14 +17,14 @@ module Idv
       Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
         call(:encrypt, :view, true)
       analytics.idv_enter_password_visited(
-        address_verification_method: address_verification_method,
+        address_verification_method: idv_session.address_verification_mechanism,
         **ab_test_analytics_buckets,
       )
 
       @title = title
       @heading = heading
 
-      @verifying_by_mail = address_verification_method == 'gpo'
+      @verify_by_mail = idv_session.verify_by_mail?
     end
 
     def create
@@ -35,7 +33,7 @@ module Idv
       init_profile
 
       flash[:success] =
-        if gpo_user_flow?
+        if idv_session.verify_by_mail?
           t('idv.messages.gpo.letter_on_the_way')
         else
           t('idv.messages.confirm')
@@ -69,18 +67,20 @@ module Idv
     end
 
     def step_indicator_step
-      return :secure_account unless address_verification_method == 'gpo'
+      return :secure_account unless idv_session.verify_by_mail?
       :get_a_letter
     end
 
     private
 
     def title
-      gpo_user_flow? ? t('titles.idv.enter_password_letter') : t('titles.idv.enter_password')
+      idv_session.verify_by_mail? ?
+        t('titles.idv.enter_password_letter')
+        : t('titles.idv.enter_password')
     end
 
     def heading
-      if gpo_user_flow?
+      if idv_session.verify_by_mail?
         t('idv.titles.session.enter_password_letter', app_name: APP_NAME)
       else
         t('idv.titles.session.enter_password', app_name: APP_NAME)
@@ -109,14 +109,10 @@ module Idv
       @gpo_mail_service ||= Idv::GpoMail.new(current_user)
     end
 
-    def address_verification_method
-      user_session.with_indifferent_access.dig('idv', 'address_verification_mechanism')
-    end
-
     def init_profile
       idv_session.create_profile_from_applicant_with_password(password)
 
-      if idv_session.address_verification_mechanism == 'gpo'
+      if idv_session.verify_by_mail?
         current_user.send_email_to_all_addresses(:letter_reminder)
         analytics.idv_gpo_address_letter_enqueued(
           enqueued_at: Time.zone.now,
@@ -170,15 +166,11 @@ module Idv
     end
 
     def next_step
-      if gpo_user_flow?
+      if idv_session.verify_by_mail?
         idv_letter_enqueued_url
       else
         idv_personal_key_url
       end
-    end
-
-    def gpo_user_flow?
-      idv_session.address_verification_mechanism == 'gpo'
     end
 
     def handle_request_enroll_exception(err)

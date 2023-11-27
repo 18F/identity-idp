@@ -5,7 +5,7 @@ module Idv
     include GettingStartedAbTestConcern
 
     before_action :confirm_not_rate_limited
-    before_action :confirm_document_capture_not_complete
+    before_action :confirm_verify_info_step_needed
     before_action :maybe_redirect_for_getting_started_ab_test
 
     def show
@@ -23,7 +23,7 @@ module Idv
     end
 
     def update
-      clear_invalid_steps!
+      clear_future_steps!
       analytics.idv_doc_auth_welcome_submitted(**analytics_arguments)
 
       create_document_capture_session
@@ -40,7 +40,10 @@ module Idv
         controller: controller_name,
         next_steps: [:agreement],
         preconditions: ->(idv_session:, user:) { true },
-        undo_step: ->(idv_session:, user:) { idv_session.welcome_visited = nil },
+        undo_step: ->(idv_session:, user:) do
+          idv_session.welcome_visited = nil
+          idv_session.document_capture_session_uuid = nil
+        end,
       )
     end
 
