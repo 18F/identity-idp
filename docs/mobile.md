@@ -82,7 +82,7 @@ These instructions work only if your development computer is an Apple product. Y
 
 5. Revisit the Safari **Develop** menu of your laptop. You'll see a menu item that wasn't there before: the name of your phone.
 
-6. In that menu item, click the "Connect via Network" option. Once you've done this you should be able to unplug the USB cable and continue with these steps. A screenshot:
+6. In that menu item, click the "Connect via Network" option. This step is optional, but will enable you to debug over your wifi network without the USB cable. Once you've checked this option you can unplug the USB cable and continue with these steps. If you don't check this option, you can continue these steps with the USB cable connecting your iPhone and computer. A screenshot:
 
    ![develop-over-network](https://github.com/18F/identity-idp/assets/6818839/a672e33c-da63-4bd0-8e87-60bc6e89027c)
 
