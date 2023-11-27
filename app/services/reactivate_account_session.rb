@@ -40,7 +40,7 @@ class ReactivateAccountSession
   # @return [Pii::Attributes, nil]
   def decrypted_pii
     return unless validated_personal_key?
-    Pii::Cacher.new(@user, session).fetch
+    Pii::Cacher.new(@user, session).fetch(@user.password_reset_profile.id)
   end
 
   private
