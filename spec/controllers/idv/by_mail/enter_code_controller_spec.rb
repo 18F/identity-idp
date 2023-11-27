@@ -1,6 +1,47 @@
 require 'rails_helper'
 
 RSpec.describe Idv::ByMail::EnterCodeController do
+  describe 'something' do
+    let(:params) { {} }
+    let(:session) { {} }
+    let(:pii_cacher) { Pii::Cacher.new(user, session) }
+
+    before do
+      allow(Pii::Cacher).to receive(:new).and_return(pii_cacher)
+      allow(pii_cacher).to receive(:fetch).and_call_original
+
+      stub_sign_in(user)
+      get :index, params: params, session: session
+    end
+
+    context 'when the user has no profiles' do
+      let(:user) { create(:user) }
+
+      it 'uses no PII' do
+        expect(pii_cacher).not_to have_received(:fetch)
+      end
+    end
+
+    context 'when the user has a verify by mail (GPO) pending profile' do
+      let(:user) { create(:user, :with_pending_gpo_profile) }
+      let(:pending_profile) { user.gpo_verification_pending_profile }
+
+      it 'uses the PII from the pending profile' do
+        expect(pii_cacher).to have_received(:fetch).with(pending_profile.id)
+      end
+    end
+
+    context 'when the user has an active profile, but no verify by mail (GPO) profile' do
+      let(:user) { create(:user, :fully_registered) }
+
+      it 'uses no PII' do
+        expect(pii_cacher).not_to have_received(:fetch)
+      end
+    end
+  end
+end
+
+RSpec.describe Idv::ByMail::EnterCodeController do
   let(:has_pending_profile) { true }
   let(:success) { true }
   let(:otp) { 'ABC123' }
