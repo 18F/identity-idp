@@ -46,7 +46,7 @@ module Idv
         root: Idv::StepInfo.new(
           key: :root,
           controller: AccountsController,
-          next_steps: [:welcome],
+          next_steps: [:request_letter, :welcome],
           preconditions: ->(idv_session:, user:) { true },
           undo_step: ->(idv_session:, user:) { true },
         ),

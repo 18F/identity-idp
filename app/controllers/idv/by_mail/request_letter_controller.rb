@@ -48,7 +48,9 @@ module Idv
           controller: self,
           action: :index,
           next_steps: [:enter_password],
-          preconditions: ->(idv_session:, user:) { idv_session.verify_info_step_complete? },
+          preconditions: ->(idv_session:, user:) do
+            idv_session.verify_info_step_complete? || user.gpo_verification_pending_profile?
+          end,
           undo_step: ->(idv_session:, user:) { idv_session.address_verification_mechanism = nil },
         )
       end
