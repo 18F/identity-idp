@@ -172,10 +172,6 @@ en:
       ssn_label: Social Security number
       state: State
       zipcode: ZIP Code
-    getting_started:
-      no_js_header: You must enable JavaScript to verify your identity.
-      no_js_intro: '%{sp_name} needs you to verify your identity. You need to enable
-        JavaScript to continue this process.'
     gpo:
       alert_info: 'We sent a letter with your verification code to:'
       alert_rate_limit_warning_html: You can’t request more letters right now. Your

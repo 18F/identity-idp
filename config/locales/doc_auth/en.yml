@@ -141,23 +141,6 @@ en:
       choose_file_html: Drag file here or <lg-underline>choose from folder</lg-underline>
       doc_success: We verified your information
       selected_file: Selected file
-    getting_started:
-      instructions:
-        bullet1: Add photos of your ID
-        bullet2: Enter your Social Security number
-        bullet3: Match to your phone number
-        bullet4: Re-enter your %{app_name} password
-        consent: By checking this box, you are letting %{app_name} ask for, use, keep,
-          and share your personal information. We will use it to verify your
-          identity.
-        getting_started: 'You’ll need to:'
-        learn_more: Learn more about our privacy and security measures
-        text1: Use your driver’s license or state ID card. Other forms of ID are not
-          accepted.
-        text2: You will not need your physical SSN card.
-        text3: Your phone number matches you to your personal information. After you
-          match, we’ll send you a code.
-        text4: Your password saves and encrypts your personal information.
     headings:
       address: Update your mailing address
       back: Back of your driver’s license or state ID
@@ -213,9 +196,6 @@ en:
       exit:
         with_sp: Exit %{app_name} and return to %{sp_name}
         without_sp: Exit identity verification and go to your account page
-      getting_started_html: '%{sp_name} needs to make sure you are you — not someone
-        pretending to be you. %{link_html}'
-      getting_started_learn_more: Learn more about what you need to verify your identity
       how_to_verify: You have the option to verify your identity online, or in person
         at a participating Post Office
       how_to_verify_troubleshooting_options_header: Want to learn more about how to verify your identity?

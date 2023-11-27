@@ -124,7 +124,6 @@ RSpec.describe Idv::ApiImageUploadForm do
           flow_path: anything,
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
-          getting_started_ab_test_bucket: :welcome_default,
           phone_question_ab_test_bucket: :bypass_phone_question,
           phone_with_camera: nil,
         )
@@ -162,7 +161,6 @@ RSpec.describe Idv::ApiImageUploadForm do
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
           doc_type_supported: boolean,
-          getting_started_ab_test_bucket: :welcome_default,
           phone_question_ab_test_bucket: :bypass_phone_question,
           phone_with_camera: nil,
         )
@@ -226,7 +224,6 @@ RSpec.describe Idv::ApiImageUploadForm do
           flow_path: anything,
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
-          getting_started_ab_test_bucket: :welcome_default,
           phone_question_ab_test_bucket: :bypass_phone_question,
           phone_with_camera: nil,
         )
@@ -361,7 +358,6 @@ RSpec.describe Idv::ApiImageUploadForm do
           flow_path: anything,
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
-          getting_started_ab_test_bucket: :welcome_default,
           phone_question_ab_test_bucket: :bypass_phone_question,
           phone_with_camera: nil,
           side: 'both',

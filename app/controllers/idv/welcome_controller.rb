@@ -2,11 +2,9 @@ module Idv
   class WelcomeController < ApplicationController
     include IdvStepConcern
     include StepIndicatorConcern
-    include GettingStartedAbTestConcern
 
     before_action :confirm_not_rate_limited
     before_action :confirm_verify_info_step_needed
-    before_action :maybe_redirect_for_getting_started_ab_test
 
     def show
       analytics.idv_doc_auth_welcome_visited(**analytics_arguments)
@@ -16,10 +14,6 @@ module Idv
 
       @sp_name = decorated_sp_session.sp_name || APP_NAME
       @title = t('doc_auth.headings.getting_started', sp_name: @sp_name)
-
-      @ab_test_bucket = getting_started_ab_test_bucket
-
-      render :show
     end
 
     def update
