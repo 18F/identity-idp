@@ -1,3 +1,9 @@
+## Unreleased
+
+### Breaking Changes
+
+- Requires Node.js v18 or newer
+
 ## 2.0.0
 
 ### Breaking Changes
