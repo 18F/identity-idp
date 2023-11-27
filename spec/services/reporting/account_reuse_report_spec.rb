@@ -48,7 +48,7 @@ RSpec.describe Reporting::AccountReuseReport do
         issuer: sp_c,
         iaa: 'iaa789',
         friendly_name: 'The Other Other App',
-        agency: agency3,
+        agency: agency2,
       )
 
       # Seed the database with data to be queried
@@ -93,17 +93,21 @@ RSpec.describe Reporting::AccountReuseReport do
 
     describe '#account_reuse_emailable_report' do
       it 'has the correct data' do
-        expect(report.account_reuse_emailable_report.table).to eq(
-          [
-            ["Metric", "Num. all users", "% of accounts", "Num. IDV users", "% of accounts"],
-            ["2 apps", 3, 0.3, 3, 0.3],
-            ["3 apps", 2, 0.2, 2, 0.2],
-            ["2+ apps", 5, 0.5, 5, 0.5],
-            ["2 agencies", 3, 0.3, 3, 0.3],
-            ["3 agencies", 2, 0.2, 2, 0.2],
-            ["2+ agencies", 5, 0.5, 5, 0.5],
-          ],
-        )
+        expected_csv = [
+          ["Metric", "Num. all users", "% of accounts", "Num. IDV users", "% of accounts"],
+          ["2 apps", 3, 0.3, 3, 0.3],
+          ["3 apps", 2, 0.2, 2, 0.2],
+          ["2+ apps", 5, 0.5, 5, 0.5],
+          ["2 agencies", 5, 0.5, 5, 0.5],
+          ["2+ agencies", 5, 0.5, 5, 0.5],
+        ]
+
+        aggregate_failures do
+          report.account_reuse_emailable_report.table.zip(expected_csv).each do |actual, expected|
+            expect(actual).to eq(expected)
+          end
+        end
+  
       end
     end
   end
