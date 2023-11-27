@@ -19,6 +19,7 @@ module Reporting
 
       total_metric = ''
       total_reuse_report.each do |report_key, report_value|
+        puts("1 - #{report_value.inspect()}")
         report_results = report_value[:results]
 
         individual_metric = ''
@@ -206,6 +207,8 @@ module Reporting
         ActiveRecord::Base.connection.execute(sp_all_sql)
       end
 
+      puts("2 - #{sp_all_results.as_json.inspect()}")
+
       sp_all_results.as_json
     end
 
@@ -238,6 +241,8 @@ module Reporting
       sp_idv_results = Reports::BaseReport.transaction_with_timeout do
         ActiveRecord::Base.connection.execute(sp_idv_sql)
       end
+
+      puts("3 - #{sp_idv_results.as_json.inspect()}")
 
       sp_idv_results.as_json
     end
@@ -273,6 +278,8 @@ module Reporting
       agency_all_results = Reports::BaseReport.transaction_with_timeout do
         ActiveRecord::Base.connection.execute(agency_all_sql)
       end
+
+      puts("4 - #{agency_all_results.as_json.inspect()}")
 
       agency_all_results.as_json
     end
@@ -311,6 +318,8 @@ module Reporting
         ActiveRecord::Base.connection.execute(agency_idv_sql)
       end
 
+      puts("5 - #{agency_idv_results.as_json.inspect()}")
+
       agency_idv_results.as_json
     end
 
@@ -335,12 +344,8 @@ module Reporting
 
     def params
       {
-        query_date: first_day_of_report_month,
+        query_date: report_date.beginning_of_month,
       }.transform_values { |v| ActiveRecord::Base.connection.quote(v) }
-    end
-
-    def first_day_of_report_month
-      report_date.beginning_of_month.strftime('%Y-%m-%d')
     end
   end
 end
