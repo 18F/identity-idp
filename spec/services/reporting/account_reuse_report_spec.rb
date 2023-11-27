@@ -95,10 +95,13 @@ RSpec.describe Reporting::AccountReuseReport do
       it 'has the correct data' do
         expect(report.account_reuse_emailable_report.table).to eq(
           [
-            ['Num. SPs', 'Num. users', 'Percentage'],
-            [2, 3, 0.3],
-            [3, 2, 0.2],
-            ['Total (all >1)', 5, 0.5],
+            ["Metric", "Num. all users", "% of accounts", "Num. IDV users", "% of accounts"],
+            ["2 apps", 3, 0.3, 3, 0.3],
+            ["3 apps", 2, 0.2, 2, 0.2],
+            ["2+ apps", 5, 0.5, 5, 0.5],
+            ["2 agencies", 3, 0.3, 3, 0.3],
+            ["3 agencies", 2, 0.2, 2, 0.2],
+            ["2+ agencies", 5, 0.5, 5, 0.5],
           ],
         )
       end

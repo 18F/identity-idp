@@ -86,48 +86,49 @@ module Reporting
       }
 
       sp_reuse_results_idv.each do |result|
-        reuse_results[:sp][result[:num_sps]] = {
-          num_sps: result[:num_sps],
-          num_idv_users: result[:num_idv_users],
+        reuse_results[:sp][result['num_sps']] = {
+          num_sps: result['num_sps'],
+          num_idv_users: result['num_idv_users'],
           num_all_users: 0, # Fill it in with 'all' results later
         }
       end
       sp_reuse_results_all.each do |result|
-        if reuse_results[:sp][result[:num_sps]].is_a?(Hash)
+        if reuse_results[:sp][result['num_sps']].is_a?(Hash)
           # Hash exists, so replace the zero placeholder value
-          reuse_results[:sp][result[:num_sps]][:num_all_users] = result[:num_all_users]
+          reuse_results[:sp][result['num_sps']][:num_all_users] = result['num_all_users']
         else
-          reuse_results[:sp][result[:num_sps]] = {
-            num_sps: result[:num_sps],
+          reuse_results[:sp][result['num_sps']] = {
+            num_sps: result['num_sps'],
             num_idv_users: 0, # Since it didn't exist, fill with zero 'idv' results
-            num_all_users: result[:num_all_users],
+            num_all_users: result['num_all_users'],
           }
         end
       end
       agency_reuse_results_idv.each do |result|
-        reuse_results[:agency][result[:num_agencies]] = {
-          num_agencies: result[:num_agencies],
-          num_idv_users: result[:num_idv_users],
+        reuse_results[:agency][result['num_agencies']] = {
+          num_agencies: result['num_agencies'],
+          num_idv_users: result['num_idv_users'],
           num_all_users: 0, # Fill it in with 'all' results later
         }
       end
       agency_reuse_results_all.each do |result|
-        if reuse_results[:agency][result[:num_agencies]].is_a?(Hash)
+        if reuse_results[:agency][result['num_agencies']].is_a?(Hash)
           # Hash exists, so replace the zero placeholder value
-          reuse_results[:agency][result[:num_agencies]][:num_all_users] = result[:num_all_users]
+          reuse_results[:agency][result['num_agencies']][:num_all_users] = result['num_all_users']
         else
-          reuse_results[:agency][result[:num_agencies]] = {
-            num_agencies: result[:num_agencies],
+          reuse_results[:agency][result['num_agencies']] = {
+            num_agencies: result['num_agencies'],
             num_idv_users: 0, # Since it didn't exist, fill with zero 'idv' results
-            num_all_users: result[:num_all_users],
+            num_all_users: result['num_all_users'],
           }
         end
       end
 
-      reuse_results.each do |results|
-        if results.length > 1
+      reuse_results.each do |results_key, results_value|
+        if results_value.length > 1
           # If there are results, then remove the zero placeholder
-          results[0] = nil
+          results_value[0] = nil
+          reuse_results[results_key] = results_value.compact
         end
       end
 
@@ -344,7 +345,7 @@ module Reporting
 
     def params
       {
-        query_date: report_date.beginning_of_month,
+        query_date: report_date.end_of_day,
       }.transform_values { |v| ActiveRecord::Base.connection.quote(v) }
     end
   end
