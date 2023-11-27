@@ -4,13 +4,13 @@ RSpec.describe 'two_factor_authentication/sms_opt_in/new.html.erb' do
   let(:phone) { '1-888-867-5309' }
   let(:phone_configuration) { build(:phone_configuration, phone: phone) }
   let(:phone_number_opt_out) { PhoneNumberOptOut.create_or_find_with_phone(phone) }
-  let(:other_mfa_options_url) { nil }
+  let(:presenter) { TwoFactorAuthCode::SmsOptInPresenter.new }
   let(:cancel_url) { '/account' }
 
   before do
     assign(:phone_configuration, phone_configuration)
     assign(:phone_number_opt_out, phone_number_opt_out)
-    assign(:other_mfa_options_url, other_mfa_options_url)
+    assign(:presenter, presenter)
     assign(:cancel_url, cancel_url)
     allow(view).to receive(:user_signing_up?).and_return(false)
   end
@@ -21,30 +21,21 @@ RSpec.describe 'two_factor_authentication/sms_opt_in/new.html.erb' do
     expect(rendered).to have_content('(***) ***-5309')
   end
 
-  context 'other authentication methods' do
-    context 'without an other_mfa_options_url' do
-      let(:other_mfa_options_url) { nil }
+  it 'renders troubleshooting options' do
+    render
 
-      it 'omits the other auth methods section' do
-        render
-
-        expect(rendered).to_not have_content(t('two_factor_authentication.opt_in.cant_use_phone'))
-        expect(rendered).to_not have_content(t('two_factor_authentication.login_options_link_text'))
-      end
-    end
-
-    context 'with an other_mfa_options_url' do
-      let(:other_mfa_options_url) { '/other' }
-
-      it 'links to other options' do
-        render
-
-        expect(rendered).to have_content(t('two_factor_authentication.opt_in.cant_use_phone'))
-        expect(rendered).to have_link(
-          t('two_factor_authentication.login_options_link_text'),
-          href: other_mfa_options_url,
-        )
-      end
-    end
+    expect(rendered).to have_link(
+      t('two_factor_authentication.login_options_link_text'),
+      href: login_two_factor_options_path,
+    )
+    expect(rendered).to have_link(
+      t('two_factor_authentication.learn_more'),
+      href: help_center_redirect_path(
+        category: 'get-started',
+        article: 'authentication-options',
+        flow: :two_factor_authentication,
+        step: :sms_opt_in,
+      ),
+    )
   end
 end
