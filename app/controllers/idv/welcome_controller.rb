@@ -14,8 +14,6 @@ module Idv
 
       @sp_name = decorated_sp_session.sp_name || APP_NAME
       @title = t('doc_auth.headings.getting_started', sp_name: @sp_name)
-
-      render :show
     end
 
     def update
