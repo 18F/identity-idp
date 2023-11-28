@@ -206,60 +206,6 @@ RSpec.describe 'IdvStepConcern' do
     end
   end
 
-  describe '#confirm_verify_info_step_complete' do
-    controller(idv_step_controller_class) do
-      before_action :confirm_verify_info_step_complete
-    end
-
-    before(:each) do
-      sign_in(user)
-      routes.draw do
-        get 'show' => 'anonymous#show'
-      end
-    end
-
-    context 'the user has completed the verify info step' do
-      it 'does not redirect and renders the view' do
-        idv_session.resolution_successful = true
-
-        get :show
-
-        expect(response.body).to eq('Hello')
-        expect(response.status).to eq(200)
-      end
-    end
-
-    context 'the user has not completed the verify info step' do
-      it 'redirects to the remote verify info step' do
-        idv_session.resolution_successful = nil
-
-        get :show
-
-        expect(response).to redirect_to(idv_verify_info_url)
-      end
-    end
-
-    context 'the user has not completed the verify info step with an in-person enrollment' do
-      let(:selected_location_details) do
-        JSON.parse(UspsInPersonProofing::Mock::Fixtures.enrollment_selected_location_details)
-      end
-
-      it 'redirects to the in-person verify info step' do
-        idv_session.resolution_successful = nil
-
-        InPersonEnrollment.find_or_create_by(
-          user: user,
-        ).update!(
-          selected_location_details: selected_location_details,
-        )
-
-        get :show
-
-        expect(response).to redirect_to(idv_in_person_verify_info_url)
-      end
-    end
-  end
-
   describe '#confirm_letter_recently_enqueued' do
     controller(idv_step_controller_class) do
       before_action :confirm_letter_recently_enqueued

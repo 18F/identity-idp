@@ -10,7 +10,6 @@ module Idv
 
     before_action :confirm_not_rate_limited_for_phone_address_verification, except: [:new]
     before_action :confirm_step_allowed
-    before_action :confirm_verify_info_step_complete
     before_action :set_idv_form
 
     def new

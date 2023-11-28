@@ -67,16 +67,6 @@ module IdvStepConcern
 
   private
 
-  def confirm_verify_info_step_complete
-    return if idv_session.verify_info_step_complete?
-
-    if current_user.has_in_person_enrollment?
-      redirect_to idv_in_person_verify_info_url
-    else
-      redirect_to idv_verify_info_url
-    end
-  end
-
   def confirm_verify_info_step_needed
     return unless idv_session.verify_info_step_complete?
     redirect_to idv_enter_password_url
