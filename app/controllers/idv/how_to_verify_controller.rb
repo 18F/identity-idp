@@ -10,10 +10,10 @@ module Idv
     check_or_render_not_found -> { self.class.enabled? }
 
     def show
-      if idv_session.skip_doc_auth == false
-        @selection = Idv::HowToVerifyForm::REMOTE
+      @selection = if idv_session.skip_doc_auth == false
+        Idv::HowToVerifyForm::REMOTE
       elsif idv_session.skip_doc_auth == true
-        @selection = Idv::HowToVerifyForm::IPP
+        Idv::HowToVerifyForm::IPP
       end
 
       analytics.idv_doc_auth_how_to_verify_visited(**analytics_arguments)
