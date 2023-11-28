@@ -91,6 +91,11 @@ module Idv
       session[:personal_key_acknowledged] = true
     end
 
+    def invalidate_personal_key!
+      session.delete(:personal_key)
+      session.delete(:personal_key_acknowledged)
+    end
+
     def verify_by_mail?
       address_verification_mechanism == 'gpo'
     end
