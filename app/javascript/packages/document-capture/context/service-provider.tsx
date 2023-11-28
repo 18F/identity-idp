@@ -16,36 +16,25 @@ export interface ServiceProviderContextType {
    * specific location within the step.
    */
   getFailureToProofURL: (location: string) => string;
-  /**
-   * Whether or not the selfie feature is currently on
-   */
-  selfieCaptureEnabled?: Boolean;
 }
 
 const ServiceProviderContext = createContext<ServiceProviderContextType>({
   name: null,
   failureToProofURL: '',
   getFailureToProofURL: () => '',
-  selfieCaptureEnabled: false,
 });
 
 ServiceProviderContext.displayName = 'ServiceProviderContext';
 
 interface ServiceProviderContextProviderProps {
   value: Omit<ServiceProviderContextType, 'getFailurreToProofURL'>;
-  selfieCaptureEnabled?: Boolean;
   children: ReactNode;
 }
 
-function ServiceProviderContextProvider({
-  value,
-  selfieCaptureEnabled,
-  children,
-}: ServiceProviderContextProviderProps) {
+function ServiceProviderContextProvider({ value, children }: ServiceProviderContextProviderProps) {
   const mergedValue = useMemo(
     () => ({
       ...value,
-      selfieCaptureEnabled,
       getFailureToProofURL: (location: string) =>
         addSearchParams(value.failureToProofURL, { location }),
     }),

@@ -1,9 +1,11 @@
 module Idv
   class AddressController < ApplicationController
+    include Idv::AvailabilityConcern
     include IdvStepConcern
 
     before_action :confirm_not_rate_limited_after_doc_auth
-    before_action :confirm_document_capture_complete
+    before_action :confirm_step_allowed
+    before_action :confirm_verify_info_step_needed
 
     def new
       analytics.idv_address_visit
@@ -12,6 +14,7 @@ module Idv
     end
 
     def update
+      clear_future_steps!
       form_result = idv_form.submit(profile_params)
       analytics.idv_address_submitted(**form_result.to_h)
       capture_address_edited(form_result)
@@ -20,6 +23,16 @@ module Idv
       else
         failure
       end
+    end
+
+    def self.step_info
+      Idv::StepInfo.new(
+        key: :address,
+        controller: controller_name,
+        next_steps: [:verify_info],
+        preconditions: ->(idv_session:, user:) { idv_session.document_capture_complete? },
+        undo_step: ->(idv_session:, user:) {},
+      )
     end
 
     private

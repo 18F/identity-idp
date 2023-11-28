@@ -186,10 +186,6 @@ fr:
       ssn_label: Numéro de sécurité sociale
       state: État
       zipcode: Code postal
-    getting_started:
-      no_js_header: Vous devez activer JavaScript pour vérifier votre identité.
-      no_js_intro: '%{sp_name} a besoin de vous pour vérifier votre identité. Vous
-        devez activer JavaScript pour poursuivre ce processus.'
     gpo:
       alert_info: 'Nous avons envoyé une lettre avec votre code de vérification à:'
       alert_rate_limit_warning_html: Vous ne pouvez pas demander d’autres lettres pour

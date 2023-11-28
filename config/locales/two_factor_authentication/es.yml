@@ -47,6 +47,9 @@ es:
       otro método de autenticación.
     learn_more: Más información sobre las opciones de autenticación.
     login_intro: Usted configuró esto cuando creó su cuenta.
+    login_intro_reauthentication: Antes de que pueda realizar cambios en su cuenta,
+      debemos confirmar su identidad mediante uno de sus métodos de
+      autenticación.
     login_options:
       auth_app: Aplicación de autenticación
       auth_app_info: Use su aplicación de autenticación para obtener el código de seguridad.
@@ -71,6 +74,7 @@ es:
       webauthn_platform_info: Use la cara o la huella digital para acceder a su cuenta
         sin un código de un solo uso.
     login_options_link_text: Elige otra opción de seguridad
+    login_options_reauthentication_title: Se requiere reautenticación
     login_options_title: Seleccione su opción de seguridad
     max_backup_code_login_attempts_reached: Para su seguridad, su cuenta está
       bloqueada temporalmente porque ha ingresado el código de respaldo
@@ -90,7 +94,6 @@ es:
     mobile_terms_of_service: Condiciones de servicio móvil
     no_auth_option: No se pudo encontrar ninguna opción de autenticación para iniciar sesión
     opt_in:
-      cant_use_phone: '¿No puede utilizar su teléfono?'
       error_retry: Lo sentimos, estamos teniendo problemas para aceptarlo. Por favor,
         inténtelo de nuevo.
       opted_out_html: Ha optado por no recibir mensajes de texto en el
@@ -189,8 +192,16 @@ es:
       additional_methods_link: elija otro método de autenticación
       connect_html: No hemos podido conectar la clave de seguridad. Por favor,
         inténtelo de nuevo o %{link_html}.
+      screen_lock_no_other_mfa: No pudimos comprobar la autenticidad mediante
+        desbloqueo facial o táctil. Intente iniciar sesión en el dispositivo
+        donde configuró por primera vez el desbloqueo facial o táctil.
+      screen_lock_other_mfa_html: No pudimos comprobar la autenticidad mediante
+        desbloqueo facial o táctil. %{link_html} o intente iniciar sesión en el
+        dispositivo donde configuró por primera vez el desbloqueo facial o
+        táctil.
       try_again: El desbloqueo facial o táctil no fue exitoso. Por favor, inténtelo de
         nuevo o %{link}.
+      use_a_different_method: Utilice otro método de autenticación
     webauthn_header_text: Conecte su llave de seguridad
     webauthn_platform_header_text: Usar desbloqueo facial o táctil
     webauthn_platform_use_key: Usar desbloqueo facial o táctil

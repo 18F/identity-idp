@@ -1,5 +1,6 @@
 module Idv
   class PleaseCallController < ApplicationController
+    include Idv::AvailabilityConcern
     include FraudReviewConcern
 
     before_action :confirm_two_factor_authenticated

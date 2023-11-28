@@ -22,6 +22,7 @@ RSpec.describe TwoFactorAuthentication::SmsOptInController do
         action
 
         expect(assigns[:phone_configuration]).to eq(user.phone_configurations.first)
+        expect(assigns[:presenter]).to be_kind_of(TwoFactorAuthCode::GenericDeliveryPresenter)
 
         expect(@analytics).to have_logged_event(
           'SMS Opt-In: Visited',
@@ -29,16 +30,6 @@ RSpec.describe TwoFactorAuthentication::SmsOptInController do
           new_user: false,
           phone_configuration_id: user.phone_configurations.first.id,
         )
-      end
-
-      context 'when the user has other auth methods' do
-        let(:user) { create(:user, :with_phone, :with_authentication_app) }
-
-        it 'has an other mfa options url' do
-          action
-
-          expect(assigns[:other_mfa_options_url]).to eq(login_two_factor_options_path)
-        end
       end
 
       context 'when the user is signing in through an SP' do
@@ -173,6 +164,7 @@ RSpec.describe TwoFactorAuthentication::SmsOptInController do
 
           expect(response).to render_template(:new)
           expect(flash[:error]).to be_present
+          expect(assigns[:presenter]).to be_kind_of(TwoFactorAuthCode::GenericDeliveryPresenter)
 
           expect(@analytics).to have_logged_event(
             'SMS Opt-In: Submitted',

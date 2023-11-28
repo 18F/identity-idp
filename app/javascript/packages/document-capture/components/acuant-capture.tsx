@@ -15,6 +15,8 @@ import { useDidUpdateEffect } from '@18f/identity-react-hooks';
 import { useI18n } from '@18f/identity-react-i18n';
 import { removeUnloadProtection } from '@18f/identity-url';
 import AcuantCamera, { AcuantDocumentType } from './acuant-camera';
+import AcuantSelfieCamera from './acuant-selfie-camera';
+import AcuantSelfieCaptureCanvas from './acuant-selfie-capture-canvas';
 import type {
   AcuantCaptureFailureError,
   AcuantSuccessResponse,
@@ -335,6 +337,9 @@ function AcuantCapture(
   const [attempt, incrementAttempt] = useCounter(1);
   const [acuantFailureCookie, setAcuantFailureCookie, refreshAcuantFailureCookie] =
     useCookie('AcuantCameraHasFailed');
+  // There's some pretty significant changes to this component when it's used for
+  // selfie capture vs document image capture. This controls those changes.
+  const selfieCapture = name === 'selfie';
 
   const {
     failedCaptureAttempts,
@@ -493,6 +498,30 @@ function AcuantCapture(
     }
   }
 
+  function onSelfieCaptureSuccess({ image }: { image: string }) {
+    onChangeAndResetError(image);
+    onResetFailedCaptureAttempts();
+    setIsCapturingEnvironment(false);
+  }
+
+  function onSelfieCaptureFailure() {
+    // Internally, Acuant sets a cookie to bail on guided capture if initialization had
+    // previously failed for any reason, including declined permission. Since the cookie
+    // never expires, and since we want to re-prompt even if the user had previously
+    // declined, unset the cookie value when failure occurs for permissions.
+    setAcuantFailureCookie(null);
+    onCameraAccessDeclined();
+
+    // Due to a bug with Safari on iOS we force the page to refresh on the third
+    // time a user denies permissions.
+    onFailedCameraPermissionAttempt();
+    if (failedCameraPermissionAttempts > 2) {
+      removeUnloadProtection();
+      window.location.reload();
+    }
+    setIsCapturingEnvironment(false);
+  }
+
   function onAcuantImageCaptureSuccess(
     nextCapture: AcuantSuccessResponse | LegacyAcuantSuccessResponse,
   ) {
@@ -603,7 +632,7 @@ function AcuantCapture(
 
   return (
     <div className={[className, 'document-capture-acuant-capture'].filter(Boolean).join(' ')}>
-      {isCapturingEnvironment && (
+      {isCapturingEnvironment && !selfieCapture && (
         <AcuantCamera
           onCropStart={() => setHasStartedCropping(true)}
           onImageCaptureSuccess={onAcuantImageCaptureSuccess}
@@ -619,6 +648,20 @@ function AcuantCapture(
             </FullScreen>
           )}
         </AcuantCamera>
+      )}
+      {isCapturingEnvironment && selfieCapture && (
+        <AcuantSelfieCamera
+          onImageCaptureSuccess={onSelfieCaptureSuccess}
+          onImageCaptureFailure={onSelfieCaptureFailure}
+          onImageCaptureOpen={() => setIsCapturingEnvironment(true)}
+          onImageCaptureClose={() => setIsCapturingEnvironment(false)}
+        >
+          <AcuantSelfieCaptureCanvas
+            fullScreenRef={fullScreenRef}
+            fullScreenLabel={t('doc_auth.accessible_labels.document_capture_dialog')}
+            onRequestClose={() => setIsCapturingEnvironment(false)}
+          />
+        </AcuantSelfieCamera>
       )}
       <FileInput
         ref={inputRef}

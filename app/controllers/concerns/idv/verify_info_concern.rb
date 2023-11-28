@@ -315,14 +315,6 @@ module Idv
       idv_session.applicant = pii
       idv_session.applicant[:ssn] = idv_session.ssn
       idv_session.applicant['uuid'] = current_user.uuid
-      delete_pii
-    end
-
-    def delete_pii
-      idv_session.pii_from_doc = nil
-      if defined?(flow_session) # no longer defined for remote flow
-        flow_session.delete(:pii_from_user)
-      end
     end
 
     def add_proofing_costs(results)

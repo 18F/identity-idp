@@ -1,12 +1,11 @@
 module Idv
   module ByMail
     class RequestLetterController < ApplicationController
-      include IdvSession
+      include Idv::AvailabilityConcern
+      include IdvStepConcern
+      skip_before_action :confirm_no_pending_gpo_profile
       include Idv::StepIndicatorConcern
-      include Idv::AbTestAnalyticsConcern
 
-      before_action :confirm_two_factor_authenticated
-      before_action :confirm_idv_needed
       before_action :confirm_user_completed_idv_profile_step
       before_action :confirm_mail_not_rate_limited
       before_action :confirm_profile_not_too_old

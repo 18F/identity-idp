@@ -126,6 +126,7 @@ module DocAuthRouter
 
     def translate_doc_auth_errors!(response)
       error_keys = DocAuth::ErrorGenerator::ERROR_KEYS.dup
+      error_keys.delete(:selfie) if @client.is_a?(DocAuth::Acuant::AcuantClient)
 
       error_keys.each do |category|
         cat_errors = response.errors[category]
@@ -178,6 +179,8 @@ module DocAuthRouter
           trueid_account_id: IdentityConfig.store.lexisnexis_trueid_account_id,
           trueid_noliveness_cropping_workflow: IdentityConfig.store.lexisnexis_trueid_noliveness_cropping_workflow,
           trueid_noliveness_nocropping_workflow: IdentityConfig.store.lexisnexis_trueid_noliveness_nocropping_workflow,
+          trueid_liveness_cropping_workflow: IdentityConfig.store.lexisnexis_trueid_liveness_cropping_workflow,
+          trueid_liveness_nocropping_workflow: IdentityConfig.store.lexisnexis_trueid_liveness_nocropping_workflow,
           trueid_password: IdentityConfig.store.lexisnexis_trueid_password,
           trueid_username: IdentityConfig.store.lexisnexis_trueid_username,
           hmac_key_id: IdentityConfig.store.lexisnexis_trueid_hmac_key_id,
@@ -204,11 +207,18 @@ module DocAuthRouter
   def self.doc_auth_vendor(discriminator: nil, analytics: nil)
     case AbTests::DOC_AUTH_VENDOR.bucket(discriminator)
     when :alternate_vendor
-      IdentityConfig.store.doc_auth_vendor_randomize_alternate_vendor
+      vendor = IdentityConfig.store.doc_auth_vendor_randomize_alternate_vendor
     else
       analytics&.idv_doc_auth_randomizer_defaulted if discriminator.blank?
 
-      IdentityConfig.store.doc_auth_vendor
+      vendor = IdentityConfig.store.doc_auth_vendor
     end
+
+    # if vendor is not set to mock and selfie enabled use lexisnexis
+    if IdentityConfig.store.doc_auth_selfie_capture[:enabled] &&
+       vendor != Idp::Constants::Vendors::MOCK
+      vendor = Idp::Constants::Vendors::LEXIS_NEXIS
+    end
+    vendor
   end
 end

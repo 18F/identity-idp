@@ -1,12 +1,11 @@
 module Idv
   class WelcomeController < ApplicationController
+    include Idv::AvailabilityConcern
     include IdvStepConcern
     include StepIndicatorConcern
-    include GettingStartedAbTestConcern
 
     before_action :confirm_not_rate_limited
-    before_action :confirm_document_capture_not_complete
-    before_action :maybe_redirect_for_getting_started_ab_test
+    before_action :confirm_verify_info_step_needed
 
     def show
       analytics.idv_doc_auth_welcome_visited(**analytics_arguments)
@@ -16,14 +15,10 @@ module Idv
 
       @sp_name = decorated_sp_session.sp_name || APP_NAME
       @title = t('doc_auth.headings.getting_started', sp_name: @sp_name)
-
-      @ab_test_bucket = getting_started_ab_test_bucket
-
-      render :show
     end
 
     def update
-      clear_invalid_steps!
+      clear_future_steps!
       analytics.idv_doc_auth_welcome_submitted(**analytics_arguments)
 
       create_document_capture_session
@@ -40,7 +35,10 @@ module Idv
         controller: controller_name,
         next_steps: [:agreement],
         preconditions: ->(idv_session:, user:) { true },
-        undo_step: ->(idv_session:, user:) { idv_session.welcome_visited = nil },
+        undo_step: ->(idv_session:, user:) do
+          idv_session.welcome_visited = nil
+          idv_session.document_capture_session_uuid = nil
+        end,
       )
     end
 
