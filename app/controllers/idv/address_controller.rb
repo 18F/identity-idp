@@ -30,7 +30,7 @@ module Idv
         controller: self,
         action: :new,
         next_steps: [:verify_info],
-        preconditions: ->(idv_session:, user:) { idv_session.pii_from_doc },
+        preconditions: ->(idv_session:, user:) { idv_session.remote_document_capture_complete? },
         undo_step: ->(idv_session:, user:) {},
       )
     end
