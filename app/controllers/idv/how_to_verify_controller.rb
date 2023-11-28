@@ -5,13 +5,20 @@ module Idv
     include RenderConditionConcern
 
     before_action :confirm_step_allowed
-    before_action :confirm_document_capture_not_complete
 
     check_or_render_not_found -> { self.class.enabled? }
 
     def show
+      if idv_session.skip_doc_auth == false
+        @selection = Idv::HowToVerifyForm::REMOTE
+      elsif idv_session.skip_doc_auth == true
+        @selection = Idv::HowToVerifyForm::IPP
+      else
+        @selection = nil
+      end
+
       analytics.idv_doc_auth_how_to_verify_visited(**analytics_arguments)
-      @idv_how_to_verify_form = Idv::HowToVerifyForm.new
+      @idv_how_to_verify_form = Idv::HowToVerifyForm.new(@selection)
     end
 
     def update
