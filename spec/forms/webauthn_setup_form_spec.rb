@@ -5,6 +5,7 @@ RSpec.describe WebauthnSetupForm do
 
   let(:user) { create(:user) }
   let(:user_session) { { webauthn_challenge: webauthn_challenge } }
+  let(:nice_name) { 'Chrome 119 on macOS 10' }
   let(:domain_name) { 'localhost:3000' }
   let(:params) do
     {
@@ -16,7 +17,7 @@ RSpec.describe WebauthnSetupForm do
       authenticator_data_value: '153',
     }
   end
-  let(:subject) { WebauthnSetupForm.new(user, user_session) }
+  let(:subject) { WebauthnSetupForm.new(user, user_session, nice_name) }
 
   before do
     allow(IdentityConfig.store).to receive(:domain_name).and_return(domain_name)
