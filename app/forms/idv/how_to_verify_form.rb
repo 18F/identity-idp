@@ -10,7 +10,7 @@ module Idv
     validates :selection,
               presence: { message: proc { I18n.t('errors.doc_auth.how_to_verify_form') } }
 
-    def initialize(selection = nil)
+    def initialize(selection: nil)
       @selection = selection
     end
 

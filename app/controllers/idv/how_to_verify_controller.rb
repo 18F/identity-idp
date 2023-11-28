@@ -14,12 +14,10 @@ module Idv
         @selection = Idv::HowToVerifyForm::REMOTE
       elsif idv_session.skip_doc_auth == true
         @selection = Idv::HowToVerifyForm::IPP
-      else
-        @selection = nil
       end
 
       analytics.idv_doc_auth_how_to_verify_visited(**analytics_arguments)
-      @idv_how_to_verify_form = Idv::HowToVerifyForm.new(@selection)
+      @idv_how_to_verify_form = Idv::HowToVerifyForm.new(selection: @selection)
     end
 
     def update
