@@ -173,6 +173,54 @@ RSpec.describe Idv::EnterPasswordController do
         end
       end
 
+      context 'with in-person proofing profile' do
+        let(:user) do
+          create(
+            :user,
+            :with_pending_in_person_enrollment,
+            password: ControllerHelper::VALID_PASSWORD,
+            email: 'old_email@example.com',
+          )
+        end
+
+        before do
+          allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+        end
+
+        context 'when no personal key in idv_session' do
+          before do
+            idv_session.personal_key = nil
+          end
+          it 'redirects to ready to verify' do
+            get :new
+            expect(response).to redirect_to(idv_in_person_ready_to_verify_url)
+          end
+        end
+
+        context 'when personal key present in idv_session' do
+          before do
+            idv_session.personal_key = 'ABCD-1234'
+          end
+
+          context 'when personal key not acknowledged' do
+            it 'redirects to personal key' do
+              get :new
+              expect(response).to redirect_to(idv_personal_key_url)
+            end
+          end
+
+          context 'when personal key acknowledged' do
+            before do
+              idv_session.acknowledge_personal_key!
+            end
+            it 'redirects to ready to verify' do
+              get :new
+              expect(response).to redirect_to(idv_in_person_ready_to_verify_url)
+            end
+          end
+        end
+      end
+
       it 'updates the doc auth log for the user for the encrypt view event' do
         unstub_analytics
         doc_auth_log = DocAuthLog.create(user_id: user.id)

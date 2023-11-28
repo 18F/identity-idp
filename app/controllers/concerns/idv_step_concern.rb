@@ -27,6 +27,12 @@ module IdvStepConcern
 
   def confirm_no_pending_in_person_enrollment
     return if !IdentityConfig.store.in_person_proofing_enabled
+
+    if idv_session.personal_key.present? && !idv_session.personal_key_acknowledged
+      redirect_to idv_personal_key_url
+      return
+    end
+
     redirect_to idv_in_person_ready_to_verify_url if current_user&.pending_in_person_enrollment
   end
 
