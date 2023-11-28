@@ -1,5 +1,6 @@
 module Idv
   class HybridHandoffController < ApplicationController
+    include Idv::AvailabilityConcern
     include ActionView::Helpers::DateHelper
     include IdvStepConcern
     include StepIndicatorConcern

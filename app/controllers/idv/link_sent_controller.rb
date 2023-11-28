@@ -1,5 +1,6 @@
 module Idv
   class LinkSentController < ApplicationController
+    include Idv::AvailabilityConcern
     include DocumentCaptureConcern
     include IdvStepConcern
     include StepIndicatorConcern

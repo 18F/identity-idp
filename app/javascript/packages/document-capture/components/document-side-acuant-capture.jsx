@@ -10,7 +10,7 @@ import AcuantCapture from './acuant-capture';
 /**
  * @typedef DocumentSideAcuantCaptureProps
  *
- * @prop {'front'|'back'} side
+ * @prop {'front'|'back'|'selfie'} side
  * @prop {RegisterFieldCallback} registerField
  * @prop {Blob|string|null|undefined} value
  * @prop {(nextValues:{[key:string]: Blob|string|null|undefined})=>void} onChange Update values,
@@ -50,9 +50,11 @@ function DocumentSideAcuantCapture({
       ref={registerField(side, { isRequired: true })}
       /* i18n-tasks-use t('doc_auth.headings.document_capture_back') */
       /* i18n-tasks-use t('doc_auth.headings.document_capture_front') */
+      /* i18n-tasks-use t('doc_auth.headings.document_capture_selfie') */
       label={t(`doc_auth.headings.document_capture_${side}`)}
       /* i18n-tasks-use t('doc_auth.headings.back') */
       /* i18n-tasks-use t('doc_auth.headings.front') */
+      /* i18n-tasks-use t('doc_auth.headings.selfie') */
       bannerText={t(`doc_auth.headings.${side}`)}
       value={value}
       onChange={(nextValue, metadata) => {

@@ -62,31 +62,6 @@ RSpec.feature 'IdV Outage Spec' do
       allow(IdentityConfig.store).to receive(key).
         and_return(send(key))
     end
-
-    # Configuration / vendor status changes can effect Rails routing tables.
-    # Force routes to be reloaded when we've modified configuration.
-    Rails.application.reload_routes!
-  end
-
-  after do
-    # Don't leave stale routes sitting around!
-    # - Reset all the feature flags that could cause route changes
-    # - Reload routes to reset the environment for any specs that run next
-
-    vendors.each do |service|
-      vendor_status_key = "vendor_status_#{service}".to_sym
-      allow(IdentityConfig.store).to receive(vendor_status_key).and_call_original
-    end
-
-    config_flags.each do |key|
-      allow(IdentityConfig.store).to receive(key).and_call_original
-    end
-
-    # Let e.g. frontend analytics requests to /api/logger settle before we reload routes
-    # to avoid flakiness in CI.
-    page.server.wait_for_pending_requests if page&.server
-
-    Rails.application.reload_routes!
   end
 
   context 'vendor_status_lexisnexis_phone_finder set to full_outage' do

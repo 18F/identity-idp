@@ -99,7 +99,6 @@ fr:
     mobile_terms_of_service: Conditions de service mobile
     no_auth_option: Aucune option d’authentification n’a été trouvée pour vous connecter
     opt_in:
-      cant_use_phone: Vous ne pouvez pas utiliser votre téléphone?
       error_retry: Désolé, nous avons des difficultés à vous connecter. Veuillez réessayer.
       opted_out_html: Vous avez choisi de ne plus recevoir de SMS à
         %{phone_number_html}. Vous pouvez vous inscrire et recevoir à nouveau un

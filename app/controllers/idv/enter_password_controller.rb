@@ -1,5 +1,6 @@
 module Idv
   class EnterPasswordController < ApplicationController
+    include Idv::AvailabilityConcern
     include IdvStepConcern
     include StepIndicatorConcern
 

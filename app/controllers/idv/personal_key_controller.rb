@@ -1,5 +1,6 @@
 module Idv
   class PersonalKeyController < ApplicationController
+    include Idv::AvailabilityConcern
     include IdvSession
     include StepIndicatorConcern
     include SecureHeadersConcern
