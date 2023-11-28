@@ -105,9 +105,10 @@ RSpec.describe 'Identity verification', :js do
       test_go_back_from_request_letter
       complete_request_letter
 
+      test_go_back_in_person_flow
       complete_enter_password_step(user)
 
-      test_go_back_from_letter_enqueued
+      try_to_go_back_from_letter_enqueued
       validate_letter_enqueued_page
       complete_letter_enqueued
       validate_return_to_sp
@@ -485,7 +486,17 @@ RSpec.describe 'Identity verification', :js do
     expect(page).to have_current_path(idv_request_letter_path)
   end
 
-  def test_go_back_from_letter_enqueued
+  def test_go_back_in_person_flow
+    go_back
+    go_back
+    go_back
+    expect(page).to have_current_path(idv_in_person_verify_info_path)
+    # can't go back further with in person controllers (yet)
+
+    3.times { go_forward }
+  end
+
+  def try_to_go_back_from_letter_enqueued
     go_back
     expect(page).to have_current_path(idv_letter_enqueued_path)
     visit(idv_welcome_path)
