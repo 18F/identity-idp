@@ -33,13 +33,6 @@ RSpec.describe Idv::WelcomeController do
         :check_for_mail_only_outage,
       )
     end
-
-    it 'includes getting started ab test before_action' do
-      expect(subject).to have_actions(
-        :before,
-        :maybe_redirect_for_getting_started_ab_test,
-      )
-    end
   end
 
   describe '#show' do
@@ -81,14 +74,17 @@ RSpec.describe Idv::WelcomeController do
         expect(response).to render_template('idv/welcome/show')
       end
 
-      context 'and document capture already completed' do
+      context 'and verify info already completed' do
         before do
+          subject.idv_session.flow_path = 'standard'
           subject.idv_session.pii_from_doc = { first_name: 'Susan' }
+          subject.idv_session.ssn = '123-45-6789'
+          subject.idv_session.resolution_successful = true
         end
 
-        it 'redirects to ssn step' do
+        it 'redirects to enter password step' do
           get :show
-          expect(response).to redirect_to(idv_ssn_url)
+          expect(response).to redirect_to(idv_enter_password_url)
         end
       end
     end
@@ -101,24 +97,6 @@ RSpec.describe Idv::WelcomeController do
       get :show
 
       expect(response).to redirect_to(idv_please_call_url)
-    end
-
-    context 'getting_started_ab_test_bucket values' do
-      render_views
-
-      it 'renders the welcome_new template for :welcome_new' do
-        allow(controller).to receive(:getting_started_ab_test_bucket).and_return(:welcome_new)
-
-        get :show
-        expect(response).to render_template(partial: '_welcome_new')
-      end
-
-      it 'it renders the welcome_default template for :welcome_default' do
-        allow(controller).to receive(:getting_started_ab_test_bucket).and_return(:welcome_default)
-
-        get :show
-        expect(response).to render_template(partial: '_welcome_default')
-      end
     end
   end
 
@@ -140,7 +118,7 @@ RSpec.describe Idv::WelcomeController do
     end
 
     it 'invalidates future steps' do
-      expect(subject).to receive(:clear_invalid_steps!)
+      expect(subject).to receive(:clear_future_steps!)
 
       put :update
     end

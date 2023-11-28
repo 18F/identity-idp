@@ -57,7 +57,7 @@ RSpec.describe Idv::HowToVerifyController do
     let(:selection) { 'remote' }
 
     it 'invalidates future steps' do
-      expect(subject).to receive(:clear_invalid_steps!)
+      expect(subject).to receive(:clear_future_steps!)
 
       put :update
     end

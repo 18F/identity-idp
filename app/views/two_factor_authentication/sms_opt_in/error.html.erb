@@ -13,22 +13,7 @@
 
 <p><%= t('two_factor_authentication.opt_in.wait_30d_opt_in') %></p>
 
-<%= render(
-      'shared/troubleshooting_options',
-      heading_tag: :h3,
-      heading: t('components.troubleshooting_options.default_heading'),
-      options: [
-        @other_mfa_options_url && {
-          url: @other_mfa_options_url,
-          text: t('two_factor_authentication.login_options_link_text'),
-        },
-        {
-          url: MarketingSite.contact_url,
-          text: t('links.contact_support', app_name: APP_NAME),
-          new_tab: true,
-        },
-      ].select(&:present?),
-    ) %>
+<%= render 'two_factor_authentication/troubleshooting_options', presenter: @presenter %>
 
 <%= render PageFooterComponent.new do %>
   <%= link_to cancel_link_text, @cancel_url %>

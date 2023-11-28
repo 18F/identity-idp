@@ -54,6 +54,33 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
         expect(request_stub).to have_been_requested
       end
     end
+
+    context 'fails document authentication' do
+      it 'fails response with errors' do
+        include_liveness = liveness_checking_required && !selfie_image.nil?
+        request_stub_liveness = stub_request(:post, full_url).with do |request|
+          JSON.parse(request.body, symbolize_names: true)[:Document][:Selfie].present?
+        end.to_return(body: response_body_with_doc_auth_errors(include_liveness), status: 201)
+        request_stub = stub_request(:post, full_url).with do |request|
+          !JSON.parse(request.body, symbolize_names: true)[:Document][:Selfie].present?
+        end.to_return(body: response_body_with_doc_auth_errors(include_liveness), status: 201)
+
+        response = subject.fetch
+
+        expect(response.success?).to eq(false)
+        expect(response.errors.keys).to contain_exactly(:general, :front, :back, :hints)
+        expect(response.errors[:general]).to contain_exactly(DocAuth::Errors::GENERAL_ERROR)
+        expect(response.errors[:front]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
+        expect(response.errors[:back]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
+        expect(response.errors[:hints]).to eq(true)
+        expect(response.exception).to be_nil
+        if include_liveness
+          expect(request_stub_liveness).to have_been_requested
+        else
+          expect(request_stub).to have_been_requested
+        end
+      end
+    end
   end
 
   context 'with liveness_checking_enabled as false' do
@@ -119,6 +146,40 @@ def response_body(include_liveness)
             Values: [
               {
                 Value: 'Passed',
+              },
+            ],
+          },
+          *(
+            if include_liveness
+              [
+                Group: 'PORTRAIT_MATCH_RESULT',
+                Name: 'FaceMatchResult',
+                Values: [{ Value: 'Success' }],
+              ]
+            end
+          ),
+        ],
+      },
+    ],
+  }.to_json
+end
+
+def response_body_with_doc_auth_errors(include_liveness)
+  {
+    Status: {
+      TransactionStatus: 'passed',
+    },
+    Products: [
+      {
+        ProductType: 'TrueID',
+        ProductStatus: 'pass',
+        ParameterDetails: [
+          {
+            Group: 'AUTHENTICATION_RESULT',
+            Name: 'DocAuthResult',
+            Values: [
+              {
+                Value: 'Failed',
               },
             ],
           },

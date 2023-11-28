@@ -1,5 +1,6 @@
 module Idv
   class PhoneController < ApplicationController
+    include Idv::AvailabilityConcern
     include IdvStepConcern
     include StepIndicatorConcern
     include PhoneOtpRateLimitable

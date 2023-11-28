@@ -18,6 +18,7 @@ module I18n
         { key: 'datetime.dotiw.minutes.one' }, # "minute is minute" in French and English
         { key: 'datetime.dotiw.minutes.other' }, # "minute is minute" in French and English
         { key: 'doc_auth.headings.photo', locales: %i[fr] }, # "Photo" is "Photo" in French
+        { key: 'doc_auth.headings.selfie', locales: %i[fr] }, # "Photo" is "Photo" in French
         { key: /^i18n\.locale\./ }, # Show locale options translated as that language
         { key: /^i18n\.transliterate\./ }, # Approximate non-ASCII characters in ASCII
         { key: 'links.contact', locales: %i[fr] }, # "Contact" is "Contact" in French

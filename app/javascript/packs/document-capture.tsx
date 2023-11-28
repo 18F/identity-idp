@@ -178,7 +178,6 @@ const App = composeComponents(
     ServiceProviderContextProvider,
     {
       value: getServiceProvider(),
-      selfieCaptureEnabled: getSelfieCaptureEnabled(),
     },
   ],
   [
@@ -194,6 +193,7 @@ const App = composeComponents(
       value: {
         notReadySectionEnabled: String(uiNotReadySectionEnabled) === 'true',
         exitQuestionSectionEnabled: String(uiExitQuestionSectionEnabled) === 'true',
+        selfieCaptureEnabled: getSelfieCaptureEnabled(),
       },
     },
   ],

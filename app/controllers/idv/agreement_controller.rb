@@ -1,11 +1,12 @@
 module Idv
   class AgreementController < ApplicationController
+    include Idv::AvailabilityConcern
     include IdvStepConcern
     include StepIndicatorConcern
 
     before_action :confirm_not_rate_limited
     before_action :confirm_step_allowed
-    before_action :confirm_document_capture_not_complete
+    before_action :confirm_verify_info_step_needed
 
     def show
       analytics.idv_doc_auth_agreement_visited(**analytics_arguments)
@@ -21,7 +22,7 @@ module Idv
     end
 
     def update
-      clear_invalid_steps!
+      clear_future_steps!
       skip_to_capture if params[:skip_hybrid_handoff]
 
       result = Idv::ConsentForm.new.submit(consent_form_params)
@@ -49,7 +50,10 @@ module Idv
         controller: controller_name,
         next_steps: [:hybrid_handoff, :document_capture, :phone_question, :how_to_verify],
         preconditions: ->(idv_session:, user:) { idv_session.welcome_visited },
-        undo_step: ->(idv_session:, user:) { idv_session.idv_consent_given = nil },
+        undo_step: ->(idv_session:, user:) do
+          idv_session.idv_consent_given = nil
+          idv_session.skip_hybrid_handoff = nil
+        end,
       )
     end
 
