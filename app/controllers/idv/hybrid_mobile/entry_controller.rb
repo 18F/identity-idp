@@ -3,6 +3,7 @@ module Idv
     # Controller responsible for taking a `document-capture-session` UUID and configuring
     # the user's Session to work when they're forwarded on to document capture.
     class EntryController < ApplicationController
+      include Idv::AvailabilityConcern
       include HybridMobileConcern
 
       def show

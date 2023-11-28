@@ -1,5 +1,6 @@
 module Idv
   class HowToVerifyController < ApplicationController
+    include Idv::AvailabilityConcern
     include IdvStepConcern
     include RenderConditionConcern
 
@@ -13,7 +14,7 @@ module Idv
     end
 
     def update
-      clear_invalid_steps!
+      clear_future_steps!
       result = Idv::HowToVerifyForm.new.submit(how_to_verify_form_params)
 
       analytics.idv_doc_auth_how_to_verify_submitted(
@@ -40,7 +41,7 @@ module Idv
         controller: controller_name,
         next_steps: [:hybrid_handoff, :document_capture],
         preconditions: ->(idv_session:, user:) do
-          self.enabled?
+          self.enabled? && idv_session.idv_consent_given
         end,
         undo_step: ->(idv_session:, user:) {}, # clear any saved data
       )

@@ -44,6 +44,14 @@ describe('document-capture/components/document-capture', () => {
     window.location.hash = originalHash;
   });
 
+  it('does not render the selfie capture by default', () => {
+    const { queryByText } = render(<DocumentCapture />);
+
+    const selfie = queryByText('doc_auth.headings.document_capture_selfie');
+
+    expect(selfie).not.to.exist();
+  });
+
   it('renders the form steps', () => {
     const { getByText } = render(<DocumentCapture />);
 
@@ -75,7 +83,7 @@ describe('document-capture/components/document-capture', () => {
   });
 
   it('progresses through steps to completion', async () => {
-    const { getByLabelText, getByText, getAllByText, findAllByText } = render(
+    const { getByLabelText, getByText, getAllByText, findAllByText, queryByText } = render(
       <DeviceContext.Provider value={{ isMobile: true }}>
         <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
           <DocumentCapture />
@@ -119,6 +127,10 @@ describe('document-capture/components/document-capture', () => {
     );
 
     await userEvent.click(getByLabelText('doc_auth.headings.document_capture_back'));
+
+    // Ensure the selfie field does not appear
+    const selfie = queryByText('doc_auth.headings.document_capture_selfie');
+    expect(selfie).not.to.exist();
 
     // Continue only once all errors have been removed.
     await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());

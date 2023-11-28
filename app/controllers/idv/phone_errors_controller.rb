@@ -1,5 +1,6 @@
 module Idv
   class PhoneErrorsController < ApplicationController
+    include Idv::AvailabilityConcern
     include StepIndicatorConcern
     include IdvSession
     include Idv::AbTestAnalyticsConcern

@@ -1,5 +1,6 @@
 module Idv
   class SessionErrorsController < ApplicationController
+    include Idv::AvailabilityConcern
     include IdvSession
     include StepIndicatorConcern
 

@@ -86,6 +86,32 @@ RSpec.feature 'Two Factor Authentication' do
 
         expect(page).to have_current_path(account_path)
       end
+
+      scenario 'allows a user to recreate their account after account reset' do
+        sign_in_before_2fa(user)
+        email = user.confirmed_email_addresses.first.email
+
+        expect(page).to have_content(t('two_factor_authentication.opt_in.title'))
+
+        click_link t('two_factor_authentication.login_options_link_text')
+        click_link t('two_factor_authentication.account_reset.link')
+        click_link t('account_reset.request.yes_continue')
+        click_button t('account_reset.request.yes_continue')
+
+        reset_email
+
+        travel_to (IdentityConfig.store.account_reset_wait_period_days + 1).days.from_now do
+          AccountReset::GrantRequestsAndSendEmails.new.perform(Time.zone.today)
+          open_last_email
+          click_email_link_matching(/delete_account\?token/)
+          click_button t('account_reset.request.yes_continue')
+          click_link t('account_reset.confirm_delete_account.link_text')
+          sign_up_with(email)
+          open_last_email
+          click_email_link_matching(/confirmation_token/)
+          expect(page).to have_content(t('devise.confirmations.confirmed'))
+        end
+      end
     end
 
     context 'with international phone that does not support voice delivery' do

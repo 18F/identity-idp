@@ -54,7 +54,6 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
       visit idv_hybrid_mobile_document_capture_url
 
       # Confirm that jumping to Welcome page does not cause errors
-      # This was added for the GettingStarted A/B Test
       visit idv_welcome_url
       expect(page).to have_current_path(root_url)
       visit idv_hybrid_mobile_document_capture_url
@@ -241,7 +240,9 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
       end
 
       perform_in_browser(:desktop) do
-        expect(page).to have_current_path(idv_verify_info_path, wait: 10)
+        expect(page).to have_current_path(idv_ssn_path, wait: 10)
+        complete_ssn_step
+        expect(page).to have_current_path(idv_verify_info_path)
 
         # verify orig pii no longer displayed
         expect(page).not_to have_text('DAVID')
@@ -297,7 +298,9 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
       end
 
       perform_in_browser(:desktop) do
-        expect(page).to have_current_path(idv_verify_info_path, wait: 10)
+        expect(page).to have_current_path(idv_ssn_path, wait: 10)
+        complete_ssn_step
+        expect(page).to have_current_path(idv_verify_info_path)
 
         # verify orig pii no longer displayed
         expect(page).not_to have_text('DAVID')

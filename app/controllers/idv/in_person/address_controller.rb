@@ -1,6 +1,7 @@
 module Idv
   module InPerson
     class AddressController < ApplicationController
+      include Idv::AvailabilityConcern
       include IdvStepConcern
 
       before_action :render_404_if_in_person_residential_address_controller_enabled_not_set

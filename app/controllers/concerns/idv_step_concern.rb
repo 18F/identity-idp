@@ -9,14 +9,20 @@ module IdvStepConcern
   included do
     before_action :confirm_two_factor_authenticated
     before_action :confirm_idv_needed
+    before_action :confirm_letter_recently_enqueued
     before_action :confirm_no_pending_gpo_profile
     before_action :confirm_no_pending_in_person_enrollment
     before_action :handle_fraud
     before_action :check_for_mail_only_outage
   end
 
+  def confirm_letter_recently_enqueued
+    # idv session should be clear when user returns to enter code
+    return redirect_to idv_letter_enqueued_url if letter_recently_enqueued?
+  end
+
   def confirm_no_pending_gpo_profile
-    redirect_to idv_verify_by_mail_enter_code_url if current_user&.gpo_verification_pending_profile?
+    redirect_to idv_verify_by_mail_enter_code_url if letter_not_recently_enqueued?
   end
 
   def confirm_no_pending_in_person_enrollment
@@ -47,9 +53,6 @@ module IdvStepConcern
   def confirm_hybrid_handoff_needed
     if params[:redo]
       idv_session.redo_document_capture = true
-    elsif idv_session.document_capture_complete?
-      redirect_to idv_ssn_url
-      return
     end
 
     # If we previously skipped hybrid handoff, keep doing that.
@@ -63,29 +66,6 @@ module IdvStepConcern
   end
 
   private
-
-  def confirm_document_capture_not_complete
-    return unless idv_session.document_capture_complete?
-
-    redirect_to idv_ssn_url
-  end
-
-  def confirm_ssn_step_complete
-    return if pii.present? && idv_session.ssn.present?
-    redirect_to prev_url
-  end
-
-  def confirm_document_capture_complete
-    return if idv_session.pii_from_doc.present?
-
-    if flow_path == 'standard'
-      redirect_to idv_document_capture_url
-    elsif flow_path == 'hybrid'
-      redirect_to idv_link_sent_url
-    else # no flow_path
-      redirect_to idv_hybrid_handoff_path
-    end
-  end
 
   def confirm_verify_info_step_complete
     return if idv_session.verify_info_step_complete?
@@ -103,7 +83,7 @@ module IdvStepConcern
   end
 
   def confirm_address_step_complete
-    return if idv_session.address_step_complete?
+    return if idv_session.phone_or_address_step_complete?
 
     redirect_to idv_otp_verification_url
   end
@@ -130,6 +110,16 @@ module IdvStepConcern
     end
     extra
   end
+  
+  def letter_recently_enqueued?
+    current_user&.gpo_verification_pending_profile? &&
+      idv_session.verify_by_mail?
+  end
+
+  def letter_not_recently_enqueued?
+    current_user&.gpo_verification_pending_profile? &&
+      !idv_session.address_verification_mechanism
+  end
 
   def flow_policy
     @flow_policy ||= Idv::FlowPolicy.new(idv_session: idv_session, user: current_user)
@@ -143,10 +133,11 @@ module IdvStepConcern
 
   def url_for_latest_step
     step_info = flow_policy.info_for_latest_step
+
     url_for(controller: step_info.controller, action: step_info.action)
   end
 
-  def clear_invalid_steps!
-    flow_policy.undo_steps_from_controller!(controller: self.class)
+  def clear_future_steps!
+    flow_policy.undo_future_steps_from_controller!(controller: self.class)
   end
 end

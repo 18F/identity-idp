@@ -1,5 +1,6 @@
 module Idv
   class DocumentCaptureController < ApplicationController
+    include Idv::AvailabilityConcern
     include AcuantConcern
     include DocumentCaptureConcern
     include IdvStepConcern
@@ -8,8 +9,7 @@ module Idv
 
     before_action :confirm_not_rate_limited, except: [:update]
     before_action :confirm_step_allowed
-    before_action :confirm_hybrid_handoff_complete
-    before_action :confirm_document_capture_needed
+    before_action :confirm_verify_info_step_needed
     before_action :override_csp_to_allow_acuant
 
     def show
@@ -22,7 +22,7 @@ module Idv
     end
 
     def update
-      clear_invalid_steps!
+      clear_future_steps!
       idv_session.redo_document_capture = nil # done with this redo
       # Not used in standard flow, here for data consistency with hybrid flow.
       document_capture_session.confirm_ocr
@@ -59,30 +59,18 @@ module Idv
       Idv::StepInfo.new(
         key: :document_capture,
         controller: controller_name,
-        next_steps: [:success], # [:ssn],
+        next_steps: [:ssn], # :ipp_state_id
         preconditions: ->(idv_session:, user:) { idv_session.flow_path == 'standard' },
         undo_step: ->(idv_session:, user:) do
           idv_session.pii_from_doc = nil
           idv_session.invalidate_in_person_pii_from_user!
+          idv_session.had_barcode_attention_error = nil
+          idv_session.had_barcode_read_failure = nil
         end,
       )
     end
 
     private
-
-    def confirm_hybrid_handoff_complete
-      return if idv_session.flow_path.present?
-
-      redirect_to idv_hybrid_handoff_url
-    end
-
-    def confirm_document_capture_needed
-      return if idv_session.redo_document_capture
-
-      return if idv_session.pii_from_doc.blank? && !idv_session.verify_info_step_complete?
-
-      redirect_to idv_ssn_url
-    end
 
     def cancel_establishing_in_person_enrollments
       UspsInPersonProofing::EnrollmentHelper.

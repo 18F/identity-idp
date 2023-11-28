@@ -45,6 +45,7 @@ RSpec.describe GpoExpirationJob do
     allow(IdentityConfig.store).to receive(:usps_confirmation_max_days).and_return(
       usps_confirmation_max_days,
     )
+    allow(subject).to receive(:analytics).and_return(analytics)
   end
 
   describe '#gpo_profiles_that_should_be_expired' do
@@ -111,22 +112,6 @@ RSpec.describe GpoExpirationJob do
         letters_sent: 1,
         gpo_verification_pending_at: be_within(1.second).of(expired_timestamp),
       )
-    end
-
-    context 'when a callback is provided' do
-      it 'calls it for expired profiles' do
-        profile = users[:user_with_one_expired_gpo_profile].reload.gpo_verification_pending_profile
-        gpo_verification_pending_at = profile.gpo_verification_pending_at
-
-        on_profile_expired = spy
-        expect(on_profile_expired).to receive(:call).with(
-          profile: profile,
-          gpo_verification_pending_at: gpo_verification_pending_at,
-        )
-
-        job = described_class.new(analytics: analytics, on_profile_expired: on_profile_expired)
-        job.perform
-      end
     end
 
     context('when dry_run is specified') do

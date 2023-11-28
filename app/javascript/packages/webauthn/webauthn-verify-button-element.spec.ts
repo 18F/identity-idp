@@ -3,6 +3,7 @@ import quibble from 'quibble';
 import { screen } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
 import '@18f/identity-submit-button/submit-button-element';
+import { SCREEN_LOCK_ERROR } from './is-user-verification-screen-lock-error';
 import type { WebauthnVerifyButtonDataset } from './webauthn-verify-button-element';
 
 describe('WebauthnVerifyButtonElement', () => {
@@ -41,6 +42,7 @@ describe('WebauthnVerifyButtonElement', () => {
           <input type="hidden" name="signature" value="">
           <input type="hidden" name="client_data_json" value="">
           <input type="hidden" name="webauthn_error" value="">
+          <input type="hidden" name="screen_lock_error" value="">
         </lg-webauthn-verify-button>
       </form>
     `;
@@ -109,6 +111,7 @@ describe('WebauthnVerifyButtonElement', () => {
       client_data_json: '',
       signature: '',
       webauthn_error: 'NotAllowedError',
+      screen_lock_error: '',
     });
     expect(trackError).not.to.have.been.called();
   });
@@ -132,6 +135,7 @@ describe('WebauthnVerifyButtonElement', () => {
       client_data_json: '',
       signature: '',
       webauthn_error: 'CustomError',
+      screen_lock_error: '',
     });
     expect(trackError).to.have.been.calledWith(error);
   });
@@ -155,6 +159,27 @@ describe('WebauthnVerifyButtonElement', () => {
       client_data_json: 'json',
       signature: 'sig',
       webauthn_error: '',
+      screen_lock_error: '',
     });
+  });
+
+  it('submits with NotSupportedError resulting from userVerification requirement', async () => {
+    const { form } = createElement();
+
+    verifyWebauthnDevice.throws(new DOMException(SCREEN_LOCK_ERROR, 'NotSupportedError'));
+
+    const button = screen.getByRole('button', { name: 'Authenticate' });
+    await userEvent.click(button);
+    await expect(form.submit).to.eventually.be.called();
+
+    expect(Object.fromEntries(new window.FormData(form))).to.deep.equal({
+      credential_id: '',
+      authenticator_data: '',
+      client_data_json: '',
+      signature: '',
+      webauthn_error: 'NotSupportedError',
+      screen_lock_error: 'true',
+    });
+    expect(trackError).not.to.have.been.called();
   });
 });

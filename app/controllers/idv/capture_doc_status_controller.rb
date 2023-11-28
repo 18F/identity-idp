@@ -1,5 +1,7 @@
 module Idv
   class CaptureDocStatusController < ApplicationController
+    include Idv::AvailabilityConcern
+
     before_action :confirm_two_factor_authenticated
 
     respond_to :json

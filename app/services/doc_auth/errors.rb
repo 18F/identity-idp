@@ -26,6 +26,7 @@ module DocAuth
     MULTIPLE_BACK_ID_FAILURES = 'multiple_back_id_failures'
     MULTIPLE_FRONT_ID_FAILURES = 'multiple_front_id_failures'
     REF_CONTROL_NUMBER_CHECK = 'ref_control_number_check'
+    SELFIE_FAILURE = 'selfie_failure'
     SEX_CHECK = 'sex_check'
     VISIBLE_COLOR_CHECK = 'visible_color_check'
     VISIBLE_PHOTO_CHECK = 'visible_photo_check'
@@ -66,6 +67,7 @@ module DocAuth
       MULTIPLE_BACK_ID_FAILURES,
       MULTIPLE_FRONT_ID_FAILURES,
       REF_CONTROL_NUMBER_CHECK,
+      SELFIE_FAILURE,
       SEX_CHECK,
       VISIBLE_COLOR_CHECK,
       VISIBLE_PHOTO_CHECK,
@@ -113,6 +115,8 @@ module DocAuth
       MULTIPLE_FRONT_ID_FAILURES => { long_msg: MULTIPLE_FRONT_ID_FAILURES, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
       MULTIPLE_BACK_ID_FAILURES => { long_msg: MULTIPLE_BACK_ID_FAILURES, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
       GENERAL_ERROR => { long_msg: GENERAL_ERROR, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
+      # Liveness, use general error for now
+      SELFIE_FAILURE => { long_msg: GENERAL_ERROR, field_msg: FALLBACK_FIELD_LEVEL, hints: false },
     }
     # rubocop:enable Layout/LineLength
   end

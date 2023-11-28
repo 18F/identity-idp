@@ -1,5 +1,6 @@
 module Idv
   class CancellationsController < ApplicationController
+    include Idv::AvailabilityConcern
     include IdvSession
     include GoBackHelper
 
