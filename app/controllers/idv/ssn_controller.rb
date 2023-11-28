@@ -62,7 +62,7 @@ module Idv
         key: :ssn,
         controller: self,
         next_steps: [:verify_info],
-        preconditions: ->(idv_session:, user:) { idv_session.remote_document_capture_complete? },
+        preconditions: ->(idv_session:, user:) { idv_session.pii_from_doc },
         undo_step: ->(idv_session:, user:) do
           idv_session.ssn = nil
           idv_session.threatmetrix_session_id = nil

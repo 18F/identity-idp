@@ -169,10 +169,6 @@ module Idv
       pii_from_doc || has_pii_from_user_in_flow_session
     end
 
-    def remote_document_capture_complete?
-      pii_from_doc
-    end
-
     def ipp_document_capture_complete?
       has_pii_from_user_in_flow_session
     end
@@ -199,10 +195,6 @@ module Idv
 
     def address_confirmed!
       session[:gpo_code_verified] = true
-    end
-
-    def clear_applicant!
-      session[:applicant] = nil
     end
 
     def mark_verify_info_step_complete!
