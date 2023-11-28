@@ -34,6 +34,8 @@ interface AppRootData {
   exitUrl: string;
   idvInPersonUrl?: string;
   securityAndPrivacyHowItWorksUrl: string;
+  skipDocAuth: string;
+  howToVerifyURL: string;
   uiNotReadySectionEnabled: string;
   uiExitQuestionSectionEnabled: string;
 }
@@ -103,6 +105,8 @@ const {
   inPersonOutageExpectedUpdateDate,
   usStatesTerritories = '',
   phoneWithCamera = '',
+  skipDocAuth,
+  howToVerifyUrl,
   uiNotReadySectionEnabled = '',
   uiExitQuestionSectionEnabled = '',
 } = appRoot.dataset as DOMStringMap & AppRootData;
@@ -126,6 +130,8 @@ const App = composeComponents(
         inPersonOutageExpectedUpdateDate,
         inPersonFullAddressEntryEnabled: inPersonFullAddressEntryEnabled === 'true',
         usStatesTerritories: parsedUsStatesTerritories,
+        skipDocAuth: skipDocAuth === 'true',
+        howToVerifyURL: howToVerifyUrl,
       },
     },
   ],
