@@ -59,7 +59,7 @@ class UserMailerPreview < ActionMailer::Preview
     UserMailer.with(user: user, email_address: email_address_record).new_device_sign_in(
       date: 'February 25, 2019 15:02',
       location: 'Washington, DC',
-      device_name: 'Chrome 119 on macOS 10',
+      device_name: 'Chrome ABC on macOS 123',
       disavowal_token: SecureRandom.hex,
     )
   end

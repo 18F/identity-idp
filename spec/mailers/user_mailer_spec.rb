@@ -177,7 +177,7 @@ RSpec.describe UserMailer, type: :mailer do
   describe '#new_device_sign_in' do
     date = 'February 25, 2019 15:02'
     location = 'Washington, DC'
-    device_name = 'Chrome 119 on macOS 10'
+    device_name = 'Chrome ABC on macOS 123'
     disavowal_token = 'asdf1234'
     let(:mail) do
       UserMailer.with(user: user, email_address: email_address).new_device_sign_in(
