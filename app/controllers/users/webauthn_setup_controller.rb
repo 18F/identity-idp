@@ -58,7 +58,7 @@ module Users
     end
 
     def confirm
-      form = WebauthnSetupForm.new(current_user, user_session, browser_agent)
+      form = WebauthnSetupForm.new(current_user, user_session, formatted_browser_agent)
       result = form.submit(request.protocol, confirm_params)
       @platform_authenticator = form.platform_authenticator?
       @presenter = WebauthnSetupPresenter.new(
@@ -109,7 +109,7 @@ module Users
 
     private
 
-    def browser_agent
+    def formatted_browser_agent
       browser = BrowserCache.parse(request.user_agent)
       os = browser.platform.name
       os_version = browser.platform.version&.split('.')&.first
