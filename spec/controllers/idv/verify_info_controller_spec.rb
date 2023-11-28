@@ -100,10 +100,10 @@ RSpec.describe Idv::VerifyInfoController do
     end
 
     context 'when the user has already verified their info' do
-      it 'renders show with the contents of idv_session.applicant' do
+      it 'renders show' do
         subject.idv_session.resolution_successful = true
         subject.idv_session.pii_from_doc = Idp::Constants::MOCK_IDV_APPLICANT
-        subject.idv_session.ssn = nil
+        subject.idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]
         subject.idv_session.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN
 
         get :show

@@ -177,10 +177,6 @@ module Idv
       has_pii_from_user_in_flow_session
     end
 
-    def ssn_step_complete?
-      ssn || verify_info_step_complete?
-    end
-
     def verify_info_step_complete?
       resolution_successful
     end
