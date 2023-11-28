@@ -72,6 +72,10 @@ module Identity
                                  )
                                end
     config.active_job.logger.formatter = config.log_formatter
+    temp = ActiveSupport::Logger.new(Rails.root.join('log', 'production.log'))
+    temp.formatter = config.log_formatter
+
+    temp.warn("BOOTING")
 
     config.logger = if FeatureManagement.log_to_stdout?
                       ActiveSupport::Logger.new(STDOUT)
