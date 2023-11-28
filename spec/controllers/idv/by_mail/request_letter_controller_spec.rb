@@ -144,6 +144,12 @@ RSpec.describe Idv::ByMail::RequestLetterController do
         stub_verify_steps_one_and_two(user)
       end
 
+      it 'invalidates future steps' do
+        expect(subject).to receive(:clear_future_steps!)
+
+        put :create
+      end
+
       it 'sets session to :gpo and redirects' do
         expect(subject.idv_session.address_verification_mechanism).to be_nil
 

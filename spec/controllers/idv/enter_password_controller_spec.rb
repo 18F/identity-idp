@@ -269,6 +269,12 @@ RSpec.describe Idv::EnterPasswordController do
         subject.idv_session.user_phone_confirmation = true
       end
 
+      it 'invalidates future steps' do
+        expect(subject).to receive(:clear_future_steps!)
+
+        put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+      end
+
       it 'activates profile' do
         put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
 

@@ -23,6 +23,7 @@ module Idv
       end
 
       def create
+        clear_future_steps!
         update_tracking
         idv_session.address_verification_mechanism = :gpo
 

@@ -30,6 +30,7 @@ module Idv
     end
 
     def create
+      clear_future_steps!
       irs_attempts_api_tracker.idv_password_entered(success: true)
 
       init_profile
