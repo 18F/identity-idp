@@ -197,7 +197,7 @@ else
       monthly_key_metrics_report: {
         class: 'Reports::MonthlyKeyMetricsReport',
         cron: cron_24h,
-        args: -> { [Time.zone.yesterday] },
+        args: -> { [Time.zone.yesterday.end_of_day] },
       },
       # Job to backfill encrypted_pii_recovery_multi_region on users
       multi_region_kms_migration_user_migration: {
