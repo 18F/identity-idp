@@ -3,8 +3,8 @@ module TwoFactorAuthentication
     before_action :load_phone
 
     def new
-      @other_mfa_options_url = other_options_mfa_url
       @cancel_url = cancel_url
+      @presenter = TwoFactorAuthCode::SmsOptInPresenter.new
 
       analytics.sms_opt_in_visit(
         new_user: new_user?,
@@ -28,8 +28,8 @@ module TwoFactorAuthentication
         @phone_number_opt_out.opt_in
         redirect_to otp_send_url(otp_delivery_selection_form: { otp_delivery_preference: :sms })
       else
-        @other_mfa_options_url = other_options_mfa_url
         @cancel_url = cancel_url
+        @presenter = TwoFactorAuthCode::SmsOptInPresenter.new
 
         if !response.error
           # unsuccessful, but didn't throw an exception: already opted in last 30 days
@@ -59,14 +59,6 @@ module TwoFactorAuthentication
       end || PhoneConfiguration.new(phone: @phone_number_opt_out.formatted_phone)
     rescue ActiveRecord::RecordNotFound
       render_not_found
-    end
-
-    def other_options_mfa_url
-      if new_user?
-        authentication_methods_setup_path
-      elsif has_other_auth_methods? && !user_fully_authenticated?
-        login_two_factor_options_path
-      end
     end
 
     def cancel_url
