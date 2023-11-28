@@ -66,11 +66,11 @@ RSpec.describe Idv::PhoneController do
         subject.idv_session.user_phone_confirmation = true
       end
 
-      it 'redirects to review when step is complete' do
+      it 'allows the back button and renders new' do
         subject.idv_session.vendor_phone_confirmation = true
         get :new
 
-        expect(response).to redirect_to idv_enter_password_path
+        expect(response).to render_template :new
       end
     end
 

@@ -65,9 +65,9 @@ RSpec.describe Idv::OtpVerificationController do
     context 'the user has already confirmed their phone' do
       let(:user_phone_confirmation) { true }
 
-      it 'redirects to the review step' do
+      it 'allows the back button and renders show' do
         get :show
-        expect(response).to redirect_to(idv_enter_password_path)
+        expect(response).to render_template :show
       end
     end
 

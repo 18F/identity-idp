@@ -11,7 +11,6 @@ module Idv
     before_action :confirm_not_rate_limited_for_phone_address_verification, except: [:new]
     before_action :confirm_step_allowed
     before_action :confirm_verify_info_step_complete
-    before_action :confirm_step_needed
     before_action :set_idv_form
 
     def new
@@ -150,10 +149,6 @@ module Idv
 
     def step_params
       params.require(:idv_phone_form).permit(:phone, :international_code, :otp_delivery_preference)
-    end
-
-    def confirm_step_needed
-      redirect_to_next_step if idv_session.user_phone_confirmation == true
     end
 
     def set_idv_form

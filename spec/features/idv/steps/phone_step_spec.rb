@@ -37,27 +37,6 @@ RSpec.feature 'idv phone step', :js do
       expect(page).to have_content(t('titles.idv.enter_one_time_code'))
       expect(page).to have_content('+1 703-789-7890')
     end
-
-    it 'is not re-entrant after confirming OTP' do
-      start_idv_from_sp
-      complete_idv_steps_before_phone_step(user)
-      fill_out_phone_form_ok
-      click_idv_send_security_code
-      fill_in_code_with_last_phone_otp
-      click_submit_default
-
-      visit idv_phone_path
-      expect(page).to have_content(t('idv.titles.session.enter_password', app_name: APP_NAME))
-      expect(page).to have_current_path(idv_enter_password_path)
-
-      fill_in 'Password', with: user_password
-      click_continue
-
-      # Currently this byasses the confirmation step since that is only
-      # accessible once
-      visit idv_phone_path
-      expect(page).to_not have_current_path(idv_phone_path)
-    end
   end
 
   it 'allows resubmitting form' do
@@ -99,6 +78,7 @@ RSpec.feature 'idv phone step', :js do
         click_on t('idv.failure.phone.warning.try_again_button')
 
         expect(page).to have_current_path(idv_phone_path)
+        phone_field = find_field(t('two_factor_authentication.phone_label'))
         expect(phone_field.value).to be_empty
       end
 

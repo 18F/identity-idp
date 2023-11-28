@@ -74,9 +74,9 @@ RSpec.describe 'Identity verification', :js do
     complete_verify_step
 
     test_go_back_from_phone
-    visit_by_mail_and_return
     complete_otp_verification_page(user)
 
+    test_go_back_from_enter_password
     complete_enter_password_step(user)
 
     acknowledge_and_confirm_personal_key
@@ -105,7 +105,6 @@ RSpec.describe 'Identity verification', :js do
       test_go_back_from_request_letter
       complete_request_letter
 
-      test_go_back_from_enter_password
       complete_enter_password_step(user)
 
       test_go_back_from_letter_enqueued
@@ -467,11 +466,14 @@ RSpec.describe 'Identity verification', :js do
 
   def test_go_back_from_enter_password
     go_back
-    expect(page).to have_current_path(idv_request_letter_path)
+    expect(page).to have_current_path(idv_otp_verification_path)
     go_back
+    expect(page).to have_current_path(idv_phone_path)
     go_back
-    expect(page).to have_current_path(idv_in_person_verify_info_path)
+    expect(page).to have_current_path(idv_verify_info_path)
     3.times { go_forward }
+
+    expect(page).to have_current_path(idv_enter_password_path)
   end
 
   def test_go_back_from_request_letter
