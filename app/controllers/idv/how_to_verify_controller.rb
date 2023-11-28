@@ -11,7 +11,7 @@ module Idv
 
     def show
       @selection = if idv_session.skip_doc_auth == false
-        Idv::HowToVerifyForm::REMOTE
+                     Idv::HowToVerifyForm::REMOTE
       elsif idv_session.skip_doc_auth == true
         Idv::HowToVerifyForm::IPP
       end
