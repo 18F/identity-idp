@@ -1,5 +1,6 @@
 module Idv
   class AddressController < ApplicationController
+    include Idv::AvailabilityConcern
     include IdvStepConcern
 
     before_action :confirm_not_rate_limited_after_doc_auth

@@ -1,6 +1,7 @@
 module Idv
   class PhoneQuestionController < ApplicationController
     include ActionView::Helpers::DateHelper
+    include Idv::AvailabilityConcern
     include IdvStepConcern
     include StepIndicatorConcern
 

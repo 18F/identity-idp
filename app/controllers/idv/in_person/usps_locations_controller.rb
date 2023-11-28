@@ -3,6 +3,7 @@ require 'json'
 module Idv
   module InPerson
     class UspsLocationsController < ApplicationController
+      include Idv::AvailabilityConcern
       include RenderConditionConcern
       include UspsInPersonProofing
       include EffectiveUser

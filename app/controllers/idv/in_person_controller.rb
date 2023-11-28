@@ -1,5 +1,6 @@
 module Idv
   class InPersonController < ApplicationController
+    include Idv::AvailabilityConcern
     include RenderConditionConcern
 
     check_or_render_not_found -> { InPersonConfig.enabled_for_issuer?(current_sp&.issuer) }

@@ -1,5 +1,6 @@
 module Idv
   class AgreementController < ApplicationController
+    include Idv::AvailabilityConcern
     include IdvStepConcern
     include StepIndicatorConcern
 

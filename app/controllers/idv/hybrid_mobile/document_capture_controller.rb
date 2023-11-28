@@ -1,6 +1,7 @@
 module Idv
   module HybridMobile
     class DocumentCaptureController < ApplicationController
+      include Idv::AvailabilityConcern
       include DocumentCaptureConcern
       include HybridMobileConcern
       include PhoneQuestionAbTestConcern
