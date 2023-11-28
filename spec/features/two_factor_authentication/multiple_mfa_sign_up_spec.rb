@@ -286,7 +286,7 @@ RSpec.feature 'Multi Two Factor Authentication' do
       select_2fa_option('webauthn_platform', visible: :all)
 
       click_continue
-      
+
       mock_press_button_on_hardware_key_on_setup
 
       click_link t('mfa.add')
