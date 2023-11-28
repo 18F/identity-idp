@@ -58,7 +58,7 @@ module Users
     end
 
     def confirm
-      form = WebauthnSetupForm.new(current_user, user_session)
+      form = WebauthnSetupForm.new(current_user, user_session, get_browser_agent)
       result = form.submit(request.protocol, confirm_params)
       @platform_authenticator = form.platform_authenticator?
       @presenter = WebauthnSetupPresenter.new(
@@ -108,6 +108,19 @@ module Users
     end
 
     private
+
+    def get_browser_agent
+      browser = BrowserCache.parse(request.user_agent)
+      os = browser.platform.name
+      os_version = browser.platform.version&.split('.')&.first
+      os = "#{os} #{os_version}" if os_version
+
+      I18n.t(
+        'account.index.device',
+        browser: "#{browser.name} #{browser.version}",
+        os: os,
+      )
+    end
 
     def validate_existing_platform_authenticator
       if platform_authenticator? && in_account_creation_flow? &&

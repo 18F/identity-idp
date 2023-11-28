@@ -2,8 +2,6 @@ require 'rails_helper'
 
 RSpec.describe 'users/webauthn_setup/new.html.erb' do
   let(:user) { create(:user, :fully_registered) }
-  let(:device) { create(:device) }
-  subject(:decorator) { DeviceDecorator.new(device) }
 
   context 'webauthn platform' do
     let(:platform_authenticator) { true }
@@ -28,10 +26,6 @@ RSpec.describe 'users/webauthn_setup/new.html.erb' do
       assign(:platform_authenticator, platform_authenticator)
       assign(:user_session, user_session)
       assign(:presenter, presenter)
-    end
-
-    it 'gives a shortened os and browser name' do
-      expect(decorator.nice_name).to eq('Chrome 58 on Windows 10')
     end
 
     it 'has a localized title' do
