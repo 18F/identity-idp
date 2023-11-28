@@ -17,7 +17,7 @@ module Idv
       action: :show
     )
       @key = key
-      @controller = controller.name.underscore.gsub('_controller', '')
+      @controller = Idv::StepInfo.full_controller_name(controller)
       @next_steps = next_steps
       @preconditions = preconditions
       @undo_step = undo_step
@@ -27,7 +27,8 @@ module Idv
     end
 
     def self.full_controller_name(controller)
-      controller.name.underscore.gsub('_controller', '')
+      # Need an absolute path for url_for if controller is in a different module
+      "/#{controller.name.underscore.gsub('_controller', '')}"
     end
 
     def next_steps_validation

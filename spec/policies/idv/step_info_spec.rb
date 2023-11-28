@@ -46,4 +46,19 @@ RSpec.describe 'Idv::StepInfo' do
       expect { subject }.to raise_error(ArgumentError)
     end
   end
+
+  context '#full_controller_name' do
+    let(:idv_step_controller_class) do
+      Class.new(ApplicationController) do
+        def self.name
+          'Idv::Lets::Go::Deeper::AnonymousController'
+        end
+      end
+    end
+
+    it 'returns an absolute "path" for the controller name' do
+      expect(Idv::StepInfo.full_controller_name(idv_step_controller_class)).
+        to eq('/idv/lets/go/deeper/anonymous')
+    end
+  end
 end
