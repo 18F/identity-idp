@@ -29,7 +29,6 @@
     "**/fixtures",
     "**/*.spec.js",
     "app/javascript/packs/pw-strength.js",
-    "app/javascript/packs/saml-post.js",
-    "app/javascript/packs/openid-connect-redirect.js"
+    "app/javascript/packs/saml-post.js"
   ]
 }

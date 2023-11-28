@@ -5,21 +5,8 @@
     <title><%= t('saml_idp.shared.saml_post_binding.redirecting') %> | <%= APP_NAME %></title>
     <%= stylesheet_link_tag 'application', media: 'all' %>
     <%= render_stylesheet_once_tags %>
-    <%= render_javascript_pack_once_tags 'openid-connect-redirect' %>
+    <meta content="0;url=<%= @oidc_redirect_uri %>" http-equiv="refresh" />
   </head>
   <body>
-    <div class="grid-container tablet:padding-y-6">
-      <div class="grid-row">
-        <div class="tablet:grid-col-6 tablet:grid-offset-3">
-          <%= render PageHeadingComponent.new.with_content(t('saml_idp.shared.saml_post_binding.heading')) %>
-
-          <p>
-            <%= t('saml_idp.shared.saml_post_binding.no_js') %>
-          </p>
-
-          <%= link_to(t('forms.buttons.continue'), @oidc_redirect_uri, class: 'usa-button usa-button--wide usa-button--big', id: 'openid-connect-redirect') %>
-        </div>
-      </div>
-    </div>
   </body>
 </html>
