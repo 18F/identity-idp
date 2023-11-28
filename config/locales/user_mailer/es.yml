@@ -10,7 +10,7 @@ es:
         póngase en contacto con la agencia a cuyo servicio está intentando
         acceder.
       subject: No hemos podido verificar su identidad
-    account_reset_cancel:
+    account_reset_cancel: 
       intro_html: Este correo electrónico confirma que ha cancelado su solicitud para
         eliminar su cuenta de %{app_name_html}.
       subject: Solicitud cancelada
@@ -222,9 +222,7 @@ es:
       disavowal_link: restablecer su contraseña
       help_html: Si no realizó este cambio, %{disavowal_link_html}. Para más ayuda,
         visite el %{app_name_html} %{help_link_html} o el %{contact_link_html}.
-      info_html: '<p>Su cuenta %{app_name} acaba de iniciar sesión en un nuevo
-        dispositivo.</p><br/><p><strong>%{date}<br/>%{location},
-        %{device_name}</strong></p>'
+      info: 'Su cuenta %{app_name} acaba de iniciar sesión en un nuevo dispositivo.'
       subject: Nuevo initio de sesion con su %{app_name} cuenta
     password_changed:
       disavowal_link: restablecer su contraseña

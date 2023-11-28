@@ -203,7 +203,7 @@ RSpec.describe UserMailer, type: :mailer do
         to have_content(
           strip_tags(
             t(
-              'user_mailer.new_device_sign_in.info_html',
+              'user_mailer.new_device_sign_in.info',
               date: date,
               location: location,
               device_name: device_name,

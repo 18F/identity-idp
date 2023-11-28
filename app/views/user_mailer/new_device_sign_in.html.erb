@@ -18,13 +18,14 @@
 
 <p>
   <%= t(
-        'user_mailer.new_device_sign_in.info_html',
+        'user_mailer.new_device_sign_in.info',
         app_name: APP_NAME,
-        date: @login_date,
-        location: @login_location,
-        device_name: @device_name,
-      ) %>
+      ) %>    
 </p>
+
+<br/>
+
+<p><strong><%= @login_date %><br/><%= @login_location %>, <%= sanitize @device_name %></strong></p>
 
 <p>
   <%= t(
