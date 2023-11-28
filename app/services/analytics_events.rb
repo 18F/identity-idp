@@ -2350,7 +2350,7 @@ module AnalyticsEvents
 
   def idv_link_sent_capture_doc_polling_started(**_extra)
     track_event(
-      'Frontend: IdV: Link sent capture doc polling started'
+      'Frontend: IdV: Link sent capture doc polling started',
     )
   end
 
