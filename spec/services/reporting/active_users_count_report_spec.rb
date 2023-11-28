@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Reporting::ActiveUsersCountReport do
-  let(:report_date) { Date.new(2023, 3, 1) }
+  let(:report_date) { Date.new(2023, 3, 31) }
 
   subject(:report) { Reporting::ActiveUsersCountReport.new(report_date) }
   let(:sp1) { create(:service_provider) }
@@ -55,11 +55,11 @@ RSpec.describe Reporting::ActiveUsersCountReport do
 
       expected_table = [
         ['Active Users', 'IAL1', 'IDV', 'Total', 'Range start', 'Range end'],
-        ['Current month', 1, 1, 2, Date.new(2023, 3, 1), Date.new(2023, 3, 31)],
+        ['Current month', 0, 0, 0, Date.new(2023, 3, 1), Date.new(2023, 3, 31)],
         ['Fiscal year Q1', 1, 1, 2, Date.new(2022, 10, 1), Date.new(2022, 12, 31)],
-        ['Fiscal year Q2 cumulative', 2, 2, 4, Date.new(2022, 10, 1), Date.new(2023, 3, 31)],
-        ['Fiscal year Q3 cumulative', 2, 2, 4, Date.new(2022, 10, 1), Date.new(2023, 6, 30)],
-        ['Fiscal year Q4 cumulative', 2, 2, 4, Date.new(2022, 10, 1), Date.new(2023, 9, 30)],
+        ['Fiscal year Q2 cumulative', 1, 1, 2, Date.new(2022, 10, 1), Date.new(2023, 3, 31)],
+        ['Fiscal year Q3 cumulative', 1, 1, 2, Date.new(2022, 10, 1), Date.new(2023, 3, 31)],
+        ['Fiscal year Q4 cumulative', 1, 1, 2, Date.new(2022, 10, 1), Date.new(2023, 3, 31)],
       ]
 
       emailable_report = report.active_users_count_emailable_report
@@ -92,8 +92,8 @@ RSpec.describe Reporting::ActiveUsersCountReport do
         ['Active Users (APG)', 'IAL1', 'IDV', 'Total', 'Range start', 'Range end'],
         ['Fiscal year Q1', 0, 0, 0, Date.new(2022, 10, 1), Date.new(2022, 12, 31)],
         ['Fiscal year Q2 cumulative', 2, 0, 2, Date.new(2022, 10, 1), Date.new(2023, 3, 31)],
-        ['Fiscal year Q3 cumulative', 2, 0, 2, Date.new(2022, 10, 1), Date.new(2023, 6, 30)],
-        ['Fiscal year Q4 cumulative', 2, 0, 2, Date.new(2022, 10, 1), Date.new(2023, 9, 30)],
+        ['Fiscal year Q3 cumulative', 2, 0, 2, Date.new(2022, 10, 1), Date.new(2023, 3, 31)],
+        ['Fiscal year Q4 cumulative', 2, 0, 2, Date.new(2022, 10, 1), Date.new(2023, 3, 31)],
       ]
 
       emailable_report = report.active_users_count_apg_emailable_report
