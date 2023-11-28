@@ -219,7 +219,6 @@ RSpec.feature 'Multi Two Factor Authentication' do
           click_continue
           expect(page).to have_current_path webauthn_setup_path(platform: true)
 
-          fill_in_nickname_and_click_continue
           mock_press_button_on_hardware_key_on_setup
           expect(page).to have_current_path(auth_method_confirmation_path)
           expect(page).to_not have_button(t('mfa.skip'))
@@ -287,7 +286,7 @@ RSpec.feature 'Multi Two Factor Authentication' do
       select_2fa_option('webauthn_platform', visible: :all)
 
       click_continue
-      fill_in_nickname_and_click_continue
+      
       mock_press_button_on_hardware_key_on_setup
 
       click_link t('mfa.add')
