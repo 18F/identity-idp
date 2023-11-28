@@ -184,6 +184,7 @@ module Idv
         reason: 'Request exception',
       )
       flash[:error] = t('idv.failure.exceptions.internal_error')
+      idv_session.invalidate_personal_key!
       redirect_to idv_enter_password_url
     end
   end

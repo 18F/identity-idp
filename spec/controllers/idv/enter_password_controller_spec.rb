@@ -481,6 +481,11 @@ RSpec.describe Idv::EnterPasswordController do
               expect(enrollment.enrollment_code).to be_nil
             end
 
+            it 'does not leave a personal_key in idv session' do
+              put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+              expect(idv_session.personal_key).not_to be_present
+            end
+
             it 'allows the user to retry the request' do
               put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
               expect(flash[:error]).to eq t('idv.failure.exceptions.internal_error')
