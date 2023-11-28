@@ -67,11 +67,6 @@ module IdvStepConcern
 
   private
 
-  def confirm_verify_info_step_needed
-    return unless idv_session.verify_info_step_complete?
-    redirect_to idv_enter_password_url
-  end
-
   def confirm_address_step_complete
     return if idv_session.phone_or_address_step_complete?
 

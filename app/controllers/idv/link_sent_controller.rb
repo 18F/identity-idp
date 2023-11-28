@@ -8,7 +8,6 @@ module Idv
 
     before_action :confirm_not_rate_limited
     before_action :confirm_step_allowed
-    before_action :confirm_verify_info_step_needed
 
     def show
       analytics.idv_doc_auth_link_sent_visited(**analytics_arguments)

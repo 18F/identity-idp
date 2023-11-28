@@ -5,7 +5,6 @@ module Idv
     include RenderConditionConcern
 
     before_action :confirm_step_allowed
-    before_action :confirm_verify_info_step_needed
 
     check_or_render_not_found -> { self.class.enabled? }
 
