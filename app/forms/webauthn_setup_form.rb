@@ -53,7 +53,7 @@ class WebauthnSetupForm
     @attestation_object = params[:attestation_object]
     @client_data_json = params[:client_data_json]
     @platform_authenticator = (params[:platform_authenticator].to_s == 'true')
-    @name = !@platform_authenticator ? params[:name] : @device_name
+    @name = @platform_authenticator ? @device_name : params[:name]
     @authenticator_data_flags = process_authenticator_data_value(
       params[:authenticator_data_value],
     )
