@@ -165,9 +165,11 @@ RSpec.describe Idv::DocumentCaptureController do
     let(:result) { { success: true, errors: {} } }
 
     it 'invalidates future steps' do
-      expect(subject).to receive(:clear_future_steps!)
+      subject.idv_session.applicant = Idp::Constants::MOCK_IDV_APPLICANT
+      expect(subject).to receive(:clear_future_steps!).and_call_original
 
       put :update
+      expect(subject.idv_session.applicant).to be_nil
     end
 
     it 'sends analytics_submitted event' do

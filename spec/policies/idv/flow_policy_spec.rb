@@ -71,7 +71,7 @@ RSpec.describe 'Idv::FlowPolicy' do
       end
     end
 
-    context 'user is on phone step' do
+    context 'user is on enter password step' do
       before do
         idv_session.welcome_visited = true
         idv_session.document_capture_session_uuid = SecureRandom.uuid
@@ -95,6 +95,33 @@ RSpec.describe 'Idv::FlowPolicy' do
         idv_session.threatmetrix_review_status = 'pass'
         idv_session.resolution_successful = true
         idv_session.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.dup
+
+        idv_session.vendor_phone_confirmation = true
+        idv_session.address_verification_mechanism = 'phone'
+        idv_session.idv_phone_step_document_capture_session_uuid = SecureRandom.uuid
+        idv_session.user_phone_confirmation_session = { phone: '201-555-1212' }
+        idv_session.previous_phone_step_params = '201-555-1111'
+
+        idv_session.user_phone_confirmation = true
+      end
+
+      it 'does clear steps after ssn when user submits ssn' do
+        subject.undo_future_steps_from_controller!(controller: Idv::SsnController)
+
+        expect(idv_session.address_edited).to be_nil
+
+        expect(idv_session.verify_info_step_document_capture_session_uuid).to be_nil
+        expect(idv_session.threatmetrix_review_status).to be_nil
+        expect(idv_session.resolution_successful).to be_nil
+        expect(idv_session.applicant).to be_nil
+
+        expect(idv_session.vendor_phone_confirmation).to be_nil
+        expect(idv_session.address_verification_mechanism).to be_nil
+        expect(idv_session.idv_phone_step_document_capture_session_uuid).to be_nil
+        expect(idv_session.user_phone_confirmation_session).to be_nil
+        expect(idv_session.previous_phone_step_params).to be_nil
+
+        expect(idv_session.user_phone_confirmation).to be_nil
       end
 
       it 'does not clear earlier steps when user goes back and submits ssn' do
