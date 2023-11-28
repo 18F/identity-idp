@@ -213,12 +213,9 @@ module Idv
         save_threatmetrix_status(form_response)
         move_applicant_to_idv_session
         idv_session.mark_verify_info_step_complete!
-        idv_session.invalidate_steps_after_verify_info!
 
         flash[:success] = t('doc_auth.forms.doc_success')
         redirect_to next_step_url
-      else
-        idv_session.invalidate_verify_info_step!
       end
       analytics.idv_doc_auth_verify_proofing_results(**analytics_arguments, **form_response.to_h)
     end

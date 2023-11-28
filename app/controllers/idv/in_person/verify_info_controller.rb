@@ -24,6 +24,7 @@ module Idv
 
       def update
         clear_future_steps!
+        idv_session.invalidate_verify_info_step!
         success = shared_update
 
         if success
