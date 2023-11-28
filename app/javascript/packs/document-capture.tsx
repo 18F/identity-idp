@@ -70,8 +70,6 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
     acuantSdkUpgradeABTestingEnabled,
     useAlternateSdk,
     acuantVersion,
-    phoneQuestionAbTestBucket,
-    phoneWithCamera,
   } = appRoot.dataset;
   return baseTrackEvent(event, {
     ...payload,
@@ -79,8 +77,6 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
     acuant_sdk_upgrade_a_b_testing_enabled: acuantSdkUpgradeABTestingEnabled,
     use_alternate_sdk: useAlternateSdk,
     acuant_version: acuantVersion,
-    phone_question_ab_test_bucket: phoneQuestionAbTestBucket,
-    phone_with_camera: phoneWithCamera,
   });
 };
 
@@ -104,7 +100,6 @@ const {
   inPersonOutageMessageEnabled,
   inPersonOutageExpectedUpdateDate,
   usStatesTerritories = '',
-  phoneWithCamera = '',
   skipDocAuth,
   howToVerifyUrl,
   uiNotReadySectionEnabled = '',
@@ -160,7 +155,6 @@ const App = composeComponents(
       isMockClient,
       formData,
       flowPath,
-      phoneWithCamera,
     },
   ],
   [
