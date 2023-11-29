@@ -14,15 +14,6 @@ DeviceDecorator = Struct.new(:device) do
   end
 
   def nice_name
-    browser = BrowserCache.parse(device.user_agent)
-    os = browser.platform.name
-    os_version = browser.platform.version&.split('.')&.first
-    os = "#{os} #{os_version}" if os_version
-
-    I18n.t(
-      'account.index.device',
-      browser: "#{browser.name} #{browser.version}",
-      os: os,
-    )
+    DeviceName.from_user_agent(device.user_agent)
   end
 end
