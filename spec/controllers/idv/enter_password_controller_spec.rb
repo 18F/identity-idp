@@ -12,6 +12,7 @@ RSpec.describe Idv::EnterPasswordController do
     )
   end
   let(:applicant) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE }
+  let(:use_gpo) { false }
   let(:idv_session) do
     idv_session = Idv::Session.new(
       user_session: subject.user_session,
@@ -19,8 +20,17 @@ RSpec.describe Idv::EnterPasswordController do
       service_provider: nil,
     )
     idv_session.resolution_successful = true
-    idv_session.vendor_phone_confirmation = true
-    idv_session.user_phone_confirmation = true
+
+    if use_gpo
+      idv_session.address_verification_mechanism = 'gpo'
+      idv_session.vendor_phone_confirmation = false
+      idv_session.user_phone_confirmation = false
+    else
+      idv_session.address_verification_mechanism = 'phone'
+      idv_session.vendor_phone_confirmation = true
+      idv_session.user_phone_confirmation = true
+    end
+
     idv_session.applicant = applicant.with_indifferent_access
     idv_session
   end
@@ -217,6 +227,25 @@ RSpec.describe Idv::EnterPasswordController do
               get :new
               expect(response).to redirect_to(idv_in_person_ready_to_verify_url)
             end
+          end
+        end
+      end
+
+      context 'after successful submission' do
+        before do
+          put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+        end
+        it 'redirects to personal key' do
+          get :new
+          expect(response).to redirect_to(idv_personal_key_url)
+        end
+
+        context 'but user is still in gpo flow' do
+          let(:use_gpo) { true }
+
+          it 'redirects to letter enqueued' do
+            get :new
+            expect(response).to redirect_to(idv_letter_enqueued_url)
           end
         end
       end

@@ -21,6 +21,9 @@ module IdvStepConcern
     return if !idv_session.personal_key.present?
     return if idv_session.personal_key_acknowledged
 
+    # We don't give GPO users their personal key until they verify their address
+    return if idv_session.profile&.gpo_verification_pending?
+
     redirect_to idv_personal_key_url
   end
 
