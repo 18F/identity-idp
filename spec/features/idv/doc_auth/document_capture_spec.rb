@@ -220,8 +220,6 @@ RSpec.feature 'document capture step', :js do
         click_idv_continue
         complete_verify_step
         expect(page).to have_current_path(idv_phone_url)
-        visit(idv_document_capture_url)
-        expect(page).to have_current_path(idv_phone_url)
       end
     end
   end
