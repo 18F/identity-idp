@@ -137,7 +137,7 @@ module Reporting
     end
 
     EntityReuseSummary = Struct.new(
-      :details_section, 
+      :details_section,
       :total_all_users, :total_all_percent,
       :total_idv_users, :total_idv_percent
     ) do
@@ -196,7 +196,7 @@ module Reporting
       sp_reuse_stats = EntityReuseSummary.new.update_from_results(
         ReuseDetailSection.new.organize_results(
           sp_reuse_results_all, sp_reuse_results_idv, 'apps'
-        ), 
+        ),
         total_proofed,
       )
       agency_reuse_stats = EntityReuseSummary.new.update_from_results(
