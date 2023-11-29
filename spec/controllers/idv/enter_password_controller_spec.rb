@@ -12,6 +12,7 @@ RSpec.describe Idv::EnterPasswordController do
     )
   end
   let(:applicant) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE }
+  let(:use_gpo) { false }
   let(:idv_session) do
     idv_session = Idv::Session.new(
       user_session: subject.user_session,
@@ -19,8 +20,17 @@ RSpec.describe Idv::EnterPasswordController do
       service_provider: nil,
     )
     idv_session.resolution_successful = true
-    idv_session.vendor_phone_confirmation = true
-    idv_session.user_phone_confirmation = true
+
+    if use_gpo
+      idv_session.address_verification_mechanism = 'gpo'
+      idv_session.vendor_phone_confirmation = false
+      idv_session.user_phone_confirmation = false
+    else
+      idv_session.address_verification_mechanism = 'phone'
+      idv_session.vendor_phone_confirmation = true
+      idv_session.user_phone_confirmation = true
+    end
+
     idv_session.applicant = applicant.with_indifferent_access
     idv_session
   end
@@ -173,6 +183,73 @@ RSpec.describe Idv::EnterPasswordController do
         end
       end
 
+      context 'with in-person proofing profile' do
+        let(:user) do
+          create(
+            :user,
+            :with_pending_in_person_enrollment,
+            password: ControllerHelper::VALID_PASSWORD,
+            email: 'old_email@example.com',
+          )
+        end
+
+        before do
+          allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+        end
+
+        context 'when no personal key in idv_session' do
+          before do
+            idv_session.personal_key = nil
+          end
+          it 'redirects to ready to verify' do
+            get :new
+            expect(response).to redirect_to(idv_in_person_ready_to_verify_url)
+          end
+        end
+
+        context 'when personal key present in idv_session' do
+          before do
+            idv_session.personal_key = 'ABCD-1234'
+          end
+
+          context 'when personal key not acknowledged' do
+            it 'redirects to personal key' do
+              get :new
+              expect(response).to redirect_to(idv_personal_key_url)
+            end
+          end
+
+          context 'when personal key acknowledged' do
+            before do
+              idv_session.acknowledge_personal_key!
+            end
+            it 'redirects to ready to verify' do
+              get :new
+              expect(response).to redirect_to(idv_in_person_ready_to_verify_url)
+            end
+          end
+        end
+      end
+
+      context 'after successful submission' do
+        before do
+          put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+        end
+        it 'redirects to personal key' do
+          get :new
+          expect(response).to redirect_to(idv_personal_key_url)
+        end
+
+        context 'but user is still in gpo flow' do
+          let(:use_gpo) { true }
+
+          it 'redirects to letter enqueued' do
+            get :new
+            expect(response).to redirect_to(idv_letter_enqueued_url)
+          end
+        end
+      end
+
       it 'updates the doc auth log for the user for the encrypt view event' do
         unstub_analytics
         doc_auth_log = DocAuthLog.create(user_id: user.id)
@@ -245,8 +322,6 @@ RSpec.describe Idv::EnterPasswordController do
 
       it 'redirects to confirmation path after user presses the back button' do
         put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
-
-        expect(subject.user_session[:need_personal_key_confirmation]).to eq(true)
 
         allow_any_instance_of(User).to receive(:active_profile).and_return(true)
         get :new
@@ -433,6 +508,11 @@ RSpec.describe Idv::EnterPasswordController do
               expect(enrollment.status).to eq(InPersonEnrollment::STATUS_ESTABLISHING)
               expect(enrollment.user_id).to eq(user.id)
               expect(enrollment.enrollment_code).to be_nil
+            end
+
+            it 'does not leave a personal_key in idv session' do
+              put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+              expect(idv_session.personal_key).not_to be_present
             end
 
             it 'allows the user to retry the request' do

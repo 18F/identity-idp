@@ -92,12 +92,22 @@ module Idv
       session[:personal_key_acknowledged] = true
     end
 
+    def invalidate_personal_key!
+      session.delete(:personal_key)
+      session.delete(:personal_key_acknowledged)
+    end
+
     def verify_by_mail?
       address_verification_mechanism == 'gpo'
     end
 
     def vendor_params
       applicant.merge('uuid' => current_user.uuid)
+    end
+
+    def profile_id=(value)
+      session[:profile_id] = value
+      @profile = nil
     end
 
     def profile
