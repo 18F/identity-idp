@@ -193,6 +193,37 @@ RSpec.feature 'document capture step', :js do
     end
   end
 
+  context 'with doc_auth_selfie_capture set to true' do
+    before do
+      allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture).and_return({ enabled: true })
+    end
+
+    it 'proceeds to the next page with valid info, including a selfie image' do
+      perform_in_browser(:mobile) do
+        visit_idp_from_oidc_sp_with_ial2
+        sign_in_and_2fa_user(user)
+        complete_doc_auth_steps_before_document_capture_step
+
+        expect(page).to have_current_path(idv_document_capture_url)
+        expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+
+        attach_images
+        attach_selfie
+        submit_images
+
+        expect(page).to have_current_path(idv_ssn_url)
+        expect_costing_for_document
+        expect(DocAuthLog.find_by(user_id: user.id).state).to eq('MT')
+
+        expect(page).to have_current_path(idv_ssn_url)
+        fill_out_ssn_form_ok
+        click_idv_continue
+        complete_verify_step
+        expect(page).to have_current_path(idv_phone_url)
+      end
+    end
+  end
+
   def expect_costing_for_document
     %i[acuant_front_image acuant_back_image acuant_result].each do |cost_type|
       expect(costing_for(cost_type)).to be_present
