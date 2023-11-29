@@ -44,6 +44,11 @@ module Idv
       end
     end
 
+    def self.enabled?
+      IdentityConfig.store.in_person_proofing_opt_in_enabled &&
+        IdentityConfig.store.in_person_proofing_enabled
+    end
+
     def self.step_info
       Idv::StepInfo.new(
         key: :how_to_verify,
@@ -54,11 +59,6 @@ module Idv
         end,
         undo_step: ->(idv_session:, user:) { idv_session.skip_doc_auth = nil },
       )
-    end
-
-    def self.enabled?
-      IdentityConfig.store.in_person_proofing_opt_in_enabled &&
-        IdentityConfig.store.in_person_proofing_enabled
     end
 
     private
