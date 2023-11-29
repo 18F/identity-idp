@@ -45,7 +45,7 @@ describe('document-capture/components/acuant-selfie-camera', () => {
       FACE_ANGLE_TOO_LARGE: 'FACE ANGLE TOO LARGE',
       PROBABILITY_TOO_SMALL: 'PROBABILITY TOO SMALL',
       FACE_TOO_SMALL: 'FACE TOO SMALL',
-      FACE_CLOSE_TO_BORDER: 'TOO CLOSE TO THE FRAME'
+      FACE_CLOSE_TO_BORDER: 'TOO CLOSE TO THE FRAME',
     });
   });
 
