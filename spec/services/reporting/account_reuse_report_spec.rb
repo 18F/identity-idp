@@ -16,7 +16,6 @@ RSpec.describe Reporting::AccountReuseReport do
 
     let(:agency) { create(:agency, name: 'The Agency') }
     let(:agency2) { create(:agency, name: 'The Other Agency') }
-    let(:agency3) { create(:agency, name: 'The Other Other Agency') }
     let(:sp_a) { 'a' }
     let(:sp_b) { 'b' }
     let(:sp_c) { 'c' }

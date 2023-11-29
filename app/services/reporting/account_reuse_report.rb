@@ -6,13 +6,6 @@ module Reporting
       @report_date = report_date
     end
 
-    RSpec.configure do |rspec|
-      rspec.expect_with :rspec do |c|
-        # Or a very large value, if you do want to truncate at some point
-        c.max_formatted_output_length = nil
-      end
-    end
-
     # Return array of arrays
     def account_reuse_report
       account_reuse_table = []
@@ -31,10 +24,10 @@ module Reporting
         individual_metric = ''
         report_results.each do |result|
           if report_key == :sp_reuse_stats
-            individual_metric = "#{result[:num_sps]} apps"
+            individual_metric = "#{result[:num_entities]} apps"
             total_metric = '2+ apps'
           elsif report_key == :agency_reuse_stats
-            individual_metric = "#{result[:num_agencies]} agencies"
+            individual_metric = "#{result[:num_entities]} agencies"
             total_metric = '2+ agencies'
           end
 
@@ -75,110 +68,121 @@ module Reporting
 
     private
 
+    ReuseDetailRow = Struct.new(
+      :num_entities, :num_all_users, :all_percent, :num_idv_users,
+      :idv_percent
+    ) do
+      def initialize(num_all_users: 0, all_percent: 0, num_idv_users: 0, idv_percent: 0)
+        super(num_all_users:, all_percent:, num_idv_users:, idv_percent:)
+      end
+
+      def update_details(num_entities: nil, num_idv_users: nil, num_all_users: nil)
+        self.num_entities = num_entities if !num_entities.nil?
+
+        self.num_idv_users = num_idv_users if !num_idv_users.nil?
+
+        self.num_all_users = num_all_users if !num_all_users.nil?
+
+        self
+      end
+
+      self
+    end
+
+    ReuseDetailSection = Struct.new(:detail_rows) do
+      def initialize(detail_rows: [ReuseDetailRow.new])
+        super(detail_rows:)
+      end
+
+      def organize_results(all_results, idv_results, entity_type)
+        idv_results.each do |result|
+          entity_num = result["num_#{entity_type}"]
+          self.detail_rows[entity_num] =
+            ReuseDetailRow.new.update_details(
+              num_entities: entity_num,
+              num_idv_users: result['num_idv_users'],
+            )
+        end
+
+        all_results.each do |result|
+          entity_num = result["num_#{entity_type}"]
+          if self.detail_rows[entity_num].is_a?(Struct)
+            self.detail_rows[entity_num].update_details(num_all_users: result['num_all_users'])
+          else
+            self.detail_rows[entity_num] =
+              ReuseDetailRow.new.update_details(
+                num_entities: entity_num,
+                num_all_users: result['num_all_users'],
+              )
+          end
+        end
+
+        if self.detail_rows.length > 1
+          # If there are results, then remove the zero placeholder
+          self.detail_rows[0] = nil
+          self.detail_rows = self.detail_rows.compact
+        end
+      end
+
+      self
+    end
+
+    ReuseSummaryRow = Struct.new(
+      :results, :total_all_users, :total_all_percent, :total_idv_users,
+      :total_idv_percent
+    ) do
+      def initialize(total_all_users: 0, total_all_percent: 0, total_idv_users: 0,
+                     total_idv_percent: 0)
+        super(total_all_users:, total_all_percent:, total_idv_users:, total_idv_percent:)
+      end
+
+      def update_from_results(results, total_proofed)
+        results.each do |result_entry|
+          self.total_all_users += result_entry.num_all_users
+          self.total_idv_users += result_entry.num_idv_users
+        end
+
+        if !results.nil? && !results.empty?
+          if total_proofed > 0
+            # Calculate percentages for breakdowns with both sps and angencies
+            results.each_with_index do |result_entry, index|
+              results[index][:all_percent] =
+                result_entry[:num_all_users] / total_proofed.to_f
+              results[index][:idv_percent] =
+                result_entry[:num_idv_users] / total_proofed.to_f
+
+              self.total_all_percent += results[index][:all_percent]
+              self.total_idv_percent += results[index][:idv_percent]
+            end
+          end
+        end
+        self.results = results
+
+        self
+      end
+    end
+
     def total_reuse_report
       return @total_reuse_report if defined?(@total_reuse_report)
 
       reuse_results = {
-        sp: [{
-          num_sps: 0,
-          num_idv_users: 0,
-          num_all_users: 0,
-        }],
-        agency: [{
-          num_agencies: 0,
-          num_idv_users: 0,
-          num_all_users: 0,
-        }],
-      }
-
-      sp_reuse_results_idv.each do |result|
-        reuse_results[:sp][result['num_sps']] = {
-          num_sps: result['num_sps'],
-          num_idv_users: result['num_idv_users'],
-          num_all_users: 0, # Fill it in with 'all' results later
-        }
-      end
-      sp_reuse_results_all.each do |result|
-        if reuse_results[:sp][result['num_sps']].is_a?(Hash)
-          # Hash exists, so replace the zero placeholder value
-          reuse_results[:sp][result['num_sps']][:num_all_users] = result['num_all_users']
-        else
-          reuse_results[:sp][result['num_sps']] = {
-            num_sps: result['num_sps'],
-            num_idv_users: 0, # Since it didn't exist, fill with zero 'idv' results
-            num_all_users: result['num_all_users'],
-          }
-        end
-      end
-      agency_reuse_results_idv.each do |result|
-        reuse_results[:agency][result['num_agencies']] = {
-          num_agencies: result['num_agencies'],
-          num_idv_users: result['num_idv_users'],
-          num_all_users: 0, # Fill it in with 'all' results later
-        }
-      end
-      agency_reuse_results_all.each do |result|
-        if reuse_results[:agency][result['num_agencies']].is_a?(Hash)
-          # Hash exists, so replace the zero placeholder value
-          reuse_results[:agency][result['num_agencies']][:num_all_users] = result['num_all_users']
-        else
-          reuse_results[:agency][result['num_agencies']] = {
-            num_agencies: result['num_agencies'],
-            num_idv_users: 0, # Since it didn't exist, fill with zero 'idv' results
-            num_all_users: result['num_all_users'],
-          }
-        end
-      end
-
-      reuse_results.each do |results_key, results_value|
-        if results_value.length > 1
-          # If there are results, then remove the zero placeholder
-          results_value[0] = nil
-          reuse_results[results_key] = results_value.compact
-        end
-      end
-
-      sp_reuse_stats = {
-        results: reuse_results[:sp].compact,
-        total_all_users: 0,
-        total_all_percent: 0,
-        total_idv_users: 0,
-        total_idv_percent: 0,
-      }
-      agency_reuse_stats = {
-        results: reuse_results[:agency].compact,
-        total_all_users: 0,
-        total_all_percent: 0,
-        total_idv_users: 0,
-        total_idv_percent: 0,
+        sp: ReuseDetailSection.new.organize_results(
+          sp_reuse_results_all, sp_reuse_results_idv,
+          'sps'
+        ),
+        agency: ReuseDetailSection.new.organize_results(
+          agency_reuse_results_all,
+          agency_reuse_results_idv, 'agencies'
+        ),
       }
 
       total_proofed = num_active_profiles
+      sp_reuse_stats = ReuseSummaryRow.new.update_from_results(reuse_results[:sp], total_proofed)
+      agency_reuse_stats = ReuseSummaryRow.new.update_from_results(
+        reuse_results[:agency],
+        total_proofed,
+      )
 
-      [sp_reuse_stats, agency_reuse_stats].each do |stats|
-        if !stats[:results].nil? && !stats[:results].empty?
-          # Count how many total users have multiples for both sps and agencies
-          stats[:results].each do |result_entry|
-            stats[:total_all_users] += result_entry[:num_all_users]
-            stats[:total_idv_users] += result_entry[:num_idv_users]
-          end
-
-          if total_proofed > 0
-            # Calculate percentages for breakdowns with both sps and angencies
-            stats[:results].each_with_index do |result_entry, index|
-              stats[:results][index][:all_percent] =
-                result_entry[:num_all_users] / total_proofed.to_f
-              stats[:results][index][:idv_percent] =
-                result_entry[:num_idv_users] / total_proofed.to_f
-
-              stats[:total_all_percent] += stats[:results][index][:all_percent]
-              stats[:total_idv_percent] += stats[:results][index][:idv_percent]
-            end
-          end
-        end
-      end
-
-      # reuse_stats and total_stats
       @total_reuse_report = {
         sp_reuse_stats: sp_reuse_stats,
         agency_reuse_stats: agency_reuse_stats,
