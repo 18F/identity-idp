@@ -133,7 +133,7 @@ module Reporting
         CalendarService.fiscal_start_date(report_date)..CalendarService.fiscal_q4_start(report_date),
         CalendarService.fiscal_start_date(report_date)..CalendarService.fiscal_end_date(report_date).next_day(1),
       ].map do |range|
-        range.begin.beginning_of_day..range.end.prev_day(1).end_of_day
+        range.begin.beginning_of_day..([range.end.prev_day(1).end_of_day, report_date].min)
       end
     end
     # rubocop:enable Layout/LineLength

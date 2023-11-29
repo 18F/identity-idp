@@ -8,12 +8,23 @@ module IdvStepConcern
 
   included do
     before_action :confirm_two_factor_authenticated
+    before_action :confirm_personal_key_acknowledged_if_needed
     before_action :confirm_idv_needed
     before_action :confirm_letter_recently_enqueued
     before_action :confirm_no_pending_gpo_profile
     before_action :confirm_no_pending_in_person_enrollment
     before_action :handle_fraud
     before_action :check_for_mail_only_outage
+  end
+
+  def confirm_personal_key_acknowledged_if_needed
+    return if !idv_session.personal_key.present?
+    return if idv_session.personal_key_acknowledged
+
+    # We don't give GPO users their personal key until they verify their address
+    return if idv_session.profile&.gpo_verification_pending?
+
+    redirect_to idv_personal_key_url
   end
 
   def confirm_letter_recently_enqueued

@@ -11,6 +11,12 @@ RSpec.describe Idv::EnterPasswordController do
       email: 'old_email@example.com',
     )
   end
+  let(:applicant) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE }
+  let(:use_gpo) { false }
+  let(:idv_session) do
+    subject.idv_session
+  end
+
   let(:ab_test_args) do
     { sample_bucket1: :sample_value1, sample_bucket2: :sample_value2 }
   end
@@ -29,8 +35,19 @@ RSpec.describe Idv::EnterPasswordController do
     subject.idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE[:ssn]
     subject.idv_session.resolution_successful = true
     subject.idv_session.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE
-    subject.idv_session.vendor_phone_confirmation = true
-    subject.idv_session.user_phone_confirmation = true
+    subject.idv_session.resolution_successful = true
+
+    if use_gpo
+      subject.idv_session.address_verification_mechanism = 'gpo'
+      subject.idv_session.vendor_phone_confirmation = false
+      subject.idv_session.user_phone_confirmation = false
+    else
+      subject.idv_session.address_verification_mechanism = 'phone'
+      subject.idv_session.vendor_phone_confirmation = true
+      subject.idv_session.user_phone_confirmation = true
+    end
+
+    subject.idv_session.applicant = applicant.with_indifferent_access
   end
 
   describe '#step_info' do
@@ -168,6 +185,73 @@ RSpec.describe Idv::EnterPasswordController do
         end
       end
 
+      context 'with in-person proofing profile' do
+        let(:user) do
+          create(
+            :user,
+            :with_pending_in_person_enrollment,
+            password: ControllerHelper::VALID_PASSWORD,
+            email: 'old_email@example.com',
+          )
+        end
+
+        before do
+          allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+        end
+
+        context 'when no personal key in idv_session' do
+          before do
+            idv_session.personal_key = nil
+          end
+          it 'redirects to ready to verify' do
+            get :new
+            expect(response).to redirect_to(idv_in_person_ready_to_verify_url)
+          end
+        end
+
+        context 'when personal key present in idv_session' do
+          before do
+            idv_session.personal_key = 'ABCD-1234'
+          end
+
+          context 'when personal key not acknowledged' do
+            it 'redirects to personal key' do
+              get :new
+              expect(response).to redirect_to(idv_personal_key_url)
+            end
+          end
+
+          context 'when personal key acknowledged' do
+            before do
+              idv_session.acknowledge_personal_key!
+            end
+            it 'redirects to ready to verify' do
+              get :new
+              expect(response).to redirect_to(idv_in_person_ready_to_verify_url)
+            end
+          end
+        end
+      end
+
+      context 'after successful submission' do
+        before do
+          put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+        end
+        it 'redirects to personal key' do
+          get :new
+          expect(response).to redirect_to(idv_personal_key_url)
+        end
+
+        context 'but user is still in gpo flow' do
+          let(:use_gpo) { true }
+
+          it 'redirects to letter enqueued' do
+            get :new
+            expect(response).to redirect_to(idv_letter_enqueued_url)
+          end
+        end
+      end
+
       it 'updates the doc auth log for the user for the encrypt view event' do
         unstub_analytics
         doc_auth_log = DocAuthLog.create(user_id: user.id)
@@ -231,9 +315,6 @@ RSpec.describe Idv::EnterPasswordController do
 
     it 'redirects to confirmation path after user presses the back button' do
       put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
-
-      expect(subject.user_session[:need_personal_key_confirmation]).to eq(true)
-
       allow_any_instance_of(User).to receive(:active_profile).and_return(true)
       get :new
       expect(response).to redirect_to idv_personal_key_path
@@ -463,6 +544,160 @@ RSpec.describe Idv::EnterPasswordController do
               original_exception_class: 'StandardError',
               reason: 'Request exception',
             )
+          end
+
+          context 'when there is a 4xx error' do
+            before do
+              stub_request_enroll_bad_request_response
+            end
+
+            it 'logs the response message' do
+              put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+              expect(@analytics).to have_logged_event(
+                'USPS IPPaaS enrollment failed',
+                context: 'authentication',
+                enrollment_id: enrollment.id,
+                exception_class: 'UspsInPersonProofing::Exception::RequestEnrollException',
+                exception_message: 'Sponsor for sponsorID 5 not found',
+                original_exception_class: 'Faraday::BadRequestError',
+                reason: 'Request exception',
+              )
+            end
+
+            it 'leaves the enrollment in establishing' do
+              put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+              expect(InPersonEnrollment.count).to be(1)
+              enrollment = InPersonEnrollment.where(user_id: user.id).first
+              expect(enrollment.status).to eq(InPersonEnrollment::STATUS_ESTABLISHING)
+              expect(enrollment.user_id).to eq(user.id)
+              expect(enrollment.enrollment_code).to be_nil
+            end
+          end
+
+          context 'when there is 5xx error' do
+            before do
+              stub_request_enroll_internal_server_error_response
+            end
+
+            it 'logs the error message' do
+              put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+              expect(@analytics).to have_logged_event(
+                'USPS IPPaaS enrollment failed',
+                context: 'authentication',
+                enrollment_id: enrollment.id,
+                exception_class: 'UspsInPersonProofing::Exception::RequestEnrollException',
+                exception_message: 'the server responded with status 500',
+                original_exception_class: 'Faraday::ServerError',
+                reason: 'Request exception',
+              )
+            end
+
+            it 'leaves the enrollment in establishing' do
+              put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+              expect(InPersonEnrollment.count).to be(1)
+              enrollment = InPersonEnrollment.where(user_id: user.id).first
+              expect(enrollment.status).to eq(InPersonEnrollment::STATUS_ESTABLISHING)
+              expect(enrollment.user_id).to eq(user.id)
+              expect(enrollment.enrollment_code).to be_nil
+            end
+
+            it 'does not leave a personal_key in idv session' do
+              put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+              expect(idv_session.personal_key).not_to be_present
+            end
+
+            it 'allows the user to retry the request' do
+              put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+              expect(flash[:error]).to eq t('idv.failure.exceptions.internal_error')
+              expect(response).to redirect_to idv_enter_password_path
+
+              stub_request_enroll
+
+              put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+              expect(response).to redirect_to idv_personal_key_path
+
+              enrollment.reload
+
+              expect(enrollment.status).to eq(InPersonEnrollment::STATUS_PENDING)
+              expect(enrollment.user_id).to eq(user.id)
+              expect(enrollment.enrollment_code).to be_a(String)
+              expect(enrollment.profile).to eq(user.profiles.last)
+              expect(enrollment.profile.in_person_verification_pending?).to eq(true)
+            end
+          end
+
+          context 'when the USPS response is not a hash' do
+            before do
+              stub_request_enroll_non_hash_response
+            end
+
+            it 'logs an error message' do
+              put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+              expect(@analytics).to have_logged_event(
+                'USPS IPPaaS enrollment failed',
+                context: 'authentication',
+                enrollment_id: enrollment.id,
+                exception_class: 'UspsInPersonProofing::Exception::RequestEnrollException',
+                exception_message: 'Expected a hash but got a NilClass',
+                original_exception_class: 'StandardError',
+                reason: 'Request exception',
+              )
+            end
+          end
+
+          context 'when the USPS response is missing an enrollment code' do
+            before do
+              stub_request_enroll_invalid_response
+            end
+
+            it 'logs an error message' do
+              put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+              expect(@analytics).to have_logged_event(
+                'USPS IPPaaS enrollment failed',
+                context: 'authentication',
+                enrollment_id: enrollment.id,
+                exception_class: 'UspsInPersonProofing::Exception::RequestEnrollException',
+                exception_message: 'Expected to receive an enrollment code',
+                original_exception_class: 'StandardError',
+                reason: 'Request exception',
+              )
+            end
+
+            it 'leaves the enrollment in establishing' do
+              put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+              expect(InPersonEnrollment.count).to be(1)
+              enrollment = InPersonEnrollment.where(user_id: user.id).first
+              expect(enrollment.status).to eq(InPersonEnrollment::STATUS_ESTABLISHING)
+              expect(enrollment.user_id).to eq(user.id)
+              expect(enrollment.enrollment_code).to be_nil
+            end
+          end
+
+          context 'when user enters an address2 value' do
+            let(:applicant) do
+              Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID_WITH_PHONE.merge(address2: '3b')
+            end
+
+            it 'does not include address2' do
+              proofer = UspsInPersonProofing::Proofer.new
+              mock = double
+              expect(UspsInPersonProofing::Proofer).to receive(:new).and_return(mock)
+              expect(mock).to receive(:request_enroll) do |applicant|
+                expect(applicant.address).
+                  to eq(Idp::Constants::MOCK_IDV_APPLICANT[:address1])
+                proofer.request_enroll(applicant)
+              end
+
+              put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+            end
           end
         end
 
