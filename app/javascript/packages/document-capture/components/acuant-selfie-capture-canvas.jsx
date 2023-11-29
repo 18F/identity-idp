@@ -8,7 +8,6 @@ function FullScreenLoadingSpinner({ fullScreenRef, onRequestClose, fullScreenLab
     <FullScreen ref={fullScreenRef} label={fullScreenLabel} onRequestClose={onRequestClose}>
       <img
         src={getAssetPath('loading-badge.gif')}
-        aria-label="loading spinner"
         alt=""
         width="144"
         height="144"

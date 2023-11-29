@@ -4,7 +4,7 @@ import { render } from '../../../support/document-capture';
 
 // It shows the loading spinner when the script hasn't loaded
 it('shows the loading spinner when the script hasnt loaded', () => {
-  const { queryByRole, container } = render(
+  const { getByRole, container } = render(
     <DeviceContext.Provider value={{ isMobile: true }}>
       <AcuantContext.Provider value={{ isReady: false }}>
         <AcuantSelfieCaptureCanvas />
@@ -12,7 +12,7 @@ it('shows the loading spinner when the script hasnt loaded', () => {
     </DeviceContext.Provider>,
   );
 
-  expect(queryByRole('img', { name: 'loading spinner' })).to.be.ok();
+  expect(getByRole('dialog')).to.be.ok();
   expect(container.querySelector('#acuant-face-capture-container')).to.not.exist();
 });
 
@@ -25,6 +25,6 @@ it('shows the acunt div when the script has loaded', () => {
     </DeviceContext.Provider>,
   );
 
-  expect(queryByRole('img', { name: 'loading spinner' })).to.not.exist();
+  expect(queryByRole('dialog')).to.not.exist();
   expect(container.querySelector('#acuant-face-capture-container')).to.exist();
 });

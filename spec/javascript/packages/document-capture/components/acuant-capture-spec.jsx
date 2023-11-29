@@ -1118,8 +1118,8 @@ describe('document-capture/components/acuant-capture', () => {
       // What we want to test is that the selfie version of the FileInput appears
       // when the name="selfie". The only difference between the selfie and document
       // versions is what happens when you click the FileInput, so this test clicks
-      // the file input, then checks the id of the resulting full screen div
-      const { queryByRole, getByLabelText } = render(
+      // the file input, then checks that the full screen div opened
+      const { getByRole, getByLabelText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
           <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
             <AcuantCapture label="Image" name="selfie" isReady />
@@ -1128,7 +1128,7 @@ describe('document-capture/components/acuant-capture', () => {
       );
 
       await userEvent.click(getByLabelText('Image'));
-      expect(queryByRole('img', { name: 'loading spinner' })).to.be.ok();
+      expect(getByRole('dialog')).to.be.ok();
     });
   });
 
