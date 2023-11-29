@@ -57,7 +57,7 @@ module Idv
     end
 
     def self.enabled?
-      IdentityConfig.store.in_person_proofing_opt_in_enabled
+      IdentityConfig.store.in_person_proofing_opt_in_enabled && IdentityConfig.store.in_person_proofing_enabled
     end
 
     private
