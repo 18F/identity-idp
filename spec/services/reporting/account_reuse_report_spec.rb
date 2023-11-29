@@ -91,7 +91,7 @@ RSpec.describe Reporting::AccountReuseReport do
     end
 
     describe '#account_reuse_emailable_report' do
-      it 'has the correct data' do
+      it 'has the correct results' do
         expected_csv = [
           ['Metric', 'Num. all users', '% of accounts', 'Num. IDV users', '% of accounts'],
           ['2 apps', 3, 0.3, 3, 0.3],
@@ -99,6 +99,26 @@ RSpec.describe Reporting::AccountReuseReport do
           ['2+ apps', 5, 0.5, 5, 0.5],
           ['2 agencies', 5, 0.5, 5, 0.5],
           ['2+ agencies', 5, 0.5, 5, 0.5],
+        ]
+
+        aggregate_failures do
+          report.account_reuse_emailable_report.table.zip(expected_csv).each do |actual, expected|
+            expect(actual).to eq(expected)
+          end
+        end
+      end
+    end
+  end
+
+  context 'without any data' do
+    describe '#account_reuse_emailable_report' do
+      it 'has the correct results' do
+        expected_csv = [
+          ['Metric', 'Num. all users', '% of accounts', 'Num. IDV users', '% of accounts'],
+          ['0 apps', 0, 0, 0, 0],
+          ['2+ apps', 0, 0, 0, 0],
+          ['0 agencies', 0, 0, 0, 0],
+          ['2+ agencies', 0, 0, 0, 0],
         ]
 
         aggregate_failures do

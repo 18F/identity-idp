@@ -17,36 +17,14 @@ module Reporting
         '% of accounts',
       ]
 
-      total_metric = ''
-      total_reuse_report.each do |report_key, report_value|
-        report_results = report_value[:results]
+      total_reuse_report.each do |key, entity_summary|
+        entity_results = entity_summary[:results]
 
-        individual_metric = ''
-        report_results.each do |result|
-          if report_key == :sp_reuse_stats
-            individual_metric = "#{result[:num_entities]} apps"
-            total_metric = '2+ apps'
-          elsif report_key == :agency_reuse_stats
-            individual_metric = "#{result[:num_entities]} agencies"
-            total_metric = '2+ agencies'
-          end
-
-          account_reuse_table << [
-            individual_metric,
-            result[:num_all_users],
-            result[:all_percent],
-            result[:num_idv_users],
-            result[:idv_percent],
-          ]
+        entity_results[:detail_rows].each do |detail_row|
+          account_reuse_table << detail_row.as_csv
         end
 
-        account_reuse_table << [
-          total_metric,
-          report_value[:total_all_users],
-          report_value[:total_all_percent],
-          report_value[:total_idv_users],
-          report_value[:total_idv_percent],
-        ]
+        account_reuse_table << entity_summary.summary_row_as_csv
       end
 
       account_reuse_table
@@ -69,21 +47,37 @@ module Reporting
     private
 
     ReuseDetailRow = Struct.new(
-      :num_entities, :num_all_users, :all_percent, :num_idv_users,
+      :num_entities, :entity_type, :num_all_users, :all_percent, :num_idv_users,
       :idv_percent
     ) do
-      def initialize(num_all_users: 0, all_percent: 0, num_idv_users: 0, idv_percent: 0)
-        super(num_all_users:, all_percent:, num_idv_users:, idv_percent:)
+      def initialize(num_entities: 0, entity_type: '', num_all_users: 0, all_percent: 0,
+                     num_idv_users: 0, idv_percent: 0)
+        super(
+          num_entities:, entity_type:, num_all_users:, all_percent:, num_idv_users:,
+          idv_percent:)
       end
 
-      def update_details(num_entities: nil, num_idv_users: nil, num_all_users: nil)
+      def update_details(num_entities: nil, entity_type: nil, num_idv_users: nil,
+                         num_all_users: nil)
         self.num_entities = num_entities if !num_entities.nil?
+
+        self.entity_type = entity_type if !entity_type.nil?
 
         self.num_idv_users = num_idv_users if !num_idv_users.nil?
 
         self.num_all_users = num_all_users if !num_all_users.nil?
 
         self
+      end
+
+      def as_csv
+        [
+          "#{self.num_entities} #{self.entity_type}",
+          self.num_all_users,
+          self.all_percent,
+          self.num_idv_users,
+          self.idv_percent,
+        ]
       end
 
       self
@@ -100,6 +94,7 @@ module Reporting
           self.detail_rows[entity_num] =
             ReuseDetailRow.new.update_details(
               num_entities: entity_num,
+              entity_type: entity_type,
               num_idv_users: result['num_idv_users'],
             )
         end
@@ -112,6 +107,7 @@ module Reporting
             self.detail_rows[entity_num] =
               ReuseDetailRow.new.update_details(
                 num_entities: entity_num,
+                entity_type: entity_type,
                 num_all_users: result['num_all_users'],
               )
           end
@@ -121,44 +117,64 @@ module Reporting
           # If there are results, then remove the zero placeholder
           self.detail_rows[0] = nil
           self.detail_rows = self.detail_rows.compact
+        else
+          # Otherwise, add the entity type to the placeholder
+          self.detail_rows[0] = self.detail_rows[0].update_details(entity_type: entity_type)
         end
+
+        self
       end
 
       self
     end
 
-    ReuseSummaryRow = Struct.new(
-      :results, :total_all_users, :total_all_percent, :total_idv_users,
+    EntityReuseSummary = Struct.new(
+      :results, :entity_type, :total_all_users, :total_all_percent, :total_idv_users,
       :total_idv_percent
     ) do
-      def initialize(total_all_users: 0, total_all_percent: 0, total_idv_users: 0,
+      def initialize(entity_type: '', total_all_users: 0, total_all_percent: 0, total_idv_users: 0,
                      total_idv_percent: 0)
-        super(total_all_users:, total_all_percent:, total_idv_users:, total_idv_percent:)
+        super(
+          entity_type:, total_all_users:, total_all_percent:, total_idv_users:,
+          total_idv_percent:)
       end
 
-      def update_from_results(results, total_proofed)
-        results.each do |result_entry|
-          self.total_all_users += result_entry.num_all_users
-          self.total_idv_users += result_entry.num_idv_users
-        end
+      def update_from_results(results, entity_type, total_proofed)
+        self.entity_type = entity_type if !entity_type.nil?
 
-        if !results.nil? && !results.empty?
+        if !results.nil? && !results[:detail_rows].nil? && !results[:detail_rows].empty?
+          detail_section = results[:detail_rows]
+          detail_section.each do |result_entry|
+            self.total_all_users += result_entry.dig(:num_all_users)
+            self.total_idv_users += result_entry.dig(:num_idv_users)
+          end
+
           if total_proofed > 0
             # Calculate percentages for breakdowns with both sps and angencies
-            results.each_with_index do |result_entry, index|
-              results[index][:all_percent] =
-                result_entry[:num_all_users] / total_proofed.to_f
-              results[index][:idv_percent] =
-                result_entry[:num_idv_users] / total_proofed.to_f
+            detail_section.each_with_index do |result_entry, index|
+              detail_section[index][:all_percent] =
+                result_entry.dig(:num_all_users) / total_proofed.to_f
+              detail_section[index][:idv_percent] =
+                result_entry.dig(:num_idv_users) / total_proofed.to_f
 
-              self.total_all_percent += results[index][:all_percent]
-              self.total_idv_percent += results[index][:idv_percent]
+              self.total_all_percent += detail_section[index].dig(:all_percent)
+              self.total_idv_percent += detail_section[index].dig(:idv_percent)
             end
           end
         end
         self.results = results
 
         self
+      end
+
+      def summary_row_as_csv
+        [
+          "2+ #{self.entity_type}",
+          self.total_all_users,
+          self.total_all_percent,
+          self.total_idv_users,
+          self.total_idv_percent,
+        ]
       end
     end
 
@@ -168,7 +184,7 @@ module Reporting
       reuse_results = {
         sp: ReuseDetailSection.new.organize_results(
           sp_reuse_results_all, sp_reuse_results_idv,
-          'sps'
+          'apps'
         ),
         agency: ReuseDetailSection.new.organize_results(
           agency_reuse_results_all,
@@ -177,10 +193,14 @@ module Reporting
       }
 
       total_proofed = num_active_profiles
-      sp_reuse_stats = ReuseSummaryRow.new.update_from_results(reuse_results[:sp], total_proofed)
-      agency_reuse_stats = ReuseSummaryRow.new.update_from_results(
+
+      sp_reuse_stats = EntityReuseSummary.new.update_from_results(
+        reuse_results[:sp], 'apps',
+        total_proofed
+      )
+      agency_reuse_stats = EntityReuseSummary.new.update_from_results(
         reuse_results[:agency],
-        total_proofed,
+        'agencies', total_proofed
       )
 
       @total_reuse_report = {
@@ -193,10 +213,10 @@ module Reporting
       sp_all_sql = format(<<-SQL, params)
         SELECT
             COUNT(*) AS num_all_users
-            , sps_per_all_users.num_sps
+            , sps_per_all_users.num_apps
         FROM (
             SELECT
-                COUNT(*) AS num_sps
+                COUNT(*) AS num_apps
                 , identities.user_id
             FROM
                 identities
@@ -206,11 +226,11 @@ module Reporting
                 identities.user_id
         ) sps_per_all_users
         GROUP BY
-            sps_per_all_users.num_sps
+            sps_per_all_users.num_apps
         HAVING 
-            sps_per_all_users.num_sps > 1
+            sps_per_all_users.num_apps > 1
         ORDER BY
-            num_sps ASC
+            num_apps ASC
       SQL
 
       sp_all_results = Reports::BaseReport.transaction_with_timeout do
@@ -224,10 +244,10 @@ module Reporting
       sp_idv_sql = format(<<-SQL, params)
         SELECT
             COUNT(*) AS num_idv_users
-            , sps_per_idv_users.num_sps
+            , sps_per_idv_users.num_apps
         FROM (
             SELECT
-                COUNT(*) AS num_sps
+                COUNT(*) AS num_apps
                 , identities.user_id
             FROM
                 identities
@@ -239,11 +259,11 @@ module Reporting
                 identities.user_id
         ) sps_per_idv_users
         GROUP BY
-            sps_per_idv_users.num_sps
+            sps_per_idv_users.num_apps
         HAVING 
-            sps_per_idv_users.num_sps > 1
+            sps_per_idv_users.num_apps > 1
         ORDER BY
-            num_sps ASC
+            num_apps ASC
       SQL
 
       sp_idv_results = Reports::BaseReport.transaction_with_timeout do
