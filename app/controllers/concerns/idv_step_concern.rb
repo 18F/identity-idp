@@ -67,12 +67,6 @@ module IdvStepConcern
 
   private
 
-  def confirm_address_step_complete
-    return if idv_session.phone_or_address_step_complete?
-
-    redirect_to idv_otp_verification_url
-  end
-
   def extra_analytics_properties
     extra = {
       pii_like_keypaths: [
