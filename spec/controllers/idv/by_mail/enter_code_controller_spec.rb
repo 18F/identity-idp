@@ -79,7 +79,6 @@ end
 RSpec.describe Idv::ByMail::EnterCodeController do
   let(:otp) { 'ABCDE12345' }
   let(:submitted_otp) { otp }
-  let(:proofing_components) { nil }
   let(:threatmetrix_enabled) { false }
   let(:gpo_enabled) { true }
   let(:params) { nil }
@@ -88,15 +87,6 @@ RSpec.describe Idv::ByMail::EnterCodeController do
     stub_analytics
     stub_attempts_tracker
     stub_sign_in(user)
-      # creation_time =
-      #   (IdentityConfig.store.minimum_wait_before_another_usps_letter_in_hours + 1).hours.ago
-      # create(
-      #   :gpo_confirmation_code,
-      #   profile: pending_profile,
-      #   otp_fingerprint: Pii::Fingerprinter.fingerprint(otp),
-      #   created_at: creation_time,
-      #   updated_at: creation_time,
-      # )
 
     allow(IdentityConfig.store).to receive(:proofing_device_profiling).
       and_return(threatmetrix_enabled ? :enabled : :disabled)
@@ -283,10 +273,6 @@ RSpec.describe Idv::ByMail::EnterCodeController do
             user: user,
             profile: user.pending_profile,
           )
-        end
-
-        let(:proofing_components) do
-          ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
         end
 
         before do
