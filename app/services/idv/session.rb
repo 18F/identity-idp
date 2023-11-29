@@ -151,10 +151,6 @@ module Idv
       failed_phone_step_numbers << phone_e164 if !failed_phone_step_numbers.include?(phone_e164)
     end
 
-    def pii_from_user
-      user_session['idv/in_person'][:pii_from_user]
-    end
-
     def has_pii_from_user_in_flow_session
       user_session.dig('idv/in_person', :pii_from_user)
     end
