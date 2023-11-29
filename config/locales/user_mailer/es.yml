@@ -10,7 +10,7 @@ es:
         póngase en contacto con la agencia a cuyo servicio está intentando
         acceder.
       subject: No hemos podido verificar su identidad
-    account_reset_cancel: 
+    account_reset_cancel:
       intro_html: Este correo electrónico confirma que ha cancelado su solicitud para
         eliminar su cuenta de %{app_name_html}.
       subject: Solicitud cancelada
