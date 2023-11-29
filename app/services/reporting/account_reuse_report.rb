@@ -47,18 +47,26 @@ module Reporting
     private
 
     ReuseDetailRow = Struct.new(
-      :num_entities, :entity_type, :num_all_users, :all_percent, :num_idv_users,
-      :idv_percent
+      :num_entities, :entity_type,
+      :num_all_users, :all_percent,
+      :num_idv_users, :idv_percent
     ) do
-      def initialize(num_entities: 0, entity_type: '', num_all_users: 0, all_percent: 0,
-                     num_idv_users: 0, idv_percent: 0)
+      def initialize(
+        num_entities: 0, entity_type: '',
+        num_all_users: 0, all_percent: 0,
+        num_idv_users: 0, idv_percent: 0
+      )
         super(
-          num_entities:, entity_type:, num_all_users:, all_percent:, num_idv_users:,
-          idv_percent:)
+          num_entities:, entity_type:,
+          num_all_users:, all_percent:,
+          num_idv_users:, idv_percent:,
+          )
       end
 
-      def update_details(num_entities: nil, entity_type: nil, num_idv_users: nil,
-                         num_all_users: nil)
+      def update_details(
+        num_entities: nil, entity_type: nil,
+        num_idv_users: nil, num_all_users: nil
+      )
         self.num_entities = num_entities if !num_entities.nil?
 
         self.entity_type = entity_type if !entity_type.nil?
@@ -129,14 +137,18 @@ module Reporting
     end
 
     EntityReuseSummary = Struct.new(
-      :results, :entity_type, :total_all_users, :total_all_percent, :total_idv_users,
-      :total_idv_percent
+      :results, :entity_type,
+      :total_all_users, :total_all_percent,
+      :total_idv_users, :total_idv_percent
     ) do
-      def initialize(entity_type: '', total_all_users: 0, total_all_percent: 0, total_idv_users: 0,
-                     total_idv_percent: 0)
+      def initialize(
+        entity_type: '', total_all_users: 0, total_all_percent: 0,
+        total_idv_users: 0, total_idv_percent: 0
+      )
         super(
-          entity_type:, total_all_users:, total_all_percent:, total_idv_users:,
-          total_idv_percent:)
+          entity_type:, total_all_users:, total_all_percent:,
+          total_idv_users:, total_idv_percent:
+          )
       end
 
       def update_from_results(results, entity_type, total_proofed)
@@ -183,24 +195,20 @@ module Reporting
 
       reuse_results = {
         sp: ReuseDetailSection.new.organize_results(
-          sp_reuse_results_all, sp_reuse_results_idv,
-          'apps'
+          sp_reuse_results_all, sp_reuse_results_idv, 'apps'
         ),
         agency: ReuseDetailSection.new.organize_results(
-          agency_reuse_results_all,
-          agency_reuse_results_idv, 'agencies'
+          agency_reuse_results_all, agency_reuse_results_idv, 'agencies'
         ),
       }
 
       total_proofed = num_active_profiles
 
       sp_reuse_stats = EntityReuseSummary.new.update_from_results(
-        reuse_results[:sp], 'apps',
-        total_proofed
+        reuse_results[:sp], 'apps', total_proofed
       )
       agency_reuse_stats = EntityReuseSummary.new.update_from_results(
-        reuse_results[:agency],
-        'agencies', total_proofed
+        reuse_results[:agency], 'agencies', total_proofed
       )
 
       @total_reuse_report = {
