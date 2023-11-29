@@ -72,7 +72,7 @@ module Idv
       end
 
       def pii
-        user_session['idv/in_person'][:pii_from_user]
+        user_session.dig('idv/in_person', :pii_from_user)
       end
 
       # override IdvSession concern
