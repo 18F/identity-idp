@@ -54,7 +54,7 @@ module IdvStepConcern
   end
 
   def pii_from_user
-    flow_session['pii_from_user']
+    user_session.dig('idv/in_person', 'pii_from_user')
   end
 
   def flow_path
@@ -77,27 +77,6 @@ module IdvStepConcern
   end
 
   private
-
-  def confirm_verify_info_step_complete
-    return if idv_session.verify_info_step_complete?
-
-    if current_user.has_in_person_enrollment?
-      redirect_to idv_in_person_verify_info_url
-    else
-      redirect_to idv_verify_info_url
-    end
-  end
-
-  def confirm_verify_info_step_needed
-    return unless idv_session.verify_info_step_complete?
-    redirect_to idv_enter_password_url
-  end
-
-  def confirm_address_step_complete
-    return if idv_session.phone_or_address_step_complete?
-
-    redirect_to idv_otp_verification_url
-  end
 
   def extra_analytics_properties
     extra = {
@@ -136,7 +115,6 @@ module IdvStepConcern
 
   def url_for_latest_step
     step_info = flow_policy.info_for_latest_step
-
     url_for(controller: step_info.controller, action: step_info.action)
   end
 

@@ -468,7 +468,7 @@ RSpec.feature 'Analytics Regression', js: true do
   # rubocop:enable Layout/LineLength
   # rubocop:enable Layout/MultilineHashKeyLineBreaks
 
-  # Needed for enqueued_at in gpo_step
+  # Needed for enqueued_at in RequestLetter
   around do |ex|
     freeze_time { ex.run }
   end
@@ -629,7 +629,7 @@ RSpec.feature 'Analytics Regression', js: true do
       complete_ssn_step
       complete_verify_step
       enter_gpo_flow
-      gpo_step
+      complete_request_letter
       complete_enter_password_step(user)
     end
 

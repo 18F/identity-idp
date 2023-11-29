@@ -8,7 +8,6 @@ RSpec.describe Idv::AddressController do
   before do
     stub_sign_in(user)
     stub_analytics
-    stub_idv_steps_before_verify_step(user)
     subject.idv_session.welcome_visited = true
     subject.idv_session.idv_consent_given = true
     subject.idv_session.flow_path = 'standard'
@@ -32,10 +31,10 @@ RSpec.describe Idv::AddressController do
         subject.idv_session.resolution_successful = true
       end
 
-      it 'redirects to enter_password' do
+      it 'renders the :new template' do
         get :new
 
-        expect(response).to redirect_to(idv_enter_password_url)
+        expect(response).to render_template(:new)
       end
     end
   end
@@ -67,7 +66,9 @@ RSpec.describe Idv::AddressController do
     it 'updates pii_from_doc in idv_session' do
       expect do
         put :update, params: params
-      end.to change { subject.idv_session.pii_from_doc }.to eql(
+      end.to change { subject.idv_session.pii_from_doc }
+
+      expect(subject.idv_session.pii_from_doc).to eql(
         pii_from_doc.merge(
           {
             'address1' => '1234 Main St',

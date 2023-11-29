@@ -4,8 +4,7 @@ module Idv
     include IdvStepConcern
     include StepIndicatorConcern
 
-    before_action :confirm_verify_info_step_complete
-    before_action :confirm_address_step_complete
+    before_action :confirm_step_allowed
     before_action :confirm_no_profile_yet
     before_action :confirm_current_password, only: [:create]
 
@@ -29,6 +28,7 @@ module Idv
     end
 
     def create
+      clear_future_steps!
       irs_attempts_api_tracker.idv_password_entered(success: true)
 
       init_profile
@@ -70,6 +70,19 @@ module Idv
     def step_indicator_step
       return :secure_account unless idv_session.verify_by_mail?
       :get_a_letter
+    end
+
+    def self.step_info
+      Idv::StepInfo.new(
+        key: :enter_password,
+        controller: self,
+        action: :new,
+        next_steps: [FlowPolicy::FINAL],
+        preconditions: ->(idv_session:, user:) do
+          idv_session.phone_or_address_step_complete?
+        end,
+        undo_step: ->(idv_session:, user:) {},
+      )
     end
 
     private

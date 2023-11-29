@@ -6,7 +6,6 @@ module Idv
     include StepIndicatorConcern
 
     before_action :confirm_not_rate_limited
-    before_action :confirm_verify_info_step_needed
     before_action :confirm_step_allowed
     before_action :confirm_hybrid_handoff_needed, only: :show
 
@@ -36,7 +35,7 @@ module Idv
     def self.step_info
       Idv::StepInfo.new(
         key: :phone_question,
-        controller: controller_name,
+        controller: self,
         next_steps: [:hybrid_handoff, :document_capture],
         preconditions: ->(idv_session:, user:) do
           AbTests::IDV_PHONE_QUESTION.bucket(user.uuid) == :show_phone_question &&
