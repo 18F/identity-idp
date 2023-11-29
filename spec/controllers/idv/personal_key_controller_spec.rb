@@ -4,6 +4,27 @@ RSpec.describe Idv::PersonalKeyController do
   include SamlAuthHelper
   include PersonalKeyValidator
 
+  def assert_personal_key_generated_for_profile(profile:, expected_pii:)
+    expect(idv_session.personal_key).to be_present
+
+    normalized_personal_key = normalize_personal_key(idv_session.personal_key)
+
+    # These keys are present in our applicant fixture but
+    # are not actually supported in Pii::Attributes
+    keys_to_ignore = %i[
+      state_id_expiration
+      state_id_issued
+      state_id_number
+      state_id_type
+    ]
+
+    expected = Pii::Attributes.new(expected_pii.except(*keys_to_ignore))
+
+    actual = profile.reload.recover_pii(normalized_personal_key)
+
+    expect(actual).to eql(expected)
+  end
+
   let(:applicant) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE }
   let(:password) { 'sekrit phrase' }
   let(:user) { create(:user, :fully_registered, password: password) }
@@ -11,6 +32,8 @@ RSpec.describe Idv::PersonalKeyController do
   # Most (but not all) of these tests assume that a profile has been minted
   # from the data in idv_session. Set this to false to prevent this behavior
   # and test the other way.
+  # (idv_session.profile will be nil if the user is coming back to complete
+  # the IdV flow out-of-band, like with GPO.)
   let(:mint_profile_from_idv_session) { true }
 
   let(:address_verification_mechanism) { 'phone' }
@@ -146,6 +169,96 @@ RSpec.describe Idv::PersonalKeyController do
         get :show
 
         expect(response).to redirect_to idv_enter_password_url
+      end
+    end
+
+    context 'no personal key generated yet' do
+      before do
+        idv_session.personal_key = nil
+      end
+
+      it 'generates a personal key that encrypts the idv_session profile data' do
+        get :show
+        assert_personal_key_generated_for_profile(
+          profile: idv_session.profile,
+          expected_pii: applicant,
+        )
+      end
+
+      context 'user has an existing profile in addition to the one attached to idv_session' do
+        let!(:existing_profile) do
+          create(
+            :profile,
+            :verify_by_mail_pending,
+            user: user,
+            pii: idv_session.applicant.merge(first_name: 'Existing'),
+          )
+        end
+        it 'generates a personal key that encrypts the idv_session profile data' do
+          get :show
+          assert_personal_key_generated_for_profile(
+            profile: idv_session.profile,
+            expected_pii: idv_session.applicant,
+          )
+        end
+      end
+
+      context 'no profile attached to idv_session' do
+        let(:mint_profile_from_idv_session) { false }
+
+        context 'user has a pending profile' do
+          let!(:pending_profile_pii) { applicant.merge(first_name: 'Pending') }
+          let!(:pending_profile) do
+            create(
+              :profile,
+              :verify_by_mail_pending,
+              user: user,
+              pii: pending_profile_pii,
+            )
+          end
+
+          before do
+            Pii::ProfileCacher.new(user, subject.user_session).save_decrypted_pii(
+              pending_profile_pii,
+              pending_profile.id,
+            )
+          end
+
+          it 'generates a personal key that encrypts the pending profile data' do
+            get :show
+            assert_personal_key_generated_for_profile(
+              profile: pending_profile,
+              expected_pii: pending_profile_pii,
+            )
+          end
+
+          context 'and user has an active profile' do
+            let(:active_profile_pii) { applicant.merge(first_name: 'Active') }
+            let!(:active_profile) do
+              create(
+                :profile,
+                :active,
+                user: user,
+                pii: active_profile_pii,
+              )
+            end
+
+            before do
+              Pii::ProfileCacher.new(user, subject.user_session).save_decrypted_pii(
+                active_profile_pii,
+                active_profile.id,
+              )
+            end
+
+            it 'generates a personal key that encrypts the active profile data' do
+              get :show
+              assert_personal_key_generated_for_profile(
+                profile: active_profile,
+                expected_pii: active_profile_pii,
+              )
+            end
+          end
+        end
       end
     end
   end

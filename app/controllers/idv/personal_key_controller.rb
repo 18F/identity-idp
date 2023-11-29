@@ -88,7 +88,11 @@ module Idv
 
     def generate_personal_key
       cacher = Pii::Cacher.new(current_user, user_session)
-      profile.encrypt_recovery_pii(cacher.fetch)
+      new_personal_key = profile.encrypt_recovery_pii(cacher.fetch(profile.id))
+
+      profile.save
+
+      new_personal_key
     end
 
     def in_person_enrollment?
