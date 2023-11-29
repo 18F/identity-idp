@@ -7,7 +7,6 @@ module Idv
 
     before_action :confirm_two_factor_authenticated
     before_action :confirm_step_allowed
-    before_action :confirm_otp_sent
     before_action :set_code
     before_action :set_otp_verification_presenter
 
@@ -48,12 +47,6 @@ module Idv
     end
 
     private
-
-    def confirm_otp_sent
-      return if idv_session.user_phone_confirmation_session.present?
-
-      redirect_to idv_phone_url
-    end
 
     def set_code
       return unless FeatureManagement.prefill_otp_codes?
