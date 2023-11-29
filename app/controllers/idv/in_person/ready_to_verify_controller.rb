@@ -21,7 +21,7 @@ module Idv
       def opt_in_analytics_properties
         extra = {}
         if IdentityConfig.store.in_person_proofing_opt_in_enabled
-          extra.merge(opted_in_to_in_person_proofing: idv_session.opted_in_to_in_person_proofing)
+          extra = { opted_in_to_in_person_proofing: idv_session.opted_in_to_in_person_proofing }
         end
         extra
       end

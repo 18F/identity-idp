@@ -15,6 +15,7 @@ module Idv
       analytics.idv_personal_key_visited(
         address_verification_method: idv_session.address_verification_mechanism,
         in_person_verification_pending: idv_session.profile&.in_person_verification_pending?,
+        **opt_in_analytics_properties,
       )
       add_proofing_component
 
@@ -38,6 +39,14 @@ module Idv
     end
 
     private
+
+    def opt_in_analytics_properties
+      extra = {}
+      if IdentityConfig.store.in_person_proofing_opt_in_enabled
+        extra = { opted_in_to_in_person_proofing: idv_session.opted_in_to_in_person_proofing }
+      end
+      extra
+    end
 
     def next_step
       if in_person_enrollment?

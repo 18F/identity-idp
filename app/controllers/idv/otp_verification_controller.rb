@@ -4,6 +4,7 @@ module Idv
     include IdvSession
     include StepIndicatorConcern
     include PhoneOtpRateLimitable
+    include IdvStepConcern
 
     before_action :confirm_two_factor_authenticated
     before_action :confirm_step_needed
@@ -19,7 +20,7 @@ module Idv
 
     def update
       result = phone_confirmation_otp_verification_form.submit(code: params[:code])
-      analytics.idv_phone_confirmation_otp_submitted(**result.to_h)
+      analytics.idv_phone_confirmation_otp_submitted(**result.to_h, **opt_in_analytics_properties)
 
       irs_attempts_api_tracker.idv_phone_otp_submitted(
         success: result.success?,
