@@ -99,7 +99,8 @@ module Reporting
       def organize_results(all_results, idv_results, entity_type)
         idv_results.each do |result|
           entity_num = result["num_#{entity_type}"]
-          self.detail_rows[entity_num] =
+          row_index = entity_num
+          self.detail_rows[row_index] =
             ReuseDetailRow.new.update_details(
               num_entities: entity_num,
               entity_type: entity_type,
@@ -109,10 +110,11 @@ module Reporting
 
         all_results.each do |result|
           entity_num = result["num_#{entity_type}"]
-          if self.detail_rows[entity_num].is_a?(Struct)
-            self.detail_rows[entity_num].update_details(num_all_users: result['num_all_users'])
+          row_index = entity_num
+          if self.detail_rows[row_index].is_a?(Struct)
+            self.detail_rows[row_index].update_details(num_all_users: result['num_all_users'])
           else
-            self.detail_rows[entity_num] =
+            self.detail_rows[row_index] =
               ReuseDetailRow.new.update_details(
                 num_entities: entity_num,
                 entity_type: entity_type,
