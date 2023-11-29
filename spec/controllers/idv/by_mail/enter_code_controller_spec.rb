@@ -77,23 +77,8 @@ RSpec.describe Idv::ByMail::EnterCodeController do
 end
 
 RSpec.describe Idv::ByMail::EnterCodeController do
-  let(:has_pending_profile) { true }
-  let(:success) { true }
-  let(:otp) { 'ABC123' }
+  let(:otp) { 'ABCDE12345' }
   let(:submitted_otp) { otp }
-  let(:user) { create(:user) }
-  let(:profile_created_at) { Time.zone.now }
-  let(:pending_profile) do
-    if user
-      create(
-        :profile,
-        :with_pii,
-        user: user,
-        proofing_components: proofing_components,
-        created_at: profile_created_at,
-      )
-    end
-  end
   let(:proofing_components) { nil }
   let(:threatmetrix_enabled) { false }
   let(:gpo_enabled) { true }
@@ -102,22 +87,16 @@ RSpec.describe Idv::ByMail::EnterCodeController do
   before do
     stub_analytics
     stub_attempts_tracker
-
-    if user
-      stub_sign_in(user)
-      pending_user = stub_user_with_pending_profile(user)
-      creation_time =
-        (IdentityConfig.store.minimum_wait_before_another_usps_letter_in_hours + 1).hours.ago
-      create(
-        :gpo_confirmation_code,
-        profile: pending_profile,
-        otp_fingerprint: Pii::Fingerprinter.fingerprint(otp),
-        created_at: creation_time,
-        updated_at: creation_time,
-      )
-      allow(pending_user).to receive(:gpo_verification_pending_profile?).
-        and_return(has_pending_profile)
-    end
+    stub_sign_in(user)
+      # creation_time =
+      #   (IdentityConfig.store.minimum_wait_before_another_usps_letter_in_hours + 1).hours.ago
+      # create(
+      #   :gpo_confirmation_code,
+      #   profile: pending_profile,
+      #   otp_fingerprint: Pii::Fingerprinter.fingerprint(otp),
+      #   created_at: creation_time,
+      #   updated_at: creation_time,
+      # )
 
     allow(IdentityConfig.store).to receive(:proofing_device_profiling).
       and_return(threatmetrix_enabled ? :enabled : :disabled)
@@ -125,11 +104,12 @@ RSpec.describe Idv::ByMail::EnterCodeController do
   end
 
   describe '#index' do
-    subject(:action) do
-      get(:index, params: params)
-    end
+    subject(:action) { get(:index, params: params) }
 
     context 'user has pending profile' do
+      let(:profile_created_at) { 2.days.ago }
+      let(:user) { create(:user, :with_pending_gpo_profile, created_at: profile_created_at) }
+
       it 'renders page' do
         controller.user_session[:decrypted_pii] = { address1: 'Address1' }.to_json
         expect(@analytics).to receive(:track_event).with(
@@ -155,8 +135,9 @@ RSpec.describe Idv::ByMail::EnterCodeController do
         expect(response).to redirect_to(idv_enter_code_rate_limited_url)
       end
 
-      context 'but that profile is > 30 days old' do
+      context 'but that profile is too old' do
         let(:profile_created_at) { 31.days.ago }
+
         it 'sets @can_request_another_letter to false' do
           action
           expect(assigns(:can_request_another_letter)).to eql(false)
@@ -184,7 +165,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
     end
 
     context 'user does not have pending profile' do
-      let(:has_pending_profile) { false }
+      let(:user) { create(:user) }
 
       it 'redirects to account page' do
         action
@@ -194,6 +175,8 @@ RSpec.describe Idv::ByMail::EnterCodeController do
     end
 
     context 'with rate limit reached' do
+      let(:user) { create(:user, :with_pending_gpo_profile, created_at: 2.days.ago) }
+
       before do
         RateLimiter.new(rate_limit_type: :verify_gpo_key, user: user).increment_to_limited!
       end
@@ -211,6 +194,8 @@ RSpec.describe Idv::ByMail::EnterCodeController do
     end
 
     context 'session says user did not receive letter' do
+      let(:user) { create(:user, :with_pending_gpo_profile, created_at: 2.days.ago) }
+
       before do
         session[:gpo_user_did_not_receive_letter] = true
         action
@@ -220,6 +205,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
           idv_verify_by_mail_enter_code_path(did_not_receive_letter: 1),
         )
       end
+
       it 'clears session value' do
         expect(session).not_to include(gpo_user_did_not_receive_letter: anything)
       end
@@ -256,6 +242,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
     end
 
     context 'with a valid form' do
+      let(:user) { create(:user, :with_pending_gpo_profile, created_at: 2.days.ago) }
       let(:success) { true }
 
       it 'redirects to the sign_up/completions page' do
@@ -294,7 +281,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
             :in_person_enrollment,
             :pending,
             user: user,
-            profile: pending_profile,
+            profile: user.pending_profile,
           )
         end
 
@@ -338,14 +325,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
 
       context 'threatmetrix disabled' do
         context 'with threatmetrix status of "reject"' do
-          let(:pending_profile) do
-            create(
-              :profile,
-              :with_pii,
-              fraud_pending_reason: 'threatmetrix_reject',
-              user: user,
-            )
-          end
+          let(:user) { create(:user, :gpo_pending_with_fraud_rejection) }
 
           it 'redirects to the sign_up/completions page' do
             expect(@analytics).to receive(:track_event).with(
@@ -377,14 +357,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
         let(:threatmetrix_enabled) { true }
 
         context 'with threatmetrix status of "reject"' do
-          let(:pending_profile) do
-            create(
-              :profile,
-              :with_pii,
-              fraud_pending_reason: 'threatmetrix_reject',
-              user: user,
-            )
-          end
+          let(:user) { create(:user, :gpo_pending_with_fraud_rejection) }
 
           it 'is reflected in analytics' do
             expect(@analytics).to receive(:track_event).with(
@@ -417,14 +390,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
         end
 
         context 'with threatmetrix status of "review"' do
-          let(:pending_profile) do
-            create(
-              :profile,
-              :with_pii,
-              fraud_pending_reason: 'threatmetrix_review',
-              user: user,
-            )
-          end
+          let(:user) { create(:user, :gpo_pending_with_fraud_review) }
 
           it 'is reflected in analytics' do
             expect(@analytics).to receive(:track_event).with(
@@ -449,6 +415,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
     end
 
     context 'with an invalid form' do
+      let(:user) { create(:user, :with_pending_gpo_profile, created_at: 2.days.ago) }
       let(:submitted_otp) { 'the-wrong-otp' }
 
       it 'redirects to the index page to show errors' do
@@ -490,6 +457,8 @@ RSpec.describe Idv::ByMail::EnterCodeController do
       end
 
       context 'user is rate limited' do
+        let(:user) { create(:user, :with_pending_gpo_profile) }
+
         it 'redirects to the rate limited index page to show errors' do
           analytics_args = {
             success: false,
@@ -538,6 +507,8 @@ RSpec.describe Idv::ByMail::EnterCodeController do
       end
 
       context 'valid code is submitted' do
+        let(:user) { create(:user, :with_pending_gpo_profile) }
+
         it 'redirects to personal key page' do
           expect(@analytics).to receive(:track_event).with(
             'IdV: enter verify by mail code submitted',
