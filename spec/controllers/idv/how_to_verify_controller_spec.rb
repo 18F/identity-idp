@@ -2,7 +2,6 @@ require 'rails_helper'
 
 RSpec.describe Idv::HowToVerifyController do
   let(:user) { create(:user) }
-  let(:enabled) { true }
 
   before do
     allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { true }
