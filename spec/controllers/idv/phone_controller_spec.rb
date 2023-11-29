@@ -30,7 +30,7 @@ RSpec.describe Idv::PhoneController do
 
   describe 'before_actions' do
     it 'includes before_actions from IdvSession' do
-      expect(subject).to have_actions(:before, :redirect_if_sp_context_needed)
+      expect(subject).to have_actions(:before, :redirect_unless_sp_requested_verification)
     end
   end
 
@@ -85,8 +85,6 @@ RSpec.describe Idv::PhoneController do
       before do
         subject.idv_session.applicant = nil
         subject.idv_session.resolution_successful = nil
-
-        allow(controller).to receive(:confirm_idv_applicant_created).and_call_original
       end
 
       it 'redirects to the verify step' do

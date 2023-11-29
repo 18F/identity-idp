@@ -1,5 +1,6 @@
 module Idv
   class MailOnlyWarningController < ApplicationController
+    include Idv::AvailabilityConcern
     include IdvSession
     include StepIndicatorConcern
 

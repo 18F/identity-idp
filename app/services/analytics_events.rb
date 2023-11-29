@@ -290,16 +290,14 @@ module AnalyticsEvents
   end
 
   # @param [String] message the warning
-  # @param [String] getting_started_ab_test_bucket Which initial IdV screen the user saw
   # @param [String] phone_question_ab_test_bucket Prompt user with phone question before doc auth
   # Logged when there is a non-user-facing error in the doc auth process, such as an unrecognized
   # field from a vendor
-  def doc_auth_warning(message: nil, getting_started_ab_test_bucket: nil,
+  def doc_auth_warning(message: nil,
                        phone_question_ab_test_bucket: nil, **extra)
     track_event(
       'Doc Auth Warning',
       message: message,
-      getting_started_ab_test_bucket: getting_started_ab_test_bucket,
       phone_question_ab_test_bucket: phone_question_ab_test_bucket,
       **extra,
     )
@@ -580,7 +578,6 @@ module AnalyticsEvents
   # @param [String] acuant_version
   # @param [String] flow_path whether the user is in the hybrid or standard flow
   # @param [Boolean] isCameraSupported
-  # @param [String] phone_question_ab_test_analytics_bucket
   # @param [Boolean] success
   # @param [Boolean] use_alternate_sdk
   # The Acuant SDK was loaded
@@ -590,7 +587,6 @@ module AnalyticsEvents
     acuant_version:,
     flow_path:,
     isCameraSupported:,
-    phone_question_ab_test_analytics_bucket:,
     success:,
     use_alternate_sdk:,
     **_extra
@@ -601,7 +597,6 @@ module AnalyticsEvents
       acuant_version: acuant_version,
       flow_path: flow_path,
       isCameraSupported: isCameraSupported,
-      phone_question_ab_test_analytics_bucket: phone_question_ab_test_analytics_bucket,
       success: success,
       use_alternate_sdk: use_alternate_sdk,
     )
@@ -656,8 +651,6 @@ module AnalyticsEvents
   # @param [Boolean] isAssessedAsUnsupported
   # @param [String] mimeType MIME type of image added
   # @param [Integer] moire
-  # @param [String] phone_question_ab_test_bucket
-  # @param [String] phone_with_camera the result of the phone question a/b test
   # @param [Integer] sharpness
   # @param [Integer] sharpnessScoreThreshold
   # @param [Integer] size size of image added in bytes
@@ -685,8 +678,6 @@ module AnalyticsEvents
     isAssessedAsUnsupported:,
     mimeType:,
     moire:,
-    phone_question_ab_test_bucket:,
-    phone_with_camera:,
     sharpness:,
     sharpnessScoreThreshold:,
     size:,
@@ -715,8 +706,6 @@ module AnalyticsEvents
       isAssessedAsUnsupported: isAssessedAsUnsupported,
       mimeType: mimeType,
       moire: moire,
-      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
-      phone_with_camera: phone_with_camera,
       sharpness: sharpness,
       sharpnessScoreThreshold: sharpnessScoreThreshold,
       size: size,
@@ -730,8 +719,6 @@ module AnalyticsEvents
   # @param [String] acuant_version
   # @param [String] flow_path whether the user is in the hybrid or standard flow
   # @param [Boolean] isDrop
-  # @param [String] phone_question_ab_test_bucket
-  # @param [String] phone_with_camera the result of the phone question a/b test
   # @param [Boolean] source
   # @param [Boolean] use_alternate_sdk
   def idv_back_image_clicked(
@@ -739,8 +726,6 @@ module AnalyticsEvents
     acuant_version:,
     flow_path:,
     isDrop:,
-    phone_question_ab_test_bucket:,
-    phone_with_camera:,
     source:,
     use_alternate_sdk:,
     **_extra
@@ -751,8 +736,6 @@ module AnalyticsEvents
       acuant_version: acuant_version,
       flow_path: flow_path,
       isDrop: isDrop,
-      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
-      phone_with_camera: phone_with_camera,
       source: source,
       use_alternate_sdk: use_alternate_sdk,
     )
@@ -890,14 +873,6 @@ module AnalyticsEvents
     )
   end
 
-  def idv_doc_auth_getting_started_submitted(**extra)
-    track_event('IdV: doc auth getting_started submitted', **extra)
-  end
-
-  def idv_doc_auth_getting_started_visited(**extra)
-    track_event('IdV: doc auth getting_started visited', **extra)
-  end
-
   def idv_doc_auth_how_to_verify_submitted(**extra)
     track_event(:idv_doc_auth_how_to_verify_submitted, **extra)
   end
@@ -974,7 +949,6 @@ module AnalyticsEvents
   # @param [String] flow_path
   # @param [String] front_image_fingerprint Fingerprint of front image data
   # @param [String] back_image_fingerprint Fingerprint of back image data
-  # @param [String] getting_started_ab_test_bucket Which initial IdV screen the user saw
   # @param [String] phone_question_ab_test_bucket Prompt user with phone question before doc auth
   # @param [String] phone_with_camera the result of the phone question a/b test
   # The document capture image uploaded was locally validated during the IDV process
@@ -987,7 +961,6 @@ module AnalyticsEvents
     user_id: nil,
     front_image_fingerprint: nil,
     back_image_fingerprint: nil,
-    getting_started_ab_test_bucket: nil,
     phone_question_ab_test_bucket: nil,
     phone_with_camera: nil,
     **extra
@@ -1002,7 +975,6 @@ module AnalyticsEvents
       flow_path: flow_path,
       front_image_fingerprint: front_image_fingerprint,
       back_image_fingerprint: back_image_fingerprint,
-      getting_started_ab_test_bucket: getting_started_ab_test_bucket,
       phone_question_ab_test_bucket: phone_question_ab_test_bucket,
       phone_with_camera: phone_with_camera,
       **extra,
@@ -1024,7 +996,6 @@ module AnalyticsEvents
   # @param [Float] vendor_request_time_in_ms Time it took to upload images & get a response.
   # @param [String] front_image_fingerprint Fingerprint of front image data
   # @param [String] back_image_fingerprint Fingerprint of back image data
-  # @param [String] getting_started_ab_test_bucket Which initial IdV screen the user saw
   # @param [String] phone_question_ab_test_bucket Prompt user with phone question before doc auth
   # @param [String] phone_with_camera the result of the phone question a/b test
   # The document capture image was uploaded to vendor during the IDV process
@@ -1043,7 +1014,6 @@ module AnalyticsEvents
     vendor_request_time_in_ms: nil,
     front_image_fingerprint: nil,
     back_image_fingerprint: nil,
-    getting_started_ab_test_bucket: nil,
     phone_question_ab_test_bucket: nil,
     phone_with_camera: nil,
     **extra
@@ -1065,7 +1035,6 @@ module AnalyticsEvents
       vendor_request_time_in_ms: vendor_request_time_in_ms,
       front_image_fingerprint: front_image_fingerprint,
       back_image_fingerprint: back_image_fingerprint,
-      getting_started_ab_test_bucket: getting_started_ab_test_bucket,
       phone_question_ab_test_bucket: phone_question_ab_test_bucket,
       phone_with_camera: phone_with_camera,
       **extra,
@@ -1080,7 +1049,6 @@ module AnalyticsEvents
   # @param [String] flow_path
   # @param [String] front_image_fingerprint Fingerprint of front image data
   # @param [String] back_image_fingerprint Fingerprint of back image data
-  # @param [String] getting_started_ab_test_bucket Which initial IdV screen the user saw
   # @param [Hash] classification_info document image side information, issuing country and type etc
   # The PII that came back from the document capture vendor was validated
   def idv_doc_auth_submitted_pii_validation(
@@ -1092,7 +1060,6 @@ module AnalyticsEvents
     user_id: nil,
     front_image_fingerprint: nil,
     back_image_fingerprint: nil,
-    getting_started_ab_test_bucket: nil,
     classification_info: {},
     **extra
   )
@@ -1106,7 +1073,6 @@ module AnalyticsEvents
       flow_path: flow_path,
       front_image_fingerprint: front_image_fingerprint,
       back_image_fingerprint: back_image_fingerprint,
-      getting_started_ab_test_bucket: getting_started_ab_test_bucket,
       classification_info: classification_info,
       **extra,
     )
@@ -1129,11 +1095,7 @@ module AnalyticsEvents
   # @param [String] step_name
   # @param [Integer] remaining_attempts
   # The user was sent to a warning page during the IDV flow
-  def idv_doc_auth_warning_visited(
-    step_name:,
-    remaining_attempts:,
-    **extra
-  )
+  def idv_doc_auth_warning_visited(step_name:, remaining_attempts:, **extra)
     track_event(
       'IdV: doc auth warning visited',
       step_name: step_name,
@@ -1203,7 +1165,6 @@ module AnalyticsEvents
   # @param [String] acuant_version
   # @param [String] flow_path whether the user is in the hybrid or standard flow
   # @param [Array] ids ID Types the user has checked whether they have
-  # @param [String] phone_question_ab_test_bucket
   # @param [String] use_alternate_sdk
   # Exit survey of optional questions when the user leaves document capture
   def idv_exit_optional_questions(
@@ -1211,7 +1172,6 @@ module AnalyticsEvents
     acuant_version:,
     flow_path:,
     ids:,
-    phone_question_ab_test_bucket:,
     use_alternate_sdk:,
     **_extra
   )
@@ -1221,7 +1181,6 @@ module AnalyticsEvents
       acuant_version: acuant_version,
       flow_path: flow_path,
       ids: ids,
-      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
       use_alternate_sdk: use_alternate_sdk,
     )
   end
@@ -1297,8 +1256,6 @@ module AnalyticsEvents
   # @param [Boolean] isAssessedAsUnsupported
   # @param [String] mimeType MIME type of image added
   # @param [Integer] moire
-  # @param [String] phone_question_ab_test_bucket
-  # @param [String] phone_with_camera the result of the phone question a/b test
   # @param [Integer] sharpness
   # @param [Integer] sharpnessScoreThreshold
   # @param [Integer] size size of image added in bytes
@@ -1326,8 +1283,6 @@ module AnalyticsEvents
     isAssessedAsUnsupported:,
     mimeType:,
     moire:,
-    phone_question_ab_test_bucket:,
-    phone_with_camera:,
     sharpness:,
     sharpnessScoreThreshold:,
     size:,
@@ -1356,8 +1311,6 @@ module AnalyticsEvents
       isAssessedAsUnsupported: isAssessedAsUnsupported,
       mimeType: mimeType,
       moire: moire,
-      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
-      phone_with_camera: phone_with_camera,
       sharpness: sharpness,
       sharpnessScoreThreshold: sharpnessScoreThreshold,
       size: size,
@@ -1371,8 +1324,6 @@ module AnalyticsEvents
   # @param [String] acuant_version
   # @param [String] flow_path whether the user is in the hybrid or standard flow
   # @param [Boolean] isDrop
-  # @param [String] phone_question_ab_test_bucket
-  # @param [String] phone_with_camera the result of the phone question a/b test
   # @param [String] source
   # @param [String] use_alternate_sdk
   def idv_front_image_clicked(
@@ -1380,8 +1331,6 @@ module AnalyticsEvents
     acuant_version:,
     flow_path:,
     isDrop:,
-    phone_question_ab_test_bucket:,
-    phone_with_camera:,
     source:,
     use_alternate_sdk:,
     **_extra
@@ -1392,8 +1341,6 @@ module AnalyticsEvents
       acuant_version: acuant_version,
       flow_path: flow_path,
       isDrop: isDrop,
-      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
-      phone_with_camera: phone_with_camera,
       source: source,
       use_alternate_sdk: use_alternate_sdk,
     )
@@ -2385,39 +2332,25 @@ module AnalyticsEvents
     )
   end
 
-  # @param [String] phone_question_ab_test_bucket
-  # @param [String] phone_with_camera the result of the phone question a/b test
   # @param [Boolean] isCancelled
   # @param [Boolean] isRateLimited
   # rubocop:disable Naming/VariableName,Naming/MethodParameterName
   def idv_link_sent_capture_doc_polling_complete(
     isCancelled:,
     isRateLimited:,
-    phone_question_ab_test_bucket:,
-    phone_with_camera:,
     **_extra
   )
     track_event(
       'Frontend: IdV: Link sent capture doc polling complete',
       isCancelled: isCancelled,
       isRateLimited: isRateLimited,
-      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
-      phone_with_camera: phone_with_camera,
     )
   end
   # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
-  # @param [String] phone_question_ab_test_bucket
-  # @param [String] phone_with_camera the result of the phone question a/b test
-  def idv_link_sent_capture_doc_polling_started(
-    phone_question_ab_test_bucket:,
-    phone_with_camera:,
-    **_extra
-  )
+  def idv_link_sent_capture_doc_polling_started(**_extra)
     track_event(
       'Frontend: IdV: Link sent capture doc polling started',
-      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
-      phone_with_camera: phone_with_camera,
     )
   end
 

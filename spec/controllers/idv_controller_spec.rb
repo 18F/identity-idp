@@ -167,29 +167,41 @@ RSpec.describe IdvController do
       expect(response).to redirect_to idv_welcome_path
     end
 
-    context 'no SP context' do
+    describe 'SP for IdV requirement' do
+      let(:current_sp) { create(:service_provider) }
+      let(:ial) { 2 }
       let(:user) { build(:user, password: ControllerHelper::VALID_PASSWORD) }
 
       before do
         stub_sign_in(user)
-        session[:sp] = {}
+        if current_sp.present?
+          session[:sp] = { issuer: current_sp.issuer, ial: ial }
+        else
+          session[:sp] = {}
+        end
         allow(IdentityConfig.store).to receive(:idv_sp_required).and_return(idv_sp_required)
       end
 
-      context 'sp required' do
-        let(:idv_sp_required) { true }
+      context 'without an SP context' do
+        let(:current_sp) { nil }
 
-        it 'redirects back to the account page' do
-          get :index
+        context 'when an SP is required' do
+          let(:idv_sp_required) { true }
 
-          expect(response).to redirect_to account_url
+          it 'redirects back to the account page' do
+            get :index
+            expect(response).to redirect_to account_url
+          end
+
+          it 'begins the proofing process if the user has a profile' do
+            create(:profile, :verified, user: user)
+            get :index
+            expect(response).to redirect_to idv_welcome_url
+          end
         end
 
-        context 'user has an existing profile' do
-          let(:user) do
-            profile = create(:profile)
-            profile.user
-          end
+        context 'no SP required' do
+          let(:idv_sp_required) { false }
 
           it 'begins the identity proofing process' do
             get :index
@@ -199,13 +211,55 @@ RSpec.describe IdvController do
         end
       end
 
-      context 'sp not required' do
-        let(:idv_sp_required) { false }
+      context 'with an SP context that does not require IdV' do
+        let(:ial) { 1 }
 
-        it 'begins the identity proofing process' do
-          get :index
+        context 'when an SP is required' do
+          let(:idv_sp_required) { true }
 
-          expect(response).to redirect_to idv_welcome_url
+          it 'redirects back to the account page' do
+            get :index
+            expect(response).to redirect_to account_url
+          end
+
+          it 'begins the proofing process if the user has a profile' do
+            create(:profile, :verified, user: user)
+            get :index
+            expect(response).to redirect_to idv_welcome_url
+          end
+        end
+
+        context 'no SP required' do
+          let(:idv_sp_required) { false }
+
+          it 'begins the identity proofing process' do
+            get :index
+
+            expect(response).to redirect_to idv_welcome_url
+          end
+        end
+      end
+
+      context 'with an SP context that requires IdV' do
+        let(:ial) { 2 }
+
+        context 'when an SP is required' do
+          let(:idv_sp_required) { true }
+
+          it 'begins the identity proofing process' do
+            get :index
+            expect(response).to redirect_to idv_welcome_url
+          end
+        end
+
+        context 'no SP required' do
+          let(:idv_sp_required) { false }
+
+          it 'begins the identity proofing process' do
+            get :index
+
+            expect(response).to redirect_to idv_welcome_url
+          end
         end
       end
     end

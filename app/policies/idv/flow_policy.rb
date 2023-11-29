@@ -18,11 +18,11 @@ module Idv
       steps[latest_step]
     end
 
-    def undo_steps_from_controller!(controller:)
+    def undo_future_steps_from_controller!(controller:)
       controller_name = controller < ApplicationController ?
                         controller.controller_name : controller
       key = controller_to_key(controller: controller_name)
-      undo_steps_from!(key: key)
+      undo_future_steps!(key: key)
     end
 
     private
@@ -55,6 +55,9 @@ module Idv
         hybrid_handoff: Idv::HybridHandoffController.step_info,
         link_sent: Idv::LinkSentController.step_info,
         document_capture: Idv::DocumentCaptureController.step_info,
+        ssn: Idv::SsnController.step_info,
+        verify_info: Idv::VerifyInfoController.step_info,
+        address: Idv::AddressController.step_info,
       }
     end
 
@@ -67,6 +70,12 @@ module Idv
 
       steps[key].undo_step.call(idv_session: idv_session, user: user)
 
+      steps[key].next_steps.each do |next_step|
+        undo_steps_from!(key: next_step)
+      end
+    end
+
+    def undo_future_steps!(key:)
       steps[key].next_steps.each do |next_step|
         undo_steps_from!(key: next_step)
       end

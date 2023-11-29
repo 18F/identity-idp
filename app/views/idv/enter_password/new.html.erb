@@ -34,7 +34,7 @@
     <%= link_to(t('idv.forgot_password.link_text'), idv_forgot_password_url, class: 'margin-left-1') %>
   </div>
 
-  <% if @verifying_by_mail %>
+  <% if @verify_by_mail %>
     <%= render AlertComponent.new(
           type: :warning,
           id: 'by-mail-password-warning',

@@ -4,41 +4,42 @@ RSpec.describe Idv::PersonalKeyController do
   include SamlAuthHelper
   include PersonalKeyValidator
 
-  def stub_idv_session
-    stub_sign_in(user)
-    idv_session.applicant = applicant
-    profile_maker = Idv::ProfileMaker.new(
-      applicant: applicant,
-      user: user,
-      user_password: password,
-    )
-    profile = profile_maker.save_profile(
-      fraud_pending_reason: nil,
-      gpo_verification_needed: false,
-      in_person_verification_needed: false,
-    )
-    idv_session.profile_id = profile.id
-    idv_session.personal_key = profile.personal_key
-    subject.idv_session.address_verification_mechanism = 'phone'
-    idv_session.vendor_phone_confirmation = true
-    idv_session.user_phone_confirmation = true
-    allow(subject).to receive(:idv_session).and_return(idv_session)
-  end
-
+  let(:applicant) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE }
   let(:password) { 'sekrit phrase' }
   let(:user) { create(:user, :fully_registered, password: password) }
-  let(:applicant) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE }
-  let(:profile) { subject.idv_session.profile }
-  let(:idv_session) do
-    Idv::Session.new(
-      user_session: subject.user_session,
-      current_user: user,
-      service_provider: nil,
-    )
-  end
+
+  # Most (but not all) of these tests assume that a profile has been minted
+  # from the data in idv_session. Set this to false to prevent this behavior
+  # and test the other way.
+  let(:mint_profile_from_idv_session) { true }
+
+  let(:address_verification_mechanism) { 'phone' }
+
+  let(:in_person_enrollment) { nil }
+
+  let(:idv_session) { subject.idv_session }
 
   before do
     stub_analytics
+    stub_attempts_tracker
+    stub_verify_steps_one_and_two(user, applicant: applicant)
+
+    case address_verification_mechanism
+    when 'phone'
+      idv_session.address_verification_mechanism = 'phone'
+      idv_session.user_phone_confirmation = true
+      idv_session.vendor_phone_confirmation = true
+    when 'gpo'
+      idv_session.address_verification_mechanism = 'gpo'
+      idv_session.user_phone_confirmation = false
+      idv_session.vendor_phone_confirmation = false
+    else
+      raise 'invalid address_verification_mechanism'
+    end
+
+    if mint_profile_from_idv_session
+      idv_session.create_profile_from_applicant_with_password(password)
+    end
   end
 
   describe 'before_actions' do
@@ -51,14 +52,10 @@ RSpec.describe Idv::PersonalKeyController do
     end
 
     it 'includes before_actions from IdvSession' do
-      expect(subject).to have_actions(:before, :redirect_if_sp_context_needed)
+      expect(subject).to have_actions(:before, :redirect_unless_sp_requested_verification)
     end
 
     describe '#confirm_profile_has_been_created' do
-      before do
-        stub_idv_session
-      end
-
       controller do
         before_action :confirm_profile_has_been_created
 
@@ -75,47 +72,31 @@ RSpec.describe Idv::PersonalKeyController do
         end
       end
 
-      context 'profile has not been created' do
-        before do
-          subject.idv_session.profile_id = nil
-        end
+      context 'profile has not been created from idv_session' do
+        let(:mint_profile_from_idv_session) { false }
 
         it 'redirects to the account path' do
           get :index
-
           expect(response).to redirect_to account_path
         end
-      end
 
-      context 'profile is pending from a different session' do
-        context 'profile is pending due to fraud review' do
-          before do
-            profile.fraud_pending_reason = 'threatmetrix_review'
-            profile.deactivate_for_fraud_review
-            subject.idv_session.profile_id = nil
+        context 'profile is pending from a different session' do
+          context 'profile is pending due to fraud review' do
+            let!(:pending_profile) { create(:profile, :fraud_review_pending, user: user) }
+
+            it 'does not redirect' do
+              get :index
+              expect(response).to_not be_redirect
+            end
           end
 
-          it 'does not redirect' do
-            get :index
+          context 'profile is pending due to in person proofing' do
+            let!(:pending_profile) { create(:profile, :in_person_verification_pending, user: user) }
 
-            expect(profile.user.pending_profile?).to eq true
-            expect(profile.fraud_review_pending_at).to_not eq nil
-            expect(response).to_not be_redirect
-          end
-        end
-
-        context 'profile is pending due to in person proofing' do
-          before do
-            profile.deactivate_for_in_person_verification
-            subject.idv_session.profile_id = nil
-          end
-
-          it 'does not redirect' do
-            get :index
-
-            expect(profile.user.pending_profile?).to eq true
-            expect(profile.in_person_verification_pending?).to eq(true)
-            expect(response).to_not be_redirect
+            it 'does not redirect' do
+              get :index
+              expect(response).to_not be_redirect
+            end
           end
         end
       end
@@ -123,14 +104,9 @@ RSpec.describe Idv::PersonalKeyController do
   end
 
   describe '#show' do
-    before do
-      stub_idv_session
-      stub_attempts_tracker
-    end
-
     it 'sets code instance variable' do
-      subject.idv_session.create_profile_from_applicant_with_password(password)
-      code = subject.idv_session.personal_key
+      code = idv_session.personal_key
+      expect(code).to be_present
 
       get :show
 
@@ -138,8 +114,8 @@ RSpec.describe Idv::PersonalKeyController do
     end
 
     it 'shows the same personal key when page is refreshed' do
-      subject.idv_session.create_profile_from_applicant_with_password(password)
-      code = subject.idv_session.personal_key
+      code = idv_session.personal_key
+      expect(code).to be_present
 
       get :show
       get :show
@@ -153,7 +129,7 @@ RSpec.describe Idv::PersonalKeyController do
       code = assigns(:code)
 
       expect(PersonalKeyGenerator.new(user).verify(code)).to eq true
-      expect(user.profiles.first.recover_pii(normalize_personal_key(code))).to eq(
+      expect(idv_session.profile.recover_pii(normalize_personal_key(code))).to eq(
         Pii::Attributes.new_from_hash(applicant),
       )
     end
@@ -164,14 +140,9 @@ RSpec.describe Idv::PersonalKeyController do
     end
 
     context 'user selected gpo verification' do
-      before do
-        subject.idv_session.address_verification_mechanism = 'gpo'
-        subject.idv_session.vendor_phone_confirmation = false
-        subject.idv_session.user_phone_confirmation = false
-        subject.idv_session.create_profile_from_applicant_with_password(password)
-      end
+      let(:address_verification_mechanism) { 'gpo' }
 
-      it 'redirects to review url' do
+      it 'redirects to enter password url' do
         get :show
 
         expect(response).to redirect_to idv_enter_password_url
@@ -180,15 +151,7 @@ RSpec.describe Idv::PersonalKeyController do
   end
 
   describe '#update' do
-    before do
-      stub_idv_session
-    end
-
     context 'user selected phone verification' do
-      before do
-        subject.idv_session.create_profile_from_applicant_with_password(password)
-      end
-
       it 'redirects to sign up completed for an sp' do
         subject.session[:sp] = { ial2: true }
         patch :update
@@ -231,12 +194,7 @@ RSpec.describe Idv::PersonalKeyController do
     end
 
     context 'user selected gpo verification' do
-      before do
-        subject.idv_session.address_verification_mechanism = 'gpo'
-        subject.idv_session.vendor_phone_confirmation = false
-        subject.idv_session.user_phone_confirmation = false
-        subject.idv_session.create_profile_from_applicant_with_password(password)
-      end
+      let(:address_verification_mechanism) { 'gpo' }
 
       it 'redirects to review url' do
         patch :update
@@ -246,7 +204,11 @@ RSpec.describe Idv::PersonalKeyController do
     end
 
     context 'with in person profile' do
-      let!(:enrollment) { create(:in_person_enrollment, :pending, user: user, profile: profile) }
+      let!(:in_person_enrollment) do
+        create(:in_person_enrollment, :pending, user: user).tap do
+          user.reload_pending_in_person_enrollment
+        end
+      end
 
       before do
         ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
@@ -283,7 +245,7 @@ RSpec.describe Idv::PersonalKeyController do
         it 'redirects to account path' do
           patch :update
 
-          expect(profile.fraud_review_pending_at).to eq nil
+          expect(idv_session.profile.fraud_review_pending_at).to eq nil
           expect(response).to redirect_to account_path
         end
 
@@ -304,13 +266,13 @@ RSpec.describe Idv::PersonalKeyController do
 
       context 'profile is in fraud_review' do
         before do
-          profile.fraud_pending_reason = 'threatmetrix_review'
-          profile.deactivate_for_fraud_review
+          idv_session.profile.fraud_pending_reason = 'threatmetrix_review'
+          idv_session.profile.deactivate_for_fraud_review
         end
 
         it 'redirects to idv please call path' do
           patch :update
-          expect(profile.fraud_review_pending_at).to_not eq nil
+          expect(idv_session.profile.fraud_review_pending_at).to_not eq nil
           expect(response).to redirect_to idv_please_call_path
         end
 

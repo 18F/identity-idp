@@ -12,7 +12,7 @@ module Reports
       super(*args, **rest)
     end
 
-    def perform(date = Time.zone.yesterday)
+    def perform(date = Time.zone.yesterday.end_of_day)
       @report_date = date
 
       email_addresses = emails.select(&:present?)

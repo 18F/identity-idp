@@ -19,6 +19,12 @@ RSpec.describe Idv::SsnController do
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 
+  describe '#step_info' do
+    it 'returns a valid StepInfo object' do
+      expect(Idv::SsnController.step_info).to be_valid
+    end
+  end
+
   describe 'before_actions' do
     it 'includes authentication before_action' do
       expect(subject).to have_actions(
@@ -31,13 +37,6 @@ RSpec.describe Idv::SsnController do
       expect(subject).to have_actions(
         :before,
         :check_for_mail_only_outage,
-      )
-    end
-
-    it 'checks that the previous step is complete' do
-      expect(subject).to have_actions(
-        :before,
-        :confirm_document_capture_complete,
       )
     end
 
@@ -90,27 +89,14 @@ RSpec.describe Idv::SsnController do
     end
 
     context 'with an ssn in idv_session' do
-      let(:referer) { idv_document_capture_url }
       before do
         subject.idv_session.ssn = ssn
-        request.env['HTTP_REFERER'] = referer
       end
 
-      context 'referer is not verify_info' do
-        it 'redirects to verify_info' do
-          get :show
+      it 'does not redirect and allows the back button' do
+        get :show
 
-          expect(response).to redirect_to(idv_verify_info_url)
-        end
-      end
-
-      context 'referer is verify_info' do
-        let(:referer) { idv_verify_info_url }
-        it 'does not redirect' do
-          get :show
-
-          expect(response).to render_template 'idv/shared/ssn'
-        end
+        expect(response).to render_template 'idv/shared/ssn'
       end
     end
 
@@ -176,6 +162,12 @@ RSpec.describe Idv::SsnController do
         end
       end
 
+      it 'invalidates future steps' do
+        expect(subject).to receive(:clear_future_steps!)
+
+        put :update, params: params
+      end
+
       it 'logs attempts api event' do
         expect(@irs_attempts_api_tracker).to receive(:idv_ssn_submitted).with(
           ssn: ssn,
@@ -226,6 +218,8 @@ RSpec.describe Idv::SsnController do
 
     context 'when pii_from_doc is not present' do
       before do
+        subject.idv_session.welcome_visited = true
+        subject.idv_session.idv_consent_given = true
         subject.idv_session.flow_path = 'standard'
         subject.idv_session.pii_from_doc = nil
       end
