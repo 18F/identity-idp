@@ -42,7 +42,6 @@ module Idv
           end,
           undo_step: ->(idv_session:, user:) do
             idv_session.resolution_successful = nil
-            idv_session.address_edited = nil
             idv_session.verify_info_step_document_capture_session_uuid = nil
             idv_session.threatmetrix_review_status = nil
             idv_session.applicant = nil
