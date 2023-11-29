@@ -37,7 +37,7 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
   const { t } = useI18n();
   const { flowPath, phoneWithCamera } = useContext(UploadContext);
   const { trackSubmitEvent, trackVisitEvent } = useContext(AnalyticsContext);
-  const { inPersonFullAddressEntryEnabled, inPersonURL } = useContext(InPersonContext);
+  const { inPersonFullAddressEntryEnabled, inPersonURL, skipDocAuth } = useContext(InPersonContext);
   const appName = getConfigValue('appName');
 
   useDidUpdateEffect(onStepChange, [stepName]);
@@ -105,7 +105,7 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
           },
         ].filter(Boolean) as FormStep[]);
 
-  const steps: FormStep[] = submissionError
+  const defaultSteps: FormStep[] = submissionError
     ? (
         [
           {
@@ -133,8 +133,14 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
         },
       ].filter(Boolean) as FormStep[]);
 
+  // If the user got here by opting-in to in-person proofing, when skipDocAuth === true,
+  // then set steps to inPersonSteps
+  const steps: FormStep[] = skipDocAuth ? inPersonSteps : defaultSteps;
+
+  // If the user got here by opting-in to in-person proofing, when skipDocAuth === true,
+  // then set stepIndicatorPath to VerifyFlowPath.IN_PERSON
   const stepIndicatorPath =
-    stepName && ['location', 'prepare', 'switch_back'].includes(stepName)
+    (stepName && ['location', 'prepare', 'switch_back'].includes(stepName)) || skipDocAuth
       ? VerifyFlowPath.IN_PERSON
       : VerifyFlowPath.DEFAULT;
 
@@ -173,6 +179,7 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
             onStepSubmit={trackSubmitEvent}
             autoFocus={!!submissionError}
             titleFormat={`%{step} - ${appName}`}
+            initialStep={skipDocAuth ? steps[0].name : undefined}
           />
         </>
       )}

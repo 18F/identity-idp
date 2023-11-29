@@ -22,6 +22,7 @@ module Idv
       profile_id
       redo_document_capture
       resolution_successful
+      skip_doc_auth
       skip_hybrid_handoff
       ssn
       threatmetrix_review_status
