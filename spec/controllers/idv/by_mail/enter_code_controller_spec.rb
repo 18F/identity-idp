@@ -102,13 +102,12 @@ RSpec.describe Idv::ByMail::EnterCodeController do
 
       it 'renders page' do
         controller.user_session[:decrypted_pii] = { address1: 'Address1' }.to_json
-        expect(@analytics).to receive(:track_event).with(
+        action
+
+        expect(@analytics).to have_logged_event(
           'IdV: enter verify by mail code visited',
           source: nil,
         )
-
-        action
-
         expect(response).to render_template('idv/by_mail/enter_code/index')
       end
 
@@ -172,12 +171,12 @@ RSpec.describe Idv::ByMail::EnterCodeController do
       end
 
       it 'redirects to the rate limited page' do
-        expect(@analytics).to receive(:track_event).with(
+        action
+
+        expect(@analytics).to have_logged_event(
           'IdV: enter verify by mail code visited',
           source: nil,
-        ).once
-
-        action
+        )
 
         expect(response).to redirect_to(idv_enter_code_rate_limited_url)
       end
@@ -236,7 +235,12 @@ RSpec.describe Idv::ByMail::EnterCodeController do
       let(:success) { true }
 
       it 'redirects to the sign_up/completions page' do
-        expect(@analytics).to receive(:track_event).with(
+        expect(@irs_attempts_api_tracker).to receive(:idv_gpo_verification_submitted).
+          with(success_properties)
+
+        action
+
+        expect(@analytics).to have_logged_event(
           'IdV: enter verify by mail code submitted',
           success: true,
           errors: {},
@@ -246,13 +250,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
           which_letter: 1,
           letter_count: 1,
           attempts: 1,
-          pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
         )
-        expect(@irs_attempts_api_tracker).to receive(:idv_gpo_verification_submitted).
-          with(success_properties)
-
-        action
-
         event_count = user.events.where(event_type: :account_verified, ip: '0.0.0.0').
           where(disavowal_token_fingerprint: nil).count
         expect(event_count).to eq 1
@@ -282,7 +280,12 @@ RSpec.describe Idv::ByMail::EnterCodeController do
         end
 
         it 'redirects to personal key page' do
-          expect(@analytics).to receive(:track_event).with(
+          expect(@irs_attempts_api_tracker).to receive(:idv_gpo_verification_submitted).
+            with(success_properties)
+
+          action
+
+          expect(@analytics).to have_logged_event(
             'IdV: enter verify by mail code submitted',
             success: true,
             errors: {},
@@ -292,13 +295,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
             which_letter: 1,
             letter_count: 1,
             attempts: 1,
-            pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
           )
-          expect(@irs_attempts_api_tracker).to receive(:idv_gpo_verification_submitted).
-            with(success_properties)
-
-          action
-
           expect(response).to redirect_to(idv_personal_key_url)
         end
 
@@ -314,7 +311,12 @@ RSpec.describe Idv::ByMail::EnterCodeController do
           let(:user) { create(:user, :gpo_pending_with_fraud_rejection) }
 
           it 'redirects to the sign_up/completions page' do
-            expect(@analytics).to receive(:track_event).with(
+            expect(@irs_attempts_api_tracker).to receive(:idv_gpo_verification_submitted).
+              with(success_properties)
+
+            action
+
+            expect(@analytics).to have_logged_event(
               'IdV: enter verify by mail code submitted',
               success: true,
               errors: {},
@@ -324,13 +326,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
               which_letter: 1,
               letter_count: 1,
               attempts: 1,
-              pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
             )
-            expect(@irs_attempts_api_tracker).to receive(:idv_gpo_verification_submitted).
-              with(success_properties)
-
-            action
-
             event_count = user.events.where(event_type: :account_verified, ip: '0.0.0.0').
               where(disavowal_token_fingerprint: nil).count
             expect(event_count).to eq 1
@@ -346,7 +342,9 @@ RSpec.describe Idv::ByMail::EnterCodeController do
           let(:user) { create(:user, :gpo_pending_with_fraud_rejection) }
 
           it 'is reflected in analytics' do
-            expect(@analytics).to receive(:track_event).with(
+            action
+
+            expect(@analytics).to have_logged_event(
               'IdV: enter verify by mail code submitted',
               success: true,
               errors: {},
@@ -356,10 +354,8 @@ RSpec.describe Idv::ByMail::EnterCodeController do
               which_letter: 1,
               letter_count: 1,
               attempts: 1,
-              pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
             )
 
-            action
 
             expect(response).to redirect_to(idv_personal_key_url)
           end
@@ -379,7 +375,9 @@ RSpec.describe Idv::ByMail::EnterCodeController do
           let(:user) { create(:user, :gpo_pending_with_fraud_review) }
 
           it 'is reflected in analytics' do
-            expect(@analytics).to receive(:track_event).with(
+            action
+
+            expect(@analytics).to have_logged_event(
               'IdV: enter verify by mail code submitted',
               success: true,
               errors: {},
@@ -389,10 +387,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
               which_letter: 1,
               letter_count: 1,
               attempts: 1,
-              pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
             )
-
-            action
 
             expect(response).to redirect_to(idv_personal_key_url)
           end
@@ -405,7 +400,12 @@ RSpec.describe Idv::ByMail::EnterCodeController do
       let(:submitted_otp) { 'the-wrong-otp' }
 
       it 'redirects to the index page to show errors' do
-        expect(@analytics).to receive(:track_event).with(
+        expect(@irs_attempts_api_tracker).to receive(:idv_gpo_verification_submitted).
+          with(success: false)
+
+        action
+
+        expect(@analytics).to have_logged_event(
           'IdV: enter verify by mail code submitted',
           success: false,
           errors: otp_code_error_message,
@@ -416,13 +416,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
           letter_count: 1,
           attempts: 1,
           error_details: { otp: { confirmation_code_incorrect: true } },
-          pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
         )
-        expect(@irs_attempts_api_tracker).to receive(:idv_gpo_verification_submitted).
-          with(success: false)
-
-        action
-
         expect(response).to redirect_to(idv_verify_by_mail_enter_code_url)
       end
 
@@ -456,36 +450,23 @@ RSpec.describe Idv::ByMail::EnterCodeController do
             letter_count: 1,
             attempts: 1,
             error_details: { otp: { confirmation_code_incorrect: true } },
-            pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
           }
-          expect(@analytics).to receive(:track_event).with(
-            'IdV: enter verify by mail code submitted',
-            **analytics_args,
-          ).once
-          analytics_args[:attempts] = 2
-          expect(@analytics).to receive(:track_event).with(
-            'IdV: enter verify by mail code submitted',
-            **analytics_args,
-          ).once
-
           max_attempts.times do |i|
-            post(
-              :create,
-              params: {
-                gpo_verify_form: {
-                  otp: invalid_otp,
-                },
-              },
-            )
+            post(:create, params: { gpo_verify_form: { otp: invalid_otp } })
           end
 
-          post(
-            :create,
-            params: {
-              gpo_verify_form: {
-                otp: submitted_otp,
-              },
-            },
+          post(:create, params: { gpo_verify_form: { otp: submitted_otp } })
+
+          expect(@analytics).to have_logged_event(
+            'IdV: enter verify by mail code submitted',
+            **analytics_args,
+          )
+
+          analytics_args[:attempts] = 2
+
+          expect(@analytics).to have_logged_event(
+            'IdV: enter verify by mail code submitted',
+            **analytics_args,
           )
 
           expect(response).to redirect_to(idv_enter_code_rate_limited_url)
@@ -496,54 +477,17 @@ RSpec.describe Idv::ByMail::EnterCodeController do
         let(:user) { create(:user, :with_pending_gpo_profile) }
 
         it 'redirects to personal key page' do
-          expect(@analytics).to receive(:track_event).with(
-            'IdV: enter verify by mail code submitted',
-            success: false,
-            errors: otp_code_error_message,
-            pending_in_person_enrollment: false,
-            fraud_check_failed: false,
-            enqueued_at: nil,
-            which_letter: nil,
-            letter_count: 1,
-            attempts: 1,
-            error_details: { otp: { confirmation_code_incorrect: true } },
-            pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
-          ).exactly(max_attempts - 1).times
-          expect(@analytics).to receive(:track_event).with(
-            'IdV: enter verify by mail code submitted',
-            success: true,
-            errors: {},
-            pending_in_person_enrollment: false,
-            fraud_check_failed: false,
-            enqueued_at: user.pending_profile.gpo_confirmation_codes.last.code_sent_at,
-            which_letter: 1,
-            letter_count: 1,
-            attempts: 2,
-            pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
-          ).once
           expect(@irs_attempts_api_tracker).to receive(:idv_gpo_verification_submitted).
             exactly(max_attempts).times
 
-          (max_attempts - 1).times do |i|
-            post(
-              :create,
-              params: {
-                gpo_verify_form: {
-                  otp: invalid_otp,
-                },
-              },
-            )
+          (max_attempts - 1).times do
+            post(:create, params: { gpo_verify_form: { otp: invalid_otp } })
           end
+          post(:create, params: { gpo_verify_form: { otp: submitted_otp } })
 
-          post(
-            :create,
-            params: {
-              gpo_verify_form: {
-                otp: submitted_otp,
-              },
-            },
-          )
-
+          gpo_submission_events = @analytics.events['IdV: enter verify by mail code submitted']
+          expect(gpo_submission_events.select{|attributes| attributes[:errors].empty?}.length).to eq(max_attempts - 1)
+          expect(gpo_submission_events.reject{|attributes| attributes[:errors].empty?}.length).to eq(1)
           expect(response).to redirect_to(idv_personal_key_url)
         end
       end
