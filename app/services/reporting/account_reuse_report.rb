@@ -18,9 +18,9 @@ module Reporting
       ]
 
       total_reuse_report.each do |key, entity_summary|
-        entity_results = entity_summary[:results]
+        entity_details = entity_summary[:details_section]
 
-        entity_results[:detail_rows].each do |detail_row|
+        entity_details[:detail_rows].each do |detail_row|
           account_reuse_table << detail_row.as_csv
         end
 
@@ -137,51 +137,49 @@ module Reporting
     end
 
     EntityReuseSummary = Struct.new(
-      :results, :entity_type,
+      :details_section, 
       :total_all_users, :total_all_percent,
       :total_idv_users, :total_idv_percent
     ) do
       def initialize(
-        entity_type: '', total_all_users: 0, total_all_percent: 0,
+        total_all_users: 0, total_all_percent: 0,
         total_idv_users: 0, total_idv_percent: 0
       )
         super(
-          entity_type:, total_all_users:, total_all_percent:,
+          total_all_users:, total_all_percent:,
           total_idv_users:, total_idv_percent:
           )
       end
 
-      def update_from_results(results, entity_type, total_proofed)
-        self.entity_type = entity_type if !entity_type.nil?
-
+      def update_from_results(results, total_proofed)
         if !results.nil? && !results[:detail_rows].nil? && !results[:detail_rows].empty?
-          detail_section = results[:detail_rows]
-          detail_section.each do |result_entry|
+          detail_results = results[:detail_rows]
+          detail_results.each do |result_entry|
             self.total_all_users += result_entry.dig(:num_all_users)
             self.total_idv_users += result_entry.dig(:num_idv_users)
           end
 
           if total_proofed > 0
             # Calculate percentages for breakdowns with both sps and angencies
-            detail_section.each_with_index do |result_entry, index|
-              detail_section[index][:all_percent] =
+            detail_results.each_with_index do |result_entry, index|
+              detail_results[index][:all_percent] =
                 result_entry.dig(:num_all_users) / total_proofed.to_f
-              detail_section[index][:idv_percent] =
+              detail_results[index][:idv_percent] =
                 result_entry.dig(:num_idv_users) / total_proofed.to_f
 
-              self.total_all_percent += detail_section[index].dig(:all_percent)
-              self.total_idv_percent += detail_section[index].dig(:idv_percent)
+              self.total_all_percent += detail_results[index].dig(:all_percent)
+              self.total_idv_percent += detail_results[index].dig(:idv_percent)
             end
           end
         end
-        self.results = results
+        self.details_section = results
 
         self
       end
 
       def summary_row_as_csv
         [
-          "2+ #{self.entity_type}",
+          "2+ #{self.dig(:details_section, :detail_rows, 0, :entity_type)}",
           self.total_all_users,
           self.total_all_percent,
           self.total_idv_users,
@@ -193,22 +191,19 @@ module Reporting
     def total_reuse_report
       return @total_reuse_report if defined?(@total_reuse_report)
 
-      reuse_results = {
-        sp: ReuseDetailSection.new.organize_results(
-          sp_reuse_results_all, sp_reuse_results_idv, 'apps'
-        ),
-        agency: ReuseDetailSection.new.organize_results(
-          agency_reuse_results_all, agency_reuse_results_idv, 'agencies'
-        ),
-      }
-
       total_proofed = num_active_profiles
 
       sp_reuse_stats = EntityReuseSummary.new.update_from_results(
-        reuse_results[:sp], 'apps', total_proofed
+        ReuseDetailSection.new.organize_results(
+          sp_reuse_results_all, sp_reuse_results_idv, 'apps'
+        ), 
+        total_proofed,
       )
       agency_reuse_stats = EntityReuseSummary.new.update_from_results(
-        reuse_results[:agency], 'agencies', total_proofed
+        ReuseDetailSection.new.organize_results(
+          agency_reuse_results_all, agency_reuse_results_idv, 'agencies'
+        ),
+        total_proofed,
       )
 
       @total_reuse_report = {
