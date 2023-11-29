@@ -50,6 +50,12 @@ module Idv
       end
     end
 
+    def confirm_phone_or_address_confirmed
+      return if idv_session.address_confirmed? || idv_session.phone_confirmed?
+
+      redirect_to idv_enter_password_url
+    end
+
     def confirm_personal_key_not_acknowledged
       redirect_to next_step if idv_session.personal_key_acknowledged
     end
