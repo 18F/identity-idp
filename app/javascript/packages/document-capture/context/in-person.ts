@@ -32,6 +32,11 @@ export interface InPersonContextProps {
   inPersonFullAddressEntryEnabled: boolean;
 
   /**
+   * When true a user has entered ipp by opting in
+   */
+  optedInToInPersonProofing: boolean;
+
+  /**
    * Collection of US states and territories
    * Each item is [Long name, abbreviation], e.g. ['Ohio', 'OH']
    */
@@ -43,6 +48,7 @@ const InPersonContext = createContext<InPersonContextProps>({
   addressSearchURL: '',
   inPersonOutageMessageEnabled: false,
   inPersonFullAddressEntryEnabled: false,
+  optedInToInPersonProofing: false,
   usStatesTerritories: [],
 });
 

@@ -106,11 +106,11 @@ module IdvStepConcern
   def opt_in_analytics_properties
     extra = {}
     if IdentityConfig.store.in_person_proofing_opt_in_enabled
-      extra.merge(opted_in_to_in_person_proofing: idv_session.opted_in_to_in_person_proofing)
+      extra = { opted_in_to_in_person_proofing: idv_session.opted_in_to_in_person_proofing }
     end
     extra
   end
-  
+
   def letter_recently_enqueued?
     current_user&.gpo_verification_pending_profile? &&
       idv_session.verify_by_mail?

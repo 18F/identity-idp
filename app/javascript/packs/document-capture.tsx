@@ -33,6 +33,7 @@ interface AppRootData {
   cancelUrl: string;
   exitUrl: string;
   idvInPersonUrl?: string;
+  optedInToInPersonProofing: string;
   securityAndPrivacyHowItWorksUrl: string;
   uiNotReadySectionEnabled: string;
   uiExitQuestionSectionEnabled: string;
@@ -70,6 +71,7 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
     acuantVersion,
     phoneQuestionAbTestBucket,
     phoneWithCamera,
+    optedInToInPersonProofing,
   } = appRoot.dataset;
   return baseTrackEvent(event, {
     ...payload,
@@ -79,6 +81,7 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
     acuant_version: acuantVersion,
     phone_question_ab_test_bucket: phoneQuestionAbTestBucket,
     phone_with_camera: phoneWithCamera,
+    opted_in_to_in_person_proofing: optedInToInPersonProofing,
   });
 };
 
@@ -101,6 +104,7 @@ const {
   inPersonFullAddressEntryEnabled,
   inPersonOutageMessageEnabled,
   inPersonOutageExpectedUpdateDate,
+  optedInToInPersonProofing,
   usStatesTerritories = '',
   phoneWithCamera = '',
   uiNotReadySectionEnabled = '',
@@ -125,6 +129,7 @@ const App = composeComponents(
         inPersonOutageMessageEnabled: inPersonOutageMessageEnabled === 'true',
         inPersonOutageExpectedUpdateDate,
         inPersonFullAddressEntryEnabled: inPersonFullAddressEntryEnabled === 'true',
+        optedInToInPersonProofing,
         usStatesTerritories: parsedUsStatesTerritories,
       },
     },
