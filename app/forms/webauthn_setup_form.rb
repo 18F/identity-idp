@@ -65,11 +65,11 @@ class WebauthnSetupForm
   def name_is_unique
     return unless WebauthnConfiguration.exists?(user_id: @user.id, name: @name)
     if @platform_authenticator
-      errors.add :name, I18n.t('errors.webauthn_platform_setup.unique_name'), type: :unique_name
+      @name.concat('-').concat(Time.now.strftime(" %d%m%Y"))
     else
       errors.add :name, I18n.t('errors.webauthn_setup.unique_name'), type: :unique_name
+      @name_taken = true
     end
-    @name_taken = true
   end
 
   def valid_attestation_response?(protocol)
