@@ -323,6 +323,7 @@ class IdentityConfig
     config.add(:newrelic_license_key, type: :string)
     config.add(:nonessential_email_banlist, type: :json)
     config.add(:openid_connect_redirect_interstitial_enabled, type: :boolean)
+    config.add(:openid_connect_content_security_form_action_enabled, type: :boolean)
     config.add(:otp_delivery_blocklist_findtime, type: :integer)
     config.add(:otp_delivery_blocklist_maxretry, type: :integer)
     config.add(:otp_expiration_warning_seconds, type: :integer)

@@ -106,7 +106,7 @@ module OpenidConnect
     end
 
     def secure_headers_override
-      return if IdentityConfig.store.openid_connect_redirect_interstitial_enabled
+      return unless IdentityConfig.store.openid_connect_content_security_form_action_enabled
       csp_uris = SecureHeadersAllowList.csp_with_sp_redirect_uris(
         @authorize_form.redirect_uri,
         @authorize_form.service_provider.redirect_uris,
