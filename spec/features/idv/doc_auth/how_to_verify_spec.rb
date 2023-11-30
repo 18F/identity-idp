@@ -4,7 +4,7 @@ RSpec.feature 'how to verify step' do
   include IdvHelper
   include DocAuthHelper
 
-  context 'ipp is turned on and opt-in ipp is turned off' do
+  context 'when ipp is enabled and opt-in ipp is disabled' do
     before do
       allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { true }
       allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { false }
@@ -14,12 +14,12 @@ RSpec.feature 'how to verify step' do
       complete_agreement_step
     end
 
-    it 'skips when disabled' do
+    it 'skips when disabled and redirects to hybird handoff)' do
       expect(page).to have_current_path(idv_hybrid_handoff_url)
     end
   end
 
-  context 'ipp is turned off and opt-in ipp is turned on' do
+  context 'when ipp is disabled and opt-in ipp is enabled' do
     before do
       allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { false }
       allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { true }
@@ -29,12 +29,12 @@ RSpec.feature 'how to verify step' do
       complete_agreement_step
     end
 
-    it 'skips when disabled' do
+    it 'skips when disabled and redirects to hybird handoff' do
       expect(page).to have_current_path(idv_hybrid_handoff_url)
     end
   end
 
-  context 'ipp is turned off and opt-in ipp is turned off' do
+  context 'when both ipp and opt-in ipp are disabled' do
     before do
       allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { false }
       allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { false }
@@ -44,12 +44,12 @@ RSpec.feature 'how to verify step' do
       complete_agreement_step
     end
 
-    it 'skips when disabled' do
+    it 'skips when disabled and redirects to hybird handoff' do
       expect(page).to have_current_path(idv_hybrid_handoff_url)
     end
   end
 
-  context 'ipp is turned on and opt-in ipp is turned on' do
+  context 'when both ipp and opt-in ipp are enabled' do
     before do
       allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { true }
       allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { true }

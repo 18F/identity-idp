@@ -168,7 +168,7 @@ RSpec.describe Idv::AgreementController do
         end
       end
 
-      context 'when both ipp and ipp opt in are enabled' do
+      context 'when both ipp and opt-in ipp are enabled' do
         before do
           allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { true }
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { true }
@@ -180,7 +180,7 @@ RSpec.describe Idv::AgreementController do
         end
       end
 
-      context 'when ipp is enabled but ipp opt in is disabled' do
+      context 'when ipp is enabled but opt-in ipp is disabled' do
         before do
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { true }
           allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { false }
@@ -192,7 +192,7 @@ RSpec.describe Idv::AgreementController do
         end
       end
 
-      context 'when ipp is disabled and ipp opt in is enabled' do
+      context 'when ipp is disabled and opt-in ipp is enabled' do
         before do
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { false }
           allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { true }
@@ -204,7 +204,7 @@ RSpec.describe Idv::AgreementController do
         end
       end
 
-      context 'when both ipp is disabled and ipp opt in is disabled' do
+      context 'when both ipp and opt-in ipp are disabled' do
         before do
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { false }
           allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { false }

@@ -21,7 +21,7 @@ RSpec.describe Idv::HowToVerifyController do
     end
 
     context 'confirm_step_allowed' do
-      context 'when ipp is disabled and ipp opt in is enabled' do
+      context 'when ipp is disabled and opt-in ipp is enabled' do
         before do
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { false }
           allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { true }
@@ -36,7 +36,7 @@ RSpec.describe Idv::HowToVerifyController do
         end
       end
 
-      context 'when ipp is enabled but ipp opt in is disabled' do
+      context 'when ipp is enabled but opt-in ipp is disabled' do
         before do
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { true }
           allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { false }
@@ -51,13 +51,13 @@ RSpec.describe Idv::HowToVerifyController do
         end
       end
 
-      context 'when at least 1 feature flag is disabled' do
+      context 'when both ipp and opt-in ipp are disabled' do
         before do
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { false }
           allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { false }
         end
 
-        it 'when both ipp is disabled and ipp opt in is disabled' do
+        it 'disables the how to verify step and redirects to hybrid handoff' do
           get :show
 
           expect(Idv::HowToVerifyController.enabled?).to be false
@@ -65,15 +65,15 @@ RSpec.describe Idv::HowToVerifyController do
           expect(response).to redirect_to(idv_hybrid_handoff_url)
         end
       end
-    end
 
-    context 'confirm_step_allowed' do
-      it 'renders the show template when both feature flags are enabled' do
-        get :show
+      context 'when both ipp and opt-in ipp are enabled' do
+        it 'renders the show template for how to verify' do
+          get :show
 
-        expect(Idv::HowToVerifyController.enabled?).to be true
-        expect(subject.idv_session.skip_doc_auth).to be_nil
-        expect(response).to render_template :show
+          expect(Idv::HowToVerifyController.enabled?).to be true
+          expect(subject.idv_session.skip_doc_auth).to be_nil
+          expect(response).to render_template :show
+        end
       end
     end
   end
