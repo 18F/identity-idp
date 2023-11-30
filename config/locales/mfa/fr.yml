@@ -13,4 +13,5 @@ fr:
       text: Vous devrez supprimer votre compte et recommencer si vous perdez votre
         seule méthode d’authentification.
     skip: '​​Ignorer pour le moment'
-    webauthn_platform_info: Ajoutez une autre méthode d’authentification au cas où vous perdriez l’accès à la première.
+    webauthn_platform_info: Ajoutez une autre méthode d’authentification au cas où
+      vous perdriez l’accès à la première.
