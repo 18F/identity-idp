@@ -119,7 +119,7 @@ RSpec.describe 'OpenID Connect' do
       expect(oidc_redirect_url).to include('?error=invalid_request')
     end
 
-    it 'auto-allows with a second authorization and includes redirect_uris in CSP headers' do
+    it 'auto-allows with a second authorization and redirect_uris in CSP headers if enabled' do
       allow(IdentityConfig.store).to receive(:openid_connect_content_security_form_action_enabled).
         and_return(true)
       client_id = 'urn:gov:gsa:openidconnect:sp:server'
@@ -138,11 +138,34 @@ RSpec.describe 'OpenID Connect' do
       fill_in_code_with_last_phone_otp
       click_submit_default
 
-      expect(current_url).to start_with('http://localhost:7654/auth/result')
+      expect(oidc_redirect_url).to start_with('http://localhost:7654/auth/result')
       expect(page.get_rack_session.keys).to include('sp')
     end
 
-    it 'auto-allows and includes redirect_uris in CSP headers after an incorrect OTP' do
+    it 'auto-allows with a second authorization and blank CSP headers if not enabled' do
+      allow(IdentityConfig.store).to receive(:openid_connect_content_security_form_action_enabled).
+        and_return(false)
+      client_id = 'urn:gov:gsa:openidconnect:sp:server'
+      service_provider = build(:service_provider, issuer: client_id)
+      user = user_with_2fa
+
+      IdentityLinker.new(user, service_provider).link_identity
+      user.identities.last.update!(verified_attributes: ['email'])
+
+      visit_idp_from_ial1_oidc_sp(client_id: client_id, prompt: 'select_account')
+      sign_in_user(user)
+
+      expect(page.response_headers['Content-Security-Policy']).
+        to(include('form-action \'self\''))
+
+      fill_in_code_with_last_phone_otp
+      click_submit_default
+
+      expect(oidc_redirect_url).to start_with('http://localhost:7654/auth/result')
+      expect(page.get_rack_session.keys).to include('sp')
+    end
+
+    it 'auto-allows and includes redirect_uris in CSP headers if enabled after an incorrect OTP' do
       allow(IdentityConfig.store).to receive(:openid_connect_content_security_form_action_enabled).
         and_return(true)
 
@@ -169,7 +192,38 @@ RSpec.describe 'OpenID Connect' do
       fill_in_code_with_last_phone_otp
       click_submit_default
 
-      expect(current_url).to start_with('http://localhost:7654/auth/result')
+      expect(oidc_redirect_url).to start_with('http://localhost:7654/auth/result')
+      expect(page.get_rack_session.keys).to include('sp')
+    end
+
+    it 'auto-allows and blank CSP headers if disabled after an incorrect OTP' do
+      allow(IdentityConfig.store).to receive(:openid_connect_content_security_form_action_enabled).
+        and_return(true)
+
+      client_id = 'urn:gov:gsa:openidconnect:sp:server'
+      service_provider = build(:service_provider, issuer: client_id)
+      user = user_with_2fa
+
+      IdentityLinker.new(user, service_provider).link_identity
+      user.identities.last.update!(verified_attributes: ['email'])
+
+      visit_idp_from_ial1_oidc_sp(client_id: client_id, prompt: 'select_account')
+      sign_in_user(user)
+
+      expect(page.response_headers['Content-Security-Policy']).
+        to(include('form-action \'self\''))
+
+      fill_in :code, with: 'wrong otp'
+      click_submit_default
+
+      expect(page).to have_content(t('two_factor_authentication.invalid_otp'))
+      expect(page.response_headers['Content-Security-Policy']).
+        to(include('form-action \'self\''))
+
+      fill_in_code_with_last_phone_otp
+      click_submit_default
+
+      expect(oidc_redirect_url).to start_with('http://localhost:7654/auth/result')
       expect(page.get_rack_session.keys).to include('sp')
     end
 
