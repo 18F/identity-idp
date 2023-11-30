@@ -48,11 +48,11 @@ module Idv
         sp_name: decorated_sp_session.sp_name,
         failure_to_proof_url: return_to_sp_failure_to_proof_url(step: 'document_capture'),
         phone_with_camera: idv_session.phone_with_camera,
-        opted_in_to_in_person_proofing: idv_session.opted_in_to_in_person_proofing,
         skip_doc_auth: idv_session.skip_doc_auth,
       }.merge(
         acuant_sdk_upgrade_a_b_testing_variables,
         phone_question_ab_test_analytics_bucket,
+        **opt_in_analytics_properties,
       )
     end
 

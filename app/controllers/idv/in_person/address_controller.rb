@@ -74,7 +74,7 @@ module Idv
           step: 'address',
           analytics_id: 'In Person Proofing',
           irs_reproofing: irs_reproofing?,
-          opted_in_to_in_person_proofing: idv_session.opted_in_to_in_person_proofing,
+          **opt_in_analytics_properties,
         }
       end
 
