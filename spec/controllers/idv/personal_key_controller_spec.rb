@@ -4,7 +4,7 @@ RSpec.describe Idv::PersonalKeyController do
   include SamlAuthHelper
   include PersonalKeyValidator
 
-  def assert_personal_key_generated_for_profile(profile:, expected_pii:)
+  def assert_personal_key_generated_for_profiles(*profile_pii_pairs)
     expect(idv_session.personal_key).to be_present
 
     normalized_personal_key = normalize_personal_key(idv_session.personal_key)
@@ -18,11 +18,11 @@ RSpec.describe Idv::PersonalKeyController do
       state_id_type
     ]
 
-    expected = Pii::Attributes.new(expected_pii.except(*keys_to_ignore))
-
-    actual = profile.reload.recover_pii(normalized_personal_key)
-
-    expect(actual).to eql(expected)
+    profile_pii_pairs.each do |profile, pii|
+      expected = Pii::Attributes.new(pii.except(*keys_to_ignore))
+      actual = profile.reload.recover_pii(normalized_personal_key)
+      expect(actual).to eql(expected)
+    end
   end
 
   let(:applicant) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE }
@@ -179,26 +179,34 @@ RSpec.describe Idv::PersonalKeyController do
 
       it 'generates a personal key that encrypts the idv_session profile data' do
         get :show
-        assert_personal_key_generated_for_profile(
-          profile: idv_session.profile,
-          expected_pii: applicant,
-        )
+        assert_personal_key_generated_for_profiles([idv_session.profile, applicant])
       end
 
       context 'user has an existing profile in addition to the one attached to idv_session' do
+        let(:existing_profile_pii) { idv_session.applicant.merge(first_name: 'Existing') }
         let!(:existing_profile) do
           create(
             :profile,
             :verify_by_mail_pending,
             user: user,
-            pii: idv_session.applicant.merge(first_name: 'Existing'),
+            pii: existing_profile_pii,
           )
         end
-        it 'generates a personal key that encrypts the idv_session profile data' do
+
+        before do
+          Pii::ProfileCacher.new(user, subject.user_session).save_decrypted_pii(
+            existing_profile_pii,
+            existing_profile.id,
+          )
+        end
+
+        it 'generates a personal key that encrypts the idv_session and existing profile data' do
+          expect(user.profiles).to include(existing_profile)
+          expect(user.profiles).to include(idv_session.profile)
           get :show
-          assert_personal_key_generated_for_profile(
-            profile: idv_session.profile,
-            expected_pii: idv_session.applicant,
+          assert_personal_key_generated_for_profiles(
+            [idv_session.profile, idv_session.applicant],
+            [existing_profile, existing_profile_pii],
           )
         end
       end
@@ -226,10 +234,7 @@ RSpec.describe Idv::PersonalKeyController do
 
           it 'generates a personal key that encrypts the pending profile data' do
             get :show
-            assert_personal_key_generated_for_profile(
-              profile: pending_profile,
-              expected_pii: pending_profile_pii,
-            )
+            assert_personal_key_generated_for_profiles([pending_profile, pending_profile_pii])
           end
 
           context 'and user has an active profile' do
@@ -250,11 +255,11 @@ RSpec.describe Idv::PersonalKeyController do
               )
             end
 
-            it 'generates a personal key that encrypts the active profile data' do
+            it 'generates a personal key that encrypts both profiles' do
               get :show
-              assert_personal_key_generated_for_profile(
-                profile: active_profile,
-                expected_pii: active_profile_pii,
+              assert_personal_key_generated_for_profiles(
+                [active_profile, active_profile_pii],
+                [pending_profile, pending_profile_pii],
               )
             end
           end
