@@ -299,7 +299,6 @@ RSpec.describe Idv::ByMail::EnterCodeController do
               attempts: 1,
             )
 
-
             expect(response).to redirect_to(idv_personal_key_url)
           end
 
@@ -428,13 +427,13 @@ RSpec.describe Idv::ByMail::EnterCodeController do
 
           failed_gpo_submission_events =
             @analytics.events['IdV: enter verify by mail code submitted'].
-              reject {|event_attributes| event_attributes[:errors].empty?}
+              reject { |event_attributes| event_attributes[:errors].empty? }
 
           successful_gpo_submission_events =
             @analytics.events['IdV: enter verify by mail code submitted'].
-              select {|event_attributes| event_attributes[:errors].empty?}
+              select { |event_attributes| event_attributes[:errors].empty? }
 
-          expect(failed_gpo_submission_events.count).to eq(max_attempts-1)
+          expect(failed_gpo_submission_events.count).to eq(max_attempts - 1)
           expect(successful_gpo_submission_events.count).to eq(1)
           expect(response).to redirect_to(idv_personal_key_url)
         end
