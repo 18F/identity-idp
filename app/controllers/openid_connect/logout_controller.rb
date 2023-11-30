@@ -29,10 +29,15 @@ module OpenidConnect
         irs_attempts_api_tracker.logout_initiated(success: result.success?)
 
         sign_out
-        redirect_to(
-          redirect_uri,
-          allow_other_host: true,
-        )
+        if IdentityConfig.store.openid_connect_redirect_interstitial_enabled
+          @oidc_redirect_uri = redirect_uri
+          render :redirect
+        else
+          redirect_to(
+            redirect_uri,
+            allow_other_host: true,
+          )
+        end
       else
         render :error
       end
@@ -42,6 +47,7 @@ module OpenidConnect
 
     def apply_logout_secure_headers_override(redirect_uri, service_provider)
       return if service_provider.nil? || redirect_uri.nil?
+      return if IdentityConfig.store.openid_connect_redirect_interstitial_enabled
 
       uris = SecureHeadersAllowList.csp_with_sp_redirect_uris(
         redirect_uri,
@@ -82,10 +88,16 @@ module OpenidConnect
         irs_attempts_api_tracker.logout_initiated(success: result.success?)
 
         sign_out
-        redirect_to(
-          redirect_uri,
-          allow_other_host: true,
-        )
+
+        if IdentityConfig.store.openid_connect_redirect_interstitial_enabled
+          @oidc_redirect_uri = redirect_uri
+          render :redirect
+        else
+          redirect_to(
+            redirect_uri,
+            allow_other_host: true,
+          )
+        end
       end
     end
 
