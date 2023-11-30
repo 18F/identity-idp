@@ -31,7 +31,10 @@ module OpenidConnect
         sign_out
         if IdentityConfig.store.openid_connect_redirect_interstitial_enabled
           @oidc_redirect_uri = redirect_uri
-          render :redirect
+          render(
+            :redirect,
+            layout: false,
+          )
         else
           redirect_to(
             redirect_uri,
@@ -91,7 +94,10 @@ module OpenidConnect
 
         if IdentityConfig.store.openid_connect_redirect_interstitial_enabled
           @oidc_redirect_uri = redirect_uri
-          render :redirect
+          render(
+            :redirect,
+            layout: false,
+          )
         else
           redirect_to(
             redirect_uri,

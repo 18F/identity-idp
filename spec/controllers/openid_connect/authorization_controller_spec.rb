@@ -52,9 +52,18 @@ RSpec.describe OpenidConnect::AuthorizationController do
           user.identities.last.update!(verified_attributes: %w[given_name family_name birthdate])
           action
 
-          expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
+          if IdentityConfig.store.openid_connect_redirect_interstitial_enabled
+            expect(controller).to render_template('openid_connect/authorization/redirect')
+            expect(assigns(:oidc_redirect_uri)).to start_with(params[:redirect_uri])
+          else
+            expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
+          end
 
-          redirect_params = UriService.params(response.location)
+          redirect_params = if IdentityConfig.store.openid_connect_redirect_interstitial_enabled
+                              UriService.params(assigns(:oidc_redirect_uri))
+                            else
+                              UriService.params(response.location)
+                            end
 
           expect(redirect_params[:code]).to be_present
           expect(redirect_params[:state]).to eq(params[:state])
@@ -116,7 +125,12 @@ RSpec.describe OpenidConnect::AuthorizationController do
               allow(controller).to receive(:pii_requested_but_locked?).and_return(false)
               action
 
-              expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
+              if IdentityConfig.store.openid_connect_redirect_interstitial_enabled
+                expect(controller).to render_template('openid_connect/authorization/redirect')
+                expect(assigns(:oidc_redirect_uri)).to start_with(params[:redirect_uri])
+              else
+                expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
+              end
             end
 
             it 'redirects to the password capture url when pii is locked' do
@@ -280,7 +294,12 @@ RSpec.describe OpenidConnect::AuthorizationController do
                 allow(controller).to receive(:pii_requested_but_locked?).and_return(false)
                 action
 
-                expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
+                if IdentityConfig.store.openid_connect_redirect_interstitial_enabled
+                  expect(controller).to render_template('openid_connect/authorization/redirect')
+                  expect(assigns(:oidc_redirect_uri)).to start_with(params[:redirect_uri])
+                else
+                  expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
+                end
               end
 
               it 'redirects to the password capture url when pii is locked' do
@@ -343,7 +362,13 @@ RSpec.describe OpenidConnect::AuthorizationController do
                 )
 
                 action
-                expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
+
+                if IdentityConfig.store.openid_connect_redirect_interstitial_enabled
+                  expect(controller).to render_template('openid_connect/authorization/redirect')
+                  expect(assigns(:oidc_redirect_uri)).to start_with(params[:redirect_uri])
+                else
+                  expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
+                end
               end
 
               it 'tracks IAL1 authentication event' do
@@ -396,7 +421,12 @@ RSpec.describe OpenidConnect::AuthorizationController do
                 )
 
                 action
-                expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
+                if IdentityConfig.store.openid_connect_redirect_interstitial_enabled
+                  expect(controller).to render_template('openid_connect/authorization/redirect')
+                  expect(assigns(:oidc_redirect_uri)).to start_with(params[:redirect_uri])
+                else
+                  expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
+                end
               end
 
               it 'tracks IAL1 authentication event' do
@@ -463,9 +493,18 @@ RSpec.describe OpenidConnect::AuthorizationController do
           it 'redirects back to the client app with a code' do
             action
 
-            expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
+            if IdentityConfig.store.openid_connect_redirect_interstitial_enabled
+              expect(controller).to render_template('openid_connect/authorization/redirect')
+              expect(assigns(:oidc_redirect_uri)).to start_with(params[:redirect_uri])
+            else
+              expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
+            end
 
-            redirect_params = UriService.params(response.location)
+            redirect_params = if IdentityConfig.store.openid_connect_redirect_interstitial_enabled
+                                UriService.params(assigns(:oidc_redirect_uri))
+                              else
+                                UriService.params(response.location)
+                              end
 
             expect(redirect_params[:code]).to be_present
             expect(redirect_params[:state]).to eq(params[:state])
@@ -479,9 +518,18 @@ RSpec.describe OpenidConnect::AuthorizationController do
         it 'redirects to the redirect_uri immediately with an invalid_request' do
           action
 
-          expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
+          if IdentityConfig.store.openid_connect_redirect_interstitial_enabled
+            expect(controller).to render_template('openid_connect/authorization/redirect')
+            expect(assigns(:oidc_redirect_uri)).to start_with(params[:redirect_uri])
+          else
+            expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
+          end
 
-          redirect_params = UriService.params(response.location)
+          redirect_params = if IdentityConfig.store.openid_connect_redirect_interstitial_enabled
+                              UriService.params(assigns(:oidc_redirect_uri))
+                            else
+                              UriService.params(response.location)
+                            end
 
           expect(redirect_params[:error]).to eq('invalid_request')
           expect(redirect_params[:error_description]).to be_present
@@ -554,7 +602,12 @@ RSpec.describe OpenidConnect::AuthorizationController do
         it 'handles the error and does not blow up' do
           action
 
-          expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
+          if IdentityConfig.store.openid_connect_redirect_interstitial_enabled
+            expect(controller).to render_template('openid_connect/authorization/redirect')
+            expect(assigns(:oidc_redirect_uri)).to start_with(params[:redirect_uri])
+          else
+            expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
+          end
         end
       end
 
@@ -575,9 +628,18 @@ RSpec.describe OpenidConnect::AuthorizationController do
         it 'redirect the user' do
           action
 
-          expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
+          if IdentityConfig.store.openid_connect_redirect_interstitial_enabled
+            expect(controller).to render_template('openid_connect/authorization/redirect')
+            expect(assigns(:oidc_redirect_uri)).to start_with(params[:redirect_uri])
+          else
+            expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
+          end
 
-          redirect_params = UriService.params(response.location)
+          redirect_params = if IdentityConfig.store.openid_connect_redirect_interstitial_enabled
+                              UriService.params(assigns(:oidc_redirect_uri))
+                            else
+                              UriService.params(response.location)
+                            end
 
           expect(redirect_params[:error]).to eq('invalid_request')
           expect(redirect_params[:error_description]).to be_present
