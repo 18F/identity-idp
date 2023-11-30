@@ -84,8 +84,13 @@ module Idv
         UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(
           current_user,
           profile_maker.pii_attributes,
+          opt_in_param,
         )
       end
+    end
+
+    def opt_in_param
+      opted_in_to_in_person_proofing unless !IdentityConfig.store.in_person_proofing_opt_in_enabled
     end
 
     def acknowledge_personal_key!
