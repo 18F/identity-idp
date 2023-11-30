@@ -13,7 +13,7 @@ RSpec.shared_examples 'creating an account with the site in Spanish' do |sp|
     if :sp == :saml
       expect(current_url).to eq UriService.add_params(@saml_authn_request, locale: :es)
     elsif sp == :oidc
-      redirect_uri = URI(current_url)
+      redirect_uri = URI(oidc_redirect_url)
 
       expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
     end
@@ -34,7 +34,7 @@ RSpec.shared_examples 'creating an account using authenticator app for 2FA' do |
     expect(current_url).to eq complete_saml_url if sp == :saml
 
     if sp == :oidc
-      redirect_uri = URI(current_url)
+      redirect_uri = URI(oidc_redirect_url)
 
       expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
     end
@@ -59,7 +59,7 @@ RSpec.shared_examples 'creating an IAL2 account using authenticator app for 2FA'
     expect(current_path).to eq test_saml_decode_assertion_path if sp == :saml
 
     if sp == :oidc
-      redirect_uri = URI(current_url)
+      redirect_uri = URI(oidc_redirect_url)
 
       expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
     end
@@ -80,7 +80,7 @@ RSpec.shared_examples 'creating an account using PIV/CAC for 2FA' do |sp|
     expect(current_url).to eq complete_saml_url if sp == :saml
 
     if sp == :oidc
-      redirect_uri = URI(current_url)
+      redirect_uri = URI(oidc_redirect_url)
 
       expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
     end
@@ -110,7 +110,7 @@ RSpec.shared_examples 'creating an IAL2 account using webauthn for 2FA' do |sp|
     expect(current_path).to eq test_saml_decode_assertion_path if sp == :saml
 
     if sp == :oidc
-      redirect_uri = URI(current_url)
+      redirect_uri = URI(oidc_redirect_url)
 
       expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
     end
@@ -135,7 +135,7 @@ RSpec.shared_examples 'creating two accounts during the same session' do |sp|
 
       expect(current_url).to eq complete_saml_url if sp == :saml
       if sp == :oidc
-        redirect_uri = URI(current_url)
+        redirect_uri = URI(oidc_redirect_url)
 
         expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
       end
@@ -156,7 +156,7 @@ RSpec.shared_examples 'creating two accounts during the same session' do |sp|
 
       expect(current_url).to eq complete_saml_url if sp == :saml
       if sp == :oidc
-        redirect_uri = URI(current_url)
+        redirect_uri = URI(oidc_redirect_url)
 
         expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
       end
