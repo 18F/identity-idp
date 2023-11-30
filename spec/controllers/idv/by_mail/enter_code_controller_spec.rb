@@ -1,86 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe Idv::ByMail::EnterCodeController do
-  describe 'Pii::Cacher use' do
-    let(:params) { {} }
-    let(:session) { {} }
-    let(:pii_cacher) { Pii::Cacher.new(user, session) }
-
-    before do
-      allow(Pii::Cacher).to receive(:new).and_return(pii_cacher)
-      allow(pii_cacher).to receive(:fetch).and_call_original
-
-      stub_sign_in(user)
-    end
-
-    context 'when the user has no profiles' do
-      let(:user) { create(:user) }
-
-      describe '#index' do
-        before { get :index, params: params, session: session }
-
-        it 'uses no PII' do
-          expect(pii_cacher).not_to have_received(:fetch)
-        end
-      end
-
-      describe '#create' do
-        before { put :index, params: params, session: session }
-
-        it 'uses no PII' do
-          expect(pii_cacher).not_to have_received(:fetch)
-        end
-      end
-    end
-
-    context 'when the user has a verify by mail (GPO) pending profile' do
-      let(:user) { create(:user, :with_pending_gpo_profile) }
-      let(:pending_profile) { user.gpo_verification_pending_profile }
-
-      describe '#index' do
-        before { get :index, params: params, session: session }
-
-        it 'uses the PII from the pending profile' do
-          expect(pii_cacher).to have_received(:fetch).with(pending_profile.id)
-        end
-      end
-
-      describe '#create' do
-        before { put :index, params: params, session: session }
-
-        it 'uses the PII from the pending profile' do
-          expect(pii_cacher).to have_received(:fetch).with(pending_profile.id)
-        end
-      end
-    end
-
-    context 'when the user has an active profile, but no verify by mail (GPO) profile' do
-      let(:user) { create(:user, :fully_registered) }
-
-      describe '#index' do
-        before { get :index, params: params, session: session }
-
-        it 'uses no PII' do
-          expect(pii_cacher).not_to have_received(:fetch)
-        end
-      end
-
-      describe '#create' do
-        before { put :index, params: params, session: session }
-
-        it 'uses no PII' do
-          expect(pii_cacher).not_to have_received(:fetch)
-        end
-      end
-    end
-  end
-end
-
-RSpec.describe Idv::ByMail::EnterCodeController do
-  let(:otp) { 'ABCDE12345' }
-  let(:submitted_otp) { otp }
+  let(:good_otp) { 'ABCDE12345' }
+  let(:bad_otp) { 'bad-otp' }
   let(:threatmetrix_enabled) { false }
   let(:gpo_enabled) { true }
+  let(:pii_cacher) { Pii::Cacher.new(user, controller.user_session) }
   let(:params) { nil }
 
   before do
@@ -88,6 +13,10 @@ RSpec.describe Idv::ByMail::EnterCodeController do
     stub_attempts_tracker
     stub_sign_in(user)
 
+    allow(Pii::Cacher).to receive(:new).and_return(pii_cacher)
+    allow(pii_cacher).to receive(:fetch).and_call_original
+    allow(UserAlerts::AlertUserAboutAccountVerified).to receive(:call)
+    allow(@irs_attempts_api_tracker).to receive(:idv_gpo_verification_submitted)
     allow(IdentityConfig.store).to receive(:proofing_device_profiling).
       and_return(threatmetrix_enabled ? :enabled : :disabled)
     allow(IdentityConfig.store).to receive(:enable_usps_verification).and_return(gpo_enabled)
@@ -99,9 +28,13 @@ RSpec.describe Idv::ByMail::EnterCodeController do
     context 'user has pending profile' do
       let(:profile_created_at) { 2.days.ago }
       let(:user) { create(:user, :with_pending_gpo_profile, created_at: profile_created_at) }
+      let(:pending_profile) { user.gpo_verification_pending_profile }
+
+      before do
+        controller.user_session[:decrypted_pii] = { address1: 'Address1' }.to_json
+      end
 
       it 'renders page' do
-        controller.user_session[:decrypted_pii] = { address1: 'Address1' }.to_json
         action
 
         expect(@analytics).to have_logged_event(
@@ -111,17 +44,35 @@ RSpec.describe Idv::ByMail::EnterCodeController do
         expect(response).to render_template('idv/by_mail/enter_code/index')
       end
 
+      it 'uses the PII from the pending profile' do
+        action
+        expect(pii_cacher).to have_received(:fetch).with(pending_profile.id)
+      end
+
       it 'sets @can_request_another_letter to true' do
         action
         expect(assigns(:can_request_another_letter)).to eql(true)
       end
 
-      it 'shows rate limited page if user is rate limited' do
-        RateLimiter.new(rate_limit_type: :verify_gpo_key, user: user).increment_to_limited!
+      context 'when the user is rate limited' do
+        before do
+          RateLimiter.new(rate_limit_type: :verify_gpo_key, user: user).increment_to_limited!
+        end
 
-        action
+        it 'shows rate limited page' do
+          action
 
-        expect(response).to redirect_to(idv_enter_code_rate_limited_url)
+          expect(response).to redirect_to(idv_enter_code_rate_limited_url)
+        end
+
+        it 'logs an analytics event' do
+          action
+
+          expect(@analytics).to have_logged_event(
+            'IdV: enter verify by mail code visited',
+            source: nil,
+          )
+        end
       end
 
       context 'but that profile is too old' do
@@ -134,15 +85,13 @@ RSpec.describe Idv::ByMail::EnterCodeController do
       end
 
       context 'user clicked a "i did not receive my letter" link' do
-        let(:params) do
-          {
-            did_not_receive_letter: 1,
-          }
-        end
+        let(:params) { { did_not_receive_letter: 1 } }
+
         it 'sets @user_did_not_receive_letter to true' do
           action
           expect(assigns(:user_did_not_receive_letter)).to eql(true)
         end
+
         it 'augments analytics event' do
           action
           expect(@analytics).to have_logged_event(
@@ -153,8 +102,14 @@ RSpec.describe Idv::ByMail::EnterCodeController do
       end
     end
 
-    context 'user does not have pending profile' do
+    context 'user does not have a pending profile' do
       let(:user) { create(:user) }
+
+      it 'uses no PII' do
+        action
+
+        expect(pii_cacher).not_to have_received(:fetch)
+      end
 
       it 'redirects to account page' do
         action
@@ -163,54 +118,32 @@ RSpec.describe Idv::ByMail::EnterCodeController do
       end
     end
 
-    context 'with rate limit reached' do
-      let(:user) { create(:user, :with_pending_gpo_profile, created_at: 2.days.ago) }
-
-      before do
-        RateLimiter.new(rate_limit_type: :verify_gpo_key, user: user).increment_to_limited!
-      end
-
-      it 'redirects to the rate limited page' do
-        action
-
-        expect(@analytics).to have_logged_event(
-          'IdV: enter verify by mail code visited',
-          source: nil,
-        )
-
-        expect(response).to redirect_to(idv_enter_code_rate_limited_url)
-      end
-    end
-
     context 'session says user did not receive letter' do
       let(:user) { create(:user, :with_pending_gpo_profile, created_at: 2.days.ago) }
 
       before do
         session[:gpo_user_did_not_receive_letter] = true
-        action
       end
+
       it 'redirects user to url with querystring' do
+        action
         expect(response).to redirect_to(
           idv_verify_by_mail_enter_code_path(did_not_receive_letter: 1),
         )
       end
 
       it 'clears session value' do
+        action
         expect(session).not_to include(gpo_user_did_not_receive_letter: anything)
       end
     end
 
-    context 'querystring says user did not receive letter' do
-      let(:params) do
-        { did_not_receive_letter: 1 }
-      end
+    context 'not logged in, and querystring says user did not receive letter' do
+      let(:user) { nil }
+      let(:params) { { did_not_receive_letter: 1 } }
 
-      context 'not logged in' do
-        let(:user) { nil }
-
-        it 'sets value in session' do
-          expect { action }.to change { session[:gpo_user_did_not_receive_letter ] }.to eql(true)
-        end
+      it 'sets value in session' do
+        expect { action }.to change { session[:gpo_user_did_not_receive_letter ] }.to eql(true)
       end
     end
   end
@@ -219,26 +152,36 @@ RSpec.describe Idv::ByMail::EnterCodeController do
     let(:otp_code_error_message) { { otp: [t('errors.messages.confirmation_code_incorrect')] } }
     let(:success_properties) { { success: true } }
 
-    subject(:action) do
-      post(
-        :create,
-        params: {
-          gpo_verify_form: {
-            otp: submitted_otp,
-          },
-        },
-      )
+    context 'user does not have a pending profile' do
+      let(:user) { create(:user, :fully_registered) }
+
+      it 'uses no PII' do
+        expect(pii_cacher).not_to have_received(:fetch)
+      end
     end
 
     context 'with a valid form' do
+      subject(:action) do
+        post(:create, params: { gpo_verify_form: { otp: good_otp } })
+      end
+
       let(:user) { create(:user, :with_pending_gpo_profile, created_at: 2.days.ago) }
+      let(:pending_profile) { user.gpo_verification_pending_profile }
       let(:success) { true }
 
-      it 'redirects to the sign_up/completions page' do
-        expect(@irs_attempts_api_tracker).to receive(:idv_gpo_verification_submitted).
-          with(success_properties)
+      it 'uses the PII from the pending profile' do
+        # action will make the profile active, so grab the ID here.
+        pending_profile_id = pending_profile.id
 
         action
+        expect(pii_cacher).to have_received(:fetch).with(pending_profile_id)
+      end
+
+      it 'redirects to the sign_up/completions page' do
+        action
+
+        expect(@irs_attempts_api_tracker).to have_received(:idv_gpo_verification_submitted).
+          with(success_properties)
 
         expect(@analytics).to have_logged_event(
           'IdV: enter verify by mail code submitted',
@@ -258,9 +201,9 @@ RSpec.describe Idv::ByMail::EnterCodeController do
       end
 
       it 'dispatches account verified alert' do
-        expect(UserAlerts::AlertUserAboutAccountVerified).to receive(:call)
-
         action
+
+        expect(UserAlerts::AlertUserAboutAccountVerified).to have_received(:call)
       end
 
       context 'with establishing in person enrollment' do
@@ -280,10 +223,10 @@ RSpec.describe Idv::ByMail::EnterCodeController do
         end
 
         it 'redirects to personal key page' do
-          expect(@irs_attempts_api_tracker).to receive(:idv_gpo_verification_submitted).
-            with(success_properties)
-
           action
+
+          expect(@irs_attempts_api_tracker).to have_received(:idv_gpo_verification_submitted).
+            with(success_properties)
 
           expect(@analytics).to have_logged_event(
             'IdV: enter verify by mail code submitted',
@@ -300,9 +243,9 @@ RSpec.describe Idv::ByMail::EnterCodeController do
         end
 
         it 'does not dispatch account verified alert' do
-          expect(UserAlerts::AlertUserAboutAccountVerified).not_to receive(:call)
-
           action
+
+          expect(UserAlerts::AlertUserAboutAccountVerified).not_to have_received(:call)
         end
       end
 
@@ -311,10 +254,10 @@ RSpec.describe Idv::ByMail::EnterCodeController do
           let(:user) { create(:user, :gpo_pending_with_fraud_rejection) }
 
           it 'redirects to the sign_up/completions page' do
-            expect(@irs_attempts_api_tracker).to receive(:idv_gpo_verification_submitted).
-              with(success_properties)
-
             action
+
+            expect(@irs_attempts_api_tracker).to have_received(:idv_gpo_verification_submitted).
+              with(success_properties)
 
             expect(@analytics).to have_logged_event(
               'IdV: enter verify by mail code submitted',
@@ -361,13 +304,14 @@ RSpec.describe Idv::ByMail::EnterCodeController do
           end
 
           it 'does not show a flash message' do
-            expect(flash[:success]).to be_nil
             action
+            expect(flash[:success]).to be_nil
           end
 
           it 'does not dispatch account verified alert' do
-            expect(UserAlerts::AlertUserAboutAccountVerified).not_to receive(:call)
             action
+
+            expect(UserAlerts::AlertUserAboutAccountVerified).not_to have_received(:call)
           end
         end
 
@@ -396,14 +340,17 @@ RSpec.describe Idv::ByMail::EnterCodeController do
     end
 
     context 'with an invalid form' do
+      subject(:action) do
+        post(:create, params: { gpo_verify_form: { otp: bad_otp } })
+      end
+
       let(:user) { create(:user, :with_pending_gpo_profile, created_at: 2.days.ago) }
-      let(:submitted_otp) { 'the-wrong-otp' }
 
       it 'redirects to the index page to show errors' do
-        expect(@irs_attempts_api_tracker).to receive(:idv_gpo_verification_submitted).
-          with(success: false)
-
         action
+
+        expect(@irs_attempts_api_tracker).to have_received(:idv_gpo_verification_submitted).
+          with(success: false)
 
         expect(@analytics).to have_logged_event(
           'IdV: enter verify by mail code submitted',
@@ -421,24 +368,25 @@ RSpec.describe Idv::ByMail::EnterCodeController do
       end
 
       it 'does not 500 with missing form keys' do
-        expect { post(:create, params: { otp: submitted_otp }) }.to raise_exception(
+        expect { post(:create, params: {}) }.to raise_exception(
           ActionController::ParameterMissing,
         )
       end
     end
 
     context 'final attempt before rate limited' do
-      let(:invalid_otp) { 'a-wrong-otp' }
+      let(:user) { create(:user, :with_pending_gpo_profile) }
       let(:max_attempts) { 2 }
 
       before do
         allow(IdentityConfig.store).to receive(:verify_gpo_key_max_attempts).
           and_return(max_attempts)
+        (max_attempts - 1).times do |i|
+          post(:create, params: { gpo_verify_form: { otp: bad_otp } })
+        end
       end
 
-      context 'user is rate limited' do
-        let(:user) { create(:user, :with_pending_gpo_profile) }
-
+      context 'invalid code is submitted' do
         it 'redirects to the rate limited index page to show errors' do
           analytics_args = {
             success: false,
@@ -451,11 +399,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
             attempts: 1,
             error_details: { otp: { confirmation_code_incorrect: true } },
           }
-          max_attempts.times do |i|
-            post(:create, params: { gpo_verify_form: { otp: invalid_otp } })
-          end
-
-          post(:create, params: { gpo_verify_form: { otp: submitted_otp } })
+          post(:create, params: { gpo_verify_form: { otp: bad_otp } })
 
           expect(@analytics).to have_logged_event(
             'IdV: enter verify by mail code submitted',
@@ -477,17 +421,21 @@ RSpec.describe Idv::ByMail::EnterCodeController do
         let(:user) { create(:user, :with_pending_gpo_profile) }
 
         it 'redirects to personal key page' do
-          expect(@irs_attempts_api_tracker).to receive(:idv_gpo_verification_submitted).
+          post(:create, params: { gpo_verify_form: { otp: good_otp } })
+
+          expect(@irs_attempts_api_tracker).to have_received(:idv_gpo_verification_submitted).
             exactly(max_attempts).times
 
-          (max_attempts - 1).times do
-            post(:create, params: { gpo_verify_form: { otp: invalid_otp } })
-          end
-          post(:create, params: { gpo_verify_form: { otp: submitted_otp } })
+          failed_gpo_submission_events =
+            @analytics.events['IdV: enter verify by mail code submitted'].
+              reject {|event_attributes| event_attributes[:errors].empty?}
 
-          gpo_submission_events = @analytics.events['IdV: enter verify by mail code submitted']
-          expect(gpo_submission_events.select{|attributes| attributes[:errors].empty?}.length).to eq(max_attempts - 1)
-          expect(gpo_submission_events.reject{|attributes| attributes[:errors].empty?}.length).to eq(1)
+          successful_gpo_submission_events =
+            @analytics.events['IdV: enter verify by mail code submitted'].
+              select {|event_attributes| event_attributes[:errors].empty?}
+
+          expect(failed_gpo_submission_events.count).to eq(max_attempts-1)
+          expect(successful_gpo_submission_events.count).to eq(1)
           expect(response).to redirect_to(idv_personal_key_url)
         end
       end
