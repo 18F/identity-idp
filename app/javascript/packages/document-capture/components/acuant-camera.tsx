@@ -206,7 +206,7 @@ interface AcuantDetectedResult {
 }
 
 /**
- * @see https://github.com/Acuant/JavascriptWebSDKV11/tree/11.8.1#image-from-acuantcameraui-and-acuantcamera
+ * @see https://github.com/Acuant/JavascriptWebSDKV11/tree/11.9.1#image-from-acuantcameraui-and-acuantcamera
  */
 export interface AcuantSuccessResponse {
   /**

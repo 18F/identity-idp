@@ -118,8 +118,8 @@ idv_available: true
 idv_contact_phone_number: (844) 555-5555
 idv_max_attempts: 5
 idv_min_age_years: 13
-idv_acuant_sdk_version_default: '11.8.2'
-idv_acuant_sdk_version_alternate: '11.8.1'
+idv_acuant_sdk_version_default: '11.9.1'
+idv_acuant_sdk_version_alternate: '11.8.2'
 idv_acuant_sdk_upgrade_a_b_testing_enabled: false
 idv_acuant_sdk_upgrade_a_b_testing_percent: 50
 idv_phone_question_a_b_testing: '{"bypass_phone_question":100, "show_phone_question":0}'

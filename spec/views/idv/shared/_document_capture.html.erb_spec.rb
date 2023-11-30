@@ -16,6 +16,7 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
   let(:doc_auth_selfie_capture) { { enabled: false } }
   let(:phone_with_camera) { false }
   let(:acuant_version) { '1.3.3.7' }
+  let(:skip_doc_auth) { false }
 
   before do
     decorated_sp_session = instance_double(
@@ -47,6 +48,7 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
       phone_question_ab_test_bucket: phone_question_ab_test_bucket,
       doc_auth_selfie_capture: doc_auth_selfie_capture,
       phone_with_camera: phone_with_camera,
+      skip_doc_auth: skip_doc_auth,
     }
   end
 

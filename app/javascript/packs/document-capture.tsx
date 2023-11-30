@@ -35,6 +35,8 @@ interface AppRootData {
   idvInPersonUrl?: string;
   optedInToInPersonProofing: string;
   securityAndPrivacyHowItWorksUrl: string;
+  skipDocAuth: string;
+  howToVerifyURL: string;
   uiNotReadySectionEnabled: string;
   uiExitQuestionSectionEnabled: string;
 }
@@ -69,8 +71,6 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
     acuantSdkUpgradeABTestingEnabled,
     useAlternateSdk,
     acuantVersion,
-    phoneQuestionAbTestBucket,
-    phoneWithCamera,
     optedInToInPersonProofing,
   } = appRoot.dataset;
   return baseTrackEvent(event, {
@@ -79,8 +79,6 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
     acuant_sdk_upgrade_a_b_testing_enabled: acuantSdkUpgradeABTestingEnabled,
     use_alternate_sdk: useAlternateSdk,
     acuant_version: acuantVersion,
-    phone_question_ab_test_bucket: phoneQuestionAbTestBucket,
-    phone_with_camera: phoneWithCamera,
     opted_in_to_in_person_proofing: optedInToInPersonProofing,
   });
 };
@@ -106,7 +104,8 @@ const {
   inPersonOutageExpectedUpdateDate,
   optedInToInPersonProofing,
   usStatesTerritories = '',
-  phoneWithCamera = '',
+  skipDocAuth,
+  howToVerifyUrl,
   uiNotReadySectionEnabled = '',
   uiExitQuestionSectionEnabled = '',
 } = appRoot.dataset as DOMStringMap & AppRootData;
@@ -131,6 +130,8 @@ const App = composeComponents(
         inPersonFullAddressEntryEnabled: inPersonFullAddressEntryEnabled === 'true',
         optedInToInPersonProofing,
         usStatesTerritories: parsedUsStatesTerritories,
+        skipDocAuth: skipDocAuth === 'true',
+        howToVerifyURL: howToVerifyUrl,
       },
     },
   ],
@@ -159,7 +160,6 @@ const App = composeComponents(
       isMockClient,
       formData,
       flowPath,
-      phoneWithCamera,
     },
   ],
   [

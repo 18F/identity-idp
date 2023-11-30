@@ -11,12 +11,17 @@ RSpec.describe Idv::PhoneController do
   let(:international_phone) { '+81 54 354 3643' }
   let(:timeout_phone) { '7035555888' }
 
+  describe '#step_info' do
+    it 'returns a valid StepInfo object' do
+      expect(Idv::PhoneController.step_info).to be_valid
+    end
+  end
+
   describe 'before_actions' do
     it 'includes authentication before_action' do
       expect(subject).to have_actions(
         :before,
         :confirm_two_factor_authenticated,
-        :confirm_verify_info_step_complete,
       )
     end
 
@@ -60,11 +65,11 @@ RSpec.describe Idv::PhoneController do
         subject.idv_session.user_phone_confirmation = true
       end
 
-      it 'redirects to review when step is complete' do
+      it 'allows the back button and renders new' do
         subject.idv_session.vendor_phone_confirmation = true
         get :new
 
-        expect(response).to redirect_to idv_enter_password_path
+        expect(response).to render_template :new
       end
     end
 
@@ -83,6 +88,11 @@ RSpec.describe Idv::PhoneController do
 
     context 'when the user has not finished the verify step' do
       before do
+        subject.idv_session.welcome_visited = true
+        subject.idv_session.idv_consent_given = true
+        subject.idv_session.flow_path = 'standard'
+        subject.idv_session.pii_from_doc = Idp::Constants::MOCK_IDV_APPLICANT
+        subject.idv_session.ssn = '123-45-6789'
         subject.idv_session.applicant = nil
         subject.idv_session.resolution_successful = nil
       end
@@ -314,6 +324,21 @@ RSpec.describe Idv::PhoneController do
         stub_analytics
         stub_attempts_tracker
         allow(@analytics).to receive(:track_event)
+      end
+
+      it 'invalidates future steps' do
+        user = build(:user, :with_phone, with: { phone: good_phone, confirmed_at: Time.zone.now })
+        stub_verify_steps_one_and_two(user)
+        expect(subject).to receive(:clear_future_steps!)
+
+        phone_params = {
+          idv_phone_form: {
+            phone: good_phone,
+            otp_delivery_preference: :sms,
+          },
+        }
+
+        put :create, params: phone_params
       end
 
       it 'tracks events with valid phone' do

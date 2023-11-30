@@ -6,8 +6,8 @@ module Idv
       skip_before_action :confirm_no_pending_gpo_profile
       include Idv::StepIndicatorConcern
 
-      before_action :confirm_user_completed_idv_profile_step
       before_action :confirm_mail_not_rate_limited
+      before_action :confirm_step_allowed
       before_action :confirm_profile_not_too_old
 
       def index
@@ -23,6 +23,7 @@ module Idv
       end
 
       def create
+        clear_future_steps!
         update_tracking
         idv_session.address_verification_mechanism = :gpo
 
@@ -39,6 +40,19 @@ module Idv
 
       def gpo_mail_service
         @gpo_mail_service ||= Idv::GpoMail.new(current_user)
+      end
+
+      def self.step_info
+        Idv::StepInfo.new(
+          key: :request_letter,
+          controller: self,
+          action: :index,
+          next_steps: [:enter_password],
+          preconditions: ->(idv_session:, user:) do
+            idv_session.verify_info_step_complete? || user.gpo_verification_pending_profile?
+          end,
+          undo_step: ->(idv_session:, user:) { idv_session.address_verification_mechanism = nil },
+        )
       end
 
       private
@@ -84,15 +98,6 @@ module Idv
 
       def confirm_mail_not_rate_limited
         redirect_to idv_enter_password_url if gpo_mail_service.rate_limited?
-      end
-
-      def confirm_user_completed_idv_profile_step
-        # If the user has a pending profile, they may have completed idv in a
-        # different session and need a letter resent now
-        return if current_user.gpo_verification_pending_profile?
-        return if idv_session.verify_info_step_complete?
-
-        redirect_to idv_verify_info_url
       end
 
       def resend_letter
