@@ -78,19 +78,10 @@ RSpec.describe Idv::PhoneErrorsController do
             subject.idv_session.user_phone_confirmation = true
           end
 
-          it 'redirects to the review url' do
+          it 'allows the back button and renders the template' do
             get action
 
-            expect(response).to redirect_to(idv_enter_password_url)
-          end
-          it 'does not log an event' do
-            expect(@analytics).not_to receive(:track_event).with(
-              'IdV: phone error visited',
-              hash_including(
-                type: action,
-              ),
-            )
-            get action
+            expect(response).to render_template(template)
           end
         end
       end
