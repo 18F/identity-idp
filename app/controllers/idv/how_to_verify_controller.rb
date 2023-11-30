@@ -16,7 +16,7 @@ module Idv
       clear_invalid_steps!
       result = Idv::HowToVerifyForm.new.submit(how_to_verify_form_params)
       if how_to_verify_form_params[:selection] == []
-        sendable_form_params = Hash.new
+        sendable_form_params = {}
       else
         sendable_form_params = how_to_verify_form_params
       end
