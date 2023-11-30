@@ -42,7 +42,7 @@ module Idv
 
       def pii
         Pii::Cacher.new(current_user, user_session).
-          fetch(current_user.gpo_verification_pending_profile&.id)
+          fetch(current_user.gpo_verification_pending_profile.id)
       end
 
       def create
