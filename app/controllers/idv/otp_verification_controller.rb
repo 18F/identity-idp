@@ -1,13 +1,12 @@
 module Idv
   class OtpVerificationController < ApplicationController
     include Idv::AvailabilityConcern
-    include IdvSession
+    include IdvStepConcern
     include StepIndicatorConcern
     include PhoneOtpRateLimitable
 
     before_action :confirm_two_factor_authenticated
-    before_action :confirm_step_needed
-    before_action :confirm_otp_sent
+    before_action :confirm_step_allowed
     before_action :set_code
     before_action :set_otp_verification_presenter
 
@@ -18,6 +17,7 @@ module Idv
     end
 
     def update
+      clear_future_steps!
       result = phone_confirmation_otp_verification_form.submit(code: params[:code])
       analytics.idv_phone_confirmation_otp_submitted(**result.to_h)
 
@@ -36,18 +36,17 @@ module Idv
       end
     end
 
+    def self.step_info
+      Idv::StepInfo.new(
+        key: :otp_verification,
+        controller: self,
+        next_steps: [:enter_password],
+        preconditions: ->(idv_session:, user:) { idv_session.phone_otp_sent? },
+        undo_step: ->(idv_session:, user:) { idv_session.user_phone_confirmation = nil },
+      )
+    end
+
     private
-
-    def confirm_step_needed
-      return unless idv_session.user_phone_confirmation
-      redirect_to idv_enter_password_url
-    end
-
-    def confirm_otp_sent
-      return if idv_session.user_phone_confirmation_session.present?
-
-      redirect_to idv_phone_url
-    end
 
     def set_code
       return unless FeatureManagement.prefill_otp_codes?

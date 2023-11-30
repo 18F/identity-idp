@@ -34,22 +34,6 @@ module ControllerHelper
     controller.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION] = true
   end
 
-  def stub_idv_steps_before_verify_step(
-    user,
-    applicant: Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE
-  )
-    user_session = {}
-    stub_sign_in(user)
-    idv_session = Idv::Session.new(
-      user_session: user_session, current_user: user,
-      service_provider: nil
-    )
-    idv_session.applicant = applicant
-    allow(subject).to receive(:confirm_idv_applicant_created).and_return(true)
-    allow(subject).to receive(:idv_session).and_return(idv_session)
-    allow(subject).to receive(:user_session).and_return(user_session)
-  end
-
   def stub_verify_steps_one_and_two(
     user,
     applicant: Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE

@@ -94,9 +94,9 @@ RSpec.describe Idv::AgreementController do
           subject.idv_session.resolution_successful = true
         end
 
-        it 'redirects to enter password step' do
+        it 'renders the show template' do
           get :show
-          expect(response).to redirect_to(idv_enter_password_url)
+          expect(response).to render_template(:show)
         end
       end
     end

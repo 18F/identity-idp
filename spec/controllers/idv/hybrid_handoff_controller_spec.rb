@@ -148,22 +148,22 @@ RSpec.describe Idv::HybridHandoffController do
           subject.idv_session.mark_verify_info_step_complete!
         end
 
-        it 'does not set redo_document_capture to true in idv_session' do
+        it 'does set redo_document_capture to true in idv_session' do
           get :show, params: { redo: true }
 
-          expect(subject.idv_session.redo_document_capture).not_to be_truthy
+          expect(subject.idv_session.redo_document_capture).to be_truthy
         end
 
-        it 'does not add redo_document_capture to analytics' do
+        it 'does add redo_document_capture to analytics' do
           get :show, params: { redo: true }
 
-          expect(@analytics).not_to have_logged_event(analytics_name)
+          expect(@analytics).to have_logged_event(analytics_name)
         end
 
-        it 'redirects to review' do
+        it 'renders show' do
           get :show, params: { redo: true }
 
-          expect(response).to redirect_to(idv_enter_password_url)
+          expect(response).to render_template :show
         end
       end
     end

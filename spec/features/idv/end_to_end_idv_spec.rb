@@ -73,10 +73,10 @@ RSpec.describe 'Identity verification', :js do
     test_go_back_from_verify_info
     complete_verify_step
 
-    validate_phone_page
-    visit_by_mail_and_return
+    test_go_back_from_phone
     complete_otp_verification_page(user)
 
+    test_go_back_from_enter_password
     complete_enter_password_step(user)
 
     acknowledge_and_confirm_personal_key
@@ -102,8 +102,10 @@ RSpec.describe 'Identity verification', :js do
       complete_all_in_person_proofing_steps(user)
 
       enter_gpo_flow
-      gpo_step
+      test_go_back_from_request_letter
+      complete_request_letter
 
+      test_go_back_in_person_flow
       complete_enter_password_step(user)
 
       try_to_go_back_from_letter_enqueued
@@ -446,8 +448,52 @@ RSpec.describe 'Identity verification', :js do
     go_back
     go_back
     expect(page).to have_current_path(idv_welcome_path)
-    visit(idv_verify_info_path)
+    5.times { go_forward }
     expect(page).to have_current_path(idv_verify_info_path)
+  end
+
+  def test_go_back_from_phone
+    go_back
+    go_back
+    expect(page).to have_current_path(idv_ssn_path)
+    go_back
+    go_back
+    go_back
+    go_back
+    expect(page).to have_current_path(idv_welcome_path)
+    6.times { go_forward }
+    expect(page).to have_current_path(idv_phone_path)
+  end
+
+  def test_go_back_from_enter_password
+    go_back
+    expect(page).to have_current_path(idv_otp_verification_path)
+    go_back
+    expect(page).to have_current_path(idv_phone_path)
+    go_back
+    expect(page).to have_current_path(idv_verify_info_path)
+    3.times { go_forward }
+
+    expect(page).to have_current_path(idv_enter_password_path)
+  end
+
+  def test_go_back_from_request_letter
+    go_back
+    expect(page).to have_current_path(idv_phone_path)
+    go_back
+    expect(page).to have_current_path(idv_in_person_verify_info_path)
+    2.times { go_forward }
+    expect(page).to have_current_path(idv_request_letter_path)
+  end
+
+  def test_go_back_in_person_flow
+    go_back
+    go_back
+    go_back
+    expect(page).to have_current_path(idv_in_person_verify_info_path)
+    # can't go back further with in person controllers (yet)
+
+    3.times { go_forward }
   end
 
   def try_to_go_back_from_letter_enqueued
