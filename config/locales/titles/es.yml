@@ -43,6 +43,7 @@ es:
       reset_password: Restablecer la contraseña
       verify_info: Verifica tu información
     mfa_setup:
+      face_touch_unlock_confirmation: Agregado el desbloqueo facial o táctil 	
       suggest_second_mfa: '¡Has agregado tu primer método de autenticación! Agrega un
         segundo método como respaldo.'
     no_auth_option: No se encontró mensaje de inicio de sesión
