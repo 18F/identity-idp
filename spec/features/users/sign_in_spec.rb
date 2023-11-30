@@ -5,6 +5,7 @@ RSpec.feature 'Sign in' do
   include ActionView::Helpers::DateHelper
   include PersonalKeyHelper
   include SamlAuthHelper
+  include OidcAuthHelper
   include SpAuthHelper
   include IdvHelper
   include DocAuthHelper
