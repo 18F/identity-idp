@@ -161,9 +161,6 @@ RSpec.feature 'hybrid_handoff step send link and errors' do
             timeout: timeout,
           ),
         )
-
-        # expect to see the headings that reflect having
-        # :phone_question_ab_test_bucket set to :bypass_phone_question
         expect(page).to have_selector('h1', text: t('doc_auth.headings.hybrid_handoff'))
         expect(page).to have_selector('h2', text: t('doc_auth.headings.upload_from_phone'))
         expect(page).not_to have_selector('h1', text: t('doc_auth.headings.upload_from_phone'))
