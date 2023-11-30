@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.feature 'signing into an SP with multiple emails enabled' do
   include SamlAuthHelper
+  include OidcAuthHelper
 
   context 'with the email scope' do
     scenario 'signing in with OIDC sends the email address used to sign in' do
@@ -109,7 +110,7 @@ RSpec.feature 'signing into an SP with multiple emails enabled' do
   end
 
   def fetch_oidc_id_token_info
-    redirect_uri = URI(current_url)
+    redirect_uri = URI(oidc_redirect_url)
     redirect_params = Rack::Utils.parse_query(redirect_uri.query).with_indifferent_access
     code = redirect_params[:code]
 
