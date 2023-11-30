@@ -5,9 +5,11 @@ RSpec.describe 'Idv::FlowPolicy' do
 
   let(:user) { create(:user) }
 
+  let(:user_session) { { 'idv/in_person' => {} } }
+
   let(:idv_session) do
     Idv::Session.new(
-      user_session: {},
+      user_session: user_session,
       current_user: user,
       service_provider: nil,
     )
@@ -66,6 +68,79 @@ RSpec.describe 'Idv::FlowPolicy' do
         expect(idv_session.threatmetrix_session_id).to be_nil
 
         expect(idv_session.address_edited).to be_nil
+      end
+    end
+
+    context 'user is on enter password step' do
+      before do
+        idv_session.welcome_visited = true
+        idv_session.document_capture_session_uuid = SecureRandom.uuid
+
+        idv_session.idv_consent_given = true
+        idv_session.skip_hybrid_handoff = true
+
+        idv_session.flow_path = 'standard'
+        idv_session.phone_for_mobile_flow = '201-555-1212'
+
+        idv_session.pii_from_doc = nil
+        idv_session.had_barcode_read_failure = true
+        idv_session.had_barcode_attention_error = true
+
+        idv_session.ssn = nil
+        idv_session.threatmetrix_session_id = SecureRandom.uuid
+
+        idv_session.address_edited = true
+
+        idv_session.verify_info_step_document_capture_session_uuid = SecureRandom.uuid
+        idv_session.threatmetrix_review_status = 'pass'
+        idv_session.resolution_successful = true
+        idv_session.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.dup
+
+        idv_session.vendor_phone_confirmation = true
+        idv_session.address_verification_mechanism = 'phone'
+        idv_session.idv_phone_step_document_capture_session_uuid = SecureRandom.uuid
+        idv_session.user_phone_confirmation_session = { phone: '201-555-1212' }
+        idv_session.previous_phone_step_params = '201-555-1111'
+
+        idv_session.user_phone_confirmation = true
+      end
+
+      it 'does clear steps after ssn when user submits ssn' do
+        subject.undo_future_steps_from_controller!(controller: Idv::SsnController)
+
+        expect(idv_session.address_edited).to be_nil
+
+        expect(idv_session.verify_info_step_document_capture_session_uuid).to be_nil
+        expect(idv_session.threatmetrix_review_status).to be_nil
+        expect(idv_session.resolution_successful).to be_nil
+        expect(idv_session.applicant).to be_nil
+
+        expect(idv_session.vendor_phone_confirmation).to be_nil
+        expect(idv_session.address_verification_mechanism).to be_nil
+        expect(idv_session.idv_phone_step_document_capture_session_uuid).to be_nil
+        expect(idv_session.user_phone_confirmation_session).to be_nil
+        expect(idv_session.previous_phone_step_params).to be_nil
+
+        expect(idv_session.user_phone_confirmation).to be_nil
+      end
+
+      it 'does not clear earlier steps when user goes back and submits ssn' do
+        expect do
+          subject.undo_future_steps_from_controller!(controller: Idv::SsnController)
+        end.not_to change {
+          idv_session.welcome_visited
+          idv_session.document_capture_session_uuid
+          idv_session.idv_consent_given
+          idv_session.skip_hybrid_handoff
+
+          idv_session.flow_path
+          idv_session.phone_for_mobile_flow
+
+          idv_session.had_barcode_read_failure
+          idv_session.had_barcode_attention_error
+
+          idv_session.threatmetrix_session_id
+        }
       end
     end
   end
@@ -145,6 +220,22 @@ RSpec.describe 'Idv::FlowPolicy' do
       end
     end
 
+    context 'preconditions for in_person ssn are present' do
+      before do
+        idv_session.welcome_visited = true
+        idv_session.idv_consent_given = true
+        idv_session.flow_path = 'standard'
+        idv_session.send(:user_session)['idv/in_person'][:pii_from_user] = { pii: 'value' }
+      end
+
+      it 'returns ipp_ssn' do
+        expect(subject.info_for_latest_step.key).to eq(:ipp_ssn)
+        expect(subject.controller_allowed?(controller: Idv::InPerson::SsnController)).to be
+        expect(subject.controller_allowed?(controller: Idv::InPerson::VerifyInfoController)).
+          not_to be
+      end
+    end
+
     context 'preconditions for verify_info are present' do
       it 'returns verify_info' do
         idv_session.welcome_visited = true
@@ -155,7 +246,112 @@ RSpec.describe 'Idv::FlowPolicy' do
 
         expect(subject.info_for_latest_step.key).to eq(:verify_info)
         expect(subject.controller_allowed?(controller: Idv::VerifyInfoController)).to be
-        # expect(subject.controller_allowed?(controller: Idv::PhoneController)).not_to be
+        expect(subject.controller_allowed?(controller: Idv::PhoneController)).not_to be
+      end
+    end
+
+    context 'preconditions for in_person verify_info are present' do
+      it 'returns ipp_verify_info' do
+        idv_session.welcome_visited = true
+        idv_session.idv_consent_given = true
+        idv_session.flow_path = 'standard'
+        idv_session.send(:user_session)['idv/in_person'][:pii_from_user] = { pii: 'value' }
+        idv_session.ssn = '666666666'
+
+        expect(subject.info_for_latest_step.key).to eq(:ipp_verify_info)
+        expect(subject.controller_allowed?(controller: Idv::InPerson::VerifyInfoController)).to be
+        expect(subject.controller_allowed?(controller: Idv::PhoneController)).not_to be
+      end
+    end
+
+    context 'preconditions for phone are present' do
+      it 'returns phone' do
+        idv_session.welcome_visited = true
+        idv_session.idv_consent_given = true
+        idv_session.flow_path = 'standard'
+        idv_session.pii_from_doc = { pii: 'value' }
+        idv_session.applicant = { pii: 'value' }
+        idv_session.ssn = '666666666'
+        idv_session.resolution_successful = true
+
+        expect(subject.info_for_latest_step.key).to eq(:phone)
+        expect(subject.controller_allowed?(controller: Idv::PhoneController)).to be
+        expect(subject.controller_allowed?(controller: Idv::OtpVerificationController)).not_to be
+      end
+    end
+
+    context 'preconditions for otp_verification are present' do
+      let(:user_phone_confirmation_session) { { code: 'abcde' } }
+
+      it 'returns otp_verification' do
+        idv_session.welcome_visited = true
+        idv_session.idv_consent_given = true
+        idv_session.flow_path = 'standard'
+        idv_session.pii_from_doc = { pii: 'value' }
+        idv_session.applicant = { pii: 'value' }
+        idv_session.ssn = '666666666'
+        idv_session.resolution_successful = true
+        idv_session.user_phone_confirmation_session = user_phone_confirmation_session
+
+        expect(subject.info_for_latest_step.key).to eq(:otp_verification)
+        expect(subject.controller_allowed?(controller: Idv::OtpVerificationController)).to be
+        expect(subject.controller_allowed?(controller: Idv::EnterPasswordController)).not_to be
+      end
+    end
+
+    context 'preconditions for request_letter are present' do
+      it 'returns enter_password with gpo verification pending' do
+        idv_session.welcome_visited = true
+        idv_session.idv_consent_given = true
+        idv_session.flow_path = 'standard'
+        idv_session.pii_from_doc = { pii: 'value' }
+        idv_session.applicant = { pii: 'value' }
+        idv_session.ssn = '666666666'
+        idv_session.resolution_successful = true
+
+        expect(subject.controller_allowed?(controller: Idv::ByMail::RequestLetterController)).to be
+        expect(subject.controller_allowed?(controller: Idv::EnterPasswordController)).not_to be
+      end
+    end
+
+    context 'preconditions for enter_password are present' do
+      let(:user_phone_confirmation_session) { { code: 'abcde' } }
+
+      context 'user has a gpo address_verification_mechanism' do
+        it 'returns enter_password with gpo verification pending' do
+          idv_session.welcome_visited = true
+          idv_session.idv_consent_given = true
+          idv_session.flow_path = 'standard'
+          idv_session.pii_from_doc = { pii: 'value' }
+          idv_session.applicant = { pii: 'value' }
+          idv_session.ssn = '666666666'
+          idv_session.resolution_successful = true
+          idv_session.user_phone_confirmation_session = user_phone_confirmation_session
+          idv_session.address_verification_mechanism = 'gpo'
+
+          expect(subject.info_for_latest_step.key).to eq(:enter_password)
+          expect(subject.controller_allowed?(controller: Idv::EnterPasswordController)).to be
+          # expect(subject.controller_allowed?(controller: Idv::PersonalKeyController)).not_to be
+        end
+      end
+
+      context 'user passed phone step' do
+        it 'returns enter_password' do
+          idv_session.welcome_visited = true
+          idv_session.idv_consent_given = true
+          idv_session.flow_path = 'standard'
+          idv_session.pii_from_doc = { pii: 'value' }
+          idv_session.applicant = { pii: 'value' }
+          idv_session.ssn = '666666666'
+          idv_session.resolution_successful = true
+          idv_session.user_phone_confirmation_session = user_phone_confirmation_session
+          idv_session.vendor_phone_confirmation = true
+          idv_session.user_phone_confirmation = true
+
+          expect(subject.info_for_latest_step.key).to eq(:enter_password)
+          expect(subject.controller_allowed?(controller: Idv::EnterPasswordController)).to be
+          # expect(subject.controller_allowed?(controller: Idv::PersonalKeyController)).not_to be
+        end
       end
     end
   end

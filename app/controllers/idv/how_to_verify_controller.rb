@@ -9,8 +9,14 @@ module Idv
     check_or_render_not_found -> { self.class.enabled? }
 
     def show
+      @selection = if idv_session.skip_doc_auth == false
+                     Idv::HowToVerifyForm::REMOTE
+      elsif idv_session.skip_doc_auth == true
+        Idv::HowToVerifyForm::IPP
+      end
+
       analytics.idv_doc_auth_how_to_verify_visited(**analytics_arguments)
-      @idv_how_to_verify_form = Idv::HowToVerifyForm.new
+      @idv_how_to_verify_form = Idv::HowToVerifyForm.new(selection: @selection)
     end
 
     def update
@@ -23,10 +29,14 @@ module Idv
 
       if result.success?
         if how_to_verify_form_params['selection'] == Idv::HowToVerifyForm::REMOTE
+          idv_session.skip_doc_auth = false
           redirect_to idv_hybrid_handoff_url
         else
+          idv_session.flow_path = 'standard'
+          idv_session.skip_doc_auth = true
           redirect_to idv_document_capture_url
         end
+
       else
         flash[:error] = result.first_error_message
         redirect_to idv_how_to_verify_url
@@ -36,12 +46,12 @@ module Idv
     def self.step_info
       Idv::StepInfo.new(
         key: :how_to_verify,
-        controller: controller_name,
+        controller: self,
         next_steps: [:hybrid_handoff, :document_capture],
         preconditions: ->(idv_session:, user:) do
           self.enabled? && idv_session.idv_consent_given
         end,
-        undo_step: ->(idv_session:, user:) {}, # clear any saved data
+        undo_step: ->(idv_session:, user:) { idv_session.skip_doc_auth = nil },
       )
     end
 

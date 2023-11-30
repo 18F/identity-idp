@@ -94,6 +94,12 @@ RSpec.feature 'idv enter password step', :js do
 
     it 'allows the user to submit password and proceed to obtain a personal key' do
       visit(idv_hybrid_handoff_url(redo: true))
+      expect(current_path).to eq idv_hybrid_handoff_path
+      complete_hybrid_handoff_step
+      complete_document_capture_step
+      complete_ssn_step
+      complete_verify_step
+      complete_phone_step(user)
       complete_enter_password_step(user)
       expect(current_path).to eq idv_personal_key_path
     end

@@ -13,6 +13,12 @@ RSpec.describe Idv::ByMail::RequestLetterController do
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 
+  describe '#step_info' do
+    it 'returns a valid StepInfo object' do
+      expect(Idv::ByMail::RequestLetterController.step_info).to be_valid
+    end
+  end
+
   describe 'before_actions' do
     it 'includes authentication before_action' do
       expect(subject).to have_actions(
@@ -138,6 +144,12 @@ RSpec.describe Idv::ByMail::RequestLetterController do
         stub_verify_steps_one_and_two(user)
       end
 
+      it 'invalidates future steps' do
+        expect(subject).to receive(:clear_future_steps!)
+
+        put :create
+      end
+
       it 'sets session to :gpo and redirects' do
         expect(subject.idv_session.address_verification_mechanism).to be_nil
 
@@ -187,6 +199,11 @@ RSpec.describe Idv::ByMail::RequestLetterController do
         stub_sign_in(user)
         stub_user_with_pending_profile(user)
         allow(user).to receive(:gpo_verification_pending_profile?).and_return(true)
+        subject.idv_session.welcome_visited = true
+        subject.idv_session.idv_consent_given = true
+        subject.idv_session.flow_path = 'standard'
+        subject.idv_session.resolution_successful = true
+        subject.idv_session.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN
       end
 
       it 'calls the GpoConfirmationMaker to send another letter and redirects' do

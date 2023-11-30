@@ -82,9 +82,9 @@ RSpec.describe Idv::WelcomeController do
           subject.idv_session.resolution_successful = true
         end
 
-        it 'redirects to enter password step' do
+        it 'renders show' do
           get :show
-          expect(response).to redirect_to(idv_enter_password_url)
+          expect(response).to render_template('idv/welcome/show')
         end
       end
     end

@@ -5,7 +5,6 @@ module Idv
     include StepIndicatorConcern
 
     before_action :confirm_not_rate_limited
-    before_action :confirm_verify_info_step_needed
 
     def show
       analytics.idv_doc_auth_welcome_visited(**analytics_arguments)
@@ -32,9 +31,9 @@ module Idv
     def self.step_info
       Idv::StepInfo.new(
         key: :welcome,
-        controller: controller_name,
+        controller: self,
         next_steps: [:agreement],
-        preconditions: ->(idv_session:, user:) { true },
+        preconditions: ->(idv_session:, user:) { !user.gpo_verification_pending_profile? },
         undo_step: ->(idv_session:, user:) do
           idv_session.welcome_visited = nil
           idv_session.document_capture_session_uuid = nil
