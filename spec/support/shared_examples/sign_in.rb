@@ -347,7 +347,7 @@ def ial2_sign_in_with_piv_cac_goes_to_sp(sp)
       expect(current_url).to include(@saml_authn_request)
     end
   elsif sp == :oidc
-    redirect_uri = URI(oidc_redirect_url)
+    redirect_uri = URI(current_url)
 
     expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
   end
