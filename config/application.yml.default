@@ -547,8 +547,6 @@ test:
   otp_min_attempts_remaining_warning_count: 1
   newrelic_license_key: ''
   nonessential_email_banlist: '["banned_email@gmail.com"]'
-  openid_connect_redirect_interstitial_enabled: false
-  openid_connect_content_security_form_action_enabled: true
   otp_delivery_blocklist_findtime: 1
   otp_delivery_blocklist_maxretry: 2
   otps_per_ip_limit: 3
