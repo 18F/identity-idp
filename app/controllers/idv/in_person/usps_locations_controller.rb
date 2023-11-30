@@ -29,11 +29,14 @@ module Idv
         if response.length > 0
           analytics.idv_in_person_locations_searched(
             success: true,
+            opted_in_to_in_person_proofing: idv_session.opted_in_to_in_person_proofing,
             result_total: response.length,
           )
         else
           analytics.idv_in_person_locations_searched(
-            success: false, errors: 'No USPS locations found',
+            success: false,
+            errors: 'No USPS locations found',
+            opted_in_to_in_person_proofing: idv_session.opted_in_to_in_person_proofing,
           )
         end
         render json: response.to_json
