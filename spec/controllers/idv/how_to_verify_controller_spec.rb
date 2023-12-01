@@ -69,6 +69,11 @@ RSpec.describe Idv::HowToVerifyController do
   end
 
   describe '#update' do
+    let(:params) do
+      {
+        idv_how_to_verify_form: { selection: selection },
+      }
+    end
     let(:analytics_name) { :idv_doc_auth_how_to_verify_submitted }
     context 'no selection made' do
       let(:analytics_args) do
@@ -82,16 +87,10 @@ RSpec.describe Idv::HowToVerifyController do
           success: false,
         }.merge(ab_test_args)
       end
-      let(:params) do
-        {
-          idv_how_to_verify_form: { selection: selection },
-        }
-      end
-      let(:selection) { 'remote' }
 
       it 'invalidates future steps' do
         expect(subject).to receive(:clear_future_steps!)
-        
+
         put :update
       end
 
@@ -102,10 +101,8 @@ RSpec.describe Idv::HowToVerifyController do
       end
     end
 
-    context 'in-person proofing is selected' do
-      let(:selection) do
-        { 'selection' => 'ipp' }
-      end
+    context 'remote' do
+      let(:selection) { 'remote' }
       let(:analytics_args) do
         {
           analytics_id: 'Doc Auth',
@@ -114,39 +111,14 @@ RSpec.describe Idv::HowToVerifyController do
           irs_reproofing: false,
           errors: {},
           success: true,
-        }.merge(selection).merge(ab_test_args)
+          'selection' => selection,
+        }.merge(ab_test_args)
       end
-      let(:params) do
-        {
-          idv_how_to_verify_form: { selection: 'ipp' },
-        }
-      end
-
-      it 'sends analytics_submitted event when ipp is selected' do
+      it 'sets skip doc auth on idv session to false and redirects to hybrid handoff' do
         put :update, params: params
 
-        expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
-      end
-    end
-
-    context 'remote proofing is selected' do
-      let(:selection) do
-        { 'selection' => 'remote' }
-      end
-      let(:analytics_args) do
-        {
-          analytics_id: 'Doc Auth',
-          skip_hybrid_handoff: nil,
-          step: 'how_to_verify',
-          irs_reproofing: false,
-          errors: {},
-          success: true,
-        }.merge(selection).merge(ab_test_args)
-      end
-      let(:params) do
-        {
-          idv_how_to_verify_form: { selection: 'remote' },
-        }
+        expect(subject.idv_session.skip_doc_auth).to be false
+        expect(response).to redirect_to(idv_hybrid_handoff_url)
       end
 
       it 'sends analytics_submitted event when remote proofing is selected' do
@@ -156,23 +128,30 @@ RSpec.describe Idv::HowToVerifyController do
       end
     end
 
-    context 'remote' do
-      it 'sets skip doc auth on idv session to false and redirects to hybrid handoff' do
-        put :update, params: params
-
-        expect(subject.idv_session.skip_doc_auth).to be false
-        expect(response).to redirect_to(idv_hybrid_handoff_url)
-      end
-    end
-
     context 'ipp' do
       let(:selection) { 'ipp' }
-
+      let(:analytics_args) do
+        {
+          analytics_id: 'Doc Auth',
+          skip_hybrid_handoff: nil,
+          step: 'how_to_verify',
+          irs_reproofing: false,
+          errors: {},
+          success: true,
+          'selection' => selection,
+        }.merge(ab_test_args)
+      end
       it 'sets skip doc auth on idv session to true and redirects to document capture' do
         put :update, params: params
 
         expect(subject.idv_session.skip_doc_auth).to be true
         expect(response).to redirect_to(idv_document_capture_url)
+      end
+
+      it 'sends analytics_submitted event when remote proofing is selected' do
+        put :update, params: params
+
+        expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
       end
     end
 
