@@ -27,6 +27,8 @@ const windowGlobals = Object.fromEntries(
 Object.assign(global, windowGlobals);
 global.window.fetch = fetch;
 global.fetch = global.window.fetch;
+global.Event = global.window.Event;
+global.CustomEvent = global.window.CustomEvent;
 Object.defineProperty(global.window, 'crypto', { value: webcrypto });
 global.window.URL.createObjectURL = createObjectURLAsDataURL;
 global.window.URL.revokeObjectURL = () => {};
