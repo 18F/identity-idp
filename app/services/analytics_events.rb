@@ -3381,6 +3381,12 @@ module AnalyticsEvents
     )
   end
 
+  # @param [String] location Placement location
+  # Logged when a browser with JavaScript disabled loads the detection stylesheet
+  def no_js_detect_stylesheet_loaded(location:, **extra)
+    track_event(:no_js_detect_stylesheet_loaded, location:, **extra)
+  end
+
   # @param [Boolean] success
   # @param [String] client_id
   # @param [Boolean] client_id_parameter_present
