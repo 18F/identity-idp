@@ -27,7 +27,7 @@ module Idv
       )
 
       if result.success?
-        idv_session.user_phone_confirmation = true
+        idv_session.mark_phone_step_complete!
         save_in_person_notification_phone
         flash[:success] = t('idv.messages.enter_password.phone_verified')
         redirect_to idv_enter_password_url
