@@ -28,6 +28,7 @@ en:
     edit_info:
       password: Change your password
       phone: Manage your phone settings
+    redirecting: Redirecting
     passwords:
       change: Change your password
       confirm: Confirm your current password to continue

@@ -28,6 +28,7 @@ fr:
     edit_info:
       password: Changez votre mot de passe
       phone: Administrer les paramètres de votre téléphone
+    redirecting: Redirection
     passwords:
       change: Changez votre mot de passe
       confirm: Confirmez votre mot de passe actuel pour continuer
