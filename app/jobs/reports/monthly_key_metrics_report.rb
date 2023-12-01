@@ -27,7 +27,7 @@ module Reports
 
       ReportMailer.tables_report(
         email: email_addresses,
-        subject: "Monthly Key Metrics Report - #{date}",
+        subject: "Monthly Key Metrics Report - #{date.to_date}",
         reports: reports,
         message: preamble,
         attachment_format: :xlsx,
