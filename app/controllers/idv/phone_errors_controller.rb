@@ -5,7 +5,7 @@ module Idv
     include StepIndicatorConcern
     include Idv::AbTestAnalyticsConcern
 
-    before_action :confirm_idv_phone_step_submitted, except: [:failure]
+    before_action :confirm_step_allowed, except: [:failure]
     before_action :set_gpo_letter_available
     before_action :ignore_form_step_wait_requests
 
@@ -37,14 +37,21 @@ module Idv
       track_event(type: :failure)
     end
 
+    def self.step_info
+      Idv::StepInfo.new(
+        key: :phone_errors,
+        controller: self,
+        action: :failure,
+        next_steps: [FlowPolicy::FINAL],
+        preconditions: ->(idv_session:, user:) { idv_session.previous_phone_step_params.present? },
+        undo_step: ->(idv_session:, user:) {},
+      )
+    end
+
     private
 
     def rate_limiter
       RateLimiter.new(user: idv_session.current_user, rate_limit_type: :proof_address)
-    end
-
-    def confirm_idv_phone_step_submitted
-      redirect_to idv_phone_url if idv_session.previous_phone_step_params.nil?
     end
 
     def ignore_form_step_wait_requests
