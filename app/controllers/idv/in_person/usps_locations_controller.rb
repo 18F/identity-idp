@@ -8,8 +8,6 @@ module Idv
       include UspsInPersonProofing
       include EffectiveUser
       include UspsInPersonProofing
-      include IdvSession
-      include OptInHelper
 
       check_or_render_not_found -> { InPersonConfig.enabled? }
 
@@ -32,13 +30,11 @@ module Idv
           analytics.idv_in_person_locations_searched(
             success: true,
             result_total: response.length,
-            **opt_in_analytics_properties,
           )
         else
           analytics.idv_in_person_locations_searched(
             success: false,
             errors: 'No USPS locations found',
-            **opt_in_analytics_properties,
           )
         end
         render json: response.to_json
