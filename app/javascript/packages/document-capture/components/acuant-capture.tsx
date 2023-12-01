@@ -499,6 +499,8 @@ function AcuantCapture(
   }
 
   function onSelfieCaptureSuccess({ image }: { image: string }) {
+    trackEvent('idv_sdk_selfie_image_added', { attempt });
+
     onChangeAndResetError(image);
     onResetFailedCaptureAttempts();
     setIsCapturingEnvironment(false);

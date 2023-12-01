@@ -1130,6 +1130,48 @@ describe('document-capture/components/acuant-capture', () => {
       await userEvent.click(getByLabelText('Image'));
       expect(getByRole('dialog')).to.be.ok();
     });
+
+    it.only('calls trackEvent from onSelfieCaptureSuccess', async () => {
+      // Stub trackEvent for asserting on later
+      const trackEvent = sinon.stub();
+
+      // Set up the components so that everything is as it would actually be -except- the AcuantSDK
+      // The AcuantSDK isn't possible to run in test, so the initialize({...}) call below mocks it.
+      const { getByLabelText } = render(
+        <DeviceContext.Provider value={{ isMobile: true }}>
+          <AnalyticsContext.Provider value={{ trackEvent }}>
+            <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
+              <AcuantCapture label="Image" name="selfie" isReady />
+            </AcuantContextProvider>
+          </AnalyticsContext.Provider>
+        </DeviceContext.Provider>,
+      );
+      // Simulate the user clicking on the box that usually opens full screen selfie capture
+      // This isn't strictly necessary for this test, but doing this makes the calls to trackEvent
+      // appear in the actual order we'd expect when using the Acuant SDK.
+      await userEvent.click(getByLabelText('Image'));
+
+      // In real use the `start` method opens the Acuant SDK full screen selfie capture window.
+      // Because we can't do that in test (AcuantSDK does not allow), this doesn't attempt to load
+      // the SDK. Instead, it simply calls the callback that happens when a photo is captured.
+      // This allows us to test everything about that callback -except- the Acuant SDK parts.
+      initialize({
+        selfieStart: sinon.stub().callsFake((callbacks) => {
+          callbacks.onCaptured();
+        }),
+      });
+
+      expect(trackEvent).to.be.calledWith('IdV: selfie image clicked');
+      expect(trackEvent).to.be.calledWith('IdV: Acuant SDK loaded');
+
+      // TODO: This should be the trackEvent that you're adding to onSelfieCaptureSuccess
+      expect(trackEvent).to.have.been.calledWith(
+        'idv_sdk_selfie_image_added',
+        sinon.match({
+          attempt: sinon.match.number,
+        }),
+      );
+    });
   });
 
   it('optionally disallows upload', () => {

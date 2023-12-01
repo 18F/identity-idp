@@ -2729,6 +2729,11 @@ module AnalyticsEvents
     )
   end
 
+  # @param [Integer] attempt number of attempts
+  def idv_sdk_selfie_image_added(attempt:, **extra)
+    track_event(:idv_sdk_selfie_image_added, attempt: attempt, **extra)
+  end
+
   # Tracks when the user visits one of the the session error pages.
   # @param [String] type
   # @param [Integer,nil] attempts_remaining
