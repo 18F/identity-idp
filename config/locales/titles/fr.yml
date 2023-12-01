@@ -24,7 +24,6 @@ fr:
       password: Modifier votre mot de passe
       phone: Modifier votre numéro de téléphone
     enter_2fa_code:
-      backup_code: Entrez votre code de sauvegarde
       one_time_code: Entrez le code de sécurité à usage unique
       security_code: Entrez le code de sécurité à utilisation unique
     failure:
