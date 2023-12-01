@@ -28,7 +28,6 @@ fr:
     edit_info:
       password: Changez votre mot de passe
       phone: Administrer les paramètres de votre téléphone
-    redirecting: Redirection
     passwords:
       change: Changez votre mot de passe
       confirm: Confirmez votre mot de passe actuel pour continuer
@@ -60,6 +59,7 @@ fr:
       already_associated: La carte PIV/CAC que vous avez présentée est associée à un
         autre utilisateur.
       new: Utilisez votre carte PIV/CAC pour sécuriser votre compte
+    redirecting: Redirection
     residential_address: Adresse de résidence actuelle
     session_timeout_warning: Vous avez besoin de plus de temps?
     sign_in_existing_users: S’identifier pour les utilisateurs existants

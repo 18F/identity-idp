@@ -28,7 +28,6 @@ en:
     edit_info:
       password: Change your password
       phone: Manage your phone settings
-    redirecting: Redirecting
     passwords:
       change: Change your password
       confirm: Confirm your current password to continue
@@ -57,6 +56,7 @@ en:
     piv_cac_setup:
       already_associated: The PIV/CAC you presented is associated with another user.
       new: Use your PIV/CAC card to secure your account
+    redirecting: Redirecting
     residential_address: Current residential address
     session_timeout_warning: Need more time?
     sign_in_existing_users: Sign in for existing users
