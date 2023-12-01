@@ -33,8 +33,7 @@ module Idv
           )
         else
           analytics.idv_in_person_locations_searched(
-            success: false,
-            errors: 'No USPS locations found',
+            success: false, errors: 'No USPS locations found',
           )
         end
         render json: response.to_json
