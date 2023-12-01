@@ -7,7 +7,7 @@ RSpec.describe 'secure cookies' do
       cookies = response.headers['Set-Cookie']
       cookie_count = cookies.count
 
-      expect(cookies.count { |x| x.match?(SecureCookies::SECURE_REGEX) }).to eq(0)
+      expect(cookies.any? { |x| x.match?(SecureCookies::SECURE_REGEX) }).to eq(false)
       expect(cookies.count { |x| x.match?(SecureCookies::HTTP_ONLY_REGEX) }).to eq(cookie_count)
       expect(cookies.count { |x| x.match?(SecureCookies::SAME_SITE_REGEX) }).to eq(cookie_count)
     end
