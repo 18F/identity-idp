@@ -1,4 +1,6 @@
 <li class="usa-process-list__item">
-  <%= content_tag(heading_level, heading, class: 'usa-process-list__heading') %>
+  <% tag_options = { class: 'usa-process-list__heading' } %>
+  <% tag_options[:id] = id if id.present? %>
+  <%= content_tag(heading_level, heading, **tag_options) %>
   <%= content %>
 </li>
