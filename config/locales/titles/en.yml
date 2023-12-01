@@ -24,7 +24,7 @@ en:
       password: Edit your password
       phone: Edit your phone number
     enter_2fa_code:
-      backup_code: Enter the secure one-time backup code
+      backup_code: Enter your backup code
       one_time_code: Enter the secure one-time code
       security_code: Enter the secure one-time security code
     failure:
