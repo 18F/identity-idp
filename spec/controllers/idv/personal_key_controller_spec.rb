@@ -165,13 +165,6 @@ RSpec.describe Idv::PersonalKeyController do
         expect(response).to redirect_to account_path
       end
 
-      it 'clears need_personal_key_confirmation session state' do
-        subject.user_session[:need_personal_key_confirmation] = true
-        patch :update
-
-        expect(subject.user_session[:need_personal_key_confirmation]).to eq(false)
-      end
-
       it 'sets idv_session.personal_key_acknowledged' do
         expect { patch :update }.to change {
                                       idv_session.personal_key_acknowledged

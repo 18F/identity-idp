@@ -5,7 +5,6 @@ module Idv
     include RenderConditionConcern
 
     before_action :confirm_step_allowed
-    before_action :confirm_verify_info_step_needed
 
     check_or_render_not_found -> { self.class.enabled? }
 
@@ -47,7 +46,7 @@ module Idv
     def self.step_info
       Idv::StepInfo.new(
         key: :how_to_verify,
-        controller: controller_name,
+        controller: self,
         next_steps: [:hybrid_handoff, :document_capture],
         preconditions: ->(idv_session:, user:) do
           self.enabled? && idv_session.idv_consent_given

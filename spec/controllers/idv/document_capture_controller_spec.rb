@@ -113,7 +113,7 @@ RSpec.describe Idv::DocumentCaptureController do
     end
 
     context 'verify info step is complete' do
-      it 'redirects to enter password step' do
+      it 'renders show' do
         subject.idv_session.welcome_visited = true
         subject.idv_session.idv_consent_given = true
         subject.idv_session.flow_path = 'standard'
@@ -123,7 +123,7 @@ RSpec.describe Idv::DocumentCaptureController do
 
         get :show
 
-        expect(response).to redirect_to(idv_enter_password_url)
+        expect(response).to render_template :show
       end
     end
 
@@ -165,9 +165,11 @@ RSpec.describe Idv::DocumentCaptureController do
     let(:result) { { success: true, errors: {} } }
 
     it 'invalidates future steps' do
-      expect(subject).to receive(:clear_future_steps!)
+      subject.idv_session.applicant = Idp::Constants::MOCK_IDV_APPLICANT
+      expect(subject).to receive(:clear_future_steps!).and_call_original
 
       put :update
+      expect(subject.idv_session.applicant).to be_nil
     end
 
     it 'sends analytics_submitted event' do

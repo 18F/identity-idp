@@ -43,7 +43,6 @@ module Idv
         if store_in_session
           idv_session.pii_from_doc ||= {}
           idv_session.pii_from_doc.merge!(pii_from_doc)
-          idv_session.clear_applicant!
         end
       end
 

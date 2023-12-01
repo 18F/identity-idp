@@ -8,7 +8,6 @@ module Idv
 
     before_action :confirm_not_rate_limited_after_doc_auth
     before_action :confirm_step_allowed
-    before_action :confirm_verify_info_step_needed
     before_action :override_csp_for_threat_metrix
 
     attr_reader :ssn_presenter
@@ -51,7 +50,6 @@ module Idv
 
       if form_response.success?
         idv_session.ssn = params[:doc_auth][:ssn]
-        idv_session.invalidate_steps_after_ssn!
         redirect_to next_url
       else
         flash[:error] = form_response.first_error_message
@@ -62,9 +60,9 @@ module Idv
     def self.step_info
       Idv::StepInfo.new(
         key: :ssn,
-        controller: controller_name,
+        controller: self,
         next_steps: [:verify_info],
-        preconditions: ->(idv_session:, user:) { idv_session.document_capture_complete? },
+        preconditions: ->(idv_session:, user:) { idv_session.remote_document_capture_complete? },
         undo_step: ->(idv_session:, user:) do
           idv_session.ssn = nil
           idv_session.threatmetrix_session_id = nil

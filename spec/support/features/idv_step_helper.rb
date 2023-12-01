@@ -40,7 +40,7 @@ module IdvStepHelper
     enter_gpo_flow
   end
 
-  def gpo_step
+  def complete_request_letter
     click_on t('idv.buttons.mail.send')
   end
 
@@ -101,7 +101,7 @@ module IdvStepHelper
 
   def complete_idv_steps_with_gpo_before_enter_password_step(user = user_with_2fa)
     complete_idv_steps_before_gpo_step(user)
-    gpo_step
+    complete_request_letter
   end
 
   def complete_idv_steps_with_gpo_before_confirmation_step(user = user_with_2fa)
