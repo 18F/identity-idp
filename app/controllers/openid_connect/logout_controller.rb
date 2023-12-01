@@ -32,7 +32,7 @@ module OpenidConnect
         if IdentityConfig.store.openid_connect_redirect_interstitial_enabled
           @oidc_redirect_uri = redirect_uri
           render(
-            :redirect,
+            'openid_connect/shared/redirect',
             layout: false,
           )
         else
@@ -95,7 +95,7 @@ module OpenidConnect
         if IdentityConfig.store.openid_connect_redirect_interstitial_enabled
           @oidc_redirect_uri = redirect_uri
           render(
-            :redirect,
+            'openid_connect/shared/redirect',
             layout: false,
           )
         else

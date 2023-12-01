@@ -75,7 +75,7 @@ RSpec.describe OpenidConnect::LogoutController do
                 and_return(true)
               action
 
-              expect(controller).to render_template('openid_connect/logout/redirect')
+              expect(controller).to render_template('openid_connect/shared/redirect')
               expect(assigns(:oidc_redirect_uri)).to start_with(post_logout_redirect_uri)
             end
 
@@ -197,7 +197,7 @@ RSpec.describe OpenidConnect::LogoutController do
               and_return(true)
             action
 
-            expect(controller).to render_template('openid_connect/logout/redirect')
+            expect(controller).to render_template('openid_connect/shared/redirect')
             expect(assigns(:oidc_redirect_uri)).to start_with(post_logout_redirect_uri)
           end
         end
@@ -311,7 +311,7 @@ RSpec.describe OpenidConnect::LogoutController do
               and_return(true)
             action
 
-            expect(controller).to render_template('openid_connect/logout/redirect')
+            expect(controller).to render_template('openid_connect/shared/redirect')
             expect(assigns(:oidc_redirect_uri)).to start_with(post_logout_redirect_uri)
           end
         end
@@ -348,7 +348,7 @@ RSpec.describe OpenidConnect::LogoutController do
               and_return(true)
             action
 
-            expect(controller).to render_template('openid_connect/logout/redirect')
+            expect(controller).to render_template('openid_connect/shared/redirect')
             expect(assigns(:oidc_redirect_uri)).to start_with(post_logout_redirect_uri)
           end
         end
@@ -391,7 +391,7 @@ RSpec.describe OpenidConnect::LogoutController do
               and_return(true)
             action
 
-            expect(controller).to render_template('openid_connect/logout/redirect')
+            expect(controller).to render_template('openid_connect/shared/redirect')
             expect(assigns(:oidc_redirect_uri)).to start_with(post_logout_redirect_uri)
           end
         end
@@ -567,7 +567,7 @@ RSpec.describe OpenidConnect::LogoutController do
             and_return(true)
           action
 
-          expect(controller).to render_template('openid_connect/logout/redirect')
+          expect(controller).to render_template('openid_connect/shared/redirect')
           expect(assigns(:oidc_redirect_uri)).to start_with(post_logout_redirect_uri)
         end
       end
@@ -601,7 +601,7 @@ RSpec.describe OpenidConnect::LogoutController do
               and_return(true)
             action
 
-            expect(controller).to render_template('openid_connect/logout/redirect')
+            expect(controller).to render_template('openid_connect/shared/redirect')
             expect(assigns(:oidc_redirect_uri)).to start_with(post_logout_redirect_uri)
           end
 

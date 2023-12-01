@@ -70,7 +70,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
           user.identities.last.update!(verified_attributes: %w[given_name family_name birthdate])
           action
 
-          expect(controller).to render_template('openid_connect/authorization/redirect')
+          expect(controller).to render_template('openid_connect/shared/redirect')
           expect(assigns(:oidc_redirect_uri)).to start_with(params[:redirect_uri])
 
           redirect_params = UriService.params(assigns(:oidc_redirect_uri))
@@ -150,7 +150,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
               allow(controller).to receive(:pii_requested_but_locked?).and_return(false)
               action
 
-              expect(controller).to render_template('openid_connect/authorization/redirect')
+              expect(controller).to render_template('openid_connect/shared/redirect')
               expect(assigns(:oidc_redirect_uri)).to start_with(params[:redirect_uri])
             end
 
@@ -331,7 +331,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                 allow(controller).to receive(:pii_requested_but_locked?).and_return(false)
                 action
 
-                expect(controller).to render_template('openid_connect/authorization/redirect')
+                expect(controller).to render_template('openid_connect/shared/redirect')
                 expect(assigns(:oidc_redirect_uri)).to start_with(params[:redirect_uri])
               end
 
@@ -411,7 +411,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                 )
 
                 action
-                expect(controller).to render_template('openid_connect/authorization/redirect')
+                expect(controller).to render_template('openid_connect/shared/redirect')
                 expect(assigns(:oidc_redirect_uri)).to start_with(params[:redirect_uri])
               end
 
@@ -482,7 +482,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                 )
 
                 action
-                expect(controller).to render_template('openid_connect/authorization/redirect')
+                expect(controller).to render_template('openid_connect/shared/redirect')
                 expect(assigns(:oidc_redirect_uri)).to start_with(params[:redirect_uri])
               end
 
@@ -566,7 +566,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
 
             action
 
-            expect(controller).to render_template('openid_connect/authorization/redirect')
+            expect(controller).to render_template('openid_connect/shared/redirect')
             expect(assigns(:oidc_redirect_uri)).to start_with(params[:redirect_uri])
 
             redirect_params = UriService.params(assigns(:oidc_redirect_uri))
@@ -598,7 +598,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
             and_return(true)
           action
 
-          expect(controller).to render_template('openid_connect/authorization/redirect')
+          expect(controller).to render_template('openid_connect/shared/redirect')
           expect(assigns(:oidc_redirect_uri)).to start_with(params[:redirect_uri])
 
           redirect_params = UriService.params(assigns(:oidc_redirect_uri))
@@ -684,7 +684,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
             and_return(true)
           action
 
-          expect(controller).to render_template('openid_connect/authorization/redirect')
+          expect(controller).to render_template('openid_connect/shared/redirect')
           expect(assigns(:oidc_redirect_uri)).to start_with(params[:redirect_uri])
         end
       end
@@ -722,7 +722,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
             and_return(true)
           action
 
-          expect(controller).to render_template('openid_connect/authorization/redirect')
+          expect(controller).to render_template('openid_connect/shared/redirect')
           expect(assigns(:oidc_redirect_uri)).to start_with(params[:redirect_uri])
 
           redirect_params = UriService.params(assigns(:oidc_redirect_uri))
