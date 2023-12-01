@@ -5,6 +5,7 @@ module Idv
     include StepIndicatorConcern
     include SecureHeadersConcern
     include FraudReviewConcern
+    include OptInHelper
 
     before_action :apply_secure_headers_override
     before_action :confirm_two_factor_authenticated
@@ -38,14 +39,6 @@ module Idv
     end
 
     private
-
-    def opt_in_analytics_properties
-      extra = {}
-      if IdentityConfig.store.in_person_proofing_opt_in_enabled
-        extra = { opted_in_to_in_person_proofing: idv_session.opted_in_to_in_person_proofing }
-      end
-      extra
-    end
 
     def next_step
       if in_person_enrollment?

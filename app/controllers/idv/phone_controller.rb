@@ -5,6 +5,7 @@ module Idv
     include StepIndicatorConcern
     include PhoneOtpRateLimitable
     include PhoneOtpSendable
+    include OptInHelper
 
     attr_reader :idv_form
 

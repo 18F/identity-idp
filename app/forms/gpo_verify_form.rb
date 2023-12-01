@@ -61,7 +61,6 @@ class GpoVerifyForm
     pending_profile.gpo_confirmation_codes.first_with_otp(otp)
   end
 
-  # this doesnt happen until the user enters code from letter
   def schedule_in_person_enrollment_and_deactivate_profile
     UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(user, pii)
     pending_profile&.deactivate_for_in_person_verification

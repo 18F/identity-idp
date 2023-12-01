@@ -8,7 +8,7 @@ module Idv
       include UspsInPersonProofing
       include EffectiveUser
       include UspsInPersonProofing
-      include IdvStepConcern
+      include OptInHelper
 
       check_or_render_not_found -> { InPersonConfig.enabled? }
 

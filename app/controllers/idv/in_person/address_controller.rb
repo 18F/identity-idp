@@ -3,6 +3,7 @@ module Idv
     class AddressController < ApplicationController
       include Idv::AvailabilityConcern
       include IdvStepConcern
+      include OptInHelper
 
       before_action :render_404_if_in_person_residential_address_controller_enabled_not_set
       before_action :confirm_in_person_state_id_step_complete

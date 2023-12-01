@@ -1,6 +1,7 @@
 module Flow
   module FlowStateMachine
     extend ActiveSupport::Concern
+    include OptInHelper
 
     included do
       before_action :initialize_flow_state_machine
@@ -171,14 +172,6 @@ module Flow
     def redirect_to_step(step)
       flow_finish and return unless next_step
       redirect_to send(@step_url, step: step)
-    end
-
-    def opt_in_analytics_properties
-      extra = {}
-      if IdentityConfig.store.in_person_proofing_opt_in_enabled
-        extra = { opted_in_to_in_person_proofing: idv_session.opted_in_to_in_person_proofing }
-      end
-      extra
     end
 
     def analytics_properties

@@ -5,6 +5,7 @@ module Idv
       include IdvSession
       include RenderConditionConcern
       include StepIndicatorConcern
+      include OptInHelper
 
       check_or_render_not_found -> { IdentityConfig.store.in_person_proofing_enabled }
 
@@ -17,14 +18,6 @@ module Idv
       end
 
       private
-
-      def opt_in_analytics_properties
-        extra = {}
-        if IdentityConfig.store.in_person_proofing_opt_in_enabled
-          extra = { opted_in_to_in_person_proofing: idv_session.opted_in_to_in_person_proofing }
-        end
-        extra
-      end
 
       def confirm_in_person_session
         redirect_to account_url unless enrollment.present?

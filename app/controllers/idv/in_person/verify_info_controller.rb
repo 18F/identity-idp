@@ -6,6 +6,7 @@ module Idv
       include StepIndicatorConcern
       include Steps::ThreatMetrixStepHelper
       include VerifyInfoConcern
+      include OptInHelper
 
       before_action :confirm_not_rate_limited_after_doc_auth, except: [:show]
       before_action :confirm_ssn_step_complete

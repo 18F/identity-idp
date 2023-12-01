@@ -4,7 +4,7 @@ module Idv
     include IdvStepConcern
     include StepIndicatorConcern
     include PhoneOtpRateLimitable
-    include IdvStepConcern
+    include OptInHelper
 
     before_action :confirm_two_factor_authenticated
     before_action :confirm_step_allowed
