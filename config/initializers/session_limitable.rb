@@ -19,8 +19,10 @@ Warden::Manager.after_set_user(only: :fetch) do |record, warden, options|
 
   if warden.authenticated?(scope) && options[:store] != false
     if record.unique_session_id != current_session_id
+      service_provider = warden.raw_session.dig('sp')
       warden.raw_session.clear
       warden.logout(scope)
+      warden.raw_session['sp'] = service_provider
       throw :warden, scope: scope, message: :session_limited
     end
   end
