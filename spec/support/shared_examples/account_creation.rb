@@ -1,5 +1,7 @@
 RSpec.shared_examples 'creating an account with the site in Spanish' do |sp|
-  it 'redirects to the SP', email: true do
+  it 'redirects to the SP with SP URIs in form-action CSP if enabled', email: true do
+    allow(IdentityConfig.store).to receive(:openid_connect_content_security_form_action_enabled).
+      and_return(true)
     Capybara.current_session.driver.header('Accept-Language', 'es')
     visit_idp_from_sp_with_ial1(sp)
     register_user
@@ -13,7 +15,29 @@ RSpec.shared_examples 'creating an account with the site in Spanish' do |sp|
     if :sp == :saml
       expect(current_url).to eq UriService.add_params(@saml_authn_request, locale: :es)
     elsif sp == :oidc
-      redirect_uri = URI(current_url)
+      redirect_uri = URI(oidc_redirect_url)
+
+      expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
+    end
+  end
+
+  it 'redirects to the SP without SP URIs in form-action CSP if disabled', email: true do
+    allow(IdentityConfig.store).to receive(:openid_connect_content_security_form_action_enabled).
+      and_return(false)
+    Capybara.current_session.driver.header('Accept-Language', 'es')
+    visit_idp_from_sp_with_ial1(sp)
+    register_user
+
+    if sp == :oidc
+      expect(page.response_headers['Content-Security-Policy']).
+        to(include('form-action \'self\''))
+    end
+
+    click_agree_and_continue
+    if :sp == :saml
+      expect(current_url).to eq UriService.add_params(@saml_authn_request, locale: :es)
+    elsif sp == :oidc
+      redirect_uri = URI(oidc_redirect_url)
 
       expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
     end
@@ -90,13 +114,36 @@ RSpec.shared_examples 'creating an IAL2 account using authenticator app for 2FA'
 end
 
 RSpec.shared_examples 'creating an account using PIV/CAC for 2FA' do |sp|
-  it 'redirects to the SP', email: true do
+  it 'redirects to the SP with SP URIs in form-action CSP if enabled', email: true do
+    allow(IdentityConfig.store).to receive(:openid_connect_content_security_form_action_enabled).
+      and_return(true)
     visit_idp_from_sp_with_ial1(sp)
     register_user_with_piv_cac
 
     if sp == :oidc
       expect(page.response_headers['Content-Security-Policy']).
         to(include('form-action \'self\' http://localhost:7654'))
+    end
+
+    click_agree_and_continue
+    expect(current_url).to eq complete_saml_url if sp == :saml
+
+    if sp == :oidc
+      redirect_uri = URI(oidc_redirect_url)
+
+      expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
+    end
+  end
+
+  it 'redirects to the SP without SP URIs in form-action CSP if disabled', email: true do
+    allow(IdentityConfig.store).to receive(:openid_connect_content_security_form_action_enabled).
+      and_return(false)
+    visit_idp_from_sp_with_ial1(sp)
+    register_user_with_piv_cac
+
+    if sp == :oidc
+      expect(page.response_headers['Content-Security-Policy']).
+        to(include('form-action \'self\''))
     end
 
     click_agree_and_continue
