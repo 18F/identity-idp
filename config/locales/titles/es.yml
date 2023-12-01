@@ -24,6 +24,7 @@ es:
       password: Edite su contraseña
       phone: Edite su número de teléfono
     enter_2fa_code:
+      backup_code: Ingrese el código de respaldo de seguridad de sólo un uso
       one_time_code: Ingrese el código de seguridad de un solo uso
       security_code: Ingese su código de seguridad de sólo un uso
     failure:
