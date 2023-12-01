@@ -3,13 +3,13 @@
     {
       "warning_type": "Dynamic Render Path",
       "warning_code": 15,
-      "fingerprint": "0300e0665f4940ef0db57c7d483c5517e8b979314a36a15f699f192278339727",
+      "fingerprint": "406a2c5ea3d852268958d2db11c146841491b6e87cee9c583dd35f5f41898fb7",
       "check_name": "Render",
       "message": "Render path contains parameter value",
       "file": "app/views/idv/cancellations/new.html.erb",
-      "line": 41,
+      "line": 43,
       "link": "https://brakemanscanner.org/docs/warning_types/dynamic_render_path/",
-      "code": "render(action => ButtonComponent.new(:action => (lambda do\n button_to(idv_cancel_path(:step => params[:step]), { **tag_options }, &block)\n end), :method => :put, :big => true, :wide => true, :outline => true).with_content(t(\"idv.cancel.actions.keep_going\")), {})",
+      "code": "render(action => ButtonComponent.new(:action => (lambda do\n button_to(idv_cancel_path(:step => params[:step]), { **tag_options }, &block)\n end), :method => :put, :big => true, :wide => true, :outline => true, :form => ({ :\"aria-label\" => t(\"idv.cancel.actions.keep_going\") })).with_content(t(\"idv.cancel.actions.keep_going\")), {})",
       "render_path": [
         {
           "type": "controller",
@@ -37,13 +37,13 @@
     {
       "warning_type": "Dynamic Render Path",
       "warning_code": 15,
-      "fingerprint": "5bb8762cb8e92a80dabc5dbbe689746d93d00cb3caf4208917bb2f971307710b",
+      "fingerprint": "8b51f403181f74421f5681ada1096371e1f55fb03d0127db01b5e5da7dda3c51",
       "check_name": "Render",
       "message": "Render path contains parameter value",
       "file": "app/views/idv/cancellations/new.html.erb",
       "line": 32,
       "link": "https://brakemanscanner.org/docs/warning_types/dynamic_render_path/",
-      "code": "render(action => ButtonComponent.new(:action => (lambda do\n button_to(idv_session_path(:step => params[:step]), { **tag_options }, &block)\n end), :method => :delete, :big => true, :wide => true).with_content(t(\"idv.cancel.actions.start_over\")), {})",
+      "code": "render(action => ButtonComponent.new(:action => (lambda do\n button_to(idv_session_path(:step => params[:step]), { **tag_options }, &block)\n end), :method => :delete, :big => true, :wide => true, :form => ({ :\"aria-label\" => t(\"idv.cancel.actions.start_over\") })).with_content(t(\"idv.cancel.actions.start_over\")), {})",
       "render_path": [
         {
           "type": "controller",
@@ -71,13 +71,13 @@
     {
       "warning_type": "Dynamic Render Path",
       "warning_code": 15,
-      "fingerprint": "ffc1a9fa8c18bd803bf353cbaebf0c8ca890b71574cedc4efded0dda941a4719",
+      "fingerprint": "f7d01c6318e6ce369f9fe9bf59b6a3a323034b4b826e2a52a9a87b581d468598",
       "check_name": "Render",
       "message": "Render path contains parameter value",
       "file": "app/views/idv/cancellations/new.html.erb",
-      "line": 62,
+      "line": 65,
       "link": "https://brakemanscanner.org/docs/warning_types/dynamic_render_path/",
-      "code": "render(action => SpinnerButtonComponent.new(:action => (lambda do\n button_to(idv_cancel_path(:step => params[:step], :location => \"cancel\"), { **tag_options }, &block)\n end), :method => :delete, :big => true, :wide => true, :outline => true, :form => ({ :data => ({ :form_steps_wait => \"\" }) })).with_content(CancellationsPresenter.new(:sp_name => decorated_sp_session.sp_name, :url_options => url_options).exit_action_text), {})",
+      "code": "render(action => SpinnerButtonComponent.new(:action => (lambda do\n button_to(idv_cancel_path(:step => params[:step], :location => \"cancel\"), { **tag_options }, &block)\n end), :method => :delete, :big => true, :wide => true, :outline => true, :form => ({ :\"aria-label\" => CancellationsPresenter.new(:sp_name => decorated_sp_session.sp_name, :url_options => url_options).exit_action_text, :data => ({ :form_steps_wait => \"\" }) })).with_content(CancellationsPresenter.new(:sp_name => decorated_sp_session.sp_name, :url_options => url_options).exit_action_text), {})",
       "render_path": [
         {
           "type": "controller",
@@ -103,6 +103,6 @@
       "note": ""
     }
   ],
-  "updated": "2023-09-14 11:53:14 -0400",
+  "updated": "2023-11-02 09:34:28 -0400",
   "brakeman_version": "6.0.1"
 }

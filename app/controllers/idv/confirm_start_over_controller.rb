@@ -1,5 +1,6 @@
 module Idv
   class ConfirmStartOverController < ApplicationController
+    include Idv::AvailabilityConcern
     include IdvSession
     include StepIndicatorConcern
     include GoBackHelper

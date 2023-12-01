@@ -1,5 +1,6 @@
 module Idv
   class PhoneController < ApplicationController
+    include Idv::AvailabilityConcern
     include IdvStepConcern
     include StepIndicatorConcern
     include PhoneOtpRateLimitable
@@ -8,8 +9,7 @@ module Idv
     attr_reader :idv_form
 
     before_action :confirm_not_rate_limited_for_phone_address_verification, except: [:new]
-    before_action :confirm_verify_info_step_complete
-    before_action :confirm_step_needed
+    before_action :confirm_step_allowed
     before_action :set_idv_form
 
     def new
@@ -40,6 +40,8 @@ module Idv
     end
 
     def create
+      clear_future_steps!
+      idv_session.invalidate_phone_step!
       result = idv_form.submit(step_params)
       Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
         call(:verify_phone, :update, result.success?)
@@ -56,6 +58,23 @@ module Idv
         flash.now[:error] = result.first_error_message
         render :new, locals: { gpo_letter_available: gpo_letter_available }
       end
+    end
+
+    def self.step_info
+      Idv::StepInfo.new(
+        key: :phone,
+        controller: self,
+        action: :new,
+        next_steps: [:otp_verification],
+        preconditions: ->(idv_session:, user:) { idv_session.verify_info_step_complete? },
+        undo_step: ->(idv_session:, user:) do
+          idv_session.vendor_phone_confirmation = nil
+          idv_session.address_verification_mechanism = nil
+          idv_session.idv_phone_step_document_capture_session_uuid = nil
+          idv_session.user_phone_confirmation_session = nil
+          idv_session.previous_phone_step_params = nil
+        end,
+      )
     end
 
     private
@@ -130,10 +149,6 @@ module Idv
 
     def step_params
       params.require(:idv_phone_form).permit(:phone, :international_code, :otp_delivery_preference)
-    end
-
-    def confirm_step_needed
-      redirect_to_next_step if idv_session.user_phone_confirmation == true
     end
 
     def set_idv_form

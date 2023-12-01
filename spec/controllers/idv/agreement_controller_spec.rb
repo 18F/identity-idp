@@ -79,22 +79,25 @@ RSpec.describe Idv::AgreementController do
 
     context 'agreement already visited' do
       it 'does not redirect to hybrid_handoff' do
-        allow(subject.idv_session).to receive(:idv_consent_given).and_return(true)
+        subject.idv_session.idv_consent_given = true
 
         get :show
 
         expect(response).to render_template('idv/agreement/show')
       end
-    end
 
-    context 'and document capture already completed' do
-      before do
-        subject.idv_session.pii_from_doc = { first_name: 'Susan' }
-      end
+      context 'and verify info already completed' do
+        before do
+          subject.idv_session.flow_path = 'standard'
+          subject.idv_session.pii_from_doc = { first_name: 'Susan' }
+          subject.idv_session.ssn = '123-45-6789'
+          subject.idv_session.resolution_successful = true
+        end
 
-      it 'redirects to ssn step' do
-        get :show
-        expect(response).to redirect_to(idv_ssn_url)
+        it 'renders the show template' do
+          get :show
+          expect(response).to render_template(:show)
+        end
       end
     end
   end
@@ -125,7 +128,7 @@ RSpec.describe Idv::AgreementController do
     end
 
     it 'invalidates future steps' do
-      expect(subject).to receive(:clear_invalid_steps!)
+      expect(subject).to receive(:clear_future_steps!)
 
       put :update, params: params
     end

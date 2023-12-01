@@ -1,14 +1,11 @@
 module Idv
   class EnterPasswordController < ApplicationController
-    before_action :personal_key_confirmed
-
+    include Idv::AvailabilityConcern
     include IdvStepConcern
     include StepIndicatorConcern
-    include PhoneConfirmation
-    include FraudReviewConcern
 
-    before_action :confirm_verify_info_step_complete
-    before_action :confirm_address_step_complete
+    before_action :confirm_step_allowed
+    before_action :confirm_no_profile_yet
     before_action :confirm_current_password, only: [:create]
 
     helper_method :step_indicator_step
@@ -20,25 +17,24 @@ module Idv
       Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
         call(:encrypt, :view, true)
       analytics.idv_enter_password_visited(
-        address_verification_method: address_verification_method,
+        address_verification_method: idv_session.address_verification_mechanism,
         **ab_test_analytics_buckets,
       )
 
       @title = title
       @heading = heading
 
-      @verifying_by_mail = address_verification_method == 'gpo'
+      @verify_by_mail = idv_session.verify_by_mail?
     end
 
     def create
+      clear_future_steps!
       irs_attempts_api_tracker.idv_password_entered(success: true)
 
       init_profile
 
-      user_session[:need_personal_key_confirmation] = true
-
       flash[:success] =
-        if gpo_user_flow?
+        if idv_session.verify_by_mail?
           t('idv.messages.gpo.letter_on_the_way')
         else
           t('idv.messages.confirm')
@@ -72,18 +68,33 @@ module Idv
     end
 
     def step_indicator_step
-      return :secure_account unless address_verification_method == 'gpo'
+      return :secure_account unless idv_session.verify_by_mail?
       :get_a_letter
+    end
+
+    def self.step_info
+      Idv::StepInfo.new(
+        key: :enter_password,
+        controller: self,
+        action: :new,
+        next_steps: [FlowPolicy::FINAL],
+        preconditions: ->(idv_session:, user:) do
+          idv_session.phone_or_address_step_complete?
+        end,
+        undo_step: ->(idv_session:, user:) {},
+      )
     end
 
     private
 
     def title
-      gpo_user_flow? ? t('titles.idv.enter_password_letter') : t('titles.idv.enter_password')
+      idv_session.verify_by_mail? ?
+        t('titles.idv.enter_password_letter')
+        : t('titles.idv.enter_password')
     end
 
     def heading
-      if gpo_user_flow?
+      if idv_session.verify_by_mail?
         t('idv.titles.session.enter_password_letter', app_name: APP_NAME)
       else
         t('idv.titles.session.enter_password', app_name: APP_NAME)
@@ -112,14 +123,10 @@ module Idv
       @gpo_mail_service ||= Idv::GpoMail.new(current_user)
     end
 
-    def address_verification_method
-      user_session.with_indifferent_access.dig('idv', 'address_verification_mechanism')
-    end
-
     def init_profile
       idv_session.create_profile_from_applicant_with_password(password)
 
-      if idv_session.address_verification_mechanism == 'gpo'
+      if idv_session.verify_by_mail?
         current_user.send_email_to_all_addresses(:letter_reminder)
         analytics.idv_gpo_address_letter_enqueued(
           enqueued_at: Time.zone.now,
@@ -154,26 +161,30 @@ module Idv
       params.fetch(:user, {})[:password].presence
     end
 
-    def personal_key_confirmed
-      return unless current_user
-      return unless current_user.active_profile.present? && need_personal_key_confirmation?
+    def confirm_no_profile_yet
+      # When no profile has been minted yet, keep them on this page.
+      return if !idv_session.profile.present?
+
+      # If the user is in the IPP flow, but we haven't actually managed to
+      # set up their enrollment (due to exception), allow them to
+      # see this page so they can re-submit and attempt to establish the
+      # enrollment.
+      is_ipp_and_needs_to_enroll_with_usps =
+        idv_session.profile.in_person_verification_pending? &&
+        idv_session.profile.in_person_enrollment&.establishing?
+
+      return if is_ipp_and_needs_to_enroll_with_usps
+
+      # Otherwise, move the user on
       redirect_to next_step
     end
 
-    def need_personal_key_confirmation?
-      user_session[:need_personal_key_confirmation]
-    end
-
     def next_step
-      if gpo_user_flow?
+      if idv_session.verify_by_mail?
         idv_letter_enqueued_url
       else
         idv_personal_key_url
       end
-    end
-
-    def gpo_user_flow?
-      idv_session.address_verification_mechanism == 'gpo'
     end
 
     def handle_request_enroll_exception(err)
@@ -186,6 +197,7 @@ module Idv
         reason: 'Request exception',
       )
       flash[:error] = t('idv.failure.exceptions.internal_error')
+      idv_session.invalidate_personal_key!
       redirect_to idv_enter_password_url
     end
   end

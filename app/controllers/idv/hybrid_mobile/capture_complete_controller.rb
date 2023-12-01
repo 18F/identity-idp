@@ -1,6 +1,7 @@
 module Idv
   module HybridMobile
     class CaptureCompleteController < ApplicationController
+      include Idv::AvailabilityConcern
       include HybridMobileConcern
 
       before_action :check_valid_document_capture_session

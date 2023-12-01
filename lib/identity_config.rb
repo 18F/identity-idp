@@ -232,7 +232,6 @@ class IdentityConfig
     config.add(:idv_attempt_window_in_hours, type: :integer)
     config.add(:idv_available, type: :boolean)
     config.add(:idv_contact_phone_number, type: :string)
-    config.add(:idv_getting_started_a_b_testing, type: :json, options: { symbolize_names: true })
     config.add(:idv_phone_question_a_b_testing, type: :json, options: { symbolize_names: true })
     config.add(:idv_max_attempts, type: :integer)
     config.add(:idv_min_age_years, type: :integer)

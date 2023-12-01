@@ -16,16 +16,13 @@ RSpec.describe 'Identity verification', :js do
     complete_welcome_step
 
     validate_agreement_page
-    try_to_go_back_from_agreement
     try_to_skip_ahead_from_agreement
     complete_agreement_step
 
     validate_hybrid_handoff_page
-    try_to_go_back_from_hybrid_handoff
     try_to_skip_ahead_from_hybrid_handoff
     complete_hybrid_handoff_step # upload photos
 
-    try_to_go_back_from_document_capture
     validate_document_capture_page
     complete_document_capture_step
     validate_document_capture_submit(user)
@@ -33,7 +30,6 @@ RSpec.describe 'Identity verification', :js do
     validate_ssn_page
     complete_ssn_step
 
-    try_to_go_back_from_verify_info
     validate_verify_info_page
     complete_verify_step
     validate_verify_info_submit(user)
@@ -56,6 +52,40 @@ RSpec.describe 'Identity verification', :js do
     validate_return_to_sp
   end
 
+  scenario 'Unsupervised proofing back button' do
+    visit_idp_from_sp_with_ial2(sp)
+    user = sign_up_and_2fa_ial1_user
+
+    complete_welcome_step
+
+    test_go_back_from_agreement
+    complete_agreement_step
+
+    test_go_back_from_hybrid_handoff
+    complete_hybrid_handoff_step # upload photos
+
+    test_go_back_from_document_capture
+    complete_document_capture_step
+
+    test_go_back_from_ssn_page
+    complete_ssn_step
+
+    test_go_back_from_verify_info
+    complete_verify_step
+
+    test_go_back_from_phone
+    complete_otp_verification_page(user)
+
+    test_go_back_from_enter_password
+    complete_enter_password_step(user)
+
+    acknowledge_and_confirm_personal_key
+
+    click_agree_and_continue
+
+    validate_return_to_sp
+  end
+
   context 'with an sp that allows in person proofing' do
     before do
       allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
@@ -72,8 +102,10 @@ RSpec.describe 'Identity verification', :js do
       complete_all_in_person_proofing_steps(user)
 
       enter_gpo_flow
-      gpo_step
+      test_go_back_from_request_letter
+      complete_request_letter
 
+      test_go_back_in_person_flow
       complete_enter_password_step(user)
 
       try_to_go_back_from_letter_enqueued
@@ -357,7 +389,7 @@ RSpec.describe 'Identity verification', :js do
     expect(page).to have_current_path(idv_phone_path)
   end
 
-  def try_to_go_back_from_agreement
+  def test_go_back_from_agreement
     go_back
     expect(current_path).to eq(idv_welcome_path)
     complete_welcome_step
@@ -368,7 +400,7 @@ RSpec.describe 'Identity verification', :js do
     )
   end
 
-  def try_to_go_back_from_hybrid_handoff
+  def test_go_back_from_hybrid_handoff
     go_back
     expect(current_path).to eql(idv_agreement_path)
     expect(page).to have_checked_field(
@@ -386,24 +418,82 @@ RSpec.describe 'Identity verification', :js do
     complete_agreement_step
   end
 
-  def try_to_go_back_from_document_capture
-    visit(idv_agreement_path)
+  def test_go_back_from_document_capture
+    go_back
+    go_back
     expect(page).to have_current_path(idv_agreement_path)
     expect(page).to have_checked_field(
       t('doc_auth.instructions.consent', app_name: APP_NAME),
       visible: :all,
     )
 
-    visit(idv_hybrid_handoff_url)
+    go_forward
     expect(page).to have_current_path(idv_hybrid_handoff_path)
-    visit(idv_document_capture_url)
+    go_forward
+    expect(page).to have_content(t('doc_auth.headings.front'))
+    expect(page).to have_content(t('doc_auth.headings.back'))
   end
 
-  def try_to_go_back_from_verify_info
-    visit(idv_document_capture_url)
+  def test_go_back_from_ssn_page
+    go_back
+    expect(page).to have_current_path(idv_document_capture_path)
+    go_forward
+  end
+
+  def test_go_back_from_verify_info
+    go_back
+    go_back
+    expect(page).to have_current_path(idv_document_capture_path)
+    go_back
+    go_back
+    go_back
+    expect(page).to have_current_path(idv_welcome_path)
+    5.times { go_forward }
     expect(page).to have_current_path(idv_verify_info_path)
-    visit(idv_welcome_path)
+  end
+
+  def test_go_back_from_phone
+    go_back
+    go_back
+    expect(page).to have_current_path(idv_ssn_path)
+    go_back
+    go_back
+    go_back
+    go_back
+    expect(page).to have_current_path(idv_welcome_path)
+    6.times { go_forward }
+    expect(page).to have_current_path(idv_phone_path)
+  end
+
+  def test_go_back_from_enter_password
+    go_back
+    expect(page).to have_current_path(idv_otp_verification_path)
+    go_back
+    expect(page).to have_current_path(idv_phone_path)
+    go_back
     expect(page).to have_current_path(idv_verify_info_path)
+    3.times { go_forward }
+
+    expect(page).to have_current_path(idv_enter_password_path)
+  end
+
+  def test_go_back_from_request_letter
+    go_back
+    expect(page).to have_current_path(idv_phone_path)
+    go_back
+    expect(page).to have_current_path(idv_in_person_verify_info_path)
+    2.times { go_forward }
+    expect(page).to have_current_path(idv_request_letter_path)
+  end
+
+  def test_go_back_in_person_flow
+    go_back
+    go_back
+    go_back
+    expect(page).to have_current_path(idv_in_person_verify_info_path)
+    # can't go back further with in person controllers (yet)
+
+    3.times { go_forward }
   end
 
   def try_to_go_back_from_letter_enqueued

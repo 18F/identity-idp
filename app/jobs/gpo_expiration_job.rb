@@ -1,11 +1,6 @@
 class GpoExpirationJob < ApplicationJob
   queue_as :low
 
-  def initialize(analytics: nil, on_profile_expired: nil)
-    @analytics = analytics
-    @on_profile_expired = on_profile_expired
-  end
-
   def perform(
     dry_run: false,
     limit: nil,
@@ -28,11 +23,6 @@ class GpoExpirationJob < ApplicationJob
         end
 
         expire_profile(profile: profile) unless dry_run
-
-        on_profile_expired&.call(
-          profile: profile,
-          gpo_verification_pending_at: gpo_verification_pending_at,
-        )
       end
     end
   end
@@ -46,8 +36,6 @@ class GpoExpirationJob < ApplicationJob
   end
 
   private
-
-  attr_reader :on_profile_expired
 
   def expire_profile(profile:)
     gpo_verification_pending_at = profile.gpo_verification_pending_at

@@ -16,7 +16,6 @@ RSpec.describe Reporting::AccountReuseReport do
 
     let(:agency) { create(:agency, name: 'The Agency') }
     let(:agency2) { create(:agency, name: 'The Other Agency') }
-    let(:agency3) { create(:agency, name: 'The Other Other Agency') }
     let(:sp_a) { 'a' }
     let(:sp_b) { 'b' }
     let(:sp_c) { 'c' }
@@ -48,7 +47,7 @@ RSpec.describe Reporting::AccountReuseReport do
         issuer: sp_c,
         iaa: 'iaa789',
         friendly_name: 'The Other Other App',
-        agency: agency3,
+        agency: agency2,
       )
 
       # Seed the database with data to be queried
@@ -92,15 +91,41 @@ RSpec.describe Reporting::AccountReuseReport do
     end
 
     describe '#account_reuse_emailable_report' do
-      it 'has the correct data' do
-        expect(report.account_reuse_emailable_report.table).to eq(
-          [
-            ['Num. SPs', 'Num. users', 'Percentage'],
-            [2, 3, 0.3],
-            [3, 2, 0.2],
-            ['Total (all >1)', 5, 0.5],
-          ],
-        )
+      it 'has the correct results' do
+        expected_csv = [
+          ['Metric', 'Num. all users', '% of accounts', 'Num. IDV users', '% of accounts'],
+          ['2 apps', 3, 0.3, 3, 0.3],
+          ['3 apps', 2, 0.2, 2, 0.2],
+          ['2+ apps', 5, 0.5, 5, 0.5],
+          ['2 agencies', 5, 0.5, 5, 0.5],
+          ['2+ agencies', 5, 0.5, 5, 0.5],
+        ]
+
+        aggregate_failures do
+          report.account_reuse_emailable_report.table.zip(expected_csv).each do |actual, expected|
+            expect(actual).to eq(expected)
+          end
+        end
+      end
+    end
+  end
+
+  context 'without any data' do
+    describe '#account_reuse_emailable_report' do
+      it 'has the correct results' do
+        expected_csv = [
+          ['Metric', 'Num. all users', '% of accounts', 'Num. IDV users', '% of accounts'],
+          ['0 apps', 0, 0, 0, 0],
+          ['2+ apps', 0, 0, 0, 0],
+          ['0 agencies', 0, 0, 0, 0],
+          ['2+ agencies', 0, 0, 0, 0],
+        ]
+
+        aggregate_failures do
+          report.account_reuse_emailable_report.table.zip(expected_csv).each do |actual, expected|
+            expect(actual).to eq(expected)
+          end
+        end
       end
     end
   end

@@ -1,12 +1,12 @@
 module Idv
   class HybridHandoffController < ApplicationController
+    include Idv::AvailabilityConcern
     include ActionView::Helpers::DateHelper
     include IdvStepConcern
     include StepIndicatorConcern
     include PhoneQuestionAbTestConcern
 
     before_action :confirm_not_rate_limited
-    before_action :confirm_verify_info_step_needed
     before_action :confirm_step_allowed
     before_action :confirm_hybrid_handoff_needed, only: :show
     before_action :maybe_redirect_for_phone_question_ab_test, only: :show
@@ -24,7 +24,7 @@ module Idv
     end
 
     def update
-      clear_invalid_steps!
+      clear_future_steps!
       irs_attempts_api_tracker.idv_document_upload_method_selected(
         upload_method: params[:type],
       )
@@ -39,10 +39,13 @@ module Idv
     def self.step_info
       Idv::StepInfo.new(
         key: :hybrid_handoff,
-        controller: controller_name,
+        controller: self,
         next_steps: [:link_sent, :document_capture],
         preconditions: ->(idv_session:, user:) { idv_session.idv_consent_given },
-        undo_step: ->(idv_session:, user:) { idv_session.flow_path = nil },
+        undo_step: ->(idv_session:, user:) do
+          idv_session.flow_path = nil
+          idv_session.phone_for_mobile_flow = nil
+        end,
       )
     end
 

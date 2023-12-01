@@ -127,7 +127,7 @@ es:
       totp_step_3: Escanee este código de barras QR con su aplicación
       totp_step_4: Ingrese el código temporal de su aplicación
     two_factor:
-      backup_code: Código de seguridad
+      backup_code: Código de respaldo
       personal_key: Clave personal
       try_again: Use otro número de teléfono.
     validation:

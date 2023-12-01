@@ -94,7 +94,6 @@ es:
     mobile_terms_of_service: Condiciones de servicio móvil
     no_auth_option: No se pudo encontrar ninguna opción de autenticación para iniciar sesión
     opt_in:
-      cant_use_phone: '¿No puede utilizar su teléfono?'
       error_retry: Lo sentimos, estamos teniendo problemas para aceptarlo. Por favor,
         inténtelo de nuevo.
       opted_out_html: Ha optado por no recibir mensajes de texto en el

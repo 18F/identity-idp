@@ -1,7 +1,6 @@
 module Idv
   module AbTestAnalyticsConcern
     include AcuantConcern
-    include Idv::GettingStartedAbTestConcern
     include Idv::PhoneQuestionAbTestConcern
 
     def ab_test_analytics_buckets
@@ -12,7 +11,6 @@ module Idv
       end
 
       buckets.merge(acuant_sdk_ab_test_analytics_args).
-        merge(getting_started_ab_test_analytics_bucket).
         merge(phone_question_ab_test_analytics_bucket)
     end
   end

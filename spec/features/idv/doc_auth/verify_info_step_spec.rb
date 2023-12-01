@@ -292,8 +292,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
           ).
           and_call_original
 
-        sign_in_and_2fa_user(user)
-        complete_doc_auth_steps_before_verify_step
+        complete_ssn_step
         complete_verify_step
 
         expect(DocAuthLog.find_by(user_id: user.id).aamva).not_to be_nil
@@ -316,8 +315,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
           ).
           and_call_original
 
-        sign_in_and_2fa_user(user)
-        complete_doc_auth_steps_before_verify_step
+        complete_ssn_step
         complete_verify_step
 
         expect(DocAuthLog.find_by(user_id: user.id).aamva).to be_nil

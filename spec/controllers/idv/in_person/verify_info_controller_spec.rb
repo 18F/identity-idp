@@ -6,7 +6,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
     { pii_from_user: pii_from_user }
   end
 
-  let(:user) { build(:user, :with_phone, with: { phone: '+1 (415) 555-0130' }) }
+  let(:user) { create(:user, :with_phone, with: { phone: '+1 (415) 555-0130' }) }
   let(:service_provider) { create(:service_provider) }
 
   let(:ab_test_args) do
@@ -14,11 +14,17 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
   end
 
   before do
-    allow(subject).to receive(:flow_session).and_return(flow_session)
     stub_sign_in(user)
     subject.idv_session.flow_path = 'standard'
     subject.idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID[:ssn]
+    subject.user_session['idv/in_person'] = flow_session
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
+  end
+
+  describe '#step_info' do
+    it 'returns a valid StepInfo object' do
+      expect(Idv::InPerson::VerifyInfoController.step_info).to be_valid
+    end
   end
 
   describe 'before_actions' do
@@ -40,13 +46,6 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
       expect(subject).to have_actions(
         :before,
         :confirm_ssn_step_complete,
-      )
-    end
-
-    it 'confirms verify step needed' do
-      expect(subject).to have_actions(
-        :before,
-        :confirm_verify_info_step_needed,
       )
     end
   end
@@ -136,12 +135,13 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
       expect(Idv::Agent).to receive(:new).
         with(hash_including(uuid_prefix: service_provider.app_id)).and_call_original
       # our test data already has the expected value by default
-      flow_session[:pii_from_user].delete(:state_id_type)
-
+      subject.user_session['idv/in_person'][:pii_from_user].delete(:state_id_type)
       put :update
 
-      expect(flow_session[:pii_from_user][:state_id_type]).to eq 'drivers_license'
-      expect(flow_session[:pii_from_user][:uuid_prefix]).to eq service_provider.app_id
+      expect(subject.user_session['idv/in_person'][:pii_from_user][:state_id_type]).
+        to eq 'drivers_license'
+      expect(subject.user_session['idv/in_person'][:pii_from_user][:uuid_prefix]).
+        to eq service_provider.app_id
     end
 
     context 'a user does not have an establishing in person enrollment associated with them' do
@@ -243,6 +243,12 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
         expect_any_instance_of(Idv::Agent).to_not receive(:proof_resolution)
         expect(response).to redirect_to(idv_session_errors_ssn_failure_url)
       end
+    end
+
+    it 'invalidates future steps' do
+      expect(subject).to receive(:clear_future_steps!)
+
+      put :update
     end
   end
 end

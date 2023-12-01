@@ -8,12 +8,23 @@ module IdvStepConcern
 
   included do
     before_action :confirm_two_factor_authenticated
+    before_action :confirm_personal_key_acknowledged_if_needed
     before_action :confirm_idv_needed
     before_action :confirm_letter_recently_enqueued
     before_action :confirm_no_pending_gpo_profile
     before_action :confirm_no_pending_in_person_enrollment
     before_action :handle_fraud
     before_action :check_for_mail_only_outage
+  end
+
+  def confirm_personal_key_acknowledged_if_needed
+    return if !idv_session.personal_key.present?
+    return if idv_session.personal_key_acknowledged
+
+    # We don't give GPO users their personal key until they verify their address
+    return if idv_session.profile&.gpo_verification_pending?
+
+    redirect_to idv_personal_key_url
   end
 
   def confirm_letter_recently_enqueued
@@ -43,7 +54,7 @@ module IdvStepConcern
   end
 
   def pii_from_user
-    flow_session['pii_from_user']
+    user_session.dig('idv/in_person', 'pii_from_user')
   end
 
   def flow_path
@@ -53,9 +64,6 @@ module IdvStepConcern
   def confirm_hybrid_handoff_needed
     if params[:redo]
       idv_session.redo_document_capture = true
-    elsif idv_session.document_capture_complete?
-      redirect_to idv_ssn_url
-      return
     end
 
     # If we previously skipped hybrid handoff, keep doing that.
@@ -69,50 +77,6 @@ module IdvStepConcern
   end
 
   private
-
-  def confirm_document_capture_not_complete
-    return unless idv_session.document_capture_complete?
-
-    redirect_to idv_ssn_url
-  end
-
-  def confirm_ssn_step_complete
-    return if pii.present? && idv_session.ssn.present?
-    redirect_to prev_url
-  end
-
-  def confirm_document_capture_complete
-    return if idv_session.pii_from_doc.present?
-
-    if flow_path == 'standard'
-      redirect_to idv_document_capture_url
-    elsif flow_path == 'hybrid'
-      redirect_to idv_link_sent_url
-    else # no flow_path
-      redirect_to idv_hybrid_handoff_path
-    end
-  end
-
-  def confirm_verify_info_step_complete
-    return if idv_session.verify_info_step_complete?
-
-    if current_user.has_in_person_enrollment?
-      redirect_to idv_in_person_verify_info_url
-    else
-      redirect_to idv_verify_info_url
-    end
-  end
-
-  def confirm_verify_info_step_needed
-    return unless idv_session.verify_info_step_complete?
-    redirect_to idv_enter_password_url
-  end
-
-  def confirm_address_step_complete
-    return if idv_session.address_step_complete?
-
-    redirect_to idv_otp_verification_url
-  end
 
   def extra_analytics_properties
     extra = {
@@ -131,7 +95,7 @@ module IdvStepConcern
 
   def letter_recently_enqueued?
     current_user&.gpo_verification_pending_profile? &&
-      idv_session.address_verification_mechanism == 'gpo'
+      idv_session.verify_by_mail?
   end
 
   def letter_not_recently_enqueued?
@@ -154,7 +118,7 @@ module IdvStepConcern
     url_for(controller: step_info.controller, action: step_info.action)
   end
 
-  def clear_invalid_steps!
-    flow_policy.undo_steps_from_controller!(controller: self.class)
+  def clear_future_steps!
+    flow_policy.undo_future_steps_from_controller!(controller: self.class)
   end
 end

@@ -89,7 +89,6 @@ en:
     mobile_terms_of_service: Mobile terms of service
     no_auth_option: No authentication option could be found for you to sign in.
     opt_in:
-      cant_use_phone: Can’t use your phone?
       error_retry: Sorry, we are having trouble opting you in. Please try again.
       opted_out_html: You’ve opted out of receiving text messages at
         %{phone_number_html}. You can opt in and receive a security code again

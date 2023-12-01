@@ -28,15 +28,27 @@ RSpec.describe Idv::OtpVerificationController do
 
     sign_in(user)
     stub_verify_steps_one_and_two(user)
+    subject.idv_session.welcome_visited = true
+    subject.idv_session.idv_consent_given = true
+    subject.idv_session.flow_path = 'standard'
+    subject.idv_session.pii_from_doc = Idp::Constants::MOCK_IDV_APPLICANT
+    subject.idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE[:ssn]
+    subject.idv_session.resolution_successful = true
     subject.idv_session.applicant[:phone] = phone
     subject.idv_session.vendor_phone_confirmation = true
     subject.idv_session.user_phone_confirmation = user_phone_confirmation
     subject.idv_session.user_phone_confirmation_session = user_phone_confirmation_session
   end
 
+  describe '#step_info' do
+    it 'returns a valid StepInfo object' do
+      expect(Idv::OtpVerificationController.step_info).to be_valid
+    end
+  end
+
   describe 'before_actions' do
     it 'includes before_actions from IdvSession' do
-      expect(subject).to have_actions(:before, :redirect_if_sp_context_needed)
+      expect(subject).to have_actions(:before, :redirect_unless_sp_requested_verification)
     end
   end
 
@@ -53,9 +65,9 @@ RSpec.describe Idv::OtpVerificationController do
     context 'the user has already confirmed their phone' do
       let(:user_phone_confirmation) { true }
 
-      it 'redirects to the review step' do
+      it 'allows the back button and renders show' do
         get :show
-        expect(response).to redirect_to(idv_enter_password_path)
+        expect(response).to render_template :show
       end
     end
 
@@ -78,6 +90,12 @@ RSpec.describe Idv::OtpVerificationController do
         put :update, params: otp_code_param
         expect(response).to redirect_to(idv_phone_url)
       end
+    end
+
+    it 'invalidates future steps' do
+      expect(subject).to receive(:clear_future_steps!)
+
+      put :update, params: otp_code_param
     end
 
     context 'the user has already confirmed their phone' do
