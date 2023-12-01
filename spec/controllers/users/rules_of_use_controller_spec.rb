@@ -141,9 +141,8 @@ RSpec.describe Users::RulesOfUseController do
           request_url: "http://test.com?#{URI.encode_www_form(params)}",
         }
         action
-        form_action = response.request.content_security_policy.form_action
-        csp_array = ["'self'", 'https://example.com']
-        expect(form_action).to match_array(csp_array)
+        expect(response.request.content_security_policy.form_action).
+          to match_array(["'self'", 'https://example.com'])
       end
 
       it 'does not include service provider URIs in form-action CSP header when disabled' do
@@ -165,9 +164,8 @@ RSpec.describe Users::RulesOfUseController do
           request_url: "http://test.com?#{URI.encode_www_form(params)}",
         }
         action
-        form_action = response.request.content_security_policy.form_action
-        csp_array = ["'self'"]
-        expect(form_action).to match_array(csp_array)
+        expect(response.request.content_security_policy.form_action).
+          to match_array(["'self'"])
       end
     end
 
