@@ -2,7 +2,6 @@ import AcuantSelfieCaptureCanvas from '@18f/identity-document-capture/components
 import { AcuantContext, DeviceContext } from '@18f/identity-document-capture';
 import { render } from '../../../support/document-capture';
 
-// It shows the loading spinner when the script hasn't loaded
 it('shows the loading spinner when the script hasnt loaded', () => {
   const { getByRole, container } = render(
     <DeviceContext.Provider value={{ isMobile: true }}>
