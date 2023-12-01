@@ -45,6 +45,8 @@ RSpec.shared_examples 'signing in as IAL1 with piv/cac' do |sp|
 end
 
 RSpec.shared_examples 'visiting 2fa when fully authenticated' do |sp|
+  include OidcAuthHelper
+
   it 'redirects to SP after visiting a 2fa screen when fully authenticated', email: true do
     ial1_sign_in_with_personal_key_goes_to_sp(sp)
 

@@ -122,7 +122,10 @@ RSpec.describe Users::RulesOfUseController do
         action
       end
 
-      it 'includes service provider URIs in form action content security policy header' do
+      it 'includes service provider URIs in form-action CSP header when enabled' do
+        allow(IdentityConfig.store).to(
+          receive(:openid_connect_content_security_form_action_enabled).and_return(true),
+        )
         sp = create(:service_provider, issuer: 'example-issuer', redirect_uris: ['https://example.com'])
         params = {
           client_id: sp.issuer,
@@ -140,6 +143,30 @@ RSpec.describe Users::RulesOfUseController do
         action
         form_action = response.request.content_security_policy.form_action
         csp_array = ["'self'", 'https://example.com']
+        expect(form_action).to match_array(csp_array)
+      end
+
+      it 'does not include service provider URIs in form-action CSP header when disabled' do
+        allow(IdentityConfig.store).to(
+          receive(:openid_connect_content_security_form_action_enabled).and_return(false),
+        )
+        sp = create(:service_provider, issuer: 'example-issuer', redirect_uris: ['https://example.com'])
+        params = {
+          client_id: sp.issuer,
+          response_type: 'code',
+          acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+          scope: 'openid email',
+          redirect_uri: sp.redirect_uris.first,
+          state: '1234567890123456789012',
+          nonce: '1234567890123456789012',
+        }
+        session[:sp] = {
+          issuer: sp.issuer,
+          request_url: "http://test.com?#{URI.encode_www_form(params)}",
+        }
+        action
+        form_action = response.request.content_security_policy.form_action
+        csp_array = ["'self'"]
         expect(form_action).to match_array(csp_array)
       end
     end
