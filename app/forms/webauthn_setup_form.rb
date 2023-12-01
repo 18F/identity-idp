@@ -10,7 +10,7 @@ class WebauthnSetupForm
 
   attr_reader :attestation_response, :name_taken
 
-  def initialize(user, user_session, nice_name)
+  def initialize(user:, user_session:, device_name:)
     @user = user
     @challenge = user_session[:webauthn_challenge]
     @attestation_object = nil
@@ -19,7 +19,7 @@ class WebauthnSetupForm
     @name = nil
     @platform_authenticator = false
     @authenticator_data_flags = nil
-    @device_name = nice_name
+    @device_name = device_name
   end
 
   def submit(protocol, params)
@@ -47,7 +47,7 @@ class WebauthnSetupForm
 
   attr_reader :success, :transports, :invalid_transports
   attr_accessor :user, :challenge, :attestation_object, :client_data_json,
-                :name, :platform_authenticator, :authenticator_data_flags, :nice_name
+                :name, :platform_authenticator, :authenticator_data_flags, :device_name
 
   def consume_parameters(params)
     @attestation_object = params[:attestation_object]
