@@ -1,13 +1,13 @@
 module FlowPolicyHelper
-  def stub_up_to_key(key:, idv_session:, user_session: {})
+  def stub_up_to_key(key:, idv_session:)
     keys = keys_up_to(key: key)
 
     keys.each do |key|
-      stub_step(key: key, idv_session: idv_session, user_session: user_session)
+      stub_step(key: key, idv_session: idv_session)
     end
   end
 
-  def stub_step(key:, idv_session:, user_session: {})
+  def stub_step(key:, idv_session:)
     case key
     when :welcome
       idv_session.welcome_visited = true
@@ -22,11 +22,12 @@ module FlowPolicyHelper
       idv_session.pii_from_doc = Idp::Constants::MOCK_IDV_APPLICANT.dup
     when :ssn
       idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]
-    when :ipp_ssn
+    when :ipp_address
       idv_session.pii_from_doc = nil
-      user_session['idv/in_person'] = {
+      idv_session.send(:user_session)['idv/in_person'] = {
         pii_from_user: Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID.dup,
       }
+    when :ipp_ssn
       idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]
     when :verify_info
       idv_session.mark_verify_info_step_complete!
@@ -62,11 +63,11 @@ module FlowPolicyHelper
     when :ssn
       %i[welcome agreement hybrid_handoff document_capture ssn]
     when :ipp_ssn
-      %i[welcome agreement hybrid_handoff document_capture ipp_ssn]
+      %i[welcome agreement hybrid_handoff document_capture ipp_address ipp_ssn]
     when :verify_info
       %i[welcome agreement hybrid_handoff document_capture ssn verify_info]
     when :ipp_verify_info
-      %i[welcome agreement hybrid_handoff document_capture ipp_ssn ipp_verify_info]
+      %i[welcome agreement hybrid_handoff document_capture ipp_address ipp_ssn ipp_verify_info]
     when :phone
       %i[welcome agreement hybrid_handoff document_capture ssn verify_info phone]
     when :otp_verification

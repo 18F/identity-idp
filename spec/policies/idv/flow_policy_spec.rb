@@ -1,7 +1,9 @@
 require 'rails_helper'
+require 'support/flow_policy_helper'
 
 RSpec.describe 'Idv::FlowPolicy' do
   include Rails.application.routes.url_helpers
+  include FlowPolicyHelper
 
   let(:user) { create(:user) }
 
@@ -159,7 +161,8 @@ RSpec.describe 'Idv::FlowPolicy' do
 
     context 'preconditions for agreement are present' do
       it 'returns agreement' do
-        idv_session.welcome_visited = true
+        stub_up_to_key(key: :welcome, idv_session: idv_session)
+
         expect(subject.info_for_latest_step.key).to eq(:agreement)
         expect(subject.controller_allowed?(controller: Idv::AgreementController)).to be
         expect(subject.controller_allowed?(controller: Idv::HybridHandoffController)).not_to be
@@ -168,8 +171,8 @@ RSpec.describe 'Idv::FlowPolicy' do
 
     context 'preconditions for hybrid_handoff are present' do
       it 'returns hybrid_handoff' do
-        idv_session.welcome_visited = true
-        idv_session.idv_consent_given = true
+        stub_up_to_key(key: :agreement, idv_session: idv_session)
+
         expect(subject.info_for_latest_step.key).to eq(:hybrid_handoff)
         expect(subject.controller_allowed?(controller: Idv::HybridHandoffController)).to be
         expect(subject.controller_allowed?(controller: Idv::DocumentCaptureController)).not_to be
@@ -178,9 +181,8 @@ RSpec.describe 'Idv::FlowPolicy' do
 
     context 'preconditions for document_capture are present' do
       it 'returns document_capture' do
-        idv_session.welcome_visited = true
-        idv_session.idv_consent_given = true
-        idv_session.flow_path = 'standard'
+        stub_up_to_key(key: :hybrid_handoff, idv_session: idv_session)
+
         expect(subject.info_for_latest_step.key).to eq(:document_capture)
         expect(subject.controller_allowed?(controller: Idv::DocumentCaptureController)).to be
         expect(subject.controller_allowed?(controller: Idv::SsnController)).not_to be
@@ -189,9 +191,9 @@ RSpec.describe 'Idv::FlowPolicy' do
 
     context 'preconditions for link_sent are present' do
       it 'returns link_sent' do
-        idv_session.welcome_visited = true
-        idv_session.idv_consent_given = true
+        stub_up_to_key(key: :hybrid_handoff, idv_session: idv_session)
         idv_session.flow_path = 'hybrid'
+
         expect(subject.info_for_latest_step.key).to eq(:link_sent)
         expect(subject.controller_allowed?(controller: Idv::LinkSentController)).to be
         expect(subject.controller_allowed?(controller: Idv::SsnController)).not_to be
@@ -200,10 +202,7 @@ RSpec.describe 'Idv::FlowPolicy' do
 
     context 'preconditions for ssn are present' do
       before do
-        idv_session.welcome_visited = true
-        idv_session.idv_consent_given = true
-        idv_session.flow_path = 'standard'
-        idv_session.pii_from_doc = { pii: 'value' }
+        stub_up_to_key(key: :document_capture, idv_session: idv_session)
       end
 
       it 'returns ssn for standard flow' do
@@ -222,10 +221,7 @@ RSpec.describe 'Idv::FlowPolicy' do
 
     context 'preconditions for in_person ssn are present' do
       before do
-        idv_session.welcome_visited = true
-        idv_session.idv_consent_given = true
-        idv_session.flow_path = 'standard'
-        idv_session.send(:user_session)['idv/in_person'][:pii_from_user] = { pii: 'value' }
+        stub_up_to_key(key: :ipp_address, idv_session: idv_session)
       end
 
       it 'returns ipp_ssn' do
@@ -238,12 +234,7 @@ RSpec.describe 'Idv::FlowPolicy' do
 
     context 'preconditions for verify_info are present' do
       it 'returns verify_info' do
-        idv_session.welcome_visited = true
-        idv_session.idv_consent_given = true
-        idv_session.flow_path = 'standard'
-        idv_session.pii_from_doc = { pii: 'value' }
-        idv_session.ssn = '666666666'
-
+        stub_up_to_key(key: :ssn, idv_session: idv_session)
         expect(subject.info_for_latest_step.key).to eq(:verify_info)
         expect(subject.controller_allowed?(controller: Idv::VerifyInfoController)).to be
         expect(subject.controller_allowed?(controller: Idv::PhoneController)).not_to be
@@ -252,11 +243,7 @@ RSpec.describe 'Idv::FlowPolicy' do
 
     context 'preconditions for in_person verify_info are present' do
       it 'returns ipp_verify_info' do
-        idv_session.welcome_visited = true
-        idv_session.idv_consent_given = true
-        idv_session.flow_path = 'standard'
-        idv_session.send(:user_session)['idv/in_person'][:pii_from_user] = { pii: 'value' }
-        idv_session.ssn = '666666666'
+        stub_up_to_key(key: :ipp_ssn, idv_session: idv_session)
 
         expect(subject.info_for_latest_step.key).to eq(:ipp_verify_info)
         expect(subject.controller_allowed?(controller: Idv::InPerson::VerifyInfoController)).to be
@@ -266,13 +253,7 @@ RSpec.describe 'Idv::FlowPolicy' do
 
     context 'preconditions for phone are present' do
       it 'returns phone' do
-        idv_session.welcome_visited = true
-        idv_session.idv_consent_given = true
-        idv_session.flow_path = 'standard'
-        idv_session.pii_from_doc = { pii: 'value' }
-        idv_session.applicant = { pii: 'value' }
-        idv_session.ssn = '666666666'
-        idv_session.resolution_successful = true
+        stub_up_to_key(key: :verify_info, idv_session: idv_session)
 
         expect(subject.info_for_latest_step.key).to eq(:phone)
         expect(subject.controller_allowed?(controller: Idv::PhoneController)).to be
@@ -284,13 +265,8 @@ RSpec.describe 'Idv::FlowPolicy' do
       let(:user_phone_confirmation_session) { { code: 'abcde' } }
 
       it 'returns otp_verification' do
-        idv_session.welcome_visited = true
-        idv_session.idv_consent_given = true
-        idv_session.flow_path = 'standard'
-        idv_session.pii_from_doc = { pii: 'value' }
-        idv_session.applicant = { pii: 'value' }
-        idv_session.ssn = '666666666'
-        idv_session.resolution_successful = true
+        stub_up_to_key(key: :phone, idv_session: idv_session)
+
         idv_session.user_phone_confirmation_session = user_phone_confirmation_session
 
         expect(subject.info_for_latest_step.key).to eq(:otp_verification)
@@ -301,13 +277,7 @@ RSpec.describe 'Idv::FlowPolicy' do
 
     context 'preconditions for request_letter are present' do
       it 'returns enter_password with gpo verification pending' do
-        idv_session.welcome_visited = true
-        idv_session.idv_consent_given = true
-        idv_session.flow_path = 'standard'
-        idv_session.pii_from_doc = { pii: 'value' }
-        idv_session.applicant = { pii: 'value' }
-        idv_session.ssn = '666666666'
-        idv_session.resolution_successful = true
+        stub_up_to_key(key: :verify_info, idv_session: idv_session)
 
         expect(subject.controller_allowed?(controller: Idv::ByMail::RequestLetterController)).to be
         expect(subject.controller_allowed?(controller: Idv::EnterPasswordController)).not_to be
@@ -319,15 +289,7 @@ RSpec.describe 'Idv::FlowPolicy' do
 
       context 'user has a gpo address_verification_mechanism' do
         it 'returns enter_password with gpo verification pending' do
-          idv_session.welcome_visited = true
-          idv_session.idv_consent_given = true
-          idv_session.flow_path = 'standard'
-          idv_session.pii_from_doc = { pii: 'value' }
-          idv_session.applicant = { pii: 'value' }
-          idv_session.ssn = '666666666'
-          idv_session.resolution_successful = true
-          idv_session.user_phone_confirmation_session = user_phone_confirmation_session
-          idv_session.address_verification_mechanism = 'gpo'
+          stub_up_to_key(key: :request_letter, idv_session: idv_session)
 
           expect(subject.info_for_latest_step.key).to eq(:enter_password)
           expect(subject.controller_allowed?(controller: Idv::EnterPasswordController)).to be
@@ -337,16 +299,7 @@ RSpec.describe 'Idv::FlowPolicy' do
 
       context 'user passed phone step' do
         it 'returns enter_password' do
-          idv_session.welcome_visited = true
-          idv_session.idv_consent_given = true
-          idv_session.flow_path = 'standard'
-          idv_session.pii_from_doc = { pii: 'value' }
-          idv_session.applicant = { pii: 'value' }
-          idv_session.ssn = '666666666'
-          idv_session.resolution_successful = true
-          idv_session.user_phone_confirmation_session = user_phone_confirmation_session
-          idv_session.vendor_phone_confirmation = true
-          idv_session.user_phone_confirmation = true
+          stub_up_to_key(key: :otp_verification, idv_session: idv_session)
 
           expect(subject.info_for_latest_step.key).to eq(:enter_password)
           expect(subject.controller_allowed?(controller: Idv::EnterPasswordController)).to be
