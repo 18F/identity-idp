@@ -23,6 +23,7 @@ RSpec.describe Idv::DocumentCaptureController do
     stub_analytics
     subject.idv_session.flow_path = 'standard'
     subject.idv_session.document_capture_session_uuid = document_capture_session_uuid
+    subject.idv_session.skip_doc_auth = true
 
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
@@ -45,6 +46,13 @@ RSpec.describe Idv::DocumentCaptureController do
       expect(subject).to have_actions(
         :before,
         :check_for_mail_only_outage,
+      )
+    end
+
+    it 'includes redirect to how to verify before_action' do
+      expect(subject).to have_actions(
+        :before,
+        :confirm_how_to_verify,
       )
     end
   end
@@ -144,6 +152,18 @@ RSpec.describe Idv::DocumentCaptureController do
         get :show
 
         expect(response).to redirect_to(idv_session_errors_rate_limited_url)
+      end
+    end
+
+    context 'user has skipped the how to verify page' do
+      before do
+        subject.idv_session.skip_doc_auth = nil
+      end
+
+      it 'redirects to how to verify page' do
+        get :show
+
+        expect(response).to redirect_to(idv_how_to_verify_url)
       end
     end
   end

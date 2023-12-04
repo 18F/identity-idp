@@ -280,4 +280,61 @@ RSpec.describe 'IdvStepConcern' do
       end
     end
   end
+
+  describe '#confirm_how_to_verify' do
+    controller(idv_step_controller_class) do
+      before_action :confirm_how_to_verify
+    end
+
+    before(:each) do
+      sign_in(user)
+      routes.draw do
+        get 'show' => 'anonymous#show'
+      end
+      # should redirect to how_to_verify
+      idv_session.skip_doc_auth = nil
+    end
+
+    context 'ipp disabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(false)
+        allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).and_return(true)
+      end
+
+      it 'does not redirect' do
+        get :show
+        expect(response.body).to eq 'Hello'
+        expect(response).to_not redirect_to idv_how_to_verify_url
+        expect(response.status).to eq 200
+      end
+    end
+
+    context 'opt-in ipp disabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+        allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).and_return(false)
+      end
+
+      it 'does not redirect' do
+        get :show
+        expect(response.body).to eq 'Hello'
+        expect(response).to_not redirect_to idv_how_to_verify_url
+        expect(response.status).to eq 200
+      end
+    end
+
+    context 'opt-in ipp and ipp disabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(false)
+        allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).and_return(false)
+      end
+
+      it 'does not redirect' do
+        get :show
+        expect(response.body).to eq 'Hello'
+        expect(response).to_not redirect_to idv_how_to_verify_url
+        expect(response.status).to eq 200
+      end
+    end
+  end
 end
