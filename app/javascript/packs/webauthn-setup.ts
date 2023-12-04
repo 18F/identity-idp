@@ -64,8 +64,9 @@ function webauthn() {
         (document.getElementById('client_data_json') as HTMLInputElement).value =
           result.clientDataJSON;
         if (result.authenticatorDataFlagsValue) {
-          (document.getElementById('authenticator_data_value') as HTMLInputElement).value =
-            `${result.authenticatorDataFlagsValue}`;
+          (
+            document.getElementById('authenticator_data_value') as HTMLInputElement
+          ).value = `${result.authenticatorDataFlagsValue}`;
         }
         if (result.transports) {
           (document.getElementById('transports') as HTMLInputElement).value =
