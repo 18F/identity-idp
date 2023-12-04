@@ -1,10 +1,9 @@
 module Pii
   class ReEncryptor
-    def initialize(user: nil, user_session: nil, pii: nil, profile: nil)
+    def initialize(user: nil, user_session: nil, pii: nil)
       @user = user
       @user_session = user_session
       @pii_attributes = pii
-      @profile = profile
     end
 
     def perform
@@ -25,7 +24,7 @@ module Pii
     end
 
     def profile
-      @profile ||= user.active_profile
+      user.active_profile
     end
   end
 end
