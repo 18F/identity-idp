@@ -14,7 +14,7 @@ class MfaConfirmationPresenter
 
   def info
     if @webauthn_platform_set_up_successful
-      I18n.t('mfa.webauthn_platform_info')
+      I18n.t('mfa.webauthn_platform_message')
     else
       I18n.t('mfa.account_info')
     end

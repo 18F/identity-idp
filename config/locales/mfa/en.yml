@@ -12,5 +12,5 @@ en:
       text: You will have to delete your account and start over if you lose your only
         authentication method.
     skip: Skip for now
-    webauthn_platform_info: Add another authentication method in case you lose
+    webauthn_platform_message: Add another authentication method in case you lose
       access to your first one.
