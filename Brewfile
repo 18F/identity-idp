@@ -1,7 +1,7 @@
 brew 'postgresql@14'
 brew 'postgis'
 brew 'redis'
-brew 'node@18'
+brew 'node@20'
 brew 'yarn'
 brew 'openssl@1.1'
 brew 'jq'
