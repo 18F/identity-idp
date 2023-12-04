@@ -12,5 +12,4 @@ es:
       text: Deberá eliminar su cuenta y comenzar de nuevo si pierde su único método de
         autenticación.
     skip: Omitir por ahora
-    webauthn_platform_info: Add another authentication method in case you lose
-      access to your first one.
+    webauthn_platform_info: Agregue otro método de autenticación por si pierde el acceso al primero.
