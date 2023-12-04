@@ -344,7 +344,7 @@ function AcuantCamera({
         setIsActive(false);
       }
     };
-  }, [isReady]);
+  }, [isReady, onCropStart, onCropped, onImageCaptureFailure, setIsActive, t]);
 
   return <>{children}</>;
 }
