@@ -10,7 +10,6 @@ module Idv
     before_action :confirm_step_allowed
     before_action :confirm_hybrid_handoff_needed, only: :show
     before_action :maybe_redirect_for_phone_question_ab_test, only: :show
-    before_action :confirm_how_to_verify, only: :show
 
     def show
       analytics.idv_doc_auth_hybrid_handoff_visited(**analytics_arguments)

@@ -10,7 +10,6 @@ module Idv
     before_action :confirm_not_rate_limited, except: [:update]
     before_action :confirm_step_allowed
     before_action :override_csp_to_allow_acuant
-    before_action :confirm_how_to_verify, only: :show
 
     def show
       analytics.idv_doc_auth_document_capture_visited(**analytics_arguments)

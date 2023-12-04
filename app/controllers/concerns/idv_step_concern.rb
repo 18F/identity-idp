@@ -76,12 +76,6 @@ module IdvStepConcern
     end
   end
 
-  def confirm_how_to_verify
-    return if !IdentityConfig.store.in_person_proofing_enabled
-    return if !IdentityConfig.store.in_person_proofing_opt_in_enabled
-    redirect_to idv_how_to_verify_url if idv_session.skip_doc_auth.nil?
-  end
-
   private
 
   def extra_analytics_properties
