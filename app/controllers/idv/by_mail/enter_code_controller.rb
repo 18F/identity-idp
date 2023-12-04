@@ -42,7 +42,8 @@ module Idv
       end
 
       def pii
-        Pii::Cacher.new(current_user, user_session).fetch
+        Pii::Cacher.new(current_user, user_session).
+          fetch(current_user.gpo_verification_pending_profile.id)
       end
 
       def create
@@ -62,8 +63,12 @@ module Idv
         )
 
         if !result.success?
-          flash[:error] = @gpo_verify_form.errors.first.message if !rate_limiter.limited?
-          redirect_to idv_verify_by_mail_enter_code_url
+          if rate_limiter.limited?
+            redirect_to idv_enter_code_rate_limited_url
+          else
+            flash[:error] = @gpo_verify_form.errors.first.message if !rate_limiter.limited?
+            redirect_to idv_verify_by_mail_enter_code_url
+          end
           return
         end
 

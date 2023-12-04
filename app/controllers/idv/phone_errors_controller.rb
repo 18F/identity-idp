@@ -1,13 +1,11 @@
 module Idv
   class PhoneErrorsController < ApplicationController
     include Idv::AvailabilityConcern
+    include IdvStepConcern
     include StepIndicatorConcern
-    include IdvSession
     include Idv::AbTestAnalyticsConcern
 
-    before_action :confirm_two_factor_authenticated
-    before_action :confirm_idv_phone_step_needed
-    before_action :confirm_idv_phone_step_submitted, except: [:failure]
+    before_action :confirm_step_allowed, except: [:failure]
     before_action :set_gpo_letter_available
     before_action :ignore_form_step_wait_requests
 
@@ -39,19 +37,21 @@ module Idv
       track_event(type: :failure)
     end
 
+    def self.step_info
+      Idv::StepInfo.new(
+        key: :phone_errors,
+        controller: self,
+        action: :failure,
+        next_steps: [FlowPolicy::FINAL],
+        preconditions: ->(idv_session:, user:) { idv_session.previous_phone_step_params.present? },
+        undo_step: ->(idv_session:, user:) {},
+      )
+    end
+
     private
 
     def rate_limiter
       RateLimiter.new(user: idv_session.current_user, rate_limit_type: :proof_address)
-    end
-
-    def confirm_idv_phone_step_needed
-      return unless user_fully_authenticated?
-      redirect_to idv_enter_password_url if idv_session.user_phone_confirmation == true
-    end
-
-    def confirm_idv_phone_step_submitted
-      redirect_to idv_phone_url if idv_session.previous_phone_step_params.nil?
     end
 
     def ignore_form_step_wait_requests

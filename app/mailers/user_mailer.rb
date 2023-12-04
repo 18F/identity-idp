@@ -123,12 +123,13 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def new_device_sign_in(date:, location:, disavowal_token:)
+  def new_device_sign_in(date:, location:, device_name:, disavowal_token:)
     return unless email_should_receive_nonessential_notifications?(email_address.email)
 
     with_user_locale(user) do
       @login_date = date
       @login_location = location
+      @device_name = device_name
       @disavowal_token = disavowal_token
       mail(
         to: email_address.email,

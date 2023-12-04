@@ -274,6 +274,16 @@ RSpec.describe Idv::PhoneController do
         expect(response).to render_template(:new)
       end
 
+      it 'invalidates phone step in idv_session' do
+        subject.idv_session.vendor_phone_confirmation = true
+        subject.idv_session.user_phone_confirmation = true
+
+        put :create, params: improbable_phone_form
+
+        expect(subject.idv_session.vendor_phone_confirmation).to be_nil
+        expect(subject.idv_session.user_phone_confirmation).to be_nil
+      end
+
       it 'disallows non-US numbers' do
         put :create, params: { idv_phone_form: { phone: international_phone } }
 
@@ -320,25 +330,31 @@ RSpec.describe Idv::PhoneController do
     end
 
     context 'when form is valid' do
+      let(:phone_params) do
+        { idv_phone_form: {
+          phone: good_phone,
+          otp_delivery_preference: :sms,
+        } }
+      end
+
       before do
         stub_analytics
         stub_attempts_tracker
         allow(@analytics).to receive(:track_event)
       end
 
-      it 'invalidates future steps' do
+      it 'invalidates future steps and invalidates phone step' do
         user = build(:user, :with_phone, with: { phone: good_phone, confirmed_at: Time.zone.now })
         stub_verify_steps_one_and_two(user)
+        subject.idv_session.vendor_phone_confirmation = true
+        subject.idv_session.user_phone_confirmation = true
+
         expect(subject).to receive(:clear_future_steps!)
 
-        phone_params = {
-          idv_phone_form: {
-            phone: good_phone,
-            otp_delivery_preference: :sms,
-          },
-        }
-
         put :create, params: phone_params
+
+        expect(subject.idv_session.vendor_phone_confirmation).to be_nil
+        expect(subject.idv_session.user_phone_confirmation).to be_nil
       end
 
       it 'tracks events with valid phone' do
@@ -349,13 +365,6 @@ RSpec.describe Idv::PhoneController do
           success: true,
           phone_number: good_phone,
         )
-
-        phone_params = {
-          idv_phone_form: {
-            phone: good_phone,
-            otp_delivery_preference: :sms,
-          },
-        }
 
         put :create, params: phone_params
 
@@ -403,12 +412,7 @@ RSpec.describe Idv::PhoneController do
         it 'redirects to otp delivery page' do
           original_applicant = subject.idv_session.applicant.dup
 
-          put :create, params: {
-            idv_phone_form: {
-              phone: good_phone,
-              otp_delivery_preference: 'sms',
-            },
-          }
+          put :create, params: phone_params
 
           expect(response).to redirect_to idv_phone_path
           get :new
@@ -452,12 +456,7 @@ RSpec.describe Idv::PhoneController do
         end
 
         it 'redirects to otp page and does not set phone_confirmed_at' do
-          put :create, params: {
-            idv_phone_form: {
-              phone: good_phone,
-              otp_delivery_preference: 'sms',
-            },
-          }
+          put :create, params: phone_params
 
           expect(response).to redirect_to idv_phone_path
           get :new
