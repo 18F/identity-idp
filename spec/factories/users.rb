@@ -215,11 +215,14 @@ FactoryBot.define do
           :with_pii,
           gpo_verification_pending_at: context.code_sent_at,
           user: user,
-          created_at: context.created_at,
+          created_at: context.code_sent_at,
+          updated_at: context.code_sent_at,
         )
         create(
           :gpo_confirmation_code,
           profile: profile,
+          created_at: context.code_sent_at,
+          updated_at: context.code_sent_at,
           code_sent_at: context.code_sent_at,
         )
         create(
@@ -228,6 +231,7 @@ FactoryBot.define do
           device: create(:device, user: user),
           event_type: :gpo_mail_sent,
           created_at: context.code_sent_at,
+          updated_at: context.code_sent_at,
         )
       end
     end
@@ -254,6 +258,22 @@ FactoryBot.define do
           :with_pii,
           user: user,
         )
+      end
+    end
+
+    trait :gpo_pending_with_fraud_rejection do
+      with_pending_gpo_profile
+      after :create do |user|
+        user.pending_profile.fraud_rejection_at = 15.days.ago
+        user.pending_profile.fraud_pending_reason = :threatmetrix_reject
+      end
+    end
+
+    trait :gpo_pending_with_fraud_review do
+      with_pending_gpo_profile
+      after :create do |user|
+        user.pending_profile.fraud_review_pending_at = 15.days.ago
+        user.pending_profile.fraud_pending_reason = :threatmetrix_review
       end
     end
 

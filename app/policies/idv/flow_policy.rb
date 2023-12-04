@@ -63,6 +63,7 @@ module Idv
         ipp_verify_info: Idv::InPerson::VerifyInfoController.step_info,
         address: Idv::AddressController.step_info,
         phone: Idv::PhoneController.step_info,
+        phone_errors: Idv::PhoneErrorsController.step_info,
         otp_verification: Idv::OtpVerificationController.step_info,
         request_letter: Idv::ByMail::RequestLetterController.step_info,
         enter_password: Idv::EnterPasswordController.step_info,
