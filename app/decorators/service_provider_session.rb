@@ -94,6 +94,8 @@ class ServiceProviderSession
   end
 
   def requested_more_recent_verification?
+    return false unless
+      IdentityConfig.store.allowed_verified_within_providers.include?(sp_issuer)
     return false if authorize_form.verified_within.blank?
 
     verified_at = view_context.current_user.active_profile&.verified_at

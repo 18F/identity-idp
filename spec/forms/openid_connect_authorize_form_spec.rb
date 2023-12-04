@@ -554,36 +554,92 @@ RSpec.describe OpenidConnectAuthorizeForm do
   end
 
   describe '#verified_within' do
-    context 'without a verified_within' do
-      let(:verified_within) { nil }
-      it 'is valid' do
-        expect(form.valid?).to eq(true)
-        expect(form.verified_within).to eq(nil)
+    context 'the issuer is allowed to use verified_within' do
+      before do
+        allow(IdentityConfig.store).to receive(
+          :allowed_verified_within_providers
+        ) { [client_id] }
+      end
+
+      context 'without a verified_within' do
+        let(:verified_within) { nil }
+
+        it 'is valid' do
+          expect(form.valid?).to eq(true)
+          expect(form.verified_within).to eq(nil)
+        end
+      end
+
+      context 'with a duration that is too short (<30 days)' do
+        let(:verified_within) { '2d' }
+
+        it 'has errors' do
+          expect(form.valid?).to eq(false)
+          expect(form.errors[:verified_within]).
+            to eq(['value must be at least 30 days or older'])
+        end
+      end
+
+      context 'with a format in days' do
+        let(:verified_within) { '45d' }
+
+        it 'parses the value as a number of days' do
+          expect(form.valid?).to eq(true)
+          expect(form.verified_within).to eq(45.days)
+        end
+      end
+
+      context 'with a verified_within with a bad format' do
+        let(:verified_within) { 'bbb' }
+
+        it 'has errors' do
+          expect(form.valid?).to eq(false)
+          expect(form.errors[:verified_within]).to eq(['Unrecognized format for verified_within'])
+        end
       end
     end
 
-    context 'with a duration that is too short (<30 days)' do
-      let(:verified_within) { '2d' }
-      it 'has errors' do
-        expect(form.valid?).to eq(false)
-        expect(form.errors[:verified_within]).
-          to eq(['value must be at least 30 days or older'])
+    context 'the issuer is not allowed to use verified_within' do
+      before do
+        allow(IdentityConfig.store).to receive(
+          :allowed_verified_within_providers
+          ) { [] }
       end
-    end
 
-    context 'with a format in days' do
-      let(:verified_within) { '45d' }
-      it 'parses the value as a number of days' do
-        expect(form.valid?).to eq(true)
-        expect(form.verified_within).to eq(45.days)
+      context 'without a verified_within' do
+        let(:verified_within) { nil }
+
+        it 'verified_within is not set' do
+          expect(form.valid?).to eq(true)
+          expect(form.verified_within).to be nil
+        end
       end
-    end
 
-    context 'with a verified_within with a bad format' do
-      let(:verified_within) { 'bbb' }
-      it 'has errors' do
-        expect(form.valid?).to eq(false)
-        expect(form.errors[:verified_within]).to eq(['Unrecognized format for verified_within'])
+      context 'with a duration that is too short (<30 days)' do
+        let(:verified_within) { '2d' }
+
+        it 'verified_within is not set' do
+          expect(form.valid?).to eq(true)
+          expect(form.verified_within).to be nil
+        end
+      end
+
+      context 'with a format in days' do
+        let(:verified_within) { '45d' }
+
+        it 'verified_within is not set' do
+          expect(form.valid?).to eq(true)
+          expect(form.verified_within).to be nil
+        end
+      end
+
+      context 'with a verified_within with a bad format' do
+        let(:verified_within) { 'bbb' }
+
+        it 'verified_within is not set' do
+          expect(form.valid?).to eq(true)
+          expect(form.verified_within).to be nil
+        end
       end
     end
   end
