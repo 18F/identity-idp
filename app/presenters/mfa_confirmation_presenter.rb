@@ -5,7 +5,7 @@ class MfaConfirmationPresenter
   end
 
   def heading
-    if @webauthn_platform_set_up_successful
+    if webauthn_platform_set_up_successful?
       I18n.t('titles.mfa_setup.face_touch_unlock_confirmation')
     else
       I18n.t('titles.mfa_setup.suggest_second_mfa')
@@ -13,7 +13,7 @@ class MfaConfirmationPresenter
   end
 
   def info
-    if @webauthn_platform_set_up_successful
+    if webauthn_platform_set_up_successful?
       I18n.t('mfa.webauthn_platform_message')
     else
       I18n.t('mfa.account_info')
