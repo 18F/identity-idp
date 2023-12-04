@@ -127,6 +127,15 @@ module WebAuthnHelper
     end
   end
 
+  def simulate_platform_authenticator_available
+    page.evaluate_script(<<~JS)
+      window.PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable = () => Promise.resolve(true);
+    JS
+    page.evaluate_script(<<~JS)
+      document.querySelectorAll('lg-webauthn-input').forEach((input) => input.connectedCallback());
+    JS
+  end
+
   def protocol
     'http://'
   end

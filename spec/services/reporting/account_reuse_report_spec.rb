@@ -102,6 +102,7 @@ RSpec.describe Reporting::AccountReuseReport do
         ]
 
         aggregate_failures do
+          expect(report.account_reuse_emailable_report.title).to eq 'IDV app reuse rate Feb-2021'
           report.account_reuse_emailable_report.table.zip(expected_csv).each do |actual, expected|
             expect(actual).to eq(expected)
           end
