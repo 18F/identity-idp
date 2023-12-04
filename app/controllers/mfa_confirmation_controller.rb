@@ -25,7 +25,7 @@ class MfaConfirmationController < ApplicationController
   def mfa_confirmation_presenter
     MfaConfirmationPresenter.new(
       show_skip_additional_mfa_link: show_skip_additional_mfa_link?,
-      webauthn_platform_set_up: webauthn_platform_set_up_successful?,
+      webauthn_platform_set_up_successful: webauthn_platform_set_up_successful?,
     )
   end
 

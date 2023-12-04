@@ -47,4 +47,23 @@ RSpec.describe MfaConfirmationPresenter do
       end
     end
   end
+
+  describe '#webauthn_platform_set_up_successful?' do
+    it 'returns false' do
+      expect(presenter.webauthn_platform_set_up_successful?).to eq(false)
+    end
+
+    context 'when f/t unlock setup is successful' do
+      let(:webauthn_platform_set_up_successful) { true }
+      let(:presenter) do
+        described_class.new(
+          webauthn_platform_set_up_successful: webauthn_platform_set_up_successful,
+        )
+      end
+
+      it 'returns true' do
+        expect(presenter.webauthn_platform_set_up_successful?).to eq(true)
+      end
+    end
+  end
 end
