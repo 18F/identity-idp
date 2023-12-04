@@ -1,5 +1,9 @@
 {
-  "extends": "plugin:@18f/eslint-plugin-identity/recommended",
+  "extends": [
+    "plugin:@18f/eslint-plugin-identity/recommended",
+    "plugin:react/recommended",
+    "plugin:react-hooks/recommended"
+  ],
   "plugins": ["@18f/eslint-plugin-identity"],
   "env": {
     "browser": true,
@@ -39,6 +43,18 @@
             "packageDir": "."
           }
         ]
+      }
+    },
+    {
+      // See LG-11654, the eventual goal is to turn these on for all files
+      "files": ["*"],
+      "rules": {
+        "react/react-in-jsx-scope": "off",
+        "react/prop-types": "off",
+        "react/display-name": "off",
+        "react/jsx-key": "off",
+        "react-hooks/exhaustive-deps": "off",
+        "react-hooks/rules-of-hooks": "off"
       }
     }
   ]
