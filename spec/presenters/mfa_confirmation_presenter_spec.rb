@@ -56,7 +56,7 @@ RSpec.describe MfaConfirmationPresenter do
     context 'when f/t unlock setup is successful' do
       let(:webauthn_platform_set_up_successful) { true }
       let(:expected_heading) { t('titles.mfa_setup.face_touch_unlock_confirmation') }
-      let(:expected_content) { t('titles.mfa_setup.suggest_second_mfa') }
+      let(:expected_info) { I18n.t('mfa.webauthn_platform_message') }
       let(:presenter) do
         described_class.new(
           webauthn_platform_set_up_successful: webauthn_platform_set_up_successful,
@@ -72,7 +72,7 @@ RSpec.describe MfaConfirmationPresenter do
       end
 
       it 'shows the correct content' do
-        expect(presenter.content).to to eq expected_content
+        expect(presenter.info).to eq expected_info
       end
     end
   end
