@@ -33,6 +33,14 @@ RSpec.describe 'users/webauthn_setup/new.html.erb' do
 
       render
     end
+
+    it 'does not display the form' do
+      render
+      expect(rendered).to_not have_content(
+        t('two_factor_authentication.two_factor_choice_options.webauthn'),
+      )
+    end
+
     context 'when user selects multiple MFA options on account creation' do
       before do
         assign(:need_to_set_up_additional_mfa, false)
