@@ -1,7 +1,7 @@
 class JavascriptRequiredComponent < BaseComponent
   include LinkHelper
 
-  attr_reader :header, :intro
+  attr_reader :header, :location, :intro
 
   BROWSER_RESOURCES = [
     { name: 'Google Chrome', url: 'https://support.google.com' },
@@ -10,8 +10,9 @@ class JavascriptRequiredComponent < BaseComponent
     { name: 'Apple Safari', url: 'https://support.apple.com/safari' },
   ].to_set.freeze
 
-  def initialize(header:, intro: nil)
+  def initialize(header:, location:, intro: nil)
     @header = header
+    @location = location
     @intro = intro
   end
 
