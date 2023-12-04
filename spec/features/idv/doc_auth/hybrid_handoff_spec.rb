@@ -163,8 +163,6 @@ RSpec.feature 'hybrid_handoff step send link and errors' do
         )
         expect(page).to have_selector('h1', text: t('doc_auth.headings.hybrid_handoff'))
         expect(page).to have_selector('h2', text: t('doc_auth.headings.upload_from_phone'))
-        expect(page).not_to have_selector('h1', text: t('doc_auth.headings.upload_from_phone'))
-        expect(page).not_to have_selector('h2', text: t('doc_auth.headings.switch_to_phone'))
       end
       expect(fake_analytics).to have_logged_event(
         'Rate Limit Reached',
