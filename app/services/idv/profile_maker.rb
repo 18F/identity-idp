@@ -26,6 +26,13 @@ module Idv
       profile.encrypt_pii(pii_attributes, user_password)
       profile.proofing_components = current_proofing_components
       profile.fraud_pending_reason = fraud_pending_reason
+
+      if in_person_verification_needed
+        profile.idv_level = :legacy_in_person
+      else
+        profile.idv_level = :legacy_unsupervised
+      end
+
       profile.save!
       profile.deactivate_for_gpo_verification if gpo_verification_needed
       if fraud_pending_reason.present? && !gpo_verification_needed
