@@ -222,4 +222,44 @@ RSpec.describe WebauthnSetupForm do
       end
     end
   end
+  describe '#name_is_unique' do
+    let(:user) { create(:user) }
+    let(:name) { device_name }
+    before do
+      user.webauthn_configurations.create(name: '...')
+    end
+    let(:user) do
+      user = create(:user)
+      user.webauthn_configurations << create(:webauthn_configuration, name: device_name)
+      user
+    end
+    context 'webauthn' do
+      it 'checks for unique device on a webauthn device' do
+        result = subject.submit(protocol, params)
+        expect(result.extra[:multi_factor_auth_method]).to eq 'webauthn'
+        expect(subject.submit(protocol, params).to_h).to include(
+          success: false,
+          errors: { name: [I18n.t(
+            'errors.webauthn_setup.unique_name',
+            type: :unique_name,
+          )] },
+        )
+      end
+    end
+    context 'webauthn_platform' do
+      let(:params) do
+        super().merge(
+          platform_authenticator: true,
+          transports: 'internal,hybrid',
+          name: device_name,
+        )
+      end
+      it 'checks for a unique device name on a webauthn platform device' do
+        result = subject.submit(protocol, params)
+        expect(result.extra[:multi_factor_auth_method]).to eq 'webauthn_platform'
+        expect(user.webauthn_configurations.platform_authenticators.count).to eq(1)
+        expect(name).to eq('Chrome 119 on macOS 10 (1)')
+      end
+    end
+  end
 end

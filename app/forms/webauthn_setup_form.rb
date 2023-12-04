@@ -65,7 +65,7 @@ class WebauthnSetupForm
   def name_is_unique
     return unless WebauthnConfiguration.exists?(user_id: @user.id, name: @name)
     if @platform_authenticator
-      @name.concat(Time.zone.now.strftime(' %d%m%Y'))
+      @name.concat(Time.zone.now.strftime(' (1)'))
     else
       errors.add :name, I18n.t('errors.webauthn_setup.unique_name'), type: :unique_name
       @name_taken = true
