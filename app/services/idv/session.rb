@@ -10,6 +10,7 @@ module Idv
       gpo_code_verified
       had_barcode_attention_error
       had_barcode_read_failure
+      how_to_verify_submitted
       idv_consent_given
       idv_phone_step_document_capture_session_uuid
       mail_only_warning_shown
