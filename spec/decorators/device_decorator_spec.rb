@@ -6,7 +6,7 @@ RSpec.describe DeviceDecorator do
 
   describe '#nice_name' do
     it 'gives a shortened os and browser name' do
-      expect(decorator.nice_name).to eq('Chrome 58 on Windows 10')
+      expect(DeviceName.from_user_agent(device.user_agent)).to eq('Chrome 58 on Windows 10')
     end
 
     it 'does not fail if OS version cannot be parsed' do
@@ -15,7 +15,7 @@ RSpec.describe DeviceDecorator do
                    'like Gecko) Chrome/72.0.3626.122 Safari/537.36'
       device.user_agent = user_agent
 
-      expect(decorator.nice_name).to eq('Chrome 72 on Chrome OS')
+      expect(DeviceName.from_user_agent(device.user_agent)).to eq('Chrome 72 on Chrome OS')
     end
   end
 end
