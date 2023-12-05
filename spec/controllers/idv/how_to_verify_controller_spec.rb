@@ -8,7 +8,8 @@ RSpec.describe Idv::HowToVerifyController do
   end
 
   before do
-    allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { enabled }
+    allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { true }
+    allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { true }
     stub_sign_in(user)
     stub_analytics
     allow(@analytics).to receive(:track_event)
@@ -17,18 +18,69 @@ RSpec.describe Idv::HowToVerifyController do
     subject.idv_session.idv_consent_given = true
   end
 
-  describe '#step_info' do
-    it 'returns a valid StepInfo object' do
-      expect(Idv::HowToVerifyController.step_info).to be_valid
-    end
-  end
-
   describe 'before_actions' do
     it 'includes authentication before_action' do
       expect(subject).to have_actions(
         :before,
         :confirm_two_factor_authenticated,
       )
+    end
+
+    context 'confirm_step_allowed' do
+      context 'when ipp is disabled and opt-in ipp is enabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { false }
+          allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { true }
+        end
+
+        it 'disables the how to verify step and redirects to hybrid handoff' do
+          get :show
+
+          expect(Idv::HowToVerifyController.enabled?).to be false
+          expect(subject.idv_session.skip_doc_auth).to be_nil
+          expect(response).to redirect_to(idv_hybrid_handoff_url)
+        end
+      end
+
+      context 'when ipp is enabled but opt-in ipp is disabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { true }
+          allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { false }
+        end
+
+        it 'disables the how to verify step and redirects to hybrid handoff' do
+          get :show
+
+          expect(Idv::HowToVerifyController.enabled?).to be false
+          expect(subject.idv_session.skip_doc_auth).to be_nil
+          expect(response).to redirect_to(idv_hybrid_handoff_url)
+        end
+      end
+
+      context 'when both ipp and opt-in ipp are disabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { false }
+          allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { false }
+        end
+
+        it 'disables the how to verify step and redirects to hybrid handoff' do
+          get :show
+
+          expect(Idv::HowToVerifyController.enabled?).to be false
+          expect(subject.idv_session.skip_doc_auth).to be_nil
+          expect(response).to redirect_to(idv_hybrid_handoff_url)
+        end
+      end
+
+      context 'when both ipp and opt-in ipp are enabled' do
+        it 'renders the show template for how to verify' do
+          get :show
+
+          expect(Idv::HowToVerifyController.enabled?).to be true
+          expect(subject.idv_session.skip_doc_auth).to be_nil
+          expect(response).to render_template :show
+        end
+      end
     end
   end
 
@@ -162,6 +214,12 @@ RSpec.describe Idv::HowToVerifyController do
         expect(subject.idv_session.skip_doc_auth).to be_nil
         expect(response).to redirect_to(idv_how_to_verify_url)
       end
+    end
+  end
+
+  describe '#step_info' do
+    it 'returns a valid StepInfo object' do
+      expect(Idv::HowToVerifyController.step_info).to be_valid
     end
   end
 end
