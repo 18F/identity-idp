@@ -166,13 +166,37 @@ describe('document-capture/components/review-issues-step', () => {
     expect(getByLabelText('doc_auth.headings.document_capture_front')).to.be.ok();
   });
 
-  it('renders with front and back inputs', async () => {
-    const { getByLabelText, getByRole } = render(<ReviewIssuesStep {...DEFAULT_PROPS} />);
+  it('renders with only front and back inputs only by default', async () => {
+    const { getByLabelText, queryByLabelText, getByRole } = render(
+      <ReviewIssuesStep {...DEFAULT_PROPS} />,
+    );
 
     await userEvent.click(getByRole('button', { name: 'idv.failure.button.warning' }));
 
     expect(getByLabelText('doc_auth.headings.document_capture_front')).to.be.ok();
     expect(getByLabelText('doc_auth.headings.document_capture_back')).to.be.ok();
+    expect(queryByLabelText('doc_auth.headings.document_capture_selfie')).to.not.exist();
+  });
+
+  it('renders with front, back, and selfie inputs when featureflag', async () => {
+    const App = composeComponents(
+      [
+        FeatureFlagContext.Provider,
+        {
+          value: {
+            selfieCaptureEnabled: true,
+          },
+        },
+      ],
+      [ReviewIssuesStep, DEFAULT_PROPS],
+    );
+    const { getByLabelText, queryByLabelText, getByRole } = render(<App />);
+
+    await userEvent.click(getByRole('button', { name: 'idv.failure.button.warning' }));
+
+    expect(getByLabelText('doc_auth.headings.document_capture_front')).to.be.ok();
+    expect(getByLabelText('doc_auth.headings.document_capture_back')).to.be.ok();
+    expect(queryByLabelText('doc_auth.headings.document_capture_selfie')).to.be.ok();
   });
 
   it('calls onChange callback with uploaded image', async () => {
