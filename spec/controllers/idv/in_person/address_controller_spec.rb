@@ -99,12 +99,12 @@ RSpec.describe Idv::InPerson::AddressController do
         expect(response).to render_template :show
       end
 
-      it 'redirects to ssn page when address1 present' do
+      it 'allows back button and renders show' do
         subject.user_session['idv/in_person'][:pii_from_user][:address1] = '123 Main St'
 
         get :show
 
-        expect(response).to redirect_to idv_in_person_ssn_url
+        expect(response).to render_template :show
       end
 
       it 'logs idv_in_person_proofing_address_visited' do
