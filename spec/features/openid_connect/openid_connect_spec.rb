@@ -504,7 +504,8 @@ RSpec.describe 'OpenID Connect' do
 
   it 'errors if verified_within param is too recent', driver: :mobile_rack_test do
     client_id = 'urn:gov:gsa:openidconnect:test'
-    allow(IdentityConfig.store).to receive(:allowed_verified_within_providers) { [client_id] }
+    allow(IdentityConfig.store).to receive(:allowed_verified_within_providers).
+      and_return([client_id])
     state = SecureRandom.hex
     nonce = SecureRandom.hex
     code_verifier = SecureRandom.hex
@@ -535,7 +536,8 @@ RSpec.describe 'OpenID Connect' do
 
   it 'sends the user through idv again via verified_within param', js: true do
     client_id = 'urn:gov:gsa:openidconnect:sp:server'
-    allow(IdentityConfig.store).to receive(:allowed_verified_within_providers) { [client_id] }
+    allow(IdentityConfig.store).to receive(:allowed_verified_within_providers).
+      and_return([client_id])
 
     user = user_with_2fa
     _profile = create(

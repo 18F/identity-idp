@@ -556,9 +556,8 @@ RSpec.describe OpenidConnectAuthorizeForm do
   describe '#verified_within' do
     context 'the issuer is allowed to use verified_within' do
       before do
-        allow(IdentityConfig.store).to receive(
-          :allowed_verified_within_providers,
-        ) { [client_id] }
+        allow(IdentityConfig.store).to receive(:allowed_verified_within_providers).
+          and_return([client_id])
       end
 
       context 'without a verified_within' do
@@ -601,9 +600,8 @@ RSpec.describe OpenidConnectAuthorizeForm do
 
     context 'the issuer is not allowed to use verified_within' do
       before do
-        allow(IdentityConfig.store).to receive(
-          :allowed_verified_within_providers,
-        ) { [] }
+        allow(IdentityConfig.store).to receive(:allowed_verified_within_providers).
+          and_return([])
       end
 
       context 'without a verified_within' do
