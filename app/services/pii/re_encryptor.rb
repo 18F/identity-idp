@@ -15,7 +15,7 @@ module Pii
     attr_reader :user, :user_session
 
     def pii_attributes
-      @pii_attributes ||= cacher.fetch(profile)
+      @pii_attributes ||= cacher.fetch(profile.id)
     end
 
     def cacher
