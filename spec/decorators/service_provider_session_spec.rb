@@ -229,10 +229,10 @@ RSpec.describe ServiceProviderSession do
     before do
       allow(view_context).to receive(:current_user).and_return(user)
       allow(IdentityConfig.store).to receive(
-        :allowed_verified_within_providers
-        ) { [client_id] }
+        :allowed_verified_within_providers,
+      ) { [client_id] }
       allow(session_decorator).to receive(:authorize_form).
-        and_return(OpenidConnectAuthorizeForm.new(verified_within:, client_id: ))
+        and_return(OpenidConnectAuthorizeForm.new(verified_within:, client_id:))
     end
 
     subject(:requested_more_recent_verification?) do
@@ -274,7 +274,7 @@ RSpec.describe ServiceProviderSession do
     end
 
     context 'issuer is not allowed to use verified_within' do
-      let(:client_id) { "different id" }
+      let(:client_id) { 'different id' }
 
       it 'is false with no verified_within param' do
         expect(requested_more_recent_verification?).to eq(false)

@@ -12,6 +12,12 @@ RSpec.feature 'SP Costing', :email do
   let(:email) { 'test@test.com' }
   let(:password) { Features::SessionHelper::VALID_PASSWORD }
 
+  before do
+    allow(IdentityConfig.store).to receive(
+      :allowed_verified_within_providers,
+    ) { [issuer] }
+  end
+
   it 'logs the correct costs for an ial2 user creation from sp with oidc', js: true do
     create_ial2_user_from_sp(email)
 
