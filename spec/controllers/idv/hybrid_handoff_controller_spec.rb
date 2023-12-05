@@ -35,13 +35,6 @@ RSpec.describe Idv::HybridHandoffController do
         :check_for_mail_only_outage,
       )
     end
-
-    it 'includes redirect for phone_question ab test before_action' do
-      expect(subject).to have_actions(
-        :before,
-        :maybe_redirect_for_phone_question_ab_test,
-      )
-    end
   end
 
   describe '#show' do
@@ -281,62 +274,6 @@ RSpec.describe Idv::HybridHandoffController do
         ).with({ upload_method: 'desktop' })
 
         put :update, params: { type: 'desktop' }
-      end
-    end
-  end
-
-  context '#maybe_redirect_for_phone_question_ab_test' do
-    context 'A/B test specifies phone question page' do
-      before do
-        allow(controller).to receive(:phone_question_ab_test_bucket).
-          and_return(:bypass_phone_question)
-      end
-
-      it 'does not redirect users away from hybrid handoff page' do
-        get :show
-
-        expect(response).to render_template :show
-        expect(response.status).to eq(200)
-      end
-    end
-
-    context 'A/B test specifies phone question page' do
-      before do
-        allow(controller).to receive(:phone_question_ab_test_bucket).
-          and_return(:show_phone_question)
-      end
-
-      it 'redirect users to phone question page' do
-        get :show
-
-        expect(response).to redirect_to(idv_phone_question_url)
-      end
-
-      context 'when user comes from phone_question page' do
-        before do
-          subject.idv_session.phone_with_camera = false
-        end
-
-        it 'does not redirect users away from hybrid handoff page' do
-          get :show
-
-          expect(response).to render_template :show
-          expect(response.status).to eq(200)
-        end
-      end
-    end
-
-    context 'A/B test specifies some other value' do
-      before do
-        allow(controller).to receive(:phone_question_ab_test_bucket).
-          and_return(:something_else)
-      end
-
-      it 'does not redirect users away from hybrid handoff page' do
-        get :show
-
-        expect(response).to render_template :show
-        expect(response.status).to eq(200)
       end
     end
   end

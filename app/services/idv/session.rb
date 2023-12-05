@@ -16,7 +16,6 @@ module Idv
       personal_key
       personal_key_acknowledged
       phone_for_mobile_flow
-      phone_with_camera
       pii_from_doc
       previous_phone_step_params
       profile_id

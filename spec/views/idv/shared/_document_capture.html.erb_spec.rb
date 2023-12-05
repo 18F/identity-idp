@@ -12,9 +12,7 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
   let(:in_person_proofing_enabled_issuer) { nil }
   let(:acuant_sdk_upgrade_a_b_testing_enabled) { false }
   let(:use_alternate_sdk) { false }
-  let(:phone_question_ab_test_bucket) { :bypass_phone_question }
   let(:doc_auth_selfie_capture) { { enabled: false } }
-  let(:phone_with_camera) { false }
   let(:acuant_version) { '1.3.3.7' }
   let(:skip_doc_auth) { false }
 
@@ -45,9 +43,7 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
       acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
       use_alternate_sdk: use_alternate_sdk,
       acuant_version: acuant_version,
-      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
       doc_auth_selfie_capture: doc_auth_selfie_capture,
-      phone_with_camera: phone_with_camera,
       skip_doc_auth: skip_doc_auth,
     }
   end
