@@ -45,8 +45,8 @@ RSpec.describe 'totp management' do
 
       expect(
         [
-          page.find_field(t('forms.totp_setup.totp_step_1')),
-          page.find_field(t('forms.totp_setup.totp_step_4')),
+          page.find('[aria-labelledby="totp-step-1-label"]'),
+          page.find('[aria-labelledby="totp-step-4-label"]'),
         ],
       ).to be_logically_grouped(t('forms.totp_setup.totp_intro'))
 

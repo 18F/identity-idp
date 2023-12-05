@@ -58,6 +58,13 @@ RSpec.describe 'users/totp_setup/new.html.erb' do
         text: t('forms.totp_setup.totp_step_4'),
       )
     end
+
+    it 'has aria labels for TOTP' do
+      render
+
+      expect(rendered).to have_selector('[aria-labelledby="totp-step-1-label"]')
+      expect(rendered).to have_selector('[aria-labelledby="totp-step-4-label"]')
+    end
   end
 
   context 'user is setting up 2FA' do

@@ -567,10 +567,15 @@ module Features
 
       expect(page).to have_current_path authenticator_setup_path
 
-      fill_in t('forms.totp_setup.totp_step_1'), with: 'App'
+      nickname_field = find('[aria-labelledby="totp-step-1-label"]')
+      nickname_field.set('App')
 
       secret = find('#qr-code').text
-      fill_in 'code', with: generate_totp_code(secret)
+
+      nickname_field = find('[aria-labelledby="totp-step-4-label"]')
+      totp_code = generate_totp_code(secret)
+      nickname_field.set(totp_code)
+
       click_button 'Submit'
     end
 
