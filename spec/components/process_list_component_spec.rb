@@ -53,6 +53,14 @@ RSpec.describe ProcessListComponent, type: :component do
     end
   end
 
+  context 'with specified id' do
+    it 'renders with css class' do
+      rendered = render_inline ProcessListComponent.new(id: 'my-custom-id')
+
+      expect(rendered).to have_selector('#my-custom-id')
+    end
+  end
+
   context 'tag options' do
     it 'applies tag options to wrapper element' do
       rendered = render_inline ProcessListComponent.new(data: { foo: 'bar' })
