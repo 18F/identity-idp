@@ -118,7 +118,7 @@ module IdvStepConcern
     url_for(controller: step_info.controller, action: step_info.action)
   end
 
-  def clear_future_steps!
-    flow_policy.undo_future_steps_from_controller!(controller: self.class)
+  def clear_future_steps!(controller: self.class)
+    flow_policy.undo_future_steps_from_controller!(controller: controller)
   end
 end

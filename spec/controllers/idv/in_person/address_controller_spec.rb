@@ -210,10 +210,11 @@ RSpec.describe Idv::InPerson::AddressController do
         end
       end
 
-      it 'invalidates future steps' do
-        expect(subject).to receive(:clear_future_steps!)
+      it 'invalidates future steps, but does not clear ssn' do
+        subject.idv_session.ssn = '123-45-6789'
+        expect(subject).to receive(:clear_future_steps!).and_call_original
 
-        put :update, params: params
+        expect { put :update, params: params }.not_to change { subject.idv_session.ssn }
       end
     end
 

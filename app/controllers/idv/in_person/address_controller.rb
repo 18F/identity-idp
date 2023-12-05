@@ -15,7 +15,8 @@ module Idv
       end
 
       def update
-        clear_future_steps! # this clears the ssn, it needs fixing
+        # don't clear the ssn when updating address, clear after SsnController
+        clear_future_steps!(controller: Idv::InPerson::SsnController)
         attrs = Idv::InPerson::AddressForm::ATTRIBUTES.difference([:same_address_as_id])
         pii_from_user[:same_address_as_id] = 'false' if updating_address?
         form_result = form.submit(flow_params)
