@@ -1,26 +1,29 @@
 require 'rails_helper'
 
 RSpec.describe Pii::ReEncryptor do
+  let(:expected_pii_attributes) do
+    pii_attributes = Pii::Attributes.new
+    pii_attributes[:ssn] = ssn
+    pii_attributes
+  end
+
+  let(:pii) { { ssn: ssn } }
+  let(:pii_cacher) { Pii::Cacher.new(user, user_session) }
+  let(:ssn) { '1234' }
+  let(:user) { profile.user }
+  let(:user_session) { {}.with_indifferent_access }
+
+  before do
+    allow(Pii::Cacher).to receive(:new).and_return(pii_cacher)
+    allow(pii_cacher).to receive(:fetch).and_call_original
+    Pii::ProfileCacher.new(user, user_session).save_decrypted_pii(pii, profile.id)
+  end
+
   describe '#perform' do
     context 'when the user has an active profile' do
-      let(:active_profile) { create(:profile, :active, :verified, pii: pii) }
-      let(:pii) { { ssn: ssn } }
-      let(:pii_cacher) { Pii::Cacher.new(user, user_session) }
-      let(:ssn) { ' 1234' }
-      let(:user) { active_profile.user }
-      let(:user_session) { {}.with_indifferent_access }
-
-      let(:expected_pii_attributes) do
-        pii_attributes = Pii::Attributes.new
-        pii_attributes[:ssn] = ssn
-        pii_attributes
-      end
+      let(:profile) { create(:profile, :active, :verified, pii: pii) }
 
       before do
-        Pii::ProfileCacher.new(user, user_session).save_decrypted_pii(pii, active_profile.id)
-
-        allow(Pii::Cacher).to receive(:new).and_return(pii_cacher)
-        allow(pii_cacher).to receive(:fetch).and_call_original
         allow(user.active_profile).to receive(:encrypt_recovery_pii).and_call_original
         allow(user.active_profile).to receive(:save!).and_call_original
 
@@ -28,7 +31,7 @@ RSpec.describe Pii::ReEncryptor do
       end
 
       it 'fetches the PII from the correct profile' do
-        expect(pii_cacher).to have_received(:fetch).with(active_profile.id)
+        expect(pii_cacher).to have_received(:fetch).with(profile.id)
       end
 
       it 're-encrypts PII using new code' do
@@ -39,24 +42,9 @@ RSpec.describe Pii::ReEncryptor do
     end
 
     context 'when the user has a pending profile' do
-      let(:pending_profile) { create(:profile, :verify_by_mail_pending, pii: pii) }
-      let(:pii) { { ssn: ssn } }
-      let(:pii_cacher) { Pii::Cacher.new(user, user_session) }
-      let(:ssn) { ' 1234' }
-      let(:user) { pending_profile.user }
-      let(:user_session) { {}.with_indifferent_access }
-
-      let(:expected_pii_attributes) do
-        pii_attributes = Pii::Attributes.new
-        pii_attributes[:ssn] = ssn
-        pii_attributes
-      end
+      let(:profile) { create(:profile, :verify_by_mail_pending, pii: pii) }
 
       before do
-        Pii::ProfileCacher.new(user, user_session).save_decrypted_pii(pii, pending_profile.id)
-
-        allow(Pii::Cacher).to receive(:new).and_return(pii_cacher)
-        allow(pii_cacher).to receive(:fetch).and_call_original
         allow(user.pending_profile).to receive(:encrypt_recovery_pii).and_call_original
         allow(user.pending_profile).to receive(:save!).and_call_original
 
@@ -64,7 +52,7 @@ RSpec.describe Pii::ReEncryptor do
       end
 
       it 'fetches the PII from the correct profile' do
-        expect(pii_cacher).to have_received(:fetch).with(pending_profile.id)
+        expect(pii_cacher).to have_received(:fetch).with(profile.id)
       end
 
       it 're-encrypts PII using new code' do
