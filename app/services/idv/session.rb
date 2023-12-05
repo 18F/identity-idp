@@ -133,7 +133,7 @@ module Idv
     end
 
     def phone_otp_sent?
-      user_phone_confirmation_session.present?
+      user_phone_confirmation_session.present? && address_verification_mechanism == 'phone'
     end
 
     def user_phone_confirmation_session
@@ -211,7 +211,7 @@ module Idv
     end
 
     def mark_phone_step_started!
-      session[:address_verification_mechanism] = :phone
+      session[:address_verification_mechanism] = 'phone'
       session[:vendor_phone_confirmation] = true
       session[:user_phone_confirmation] = false
     end
