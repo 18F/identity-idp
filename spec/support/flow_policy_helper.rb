@@ -22,12 +22,10 @@ module FlowPolicyHelper
       idv_session.pii_from_doc = Idp::Constants::MOCK_IDV_APPLICANT.dup
     when :ssn
       idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]
-    when :ipp_address
-      idv_session.pii_from_doc = nil
+    when :ipp_ssn
       idv_session.send(:user_session)['idv/in_person'] = {
         pii_from_user: Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID.dup,
       }
-    when :ipp_ssn
       idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]
     when :verify_info
       idv_session.mark_verify_info_step_complete!
@@ -63,11 +61,11 @@ module FlowPolicyHelper
     when :ssn
       %i[welcome agreement hybrid_handoff document_capture ssn]
     when :ipp_ssn
-      %i[welcome agreement hybrid_handoff document_capture ipp_address ipp_ssn]
+      %i[welcome agreement hybrid_handoff ipp_ssn]
     when :verify_info
       %i[welcome agreement hybrid_handoff document_capture ssn verify_info]
     when :ipp_verify_info
-      %i[welcome agreement hybrid_handoff document_capture ipp_address ipp_ssn ipp_verify_info]
+      %i[welcome agreement hybrid_handoff ipp_ssn ipp_verify_info]
     when :phone
       %i[welcome agreement hybrid_handoff document_capture ssn verify_info phone]
     when :otp_verification

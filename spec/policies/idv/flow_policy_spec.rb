@@ -221,7 +221,8 @@ RSpec.describe 'Idv::FlowPolicy' do
 
     context 'preconditions for in_person ssn are present' do
       before do
-        stub_up_to_key(key: :ipp_address, idv_session: idv_session)
+        stub_up_to_key(key: :hybrid_handoff, idv_session: idv_session)
+        idv_session.send(:user_session)['idv/in_person'] = { pii_from_user: { pii: 'value' } }
       end
 
       it 'returns ipp_ssn' do
