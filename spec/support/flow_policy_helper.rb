@@ -35,7 +35,6 @@ module FlowPolicyHelper
       idv_session.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.dup
     when :phone
       idv_session.mark_phone_step_started!
-      idv_session.user_phone_confirmation_session = { code: 'abcde' }
     when :otp_verification
       idv_session.mark_phone_step_complete!
     when :request_letter

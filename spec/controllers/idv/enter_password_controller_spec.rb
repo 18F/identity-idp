@@ -263,7 +263,7 @@ RSpec.describe Idv::EnterPasswordController do
     end
 
     it 'redirects to phone step if the user has not completed it' do
-      subject.idv_session.user_phone_confirmation = nil
+      subject.idv_session.vendor_phone_confirmation = nil
 
       get :new
 

@@ -133,7 +133,7 @@ module Idv
     end
 
     def phone_otp_sent?
-      user_phone_confirmation_session.present? && address_verification_mechanism == 'phone'
+      vendor_phone_confirmation && address_verification_mechanism == 'phone'
     end
 
     def user_phone_confirmation_session
