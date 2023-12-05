@@ -160,6 +160,11 @@ module Idv
       user_session.dig('idv/in_person', :pii_from_user)
     end
 
+    def ipp_address_allowed?
+      pii_from_user = user_session.dig('idv/in_person', :pii_from_user)
+      pii_from_user&.has_key?(:identity_doc_address1)
+    end
+
     def invalidate_in_person_pii_from_user!
       if has_pii_from_user_in_flow_session
         user_session['idv/in_person'][:pii_from_user] = nil

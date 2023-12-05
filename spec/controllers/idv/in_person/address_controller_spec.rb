@@ -17,13 +17,20 @@ RSpec.describe Idv::InPerson::AddressController do
       and_return(true)
     allow(subject).to receive(:current_user).
       and_return(user)
-    allow(subject).to receive(:pii_from_user).and_return(pii_from_user)
-    allow(subject).to receive(:flow_session).and_return(flow_session)
     stub_sign_in(user)
+    subject.user_session['idv/in_person'] = flow_session
+    subject.idv_session.welcome_visited = true
+    subject.idv_session.idv_consent_given = true
     subject.idv_session.flow_path = 'standard'
     subject.idv_session.ssn = ssn
     stub_analytics
     allow(@analytics).to receive(:track_event)
+  end
+
+  describe '#step_info' do
+    it 'returns a valid StepInfo object' do
+      expect(Idv::InPerson::AddressController.step_info).to be_valid
+    end
   end
 
   describe 'before_actions' do
@@ -55,7 +62,7 @@ RSpec.describe Idv::InPerson::AddressController do
 
     context '#confirm_in_person_state_id_step_complete' do
       it 'redirects to state id page if not complete' do
-        flow_session[:pii_from_user].delete(:identity_doc_address1)
+        subject.user_session['idv/in_person'][:pii_from_user].delete(:identity_doc_address1)
         get :show
 
         expect(response).to redirect_to idv_in_person_step_url(step: :state_id)
@@ -93,7 +100,7 @@ RSpec.describe Idv::InPerson::AddressController do
       end
 
       it 'redirects to ssn page when address1 present' do
-        flow_session[:pii_from_user][:address1] = '123 Main St'
+        subject.user_session['idv/in_person'][:pii_from_user][:address1] = '123 Main St'
 
         get :show
 
@@ -153,7 +160,7 @@ RSpec.describe Idv::InPerson::AddressController do
       it 'sets values in the flow session' do
         put :update, params: params
 
-        expect(flow_session[:pii_from_user]).to include(
+        expect(subject.user_session['idv/in_person'][:pii_from_user]).to include(
           address1:,
           address2:,
           city:,
@@ -172,32 +179,41 @@ RSpec.describe Idv::InPerson::AddressController do
 
       context 'when updating the residential address' do
         before do
-          flow_session[:pii_from_user][:address1] = '123 New Residential Ave'
+          subject.user_session['idv/in_person'][:pii_from_user][:address1] =
+            '123 New Residential Ave'
         end
 
         context 'user previously selected that the residential address matched state ID' do
           before do
-            flow_session[:pii_from_user][:same_address_as_id] = 'true'
+            subject.user_session['idv/in_person'][:pii_from_user][:same_address_as_id] = 'true'
           end
 
           it 'infers and sets the "same_address_as_id" in the flow session to false' do
             put :update, params: params
 
-            expect(flow_session[:pii_from_user][:same_address_as_id]).to eq('false')
+            expect(subject.user_session['idv/in_person'][:pii_from_user][:same_address_as_id]).
+              to eq('false')
           end
         end
 
         context 'user previously selected that the residential address did not match state ID' do
           before do
-            flow_session[:pii_from_user][:same_address_as_id] = 'false'
+            subject.user_session['idv/in_person'][:pii_from_user][:same_address_as_id] = 'false'
           end
 
           it 'leaves the "same_address_as_id" in the flow session as false' do
             put :update, params: params
 
-            expect(flow_session[:pii_from_user][:same_address_as_id]).to eq('false')
+            expect(subject.user_session['idv/in_person'][:pii_from_user][:same_address_as_id]).
+              to eq('false')
           end
         end
+      end
+
+      it 'invalidates future steps' do
+        expect(subject).to receive(:clear_future_steps!)
+
+        put :update, params: params
       end
     end
 
@@ -233,6 +249,12 @@ RSpec.describe Idv::InPerson::AddressController do
 
         expect(response).to have_rendered(:show)
         expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
+      end
+
+      it 'invalidates future steps' do
+        expect(subject).to receive(:clear_future_steps!)
+
+        put :update, params: params
       end
     end
   end
