@@ -23,7 +23,7 @@ module Pii
     end
 
     def profile
-      user.active_or_pending_profile
+      @profile ||= user.active_or_pending_profile
     end
   end
 end
