@@ -6,7 +6,6 @@ module Idv
 
     before_action :confirm_not_rate_limited
     before_action :confirm_step_allowed
-    before_action :confirm_verify_info_step_needed
 
     def show
       analytics.idv_doc_auth_agreement_visited(**analytics_arguments)
@@ -34,7 +33,8 @@ module Idv
       if result.success?
         idv_session.idv_consent_given = true
 
-        if IdentityConfig.store.in_person_proofing_opt_in_enabled
+        if IdentityConfig.store.in_person_proofing_opt_in_enabled &&
+           IdentityConfig.store.in_person_proofing_enabled
           redirect_to idv_how_to_verify_url
         else
           redirect_to idv_hybrid_handoff_url
@@ -47,7 +47,7 @@ module Idv
     def self.step_info
       Idv::StepInfo.new(
         key: :agreement,
-        controller: controller_name,
+        controller: self,
         next_steps: [:hybrid_handoff, :document_capture, :phone_question, :how_to_verify],
         preconditions: ->(idv_session:, user:) { idv_session.welcome_visited },
         undo_step: ->(idv_session:, user:) do

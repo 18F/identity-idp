@@ -3,6 +3,7 @@ Dir.chdir(__dir__) { require 'bundler/setup' }
 
 require 'active_support'
 require 'active_support/core_ext/integer/time'
+require 'active_support/core_ext/object/blank'
 require 'active_support/time'
 require 'aws-sdk-cloudwatchlogs'
 require 'concurrent-ruby'

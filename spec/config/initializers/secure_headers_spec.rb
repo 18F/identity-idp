@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 RSpec.describe 'config.ssl_options' do
   subject(:ssl_options) { Rails.application.config.ssl_options }
 
@@ -8,7 +10,7 @@ RSpec.describe 'config.ssl_options' do
     request = { 'HTTPS' => 'on' }
     _status, headers, _body = ssl_middleware.call(request)
 
-    expect(headers['Strict-Transport-Security']).
+    expect(headers['strict-transport-security']).
       to eq('max-age=31556952; includeSubDomains; preload')
   end
 end

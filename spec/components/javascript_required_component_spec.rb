@@ -5,10 +5,11 @@ RSpec.describe JavascriptRequiredComponent, type: :component do
 
   let(:header) { 'You must enable JavaScript' }
   let(:intro) { nil }
+  let(:location) { 'example' }
   let(:content) { 'JavaScript-required content' }
 
   subject(:rendered) do
-    render_inline described_class.new(header:, intro:).with_content(content)
+    render_inline described_class.new(header:, intro:, location:).with_content(content)
   end
 
   it 'renders instructions to enable JavaScript' do
@@ -25,7 +26,7 @@ RSpec.describe JavascriptRequiredComponent, type: :component do
   end
 
   it 'loads css resource for setting session key in JavaScript-disabled environments' do
-    expect(rendered).to have_css("noscript link[href='#{no_js_detect_css_path}']")
+    expect(rendered).to have_css("noscript link[href='#{no_js_detect_css_path(location:)}']")
   end
 
   context 'with intro' do
@@ -49,7 +50,7 @@ RSpec.describe JavascriptRequiredComponent, type: :component do
     it 'only renders the alert once' do
       rendered
 
-      second_rendered = render_inline described_class.new(header:)
+      second_rendered = render_inline described_class.new(header:, location:)
 
       expect(second_rendered).not_to have_content(t('components.javascript_required.enabled_alert'))
     end

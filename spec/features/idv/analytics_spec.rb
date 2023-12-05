@@ -63,10 +63,10 @@ RSpec.feature 'Analytics Regression', js: true do
         flow_path: 'standard', step: 'document_capture', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, phone_question_ab_test_bucket: :bypass_phone_question, phone_with_camera: nil, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, irs_reproofing: false
       },
       'Frontend: IdV: front image added' => {
-        width: 284, height: 38, mimeType: 'image/png', source: 'upload', size: 3694, attempt: 1, flow_path: 'standard', acuant_sdk_upgrade_a_b_testing_enabled: 'false', use_alternate_sdk: anything, acuant_version: anything, acuantCaptureMode: nil, fingerprint: anything, failedImageResubmission: boolean, phone_question_ab_test_bucket: 'bypass_phone_question', phone_with_camera: nil, documentType: nil, dpi: nil, glare: nil, glareScoreThreshold: nil, isAssessedAsBlurry: nil, isAssessedAsGlare: nil, isAssessedAsUnsupported: nil, moire: nil, sharpness: nil, sharpnessScoreThreshold: nil, assessment: nil
+        width: 284, height: 38, mimeType: 'image/png', source: 'upload', size: 3694, attempt: 1, flow_path: 'standard', acuant_sdk_upgrade_a_b_testing_enabled: 'false', use_alternate_sdk: anything, acuant_version: anything, acuantCaptureMode: nil, fingerprint: anything, failedImageResubmission: boolean, documentType: nil, dpi: nil, glare: nil, glareScoreThreshold: nil, isAssessedAsBlurry: nil, isAssessedAsGlare: nil, isAssessedAsUnsupported: nil, moire: nil, sharpness: nil, sharpnessScoreThreshold: nil, assessment: nil
       },
       'Frontend: IdV: back image added' => {
-        width: 284, height: 38, mimeType: 'image/png', source: 'upload', size: 3694, attempt: 1, flow_path: 'standard', acuant_sdk_upgrade_a_b_testing_enabled: 'false', use_alternate_sdk: anything, acuant_version: anything, acuantCaptureMode: nil, fingerprint: anything, failedImageResubmission: boolean, phone_question_ab_test_bucket: 'bypass_phone_question', phone_with_camera: nil, documentType: nil, dpi: nil, glare: nil, glareScoreThreshold: nil, isAssessedAsBlurry: nil, isAssessedAsGlare: nil, isAssessedAsUnsupported: nil, moire: nil, sharpness: nil, sharpnessScoreThreshold: nil, assessment: nil
+        width: 284, height: 38, mimeType: 'image/png', source: 'upload', size: 3694, attempt: 1, flow_path: 'standard', acuant_sdk_upgrade_a_b_testing_enabled: 'false', use_alternate_sdk: anything, acuant_version: anything, acuantCaptureMode: nil, fingerprint: anything, failedImageResubmission: boolean, documentType: nil, dpi: nil, glare: nil, glareScoreThreshold: nil, isAssessedAsBlurry: nil, isAssessedAsGlare: nil, isAssessedAsUnsupported: nil, moire: nil, sharpness: nil, sharpnessScoreThreshold: nil, assessment: nil
       },
       'IdV: doc auth image upload form submitted' => {
         success: true, errors: {}, attempts: 1, remaining_attempts: 3, user_id: user.uuid, flow_path: 'standard', front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), phone_question_ab_test_bucket: :bypass_phone_question, phone_with_camera: nil
@@ -171,10 +171,10 @@ RSpec.feature 'Analytics Regression', js: true do
         flow_path: 'hybrid', step: 'document_capture', acuant_sdk_upgrade_ab_test_bucket: :default, phone_question_ab_test_bucket: :bypass_phone_question, phone_with_camera: nil, analytics_id: 'Doc Auth', irs_reproofing: false
       },
       'Frontend: IdV: front image added' => {
-        width: 284, height: 38, mimeType: 'image/png', source: 'upload', size: 3694, attempt: 1, flow_path: 'hybrid', acuant_sdk_upgrade_a_b_testing_enabled: 'false', use_alternate_sdk: anything, acuant_version: anything, acuantCaptureMode: nil, fingerprint: anything, failedImageResubmission: boolean, phone_question_ab_test_bucket: 'bypass_phone_question', documentType: nil, dpi: nil, glare: nil, glareScoreThreshold: nil, isAssessedAsBlurry: nil, isAssessedAsGlare: nil, isAssessedAsUnsupported: nil, moire: nil, sharpness: nil, sharpnessScoreThreshold: nil, assessment: nil, phone_with_camera: nil
+        width: 284, height: 38, mimeType: 'image/png', source: 'upload', size: 3694, attempt: 1, flow_path: 'hybrid', acuant_sdk_upgrade_a_b_testing_enabled: 'false', use_alternate_sdk: anything, acuant_version: anything, acuantCaptureMode: nil, fingerprint: anything, failedImageResubmission: boolean, documentType: nil, dpi: nil, glare: nil, glareScoreThreshold: nil, isAssessedAsBlurry: nil, isAssessedAsGlare: nil, isAssessedAsUnsupported: nil, moire: nil, sharpness: nil, sharpnessScoreThreshold: nil, assessment: nil
       },
       'Frontend: IdV: back image added' => {
-        width: 284, height: 38, mimeType: 'image/png', source: 'upload', size: 3694, attempt: 1, flow_path: 'hybrid', acuant_sdk_upgrade_a_b_testing_enabled: 'false', use_alternate_sdk: anything, acuant_version: anything, acuantCaptureMode: nil, fingerprint: anything, failedImageResubmission: boolean, phone_question_ab_test_bucket: 'bypass_phone_question', documentType: nil, dpi: nil, glare: nil, glareScoreThreshold: nil, isAssessedAsBlurry: nil, isAssessedAsGlare: nil, isAssessedAsUnsupported: nil, moire: nil, sharpness: nil, sharpnessScoreThreshold: nil, assessment: nil, phone_with_camera: nil
+        width: 284, height: 38, mimeType: 'image/png', source: 'upload', size: 3694, attempt: 1, flow_path: 'hybrid', acuant_sdk_upgrade_a_b_testing_enabled: 'false', use_alternate_sdk: anything, acuant_version: anything, acuantCaptureMode: nil, fingerprint: anything, failedImageResubmission: boolean, documentType: nil, dpi: nil, glare: nil, glareScoreThreshold: nil, isAssessedAsBlurry: nil, isAssessedAsGlare: nil, isAssessedAsUnsupported: nil, moire: nil, sharpness: nil, sharpnessScoreThreshold: nil, assessment: nil
       },
       'IdV: doc auth image upload form submitted' => {
         success: true, errors: {}, attempts: 1, remaining_attempts: 3, user_id: user.uuid, flow_path: 'hybrid', front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), phone_question_ab_test_bucket: :bypass_phone_question, phone_with_camera: nil
@@ -276,10 +276,10 @@ RSpec.feature 'Analytics Regression', js: true do
         flow_path: 'standard', step: 'document_capture', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, phone_question_ab_test_bucket: :bypass_phone_question, phone_with_camera: nil, skip_hybrid_handoff: nil, analytics_id: 'Doc Auth', irs_reproofing: false
       },
       'Frontend: IdV: front image added' => {
-        width: 284, height: 38, mimeType: 'image/png', source: 'upload', size: 3694, attempt: 1, flow_path: 'standard', acuant_sdk_upgrade_a_b_testing_enabled: 'false', use_alternate_sdk: anything, acuant_version: anything, acuantCaptureMode: nil, fingerprint: anything, failedImageResubmission: boolean, phone_question_ab_test_bucket: 'bypass_phone_question', phone_with_camera: nil, documentType: nil, dpi: nil, glare: nil, glareScoreThreshold: nil, isAssessedAsBlurry: nil, isAssessedAsGlare: nil, isAssessedAsUnsupported: nil, moire: nil, sharpness: nil, sharpnessScoreThreshold: nil, assessment: nil
+        width: 284, height: 38, mimeType: 'image/png', source: 'upload', size: 3694, attempt: 1, flow_path: 'standard', acuant_sdk_upgrade_a_b_testing_enabled: 'false', use_alternate_sdk: anything, acuant_version: anything, acuantCaptureMode: nil, fingerprint: anything, failedImageResubmission: boolean, documentType: nil, dpi: nil, glare: nil, glareScoreThreshold: nil, isAssessedAsBlurry: nil, isAssessedAsGlare: nil, isAssessedAsUnsupported: nil, moire: nil, sharpness: nil, sharpnessScoreThreshold: nil, assessment: nil
       },
       'Frontend: IdV: back image added' => {
-        width: 284, height: 38, mimeType: 'image/png', source: 'upload', size: 3694, attempt: 1, flow_path: 'standard', acuant_sdk_upgrade_a_b_testing_enabled: 'false', use_alternate_sdk: anything, acuant_version: anything, acuantCaptureMode: nil, fingerprint: anything, failedImageResubmission: boolean, phone_question_ab_test_bucket: 'bypass_phone_question', phone_with_camera: nil, documentType: nil, dpi: nil, glare: nil, glareScoreThreshold: nil, isAssessedAsBlurry: nil, isAssessedAsGlare: nil, isAssessedAsUnsupported: nil, moire: nil, sharpness: nil, sharpnessScoreThreshold: nil, assessment: nil
+        width: 284, height: 38, mimeType: 'image/png', source: 'upload', size: 3694, attempt: 1, flow_path: 'standard', acuant_sdk_upgrade_a_b_testing_enabled: 'false', use_alternate_sdk: anything, acuant_version: anything, acuantCaptureMode: nil, fingerprint: anything, failedImageResubmission: boolean, documentType: nil, dpi: nil, glare: nil, glareScoreThreshold: nil, isAssessedAsBlurry: nil, isAssessedAsGlare: nil, isAssessedAsUnsupported: nil, moire: nil, sharpness: nil, sharpnessScoreThreshold: nil, assessment: nil
       },
       'IdV: doc auth image upload form submitted' => {
         success: true, errors: {}, attempts: 1, remaining_attempts: 3, user_id: user.uuid, flow_path: 'standard', front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), phone_question_ab_test_bucket: :bypass_phone_question, phone_with_camera: nil
@@ -363,10 +363,10 @@ RSpec.feature 'Analytics Regression', js: true do
         flow_path: 'standard', step: 'document_capture', redo_document_capture: nil, acuant_sdk_upgrade_ab_test_bucket: :default, phone_question_ab_test_bucket: :bypass_phone_question, phone_with_camera: nil, analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, irs_reproofing: false
       },
       'Frontend: IdV: front image added' => {
-        width: 284, height: 38, mimeType: 'image/png', source: 'upload', size: 3694, attempt: 1, flow_path: 'standard', acuant_sdk_upgrade_a_b_testing_enabled: 'false', use_alternate_sdk: anything, acuant_version: anything, acuantCaptureMode: nil, fingerprint: anything, failedImageResubmission: boolean, phone_question_ab_test_bucket: 'bypass_phone_question', phone_with_camera: nil, documentType: nil, dpi: nil, glare: nil, glareScoreThreshold: nil, isAssessedAsBlurry: nil, isAssessedAsGlare: nil, isAssessedAsUnsupported: nil, moire: nil, sharpness: nil, sharpnessScoreThreshold: nil, assessment: nil
+        width: 284, height: 38, mimeType: 'image/png', source: 'upload', size: 3694, attempt: 1, flow_path: 'standard', acuant_sdk_upgrade_a_b_testing_enabled: 'false', use_alternate_sdk: anything, acuant_version: anything, acuantCaptureMode: nil, fingerprint: anything, failedImageResubmission: boolean, documentType: nil, dpi: nil, glare: nil, glareScoreThreshold: nil, isAssessedAsBlurry: nil, isAssessedAsGlare: nil, isAssessedAsUnsupported: nil, moire: nil, sharpness: nil, sharpnessScoreThreshold: nil, assessment: nil
       },
       'Frontend: IdV: back image added' => {
-        width: 284, height: 38, mimeType: 'image/png', source: 'upload', size: 3694, attempt: 1, flow_path: 'standard', acuant_sdk_upgrade_a_b_testing_enabled: 'false', use_alternate_sdk: anything, acuant_version: anything, acuantCaptureMode: nil, fingerprint: anything, failedImageResubmission: boolean, phone_question_ab_test_bucket: 'bypass_phone_question', phone_with_camera: nil, documentType: nil, dpi: nil, glare: nil, glareScoreThreshold: nil, isAssessedAsBlurry: nil, isAssessedAsGlare: nil, isAssessedAsUnsupported: nil, moire: nil, sharpness: nil, sharpnessScoreThreshold: nil, assessment: nil
+        width: 284, height: 38, mimeType: 'image/png', source: 'upload', size: 3694, attempt: 1, flow_path: 'standard', acuant_sdk_upgrade_a_b_testing_enabled: 'false', use_alternate_sdk: anything, acuant_version: anything, acuantCaptureMode: nil, fingerprint: anything, failedImageResubmission: boolean, documentType: nil, dpi: nil, glare: nil, glareScoreThreshold: nil, isAssessedAsBlurry: nil, isAssessedAsGlare: nil, isAssessedAsUnsupported: nil, moire: nil, sharpness: nil, sharpnessScoreThreshold: nil, assessment: nil
       },
       'IdV: doc auth image upload form submitted' => {
         success: true, errors: {}, attempts: 1, remaining_attempts: 3, user_id: user.uuid, flow_path: 'standard', front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), phone_question_ab_test_bucket: :bypass_phone_question, phone_with_camera: nil
@@ -468,7 +468,7 @@ RSpec.feature 'Analytics Regression', js: true do
   # rubocop:enable Layout/LineLength
   # rubocop:enable Layout/MultilineHashKeyLineBreaks
 
-  # Needed for enqueued_at in gpo_step
+  # Needed for enqueued_at in RequestLetter
   around do |ex|
     freeze_time { ex.run }
   end
@@ -629,7 +629,7 @@ RSpec.feature 'Analytics Regression', js: true do
       complete_ssn_step
       complete_verify_step
       enter_gpo_flow
-      gpo_step
+      complete_request_letter
       complete_enter_password_step(user)
     end
 

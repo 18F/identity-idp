@@ -379,6 +379,9 @@ RSpec.feature 'Sign in' do
   context 'user attempts too many concurrent sessions' do
     context 'with email and password' do
       scenario 'redirects to home page with error' do
+        analytics = FakeAnalytics.new
+        allow(Analytics).to receive(:new).and_return(analytics)
+
         user = user_with_2fa
 
         perform_in_browser(:one) do
@@ -398,6 +401,8 @@ RSpec.feature 'Sign in' do
 
           expect(current_path).to eq new_user_session_path
           expect(page).to have_content(t('devise.failure.session_limited'))
+
+          expect(analytics.events[:concurrent_session_logout].count).to eq 1
         end
       end
     end

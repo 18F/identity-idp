@@ -16,9 +16,8 @@ RSpec.describe Idv::InPerson::SsnController do
   end
 
   before do
-    allow(subject).to receive(:pii_from_user).and_return(pii_from_user)
-    allow(subject).to receive(:flow_session).and_return(flow_session)
     stub_sign_in(user)
+    subject.user_session['idv/in_person'] = flow_session
     stub_analytics
     stub_attempts_tracker
     allow(@analytics).to receive(:track_event)
@@ -26,20 +25,21 @@ RSpec.describe Idv::InPerson::SsnController do
     subject.idv_session.flow_path = 'standard'
   end
 
+  describe '#step_info' do
+    it 'returns a valid StepInfo object' do
+      expect(Idv::InPerson::SsnController.step_info).to be_valid
+    end
+  end
+
   describe 'before_actions' do
-    context('#confirm_in_person_address_step_complete') do
+    context '#confirm_in_person_address_step_complete' do
       context 'residential address controller flag not enabled' do
         before do
           allow(IdentityConfig.store).to receive(:in_person_residential_address_controller_enabled).
             and_return(false)
         end
         it 'redirects if the user hasn\'t completed the address page' do
-          # delete address attributes on session
-          flow_session[:pii_from_user].delete(:address1)
-          flow_session[:pii_from_user].delete(:address2)
-          flow_session[:pii_from_user].delete(:city)
-          flow_session[:pii_from_user].delete(:state)
-          flow_session[:pii_from_user].delete(:zipcode)
+          subject.user_session['idv/in_person'][:pii_from_user].delete(:address1)
           get :show
 
           expect(response).to redirect_to idv_in_person_step_url(step: :address)
@@ -52,12 +52,7 @@ RSpec.describe Idv::InPerson::SsnController do
             and_return(true)
         end
         it 'redirects if address page not completed' do
-          # delete address attributes on session
-          flow_session[:pii_from_user].delete(:address1)
-          flow_session[:pii_from_user].delete(:address2)
-          flow_session[:pii_from_user].delete(:city)
-          flow_session[:pii_from_user].delete(:state)
-          flow_session[:pii_from_user].delete(:zipcode)
+          subject.user_session['idv/in_person'][:pii_from_user].delete(:address1)
           get :show
 
           expect(response).to redirect_to idv_in_person_proofing_address_url
@@ -216,6 +211,12 @@ RSpec.describe Idv::InPerson::SsnController do
         expect(response).to have_rendered('idv/shared/ssn')
         expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
         expect(response.body).to include('Enter a nine-digit Social Security number')
+      end
+
+      it 'invalidates future steps' do
+        expect(subject).to receive(:clear_future_steps!)
+
+        put :update, params: params
       end
     end
   end

@@ -34,6 +34,8 @@ interface AppRootData {
   exitUrl: string;
   idvInPersonUrl?: string;
   securityAndPrivacyHowItWorksUrl: string;
+  skipDocAuth: string;
+  howToVerifyURL: string;
   uiNotReadySectionEnabled: string;
   uiExitQuestionSectionEnabled: string;
 }
@@ -63,22 +65,14 @@ function getMetaContent(name): string | null {
 const device: DeviceContextValue = { isMobile: isCameraCapableMobile() };
 
 const trackEvent: typeof baseTrackEvent = (event, payload) => {
-  const {
-    flowPath,
-    acuantSdkUpgradeABTestingEnabled,
-    useAlternateSdk,
-    acuantVersion,
-    phoneQuestionAbTestBucket,
-    phoneWithCamera,
-  } = appRoot.dataset;
+  const { flowPath, acuantSdkUpgradeABTestingEnabled, useAlternateSdk, acuantVersion } =
+    appRoot.dataset;
   return baseTrackEvent(event, {
     ...payload,
     flow_path: flowPath,
     acuant_sdk_upgrade_a_b_testing_enabled: acuantSdkUpgradeABTestingEnabled,
     use_alternate_sdk: useAlternateSdk,
     acuant_version: acuantVersion,
-    phone_question_ab_test_bucket: phoneQuestionAbTestBucket,
-    phone_with_camera: phoneWithCamera,
   });
 };
 
@@ -102,7 +96,8 @@ const {
   inPersonOutageMessageEnabled,
   inPersonOutageExpectedUpdateDate,
   usStatesTerritories = '',
-  phoneWithCamera = '',
+  skipDocAuth,
+  howToVerifyUrl,
   uiNotReadySectionEnabled = '',
   uiExitQuestionSectionEnabled = '',
 } = appRoot.dataset as DOMStringMap & AppRootData;
@@ -126,6 +121,8 @@ const App = composeComponents(
         inPersonOutageExpectedUpdateDate,
         inPersonFullAddressEntryEnabled: inPersonFullAddressEntryEnabled === 'true',
         usStatesTerritories: parsedUsStatesTerritories,
+        skipDocAuth: skipDocAuth === 'true',
+        howToVerifyURL: howToVerifyUrl,
       },
     },
   ],
@@ -154,7 +151,6 @@ const App = composeComponents(
       isMockClient,
       formData,
       flowPath,
-      phoneWithCamera,
     },
   ],
   [

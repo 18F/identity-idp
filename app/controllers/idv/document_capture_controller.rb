@@ -9,7 +9,6 @@ module Idv
 
     before_action :confirm_not_rate_limited, except: [:update]
     before_action :confirm_step_allowed
-    before_action :confirm_verify_info_step_needed
     before_action :override_csp_to_allow_acuant
 
     def show
@@ -49,6 +48,7 @@ module Idv
         sp_name: decorated_sp_session.sp_name,
         failure_to_proof_url: return_to_sp_failure_to_proof_url(step: 'document_capture'),
         phone_with_camera: idv_session.phone_with_camera,
+        skip_doc_auth: idv_session.skip_doc_auth,
       }.merge(
         acuant_sdk_upgrade_a_b_testing_variables,
         phone_question_ab_test_analytics_bucket,
@@ -58,8 +58,8 @@ module Idv
     def self.step_info
       Idv::StepInfo.new(
         key: :document_capture,
-        controller: controller_name,
-        next_steps: [:ssn], # :ipp_state_id
+        controller: self,
+        next_steps: [:ssn, :ipp_ssn], # :ipp_state_id
         preconditions: ->(idv_session:, user:) { idv_session.flow_path == 'standard' },
         undo_step: ->(idv_session:, user:) do
           idv_session.pii_from_doc = nil

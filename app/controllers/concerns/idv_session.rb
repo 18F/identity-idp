@@ -18,12 +18,6 @@ module IdvSession
     session[:doc_capture_user_id].present?
   end
 
-  def confirm_phone_or_address_confirmed
-    return if idv_session.address_confirmed? || idv_session.phone_confirmed?
-
-    redirect_to idv_enter_password_url
-  end
-
   def idv_session
     @idv_session ||= Idv::Session.new(
       user_session: user_session,

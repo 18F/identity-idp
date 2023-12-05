@@ -10,6 +10,7 @@ module Idv
     before_action :confirm_two_factor_authenticated
     before_action :confirm_phone_or_address_confirmed
     before_action :confirm_profile_has_been_created
+    before_action :confirm_personal_key_not_acknowledged
 
     def show
       analytics.idv_personal_key_visited(
@@ -22,8 +23,6 @@ module Idv
     end
 
     def update
-      user_session[:need_personal_key_confirmation] = false
-
       analytics.idv_personal_key_submitted(
         address_verification_method: idv_session.address_verification_mechanism,
         deactivation_reason: idv_session.profile&.deactivation_reason,
@@ -49,6 +48,16 @@ module Idv
       else
         after_sign_in_path_for(current_user)
       end
+    end
+
+    def confirm_phone_or_address_confirmed
+      return if idv_session.address_confirmed? || idv_session.phone_confirmed?
+
+      redirect_to idv_enter_password_url
+    end
+
+    def confirm_personal_key_not_acknowledged
+      redirect_to next_step if idv_session.personal_key_acknowledged
     end
 
     def confirm_profile_has_been_created

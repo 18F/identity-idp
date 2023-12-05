@@ -51,11 +51,11 @@ RSpec.feature 'phone question step' do
         attach_and_submit_images
         expect(fake_analytics).to have_logged_event(
           'IdV: doc auth image upload form submitted',
-          hash_including(phone_with_camera: true),
+          hash_including(phone_with_camera: nil),
         )
         expect(fake_analytics).to have_logged_event(
           'IdV: doc auth image upload vendor submitted',
-          hash_including(phone_with_camera: true),
+          hash_including(phone_with_camera: nil),
         )
       end
     end
@@ -71,11 +71,11 @@ RSpec.feature 'phone question step' do
         attach_and_submit_images
         expect(fake_analytics).to have_logged_event(
           'IdV: doc auth image upload form submitted',
-          hash_including(phone_with_camera: false),
+          hash_including(phone_with_camera: nil),
         )
         expect(fake_analytics).to have_logged_event(
           'IdV: doc auth image upload vendor submitted',
-          hash_including(phone_with_camera: false),
+          hash_including(phone_with_camera: nil),
         )
       end
     end

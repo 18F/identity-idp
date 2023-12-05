@@ -273,6 +273,11 @@ module AnalyticsEvents
     track_event('Account Reset: Cancel Account Recovery Options')
   end
 
+  # User was logged out due to an existing active session
+  def concurrent_session_logout
+    track_event(:concurrent_session_logout)
+  end
+
   # @param [String] redirect_url URL user was directed to
   # @param [String, nil] step which step
   # @param [String, nil] location which part of a step, if applicable
@@ -578,7 +583,6 @@ module AnalyticsEvents
   # @param [String] acuant_version
   # @param [String] flow_path whether the user is in the hybrid or standard flow
   # @param [Boolean] isCameraSupported
-  # @param [String] phone_question_ab_test_analytics_bucket
   # @param [Boolean] success
   # @param [Boolean] use_alternate_sdk
   # The Acuant SDK was loaded
@@ -588,7 +592,6 @@ module AnalyticsEvents
     acuant_version:,
     flow_path:,
     isCameraSupported:,
-    phone_question_ab_test_analytics_bucket:,
     success:,
     use_alternate_sdk:,
     **_extra
@@ -599,7 +602,6 @@ module AnalyticsEvents
       acuant_version: acuant_version,
       flow_path: flow_path,
       isCameraSupported: isCameraSupported,
-      phone_question_ab_test_analytics_bucket: phone_question_ab_test_analytics_bucket,
       success: success,
       use_alternate_sdk: use_alternate_sdk,
     )
@@ -654,8 +656,6 @@ module AnalyticsEvents
   # @param [Boolean] isAssessedAsUnsupported
   # @param [String] mimeType MIME type of image added
   # @param [Integer] moire
-  # @param [String] phone_question_ab_test_bucket
-  # @param [String] phone_with_camera the result of the phone question a/b test
   # @param [Integer] sharpness
   # @param [Integer] sharpnessScoreThreshold
   # @param [Integer] size size of image added in bytes
@@ -683,8 +683,6 @@ module AnalyticsEvents
     isAssessedAsUnsupported:,
     mimeType:,
     moire:,
-    phone_question_ab_test_bucket:,
-    phone_with_camera:,
     sharpness:,
     sharpnessScoreThreshold:,
     size:,
@@ -713,8 +711,6 @@ module AnalyticsEvents
       isAssessedAsUnsupported: isAssessedAsUnsupported,
       mimeType: mimeType,
       moire: moire,
-      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
-      phone_with_camera: phone_with_camera,
       sharpness: sharpness,
       sharpnessScoreThreshold: sharpnessScoreThreshold,
       size: size,
@@ -728,8 +724,6 @@ module AnalyticsEvents
   # @param [String] acuant_version
   # @param [String] flow_path whether the user is in the hybrid or standard flow
   # @param [Boolean] isDrop
-  # @param [String] phone_question_ab_test_bucket
-  # @param [String] phone_with_camera the result of the phone question a/b test
   # @param [Boolean] source
   # @param [Boolean] use_alternate_sdk
   def idv_back_image_clicked(
@@ -737,8 +731,6 @@ module AnalyticsEvents
     acuant_version:,
     flow_path:,
     isDrop:,
-    phone_question_ab_test_bucket:,
-    phone_with_camera:,
     source:,
     use_alternate_sdk:,
     **_extra
@@ -749,8 +741,6 @@ module AnalyticsEvents
       acuant_version: acuant_version,
       flow_path: flow_path,
       isDrop: isDrop,
-      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
-      phone_with_camera: phone_with_camera,
       source: source,
       use_alternate_sdk: use_alternate_sdk,
     )
@@ -1180,7 +1170,6 @@ module AnalyticsEvents
   # @param [String] acuant_version
   # @param [String] flow_path whether the user is in the hybrid or standard flow
   # @param [Array] ids ID Types the user has checked whether they have
-  # @param [String] phone_question_ab_test_bucket
   # @param [String] use_alternate_sdk
   # Exit survey of optional questions when the user leaves document capture
   def idv_exit_optional_questions(
@@ -1188,7 +1177,6 @@ module AnalyticsEvents
     acuant_version:,
     flow_path:,
     ids:,
-    phone_question_ab_test_bucket:,
     use_alternate_sdk:,
     **_extra
   )
@@ -1198,7 +1186,6 @@ module AnalyticsEvents
       acuant_version: acuant_version,
       flow_path: flow_path,
       ids: ids,
-      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
       use_alternate_sdk: use_alternate_sdk,
     )
   end
@@ -1274,8 +1261,6 @@ module AnalyticsEvents
   # @param [Boolean] isAssessedAsUnsupported
   # @param [String] mimeType MIME type of image added
   # @param [Integer] moire
-  # @param [String] phone_question_ab_test_bucket
-  # @param [String] phone_with_camera the result of the phone question a/b test
   # @param [Integer] sharpness
   # @param [Integer] sharpnessScoreThreshold
   # @param [Integer] size size of image added in bytes
@@ -1303,8 +1288,6 @@ module AnalyticsEvents
     isAssessedAsUnsupported:,
     mimeType:,
     moire:,
-    phone_question_ab_test_bucket:,
-    phone_with_camera:,
     sharpness:,
     sharpnessScoreThreshold:,
     size:,
@@ -1333,8 +1316,6 @@ module AnalyticsEvents
       isAssessedAsUnsupported: isAssessedAsUnsupported,
       mimeType: mimeType,
       moire: moire,
-      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
-      phone_with_camera: phone_with_camera,
       sharpness: sharpness,
       sharpnessScoreThreshold: sharpnessScoreThreshold,
       size: size,
@@ -1348,8 +1329,6 @@ module AnalyticsEvents
   # @param [String] acuant_version
   # @param [String] flow_path whether the user is in the hybrid or standard flow
   # @param [Boolean] isDrop
-  # @param [String] phone_question_ab_test_bucket
-  # @param [String] phone_with_camera the result of the phone question a/b test
   # @param [String] source
   # @param [String] use_alternate_sdk
   def idv_front_image_clicked(
@@ -1357,8 +1336,6 @@ module AnalyticsEvents
     acuant_version:,
     flow_path:,
     isDrop:,
-    phone_question_ab_test_bucket:,
-    phone_with_camera:,
     source:,
     use_alternate_sdk:,
     **_extra
@@ -1369,8 +1346,6 @@ module AnalyticsEvents
       acuant_version: acuant_version,
       flow_path: flow_path,
       isDrop: isDrop,
-      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
-      phone_with_camera: phone_with_camera,
       source: source,
       use_alternate_sdk: use_alternate_sdk,
     )
@@ -2362,39 +2337,25 @@ module AnalyticsEvents
     )
   end
 
-  # @param [String] phone_question_ab_test_bucket
-  # @param [String] phone_with_camera the result of the phone question a/b test
   # @param [Boolean] isCancelled
   # @param [Boolean] isRateLimited
   # rubocop:disable Naming/VariableName,Naming/MethodParameterName
   def idv_link_sent_capture_doc_polling_complete(
     isCancelled:,
     isRateLimited:,
-    phone_question_ab_test_bucket:,
-    phone_with_camera:,
     **_extra
   )
     track_event(
       'Frontend: IdV: Link sent capture doc polling complete',
       isCancelled: isCancelled,
       isRateLimited: isRateLimited,
-      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
-      phone_with_camera: phone_with_camera,
     )
   end
   # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
-  # @param [String] phone_question_ab_test_bucket
-  # @param [String] phone_with_camera the result of the phone question a/b test
-  def idv_link_sent_capture_doc_polling_started(
-    phone_question_ab_test_bucket:,
-    phone_with_camera:,
-    **_extra
-  )
+  def idv_link_sent_capture_doc_polling_started(**_extra)
     track_event(
       'Frontend: IdV: Link sent capture doc polling started',
-      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
-      phone_with_camera: phone_with_camera,
     )
   end
 
@@ -3423,6 +3384,12 @@ module AnalyticsEvents
       error_count: error_count,
       **extra,
     )
+  end
+
+  # @param [String] location Placement location
+  # Logged when a browser with JavaScript disabled loads the detection stylesheet
+  def no_js_detect_stylesheet_loaded(location:, **extra)
+    track_event(:no_js_detect_stylesheet_loaded, location:, **extra)
   end
 
   # @param [Boolean] success

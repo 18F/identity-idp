@@ -16,7 +16,7 @@
 
     <p><strong><%= t('components.javascript_required.next_step') %></strong></p>
   <% end %>
-  <link rel="stylesheet" href="<%= no_js_detect_css_path %>">
+  <link rel="stylesheet" href="<%= no_js_detect_css_path(location:) %>">
 </noscript>
 <div class="js">
   <% if was_no_js? %>

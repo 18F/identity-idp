@@ -1,14 +1,11 @@
 module Idv
   class EnterPasswordController < ApplicationController
     include Idv::AvailabilityConcern
-
-    before_action :personal_key_confirmed
-
     include IdvStepConcern
     include StepIndicatorConcern
 
-    before_action :confirm_verify_info_step_complete
-    before_action :confirm_address_step_complete
+    before_action :confirm_step_allowed
+    before_action :confirm_no_profile_yet
     before_action :confirm_current_password, only: [:create]
 
     helper_method :step_indicator_step
@@ -31,11 +28,10 @@ module Idv
     end
 
     def create
+      clear_future_steps!
       irs_attempts_api_tracker.idv_password_entered(success: true)
 
       init_profile
-
-      user_session[:need_personal_key_confirmation] = true
 
       flash[:success] =
         if idv_session.verify_by_mail?
@@ -74,6 +70,19 @@ module Idv
     def step_indicator_step
       return :secure_account unless idv_session.verify_by_mail?
       :get_a_letter
+    end
+
+    def self.step_info
+      Idv::StepInfo.new(
+        key: :enter_password,
+        controller: self,
+        action: :new,
+        next_steps: [FlowPolicy::FINAL],
+        preconditions: ->(idv_session:, user:) do
+          idv_session.phone_or_address_step_complete?
+        end,
+        undo_step: ->(idv_session:, user:) {},
+      )
     end
 
     private
@@ -152,14 +161,22 @@ module Idv
       params.fetch(:user, {})[:password].presence
     end
 
-    def personal_key_confirmed
-      return unless current_user
-      return unless current_user.active_profile.present? && need_personal_key_confirmation?
-      redirect_to next_step
-    end
+    def confirm_no_profile_yet
+      # When no profile has been minted yet, keep them on this page.
+      return if !idv_session.profile.present?
 
-    def need_personal_key_confirmation?
-      user_session[:need_personal_key_confirmation]
+      # If the user is in the IPP flow, but we haven't actually managed to
+      # set up their enrollment (due to exception), allow them to
+      # see this page so they can re-submit and attempt to establish the
+      # enrollment.
+      is_ipp_and_needs_to_enroll_with_usps =
+        idv_session.profile.in_person_verification_pending? &&
+        idv_session.profile.in_person_enrollment&.establishing?
+
+      return if is_ipp_and_needs_to_enroll_with_usps
+
+      # Otherwise, move the user on
+      redirect_to next_step
     end
 
     def next_step
@@ -180,6 +197,7 @@ module Idv
         reason: 'Request exception',
       )
       flash[:error] = t('idv.failure.exceptions.internal_error')
+      idv_session.invalidate_personal_key!
       redirect_to idv_enter_password_url
     end
   end

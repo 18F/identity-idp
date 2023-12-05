@@ -7,7 +7,6 @@ module Idv
     include PhoneQuestionAbTestConcern
 
     before_action :confirm_not_rate_limited
-    before_action :confirm_verify_info_step_needed
     before_action :confirm_step_allowed
     before_action :confirm_hybrid_handoff_needed, only: :show
     before_action :maybe_redirect_for_phone_question_ab_test, only: :show
@@ -40,7 +39,7 @@ module Idv
     def self.step_info
       Idv::StepInfo.new(
         key: :hybrid_handoff,
-        controller: controller_name,
+        controller: self,
         next_steps: [:link_sent, :document_capture],
         preconditions: ->(idv_session:, user:) { idv_session.idv_consent_given },
         undo_step: ->(idv_session:, user:) do
