@@ -277,7 +277,7 @@ RSpec.describe 'Idv::FlowPolicy' do
     end
 
     context 'preconditions for request_letter are present' do
-      it 'returns enter_password with gpo verification pending' do
+      it 'allows request_letter' do
         stub_up_to_key(key: :verify_info, idv_session: idv_session)
 
         expect(subject.controller_allowed?(controller: Idv::ByMail::RequestLetterController)).to be

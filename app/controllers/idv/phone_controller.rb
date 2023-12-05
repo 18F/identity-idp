@@ -65,7 +65,7 @@ module Idv
         key: :phone,
         controller: self,
         action: :new,
-        next_steps: [:otp_verification],
+        next_steps: [:otp_verification, :enter_password],
         preconditions: ->(idv_session:, user:) { idv_session.verify_info_step_complete? },
         undo_step: ->(idv_session:, user:) do
           idv_session.vendor_phone_confirmation = nil
