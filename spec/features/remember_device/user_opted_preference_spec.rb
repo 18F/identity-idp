@@ -10,8 +10,8 @@ RSpec.describe 'Unchecking remember device' do
         select_2fa_option('auth_app')
 
         secret = find('#qr-code').text
-        nickname_field = find('[aria-labelledby="totp-step-1-label"]')
-        nickname_field.set('App')
+
+        fill_in_totp_name
         fill_in 'code', with: generate_totp_code(secret)
         uncheck 'remember_device'
 

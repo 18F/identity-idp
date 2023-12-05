@@ -114,6 +114,14 @@ module Features
       click_button t('links.sign_in')
     end
 
+    def fill_in_totp_name(nickname = 'App')
+      fill_in 'name', with: nickname
+    end
+
+    def fill_in_totp_code
+      fill_in 'code', with: generate_totp_code(secret)
+    end
+
     def continue_as(email = nil, password = VALID_PASSWORD)
       return unless current_url.include?(user_authorization_confirmation_path)
 
@@ -567,14 +575,10 @@ module Features
 
       expect(page).to have_current_path authenticator_setup_path
 
-      nickname_field = find('[aria-labelledby="totp-step-1-label"]')
-      nickname_field.set('App')
+      fill_in_totp_name
 
       secret = find('#qr-code').text
-
-      nickname_field = find('[aria-labelledby="totp-step-4-label"]')
-      totp_code = generate_totp_code(secret)
-      nickname_field.set(totp_code)
+      fill_in :code, with: secret
 
       click_button 'Submit'
     end

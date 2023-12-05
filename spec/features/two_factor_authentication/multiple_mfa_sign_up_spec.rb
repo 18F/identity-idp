@@ -73,8 +73,7 @@ RSpec.feature 'Multi Two Factor Authentication' do
 
       select_2fa_option('auth_app')
 
-      nickname_field = find('[aria-labelledby="totp-step-1-label"]')
-      nickname_field.set('App')
+      fill_in_totp_name
 
       secret = find('#qr-code').text
       totp = generate_totp_code(secret)
@@ -100,8 +99,7 @@ RSpec.feature 'Multi Two Factor Authentication' do
 
       expect(current_path).to eq authenticator_setup_path
 
-      nickname_field = find('[aria-labelledby="totp-step-1-label"]')
-      nickname_field.set('App')
+      fill_in_totp_name
 
       secret = find('#qr-code').text
       totp = generate_totp_code(secret)

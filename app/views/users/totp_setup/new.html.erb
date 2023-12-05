@@ -19,7 +19,7 @@
 <%= simple_form_for('', method: :patch, html: { class: 'margin-bottom-4' }) do |f| %>
   <fieldset aria-labelledby="totp-intro" class="padding-0 border-0 margin-y-4 margin-x-0">
     <%= render ProcessListComponent.new(connected: true) do |c| %>
-      <%= c.with_item(heading: t('forms.totp_setup.totp_step_1'), id: 'totp-step-1-label') do %>
+      <%= c.with_item(heading: t('forms.totp_setup.totp_step_1'), heading_id: 'totp-step-1-label') do %>
         <p><%= t('forms.totp_setup.totp_step_1a') %></p>
         <%= render ValidatedFieldComponent.new(
               form: f,
@@ -44,7 +44,7 @@
         </code>
         <%= render ClipboardButtonComponent.new(clipboard_text: @code.upcase, outline: true) %>
       <% end %>
-      <%= c.with_item(heading: t('forms.totp_setup.totp_step_4'), id: 'totp-step-4-label') do %>
+      <%= c.with_item(heading: t('forms.totp_setup.totp_step_4'), heading_id: 'totp-step-4-label') do %>
         <%= render OneTimeCodeInputComponent.new(
               form: f,
               transport: nil,
