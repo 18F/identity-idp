@@ -264,6 +264,18 @@ interface AcuantCameraContextProps {
    */
   onCropStart: () => void;
   /**
+   * Camera is ready boolean
+   */
+  isReady: boolean;
+  /**
+   * Whether or not the full screen capturing modal is open
+   */
+  setIsActive: (boolean) => void;
+  /**
+   * Translation hook
+   */
+  t: (string) => string;
+  /**
    * React children node
    */
   children: ReactNode;
@@ -293,10 +305,11 @@ function AcuantCamera({
   onImageCaptureSuccess = () => {},
   onImageCaptureFailure = () => {},
   onCropStart = () => {},
+  isReady = false,
+  setIsActive = () => {},
+  t = () => '',
   children,
 }: AcuantCameraContextProps) {
-  const { isReady, setIsActive } = useContext(AcuantContext);
-  const { t } = useI18n();
   const onCropped = useImmutableCallback(
     (response) => {
       if (response) {
@@ -308,6 +321,7 @@ function AcuantCamera({
     [onImageCaptureSuccess],
   );
 
+    console.log('effect')
   useEffect(() => {
     const textOptions = {
       text: {

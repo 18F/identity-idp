@@ -317,6 +317,7 @@ function AcuantCapture(
   const {
     isReady,
     isActive: isAcuantInstanceActive,
+    setIsActive: setIsAcuantInstanceActive,
     acuantCaptureMode,
     isError,
     isCameraSupported,
@@ -645,6 +646,9 @@ function AcuantCapture(
           onCropStart={onCropStart}
           onImageCaptureSuccess={onImageCaptureSuccess}
           onImageCaptureFailure={onImageCaptureFailure}
+          isReady={isReady}
+          setIsActive={setIsAcuantInstanceActive}
+          t={t}
         >
           {!hasStartedCropping && (
             <FullScreen
