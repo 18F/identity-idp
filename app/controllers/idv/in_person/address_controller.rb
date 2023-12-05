@@ -6,7 +6,7 @@ module Idv
 
       before_action :render_404_if_in_person_residential_address_controller_enabled_not_set
       before_action :confirm_in_person_state_id_step_complete
-      ## before_action :confirm_step_allowed # pending FSM removal
+      ## before_action :confirm_step_allowed # pending FSM removal of state id step
 
       def show
         analytics.idv_in_person_proofing_address_visited(**analytics_arguments)

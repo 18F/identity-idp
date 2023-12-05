@@ -491,9 +491,12 @@ RSpec.describe 'Identity verification', :js do
     go_back
     go_back
     expect(page).to have_current_path(idv_in_person_verify_info_path)
+    go_back
+    expect(page).to have_current_path(idv_in_person_ssn_path)
+
     # can't go back further with in person controllers (yet)
 
-    3.times { go_forward }
+    4.times { go_forward }
   end
 
   def try_to_go_back_from_letter_enqueued

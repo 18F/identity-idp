@@ -55,6 +55,10 @@ RSpec.describe 'doc auth In person proofing residential address step', js: true 
       expect(page).to have_text(InPersonHelper::GOOD_ADDRESS2)
       expect(page).to have_text(InPersonHelper::GOOD_CITY)
       expect(page).to have_text(InPersonHelper::GOOD_ZIPCODE)
+
+      go_back
+      go_back
+      expect(page).to have_current_path(idv_in_person_proofing_address_url)
     end
   end
 end

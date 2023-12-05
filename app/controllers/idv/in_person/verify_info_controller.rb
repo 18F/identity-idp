@@ -8,7 +8,7 @@ module Idv
       include VerifyInfoConcern
 
       before_action :confirm_not_rate_limited_after_doc_auth, except: [:show]
-      before_action :confirm_ssn_step_complete
+      before_action :confirm_step_allowed
 
       def show
         @step_indicator_steps = step_indicator_steps
@@ -88,11 +88,6 @@ module Idv
           irs_reproofing: irs_reproofing?,
         }.merge(ab_test_analytics_buckets).
           merge(**extra_analytics_properties)
-      end
-
-      def confirm_ssn_step_complete
-        return if pii.present? && idv_session.ssn.present?
-        redirect_to prev_url
       end
     end
   end

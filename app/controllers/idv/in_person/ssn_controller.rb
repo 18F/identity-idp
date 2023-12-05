@@ -9,6 +9,7 @@ module Idv
 
       before_action :confirm_not_rate_limited_after_doc_auth
       before_action :confirm_in_person_address_step_complete
+      # before_action :confirm_step_allowed # pending FSM removal for in person address step
       before_action :override_csp_for_threat_metrix
 
       attr_reader :ssn_presenter
