@@ -1,6 +1,8 @@
 import sinon from 'sinon';
 import quibble from 'quibble';
+import { waitFor } from '@testing-library/dom';
 import type { IsWebauthnPasskeySupported } from './is-webauthn-passkey-supported';
+import type { IsWebauthnPlatformAvailable } from './is-webauthn-platform-authenticator-available';
 
 describe('WebauthnInputElement', () => {
   const isWebauthnPasskeySupported = sinon.stub<
@@ -8,8 +10,14 @@ describe('WebauthnInputElement', () => {
     ReturnType<IsWebauthnPasskeySupported>
   >();
 
+  const isWebauthnPlatformAvailable = sinon.stub<
+    Parameters<IsWebauthnPlatformAvailable>,
+    ReturnType<IsWebauthnPlatformAvailable>
+  >();
+
   before(async () => {
     quibble('./is-webauthn-passkey-supported', isWebauthnPasskeySupported);
+    quibble('./is-webauthn-platform-authenticator-available', isWebauthnPlatformAvailable);
     await import('./webauthn-input-element');
   });
 
@@ -21,6 +29,7 @@ describe('WebauthnInputElement', () => {
     context('unsupported passkey not shown', () => {
       beforeEach(() => {
         isWebauthnPasskeySupported.returns(false);
+        isWebauthnPlatformAvailable.resolves(false);
         document.body.innerHTML = `<lg-webauthn-input hidden></lg-webauthn-input>`;
       });
 
@@ -34,6 +43,7 @@ describe('WebauthnInputElement', () => {
     context('unsupported passkey shown', () => {
       beforeEach(() => {
         isWebauthnPasskeySupported.returns(false);
+        isWebauthnPlatformAvailable.resolves(false);
         document.body.innerHTML = `<lg-webauthn-input show-unsupported-passkey hidden></lg-webauthn-input>`;
       });
 
@@ -47,15 +57,32 @@ describe('WebauthnInputElement', () => {
   });
 
   context('device supports passkey', () => {
-    beforeEach(() => {
-      isWebauthnPasskeySupported.returns(true);
-      document.body.innerHTML = `<lg-webauthn-input hidden></lg-webauthn-input>`;
+    context('unsupported publickeycredential not shown', () => {
+      beforeEach(() => {
+        isWebauthnPlatformAvailable.resolves(false);
+        isWebauthnPasskeySupported.returns(true);
+        document.body.innerHTML = `<lg-webauthn-input hidden></lg-webauthn-input>`;
+      });
+
+      it('stays hidden', () => {
+        const element = document.querySelector('lg-webauthn-input')!;
+
+        expect(element.hidden).to.be.true();
+      });
     });
 
-    it('becomes visible', () => {
-      const element = document.querySelector('lg-webauthn-input')!;
+    context('publickeycredential input is shown', () => {
+      beforeEach(() => {
+        isWebauthnPasskeySupported.returns(true);
+        isWebauthnPlatformAvailable.resolves(true);
+        document.body.innerHTML = `<lg-webauthn-input hidden></lg-webauthn-input>`;
+      });
 
-      expect(element.hidden).to.be.false();
+      it('becomes visible', async () => {
+        const element = document.querySelector('lg-webauthn-input')!;
+
+        await waitFor(() => expect(element.hidden).to.be.false());
+      });
     });
   });
 });

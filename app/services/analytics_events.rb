@@ -273,6 +273,11 @@ module AnalyticsEvents
     track_event('Account Reset: Cancel Account Recovery Options')
   end
 
+  # User was logged out due to an existing active session
+  def concurrent_session_logout
+    track_event(:concurrent_session_logout)
+  end
+
   # @param [String] redirect_url URL user was directed to
   # @param [String, nil] step which step
   # @param [String, nil] location which part of a step, if applicable
@@ -3379,6 +3384,12 @@ module AnalyticsEvents
       error_count: error_count,
       **extra,
     )
+  end
+
+  # @param [String] location Placement location
+  # Logged when a browser with JavaScript disabled loads the detection stylesheet
+  def no_js_detect_stylesheet_loaded(location:, **extra)
+    track_event(:no_js_detect_stylesheet_loaded, location:, **extra)
   end
 
   # @param [Boolean] success

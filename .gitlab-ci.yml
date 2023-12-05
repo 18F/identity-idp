@@ -10,7 +10,7 @@ variables:
   ECR_REGISTRY: '${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com'
   IDP_CI_SHA: 'sha256:26bcd68d39085d0e9dbfe272ec3f95158a272dcc2e25f5152b1d8e4600cf1cac'
   PKI_IMAGE_TAG: 'main'
-  DASHBOARD_IMAGE_TAG: 'ab661426de8de0b4cce094f8c862ad3ce6d97274'
+  DASHBOARD_IMAGE_TAG: 'main'
 
 default:
   image: '${ECR_REGISTRY}/idp/ci@${IDP_CI_SHA}'

@@ -228,8 +228,7 @@ fr:
       help_html: Si vous n’avez pas effectué ce changement, %{disavowal_link_html}.
         Pour plus d’aide, veuillez visiter le %{help_link_html} de
         %{app_name_html} ou %{contact_link_html}.
-      info_html: '<p>Votre compte %{app_name} a été connecté sur un nouvel
-        appareil.</p><br/><p><strong>%{date}<br/>%{location}</strong></p>'
+      info: 'Votre compte %{app_name} a été connecté sur un nouvel appareil.'
       subject: Nouvelle connexion avec votre compte %{app_name}
     password_changed:
       disavowal_link: réinitialiser votre mot de passe

@@ -125,8 +125,8 @@ class ApplicationController < ActionController::Base
   end
 
   def disable_caching
-    response.headers['Cache-Control'] = 'no-store'
-    response.headers['Pragma'] = 'no-cache'
+    response.headers[Rack::CACHE_CONTROL] = 'no-store'
+    response.headers['pragma'] = 'no-cache'
   end
 
   def cache_issuer_in_cookie
