@@ -117,12 +117,17 @@ module Idv
 
       def confirmation_maker_perform
         confirmation_maker = GpoConfirmationMaker.new(
-          pii: Pii::Cacher.new(current_user, user_session).fetch,
+          pii: pii,
           service_provider: current_sp,
           profile: current_user.pending_profile,
         )
         confirmation_maker.perform
         confirmation_maker
+      end
+
+      def pii
+        Pii::Cacher.new(current_user, user_session).
+          fetch(current_user.gpo_verification_pending_profile.id)
       end
 
       def send_reminder
