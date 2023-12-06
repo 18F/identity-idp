@@ -22,9 +22,14 @@ module Idv
     def update
       clear_future_steps!
       result = Idv::HowToVerifyForm.new.submit(how_to_verify_form_params)
+      if how_to_verify_form_params[:selection] == []
+        sendable_form_params = {}
+      else
+        sendable_form_params = how_to_verify_form_params
+      end
 
       analytics.idv_doc_auth_how_to_verify_submitted(
-        **analytics_arguments.merge(result.to_h),
+        **analytics_arguments.merge(sendable_form_params).merge(result.to_h),
       )
 
       if result.success?
@@ -45,6 +50,11 @@ module Idv
       end
     end
 
+    def self.enabled?
+      IdentityConfig.store.in_person_proofing_opt_in_enabled &&
+        IdentityConfig.store.in_person_proofing_enabled
+    end
+
     def self.step_info
       Idv::StepInfo.new(
         key: :how_to_verify,
@@ -57,17 +67,15 @@ module Idv
       )
     end
 
-    def self.enabled?
-      IdentityConfig.store.in_person_proofing_opt_in_enabled
-    end
-
     private
 
     def analytics_arguments
       {
         step: 'how_to_verify',
         analytics_id: 'Doc Auth',
-      }
+        skip_hybrid_handoff: idv_session.skip_hybrid_handoff,
+        irs_reproofing: irs_reproofing?,
+      }.merge(ab_test_analytics_buckets)
     end
 
     def how_to_verify_form_params

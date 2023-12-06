@@ -41,7 +41,7 @@ module Reporting
     end
 
     def stats_month
-      report_date.prev_month(1).strftime('%b-%Y')
+      report_date.strftime('%b-%Y')
     end
 
     private

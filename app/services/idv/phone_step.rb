@@ -130,10 +130,8 @@ module Idv
     end
 
     def update_idv_session
-      idv_session.address_verification_mechanism = :phone
       idv_session.applicant = applicant
-      idv_session.vendor_phone_confirmation = true
-      idv_session.user_phone_confirmation = false
+      idv_session.mark_phone_step_started!
 
       ProofingComponent.find_or_create_by(user: idv_session.current_user).
         update(address_check: 'lexis_nexis_address')

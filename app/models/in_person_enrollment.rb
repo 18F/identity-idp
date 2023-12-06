@@ -136,7 +136,7 @@ class InPersonEnrollment < ApplicationRecord
   end
 
   def days_to_due_date
-    today = Time.zone.now.utc
+    today = Time.zone.now
     (due_date - today).seconds.in_days.to_i
   end
 

@@ -45,6 +45,7 @@ module Idv
 
     def create
       clear_future_steps!
+      idv_session.invalidate_phone_step!
       result = idv_form.submit(step_params)
       Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
         call(:verify_phone, :update, result.success?)

@@ -17,7 +17,6 @@ module Idv
       personal_key
       personal_key_acknowledged
       phone_for_mobile_flow
-      phone_with_camera
       pii_from_doc
       previous_phone_step_params
       profile_id
@@ -216,12 +215,18 @@ module Idv
       session[:resolution_successful] = nil
     end
 
-    def invalidate_steps_after_verify_info!
-      session[:address_verification_mechanism] = 'phone'
-      invalidate_phone_step!
+    def mark_phone_step_started!
+      session[:address_verification_mechanism] = :phone
+      session[:vendor_phone_confirmation] = true
+      session[:user_phone_confirmation] = false
+    end
+
+    def mark_phone_step_complete!
+      session[:user_phone_confirmation] = true
     end
 
     def invalidate_phone_step!
+      session[:address_verification_mechanism] = nil
       session[:vendor_phone_confirmation] = nil
       session[:user_phone_confirmation] = nil
     end

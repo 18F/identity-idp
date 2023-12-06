@@ -8,7 +8,6 @@ es:
     buttons:
       add_new_photos: Añadir nuevas fotos
       continue: Continuar
-      have_phone: Sí tengo teléfono
       take_or_upload_picture_html: '<lg-take-photo>Toma una foto</lg-take-photo> o
         <lg-upload>Sube una foto</lg-upload>'
       take_picture: Toma una foto
@@ -190,14 +189,11 @@ es:
       interstitial: Estamos procesando sus imágenes
       lets_go: Cómo funciona la verificación de su identidad
       no_ssn: ¿No tiene un número de Seguro Social?
-      phone_question: ¿Tiene un teléfono con el que pueda tomar fotos de su documento
-        de identidad?
       review_issues: Revise sus imágenes e inténtelo de nuevo
       secure_account: Asegure su cuenta
       selfie: Foto
       ssn: Ingrese su número de Seguro Social
       ssn_update: Actualice su número de Seguro Social
-      switch_to_phone: Cambiar al teléfono
       text_message: Enviamos un mensaje a su teléfono
       upload_from_computer: Continuar en esta computadora
       upload_from_phone: Utilice su teléfono para tomar las fotos
@@ -318,8 +314,6 @@ es:
         verificado su identidad. Puede volver más tarde para completar este
         proceso.
       header: ¿No está listo para enviar las fotos?
-    phone_question:
-      do_not_have: No tengo teléfono
     tips:
       document_capture_header_text: 'Para obtener los mejores resultados:'
       document_capture_hint: Debe ser un JPG o PNG

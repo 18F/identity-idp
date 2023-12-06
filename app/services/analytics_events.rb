@@ -273,6 +273,11 @@ module AnalyticsEvents
     track_event('Account Reset: Cancel Account Recovery Options')
   end
 
+  # User was logged out due to an existing active session
+  def concurrent_session_logout
+    track_event(:concurrent_session_logout)
+  end
+
   # @param [String] redirect_url URL user was directed to
   # @param [String, nil] step which step
   # @param [String, nil] location which part of a step, if applicable
@@ -290,15 +295,12 @@ module AnalyticsEvents
   end
 
   # @param [String] message the warning
-  # @param [String] phone_question_ab_test_bucket Prompt user with phone question before doc auth
   # Logged when there is a non-user-facing error in the doc auth process, such as an unrecognized
   # field from a vendor
-  def doc_auth_warning(message: nil,
-                       phone_question_ab_test_bucket: nil, **extra)
+  def doc_auth_warning(message: nil, **extra)
     track_event(
       'Doc Auth Warning',
       message: message,
-      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
       **extra,
     )
   end
@@ -904,17 +906,6 @@ module AnalyticsEvents
     track_event('IdV: doc auth link_sent visited', **extra)
   end
 
-  # The "phone question" step: Desktop user has submitted they
-  # do or do not have a phone with a a camera via desktop
-  def idv_doc_auth_phone_question_submitted(**extra)
-    track_event(:idv_doc_auth_phone_question_submitted, **extra)
-  end
-
-  # Desktop user has reached the above "phone question" view
-  def idv_doc_auth_phone_question_visited(**extra)
-    track_event(:idv_doc_auth_phone_question_visited, **extra)
-  end
-
   def idv_doc_auth_randomizer_defaulted
     track_event(
       'IdV: doc_auth random vendor error',
@@ -949,8 +940,6 @@ module AnalyticsEvents
   # @param [String] flow_path
   # @param [String] front_image_fingerprint Fingerprint of front image data
   # @param [String] back_image_fingerprint Fingerprint of back image data
-  # @param [String] phone_question_ab_test_bucket Prompt user with phone question before doc auth
-  # @param [String] phone_with_camera the result of the phone question a/b test
   # The document capture image uploaded was locally validated during the IDV process
   def idv_doc_auth_submitted_image_upload_form(
     success:,
@@ -961,8 +950,6 @@ module AnalyticsEvents
     user_id: nil,
     front_image_fingerprint: nil,
     back_image_fingerprint: nil,
-    phone_question_ab_test_bucket: nil,
-    phone_with_camera: nil,
     **extra
   )
     track_event(
@@ -975,8 +962,6 @@ module AnalyticsEvents
       flow_path: flow_path,
       front_image_fingerprint: front_image_fingerprint,
       back_image_fingerprint: back_image_fingerprint,
-      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
-      phone_with_camera: phone_with_camera,
       **extra,
     )
   end
@@ -996,8 +981,6 @@ module AnalyticsEvents
   # @param [Float] vendor_request_time_in_ms Time it took to upload images & get a response.
   # @param [String] front_image_fingerprint Fingerprint of front image data
   # @param [String] back_image_fingerprint Fingerprint of back image data
-  # @param [String] phone_question_ab_test_bucket Prompt user with phone question before doc auth
-  # @param [String] phone_with_camera the result of the phone question a/b test
   # The document capture image was uploaded to vendor during the IDV process
   def idv_doc_auth_submitted_image_upload_vendor(
     success:,
@@ -1014,8 +997,6 @@ module AnalyticsEvents
     vendor_request_time_in_ms: nil,
     front_image_fingerprint: nil,
     back_image_fingerprint: nil,
-    phone_question_ab_test_bucket: nil,
-    phone_with_camera: nil,
     **extra
   )
     track_event(
@@ -1035,8 +1016,6 @@ module AnalyticsEvents
       vendor_request_time_in_ms: vendor_request_time_in_ms,
       front_image_fingerprint: front_image_fingerprint,
       back_image_fingerprint: back_image_fingerprint,
-      phone_question_ab_test_bucket: phone_question_ab_test_bucket,
-      phone_with_camera: phone_with_camera,
       **extra,
     )
   end
@@ -2337,6 +2316,7 @@ module AnalyticsEvents
       isRateLimited: isRateLimited,
     )
   end
+
   # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
   def idv_link_sent_capture_doc_polling_started(**_extra)
@@ -3375,6 +3355,12 @@ module AnalyticsEvents
       error_count: error_count,
       **extra,
     )
+  end
+
+  # @param [String] location Placement location
+  # Logged when a browser with JavaScript disabled loads the detection stylesheet
+  def no_js_detect_stylesheet_loaded(location:, **extra)
+    track_event(:no_js_detect_stylesheet_loaded, location:, **extra)
   end
 
   # @param [Boolean] success
