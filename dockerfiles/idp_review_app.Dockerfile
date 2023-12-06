@@ -2,8 +2,8 @@ FROM ruby:3.2.2-slim
 
 # Set environment variables
 ARG ARG_CI_ENVIRONMENT_SLUG="placeholder"
-ARG CI_COMMIT_BRANCH="branch_placeholder"
-ARG CI_COMMIT_SHA="sha_placeholder"
+ARG ARG_CI_COMMIT_BRANCH="branch_placeholder"
+ARG ARG_CI_COMMIT_SHA="sha_placeholder"
 ENV CI_ENVIRONMENT_SLUG=${ARG_CI_ENVIRONMENT_SLUG}
 ENV CI_COMMIT_BRANCH=${ARG_CI_COMMIT_BRANCH}
 ENV CI_COMMIT_SHA=${ARG_CI_COMMIT_SHA}
