@@ -108,7 +108,7 @@ COPY package.json $RAILS_ROOT/package.json
 COPY yarn.lock $RAILS_ROOT/yarn.lock
 RUN yarn install --production=true --frozen-lockfile --cache-folder .yarn-cache
 
-RUN cat > $RAILS_ROOT/public/deploy.json <<EOF
+RUN cat <<EOF > $RAILS_ROOT/public/deploy.json
   {
     "branch": "$CI_COMMIT_BRANCH",
     "git_sha":"$CI_COMMIT_SHA"
