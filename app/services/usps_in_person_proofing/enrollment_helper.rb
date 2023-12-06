@@ -1,7 +1,7 @@
 module UspsInPersonProofing
   class EnrollmentHelper
     class << self
-      def schedule_in_person_enrollment(user, pii)
+      def schedule_in_person_enrollment(user, pii, opt_in = nil)
         enrollment = user.establishing_in_person_enrollment
         return unless enrollment
 
@@ -29,6 +29,7 @@ module UspsInPersonProofing
           enrollment_id: enrollment.id,
           second_address_line_present: pii[:address2].present?,
           service_provider: enrollment.service_provider&.issuer,
+          opted_in_to_in_person_proofing: opt_in,
         )
 
         send_ready_to_verify_email(user, enrollment)

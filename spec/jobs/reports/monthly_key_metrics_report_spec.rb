@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Reports::MonthlyKeyMetricsReport do
-  let(:report_date) { Date.new(2021, 3, 2) }
+  let(:report_date) { Date.new(2021, 3, 2).in_time_zone('UTC').end_of_day }
   subject(:report) { Reports::MonthlyKeyMetricsReport.new(report_date) }
 
   let(:name) { 'monthly-key-metrics-report' }

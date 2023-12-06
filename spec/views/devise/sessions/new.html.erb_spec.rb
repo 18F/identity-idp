@@ -75,6 +75,15 @@ RSpec.describe 'devise/sessions/new.html.erb' do
     )
   end
 
+  it 'includes tracking script for no-JavaScript' do
+    render
+
+    expect(rendered).to have_css(
+      "link[rel='stylesheet'][href='#{no_js_detect_css_path(location: :sign_in)}']",
+      visible: false,
+    )
+  end
+
   context 'when SP is present' do
     let(:sp) do
       build_stubbed(

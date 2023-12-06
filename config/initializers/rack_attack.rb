@@ -240,7 +240,7 @@ module Rack
     # If you want to return 503 so that the attacker might be fooled into
     # believing that they've successfully broken your app (or you just want to
     # customize the response), then uncomment these lines.
-    self.throttled_response = lambda do |_env|
+    self.throttled_responder = lambda do |_env|
       [
         429, # status
         { 'Content-Type' => 'text/html' }, # headers
@@ -248,7 +248,7 @@ module Rack
       ]
     end
 
-    self.blocklisted_response = throttled_response
+    self.blocklisted_responder = throttled_responder
   end
 end
 
