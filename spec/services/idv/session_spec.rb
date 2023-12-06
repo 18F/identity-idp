@@ -89,6 +89,20 @@ RSpec.describe Idv::Session do
     end
   end
 
+  describe '#invalidate_personal_key!' do
+    before do
+      subject.personal_key = 'ABCD-1234'
+      subject.personal_key_acknowledged = true
+      subject.invalidate_personal_key!
+    end
+    it 'nils out personal_key' do
+      expect(subject.personal_key).to be_nil
+    end
+    it 'nils out personal_key-acknowledged' do
+      expect(subject.personal_key).to be_nil
+    end
+  end
+
   describe '#add_failed_phone_step_number' do
     it 'adds uniq phone numbers in e164 format' do
       subject.add_failed_phone_step_number('+1703-555-1212')
@@ -113,6 +127,7 @@ RSpec.describe Idv::Session do
   end
 
   describe '#create_profile_from_applicant_with_password' do
+    let(:opt_in_param) { nil }
     before do
       subject.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN
     end
@@ -196,7 +211,7 @@ RSpec.describe Idv::Session do
         it 'creates a USPS enrollment' do
           expect(UspsInPersonProofing::EnrollmentHelper).
             to receive(:schedule_in_person_enrollment).
-            with(user, Pii::Attributes.new_from_hash(subject.applicant))
+            with(user, Pii::Attributes.new_from_hash(subject.applicant), opt_in_param)
 
           subject.create_profile_from_applicant_with_password(user.password)
 
@@ -289,6 +304,29 @@ RSpec.describe Idv::Session do
       subject.vendor_phone_confirmation = nil
 
       expect(subject.phone_confirmed?).to eq(false)
+    end
+  end
+
+  describe '#profile' do
+    it 'is nil by default' do
+      expect(subject.profile).to eql(nil)
+    end
+
+    it 'can be set via profile_id' do
+      profile = create(:profile)
+      subject.profile_id = profile.id
+      expect(subject.profile).to eql(profile)
+    end
+
+    it 'can be changed' do
+      profile1 = create(:profile)
+      profile2 = create(:profile)
+
+      subject.profile_id = profile1.id
+      expect(subject.profile).to eql(profile1)
+
+      subject.profile_id = profile2.id
+      expect(subject.profile).to eql(profile2)
     end
   end
 

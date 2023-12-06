@@ -47,13 +47,6 @@ RSpec.describe Idv::DocumentCaptureController do
         :check_for_mail_only_outage,
       )
     end
-
-    it 'checks that hybrid_handoff is complete' do
-      expect(subject).to have_actions(
-        :before,
-        :confirm_hybrid_handoff_complete,
-      )
-    end
   end
 
   describe '#show' do
@@ -119,12 +112,18 @@ RSpec.describe Idv::DocumentCaptureController do
       end
     end
 
-    context 'with pii in idv_session' do
-      it 'redirects to ssn step' do
+    context 'verify info step is complete' do
+      it 'renders show' do
+        subject.idv_session.welcome_visited = true
+        subject.idv_session.idv_consent_given = true
+        subject.idv_session.flow_path = 'standard'
         subject.idv_session.pii_from_doc = Idp::Constants::MOCK_IDV_APPLICANT
+        subject.idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]
+        subject.idv_session.resolution_successful = true
+
         get :show
 
-        expect(response).to redirect_to(idv_ssn_url)
+        expect(response).to render_template :show
       end
     end
 
@@ -166,9 +165,11 @@ RSpec.describe Idv::DocumentCaptureController do
     let(:result) { { success: true, errors: {} } }
 
     it 'invalidates future steps' do
-      expect(subject).to receive(:clear_invalid_steps!)
+      subject.idv_session.applicant = Idp::Constants::MOCK_IDV_APPLICANT
+      expect(subject).to receive(:clear_future_steps!).and_call_original
 
       put :update
+      expect(subject.idv_session.applicant).to be_nil
     end
 
     it 'sends analytics_submitted event' do

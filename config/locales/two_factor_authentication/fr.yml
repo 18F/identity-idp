@@ -51,6 +51,9 @@ fr:
       choisissez une autre méthode d’authentification.
     learn_more: En savoir plus sur les options d’authentification
     login_intro: Vous les avez configurés lorsque vous avez crée votre compte.
+    login_intro_reauthentication: Avant que vous puissiez apporter des modifications
+      à votre compte, nous devons nous assurer qu’il s’agit bien de vous en
+      utilisant l’une de vos méthodes d’authentification.
     login_options:
       auth_app: Application d’authentification
       auth_app_info: Utilisez votre application d’authentification pour obtenir votre
@@ -75,6 +78,7 @@ fr:
       webauthn_platform_info: Utilisez votre visage ou votre empreinte digitale pour
         accéder à votre compte sans code à usage unique.
     login_options_link_text: Choisissez une autre option de sécurité
+    login_options_reauthentication_title: Réauthentification requise
     login_options_title: Sélectionnez votre option de sécurité
     max_backup_code_login_attempts_reached: Pour votre sécurité, votre compte est
       temporairement verrouillé car vous avez saisi trop de fois le code de
@@ -95,7 +99,6 @@ fr:
     mobile_terms_of_service: Conditions de service mobile
     no_auth_option: Aucune option d’authentification n’a été trouvée pour vous connecter
     opt_in:
-      cant_use_phone: Vous ne pouvez pas utiliser votre téléphone?
       error_retry: Désolé, nous avons des difficultés à vous connecter. Veuillez réessayer.
       opted_out_html: Vous avez choisi de ne plus recevoir de SMS à
         %{phone_number_html}. Vous pouvez vous inscrire et recevoir à nouveau un

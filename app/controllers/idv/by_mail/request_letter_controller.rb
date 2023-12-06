@@ -1,14 +1,14 @@
 module Idv
   module ByMail
     class RequestLetterController < ApplicationController
-      include IdvSession
+      include Idv::AvailabilityConcern
+      include IdvStepConcern
+      skip_before_action :confirm_no_pending_gpo_profile
       include Idv::StepIndicatorConcern
-      include Idv::AbTestAnalyticsConcern
+      include OptInHelper
 
-      before_action :confirm_two_factor_authenticated
-      before_action :confirm_idv_needed
-      before_action :confirm_user_completed_idv_profile_step
       before_action :confirm_mail_not_rate_limited
+      before_action :confirm_step_allowed
       before_action :confirm_profile_not_too_old
 
       def index
@@ -24,6 +24,7 @@ module Idv
       end
 
       def create
+        clear_future_steps!
         update_tracking
         idv_session.address_verification_mechanism = :gpo
 
@@ -40,6 +41,19 @@ module Idv
 
       def gpo_mail_service
         @gpo_mail_service ||= Idv::GpoMail.new(current_user)
+      end
+
+      def self.step_info
+        Idv::StepInfo.new(
+          key: :request_letter,
+          controller: self,
+          action: :index,
+          next_steps: [:enter_password],
+          preconditions: ->(idv_session:, user:) do
+            idv_session.verify_info_step_complete? || user.gpo_verification_pending_profile?
+          end,
+          undo_step: ->(idv_session:, user:) { idv_session.address_verification_mechanism = nil },
+        )
       end
 
       private
@@ -67,6 +81,7 @@ module Idv
             gpo_mail_service.hours_since_first_letter(first_letter_requested_at),
           phone_step_attempts: gpo_mail_service.phone_step_attempts,
           **ab_test_analytics_buckets,
+          **opt_in_analytics_properties,
         )
         irs_attempts_api_tracker.idv_gpo_letter_requested(resend: resend_requested?)
         create_user_event(:gpo_mail_sent, current_user)
@@ -84,15 +99,6 @@ module Idv
 
       def confirm_mail_not_rate_limited
         redirect_to idv_enter_password_url if gpo_mail_service.rate_limited?
-      end
-
-      def confirm_user_completed_idv_profile_step
-        # If the user has a pending profile, they may have completed idv in a
-        # different session and need a letter resent now
-        return if current_user.gpo_verification_pending_profile?
-        return if idv_session.verify_info_step_complete?
-
-        redirect_to idv_verify_info_url
       end
 
       def resend_letter
@@ -113,12 +119,17 @@ module Idv
 
       def confirmation_maker_perform
         confirmation_maker = GpoConfirmationMaker.new(
-          pii: Pii::Cacher.new(current_user, user_session).fetch,
+          pii: pii,
           service_provider: current_sp,
           profile: current_user.pending_profile,
         )
         confirmation_maker.perform
         confirmation_maker
+      end
+
+      def pii
+        Pii::Cacher.new(current_user, user_session).
+          fetch(current_user.gpo_verification_pending_profile.id)
       end
 
       def send_reminder

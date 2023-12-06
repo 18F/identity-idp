@@ -9,6 +9,8 @@ RSpec.describe Idv::LinkSentController do
 
   before do
     stub_sign_in(user)
+    subject.idv_session.welcome_visited = true
+    subject.idv_session.idv_consent_given = true
     subject.idv_session.flow_path = 'hybrid'
     stub_analytics
     stub_attempts_tracker
@@ -37,10 +39,10 @@ RSpec.describe Idv::LinkSentController do
       )
     end
 
-    it 'checks that hybrid_handoff is complete' do
+    it 'checks that step is allowed' do
       expect(subject).to have_actions(
         :before,
-        :confirm_hybrid_handoff_complete,
+        :confirm_step_allowed,
       )
     end
   end
@@ -76,17 +78,13 @@ RSpec.describe Idv::LinkSentController do
       )
     end
 
-    context '#confirm_hybrid_handoff_complete' do
-      context 'no flow_path' do
-        it 'redirects to idv_hybrid_handoff_url' do
-          subject.idv_session.welcome_visited = true
-          subject.idv_session.idv_consent_given = true
-          subject.idv_session.flow_path = nil
+    context 'no flow_path in idv_session' do
+      it 'redirects to idv_hybrid_handoff_url' do
+        subject.idv_session.flow_path = nil
 
-          get :show
+        get :show
 
-          expect(response).to redirect_to(idv_hybrid_handoff_url)
-        end
+        expect(response).to redirect_to(idv_hybrid_handoff_url)
       end
 
       context 'flow_path is standard' do
@@ -100,14 +98,14 @@ RSpec.describe Idv::LinkSentController do
           expect(response).to redirect_to(idv_document_capture_url)
         end
       end
-    end
 
-    context 'with pii in idv_session' do
-      it 'redirects to ssn step' do
-        subject.idv_session.pii_from_doc = Idp::Constants::MOCK_IDV_APPLICANT
-        get :show
+      context 'with pii in idv_session' do
+        it 'allows the back button and does not redirect' do
+          subject.idv_session.pii_from_doc = Idp::Constants::MOCK_IDV_APPLICANT
+          get :show
 
-        expect(response).to redirect_to(idv_ssn_url)
+          expect(response).to render_template :show
+        end
       end
     end
   end
@@ -124,9 +122,11 @@ RSpec.describe Idv::LinkSentController do
     end
 
     it 'invalidates future steps' do
-      expect(subject).to receive(:clear_invalid_steps!)
+      subject.idv_session.applicant = Idp::Constants::MOCK_IDV_APPLICANT
+      expect(subject).to receive(:clear_future_steps!).and_call_original
 
       put :update
+      expect(subject.idv_session.applicant).to be_nil
     end
 
     it 'sends analytics_submitted event' do

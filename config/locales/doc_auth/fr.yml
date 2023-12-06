@@ -8,7 +8,6 @@ fr:
     buttons:
       add_new_photos: Ajoutez de nouvelles photos
       continue: Continuer
-      have_phone: Oui j’ai un téléphone
       take_or_upload_picture_html: '<lg-take-photo>Prendre une photo</lg-take-photo>
         ou <lg-upload>Télécharger une photo</lg-upload>'
       take_picture: Prendre une photo
@@ -179,23 +178,6 @@ fr:
         dossier</lg-underline>
       doc_success: Nous avons vérifié vos informations
       selected_file: Fichier sélectionné
-    getting_started:
-      instructions:
-        bullet1: Ajoutez des photos de votre pièce d’identité
-        bullet2: Saisissez votre numéro de sécurité sociale
-        bullet3: Faire correspondre à votre numéro de téléphone
-        bullet4: Saisissez à nouveau votre mot de passe %{app_name}
-        consent: En cochant cette case, vous autorisez %{app_name} à demander, utiliser,
-          conserver et partager vos renseignements personnels. Nous les
-          utilisons pour vérifier votre identité.
-        getting_started: 'Vous aurez besoin de :'
-        learn_more: En savoir plus sur nos mesures de confidentialité et de sécurité
-        text1: Utilisez votre permis de conduire ou votre carte d’identité de l’État.
-          Les autres pièces d’identité ne sont pas acceptées.
-        text2: Vous n’aurez pas besoin de votre carte SSN physique.
-        text3: Votre numéro de téléphone correspond à vos informations personnelles. Une
-          fois la correspondance établie, nous vous enverrons un code.
-        text4: Votre mot de passe sauvegarde et crypte vos informations personnelles.
     headings:
       address: Mettre à jour votre adresse postale
       back: Verso de votre permis de conduire ou de votre carte d’identité de l’État
@@ -207,6 +189,7 @@ fr:
       document_capture: Ajoutez des photos de votre pièce d’identité
       document_capture_back: Verso de votre carte d’identité
       document_capture_front: Recto de votre carte d’identité
+      document_capture_selfie: Égoportrait
       front: Recto de votre permis de conduire ou de votre carte d’identité de l’État
       getting_started: Vérifions votre identité pour %{sp_name}
       how_to_verify: Choisissez la manière dont vous souhaitez confirmer votre identité
@@ -214,13 +197,11 @@ fr:
       interstitial: Nous traitons vos images
       lets_go: Comment fonctionne la vérification de votre identité
       no_ssn: Vous n’avez pas de numéro de sécurité sociale?
-      phone_question: Avez-vous un téléphone que vous pouvez utiliser pour prendre des
-        photos de votre identifiant?
       review_issues: Vérifiez vos images et essayez à nouveau
       secure_account: Sécuriser votre compte
+      selfie: Photo
       ssn: Saisissez votre numéro de sécurité sociale
       ssn_update: Mettre à jour votre numéro de Sécurité Sociale
-      switch_to_phone: Basculez vers votre téléphone
       text_message: Nous avons envoyé un message à votre téléphone
       upload_from_computer: Continuer sur cet ordinateur
       upload_from_phone: Utilisez votre téléphone pour prendre des photos
@@ -254,9 +235,6 @@ fr:
       exit:
         with_sp: Quittez %{app_name} et retournez à %{sp_name}
         without_sp: Quittez la vérification d’identité et accédez à la page de votre compte
-      getting_started_html: '%{sp_name} doit s’assurer que c’est bien vous — et non
-        quelqu’un qui se fait passer pour vous. %{link_html}'
-      getting_started_learn_more: En savoir plus sur ce dont vous avez besoin pour vérifier votre identité
       how_to_verify: Vous avez la possibilité de confirmer votre identité en ligne ou
         en personne dans un bureau de poste participant.
       how_to_verify_troubleshooting_options_header: Vous voulez en savoir plus sur la façon de vérifier votre identité?
@@ -348,8 +326,6 @@ fr:
         votre identité n’aura pas été vérifiée. Vous pourrez revenir plus tard
         pour terminer ce processus.
       header: Vous n’êtes pas prêt à ajouter des photos?
-    phone_question:
-      do_not_have: Je n’ai pas de téléphone
     tips:
       document_capture_header_text: 'Pour obtenir les meilleurs résultats:'
       document_capture_hint: Doit être un JPG ou PNG

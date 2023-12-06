@@ -24,14 +24,12 @@ describe('InPersonPrepareStep', () => {
     expect(getByText('in_person_proofing.body.prepare.verify_step_post_office')).to.exist();
     expect(getByText('in_person_proofing.body.prepare.verify_step_enter_pii')).to.exist();
     expect(getByText('in_person_proofing.body.prepare.verify_step_enter_phone')).to.exist();
-    expect(getByText('in_person_proofing.body.prepare.verify_step_visit_post_office')).to.exist();
   });
 
-  it('renders about and additional information steps', () => {
+  it('renders about information', () => {
     const { getByText } = render(<InPersonPrepareStep {...DEFAULT_PROPS} />);
 
     expect(getByText('in_person_proofing.body.prepare.verify_step_about')).to.exist();
-    expect(getByText('in_person_proofing.body.prepare.additional_information')).to.exist();
   });
 
   context('Outage message', () => {
@@ -44,6 +42,7 @@ describe('InPersonPrepareStep', () => {
             inPersonOutageMessageEnabled: true,
             inPersonOutageExpectedUpdateDate: 'January 1, 2024',
             inPersonFullAddressEntryEnabled: false,
+            optedInToInPersonProofing: false,
             usStatesTerritories: [],
           }}
         >
@@ -62,6 +61,7 @@ describe('InPersonPrepareStep', () => {
             addressSearchURL: 'https://localhost:3000/unused',
             inPersonOutageMessageEnabled: false,
             inPersonFullAddressEntryEnabled: false,
+            optedInToInPersonProofing: false,
             usStatesTerritories: [],
           }}
         >

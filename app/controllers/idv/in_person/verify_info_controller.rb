@@ -1,18 +1,20 @@
 module Idv
   module InPerson
     class VerifyInfoController < ApplicationController
+      include Idv::AvailabilityConcern
       include IdvStepConcern
       include StepIndicatorConcern
       include Steps::ThreatMetrixStepHelper
       include VerifyInfoConcern
+      include OptInHelper
 
       before_action :confirm_not_rate_limited_after_doc_auth, except: [:show]
       before_action :confirm_ssn_step_complete
-      before_action :confirm_verify_info_step_needed
 
       def show
         @step_indicator_steps = step_indicator_steps
         @ssn = idv_session.ssn
+        @pii = pii
 
         analytics.idv_doc_auth_verify_visited(**analytics_arguments)
         Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
@@ -22,11 +24,30 @@ module Idv
       end
 
       def update
+        clear_future_steps!
+        idv_session.invalidate_verify_info_step!
         success = shared_update
 
         if success
           redirect_to idv_in_person_verify_info_url
         end
+      end
+
+      def self.step_info
+        Idv::StepInfo.new(
+          key: :ipp_verify_info,
+          controller: self,
+          next_steps: [:phone],
+          preconditions: ->(idv_session:, user:) do
+            idv_session.ssn && idv_session.ipp_document_capture_complete?
+          end,
+          undo_step: ->(idv_session:, user:) do
+            idv_session.resolution_successful = nil
+            idv_session.verify_info_step_document_capture_session_uuid = nil
+            idv_session.threatmetrix_review_status = nil
+            idv_session.applicant = nil
+          end,
+        )
       end
 
       private
@@ -40,11 +61,11 @@ module Idv
       # between various ID types and driver's license is the most common one that will
       # be supported. See also LG-3852 and related findings document.
       def set_state_id_type
-        pii[:state_id_type] = 'drivers_license' unless invalid_state?
+        pii_from_user[:state_id_type] = 'drivers_license' unless invalid_state?
       end
 
       def invalid_state?
-        pii.blank?
+        pii_from_user.blank?
       end
 
       def prev_url
@@ -52,7 +73,7 @@ module Idv
       end
 
       def pii
-        @pii = flow_session[:pii_from_user]
+        user_session.dig('idv/in_person', :pii_from_user)
       end
 
       # override IdvSession concern
@@ -67,7 +88,13 @@ module Idv
           analytics_id: 'In Person Proofing',
           irs_reproofing: irs_reproofing?,
         }.merge(ab_test_analytics_buckets).
-          merge(**extra_analytics_properties)
+          merge(**extra_analytics_properties).
+          merge(**opt_in_analytics_properties)
+      end
+
+      def confirm_ssn_step_complete
+        return if pii.present? && idv_session.ssn.present?
+        redirect_to prev_url
       end
     end
   end

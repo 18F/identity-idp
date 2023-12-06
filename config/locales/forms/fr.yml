@@ -129,7 +129,7 @@ fr:
       totp_step_3: Scannez ce code-barres QR avec votre application
       totp_step_4: Entrez le code temporaire de votre application
     two_factor:
-      backup_code: Code de sécurité
+      backup_code: Code de sauvegarde
       personal_key: Clé personnelle
       try_again: Utilisez un autre numéro de téléphone
     validation:

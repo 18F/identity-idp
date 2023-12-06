@@ -169,7 +169,7 @@ module SamlIdpAuthConcern
 
   def decrypted_pii
     cacher = Pii::Cacher.new(current_user, user_session)
-    cacher.fetch
+    cacher.fetch(current_user&.active_profile&.id)
   end
 
   def build_asserted_attributes(principal)

@@ -13,15 +13,16 @@ module Idv
       idv_consent_given
       idv_phone_step_document_capture_session_uuid
       mail_only_warning_shown
+      opted_in_to_in_person_proofing
       personal_key
       personal_key_acknowledged
       phone_for_mobile_flow
-      phone_with_camera
       pii_from_doc
       previous_phone_step_params
       profile_id
       redo_document_capture
       resolution_successful
+      skip_doc_auth
       skip_hybrid_handoff
       ssn
       threatmetrix_review_status
@@ -60,7 +61,7 @@ module Idv
       profile_maker = build_profile_maker(user_password)
       profile = profile_maker.save_profile(
         fraud_pending_reason: threatmetrix_fraud_pending_reason,
-        gpo_verification_needed: gpo_verification_needed?,
+        gpo_verification_needed: !phone_confirmed? || verify_by_mail?,
         in_person_verification_needed: current_user.has_in_person_enrollment?,
       )
 
@@ -82,8 +83,13 @@ module Idv
         UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(
           current_user,
           profile_maker.pii_attributes,
+          opt_in_param,
         )
       end
+    end
+
+    def opt_in_param
+      opted_in_to_in_person_proofing unless !IdentityConfig.store.in_person_proofing_opt_in_enabled
     end
 
     def acknowledge_personal_key!
@@ -91,12 +97,22 @@ module Idv
       session[:personal_key_acknowledged] = true
     end
 
-    def gpo_verification_needed?
-      !phone_confirmed? || address_verification_mechanism == 'gpo'
+    def invalidate_personal_key!
+      session.delete(:personal_key)
+      session.delete(:personal_key_acknowledged)
+    end
+
+    def verify_by_mail?
+      address_verification_mechanism == 'gpo'
     end
 
     def vendor_params
       applicant.merge('uuid' => current_user.uuid)
+    end
+
+    def profile_id=(value)
+      session[:profile_id] = value
+      @profile = nil
     end
 
     def profile
@@ -150,29 +166,33 @@ module Idv
     end
 
     def invalidate_in_person_pii_from_user!
-      if user_session.dig('idv/in_person', :pii_from_user)
+      if has_pii_from_user_in_flow_session
         user_session['idv/in_person'][:pii_from_user] = nil
       end
     end
 
     def document_capture_complete?
-      pii_from_doc || has_pii_from_user_in_flow_session || verify_info_step_complete?
+      pii_from_doc || has_pii_from_user_in_flow_session
+    end
+
+    def remote_document_capture_complete?
+      pii_from_doc
+    end
+
+    def ipp_document_capture_complete?
+      has_pii_from_user_in_flow_session
     end
 
     def verify_info_step_complete?
       resolution_successful
     end
 
-    def address_step_complete?
-      if address_verification_mechanism == 'gpo'
-        true
-      else
-        phone_confirmed?
-      end
+    def phone_or_address_step_complete?
+      verify_by_mail? || phone_confirmed?
     end
 
     def address_mechanism_chosen?
-      vendor_phone_confirmation == true || address_verification_mechanism == 'gpo'
+      vendor_phone_confirmation == true || verify_by_mail?
     end
 
     def phone_confirmed?
@@ -187,18 +207,6 @@ module Idv
       session[:gpo_code_verified] = true
     end
 
-    def invalidate_steps_after_ssn!
-      # Guard against unvalidated attributes from in-person flow in review controller
-      clear_applicant!
-
-      invalidate_verify_info_step!
-      invalidate_phone_step!
-    end
-
-    def clear_applicant!
-      session[:applicant] = nil
-    end
-
     def mark_verify_info_step_complete!
       session[:resolution_successful] = true
     end
@@ -207,12 +215,18 @@ module Idv
       session[:resolution_successful] = nil
     end
 
-    def invalidate_steps_after_verify_info!
-      session[:address_verification_mechanism] = 'phone'
-      invalidate_phone_step!
+    def mark_phone_step_started!
+      session[:address_verification_mechanism] = :phone
+      session[:vendor_phone_confirmation] = true
+      session[:user_phone_confirmation] = false
+    end
+
+    def mark_phone_step_complete!
+      session[:user_phone_confirmation] = true
     end
 
     def invalidate_phone_step!
+      session[:address_verification_mechanism] = nil
       session[:vendor_phone_confirmation] = nil
       session[:user_phone_confirmation] = nil
     end

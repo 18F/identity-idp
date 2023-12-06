@@ -1,14 +1,13 @@
 module Idv
   class SsnController < ApplicationController
+    include Idv::AvailabilityConcern
     include IdvStepConcern
     include StepIndicatorConcern
     include Steps::ThreatMetrixStepHelper
     include ThreatMetrixConcern
 
     before_action :confirm_not_rate_limited_after_doc_auth
-    before_action :confirm_verify_info_step_needed
-    before_action :confirm_document_capture_complete
-    before_action :confirm_repeat_ssn, only: :show
+    before_action :confirm_step_allowed
     before_action :override_csp_for_threat_metrix
 
     attr_reader :ssn_presenter
@@ -34,6 +33,7 @@ module Idv
     end
 
     def update
+      clear_future_steps!
       ssn_form = Idv::SsnFormatForm.new(idv_session.ssn)
       form_response = ssn_form.submit(params.require(:doc_auth).permit(:ssn))
       @ssn_presenter = Idv::SsnPresenter.new(
@@ -50,7 +50,6 @@ module Idv
 
       if form_response.success?
         idv_session.ssn = params[:doc_auth][:ssn]
-        idv_session.invalidate_steps_after_ssn!
         redirect_to next_url
       else
         flash[:error] = form_response.first_error_message
@@ -58,14 +57,20 @@ module Idv
       end
     end
 
-    private
-
-    def confirm_repeat_ssn
-      return if !idv_session.ssn
-      return if request.referer == idv_verify_info_url
-
-      redirect_to idv_verify_info_url
+    def self.step_info
+      Idv::StepInfo.new(
+        key: :ssn,
+        controller: self,
+        next_steps: [:verify_info],
+        preconditions: ->(idv_session:, user:) { idv_session.remote_document_capture_complete? },
+        undo_step: ->(idv_session:, user:) do
+          idv_session.ssn = nil
+          idv_session.threatmetrix_session_id = nil
+        end,
+      )
     end
+
+    private
 
     def next_url
       if idv_session.pii_from_doc[:state] == 'PR' && !ssn_presenter.updating_ssn?

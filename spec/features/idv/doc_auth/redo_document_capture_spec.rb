@@ -54,55 +54,13 @@ RSpec.feature 'doc auth redo document capture', js: true do
       DocAuth::Mock::DocAuthMockClient.reset!
       attach_and_submit_images
 
+      expect(current_path).to eq(idv_ssn_path)
+      expect(page).to have_css('[role="status"]') # We verified your ID
+      complete_ssn_step
+
       expect(current_path).to eq(idv_verify_info_path)
       check t('forms.ssn.show')
       expect(page).to have_content(DocAuthHelper::GOOD_SSN)
-      expect(page).to have_css('[role="status"]') # We verified your ID
-    end
-
-    it 'document capture cannot be reached after submitting verify info step' do
-      warning_link_text = t('doc_auth.headings.capture_scan_warning_link')
-
-      expect(page).to have_css(
-        '[role="status"]',
-        text: t(
-          'doc_auth.headings.capture_scan_warning_html',
-          link_html: warning_link_text,
-        ).tr(' ', ' '),
-      )
-      click_link warning_link_text
-
-      expect(current_path).to eq(idv_hybrid_handoff_path)
-      complete_hybrid_handoff_step
-
-      visit idv_verify_info_url
-      expect(page).to have_current_path(idv_document_capture_path)
-      DocAuth::Mock::DocAuthMockClient.reset!
-      attach_and_submit_images
-      complete_verify_step
-
-      expect(page).to have_current_path(idv_phone_path)
-
-      fill_out_phone_form_fail
-
-      click_idv_send_security_code
-
-      expect(page).to have_content(t('idv.failure.phone.warning.heading'))
-
-      visit idv_url
-      expect(current_path).to eq(idv_phone_path)
-
-      visit idv_hybrid_handoff_url
-      expect(current_path).to eq(idv_phone_path)
-
-      visit idv_document_capture_url
-      expect(current_path).to eq(idv_phone_path)
-
-      visit idv_ssn_url
-      expect(current_path).to eq(idv_phone_path)
-
-      visit idv_verify_info_url
-      expect(current_path).to eq(idv_phone_path)
     end
 
     context 'with a bad SSN' do
@@ -142,10 +100,13 @@ RSpec.feature 'doc auth redo document capture', js: true do
         DocAuth::Mock::DocAuthMockClient.reset!
         attach_and_submit_images
 
+        expect(current_path).to eq(idv_ssn_path)
+        expect(page).to have_css('[role="status"]') # We verified your ID
+        complete_ssn_step
+
         expect(current_path).to eq(idv_verify_info_path)
         check t('forms.ssn.show')
         expect(page).to have_content(DocAuthHelper::GOOD_SSN)
-        expect(page).to have_css('[role="status"]') # We verified your ID
       end
     end
   end

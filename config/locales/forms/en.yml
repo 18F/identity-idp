@@ -120,7 +120,7 @@ en:
       totp_step_3: Scan this QR barcode with your app
       totp_step_4: Enter the temporary code from your app
     two_factor:
-      backup_code: Security code
+      backup_code: Backup code
       personal_key: Personal key
       try_again: Use another phone number
     validation:

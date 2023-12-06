@@ -1,5 +1,6 @@
 module Idv
   class ForgotPasswordController < ApplicationController
+    include Idv::AvailabilityConcern
     include IdvSession
 
     before_action :confirm_two_factor_authenticated

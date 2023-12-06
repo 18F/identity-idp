@@ -208,8 +208,7 @@ en:
       help_html: If you did not make this change, %{disavowal_link_html}. For more
         help, please visit the %{app_name_html} %{help_link_html} or
         %{contact_link_html}.
-      info_html: '<p>Your %{app_name} account was just used to sign in on a new
-        device.</p><br/><p><strong>%{date}<br/>%{location}</strong></p>'
+      info: 'Your %{app_name} account was just used to sign in on a new device.'
       subject: New sign-in with your %{app_name} account
     password_changed:
       disavowal_link: reset your password

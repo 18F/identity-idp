@@ -1,9 +1,9 @@
 module Idv
   module HybridMobile
     class DocumentCaptureController < ApplicationController
+      include Idv::AvailabilityConcern
       include DocumentCaptureConcern
       include HybridMobileConcern
-      include PhoneQuestionAbTestConcern
 
       before_action :check_valid_document_capture_session
       before_action :override_csp_to_allow_acuant
@@ -43,8 +43,7 @@ module Idv
           failure_to_proof_url: return_to_sp_failure_to_proof_url(step: 'document_capture'),
         }.merge(
           acuant_sdk_upgrade_a_b_testing_variables,
-          phone_question_ab_test_analytics_bucket,
-        ).merge(phone_with_camera)
+        )
       end
 
       private
@@ -57,7 +56,7 @@ module Idv
           irs_reproofing: irs_reproofing?,
         }.merge(
           ab_test_analytics_buckets,
-        ).merge(phone_with_camera)
+        )
       end
 
       def handle_stored_result
@@ -83,10 +82,6 @@ module Idv
         return unless document_capture_session.requested_at
 
         document_capture_session.requested_at > stored_result.captured_at
-      end
-
-      def phone_with_camera
-        { phone_with_camera: phone_question_ab_test_bucket == :show_phone_question ? true : nil }
       end
     end
   end

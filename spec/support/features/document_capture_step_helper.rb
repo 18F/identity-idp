@@ -16,6 +16,10 @@ module DocumentCaptureStepHelper
     attach_file t('doc_auth.headings.document_capture_back'), file, make_visible: true
   end
 
+  def attach_selfie(file = Rails.root.join('app', 'assets', 'images', 'logo.png'))
+    attach_file t('doc_auth.headings.document_capture_selfie'), file, make_visible: true
+  end
+
   def document_capture_form
     page.find('#document-capture-form')
   end

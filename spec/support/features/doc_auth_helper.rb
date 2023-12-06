@@ -175,7 +175,7 @@ module DocAuthHelper
     click_button t('idv.gpo.form.submit')
   end
 
-  def complete_come_back_later
+  def complete_letter_enqueued
     # Exit Login.gov and return to SP
     click_on t('idv.cancel.actions.exit', app_name: APP_NAME)
   end

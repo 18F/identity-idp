@@ -224,45 +224,77 @@ RSpec.describe ServiceProviderSession do
   describe '#requested_more_recent_verification?' do
     let(:verified_within) { nil }
     let(:user) { create(:user) }
+    let(:client_id) { sp.issuer }
 
     before do
       allow(view_context).to receive(:current_user).and_return(user)
+      allow(IdentityConfig.store).to receive(
+        :allowed_verified_within_providers,
+      ) { [client_id] }
       allow(session_decorator).to receive(:authorize_form).
-        and_return(OpenidConnectAuthorizeForm.new(verified_within: verified_within))
+        and_return(OpenidConnectAuthorizeForm.new(verified_within:, client_id:))
     end
 
     subject(:requested_more_recent_verification?) do
       session_decorator.requested_more_recent_verification?
     end
 
-    it 'is false with no verified_within param' do
-      expect(requested_more_recent_verification?).to eq(false)
-    end
-
-    context 'with a valid verified_within' do
-      let(:verified_within) { '45d' }
-
-      it 'is true if the user does not have an activated profile' do
-        expect(requested_more_recent_verification?).to eq(true)
+    context 'issuer is allowed to use verified_within' do
+      it 'is false with no verified_within param' do
+        expect(requested_more_recent_verification?).to eq(false)
       end
 
-      context 'the verified_at is newer than the verified_within ' do
-        before do
-          create(:profile, :active, user: user, verified_at: 15.days.ago)
+      context 'with a valid verified_within' do
+        let(:verified_within) { '45d' }
+
+        it 'is true if the user does not have an activated profile' do
+          expect(requested_more_recent_verification?).to eq(true)
         end
+
+        context 'the verified_at is newer than the verified_within ' do
+          before do
+            create(:profile, :active, user: user, verified_at: 15.days.ago)
+          end
+
+          it 'is false' do
+            expect(requested_more_recent_verification?).to eq(false)
+          end
+        end
+
+        context 'the verified_at is older than the verified_at' do
+          before do
+            create(:profile, :active, user: user, verified_at: 60.days.ago)
+          end
+
+          it 'is true' do
+            expect(requested_more_recent_verification?).to eq(true)
+          end
+        end
+      end
+    end
+
+    context 'issuer is not allowed to use verified_within' do
+      let(:client_id) { 'different id' }
+
+      it 'is false with no verified_within param' do
+        expect(requested_more_recent_verification?).to eq(false)
+      end
+
+      context 'with a valid verified_within' do
+        let(:verified_within) { '45d' }
 
         it 'is false' do
           expect(requested_more_recent_verification?).to eq(false)
         end
-      end
 
-      context 'the verified_at is older than the verified_at' do
-        before do
-          create(:profile, :active, user: user, verified_at: 60.days.ago)
-        end
+        context 'the verified_at is older than the verified_at' do
+          before do
+            create(:profile, :active, user: user, verified_at: 60.days.ago)
+          end
 
-        it 'is true' do
-          expect(requested_more_recent_verification?).to eq(true)
+          it 'is false' do
+            expect(requested_more_recent_verification?).to eq(false)
+          end
         end
       end
     end

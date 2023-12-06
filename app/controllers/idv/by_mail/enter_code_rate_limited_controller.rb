@@ -1,6 +1,7 @@
 module Idv
   module ByMail
     class EnterCodeRateLimitedController < ApplicationController
+      include Idv::AvailabilityConcern
       include IdvSession
       include FraudReviewConcern
 

@@ -8,15 +8,27 @@ module Idv
     validates :action, presence: true
     validate :next_steps_validation, :preconditions_validation, :undo_step_validation
 
-    def initialize(key:, controller:, next_steps:, preconditions:, undo_step:, action: :show)
+    def initialize(
+      key:,
+      controller:,
+      next_steps:,
+      preconditions:,
+      undo_step:,
+      action: :show
+    )
       @key = key
-      @controller = controller
-      @action = action
+      @controller = Idv::StepInfo.full_controller_name(controller)
       @next_steps = next_steps
       @preconditions = preconditions
       @undo_step = undo_step
+      @action = action
 
       raise ArgumentError unless valid?
+    end
+
+    def self.full_controller_name(controller)
+      # Need an absolute path for url_for if controller is in a different module
+      "/#{controller.name.underscore.gsub('_controller', '')}"
     end
 
     def next_steps_validation

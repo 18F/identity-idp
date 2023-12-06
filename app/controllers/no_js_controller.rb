@@ -3,6 +3,7 @@ class NoJsController < ApplicationController
 
   def index
     session[SESSION_KEY] = true
+    analytics.no_js_detect_stylesheet_loaded(location: params[:location])
     render body: '', content_type: 'text/css'
   end
 end

@@ -1,7 +1,9 @@
 module Idv
   module InPerson
     class AddressController < ApplicationController
+      include Idv::AvailabilityConcern
       include IdvStepConcern
+      include OptInHelper
 
       before_action :render_404_if_in_person_residential_address_controller_enabled_not_set
       before_action :confirm_in_person_state_id_step_complete
@@ -73,6 +75,7 @@ module Idv
           step: 'address',
           analytics_id: 'In Person Proofing',
           irs_reproofing: irs_reproofing?,
+          **opt_in_analytics_properties,
         }
       end
 

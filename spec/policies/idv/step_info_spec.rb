@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe 'Idv::StepInfo' do
-  let(:controller) { ApplicationController.controller_name }
+  let(:controller) { ApplicationController.class }
   let(:next_steps) { [] }
   let(:preconditions) { ->(idv_session:, user:) { true } }
   let(:undo_step) { ->(idv_session:, user:) { true } }
@@ -44,6 +44,21 @@ RSpec.describe 'Idv::StepInfo' do
 
     it 'raises an ArgumentError' do
       expect { subject }.to raise_error(ArgumentError)
+    end
+  end
+
+  context '#full_controller_name' do
+    let(:idv_step_controller_class) do
+      Class.new(ApplicationController) do
+        def self.name
+          'Idv::Lets::Go::Deeper::AnonymousController'
+        end
+      end
+    end
+
+    it 'returns an absolute "path" for the controller name' do
+      expect(Idv::StepInfo.full_controller_name(idv_step_controller_class)).
+        to eq('/idv/lets/go/deeper/anonymous')
     end
   end
 end

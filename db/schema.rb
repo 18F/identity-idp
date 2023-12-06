@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_11_02_211426) do
+ActiveRecord::Schema[7.1].define(version: 2023_12_04_232215) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -457,6 +457,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_11_02_211426) do
     t.text "encrypted_pii_multi_region"
     t.text "encrypted_pii_recovery_multi_region"
     t.datetime "gpo_verification_expired_at"
+    t.integer "idv_level"
     t.index ["fraud_pending_reason"], name: "index_profiles_on_fraud_pending_reason"
     t.index ["fraud_rejection_at"], name: "index_profiles_on_fraud_rejection_at"
     t.index ["fraud_review_pending_at"], name: "index_profiles_on_fraud_review_pending_at"
