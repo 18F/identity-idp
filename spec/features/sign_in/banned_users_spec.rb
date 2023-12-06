@@ -38,7 +38,7 @@ RSpec.feature 'Banning users for an SP' do
       visit_idp_from_sp_with_ial1(:oidc)
       sign_in_live_with_2fa(user)
       click_agree_and_continue
-      expect(current_url).to start_with('http://localhost:7654/auth/result')
+      expect(oidc_redirect_url).to start_with('http://localhost:7654/auth/result')
     end
   end
 

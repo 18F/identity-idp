@@ -5,6 +5,7 @@ RSpec.feature 'Sign in' do
   include ActionView::Helpers::DateHelper
   include PersonalKeyHelper
   include SamlAuthHelper
+  include OidcAuthHelper
   include SpAuthHelper
   include IdvHelper
   include DocAuthHelper
@@ -94,7 +95,7 @@ RSpec.feature 'Sign in' do
 
     expect(current_url).to eq rules_of_use_url
     accept_rules_of_use_and_continue_if_displayed
-    expect(current_url).to start_with service_provider.redirect_uris.first
+    expect(oidc_redirect_url).to start_with service_provider.redirect_uris.first
   end
 
   scenario 'user with old terms of use can accept and continue to IAL2 SP' do
@@ -128,7 +129,7 @@ RSpec.feature 'Sign in' do
 
     expect(current_url).to eq rules_of_use_url
     accept_rules_of_use_and_continue_if_displayed
-    expect(current_url).to start_with service_provider.redirect_uris.first
+    expect(oidc_redirect_url).to start_with service_provider.redirect_uris.first
   end
 
   scenario 'user opts to add piv/cac card but gets an error' do
@@ -190,7 +191,7 @@ RSpec.feature 'Sign in' do
     click_submit_default
     skip_second_mfa_prompt
     click_agree_and_continue
-    expect(current_url).to start_with('http://localhost:7654/auth/result')
+    expect(oidc_redirect_url).to start_with('http://localhost:7654/auth/result')
   end
 
   scenario 'user cannot sign in with certificate none error' do
@@ -721,7 +722,7 @@ RSpec.feature 'Sign in' do
       click_submit_default
       click_agree_and_continue
 
-      redirect_uri = URI(current_url)
+      redirect_uri = URI(oidc_redirect_url)
 
       expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
     end
@@ -784,7 +785,7 @@ RSpec.feature 'Sign in' do
 
         click_agree_and_continue
 
-        expect(current_url).to start_with('http://localhost:7654/auth/result')
+        expect(oidc_redirect_url).to start_with('http://localhost:7654/auth/result')
       end
 
       it 'returns ial2 info for a verified user' do
@@ -802,7 +803,7 @@ RSpec.feature 'Sign in' do
 
         click_agree_and_continue
 
-        expect(current_url).to start_with('http://localhost:7654/auth/result')
+        expect(oidc_redirect_url).to start_with('http://localhost:7654/auth/result')
       end
     end
 
@@ -811,7 +812,7 @@ RSpec.feature 'Sign in' do
         create(:user, :fully_registered)
         visit_idp_from_oidc_sp_with_ialmax
 
-        expect(page).to have_content 'The page you were looking for doesn’t exist'
+        expect(oidc_redirect_url).to include('error=invalid_request')
       end
     end
   end
@@ -955,7 +956,7 @@ RSpec.feature 'Sign in' do
       action_url = agree_and_continue_button.ancestor('form')[:action]
       agree_and_continue_button.click
 
-      expect(current_url).to start_with('http://localhost:7654/auth/result')
+      expect(oidc_redirect_url).to start_with('http://localhost:7654/auth/result')
 
       response = page.driver.post(action_url)
       expect(response).to be_redirect

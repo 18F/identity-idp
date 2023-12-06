@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.feature 'sp active users report' do
   include SamlAuthHelper
+  include OidcAuthHelper
   include IdvHelper
 
   it 'reports a user as ial1 active for an ial1 sign in' do
@@ -11,7 +12,7 @@ RSpec.feature 'sp active users report' do
     fill_in_code_with_last_phone_otp
     click_submit_default
     click_agree_and_continue
-    expect(current_url).to start_with('http://localhost:7654/auth/result')
+    expect(oidc_redirect_url).to start_with('http://localhost:7654/auth/result')
 
     results = [{ issuer: OidcAuthHelper::OIDC_IAL1_ISSUER,
                  app_id: nil,
@@ -30,7 +31,7 @@ RSpec.feature 'sp active users report' do
     fill_in_code_with_last_phone_otp
     click_submit_default
     click_agree_and_continue
-    expect(current_url).to start_with('http://localhost:7654/auth/result')
+    expect(oidc_redirect_url).to start_with('http://localhost:7654/auth/result')
 
     results = [{ issuer: 'urn:gov:gsa:openidconnect:sp:server',
                  app_id: nil,

@@ -7,11 +7,6 @@ RSpec.shared_examples 'signing in with the site in Spanish' do |sp|
     fill_in_credentials_and_submit(user.email, user.password)
     continue_as(user.email)
 
-    if sp == :oidc
-      expect(page.response_headers['Content-Security-Policy']).
-        to(include('form-action \'self\' http://localhost:7654'))
-    end
-
     fill_in_code_with_last_phone_otp
     sp == :saml ? click_submit_default_twice : click_submit_default
 
@@ -22,7 +17,7 @@ RSpec.shared_examples 'signing in with the site in Spanish' do |sp|
     if sp == :saml
       expect(current_url).to eq UriService.add_params(complete_saml_url, locale: 'es')
     elsif sp == :oidc
-      redirect_uri = URI(current_url)
+      redirect_uri = URI(oidc_redirect_url)
 
       expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
     end
@@ -50,6 +45,8 @@ RSpec.shared_examples 'signing in as IAL1 with piv/cac' do |sp|
 end
 
 RSpec.shared_examples 'visiting 2fa when fully authenticated' do |sp|
+  include OidcAuthHelper
+
   it 'redirects to SP after visiting a 2fa screen when fully authenticated', email: true do
     ial1_sign_in_with_personal_key_goes_to_sp(sp)
 
@@ -60,7 +57,7 @@ RSpec.shared_examples 'visiting 2fa when fully authenticated' do |sp|
     expect(current_url).to eq complete_saml_url if sp == :saml
 
     if sp == :oidc
-      redirect_uri = URI(current_url)
+      redirect_uri = URI(oidc_redirect_url)
 
       expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
     end
@@ -120,7 +117,7 @@ RSpec.shared_examples 'signing in as IAL1 with personal key after resetting pass
 
     expect(current_url).to eq complete_saml_url if sp == :saml
     if sp == :oidc
-      redirect_uri = URI(current_url)
+      redirect_uri = URI(oidc_redirect_url)
 
       expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
     end
@@ -156,7 +153,7 @@ RSpec.shared_examples 'signing in as IAL2 after resetting password' do |sp|
 
     expect(current_url).to eq complete_saml_url if sp == :saml
     if sp == :oidc
-      redirect_uri = URI(current_url)
+      redirect_uri = URI(oidc_redirect_url)
 
       expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
     end
@@ -311,7 +308,7 @@ def ial1_sign_in_with_personal_key_goes_to_sp(sp)
 
   return unless sp == :oidc
 
-  redirect_uri = URI(current_url)
+  redirect_uri = URI(oidc_redirect_url)
 
   expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
 end
@@ -326,7 +323,7 @@ def ial1_sign_in_with_piv_cac_goes_to_sp(sp)
   click_submit_default if sp == :saml
   click_agree_and_continue
   return unless sp == :oidc
-  redirect_uri = URI(current_url)
+  redirect_uri = URI(oidc_redirect_url)
 
   expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
 end
