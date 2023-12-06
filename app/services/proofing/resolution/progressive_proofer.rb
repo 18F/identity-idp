@@ -240,7 +240,7 @@ module Proofing
             Proofing::Mock::ResolutionMockClient.new
           else
             Proofing::LexisNexis::InstantVerify::Proofer.new(
-              instant_verify_workflow: IdentityConfig.store.lexisnexis_instant_verify_workflow,
+              instant_verify_workflow: lexisnexis_instant_verify_workflow,
               account_id: IdentityConfig.store.lexisnexis_account_id,
               base_url: IdentityConfig.store.lexisnexis_base_url,
               username: IdentityConfig.store.lexisnexis_username,
@@ -250,6 +250,11 @@ module Proofing
               request_mode: IdentityConfig.store.lexisnexis_request_mode,
             )
           end
+      end
+
+      def lexisnexis_instant_verify_workflow
+        ab_test_variables = LexisnexisInstantVerify.new.workflow_ab_testing_variables
+        ab_test_variables.instant_verify_workflow
       end
 
       def state_id_proofer
