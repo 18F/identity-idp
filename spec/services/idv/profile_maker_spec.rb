@@ -95,7 +95,7 @@ RSpec.describe Idv::ProfileMaker do
           in_person_verification_needed: false,
         )
       end
-      it 'deactivates a profile for gpo verification' do
+      it 'creates a pending profile for gpo verification' do
         expect(profile.activated_at).to be_nil
         expect(profile.active).to eq(false)
         expect(profile.deactivation_reason).to be_nil
