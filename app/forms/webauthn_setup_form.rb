@@ -65,9 +65,12 @@ class WebauthnSetupForm
   def name_is_unique
     return unless WebauthnConfiguration.exists?(user_id: @user.id, name: @name)
     if @platform_authenticator
-      incrementer = 1
-      while WebauthnConfiguration.exists?(user_id: @user.id, name: @name)
-        @name = "#{@name} (#{++incrementer})"
+      if WebauthnConfiguration.exists?(user_id: @user.id, name: @name)
+        num_existing_devices = WebauthnConfiguration.
+          where(user_id: @user.id).
+          where('name LIKE ?', "#{@name}%").
+          count
+        @name = "#{@name} (#{num_existing_devices})"
       end
     else
       errors.add :name, I18n.t('errors.webauthn_setup.unique_name'), type: :unique_name
