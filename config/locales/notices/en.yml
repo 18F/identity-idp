@@ -63,5 +63,6 @@ en:
       text_html: Or, %{link_html}
     webauthn_configured: A security key was added to your account.
     webauthn_deleted: Your security key was deleted from your account.
-    webauthn_platform_configured: Face or touch unlock was added to your account.
+    webauthn_platform_configured: You used your device’s screen lock to add face or
+      touch unlock to your account.
     webauthn_platform_deleted: Face or touch unlock was deleted from your account.
