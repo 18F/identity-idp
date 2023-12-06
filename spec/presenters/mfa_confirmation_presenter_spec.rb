@@ -7,18 +7,46 @@ RSpec.describe MfaConfirmationPresenter do
   end
 
   describe '#heading?' do
-    it 'supplies a message' do
+    it 'supplies a message for successful MFA setup' do
       expect(presenter.heading).
         to eq(t('titles.mfa_setup.suggest_second_mfa'))
+    end
+
+    context 'after successful face or touch unlock setup' do
+      let(:webauthn_platform_set_up_successful) { true }
+      let(:presenter) do
+        described_class.new(
+          webauthn_platform_set_up_successful: webauthn_platform_set_up_successful,
+        )
+      end
+
+      it 'shows the correct heading' do
+        expect(presenter.heading).
+          to eq(t('titles.mfa_setup.face_touch_unlock_confirmation'))
+      end
     end
   end
 
   describe '#info?' do
-    it 'supplies a message' do
+    it 'supplies a message for successful MFA setup' do
       expect(presenter.info).
         to eq(
           t('mfa.account_info'),
         )
+    end
+
+    context 'after successful face or touch unlock setup' do
+      let(:webauthn_platform_set_up_successful) { true }
+      let(:presenter) do
+        described_class.new(
+          webauthn_platform_set_up_successful: webauthn_platform_set_up_successful,
+        )
+      end
+
+      it 'shows the correct information' do
+        expect(presenter.info).
+          to eq(t('mfa.webauthn_platform_message'))
+      end
     end
   end
 
