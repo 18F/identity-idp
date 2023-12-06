@@ -27,11 +27,11 @@ module Idv
       profile.proofing_components = current_proofing_components
       profile.fraud_pending_reason = fraud_pending_reason
 
-      if in_person_verification_needed
-        profile.idv_level = :legacy_in_person
-      else
-        profile.idv_level = :legacy_unsupervised
-      end
+      profile.idv_level = if in_person_verification_needed
+                            :legacy_in_person
+                          else
+                            :legacy_unsupervised
+                          end
 
       profile.save!
       profile.deactivate_for_gpo_verification if gpo_verification_needed
