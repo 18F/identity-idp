@@ -458,6 +458,13 @@ review-app:
       EOF
       )
     - git clone -b main --single-branch https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.login.gov/lg-public/identity-idp-helm-chart.git
+    - |-
+      cat public/deploy.json > <<EOF
+        {
+          "branch": "$CI_COMMIT_BRANCH",
+          "git_sha": "$CI_COMMIT_SHA"
+        }
+      EOF
     - >-
       helm upgrade --install --namespace review-apps
       --debug
