@@ -30,6 +30,11 @@ class Profile < ApplicationRecord
     threatmetrix_reject: 2,
   }
 
+  enum idv_level: {
+    legacy_unsupervised: 1,
+    legacy_in_person: 2,
+  }
+
   attr_reader :personal_key
 
   # Class methods
