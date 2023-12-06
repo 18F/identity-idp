@@ -134,7 +134,8 @@ build-review-image:
       --cache-ttl=168h
       --cache=true
       --compressed-caching=false
-      --build-arg "http_proxy=${http_proxy}" --build-arg "https_proxy=${https_proxy}" --build-arg "no_proxy=${no_proxy}" --build-arg "ARG_CI_ENVIRONMENT_SLUG=${CI_ENVIRONMENT_SLUG}"
+      --build-arg "http_proxy=${http_proxy}" --build-arg "https_proxy=${https_proxy}" --build-arg "no_proxy=${no_proxy}" --build-arg "ARG_CI_ENVIRONMENT_SLUG=${CI_ENVIRONMENT_SLUG}" --build-arg "CI_COMMIT_BRANCH=${CI_COMMIT_BRANCH}" --build-arg "CI_COMMIT_SHA=${CI_COMMIT_SHA}"
+
 
 check_changelog:
   stage: test
@@ -458,13 +459,6 @@ review-app:
       EOF
       )
     - git clone -b main --single-branch https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.login.gov/lg-public/identity-idp-helm-chart.git
-    - |-
-      cat public/deploy.json > <<EOF
-        {
-          "branch": "$CI_COMMIT_BRANCH",
-          "git_sha": "$CI_COMMIT_SHA"
-        }
-      EOF
     - >-
       helm upgrade --install --namespace review-apps
       --debug

@@ -2,6 +2,8 @@ FROM ruby:3.2.2-slim
 
 # Set environment variables
 ARG ARG_CI_ENVIRONMENT_SLUG="placeholder"
+ARG CI_COMMIT_BRANCH="branch_placeholder"
+ARG CI_COMMIT_SHA="sha_placeholder"
 ENV CI_ENVIRONMENT_SLUG=${ARG_CI_ENVIRONMENT_SLUG}
 ENV RAILS_ROOT /app
 ENV RAILS_ENV production
@@ -105,6 +107,13 @@ RUN bundle binstubs --all
 COPY package.json $RAILS_ROOT/package.json
 COPY yarn.lock $RAILS_ROOT/yarn.lock
 RUN yarn install --production=true --frozen-lockfile --cache-folder .yarn-cache
+
+RUN cat > $RAILS_ROOT/public/deploy.json <<EOF
+  {
+    "branch": "$CI_COMMIT_BRANCH",
+    "git_sha":"$CI_COMMIT_SHA"
+  }
+EOF
 
 # Add the application code
 COPY --chown=app:app ./lib ./lib
