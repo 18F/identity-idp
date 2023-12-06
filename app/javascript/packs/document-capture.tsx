@@ -33,6 +33,7 @@ interface AppRootData {
   cancelUrl: string;
   exitUrl: string;
   idvInPersonUrl?: string;
+  optedInToInPersonProofing: string;
   securityAndPrivacyHowItWorksUrl: string;
   skipDocAuth: string;
   howToVerifyURL: string;
@@ -65,14 +66,20 @@ function getMetaContent(name): string | null {
 const device: DeviceContextValue = { isMobile: isCameraCapableMobile() };
 
 const trackEvent: typeof baseTrackEvent = (event, payload) => {
-  const { flowPath, acuantSdkUpgradeABTestingEnabled, useAlternateSdk, acuantVersion } =
-    appRoot.dataset;
+  const {
+    flowPath,
+    acuantSdkUpgradeABTestingEnabled,
+    useAlternateSdk,
+    acuantVersion,
+    optedInToInPersonProofing,
+  } = appRoot.dataset;
   return baseTrackEvent(event, {
     ...payload,
     flow_path: flowPath,
     acuant_sdk_upgrade_a_b_testing_enabled: acuantSdkUpgradeABTestingEnabled,
     use_alternate_sdk: useAlternateSdk,
     acuant_version: acuantVersion,
+    opted_in_to_in_person_proofing: optedInToInPersonProofing,
   });
 };
 
@@ -95,6 +102,7 @@ const {
   inPersonFullAddressEntryEnabled,
   inPersonOutageMessageEnabled,
   inPersonOutageExpectedUpdateDate,
+  optedInToInPersonProofing,
   usStatesTerritories = '',
   skipDocAuth,
   howToVerifyUrl,
@@ -120,6 +128,7 @@ const App = composeComponents(
         inPersonOutageMessageEnabled: inPersonOutageMessageEnabled === 'true',
         inPersonOutageExpectedUpdateDate,
         inPersonFullAddressEntryEnabled: inPersonFullAddressEntryEnabled === 'true',
+        optedInToInPersonProofing: optedInToInPersonProofing === 'true',
         usStatesTerritories: parsedUsStatesTerritories,
         skipDocAuth: skipDocAuth === 'true',
         howToVerifyURL: howToVerifyUrl,

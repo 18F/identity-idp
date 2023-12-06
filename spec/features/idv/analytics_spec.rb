@@ -373,28 +373,28 @@ RSpec.feature 'Analytics Regression', js: true do
       },
       'IdV: doc auth image upload vendor submitted' => hash_including(success: true, flow_path: 'standard', attention_with_barcode: true, doc_auth_result: 'Attention'),
       'IdV: verify in person troubleshooting option clicked' => {
-        flow_path: 'standard',
+        flow_path: 'standard', opted_in_to_in_person_proofing: nil
       },
       'IdV: in person proofing location visited' => {
-        flow_path: 'standard',
+        flow_path: 'standard', opted_in_to_in_person_proofing: nil
       },
       'IdV: in person proofing location submitted' => {
-        flow_path: 'standard', selected_location: '606 E JUNEAU AVE, MILWAUKEE, WI, 53202-9998'
+        flow_path: 'standard', selected_location: '606 E JUNEAU AVE, MILWAUKEE, WI, 53202-9998', opted_in_to_in_person_proofing: nil
       },
       'IdV: in person proofing prepare visited' => {
-        flow_path: 'standard',
+        flow_path: 'standard', opted_in_to_in_person_proofing: nil
       },
       'IdV: in person proofing prepare submitted' => {
-        flow_path: 'standard',
+        flow_path: 'standard', opted_in_to_in_person_proofing: nil
       },
       'IdV: in person proofing state_id visited' => {
-        step: 'state_id', flow_path: 'standard', step_count: 1, analytics_id: 'In Person Proofing', irs_reproofing: false
+        step: 'state_id', flow_path: 'standard', step_count: 1, analytics_id: 'In Person Proofing', irs_reproofing: false, opted_in_to_in_person_proofing: nil
       },
       'IdV: in person proofing state_id submitted' => {
-        success: true, flow_path: 'standard', step: 'state_id', step_count: 1, analytics_id: 'In Person Proofing', irs_reproofing: false, errors: {}, same_address_as_id: false
+        success: true, flow_path: 'standard', step: 'state_id', step_count: 1, analytics_id: 'In Person Proofing', irs_reproofing: false, errors: {}, same_address_as_id: false, opted_in_to_in_person_proofing: nil
       },
       'IdV: in person proofing address visited' => {
-        step: 'address', flow_path: 'standard', step_count: 1, analytics_id: 'In Person Proofing', irs_reproofing: false, same_address_as_id: false
+        step: 'address', flow_path: 'standard', step_count: 1, analytics_id: 'In Person Proofing', irs_reproofing: false, same_address_as_id: false, opted_in_to_in_person_proofing: nil
       },
       'IdV: in person proofing residential address submitted' => {
         success: true, step: 'address', flow_path: 'standard', step_count: 1, analytics_id: 'In Person Proofing', irs_reproofing: false, errors: {}, same_address_as_id: false
@@ -666,6 +666,7 @@ RSpec.feature 'Analytics Regression', js: true do
 
     before do
       allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+      allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).and_return(false)
       allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).and_return(true)
       allow_any_instance_of(Idv::InPerson::ReadyToVerifyPresenter).
         to receive(:service_provider_homepage_url).and_return(return_sp_url)

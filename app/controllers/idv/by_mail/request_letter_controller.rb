@@ -5,6 +5,7 @@ module Idv
       include IdvStepConcern
       skip_before_action :confirm_no_pending_gpo_profile
       include Idv::StepIndicatorConcern
+      include OptInHelper
 
       before_action :confirm_mail_not_rate_limited
       before_action :confirm_step_allowed
@@ -80,6 +81,7 @@ module Idv
             gpo_mail_service.hours_since_first_letter(first_letter_requested_at),
           phone_step_attempts: gpo_mail_service.phone_step_attempts,
           **ab_test_analytics_buckets,
+          **opt_in_analytics_properties,
         )
         irs_attempts_api_tracker.idv_gpo_letter_requested(resend: resend_requested?)
         create_user_event(:gpo_mail_sent, current_user)

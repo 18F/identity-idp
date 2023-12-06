@@ -80,6 +80,7 @@ RSpec.describe Idv::InPerson::AddressController do
         analytics_id: 'In Person Proofing',
         flow_path: 'standard',
         irs_reproofing: false,
+        opted_in_to_in_person_proofing: nil,
         step: 'address',
         step_count: nil,
       }

@@ -1487,23 +1487,31 @@ module AnalyticsEvents
 
   # @param [String] selected_location Selected in-person location
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
+  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   # The user submitted the in person proofing location step
-  def idv_in_person_location_submitted(selected_location:, flow_path:,
-                                       **extra)
+  def idv_in_person_location_submitted(
+    selected_location:,
+    flow_path:,
+    opted_in_to_in_person_proofing:,
+    **extra
+  )
     track_event(
       'IdV: in person proofing location submitted',
       selected_location: selected_location,
       flow_path: flow_path,
+      opted_in_to_in_person_proofing: opted_in_to_in_person_proofing,
       **extra,
     )
   end
 
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
+  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   # The user visited the in person proofing location step
-  def idv_in_person_location_visited(flow_path:, **extra)
+  def idv_in_person_location_visited(flow_path:, opted_in_to_in_person_proofing:, **extra)
     track_event(
       'IdV: in person proofing location visited',
       flow_path: flow_path,
+      opted_in_to_in_person_proofing: opted_in_to_in_person_proofing,
       **extra,
     )
   end
@@ -1562,51 +1570,25 @@ module AnalyticsEvents
   end
 
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
+  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   # The user submitted the in person proofing prepare step
-  def idv_in_person_prepare_submitted(flow_path:, **extra)
+  def idv_in_person_prepare_submitted(flow_path:, opted_in_to_in_person_proofing:, **extra)
     track_event(
       'IdV: in person proofing prepare submitted',
       flow_path: flow_path,
+      opted_in_to_in_person_proofing: opted_in_to_in_person_proofing,
       **extra,
     )
   end
 
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
+  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   # The user visited the in person proofing prepare step
-  def idv_in_person_prepare_visited(flow_path:, **extra)
-    track_event('IdV: in person proofing prepare visited', flow_path: flow_path, **extra)
-  end
-
-  # @param [String] flow_path
-  # @param [String] step
-  # @param [Integer] step_count
-  # @param [String] analytics_id
-  # @param [Boolean] irs_reproofing
-  # @param [Boolean] success
-  # @param [Hash] errors
-  # @param [Boolean] same_address_as_id
-  # address submitted by user
-  def idv_in_person_proofing_address_submitted(
-    flow_path: nil,
-    step: nil,
-    step_count: nil,
-    analytics_id: nil,
-    irs_reproofing: nil,
-    success: nil,
-    errors: nil,
-    same_address_as_id: nil,
-    **extra
-  )
+  def idv_in_person_prepare_visited(flow_path:, opted_in_to_in_person_proofing:, **extra)
     track_event(
-      'IdV: in person proofing address submitted',
+      'IdV: in person proofing prepare visited',
       flow_path: flow_path,
-      step: step,
-      step_count: step_count,
-      analytics_id: analytics_id,
-      irs_reproofing: irs_reproofing,
-      success: success,
-      errors: errors,
-      same_address_as_id: same_address_as_id,
+      opted_in_to_in_person_proofing: opted_in_to_in_person_proofing,
       **extra,
     )
   end
@@ -1616,6 +1598,7 @@ module AnalyticsEvents
   # @param [Integer] step_count
   # @param [String] analytics_id
   # @param [Boolean] irs_reproofing
+  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   # address page visited
   def idv_in_person_proofing_address_visited(
     flow_path: nil,
@@ -1623,6 +1606,7 @@ module AnalyticsEvents
     step_count: nil,
     analytics_id: nil,
     irs_reproofing: nil,
+    opted_in_to_in_person_proofing: nil,
     **extra
   )
     track_event(
@@ -1632,6 +1616,7 @@ module AnalyticsEvents
       step_count: step_count,
       analytics_id: analytics_id,
       irs_reproofing: irs_reproofing,
+      opted_in_to_in_person_proofing: opted_in_to_in_person_proofing,
       **extra,
     )
   end
@@ -1819,6 +1804,7 @@ module AnalyticsEvents
   # @param [Boolean] success
   # @param [Hash] errors
   # @param [Boolean, nil] same_address_as_id
+  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   # User submitted state id
   def idv_in_person_proofing_state_id_submitted(
     flow_path: nil,
@@ -1829,6 +1815,7 @@ module AnalyticsEvents
     success: nil,
     errors: nil,
     same_address_as_id: nil,
+    opted_in_to_in_person_proofing: nil,
     **extra
   )
     track_event(
@@ -1841,6 +1828,7 @@ module AnalyticsEvents
       success: success,
       errors: errors,
       same_address_as_id: same_address_as_id,
+      opted_in_to_in_person_proofing: opted_in_to_in_person_proofing,
       **extra,
     )
   end
@@ -1850,6 +1838,7 @@ module AnalyticsEvents
   # @param [Integer] step_count
   # @param [String] analytics_id
   # @param [Boolean] irs_reproofing
+  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   # State id page visited
   def idv_in_person_proofing_state_id_visited(
     flow_path: nil,
@@ -1857,6 +1846,7 @@ module AnalyticsEvents
     step_count: nil,
     analytics_id: nil,
     irs_reproofing: nil,
+    opted_in_to_in_person_proofing: nil,
     **extra
   )
     track_event(
@@ -1866,6 +1856,7 @@ module AnalyticsEvents
       step_count: step_count,
       analytics_id: analytics_id,
       irs_reproofing: irs_reproofing,
+      opted_in_to_in_person_proofing: opted_in_to_in_person_proofing,
       **extra,
     )
   end
@@ -2876,12 +2867,17 @@ module AnalyticsEvents
   end
 
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
+  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   # The user clicked the troubleshooting option to start in-person proofing
-  def idv_verify_in_person_troubleshooting_option_clicked(flow_path:,
-                                                          **extra)
+  def idv_verify_in_person_troubleshooting_option_clicked(
+    flow_path:,
+    opted_in_to_in_person_proofing:,
+    **extra
+  )
     track_event(
       'IdV: verify in person troubleshooting option clicked',
       flow_path: flow_path,
+      opted_in_to_in_person_proofing: opted_in_to_in_person_proofing,
       **extra,
     )
   end

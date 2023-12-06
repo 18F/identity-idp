@@ -13,6 +13,7 @@ module Idv
       idv_consent_given
       idv_phone_step_document_capture_session_uuid
       mail_only_warning_shown
+      opted_in_to_in_person_proofing
       personal_key
       personal_key_acknowledged
       phone_for_mobile_flow
@@ -82,8 +83,13 @@ module Idv
         UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(
           current_user,
           profile_maker.pii_attributes,
+          opt_in_param,
         )
       end
+    end
+
+    def opt_in_param
+      opted_in_to_in_person_proofing unless !IdentityConfig.store.in_person_proofing_opt_in_enabled
     end
 
     def acknowledge_personal_key!

@@ -15,6 +15,7 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
   let(:doc_auth_selfie_capture) { { enabled: false } }
   let(:acuant_version) { '1.3.3.7' }
   let(:skip_doc_auth) { false }
+  let(:opted_in_to_in_person_proofing) { false }
 
   before do
     decorated_sp_session = instance_double(
@@ -45,6 +46,7 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
       acuant_version: acuant_version,
       doc_auth_selfie_capture: doc_auth_selfie_capture,
       skip_doc_auth: skip_doc_auth,
+      opted_in_to_in_person_proofing: opted_in_to_in_person_proofing,
     }
   end
 

@@ -29,6 +29,7 @@
       exit_url: idv_exit_path,
       account_url: account_path,
       failure_to_proof_url: failure_to_proof_url,
+      opted_in_to_in_person_proofing: opted_in_to_in_person_proofing,
       idv_in_person_url: (IdentityConfig.store.in_person_doc_auth_button_enabled && Idv::InPersonConfig.enabled_for_issuer?(decorated_sp_session.sp_issuer)) ? idv_in_person_url : nil,
       security_and_privacy_how_it_works_url: MarketingSite.security_and_privacy_how_it_works_url,
       in_person_full_address_entry_enabled: IdentityConfig.store.in_person_full_address_entry_enabled,
