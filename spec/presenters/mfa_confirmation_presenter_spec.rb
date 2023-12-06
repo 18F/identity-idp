@@ -11,6 +11,20 @@ RSpec.describe MfaConfirmationPresenter do
       expect(presenter.heading).
         to eq(t('titles.mfa_setup.suggest_second_mfa'))
     end
+
+    context 'after face or touch unlock setup' do
+      let(:webauthn_platform_set_up_successful) { true }
+      let(:presenter) do
+        described_class.new(
+          webauthn_platform_set_up_successful: webauthn_platform_set_up_successful,
+        )
+      end
+
+      it 'shows the correct heading' do
+        expect(presenter.heading).
+          to eq(t('titles.mfa_setup.face_touch_unlock_confirmation'))
+      end
+    end
   end
 
   describe '#info?' do
@@ -19,6 +33,20 @@ RSpec.describe MfaConfirmationPresenter do
         to eq(
           t('mfa.account_info'),
         )
+    end
+
+    context 'after face or touch unlock setup' do
+      let(:webauthn_platform_set_up_successful) { true }
+      let(:presenter) do
+        described_class.new(
+          webauthn_platform_set_up_successful: webauthn_platform_set_up_successful,
+        )
+      end
+
+      it 'shows the correct heading' do
+        expect(presenter.info).
+          to eq(t('mfa.webauthn_platform_message'))
+      end
     end
   end
 
@@ -44,35 +72,6 @@ RSpec.describe MfaConfirmationPresenter do
 
       it 'returns false' do
         expect(presenter.show_skip_additional_mfa_link?).to eq(false)
-      end
-    end
-  end
-
-  describe '#webauthn_platform_set_up_successful?' do
-    it 'returns false' do
-      expect(presenter.webauthn_platform_set_up_successful?).to eq(false)
-    end
-
-    context 'when f/t unlock setup is successful' do
-      let(:webauthn_platform_set_up_successful) { true }
-      let(:expected_heading) { t('titles.mfa_setup.face_touch_unlock_confirmation') }
-      let(:expected_info) { I18n.t('mfa.webauthn_platform_message') }
-      let(:presenter) do
-        described_class.new(
-          webauthn_platform_set_up_successful: webauthn_platform_set_up_successful,
-        )
-      end
-
-      it 'returns true' do
-        expect(presenter.webauthn_platform_set_up_successful?).to eq(true)
-      end
-
-      it 'shows the correct heading' do
-        expect(presenter.heading).to eq expected_heading
-      end
-
-      it 'shows the correct content' do
-        expect(presenter.info).to eq expected_info
       end
     end
   end
