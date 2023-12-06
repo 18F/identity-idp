@@ -433,7 +433,7 @@ RSpec.feature 'Sign in' do
     end
 
     context 'with sp' do
-      scenario 'redirects to home page with error' do
+      scenario 'redirects to home page with error  and preserves branded experience' do
         user = user_with_2fa
         service_provider = ServiceProvider.find_by(issuer: OidcAuthHelper::OIDC_IAL1_ISSUER)
         IdentityLinker.new(user, service_provider).link_identity(
