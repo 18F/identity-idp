@@ -1,5 +1,5 @@
 module FlowPolicyHelper
-  def stub_up_to_key(key:, idv_session:)
+  def stub_up_to(key, idv_session:)
     keys = keys_up_to(key: key)
 
     keys.each do |key|
