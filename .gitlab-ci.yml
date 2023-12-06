@@ -117,6 +117,8 @@ build-review-image:
     - mkdir -p /kaniko/.docker
     - echo ${CI_ENVIRONMENT_SLUG}
     - echo $CI_ENVIRONMENT_SLUG
+    - echo $CI_COMMIT_BRANCH
+    - echo $CI_COMMIT_SHA
     - |-
       KANIKOCFG="\"credsStore\":\"ecr-login\""
       if [ "x${http_proxy}" != "x" -o "x${https_proxy}" != "x" ]; then
