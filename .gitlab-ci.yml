@@ -126,6 +126,7 @@ build-review-image:
       fi
       KANIKOCFG="{ ${KANIKOCFG} }"
       echo "${KANIKOCFG}" > /kaniko/.docker/config.json
+    - echo DEBUG_REMOVE_ME --build-arg "ARG_CI_ENVIRONMENT_SLUG=${CI_ENVIRONMENT_SLUG}" --build-arg "ARG_CI_COMMIT_BRANCH=${CI_COMMIT_BRANCH}" --build-arg "ARG_CI_COMMIT_SHA=${CI_COMMIT_SHA}"
     - >-
       /kaniko/executor
       --context "${CI_PROJECT_DIR}"
