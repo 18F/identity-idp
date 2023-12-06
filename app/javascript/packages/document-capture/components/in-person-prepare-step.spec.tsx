@@ -42,6 +42,7 @@ describe('InPersonPrepareStep', () => {
             inPersonOutageMessageEnabled: true,
             inPersonOutageExpectedUpdateDate: 'January 1, 2024',
             inPersonFullAddressEntryEnabled: false,
+            optedInToInPersonProofing: false,
             usStatesTerritories: [],
           }}
         >
@@ -60,6 +61,7 @@ describe('InPersonPrepareStep', () => {
             addressSearchURL: 'https://localhost:3000/unused',
             inPersonOutageMessageEnabled: false,
             inPersonFullAddressEntryEnabled: false,
+            optedInToInPersonProofing: false,
             usStatesTerritories: [],
           }}
         >

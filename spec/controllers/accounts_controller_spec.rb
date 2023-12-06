@@ -23,6 +23,45 @@ RSpec.describe AccountsController do
       end
     end
 
+    describe 'pii fetching' do
+      let(:pii_cacher) { Pii::Cacher.new(user, {}) }
+      let(:active_profile) { create(:profile, :active) }
+      let(:pending_profile) { create(:profile, :verify_by_mail_pending) }
+      let(:user) { create(:user, :fully_registered, profiles: profiles) }
+
+      before do
+        allow(Pii::Cacher).to receive(:new).and_return(pii_cacher)
+        allow(pii_cacher).to receive(:fetch).and_call_original
+
+        sign_in user
+        get :show
+      end
+
+      context 'when the user has no profiles' do
+        let(:profiles) { [] }
+
+        it 'uses no PII' do
+          expect(pii_cacher).to have_received(:fetch).with(nil)
+        end
+      end
+
+      context 'when the user has an active profile and a pending profile' do
+        let(:profiles) { [active_profile, pending_profile] }
+
+        it 'uses PII from the active profile' do
+          expect(pii_cacher).to have_received(:fetch).with(active_profile.id)
+        end
+      end
+
+      context 'when the user has no active profile but has a pending profile' do
+        let(:profiles) { [pending_profile] }
+
+        it 'uses PII from the pending profile' do
+          expect(pii_cacher).to have_received(:fetch).with(pending_profile.id)
+        end
+      end
+    end
+
     context 'when user has an active identity' do
       it 'renders the profile and does not redirect out of the app' do
         stub_analytics

@@ -4,7 +4,6 @@ module Idv
     include DocumentCaptureConcern
     include IdvStepConcern
     include StepIndicatorConcern
-    include PhoneQuestionAbTestConcern
 
     before_action :confirm_not_rate_limited
     before_action :confirm_step_allowed
@@ -34,10 +33,7 @@ module Idv
     end
 
     def extra_view_variables
-      { phone: idv_session.phone_for_mobile_flow }.merge(
-        phone_question_ab_test_analytics_bucket,
-        phone_with_camera: idv_session.phone_with_camera,
-      )
+      { phone: idv_session.phone_for_mobile_flow }
     end
 
     def self.step_info

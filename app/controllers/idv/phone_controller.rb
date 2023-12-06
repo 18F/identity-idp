@@ -5,6 +5,7 @@ module Idv
     include StepIndicatorConcern
     include PhoneOtpRateLimitable
     include PhoneOtpSendable
+    include OptInHelper
 
     attr_reader :idv_form
 
@@ -30,7 +31,10 @@ module Idv
         Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
           call(:verify_phone, :view, true)
 
-        analytics.idv_phone_of_record_visited(**ab_test_analytics_buckets)
+        analytics.idv_phone_of_record_visited(
+          **ab_test_analytics_buckets,
+          **opt_in_analytics_properties,
+        )
         render :new, locals: { gpo_letter_available: gpo_letter_available }
       elsif async_state.missing?
         analytics.proofing_address_result_missing
@@ -187,6 +191,7 @@ module Idv
           new_phone_added: new_phone_added?,
           hybrid_handoff_phone_used: hybrid_handoff_phone_used?,
         ),
+        **opt_in_analytics_properties,
       )
 
       if form_result.success?

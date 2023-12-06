@@ -5,6 +5,7 @@ module Idv
     include StepIndicatorConcern
     include SecureHeadersConcern
     include FraudReviewConcern
+    include OptInHelper
 
     before_action :apply_secure_headers_override
     before_action :confirm_two_factor_authenticated
@@ -16,6 +17,7 @@ module Idv
       analytics.idv_personal_key_visited(
         address_verification_method: idv_session.address_verification_mechanism,
         in_person_verification_pending: idv_session.profile&.in_person_verification_pending?,
+        **opt_in_analytics_properties,
       )
       add_proofing_component
 
