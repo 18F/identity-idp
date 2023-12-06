@@ -119,7 +119,7 @@ RSpec.describe Idv::ProfileMaker do
           in_person_verification_needed: true,
         )
       end
-      it 'deactivates a profile for in person verification' do
+      it 'creates a pending profile for in person verification' do
         expect(profile.activated_at).to be_nil
         expect(profile.active).to eq(false)
         expect(profile.deactivation_reason).to be_nil
