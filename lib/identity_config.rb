@@ -126,6 +126,7 @@ class IdentityConfig
     config.add(:address_identity_proofing_supported_country_codes, type: :json)
     config.add(:all_redirect_uris_cache_duration_minutes, type: :integer)
     config.add(:allowed_ialmax_providers, type: :json)
+    config.add(:allowed_verified_within_providers, type: :json)
     config.add(:asset_host, type: :string)
     config.add(:async_stale_job_timeout_seconds, type: :integer)
     config.add(:async_wait_timeout_seconds, type: :integer)

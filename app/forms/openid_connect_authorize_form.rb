@@ -46,8 +46,8 @@ class OpenidConnectAuthorizeForm
   validate :validate_unauthorized_scope
   validate :validate_privileges
   validate :validate_prompt
-  validate :validate_verified_within_format
-  validate :validate_verified_within_duration
+  validate :validate_verified_within_format, if: :verified_within_allowed?
+  validate :validate_verified_within_duration, if: :verified_within_allowed?
 
   def initialize(params)
     @acr_values = parse_to_values(params[:acr_values], Saml::Idp::Constants::VALID_AUTHN_CONTEXTS)
@@ -56,8 +56,10 @@ class OpenidConnectAuthorizeForm
     @scope = parse_to_values(params[:scope], scopes)
     @unauthorized_scope = check_for_unauthorized_scope(params)
 
-    @duration_parser = DurationParser.new(params[:verified_within])
-    @verified_within = @duration_parser.parse
+    if verified_within_allowed?
+      @duration_parser = DurationParser.new(params[:verified_within])
+      @verified_within = @duration_parser.parse
+    end
   end
 
   def submit
@@ -273,5 +275,9 @@ class OpenidConnectAuthorizeForm
 
   def highest_level_aal(aal_values)
     AALS_BY_PRIORITY.find { |aal| aal_values.include?(aal) }
+  end
+
+  def verified_within_allowed?
+    IdentityConfig.store.allowed_verified_within_providers.include?(client_id)
   end
 end
