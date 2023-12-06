@@ -97,22 +97,22 @@ module Reporting
         end
 
         reports = if parallel?
-          threads = sub_reports.map do |report|
-            Thread.new do
-              report.tap(&:data)
-            end.tap do |thread|
-              thread.report_on_exception = false
-            end
-          end
+                    threads = sub_reports.map do |report|
+                      Thread.new do
+                        report.tap(&:data)
+                      end.tap do |thread|
+                        thread.report_on_exception = false
+                      end
+                    end
 
-          Reporting::UnknownProgressBar.wrap(show_bar: progress?) do
-            threads.map(&:value)
-          end
-        else
-          Reporting::UnknownProgressBar.wrap(show_bar: progress?) do
-            sub_reports.each(&:data)
-          end
-        end
+                    Reporting::UnknownProgressBar.wrap(show_bar: progress?) do
+                      threads.map(&:value)
+                    end
+                  else
+                    Reporting::UnknownProgressBar.wrap(show_bar: progress?) do
+                      sub_reports.each(&:data)
+                    end
+                  end
 
         reports.reduce([]) do |acc, report|
           if acc.empty?
