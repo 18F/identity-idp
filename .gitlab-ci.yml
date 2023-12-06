@@ -8,7 +8,7 @@ variables:
   FF_SCRIPT_SECTIONS: 'true'
   JUNIT_OUTPUT: 'true'
   ECR_REGISTRY: '${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com'
-  IDP_CI_SHA: 'sha256:26bcd68d39085d0e9dbfe272ec3f95158a272dcc2e25f5152b1d8e4600cf1cac'
+  IDP_CI_SHA: 'sha256:f0bb8e05d803675cfc84d0183d6776646b25efc0d93b31773af5f376e861ffdb'
   PKI_IMAGE_TAG: 'main'
   DASHBOARD_IMAGE_TAG: 'main'
 
@@ -349,7 +349,6 @@ trigger_devops:
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
   trigger: lg/identity-devops
-
 
 review-app:
   stage: review
