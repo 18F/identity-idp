@@ -4,6 +4,7 @@ RSpec.describe Idv::OtpVerificationController do
   let(:user) { create(:user) }
 
   let(:phone) { '2255555000' }
+  let(:vendor_phone_confirmation) { true }
   let(:user_phone_confirmation) { false }
   let(:phone_confirmation_otp_code) { '777777' }
   let(:phone_confirmation_otp_sent_at) { Time.zone.now }
@@ -35,7 +36,8 @@ RSpec.describe Idv::OtpVerificationController do
     subject.idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE[:ssn]
     subject.idv_session.resolution_successful = true
     subject.idv_session.applicant[:phone] = phone
-    subject.idv_session.vendor_phone_confirmation = true
+    subject.idv_session.address_verification_mechanism = 'phone'
+    subject.idv_session.vendor_phone_confirmation = vendor_phone_confirmation
     subject.idv_session.user_phone_confirmation = user_phone_confirmation
     subject.idv_session.user_phone_confirmation_session = user_phone_confirmation_session
   end
@@ -55,6 +57,7 @@ RSpec.describe Idv::OtpVerificationController do
   describe '#show' do
     context 'the user has not been sent an otp' do
       let(:user_phone_confirmation_session) { nil }
+      let(:vendor_phone_confirmation) { nil }
 
       it 'redirects to the delivery method path' do
         get :show
@@ -85,6 +88,7 @@ RSpec.describe Idv::OtpVerificationController do
     let(:otp_code_param) { { code: phone_confirmation_otp_code } }
     context 'the user has not been sent an otp' do
       let(:user_phone_confirmation_session) { nil }
+      let(:vendor_phone_confirmation) { nil }
 
       it 'redirects to otp delivery method selection' do
         put :update, params: otp_code_param

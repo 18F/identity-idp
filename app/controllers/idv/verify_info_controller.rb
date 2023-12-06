@@ -42,7 +42,7 @@ module Idv
       Idv::StepInfo.new(
         key: :verify_info,
         controller: self,
-        next_steps: [:phone],
+        next_steps: [:phone, :request_letter],
         preconditions: ->(idv_session:, user:) do
           idv_session.ssn && idv_session.remote_document_capture_complete?
         end,
