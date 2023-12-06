@@ -36,4 +36,3 @@ production:
   lexisnexis_threatmetrix_mock_enabled: true
   enable_usps_verification: true
   seed_agreements_data: false
-  version_headers_enabled: true
