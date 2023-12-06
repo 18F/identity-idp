@@ -3,12 +3,12 @@ require 'rails_helper'
 RSpec.describe Reports::SpIssuerUserCountsReport do
   let(:issuer) { 'urn:gov:gsa:openidconnect:sp:sinatra' }
   let(:email) { 'foo@bar.com' }
-  let(:date) { Date.today.to_s }
+  let(:date) { Date.today.to_s } # rubocop:disable Rails/Date
   let(:user_counts) do
     {
-      "total" => 56,
-      "ial1_total" => 40,
-      "ial2_total" => 16
+      'total' => 56,
+      'ial1_total' => 40,
+      'ial2_total' => 16,
     }
   end
 
@@ -29,7 +29,7 @@ RSpec.describe Reports::SpIssuerUserCountsReport do
           ['Metric', 'Number of users'],
           ['Total Users', 56],
           ['IAL1 Users', 40],
-          ['Identity Verified Users', 16]
+          ['Identity Verified Users', 16],
         ],
       ),
     ]
@@ -45,11 +45,10 @@ RSpec.describe Reports::SpIssuerUserCountsReport do
     allow(ReportMailer).to receive(:tables_report).and_call_original
   end
 
-
   it 'emails the csv' do
     expect(ReportMailer).to receive(:tables_report).with(
       email:,
-      subject: "Service provider user count report",
+      subject: 'Service provider user count report',
       message: "Report: #{Reports::SpIssuerUserCountsReport::REPORT_NAME}",
       reports:,
       attachment_format: :csv,

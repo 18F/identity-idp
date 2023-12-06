@@ -5,7 +5,7 @@ module Reports
     def perform(_date)
       configs = IdentityConfig.store.sp_issuer_user_counts_report_configs
       message = "Report: #{REPORT_NAME}"
-      subject = "Service provider user count report"
+      subject = 'Service provider user count report'
 
       configs.each do |report_hash|
         emails = report_hash['emails']
@@ -22,7 +22,7 @@ module Reports
           ),
           Reporting::EmailableReport.new(
             title: 'User counts',
-            table: user_table(user_counts)
+            table: user_table(user_counts),
           ),
         ]
 
@@ -41,7 +41,7 @@ module Reports
     def overview_table(issuer)
       [
         ['Report Generated', Date.today.to_s], # rubocop:disable Rails/Date
-        ['Issuer', issuer]
+        ['Issuer', issuer],
       ]
     end
 
@@ -50,7 +50,7 @@ module Reports
         ['Metric', 'Number of users'],
         ['Total Users', user_counts['total']],
         ['IAL1 Users', user_counts['ial1_total']],
-        ['Identity Verified Users', user_counts['ial2_total']]
+        ['Identity Verified Users', user_counts['ial2_total']],
       ]
     end
   end
