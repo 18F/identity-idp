@@ -14,12 +14,14 @@ module Reporting
       end_date:,
       verbose: false,
       progress: false,
-      wait_duration: CloudwatchClient::DEFAULT_WAIT_DURATION
+      wait_duration: CloudwatchClient::DEFAULT_WAIT_DURATION,
+      parallel: false
     )
       @end_date = end_date.in_time_zone('UTC')
       @verbose = verbose
       @progress = progress
       @wait_duration = wait_duration
+      @parallel = parallel
     end
 
     def verbose?
@@ -28,6 +30,10 @@ module Reporting
 
     def progress?
       @progress
+    end
+
+    def parallel?
+      @parallel
     end
 
     def proofing_rate_emailable_report
@@ -79,24 +85,34 @@ module Reporting
 
     def reports
       @reports ||= begin
-        threads = [0, *DATE_INTERVALS].each_cons(2).map do |slice_end, slice_start|
-          Thread.new do
-            Reporting::IdentityVerificationReport.new(
-              issuers: nil, # all issuers
-              time_range: Range.new(
-                (end_date - slice_start.days).beginning_of_day,
-                (end_date - slice_end.days).beginning_of_day,
-              ),
-              cloudwatch_client: cloudwatch_client,
-            ).tap(&:data)
-          end.tap do |thread|
-            thread.report_on_exception = false
-          end
+        sub_reports = [0, *DATE_INTERVALS].each_cons(2).map do |slice_end, slice_start|
+          Reporting::IdentityVerificationReport.new(
+            issuers: nil, # all issuers
+            time_range: Range.new(
+              (end_date - slice_start.days).beginning_of_day,
+              (end_date - slice_end.days).beginning_of_day,
+            ),
+            cloudwatch_client: cloudwatch_client,
+          )
         end
 
-        reports = Reporting::UnknownProgressBar.wrap(show_bar: progress?) do
-          threads.map(&:value)
-        end
+        reports = if parallel?
+                    threads = sub_reports.map do |report|
+                      Thread.new do
+                        report.tap(&:data)
+                      end.tap do |thread|
+                        thread.report_on_exception = false
+                      end
+                    end
+
+                    Reporting::UnknownProgressBar.wrap(show_bar: progress?) do
+                      threads.map(&:value)
+                    end
+                  else
+                    Reporting::UnknownProgressBar.wrap(show_bar: progress?) do
+                      sub_reports.each(&:data)
+                    end
+                  end
 
         reports.reduce([]) do |acc, report|
           if acc.empty?
@@ -162,11 +178,13 @@ if __FILE__ == $PROGRAM_NAME
              end
   progress = !ARGV.include?('--no-progress')
   verbose = ARGV.include?('--verbose')
+  parallel = !ARGV.include?('--no-parallel')
 
   puts Reporting::ProofingRateReport.new(
     end_date: end_date,
     progress: progress,
     verbose: verbose,
+    parallel: parallel,
   ).to_csv
 end
 # rubocop:enable Rails/Output
