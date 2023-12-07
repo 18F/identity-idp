@@ -70,6 +70,12 @@ RSpec.describe Users::DeleteController do
       expect(User.where(id: user.id).length).to eq(0)
     end
 
+    it 'emails user of account deletion' do
+      stub_signed_in_user
+      delete
+      expect(ActionMailer::Base.deliveries.count).to eq 1
+    end
+
     it 'logs a succesful submit' do
       stub_analytics
       stub_attempts_tracker

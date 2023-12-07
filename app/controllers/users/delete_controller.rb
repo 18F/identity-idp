@@ -13,6 +13,7 @@ module Users
     def delete
       irs_attempts_api_tracker.logged_in_account_purged(success: true)
       send_push_notifications
+      notify_user_via_email_of_deletion
       delete_user
       sign_out
       flash[:success] = t('devise.registrations.destroyed')
@@ -50,5 +51,14 @@ module Users
       event = PushNotification::AccountPurgedEvent.new(user: current_user)
       PushNotification::HttpPush.deliver(event)
     end
+
+    # rubocop:disable IdentityIdp/MailLaterLinter
+    def notify_user_via_email_of_deletion
+      current_user.confirmed_email_addresses.each do |email_address|
+        UserMailer.with(user: current_user, email_address: email_address).
+          account_reset_complete.deliver_now
+      end
+    end
+    # rubocop:enable IdentityIdp/MailLaterLinter
   end
 end
