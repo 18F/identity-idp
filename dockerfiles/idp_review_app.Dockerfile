@@ -128,7 +128,8 @@ COPY --chown=app:app ./babel.config.js ./babel.config.js
 COPY --chown=app:app ./webpack.config.js ./webpack.config.js
 COPY --chown=app:app ./.browserslistrc ./.browserslistrc
 
-RUN echo "{\"branch\":\"$CI_COMMIT_BRANCH\",\"git_sha\":\"$CI_COMMIT_SHA\"}" > $RAILS_ROOT/public/deploy.json
+RUN mkdir -p $RAILS_ROOT/public/api/
+RUN echo "{\"branch\":\"$CI_COMMIT_BRANCH\",\"git_sha\":\"$CI_COMMIT_SHA\"}" > $RAILS_ROOT/public/api/deploy.json
 
 # Copy keys
 COPY --chown=app:app keys.example $RAILS_ROOT/keys
