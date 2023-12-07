@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { useImmutableCallback } from '@18f/identity-react-hooks';
+import { useI18n } from '@18f/identity-react-i18n';
 
 declare let AcuantCameraUI: AcuantCameraUIInterface;
 declare global {
@@ -270,10 +271,6 @@ interface AcuantCameraContextProps {
    */
   setIsActive: (boolean) => void;
   /**
-   * Translation hook
-   */
-  t: (string) => string;
-  /**
    * React children node
    */
   children: ReactNode;
@@ -305,9 +302,9 @@ function AcuantCamera({
   onCropStart = () => {},
   isReady = false,
   setIsActive = () => {},
-  t = () => '',
   children,
 }: AcuantCameraContextProps) {
+  const { t } = useI18n();
   const onCropped = useImmutableCallback(
     (response) => {
       if (response) {
