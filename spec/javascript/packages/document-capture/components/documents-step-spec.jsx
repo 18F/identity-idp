@@ -13,6 +13,7 @@ import DocumentsStep from '@18f/identity-document-capture/components/documents-s
 import { composeComponents } from '@18f/identity-compose-components';
 import { render } from '../../../support/document-capture';
 import { getFixtureFile } from '../../../support/file';
+
 describe('document-capture/components/documents-step', () => {
   it('renders with only front and back inputs by default', () => {
     const { getByLabelText, queryByLabelText } = render(<DocumentsStep />);
@@ -173,11 +174,11 @@ describe('document-capture/components/documents-step', () => {
         level: 1,
       });
       const idHeader = getByRole('heading', {
-        name: 'doc_auth.headdngs.document_capture_subheader_id',
+        name: 'doc_auth.headings.document_capture_subheader_id',
         level: 2,
       });
       const selfieHeader = getByRole('heading', {
-        name: 'doc_auth.headdngs.document_capture_subheader_selfie',
+        name: 'doc_auth.headings.document_capture_subheader_selfie',
         level: 2,
       });
       expect(front).to.be.ok();
