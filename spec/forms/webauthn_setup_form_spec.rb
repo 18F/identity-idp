@@ -228,7 +228,7 @@ RSpec.describe WebauthnSetupForm do
     before do
       user.webauthn_configurations.create(name: '...')
     end
-    
+
     context 'webauthn' do
       let(:user) do
         user = create(:user)
@@ -252,10 +252,10 @@ RSpec.describe WebauthnSetupForm do
       let(:user) do
         user = create(:user)
         user.webauthn_configurations << create(
-          :webauthn_configuration, 
-          name: device_name, 
-          platform_authenticator: true, 
-          transports: ["internal","hybrid"],
+          :webauthn_configuration,
+          name: device_name,
+          platform_authenticator: true,
+          transports: ['internal', 'hybrid'],
         )
         user
       end
@@ -271,9 +271,9 @@ RSpec.describe WebauthnSetupForm do
         expect(result.extra[:multi_factor_auth_method]).to eq 'webauthn_platform'
         expect(user.webauthn_configurations.platform_authenticators.count).to eq(2)
         expect(
-          user.webauthn_configurations.platform_authenticators[1].name).
-          to eq("#{device_name} (1)"
-        )
+          user.webauthn_configurations.platform_authenticators[1].name,
+        ).
+          to eq("#{device_name} (1)")
       end
     end
   end
