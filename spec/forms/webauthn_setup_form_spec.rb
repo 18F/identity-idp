@@ -242,7 +242,6 @@ RSpec.describe WebauthnSetupForm do
       end
     end
     context 'webauthn_platform' do
-
       context 'with one platform authenticator with the same name' do
         let(:user) do
           user = create(:user)
