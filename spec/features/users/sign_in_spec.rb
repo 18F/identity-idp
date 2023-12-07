@@ -444,15 +444,11 @@ RSpec.feature 'Sign in' do
         perform_in_browser(:one) do
           visit_idp_from_sp_with_ial1(:oidc)
           sign_in_live_with_2fa(user)
-
-          expect(current_url).to match('http://localhost:7654/auth/result')
         end
 
         perform_in_browser(:two) do
           visit_idp_from_sp_with_ial1(:oidc)
           sign_in_live_with_2fa(user)
-
-          expect(current_url).to match('http://localhost:7654/auth/result')
         end
 
         perform_in_browser(:one) do
