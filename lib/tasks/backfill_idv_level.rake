@@ -12,15 +12,28 @@ namespace :profiles do
       is_not_in_person = Profile.where.not(id: InPersonEnrollment.select(:profile_id))
       needs_idv_level = Profile.where(idv_level: nil)
 
-      # rubocop:disable Rails/SkipsModelValidations
-      count = Profile.and(is_in_person).and(needs_idv_level).
-        update_all(idv_level: :legacy_in_person)
+      in_person_and_needs_idv_level = Profile.and(is_in_person).and(needs_idv_level)
+      not_in_person_and_needs_idv_level = Profile.and(is_not_in_person).and(needs_idv_level)
+
+      profile_count = in_person_and_needs_idv_level.count + not_in_person_and_needs_idv_level.count
+      warn("Found #{profile_count} profile(s) needing backfill")
+
+      count = 0
+      in_person_and_needs_idv_level.
+        in_batches(of: batch_size) do |batch|
+        count += batch.update_all(idv_level: :legacy_in_person) # rubocop:disable Rails/SkipsModelValidations
+        report_count(count, profile_count)
+      end
       warn("set idv_level for #{count} legacy_in_person profile(s)")
 
-      count = Profile.and(is_not_in_person).and(needs_idv_level).
-        update_all(idv_level: :legacy_unsupervised)
+      count = 0
+      not_in_person_and_needs_idv_level.
+        in_batches(of: batch_size) do |batch|
+          count += batch.update_all(idv_level: :legacy_unsupervised) # rubocop:disable Rails/SkipsModelValidations
+          report_count(count, profile_count)
+        end
+
       warn("set idv_level for #{count} legacy_unsupervised profile(s)")
-      # rubocop:enable Rails/SkipsModelValidations
     end
 
     with_statement_timeout do
@@ -30,6 +43,23 @@ namespace :profiles do
         warn("#{value.inspect}: #{count}")
       end
     end
+  end
+
+  def batch_size
+    ENV['BATCH_SIZE'] ? ENV['BATCH_SIZE'].to_i : 1000
+  end
+
+  def report_count(count, profile_count)
+    report_interval = ENV['REPORT_INTERVAL'] ? ENV['REPORT_INTERVAL'].to_i.seconds : 10.seconds
+    return if !report_interval
+
+    @last_report ||= Time.zone.now
+    return if Time.zone.now - @last_report < report_interval
+
+    percent = sprintf('%.2f', (count / profile_count.to_f) * 100)
+    warn("Backfilled #{count} profile(s) (#{percent}%)")
+
+    @last_report = Time.zone.now
   end
 
   def with_statement_timeout(timeout_in_seconds = nil)

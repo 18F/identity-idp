@@ -49,6 +49,7 @@ RSpec.describe 'profiles:backfill_idv_level rake task' do
   it 'outputs what it did' do
     expect(invoke_task.to_s).to eql(
       <<~END,
+        Found 2 profile(s) needing backfill
         set idv_level for 1 legacy_in_person profile(s)
         set idv_level for 1 legacy_unsupervised profile(s)
         Profile counts by idv_level after update:
