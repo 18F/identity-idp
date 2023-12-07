@@ -1,6 +1,7 @@
 {
   "extends": [
     "plugin:@18f/eslint-plugin-identity/recommended",
+    // These two react lint plugins are mostly off, see overrides below
     "plugin:react/recommended",
     "plugin:react-hooks/recommended"
   ],
@@ -46,7 +47,7 @@
       }
     },
     {
-      // See LG-11654, the eventual goal is to turn these on for all files
+      // Turn off react linting rules for every file
       "files": ["*"],
       "rules": {
         "react/react-in-jsx-scope": "off",
@@ -58,11 +59,16 @@
       }
     },
     {
-      // See LG-11654, turn react linting rules on for one file
-      "files": ["app/javascript/packages/document-capture/components/acuant-camera.tsx"],
+      // Activate the react linting rules for certain files
+      "files": [
+        "app/javascript/packages/document-capture/components/acuant-camera.tsx",
+      ],
       "rules": {
-        "react-hooks/rules-of-hooks": "error",
-        "react-hooks/exhaustive-deps": "error"
+        "react/prop-types": "error",
+        "react/display-name": "error",
+        "react/jsx-key": "error",
+        "react-hooks/exhaustive-deps": "error",
+        "react-hooks/rules-of-hooks": "error"
       }
     }
   ]
