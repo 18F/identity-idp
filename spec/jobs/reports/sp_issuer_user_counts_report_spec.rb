@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Reports::SpIssuerUserCountsReport do
   let(:issuer) { 'urn:gov:gsa:openidconnect:sp:sinatra' }
   let(:email) { 'foo@bar.com' }
-  let(:date) { Date.today.to_s } # rubocop:disable Rails/Date
+  let(:date) { Time.zone.today.to_s }
   let(:user_counts) do
     {
       'total' => 56,

@@ -40,7 +40,7 @@ module Reports
 
     def overview_table(issuer)
       [
-        ['Report Generated', Date.today.to_s], # rubocop:disable Rails/Date
+        ['Report Generated', Time.zone.today.to_s],
         ['Issuer', issuer],
       ]
     end
