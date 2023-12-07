@@ -168,7 +168,7 @@ module Reporting
     def overview_table
       [
         ['Report Timeframe', "#{time_range.begin} to #{time_range.end}"],
-        ['Report Generated', Date.today.to_s], # rubocop:disable Rails/Date
+        ['Report Generated', Time.zone.today.to_s],
         ['Issuer', issuers.join(', ')],
         ['Total # of IAL1 Users', sp_redirect_initiated_all],
       ]
