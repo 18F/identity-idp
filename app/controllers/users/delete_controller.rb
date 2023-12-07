@@ -56,7 +56,7 @@ module Users
     def notify_user_via_email_of_deletion
       current_user.confirmed_email_addresses.each do |email_address|
         UserMailer.with(user: current_user, email_address: email_address).
-          account_reset_complete.deliver_now
+          account_delete_submitted.deliver_now
       end
     end
     # rubocop:enable IdentityIdp/MailLaterLinter
