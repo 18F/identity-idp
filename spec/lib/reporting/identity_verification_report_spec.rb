@@ -65,7 +65,7 @@ RSpec.describe Reporting::IdentityVerificationReport do
 
       expected_csv = [
         ['Report Timeframe', "#{time_range.begin} to #{time_range.end}"],
-        ['Report Generated', Time.zone.today.to_s],
+        ['Report Generated', Date.today.to_s], # rubocop:disable Rails/Date
         ['Issuer', issuer],
         [],
         ['Metric', '# of Users'],

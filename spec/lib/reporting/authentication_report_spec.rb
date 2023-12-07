@@ -149,7 +149,7 @@ RSpec.describe Reporting::AuthenticationReport do
     [
       [
         ['Report Timeframe', "#{time_range.begin} to #{time_range.end}"],
-        ['Report Generated', Time.zone.today.to_s],
+        ['Report Generated', Date.today.to_s], # rubocop:disable Rails/Date
         ['Issuer', issuer],
         ['Total # of IAL1 Users', strings ? '2' : 2],
       ],
