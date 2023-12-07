@@ -151,7 +151,10 @@ en:
       document_capture: Add photos of your ID
       document_capture_back: Back of your ID
       document_capture_front: Front of your ID
-      document_capture_selfie: Selfie
+      document_capture_selfie: A photo of yourself
+      document_capture_subheader_id: 1. Driver’s license or state ID card
+      document_capture_subheader_selfie: 2. Photo of yourself
+      document_capture_with_selfie: Add photos of your ID and a photo of yourself
       front: Front of your driver’s license or state ID
       getting_started: Let’s verify your identity for %{sp_name}
       how_to_verify: Choose how you want to verify your identity
@@ -279,6 +282,11 @@ en:
       document_capture_id_text2: Take the photo on a flat surface
       document_capture_id_text3: Do not use the flash on your camera
       document_capture_id_text4: File size should be at least 2 MB
+      document_capture_selfie_id_header_text: Tips for taking clear photos
+      document_capture_selfie_selfie_text: Tips for taking a clear photo
+      document_capture_selfie_text1: Hold your device at eye level
+      document_capture_selfie_text2: Make sure your whole face is visible
+      document_capture_selfie_text3: Do not wear sunglasses
       most_common: Most Common
       review_issues_id_header_text: 'Review the images of your state‑issued ID:'
       review_issues_id_text1: Did you use a dark background?

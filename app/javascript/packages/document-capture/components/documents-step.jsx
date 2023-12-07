@@ -11,6 +11,7 @@ import TipList from './tip-list';
 import DocumentCaptureNotReady from './document-capture-not-ready';
 import { FeatureFlagContext } from '../context';
 import DocumentCaptureAbandon from './document-capture-abandon';
+import DocumentCaptureSelfieCapture from './document-capture-selfie-capture';
 
 /**
  * @typedef {'front'|'back'|'selfie'} DocumentSide
@@ -47,16 +48,26 @@ function DocumentsStep({
    *
    * @type {DocumentSide[]}
    */
-  const documentSides = selfieCaptureEnabled ? ['front', 'back', 'selfie'] : ['front', 'back'];
+  const documentSides = ['front', 'back'];
+  const selfieSide = 'selfie';
+
+  const pageHeaderText = selfieCaptureEnabled
+    ? t('doc_auth.headings.document_capture_with_selfie')
+    : t('doc_auth.headings.document_capture');
+
+  const idTipListTitle = selfieCaptureEnabled
+    ? t('doc_auth.tips.document_capture_selfie_id_header_text')
+    : t('doc_auth.tips.document_capture_header_text');
 
   return (
     <>
       {flowPath === 'hybrid' && <HybridDocCaptureWarning className="margin-bottom-4" />}
-      <PageHeading>{t('doc_auth.headings.document_capture')}</PageHeading>
-      <p>{t('doc_auth.info.document_capture_intro_acknowledgment')}</p>
+      <PageHeading>{pageHeaderText}</PageHeading>
+      {!selfieCaptureEnabled && <p>{t('doc_auth.info.document_capture_intro_acknowledgment')}</p>}
+      {selfieCaptureEnabled && <h2>{t('doc_auth.headings.document_capture_subheader_id')}</h2>}
       <TipList
-        titleClassName="margin-bottom-0"
-        title={t('doc_auth.tips.document_capture_header_text')}
+        titleClassName={`margin-bottom-0 ${selfieCaptureEnabled ? 'text-bold' : ''}`}
+        title={idTipListTitle}
         items={[
           t('doc_auth.tips.document_capture_id_text1'),
           t('doc_auth.tips.document_capture_id_text2'),
@@ -74,6 +85,15 @@ function DocumentsStep({
           onError={onError}
         />
       ))}
+      {selfieCaptureEnabled && (
+        <DocumentCaptureSelfieCapture
+          registerField={registerField}
+          value={value[selfieSide]}
+          onChange={onChange}
+          errors={errors}
+          onError={onError}
+        />
+      )}
       {isLastStep ? <FormStepsButton.Submit /> : <FormStepsButton.Continue />}
       {notReadySectionEnabled && <DocumentCaptureNotReady />}
       {exitQuestionSectionEnabled && <DocumentCaptureAbandon />}
