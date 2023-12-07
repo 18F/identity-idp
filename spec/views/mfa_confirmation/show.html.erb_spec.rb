@@ -53,6 +53,7 @@ RSpec.describe 'mfa_confirmation/show.html.erb' do
     before do
       @content = MfaConfirmationPresenter.new(
         show_skip_additional_mfa_link: false,
+        webauthn_platform_set_up_successful: true,
       )
     end
 
@@ -61,6 +62,14 @@ RSpec.describe 'mfa_confirmation/show.html.erb' do
 
       expect(rendered).not_to have_button(
         t('mfa.skip'),
+      )
+    end
+
+    it 'shows the correct localized title after setup' do
+      render
+
+      expect(rendered).to have_content(
+        t('titles.mfa_setup.face_touch_unlock_confirmation'),
       )
     end
   end

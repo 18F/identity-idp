@@ -193,7 +193,7 @@ RSpec.describe Idv::ByMail::RequestLetterController do
 
     context 'resending a letter' do
       let(:has_pending_profile) { true }
-      let(:pending_profile) { create(:profile, :verify_by_mail_pending) }
+      let(:pending_profile) { create(:profile, :with_pii, :verify_by_mail_pending) }
 
       before do
         stub_sign_in(user)
@@ -262,9 +262,9 @@ RSpec.describe Idv::ByMail::RequestLetterController do
   end
 
   def expect_resend_letter_to_send_letter_and_redirect(otp:)
-    pii = { first_name: 'Samuel', last_name: 'Sampson' }
+    pii = pending_profile.decrypt_pii(user.password).to_h
     pii_cacher = instance_double(Pii::Cacher)
-    allow(pii_cacher).to receive(:fetch).and_return(pii)
+    allow(pii_cacher).to receive(:fetch).with(pending_profile.id).and_return(pii)
     allow(pii_cacher).to receive(:exists_in_session?).and_return(true)
     allow(Pii::Cacher).to receive(:new).and_return(pii_cacher)
 

@@ -1,6 +1,7 @@
 module Flow
   module FlowStateMachine
     extend ActiveSupport::Concern
+    include OptInHelper
 
     included do
       before_action :initialize_flow_state_machine
@@ -182,7 +183,8 @@ module Flow
         irs_reproofing: effective_user&.reproof_for_irs?(
           service_provider: current_sp,
         ).present?,
-      }.merge(flow.extra_analytics_properties)
+      }.merge(flow.extra_analytics_properties).
+        merge(**opt_in_analytics_properties)
     end
 
     def current_step_name

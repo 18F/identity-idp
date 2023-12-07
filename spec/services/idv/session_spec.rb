@@ -127,6 +127,7 @@ RSpec.describe Idv::Session do
   end
 
   describe '#create_profile_from_applicant_with_password' do
+    let(:opt_in_param) { nil }
     before do
       subject.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN
     end
@@ -210,7 +211,7 @@ RSpec.describe Idv::Session do
         it 'creates a USPS enrollment' do
           expect(UspsInPersonProofing::EnrollmentHelper).
             to receive(:schedule_in_person_enrollment).
-            with(user, Pii::Attributes.new_from_hash(subject.applicant))
+            with(user, Pii::Attributes.new_from_hash(subject.applicant), opt_in_param)
 
           subject.create_profile_from_applicant_with_password(user.password)
 

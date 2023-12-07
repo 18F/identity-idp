@@ -71,13 +71,13 @@ RSpec.feature 'idv phone step', :js do
     context 'resubmission after number failed verification' do
       it 'phone field is empty after invalid submission' do
         phone_field = find_field(t('two_factor_authentication.phone_label'))
-
         expect(phone_field.value).not_to be_empty
 
         click_idv_send_security_code
         click_on t('idv.failure.phone.warning.try_again_button')
 
         expect(page).to have_current_path(idv_phone_path)
+
         phone_field = find_field(t('two_factor_authentication.phone_label'))
         expect(phone_field.value).to be_empty
       end

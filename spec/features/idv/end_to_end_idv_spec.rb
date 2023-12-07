@@ -100,6 +100,7 @@ RSpec.describe 'Identity verification', :js do
 
       begin_in_person_proofing
       complete_all_in_person_proofing_steps(user)
+      test_restart_in_person_flow(user)
 
       enter_gpo_flow
       test_go_back_from_request_letter
@@ -494,6 +495,12 @@ RSpec.describe 'Identity verification', :js do
     # can't go back further with in person controllers (yet)
 
     3.times { go_forward }
+  end
+
+  def test_restart_in_person_flow(user)
+    visit(idv_welcome_path)
+    begin_in_person_proofing
+    complete_all_in_person_proofing_steps(user)
   end
 
   def try_to_go_back_from_letter_enqueued

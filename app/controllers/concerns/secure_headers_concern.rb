@@ -3,6 +3,7 @@ module SecureHeadersConcern
 
   def apply_secure_headers_override
     return if stored_url_for_user.blank?
+    return unless IdentityConfig.store.openid_connect_content_security_form_action_enabled
 
     authorize_form = OpenidConnectAuthorizeForm.new(authorize_params)
     return unless authorize_form.valid?

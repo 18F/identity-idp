@@ -3,9 +3,10 @@ require 'reporting/proofing_rate_report'
 
 RSpec.describe Reporting::ProofingRateReport do
   let(:end_date) { Date.new(2022, 1, 1).in_time_zone('UTC').beginning_of_day }
+  let(:parallel) { true }
 
   subject(:report) do
-    Reporting::ProofingRateReport.new(end_date: end_date, wait_duration: 0)
+    Reporting::ProofingRateReport.new(end_date: end_date, wait_duration: 0, parallel: parallel)
   end
 
   describe '#as_csv' do
@@ -110,34 +111,40 @@ RSpec.describe Reporting::ProofingRateReport do
       }
     end
 
-    it 'calls IdentityVerificationReport with separate slices, but merges them' do
-      allow(Reporting::IdentityVerificationReport).to receive(:new).and_call_original
+    [true, false].each do |parallel_value|
+      context "with parallel: #{parallel_value}" do
+        let(:parallel) { parallel_value }
 
-      expect(report.reports.map(&:time_range)).to eq(
-        [
-          (end_date - 30.days)..end_date,
-          (end_date - 60.days)..end_date,
-          (end_date - 90.days)..end_date,
-        ],
-      )
+        it 'calls IdentityVerificationReport with separate slices, but merges them' do
+          allow(Reporting::IdentityVerificationReport).to receive(:new).and_call_original
 
-      expect(Reporting::IdentityVerificationReport).to have_received(:new).with(
-        time_range: (end_date - 30.days)..end_date,
-        issuers: nil,
-        cloudwatch_client: report.cloudwatch_client,
-      ).once
+          expect(report.reports.map(&:time_range)).to eq(
+            [
+              (end_date - 30.days)..end_date,
+              (end_date - 60.days)..end_date,
+              (end_date - 90.days)..end_date,
+            ],
+          )
 
-      expect(Reporting::IdentityVerificationReport).to have_received(:new).with(
-        time_range: (end_date - 60.days)..(end_date - 30.days),
-        issuers: nil,
-        cloudwatch_client: report.cloudwatch_client,
-      ).once
+          expect(Reporting::IdentityVerificationReport).to have_received(:new).with(
+            time_range: (end_date - 30.days)..end_date,
+            issuers: nil,
+            cloudwatch_client: report.cloudwatch_client,
+          ).once
 
-      expect(Reporting::IdentityVerificationReport).to have_received(:new).with(
-        time_range: (end_date - 90.days)..(end_date - 60.days),
-        issuers: nil,
-        cloudwatch_client: report.cloudwatch_client,
-      ).once
+          expect(Reporting::IdentityVerificationReport).to have_received(:new).with(
+            time_range: (end_date - 60.days)..(end_date - 30.days),
+            issuers: nil,
+            cloudwatch_client: report.cloudwatch_client,
+          ).once
+
+          expect(Reporting::IdentityVerificationReport).to have_received(:new).with(
+            time_range: (end_date - 90.days)..(end_date - 60.days),
+            issuers: nil,
+            cloudwatch_client: report.cloudwatch_client,
+          ).once
+        end
+      end
     end
   end
 end
