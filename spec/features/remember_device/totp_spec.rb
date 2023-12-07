@@ -26,7 +26,7 @@ RSpec.describe 'Remembering a TOTP device' do
       user.password = Features::SessionHelper::VALID_PASSWORD
 
       select_2fa_option('auth_app')
-      fill_in t('forms.totp_setup.totp_step_1'), with: 'App'
+      fill_in_totp_name
       fill_in :code, with: totp_secret_from_page
       check t('forms.messages.remember_device')
       click_submit_default
@@ -47,7 +47,7 @@ RSpec.describe 'Remembering a TOTP device' do
       click_on t('account.index.totp_confirm_delete')
       travel_to(10.seconds.from_now) # Travel past the revoked at date from disabling the device
       click_link t('account.index.auth_app_add'), href: authenticator_setup_url
-      fill_in t('forms.totp_setup.totp_step_1'), with: 'App'
+      fill_in_totp_name
       fill_in :code, with: totp_secret_from_page
       check t('forms.messages.remember_device')
       click_submit_default
