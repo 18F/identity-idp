@@ -58,7 +58,6 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController do
           flow_path: 'hybrid',
           irs_reproofing: false,
           step: 'document_capture',
-          phone_with_camera: nil,
         }.merge(ab_test_args)
       end
 
@@ -79,18 +78,6 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController do
         get :show
 
         expect(@analytics).to have_logged_event(analytics_name, analytics_args)
-      end
-
-      context 'user visited phone_question_page' do
-        before do
-          allow(AbTests::IDV_PHONE_QUESTION).to receive(:bucket).and_return(:show_phone_question)
-        end
-        it 'logs user has a phone_with_camera' do
-          get :show
-
-          expect(@analytics).
-            to have_logged_event(analytics_name, analytics_args.merge(phone_with_camera: true))
-        end
       end
 
       it 'updates DocAuthLog document_capture_view_count' do
@@ -172,7 +159,6 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController do
           flow_path: 'hybrid',
           irs_reproofing: false,
           step: 'document_capture',
-          phone_with_camera: nil,
         }.merge(ab_test_args)
       end
 
