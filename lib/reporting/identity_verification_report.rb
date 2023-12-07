@@ -28,6 +28,8 @@ module Reporting
       GPO_VERIFICATION_SUBMITTED_OLD = 'IdV: GPO verification submitted'
       USPS_ENROLLMENT_STATUS_UPDATED = 'GetUspsProofingResultsJob: Enrollment status updated'
       FRAUD_REVIEW_PASSED = 'Fraud: Profile review passed'
+      FRAUD_REVIEW_REJECT_AUTOMATIC = 'Fraud: Automatic Fraud Rejection'
+      FRAUD_REVIEW_REJECT_MANUAL = 'Fraud: Profile review rejected'
 
       def self.all_events
         constants.map { |c| const_get(c) }
@@ -179,6 +181,10 @@ module Reporting
         data[Results::IDV_FINAL_RESOLUTION_VERIFIED] -
         data[Results::IDV_FINAL_RESOLUTION_IN_PERSON]
       ).count
+    end
+
+    def idv_fraud_rejected
+      (data[Events::FRAUD_REVIEW_REJECT_AUTOMATIC] + data[Events::FRAUD_REVIEW_REJECT_MANUAL]).count
     end
 
     def fraud_review_passed
