@@ -222,51 +222,89 @@ RSpec.describe WebauthnSetupForm do
       end
     end
   end
-  describe '#name_is_unique' do
+  describe '.name_is_unique' do
     context 'webauthn' do
       let(:user) do
         user = create(:user)
-        user.webauthn_configurations << create(:webauthn_configuration, name: device_name)
+        user.webauthn_configurations << create(:webauthn_configuration, name: params[:name])
         user
       end
       it 'checks for unique device on a webauthn device' do
         result = subject.submit(protocol, params)
         expect(result.extra[:multi_factor_auth_method]).to eq 'webauthn'
-        expect(subject.submit(protocol, params).to_h).to include(
-          success: false,
-          errors: { name: [I18n.t(
+        expect(result.errors[:name]).to eq(
+          [I18n.t(
             'errors.webauthn_setup.unique_name',
             type: :unique_name,
-          )] },
+          )],
         )
+        expect(result.to_h[:success]).to eq(false)
       end
     end
     context 'webauthn_platform' do
-      let(:user) do
-        user = create(:user)
-        user.webauthn_configurations << create(
-          :webauthn_configuration,
-          name: device_name,
-          platform_authenticator: true,
-          transports: ['internal', 'hybrid'],
-        )
-        user
+
+      context 'with one platform authenticator with the same name' do
+        let(:user) do
+          user = create(:user)
+          user.webauthn_configurations << create(
+            :webauthn_configuration,
+            name: device_name,
+            platform_authenticator: true,
+            transports: ['internal', 'hybrid'],
+          )
+          user
+        end
+        let(:params) do
+          super().merge(
+            platform_authenticator: true,
+            transports: 'internal,hybrid',
+          )
+        end
+        it 'adds a new platform device with the same existing name and appends a (1)' do
+          result = subject.submit(protocol, params)
+          expect(result.extra[:multi_factor_auth_method]).to eq 'webauthn_platform'
+          expect(user.webauthn_configurations.platform_authenticators.count).to eq(2)
+          expect(
+            user.webauthn_configurations.platform_authenticators[1].name,
+          ).
+            to eq("#{device_name} (1)")
+          expect(result.to_h[:success]).to eq(true)
+        end
       end
-      let(:params) do
-        super().merge(
-          platform_authenticator: true,
-          transports: 'internal,hybrid',
-          name: device_name,
-        )
-      end
-      it 'checks for a unique device name on a webauthn platform device' do
-        result = subject.submit(protocol, params)
-        expect(result.extra[:multi_factor_auth_method]).to eq 'webauthn_platform'
-        expect(user.webauthn_configurations.platform_authenticators.count).to eq(2)
-        expect(
-          user.webauthn_configurations.platform_authenticators[1].name,
-        ).
-          to eq("#{device_name} (1)")
+
+      context 'with two existing platform authenticators one with the same name' do
+        let(:user) do
+          user = create(:user)
+          user.webauthn_configurations << create(
+            :webauthn_configuration,
+            name: device_name,
+            platform_authenticator: true,
+            transports: ['internal', 'hybrid'],
+          )
+          user.webauthn_configurations << create(
+            :webauthn_configuration,
+            name: device_name,
+            platform_authenticator: true,
+            transports: ['internal', 'hybrid'],
+          )
+          user
+        end
+        let(:params) do
+          super().merge(
+            platform_authenticator: true,
+            transports: 'internal,hybrid',
+          )
+        end
+        it 'adds a second new platform device with the same existing name and appends a (2)' do
+          result = subject.submit(protocol, params)
+          expect(result.extra[:multi_factor_auth_method]).to eq 'webauthn_platform'
+          expect(user.webauthn_configurations.platform_authenticators.count).to eq(3)
+          expect(
+            user.webauthn_configurations.platform_authenticators[2].name,
+          ).
+            to eq("#{device_name} (2)")
+          expect(result.to_h[:success]).to eq(true)
+        end
       end
     end
   end
