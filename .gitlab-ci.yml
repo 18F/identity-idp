@@ -126,7 +126,6 @@ build-review-image:
       fi
       KANIKOCFG="{ ${KANIKOCFG} }"
       echo "${KANIKOCFG}" > /kaniko/.docker/config.json
-    - echo DEBUG_REMOVE_ME --build-arg "ARG_CI_ENVIRONMENT_SLUG=${CI_ENVIRONMENT_SLUG}" --build-arg "ARG_CI_COMMIT_BRANCH=${CI_COMMIT_BRANCH}" --build-arg "ARG_CI_COMMIT_SHA=${CI_COMMIT_SHA}"
     - >-
       /kaniko/executor
       --context "${CI_PROJECT_DIR}"
@@ -137,13 +136,7 @@ build-review-image:
       --cache-ttl=168h
       --cache=true
       --compressed-caching=false
-      --build-arg "http_proxy=${http_proxy}"
-      --build-arg "https_proxy=${https_proxy}"
-      --build-arg "no_proxy=${no_proxy}"
-      --build-arg "ARG_CI_ENVIRONMENT_SLUG=${CI_ENVIRONMENT_SLUG}"
-      --build-arg "ARG_CI_COMMIT_BRANCH=${CI_COMMIT_BRANCH}"
-      --build-arg "ARG_CI_COMMIT_SHA=${CI_COMMIT_SHA}"
-
+      --build-arg "http_proxy=${http_proxy}" --build-arg "https_proxy=${https_proxy}" --build-arg "no_proxy=${no_proxy}" --build-arg "ARG_CI_ENVIRONMENT_SLUG=${CI_ENVIRONMENT_SLUG}" --build-arg "ARG_CI_COMMIT_BRANCH=${CI_COMMIT_BRANCH}" --build-arg "ARG_CI_COMMIT_SHA=${CI_COMMIT_SHA}"
 
 check_changelog:
   stage: test
