@@ -225,9 +225,6 @@ RSpec.describe WebauthnSetupForm do
   describe '#name_is_unique' do
     let(:user) { create(:user) }
     let(:name) { device_name }
-    before do
-      user.webauthn_configurations.create(name: '...')
-    end
 
     context 'webauthn' do
       let(:user) do
