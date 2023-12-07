@@ -19,6 +19,7 @@ RSpec.describe Reporting::ProofingRateReport do
             idv_doc_auth_image_vendor_submitted: 2,
             successfully_verified_users: 1,
             idv_doc_auth_rejected: 1,
+            idv_fraud_rejected: 0,
             time_range: (end_date - 30.days)..end_date,
           ),
           instance_double(
@@ -28,6 +29,7 @@ RSpec.describe Reporting::ProofingRateReport do
             idv_doc_auth_image_vendor_submitted: 3,
             successfully_verified_users: 2,
             idv_doc_auth_rejected: 1,
+            idv_fraud_rejected: 1,
             time_range: (end_date - 60.days)..end_date,
           ),
           instance_double(
@@ -37,6 +39,7 @@ RSpec.describe Reporting::ProofingRateReport do
             idv_doc_auth_image_vendor_submitted: 4,
             successfully_verified_users: 3,
             idv_doc_auth_rejected: 1,
+            idv_fraud_rejected: 2,
             time_range: (end_date - 90.days)..end_date,
           ),
         ],
@@ -53,7 +56,8 @@ RSpec.describe Reporting::ProofingRateReport do
         ['Welcome Submitted', 3, 4, 5],
         ['Image Submitted', 2, 3, 4],
         ['Successfully Verified', 1, 2, 3],
-        ['IDV Rejected', 1, 1, 1],
+        ['IDV Rejected (Non-Fraud)', 1, 1, 1],
+        ['IDV Rejected (Fraud)', 0, 1, 2],
         ['Blanket Proofing Rate (IDV Started to Successfully Verified)', 1.0 / 4, 2.0 / 5, 3.0 / 6],
         ['Intent Proofing Rate (Welcome Submitted to Successfully Verified)', 1.0 / 3, 2.0 / 4, 3.0 / 5],
         ['Actual Proofing Rate (Image Submitted to Successfully Verified)', 1.0 / 2, 2.0 / 3, 3.0 / 4],

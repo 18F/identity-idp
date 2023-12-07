@@ -53,7 +53,8 @@ module Reporting
       csv << ['Welcome Submitted', *reports.map(&:idv_doc_auth_welcome_submitted)]
       csv << ['Image Submitted', *reports.map(&:idv_doc_auth_image_vendor_submitted)]
       csv << ['Successfully Verified', *reports.map(&:successfully_verified_users)]
-      csv << ['IDV Rejected', *reports.map(&:idv_doc_auth_rejected)]
+      csv << ['IDV Rejected (Non-Fraud)', *reports.map(&:idv_doc_auth_rejected)]
+      csv << ['IDV Rejected (Fraud)', *reports.map(&:idv_fraud_rejected)]
 
       csv << ['Blanket Proofing Rate (IDV Started to Successfully Verified)', *blanket_proofing_rates(reports)]
       csv << ['Intent Proofing Rate (Welcome Submitted to Successfully Verified)', *intent_proofing_rates(reports)]
