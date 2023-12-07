@@ -110,8 +110,6 @@ COPY package.json $RAILS_ROOT/package.json
 COPY yarn.lock $RAILS_ROOT/yarn.lock
 RUN yarn install --production=true --frozen-lockfile --cache-folder .yarn-cache
 
-RUN echo "{\"branch\":\"$CI_COMMIT_BRANCH\",\"git_sha\":\"$CI_COMMIT_SHA\"}" > $RAILS_ROOT/public/deploy.json
-
 # Add the application code
 COPY --chown=app:app ./lib ./lib
 COPY --chown=app:app ./app ./app
@@ -129,6 +127,8 @@ COPY --chown=app:app ./Makefile ./Makefile
 COPY --chown=app:app ./babel.config.js ./babel.config.js
 COPY --chown=app:app ./webpack.config.js ./webpack.config.js
 COPY --chown=app:app ./.browserslistrc ./.browserslistrc
+
+RUN echo "{\"branch\":\"$CI_COMMIT_BRANCH\",\"git_sha\":\"$CI_COMMIT_SHA\"}" > $RAILS_ROOT/public/deploy.json
 
 # Copy keys
 COPY --chown=app:app keys.example $RAILS_ROOT/keys
