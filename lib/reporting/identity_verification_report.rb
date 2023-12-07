@@ -78,7 +78,8 @@ module Reporting
     def to_csv
       CSV.generate do |csv|
         csv << ['Report Timeframe', "#{time_range.begin} to #{time_range.end}"]
-        csv << ['Report Generated', Time.zone.today.to_s]
+        # This needs to be Date.today so it works when run on the command line
+        csv << ['Report Generated', Date.today.to_s] # rubocop:disable Rails/Date
         csv << ['Issuer', issuers.join(', ')] if issuers.present?
         csv << []
         csv << ['Metric', '# of Users']
