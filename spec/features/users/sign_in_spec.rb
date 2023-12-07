@@ -432,6 +432,38 @@ RSpec.feature 'Sign in' do
         end
       end
     end
+
+    context 'with sp' do
+      scenario 'redirects to home page with error  and preserves branded experience' do
+        user = user_with_2fa
+        service_provider = ServiceProvider.find_by(issuer: OidcAuthHelper::OIDC_IAL1_ISSUER)
+        IdentityLinker.new(user, service_provider).link_identity(
+          verified_attributes: %w[openid email],
+        )
+
+        perform_in_browser(:one) do
+          visit_idp_from_sp_with_ial1(:oidc)
+          sign_in_live_with_2fa(user)
+
+          expect(current_url).to match('http://localhost:7654/auth/result')
+        end
+
+        perform_in_browser(:two) do
+          visit_idp_from_sp_with_ial1(:oidc)
+          sign_in_live_with_2fa(user)
+
+          expect(current_url).to match('http://localhost:7654/auth/result')
+        end
+
+        perform_in_browser(:one) do
+          visit account_path
+
+          expect(current_path).to eq new_user_session_path
+          expect(page).to have_content(t('devise.failure.session_limited'))
+          expect_branded_experience
+        end
+      end
+    end
   end
 
   context 'attribute_encryption_key is changed but queue does not contain any previous keys' do
