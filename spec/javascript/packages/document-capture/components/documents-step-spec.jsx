@@ -13,7 +13,6 @@ import DocumentsStep from '@18f/identity-document-capture/components/documents-s
 import { composeComponents } from '@18f/identity-compose-components';
 import { render } from '../../../support/document-capture';
 import { getFixtureFile } from '../../../support/file';
-
 describe('document-capture/components/documents-step', () => {
   it('renders with only front and back inputs by default', () => {
     const { getByLabelText, queryByLabelText } = render(<DocumentsStep />);
@@ -164,15 +163,29 @@ describe('document-capture/components/documents-step', () => {
         ],
         [DocumentsStep],
       );
-      const { getByLabelText, queryByLabelText } = render(<App />);
+      const { getByRole, getByLabelText, queryByLabelText } = render(<App />);
 
       const front = getByLabelText('doc_auth.headings.document_capture_front');
       const back = getByLabelText('doc_auth.headings.document_capture_back');
       const selfie = queryByLabelText('doc_auth.headings.document_capture_selfie');
-
+      const pageHeader = getByRole('heading', {
+        name: 'doc_auth.headings.document_capture_with_selfie',
+        level: 1,
+      });
+      const idHeader = getByRole('heading', {
+        name: 'doc_auth.headdngs.document_capture_subheader_id',
+        level: 2,
+      });
+      const selfieHeader = getByRole('heading', {
+        name: 'doc_auth.headdngs.document_capture_subheader_selfie',
+        level: 2,
+      });
       expect(front).to.be.ok();
       expect(back).to.be.ok();
       expect(selfie).to.be.ok();
+      expect(pageHeader).to.be.ok();
+      expect(idHeader).to.be.ok();
+      expect(selfieHeader).to.be.ok();
     });
   });
 });
