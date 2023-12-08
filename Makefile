@@ -35,6 +35,8 @@ ARTIFACT_DESTINATION_FILE ?= ./tmp/idp.tar.gz
 	lint_yaml \
 	lint_yarn_workspaces \
 	lint_asset_bundle_size \
+	lint_readme \
+	lint_spec_file_name \
 	lintfix \
 	normalize_yaml \
 	optimize_assets \
@@ -103,6 +105,8 @@ endif
 	yarn lint:css
 	@echo "--- README.md ---"
 	make lint_readme
+	@echo "--- lint spec file names ---"
+	make lint_spec_file_name
 	@echo "--- lint migrations ---"
 	make lint_migrations
 
@@ -140,6 +144,10 @@ lint_lockfiles: lint_gemfile_lock lint_yarn_lock ## Lints to ensure lockfiles ar
 
 lint_readme: README.md ## Lints README.md
 	(! git diff --name-only | grep "^README.md$$") || (echo "Error: Run 'make README.md' to regenerate the README.md"; exit 1)
+
+lint_spec_file_name:
+	@find spec/*/** -type f -name '*.rb' -and -not -name '*_spec.rb' -and -not -path 'spec/factories/*' -and -not -path 'spec/support/*' -and -not -path '*/previews/*' -exec false {} + -exec echo "Error: Spec files named incorrectly, should end in '_spec.rb':" {} +
+	@find app/javascript/packages -type f "(" -name '*spec.js' -or -name '*spec.ts' -or -name '*spec.jsx' -or -name '*spec.tsx' ")" -and -not "(" -name '*.spec.js' -or -name '*.spec.ts' -or -name '*.spec.jsx' -or -name '*.spec.tsx' ")" -exec false {} + -exec echo "Error: Spec files named incorrectly, should end in '.spec.(js|ts|jsx|tsx)':" {} +
 
 lintfix: ## Try to automatically fix any Ruby, ERB, JavaScript, YAML, or CSS lint errors
 	@echo "--- rubocop fix ---"
