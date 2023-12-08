@@ -47,8 +47,22 @@
       }
     },
     {
-      // Turn off react linting rules for every file
-      "files": ["*"],
+      // Turn off react linting rules for most files
+      "files": [
+        "spec/**",
+        "app/javascript/packs/**",
+        "app/javascript/packages/address-search/**",
+        "app/javascript/packages/components/**",
+        "app/javascript/packages/compose-components/**",
+        "app/javascript/packages/document-capture/**", // Change this
+        "app/javascript/packages/form-steps/**",
+        "app/javascript/packages/react-hooks/**",
+        "app/javascript/packages/react-i18n/**",
+        "app/javascript/packages/spinner-button/**",
+        "app/javascript/packages/step-indicator/**",
+        "app/javascript/packages/validated-field/**",
+        "app/javascript/packages/verify-flow/**"
+      ],
       "rules": {
         "react/react-in-jsx-scope": "off",
         "react/prop-types": "off",
@@ -58,18 +72,5 @@
         "react-hooks/rules-of-hooks": "off"
       }
     },
-    {
-      // Activate the react linting rules for certain files
-      "files": [
-        "app/javascript/packages/document-capture/components/acuant-camera.tsx",
-      ],
-      "rules": {
-        "react/prop-types": "error",
-        "react/display-name": "error",
-        "react/jsx-key": "error",
-        "react-hooks/exhaustive-deps": "error",
-        "react-hooks/rules-of-hooks": "error"
-      }
-    }
   ]
 }
