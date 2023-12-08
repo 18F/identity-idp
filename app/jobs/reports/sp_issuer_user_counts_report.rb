@@ -4,6 +4,8 @@ module Reports
 
     def perform(_date)
       configs = IdentityConfig.store.sp_issuer_user_counts_report_configs
+      message = "Report: #{REPORT_NAME}"
+      subject = 'Service provider user count report'
 
       configs.each do |report_hash|
         emails = report_hash['emails']
@@ -13,17 +15,43 @@ module Reports
           Db::Identity::SpUserCounts.with_issuer(issuer)
         end
 
+        reports = [
+          Reporting::EmailableReport.new(
+            title: 'Overview',
+            table: overview_table(issuer),
+          ),
+          Reporting::EmailableReport.new(
+            title: 'User counts',
+            table: user_table(user_counts),
+          ),
+        ]
+
         emails.each do |email|
-          ReportMailer.sp_issuer_user_counts_report(
-            name: REPORT_NAME,
-            email: email,
-            issuer: issuer,
-            total: user_counts['total'],
-            ial1_total: user_counts['ial1_total'],
-            ial2_total: user_counts['ial2_total'],
+          ReportMailer.tables_report(
+            email:,
+            subject:,
+            message:,
+            reports:,
+            attachment_format: :csv,
           ).deliver_now
         end
       end
+    end
+
+    def overview_table(issuer)
+      [
+        ['Report Generated', Time.zone.today.to_s],
+        ['Issuer', issuer],
+      ]
+    end
+
+    def user_table(user_counts)
+      [
+        ['Metric', 'Number of users'],
+        ['Total Users', user_counts['total']],
+        ['IAL1 Users', user_counts['ial1_total']],
+        ['Identity Verified Users', user_counts['ial2_total']],
+      ]
     end
   end
 end

@@ -30,6 +30,11 @@ class Profile < ApplicationRecord
     threatmetrix_reject: 2,
   }
 
+  enum idv_level: {
+    legacy_unsupervised: 1,
+    legacy_in_person: 2,
+  }
+
   attr_reader :personal_key
 
   # Class methods
@@ -250,8 +255,8 @@ class Profile < ApplicationRecord
   end
 
   # @param [Pii::Attributes] pii
-  def encrypt_recovery_pii(pii)
-    personal_key = personal_key_generator.create
+  def encrypt_recovery_pii(pii, personal_key: nil)
+    personal_key ||= personal_key_generator.create
     encryptor = Encryption::Encryptors::PiiEncryptor.new(
       personal_key_generator.normalize(personal_key),
     )

@@ -13,10 +13,10 @@ module Idv
       idv_consent_given
       idv_phone_step_document_capture_session_uuid
       mail_only_warning_shown
+      opted_in_to_in_person_proofing
       personal_key
       personal_key_acknowledged
       phone_for_mobile_flow
-      phone_with_camera
       pii_from_doc
       previous_phone_step_params
       profile_id
@@ -83,8 +83,13 @@ module Idv
         UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(
           current_user,
           profile_maker.pii_attributes,
+          opt_in_param,
         )
       end
+    end
+
+    def opt_in_param
+      opted_in_to_in_person_proofing unless !IdentityConfig.store.in_person_proofing_opt_in_enabled
     end
 
     def acknowledge_personal_key!
@@ -133,7 +138,7 @@ module Idv
     end
 
     def phone_otp_sent?
-      user_phone_confirmation_session.present?
+      vendor_phone_confirmation && address_verification_mechanism == 'phone'
     end
 
     def user_phone_confirmation_session
@@ -168,6 +173,9 @@ module Idv
     def invalidate_in_person_pii_from_user!
       if has_pii_from_user_in_flow_session
         user_session['idv/in_person'][:pii_from_user] = nil
+        # Mark the two FSM steps as incomplete so that they can be re-entered.
+        user_session['idv/in_person'].delete('Idv::Steps::InPerson::StateIdStep')
+        user_session['idv/in_person'].delete('Idv::Steps::InPerson::AddressStep')
       end
     end
 
@@ -216,7 +224,7 @@ module Idv
     end
 
     def mark_phone_step_started!
-      session[:address_verification_mechanism] = :phone
+      session[:address_verification_mechanism] = 'phone'
       session[:vendor_phone_confirmation] = true
       session[:user_phone_confirmation] = false
     end

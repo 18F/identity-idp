@@ -39,7 +39,7 @@ RSpec.feature 'OIDC Authorization Confirmation' do
       expect(page).to have_content second_email.email
 
       continue_as(second_email.email)
-      expect(current_url).to match('http://localhost:7654/auth/result')
+      expect(oidc_redirect_url).to match('http://localhost:7654/auth/result')
     end
 
     it 'it allows the user to switch accounts prior to continuing to the SP' do
@@ -53,7 +53,7 @@ RSpec.feature 'OIDC Authorization Confirmation' do
       fill_in_code_with_last_phone_otp
       click_submit_default
 
-      expect(current_url).to match('http://localhost:7654/auth/result')
+      expect(oidc_redirect_url).to match('http://localhost:7654/auth/result')
     end
 
     it 'does not render the confirmation screen on a return visit to the SP by default' do
@@ -66,7 +66,7 @@ RSpec.feature 'OIDC Authorization Confirmation' do
 
       # second visit
       visit_idp_from_ial1_oidc_sp
-      expect(current_url).to match('http://localhost:7654/auth/result')
+      expect(oidc_redirect_url).to match('http://localhost:7654/auth/result')
     end
 
     it 'does not render an error if a user goes back after opting to switch accounts' do
@@ -100,7 +100,7 @@ RSpec.feature 'OIDC Authorization Confirmation' do
 
         click_agree_and_continue
 
-        expect(current_url).to match('http://localhost:7654/auth/result')
+        expect(oidc_redirect_url).to match('http://localhost:7654/auth/result')
         expect(page.get_rack_session.keys).to include('sp')
       end
     end

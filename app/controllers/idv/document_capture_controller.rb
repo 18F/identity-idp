@@ -5,7 +5,6 @@ module Idv
     include DocumentCaptureConcern
     include IdvStepConcern
     include StepIndicatorConcern
-    include PhoneQuestionAbTestConcern
 
     before_action :confirm_not_rate_limited, except: [:update]
     before_action :confirm_step_allowed
@@ -47,11 +46,10 @@ module Idv
         flow_path: 'standard',
         sp_name: decorated_sp_session.sp_name,
         failure_to_proof_url: return_to_sp_failure_to_proof_url(step: 'document_capture'),
-        phone_with_camera: idv_session.phone_with_camera,
         skip_doc_auth: idv_session.skip_doc_auth,
+        opted_in_to_in_person_proofing: idv_session.opted_in_to_in_person_proofing,
       }.merge(
         acuant_sdk_upgrade_a_b_testing_variables,
-        phone_question_ab_test_analytics_bucket,
       )
     end
 

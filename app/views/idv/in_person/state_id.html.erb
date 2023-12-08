@@ -127,6 +127,7 @@
     <% state_id_number_hint = capture do %>
       <% [
            [:default, state_id_number_hint_default],
+           ['FL', t('in_person_proofing.form.state_id.state_id_number_florida_hint')],
            ['TX', t('in_person_proofing.form.state_id.state_id_number_texas_hint')],
          ].each do |state, hint| %>
         <%= content_tag(

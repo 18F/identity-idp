@@ -43,6 +43,7 @@ en:
       reset_password: Reset Password
       verify_info: Verify your information
     mfa_setup:
+      face_touch_unlock_confirmation: Face or touch unlock added
       suggest_second_mfa: You’ve added your first authentication method! Add a second
         method as a backup.
     no_auth_option: No sign-in method found

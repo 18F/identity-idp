@@ -4,6 +4,7 @@ RSpec.feature 'Password recovery via personal key' do
   include PersonalKeyHelper
   include IdvStepHelper
   include SamlAuthHelper
+  include OidcAuthHelper
   include SpAuthHelper
 
   let(:user) { create(:user, :fully_registered) }
@@ -107,7 +108,7 @@ RSpec.feature 'Password recovery via personal key' do
 
       click_agree_and_continue
 
-      expect(current_url).to start_with('http://localhost:7654/auth/result')
+      expect(oidc_redirect_url).to start_with('http://localhost:7654/auth/result')
     end
   end
 
