@@ -205,11 +205,6 @@ max_phone_numbers_per_account: 5
 max_piv_cac_per_account: 2
 min_password_score: 3
 minimum_wait_before_another_usps_letter_in_hours: 24
-multi_region_kms_migration_jobs_enabled: true
-multi_region_kms_migration_jobs_profile_count: 1000
-multi_region_kms_migration_jobs_profile_timeout: 120
-multi_region_kms_migration_jobs_user_count: 1000
-multi_region_kms_migration_jobs_user_timeout: 120
 mx_timeout: 3
 openid_connect_redirect: client_side_js
 openid_connect_content_security_form_action_enabled: false
