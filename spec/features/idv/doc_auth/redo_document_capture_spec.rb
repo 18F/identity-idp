@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.feature 'doc auth redo document capture', js: true do
   include IdvStepHelper
   include DocAuthHelper
+  include DocCaptureHelper
 
   let(:fake_analytics) { FakeAnalytics.new }
 
@@ -168,7 +169,6 @@ RSpec.feature 'doc auth redo document capture', js: true do
       )
     end
   end
-
   context 'error due to data issue with 2xx status code', allow_browser_log: true do
     before do
       sign_in_and_2fa_user
@@ -238,5 +238,27 @@ RSpec.feature 'doc auth redo document capture', js: true do
     end
 
     it_behaves_like 'image re-upload not allowed'
+  end
+
+  context 'when selfie is enabled' do
+    context 'error due to data issue with 2xx status code', allow_browser_log: true do
+      before do
+        allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture).
+          and_return({ enabled: true })
+        sign_in_and_2fa_user
+        complete_doc_auth_steps_before_document_capture_step
+        mock_doc_auth_acuant_error_unknown
+        attach_images
+        attach_selfie
+        submit_images
+        click_try_again
+      end
+      it_behaves_like 'image re-upload not allowed'
+      it 'show headers with selfie' do
+        expect_doc_capture_page_header(t('doc_auth.headings.document_capture_with_selfie'))
+        expect_doc_capture_id_subheader
+        expect_doc_capture_selfie_subheader
+      end
+    end
   end
 end
