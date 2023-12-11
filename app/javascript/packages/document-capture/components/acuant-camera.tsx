@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
 import { useImmutableCallback } from '@18f/identity-react-hooks';
 import AcuantContext from '../context/acuant';
+import { AcuantCameraInterface, AcuantCameraUICallbacks, AcuantImage } from '../types';
 
 declare let AcuantCameraUI: AcuantCameraUIInterface;
 declare global {
@@ -20,13 +21,6 @@ type AcuantGlobals = {
 };
 export type AcuantGlobal = Window & AcuantGlobals;
 
-enum AcuantDocumentStateEnum {
-  NO_DOCUMENT = 0,
-  SMALL_DOCUMENT = 1,
-  BIG_DOCUMENT = 2,
-  GOOD_DOCUMENT = 3,
-}
-
 /**
  * @enum {number}
  */
@@ -37,11 +31,6 @@ export const AcuantDocumentState = {
   GOOD_DOCUMENT: 3,
 };
 
-enum AcuantUIStateEnum {
-  CAPTURING = -1,
-  TAP_TO_CAPTURE = -2,
-}
-
 /**
  * @enum {number}
  */
@@ -49,10 +38,6 @@ export const AcuantUIState = {
   CAPTURING: -1,
   TAP_TO_CAPTURE: -2,
 };
-
-type AcuantFrameState = AcuantDocumentStateEnum & AcuantUIStateEnum;
-
-type AcuantCaptureType = 'AUTO' | 'TAP';
 
 interface AcuantCameraUIText {
   /**
@@ -112,26 +97,6 @@ export type AcuantCaptureFailureError =
   | 'Live capture has previously failed and was called again. User was sent to manual capture.' // Previous failure (SDK v11.5.0, L698)
   | 'sequence-break'; // iOS 15 sequence break (SDK v11.5.0, L1327)
 
-interface AcuantCameraUICallbacks {
-  /**
-   * Document captured callback.
-   */
-  onCaptured: (response: AcuantCaptureImage) => void;
-  /**
-   * Document cropped callback. Null if
-   * cropping error.
-   */
-  onCropped: (response: AcuantSuccessResponse | null) => void;
-  /**
-   * Optional frame available callback
-   */
-  onFrameAvailable?: (response: AcuantDetectedResult) => void;
-  /**
-   * Callback that occurs when there is a failure.
-   */
-  onError: (error?: AcuantCaptureFailureError, code?: string) => void;
-}
-
 type AcuantCameraUIStart = (
   callbacks: AcuantCameraUICallbacks,
   onFailureCallbackWithOptions: AcuantFailureCallback,
@@ -147,62 +112,6 @@ interface AcuantCameraUIInterface {
    * End capture
    */
   end: () => void;
-}
-
-type AcuantCameraStart = (
-  callback: (response: AcuantImage) => void,
-  errorCallback: Function,
-) => void;
-type AcuantCameraTriggerCapture = (callback: (response: AcuantImage) => void) => void;
-type AcuantCameraCrop = (
-  data: string,
-  width: number,
-  height: number,
-  capType: AcuantCaptureType,
-  callback: (result: AcuantImage) => void,
-) => void;
-
-declare global {
-  interface AcuantCameraInterface {
-    start: AcuantCameraStart;
-    startManualCapture: (callback: AcuantCameraUICallbacks) => void;
-    triggerCapture: AcuantCameraTriggerCapture;
-    crop: AcuantCameraCrop;
-  }
-}
-
-interface AcuantCaptureImage {
-  /**
-   * Pre-cropped image data
-   */
-  data: Blob;
-  /**
-   * Image width
-   */
-  width: number;
-  /**
-   * Image height
-   */
-  height: number;
-}
-
-interface AcuantImage {
-  /**
-   * Base64-encoded image data
-   */
-  data: string;
-  /**
-   * Image width
-   */
-  width: number;
-  /**
-   * Image height
-   */
-  height: number;
-}
-
-interface AcuantDetectedResult {
-  state: AcuantFrameState;
 }
 
 /**

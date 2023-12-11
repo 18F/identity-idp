@@ -1,8 +1,9 @@
-import { createContext, useContext, useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import useObjectMemo from '@18f/identity-react-hooks/use-object-memo';
 import AnalyticsContext from './analytics';
 import DeviceContext from './device';
+import { AcuantCameraInterface, AcuantConfig } from '../types';
 
 /**
  * Global declarations
@@ -40,25 +41,6 @@ declare global {
      */
     AcuantCamera: AcuantCameraInterface;
   }
-}
-
-/**
- * Some of the other modules still refer to
- * AcuantGlobal, which should be equivalent to the
- * Window
- */
-export type AcuantGlobal = Window;
-
-/**
- * @see https://github.com/Acuant/JavascriptWebSDKV11/blob/11.4.3/SimpleHTMLApp/webSdk/dist/AcuantJavascriptWebSdk.js#L1025-L1027
- * @see https://github.com/Acuant/JavascriptWebSDKV11/blob/11.4.3/SimpleHTMLApp/webSdk/dist/AcuantJavascriptWebSdk.js#L1049
- */
-interface AcuantConfig {
-  path: string;
-}
-
-interface AcuantCameraInterface {
-  isCameraSupported: boolean;
 }
 
 /**

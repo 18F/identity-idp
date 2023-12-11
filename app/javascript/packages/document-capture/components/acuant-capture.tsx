@@ -251,6 +251,23 @@ function getImageMetadata(
   );
 }
 
+function preProcessImage(width: number, height: number, file: File) {
+  let croppedImg;
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const dataBuffer = reader.result;
+      const imgData = new Uint8ClampedArray(dataBuffer as ArrayBuffer);
+      const img = new ImageData(imgData, width, height);
+      window.AcuantCamera.evaluateImage(img, width, height, (result) => {
+        console.log('result: ', result);
+        croppedImg = result;
+      });
+    };
+    reader.readAsArrayBuffer(file);
+  });
+}
+
 /**
  * Pauses default focus trap behaviors for a single tick. If a focus transition occurs during this
  * tick, the focus trap's deactivation will be overridden to prevent any default focus return, in
