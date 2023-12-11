@@ -19,6 +19,10 @@ Rails.application.routes.draw do
     namespace :internal do
       get '/sessions' => 'sessions#show'
       put '/sessions' => 'sessions#update'
+
+      namespace :two_factor_authentication do
+        resource :webauthn, path: '/webauthn/:id', controller: :webauthn, only: [:update, :destroy]
+      end
     end
   end
 
@@ -218,6 +222,8 @@ Rails.application.routes.draw do
 
     get '/webauthn_setup' => 'users/webauthn_setup#new', as: :webauthn_setup
     patch '/webauthn_setup' => 'users/webauthn_setup#confirm'
+
+    # Deprecated routes: Remove once LG-11454 is fully deployed to production.
     delete '/webauthn_setup' => 'users/webauthn_setup#delete'
     get '/webauthn_setup_delete' => 'users/webauthn_setup#show_delete'
 
@@ -245,6 +251,11 @@ Rails.application.routes.draw do
     delete '/manage/phone/:id' => 'users/edit_phone#destroy'
     get '/manage/personal_key' => 'users/personal_keys#show', as: :manage_personal_key
     post '/manage/personal_key' => 'users/personal_keys#update'
+    resource :webauthn,
+             path: '/manage/webauthn/:id',
+             controller: 'users/webauthn',
+             path_names: { edit: '' },
+             only: [:edit, :update, :destroy]
 
     get '/account/personal_key' => 'accounts/personal_keys#new', as: :create_new_personal_key
     post '/account/personal_key' => 'accounts/personal_keys#create'

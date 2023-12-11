@@ -3,7 +3,7 @@ module ReauthenticationRequiredConcern
   include TwoFactorAuthenticatableMethods
 
   def confirm_recently_authenticated_2fa
-    return if !user_fully_authenticated? || auth_methods_session.recently_authenticated_2fa?
+    return if !user_fully_authenticated? || recently_authenticated_2fa?
 
     analytics.user_2fa_reauthentication_required(
       auth_method: auth_methods_session.last_auth_event&.[](:auth_method),
@@ -11,6 +11,10 @@ module ReauthenticationRequiredConcern
     )
 
     prompt_for_second_factor
+  end
+
+  def recently_authenticated_2fa?
+    user_fully_authenticated? && auth_methods_session.recently_authenticated_2fa?
   end
 
   private

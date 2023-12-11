@@ -190,6 +190,13 @@ en:
       try_again: Face or touch unlock was unsuccessful. Please try again or %{link}.
       use_a_different_method: Use a different authentication method
     webauthn_header_text: Connect your security key
+    webauthn_platform:
+      change_nickname: Change nickname
+      delete: Delete this device
+      deleted: Successfully deleted a face or touch unlock method
+      edit_heading: Manage your face or touch unlock settings
+      nickname: Nickname
+      renamed: Successfully renamed your face or touch unlock method
     webauthn_platform_header_text: Use face or touch unlock
     webauthn_platform_use_key: Use face or touch unlock
     webauthn_use_key: Use security key
