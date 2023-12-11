@@ -9,16 +9,23 @@ RSpec.describe Idv::AbTestAnalyticsConcern do
   describe '#ab_test_analytics_buckets' do
     controller(ApplicationController) do
       include Idv::AbTestAnalyticsConcern
+
+      def document_capture_session_uuid
+        SecureRandom.uuid
+      end
     end
 
     let(:acuant_sdk_args) { { as_bucket: :as_value } }
     let(:instant_verify_sdk_args) { { iv_bucket: :iv_value } }
+    let(:lniv) { Idv::LexisnexisInstantVerify.new(controller.document_capture_session_uuid) }
 
     before do
       allow(subject).to receive(:current_user).and_return(user)
       expect(subject).to receive(:acuant_sdk_ab_test_analytics_args).
         and_return(acuant_sdk_args)
-      expect(subject).to receive(:lexisnexis_instant_verify_workflow_ab_test_analytics_args).
+      allow(Idv::LexisnexisInstantVerify).to receive(:new).
+        and_return(lniv)
+      expect(lniv).to receive(:workflow_ab_test_analytics_args).
         and_return(instant_verify_sdk_args)
     end
 

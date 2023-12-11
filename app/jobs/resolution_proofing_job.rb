@@ -38,6 +38,7 @@ class ResolutionProofingJob < ApplicationJob
 
     user = User.find_by(id: user_id)
 
+    document_capture_session = DocumentCaptureSession.new(result_id: result_id)
     callback_log_data = make_vendor_proofing_requests(
       timer: timer,
       user: user,
@@ -47,9 +48,9 @@ class ResolutionProofingJob < ApplicationJob
       should_proof_state_id: should_proof_state_id,
       double_address_verification: double_address_verification,
       ipp_enrollment_in_progress: ipp_enrollment_in_progress,
+      document_capture_session_uuid: document_capture_session.uuid,
     )
 
-    document_capture_session = DocumentCaptureSession.new(result_id: result_id)
     document_capture_session.store_proofing_result(callback_log_data.result)
   ensure
     logger_info_hash(
@@ -74,9 +75,10 @@ class ResolutionProofingJob < ApplicationJob
     request_ip:,
     should_proof_state_id:,
     double_address_verification:,
-    ipp_enrollment_in_progress:
+    ipp_enrollment_in_progress:,
+    document_capture_session_uuid:
   )
-    result = resolution_proofer.proof(
+    result = resolution_proofer(document_capture_session_uuid).proof(
       applicant_pii: applicant_pii,
       user_email: user&.confirmed_email_addresses&.first&.email,
       threatmetrix_session_id: threatmetrix_session_id,
@@ -112,8 +114,9 @@ class ResolutionProofingJob < ApplicationJob
     logger.info(hash.to_json)
   end
 
-  def resolution_proofer
-    @resolution_proofer ||= Proofing::Resolution::ProgressiveProofer.new
+  def resolution_proofer(document_capture_session_uuid)
+    @resolution_proofer ||= Proofing::Resolution::ProgressiveProofer.
+      new(document_capture_session_uuid)
   end
 
   def add_threatmetrix_proofing_component(user_id, threatmetrix_result)

@@ -1,6 +1,12 @@
 module Idv
-  module LexisnexisInstantVerify
-    def lexisnexis_instant_verify_workflow_ab_test_analytics_args
+  class LexisnexisInstantVerify
+    attr_reader :document_capture_session_uuid
+
+    def initialize(document_capture_session_uuid = nil)
+      @document_capture_session_uuid = document_capture_session_uuid
+    end
+
+    def workflow_ab_test_analytics_args
       return {} if document_capture_session_uuid.blank?
 
       {
