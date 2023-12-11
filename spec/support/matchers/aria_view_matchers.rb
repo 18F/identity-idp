@@ -38,8 +38,8 @@ class HaveButtonToWithAccessibilityMatcher
     return 'expected button to be in a (Rails) "button_to" form tag' unless enclosing_form
 
     messages = []
-    messages += aria_label_failure_message unless aria_label_ok?
-    messages += action_failure_message unless action_ok?
+    messages << aria_label_failure_message unless aria_label_ok?
+    messages << action_failure_message unless action_ok?
     messages.join("\n")
   end
 
