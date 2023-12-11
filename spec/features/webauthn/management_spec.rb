@@ -169,7 +169,6 @@ RSpec.describe 'webauthn management' do
 
       # Regression: LG-9860: Ensure that the platform URL parameter is maintained through reauthn
       travel_to (IdentityConfig.store.reauthn_window + 1).seconds.from_now
-      fill_in_nickname_and_click_continue
       mock_press_button_on_hardware_key_on_setup
 
       expect(page).to have_current_path login_two_factor_options_path
@@ -178,7 +177,6 @@ RSpec.describe 'webauthn management' do
       click_submit_default
 
       expect(page).to have_current_path webauthn_setup_path(platform: true)
-      fill_in_nickname_and_click_continue
       mock_press_button_on_hardware_key_on_setup
 
       expect_webauthn_platform_setup_success
