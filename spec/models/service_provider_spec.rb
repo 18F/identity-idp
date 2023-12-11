@@ -15,6 +15,29 @@ RSpec.describe ServiceProvider do
     end
   end
 
+  describe 'scopes' do
+    before do
+      clear_agreements_data
+      Agency.destroy_all
+      ServiceProvider.destroy_all
+    end
+
+    let!(:external_sps) { create_list(:service_provider, 2, iaa: 'LG1234') }
+    let!(:internal_sp) { create(:service_provider, :internal) }
+
+    describe '.internal' do
+      it 'includes apps with iaa: LGINTERNAL' do
+        expect(ServiceProvider.internal.to_a).to eq([internal_sp])
+      end
+    end
+
+    describe '.external' do
+      it 'includes apps without iaa: LGINTERNAL' do
+        expect(ServiceProvider.external.to_a).to match_array(external_sps)
+      end
+    end
+  end
+
   describe '#issuer' do
     it 'returns the constructor value' do
       expect(service_provider.issuer).to eq 'http://localhost:3000'

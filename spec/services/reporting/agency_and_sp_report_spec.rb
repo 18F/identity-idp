@@ -14,13 +14,7 @@ RSpec.describe Reporting::AgencyAndSpReport do
 
   # Wipe the pre-seeded data. It's easier to start from a clean slate.
   before do
-    Agreements::IntegrationUsage.destroy_all
-    Agreements::IaaOrder.destroy_all
-    Agreements::Integration.destroy_all
-    Agreements::IntegrationStatus.destroy_all
-    Agreements::IaaGtc.destroy_all
-    Agreements::PartnerAccount.destroy_all
-    Agreements::PartnerAccountStatus.destroy_all
+    clear_agreements_data
     Agency.destroy_all
     ServiceProvider.destroy_all
   end
@@ -31,7 +25,7 @@ RSpec.describe Reporting::AgencyAndSpReport do
     subject { report.agency_and_sp_report }
 
     context 'when adding a non-IDV SP' do
-      let!(:auth_sp) { create(:service_provider, :active) }
+      let!(:auth_sp) { create(:service_provider, :external, :active) }
       let(:expected_report) do
         [
           header_row,
@@ -47,7 +41,7 @@ RSpec.describe Reporting::AgencyAndSpReport do
     end
 
     context 'when adding an inactive SP' do
-      let!(:inactive_sp) { create(:service_provider) }
+      let!(:inactive_sp) { create(:service_provider, :external) }
       let(:expected_report) do
         [
           header_row,
@@ -64,7 +58,7 @@ RSpec.describe Reporting::AgencyAndSpReport do
     end
 
     context 'when adding an IDV SP to a non-IDV Agency' do
-      let!(:initial_sp) { create(:service_provider, :active) }
+      let!(:initial_sp) { create(:service_provider, :external, :active) }
       let!(:agency) { initial_sp.agency }
 
       let(:initial_report) do
@@ -88,7 +82,7 @@ RSpec.describe Reporting::AgencyAndSpReport do
       it 'becomes an IDV agency' do
         expect(subject).to match_array(initial_report)
 
-        create(:service_provider, :active, :idv, agency: agency)
+        create(:service_provider, :external, :active, :idv, agency: agency)
 
         # The report gets memoized, so we need to reconstruct it here:
         new_report = described_class.new(report_date)
@@ -97,7 +91,7 @@ RSpec.describe Reporting::AgencyAndSpReport do
     end
 
     context 'when adding an IDV SP' do
-      let!(:idv_sp) { create(:service_provider, :idv, :active) }
+      let!(:idv_sp) { create(:service_provider, :external, :idv, :active) }
 
       let(:expected_report) do
         [

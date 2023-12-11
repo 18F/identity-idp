@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'fingerprinter'
 require 'identity_validations'
 
@@ -27,6 +28,11 @@ class ServiceProvider < ApplicationRecord
     :with_push_notification_urls,
     -> { where.not(push_notification_url: nil).where.not(push_notification_url: '') },
   )
+
+  IAA_INTERNAL = 'LGINTERNAL'
+
+  scope(:internal, -> { where(iaa: IAA_INTERNAL) })
+  scope(:external, -> { where.not(iaa: IAA_INTERNAL) })
 
   def metadata
     attributes.symbolize_keys.merge(certs: ssl_certs)
