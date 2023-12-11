@@ -60,7 +60,6 @@ es:
     piv_cac_setup:
       new: Use su tarjeta PIV/CAC para asegurar su cuenta
     present_piv_cac: Presenta tu PIV/CAC
-    present_webauthn: Conecte su clave de seguridad de hardware
     reactivate_account: Reactive su cuenta
     registrations:
       new: Crea tu cuenta

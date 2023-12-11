@@ -60,7 +60,6 @@ fr:
     piv_cac_setup:
       new: Utilisez votre carte PIV/CAC pour sécuriser votre compte
     present_piv_cac: Veuillez présenter votre carte PIV/CAC
-    present_webauthn: Branchez votre clé de sécurité physique
     reactivate_account: Réactiver le profil
     registrations:
       new: S’inscrire et créer un compte
