@@ -17,6 +17,7 @@ en:
         link: create a new account
         text_html: Or, %{link_html} using a different email address.
     password_changed: You changed your password.
+    personal_key_used_as_mfa: You have used Personal Key, You will need to get a new MFA method. 
     phone_confirmed: A phone was added to your account.
     piv_cac_configured: A PIV/CAC card was added to your account.
     piv_cac_disabled: Your PIV/CAC was deleted from your account.
