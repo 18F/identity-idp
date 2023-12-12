@@ -77,19 +77,13 @@ RSpec.describe Idv::PersonalKeyController do
     it 'includes before_actions from IdvSession' do
       expect(subject).to have_actions(:before, :redirect_unless_sp_requested_verification)
     end
+  end
 
-    describe '#confirm_profile_has_been_created' do
-      controller do
-        before_action :confirm_profile_has_been_created
-
-        def index
-          render plain: 'Hello'
-        end
-      end
-
+  describe '#show' do
+    describe '#confirm_step_allowed' do
       context 'profile has been created' do
         it 'does not redirect' do
-          get :index
+          get :show
 
           expect(response).to_not be_redirect
         end
@@ -99,7 +93,7 @@ RSpec.describe Idv::PersonalKeyController do
         let(:mint_profile_from_idv_session) { false }
 
         it 'redirects to the account path' do
-          get :index
+          get :show
           expect(response).to redirect_to account_path
         end
 
@@ -108,7 +102,7 @@ RSpec.describe Idv::PersonalKeyController do
             let!(:pending_profile) { create(:profile, :fraud_review_pending, user: user) }
 
             it 'does not redirect' do
-              get :index
+              get :show
               expect(response).to_not be_redirect
             end
           end
@@ -117,16 +111,14 @@ RSpec.describe Idv::PersonalKeyController do
             let!(:pending_profile) { create(:profile, :in_person_verification_pending, user: user) }
 
             it 'does not redirect' do
-              get :index
+              get :show
               expect(response).to_not be_redirect
             end
           end
         end
       end
     end
-  end
 
-  describe '#show' do
     it 'sets code instance variable' do
       code = idv_session.personal_key
       expect(code).to be_present
