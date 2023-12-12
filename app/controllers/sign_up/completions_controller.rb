@@ -81,7 +81,7 @@ module SignUp
     end
 
     def analytics_attributes(page_occurence)
-      {
+      attributes = {
         ial2: sp_session[:ial2],
         ialmax: sp_session[:ialmax],
         service_provider_name: decorated_sp_session.sp_name,
@@ -91,6 +91,19 @@ module SignUp
         in_account_creation_flow: user_session[:in_account_creation_flow] || false,
         needs_completion_screen_reason: needs_completion_screen_reason,
       }
+
+      if page_occurence.present? && DisposableDomain.is_disposable?(email_domain)
+        attributes.merge!({ disposable_email_domain: email_domain })
+      end
+
+      attributes
+    end
+
+    def email_domain
+      @email_domain ||= begin
+        email_address = current_user.email_addresses.take.email
+        Mail::Address.new(email_address).domain
+      end
     end
 
     def track_completion_event(last_page)
