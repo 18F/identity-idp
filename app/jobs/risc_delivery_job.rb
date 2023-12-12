@@ -52,6 +52,13 @@ class RiscDeliveryJob < ApplicationJob
         }.to_json,
       )
     end
+
+    track_event(
+      error: response.success? ? nil : 'http_push_error',
+      event_type:,
+      issuer:,
+      success: response.success?,
+    )
   rescue *NETWORK_ERRORS => err
     raise err if self.executions < 2 && !inline?
 
@@ -64,6 +71,13 @@ class RiscDeliveryJob < ApplicationJob
         error: err.message,
       }.to_json,
     )
+
+    track_event(
+      error: err.message,
+      event_type:,
+      issuer:,
+      success: false,
+    )
   rescue RedisRateLimiter::LimitError => err
     raise err if self.executions < 10 && !inline?
 
@@ -75,6 +89,13 @@ class RiscDeliveryJob < ApplicationJob
         service_provider: issuer,
         error: err.message,
       }.to_json,
+    )
+
+    track_event(
+      error: err.message,
+      event_type:,
+      issuer:,
+      success: false,
     )
   end
 
@@ -103,5 +124,23 @@ class RiscDeliveryJob < ApplicationJob
 
   def inline?
     queue_adapter.is_a?(ActiveJob::QueueAdapters::InlineAdapter)
+  end
+
+  def track_event(event_type:, issuer:, success:, error: nil)
+    analytics.risc_security_event_pushed(
+      client_id: issuer,
+      error:,
+      event_type:,
+      success:,
+    )
+  end
+
+  def analytics
+    @analytics ||= Analytics.new(
+      user: AnonymousUser.new,
+      request: nil,
+      session: {},
+      sp: nil,
+    )
   end
 end
