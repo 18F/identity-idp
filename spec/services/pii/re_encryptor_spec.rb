@@ -22,7 +22,10 @@ RSpec.describe Pii::ReEncryptor do
 
       it 're-encrypts PII onto the active profile using new code' do
         active_profile = create(:profile, :active, :verified, pii: active_pii, user: user)
-        # creating a pending profile to make sure pending profiles are ignored when an active one is present
+
+        # create a pending profile with different pii, so we're sure
+        # that the ReEncryptor uses the active profile, and not the
+        # pending profile, if both are present.
         create(:profile, :verify_by_mail_pending, pii: pending_pii, user: user)
 
         pii_cacher.save_decrypted_pii(active_pii, active_profile.id)
