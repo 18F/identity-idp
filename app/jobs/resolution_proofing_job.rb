@@ -16,6 +16,7 @@ class ResolutionProofingJob < ApplicationJob
 
   def perform(
     result_id:,
+    document_capture_session_uuid:,
     encrypted_arguments:,
     trace_id:,
     should_proof_state_id:,
@@ -38,7 +39,6 @@ class ResolutionProofingJob < ApplicationJob
 
     user = User.find_by(id: user_id)
 
-    document_capture_session = DocumentCaptureSession.new(result_id: result_id)
     callback_log_data = make_vendor_proofing_requests(
       timer: timer,
       user: user,
@@ -48,9 +48,10 @@ class ResolutionProofingJob < ApplicationJob
       should_proof_state_id: should_proof_state_id,
       double_address_verification: double_address_verification,
       ipp_enrollment_in_progress: ipp_enrollment_in_progress,
-      document_capture_session_uuid: document_capture_session.uuid,
+      document_capture_session_uuid: document_capture_session_uuid,
     )
 
+    document_capture_session = DocumentCaptureSession.new(result_id: result_id)
     document_capture_session.store_proofing_result(callback_log_data.result)
   ensure
     logger_info_hash(

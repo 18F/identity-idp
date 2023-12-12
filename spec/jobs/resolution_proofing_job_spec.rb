@@ -7,7 +7,9 @@ RSpec.describe ResolutionProofingJob, type: :job do
       { applicant_pii: pii }.to_json,
     )
   end
-  let(:document_capture_session) { DocumentCaptureSession.new(result_id: SecureRandom.hex) }
+  let(:document_capture_session) do
+    DocumentCaptureSession.new(result_id: SecureRandom.hex, uuid: SecureRandom.uuid)
+  end
   let(:should_proof_state_id) { true }
   let(:trace_id) { SecureRandom.uuid }
   let(:user) { create(:user, :fully_registered) }
@@ -31,6 +33,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
     subject(:perform) do
       instance.perform(
         result_id: document_capture_session.result_id,
+        document_capture_session_uuid: document_capture_session.uuid,
         should_proof_state_id: should_proof_state_id,
         encrypted_arguments: encrypted_arguments,
         trace_id: trace_id,
@@ -325,6 +328,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
       subject(:perform) do
         instance.perform(
           result_id: document_capture_session.result_id,
+          document_capture_session_uuid: document_capture_session.uuid,
           should_proof_state_id: should_proof_state_id,
           encrypted_arguments: encrypted_arguments,
           trace_id: trace_id,
