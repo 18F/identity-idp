@@ -4721,6 +4721,7 @@ module AnalyticsEvents
   # @param [Hash] error_details
   # @param [Integer] configuration_id
   # Tracks when user attempts to delete a WebAuthn configuration
+  # @identity.idp.previous_event_name WebAuthn Deleted
   def webauthn_delete_submitted(
     success:,
     configuration_id:,
