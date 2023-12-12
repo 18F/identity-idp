@@ -30,6 +30,7 @@ ARTIFACT_DESTINATION_FILE ?= ./tmp/idp.tar.gz
 	lint_country_dialing_codes \
 	lint_erb \
 	lint_lockfiles \
+	lint_new_typescript_files \
 	lint_optimized_assets \
 	lint_tracker_events \
 	lint_yaml \
@@ -160,6 +161,11 @@ lint_spec_file_name:
 		"(" -name '*.spec.js' -or -name '*.spec.ts' -or -name '*.spec.jsx' -or -name '*.spec.tsx' ")" \
 		-exec false {} + \
 		-exec echo "Error: Spec files named incorrectly, should end in '.spec.(js|ts|jsx|tsx)':" {} +
+
+lint_new_typescript_files:
+	@for file in $(shell git diff main HEAD --name-only --diff-filter=A | grep -E '\.jsx?$$'); do \
+		echo $$file | sed -r 's/^(app\/javascript\/packages\/[^/]+\/).+/\1package.json/' | xargs -I% jq -e 'select(.private == false and .exports["."].source == null)' % || (echo "All new JavaScript files should be written as TypeScript, found: $$file"; exit 1); \
+	done
 
 lintfix: ## Try to automatically fix any Ruby, ERB, JavaScript, YAML, or CSS lint errors
 	@echo "--- rubocop fix ---"
