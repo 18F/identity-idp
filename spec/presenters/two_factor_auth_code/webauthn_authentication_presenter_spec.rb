@@ -18,6 +18,21 @@ RSpec.describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
   let(:phishing_resistant_required) { false }
   let(:platform_authenticator) { false }
 
+  describe '#webauthn_title' do
+    it('shows title for security key mfa') do
+      expect(subject.webauthn_title).to eq(t('titles.present_webauthn'))
+    end
+
+    context('when using platform authenticator mfa') do
+      let(:platform_authenticator) { true }
+      it('shows title for platform authenticator mfa') do
+        expect(subject.webauthn_title).to eq(
+          t('two_factor_authentication.webauthn_platform_header_text'),
+        )
+      end
+    end
+  end
+
   describe '#webauthn_help' do
     let(:phishing_resistant_required) { false }
 
