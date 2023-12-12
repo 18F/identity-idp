@@ -92,7 +92,7 @@ module SignUp
         needs_completion_screen_reason: needs_completion_screen_reason,
       }
 
-      if page_occurence.present? && DisposableDomain.is_disposable?(email_domain)
+      if page_occurence.present? && DisposableDomain.disposable?(email_domain)
         attributes[:disposable_email_domain] = email_domain
       end
 
