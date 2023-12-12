@@ -190,8 +190,8 @@ fr:
       document_capture_back: Verso de votre carte d’identité
       document_capture_front: Recto de votre carte d’identité
       document_capture_selfie: Égoportrait
-      document_capture_subheader_id: 1. Driver’s license or state ID card
-      document_capture_subheader_selfie: 2. Photo of yourself
+      document_capture_subheader_id: Driver’s license or state ID card
+      document_capture_subheader_selfie: Photo of yourself
       document_capture_with_selfie: Add photos of your ID and a photo of yourself
       front: Recto de votre permis de conduire ou de votre carte d’identité de l’État
       getting_started: Vérifions votre identité pour %{sp_name}

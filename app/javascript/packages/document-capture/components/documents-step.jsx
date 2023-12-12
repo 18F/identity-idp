@@ -55,18 +55,16 @@ function DocumentsStep({
     ? t('doc_auth.headings.document_capture_with_selfie')
     : t('doc_auth.headings.document_capture');
 
-  const idTipListTitle = selfieCaptureEnabled
-    ? t('doc_auth.tips.document_capture_selfie_id_header_text')
-    : t('doc_auth.tips.document_capture_header_text');
-
+  const idTipListTitle = t('doc_auth.tips.document_capture_selfie_id_header_text');
   return (
     <>
       {flowPath === 'hybrid' && <HybridDocCaptureWarning className="margin-bottom-4" />}
       <PageHeading>{pageHeaderText}</PageHeading>
-      {!selfieCaptureEnabled && <p>{t('doc_auth.info.document_capture_intro_acknowledgment')}</p>}
-      {selfieCaptureEnabled && <h2>{t('doc_auth.headings.document_capture_subheader_id')}</h2>}
+      <h2>
+        {selfieCaptureEnabled && '1.'} {t('doc_auth.headings.document_capture_subheader_id')}
+      </h2>
       <TipList
-        titleClassName={`margin-bottom-0 ${selfieCaptureEnabled ? 'text-bold' : ''}`}
+        titleClassName="margin-bottom-0 text-bold"
         title={idTipListTitle}
         items={[
           t('doc_auth.tips.document_capture_id_text1'),

@@ -31,7 +31,7 @@ function DocumentCaptureSelfieCapture({
 }) {
   return (
     <>
-      <h2>{t('doc_auth.headings.document_capture_subheader_selfie')}</h2>
+      <h2>2. {t('doc_auth.headings.document_capture_subheader_selfie')}</h2>
       <TipList
         titleClassName="margin-bottom-0 text-bold"
         title={t('doc_auth.tips.document_capture_selfie_selfie_text')}
