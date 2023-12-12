@@ -25,7 +25,13 @@ RSpec.describe Reporting::AgencyAndSpReport do
     subject { report.agency_and_sp_report }
 
     context 'when adding a non-IDV SP' do
-      let!(:auth_sp) { create(:service_provider, :external, :active) }
+      let!(:auth_sp) do
+        create(
+          :service_provider,
+          :external,
+          :active, identities: [build(:service_provider_identity)],
+        )
+      end
       let(:expected_report) do
         [
           header_row,
@@ -41,24 +47,30 @@ RSpec.describe Reporting::AgencyAndSpReport do
     end
 
     context 'when adding an inactive SP' do
-      let!(:inactive_sp) { create(:service_provider, :external) }
+      let!(:inactive_sp) { create(:service_provider, :external, identities: []) }
       let(:expected_report) do
         [
           header_row,
-          ['Auth', 0, 1],
+          ['Auth', 0, 0],
           ['IDV', 0, 0],
-          ['Total', 0, 1],
+          ['Total', 0, 0],
         ]
       end
 
-      # Agencies don't have a sense of 'active' and are included.
       it 'includes the agency but not the inactive SP' do
         expect(subject).to match_array(expected_report)
       end
     end
 
     context 'when adding an IDV SP to a non-IDV Agency' do
-      let!(:initial_sp) { create(:service_provider, :external, :active) }
+      let!(:initial_sp) do
+        create(
+          :service_provider,
+          :external,
+          :active,
+          identities: [build(:service_provider_identity)],
+        )
+      end
       let!(:agency) { initial_sp.agency }
 
       let(:initial_report) do
@@ -82,7 +94,13 @@ RSpec.describe Reporting::AgencyAndSpReport do
       it 'becomes an IDV agency' do
         expect(subject).to match_array(initial_report)
 
-        create(:service_provider, :external, :active, :idv, agency: agency)
+        create(
+          :service_provider,
+          :external,
+          :active,
+          :idv,
+          agency: agency, identities: [build(:service_provider_identity)],
+        )
 
         # The report gets memoized, so we need to reconstruct it here:
         new_report = described_class.new(report_date)
@@ -91,7 +109,15 @@ RSpec.describe Reporting::AgencyAndSpReport do
     end
 
     context 'when adding an IDV SP' do
-      let!(:idv_sp) { create(:service_provider, :external, :idv, :active) }
+      let!(:idv_sp) do
+        create(
+          :service_provider,
+          :external,
+          :idv,
+          :active,
+          identities: [build(:service_provider_identity)],
+        )
+      end
 
       let(:expected_report) do
         [

@@ -7,8 +7,7 @@ module Reporting
     end
 
     def agency_and_sp_report
-      idv_sps, auth_sps = ServiceProvider.where('created_at <= ?', report_date).active.external.
-        partition { |sp| sp.ial.present? && sp.ial >= 2 }
+      idv_sps, auth_sps = service_providers.partition { |sp| sp.ial.present? && sp.ial >= 2 }
       idv_agency_ids = idv_sps.map(&:agency_id).uniq
       idv_agencies, auth_agencies = agencies_with_sps.partition do |agency|
         idv_agency_ids.include?(agency.id)
@@ -32,9 +31,17 @@ module Reporting
 
     # Agencies have no timestamps, so we need to join to SPs to get something equivalent.
     def agencies_with_sps
-      Agency.joins(:service_providers).
-        where('service_providers.created_at <= ?', report_date).
-        distinct
+      Agency.where(id: service_providers.select(:agency_id).distinct)
+    end
+
+    def service_providers
+      @service_providers ||= Reports::BaseReport.transaction_with_timeout do
+        issuers = ServiceProviderIdentity.
+          where('created_at <= ?', report_date).
+          distinct.
+          pluck(:service_provider)
+        ServiceProvider.where(issuer: issuers).active.external
+      end
     end
   end
 end
