@@ -23,6 +23,7 @@ aamva_verification_request_timeout: 5.0
 aamva_verification_url: https://example.org:12345/verification/url
 all_redirect_uris_cache_duration_minutes: 2
 allowed_ialmax_providers: '[]'
+allowed_verified_within_providers: '[]'
 account_reset_token_valid_for_days: 1
 account_reset_wait_period_days: 1
 account_suspended_support_code: EFGHI
@@ -122,7 +123,6 @@ idv_acuant_sdk_version_default: '11.9.1'
 idv_acuant_sdk_version_alternate: '11.8.2'
 idv_acuant_sdk_upgrade_a_b_testing_enabled: false
 idv_acuant_sdk_upgrade_a_b_testing_percent: 50
-idv_phone_question_a_b_testing: '{"bypass_phone_question":100, "show_phone_question":0}'
 idv_send_link_attempt_window_in_minutes: 10
 idv_send_link_max_attempts: 5
 idv_sp_required: false
@@ -211,6 +211,8 @@ multi_region_kms_migration_jobs_profile_timeout: 120
 multi_region_kms_migration_jobs_user_count: 1000
 multi_region_kms_migration_jobs_user_timeout: 120
 mx_timeout: 3
+openid_connect_redirect_interstitial_enabled: true
+openid_connect_content_security_form_action_enabled: false
 otp_delivery_blocklist_maxretry: 10
 otp_valid_for: 10
 otp_expiration_warning_seconds: 150
@@ -470,6 +472,8 @@ production:
   logins_per_ip_track_only_mode: true
   newrelic_license_key: ''
   nonessential_email_banlist: '[]'
+  openid_connect_redirect_interstitial_enabled: false
+  openid_connect_content_security_form_action_enabled: true
   otp_delivery_blocklist_findtime: 5
   participate_in_dap: true
   password_pepper:

@@ -104,30 +104,41 @@ RSpec.describe 'FeatureManagement' do
   end
 
   describe '#reveal_gpo_code?' do
-    context 'server domain name is dev, qa, or int' do
-      it 'returns true' do
-        %w[idp.dev.login.gov idp.int.login.gov idp.qa.login.gov].each do |domain|
-          allow(IdentityConfig.store).to receive(:domain_name).and_return(domain)
+    context 'domain is set to identitysandbox.gov' do
+      before do
+        allow(Identity::Hostdata).to receive(:domain).and_return('identitysandbox.gov')
+      end
 
+      context 'Rails env is development' do
+        before do
+          allow(Rails.env).to receive(:development?).and_return(true)
+          allow(Rails.env).to receive(:production?).and_return(false)
+        end
+        it 'returns true' do
+          expect(FeatureManagement.reveal_gpo_code?).to eq(true)
+        end
+      end
+
+      context 'Rails env is production' do
+        before do
+          allow(Rails.env).to receive(:development?).and_return(false)
+          allow(Rails.env).to receive(:production?).and_return(true)
+        end
+        it 'returns true' do
           expect(FeatureManagement.reveal_gpo_code?).to eq(true)
         end
       end
     end
 
-    context 'Rails env is development' do
-      it 'returns true' do
-        allow(Rails.env).to receive(:development?).and_return(true)
-
-        expect(FeatureManagement.reveal_gpo_code?).to eq(true)
-      end
-    end
-
-    context 'Rails env is not development and server is not dev, qa, or int' do
-      it 'returns false' do
-        allow(Rails.env).to receive(:development?).and_return(false)
-        allow(IdentityConfig.store).to receive(:domain_name).and_return('foo.login.gov')
-
-        expect(FeatureManagement.reveal_gpo_code?).to eq(false)
+    context 'domain is set to login.gov' do
+      context 'Rails env is production' do
+        before do
+          allow(Rails.env).to receive(:development?).and_return(false)
+          allow(Rails.env).to receive(:production?).and_return(true)
+        end
+        it 'returns false' do
+          expect(FeatureManagement.reveal_gpo_code?).to eq(false)
+        end
       end
     end
   end

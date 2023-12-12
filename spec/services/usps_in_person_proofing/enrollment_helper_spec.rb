@@ -195,6 +195,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
               'USPS IPPaaS enrollment created',
               enrollment_code: user.in_person_enrollments.first.enrollment_code,
               enrollment_id: user.in_person_enrollments.first.id,
+              opted_in_to_in_person_proofing: nil,
               second_address_line_present: false,
               service_provider: nil,
             )
@@ -212,6 +213,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
               'USPS IPPaaS enrollment created',
               enrollment_code: user.in_person_enrollments.first.enrollment_code,
               enrollment_id: user.in_person_enrollments.first.id,
+              opted_in_to_in_person_proofing: nil,
               second_address_line_present: false,
               service_provider: issuer,
             )
@@ -237,6 +239,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
               'USPS IPPaaS enrollment created',
               enrollment_code: user.in_person_enrollments.first.enrollment_code,
               enrollment_id: user.in_person_enrollments.first.id,
+              opted_in_to_in_person_proofing: nil,
               second_address_line_present: false,
               service_provider: nil,
             )
@@ -255,10 +258,28 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
                 'USPS IPPaaS enrollment created',
                 enrollment_code: user.in_person_enrollments.first.enrollment_code,
                 enrollment_id: user.in_person_enrollments.first.id,
+                opted_in_to_in_person_proofing: nil,
                 second_address_line_present: true,
                 service_provider: nil,
               )
             end
+          end
+        end
+
+        context 'with opt in value' do
+          let(:opt_in) { true }
+
+          it 'logs user\'s opt-in choice' do
+            subject.schedule_in_person_enrollment(user, pii, opt_in)
+
+            expect(subject_analytics).to have_logged_event(
+              'USPS IPPaaS enrollment created',
+              enrollment_code: user.in_person_enrollments.first.enrollment_code,
+              enrollment_id: user.in_person_enrollments.first.id,
+              opted_in_to_in_person_proofing: true,
+              second_address_line_present: false,
+              service_provider: nil,
+            )
           end
         end
       end

@@ -18,9 +18,4 @@ module AbTests
         0,
     },
   )
-
-  IDV_PHONE_QUESTION = AbTestBucket.new(
-    experiment_name: 'Idv: Phone Question',
-    buckets: IdentityConfig.store.idv_phone_question_a_b_testing,
-  )
 end

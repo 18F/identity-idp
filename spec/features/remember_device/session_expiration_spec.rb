@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe 'signing in with remember device and idling on the sign in page' do
   include SamlAuthHelper
+  include OidcAuthHelper
 
   it 'redirects to the OIDC SP even though session is deleted' do
     allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry).and_return(1000)
@@ -37,14 +38,11 @@ RSpec.describe 'signing in with remember device and idling on the sign in page' 
       # Simulate refreshing the page with JS to avoid a CSRF error
       visit new_user_session_url(request_id: request_id)
 
-      expect(page.response_headers['Content-Security-Policy']).
-        to(include('form-action \'self\' http://localhost:7654'))
-
       fill_in_credentials_and_submit(user.email, user.password)
 
       continue_as(user.email, user.password)
 
-      expect(current_url).to start_with('http://localhost:7654')
+      expect(oidc_redirect_url).to start_with('http://localhost:7654')
     end
   end
 end

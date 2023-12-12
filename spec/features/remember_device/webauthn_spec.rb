@@ -114,7 +114,6 @@ RSpec.describe 'Remembering a webauthn device' do
 
         # webauthn option is hidden in browsers that don't support it
         select_2fa_option('webauthn_platform', visible: :all)
-        fill_in_nickname_and_click_continue
         check t('forms.messages.remember_device')
         mock_press_button_on_hardware_key_on_setup
 

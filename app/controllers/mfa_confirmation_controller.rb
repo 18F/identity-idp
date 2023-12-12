@@ -25,6 +25,7 @@ class MfaConfirmationController < ApplicationController
   def mfa_confirmation_presenter
     MfaConfirmationPresenter.new(
       show_skip_additional_mfa_link: show_skip_additional_mfa_link?,
+      webauthn_platform_set_up_successful: webauthn_platform_set_up_successful?,
     )
   end
 
@@ -46,5 +47,9 @@ class MfaConfirmationController < ApplicationController
 
   def backup_code_confirmation_needed?
     !MfaPolicy.new(current_user).multiple_factors_enabled? && user_backup_codes_configured?
+  end
+
+  def webauthn_platform_set_up_successful?
+    mfa_context.webauthn_platform_configurations.present?
   end
 end

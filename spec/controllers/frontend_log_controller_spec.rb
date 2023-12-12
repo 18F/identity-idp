@@ -61,7 +61,11 @@ RSpec.describe FrontendLogController do
           let(:selected_location) { 'Bethesda' }
           let(:flow_path) { 'standard' }
           let(:event) { 'IdV: location submitted' }
-          let(:payload) { { 'selected_location' => selected_location, 'flow_path' => flow_path } }
+          let(:payload) do
+            { 'selected_location' => selected_location,
+              'flow_path' => flow_path,
+              'opted_in_to_in_person_proofing' => nil }
+          end
 
           it 'succeeds' do
             action
@@ -70,6 +74,7 @@ RSpec.describe FrontendLogController do
               'IdV: in person proofing location submitted',
               selected_location: selected_location,
               flow_path: flow_path,
+              opted_in_to_in_person_proofing: nil,
             )
             expect(response).to have_http_status(:ok)
             expect(json[:success]).to eq(true)
@@ -85,7 +90,37 @@ RSpec.describe FrontendLogController do
                 'IdV: in person proofing location submitted',
                 flow_path: nil,
                 selected_location: nil,
+                opted_in_to_in_person_proofing: nil,
               )
+            end
+          end
+
+          context 'with opt in flag enabled' do
+            let(:idv_session) do
+              { opt_in_analytics_properties: true }
+            end
+            let(:payload) do
+              { 'selected_location' => selected_location,
+                'flow_path' => flow_path,
+                'opted_in_to_in_person_proofing' => true }
+            end
+
+            before do
+              allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).
+                and_return(true)
+            end
+
+            it 'succeeds' do
+              action
+
+              expect(fake_analytics).to have_logged_event(
+                'IdV: in person proofing location submitted',
+                selected_location: selected_location,
+                flow_path: flow_path,
+                opted_in_to_in_person_proofing: true,
+              )
+              expect(response).to have_http_status(:ok)
+              expect(json[:success]).to eq(true)
             end
           end
         end

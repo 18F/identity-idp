@@ -58,7 +58,11 @@ module Users
     end
 
     def confirm
-      form = WebauthnSetupForm.new(current_user, user_session)
+      form = WebauthnSetupForm.new(
+        user: current_user,
+        user_session: user_session,
+        device_name: DeviceName.from_user_agent(request.user_agent),
+      )
       result = form.submit(request.protocol, confirm_params)
       @platform_authenticator = form.platform_authenticator?
       @presenter = WebauthnSetupPresenter.new(

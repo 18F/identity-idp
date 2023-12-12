@@ -84,7 +84,10 @@ module Reports
     end
 
     def proofing_rate_report
-      @proofing_rate_report ||= Reporting::ProofingRateReport.new(end_date: report_date)
+      @proofing_rate_report ||= Reporting::ProofingRateReport.new(
+        end_date: report_date,
+        parallel: false,
+      )
     end
 
     def account_reuse_report

@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.feature 'Sign Up' do
   include SamlAuthHelper
+  include OidcAuthHelper
   include DocAuthHelper
   include ActionView::Helpers::DateHelper
 
@@ -315,7 +316,7 @@ RSpec.feature 'Sign Up' do
     skip_second_mfa_prompt
     click_agree_and_continue
 
-    redirect_uri = URI(current_url)
+    redirect_uri = URI(oidc_redirect_url)
 
     expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
   end
