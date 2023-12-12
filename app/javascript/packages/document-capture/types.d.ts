@@ -1,4 +1,5 @@
 import { AcuantCaptureFailureError, AcuantSuccessResponse } from './components/acuant-camera';
+import { n } from 'msw/lib/glossary-de6278a9';
 
 /**
  * Some of the other modules still refer to
@@ -104,7 +105,8 @@ type AcuantCameraEvaluateImage = (
   image: ImageData,
   width: number,
   height: number,
-  callback: (result: object) => void,
+  captureType: string,
+  callback: (result: AcuantEvaluatedResult) => void,
 ) => void;
 interface AcuantCameraInterface {
   start: AcuantCameraStart;
@@ -113,4 +115,19 @@ interface AcuantCameraInterface {
   crop: AcuantCameraCrop;
   isCameraSupported: boolean;
   evaluateImage: AcuantCameraEvaluateImage;
+}
+
+interface AcuantEvaluatedResult {
+  cardType: number;
+  dpi: number;
+  glare: number;
+  sharpness: number;
+  moire: number;
+  image: {
+    width: number;
+    height: number;
+    bytes: Uint8ClampedArray;
+  };
+  signedImage: string;
+  isPortraitOrientation: boolean;
 }
