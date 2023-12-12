@@ -24,6 +24,7 @@ module Proofing
 
         def build_result_from_response(verification_response)
           instant_verify_product = find_instant_verify_product(verification_response)
+
           Proofing::Resolution::Result.new(
             success: verification_response.verification_status == 'passed',
             errors: parse_verification_errors(verification_response),
