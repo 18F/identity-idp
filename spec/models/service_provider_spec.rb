@@ -22,7 +22,12 @@ RSpec.describe ServiceProvider do
       ServiceProvider.destroy_all
     end
 
-    let!(:external_sps) { create_list(:service_provider, 2, :external) }
+    let!(:external_sps) do
+      [
+        create(:service_provider, :external),
+        create(:service_provider, iaa: nil),
+      ]
+    end
     let!(:internal_sp) { create(:service_provider, :internal) }
 
     describe '.internal' do

@@ -33,7 +33,7 @@ class ServiceProvider < ApplicationRecord
   IAA_INTERNAL = 'LGINTERNAL'
 
   scope(:internal, -> { where(iaa: IAA_INTERNAL) })
-  scope(:external, -> { where.not(iaa: IAA_INTERNAL) })
+  scope(:external, -> { where.not(iaa: IAA_INTERNAL).or(where(iaa: nil)) })
 
   def metadata
     attributes.symbolize_keys.merge(certs: ssl_certs)
