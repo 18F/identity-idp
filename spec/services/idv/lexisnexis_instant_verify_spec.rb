@@ -4,9 +4,7 @@ RSpec.describe Idv::LexisnexisInstantVerify do
   let(:session_uuid) { SecureRandom.uuid }
   let(:default_workflow) { 'legacy_workflow' }
   let(:alternate_workflow) { 'equitable_workflow' }
-  let(:percent) { 5 }
   let(:ab_testing_enabled) { false }
-  let(:variables) { subject.workflow_ab_testing_variables }
 
   subject { Idv::LexisnexisInstantVerify.new(session_uuid) }
 
@@ -16,7 +14,7 @@ RSpec.describe Idv::LexisnexisInstantVerify do
       and_return(ab_testing_enabled)
     allow(IdentityConfig.store).
       to receive(:lexisnexis_instant_verify_workflow_ab_testing_percent).
-      and_return(percent)
+      and_return(5)
     allow(IdentityConfig.store).
       to receive(:lexisnexis_instant_verify_workflow).
       and_return(default_workflow)
@@ -28,7 +26,9 @@ RSpec.describe Idv::LexisnexisInstantVerify do
   context 'with lexisnexis instant verify workflow A/B testing disabled' do
     let(:ab_testing_enabled) { false }
 
-    it 'passes correct variables' do
+    it 'returns correct variables' do
+      variables = subject.workflow_ab_testing_variables
+
       expect(variables[:ab_testing_enabled]).to eq(false)
       expect(variables[:use_alternate_workflow]).to eq(false)
       expect(variables[:instant_verify_workflow]).to eq(default_workflow)
@@ -46,7 +46,9 @@ RSpec.describe Idv::LexisnexisInstantVerify do
         )
       end
 
-      it 'passes correct variables' do
+      it 'returns correct variables' do
+        variables = subject.workflow_ab_testing_variables
+
         expect(variables[:ab_testing_enabled]).to eq(true)
         expect(variables[:use_alternate_workflow]).to eq(true)
         expect(variables[:instant_verify_workflow]).to eq(alternate_workflow)
@@ -61,7 +63,9 @@ RSpec.describe Idv::LexisnexisInstantVerify do
         )
       end
 
-      it 'passes correct variables' do
+      it 'returns correct variables' do
+        variables = subject.workflow_ab_testing_variables
+
         expect(variables[:ab_testing_enabled]).to eq(true)
         expect(variables[:use_alternate_workflow]).to eq(false)
         expect(variables[:instant_verify_workflow]).to eq(default_workflow)
