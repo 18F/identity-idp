@@ -44,7 +44,7 @@ RSpec.describe RiscDeliveryJob do
 
       expect(req).to have_been_requested
       expect(job_analytics).to have_logged_event(
-        'RISC: Security event pushed',
+        :risc_security_event_pushed,
         client_id: issuer,
         error: nil,
         event_type: event_type,
@@ -68,7 +68,7 @@ RSpec.describe RiscDeliveryJob do
 
           expect { perform }.to_not raise_error
           expect(job_analytics).to have_logged_event(
-            'RISC: Security event pushed',
+            :risc_security_event_pushed,
             client_id: issuer,
             error: 'Exception from WebMock',
             event_type: event_type,
@@ -109,7 +109,7 @@ RSpec.describe RiscDeliveryJob do
 
           expect { perform }.to_not raise_error
           expect(job_analytics).to have_logged_event(
-            'RISC: Security event pushed',
+            :risc_security_event_pushed,
             client_id: issuer,
             error: 'Connection refused',
             event_type: event_type,
@@ -148,7 +148,7 @@ RSpec.describe RiscDeliveryJob do
 
           expect { perform }.to_not raise_error
           expect(job_analytics).to have_logged_event(
-            'RISC: Security event pushed',
+            :risc_security_event_pushed,
             client_id: issuer,
             error: 'http_push_error',
             event_type: event_type,
@@ -173,7 +173,7 @@ RSpec.describe RiscDeliveryJob do
 
           expect { perform }.to_not raise_error
           expect(job_analytics).to have_logged_event(
-            'RISC: Security event pushed',
+            :risc_security_event_pushed,
             client_id: issuer,
             error: 'http_push_error',
             event_type: event_type,
@@ -199,7 +199,7 @@ RSpec.describe RiscDeliveryJob do
 
           expect { perform }.to_not raise_error
           expect(job_analytics).to have_logged_event(
-            'RISC: Security event pushed',
+            :risc_security_event_pushed,
             client_id: issuer,
             error: 'execution expired',
             event_type: event_type,
@@ -240,7 +240,7 @@ RSpec.describe RiscDeliveryJob do
 
           expect { perform }.to_not raise_error
           expect(job_analytics).to have_logged_event(
-            'RISC: Security event pushed',
+            :risc_security_event_pushed,
             client_id: issuer,
             error: 'rate limit for push-notification-https://push.example.gov has maxed out',
             event_type: event_type,
@@ -274,7 +274,7 @@ RSpec.describe RiscDeliveryJob do
 
           expect(req).to have_been_requested
           expect(job_analytics).to have_logged_event(
-            'RISC: Security event pushed',
+            :risc_security_event_pushed,
             client_id: issuer,
             error: nil,
             event_type: event_type,

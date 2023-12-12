@@ -4047,6 +4047,28 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks when risc security event is pushed
+  # @param [String] client_id
+  # @param [String] event_type
+  # @param [Boolean] success
+  # @param [String] error
+  def risc_security_event_pushed(
+    client_id:,
+    event_type:,
+    success:,
+    error: nil,
+    **extra
+  )
+    track_event(
+      :risc_security_event_pushed,
+      client_id:,
+      error:,
+      event_type:,
+      success:,
+      **extra,
+    )
+  end
+
   # Tracks when rules of use is submitted with a success or failure
   # @param [Boolean] success
   # @param [Hash] errors
@@ -4125,28 +4147,6 @@ module AnalyticsEvents
   # User visited the second MFA reminder page
   def second_mfa_reminder_visit
     track_event('Second MFA Reminder Visited')
-  end
-
-  # Tracks when security event is pushed
-  # @param [String] client_id
-  # @param [String] event_type
-  # @param [Boolean] success
-  # @param [String] error
-  def security_event_pushed(
-    client_id:,
-    event_type:,
-    success:,
-    error: nil,
-    **extra
-  )
-    track_event(
-      :security_event_pushed,
-      client_id:,
-      error:,
-      event_type:,
-      success:,
-      **extra,
-    )
   end
 
   # Tracks when security event is received

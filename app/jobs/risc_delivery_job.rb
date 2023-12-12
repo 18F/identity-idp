@@ -22,11 +22,12 @@ class RiscDeliveryJob < ApplicationJob
   end
 
   def perform(
-    push_notification_url:,
-    jwt:,
     event_type:,
     issuer:,
-    now: Time.zone.now
+    jwt:,
+    push_notification_url:,
+    now: Time.zone.now,
+    user: nil
   )
     response = rate_limiter(push_notification_url).attempt!(now) do
       faraday.post(
@@ -58,6 +59,7 @@ class RiscDeliveryJob < ApplicationJob
       event_type:,
       issuer:,
       success: response.success?,
+      user:,
     )
   rescue *NETWORK_ERRORS => err
     raise err if self.executions < 2 && !inline?
@@ -77,6 +79,7 @@ class RiscDeliveryJob < ApplicationJob
       event_type:,
       issuer:,
       success: false,
+      user:,
     )
   rescue RedisRateLimiter::LimitError => err
     raise err if self.executions < 10 && !inline?
@@ -96,6 +99,7 @@ class RiscDeliveryJob < ApplicationJob
       event_type:,
       issuer:,
       success: false,
+      user:,
     )
   end
 
@@ -126,8 +130,8 @@ class RiscDeliveryJob < ApplicationJob
     queue_adapter.is_a?(ActiveJob::QueueAdapters::InlineAdapter)
   end
 
-  def track_event(event_type:, issuer:, success:, error: nil)
-    analytics.risc_security_event_pushed(
+  def track_event(event_type:, issuer:, success:, user:, error: nil)
+    analytics(user).risc_security_event_pushed(
       client_id: issuer,
       error:,
       event_type:,
@@ -135,12 +139,12 @@ class RiscDeliveryJob < ApplicationJob
     )
   end
 
-  def analytics
+  def analytics(user)
     @analytics ||= Analytics.new(
-      user: AnonymousUser.new,
       request: nil,
       session: {},
       sp: nil,
+      user: user || AnonymousUser.new,
     )
   end
 end
