@@ -138,7 +138,7 @@ module Idv
     end
 
     def phone_otp_sent?
-      user_phone_confirmation_session.present?
+      vendor_phone_confirmation && address_verification_mechanism == 'phone'
     end
 
     def user_phone_confirmation_session
@@ -168,6 +168,9 @@ module Idv
     def invalidate_in_person_pii_from_user!
       if has_pii_from_user_in_flow_session
         user_session['idv/in_person'][:pii_from_user] = nil
+        # Mark the two FSM steps as incomplete so that they can be re-entered.
+        user_session['idv/in_person'].delete('Idv::Steps::InPerson::StateIdStep')
+        user_session['idv/in_person'].delete('Idv::Steps::InPerson::AddressStep')
       end
     end
 
@@ -216,7 +219,7 @@ module Idv
     end
 
     def mark_phone_step_started!
-      session[:address_verification_mechanism] = :phone
+      session[:address_verification_mechanism] = 'phone'
       session[:vendor_phone_confirmation] = true
       session[:user_phone_confirmation] = false
     end

@@ -110,16 +110,6 @@ describe('FormSteps', () => {
     },
   ];
 
-  let originalHash;
-
-  beforeEach(() => {
-    originalHash = window.location.hash;
-  });
-
-  afterEach(() => {
-    window.location.hash = originalHash;
-  });
-
   describe('getStepIndexByName', () => {
     it('returns -1 if no step by name', () => {
       const result = getStepIndexByName(STEPS, 'third');

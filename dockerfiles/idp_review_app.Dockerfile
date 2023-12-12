@@ -2,7 +2,11 @@ FROM ruby:3.2.2-slim
 
 # Set environment variables
 ARG ARG_CI_ENVIRONMENT_SLUG="placeholder"
+ARG ARG_CI_COMMIT_BRANCH="branch_placeholder"
+ARG ARG_CI_COMMIT_SHA="sha_placeholder"
 ENV CI_ENVIRONMENT_SLUG=${ARG_CI_ENVIRONMENT_SLUG}
+ENV CI_COMMIT_BRANCH=${ARG_CI_COMMIT_BRANCH}
+ENV CI_COMMIT_SHA=${ARG_CI_COMMIT_SHA}
 ENV RAILS_ROOT /app
 ENV RAILS_ENV production
 ENV NODE_ENV production
@@ -123,6 +127,9 @@ COPY --chown=app:app ./Makefile ./Makefile
 COPY --chown=app:app ./babel.config.js ./babel.config.js
 COPY --chown=app:app ./webpack.config.js ./webpack.config.js
 COPY --chown=app:app ./.browserslistrc ./.browserslistrc
+
+RUN mkdir -p $RAILS_ROOT/public/api/
+RUN echo "{\"branch\":\"$CI_COMMIT_BRANCH\",\"git_sha\":\"$CI_COMMIT_SHA\"}" > $RAILS_ROOT/public/api/deploy.json
 
 # Copy keys
 COPY --chown=app:app keys.example $RAILS_ROOT/keys

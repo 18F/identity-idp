@@ -135,6 +135,9 @@ fr:
         state_id_jurisdiction_hint: Il s’agit de l’État qui a émis votre pièce d’identité
         state_id_jurisdiction_prompt: '- Sélectionnez -'
         state_id_number: Numéro d’identification
+        state_id_number_florida_hint: Il s’agit du numéro sur votre pièce d’identité qui
+          commence par une lettre suivie de 12 chiffres. Les tirets ne sont pas
+          obligatoires.
         state_id_number_hint: 'Il peut s’agir de lettres, de chiffres et des symboles suivants:'
         state_id_number_hint_asterisks: 'des astérisques'
         state_id_number_hint_dashes: 'des tirets'

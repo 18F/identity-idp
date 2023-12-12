@@ -4,6 +4,7 @@ RSpec.feature 'Password Recovery' do
   include IdvHelper
   include PersonalKeyHelper
   include SamlAuthHelper
+  include OidcAuthHelper
 
   context 'user enters valid email in forgot password form', email: true do
     it 'redirects to forgot_password path and sends an email to the user' do
@@ -203,7 +204,7 @@ RSpec.feature 'Password Recovery' do
         click_submit_default
         click_agree_and_continue
 
-        expect(current_url).to start_with('http://localhost:7654/auth/result')
+        expect(oidc_redirect_url).to start_with('http://localhost:7654/auth/result')
       end
     end
 

@@ -135,6 +135,8 @@ es:
         state_id_jurisdiction_hint: Este es el estado que emitió su identificación
         state_id_jurisdiction_prompt: '- Seleccione -'
         state_id_number: Número de identidad
+        state_id_number_florida_hint: Este es el número de su identificación que
+          comienza con 1 letra seguida por 12 números. No se requieren guiones.
         state_id_number_hint: 'Puede incluir letras, números y los siguientes símbolos:'
         state_id_number_hint_asterisks: 'asteriscos'
         state_id_number_hint_dashes: guiones
