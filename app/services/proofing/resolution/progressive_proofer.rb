@@ -259,7 +259,7 @@ module Proofing
       end
 
       def lexisnexis_instant_verify_workflow
-        ab_test_variables = Idv::LexisnexisInstantVerify.new(:document_capture_session_uuid).
+        ab_test_variables = Idv::LexisnexisInstantVerify.new(document_capture_session_uuid).
           workflow_ab_testing_variables
         ab_test_variables[:instant_verify_workflow]
       end
