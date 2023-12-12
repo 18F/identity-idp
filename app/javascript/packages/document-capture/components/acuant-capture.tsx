@@ -236,42 +236,57 @@ function getImageDimensions(file: File): Promise<{ width: number | null; height:
     : Promise.resolve({ width: null, height: null });
 }
 
-function evaluateImage(width: number, height: number, file: File): Promise<AcuantEvaluatedResult> {
+function evaluateImage(
+  width: number,
+  height: number,
+  file: File,
+): Promise<AcuantEvaluatedResult | null> {
   let croppedImg: AcuantEvaluatedResult;
   return new Promise((resolve) => {
     const reader = new FileReader();
-    reader.onload = () => {
-      const dataBuffer = reader.result;
-      const imgData = new Uint8ClampedArray(dataBuffer as ArrayBuffer);
-      const img = new ImageData(imgData, width, height);
-      window.AcuantCamera.evaluateImage(
-        img,
-        width,
-        height,
-        'MANUAL',
-        (result: AcuantEvaluatedResult) => {
-          console.log('result: ', result);
-          croppedImg = result;
-        },
-      );
-      resolve(croppedImg);
+    reader.onload = (event: ProgressEvent<FileReader>) => {
+      const img = new Image();
+      img.onload = function () {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext('2d');
+        ctx?.drawImage(img, 0, 0);
+        const imageData = ctx?.getImageData(0, 0, canvas.width, canvas.height);
+        window.AcuantCamera.evaluateImage(
+          imageData as ImageData,
+          width,
+          height,
+          false,
+          'MANUAL',
+          (result: AcuantEvaluatedResult) => {
+            console.log('result: ', result);
+            croppedImg = result;
+          },
+        );
+        resolve(croppedImg);
+      };
+      img.onerror = function () {
+        resolve(null);
+      };
+      img.src = event?.target?.result as string;
     };
-    reader.readAsArrayBuffer(file);
+    reader.readAsDataURL(file);
   });
 }
 
 function processImage(file: File, width: number, height: number) {
   const fingerprint = getFingerPrint(file);
   const processedImg = evaluateImage(width, height, file);
-  return new Promise<{ fingerprint: string | null; processedImg: AcuantEvaluatedResult }>(function (
-    resolve,
-  ) {
-    Promise.all([fingerprint, processedImg])
-      .then((results) => {
-        resolve({ fingerprint: results[0], processedImg: results[1] });
-      })
-      .catch(() => ({ fingerprint: null, processedImg: null }));
-  });
+  return new Promise<{ fingerprint: string | null; processedImg: AcuantEvaluatedResult | null }>(
+    function (resolve) {
+      Promise.all([fingerprint, processedImg])
+        .then((results) => {
+          resolve({ fingerprint: results[0], processedImg: results[1] });
+        })
+        .catch(() => ({ fingerprint: null, processedImg: null }));
+    },
+  );
 }
 
 function getImageMetadata(file: File) {
@@ -442,8 +457,10 @@ function AcuantCapture(
         failedImageResubmission: hasFailed,
       });
       trackEvent(`IdV: ${name} image added`, analyticsPayload);
-      const blob = new Blob([img.image.bytes], { type: nextValue.type });
-      nextValue = new File([blob], nextValue.name);
+      if (img != null) {
+        const blob = new Blob([img.image.bytes], { type: nextValue.type });
+        nextValue = new File([blob], nextValue.name);
+      }
     }
 
     onChangeAndResetError(nextValue, analyticsPayload);

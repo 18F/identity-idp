@@ -105,6 +105,7 @@ type AcuantCameraEvaluateImage = (
   image: ImageData,
   width: number,
   height: number,
+  isPortraitOrientation: boolean,
   captureType: string,
   callback: (result: AcuantEvaluatedResult) => void,
 ) => void;
