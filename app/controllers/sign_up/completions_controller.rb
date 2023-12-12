@@ -93,7 +93,7 @@ module SignUp
       }
 
       if page_occurence.present? && DisposableDomain.is_disposable?(email_domain)
-        attributes.merge!({ disposable_email_domain: email_domain })
+        attributes[:disposable_email_domain] = email_domain
       end
 
       attributes
