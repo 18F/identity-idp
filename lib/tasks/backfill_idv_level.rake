@@ -8,8 +8,10 @@ namespace :profiles do
   #
   task backfill_idv_level: :environment do |_task, _args|
     with_statement_timeout do
-      is_in_person = Profile.where(id: InPersonEnrollment.select(:profile_id))
-      is_not_in_person = Profile.where.not(id: InPersonEnrollment.select(:profile_id))
+      in_person_enrollment_profile_ids = InPersonEnrollment.
+        where.not(profile_id: nil).select(:profile_id)
+      is_in_person = Profile.where(id: in_person_enrollment_profile_ids)
+      is_not_in_person = Profile.where.not(id: in_person_enrollment_profile_ids)
       needs_idv_level = Profile.where(idv_level: nil)
 
       in_person_and_needs_idv_level = Profile.and(is_in_person).and(needs_idv_level)
