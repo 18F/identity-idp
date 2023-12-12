@@ -21,6 +21,21 @@ RSpec.describe Reporting::AgencyAndSpReport do
 
   subject(:report) { described_class.new(report_date) }
 
+  let(:agency) do
+    create(
+      :agency,
+      partner_accounts: [
+        build(
+          :partner_account,
+          became_partner: report_date - 10.days,
+          partner_account_status: build(
+            :partner_account_status, name: 'active'
+          ),
+        ),
+      ],
+    )
+  end
+
   describe '#agency_and_sp_report' do
     subject { report.agency_and_sp_report }
 
@@ -30,6 +45,7 @@ RSpec.describe Reporting::AgencyAndSpReport do
           :service_provider,
           :external,
           :active,
+          agency:,
           identities: [build(:service_provider_identity)],
         )
       end
@@ -48,13 +64,13 @@ RSpec.describe Reporting::AgencyAndSpReport do
     end
 
     context 'when adding an inactive SP' do
-      let!(:inactive_sp) { create(:service_provider, :external, identities: []) }
+      let!(:inactive_sp) { create(:service_provider, :external, agency:, identities: []) }
       let(:expected_report) do
         [
           header_row,
-          ['Auth', 0, 0],
+          ['Auth', 0, 1],
           ['IDV', 0, 0],
-          ['Total', 0, 0],
+          ['Total', 0, 1],
         ]
       end
 
@@ -69,10 +85,10 @@ RSpec.describe Reporting::AgencyAndSpReport do
           :service_provider,
           :external,
           :active,
+          agency:,
           identities: [build(:service_provider_identity)],
         )
       end
-      let!(:agency) { initial_sp.agency }
 
       let(:initial_report) do
         [
@@ -100,7 +116,7 @@ RSpec.describe Reporting::AgencyAndSpReport do
           :external,
           :active,
           :idv,
-          agency: agency,
+          agency:,
           identities: [build(:service_provider_identity)],
         )
 
@@ -117,6 +133,7 @@ RSpec.describe Reporting::AgencyAndSpReport do
           :external,
           :idv,
           :active,
+          agency:,
           identities: [build(:service_provider_identity)],
         )
       end
