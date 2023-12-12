@@ -14,7 +14,6 @@ import DocumentSideAcuantCapture from './document-side-acuant-capture';
 import DocumentCaptureNotReady from './document-capture-not-ready';
 import { FeatureFlagContext } from '../context';
 import DocumentCaptureAbandon from './document-capture-abandon';
-import DocumentCaptureSelfieCapture from './document-capture-selfie-capture';
 
 interface DocumentCaptureReviewIssuesProps {
   isFailedDocType: boolean;
@@ -28,6 +27,8 @@ interface DocumentCaptureReviewIssuesProps {
   onError: OnErrorCallback;
   hasDismissed: boolean;
 }
+
+type DocumentSide = 'front' | 'back' | 'selfie';
 
 function DocumentCaptureReviewIssues({
   isFailedDocType,
@@ -46,20 +47,13 @@ function DocumentCaptureReviewIssues({
     useContext(FeatureFlagContext);
 
   // Sides of document to present as file input.
-  const documentSides: ('front' | 'back')[] = ['front', 'back'];
-  const selfieSide = 'selfie';
-
-  const pageHeaderText = selfieCaptureEnabled
-    ? t('doc_auth.headings.document_capture_with_selfie')
-    : t('doc_auth.headings.review_issues');
-
-  const idTipListTitle = selfieCaptureEnabled
-    ? t('doc_auth.tips.document_capture_selfie_id_header_text')
-    : t('doc_auth.tips.review_issues_id_header_text');
+  const documentSides: DocumentSide[] = selfieCaptureEnabled
+    ? ['front', 'back', 'selfie']
+    : ['front', 'back'];
 
   return (
     <>
-      <PageHeading>{pageHeaderText}</PageHeading>
+      <PageHeading>{t('doc_auth.headings.review_issues')}</PageHeading>
       <UnknownError
         unknownFieldErrors={unknownFieldErrors}
         remainingAttempts={remainingAttempts}
@@ -67,25 +61,16 @@ function DocumentCaptureReviewIssues({
         altFailedDocTypeMsg={isFailedDocType ? t('doc_auth.errors.doc.wrong_id_type_html') : null}
         hasDismissed={hasDismissed}
       />
-      {selfieCaptureEnabled && <h2>{t('doc_auth.headings.document_capture_subheader_id')}</h2>}
-      {(selfieCaptureEnabled || (!isFailedDocType && captureHints)) && (
+      {!isFailedDocType && captureHints && (
         <TipList
-          titleClassName={`margin-bottom-0 margin-top-2 ${selfieCaptureEnabled ? 'text-bold' : ''}`}
-          title={idTipListTitle}
-          items={
-            selfieCaptureEnabled
-              ? [
-                  t('doc_auth.tips.document_capture_id_text1'),
-                  t('doc_auth.tips.document_capture_id_text2'),
-                  t('doc_auth.tips.document_capture_id_text3'),
-                ]
-              : [
-                  t('doc_auth.tips.review_issues_id_text1'),
-                  t('doc_auth.tips.review_issues_id_text2'),
-                  t('doc_auth.tips.review_issues_id_text3'),
-                  t('doc_auth.tips.review_issues_id_text4'),
-                ]
-          }
+          titleClassName="margin-bottom-0 margin-top-2"
+          title={t('doc_auth.tips.review_issues_id_header_text')}
+          items={[
+            t('doc_auth.tips.review_issues_id_text1'),
+            t('doc_auth.tips.review_issues_id_text2'),
+            t('doc_auth.tips.review_issues_id_text3'),
+            t('doc_auth.tips.review_issues_id_text4'),
+          ]}
         />
       )}
       {documentSides.map((side) => (
@@ -100,15 +85,6 @@ function DocumentCaptureReviewIssues({
           className="document-capture-review-issues-step__input"
         />
       ))}
-      {selfieCaptureEnabled && (
-        <DocumentCaptureSelfieCapture
-          registerField={registerField}
-          value={value[selfieSide]}
-          onChange={onChange}
-          errors={errors}
-          onError={onError}
-        />
-      )}
       <FormStepsButton.Submit />
       {notReadySectionEnabled && <DocumentCaptureNotReady />}
       {exitQuestionSectionEnabled && <DocumentCaptureAbandon />}

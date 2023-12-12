@@ -174,11 +174,11 @@ describe('document-capture/components/documents-step', () => {
         level: 1,
       });
       const idHeader = getByRole('heading', {
-        name: 'doc_auth.headings.document_capture_subheader_id',
+        name: '1. doc_auth.headings.document_capture_subheader_id',
         level: 2,
       });
       const selfieHeader = getByRole('heading', {
-        name: 'doc_auth.headings.document_capture_subheader_selfie',
+        name: '2. doc_auth.headings.document_capture_subheader_selfie',
         level: 2,
       });
       expect(front).to.be.ok();
