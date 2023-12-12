@@ -29,7 +29,8 @@ RSpec.describe Reporting::AgencyAndSpReport do
         create(
           :service_provider,
           :external,
-          :active, identities: [build(:service_provider_identity)],
+          :active,
+          identities: [build(:service_provider_identity)],
         )
       end
       let(:expected_report) do
@@ -99,7 +100,8 @@ RSpec.describe Reporting::AgencyAndSpReport do
           :external,
           :active,
           :idv,
-          agency: agency, identities: [build(:service_provider_identity)],
+          agency: agency,
+          identities: [build(:service_provider_identity)],
         )
 
         # The report gets memoized, so we need to reconstruct it here:
