@@ -88,10 +88,112 @@ install:
     - *yarn_install
     - bundle exec rake assets:precompile
 
-include:
-  - template: Jobs/SAST.gitlab-ci.yml
-  - template: Jobs/Dependency-Scanning.gitlab-ci.yml
-  - template: Security/Secret-Detection.gitlab-ci.yml
+specs:
+  stage: test
+  needs:
+    - job: install
+  parallel: 22
+  cache:
+    - <<: *ruby_cache
+    - <<: *yarn_cache
+    - <<: *assets_cache
+  variables:
+    AWS_ACCESS_KEY_ID: test
+    AWS_DEFAULT_REGION: us-west-2
+    AWS_REGION: us-west-2
+    AWS_SECRET_ACCESS_KEY: test
+    CAPYBARA_WAIT_TIME_SECONDS: 5
+    COVERAGE: 'true'
+    DOCKER_DB_HOST: db-postgres
+    POSTGRES_DB: identity_idp_test
+    POSTGRES_USER: postgres_user
+    POSTGRES_PASSWORD: postgres_password
+    POSTGRES_HOST_AUTH_METHOD: trust
+    RAILS_ENV: test
+  services:
+    - name: postgis/postgis:13-3.3
+      alias: db-postgres
+      command: ['--fsync=false', '--synchronous_commit=false', '--full_page_writes=false']
+    - name: redis:7.0
+      alias: db-redis
+  artifacts:
+    expire_in: 31d
+    when: always
+    paths:
+      - coverage/
+      - rspec.xml
+      - rspec_json/
+    reports:
+      junit: rspec.xml
+  script:
+    - *bundle_install
+    - *yarn_install
+    - cp config/application.yml.default config/application.yml
+    - cp config/service_providers.localdev.yml config/service_providers.yml
+    - cp config/agencies.localdev.yml config/agencies.yml
+    - cp config/iaa_gtcs{.localdev,}.yml
+    - cp config/iaa_orders{.localdev,}.yml
+    - cp config/iaa_statuses{.localdev,}.yml
+    - cp config/integration_statuses{.localdev,}.yml
+    - cp config/integrations{.localdev,}.yml
+    - cp config/partner_account_statuses{.localdev,}.yml
+    - cp config/partner_accounts{.localdev,}.yml
+    - cp -a keys.example keys
+    - cp -a certs.example certs
+    - cp pwned_passwords/pwned_passwords.txt.sample pwned_passwords/pwned_passwords.txt
+    - "echo -e \"test:\n  redis_url: 'redis://redis:6379/0'\n  redis_throttle_url: 'redis://redis:6379/1'\" > config/application.yml"
+    - bundle exec rake db:create db:migrate --trace
+    - bundle exec rake db:seed
+    - bundle exec rake rspec["--format documentation --format RspecJunitFormatter --out rspec.xml --format json --out rspec_json/rspec.json"]
+
+js_build:
+  stage: test
+  needs:
+    - job: install
+  cache:
+    - <<: *ruby_cache
+    - <<: *yarn_production_cache
+  variables:
+    NODE_ENV: 'production'
+    SKIP_YARN_INSTALL: 'true'
+  script:
+    - *bundle_install
+    - *yarn_production_install
+    - bundle exec rake assets:precompile
+    - make lint_asset_bundle_size
+
+build-ci-image:
+  stage: build
+  interruptible: true
+  needs: []
+  tags:
+    - build-pool
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: ['']
+  rules:
+    # Build when there are changes to the Dockerfile
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH || $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "external_pull_request_event" || $CI_PIPELINE_SOURCE == "web"'
+      changes:
+        compare_to: 'refs/heads/main'
+        paths:
+          - dockerfiles/idp_ci.Dockerfile
+  script:
+    - mkdir -p /kaniko/.docker
+    - |-
+      KANIKOCFG="\"credsStore\":\"ecr-login\""
+      if [ "x${http_proxy}" != "x" -o "x${https_proxy}" != "x" ]; then
+        KANIKOCFG="${KANIKOCFG}, \"proxies\": { \"default\": { \"httpProxy\": \"${http_proxy}\", \"httpsProxy\": \"${https_proxy}\", \"noProxy\": \"${no_proxy}\"}}"
+      fi
+      KANIKOCFG="{ ${KANIKOCFG} }"
+      echo "${KANIKOCFG}" > /kaniko/.docker/config.json
+    - >-
+      /kaniko/executor
+      --context "${CI_PROJECT_DIR}"
+      --dockerfile "${CI_PROJECT_DIR}/dockerfiles/idp_ci.Dockerfile"
+      --destination "${ECR_REGISTRY}/idp/ci:latest"
+      --destination "${ECR_REGISTRY}/idp/ci:${CI_COMMIT_SHA}"
+      --build-arg "http_proxy=${http_proxy}" --build-arg "https_proxy=${https_proxy}" --build-arg "no_proxy=${no_proxy}"
 
 secret_detection:
   allow_failure: false
