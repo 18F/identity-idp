@@ -65,7 +65,11 @@ RSpec.describe ReactivateAccountSession do
       @reactivate_account_session.store_decrypted_pii(pii)
       account_reactivation_obj = user_session[:reactivate_account]
       expect(account_reactivation_obj[:validated_personal_key]).to be(true)
-      expect(user_session[:decrypted_pii]).to eq(pii.to_json)
+
+      decrypted_session_pii = Pii::Cacher.new(user, user_session).fetch(
+        user.password_reset_profile.id,
+      )
+      expect(decrypted_session_pii).to eq(pii)
     end
   end
 

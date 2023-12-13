@@ -435,8 +435,6 @@ class IdentityConfig
     config.add(:ses_configuration_set_name, type: :string)
     config.add(:session_check_delay, type: :integer)
     config.add(:session_check_frequency, type: :integer)
-    config.add(:session_encrypted_profiles_read_enabled, type: :boolean)
-    config.add(:session_encrypted_profiles_write_enabled, type: :boolean)
     config.add(:session_encryption_key, type: :string)
     config.add(:session_encryptor_alert_enabled, type: :boolean)
     config.add(:session_timeout_in_minutes, type: :integer)

@@ -226,7 +226,10 @@ RSpec.describe Users::PasswordsController do
       end
 
       it 'renders form if PII is decrypted' do
-        controller.user_session[:decrypted_pii] = pii.to_json
+        Pii::Cacher.new(
+          controller.current_user,
+          controller.user_session,
+        ).save_decrypted_pii(pii, 123)
 
         get :edit
 
