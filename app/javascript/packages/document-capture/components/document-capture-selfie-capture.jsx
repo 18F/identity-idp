@@ -31,6 +31,7 @@ function DocumentCaptureSelfieCapture({
 }) {
   return (
     <>
+      <hr className="margin-y-5" />
       <h2>2. {t('doc_auth.headings.document_capture_subheader_selfie')}</h2>
       <TipList
         titleClassName="margin-bottom-0 text-bold"
