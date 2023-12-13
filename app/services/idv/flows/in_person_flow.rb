@@ -5,7 +5,6 @@ module Idv
 
       STEPS = {
         state_id: Idv::Steps::InPerson::StateIdStep, # info from state id
-        address: Idv::Steps::InPerson::AddressStep,  # entering the address
       }.freeze
 
       ACTIONS = {
