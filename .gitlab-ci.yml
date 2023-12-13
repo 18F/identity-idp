@@ -92,7 +92,6 @@ specs:
   stage: test
   needs:
     - job: install
-  parallel: 22
   cache:
     - <<: *ruby_cache
     - <<: *yarn_cache
