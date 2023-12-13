@@ -46,7 +46,7 @@ module TwoFactorAuthentication
         _event, disavowal_token = create_user_event_with_disavowal(:personal_key_used)
         alert_user_about_personal_key_sign_in(disavowal_token)
         remove_personal_key
-        flash[:success] = t('notices.personal_key_used_as_mfa')
+
         handle_valid_otp
       else
         handle_invalid_otp(context: context, type: 'personal_key')
@@ -75,6 +75,8 @@ module TwoFactorAuthentication
       )
       if current_user.identity_verified? || current_user.password_reset_profile.present?
         redirect_to manage_personal_key_url
+      elsif MfaPolicy.new(current_user).two_factor_enabled?
+        redirect_to after_mfa_setup_path
       else
         redirect_to authentication_methods_setup_url
       end

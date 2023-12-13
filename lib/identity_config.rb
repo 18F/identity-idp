@@ -201,6 +201,7 @@ class IdentityConfig
     config.add(:email_registrations_per_ip_limit, type: :integer)
     config.add(:email_registrations_per_ip_period, type: :integer)
     config.add(:email_registrations_per_ip_track_only_mode, type: :boolean)
+    config.add(:enable_additional_mfa_redirect_for_personal_key_mfa, type: :boolean)
     config.add(:enable_load_testing_mode, type: :boolean)
     config.add(:enable_rate_limiting, type: :boolean)
     config.add(:enable_test_routes, type: :boolean)
