@@ -95,6 +95,40 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
                   tmx_summary_reason_code: ['Identity_Negative_History'],
                 },
               },
+              resolution: {
+                success: true,
+                errors: {},
+                exception: nil,
+                timed_out: false,
+                transaction_id: 'resolution-mock-transaction-id-123',
+                reference: 'aaa-bbb-ccc',
+                can_pass_with_additional_verification: false,
+                attributes_requiring_additional_verification: [],
+                vendor_name: 'ResolutionMock',
+                vendor_workflow: nil,
+              },
+              residential_address: {
+                success: true,
+                errors: {},
+                exception: nil,
+                timed_out: false,
+                transaction_id: 'resolution-mock-transaction-id-123',
+                reference: 'aaa-bbb-ccc',
+                can_pass_with_additional_verification: false,
+                attributes_requiring_additional_verification: [],
+                vendor_name: 'ResolutionMock',
+                vendor_workflow: nil,
+              },
+              state_id: {
+                success: true,
+                errors: {},
+                exception: nil,
+                mva_exception: nil,
+                timed_out: false,
+                transaction_id: 'state-id-mock-transaction-id-456',
+                vendor_name: 'StateIdMock',
+                verified_attributes: [],
+              },
             },
           },
           errors: {},
@@ -114,6 +148,23 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
           'IdV: doc auth verify proofing results',
           hash_including(**analytics_args, success: true),
         )
+      end
+
+      it 'adds costs' do
+        allow(controller).to receive(:load_async_state).and_return(async_state)
+        allow(async_state).to receive(:done?).and_return(true)
+        allow(async_state).to receive(:result).and_return(adjudicated_result)
+
+        get :show
+
+        lexis_nexis_costs = SpCost.where(cost_type: 'lexis_nexis_resolution')
+        expect(lexis_nexis_costs.count).to eq(2)
+
+        aamva_costs = SpCost.where(cost_type: 'aamva')
+        expect(aamva_costs.count).to eq(1)
+
+        threatmetrix_costs = SpCost.where(cost_type: 'threatmetrix')
+        expect(threatmetrix_costs.count).to eq(1)
       end
     end
   end
