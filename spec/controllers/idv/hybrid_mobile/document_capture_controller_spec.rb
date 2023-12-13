@@ -74,6 +74,41 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController do
         expect(response).to render_template :show
       end
 
+      context 'when a selfie is requested' do
+        context 'when hosted in a prod env' do
+          before do
+            allow(Identity::Hostdata).to receive(:env).and_return('prod')
+          end
+          it 'renders the show template without selfie feature flag' do
+            expect(subject).to receive(:render).with(
+              :show,
+              locals: hash_including(
+                document_capture_session_uuid: document_capture_session_uuid,
+                doc_auth_selfie_capture: nil,
+              ),
+            ).and_call_original
+
+            get :show, params: { selfie: true }
+
+            expect(response).to render_template :show
+          end
+        end
+
+        it 'renders the show template with selfie feature flag' do
+          expect(subject).to receive(:render).with(
+            :show,
+            locals: hash_including(
+              document_capture_session_uuid: document_capture_session_uuid,
+              doc_auth_selfie_capture: { enabled: false },
+            ),
+          ).and_call_original
+
+          get :show, params: { selfie: true }
+
+          expect(response).to render_template :show
+        end
+      end
+
       it 'sends analytics_visited event' do
         get :show
 
