@@ -4051,11 +4051,15 @@ module AnalyticsEvents
   # @param [String] client_id
   # @param [String] event_type
   # @param [Boolean] success
+  # @param ['async'|'direct'] transport
+  # @param [Integer] status
   # @param [String] error
   def risc_security_event_pushed(
     client_id:,
     event_type:,
     success:,
+    transport:,
+    status: nil,
     error: nil,
     **extra
   )
@@ -4064,7 +4068,9 @@ module AnalyticsEvents
       client_id:,
       error:,
       event_type:,
+      status:,
       success:,
+      transport:,
       **extra,
     )
   end

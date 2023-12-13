@@ -8,13 +8,25 @@ RSpec.describe RiscDeliveryJob do
   end
 
   describe '#perform' do
-    let(:push_notification_url) { 'https://push.example.gov' }
-    let(:jwt) { JWT.encode({ foo: 'bar' }, 'a') }
     let(:event_type) { PushNotification::IdentifierRecycledEvent::EVENT_TYPE }
     let(:issuer) { 'issuer1' }
-    let(:now) { 5.hours.ago }
-
     let(:job) { RiscDeliveryJob.new }
+    let(:job_analytics) { FakeAnalytics.new }
+    let(:jwt) { JWT.encode({ foo: 'bar' }, 'a') }
+    let(:now) { 5.hours.ago }
+    let(:push_notification_url) { 'https://push.example.gov' }
+
+    let(:risc_event_payload) do
+      {
+        client_id: issuer,
+        error: nil,
+        event_type: event_type,
+        status: nil,
+        success: false,
+        transport: 'direct',
+      }
+    end
+
     subject(:perform) do
       job.perform(
         push_notification_url: push_notification_url,
@@ -24,7 +36,6 @@ RSpec.describe RiscDeliveryJob do
         now: now,
       )
     end
-    let(:job_analytics) { FakeAnalytics.new }
 
     before do
       allow(job).to receive(:analytics).and_return(job_analytics)
@@ -45,10 +56,10 @@ RSpec.describe RiscDeliveryJob do
       expect(req).to have_been_requested
       expect(job_analytics).to have_logged_event(
         :risc_security_event_pushed,
-        client_id: issuer,
-        error: nil,
-        event_type: event_type,
-        success: true,
+        risc_event_payload.merge(
+          success: true,
+          status: 200,
+        ),
       )
     end
 
@@ -58,21 +69,12 @@ RSpec.describe RiscDeliveryJob do
       end
 
       context 'when performed inline' do
-        it 'prints warning' do
-          expect(Rails.logger).to receive(:warn) do |msg|
-            payload = JSON.parse(msg, symbolize_names: true)
-
-            expect(payload[:event]).to eq('http_push_error')
-            expect(payload[:transport]).to eq('direct')
-          end
-
+        it 'logs an event' do
           expect { perform }.to_not raise_error
+
           expect(job_analytics).to have_logged_event(
             :risc_security_event_pushed,
-            client_id: issuer,
-            error: 'Exception from WebMock',
-            event_type: event_type,
-            success: false,
+            risc_event_payload.merge(error: 'Exception from WebMock'),
           )
         end
       end
@@ -84,9 +86,25 @@ RSpec.describe RiscDeliveryJob do
         end
 
         it 'raises and retries via ActiveJob' do
-          expect(Rails.logger).to_not receive(:warn)
-
           expect { perform }.to raise_error(Faraday::SSLError)
+        end
+
+        context 'it has already failed twice' do
+          before do
+            allow(job).to receive(:executions).and_return 2
+          end
+
+          it 'logs an event' do
+            expect { perform }.to_not raise_error
+
+            expect(job_analytics).to have_logged_event(
+              :risc_security_event_pushed,
+              risc_event_payload.merge(
+                error: 'Exception from WebMock',
+                transport: 'async',
+              ),
+            )
+          end
         end
       end
     end
@@ -99,21 +117,11 @@ RSpec.describe RiscDeliveryJob do
       end
 
       context 'when performed inline' do
-        it 'prints a warning' do
-          expect(Rails.logger).to receive(:warn) do |msg|
-            payload = JSON.parse(msg, symbolize_names: true)
-
-            expect(payload[:event]).to eq('http_push_error')
-            expect(payload[:transport]).to eq('direct')
-          end
-
+        it 'logs an event' do
           expect { perform }.to_not raise_error
           expect(job_analytics).to have_logged_event(
             :risc_security_event_pushed,
-            client_id: issuer,
-            error: 'Connection refused',
-            event_type: event_type,
-            success: false,
+            risc_event_payload.merge(error: 'Connection refused'),
           )
         end
       end
@@ -125,9 +133,25 @@ RSpec.describe RiscDeliveryJob do
         end
 
         it 'raises and retries via ActiveJob' do
-          expect(Rails.logger).to_not receive(:warn)
-
           expect { perform }.to raise_error(Errno::ECONNREFUSED)
+        end
+
+        context 'it has already failed twice' do
+          before do
+            allow(job).to receive(:executions).and_return 2
+          end
+
+          it 'logs an event' do
+            expect { perform }.to_not raise_error
+
+            expect(job_analytics).to have_logged_event(
+              :risc_security_event_pushed,
+              risc_event_payload.merge(
+                error: 'Connection refused',
+                transport: 'async',
+              ),
+            )
+          end
         end
       end
     end
@@ -138,21 +162,14 @@ RSpec.describe RiscDeliveryJob do
       end
 
       context 'when performed inline' do
-        it 'prints a warning' do
-          expect(Rails.logger).to receive(:warn) do |msg|
-            payload = JSON.parse(msg, symbolize_names: true)
-
-            expect(payload[:event]).to eq('http_push_error')
-            expect(payload[:transport]).to eq('direct')
-          end
-
+        it 'logs an event' do
           expect { perform }.to_not raise_error
           expect(job_analytics).to have_logged_event(
             :risc_security_event_pushed,
-            client_id: issuer,
-            error: 'http_push_error',
-            event_type: event_type,
-            success: false,
+            risc_event_payload.merge(
+              error: 'http_push_error',
+              status: 403,
+            ),
           )
         end
       end
@@ -163,22 +180,35 @@ RSpec.describe RiscDeliveryJob do
             and_return(ActiveJob::QueueAdapters::GoodJobAdapter.new)
         end
 
-        it 'prints a warning' do
-          expect(Rails.logger).to receive(:warn) do |msg|
-            payload = JSON.parse(msg, symbolize_names: true)
-
-            expect(payload[:event]).to eq('http_push_error')
-            expect(payload[:transport]).to eq('async')
-          end
-
+        it 'logs an event' do
           expect { perform }.to_not raise_error
           expect(job_analytics).to have_logged_event(
             :risc_security_event_pushed,
-            client_id: issuer,
-            error: 'http_push_error',
-            event_type: event_type,
-            success: false,
+            risc_event_payload.merge(
+              error: 'http_push_error',
+              status: 403,
+              transport: 'async',
+            ),
           )
+        end
+
+        context 'it has already failed twice' do
+          before do
+            allow(job).to receive(:executions).and_return 2
+          end
+
+          it 'logs an event' do
+            expect { perform }.to_not raise_error
+
+            expect(job_analytics).to have_logged_event(
+              :risc_security_event_pushed,
+              risc_event_payload.merge(
+                error: 'http_push_error',
+                status: 403,
+                transport: 'async',
+              ),
+            )
+          end
         end
       end
     end
@@ -189,21 +219,13 @@ RSpec.describe RiscDeliveryJob do
       end
 
       context 'when performed inline' do
-        it 'prints warning' do
-          expect(Rails.logger).to receive(:warn) do |msg|
-            payload = JSON.parse(msg, symbolize_names: true)
-
-            expect(payload[:event]).to eq('http_push_error')
-            expect(payload[:transport]).to eq('direct')
-          end
-
+        it 'logs an event' do
           expect { perform }.to_not raise_error
           expect(job_analytics).to have_logged_event(
             :risc_security_event_pushed,
-            client_id: issuer,
-            error: 'execution expired',
-            event_type: event_type,
-            success: false,
+            risc_event_payload.merge(
+              error: 'execution expired',
+            ),
           )
         end
       end
@@ -215,9 +237,25 @@ RSpec.describe RiscDeliveryJob do
         end
 
         it 'raises and retries via ActiveJob' do
-          expect(Rails.logger).to_not receive(:warn)
-
           expect { perform }.to raise_error(Faraday::ConnectionFailed)
+        end
+
+        context 'it has already failed twice' do
+          before do
+            allow(job).to receive(:executions).and_return 2
+          end
+
+          it 'logs an event' do
+            expect { perform }.to_not raise_error
+
+            expect(job_analytics).to have_logged_event(
+              :risc_security_event_pushed,
+              risc_event_payload.merge(
+                error: 'execution expired',
+                transport: 'async',
+              ),
+            )
+          end
         end
       end
     end
@@ -230,21 +268,13 @@ RSpec.describe RiscDeliveryJob do
       end
 
       context 'when performed inline' do
-        it 'warns on limit hit' do
-          expect(Rails.logger).to receive(:warn) do |msg|
-            payload = JSON.parse(msg, symbolize_names: true)
-
-            expect(payload[:event]).to eq('http_push_rate_limit')
-            expect(payload[:transport]).to eq('direct')
-          end
-
+        it 'logs an event on limit hit' do
           expect { perform }.to_not raise_error
           expect(job_analytics).to have_logged_event(
             :risc_security_event_pushed,
-            client_id: issuer,
-            error: 'rate limit for push-notification-https://push.example.gov has maxed out',
-            event_type: event_type,
-            success: false,
+            risc_event_payload.merge(
+              error: 'rate limit for push-notification-https://push.example.gov has maxed out',
+            ),
           )
         end
       end
@@ -256,9 +286,25 @@ RSpec.describe RiscDeliveryJob do
         end
 
         it 'raises on rate limit errors (and retries via ActiveJob)' do
-          expect(Rails.logger).to_not receive(:warn)
-
           expect { perform }.to raise_error(RedisRateLimiter::LimitError)
+        end
+
+        context 'it has already failed ten times' do
+          before do
+            allow(job).to receive(:executions).and_return 10
+          end
+
+          it 'logs an event' do
+            expect { perform }.to_not raise_error
+
+            expect(job_analytics).to have_logged_event(
+              :risc_security_event_pushed,
+              risc_event_payload.merge(
+                error: 'rate limit for push-notification-https://push.example.gov has maxed out',
+                transport: 'async',
+              ),
+            )
+          end
         end
       end
 
@@ -275,10 +321,11 @@ RSpec.describe RiscDeliveryJob do
           expect(req).to have_been_requested
           expect(job_analytics).to have_logged_event(
             :risc_security_event_pushed,
-            client_id: issuer,
-            error: nil,
-            event_type: event_type,
-            success: true,
+            risc_event_payload.merge(
+              success: true,
+              status: 200,
+              transport: 'direct',
+            ),
           )
         end
       end

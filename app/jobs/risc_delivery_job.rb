@@ -42,37 +42,16 @@ class RiscDeliveryJob < ApplicationJob
       end
     end
 
-    unless response.success?
-      Rails.logger.warn(
-        {
-          event: 'http_push_error',
-          transport: inline? ? 'direct' : 'async',
-          event_type: event_type,
-          service_provider: issuer,
-          status: response.status,
-        }.to_json,
-      )
-    end
-
     track_event(
       error: response.success? ? nil : 'http_push_error',
       event_type:,
       issuer:,
+      status: response.status,
       success: response.success?,
       user:,
     )
   rescue *NETWORK_ERRORS => err
     raise err if self.executions < 2 && !inline?
-
-    Rails.logger.warn(
-      {
-        event: 'http_push_error',
-        transport: inline? ? 'direct' : 'async',
-        event_type: event_type,
-        service_provider: issuer,
-        error: err.message,
-      }.to_json,
-    )
 
     track_event(
       error: err.message,
@@ -83,16 +62,6 @@ class RiscDeliveryJob < ApplicationJob
     )
   rescue RedisRateLimiter::LimitError => err
     raise err if self.executions < 10 && !inline?
-
-    Rails.logger.warn(
-      {
-        event: 'http_push_rate_limit',
-        transport: inline? ? 'direct' : 'async',
-        event_type: event_type,
-        service_provider: issuer,
-        error: err.message,
-      }.to_json,
-    )
 
     track_event(
       error: err.message,
@@ -130,12 +99,14 @@ class RiscDeliveryJob < ApplicationJob
     queue_adapter.is_a?(ActiveJob::QueueAdapters::InlineAdapter)
   end
 
-  def track_event(event_type:, issuer:, success:, user:, error: nil)
+  def track_event(event_type:, issuer:, success:, user:, error: nil, status: nil)
     analytics(user).risc_security_event_pushed(
       client_id: issuer,
       error:,
       event_type:,
+      status:,
       success:,
+      transport: inline? ? 'direct' : 'async',
     )
   end
 
