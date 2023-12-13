@@ -90,7 +90,21 @@ module Idv
 
     def generate_personal_key
       cacher = Pii::Cacher.new(current_user, user_session)
-      profile.encrypt_recovery_pii(cacher.fetch)
+
+      new_personal_key = nil
+
+      Profile.transaction do
+        current_user.profiles.each do |profile|
+          pii = cacher.fetch(profile.id)
+          next if pii.nil?
+
+          new_personal_key = profile.encrypt_recovery_pii(pii, personal_key: new_personal_key)
+
+          profile.save!
+        end
+      end
+
+      new_personal_key
     end
 
     def in_person_enrollment?

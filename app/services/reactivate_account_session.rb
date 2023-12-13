@@ -53,7 +53,6 @@ class ReactivateAccountSession
     {
       active: false,
       validated_personal_key: false,
-      x509: nil,
     }
   end
 
