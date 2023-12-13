@@ -1,4 +1,5 @@
-import { forceNavigate } from '@18f/identity-url';
+import { forceRedirect } from '@18f/identity-url';
+
 document.body.classList.add('usa-sr-only');
-const link: HTMLLinkElement = document.getElementById('openid-connect-redirect')!;
+const link = document.querySelector<HTMLLinkElement>('#openid-connect-redirect')!;
 forceRedirect(link.href);
