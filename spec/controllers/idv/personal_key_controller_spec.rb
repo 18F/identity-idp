@@ -42,6 +42,8 @@ RSpec.describe Idv::PersonalKeyController do
 
   let(:idv_session) { subject.idv_session }
 
+  let(:threatmetrix_review_status) { nil }
+
   before do
     stub_analytics
     stub_attempts_tracker
@@ -60,6 +62,8 @@ RSpec.describe Idv::PersonalKeyController do
       raise 'invalid address_verification_mechanism'
     end
 
+    idv_session.threatmetrix_review_status = threatmetrix_review_status
+
     if mint_profile_from_idv_session
       idv_session.create_profile_from_applicant_with_password(password)
     end
@@ -74,45 +78,54 @@ RSpec.describe Idv::PersonalKeyController do
     end
 
     it 'includes before_actions from IdvSession' do
-      expect(subject).to have_actions(:before, :redirect_unless_sp_requested_verification)
+      expect(subject).to have_actions(
+        :before,
+        :redirect_unless_sp_requested_verification,
+      )
     end
   end
 
   describe '#show' do
-    describe '#confirm_step_allowed' do
-      context 'profile has been created' do
+    context 'profile has been created from idv_session' do
+      it 'does not redirect' do
+        get :show
+
+        expect(response).to_not be_redirect
+      end
+
+      context 'profile is pending fraud review' do
+        let(:threatmetrix_review_status) { 'reject' }
         it 'does not redirect' do
           get :show
-
           expect(response).to_not be_redirect
         end
       end
+    end
 
-      context 'profile has not been created from idv_session' do
-        let(:mint_profile_from_idv_session) { false }
+    context 'profile has not been created from idv_session' do
+      let(:mint_profile_from_idv_session) { false }
 
-        it 'redirects to the account path' do
-          get :show
-          expect(response).to redirect_to idv_welcome_path
+      it 'redirects to the account path' do
+        get :show
+        expect(response).to redirect_to idv_welcome_path
+      end
+
+      context 'but a profile is pending from a different session' do
+        context 'due to fraud review' do
+          let!(:pending_profile) { create(:profile, :fraud_review_pending, user: user) }
+
+          it 'does not redirect' do
+            get :show
+            expect(response).not_to be_redirect
+          end
         end
 
-        context 'profile is pending from a different session' do
-          context 'profile is pending due to fraud review' do
-            let!(:pending_profile) { create(:profile, :fraud_review_pending, user: user) }
+        context 'due to in person proofing' do
+          let!(:pending_profile) { create(:profile, :in_person_verification_pending, user: user) }
 
-            it 'redirects to please call url' do
-              get :show
-              expect(response).to redirect_to idv_please_call_url
-            end
-          end
-
-          context 'profile is pending due to in person proofing' do
-            let!(:pending_profile) { create(:profile, :in_person_verification_pending, user: user) }
-
-            it 'does not redirect' do
-              get :show
-              expect(response).to_not be_redirect
-            end
+          it 'does not redirect' do
+            get :show
+            expect(response).to_not be_redirect
           end
         end
       end
