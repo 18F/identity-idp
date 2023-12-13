@@ -60,7 +60,6 @@ default:
 stages:
   - build
   - test
-  - scan
 
 workflow:
   rules:
