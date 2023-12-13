@@ -70,7 +70,6 @@ RSpec.describe Idv::PersonalKeyController do
       expect(subject).to have_actions(
         :before,
         :confirm_two_factor_authenticated,
-        :confirm_phone_or_address_confirmed,
       )
     end
 
@@ -94,16 +93,16 @@ RSpec.describe Idv::PersonalKeyController do
 
         it 'redirects to the account path' do
           get :show
-          expect(response).to redirect_to account_path
+          expect(response).to redirect_to idv_welcome_path
         end
 
         context 'profile is pending from a different session' do
           context 'profile is pending due to fraud review' do
             let!(:pending_profile) { create(:profile, :fraud_review_pending, user: user) }
 
-            it 'does not redirect' do
+            it 'redirects to please call url' do
               get :show
-              expect(response).to_not be_redirect
+              expect(response).to redirect_to idv_please_call_url
             end
           end
 
@@ -157,10 +156,10 @@ RSpec.describe Idv::PersonalKeyController do
     context 'user selected gpo verification' do
       let(:address_verification_mechanism) { 'gpo' }
 
-      it 'redirects to enter password url' do
+      it 'redirects to letter enqueued url' do
         get :show
 
-        expect(response).to redirect_to idv_enter_password_url
+        expect(response).to redirect_to idv_letter_enqueued_url
       end
     end
 
@@ -299,10 +298,14 @@ RSpec.describe Idv::PersonalKeyController do
     context 'user selected gpo verification' do
       let(:address_verification_mechanism) { 'gpo' }
 
-      it 'redirects to review url' do
+      it 'redirects to correct url' do
         patch :update
+        expect(response).to redirect_to idv_letter_enqueued_url
+      end
 
-        expect(response).to redirect_to idv_enter_password_url
+      it 'does not log any events' do
+        expect(@analytics).not_to have_logged_event
+        patch :update
       end
     end
 
