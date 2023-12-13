@@ -55,9 +55,13 @@ fr:
     format_type:
       character: caractère
       digit: chiffres
+    help: Obtenez de l'aide sur www.login.gov/help ou contactez-nous à l'adresse
+      www.login.gov/contact.
     personal_key_regeneration_notice: Une nouvelle clé personnelle a été émise pour
       votre compte %{app_name}. Si vous ne l'avez pas demandée, réinitialisez
       votre mot de passe.
     personal_key_sign_in_notice: Votre clé personnelle a été utilisée pour vous
       connecter à votre compte %{app_name}. Si ce n'était pas vous, changez
       votre mot de passe.
+    stop: |-
+      Vous etes désinscrit(e) et ne recevrez plus d'alertes de Login.gov. Pour vous réinscrire, connectez-vous ou créez un compte. Aide: login.gov/help

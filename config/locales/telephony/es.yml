@@ -54,7 +54,10 @@ es:
     format_type:
       character: carácter
       digit: dígitos
+    help: Obtenga ayuda en www.login.gov/help o contactenos en www.login.gov/contact
     personal_key_regeneration_notice: Se ha emitido una nueva clave personal para tu
       cuenta %{app_name}. Si no eres tú, restablece tu contraseña.
     personal_key_sign_in_notice: Su clave personal solo se utilizó para iniciar
       sesión en su cuenta %{app_name}. Si no fue así, reinicie su contraseña.
+    stop: Cancelo su suscripcion y no recibira avisos de Login.gov Inicie sesion o
+      cree una cuenta para suscribirse de nuevo. ¿Necesita ayuda? login.gov/help

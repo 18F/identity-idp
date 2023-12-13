@@ -318,6 +318,52 @@ RSpec.describe Telephony::OtpSender do
 
     subject(:message) { sender.authentication_message }
 
+    context 'sms keywords' do
+      context 'English' do
+        it 'does not contain any non-GSM characters and is less than or equal to 160 characters' do
+          stop_message = t('telephony.stop')
+          expect(Telephony.sms_parts(stop_message)).to eq 1
+          expect(Telephony.gsm_chars_only?(stop_message)).to eq true
+
+          help_message = t('telephony.help')
+          expect(Telephony.sms_parts(help_message)).to eq 1
+          expect(Telephony.gsm_chars_only?(help_message)).to eq true
+        end
+      end
+
+      context 'French' do
+        it 'does not contain any non-GSM characters and is less than or equal to 160 characters' do
+          I18n.locale = :fr
+
+          stop_message = t('telephony.stop')
+          expect(Telephony.sms_parts(stop_message)).to eq 1
+          expect(Telephony.gsm_chars_only?(stop_message)).to eq true
+
+          help_message = t('telephony.help')
+          expect(Telephony.sms_parts(help_message)).to eq 1
+          expect(Telephony.gsm_chars_only?(help_message)).to eq true
+        ensure
+          I18n.locale = :en
+        end
+      end
+
+      context 'Spanish' do
+        it 'does not contain any non-GSM characters and is less than or equal to 160 characters' do
+          I18n.locale = :es
+
+          stop_message = t('telephony.stop')
+          expect(Telephony.sms_parts(stop_message)).to eq 1
+          expect(Telephony.gsm_chars_only?(stop_message)).to eq true
+
+          help_message = t('telephony.help')
+          expect(Telephony.sms_parts(help_message)).to eq 1
+          expect(Telephony.gsm_chars_only?(help_message)).to eq true
+        ensure
+          I18n.locale = :en
+        end
+      end
+    end
+
     context 'sms' do
       let(:channel) { :sms }
 

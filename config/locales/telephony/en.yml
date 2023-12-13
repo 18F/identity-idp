@@ -51,7 +51,10 @@ en:
     format_type:
       character: character
       digit: digit
+    help: Get help at www.login.gov/help or contact us at www.login.gov/contact
     personal_key_regeneration_notice: A new personal key has been issued for your
       %{app_name} account. If this wasn't you, reset your password.
     personal_key_sign_in_notice: Your personal key was just used to sign into your
       %{app_name} account. If this wasn't you, reset your password.
+    stop: |-
+      You have unsubscribed and will not receive alerts from Login.gov. To resubscribe, sign in or set up an account. Help? login.gov/help
