@@ -40,19 +40,20 @@ module OpenidConnect
     private
 
     def redirect_user(redirect_uri)
-      if IdentityConfig.store.openid_connect_redirect == :client_side
+      case IdentityConfig.store.openid_connect_redirect
+      when :client_side
         @oidc_redirect_uri = redirect_uri
         render(
           'openid_connect/shared/redirect',
           layout: false,
         )
-      elsif IdentityConfig.store.openid_connect_redirect == :client_side_js
+      when :client_side_js
         @oidc_redirect_uri = redirect_uri
         render(
           'openid_connect/shared/redirect_js',
           layout: false,
         )
-      elsif IdentityConfig.store.openid_connect_redirect == :server_side
+      else # should only be :server_side
         redirect_to(
           redirect_uri,
           allow_other_host: true,

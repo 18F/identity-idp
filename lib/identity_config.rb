@@ -322,7 +322,11 @@ class IdentityConfig
     config.add(:mx_timeout, type: :integer)
     config.add(:newrelic_license_key, type: :string)
     config.add(:nonessential_email_banlist, type: :json)
-    config.add(:openid_connect_redirect, type: :symbol, enum: [:server_side, :client_side, :client_side_js])
+    config.add(
+      :openid_connect_redirect,
+      type: :symbol,
+      enum: [:server_side, :client_side, :client_side_js],
+    )
     config.add(:openid_connect_content_security_form_action_enabled, type: :boolean)
     config.add(:otp_delivery_blocklist_findtime, type: :integer)
     config.add(:otp_delivery_blocklist_maxretry, type: :integer)
