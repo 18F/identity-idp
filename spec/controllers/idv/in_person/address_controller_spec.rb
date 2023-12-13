@@ -27,32 +27,6 @@ RSpec.describe Idv::InPerson::AddressController do
   end
 
   describe 'before_actions' do
-    context '#render_404_if_in_person_residential_address_controller_enabled not set' do
-      context 'flag not set' do
-        before do
-          allow(IdentityConfig.store).to receive(:in_person_residential_address_controller_enabled).
-            and_return(nil)
-        end
-        it 'renders a 404' do
-          get :show
-
-          expect(response).to be_not_found
-        end
-      end
-
-      context 'flag not enabled' do
-        before do
-          allow(IdentityConfig.store).to receive(:in_person_residential_address_controller_enabled).
-            and_return(false)
-        end
-        it 'renders a 404' do
-          get :show
-
-          expect(response).to be_not_found
-        end
-      end
-    end
-
     context '#confirm_in_person_state_id_step_complete' do
       it 'redirects to state id page if not complete' do
         flow_session[:pii_from_user].delete(:identity_doc_address1)

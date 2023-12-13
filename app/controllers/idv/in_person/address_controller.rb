@@ -5,7 +5,6 @@ module Idv
       include IdvStepConcern
       include OptInHelper
 
-      before_action :render_404_if_in_person_residential_address_controller_enabled_not_set
       before_action :confirm_in_person_state_id_step_complete
       before_action :confirm_in_person_address_step_needed, only: :show
 
@@ -85,11 +84,6 @@ module Idv
         else
           redirect_to idv_in_person_ssn_url
         end
-      end
-
-      def render_404_if_in_person_residential_address_controller_enabled_not_set
-        render_not_found unless
-            IdentityConfig.store.in_person_residential_address_controller_enabled
       end
 
       def confirm_in_person_state_id_step_complete
