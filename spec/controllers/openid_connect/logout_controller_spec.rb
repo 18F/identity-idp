@@ -62,20 +62,29 @@ RSpec.describe OpenidConnect::LogoutController do
               action
             end
 
-            it 'redirects back to the client if client-side redirect is disabled' do
-              allow(IdentityConfig.store).to receive(:openid_connect_redirect_interstitial_enabled).
-                and_return(false)
+            it 'redirects back to the client if server-side redirect is enabled' do
+              allow(IdentityConfig.store).to receive(:openid_connect_redirect).
+                and_return(:server_side)
               action
 
               expect(response).to redirect_to(/^#{post_logout_redirect_uri}/)
             end
 
             it 'renders client-side redirect if client-side redirect is enabled' do
-              allow(IdentityConfig.store).to receive(:openid_connect_redirect_interstitial_enabled).
-                and_return(true)
+              allow(IdentityConfig.store).to receive(:openid_connect_redirect).
+                and_return(:client_side)
               action
 
               expect(controller).to render_template('openid_connect/shared/redirect')
+              expect(assigns(:oidc_redirect_uri)).to start_with(post_logout_redirect_uri)
+            end
+
+            it 'renders JS client-side redirect if client-side JS redirect is enabled' do
+              allow(IdentityConfig.store).to receive(:openid_connect_redirect).
+                and_return(:client_side_js)
+              action
+
+              expect(controller).to render_template('openid_connect/shared/redirect_js')
               expect(assigns(:oidc_redirect_uri)).to start_with(post_logout_redirect_uri)
             end
 
@@ -184,20 +193,29 @@ RSpec.describe OpenidConnect::LogoutController do
         end
 
         context 'user is not signed in' do
-          it 'renders client-side redirect if client-side redirect is enabled' do
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect_interstitial_enabled).
-              and_return(false)
+          it 'renders server-side redirect if server-side redirect is enabled' do
+            allow(IdentityConfig.store).to receive(:openid_connect_redirect).
+              and_return(:server_side)
             action
 
             expect(response).to redirect_to(/^#{post_logout_redirect_uri}/)
           end
 
-          it 'redirects back to the client if client-side redirect is disabled' do
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect_interstitial_enabled).
-              and_return(true)
+          it 'redirects back to the client if client-side redirect is enabled' do
+            allow(IdentityConfig.store).to receive(:openid_connect_redirect).
+              and_return(:client_side)
             action
 
             expect(controller).to render_template('openid_connect/shared/redirect')
+            expect(assigns(:oidc_redirect_uri)).to start_with(post_logout_redirect_uri)
+          end
+
+          it 'redirects back to the client if JS client-side redirect is enabledj' do
+            allow(IdentityConfig.store).to receive(:openid_connect_redirect).
+              and_return(:client_side_js)
+            action
+
+            expect(controller).to render_template('openid_connect/shared/redirect_js')
             expect(assigns(:oidc_redirect_uri)).to start_with(post_logout_redirect_uri)
           end
         end
@@ -298,20 +316,29 @@ RSpec.describe OpenidConnect::LogoutController do
         end
 
         context 'user is not signed in' do
-          it 'redirects back to the client if client-side redirect is disabled' do
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect_interstitial_enabled).
-              and_return(false)
+          it 'redirects back to the client if server-side redirect is enabled' do
+            allow(IdentityConfig.store).to receive(:openid_connect_redirect).
+              and_return(:server_side)
             action
 
             expect(response).to redirect_to(/^#{post_logout_redirect_uri}/)
           end
 
           it 'renders client-side redirect if client-side redirect is enabled' do
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect_interstitial_enabled).
-              and_return(true)
+            allow(IdentityConfig.store).to receive(:openid_connect_redirect).
+              and_return(:client_side)
             action
 
             expect(controller).to render_template('openid_connect/shared/redirect')
+            expect(assigns(:oidc_redirect_uri)).to start_with(post_logout_redirect_uri)
+          end
+
+          it 'renders JS client-side redirect if JS client-side redirect is enabled' do
+            allow(IdentityConfig.store).to receive(:openid_connect_redirect).
+              and_return(:client_side_js)
+            action
+
+            expect(controller).to render_template('openid_connect/shared/redirect_js')
             expect(assigns(:oidc_redirect_uri)).to start_with(post_logout_redirect_uri)
           end
         end
@@ -333,10 +360,10 @@ RSpec.describe OpenidConnect::LogoutController do
           let(:user) { create(:user) }
           before { stub_sign_in(user) }
 
-          it 'destroys the session and redirects to client if client-side redirect is disabled' do
+          it 'destroys the session and redirects to client if server-side redirect is enabled' do
             expect(controller).to receive(:sign_out)
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect_interstitial_enabled).
-              and_return(false)
+            allow(IdentityConfig.store).to receive(:openid_connect_redirect).
+              and_return(:server_side)
             action
 
             expect(response).to redirect_to(/^#{post_logout_redirect_uri}/)
@@ -344,11 +371,21 @@ RSpec.describe OpenidConnect::LogoutController do
 
           it 'destroys session and renders client-side redirect if enabled' do
             expect(controller).to receive(:sign_out)
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect_interstitial_enabled).
-              and_return(true)
+            allow(IdentityConfig.store).to receive(:openid_connect_redirect).
+              and_return(:client_side)
             action
 
             expect(controller).to render_template('openid_connect/shared/redirect')
+            expect(assigns(:oidc_redirect_uri)).to start_with(post_logout_redirect_uri)
+          end
+
+          it 'destroys session and renders JS client-side redirect if enabled' do
+            expect(controller).to receive(:sign_out)
+            allow(IdentityConfig.store).to receive(:openid_connect_redirect).
+              and_return(:client_side_js)
+            action
+
+            expect(controller).to render_template('openid_connect/shared/redirect_js')
             expect(assigns(:oidc_redirect_uri)).to start_with(post_logout_redirect_uri)
           end
         end
@@ -378,8 +415,8 @@ RSpec.describe OpenidConnect::LogoutController do
           before { stub_sign_in(user) }
           it 'destroys the session and redirects if client-side redirect is disabled' do
             expect(controller).to receive(:sign_out)
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect_interstitial_enabled).
-              and_return(false)
+            allow(IdentityConfig.store).to receive(:openid_connect_redirect).
+              and_return(:server_side)
             action
 
             expect(response).to redirect_to(/^#{post_logout_redirect_uri}/)
@@ -387,11 +424,21 @@ RSpec.describe OpenidConnect::LogoutController do
 
           it 'destroys the session and renders client-side redirect if enabled' do
             expect(controller).to receive(:sign_out)
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect_interstitial_enabled).
-              and_return(true)
+            allow(IdentityConfig.store).to receive(:openid_connect_redirect).
+              and_return(:client_side)
             action
 
             expect(controller).to render_template('openid_connect/shared/redirect')
+            expect(assigns(:oidc_redirect_uri)).to start_with(post_logout_redirect_uri)
+          end
+
+          it 'destroys the session and renders JS client-side redirect if enabled' do
+            expect(controller).to receive(:sign_out)
+            allow(IdentityConfig.store).to receive(:openid_connect_redirect).
+              and_return(:client_side_js)
+            action
+
+            expect(controller).to render_template('openid_connect/shared/redirect_js')
             expect(assigns(:oidc_redirect_uri)).to start_with(post_logout_redirect_uri)
           end
         end
@@ -552,10 +599,10 @@ RSpec.describe OpenidConnect::LogoutController do
       end
 
       context 'user is not signed in' do
-        it 'redirects back to the client if client-side redirect is disabled' do
+        it 'redirects back to the client if server-side redirect is enabled' do
           expect(controller).to receive(:sign_out)
-          allow(IdentityConfig.store).to receive(:openid_connect_redirect_interstitial_enabled).
-            and_return(false)
+          allow(IdentityConfig.store).to receive(:openid_connect_redirect).
+            and_return(:server_side)
           action
 
           expect(response).to redirect_to(/^#{post_logout_redirect_uri}/)
@@ -563,11 +610,21 @@ RSpec.describe OpenidConnect::LogoutController do
 
         it 'renders client-side redirect if client-side redirect is enabled' do
           expect(controller).to receive(:sign_out)
-          allow(IdentityConfig.store).to receive(:openid_connect_redirect_interstitial_enabled).
-            and_return(true)
+          allow(IdentityConfig.store).to receive(:openid_connect_redirect).
+            and_return(:client_side)
           action
 
           expect(controller).to render_template('openid_connect/shared/redirect')
+          expect(assigns(:oidc_redirect_uri)).to start_with(post_logout_redirect_uri)
+        end
+
+        it 'renders JS client-side redirect if JS client-side redirect is enabled' do
+          expect(controller).to receive(:sign_out)
+          allow(IdentityConfig.store).to receive(:openid_connect_redirect).
+            and_return(:client_side_js)
+          action
+
+          expect(controller).to render_template('openid_connect/shared/redirect_js')
           expect(assigns(:oidc_redirect_uri)).to start_with(post_logout_redirect_uri)
         end
       end
@@ -586,10 +643,10 @@ RSpec.describe OpenidConnect::LogoutController do
 
         context 'user is signed in' do
           before { stub_sign_in(user) }
-          it 'destroys session and redirects to client if client-side redirect is disabled' do
+          it 'destroys session and redirects to client if server-side redirect is enabled' do
             expect(controller).to receive(:sign_out)
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect_interstitial_enabled).
-              and_return(false)
+            allow(IdentityConfig.store).to receive(:openid_connect_redirect).
+              and_return(:server_side)
             action
 
             expect(response).to redirect_to(/^#{post_logout_redirect_uri}/)
@@ -597,11 +654,21 @@ RSpec.describe OpenidConnect::LogoutController do
 
           it 'destroys the session and renders client-side redirect if enabled' do
             expect(controller).to receive(:sign_out)
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect_interstitial_enabled).
-              and_return(true)
+            allow(IdentityConfig.store).to receive(:openid_connect_redirect).
+              and_return(:client_side)
             action
 
             expect(controller).to render_template('openid_connect/shared/redirect')
+            expect(assigns(:oidc_redirect_uri)).to start_with(post_logout_redirect_uri)
+          end
+
+          it 'destroys the session and renders JS client-side redirect if enabled' do
+            expect(controller).to receive(:sign_out)
+            allow(IdentityConfig.store).to receive(:openid_connect_redirect).
+              and_return(:client_side_js)
+            action
+
+            expect(controller).to render_template('openid_connect/shared/redirect_js')
             expect(assigns(:oidc_redirect_uri)).to start_with(post_logout_redirect_uri)
           end
 

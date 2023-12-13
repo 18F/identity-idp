@@ -30,25 +30,36 @@ module OpenidConnect
         analytics.logout_initiated(**result.to_h.except(:redirect_uri))
         irs_attempts_api_tracker.logout_initiated(success: result.success?)
 
+        redirect_user(redirect_uri)
         sign_out
-        if IdentityConfig.store.openid_connect_redirect_interstitial_enabled
-          @oidc_redirect_uri = redirect_uri
-          render(
-            'openid_connect/shared/redirect',
-            layout: false,
-          )
-        else
-          redirect_to(
-            redirect_uri,
-            allow_other_host: true,
-          )
-        end
       else
         render :error
       end
     end
 
     private
+
+    def redirect_user(redirect_uri)
+      case IdentityConfig.store.openid_connect_redirect
+      when :client_side
+        @oidc_redirect_uri = redirect_uri
+        render(
+          'openid_connect/shared/redirect',
+          layout: false,
+        )
+      when :client_side_js
+        @oidc_redirect_uri = redirect_uri
+        render(
+          'openid_connect/shared/redirect_js',
+          layout: false,
+        )
+      else # should only be :server_side
+        redirect_to(
+          redirect_uri,
+          allow_other_host: true,
+        )
+      end
+    end
 
     def apply_logout_secure_headers_override(redirect_uri, service_provider)
       return if service_provider.nil? || redirect_uri.nil?
@@ -94,18 +105,7 @@ module OpenidConnect
 
         sign_out
 
-        if IdentityConfig.store.openid_connect_redirect_interstitial_enabled
-          @oidc_redirect_uri = redirect_uri
-          render(
-            'openid_connect/shared/redirect',
-            layout: false,
-          )
-        else
-          redirect_to(
-            redirect_uri,
-            allow_other_host: true,
-          )
-        end
+        redirect_user(redirect_uri)
       end
     end
 
