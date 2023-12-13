@@ -186,6 +186,17 @@ RSpec.describe User do
 
         expect(user.active_profile).to eq profile1
       end
+
+      context 'when the active profile is deactivated' do
+        it 'is no longer returned' do
+          user = create(:user, :fully_registered)
+          create(:profile, :active, :verified, user: user, pii: { first_name: 'Jane' })
+
+          expect(user.active_profile).not_to be_nil
+          user.active_profile.deactivate(:password_reset)
+          expect(user.active_profile).to be_nil
+        end
+      end
     end
   end
 
@@ -628,6 +639,16 @@ RSpec.describe User do
         allow(user).to receive(:active_profile).and_return(Profile.new(activated_at: 3.days.ago))
 
         expect(user.pending_profile).to eq pending
+      end
+
+      it 'returns nil after the pending profile is activated' do
+        pending_profile = user.pending_profile
+        expect(pending_profile).not_to be_nil
+
+        pending_profile.remove_gpo_deactivation_reason
+        pending_profile.activate
+
+        expect(user.pending_profile).to be_nil
       end
     end
 
