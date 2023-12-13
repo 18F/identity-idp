@@ -11,8 +11,6 @@ RSpec.describe Idv::InPerson::AddressController do
   let(:ssn) { nil }
 
   before do
-    allow(IdentityConfig.store).to receive(:in_person_residential_address_controller_enabled).
-      and_return(true)
     allow(IdentityConfig.store).to receive(:usps_ipp_transliteration_enabled).
       and_return(true)
     allow(subject).to receive(:current_user).

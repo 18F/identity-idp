@@ -6,8 +6,6 @@ RSpec.describe 'doc auth In person proofing residential address step', js: true 
 
   before do
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
-    allow(IdentityConfig.store).to receive(:in_person_residential_address_controller_enabled).
-      and_return(true)
   end
 
   context 'when visiting address for the first time' do

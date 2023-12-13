@@ -103,11 +103,7 @@ module Idv
 
       def confirm_in_person_address_step_complete
         return if flow_session[:pii_from_user] && flow_session[:pii_from_user][:address1].present?
-        if IdentityConfig.store.in_person_residential_address_controller_enabled
-          redirect_to idv_in_person_proofing_address_url
-        else
-          redirect_to idv_in_person_step_url(step: :address)
-        end
+        redirect_to idv_in_person_proofing_address_url
       end
     end
   end

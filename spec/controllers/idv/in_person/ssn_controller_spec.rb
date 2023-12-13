@@ -33,30 +33,11 @@ RSpec.describe Idv::InPerson::SsnController do
 
   describe 'before_actions' do
     context '#confirm_in_person_address_step_complete' do
-      context 'residential address controller flag not enabled' do
-        before do
-          allow(IdentityConfig.store).to receive(:in_person_residential_address_controller_enabled).
-            and_return(false)
-        end
-        it 'redirects if the user hasn\'t completed the address page' do
-          subject.user_session['idv/in_person'][:pii_from_user].delete(:address1)
-          get :show
+      it 'redirects if address page not completed' do
+        subject.user_session['idv/in_person'][:pii_from_user].delete(:address1)
+        get :show
 
-          expect(response).to redirect_to idv_in_person_step_url(step: :address)
-        end
-      end
-
-      context 'residential address controller flag enabled' do
-        before do
-          allow(IdentityConfig.store).to receive(:in_person_residential_address_controller_enabled).
-            and_return(true)
-        end
-        it 'redirects if address page not completed' do
-          subject.user_session['idv/in_person'][:pii_from_user].delete(:address1)
-          get :show
-
-          expect(response).to redirect_to idv_in_person_proofing_address_url
-        end
+        expect(response).to redirect_to idv_in_person_proofing_address_url
       end
     end
   end
