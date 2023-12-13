@@ -16,6 +16,14 @@ module TwoFactorAuthCode
       )
     end
 
+    def webauthn_title
+      if platform_authenticator?
+        t('two_factor_authentication.webauthn_platform_header_text')
+      else
+        t('titles.present_webauthn')
+      end
+    end
+
     def webauthn_help
       if platform_authenticator?
         t('instructions.mfa.webauthn.confirm_webauthn_platform', app_name: APP_NAME)

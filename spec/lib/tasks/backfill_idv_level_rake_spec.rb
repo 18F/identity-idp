@@ -43,6 +43,11 @@ RSpec.describe 'profiles:backfill_idv_level rake task' do
     expect(profiles[:unsupervised_no_level].idv_level).to be_nil
     expect(profiles[:in_person].idv_level).not_to be_nil
     expect(profiles[:in_person_no_level].idv_level).to be_nil
+
+    # NULL values can blow up postgres WHERE NOT IN () conditions if you're
+    # not careful...
+    create(:in_person_enrollment, profile: nil)
+
     invoke_task
   end
 
