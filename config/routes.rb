@@ -21,7 +21,8 @@ Rails.application.routes.draw do
       put '/sessions' => 'sessions#update'
 
       namespace :two_factor_authentication do
-        resource :webauthn, path: '/webauthn/:id', controller: :webauthn, only: [:update, :destroy]
+        put '/webauthn/:id' => 'webauthn#update', as: :webauthn
+        delete '/webauthn/:id' => 'webauthn#destroy', as: nil
       end
     end
   end
@@ -251,11 +252,9 @@ Rails.application.routes.draw do
     delete '/manage/phone/:id' => 'users/edit_phone#destroy'
     get '/manage/personal_key' => 'users/personal_keys#show', as: :manage_personal_key
     post '/manage/personal_key' => 'users/personal_keys#update'
-    resource :webauthn,
-             path: '/manage/webauthn/:id',
-             controller: 'users/webauthn',
-             path_names: { edit: '' },
-             only: [:edit, :update, :destroy]
+    get '/manage/webauthn/:id' => 'users/webauthn#edit', as: :edit_webauthn
+    put '/manage/webauthn/:id' => 'users/webauthn#update', as: :webauthn
+    delete '/manage/webauthn/:id' => 'users/webauthn#destroy', as: nil
 
     get '/account/personal_key' => 'accounts/personal_keys#new', as: :create_new_personal_key
     post '/account/personal_key' => 'accounts/personal_keys#create'
