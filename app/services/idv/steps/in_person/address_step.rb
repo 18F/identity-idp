@@ -22,9 +22,11 @@ module Idv
             flow_session[:pii_from_user][attr] = flow_params[attr]
           end
 
-          redirect_to idv_in_person_verify_info_url if updating_address?
-
-          redirect_to idv_in_person_ssn_url
+          if updating_address?
+            redirect_to idv_in_person_verify_info_url
+          else
+            redirect_to idv_in_person_ssn_url
+          end
         end
 
         def extra_view_variables
