@@ -211,7 +211,7 @@ multi_region_kms_migration_jobs_profile_timeout: 120
 multi_region_kms_migration_jobs_user_count: 1000
 multi_region_kms_migration_jobs_user_timeout: 120
 mx_timeout: 3
-openid_connect_redirect_interstitial_enabled: true
+openid_connect_redirect: client_side_js
 openid_connect_content_security_form_action_enabled: false
 otp_delivery_blocklist_maxretry: 10
 otp_valid_for: 10
@@ -472,7 +472,7 @@ production:
   logins_per_ip_track_only_mode: true
   newrelic_license_key: ''
   nonessential_email_banlist: '[]'
-  openid_connect_redirect_interstitial_enabled: false
+  openid_connect_redirect: server_side
   openid_connect_content_security_form_action_enabled: true
   otp_delivery_blocklist_findtime: 5
   participate_in_dap: true

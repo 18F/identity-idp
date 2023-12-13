@@ -75,15 +75,8 @@ module OpenidConnect
     def handle_successful_handoff
       track_events
       SpHandoffBounce::AddHandoffTimeToSession.call(sp_session)
-      if IdentityConfig.store.openid_connect_redirect_interstitial_enabled
-        @oidc_redirect_uri = @authorize_form.success_redirect_uri
-        render(
-          'openid_connect/shared/redirect',
-          layout: false,
-        )
-      else
-        redirect_to @authorize_form.success_redirect_uri, allow_other_host: true
-      end
+
+      redirect_user(@authorize_form.success_redirect_uri)
 
       delete_branded_experience
     end
@@ -133,14 +126,8 @@ module OpenidConnect
 
       if redirect_uri.nil?
         render :error
-      elsif IdentityConfig.store.openid_connect_redirect_interstitial_enabled
-        @oidc_redirect_uri = redirect_uri
-        render(
-          'openid_connect/shared/redirect',
-          layout: false,
-        )
       else
-        redirect_to redirect_uri, allow_other_host: true
+        redirect_user(redirect_uri)
       end
     end
 
@@ -197,6 +184,27 @@ module OpenidConnect
         billed_ial: event_ial_context.bill_for_ial_1_or_2,
       )
       track_billing_events
+    end
+
+    def redirect_user(redirect_uri)
+      if IdentityConfig.store.openid_connect_redirect == :client_side
+        @oidc_redirect_uri = redirect_uri
+        render(
+          'openid_connect/shared/redirect',
+          layout: false,
+        )
+      elsif IdentityConfig.store.openid_connect_redirect == :client_side_js
+        @oidc_redirect_uri = redirect_uri
+        render(
+          'openid_connect/shared/redirect_js',
+          layout: false,
+        )
+      elsif IdentityConfig.store.openid_connect_redirect == :server_side
+        redirect_to(
+          redirect_uri,
+          allow_other_host: true,
+        )
+      end
     end
   end
 end
