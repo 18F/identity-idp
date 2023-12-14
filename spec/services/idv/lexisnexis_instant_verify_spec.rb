@@ -1,12 +1,12 @@
 require 'rails_helper'
 
-RSpec.describe Idv::LexisNexisInstantVerify do
+RSpec.describe Idv::LexisnexisInstantVerify do
   let(:session_uuid) { SecureRandom.uuid }
   let(:default_workflow) { 'legacy_workflow' }
   let(:alternate_workflow) { 'equitable_workflow' }
   let(:ab_testing_enabled) { false }
 
-  subject { Idv::LexisNexisInstantVerify.new(session_uuid) }
+  subject { Idv::LexisnexisInstantVerify.new(session_uuid) }
 
   before do
     allow(IdentityConfig.store).

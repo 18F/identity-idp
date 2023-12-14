@@ -9,7 +9,7 @@ module Idv
       end
 
       if defined?(document_capture_session_uuid)
-        lniv_args = LexisNexisInstantVerify.new(document_capture_session_uuid).
+        lniv_args = LexisnexisInstantVerify.new(document_capture_session_uuid).
           workflow_ab_test_analytics_args
         buckets = buckets.merge(lniv_args)
       end
