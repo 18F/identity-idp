@@ -131,6 +131,10 @@ class OpenidConnectAuthorizeForm
                  :ial2_or_greater?,
                  :ial2_requested?
 
+  def biometric_comparison_required
+    @biometric_comparison_required.to_s == 'true'
+  end
+
   private
 
   attr_reader :identity, :success

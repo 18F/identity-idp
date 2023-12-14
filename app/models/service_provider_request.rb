@@ -20,7 +20,7 @@ class ServiceProviderRequest
     @ial = ial
     @aal = aal
     @requested_attributes = requested_attributes&.map(&:to_s)
-    @biometric_comparison_required = biometric_comparison_required.to_s == 'true'
+    @biometric_comparison_required = biometric_comparison_required
   end
 
   def ==(other)
