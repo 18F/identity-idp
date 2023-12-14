@@ -39,10 +39,10 @@ RSpec.feature 'Analytics Regression', js: true do
     {
       'IdV: intro visited' => {},
       'IdV: doc auth welcome visited' => {
-        step: 'welcome', analytics_id: 'Doc Auth', irs_reproofing: false, skip_hybrid_handoff: nil
+        step: 'welcome', analytics_id: 'Doc Auth', irs_reproofing: false, skip_hybrid_handoff: nil, lexisnexis_instant_verify_workflow_ab_test_bucket: :default
       },
       'IdV: doc auth welcome submitted' => {
-        step: 'welcome', analytics_id: 'Doc Auth', irs_reproofing: false, skip_hybrid_handoff: nil
+        step: 'welcome', analytics_id: 'Doc Auth', irs_reproofing: false, skip_hybrid_handoff: nil, lexisnexis_instant_verify_workflow_ab_test_bucket: :default
       },
       'IdV: doc auth agreement visited' => {
         step: 'agreement', analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, irs_reproofing: false, acuant_sdk_upgrade_ab_test_bucket: :default, lexisnexis_instant_verify_workflow_ab_test_bucket: :default
@@ -147,10 +147,10 @@ RSpec.feature 'Analytics Regression', js: true do
     {
       'IdV: intro visited' => {},
       'IdV: doc auth welcome visited' => {
-        step: 'welcome', analytics_id: 'Doc Auth', irs_reproofing: false, skip_hybrid_handoff: nil
+        step: 'welcome', analytics_id: 'Doc Auth', irs_reproofing: false, skip_hybrid_handoff: nil, lexisnexis_instant_verify_workflow_ab_test_bucket: :default
       },
       'IdV: doc auth welcome submitted' => {
-        step: 'welcome', analytics_id: 'Doc Auth', irs_reproofing: false, skip_hybrid_handoff: nil
+        step: 'welcome', analytics_id: 'Doc Auth', irs_reproofing: false, skip_hybrid_handoff: nil, lexisnexis_instant_verify_workflow_ab_test_bucket: :default
       },
       'IdV: doc auth agreement visited' => {
         step: 'agreement', analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, irs_reproofing: false, acuant_sdk_upgrade_ab_test_bucket: :default, lexisnexis_instant_verify_workflow_ab_test_bucket: :default
@@ -255,10 +255,10 @@ RSpec.feature 'Analytics Regression', js: true do
     {
       'IdV: intro visited' => {},
       'IdV: doc auth welcome visited' => {
-        step: 'welcome', analytics_id: 'Doc Auth', irs_reproofing: false, skip_hybrid_handoff: nil
+        step: 'welcome', analytics_id: 'Doc Auth', irs_reproofing: false, skip_hybrid_handoff: nil, lexisnexis_instant_verify_workflow_ab_test_bucket: :default
       },
       'IdV: doc auth welcome submitted' => {
-        step: 'welcome', analytics_id: 'Doc Auth', irs_reproofing: false, skip_hybrid_handoff: nil
+        step: 'welcome', analytics_id: 'Doc Auth', irs_reproofing: false, skip_hybrid_handoff: nil, lexisnexis_instant_verify_workflow_ab_test_bucket: :default
       },
       'IdV: doc auth agreement visited' => {
         step: 'agreement', analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, irs_reproofing: false, acuant_sdk_upgrade_ab_test_bucket: :default, lexisnexis_instant_verify_workflow_ab_test_bucket: :default
@@ -342,10 +342,10 @@ RSpec.feature 'Analytics Regression', js: true do
   let(:in_person_path_events) do
     {
       'IdV: doc auth welcome visited' => {
-        step: 'welcome', analytics_id: 'Doc Auth', irs_reproofing: false, skip_hybrid_handoff: nil
+        step: 'welcome', analytics_id: 'Doc Auth', irs_reproofing: false, skip_hybrid_handoff: nil, lexisnexis_instant_verify_workflow_ab_test_bucket: :default
       },
       'IdV: doc auth welcome submitted' => {
-        step: 'welcome', analytics_id: 'Doc Auth', irs_reproofing: false, skip_hybrid_handoff: nil
+        step: 'welcome', analytics_id: 'Doc Auth', irs_reproofing: false, skip_hybrid_handoff: nil, lexisnexis_instant_verify_workflow_ab_test_bucket: :default
       },
       'IdV: doc auth agreement visited' => {
         step: 'agreement', analytics_id: 'Doc Auth', skip_hybrid_handoff: nil, irs_reproofing: false, acuant_sdk_upgrade_ab_test_bucket: :default, lexisnexis_instant_verify_workflow_ab_test_bucket: :default
