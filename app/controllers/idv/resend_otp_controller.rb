@@ -1,5 +1,6 @@
 module Idv
   class ResendOtpController < ApplicationController
+    include Idv::AvailabilityConcern
     include IdvSession
     include PhoneOtpRateLimitable
     include PhoneOtpSendable

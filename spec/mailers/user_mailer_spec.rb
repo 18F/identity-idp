@@ -177,11 +177,13 @@ RSpec.describe UserMailer, type: :mailer do
   describe '#new_device_sign_in' do
     date = 'February 25, 2019 15:02'
     location = 'Washington, DC'
+    device_name = 'Chrome ABC on macOS 123'
     disavowal_token = 'asdf1234'
     let(:mail) do
       UserMailer.with(user: user, email_address: email_address).new_device_sign_in(
         date: date,
         location: location,
+        device_name: device_name,
         disavowal_token: disavowal_token,
       )
     end
@@ -201,8 +203,11 @@ RSpec.describe UserMailer, type: :mailer do
         to have_content(
           strip_tags(
             t(
-              'user_mailer.new_device_sign_in.info_html',
-              date: date, location: location, app_name: APP_NAME,
+              'user_mailer.new_device_sign_in.info',
+              date: date,
+              location: location,
+              device_name: device_name,
+              app_name: APP_NAME,
             ),
           ),
         )
@@ -217,6 +222,7 @@ RSpec.describe UserMailer, type: :mailer do
       mail = UserMailer.with(user: user, email_address: email_address).new_device_sign_in(
         date: date,
         location: location,
+        device_name: device_name,
         disavowal_token: disavowal_token,
       )
       expect(mail.to).to eq(nil)
@@ -399,6 +405,31 @@ RSpec.describe UserMailer, type: :mailer do
     let(:mail) do
       UserMailer.with(user: user, email_address: email_address).
         account_reset_complete
+    end
+
+    it_behaves_like 'a system email'
+    it_behaves_like 'an email that respects user email locale preference'
+
+    it 'sends to the current email' do
+      expect(mail.to).to eq [email_address.email]
+    end
+
+    it 'renders the subject' do
+      expect(mail.subject).to eq t('user_mailer.account_reset_complete.subject')
+    end
+
+    it 'renders the body' do
+      expect(mail.html_part.body).
+        to have_content(
+          strip_tags(t('user_mailer.account_reset_complete.intro_html', app_name_html: APP_NAME)),
+        )
+    end
+  end
+
+  describe '#account_delete_submitted' do
+    let(:mail) do
+      UserMailer.with(user: user, email_address: email_address).
+        account_delete_submitted
     end
 
     it_behaves_like 'a system email'

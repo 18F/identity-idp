@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module OpenidConnect
   class LogoutController < ApplicationController
     include SecureHeadersConcern
@@ -28,11 +30,8 @@ module OpenidConnect
         analytics.logout_initiated(**result.to_h.except(:redirect_uri))
         irs_attempts_api_tracker.logout_initiated(success: result.success?)
 
+        redirect_user(redirect_uri)
         sign_out
-        redirect_to(
-          redirect_uri,
-          allow_other_host: true,
-        )
       else
         render :error
       end
@@ -40,8 +39,31 @@ module OpenidConnect
 
     private
 
+    def redirect_user(redirect_uri)
+      case IdentityConfig.store.openid_connect_redirect
+      when :client_side
+        @oidc_redirect_uri = redirect_uri
+        render(
+          'openid_connect/shared/redirect',
+          layout: false,
+        )
+      when :client_side_js
+        @oidc_redirect_uri = redirect_uri
+        render(
+          'openid_connect/shared/redirect_js',
+          layout: false,
+        )
+      else # should only be :server_side
+        redirect_to(
+          redirect_uri,
+          allow_other_host: true,
+        )
+      end
+    end
+
     def apply_logout_secure_headers_override(redirect_uri, service_provider)
       return if service_provider.nil? || redirect_uri.nil?
+      return unless IdentityConfig.store.openid_connect_content_security_form_action_enabled
 
       uris = SecureHeadersAllowList.csp_with_sp_redirect_uris(
         redirect_uri,
@@ -82,10 +104,8 @@ module OpenidConnect
         irs_attempts_api_tracker.logout_initiated(success: result.success?)
 
         sign_out
-        redirect_to(
-          redirect_uri,
-          allow_other_host: true,
-        )
+
+        redirect_user(redirect_uri)
       end
     end
 

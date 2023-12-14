@@ -1,14 +1,12 @@
 module Idv
   class LinkSentController < ApplicationController
+    include Idv::AvailabilityConcern
     include DocumentCaptureConcern
     include IdvStepConcern
     include StepIndicatorConcern
-    include PhoneQuestionAbTestConcern
 
     before_action :confirm_not_rate_limited
     before_action :confirm_step_allowed
-    before_action :confirm_hybrid_handoff_complete
-    before_action :confirm_document_capture_needed
 
     def show
       analytics.idv_doc_auth_link_sent_visited(**analytics_arguments)
@@ -20,7 +18,7 @@ module Idv
     end
 
     def update
-      clear_invalid_steps!
+      clear_future_steps!
       analytics.idv_doc_auth_link_sent_submitted(**analytics_arguments)
 
       return render_document_capture_cancelled if document_capture_session&.cancelled_at
@@ -35,44 +33,25 @@ module Idv
     end
 
     def extra_view_variables
-      { phone: idv_session.phone_for_mobile_flow }.merge(
-        phone_question_ab_test_analytics_bucket,
-        phone_with_camera: idv_session.phone_with_camera,
-      )
+      { phone: idv_session.phone_for_mobile_flow }
     end
 
     def self.step_info
       Idv::StepInfo.new(
         key: :link_sent,
-        controller: controller_name,
-        next_steps: [:success], # [:ssn],
+        controller: self,
+        next_steps: [:ssn],
         preconditions: ->(idv_session:, user:) { idv_session.flow_path == 'hybrid' },
         undo_step: ->(idv_session:, user:) do
           idv_session.pii_from_doc = nil
           idv_session.invalidate_in_person_pii_from_user!
+          idv_session.had_barcode_attention_error = nil
+          idv_session.had_barcode_read_failure = nil
         end,
       )
     end
 
     private
-
-    def confirm_hybrid_handoff_complete
-      return if idv_session.flow_path == 'hybrid'
-
-      if idv_session.flow_path == 'standard'
-        redirect_to idv_document_capture_url
-      else
-        redirect_to idv_hybrid_handoff_url
-      end
-    end
-
-    def confirm_document_capture_needed
-      return if idv_session.redo_document_capture
-
-      return if idv_session.pii_from_doc.blank? && !idv_session.verify_info_step_complete?
-
-      redirect_to idv_ssn_url
-    end
 
     def analytics_arguments
       {

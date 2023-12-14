@@ -5,6 +5,7 @@ module Idv
 
     validates_presence_of :front
     validates_presence_of :back
+    validates_presence_of :selfie, if: :liveness_checking_enabled
     validates_presence_of :document_capture_session
 
     validate :validate_images
@@ -12,7 +13,8 @@ module Idv
     validate :limit_if_rate_limited
 
     def initialize(params, service_provider:, analytics: nil,
-                   uuid_prefix: nil, irs_attempts_api_tracker: nil, store_encrypted_images: false)
+                   uuid_prefix: nil, irs_attempts_api_tracker: nil, store_encrypted_images: false,
+                   liveness_checking_enabled: false)
       @params = params
       @service_provider = service_provider
       @analytics = analytics
@@ -20,6 +22,7 @@ module Idv
       @uuid_prefix = uuid_prefix
       @irs_attempts_api_tracker = irs_attempts_api_tracker
       @store_encrypted_images = store_encrypted_images
+      @liveness_checking_enabled = liveness_checking_enabled
     end
 
     def submit
@@ -51,7 +54,7 @@ module Idv
     private
 
     attr_reader :params, :analytics, :service_provider, :form_response, :uuid_prefix,
-                :irs_attempts_api_tracker
+                :irs_attempts_api_tracker, :liveness_checking_enabled
 
     def increment_rate_limiter!
       return unless document_capture_session
@@ -80,9 +83,11 @@ module Idv
         doc_auth_client.post_images(
           front_image: front_image_bytes,
           back_image: back_image_bytes,
+          selfie_image: liveness_checking_enabled ? selfie_image_bytes : nil,
           image_source: image_source,
           user_uuid: user_uuid,
           uuid_prefix: uuid_prefix,
+          liveness_checking_enabled: liveness_checking_enabled,
         )
       end
 
@@ -103,6 +108,10 @@ module Idv
 
     def back_image_bytes
       @back_image_bytes ||= back.read
+    end
+
+    def selfie_image_bytes
+      @selfie_image_bytes ||= selfie.read
     end
 
     def validate_pii_from_doc(client_response)
@@ -141,13 +150,10 @@ module Idv
         user_id: user_uuid,
         pii_like_keypaths: DocPiiForm.pii_like_keypaths,
         flow_path: params[:flow_path],
-        phone_with_camera: phone_with_camera,
       }
 
       @extra_attributes[:front_image_fingerprint] = front_image_fingerprint
       @extra_attributes[:back_image_fingerprint] = back_image_fingerprint
-      @extra_attributes.merge!(getting_started_ab_test_analytics_bucket)
-      @extra_attributes.merge!(phone_question_ab_test_analytics_bucket)
       @extra_attributes
     end
 
@@ -201,6 +207,10 @@ module Idv
       as_readable(:back)
     end
 
+    def selfie
+      as_readable(:selfie)
+    end
+
     def document_capture_session
       @document_capture_session ||= DocumentCaptureSession.find_by(
         uuid: document_capture_session_uuid,
@@ -217,6 +227,12 @@ module Idv
       if back.is_a? DataUrlImage::InvalidUrlFormatError
         errors.add(
           :back, t('doc_auth.errors.not_a_file'),
+          type: :not_a_file
+        )
+      end
+      if selfie.is_a? DataUrlImage::InvalidUrlFormatError
+        errors.add(
+          :selfie, t('doc_auth.errors.not_a_file'),
           type: :not_a_file
         )
       end
@@ -266,9 +282,7 @@ module Idv
         vendor_discriminator: document_capture_session_uuid,
         warn_notifier: proc do |attrs|
           analytics&.doc_auth_warning(
-            **attrs.
-                        merge(getting_started_ab_test_analytics_bucket).
-                        merge(phone_question_ab_test_analytics_bucket),
+            **attrs,
           )
         end,
       )
@@ -301,12 +315,9 @@ module Idv
           client_image_metrics: image_metadata,
           async: false,
           flow_path: params[:flow_path],
-          phone_with_camera: phone_with_camera,
           vendor_request_time_in_ms: vendor_request_time_in_ms,
         ).except(:classification_info).
-        merge(acuant_sdk_upgrade_ab_test_data).
-        merge(getting_started_ab_test_analytics_bucket).
-        merge(phone_question_ab_test_analytics_bucket),
+        merge(acuant_sdk_upgrade_ab_test_data),
       )
     end
 
@@ -337,20 +348,6 @@ module Idv
       }
     end
 
-    def getting_started_ab_test_analytics_bucket
-      {
-        getting_started_ab_test_bucket:
-          AbTests::IDV_GETTING_STARTED.bucket(user_uuid),
-      }
-    end
-
-    def phone_question_ab_test_analytics_bucket
-      {
-        phone_question_ab_test_bucket:
-          AbTests::IDV_PHONE_QUESTION.bucket(user_uuid),
-      }
-    end
-
     def acuant_sdk_capture?
       image_metadata.dig(:front, :source) == Idp::Constants::Vendors::ACUANT &&
         image_metadata.dig(:back, :source) == Idp::Constants::Vendors::ACUANT
@@ -372,7 +369,8 @@ module Idv
     def add_costs(response)
       Db::AddDocumentVerificationAndSelfieCosts.
         new(user_id: user_id,
-            service_provider: service_provider).
+            service_provider: service_provider,
+            liveness_checking_enabled: liveness_checking_enabled).
         call(response)
     end
 
@@ -473,15 +471,6 @@ module Idv
 
     def image_resubmission_check?
       IdentityConfig.store.doc_auth_check_failed_image_resubmission_enabled
-    end
-
-    def phone_with_camera
-      case params[:phone_with_camera]
-      when 'true'
-        true
-      when 'false'
-        false
-      end
     end
   end
 end

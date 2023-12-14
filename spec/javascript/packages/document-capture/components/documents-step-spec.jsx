@@ -15,14 +15,16 @@ import { render } from '../../../support/document-capture';
 import { getFixtureFile } from '../../../support/file';
 
 describe('document-capture/components/documents-step', () => {
-  it('renders with front and back inputs', () => {
-    const { getByLabelText } = render(<DocumentsStep />);
+  it('renders with only front and back inputs by default', () => {
+    const { getByLabelText, queryByLabelText } = render(<DocumentsStep />);
 
     const front = getByLabelText('doc_auth.headings.document_capture_front');
     const back = getByLabelText('doc_auth.headings.document_capture_back');
+    const selfie = queryByLabelText('doc_auth.headings.document_capture_selfie');
 
     expect(front).to.be.ok();
     expect(back).to.be.ok();
+    expect(selfie).to.not.exist();
   });
 
   it('calls onChange callback with uploaded image', async () => {
@@ -146,6 +148,31 @@ describe('document-capture/components/documents-step', () => {
       );
       const { queryByRole } = render(<App />);
       expect(queryByRole('heading', { name: 'doc_auth.not_ready.header', level: 2 })).to.be.null();
+    });
+  });
+
+  context('selfie capture', () => {
+    it('renders with front, back, and selfie inputs when featureflag is on', () => {
+      const App = composeComponents(
+        [
+          FeatureFlagContext.Provider,
+          {
+            value: {
+              selfieCaptureEnabled: true,
+            },
+          },
+        ],
+        [DocumentsStep],
+      );
+      const { getByLabelText, queryByLabelText } = render(<App />);
+
+      const front = getByLabelText('doc_auth.headings.document_capture_front');
+      const back = getByLabelText('doc_auth.headings.document_capture_back');
+      const selfie = queryByLabelText('doc_auth.headings.document_capture_selfie');
+
+      expect(front).to.be.ok();
+      expect(back).to.be.ok();
+      expect(selfie).to.be.ok();
     });
   });
 });

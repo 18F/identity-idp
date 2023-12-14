@@ -30,16 +30,6 @@ describe('useHistoryParam', () => {
     );
   }
 
-  let originalHash;
-
-  beforeEach(() => {
-    originalHash = window.location.hash;
-  });
-
-  afterEach(() => {
-    window.location.hash = originalHash;
-  });
-
   it('returns undefined value if absent from initial URL', () => {
     const { getByDisplayValue } = render(<TestComponent />);
 

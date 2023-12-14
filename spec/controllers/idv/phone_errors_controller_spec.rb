@@ -5,6 +5,12 @@ RSpec.describe Idv::PhoneErrorsController do
     { sample_bucket1: :sample_value1, sample_bucket2: :sample_value2 }
   end
 
+  describe '#step_info' do
+    it 'returns a valid StepInfo object' do
+      expect(Idv::PhoneErrorsController.step_info).to be_valid
+    end
+  end
+
   before do
     allow(subject).to receive(:remaining_attempts).and_return(5)
     stub_analytics
@@ -13,6 +19,13 @@ RSpec.describe Idv::PhoneErrorsController do
 
     if user
       stub_sign_in(user)
+      subject.idv_session.welcome_visited = true
+      subject.idv_session.idv_consent_given = true
+      subject.idv_session.flow_path = 'standard'
+      subject.idv_session.pii_from_doc = Idp::Constants::MOCK_IDV_APPLICANT
+      subject.idv_session.ssn = '123-45-6789'
+      subject.idv_session.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE
+      subject.idv_session.resolution_successful = true
       subject.idv_session.user_phone_confirmation = false
       subject.idv_session.previous_phone_step_params = previous_phone_step_params
     end
@@ -21,14 +34,14 @@ RSpec.describe Idv::PhoneErrorsController do
   shared_examples_for 'an idv phone errors controller action' do
     describe 'before_actions' do
       it 'includes before_actions from IdvSession' do
-        expect(subject).to have_actions(:before, :redirect_if_sp_context_needed)
+        expect(subject).to have_actions(:before, :redirect_unless_sp_requested_verification)
       end
     end
 
     context 'authenticated user' do
       let(:user) { create(:user) }
 
-      context 'the user has not submtted a phone number' do
+      context 'the user has not submitted a phone number' do
         it 'redirects to phone step' do
           subject.idv_session.previous_phone_step_params = nil
           get action
@@ -78,19 +91,10 @@ RSpec.describe Idv::PhoneErrorsController do
             subject.idv_session.user_phone_confirmation = true
           end
 
-          it 'redirects to the review url' do
+          it 'allows the back button and renders the template' do
             get action
 
-            expect(response).to redirect_to(idv_enter_password_url)
-          end
-          it 'does not log an event' do
-            expect(@analytics).not_to receive(:track_event).with(
-              'IdV: phone error visited',
-              hash_including(
-                type: action,
-              ),
-            )
-            get action
+            expect(response).to render_template(template)
           end
         end
       end

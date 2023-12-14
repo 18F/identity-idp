@@ -1,6 +1,7 @@
 module Idv
   module ByMail
     class LetterEnqueuedController < ApplicationController
+      include Idv::AvailabilityConcern
       include IdvSession
       include Idv::StepIndicatorConcern
 

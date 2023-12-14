@@ -59,6 +59,7 @@ class UserMailerPreview < ActionMailer::Preview
     UserMailer.with(user: user, email_address: email_address_record).new_device_sign_in(
       date: 'February 25, 2019 15:02',
       location: 'Washington, DC',
+      device_name: 'Chrome ABC on macOS 123',
       disavowal_token: SecureRandom.hex,
     )
   end
@@ -81,6 +82,10 @@ class UserMailerPreview < ActionMailer::Preview
 
   def account_reset_complete
     UserMailer.with(user: user, email_address: email_address_record).account_reset_complete
+  end
+
+  def account_delete_submitted
+    UserMailer.with(user: user, email_address: email_address_record).account_delete_submitted
   end
 
   def account_reset_cancel

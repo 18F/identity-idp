@@ -32,10 +32,27 @@ export interface InPersonContextProps {
   inPersonFullAddressEntryEnabled: boolean;
 
   /**
+   * When true a user has entered ipp by opting in
+   */
+  optedInToInPersonProofing: boolean;
+
+  /**
    * Collection of US states and territories
    * Each item is [Long name, abbreviation], e.g. ['Ohio', 'OH']
    */
   usStatesTerritories: Array<[string, string]>;
+
+  /**
+   * When skipDocAuth is true and in_person_proofing_opt_in_enabled is true,
+   * users are directed to the beginning of the IPP flow. This is set to true when
+   * they choose Opt-in IPP on the new How To Verify page
+   */
+  skipDocAuth?: boolean;
+
+  /**
+   * URL for Opt-in IPP, used when in_person_proofing_opt_in_enabled is enabled
+   */
+  howToVerifyURL?: string;
 }
 
 const InPersonContext = createContext<InPersonContextProps>({
@@ -43,6 +60,7 @@ const InPersonContext = createContext<InPersonContextProps>({
   addressSearchURL: '',
   inPersonOutageMessageEnabled: false,
   inPersonFullAddressEntryEnabled: false,
+  optedInToInPersonProofing: false,
   usStatesTerritories: [],
 });
 

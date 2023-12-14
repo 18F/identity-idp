@@ -1,4 +1,6 @@
 RSpec.shared_examples 'remember device' do
+  include OidcAuthHelper
+
   it 'does not require 2FA on sign in' do
     user = remember_device_and_sign_out_user
     sign_in_user(user)
@@ -56,12 +58,9 @@ RSpec.shared_examples 'remember device' do
 
     visit oidc_url
 
-    expect(page.response_headers['Content-Security-Policy']).
-      to(include('form-action \'self\' http://localhost:7654'))
-
     sign_in_user(user)
     click_continue
-    expect(current_url).to start_with('http://localhost:7654/auth/result')
+    expect(oidc_redirect_url).to start_with('http://localhost:7654/auth/result')
   end
 
   def expect_mfa_to_be_required_for_user(user)

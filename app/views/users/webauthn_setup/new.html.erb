@@ -30,20 +30,24 @@
   <%= hidden_field_tag :client_data_json, '', id: 'client_data_json' %>
   <%= hidden_field_tag :authenticator_data_value, '', id: 'authenticator_data_value' %>
   <%= hidden_field_tag :transports, '', id: 'transports' %>
+
   <%= hidden_field_tag :platform_authenticator, @platform_authenticator, id: 'platform_authenticator' %>
-  <%= render ValidatedFieldComponent.new(
-        form: f,
-        name: :name,
-        required: true,
-        label: @presenter.nickname_label,
-        hint: @presenter.device_nickname_hint,
-        input_html: {
-          id: 'nickname',
-          class: 'font-family-mono',
-          size: 16,
-          maxlength: 20,
-        },
-      ) %>
+  <% if !@platform_authenticator %>
+    
+      <%= render ValidatedFieldComponent.new(
+            form: f,
+            name: :name,
+            required: true,
+            label: @presenter.nickname_label,
+            hint: @presenter.device_nickname_hint,
+            input_html: {
+              id: 'nickname',
+              class: 'font-family-mono',
+              size: 16,
+              maxlength: 20,
+            },
+          ) %>
+  <% end %> 
   <div class="margin-y-4 text-center" id="spinner" hidden>
     <%= image_tag(
           asset_url('loading-badge.gif'),

@@ -14,6 +14,12 @@ RSpec.feature 'address proofing rate limit' do
 
       expect(current_path).to eq(idv_phone_errors_failure_path)
 
+      # Cancel is available
+      click_on 'Cancel'
+      expect(current_path).to eq(idv_cancel_path)
+      click_on(t('idv.cancel.actions.keep_going'))
+
+      # Can continue with Verify by mail
       click_on t('idv.failure.phone.rate_limited.gpo.button')
       click_on t('idv.buttons.mail.send')
 

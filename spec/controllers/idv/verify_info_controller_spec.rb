@@ -16,13 +16,21 @@ RSpec.describe Idv::VerifyInfoController do
   end
 
   before do
+    stub_sign_in(user)
     stub_analytics
     stub_attempts_tracker
-    stub_idv_steps_before_verify_step(user)
+    subject.idv_session.welcome_visited = true
+    subject.idv_session.idv_consent_given = true
     subject.idv_session.flow_path = 'standard'
     subject.idv_session.pii_from_doc = Idp::Constants::MOCK_IDV_APPLICANT.dup
     subject.idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
+  end
+
+  describe '#step_info' do
+    it 'returns a valid StepInfo object' do
+      expect(Idv::VerifyInfoController.step_info).to be_valid
+    end
   end
 
   describe 'before_actions' do
@@ -37,13 +45,6 @@ RSpec.describe Idv::VerifyInfoController do
       expect(subject).to have_actions(
         :before,
         :check_for_mail_only_outage,
-      )
-    end
-
-    it 'confirms ssn step complete' do
-      expect(subject).to have_actions(
-        :before,
-        :confirm_ssn_step_complete,
       )
     end
   end
@@ -99,12 +100,15 @@ RSpec.describe Idv::VerifyInfoController do
     end
 
     context 'when the user has already verified their info' do
-      it 'redirects to the enter password controller' do
+      it 'renders show' do
         subject.idv_session.resolution_successful = true
+        subject.idv_session.pii_from_doc = Idp::Constants::MOCK_IDV_APPLICANT
+        subject.idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]
+        subject.idv_session.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN
 
         get :show
 
-        expect(response).to redirect_to(idv_enter_password_url)
+        expect(response).to render_template :show
       end
     end
 
@@ -365,6 +369,12 @@ RSpec.describe Idv::VerifyInfoController do
   end
 
   describe '#update' do
+    it 'invalidates future steps' do
+      expect(subject).to receive(:clear_future_steps!)
+
+      put :update
+    end
+
     it 'logs the correct analytics event' do
       put :update
 

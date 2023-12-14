@@ -20,12 +20,7 @@
               class: 'usa-button usa-button--wide usa-button--big',
               form_class: 'margin-y-5' %>
 
-<% if @other_mfa_options_url %>
-  <h2 class="margin-top-5"><%= t('two_factor_authentication.opt_in.cant_use_phone') %></h2>
-
-  <%= link_to t('two_factor_authentication.login_options_link_text'),
-              @other_mfa_options_url %>
-<% end %>
+<%= render 'two_factor_authentication/troubleshooting_options', presenter: @presenter %>
 
 <%= render PageFooterComponent.new do %>
   <%= link_to cancel_link_text, @cancel_url %>

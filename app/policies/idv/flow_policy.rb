@@ -2,6 +2,8 @@ module Idv
   class FlowPolicy
     attr_reader :idv_session, :user
 
+    FINAL = :final
+
     def initialize(idv_session:, user:)
       @idv_session = idv_session
       @user = user
@@ -9,7 +11,7 @@ module Idv
 
     def controller_allowed?(controller:)
       controller_name = controller < ApplicationController ?
-                          controller.controller_name : controller
+                          StepInfo.full_controller_name(controller) : controller
       key = controller_to_key(controller: controller_name)
       step_allowed?(key: key)
     end
@@ -18,18 +20,18 @@ module Idv
       steps[latest_step]
     end
 
-    def undo_steps_from_controller!(controller:)
+    def undo_future_steps_from_controller!(controller:)
       controller_name = controller < ApplicationController ?
-                        controller.controller_name : controller
+                          StepInfo.full_controller_name(controller) : controller
       key = controller_to_key(controller: controller_name)
-      undo_steps_from!(key: key)
+      undo_future_steps!(key: key)
     end
 
     private
 
     def latest_step(current_step: :root)
       return nil if steps[current_step]&.next_steps.blank?
-      return current_step if steps[current_step].next_steps == [:success]
+      return current_step if steps[current_step].next_steps == [FINAL]
 
       steps[current_step].next_steps.each do |key|
         if step_allowed?(key: key)
@@ -43,18 +45,27 @@ module Idv
       {
         root: Idv::StepInfo.new(
           key: :root,
-          controller: AccountsController.controller_name,
-          next_steps: [:welcome],
+          controller: AccountsController,
+          next_steps: [:welcome, :request_letter],
           preconditions: ->(idv_session:, user:) { true },
           undo_step: ->(idv_session:, user:) { true },
         ),
         welcome: Idv::WelcomeController.step_info,
         agreement: Idv::AgreementController.step_info,
         how_to_verify: Idv::HowToVerifyController.step_info,
-        phone_question: Idv::PhoneQuestionController.step_info,
         hybrid_handoff: Idv::HybridHandoffController.step_info,
         link_sent: Idv::LinkSentController.step_info,
         document_capture: Idv::DocumentCaptureController.step_info,
+        ssn: Idv::SsnController.step_info,
+        ipp_ssn: Idv::InPerson::SsnController.step_info,
+        verify_info: Idv::VerifyInfoController.step_info,
+        ipp_verify_info: Idv::InPerson::VerifyInfoController.step_info,
+        address: Idv::AddressController.step_info,
+        phone: Idv::PhoneController.step_info,
+        phone_errors: Idv::PhoneErrorsController.step_info,
+        otp_verification: Idv::OtpVerificationController.step_info,
+        request_letter: Idv::ByMail::RequestLetterController.step_info,
+        enter_password: Idv::EnterPasswordController.step_info,
       }
     end
 
@@ -63,10 +74,16 @@ module Idv
     end
 
     def undo_steps_from!(key:)
-      return if key == :success
+      return if key == FINAL
+
+      steps[key].next_steps.each do |next_step|
+        undo_steps_from!(key: next_step)
+      end
 
       steps[key].undo_step.call(idv_session: idv_session, user: user)
+    end
 
+    def undo_future_steps!(key:)
       steps[key].next_steps.each do |next_step|
         undo_steps_from!(key: next_step)
       end

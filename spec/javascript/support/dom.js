@@ -94,13 +94,13 @@ export function createDOM() {
  */
 export function useCleanDOM(dom) {
   beforeEach(() => {
-    while (document.body.firstChild) {
-      document.body.removeChild(document.body.firstChild);
+    for (const element of [document.head, document.body]) {
+      while (element.firstChild) {
+        element.firstChild.remove();
+      }
     }
     document.documentElement.lang = 'en';
-    window.history.replaceState(null, '', TEST_URL);
-    window.location.pathname = '';
-    window.location.hash = '';
+    dom.reconfigure({ url: TEST_URL });
     dom.cookieJar.removeAllCookiesSync();
   });
 }

@@ -6,6 +6,8 @@ FactoryBot.define do
       pii { false }
     end
 
+    idv_level { :legacy_unsupervised }
+
     trait :active do
       active { true }
       activated_at { Time.zone.now }
@@ -35,6 +37,7 @@ FactoryBot.define do
 
     trait :in_person_verification_pending do
       in_person_verification_pending_at { 15.days.ago }
+      idv_level { :legacy_in_person }
     end
 
     trait :fraud_pending_reason do

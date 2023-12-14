@@ -4,6 +4,7 @@ RSpec.describe Idv::OtpVerificationController do
   let(:user) { create(:user) }
 
   let(:phone) { '2255555000' }
+  let(:vendor_phone_confirmation) { true }
   let(:user_phone_confirmation) { false }
   let(:phone_confirmation_otp_code) { '777777' }
   let(:phone_confirmation_otp_sent_at) { Time.zone.now }
@@ -28,21 +29,35 @@ RSpec.describe Idv::OtpVerificationController do
 
     sign_in(user)
     stub_verify_steps_one_and_two(user)
+    subject.idv_session.welcome_visited = true
+    subject.idv_session.idv_consent_given = true
+    subject.idv_session.flow_path = 'standard'
+    subject.idv_session.pii_from_doc = Idp::Constants::MOCK_IDV_APPLICANT
+    subject.idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE[:ssn]
+    subject.idv_session.resolution_successful = true
     subject.idv_session.applicant[:phone] = phone
-    subject.idv_session.vendor_phone_confirmation = true
+    subject.idv_session.address_verification_mechanism = 'phone'
+    subject.idv_session.vendor_phone_confirmation = vendor_phone_confirmation
     subject.idv_session.user_phone_confirmation = user_phone_confirmation
     subject.idv_session.user_phone_confirmation_session = user_phone_confirmation_session
   end
 
+  describe '#step_info' do
+    it 'returns a valid StepInfo object' do
+      expect(Idv::OtpVerificationController.step_info).to be_valid
+    end
+  end
+
   describe 'before_actions' do
     it 'includes before_actions from IdvSession' do
-      expect(subject).to have_actions(:before, :redirect_if_sp_context_needed)
+      expect(subject).to have_actions(:before, :redirect_unless_sp_requested_verification)
     end
   end
 
   describe '#show' do
     context 'the user has not been sent an otp' do
       let(:user_phone_confirmation_session) { nil }
+      let(:vendor_phone_confirmation) { nil }
 
       it 'redirects to the delivery method path' do
         get :show
@@ -53,9 +68,9 @@ RSpec.describe Idv::OtpVerificationController do
     context 'the user has already confirmed their phone' do
       let(:user_phone_confirmation) { true }
 
-      it 'redirects to the review step' do
+      it 'allows the back button and renders show' do
         get :show
-        expect(response).to redirect_to(idv_enter_password_path)
+        expect(response).to render_template :show
       end
     end
 
@@ -73,11 +88,18 @@ RSpec.describe Idv::OtpVerificationController do
     let(:otp_code_param) { { code: phone_confirmation_otp_code } }
     context 'the user has not been sent an otp' do
       let(:user_phone_confirmation_session) { nil }
+      let(:vendor_phone_confirmation) { nil }
 
       it 'redirects to otp delivery method selection' do
         put :update, params: otp_code_param
         expect(response).to redirect_to(idv_phone_url)
       end
+    end
+
+    it 'invalidates future steps' do
+      expect(subject).to receive(:clear_future_steps!)
+
+      put :update, params: otp_code_param
     end
 
     context 'the user has already confirmed their phone' do

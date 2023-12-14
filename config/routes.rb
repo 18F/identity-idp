@@ -19,6 +19,11 @@ Rails.application.routes.draw do
     namespace :internal do
       get '/sessions' => 'sessions#show'
       put '/sessions' => 'sessions#update'
+
+      namespace :two_factor_authentication do
+        put '/webauthn/:id' => 'webauthn#update', as: :webauthn
+        delete '/webauthn/:id' => 'webauthn#destroy', as: nil
+      end
     end
   end
 
@@ -218,6 +223,8 @@ Rails.application.routes.draw do
 
     get '/webauthn_setup' => 'users/webauthn_setup#new', as: :webauthn_setup
     patch '/webauthn_setup' => 'users/webauthn_setup#confirm'
+
+    # Deprecated routes: Remove once LG-11454 is fully deployed to production.
     delete '/webauthn_setup' => 'users/webauthn_setup#delete'
     get '/webauthn_setup_delete' => 'users/webauthn_setup#show_delete'
 
@@ -245,6 +252,9 @@ Rails.application.routes.draw do
     delete '/manage/phone/:id' => 'users/edit_phone#destroy'
     get '/manage/personal_key' => 'users/personal_keys#show', as: :manage_personal_key
     post '/manage/personal_key' => 'users/personal_keys#update'
+    get '/manage/webauthn/:id' => 'users/webauthn#edit', as: :edit_webauthn
+    put '/manage/webauthn/:id' => 'users/webauthn#update', as: :webauthn
+    delete '/manage/webauthn/:id' => 'users/webauthn#destroy', as: nil
 
     get '/account/personal_key' => 'accounts/personal_keys#new', as: :create_new_personal_key
     post '/account/personal_key' => 'accounts/personal_keys#create'
@@ -307,11 +317,6 @@ Rails.application.routes.draw do
       get '/activated' => 'idv#activated'
     end
     scope '/verify', module: 'idv', as: 'idv' do
-      if !FeatureManagement.idv_available?
-        # IdV has been disabled.
-        match '/*path' => 'unavailable#show', via: %i[get post]
-      end
-
       get '/mail_only_warning' => 'mail_only_warning#show'
       get '/personal_key' => 'personal_key#show'
       post '/personal_key' => 'personal_key#update'
@@ -326,8 +331,6 @@ Rails.application.routes.draw do
       # This route is included in SMS messages sent to users who start the IdV hybrid flow. It
       # should be kept short, and should not include underscores ("_").
       get '/documents' => 'hybrid_mobile/entry#show', as: :hybrid_mobile_entry
-      get '/getting_started' => 'getting_started#show'
-      put '/getting_started' => 'getting_started#update'
       get '/hybrid_mobile/document_capture' => 'hybrid_mobile/document_capture#show'
       put '/hybrid_mobile/document_capture' => 'hybrid_mobile/document_capture#update'
       get '/hybrid_mobile/capture_complete' => 'hybrid_mobile/capture_complete#show'
@@ -352,9 +355,6 @@ Rails.application.routes.draw do
       put '/phone_confirmation' => 'otp_verification#update', as: :nil
       get '/enter_password' => 'enter_password#new'
       put '/enter_password' => 'enter_password#create'
-      get '/phone_question' => 'phone_question#show'
-      get '/phone_question/phone_with_camera' => 'phone_question#phone_with_camera'
-      get '/phone_question/phone_without_camera' => 'phone_question#phone_without_camera'
       get '/session/errors/warning' => 'session_errors#warning'
       get '/session/errors/state_id_warning' => 'session_errors#state_id_warning'
       get '/phone/errors/timeout' => 'phone_errors#timeout'

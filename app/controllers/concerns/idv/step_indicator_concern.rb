@@ -48,7 +48,7 @@ module Idv
       return false unless current_user
       return true if current_user.gpo_verification_pending_profile?
 
-      return idv_session.address_verification_mechanism == 'gpo'
+      return idv_session.verify_by_mail?
     end
   end
 end

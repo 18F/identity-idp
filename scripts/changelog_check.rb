@@ -3,7 +3,7 @@ require 'open3'
 require 'optparse'
 
 CHANGELOG_REGEX =
-  %r{^(?:\* )?changelog: ?(?<category>[\w -]{2,}), ?(?<subcategory>[\w -]{2,}), ?(?<change>.+)$}i
+  %r{^(?:\* )?changelog: ?(?<category>[\w -]{2,}), ?(?<subcategory>[^,]{2,}), ?(?<change>.+)$}i
 CATEGORIES = [
   'User-Facing Improvements',
   'Bug Fixes',

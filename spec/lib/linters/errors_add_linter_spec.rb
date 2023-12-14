@@ -1,5 +1,7 @@
 require 'rubocop'
-require 'rubocop/rspec/support'
+require 'rubocop/rspec/cop_helper'
+require 'rubocop/rspec/expect_offense'
+
 require_relative '../../../lib/linters/errors_add_linter'
 
 RSpec.describe RuboCop::Cop::IdentityIdp::ErrorsAddLinter do

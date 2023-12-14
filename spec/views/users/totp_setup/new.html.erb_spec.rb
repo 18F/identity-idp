@@ -49,8 +49,21 @@ RSpec.describe 'users/totp_setup/new.html.erb' do
     it 'has labelled fields' do
       render
 
-      expect(rendered).to have_field(t('forms.totp_setup.totp_step_1'))
-      expect(rendered).to have_field(t('forms.totp_setup.totp_step_4'))
+      expect(rendered).to have_selector(
+        'h2#totp-step-1-label',
+        text: t('forms.totp_setup.totp_step_1'),
+      )
+      expect(rendered).to have_selector(
+        'h2#totp-step-4-label',
+        text: t('forms.totp_setup.totp_step_4'),
+      )
+    end
+
+    it 'has aria labels for TOTP' do
+      render
+
+      expect(rendered).to have_selector('[aria-labelledby="totp-step-1-label"]')
+      expect(rendered).to have_selector('[aria-labelledby="totp-step-4-label"]')
     end
   end
 

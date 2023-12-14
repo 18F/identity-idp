@@ -123,12 +123,13 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def new_device_sign_in(date:, location:, disavowal_token:)
+  def new_device_sign_in(date:, location:, device_name:, disavowal_token:)
     return unless email_should_receive_nonessential_notifications?(email_address.email)
 
     with_user_locale(user) do
       @login_date = date
       @login_location = location
+      @device_name = device_name
       @disavowal_token = disavowal_token
       mail(
         to: email_address.email,
@@ -168,6 +169,12 @@ class UserMailer < ActionMailer::Base
   end
 
   def account_reset_complete
+    with_user_locale(user) do
+      mail(to: email_address.email, subject: t('user_mailer.account_reset_complete.subject'))
+    end
+  end
+
+  def account_delete_submitted
     with_user_locale(user) do
       mail(to: email_address.email, subject: t('user_mailer.account_reset_complete.subject'))
     end

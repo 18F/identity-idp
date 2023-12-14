@@ -5,7 +5,7 @@ RSpec.describe Idv::ImageUploadsController do
 
   let(:document_filename_regex) { /^[a-f0-9]{8}-([a-f0-9]{4}-){3}[a-f0-9]{12}\.[a-z]+$/ }
   let(:base64_regex) { /^[a-z0-9+\/]+=*$/i }
-
+  let(:selfie_img) { nil }
   describe '#create' do
     subject(:action) do
       post :create, params: params
@@ -19,10 +19,11 @@ RSpec.describe Idv::ImageUploadsController do
         front: DocAuthImageFixtures.document_front_image_multipart,
         front_image_metadata: '{"glare":99.99}',
         back: DocAuthImageFixtures.document_back_image_multipart,
+        selfie: (selfie_img unless selfie_img.nil?),
         back_image_metadata: '{"glare":99.99}',
         document_capture_session_uuid: document_capture_session.uuid,
         flow_path: flow_path,
-      }
+      }.compact
     end
     let(:json) { JSON.parse(response.body, symbolize_names: true) }
 
@@ -132,9 +133,6 @@ RSpec.describe Idv::ImageUploadsController do
           flow_path: 'standard',
           front_image_fingerprint: nil,
           back_image_fingerprint: an_instance_of(String),
-          getting_started_ab_test_bucket: :welcome_default,
-          phone_question_ab_test_bucket: :bypass_phone_question,
-          phone_with_camera: nil,
         )
 
         expect(@irs_attempts_api_tracker).to receive(:track_event).with(
@@ -269,9 +267,6 @@ RSpec.describe Idv::ImageUploadsController do
           flow_path: 'standard',
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
-          getting_started_ab_test_bucket: :welcome_default,
-          phone_question_ab_test_bucket: :bypass_phone_question,
-          phone_with_camera: nil,
         )
 
         expect(@irs_attempts_api_tracker).to receive(:track_event).with(
@@ -372,9 +367,6 @@ RSpec.describe Idv::ImageUploadsController do
           flow_path: 'standard',
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
-          getting_started_ab_test_bucket: :welcome_default,
-          phone_question_ab_test_bucket: :bypass_phone_question,
-          phone_with_camera: nil,
         )
 
         expect(@analytics).to receive(:track_event).with(
@@ -400,9 +392,6 @@ RSpec.describe Idv::ImageUploadsController do
           vendor_request_time_in_ms: a_kind_of(Float),
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
-          getting_started_ab_test_bucket: :welcome_default,
-          phone_question_ab_test_bucket: :bypass_phone_question,
-          phone_with_camera: nil,
           doc_type_supported: boolean,
         )
 
@@ -418,9 +407,6 @@ RSpec.describe Idv::ImageUploadsController do
           flow_path: 'standard',
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
-          getting_started_ab_test_bucket: :welcome_default,
-          phone_question_ab_test_bucket: :bypass_phone_question,
-          phone_with_camera: nil,
           classification_info: a_kind_of(Hash),
         )
 
@@ -556,9 +542,6 @@ RSpec.describe Idv::ImageUploadsController do
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
-              getting_started_ab_test_bucket: :welcome_default,
-              phone_question_ab_test_bucket: :bypass_phone_question,
-              phone_with_camera: nil,
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -584,9 +567,6 @@ RSpec.describe Idv::ImageUploadsController do
               vendor_request_time_in_ms: a_kind_of(Float),
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
-              getting_started_ab_test_bucket: :welcome_default,
-              phone_question_ab_test_bucket: :bypass_phone_question,
-              phone_with_camera: nil,
               doc_type_supported: boolean,
             )
 
@@ -607,9 +587,6 @@ RSpec.describe Idv::ImageUploadsController do
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
-              getting_started_ab_test_bucket: :welcome_default,
-              phone_question_ab_test_bucket: :bypass_phone_question,
-              phone_with_camera: nil,
               classification_info: hash_including(
                 Front: hash_including(ClassName: 'Identification Card', CountryCode: 'USA'),
                 Back: hash_including(ClassName: 'Identification Card', CountryCode: 'USA'),
@@ -654,9 +631,6 @@ RSpec.describe Idv::ImageUploadsController do
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
-              getting_started_ab_test_bucket: :welcome_default,
-              phone_question_ab_test_bucket: :bypass_phone_question,
-              phone_with_camera: nil,
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -682,9 +656,6 @@ RSpec.describe Idv::ImageUploadsController do
               vendor_request_time_in_ms: a_kind_of(Float),
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
-              getting_started_ab_test_bucket: :welcome_default,
-              phone_question_ab_test_bucket: :bypass_phone_question,
-              phone_with_camera: nil,
               doc_type_supported: boolean,
             )
 
@@ -705,9 +676,6 @@ RSpec.describe Idv::ImageUploadsController do
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
-              getting_started_ab_test_bucket: :welcome_default,
-              phone_question_ab_test_bucket: :bypass_phone_question,
-              phone_with_camera: nil,
               classification_info: hash_including(
                 Front: hash_including(ClassName: 'Identification Card', CountryCode: 'USA'),
                 Back: hash_including(ClassName: 'Identification Card', CountryCode: 'USA'),
@@ -752,9 +720,6 @@ RSpec.describe Idv::ImageUploadsController do
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
-              getting_started_ab_test_bucket: :welcome_default,
-              phone_question_ab_test_bucket: :bypass_phone_question,
-              phone_with_camera: nil,
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -780,9 +745,6 @@ RSpec.describe Idv::ImageUploadsController do
               vendor_request_time_in_ms: a_kind_of(Float),
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
-              getting_started_ab_test_bucket: :welcome_default,
-              phone_question_ab_test_bucket: :bypass_phone_question,
-              phone_with_camera: nil,
               doc_type_supported: boolean,
             )
 
@@ -803,9 +765,6 @@ RSpec.describe Idv::ImageUploadsController do
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
-              getting_started_ab_test_bucket: :welcome_default,
-              phone_question_ab_test_bucket: :bypass_phone_question,
-              phone_with_camera: nil,
               classification_info: hash_including(:Front, :Back),
             )
 
@@ -870,9 +829,6 @@ RSpec.describe Idv::ImageUploadsController do
           flow_path: 'standard',
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
-          getting_started_ab_test_bucket: :welcome_default,
-          phone_question_ab_test_bucket: :bypass_phone_question,
-          phone_with_camera: nil,
         )
 
         expect(@analytics).to receive(:track_event).with(
@@ -900,9 +856,6 @@ RSpec.describe Idv::ImageUploadsController do
           vendor_request_time_in_ms: a_kind_of(Float),
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
-          getting_started_ab_test_bucket: :welcome_default,
-          phone_question_ab_test_bucket: :bypass_phone_question,
-          phone_with_camera: nil,
           doc_type_supported: boolean,
         )
 
@@ -944,9 +897,6 @@ RSpec.describe Idv::ImageUploadsController do
           flow_path: 'standard',
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
-          getting_started_ab_test_bucket: :welcome_default,
-          phone_question_ab_test_bucket: :bypass_phone_question,
-          phone_with_camera: nil,
         )
 
         expect(@analytics).to receive(:track_event).with(
@@ -976,9 +926,6 @@ RSpec.describe Idv::ImageUploadsController do
           vendor_request_time_in_ms: a_kind_of(Float),
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
-          getting_started_ab_test_bucket: :welcome_default,
-          phone_question_ab_test_bucket: :bypass_phone_question,
-          phone_with_camera: nil,
           doc_type_supported: boolean,
         )
 
@@ -1003,6 +950,20 @@ RSpec.describe Idv::ImageUploadsController do
             message: I18n.t('doc_auth.errors.alerts.birth_date_checks'),
           },
         ]
+      end
+    end
+
+    context 'when liveness checking enabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture).
+          and_return({ enabled: true })
+      end
+      let(:selfie_img) { DocAuthImageFixtures.selfie_image_multipart }
+      it 'returns a successful response' do
+        action
+        expect(response.status).to eq(200)
+        expect(json[:success]).to eq(true)
+        expect(document_capture_session.reload.load_result.success?).to eq(true)
       end
     end
   end

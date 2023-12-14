@@ -18,10 +18,6 @@ interface DocumentCapturePollingOptions {
 
   elements: DocumentCapturePollingElements;
 
-  phoneQuestionAbTestBucket: string | undefined;
-
-  phoneWithCamera: string | undefined;
-
   trackEvent?: typeof defaultTrackEvent;
 }
 
@@ -51,30 +47,19 @@ export class DocumentCapturePolling {
 
   cleanUpPromptOnNavigate: (() => void) | undefined;
 
-  phoneQuestionAbTestBucket: string | undefined;
-
-  phoneWithCamera: string | undefined;
-
   constructor({
     elements,
     statusEndpoint,
     trackEvent = defaultTrackEvent,
-    phoneQuestionAbTestBucket,
-    phoneWithCamera,
   }: DocumentCapturePollingOptions) {
     this.elements = elements;
     this.statusEndpoint = statusEndpoint;
     this.trackEvent = trackEvent;
-    this.phoneQuestionAbTestBucket = phoneQuestionAbTestBucket;
-    this.phoneWithCamera = phoneWithCamera;
   }
 
   bind() {
     this.toggleFormVisible(false);
-    this.trackEvent('IdV: Link sent capture doc polling started', {
-      phone_question_ab_test_bucket: this.phoneQuestionAbTestBucket,
-      phone_with_camera: this.phoneWithCamera,
-    });
+    this.trackEvent('IdV: Link sent capture doc polling started');
     this.schedulePoll();
     this.bindPromptOnNavigate(true);
     this.elements.backLink.addEventListener('click', () => this.bindPromptOnNavigate(false));
@@ -107,8 +92,6 @@ export class DocumentCapturePolling {
     this.trackEvent('IdV: Link sent capture doc polling complete', {
       isCancelled: result === ResultType.CANCELLED,
       isRateLimited: result === ResultType.RATE_LIMITED,
-      phone_question_ab_test_bucket: this.phoneQuestionAbTestBucket,
-      phone_with_camera: this.phoneWithCamera,
     });
     this.bindPromptOnNavigate(false);
     if (redirect) {

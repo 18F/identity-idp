@@ -64,9 +64,9 @@ RSpec.describe 'IdvStepConcern' do
         idv_session.pii_from_doc = { first_name: 'Susan' }
       end
 
-      it 'redirects to ssn screen' do
+      it 'allows the back button and stays on page' do
         get :show
-        expect(response).to redirect_to(idv_ssn_url)
+        expect(response).to have_http_status(200)
       end
 
       context 'and redo specified' do
@@ -126,10 +126,35 @@ RSpec.describe 'IdvStepConcern' do
         allow(subject).to receive(:current_user).and_return(user)
       end
 
-      it 'redirects to activated page' do
-        get :show
+      context 'and user has not yet acknowledged personal key' do
+        before do
+          idv_session.personal_key = 'ABCD-1234'
+        end
+        it 'does not redirect' do
+          get :show
+          expect(response).not_to redirect_to idv_activated_url
+        end
 
-        expect(response).to redirect_to idv_activated_url
+        context 'but they do not have a personal key to acknowledge' do
+          before do
+            idv_session.personal_key = nil
+          end
+          it 'redirects to activated page' do
+            get :show
+            expect(response).to redirect_to idv_activated_url
+          end
+        end
+      end
+
+      context 'and user has acknowledged personal key' do
+        before do
+          idv_session.acknowledge_personal_key!
+        end
+        it 'redirects to activated page' do
+          get :show
+
+          expect(response).to redirect_to idv_activated_url
+        end
       end
     end
 
@@ -148,173 +173,38 @@ RSpec.describe 'IdvStepConcern' do
     end
   end
 
-  describe '#confirm_address_step_complete' do
+  describe '#confirm_letter_recently_enqueued' do
     controller(idv_step_controller_class) do
-      before_action :confirm_address_step_complete
+      before_action :confirm_letter_recently_enqueued
     end
 
     before(:each) do
       sign_in(user)
+      allow(subject).to receive(:current_user).and_return(user)
       routes.draw do
         get 'show' => 'anonymous#show'
       end
     end
 
-    context 'the user has completed phone confirmation' do
+    context 'letter was not recently enqueued' do
       it 'does not redirect' do
-        idv_session.vendor_phone_confirmation = true
-        idv_session.user_phone_confirmation = true
-
         get :show
 
-        expect(response.body).to eq('Hello')
-        expect(response.status).to eq(200)
+        expect(response.body).to eq 'Hello'
+        expect(response).to_not redirect_to idv_letter_enqueued_url
+        expect(response.status).to eq 200
       end
     end
 
-    context 'the user has not confirmed their phone OTP' do
-      it 'redirects to OTP confirmation' do
-        idv_session.vendor_phone_confirmation = true
-        idv_session.user_phone_confirmation = false
+    context 'letter was recently enqueued' do
+      let(:user) { create(:user, :with_pending_gpo_profile, :fully_registered) }
 
-        get :show
-
-        expect(response).to redirect_to(idv_otp_verification_url)
-      end
-    end
-
-    context 'the user has not confirmed their phone with the vendor' do
-      it 'redirects to phone confirmation' do
-        idv_session.vendor_phone_confirmation = false
-        idv_session.user_phone_confirmation = false
-
-        get :show
-
-        expect(response).to redirect_to(idv_otp_verification_url)
-      end
-    end
-
-    context 'the user has selected GPO for address confirmation' do
-      it 'does not redirect' do
+      it 'redirects to letter enqueued page' do
         idv_session.address_verification_mechanism = 'gpo'
 
         get :show
 
-        expect(response.body).to eq('Hello')
-        expect(response.status).to eq(200)
-      end
-    end
-  end
-
-  describe '#confirm_document_capture_not_complete' do
-    controller(idv_step_controller_class) do
-      before_action :confirm_document_capture_not_complete
-    end
-
-    before(:each) do
-      sign_in(user)
-      routes.draw do
-        get 'show' => 'anonymous#show'
-      end
-    end
-
-    context 'the user has not completed document capture' do
-      it 'does not redirect and renders the view' do
-        idv_session.pii_from_doc = nil
-        idv_session.resolution_successful = nil
-
-        get :show
-
-        expect(response.body).to eq('Hello')
-        expect(response.status).to eq(200)
-      end
-    end
-
-    context 'the user has completed remote document capture but not verify_info' do
-      it 'redirects to the ssn step' do
-        idv_session.pii_from_doc = { first_name: 'Susan' }
-        idv_session.resolution_successful = false
-
-        get :show
-
-        expect(response).to redirect_to(idv_ssn_url)
-      end
-    end
-
-    context 'the user has completed in person document capture but not verify_info' do
-      it 'redirects to the ssn step' do
-        subject.user_session['idv/in_person'] = {}
-        subject.user_session['idv/in_person'][:pii_from_user] = { first_name: 'Susan' }
-        idv_session.resolution_successful = false
-
-        get :show
-
-        expect(response).to redirect_to(idv_ssn_url)
-      end
-    end
-
-    context 'the user has completed document capture and verify_info' do
-      it 'redirects to the ssn step' do
-        idv_session.pii_from_doc = nil
-        idv_session.resolution_successful = true
-
-        get :show
-
-        expect(response).to redirect_to(idv_ssn_url)
-      end
-    end
-  end
-
-  describe '#confirm_verify_info_step_complete' do
-    controller(idv_step_controller_class) do
-      before_action :confirm_verify_info_step_complete
-    end
-
-    before(:each) do
-      sign_in(user)
-      routes.draw do
-        get 'show' => 'anonymous#show'
-      end
-    end
-
-    context 'the user has completed the verify info step' do
-      it 'does not redirect and renders the view' do
-        idv_session.resolution_successful = true
-
-        get :show
-
-        expect(response.body).to eq('Hello')
-        expect(response.status).to eq(200)
-      end
-    end
-
-    context 'the user has not completed the verify info step' do
-      it 'redirects to the remote verify info step' do
-        idv_session.resolution_successful = nil
-
-        get :show
-
-        expect(response).to redirect_to(idv_verify_info_url)
-      end
-    end
-
-    context 'the user has not completed the verify info step with an in-person enrollment' do
-      let(:selected_location_details) do
-        JSON.parse(UspsInPersonProofing::Mock::Fixtures.enrollment_selected_location_details)
-      end
-
-      it 'redirects to the in-person verify info step' do
-        idv_session.resolution_successful = nil
-
-        InPersonEnrollment.find_or_create_by(
-          user: user,
-        ).update!(
-          selected_location_details: selected_location_details,
-        )
-
-        get :show
-
-        expect(response).to redirect_to(idv_in_person_verify_info_url)
+        expect(response).to redirect_to idv_letter_enqueued_url
       end
     end
   end

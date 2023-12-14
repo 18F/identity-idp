@@ -72,7 +72,8 @@ RSpec.feature 'Multi Two Factor Authentication' do
       expect(page).to have_current_path(authentication_methods_setup_path)
 
       select_2fa_option('auth_app')
-      fill_in t('forms.totp_setup.totp_step_1'), with: 'App'
+
+      fill_in_totp_name
 
       secret = find('#qr-code').text
       totp = generate_totp_code(secret)
@@ -97,7 +98,8 @@ RSpec.feature 'Multi Two Factor Authentication' do
       click_continue
 
       expect(current_path).to eq authenticator_setup_path
-      fill_in t('forms.totp_setup.totp_step_1'), with: 'App'
+
+      fill_in_totp_name
 
       secret = find('#qr-code').text
       totp = generate_totp_code(secret)
@@ -219,7 +221,6 @@ RSpec.feature 'Multi Two Factor Authentication' do
           click_continue
           expect(page).to have_current_path webauthn_setup_path(platform: true)
 
-          fill_in_nickname_and_click_continue
           mock_press_button_on_hardware_key_on_setup
           expect(page).to have_current_path(auth_method_confirmation_path)
           expect(page).to_not have_button(t('mfa.skip'))
@@ -268,7 +269,10 @@ RSpec.feature 'Multi Two Factor Authentication' do
     end
 
     it 'regenerates backup codes path if a user clicks that they need new backup codes' do
-      click_link strip_tags(t('two_factor_authentication.backup_codes.new_backup_codes_html'))
+      find(
+        'a',
+        text: t('two_factor_authentication.backup_codes.new_backup_codes_html').gsub('&nbsp;', ' '),
+      ).click
       expect(page).to have_current_path backup_code_regenerate_path
     end
   end
@@ -284,7 +288,7 @@ RSpec.feature 'Multi Two Factor Authentication' do
       select_2fa_option('webauthn_platform', visible: :all)
 
       click_continue
-      fill_in_nickname_and_click_continue
+
       mock_press_button_on_hardware_key_on_setup
 
       click_link t('mfa.add')

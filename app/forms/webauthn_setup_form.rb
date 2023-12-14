@@ -10,7 +10,7 @@ class WebauthnSetupForm
 
   attr_reader :attestation_response, :name_taken
 
-  def initialize(user, user_session)
+  def initialize(user:, user_session:, device_name:)
     @user = user
     @challenge = user_session[:webauthn_challenge]
     @attestation_object = nil
@@ -19,6 +19,7 @@ class WebauthnSetupForm
     @name = nil
     @platform_authenticator = false
     @authenticator_data_flags = nil
+    @device_name = device_name
   end
 
   def submit(protocol, params)
@@ -46,13 +47,13 @@ class WebauthnSetupForm
 
   attr_reader :success, :transports, :invalid_transports
   attr_accessor :user, :challenge, :attestation_object, :client_data_json,
-                :name, :platform_authenticator, :authenticator_data_flags
+                :name, :platform_authenticator, :authenticator_data_flags, :device_name
 
   def consume_parameters(params)
     @attestation_object = params[:attestation_object]
     @client_data_json = params[:client_data_json]
-    @name = params[:name]
     @platform_authenticator = (params[:platform_authenticator].to_s == 'true')
+    @name = @platform_authenticator ? @device_name : params[:name]
     @authenticator_data_flags = process_authenticator_data_value(
       params[:authenticator_data_value],
     )
@@ -64,11 +65,15 @@ class WebauthnSetupForm
   def name_is_unique
     return unless WebauthnConfiguration.exists?(user_id: @user.id, name: @name)
     if @platform_authenticator
-      errors.add :name, I18n.t('errors.webauthn_platform_setup.unique_name'), type: :unique_name
+      num_existing_devices = WebauthnConfiguration.
+        where(user_id: @user.id).
+        where('name LIKE ?', "#{@name}%").
+        count
+      @name = "#{@name} (#{num_existing_devices})"
     else
       errors.add :name, I18n.t('errors.webauthn_setup.unique_name'), type: :unique_name
+      @name_taken = true
     end
-    @name_taken = true
   end
 
   def valid_attestation_response?(protocol)

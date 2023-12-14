@@ -35,13 +35,6 @@ RSpec.describe Idv::HybridHandoffController do
         :check_for_mail_only_outage,
       )
     end
-
-    it 'includes redirect for phone_question ab test before_action' do
-      expect(subject).to have_actions(
-        :before,
-        :maybe_redirect_for_phone_question_ab_test,
-      )
-    end
   end
 
   describe '#show' do
@@ -148,22 +141,22 @@ RSpec.describe Idv::HybridHandoffController do
           subject.idv_session.mark_verify_info_step_complete!
         end
 
-        it 'does not set redo_document_capture to true in idv_session' do
+        it 'does set redo_document_capture to true in idv_session' do
           get :show, params: { redo: true }
 
-          expect(subject.idv_session.redo_document_capture).not_to be_truthy
+          expect(subject.idv_session.redo_document_capture).to be_truthy
         end
 
-        it 'does not add redo_document_capture to analytics' do
+        it 'does add redo_document_capture to analytics' do
           get :show, params: { redo: true }
 
-          expect(@analytics).not_to have_logged_event(analytics_name)
+          expect(@analytics).to have_logged_event(analytics_name)
         end
 
-        it 'redirects to review' do
+        it 'renders show' do
           get :show, params: { redo: true }
 
-          expect(response).to redirect_to(idv_enter_password_url)
+          expect(response).to render_template :show
         end
       end
     end
@@ -221,7 +214,7 @@ RSpec.describe Idv::HybridHandoffController do
       let(:document_capture_session_uuid) { '09228b6d-dd39-4925-bf82-b69104095517' }
 
       it 'invalidates future steps' do
-        expect(subject).to receive(:clear_invalid_steps!)
+        expect(subject).to receive(:clear_future_steps!)
 
         put :update, params: params
       end
@@ -281,62 +274,6 @@ RSpec.describe Idv::HybridHandoffController do
         ).with({ upload_method: 'desktop' })
 
         put :update, params: { type: 'desktop' }
-      end
-    end
-  end
-
-  context '#maybe_redirect_for_phone_question_ab_test' do
-    context 'A/B test specifies phone question page' do
-      before do
-        allow(controller).to receive(:phone_question_ab_test_bucket).
-          and_return(:bypass_phone_question)
-      end
-
-      it 'does not redirect users away from hybrid handoff page' do
-        get :show
-
-        expect(response).to render_template :show
-        expect(response.status).to eq(200)
-      end
-    end
-
-    context 'A/B test specifies phone question page' do
-      before do
-        allow(controller).to receive(:phone_question_ab_test_bucket).
-          and_return(:show_phone_question)
-      end
-
-      it 'redirect users to phone question page' do
-        get :show
-
-        expect(response).to redirect_to(idv_phone_question_url)
-      end
-
-      context 'when user comes from phone_question page' do
-        before do
-          subject.idv_session.phone_with_camera = false
-        end
-
-        it 'does not redirect users away from hybrid handoff page' do
-          get :show
-
-          expect(response).to render_template :show
-          expect(response.status).to eq(200)
-        end
-      end
-    end
-
-    context 'A/B test specifies some other value' do
-      before do
-        allow(controller).to receive(:phone_question_ab_test_bucket).
-          and_return(:something_else)
-      end
-
-      it 'does not redirect users away from hybrid handoff page' do
-        get :show
-
-        expect(response).to render_template :show
-        expect(response.status).to eq(200)
       end
     end
   end

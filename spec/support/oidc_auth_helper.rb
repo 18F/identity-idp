@@ -103,4 +103,31 @@ module OidcAuthHelper
     params[:acr_values] = "#{params[:acr_values]} " +
                           Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF
   end
+
+  # We rely on client-side redirects in some cases using:
+  # <meta content="0;url=REDIRECT_URL" http-equiv="refresh" />
+  # This method checks that the url contains the right url
+  def extract_meta_refresh_url
+    content = page.find("meta[http-equiv='refresh']", visible: false)['content']
+    timeout, url_value = content.split(';')
+    expect(timeout).to eq '0'
+    _, url = url_value.split('url=')
+    url
+  end
+
+  def extract_redirect_url
+    content = page.find('a#openid-connect-redirect')
+    content[:href]
+  end
+
+  def oidc_redirect_url
+    case IdentityConfig.store.openid_connect_redirect
+    when :client_side
+      extract_meta_refresh_url
+    when :client_side_js
+      extract_redirect_url
+    else # should only be :server_side
+      current_url
+    end
+  end
 end

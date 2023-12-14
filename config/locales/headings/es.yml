@@ -56,6 +56,7 @@ es:
     piv_cac_setup:
       already_associated: La PIV/CAC que has presentado está asociada a otro usuario.
       new: Use su tarjeta PIV/CAC para asegurar su cuenta
+    redirecting: Redirigiendo
     residential_address: Dirección residencial actual
     session_timeout_warning: '¿Necesita más tiempo?'
     sign_in_existing_users: Iniciar sesión para usuarios existentes
