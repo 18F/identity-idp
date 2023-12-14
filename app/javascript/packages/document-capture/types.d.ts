@@ -1,5 +1,4 @@
 import { AcuantCaptureFailureError, AcuantSuccessResponse } from './components/acuant-camera';
-import { n } from 'msw/lib/glossary-de6278a9';
 
 /**
  * Some of the other modules still refer to
