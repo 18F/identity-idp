@@ -1,5 +1,7 @@
 require 'rubocop'
-require 'rubocop/rspec/support'
+require 'rubocop/rspec/cop_helper'
+require 'rubocop/rspec/expect_offense'
+
 require_relative '../../../lib/linters/url_options_linter'
 
 RSpec.describe RuboCop::Cop::IdentityIdp::UrlOptionsLinter do
