@@ -32,8 +32,8 @@ module DocAuth
               Back: encode(back_image),
               Selfie: (encode(selfie_image) if include_liveness?),
               DocumentType: 'DriversLicense',
-            },
-          }.compact
+            }.compact,
+          }
 
           settings.merge(document).to_json
         end

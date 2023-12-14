@@ -4718,14 +4718,21 @@ module AnalyticsEvents
   end
 
   # @param [Boolean] success
-  # @param [Integer] mfa_method_counts
-  # Tracks when WebAuthn is deleted
-  def webauthn_deleted(success:, mfa_method_counts:, pii_like_keypaths:, **extra)
+  # @param [Hash] error_details
+  # @param [Integer] configuration_id
+  # Tracks when user attempts to delete a WebAuthn configuration
+  # @identity.idp.previous_event_name WebAuthn Deleted
+  def webauthn_delete_submitted(
+    success:,
+    configuration_id:,
+    error_details: nil,
+    **extra
+  )
     track_event(
-      'WebAuthn Deleted',
-      success: success,
-      mfa_method_counts: mfa_method_counts,
-      pii_like_keypaths: pii_like_keypaths,
+      :webauthn_delete_submitted,
+      success:,
+      error_details:,
+      configuration_id:,
       **extra,
     )
   end
@@ -4752,6 +4759,25 @@ module AnalyticsEvents
       'WebAuthn Setup Visited',
       platform_authenticator: platform_authenticator,
       enabled_mfa_methods_count: enabled_mfa_methods_count,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success
+  # @param [Hash] error_details
+  # @param [Integer] configuration_id
+  # Tracks when user submits a name change for a WebAuthn configuration
+  def webauthn_update_name_submitted(
+    success:,
+    configuration_id:,
+    error_details: nil,
+    **extra
+  )
+    track_event(
+      :webauthn_update_name_submitted,
+      success:,
+      error_details:,
+      configuration_id:,
       **extra,
     )
   end
