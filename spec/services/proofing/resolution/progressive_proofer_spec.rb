@@ -10,7 +10,8 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
   let(:timer) { JobHelpers::Timer.new }
   let(:user) { create(:user, :fully_registered) }
   let(:instant_verify_proofer) { instance_double(Proofing::LexisNexis::InstantVerify::Proofer) }
-  let(:instance) { described_class.new }
+  let(:dcs_uuid) { SecureRandom.uuid }
+  let(:instance) { described_class.new(instant_verify_ab_test_discriminator: dcs_uuid) }
   let(:state_id_address) do
     {
       address1: applicant_pii[:identity_doc_address1],
@@ -114,6 +115,40 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         expect(device_profiling_result.success).to be(true)
         expect(device_profiling_result.client).to eq('tmx_disabled')
         expect(device_profiling_result.review_status).to eq('pass')
+      end
+    end
+
+    context 'LexisNexis Instant Verify A/B test enabled' do
+      let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID }
+      let(:residential_instant_verify_proof) do
+        instance_double(Proofing::Resolution::Result)
+      end
+      let(:instant_verify_workflow) { 'equitable_workflow' }
+      let(:ab_test_variables) do
+        {
+          ab_testing_enabled: true,
+          use_alternate_workflow: true,
+          instant_verify_workflow: instant_verify_workflow,
+        }
+      end
+
+      before do
+        allow(instant_verify_proofer).to receive(:proof).
+          and_return(residential_instant_verify_proof)
+        allow(residential_instant_verify_proof).to receive(:success?).and_return(true)
+      end
+
+      it 'uses the selected workflow' do
+        lniv = Idv::LexisnexisInstantVerify.new(dcs_uuid)
+        expect(lniv).to receive(:workflow_ab_testing_variables).
+          and_return(ab_test_variables)
+        expect(Idv::LexisnexisInstantVerify).to receive(:new).
+          and_return(lniv)
+        expect(Proofing::LexisNexis::InstantVerify::Proofer).to receive(:new).
+          with(hash_including(instant_verify_workflow: instant_verify_workflow)).
+          and_return(instant_verify_proofer)
+
+        proof
       end
     end
 
@@ -322,6 +357,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           allow(instant_verify_proofer).to receive(:proof).and_return(residential_address_proof)
           allow(residential_address_proof).to receive(:success?).and_return(true)
         end
+
         context 'LexisNexis InstantVerify passes for id address' do
           it 'makes two requests to the InstantVerify Proofer' do
             expect(instant_verify_proofer).to receive(:proof).
@@ -355,6 +391,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           end
         end
       end
+
       context 'LexisNexis InstantVerify fails for residential address' do
         let(:aamva_proofer) { instance_double(Proofing::Aamva::Proofer) }
 

@@ -4047,6 +4047,34 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks when risc security event is pushed
+  # @param [String] client_id
+  # @param [String] event_type
+  # @param [Boolean] success
+  # @param ['async'|'direct'] transport
+  # @param [Integer] status
+  # @param [String] error
+  def risc_security_event_pushed(
+    client_id:,
+    event_type:,
+    success:,
+    transport:,
+    status: nil,
+    error: nil,
+    **extra
+  )
+    track_event(
+      :risc_security_event_pushed,
+      client_id:,
+      error:,
+      event_type:,
+      status:,
+      success:,
+      transport:,
+      **extra,
+    )
+  end
+
   # Tracks when rules of use is submitted with a success or failure
   # @param [Boolean] success
   # @param [Hash] errors
