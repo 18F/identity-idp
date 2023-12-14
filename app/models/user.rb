@@ -96,7 +96,7 @@ class User < ApplicationRecord
 
   def active_profile
     if defined?(@active_profile)
-      if !@active_profile&.active
+      if @active_profile && !@active_profile.active
         remove_instance_variable(:@active_profile)
       else
         return @active_profile
