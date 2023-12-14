@@ -2730,8 +2730,33 @@ module AnalyticsEvents
   end
 
   # @param [Integer] attempt number of attempts
+  # User captured and approved of their selfie
   def idv_sdk_selfie_image_added(attempt:, **extra)
     track_event(:idv_sdk_selfie_image_added, attempt: attempt, **extra)
+  end
+
+  # User closed the SDK for taking a selfie without submitting a photo
+  def idv_sdk_selfie_image_capture_closed_without_photo(**extra)
+    track_event(:idv_sdk_selfie_image_capture_closed_without_photo, **extra)
+  end
+
+  # @param [Integer] sdk_error_code SDK code for the error encountered
+  # @param [String] sdk_error_message SDK message for the error encountered
+  # User captured and approved of their selfie
+  # Error code 1: camera permission not granted
+  # Error code 2: unexpected errors
+  def idv_sdk_selfie_image_capture_failed(sdk_error_code:, sdk_error_message:, **extra)
+    track_event(
+      :idv_sdk_selfie_image_capture_failed,
+      sdk_error_code: sdk_error_code,
+      sdk_error_message: sdk_error_message,
+      **extra,
+    )
+  end
+
+  # User opened the SDK to take a selfie
+  def idv_sdk_selfie_image_capture_opened(**extra)
+    track_event(:idv_sdk_selfie_image_capture_opened, **extra)
   end
 
   # Tracks when the user visits one of the the session error pages.
