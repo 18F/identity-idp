@@ -183,7 +183,13 @@ module Idv
     end
 
     def ipp_document_capture_complete?
-      has_pii_from_user_in_flow_session
+      has_pii_from_user_in_flow_session &&
+        user_session['idv/in_person'][:pii_from_user].has_key?(:address1)
+    end
+
+    def ipp_address_allowed?
+      has_pii_from_user_in_flow_session &&
+        user_session['idv/in_person'][:pii_from_user].has_key?(:identity_doc_address1)
     end
 
     def verify_info_step_complete?

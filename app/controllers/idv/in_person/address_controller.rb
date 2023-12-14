@@ -7,6 +7,7 @@ module Idv
 
       before_action :render_404_if_in_person_residential_address_controller_enabled_not_set
       before_action :confirm_in_person_state_id_step_complete
+      ## before_action :confirm_step_allowed # pending FSM removal of state id step
       before_action :confirm_in_person_address_step_needed, only: :show
 
       def show
@@ -16,6 +17,8 @@ module Idv
       end
 
       def update
+        # don't clear the ssn when updating address, clear after SsnController
+        clear_future_steps!(controller: Idv::InPerson::SsnController)
         attrs = Idv::InPerson::AddressForm::ATTRIBUTES.difference([:same_address_as_id])
         pii_from_user[:same_address_as_id] = 'false' if updating_address?
         form_result = form.submit(flow_params)
@@ -41,6 +44,24 @@ module Idv
           pii:,
           updating_address: updating_address?,
         }
+      end
+
+      # update Idv::DocumentCaptureController.step_info.next_steps to include
+      # :ipp_address instead of :ipp_ssn in delete PR
+      def self.step_info
+        Idv::StepInfo.new(
+          key: :ipp_address,
+          controller: self,
+          next_steps: [:ipp_ssn],
+          preconditions: ->(idv_session:, user:) { idv_session.ipp_address_allowed? },
+          undo_step: ->(idv_session:, user:) do
+            flow_session[:pii_from_user][:address1] = nil
+            flow_session[:pii_from_user][:address2] = nil
+            flow_session[:pii_from_user][:city] = nil
+            flow_session[:pii_from_user][:zipcode] = nil
+            flow_session[:pii_from_user][:state] = nil
+          end,
+        )
       end
 
       private
