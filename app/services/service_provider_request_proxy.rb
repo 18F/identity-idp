@@ -51,7 +51,7 @@ class ServiceProviderRequestProxy
   def self.create(hash)
     uuid = hash[:uuid]
     obj = hash.slice(
-      :issuer, :url, :ial, :aal, :requested_attributes, :biometric_comparison_required,
+      :issuer, :url, :ial, :aal, :requested_attributes, :biometric_comparison_required
     )
     write(obj, uuid)
     hash_to_spr(obj, uuid)
