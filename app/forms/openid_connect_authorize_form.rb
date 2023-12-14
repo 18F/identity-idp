@@ -15,6 +15,7 @@ class OpenidConnectAuthorizeForm
     redirect_uri
     response_type
     state
+    biometric_comparison_required
   ].freeze
 
   ATTRS = [:unauthorized_scope, :acr_values, :scope, :verified_within, *SIMPLE_ATTRS].freeze
