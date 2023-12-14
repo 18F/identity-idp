@@ -95,9 +95,7 @@ class User < ApplicationRecord
   end
 
   def active_profile
-    return @active_profile if defined?(@active_profile) &&
-                              (@active_profile.nil? || @active_profile.active)
-
+    return @active_profile if defined?(@active_profile) && @active_profile&.active
     @active_profile = profiles.verified.find(&:active?)
   end
 

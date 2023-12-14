@@ -199,7 +199,7 @@ RSpec.describe User do
       end
 
       context 'when there is no active profile' do
-        it 'caches the nil value until .reload is called' do
+        it 'does not cache the nil value' do
           user = create(:user, :fully_registered)
           profile = create(
             :profile,
@@ -213,9 +213,6 @@ RSpec.describe User do
           profile.remove_gpo_deactivation_reason
           profile.activate
 
-          expect(user.active_profile).to be_nil
-
-          user.reload
           expect(user.active_profile).to eql(profile)
         end
       end
