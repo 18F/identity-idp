@@ -139,10 +139,10 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       end
 
       it 'uses the selected workflow' do
-        lniv = Idv::LexisnexisInstantVerify.new(dcs_uuid)
+        lniv = Idv::LexisNexisInstantVerify.new(dcs_uuid)
         expect(lniv).to receive(:workflow_ab_testing_variables).
           and_return(ab_test_variables)
-        expect(Idv::LexisnexisInstantVerify).to receive(:new).
+        expect(Idv::LexisNexisInstantVerify).to receive(:new).
           and_return(lniv)
         expect(Proofing::LexisNexis::InstantVerify::Proofer).to receive(:new).
           with(hash_including(instant_verify_workflow: instant_verify_workflow)).
