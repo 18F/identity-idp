@@ -10,7 +10,7 @@ RSpec.describe 'In Person Proofing', js: true do
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
     # test: if we force the config to be FALSE, we can keep this entire spec file and make
     # a new one in every divergent path
-    allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(false)
+    allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).and_return(false)
   end
 
   context 'ThreatMetrix review pending' do
