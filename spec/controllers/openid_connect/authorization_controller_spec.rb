@@ -901,6 +901,14 @@ RSpec.describe OpenidConnect::AuthorizationController do
           biometric_comparison_required: false,
         )
       end
+
+      it 'sets biometric_comparison_required to true if biometric comparison is required' do
+        params[:biometric_comparison_required] = true
+
+        action
+
+        expect(session[:sp][:biometric_comparison_required]).to eq(true)
+      end
     end
   end
 end
