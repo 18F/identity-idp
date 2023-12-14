@@ -212,5 +212,5 @@ es:
       renamed: Se ha cambiado correctamente el nombre de su método de desbloqueo
         facial o táctil
     webauthn_platform_header_text: Usar desbloqueo facial o táctil
-    webauthn_platform_use_key: Usar desbloqueo facial o táctil
+    webauthn_platform_use_key: Usar el desbloqueo de pantalla
     webauthn_use_key: Usar llave de seguridad

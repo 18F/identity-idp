@@ -198,5 +198,5 @@ en:
       nickname: Nickname
       renamed: Successfully renamed your face or touch unlock method
     webauthn_platform_header_text: Use face or touch unlock
-    webauthn_platform_use_key: Use face or touch unlock
+    webauthn_platform_use_key: Use screen unlock
     webauthn_use_key: Use security key

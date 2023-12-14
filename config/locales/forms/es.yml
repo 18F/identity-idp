@@ -145,13 +145,13 @@ es:
       continue: Continuar
       info_text: Tendrá que configurar un método de autenticación adicional después de
         establecer el desbloqueo con la cara o con la huella digital.
-      intro_html: '<p>Guarde la cara o la huella digital como credencial en su
-        dispositivo. De esta forma, accederá a su cuenta con una de ellas.
-        %{app_name} no almacena la cara ni la huella digital.</p><p>Es posible
-        que necesite usar el mismo dispositivo para ingresar en cada ocasión.
-        %{link}</p>'
-      intro_link_text: Obtenga más información sobre el desbloqueo con la cara o con
-        la huella digital.
+      intro_html: <p>Autentifíquese de la misma forma que desbloquea su dispositivo,
+        ya sea con su cara o huella digital, una contraseña u otro
+        método.</p><p>Si utiliza un gestor de contraseñas como iCloud Keychain o
+        Google Password Manager, es posible que le pida que guarde una llave de
+        acceso. Esto le permite autentificar en cualquier dispositivo con ese
+        gestor de contraseñas. %{link}</p>
+      intro_link_text: Más información sobre el uso de varios dispositivos.
       nickname: Apodo de dispositivo.
       nickname_hint: Si agrega más dispositivos para desbloquear con la cara o con la
         huella digital, podrá distinguirlos.

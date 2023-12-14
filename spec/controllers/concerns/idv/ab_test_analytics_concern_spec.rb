@@ -9,24 +9,14 @@ RSpec.describe Idv::AbTestAnalyticsConcern do
   describe '#ab_test_analytics_buckets' do
     controller(ApplicationController) do
       include Idv::AbTestAnalyticsConcern
-
-      def document_capture_session_uuid
-        SecureRandom.uuid
-      end
     end
 
     let(:acuant_sdk_args) { { as_bucket: :as_value } }
-    let(:instant_verify_sdk_args) { { iv_bucket: :iv_value } }
-    let(:lniv) { Idv::LexisnexisInstantVerify.new(controller.document_capture_session_uuid) }
 
     before do
       allow(subject).to receive(:current_user).and_return(user)
       expect(subject).to receive(:acuant_sdk_ab_test_analytics_args).
         and_return(acuant_sdk_args)
-      allow(Idv::LexisnexisInstantVerify).to receive(:new).
-        and_return(lniv)
-      expect(lniv).to receive(:workflow_ab_test_analytics_args).
-        and_return(instant_verify_sdk_args)
     end
 
     context 'idv_session is available' do
@@ -34,13 +24,8 @@ RSpec.describe Idv::AbTestAnalyticsConcern do
         sign_in(user)
         expect(subject).to receive(:idv_session).once.and_return(idv_session)
       end
-
       it 'includes acuant_sdk_ab_test_analytics_args' do
         expect(controller.ab_test_analytics_buckets).to include(acuant_sdk_args)
-      end
-
-      it 'includes lexisnexis_instant_verify_sdk_ab_test_analytics_args' do
-        expect(controller.ab_test_analytics_buckets).to include(instant_verify_sdk_args)
       end
 
       it 'includes skip_hybrid_handoff' do
@@ -50,12 +35,8 @@ RSpec.describe Idv::AbTestAnalyticsConcern do
     end
 
     context 'idv_session is not available' do
-      it 'still includes acuant_sdk_ab_test_analytics_args' do
+      it 'still works' do
         expect(controller.ab_test_analytics_buckets).to include(acuant_sdk_args)
-      end
-
-      it 'still includes lexisnexis_instant_verify_sdk_ab_test_analytics_args' do
-        expect(controller.ab_test_analytics_buckets).to include(instant_verify_sdk_args)
       end
     end
   end
