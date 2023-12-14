@@ -23,7 +23,8 @@ class ResolutionProofingJob < ApplicationJob
     ipp_enrollment_in_progress: false,
     user_id: nil,
     threatmetrix_session_id: nil,
-    request_ip: nil
+    request_ip: nil,
+    instant_verify_ab_test_discriminator: nil # rubocop:disable Lint/UnusedMethodArgument
   )
     timer = JobHelpers::Timer.new
 
