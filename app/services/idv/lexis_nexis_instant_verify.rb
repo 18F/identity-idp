@@ -1,5 +1,5 @@
 module Idv
-  class LexisnexisInstantVerify
+  class LexisNexisInstantVerify
     attr_reader :document_capture_session_uuid
 
     def initialize(document_capture_session_uuid)
