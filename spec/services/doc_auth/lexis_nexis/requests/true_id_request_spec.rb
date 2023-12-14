@@ -89,6 +89,12 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
       let(:workflow) { 'test_workflow' }
       let(:image_source) { DocAuth::ImageSources::ACUANT_SDK }
       it_behaves_like 'a successful request'
+
+      it 'does not include a nil selfie in the request body sent to TrueID' do
+        body_as_json = subject.send(:body)
+        body_as_hash = JSON.parse(body_as_json)
+        expect(body_as_hash['Document']).not_to have_key('Selfie')
+      end
     end
     context 'with unknown image source' do
       let(:workflow) { 'test_workflow_cropping' }

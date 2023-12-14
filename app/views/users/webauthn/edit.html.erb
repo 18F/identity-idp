@@ -1,0 +1,40 @@
+<% self.title = t('two_factor_authentication.webauthn_platform.edit_heading') %>
+
+<%= render PageHeadingComponent.new.with_content(t('two_factor_authentication.webauthn_platform.edit_heading')) %>
+
+<%= simple_form_for(
+      @form,
+      as: :form,
+      method: :put,
+      html: { autocomplete: 'off' },
+      url: webauthn_path(id: @form.configuration.id),
+    ) do |f| %>
+  <%= render ValidatedFieldComponent.new(
+        form: f,
+        name: :name,
+        label: t('two_factor_authentication.webauthn_platform.nickname'),
+      ) %>
+
+  <%= f.submit(
+        t('two_factor_authentication.webauthn_platform.change_nickname'),
+        class: 'display-block margin-top-5',
+      ) %>
+<% end %>
+
+<%= render ButtonComponent.new(
+      action: ->(**tag_options, &block) do
+        button_to(
+          webauthn_path(id: @form.configuration.id),
+          form: { aria: { label: t('two_factor_authentication.webauthn_platform.delete') } },
+          **tag_options,
+          &block
+        )
+      end,
+      method: :delete,
+      big: true,
+      wide: true,
+      danger: true,
+      class: 'display-block margin-top-2',
+    ).with_content(t('two_factor_authentication.webauthn_platform.delete')) %>
+
+<%= render 'shared/cancel', link: account_path %>

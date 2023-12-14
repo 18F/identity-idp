@@ -1,5 +1,7 @@
 require 'rubocop'
-require 'rubocop/rspec/support'
+require 'rubocop/rspec/cop_helper'
+require 'rubocop/rspec/expect_offense'
+
 require 'rails_helper'
 require_relative '../../../lib/linters/mail_later_linter'
 

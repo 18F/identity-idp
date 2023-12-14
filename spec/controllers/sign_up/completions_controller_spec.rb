@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe SignUp::CompletionsController do
+  let(:temporary_email) { 'name@temporary.com' }
+
   describe '#show' do
     let(:current_sp) { create(:service_provider) }
 
@@ -22,8 +24,10 @@ RSpec.describe SignUp::CompletionsController do
       end
 
       context 'IAL1' do
-        let(:user) { create(:user, :fully_registered) }
+        let(:user) { create(:user, :fully_registered, email: temporary_email) }
+
         before do
+          DisposableDomain.create(name: 'temporary.com')
           stub_sign_in(user)
           subject.session[:sp] = {
             issuer: current_sp.issuer,
@@ -255,11 +259,47 @@ RSpec.describe SignUp::CompletionsController do
         patch :update
         expect(response).to redirect_to account_path
       end
+
+      context 'with a disposable email address' do
+        let(:user) { create(:user, :fully_registered, email: temporary_email) }
+
+        it 'logs disposable domain' do
+          DisposableDomain.create(name: 'temporary.com')
+          stub_sign_in(user)
+          subject.session[:sp] = {
+            ial2: false,
+            issuer: 'foo',
+            request_url: 'http://example.com',
+          }
+          subject.user_session[:in_account_creation_flow] = true
+
+          patch :update
+
+          expect(@analytics).to have_received(:track_event).with(
+            'User registration: complete',
+            ial2: false,
+            ialmax: nil,
+            service_provider_name: subject.decorated_sp_session.sp_name,
+            page_occurence: 'agency-page',
+            needs_completion_screen_reason: :new_sp,
+            sp_request_requested_attributes: nil,
+            sp_session_requested_attributes: nil,
+            in_account_creation_flow: true,
+            disposable_email_domain: 'temporary.com',
+          )
+        end
+      end
     end
 
     context 'IAL2' do
       it 'tracks analytics' do
-        user = create(:user, :fully_registered, profiles: [create(:profile, :verified, :active)])
+        DisposableDomain.create(name: 'temporary.com')
+        user = create(
+          :user,
+          :fully_registered,
+          profiles: [create(:profile, :verified, :active)],
+          email: temporary_email,
+        )
         stub_sign_in(user)
         sp = create(:service_provider, issuer: 'https://awesome')
         subject.session[:sp] = {
@@ -282,6 +322,7 @@ RSpec.describe SignUp::CompletionsController do
           sp_request_requested_attributes: nil,
           sp_session_requested_attributes: ['email'],
           in_account_creation_flow: true,
+          disposable_email_domain: 'temporary.com',
         )
       end
 

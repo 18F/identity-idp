@@ -115,10 +115,18 @@ module OidcAuthHelper
     url
   end
 
+  def extract_redirect_url
+    content = page.find('a#openid-connect-redirect')
+    content[:href]
+  end
+
   def oidc_redirect_url
-    if IdentityConfig.store.openid_connect_redirect_interstitial_enabled
+    case IdentityConfig.store.openid_connect_redirect
+    when :client_side
       extract_meta_refresh_url
-    else
+    when :client_side_js
+      extract_redirect_url
+    else # should only be :server_side
       current_url
     end
   end

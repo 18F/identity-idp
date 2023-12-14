@@ -51,5 +51,13 @@ FactoryBot.define do
     end
 
     factory :service_provider_without_help_text, traits: [:without_help_text]
+
+    trait :internal do
+      iaa { ServiceProvider::IAA_INTERNAL }
+    end
+
+    trait :external do
+      iaa { 'LG1234' }
+    end
   end
 end
