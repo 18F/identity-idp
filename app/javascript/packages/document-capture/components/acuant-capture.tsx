@@ -647,6 +647,7 @@ function AcuantCapture(
           onImageCaptureSuccess={onImageCaptureSuccess}
           onImageCaptureFailure={onImageCaptureFailure}
           isReady={isReady}
+          isActive={isAcuantInstanceActive}
           setIsActive={setIsAcuantInstanceActive}
         >
           {!hasStartedCropping && (

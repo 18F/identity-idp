@@ -269,6 +269,7 @@ interface AcuantCameraContextProps {
   /**
    * Whether or not the full screen capturing modal is open
    */
+  isActive: boolean;
   setIsActive: (boolean) => void;
   /**
    * React children node
@@ -301,6 +302,7 @@ function AcuantCamera({
   onImageCaptureFailure = () => {},
   onCropStart = () => {},
   isReady = false,
+  isActive = false,
   setIsActive = () => {},
   children,
 }: AcuantCameraContextProps) {
@@ -327,7 +329,7 @@ function AcuantCamera({
         TAP_TO_CAPTURE: t('doc_auth.info.capture_status_tap_to_capture'),
       },
     };
-    if (isReady) {
+    if (isReady && isActive) {
       const onFailureCallbackWithOptions = (...args) => onImageCaptureFailure(...args);
       Object.keys(textOptions).forEach((key) => {
         onFailureCallbackWithOptions[key] = textOptions[key];
@@ -352,7 +354,7 @@ function AcuantCamera({
         setIsActive(false);
       }
     };
-  }, [isReady, onCropStart, onCropped, onImageCaptureFailure, setIsActive, t]);
+  }, [isReady, onCropStart, onCropped, onImageCaptureFailure, isActive, setIsActive, t]);
 
   return <>{children}</>;
 }
