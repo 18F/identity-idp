@@ -8,8 +8,8 @@ en:
     buttons:
       add_new_photos: Add new photos
       continue: Continue
-      take_or_upload_picture_html: '<lg-take-photo>Take photo</lg-take-photo> or
-        <lg-upload>Upload photo</lg-upload>'
+      take_or_upload_picture_html: '<lg-take-photo>Take photo</lg-take-photo><lg-or>
+        or </lg-or> <lg-upload>Upload photo</lg-upload>'
       take_picture: Take photo
       take_picture_retry: Retake photo
       upload_picture: Upload photo
