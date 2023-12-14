@@ -95,13 +95,8 @@ class User < ApplicationRecord
   end
 
   def active_profile
-    if defined?(@active_profile)
-      if @active_profile && !@active_profile.active
-        remove_instance_variable(:@active_profile)
-      else
-        return @active_profile
-      end
-    end
+    return @active_profile if defined?(@active_profile) &&
+                              (@active_profile.nil? || @active_profile.active)
 
     @active_profile = profiles.verified.find(&:active?)
   end
@@ -157,13 +152,7 @@ class User < ApplicationRecord
   end
 
   def pending_profile
-    if defined?(@pending_profile)
-      if @pending_profile&.active
-        remove_instance_variable(:@pending_profile)
-      else
-        return @pending_profile
-      end
-    end
+    return @pending_profile if defined?(@pending_profile) && !@pending_profile&.active
 
     @pending_profile = begin
       pending = profiles.in_person_verification_pending.or(
