@@ -1118,6 +1118,7 @@ RSpec.describe SamlIdpController do
           request_url: @stored_request_url.gsub('authpost', 'auth'),
           request_id: sp_request_id,
           requested_attributes: ['email'],
+          biometric_comparison_required: false,
         )
       end
 
@@ -1149,6 +1150,7 @@ RSpec.describe SamlIdpController do
           request_url: @saml_request.request.original_url.gsub('authpost', 'auth'),
           request_id: sp_request_id,
           requested_attributes: ['email'],
+          biometric_comparison_required: false,
         )
       end
 
