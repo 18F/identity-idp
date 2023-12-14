@@ -232,9 +232,6 @@ fr:
       capture_status_none: Alignez
       capture_status_small_document: Approchez-vous
       capture_status_tap_to_capture: Appuyez pour capturer
-      document_capture_intro_acknowledgment: Nous recueillons des informations sur
-        vous en lisant votre permis de conduire ou votre carte d’identité de
-        l’État. Nous utilisons ces informations pour vérifier votre identité.
       exit:
         with_sp: Quittez %{app_name} et retournez à %{sp_name}
         without_sp: Quittez la vérification d’identité et accédez à la page de votre compte
@@ -330,7 +327,6 @@ fr:
         pour terminer ce processus.
       header: Vous n’êtes pas prêt à ajouter des photos?
     tips:
-      document_capture_header_text: 'Pour obtenir les meilleurs résultats:'
       document_capture_hint: Doit être un JPG ou PNG
       document_capture_id_text1: Utilisez un fond sombre
       document_capture_id_text2: Prenez la photo sur une surface plane

@@ -192,9 +192,6 @@ en:
       capture_status_none: Align
       capture_status_small_document: Move Closer
       capture_status_tap_to_capture: Tap to Capture
-      document_capture_intro_acknowledgment: We’ll collect information about you by
-        reading your driver’s license or state ID card. We use this information
-        to verify your identity.
       exit:
         with_sp: Exit %{app_name} and return to %{sp_name}
         without_sp: Exit identity verification and go to your account page
@@ -276,7 +273,6 @@ en:
         process.
       header: Not ready to add photos?
     tips:
-      document_capture_header_text: 'For best results:'
       document_capture_hint: Must be a JPG or PNG
       document_capture_id_text1: Use a dark background
       document_capture_id_text2: Take the photo on a flat surface

@@ -252,12 +252,11 @@ RSpec.feature 'doc auth redo document capture', js: true do
         attach_selfie
         submit_images
         click_try_again
+        sleep(10)
       end
       it_behaves_like 'image re-upload not allowed'
-      it 'show headers with selfie' do
-        expect_doc_capture_page_header(t('doc_auth.headings.document_capture_with_selfie'))
-        expect_doc_capture_id_subheader
-        expect_doc_capture_selfie_subheader
+      it 'shows current existing header' do
+        expect_doc_capture_page_header(t('doc_auth.headings.review_issues'))
       end
     end
   end

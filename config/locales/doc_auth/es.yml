@@ -225,9 +225,6 @@ es:
       capture_status_none: Alinea
       capture_status_small_document: Muévete mas cerca
       capture_status_tap_to_capture: Toque para capturar
-      document_capture_intro_acknowledgment: Recopilaremos información sobre usted
-        leyendo su licencia de conducir o identificación estatal. Usamos esta
-        información para verificar su identidad.
       exit:
         with_sp: Salir de %{app_name} y volver a %{sp_name}
         without_sp: Salir de la verificación de identidad e ir a la página de su cuenta
@@ -318,7 +315,6 @@ es:
         proceso.
       header: ¿No está listo para enviar las fotos?
     tips:
-      document_capture_header_text: 'Para obtener los mejores resultados:'
       document_capture_hint: Debe ser un JPG o PNG
       document_capture_id_text1: Use un fondo oscuro
       document_capture_id_text2: Tome la foto en una superficie plana

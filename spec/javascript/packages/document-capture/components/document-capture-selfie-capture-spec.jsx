@@ -15,7 +15,7 @@ describe('document-capture/components/document-capture-selfie-capture', () => {
       />,
     );
 
-    const header = getByText('doc_auth.headings.document_capture_subheader_selfie');
+    const header = getByText('2. doc_auth.headings.document_capture_subheader_selfie');
     expect(header).to.be.ok();
     const tipListHeader = getByText('doc_auth.tips.document_capture_selfie_selfie_text');
     expect(tipListHeader).to.be.ok();

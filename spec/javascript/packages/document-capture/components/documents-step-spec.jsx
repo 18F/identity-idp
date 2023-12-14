@@ -189,4 +189,35 @@ describe('document-capture/components/documents-step', () => {
       expect(selfieHeader).to.be.ok();
     });
   });
+
+  it('renders with front, back when featureflag is off', () => {
+    const App = composeComponents(
+      [
+        FeatureFlagContext.Provider,
+        {
+          value: {
+            selfieCaptureEnabled: false,
+          },
+        },
+      ],
+      [DocumentsStep],
+    );
+    const { getByRole, getByLabelText } = render(<App />);
+
+    const front = getByLabelText('doc_auth.headings.document_capture_front');
+    const back = getByLabelText('doc_auth.headings.document_capture_back');
+    const pageHeader = getByRole('heading', {
+      name: 'doc_auth.headings.document_capture',
+      level: 1,
+    });
+    const idHeader = getByRole('heading', {
+      name: 'doc_auth.headings.document_capture_subheader_id',
+      level: 2,
+    });
+
+    expect(front).to.be.ok();
+    expect(back).to.be.ok();
+    expect(pageHeader).to.be.ok();
+    expect(idHeader).to.be.ok();
+  });
 });
