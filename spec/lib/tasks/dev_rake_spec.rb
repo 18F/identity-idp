@@ -82,7 +82,7 @@ RSpec.describe 'dev rake tasks' do
       expect(User.count).to eq 10
       verified_user.reload
       expect(verified_user.updated_at).to eq(verified_user_updated_at)
-      expect(verified_user.active_profile).to be(verified_user_profile)
+      expect(verified_user.active_profile).to eq(verified_user_profile)
 
       unverified_user = User.last
       expect(unverified_user.active_profile).to be_nil
@@ -99,7 +99,7 @@ RSpec.describe 'dev rake tasks' do
 
       verified_user.reload
       expect(verified_user.updated_at).to eq(verified_user_updated_at)
-      expect(verified_user.active_profile).to be(verified_user_profile)
+      expect(verified_user.active_profile).to eq(verified_user_profile)
     end
   end
 
