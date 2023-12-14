@@ -24,18 +24,13 @@
         "selector": "ExpressionStatement[expression.callee.object.name='userEvent']",
         "message": "Await the promised result of a userEvent interaction"
       }
-    ]
+    ],
+    "react/react-in-jsx-scope": "off"
   },
   "settings": {
     "import/internal-regex": "^@18f/identity-"
   },
   "overrides": [
-    {
-      "files": ["*"],
-      "rules": {
-        "react/react-in-jsx-scope": "off"
-      }
-    },
     {
       "files": ["*.spec.*", "*-spec.*", "*_spec.*", "spec/**"],
       "globals": {
