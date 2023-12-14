@@ -6,10 +6,10 @@ module Proofing
     #   2. The user has only provided one address for their residential and identity document
     #      address or separate residential and identity document addresses
     class ProgressiveProofer
-      attr_reader :document_capture_session_uuid
+      attr_reader :instant_verify_ab_test_discriminator
 
-      def initialize(document_capture_session_uuid = nil)
-        @document_capture_session_uuid = document_capture_session_uuid
+      def initialize(instant_verify_ab_test_discriminator = nil)
+        @instant_verify_ab_test_discriminator = instant_verify_ab_test_discriminator
       end
 
       # @param [Hash] applicant_pii keys are symbols and values are strings, confidential user info
@@ -259,7 +259,7 @@ module Proofing
       end
 
       def lexisnexis_instant_verify_workflow
-        ab_test_variables = Idv::LexisnexisInstantVerify.new(document_capture_session_uuid).
+        ab_test_variables = Idv::LexisnexisInstantVerify.new(instant_verify_ab_test_discriminator).
           workflow_ab_testing_variables
         ab_test_variables[:instant_verify_workflow]
       end

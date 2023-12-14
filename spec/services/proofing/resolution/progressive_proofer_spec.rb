@@ -11,7 +11,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
   let(:user) { create(:user, :fully_registered) }
   let(:instant_verify_proofer) { instance_double(Proofing::LexisNexis::InstantVerify::Proofer) }
   let(:dcs_uuid) { SecureRandom.uuid }
-  let(:instance) { described_class.new(document_capture_session_uuid: dcs_uuid) }
+  let(:instance) { described_class.new(instant_verify_ab_test_discriminator: dcs_uuid) }
   let(:state_id_address) do
     {
       address1: applicant_pii[:identity_doc_address1],

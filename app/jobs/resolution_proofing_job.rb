@@ -24,7 +24,7 @@ class ResolutionProofingJob < ApplicationJob
     user_id: nil,
     threatmetrix_session_id: nil,
     request_ip: nil,
-    document_capture_session_uuid: nil
+    instant_verify_ab_test_discriminator: nil
   )
     timer = JobHelpers::Timer.new
 
@@ -48,7 +48,7 @@ class ResolutionProofingJob < ApplicationJob
       should_proof_state_id: should_proof_state_id,
       double_address_verification: double_address_verification,
       ipp_enrollment_in_progress: ipp_enrollment_in_progress,
-      document_capture_session_uuid: document_capture_session_uuid,
+      instant_verify_ab_test_discriminator: instant_verify_ab_test_discriminator,
     )
 
     document_capture_session = DocumentCaptureSession.new(result_id: result_id)
@@ -77,9 +77,9 @@ class ResolutionProofingJob < ApplicationJob
     should_proof_state_id:,
     double_address_verification:,
     ipp_enrollment_in_progress:,
-    document_capture_session_uuid:
+    instant_verify_ab_test_discriminator:
   )
-    result = resolution_proofer(document_capture_session_uuid).proof(
+    result = resolution_proofer(instant_verify_ab_test_discriminator).proof(
       applicant_pii: applicant_pii,
       user_email: user&.confirmed_email_addresses&.first&.email,
       threatmetrix_session_id: threatmetrix_session_id,
@@ -115,9 +115,9 @@ class ResolutionProofingJob < ApplicationJob
     logger.info(hash.to_json)
   end
 
-  def resolution_proofer(document_capture_session_uuid)
+  def resolution_proofer(instant_verify_ab_test_discriminator)
     @resolution_proofer ||= Proofing::Resolution::ProgressiveProofer.
-      new(document_capture_session_uuid)
+      new(instant_verify_ab_test_discriminator)
   end
 
   def add_threatmetrix_proofing_component(user_id, threatmetrix_result)

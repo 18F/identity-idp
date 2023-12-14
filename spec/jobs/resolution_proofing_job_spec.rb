@@ -33,7 +33,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
     subject(:perform) do
       instance.perform(
         result_id: document_capture_session.result_id,
-        document_capture_session_uuid: document_capture_session.uuid,
+        instant_verify_ab_test_discriminator: document_capture_session.uuid,
         should_proof_state_id: should_proof_state_id,
         encrypted_arguments: encrypted_arguments,
         trace_id: trace_id,
@@ -108,7 +108,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
       end
     end
 
-    context 'with a nil document_capture_session_uuid (check for 50/50 state)' do
+    context 'with a nil instant_verify_ab_test_discriminator (check for 50/50 state)' do
       subject(:perform) do
         instance.perform(
           result_id: document_capture_session.result_id,
@@ -404,7 +404,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
       subject(:perform) do
         instance.perform(
           result_id: document_capture_session.result_id,
-          document_capture_session_uuid: document_capture_session.uuid,
+          instant_verify_ab_test_discriminator: document_capture_session.uuid,
           should_proof_state_id: should_proof_state_id,
           encrypted_arguments: encrypted_arguments,
           trace_id: trace_id,
