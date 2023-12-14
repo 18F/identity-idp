@@ -116,9 +116,6 @@ RSpec.describe 'In Person Proofing', js: true do
 
   it 'works for a happy path', allow_browser_log: true do
     user = user_with_2fa
-    puts('bbiiiggibie!!!')
-    puts(IdentityConfig.store.in_person_proofing_opt_in_enabled)
-    puts('yammo')
     sign_in_and_2fa_user(user)
     begin_in_person_proofing(user)
 
