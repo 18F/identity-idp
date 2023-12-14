@@ -26,7 +26,7 @@ module TwoFactorAuthCode
 
     def webauthn_help
       if platform_authenticator?
-        t('instructions.mfa.webauthn.confirm_webauthn_platform', app_name: APP_NAME)
+        t('instructions.mfa.webauthn.confirm_webauthn_platform_html')
       else
         t('instructions.mfa.webauthn.confirm_webauthn')
       end
