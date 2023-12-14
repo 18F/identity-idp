@@ -3,7 +3,8 @@
     "plugin:@18f/eslint-plugin-identity/recommended",
     // These two react lint plugins are mostly off, see overrides below
     "plugin:react/recommended",
-    "plugin:react-hooks/recommended"
+    "plugin:react-hooks/recommended",
+    "plugin:react/jsx-runtime"
   ],
   "plugins": ["@18f/eslint-plugin-identity"],
   "env": {
@@ -24,8 +25,7 @@
         "selector": "ExpressionStatement[expression.callee.object.name='userEvent']",
         "message": "Await the promised result of a userEvent interaction"
       }
-    ],
-    "react/react-in-jsx-scope": "off"
+    ]
   },
   "settings": {
     "import/internal-regex": "^@18f/identity-"
