@@ -640,8 +640,9 @@ RSpec.describe User do
   end
 
   describe '#pending_profile' do
+    let(:user) { User.new }
+
     context 'when a pending profile exists' do
-      let(:user) { User.new }
       let!(:pending) do
         create(
           :profile,
@@ -676,7 +677,6 @@ RSpec.describe User do
 
     context 'when pending profile does not exist' do
       it 'returns nil' do
-        user = User.new
         create(
           :profile,
           deactivation_reason: :encryption_error,
@@ -684,6 +684,19 @@ RSpec.describe User do
         )
 
         expect(user.pending_profile).to be_nil
+      end
+
+      it 'caches nil until reload' do
+        expect(user.pending_profile).to be_nil
+        pending_profile = create(
+          :profile,
+          gpo_verification_pending_at: 2.days.ago,
+          created_at: 2.days.ago,
+          user: user,
+        )
+        expect(user.pending_profile).to be_nil
+        user.reload
+        expect(user.pending_profile).to eql(pending_profile)
       end
     end
 
