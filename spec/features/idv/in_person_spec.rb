@@ -8,6 +8,9 @@ RSpec.describe 'In Person Proofing', js: true do
 
   before do
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+    # test: if we force the config to be FALSE, we can keep this entire spec file and make
+    # a new one in every divergent path
+    allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(false)
   end
 
   context 'ThreatMetrix review pending' do
@@ -113,7 +116,9 @@ RSpec.describe 'In Person Proofing', js: true do
 
   it 'works for a happy path', allow_browser_log: true do
     user = user_with_2fa
-
+    puts('bbiiiggibie!!!')
+    puts(IdentityConfig.store.in_person_proofing_opt_in_enabled)
+    puts('yammo')
     sign_in_and_2fa_user(user)
     begin_in_person_proofing(user)
 
@@ -121,7 +126,7 @@ RSpec.describe 'In Person Proofing', js: true do
     expect(page).to(have_content(t('in_person_proofing.body.prepare.verify_step_about')))
     expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.find_a_post_office'))
     complete_prepare_step(user)
-
+  
     # location page
     expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.find_a_post_office'))
     expect(page).to have_content(t('in_person_proofing.headings.po_search.location'))
