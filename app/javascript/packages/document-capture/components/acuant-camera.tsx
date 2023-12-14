@@ -1,7 +1,8 @@
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import type { ReactNode } from 'react';
-import { useImmutableCallback } from '@18f/identity-react-hooks';
 import { useI18n } from '@18f/identity-react-i18n';
+import { useImmutableCallback } from '@18f/identity-react-hooks';
+import AcuantContext from '../context/acuant';
 
 declare let AcuantCameraUI: AcuantCameraUIInterface;
 declare global {
@@ -263,15 +264,6 @@ interface AcuantCameraContextProps {
    */
   onCropStart: () => void;
   /**
-   * Camera is ready boolean
-   */
-  isReady: boolean;
-  /**
-   * Whether or not the full screen capturing modal is open
-   */
-  isActive: boolean;
-  setIsActive: (boolean) => void;
-  /**
    * React children node
    */
   children: ReactNode;
@@ -301,11 +293,9 @@ function AcuantCamera({
   onImageCaptureSuccess = () => {},
   onImageCaptureFailure = () => {},
   onCropStart = () => {},
-  isReady = false,
-  isActive = false,
-  setIsActive = () => {},
   children,
 }: AcuantCameraContextProps) {
+  const { isReady, setIsActive } = useContext(AcuantContext);
   const { t } = useI18n();
   const onCropped = useImmutableCallback(
     (response) => {
@@ -329,7 +319,7 @@ function AcuantCamera({
         TAP_TO_CAPTURE: t('doc_auth.info.capture_status_tap_to_capture'),
       },
     };
-    if (isReady && isActive) {
+    if (isReady) {
       const onFailureCallbackWithOptions = (...args) => onImageCaptureFailure(...args);
       Object.keys(textOptions).forEach((key) => {
         onFailureCallbackWithOptions[key] = textOptions[key];
@@ -354,7 +344,7 @@ function AcuantCamera({
         setIsActive(false);
       }
     };
-  }, [isReady, onCropStart, onCropped, onImageCaptureFailure, isActive, setIsActive, t]);
+  }, [isReady]);
 
   return <>{children}</>;
 }

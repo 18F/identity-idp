@@ -207,7 +207,7 @@ describe('document-capture/components/acuant-capture', () => {
       expect(window.AcuantCameraUI.end.called).to.be.false();
     });
 
-    it.only('does not start capturing if an acuant instance is already active', async () => {
+    it('does not start capturing if an acuant instance is already active', async () => {
       const { getByLabelText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
           <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">

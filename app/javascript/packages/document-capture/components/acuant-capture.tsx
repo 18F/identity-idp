@@ -2,7 +2,6 @@ import { Button, FullScreen } from '@18f/identity-components';
 import type { MouseEvent, ReactNode, Ref } from 'react';
 import {
   forwardRef,
-  useCallback,
   useContext,
   useEffect,
   useImperativeHandle,
@@ -317,7 +316,6 @@ function AcuantCapture(
   const {
     isReady,
     isActive: isAcuantInstanceActive,
-    setIsActive: setIsAcuantInstanceActive,
     acuantCaptureMode,
     isError,
     isCameraSupported,
@@ -632,23 +630,13 @@ function AcuantCapture(
     });
   }
 
-  const onCropStart = useCallback(() => setHasStartedCropping(true), [setHasStartedCropping]);
-  const onImageCaptureSuccess = useCallback(onAcuantImageCaptureSuccess, [
-    onAcuantImageCaptureSuccess,
-  ]);
-  const onImageCaptureFailure = useCallback(onAcuantImageCaptureFailure, [
-    onAcuantImageCaptureFailure,
-  ]);
   return (
     <div className={[className, 'document-capture-acuant-capture'].filter(Boolean).join(' ')}>
       {isCapturingEnvironment && !selfieCapture && (
         <AcuantCamera
-          onCropStart={onCropStart}
-          onImageCaptureSuccess={onImageCaptureSuccess}
-          onImageCaptureFailure={onImageCaptureFailure}
-          isReady={isReady}
-          isActive={isAcuantInstanceActive}
-          setIsActive={setIsAcuantInstanceActive}
+          onCropStart={() => setHasStartedCropping(true)}
+          onImageCaptureSuccess={onAcuantImageCaptureSuccess}
+          onImageCaptureFailure={onAcuantImageCaptureFailure}
         >
           {!hasStartedCropping && (
             <FullScreen
