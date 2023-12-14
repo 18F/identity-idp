@@ -61,7 +61,9 @@ function DocumentsStep({
       {flowPath === 'hybrid' && <HybridDocCaptureWarning className="margin-bottom-4" />}
       <PageHeading>{pageHeaderText}</PageHeading>
       <h2>
-        {selfieCaptureEnabled && '1.'} {t('doc_auth.headings.document_capture_subheader_id')}
+        {selfieCaptureEnabled
+          ? `1. ${t('doc_auth.headings.document_capture_subheader_id')}`
+          : t('doc_auth.headings.document_capture_subheader_id')}
       </h2>
       <TipList
         titleClassName="margin-bottom-0 text-bold"
