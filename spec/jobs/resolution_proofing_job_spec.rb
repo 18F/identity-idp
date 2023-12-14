@@ -109,10 +109,17 @@ RSpec.describe ResolutionProofingJob, type: :job do
     end
 
     context 'with a nil document_capture_session_uuid (check for 50/50 state)' do
-      let(:document_capture_session) do
-        DocumentCaptureSession.new(result_id: SecureRandom.hex, uuid: nil)
+      subject(:perform) do
+        instance.perform(
+          result_id: document_capture_session.result_id,
+          should_proof_state_id: should_proof_state_id,
+          encrypted_arguments: encrypted_arguments,
+          trace_id: trace_id,
+          user_id: user.id,
+          threatmetrix_session_id: threatmetrix_session_id,
+          request_ip: request_ip,
+        )
       end
-
       it 'stores a successful result' do
         stub_vendor_requests
 

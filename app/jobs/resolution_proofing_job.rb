@@ -16,7 +16,6 @@ class ResolutionProofingJob < ApplicationJob
 
   def perform(
     result_id:,
-    document_capture_session_uuid:,
     encrypted_arguments:,
     trace_id:,
     should_proof_state_id:,
@@ -24,7 +23,8 @@ class ResolutionProofingJob < ApplicationJob
     ipp_enrollment_in_progress: false,
     user_id: nil,
     threatmetrix_session_id: nil,
-    request_ip: nil
+    request_ip: nil,
+    document_capture_session_uuid: nil
   )
     timer = JobHelpers::Timer.new
 
