@@ -197,6 +197,28 @@ RSpec.describe User do
           expect(user.active_profile).to be_nil
         end
       end
+
+      context 'when there is no active profile' do
+        it 'caches the nil value until .reload is called' do
+          user = create(:user, :fully_registered)
+          profile = create(
+            :profile,
+            gpo_verification_pending_at: 2.days.ago,
+            created_at: 2.days.ago,
+            user: user,
+          )
+
+          expect(user.active_profile).to be_nil
+
+          profile.remove_gpo_deactivation_reason
+          profile.activate
+
+          expect(user.active_profile).to be_nil
+
+          user.reload
+          expect(user.active_profile).to eql(profile)
+        end
+      end
     end
   end
 
