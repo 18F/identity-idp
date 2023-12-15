@@ -12,12 +12,12 @@ RSpec.describe Idv::ApiImageUploadForm do
         back_image_metadata: back_image_metadata,
         selfie: selfie_image,
         document_capture_session_uuid: document_capture_session_uuid,
+        liveness_checking_enabled: liveness_checking_enabled,
       ),
       service_provider: build(:service_provider, issuer: 'test_issuer'),
       analytics: fake_analytics,
       irs_attempts_api_tracker: irs_attempts_api_tracker,
       store_encrypted_images: store_encrypted_images,
-      liveness_checking_enabled: liveness_checking_enabled,
     )
   end
 
@@ -79,7 +79,10 @@ RSpec.describe Idv::ApiImageUploadForm do
     end
 
     context 'when liveness check is enabled' do
-      let(:liveness_checking_enabled) { true }
+      let(:liveness_checking_enabled) { 'true' }
+      before do
+        allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture).and_return({ enabled: true })
+      end
       it 'is not valid without selfie' do
         expect(form.valid?).to eq(false)
       end
