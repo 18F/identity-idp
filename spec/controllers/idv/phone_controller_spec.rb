@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Idv::PhoneController do
+  include FlowPolicyHelper
+
   let(:max_attempts) { RateLimiter.max_attempts(:proof_address) }
   let(:good_phone) { '+1 (703) 555-0000' }
   let(:bad_phone) do
@@ -48,7 +50,8 @@ RSpec.describe Idv::PhoneController do
     end
 
     before do
-      stub_verify_steps_one_and_two(user)
+      stub_sign_in(user)
+      stub_up_to(:verify_info, idv_session: subject.idv_session)
     end
 
     it 'updates the doc auth log for the user for the usps_letter_sent event' do
@@ -88,11 +91,6 @@ RSpec.describe Idv::PhoneController do
 
     context 'when the user has not finished the verify step' do
       before do
-        subject.idv_session.welcome_visited = true
-        subject.idv_session.idv_consent_given = true
-        subject.idv_session.flow_path = 'standard'
-        subject.idv_session.pii_from_doc = Idp::Constants::MOCK_IDV_APPLICANT
-        subject.idv_session.ssn = '123-45-6789'
         subject.idv_session.applicant = nil
         subject.idv_session.resolution_successful = nil
       end
