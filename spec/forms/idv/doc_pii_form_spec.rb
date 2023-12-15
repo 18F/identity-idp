@@ -18,6 +18,7 @@ RSpec.describe Idv::DocPiiForm do
       zipcode: Faker::Address.zip_code,
       state: Faker::Address.state_abbr,
       state_id_jurisdiction: 'AL',
+      state_id_number: 'S59397998',
     }
   end
   let(:name_errors_pii) do
@@ -88,6 +89,17 @@ RSpec.describe Idv::DocPiiForm do
     }
   end
   let(:address1_error_pii) do
+    {
+      first_name: Faker::Name.first_name,
+      last_name: Faker::Name.last_name,
+      dob: valid_dob,
+      address1: nil,
+      zipcode: Faker::Address.zip_code,
+      state: Faker::Address.state_abbr,
+      state_id_jurisdiction: 'AL',
+    }
+  end
+  let(:nil_state_id_number_pii) do
     {
       first_name: Faker::Name.first_name,
       last_name: Faker::Name.last_name,
