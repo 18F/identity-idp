@@ -277,8 +277,6 @@ function evaluateImage(
   });
 }
 
-function evaluateImage() {}
-
 function getImageMetadata(
   file: File,
 ): Promise<{ width: number | null; height: number | null; fingerprint: string | null }> {
@@ -433,7 +431,7 @@ function AcuantCapture(
     incrementAttempt();
     return enhancedPayload;
   }
-  function dataURItoBlob(dataURI: string): Blob {
+  function dataURItoFile(fileName: string, dataURI: string): File {
     // convert base64 to raw binary data held in a string
     // doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this
     const byteString = atob(dataURI.split(',')[1]);
@@ -453,9 +451,9 @@ function AcuantCapture(
     }
 
     // write the ArrayBuffer to a blob, and you're done
-    const blob = new Blob([ab], { type: mimeString });
-    return blob;
+    return new File([ia], fileName, { type: mimeString });
   }
+
   /**
    * Handler for file input change events.
    */
@@ -476,6 +474,13 @@ function AcuantCapture(
         failedImageResubmission: hasFailed,
       });
       trackEvent(`IdV: ${name} image added`, analyticsPayload);
+      const newImg = await evaluateImage(width as number, height as number, nextValue);
+      if (newImg?.image?.data) {
+        const newImgFile = dataURItoFile(nextValue.name, newImg.image.data);
+        if (newImgFile?.size) {
+          nextValue = newImgFile;
+        }
+      }
     }
 
     onChangeAndResetError(nextValue, analyticsPayload);

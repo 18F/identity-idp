@@ -127,6 +127,10 @@ interface AcuantEvaluatedResult {
     width: number;
     height: number;
     bytes: Uint8ClampedArray;
+    /**
+     * dataURI
+     * * */
+    data: string;
   };
   signedImage: string;
   isPortraitOrientation: boolean;

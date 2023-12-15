@@ -98,11 +98,6 @@ interface FileInputProps {
    * Callback to trigger if upload error occurs
    */
   onError?: (message: ReactNode) => void;
-
-  /**
-   * Callback to transform value when it's set
-   */
-  transform?: (original: Blob | string | null | undefined) => Blob | string | null | undefined;
 }
 
 type AriaLabelReturnType = { 'aria-labelledby': string } | { 'aria-label': string };
@@ -185,7 +180,6 @@ function FileInput(props: FileInputProps, ref: ForwardedRef<any>) {
     onDrop,
     onChange = () => {},
     onError = () => {},
-    transform = (original) => original,
   } = props;
   const inputRef = useRef<HTMLInputElement>(null);
   const { t, formatHTML } = useI18n();
@@ -203,8 +197,6 @@ function FileInput(props: FileInputProps, ref: ForwardedRef<any>) {
     [value, isValuePending, previousIsValuePending],
   );
   const [ownErrorMessage, setOwnErrorMessage] = useState<string | null>(null);
-  const [transformedValue, setTransformedValue] = useState(value);
-
   useMemo(() => setOwnErrorMessage(null), [value]);
   useImperativeHandle(ref, () => inputRef.current);
   useEffect(() => {
@@ -218,10 +210,6 @@ function FileInput(props: FileInputProps, ref: ForwardedRef<any>) {
     // See: https://reactjs.org/docs/uncontrolled-components.html#the-file-input-tag
     if (inputRef.current && inputRef.current.files?.length) {
       inputRef.current.value = '';
-    }
-    // update value
-    if (value instanceof window.File && isImage(value)) {
-      setTransformedValue(transform(value));
     }
   }, [value]);
   const inputId = `file-input-${instanceId}`;
@@ -372,17 +360,9 @@ function FileInput(props: FileInputProps, ref: ForwardedRef<any>) {
           {value && !isValuePending && isImage(value) && (
             <div className="usa-file-input__preview" aria-hidden="true">
               {value instanceof window.Blob ? (
-                <FileImage
-                  file={transformedValue as Blob}
-                  alt=""
-                  className="usa-file-input__preview-image"
-                />
+                <FileImage file={value} alt="" className="usa-file-input__preview-image" />
               ) : (
-                <img
-                  src={transformedValue as string | undefined}
-                  alt=""
-                  className="usa-file-input__preview-image"
-                />
+                <img src={value} alt="" className="usa-file-input__preview-image" />
               )}
             </div>
           )}
