@@ -182,7 +182,7 @@ es:
       document_capture: Incluir fotos de su identificación
       document_capture_back: Parte trasera de su documento de identidad
       document_capture_front: Parte delantera de su documento de identidad
-      document_capture_selfie: Selfi
+      document_capture_selfie: Una foto tuya
       document_capture_subheader_id: Licencia de conducir o con un documento de identidad estatal
       document_capture_subheader_selfie: Foto suya
       document_capture_with_selfie: Incluir fotos de su identificación y una foto suya
@@ -324,7 +324,7 @@ es:
       document_capture_selfie_id_header_text: Consejos para obtener fotografías nítidas
       document_capture_selfie_selfie_text: Consejos para obtener una foto nítidas
       document_capture_selfie_text1: Mantenga el dispositivo al mismo nivel que los ojos
-      document_capture_selfie_text2: Asegúrese de que toda su cara sea visible
+      document_capture_selfie_text2: Asegúrate de que tu rostro completo sea visible
       document_capture_selfie_text3: Tómese la foto en un sitio con buena iluminación
       most_common: Más común
       review_issues_id_header_text: 'Revise las imágenes de su documento de identidad

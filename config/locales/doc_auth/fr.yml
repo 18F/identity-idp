@@ -190,7 +190,7 @@ fr:
       document_capture: Ajoutez des photos de votre pièce d’identité
       document_capture_back: Verso de votre carte d’identité
       document_capture_front: Recto de votre carte d’identité
-      document_capture_selfie: Égoportrait
+      document_capture_selfie: Une photo de vous
       document_capture_subheader_id: Permis de conduire ou de carte d’identité d’État
       document_capture_subheader_selfie: Photo de vous-même
       document_capture_with_selfie: Ajoutez des photos de votre pièce d’identité et une photo de vous-même

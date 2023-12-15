@@ -7,7 +7,7 @@ describe('document-capture/components/document-capture-selfie-capture', () => {
   it('renders the form steps', () => {
     const { getAllByRole, getByText } = render(
       <DocumentCaptureSelfieCapture
-        value={{}}
+        value=""
         onChange={() => {}}
         errors={[]}
         onError={() => {}}
