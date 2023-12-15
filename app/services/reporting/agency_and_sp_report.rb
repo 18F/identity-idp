@@ -35,14 +35,12 @@ module Reporting
     end
 
     def active_agencies
-      @active_agencies ||= begin
-        Agreements::PartnerAccountStatus.find_by(name: 'active').
-          partner_accounts.
-          includes(:agency).
-          where('became_partner <= ?', report_date).
-          map(&:agency).
-          uniq
-      end
+      @active_agencies ||= Agreements::PartnerAccountStatus.find_by(name: 'active').
+        partner_accounts.
+        includes(:agency).
+        where('became_partner <= ?', report_date).
+        map(&:agency).
+        uniq
     end
 
     def service_providers
