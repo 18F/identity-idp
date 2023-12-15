@@ -192,9 +192,9 @@ RSpec.feature 'document capture step', :js do
     end
   end
 
-  context 'with doc_auth_selfie_capture set to true' do
+  context 'with doc_auth_selfie_capture_enabled set to true' do
     before do
-      allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture).and_return({ enabled: true })
+      allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).and_return(true)
     end
 
     it 'proceeds to the next page with valid info, including a selfie image' do
