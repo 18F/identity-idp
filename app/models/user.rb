@@ -481,7 +481,6 @@ class User < ApplicationRecord
   end
 
   def reload(...)
-    remove_instance_variable(:@active_profile) if defined?(@active_profile)
     remove_instance_variable(:@pending_profile) if defined?(@pending_profile)
     super(...)
   end
