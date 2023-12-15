@@ -281,4 +281,17 @@ RSpec.describe Idv::DocPiiForm do
       expect(result.errors[:state]).to eq([I18n.t('doc_auth.errors.general.no_liveness')])
     end
   end
+
+  context 'when the state_id_number is missing' do
+    let(:subject) { Idv::DocPiiForm.new(pii: nil_state_id_number_pii) }
+
+    it 'responds with an unsuccessful result' do
+      result = subject.submit
+
+      expect(result.success?).to eq(false)
+      expect(result.errors[:state_id_number]).to eq(
+        [I18n.t('doc_auth.errors.general.missing_state_id_number')],
+      )
+    end
+  end
 end
