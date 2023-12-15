@@ -23,12 +23,5 @@
   <%= f.input :resend, as: :hidden %>
   <p><%= t('notices.forgot_password.no_email_sent_explanation_start') %>
   <%= f.button :button, t('links.resend'), class: 'usa-button--unstyled margin-left-05' %></p>
-
-  <p>
-    <%= t(
-          'notices.forgot_password.use_diff_email.text_html',
-          link_html: link_to(t('notices.forgot_password.use_diff_email.link'), sign_up_email_path),
-        ) %>
-  </p>
   <p><%= t('instructions.forgot_password.close_window') %></p>
 <% end %>

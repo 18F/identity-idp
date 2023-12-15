@@ -13,9 +13,6 @@ es:
       first_paragraph_start: Enviamos un email a
       no_email_sent_explanation_start: '¿No recibió un email?'
       resend_email_success: Enviamos otro email para restablecer la contraseña.
-      use_diff_email:
-        link: crear una cuenta nueva
-        text_html: O, %{link_html} utilizando un email diferente.
     password_changed: Ha cambiado su contraseña.
     phone_confirmed: Un teléfono fue agregado a tu cuenta.
     piv_cac_configured: Una tarjeta PIV/CAC fue agregada a tu cuenta.
