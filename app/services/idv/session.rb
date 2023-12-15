@@ -187,7 +187,7 @@ module Idv
         user_session['idv/in_person'][:pii_from_user].has_key?(:address1)
     end
 
-    def ipp_address_allowed?
+    def ipp_state_id_complete?
       has_pii_from_user_in_flow_session &&
         user_session['idv/in_person'][:pii_from_user].has_key?(:identity_doc_address1)
     end

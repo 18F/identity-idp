@@ -53,7 +53,7 @@ module Idv
           key: :ipp_address,
           controller: self,
           next_steps: [:ipp_ssn],
-          preconditions: ->(idv_session:, user:) { idv_session.ipp_address_allowed? },
+          preconditions: ->(idv_session:, user:) { idv_session.ipp_state_id_complete? },
           undo_step: ->(idv_session:, user:) do
             flow_session[:pii_from_user][:address1] = nil
             flow_session[:pii_from_user][:address2] = nil
