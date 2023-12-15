@@ -120,7 +120,7 @@ module InPersonHelper
     fill_out_state_id_form_ok(same_address_as_id: same_address_as_id)
     click_idv_continue
     unless same_address_as_id
-      expect(page).to have_current_path(idv_in_person_step_path(step: :address), wait: 10)
+      expect(page).to have_current_path(idv_in_person_proofing_address_path, wait: 10)
       expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
     end
   end

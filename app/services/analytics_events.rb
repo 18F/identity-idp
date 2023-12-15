@@ -1595,7 +1595,6 @@ module AnalyticsEvents
 
   # @param [String] flow_path
   # @param [String] step
-  # @param [Integer] step_count
   # @param [String] analytics_id
   # @param [Boolean] irs_reproofing
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
@@ -1603,7 +1602,6 @@ module AnalyticsEvents
   def idv_in_person_proofing_address_visited(
     flow_path: nil,
     step: nil,
-    step_count: nil,
     analytics_id: nil,
     irs_reproofing: nil,
     opted_in_to_in_person_proofing: nil,
@@ -1613,7 +1611,6 @@ module AnalyticsEvents
       'IdV: in person proofing address visited',
       flow_path: flow_path,
       step: step,
-      step_count: step_count,
       analytics_id: analytics_id,
       irs_reproofing: irs_reproofing,
       opted_in_to_in_person_proofing: opted_in_to_in_person_proofing,
@@ -1623,7 +1620,6 @@ module AnalyticsEvents
 
   # @param [String] flow_path
   # @param [String] step
-  # @param [Integer] step_count
   # @param [String] analytics_id
   # @param [Boolean] irs_reproofing
   # @param [Boolean] success
@@ -1633,7 +1629,6 @@ module AnalyticsEvents
   def idv_in_person_proofing_cancel_update_address(
     flow_path: nil,
     step: nil,
-    step_count: nil,
     analytics_id: nil,
     irs_reproofing: nil,
     success: nil,
@@ -1645,7 +1640,6 @@ module AnalyticsEvents
       'IdV: in person proofing cancel_update_address submitted',
       flow_path: flow_path,
       step: step,
-      step_count: step_count,
       analytics_id: analytics_id,
       irs_reproofing: irs_reproofing,
       success: success,
