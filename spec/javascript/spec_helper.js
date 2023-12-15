@@ -18,6 +18,7 @@ global.expect = chai.expect;
 // Emulate a DOM, since many modules will assume the presence of these globals exist as a side
 // effect of their import.
 const dom = createDOM();
+global.jsdom = dom;
 global.window = dom.window;
 const windowGlobals = Object.fromEntries(
   Object.getOwnPropertyNames(window)

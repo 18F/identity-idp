@@ -19,6 +19,21 @@ en:
       enabled_alert: You have enabled JavaScript in your browser.
       next_step: Please refresh this page once you have enabled JavaScript in your
         browser.
+    manageable_authenticator:
+      cancel: Cancel
+      created_on: Created on %{date}
+      delete: Delete
+      delete_confirm: Are you sure you want to delete this authentication method?
+      deleted: Successfully deleted an authentication method
+      deleting: Deleting…
+      done: Done
+      manage: Manage
+      manage_accessible_label: Manage authentication method
+      nickname: Nickname
+      rename: Rename
+      renamed: Successfully renamed your authentication method
+      save: Save
+      saving: Saving…
     memorable_date:
       day: Day
       errors:
