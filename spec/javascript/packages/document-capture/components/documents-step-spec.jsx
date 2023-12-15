@@ -1,4 +1,5 @@
 import userEvent from '@testing-library/user-event';
+import { within } from '@testing-library/react';
 import sinon from 'sinon';
 import { expect } from 'chai';
 import { t } from '@18f/identity-i18n';
@@ -164,7 +165,9 @@ describe('document-capture/components/documents-step', () => {
         ],
         [DocumentsStep],
       );
-      const { getByRole, getByLabelText, queryByLabelText } = render(<App />);
+      const { getAllByRole, getByText, getByRole, getByLabelText, queryByLabelText } = render(
+        <App />,
+      );
 
       const front = getByLabelText('doc_auth.headings.document_capture_front');
       const back = getByLabelText('doc_auth.headings.document_capture_back');
@@ -187,6 +190,16 @@ describe('document-capture/components/documents-step', () => {
       expect(pageHeader).to.be.ok();
       expect(idHeader).to.be.ok();
       expect(selfieHeader).to.be.ok();
+
+      const tipListHeader = getByText('doc_auth.tips.document_capture_selfie_selfie_text');
+      expect(tipListHeader).to.be.ok();
+      const lists = getAllByRole('list');
+      const tipList = lists[1];
+      expect(tipList).to.be.ok();
+      const tipListItem = within(tipList).getAllByRole('listitem');
+      tipListItem.forEach((li, idx) => {
+        expect(li.textContent).to.equals(`doc_auth.tips.document_capture_selfie_text${idx + 1}`);
+      });
     });
   });
 

@@ -27,13 +27,6 @@ import DocumentCaptureAbandon from './document-capture-abandon';
  */
 
 /**
- * Sides of the ID document to present as file input.
- *
- * @type {DocumentSide[]}
- */
-const DOCUMENT_SIDES = ['front', 'back'];
-
-/**
  * @param {import('@18f/identity-form-steps').FormStepComponentProps<DocumentsStepValue>} props Props object.
  */
 function DocumentsStep({
@@ -43,6 +36,13 @@ function DocumentsStep({
   onError = () => {},
   registerField = () => undefined,
 }) {
+  /**
+   * Sides of the ID document to present as file input.
+   *
+   * @type {DocumentSide[]}
+   */
+  const documentsSides = ['front', 'back'];
+
   const { t } = useI18n();
   const { isMobile } = useContext(DeviceContext);
   const { isLastStep } = useContext(FormStepsContext);
@@ -77,7 +77,7 @@ function DocumentsStep({
           t('doc_auth.tips.document_capture_id_text3'),
         ].concat(!isMobile ? [t('doc_auth.tips.document_capture_id_text4')] : [])}
       />
-      {DOCUMENT_SIDES.map((side) => (
+      {documentsSides.map((side) => (
         <DocumentSideAcuantCapture
           {...defaultSideProps}
           key={side}
@@ -89,6 +89,15 @@ function DocumentsStep({
         <>
           <hr className="margin-y-5" />
           <h2>2. {t('doc_auth.headings.document_capture_subheader_selfie')}</h2>
+          <TipList
+            title={t('doc_auth.tips.document_capture_selfie_selfie_text')}
+            titleClassName="margin-bottom-0 text-bold"
+            items={[
+              t('doc_auth.tips.document_capture_selfie_text1'),
+              t('doc_auth.tips.document_capture_selfie_text2'),
+              t('doc_auth.tips.document_capture_selfie_text3'),
+            ]}
+          />
           <DocumentSideAcuantCapture
             {...defaultSideProps}
             key="selfie"
