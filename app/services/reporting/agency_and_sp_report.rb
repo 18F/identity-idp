@@ -19,6 +19,11 @@ module Reporting
         ['IDV', idv_sps.count, idv_agencies.count],
         ['Total', auth_sps.count + idv_sps.count, auth_agencies.count + idv_agencies.count],
       ]
+    rescue ActiveRecord::QueryCanceled => err
+      [
+        ['Error', 'Message'],
+        [err.class.name, err.message],
+      ]
     end
 
     def agency_and_sp_emailable_report
