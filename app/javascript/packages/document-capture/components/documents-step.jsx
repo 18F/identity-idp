@@ -11,8 +11,6 @@ import TipList from './tip-list';
 import DocumentCaptureNotReady from './document-capture-not-ready';
 import { FeatureFlagContext } from '../context';
 import DocumentCaptureAbandon from './document-capture-abandon';
-import DocumentCaptureSelfieCapture from './document-capture-selfie-capture';
-import withProps from '../higher-order/with-props';
 
 /**
  * @typedef {'front'|'back'|'selfie'} DocumentSide
@@ -56,30 +54,12 @@ function DocumentsStep({
     ? t('doc_auth.headings.document_capture_with_selfie')
     : t('doc_auth.headings.document_capture');
 
-  const DocumentTipList = withProps({
-    title: t('doc_auth.tips.document_capture_selfie_id_header_text'),
-    titleClassName: 'margin-bottom-0 text-bold',
-    items: [
-      t('doc_auth.tips.document_capture_id_text1'),
-      t('doc_auth.tips.document_capture_id_text2'),
-      t('doc_auth.tips.document_capture_id_text3'),
-    ].concat(!isMobile ? [t('doc_auth.tips.document_capture_id_text4')] : []),
-  })(TipList);
-
   const defaultSideProps = {
     registerField,
     onChange,
     errors,
     onError,
   };
-
-  const SelfieSection = withProps({
-    key: 'selfie',
-    side: 'selfie',
-    value: value.selfie,
-    ...defaultSideProps,
-  })(DocumentCaptureSelfieCapture);
-
   return (
     <>
       {flowPath === 'hybrid' && <HybridDocCaptureWarning className="margin-bottom-4" />}
@@ -88,19 +68,35 @@ function DocumentsStep({
         {selfieCaptureEnabled && '1. '}
         {t('doc_auth.headings.document_capture_subheader_id')}
       </h2>
-      <DocumentTipList />
+      <TipList
+        titleClassName="margin-bottom-0 text-bold"
+        title={t('doc_auth.tips.document_capture_selfie_id_header_text')}
+        items={[
+          t('doc_auth.tips.document_capture_id_text1'),
+          t('doc_auth.tips.document_capture_id_text2'),
+          t('doc_auth.tips.document_capture_id_text3'),
+        ].concat(!isMobile ? [t('doc_auth.tips.document_capture_id_text4')] : [])}
+      />
       {DOCUMENT_SIDES.map((side) => (
         <DocumentSideAcuantCapture
+          {...defaultSideProps}
           key={side}
           side={side}
-          registerField={registerField}
           value={value[side]}
-          onChange={onChange}
-          errors={errors}
-          onError={onError}
         />
       ))}
-      {selfieCaptureEnabled && <SelfieSection />}
+      {selfieCaptureEnabled && (
+        <>
+          <hr className="margin-y-5" />
+          <h2>2. {t('doc_auth.headings.document_capture_subheader_selfie')}</h2>
+          <DocumentSideAcuantCapture
+            {...defaultSideProps}
+            key="selfie"
+            side="selfie"
+            value={value.selfie}
+          />
+        </>
+      )}
       {isLastStep ? <FormStepsButton.Submit /> : <FormStepsButton.Continue />}
       {notReadySectionEnabled && <DocumentCaptureNotReady />}
       {exitQuestionSectionEnabled && <DocumentCaptureAbandon />}
