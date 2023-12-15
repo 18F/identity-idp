@@ -109,6 +109,8 @@ RSpec.feature 'document capture step', :js do
         end
 
         it 'proceeds to the next page with valid info' do
+          expect(page).to have_current_path(idv_document_capture_url)
+          expect(page).not_to have_content(t('doc_auth.headings.document_capture_selfie'))
           attach_and_submit_images
           expect(page).to have_current_path(idv_ssn_url)
 
@@ -176,6 +178,7 @@ RSpec.feature 'document capture step', :js do
 
         expect(page).to have_current_path(idv_document_capture_url)
         expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+        expect(page).not_to have_content(t('doc_auth.headings.document_capture_selfie'))
 
         attach_and_submit_images
 
