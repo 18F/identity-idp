@@ -277,33 +277,22 @@ function evaluateImage(
   });
 }
 
-function processImage(file: File, width: number, height: number) {
+function evaluateImage() {}
+
+function getImageMetadata(
+  file: File,
+): Promise<{ width: number | null; height: number | null; fingerprint: string | null }> {
+  const dimension = getImageDimensions(file);
   const fingerprint = getFingerPrint(file);
-  const processedImg = evaluateImage(width, height, file);
-  return new Promise<{ fingerprint: string | null; processedImg: AcuantEvaluatedResult | null }>(
+  return new Promise<{ width: number | null; height: number | null; fingerprint: string | null }>(
     function (resolve) {
-      Promise.all([fingerprint, processedImg])
+      Promise.all([dimension, fingerprint])
         .then((results) => {
-          resolve({ fingerprint: results[0], processedImg: results[1] });
+          resolve({ width: results[0].width, height: results[0].height, fingerprint: results[1] });
         })
-        .catch(() => ({ fingerprint: null, processedImg: null }));
+        .catch(() => ({ width: null, height: null, fingerprint: null }));
     },
   );
-}
-
-function getImageMetadata(file: File): Promise<{
-  width: number | null;
-  height: number | null;
-  fingerprint: string | null;
-  processedImg: AcuantEvaluatedResult | null;
-}> {
-  const dimension = getImageDimensions(file);
-  return dimension.then(({ width, height }) => {
-    const result = processImage(file, width as number, height as number);
-    return result.then(({ fingerprint, processedImg }) =>
-      Promise.resolve({ width, height, fingerprint, processedImg }),
-    );
-  });
 }
 
 /**
@@ -444,7 +433,7 @@ function AcuantCapture(
     incrementAttempt();
     return enhancedPayload;
   }
-  function dataURItoBlob(dataURI) {
+  function dataURItoBlob(dataURI: string): Blob {
     // convert base64 to raw binary data held in a string
     // doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this
     const byteString = atob(dataURI.split(',')[1]);
@@ -475,8 +464,7 @@ function AcuantCapture(
     let hasFailed = false;
 
     if (nextValue) {
-      const result = await getImageMetadata(nextValue);
-      const { width, height, fingerprint, processedImg } = result;
+      const { width, height, fingerprint } = await getImageMetadata(nextValue);
       hasFailed = failedSubmissionImageFingerprints[name]?.includes(fingerprint);
       analyticsPayload = getAddAttemptAnalyticsPayload({
         width,
@@ -488,17 +476,6 @@ function AcuantCapture(
         failedImageResubmission: hasFailed,
       });
       trackEvent(`IdV: ${name} image added`, analyticsPayload);
-      if (processedImg !== null && processedImg !== undefined) {
-        console.log('cropped image available, update file');
-        console.log('Processed image size:', processedImg.image.width);
-        const blob = new Blob([processedImg.image.bytes], { type: nextValue.type });
-        nextValue = new File([blob], nextValue.name);
-      } else {
-        console.log('Processed image not available');
-        // const blob = dataURItoBlob(
-        //   'data:image/jpeg;base64,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',
-        // );
-      }
     }
 
     onChangeAndResetError(nextValue, analyticsPayload);
