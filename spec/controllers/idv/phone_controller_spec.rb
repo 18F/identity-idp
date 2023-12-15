@@ -340,8 +340,6 @@ RSpec.describe Idv::PhoneController do
       end
 
       it 'invalidates future steps and invalidates phone step' do
-        user = build(:user, :with_phone, with: { phone: good_phone, confirmed_at: Time.zone.now })
-        stub_verify_steps_one_and_two(user)
         subject.idv_session.vendor_phone_confirmation = true
         subject.idv_session.user_phone_confirmation = true
 
@@ -354,9 +352,6 @@ RSpec.describe Idv::PhoneController do
       end
 
       it 'tracks events with valid phone' do
-        user = build(:user, :with_phone, with: { phone: good_phone, confirmed_at: Time.zone.now })
-        stub_verify_steps_one_and_two(user)
-
         expect(@irs_attempts_api_tracker).to receive(:idv_phone_submitted).with(
           success: true,
           phone_number: good_phone,
@@ -384,10 +379,6 @@ RSpec.describe Idv::PhoneController do
       end
 
       it 'updates the doc auth log for the user with verify_phone_submit step' do
-        user = create(:user, :with_phone, with: { phone: good_phone, confirmed_at: Time.zone.now })
-        unstub_analytics
-        stub_verify_steps_one_and_two(user)
-
         doc_auth_log = DocAuthLog.create(user_id: user.id)
 
         expect { put :create, params: { idv_phone_form: { phone: good_phone } } }.to(
@@ -396,15 +387,6 @@ RSpec.describe Idv::PhoneController do
       end
 
       context 'when same as user phone' do
-        before do
-          user = build(
-            :user, :with_phone, with: {
-              phone: good_phone, confirmed_at: Time.zone.now
-            }
-          )
-          stub_verify_steps_one_and_two(user)
-        end
-
         it 'redirects to otp delivery page' do
           original_applicant = subject.idv_session.applicant.dup
 
@@ -442,15 +424,6 @@ RSpec.describe Idv::PhoneController do
       end
 
       context 'when different phone from user phone' do
-        before do
-          user = build(
-            :user, :with_phone, with: {
-              phone: '+1 (415) 555-0130', confirmed_at: Time.zone.now
-            }
-          )
-          stub_verify_steps_one_and_two(user)
-        end
-
         it 'redirects to otp page and does not set phone_confirmed_at' do
           put :create, params: phone_params
 
@@ -480,8 +453,6 @@ RSpec.describe Idv::PhoneController do
 
       it 'tracks event with valid phone' do
         proofing_phone = Phonelib.parse(good_phone)
-        user = build(:user, with: { phone: '+1 (415) 555-0130', phone_confirmed_at: Time.zone.now })
-        stub_verify_steps_one_and_two(user)
 
         result = {
           success: true,
@@ -516,9 +487,6 @@ RSpec.describe Idv::PhoneController do
     end
 
     it 'tracks that the hybrid handoff phone was used' do
-      user = build(:user)
-      stub_verify_steps_one_and_two(user)
-
       expect(@analytics).to receive(:track_event).ordered.with(
         'IdV: phone confirmation form', hash_including(:success)
       )
@@ -535,9 +503,6 @@ RSpec.describe Idv::PhoneController do
 
     context 'when verification fails' do
       it 'renders failure page and does not set phone confirmation' do
-        user = build(:user, with: { phone: '+1 (415) 555-0130', phone_confirmed_at: Time.zone.now })
-        stub_verify_steps_one_and_two(user)
-
         put :create, params: { idv_phone_form: { phone: bad_phone } }
 
         expect(response).to redirect_to idv_phone_path
@@ -550,9 +515,6 @@ RSpec.describe Idv::PhoneController do
       end
 
       it 'renders timeout page and does not set phone confirmation' do
-        user = build(:user, with: { phone: '+1 (415) 555-0130', phone_confirmed_at: Time.zone.now })
-        stub_verify_steps_one_and_two(user)
-
         put :create, params: { idv_phone_form: { phone: timeout_phone } }
 
         expect(response).to redirect_to idv_phone_path
@@ -566,8 +528,6 @@ RSpec.describe Idv::PhoneController do
 
       it 'tracks event with invalid phone' do
         proofing_phone = Phonelib.parse(bad_phone)
-        user = build(:user, with: { phone: '+1 (415) 555-0130', phone_confirmed_at: Time.zone.now })
-        stub_verify_steps_one_and_two(user)
 
         result = {
           success: false,
@@ -607,9 +567,6 @@ RSpec.describe Idv::PhoneController do
       context 'when the user is rate limited by submission' do
         before do
           stub_analytics
-
-          user = create(:user, with: { phone: '+1 (415) 555-0130' })
-          stub_verify_steps_one_and_two(user)
 
           rate_limiter = RateLimiter.new(rate_limit_type: :proof_address, user: user)
           rate_limiter.increment_to_limited!
