@@ -31,7 +31,10 @@ RSpec.describe Idv::ByMail::EnterCodeController do
       let(:pending_profile) { user.gpo_verification_pending_profile }
 
       before do
-        controller.user_session[:decrypted_pii] = { address1: 'Address1' }.to_json
+        Pii::Cacher.new(user, controller.user_session).save_decrypted_pii(
+          { address1: 'Address1' },
+          pending_profile.id,
+        )
       end
 
       it 'renders page' do
