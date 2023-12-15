@@ -102,6 +102,7 @@ module TwoFactorAuthentication
         context: context,
         multi_factor_auth_method: 'piv_cac',
         piv_cac_configuration_id: piv_cac_verification_form&.piv_cac_configuration&.id,
+        new_device: DeviceCookie.check_for_new_device(cookies, current_user).nil?,
       }
     end
   end

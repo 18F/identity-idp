@@ -19,6 +19,7 @@ module TwoFactorAuthentication
         **analytics_properties,
         multi_factor_auth_method_created_at:
           webauthn_configuration_or_latest.created_at.strftime('%s%L'),
+        new_device: DeviceCookie.check_for_new_device(cookies, current_user).nil?,
       )
 
       if analytics_properties[:multi_factor_auth_method] == 'webauthn_platform'
