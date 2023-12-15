@@ -21,7 +21,7 @@ module FederatedProtocols
     end
 
     def biometric_comparison_required?
-      request.biometric_comparison_required == true
+      request.biometric_comparison_required?
     end
 
     def service_provider

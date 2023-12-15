@@ -15,10 +15,17 @@ class OpenidConnectAuthorizeForm
     redirect_uri
     response_type
     state
-    biometric_comparison_required
   ].freeze
 
-  ATTRS = [:unauthorized_scope, :acr_values, :scope, :verified_within, *SIMPLE_ATTRS].freeze
+  ATTRS = [
+    :unauthorized_scope,
+    :acr_values,
+    :scope,
+    :verified_within,
+    :biometric_comparison_required,
+    *SIMPLE_ATTRS,
+  ].freeze
+
   AALS_BY_PRIORITY = [Saml::Idp::Constants::AAL2_HSPD12_AUTHN_CONTEXT_CLASSREF,
                       Saml::Idp::Constants::AAL3_HSPD12_AUTHN_CONTEXT_CLASSREF,
                       Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF,
@@ -56,6 +63,7 @@ class OpenidConnectAuthorizeForm
     @prompt ||= 'select_account'
     @scope = parse_to_values(params[:scope], scopes)
     @unauthorized_scope = check_for_unauthorized_scope(params)
+    @biometric_comparison_required = params[:biometric_comparison_required].to_s == 'true'
 
     if verified_within_allowed?
       @duration_parser = DurationParser.new(params[:verified_within])
@@ -131,8 +139,8 @@ class OpenidConnectAuthorizeForm
                  :ial2_or_greater?,
                  :ial2_requested?
 
-  def biometric_comparison_required
-    @biometric_comparison_required.to_s == 'true'
+  def biometric_comparison_required?
+    @biometric_comparison_required
   end
 
   private
