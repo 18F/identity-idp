@@ -41,19 +41,22 @@ RSpec.describe Idv::PhoneController do
     end
   end
 
+  let(:user) do
+    create(
+      :user, :with_phone,
+      with: { phone: good_phone, confirmed_at: Time.zone.now }
+    )
+  end
+
+  before do
+    stub_sign_in(user)
+    stub_up_to(:verify_info, idv_session: subject.idv_session)
+    stub_analytics
+    stub_attempts_tracker
+    allow(@analytics).to receive(:track_event)
+  end
+
   describe '#new' do
-    let(:user) do
-      create(
-        :user, :with_phone,
-        with: { phone: good_phone, confirmed_at: Time.zone.now }
-      )
-    end
-
-    before do
-      stub_sign_in(user)
-      stub_up_to(:verify_info, idv_session: subject.idv_session)
-    end
-
     it 'updates the doc auth log for the user for the usps_letter_sent event' do
       unstub_analytics
       doc_auth_log = DocAuthLog.create(user_id: user.id)
@@ -237,6 +240,12 @@ RSpec.describe Idv::PhoneController do
   end
 
   describe '#create' do
+    let(:user) do
+      create(
+        :user, :with_phone,
+        with: { phone: '+1 (415) 555-0130' }
+      )
+    end
     let(:ab_test_args) do
       { sample_bucket1: :sample_value1, sample_bucket2: :sample_value2 }
     end
@@ -258,11 +267,6 @@ RSpec.describe Idv::PhoneController do
         }
       end
       before do
-        user = build(:user, :with_phone, with: { phone: '+1 (415) 555-0130' })
-        stub_verify_steps_one_and_two(user)
-        stub_analytics
-        stub_attempts_tracker
-        allow(@analytics).to receive(:track_event)
       end
 
       it 'renders #new' do
@@ -333,12 +337,6 @@ RSpec.describe Idv::PhoneController do
           phone: good_phone,
           otp_delivery_preference: :sms,
         } }
-      end
-
-      before do
-        stub_analytics
-        stub_attempts_tracker
-        allow(@analytics).to receive(:track_event)
       end
 
       it 'invalidates future steps and invalidates phone step' do
@@ -485,9 +483,6 @@ RSpec.describe Idv::PhoneController do
         user = build(:user, with: { phone: '+1 (415) 555-0130', phone_confirmed_at: Time.zone.now })
         stub_verify_steps_one_and_two(user)
 
-        stub_analytics
-        allow(@analytics).to receive(:track_event)
-
         result = {
           success: true,
           new_phone_added: true,
@@ -523,9 +518,6 @@ RSpec.describe Idv::PhoneController do
     it 'tracks that the hybrid handoff phone was used' do
       user = build(:user)
       stub_verify_steps_one_and_two(user)
-
-      stub_analytics
-      allow(@analytics).to receive(:track_event)
 
       expect(@analytics).to receive(:track_event).ordered.with(
         'IdV: phone confirmation form', hash_including(:success)
@@ -576,9 +568,6 @@ RSpec.describe Idv::PhoneController do
         proofing_phone = Phonelib.parse(bad_phone)
         user = build(:user, with: { phone: '+1 (415) 555-0130', phone_confirmed_at: Time.zone.now })
         stub_verify_steps_one_and_two(user)
-
-        stub_analytics
-        allow(@analytics).to receive(:track_event)
 
         result = {
           success: false,
