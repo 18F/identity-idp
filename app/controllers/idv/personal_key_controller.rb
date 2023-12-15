@@ -56,7 +56,7 @@ module Idv
 
           return false unless user.active_or_pending_profile
 
-          idv_session.personal_key_acknowledged != false
+          !idv_session.personal_key_acknowledged
         end,
         undo_step: ->(idv_session:, user:) {
           idv_session.personal_key_acknowledged = nil

@@ -54,10 +54,16 @@ RSpec.describe Idv::PersonalKeyController do
       idv_session.address_verification_mechanism = 'phone'
       idv_session.user_phone_confirmation = true
       idv_session.vendor_phone_confirmation = true
+      idv_session.gpo_code_verified = false
     when 'gpo'
       idv_session.address_verification_mechanism = 'gpo'
       idv_session.user_phone_confirmation = false
       idv_session.vendor_phone_confirmation = false
+      idv_session.gpo_code_verified = true
+    when nil
+      idv_session.address_verification_mechanism = nil
+      idv_session.user_phone_confirmation = nil
+      idv_session.vendor_phone_confirmation = nil
     else
       raise 'invalid address_verification_mechanism'
     end
@@ -66,6 +72,92 @@ RSpec.describe Idv::PersonalKeyController do
 
     if mint_profile_from_idv_session
       idv_session.create_profile_from_applicant_with_password(password)
+    end
+  end
+
+  describe '#step_info' do
+    let(:step_info) do
+      controller.class.step_info
+    end
+
+    describe '#undo' do
+      it 'clears personal_key_acknowledged' do
+        idv_session.acknowledge_personal_key!
+        step_info.undo_step.call(idv_session: idv_session, user: user)
+        expect(idv_session.personal_key_acknowledged).to eql(nil)
+      end
+    end
+
+    describe '#preconditions' do
+      let(:preconditions) do
+        step_info.preconditions.call(idv_session: idv_session, user: user)
+      end
+
+      context 'when all conditions met' do
+        it 'returns true' do
+          expect(preconditions).to eql(true)
+        end
+      end
+
+      context 'when user does not have a pending or active profile' do
+        before do
+          user.active_profile.deactivate(:password_reset)
+          expect(user.active_profile).to eql(nil)
+          user.reload
+        end
+
+        it 'returns false' do
+          expect(preconditions).to eql(false)
+        end
+      end
+
+      context 'when address confirmed via GPO' do
+        let(:address_verification_mechanism) { 'gpo' }
+        it 'returns true' do
+          expect(preconditions).to eql(true)
+        end
+      end
+
+      context 'when address confirmed via phone' do
+        let(:address_verification_mechanism) { 'phone' }
+        it 'returns true' do
+          expect(preconditions).to eql(true)
+        end
+      end
+
+      context 'when address unconfirmed' do
+        let(:address_verification_mechanism) { nil }
+        it 'returns false' do
+          expect(preconditions).to eql(false)
+        end
+      end
+
+      context 'when personal_key_acknowledged is false' do
+        before do
+          idv_session.personal_key_acknowledged = false
+        end
+        it 'returns true' do
+          expect(preconditions).to eql(true)
+        end
+      end
+
+      context 'when personal_key_acknowledged is true' do
+        before do
+          idv_session.personal_key_acknowledged = true
+        end
+        it 'returns false' do
+          expect(preconditions).to eql(false)
+        end
+      end
+
+      context 'when personal_key_acknowledged is nil' do
+        before do
+          idv_session.personal_key_acknowledged = nil
+        end
+        it 'returns true' do
+          expect(preconditions).to eql(true)
+        end
+      end
     end
   end
 
@@ -268,6 +360,16 @@ RSpec.describe Idv::PersonalKeyController do
             end
           end
         end
+      end
+    end
+
+    context 'personal key already acknowledged' do
+      before do
+        idv_session.acknowledge_personal_key!
+      end
+      it 'redirects away' do
+        get :show
+        expect(response).to be_redirect
       end
     end
   end
