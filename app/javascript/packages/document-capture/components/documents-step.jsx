@@ -29,6 +29,13 @@ import withProps from '../higher-order/with-props';
  */
 
 /**
+ * Sides of the ID document to present as file input.
+ *
+ * @type {DocumentSide[]}
+ */
+const DOCUMENT_SIDES = ['front', 'back'];
+
+/**
  * @param {import('@18f/identity-form-steps').FormStepComponentProps<DocumentsStepValue>} props Props object.
  */
 function DocumentsStep({
@@ -66,20 +73,6 @@ function DocumentsStep({
     onError,
   };
 
-  const DocumentFront = withProps({
-    key: 'front',
-    side: 'front',
-    value: value.front,
-    ...defaultSideProps,
-  })(DocumentSideAcuantCapture);
-
-  const DocumentBack = withProps({
-    key: 'back',
-    side: 'back',
-    value: value.back,
-    ...defaultSideProps,
-  })(DocumentSideAcuantCapture);
-
   const SelfieSection = withProps({
     key: 'selfie',
     side: 'selfie',
@@ -96,8 +89,17 @@ function DocumentsStep({
         {t('doc_auth.headings.document_capture_subheader_id')}
       </h2>
       <DocumentTipList />
-      <DocumentFront />
-      <DocumentBack />
+      {DOCUMENT_SIDES.map((side) => (
+        <DocumentSideAcuantCapture
+          key={side}
+          side={side}
+          registerField={registerField}
+          value={value[side]}
+          onChange={onChange}
+          errors={errors}
+          onError={onError}
+        />
+      ))}
       {selfieCaptureEnabled && <SelfieSection />}
       {isLastStep ? <FormStepsButton.Submit /> : <FormStepsButton.Continue />}
       {notReadySectionEnabled && <DocumentCaptureNotReady />}
