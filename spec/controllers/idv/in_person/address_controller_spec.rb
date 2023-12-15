@@ -83,6 +83,12 @@ RSpec.describe Idv::InPerson::AddressController do
         opted_in_to_in_person_proofing: nil,
         step: 'address',
         step_count: nil,
+        lexisnexis_instant_verify_workflow_ab_test_bucket: :default,
+        pii_like_keypaths: [[:same_address_as_id],
+                            [:proofing_results, :context, :stages, :state_id,
+                             :state_id_jurisdiction]],
+        same_address_as_id: false,
+        skip_hybrid_handoff: nil,
       }
     end
 
@@ -148,6 +154,12 @@ RSpec.describe Idv::InPerson::AddressController do
           flow_path: 'standard',
           irs_reproofing: false,
           step: 'address',
+          lexisnexis_instant_verify_workflow_ab_test_bucket: :default,
+          pii_like_keypaths: [[:same_address_as_id],
+                              [:proofing_results, :context, :stages, :state_id,
+                               :state_id_jurisdiction]],
+          same_address_as_id: false,
+          skip_hybrid_handoff: nil,
         }
       end
 
@@ -226,6 +238,12 @@ RSpec.describe Idv::InPerson::AddressController do
           flow_path: 'standard',
           irs_reproofing: false,
           step: 'address',
+          lexisnexis_instant_verify_workflow_ab_test_bucket: :default,
+          pii_like_keypaths: [[:same_address_as_id],
+                              [:proofing_results, :context, :stages, :state_id,
+                               :state_id_jurisdiction]],
+          same_address_as_id: false,
+          skip_hybrid_handoff: nil,
         }
       end
 
