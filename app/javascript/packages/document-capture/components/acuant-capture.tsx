@@ -218,10 +218,12 @@ function getFingerPrint(file: File): Promise<string | null> {
             .replace(/\+/g, '-')
             .replace(/\//g, '_')
             .replace(/=+$/, '');
+          console.timeEnd('reading fingerprint');
           resolve(urlSafeBase64String);
         })
         .catch(() => null);
     };
+    console.time('reading fingerprint');
     reader.readAsArrayBuffer(file);
   });
 }
@@ -291,8 +293,9 @@ function processImage(file: File): Promise<{
   croppedImg: File;
 }> {
   let croppedImg: AcuantEvaluatedResult;
-  if (window.AcuantCamera === undefined) {
-    return Promise.resolve({ width: null, height: null, croppedImg: file });
+  // javascript not loaded or it is not a image
+  if (window.AcuantCamera === undefined || file.type.indexOf('image/') === 0) {
+    return Promise.resolve({ width: 0, height: 0, croppedImg: file });
   }
   return new Promise((resolve) => {
     const reader = new FileReader();
@@ -321,6 +324,7 @@ function processImage(file: File): Promise<{
                 newFile = newImgFile;
               }
             }
+            console.timeEnd('processImage');
             resolve({ width, height, croppedImg: newFile });
           },
         );
@@ -330,6 +334,7 @@ function processImage(file: File): Promise<{
       };
       img.src = event?.target?.result as string;
     };
+    console.time('processImage');
     reader.readAsDataURL(file);
   });
 }
