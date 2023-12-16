@@ -193,6 +193,13 @@ export function getNormalizedAcuantCaptureFailureMessage(
   }
 }
 
+function dataURItoFile(fileName: string, dataURI: string): File {
+  const byteString = atob(dataURI.split(',')[1]);
+  const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+  const unit8Array = new Uint8Array(Array.from(byteString, (char) => char.charCodeAt(0)));
+  return new File([unit8Array], fileName, { type: mimeString });
+}
+
 function getFingerPrint(file: File): Promise<string | null> {
   return new Promise((resolve) => {
     const reader = new FileReader();
@@ -218,6 +225,7 @@ function getFingerPrint(file: File): Promise<string | null> {
     reader.readAsArrayBuffer(file);
   });
 }
+
 function getImageDimensions(file: File): Promise<{ width: number | null; height: number | null }> {
   let objectURL: string;
   return file.type.indexOf('image/') === 0
@@ -277,6 +285,55 @@ function evaluateImage(
   });
 }
 
+function processImage(file: File): Promise<{
+  width: number | null;
+  height: number | null;
+  croppedImg: File;
+}> {
+  let croppedImg: AcuantEvaluatedResult;
+  if (window.AcuantCamera === undefined) {
+    return Promise.resolve({ width: null, height: null, croppedImg: file });
+  }
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = (event: ProgressEvent<FileReader>) => {
+      const img = new Image();
+      img.onload = function () {
+        const canvas = document.createElement('canvas');
+        const { width, height } = img;
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx?.drawImage(img, 0, 0);
+        const imageData = ctx?.getImageData(0, 0, canvas.width, canvas.height);
+        window.AcuantCamera.evaluateImage(
+          imageData as ImageData,
+          width,
+          height,
+          false,
+          'MANUAL',
+          (result: AcuantEvaluatedResult) => {
+            croppedImg = result;
+            let newFile = file;
+            if (croppedImg?.image?.data) {
+              const newImgFile = dataURItoFile(file.name, croppedImg.image.data);
+              if (newImgFile?.size) {
+                newFile = newImgFile;
+              }
+            }
+            resolve({ width, height, croppedImg: newFile });
+          },
+        );
+      };
+      img.onerror = function () {
+        resolve({ width: null, height: null, croppedImg: file });
+      };
+      img.src = event?.target?.result as string;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
 function getImageMetadata(
   file: File,
 ): Promise<{ width: number | null; height: number | null; fingerprint: string | null }> {
@@ -291,6 +348,33 @@ function getImageMetadata(
         .catch(() => ({ width: null, height: null, fingerprint: null }));
     },
   );
+}
+
+function getImageMetadataEnhanced(file: File): Promise<{
+  width: number | null;
+  height: number | null;
+  croppedImg: File;
+  fingerprint: string | null;
+}> {
+  const processedData = processImage(file);
+  const fingerprint = getFingerPrint(file);
+  return new Promise<{
+    width: number | null;
+    height: number | null;
+    croppedImg: File;
+    fingerprint: string | null;
+  }>(function (resolve) {
+    Promise.all([processedData, fingerprint])
+      .then((results) => {
+        resolve({
+          width: results[0].width,
+          height: results[0].height,
+          croppedImg: results[0].croppedImg,
+          fingerprint: results[1],
+        });
+      })
+      .catch(() => ({ width: null, height: null, croppedImg: file, fingerprint: null }));
+  });
 }
 
 /**
@@ -431,28 +515,6 @@ function AcuantCapture(
     incrementAttempt();
     return enhancedPayload;
   }
-  function dataURItoFile(fileName: string, dataURI: string): File {
-    // convert base64 to raw binary data held in a string
-    // doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this
-    const byteString = atob(dataURI.split(',')[1]);
-
-    // separate out the mime component
-    const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-
-    // write the bytes of the string to an ArrayBuffer
-    const ab = new ArrayBuffer(byteString.length);
-
-    // create a view into the buffer
-    const ia = new Uint8Array(ab);
-
-    // set the bytes of the buffer to the correct values
-    for (let i = 0; i < byteString.length; i++) {
-      ia[i] = byteString.charCodeAt(i);
-    }
-
-    // write the ArrayBuffer to a blob, and you're done
-    return new File([ia], fileName, { type: mimeString });
-  }
 
   /**
    * Handler for file input change events.
@@ -483,6 +545,31 @@ function AcuantCapture(
       }
     }
 
+    onChangeAndResetError(nextValue, analyticsPayload);
+  }
+
+  async function onUploadEnhanced(nextValue: File | null) {
+    let analyticsPayload: ImageAnalyticsPayload | undefined;
+    let hasFailed = false;
+
+    if (nextValue) {
+      const { width, height, croppedImg, fingerprint } = await getImageMetadataEnhanced(nextValue);
+      hasFailed = failedSubmissionImageFingerprints[name]?.includes(fingerprint);
+      // file changed
+      if (croppedImg && croppedImg.size !== nextValue.size) {
+        nextValue = croppedImg;
+      }
+      analyticsPayload = getAddAttemptAnalyticsPayload({
+        width,
+        height,
+        fingerprint,
+        mimeType: nextValue.type,
+        source: 'upload',
+        size: nextValue.size,
+        failedImageResubmission: hasFailed,
+      });
+      trackEvent(`IdV: ${name} image added`, analyticsPayload);
+    }
     onChangeAndResetError(nextValue, analyticsPayload);
   }
 
@@ -749,7 +836,7 @@ function AcuantCapture(
         isValuePending={hasStartedCropping}
         onClick={withLoggedClick('placeholder')(startCaptureOrTriggerUpload)}
         onDrop={withLoggedClick('placeholder', { isDrop: true })(noop)}
-        onChange={onUpload}
+        onChange={onUploadEnhanced}
         onError={() => setOwnErrorMessage(null)}
       />
       <div className="margin-top-2">
