@@ -95,40 +95,6 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
                   tmx_summary_reason_code: ['Identity_Negative_History'],
                 },
               },
-              resolution: {
-                success: true,
-                errors: {},
-                exception: nil,
-                timed_out: false,
-                transaction_id: 'resolution-mock-transaction-id-123',
-                reference: 'aaa-bbb-ccc',
-                can_pass_with_additional_verification: false,
-                attributes_requiring_additional_verification: [],
-                vendor_name: 'ResolutionMock',
-                vendor_workflow: nil,
-              },
-              residential_address: {
-                success: true,
-                errors: {},
-                exception: nil,
-                timed_out: false,
-                transaction_id: 'resolution-mock-transaction-id-123',
-                reference: 'aaa-bbb-ccc',
-                can_pass_with_additional_verification: false,
-                attributes_requiring_additional_verification: [],
-                vendor_name: 'ResolutionMock',
-                vendor_workflow: nil,
-              },
-              state_id: {
-                success: true,
-                errors: {},
-                exception: nil,
-                mva_exception: nil,
-                timed_out: false,
-                transaction_id: 'state-id-mock-transaction-id-456',
-                vendor_name: 'StateIdMock',
-                verified_attributes: [],
-              },
             },
           },
           errors: {},
@@ -137,6 +103,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
           threatmetrix_review_status: review_status,
         }
       end
+
       it 'logs proofing results with analytics_id' do
         allow(controller).to receive(:load_async_state).and_return(async_state)
         allow(async_state).to receive(:done?).and_return(true)
@@ -149,22 +116,195 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
           hash_including(**analytics_args, success: true),
         )
       end
+    end
 
-      it 'adds costs' do
+    context 'tracks costs' do
+      let(:review_status) { 'pass' }
+      let(:async_state) { instance_double(ProofingSessionAsyncResult) }
+
+      before do
         allow(controller).to receive(:load_async_state).and_return(async_state)
         allow(async_state).to receive(:done?).and_return(true)
-        allow(async_state).to receive(:result).and_return(adjudicated_result)
+      end
 
-        get :show
+      context 'when same address as id is true and in aamva jurisdiction' do
+        let(:pii) do
+          { same_address_as_id: 'true' }
+        end
+        let(:adjudicated_result) do
+          {
+            context: {
+              stages: {
+                threatmetrix: {
+                  transaction_id: 1,
+                },
+                resolution: {
+                  transaction_id: 'resolution-mock-transaction-id-123',
+                  vendor_name: 'ResolutionMock',
+                },
+                residential_address: {
+                  transaction_id: 'resolution-mock-transaction-id-123',
+                  vendor_name: 'ResolutionMock',
+                },
+                state_id: {
+                  transaction_id: 'state-id-mock-transaction-id-456',
+                  vendor_name: 'StateIdMock',
+                },
+              },
+            },
+          }
+        end
 
-        lexis_nexis_costs = SpCost.where(cost_type: 'lexis_nexis_resolution')
-        expect(lexis_nexis_costs.count).to eq(2)
+        it 'adds costs to database' do
+          allow(subject).to receive(:pii).and_return(pii)
+          allow(async_state).to receive(:result).and_return(adjudicated_result)
 
-        aamva_costs = SpCost.where(cost_type: 'aamva')
-        expect(aamva_costs.count).to eq(1)
+          get :show
 
-        threatmetrix_costs = SpCost.where(cost_type: 'threatmetrix')
-        expect(threatmetrix_costs.count).to eq(1)
+          lexis_nexis_costs = SpCost.where(cost_type: 'lexis_nexis_resolution')
+          expect(lexis_nexis_costs.count).to eq(1)
+
+          aamva_costs = SpCost.where(cost_type: 'aamva')
+          expect(aamva_costs.count).to eq(1)
+
+          threatmetrix_costs = SpCost.where(cost_type: 'threatmetrix')
+          expect(threatmetrix_costs.count).to eq(1)
+        end
+      end
+
+      context 'when same address as id is true and not in aamva jurisdiction' do
+        let(:pii) do
+          { same_address_as_id: 'true' }
+        end
+        let(:adjudicated_result) do
+          {
+            context: {
+              stages: {
+                threatmetrix: {
+                  transaction_id: 1,
+                },
+                resolution: {
+                  transaction_id: 'resolution-mock-transaction-id-123',
+                  vendor_name: 'ResolutionMock',
+                },
+                residential_address: {
+                  transaction_id: 'resolution-mock-transaction-id-123',
+                  vendor_name: 'ResolutionMock',
+                },
+                state_id: {
+                  transaction_id: 'state-id-mock-transaction-id-456',
+                  vendor_name: 'UnsupportedJurisdiction',
+                },
+              },
+            },
+          }
+        end
+
+        it 'adds costs to database' do
+          allow(subject).to receive(:pii).and_return(pii)
+          allow(async_state).to receive(:result).and_return(adjudicated_result)
+
+          get :show
+
+          lexis_nexis_costs = SpCost.where(cost_type: 'lexis_nexis_resolution')
+          expect(lexis_nexis_costs.count).to eq(1)
+
+          aamva_costs = SpCost.where(cost_type: 'aamva')
+          expect(aamva_costs.count).to eq(0)
+
+          threatmetrix_costs = SpCost.where(cost_type: 'threatmetrix')
+          expect(threatmetrix_costs.count).to eq(1)
+        end
+      end
+
+      context 'when same address as id is false and in aamva jurisdiction' do
+        let(:pii) do
+          { same_address_as_id: 'false' }
+        end
+        let(:adjudicated_result) do
+          {
+            context: {
+              stages: {
+                threatmetrix: {
+                  transaction_id: 1,
+                },
+                resolution: {
+                  transaction_id: 'resolution-mock-transaction-id-123',
+                  vendor_name: 'ResolutionMock',
+                },
+                residential_address: {
+                  transaction_id: 'resolution-mock-transaction-id-123',
+                  vendor_name: 'ResolutionMock',
+                },
+                state_id: {
+                  transaction_id: 'state-id-mock-transaction-id-456',
+                  vendor_name: 'StateIdMock',
+                },
+              },
+            },
+          }
+        end
+
+        it 'adds costs to database' do
+          allow(async_state).to receive(:result).and_return(adjudicated_result)
+          allow(subject).to receive(:pii).and_return(pii)
+
+          get :show
+
+          lexis_nexis_costs = SpCost.where(cost_type: 'lexis_nexis_resolution')
+          expect(lexis_nexis_costs.count).to eq(2)
+
+          aamva_costs = SpCost.where(cost_type: 'aamva')
+          expect(aamva_costs.count).to eq(1)
+
+          threatmetrix_costs = SpCost.where(cost_type: 'threatmetrix')
+          expect(threatmetrix_costs.count).to eq(1)
+        end
+      end
+
+      context 'when same address as id is false and not in aamva jurisdiction' do
+        let(:pii) do
+          { same_address_as_id: 'false' }
+        end
+        let(:adjudicated_result) do
+          {
+            context: {
+              stages: {
+                threatmetrix: {
+                  transaction_id: 1,
+                },
+                resolution: {
+                  transaction_id: 'resolution-mock-transaction-id-123',
+                  vendor_name: 'ResolutionMock',
+                },
+                residential_address: {
+                  transaction_id: 'resolution-mock-transaction-id-123',
+                  vendor_name: 'ResolutionMock',
+                },
+                state_id: {
+                  transaction_id: 'state-id-mock-transaction-id-456',
+                  vendor_name: 'UnsupportedJurisdiction',
+                },
+              },
+            },
+          }
+        end
+
+        it 'adds costs to database' do
+          allow(async_state).to receive(:result).and_return(adjudicated_result)
+          allow(subject).to receive(:pii).and_return(pii)
+
+          get :show
+
+          lexis_nexis_costs = SpCost.where(cost_type: 'lexis_nexis_resolution')
+          expect(lexis_nexis_costs.count).to eq(2)
+
+          aamva_costs = SpCost.where(cost_type: 'aamva')
+          expect(aamva_costs.count).to eq(0)
+
+          threatmetrix_costs = SpCost.where(cost_type: 'threatmetrix')
+          expect(threatmetrix_costs.count).to eq(1)
+        end
       end
     end
   end
