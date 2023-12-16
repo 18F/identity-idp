@@ -121,6 +121,29 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
     context 'tracks costs' do
       let(:review_status) { 'pass' }
       let(:async_state) { instance_double(ProofingSessionAsyncResult) }
+      let(:adjudicated_result) do
+        {
+          context: {
+            stages: {
+              threatmetrix: {
+                transaction_id: 1,
+              },
+              resolution: {
+                transaction_id: 'resolution-mock-transaction-id-123',
+                vendor_name: 'ResolutionMock',
+              },
+              residential_address: {
+                transaction_id: 'resolution-mock-transaction-id-123',
+                vendor_name: 'ResolutionMock',
+              },
+              state_id: {
+                transaction_id: 'state-id-mock-transaction-id-456',
+                vendor_name: 'StateIdMock',
+              },
+            },
+          },
+        }
+      end
 
       before do
         allow(controller).to receive(:load_async_state).and_return(async_state)
@@ -130,29 +153,6 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
       context 'when same address as id is true and in aamva jurisdiction' do
         let(:pii) do
           { same_address_as_id: 'true' }
-        end
-        let(:adjudicated_result) do
-          {
-            context: {
-              stages: {
-                threatmetrix: {
-                  transaction_id: 1,
-                },
-                resolution: {
-                  transaction_id: 'resolution-mock-transaction-id-123',
-                  vendor_name: 'ResolutionMock',
-                },
-                residential_address: {
-                  transaction_id: 'resolution-mock-transaction-id-123',
-                  vendor_name: 'ResolutionMock',
-                },
-                state_id: {
-                  transaction_id: 'state-id-mock-transaction-id-456',
-                  vendor_name: 'StateIdMock',
-                },
-              },
-            },
-          }
         end
 
         it 'adds costs to database' do
@@ -176,31 +176,9 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
         let(:pii) do
           { same_address_as_id: 'true' }
         end
-        let(:adjudicated_result) do
-          {
-            context: {
-              stages: {
-                threatmetrix: {
-                  transaction_id: 1,
-                },
-                resolution: {
-                  transaction_id: 'resolution-mock-transaction-id-123',
-                  vendor_name: 'ResolutionMock',
-                },
-                residential_address: {
-                  transaction_id: 'resolution-mock-transaction-id-123',
-                  vendor_name: 'ResolutionMock',
-                },
-                state_id: {
-                  transaction_id: 'state-id-mock-transaction-id-456',
-                  vendor_name: 'UnsupportedJurisdiction',
-                },
-              },
-            },
-          }
-        end
 
         it 'adds costs to database' do
+          adjudicated_result[:context][:stages][:state_id][:vendor_name] = 'UnsupportedJurisdiction'
           allow(subject).to receive(:pii).and_return(pii)
           allow(async_state).to receive(:result).and_return(adjudicated_result)
 
@@ -220,29 +198,6 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
       context 'when same address as id is false and in aamva jurisdiction' do
         let(:pii) do
           { same_address_as_id: 'false' }
-        end
-        let(:adjudicated_result) do
-          {
-            context: {
-              stages: {
-                threatmetrix: {
-                  transaction_id: 1,
-                },
-                resolution: {
-                  transaction_id: 'resolution-mock-transaction-id-123',
-                  vendor_name: 'ResolutionMock',
-                },
-                residential_address: {
-                  transaction_id: 'resolution-mock-transaction-id-123',
-                  vendor_name: 'ResolutionMock',
-                },
-                state_id: {
-                  transaction_id: 'state-id-mock-transaction-id-456',
-                  vendor_name: 'StateIdMock',
-                },
-              },
-            },
-          }
         end
 
         it 'adds costs to database' do
@@ -266,31 +221,9 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
         let(:pii) do
           { same_address_as_id: 'false' }
         end
-        let(:adjudicated_result) do
-          {
-            context: {
-              stages: {
-                threatmetrix: {
-                  transaction_id: 1,
-                },
-                resolution: {
-                  transaction_id: 'resolution-mock-transaction-id-123',
-                  vendor_name: 'ResolutionMock',
-                },
-                residential_address: {
-                  transaction_id: 'resolution-mock-transaction-id-123',
-                  vendor_name: 'ResolutionMock',
-                },
-                state_id: {
-                  transaction_id: 'state-id-mock-transaction-id-456',
-                  vendor_name: 'UnsupportedJurisdiction',
-                },
-              },
-            },
-          }
-        end
 
         it 'adds costs to database' do
+          adjudicated_result[:context][:stages][:state_id][:vendor_name] = 'UnsupportedJurisdiction'
           allow(async_state).to receive(:result).and_return(adjudicated_result)
           allow(subject).to receive(:pii).and_return(pii)
 
