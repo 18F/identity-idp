@@ -555,16 +555,19 @@ function AcuantCapture(
     if (nextValue) {
       const { width, height, croppedImg, fingerprint } = await getImageMetadataEnhanced(nextValue);
       hasFailed = failedSubmissionImageFingerprints[name]?.includes(fingerprint);
+      let source: ImageSource = 'upload';
       // file changed
       if (croppedImg && croppedImg.size !== nextValue.size) {
         nextValue = croppedImg;
+        // it is cropped
+        source = 'acuant';
       }
       analyticsPayload = getAddAttemptAnalyticsPayload({
         width,
         height,
         fingerprint,
         mimeType: nextValue.type,
-        source: 'upload',
+        source,
         size: nextValue.size,
         failedImageResubmission: hasFailed,
       });
