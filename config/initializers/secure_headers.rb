@@ -17,12 +17,11 @@ Rails.application.configure do
   if Identity::Hostdata.env == 'dev'
     # so we can embed a special lookbook component into the dev docs
     config.action_dispatch.default_headers.merge!(
-      'Content-Security-Policy' => "frame-ancestors 'self' https://developers.login.gov/" 
+      'Content-Security-Policy' => "frame-ancestors 'self' https://developers.login.gov/",
     )
-  else 
+  else
     config.action_dispatch.default_headers.merge!(
-      'X-Frame-Options' => previews_enabled ? 'SAMEORIGIN' : 'DENY'
+      'X-Frame-Options' => previews_enabled ? 'SAMEORIGIN' : 'DENY',
     )
   end
-
 end
