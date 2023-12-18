@@ -473,7 +473,7 @@ module Idv
 
     def liveness_checking_enabled?
       return false if Identity::Hostdata.env == 'prod'
-      return false unless IdentityConfig.store.doc_auth_selfie_capture[:enabled]
+      return false unless IdentityConfig.store.doc_auth_selfie_capture_enabled
 
       params[:liveness_checking_enabled] == 'true'
     end
