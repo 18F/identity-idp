@@ -35,7 +35,6 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
 
   shared_examples 'a successful request' do
     it 'uploads the image and returns a successful result' do
-      include_liveness = liveness_checking_required && !selfie_image.nil?
       request_stub_liveness = stub_request(:post, full_url).with do |request|
         JSON.parse(request.body, symbolize_names: true)[:Document][:Selfie].present?
       end.to_return(body: response_body(include_liveness), status: 201)
@@ -57,7 +56,6 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
 
     context 'fails document authentication' do
       it 'fails response with errors' do
-        include_liveness = liveness_checking_required && !selfie_image.nil?
         request_stub_liveness = stub_request(:post, full_url).with do |request|
           JSON.parse(request.body, symbolize_names: true)[:Document][:Selfie].present?
         end.to_return(body: response_body_with_doc_auth_errors(include_liveness), status: 201)
@@ -81,42 +79,104 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
         end
       end
     end
+
+    def include_liveness
+      return false if Identity::Hostdata.env == 'prod'
+      return false unless IdentityConfig.store.doc_auth_selfie_capture[:enabled]
+
+      liveness_checking_required
+    end
   end
 
   context 'with liveness_checking_enabled as false' do
-    let(:liveness_checking_required) { false }
-    context 'with acuant image source' do
-      let(:workflow) { 'test_workflow' }
-      let(:image_source) { DocAuth::ImageSources::ACUANT_SDK }
-      it_behaves_like 'a successful request'
+    context 'when liveness checking is NOT required' do
+      let(:liveness_checking_required) { false }
+      context 'with acuant image source' do
+        let(:workflow) { 'test_workflow' }
+        let(:image_source) { DocAuth::ImageSources::ACUANT_SDK }
+        it_behaves_like 'a successful request'
 
-      it 'does not include a nil selfie in the request body sent to TrueID' do
-        body_as_json = subject.send(:body)
-        body_as_hash = JSON.parse(body_as_json)
-        expect(body_as_hash['Document']).not_to have_key('Selfie')
+        it 'does not include a nil selfie in the request body sent to TrueID' do
+          body_as_json = subject.send(:body)
+          body_as_hash = JSON.parse(body_as_json)
+          expect(body_as_hash['Document']).not_to have_key('Selfie')
+        end
+      end
+      context 'with unknown image source' do
+        let(:workflow) { 'test_workflow_cropping' }
+        let(:image_source) { DocAuth::ImageSources::UNKNOWN }
+
+        it_behaves_like 'a successful request'
       end
     end
-    context 'with unknown image source' do
-      let(:workflow) { 'test_workflow_cropping' }
-      let(:image_source) { DocAuth::ImageSources::UNKNOWN }
 
-      it_behaves_like 'a successful request'
+    context 'when liveness checking is required' do
+      let(:liveness_checking_required) { true }
+      context 'with acuant image source' do
+        let(:workflow) { 'test_workflow' }
+        let(:image_source) { DocAuth::ImageSources::ACUANT_SDK }
+        it_behaves_like 'a successful request'
+      end
+      context 'with unknown image source' do
+        let(:workflow) { 'test_workflow_cropping' }
+        let(:image_source) { DocAuth::ImageSources::UNKNOWN }
+
+        it_behaves_like 'a successful request'
+      end
     end
   end
 
   context 'with liveness_checking_enabled as true' do
-    let(:liveness_checking_required) { true }
-    context 'with acuant image source' do
-      let(:workflow) { 'test_workflow_liveness' }
-      let(:image_source) { DocAuth::ImageSources::ACUANT_SDK }
-
-      it_behaves_like 'a successful request'
+    before do
+      allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture).and_return({ enabled: true })
     end
-    context 'with unknown image source' do
-      let(:workflow) { 'test_workflow_liveness_cropping' }
-      let(:image_source) { DocAuth::ImageSources::UNKNOWN }
 
-      it_behaves_like 'a successful request'
+    context 'when liveness checking is NOT required' do
+      let(:liveness_checking_required) { false }
+      context 'with acuant image source' do
+        let(:workflow) { 'test_workflow' }
+        let(:image_source) { DocAuth::ImageSources::ACUANT_SDK }
+        it_behaves_like 'a successful request'
+      end
+      context 'with unknown image source' do
+        let(:workflow) { 'test_workflow_cropping' }
+        let(:image_source) { DocAuth::ImageSources::UNKNOWN }
+
+        it_behaves_like 'a successful request'
+      end
+    end
+
+    context 'when liveness checking is required' do
+      let(:liveness_checking_required) { true }
+      context 'with acuant image source' do
+        let(:workflow) { 'test_workflow_liveness' }
+        let(:image_source) { DocAuth::ImageSources::ACUANT_SDK }
+
+        it_behaves_like 'a successful request'
+      end
+      context 'with unknown image source' do
+        let(:workflow) { 'test_workflow_liveness_cropping' }
+        let(:image_source) { DocAuth::ImageSources::UNKNOWN }
+
+        it_behaves_like 'a successful request'
+      end
+
+      context 'when hosted env is prod' do
+        before do
+          allow(Identity::Hostdata).to receive(:env).and_return('prod')
+        end
+        context 'with acuant image source' do
+          let(:workflow) { 'test_workflow' }
+          let(:image_source) { DocAuth::ImageSources::ACUANT_SDK }
+          it_behaves_like 'a successful request'
+        end
+        context 'with unknown image source' do
+          let(:workflow) { 'test_workflow_cropping' }
+          let(:image_source) { DocAuth::ImageSources::UNKNOWN }
+
+          it_behaves_like 'a successful request'
+        end
+      end
     end
   end
 
