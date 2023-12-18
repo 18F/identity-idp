@@ -54,6 +54,12 @@ module Idv
       @stored_result = document_capture_session&.load_result
     end
 
+    def liveness_checking_enabled
+      return if params[:selfie] != 'true'
+
+      IdentityConfig.store.doc_auth_selfie_capture_enabled
+    end
+
     private
 
     def track_document_issuing_state(user, state)

@@ -85,6 +85,7 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
 
 const formData: Record<string, any> = {
   document_capture_session_uuid: appRoot.getAttribute('data-document-capture-session-uuid'),
+  liveness_checking_enabled: getSelfieCaptureEnabled(), // remove once available in idv_session
   locale: document.documentElement.lang,
 };
 

@@ -41,6 +41,7 @@ module Idv
           flow_path: 'hybrid',
           document_capture_session_uuid: document_capture_session_uuid,
           failure_to_proof_url: return_to_sp_failure_to_proof_url(step: 'document_capture'),
+          doc_auth_selfie_capture: liveness_checking_enabled,
         }.merge(
           acuant_sdk_upgrade_a_b_testing_variables,
         )
