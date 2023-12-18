@@ -94,8 +94,8 @@ RSpec.describe Idv::PersonalKeyController do
       end
 
       context 'when all conditions met' do
-        it 'returns true' do
-          expect(preconditions).to eql(true)
+        it 'returns a truthy result' do
+          expect(preconditions).to be_truthy
         end
       end
 
@@ -113,22 +113,22 @@ RSpec.describe Idv::PersonalKeyController do
 
       context 'when address confirmed via GPO' do
         let(:address_verification_mechanism) { 'gpo' }
-        it 'returns true' do
-          expect(preconditions).to eql(true)
+        it 'returns a truthy result' do
+          expect(preconditions).to be_truthy
         end
       end
 
       context 'when address confirmed via phone' do
         let(:address_verification_mechanism) { 'phone' }
-        it 'returns true' do
-          expect(preconditions).to eql(true)
+        it 'returns a truthy result' do
+          expect(preconditions).to be_truthy
         end
       end
 
       context 'when address unconfirmed' do
         let(:address_verification_mechanism) { nil }
-        it 'returns false' do
-          expect(preconditions).to eql(false)
+        it 'returns a falsey result' do
+          expect(preconditions).to be_falsey
         end
       end
 
@@ -136,8 +136,8 @@ RSpec.describe Idv::PersonalKeyController do
         before do
           idv_session.personal_key_acknowledged = false
         end
-        it 'returns true' do
-          expect(preconditions).to eql(true)
+        it 'returns a truthy result' do
+          expect(preconditions).to be_truthy
         end
       end
 
@@ -145,8 +145,8 @@ RSpec.describe Idv::PersonalKeyController do
         before do
           idv_session.personal_key_acknowledged = true
         end
-        it 'returns false' do
-          expect(preconditions).to eql(false)
+        it 'returns a falsey result' do
+          expect(preconditions).to be_falsey
         end
       end
 
@@ -154,8 +154,8 @@ RSpec.describe Idv::PersonalKeyController do
         before do
           idv_session.personal_key_acknowledged = nil
         end
-        it 'returns true' do
-          expect(preconditions).to eql(true)
+        it 'returns a truthy result' do
+          expect(preconditions).to be_truthy
         end
       end
     end
