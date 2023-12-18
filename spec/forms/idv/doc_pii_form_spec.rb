@@ -32,7 +32,8 @@ RSpec.describe Idv::DocPiiForm do
     }
   end
   let(:name_and_dob_errors_pii) do
-    { first_name: nil,
+    {
+      first_name: nil,
       last_name: nil,
       dob: nil,
       address1: Faker::Address.street_address,
