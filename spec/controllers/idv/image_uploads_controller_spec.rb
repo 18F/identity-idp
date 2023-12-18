@@ -462,6 +462,7 @@ RSpec.describe Idv::ImageUploadsController do
         let(:zipcode) { '12345' }
         let(:country_code) { 'USA' }
         let(:class_name) { 'Identification Card' }
+        let(:state_id_number) { 'S59397998' }
 
         before do
           DocAuth::Mock::DocAuthMockClient.mock_response!(
@@ -491,6 +492,7 @@ RSpec.describe Idv::ImageUploadsController do
                 state_id_type: state_id_type,
                 dob: dob,
                 state_id_jurisdiction: jurisdiction,
+                state_id_number: state_id_number,
                 zipcode: zipcode,
               },
             ),
@@ -508,7 +510,7 @@ RSpec.describe Idv::ImageUploadsController do
               :idv_document_upload_submitted,
               success: false,
               document_state: 'ND',
-              document_number: nil,
+              document_number: 'S59397998',
               document_issued: nil,
               document_expiration: nil,
               first_name: nil,
@@ -597,7 +599,7 @@ RSpec.describe Idv::ImageUploadsController do
               :idv_document_upload_submitted,
               success: false,
               document_state: 'ND',
-              document_number: nil,
+              document_number: 'S59397998',
               document_issued: nil,
               document_expiration: nil,
               first_name: nil,
@@ -686,7 +688,7 @@ RSpec.describe Idv::ImageUploadsController do
               :idv_document_upload_submitted,
               success: false,
               document_state: 'Maryland',
-              document_number: nil,
+              document_number: 'S59397998',
               document_issued: nil,
               document_expiration: nil,
               first_name: 'FAKEY',
@@ -775,7 +777,7 @@ RSpec.describe Idv::ImageUploadsController do
               document_front_image_filename: nil,
               document_image_encryption_key: nil,
               document_state: 'ND',
-              document_number: nil,
+              document_number: 'S59397998',
               document_issued: nil,
               document_expiration: nil,
               first_name: 'FAKEY',
