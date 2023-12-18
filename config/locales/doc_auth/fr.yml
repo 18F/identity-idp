@@ -8,8 +8,9 @@ fr:
     buttons:
       add_new_photos: Ajoutez de nouvelles photos
       continue: Continuer
-      take_or_upload_picture_html: '<lg-take-photo>Prendre une photo</lg-take-photo>
-        ou <lg-upload>Télécharger une photo</lg-upload>'
+      take_or_upload_picture_html: '<lg-take-photo>Prendre une
+        photo</lg-take-photo><lg-or> ou </lg-or><lg-upload>Télécharger une
+        photo</lg-upload>'
       take_picture: Prendre une photo
       take_picture_retry: Reprendre la photo
       upload_picture: Télécharger une photo
@@ -189,7 +190,10 @@ fr:
       document_capture: Ajoutez des photos de votre pièce d’identité
       document_capture_back: Verso de votre carte d’identité
       document_capture_front: Recto de votre carte d’identité
-      document_capture_selfie: Égoportrait
+      document_capture_selfie: Une photo de vous
+      document_capture_subheader_id: Permis de conduire ou de carte d’identité d’État
+      document_capture_subheader_selfie: Photo de vous-même
+      document_capture_with_selfie: Ajoutez des photos de votre pièce d’identité et une photo de vous-même
       front: Recto de votre permis de conduire ou de votre carte d’identité de l’État
       getting_started: Vérifions votre identité pour %{sp_name}
       how_to_verify: Choisissez la manière dont vous souhaitez confirmer votre identité
@@ -229,9 +233,6 @@ fr:
       capture_status_none: Alignez
       capture_status_small_document: Approchez-vous
       capture_status_tap_to_capture: Appuyez pour capturer
-      document_capture_intro_acknowledgment: Nous recueillons des informations sur
-        vous en lisant votre permis de conduire ou votre carte d’identité de
-        l’État. Nous utilisons ces informations pour vérifier votre identité.
       exit:
         with_sp: Quittez %{app_name} et retournez à %{sp_name}
         without_sp: Quittez la vérification d’identité et accédez à la page de votre compte
@@ -327,12 +328,16 @@ fr:
         pour terminer ce processus.
       header: Vous n’êtes pas prêt à ajouter des photos?
     tips:
-      document_capture_header_text: 'Pour obtenir les meilleurs résultats:'
       document_capture_hint: Doit être un JPG ou PNG
       document_capture_id_text1: Utilisez un fond sombre
       document_capture_id_text2: Prenez la photo sur une surface plane
       document_capture_id_text3: N’utilisez pas le flash de votre appareil photo
       document_capture_id_text4: La taille du fichier doit être d’au moins 2 Mo
+      document_capture_selfie_id_header_text: Conseils pour prendre des photos claires
+      document_capture_selfie_selfie_text: Conseils pour prendre un photo claires
+      document_capture_selfie_text1: Tenez votre appareil à hauteur des yeux
+      document_capture_selfie_text2: Veillez à ce que l’ensemble de votre visage soit visible
+      document_capture_selfie_text3: Prenez votre photo dans un endroit bien éclairé
       most_common: Le plus commun
       review_issues_id_header_text: 'Examinez les images de votre carte d’identité délivrée par l’État:'
       review_issues_id_text1: Avez-vous utilisé un fond sombre?
