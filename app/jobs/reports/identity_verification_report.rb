@@ -27,14 +27,14 @@ module Reports
     end
 
     def preamble
-      ERB.new(<<~ERB).result(binding).html_safe # rubocop:disable Rails/OutputSafety
+      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
         <h2>
           Identity Verification Report
         </h2>
         <p>
           Disclaimer: This Report is In Progress: Not Production Ready
         </p>
-      ERB
+      HTML
     end
 
     def reports
