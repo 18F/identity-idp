@@ -75,6 +75,30 @@ RSpec.describe Api::Internal::TwoFactorAuthentication::WebauthnController do
         expect(response.status).to eq(401)
       end
     end
+
+    context 'with a configuration that does not exist' do
+      let(:params) { { id: 0 } }
+
+      it 'responds with unsuccessful result' do
+        expect(response_body).to eq(
+          success: false,
+          error: t('errors.manage_authenticator.internal_error'),
+        )
+        expect(response.status).to eq(400)
+      end
+    end
+
+    context 'with a configuration that does not belong to the user' do
+      let(:configuration) { create(:webauthn_configuration) }
+
+      it 'responds with unsuccessful result' do
+        expect(response_body).to eq(
+          success: false,
+          error: t('errors.manage_authenticator.internal_error'),
+        )
+        expect(response.status).to eq(400)
+      end
+    end
   end
 
   describe '#destroy' do
@@ -143,6 +167,30 @@ RSpec.describe Api::Internal::TwoFactorAuthentication::WebauthnController do
       it 'responds with unauthorized response' do
         expect(response_body).to eq(error: 'Unauthorized')
         expect(response.status).to eq(401)
+      end
+    end
+
+    context 'with a configuration that does not exist' do
+      let(:params) { { id: 0 } }
+
+      it 'responds with unsuccessful result' do
+        expect(response_body).to eq(
+          success: false,
+          error: t('errors.manage_authenticator.internal_error'),
+        )
+        expect(response.status).to eq(400)
+      end
+    end
+
+    context 'with a configuration that does not belong to the user' do
+      let(:configuration) { create(:webauthn_configuration) }
+
+      it 'responds with unsuccessful result' do
+        expect(response_body).to eq(
+          success: false,
+          error: t('errors.manage_authenticator.internal_error'),
+        )
+        expect(response.status).to eq(400)
       end
     end
   end
