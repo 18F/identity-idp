@@ -243,8 +243,7 @@ RSpec.feature 'doc auth redo document capture', js: true do
   context 'when selfie is enabled' do
     context 'error due to data issue with 2xx status code', allow_browser_log: true do
       before do
-        allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture).
-          and_return({ enabled: true })
+        allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).and_return(true)
         sign_in_and_2fa_user
         complete_doc_auth_steps_before_document_capture_step
         mock_doc_auth_acuant_error_unknown
