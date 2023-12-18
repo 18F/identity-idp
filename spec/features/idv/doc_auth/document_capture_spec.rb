@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.feature 'document capture step', :js do
   include IdvStepHelper
   include DocAuthHelper
+  include DocCaptureHelper
   include ActionView::Helpers::DateHelper
 
   let(:max_attempts) { IdentityConfig.store.doc_auth_max_attempts }
@@ -204,7 +205,9 @@ RSpec.feature 'document capture step', :js do
 
         expect(page).to have_current_path(idv_document_capture_url)
         expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
-
+        expect_doc_capture_page_header(t('doc_auth.headings.document_capture_with_selfie'))
+        expect_doc_capture_id_subheader
+        expect_doc_capture_selfie_subheader
         attach_images
         attach_selfie
         submit_images
