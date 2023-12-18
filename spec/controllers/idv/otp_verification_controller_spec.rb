@@ -21,11 +21,15 @@ RSpec.describe Idv::OtpVerificationController do
       sent_at: phone_confirmation_otp_sent_at,
     )
   end
+  let(:ab_test_args) do
+    { sample_bucket1: :sample_value1, sample_bucket2: :sample_value2 }
+  end
 
   before do
     stub_analytics
     stub_attempts_tracker
     allow(@analytics).to receive(:track_event)
+    allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
 
     sign_in(user)
     stub_verify_steps_one_and_two(user)
@@ -177,6 +181,7 @@ RSpec.describe Idv::OtpVerificationController do
         second_factor_attempts_count: 0,
         second_factor_locked_at: nil,
         proofing_components: nil,
+        **ab_test_args,
       }
 
       expect(@analytics).to have_received(:track_event).with(
