@@ -149,14 +149,14 @@ RSpec.describe Users::WebauthnSetupController do
       end
 
       it 'tracks the delete in analytics' do
-        result = {
-          success: true,
-          mfa_method_counts: { auth_app: 1, phone: 1 },
-          pii_like_keypaths: [[:mfa_method_counts, :phone]],
-        }
-        expect(@analytics).to receive(:track_event).with('WebAuthn Deleted', result)
-
         delete :delete, params: { id: webauthn_configuration.id }
+
+        expect(@analytics).to have_logged_event(
+          :webauthn_delete_submitted,
+          success: true,
+          error_details: nil,
+          configuration_id: webauthn_configuration.id.to_s,
+        )
       end
 
       it 'sends a recovery information changed event' do

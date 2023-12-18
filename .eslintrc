@@ -1,5 +1,11 @@
 {
-  "extends": "plugin:@18f/eslint-plugin-identity/recommended",
+  "extends": [
+    "plugin:@18f/eslint-plugin-identity/recommended",
+    // These two react lint plugins are mostly off, see overrides below
+    "plugin:react/recommended",
+    "plugin:react-hooks/recommended",
+    "plugin:react/jsx-runtime"
+  ],
   "plugins": ["@18f/eslint-plugin-identity"],
   "env": {
     "browser": true,
@@ -40,6 +46,73 @@
           }
         ]
       }
-    }
+    },
+    {
+      // Turn off react linting rules for most packages/files 
+      "files": [
+        "spec/**",
+        "app/javascript/packs/**",
+        "app/javascript/packages/address-search/**",
+        "app/javascript/packages/components/**",
+        "app/javascript/packages/compose-components/**",
+        "app/javascript/packages/form-steps/**",
+        "app/javascript/packages/react-hooks/**",
+        "app/javascript/packages/react-i18n/**",
+        "app/javascript/packages/spinner-button/**",
+        "app/javascript/packages/step-indicator/**",
+        "app/javascript/packages/validated-field/**",
+        "app/javascript/packages/verify-flow/**",
+        // In progress: enabling these rules for all files in packages/document-capture
+        "app/javascript/packages/document-capture/context/**", 
+        "app/javascript/packages/document-capture/higher-order/**", 
+        "app/javascript/packages/document-capture/hooks/**",
+        // Comment out a file to enable react lint rules for that file only
+        "app/javascript/packages/document-capture/components/acuant-camera.tsx",
+        "app/javascript/packages/document-capture/components/acuant-capture-canvas.jsx",
+        "app/javascript/packages/document-capture/components/acuant-capture.tsx",
+        "app/javascript/packages/document-capture/components/acuant-selfie-camera.tsx",
+        "app/javascript/packages/document-capture/components/acuant-selfie-capture-canvas.jsx",
+        "app/javascript/packages/document-capture/components/barcode-attention-warning.tsx",
+        "app/javascript/packages/document-capture/components/callback-on-mount.jsx",
+        "app/javascript/packages/document-capture/components/document-capture-troubleshooting-options.tsx",
+        "app/javascript/packages/document-capture/components/document-capture-warning.tsx",
+        "app/javascript/packages/document-capture/components/document-capture.tsx",
+        "app/javascript/packages/document-capture/components/document-side-acuant-capture.jsx",
+        "app/javascript/packages/document-capture/components/documents-step.jsx",
+        "app/javascript/packages/document-capture/components/file-image.jsx",
+        "app/javascript/packages/document-capture/components/file-input.tsx",
+        "app/javascript/packages/document-capture/components/hybrid-doc-capture-warning.spec.tsx",
+        "app/javascript/packages/document-capture/components/hybrid-doc-capture-warning.tsx",
+        "app/javascript/packages/document-capture/components/in-person-call-to-action.spec.tsx",
+        "app/javascript/packages/document-capture/components/in-person-call-to-action.tsx",
+        "app/javascript/packages/document-capture/components/in-person-location-full-address-entry-post-office-search-step.spec.tsx",
+        "app/javascript/packages/document-capture/components/in-person-location-full-address-entry-post-office-search-step.tsx",
+        "app/javascript/packages/document-capture/components/in-person-location-post-office-search-step.spec.tsx",
+        "app/javascript/packages/document-capture/components/in-person-location-post-office-search-step.tsx",
+        "app/javascript/packages/document-capture/components/in-person-outage-alert.spec.tsx",
+        "app/javascript/packages/document-capture/components/in-person-outage-alert.tsx",
+        "app/javascript/packages/document-capture/components/in-person-prepare-step.spec.tsx",
+        "app/javascript/packages/document-capture/components/in-person-prepare-step.tsx",
+        "app/javascript/packages/document-capture/components/in-person-switch-back-step.tsx",
+        "app/javascript/packages/document-capture/components/in-person-troubleshooting-options.tsx",
+        "app/javascript/packages/document-capture/components/review-issues-step.tsx",
+        "app/javascript/packages/document-capture/components/status-message.jsx",
+        "app/javascript/packages/document-capture/components/submission-complete.tsx",
+        "app/javascript/packages/document-capture/components/submission-interstitial.jsx",
+        "app/javascript/packages/document-capture/components/submission-status.jsx",
+        "app/javascript/packages/document-capture/components/submission.jsx",
+        "app/javascript/packages/document-capture/components/suspense-error-boundary.jsx",
+        "app/javascript/packages/document-capture/components/tip-list.tsx",
+        "app/javascript/packages/document-capture/components/unknown-error.tsx",
+        "app/javascript/packages/document-capture/components/warning.tsx"
+      ],
+      "rules": {
+        "react/prop-types": "off",
+        "react/display-name": "off",
+        "react/jsx-key": "off",
+        "react-hooks/exhaustive-deps": "off",
+        "react-hooks/rules-of-hooks": "off"
+      }
+    },
   ]
 }

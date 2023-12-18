@@ -11,14 +11,14 @@ RSpec.describe PasswordCaptureController do
         create(:profile, :active, :verified, user: user, pii: pii)
         stub_sign_in(user)
 
-        expect(controller.user_session[:decrypted_pii]).to be nil
+        expect(controller.user_session[:encrypted_profiles]).to be nil
 
         params = { password: 'a really long sekrit' }
         get :new
         patch :create, params: { user: params }
 
         expect(response).to redirect_to account_path
-        expect(controller.user_session[:decrypted_pii]).to_not be nil
+        expect(controller.user_session[:encrypted_profiles]).to_not be nil
       end
     end
 

@@ -1,5 +1,5 @@
 import { render } from '@testing-library/react';
-import type { ComponentType } from 'react';
+import type { ComponentType, ReactNode } from 'react';
 import {
   MarketingSiteContextProvider,
   ServiceProviderContextProvider,
@@ -17,7 +17,7 @@ describe('DocumentCaptureTroubleshootingOptions', () => {
     getFailureToProofURL: () => '',
   };
   const wrappers: Record<string, ComponentType> = {
-    MarketingSiteContext: ({ children }) => (
+    MarketingSiteContext: ({ children }: { children?: ReactNode }) => (
       <MarketingSiteContextProvider helpCenterRedirectURL={helpCenterRedirectURL}>
         {children}
       </MarketingSiteContextProvider>

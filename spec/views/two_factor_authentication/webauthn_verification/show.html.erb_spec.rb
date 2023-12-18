@@ -18,6 +18,12 @@ RSpec.describe 'two_factor_authentication/webauthn_verification/show.html.erb' d
     )
   end
 
+  it 'includes a page title for webauthn authenticator' do
+    expect(view).to receive(:title=).with(t('titles.present_webauthn'))
+
+    render
+  end
+
   it 'includes hidden platform form input with value false' do
     expect(rendered).to have_field('platform', with: 'false', type: 'hidden')
   end
@@ -32,6 +38,14 @@ RSpec.describe 'two_factor_authentication/webauthn_verification/show.html.erb' d
 
   context 'with platform authenticator' do
     let(:platform_authenticator) { true }
+
+    it 'includes a page title for a platform authenticator' do
+      expect(view).to receive(:title=).with(
+        t('two_factor_authentication.webauthn_platform_header_text'),
+      )
+
+      render
+    end
 
     it 'includes hidden platform form input with value false' do
       expect(rendered).to have_field('platform', with: 'true', type: 'hidden')

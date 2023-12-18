@@ -64,8 +64,6 @@ fr:
       webauthn_platform_add: Ajouter le déverouillage facial ou déverrouillage par empreinte digitale
       webauthn_platform_confirm_delete: Oui, supprimer le déverouillage facial ou
         déverrouillage par empreinte digitale
-      webauthn_platform_delete: Supprimer le déverouillage facial ou déverrouillage
-        par empreinte digitale
     items:
       delete_your_account: Supprimer votre compte
       personal_key: Clé personnelle

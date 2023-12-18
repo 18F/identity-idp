@@ -58,7 +58,11 @@ module Users
     end
 
     def confirm
-      form = WebauthnSetupForm.new(current_user, user_session)
+      form = WebauthnSetupForm.new(
+        user: current_user,
+        user_session: user_session,
+        device_name: DeviceName.from_user_agent(request.user_agent),
+      )
       result = form.submit(request.protocol, confirm_params)
       @platform_authenticator = form.platform_authenticator?
       @presenter = WebauthnSetupPresenter.new(
@@ -159,12 +163,7 @@ module Users
     end
 
     def track_delete(success)
-      counts_hash = MfaContext.new(current_user.reload).enabled_two_factor_configuration_counts_hash
-      analytics.webauthn_deleted(
-        success: success,
-        mfa_method_counts: counts_hash,
-        pii_like_keypaths: [[:mfa_method_counts, :phone]],
-      )
+      analytics.webauthn_delete_submitted(success:, configuration_id: delete_params[:id])
     end
 
     def save_challenge_in_session

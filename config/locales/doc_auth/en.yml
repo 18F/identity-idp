@@ -8,8 +8,8 @@ en:
     buttons:
       add_new_photos: Add new photos
       continue: Continue
-      take_or_upload_picture_html: '<lg-take-photo>Take photo</lg-take-photo> or
-        <lg-upload>Upload photo</lg-upload>'
+      take_or_upload_picture_html: '<lg-take-photo>Take photo</lg-take-photo><lg-or>
+        or </lg-or> <lg-upload>Upload photo</lg-upload>'
       take_picture: Take photo
       take_picture_retry: Retake photo
       upload_picture: Upload photo
@@ -151,7 +151,10 @@ en:
       document_capture: Add photos of your ID
       document_capture_back: Back of your ID
       document_capture_front: Front of your ID
-      document_capture_selfie: Selfie
+      document_capture_selfie: A photo of yourself
+      document_capture_subheader_id: Driver’s license or state ID card
+      document_capture_subheader_selfie: Photo of yourself
+      document_capture_with_selfie: Add photos of your ID and a photo of yourself
       front: Front of your driver’s license or state ID
       getting_started: Let’s verify your identity for %{sp_name}
       how_to_verify: Choose how you want to verify your identity
@@ -189,9 +192,6 @@ en:
       capture_status_none: Align
       capture_status_small_document: Move Closer
       capture_status_tap_to_capture: Tap to Capture
-      document_capture_intro_acknowledgment: We’ll collect information about you by
-        reading your driver’s license or state ID card. We use this information
-        to verify your identity.
       exit:
         with_sp: Exit %{app_name} and return to %{sp_name}
         without_sp: Exit identity verification and go to your account page
@@ -273,12 +273,16 @@ en:
         process.
       header: Not ready to add photos?
     tips:
-      document_capture_header_text: 'For best results:'
       document_capture_hint: Must be a JPG or PNG
       document_capture_id_text1: Use a dark background
       document_capture_id_text2: Take the photo on a flat surface
       document_capture_id_text3: Do not use the flash on your camera
       document_capture_id_text4: File size should be at least 2 MB
+      document_capture_selfie_id_header_text: Tips for taking clear photos
+      document_capture_selfie_selfie_text: Tips for taking a clear photo
+      document_capture_selfie_text1: Hold your device at eye level
+      document_capture_selfie_text2: Make sure your whole face is visible
+      document_capture_selfie_text3: Take your photo in a well-lit place
       most_common: Most Common
       review_issues_id_header_text: 'Review the images of your state‑issued ID:'
       review_issues_id_text1: Did you use a dark background?

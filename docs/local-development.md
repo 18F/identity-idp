@@ -2,7 +2,7 @@
 
 ## Installing on your local machine
 
-This installation method is meant for those who are familiar with setting up local development environments on their machines. If you encounter errors, see the [Troubleshooting](#troubleshooting) section at the bottom of this README.
+This installation method is meant for those who are familiar with setting up local development environments on their machines. If you encounter errors, see [Troubleshooting](./troubleshooting.md).
 
 We recommend using [Homebrew](https://brew.sh/), [rbenv](https://github.com/rbenv/rbenv), [nvm](https://github.com/nvm-sh/nvm) or other version management tooling to install the below dependencies; while we don't anticipate changing these frequently, this will ensure that you will be able to easily switch to different versions as needed.
 
@@ -109,6 +109,22 @@ different options of the authentication request, such as AAL or IAL.
   ```
   $ SHOW_BROWSER=true bundle exec rspec spec/features/
   ```
+
+#### Skipping asset compilation in feature tests
+
+To ensure that tests are run using the latest source code, JavaScript-enabled feature specs will
+compile all JavaScript and stylesheets in local development. This can be time-consuming if you're
+repeatedly running the same tests, so you can choose to skip the build by passing the
+`SKIP_BUILD=true` environment variable:
+
+```
+$ SKIP_BUILD=true bundle exec rspec spec/features
+```
+
+Since the automatic build is meant to act as a safeguard to prevent stale assets from being used,
+disabling it will mean you're responsible for running the build any time JavaScript or Sass source
+files are changed. You can do this by running `yarn build` for JavaScript, or `yarn build:css` for
+stylesheets.
 
 ### Viewing email messages
 

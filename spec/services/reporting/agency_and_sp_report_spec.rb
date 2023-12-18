@@ -14,24 +14,41 @@ RSpec.describe Reporting::AgencyAndSpReport do
 
   # Wipe the pre-seeded data. It's easier to start from a clean slate.
   before do
-    Agreements::IntegrationUsage.destroy_all
-    Agreements::IaaOrder.destroy_all
-    Agreements::Integration.destroy_all
-    Agreements::IntegrationStatus.destroy_all
-    Agreements::IaaGtc.destroy_all
-    Agreements::PartnerAccount.destroy_all
-    Agreements::PartnerAccountStatus.destroy_all
+    clear_agreements_data
     Agency.destroy_all
     ServiceProvider.destroy_all
   end
 
   subject(:report) { described_class.new(report_date) }
 
+  let(:agency) do
+    create(
+      :agency,
+      partner_accounts: [
+        build(
+          :partner_account,
+          became_partner: report_date - 10.days,
+          partner_account_status: build(
+            :partner_account_status, name: 'active'
+          ),
+        ),
+      ],
+    )
+  end
+
   describe '#agency_and_sp_report' do
-    subject { report.agency_and_sp_report }
+    subject(:agency_and_sp_report) { report.agency_and_sp_report }
 
     context 'when adding a non-IDV SP' do
-      let!(:auth_sp) { create(:service_provider, :active) }
+      let!(:auth_sp) do
+        create(
+          :service_provider,
+          :external,
+          :active,
+          agency:,
+          identities: [build(:service_provider_identity)],
+        )
+      end
       let(:expected_report) do
         [
           header_row,
@@ -47,7 +64,7 @@ RSpec.describe Reporting::AgencyAndSpReport do
     end
 
     context 'when adding an inactive SP' do
-      let!(:inactive_sp) { create(:service_provider) }
+      let!(:inactive_sp) { create(:service_provider, :external, agency:, identities: []) }
       let(:expected_report) do
         [
           header_row,
@@ -57,15 +74,21 @@ RSpec.describe Reporting::AgencyAndSpReport do
         ]
       end
 
-      # Agencies don't have a sense of 'active' and are included.
       it 'includes the agency but not the inactive SP' do
         expect(subject).to match_array(expected_report)
       end
     end
 
     context 'when adding an IDV SP to a non-IDV Agency' do
-      let!(:initial_sp) { create(:service_provider, :active) }
-      let!(:agency) { initial_sp.agency }
+      let!(:initial_sp) do
+        create(
+          :service_provider,
+          :external,
+          :active,
+          agency:,
+          identities: [build(:service_provider_identity)],
+        )
+      end
 
       let(:initial_report) do
         [
@@ -88,7 +111,14 @@ RSpec.describe Reporting::AgencyAndSpReport do
       it 'becomes an IDV agency' do
         expect(subject).to match_array(initial_report)
 
-        create(:service_provider, :active, :idv, agency: agency)
+        create(
+          :service_provider,
+          :external,
+          :active,
+          :idv,
+          agency:,
+          identities: [build(:service_provider_identity)],
+        )
 
         # The report gets memoized, so we need to reconstruct it here:
         new_report = described_class.new(report_date)
@@ -97,7 +127,16 @@ RSpec.describe Reporting::AgencyAndSpReport do
     end
 
     context 'when adding an IDV SP' do
-      let!(:idv_sp) { create(:service_provider, :idv, :active) }
+      let!(:idv_sp) do
+        create(
+          :service_provider,
+          :external,
+          :idv,
+          :active,
+          agency:,
+          identities: [build(:service_provider_identity)],
+        )
+      end
 
       let(:expected_report) do
         [
@@ -110,6 +149,22 @@ RSpec.describe Reporting::AgencyAndSpReport do
 
       it 'counts the SP and its Agency as IDV' do
         expect(subject).to match_array(expected_report)
+      end
+    end
+
+    context 'when a query times out' do
+      before do
+        expect(ServiceProvider).to receive(:where).
+          and_raise(ActiveRecord::QueryCanceled, 'query took too long')
+      end
+
+      it 'rescues the error and shows a warning' do
+        expect(agency_and_sp_report).to eq(
+          [
+            ['Error', 'Message'],
+            ['ActiveRecord::QueryCanceled', 'query took too long'],
+          ],
+        )
       end
     end
   end

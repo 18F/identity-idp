@@ -213,6 +213,18 @@ fr:
         réessayer ou %{link}.
       use_a_different_method: Utilisez un autre moyen d’authentification
     webauthn_header_text: Connectez votre clé de sécurité
+    webauthn_platform:
+      change_nickname: Changer de pseudo
+      delete: Supprimer cet appareil
+      deleted: Suppression réussie d’une méthode de déverrouillage par reconnaissance
+        faciale ou par empreinte digitale
+      edit_heading: Gérez vos paramètres de déverrouillage par reconnaissance faciale
+        ou par empreinte digitale
+      manage_accessible_label: Gérer le déverrouillage par reconnaissance faciale ou
+        par empreinte digitale
+      nickname: Pseudo
+      renamed: Votre méthode de déverrouillage par reconnaissance faciale ou par
+        empreinte digitale a été renommée avec succès
     webauthn_platform_header_text: Utilisez le déverrouillage facial ou tactile
-    webauthn_platform_use_key: Utilisez le déverrouillage facial ou tactile
+    webauthn_platform_use_key: Utiliser le déverrouillage de l’écran
     webauthn_use_key: Utiliser la clé de sécurité

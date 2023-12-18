@@ -41,6 +41,10 @@ en:
         <strong>Try again in %{timeout}.</strong>
     general: Oops, something went wrong. Please try again.
     invalid_totp: Invalid code. Please try again.
+    manage_authenticator:
+      internal_error: There was an internal error processing your request. Please try again.
+      remove_only_method_error: You cannot remove your only authentication method.
+      unique_name_error: Name already in use. Please use a different name.
     max_password_attempts_reached: You’ve entered too many incorrect passwords. You
       can reset your password using the “Forgot your password?” link.
     messages:

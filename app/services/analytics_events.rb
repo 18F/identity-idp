@@ -1595,7 +1595,6 @@ module AnalyticsEvents
 
   # @param [String] flow_path
   # @param [String] step
-  # @param [Integer] step_count
   # @param [String] analytics_id
   # @param [Boolean] irs_reproofing
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
@@ -1603,7 +1602,6 @@ module AnalyticsEvents
   def idv_in_person_proofing_address_visited(
     flow_path: nil,
     step: nil,
-    step_count: nil,
     analytics_id: nil,
     irs_reproofing: nil,
     opted_in_to_in_person_proofing: nil,
@@ -1613,7 +1611,6 @@ module AnalyticsEvents
       'IdV: in person proofing address visited',
       flow_path: flow_path,
       step: step,
-      step_count: step_count,
       analytics_id: analytics_id,
       irs_reproofing: irs_reproofing,
       opted_in_to_in_person_proofing: opted_in_to_in_person_proofing,
@@ -1623,7 +1620,6 @@ module AnalyticsEvents
 
   # @param [String] flow_path
   # @param [String] step
-  # @param [Integer] step_count
   # @param [String] analytics_id
   # @param [Boolean] irs_reproofing
   # @param [Boolean] success
@@ -1633,7 +1629,6 @@ module AnalyticsEvents
   def idv_in_person_proofing_cancel_update_address(
     flow_path: nil,
     step: nil,
-    step_count: nil,
     analytics_id: nil,
     irs_reproofing: nil,
     success: nil,
@@ -1645,7 +1640,6 @@ module AnalyticsEvents
       'IdV: in person proofing cancel_update_address submitted',
       flow_path: flow_path,
       step: step,
-      step_count: step_count,
       analytics_id: analytics_id,
       irs_reproofing: irs_reproofing,
       success: success,
@@ -1657,7 +1651,6 @@ module AnalyticsEvents
 
   # @param [String] flow_path
   # @param [String] step
-  # @param [Integer] step_count
   # @param [String] analytics_id
   # @param [Boolean] irs_reproofing
   # @param [Boolean] success
@@ -1667,7 +1660,6 @@ module AnalyticsEvents
   def idv_in_person_proofing_cancel_update_state_id(
     flow_path: nil,
     step: nil,
-    step_count: nil,
     analytics_id: nil,
     irs_reproofing: nil,
     success: nil,
@@ -1679,7 +1671,6 @@ module AnalyticsEvents
       'IdV: in person proofing cancel_update_state_id submitted',
       flow_path: flow_path,
       step: step,
-      step_count: step_count,
       analytics_id: analytics_id,
       irs_reproofing: irs_reproofing,
       success: success,
@@ -1760,7 +1751,6 @@ module AnalyticsEvents
 
   # @param [String] flow_path
   # @param [String] step
-  # @param [Integer] step_count
   # @param [String] analytics_id
   # @param [Boolean] irs_reproofing
   # @param [Boolean] success
@@ -1770,7 +1760,6 @@ module AnalyticsEvents
   def idv_in_person_proofing_redo_state_id_submitted(
     flow_path: nil,
     step: nil,
-    step_count: nil,
     analytics_id: nil,
     irs_reproofing: nil,
     success: nil,
@@ -1782,7 +1771,6 @@ module AnalyticsEvents
       'IdV: in person proofing redo_state_id submitted',
       flow_path: flow_path,
       step: step,
-      step_count: step_count,
       analytics_id: analytics_id,
       irs_reproofing: irs_reproofing,
       success: success,
@@ -1798,7 +1786,6 @@ module AnalyticsEvents
 
   # @param [String] flow_path
   # @param [String] step
-  # @param [Integer] step_count
   # @param [String] analytics_id
   # @param [Boolean] irs_reproofing
   # @param [Boolean] success
@@ -1809,7 +1796,6 @@ module AnalyticsEvents
   def idv_in_person_proofing_state_id_submitted(
     flow_path: nil,
     step: nil,
-    step_count: nil,
     analytics_id: nil,
     irs_reproofing: nil,
     success: nil,
@@ -1822,7 +1808,6 @@ module AnalyticsEvents
       'IdV: in person proofing state_id submitted',
       flow_path: flow_path,
       step: step,
-      step_count: step_count,
       analytics_id: analytics_id,
       irs_reproofing: irs_reproofing,
       success: success,
@@ -1835,7 +1820,6 @@ module AnalyticsEvents
 
   # @param [String] flow_path
   # @param [String] step
-  # @param [Integer] step_count
   # @param [String] analytics_id
   # @param [Boolean] irs_reproofing
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
@@ -1843,7 +1827,6 @@ module AnalyticsEvents
   def idv_in_person_proofing_state_id_visited(
     flow_path: nil,
     step: nil,
-    step_count: nil,
     analytics_id: nil,
     irs_reproofing: nil,
     opted_in_to_in_person_proofing: nil,
@@ -1853,7 +1836,6 @@ module AnalyticsEvents
       'IdV: in person proofing state_id visited',
       flow_path: flow_path,
       step: step,
-      step_count: step_count,
       analytics_id: analytics_id,
       irs_reproofing: irs_reproofing,
       opted_in_to_in_person_proofing: opted_in_to_in_person_proofing,
@@ -3319,44 +3301,6 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Boolean] success
-  # @param [String] exception
-  # @param [Integer] user_id
-  # A user was migrated from a single-region key to a multi-region key
-  def multi_region_kms_migration_user_migrated(
-    success:,
-    exception:,
-    user_id:,
-    **extra
-  )
-    track_event(
-      'Multi-region KMS migration: User migrated',
-      success: success,
-      exception: exception,
-      user_id: user_id,
-      **extra,
-    )
-  end
-
-  # @param [Integer] user_count
-  # @param [Integer] success_count
-  # @param [Integer] error_count
-  # The user migration job finished running
-  def multi_region_kms_migration_user_migration_summary(
-    user_count:,
-    success_count:,
-    error_count:,
-    **extra
-  )
-    track_event(
-      'Multi-region KMS migration: User migration summary',
-      user_count: user_count,
-      success_count: success_count,
-      error_count: error_count,
-      **extra,
-    )
-  end
-
   # @param [String] location Placement location
   # Logged when a browser with JavaScript disabled loads the detection stylesheet
   def no_js_detect_stylesheet_loaded(location:, **extra)
@@ -4047,6 +3991,34 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks when risc security event is pushed
+  # @param [String] client_id
+  # @param [String] event_type
+  # @param [Boolean] success
+  # @param ['async'|'direct'] transport
+  # @param [Integer] status
+  # @param [String] error
+  def risc_security_event_pushed(
+    client_id:,
+    event_type:,
+    success:,
+    transport:,
+    status: nil,
+    error: nil,
+    **extra
+  )
+    track_event(
+      :risc_security_event_pushed,
+      client_id:,
+      error:,
+      event_type:,
+      status:,
+      success:,
+      transport:,
+      **extra,
+    )
+  end
+
   # Tracks when rules of use is submitted with a success or failure
   # @param [Boolean] success
   # @param [Hash] errors
@@ -4718,14 +4690,21 @@ module AnalyticsEvents
   end
 
   # @param [Boolean] success
-  # @param [Integer] mfa_method_counts
-  # Tracks when WebAuthn is deleted
-  def webauthn_deleted(success:, mfa_method_counts:, pii_like_keypaths:, **extra)
+  # @param [Hash] error_details
+  # @param [Integer] configuration_id
+  # Tracks when user attempts to delete a WebAuthn configuration
+  # @identity.idp.previous_event_name WebAuthn Deleted
+  def webauthn_delete_submitted(
+    success:,
+    configuration_id:,
+    error_details: nil,
+    **extra
+  )
     track_event(
-      'WebAuthn Deleted',
-      success: success,
-      mfa_method_counts: mfa_method_counts,
-      pii_like_keypaths: pii_like_keypaths,
+      :webauthn_delete_submitted,
+      success:,
+      error_details:,
+      configuration_id:,
       **extra,
     )
   end
@@ -4752,6 +4731,25 @@ module AnalyticsEvents
       'WebAuthn Setup Visited',
       platform_authenticator: platform_authenticator,
       enabled_mfa_methods_count: enabled_mfa_methods_count,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success
+  # @param [Hash] error_details
+  # @param [Integer] configuration_id
+  # Tracks when user submits a name change for a WebAuthn configuration
+  def webauthn_update_name_submitted(
+    success:,
+    configuration_id:,
+    error_details: nil,
+    **extra
+  )
+    track_event(
+      :webauthn_update_name_submitted,
+      success:,
+      error_details:,
+      configuration_id:,
       **extra,
     )
   end

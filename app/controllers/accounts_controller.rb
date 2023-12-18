@@ -19,11 +19,11 @@ class AccountsController < ApplicationController
     )
   end
 
-  # This action is used to re-authenticate when PII on the account page is locked on `show` action
-  # This allows users to view their PII after reauthenticating their MFA.
-
   def reauthentication
-    user_session[:stored_location] = account_url
+    # This route sends a user through reauthentication and returns them to the account page, since
+    # some actions within the account dashboard require a fresh reauthentication (e.g. managing an
+    # MFA method or viewing verified profile information).
+    user_session[:stored_location] = account_url(params.permit(:manage_authenticator))
     user_session[:context] = 'reauthentication'
 
     redirect_to login_two_factor_options_path

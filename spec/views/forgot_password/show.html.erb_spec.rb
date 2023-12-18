@@ -42,13 +42,6 @@ RSpec.describe 'forgot_password/show.html.erb' do
     expect(rendered).to_not have_content t('notices.forgot_password.resend_email_success')
   end
 
-  it 'contains a link to create a new account' do
-    render
-
-    expect(rendered).
-      to have_link(t('notices.forgot_password.use_diff_email.link'), href: sign_up_email_path)
-  end
-
   it 'displays a notice if resend_confirmation is present' do
     @resend = true
 

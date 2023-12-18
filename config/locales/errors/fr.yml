@@ -48,6 +48,11 @@ fr:
         reprises. <strong>Réessayez dans %{timeout}.</strong>
     general: Oups, une erreur s’est produite. Veuillez essayer de nouveau.
     invalid_totp: Code non valide. Veuillez essayer de nouveau.
+    manage_authenticator:
+      internal_error: Une erreur interne s’est produite lors du traitement de votre
+        demande. Veuillez réessayer.
+      remove_only_method_error: Vous ne pouvez pas supprimer votre seule méthode d’authentification.
+      unique_name_error: Ce nom est déjà utilisé. Veuillez utiliser un nom différent.
     max_password_attempts_reached: Vous avez inscrit des mots de passe incorrects un
       trop grand nombre de fois. Vous pouvez réinitialiser votre mot de passe en
       utilisant le lien « Vous avez oublié votre mot de passe? ».
