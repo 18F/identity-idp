@@ -87,7 +87,7 @@ doc_auth_max_attempts: 5
 doc_auth_max_capture_attempts_before_native_camera: 3
 doc_auth_max_submission_attempts_before_native_camera: 3
 doc_auth_not_ready_section_enabled: false
-doc_auth_selfie_capture: '{"enabled":false}'
+doc_auth_selfie_capture_enabled: false
 doc_auth_sdk_capture_orientation: '{"horizontal": 100, "vertical": 0}'
 doc_auth_supported_country_codes: '["US", "GU", "VI", "AS", "MP", "PR", "USA" ,"GUM", "VIR", "ASM", "MNP", "PRI"]'
 doc_capture_request_valid_for_minutes: 15
@@ -254,7 +254,7 @@ rack_mini_profiler: false
 rack_timeout_service_timeout_seconds: 15
 rails_mailer_previews_enabled: false
 raise_on_missing_title: false
-reauthn_window: 120
+reauthn_window: 1200
 recaptcha_enterprise_api_key: ''
 recaptcha_enterprise_project_id: ''
 recaptcha_site_key_v2: ''
@@ -300,8 +300,6 @@ seed_agreements_data: true
 service_provider_request_ttl_hours: 24
 session_check_delay: 30
 session_check_frequency: 30
-session_encrypted_profiles_read_enabled: true
-session_encrypted_profiles_write_enabled: true
 session_encryptor_alert_enabled: false
 session_timeout_in_minutes: 15
 session_timeout_warning_seconds: 150
@@ -384,7 +382,7 @@ development:
   database_worker_jobs_password: ''
   doc_auth_exit_question_section_enabled: true
   doc_auth_not_ready_section_enabled: true
-  doc_auth_selfie_capture: '{"enabled": false}'
+  doc_auth_selfie_capture_enabled: false
   doc_auth_vendor: 'mock'
   doc_auth_vendor_randomize: false
   doc_auth_vendor_randomize_percent: 0
@@ -489,8 +487,6 @@ production:
   scrypt_cost: 10000$8$1$
   secret_key_base:
   seed_agreements_data: false
-  session_encrypted_profiles_read_enabled: false
-  session_encrypted_profiles_write_enabled: false
   session_encryption_key:
   skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:dev", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:int"]'
   state_tracking_enabled: false
@@ -525,7 +521,7 @@ test:
   database_worker_jobs_host: ''
   database_worker_jobs_password: ''
   doc_auth_max_attempts: 4
-  doc_auth_selfie_capture: '{"enabled":false}'
+  doc_auth_selfie_capture_enabled: false
   doc_auth_vendor: 'mock'
   doc_auth_vendor_randomize: false
   doc_auth_vendor_randomize_percent: 0

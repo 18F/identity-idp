@@ -37,7 +37,7 @@ RSpec.describe Reporting::AgencyAndSpReport do
   end
 
   describe '#agency_and_sp_report' do
-    subject { report.agency_and_sp_report }
+    subject(:agency_and_sp_report) { report.agency_and_sp_report }
 
     context 'when adding a non-IDV SP' do
       let!(:auth_sp) do
@@ -149,6 +149,22 @@ RSpec.describe Reporting::AgencyAndSpReport do
 
       it 'counts the SP and its Agency as IDV' do
         expect(subject).to match_array(expected_report)
+      end
+    end
+
+    context 'when a query times out' do
+      before do
+        expect(ServiceProvider).to receive(:where).
+          and_raise(ActiveRecord::QueryCanceled, 'query took too long')
+      end
+
+      it 'rescues the error and shows a warning' do
+        expect(agency_and_sp_report).to eq(
+          [
+            ['Error', 'Message'],
+            ['ActiveRecord::QueryCanceled', 'query took too long'],
+          ],
+        )
       end
     end
   end

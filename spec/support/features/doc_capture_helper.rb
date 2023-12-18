@@ -46,4 +46,16 @@ module DocCaptureHelper
     user = User.find(user_id)
     user.document_capture_sessions.last.store_result_from_response(response)
   end
+
+  def expect_doc_capture_page_header(text)
+    expect(page).to have_css('.page-heading', text: text, wait: 5)
+  end
+
+  def expect_doc_capture_id_subheader
+    expect(page).to have_text(t('doc_auth.headings.document_capture_subheader_id'))
+  end
+
+  def expect_doc_capture_selfie_subheader
+    expect(page).to have_text(t('doc_auth.headings.document_capture_subheader_selfie'))
+  end
 end
