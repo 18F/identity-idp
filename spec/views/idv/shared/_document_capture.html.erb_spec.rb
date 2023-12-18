@@ -12,7 +12,8 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
   let(:in_person_proofing_enabled_issuer) { nil }
   let(:acuant_sdk_upgrade_a_b_testing_enabled) { false }
   let(:use_alternate_sdk) { false }
-  let(:doc_auth_selfie_capture_enabled) { false }
+  let(:doc_auth_selfie_capture_enabled) { true }
+
   let(:acuant_version) { '1.3.3.7' }
   let(:skip_doc_auth) { false }
   let(:opted_in_to_in_person_proofing) { false }
@@ -100,8 +101,19 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
     it 'sends doc_auth_selfie_capture_enabled to the FE' do
       render_partial
       expect(rendered).to have_css(
-        "#document-capture-form[data-doc-auth-selfie-capture='{\"enabled\":false}']",
+        "#document-capture-form[data-doc-auth-selfie-capture='{\"enabled\":true}']",
       )
+    end
+
+    context 'when hosted in prod env' do
+      it 'does not send doc_auth_selfie_capture to the FE' do
+        allow(Identity::Hostdata).to receive(:env).and_return('prod')
+
+        render_partial
+        expect(rendered).not_to have_css(
+          "#document-capture-form[data-doc-auth-selfie-capture='{\"enabled\":true}']",
+        )
+      end
     end
   end
 end
