@@ -55,6 +55,7 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
           multi_factor_auth_method: 'personal-key',
           multi_factor_auth_method_created_at: user.reload.
             encrypted_recovery_code_digest_generated_at.strftime('%s%L'),
+          new_device: true,
         }
 
         expect(@analytics).to receive(:track_mfa_submit_event).
@@ -187,6 +188,7 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
           error_details: { personal_key: { personal_key_incorrect: true } },
           multi_factor_auth_method: 'personal-key',
           multi_factor_auth_method_created_at: personal_key_generated_at.strftime('%s%L'),
+          new_device: true,
         }
 
         expect(@analytics).to receive(:track_mfa_submit_event).

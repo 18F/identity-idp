@@ -33,6 +33,7 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
             errors: {},
             multi_factor_auth_method: 'backup_code',
             multi_factor_auth_method_created_at: Time.zone.now.strftime('%s%L'),
+            new_device: true,
           }
 
           expect(@analytics).to receive(:track_mfa_submit_event).
@@ -96,6 +97,7 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
               errors: {},
               multi_factor_auth_method: 'backup_code',
               multi_factor_auth_method_created_at: Time.zone.now.strftime('%s%L'),
+              new_device: true,
             })
 
           expect(@irs_attempts_api_tracker).to receive(:track_event).
@@ -156,6 +158,7 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
           errors: {},
           multi_factor_auth_method: 'backup_code',
           multi_factor_auth_method_created_at: nil,
+          new_device: true,
         }
 
         stub_analytics

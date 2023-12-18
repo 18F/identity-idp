@@ -53,6 +53,7 @@ RSpec.describe TwoFactorAuthentication::TotpVerificationController do
           errors: {},
           multi_factor_auth_method: 'totp',
           multi_factor_auth_method_created_at: cfg.created_at.strftime('%s%L'),
+          new_device: true,
           auth_app_configuration_id: controller.current_user.auth_app_configurations.first.id,
         }
         expect(@analytics).to receive(:track_mfa_submit_event).
@@ -131,6 +132,7 @@ RSpec.describe TwoFactorAuthentication::TotpVerificationController do
           errors: {},
           multi_factor_auth_method: 'totp',
           multi_factor_auth_method_created_at: nil,
+          new_device: true,
           auth_app_configuration_id: nil,
         }
 

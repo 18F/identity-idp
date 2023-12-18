@@ -106,6 +106,7 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController do
         attributes = {
           context: 'authentication',
           multi_factor_auth_method: 'piv_cac',
+          new_device: true,
           piv_cac_configuration_id: nil,
         }
 
@@ -117,6 +118,7 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController do
           errors: {},
           context: 'authentication',
           multi_factor_auth_method: 'piv_cac',
+          new_device: true,
           multi_factor_auth_method_created_at: cfg.created_at.strftime('%s%L'),
           piv_cac_configuration_id: cfg.id,
         }
@@ -203,6 +205,7 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController do
         attributes = {
           context: 'authentication',
           multi_factor_auth_method: 'piv_cac',
+          new_device: true,
           piv_cac_configuration_id: nil,
         }
 
@@ -220,6 +223,7 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController do
           context: 'authentication',
           multi_factor_auth_method: 'piv_cac',
           multi_factor_auth_method_created_at: nil,
+          new_device: true,
           key_id: nil,
           piv_cac_configuration_id: nil,
         }
