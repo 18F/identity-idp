@@ -14,7 +14,7 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
   
   # TO DO: Flows to test...
   #   1. When in_person_proofing_enabled = true && in_person_proofing_opt_in_enabled true
-  #     a. path when opting out (pick remote)
+  #     a. path when opting out (pick remote) - complete
   #     b. path when opting in (pick ipp) - complete
   #   2. When in_person_proofing_enabled = false && in_person_proofing_opt_in_enabled true
   #     a. Only path (remote flow)
@@ -35,9 +35,13 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
 
       it 'allows the user to continue down the happy path', allow_browser_log: true do
         sign_in_and_2fa_user(user)
+
+        # complete welcome step, agreement step, how to verify step (and opts into Opt-in Ipp)
         begin_in_person_proofing_with_opt_in_ipp_enabled_and_opting_in
+
         # prepare page
         complete_prepare_step(user)
+
         # location page
         complete_location_step
 
@@ -125,10 +129,11 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
       end
     end
 
-    it 'works for a happy path when the user opts into ipp (1b above)', allow_browser_log: true do
+    it 'works for a happy path when the user opts into opt-in ipp (1b above)', allow_browser_log: true do
       user = user_with_2fa
-
       sign_in_and_2fa_user(user)
+
+      # complete welcome step, agreement step, how to verify step (and opts into Opt-in Ipp)
       begin_in_person_proofing_with_opt_in_ipp_enabled_and_opting_in
 
       # prepare page
@@ -264,6 +269,134 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
       expect(page).to have_current_path(account_path)
     end
 
+    it 'works for a happy path when the user opts out of opt-in ipp(1a above)', allow_browser_log: true do
+      user = user_with_2fa
+      sign_in_and_2fa_user(user)
+      
+      # complete welcome step, agreement step, how to verify step (and opts out of Opt-in Ipp)
+      begin_in_person_proofing_with_opt_in_ipp_enabled_and_opting_out
+
+      # hybrid handoff
+      click_on t('forms.buttons.upload_photos')
+      mock_doc_auth_attention_with_barcode
+
+      # doc auth- attach and submit images to fail doc auth
+      mock_doc_auth_attention_with_barcode
+      attach_images
+      submit_images
+
+      # pick in-person proofing (now that you failed doc auth, this is NOT opting in because it was not picked on how to verify page)
+      click_button t('in_person_proofing.body.cta.button')
+
+      # prepare page
+      expect(page).to(have_content(t('in_person_proofing.body.prepare.verify_step_about')))
+      expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.find_a_post_office'))
+      complete_prepare_step(user)
+
+      # location page
+      expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.find_a_post_office'))
+      expect(page).to have_content(t('in_person_proofing.headings.po_search.location'))
+      complete_location_step
+
+      # state ID page
+      expect_in_person_step_indicator_current_step(
+        t('step_indicator.flows.idv.verify_info'),
+      )
+      expect(page).to have_content(
+        t(
+          'in_person_proofing.headings.state_id_milestone_2',
+        ).tr(' ', ' '),
+      )
+      complete_state_id_step(user)
+
+      # ssn page
+      expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
+      expect(page).to have_content(t('doc_auth.headings.ssn'))
+      complete_ssn_step(user)
+
+      # verify page
+      expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
+      expect(page).to have_content(t('headings.verify'))
+      expect(page).to have_current_path(idv_in_person_verify_info_path)
+      expect(page).to have_text(InPersonHelper::GOOD_FIRST_NAME)
+      expect(page).to have_text(InPersonHelper::GOOD_LAST_NAME)
+      expect(page).to have_text(InPersonHelper::GOOD_DOB_FORMATTED_EVENT)
+      expect(page).to have_text(InPersonHelper::GOOD_STATE_ID_NUMBER)
+      expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS1).twice
+      expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS2).twice
+      expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_CITY).twice
+      expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT[:state_id_jurisdiction], count: 3)
+      expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_ZIPCODE).twice
+      expect(page).to have_text(DocAuthHelper::GOOD_SSN_MASKED)
+      complete_verify_step(user)
+
+      # phone page
+      expect_in_person_step_indicator_current_step(
+        t('step_indicator.flows.idv.verify_phone_or_address'),
+      )
+      expect(page).to have_content(t('titles.idv.phone'))
+      fill_out_phone_form_ok(MfaContext.new(user).phone_configurations.first.phone)
+      click_idv_send_security_code
+      expect_in_person_step_indicator_current_step(
+        t('step_indicator.flows.idv.verify_phone_or_address'),
+      )
+
+      expect_in_person_step_indicator_current_step(
+        t('step_indicator.flows.idv.verify_phone_or_address'),
+      )
+      fill_in_code_with_last_phone_otp
+      click_submit_default
+
+      # password confirm page
+      expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.secure_account'))
+      expect(page).to have_content(t('idv.titles.session.enter_password', app_name: APP_NAME))
+      complete_enter_password_step(user)
+
+      # personal key page
+      expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.secure_account'))
+      expect(page).to have_content(t('titles.idv.personal_key'))
+      deadline = nil
+      freeze_time do
+        acknowledge_and_confirm_personal_key
+        deadline = (Time.zone.now + IdentityConfig.store.in_person_enrollment_validity_in_days.days).
+          in_time_zone(Idv::InPerson::ReadyToVerifyPresenter::USPS_SERVER_TIMEZONE).
+          strftime(t('time.formats.event_date'))
+      end
+
+      # ready to verify page
+      expect_in_person_step_indicator_current_step(
+        t('step_indicator.flows.idv.go_to_the_post_office'),
+      )
+      expect_page_to_have_no_accessibility_violations(page)
+      enrollment_code = JSON.parse(
+        UspsInPersonProofing::Mock::Fixtures.request_enroll_response,
+      )['enrollmentCode']
+      expect(page).to have_css("img[alt='#{APP_NAME}']")
+      expect(page).to have_content(t('in_person_proofing.headings.barcode').tr(' ', ' '))
+      expect(page).to have_content(Idv::InPerson::EnrollmentCodeFormatter.format(enrollment_code))
+      expect(page).to have_content(t('in_person_proofing.body.barcode.deadline', deadline: deadline))
+      expect(page).to have_content('MILWAUKEE')
+      expect(page).to have_content('Sunday: Closed')
+
+      # signing in again before completing in-person proofing at a post office
+      Capybara.reset_session!
+      sign_in_live_with_2fa(user)
+      visit_idp_from_sp_with_ial2(:oidc)
+      expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
+
+      # confirm that user cannot visit other IdV pages before completing in-person proofing
+      visit idv_agreement_path
+      expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
+      visit idv_ssn_url
+      expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
+      visit idv_verify_info_url
+      expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
+
+      # Confirms that user can visit account page even if not completing in person proofing
+      Capybara.reset_session!
+      sign_in_and_2fa_user(user)
+      expect(page).to have_current_path(account_path)
+    end
 
     # it 'allows the user to cancel and start over from the beginning', allow_browser_log: true do
     #   user = sign_in_and_2fa_user
