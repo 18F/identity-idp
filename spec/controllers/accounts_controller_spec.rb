@@ -178,6 +178,7 @@ RSpec.describe AccountsController do
     before(:each) do
       stub_sign_in(user)
     end
+
     it 'redirects to 2FA options' do
       post :reauthentication
 
@@ -194,6 +195,29 @@ RSpec.describe AccountsController do
       post :reauthentication
 
       expect(controller.user_session[:stored_location]).to eq account_url
+    end
+
+    context 'with parameters' do
+      let(:params) { { foo: 'bar' } }
+
+      it 'sets stored location excluding unknown parameters' do
+        post :reauthentication, params: params
+
+        expect(controller.user_session[:stored_location]).to eq account_url
+      end
+
+      context 'with permitted parameters' do
+        let(:manage_authenticator_param) { 'abc-123' }
+        let(:params) { { foo: 'bar', manage_authenticator: manage_authenticator_param } }
+
+        it 'sets stored location including only permitted parameters' do
+          post :reauthentication, params: params
+
+          expect(controller.user_session[:stored_location]).to eq(
+            account_url(manage_authenticator: manage_authenticator_param),
+          )
+        end
+      end
     end
   end
 end

@@ -220,9 +220,11 @@ fr:
         faciale ou par empreinte digitale
       edit_heading: Gérez vos paramètres de déverrouillage par reconnaissance faciale
         ou par empreinte digitale
+      manage_accessible_label: Gérer le déverrouillage par reconnaissance faciale ou
+        par empreinte digitale
       nickname: Pseudo
       renamed: Votre méthode de déverrouillage par reconnaissance faciale ou par
         empreinte digitale a été renommée avec succès
     webauthn_platform_header_text: Utilisez le déverrouillage facial ou tactile
-    webauthn_platform_use_key: Utilisez le déverrouillage facial ou tactile
+    webauthn_platform_use_key: Utiliser le déverrouillage de l’écran
     webauthn_use_key: Utiliser la clé de sécurité

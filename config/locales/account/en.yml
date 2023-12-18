@@ -59,7 +59,6 @@ en:
       webauthn_platform: Face or touch unlock
       webauthn_platform_add: Add face or touch unlock
       webauthn_platform_confirm_delete: Yes, remove face or touch unlock
-      webauthn_platform_delete: Remove face or touch unlock
     items:
       delete_your_account: Delete your account
       personal_key: Personal key

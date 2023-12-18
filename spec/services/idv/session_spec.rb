@@ -155,7 +155,7 @@ RSpec.describe Idv::Session do
           expect(profile.initiating_service_provider).to eq nil
           expect(profile.verified_at).to eq now
 
-          pii_from_session = Pii::Cacher.new(user, user_session).fetch
+          pii_from_session = Pii::Cacher.new(user, user_session).fetch(profile.id)
           expect(pii_from_session).to_not be_nil
           expect(pii_from_session.ssn).to eq(Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn])
         end
@@ -174,7 +174,7 @@ RSpec.describe Idv::Session do
         expect(profile.initiating_service_provider).to eq nil
         expect(profile.verified_at).to eq nil
 
-        pii_from_session = Pii::Cacher.new(user, user_session).fetch
+        pii_from_session = Pii::Cacher.new(user, user_session).fetch(profile.id)
         expect(pii_from_session).to_not be_nil
         expect(pii_from_session.ssn).to eq(Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn])
       end
@@ -203,7 +203,7 @@ RSpec.describe Idv::Session do
           expect(profile.initiating_service_provider).to eq nil
           expect(profile.verified_at).to eq nil
 
-          pii_from_session = Pii::Cacher.new(user, user_session).fetch
+          pii_from_session = Pii::Cacher.new(user, user_session).fetch(profile.id)
           expect(pii_from_session).to_not be_nil
           expect(pii_from_session.ssn).to eq(Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE[:ssn])
         end
@@ -246,7 +246,7 @@ RSpec.describe Idv::Session do
         expect(profile.initiating_service_provider).to eq nil
         expect(profile.verified_at).to eq nil
 
-        pii_from_session = Pii::Cacher.new(user, user_session).fetch
+        pii_from_session = Pii::Cacher.new(user, user_session).fetch(profile.id)
         expect(pii_from_session).to_not be_nil
         expect(pii_from_session.ssn).to eq(Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn])
       end
@@ -270,7 +270,7 @@ RSpec.describe Idv::Session do
         expect(profile.initiating_service_provider).to eq nil
         expect(profile.verified_at).to eq nil
 
-        pii_from_session = Pii::Cacher.new(user, user_session).fetch
+        pii_from_session = Pii::Cacher.new(user, user_session).fetch(profile.id)
         expect(pii_from_session).to_not be_nil
         expect(pii_from_session.ssn).to eq(Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn])
       end

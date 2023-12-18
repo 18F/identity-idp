@@ -14,7 +14,10 @@ RSpec.describe Idv::SessionsController do
       allow(idv_session).to receive(:clear)
       allow(subject).to receive(:idv_session).and_return(idv_session)
       controller.user_session['idv/in_person'] = flow_session
-      controller.user_session[:decrypted_pii] = pii
+      Pii::Cacher.new(user, controller.user_session).save_decrypted_pii(
+        pii,
+        '123',
+      )
     end
 
     let(:idv_session) { double }
@@ -33,7 +36,7 @@ RSpec.describe Idv::SessionsController do
       end
 
       it 'clears the decrypted_pii session' do
-        expect(controller.user_session[:decrypted_pii]).to be_blank
+        expect(controller.user_session[:encrypted_profiles]).to be_blank
       end
     end
 
