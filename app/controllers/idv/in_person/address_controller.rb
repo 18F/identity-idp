@@ -74,8 +74,9 @@ module Idv
           step: 'address',
           analytics_id: 'In Person Proofing',
           irs_reproofing: irs_reproofing?,
-          **opt_in_analytics_properties,
-        }
+        }.merge(ab_test_analytics_buckets).
+          merge(extra_analytics_properties).
+          merge(opt_in_analytics_properties)
       end
 
       def redirect_to_next_page

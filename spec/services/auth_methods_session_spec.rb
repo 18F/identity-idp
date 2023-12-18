@@ -103,6 +103,164 @@ RSpec.describe AuthMethodsSession do
     end
   end
 
+  describe '#last_2fa_auth_event' do
+    subject(:last_2fa_auth_event) { auth_methods_session.last_2fa_auth_event }
+
+    context 'no auth events' do
+      it { expect(last_2fa_auth_event).to be_nil }
+    end
+
+    context 'with remember device auth event' do
+      let(:user_session) do
+        {
+          auth_events: [
+            {
+              auth_method: TwoFactorAuthenticatable::AuthMethod::REMEMBER_DEVICE,
+              at: Time.zone.now,
+            },
+          ],
+        }
+      end
+
+      it { expect(last_2fa_auth_event).to be_nil }
+
+      context 'with non-remember device auth event' do
+        let(:auth_event_2fa) do
+          { auth_method: TwoFactorAuthenticatable::AuthMethod::SMS, at: Time.zone.now }
+        end
+        let(:user_session) do
+          {
+            auth_events: [
+              {
+                auth_method: TwoFactorAuthenticatable::AuthMethod::REMEMBER_DEVICE,
+                at: 3.minutes.ago,
+              },
+              auth_event_2fa,
+            ],
+          }
+        end
+
+        it 'is the non-remember device auth event' do
+          expect(last_2fa_auth_event).to eq(auth_event_2fa)
+        end
+      end
+    end
+
+    context 'with non-remember device auth event' do
+      let(:auth_event_2fa) do
+        { auth_method: TwoFactorAuthenticatable::AuthMethod::SMS, at: Time.zone.now }
+      end
+      let(:user_session) { { auth_events: [auth_event_2fa] } }
+
+      it 'is the non-remember device auth event' do
+        expect(last_2fa_auth_event).to eq(auth_event_2fa)
+      end
+    end
+  end
+
+  describe '#reauthenticate_at' do
+    subject(:reauthenticate_at) { auth_methods_session.reauthenticate_at }
+
+    context 'no auth events' do
+      it 'is now' do
+        expect(reauthenticate_at).to eq(Time.zone.now)
+      end
+    end
+
+    context 'with remember device auth event' do
+      let(:user_session) do
+        {
+          auth_events: [
+            {
+              auth_method: TwoFactorAuthenticatable::AuthMethod::REMEMBER_DEVICE,
+              at: Time.zone.now,
+            },
+          ],
+        }
+      end
+
+      it 'is now' do
+        expect(reauthenticate_at).to eq(Time.zone.now)
+      end
+
+      context 'with expired non-remember device auth event' do
+        let(:user_session) do
+          {
+            auth_events: [
+              {
+                auth_method: TwoFactorAuthenticatable::AuthMethod::REMEMBER_DEVICE,
+                at: (IdentityConfig.store.reauthn_window.seconds + 2).ago,
+              },
+              {
+                auth_method: TwoFactorAuthenticatable::AuthMethod::SMS,
+                at: (IdentityConfig.store.reauthn_window.seconds + 1).ago,
+              },
+            ],
+          }
+        end
+
+        it 'is at time of 2fa auth event expiration' do
+          expect(reauthenticate_at).to eq(Time.zone.now - 1.second)
+        end
+      end
+
+      context 'with valid non-remember device auth event' do
+        let(:user_session) do
+          {
+            auth_events: [
+              {
+                auth_method: TwoFactorAuthenticatable::AuthMethod::REMEMBER_DEVICE,
+                at: (IdentityConfig.store.reauthn_window.seconds - 2).ago,
+              },
+              {
+                auth_method: TwoFactorAuthenticatable::AuthMethod::SMS,
+                at: (IdentityConfig.store.reauthn_window.seconds - 1).ago,
+              },
+            ],
+          }
+        end
+
+        it 'is at time of 2fa auth event expiration' do
+          expect(reauthenticate_at).to eq(Time.zone.now + 1.second)
+        end
+      end
+    end
+
+    context 'with expired non-remember device auth event' do
+      let(:user_session) do
+        {
+          auth_events: [
+            {
+              auth_method: TwoFactorAuthenticatable::AuthMethod::SMS,
+              at: (IdentityConfig.store.reauthn_window.seconds + 1).ago,
+            },
+          ],
+        }
+      end
+
+      it 'is at time of 2fa auth event expiration' do
+        expect(reauthenticate_at).to eq(Time.zone.now - 1.second)
+      end
+    end
+
+    context 'with valid non-remember device auth event' do
+      let(:user_session) do
+        {
+          auth_events: [
+            {
+              auth_method: TwoFactorAuthenticatable::AuthMethod::SMS,
+              at: (IdentityConfig.store.reauthn_window.seconds - 1).ago,
+            },
+          ],
+        }
+      end
+
+      it 'is at time of 2fa auth event expiration' do
+        expect(reauthenticate_at).to eq(Time.zone.now + 1.second)
+      end
+    end
+  end
+
   describe '#recently_authenticated_2fa?' do
     subject(:recently_authenticated_2fa) { auth_methods_session.recently_authenticated_2fa? }
 
@@ -124,17 +282,36 @@ RSpec.describe AuthMethodsSession do
 
       it { expect(recently_authenticated_2fa).to eq(false) }
 
-      context 'with non-remember device auth event' do
+      context 'with expired non-remember device auth event' do
         let(:user_session) do
           {
             auth_events: [
               {
                 auth_method: TwoFactorAuthenticatable::AuthMethod::REMEMBER_DEVICE,
-                at: 3.minutes.ago,
+                at: (IdentityConfig.store.reauthn_window.seconds + 2).ago,
               },
               {
                 auth_method: TwoFactorAuthenticatable::AuthMethod::SMS,
-                at: Time.zone.now,
+                at: (IdentityConfig.store.reauthn_window.seconds + 1).ago,
+              },
+            ],
+          }
+        end
+
+        it { expect(recently_authenticated_2fa).to eq(false) }
+      end
+
+      context 'with valid non-remember device auth event' do
+        let(:user_session) do
+          {
+            auth_events: [
+              {
+                auth_method: TwoFactorAuthenticatable::AuthMethod::REMEMBER_DEVICE,
+                at: (IdentityConfig.store.reauthn_window.seconds - 2).ago,
+              },
+              {
+                auth_method: TwoFactorAuthenticatable::AuthMethod::SMS,
+                at: (IdentityConfig.store.reauthn_window.seconds - 1).ago,
               },
             ],
           }
@@ -144,13 +321,28 @@ RSpec.describe AuthMethodsSession do
       end
     end
 
-    context 'with non-remember device auth event' do
+    context 'with expired non-remember device auth event' do
       let(:user_session) do
         {
           auth_events: [
             {
               auth_method: TwoFactorAuthenticatable::AuthMethod::SMS,
-              at: Time.zone.now,
+              at: (IdentityConfig.store.reauthn_window.seconds + 1).ago,
+            },
+          ],
+        }
+      end
+
+      it { expect(recently_authenticated_2fa).to eq(false) }
+    end
+
+    context 'with valid non-remember device auth event' do
+      let(:user_session) do
+        {
+          auth_events: [
+            {
+              auth_method: TwoFactorAuthenticatable::AuthMethod::SMS,
+              at: (IdentityConfig.store.reauthn_window.seconds - 1).ago,
             },
           ],
         }

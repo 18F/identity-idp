@@ -2,7 +2,7 @@
 
 ## Installing on your local machine
 
-This installation method is meant for those who are familiar with setting up local development environments on their machines. If you encounter errors, see the [Troubleshooting](#troubleshooting) section at the bottom of this README.
+This installation method is meant for those who are familiar with setting up local development environments on their machines. If you encounter errors, see [Troubleshooting](./troubleshooting.md).
 
 We recommend using [Homebrew](https://brew.sh/), [rbenv](https://github.com/rbenv/rbenv), [nvm](https://github.com/nvm-sh/nvm) or other version management tooling to install the below dependencies; while we don't anticipate changing these frequently, this will ensure that you will be able to easily switch to different versions as needed.
 

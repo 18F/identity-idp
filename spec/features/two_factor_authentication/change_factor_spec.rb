@@ -6,8 +6,7 @@ RSpec.feature 'Changing authentication factor' do
 
     before do
       user # Sign up the user
-      reauthn_date = (IdentityConfig.store.reauthn_window + 1).seconds.from_now
-      travel_to(reauthn_date)
+      expire_reauthn_window
     end
 
     scenario 'editing password' do
@@ -29,7 +28,7 @@ RSpec.feature 'Changing authentication factor' do
         old_phone = phone_configuration.phone
         parsed_phone = Phonelib.parse(old_phone)
 
-        travel(IdentityConfig.store.reauthn_window + 1)
+        expire_reauthn_window
         visit manage_phone_path(id: phone_configuration)
         complete_2fa_confirmation_without_entering_otp
         click_link t('links.two_factor_authentication.send_another_code')
@@ -57,7 +56,7 @@ RSpec.feature 'Changing authentication factor' do
     context 'changing authentication methods' do
       it 'returns user to account page if they choose to cancel' do
         sign_in_and_2fa_user
-        travel(IdentityConfig.store.reauthn_window + 1)
+        expire_reauthn_window
         visit manage_password_path
         complete_2fa_confirmation_without_entering_otp
 
