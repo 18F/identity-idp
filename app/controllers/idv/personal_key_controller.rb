@@ -53,7 +53,7 @@ module Idv
             !idv_session.personal_key_acknowledged
         end,
         undo_step: ->(idv_session:, user:) {
-          idv_session.personal_key_acknowledged = nil
+          idv_session.invalidate_personal_key!
         },
       )
     end

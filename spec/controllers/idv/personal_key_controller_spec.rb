@@ -79,6 +79,12 @@ RSpec.describe Idv::PersonalKeyController do
         step_info.undo_step.call(idv_session: idv_session, user: user)
         expect(idv_session.personal_key_acknowledged).to eql(nil)
       end
+
+      it 'clears personal_key' do
+        idv_session.personal_key = 'ABCD-1234'
+        step_info.undo_step.call(idv_session: idv_session, user: user)
+        expect(idv_session.personal_key).to be_nil
+      end
     end
 
     describe '#preconditions' do
