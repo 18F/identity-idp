@@ -254,7 +254,7 @@ rack_mini_profiler: false
 rack_timeout_service_timeout_seconds: 15
 rails_mailer_previews_enabled: false
 raise_on_missing_title: false
-reauthn_window: 120
+reauthn_window: 1200
 recaptcha_enterprise_api_key: ''
 recaptcha_enterprise_project_id: ''
 recaptcha_site_key_v2: ''
