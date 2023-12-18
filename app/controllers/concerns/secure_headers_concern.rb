@@ -1,6 +1,7 @@
 module SecureHeadersConcern
   extend ActiveSupport::Concern
 
+  # so we can embed a special lookbook component into the dev docs
   DEV_FRAME_ANCESTORS = [
     'https://developers.login.gov',
   ].freeze
