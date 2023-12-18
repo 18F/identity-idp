@@ -77,6 +77,14 @@ module Reporting
       @progress
     end
 
+    def identity_verification_emailable_report
+      EmailableReport.new(
+        title: 'Identiy Verification Metrics',
+        table: to_csv,
+        filename: 'identity_verification_metrics',
+      )
+    end
+
     def to_csv
       CSV.generate do |csv|
         csv << ['Report Timeframe', "#{time_range.begin} to #{time_range.end}"]
