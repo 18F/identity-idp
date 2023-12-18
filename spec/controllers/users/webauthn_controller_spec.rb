@@ -19,6 +19,41 @@ RSpec.describe Users::WebauthnController do
       expect(assigns(:form)).to be_kind_of(TwoFactorAuthentication::WebauthnUpdateForm)
       expect(assigns(:form).configuration).to eq(configuration)
     end
+
+    context 'signed out' do
+      let(:user) { nil }
+      let(:configuration) { create(:webauthn_configuration) }
+
+      it 'redirects to sign-in page' do
+        expect(response).to redirect_to(new_user_session_url)
+      end
+    end
+
+    context 'not recently authenticated' do
+      before do
+        allow(controller).to receive(:recently_authenticated_2fa?).and_return(false)
+      end
+
+      it 'redirects to reauthenticate' do
+        expect(response).to redirect_to(login_two_factor_options_path)
+      end
+    end
+
+    context 'editing a configuration that does not exist' do
+      let(:params) { { id: 0 } }
+
+      it 'renders not found' do
+        expect(response).to be_not_found
+      end
+    end
+
+    context 'editing a configuration that does not belong to the user' do
+      let(:configuration) { create(:webauthn_configuration) }
+
+      it 'renders not found' do
+        expect(response).to be_not_found
+      end
+    end
   end
 
   describe '#update' do
