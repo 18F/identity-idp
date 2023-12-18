@@ -48,11 +48,9 @@ module Idv
         controller: self,
         next_steps: [FlowPolicy::FINAL],
         preconditions: ->(idv_session:, user:) do
-          return false unless idv_session.address_confirmed? || idv_session.phone_confirmed?
-
-          return false unless user.active_or_pending_profile
-
-          !idv_session.personal_key_acknowledged
+          idv_session.phone_or_address_step_complete? &&
+            user.active_or_pending_profile &&
+            !idv_session.personal_key_acknowledged
         end,
         undo_step: ->(idv_session:, user:) {
           idv_session.personal_key_acknowledged = nil

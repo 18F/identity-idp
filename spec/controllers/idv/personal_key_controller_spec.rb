@@ -106,8 +106,8 @@ RSpec.describe Idv::PersonalKeyController do
           user.reload
         end
 
-        it 'returns false' do
-          expect(preconditions).to eql(false)
+        it 'returns something falsey' do
+          expect(preconditions).to be_falsey
         end
       end
 
