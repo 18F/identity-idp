@@ -1,15 +1,12 @@
 module Idv
   class PersonalKeyController < ApplicationController
     include Idv::AvailabilityConcern
-    include IdvSession
     include IdvStepConcern
     include StepIndicatorConcern
     include SecureHeadersConcern
-    include FraudReviewConcern
     include OptInHelper
 
     before_action :apply_secure_headers_override
-    before_action :confirm_two_factor_authenticated
     before_action :confirm_step_allowed
 
     # Personal key is kind of a special case, since you're always meant to
