@@ -170,6 +170,16 @@ RSpec.describe Idv::PersonalKeyController do
       )
     end
 
+    it 'skips redundant or irrelevant before_actions' do
+      expect(subject).not_to have_actions(
+        :before,
+        :confirm_idv_needed,
+        :confirm_personal_key_acknowledged_if_needed,
+        :confirm_no_pending_in_person_enrollment,
+        :handle_fraud,
+      )
+    end
+
     it 'includes before_actions from IdvSession' do
       expect(subject).to have_actions(
         :before,
