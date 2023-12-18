@@ -36,13 +36,7 @@
       in_person_outage_message_enabled: IdentityConfig.store.in_person_outage_message_enabled,
       in_person_outage_expected_update_date: IdentityConfig.store.in_person_outage_expected_update_date,
       us_states_territories: us_states_territories,
-<<<<<<< HEAD
-      doc_auth_selfie_capture: {
-        enabled: IdentityConfig.store.doc_auth_selfie_capture_enabled,
-      },
-=======
       doc_auth_selfie_capture: Identity::Hostdata.env == 'prod' ? nil : doc_auth_selfie_capture,
->>>>>>> d9bf596bf1 (rebase main)
       skip_doc_auth: skip_doc_auth,
       how_to_verify_url: idv_how_to_verify_url,
       ui_not_ready_section_enabled: IdentityConfig.store.doc_auth_not_ready_section_enabled,
