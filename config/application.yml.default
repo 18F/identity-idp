@@ -87,7 +87,7 @@ doc_auth_max_attempts: 5
 doc_auth_max_capture_attempts_before_native_camera: 3
 doc_auth_max_submission_attempts_before_native_camera: 3
 doc_auth_not_ready_section_enabled: false
-doc_auth_selfie_capture: '{"enabled":false}'
+doc_auth_selfie_capture_enabled: false
 doc_auth_sdk_capture_orientation: '{"horizontal": 100, "vertical": 0}'
 doc_auth_supported_country_codes: '["US", "GU", "VI", "AS", "MP", "PR", "USA" ,"GUM", "VIR", "ASM", "MNP", "PRI"]'
 doc_capture_request_valid_for_minutes: 15
@@ -254,7 +254,7 @@ rack_mini_profiler: false
 rack_timeout_service_timeout_seconds: 15
 rails_mailer_previews_enabled: false
 raise_on_missing_title: false
-reauthn_window: 120
+reauthn_window: 1200
 recaptcha_enterprise_api_key: ''
 recaptcha_enterprise_project_id: ''
 recaptcha_site_key_v2: ''
@@ -382,7 +382,7 @@ development:
   database_worker_jobs_password: ''
   doc_auth_exit_question_section_enabled: true
   doc_auth_not_ready_section_enabled: true
-  doc_auth_selfie_capture: '{"enabled": true}'
+  doc_auth_selfie_capture_enabled: false
   doc_auth_vendor: 'mock'
   doc_auth_vendor_randomize: false
   doc_auth_vendor_randomize_percent: 0
@@ -521,7 +521,7 @@ test:
   database_worker_jobs_host: ''
   database_worker_jobs_password: ''
   doc_auth_max_attempts: 4
-  doc_auth_selfie_capture: '{"enabled":false}'
+  doc_auth_selfie_capture_enabled: false
   doc_auth_vendor: 'mock'
   doc_auth_vendor_randomize: false
   doc_auth_vendor_randomize_percent: 0

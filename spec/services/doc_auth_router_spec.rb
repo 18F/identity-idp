@@ -84,8 +84,7 @@ RSpec.describe DocAuthRouter do
 
       context 'when selfie is enabled' do
         before do
-          allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture).
-            and_return({ enabled: true })
+          allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).and_return(true)
         end
         context 'when vendor is not set to mock' do
           it 'chose lexisnexis' do
@@ -123,8 +122,7 @@ RSpec.describe DocAuthRouter do
 
       context 'with selfie enabled' do
         before do
-          allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture).
-            and_return({ enabled: true })
+          allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).and_return(true)
         end
         it 'is the lexisnexis vendor' do
           expect(DocAuthRouter.doc_auth_vendor(discriminator: discriminator)).

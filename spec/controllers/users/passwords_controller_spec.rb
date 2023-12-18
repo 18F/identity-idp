@@ -69,10 +69,16 @@ RSpec.describe Users::PasswordsController do
       end
 
       it 'creates a user Event for the password change' do
-        stub_sign_in(create(:user))
+        user = stub_sign_in
 
-        params = { password: 'salty new password' }
-        patch :update, params: { update_user_password_form: params }
+        params = {
+          password: 'salty new password',
+          password_confirmation: 'salty new password',
+        }
+
+        expect do
+          patch :update, params: { update_user_password_form: params }
+        end.to change { user.events.password_changed.size }.by 1
       end
 
       it 'sends a security event' do
