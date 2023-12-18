@@ -80,7 +80,7 @@ RSpec.describe Idv::PersonalKeyController do
       controller.class.step_info
     end
 
-    describe '#undo' do
+    describe '#undo_step' do
       it 'clears personal_key_acknowledged' do
         idv_session.acknowledge_personal_key!
         step_info.undo_step.call(idv_session: idv_session, user: user)
