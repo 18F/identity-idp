@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Idv::PersonalKeyController do
+  include FlowPolicyHelper
   include SamlAuthHelper
   include PersonalKeyValidator
 
@@ -51,21 +52,13 @@ RSpec.describe Idv::PersonalKeyController do
 
     case address_verification_mechanism
     when 'phone'
-      idv_session.address_verification_mechanism = 'phone'
-      idv_session.user_phone_confirmation = true
-      idv_session.vendor_phone_confirmation = true
-      idv_session.gpo_code_verified = false
+      stub_step(key: :phone, idv_session: idv_session)
+      stub_step(key: :otp_verification, idv_session: idv_session)
     when 'gpo'
-      idv_session.address_verification_mechanism = 'gpo'
-      idv_session.user_phone_confirmation = false
-      idv_session.vendor_phone_confirmation = false
+      stub_step(key: :request_letter, idv_session: idv_session)
       idv_session.gpo_code_verified = true
-    when nil
-      idv_session.address_verification_mechanism = nil
-      idv_session.user_phone_confirmation = nil
-      idv_session.vendor_phone_confirmation = nil
     else
-      raise 'invalid address_verification_mechanism'
+      raise 'invalid address_verification_mechanism' unless address_verification_mechanism.nil?
     end
 
     idv_session.threatmetrix_review_status = threatmetrix_review_status
