@@ -49,7 +49,6 @@ module Idv
       Idv::StepInfo.new(
         key: :personal_key,
         controller: self,
-        action: :show,
         next_steps: [FlowPolicy::FINAL],
         preconditions: ->(idv_session:, user:) do
           return false unless idv_session.address_confirmed? || idv_session.phone_confirmed?
