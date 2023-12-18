@@ -100,6 +100,7 @@ fr:
           ou PNG.
       general:
         fallback_field_level: Veuillez ajouter une nouvelle image
+        missing_state_id_number: 'ERROR MESSAGE'
         multiple_back_id_failures: Nous n’avons pas pu vérifier le verso de votre pièce
           d’identité. Essayez de prendre une nouvelle photo.
         multiple_front_id_failures: Nous n’avons pas pu vérifier le recto de votre pièce

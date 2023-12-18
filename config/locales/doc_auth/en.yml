@@ -75,7 +75,7 @@ en:
         invalid: This file type is not accepted, please choose a JPG or PNG file.
       general:
         fallback_field_level: Please add a new image
-        missing_state_id_number: "ERROR MESSAGE"
+        missing_state_id_number: 'ERROR MESSAGE'
         multiple_back_id_failures: We couldn’t verify the back of your ID. Try taking a new picture.
         multiple_front_id_failures: We couldn’t verify the front of your ID. Try taking a new picture.
         network_error: We are having technical difficulties on our end. Please try to
