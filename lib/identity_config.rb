@@ -322,8 +322,12 @@ class IdentityConfig
     config.add(:nonessential_email_banlist, type: :json)
     config.add(
       :openid_connect_redirect,
-      type: :symbol,
-      enum: [:server_side, :client_side, :client_side_js],
+      type: :string,
+      enum: ['server_side', 'client_side', 'client_side_js'],
+    )
+    config.add(
+      :openid_connect_redirect_uuid_override_map,
+      type: :json,
     )
     config.add(:openid_connect_content_security_form_action_enabled, type: :boolean)
     config.add(:otp_delivery_blocklist_findtime, type: :integer)
