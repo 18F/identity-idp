@@ -8,8 +8,9 @@ es:
     buttons:
       add_new_photos: Añadir nuevas fotos
       continue: Continuar
-      take_or_upload_picture_html: '<lg-take-photo>Toma una foto</lg-take-photo> o
-        <lg-upload>Sube una foto</lg-upload>'
+      take_or_upload_picture_html: '<lg-take-photo>Toma una
+        foto</lg-take-photo><lg-or> o </lg-or> <lg-upload>Sube una
+        foto</lg-upload>'
       take_picture: Toma una foto
       take_picture_retry: Retirar la foto
       upload_picture: Subir foto
@@ -181,7 +182,10 @@ es:
       document_capture: Incluir fotos de su identificación
       document_capture_back: Parte trasera de su documento de identidad
       document_capture_front: Parte delantera de su documento de identidad
-      document_capture_selfie: Selfi
+      document_capture_selfie: Una foto tuya
+      document_capture_subheader_id: Licencia de conducir o con un documento de identidad estatal
+      document_capture_subheader_selfie: Foto suya
+      document_capture_with_selfie: Incluir fotos de su identificación y una foto suya
       front: Anverso de su licencia de conducir o identificación estatal
       getting_started: Vamos a verificar su identidad para %{sp_name}
       how_to_verify: Elija cómo quiere verificar su identidad
@@ -222,9 +226,6 @@ es:
       capture_status_none: Alinea
       capture_status_small_document: Muévete mas cerca
       capture_status_tap_to_capture: Toque para capturar
-      document_capture_intro_acknowledgment: Recopilaremos información sobre usted
-        leyendo su licencia de conducir o identificación estatal. Usamos esta
-        información para verificar su identidad.
       exit:
         with_sp: Salir de %{app_name} y volver a %{sp_name}
         without_sp: Salir de la verificación de identidad e ir a la página de su cuenta
@@ -315,12 +316,16 @@ es:
         proceso.
       header: ¿No está listo para enviar las fotos?
     tips:
-      document_capture_header_text: 'Para obtener los mejores resultados:'
       document_capture_hint: Debe ser un JPG o PNG
       document_capture_id_text1: Use un fondo oscuro
       document_capture_id_text2: Tome la foto en una superficie plana
       document_capture_id_text3: No use el flash de su cámara
       document_capture_id_text4: El tamaño del archivo debe ser de al menos 2 MB
+      document_capture_selfie_id_header_text: Consejos para obtener fotografías nítidas
+      document_capture_selfie_selfie_text: Consejos para obtener una foto nítidas
+      document_capture_selfie_text1: Mantenga el dispositivo al mismo nivel que los ojos
+      document_capture_selfie_text2: Asegúrate de que tu rostro completo sea visible
+      document_capture_selfie_text3: Tómese la foto en un sitio con buena iluminación
       most_common: Más común
       review_issues_id_header_text: 'Revise las imágenes de su documento de identidad
         expedido por el estado:'

@@ -1,0 +1,77 @@
+@use 'uswds-core' as *;
+
+.manageable-authenticator__edit {
+  @include u-margin-y(1.5);
+  @include u-padding(2);
+  @include u-border(1px, 'primary-light');
+  @include u-radius('lg');
+  display: none;
+
+  .manageable-authenticator--editing & {
+    display: block;
+  }
+
+  .manageable-authenticator--deleted & {
+    @include u-padding(0);
+    @include u-border(0);
+  }
+
+  &:focus:not(:focus-visible) {
+    outline: none;
+  }
+}
+
+.manageable-authenticator__alert {
+  @include u-margin-bottom(2);
+  display: none;
+
+  .manageable-authenticator--alert-visible & {
+    display: block;
+  }
+
+  &:focus:not(:focus-visible) {
+    outline: none;
+  }
+}
+
+.manageable-authenticator__rename {
+  display: none;
+
+  .manageable-authenticator--renaming & {
+    display: block;
+  }
+}
+
+.manageable-authenticator__details {
+  .manageable-authenticator--renaming &,
+  .manageable-authenticator--deleted & {
+    display: none;
+  }
+}
+
+.manageable-authenticator__details-name {
+  display: block;
+}
+
+.manageable-authenticator__summary {
+  @include grid-row;
+  @include u-padding(1);
+  @include u-border(1px, 'primary-light');
+
+  lg-manageable-authenticator + lg-manageable-authenticator & {
+    border-top: none;
+  }
+
+  .manageable-authenticator--editing &,
+  .manageable-authenticator--deleted & {
+    display: none;
+  }
+}
+
+.manageable-authenticator__summary-name {
+  @include grid-col('fill');
+}
+
+.manageable-authenticator__actions {
+  @include grid-col('auto');
+}

@@ -215,7 +215,7 @@ module DocAuthRouter
     end
 
     # if vendor is not set to mock and selfie enabled use lexisnexis
-    if IdentityConfig.store.doc_auth_selfie_capture[:enabled] &&
+    if IdentityConfig.store.doc_auth_selfie_capture_enabled &&
        vendor != Idp::Constants::Vendors::MOCK
       vendor = Idp::Constants::Vendors::LEXIS_NEXIS
     end

@@ -71,7 +71,8 @@ RSpec.describe SignUp::CompletionsController do
             requested_attributes: [:email],
             request_url: 'http://localhost:3000',
           }
-          allow(controller).to receive(:user_session).and_return('decrypted_pii' => pii.to_json)
+          Pii::Cacher.new(user, controller.user_session).save_decrypted_pii(pii, 123)
+
           get :show
         end
 
@@ -109,7 +110,8 @@ RSpec.describe SignUp::CompletionsController do
             requested_attributes: [:email],
             request_url: 'http://localhost:3000',
           }
-          allow(controller).to receive(:user_session).and_return('decrypted_pii' => pii.to_json)
+          Pii::Cacher.new(user, controller.user_session).save_decrypted_pii(pii, 123)
+
           get :show
         end
 

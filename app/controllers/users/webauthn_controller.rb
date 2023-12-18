@@ -30,6 +30,10 @@ module Users
 
       if result.success?
         flash[:success] = t('two_factor_authentication.webauthn_platform.deleted')
+        create_user_event(:webauthn_key_removed)
+        revoke_remember_device(current_user)
+        event = PushNotification::RecoveryInformationChangedEvent.new(user: current_user)
+        PushNotification::HttpPush.deliver(event)
         redirect_to account_path
       else
         flash[:error] = result.first_error_message

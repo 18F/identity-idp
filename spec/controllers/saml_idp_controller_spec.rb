@@ -498,7 +498,6 @@ RSpec.describe SamlIdpController do
           zipcode: '12345',
         )
       end
-      let(:pii_json) { pii.present? ? pii.to_json : nil }
       let(:this_authn_request) do
         ial2_authnrequest = saml_authn_request_url(
           overrides: {
@@ -528,7 +527,12 @@ RSpec.describe SamlIdpController do
         )
         allow(subject).to receive(:attribute_asserter) { asserter }
 
-        controller.user_session[:decrypted_pii] = pii_json
+        if pii.present?
+          Pii::Cacher.new(user, controller.user_session).save_decrypted_pii(
+            pii,
+            user.active_profile.id,
+          )
+        end
       end
 
       it 'calls AttributeAsserter#build' do
@@ -671,7 +675,12 @@ RSpec.describe SamlIdpController do
         )
         allow(subject).to receive(:attribute_asserter) { asserter }
 
-        controller.user_session[:decrypted_pii] = pii
+        if pii.present?
+          Pii::Cacher.new(user, controller.user_session).save_decrypted_pii(
+            pii,
+            user.active_profile.id,
+          )
+        end
       end
 
       it 'calls AttributeAsserter#build' do
@@ -1118,6 +1127,7 @@ RSpec.describe SamlIdpController do
           request_url: @stored_request_url.gsub('authpost', 'auth'),
           request_id: sp_request_id,
           requested_attributes: ['email'],
+          biometric_comparison_required: false,
         )
       end
 
@@ -1149,6 +1159,7 @@ RSpec.describe SamlIdpController do
           request_url: @saml_request.request.original_url.gsub('authpost', 'auth'),
           request_id: sp_request_id,
           requested_attributes: ['email'],
+          biometric_comparison_required: false,
         )
       end
 

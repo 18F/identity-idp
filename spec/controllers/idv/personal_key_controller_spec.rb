@@ -194,7 +194,7 @@ RSpec.describe Idv::PersonalKeyController do
         end
 
         before do
-          Pii::ProfileCacher.new(user, subject.user_session).save_decrypted_pii(
+          Pii::Cacher.new(user, subject.user_session).save_decrypted_pii(
             existing_profile_pii,
             existing_profile.id,
           )
@@ -226,7 +226,7 @@ RSpec.describe Idv::PersonalKeyController do
           end
 
           before do
-            Pii::ProfileCacher.new(user, subject.user_session).save_decrypted_pii(
+            Pii::Cacher.new(user, subject.user_session).save_decrypted_pii(
               pending_profile_pii,
               pending_profile.id,
             )
@@ -249,7 +249,7 @@ RSpec.describe Idv::PersonalKeyController do
             end
 
             before do
-              Pii::ProfileCacher.new(user, subject.user_session).save_decrypted_pii(
+              Pii::Cacher.new(user, subject.user_session).save_decrypted_pii(
                 active_profile_pii,
                 active_profile.id,
               )

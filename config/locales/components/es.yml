@@ -19,6 +19,21 @@ es:
       enabled_alert: YHabilitó el JavaScript en su navegador.
       next_step: Recargue esta página una vez que haya habilitado JavaScript en su
         navegador.
+    manageable_authenticator:
+      cancel: Cancelar
+      created_on: Creado el %{date}
+      delete: Borrar
+      delete_confirm: ¿Está seguro que desea eliminar este método de autenticación?
+      deleted: Se ha eliminado correctamente un método de autenticación.
+      deleting: Eliminando…
+      done: Terminado
+      manage: Administrar
+      manage_accessible_label: Gestionar método de autenticación
+      nickname: Apodo
+      rename: Cambiar el nombre
+      renamed: Se ha cambiado correctamente el nombre de su método de autenticación.
+      save: Guardar
+      saving: Guardando…
     memorable_date:
       day: Día
       errors:
