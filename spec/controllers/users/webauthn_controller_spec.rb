@@ -116,6 +116,26 @@ RSpec.describe Users::WebauthnController do
       expect(assigns(:form).configuration).to eq(configuration)
     end
 
+    it 'sends a recovery information changed event' do
+      expect(PushNotification::HttpPush).to receive(:deliver).
+        with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
+
+      response
+    end
+
+    it 'revokes remembered device' do
+      expect(user.remember_device_revoked_at).to eq nil
+
+      freeze_time do
+        response
+        expect(user.reload.remember_device_revoked_at).to eq Time.zone.now
+      end
+    end
+
+    it 'logs a user event for the removed credential' do
+      expect { response }.to change { user.events.webauthn_key_removed.size }.by 1
+    end
+
     context 'signed out' do
       let(:user) { nil }
       let(:configuration) { create(:webauthn_configuration) }
