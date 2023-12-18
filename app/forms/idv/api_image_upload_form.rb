@@ -5,7 +5,7 @@ module Idv
 
     validates_presence_of :front
     validates_presence_of :back
-    validates_presence_of :selfie, if: :liveness_checking_enabled?
+    validates_presence_of :selfie, if: :liveness_checking_required?
     validates_presence_of :document_capture_session
 
     validate :validate_images
@@ -81,11 +81,11 @@ module Idv
         doc_auth_client.post_images(
           front_image: front_image_bytes,
           back_image: back_image_bytes,
-          selfie_image: liveness_checking_enabled? ? selfie_image_bytes : nil,
+          selfie_image: liveness_checking_required? ? selfie_image_bytes : nil,
           image_source: image_source,
           user_uuid: user_uuid,
           uuid_prefix: uuid_prefix,
-          liveness_checking_enabled: liveness_checking_enabled?,
+          liveness_checking_required: liveness_checking_required?,
         )
       end
 
@@ -368,7 +368,7 @@ module Idv
       Db::AddDocumentVerificationAndSelfieCosts.
         new(user_id: user_id,
             service_provider: service_provider,
-            liveness_checking_enabled: liveness_checking_enabled?).
+            liveness_checking_enabled: liveness_checking_required?).
         call(response)
     end
 
@@ -471,11 +471,8 @@ module Idv
       IdentityConfig.store.doc_auth_check_failed_image_resubmission_enabled
     end
 
-    def liveness_checking_enabled?
-      return false if Identity::Hostdata.env == 'prod'
-      return false unless IdentityConfig.store.doc_auth_selfie_capture_enabled
-
-      params[:liveness_checking_enabled] == 'true'
+    def liveness_checking_required?
+      sp_session[:biometric_camparison_required]
     end
   end
 end

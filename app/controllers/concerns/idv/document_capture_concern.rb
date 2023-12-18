@@ -54,11 +54,11 @@ module Idv
       @stored_result = document_capture_session&.load_result
     end
 
-    def liveness_checking_enabled
-      return if Identity::Hostdata.env == 'prod'
-      return if params[:selfie] != 'true'
+    def liveness_checking_enabled?
+      return false if Identity::Hostdata.env == 'prod'
+      return false unless IdentityConfig.store.doc_auth_selfie_capture_enabled
 
-      IdentityConfig.store.doc_auth_selfie_capture_enabled
+      sp_session[:biometric_camparison_required]
     end
 
     private
