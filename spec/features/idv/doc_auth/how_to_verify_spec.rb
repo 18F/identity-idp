@@ -140,7 +140,7 @@ RSpec.feature 'how to verify step', js: true do
         expect(page).to have_current_path(idv_hybrid_handoff_url)
       end
     end
-    
+
     context 'Going back from Hybrid Handoff with opt in enabled midstream' do
       before do
         allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { true }
@@ -161,7 +161,7 @@ RSpec.feature 'how to verify step', js: true do
         expect(page).to have_current_path(idv_agreement_url)
       end
     end
-    
+
     context 'Going back from Hybrid Handoff with opt in enabled the whole time' do
       before do
         allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { true }
@@ -182,7 +182,7 @@ RSpec.feature 'how to verify step', js: true do
         expect(page).to have_current_path(idv_how_to_verify_url)
       end
     end
-    
+
     context 'Going back from Hybrid Handoff with opt in disabled the whole time' do
       before do
         allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { true }
