@@ -32,7 +32,7 @@ interface AcuantSelfieCameraContextProps {
   /**
    * Failure callback
    */
-  onImageCaptureFailure: any;
+  onImageCaptureFailure: ( error : { code: number, message: string }) => void;
   /**
    * Capture open callback, tells the rest of the page
    * when the fullscreen selfie capture page is open

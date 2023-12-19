@@ -672,7 +672,7 @@ function AcuantCapture(
       {isCapturingEnvironment && selfieCapture && (
         <AcuantSelfieCamera
           onImageCaptureSuccess={onSelfieCaptureSuccess}
-          onImageCaptureFailure={(error) => onSelfieCaptureFailure(error)}
+          onImageCaptureFailure={onSelfieCaptureFailure}
           onImageCaptureOpen={onSelfieCaptureOpen}
           onImageCaptureClose={onSelfieCaptureClosed}
         >
