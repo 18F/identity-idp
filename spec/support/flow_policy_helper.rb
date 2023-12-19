@@ -7,6 +7,14 @@ module FlowPolicyHelper
     end
   end
 
+  def stub_steps_before(key, idv_session:)
+    keys_before = keys_up_to(key: key)[0..-2]
+
+    keys_before.each do |key|
+      stub_step(key: key, idv_session: idv_session)
+    end
+  end
+
   def stub_step(key:, idv_session:)
     case key
     when :welcome
