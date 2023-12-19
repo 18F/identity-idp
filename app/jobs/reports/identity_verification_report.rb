@@ -10,10 +10,11 @@ module Reports
       return unless IdentityConfig.store.s3_reports_enabled
       self.report_date = report_date
 
-      emails = IdentityConfig.store.team_ada_email
       csv = report_maker.to_csv
 
       save_report(REPORT_NAME, csv, extension: 'csv')
+
+      emails = IdentityConfig.store.team_ada_emails
 
       emails.each do |email|
         ReportMailer.tables_report(
