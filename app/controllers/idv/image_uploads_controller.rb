@@ -25,6 +25,7 @@ module Idv
         uuid_prefix: current_sp&.app_id,
         irs_attempts_api_tracker: irs_attempts_api_tracker,
         store_encrypted_images: store_encrypted_images?,
+        liveness_checking_required: liveness_checking_required?,
       )
     end
 
@@ -42,6 +43,10 @@ module Idv
         service_provider: current_sp,
         user: current_user,
       )
+    end
+
+    def liveness_checking_required?
+      sp_session[:biometric_camparison_required]
     end
   end
 end

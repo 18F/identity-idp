@@ -58,7 +58,9 @@ module Idv
       return false if Identity::Hostdata.env == 'prod'
       return false unless IdentityConfig.store.doc_auth_selfie_capture_enabled
 
-      sp_session[:biometric_camparison_required]
+      return unless sp_session[:biometric_comparison_required]
+
+      { enabled: true } # until FE updated
     end
 
     private
