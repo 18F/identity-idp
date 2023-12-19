@@ -12,7 +12,7 @@ RSpec.feature 'Password recovery via personal key for a GPO-verified user' do
 
   scenario 'lets them reactivate their profile with their personal key', email: true, js: true do
     complete_idv_steps_with_gpo_before_confirmation_step(user)
-    click_on 'Continue'
+    click_on t('doc_auth.buttons.continue')
 
     click_on t('account.index.verification.reactivate_button')
     click_on t('idv.gpo.form.submit')
@@ -21,7 +21,7 @@ RSpec.feature 'Password recovery via personal key for a GPO-verified user' do
     check t('forms.personal_key.required_checkbox')
     click_continue
 
-    click_on 'Sign out'
+    click_on t('links.sign_out')
 
     trigger_reset_password_and_click_email_link(user.email)
     reset_password_and_sign_back_in(user, new_password)
