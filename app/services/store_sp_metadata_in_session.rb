@@ -36,7 +36,6 @@ class StoreSpMetadataInSession
       request_url: sp_request.url,
       request_id: sp_request.uuid,
       requested_attributes: sp_request.requested_attributes,
-      biometric_comparison_required: sp_request.biometric_comparison_required,
     }
   end
 
