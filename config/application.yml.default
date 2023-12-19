@@ -96,6 +96,7 @@ email_from_display_name: Login.gov
 email_registrations_per_ip_limit: 20
 email_registrations_per_ip_period: 20
 email_registrations_per_ip_track_only_mode: false
+enable_add_mfa_redirect_for_personal_key: false
 enable_load_testing_mode: false
 enable_rate_limiting: true
 enable_test_routes: true
@@ -211,6 +212,7 @@ minimum_wait_before_another_usps_letter_in_hours: 24
 mx_timeout: 3
 openid_connect_redirect: client_side_js
 openid_connect_content_security_form_action_enabled: false
+openid_connect_redirect_uuid_override_map: '{}'
 otp_delivery_blocklist_maxretry: 10
 otp_valid_for: 10
 otp_expiration_warning_seconds: 150
