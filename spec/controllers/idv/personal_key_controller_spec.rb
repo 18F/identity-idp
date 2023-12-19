@@ -48,20 +48,20 @@ RSpec.describe Idv::PersonalKeyController do
   before do
     stub_analytics
     stub_attempts_tracker
-    stub_verify_steps_one_and_two(user, applicant: applicant)
+
+    stub_sign_in(user)
 
     case address_verification_mechanism
     when 'phone'
-      stub_step(key: :phone, idv_session: idv_session)
-      stub_step(key: :otp_verification, idv_session: idv_session)
+      stub_up_to(:otp_verification, idv_session: idv_session, applicant: applicant)
     when 'gpo'
-      stub_step(key: :request_letter, idv_session: idv_session)
+      stub_up_to(:request_letter, idv_session: idv_session, applicant: applicant)
       idv_session.gpo_code_verified = true
+    when nil
+      stub_up_to(:verify_info, idv_session: idv_session, applicant: applicant)
     else
-      raise 'invalid address_verification_mechanism' unless address_verification_mechanism.nil?
+      raise 'invalid address_verification_mechanism'
     end
-
-    idv_session.threatmetrix_review_status = threatmetrix_review_status
 
     if mint_profile_from_idv_session
       idv_session.create_profile_from_applicant_with_password(password)
@@ -207,9 +207,9 @@ RSpec.describe Idv::PersonalKeyController do
     context 'profile has not been created from idv_session' do
       let(:mint_profile_from_idv_session) { false }
 
-      it 'redirects to the account path' do
+      it 'redirects to the enter password screen' do
         get :show
-        expect(response).to redirect_to idv_welcome_path
+        expect(response).to redirect_to idv_enter_password_url
       end
 
       context 'but a profile is pending from a different session' do
