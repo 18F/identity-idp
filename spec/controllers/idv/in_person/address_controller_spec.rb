@@ -1,28 +1,22 @@
 require 'rails_helper'
 
 RSpec.describe Idv::InPerson::AddressController do
+  include FlowPolicyHelper
   include InPersonHelper
 
-  let(:pii_from_user) { Idp::Constants::MOCK_IPP_APPLICANT_SAME_ADDRESS_AS_ID_FALSE.dup }
   let(:user) { build(:user) }
-  let(:flow_session) do
-    { pii_from_user: pii_from_user }
-  end
-  let(:ssn) { nil }
 
   before do
     allow(IdentityConfig.store).to receive(:in_person_residential_address_controller_enabled).
       and_return(true)
     allow(IdentityConfig.store).to receive(:usps_ipp_transliteration_enabled).
       and_return(true)
-    allow(subject).to receive(:current_user).
-      and_return(user)
     stub_sign_in(user)
-    subject.user_session['idv/in_person'] = flow_session
-    subject.idv_session.welcome_visited = true
-    subject.idv_session.idv_consent_given = true
-    subject.idv_session.flow_path = 'standard'
-    subject.idv_session.ssn = ssn
+    stub_up_to(:hybrid_handoff, idv_session: subject.idv_session)
+    subject.user_session['idv/in_person'] = {
+      pii_from_user: Idp::Constants::MOCK_IPP_APPLICANT_SAME_ADDRESS_AS_ID_FALSE.dup,
+    }
+    subject.idv_session.ssn = nil
     stub_analytics
     allow(@analytics).to receive(:track_event)
   end
@@ -145,7 +139,6 @@ RSpec.describe Idv::InPerson::AddressController do
           state: state,
         } }
       end
-      let(:ssn) { '900123456' }
       let(:analytics_name) { 'IdV: in person proofing residential address submitted' }
       let(:analytics_args) do
         {
@@ -220,18 +213,13 @@ RSpec.describe Idv::InPerson::AddressController do
     end
 
     context 'invalid address details' do
-      let(:address1) { '1 F@KE RD' }
-      let(:address2) { '@?T 1B' }
-      let(:city) { 'GR3AT F&LLS' }
-      let(:zipcode) { '59010' }
-      let(:state) { 'Montana' }
       let(:params) do
         { in_person_address: {
-          address1: address1,
-          address2: address2,
-          city: city,
-          zipcode: zipcode,
-          state: state,
+          address1: '1 F@KE RD',
+          address2: '@?T 1B',
+          city: 'GR3AT F&LLS',
+          zipcode: '59010',
+          state: 'Montana',
         } }
       end
       let(:analytics_name) { 'IdV: in person proofing residential address submitted' }
