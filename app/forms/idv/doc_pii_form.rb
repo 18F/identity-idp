@@ -18,7 +18,7 @@ module Idv
                                                    } }
 
     validates_presence_of :state_id_number, { message: proc {
-      I18n.t('doc_auth.errors.general.missing_state_id_number')
+      I18n.t('doc_auth.errors.general.no_liveness')
     } }
 
     attr_reader :first_name, :last_name, :dob, :address1, :state, :zipcode, :attention_with_barcode,

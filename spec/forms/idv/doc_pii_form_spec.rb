@@ -291,7 +291,7 @@ RSpec.describe Idv::DocPiiForm do
 
       expect(result.success?).to eq(false)
       expect(result.errors[:state_id_number]).to eq(
-        [I18n.t('doc_auth.errors.general.missing_state_id_number')],
+        [I18n.t('doc_auth.errors.general.no_liveness')],
       )
     end
   end
