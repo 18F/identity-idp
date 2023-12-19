@@ -51,7 +51,10 @@ module TwoFactorAuthentication
     end
 
     def extra_analytics_attributes
-      { configuration_id: }
+      {
+        configuration_id:,
+        platform_authenticator: configuration&.platform_authenticator?,
+      }
     end
   end
 end

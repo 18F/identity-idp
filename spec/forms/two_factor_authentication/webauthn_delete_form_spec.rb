@@ -14,7 +14,21 @@ RSpec.describe TwoFactorAuthentication::WebauthnDeleteForm do
 
       it 'returns a successful result' do
         expect(result.success?).to eq(true)
-        expect(result.to_h).to eq(success: true, configuration_id:)
+        expect(result.to_h).to eq(
+          success: true,
+          configuration_id:,
+          platform_authenticator: false,
+        )
+      end
+
+      context 'with platform authenticator' do
+        let(:configuration) do
+          create(:webauthn_configuration, :platform_authenticator, user:)
+
+          it 'includes platform authenticator detail in result' do
+            expect(result.to_h[:platform_authenticator]).to eq(true)
+          end
+        end
       end
 
       context 'with blank configuration' do
@@ -28,6 +42,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnDeleteForm do
               configuration_id: { configuration_not_found: true },
             },
             configuration_id:,
+            platform_authenticator: nil,
           )
         end
       end
@@ -43,6 +58,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnDeleteForm do
               configuration_id: { configuration_not_found: true },
             },
             configuration_id:,
+            platform_authenticator: nil,
           )
         end
       end
@@ -58,6 +74,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnDeleteForm do
               configuration_id: { configuration_not_found: true },
             },
             configuration_id:,
+            platform_authenticator: nil,
           )
         end
       end
@@ -74,7 +91,18 @@ RSpec.describe TwoFactorAuthentication::WebauthnDeleteForm do
             configuration_id: { only_method: true },
           },
           configuration_id:,
+          platform_authenticator: false,
         )
+      end
+
+      context 'with platform authenticator' do
+        let(:configuration) do
+          create(:webauthn_configuration, :platform_authenticator, user:)
+
+          it 'includes platform authenticator detail in result' do
+            expect(result.to_h[:platform_authenticator]).to eq(true)
+          end
+        end
       end
     end
   end
