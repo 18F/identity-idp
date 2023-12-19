@@ -96,6 +96,7 @@ email_from_display_name: Login.gov
 email_registrations_per_ip_limit: 20
 email_registrations_per_ip_period: 20
 email_registrations_per_ip_track_only_mode: false
+enable_add_mfa_redirect_for_personal_key: false
 enable_load_testing_mode: false
 enable_rate_limiting: true
 enable_test_routes: true
