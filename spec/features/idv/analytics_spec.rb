@@ -394,10 +394,10 @@ RSpec.feature 'Analytics Regression', js: true do
         success: true, flow_path: 'standard', step: 'state_id', step_count: 1, analytics_id: 'In Person Proofing', irs_reproofing: false, errors: {}, same_address_as_id: false, opted_in_to_in_person_proofing: nil
       },
       'IdV: in person proofing address visited' => {
-        step: 'address', flow_path: 'standard', analytics_id: 'In Person Proofing', irs_reproofing: false, same_address_as_id: false, opted_in_to_in_person_proofing: nil
+        step: 'address', flow_path: 'standard', analytics_id: 'In Person Proofing', irs_reproofing: false, same_address_as_id: false, opted_in_to_in_person_proofing: nil, acuant_sdk_upgrade_ab_test_bucket: :default, lexisnexis_instant_verify_workflow_ab_test_bucket: :default, skip_hybrid_handoff: nil
       },
       'IdV: in person proofing residential address submitted' => {
-        success: true, step: 'address', flow_path: 'standard', analytics_id: 'In Person Proofing', irs_reproofing: false, errors: {}, same_address_as_id: false
+        success: true, step: 'address', flow_path: 'standard', analytics_id: 'In Person Proofing', irs_reproofing: false, errors: {}, same_address_as_id: false, acuant_sdk_upgrade_ab_test_bucket: :default, lexisnexis_instant_verify_workflow_ab_test_bucket: :default, skip_hybrid_handoff: nil
       },
       'IdV: doc auth ssn visited' => {
         analytics_id: 'In Person Proofing', step: 'ssn', flow_path: 'standard', irs_reproofing: false, acuant_sdk_upgrade_ab_test_bucket: :default, lexisnexis_instant_verify_workflow_ab_test_bucket: :default, skip_hybrid_handoff: nil, same_address_as_id: false
