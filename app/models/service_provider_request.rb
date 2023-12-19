@@ -4,8 +4,15 @@ class ServiceProviderRequest
   # upon deployment
   attr_accessor :uuid, :issuer, :url, :ial, :aal, :requested_attributes
 
-  def initialize(uuid: nil, issuer: nil, url: nil,
-                 ial: nil, aal: nil, requested_attributes: [])
+  def initialize(
+    uuid: nil,
+    issuer: nil,
+    url: nil,
+    ial: nil,
+    aal: nil,
+    requested_attributes: [],
+    biometric_comparison_required: false # rubocop:disable Lint/UnusedMethodArgument
+  )
     @uuid = uuid
     @issuer = issuer
     @url = url
