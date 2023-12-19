@@ -55,12 +55,10 @@ module Idv
     end
 
     def liveness_checking_enabled?
-      return { enabled: false } if Identity::Hostdata.env == 'prod'
-      return { enabled: false } unless IdentityConfig.store.doc_auth_selfie_capture_enabled
+      return false if Identity::Hostdata.env == 'prod'
+      return false unless IdentityConfig.store.doc_auth_selfie_capture_enabled
 
-      return { enabled: false } unless sp_session[:biometric_comparison_required]
-
-      { enabled: true } # until FE updated
+      !!sp_session[:biometric_comparison_required]
     end
 
     private
