@@ -2742,7 +2742,7 @@ module AnalyticsEvents
 
   # @param [Integer] sdk_error_code SDK code for the error encountered
   # @param [String] sdk_error_message SDK message for the error encountered
-  # User captured and approved of their selfie
+  # User encountered an error with the SDK selfie process
   # Error code 1: camera permission not granted
   # Error code 2: unexpected errors
   def idv_sdk_selfie_image_capture_failed(sdk_error_code:, sdk_error_message:, **extra)
