@@ -39,6 +39,10 @@ class FeatureManagement
     IdentityConfig.store.enable_load_testing_mode
   end
 
+  def self.enable_additional_mfa_redirect_for_personal_key_mfa?
+    IdentityConfig.store.enable_add_mfa_redirect_for_personal_key
+  end
+
   def self.use_kms?
     IdentityConfig.store.use_kms
   end
