@@ -53,15 +53,17 @@ RSpec.describe Idv::PersonalKeyController do
 
     case address_verification_mechanism
     when 'phone'
-      stub_up_to(:otp_verification, idv_session: idv_session, applicant: applicant)
+      stub_up_to(:otp_verification, idv_session: idv_session)
     when 'gpo'
-      stub_up_to(:request_letter, idv_session: idv_session, applicant: applicant)
+      stub_up_to(:request_letter, idv_session: idv_session)
       idv_session.gpo_code_verified = true
     when nil
-      stub_up_to(:verify_info, idv_session: idv_session, applicant: applicant)
+      stub_up_to(:verify_info, idv_session: idv_session)
     else
       raise 'invalid address_verification_mechanism'
     end
+
+    idv_session.applicant = applicant
 
     if mint_profile_from_idv_session
       idv_session.create_profile_from_applicant_with_password(password)
