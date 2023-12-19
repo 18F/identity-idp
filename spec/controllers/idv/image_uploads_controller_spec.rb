@@ -666,7 +666,7 @@ RSpec.describe Idv::ImageUploadsController do
                 state: [I18n.t('doc_auth.errors.general.no_liveness')],
               },
               error_details: {
-                state: { wrong_length: true },
+                state: { state: true },
               },
               attention_with_barcode: false,
               user_id: user.uuid,
