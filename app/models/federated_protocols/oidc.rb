@@ -20,10 +20,6 @@ module FederatedProtocols
       OpenidConnectAttributeScoper.new(request.scope).requested_attributes
     end
 
-    def biometric_comparison_required?
-      request.biometric_comparison_required?
-    end
-
     def service_provider
       request.service_provider
     end
