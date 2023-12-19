@@ -33,7 +33,7 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
         allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_org_id).and_return('test_org')
       end
 
-      it 'allows the user to continue down the happy path', allow_browser_log: true do
+      it 'allows the user to continue down the happy path selecting to opt in', allow_browser_log: true do
         sign_in_and_2fa_user(user)
 
         # complete welcome step, agreement step, how to verify step (and opts into Opt-in Ipp)
@@ -1060,5 +1060,29 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
     #     expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
     #   end
     # end
+  end
+
+  context '->when in_person_proofing_opt_in_enabled is false and in_person_proofing_opt_in_enabled is enabled' do
+    let(:user) { user_with_2fa }
+    let(:sp) { :oidc }
+    
+    before do
+      allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { false }
+      allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { true }
+    end
+
+    it 'does the normal thing without going to IPP' do
+      sign_in_and_2fa_user(user)
+      visit_idp_from_sp_with_ial2(:oidc)
+      complete_welcome_step
+      complete_agreement_step
+      complete_hybrid_handoff_step
+      complete_document_capture_step
+      complete_ssn_step
+      complete_verify_step
+      complete_phone_step(user)
+      complete_enter_password_step(user)
+      acknowledge_and_confirm_personal_key
+    end
   end
 end
