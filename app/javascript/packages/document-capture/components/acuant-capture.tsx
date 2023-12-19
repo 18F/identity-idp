@@ -410,11 +410,7 @@ function AcuantCapture(
         failedImageResubmission: hasFailed,
       });
 
-      if (name === 'selfie') {
-        trackEvent('idv_selfie_image_file_uploaded', analyticsPayload);
-      } else {
-        trackEvent(`IdV: ${name} image added`, analyticsPayload);
-      }
+      trackEvent(name ==='selfie' ? 'idv_selfie_image_file_uploaded' : `IdV: ${name} image added`, analyticsPayload)
     }
 
     onChangeAndResetError(nextValue, analyticsPayload);
