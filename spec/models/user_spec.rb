@@ -186,6 +186,36 @@ RSpec.describe User do
 
         expect(user.active_profile).to eq profile1
       end
+
+      context 'when the active profile is deactivated' do
+        it 'is no longer returned' do
+          user = create(:user, :fully_registered)
+          create(:profile, :active, :verified, user: user, pii: { first_name: 'Jane' })
+
+          expect(user.active_profile).not_to be_nil
+          user.active_profile.deactivate(:password_reset)
+          expect(user.active_profile).to be_nil
+        end
+      end
+
+      context 'when there is no active profile' do
+        it 'does not cache the nil value' do
+          user = create(:user, :fully_registered)
+          profile = create(
+            :profile,
+            gpo_verification_pending_at: 2.days.ago,
+            created_at: 2.days.ago,
+            user: user,
+          )
+
+          expect(user.active_profile).to be_nil
+
+          profile.remove_gpo_deactivation_reason
+          profile.activate
+
+          expect(user.active_profile).to eql(profile)
+        end
+      end
     end
   end
 
@@ -607,8 +637,9 @@ RSpec.describe User do
   end
 
   describe '#pending_profile' do
+    let(:user) { User.new }
+
     context 'when a pending profile exists' do
-      let(:user) { User.new }
       let!(:pending) do
         create(
           :profile,
@@ -629,11 +660,20 @@ RSpec.describe User do
 
         expect(user.pending_profile).to eq pending
       end
+
+      it 'returns nil after the pending profile is activated' do
+        pending_profile = user.pending_profile
+        expect(pending_profile).not_to be_nil
+
+        pending_profile.remove_gpo_deactivation_reason
+        pending_profile.activate
+
+        expect(user.pending_profile).to be_nil
+      end
     end
 
     context 'when pending profile does not exist' do
       it 'returns nil' do
-        user = User.new
         create(
           :profile,
           deactivation_reason: :encryption_error,
@@ -641,6 +681,19 @@ RSpec.describe User do
         )
 
         expect(user.pending_profile).to be_nil
+      end
+
+      it 'caches nil until reload' do
+        expect(user.pending_profile).to be_nil
+        pending_profile = create(
+          :profile,
+          gpo_verification_pending_at: 2.days.ago,
+          created_at: 2.days.ago,
+          user: user,
+        )
+        expect(user.pending_profile).to be_nil
+        user.reload
+        expect(user.pending_profile).to eql(pending_profile)
       end
     end
 

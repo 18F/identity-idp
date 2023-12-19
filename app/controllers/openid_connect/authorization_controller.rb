@@ -76,7 +76,10 @@ module OpenidConnect
       track_events
       SpHandoffBounce::AddHandoffTimeToSession.call(sp_session)
 
-      redirect_user(@authorize_form.success_redirect_uri)
+      redirect_user(
+        @authorize_form.success_redirect_uri,
+        current_user.uuid,
+      )
 
       delete_branded_experience
     end
@@ -127,7 +130,7 @@ module OpenidConnect
       if redirect_uri.nil?
         render :error
       else
-        redirect_user(redirect_uri)
+        redirect_user(redirect_uri, current_user&.uuid)
       end
     end
 
@@ -186,15 +189,20 @@ module OpenidConnect
       track_billing_events
     end
 
-    def redirect_user(redirect_uri)
-      case IdentityConfig.store.openid_connect_redirect
-      when :client_side
+    def redirect_user(redirect_uri, user_uuid)
+      redirect_method = IdentityConfig.store.openid_connect_redirect_uuid_override_map.fetch(
+        user_uuid,
+        IdentityConfig.store.openid_connect_redirect,
+      )
+
+      case redirect_method
+      when 'client_side'
         @oidc_redirect_uri = redirect_uri
         render(
           'openid_connect/shared/redirect',
           layout: false,
         )
-      when :client_side_js
+      when 'client_side_js'
         @oidc_redirect_uri = redirect_uri
         render(
           'openid_connect/shared/redirect_js',

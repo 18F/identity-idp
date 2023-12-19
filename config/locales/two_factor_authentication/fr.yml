@@ -220,6 +220,8 @@ fr:
         faciale ou par empreinte digitale
       edit_heading: Gérez vos paramètres de déverrouillage par reconnaissance faciale
         ou par empreinte digitale
+      manage_accessible_label: Gérer le déverrouillage par reconnaissance faciale ou
+        par empreinte digitale
       nickname: Pseudo
       renamed: Votre méthode de déverrouillage par reconnaissance faciale ou par
         empreinte digitale a été renommée avec succès

@@ -195,6 +195,7 @@ en:
       delete: Delete this device
       deleted: Successfully deleted a face or touch unlock method
       edit_heading: Manage your face or touch unlock settings
+      manage_accessible_label: Manage face or touch unlock
       nickname: Nickname
       renamed: Successfully renamed your face or touch unlock method
     webauthn_platform_header_text: Use face or touch unlock
