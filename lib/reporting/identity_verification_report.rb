@@ -80,36 +80,44 @@ module Reporting
     def identity_verification_emailable_report
       EmailableReport.new(
         title: 'Identiy Verification Metrics',
-        table: to_csv,
+        table: as_csv,
         filename: 'identity_verification_metrics',
       )
     end
 
+    def as_csv
+      csv = []
+
+      csv << ['Report Timeframe', "#{time_range.begin} to #{time_range.end}"]
+      # This needs to be Date.today so it works when run on the command line
+      csv << ['Report Generated', Date.today.to_s] # rubocop:disable Rails/Date
+      csv << ['Issuer', issuers.join(', ')] if issuers.present?
+      csv << []
+      csv << ['Metric', '# of Users']
+      csv << []
+      csv << ['Started IdV Verification', idv_started]
+      csv << ['Submitted welcome page', idv_doc_auth_welcome_submitted]
+      csv << ['Images uploaded', idv_doc_auth_image_vendor_submitted]
+      csv << []
+      csv << ['Workflow completed', idv_final_resolution]
+      csv << ['Workflow completed - Verified', idv_final_resolution_verified]
+      csv << ['Workflow completed - Total Pending', idv_final_resolution_total_pending]
+      csv << ['Workflow completed - GPO Pending', idv_final_resolution_gpo]
+      csv << ['Workflow completed - In-Person Pending', idv_final_resolution_in_person]
+      csv << ['Workflow completed - Fraud Review Pending', idv_final_resolution_fraud_review]
+      csv << []
+      csv << ['Successfully verified', successfully_verified_users]
+      csv << ['Successfully verified - Inline', idv_final_resolution_verified]
+      csv << ['Successfully verified - GPO Code Entry', gpo_verification_submitted]
+      csv << ['Successfully verified - In Person', usps_enrollment_status_updated]
+      csv << ['Successfully verified - Passed Fraud Review', fraud_review_passed]
+    end
+
     def to_csv
       CSV.generate do |csv|
-        csv << ['Report Timeframe', "#{time_range.begin} to #{time_range.end}"]
-        # This needs to be Date.today so it works when run on the command line
-        csv << ['Report Generated', Date.today.to_s] # rubocop:disable Rails/Date
-        csv << ['Issuer', issuers.join(', ')] if issuers.present?
-        csv << []
-        csv << ['Metric', '# of Users']
-        csv << []
-        csv << ['Started IdV Verification', idv_started]
-        csv << ['Submitted welcome page', idv_doc_auth_welcome_submitted]
-        csv << ['Images uploaded', idv_doc_auth_image_vendor_submitted]
-        csv << []
-        csv << ['Workflow completed', idv_final_resolution]
-        csv << ['Workflow completed - Verified', idv_final_resolution_verified]
-        csv << ['Workflow completed - Total Pending', idv_final_resolution_total_pending]
-        csv << ['Workflow completed - GPO Pending', idv_final_resolution_gpo]
-        csv << ['Workflow completed - In-Person Pending', idv_final_resolution_in_person]
-        csv << ['Workflow completed - Fraud Review Pending', idv_final_resolution_fraud_review]
-        csv << []
-        csv << ['Successfully verified', successfully_verified_users]
-        csv << ['Successfully verified - Inline', idv_final_resolution_verified]
-        csv << ['Successfully verified - GPO Code Entry', gpo_verification_submitted]
-        csv << ['Successfully verified - In Person', usps_enrollment_status_updated]
-        csv << ['Successfully verified - Passed Fraud Review', fraud_review_passed]
+        as_csv.each do |row|
+          csv << row
+        end
       end
     end
 
