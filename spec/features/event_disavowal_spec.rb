@@ -27,7 +27,7 @@ RSpec.feature 'disavowing an action' do
     signin(user.email, user.password)
     Capybara.reset_session!
     visit root_path
-    signin(user.email, user.password)
+    sign_in_live_with_2fa(user)
 
     disavow_last_action_and_reset_password
   end
