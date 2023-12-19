@@ -151,7 +151,7 @@ module Identity
       config.lookbook.auto_refresh = false
       config.lookbook.project_name = "#{APP_NAME} Component Previews"
       config.lookbook.ui_theme = 'blue'
-      if Identity::Hostdata.env != 'dev'
+      if Identity::Hostdata.env == 'dev'
         # so we can embed a lookbook component into the dev docs
         config.lookbook.preview_embeds.policy = "ALLOWALL"
       end
