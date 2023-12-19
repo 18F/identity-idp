@@ -151,12 +151,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
       end
 
       context 'when same address as id is true and in aamva jurisdiction' do
-        let(:pii) do
-          { same_address_as_id: 'true' }
-        end
-
         it 'adds costs to database' do
-          allow(subject).to receive(:pii).and_return(pii)
           allow(async_state).to receive(:result).and_return(adjudicated_result)
 
           get :show
@@ -173,13 +168,8 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
       end
 
       context 'when same address as id is true and not in aamva jurisdiction' do
-        let(:pii) do
-          { same_address_as_id: 'true' }
-        end
-
         it 'adds costs to database' do
           adjudicated_result[:context][:stages][:state_id][:vendor_name] = 'UnsupportedJurisdiction'
-          allow(subject).to receive(:pii).and_return(pii)
           allow(async_state).to receive(:result).and_return(adjudicated_result)
 
           get :show
@@ -196,13 +186,12 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
       end
 
       context 'when same address as id is false and in aamva jurisdiction' do
-        let(:pii) do
+        let(:pii_from_user) do
           { same_address_as_id: 'false' }
         end
 
         it 'adds costs to database' do
           allow(async_state).to receive(:result).and_return(adjudicated_result)
-          allow(subject).to receive(:pii).and_return(pii)
 
           get :show
 
@@ -218,14 +207,13 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
       end
 
       context 'when same address as id is false and not in aamva jurisdiction' do
-        let(:pii) do
+        let(:pii_from_user) do
           { same_address_as_id: 'false' }
         end
 
         it 'adds costs to database' do
           adjudicated_result[:context][:stages][:state_id][:vendor_name] = 'UnsupportedJurisdiction'
           allow(async_state).to receive(:result).and_return(adjudicated_result)
-          allow(subject).to receive(:pii).and_return(pii)
 
           get :show
 
