@@ -101,18 +101,29 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
     it 'sends doc_auth_selfie_capture_enabled to the FE' do
       render_partial
       expect(rendered).to have_css(
-        "#document-capture-form[data-doc-auth-selfie-capture='{\"enabled\":true}']",
+        "#document-capture-form[data-doc-auth-selfie-capture='{\"enabled\":false}']",
       )
     end
 
-    context 'when hosted in prod env' do
-      it 'does not send doc_auth_selfie_capture to the FE' do
-        allow(Identity::Hostdata).to receive(:env).and_return('prod')
-
+    context 'when selfie FF enabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).and_return(true)
+      end
+      it 'does send doc_auth_selfie_capture to the FE' do
         render_partial
-        expect(rendered).not_to have_css(
+        expect(rendered).to have_css(
           "#document-capture-form[data-doc-auth-selfie-capture='{\"enabled\":true}']",
         )
+      end
+      context 'when hosted in prod env' do
+        it 'does not send doc_auth_selfie_capture to the FE' do
+          allow(Identity::Hostdata).to receive(:env).and_return('prod')
+
+          render_partial
+          expect(rendered).to have_css(
+            "#document-capture-form[data-doc-auth-selfie-capture='{\"enabled\":false}']",
+          )
+        end
       end
     end
   end

@@ -31,6 +31,7 @@ RSpec.describe Idv::ImageUploadsController do
 
     before do
       allow(controller).to receive(:store_encrypted_images?).and_return(store_encrypted_images)
+      allow(controller).to receive(:liveness_checking_required?).and_return(false)
     end
 
     before do
@@ -353,7 +354,7 @@ RSpec.describe Idv::ImageUploadsController do
             image_source: :unknown,
             user_uuid: an_instance_of(String),
             uuid_prefix: nil,
-            liveness_checking_enabled: false,
+            liveness_checking_required: false,
           ).and_call_original
 
         action
@@ -978,12 +979,8 @@ RSpec.describe Idv::ImageUploadsController do
 
       context 'the frontend requests a selfie' do
         before do
-          params[:liveness_checking_enabled] = true
+          allow(controller).to receive(:liveness_checking_required?).and_return(true)
         end
-        after do
-          params.delete(:liveness_checking_enabled)
-        end
-
         it 'sends a selfie' do
           expect_any_instance_of(DocAuth::Mock::DocAuthMockClient).
             to receive(:post_images).with(
@@ -993,7 +990,7 @@ RSpec.describe Idv::ImageUploadsController do
               image_source: :unknown,
               user_uuid: an_instance_of(String),
               uuid_prefix: nil,
-              liveness_checking_enabled: true,
+              liveness_checking_required: true,
             ).and_call_original
 
           action
@@ -1014,7 +1011,7 @@ RSpec.describe Idv::ImageUploadsController do
                 image_source: :unknown,
                 user_uuid: an_instance_of(String),
                 uuid_prefix: nil,
-                liveness_checking_enabled: false,
+                liveness_checking_required: false,
               ).and_call_original
 
             action

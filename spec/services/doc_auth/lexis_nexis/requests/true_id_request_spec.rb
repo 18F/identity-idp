@@ -128,7 +128,7 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
 
   context 'with liveness_checking_enabled as true' do
     before do
-      allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture).and_return({ enabled: true })
+      allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).and_return(true)
     end
 
     context 'when liveness checking is NOT required' do
