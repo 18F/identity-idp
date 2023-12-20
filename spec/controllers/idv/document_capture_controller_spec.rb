@@ -69,7 +69,7 @@ RSpec.describe Idv::DocumentCaptureController do
         :show,
         locals: hash_including(
           document_capture_session_uuid: document_capture_session_uuid,
-          doc_auth_selfie_capture: nil,
+          doc_auth_selfie_capture: false,
         ),
       ).and_call_original
 
@@ -88,7 +88,7 @@ RSpec.describe Idv::DocumentCaptureController do
             :show,
             locals: hash_including(
               document_capture_session_uuid: document_capture_session_uuid,
-              doc_auth_selfie_capture: nil,
+              doc_auth_selfie_capture: false,
             ),
           ).and_call_original
 
@@ -103,7 +103,7 @@ RSpec.describe Idv::DocumentCaptureController do
           :show,
           locals: hash_including(
             document_capture_session_uuid: document_capture_session_uuid,
-            doc_auth_selfie_capture: { enabled: false },
+            doc_auth_selfie_capture: false,
           ),
         ).and_call_original
 

@@ -12,19 +12,19 @@ RSpec.describe Idv::ApiImageUploadForm do
         back_image_metadata: back_image_metadata,
         selfie: selfie_image,
         document_capture_session_uuid: document_capture_session_uuid,
-        liveness_checking_enabled: liveness_checking_enabled,
       ),
       service_provider: build(:service_provider, issuer: 'test_issuer'),
       analytics: fake_analytics,
       irs_attempts_api_tracker: irs_attempts_api_tracker,
       store_encrypted_images: store_encrypted_images,
+      liveness_checking_required: liveness_checking_required,
     )
   end
 
   let(:front_image) { DocAuthImageFixtures.document_front_image_multipart }
   let(:back_image) { DocAuthImageFixtures.document_back_image_multipart }
   let(:selfie_image) { nil }
-  let(:liveness_checking_enabled) { false }
+  let(:liveness_checking_required) { false }
   let(:front_image_metadata) do
     { width: 40, height: 40, mimeType: 'image/png', source: 'upload' }.to_json
   end
@@ -79,7 +79,7 @@ RSpec.describe Idv::ApiImageUploadForm do
     end
 
     context 'when liveness check is enabled' do
-      let(:liveness_checking_enabled) { 'true' }
+      let(:liveness_checking_required) { 'true' }
       before do
         allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).and_return(true)
       end
