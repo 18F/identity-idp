@@ -3003,7 +3003,7 @@ module AnalyticsEvents
   # @param [Boolean] success Whether authentication was successful
   # @param [Hash] errors Authentication error reasons, if unsuccessful
   # @param [String] context
-  # @param [Boolean] true if authenticated using a new device
+  # @param [Boolean] new_device
   # @param [String] multi_factor_auth_method
   # @param [DateTime] multi_factor_auth_method_created_at time auth method was created
   # @param [Integer] auth_app_configuration_id
