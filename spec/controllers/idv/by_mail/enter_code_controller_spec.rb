@@ -31,7 +31,10 @@ RSpec.describe Idv::ByMail::EnterCodeController do
       let(:pending_profile) { user.gpo_verification_pending_profile }
 
       before do
-        controller.user_session[:decrypted_pii] = { address1: 'Address1' }.to_json
+        Pii::Cacher.new(user, controller.user_session).save_decrypted_pii(
+          { address1: 'Address1' },
+          pending_profile.id,
+        )
       end
 
       it 'renders page' do
@@ -166,7 +169,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
       end
 
       let(:user) { create(:user, :with_pending_gpo_profile, created_at: 2.days.ago) }
-      let(:pending_profile) { user.gpo_verification_pending_profile }
+      let!(:pending_profile) { user.gpo_verification_pending_profile }
       let(:success) { true }
 
       it 'uses the PII from the pending profile' do
@@ -189,7 +192,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
           errors: {},
           pending_in_person_enrollment: false,
           fraud_check_failed: false,
-          enqueued_at: user.pending_profile.gpo_confirmation_codes.last.code_sent_at,
+          enqueued_at: pending_profile.gpo_confirmation_codes.last.code_sent_at,
           which_letter: 1,
           letter_count: 1,
           attempts: 1,
@@ -234,7 +237,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
             errors: {},
             pending_in_person_enrollment: true,
             fraud_check_failed: false,
-            enqueued_at: user.pending_profile.gpo_confirmation_codes.last.code_sent_at,
+            enqueued_at: pending_profile.gpo_confirmation_codes.last.code_sent_at,
             which_letter: 1,
             letter_count: 1,
             attempts: 1,
@@ -265,7 +268,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
               errors: {},
               pending_in_person_enrollment: false,
               fraud_check_failed: true,
-              enqueued_at: user.pending_profile.gpo_confirmation_codes.last.code_sent_at,
+              enqueued_at: pending_profile.gpo_confirmation_codes.last.code_sent_at,
               which_letter: 1,
               letter_count: 1,
               attempts: 1,

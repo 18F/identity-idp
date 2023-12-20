@@ -220,6 +220,13 @@ module Features
       user
     end
 
+    def expire_reauthn_window
+      Warden.on_next_request do |proxy|
+        proxy.env['rack.session']['warden.user.user.session']['auth_events'].last[:at] =
+          IdentityConfig.store.reauthn_window.seconds.ago
+      end
+    end
+
     def user_with_2fa
       create(:user, :fully_registered, with: { phone: IAL1_USER_PHONE }, password: VALID_PASSWORD)
     end

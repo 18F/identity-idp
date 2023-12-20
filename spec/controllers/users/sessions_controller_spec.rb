@@ -221,7 +221,8 @@ RSpec.describe Users::SessionsController, devise: true do
 
         post :create, params: { user: { email: user.email.upcase, password: user.password } }
 
-        expect(controller.user_session[:decrypted_pii]).to match '1234'
+        cached_pii = Pii::Cacher.new(user, controller.user_session).fetch(user.pending_profile.id)
+        expect(cached_pii).to eq(Pii::Attributes.new(ssn: '1234'))
       end
 
       it 'caches PII in the user session' do
@@ -230,7 +231,8 @@ RSpec.describe Users::SessionsController, devise: true do
 
         post :create, params: { user: { email: user.email.upcase, password: user.password } }
 
-        expect(controller.user_session[:decrypted_pii]).to match '1234'
+        cached_pii = Pii::Cacher.new(user, controller.user_session).fetch(user.active_profile.id)
+        expect(cached_pii).to eq(Pii::Attributes.new(ssn: '1234'))
       end
 
       it 'deactivates profile if not de-cryptable' do
@@ -265,7 +267,7 @@ RSpec.describe Users::SessionsController, devise: true do
 
         post :create, params: { user: { email: user.email, password: user.password } }
 
-        expect(controller.user_session[:decrypted_pii]).to be_nil
+        expect(controller.user_session[:encrypted_profiles]).to be_nil
         expect(profile.reload).to_not be_active
       end
     end

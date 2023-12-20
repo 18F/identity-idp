@@ -13,9 +13,6 @@ fr:
       first_paragraph_start: Nous avons envoyé un courriel à
       no_email_sent_explanation_start: Vous n’avez pas reçu de courriel?
       resend_email_success: Nous avons envoyé un autre courriel de réinitialisation de mot de passe.
-      use_diff_email:
-        link: Créer un nouveau compte
-        text_html: Ou, %{link_html} en utilisant une adresse courriel différente.
     password_changed: Vous avez changé votre mot de passe.
     phone_confirmed: Un téléphone a été ajouté à votre compte.
     piv_cac_configured: Une carte PIV / CAC a été ajoutée à votre compte.

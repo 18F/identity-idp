@@ -702,12 +702,13 @@ function AcuantCapture(
           allowUpload &&
           formatHTML(t('doc_auth.buttons.take_or_upload_picture_html'), {
             'lg-take-photo': () => null,
+            'lg-or': ({ children }) => (
+              <span className="padding-left-1 padding-right-1">{children}</span>
+            ),
             'lg-upload': ({ children }) => (
-              <span className="padding-left-1">
-                <Button isUnstyled onClick={withLoggedClick('upload')(forceUpload)}>
-                  {children}
-                </Button>
-              </span>
+              <Button isUnstyled onClick={withLoggedClick('upload')(forceUpload)}>
+                {children}
+              </Button>
             ),
           })}
       </div>

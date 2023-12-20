@@ -19,6 +19,11 @@ module Reporting
         ['IDV', idv_sps.count, idv_agencies.count],
         ['Total', auth_sps.count + idv_sps.count, auth_agencies.count + idv_agencies.count],
       ]
+    rescue ActiveRecord::QueryCanceled => err
+      [
+        ['Error', 'Message'],
+        [err.class.name, err.message],
+      ]
     end
 
     def agency_and_sp_emailable_report
@@ -30,14 +35,12 @@ module Reporting
     end
 
     def active_agencies
-      @active_agencies ||= begin
-        Agreements::PartnerAccountStatus.find_by(name: 'active').
-          partner_accounts.
-          includes(:agency).
-          where('became_partner <= ?', report_date).
-          map(&:agency).
-          uniq
-      end
+      @active_agencies ||= Agreements::PartnerAccountStatus.find_by(name: 'active').
+        partner_accounts.
+        includes(:agency).
+        where('became_partner <= ?', report_date).
+        map(&:agency).
+        uniq
     end
 
     def service_providers

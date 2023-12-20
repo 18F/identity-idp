@@ -212,7 +212,7 @@ GEM
     bindata (2.4.15)
     bootsnap (1.17.0)
       msgpack (~> 1.2)
-    brakeman (6.0.1)
+    brakeman (6.1.0)
     browser (5.3.1)
     builder (3.2.4)
     bullet (7.1.4)
@@ -442,7 +442,7 @@ GEM
     pg (1.5.4)
     pg_query (4.2.3)
       google-protobuf (>= 3.22.3)
-    phonelib (0.8.5)
+    phonelib (0.8.6)
     pkcs11 (0.3.4)
     premailer (1.21.0)
       addressable
@@ -684,7 +684,7 @@ GEM
       activemodel
       mail (>= 2.6.1)
       simpleidn
-    view_component (3.0.0)
+    view_component (3.8.0)
       activesupport (>= 5.2.0, < 8.0)
       concurrent-ruby (~> 1.0)
       method_source (~> 1.0)
@@ -842,7 +842,7 @@ DEPENDENCIES
   tableparser
   terminal-table
   valid_email (>= 0.1.3)
-  view_component (~> 3.0.0)
+  view_component (~> 3.0)
   webauthn (~> 2.5.2)
   webmock
   xmldsig (~> 0.6)

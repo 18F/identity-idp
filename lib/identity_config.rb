@@ -186,7 +186,7 @@ class IdentityConfig
     config.add(:doc_auth_max_capture_attempts_before_native_camera, type: :integer)
     config.add(:doc_auth_max_submission_attempts_before_native_camera, type: :integer)
     config.add(:doc_auth_s3_request_timeout, type: :integer)
-    config.add(:doc_auth_selfie_capture, type: :json, options: { symbolize_names: true })
+    config.add(:doc_auth_selfie_capture_enabled, type: :boolean)
     config.add(:doc_auth_sdk_capture_orientation, type: :json, options: { symbolize_names: true })
     config.add(:doc_auth_supported_country_codes, type: :json)
     config.add(:doc_auth_vendor, type: :string)
@@ -201,6 +201,7 @@ class IdentityConfig
     config.add(:email_registrations_per_ip_limit, type: :integer)
     config.add(:email_registrations_per_ip_period, type: :integer)
     config.add(:email_registrations_per_ip_track_only_mode, type: :boolean)
+    config.add(:enable_add_mfa_redirect_for_personal_key, type: :boolean)
     config.add(:enable_load_testing_mode, type: :boolean)
     config.add(:enable_rate_limiting, type: :boolean)
     config.add(:enable_test_routes, type: :boolean)
@@ -322,8 +323,12 @@ class IdentityConfig
     config.add(:nonessential_email_banlist, type: :json)
     config.add(
       :openid_connect_redirect,
-      type: :symbol,
-      enum: [:server_side, :client_side, :client_side_js],
+      type: :string,
+      enum: ['server_side', 'client_side', 'client_side_js'],
+    )
+    config.add(
+      :openid_connect_redirect_uuid_override_map,
+      type: :json,
     )
     config.add(:openid_connect_content_security_form_action_enabled, type: :boolean)
     config.add(:otp_delivery_blocklist_findtime, type: :integer)
@@ -433,8 +438,6 @@ class IdentityConfig
     config.add(:ses_configuration_set_name, type: :string)
     config.add(:session_check_delay, type: :integer)
     config.add(:session_check_frequency, type: :integer)
-    config.add(:session_encrypted_profiles_read_enabled, type: :boolean)
-    config.add(:session_encrypted_profiles_write_enabled, type: :boolean)
     config.add(:session_encryption_key, type: :string)
     config.add(:session_encryptor_alert_enabled, type: :boolean)
     config.add(:session_timeout_in_minutes, type: :integer)

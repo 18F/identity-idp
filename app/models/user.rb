@@ -95,7 +95,8 @@ class User < ApplicationRecord
   end
 
   def active_profile
-    @active_profile ||= profiles.verified.find(&:active?)
+    return @active_profile if defined?(@active_profile) && @active_profile&.active
+    @active_profile = profiles.verified.find(&:active?)
   end
 
   def pending_profile?
@@ -149,7 +150,7 @@ class User < ApplicationRecord
   end
 
   def pending_profile
-    return @pending_profile if defined?(@pending_profile)
+    return @pending_profile if defined?(@pending_profile) && !@pending_profile&.active
 
     @pending_profile = begin
       pending = profiles.in_person_verification_pending.or(
@@ -477,6 +478,11 @@ class User < ApplicationRecord
       ).send(user_mailer_template).
         deliver_now_or_later
     end
+  end
+
+  def reload(...)
+    remove_instance_variable(:@pending_profile) if defined?(@pending_profile)
+    super(...)
   end
 
   private

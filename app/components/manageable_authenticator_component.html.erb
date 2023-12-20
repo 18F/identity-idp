@@ -1,0 +1,120 @@
+<%= content_tag(
+      :'lg-manageable-authenticator',
+      **tag_options,
+      'api-url': manage_api_url,
+      'configuration-name': configuration.name,
+      'unique-id': unique_id,
+      'reauthenticate-at': reauthenticate_at.iso8601,
+      'reauthentication-url': reauthentication_url,
+    ) do %>
+  <%= content_tag(
+        :script,
+        strings.
+          slice(:renamed, :delete_confirm, :deleted).
+          transform_keys { |key| key.to_s.camelcase(:lower) }.
+          to_json,
+        {
+          type: 'application/json',
+          class: 'manageable-authenticator__strings',
+        },
+        false,
+      ) %>
+  <%= tag.div(
+        class: 'manageable-authenticator__edit',
+        tabindex: '-1',
+        role: 'group',
+        aria: { labelledby: "manageable-authenticator-manage-accessible-label-#{unique_id}" },
+      ) do %>
+    <%= render AlertComponent.new(
+          type: :success,
+          class: 'manageable-authenticator__alert',
+          tabindex: '-1',
+        ) %>
+    <form class="manageable-authenticator__rename">
+      <%= tag.input(
+            class: 'manageable-authenticator__rename-input usa-input width-full',
+            aria: { label: t('components.manageable_authenticator.nickname') },
+            value: configuration.name,
+          ) %>
+      <div class="display-flex margin-top-205">
+        <%= render SpinnerButtonComponent.new(
+              type: :submit,
+              wrapper_options: { class: 'manageable-authenticator__save-rename-button' },
+              action_message: t('components.manageable_authenticator.saving'),
+              long_wait_duration: Float::INFINITY,
+            ).with_content(t('components.manageable_authenticator.save')) %>
+        <%= render ButtonComponent.new(
+              type: :button,
+              outline: true,
+              class: 'margin-left-1 manageable-authenticator__cancel-rename-button',
+            ).with_content(t('components.manageable_authenticator.cancel')) %>
+      </div>
+    </form>
+    <div class="manageable-authenticator__details">
+      <span class="usa-sr-only"><%= t('components.manageable_authenticator.nickname') %>:</span>
+      <strong class="manageable-authenticator__name manageable-authenticator__details-name">
+        <%= configuration.name %>
+      </strong>
+      <div>
+        <%= t(
+              'components.manageable_authenticator.created_on',
+              date: l(configuration.created_at, format: :event_date),
+            ) %>
+      </div>
+      <div class="grid-row margin-top-205">
+        <div class="grid-col-auto grid-row display-flex">
+          <%= render ButtonComponent.new(
+                type: :button,
+                class: 'manageable-authenticator__rename-button',
+              ).with_content(t('components.manageable_authenticator.rename')) %>
+          <%= render SpinnerButtonComponent.new(
+                type: :button,
+                danger: true,
+                outline: true,
+                wrapper_options: { class: 'manageable-authenticator__delete-button' },
+                class: 'margin-left-1',
+                action_message: t('components.manageable_authenticator.deleting'),
+                long_wait_duration: Float::INFINITY,
+              ).with_content(t('components.manageable_authenticator.delete')) %>
+        </div>
+        <div class="grid-col-fill text-right">
+          <%= render ButtonComponent.new(
+                type: :button,
+                outline: true,
+                class: 'manageable-authenticator__done-button',
+              ).with_content(t('components.manageable_authenticator.done')) %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+  <div class="manageable-authenticator__summary">
+    <div class="manageable-authenticator__name manageable-authenticator__summary-name"><%= configuration.name %></div>
+    <div class="manageable-authenticator__actions">
+      <%= render ButtonComponent.new(
+            action: ->(**tag_options, &block) { link_to(manage_url, **tag_options, &block) },
+            type: :button,
+            unstyled: true,
+            class: 'no-js',
+          ) do %>
+        <span aria-hidden="true">
+          <%= t('components.manageable_authenticator.manage') %>
+        </span>
+        <span class="usa-sr-only">
+          <%= strings[:manage_accessible_label] %>: <%= tag.span(configuration.name, class: 'manageable-authenticator__name') %>
+        </span>
+      <% end %>
+      <%= render ButtonComponent.new(
+            type: :button,
+            unstyled: true,
+            class: 'js manageable-authenticator__manage-button',
+          ) do %>
+        <span aria-hidden="true">
+          <%= t('components.manageable_authenticator.manage') %>
+        </span>
+        <span class="usa-sr-only" id="manageable-authenticator-manage-accessible-label-<%= unique_id %>">
+          <%= strings[:manage_accessible_label] %>: <%= tag.span(configuration.name, class: 'manageable-authenticator__name') %>
+        </span>
+      <% end %>
+    </div>
+  </div>
+<% end %>

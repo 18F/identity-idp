@@ -35,15 +35,7 @@ RSpec.describe TabNavigationComponent, type: :component do
         post '(:example_param)/second' => 'application#second_create'
       end
 
-      with_request_url(request_path) do
-        vc_test_request.request_method = request_method
-        vc_test_request.path_parameters = Rails.application.routes.recognize_path_with_request(
-          vc_test_request,
-          request_path,
-          {},
-        )
-        example.run
-      end
+      with_request_url(request_path, method: request_method) { example.run }
 
       Rails.application.reload_routes!
     end
