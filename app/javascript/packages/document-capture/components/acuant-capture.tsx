@@ -409,7 +409,11 @@ function AcuantCapture(
         size: nextValue.size,
         failedImageResubmission: hasFailed,
       });
-      trackEvent(`IdV: ${name} image added`, analyticsPayload);
+
+      trackEvent(
+        name === 'selfie' ? 'idv_selfie_image_file_uploaded' : `IdV: ${name} image added`,
+        analyticsPayload,
+      );
     }
 
     onChangeAndResetError(nextValue, analyticsPayload);
@@ -498,13 +502,32 @@ function AcuantCapture(
     }
   }
 
+  function onSelfieCaptureOpen() {
+    trackEvent('idv_sdk_selfie_image_capture_opened');
+
+    setIsCapturingEnvironment(true);
+  }
+
+  function onSelfieCaptureClosed() {
+    trackEvent('idv_sdk_selfie_image_capture_closed_without_photo');
+
+    setIsCapturingEnvironment(false);
+  }
+
   function onSelfieCaptureSuccess({ image }: { image: string }) {
+    trackEvent('idv_sdk_selfie_image_added', { attempt });
+
     onChangeAndResetError(image);
     onResetFailedCaptureAttempts();
     setIsCapturingEnvironment(false);
   }
 
-  function onSelfieCaptureFailure() {
+  function onSelfieCaptureFailure(error) {
+    trackEvent('idv_sdk_selfie_image_capture_failed', {
+      sdk_error_code: error.code,
+      sdk_error_message: error.message,
+    });
+
     // Internally, Acuant sets a cookie to bail on guided capture if initialization had
     // previously failed for any reason, including declined permission. Since the cookie
     // never expires, and since we want to re-prompt even if the user had previously
@@ -653,8 +676,8 @@ function AcuantCapture(
         <AcuantSelfieCamera
           onImageCaptureSuccess={onSelfieCaptureSuccess}
           onImageCaptureFailure={onSelfieCaptureFailure}
-          onImageCaptureOpen={() => setIsCapturingEnvironment(true)}
-          onImageCaptureClose={() => setIsCapturingEnvironment(false)}
+          onImageCaptureOpen={onSelfieCaptureOpen}
+          onImageCaptureClose={onSelfieCaptureClosed}
         >
           <AcuantSelfieCaptureCanvas
             fullScreenRef={fullScreenRef}

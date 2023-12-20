@@ -2729,6 +2729,74 @@ module AnalyticsEvents
     )
   end
 
+  # @param [Integer] attempt number of attempts
+  # User captured and approved of their selfie
+  def idv_sdk_selfie_image_added(attempt:, **extra)
+    track_event(:idv_sdk_selfie_image_added, attempt: attempt, **extra)
+  end
+
+  # User closed the SDK for taking a selfie without submitting a photo
+  def idv_sdk_selfie_image_capture_closed_without_photo(**extra)
+    track_event(:idv_sdk_selfie_image_capture_closed_without_photo, **extra)
+  end
+
+  # @param [Integer] sdk_error_code SDK code for the error encountered
+  # @param [String] sdk_error_message SDK message for the error encountered
+  # User encountered an error with the SDK selfie process
+  # Error code 1: camera permission not granted
+  # Error code 2: unexpected errors
+  def idv_sdk_selfie_image_capture_failed(sdk_error_code:, sdk_error_message:, **extra)
+    track_event(
+      :idv_sdk_selfie_image_capture_failed,
+      sdk_error_code: sdk_error_code,
+      sdk_error_message: sdk_error_message,
+      **extra,
+    )
+  end
+
+  # User opened the SDK to take a selfie
+  def idv_sdk_selfie_image_capture_opened(**extra)
+    track_event(:idv_sdk_selfie_image_capture_opened, **extra)
+  end
+
+  # @param [Integer] attempt number of attempts
+  # @param [Integer] failedImageResubmission
+  # @param [String] fingerprint fingerprint of the image added
+  # @param [String] flow_path whether the user is in the hybrid or standard flow
+  # @param [Integer] height height of image added in pixels
+  # @param [String] mimeType MIME type of image added
+  # @param [Integer] size size of image added in bytes
+  # @param [String] source
+  # @param [Integer] width width of image added in pixels
+  # User uploaded a selfie using the file picker
+  # rubocop:disable Naming/VariableName,Naming/MethodParameterName
+  def idv_selfie_image_file_uploaded(
+    attempt:,
+    failedImageResubmission:,
+    fingerprint:,
+    flow_path:,
+    height:,
+    mimeType:,
+    size:,
+    source:,
+    width:,
+    **_extra
+  )
+    track_event(
+      :idv_selfie_image_file_uploaded,
+      attempt: attempt,
+      failedImageResubmission: failedImageResubmission,
+      fingerprint: fingerprint,
+      flow_path: flow_path,
+      height: height,
+      mimeType: mimeType,
+      size: size,
+      source: source,
+      width: width,
+    )
+  end
+  # rubocop:enable Naming/VariableName,Naming/MethodParameterName
+
   # Tracks when the user visits one of the the session error pages.
   # @param [String] type
   # @param [Integer,nil] attempts_remaining
