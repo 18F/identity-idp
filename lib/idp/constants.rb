@@ -70,7 +70,6 @@ module Idp
       GU
       MP
       PR
-      UM
       VI
     ].to_set.freeze
 
