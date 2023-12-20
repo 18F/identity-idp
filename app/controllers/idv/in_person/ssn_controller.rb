@@ -6,7 +6,6 @@ module Idv
       include StepIndicatorConcern
       include Steps::ThreatMetrixStepHelper
       include ThreatMetrixConcern
-      include OptInHelper
 
       before_action :confirm_not_rate_limited_after_doc_auth
       before_action :confirm_in_person_address_step_complete
@@ -97,8 +96,7 @@ module Idv
           analytics_id: 'In Person Proofing',
           irs_reproofing: irs_reproofing?,
         }.merge(ab_test_analytics_buckets).
-          merge(**extra_analytics_properties).
-          merge(**opt_in_analytics_properties)
+          merge(**extra_analytics_properties)
       end
 
       def confirm_in_person_address_step_complete

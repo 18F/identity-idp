@@ -70,6 +70,11 @@ class ServiceProviderSession
     sp.issuer
   end
 
+  def selfie_required?
+    !!(IdentityConfig.store.doc_auth_selfie_capture_enabled &&
+      sp_session[:biometric_comparison_required])
+  end
+
   def cancel_link_url
     view_context.new_user_session_url(request_id: sp_session[:request_id])
   end

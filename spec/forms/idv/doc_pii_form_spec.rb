@@ -51,14 +51,14 @@ RSpec.describe Idv::DocPiiForm do
       state_id_number: 'S59397998',
     }
   end
-  let(:non_string_zipcode_pii) do
+  let(:invalid_zipcode_pii) do
     {
       first_name: Faker::Name.first_name,
       last_name: Faker::Name.last_name,
       dob: valid_dob,
       address1: Faker::Address.street_address,
       state: Faker::Address.state_abbr,
-      zipcode: 12345,
+      zipcode: 123456,
       state_id_jurisdiction: 'AL',
       state_id_number: 'S59397998',
     }
@@ -199,7 +199,7 @@ RSpec.describe Idv::DocPiiForm do
     end
 
     context 'when there is a non-string zipcode' do
-      let(:pii) { non_string_zipcode_pii }
+      let(:pii) { invalid_zipcode_pii }
 
       it 'returns a single generic pii error' do
         result = subject.submit
