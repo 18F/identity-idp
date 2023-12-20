@@ -222,7 +222,9 @@ RSpec.describe 'Idv::FlowPolicy' do
     context 'preconditions for in_person ssn are present' do
       before do
         stub_up_to(:hybrid_handoff, idv_session: idv_session)
-        idv_session.send(:user_session)['idv/in_person'] = { pii_from_user: { pii: 'value' } }
+        idv_session.send(:user_session)['idv/in_person'] = {
+          pii_from_user: Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID.dup,
+        }
       end
 
       it 'returns ipp_ssn' do
