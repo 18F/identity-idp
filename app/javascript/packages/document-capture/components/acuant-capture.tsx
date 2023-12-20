@@ -315,6 +315,7 @@ function processImage(file: File): Promise<{
           'MANUAL',
           (result: AcuantEvaluatedResult) => {
             croppedImg = result;
+            console.log(result);
             let newFile = file;
             if (croppedImg?.image?.data) {
               const newImgFile = dataURItoFile(file.name, croppedImg.image.data);
@@ -322,6 +323,7 @@ function processImage(file: File): Promise<{
                 newFile = newImgFile;
               }
             }
+            console.timeEnd('ProcessImage');
             resolve({ width, height, croppedImg: newFile });
           },
         );
@@ -331,6 +333,7 @@ function processImage(file: File): Promise<{
       };
       img.src = event?.target?.result as string;
     };
+    console.time('ProcessImage');
     reader.readAsDataURL(file);
   });
 }

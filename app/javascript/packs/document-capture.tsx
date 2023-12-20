@@ -140,7 +140,7 @@ const App = composeComponents(
     AcuantContextProvider,
     {
       sdkSrc: acuantVersion && `/acuant/${acuantVersion}/AcuantJavascriptWebSdk.min.js`,
-      cameraSrc: acuantVersion && `/acuant/${acuantVersion}/AcuantCamera.js`,
+      cameraSrc: acuantVersion && `/acuant/${acuantVersion}/AcuantCamera.min.js`,
       passiveLivenessOpenCVSrc: acuantVersion && `/acuant/${acuantVersion}/opencv.min.js`,
       passiveLivenessSrc: getSelfieCaptureEnabled()
         ? acuantVersion && `/acuant/${acuantVersion}/AcuantPassiveLiveness.min.js`
