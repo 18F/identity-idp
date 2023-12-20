@@ -3003,6 +3003,7 @@ module AnalyticsEvents
   # @param [Boolean] success Whether authentication was successful
   # @param [Hash] errors Authentication error reasons, if unsuccessful
   # @param [String] context
+  # @param [Boolean] true if authenticated using a new device
   # @param [String] multi_factor_auth_method
   # @param [DateTime] multi_factor_auth_method_created_at time auth method was created
   # @param [Integer] auth_app_configuration_id
@@ -3020,6 +3021,7 @@ module AnalyticsEvents
     success:,
     errors: nil,
     context: nil,
+    new_device: nil,
     multi_factor_auth_method: nil,
     multi_factor_auth_method_created_at: nil,
     auth_app_configuration_id: nil,
@@ -3040,6 +3042,7 @@ module AnalyticsEvents
       success: success,
       errors: errors,
       context: context,
+      new_device: new_device,
       multi_factor_auth_method: multi_factor_auth_method,
       multi_factor_auth_method_created_at: multi_factor_auth_method_created_at,
       auth_app_configuration_id: auth_app_configuration_id,
