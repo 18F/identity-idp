@@ -3,8 +3,11 @@ require 'rails_helper'
 RSpec.feature 'Password recovery via personal key for a GPO-verified user' do
   include IdvStepHelper
 
-  let(:user) { create(:user, :fully_registered) }
+  let(:email) { 'cool_beagle@test.org' }
+  let(:password) { '!1a Z@6s' * 16 } # default password from user factory
   let(:new_password) { 'some really awesome new password' }
+
+  let(:user) { create(:user, :fully_registered, email: email, password: password) }
 
   before do
     allow(FeatureManagement).to receive(:reveal_gpo_code?).and_return(true)
@@ -14,7 +17,16 @@ RSpec.feature 'Password recovery via personal key for a GPO-verified user' do
     complete_idv_steps_with_gpo_before_confirmation_step(user)
     click_on t('doc_auth.buttons.continue')
 
-    click_on t('account.index.verification.reactivate_button')
+    gpo_code = page.get_rack_session_key('last_gpo_confirmation_code')
+    page.go_back # get_rack_session_key navigates away.
+
+    click_on t('links.sign_out')
+
+    fill_in_credentials_and_submit(email, password)
+    fill_in I18n.t('components.one_time_code_input.label'), with: last_phone_otp
+    click_submit_default
+
+    fill_in 'gpo_verify_form_otp', with: gpo_code
     click_on t('idv.gpo.form.submit')
 
     personal_key = scrape_personal_key
