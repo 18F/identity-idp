@@ -1,7 +1,5 @@
 module Idv
   class ImageUploadsController < ApplicationController
-    include ApplicationHelper # for liveness_checking_enabled? -- can be removed?
-
     respond_to :json
 
     def create
@@ -35,14 +33,6 @@ module Idv
 
     def liveness_checking_enabled?
       IdentityConfig.store.doc_auth_selfie_capture_enabled
-    end
-
-    def ial_context
-      @ial_context ||= IalContext.new(
-        ial: sp_session_ial,
-        service_provider: current_sp,
-        user: current_user,
-      )
     end
 
     def liveness_checking_required?
