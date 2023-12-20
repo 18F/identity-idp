@@ -66,6 +66,7 @@ module Idv
         otp_verification: Idv::OtpVerificationController.step_info,
         request_letter: Idv::ByMail::RequestLetterController.step_info,
         enter_password: Idv::EnterPasswordController.step_info,
+        personal_key: Idv::PersonalKeyController.step_info,
       }
     end
 

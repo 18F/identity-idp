@@ -7,8 +7,14 @@ module Idv
     validates_presence_of :address1, { message: proc {
                                                   I18n.t('doc_auth.errors.alerts.address_check')
                                                 } }
-    validate :zipcode_valid?
     validate :state_valid?
+    validates :zipcode, format: {
+      with: /\A[0-9]{5}(?:-[0-9]{4})?\z/,
+      message: proc {
+        I18n.t('doc_auth.errors.general.no_liveness')
+      },
+    }
+
     validates :jurisdiction, inclusion: { in: Idp::Constants::STATE_AND_TERRITORY_CODES,
                                           message: proc {
                                                      I18n.t('doc_auth.errors.general.no_liveness')
@@ -77,12 +83,6 @@ module Idv
       if age < IdentityConfig.store.idv_min_age_years
         errors.add(:dob_min_age, dob_min_age_error, type: :dob)
       end
-    end
-
-    def zipcode_valid?
-      return if zipcode.is_a?(String) && zipcode.present?
-
-      errors.add(:zipcode, generic_error, type: :zipcode)
     end
 
     def generic_error

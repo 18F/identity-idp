@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Idv::DocumentCaptureController do
+  include FlowPolicyHelper
+
   let(:document_capture_session_requested_at) { Time.zone.now }
 
   let!(:document_capture_session) do
@@ -20,8 +22,8 @@ RSpec.describe Idv::DocumentCaptureController do
 
   before do
     stub_sign_in(user)
+    stub_up_to(:hybrid_handoff, idv_session: subject.idv_session)
     stub_analytics
-    subject.idv_session.flow_path = 'standard'
     subject.idv_session.document_capture_session_uuid = document_capture_session_uuid
 
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
@@ -102,8 +104,6 @@ RSpec.describe Idv::DocumentCaptureController do
 
     context 'hybrid handoff step is not complete' do
       it 'redirects to hybrid handoff' do
-        subject.idv_session.welcome_visited = true
-        subject.idv_session.idv_consent_given = true
         subject.idv_session.flow_path = nil
 
         get :show
@@ -114,12 +114,7 @@ RSpec.describe Idv::DocumentCaptureController do
 
     context 'verify info step is complete' do
       it 'renders show' do
-        subject.idv_session.welcome_visited = true
-        subject.idv_session.idv_consent_given = true
-        subject.idv_session.flow_path = 'standard'
-        subject.idv_session.pii_from_doc = Idp::Constants::MOCK_IDV_APPLICANT
-        subject.idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]
-        subject.idv_session.resolution_successful = true
+        stub_up_to(:verify_info, idv_session: subject.idv_session)
 
         get :show
 

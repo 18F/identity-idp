@@ -164,6 +164,10 @@ stylesheets.
 
   To see outbound SMS messages and phone calls, visit `http://localhost:3000/test/telephony`.
 
+### Viewing RISC push notifications
+
+To view [RISC Security Events](https://developers.login.gov/security-events/) push notifications delivered by the application, visit http://localhost:3000/test/push_notification.
+
 ### Setting up Geolocation
 
 Login.gov uses MaxMind Geolite2 for geolocation. To test geolocation locally, you will need to add a copy of the Geolite2-City database to the IdP.

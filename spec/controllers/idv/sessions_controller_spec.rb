@@ -35,7 +35,7 @@ RSpec.describe Idv::SessionsController do
         expect(controller.user_session['idv/in_person']).to be_blank
       end
 
-      it 'clears the decrypted_pii session' do
+      it 'clears the encrypted_profiles session' do
         expect(controller.user_session[:encrypted_profiles]).to be_blank
       end
     end

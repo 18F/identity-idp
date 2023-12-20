@@ -61,7 +61,6 @@ class SessionEncryptor
   def dump(value)
     value.deep_stringify_keys!
 
-    kms_encrypt_pii!(value)
     kms_encrypt_sensitive_paths!(value, SENSITIVE_PATHS)
     alert_or_raise_if_contains_sensitive_keys!(value)
     plain = JSON.generate(value)
@@ -103,22 +102,6 @@ class SessionEncryptor
   end
 
   private
-
-  # The PII bundle is stored in the user session in the 'decrypted_pii' key.
-  # The PII is decrypted with the user's password when they successfully submit it and then
-  # stored in the session.  Before saving the session, this method encrypts the PII with KMS and
-  # stores it in the 'encrypted_pii' key.
-  #
-  # The PII is not frequently needed in its KMS-decrypted state. To reduce the
-  # risks around holding plaintext PII in memory during requests, this PII is KMS-decrypted
-  # on-demand by the Pii::Cacher.
-  def kms_encrypt_pii!(session)
-    return unless session.dig('warden.user.user.session', 'decrypted_pii')
-    decrypted_pii = session['warden.user.user.session'].delete('decrypted_pii')
-    session['warden.user.user.session']['encrypted_pii'] =
-      kms_encrypt(decrypted_pii)
-    nil
-  end
 
   # This method extracts all of the sensitive paths that exist into a
   # separate hash.  This separate hash is then encrypted and placed in the session.
