@@ -84,7 +84,8 @@ In practice:
 
 As with any public NPM package, a workspace package should ideally be reusable and avoid direct
 references to page elements. In order to integrate a package within a particular page, you should
-either reference it within [a ViewComponent component's accompanying script](https://github.com/18F/identity-idp/blob/main/app/components/README.md), or by creating a new `app/javascript/packs` file to be loaded on a page.
+either reference it within [a ViewComponent component's accompanying script](https://github.com/18F/identity-idp/blob/main/app/components/README.md),
+or by creating a new `app/javascript/packs` file to be loaded on a page.
 
 Because Yarn will alias workspace packages using symlinks, you can reference a package using the
 name you assigned using the guidelines above for `package.json` `name` field (for example,
