@@ -66,8 +66,8 @@ workflow to apply formatting automatically on save.
 
 [Workspaces](https://classic.yarnpkg.com/en/docs/workspaces/) allow a developer to create and
 organize code which is used just like any other NPM package, but which doesn't require the overhead
-involved in publishing those modules and keeping versions in sync across multiple repositories. The
-IDP uses Yarn workspaces to keep JavaScript code organized, reusable, and to encourage good coding
+involved in publishing those modules and keeping versions in sync across multiple repositories. We
+use Yarn workspaces to keep JavaScript code organized, reusable, and to encourage good coding
 practices in abstractions.
 
 In practice:
@@ -75,21 +75,17 @@ In practice:
 - All folders within `app/javascript/packages` are treated as workspace packages.
 - Each package should have its own `package.json` that includes...
   - ...a `name` starting with `@18f/identity-` and ending with the name of the package folder.
-  - ...a listing of its own dependencies, including to other workspace packages using
-    [`file:` prefix](https://classic.yarnpkg.com/en/docs/cli/add/).
-  - ...[`"private": true`](https://docs.npmjs.com/files/package.json#private) if the workspace
-    package is not intended to be published to NPM.
+  - ...a [`private`](https://docs.npmjs.com/files/package.json#private) value indicating whether the
+    package is intended to be published to NPM.
   - ...a value for the `version` field, since it is required. The value value can be anything, and
     `"1.0.0"` is a good default.
-- Each package should include an `index.js` which serves as the entry-point and public API for the
-  package.
 
-A package might have a corresponding file by the same package name contained within
-`app/javascript/packs` that serves as the integration point between packages and the Rails
-application. This is to encourage packages to be reusable, where the file in `packs` contains any
-logic required to wire the package to the running Rails application. Because Yarn will alias
-workspace packages using symlinks, you can reference a package using the name you assigned using the
-guidelines above for `package.json` `name` field (for example,
+As with any public NPM package, a workspace package should ideally be reusable and avoid direct
+references to page elements. In order to integrate a package within a particular page, you should
+either reference it within [a ViewComponent component's accompanying script](https://github.com/18F/identity-idp/blob/main/app/components/README.md), or by creating a new `app/javascript/packs` file to be loaded on a page.
+
+Because Yarn will alias workspace packages using symlinks, you can reference a package using the
+name you assigned using the guidelines above for `package.json` `name` field (for example,
 `import { Button } from '@18f/identity-components';`).
 
 ### Dependencies
@@ -138,9 +134,9 @@ See [`@18f/identity-analytics` package documentation][analytics_package] for cod
 how to track an event in JavaScript.
 
 Any event logged from the frontend must be added to the `ALLOWED_EVENTS` allowlist in [`FrontendLogController`][frontend_log_controller.rb].
-This mapping associates the event name logged from the frontend with the corresponding method from
-[AnalyticsEvents][analytics_events.rb] to be called. All properties will be passed automatically to
-the event from the frontend as long as they are defined in the method argument signature.
+This is an allowlist of events defined in [AnalyticsEvents][analytics_events.rb] which are allowed
+to be logged from the frontend. All properties will be passed automatically to the event from the
+frontend as long as they are defined in the method argument signature.
 
 There may be some situations where you need to append a value known by the server to an event logged
 in the frontend, such as an A/B test bucket descriptor. In these scenarios, you have a few options:
