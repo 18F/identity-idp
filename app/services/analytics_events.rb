@@ -2759,8 +2759,6 @@ module AnalyticsEvents
     track_event(:idv_sdk_selfie_image_capture_opened, **extra)
   end
 
-  # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
-  # @param [String] acuant_version
   # @param [Integer] attempt number of attempts
   # @param [Integer] failedImageResubmission
   # @param [String] fingerprint fingerprint of the image added
@@ -2769,13 +2767,10 @@ module AnalyticsEvents
   # @param [String] mimeType MIME type of image added
   # @param [Integer] size size of image added in bytes
   # @param [String] source
-  # @param [Boolean] use_alternate_sdk
   # @param [Integer] width width of image added in pixels
   # User uploaded a selfie using the file picker
   # rubocop:disable Naming/VariableName,Naming/MethodParameterName
   def idv_selfie_image_file_uploaded(
-    acuant_sdk_upgrade_a_b_testing_enabled:,
-    acuant_version:,
     attempt:,
     failedImageResubmission:,
     fingerprint:,
@@ -2784,14 +2779,11 @@ module AnalyticsEvents
     mimeType:,
     size:,
     source:,
-    use_alternate_sdk:,
     width:,
     **_extra
   )
     track_event(
       :idv_selfie_image_file_uploaded,
-      acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
-      acuant_version: acuant_version,
       attempt: attempt,
       failedImageResubmission: failedImageResubmission,
       fingerprint: fingerprint,
@@ -2800,7 +2792,6 @@ module AnalyticsEvents
       mimeType: mimeType,
       size: size,
       source: source,
-      use_alternate_sdk: use_alternate_sdk,
       width: width,
     )
   end

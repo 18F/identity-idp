@@ -509,7 +509,7 @@ RSpec.feature 'Analytics Regression', js: true do
         success: true, errors: {}, flow_path: 'standard', step: 'document_capture', redo_document_capture: nil, skip_hybrid_handoff: nil, acuant_sdk_upgrade_ab_test_bucket: :default, lexisnexis_instant_verify_workflow_ab_test_bucket: :default, analytics_id: 'Doc Auth', irs_reproofing: false
       },
       :idv_selfie_image_file_uploaded => {
-        acuant_sdk_upgrade_a_b_testing_enabled: 'false', acuant_version: anything, attempt: 1, failedImageResubmission: nil, fingerprint: 'aIzxkX_iMtoxFOURZr55qkshs53emQKUOr7VfTf6G1Q', flow_path: 'standard', height: 38, mimeType: 'image/png', size: 3694, source: 'upload', use_alternate_sdk: anything, width: 284
+        attempt: 1, failedImageResubmission: nil, fingerprint: 'aIzxkX_iMtoxFOURZr55qkshs53emQKUOr7VfTf6G1Q', flow_path: 'standard', height: 38, mimeType: 'image/png', size: 3694, source: 'upload', width: 284
       },
       'IdV: doc auth ssn visited' => {
         flow_path: 'standard', step: 'ssn', acuant_sdk_upgrade_ab_test_bucket: :default, lexisnexis_instant_verify_workflow_ab_test_bucket: :default, skip_hybrid_handoff: nil, analytics_id: 'Doc Auth', irs_reproofing: false
