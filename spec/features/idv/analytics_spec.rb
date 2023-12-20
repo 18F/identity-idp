@@ -113,7 +113,7 @@ RSpec.feature 'Analytics Regression', js: true do
         proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' },
       },
       'IdV: phone confirmation otp submitted' => {
-        success: true, code_expired: false, code_matches: true, second_factor_attempts_count: 0, second_factor_locked_at: nil, errors: {},
+        success: true, code_expired: false, code_matches: true, second_factor_attempts_count: 0, second_factor_locked_at: nil, errors: {}, acuant_sdk_upgrade_ab_test_bucket: :default, lexisnexis_instant_verify_workflow_ab_test_bucket: :default, skip_hybrid_handoff: nil,
         proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
       },
       :idv_enter_password_visited => {
@@ -221,7 +221,7 @@ RSpec.feature 'Analytics Regression', js: true do
         proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' },
       },
       'IdV: phone confirmation otp submitted' => {
-        success: true, code_expired: false, code_matches: true, second_factor_attempts_count: 0, second_factor_locked_at: nil, errors: {},
+        success: true, code_expired: false, code_matches: true, second_factor_attempts_count: 0, second_factor_locked_at: nil, errors: {}, acuant_sdk_upgrade_ab_test_bucket: :default, lexisnexis_instant_verify_workflow_ab_test_bucket: :default, skip_hybrid_handoff: nil,
         proofing_components: { document_check: 'mock', document_type: 'state_id', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
       },
       :idv_enter_password_visited => {
@@ -431,7 +431,7 @@ RSpec.feature 'Analytics Regression', js: true do
         proofing_components: { address_check: 'lexis_nexis_address', document_check: 'usps', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', source_check: 'aamva' },
       },
       'IdV: phone confirmation otp submitted' => {
-        success: true, code_expired: false, code_matches: true, second_factor_attempts_count: 0, second_factor_locked_at: nil, errors: {},
+        success: true, code_expired: false, code_matches: true, second_factor_attempts_count: 0, second_factor_locked_at: nil, errors: {}, acuant_sdk_upgrade_ab_test_bucket: :default, lexisnexis_instant_verify_workflow_ab_test_bucket: :default, skip_hybrid_handoff: nil,
         proofing_components: { document_check: 'usps', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
       },
       :idv_enter_password_visited => {
@@ -542,7 +542,7 @@ RSpec.feature 'Analytics Regression', js: true do
     end
   end
 
-  context 'Happy hybrid path' do
+  context 'Happy hybrid path', allow_browser_log: true do
     before do
       allow(Telephony).to receive(:send_doc_auth_link).and_wrap_original do |impl, config|
         @sms_link = config[:link]
@@ -633,7 +633,7 @@ RSpec.feature 'Analytics Regression', js: true do
       complete_enter_password_step(user)
     end
 
-    it 'records all of the events' do
+    it 'records all of the events', allow_browser_log: true do
       gpo_path_events.each do |event, attributes|
         expect(fake_analytics).to have_logged_event(event, attributes)
       end
