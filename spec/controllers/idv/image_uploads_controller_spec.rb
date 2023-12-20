@@ -31,7 +31,6 @@ RSpec.describe Idv::ImageUploadsController do
 
     before do
       allow(controller).to receive(:store_encrypted_images?).and_return(store_encrypted_images)
-      allow(controller).to receive(:liveness_checking_required?).and_return(false)
     end
 
     before do
@@ -979,7 +978,8 @@ RSpec.describe Idv::ImageUploadsController do
 
       context 'the frontend requests a selfie' do
         before do
-          allow(controller).to receive(:liveness_checking_required?).and_return(true)
+          allow(controller).to receive(:decorated_sp_session).
+            and_return(double('decorated_session', { selfie_required?: true }))
         end
         it 'sends a selfie' do
           expect_any_instance_of(DocAuth::Mock::DocAuthMockClient).
