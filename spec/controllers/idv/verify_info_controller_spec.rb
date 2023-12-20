@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Idv::VerifyInfoController do
+  include FlowPolicyHelper
+
   let(:user) { create(:user) }
   let(:analytics_hash) do
     {
@@ -17,13 +19,9 @@ RSpec.describe Idv::VerifyInfoController do
 
   before do
     stub_sign_in(user)
+    stub_up_to(:ssn, idv_session: subject.idv_session)
     stub_analytics
     stub_attempts_tracker
-    subject.idv_session.welcome_visited = true
-    subject.idv_session.idv_consent_given = true
-    subject.idv_session.flow_path = 'standard'
-    subject.idv_session.pii_from_doc = Idp::Constants::MOCK_IDV_APPLICANT.dup
-    subject.idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 
@@ -101,10 +99,7 @@ RSpec.describe Idv::VerifyInfoController do
 
     context 'when the user has already verified their info' do
       it 'renders show' do
-        subject.idv_session.resolution_successful = true
-        subject.idv_session.pii_from_doc = Idp::Constants::MOCK_IDV_APPLICANT
-        subject.idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]
-        subject.idv_session.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN
+        stub_up_to(:verify_info, idv_session: subject.idv_session)
 
         get :show
 
