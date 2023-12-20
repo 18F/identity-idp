@@ -294,7 +294,7 @@ RSpec.describe 'Idv::FlowPolicy' do
 
           expect(subject.info_for_latest_step.key).to eq(:enter_password)
           expect(subject.controller_allowed?(controller: Idv::EnterPasswordController)).to be
-          # expect(subject.controller_allowed?(controller: Idv::PersonalKeyController)).not_to be
+          expect(subject.controller_allowed?(controller: Idv::PersonalKeyController)).not_to be
         end
       end
 
@@ -304,7 +304,31 @@ RSpec.describe 'Idv::FlowPolicy' do
 
           expect(subject.info_for_latest_step.key).to eq(:enter_password)
           expect(subject.controller_allowed?(controller: Idv::EnterPasswordController)).to be
-          # expect(subject.controller_allowed?(controller: Idv::PersonalKeyController)).not_to be
+          expect(subject.controller_allowed?(controller: Idv::PersonalKeyController)).not_to be
+        end
+      end
+    end
+
+    context 'preconditions for personal_key are present' do
+      let(:password) { 'sekrit phrase' }
+      context 'user has a verify by mail pending profile' do
+        it 'returns personal_key' do
+          stub_up_to(:request_letter, idv_session: idv_session)
+          idv_session.gpo_code_verified = true
+          idv_session.create_profile_from_applicant_with_password('password')
+
+          expect(subject.info_for_latest_step.key).to eq(:personal_key)
+          expect(subject.controller_allowed?(controller: Idv::PersonalKeyController)).to be
+        end
+      end
+
+      context 'user has a newly activated profile' do
+        it 'returns personal_key' do
+          stub_up_to(:otp_verification, idv_session: idv_session)
+          idv_session.create_profile_from_applicant_with_password('password')
+
+          expect(subject.info_for_latest_step.key).to eq(:personal_key)
+          expect(subject.controller_allowed?(controller: Idv::PersonalKeyController)).to be
         end
       end
     end
