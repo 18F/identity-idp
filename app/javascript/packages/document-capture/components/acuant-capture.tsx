@@ -226,24 +226,6 @@ function getFingerPrint(file: File): Promise<string | null> {
   });
 }
 
-function getImageDimensions(file: File): Promise<{ width: number | null; height: number | null }> {
-  let objectURL: string;
-  return file.type.indexOf('image/') === 0
-    ? new Promise<{ width: number | null; height: number | null }>((resolve) => {
-        objectURL = window.URL.createObjectURL(file);
-        const image = new window.Image();
-        image.onload = () => resolve({ width: image.width, height: image.height });
-        image.onerror = () => resolve({ width: null, height: null });
-        image.src = objectURL;
-      })
-        .then(({ width, height }) => {
-          window.URL.revokeObjectURL(objectURL);
-          return { width, height };
-        })
-        .catch(() => ({ width: null, height: null }))
-    : Promise.resolve({ width: null, height: null });
-}
-
 function processImage(file: File): Promise<{
   width: number | null;
   height: number | null;
@@ -273,7 +255,7 @@ function processImage(file: File): Promise<{
           false,
           'MANUAL',
           (result: AcuantEvaluatedResult) => {
-            console.log('resultInCallback',result)
+            console.log('resultInCallback', result);
             croppedImg = result;
             let newFile = file;
             if (croppedImg?.image?.data) {
@@ -293,22 +275,6 @@ function processImage(file: File): Promise<{
     };
     reader.readAsDataURL(file);
   });
-}
-
-function getImageMetadata(
-  file: File,
-): Promise<{ width: number | null; height: number | null; fingerprint: string | null }> {
-  const dimension = getImageDimensions(file);
-  const fingerprint = getFingerPrint(file);
-  return new Promise<{ width: number | null; height: number | null; fingerprint: string | null }>(
-    function (resolve) {
-      Promise.all([dimension, fingerprint])
-        .then((results) => {
-          resolve({ width: results[0].width, height: results[0].height, fingerprint: results[1] });
-        })
-        .catch(() => ({ width: null, height: null, fingerprint: null }));
-    },
-  );
 }
 
 function getImageMetadataEnhanced(file: File): Promise<{
@@ -475,38 +441,6 @@ function AcuantCapture(
     };
     incrementAttempt();
     return enhancedPayload;
-  }
-
-  /**
-   * Handler for file input change events.
-   */
-  async function onUpload(nextValue: File | null) {
-    let analyticsPayload: ImageAnalyticsPayload | undefined;
-    let hasFailed = false;
-
-    if (nextValue) {
-      const { width, height, fingerprint } = await getImageMetadata(nextValue);
-      hasFailed = failedSubmissionImageFingerprints[name]?.includes(fingerprint);
-      analyticsPayload = getAddAttemptAnalyticsPayload({
-        width,
-        height,
-        fingerprint,
-        mimeType: nextValue.type,
-        source: 'upload',
-        size: nextValue.size,
-        failedImageResubmission: hasFailed,
-      });
-      trackEvent(`IdV: ${name} image added`, analyticsPayload);
-      // const newImg = await evaluateImage(width as number, height as number, nextValue);
-      if (newImg?.image?.data) {
-        const newImgFile = dataURItoFile(nextValue.name, newImg.image.data);
-        if (newImgFile?.size) {
-          nextValue = newImgFile;
-        }
-      }
-    }
-
-    onChangeAndResetError(nextValue, analyticsPayload);
   }
 
   async function onUploadEnhanced(nextValue: File | null) {
