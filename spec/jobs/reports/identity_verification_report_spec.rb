@@ -2,11 +2,11 @@ require 'rails_helper'
 
 RSpec.describe Reports::IdentityVerificationReport do
   let(:report_date) { Date.new(2023, 12, 12).in_time_zone('UTC') }
-  let(:team_ada_emails) { ['ada@example.com'] }
+  let(:team_ada_email) { 'ada@example.com' }
 
   before do
     allow(IdentityConfig.store).to receive(:s3_reports_enabled).and_return(true)
-    allow(IdentityConfig.store).to receive(:team_ada_emails).and_return(team_ada_emails)
+    allow(IdentityConfig.store).to receive(:team_ada_email).and_return(team_ada_email)
   end
 
   describe '#perform' do
@@ -53,7 +53,7 @@ RSpec.describe Reports::IdentityVerificationReport do
       )
 
       expect(ReportMailer).to receive(:tables_report).once.with(
-        email: IdentityConfig.store.team_ada_emails[0],
+        email: IdentityConfig.store.team_ada_email,
         subject: 'Daily Identity Verification Report - 2023-12-12',
         reports: anything,
         message: anything,
