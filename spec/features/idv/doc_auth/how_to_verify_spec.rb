@@ -76,7 +76,9 @@ RSpec.feature 'how to verify step', js: true do
   describe 'navigating to How To Verify from Agreement page in 50/50 state' do
     before do
       allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { true }
-      allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { initial_opt_in_enabled }
+      allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) {
+                                       initial_opt_in_enabled
+                                     }
 
       sign_in_and_2fa_user
       complete_doc_auth_steps_before_agreement_step
@@ -123,7 +125,7 @@ RSpec.feature 'how to verify step', js: true do
 
     context 'Going back from Hybrid Handoff with opt in enabled midstream' do
       let(:initial_opt_in_enabled) { false }
-      
+
       it 'should go back to the Agreement step from Hybrid Handoff with opt in toggled midstream' do
         expect(page).to have_current_path(idv_hybrid_handoff_url)
         allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { true }
@@ -147,7 +149,7 @@ RSpec.feature 'how to verify step', js: true do
 
     context 'Going back from Hybrid Handoff with opt in disabled the whole time' do
       let(:initial_opt_in_enabled) { false }
-    
+
       it 'should be not be bounced back to How to Verify' do
         expect(page).to have_current_path(idv_hybrid_handoff_url)
         page.go_back
