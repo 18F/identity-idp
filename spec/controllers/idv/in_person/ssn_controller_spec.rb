@@ -107,27 +107,12 @@ RSpec.describe Idv::InPerson::SsnController do
     end
 
     context 'with an ssn in idv_session' do
-      let(:referer) { idv_in_person_step_url(step: :address) }
-      before do
+      it 'allows the back button and renders the show template' do
         subject.idv_session.ssn = ssn
-        request.env['HTTP_REFERER'] = referer
-      end
 
-      context 'referer is not verify_info' do
-        it 'redirects to verify_info' do
-          get :show
+        get :show
 
-          expect(response).to redirect_to(idv_in_person_verify_info_url)
-        end
-      end
-
-      context 'referer is verify_info' do
-        let(:referer) { idv_in_person_verify_info_url }
-        it 'does not redirect' do
-          get :show
-
-          expect(response).to render_template 'idv/shared/ssn'
-        end
+        expect(response).to render_template 'idv/shared/ssn'
       end
     end
   end
