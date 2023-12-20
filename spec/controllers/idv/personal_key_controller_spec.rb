@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Idv::PersonalKeyController do
+  include FlowPolicyHelper
   include SamlAuthHelper
   include PersonalKeyValidator
 
@@ -42,26 +43,122 @@ RSpec.describe Idv::PersonalKeyController do
 
   let(:idv_session) { subject.idv_session }
 
+  let(:threatmetrix_review_status) { nil }
+
   before do
     stub_analytics
     stub_attempts_tracker
-    stub_verify_steps_one_and_two(user, applicant: applicant)
+
+    stub_sign_in(user)
 
     case address_verification_mechanism
     when 'phone'
-      idv_session.address_verification_mechanism = 'phone'
-      idv_session.user_phone_confirmation = true
-      idv_session.vendor_phone_confirmation = true
+      stub_up_to(:otp_verification, idv_session: idv_session)
     when 'gpo'
-      idv_session.address_verification_mechanism = 'gpo'
-      idv_session.user_phone_confirmation = false
-      idv_session.vendor_phone_confirmation = false
+      stub_up_to(:request_letter, idv_session: idv_session)
+      idv_session.gpo_code_verified = true
+    when nil
+      stub_up_to(:verify_info, idv_session: idv_session)
     else
       raise 'invalid address_verification_mechanism'
     end
 
+    idv_session.applicant = applicant
+
     if mint_profile_from_idv_session
       idv_session.create_profile_from_applicant_with_password(password)
+    end
+  end
+
+  describe '#step_info' do
+    let(:step_info) do
+      controller.class.step_info
+    end
+
+    describe '#undo_step' do
+      it 'clears personal_key_acknowledged' do
+        idv_session.acknowledge_personal_key!
+        step_info.undo_step.call(idv_session: idv_session, user: user)
+        expect(idv_session.personal_key_acknowledged).to eql(nil)
+      end
+
+      it 'clears personal_key' do
+        idv_session.personal_key = 'ABCD-1234'
+        step_info.undo_step.call(idv_session: idv_session, user: user)
+        expect(idv_session.personal_key).to be_nil
+      end
+    end
+
+    describe '#preconditions' do
+      let(:preconditions) do
+        step_info.preconditions.call(idv_session: idv_session, user: user)
+      end
+
+      context 'when all conditions met' do
+        it 'returns a truthy result' do
+          expect(preconditions).to be_truthy
+        end
+      end
+
+      context 'when user does not have a pending or active profile' do
+        before do
+          user.active_profile.deactivate(:password_reset)
+          expect(user.active_profile).to eql(nil)
+          user.reload
+        end
+
+        it 'returns something falsey' do
+          expect(preconditions).to be_falsey
+        end
+      end
+
+      context 'when address confirmed via GPO' do
+        let(:address_verification_mechanism) { 'gpo' }
+        it 'returns a truthy result' do
+          expect(preconditions).to be_truthy
+        end
+      end
+
+      context 'when address confirmed via phone' do
+        let(:address_verification_mechanism) { 'phone' }
+        it 'returns a truthy result' do
+          expect(preconditions).to be_truthy
+        end
+      end
+
+      context 'when address unconfirmed' do
+        let(:address_verification_mechanism) { nil }
+        it 'returns a falsey result' do
+          expect(preconditions).to be_falsey
+        end
+      end
+
+      context 'when personal_key_acknowledged is false' do
+        before do
+          idv_session.personal_key_acknowledged = false
+        end
+        it 'returns a truthy result' do
+          expect(preconditions).to be_truthy
+        end
+      end
+
+      context 'when personal_key_acknowledged is true' do
+        before do
+          idv_session.personal_key_acknowledged = true
+        end
+        it 'returns a falsey result' do
+          expect(preconditions).to be_falsey
+        end
+      end
+
+      context 'when personal_key_acknowledged is nil' do
+        before do
+          idv_session.personal_key_acknowledged = nil
+        end
+        it 'returns a truthy result' do
+          expect(preconditions).to be_truthy
+        end
+      end
     end
   end
 
@@ -70,63 +167,74 @@ RSpec.describe Idv::PersonalKeyController do
       expect(subject).to have_actions(
         :before,
         :confirm_two_factor_authenticated,
-        :confirm_phone_or_address_confirmed,
+        :confirm_step_allowed,
+      )
+    end
+
+    it 'skips redundant or irrelevant before_actions' do
+      expect(subject).not_to have_actions(
+        :before,
+        :confirm_idv_needed,
+        :confirm_personal_key_acknowledged_if_needed,
+        :confirm_no_pending_in_person_enrollment,
+        :handle_fraud,
       )
     end
 
     it 'includes before_actions from IdvSession' do
-      expect(subject).to have_actions(:before, :redirect_unless_sp_requested_verification)
-    end
-
-    describe '#confirm_profile_has_been_created' do
-      controller do
-        before_action :confirm_profile_has_been_created
-
-        def index
-          render plain: 'Hello'
-        end
-      end
-
-      context 'profile has been created' do
-        it 'does not redirect' do
-          get :index
-
-          expect(response).to_not be_redirect
-        end
-      end
-
-      context 'profile has not been created from idv_session' do
-        let(:mint_profile_from_idv_session) { false }
-
-        it 'redirects to the account path' do
-          get :index
-          expect(response).to redirect_to account_path
-        end
-
-        context 'profile is pending from a different session' do
-          context 'profile is pending due to fraud review' do
-            let!(:pending_profile) { create(:profile, :fraud_review_pending, user: user) }
-
-            it 'does not redirect' do
-              get :index
-              expect(response).to_not be_redirect
-            end
-          end
-
-          context 'profile is pending due to in person proofing' do
-            let!(:pending_profile) { create(:profile, :in_person_verification_pending, user: user) }
-
-            it 'does not redirect' do
-              get :index
-              expect(response).to_not be_redirect
-            end
-          end
-        end
-      end
+      expect(subject).to have_actions(
+        :before,
+        :redirect_unless_sp_requested_verification,
+      )
     end
   end
 
   describe '#show' do
+    context 'profile has been created from idv_session' do
+      it 'does not redirect' do
+        get :show
+
+        expect(response).to_not be_redirect
+      end
+
+      context 'profile is pending fraud review' do
+        let(:threatmetrix_review_status) { 'reject' }
+        it 'does not redirect' do
+          get :show
+          expect(response).to_not be_redirect
+        end
+      end
+    end
+
+    context 'profile has not been created from idv_session' do
+      let(:mint_profile_from_idv_session) { false }
+
+      it 'redirects to the enter password screen' do
+        get :show
+        expect(response).to redirect_to idv_enter_password_url
+      end
+
+      context 'but a profile is pending from a different session' do
+        context 'due to fraud review' do
+          let!(:pending_profile) { create(:profile, :fraud_review_pending, user: user) }
+
+          it 'does not redirect' do
+            get :show
+            expect(response).not_to be_redirect
+          end
+        end
+
+        context 'due to in person proofing' do
+          let!(:pending_profile) { create(:profile, :in_person_verification_pending, user: user) }
+
+          it 'does not redirect' do
+            get :show
+            expect(response).to_not be_redirect
+          end
+        end
+      end
+    end
+
     it 'sets code instance variable' do
       code = idv_session.personal_key
       expect(code).to be_present
@@ -165,10 +273,10 @@ RSpec.describe Idv::PersonalKeyController do
     context 'user selected gpo verification' do
       let(:address_verification_mechanism) { 'gpo' }
 
-      it 'redirects to enter password url' do
+      it 'redirects to letter enqueued url' do
         get :show
 
-        expect(response).to redirect_to idv_enter_password_url
+        expect(response).to redirect_to idv_letter_enqueued_url
       end
     end
 
@@ -266,6 +374,16 @@ RSpec.describe Idv::PersonalKeyController do
         end
       end
     end
+
+    context 'personal key already acknowledged' do
+      before do
+        idv_session.acknowledge_personal_key!
+      end
+      it 'redirects away' do
+        get :show
+        expect(response).to be_redirect
+      end
+    end
   end
 
   describe '#update' do
@@ -307,10 +425,14 @@ RSpec.describe Idv::PersonalKeyController do
     context 'user selected gpo verification' do
       let(:address_verification_mechanism) { 'gpo' }
 
-      it 'redirects to review url' do
+      it 'redirects to correct url' do
         patch :update
+        expect(response).to redirect_to idv_letter_enqueued_url
+      end
 
-        expect(response).to redirect_to idv_enter_password_url
+      it 'does not log any events' do
+        expect(@analytics).not_to have_logged_event
+        patch :update
       end
     end
 
