@@ -244,47 +244,6 @@ function getImageDimensions(file: File): Promise<{ width: number | null; height:
     : Promise.resolve({ width: null, height: null });
 }
 
-function evaluateImage(
-  width: number,
-  height: number,
-  file: File,
-): Promise<AcuantEvaluatedResult | null> {
-  let croppedImg: AcuantEvaluatedResult;
-  if (window.AcuantCamera === undefined) {
-    return Promise.resolve(null);
-  }
-  return new Promise((resolve) => {
-    const reader = new FileReader();
-    reader.onload = (event: ProgressEvent<FileReader>) => {
-      const img = new Image();
-      img.onload = function () {
-        const canvas = document.createElement('canvas');
-        canvas.width = img.width;
-        canvas.height = img.height;
-        const ctx = canvas.getContext('2d');
-        ctx?.drawImage(img, 0, 0);
-        const imageData = ctx?.getImageData(0, 0, canvas.width, canvas.height);
-        window.AcuantCamera.evaluateImage(
-          imageData as ImageData,
-          width,
-          height,
-          false,
-          'MANUAL',
-          (result: AcuantEvaluatedResult) => {
-            croppedImg = result;
-            resolve(croppedImg);
-          },
-        );
-      };
-      img.onerror = function () {
-        resolve(null);
-      };
-      img.src = event?.target?.result as string;
-    };
-    reader.readAsDataURL(file);
-  });
-}
-
 function processImage(file: File): Promise<{
   width: number | null;
   height: number | null;
@@ -538,7 +497,7 @@ function AcuantCapture(
         failedImageResubmission: hasFailed,
       });
       trackEvent(`IdV: ${name} image added`, analyticsPayload);
-      const newImg = await evaluateImage(width as number, height as number, nextValue);
+      // const newImg = await evaluateImage(width as number, height as number, nextValue);
       if (newImg?.image?.data) {
         const newImgFile = dataURItoFile(nextValue.name, newImg.image.data);
         if (newImgFile?.size) {
