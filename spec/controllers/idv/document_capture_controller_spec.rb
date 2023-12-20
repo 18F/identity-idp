@@ -92,7 +92,7 @@ RSpec.describe Idv::DocumentCaptureController do
             ),
           ).and_call_original
 
-          get :show, params: { selfie: true }
+          get :show
 
           expect(response).to render_template :show
         end
@@ -107,7 +107,7 @@ RSpec.describe Idv::DocumentCaptureController do
           ),
         ).and_call_original
 
-        get :show, params: { selfie: true }
+        get :show
 
         expect(response).to render_template :show
       end

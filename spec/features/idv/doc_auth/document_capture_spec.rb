@@ -210,11 +210,8 @@ RSpec.feature 'document capture step', :js do
           expect(page).to have_current_path(idv_document_capture_url)
           expect(page).not_to have_content(t('doc_auth.headings.document_capture_selfie'))
 
-          visit(idv_document_capture_path(selfie: true))
-          expect(page).to have_current_path(idv_document_capture_url(selfie: true))
           expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
 
-          expect(page).not_to have_content(t('doc_auth.headings.document_capture_selfie'))
           attach_images
           submit_images
 
@@ -278,8 +275,6 @@ RSpec.feature 'document capture step', :js do
             expect(page).to have_current_path(idv_document_capture_url)
             expect(page).not_to have_content(t('doc_auth.headings.document_capture_selfie'))
 
-            visit(idv_document_capture_path(selfie: true))
-            expect(page).to have_current_path(idv_document_capture_url(selfie: true))
             expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
 
             expect(page).not_to have_content(t('doc_auth.headings.document_capture_selfie'))
