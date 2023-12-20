@@ -36,7 +36,7 @@ module Idv
     end
 
     def liveness_checking_required?
-      sp_session[:biometric_camparison_required]
+      decorated_sp_session.selfie_required?
     end
   end
 end
