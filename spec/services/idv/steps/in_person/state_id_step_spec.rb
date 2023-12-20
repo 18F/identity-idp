@@ -121,8 +121,7 @@ RSpec.describe Idv::Steps::InPerson::StateIdStep do
           }
         end
 
-        it 'marks address step as incomplete, retains identity_doc_ attrs/value
-        but removes addr attr in flow session' do
+        it 'retains identity_doc_ attrs/value but removes addr attr in flow session' do
           Idv::StateIdForm::ATTRIBUTES.each do |attr|
             expect(flow.flow_session[:pii_from_user]).to_not have_key attr
           end
@@ -132,10 +131,6 @@ RSpec.describe Idv::Steps::InPerson::StateIdStep do
           # On Verify, user changes response from "Yes,..." to
           # "No, I live at a different address", see submitted_values above
           step.call
-
-          # marks address step as incomplete
-          address_step = flow.flow_session[Idv::Steps::InPerson::AddressStep.name]
-          expect(address_step).to eq nil
 
           # retains identity_doc_ attributes and values in flow session
           expect(flow.flow_session[:pii_from_user]).to include(
@@ -339,13 +334,6 @@ RSpec.describe Idv::Steps::InPerson::StateIdStep do
     end
 
     context 'same address as id' do
-      it 'marks the address step as complete' do
-        step.call
-
-        address_step = flow.flow_session[Idv::Steps::InPerson::AddressStep.name]
-        expect(address_step).to eq true
-      end
-
       it 'adds state id values to address values in pii' do
         step.call
 
