@@ -68,7 +68,7 @@ RSpec.feature 'how to verify step', js: true do
       expect(page).to have_current_path(idv_how_to_verify_path)
       expect(page).to have_content(t('errors.doc_auth.how_to_verify_form'))
 
-      complete_how_to_verify_step
+      complete_how_to_verify_step(remote: true)
       expect(page).to have_current_path(idv_hybrid_handoff_url)
     end
   end
@@ -91,7 +91,6 @@ RSpec.feature 'how to verify step', js: true do
         expect(page).to have_current_path(idv_hybrid_handoff_url)
         allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { true }
         page.refresh
-        expect(page).not_to have_current_path(idv_how_to_verify_url)
         expect(page).to have_current_path(idv_hybrid_handoff_url)
       end
     end
@@ -126,7 +125,7 @@ RSpec.feature 'how to verify step', js: true do
         sign_in_and_2fa_user
         complete_doc_auth_steps_before_agreement_step
         complete_agreement_step
-        complete_how_to_verify_step
+        complete_how_to_verify_step(remote: true)
       end
 
       it 'should not be bounced back to How to Verify with opt in disabled midstream' do
@@ -163,7 +162,7 @@ RSpec.feature 'how to verify step', js: true do
         sign_in_and_2fa_user
         complete_doc_auth_steps_before_agreement_step
         complete_agreement_step
-        complete_how_to_verify_step
+        complete_how_to_verify_step(remote: true)
       end
 
       it 'should be bounced back to How to Verify' do
