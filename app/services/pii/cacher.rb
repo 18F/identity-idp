@@ -36,8 +36,6 @@ module Pii
     end
 
     def delete
-      user_session.delete(:decrypted_pii)
-      user_session.delete(:encrypted_pii)
       user_session.delete(:encrypted_profiles)
     end
 

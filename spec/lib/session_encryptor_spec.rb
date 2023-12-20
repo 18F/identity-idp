@@ -34,19 +34,6 @@ RSpec.describe SessionEncryptor do
       )
     end
 
-    it 'encrypts decrypted_pii bundle without automatically decrypting' do
-      session = { 'warden.user.user.session' => {
-        'decrypted_pii' => { 'ssn' => '666-66-6666' }.to_json,
-      } }
-
-      ciphertext = subject.dump(session)
-
-      result = subject.load(ciphertext)
-
-      expect(result.fetch('warden.user.user.session')['decrypted_pii']).to eq nil
-      expect(result.fetch('warden.user.user.session')['encrypted_pii']).to_not eq nil
-    end
-
     it 'KMS encrypts/decrypts doc auth elements of the session' do
       session = { 'warden.user.user.session' => {
         'idv' => { 'ssn' => '666-66-6666' },
