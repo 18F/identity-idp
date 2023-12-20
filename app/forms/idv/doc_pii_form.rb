@@ -7,18 +7,16 @@ module Idv
     validates_presence_of :address1, { message: proc {
                                                   I18n.t('doc_auth.errors.alerts.address_check')
                                                 } }
-    validate :state_valid?
     validates :zipcode, format: {
       with: /\A[0-9]{5}(?:-[0-9]{4})?\z/,
       message: proc {
         I18n.t('doc_auth.errors.general.no_liveness')
       },
     }
-
-    validates :jurisdiction, inclusion: { in: Idp::Constants::STATE_AND_TERRITORY_CODES,
-                                          message: proc {
-                                                     I18n.t('doc_auth.errors.general.no_liveness')
-                                                   } }
+    validates :jurisdiction, :state, inclusion: { in: Idp::Constants::STATE_AND_TERRITORY_CODES,
+                                                  message: proc {
+                                                    I18n.t('doc_auth.errors.general.no_liveness')
+                                                  } }
 
     attr_reader :first_name, :last_name, :dob, :address1, :state, :zipcode, :attention_with_barcode,
                 :jurisdiction
@@ -99,13 +97,6 @@ module Idv
 
     def dob_min_age_error
       I18n.t('doc_auth.errors.pii.birth_date_min_age')
-    end
-
-    # Future work could include a matching jurisdiction_valid? method since this
-    # does the same thing as the current jurisdiction validation.
-    def state_valid?
-      return true if state in Idp::Constants::STATE_AND_TERRITORY_CODES
-      errors.add(:state, generic_error, type: :state)
     end
   end
 end
