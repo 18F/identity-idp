@@ -22,6 +22,11 @@ fr:
     attempt_remaining_warning_html:
       one: Il vous reste <strong>%{count} tentative</strong>.
       other: Il vous reste <strong>%{count} tentatives</strong>.
+    auth_app:
+      delete: Suppression réussie d’une méthode d’application d’authentification
+      manage_app: Gérer l’application d’authentification
+      manage_settings: Gérer les paramètres de votre application d’authentification
+      rename: Votre méthode d’application d’authentification a été renommée avec succès
     backup_code_header_text: Entrez votre code de sauvegarde
     backup_code_prompt: Vous pouvez utiliser ce code de sauvegarde une seule fois.
       Après l’avoir envoyé, vous devrez utiliser un nouveau code de sauvegarde

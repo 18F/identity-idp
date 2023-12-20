@@ -20,6 +20,12 @@ es:
     attempt_remaining_warning_html:
       one: Le quedan <strong>%{count} intento</strong>.
       other: Le quedan <strong>%{count} intentos</strong>.
+    auth_app:
+      delete: Se ha eliminado correctamente un método de aplicación de autenticación.
+      manage_app: Gestionar la aplicación de autenticación
+      manage_settings: Gestionar la configuración de su aplicación de autenticación
+      rename: Se ha cambiado correctamente el nombre de su método de aplicación de
+        autenticación.
     backup_code_header_text: Ingrese su código de respaldo
     backup_code_prompt: Puede utilizar este código de respaldo una vez. Tendrá que
       usar un nuevo código de respaldo la próxima vez después de que lo envíe.
