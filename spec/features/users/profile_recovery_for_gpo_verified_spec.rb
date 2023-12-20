@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.feature 'Password recovery via personal key for a GPO-verified user' do
   include IdvStepHelper
 
-  let(:email) { 'cool_beagle@test.org' }
+  let(:email) { 'cool_beagle@example.org' }
   let(:password) { '!1a Z@6s' * 16 } # default password from user factory
   let(:new_password) { 'some really awesome new password' }
 
