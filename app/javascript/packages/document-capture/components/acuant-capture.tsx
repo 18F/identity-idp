@@ -314,6 +314,7 @@ function processImage(file: File): Promise<{
           false,
           'MANUAL',
           (result: AcuantEvaluatedResult) => {
+            console.log('resultInCallback',result)
             croppedImg = result;
             let newFile = file;
             if (croppedImg?.image?.data) {
