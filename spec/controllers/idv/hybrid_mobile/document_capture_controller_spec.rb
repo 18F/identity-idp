@@ -101,7 +101,8 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController do
         context 'renders the show template with selfie feature flag enabled' do
           context 'when selfie is required by sp session' do
             before do
-              allow(subject).to receive(:sp_session).and_return({ biometric_comparison_required: true })
+              allow(subject).to receive(:sp_session).
+                and_return({ biometric_comparison_required: true })
             end
             it 'requests FE to display selfie' do
               expect(subject).to receive(:render).with(

@@ -266,7 +266,8 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
     before do
       allow(Identity::Hostdata).to receive(:env).and_return('prod')
       allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).and_return(true)
-      allow_any_instance_of(FederatedProtocols::Oidc).to receive(:biometric_comparison_required?).and_return(true)
+      allow_any_instance_of(FederatedProtocols::Oidc).
+        to receive(:biometric_comparison_required?).and_return(true)
     end
     it 'continues to ssn on desktop when user selects Continue', js: true do
       user = nil
@@ -334,8 +335,10 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
   end
 
   it 'prefils the phone number used on the phone step if the user has no MFA phone', :js do
-    allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).and_return(true)
-    allow_any_instance_of(FederatedProtocols::Oidc).to receive(:biometric_comparison_required?).and_return(true)
+    allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).
+      and_return(true)
+    allow_any_instance_of(FederatedProtocols::Oidc).
+      to receive(:biometric_comparison_required?).and_return(true)
     user = create(:user, :with_authentication_app)
 
     perform_in_browser(:desktop) do

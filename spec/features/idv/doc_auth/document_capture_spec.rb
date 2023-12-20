@@ -233,7 +233,9 @@ RSpec.feature 'document capture step', :js do
 
     context 'when a selfie is required by the SP' do
       before do
-        allow_any_instance_of(FederatedProtocols::Oidc).to receive(:biometric_comparison_required?).and_return({ biometric_comparison_required: true })
+        allow_any_instance_of(FederatedProtocols::Oidc).
+          to receive(:biometric_comparison_required?).
+          and_return({ biometric_comparison_required: true })
       end
 
       it 'proceeds to the next page with valid info, including a selfie image' do
