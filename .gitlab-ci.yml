@@ -163,6 +163,17 @@ check_changelog:
         exit 0
       fi
 
+check_content_freeze:
+  stage: test
+  script: |-
+    echo "Content change is not allowed during content freeze"
+    exit 1
+  rules:
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH || $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "external_pull_request_event" || $CI_PIPELINE_SOURCE == "web"'
+      changes:
+        compare_to: 'refs/heads/main'
+        paths:
+          - config/locales/**/en.yml
 specs:
   stage: test
   needs:

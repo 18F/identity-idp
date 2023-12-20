@@ -122,9 +122,9 @@ module OidcAuthHelper
 
   def oidc_redirect_url
     case IdentityConfig.store.openid_connect_redirect
-    when :client_side
+    when 'client_side'
       extract_meta_refresh_url
-    when :client_side_js
+    when 'client_side_js'
       extract_redirect_url
     else # should only be :server_side
       current_url

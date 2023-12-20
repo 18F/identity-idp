@@ -6,11 +6,12 @@ RSpec.describe ServiceProviderSession do
     ServiceProviderSession.new(
       sp: sp,
       view_context: view_context,
-      sp_session: {},
+      sp_session: sp_session,
       service_provider_request: service_provider_request,
     )
   end
   let(:sp) { build_stubbed(:service_provider) }
+  let(:sp_session) { {} }
   let(:service_provider_request) { ServiceProviderRequest.new }
   let(:sp_name) { subject.sp_name }
   let(:sp_create_link) { '/sign_up/enter_email' }
@@ -174,6 +175,46 @@ RSpec.describe ServiceProviderSession do
         )
 
         expect(subject.sp_logo_url).to be_kind_of(String)
+      end
+    end
+  end
+
+  describe '#selfie_required' do
+    before do
+      allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).
+        and_return(selfie_capture_enabled)
+    end
+
+    context 'doc_auth_selfie_capture_enabled is true' do
+      let(:selfie_capture_enabled) { true }
+
+      it 'returns true when sp biometric_comparison_required is true' do
+        sp_session[:biometric_comparison_required] = true
+        expect(subject.selfie_required?).to eq(true)
+      end
+
+      it 'returns true when sp biometric_comparison_required is truthy' do
+        sp_session[:biometric_comparison_required] = 1
+        expect(subject.selfie_required?).to eq(true)
+      end
+
+      it 'returns false when sp biometric_comparison_required is false' do
+        sp_session[:biometric_comparison_required] = false
+        expect(subject.selfie_required?).to eq(false)
+      end
+
+      it 'returns false when sp biometric_comparison_required is nil' do
+        sp_session[:biometric_comparison_required] = nil
+        expect(subject.selfie_required?).to eq(false)
+      end
+    end
+
+    context 'doc_auth_selfie_capture_enabled is false' do
+      let(:selfie_capture_enabled) { false }
+
+      it 'returns false' do
+        sp_session[:biometric_comparison_required] = true
+        expect(subject.selfie_required?).to eq(false)
       end
     end
   end
