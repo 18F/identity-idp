@@ -1,10 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Idv::InPerson::VerifyInfoController do
-  let(:pii_from_user) { Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID.dup }
-  let(:flow_session) do
-    { pii_from_user: pii_from_user }
-  end
+  include FlowPolicyHelper
 
   let(:user) { create(:user, :with_phone, with: { phone: '+1 (415) 555-0130' }) }
   let(:service_provider) { create(:service_provider) }
@@ -15,9 +12,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
 
   before do
     stub_sign_in(user)
-    subject.idv_session.flow_path = 'standard'
-    subject.idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID[:ssn]
-    subject.user_session['idv/in_person'] = flow_session
+    stub_up_to(:ipp_ssn, idv_session: subject.idv_session)
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 
@@ -45,7 +40,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
     it 'confirms ssn step complete' do
       expect(subject).to have_actions(
         :before,
-        :confirm_ssn_step_complete,
+        :confirm_step_allowed,
       )
     end
   end
@@ -186,11 +181,9 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
       end
 
       context 'when same address as id is false and in aamva jurisdiction' do
-        let(:pii_from_user) do
-          { same_address_as_id: 'false' }
-        end
-
         it 'adds costs to database' do
+          subject.user_session['idv/in_person'][:pii_from_user][:same_address_as_id] = false
+
           allow(async_state).to receive(:result).and_return(adjudicated_result)
 
           get :show
@@ -207,11 +200,9 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
       end
 
       context 'when same address as id is false and not in aamva jurisdiction' do
-        let(:pii_from_user) do
-          { same_address_as_id: 'false' }
-        end
-
         it 'adds costs to database' do
+          subject.user_session['idv/in_person'][:pii_from_user][:same_address_as_id] = false
+
           adjudicated_result[:context][:stages][:state_id][:vendor_name] = 'UnsupportedJurisdiction'
           allow(async_state).to receive(:result).and_return(adjudicated_result)
 
@@ -237,9 +228,11 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
       expect(response).to redirect_to idv_in_person_verify_info_url
     end
 
-    let(:pii_from_user) { Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS.dup }
     let(:enrollment) { InPersonEnrollment.new }
     before do
+      subject.user_session['idv/in_person'][:pii_from_user] =
+        Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS.dup
+
       allow(user).to receive(:establishing_in_person_enrollment).and_return(enrollment)
     end
 
@@ -293,9 +286,9 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
       end
 
       it 'captures state id address fields in the pii' do
-        expect(Idv::Agent).to receive(:new).
-          with(Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS.merge(uuid_prefix: nil)).
-          and_call_original
+        applicant = Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS.merge(uuid_prefix: nil).
+          stringify_keys
+        expect(Idv::Agent).to receive(:new).with(applicant).and_call_original
         put :update
       end
     end
@@ -324,7 +317,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
 
     context 'when pii_from_user is blank' do
       it 'redirects' do
-        flow_session[:pii_from_user] = {}
+        subject.user_session['idv/in_person'][:pii_from_user] = {}
         put :update
         expect(response.status).to eq 302
       end
