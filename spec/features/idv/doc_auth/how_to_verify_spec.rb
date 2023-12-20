@@ -76,16 +76,15 @@ RSpec.feature 'how to verify step', js: true do
   describe 'navigating to How To Verify from Agreement page in 50/50 state' do
     before do
       allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { true }
+      allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { initial_opt_in_enabled }
+
+      sign_in_and_2fa_user
+      complete_doc_auth_steps_before_agreement_step
+      complete_agreement_step
     end
 
     context 'opt in false at start but true during navigation' do
-      before do
-        allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { false }
-
-        sign_in_and_2fa_user
-        complete_doc_auth_steps_before_agreement_step
-        complete_agreement_step
-      end
+      let(:initial_opt_in_enabled) { false }
 
       it 'should not be bounced back from Hybrid Handoff to How to Verify' do
         expect(page).to have_current_path(idv_hybrid_handoff_url)
@@ -96,13 +95,7 @@ RSpec.feature 'how to verify step', js: true do
     end
 
     context 'opt in true at start but false during navigation' do
-      before do
-        allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { true }
-
-        sign_in_and_2fa_user
-        complete_doc_auth_steps_before_agreement_step
-        complete_agreement_step
-      end
+      let(:initial_opt_in_enabled) { true }
 
       it 'should be redirected to Hybrid Handoff page when opt in is false' do
         expect(page).to have_current_path(idv_how_to_verify_url)
@@ -111,20 +104,10 @@ RSpec.feature 'how to verify step', js: true do
         expect(page).to have_current_path(idv_hybrid_handoff_url)
       end
     end
-  end
-
-  describe 'navigating backwards from How to Verify page in 50/50 state' do
-    before do
-      allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { true }
-    end
 
     context 'Going back from Hybrid Handoff with opt in disabled midstream' do
+      let(:initial_opt_in_enabled) { true }
       before do
-        allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { true }
-
-        sign_in_and_2fa_user
-        complete_doc_auth_steps_before_agreement_step
-        complete_agreement_step
         complete_how_to_verify_step(remote: true)
       end
 
@@ -139,14 +122,8 @@ RSpec.feature 'how to verify step', js: true do
     end
 
     context 'Going back from Hybrid Handoff with opt in enabled midstream' do
-      before do
-        allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { false }
-
-        sign_in_and_2fa_user
-        complete_doc_auth_steps_before_agreement_step
-        complete_agreement_step
-      end
-
+      let(:initial_opt_in_enabled) { false }
+      
       it 'should go back to the Agreement step from Hybrid Handoff with opt in toggled midstream' do
         expect(page).to have_current_path(idv_hybrid_handoff_url)
         allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { true }
@@ -156,12 +133,8 @@ RSpec.feature 'how to verify step', js: true do
     end
 
     context 'Going back from Hybrid Handoff with opt in enabled the whole time' do
+      let(:initial_opt_in_enabled) { true }
       before do
-        allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { true }
-
-        sign_in_and_2fa_user
-        complete_doc_auth_steps_before_agreement_step
-        complete_agreement_step
         complete_how_to_verify_step(remote: true)
       end
 
@@ -173,34 +146,18 @@ RSpec.feature 'how to verify step', js: true do
     end
 
     context 'Going back from Hybrid Handoff with opt in disabled the whole time' do
-      before do
-        allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { false }
-
-        sign_in_and_2fa_user
-        complete_doc_auth_steps_before_agreement_step
-        complete_agreement_step
-      end
-
+      let(:initial_opt_in_enabled) { false }
+    
       it 'should be not be bounced back to How to Verify' do
         expect(page).to have_current_path(idv_hybrid_handoff_url)
         page.go_back
         expect(page).to have_current_path(idv_agreement_url)
       end
     end
-  end
-
-  describe 'navigating backwards from Document Capture page in 50/50 state' do
-    before do
-      allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { true }
-    end
 
     context 'Going back from Document Capture with opt in disabled midstream' do
+      let(:initial_opt_in_enabled) { true }
       before do
-        allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { true }
-
-        sign_in_and_2fa_user
-        complete_doc_auth_steps_before_agreement_step
-        complete_agreement_step
         complete_how_to_verify_step(remote: false)
       end
 
@@ -215,13 +172,9 @@ RSpec.feature 'how to verify step', js: true do
     end
 
     context 'Going back from Document Capture with opt in enabled midstream' do
+      let(:initial_opt_in_enabled) { false }
       before do
-        allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { false }
-
-        sign_in_and_2fa_user
-        complete_doc_auth_steps_before_agreement_step
-        complete_agreement_step
-        complete_doc_auth_steps_before_document_capture_step
+        complete_hybrid_handoff_step
       end
 
       it 'should go to Hybrid Handoff from Document Capture with opt in toggled midstream' do
@@ -233,12 +186,8 @@ RSpec.feature 'how to verify step', js: true do
     end
 
     context 'Going back from Document Capture with opt in enabled the whole time' do
+      let(:initial_opt_in_enabled) { true }
       before do
-        allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { true }
-
-        sign_in_and_2fa_user
-        complete_doc_auth_steps_before_agreement_step
-        complete_agreement_step
         complete_how_to_verify_step(remote: false)
       end
 
@@ -250,13 +199,9 @@ RSpec.feature 'how to verify step', js: true do
     end
 
     context 'Going back from Document Capture with opt in disabled the whole time' do
+      let(:initial_opt_in_enabled) { false }
       before do
-        allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { false }
-
-        sign_in_and_2fa_user
-        complete_doc_auth_steps_before_agreement_step
-        complete_agreement_step
-        complete_doc_auth_steps_before_document_capture_step
+        complete_hybrid_handoff_step
       end
 
       it 'should be not be bounced back to how to verify' do
