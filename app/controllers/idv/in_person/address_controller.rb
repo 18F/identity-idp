@@ -7,7 +7,6 @@ module Idv
       before_action :render_404_if_in_person_residential_address_controller_enabled_not_set
       before_action :confirm_in_person_state_id_step_complete
       ## before_action :confirm_step_allowed # pending FSM removal of state id step
-      before_action :confirm_in_person_address_step_needed, only: :show
 
       def show
         analytics.idv_in_person_proofing_address_visited(**analytics_arguments)
@@ -115,13 +114,6 @@ module Idv
       def confirm_in_person_state_id_step_complete
         return if pii_from_user&.has_key?(:identity_doc_address1)
         redirect_to idv_in_person_step_url(step: :state_id)
-      end
-
-      def confirm_in_person_address_step_needed
-        return if pii_from_user && pii_from_user[:same_address_as_id] == 'false' &&
-                  !pii_from_user.has_key?(:address1)
-        return if request.referer == idv_in_person_verify_info_url
-        redirect_to idv_in_person_ssn_url
       end
     end
   end
