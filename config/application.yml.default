@@ -58,6 +58,7 @@ backup_code_cost: '2000$8$1$'
 broken_personal_key_window_start: '2021-07-29T00:00:00Z'
 broken_personal_key_window_finish: '2021-09-22T00:00:00Z'
 component_previews_enabled: false
+component_previews_embed_frame_ancestors: '["https://developers.login.gov"]'
 country_phone_number_overrides: '{}'
 database_pool_idp: 5
 database_socket: ''
@@ -362,6 +363,7 @@ development:
   attribute_encryption_key_queue: '[{ "key": "11111111111111111111111111111111" }, { "key": "22222222222222222222222222222222" }]'
   aws_logo_bucket: ''
   component_previews_enabled: true
+  component_previews_embed_frame_ancestors: '["http://localhost:4000"]'
   dashboard_api_token: test_token
   dashboard_url: http://localhost:3001/api/service_providers
   database_host: ''
@@ -425,6 +427,7 @@ production:
   attribute_encryption_key:
   attribute_encryption_key_queue: '[]'
   aws_logo_bucket: ''
+  component_previews_embed_frame_ancestors: ['https://developers.login.gov']
   dashboard_api_token: ''
   dashboard_url: https://dashboard.demo.login.gov
   database_host: ''
