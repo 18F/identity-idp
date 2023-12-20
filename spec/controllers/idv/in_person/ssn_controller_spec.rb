@@ -88,7 +88,7 @@ RSpec.describe Idv::InPerson::SsnController do
     end
 
     context 'with an ssn in idv_session' do
-      let(:referer) { idv_in_person_step_url(step: :address) }
+      let(:referer) { idv_in_person_proofing_address_url }
       before do
         subject.idv_session.ssn = ssn
         request.env['HTTP_REFERER'] = referer

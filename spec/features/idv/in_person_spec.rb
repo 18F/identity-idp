@@ -166,8 +166,8 @@ RSpec.describe 'In Person Proofing', js: true do
     expect(page).to have_content(t('headings.verify'))
     expect(page).to have_current_path(idv_in_person_verify_info_path)
 
-    # click update address button
-    click_button t('idv.buttons.change_address_label')
+    # click update address link
+    click_link t('idv.buttons.change_address_label')
     expect(page).to have_content(t('in_person_proofing.headings.update_address'))
     click_button t('forms.buttons.submit.update')
     expect(page).to have_content(t('headings.verify'))
@@ -498,7 +498,7 @@ RSpec.describe 'In Person Proofing', js: true do
               with: InPersonHelper::GOOD_IDENTITY_DOC_CITY
       click_idv_continue
 
-      expect(page).to have_current_path(idv_in_person_step_path(step: :address), wait: 10)
+      expect(page).to have_current_path(idv_in_person_proofing_address_path, wait: 10)
     end
 
     it 'shows hints when user selects Puerto Rico as state',
@@ -526,7 +526,7 @@ RSpec.describe 'In Person Proofing', js: true do
              from: t('in_person_proofing.form.state_id.identity_doc_address_state')
       click_idv_continue
 
-      expect(page).to have_current_path(idv_in_person_step_path(step: :address))
+      expect(page).to have_current_path(idv_in_person_proofing_address_path)
 
       # address form
       select 'Puerto Rico',
@@ -561,7 +561,7 @@ RSpec.describe 'In Person Proofing', js: true do
       click_button t('forms.buttons.submit.update')
 
       # update address
-      click_button t('idv.buttons.change_address_label')
+      click_link t('idv.buttons.change_address_label')
 
       expect(page).to have_content(t('in_person_proofing.headings.update_address'))
       expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address1_hint'))
@@ -597,8 +597,8 @@ RSpec.describe 'In Person Proofing', js: true do
       complete_state_id_step(user, same_address_as_id: false)
       complete_address_step(user, same_address_as_id: false)
       complete_ssn_step(user)
-      # click update address button on the verify page
-      click_button t('idv.buttons.change_address_label')
+      # click update address link on the verify page
+      click_link t('idv.buttons.change_address_label')
       expect(page).to have_content(t('in_person_proofing.headings.update_address'))
       fill_out_address_form_ok(same_address_as_id: true)
       click_button t('forms.buttons.submit.update')
@@ -622,8 +622,8 @@ RSpec.describe 'In Person Proofing', js: true do
       complete_state_id_step(user, same_address_as_id: true)
       # skip address step
       complete_ssn_step(user)
-      # click update address button on the verify page
-      click_button t('idv.buttons.change_address_label')
+      # click update address link on the verify page
+      click_link t('idv.buttons.change_address_label')
       expect(page).to have_content(t('in_person_proofing.headings.update_address'))
       fill_out_address_form_ok(same_address_as_id: true)
       click_button t('forms.buttons.submit.update')
@@ -636,7 +636,7 @@ RSpec.describe 'In Person Proofing', js: true do
       complete_ssn_step(user)
 
       # click "update residential address"
-      click_button t('idv.buttons.change_address_label')
+      click_link t('idv.buttons.change_address_label')
       expect(page).to have_content(t('in_person_proofing.headings.update_address'))
       # change something in the address
       fill_in t('idv.form.address1'), with: 'new address different from state address1'
