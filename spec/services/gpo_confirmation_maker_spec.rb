@@ -76,12 +76,8 @@ RSpec.describe GpoConfirmationMaker do
     let(:zipcode) { nil }
 
     describe '#perform' do
-      it 'accepts the zipcode' do
-        subject.perform
-
-        gpo_confirmation = GpoConfirmation.first
-        entry_hash = gpo_confirmation.entry
-        expect(entry_hash[:zipcode]).to be_nil
+      it 'rejects the zipcode' do
+        expect { subject.perform }.to raise_error(GpoConfirmationMaker::InvalidEntryError)
       end
     end
   end
