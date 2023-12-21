@@ -37,17 +37,17 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
     it 'uploads the image and returns a successful result' do
       request_stub_liveness = stub_request(:post, full_url).with do |request|
         JSON.parse(request.body, symbolize_names: true)[:Document][:Selfie].present?
-      end.to_return(body: response_body(include_liveness), status: 201)
+      end.to_return(body: response_body(include_liveness_expected), status: 201)
       request_stub = stub_request(:post, full_url).with do |request|
         !JSON.parse(request.body, symbolize_names: true)[:Document][:Selfie].present?
-      end.to_return(body: response_body(include_liveness), status: 201)
+      end.to_return(body: response_body(include_liveness_expected), status: 201)
 
       response = subject.fetch
 
       expect(response.success?).to eq(true)
       expect(response.errors).to eq({})
       expect(response.exception).to be_nil
-      if include_liveness
+      if include_liveness_expected
         expect(request_stub_liveness).to have_been_requested
       else
         expect(request_stub).to have_been_requested
@@ -58,10 +58,10 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
       it 'fails response with errors' do
         request_stub_liveness = stub_request(:post, full_url).with do |request|
           JSON.parse(request.body, symbolize_names: true)[:Document][:Selfie].present?
-        end.to_return(body: response_body_with_doc_auth_errors(include_liveness), status: 201)
+        end.to_return(body: response_body_with_doc_auth_errors(include_liveness_expected), status: 201)
         request_stub = stub_request(:post, full_url).with do |request|
           !JSON.parse(request.body, symbolize_names: true)[:Document][:Selfie].present?
-        end.to_return(body: response_body_with_doc_auth_errors(include_liveness), status: 201)
+        end.to_return(body: response_body_with_doc_auth_errors(include_liveness_expected), status: 201)
 
         response = subject.fetch
 
@@ -72,7 +72,7 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
         expect(response.errors[:back]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
         expect(response.errors[:hints]).to eq(true)
         expect(response.exception).to be_nil
-        if include_liveness
+        if include_liveness_expected
           expect(request_stub_liveness).to have_been_requested
         else
           expect(request_stub).to have_been_requested
@@ -80,7 +80,7 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
       end
     end
 
-    def include_liveness
+    def include_liveness_expected
       return false if Identity::Hostdata.env == 'prod'
       return false unless IdentityConfig.store.doc_auth_selfie_capture_enabled
 
