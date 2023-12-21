@@ -1,11 +1,7 @@
-# PII is stored encrypted in the database using the user's passphrase.
-# Since we need to access the PII during the entire user session,
-# but we only have the passphrase at initial log in,
-# we use the passphrase to decrypt the PII at log in,
-# and store the PII, de-crypted, in the encrypted session.
-#
 module Pii
   class Cacher
+    attr_reader :user, :user_session
+
     def initialize(user, user_session)
       @user = user
       @user_session = user_session
@@ -13,78 +9,59 @@ module Pii
 
     def save(user_password, profile = user.active_profile)
       decrypted_pii = profile.decrypt_pii(user_password) if profile
-      save_decrypted_pii_json(decrypted_pii.to_json) if decrypted_pii
-      rotate_fingerprints(profile) if stale_fingerprints?(profile)
-      user_session[:decrypted_pii]
+      save_decrypted_pii(decrypted_pii, profile.id) if decrypted_pii
+      rotate_fingerprints(profile, decrypted_pii) if stale_fingerprints?(profile, decrypted_pii)
+      decrypted_pii
     end
 
-    def save_decrypted_pii_json(decrypted_pii_json)
-      user_session[:decrypted_pii] = decrypted_pii_json
-      nil
+    def save_decrypted_pii(decrypted_pii, profile_id)
+      kms_encrypted_pii = SessionEncryptor.new.kms_encrypt(decrypted_pii.to_json)
+
+      user_session[:encrypted_profiles] ||= {}
+      user_session[:encrypted_profiles][profile_id.to_s] = kms_encrypted_pii
     end
 
-    def fetch
-      pii_string = fetch_string
-      return nil unless pii_string
+    def fetch(profile_id)
+      return unless user_session[:encrypted_profiles].present?
 
-      Pii::Attributes.new_from_json(pii_string)
-    end
+      encrypted_profile_pii = user_session[:encrypted_profiles][profile_id.to_s]
+      return unless encrypted_profile_pii.present?
 
-    # Between requests, the decrypted PII bundle is encrypted with KMS and moved to the
-    # 'encrypted_pii' key by the SessionEncryptor.
-    #
-    # The PII is decrypted on-demand by this method and moved into the 'decrypted_pii' key.
-    # See SessionEncryptor#kms_encrypt_pii! for more detail.
-    def fetch_string
-      return unless user_session[:decrypted_pii] || user_session[:encrypted_pii]
-      return user_session[:decrypted_pii] if user_session[:decrypted_pii].present?
-
-      decrypted = SessionEncryptor.new.kms_decrypt(
-        user_session[:encrypted_pii],
-      )
-      user_session[:decrypted_pii] = decrypted
-
-      decrypted
+      decrypted_profile_pii_json = SessionEncryptor.new.kms_decrypt(encrypted_profile_pii)
+      Pii::Attributes.new_from_json(decrypted_profile_pii_json)
     end
 
     def exists_in_session?
-      return user_session[:decrypted_pii] || user_session[:encrypted_pii]
+      user_session[:encrypted_profiles].present?
     end
 
     def delete
-      user_session.delete(:decrypted_pii)
-      user_session.delete(:encrypted_pii)
+      user_session.delete(:encrypted_profiles)
     end
 
     private
 
-    attr_reader :user, :user_session
-
-    def rotate_fingerprints(profile)
+    def rotate_fingerprints(profile, pii)
       KeyRotator::HmacFingerprinter.new.rotate(
         user: user,
         profile: profile,
-        pii_attributes: fetch,
+        pii_attributes: pii,
       )
     end
 
-    def stale_fingerprints?(profile)
-      stale_ssn_signature?(profile) ||
-        stale_compound_pii_signature?(profile)
+    def stale_fingerprints?(profile, pii)
+      stale_ssn_signature?(profile, pii) ||
+        stale_compound_pii_signature?(profile, pii)
     end
 
-    def stale_ssn_signature?(profile)
-      return false unless profile
-      decrypted_pii = fetch
-      return false unless decrypted_pii
-      Pii::Fingerprinter.stale?(decrypted_pii.ssn, profile.ssn_signature)
+    def stale_ssn_signature?(profile, pii)
+      return false unless profile.present? && pii.present?
+      Pii::Fingerprinter.stale?(pii.ssn, profile.ssn_signature)
     end
 
-    def stale_compound_pii_signature?(profile)
-      return false unless profile
-      decrypted_pii = fetch
-      return false unless decrypted_pii
-      compound_pii = Profile.build_compound_pii(decrypted_pii)
+    def stale_compound_pii_signature?(profile, pii)
+      return false unless profile.present? && pii.present?
+      compound_pii = Profile.build_compound_pii(pii)
       return false unless compound_pii
       Pii::Fingerprinter.stale?(compound_pii, profile.name_zip_birth_year_signature)
     end

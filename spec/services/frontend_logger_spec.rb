@@ -1,15 +1,19 @@
 require 'rails_helper'
 
 RSpec.describe FrontendLogger do
-  module ExampleAnalyticsEvents
-    def example_method_handler(ok:, **rest)
-      track_event('example', ok: ok, rest: rest)
+  let(:example_analytics_mixin) do
+    Module.new do
+      def example_method_handler(ok:, **rest)
+        track_event('example', ok: ok, rest: rest)
+      end
     end
   end
 
   let(:analytics_class) do
+    mixin = example_analytics_mixin
+
     Class.new(FakeAnalytics) do
-      include ExampleAnalyticsEvents
+      include mixin
     end
   end
   let(:analytics) { analytics_class.new }
@@ -31,12 +35,12 @@ RSpec.describe FrontendLogger do
     subject(:call) { logger.track_event(name, attributes) }
 
     context 'with unknown event' do
-      let(:name) { 'unknown' }
+      let(:name) { :test_event }
 
-      it 'logs with prefix for unknown event' do
+      it 'logs unknown event with warning' do
         call
 
-        expect(analytics).to have_logged_event('Frontend: unknown', attributes)
+        expect(analytics).to have_logged_event('Frontend (warning): test_event')
       end
     end
 

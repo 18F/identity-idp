@@ -36,7 +36,7 @@ module TwoFactorAuthentication
       if result.success?
         handle_valid_webauthn
       else
-        handle_invalid_webauthn
+        handle_invalid_webauthn(result)
       end
     end
 
@@ -54,24 +54,12 @@ module TwoFactorAuthentication
       redirect_to after_sign_in_path_for(current_user)
     end
 
-    def handle_invalid_webauthn
+    def handle_invalid_webauthn(result)
+      flash[:error] = result.first_error_message
+
       if platform_authenticator?
-        flash[:error] = t(
-          'two_factor_authentication.webauthn_error.try_again',
-          link: view_context.link_to(
-            t('two_factor_authentication.webauthn_error.additional_methods_link'),
-            login_two_factor_options_path,
-          ),
-        )
         redirect_to login_two_factor_webauthn_url(platform: 'true')
       else
-        flash[:error] = t(
-          'two_factor_authentication.webauthn_error.connect_html',
-          link_html: view_context.link_to(
-            t('two_factor_authentication.webauthn_error.additional_methods_link'),
-            login_two_factor_options_path,
-          ),
-        )
         redirect_to login_two_factor_webauthn_url
       end
     end
@@ -124,6 +112,8 @@ module TwoFactorAuthentication
     def form
       @form ||= WebauthnVerificationForm.new(
         user: current_user,
+        platform_authenticator: platform_authenticator?,
+        url_options:,
         challenge: user_session[:webauthn_challenge],
         protocol: request.protocol,
         authenticator_data: params[:authenticator_data],
@@ -131,6 +121,7 @@ module TwoFactorAuthentication
         signature: params[:signature],
         credential_id: params[:credential_id],
         webauthn_error: params[:webauthn_error],
+        screen_lock_error: params[:screen_lock_error],
       )
     end
 

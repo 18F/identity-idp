@@ -9,7 +9,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
   end
   let(:service_provider_ial) { 2 }
   let(:service_provider) { create(:service_provider, ial: service_provider_ial) }
-  let(:profile) { build(:profile, :active, :verified) }
+  let(:profile) { create(:profile, :active, :verified) }
   let(:identity) do
     build(
       :service_provider_identity,
@@ -140,7 +140,11 @@ RSpec.describe OpenidConnectUserInfoPresenter do
       end
 
       before do
-        OutOfBandSessionAccessor.new(rails_session_id).put_pii(pii, 5.minutes.to_i)
+        OutOfBandSessionAccessor.new(rails_session_id).put_pii(
+          profile_id: profile.id,
+          pii: pii,
+          expiration: 5.minutes.to_i,
+        )
       end
 
       context 'when the identity has ial2 access' do

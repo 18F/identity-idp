@@ -41,6 +41,26 @@ module DocAuth
         def timeout
           IdentityConfig.store.acuant_upload_image_timeout
         end
+
+        def errors_from_http_status(status)
+          case status
+          when 438
+            {
+              general: [Errors::IMAGE_LOAD_FAILURE],
+              side.downcase.to_sym => [Errors::IMAGE_LOAD_FAILURE_FIELD],
+            }
+          when 439
+            {
+              general: [Errors::PIXEL_DEPTH_FAILURE],
+              side.downcase.to_sym => [Errors::PIXEL_DEPTH_FAILURE_FIELD],
+            }
+          when 440
+            {
+              general: [Errors::IMAGE_SIZE_FAILURE],
+              side.downcase.to_sym => [Errors::IMAGE_SIZE_FAILURE_FIELD],
+            }
+          end
+        end
       end
     end
   end

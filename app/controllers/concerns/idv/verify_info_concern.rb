@@ -21,8 +21,6 @@ module Idv
       document_capture_session.requested_at = Time.zone.now
 
       idv_session.verify_info_step_document_capture_session_uuid = document_capture_session.uuid
-      idv_session.vendor_phone_confirmation = false
-      idv_session.user_phone_confirmation = false
 
       # proof_resolution job expects these values
       pii[:uuid_prefix] = ServiceProvider.find_by(issuer: sp_session[:issuer])&.app_id
@@ -34,7 +32,7 @@ module Idv
         user_id: current_user.id,
         threatmetrix_session_id: idv_session.threatmetrix_session_id,
         request_ip: request.remote_ip,
-        double_address_verification: capture_secondary_id_enabled,
+        ipp_enrollment_in_progress: ipp_enrollment_in_progress?,
       )
 
       return true
@@ -42,9 +40,8 @@ module Idv
 
     private
 
-    def capture_secondary_id_enabled
-      current_user.establishing_in_person_enrollment&.
-          capture_secondary_id_enabled || false
+    def ipp_enrollment_in_progress?
+      current_user.has_in_person_enrollment?
     end
 
     def should_use_aamva?(pii)
@@ -86,8 +83,6 @@ module Idv
         :state_id,
         :mva_exception,
       )
-
-      resolution_rate_limiter.increment! if proofing_results_exception.blank?
 
       if ssn_rate_limiter.limited?
         idv_failure_log_rate_limited(:proof_ssn)
@@ -164,10 +159,9 @@ module Idv
         return
       end
 
-      return if confirm_not_rate_limited
+      return if confirm_not_rate_limited_after_doc_auth
 
       if current_async_state.none?
-        idv_session.invalidate_verify_info_step!
         render :show
       elsif current_async_state.missing?
         analytics.idv_proofing_resolution_result_missing
@@ -175,11 +169,9 @@ module Idv
         render :show
 
         delete_async
-        idv_session.invalidate_verify_info_step!
 
         log_idv_verification_submitted_event(
           success: false,
-          failure_reason: { idv_verification: [:timeout] },
         )
       end
     end
@@ -195,32 +187,36 @@ module Idv
         extra: {
           address_edited: !!idv_session.address_edited,
           address_line2_present: !pii[:address2].blank?,
-          pii_like_keypaths: [[:errors, :ssn], [:response_body, :first_name],
-                              [:same_address_as_id],
-                              [:state_id, :state_id_jurisdiction]],
+          pii_like_keypaths: [
+            [:errors, :ssn],
+            [:proofing_results, :context, :stages, :resolution, :errors, :ssn],
+            [:proofing_results, :context, :stages, :residential_address, :errors, :ssn],
+            [:proofing_results, :context, :stages, :threatmetrix, :response_body, :first_name],
+            [:same_address_as_id],
+            [:proofing_results, :context, :stages, :state_id, :state_id_jurisdiction],
+          ],
         },
       )
       log_idv_verification_submitted_event(
         success: form_response.success?,
-        failure_reason: irs_attempts_api_tracker.parse_failure_reason(form_response),
       )
 
-      form_response = form_response.merge(check_ssn) if form_response.success?
-      summarize_result_and_rate_limit_failures(form_response)
+      form_response.extra[:ssn_is_unique] = DuplicateSsnFinder.new(
+        ssn: idv_session.ssn,
+        user: current_user,
+      ).ssn_is_unique?
+
+      summarize_result_and_rate_limit(form_response)
       delete_async
 
       if form_response.success?
         save_threatmetrix_status(form_response)
         move_applicant_to_idv_session
         idv_session.mark_verify_info_step_complete!
-        idv_session.invalidate_steps_after_verify_info!
 
         flash[:success] = t('doc_auth.forms.doc_success')
         redirect_to next_step_url
-      else
-        idv_session.invalidate_verify_info_step!
       end
-
       analytics.idv_doc_auth_verify_proofing_results(**analytics_arguments, **form_response.to_h)
     end
 
@@ -234,10 +230,12 @@ module Idv
       idv_session.threatmetrix_review_status = review_status
     end
 
-    def summarize_result_and_rate_limit_failures(summary_result)
+    def summarize_result_and_rate_limit(summary_result)
+      proofing_results_exception = summary_result.extra.dig(:proofing_results, :exception)
+      resolution_rate_limiter.increment! if proofing_results_exception.blank?
+
       if summary_result.success?
         add_proofing_components
-        ssn_rate_limiter.reset!
       else
         idv_failure(summary_result)
       end
@@ -290,7 +288,7 @@ module Idv
       )
     end
 
-    def log_idv_verification_submitted_event(success: false, failure_reason: nil)
+    def log_idv_verification_submitted_event(success: false)
       pii_from_doc = pii || {}
       irs_attempts_api_tracker.idv_verification_submitted(
         success: success,
@@ -303,26 +301,13 @@ module Idv
         date_of_birth: pii_from_doc[:dob],
         address: pii_from_doc[:address1],
         ssn: idv_session.ssn,
-        failure_reason: failure_reason,
       )
-    end
-
-    def check_ssn
-      Idv::SsnForm.new(current_user).submit(ssn: idv_session.ssn)
     end
 
     def move_applicant_to_idv_session
       idv_session.applicant = pii
       idv_session.applicant[:ssn] = idv_session.ssn
       idv_session.applicant['uuid'] = current_user.uuid
-      delete_pii
-    end
-
-    def delete_pii
-      idv_session.pii_from_doc = nil
-      if defined?(flow_session) # no longer defined for remote flow
-        flow_session.delete(:pii_from_user)
-      end
     end
 
     def add_proofing_costs(results)
@@ -330,10 +315,16 @@ module Idv
         if stage == :resolution
           # transaction_id comes from ConversationId
           add_cost(:lexis_nexis_resolution, transaction_id: hash[:transaction_id])
+        elsif stage == :residential_address
+          next if pii[:same_address_as_id] == 'true'
+          next if hash[:vendor_name] == 'ResidentialAddressNotRequired'
+          add_cost(:lexis_nexis_resolution, transaction_id: hash[:transaction_id])
         elsif stage == :state_id
           next if hash[:exception].present?
+          next if hash[:vendor_name] == 'UnsupportedJurisdiction'
+          # transaction_id comes from TransactionLocatorId
           add_cost(:aamva, transaction_id: hash[:transaction_id])
-          track_aamva unless hash[:vendor_name] == 'UnsupportedJurisdiction'
+          track_aamva
         elsif stage == :threatmetrix
           # transaction_id comes from request_id
           tmx_id = hash[:transaction_id]

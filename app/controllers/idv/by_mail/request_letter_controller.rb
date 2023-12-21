@@ -1,19 +1,20 @@
 module Idv
   module ByMail
     class RequestLetterController < ApplicationController
-      include IdvSession
+      include Idv::AvailabilityConcern
+      include IdvStepConcern
+      skip_before_action :confirm_no_pending_gpo_profile
       include Idv::StepIndicatorConcern
-      include Idv::AbTestAnalyticsConcern
 
-      before_action :confirm_two_factor_authenticated
-      before_action :confirm_idv_needed
-      before_action :confirm_user_completed_idv_profile_step
-      before_action :confirm_mail_not_spammed
+      before_action :confirm_mail_not_rate_limited
+      before_action :confirm_step_allowed
       before_action :confirm_profile_not_too_old
 
       def index
+        @applicant = idv_session.applicant
         @presenter = RequestLetterPresenter.new(current_user, url_options)
         @step_indicator_current_step = step_indicator_current_step
+
         Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
           call(:usps_address, :view, true)
         analytics.idv_request_letter_visited(
@@ -22,6 +23,7 @@ module Idv
       end
 
       def create
+        clear_future_steps!
         update_tracking
         idv_session.address_verification_mechanism = :gpo
 
@@ -32,12 +34,25 @@ module Idv
           flash[:success] = t('idv.messages.gpo.another_letter_on_the_way')
           redirect_to idv_letter_enqueued_url
         else
-          redirect_to idv_review_url
+          redirect_to idv_enter_password_url
         end
       end
 
       def gpo_mail_service
         @gpo_mail_service ||= Idv::GpoMail.new(current_user)
+      end
+
+      def self.step_info
+        Idv::StepInfo.new(
+          key: :request_letter,
+          controller: self,
+          action: :index,
+          next_steps: [:enter_password],
+          preconditions: ->(idv_session:, user:) do
+            idv_session.verify_info_step_complete? || user.gpo_verification_pending_profile?
+          end,
+          undo_step: ->(idv_session:, user:) { idv_session.address_verification_mechanism = nil },
+        )
       end
 
       private
@@ -80,17 +95,8 @@ module Idv
         current_user.gpo_verification_pending_profile&.gpo_verification_pending_at
       end
 
-      def confirm_mail_not_spammed
-        redirect_to idv_review_url if gpo_mail_service.mail_spammed?
-      end
-
-      def confirm_user_completed_idv_profile_step
-        # If the user has a pending profile, they may have completed idv in a
-        # different session and need a letter resent now
-        return if current_user.gpo_verification_pending_profile?
-        return if idv_session.verify_info_step_complete?
-
-        redirect_to idv_verify_info_url
+      def confirm_mail_not_rate_limited
+        redirect_to idv_enter_password_url if gpo_mail_service.rate_limited?
       end
 
       def resend_letter
@@ -111,12 +117,17 @@ module Idv
 
       def confirmation_maker_perform
         confirmation_maker = GpoConfirmationMaker.new(
-          pii: Pii::Cacher.new(current_user, user_session).fetch,
+          pii: pii,
           service_provider: current_sp,
           profile: current_user.pending_profile,
         )
         confirmation_maker.perform
         confirmation_maker
+      end
+
+      def pii
+        Pii::Cacher.new(current_user, user_session).
+          fetch(current_user.gpo_verification_pending_profile.id)
       end
 
       def send_reminder

@@ -1,4 +1,4 @@
-<% title t('headings.cancellations.prompt') %>
+<% self.title = t('headings.cancellations.prompt') %>
 
 <%= render StatusPageComponent.new(status: :warning) do |c| %>
   <% c.with_header { t('headings.cancellations.prompt') } %>

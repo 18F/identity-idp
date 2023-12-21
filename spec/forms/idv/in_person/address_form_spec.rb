@@ -23,7 +23,7 @@ RSpec.describe Idv::InPerson::AddressForm do
       }
     end
     context 'when usps_ipp_transliteration_enabled is false' do
-      let(:subject) { described_class.new(capture_secondary_id_enabled: true) }
+      let(:subject) { described_class.new }
       before(:each) do
         allow(IdentityConfig.store).to receive(:usps_ipp_transliteration_enabled).and_return(false)
       end
@@ -52,7 +52,7 @@ RSpec.describe Idv::InPerson::AddressForm do
       end
     end
     context 'when usps_ipp_transliteration_enabled is enabled ' do
-      let(:subject) { described_class.new(capture_secondary_id_enabled: true) }
+      let(:subject) { described_class.new }
       before(:each) do
         allow(IdentityConfig.store).to receive(:usps_ipp_transliteration_enabled).and_return(true)
       end
@@ -77,26 +77,13 @@ RSpec.describe Idv::InPerson::AddressForm do
       before(:each) do
         allow(IdentityConfig.store).to receive(:usps_ipp_transliteration_enabled).and_return(true)
       end
-      context 'when capture_secondary_id_enabled is true' do
-        let(:subject) { described_class.new(capture_secondary_id_enabled: true) }
-        it 'submit with missing same_address_as_id should be successful' do
-          missing_required_params = good_params.except(:same_address_as_id)
-          result = subject.submit(missing_required_params)
-          expect(subject.errors.empty?).to be(true)
-          expect(result).to be_kind_of(FormResponse)
-          expect(result.success?).to be(true)
-        end
-      end
-      context 'when capture_secondary_id_enabled is false' do
-        let(:subject) { described_class.new(capture_secondary_id_enabled: false) }
-        it 'submit with missing same_address_as_id will fail' do
-          missing_required_params = good_params.except(:same_address_as_id)
-          result = subject.submit(missing_required_params)
-          expect(subject.errors.empty?).to be(false)
-          expect(result).to be_kind_of(FormResponse)
-          expect(result.success?).to be(false)
-          expect(result.errors.keys).to include(:same_address_as_id)
-        end
+      let(:subject) { described_class.new }
+      it 'submit with missing same_address_as_id should be successful' do
+        missing_required_params = good_params.except(:same_address_as_id)
+        result = subject.submit(missing_required_params)
+        expect(subject.errors.empty?).to be(true)
+        expect(result).to be_kind_of(FormResponse)
+        expect(result.success?).to be(true)
       end
     end
   end

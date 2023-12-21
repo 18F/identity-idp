@@ -1,6 +1,19 @@
 require 'rails_helper'
 
 RSpec.describe FrontendLogController do
+  describe '.LEGACY_EVENT_MAP' do
+    it 'has keys sorted alphabetically' do
+      expect(described_class::LEGACY_EVENT_MAP.keys).
+        to eq(described_class::LEGACY_EVENT_MAP.keys.sort_by(&:downcase))
+    end
+  end
+
+  describe '.ALLOWED_EVENTS' do
+    it 'is sorted alphabetically' do
+      expect(described_class::ALLOWED_EVENTS).to eq(described_class::ALLOWED_EVENTS.sort)
+    end
+  end
+
   describe '#create' do
     subject(:action) { post :create, params: params, as: :json }
 
@@ -17,19 +30,20 @@ RSpec.describe FrontendLogController do
         allow(controller).to receive(:analytics).and_return(fake_analytics)
       end
 
-      it 'succeeds' do
-        expect(fake_analytics).to receive(:track_event).
-          with("Frontend: #{event}", payload)
+      context 'with invalid event name' do
+        it 'logs with warning' do
+          action
 
-        action
+          expect(fake_analytics).to have_logged_event('Frontend (warning): Custom Event')
+          expect(response).to have_http_status(:bad_request)
+          expect(json[:success]).to eq(false)
+          expect(json[:error_message]).to eq('invalid event')
+        end
 
-        expect(response).to have_http_status(:ok)
-        expect(json[:success]).to eq(true)
-      end
-
-      it 'does not commit session' do
-        action
-        expect(request.session_options[:skip]).to eql(true)
+        it 'does not commit session' do
+          action
+          expect(request.session_options[:skip]).to eql(true)
+        end
       end
 
       context 'allowlisted analytics event' do
@@ -47,7 +61,11 @@ RSpec.describe FrontendLogController do
           let(:selected_location) { 'Bethesda' }
           let(:flow_path) { 'standard' }
           let(:event) { 'IdV: location submitted' }
-          let(:payload) { { 'selected_location' => selected_location, 'flow_path' => flow_path } }
+          let(:payload) do
+            { 'selected_location' => selected_location,
+              'flow_path' => flow_path,
+              'opted_in_to_in_person_proofing' => nil }
+          end
 
           it 'succeeds' do
             action
@@ -56,6 +74,7 @@ RSpec.describe FrontendLogController do
               'IdV: in person proofing location submitted',
               selected_location: selected_location,
               flow_path: flow_path,
+              opted_in_to_in_person_proofing: nil,
             )
             expect(response).to have_http_status(:ok)
             expect(json[:success]).to eq(true)
@@ -71,36 +90,39 @@ RSpec.describe FrontendLogController do
                 'IdV: in person proofing location submitted',
                 flow_path: nil,
                 selected_location: nil,
+                opted_in_to_in_person_proofing: nil,
               )
             end
           end
-        end
-      end
 
-      context 'empty payload' do
-        let(:payload) { {} }
+          context 'with opt in flag enabled' do
+            let(:idv_session) do
+              { opt_in_analytics_properties: true }
+            end
+            let(:payload) do
+              { 'selected_location' => selected_location,
+                'flow_path' => flow_path,
+                'opted_in_to_in_person_proofing' => true }
+            end
 
-        it 'succeeds' do
-          expect(fake_analytics).to receive(:track_event).
-            with("Frontend: #{event}", payload)
+            before do
+              allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).
+                and_return(true)
+            end
 
-          action
+            it 'succeeds' do
+              action
 
-          expect(response).to have_http_status(:ok)
-          expect(json[:success]).to eq(true)
-        end
-      end
-
-      context 'without payload' do
-        let(:params) { { 'event' => event } }
-
-        it 'succeeds' do
-          expect(fake_analytics).to receive(:track_event).with("Frontend: #{event}", {})
-
-          action
-
-          expect(response).to have_http_status(:ok)
-          expect(json[:success]).to eq(true)
+              expect(fake_analytics).to have_logged_event(
+                'IdV: in person proofing location submitted',
+                selected_location: selected_location,
+                flow_path: flow_path,
+                opted_in_to_in_person_proofing: true,
+              )
+              expect(response).to have_http_status(:ok)
+              expect(json[:success]).to eq(true)
+            end
+          end
         end
       end
 
@@ -155,7 +177,7 @@ RSpec.describe FrontendLogController do
           }
         end
 
-        it 'logs the analytics event without the prefix' do
+        it 'logs the analytics event' do
           expect(fake_analytics).to receive(:track_event).with(
             'IdV: Native camera forced after failed attempts',
             field: field,
@@ -214,25 +236,35 @@ RSpec.describe FrontendLogController do
         expect(Analytics).to receive(:new).with(hash_including(user: user))
       end
 
-      it 'succeeds' do
-        expect(fake_analytics).to receive(:track_event).with("Frontend: #{event}", payload)
+      context 'with invalid event name' do
+        it 'logs with warning' do
+          action
 
-        action
+          expect(fake_analytics).to have_logged_event('Frontend (warning): Custom Event')
+          expect(response).to have_http_status(:bad_request)
+          expect(json[:success]).to eq(false)
+          expect(json[:error_message]).to eq('invalid event')
+        end
 
-        expect(response).to have_http_status(:ok)
-        expect(json[:success]).to eq(true)
+        it 'does not commit session' do
+          action
+          expect(request.session_options[:skip]).to eql(true)
+        end
       end
 
-      it 'does not commit session' do
-        action
-        expect(request.session_options[:skip]).to eql(true)
-      end
-    end
+      context 'for a named analytics method' do
+        let(:event) { 'User prompted before navigation' }
 
-    context 'with all events' do
-      it 'sorts keys alphabetically' do
-        expect(described_class::EVENT_MAP.keys).
-          to eq(described_class::EVENT_MAP.keys.sort_by(&:downcase))
+        it 'logs the analytics event' do
+          expect(fake_analytics).to receive(:track_event).with(
+            'User prompted before navigation',
+            path: nil,
+          )
+          action
+
+          expect(response).to have_http_status(:ok)
+          expect(json[:success]).to eq(true)
+        end
       end
     end
   end

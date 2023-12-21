@@ -95,7 +95,8 @@ class User < ApplicationRecord
   end
 
   def active_profile
-    @active_profile ||= profiles.verified.find(&:active?)
+    return @active_profile if defined?(@active_profile) && @active_profile&.active
+    @active_profile = profiles.verified.find(&:active?)
   end
 
   def pending_profile?
@@ -122,6 +123,10 @@ class User < ApplicationRecord
     OutOfBandSessionAccessor.new(unique_session_id).destroy if unique_session_id
     update!(suspended_at: Time.zone.now, unique_session_id: nil)
     analytics.user_suspended(success: true)
+
+    event = PushNotification::AccountDisabledEvent.new(user: self)
+    PushNotification::HttpPush.deliver(event)
+
     email_addresses.map do |email_address|
       SuspendedEmail.create_from_email_address!(email_address)
     end
@@ -134,13 +139,18 @@ class User < ApplicationRecord
     end
     update!(reinstated_at: Time.zone.now)
     analytics.user_reinstated(success: true)
+
+    event = PushNotification::AccountEnabledEvent.new(user: self)
+    PushNotification::HttpPush.deliver(event)
+
     email_addresses.map do |email_address|
       SuspendedEmail.find_with_email(email_address.email)&.destroy
     end
+    send_email_to_all_addresses(:account_reinstated)
   end
 
   def pending_profile
-    return @pending_profile if defined?(@pending_profile)
+    return @pending_profile if defined?(@pending_profile) && !@pending_profile&.active
 
     @pending_profile = begin
       pending = profiles.in_person_verification_pending.or(
@@ -468,6 +478,11 @@ class User < ApplicationRecord
       ).send(user_mailer_template).
         deliver_now_or_later
     end
+  end
+
+  def reload(...)
+    remove_instance_variable(:@pending_profile) if defined?(@pending_profile)
+    super(...)
   end
 
   private

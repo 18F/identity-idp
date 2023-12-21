@@ -1,10 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe TwoFactorAuthentication::SetUpSelectionPresenter do
-  class PlaceholderPresenter < TwoFactorAuthentication::SetUpSelectionPresenter
-    def method
-      :missing
-    end
+  let(:placeholder_presenter_class) do
+    Class.new(TwoFactorAuthentication::SetUpSelectionPresenter)
   end
 
   let(:user) { build(:user) }
@@ -91,15 +89,21 @@ RSpec.describe TwoFactorAuthentication::SetUpSelectionPresenter do
     end
   end
 
+  describe '#type' do
+    it 'raises with missing implementation' do
+      expect { placeholder_presenter_class.new(user:).type }.to raise_error(NotImplementedError)
+    end
+  end
+
   describe '#label' do
-    it 'raises with missing translation' do
-      expect { PlaceholderPresenter.new(user: user).label }.to raise_error(RuntimeError)
+    it 'raises with missing implementation' do
+      expect { placeholder_presenter_class.new(user:).label }.to raise_error(NotImplementedError)
     end
   end
 
   describe '#info' do
-    it 'raises with missing translation' do
-      expect { PlaceholderPresenter.new(user: user).info }.to raise_error(RuntimeError)
+    it 'raises with missing implementation' do
+      expect { placeholder_presenter_class.new(user:).info }.to raise_error(NotImplementedError)
     end
   end
 end

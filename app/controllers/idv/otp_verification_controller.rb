@@ -1,12 +1,12 @@
 module Idv
   class OtpVerificationController < ApplicationController
-    include IdvSession
+    include Idv::AvailabilityConcern
+    include IdvStepConcern
     include StepIndicatorConcern
     include PhoneOtpRateLimitable
 
     before_action :confirm_two_factor_authenticated
-    before_action :confirm_step_needed
-    before_action :confirm_otp_sent
+    before_action :confirm_step_allowed
     before_action :set_code
     before_action :set_otp_verification_presenter
 
@@ -17,41 +17,36 @@ module Idv
     end
 
     def update
+      clear_future_steps!
       result = phone_confirmation_otp_verification_form.submit(code: params[:code])
-      analytics.idv_phone_confirmation_otp_submitted(**result.to_h)
+      analytics.idv_phone_confirmation_otp_submitted(**result.to_h, **ab_test_analytics_buckets)
 
-      parsed_failure_reason =
-        (result.extra.slice(:code_expired) if result.extra[:code_expired]) ||
-        (result.extra.slice(:code_matches) if !result.success? && !result.extra[:code_matches]) ||
-        {}
       irs_attempts_api_tracker.idv_phone_otp_submitted(
         success: result.success?,
         phone_number: idv_session.user_phone_confirmation_session.phone,
-        failure_reason: parsed_failure_reason,
       )
 
       if result.success?
-        idv_session.user_phone_confirmation = true
+        idv_session.mark_phone_step_complete!
         save_in_person_notification_phone
-        flash[:success] = t('idv.messages.review.phone_verified')
-        redirect_to idv_review_url
+        flash[:success] = t('idv.messages.enter_password.phone_verified')
+        redirect_to idv_enter_password_url
       else
         handle_otp_confirmation_failure
       end
     end
 
+    def self.step_info
+      Idv::StepInfo.new(
+        key: :otp_verification,
+        controller: self,
+        next_steps: [:enter_password],
+        preconditions: ->(idv_session:, user:) { idv_session.phone_otp_sent? },
+        undo_step: ->(idv_session:, user:) { idv_session.user_phone_confirmation = nil },
+      )
+    end
+
     private
-
-    def confirm_step_needed
-      return unless idv_session.user_phone_confirmation
-      redirect_to idv_review_url
-    end
-
-    def confirm_otp_sent
-      return if idv_session.user_phone_confirmation_session.present?
-
-      redirect_to idv_phone_url
-    end
 
     def set_code
       return unless FeatureManagement.prefill_otp_codes?

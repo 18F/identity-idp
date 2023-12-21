@@ -1,5 +1,6 @@
 module Idv
   class PhoneController < ApplicationController
+    include Idv::AvailabilityConcern
     include IdvStepConcern
     include StepIndicatorConcern
     include PhoneOtpRateLimitable
@@ -7,10 +8,9 @@ module Idv
 
     attr_reader :idv_form
 
-    before_action :confirm_verify_info_step_complete
-    before_action :confirm_step_needed
+    before_action :confirm_not_rate_limited_for_phone_address_verification, except: [:new]
+    before_action :confirm_step_allowed
     before_action :set_idv_form
-    skip_before_action :confirm_not_rate_limited, only: :new
 
     def new
       flash.keep(:success) if should_keep_flash_success?
@@ -24,13 +24,15 @@ module Idv
 
       render 'shared/wait' and return if async_state.in_progress?
 
-      return if confirm_not_rate_limited
+      return if confirm_not_rate_limited_for_phone_address_verification
 
       if async_state.none?
         Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
           call(:verify_phone, :view, true)
 
-        analytics.idv_phone_of_record_visited(**ab_test_analytics_buckets)
+        analytics.idv_phone_of_record_visited(
+          **ab_test_analytics_buckets,
+        )
         render :new, locals: { gpo_letter_available: gpo_letter_available }
       elsif async_state.missing?
         analytics.proofing_address_result_missing
@@ -40,6 +42,8 @@ module Idv
     end
 
     def create
+      clear_future_steps!
+      idv_session.invalidate_phone_step!
       result = idv_form.submit(step_params)
       Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
         call(:verify_phone, :update, result.success?)
@@ -48,7 +52,6 @@ module Idv
       irs_attempts_api_tracker.idv_phone_submitted(
         success: result.success?,
         phone_number: step_params[:phone],
-        failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
       )
       if result.success?
         submit_proofing_attempt
@@ -57,6 +60,25 @@ module Idv
         flash.now[:error] = result.first_error_message
         render :new, locals: { gpo_letter_available: gpo_letter_available }
       end
+    end
+
+    def self.step_info
+      Idv::StepInfo.new(
+        key: :phone,
+        controller: self,
+        action: :new,
+        next_steps: [:otp_verification],
+        preconditions: ->(idv_session:, user:) do
+          idv_session.verify_info_step_complete? && !idv_session.verify_by_mail?
+        end,
+        undo_step: ->(idv_session:, user:) do
+          idv_session.vendor_phone_confirmation = nil
+          idv_session.address_verification_mechanism = nil
+          idv_session.idv_phone_step_document_capture_session_uuid = nil
+          idv_session.user_phone_confirmation_session = nil
+          idv_session.previous_phone_step_params = nil
+        end,
+      )
     end
 
     private
@@ -73,7 +95,7 @@ module Idv
           send_phone_confirmation_otp_and_handle_result
         end
       else
-        redirect_to idv_review_url
+        redirect_to idv_enter_password_url
       end
     end
 
@@ -96,7 +118,6 @@ module Idv
         phone_number: @idv_phone,
         success: result.success?,
         otp_delivery_method: idv_session.previous_phone_step_params[:otp_delivery_preference],
-        failure_reason: result.success? ? {} : otp_sent_tracker_error(result),
       )
       if result.success?
         redirect_to idv_otp_verification_url
@@ -134,10 +155,6 @@ module Idv
       params.require(:idv_phone_form).permit(:phone, :international_code, :otp_delivery_preference)
     end
 
-    def confirm_step_needed
-      redirect_to_next_step if idv_session.user_phone_confirmation == true
-    end
-
     def set_idv_form
       @idv_form = Idv::PhoneForm.new(
         user: current_user,
@@ -145,6 +162,7 @@ module Idv
         allowed_countries:
           PhoneNumberCapabilities::ADDRESS_IDENTITY_PROOFING_SUPPORTED_COUNTRY_CODES,
         failed_phone_numbers: idv_session.failed_phone_step_numbers,
+        hybrid_handoff_phone_number: idv_session.phone_for_mobile_flow,
       )
     end
 
@@ -171,14 +189,16 @@ module Idv
             [:context, :stages, :address],
           ],
           new_phone_added: new_phone_added?,
+          hybrid_handoff_phone_used: hybrid_handoff_phone_used?,
         ),
+        **opt_in_analytics_properties,
       )
 
-      if async_state.result[:success]
-        rate_limiter.reset!
-        redirect_to_next_step and return
+      if form_result.success?
+        redirect_to_next_step
+      else
+        handle_proofing_failure
       end
-      handle_proofing_failure
     end
 
     def is_req_from_frontend?
@@ -198,14 +218,24 @@ module Idv
       configured_phones = context.phone_configurations.map(&:phone).map do |number|
         PhoneFormatter.format(number)
       end
-      applicant_phone = PhoneFormatter.format(idv_session.applicant['phone'])
-      !configured_phones.include?(applicant_phone)
+      !configured_phones.include?(formatted_previous_phone_step_params_phone)
+    end
+
+    def hybrid_handoff_phone_used?
+      formatted_previous_phone_step_params_phone ==
+        PhoneFormatter.format(idv_session.phone_for_mobile_flow)
+    end
+
+    def formatted_previous_phone_step_params_phone
+      PhoneFormatter.format(
+        idv_session.previous_phone_step_params&.fetch('phone'),
+      )
     end
 
     def gpo_letter_available
       return @gpo_letter_available if defined?(@gpo_letter_available)
       @gpo_letter_available ||= FeatureManagement.gpo_verification_enabled? &&
-                                !Idv::GpoMail.new(current_user).mail_spammed?
+                                !Idv::GpoMail.new(current_user).rate_limited?
     end
 
     # Migrated from otp_delivery_method_controller

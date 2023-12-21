@@ -32,9 +32,12 @@ fr:
             - Vous aurez toujours un compte %{app_name}. Vous pouvez gérer ou
               supprimer votre compte sur %{account_page_text}.
         gpo:
+          continue: Recommencez et vérifiez votre identité depuis le début.
           start_over: Si vous supprimez vos informations et recommencez
+          start_over_new_address: Pour envoyer votre lettre à une autre adresse, vous
+            devrez recommencer et vérifier votre identité à la nouvelle adresse.
           warnings:
-            - Le code à usage unique dans votre lettre ne fonctionnera plus
+            - Le code de vérification dans votre lettre ne fonctionnera plus
             - Vous recommencerez la vérification de votre identité depuis le
               début
         hybrid: Si vous annulez maintenant, vous serez invité à retourner sur votre
@@ -52,10 +55,10 @@ fr:
           hybrid: Êtes-vous sûr de vouloir annuler le téléchargement de vos photos
             d’identité sur ce téléphone?
           standard: Annuler la vérification de votre identité?
+          start_over: Recommencez la vérification de votre identité?
         start_over: Recommencez la vérification de votre identité
     errors:
       incorrect_password: Le mot de passe que vous avez inscrit est incorrect.
-      mail_limit_reached: Vous avez demandé trop de lettres au cours du dernier mois.
       pattern_mismatch:
         ssn: 'Entrez un numéro de sécurité sociale à neuf chiffres'
         zipcode: Entrez un code postal à 5 ou 9 chiffres
@@ -101,6 +104,9 @@ fr:
       exit:
         with_sp: Quittez %{app_name} et retournez à %{sp_name}
         without_sp: Quittez la vérification d’identité et accédez à la page de votre compte
+      gpo:
+        rate_limited:
+          heading: Réessayez plus tard
       phone:
         heading: Nous n’avons pas pu faire correspondre ce numéro de téléphone à
           d’autres enregistrements
@@ -169,7 +175,6 @@ fr:
     form:
       address1: Adresse ligne 1
       address2: Adresse ligne 2
-      address2_optional: Adresse ligne 2 (optional)
       city: Ville
       dob: Date de naissance
       first_name: Prénom
@@ -181,12 +186,11 @@ fr:
       ssn_label: Numéro de sécurité sociale
       state: État
       zipcode: Code postal
-    getting_started:
-      no_js_header: Vous devez activer JavaScript pour vérifier votre identité.
-      no_js_intro: '%{sp_name} a besoin de vous pour vérifier votre identité. Vous
-        devez activer JavaScript pour poursuivre ce processus.'
     gpo:
-      alert_info: 'Nous avons envoyé une lettre avec votre code à usage unique à:'
+      alert_info: 'Nous avons envoyé une lettre avec votre code de vérification à:'
+      alert_rate_limit_warning_html: Vous ne pouvez pas demander d’autres lettres pour
+        le moment. Votre précédente demande de lettre a été effectuée le
+        <strong>%{date_letter_was_sent}</strong>.
       clear_and_start_over: Supprimez vos données et recommencez
       did_not_receive_letter:
         form:
@@ -203,11 +207,11 @@ fr:
       form:
         instructions: Entrez le code à 10 caractères figurant sur la lettre que vous
           avez reçue.
-        otp_label: Code à usage unique
+        otp_label: Code de vérification
         submit: Confirmer le compte
         title: Confirmez votre compte
-      intro_html: '<p>Si vous avez reçu votre lettre, veuillez entrer votre code à
-        usage unique ci-dessous. </p> <p>Si votre lettre n’est pas encore
+      intro_html: '<p>Si vous avez reçu votre lettre, veuillez entrer votre code de
+        vérification ci-dessous. </p> <p>Si votre lettre n’est pas encore
         arrivée, veuillez être patient car les lettres mettent jusqu’à
         <strong>10 jours</strong> pour arriver. Nous vous remercions de votre
         patience.</p>'
@@ -224,11 +228,20 @@ fr:
       wrong_address: Pas la bonne adresse?
     images:
       come_back_later: Lettre avec un crochet
-    index:
-      id:
-        need_html: Si vous créez un compte, vous aurez besoin d’un <strong>identifiant
-          actuel émis par l’état</strong>.
-        state_issue: Carte d’identité délivrée par l’État
+    legal_statement:
+      information_collection: >-
+        Cette collecte d’informations répond aux exigences de l’article 3507 du
+        44 U.S.C., tel que modifié par l’article 2 de la loi de 1995 sur la
+        réduction des tâches administratives. Vous n’avez pas besoin de répondre
+        à ces questions, sauf si nous affichons un numéro de contrôle valide de
+        l’Office of Management and Budget (OMB). Le numéro de contrôle de l’OMB
+        pour cette collecte est 3090-0325. Nous estimons qu’il faut une minute
+        pour lire les instructions, rassembler les preuves et répondre aux
+        questions. N’envoyez que des commentaires relatifs à notre estimation du
+        temps, y compris des suggestions pour réduire cette charge, ou tout
+        autre aspect de cette collecte d’informations à : General Services
+        Administration, Regulatory Secretariat Division (MVCB), ATTN : Lois
+        Mandell/IC 3090-0325, 1800 F Street, NW, Washington, DC 20405.
     messages:
       activated_html: Votre identité a été vérifiée. Si vous souhaitez modifier votre
         information vérifiée, veuillez %{link_html}.
@@ -236,38 +249,37 @@ fr:
       clear_and_start_over: Supprimer mes données et recommencer
       come_back_later_html: <p>Les lettres mettent <strong>5 à 10 jours</strong> pour
         arriver par le courrier de première classe d’USPS.</p><p>Une fois votre
-        lettre arrivée, connectez-vous à %{app_name} et entrez votre code à
-        usage unique lorsque vous y êtes invité.</p>
+        lettre arrivée, connectez-vous à %{app_name} et entrez votre code de
+        vérification lorsque vous y êtes invité.</p>
       come_back_later_no_sp_html: Vous pouvez revenir à votre <strong>compte
         %{app_name}</strong> pour le moment.
       come_back_later_password_html: <strong>N’oubliez pas votre mot de
         passe.</strong> <br /> Si vous réinitialisez votre mot de passe, le code
-        à usage unique figurant dans votre lettre ne correspondra plus et vous
+        de vérification figurant dans votre lettre ne correspondra plus et vous
         serez obligé de vérifier à nouveau votre identité.
       come_back_later_sp_html: Vous pouvez retourner à l’agence <strong>%{sp}</strong> pour le moment.
       confirm: Nous avons sécurisé vos informations vérifiées
+      enter_password:
+        by_mail_password_reminder_html: <strong>Mémorisez votre mot de passe.</strong>
+          Le code de vérification contenu dans votre lettre ne fonctionnera pas
+          si vous réinitialisez votre mot de passe par la suite.
+        message: '%{app_name} crypte vos informations avec votre mot de passe. Cela
+          signifie que vos informations sont sécurisées et que vous seul pourrez
+          y accéder ou les modifier.'
+        phone_verified: Nous avons vérifié votre numéro de téléphone
       gpo:
-        address_on_file_html: Nous enverrons une lettre avec <strong>un code à usage
-          unique </strong> à l’adresse que vous avez indiquée à l’étape
-          précédente.
+        address_on_file: 'Nous enverrons la lettre à l’adresse que vous avez vérifiée
+          précédemment:'
         another_letter_on_the_way: Nous vous envoyons une autre lettre
         info_alert: Vous devrez attendre la livraison de votre lettre pour compléter la
           vérification de votre identité.
+        learn_more_verify_by_mail: En savoir plus sur la vérification de votre adresse par courrier
         letter_on_the_way: Nous vous envoyons une lettre
         resend: Envoyez-moi une autre lettre
-        timeframe_html: Les lettres sont envoyées le jour ouvrable suivant par le
-          courrier de première classe d’USPS et arrivent dans un délai de
-          <strong>5 à 10 jours</strong>.
-      gpo_reminder:
-        body_html: Vous avez demandé une lettre pour vérifier votre identité le
-          <strong>%{date_letter_was_sent}</strong>. Vous devrez saisir le code
-          figurant dans la lettre pour terminer la vérification par courrier.
-          Reconnectez-vous à %{app_name} pour terminer la vérification de votre
-          identité. %{help_link}.
-        did_not_get_a_letter_html: Si vous n’avez pas reçu cette lettre, %{another_letter_link_html}.
-        finish: Terminer la vérification de votre identité
-        sign_in_and_request_another_letter: connectez-vous pour en demander une autre.
-        subject: Terminer la vérification de votre identité
+        start_over_html: Si ce n’est pas la bonne adresse, vous devrez %{start_over_link_html}.
+        start_over_link_text: recommencer et vérifier avec votre nouvelle adresse
+        timeframe_html: Vous recevrez une lettre avec un <strong>code de
+          vérification</strong> dans un délai de <strong>5 à 10 jours</strong>.
       otp_delivery_method_description: Si vous avez saisi une ligne fixe ci-dessus,
         veuillez sélectionner « Appel téléphonique » ci-dessous.
       personal_key: Il s’agit de votre nouvelle clé personnelle. Notez-la et
@@ -286,14 +298,6 @@ fr:
           - Basé aux Etats-Unis (y compris les territoires américains)
           - Votre numéro principal (celui que vous utilisez le plus souvent)
       return_to_profile: '‹ Revenir à votre profil %{app_name}'
-      review:
-        by_mail_password_reminder_html: <b>Mémorisez votre mot de passe.</b> Le code de
-          vérification contenu dans votre lettre ne fonctionnera pas si vous
-          réinitialisez votre mot de passe par la suite.
-        message: '%{app_name} crypte vos informations avec votre mot de passe. Cela
-          signifie que vos informations sont sécurisées et que vous seul pourrez
-          y accéder ou les modifier.'
-        phone_verified: Nous avons vérifié votre numéro de téléphone
       select_verification_with_sp: Afin de vous protéger des fraudes d’identité, vous
         ne pouvez pas utiliser votre compte au %{sp_name} tant que vous ne
         l’aurez pas activé en entrant votre code à usage unique.
@@ -301,22 +305,26 @@ fr:
         à l’identité, votre profil ne sera pas activé tant que vous n’aurez pas
         entré votre code à usage unique.
       sessions:
+        enter_password_message: Lorsque vous entrez à nouveau votre mot de passe,
+          %{app_name} crypte vos données pour vous assurer que personne ne peut
+          y accéder.
         no_pii: SITE DE TEST - N’utilisez pas de véritables données personnelles (il
           s’agit d’une démonstration seulement) - SITE DE TEST
-        review_message: Lorsque vous entrez à nouveau votre mot de passe, %{app_name}
-          crypte vos données pour vous assurer que personne ne peut y accéder.
+      verify_info: Nous lisons vos informations à partir de votre pièce d’identité.
+        Passez-les en revue et mettez-les à jour avant de les soumettre pour
+        vérification.
       verifying: Vérification…
     titles:
       activated: Votre identité a déjà été vérifiée
       come_back_later: Votre lettre est en route
+      enter_password: Réviser et soumettre
       mail:
         verify: Vérifiez votre adresse
       otp_delivery_method: Comment envoyer un code?
-      review: Réviser et soumettre
       session:
-        review: 'Saisissez à nouveau votre mot de passe %{app_name}'
-        review_letter: 'Saisissez à nouveau votre mot de passe %{app_name} pour envoyer
-          votre lettre'
+        enter_password: 'Saisissez à nouveau votre mot de passe %{app_name}'
+        enter_password_letter: 'Saisissez à nouveau votre mot de passe %{app_name} pour
+          envoyer votre lettre'
       unavailable: Nous travaillons à la résolution d’une erreur
     troubleshooting:
       headings:

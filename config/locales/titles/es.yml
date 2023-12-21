@@ -35,14 +35,15 @@ es:
       cancelled: Se canceló la verificación de identidad
       come_back_soon: Vuelve pronto
       enter_one_time_code: Introduzca su código único
+      enter_password: Vuelve a ingresar tu contraseña
+      enter_password_letter: Vuelve a ingresar tu contraseña para enviar su carta
       get_letter: Recibe una carta
       personal_key: Guarda tu llave personal
       phone: Verifique su número de teléfono
       reset_password: Restablecer la contraseña
-      review: Vuelve a ingresar tu contraseña
-      review_letter: Vuelve a ingresar tu contraseña para enviar su carta
       verify_info: Verifica tu información
     mfa_setup:
+      face_touch_unlock_confirmation: Agregado el desbloqueo facial o táctil
       suggest_second_mfa: '¡Has agregado tu primer método de autenticación! Agrega un
         segundo método como respaldo.'
     no_auth_option: No se encontró mensaje de inicio de sesión
@@ -74,14 +75,13 @@ es:
       completion_ial2: Conecte su información verificada a %{sp}
       completion_new_attributes: '%{sp} está solicitando nueva información'
       completion_new_sp: Acabas de iniciar sesión por primera vez
-      completion_reverified_consent: Actualice su información verificados con %{sp}
+      completion_reverified_consent: Proporciónale tu información actualizada a %{sp}
       confirmation: Continuar para iniciar sesión
     spam_protection: Protección contra el correo no deseado
     totp_setup:
       new: Agregar aplicación de autenticación
     two_factor_setup: Configuración de autenticación de dos factores
     verify_email: Consulta tu correo electrónico
-    verify_profile: Active su cuenta
     visitors:
       index: Bienvenido/a
     webauthn_setup: Añade tu clave de seguridad

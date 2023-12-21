@@ -31,9 +31,12 @@ en:
             - You will still have a %{app_name} account. You can manage or
               delete your account on your %{account_page_text}.
         gpo:
+          continue: Continue to start over and verify your identity from the beginning.
           start_over: 'If you clear your information and start over:'
+          start_over_new_address: To mail your letter to another address, you’ll need to
+            start over and verify your identity with the new address.
           warnings:
-            - The one-time code in your letter will no longer work
+            - The verification code in your letter will no longer work
             - You will start over verifying your identity from the beginning
         hybrid: If you cancel now, you will be prompted to switch back to your computer
           to continue verifying your identity.
@@ -48,10 +51,10 @@ en:
           hybrid: Are you sure you want to cancel uploading photos of your ID on this
             phone?
           standard: Cancel verifying your identity?
+          start_over: Start over verifying your identity?
         start_over: Start over verifying your identity
     errors:
       incorrect_password: The password you entered is not correct.
-      mail_limit_reached: You have requested too much mail in the last month.
       pattern_mismatch:
         ssn: 'Enter a nine-digit Social Security number'
         zipcode: Enter a 5 or 9 digit ZIP Code
@@ -91,6 +94,9 @@ en:
       exit:
         with_sp: Exit %{app_name} and return to %{sp_name}
         without_sp: Exit identity verification and go to your account page
+      gpo:
+        rate_limited:
+          heading: Try again later
       phone:
         heading: We could not match this phone number to other records
         jobfail: Something went wrong and we cannot process your request at this time.
@@ -155,7 +161,6 @@ en:
     form:
       address1: Address line 1
       address2: Address line 2
-      address2_optional: Address line 2 (optional)
       city: City
       dob: Date of birth
       first_name: First name
@@ -167,12 +172,10 @@ en:
       ssn_label: Social Security number
       state: State
       zipcode: ZIP Code
-    getting_started:
-      no_js_header: You must enable JavaScript to verify your identity.
-      no_js_intro: '%{sp_name} needs you to verify your identity. You need to enable
-        JavaScript to continue this process.'
     gpo:
-      alert_info: 'We sent a letter with your one-time code to:'
+      alert_info: 'We sent a letter with your verification code to:'
+      alert_rate_limit_warning_html: You can’t request more letters right now. Your
+        previous letter request was on <strong>%{date_letter_was_sent}</strong>.
       clear_and_start_over: Clear your information and start over
       did_not_receive_letter:
         form:
@@ -187,10 +190,10 @@ en:
         title: Didn’t get your letter?
       form:
         instructions: Enter the 10-character code from the letter you received.
-        otp_label: One-time code
+        otp_label: Verification code
         submit: Confirm account
         title: Confirm your account
-      intro_html: '<p>If you have received your letter, please enter your one-time
+      intro_html: '<p>If you have received your letter, please enter your verification
         code below. </p><p>If your letter hasn’t arrived yet, please be patient
         as letters take up to <strong>10 days</strong> to arrive. Thank you for
         your patience.</p>'
@@ -206,11 +209,19 @@ en:
       wrong_address: Not the right address?
     images:
       come_back_later: Letter with a check mark
-    index:
-      id:
-        need_html: If you’re creating an account, you’ll need a <strong>current
-          state‑issued ID</strong>.
-        state_issue: State‑issued ID
+    legal_statement:
+      information_collection: >-
+        This information collection meets the requirements of 44 U.S.C. § 3507,
+        as amended by section 2 of the Paperwork Reduction Act of 1995. You do
+        not need to answer these questions unless we display a valid Office of
+        Management and Budget (OMB) control number. The OMB control number for
+        this collection is 3090-0325. We estimate that it will take 1 minute to
+        read the instructions, gather the facts, and answer the questions. Send
+        only comments relating to our time estimate, including suggestions for
+        reducing this burden, or any other aspects of this collection of
+        information to: General Services Administration, Regulatory Secretariat
+        Division (MVCB), ATTN: Lois Mandell/IC 3090-0325, 1800 F Street, NW,
+        Washington, DC 20405.
     messages:
       activated_html: Your identity has been verified. If you need to change your
         verified information, please %{link_html}.
@@ -218,32 +229,34 @@ en:
       clear_and_start_over: Clear my information and start over
       come_back_later_html: <p>Letters take <strong>5 to 10 days</strong> to arrive
         via USPS First-Class Mail.</p> <p>Once your letter arrives, sign in to
-        %{app_name}, and enter your one-time code when prompted.</p>
+        %{app_name}, and enter your verification code when prompted.</p>
       come_back_later_no_sp_html: You can return to your <strong>%{app_name} account</strong> for now.
       come_back_later_password_html: <strong>Don’t forget your password.</strong><br
-        /> If you reset your password, the one-time code in your letter will no
-        longer work and you’ll have to verify your identity again.
+        /> If you reset your password, the verification code in your letter will
+        no longer work and you’ll have to verify your identity again.
       come_back_later_sp_html: You can return to <strong>%{sp}</strong> for now.
       confirm: We secured your verified information
+      enter_password:
+        by_mail_password_reminder_html: <strong>Remember your password.</strong> The
+          verification code in your letter won’t work if you reset your password
+          later.
+        message: '%{app_name} will encrypt your information with your password. This
+          means that your information is secure and only you will be able to
+          access or change it.'
+        phone_verified: We verified your phone number
       gpo:
-        address_on_file_html: We will mail a letter with a <strong>one-time
-          code</strong> to the address that you provided on the previous step.
+        address_on_file: 'We’ll mail the letter to the address you verified earlier:'
         another_letter_on_the_way: We are sending you another letter
         info_alert: You’ll need to wait until your letter is delivered to finish
           verifying your identity.
+        learn_more_verify_by_mail: Learn more about verifying your address by mail
         letter_on_the_way: We are sending you a letter
         resend: Send me another letter
-        timeframe_html: Letters are sent the next business day via USPS First-Class Mail
-          and arrive in <strong>5 to 10 days</strong>.
-      gpo_reminder:
-        body_html: You requested a letter to verify your identity on
-          <strong>%{date_letter_was_sent}</strong>. You’ll need to enter the
-          code from the letter to finish verifying your identity. Sign back in
-          to %{app_name} to finish verifying your identity. %{help_link}.
-        did_not_get_a_letter_html: If you didn’t get this letter, %{another_letter_link_html}.
-        finish: Finish verifying your identity
-        sign_in_and_request_another_letter: sign in to request another letter
-        subject: Finish verifying your identity
+        start_over_html: If this isn’t the right address, you’ll need to
+          %{start_over_link_html}.
+        start_over_link_text: start over and verify with your new address
+        timeframe_html: You’ll get a letter with a <strong>verification code</strong> in
+          <strong>5 to 10 days</strong>.
       otp_delivery_method_description: If you entered a landline above, please select “Phone call” below.
       personal_key: This is your new personal key. Write it down and keep it in a safe
         place. You will need it if you ever lose your password.
@@ -260,33 +273,29 @@ en:
           - Based in the United States (including U.S. territories)
           - Your primary number (the one you use the most often)
       return_to_profile: '‹ Return to your %{app_name} profile'
-      review:
-        by_mail_password_reminder_html: <b>Remember your password.</b> The verification
-          code in your letter won’t work if you reset your password later.
-        message: '%{app_name} will encrypt your information with your password. This
-          means that your information is secure and only you will be able to
-          access or change it.'
-        phone_verified: We verified your phone number
       select_verification_with_sp: To protect you from identity fraud, we will contact
         you to confirm that this %{sp_name} account is legitimate.
       select_verification_without_sp: To protect you from identity fraud, we will
         contact you to confirm that this account is legitimate.
       sessions:
+        enter_password_message: When you re-enter your password, %{app_name} will
+          protect the information you’ve given us, so that only you can access
+          it.
         no_pii: TEST SITE - Do not use real personal information (demo purposes only) -
           TEST SITE
-        review_message: When you re-enter your password, %{app_name} will protect the
-          information you’ve given us, so that only you can access it.
+      verify_info: We read your information from your ID. Review it and make any
+        updates before submitting for verification.
       verifying: Verifying…
     titles:
       activated: Your identity has already been verified
       come_back_later: Your letter is on the way
+      enter_password: Review and submit
       mail:
         verify: Verify your address
       otp_delivery_method: How should we send a code?
-      review: Review and submit
       session:
-        review: Re-enter your %{app_name} password
-        review_letter: Re-enter your %{app_name} password to send your letter
+        enter_password: Re-enter your %{app_name} password
+        enter_password_letter: Re-enter your %{app_name} password to send your letter
       unavailable: 'We are working to resolve an error'
     troubleshooting:
       headings:

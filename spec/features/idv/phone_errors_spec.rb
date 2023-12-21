@@ -13,8 +13,8 @@ RSpec.feature 'phone errors', :js do
       verify_phone_submitted(idv_phone_errors_warning_url, idv_phone_errors_warning_path)
     end
 
-    it 'only renders failure after phone has been submitted' do
-      verify_phone_submitted(idv_phone_errors_failure_url, idv_phone_errors_failure_path)
+    it 'only renders timeout after phone has been submitted' do
+      verify_phone_submitted(idv_phone_errors_timeout_url, idv_phone_errors_timeout_path)
     end
 
     it 'only renders jobfail after phone has been submitted' do

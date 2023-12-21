@@ -8,26 +8,41 @@ ALLOWED_INTERPOLATION_MISMATCH_KEYS = [
   'time.formats.event_timestamp_js',
 ]
 
+# A set of patterns which are expected to only occur within specific locales. This is an imperfect
+# solution based on current content, intended to help prevent accidents when adding new translated
+# content. If you are having issues with new content, it would be reasonable to remove or modify
+# the parts of the pattern which are valid for the content you're adding.
+LOCALE_SPECIFIC_CONTENT = {
+  fr: / [nd]’|à/i,
+  es: /¿|ó/,
+}.freeze
+
 module I18n
   module Tasks
     class BaseTask
       # List of keys allowed to be untranslated or are the same as English
       ALLOWED_UNTRANSLATED_KEYS = [
         { key: 'account.navigation.menu', locales: %i[fr] }, # "Menu" is "Menu" in French
+        { key: /^countries/ }, # Some countries have the same name across languages
+        { key: 'datetime.dotiw.minutes.one' }, # "minute is minute" in French and English
+        { key: 'datetime.dotiw.minutes.other' }, # "minute is minute" in French and English
         { key: 'doc_auth.headings.photo', locales: %i[fr] }, # "Photo" is "Photo" in French
+        { key: 'doc_auth.headings.selfie', locales: %i[fr] }, # "Photo" is "Photo" in French
         { key: /^i18n\.locale\./ }, # Show locale options translated as that language
         { key: /^i18n\.transliterate\./ }, # Approximate non-ASCII characters in ASCII
-        { key: /^countries/ }, # Some countries have the same name across languages
         { key: 'links.contact', locales: %i[fr] }, # "Contact" is "Contact" in French
+        { key: 'mailer.logo' }, # "logo is logo" in English, French and Spanish
+        { key: 'saml_idp.auth.error.title', locales: %i[es] }, # "Error" is "Error" in Spanish
         { key: 'simple_form.no', locales: %i[es] }, # "No" is "No" in Spanish
         { key: 'simple_form.required.html' }, # No text content
         { key: 'simple_form.required.mark' }, # No text content
         { key: 'time.am' }, # "AM" is "AM" in French and Spanish
-        { key: 'time.pm' }, # "PM" is "PM" in French and Spanish
         { key: 'time.formats.sms_date' }, # for us date format
+        { key: 'time.pm' }, # "PM" is "PM" in French and Spanish
         { key: 'datetime.dotiw.minutes.one' }, # "minute is minute" in French and English
         { key: 'datetime.dotiw.minutes.other' }, # "minute is minute" in French and English
         { key: 'mailer.logo' }, # "logo is logo" in English, French and Spanish
+        { key: 'datetime.dotiw.words_connector' }, # " , " is only punctuation and not translated
       ].freeze
 
       def untranslated_keys
@@ -149,17 +164,19 @@ RSpec.describe 'I18n' do
       i18n_file = full_path.sub("#{root_dir}/", '')
 
       describe i18n_file do
+        let(:flattened_yaml_data) { flatten_hash(YAML.load_file(full_path)) }
+
         # Transliteration includes special characters by definition, so it could fail checks below
         if !full_path.match?(%(/config/locales/transliterate/))
           it 'has only lower_snake_case keys' do
-            keys = flatten_hash(YAML.load_file(full_path)).keys
+            keys = flattened_yaml_data.keys
 
             bad_keys = keys.reject { |key| key =~ /^[a-z0-9_.]+$/ }
             expect(bad_keys).to be_empty
           end
 
           it 'has only has XML-safe identifiers (keys start with a letter)' do
-            keys = flatten_hash(YAML.load_file(full_path)).keys
+            keys = flattened_yaml_data.keys
 
             bad_keys = keys.select { |key| key.split('.').any? { |part| part =~ /^[0-9]/ } }
 
@@ -168,7 +185,7 @@ RSpec.describe 'I18n' do
         end
 
         it 'has correctly-formatted interpolation values' do
-          bad_keys = flatten_hash(YAML.load_file(full_path)).select do |_key, value|
+          bad_keys = flattened_yaml_data.select do |_key, value|
             next unless value.is_a?(String)
 
             interpolation_names = value.scan(/%\{([^}]+)\}/).flatten
@@ -180,7 +197,7 @@ RSpec.describe 'I18n' do
         end
 
         it 'does not contain any translations expecting legacy fallback behavior' do
-          bad_keys = flatten_hash(YAML.load_file(full_path)).select do |_key, value|
+          bad_keys = flattened_yaml_data.select do |_key, value|
             value.include?('NOT TRANSLATED YET')
           end
 
@@ -188,11 +205,21 @@ RSpec.describe 'I18n' do
         end
 
         it 'does not contain any translations that hardcode APP_NAME' do
-          bad_keys = flatten_hash(YAML.load_file(full_path)).select do |_key, value|
+          bad_keys = flattened_yaml_data.select do |_key, value|
             value.include?(APP_NAME)
           end
 
           expect(bad_keys).to be_empty
+        end
+
+        it 'does not contain content from another language' do
+          flattened_yaml_data.each do |key, value|
+            locale = key.split('.', 2).first.to_sym
+            other_locales = LOCALE_SPECIFIC_CONTENT.keys - [locale]
+            expect(value).not_to match(
+              Regexp.union(*LOCALE_SPECIFIC_CONTENT.slice(*other_locales).values),
+            )
+          end
         end
       end
     end
@@ -214,7 +241,7 @@ RSpec.describe 'I18n' do
 
   def likely_html_interpolation?(str)
     str.scan(I18n::INTERPOLATION_PATTERN).flatten.compact.any? do |key|
-      key =~ /html/
+      key.include?('html')
     end
   end
 

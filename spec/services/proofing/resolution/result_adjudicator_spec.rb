@@ -29,8 +29,9 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
   end
 
   let(:should_proof_state_id) { true }
-  let(:double_address_verification) { false }
-  let(:same_address_as_id) { 'true' }
+  let(:double_address_verification) { true }
+  let(:ipp_enrollment_in_progress) { true }
+  let(:same_address_as_id) { 'false' }
 
   let(:device_profiling_success) { true }
   let(:device_profiling_exception) { nil }
@@ -50,6 +51,7 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
       residential_resolution_result: residential_resolution_result,
       state_id_result: state_id_result,
       should_proof_state_id: should_proof_state_id,
+      ipp_enrollment_in_progress: ipp_enrollment_in_progress,
       double_address_verification: double_address_verification,
       device_profiling_result: device_profiling_result,
       same_address_as_id: same_address_as_id,
@@ -57,129 +59,64 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
   end
 
   describe '#adjudicated_result' do
-    context 'double address verification is disabled' do
-      context 'AAMVA and LexisNexis both pass' do
-        it 'returns a successful response' do
-          result = subject.adjudicated_result
-
-          expect(result.success?).to eq(true)
-        end
-      end
-      context 'LexisNexis fails with attributes covered by AAMVA response' do
+    context 'residential address and id address are different' do
+      context 'LexisNexis fails for the residential address' do
         let(:resolution_success) { false }
-        let(:can_pass_with_additional_verification) { true }
-        let(:attributes_requiring_additional_verification) { [:dob] }
-        let(:state_id_verified_attributes) { [:dob, :address] }
-
-        it 'returns a successful response' do
-          result = subject.adjudicated_result
-
-          expect(result.success?).to eq(true)
+        let(:residential_resolution_result) do
+          Proofing::Resolution::Result.new(
+            success: resolution_success,
+            errors: {},
+            exception: nil,
+            vendor_name: 'test-resolution-vendor',
+            failed_result_can_pass_with_additional_verification:
+            can_pass_with_additional_verification,
+            attributes_requiring_additional_verification:
+            attributes_requiring_additional_verification,
+          )
         end
-      end
-
-      context 'LexisNexis fails with attributes not covered by AAMVA response' do
-        let(:resolution_success) { false }
-        let(:can_pass_with_additional_verification) { true }
-        let(:attributes_requiring_additional_verification) { [:address] }
-        let(:state_id_verified_attributes) { [:dob] }
-
         it 'returns a failed response' do
           result = subject.adjudicated_result
 
           expect(result.success?).to eq(false)
+          resolution_adjudication_reason = result.extra[:context][:resolution_adjudication_reason]
+          expect(resolution_adjudication_reason).to eq(:fail_resolution_skip_state_id)
         end
       end
 
-      context 'LexisNexis fails and AAMVA state is unsupported' do
-        let(:should_proof_state_id) { false }
-        let(:resolution_success) { false }
-
-        it 'returns a failed response' do
-          result = subject.adjudicated_result
-
-          expect(result.success?).to eq(false)
-        end
-      end
-
-      context 'LexisNexis passes and AAMVA fails' do
-        let(:resolution_success) { true }
+      context 'AAMVA fails for the id address' do
         let(:state_id_success) { false }
-
         it 'returns a failed response' do
           result = subject.adjudicated_result
 
           expect(result.success?).to eq(false)
+          resolution_adjudication_reason = result.extra[:context][:resolution_adjudication_reason]
+          expect(resolution_adjudication_reason).to eq(:fail_state_id)
         end
       end
 
-      context 'Device profiling fails and everything else passes' do
-        let(:device_profiling_success) { false }
-        let(:device_profiling_review_status) { 'fail' }
+      # rubocop:disable Layout/LineLength
+      context 'Confirm adjudication works for either double_address_verification or ipp_enrollment_in_progress' do
+        context 'Adjudication passes if double_address_verification is false and ipp_enrollment_in_progress is true' do
+          # rubocop:enable Layout/LineLength
+          let(:double_address_verification) { false }
+          let(:ipp_enrollment_in_progress) { true }
 
-        it 'returns a successful response including the review status' do
-          result = subject.adjudicated_result
-
-          expect(result.success?).to eq(true)
-
-          threatmetrix_context = result.extra[:context][:stages][:threatmetrix]
-          expect(threatmetrix_context[:success]).to eq(false)
-          expect(threatmetrix_context[:review_status]).to eq('fail')
-        end
-      end
-
-      context 'Device profiling experiences an exception' do
-        let(:device_profiling_success) { false }
-        let(:device_profiling_exception) { 'this is a test value' }
-
-        it 'returns a failed response' do
-          result = subject.adjudicated_result
-
-          expect(result.success?).to eq(false)
-
-          threatmetrix_context = result.extra[:context][:stages][:threatmetrix]
-          expect(threatmetrix_context[:success]).to eq(false)
-          expect(threatmetrix_context[:exception]).to eq('this is a test value')
-        end
-      end
-    end
-
-    context 'double address verification is enabled' do
-      let(:double_address_verification) { true }
-      let(:should_proof_state_id) { true }
-      context 'residential address and id address are different' do
-        let(:same_address_as_id) { 'false' }
-        context 'LexisNexis fails for the residential address' do
-          let(:resolution_success) { false }
-          let(:residential_resolution_result) do
-            Proofing::Resolution::Result.new(
-              success: resolution_success,
-              errors: {},
-              exception: nil,
-              vendor_name: 'test-resolution-vendor',
-              failed_result_can_pass_with_additional_verification:
-              can_pass_with_additional_verification,
-              attributes_requiring_additional_verification:
-              attributes_requiring_additional_verification,
-            )
-          end
-          it 'returns a failed response' do
+          it 'returns a successful response' do
             result = subject.adjudicated_result
 
-            expect(result.success?).to eq(false)
-            resolution_adjudication_reason = result.extra[:context][:resolution_adjudication_reason]
-            expect(resolution_adjudication_reason).to eq(:fail_resolution_skip_state_id)
+            expect(result.success?).to eq(true)
           end
         end
+        # rubocop:disable Layout/LineLength
+        context 'Adjudication passes if ipp_enrollment_in_progress is false and double_address_verification is true' do
+          # rubocop:enable Layout/LineLength
+          let(:double_address_verification) { true }
+          let(:ipp_enrollment_in_progress) { false }
 
-        context 'AAMVA fails for the id address' do
-          let(:state_id_success) { false }
-          it 'returns a failed response' do
+          it 'returns a successful response' do
             result = subject.adjudicated_result
 
-            expect(result.success?).to eq(false)
-            resolution_adjudication_reason = result.extra[:context][:resolution_adjudication_reason]
-            expect(resolution_adjudication_reason).to eq(:fail_state_id)
+            expect(result.success?).to eq(true)
           end
         end
       end

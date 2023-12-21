@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Idv::HybridMobile::DocumentCaptureController do
-  include IdvHelper
-
   let(:user) { create(:user) }
 
   let!(:document_capture_session) do
@@ -15,6 +13,8 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController do
   let(:document_capture_session_uuid) { document_capture_session&.uuid }
 
   let(:document_capture_session_requested_at) { Time.zone.now }
+  let(:document_capture_session_result_captured_at) { Time.zone.now + 1.second }
+  let(:document_capture_session_result_success) { true }
 
   let(:ab_test_args) do
     { sample_bucket1: :sample_value1, sample_bucket2: :sample_value2 }
@@ -102,20 +102,42 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController do
         end
       end
     end
+
+    context 'stored_result already exists' do
+      before do
+        stub_document_capture_session_result
+      end
+
+      it 'redirects to document capture complete' do
+        get :show
+        expect(response).to redirect_to idv_hybrid_mobile_capture_complete_url
+      end
+
+      context 'document capture re-requested' do
+        let(:document_capture_session_result_captured_at) do
+          document_capture_session_requested_at - 5.minutes
+        end
+        context 'with successful stored_result' do
+          it 'renders the show template' do
+            get :show
+            expect(response).to render_template :show
+          end
+        end
+
+        context 'with failed stored_result' do
+          let(:document_capture_session_result_success) { false }
+          it 'renders the show template' do
+            get :show
+            expect(response).to render_template :show
+          end
+        end
+      end
+    end
   end
 
   describe '#update' do
     before do
-      allow_any_instance_of(DocumentCaptureSession).to receive(:load_result).and_return(
-        DocumentCaptureSessionResult.new(
-          id: 1234,
-          success: true,
-          pii: {
-            state: 'WA',
-          },
-          attention_with_barcode: true,
-        ),
-      )
+      stub_document_capture_session_result
     end
 
     context 'with no user id in session' do
@@ -161,6 +183,17 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController do
         put :update
         expect(response).to redirect_to idv_hybrid_mobile_capture_complete_url
       end
+
+      context 'ocr confirmation pending' do
+        before do
+          subject.document_capture_session.ocr_confirmation_pending = true
+        end
+
+        it 'confirms ocr' do
+          put :update
+          expect(subject.document_capture_session.ocr_confirmation_pending).to be_falsey
+        end
+      end
     end
   end
 
@@ -171,5 +204,19 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController do
       expect(controller).to receive(:acuant_sdk_upgrade_a_b_testing_variables).and_call_original
       controller.extra_view_variables
     end
+  end
+
+  def stub_document_capture_session_result
+    allow_any_instance_of(DocumentCaptureSession).to receive(:load_result).and_return(
+      DocumentCaptureSessionResult.new(
+        id: 1234,
+        success: document_capture_session_result_success,
+        pii: {
+          state: 'WA',
+        },
+        attention_with_barcode: true,
+        captured_at: document_capture_session_result_captured_at,
+      ),
+    )
   end
 end

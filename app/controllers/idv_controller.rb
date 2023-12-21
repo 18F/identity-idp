@@ -21,6 +21,11 @@ class IdvController < ApplicationController
   end
 
   def activated
+    if idv_session.personal_key.present?
+      redirect_to idv_personal_key_url
+      return
+    end
+
     redirect_to idv_url unless active_profile?
     idv_session.clear
   end

@@ -28,7 +28,7 @@ RSpec.describe 'users/totp_setup/new.html.erb' do
     it 'renders the QR code image with useful alt text' do
       render
 
-      page = Capybara.string(rendered)
+      page = Capybara.string(rendered.html)
       image_tag = page.find_css('img[src^="/images/qrcode.png"]').first
       expect(image_tag).to be
       expect(image_tag['alt']).to eq(I18n.t('image_description.totp_qrcode'))
@@ -49,8 +49,21 @@ RSpec.describe 'users/totp_setup/new.html.erb' do
     it 'has labelled fields' do
       render
 
-      expect(rendered).to have_field(t('forms.totp_setup.totp_step_1'))
-      expect(rendered).to have_field(t('forms.totp_setup.totp_step_4'))
+      expect(rendered).to have_selector(
+        'h2#totp-step-1-label',
+        text: t('forms.totp_setup.totp_step_1'),
+      )
+      expect(rendered).to have_selector(
+        'h2#totp-step-4-label',
+        text: t('forms.totp_setup.totp_step_4'),
+      )
+    end
+
+    it 'has aria labels for TOTP' do
+      render
+
+      expect(rendered).to have_selector('[aria-labelledby="totp-step-1-label"]')
+      expect(rendered).to have_selector('[aria-labelledby="totp-step-4-label"]')
     end
   end
 

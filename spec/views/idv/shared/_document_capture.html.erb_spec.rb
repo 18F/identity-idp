@@ -12,7 +12,10 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
   let(:in_person_proofing_enabled_issuer) { nil }
   let(:acuant_sdk_upgrade_a_b_testing_enabled) { false }
   let(:use_alternate_sdk) { false }
+  let(:doc_auth_selfie_capture_enabled) { false }
   let(:acuant_version) { '1.3.3.7' }
+  let(:skip_doc_auth) { false }
+  let(:opted_in_to_in_person_proofing) { false }
 
   before do
     decorated_sp_session = instance_double(
@@ -41,6 +44,9 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
       acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
       use_alternate_sdk: use_alternate_sdk,
       acuant_version: acuant_version,
+      doc_auth_selfie_capture: { enabled: doc_auth_selfie_capture_enabled },
+      skip_doc_auth: skip_doc_auth,
+      opted_in_to_in_person_proofing: opted_in_to_in_person_proofing,
     }
   end
 
@@ -88,6 +94,14 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
           end
         end
       end
+    end
+  end
+  describe 'view variables sent correctly' do
+    it 'sends doc_auth_selfie_capture_enabled to the FE' do
+      render_partial
+      expect(rendered).to have_css(
+        "#document-capture-form[data-doc-auth-selfie-capture='{\"enabled\":false}']",
+      )
     end
   end
 end

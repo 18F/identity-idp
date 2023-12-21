@@ -1,17 +1,16 @@
 module UspsInPersonProofing
   class EnrollmentHelper
     class << self
-      def schedule_in_person_enrollment(user, pii)
+      def schedule_in_person_enrollment(user, pii, opt_in = nil)
         enrollment = user.establishing_in_person_enrollment
         return unless enrollment
 
         enrollment.current_address_matches_id = pii['same_address_as_id']
         enrollment.save!
 
-        # If we're using secondary ID capture (aka double address verification),
-        # then send the state ID address to USPS. Otherwise send the residential address.
+        # Send state ID address to USPS
         pii = pii.to_h
-        if enrollment.capture_secondary_id_enabled? && !enrollment.current_address_matches_id?
+        if !enrollment.current_address_matches_id?
           pii = pii.except(*SECONDARY_ID_ADDRESS_MAP.values).
             transform_keys(SECONDARY_ID_ADDRESS_MAP)
         end
@@ -30,6 +29,7 @@ module UspsInPersonProofing
           enrollment_id: enrollment.id,
           second_address_line_present: pii[:address2].present?,
           service_provider: enrollment.service_provider&.issuer,
+          opted_in_to_in_person_proofing: opt_in,
         )
 
         send_ready_to_verify_email(user, enrollment)

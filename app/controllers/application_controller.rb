@@ -7,6 +7,7 @@ class ApplicationController < ActionController::Base
   include VerifySpAttributesConcern
   include EffectiveUser
   include SecondMfaReminderConcern
+  include TwoFactorAuthenticatableMethods
 
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
@@ -41,6 +42,10 @@ class ApplicationController < ActionController::Base
 
   # for lograge
   def append_info_to_payload(payload)
+    return if Lograge.lograge_config.ignore_actions&.include?(
+      "#{Lograge.controller_field(payload)}##{payload[:action]}",
+    )
+
     payload[:user_id] = analytics_user.uuid unless @skip_session_load
 
     payload[:git_sha] = IdentityConfig::GIT_SHA
@@ -120,8 +125,8 @@ class ApplicationController < ActionController::Base
   end
 
   def disable_caching
-    response.headers['Cache-Control'] = 'no-store'
-    response.headers['Pragma'] = 'no-cache'
+    response.headers[Rack::CACHE_CONTROL] = 'no-store'
+    response.headers['pragma'] = 'no-cache'
   end
 
   def cache_issuer_in_cookie
@@ -193,7 +198,7 @@ class ApplicationController < ActionController::Base
     if pii_unlocked
       cacher = Pii::Cacher.new(current_user, user_session)
       profile = current_user.active_profile
-      user_session[:personal_key] = profile.encrypt_recovery_pii(cacher.fetch)
+      user_session[:personal_key] = profile.encrypt_recovery_pii(cacher.fetch(profile.id))
       profile.save!
 
       analytics.broken_personal_key_regenerated
@@ -220,7 +225,7 @@ class ApplicationController < ActionController::Base
   end
 
   def signed_in_url
-    return url_for_pending_profile_reason if user_has_pending_profile?
+    return idv_verify_by_mail_enter_code_url if current_user.gpo_verification_pending_profile?
     return backup_code_reminder_url if user_needs_backup_code_reminder?
     account_path
   end
@@ -380,7 +385,7 @@ class ApplicationController < ActionController::Base
     @service_provider_mfa_policy ||= ServiceProviderMfaPolicy.new(
       user: current_user,
       service_provider: sp_from_sp_session,
-      auth_method: user_session[:auth_method],
+      auth_methods_session:,
       aal_level_requested: sp_session[:aal_level_requested],
       piv_cac_requested: sp_session[:piv_cac_requested],
       phishing_resistant_requested: sp_session[:phishing_resistant_requested],

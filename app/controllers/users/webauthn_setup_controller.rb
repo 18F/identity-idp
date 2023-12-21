@@ -10,6 +10,7 @@ module Users
     before_action :apply_secure_headers_override
     before_action :set_webauthn_setup_presenter
     before_action :confirm_recently_authenticated_2fa
+    before_action :validate_existing_platform_authenticator
 
     helper_method :in_multi_mfa_selection_flow?
 
@@ -29,8 +30,11 @@ module Users
         platform_authenticator: @platform_authenticator,
         url_options:,
       )
-      properties = result.to_h.merge(analytics_properties)
-      analytics.webauthn_setup_visit(**properties)
+      analytics.webauthn_setup_visit(
+        platform_authenticator: result.extra[:platform_authenticator],
+        in_account_creation_flow: user_session[:in_account_creation_flow] || false,
+        enabled_mfa_methods_count: result.extra[:enabled_mfa_methods_count],
+      )
       save_challenge_in_session
       @exclude_credentials = exclude_credentials
       @need_to_set_up_additional_mfa = need_to_set_up_additional_mfa?
@@ -42,11 +46,23 @@ module Users
         end
       end
 
+      if result.errors.present?
+        analytics.webauthn_setup_submitted(
+          platform_authenticator: form.platform_authenticator?,
+          errors: result.errors,
+          success: false,
+        )
+      end
+
       flash_error(result.errors) unless result.success?
     end
 
     def confirm
-      form = WebauthnSetupForm.new(current_user, user_session)
+      form = WebauthnSetupForm.new(
+        user: current_user,
+        user_session: user_session,
+        device_name: DeviceName.from_user_agent(request.user_agent),
+      )
       result = form.submit(request.protocol, confirm_params)
       @platform_authenticator = form.platform_authenticator?
       @presenter = WebauthnSetupPresenter.new(
@@ -97,6 +113,17 @@ module Users
 
     private
 
+    def validate_existing_platform_authenticator
+      if platform_authenticator? && in_account_creation_flow? &&
+         current_user.webauthn_configurations.platform_authenticators.present?
+        redirect_to authentication_methods_setup_path
+     end
+    end
+
+    def platform_authenticator?
+      params[:platform] == 'true'
+    end
+
     def set_webauthn_setup_presenter
       @presenter = SetupPresenter.new(
         current_user: current_user,
@@ -136,12 +163,7 @@ module Users
     end
 
     def track_delete(success)
-      counts_hash = MfaContext.new(current_user.reload).enabled_two_factor_configuration_counts_hash
-      analytics.webauthn_deleted(
-        success: success,
-        mfa_method_counts: counts_hash,
-        pii_like_keypaths: [[:mfa_method_counts, :phone]],
-      )
+      analytics.webauthn_delete_submitted(success:, configuration_id: delete_params[:id])
     end
 
     def save_challenge_in_session
@@ -151,10 +173,9 @@ module Users
 
     def process_valid_webauthn(form)
       create_user_event(:webauthn_key_added)
-      mfa_user = MfaContext.new(current_user)
-      analytics.multi_factor_auth_added_webauthn(
+      analytics.webauthn_setup_submitted(
         platform_authenticator: form.platform_authenticator?,
-        enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
+        success: true,
       )
       handle_remember_device_preference(params[:remember_device])
       if form.platform_authenticator?

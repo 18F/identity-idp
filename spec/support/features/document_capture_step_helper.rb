@@ -16,6 +16,10 @@ module DocumentCaptureStepHelper
     attach_file t('doc_auth.headings.document_capture_back'), file, make_visible: true
   end
 
+  def attach_selfie(file = Rails.root.join('app', 'assets', 'images', 'logo.png'))
+    attach_file t('doc_auth.headings.document_capture_selfie'), file, make_visible: true
+  end
+
   def document_capture_form
     page.find('#document-capture-form')
   end
@@ -52,5 +56,13 @@ module DocumentCaptureStepHelper
 
   def click_try_again
     click_spinner_button_and_wait t('idv.failure.button.warning')
+  end
+
+  def click_sp_exit_link(sp_name: 'Test SP')
+    click_on "exit Login.gov and contact #{sp_name}"
+  end
+
+  def click_submit_exit_button
+    click_on 'Submit and exit Login.gov'
   end
 end

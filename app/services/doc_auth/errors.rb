@@ -2,8 +2,11 @@ module DocAuth
   module Errors
     # HTTP Status Codes
     IMAGE_LOAD_FAILURE = 'image_load_failure' # 438
+    IMAGE_LOAD_FAILURE_FIELD = 'image_load_failure_field' # 438
     PIXEL_DEPTH_FAILURE = 'pixel_depth_failure' # 439
+    PIXEL_DEPTH_FAILURE_FIELD = 'pixel_depth_failure_field'
     IMAGE_SIZE_FAILURE = 'image_size_failure' # 440
+    IMAGE_SIZE_FAILURE_FIELD = 'image_size_failure_field' # 440
     # Network
     NETWORK = 'network' # usually 500 or other unhandled error
     # Alerts
@@ -23,6 +26,7 @@ module DocAuth
     MULTIPLE_BACK_ID_FAILURES = 'multiple_back_id_failures'
     MULTIPLE_FRONT_ID_FAILURES = 'multiple_front_id_failures'
     REF_CONTROL_NUMBER_CHECK = 'ref_control_number_check'
+    SELFIE_FAILURE = 'selfie_failure'
     SEX_CHECK = 'sex_check'
     VISIBLE_COLOR_CHECK = 'visible_color_check'
     VISIBLE_PHOTO_CHECK = 'visible_photo_check'
@@ -63,6 +67,7 @@ module DocAuth
       MULTIPLE_BACK_ID_FAILURES,
       MULTIPLE_FRONT_ID_FAILURES,
       REF_CONTROL_NUMBER_CHECK,
+      SELFIE_FAILURE,
       SEX_CHECK,
       VISIBLE_COLOR_CHECK,
       VISIBLE_PHOTO_CHECK,
@@ -80,6 +85,10 @@ module DocAuth
 
     # rubocop:disable Layout/LineLength
     USER_DISPLAY = {
+      # Http status
+      IMAGE_LOAD_FAILURE => { long_msg: IMAGE_LOAD_FAILURE, long_msg_plural: IMAGE_LOAD_FAILURE, field_msg: IMAGE_LOAD_FAILURE_FIELD },
+      PIXEL_DEPTH_FAILURE => { long_msg: PIXEL_DEPTH_FAILURE, long_msg_plural: PIXEL_DEPTH_FAILURE, field_msg: PIXEL_DEPTH_FAILURE_FIELD },
+      IMAGE_SIZE_FAILURE => { long_msg: IMAGE_SIZE_FAILURE, long_msg_plural: IMAGE_SIZE_FAILURE, field_msg: IMAGE_SIZE_FAILURE_FIELD },
       # Image metrics
       DPI_LOW => { long_msg: DPI_LOW_ONE_SIDE, long_msg_plural: DPI_LOW_BOTH_SIDES, field_msg: DPI_LOW_FIELD },
       SHARP_LOW => { long_msg: SHARP_LOW_ONE_SIDE, long_msg_plural: SHARP_LOW_BOTH_SIDES, field_msg: SHARP_LOW_FIELD },
@@ -106,6 +115,8 @@ module DocAuth
       MULTIPLE_FRONT_ID_FAILURES => { long_msg: MULTIPLE_FRONT_ID_FAILURES, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
       MULTIPLE_BACK_ID_FAILURES => { long_msg: MULTIPLE_BACK_ID_FAILURES, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
       GENERAL_ERROR => { long_msg: GENERAL_ERROR, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
+      # Liveness, use general error for now
+      SELFIE_FAILURE => { long_msg: GENERAL_ERROR, field_msg: FALLBACK_FIELD_LEVEL, hints: false },
     }
     # rubocop:enable Layout/LineLength
   end

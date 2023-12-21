@@ -1,26 +1,48 @@
 require 'rails_helper'
 
 RSpec.describe Reports::MonthlyKeyMetricsReport do
-  subject(:report) { Reports::MonthlyKeyMetricsReport.new }
+  let(:report_date) { Date.new(2021, 3, 2).in_time_zone('UTC').end_of_day }
+  subject(:report) { Reports::MonthlyKeyMetricsReport.new(report_date) }
 
-  let(:report_date) { Date.new(2021, 3, 2) }
   let(:name) { 'monthly-key-metrics-report' }
-  let(:agnes_email) { 'fake@agnes_email.com' }
-  let(:feds_email) { 'fake@feds_email.com' }
   let(:s3_report_bucket_prefix) { 'reports-bucket' }
-  let(:account_reuse_s3_path) do
-    'int/monthly-key-metrics-report/2021/2021-03-02.monthly-key-metrics-report/account_reuse.csv'
+  let(:report_folder) do
+    'int/monthly-key-metrics-report/2021/2021-03-02.monthly-key-metrics-report'
   end
-  let(:total_profiles_s3_path) do
-    'int/monthly-key-metrics-report/2021/2021-03-02.monthly-key-metrics-report/total_profiles.csv'
+
+  let(:expected_s3_paths) do
+    [
+      "#{report_folder}/account_reuse.csv",
+      "#{report_folder}/account_deletion_rate.csv",
+      "#{report_folder}/total_user_count.csv",
+      "#{report_folder}/active_users_count.csv",
+      "#{report_folder}/proofing_rate_metrics.csv",
+      "#{report_folder}/agency_and_sp_counts.csv",
+      "#{report_folder}/active_users_count_apg.csv",
+    ]
+  end
+
+  let(:s3_metadata) do
+    {
+      body: anything,
+      content_type: 'text/csv',
+      bucket: 'reports-bucket.1234-us-west-1',
+    }
+  end
+
+  let(:mock_proofing_report_data) do
+    [
+      ['metric', 'num_users', 'percent'],
+    ]
+  end
+
+  let(:mock_proofing_rate_data) do
+    [
+      ['Metric', 'Trailing 30d', 'Trailing 60d', 'Trailing 90d'],
+    ]
   end
 
   before do
-    allow(IdentityConfig.store).to receive(:team_agnes_email).
-      and_return(agnes_email)
-    allow(IdentityConfig.store).to receive(:team_all_feds_email).
-      and_return(feds_email)
-
     allow(Identity::Hostdata).to receive(:env).and_return('int')
     allow(Identity::Hostdata).to receive(:aws_account_id).and_return('1234')
     allow(Identity::Hostdata).to receive(:aws_region).and_return('us-west-1')
@@ -32,60 +54,85 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
         put_object: {},
       },
     }
+
+    allow(report.proofing_rate_report).to receive(:as_csv).
+      and_return(mock_proofing_rate_data)
   end
 
-  it 'sends out a report to the email listed with one total user' do
+  it 'sends out a report to just to team agnes' do
     expect(ReportMailer).to receive(:tables_report).once.with(
-      message: 'Report: monthly-key-metrics-report 2021-03-02',
-      email: [agnes_email],
+      email: [IdentityConfig.store.team_agnes_email],
       subject: 'Monthly Key Metrics Report - 2021-03-02',
-      tables: anything,
+      reports: anything,
+      message: report.preamble,
+      attachment_format: :xlsx,
     ).and_call_original
 
-    subject.perform(report_date)
+    report.perform(report_date)
   end
 
-  it 'sends out a report to the emails listed with two users' do
-    first_of_month_date = report_date - 1
+  context 'when queued from the first of the month' do
+    let(:report_date) { Date.new(2021, 3, 1).prev_day }
 
-    expect(ReportMailer).to receive(:tables_report).once.with(
-      message: 'Report: monthly-key-metrics-report 2021-03-01',
-      email: [agnes_email, feds_email],
-      subject: 'Monthly Key Metrics Report - 2021-03-01',
-      tables: anything,
-    ).and_call_original
+    it 'sends out a report to everybody' do
+      expect(ReportMailer).to receive(:tables_report).once.with(
+        email: [
+          IdentityConfig.store.team_agnes_email,
+          IdentityConfig.store.team_all_feds_email,
+          IdentityConfig.store.team_all_contractors_email,
+        ],
+        subject: 'Monthly Key Metrics Report - 2021-02-28',
+        reports: anything,
+        message: report.preamble,
+        attachment_format: :xlsx,
+      ).and_call_original
 
-    subject.perform(first_of_month_date)
+      report.perform(report_date)
+    end
   end
 
   it 'does not send out a report with no emails' do
     allow(IdentityConfig.store).to receive(:team_agnes_email).and_return('')
 
-    expect(ReportMailer).not_to receive(:tables_report).with(
-      message: 'Report: monthly-key-metrics-report 2021-03-02',
-      email: [''],
-      subject: 'Monthly Key Metrics Report - 2021-03-02',
-      tables: anything,
-    ).and_call_original
+    expect(report).to_not receive(:reports)
 
-    subject.perform(report_date)
+    expect(ReportMailer).not_to receive(:tables_report)
+
+    report.perform(report_date)
   end
 
   it 'uploads a file to S3 based on the report date' do
-    expect(subject).to receive(:upload_file_to_s3_bucket).with(
-      path: account_reuse_s3_path,
-      body: anything,
-      content_type: 'text/csv',
-      bucket: 'reports-bucket.1234-us-west-1',
-    ).exactly(1).time.and_call_original
+    expected_s3_paths.each do |path|
+      expect(subject).to receive(:upload_file_to_s3_bucket).with(
+        path: path,
+        **s3_metadata,
+      ).exactly(1).time.and_call_original
+    end
 
-    expect(subject).to receive(:upload_file_to_s3_bucket).with(
-      path: total_profiles_s3_path,
-      body: anything,
-      content_type: 'text/csv',
-      bucket: 'reports-bucket.1234-us-west-1',
-    ).exactly(1).time.and_call_original
+    report.perform(report_date)
+  end
 
-    subject.perform(report_date)
+  describe '#preamble' do
+    let(:env) { 'prod' }
+    subject(:preamble) { report.preamble(env:) }
+
+    it 'has a preamble that is valid HTML' do
+      expect(preamble).to be_html_safe
+
+      expect { Nokogiri::XML(preamble) { |config| config.strict } }.to_not raise_error
+    end
+
+    context 'in a non-prod environment' do
+      let(:env) { 'staging' }
+
+      it 'has an alert with the environment name' do
+        expect(preamble).to be_html_safe
+
+        doc = Nokogiri::XML(preamble)
+
+        alert = doc.at_css('.usa-alert')
+        expect(alert.text).to include(env)
+      end
+    end
   end
 end

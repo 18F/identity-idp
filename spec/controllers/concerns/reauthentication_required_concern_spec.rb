@@ -3,21 +3,21 @@ require 'rails_helper'
 RSpec.describe ReauthenticationRequiredConcern, type: :controller do
   let(:user) { create(:user, :fully_registered, email: 'old_email@example.com') }
 
+  controller ApplicationController do
+    include ReauthenticationRequiredConcern
+
+    before_action :confirm_recently_authenticated_2fa
+
+    def index
+      render plain: 'Hello'
+    end
+  end
+
+  before(:each) do
+    stub_sign_in(user) if user
+  end
+
   describe '#confirm_recently_authenticated_2fa' do
-    controller ApplicationController do
-      include ReauthenticationRequiredConcern
-
-      before_action :confirm_recently_authenticated_2fa
-
-      def index
-        render plain: 'Hello'
-      end
-    end
-
-    before(:each) do
-      stub_sign_in(user)
-    end
-
     context 'recently authenticated' do
       it 'allows action' do
         get :index
@@ -26,9 +26,26 @@ RSpec.describe ReauthenticationRequiredConcern, type: :controller do
       end
     end
 
+    context 'signed out' do
+      let(:user) { nil }
+
+      it 'redirects to 2FA options' do
+        get :index
+
+        expect(response.body).to eq 'Hello'
+      end
+    end
+
     context 'authenticated outside the authn window' do
+      let(:travel_time) { (IdentityConfig.store.reauthn_window + 1).seconds }
+
       before do
-        controller.user_session[:authn_at] -= IdentityConfig.store.reauthn_window
+        controller.auth_methods_session.authenticate!(TwoFactorAuthenticatable::AuthMethod::TOTP)
+        travel travel_time
+      end
+
+      around do |example|
+        freeze_time { example.run }
       end
 
       it 'redirects to 2FA options' do
@@ -44,15 +61,43 @@ RSpec.describe ReauthenticationRequiredConcern, type: :controller do
       end
 
       it 'records analytics' do
-        controller.user_session[:auth_method] = TwoFactorAuthenticatable::AuthMethod::TOTP
         stub_analytics
         expect(@analytics).to receive(:track_event).with(
           'User 2FA Reauthentication Required',
-          authenticated_at: controller.user_session[:authn_at],
-          auth_method: 'totp',
+          authenticated_at: travel_time.ago,
+          auth_method: TwoFactorAuthenticatable::AuthMethod::TOTP,
         )
         get :index
       end
+    end
+  end
+
+  describe '#recently_authenticated_2fa?' do
+    subject(:recently_authenticated_2fa) { controller.recently_authenticated_2fa? }
+
+    context 'recently authenticated' do
+      it { expect(recently_authenticated_2fa).to eq(true) }
+    end
+
+    context 'signed out' do
+      let(:user) { nil }
+
+      it { expect(recently_authenticated_2fa).to eq(false) }
+    end
+
+    context 'authenticated outside the authn window' do
+      let(:travel_time) { (IdentityConfig.store.reauthn_window + 1).seconds }
+
+      before do
+        controller.auth_methods_session.authenticate!(TwoFactorAuthenticatable::AuthMethod::TOTP)
+        travel travel_time
+      end
+
+      around do |example|
+        freeze_time { example.run }
+      end
+
+      it { expect(recently_authenticated_2fa).to eq(false) }
     end
   end
 end

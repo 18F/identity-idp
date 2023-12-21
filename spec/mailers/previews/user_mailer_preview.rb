@@ -59,6 +59,7 @@ class UserMailerPreview < ActionMailer::Preview
     UserMailer.with(user: user, email_address: email_address_record).new_device_sign_in(
       date: 'February 25, 2019 15:02',
       location: 'Washington, DC',
+      device_name: 'Chrome ABC on macOS 123',
       disavowal_token: SecureRandom.hex,
     )
   end
@@ -81,6 +82,10 @@ class UserMailerPreview < ActionMailer::Preview
 
   def account_reset_complete
     UserMailer.with(user: user, email_address: email_address_record).account_reset_complete
+  end
+
+  def account_delete_submitted
+    UserMailer.with(user: user, email_address: email_address_record).account_delete_submitted
   end
 
   def account_reset_cancel
@@ -194,6 +199,20 @@ class UserMailerPreview < ActionMailer::Preview
     ).gpo_reminder
   end
 
+  def suspension_confirmed
+    UserMailer.with(
+      user: user,
+      email_address: email_address_record,
+    ).suspension_confirmed
+  end
+
+  def account_reinstated
+    UserMailer.with(
+      user: user,
+      email_address: email_address_record,
+    ).account_reinstated
+  end
+
   private
 
   def user
@@ -234,7 +253,6 @@ class UserMailerPreview < ActionMailer::Preview
         ),
         status_updated_at: Time.zone.now - 1.hour,
         current_address_matches_id: params['current_address_matches_id'] == 'true',
-        capture_secondary_id_enabled: IdentityConfig.store.in_person_capture_secondary_id_enabled,
         selected_location_details: {
           'name' => 'BALTIMORE',
           'street_address' => '900 E FAYETTE ST RM 118',

@@ -8,7 +8,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
   let(:current_address_matches_id) { false }
   let(:pii) do
     Pii::Attributes.new_from_hash(
-      Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.
+      Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID_WITH_PHONE.
         merge(same_address_as_id: current_address_matches_id ? 'true' : 'false').
         transform_keys(&:to_s),
     )
@@ -18,7 +18,6 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
   let(:transliterator) { UspsInPersonProofing::Transliterator.new }
   let(:service_provider) { nil }
   let(:usps_ipp_transliteration_enabled) { true }
-  let(:in_person_capture_secondary_id_enabled) { false }
   let(:usps_ipp_enrollment_status_update_email_address) do
     'registration@usps.local.identitysandbox.gov'
   end
@@ -38,8 +37,6 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
     allow(subject).to receive(:analytics).and_return(subject_analytics)
     allow(IdentityConfig.store).to receive(:usps_ipp_transliteration_enabled).
       and_return(usps_ipp_transliteration_enabled)
-    allow(IdentityConfig.store).to receive(:in_person_capture_secondary_id_enabled).
-      and_return(in_person_capture_secondary_id_enabled)
   end
 
   describe '#schedule_in_person_enrollment' do
@@ -102,7 +99,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
           subject.schedule_in_person_enrollment(user, pii)
         end
 
-        describe 'double address verification' do
+        context 'same address as id is false' do
           let(:pii) do
             Pii::Attributes.new_from_hash(
               Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.
@@ -112,46 +109,23 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
             )
           end
 
-          context 'feature enabled' do
-            let(:in_person_capture_secondary_id_enabled) { true }
-
-            it 'maps enrollment address fields' do
-              expect(proofer).to receive(:request_enroll) do |applicant|
-                ADDR = Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS
-                expect(applicant).to have_attributes(
-                  address: Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[
-                    :identity_doc_address1
-                  ],
-                  city: Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:identity_doc_city],
-                  state: Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[
-                    :identity_doc_address_state
-                  ],
-                  zip_code:
-                    Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:identity_doc_zipcode],
-                )
-                UspsInPersonProofing::Mock::Proofer.new.request_enroll(applicant)
-              end
-
-              subject.schedule_in_person_enrollment(user, pii)
+          it 'maps enrollment address fields' do
+            expect(proofer).to receive(:request_enroll) do |applicant|
+              expect(applicant).to have_attributes(
+                address: Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[
+                  :identity_doc_address1
+                ],
+                city: Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:identity_doc_city],
+                state: Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[
+                  :identity_doc_address_state
+                ],
+                zip_code:
+                  Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:identity_doc_zipcode],
+              )
+              UspsInPersonProofing::Mock::Proofer.new.request_enroll(applicant)
             end
-          end
 
-          context 'feature disabled' do
-            let(:in_person_capture_secondary_id_enabled) { false }
-
-            it 'does not map enrollment address fields' do
-              expect(proofer).to receive(:request_enroll) do |applicant|
-                expect(applicant).to have_attributes(
-                  address: Idp::Constants::MOCK_IDV_APPLICANT[:address1],
-                  city: Idp::Constants::MOCK_IDV_APPLICANT[:city],
-                  state: Idp::Constants::MOCK_IDV_APPLICANT[:state],
-                  zip_code: Idp::Constants::MOCK_IDV_APPLICANT[:zipcode],
-                )
-                UspsInPersonProofing::Mock::Proofer.new.request_enroll(applicant)
-              end
-
-              subject.schedule_in_person_enrollment(user, pii)
-            end
+            subject.schedule_in_person_enrollment(user, pii)
           end
         end
       end
@@ -221,6 +195,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
               'USPS IPPaaS enrollment created',
               enrollment_code: user.in_person_enrollments.first.enrollment_code,
               enrollment_id: user.in_person_enrollments.first.id,
+              opted_in_to_in_person_proofing: nil,
               second_address_line_present: false,
               service_provider: nil,
             )
@@ -238,6 +213,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
               'USPS IPPaaS enrollment created',
               enrollment_code: user.in_person_enrollments.first.enrollment_code,
               enrollment_id: user.in_person_enrollments.first.id,
+              opted_in_to_in_person_proofing: nil,
               second_address_line_present: false,
               service_provider: issuer,
             )
@@ -247,29 +223,34 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
         context 'with address line 2 present' do
           before { pii['address2'] = 'Apartment 227' }
 
-          it 'logs the presence of address line 2' do
+          # this is a pii bundle that adds identity_doc_* values
+          let(:pii) do
+            Pii::Attributes.new_from_hash(
+              Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS.transform_keys(&:to_s),
+            )
+          end
+
+          it 'does not log the presence of address line 2 only in residential address' do
+            pii['identity_doc_address2'] = nil
+
             subject.schedule_in_person_enrollment(user, pii)
 
             expect(subject_analytics).to have_logged_event(
               'USPS IPPaaS enrollment created',
               enrollment_code: user.in_person_enrollments.first.enrollment_code,
               enrollment_id: user.in_person_enrollments.first.id,
-              second_address_line_present: true,
+              opted_in_to_in_person_proofing: nil,
+              second_address_line_present: false,
               service_provider: nil,
             )
           end
 
-          context 'double address verification active' do
-            let(:in_person_capture_secondary_id_enabled) { true }
-            # this is a pii bundle that adds identity_doc_* values
-            let(:pii) do
-              Pii::Attributes.new_from_hash(
-                Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS.transform_keys(&:to_s),
-              )
-            end
+          context 'with address line 2 present in state ID address' do
+            it 'logs the presence of address line 2' do
+              expect(pii['identity_doc_address2'].present?).to eq(true)
 
-            it 'does not log the presence of address line 2 only in residential address' do
-              pii['identity_doc_address2'] = nil
+              pii['same_address_as_id'] = false
+              pii['address2'] = nil
 
               subject.schedule_in_person_enrollment(user, pii)
 
@@ -277,29 +258,28 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
                 'USPS IPPaaS enrollment created',
                 enrollment_code: user.in_person_enrollments.first.enrollment_code,
                 enrollment_id: user.in_person_enrollments.first.id,
-                second_address_line_present: false,
+                opted_in_to_in_person_proofing: nil,
+                second_address_line_present: true,
                 service_provider: nil,
               )
             end
+          end
+        end
 
-            context 'with address line 2 present in state ID address' do
-              it 'logs the presence of address line 2' do
-                expect(pii['identity_doc_address2'].present?).to eq(true)
+        context 'with opt in value' do
+          let(:opt_in) { true }
 
-                pii['same_address_as_id'] = false
-                pii['address2'] = nil
+          it 'logs user\'s opt-in choice' do
+            subject.schedule_in_person_enrollment(user, pii, opt_in)
 
-                subject.schedule_in_person_enrollment(user, pii)
-
-                expect(subject_analytics).to have_logged_event(
-                  'USPS IPPaaS enrollment created',
-                  enrollment_code: user.in_person_enrollments.first.enrollment_code,
-                  enrollment_id: user.in_person_enrollments.first.id,
-                  second_address_line_present: true,
-                  service_provider: nil,
-                )
-              end
-            end
+            expect(subject_analytics).to have_logged_event(
+              'USPS IPPaaS enrollment created',
+              enrollment_code: user.in_person_enrollments.first.enrollment_code,
+              enrollment_id: user.in_person_enrollments.first.id,
+              opted_in_to_in_person_proofing: true,
+              second_address_line_present: false,
+              service_provider: nil,
+            )
           end
         end
       end

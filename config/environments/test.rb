@@ -4,11 +4,11 @@ Rails.application.configure do
   config.action_view.cache_template_loading = true
   config.eager_load = false
   config.public_file_server.enabled = true
-  config.public_file_server.headers = { 'Cache-Control' => 'public, max-age=3600' }
+  config.public_file_server.headers = { Rack::CACHE_CONTROL => 'public, max-age=3600' }
   config.consider_all_requests_local = true
   config.action_controller.perform_caching = false
   config.cache_store = :memory_store
-  config.action_dispatch.show_exceptions = false
+  config.action_dispatch.show_exceptions = :none
   config.action_controller.allow_forgery_protection = false
   config.active_support.test_order = :random
   config.active_support.deprecation = :stderr
@@ -44,9 +44,9 @@ Rails.application.configure do
       :auth_app_configurations,
       :backup_code_configurations,
       :webauthn_configurations,
-      :email_addresses,
       :proofing_component,
       :account_reset_request,
+      :registration_log,
     ].each do |association|
       Bullet.add_safelist(type: :n_plus_one_query, class_name: 'User', association: association)
     end

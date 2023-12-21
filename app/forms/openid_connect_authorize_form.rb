@@ -17,7 +17,15 @@ class OpenidConnectAuthorizeForm
     state
   ].freeze
 
-  ATTRS = [:unauthorized_scope, :acr_values, :scope, :verified_within, *SIMPLE_ATTRS].freeze
+  ATTRS = [
+    :unauthorized_scope,
+    :acr_values,
+    :scope,
+    :verified_within,
+    :biometric_comparison_required,
+    *SIMPLE_ATTRS,
+  ].freeze
+
   AALS_BY_PRIORITY = [Saml::Idp::Constants::AAL2_HSPD12_AUTHN_CONTEXT_CLASSREF,
                       Saml::Idp::Constants::AAL3_HSPD12_AUTHN_CONTEXT_CLASSREF,
                       Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF,
@@ -46,8 +54,8 @@ class OpenidConnectAuthorizeForm
   validate :validate_unauthorized_scope
   validate :validate_privileges
   validate :validate_prompt
-  validate :validate_verified_within_format
-  validate :validate_verified_within_duration
+  validate :validate_verified_within_format, if: :verified_within_allowed?
+  validate :validate_verified_within_duration, if: :verified_within_allowed?
 
   def initialize(params)
     @acr_values = parse_to_values(params[:acr_values], Saml::Idp::Constants::VALID_AUTHN_CONTEXTS)
@@ -55,9 +63,12 @@ class OpenidConnectAuthorizeForm
     @prompt ||= 'select_account'
     @scope = parse_to_values(params[:scope], scopes)
     @unauthorized_scope = check_for_unauthorized_scope(params)
+    @biometric_comparison_required = params[:biometric_comparison_required].to_s == 'true'
 
-    @duration_parser = DurationParser.new(params[:verified_within])
-    @verified_within = @duration_parser.parse
+    if verified_within_allowed?
+      @duration_parser = DurationParser.new(params[:verified_within])
+      @verified_within = @duration_parser.parse
+    end
   end
 
   def submit
@@ -100,7 +111,7 @@ class OpenidConnectAuthorizeForm
   end
 
   def ial_values
-    acr_values.filter { |acr| %r{/ial/}.match?(acr) || %r{/loa/}.match?(acr) }
+    acr_values.filter { |acr| acr.include?('ial') || acr.include?('loa') }
   end
 
   def ial_context
@@ -112,7 +123,7 @@ class OpenidConnectAuthorizeForm
   end
 
   def aal_values
-    acr_values.filter { |acr| %r{/aal/}.match? acr }
+    acr_values.filter { |acr| acr.include?('aal') }
   end
 
   def aal
@@ -127,6 +138,10 @@ class OpenidConnectAuthorizeForm
   def_delegators :ial_context,
                  :ial2_or_greater?,
                  :ial2_requested?
+
+  def biometric_comparison_required?
+    @biometric_comparison_required
+  end
 
   private
 
@@ -273,5 +288,9 @@ class OpenidConnectAuthorizeForm
 
   def highest_level_aal(aal_values)
     AALS_BY_PRIORITY.find { |aal| aal_values.include?(aal) }
+  end
+
+  def verified_within_allowed?
+    IdentityConfig.store.allowed_verified_within_providers.include?(client_id)
   end
 end

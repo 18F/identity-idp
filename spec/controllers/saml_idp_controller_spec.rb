@@ -230,7 +230,7 @@ RSpec.describe SamlIdpController do
     it 'accepts requests with correct cert and correct session index and renders logout response' do
       REDIS_POOL.with { |client| client.flushdb }
       session_accessor = OutOfBandSessionAccessor.new(session_id)
-      session_accessor.put_pii(foo: 'bar')
+      session_accessor.put_pii(profile_id: 123, pii: { foo: 'bar' })
       saml_request = OneLogin::RubySaml::Logoutrequest.new
       encoded_saml_request = UriService.params(
         saml_request.create(right_cert_settings),
@@ -263,7 +263,7 @@ RSpec.describe SamlIdpController do
       )
 
       expect(response).to be_ok
-      expect(session_accessor.load_pii).to be_nil
+      expect(OutOfBandSessionAccessor.new(session_id).load_pii(123)).to be_nil
 
       logout_response = OneLogin::RubySaml::Logoutresponse.new(response.body)
       expect(logout_response.success?).to eq(true)
@@ -498,7 +498,6 @@ RSpec.describe SamlIdpController do
           zipcode: '12345',
         )
       end
-      let(:pii_json) { pii.present? ? pii.to_json : nil }
       let(:this_authn_request) do
         ial2_authnrequest = saml_authn_request_url(
           overrides: {
@@ -528,7 +527,12 @@ RSpec.describe SamlIdpController do
         )
         allow(subject).to receive(:attribute_asserter) { asserter }
 
-        controller.user_session[:decrypted_pii] = pii_json
+        if pii.present?
+          Pii::Cacher.new(user, controller.user_session).save_decrypted_pii(
+            pii,
+            user.active_profile.id,
+          )
+        end
       end
 
       it 'calls AttributeAsserter#build' do
@@ -671,7 +675,12 @@ RSpec.describe SamlIdpController do
         )
         allow(subject).to receive(:attribute_asserter) { asserter }
 
-        controller.user_session[:decrypted_pii] = pii
+        if pii.present?
+          Pii::Cacher.new(user, controller.user_session).save_decrypted_pii(
+            pii,
+            user.active_profile.id,
+          )
+        end
       end
 
       it 'calls AttributeAsserter#build' do
@@ -765,7 +774,7 @@ RSpec.describe SamlIdpController do
         analytics_hash = {
           success: false,
           errors: { authn_context: [t('errors.messages.unauthorized_authn_context')] },
-          error_details: { authn_context: [:unauthorized_authn_context] },
+          error_details: { authn_context: { unauthorized_authn_context: true } },
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: ['http://idmanagement.gov/ns/assurance/loa/5'],
           authn_context_comparison: 'exact',
@@ -832,7 +841,9 @@ RSpec.describe SamlIdpController do
 
         it 'returns AAL3 authn_context when AAL3 is requested' do
           allow(controller).to receive(:user_session).and_return(
-            { auth_method: TwoFactorAuthenticatable::AuthMethod::PIV_CAC },
+            auth_events: [
+              { auth_method: TwoFactorAuthenticatable::AuthMethod::PIV_CAC, at: Time.zone.now },
+            ],
           )
           user = create(:user, :with_piv_or_cac)
           auth_settings = saml_settings(
@@ -849,7 +860,9 @@ RSpec.describe SamlIdpController do
 
         it 'returns AAL3-HSPD12 authn_context when AAL3-HSPD12 is requested' do
           allow(controller).to receive(:user_session).and_return(
-            { auth_method: TwoFactorAuthenticatable::AuthMethod::PIV_CAC },
+            auth_events: [
+              { auth_method: TwoFactorAuthenticatable::AuthMethod::PIV_CAC, at: Time.zone.now },
+            ],
           )
           user = create(:user, :with_piv_or_cac)
           auth_settings = saml_settings(
@@ -866,7 +879,9 @@ RSpec.describe SamlIdpController do
 
         it 'returns AAL2-HSPD12 authn_context when AAL2-HSPD12 is requested' do
           allow(controller).to receive(:user_session).and_return(
-            { auth_method: TwoFactorAuthenticatable::AuthMethod::PIV_CAC },
+            auth_events: [
+              { auth_method: TwoFactorAuthenticatable::AuthMethod::PIV_CAC, at: Time.zone.now },
+            ],
           )
           user = create(:user, :with_piv_or_cac)
           auth_settings = saml_settings(
@@ -883,7 +898,9 @@ RSpec.describe SamlIdpController do
 
         it 'returns AAL2-phishing-resistant authn_context when AAL2-phishing-resistant requested' do
           allow(controller).to receive(:user_session).and_return(
-            { auth_method: TwoFactorAuthenticatable::AuthMethod::WEBAUTHN },
+            auth_events: [
+              { auth_method: TwoFactorAuthenticatable::AuthMethod::WEBAUTHN, at: Time.zone.now },
+            ],
           )
           user = create(:user, :with_webauthn)
           auth_settings = saml_settings(
@@ -976,7 +993,7 @@ RSpec.describe SamlIdpController do
         analytics_hash = {
           success: false,
           errors: { service_provider: [t('errors.messages.unauthorized_service_provider')] },
-          error_details: { service_provider: [:unauthorized_service_provider] },
+          error_details: { service_provider: { unauthorized_service_provider: true } },
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: request_authn_contexts,
           authn_context_comparison: 'exact',
@@ -1018,8 +1035,8 @@ RSpec.describe SamlIdpController do
             authn_context: [t('errors.messages.unauthorized_authn_context')],
           },
           error_details: {
-            authn_context: [:unauthorized_authn_context],
-            service_provider: [:unauthorized_service_provider],
+            authn_context: { unauthorized_authn_context: true },
+            service_provider: { unauthorized_service_provider: true },
           },
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: ['http://idmanagement.gov/ns/assurance/loa/5'],
@@ -1110,6 +1127,7 @@ RSpec.describe SamlIdpController do
           request_url: @stored_request_url.gsub('authpost', 'auth'),
           request_id: sp_request_id,
           requested_attributes: ['email'],
+          biometric_comparison_required: false,
         )
       end
 
@@ -1141,6 +1159,7 @@ RSpec.describe SamlIdpController do
           request_url: @saml_request.request.original_url.gsub('authpost', 'auth'),
           request_id: sp_request_id,
           requested_attributes: ['email'],
+          biometric_comparison_required: false,
         )
       end
 
@@ -1409,7 +1428,7 @@ RSpec.describe SamlIdpController do
         analytics_hash = {
           success: false,
           errors: { nameid_format: [t('errors.messages.unauthorized_nameid_format')] },
-          error_details: { nameid_format: [:unauthorized_nameid_format] },
+          error_details: { nameid_format: { unauthorized_nameid_format: true } },
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL,
           authn_context: request_authn_contexts,
           authn_context_comparison: 'exact',

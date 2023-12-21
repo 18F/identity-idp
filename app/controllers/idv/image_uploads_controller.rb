@@ -20,6 +20,7 @@ module Idv
     def image_upload_form
       @image_upload_form ||= Idv::ApiImageUploadForm.new(
         params,
+        liveness_checking_enabled: liveness_checking_enabled?,
         service_provider: current_sp,
         analytics: analytics,
         uuid_prefix: current_sp&.app_id,
@@ -30,6 +31,18 @@ module Idv
 
     def store_encrypted_images?
       IdentityConfig.store.encrypted_document_storage_enabled
+    end
+
+    def liveness_checking_enabled?
+      IdentityConfig.store.doc_auth_selfie_capture_enabled
+    end
+
+    def ial_context
+      @ial_context ||= IalContext.new(
+        ial: sp_session_ial,
+        service_provider: current_sp,
+        user: current_user,
+      )
     end
   end
 end

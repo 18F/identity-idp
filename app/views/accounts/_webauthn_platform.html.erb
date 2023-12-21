@@ -2,30 +2,28 @@
   <%= t('account.index.webauthn_platform') %>
 </h2>
 
-<div class="border-bottom border-primary-light">
-  <% MfaContext.new(current_user).webauthn_platform_configurations.each do |cfg| %>
-    <div class="grid-row padding-1 border-top border-left border-right border-primary-light">
-      <div class="grid-col-8 tablet:grid-col-6 truncate">
-        <%= cfg.name %>
-      </div>
-      <% if MfaPolicy.new(current_user).multiple_factors_enabled? %>
-        <div class="grid-col-4 tablet:grid-col-6 text-right">
-          <%= link_to(
-                t('account.index.webauthn_platform_delete'),
-                webauthn_setup_delete_path(id: cfg.id),
-              ) %>
-        </div>
-      <% end %>
-    </div>
-    <div class="clearfix"></div>
+<div role="list">
+  <% MfaContext.new(current_user).webauthn_platform_configurations.each do |configuration| %>
+    <%= render ManageableAuthenticatorComponent.new(
+          configuration:,
+          user_session:,
+          manage_url: edit_webauthn_path(id: configuration.id),
+          manage_api_url: api_internal_two_factor_authentication_webauthn_path(id: configuration.id),
+          custom_strings: {
+            deleted: t('two_factor_authentication.webauthn_platform.deleted'),
+            renamed: t('two_factor_authentication.webauthn_platform.renamed'),
+            manage_accessible_label: t('two_factor_authentication.webauthn_platform.manage_accessible_label'),
+          },
+          role: 'list-item',
+        ) %>
   <% end %>
 </div>
-<% if IdentityConfig.store.platform_auth_set_up_enabled %>
-  <%= render ButtonComponent.new(
-        action: ->(**tag_options, &block) do
-          link_to(webauthn_setup_path(platform: true), **tag_options, &block)
-        end,
-        icon: :add,
-        class: 'usa-button usa-button--outline margin-top-2',
-      ).with_content(t('account.index.webauthn_platform_add')) %>
-<% end %>
+
+<%= render ButtonComponent.new(
+      action: ->(**tag_options, &block) do
+        link_to(webauthn_setup_path(platform: true), **tag_options, &block)
+      end,
+      icon: :add,
+      outline: true,
+      class: 'margin-top-2',
+    ).with_content(t('account.index.webauthn_platform_add')) %>

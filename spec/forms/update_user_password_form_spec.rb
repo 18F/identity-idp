@@ -34,7 +34,7 @@ RSpec.describe UpdateUserPasswordForm, type: :model do
         }
 
         expect(UpdateUser).not_to receive(:new)
-        expect(ActiveProfileEncryptor).not_to receive(:new)
+        expect(UserProfilesEncryptor).not_to receive(:new)
         expect(subject.submit(params).to_h).to include(
           success: false,
           errors: errors,
@@ -48,6 +48,9 @@ RSpec.describe UpdateUserPasswordForm, type: :model do
         expect(subject.submit(params).to_h).to eq(
           success: true,
           errors: {},
+          active_profile_present: false,
+          pending_profile_present: false,
+          user_id: user.uuid,
         )
       end
 
@@ -67,26 +70,77 @@ RSpec.describe UpdateUserPasswordForm, type: :model do
     context 'when the user has an active profile' do
       let(:profile) { create(:profile, :active, :verified, pii: { ssn: '1234' }) }
       let(:user) { profile.user }
+      let(:user_session) { {} }
+
+      before do
+        Pii::Cacher.new(user, user_session).save_decrypted_pii({ ssn: '1234' }, profile.id)
+      end
 
       it 'encrypts the active profile' do
-        allow(user).to receive(:active_profile).and_return(profile)
-
-        encryptor = instance_double(ActiveProfileEncryptor)
-        allow(ActiveProfileEncryptor).to receive(:new).
-          with(user, user_session, password).and_return(encryptor)
-        allow(encryptor).to receive(:call)
+        encryptor = instance_double(UserProfilesEncryptor)
+        allow(UserProfilesEncryptor).to receive(:new).
+          with(user: user, user_session: user_session, password: password).and_return(encryptor)
+        allow(encryptor).to receive(:encrypt)
 
         subject.submit(params)
 
-        expect(encryptor).to have_received(:call)
+        expect(encryptor).to have_received(:encrypt)
+      end
+
+      it 'logs that the user has an active profile' do
+        result = subject.submit(params)
+
+        expect(result.extra).to include(
+          active_profile_present: true,
+          pending_profile_present: false,
+        )
       end
     end
 
-    context 'when the user does not have an active profile' do
-      it 'does not call ActiveProfileEncryptor' do
-        expect(ActiveProfileEncryptor).to_not receive(:new)
+    context 'the user has a pending profile' do
+      let(:profile) { create(:profile, :verify_by_mail_pending, :verified, pii: { ssn: '1234' }) }
+      let(:user) { profile.user }
+      let(:user_session) { {} }
+
+      before do
+        Pii::Cacher.new(user, user_session).save_decrypted_pii({ ssn: '1234' }, profile.id)
+      end
+
+      it 'encrypts the pending profile' do
+        encryptor = instance_double(UserProfilesEncryptor)
+        allow(UserProfilesEncryptor).to receive(:new).
+          with(user: user, user_session: user_session, password: password).and_return(encryptor)
+        allow(encryptor).to receive(:encrypt)
 
         subject.submit(params)
+
+        expect(encryptor).to have_received(:encrypt)
+      end
+
+      it 'logs that the user has a pending profile' do
+        result = subject.submit(params)
+
+        expect(result.extra).to include(
+          active_profile_present: false,
+          pending_profile_present: true,
+        )
+      end
+    end
+
+    context 'when the user does not have a profile' do
+      it 'does not call UserProfilesEncryptor' do
+        expect(UserProfilesEncryptor).to_not receive(:new)
+
+        subject.submit(params)
+      end
+
+      it 'logs that the user does not have an active or pending profile' do
+        result = subject.submit(params)
+
+        expect(result.extra).to include(
+          active_profile_present: false,
+          pending_profile_present: false,
+        )
       end
     end
   end

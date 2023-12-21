@@ -70,6 +70,11 @@ class ServiceProviderSession
     sp.issuer
   end
 
+  def selfie_required?
+    !!(IdentityConfig.store.doc_auth_selfie_capture_enabled &&
+      sp_session[:biometric_comparison_required])
+  end
+
   def cancel_link_url
     view_context.new_user_session_url(request_id: sp_session[:request_id])
   end
@@ -94,6 +99,9 @@ class ServiceProviderSession
   end
 
   def requested_more_recent_verification?
+    unless IdentityConfig.store.allowed_verified_within_providers.include?(sp_issuer)
+      return false
+    end
     return false if authorize_form.verified_within.blank?
 
     verified_at = view_context.current_user.active_profile&.verified_at

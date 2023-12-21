@@ -3,7 +3,7 @@ module IdvSession
 
   included do
     before_action :redirect_unless_idv_session_user
-    before_action :redirect_if_sp_context_needed
+    before_action :redirect_unless_sp_requested_verification
   end
 
   def confirm_idv_needed
@@ -16,12 +16,6 @@ module IdvSession
 
   def hybrid_session?
     session[:doc_capture_user_id].present?
-  end
-
-  def confirm_phone_or_address_confirmed
-    return if idv_session.address_confirmed? || idv_session.phone_confirmed?
-
-    redirect_to idv_review_url
   end
 
   def idv_session
@@ -53,10 +47,16 @@ module IdvSession
     redirect_to root_url if !idv_session_user
   end
 
-  def redirect_if_sp_context_needed
-    return if sp_from_sp_session.present?
-    return unless IdentityConfig.store.idv_sp_required
+  def redirect_unless_sp_requested_verification
+    return if !IdentityConfig.store.idv_sp_required
     return if idv_session_user.profiles.any?
+
+    ial_context = IalContext.new(
+      ial: sp_session_ial,
+      service_provider: sp_from_sp_session,
+      user: idv_session_user,
+    )
+    return if ial_context.ial2_or_greater?
 
     redirect_to account_url
   end

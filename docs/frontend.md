@@ -33,6 +33,18 @@ margins or borders.
 - Packages are managed with [Yarn](https://classic.yarnpkg.com/), organized using [Yarn workspaces](https://classic.yarnpkg.com/en/docs/workspaces/)
 - JavaScript is transpiled, bundled, and minified via [Webpack](https://webpack.js.org/) and [Babel](https://babeljs.io/)
 
+### Naming Conventions
+
+- Files within `app/javascript` should be named as kebab-case, e.g. `./path-to/my-javascript.ts`.
+- Variables and functions (excluding React components) should be named as camelCase, e.g. `const myFavoriteNumber = 1;`.
+   - Only the first letter of an abbreviation should be capitalized, e.g. `const userId = 10;`.
+   - All letters of an acronym should be capitalized, e.g. `const siteURL = 'https://example.com';`.
+- Classes, React components, and TypeScript types should be named as PascalCase (upper camel case), e.g. `class MyCustomElement {}`.
+- Constants should be named as SCREAMING_SNAKE_CASE, e.g. `const MEANING_OF_LIFE = 42;`.
+- TypeScript enums should be named as PascalCase with SCREAMING_SNAKE_CASE members, e.g. `enum Color { RED = '#f00'; }`.
+
+Related: [Component Naming Conventions](#naming)
+
 ### Prettier
 
 [Prettier](https://prettier.io/) is an opinionated code formatter which simplifies adherence to
@@ -54,8 +66,8 @@ workflow to apply formatting automatically on save.
 
 [Workspaces](https://classic.yarnpkg.com/en/docs/workspaces/) allow a developer to create and
 organize code which is used just like any other NPM package, but which doesn't require the overhead
-involved in publishing those modules and keeping versions in sync across multiple repositories. The
-IDP uses Yarn workspaces to keep JavaScript code organized, reusable, and to encourage good coding
+involved in publishing those modules and keeping versions in sync across multiple repositories. We
+use Yarn workspaces to keep JavaScript code organized, reusable, and to encourage good coding
 practices in abstractions.
 
 In practice:
@@ -63,21 +75,20 @@ In practice:
 - All folders within `app/javascript/packages` are treated as workspace packages.
 - Each package should have its own `package.json` that includes...
   - ...a `name` starting with `@18f/identity-` and ending with the name of the package folder.
-  - ...a listing of its own dependencies, including to other workspace packages using
-    [`file:` prefix](https://classic.yarnpkg.com/en/docs/cli/add/).
-  - ...[`"private": true`](https://docs.npmjs.com/files/package.json#private) if the workspace
-    package is not intended to be published to NPM.
+  - ...a [`private`](https://docs.npmjs.com/files/package.json#private) value indicating whether the
+    package is intended to be published to NPM.
   - ...a value for the `version` field, since it is required. The value value can be anything, and
     `"1.0.0"` is a good default.
-- Each package should include an `index.js` which serves as the entry-point and public API for the
-  package.
+- The package should be importable by its bare name, either with an `index.ts` or equivalent
+  [package entrypoints](https://nodejs.org/api/packages.html#package-entry-points)
 
-A package might have a corresponding file by the same package name contained within
-`app/javascript/packs` that serves as the integration point between packages and the Rails
-application. This is to encourage packages to be reusable, where the file in `packs` contains any
-logic required to wire the package to the running Rails application. Because Yarn will alias
-workspace packages using symlinks, you can reference a package using the name you assigned using the
-guidelines above for `package.json` `name` field (for example,
+As with any public NPM package, a workspace package should ideally be reusable and avoid direct
+references to page elements. In order to integrate a package within a particular page, you should
+either reference it within [a ViewComponent component's accompanying script](https://github.com/18F/identity-idp/blob/main/app/components/README.md),
+or by creating a new `app/javascript/packs` file to be loaded on a page.
+
+Because Yarn will alias workspace packages using symlinks, you can reference a package using the
+name you assigned using the guidelines above for `package.json` `name` field (for example,
 `import { Button } from '@18f/identity-components';`).
 
 ### Dependencies
@@ -119,6 +130,30 @@ to deduplicate resolved package versions within the Yarn lockfile.
 ### Localization
 
 See [`@18f/identity-i18n` package documentation](../app/javascript/packages/i18n/README.md).
+
+### Analytics
+
+See [`@18f/identity-analytics` package documentation][analytics_package] for code examples detailing
+how to track an event in JavaScript.
+
+Any event logged from the frontend must be added to the `ALLOWED_EVENTS` allowlist in [`FrontendLogController`][frontend_log_controller.rb].
+This is an allowlist of events defined in [AnalyticsEvents][analytics_events.rb] which are allowed
+to be logged from the frontend. All properties will be passed automatically to the event from the
+frontend as long as they are defined in the method argument signature.
+
+There may be some situations where you need to append a value known by the server to an event logged
+in the frontend, such as an A/B test bucket descriptor. In these scenarios, you have a few options:
+
+1. Add the value to the page markup, such as through an [HTML `data-` attribute][data_attributes],
+and reference that attribute in JavaScript.
+2. Implement a mixin to intercept and override the default behavior of an analytics event, such as
+how [`Idv::AnalyticsEventEnhancer`][analytics_events_enhancer.rb] is implemented.
+
+[analytics_package]: ../app/javascript/packages/analytics/README.md
+[frontend_log_controller.rb]: https://github.com/18F/identity-idp/blob/main/app/controllers/frontend_log_controller.rb
+[analytics_events.rb]: https://github.com/18F/identity-idp/blob/main/app/services/analytics_events.rb
+[data_attributes]: https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes
+[analytics_events_enhancer.rb]: https://github.com/18F/identity-idp/blob/main/app/services/idv/analytics_events_enhancer.rb
 
 ## Components
 
@@ -187,8 +222,8 @@ For example, consider a **Password Input** component:
 - A ViewComponent file would be named `app/components/password_input_component.rb`
 - A stylesheet file would be named `app/assets/stylesheets/componewnts/_password-input.scss`
 - A stylesheet selector would be named `.password-input`, with child elements prefixed as `.password-input__`
-- A react component would be named `<PasswordInput />`
-- A react component file would be named `app/javascript/packages/password-input/password-input.tsx`
+- A React component would be named `<PasswordInput />`
+- A React component file would be named `app/javascript/packages/password-input/password-input.tsx`
 - A web component would be named `PasswordInputElement`
 - A web components file would be named `app/javascript/packages/password-input/password-input-element.ts`
 
@@ -320,19 +355,37 @@ is a wrapper component for Simple Form's `f.input` helper. It enhances the behav
 
 ### Production Errors
 
-JavaScript errors that occur in production environments are automatically logged to NewRelic.
-Because JavaScript is transpiled and minified in production, these files can be difficult to debug.
-Fortunately, [NewRelic supports source maps](https://docs.newrelic.com/docs/browser/browser-monitoring/browser-pro-features/upload-source-maps-un-minify-js-errors/)
-to produce a readable stack trace of the original code.
+JavaScript errors that occur in production environments are automatically logged to NewRelic. They are logged as an expected Ruby error with the class `FrontendLoggerError::FrontendError`.
 
-When viewing an instance of a JavaScript error, NewRelic will prompt for a sourcemap corresponding
-to a specific JavaScript file URL.
+There are two ways you can view these errors:
 
-![NewRelic minified stack trace](https://user-images.githubusercontent.com/1779930/194325242-1e0cb00a-6ee1-4fb0-82b1-b017ced703b5.png)
+- [In the production APM "Errors" inbox, removing the filter which hides "expected" errors](https://onenr.io/0OQMVbbB9wG)
+- [In the query builder, selecting from `TransactionError` with an error class of `FrontendErrorLogger::FrontendLogger`](https://onenr.io/0kjnpGG4awo)
 
-To retrieve the sourcemap for this URL, simply copy the URL into your browser URL bar and append
-`.map`. Navigating to this URL should download the `.map` file to your computer, which you can then
-drag-and-drop onto the NewRelic web interface to reveal the decompiled stack trace.
+Each error includes a few details to help you debug:
+
+- `message`: Corresponds to [`Error#message`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/message), and is usually a good summary to group by
+- `name`: The subclass of the error (e.g. `TypeError`)
+- `stack`: A stacktrace of the individual error instance
+
+Note that NewRelic creates links in stack traces which are invalid, since they include the line and column number. If you encounter an "AccessDenied" error when clicking a stacktrace link, make sure to remove those details after the `.js` in your browser URL.
+
+Debugging these stack traces can be difficult, since files in production are minified, and the stack traces include line numbers and columns for minified files. With the following steps, you can find a reference to the original code:
+
+1. Download the minified JavaScript file referenced in the stack trace
+   - Example: https://secure.login.gov/packs/js/document-capture-e41c853e.digested.js
+2. Download the sourcemap file for the JavaScript by appending `.map` to the previous URL
+   - Example: https://secure.login.gov/packs/js/document-capture-e41c853e.digested.js.map
+3. Install the [`sourcemap-lookup` npm package](https://www.npmjs.com/package/sourcemap-lookup)
+   - `npm i -g sourcemap-lookup`
+4. Open a terminal window to the directory where you downloaded the files in steps 1 and 2
+   - Example: `cd ~/Downloads`
+5. Clean the sourcemap file to remove Webpack protocol details
+   - Example: `sed -i '' 's/webpack:\/\/@18f\/identity-idp\///g' document-capture-e41c853e.digested.js.map`
+6. Run the `sourcemap-lookup` command with a reference to the JavaScript file, line and column number, and specifying the source path to your local copy of `identity-idp`
+   - Example: `sourcemap-lookup document-capture-e41c853e.digested.js:2:172098 --source-path=/path/to/identity-idp/`
+
+The output of the `sourcemap-lookup` command should include "Original Position" and "Code Section" of the code which triggered the error.
 
 ## Devices
 

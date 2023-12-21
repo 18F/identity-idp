@@ -13,7 +13,6 @@ module Idv
         end
 
         def call
-          flow_session[:flow_path] = @flow.flow_path
           pii_from_user = flow_session[:pii_from_user]
           initial_state_of_same_address_as_id = flow_session[:pii_from_user][:same_address_as_id]
           Idv::StateIdForm::ATTRIBUTES.each do |attr|
@@ -23,28 +22,30 @@ module Idv
           formatted_dob = MemorableDateComponent.extract_date_param flow_params&.[](:dob)
           pii_from_user[:dob] = formatted_dob if formatted_dob
 
-          if capture_secondary_id_enabled?
-            if pii_from_user[:same_address_as_id] == 'true'
-              copy_state_id_address_to_residential_address(pii_from_user)
-              mark_step_complete(:address)
-              redirect_to idv_in_person_ssn_url
-            end
-
-            if initial_state_of_same_address_as_id == 'true' &&
-               pii_from_user[:same_address_as_id] == 'false'
-              clear_residential_address(pii_from_user)
-              mark_step_incomplete(:address)
-           end
+          if pii_from_user[:same_address_as_id] == 'true'
+            copy_state_id_address_to_residential_address(pii_from_user)
+            flow_session['Idv::Steps::InPerson::AddressStep'] = true
+            redirect_to idv_in_person_ssn_url
           end
+
+          if initial_state_of_same_address_as_id == 'true' &&
+             pii_from_user[:same_address_as_id] == 'false'
+            clear_residential_address(pii_from_user)
+            flow_session.delete('Idv::Steps::InPerson::AddressStep')
+         end
 
           if flow_session['Idv::Steps::InPerson::AddressStep']
             redirect_to idv_in_person_verify_info_url
+          end
+
+          if pii_from_user[:same_address_as_id] == 'false' &&
+             IdentityConfig.store.in_person_residential_address_controller_enabled
+            redirect_to idv_in_person_proofing_address_url
           end
         end
 
         def extra_view_variables
           {
-            capture_secondary_id_enabled: capture_secondary_id_enabled?,
             form:,
             pii:,
             parsed_dob:,
@@ -104,10 +105,7 @@ module Idv
         end
 
         def form
-          @form ||= Idv::StateIdForm.new(
-            current_user,
-            capture_secondary_id_enabled: capture_secondary_id_enabled?,
-          )
+          @form ||= Idv::StateIdForm.new(current_user)
         end
 
         def form_submit

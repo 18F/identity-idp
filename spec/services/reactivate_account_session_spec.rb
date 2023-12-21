@@ -1,10 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe ReactivateAccountSession do
-  let(:user) { build(:user) }
+  let(:user) { create(:user, :proofed) }
   let(:user_session) { {} }
 
   before do
+    user.active_profile.deactivate(:password_reset)
     @reactivate_account_session = ReactivateAccountSession.new(
       user: user,
       user_session: user_session,
@@ -64,7 +65,11 @@ RSpec.describe ReactivateAccountSession do
       @reactivate_account_session.store_decrypted_pii(pii)
       account_reactivation_obj = user_session[:reactivate_account]
       expect(account_reactivation_obj[:validated_personal_key]).to be(true)
-      expect(user_session[:decrypted_pii]).to eq(pii.to_json)
+
+      decrypted_session_pii = Pii::Cacher.new(user, user_session).fetch(
+        user.password_reset_profile.id,
+      )
+      expect(decrypted_session_pii).to eq(pii)
     end
   end
 
@@ -80,15 +85,23 @@ RSpec.describe ReactivateAccountSession do
   end
 
   describe '#decrypted_pii' do
+    let(:pii_cacher) { Pii::Cacher.new(user, user_session) }
+
+    before do
+      allow(Pii::Cacher).to receive(:new).and_return(pii_cacher)
+      allow(pii_cacher).to receive(:fetch).and_call_original
+    end
+
     it 'returns nil as a default' do
       expect(@reactivate_account_session.decrypted_pii).to eq(nil)
     end
 
-    it 'returns the pii stored in the session' do
+    it 'returns the pii stored in the session by way of the password reset profile' do
       pii = Pii::Attributes.new(first_name: 'Test')
       @reactivate_account_session.store_decrypted_pii(pii)
 
       expect(@reactivate_account_session.decrypted_pii).to eq(pii)
+      expect(pii_cacher).to have_received(:fetch).with(user.password_reset_profile.id)
     end
   end
 end

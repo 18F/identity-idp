@@ -3,6 +3,8 @@ Dir.chdir(__dir__) { require 'bundler/setup' }
 
 require 'active_support'
 require 'active_support/core_ext/integer/time'
+require 'active_support/core_ext/object/blank'
+require 'active_support/time'
 require 'aws-sdk-cloudwatchlogs'
 require 'concurrent-ruby'
 require 'csv'
@@ -23,10 +25,12 @@ class QueryCloudwatch
     :app,
     :from,
     :to,
+    :time_slices,
     :query,
     :format,
     :complete,
     :progress,
+    :num_threads,
     :wait_duration,
     :count_distinct,
     keyword_init: true,
@@ -68,8 +72,9 @@ class QueryCloudwatch
   def fetch(&block)
     cloudwatch_client.fetch(
       query: config.query,
-      from: config.from,
-      to: config.to,
+      from: config.time_slices.blank? ? config.from : nil,
+      to: config.time_slices.blank? ? config.to : nil,
+      time_slices: config.time_slices.presence,
       &block
     )
   end
@@ -80,6 +85,7 @@ class QueryCloudwatch
       log_group_name: config.group,
       progress: config.progress,
       slice_interval: config.slice,
+      num_threads: config.num_threads,
       **config.to_h.slice(:wait_duration).compact,
     )
   end
@@ -92,8 +98,10 @@ class QueryCloudwatch
       slice: parse_duration('1w'),
       format: :csv,
       to: now,
+      time_slices: [],
       complete: false,
       progress: true,
+      num_threads: Reporting::CloudwatchClient::DEFAULT_NUM_THREADS,
       count_distinct: nil,
     )
 
@@ -124,6 +132,13 @@ class QueryCloudwatch
           --group int_/srv/idp/shared/log/production.log \\
           --start "2020-01-01T00:00:00-00:00" \\
           --to "2020-12-31T23:59:59-00:00" \\
+          --query "fields @timestamp | limit 9999"
+
+        Query disjoint time slices via --date
+
+        #{$PROGRAM_NAME} \\
+          --date 2023-01-01,2023-02-01
+          --env int --app idp --log events.log
           --query "fields @timestamp | limit 9999"
 
         Timestamps
@@ -188,6 +203,22 @@ class QueryCloudwatch
         end
       end
 
+      opts.on(
+        '--num-threads NUM',
+        "number of threads, defaults to #{Reporting::CloudwatchClient::DEFAULT_NUM_THREADS}",
+      ) do |str|
+        config.num_threads = Integer(str, 10)
+      end
+
+      opts.on(
+        '--date DATE,DATE',
+        '(optional) dates to query, can be disjoint, to provide time slices to query'
+      ) do |dates|
+        dates.split(',').each do |date_str|
+          config.time_slices << Date.parse(date_str).in_time_zone('UTC').all_day
+        end
+      end
+
       opts.on('--query QUERY', 'Cloudwatch Insights query') do |query|
         config.query = query
       end
@@ -237,7 +268,9 @@ class QueryCloudwatch
       errors << 'ERROR: missing log group --group or (--app and --env and --log)'
     end
 
-    errors << 'ERROR: missing time range --from or --start' if !config.from
+    if !config.from && config.time_slices.empty?
+      errors << 'ERROR: missing time range --from or --start, or --date'
+    end
 
     if !config.query
       if stdin.tty?

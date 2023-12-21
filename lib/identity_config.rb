@@ -6,7 +6,7 @@ class IdentityConfig
   VENDOR_STATUS_OPTIONS = %i[operational partial_outage full_outage]
 
   class << self
-    attr_reader :store, :key_types
+    attr_reader :store, :key_types, :unused_keys
   end
 
   CONVERTERS = {
@@ -126,6 +126,7 @@ class IdentityConfig
     config.add(:address_identity_proofing_supported_country_codes, type: :json)
     config.add(:all_redirect_uris_cache_duration_minutes, type: :integer)
     config.add(:allowed_ialmax_providers, type: :json)
+    config.add(:allowed_verified_within_providers, type: :json)
     config.add(:asset_host, type: :string)
     config.add(:async_stale_job_timeout_seconds, type: :integer)
     config.add(:async_wait_timeout_seconds, type: :integer)
@@ -169,7 +170,6 @@ class IdentityConfig
     config.add(:deleted_user_accounts_report_configs, type: :json)
     config.add(:deliver_mail_async, type: :boolean)
     config.add(:development_mailer_deliver_method, type: :symbol, enum: [:file, :letter_opener])
-    config.add(:disable_csp_unsafe_inline, type: :boolean)
     config.add(:disable_email_sending, type: :boolean)
     config.add(:disable_logout_get_request, type: :boolean)
     config.add(:disallow_all_web_crawlers, type: :boolean)
@@ -181,10 +181,14 @@ class IdentityConfig
     config.add(:doc_auth_error_dpi_threshold, type: :integer)
     config.add(:doc_auth_error_glare_threshold, type: :integer)
     config.add(:doc_auth_error_sharpness_threshold, type: :integer)
+    config.add(:doc_auth_exit_question_section_enabled, type: :boolean)
+    config.add(:doc_auth_not_ready_section_enabled, type: :boolean)
     config.add(:doc_auth_max_attempts, type: :integer)
     config.add(:doc_auth_max_capture_attempts_before_native_camera, type: :integer)
     config.add(:doc_auth_max_submission_attempts_before_native_camera, type: :integer)
     config.add(:doc_auth_s3_request_timeout, type: :integer)
+    config.add(:doc_auth_selfie_capture_enabled, type: :boolean)
+    config.add(:doc_auth_sdk_capture_orientation, type: :json, options: { symbolize_names: true })
     config.add(:doc_auth_supported_country_codes, type: :json)
     config.add(:doc_auth_vendor, type: :string)
     config.add(:doc_auth_vendor_randomize, type: :boolean)
@@ -198,6 +202,7 @@ class IdentityConfig
     config.add(:email_registrations_per_ip_limit, type: :integer)
     config.add(:email_registrations_per_ip_period, type: :integer)
     config.add(:email_registrations_per_ip_track_only_mode, type: :boolean)
+    config.add(:enable_add_mfa_redirect_for_personal_key, type: :boolean)
     config.add(:enable_load_testing_mode, type: :boolean)
     config.add(:enable_rate_limiting, type: :boolean)
     config.add(:enable_test_routes, type: :boolean)
@@ -230,14 +235,11 @@ class IdentityConfig
     config.add(:idv_attempt_window_in_hours, type: :integer)
     config.add(:idv_available, type: :boolean)
     config.add(:idv_contact_phone_number, type: :string)
-    config.add(:idv_getting_started_a_b_testing, type: :json, options: { symbolize_names: true })
-    config.add(:idv_phone_question_a_b_testing, type: :json, options: { symbolize_names: true })
     config.add(:idv_max_attempts, type: :integer)
     config.add(:idv_min_age_years, type: :integer)
     config.add(:idv_send_link_attempt_window_in_minutes, type: :integer)
     config.add(:idv_send_link_max_attempts, type: :integer)
     config.add(:idv_sp_required, type: :boolean)
-    config.add(:in_person_capture_secondary_id_enabled, type: :boolean)
     config.add(:in_person_completion_survey_url, type: :string)
     config.add(:in_person_doc_auth_button_enabled, type: :boolean)
     config.add(:in_person_email_reminder_early_benchmark_in_days, type: :integer)
@@ -256,6 +258,7 @@ class IdentityConfig
     config.add(:in_person_outage_expected_update_date, type: :string)
     config.add(:in_person_outage_message_enabled, type: :boolean)
     config.add(:in_person_proofing_enabled, type: :boolean)
+    config.add(:in_person_proofing_opt_in_enabled, type: :boolean)
     config.add(:in_person_public_address_search_enabled, type: :boolean)
     config.add(:in_person_residential_address_controller_enabled, type: :boolean)
     config.add(:in_person_results_delay_in_hours, type: :integer)
@@ -269,6 +272,9 @@ class IdentityConfig
     config.add(:lexisnexis_hmac_secret_key, type: :string)
     config.add(:lexisnexis_instant_verify_timeout, type: :float)
     config.add(:lexisnexis_instant_verify_workflow, type: :string)
+    config.add(:lexisnexis_instant_verify_workflow_ab_testing_enabled, type: :boolean)
+    config.add(:lexisnexis_instant_verify_workflow_ab_testing_percent, type: :integer)
+    config.add(:lexisnexis_instant_verify_workflow_alternate, type: :string)
     config.add(:lexisnexis_password, type: :string)
     config.add(:lexisnexis_phone_finder_timeout, type: :float)
     config.add(:lexisnexis_phone_finder_workflow, type: :string)
@@ -313,14 +319,19 @@ class IdentityConfig
     config.add(:max_piv_cac_per_account, type: :integer)
     config.add(:min_password_score, type: :integer)
     config.add(:minimum_wait_before_another_usps_letter_in_hours, type: :integer)
-    config.add(:multi_region_kms_migration_jobs_enabled, type: :boolean)
-    config.add(:multi_region_kms_migration_jobs_profile_count, type: :integer)
-    config.add(:multi_region_kms_migration_jobs_profile_timeout, type: :integer)
-    config.add(:multi_region_kms_migration_jobs_user_count, type: :integer)
-    config.add(:multi_region_kms_migration_jobs_user_timeout, type: :integer)
     config.add(:mx_timeout, type: :integer)
     config.add(:newrelic_license_key, type: :string)
     config.add(:nonessential_email_banlist, type: :json)
+    config.add(
+      :openid_connect_redirect,
+      type: :string,
+      enum: ['server_side', 'client_side', 'client_side_js'],
+    )
+    config.add(
+      :openid_connect_redirect_uuid_override_map,
+      type: :json,
+    )
+    config.add(:openid_connect_content_security_form_action_enabled, type: :boolean)
     config.add(:otp_delivery_blocklist_findtime, type: :integer)
     config.add(:otp_delivery_blocklist_maxretry, type: :integer)
     config.add(:otp_expiration_warning_seconds, type: :integer)
@@ -359,7 +370,6 @@ class IdentityConfig
     config.add(:piv_cac_service_url, type: :string)
     config.add(:piv_cac_verify_token_secret)
     config.add(:piv_cac_verify_token_url, type: :string)
-    config.add(:platform_auth_set_up_enabled, type: :boolean)
     config.add(:poll_rate_for_verify_in_seconds, type: :integer)
     config.add(:proof_address_max_attempt_window_in_minutes, type: :integer)
     config.add(:proof_address_max_attempts, type: :integer)
@@ -376,6 +386,7 @@ class IdentityConfig
     config.add(:rack_mini_profiler, type: :boolean)
     config.add(:rack_timeout_service_timeout_seconds, type: :integer)
     config.add(:rails_mailer_previews_enabled, type: :boolean)
+    config.add(:raise_on_missing_title, type: :boolean)
     config.add(:reauthn_window, type: :integer)
     config.add(:recaptcha_enterprise_api_key, type: :string)
     config.add(:recaptcha_enterprise_project_id, type: :string)
@@ -442,6 +453,7 @@ class IdentityConfig
     config.add(:state_tracking_enabled, type: :boolean)
     config.add(:system_demand_report_email, type: :string)
     config.add(:team_agnes_email, type: :string)
+    config.add(:team_all_contractors_email, type: :string)
     config.add(:team_all_feds_email, type: :string)
     config.add(:team_ursula_email, type: :string)
     config.add(:telephony_adapter, type: :string)
@@ -474,6 +486,8 @@ class IdentityConfig
     config.add(:vendor_status_lexisnexis_trueid, type: :symbol, enum: VENDOR_STATUS_OPTIONS)
     config.add(:vendor_status_sms, type: :symbol, enum: VENDOR_STATUS_OPTIONS)
     config.add(:vendor_status_voice, type: :symbol, enum: VENDOR_STATUS_OPTIONS)
+    config.add(:vendor_status_idv_scheduled_maintenance_start, type: :string)
+    config.add(:vendor_status_idv_scheduled_maintenance_finish, type: :string)
     config.add(:verification_errors_report_configs, type: :json)
     config.add(:verify_gpo_key_attempt_window_in_minutes, type: :integer)
     config.add(:verify_gpo_key_max_attempts, type: :integer)
@@ -484,8 +498,10 @@ class IdentityConfig
     config.add(:voice_otp_speech_rate)
     config.add(:voip_allowed_phones, type: :json)
     config.add(:voip_block, type: :boolean)
+    config.add(:weekly_auth_funnel_report_config, type: :json)
 
     @key_types = config.key_types
+    @unused_keys = config_map.keys - config.written_env.keys
     @store = RedactedStruct.new('IdentityConfig', *config.written_env.keys, keyword_init: true).
       new(**config.written_env)
   end

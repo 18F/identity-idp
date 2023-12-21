@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Idv::HybridHandoffController do
-  include IdvHelper
+  include FlowPolicyHelper
 
   let(:user) { create(:user) }
 
@@ -11,10 +11,16 @@ RSpec.describe Idv::HybridHandoffController do
 
   before do
     stub_sign_in(user)
+    stub_up_to(:agreement, idv_session: subject.idv_session)
     stub_analytics
     stub_attempts_tracker
-    subject.idv_session.idv_consent_given = true
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
+  end
+
+  describe '#step_info' do
+    it 'returns a valid StepInfo object' do
+      expect(Idv::HybridHandoffController.step_info).to be_valid
+    end
   end
 
   describe 'before_actions' do
@@ -29,20 +35,6 @@ RSpec.describe Idv::HybridHandoffController do
       expect(subject).to have_actions(
         :before,
         :check_for_mail_only_outage,
-      )
-    end
-
-    it 'checks that agreement step is complete' do
-      expect(subject).to have_actions(
-        :before,
-        :confirm_agreement_step_complete,
-      )
-    end
-
-    it 'checks that hybrid_handoff is needed' do
-      expect(subject).to have_actions(
-        :before,
-        :confirm_hybrid_handoff_needed,
       )
     end
   end
@@ -92,20 +84,20 @@ RSpec.describe Idv::HybridHandoffController do
     end
 
     context 'hybrid_handoff already visited' do
-      it 'redirects to document_capture in standard flow' do
+      it 'shows hybrid_handoff for standard' do
         subject.idv_session.flow_path = 'standard'
 
         get :show
 
-        expect(response).to redirect_to(idv_document_capture_url)
+        expect(response).to render_template :show
       end
 
-      it 'redirects to link_sent in hybrid flow' do
+      it 'shows hybrid_handoff for hybrid' do
         subject.idv_session.flow_path = 'hybrid'
 
         get :show
 
-        expect(response).to redirect_to(idv_link_sent_url)
+        expect(response).to render_template :show
       end
     end
 
@@ -147,25 +139,25 @@ RSpec.describe Idv::HybridHandoffController do
 
       context 'user has already completed verify info' do
         before do
-          subject.idv_session.mark_verify_info_step_complete!
+          stub_up_to(:verify_info, idv_session: subject.idv_session)
         end
 
-        it 'does not set redo_document_capture to true in idv_session' do
+        it 'does set redo_document_capture to true in idv_session' do
           get :show, params: { redo: true }
 
-          expect(subject.idv_session.redo_document_capture).not_to be_truthy
+          expect(subject.idv_session.redo_document_capture).to be_truthy
         end
 
-        it 'does not add redo_document_capture to analytics' do
+        it 'does add redo_document_capture to analytics' do
           get :show, params: { redo: true }
 
-          expect(@analytics).not_to have_logged_event(analytics_name)
+          expect(@analytics).to have_logged_event(analytics_name)
         end
 
-        it 'redirects to review' do
+        it 'renders show' do
           get :show, params: { redo: true }
 
-          expect(response).to redirect_to(idv_review_url)
+          expect(response).to render_template :show
         end
       end
     end
@@ -221,6 +213,12 @@ RSpec.describe Idv::HybridHandoffController do
       end
 
       let(:document_capture_session_uuid) { '09228b6d-dd39-4925-bf82-b69104095517' }
+
+      it 'invalidates future steps' do
+        expect(subject).to receive(:clear_future_steps!)
+
+        put :update, params: params
+      end
 
       it 'sends analytics_submitted event for hybrid' do
         put :update, params: params

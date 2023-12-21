@@ -2,10 +2,6 @@
 en:
   in_person_proofing:
     body:
-      address:
-        info: If your current address does not match the address on your ID, you will
-          need to bring proof of your current address to the Post Office.
-        learn_more: Learn more
       barcode:
         cancel_link_text: Cancel your barcode
         close_window: You may now close this window.
@@ -24,8 +20,8 @@ en:
         what_to_expect: What to expect at the Post Office
       cta:
         button: Try in person
-        prompt_detail: You may be able to verify your ID in person at a participating
-          Post Office near you.
+        prompt_detail: You may be able to verify your identity at a participating Post
+          Office near you.
       expect:
         heading: What to expect after your visit
         info: We’ll send you an email to let you know if your identity verification was
@@ -43,7 +39,7 @@ en:
         po_search:
           address_label: Address
           address_search_hint: 'Example: 1234 N Example St., Allentown, PA 12345'
-          address_search_label: Enter an address to find a Post Office near you
+          address_search_label: Enter an address to find a Post Office near you.
           city_label: City
           is_searching_message: Searching for Post Office locations…
           none_found: Sorry, there are no participating Post Offices within 50 miles of
@@ -93,10 +89,6 @@ en:
           unsupported_chars: 'Our system cannot read the following characters:
             %{char_list}. Please try again using substitutes for those
             characters.'
-        same_address: Is this address displayed on the state‑issued ID that you are
-          bringing to the Post Office?
-        same_address_choice_no: I have a different address on my ID
-        same_address_choice_yes: This address is on my state‑issued ID
         state_prompt: '- Select -'
       state_id:
         address1: Address line 1
@@ -115,7 +107,6 @@ en:
             %{char_list}. Please try again using the characters on your ID.'
         first_name: First name
         identity_doc_address_state: State
-        identity_doc_address_state_hint: Select the state shown on your ID
         identity_doc_address_state_prompt: '- Select -'
         last_name: Last name
         memorable_date:
@@ -131,13 +122,15 @@ en:
         state_id_jurisdiction_hint: This is the state that issued your ID
         state_id_jurisdiction_prompt: '- Select -'
         state_id_number: ID number
-        state_id_number_hint_html: "May include letters, numbers, and the following
-          symbols: <span class='usa-sr-only'>spaces,</span><span
-          aria-hidden='true'> </span> <span class='usa-sr-only'>forward
-          slashes,</span><span aria-hidden='true'>/</span> <span
-          class='usa-sr-only'>asterisks,</span><span aria-hidden='true'>*</span>
-          <span class='usa-sr-only'>dashes</span><span
-          aria-hidden='true'>-</span>"
+        state_id_number_florida_hint: This is the number on your ID that begins with 1
+          letter followed by 12 numbers. Dashes are not required.
+        state_id_number_hint: 'May include letters, numbers, and the following symbols:'
+        state_id_number_hint_asterisks: asterisks
+        state_id_number_hint_dashes: dashes
+        state_id_number_hint_forward_slashes: forward slashes
+        state_id_number_hint_spaces: spaces
+        state_id_number_texas_hint: This is the 8-digit number on your ID. Enter only
+          numbers in this field.
         zipcode: ZIP Code
     headings:
       address: Enter your current residential address
@@ -158,18 +151,6 @@ en:
         heading: Show your %{app_name} barcode
         info: The retail associate needs to scan your barcode at the top of this page.
           You can print this page or show it on your mobile device.
-      proof_of_address:
-        acceptable_proof:
-          - Lease, Mortgage, or Deed of Trust
-          - Voter Registration
-          - Vehicle Registration Card
-          - Home or Vehicle Insurance Policy
-        heading: Proof of your current address
-        info: 'You need a proof of address if your current address is different than the
-          address on your ID. Acceptable forms of proof of address are:'
-        physical_or_digital_copy: You can bring a physical copy or show a digital copy
-          of the document. You cannot show a photo or screenshot of the
-          document.
       state_id:
         heading: Show your State Driver’s License or State Non-Driver’s Identification
           Card

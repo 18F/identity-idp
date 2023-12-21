@@ -37,27 +37,6 @@ RSpec.feature 'idv phone step', :js do
       expect(page).to have_content(t('titles.idv.enter_one_time_code'))
       expect(page).to have_content('+1 703-789-7890')
     end
-
-    it 'is not re-entrant after confirming OTP' do
-      start_idv_from_sp
-      complete_idv_steps_before_phone_step(user)
-      fill_out_phone_form_ok
-      click_idv_send_security_code
-      fill_in_code_with_last_phone_otp
-      click_submit_default
-
-      visit idv_phone_path
-      expect(page).to have_content(t('idv.titles.session.review', app_name: APP_NAME))
-      expect(page).to have_current_path(idv_review_path)
-
-      fill_in 'Password', with: user_password
-      click_continue
-
-      # Currently this byasses the confirmation step since that is only
-      # accessible once
-      visit idv_phone_path
-      expect(page).to_not have_current_path(idv_phone_path)
-    end
   end
 
   it 'allows resubmitting form' do
@@ -92,13 +71,14 @@ RSpec.feature 'idv phone step', :js do
     context 'resubmission after number failed verification' do
       it 'phone field is empty after invalid submission' do
         phone_field = find_field(t('two_factor_authentication.phone_label'))
-
         expect(phone_field.value).not_to be_empty
 
         click_idv_send_security_code
         click_on t('idv.failure.phone.warning.try_again_button')
 
         expect(page).to have_current_path(idv_phone_path)
+
+        phone_field = find_field(t('two_factor_authentication.phone_label'))
         expect(phone_field.value).to be_empty
       end
 
@@ -251,54 +231,5 @@ RSpec.feature 'idv phone step', :js do
 
   context 'when the IdV background job fails' do
     it_behaves_like 'failed idv phone job'
-  end
-
-  context 'after the max number of attempts' do
-    it_behaves_like 'verification step max attempts', :phone
-    it_behaves_like 'verification step max attempts', :phone, :oidc
-    it_behaves_like 'verification step max attempts', :phone, :saml
-  end
-
-  context 'when the user is rate-limited' do
-    before do
-      start_idv_from_sp
-      complete_idv_steps_before_step(:phone, user)
-    end
-
-    around do |ex|
-      freeze_time { ex.run }
-    end
-
-    before do
-      (RateLimiter.max_attempts(:proof_address) - 1).times do
-        fill_out_phone_form_fail
-        click_idv_continue_for_step(:phone)
-        click_on t('idv.failure.phone.warning.try_again_button')
-      end
-      fill_out_phone_form_fail
-      click_idv_continue_for_step(:phone)
-    end
-
-    it 'takes them to the IdV cancel screen if they hit cancel', js: true do
-      click_on 'Cancel'
-      expect(current_path).to eq(idv_cancel_path)
-    end
-
-    it 'still lets them access the GPO flow and return to the error' do
-      click_on t('idv.failure.phone.rate_limited.gpo.button')
-      expect(page).to have_content(t('idv.titles.mail.verify'))
-      click_doc_auth_back_link
-      expect(page).to have_content(t('idv.failure.phone.rate_limited.heading'))
-    end
-
-    context 'GPO is disabled' do
-      let(:gpo_enabled) { false }
-
-      it 'does not link out to GPO flow' do
-        prompt_text = t('idv.failure.phone.rate_limited.option_verify_by_mail_html')
-        expect(page).not_to have_content(prompt_text)
-        expect(page).not_to have_content(t('idv.failure.phone.rate_limited.gpo.button'))
-      end
-    end
   end
 end

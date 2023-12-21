@@ -16,3 +16,4 @@ export {
 } from './failed-capture-attempts';
 export type { DeviceContextValue } from './device';
 export { default as InPersonContext } from './in-person';
+export { default as FeatureFlagContext } from './feature-flag';

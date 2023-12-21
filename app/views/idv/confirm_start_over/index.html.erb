@@ -2,7 +2,7 @@
       'idv/shared/error',
       type: :warning,
       heading: t('idv.cancel.headings.prompt.standard'),
-      current_step: :get_a_letter,
+      current_step: @step_indicator_step,
     ) do %>
   <p>
     <%= t('idv.cancel.description.gpo.start_over') %>
@@ -14,6 +14,7 @@
       </li>
     <% end %>
   </ul>
+
   <div class="margin-y-5">
     <%= render ButtonComponent.new(
           action: ->(**tag_options, &block) do

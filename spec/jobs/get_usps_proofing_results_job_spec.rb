@@ -6,7 +6,8 @@ RSpec.shared_examples 'enrollment_with_a_status_update' do |passed:,
                                                             response_json:|
 
   it 'logs a message with common attributes' do
-    freeze_time do
+    date_far_from_daylight_savings_changes = Time.zone.parse('2023-11-30T10:00:00Z')
+    travel_to date_far_from_daylight_savings_changes do
       pending_enrollment.update(
         enrollment_established_at: Time.zone.now - 3.days,
         status_check_attempted_at: Time.zone.now - 15.minutes,
@@ -218,7 +219,7 @@ RSpec.describe GetUspsProofingResultsJob do
 
   describe '#perform' do
     describe 'IPP enabled' do
-      describe 'DAV not enabled' do
+      describe 'Proofed without secondary id' do
         let!(:pending_enrollments) do
           ['BALTIMORE', 'FRIENDSHIP', 'WASHINGTON', 'ARLINGTON', 'DEANWOOD'].map do |name|
             create(
@@ -1149,19 +1150,17 @@ RSpec.describe GetUspsProofingResultsJob do
         end
       end
 
-      describe 'DAV enabled' do
-        let(:capture_secondary_id_enabled) { true }
+      describe 'Proofed with secondary id' do
         let(:pending_enrollment) do
           create(
-            :in_person_enrollment, :pending,
-            capture_secondary_id_enabled: capture_secondary_id_enabled
+            :in_person_enrollment, :pending
           )
         end
         before do
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
         end
 
-        context 'when an enrollment passes proofing with an secondary ID and DAV enabled' do
+        context 'when an enrollment passes proofing with a secondary ID' do
           before do
             stub_request_passed_proofing_secondary_id_type_results
           end
@@ -1212,85 +1211,82 @@ RSpec.describe GetUspsProofingResultsJob do
             )
           end
         end
+      end
 
-        context 'sms notifications enabled' do
-          let(:pending_enrollment) do
-            create(
-              :in_person_enrollment,
-              :pending,
-              :with_notification_phone_configuration,
-              capture_secondary_id_enabled: true,
-            )
+      describe 'sms notifications enabled' do
+        let(:pending_enrollment) do
+          create(
+            :in_person_enrollment, :pending, :with_notification_phone_configuration
+          )
+        end
+        before do
+          allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+          allow(IdentityConfig.store).to receive(:in_person_send_proofing_notifications_enabled).
+            and_return(true)
+        end
+
+        context 'enrollment is expired' do
+          it 'deletes the notification phone configuration without sending an sms' do
+            stub_request_expired_proofing_results
+
+            expect(pending_enrollment.notification_phone_configuration).to_not be_nil
+
+            job.perform(Time.zone.now)
+
+            expect(pending_enrollment.reload.notification_phone_configuration).to be_nil
+            expect(pending_enrollment.notification_sent_at).to be_nil
           end
+        end
 
-          before do
-            allow(IdentityConfig.store).to receive(:in_person_send_proofing_notifications_enabled).
-              and_return(true)
+        context 'enrollment has passed proofing' do
+          it 'invokes the SendProofingNotificationJob for the enrollment' do
+            stub_request_passed_proofing_results
+
+            expect(pending_enrollment.notification_phone_configuration).to_not be_nil
+            expect(pending_enrollment.notification_sent_at).to be_nil
+
+            expect { job.perform(Time.zone.now) }.
+              to have_enqueued_job(InPerson::SendProofingNotificationJob).
+              with(pending_enrollment.id)
           end
+        end
 
-          context 'enrollment is expired' do
-            it 'deletes the notification phone configuration without sending an sms' do
-              stub_request_expired_proofing_results
+        context 'enrollment has failed proofing' do
+          it 'invokes the SendProofingNotificationJob for the enrollment' do
+            stub_request_failed_proofing_results
 
-              expect(pending_enrollment.notification_phone_configuration).to_not be_nil
+            expect(pending_enrollment.notification_phone_configuration).to_not be_nil
+            expect(pending_enrollment.notification_sent_at).to be_nil
 
-              job.perform(Time.zone.now)
-
-              expect(pending_enrollment.reload.notification_phone_configuration).to be_nil
-              expect(pending_enrollment.notification_sent_at).to be_nil
-            end
+            expect { job.perform(Time.zone.now) }.
+              to have_enqueued_job(InPerson::SendProofingNotificationJob).
+              with(pending_enrollment.id)
           end
+        end
 
-          context 'enrollment has passed proofing' do
-            it 'invokes the SendProofingNotificationJob for the enrollment' do
-              stub_request_passed_proofing_results
+        context 'enrollment has failed proofing due to unsupported secondary ID' do
+          it 'invokes the SendProofingNotificationJob for the enrollment' do
+            stub_request_passed_proofing_secondary_id_type_results
 
-              expect(pending_enrollment.notification_phone_configuration).to_not be_nil
-              expect(pending_enrollment.notification_sent_at).to be_nil
+            expect(pending_enrollment.notification_phone_configuration).to_not be_nil
+            expect(pending_enrollment.notification_sent_at).to be_nil
 
-              expect { job.perform(Time.zone.now) }.
-                to have_enqueued_job(InPerson::SendProofingNotificationJob).
-                with(pending_enrollment.id)
-            end
+            expect { job.perform(Time.zone.now) }.
+              to have_enqueued_job(InPerson::SendProofingNotificationJob).
+              with(pending_enrollment.id)
           end
+        end
 
-          context 'enrollment has failed proofing' do
-            it 'invokes the SendProofingNotificationJob for the enrollment' do
-              stub_request_failed_proofing_results
+        context 'enrollment has failed proofing due to unsupported ID type' do
+          it 'invokes the SendProofingNotificationJob for the enrollment' do
+            stub_request_passed_proofing_unsupported_id_results
 
-              expect(pending_enrollment.notification_phone_configuration).to_not be_nil
-              expect(pending_enrollment.notification_sent_at).to be_nil
+            expect(pending_enrollment.notification_phone_configuration).to_not be_nil
+            expect(pending_enrollment.notification_sent_at).to be_nil
 
-              expect { job.perform(Time.zone.now) }.
-                to have_enqueued_job(InPerson::SendProofingNotificationJob).
-                with(pending_enrollment.id)
-            end
-          end
-
-          context 'enrollment has failed proofing due to unsupported secondary ID' do
-            it 'invokes the SendProofingNotificationJob for the enrollment' do
-              stub_request_passed_proofing_secondary_id_type_results
-
-              expect(pending_enrollment.notification_phone_configuration).to_not be_nil
-              expect(pending_enrollment.notification_sent_at).to be_nil
-
-              expect { job.perform(Time.zone.now) }.
-                to have_enqueued_job(InPerson::SendProofingNotificationJob).
-                with(pending_enrollment.id)
-            end
-          end
-
-          context 'enrollment has failed proofing due to unsupported ID type' do
-            it 'invokes the SendProofingNotificationJob for the enrollment' do
-              stub_request_passed_proofing_unsupported_id_results
-
-              expect(pending_enrollment.notification_phone_configuration).to_not be_nil
-              expect(pending_enrollment.notification_sent_at).to be_nil
-
-              expect { job.perform(Time.zone.now) }.
-                to have_enqueued_job(InPerson::SendProofingNotificationJob).
-                with(pending_enrollment.id)
-            end
+            expect { job.perform(Time.zone.now) }.
+              to have_enqueued_job(InPerson::SendProofingNotificationJob).
+              with(pending_enrollment.id)
           end
         end
       end

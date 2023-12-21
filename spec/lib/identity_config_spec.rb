@@ -65,4 +65,10 @@ RSpec.describe IdentityConfig do
       end
     end
   end
+
+  describe '.unused_keys' do
+    it 'does not have any unused keys' do
+      expect(IdentityConfig.unused_keys).to be_empty
+    end
+  end
 end

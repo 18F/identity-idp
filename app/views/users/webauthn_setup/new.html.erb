@@ -1,4 +1,4 @@
-<% title @presenter.page_title %>
+<% self.title = @presenter.page_title %>
 
 <%= image_tag asset_url(@presenter.image_path), alt: '', width: '90', class: 'margin-left-1 margin-bottom-2' %>
 
@@ -30,20 +30,24 @@
   <%= hidden_field_tag :client_data_json, '', id: 'client_data_json' %>
   <%= hidden_field_tag :authenticator_data_value, '', id: 'authenticator_data_value' %>
   <%= hidden_field_tag :transports, '', id: 'transports' %>
+
   <%= hidden_field_tag :platform_authenticator, @platform_authenticator, id: 'platform_authenticator' %>
-  <%= render ValidatedFieldComponent.new(
-        form: f,
-        name: :name,
-        required: true,
-        label: @presenter.nickname_label,
-        hint: @presenter.device_nickname_hint,
-        input_html: {
-          id: 'nickname',
-          class: 'font-family-mono',
-          size: 16,
-          maxlength: 20,
-        },
-      ) %>
+  <% if !@platform_authenticator %>
+    
+      <%= render ValidatedFieldComponent.new(
+            form: f,
+            name: :name,
+            required: true,
+            label: @presenter.nickname_label,
+            hint: @presenter.device_nickname_hint,
+            input_html: {
+              id: 'nickname',
+              class: 'font-family-mono',
+              size: 16,
+              maxlength: 20,
+            },
+          ) %>
+  <% end %> 
   <div class="margin-y-4 text-center" id="spinner" hidden>
     <%= image_tag(
           asset_url('loading-badge.gif'),
@@ -64,11 +68,7 @@
           checked: @presenter.remember_device_box_checked?,
         },
       ) %>
-  <%= submit_tag(
-        @presenter.button_text,
-        id: 'continue-button',
-        class: 'display-block usa-button usa-button--big usa-button--wide margin-y-5',
-      ) %>
+  <%= render SubmitButtonComponent.new(class: 'display-block margin-y-5').with_content(@presenter.button_text) %>
 <% end %>
 
 <%= render 'shared/cancel_or_back_to_options' %>

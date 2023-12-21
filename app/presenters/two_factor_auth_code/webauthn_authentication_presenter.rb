@@ -16,9 +16,17 @@ module TwoFactorAuthCode
       )
     end
 
+    def webauthn_title
+      if platform_authenticator?
+        t('two_factor_authentication.webauthn_platform_header_text')
+      else
+        t('titles.present_webauthn')
+      end
+    end
+
     def webauthn_help
       if platform_authenticator?
-        t('instructions.mfa.webauthn.confirm_webauthn_platform', app_name: APP_NAME)
+        t('instructions.mfa.webauthn.confirm_webauthn_platform_html')
       else
         t('instructions.mfa.webauthn.confirm_webauthn')
       end
@@ -67,10 +75,6 @@ module TwoFactorAuthCode
 
     def redirect_location_step
       :webauthn_verification
-    end
-
-    def multiple_factors_enabled?
-      service_provider_mfa_policy.multiple_factors_enabled?
     end
 
     def platform_authenticator?

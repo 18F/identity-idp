@@ -273,6 +273,11 @@ module AnalyticsEvents
     track_event('Account Reset: Cancel Account Recovery Options')
   end
 
+  # User was logged out due to an existing active session
+  def concurrent_session_logout
+    track_event(:concurrent_session_logout)
+  end
+
   # @param [String] redirect_url URL user was directed to
   # @param [String, nil] step which step
   # @param [String, nil] location which part of a step, if applicable
@@ -289,23 +294,13 @@ module AnalyticsEvents
     )
   end
 
-  # @param [String, nil] error error message
-  # @param [String, nil] uuid document capture session uuid
-  # @param [String, nil] result_id document capture session result id
-  # When there is an error loading async results during the document authentication flow
-  def doc_auth_async(error: nil, uuid: nil, result_id: nil, **extra)
-    track_event('Doc Auth Async', error: error, uuid: uuid, result_id: result_id, **extra)
-  end
-
   # @param [String] message the warning
-  # @param [String] getting_started_ab_test_bucket Which initial IdV screen the user saw
   # Logged when there is a non-user-facing error in the doc auth process, such as an unrecognized
   # field from a vendor
-  def doc_auth_warning(message: nil, getting_started_ab_test_bucket: nil, **extra)
+  def doc_auth_warning(message: nil, **extra)
     track_event(
       'Doc Auth Warning',
       message: message,
-      getting_started_ab_test_bucket: getting_started_ab_test_bucket,
       **extra,
     )
   end
@@ -577,9 +572,38 @@ module AnalyticsEvents
   # @param [String] name
   # @param [String] message
   # @param [String] stack
-  def frontend_error(name:, message:, stack: nil, **extra)
-    track_event('Frontend Error', name:, message:, stack:, **extra)
+  def frontend_error(name:, message:, stack: nil, **_extra)
+    track_event('Frontend Error', name:, message:, stack:)
   end
+
+  # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
+  # @param [String] acuant_version
+  # @param [String] flow_path whether the user is in the hybrid or standard flow
+  # @param [Boolean] isCameraSupported
+  # @param [Boolean] success
+  # @param [Boolean] use_alternate_sdk
+  # The Acuant SDK was loaded
+  # rubocop:disable Naming/VariableName,Naming/MethodParameterName
+  def idv_acuant_sdk_loaded(
+    acuant_sdk_upgrade_a_b_testing_enabled:,
+    acuant_version:,
+    flow_path:,
+    isCameraSupported:,
+    success:,
+    use_alternate_sdk:,
+    **_extra
+  )
+    track_event(
+      'Frontend: IdV: Acuant SDK loaded',
+      acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
+      acuant_version: acuant_version,
+      flow_path: flow_path,
+      isCameraSupported: isCameraSupported,
+      success: success,
+      use_alternate_sdk: use_alternate_sdk,
+    )
+  end
+  # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
   # @param [Boolean] success
   # @param [Boolean] address_edited
@@ -609,6 +633,127 @@ module AnalyticsEvents
   # User visited idv address page
   def idv_address_visit
     track_event('IdV: address visited')
+  end
+
+  # @param [String] acuantCaptureMode
+  # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
+  # @param [String] acuant_version
+  # @param [Boolean] assessment
+  # @param [Integer] attempt number of attempts
+  # @param [String] documentType
+  # @param [Integer] dpi  dots per inch of image
+  # @param [Integer] failedImageResubmission
+  # @param [String] fingerprint fingerprint of the image added
+  # @param [String] flow_path whether the user is in the hybrid or standard flow
+  # @param [Integer] glare
+  # @param [Integer] glareScoreThreshold
+  # @param [Integer] height height of image added in pixels
+  # @param [Boolean] isAssessedAsBlurry
+  # @param [Boolean] isAssessedAsGlare
+  # @param [Boolean] isAssessedAsUnsupported
+  # @param [String] mimeType MIME type of image added
+  # @param [Integer] moire
+  # @param [Integer] sharpness
+  # @param [Integer] sharpnessScoreThreshold
+  # @param [Integer] size size of image added in bytes
+  # @param [String] source
+  # @param [Boolean] use_alternate_sdk
+  # @param [Integer] width width of image added in pixels
+  # Back image was added in document capture
+  # rubocop:disable Naming/VariableName,Naming/MethodParameterName
+  def idv_back_image_added(
+    acuantCaptureMode:,
+    acuant_sdk_upgrade_a_b_testing_enabled:,
+    acuant_version:,
+    assessment:,
+    attempt:,
+    documentType:,
+    dpi:,
+    failedImageResubmission:,
+    fingerprint:,
+    flow_path:,
+    glare:,
+    glareScoreThreshold:,
+    height:,
+    isAssessedAsBlurry:,
+    isAssessedAsGlare:,
+    isAssessedAsUnsupported:,
+    mimeType:,
+    moire:,
+    sharpness:,
+    sharpnessScoreThreshold:,
+    size:,
+    source:,
+    use_alternate_sdk:,
+    width:,
+    **_extra
+  )
+    track_event(
+      'Frontend: IdV: back image added',
+      acuantCaptureMode: acuantCaptureMode,
+      acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
+      acuant_version: acuant_version,
+      assessment: assessment,
+      attempt: attempt,
+      documentType: documentType,
+      dpi: dpi,
+      failedImageResubmission: failedImageResubmission,
+      fingerprint: fingerprint,
+      flow_path: flow_path,
+      glare: glare,
+      glareScoreThreshold: glareScoreThreshold,
+      height: height,
+      isAssessedAsBlurry: isAssessedAsBlurry,
+      isAssessedAsGlare: isAssessedAsGlare,
+      isAssessedAsUnsupported: isAssessedAsUnsupported,
+      mimeType: mimeType,
+      moire: moire,
+      sharpness: sharpness,
+      sharpnessScoreThreshold: sharpnessScoreThreshold,
+      size: size,
+      source: source,
+      use_alternate_sdk: use_alternate_sdk,
+      width: width,
+    )
+  end
+
+  # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
+  # @param [String] acuant_version
+  # @param [String] flow_path whether the user is in the hybrid or standard flow
+  # @param [Boolean] isDrop
+  # @param [Boolean] source
+  # @param [Boolean] use_alternate_sdk
+  def idv_back_image_clicked(
+    acuant_sdk_upgrade_a_b_testing_enabled:,
+    acuant_version:,
+    flow_path:,
+    isDrop:,
+    source:,
+    use_alternate_sdk:,
+    **_extra
+  )
+    track_event(
+      'Frontend: IdV: back image clicked',
+      acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
+      acuant_version: acuant_version,
+      flow_path: flow_path,
+      isDrop: isDrop,
+      source: source,
+      use_alternate_sdk: use_alternate_sdk,
+    )
+  end
+  # rubocop:enable Naming/VariableName,Naming/MethodParameterName
+
+  def idv_barcode_warning_continue_clicked(**_extra)
+    track_event(
+      'Frontend: IdV: barcode warning continue clicked',
+    )
+  end
+
+  def idv_barcode_warning_retake_photos_clicked(**_extra)
+    track_event(
+      'Frontend: IdV: barcode warning retake photos clicked',
+    )
   end
 
   # @param [String] step the step that the user was on when they clicked cancel
@@ -652,6 +797,26 @@ module AnalyticsEvents
       request_came_from: request_came_from,
       proofing_components: proofing_components,
       **extra,
+    )
+  end
+
+  # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
+  # @param [String] acuant_version
+  # @param [String] flow_path whether the user is in the hybrid or standard flow
+  # @param [String] use_alternate_sdk
+  def idv_capture_troubleshooting_dismissed(
+    acuant_sdk_upgrade_a_b_testing_enabled:,
+    acuant_version:,
+    flow_path:,
+    use_alternate_sdk:,
+    **_extra
+  )
+    track_event(
+      'Frontend: IdV: Capture troubleshooting dismissed',
+      acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
+      acuant_version: acuant_version,
+      flow_path: flow_path,
+      use_alternate_sdk: use_alternate_sdk,
     )
   end
 
@@ -710,12 +875,12 @@ module AnalyticsEvents
     )
   end
 
-  def idv_doc_auth_getting_started_submitted(**extra)
-    track_event('IdV: doc auth getting_started submitted', **extra)
+  def idv_doc_auth_how_to_verify_submitted(**extra)
+    track_event(:idv_doc_auth_how_to_verify_submitted, **extra)
   end
 
-  def idv_doc_auth_getting_started_visited(**extra)
-    track_event('IdV: doc auth getting_started visited', **extra)
+  def idv_doc_auth_how_to_verify_visited(**extra)
+    track_event(:idv_doc_auth_how_to_verify_visited, **extra)
   end
 
   # The "hybrid handoff" step: Desktop user has submitted their choice to
@@ -775,7 +940,6 @@ module AnalyticsEvents
   # @param [String] flow_path
   # @param [String] front_image_fingerprint Fingerprint of front image data
   # @param [String] back_image_fingerprint Fingerprint of back image data
-  # @param [String] getting_started_ab_test_bucket Which initial IdV screen the user saw
   # The document capture image uploaded was locally validated during the IDV process
   def idv_doc_auth_submitted_image_upload_form(
     success:,
@@ -786,7 +950,6 @@ module AnalyticsEvents
     user_id: nil,
     front_image_fingerprint: nil,
     back_image_fingerprint: nil,
-    getting_started_ab_test_bucket: nil,
     **extra
   )
     track_event(
@@ -799,7 +962,6 @@ module AnalyticsEvents
       flow_path: flow_path,
       front_image_fingerprint: front_image_fingerprint,
       back_image_fingerprint: back_image_fingerprint,
-      getting_started_ab_test_bucket: getting_started_ab_test_bucket,
       **extra,
     )
   end
@@ -819,7 +981,6 @@ module AnalyticsEvents
   # @param [Float] vendor_request_time_in_ms Time it took to upload images & get a response.
   # @param [String] front_image_fingerprint Fingerprint of front image data
   # @param [String] back_image_fingerprint Fingerprint of back image data
-  # @param [String] getting_started_ab_test_bucket Which initial IdV screen the user saw
   # The document capture image was uploaded to vendor during the IDV process
   def idv_doc_auth_submitted_image_upload_vendor(
     success:,
@@ -836,7 +997,6 @@ module AnalyticsEvents
     vendor_request_time_in_ms: nil,
     front_image_fingerprint: nil,
     back_image_fingerprint: nil,
-    getting_started_ab_test_bucket: nil,
     **extra
   )
     track_event(
@@ -856,7 +1016,6 @@ module AnalyticsEvents
       vendor_request_time_in_ms: vendor_request_time_in_ms,
       front_image_fingerprint: front_image_fingerprint,
       back_image_fingerprint: back_image_fingerprint,
-      getting_started_ab_test_bucket: getting_started_ab_test_bucket,
       **extra,
     )
   end
@@ -869,7 +1028,7 @@ module AnalyticsEvents
   # @param [String] flow_path
   # @param [String] front_image_fingerprint Fingerprint of front image data
   # @param [String] back_image_fingerprint Fingerprint of back image data
-  # @param [String] getting_started_ab_test_bucket Which initial IdV screen the user saw
+  # @param [Hash] classification_info document image side information, issuing country and type etc
   # The PII that came back from the document capture vendor was validated
   def idv_doc_auth_submitted_pii_validation(
     success:,
@@ -880,7 +1039,7 @@ module AnalyticsEvents
     user_id: nil,
     front_image_fingerprint: nil,
     back_image_fingerprint: nil,
-    getting_started_ab_test_bucket: nil,
+    classification_info: {},
     **extra
   )
     track_event(
@@ -893,7 +1052,7 @@ module AnalyticsEvents
       flow_path: flow_path,
       front_image_fingerprint: front_image_fingerprint,
       back_image_fingerprint: back_image_fingerprint,
-      getting_started_ab_test_bucket: getting_started_ab_test_bucket,
+      classification_info: classification_info,
       **extra,
     )
   end
@@ -915,11 +1074,7 @@ module AnalyticsEvents
   # @param [String] step_name
   # @param [Integer] remaining_attempts
   # The user was sent to a warning page during the IDV flow
-  def idv_doc_auth_warning_visited(
-    step_name:,
-    remaining_attempts:,
-    **extra
-  )
+  def idv_doc_auth_warning_visited(step_name:, remaining_attempts:, **extra)
     track_event(
       'IdV: doc auth warning visited',
       step_name: step_name,
@@ -934,6 +1089,79 @@ module AnalyticsEvents
 
   def idv_doc_auth_welcome_visited(**extra)
     track_event('IdV: doc auth welcome visited', **extra)
+  end
+
+  # User submitted IDV password confirm page
+  # @param [Boolean] success
+  # @param [Boolean] fraud_review_pending
+  # @param [Boolean] fraud_rejection
+  # @param [Boolean] gpo_verification_pending
+  # @param [Boolean] in_person_verification_pending
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # @param [String, nil] deactivation_reason Reason user's profile was deactivated, if any.
+  def idv_enter_password_submitted(
+    success:,
+    fraud_review_pending:,
+    fraud_rejection:,
+    gpo_verification_pending:,
+    in_person_verification_pending:,
+    deactivation_reason: nil,
+    proofing_components: nil,
+    **extra
+  )
+    track_event(
+      :idv_enter_password_submitted,
+      success: success,
+      deactivation_reason: deactivation_reason,
+      fraud_review_pending: fraud_review_pending,
+      gpo_verification_pending: gpo_verification_pending,
+      in_person_verification_pending: in_person_verification_pending,
+      fraud_rejection: fraud_rejection,
+      proofing_components: proofing_components,
+      **extra,
+    )
+  end
+
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's
+  #        current proofing components
+  # @param [String] address_verification_method The method (phone or gpo) being
+  #        used to verify the user's identity
+  # User visited IDV password confirm page
+  def idv_enter_password_visited(
+    proofing_components: nil,
+    address_verification_method: nil,
+    **extra
+  )
+    track_event(
+      :idv_enter_password_visited,
+      address_verification_method: address_verification_method,
+      proofing_components: proofing_components,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
+  # @param [String] acuant_version
+  # @param [String] flow_path whether the user is in the hybrid or standard flow
+  # @param [Array] ids ID Types the user has checked whether they have
+  # @param [String] use_alternate_sdk
+  # Exit survey of optional questions when the user leaves document capture
+  def idv_exit_optional_questions(
+    acuant_sdk_upgrade_a_b_testing_enabled:,
+    acuant_version:,
+    flow_path:,
+    ids:,
+    use_alternate_sdk:,
+    **_extra
+  )
+    track_event(
+      'Frontend: IdV: exit optional questions',
+      acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
+      acuant_version: acuant_version,
+      flow_path: flow_path,
+      ids: ids,
+      use_alternate_sdk: use_alternate_sdk,
+    )
   end
 
   # @param [Boolean] success
@@ -988,6 +1216,115 @@ module AnalyticsEvents
       **extra,
     )
   end
+
+  # @param [String] acuantCaptureMode
+  # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
+  # @param [String] acuant_version
+  # @param [Boolean] assessment
+  # @param [Integer] attempt number of attempts
+  # @param [String] documentType
+  # @param [Integer] dpi  dots per inch of image
+  # @param [Integer] failedImageResubmission
+  # @param [String] fingerprint fingerprint of the image added
+  # @param [String] flow_path whether the user is in the hybrid or standard flow
+  # @param [Integer] glare
+  # @param [Integer] glareScoreThreshold
+  # @param [Integer] height height of image added in pixels
+  # @param [Boolean] isAssessedAsBlurry
+  # @param [Boolean] isAssessedAsGlare
+  # @param [Boolean] isAssessedAsUnsupported
+  # @param [String] mimeType MIME type of image added
+  # @param [Integer] moire
+  # @param [Integer] sharpness
+  # @param [Integer] sharpnessScoreThreshold
+  # @param [Integer] size size of image added in bytes
+  # @param [String] source
+  # @param [Boolean] use_alternate_sdk
+  # @param [Integer] width width of image added in pixels
+  # Front image was added in document capture
+  # rubocop:disable Naming/VariableName,Naming/MethodParameterName
+  def idv_front_image_added(
+    acuantCaptureMode:,
+    acuant_sdk_upgrade_a_b_testing_enabled:,
+    acuant_version:,
+    assessment:,
+    attempt:,
+    documentType:,
+    dpi:,
+    failedImageResubmission:,
+    fingerprint:,
+    flow_path:,
+    glare:,
+    glareScoreThreshold:,
+    height:,
+    isAssessedAsBlurry:,
+    isAssessedAsGlare:,
+    isAssessedAsUnsupported:,
+    mimeType:,
+    moire:,
+    sharpness:,
+    sharpnessScoreThreshold:,
+    size:,
+    source:,
+    use_alternate_sdk:,
+    width:,
+    **_extra
+  )
+    track_event(
+      'Frontend: IdV: front image added',
+      acuantCaptureMode: acuantCaptureMode,
+      acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
+      acuant_version: acuant_version,
+      assessment: assessment,
+      attempt: attempt,
+      documentType: documentType,
+      dpi: dpi,
+      failedImageResubmission: failedImageResubmission,
+      fingerprint: fingerprint,
+      flow_path: flow_path,
+      glare: glare,
+      glareScoreThreshold: glareScoreThreshold,
+      height: height,
+      isAssessedAsBlurry: isAssessedAsBlurry,
+      isAssessedAsGlare: isAssessedAsGlare,
+      isAssessedAsUnsupported: isAssessedAsUnsupported,
+      mimeType: mimeType,
+      moire: moire,
+      sharpness: sharpness,
+      sharpnessScoreThreshold: sharpnessScoreThreshold,
+      size: size,
+      source: source,
+      use_alternate_sdk: use_alternate_sdk,
+      width: width,
+    )
+  end
+
+  # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
+  # @param [String] acuant_version
+  # @param [String] flow_path whether the user is in the hybrid or standard flow
+  # @param [Boolean] isDrop
+  # @param [String] source
+  # @param [String] use_alternate_sdk
+  def idv_front_image_clicked(
+    acuant_sdk_upgrade_a_b_testing_enabled:,
+    acuant_version:,
+    flow_path:,
+    isDrop:,
+    source:,
+    use_alternate_sdk:,
+    **_extra
+  )
+    track_event(
+      'Frontend: IdV: front image clicked',
+      acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
+      acuant_version: acuant_version,
+      flow_path: flow_path,
+      isDrop: isDrop,
+      source: source,
+      use_alternate_sdk: use_alternate_sdk,
+    )
+  end
+  # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
   # @param [DateTime] enqueued_at When letter was enqueued
   # @param [Boolean] resend User requested a second (or more) letter
@@ -1044,9 +1381,36 @@ module AnalyticsEvents
     )
   end
 
+  # The user visited the gpo confirm cancellation screen from RequestLetter
+  def idv_gpo_confirm_start_over_before_letter_visited(**extra)
+    track_event(:idv_gpo_confirm_start_over_before_letter_visited, **extra)
+  end
+
   # The user visited the gpo confirm cancellation screen
-  def idv_gpo_confirm_start_over_visited
-    track_event('IdV: gpo confirm start over visited')
+  def idv_gpo_confirm_start_over_visited(**extra)
+    track_event('IdV: gpo confirm start over visited', **extra)
+  end
+
+  # The user ran out of time to complete their address verification by mail.
+  # @param [String] user_id UUID of the user who expired
+  # @param [Boolean] user_has_active_profile Whether the user currently has an active profile
+  # @param [Integer] letters_sent Total # of GPO letters sent for this profile
+  # @param [Time] gpo_verification_pending_at Date/time when profile originally entered GPO flow
+  def idv_gpo_expired(
+    user_id:,
+    user_has_active_profile:,
+    letters_sent:,
+    gpo_verification_pending_at:,
+    **extra
+  )
+    track_event(
+      :idv_gpo_expired,
+      user_id: user_id,
+      user_has_active_profile: user_has_active_profile,
+      letters_sent: letters_sent,
+      gpo_verification_pending_at: gpo_verification_pending_at,
+      **extra,
+    )
   end
 
   # A GPO reminder email was sent to the user
@@ -1054,6 +1418,37 @@ module AnalyticsEvents
   def idv_gpo_reminder_email_sent(user_id:, **extra)
     track_event('IdV: gpo reminder email sent', user_id: user_id, **extra)
   end
+
+  # @param [String] field back or front
+  # @param [String] acuantCaptureMode
+  # @param [String] error
+  # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
+  # @param [String] acuant_version
+  # @param [String] flow_path
+  # @param [Boolean] use_alternate_sdk
+  # rubocop:disable Naming/VariableName,Naming/MethodParameterName
+  def idv_image_capture_failed(
+    field:,
+    acuantCaptureMode:,
+    error:,
+    acuant_sdk_upgrade_a_b_testing_enabled:,
+    acuant_version:,
+    flow_path:,
+    use_alternate_sdk:,
+    **_extra
+  )
+    track_event(
+      'Frontend: IdV: Image capture failed',
+      field: field,
+      acuantCaptureMode: acuantCaptureMode,
+      error: error,
+      acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
+      acuant_version: acuant_version,
+      flow_path: flow_path,
+      use_alternate_sdk: use_alternate_sdk,
+    )
+  end
+  # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
   # Tracks emails that are initiated during InPerson::EmailReminderJob
   # @param [String] email_type early or late
@@ -1092,23 +1487,31 @@ module AnalyticsEvents
 
   # @param [String] selected_location Selected in-person location
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
+  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   # The user submitted the in person proofing location step
-  def idv_in_person_location_submitted(selected_location:, flow_path:,
-                                       **extra)
+  def idv_in_person_location_submitted(
+    selected_location:,
+    flow_path:,
+    opted_in_to_in_person_proofing:,
+    **extra
+  )
     track_event(
       'IdV: in person proofing location submitted',
       selected_location: selected_location,
       flow_path: flow_path,
+      opted_in_to_in_person_proofing: opted_in_to_in_person_proofing,
       **extra,
     )
   end
 
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
+  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   # The user visited the in person proofing location step
-  def idv_in_person_location_visited(flow_path:, **extra)
+  def idv_in_person_location_visited(flow_path:, opted_in_to_in_person_proofing:, **extra)
     track_event(
       'IdV: in person proofing location visited',
       flow_path: flow_path,
+      opted_in_to_in_person_proofing: opted_in_to_in_person_proofing,
       **extra,
     )
   end
@@ -1167,83 +1570,56 @@ module AnalyticsEvents
   end
 
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
+  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   # The user submitted the in person proofing prepare step
-  def idv_in_person_prepare_submitted(flow_path:, **extra)
+  def idv_in_person_prepare_submitted(flow_path:, opted_in_to_in_person_proofing:, **extra)
     track_event(
       'IdV: in person proofing prepare submitted',
       flow_path: flow_path,
+      opted_in_to_in_person_proofing: opted_in_to_in_person_proofing,
       **extra,
     )
   end
 
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
+  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   # The user visited the in person proofing prepare step
-  def idv_in_person_prepare_visited(flow_path:, **extra)
-    track_event('IdV: in person proofing prepare visited', flow_path: flow_path, **extra)
-  end
-
-  # @param [String] flow_path
-  # @param [String] step
-  # @param [Integer] step_count
-  # @param [String] analytics_id
-  # @param [Boolean] irs_reproofing
-  # @param [Boolean] success
-  # @param [Hash] errors
-  # @param [Boolean] same_address_as_id
-  # address submitted by user
-  def idv_in_person_proofing_address_submitted(
-    flow_path: nil,
-    step: nil,
-    step_count: nil,
-    analytics_id: nil,
-    irs_reproofing: nil,
-    success: nil,
-    errors: nil,
-    same_address_as_id: nil,
-    **extra
-  )
+  def idv_in_person_prepare_visited(flow_path:, opted_in_to_in_person_proofing:, **extra)
     track_event(
-      'IdV: in person proofing address submitted',
+      'IdV: in person proofing prepare visited',
       flow_path: flow_path,
-      step: step,
-      step_count: step_count,
-      analytics_id: analytics_id,
-      irs_reproofing: irs_reproofing,
-      success: success,
-      errors: errors,
-      same_address_as_id: same_address_as_id,
+      opted_in_to_in_person_proofing: opted_in_to_in_person_proofing,
       **extra,
     )
   end
 
   # @param [String] flow_path
   # @param [String] step
-  # @param [Integer] step_count
   # @param [String] analytics_id
   # @param [Boolean] irs_reproofing
+  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   # address page visited
   def idv_in_person_proofing_address_visited(
     flow_path: nil,
     step: nil,
-    step_count: nil,
     analytics_id: nil,
     irs_reproofing: nil,
+    opted_in_to_in_person_proofing: nil,
     **extra
   )
     track_event(
       'IdV: in person proofing address visited',
       flow_path: flow_path,
       step: step,
-      step_count: step_count,
       analytics_id: analytics_id,
       irs_reproofing: irs_reproofing,
+      opted_in_to_in_person_proofing: opted_in_to_in_person_proofing,
       **extra,
     )
   end
 
   # @param [String] flow_path
   # @param [String] step
-  # @param [Integer] step_count
   # @param [String] analytics_id
   # @param [Boolean] irs_reproofing
   # @param [Boolean] success
@@ -1253,7 +1629,6 @@ module AnalyticsEvents
   def idv_in_person_proofing_cancel_update_address(
     flow_path: nil,
     step: nil,
-    step_count: nil,
     analytics_id: nil,
     irs_reproofing: nil,
     success: nil,
@@ -1265,7 +1640,6 @@ module AnalyticsEvents
       'IdV: in person proofing cancel_update_address submitted',
       flow_path: flow_path,
       step: step,
-      step_count: step_count,
       analytics_id: analytics_id,
       irs_reproofing: irs_reproofing,
       success: success,
@@ -1277,7 +1651,6 @@ module AnalyticsEvents
 
   # @param [String] flow_path
   # @param [String] step
-  # @param [Integer] step_count
   # @param [String] analytics_id
   # @param [Boolean] irs_reproofing
   # @param [Boolean] success
@@ -1287,7 +1660,6 @@ module AnalyticsEvents
   def idv_in_person_proofing_cancel_update_state_id(
     flow_path: nil,
     step: nil,
-    step_count: nil,
     analytics_id: nil,
     irs_reproofing: nil,
     success: nil,
@@ -1299,7 +1671,6 @@ module AnalyticsEvents
       'IdV: in person proofing cancel_update_state_id submitted',
       flow_path: flow_path,
       step: step,
-      step_count: step_count,
       analytics_id: analytics_id,
       irs_reproofing: irs_reproofing,
       success: success,
@@ -1380,7 +1751,6 @@ module AnalyticsEvents
 
   # @param [String] flow_path
   # @param [String] step
-  # @param [Integer] step_count
   # @param [String] analytics_id
   # @param [Boolean] irs_reproofing
   # @param [Boolean] success
@@ -1390,7 +1760,6 @@ module AnalyticsEvents
   def idv_in_person_proofing_redo_state_id_submitted(
     flow_path: nil,
     step: nil,
-    step_count: nil,
     analytics_id: nil,
     irs_reproofing: nil,
     success: nil,
@@ -1402,7 +1771,6 @@ module AnalyticsEvents
       'IdV: in person proofing redo_state_id submitted',
       flow_path: flow_path,
       step: step,
-      step_count: step_count,
       analytics_id: analytics_id,
       irs_reproofing: irs_reproofing,
       success: success,
@@ -1418,59 +1786,59 @@ module AnalyticsEvents
 
   # @param [String] flow_path
   # @param [String] step
-  # @param [Integer] step_count
   # @param [String] analytics_id
   # @param [Boolean] irs_reproofing
   # @param [Boolean] success
   # @param [Hash] errors
   # @param [Boolean, nil] same_address_as_id
+  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   # User submitted state id
   def idv_in_person_proofing_state_id_submitted(
     flow_path: nil,
     step: nil,
-    step_count: nil,
     analytics_id: nil,
     irs_reproofing: nil,
     success: nil,
     errors: nil,
     same_address_as_id: nil,
+    opted_in_to_in_person_proofing: nil,
     **extra
   )
     track_event(
       'IdV: in person proofing state_id submitted',
       flow_path: flow_path,
       step: step,
-      step_count: step_count,
       analytics_id: analytics_id,
       irs_reproofing: irs_reproofing,
       success: success,
       errors: errors,
       same_address_as_id: same_address_as_id,
+      opted_in_to_in_person_proofing: opted_in_to_in_person_proofing,
       **extra,
     )
   end
 
   # @param [String] flow_path
   # @param [String] step
-  # @param [Integer] step_count
   # @param [String] analytics_id
   # @param [Boolean] irs_reproofing
+  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   # State id page visited
   def idv_in_person_proofing_state_id_visited(
     flow_path: nil,
     step: nil,
-    step_count: nil,
     analytics_id: nil,
     irs_reproofing: nil,
+    opted_in_to_in_person_proofing: nil,
     **extra
   )
     track_event(
       'IdV: in person proofing state_id visited',
       flow_path: flow_path,
       step: step,
-      step_count: step_count,
       analytics_id: analytics_id,
       irs_reproofing: irs_reproofing,
+      opted_in_to_in_person_proofing: opted_in_to_in_person_proofing,
       **extra,
     )
   end
@@ -1916,6 +2284,29 @@ module AnalyticsEvents
     )
   end
 
+  # @param [Boolean] isCancelled
+  # @param [Boolean] isRateLimited
+  # rubocop:disable Naming/VariableName,Naming/MethodParameterName
+  def idv_link_sent_capture_doc_polling_complete(
+    isCancelled:,
+    isRateLimited:,
+    **_extra
+  )
+    track_event(
+      'Frontend: IdV: Link sent capture doc polling complete',
+      isCancelled: isCancelled,
+      isRateLimited: isRateLimited,
+    )
+  end
+
+  # rubocop:enable Naming/VariableName,Naming/MethodParameterName
+
+  def idv_link_sent_capture_doc_polling_started(**_extra)
+    track_event(
+      'Frontend: IdV: Link sent capture doc polling started',
+    )
+  end
+
   # Tracks when the user visits Mail only warning when vendor_status_sms is set to full_outage
   def idv_mail_only_warning_visited(**extra)
     track_event(
@@ -2338,52 +2729,73 @@ module AnalyticsEvents
     )
   end
 
-  # User submitted IDV password confirm page
-  # @param [Boolean] success
-  # @param [Boolean] fraud_review_pending
-  # @param [Boolean] fraud_rejection
-  # @param [Boolean] gpo_verification_pending
-  # @param [Boolean] in_person_verification_pending
-  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
-  # @param [String, nil] deactivation_reason Reason user's profile was deactivated, if any.
-  def idv_review_complete(
-    success:,
-    fraud_review_pending:,
-    fraud_rejection:,
-    gpo_verification_pending:,
-    in_person_verification_pending:,
-    deactivation_reason: nil,
-    proofing_components: nil,
-    **extra
-  )
+  # @param [Integer] attempt number of attempts
+  # User captured and approved of their selfie
+  def idv_sdk_selfie_image_added(attempt:, **extra)
+    track_event(:idv_sdk_selfie_image_added, attempt: attempt, **extra)
+  end
+
+  # User closed the SDK for taking a selfie without submitting a photo
+  def idv_sdk_selfie_image_capture_closed_without_photo(**extra)
+    track_event(:idv_sdk_selfie_image_capture_closed_without_photo, **extra)
+  end
+
+  # @param [Integer] sdk_error_code SDK code for the error encountered
+  # @param [String] sdk_error_message SDK message for the error encountered
+  # User encountered an error with the SDK selfie process
+  # Error code 1: camera permission not granted
+  # Error code 2: unexpected errors
+  def idv_sdk_selfie_image_capture_failed(sdk_error_code:, sdk_error_message:, **extra)
     track_event(
-      'IdV: review complete',
-      success: success,
-      deactivation_reason: deactivation_reason,
-      fraud_review_pending: fraud_review_pending,
-      gpo_verification_pending: gpo_verification_pending,
-      in_person_verification_pending: in_person_verification_pending,
-      fraud_rejection: fraud_rejection,
-      proofing_components: proofing_components,
+      :idv_sdk_selfie_image_capture_failed,
+      sdk_error_code: sdk_error_code,
+      sdk_error_message: sdk_error_message,
       **extra,
     )
   end
 
-  # @param [Idv::ProofingComponentsLogging] proofing_components User's
-  #        current proofing components
-  # @param [String] address_verification_method The method (phone or gpo) being
-  #        used to verify the user's identity
-  # User visited IDV password confirm page
-  def idv_review_info_visited(proofing_components: nil,
-                              address_verification_method: nil,
-                              **extra)
+  # User opened the SDK to take a selfie
+  def idv_sdk_selfie_image_capture_opened(**extra)
+    track_event(:idv_sdk_selfie_image_capture_opened, **extra)
+  end
+
+  # @param [Integer] attempt number of attempts
+  # @param [Integer] failedImageResubmission
+  # @param [String] fingerprint fingerprint of the image added
+  # @param [String] flow_path whether the user is in the hybrid or standard flow
+  # @param [Integer] height height of image added in pixels
+  # @param [String] mimeType MIME type of image added
+  # @param [Integer] size size of image added in bytes
+  # @param [String] source
+  # @param [Integer] width width of image added in pixels
+  # User uploaded a selfie using the file picker
+  # rubocop:disable Naming/VariableName,Naming/MethodParameterName
+  def idv_selfie_image_file_uploaded(
+    attempt:,
+    failedImageResubmission:,
+    fingerprint:,
+    flow_path:,
+    height:,
+    mimeType:,
+    size:,
+    source:,
+    width:,
+    **_extra
+  )
     track_event(
-      'IdV: review info visited',
-      address_verification_method: address_verification_method,
-      proofing_components: proofing_components,
-      **extra,
+      :idv_selfie_image_file_uploaded,
+      attempt: attempt,
+      failedImageResubmission: failedImageResubmission,
+      fingerprint: fingerprint,
+      flow_path: flow_path,
+      height: height,
+      mimeType: mimeType,
+      size: size,
+      source: source,
+      width: width,
     )
   end
+  # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
   # Tracks when the user visits one of the the session error pages.
   # @param [String] type
@@ -2505,13 +2917,76 @@ module AnalyticsEvents
   end
 
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
+  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   # The user clicked the troubleshooting option to start in-person proofing
-  def idv_verify_in_person_troubleshooting_option_clicked(flow_path:,
-                                                          **extra)
+  def idv_verify_in_person_troubleshooting_option_clicked(
+    flow_path:,
+    opted_in_to_in_person_proofing:,
+    **extra
+  )
     track_event(
       'IdV: verify in person troubleshooting option clicked',
       flow_path: flow_path,
+      opted_in_to_in_person_proofing: opted_in_to_in_person_proofing,
       **extra,
+    )
+  end
+
+  # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
+  # @param [String] acuant_version
+  # @param [String] flow_path
+  # @param [String] location
+  # @param [Boolean] use_alternate_sdk
+  def idv_warning_action_triggered(
+    acuant_sdk_upgrade_a_b_testing_enabled:,
+    acuant_version:,
+    flow_path:,
+    location:,
+    use_alternate_sdk:,
+    **_extra
+  )
+    track_event(
+      'Frontend: IdV: warning action triggered',
+      acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
+      acuant_version: acuant_version,
+      flow_path: flow_path,
+      location: location,
+      use_alternate_sdk: use_alternate_sdk,
+    )
+  end
+
+  # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
+  # @param [String] acuant_version
+  # @param [String] error_message_displayed
+  # @param [String] flow_path
+  # @param [String] heading
+  # @param [String] location
+  # @param [Integer] remaining_attempts
+  # @param [String] subheading
+  # @param [Boolean] use_alternate_sdk
+  def idv_warning_shown(
+    acuant_sdk_upgrade_a_b_testing_enabled:,
+    acuant_version:,
+    error_message_displayed:,
+    flow_path:,
+    heading:,
+    location:,
+    remaining_attempts:,
+    subheading:,
+    use_alternate_sdk:,
+    **_extra
+  )
+    track_event(
+      'Frontend: IdV: warning shown',
+      acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
+      acuant_version: acuant_version,
+      error_message_displayed: error_message_displayed,
+      flow_path: flow_path,
+      heading: heading,
+      location: location,
+      remaining_attempts: remaining_attempts,
+      subheading: subheading,
+      use_alternate_sdk: use_alternate_sdk,
     )
   end
 
@@ -2607,6 +3082,7 @@ module AnalyticsEvents
   # @param [String] area_code
   # @param [String] country_code
   # @param [String] phone_fingerprint the hmac fingerprint of the phone number formatted as e164
+  # @param [String] frontend_error Name of error that occurred in frontend during submission
   # Multi-Factor Authentication
   def multi_factor_auth(
     success:,
@@ -2624,6 +3100,7 @@ module AnalyticsEvents
     area_code: nil,
     country_code: nil,
     phone_fingerprint: nil,
+    frontend_error: nil,
     **extra
   )
     track_event(
@@ -2643,6 +3120,7 @@ module AnalyticsEvents
       area_code: area_code,
       country_code: country_code,
       phone_fingerprint: phone_fingerprint,
+      frontend_error:,
       **extra,
     )
   end
@@ -2660,13 +3138,14 @@ module AnalyticsEvents
     )
   end
 
+  # @identity.idp.previous_event_name Multi-Factor Authentication: Added PIV_CAC
   # Tracks when the user has added the MFA method piv_cac to their account
   # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
   # @param [Boolean] in_account_creation_flow whether user is going through creation flow
   def multi_factor_auth_added_piv_cac(enabled_mfa_methods_count:, in_account_creation_flow:,
                                       **extra)
     track_event(
-      'Multi-Factor Authentication: Added PIV_CAC',
+      :multi_factor_auth_added_piv_cac,
       {
         method_name: :piv_cac,
         enabled_mfa_methods_count:,
@@ -2687,24 +3166,6 @@ module AnalyticsEvents
         method_name: :totp,
         in_account_creation_flow:,
         enabled_mfa_methods_count:,
-        **extra,
-      }.compact,
-    )
-  end
-
-  # Tracks when the user has added the MFA method webauthn to their account
-  # @param [Boolean] platform_authenticator indicates if webauthn_platform was used
-  # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
-  def multi_factor_auth_added_webauthn(
-    platform_authenticator:,
-    enabled_mfa_methods_count:, **extra
-  )
-    track_event(
-      'Multi-Factor Authentication: Added webauthn',
-      {
-        method_name: :webauthn,
-        platform_authenticator: platform_authenticator,
-        enabled_mfa_methods_count: enabled_mfa_methods_count,
         **extra,
       }.compact,
     )
@@ -2775,6 +3236,7 @@ module AnalyticsEvents
     )
   end
 
+  # @identity.idp.previous_event_name 'Multi-Factor Authentication: enter PIV CAC visited'
   # @param ["authentication","reauthentication","confirmation"] context user session context
   # @param ["piv_cac"] multi_factor_auth_method
   # @param [Integer, nil] piv_cac_configuration_id PIV/CAC configuration database ID
@@ -2786,7 +3248,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'Multi-Factor Authentication: enter PIV CAC visited',
+      :multi_factor_auth_enter_piv_cac,
       context: context,
       multi_factor_auth_method: multi_factor_auth_method,
       piv_cac_configuration_id: piv_cac_configuration_id,
@@ -2907,80 +3369,10 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Boolean] success
-  # @param [String] exception
-  # @param [Integer] profile_id
-  # A profile was migrated from a single-region key to a multi-region key
-  def multi_region_kms_migration_profile_migrated(
-    success:,
-    exception:,
-    profile_id:,
-    **extra
-  )
-    track_event(
-      'Multi-region KMS migration: Profile migrated',
-      success: success,
-      exception: exception,
-      profile_id: profile_id,
-      **extra,
-    )
-  end
-
-  # @param [Integer] profile_count
-  # @param [Integer] success_count
-  # @param [Integer] error_count
-  # The profile migration job finished running
-  def multi_region_kms_migration_profile_migration_summary(
-    profile_count:,
-    success_count:,
-    error_count:,
-    **extra
-  )
-    track_event(
-      'Multi-region KMS migration: Profile migration summary',
-      profile_count: profile_count,
-      success_count: success_count,
-      error_count: error_count,
-      **extra,
-    )
-  end
-
-  # @param [Boolean] success
-  # @param [String] exception
-  # @param [Integer] user_id
-  # A user was migrated from a single-region key to a multi-region key
-  def multi_region_kms_migration_user_migrated(
-    success:,
-    exception:,
-    user_id:,
-    **extra
-  )
-    track_event(
-      'Multi-region KMS migration: User migrated',
-      success: success,
-      exception: exception,
-      user_id: user_id,
-      **extra,
-    )
-  end
-
-  # @param [Integer] user_count
-  # @param [Integer] success_count
-  # @param [Integer] error_count
-  # The user migration job finished running
-  def multi_region_kms_migration_user_migration_summary(
-    user_count:,
-    success_count:,
-    error_count:,
-    **extra
-  )
-    track_event(
-      'Multi-region KMS migration: User migration summary',
-      user_count: user_count,
-      success_count: success_count,
-      error_count: error_count,
-      **extra,
-    )
+  # @param [String] location Placement location
+  # Logged when a browser with JavaScript disabled loads the detection stylesheet
+  def no_js_detect_stylesheet_loaded(location:, **extra)
+    track_event(:no_js_detect_stylesheet_loaded, location:, **extra)
   end
 
   # @param [Boolean] success
@@ -3319,13 +3711,6 @@ module AnalyticsEvents
     track_event('Personal key reactivation: Account reactivated with personal key')
   end
 
-  # Account reactivated with personal key as MFA
-  def personal_key_reactivation_sign_in
-    track_event(
-      'Personal key reactivation: Account reactivated with personal key as MFA',
-    )
-  end
-
   # @param [Boolean] success
   # @param [Hash] errors
   # @param [Hash] pii_like_keypaths
@@ -3397,30 +3782,43 @@ module AnalyticsEvents
     )
   end
 
-  # @identity.idp.previous_event_name User Registration: piv cac disabled
-  # Tracks when user's piv cac is disabled
-  def piv_cac_disabled
-    track_event('PIV CAC disabled')
+  # @param [String] country_code The new selected country code
+  # User changes the selected country in the frontend phone input component
+  def phone_input_country_changed(country_code:, **extra)
+    track_event(:phone_input_country_changed, country_code:, **extra)
   end
 
+  # @identity.idp.previous_event_name User Registration: piv cac disabled
+  # @identity.idp.previous_event_name PIV CAC disabled
+  # Tracks when user's piv cac is disabled
+  def piv_cac_disabled
+    track_event(:piv_cac_disabled)
+  end
+
+  # @identity.idp.previous_event_name PIV/CAC login
   # @param [Boolean] success
   # @param [Hash] errors
   # tracks piv cac login event
   def piv_cac_login(success:, errors:, **extra)
     track_event(
-      'PIV/CAC Login',
+      :piv_cac_login,
       success: success,
       errors: errors,
       **extra,
     )
   end
 
+  def piv_cac_login_visited
+    track_event(:piv_cac_login_visited)
+  end
+
   # @identity.idp.previous_event_name User Registration: piv cac setup visited
+  # @identity.idp.previous_event_name PIV CAC setup visited
   # Tracks when user's piv cac setup
   # @param [Boolean] in_account_creation_flow
-  def piv_cac_setup_visit(in_account_creation_flow:, **extra)
+  def piv_cac_setup_visited(in_account_creation_flow:, **extra)
     track_event(
-      'PIV CAC setup visited',
+      :piv_cac_setup_visited,
       in_account_creation_flow:,
       **extra,
     )
@@ -3661,6 +4059,34 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks when risc security event is pushed
+  # @param [String] client_id
+  # @param [String] event_type
+  # @param [Boolean] success
+  # @param ['async'|'direct'] transport
+  # @param [Integer] status
+  # @param [String] error
+  def risc_security_event_pushed(
+    client_id:,
+    event_type:,
+    success:,
+    transport:,
+    status: nil,
+    error: nil,
+    **extra
+  )
+    track_event(
+      :risc_security_event_pushed,
+      client_id:,
+      error:,
+      event_type:,
+      status:,
+      success:,
+      transport:,
+      **extra,
+    )
+  end
+
   # Tracks when rules of use is submitted with a success or failure
   # @param [Boolean] success
   # @param [Hash] errors
@@ -3782,11 +4208,6 @@ module AnalyticsEvents
   # tracks when a user's session is timed out
   def session_total_duration_timeout
     track_event('User Maximum Session Length Exceeded')
-  end
-
-  # Tracks if a user clicks the "You will also need" accordion on the homepage
-  def sign_in_idv_requirements_accordion_clicked
-    track_event('Sign In: IdV requirements accordion clicked')
   end
 
   # @param [String] flash
@@ -4293,6 +4714,11 @@ module AnalyticsEvents
     )
   end
 
+  # We sent an email to the user confirming that they will remain suspended
+  def user_suspension_confirmed
+    track_event(:user_suspension_confirmed)
+  end
+
   # Tracks when USPS in-person proofing enrollment is created
   # @param [String] enrollment_code
   # @param [Integer] enrollment_id
@@ -4332,31 +4758,66 @@ module AnalyticsEvents
   end
 
   # @param [Boolean] success
-  # @param [Integer] mfa_method_counts
-  # Tracks when WebAuthn is deleted
-  def webauthn_deleted(success:, mfa_method_counts:, pii_like_keypaths:, **extra)
+  # @param [Hash] error_details
+  # @param [Integer] configuration_id
+  # Tracks when user attempts to delete a WebAuthn configuration
+  # @identity.idp.previous_event_name WebAuthn Deleted
+  def webauthn_delete_submitted(
+    success:,
+    configuration_id:,
+    error_details: nil,
+    **extra
+  )
     track_event(
-      'WebAuthn Deleted',
-      success: success,
-      mfa_method_counts: mfa_method_counts,
-      pii_like_keypaths: pii_like_keypaths,
+      :webauthn_delete_submitted,
+      success:,
+      error_details:,
+      configuration_id:,
       **extra,
     )
   end
 
   # @param [Hash] platform_authenticator
-  # @param [Hash] errors
-  # @param [Integer] enabled_mfa_methods_count
   # @param [Boolean] success
+  # @param [Hash, nil] errors
+  # Tracks whether or not Webauthn setup was successful
+  def webauthn_setup_submitted(platform_authenticator:, success:, errors: nil, **extra)
+    track_event(
+      :webauthn_setup_submitted,
+      platform_authenticator: platform_authenticator,
+      success: success,
+      errors: errors,
+      **extra,
+    )
+  end
+
+  # @param [Hash] platform_authenticator
+  # @param [Integer] enabled_mfa_methods_count
   # Tracks when WebAuthn setup is visited
-  def webauthn_setup_visit(platform_authenticator:, errors:, enabled_mfa_methods_count:, success:,
-                           **extra)
+  def webauthn_setup_visit(platform_authenticator:, enabled_mfa_methods_count:, **extra)
     track_event(
       'WebAuthn Setup Visited',
       platform_authenticator: platform_authenticator,
-      errors: errors,
       enabled_mfa_methods_count: enabled_mfa_methods_count,
-      success: success,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success
+  # @param [Hash] error_details
+  # @param [Integer] configuration_id
+  # Tracks when user submits a name change for a WebAuthn configuration
+  def webauthn_update_name_submitted(
+    success:,
+    configuration_id:,
+    error_details: nil,
+    **extra
+  )
+    track_event(
+      :webauthn_update_name_submitted,
+      success:,
+      error_details:,
+      configuration_id:,
       **extra,
     )
   end

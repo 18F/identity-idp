@@ -72,6 +72,22 @@ module DocAuthHelper
     click_on t('doc_auth.buttons.continue')
   end
 
+  def complete_how_to_verify_step(remote: true)
+    text_for_method = remote ? t(
+      'doc_auth.headings.verify_online',
+      app_name: APP_NAME,
+    ) : t(
+      'doc_auth.headings.verify_at_post_office',
+      app_name: APP_NAME,
+    )
+    find(
+      'label',
+      text: text_for_method,
+      wait: 5,
+    ).click
+    click_on t('doc_auth.buttons.continue')
+  end
+
   def complete_doc_auth_steps_before_hybrid_handoff_step(expect_accessible: false)
     complete_doc_auth_steps_before_agreement_step(expect_accessible: expect_accessible)
     complete_agreement_step
@@ -134,7 +150,7 @@ module DocAuthHelper
   end
 
   def complete_verify_step
-    click_idv_continue
+    click_idv_submit_default
   end
 
   def complete_doc_auth_steps_before_address_step(expect_accessible: false)
@@ -159,7 +175,7 @@ module DocAuthHelper
     click_button t('idv.gpo.form.submit')
   end
 
-  def complete_come_back_later
+  def complete_letter_enqueued
     # Exit Login.gov and return to SP
     click_on t('idv.cancel.actions.exit', app_name: APP_NAME)
   end
@@ -175,7 +191,7 @@ module DocAuthHelper
     fill_out_phone_form_ok if find('#idv_phone_form_phone').value.blank?
     click_continue
     verify_phone_otp
-    expect(page).to have_current_path(idv_review_path, wait: 10)
+    expect(page).to have_current_path(idv_enter_password_path, wait: 10)
     expect_page_to_have_no_accessibility_violations(page) if expect_accessible
   end
 
@@ -248,7 +264,7 @@ module DocAuthHelper
   def mock_doc_auth_acuant_http_4xx_status(status, method = :post_front_image)
     DocAuth::Mock::DocAuthMockClient.mock_response!(
       method: method,
-      response: DocAuth::Mock::ResultResponse.create_image_error_response(status),
+      response: DocAuth::Mock::ResultResponse.create_image_error_response(status, 'front'),
     )
   end
 
@@ -271,17 +287,6 @@ module DocAuthHelper
         DocAuth::Acuant::Config.new,
       ),
     )
-  end
-
-  def set_up_document_capture_result(uuid:, idv_result:)
-    dcs = DocumentCaptureSession.where(uuid: uuid).first_or_create
-    dcs.create_doc_auth_session
-    if idv_result
-      dcs.store_doc_auth_result(
-        result: idv_result.except(:pii_from_doc),
-        pii: idv_result[:pii_from_doc],
-      )
-    end
   end
 
   def verify_phone_otp
@@ -326,9 +331,9 @@ module DocAuthHelper
     complete_doc_auth_steps_before_ssn_step
     select threatmetrix, from: :mock_profiling_result
     complete_ssn_step
-    click_idv_continue
+    complete_verify_step
     complete_phone_step(user)
-    complete_review_step(user)
+    complete_enter_password_step(user)
     acknowledge_and_confirm_personal_key
   end
 end

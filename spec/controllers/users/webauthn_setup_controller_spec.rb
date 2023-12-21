@@ -51,10 +51,8 @@ RSpec.describe Users::WebauthnSetupController do
           with(
             'WebAuthn Setup Visited',
             platform_authenticator: false,
-            errors: {},
             enabled_mfa_methods_count: 0,
             in_account_creation_flow: false,
-            success: true,
           )
 
         expect(@irs_attempts_api_tracker).not_to receive(:track_event)
@@ -114,11 +112,12 @@ RSpec.describe Users::WebauthnSetupController do
           with('Multi-Factor Authentication Setup', result)
 
         expect(@analytics).to receive(:track_event).
-          with('Multi-Factor Authentication: Added webauthn', {
-            enabled_mfa_methods_count: 3,
-            method_name: :webauthn,
+          with(
+            :webauthn_setup_submitted,
+            errors: nil,
             platform_authenticator: false,
-          })
+            success: true,
+          )
 
         patch :confirm, params: params
       end
@@ -150,14 +149,14 @@ RSpec.describe Users::WebauthnSetupController do
       end
 
       it 'tracks the delete in analytics' do
-        result = {
-          success: true,
-          mfa_method_counts: { auth_app: 1, phone: 1 },
-          pii_like_keypaths: [[:mfa_method_counts, :phone]],
-        }
-        expect(@analytics).to receive(:track_event).with('WebAuthn Deleted', result)
-
         delete :delete, params: { id: webauthn_configuration.id }
+
+        expect(@analytics).to have_logged_event(
+          :webauthn_delete_submitted,
+          success: true,
+          error_details: nil,
+          configuration_id: webauthn_configuration.id.to_s,
+        )
       end
 
       it 'sends a recovery information changed event' do
@@ -231,7 +230,20 @@ RSpec.describe Users::WebauthnSetupController do
           expect(additional_mfa_check).to be_truthy
         end
       end
+
+      context 'when the back button is clicked after platform is added' do
+        let(:user) { create(:user, :with_webauthn_platform) }
+        before do
+          controller.user_session[:in_account_creation_flow] = true
+        end
+        it 'should redirect to authentication methods setup' do
+          get :new, params: { platform: true }
+
+          expect(response).to redirect_to(authentication_methods_setup_path)
+        end
+      end
     end
+
     describe 'multiple MFA handling' do
       let(:mfa_selections) { ['webauthn_platform', 'voice'] }
 
@@ -278,14 +290,13 @@ RSpec.describe Users::WebauthnSetupController do
             },
           )
 
-          expect(@analytics).to receive(:track_event).with(
-            'Multi-Factor Authentication: Added webauthn',
-            {
-              enabled_mfa_methods_count: 1,
-              method_name: :webauthn,
+          expect(@analytics).to receive(:track_event).
+            with(
+              :webauthn_setup_submitted,
+              errors: nil,
               platform_authenticator: false,
-            },
-          )
+              success: true,
+            )
 
           expect(@irs_attempts_api_tracker).to receive(:track_event).with(
             :mfa_enroll_webauthn_roaming, success: true
@@ -322,6 +333,14 @@ RSpec.describe Users::WebauthnSetupController do
 
         it 'should log expected events' do
           expect(@analytics).to receive(:track_event).
+            with(
+              :webauthn_setup_submitted,
+              errors: nil,
+              platform_authenticator: true,
+              success: true,
+            )
+
+          expect(@analytics).to receive(:track_event).
             with('User marked authenticated', { authentication_type: :valid_2fa_confirmation })
           expect(@analytics).to receive(:track_event).with(
             'User Registration: User Fully Registered',
@@ -341,20 +360,23 @@ RSpec.describe Users::WebauthnSetupController do
             },
           )
 
-          expect(@analytics).to receive(:track_event).with(
-            'Multi-Factor Authentication: Added webauthn',
-            {
-              enabled_mfa_methods_count: 1,
-              method_name: :webauthn,
-              platform_authenticator: true,
-            },
-          )
-
           expect(@irs_attempts_api_tracker).to receive(:track_event).with(
             :mfa_enroll_webauthn_platform, success: true
           )
 
           patch :confirm, params: params
+        end
+
+        it 'should log submitted failure' do
+          get :new, params: { platform: true, error: 'NotAllowedError' }
+
+          expect(@analytics).to have_logged_event(
+            :webauthn_setup_submitted,
+            hash_including(
+              success: false,
+              platform_authenticator: true,
+            ),
+          )
         end
       end
 
@@ -369,6 +391,7 @@ RSpec.describe Users::WebauthnSetupController do
             platform_authenticator: 'true',
           }
         end
+
         it 'should log expected events' do
           allow(IdentityConfig.store).to receive(:domain_name).and_return('localhost:3000')
           allow(WebAuthn::AttestationStatement).to receive(:from).and_raise(StandardError)
@@ -381,10 +404,7 @@ RSpec.describe Users::WebauthnSetupController do
                 'errors.webauthn_platform_setup.attestation_error',
                 link: MarketingSite.contact_url,
               )] },
-              error_details: { name: [I18n.t(
-                'errors.webauthn_platform_setup.attestation_error',
-                link: MarketingSite.contact_url,
-              )] },
+              error_details: { name: { attestation_error: true } },
               in_account_creation_flow: false,
               mfa_method_counts: {},
               multi_factor_auth_method: 'webauthn_platform',

@@ -1,4 +1,4 @@
-<% title t('in_person_proofing.headings.barcode') %>
+<% self.title = t('in_person_proofing.headings.barcode') %>
 
 <% content_for(:pre_flash_content) do %>
   <%= render StepIndicatorComponent.new(
@@ -30,7 +30,7 @@
 
 <%= render AlertComponent.new(class: 'margin-y-4', text_tag: :div) do %>
   <p class="margin-bottom-1 margin-top-0 h3"><strong><%= t('in_person_proofing.body.barcode.deadline', deadline: @presenter.formatted_due_date) %></strong></p>
-  <p class="margin-bottom-0"><%= t('in_person_proofing.body.barcode.deadline_restart') %></p>
+  <p><%= t('in_person_proofing.body.barcode.deadline_restart') %></p>
 <% end %>
 
 <section class="border-1px border-primary-light radius-lg padding-4">
@@ -44,17 +44,6 @@
     <% end %>
     <% c.with_item(heading: t('in_person_proofing.process.state_id.heading')) do %>
       <p><%= t('in_person_proofing.process.state_id.info') %></p>
-    <% end %>
-    <% if @presenter.needs_proof_of_address? %>
-      <% c.with_item(heading: t('in_person_proofing.process.proof_of_address.heading')) do %>
-        <p class="margin-bottom-105"><%= t('in_person_proofing.process.proof_of_address.info') %></p>
-        <ul class="usa-list margin-y-105">
-          <% t('in_person_proofing.process.proof_of_address.acceptable_proof').each do |proof| %>
-            <li><%= proof %></li>
-          <% end %>
-        </ul>
-        <p><%= t('in_person_proofing.process.proof_of_address.physical_or_digital_copy') %></p>
-      <% end %>
     <% end %>
   <% end %>
   <p class="margin-bottom-0">

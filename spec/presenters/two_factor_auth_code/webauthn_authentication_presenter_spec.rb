@@ -17,17 +17,20 @@ RSpec.describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
 
   let(:phishing_resistant_required) { false }
   let(:platform_authenticator) { false }
-  let(:multiple_factors_enabled) { false }
-  let(:service_provider_mfa_policy) do
-    instance_double(
-      ServiceProviderMfaPolicy,
-      phishing_resistant_required?: phishing_resistant_required,
-      multiple_factors_enabled?: multiple_factors_enabled,
-    )
-  end
 
-  before do
-    allow(presenter).to receive(:service_provider_mfa_policy).and_return service_provider_mfa_policy
+  describe '#webauthn_title' do
+    it 'shows title for security key mfa' do
+      expect(subject.webauthn_title).to eq(t('titles.present_webauthn'))
+    end
+
+    context 'when using platform authenticator mfa' do
+      let(:platform_authenticator) { true }
+      it 'shows title for platform authenticator mfa' do
+        expect(subject.webauthn_title).to eq(
+          t('two_factor_authentication.webauthn_platform_header_text'),
+        )
+      end
+    end
   end
 
   describe '#webauthn_help' do
@@ -42,10 +45,7 @@ RSpec.describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
 
       it 'returns the help text for a platform authenticator' do
         expect(presenter.webauthn_help).to eq(
-          t(
-            'instructions.mfa.webauthn.confirm_webauthn_platform',
-            app_name: APP_NAME,
-          ),
+          t('instructions.mfa.webauthn.confirm_webauthn_platform_html'),
         )
       end
     end
@@ -67,22 +67,6 @@ RSpec.describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
         expect(presenter.authenticate_button_text).to eq(
           t('two_factor_authentication.webauthn_platform_use_key'),
         )
-      end
-    end
-  end
-
-  describe '#multiple_factors_enabled?' do
-    context 'with multiple factors enabled in user policy' do
-      let(:multiple_factors_enabled) { true }
-
-      it 'returns true' do
-        expect(presenter.multiple_factors_enabled?).to be_truthy
-      end
-    end
-
-    context 'with multiple factors not enabled for user policy' do
-      it 'returns false' do
-        expect(presenter.multiple_factors_enabled?).to be_falsey
       end
     end
   end

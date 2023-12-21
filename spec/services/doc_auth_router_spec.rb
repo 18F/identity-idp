@@ -81,6 +81,31 @@ RSpec.describe DocAuthRouter do
 
         expect(result).to eq(doc_auth_vendor)
       end
+
+      context 'when selfie is enabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).and_return(true)
+        end
+        context 'when vendor is not set to mock' do
+          it 'chose lexisnexis' do
+            result = DocAuthRouter.doc_auth_vendor(
+              discriminator: discriminator,
+              analytics: analytics,
+            )
+            expect(result).to eq(Idp::Constants::Vendors::LEXIS_NEXIS)
+          end
+        end
+        context 'when vendor is set to mock' do
+          let(:doc_auth_vendor) { Idp::Constants::Vendors::MOCK }
+          it 'stays with the mock' do
+            result = DocAuthRouter.doc_auth_vendor(
+              discriminator: discriminator,
+              analytics: analytics,
+            )
+            expect(result).to eq(Idp::Constants::Vendors::MOCK)
+          end
+        end
+      end
     end
 
     context 'with a discriminator that hashes inside the test group' do
@@ -93,6 +118,24 @@ RSpec.describe DocAuthRouter do
       it 'is the alternate vendor' do
         expect(DocAuthRouter.doc_auth_vendor(discriminator: discriminator)).
           to eq(doc_auth_vendor_randomize_alternate_vendor)
+      end
+
+      context 'with selfie enabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).and_return(true)
+        end
+        it 'is the lexisnexis vendor' do
+          expect(DocAuthRouter.doc_auth_vendor(discriminator: discriminator)).
+            to eq(Idp::Constants::Vendors::LEXIS_NEXIS)
+        end
+
+        context 'when alternate is set to mock' do
+          let(:doc_auth_vendor_randomize_alternate_vendor) { Idp::Constants::Vendors::MOCK }
+          it 'stays with the mock vendor' do
+            expect(DocAuthRouter.doc_auth_vendor(discriminator: discriminator)).
+              to eq(Idp::Constants::Vendors::MOCK)
+          end
+        end
       end
 
       context 'with randomize false' do
@@ -230,22 +273,67 @@ RSpec.describe DocAuthRouter do
       )
     end
 
-    it 'translates http response errors and maintains exceptions' do
-      DocAuth::Mock::DocAuthMockClient.mock_response!(
-        method: :post_images,
-        response: DocAuth::Response.new(
-          success: false,
-          errors: {
-            general: [DocAuth::Errors::IMAGE_LOAD_FAILURE],
-          },
-          exception: DocAuth::RequestError.new('Test 438 HTTP failure', 438),
-        ),
-      )
+    context 'translates http response errors and maintains exceptions' do
+      it 'translate general message' do
+        DocAuth::Mock::DocAuthMockClient.mock_response!(
+          method: :post_images,
+          response: DocAuth::Response.new(
+            success: false,
+            errors: {
+              general: [DocAuth::Errors::IMAGE_LOAD_FAILURE],
+            },
+            exception: DocAuth::RequestError.new('Test 438 HTTP failure', 438),
+          ),
+        )
 
-      response = proxy.post_images(front_image: 'a', back_image: 'b')
+        response = proxy.post_images(front_image: 'a', back_image: 'b')
+        expect(response.errors).to eq(general: [I18n.t('doc_auth.errors.http.image_load.top_msg')])
+        expect(response.exception.message).to eq('Test 438 HTTP failure')
+      end
+      it 'translate related inline error messages for both sides' do
+        DocAuth::Mock::DocAuthMockClient.mock_response!(
+          method: :post_images,
+          response: DocAuth::Response.new(
+            success: false,
+            errors: {
+              general: [DocAuth::Errors::IMAGE_SIZE_FAILURE],
+              front: [DocAuth::Errors::IMAGE_SIZE_FAILURE_FIELD],
+              back: [DocAuth::Errors::IMAGE_SIZE_FAILURE_FIELD],
+            },
+            exception: DocAuth::RequestError.new('Test 440 HTTP failure', 440),
+          ),
+        )
 
-      expect(response.errors).to eq(general: [I18n.t('doc_auth.errors.http.image_load')])
-      expect(response.exception.message).to eq('Test 438 HTTP failure')
+        response = proxy.post_images(front_image: 'a', back_image: 'b')
+
+        expect(response.errors).to eq(
+          general: [I18n.t('doc_auth.errors.http.image_size.top_msg')],
+          front: [I18n.t('doc_auth.errors.http.image_size.failed_short')],
+          back: [I18n.t('doc_auth.errors.http.image_size.failed_short')],
+        )
+        expect(response.exception.message).to eq('Test 440 HTTP failure')
+      end
+      it 'translate related side specific inline error message' do
+        DocAuth::Mock::DocAuthMockClient.mock_response!(
+          method: :post_images,
+          response: DocAuth::Response.new(
+            success: false,
+            errors: {
+              general: [DocAuth::Errors::PIXEL_DEPTH_FAILURE],
+              front: [DocAuth::Errors::PIXEL_DEPTH_FAILURE_FIELD],
+            },
+            exception: DocAuth::RequestError.new('Test 439 HTTP failure', 439),
+          ),
+        )
+
+        response = proxy.post_images(front_image: 'a', back_image: 'b')
+
+        expect(response.errors).to eq(
+          general: [I18n.t('doc_auth.errors.http.pixel_depth.top_msg')],
+          front: [I18n.t('doc_auth.errors.http.pixel_depth.failed_short')],
+        )
+        expect(response.exception.message).to eq('Test 439 HTTP failure')
+      end
     end
 
     it 'translates doc type error' do

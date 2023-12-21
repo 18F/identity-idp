@@ -1,6 +1,9 @@
 ---
 es:
   saml_idp:
+    auth:
+      error:
+        title: Error
     shared:
       saml_post_binding:
         heading: Enviar para continuar

@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe AccountsController do
   describe 'before_actions' do
-    it 'includes before_actions from AccountStateChecker' do
+    it 'includes before_actions' do
       expect(subject).to have_actions(
         :before,
         :confirm_two_factor_authenticated,
@@ -20,6 +20,45 @@ RSpec.describe AccountsController do
         get :show
 
         expect(response).to redirect_to(new_user_session_url)
+      end
+    end
+
+    describe 'pii fetching' do
+      let(:pii_cacher) { Pii::Cacher.new(user, {}) }
+      let(:active_profile) { create(:profile, :active) }
+      let(:pending_profile) { create(:profile, :verify_by_mail_pending) }
+      let(:user) { create(:user, :fully_registered, profiles: profiles) }
+
+      before do
+        allow(Pii::Cacher).to receive(:new).and_return(pii_cacher)
+        allow(pii_cacher).to receive(:fetch).and_call_original
+
+        sign_in user
+        get :show
+      end
+
+      context 'when the user has no profiles' do
+        let(:profiles) { [] }
+
+        it 'uses no PII' do
+          expect(pii_cacher).to have_received(:fetch).with(nil)
+        end
+      end
+
+      context 'when the user has an active profile and a pending profile' do
+        let(:profiles) { [active_profile, pending_profile] }
+
+        it 'uses PII from the active profile' do
+          expect(pii_cacher).to have_received(:fetch).with(active_profile.id)
+        end
+      end
+
+      context 'when the user has no active profile but has a pending profile' do
+        let(:profiles) { [pending_profile] }
+
+        it 'uses PII from the pending profile' do
+          expect(pii_cacher).to have_received(:fetch).with(pending_profile.id)
+        end
       end
     end
 
@@ -139,6 +178,7 @@ RSpec.describe AccountsController do
     before(:each) do
       stub_sign_in(user)
     end
+
     it 'redirects to 2FA options' do
       post :reauthentication
 
@@ -155,6 +195,29 @@ RSpec.describe AccountsController do
       post :reauthentication
 
       expect(controller.user_session[:stored_location]).to eq account_url
+    end
+
+    context 'with parameters' do
+      let(:params) { { foo: 'bar' } }
+
+      it 'sets stored location excluding unknown parameters' do
+        post :reauthentication, params: params
+
+        expect(controller.user_session[:stored_location]).to eq account_url
+      end
+
+      context 'with permitted parameters' do
+        let(:manage_authenticator_param) { 'abc-123' }
+        let(:params) { { foo: 'bar', manage_authenticator: manage_authenticator_param } }
+
+        it 'sets stored location including only permitted parameters' do
+          post :reauthentication, params: params
+
+          expect(controller.user_session[:stored_location]).to eq(
+            account_url(manage_authenticator: manage_authenticator_param),
+          )
+        end
+      end
     end
   end
 end

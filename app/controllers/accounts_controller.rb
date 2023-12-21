@@ -10,7 +10,7 @@ class AccountsController < ApplicationController
     session[:account_redirect_path] = account_path
     cacher = Pii::Cacher.new(current_user, user_session)
     @presenter = AccountShowPresenter.new(
-      decrypted_pii: cacher.fetch,
+      decrypted_pii: cacher.fetch(current_user.active_or_pending_profile&.id),
       personal_key: flash[:personal_key],
       sp_session_request_url: sp_session_request_url_with_updated_params,
       sp_name: decorated_sp_session.sp_name,
@@ -19,11 +19,11 @@ class AccountsController < ApplicationController
     )
   end
 
-  # This action is used to re-authenticate when PII on the account page is locked on `show` action
-  # This allows users to view their PII after reauthenticating their MFA.
-
   def reauthentication
-    user_session[:stored_location] = account_url
+    # This route sends a user through reauthentication and returns them to the account page, since
+    # some actions within the account dashboard require a fresh reauthentication (e.g. managing an
+    # MFA method or viewing verified profile information).
+    user_session[:stored_location] = account_url(params.permit(:manage_authenticator))
     user_session[:context] = 'reauthentication'
 
     redirect_to login_two_factor_options_path

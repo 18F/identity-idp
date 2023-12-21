@@ -16,15 +16,12 @@ RSpec.feature 'IAL1 Single Sign On' do
       perform_in_browser(:two) do
         confirm_email_in_a_different_browser(email)
         expect(current_path).to eq sign_up_completed_path
-        within('.requested-attributes') do
-          expect(page).to have_content t('help_text.requested_attributes.email')
-          expect(page).to have_content email
-          expect(page).to_not have_content t('help_text.requested_attributes.address')
-          expect(page).to_not have_content t('help_text.requested_attributes.birthdate')
-          expect(page).to_not have_content t('help_text.requested_attributes.phone')
-          expect(page).
-            to_not have_content t('help_text.requested_attributes.social_security_number')
-        end
+        expect(page).to have_content t('help_text.requested_attributes.email')
+        expect(page).to have_content email
+        expect(page).to_not have_content t('help_text.requested_attributes.address')
+        expect(page).to_not have_content t('help_text.requested_attributes.birthdate')
+        expect(page).to_not have_content t('help_text.requested_attributes.phone')
+        expect(page).to_not have_content t('help_text.requested_attributes.social_security_number')
 
         click_agree_and_continue
 
@@ -64,9 +61,11 @@ RSpec.feature 'IAL1 Single Sign On' do
 
     it 'shows user the start page with a link back to the SP' do
       visit saml_authn_request_url
-
       expect(page).to have_link(
-        t('links.back_to_sp', sp: 'Your friendly Government Agency'), href: return_to_sp_cancel_path
+        t(
+          'links.back_to_sp',
+          sp: 'Your friendly Government Agency',
+        ), href: return_to_sp_cancel_path(step: :authentication)
       )
     end
 

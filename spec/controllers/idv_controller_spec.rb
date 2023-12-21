@@ -27,7 +27,7 @@ RSpec.describe IdvController do
       get :index
     end
 
-    it 'redirects to sad face page if fraud review is pending' do
+    it 'redirects to please call page if fraud review is pending' do
       profile = create(:profile, :fraud_review_pending)
 
       stub_sign_in(profile.user)
@@ -105,7 +105,46 @@ RSpec.describe IdvController do
         stub_sign_in(profile.user)
       end
 
-      it 'redirects to rate limited page' do
+      it 'redirects the user to start proofing' do
+        get :index
+
+        expect(response).to redirect_to idv_welcome_url
+      end
+    end
+
+    context 'if the number of letter sends has been exceeded' do
+      before do
+        user = create(:user)
+        profile = create(
+          :profile,
+          :letter_sends_rate_limited,
+          user: user,
+        )
+
+        stub_sign_in(profile.user)
+      end
+
+      it 'redirects the user to start proofing' do
+        get :index
+
+        expect(response).to redirect_to idv_welcome_url
+      end
+    end
+
+    context 'if the number of letter sends and phone attempts have been exceeded' do
+      before do
+        user = create(:user)
+        profile = create(
+          :profile,
+          :letter_sends_rate_limited,
+          user: user,
+        )
+        RateLimiter.new(rate_limit_type: :proof_address, user: user).increment_to_limited!
+
+        stub_sign_in(profile.user)
+      end
+
+      it 'redirects to failure page' do
         get :index
 
         expect(response).to redirect_to idv_phone_errors_failure_url
@@ -128,29 +167,41 @@ RSpec.describe IdvController do
       expect(response).to redirect_to idv_welcome_path
     end
 
-    context 'no SP context' do
+    describe 'SP for IdV requirement' do
+      let(:current_sp) { create(:service_provider) }
+      let(:ial) { 2 }
       let(:user) { build(:user, password: ControllerHelper::VALID_PASSWORD) }
 
       before do
         stub_sign_in(user)
-        session[:sp] = {}
+        if current_sp.present?
+          session[:sp] = { issuer: current_sp.issuer, ial: ial }
+        else
+          session[:sp] = {}
+        end
         allow(IdentityConfig.store).to receive(:idv_sp_required).and_return(idv_sp_required)
       end
 
-      context 'sp required' do
-        let(:idv_sp_required) { true }
+      context 'without an SP context' do
+        let(:current_sp) { nil }
 
-        it 'redirects back to the account page' do
-          get :index
+        context 'when an SP is required' do
+          let(:idv_sp_required) { true }
 
-          expect(response).to redirect_to account_url
+          it 'redirects back to the account page' do
+            get :index
+            expect(response).to redirect_to account_url
+          end
+
+          it 'begins the proofing process if the user has a profile' do
+            create(:profile, :verified, user: user)
+            get :index
+            expect(response).to redirect_to idv_welcome_url
+          end
         end
 
-        context 'user has an existing profile' do
-          let(:user) do
-            profile = create(:profile)
-            profile.user
-          end
+        context 'no SP required' do
+          let(:idv_sp_required) { false }
 
           it 'begins the identity proofing process' do
             get :index
@@ -160,13 +211,55 @@ RSpec.describe IdvController do
         end
       end
 
-      context 'sp not required' do
-        let(:idv_sp_required) { false }
+      context 'with an SP context that does not require IdV' do
+        let(:ial) { 1 }
 
-        it 'begins the identity proofing process' do
-          get :index
+        context 'when an SP is required' do
+          let(:idv_sp_required) { true }
 
-          expect(response).to redirect_to idv_welcome_url
+          it 'redirects back to the account page' do
+            get :index
+            expect(response).to redirect_to account_url
+          end
+
+          it 'begins the proofing process if the user has a profile' do
+            create(:profile, :verified, user: user)
+            get :index
+            expect(response).to redirect_to idv_welcome_url
+          end
+        end
+
+        context 'no SP required' do
+          let(:idv_sp_required) { false }
+
+          it 'begins the identity proofing process' do
+            get :index
+
+            expect(response).to redirect_to idv_welcome_url
+          end
+        end
+      end
+
+      context 'with an SP context that requires IdV' do
+        let(:ial) { 2 }
+
+        context 'when an SP is required' do
+          let(:idv_sp_required) { true }
+
+          it 'begins the identity proofing process' do
+            get :index
+            expect(response).to redirect_to idv_welcome_url
+          end
+        end
+
+        context 'no SP required' do
+          let(:idv_sp_required) { false }
+
+          it 'begins the identity proofing process' do
+            get :index
+
+            expect(response).to redirect_to idv_welcome_url
+          end
         end
       end
     end
@@ -182,6 +275,24 @@ RSpec.describe IdvController do
         get :activated
 
         expect(response).to render_template(:activated)
+      end
+
+      context 'user still has personal_key in idv_session' do
+        it 'redirects user to personal key acknowledgement' do
+          user = create(:profile, :active, :verified).user
+          idv_session = Idv::Session.new(
+            user_session: {},
+            current_user: user,
+            service_provider: nil,
+          )
+          allow(controller).to receive(:idv_session).and_return(idv_session)
+          stub_sign_in(user)
+          idv_session.personal_key = 'a-really-secure-key'
+
+          get :activated
+
+          expect(response).to redirect_to idv_personal_key_url
+        end
       end
     end
 

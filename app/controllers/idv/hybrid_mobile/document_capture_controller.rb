@@ -1,18 +1,15 @@
 module Idv
   module HybridMobile
     class DocumentCaptureController < ApplicationController
+      include Idv::AvailabilityConcern
       include DocumentCaptureConcern
       include HybridMobileConcern
 
       before_action :check_valid_document_capture_session
       before_action :override_csp_to_allow_acuant
+      before_action :confirm_document_capture_needed, only: :show
 
       def show
-        if document_capture_session&.load_result&.success?
-          redirect_to idv_hybrid_mobile_capture_complete_url
-          return
-        end
-
         analytics.idv_doc_auth_document_capture_visited(**analytics_arguments)
 
         Funnel::DocAuth::RegisterStep.new(document_capture_user.id, sp_session[:issuer]).
@@ -22,6 +19,7 @@ module Idv
       end
 
       def update
+        document_capture_session.confirm_ocr
         result = handle_stored_result
 
         analytics.idv_doc_auth_document_capture_submitted(**result.to_h.merge(analytics_arguments))
@@ -56,7 +54,9 @@ module Idv
           step: 'document_capture',
           analytics_id: 'Doc Auth',
           irs_reproofing: irs_reproofing?,
-        }.merge(ab_test_analytics_buckets)
+        }.merge(
+          ab_test_analytics_buckets,
+        )
       end
 
       def handle_stored_result
@@ -68,6 +68,20 @@ module Idv
           extra = { stored_result_present: stored_result.present? }
           failure(I18n.t('doc_auth.errors.general.network_error'), extra)
         end
+      end
+
+      def confirm_document_capture_needed
+        return unless stored_result&.success?
+        return if redo_document_capture_pending?
+
+        redirect_to idv_hybrid_mobile_capture_complete_url
+      end
+
+      def redo_document_capture_pending?
+        return unless stored_result&.dig(:captured_at)
+        return unless document_capture_session.requested_at
+
+        document_capture_session.requested_at > stored_result.captured_at
       end
     end
   end

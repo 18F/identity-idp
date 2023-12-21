@@ -9,7 +9,7 @@ import {
   AnalyticsContext,
   FailedCaptureAttemptsContextProvider,
 } from '@18f/identity-document-capture';
-import { createEvent, waitFor } from '@testing-library/dom';
+import { createEvent, waitFor, screen } from '@testing-library/dom';
 
 import DeviceContext from '@18f/identity-document-capture/context/device';
 import { I18n } from '@18f/identity-i18n';
@@ -1113,6 +1113,120 @@ describe('document-capture/components/acuant-capture', () => {
     });
   });
 
+  context('mobile selfie', () => {
+    const trackEvent = sinon.stub();
+
+    beforeEach(async () => {
+      // Set up the components so that everything is as it would actually be -except- the AcuantSDK
+      // The AcuantSDK isn't possible to run in test, so the initialize({...}) call below mocks it.
+      render(
+        <DeviceContext.Provider value={{ isMobile: true }}>
+          <AnalyticsContext.Provider value={{ trackEvent }}>
+            <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
+              <AcuantCapture label="Image" name="selfie" isReady />
+            </AcuantContextProvider>
+          </AnalyticsContext.Provider>
+        </DeviceContext.Provider>,
+      );
+
+      // Simulate the user clicking on the box that usually opens full screen selfie capture.
+      // This isn't strictly necessary for the logging tests, but doing this makes the calls to
+      // trackEvent appear in the actual order we'd expect when using the Acuant SDK.
+      await userEvent.click(screen.getByLabelText('Image'));
+    });
+
+    it('renders the selfie capture loading div in acuant-capture', () => {
+      // What we want to test is that the selfie version of the FileInput appears
+      // when the name="selfie". The only difference between the selfie and document
+      // versions is what happens when you click the FileInput, so this test clicks
+      // the file input, then checks that the full screen div opened
+      expect(screen.getByRole('dialog')).to.be.ok();
+    });
+
+    it('calls trackEvent from onSelfieCaptureOpen', () => {
+      // In real use the `start` method opens the Acuant SDK full screen selfie capture window.
+      // Because we can't do that in test (AcuantSDK does not allow), this doesn't attempt to load
+      // the SDK. Instead, it simply calls the callback that happens when a photo is captured.
+      // This allows us to test everything about that callback -except- the Acuant SDK parts.
+      initialize({
+        selfieStart: sinon.stub().callsFake((callbacks) => {
+          callbacks.onOpened();
+        }),
+      });
+
+      expect(trackEvent).to.be.calledWith('IdV: selfie image clicked');
+      expect(trackEvent).to.be.calledWith('IdV: Acuant SDK loaded');
+
+      expect(trackEvent).to.have.been.calledWith('idv_sdk_selfie_image_capture_opened');
+    });
+
+    it('calls trackEvent from onSelfieCaptureClosed', () => {
+      // In real use the `start` method opens the Acuant SDK full screen selfie capture window.
+      // Because we can't do that in test (AcuantSDK does not allow), this doesn't attempt to load
+      // the SDK. Instead, it simply calls the callback that happens when a photo is captured.
+      // This allows us to test everything about that callback -except- the Acuant SDK parts.
+      initialize({
+        selfieStart: sinon.stub().callsFake((callbacks) => {
+          callbacks.onClosed();
+        }),
+      });
+
+      expect(trackEvent).to.be.calledWith('IdV: selfie image clicked');
+      expect(trackEvent).to.be.calledWith('IdV: Acuant SDK loaded');
+
+      expect(trackEvent).to.have.been.calledWith(
+        'idv_sdk_selfie_image_capture_closed_without_photo',
+      );
+    });
+
+    it('calls trackEvent from onSelfieCaptureSuccess', () => {
+      // In real use the `start` method opens the Acuant SDK full screen selfie capture window.
+      // Because we can't do that in test (AcuantSDK does not allow), this doesn't attempt to load
+      // the SDK. Instead, it simply calls the callback that happens when a photo is captured.
+      // This allows us to test everything about that callback -except- the Acuant SDK parts.
+      initialize({
+        selfieStart: sinon.stub().callsFake((callbacks) => {
+          callbacks.onCaptured();
+        }),
+      });
+
+      expect(trackEvent).to.be.calledWith('IdV: selfie image clicked');
+      expect(trackEvent).to.be.calledWith('IdV: Acuant SDK loaded');
+
+      expect(trackEvent).to.have.been.calledWith(
+        'idv_sdk_selfie_image_added',
+        sinon.match({
+          attempt: sinon.match.number,
+        }),
+      );
+    });
+
+    it('calls trackEvent from onSelfieCaptureFailure', () => {
+      const errorHash = { code: 1, message: 'Camera permission not granted' };
+
+      // In real use the `start` method opens the Acuant SDK full screen selfie capture window.
+      // Because we can't do that in test (AcuantSDK does not allow), this doesn't attempt to load
+      // the SDK. Instead, it simply calls the callback that happens when a photo is captured.
+      // This allows us to test everything about that callback -except- the Acuant SDK parts.
+      initialize({
+        selfieStart: sinon.stub().callsFake((callbacks) => {
+          callbacks.onError(errorHash);
+        }),
+      });
+
+      expect(trackEvent).to.be.calledWith('IdV: selfie image clicked');
+      expect(trackEvent).to.be.calledWith('IdV: Acuant SDK loaded');
+
+      expect(trackEvent).to.have.been.calledWith(
+        'idv_sdk_selfie_image_capture_failed',
+        sinon.match({
+          sdk_error_code: sinon.match.number,
+          sdk_error_message: sinon.match.string,
+        }),
+      );
+    });
+  });
+
   it('optionally disallows upload', () => {
     const { getByText } = render(
       <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
@@ -1188,7 +1302,7 @@ describe('document-capture/components/acuant-capture', () => {
         mimeType: 'image/jpeg',
         size: sinon.match.number,
         attempt: sinon.match.number,
-        acuantCaptureMode: 'AUTO',
+        acuantCaptureMode: null,
       }),
     );
   });

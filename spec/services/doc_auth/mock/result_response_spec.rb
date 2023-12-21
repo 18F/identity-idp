@@ -301,6 +301,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.extra).to eq(
         doc_auth_result: DocAuth::Acuant::ResultCodes::PASSED.name,
         billed: true,
+        classification_info: {},
       )
     end
   end
@@ -327,6 +328,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.extra).to eq(
         doc_auth_result: DocAuth::Acuant::ResultCodes::CAUTION.name,
         billed: true,
+        classification_info: {},
       )
     end
   end
@@ -351,6 +353,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.extra).to eq(
         doc_auth_result: DocAuth::Acuant::ResultCodes::FAILED.name,
         billed: true,
+        classification_info: {},
       )
     end
   end
@@ -396,6 +399,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.extra).to eq(
         doc_auth_result: DocAuth::Acuant::ResultCodes::PASSED.name,
         billed: true,
+        classification_info: {},
       )
     end
   end
@@ -476,6 +480,169 @@ RSpec.describe DocAuth::Mock::ResultResponse do
     end
     it 'returns doc type as not supported' do
       expect(response.doc_type_supported?).to eq(false)
+    end
+  end
+  context 'with a yaml file with a supported classname and country' do
+    let(:input) do
+      <<~YAML
+        doc_auth_result: Failed
+        classification_info:
+          Front:
+            ClassName: Drivers License
+            CountryCode: US
+          Back:
+            ClassName: Drivers License
+            CountryCode: US
+      YAML
+    end
+    it 'returns doc type as supported' do
+      expect(response.doc_type_supported?).to eq(true)
+    end
+  end
+  context 'with a yaml file with a supported classname and not supported country' do
+    let(:input) do
+      <<~YAML
+        doc_auth_result: Failed
+        classification_info:
+          Front:
+            ClassName: Drivers License
+            CountryCode: UK
+          Back:
+            ClassName: Drivers License
+            CountryCode: UK
+      YAML
+    end
+    it 'returns doc type as not supported' do
+      expect(response.doc_type_supported?).to eq(false)
+      expect(response.errors).to eq(
+        general: [DocAuth::Errors::DOC_TYPE_CHECK],
+        front: [DocAuth::Errors::CARD_TYPE],
+        back: [DocAuth::Errors::CARD_TYPE],
+        hints: true,
+      )
+    end
+  end
+
+  context 'with a passed yaml file containing unsupported doc type and bad image metrics' do
+    let(:input) do
+      <<~YAML
+        doc_auth_result: Passed
+        classification_info:
+          Front:
+            ClassName: Identification Card
+            CountryCode: USA
+            IssuerType: Country
+          Back:
+            ClassName: Identification Card
+            CountryCode: USA
+            IssuerType: StateProvince
+        image_metrics:
+          front:
+            HorizontalResolution: 50
+            VerticalResolution: 300
+            SharpnessMetric: 50
+            GlareMetric: 50
+          back:
+            HorizontalResolution: 300
+            VerticalResolution: 300,
+            SharpnessMetric: 50,
+            GlareMetric: 50   
+      YAML
+    end
+    it 'returns doc type as not supported and generate errors for doc type' do
+      expect(response.doc_type_supported?).to eq(false)
+      expect(response.errors).to eq(
+        general: [DocAuth::Errors::DOC_TYPE_CHECK],
+        front: [DocAuth::Errors::CARD_TYPE],
+        hints: true,
+      )
+      expect(response.exception).to be_nil
+      expect(response.success?).to eq(false)
+    end
+  end
+
+  context 'with a yaml file that does not include classification info' do
+    let(:input) do
+      <<~YAML
+        document:
+          first_name: Jane
+          last_name: Doe
+          middle_name: Q
+          city: Bayside
+          state: NY
+          zipcode: '11364'
+          dob: 10/06/1938
+          phone: +1 314-555-1212
+          state_id_jurisdiction: 'ND'
+      YAML
+    end
+    it 'successfully extracts PII' do
+      expect(response.pii_from_doc.empty?).to eq(false)
+    end
+  end
+  context 'with a yaml file that includes classification info' do
+    let(:input) do
+      <<~YAML
+        document:
+          first_name: Jane
+          last_name: Doe
+          middle_name: Q
+          city: Bayside
+          state: NY
+          zipcode: '11364'
+          dob: 10/06/1938
+          phone: +1 314-555-1212
+          state_id_jurisdiction: 'ND'
+        classification_info:
+          Front:
+            ClassName: Drivers License
+            CountryCode: USA
+          Back:
+            ClassName: Drivers License
+            CountryCode: USA
+      YAML
+    end
+    it 'successfully extracts classification info' do
+      classification_info = response.extra[:classification_info].deep_symbolize_keys
+      expect(classification_info).to eq(
+        {
+          Front: { ClassName: 'Drivers License',
+                   CountryCode: 'USA' },
+          Back: { ClassName: 'Drivers License', CountryCode: 'USA' },
+        },
+      )
+    end
+  end
+  context 'with a yaml file that includes classification info but missing pii' do
+    let(:input) do
+      <<~YAML
+        doc_auth_result: Passed
+        document:
+          city: Bayside
+          state: NY
+          zipcode: '11364'
+          dob: 10/06/1938
+          phone: +1 314-555-1212
+          state_id_jurisdiction: 'ND'
+        failed_alerts: []
+        classification_info:
+          Front:
+            ClassName: Drivers License
+            CountryCode: USA
+          Back:
+            ClassName: Drivers License
+            CountryCode: USA
+      YAML
+    end
+    it 'successfully extracts classification info' do
+      classification_info = response.extra[:classification_info].deep_symbolize_keys
+      expect(classification_info).to eq(
+        {
+          Front: { ClassName: 'Drivers License',
+                   CountryCode: 'USA' },
+          Back: { ClassName: 'Drivers License', CountryCode: 'USA' },
+        },
+      )
     end
   end
 end

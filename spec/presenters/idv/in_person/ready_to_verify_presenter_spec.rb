@@ -4,14 +4,13 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
   let(:user) { build(:user) }
   let(:profile) { build(:profile, user: user) }
   let(:current_address_matches_id) { true }
-  let(:created_at) { described_class::USPS_SERVER_TIMEZONE.parse('2022-07-14T00:00:00Z') }
+  let(:created_at) { described_class::USPS_SERVER_TIMEZONE.parse('2023-06-14T00:00:00Z') }
   let(:enrollment_established_at) do
-    described_class::USPS_SERVER_TIMEZONE.parse('2022-08-14T00:00:00Z')
+    described_class::USPS_SERVER_TIMEZONE.parse('2023-07-14T00:00:00Z')
   end
   let(:enrollment_selected_location_details) do
     JSON.parse(UspsInPersonProofing::Mock::Fixtures.enrollment_selected_location_details)
   end
-  let(:capture_secondary_id_enabled) { false }
   let(:enrollment) do
     create(
       :in_person_enrollment, :with_service_provider, :pending,
@@ -20,8 +19,7 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
       created_at: created_at,
       enrollment_established_at: enrollment_established_at,
       current_address_matches_id: current_address_matches_id,
-      selected_location_details: enrollment_selected_location_details,
-      capture_secondary_id_enabled: capture_secondary_id_enabled
+      selected_location_details: enrollment_selected_location_details
     )
   end
   subject(:presenter) { described_class.new(enrollment: enrollment) }
@@ -33,13 +31,13 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
     end
 
     it 'returns a formatted due date' do
-      expect(formatted_due_date).to eq 'September 12, 2022'
+      expect(formatted_due_date).to eq 'August 12, 2023'
     end
 
     context 'there is no enrollment_established_at' do
       let(:enrollment_established_at) { nil }
       it 'returns formatted due date when no enrollment_established_at' do
-        expect(formatted_due_date).to eq 'August 12, 2022'
+        expect(formatted_due_date).to eq 'July 13, 2023'
       end
     end
   end
@@ -98,42 +96,6 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
         expect(presenter.selected_location_hours(:sunday)).to eq(
           I18n.t('in_person_proofing.body.barcode.retail_hours_closed'),
         )
-      end
-    end
-  end
-
-  describe '#needs_proof_of_address?' do
-    subject(:needs_proof_of_address) { presenter.needs_proof_of_address? }
-
-    context 'with double address verification disabled' do
-      let(:capture_secondary_id_enabled) { false }
-
-      context 'with current address matching id' do
-        let(:current_address_matches_id) { true }
-
-        it { expect(needs_proof_of_address).to eq false }
-      end
-
-      context 'with current address not matching id' do
-        let(:current_address_matches_id) { false }
-
-        it { expect(needs_proof_of_address).to eq true }
-      end
-    end
-
-    context 'with double address verification enabled' do
-      let(:capture_secondary_id_enabled) { true }
-
-      context 'with current address matching id' do
-        let(:current_address_matches_id) { true }
-
-        it { expect(needs_proof_of_address).to eq false }
-      end
-
-      context 'with current address not matching id' do
-        let(:current_address_matches_id) { false }
-
-        it { expect(needs_proof_of_address).to eq false }
       end
     end
   end

@@ -29,8 +29,8 @@ module Idv
       idv_phone_otp_delivery_selection_visit
       idv_phone_otp_delivery_selection_submitted
       idv_proofing_resolution_result_missing
-      idv_review_complete
-      idv_review_info_visited
+      idv_enter_password_submitted
+      idv_enter_password_visited
       idv_please_call_visited
       idv_start_over
     ].freeze

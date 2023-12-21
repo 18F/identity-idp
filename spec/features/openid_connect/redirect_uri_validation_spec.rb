@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe 'redirect_uri validation' do
+  include OidcAuthHelper
+
   context 'when the redirect_uri in the request does not match one that is registered' do
     it 'displays error instead of branded landing page' do
       visit_idp_from_sp_with_ial1_with_disallowed_redirect_uri
@@ -148,8 +150,9 @@ RSpec.describe 'redirect_uri validation' do
       click_submit_default
       click_agree_and_continue
 
-      redirect_host = URI.parse(current_url).host
-      redirect_scheme = URI.parse(current_url).scheme
+      redirect_uri = URI.parse(oidc_redirect_url)
+      redirect_host = redirect_uri.host
+      redirect_scheme = redirect_uri.scheme
 
       expect(redirect_host).to eq('example.com')
       expect(redirect_scheme).to eq('https')

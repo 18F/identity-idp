@@ -129,7 +129,7 @@ fr:
       totp_step_3: Scannez ce code-barres QR avec votre application
       totp_step_4: Entrez le code temporaire de votre application
     two_factor:
-      backup_code: Code de sécurité
+      backup_code: Code de sauvegarde
       personal_key: Clé personnelle
       try_again: Utilisez un autre numéro de téléphone
     validation:
@@ -149,13 +149,15 @@ fr:
       info_text: Vous aurez besoin de configurer une méthode d’authentification
         supplémentaire après que vous aurez configuré le déverrouillage facial
         ou le déverrouillage tactile.
-      intro_html: '<p>Enregistrez votre visage ou votre empreinte digitale en tant
-        qu’identifiant sur votre appareil, afin de pouvoir les utiliser pour
-        accéder à votre compte. %{app_name} ne stocke pas votre visage ni votre
-        empreinte digitale</p><p>Il se peut que vous ayez besoin d’utiliser le
-        même appareil pour vous connecter chaque fois. %{link}</p>'
-      intro_link_text: En savoir plus sur le déverrouillage facial ou sur le
-        déverrouillage tactile.
+      intro_html: <p>Authentifiez-vous de la même manière que vous déverrouillez votre
+        appareil, que ce soit avec votre visage ou votre empreinte digitale, un
+        mot de passe ou une autre méthode.</p><p>Si vous utilisez un
+        gestionnaire de mots de passe tel que le trousseau iCloud ou le
+        gestionnaire de mots de passe Google, il peut vous demander
+        d’enregistrer une clé d’accès. Cela vous permet de vous authentifier sur
+        n’importe quel appareil à l’aide de ce gestionnaire de mots de passe.
+        %{link}</p>
+      intro_link_text: En savoir plus sur l’utilisation de plusieurs appareils.
       nickname: Pseudo dispositivo
       nickname_hint: Au cas où vous ajouteriez d’autres appareils pour le
         déverrouillage facial ou pour le déverrouillage tactile, vous saurez les

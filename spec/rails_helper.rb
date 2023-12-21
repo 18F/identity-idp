@@ -70,7 +70,7 @@ RSpec.configure do |config|
     end
   end
 
-  if !ENV['CI']
+  if !ENV['CI'] && !ENV['SKIP_BUILD']
     config.before(js: true) do
       # rubocop:disable Style/GlobalVars
       next if defined?($ran_asset_build)

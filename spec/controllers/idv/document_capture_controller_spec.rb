@@ -1,9 +1,18 @@
 require 'rails_helper'
 
 RSpec.describe Idv::DocumentCaptureController do
-  include IdvHelper
+  include FlowPolicyHelper
 
-  let(:document_capture_session_uuid) { 'fd14e181-6fb1-4cdc-92e0-ef66dad0df4e' }
+  let(:document_capture_session_requested_at) { Time.zone.now }
+
+  let!(:document_capture_session) do
+    DocumentCaptureSession.create!(
+      user: user,
+      requested_at: document_capture_session_requested_at,
+    )
+  end
+
+  let(:document_capture_session_uuid) { document_capture_session&.uuid }
 
   let(:user) { create(:user) }
 
@@ -13,11 +22,17 @@ RSpec.describe Idv::DocumentCaptureController do
 
   before do
     stub_sign_in(user)
+    stub_up_to(:hybrid_handoff, idv_session: subject.idv_session)
     stub_analytics
-    subject.idv_session.flow_path = 'standard'
     subject.idv_session.document_capture_session_uuid = document_capture_session_uuid
 
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
+  end
+
+  describe '#step_info' do
+    it 'returns a valid StepInfo object' do
+      expect(Idv::DocumentCaptureController.step_info).to be_valid
+    end
   end
 
   describe 'before_actions' do
@@ -32,13 +47,6 @@ RSpec.describe Idv::DocumentCaptureController do
       expect(subject).to have_actions(
         :before,
         :check_for_mail_only_outage,
-      )
-    end
-
-    it 'checks that hybrid_handoff is complete' do
-      expect(subject).to have_actions(
-        :before,
-        :confirm_hybrid_handoff_complete,
       )
     end
   end
@@ -104,12 +112,13 @@ RSpec.describe Idv::DocumentCaptureController do
       end
     end
 
-    context 'with pii in idv_session' do
-      it 'redirects to ssn step' do
-        subject.idv_session.pii_from_doc = Idp::Constants::MOCK_IDV_APPLICANT
+    context 'verify info step is complete' do
+      it 'renders show' do
+        stub_up_to(:verify_info, idv_session: subject.idv_session)
+
         get :show
 
-        expect(response).to redirect_to(idv_ssn_url)
+        expect(response).to render_template :show
       end
     end
 
@@ -150,6 +159,14 @@ RSpec.describe Idv::DocumentCaptureController do
     end
     let(:result) { { success: true, errors: {} } }
 
+    it 'invalidates future steps' do
+      subject.idv_session.applicant = Idp::Constants::MOCK_IDV_APPLICANT
+      expect(subject).to receive(:clear_future_steps!).and_call_original
+
+      put :update
+      expect(subject.idv_session.applicant).to be_nil
+    end
+
     it 'sends analytics_submitted event' do
       allow(result).to receive(:success?).and_return(true)
       allow(subject).to receive(:handle_stored_result).and_return(result)
@@ -182,6 +199,17 @@ RSpec.describe Idv::DocumentCaptureController do
 
         expect(enrollment.reload.cancelled?).to eq(true)
         expect(user.reload.establishing_in_person_enrollment).to be_nil
+      end
+    end
+
+    context 'ocr confirmation pending' do
+      before do
+        subject.document_capture_session.ocr_confirmation_pending = true
+      end
+
+      it 'confirms ocr' do
+        put :update
+        expect(subject.document_capture_session.ocr_confirmation_pending).to be_falsey
       end
     end
   end

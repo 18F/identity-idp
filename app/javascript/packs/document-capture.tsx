@@ -10,6 +10,7 @@ import {
   FailedCaptureAttemptsContextProvider,
   MarketingSiteContextProvider,
   InPersonContext,
+  FeatureFlagContext,
 } from '@18f/identity-document-capture';
 import { isCameraCapableMobile } from '@18f/identity-device';
 import { FlowContext } from '@18f/identity-verify-flow';
@@ -30,8 +31,14 @@ interface AppRootData {
   acuantVersion: string;
   flowPath: FlowPath;
   cancelUrl: string;
+  exitUrl: string;
   idvInPersonUrl?: string;
+  optedInToInPersonProofing: string;
   securityAndPrivacyHowItWorksUrl: string;
+  skipDocAuth: string;
+  howToVerifyURL: string;
+  uiNotReadySectionEnabled: string;
+  uiExitQuestionSectionEnabled: string;
 }
 
 const appRoot = document.getElementById('document-capture-form')!;
@@ -45,6 +52,12 @@ function getServiceProvider() {
   return { name, failureToProofURL };
 }
 
+function getSelfieCaptureEnabled() {
+  const { docAuthSelfieCapture } = appRoot.dataset;
+  const docAuthSelfieCaptureObject = docAuthSelfieCapture ? JSON.parse(docAuthSelfieCapture) : {};
+  return !!docAuthSelfieCaptureObject?.enabled;
+}
+
 function getMetaContent(name): string | null {
   const meta = document.querySelector<HTMLMetaElement>(`meta[name="${name}"]`);
   return meta?.content ?? null;
@@ -53,14 +66,20 @@ function getMetaContent(name): string | null {
 const device: DeviceContextValue = { isMobile: isCameraCapableMobile() };
 
 const trackEvent: typeof baseTrackEvent = (event, payload) => {
-  const { flowPath, acuantSdkUpgradeABTestingEnabled, useAlternateSdk, acuantVersion } =
-    appRoot.dataset;
+  const {
+    flowPath,
+    acuantSdkUpgradeABTestingEnabled,
+    useAlternateSdk,
+    acuantVersion,
+    optedInToInPersonProofing,
+  } = appRoot.dataset;
   return baseTrackEvent(event, {
     ...payload,
     flow_path: flowPath,
     acuant_sdk_upgrade_a_b_testing_enabled: acuantSdkUpgradeABTestingEnabled,
     use_alternate_sdk: useAlternateSdk,
     acuant_version: acuantVersion,
+    opted_in_to_in_person_proofing: optedInToInPersonProofing,
   });
 };
 
@@ -76,12 +95,19 @@ const {
   acuantVersion,
   flowPath,
   cancelUrl: cancelURL,
+  exitUrl: exitURL,
+  accountUrl: accountURL,
   idvInPersonUrl: inPersonURL,
   securityAndPrivacyHowItWorksUrl: securityAndPrivacyHowItWorksURL,
   inPersonFullAddressEntryEnabled,
   inPersonOutageMessageEnabled,
   inPersonOutageExpectedUpdateDate,
+  optedInToInPersonProofing,
   usStatesTerritories = '',
+  skipDocAuth,
+  howToVerifyUrl,
+  uiNotReadySectionEnabled = '',
+  uiExitQuestionSectionEnabled = '',
 } = appRoot.dataset as DOMStringMap & AppRootData;
 
 let parsedUsStatesTerritories = [];
@@ -102,7 +128,10 @@ const App = composeComponents(
         inPersonOutageMessageEnabled: inPersonOutageMessageEnabled === 'true',
         inPersonOutageExpectedUpdateDate,
         inPersonFullAddressEntryEnabled: inPersonFullAddressEntryEnabled === 'true',
+        optedInToInPersonProofing: optedInToInPersonProofing === 'true',
         usStatesTerritories: parsedUsStatesTerritories,
+        skipDocAuth: skipDocAuth === 'true',
+        howToVerifyURL: howToVerifyUrl,
       },
     },
   ],
@@ -112,6 +141,10 @@ const App = composeComponents(
     {
       sdkSrc: acuantVersion && `/acuant/${acuantVersion}/AcuantJavascriptWebSdk.min.js`,
       cameraSrc: acuantVersion && `/acuant/${acuantVersion}/AcuantCamera.min.js`,
+      passiveLivenessOpenCVSrc: acuantVersion && `/acuant/${acuantVersion}/opencv.min.js`,
+      passiveLivenessSrc: getSelfieCaptureEnabled()
+        ? acuantVersion && `/acuant/${acuantVersion}/AcuantPassiveLiveness.min.js`
+        : undefined,
       credentials: getMetaContent('acuant-sdk-initialization-creds'),
       endpoint: getMetaContent('acuant-sdk-initialization-endpoint'),
       glareThreshold,
@@ -133,17 +166,34 @@ const App = composeComponents(
     FlowContext.Provider,
     {
       value: {
+        accountURL,
         cancelURL,
+        exitURL,
         currentStep: 'document_capture',
       },
     },
   ],
-  [ServiceProviderContextProvider, { value: getServiceProvider() }],
+  [
+    ServiceProviderContextProvider,
+    {
+      value: getServiceProvider(),
+    },
+  ],
   [
     FailedCaptureAttemptsContextProvider,
     {
       maxCaptureAttemptsBeforeNativeCamera: Number(maxCaptureAttemptsBeforeNativeCamera),
       maxSubmissionAttemptsBeforeNativeCamera: Number(maxSubmissionAttemptsBeforeNativeCamera),
+    },
+  ],
+  [
+    FeatureFlagContext.Provider,
+    {
+      value: {
+        notReadySectionEnabled: String(uiNotReadySectionEnabled) === 'true',
+        exitQuestionSectionEnabled: String(uiExitQuestionSectionEnabled) === 'true',
+        selfieCaptureEnabled: getSelfieCaptureEnabled(),
+      },
     },
   ],
   [

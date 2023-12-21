@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Idv::DocPiiForm do
+  include DocPiiHelper
+
   let(:user) { create(:user) }
   let(:subject) { Idv::DocPiiForm.new(pii: pii) }
   let(:valid_dob) { (Time.zone.today - (IdentityConfig.store.idv_min_age_years + 1).years).to_s }
@@ -41,14 +43,14 @@ RSpec.describe Idv::DocPiiForm do
       state: Faker::Address.state_abbr,
     }
   end
-  let(:non_string_zipcode_pii) do
+  let(:invalid_zipcode_pii) do
     {
       first_name: Faker::Name.first_name,
       last_name: Faker::Name.last_name,
       dob: valid_dob,
       address1: Faker::Address.street_address,
       state: Faker::Address.state_abbr,
-      zipcode: 12345,
+      zipcode: 123456,
       state_id_jurisdiction: 'AL',
     }
   end
@@ -60,6 +62,17 @@ RSpec.describe Idv::DocPiiForm do
       address1: Faker::Address.street_address,
       state: Faker::Address.state_abbr,
       zipcode: nil,
+      state_id_jurisdiction: 'AL',
+    }
+  end
+  let(:state_error_pii) do
+    {
+      first_name: Faker::Name.first_name,
+      last_name: Faker::Name.last_name,
+      dob: valid_dob,
+      address1: Faker::Address.street_address,
+      zipcode: Faker::Address.zip_code,
+      state: 'YORK',
       state_id_jurisdiction: 'AL',
     }
   end
@@ -99,7 +112,7 @@ RSpec.describe Idv::DocPiiForm do
         expect(result.errors).to be_empty
         expect(result.extra).to eq(
           attention_with_barcode: false,
-          pii_like_keypaths: [[:pii]],
+          pii_like_keypaths: pii_like_keypaths,
         )
       end
     end
@@ -112,10 +125,10 @@ RSpec.describe Idv::DocPiiForm do
 
         expect(result).to be_kind_of(FormResponse)
         expect(result.success?).to eq(false)
-        expect(result.errors[:pii]).to eq [t('doc_auth.errors.alerts.full_name_check')]
+        expect(result.errors[:name]).to eq [t('doc_auth.errors.alerts.full_name_check')]
         expect(result.extra).to eq(
           attention_with_barcode: false,
-          pii_like_keypaths: [[:pii]],
+          pii_like_keypaths: pii_like_keypaths,
         )
       end
     end
@@ -128,12 +141,16 @@ RSpec.describe Idv::DocPiiForm do
 
         expect(result).to be_kind_of(FormResponse)
         expect(result.success?).to eq(false)
-        expect(result.errors[:pii]).to eq [
-          t('doc_auth.errors.general.no_liveness'),
-        ]
+        expect(result.errors.keys).
+          to contain_exactly(
+            :name,
+            :dob,
+            :zipcode,
+            :jurisdiction,
+          )
         expect(result.extra).to eq(
           attention_with_barcode: false,
-          pii_like_keypaths: [[:pii]],
+          pii_like_keypaths: pii_like_keypaths,
         )
       end
     end
@@ -146,30 +163,30 @@ RSpec.describe Idv::DocPiiForm do
 
         expect(result).to be_kind_of(FormResponse)
         expect(result.success?).to eq(false)
-        expect(result.errors[:pii]).to eq [
+        expect(result.errors[:dob_min_age]).to eq [
           t('doc_auth.errors.pii.birth_date_min_age'),
         ]
         expect(result.extra).to eq(
           attention_with_barcode: false,
-          pii_like_keypaths: [[:pii]],
+          pii_like_keypaths: pii_like_keypaths,
         )
       end
     end
 
     context 'when there is a non-string zipcode' do
-      let(:pii) { non_string_zipcode_pii }
+      let(:pii) { invalid_zipcode_pii }
 
       it 'returns a single generic pii error' do
         result = subject.submit
 
         expect(result).to be_kind_of(FormResponse)
         expect(result.success?).to eq(false)
-        expect(result.errors[:pii]).to eq [
+        expect(result.errors[:zipcode]).to eq [
           t('doc_auth.errors.general.no_liveness'),
         ]
         expect(result.extra).to eq(
           attention_with_barcode: false,
-          pii_like_keypaths: [[:pii]],
+          pii_like_keypaths: pii_like_keypaths,
         )
       end
     end
@@ -182,12 +199,12 @@ RSpec.describe Idv::DocPiiForm do
 
         expect(result).to be_kind_of(FormResponse)
         expect(result.success?).to eq(false)
-        expect(result.errors[:pii]).to eq [
+        expect(result.errors[:zipcode]).to eq [
           t('doc_auth.errors.general.no_liveness'),
         ]
         expect(result.extra).to eq(
           attention_with_barcode: false,
-          pii_like_keypaths: [[:pii]],
+          pii_like_keypaths: pii_like_keypaths,
         )
       end
     end
@@ -210,10 +227,10 @@ RSpec.describe Idv::DocPiiForm do
 
         expect(result).to be_kind_of(FormResponse)
         expect(result.success?).to eq(false)
-        expect(result.errors[:pii]).to eq [t('doc_auth.errors.alerts.address_check')]
+        expect(result.errors[:address1]).to eq [t('doc_auth.errors.alerts.address_check')]
         expect(result.extra).to eq(
           attention_with_barcode: false,
-          pii_like_keypaths: [[:pii]],
+          pii_like_keypaths: pii_like_keypaths,
         )
       end
     end
@@ -226,6 +243,18 @@ RSpec.describe Idv::DocPiiForm do
       result = subject.submit
 
       expect(result.success?).to eq(false)
+      expect(result.errors[:jurisdiction]).to eq([I18n.t('doc_auth.errors.general.no_liveness')])
+    end
+  end
+
+  context 'when there is an invalid state' do
+    let(:subject) { Idv::DocPiiForm.new(pii: state_error_pii) }
+
+    it 'responds with an unsuccessful result' do
+      result = subject.submit
+
+      expect(result.success?).to eq(false)
+      expect(result.errors[:state]).to eq([I18n.t('doc_auth.errors.general.no_liveness')])
     end
   end
 end

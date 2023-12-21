@@ -54,58 +54,35 @@ module Reporting
       @progress
     end
 
-    # rubocop:disable Metrics/BlockLength
-    def to_csv
-      CSV.generate do |csv|
-        csv << ['Report Timeframe', "#{time_range.begin} to #{time_range.end}"]
-        csv << ['Report Generated', Date.today.to_s] # rubocop:disable Rails/Date
-        csv << ['Issuer', issuers.join(', ')]
-        csv << []
-        csv << ['Metric', 'Number of accounts', '% of total from start']
-        csv << [
-          'New Users Started IAL1 Verification',
-          email_confirmation,
-          format_as_percent(numerator: email_confirmation, denominator: email_confirmation),
-        ]
+    def as_tables
+      [
+        overview_table,
+        funnel_metrics_table,
+      ]
+    end
 
-        csv << [
-          'New Users Completed IAL1 Password Setup',
-          two_fa_setup_visited,
-          format_as_percent(numerator: two_fa_setup_visited, denominator: email_confirmation),
-        ]
+    def as_emailable_reports
+      [
+        Reporting::EmailableReport.new(
+          title: 'Overview',
+          table: overview_table,
+        ),
+        Reporting::EmailableReport.new(
+          title: 'Authentication Funnel Metrics',
+          table: funnel_metrics_table,
+        ),
+      ]
+    end
 
-        csv << [
-          'New Users Completed IAL1 MFA',
-          user_fully_registered,
-          format_as_percent(numerator: user_fully_registered, denominator: email_confirmation),
-        ]
-        csv << [
-          'New IAL1 Users Consented to Partner',
-          sp_redirect_initiated_new_users,
-          format_as_percent(
-            numerator: sp_redirect_initiated_new_users,
-            denominator: email_confirmation,
-          ),
-        ]
-        csv << []
-        csv << ['Total # of IAL1 Users', sp_redirect_initiated_all]
-        csv << []
-        csv << [
-          'AAL2 Authentication Requests from Partner',
-          oidc_auth_request,
-          format_as_percent(numerator: oidc_auth_request, denominator: oidc_auth_request),
-        ]
-        csv << [
-          'AAL2 Authenticated Requests',
-          sp_redirect_initiated_after_oidc,
-          format_as_percent(
-            numerator: sp_redirect_initiated_after_oidc,
-            denominator: oidc_auth_request,
-          ),
-        ]
+    def to_csvs
+      as_tables.map do |table|
+        CSV.generate do |csv|
+          table.each do |row|
+            csv << row
+          end
+        end
       end
     end
-    # rubocop:enable Metrics/BlockLength
 
     # event name => set(user ids)
     # @return Hash<String,Set<String>>
@@ -188,6 +165,58 @@ module Reporting
       )
     end
 
+    def overview_table
+      [
+        ['Report Timeframe', "#{time_range.begin} to #{time_range.end}"],
+        # This needs to be Date.today so it works when run on the command line
+        ['Report Generated', Date.today.to_s], # rubocop:disable Rails/Date
+        ['Issuer', issuers.join(', ')],
+        ['Total # of IAL1 Users', sp_redirect_initiated_all],
+      ]
+    end
+
+    def funnel_metrics_table
+      [
+        ['Metric', 'Number of accounts', '% of total from start'],
+        [
+          'New Users Started IAL1 Verification',
+          email_confirmation,
+          format_as_percent(numerator: email_confirmation, denominator: email_confirmation),
+        ],
+        [
+          'New Users Completed IAL1 Password Setup',
+          two_fa_setup_visited,
+          format_as_percent(numerator: two_fa_setup_visited, denominator: email_confirmation),
+        ],
+        [
+          'New Users Completed IAL1 MFA',
+          user_fully_registered,
+          format_as_percent(numerator: user_fully_registered, denominator: email_confirmation),
+        ],
+        [
+          'New IAL1 Users Consented to Partner',
+          sp_redirect_initiated_new_users,
+          format_as_percent(
+            numerator: sp_redirect_initiated_new_users,
+            denominator: email_confirmation,
+          ),
+        ],
+        [
+          'AAL2 Authentication Requests from Partner',
+          oidc_auth_request,
+          format_as_percent(numerator: oidc_auth_request, denominator: oidc_auth_request),
+        ],
+        [
+          'AAL2 Authenticated Requests',
+          sp_redirect_initiated_after_oidc,
+          format_as_percent(
+            numerator: sp_redirect_initiated_after_oidc,
+            denominator: oidc_auth_request,
+          ),
+        ],
+      ]
+    end
+
     # @return [String]
     def format_as_percent(numerator:, denominator:)
       (100 * numerator.to_f / denominator.to_f).round(2).to_s + '%'
@@ -199,6 +228,8 @@ end
 if __FILE__ == $PROGRAM_NAME
   options = Reporting::CommandLineOptions.new.parse!(ARGV)
 
-  puts Reporting::AuthenticationReport.new(**options).to_csv
+  Reporting::AuthenticationReport.new(**options).to_csvs.each do |csv|
+    puts csv
+  end
 end
 # rubocop:enable Rails/Output

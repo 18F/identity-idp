@@ -123,12 +123,13 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def new_device_sign_in(date:, location:, disavowal_token:)
+  def new_device_sign_in(date:, location:, device_name:, disavowal_token:)
     return unless email_should_receive_nonessential_notifications?(email_address.email)
 
     with_user_locale(user) do
       @login_date = date
       @login_location = location
+      @device_name = device_name
       @disavowal_token = disavowal_token
       mail(
         to: email_address.email,
@@ -168,6 +169,12 @@ class UserMailer < ActionMailer::Base
   end
 
   def account_reset_complete
+    with_user_locale(user) do
+      mail(to: email_address.email, subject: t('user_mailer.account_reset_complete.subject'))
+    end
+  end
+
+  def account_delete_submitted
     with_user_locale(user) do
       mail(to: email_address.email, subject: t('user_mailer.account_reset_complete.subject'))
     end
@@ -397,7 +404,21 @@ class UserMailer < ActionMailer::Base
         user.gpo_verification_pending_profile.gpo_verification_pending_at,
         format: :event_date,
       )
-      mail(to: email_address.email, subject: t('idv.messages.gpo_reminder.subject'))
+      mail(to: email_address.email, subject: t('user_mailer.letter_reminder_14_days.subject'))
+    end
+  end
+
+  def suspension_confirmed
+    with_user_locale(user) do
+      @help_text = t('user_mailer.suspension_confirmed.contact_agency')
+
+      mail(to: email_address.email, subject: t('user_mailer.suspension_confirmed.subject'))
+    end
+  end
+
+  def account_reinstated
+    with_user_locale(user) do
+      mail(to: email_address.email, subject: t('user_mailer.account_reinstated.subject'))
     end
   end
 

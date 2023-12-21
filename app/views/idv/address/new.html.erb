@@ -7,7 +7,7 @@
       ) %>
 <% end %>
 
-<% title t('titles.doc_auth.address') %>
+<% self.title = t('titles.doc_auth.address') %>
 
 <%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.address')) %>
 
@@ -87,4 +87,4 @@
 
 <%= render 'idv/shared/back', step: 'verify' %>
 <%= javascript_packs_tag_once('formatted-fields') %>
-<%= javascript_packs_tag_once('puerto-rico-guidance') %>
+<%= javascript_packs_tag_once('state-guidance') %>

@@ -1,18 +1,46 @@
-<% title @presenter.heading %>
+<% self.title = @presenter.heading %>
 <div class="text-center">
   <%= image_tag asset_url(@presenter.image_name), width: 140, alt: @presenter.image_alt, class: 'margin-bottom-2' %>
 </div>
 
-<%= render PageHeadingComponent.new(class: 'tablet:margin-right-1 tablet:margin-left-1 text-center') do %>
+<%= render PageHeadingComponent.new(class: 'text-center') do %>
   <%= @presenter.heading %>
 <% end %>
 
-<p class="tablet:margin-right-1 tablet:margin-left-1 margin-top-4 margin-bottom-4">
+<p class="margin-top-4 margin-bottom-4">
   <%= @presenter.intro.html_safe %>
 </p>
-<div class='tablet:margin-left-1 tablet:margin-right-1'>
-  <%= render 'sign_up/completions/requested_attributes', pii: @presenter.pii %>
-</div>
+
+<%= render IconListComponent.new(icon: :check_circle, color: :success, class: 'border-bottom border-primary-light') do |c| %>
+  <% @presenter.pii.each do |attribute_key, attribute_value| %>
+    <% next if attribute_value.blank? %>
+    <% c.with_item(class: 'padding-y-2 border-top border-primary-light') do %>
+      <strong class="display-block">
+        <%= t("help_text.requested_attributes.#{attribute_key}") %>
+      </strong>
+      <% if attribute_value.is_a? Array %>
+        <ul class="usa-list usa-list--unstyled">
+          <% attribute_value.each do |item| %>
+            <li><%= item %></li>
+          <% end %>
+        </ul>
+      <% elsif attribute_key == :social_security_number %>
+        <%= render(
+              'shared/masked_text',
+              text: attribute_value,
+              masked_text: SsnFormatter.format_masked(attribute_value),
+              accessible_masked_text: t(
+                'idv.accessible_labels.masked_ssn',
+                first_number: attribute_value[0],
+                last_number: attribute_value[-1],
+              ),
+            ) %>
+      <% else %>
+        <%= attribute_value.to_s %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>
 
 <% if !@multiple_factors_enabled %>
   <%= render(AlertComponent.new(type: :warning, class: 'margin-bottom-4')) do %>
@@ -29,5 +57,5 @@
 <% end %>
 
 <%= render PageFooterComponent.new do %>
-  <%= link_to t('links.cancel'), return_to_sp_cancel_path %>
+  <%= link_to t('links.cancel'), return_to_sp_cancel_path(step: :sign_up) %>
 <% end %>

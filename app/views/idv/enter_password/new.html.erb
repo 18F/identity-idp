@@ -1,0 +1,51 @@
+<% self.title = @title %>
+
+<% content_for(:pre_flash_content) do %>
+  <%= render StepIndicatorComponent.new(
+        steps: step_indicator_steps,
+        current_step: step_indicator_step,
+        locale_scope: 'idv',
+        class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
+      ) %>
+<% end %>
+
+<%= render PageHeadingComponent.new.with_content(@heading) %>
+
+<p>
+  <%= t('idv.messages.enter_password.message', app_name: APP_NAME) %>
+</p>
+
+<%= simple_form_for(
+      current_user,
+      url: idv_enter_password_path,
+      html: { autocomplete: 'off', method: :put, class: 'margin-top-4' },
+    ) do |f| %>
+  <%= render PasswordToggleComponent.new(
+        form: f,
+        field_options: {
+          label: t('idv.form.password'),
+          required: true,
+          input_html: {
+            autocomplete: 'current-password',
+          },
+        },
+      ) %>
+  <div class="text-right margin-top-neg-4">
+    <%= link_to(t('idv.forgot_password.link_text'), idv_forgot_password_url, class: 'margin-left-1') %>
+  </div>
+
+  <% if @verify_by_mail %>
+    <%= render AlertComponent.new(
+          type: :warning,
+          id: 'by-mail-password-warning',
+          class: 'margin-top-4',
+        ) do
+          t('idv.messages.enter_password.by_mail_password_reminder_html')
+        end
+    %>
+  <% end %>
+
+  <%= f.submit t('forms.buttons.continue'), class: 'margin-top-5' %>
+<% end %>
+
+<%= render 'idv/doc_auth/cancel', step: 'review' %>

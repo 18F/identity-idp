@@ -1,8 +1,9 @@
 class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresenter
   include ActionView::Helpers::TranslationHelper
 
-  attr_reader :user, :phishing_resistant_required, :piv_cac_required
+  attr_reader :user, :reauthentication_context, :phishing_resistant_required, :piv_cac_required
 
+  alias_method :reauthentication_context?, :reauthentication_context
   alias_method :phishing_resistant_required?, :phishing_resistant_required
   alias_method :piv_cac_required?, :piv_cac_required
 
@@ -27,14 +28,24 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
   end
 
   def heading
-    t('two_factor_authentication.login_options_title')
+    if reauthentication_context?
+      t('two_factor_authentication.login_options_reauthentication_title')
+    else
+      t('two_factor_authentication.login_options_title')
+    end
   end
 
   def info
-    t('two_factor_authentication.login_intro')
+    if reauthentication_context?
+      t('two_factor_authentication.login_intro_reauthentication')
+    else
+      t('two_factor_authentication.login_intro')
+    end
   end
 
   def restricted_options_warning_text
+    return if reauthentication_context?
+
     if piv_cac_required?
       t('two_factor_authentication.aal2_request.piv_cac_only_html', sp_name:)
     elsif phishing_resistant_required?
@@ -46,9 +57,9 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
     return @options if defined?(@options)
     mfa = MfaContext.new(user)
 
-    if @piv_cac_required
+    if piv_cac_required? && !reauthentication_context?
       configurations = mfa.piv_cac_configurations
-    elsif @phishing_resistant_required
+    elsif phishing_resistant_required? && !reauthentication_context?
       configurations = mfa.phishing_resistant_configurations
     else
       configurations = mfa.two_factor_configurations
@@ -74,7 +85,7 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
   end
 
   def cancel_link
-    if @reauthentication_context
+    if reauthentication_context?
       account_path
     else
       sign_out_path

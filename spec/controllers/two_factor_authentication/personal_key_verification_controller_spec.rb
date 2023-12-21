@@ -68,12 +68,43 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
         expect(@analytics).to receive(:track_event).
           with('User marked authenticated', authentication_type: :valid_2fa)
 
-        post :create, params: payload
+        freeze_time do
+          post :create, params: payload
 
-        expect(subject.user_session[:auth_method]).to eq(
-          TwoFactorAuthenticatable::AuthMethod::PERSONAL_KEY,
-        )
-        expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq false
+          expect(subject.user_session[:auth_events]).to eq(
+            [
+              auth_method: TwoFactorAuthenticatable::AuthMethod::PERSONAL_KEY,
+              at: Time.zone.now,
+            ],
+          )
+          expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq false
+        end
+      end
+
+      context 'with enable_additional_mfa_redirect_for_personal_key_mfa? set to true' do
+        before do
+          personal_key
+          sign_in_before_2fa(user)
+          allow(FeatureManagement).
+            to receive(:enable_additional_mfa_redirect_for_personal_key_mfa?).and_return(true)
+        end
+        it 'should redirect to mfa selection page' do
+          post :create, params: payload
+          expect(response).to redirect_to(authentication_methods_setup_url)
+        end
+      end
+
+      context 'with enable_additional_mfa_redirect_for_personal_key_mfa? set to false' do
+        before do
+          personal_key
+          sign_in_before_2fa(user)
+          allow(FeatureManagement).
+            to receive(:enable_additional_mfa_redirect_for_personal_key_mfa?).and_return(false)
+        end
+        it 'should redirect to account page' do
+          post :create, params: payload
+          expect(response).to redirect_to(account_path)
+        end
       end
     end
 
@@ -130,7 +161,7 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
 
         post :create, params: payload
 
-        expect(subject.user_session[:auth_method]).to eq nil
+        expect(subject.user_session[:auth_events]).to eq nil
         expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq true
       end
 
@@ -153,7 +184,7 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
         properties = {
           success: false,
           errors: { personal_key: [t('errors.messages.personal_key_incorrect')] },
-          error_details: { personal_key: [:personal_key_incorrect] },
+          error_details: { personal_key: { personal_key_incorrect: true } },
           multi_factor_auth_method: 'personal-key',
           multi_factor_auth_method_created_at: personal_key_generated_at.strftime('%s%L'),
         }

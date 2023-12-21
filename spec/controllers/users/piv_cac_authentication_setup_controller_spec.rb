@@ -75,8 +75,6 @@ RSpec.describe Users::PivCacAuthenticationSetupController do
         allow(PivCacService).to receive(:decode_token).with(bad_token) { bad_token_response }
         allow(subject).to receive(:user_session).and_return(piv_cac_nonce: nonce)
         subject.user_session[:piv_cac_nickname] = nickname
-        subject.user_session[:authn_at] = Time.zone.now
-        subject.user_session[:auth_method] = TwoFactorAuthenticatable::AuthMethod::SMS
       end
 
       let(:nonce) { 'nonce' }
@@ -108,7 +106,7 @@ RSpec.describe Users::PivCacAuthenticationSetupController do
           it 'tracks the analytic event of visited' do
             stub_analytics
             expect(@analytics).to receive(:track_event).
-              with('PIV CAC setup visited', {
+              with(:piv_cac_setup_visited, {
                 in_account_creation_flow: false,
                 enabled_mfa_methods_count: 1,
               })
@@ -134,7 +132,6 @@ RSpec.describe Users::PivCacAuthenticationSetupController do
                 :mfa_enroll_piv_cac,
                 success: true,
                 subject_dn: 'some dn',
-                failure_reason: nil,
               )
 
               get :new, params: { token: good_token }
@@ -158,7 +155,6 @@ RSpec.describe Users::PivCacAuthenticationSetupController do
                 :mfa_enroll_piv_cac,
                 success: true,
                 subject_dn: 'some dn',
-                failure_reason: nil,
               )
 
               get :new, params: { token: good_token }
@@ -174,7 +170,6 @@ RSpec.describe Users::PivCacAuthenticationSetupController do
                 :mfa_enroll_piv_cac,
                 success: true,
                 subject_dn: 'some dn',
-                failure_reason: nil,
               )
 
               get :new, params: { token: good_token }
@@ -187,7 +182,6 @@ RSpec.describe Users::PivCacAuthenticationSetupController do
                 :mfa_enroll_piv_cac,
                 success: true,
                 subject_dn: 'some dn',
-                failure_reason: nil,
               )
 
               get :new, params: { token: good_token }
@@ -215,7 +209,6 @@ RSpec.describe Users::PivCacAuthenticationSetupController do
               :mfa_enroll_piv_cac,
               success: false,
               subject_dn: nil,
-              failure_reason: { type: 'certificate.bad' },
             )
 
             get :new, params: { token: bad_token }

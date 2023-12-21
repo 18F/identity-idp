@@ -13,14 +13,16 @@ module Idv
       idv_consent_given
       idv_phone_step_document_capture_session_uuid
       mail_only_warning_shown
+      opted_in_to_in_person_proofing
       personal_key
+      personal_key_acknowledged
       phone_for_mobile_flow
-      pii
       pii_from_doc
       previous_phone_step_params
       profile_id
       redo_document_capture
       resolution_successful
+      skip_doc_auth
       skip_hybrid_handoff
       ssn
       threatmetrix_review_status
@@ -59,42 +61,58 @@ module Idv
       profile_maker = build_profile_maker(user_password)
       profile = profile_maker.save_profile(
         fraud_pending_reason: threatmetrix_fraud_pending_reason,
-        gpo_verification_needed: gpo_verification_needed?,
+        gpo_verification_needed: !phone_confirmed? || verify_by_mail?,
         in_person_verification_needed: current_user.has_in_person_enrollment?,
       )
 
       profile.activate unless profile.reason_not_to_activate
 
-      self.pii = profile_maker.pii_attributes
       self.profile_id = profile.id
       self.personal_key = profile.personal_key
 
-      cache_encrypted_pii(user_password)
-      associate_in_person_enrollment_with_profile
+      Pii::Cacher.new(current_user, user_session).save_decrypted_pii(
+        profile_maker.pii_attributes,
+        profile.id,
+      )
 
-      if profile.active?
-        move_pii_to_user_session
-      elsif address_verification_mechanism == 'gpo'
-        create_gpo_entry
-      elsif current_user.has_in_person_enrollment?
+      associate_in_person_enrollment_with_profile if profile.in_person_verification_pending?
+
+      if profile.gpo_verification_pending?
+        create_gpo_entry(profile_maker.pii_attributes)
+      elsif profile.in_person_verification_pending?
         UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(
           current_user,
-          pii,
+          profile_maker.pii_attributes,
+          opt_in_param,
         )
       end
     end
 
-    def gpo_verification_needed?
-      !phone_confirmed? || address_verification_mechanism == 'gpo'
+    def opt_in_param
+      opted_in_to_in_person_proofing unless !IdentityConfig.store.in_person_proofing_opt_in_enabled
     end
 
-    def cache_encrypted_pii(password)
-      cacher = Pii::Cacher.new(current_user, session)
-      cacher.save(password, profile)
+    def acknowledge_personal_key!
+      session.delete(:personal_key)
+      session[:personal_key_acknowledged] = true
+    end
+
+    def invalidate_personal_key!
+      session.delete(:personal_key)
+      session.delete(:personal_key_acknowledged)
+    end
+
+    def verify_by_mail?
+      address_verification_mechanism == 'gpo'
     end
 
     def vendor_params
       applicant.merge('uuid' => current_user.uuid)
+    end
+
+    def profile_id=(value)
+      session[:profile_id] = value
+      @profile = nil
     end
 
     def profile
@@ -106,14 +124,10 @@ module Idv
     end
 
     def associate_in_person_enrollment_with_profile
-      return unless current_user.has_in_person_enrollment?
-
       current_user.establishing_in_person_enrollment.update(profile: profile)
     end
 
-    def create_gpo_entry
-      move_pii_to_user_session
-      self.pii = Pii::Cacher.new(current_user, user_session).fetch if pii.is_a?(String)
+    def create_gpo_entry(pii)
       confirmation_maker = GpoConfirmationMaker.new(
         pii: pii, service_provider: service_provider,
         profile: profile
@@ -121,6 +135,10 @@ module Idv
       confirmation_maker.perform
 
       @gpo_otp = confirmation_maker.otp
+    end
+
+    def phone_otp_sent?
+      vendor_phone_confirmation && address_verification_mechanism == 'phone'
     end
 
     def user_phone_confirmation_session
@@ -143,20 +161,47 @@ module Idv
       failed_phone_step_numbers << phone_e164 if !failed_phone_step_numbers.include?(phone_e164)
     end
 
+    def has_pii_from_user_in_flow_session
+      user_session.dig('idv/in_person', :pii_from_user)
+    end
+
+    def invalidate_in_person_pii_from_user!
+      if has_pii_from_user_in_flow_session
+        user_session['idv/in_person'][:pii_from_user] = nil
+        # Mark the two FSM steps as incomplete so that they can be re-entered.
+        user_session['idv/in_person'].delete('Idv::Steps::InPerson::StateIdStep')
+        user_session['idv/in_person'].delete('Idv::Steps::InPerson::AddressStep')
+      end
+    end
+
+    def document_capture_complete?
+      pii_from_doc || has_pii_from_user_in_flow_session
+    end
+
+    def remote_document_capture_complete?
+      pii_from_doc
+    end
+
+    def ipp_document_capture_complete?
+      has_pii_from_user_in_flow_session &&
+        user_session['idv/in_person'][:pii_from_user].has_key?(:address1)
+    end
+
+    def ipp_state_id_complete?
+      has_pii_from_user_in_flow_session &&
+        user_session['idv/in_person'][:pii_from_user].has_key?(:identity_doc_address1)
+    end
+
     def verify_info_step_complete?
       resolution_successful
     end
 
-    def address_step_complete?
-      if address_verification_mechanism == 'gpo'
-        true
-      else
-        phone_confirmed?
-      end
+    def phone_or_address_step_complete?
+      verify_by_mail? || phone_confirmed?
     end
 
     def address_mechanism_chosen?
-      vendor_phone_confirmation == true || address_verification_mechanism == 'gpo'
+      vendor_phone_confirmation == true || verify_by_mail?
     end
 
     def phone_confirmed?
@@ -171,18 +216,6 @@ module Idv
       session[:gpo_code_verified] = true
     end
 
-    def invalidate_steps_after_ssn!
-      # Guard against unvalidated attributes from in-person flow in review controller
-      clear_applicant!
-
-      invalidate_verify_info_step!
-      invalidate_phone_step!
-    end
-
-    def clear_applicant!
-      session[:applicant] = nil
-    end
-
     def mark_verify_info_step_complete!
       session[:resolution_successful] = true
     end
@@ -191,12 +224,18 @@ module Idv
       session[:resolution_successful] = nil
     end
 
-    def invalidate_steps_after_verify_info!
+    def mark_phone_step_started!
       session[:address_verification_mechanism] = 'phone'
-      invalidate_phone_step!
+      session[:vendor_phone_confirmation] = true
+      session[:user_phone_confirmation] = false
+    end
+
+    def mark_phone_step_complete!
+      session[:user_phone_confirmation] = true
     end
 
     def invalidate_phone_step!
+      session[:address_verification_mechanism] = nil
       session[:vendor_phone_confirmation] = nil
       session[:user_phone_confirmation] = nil
     end
@@ -215,12 +254,6 @@ module Idv
 
     def new_idv_session
       {}
-    end
-
-    def move_pii_to_user_session
-      return if session[:decrypted_pii].blank?
-      decrypted_pii = session.delete(:decrypted_pii)
-      Pii::Cacher.new(current_user, user_session).save_decrypted_pii_json(decrypted_pii)
     end
 
     def session

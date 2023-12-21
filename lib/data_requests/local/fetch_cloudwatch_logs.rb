@@ -78,7 +78,7 @@ module DataRequests
       def query_string
         <<~QUERY
           fields @timestamp, @message
-          | filter @message like /#{uuid}/
+          | filter properties.user_id = '#{uuid}' and name != 'IRS Attempt API: Event metadata'
         QUERY
       end
 

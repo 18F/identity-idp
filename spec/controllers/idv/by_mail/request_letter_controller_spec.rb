@@ -13,19 +13,25 @@ RSpec.describe Idv::ByMail::RequestLetterController do
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 
+  describe '#step_info' do
+    it 'returns a valid StepInfo object' do
+      expect(Idv::ByMail::RequestLetterController.step_info).to be_valid
+    end
+  end
+
   describe 'before_actions' do
     it 'includes authentication before_action' do
       expect(subject).to have_actions(
         :before,
         :confirm_two_factor_authenticated,
         :confirm_idv_needed,
-        :confirm_mail_not_spammed,
+        :confirm_mail_not_rate_limited,
         :confirm_profile_not_too_old,
       )
     end
 
     it 'includes before_actions from IdvSession' do
-      expect(subject).to have_actions(:before, :redirect_if_sp_context_needed)
+      expect(subject).to have_actions(:before, :redirect_unless_sp_requested_verification)
     end
   end
 
@@ -54,16 +60,16 @@ RSpec.describe Idv::ByMail::RequestLetterController do
     end
 
     it 'redirects if the user has sent too much mail' do
-      allow(controller.gpo_mail_service).to receive(:mail_spammed?).and_return(true)
+      allow(controller.gpo_mail_service).to receive(:rate_limited?).and_return(true)
       allow(subject.idv_session).to receive(:address_mechanism_chosen?).
         and_return(true)
       get :index
 
-      expect(response).to redirect_to idv_review_path
+      expect(response).to redirect_to idv_enter_password_path
     end
 
     it 'allows a user to request another letter' do
-      allow(controller.gpo_mail_service).to receive(:mail_spammed?).and_return(false)
+      allow(controller.gpo_mail_service).to receive(:rate_limited?).and_return(false)
       get :index
 
       expect(response).to be_ok
@@ -138,12 +144,18 @@ RSpec.describe Idv::ByMail::RequestLetterController do
         stub_verify_steps_one_and_two(user)
       end
 
+      it 'invalidates future steps' do
+        expect(subject).to receive(:clear_future_steps!)
+
+        put :create
+      end
+
       it 'sets session to :gpo and redirects' do
         expect(subject.idv_session.address_verification_mechanism).to be_nil
 
         put :create
 
-        expect(response).to redirect_to idv_review_path
+        expect(response).to redirect_to idv_enter_password_path
         expect(subject.idv_session.address_verification_mechanism).to eq :gpo
       end
 
@@ -181,12 +193,17 @@ RSpec.describe Idv::ByMail::RequestLetterController do
 
     context 'resending a letter' do
       let(:has_pending_profile) { true }
-      let(:pending_profile) { create(:profile, :verify_by_mail_pending) }
+      let(:pending_profile) { create(:profile, :with_pii, :verify_by_mail_pending) }
 
       before do
         stub_sign_in(user)
         stub_user_with_pending_profile(user)
         allow(user).to receive(:gpo_verification_pending_profile?).and_return(true)
+        subject.idv_session.welcome_visited = true
+        subject.idv_session.idv_consent_given = true
+        subject.idv_session.flow_path = 'standard'
+        subject.idv_session.resolution_successful = true
+        subject.idv_session.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN
       end
 
       it 'calls the GpoConfirmationMaker to send another letter and redirects' do
@@ -245,9 +262,9 @@ RSpec.describe Idv::ByMail::RequestLetterController do
   end
 
   def expect_resend_letter_to_send_letter_and_redirect(otp:)
-    pii = { first_name: 'Samuel', last_name: 'Sampson' }
+    pii = pending_profile.decrypt_pii(user.password).to_h
     pii_cacher = instance_double(Pii::Cacher)
-    allow(pii_cacher).to receive(:fetch).and_return(pii)
+    allow(pii_cacher).to receive(:fetch).with(pending_profile.id).and_return(pii)
     allow(pii_cacher).to receive(:exists_in_session?).and_return(true)
     allow(Pii::Cacher).to receive(:new).and_return(pii_cacher)
 

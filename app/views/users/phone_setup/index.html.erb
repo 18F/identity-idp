@@ -1,4 +1,4 @@
-<%= title t('titles.add_info.phone') %>
+<% self.title = t('titles.add_info.phone') %>
 
 <%= render(VendorOutageAlertComponent.new(vendors: [:sms, :voice])) %>
 

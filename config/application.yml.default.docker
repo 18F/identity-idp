@@ -2,6 +2,7 @@
 production:
   attribute_encryption_key: 2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25
   asset_host: ['env', 'ASSET_HOST']
+  component_previews_enabled: true
   database_host: ['env', 'POSTGRES_HOST']
   database_name: ['env', 'POSTGRES_NAME']
   database_password: ['env', 'POSTGRES_PASSWORD']
@@ -13,6 +14,7 @@ production:
   database_worker_jobs_password: ['env', 'POSTGRES_WORKER_PASSWORD']
   database_worker_jobs_sslmode: ['env', 'POSTGRES_WORKER_SSLMODE']
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
+  rails_mailer_previews_enabled: true
   redis_throttle_url: ['env', 'REDIS_THROTTLE_URL']
   redis_url: ['env', 'REDIS_URL']
   password_pepper: f22d4b2cafac9066fe2f4416f5b7a32c
@@ -32,3 +34,5 @@ production:
   doc_auth_vendor: 'mock'
   usps_auth_token_refresh_job_enabled: false
   lexisnexis_threatmetrix_mock_enabled: true
+  enable_usps_verification: true
+  seed_agreements_data: false

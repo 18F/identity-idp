@@ -11,7 +11,7 @@ RSpec.describe 'idv/unavailable/show.html.erb' do
   end
 
   it 'sets a title' do
-    expect(view).to receive(:title).with(t('idv.titles.unavailable'))
+    expect(view).to receive(:title=).with(t('idv.titles.unavailable'))
     render
   end
   it 'has an h1' do
@@ -34,7 +34,7 @@ RSpec.describe 'idv/unavailable/show.html.erb' do
     it 'links to the right place' do
       expect(rendered).to have_link(
         t('idv.unavailable.exit_button', app_name: APP_NAME),
-        href: return_to_sp_failure_to_proof_path(location: 'unavailable'),
+        href: return_to_sp_failure_to_proof_path(step: 'unavailable', location: 'unavailable'),
       )
     end
   end

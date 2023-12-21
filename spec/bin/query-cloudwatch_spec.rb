@@ -97,6 +97,20 @@ RSpec.describe QueryCloudwatch do
       end
     end
 
+    context 'with --date' do
+      let(:argv) { required_parameters + ['--date', '2023-01-01,2023-08-01'] }
+
+      it 'creates disjoint time slices' do
+        config = parse!
+        expect(config.time_slices).to eq(
+          [
+            Date.new(2023, 1, 1).in_time_zone('UTC').all_day,
+            Date.new(2023, 8, 1).in_time_zone('UTC').all_day,
+          ],
+        )
+      end
+    end
+
     context 'with --no-progress' do
       let(:argv) { required_parameters + %w[--no-progress] }
 
@@ -183,6 +197,24 @@ RSpec.describe QueryCloudwatch do
       end
     end
 
+    context 'number of threads' do
+      let(:argv) { required_parameters }
+
+      it 'defaults to Reporting::CloudwatchClient::DEFAULT_NUM_THREADS' do
+        config = parse!
+        expect(config.num_threads).to eq(Reporting::CloudwatchClient::DEFAULT_NUM_THREADS)
+      end
+
+      context 'with --num-threads' do
+        let(:argv) { required_parameters + %w[--num-threads 15] }
+
+        it 'overrides the number of threads' do
+          config = parse!
+          expect(config.num_threads).to eq(15)
+        end
+      end
+    end
+
     def build_stdin_without_query
       StringIO.new.tap do |io|
         allow(io).to receive(:tty?).and_return(true)
@@ -208,6 +240,7 @@ RSpec.describe QueryCloudwatch do
         query: 'fields @timestamp, @message',
         format: format,
         count_distinct: count_distinct,
+        num_threads: Reporting::CloudwatchClient::DEFAULT_NUM_THREADS,
       )
     end
     let(:query_cloudwatch) { QueryCloudwatch.new(config) }

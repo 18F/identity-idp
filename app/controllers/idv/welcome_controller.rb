@@ -1,11 +1,10 @@
 module Idv
   class WelcomeController < ApplicationController
+    include Idv::AvailabilityConcern
     include IdvStepConcern
     include StepIndicatorConcern
-    include GettingStartedAbTestConcern
 
-    before_action :confirm_welcome_needed
-    before_action :maybe_redirect_for_getting_started_ab_test
+    before_action :confirm_not_rate_limited
 
     def show
       analytics.idv_doc_auth_welcome_visited(**analytics_arguments)
@@ -15,13 +14,10 @@ module Idv
 
       @sp_name = decorated_sp_session.sp_name || APP_NAME
       @title = t('doc_auth.headings.getting_started', sp_name: @sp_name)
-
-      @ab_test_bucket = getting_started_ab_test_bucket
-
-      render :show
     end
 
     def update
+      clear_future_steps!
       analytics.idv_doc_auth_welcome_submitted(**analytics_arguments)
 
       create_document_capture_session
@@ -30,6 +26,19 @@ module Idv
       idv_session.welcome_visited = true
 
       redirect_to idv_agreement_url
+    end
+
+    def self.step_info
+      Idv::StepInfo.new(
+        key: :welcome,
+        controller: self,
+        next_steps: [:agreement],
+        preconditions: ->(idv_session:, user:) { !user.gpo_verification_pending_profile? },
+        undo_step: ->(idv_session:, user:) do
+          idv_session.welcome_visited = nil
+          idv_session.document_capture_session_uuid = nil
+        end,
+      )
     end
 
     private
@@ -54,12 +63,6 @@ module Idv
       return unless IdentityConfig.store.in_person_proofing_enabled
       UspsInPersonProofing::EnrollmentHelper.
         cancel_stale_establishing_enrollments_for_user(current_user)
-    end
-
-    def confirm_welcome_needed
-      return unless idv_session.welcome_visited
-
-      redirect_to idv_agreement_url
     end
   end
 end

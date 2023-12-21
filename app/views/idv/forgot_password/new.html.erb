@@ -1,4 +1,4 @@
-<% title t('titles.idv.reset_password') %>
+<% self.title = t('titles.idv.reset_password') %>
 
 <%= render StatusPageComponent.new(status: :info, icon: :question) do |c| %>
   <% c.with_header { t('idv.forgot_password.modal_header') } %>
@@ -11,7 +11,7 @@
 
   <% c.with_action_button(
        action: ->(**tag_options, &block) do
-         link_to(idv_review_path, **tag_options, &block)
+         link_to(idv_enter_password_path, **tag_options, &block)
        end,
      ) { t('idv.forgot_password.try_again') } %>
 

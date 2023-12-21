@@ -177,11 +177,13 @@ RSpec.describe UserMailer, type: :mailer do
   describe '#new_device_sign_in' do
     date = 'February 25, 2019 15:02'
     location = 'Washington, DC'
+    device_name = 'Chrome ABC on macOS 123'
     disavowal_token = 'asdf1234'
     let(:mail) do
       UserMailer.with(user: user, email_address: email_address).new_device_sign_in(
         date: date,
         location: location,
+        device_name: device_name,
         disavowal_token: disavowal_token,
       )
     end
@@ -201,8 +203,11 @@ RSpec.describe UserMailer, type: :mailer do
         to have_content(
           strip_tags(
             t(
-              'user_mailer.new_device_sign_in.info_html',
-              date: date, location: location, app_name: APP_NAME,
+              'user_mailer.new_device_sign_in.info',
+              date: date,
+              location: location,
+              device_name: device_name,
+              app_name: APP_NAME,
             ),
           ),
         )
@@ -217,6 +222,7 @@ RSpec.describe UserMailer, type: :mailer do
       mail = UserMailer.with(user: user, email_address: email_address).new_device_sign_in(
         date: date,
         location: location,
+        device_name: device_name,
         disavowal_token: disavowal_token,
       )
       expect(mail.to).to eq(nil)
@@ -420,6 +426,31 @@ RSpec.describe UserMailer, type: :mailer do
     end
   end
 
+  describe '#account_delete_submitted' do
+    let(:mail) do
+      UserMailer.with(user: user, email_address: email_address).
+        account_delete_submitted
+    end
+
+    it_behaves_like 'a system email'
+    it_behaves_like 'an email that respects user email locale preference'
+
+    it 'sends to the current email' do
+      expect(mail.to).to eq [email_address.email]
+    end
+
+    it 'renders the subject' do
+      expect(mail.subject).to eq t('user_mailer.account_reset_complete.subject')
+    end
+
+    it 'renders the body' do
+      expect(mail.html_part.body).
+        to have_content(
+          strip_tags(t('user_mailer.account_reset_complete.intro_html', app_name_html: APP_NAME)),
+        )
+    end
+  end
+
   describe '#account_reset_cancel' do
     let(:mail) do
       UserMailer.with(user: user, email_address: email_address).
@@ -534,7 +565,6 @@ RSpec.describe UserMailer, type: :mailer do
   end
 
   context 'in person emails' do
-    let(:capture_secondary_id_enabled) { false }
     let(:current_address_matches_id) { false }
     let!(:enrollment) do
       create(
@@ -542,7 +572,6 @@ RSpec.describe UserMailer, type: :mailer do
         :pending,
         selected_location_details: { name: 'FRIENDSHIP' },
         status_updated_at: Time.zone.now - 2.hours,
-        capture_secondary_id_enabled: capture_secondary_id_enabled,
         current_address_matches_id: current_address_matches_id,
       )
     end
@@ -556,25 +585,6 @@ RSpec.describe UserMailer, type: :mailer do
 
       it_behaves_like 'a system email'
       it_behaves_like 'an email that respects user email locale preference'
-
-      context 'double address verification is not enabled' do
-        it 'renders the body' do
-          expect(mail.html_part.body).
-            to have_content(
-              t('in_person_proofing.process.proof_of_address.heading'),
-            )
-        end
-      end
-
-      context 'double address verification is enabled' do
-        let(:capture_secondary_id_enabled) { true }
-        it 'renders the body' do
-          expect(mail.html_part.body).
-            to_not have_content(
-              t('in_person_proofing.process.proof_of_address.heading'),
-            )
-        end
-      end
 
       context 'Outage message' do
         let(:formatted_date) { 'Tuesday, October 31' }
@@ -646,25 +656,6 @@ RSpec.describe UserMailer, type: :mailer do
       it_behaves_like 'a system email'
       it_behaves_like 'an email that respects user email locale preference'
 
-      context 'double address verification is not enabled' do
-        it 'renders the body' do
-          expect(mail.html_part.body).
-            to have_content(
-              t('in_person_proofing.process.proof_of_address.heading'),
-            )
-        end
-      end
-
-      context 'double address verification is enabled' do
-        let(:capture_secondary_id_enabled) { true }
-        it 'renders the body' do
-          expect(mail.html_part.body).
-            to_not have_content(
-              t('in_person_proofing.process.proof_of_address.heading'),
-            )
-        end
-      end
-
       it 'renders the body' do
         expect(mail.html_part.body).
           to have_content(
@@ -699,7 +690,6 @@ RSpec.describe UserMailer, type: :mailer do
           selected_location_details: { name: 'FRIENDSHIP' },
           status_updated_at: Time.zone.now - 2.hours,
           current_address_matches_id: current_address_matches_id,
-          capture_secondary_id_enabled: capture_secondary_id_enabled,
         )
       end
 
@@ -711,25 +701,6 @@ RSpec.describe UserMailer, type: :mailer do
 
       it_behaves_like 'a system email'
       it_behaves_like 'an email that respects user email locale preference'
-
-      context 'double address verification is not enabled' do
-        it 'renders the body' do
-          expect(mail.html_part.body).
-            to have_content(
-              t('user_mailer.in_person_failed.verifying_step_proof_of_address'),
-            )
-        end
-      end
-
-      context 'double address verification is enabled' do
-        let(:capture_secondary_id_enabled) { true }
-        it 'renders the body' do
-          expect(mail.html_part.body).
-            to_not have_content(
-              t('user_mailer.in_person_failed.verifying_step_proof_of_address'),
-            )
-        end
-      end
     end
 
     describe '#in_person_failed_fraud' do
@@ -894,7 +865,7 @@ RSpec.describe UserMailer, type: :mailer do
     end
 
     it 'renders the subject' do
-      expect(mail.subject).to eq t('idv.messages.gpo_reminder.subject')
+      expect(mail.subject).to eq t('user_mailer.letter_reminder_14_days.subject')
     end
 
     it 'renders the body' do
@@ -911,7 +882,7 @@ RSpec.describe UserMailer, type: :mailer do
 
       expected_body = strip_tags(
         t(
-          'idv.messages.gpo_reminder.body_html',
+          'user_mailer.letter_reminder_14_days.body_html',
           date_letter_was_sent: date_letter_was_sent.strftime(t('time.formats.event_date')),
           app_name: APP_NAME,
           help_link: expected_help_link,
@@ -923,14 +894,14 @@ RSpec.describe UserMailer, type: :mailer do
 
     it 'renders the finish link' do
       expect(mail.html_part.body).to have_link(
-        t('idv.messages.gpo_reminder.finish'),
+        t('user_mailer.letter_reminder_14_days.finish'),
         href: idv_verify_by_mail_enter_code_url,
       )
     end
 
     it 'renders the did not get it link' do
       expect(mail.html_part.body).to have_link(
-        t('idv.messages.gpo_reminder.sign_in_and_request_another_letter'),
+        t('user_mailer.letter_reminder_14_days.sign_in_and_request_another_letter'),
         href: idv_verify_by_mail_enter_code_url(did_not_receive_letter: 1),
       )
     end
@@ -946,5 +917,38 @@ RSpec.describe UserMailer, type: :mailer do
         ),
       )
     end
+  end
+
+  describe '#suspension_confirmed' do
+    let(:mail) do
+      UserMailer.with(user: user, email_address: email_address).suspension_confirmed
+    end
+
+    it_behaves_like 'a system email'
+    it_behaves_like 'an email that respects user email locale preference'
+
+    it 'does not link to the help center' do
+      expect(mail.html_part.body).to_not include(MarketingSite.nice_help_url)
+    end
+
+    context 'in another language' do
+      let(:user) { build(:user, email_language: :es) }
+
+      it 'translates the footer help text correctly' do
+        expect(mail.html_part.body).
+          to include(t('user_mailer.suspension_confirmed.contact_agency', locale: :es))
+        expect(mail.html_part.body).
+          to_not include(t('user_mailer.suspension_confirmed.contact_agency', locale: :en))
+      end
+    end
+  end
+
+  describe '#account_reinstated' do
+    let(:mail) do
+      UserMailer.with(user: user, email_address: email_address).account_reinstated
+    end
+
+    it_behaves_like 'a system email'
+    it_behaves_like 'an email that respects user email locale preference'
   end
 end

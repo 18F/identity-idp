@@ -1,6 +1,12 @@
 FROM ruby:3.2.2-slim
 
 # Set environment variables
+ARG ARG_CI_ENVIRONMENT_SLUG="placeholder"
+ARG ARG_CI_COMMIT_BRANCH="branch_placeholder"
+ARG ARG_CI_COMMIT_SHA="sha_placeholder"
+ENV CI_ENVIRONMENT_SLUG=${ARG_CI_ENVIRONMENT_SLUG}
+ENV CI_COMMIT_BRANCH=${ARG_CI_COMMIT_BRANCH}
+ENV CI_COMMIT_SHA=${ARG_CI_COMMIT_SHA}
 ENV RAILS_ROOT /app
 ENV RAILS_ENV production
 ENV NODE_ENV production
@@ -29,6 +35,8 @@ ENV ASSET_HOST http://localhost:3000
 ENV DOMAIN_NAME localhost:3000
 ENV PIV_CAC_SERVICE_URL https://localhost:8443/
 ENV PIV_CAC_VERIFY_TOKEN_URL https://localhost:8443/ 
+
+RUN echo Env Value : $CI_ENVIRONMENT_SLUG
 
 # Prevent documentation installation
 RUN echo 'path-exclude=/usr/share/doc/*' > /etc/dpkg/dpkg.cfg.d/00_nodoc && \
@@ -120,16 +128,8 @@ COPY --chown=app:app ./babel.config.js ./babel.config.js
 COPY --chown=app:app ./webpack.config.js ./webpack.config.js
 COPY --chown=app:app ./.browserslistrc ./.browserslistrc
 
-# Setup config files
-COPY --chown=app:app config/agencies.localdev.yml $RAILS_ROOT/config/agencies.yaml
-COPY --chown=app:app config/iaa_gtcs.localdev.yml $RAILS_ROOT/config/iaa_gtcs.yaml
-COPY --chown=app:app config/iaa_orders.localdev.yml $RAILS_ROOT/config/iaa_orders.yaml
-COPY --chown=app:app config/iaa_statuses.localdev.yml $RAILS_ROOT/config/iaa_statuses.yaml
-COPY --chown=app:app config/integration_statuses.localdev.yml $RAILS_ROOT/config/integration_statuses.yaml
-COPY --chown=app:app config/integrations.localdev.yml $RAILS_ROOT/config/integrations.yaml
-COPY --chown=app:app config/partner_account_statuses.localdev.yml $RAILS_ROOT/config/partner_account_statuses.yaml
-COPY --chown=app:app config/partner_accounts.localdev.yml $RAILS_ROOT/config/partner_accounts.yaml
-COPY --chown=app:app config/service_providers.localdev.yml $RAILS_ROOT/config/service_providers.yaml
+RUN mkdir -p $RAILS_ROOT/public/api/
+RUN echo "{\"branch\":\"$CI_COMMIT_BRANCH\",\"git_sha\":\"$CI_COMMIT_SHA\"}" > $RAILS_ROOT/public/api/deploy.json
 
 # Copy keys
 COPY --chown=app:app keys.example $RAILS_ROOT/keys
@@ -151,6 +151,18 @@ RUN openssl req -x509 -sha256 -nodes -newkey rsa:2048 -days 1825 \
 
 # Precompile assets
 RUN bundle exec rake assets:precompile --trace
+
+# Setup config files
+COPY --chown=app:app config/agencies.localdev.yml $RAILS_ROOT/config/agencies.yml
+COPY --chown=app:app config/iaa_gtcs.localdev.yml $RAILS_ROOT/config/iaa_gtcs.yml
+COPY --chown=app:app config/iaa_orders.localdev.yml $RAILS_ROOT/config/iaa_orders.yml
+COPY --chown=app:app config/iaa_statuses.localdev.yml $RAILS_ROOT/config/iaa_statuses.yml
+COPY --chown=app:app config/integration_statuses.localdev.yml $RAILS_ROOT/config/integration_statuses.yml
+COPY --chown=app:app config/integrations.localdev.yml $RAILS_ROOT/config/integrations.yml
+COPY --chown=app:app config/partner_account_statuses.localdev.yml $RAILS_ROOT/config/partner_account_statuses.yml
+COPY --chown=app:app config/partner_accounts.localdev.yml $RAILS_ROOT/config/partner_accounts.yml
+COPY --chown=app:app certs.example $RAILS_ROOT/certs
+COPY --chown=app:app config/service_providers.localdev.yml $RAILS_ROOT/config/service_providers.yaml
 
 # Expose the port the app runs on
 EXPOSE 3000

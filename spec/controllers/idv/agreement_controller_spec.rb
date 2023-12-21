@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Idv::AgreementController do
-  include IdvHelper
+  include FlowPolicyHelper
 
   let(:user) { create(:user) }
 
@@ -11,9 +11,15 @@ RSpec.describe Idv::AgreementController do
 
   before do
     stub_sign_in(user)
+    stub_up_to(:welcome, idv_session: subject.idv_session)
     stub_analytics
-    subject.idv_session.welcome_visited = true
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
+  end
+
+  describe '#step_info' do
+    it 'returns a valid StepInfo object' do
+      expect(Idv::AgreementController.step_info).to be_valid
+    end
   end
 
   describe 'before_actions' do
@@ -74,12 +80,23 @@ RSpec.describe Idv::AgreementController do
     end
 
     context 'agreement already visited' do
-      it 'redirects to hybrid_handoff' do
-        allow(subject.idv_session).to receive(:idv_consent_given).and_return(true)
+      it 'does not redirect to hybrid_handoff' do
+        stub_up_to(:agreement, idv_session: subject.idv_session)
 
         get :show
 
-        expect(response).to redirect_to(idv_hybrid_handoff_url)
+        expect(response).to render_template('idv/agreement/show')
+      end
+
+      context 'and verify info already completed' do
+        before do
+          stub_up_to(:verify_info, idv_session: subject.idv_session)
+        end
+
+        it 'renders the show template' do
+          get :show
+          expect(response).to render_template(:show)
+        end
       end
     end
   end
@@ -109,6 +126,12 @@ RSpec.describe Idv::AgreementController do
       }.compact
     end
 
+    it 'invalidates future steps' do
+      expect(subject).to receive(:clear_future_steps!)
+
+      put :update, params: params
+    end
+
     it 'sends analytics_submitted event with consent given' do
       put :update, params: params
 
@@ -123,41 +146,91 @@ RSpec.describe Idv::AgreementController do
       }.from(nil)
     end
 
-    it 'redirects to hybrid handoff' do
-      put :update, params: params
-      expect(response).to redirect_to(idv_hybrid_handoff_url)
-    end
+    context 'on success' do
+      context 'skip_hybrid_handoff present in params' do
+        let(:skip_hybrid_handoff) { '' }
 
-    context 'skip_hybrid_handoff present in params' do
-      let(:skip_hybrid_handoff) { '' }
-      it 'sets flow_path to standard' do
-        expect do
+        it 'sets flow_path to standard' do
+          expect do
+            put :update, params: params
+          end.to change {
+            subject.idv_session.flow_path
+          }.from(nil).to('standard').and change {
+            subject.idv_session.skip_hybrid_handoff
+          }.from(nil).to(true)
+        end
+
+        it 'redirects to hybrid handoff' do
           put :update, params: params
-        end.to change {
-          subject.idv_session.flow_path
-        }.from(nil).to('standard').and change {
-          subject.idv_session.skip_hybrid_handoff
-        }.from(nil).to(true)
+
+          expect(response).to redirect_to(idv_hybrid_handoff_url)
+        end
       end
 
-      it 'redirects to hybrid handoff' do
-        put :update, params: params
-        expect(response).to redirect_to(idv_hybrid_handoff_url)
+      context 'when both ipp and opt-in ipp are enabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { true }
+          allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { true }
+        end
+
+        it 'redirects to how to verify' do
+          put :update, params: params
+          expect(response).to redirect_to(idv_how_to_verify_url)
+        end
+      end
+
+      context 'when ipp is enabled but opt-in ipp is disabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { true }
+          allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { false }
+        end
+
+        it 'redirects to hybrid handoff' do
+          put :update, params: params
+          expect(response).to redirect_to(idv_hybrid_handoff_url)
+        end
+      end
+
+      context 'when ipp is disabled and opt-in ipp is enabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { false }
+          allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { true }
+        end
+
+        it 'redirects to hybrid handoff' do
+          put :update, params: params
+          expect(response).to redirect_to(idv_hybrid_handoff_url)
+        end
+      end
+
+      context 'when both ipp and opt-in ipp are disabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { false }
+          allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { false }
+        end
+
+        it 'redirects to hybrid handoff' do
+          put :update, params: params
+          expect(response).to redirect_to(idv_hybrid_handoff_url)
+        end
       end
     end
 
-    context 'ial2_consent_given param present' do
+    context 'on failure' do
+      let(:skip_hybrid_handoff) { nil }
+
       let(:params) do
         {
           doc_auth: {
-            ial2_consent_given: 1,
+            idv_consent_given: nil,
           },
           skip_hybrid_handoff: skip_hybrid_handoff,
         }.compact
       end
-      it 'succeeds' do
+
+      it 'redirects to idv agreement' do
         put :update, params: params
-        expect(response).to redirect_to(idv_hybrid_handoff_url)
+        expect(response).to redirect_to(idv_agreement_url)
       end
     end
   end

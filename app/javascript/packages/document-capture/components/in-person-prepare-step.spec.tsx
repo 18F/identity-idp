@@ -18,6 +18,20 @@ describe('InPersonPrepareStep', () => {
     ).not.to.exist();
   });
 
+  it('renders all steps to verify your identity at a Post Office', () => {
+    const { getByText } = render(<InPersonPrepareStep {...DEFAULT_PROPS} />);
+
+    expect(getByText('in_person_proofing.body.prepare.verify_step_post_office')).to.exist();
+    expect(getByText('in_person_proofing.body.prepare.verify_step_enter_pii')).to.exist();
+    expect(getByText('in_person_proofing.body.prepare.verify_step_enter_phone')).to.exist();
+  });
+
+  it('renders about information', () => {
+    const { getByText } = render(<InPersonPrepareStep {...DEFAULT_PROPS} />);
+
+    expect(getByText('in_person_proofing.body.prepare.verify_step_about')).to.exist();
+  });
+
   context('Outage message', () => {
     it('renders a warning when the flag is enabled', () => {
       const { queryByText } = render(
@@ -28,6 +42,7 @@ describe('InPersonPrepareStep', () => {
             inPersonOutageMessageEnabled: true,
             inPersonOutageExpectedUpdateDate: 'January 1, 2024',
             inPersonFullAddressEntryEnabled: false,
+            optedInToInPersonProofing: false,
             usStatesTerritories: [],
           }}
         >
@@ -46,6 +61,7 @@ describe('InPersonPrepareStep', () => {
             addressSearchURL: 'https://localhost:3000/unused',
             inPersonOutageMessageEnabled: false,
             inPersonFullAddressEntryEnabled: false,
+            optedInToInPersonProofing: false,
             usStatesTerritories: [],
           }}
         >

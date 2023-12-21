@@ -10,10 +10,22 @@ class FrontendLogController < ApplicationController
 
   # Please try to keep this list alphabetical as well!
   # rubocop:disable Layout/LineLength
-  EVENT_MAP = {
+  LEGACY_EVENT_MAP = {
     'Frontend Error' => FrontendErrorLogger.method(:track_error),
+    'IdV: Acuant SDK loaded' => :idv_acuant_sdk_loaded,
+    'IdV: back image added' => :idv_back_image_added,
+    'IdV: back image clicked' => :idv_back_image_clicked,
+    'IdV: barcode warning continue clicked' => :idv_barcode_warning_continue_clicked,
+    'IdV: barcode warning retake photos clicked' => :idv_barcode_warning_retake_photos_clicked,
+    'IdV: Capture troubleshooting dismissed' => :idv_capture_troubleshooting_dismissed,
     'IdV: consent checkbox toggled' => :idv_consent_checkbox_toggled,
     'IdV: download personal key' => :idv_personal_key_downloaded,
+    'IdV: exit optional questions' => :idv_exit_optional_questions,
+    'IdV: front image added' => :idv_front_image_added,
+    'IdV: front image clicked' => :idv_front_image_clicked,
+    'IdV: Image capture failed' => :idv_image_capture_failed,
+    'IdV: Link sent capture doc polling complete' => :idv_link_sent_capture_doc_polling_complete,
+    'IdV: Link sent capture doc polling started' => :idv_link_sent_capture_doc_polling_started,
     'IdV: location submitted' => :idv_in_person_location_submitted,
     'IdV: location visited' => :idv_in_person_location_visited,
     'IdV: Mobile device and camera check' => :idv_mobile_device_and_camera_check,
@@ -26,17 +38,34 @@ class FrontendLogController < ApplicationController
     'IdV: user clicked sp link on ready to verify page' => :idv_in_person_ready_to_verify_sp_link_clicked,
     'IdV: user clicked what to bring link on ready to verify page' => :idv_in_person_ready_to_verify_what_to_bring_link_clicked,
     'IdV: verify in person troubleshooting option clicked' => :idv_verify_in_person_troubleshooting_option_clicked,
+    'IdV: warning action triggered' => :idv_warning_action_triggered,
+    'IdV: warning shown' => :idv_warning_shown,
     'Multi-Factor Authentication: download backup code' => :multi_factor_auth_backup_code_download,
-    'Sign In: IdV requirements accordion clicked' => :sign_in_idv_requirements_accordion_clicked,
     'User prompted before navigation' => :user_prompted_before_navigation,
     'User prompted before navigation and still on page' => :user_prompted_before_navigation_and_still_on_page,
   }.freeze
   # rubocop:enable Layout/LineLength
 
-  def create
-    frontend_logger.track_event(log_params[:event], log_params[:payload].to_h)
+  ALLOWED_EVENTS = %i[
+    idv_sdk_selfie_image_added
+    idv_sdk_selfie_image_capture_closed_without_photo
+    idv_sdk_selfie_image_capture_failed
+    idv_sdk_selfie_image_capture_opened
+    idv_selfie_image_file_uploaded
+    phone_input_country_changed
+  ].freeze
 
-    render json: { success: true }, status: :ok
+  EVENT_MAP = ALLOWED_EVENTS.index_by(&:to_s).merge(LEGACY_EVENT_MAP).freeze
+
+  def create
+    result = frontend_logger.track_event(log_params[:event], log_params[:payload].to_h)
+
+    if result
+      render json: { success: true }, status: :ok
+    else
+      render json: { success: false, error_message: 'invalid event' },
+             status: :bad_request
+    end
   end
 
   private

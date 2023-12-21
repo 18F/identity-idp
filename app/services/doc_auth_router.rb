@@ -78,12 +78,18 @@ module DocAuthRouter
     DocAuth::Errors::GLARE_LOW_BOTH_SIDES => 'doc_auth.errors.glare.top_msg_plural',
     # i18n-tasks-use t('doc_auth.errors.glare.failed_short')
     DocAuth::Errors::GLARE_LOW_FIELD => 'doc_auth.errors.glare.failed_short',
-    # i18n-tasks-use t('doc_auth.errors.http.image_load')
-    DocAuth::Errors::IMAGE_LOAD_FAILURE => 'doc_auth.errors.http.image_load',
-    # i18n-tasks-use t('doc_auth.errors.http.pixel_depth')
-    DocAuth::Errors::PIXEL_DEPTH_FAILURE => 'doc_auth.errors.http.pixel_depth',
-    # i18n-tasks-use t('doc_auth.errors.http.image_size')
-    DocAuth::Errors::IMAGE_SIZE_FAILURE => 'doc_auth.errors.http.image_size',
+    # i18n-tasks-use t('doc_auth.errors.http.image_load.top_msg')
+    DocAuth::Errors::IMAGE_LOAD_FAILURE => 'doc_auth.errors.http.image_load.top_msg',
+    # i18n-tasks-use t('doc_auth.errors.http.image_load.failed_short')
+    DocAuth::Errors::IMAGE_LOAD_FAILURE_FIELD => 'doc_auth.errors.http.image_load.failed_short',
+    # i18n-tasks-use t('doc_auth.errors.http.pixel_depth.top_msg')
+    DocAuth::Errors::PIXEL_DEPTH_FAILURE => 'doc_auth.errors.http.pixel_depth.top_msg',
+    # i18n-tasks-use t('doc_auth.errors.http.pixel_depth.failed_short')
+    DocAuth::Errors::PIXEL_DEPTH_FAILURE_FIELD => 'doc_auth.errors.http.pixel_depth.failed_short',
+    # i18n-tasks-use t('doc_auth.errors.http.image_size.top_msg')
+    DocAuth::Errors::IMAGE_SIZE_FAILURE => 'doc_auth.errors.http.image_size.top_msg',
+    # i18n-tasks-use t('doc_auth.errors.http.image_size.failed_short')
+    DocAuth::Errors::IMAGE_SIZE_FAILURE_FIELD => 'doc_auth.errors.http.image_size.failed_short',
     # i18n-tasks-use t('doc_auth.errors.general.fallback_field_level')
     DocAuth::Errors::FALLBACK_FIELD_LEVEL => 'doc_auth.errors.general.fallback_field_level',
   }.freeze
@@ -120,9 +126,12 @@ module DocAuthRouter
 
     def translate_doc_auth_errors!(response)
       error_keys = DocAuth::ErrorGenerator::ERROR_KEYS.dup
+      error_keys.delete(:selfie) if @client.is_a?(DocAuth::Acuant::AcuantClient)
 
       error_keys.each do |category|
-        response.errors[category]&.map! do |plain_error|
+        cat_errors = response.errors[category]
+        next unless cat_errors
+        translated_cat_errors = cat_errors.map do |plain_error|
           error_key = ERROR_TRANSLATIONS[plain_error]
           if error_key
             I18n.t(error_key)
@@ -131,6 +140,7 @@ module DocAuthRouter
             I18n.t('doc_auth.errors.general.no_liveness')
           end
         end
+        response.errors[category] = translated_cat_errors
       end
     end
 
@@ -169,6 +179,8 @@ module DocAuthRouter
           trueid_account_id: IdentityConfig.store.lexisnexis_trueid_account_id,
           trueid_noliveness_cropping_workflow: IdentityConfig.store.lexisnexis_trueid_noliveness_cropping_workflow,
           trueid_noliveness_nocropping_workflow: IdentityConfig.store.lexisnexis_trueid_noliveness_nocropping_workflow,
+          trueid_liveness_cropping_workflow: IdentityConfig.store.lexisnexis_trueid_liveness_cropping_workflow,
+          trueid_liveness_nocropping_workflow: IdentityConfig.store.lexisnexis_trueid_liveness_nocropping_workflow,
           trueid_password: IdentityConfig.store.lexisnexis_trueid_password,
           trueid_username: IdentityConfig.store.lexisnexis_trueid_username,
           hmac_key_id: IdentityConfig.store.lexisnexis_trueid_hmac_key_id,
@@ -195,11 +207,18 @@ module DocAuthRouter
   def self.doc_auth_vendor(discriminator: nil, analytics: nil)
     case AbTests::DOC_AUTH_VENDOR.bucket(discriminator)
     when :alternate_vendor
-      IdentityConfig.store.doc_auth_vendor_randomize_alternate_vendor
+      vendor = IdentityConfig.store.doc_auth_vendor_randomize_alternate_vendor
     else
       analytics&.idv_doc_auth_randomizer_defaulted if discriminator.blank?
 
-      IdentityConfig.store.doc_auth_vendor
+      vendor = IdentityConfig.store.doc_auth_vendor
     end
+
+    # if vendor is not set to mock and selfie enabled use lexisnexis
+    if IdentityConfig.store.doc_auth_selfie_capture_enabled &&
+       vendor != Idp::Constants::Vendors::MOCK
+      vendor = Idp::Constants::Vendors::LEXIS_NEXIS
+    end
+    vendor
   end
 end

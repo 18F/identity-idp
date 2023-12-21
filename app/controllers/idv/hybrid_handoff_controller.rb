@@ -1,11 +1,12 @@
 module Idv
   class HybridHandoffController < ApplicationController
+    include Idv::AvailabilityConcern
     include ActionView::Helpers::DateHelper
     include IdvStepConcern
     include StepIndicatorConcern
 
-    before_action :confirm_verify_info_step_needed
-    before_action :confirm_agreement_step_complete
+    before_action :confirm_not_rate_limited
+    before_action :confirm_step_allowed
     before_action :confirm_hybrid_handoff_needed, only: :show
 
     def show
@@ -20,6 +21,7 @@ module Idv
     end
 
     def update
+      clear_future_steps!
       irs_attempts_api_tracker.idv_document_upload_method_selected(
         upload_method: params[:type],
       )
@@ -31,6 +33,19 @@ module Idv
       end
     end
 
+    def self.step_info
+      Idv::StepInfo.new(
+        key: :hybrid_handoff,
+        controller: self,
+        next_steps: [:link_sent, :document_capture],
+        preconditions: ->(idv_session:, user:) { idv_session.idv_consent_given },
+        undo_step: ->(idv_session:, user:) do
+          idv_session.flow_path = nil
+          idv_session.phone_for_mobile_flow = nil
+        end,
+      )
+    end
+
     def handle_phone_submission
       return rate_limited_failure if rate_limiter.limited?
       rate_limiter.increment!
@@ -39,18 +54,15 @@ module Idv
       telephony_result = send_link
       telephony_form_response = build_telephony_form_response(telephony_result)
 
-      failure_reason = nil
       if !telephony_result.success?
-        failure_reason = { telephony: [telephony_result.error.class.name.demodulize] }
         failure(telephony_form_response.errors[:message])
       end
       irs_attempts_api_tracker.idv_phone_upload_link_sent(
         success: telephony_result.success?,
         phone_number: formatted_destination_phone,
-        failure_reason: failure_reason,
       )
 
-      if !failure_reason
+      if telephony_result.success?
         redirect_to idv_link_sent_url
       else
         redirect_to idv_hybrid_handoff_url
@@ -184,12 +196,6 @@ module Idv
       form_response_params = { success: false, errors: { message: message } }
       form_response_params[:extra] = extra unless extra.nil?
       FormResponse.new(**form_response_params)
-    end
-
-    def confirm_agreement_step_complete
-      return if idv_session.idv_consent_given
-
-      redirect_to idv_agreement_url
     end
 
     def formatted_destination_phone

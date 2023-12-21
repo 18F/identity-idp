@@ -9,11 +9,11 @@ en:
       events: Events
       federal_employee_id: Federal employee ID
       login_info: Your account
-      profile_info: Profile information
       reactivate: Reactivate your account
       two_factor: Your authentication methods
       unphishable: Unphishable
       verified_account: Verified Account
+      verified_information: Verified information
     add_email: Add a new email address
     add_info:
       phone: Add a phone number
@@ -56,6 +56,7 @@ en:
     piv_cac_setup:
       already_associated: The PIV/CAC you presented is associated with another user.
       new: Use your PIV/CAC card to secure your account
+    redirecting: Redirecting
     residential_address: Current residential address
     session_timeout_warning: Need more time?
     sign_in_existing_users: Sign in for existing users

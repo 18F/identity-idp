@@ -52,9 +52,11 @@ module DocAuth
       def post_images(
         front_image:,
         back_image:,
+        selfie_image: nil,
         image_source: nil,
         user_uuid: nil,
-        uuid_prefix: nil
+        uuid_prefix: nil,
+        liveness_checking_enabled: false
       )
         return mocked_response_for_method(__method__) if method_mocked?(__method__)
 
@@ -105,25 +107,42 @@ module DocAuth
         data = parse_yaml(image.to_s)
         status = data.dig('http_status', side)
         return nil unless [500, 440, 438, 439].include?(status)
-        error = case status
-                when 438
-                  Errors::IMAGE_LOAD_FAILURE
-                when 439
-                  Errors::PIXEL_DEPTH_FAILURE
-                when 440
-                  Errors::IMAGE_SIZE_FAILURE
-                when 500
-                  Errors::NETWORK
-                end
-        return nil unless error
-        errors = { general: [error] }
+        errors = case status
+                 when 438
+                   {
+                     general: [Errors::IMAGE_LOAD_FAILURE],
+                     side.downcase.to_sym => [Errors::IMAGE_LOAD_FAILURE_FIELD],
+                   }
+                 when 439
+                   {
+                     general: [Errors::PIXEL_DEPTH_FAILURE],
+                     side.downcase.to_sym => [Errors::PIXEL_DEPTH_FAILURE_FIELD],
+                   }
+                 when 440
+                   {
+                     general: [Errors::IMAGE_SIZE_FAILURE],
+                     side.downcase.to_sym => [Errors::IMAGE_SIZE_FAILURE_FIELD],
+                   }
+                 when 500
+                   {
+                     general: [Errors::NETWORK],
+                   }
+                 end
+        return nil unless errors
+        errors = errors.tap do |h|
+          if h.has_key?(:result)
+            h[:front] = h[:result]
+            h[:back] = h[:result]
+            h.delete(:result)
+          end
+        end
         message = [
           self.class.name,
           'Unexpected HTTP response',
           status,
         ].join(' ')
         exception = DocAuth::RequestError.new(message, status)
-        return DocAuth::Response.new(
+        DocAuth::Response.new(
           success: false,
           errors: errors,
           exception: exception,

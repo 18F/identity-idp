@@ -23,6 +23,7 @@ aamva_verification_request_timeout: 5.0
 aamva_verification_url: https://example.org:12345/verification/url
 all_redirect_uris_cache_duration_minutes: 2
 allowed_ialmax_providers: '[]'
+allowed_verified_within_providers: '[]'
 account_reset_token_valid_for_days: 1
 account_reset_wait_period_days: 1
 account_suspended_support_code: EFGHI
@@ -69,7 +70,6 @@ database_worker_jobs_sslmode: 'verify-full'
 deliver_mail_async: false
 deleted_user_accounts_report_configs: '[]'
 development_mailer_deliver_method: letter_opener
-disable_csp_unsafe_inline: true
 disable_email_sending: true
 disable_logout_get_request: true
 disallow_all_web_crawlers: true
@@ -83,9 +83,13 @@ doc_auth_s3_request_timeout: 5
 doc_auth_error_dpi_threshold: 290
 doc_auth_error_glare_threshold: 40
 doc_auth_error_sharpness_threshold: 40
+doc_auth_exit_question_section_enabled: false
 doc_auth_max_attempts: 5
 doc_auth_max_capture_attempts_before_native_camera: 3
 doc_auth_max_submission_attempts_before_native_camera: 3
+doc_auth_not_ready_section_enabled: false
+doc_auth_selfie_capture_enabled: false
+doc_auth_sdk_capture_orientation: '{"horizontal": 100, "vertical": 0}'
 doc_auth_supported_country_codes: '["US", "GU", "VI", "AS", "MP", "PR", "USA" ,"GUM", "VIR", "ASM", "MNP", "PRI"]'
 doc_capture_request_valid_for_minutes: 15
 email_from: no-reply@login.gov
@@ -93,6 +97,7 @@ email_from_display_name: Login.gov
 email_registrations_per_ip_limit: 20
 email_registrations_per_ip_period: 20
 email_registrations_per_ip_track_only_mode: false
+enable_add_mfa_redirect_for_personal_key: false
 enable_load_testing_mode: false
 enable_rate_limiting: true
 enable_test_routes: true
@@ -116,22 +121,20 @@ idv_available: true
 idv_contact_phone_number: (844) 555-5555
 idv_max_attempts: 5
 idv_min_age_years: 13
-idv_acuant_sdk_version_default: '11.8.2'
-idv_acuant_sdk_version_alternate: '11.8.1'
+idv_acuant_sdk_version_default: '11.9.1'
+idv_acuant_sdk_version_alternate: '11.8.2'
 idv_acuant_sdk_upgrade_a_b_testing_enabled: false
 idv_acuant_sdk_upgrade_a_b_testing_percent: 50
-idv_getting_started_a_b_testing: '{"welcome_default":100, "welcome_new":0, "getting_started":0}'
-idv_phone_question_a_b_testing: '{"show_phone_question":0}'
 idv_send_link_attempt_window_in_minutes: 10
 idv_send_link_max_attempts: 5
 idv_sp_required: false
-in_person_capture_secondary_id_enabled: false
 in_person_public_address_search_enabled: false
 in_person_doc_auth_button_enabled: true
 in_person_email_reminder_early_benchmark_in_days: 11
 in_person_email_reminder_final_benchmark_in_days: 1
 in_person_email_reminder_late_benchmark_in_days: 4
 in_person_proofing_enabled: false
+in_person_proofing_opt_in_enabled: false
 in_person_enrollment_validity_in_days: 30
 in_person_enrollments_ready_job_email_body_pattern: '\A\s*(?<enrollment_code>\d{16})\s*\Z'
 in_person_enrollments_ready_job_cron: '0/10 * * * *'
@@ -152,7 +155,6 @@ in_person_outage_emailed_by_date: 'November 1, 2024'
 in_person_send_proofing_notifications_enabled: false
 in_person_stop_expiring_enrollments: false
 include_slo_in_saml_metadata: false
-key_pair_generation_percent: 0
 logins_per_ip_track_only_mode: false
 # LexisNexis #####################################################
 lexisnexis_base_url: https://www.example.com
@@ -168,6 +170,9 @@ lexisnexis_phone_finder_timeout: 1.0
 lexisnexis_phone_finder_workflow: customers.gsa2.phonefinder.workflow
 lexisnexis_instant_verify_timeout: 1.0
 lexisnexis_instant_verify_workflow: gsa2.chk32.test.wf
+lexisnexis_instant_verify_workflow_ab_testing_enabled: false
+lexisnexis_instant_verify_workflow_ab_testing_percent: 5
+lexisnexis_instant_verify_workflow_alternate: gsa2.chk14.test.wf
 # TrueID DocAuth Integration
 lexisnexis_trueid_account_id: '12345'
 lexisnexis_trueid_username: test_username
@@ -205,12 +210,10 @@ max_phone_numbers_per_account: 5
 max_piv_cac_per_account: 2
 min_password_score: 3
 minimum_wait_before_another_usps_letter_in_hours: 24
-multi_region_kms_migration_jobs_enabled: true
-multi_region_kms_migration_jobs_profile_count: 1000
-multi_region_kms_migration_jobs_profile_timeout: 120
-multi_region_kms_migration_jobs_user_count: 1000
-multi_region_kms_migration_jobs_user_timeout: 120
 mx_timeout: 3
+openid_connect_redirect: client_side_js
+openid_connect_content_security_form_action_enabled: false
+openid_connect_redirect_uuid_override_map: '{}'
 otp_delivery_blocklist_maxretry: 10
 otp_valid_for: 10
 otp_expiration_warning_seconds: 150
@@ -241,7 +244,6 @@ pinpoint_voice_pool_size: 5
 piv_cac_service_url: https://localhost:8443/
 piv_cac_service_timeout: 5.0
 piv_cac_verify_token_url: https://localhost:8443/
-platform_auth_set_up_enabled: false
 poll_rate_for_verify_in_seconds: 3
 proofer_mock_fallback: true
 proof_address_max_attempts: 5
@@ -254,7 +256,8 @@ pwned_passwords_file_path: 'pwned_passwords/pwned_passwords.txt'
 rack_mini_profiler: false
 rack_timeout_service_timeout_seconds: 15
 rails_mailer_previews_enabled: false
-reauthn_window: 120
+raise_on_missing_title: false
+reauthn_window: 1200
 recaptcha_enterprise_api_key: ''
 recaptcha_enterprise_project_id: ''
 recaptcha_site_key_v2: ''
@@ -313,6 +316,7 @@ otp_min_attempts_remaining_warning_count: 3
 system_demand_report_email: 'foo@bar.com'
 sp_issuer_user_counts_report_configs: '[]'
 team_agnes_email: ''
+team_all_contractors_email: ''
 team_all_feds_email: ''
 team_ursula_email: ''
 test_ssn_allowed_list: ''
@@ -327,6 +331,8 @@ vendor_status_lexisnexis_phone_finder: 'operational'
 vendor_status_lexisnexis_trueid: 'operational'
 vendor_status_sms: 'operational'
 vendor_status_voice: 'operational'
+vendor_status_idv_scheduled_maintenance_start: ''
+vendor_status_idv_scheduled_maintenance_finish: ''
 verification_errors_report_configs: '[]'
 verify_gpo_key_attempt_window_in_minutes: 10
 verify_gpo_key_max_attempts: 5
@@ -355,6 +361,7 @@ voice_otp_pause_time: '0.5s'
 voice_otp_speech_rate: 'slow'
 voip_block: true
 voip_allowed_phones: '[]'
+weekly_auth_funnel_report_config: '[]'
 
 development:
   aamva_private_key: 123abc
@@ -376,6 +383,9 @@ development:
   database_worker_jobs_username: ''
   database_worker_jobs_host: ''
   database_worker_jobs_password: ''
+  doc_auth_exit_question_section_enabled: true
+  doc_auth_not_ready_section_enabled: true
+  doc_auth_selfie_capture_enabled: false
   doc_auth_vendor: 'mock'
   doc_auth_vendor_randomize: false
   doc_auth_vendor_randomize_percent: 0
@@ -395,9 +405,11 @@ development:
   otp_delivery_blocklist_findtime: 5
   password_pepper: f22d4b2cafac9066fe2f4416f5b7a32c
   piv_cac_verify_token_secret: ee7f20f44cdc2ba0c6830f70470d1d1d059e1279cdb58134db92b35947b1528ef5525ece5910cf4f2321ab989a618feea12ef95711dbc62b9601e8520a34ee12
-  platform_auth_set_up_enabled: true
+  push_notifications_enabled: true
   rails_mailer_previews_enabled: true
   rack_timeout_service_timeout_seconds: 9_999_999_999
+  raise_on_missing_title: true
+  risc_notifications_local_enabled: true
   s3_report_bucket_prefix: ''
   s3_report_public_bucket_prefix: ''
   saml_endpoint_configs: '[{"suffix":"2023","secret_key_passphrase":"trust-but-verify"}]'
@@ -461,6 +473,8 @@ production:
   logins_per_ip_track_only_mode: true
   newrelic_license_key: ''
   nonessential_email_banlist: '[]'
+  openid_connect_redirect: server_side
+  openid_connect_content_security_form_action_enabled: true
   otp_delivery_blocklist_findtime: 5
   participate_in_dap: true
   password_pepper:
@@ -512,6 +526,7 @@ test:
   database_worker_jobs_host: ''
   database_worker_jobs_password: ''
   doc_auth_max_attempts: 4
+  doc_auth_selfie_capture_enabled: false
   doc_auth_vendor: 'mock'
   doc_auth_vendor_randomize: false
   doc_auth_vendor_randomize_percent: 0
@@ -544,6 +559,7 @@ test:
   phone_setups_per_ip_track_only_mode: false
   piv_cac_verify_token_secret: 3ac13bfa23e22adae321194c083e783faf89469f6f85dcc0802b27475c94b5c3891b5657bd87d0c1ad65de459166440512f2311018db90d57b15d8ab6660748f
   poll_rate_for_verify_in_seconds: 0
+  raise_on_missing_title: true
   reg_confirmed_email_max_attempts: 3
   reg_unconfirmed_email_max_attempts: 4
   reg_unconfirmed_email_window_in_minutes: 70
@@ -560,6 +576,9 @@ test:
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
   skip_encryption_allowed_list: '[]'
   state_tracking_enabled: true
+  team_agnes_email: 'a@example.com'
+  team_all_contractors_email: 'c@example.com'
+  team_all_feds_email: 'f@example.com'
   telephony_adapter: test
   test_ssn_allowed_list: '999999999'
   totp_code_interval: 3

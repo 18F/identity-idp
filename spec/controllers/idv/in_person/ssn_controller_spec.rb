@@ -1,13 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe Idv::InPerson::SsnController do
-  include IdvHelper
-
   let(:pii_from_user) { Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID_WITH_NO_SSN.dup }
 
   let(:flow_session) do
-    { pii_from_user: pii_from_user,
-      flow_path: 'standard' }
+    { pii_from_user: pii_from_user }
   end
 
   let(:ssn) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn] }
@@ -19,27 +16,47 @@ RSpec.describe Idv::InPerson::SsnController do
   end
 
   before do
-    allow(subject).to receive(:pii_from_user).and_return(pii_from_user)
-    allow(subject).to receive(:flow_session).and_return(flow_session)
     stub_sign_in(user)
+    subject.user_session['idv/in_person'] = flow_session
     stub_analytics
     stub_attempts_tracker
     allow(@analytics).to receive(:track_event)
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
+    subject.idv_session.flow_path = 'standard'
+  end
+
+  describe '#step_info' do
+    it 'returns a valid StepInfo object' do
+      expect(Idv::InPerson::SsnController.step_info).to be_valid
+    end
   end
 
   describe 'before_actions' do
-    context('#confirm_in_person_address_step_complete') do
-      it 'redirects if the user hasn\'t completed the address page' do
-        # delete address attributes on session
-        flow_session[:pii_from_user].delete(:address1)
-        flow_session[:pii_from_user].delete(:address2)
-        flow_session[:pii_from_user].delete(:city)
-        flow_session[:pii_from_user].delete(:state)
-        flow_session[:pii_from_user].delete(:zipcode)
-        get :show
+    context '#confirm_in_person_address_step_complete' do
+      context 'residential address controller flag not enabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:in_person_residential_address_controller_enabled).
+            and_return(false)
+        end
+        it 'redirects if the user hasn\'t completed the address page' do
+          subject.user_session['idv/in_person'][:pii_from_user].delete(:address1)
+          get :show
 
-        expect(response).to redirect_to idv_in_person_step_url(step: :address)
+          expect(response).to redirect_to idv_in_person_step_url(step: :address)
+        end
+      end
+
+      context 'residential address controller flag enabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:in_person_residential_address_controller_enabled).
+            and_return(true)
+        end
+        it 'redirects if address page not completed' do
+          subject.user_session['idv/in_person'][:pii_from_user].delete(:address1)
+          get :show
+
+          expect(response).to redirect_to idv_in_person_proofing_address_url
+        end
       end
     end
   end
@@ -53,14 +70,17 @@ RSpec.describe Idv::InPerson::SsnController do
         irs_reproofing: false,
         step: 'ssn',
         same_address_as_id: true,
-        pii_like_keypaths: [[:same_address_as_id], [:state_id, :state_id_jurisdiction]],
+        pii_like_keypaths: [
+          [:same_address_as_id],
+          [:proofing_results, :context, :stages, :state_id, :state_id_jurisdiction],
+        ],
       }.merge(ab_test_args)
     end
 
     it 'renders the show template' do
       get :show
 
-      expect(response).to render_template :show
+      expect(response).to render_template 'idv/shared/ssn'
     end
 
     it 'sends analytics_visited event' do
@@ -79,6 +99,11 @@ RSpec.describe Idv::InPerson::SsnController do
 
     it 'adds a threatmetrix session id to idv_session' do
       expect { get :show }.to change { subject.idv_session.threatmetrix_session_id }.from(nil)
+    end
+
+    it 'does not change threatmetrix_session_id when updating ssn' do
+      subject.idv_session.ssn = ssn
+      expect { get :show }.not_to change { subject.idv_session.threatmetrix_session_id }
     end
 
     context 'with an ssn in idv_session' do
@@ -101,7 +126,7 @@ RSpec.describe Idv::InPerson::SsnController do
         it 'does not redirect' do
           get :show
 
-          expect(response).to render_template :show
+          expect(response).to render_template 'idv/shared/ssn'
         end
       end
     end
@@ -157,14 +182,6 @@ RSpec.describe Idv::InPerson::SsnController do
 
         expect(response).to redirect_to idv_in_person_verify_info_url
       end
-
-      it 'does not change threatmetrix_session_id when updating ssn' do
-        subject.idv_session.ssn = ssn
-        put :update, params: params
-        session_id = subject.idv_session.threatmetrix_session_id
-        subject.threatmetrix_view_variables
-        expect(subject.idv_session.threatmetrix_session_id).to eq(session_id)
-      end
     end
 
     context 'invalid ssn' do
@@ -180,7 +197,7 @@ RSpec.describe Idv::InPerson::SsnController do
           errors: {
             ssn: ['Enter a nine-digit Social Security number'],
           },
-          error_details: { ssn: [:invalid] },
+          error_details: { ssn: { invalid: true } },
           same_address_as_id: true,
           pii_like_keypaths: [[:same_address_as_id], [:errors, :ssn], [:error_details, :ssn]],
         }.merge(ab_test_args)
@@ -191,9 +208,15 @@ RSpec.describe Idv::InPerson::SsnController do
       it 'renders the show template with an error message' do
         put :update, params: params
 
-        expect(response).to have_rendered(:show)
+        expect(response).to have_rendered('idv/shared/ssn')
         expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
         expect(response.body).to include('Enter a nine-digit Social Security number')
+      end
+
+      it 'invalidates future steps' do
+        expect(subject).to receive(:clear_future_steps!)
+
+        put :update, params: params
       end
     end
   end

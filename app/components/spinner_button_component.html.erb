@@ -1,4 +1,10 @@
-<%= content_tag(:'lg-spinner-button', class: css_class, 'spin-on-click': spin_on_click) do %>
+<%= content_tag(
+      :'lg-spinner-button',
+      **wrapper_options,
+      class: css_class,
+      'spin-on-click': spin_on_click,
+      'long-wait-duration-ms': long_wait_duration.in_milliseconds,
+    ) do %>
   <%= render ButtonComponent.new(type: :button, **button_options) do %>
     <span class="spinner-button__content"><%= content %></span>
     <span class="spinner-dots spinner-dots--centered" aria-hidden="true">

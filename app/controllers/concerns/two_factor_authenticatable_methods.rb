@@ -4,6 +4,10 @@ module TwoFactorAuthenticatableMethods
   include SecureHeadersConcern
   include MfaSetupConcern
 
+  def auth_methods_session
+    @auth_methods_session ||= AuthMethodsSession.new(user_session:)
+  end
+
   private
 
   def authenticate_user
@@ -145,14 +149,12 @@ module TwoFactorAuthenticatableMethods
   end
 
   def handle_valid_verification_for_confirmation_context(auth_method:)
-    user_session[:auth_method] = auth_method
-    mark_user_session_authenticated(:valid_2fa_confirmation)
+    mark_user_session_authenticated(auth_method:, authentication_type: :valid_2fa_confirmation)
     reset_second_factor_attempts_count
   end
 
   def handle_valid_verification_for_authentication_context(auth_method:)
-    user_session[:auth_method] = auth_method
-    mark_user_session_authenticated(:valid_2fa)
+    mark_user_session_authenticated(auth_method:, authentication_type: :valid_2fa)
     create_user_event(:sign_in_after_2fa)
 
     reset_second_factor_attempts_count
@@ -162,9 +164,8 @@ module TwoFactorAuthenticatableMethods
     UpdateUser.new(user: current_user, attributes: { second_factor_attempts_count: 0 }).call
   end
 
-  def mark_user_session_authenticated(authentication_type)
-    user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION] = false
-    user_session[:authn_at] = Time.zone.now
+  def mark_user_session_authenticated(auth_method:, authentication_type:)
+    auth_methods_session.authenticate!(auth_method)
     mark_user_session_authenticated_analytics(authentication_type)
   end
 

@@ -10,10 +10,9 @@ RSpec.describe Users::PivCacLoginController do
     context 'without a token' do
       before { get :new }
 
-      it 'tracks the piv_cac setup' do
+      it 'tracks the piv cac login' do
         expect(@analytics).to have_received(:track_event).with(
-          'PIV CAC setup visited',
-          in_account_creation_flow: false,
+          :piv_cac_login_visited,
         )
       end
 
@@ -29,7 +28,7 @@ RSpec.describe Users::PivCacLoginController do
         before { get :new, params: { token: token } }
         it 'tracks the login attempt' do
           expect(@analytics).to have_received(:track_event).with(
-            'PIV/CAC Login',
+            :piv_cac_login,
             {
               errors: {},
               key_id: nil,
@@ -74,7 +73,7 @@ RSpec.describe Users::PivCacLoginController do
 
           it 'tracks the login attempt' do
             expect(@analytics).to have_received(:track_event).with(
-              'PIV/CAC Login',
+              :piv_cac_login,
               {
                 errors: {
                   type: 'user.not_found',
@@ -113,7 +112,7 @@ RSpec.describe Users::PivCacLoginController do
 
           it 'tracks the login attempt' do
             expect(@analytics).to have_received(:track_event).with(
-              'PIV/CAC Login',
+              :piv_cac_login,
               {
                 errors: {},
                 key_id: nil,
@@ -126,8 +125,14 @@ RSpec.describe Users::PivCacLoginController do
             expect(controller.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).
               to eq false
 
-            expect(controller.user_session[:authn_at]).to_not be nil
-            expect(controller.user_session[:authn_at].class).to eq ActiveSupport::TimeWithZone
+            expect(controller.auth_methods_session.auth_events).to match(
+              [
+                {
+                  auth_method: TwoFactorAuthenticatable::AuthMethod::PIV_CAC,
+                  at: kind_of(ActiveSupport::TimeWithZone),
+                },
+              ],
+            )
           end
 
           it 'tracks the user_marked_authed event' do
@@ -167,6 +172,14 @@ RSpec.describe Users::PivCacLoginController do
             context 'ial1 user' do
               it 'redirects to the after_sign_in_path_for' do
                 expect(response).to redirect_to(account_url)
+              end
+
+              context 'ial2 service_level' do
+                let(:sp_session) { { ial: Idp::Constants::IAL2, issuer: service_provider.issuer } }
+
+                it 'redirects to account' do
+                  expect(response).to redirect_to(account_url)
+                end
               end
 
               context 'ial_max service level' do

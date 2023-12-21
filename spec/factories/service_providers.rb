@@ -7,10 +7,13 @@ FactoryBot.define do
     issuer { SecureRandom.uuid }
     return_to_sp_url { '/' }
     agency { association :agency }
+    launch_date { Date.new(2020, 1, 1) }
     help_text do
-      { sign_in: { en: '<b>custom sign in help text for %{sp_name}</b>' },
-        sign_up: { en: '<b>custom sign up help text for %{sp_name}</b>' },
-        forgot_password: { en: '<b>custom forgot password help text for %{sp_name}</b>' } }
+      { sign_in: { en: '<strong>custom sign in help text for %{sp_name}</strong>' },
+        sign_up: { en: '<strong>custom sign up help text for %{sp_name}</strong>' },
+        forgot_password: {
+          en: '<strong>custom forgot password help text for %{sp_name}</strong>',
+        } }
     end
 
     trait :without_help_text do
@@ -31,6 +34,14 @@ FactoryBot.define do
       end
     end
 
+    trait :idv do
+      ial { 2 }
+    end
+
+    trait :active do
+      active { true }
+    end
+
     trait :irs do
       friendly_name { 'An IRS Service Provider' }
       ial { 2 }
@@ -40,5 +51,13 @@ FactoryBot.define do
     end
 
     factory :service_provider_without_help_text, traits: [:without_help_text]
+
+    trait :internal do
+      iaa { ServiceProvider::IAA_INTERNAL }
+    end
+
+    trait :external do
+      iaa { 'LG1234' }
+    end
   end
 end

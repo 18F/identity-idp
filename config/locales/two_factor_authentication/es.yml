@@ -47,6 +47,9 @@ es:
       otro método de autenticación.
     learn_more: Más información sobre las opciones de autenticación.
     login_intro: Usted configuró esto cuando creó su cuenta.
+    login_intro_reauthentication: Antes de que pueda realizar cambios en su cuenta,
+      debemos confirmar su identidad mediante uno de sus métodos de
+      autenticación.
     login_options:
       auth_app: Aplicación de autenticación
       auth_app_info: Use su aplicación de autenticación para obtener el código de seguridad.
@@ -71,6 +74,7 @@ es:
       webauthn_platform_info: Use la cara o la huella digital para acceder a su cuenta
         sin un código de un solo uso.
     login_options_link_text: Elige otra opción de seguridad
+    login_options_reauthentication_title: Se requiere reautenticación
     login_options_title: Seleccione su opción de seguridad
     max_backup_code_login_attempts_reached: Para su seguridad, su cuenta está
       bloqueada temporalmente porque ha ingresado el código de respaldo
@@ -90,7 +94,6 @@ es:
     mobile_terms_of_service: Condiciones de servicio móvil
     no_auth_option: No se pudo encontrar ninguna opción de autenticación para iniciar sesión
     opt_in:
-      cant_use_phone: '¿No puede utilizar su teléfono?'
       error_retry: Lo sentimos, estamos teniendo problemas para aceptarlo. Por favor,
         inténtelo de nuevo.
       opted_out_html: Ha optado por no recibir mensajes de texto en el
@@ -104,9 +107,9 @@ es:
         seguridad para ese número de teléfono.
     otp_delivery_preference:
       instruction: Envíe mensajes de texto y llamadas a este número por defecto.
-      landline_warning_html: Al parecer el número ingresado pertenece a un <b>teléfono
-        fijo</b>. Mejor solicita un código de un solo uso por
-        %{phone_setup_path}.
+      landline_warning_html: Al parecer el número ingresado pertenece a un
+        <strong>teléfono fijo</strong>. Mejor solicita un código de un solo uso
+        por %{phone_setup_path}.
       no_supported_options: No podemos verificar los números de teléfono de %{location}
       phone_call: llamada telefónica
       sms: Mensaje de texto (SMS, sigla en inglés)
@@ -115,8 +118,7 @@ es:
       voice: Llamada telefónica
       voice_unsupported: No podemos llamar a números de teléfono en %{location}.
     otp_make_default_number:
-      instruction: Establece este número de teléfono como predeterminado para que
-        recibas en él mensajes de texto o llamadas telefónicas.
+      instruction: Envíe códigos únicos a este número por defecto.
       label: Número de teléfono predeterminado
       one_number_instruction: Debes tener más de un número de teléfono agregado para
         seleccionar un número de teléfono predeterminado.
@@ -174,8 +176,6 @@ es:
       piv_cac: Identificación de empleado gubernamental
       piv_cac_info: Credenciales PIV/CAC para empleados gubernamentales y del
         ejército. Únicamente versión de escritorio.
-      sms: Mensaje de texto / SMS
-      voice: Llamada telefónica
       webauthn: Clave de seguridad
       webauthn_info: Un dispositivo físico que suele tener la forma de una unidad USB
         y se conecta a su dispositivo.
@@ -192,9 +192,26 @@ es:
       additional_methods_link: elija otro método de autenticación
       connect_html: No hemos podido conectar la clave de seguridad. Por favor,
         inténtelo de nuevo o %{link_html}.
+      screen_lock_no_other_mfa: No pudimos comprobar la autenticidad mediante
+        desbloqueo facial o táctil. Intente iniciar sesión en el dispositivo
+        donde configuró por primera vez el desbloqueo facial o táctil.
+      screen_lock_other_mfa_html: No pudimos comprobar la autenticidad mediante
+        desbloqueo facial o táctil. %{link_html} o intente iniciar sesión en el
+        dispositivo donde configuró por primera vez el desbloqueo facial o
+        táctil.
       try_again: El desbloqueo facial o táctil no fue exitoso. Por favor, inténtelo de
         nuevo o %{link}.
+      use_a_different_method: Utilice otro método de autenticación
     webauthn_header_text: Conecte su llave de seguridad
+    webauthn_platform:
+      change_nickname: Cambiar apodo
+      delete: Eliminar este dispositivo
+      deleted: Se ha eliminado correctamente un método de desbloqueo facial o táctil
+      edit_heading: Gestione su configuración de desbloqueo facial o táctil
+      manage_accessible_label: Gestionar desbloqueo facial o táctil
+      nickname: Apodo
+      renamed: Se ha cambiado correctamente el nombre de su método de desbloqueo
+        facial o táctil
     webauthn_platform_header_text: Usar desbloqueo facial o táctil
-    webauthn_platform_use_key: Usar desbloqueo facial o táctil
+    webauthn_platform_use_key: Usar el desbloqueo de pantalla
     webauthn_use_key: Usar llave de seguridad

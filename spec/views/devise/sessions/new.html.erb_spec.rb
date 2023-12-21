@@ -27,7 +27,7 @@ RSpec.describe 'devise/sessions/new.html.erb' do
   end
 
   it 'has a localized title' do
-    expect(view).to receive(:title).with(t('titles.visitors.index'))
+    expect(view).to receive(:title=).with(t('titles.visitors.index'))
 
     render
   end
@@ -75,6 +75,15 @@ RSpec.describe 'devise/sessions/new.html.erb' do
     )
   end
 
+  it 'includes tracking script for no-JavaScript' do
+    render
+
+    expect(rendered).to have_css(
+      "link[rel='stylesheet'][href='#{no_js_detect_css_path(location: :sign_in)}']",
+      visible: false,
+    )
+  end
+
   context 'when SP is present' do
     let(:sp) do
       build_stubbed(
@@ -111,7 +120,10 @@ RSpec.describe 'devise/sessions/new.html.erb' do
       render
 
       expect(rendered).to have_link(
-        t('links.back_to_sp', sp: 'Awesome Application!'), href: return_to_sp_cancel_path
+        t(
+          'links.back_to_sp',
+          sp: 'Awesome Application!',
+        ), href: return_to_sp_cancel_path(step: :authentication)
       )
     end
 

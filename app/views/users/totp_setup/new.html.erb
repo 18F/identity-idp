@@ -1,9 +1,9 @@
-<% title t('titles.totp_setup.new') %>
+<% self.title = t('titles.totp_setup.new') %>
 
 <%= render PageHeadingComponent.new.with_content(t('headings.totp_setup.new')) %>
 
 <p>
-  <%= t('forms.totp_setup.totp_intro') %>
+  <span id="totp-intro"><%= t('forms.totp_setup.totp_intro') %></span>
   <%= new_tab_link_to(
         t('links.what_is_totp'),
         help_center_redirect_path(
@@ -17,46 +17,51 @@
 </p>
 
 <%= simple_form_for('', method: :patch, html: { class: 'margin-bottom-4' }) do |f| %>
-  <%= render ProcessListComponent.new(connected: true, class: 'margin-y-4') do |c| %>
-    <%= c.with_item(heading: t('forms.totp_setup.totp_step_1')) do %>
-      <p><%= t('forms.totp_setup.totp_step_1a') %></p>
-      <%= render ValidatedFieldComponent.new(
-            form: f,
-            name: :name,
-            required: true,
-            label: false,
-            wrapper_html: { class: 'margin-bottom-0' },
-            input_html: {
-              aria: { label: t('forms.totp_setup.totp_step_1') },
-              maxlength: 20,
-            },
-          ) %>
-    <% end %>
-    <%= c.with_item(heading: t('forms.totp_setup.totp_step_2')) %>
-    <%= c.with_item(heading: t('forms.totp_setup.totp_step_3')) do %>
-      <div class="text-center">
-        <%= image_tag @qrcode, size: 240, skip_pipeline: true, alt: t('image_description.totp_qrcode') %>
-      </div>
-      <p><%= t('instructions.mfa.authenticator.manual_entry') %></p>
-      <code class="display-block margin-y-2 font-family-mono padding-y-2 padding-x-1 border-base-lighter border-1px text-bold text-wrap-anywhere" id="qr-code">
-        <%= @code %>
-      </code>
-      <%= render ClipboardButtonComponent.new(clipboard_text: @code.upcase, outline: true) %>
-    <% end %>
-    <%= c.with_item(heading: t('forms.totp_setup.totp_step_4')) do %>
-      <%= render OneTimeCodeInputComponent.new(
-            form: f,
-            transport: nil,
-            code_length: TwoFactorAuthenticatable::OTP_LENGTH,
-            field_options: {
+  <fieldset aria-labelledby="totp-intro" class="padding-0 border-0 margin-y-4 margin-x-0">
+    <%= render ProcessListComponent.new(connected: true) do |c| %>
+      <%= c.with_item(heading: t('forms.totp_setup.totp_step_1'), heading_id: 'totp-step-1-label') do %>
+        <p><%= t('forms.totp_setup.totp_step_1a') %></p>
+        <%= render ValidatedFieldComponent.new(
+              form: f,
+              name: :name,
+              required: true,
               label: false,
+              wrapper_html: { class: 'margin-bottom-0' },
               input_html: {
-                aria: { label: t('forms.totp_setup.totp_step_4') },
+                aria: { labelledby: 'totp-step-1-label' },
+                maxlength: 20,
               },
-            },
-          ) %>
+            ) %>
+      <% end %>
+      <%= c.with_item(heading: t('forms.totp_setup.totp_step_2')) %>
+      <%= c.with_item(heading: t('forms.totp_setup.totp_step_3')) do %>
+        <div class="text-center">
+          <%= image_tag @qrcode, size: 240, skip_pipeline: true, alt: t('image_description.totp_qrcode') %>
+        </div>
+        <p><%= t('instructions.mfa.authenticator.manual_entry') %></p>
+        <code class="display-block margin-y-2 font-family-mono padding-y-2 padding-x-1 border-base-lighter border-1px text-bold text-wrap-anywhere" id="qr-code">
+          <%= @code %>
+        </code>
+        <%= render ClipboardButtonComponent.new(clipboard_text: @code.upcase, outline: true) %>
+      <% end %>
+      <%= c.with_item(heading: t('forms.totp_setup.totp_step_4'), heading_id: 'totp-step-4-label') do %>
+        <%= render OneTimeCodeInputComponent.new(
+              form: f,
+              transport: nil,
+              code_length: TwoFactorAuthenticatable::OTP_LENGTH,
+              field_options: {
+                label: false,
+                wrapper_html: {
+                  class: 'margin-bottom-0',
+                },
+                input_html: {
+                  aria: { labelledby: 'totp-step-4-label' },
+                },
+              },
+            ) %>
+      <% end %>
     <% end %>
-  <% end %>
+  </fieldset>
   <%= f.input(
         :remember_device,
         as: :boolean,

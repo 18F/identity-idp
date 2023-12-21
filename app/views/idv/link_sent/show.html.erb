@@ -7,7 +7,7 @@
       ) %>
 <% end %>
 
-<% title t('titles.doc_auth.link_sent') %>
+<% self.title = t('titles.doc_auth.link_sent') %>
 
 <%= render AlertComponent.new(type: :warning, class: 'margin-bottom-4') do %>
   <strong class="display-block"><%= t('doc_auth.info.keep_window_open') %></strong>
@@ -41,7 +41,9 @@
 </div>
 
 <% if FeatureManagement.doc_capture_polling_enabled? %>
-  <%= content_tag 'script', '', data: { status_endpoint: idv_capture_doc_status_url } %>
+  <%= content_tag 'script', '', data: {
+        status_endpoint: idv_capture_doc_status_url,
+      } %>
   <%= javascript_packs_tag_once 'doc-capture-polling' %>
 <% end %>
 

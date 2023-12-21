@@ -6,11 +6,12 @@ RSpec.describe ServiceProviderSession do
     ServiceProviderSession.new(
       sp: sp,
       view_context: view_context,
-      sp_session: {},
+      sp_session: sp_session,
       service_provider_request: service_provider_request,
     )
   end
   let(:sp) { build_stubbed(:service_provider) }
+  let(:sp_session) { {} }
   let(:service_provider_request) { ServiceProviderRequest.new }
   let(:sp_name) { subject.sp_name }
   let(:sp_create_link) { '/sign_up/enter_email' }
@@ -46,7 +47,7 @@ RSpec.describe ServiceProviderSession do
     context 'sp has custom alert' do
       it 'uses the custom template' do
         expect(subject.sp_alert('sign_in')).
-          to eq "<b>custom sign in help text for #{sp.friendly_name}</b>"
+          to eq "<strong>custom sign in help text for #{sp.friendly_name}</strong>"
       end
     end
 
@@ -178,6 +179,46 @@ RSpec.describe ServiceProviderSession do
     end
   end
 
+  describe '#selfie_required' do
+    before do
+      allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).
+        and_return(selfie_capture_enabled)
+    end
+
+    context 'doc_auth_selfie_capture_enabled is true' do
+      let(:selfie_capture_enabled) { true }
+
+      it 'returns true when sp biometric_comparison_required is true' do
+        sp_session[:biometric_comparison_required] = true
+        expect(subject.selfie_required?).to eq(true)
+      end
+
+      it 'returns true when sp biometric_comparison_required is truthy' do
+        sp_session[:biometric_comparison_required] = 1
+        expect(subject.selfie_required?).to eq(true)
+      end
+
+      it 'returns false when sp biometric_comparison_required is false' do
+        sp_session[:biometric_comparison_required] = false
+        expect(subject.selfie_required?).to eq(false)
+      end
+
+      it 'returns false when sp biometric_comparison_required is nil' do
+        sp_session[:biometric_comparison_required] = nil
+        expect(subject.selfie_required?).to eq(false)
+      end
+    end
+
+    context 'doc_auth_selfie_capture_enabled is false' do
+      let(:selfie_capture_enabled) { false }
+
+      it 'returns false' do
+        sp_session[:biometric_comparison_required] = true
+        expect(subject.selfie_required?).to eq(false)
+      end
+    end
+  end
+
   describe '#cancel_link_url' do
     subject(:decorator) do
       ServiceProviderSession.new(
@@ -224,45 +265,77 @@ RSpec.describe ServiceProviderSession do
   describe '#requested_more_recent_verification?' do
     let(:verified_within) { nil }
     let(:user) { create(:user) }
+    let(:client_id) { sp.issuer }
 
     before do
       allow(view_context).to receive(:current_user).and_return(user)
+      allow(IdentityConfig.store).to receive(
+        :allowed_verified_within_providers,
+      ) { [client_id] }
       allow(session_decorator).to receive(:authorize_form).
-        and_return(OpenidConnectAuthorizeForm.new(verified_within: verified_within))
+        and_return(OpenidConnectAuthorizeForm.new(verified_within:, client_id:))
     end
 
     subject(:requested_more_recent_verification?) do
       session_decorator.requested_more_recent_verification?
     end
 
-    it 'is false with no verified_within param' do
-      expect(requested_more_recent_verification?).to eq(false)
-    end
-
-    context 'with a valid verified_within' do
-      let(:verified_within) { '45d' }
-
-      it 'is true if the user does not have an activated profile' do
-        expect(requested_more_recent_verification?).to eq(true)
+    context 'issuer is allowed to use verified_within' do
+      it 'is false with no verified_within param' do
+        expect(requested_more_recent_verification?).to eq(false)
       end
 
-      context 'the verified_at is newer than the verified_within ' do
-        before do
-          create(:profile, :active, user: user, verified_at: 15.days.ago)
+      context 'with a valid verified_within' do
+        let(:verified_within) { '45d' }
+
+        it 'is true if the user does not have an activated profile' do
+          expect(requested_more_recent_verification?).to eq(true)
         end
+
+        context 'the verified_at is newer than the verified_within ' do
+          before do
+            create(:profile, :active, user: user, verified_at: 15.days.ago)
+          end
+
+          it 'is false' do
+            expect(requested_more_recent_verification?).to eq(false)
+          end
+        end
+
+        context 'the verified_at is older than the verified_at' do
+          before do
+            create(:profile, :active, user: user, verified_at: 60.days.ago)
+          end
+
+          it 'is true' do
+            expect(requested_more_recent_verification?).to eq(true)
+          end
+        end
+      end
+    end
+
+    context 'issuer is not allowed to use verified_within' do
+      let(:client_id) { 'different id' }
+
+      it 'is false with no verified_within param' do
+        expect(requested_more_recent_verification?).to eq(false)
+      end
+
+      context 'with a valid verified_within' do
+        let(:verified_within) { '45d' }
 
         it 'is false' do
           expect(requested_more_recent_verification?).to eq(false)
         end
-      end
 
-      context 'the verified_at is older than the verified_at' do
-        before do
-          create(:profile, :active, user: user, verified_at: 60.days.ago)
-        end
+        context 'the verified_at is older than the verified_at' do
+          before do
+            create(:profile, :active, user: user, verified_at: 60.days.ago)
+          end
 
-        it 'is true' do
-          expect(requested_more_recent_verification?).to eq(true)
+          it 'is false' do
+            expect(requested_more_recent_verification?).to eq(false)
+          end
         end
       end
     end

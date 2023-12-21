@@ -24,6 +24,14 @@ RSpec.feature 'hybrid_handoff step send link and errors' do
       complete_doc_auth_steps_before_hybrid_handoff_step
     end
 
+    it 'has the forms with the expected aria attributes' do
+      mobile_form = find('#form-to-submit-photos-through-mobile')
+      desktop_form = find('#form-to-submit-photos-through-desktop')
+
+      expect(mobile_form).to have_name(t('forms.buttons.send_link'))
+      expect(desktop_form).to have_name(t('forms.buttons.upload_photos'))
+    end
+
     it 'proceeds to link sent page when user chooses to use phone' do
       expect(fake_attempts_tracker).to receive(
         :idv_document_upload_method_selected,
@@ -36,9 +44,6 @@ RSpec.feature 'hybrid_handoff step send link and errors' do
         'IdV: doc auth hybrid handoff submitted',
         hash_including(step: 'hybrid_handoff', destination: :link_sent),
       )
-
-      visit(idv_hybrid_handoff_url)
-      expect(page).to have_current_path(idv_link_sent_path)
     end
 
     it 'proceeds to the next page with valid info', :js do
@@ -47,7 +52,6 @@ RSpec.feature 'hybrid_handoff step send link and errors' do
       ).with(
         success: true,
         phone_number: '+1 415-555-0199',
-        failure_reason: nil,
       )
 
       expect(Telephony).to receive(:send_doc_auth_link).
@@ -87,7 +91,6 @@ RSpec.feature 'hybrid_handoff step send link and errors' do
       expect(fake_attempts_tracker).to receive(:idv_phone_upload_link_sent).with(
         success: false,
         phone_number: '+1 225-555-1000',
-        failure_reason: { telephony: ['TelephonyError'] },
       )
       fill_in :doc_auth_phone, with: '225-555-1000'
 
@@ -158,6 +161,8 @@ RSpec.feature 'hybrid_handoff step send link and errors' do
             timeout: timeout,
           ),
         )
+        expect(page).to have_selector('h1', text: t('doc_auth.headings.hybrid_handoff'))
+        expect(page).to have_selector('h2', text: t('doc_auth.headings.upload_from_phone'))
       end
       expect(fake_analytics).to have_logged_event(
         'Rate Limit Reached',

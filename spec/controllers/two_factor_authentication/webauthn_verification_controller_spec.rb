@@ -158,12 +158,17 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
             success: true,
           )
 
-          patch :confirm, params: params
+          freeze_time do
+            patch :confirm, params: params
 
-          expect(subject.user_session[:auth_method]).to eq(
-            TwoFactorAuthenticatable::AuthMethod::WEBAUTHN,
-          )
-          expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq false
+            expect(subject.user_session[:auth_events]).to eq(
+              [
+                auth_method: TwoFactorAuthenticatable::AuthMethod::WEBAUTHN,
+                at: Time.zone.now,
+              ],
+            )
+            expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq false
+          end
         end
 
         context 'with platform authenticator' do
@@ -190,11 +195,18 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
               success: true,
             )
 
-            patch :confirm, params: params
-            expect(subject.user_session[:auth_method]).to eq(
-              TwoFactorAuthenticatable::AuthMethod::WEBAUTHN_PLATFORM,
-            )
-            expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq false
+            freeze_time do
+              patch :confirm, params: params
+              expect(subject.user_session[:auth_events]).to eq(
+                [
+                  auth_method: TwoFactorAuthenticatable::AuthMethod::WEBAUTHN_PLATFORM,
+                  at: Time.zone.now,
+                ],
+              )
+              expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq(
+                false,
+              )
+            end
           end
         end
       end
@@ -211,7 +223,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
         result = { context: 'authentication',
                    multi_factor_auth_method: 'webauthn',
                    success: false,
-                   error_details: { authenticator_data: [:invalid_authenticator_data] },
+                   error_details: { authenticator_data: { invalid_authenticator_data: true } },
                    webauthn_configuration_id: webauthn_configuration.id,
                    multi_factor_auth_method_created_at: webauthn_configuration.created_at.
                      strftime('%s%L') }
@@ -246,16 +258,10 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
           create(:webauthn_configuration, :platform_authenticator, user:, created_at: 1.day.ago)
         end
 
-        before do
-          allow_any_instance_of(TwoFactorAuthCode::WebauthnAuthenticationPresenter).
-            to receive(:multiple_factors_enabled?).
-            and_return(true)
-        end
-
         it 'redirects to webauthn show page' do
           patch :confirm, params: params
           expect(response).to redirect_to login_two_factor_webauthn_url(platform: true)
-          expect(subject.user_session[:auth_method]).to eq nil
+          expect(subject.user_session[:auth_events]).to eq nil
           expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq true
         end
 
@@ -274,17 +280,18 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
           expect(@analytics).to receive(:track_mfa_submit_event).with(
             success: false,
             error_details: {
-              authenticator_data: [:blank],
-              client_data_json: [:blank],
-              signature: [:blank],
-              webauthn_configuration: [:blank],
-              webauthn_error: [webauthn_error],
+              authenticator_data: { blank: true },
+              client_data_json: { blank: true },
+              signature: { blank: true },
+              webauthn_configuration: { blank: true },
+              webauthn_error: { present: true },
             },
             context: UserSessionContext::AUTHENTICATION_CONTEXT,
             multi_factor_auth_method: 'webauthn_platform',
             multi_factor_auth_method_created_at:
               second_webauthn_platform_configuration.created_at.strftime('%s%L'),
             webauthn_configuration_id: nil,
+            frontend_error: webauthn_error,
           )
 
           patch :confirm, params: params

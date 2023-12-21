@@ -13,9 +13,6 @@ es:
       first_paragraph_start: Enviamos un email a
       no_email_sent_explanation_start: '¿No recibió un email?'
       resend_email_success: Enviamos otro email para restablecer la contraseña.
-      use_diff_email:
-        link: crear una cuenta nueva
-        text_html: O, %{link_html} utilizando un email diferente.
     password_changed: Ha cambiado su contraseña.
     phone_confirmed: Un teléfono fue agregado a tu cuenta.
     piv_cac_configured: Una tarjeta PIV/CAC fue agregada a tu cuenta.
@@ -65,5 +62,6 @@ es:
       text_html: O %{link_html}
     webauthn_configured: Una llave de seguridad fue agregada a tu cuenta.
     webauthn_deleted: Tu llave de seguridad fue eliminada de tu cuenta.
-    webauthn_platform_configured: Desbloqueo facial o táctil fue agregada a tu cuenta.
+    webauthn_platform_configured: Usó el bloqueo de pantalla de su dispositivo para
+      agregar el desbloqueo facial o táctil a su cuenta.
     webauthn_platform_deleted: Desbloqueo facial o táctil fue eliminada de tu cuenta.

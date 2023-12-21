@@ -1,5 +1,7 @@
 require 'rubocop'
-require 'rubocop/rspec/support'
+require 'rubocop/rspec/cop_helper'
+require 'rubocop/rspec/expect_offense'
+
 require_relative '../../../lib/linters/errors_add_linter'
 
 RSpec.describe RuboCop::Cop::IdentityIdp::ErrorsAddLinter do
@@ -9,11 +11,22 @@ RSpec.describe RuboCop::Cop::IdentityIdp::ErrorsAddLinter do
   let(:config) { RuboCop::Config.new }
   let(:cop) { RuboCop::Cop::IdentityIdp::ErrorsAddLinter.new(config) }
 
+  it 'registers an offense when neither type nor options are specified' do
+    expect_offense(<<~RUBY)
+      class MyModel
+        def my_method
+          errors.add(:number)
+          ^^^^^^^^^^^^^^^^^^^ IdentityIdp/ErrorsAddLinter: Please set a unique key for this error
+        end
+      end
+    RUBY
+  end
+
   it 'registers an offense when no options are passed' do
     expect_offense(<<~RUBY)
       class MyModel
         def my_method
-          errors.add(:number, "is negative")
+          errors.add(:number, 'is negative')
           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ IdentityIdp/ErrorsAddLinter: Please set a unique key for this error
         end
       end
@@ -24,7 +37,7 @@ RSpec.describe RuboCop::Cop::IdentityIdp::ErrorsAddLinter do
     expect_offense(<<~RUBY)
       class MyModel
         def my_method
-          errors.add(:number, "is negative", foo: :bar)
+          errors.add(:number, 'is negative', foo: :bar)
           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ IdentityIdp/ErrorsAddLinter: Please set a unique key for this error
         end
       end
@@ -48,7 +61,31 @@ RSpec.describe RuboCop::Cop::IdentityIdp::ErrorsAddLinter do
       class MyModel
         def validate
           if number.negative?
-            errors.add(:number, "is negative", type: :is_negative)
+            errors.add(:number, 'is negative', type: :is_negative)
+          end
+        end
+      end
+    RUBY
+  end
+
+  it 'registers no offense when defining hash as second argument including "type"' do
+    expect_no_offenses(<<~RUBY)
+      class MyModel
+        def validate
+          if number.negative?
+            errors.add(:number, message: 'is negative', type: :is_negative)
+          end
+        end
+      end
+    RUBY
+  end
+
+  it 'registers no offense when type symbool is defined as second argument' do
+    expect_no_offenses(<<~RUBY)
+      class MyModel
+        def validate
+          if number.negative?
+            errors.add(:number, :is_negative, message: 'is negative')
           end
         end
       end

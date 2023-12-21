@@ -6,6 +6,8 @@ FactoryBot.define do
       pii { false }
     end
 
+    idv_level { :legacy_unsupervised }
+
     trait :active do
       active { true }
       activated_at { Time.zone.now }
@@ -35,6 +37,7 @@ FactoryBot.define do
 
     trait :in_person_verification_pending do
       in_person_verification_pending_at { 15.days.ago }
+      idv_level { :legacy_in_person }
     end
 
     trait :fraud_pending_reason do
@@ -68,6 +71,12 @@ FactoryBot.define do
 
     trait :with_pii do
       pii { Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE }
+    end
+
+    trait :letter_sends_rate_limited do
+      gpo_confirmation_codes do
+        build_list(:gpo_confirmation_code, IdentityConfig.store.max_mail_events)
+      end
     end
 
     after(:build) do |profile, evaluator|

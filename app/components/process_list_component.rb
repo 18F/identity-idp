@@ -1,7 +1,7 @@
 class ProcessListComponent < BaseComponent
-  renders_many :items, ->(**kwargs, &block) {
+  renders_many :items, ->(**kwargs, &block) do
     ProcessListItemComponent.new(heading_level:, **kwargs, &block)
-  }
+  end
 
   attr_reader :heading_level, :big, :connected, :tag_options
 
@@ -20,11 +20,19 @@ class ProcessListComponent < BaseComponent
   end
 
   class ProcessListItemComponent < BaseComponent
-    attr_reader :heading_level, :heading
+    attr_reader :heading_level, :heading, :heading_id
 
-    def initialize(heading_level:, heading:)
+    def initialize(heading_level:, heading:, heading_id: nil)
       @heading_level = heading_level
       @heading = heading
+      @heading_id = heading_id
+    end
+
+    def heading_options
+      options = { class: 'usa-process-list__heading' }
+
+      options[:id] = heading_id if heading_id.present?
+      options
     end
   end
 end

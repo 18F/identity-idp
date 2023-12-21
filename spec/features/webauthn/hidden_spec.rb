@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe 'webauthn hide' do
   include JavascriptDriverHelper
+  include WebAuthnHelper
 
   describe 'security key' do
     let(:option_id) { 'two_factor_options_form_selection_webauthn' }
@@ -50,10 +51,6 @@ RSpec.describe 'webauthn hide' do
   describe 'platform authenticator' do
     let(:option_id) { 'two_factor_options_form_selection_webauthn_platform' }
 
-    before do
-      allow(IdentityConfig.store).to receive(:platform_auth_set_up_enabled).and_return(true)
-    end
-
     context 'on sign up' do
       context 'with javascript enabled', :js do
         it 'does not display the authenticator option' do
@@ -62,9 +59,11 @@ RSpec.describe 'webauthn hide' do
           expect(webauthn_option_hidden?).to eq(true)
         end
 
-        context 'with supported browser', driver: :headless_chrome_mobile do
+        context 'with supported browser and platform authenticator available',
+                driver: :headless_chrome_mobile do
           it 'displays the authenticator option' do
             sign_up_and_set_password
+            simulate_platform_authenticator_available
 
             expect(webauthn_option_hidden?).to eq(false)
           end

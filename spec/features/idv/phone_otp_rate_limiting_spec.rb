@@ -77,8 +77,8 @@ RSpec.feature 'phone otp rate limiting', :js do
       fill_in_code_with_last_phone_otp
       click_submit_default
 
-      expect(page).to have_content(t('idv.titles.session.review', app_name: APP_NAME))
-      expect(current_path).to eq(idv_review_path)
+      expect(page).to have_content(t('idv.titles.session.enter_password', app_name: APP_NAME))
+      expect(current_path).to eq(idv_enter_password_path)
     end
   end
 end

@@ -43,6 +43,13 @@ RSpec.describe 'totp management' do
 
       click_link t('account.index.auth_app_add'), href: authenticator_setup_url
 
+      expect(
+        [
+          page.find('[aria-labelledby="totp-step-1-label"]'),
+          page.find('[aria-labelledby="totp-step-4-label"]'),
+        ],
+      ).to be_logically_grouped(t('forms.totp_setup.totp_intro'))
+
       secret = find('#qr-code').text
       fill_in 'name', with: 'foo'
       fill_in 'code', with: generate_totp_code(secret)

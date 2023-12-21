@@ -5,6 +5,7 @@ RSpec.describe WebauthnSetupForm do
 
   let(:user) { create(:user) }
   let(:user_session) { { webauthn_challenge: webauthn_challenge } }
+  let(:device_name) { 'Chrome 119 on macOS 10' }
   let(:domain_name) { 'localhost:3000' }
   let(:params) do
     {
@@ -16,7 +17,7 @@ RSpec.describe WebauthnSetupForm do
       authenticator_data_value: '153',
     }
   end
-  let(:subject) { WebauthnSetupForm.new(user, user_session) }
+  let(:subject) { WebauthnSetupForm.new(user:, user_session:, device_name:) }
 
   before do
     allow(IdentityConfig.store).to receive(:domain_name).and_return(domain_name)
@@ -215,12 +216,94 @@ RSpec.describe WebauthnSetupForm do
             'errors.webauthn_setup.attestation_error',
             link: MarketingSite.contact_url,
           )] },
-          error_details: { name: [I18n.t(
-            'errors.webauthn_setup.attestation_error',
-            link: MarketingSite.contact_url,
-          )] },
+          error_details: { name: { attestation_error: true } },
           **extra_attributes,
         )
+      end
+    end
+  end
+  describe '.name_is_unique' do
+    context 'webauthn' do
+      let(:user) do
+        user = create(:user)
+        user.webauthn_configurations << create(:webauthn_configuration, name: params[:name])
+        user
+      end
+      it 'checks for unique device on a webauthn device' do
+        result = subject.submit(protocol, params)
+        expect(result.extra[:multi_factor_auth_method]).to eq 'webauthn'
+        expect(result.errors[:name]).to eq(
+          [I18n.t(
+            'errors.webauthn_setup.unique_name',
+            type: :unique_name,
+          )],
+        )
+        expect(result.to_h[:success]).to eq(false)
+      end
+    end
+    context 'webauthn_platform' do
+      context 'with one platform authenticator with the same name' do
+        let(:user) do
+          user = create(:user)
+          user.webauthn_configurations << create(
+            :webauthn_configuration,
+            name: device_name,
+            platform_authenticator: true,
+            transports: ['internal', 'hybrid'],
+          )
+          user
+        end
+        let(:params) do
+          super().merge(
+            platform_authenticator: true,
+            transports: 'internal,hybrid',
+          )
+        end
+        it 'adds a new platform device with the same existing name and appends a (1)' do
+          result = subject.submit(protocol, params)
+          expect(result.extra[:multi_factor_auth_method]).to eq 'webauthn_platform'
+          expect(user.webauthn_configurations.platform_authenticators.count).to eq(2)
+          expect(
+            user.webauthn_configurations.platform_authenticators[1].name,
+          ).
+            to eq("#{device_name} (1)")
+          expect(result.to_h[:success]).to eq(true)
+        end
+      end
+
+      context 'with two existing platform authenticators one with the same name' do
+        let(:user) do
+          user = create(:user)
+          user.webauthn_configurations << create(
+            :webauthn_configuration,
+            name: device_name,
+            platform_authenticator: true,
+            transports: ['internal', 'hybrid'],
+          )
+          user.webauthn_configurations << create(
+            :webauthn_configuration,
+            name: device_name,
+            platform_authenticator: true,
+            transports: ['internal', 'hybrid'],
+          )
+          user
+        end
+        let(:params) do
+          super().merge(
+            platform_authenticator: true,
+            transports: 'internal,hybrid',
+          )
+        end
+        it 'adds a second new platform device with the same existing name and appends a (2)' do
+          result = subject.submit(protocol, params)
+          expect(result.extra[:multi_factor_auth_method]).to eq 'webauthn_platform'
+          expect(user.webauthn_configurations.platform_authenticators.count).to eq(3)
+          expect(
+            user.webauthn_configurations.platform_authenticators[2].name,
+          ).
+            to eq("#{device_name} (2)")
+          expect(result.to_h[:success]).to eq(true)
+        end
       end
     end
   end

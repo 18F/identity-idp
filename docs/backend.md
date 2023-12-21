@@ -77,13 +77,32 @@ properties to the Form object that get written during `#submit`
 
 ### Analytics
 
-At the end of the day, analytics events get dumped into `events.log` and contain
-information like user ID, service provider, user agent, etc.
+Analytics events are appended to `log/events.log` and contain information both common information as
+well as custom event properties. Common information includes service provider, user ID, browser
+details, and other information.
 
-Event names are strings. Events correspond to methods in the
-[AnalyticsEvents](../app/services/analytics_events.rb) mixin. We document these
-with YARD so that we can auto-generate
-[documentation on them in our handbook][analytics-handbook]
+Event names correspond to methods in the [AnalyticsEvents](../app/services/analytics_events.rb)
+mixin. We document these with YARD so that we can auto-generate
+[documentation on them in our handbook][analytics-handbook].
+
+> [!NOTE]
+> The convention to name events to match the method name is expected for all new analytics events,
+> but you will find a number of exceptions for analytics which had existed prior to this convention
+> being established.
+
+If you are adding or troubleshooting events, consider running the `watch_events` Makefile target in
+a separate terminal. This command will print formatted event data as it happens, so you can see what
+events are logged as you navigate the application in your local development environment.
+
+```
+make watch_events
+```
+
+You can also watch for specific events by assigning the `EVENT_NAME` environment variable:
+
+```
+EVENT_NAME="piv_cac_disabled" make watch_events
+```
 
 [analytics-handbook]: https://handbook.login.gov/articles/analytics-events.html
 

@@ -28,6 +28,7 @@ es:
       doc_type_not_supported_heading: Solo aceptamos una licencia de conducir o un
         documento de identidad estatal
       document_capture_cancelled: Ha cancelado la carga de fotos de su identificación en este teléfono.
+      how_to_verify_form: Seleccione una forma de verificar su identidad.
       phone_step_incomplete: Debe ir a su teléfono y cargar fotos de su identificación
         antes de continuar. Te enviamos un enlace con instrucciones.
       rate_limited_heading: No pudimos verificar la identificación
@@ -38,22 +39,30 @@ es:
       send_link_limited: Ha intentado demasiadas veces, por favor, inténtelo de nuevo
         en %{timeout}. También puede retroceder y elegir utilizar su computadora
         como alternativa.
+    enter_code:
+      rate_limited_html: Ingresó un código de verificación incorrecto demasiadas
+        veces. <strong>Inténtelo de nuevo en %{timeout}.</strong>
     general: '¡Oops! Algo salió mal. Inténtelo de nuevo.'
     invalid_totp: El código es inválido. Vuelva a intentarlo.
+    manage_authenticator:
+      internal_error: Se produjo un error interno al procesar tu solicitud. Por favor,
+        inténtalo de nuevo.
+      remove_only_method_error: No puede eliminar su único método de autenticación.
+      unique_name_error: Nombre ya en uso. Utilice un nombre diferente.
     max_password_attempts_reached: Ha ingresado demasiadas contraseñas incorrectas.
       Puede restablecer su contraseña usando el enlace “¿Olvidó su contraseña?”.
     messages:
       already_confirmed: ya estaba confirmado, por favor intente iniciar una sesión
       blank: Por favor, rellenar este campo.
-      confirmation_code_incorrect: El código es incorrecto. ¿Lo escribió correctamente?
+      confirmation_code_incorrect: Código de verificación incorrecto. ¿Lo escribió correctamente?
       confirmation_invalid_token: El enlace de confirmación no es válido. El enlace
         expiró o usted ya ha confirmado su cuenta.
       confirmation_period_expired: El enlace de confirmación expiró. Puede hacer clic
         en “Reenviar instrucciones de confirmación” para obtener otro.
       expired: ha caducado, por favor solicite uno nuevo
       format_mismatch: Por favor, use el formato solicitado.
-      gpo_otp_expired: Tu código único ha caducado. Vuelve a solicitar otra carta para
-        recibir un nuevo código.
+      gpo_otp_expired: Tu código de verificación ha caducado. Vuelve a solicitar otra
+        carta para recibir un nuevo código.
       improbable_phone: Número de teléfono no válido. Asegúrate de introducir un
         número de teléfono válido.
       inclusion: No se incluye en la lista.
@@ -119,8 +128,6 @@ es:
       must_select_option: Seleccione un método de autenticación.
     verify_personal_key:
       rate_limited: Lo intentaste muchas veces, vuelve a intentarlo en %{timeout}.
-    verify_profile:
-      rate_limited: Lo intentaste muchas veces, vuelve a intentarlo en %{timeout}.
     webauthn_platform_setup:
       account_setup_error: No pudimos agregar el desbloqueo con la cara o con la
         huella digital. Inténtelo de nuevo o %{link}.
@@ -135,8 +142,9 @@ es:
       choose_another_method: elija otro método de autenticación
       general_error: No pudimos agregar el desbloqueo con la cara o con la huella
         digital. Inténtelo de nuevo o elija otro método de autenticación.
-      not_supported: Lo sentimos, pero su navegador no es compatible con el desbloqueo
-        facial o táctil.
+      not_supported: Su navegador no permite el desbloqueo facial o con la huella
+        digital. Use la última versión de Google Chrome, Microsoft Edge o Safari
+        para usar el desbloqueo facial o con la huella digital.
       unique_name: Ese nombre de dispositivo ha sido utilizado. Por favor, seleccione
         un nombre de dispositivo diferente.
     webauthn_setup:
@@ -151,7 +159,7 @@ es:
         %{link}.
       general_error_html: No hemos podido añadir la clave de seguridad. Inténtelo de
         nuevo o %{link_html}.
-      not_supported: Lo sentimos, su navegador no admite las claves de seguridad FIDO.
-        Las últimas versiones de Chrome, Firefox, Edge y Safari son compatibles
-        con las claves de seguridad FIDO.
+      not_supported: Tu navegador no es compatible con llaves de seguridad. Utiliza la
+        última versión de Google Chrome, Microsoft Edge, Mozilla Firefox o
+        Safari para utilizar llaves de seguridad.
       unique_name: El nombre ya fue escogido. Por favor, elija un nombre diferente.

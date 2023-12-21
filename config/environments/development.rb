@@ -30,7 +30,7 @@ Rails.application.configure do
 
   routes.default_url_options[:protocol] = 'https' if ENV['HTTPS'] == 'on'
 
-  config.lograge.ignore_actions = ['Users::SessionsController#active']
+  config.lograge.ignore_actions = ['Api::Internal::SessionsController#show']
 
   if Rails.root.join('tmp', 'caching-dev.txt').exist?
     config.action_controller.perform_caching = true
@@ -38,15 +38,15 @@ Rails.application.configure do
 
     config.cache_store = :memory_store
     config.public_file_server.headers = {
-      'Cache-Control' => "public, max-age=#{2.days.to_i}",
+      Rack::CACHE_CONTROL => "public, max-age=#{2.days.to_i}",
     }
   else
     config.action_controller.perform_caching = false
 
     config.cache_store = :null_store
     config.public_file_server.headers = {
-      'Cache-Control' => 'public, no-cache, must-revalidate',
-      'Vary' => '*',
+      Rack::CACHE_CONTROL => 'public, no-cache, must-revalidate',
+      'vary' => '*',
     }
   end
 

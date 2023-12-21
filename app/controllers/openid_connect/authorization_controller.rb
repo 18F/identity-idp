@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module OpenidConnect
   class AuthorizationController < ApplicationController
     include FullyAuthenticatable
@@ -73,7 +75,12 @@ module OpenidConnect
     def handle_successful_handoff
       track_events
       SpHandoffBounce::AddHandoffTimeToSession.call(sp_session)
-      redirect_to @authorize_form.success_redirect_uri, allow_other_host: true
+
+      redirect_user(
+        @authorize_form.success_redirect_uri,
+        current_user.uuid,
+      )
+
       delete_branded_experience
     end
 
@@ -97,6 +104,7 @@ module OpenidConnect
     end
 
     def secure_headers_override
+      return unless IdentityConfig.store.openid_connect_content_security_form_action_enabled
       csp_uris = SecureHeadersAllowList.csp_with_sp_redirect_uris(
         @authorize_form.redirect_uri,
         @authorize_form.service_provider.redirect_uris,
@@ -117,11 +125,12 @@ module OpenidConnect
         ),
       )
       return if result.success?
+      redirect_uri = result.extra[:redirect_uri]
 
-      if (redirect_uri = result.extra[:redirect_uri])
-        redirect_to redirect_uri, allow_other_host: true
-      else
+      if redirect_uri.nil?
         render :error
+      else
+        redirect_user(redirect_uri, current_user&.uuid)
       end
     end
 
@@ -178,6 +187,33 @@ module OpenidConnect
         billed_ial: event_ial_context.bill_for_ial_1_or_2,
       )
       track_billing_events
+    end
+
+    def redirect_user(redirect_uri, user_uuid)
+      redirect_method = IdentityConfig.store.openid_connect_redirect_uuid_override_map.fetch(
+        user_uuid,
+        IdentityConfig.store.openid_connect_redirect,
+      )
+
+      case redirect_method
+      when 'client_side'
+        @oidc_redirect_uri = redirect_uri
+        render(
+          'openid_connect/shared/redirect',
+          layout: false,
+        )
+      when 'client_side_js'
+        @oidc_redirect_uri = redirect_uri
+        render(
+          'openid_connect/shared/redirect_js',
+          layout: false,
+        )
+      else # should only be :server_side
+        redirect_to(
+          redirect_uri,
+          allow_other_host: true,
+        )
+      end
     end
   end
 end

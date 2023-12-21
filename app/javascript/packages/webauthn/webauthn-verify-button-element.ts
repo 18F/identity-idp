@@ -1,7 +1,9 @@
 import { trackError } from '@18f/identity-analytics';
+import type SubmitButtonElement from '@18f/identity-submit-button/submit-button-element';
 import verifyWebauthnDevice from './verify-webauthn-device';
-import type { VerifyCredentialDescriptor } from './verify-webauthn-device';
 import isExpectedWebauthnError from './is-expected-error';
+import isUserVerificationScreenLockError from './is-user-verification-screen-lock-error';
+import type { VerifyCredentialDescriptor } from './verify-webauthn-device';
 
 export interface WebauthnVerifyButtonDataset extends DOMStringMap {
   credentials: string;
@@ -18,6 +20,10 @@ class WebauthnVerifyButtonElement extends HTMLElement {
 
   get button(): HTMLButtonElement {
     return this.querySelector('.webauthn-verify-button__button')!;
+  }
+
+  get submitButton(): SubmitButtonElement {
+    return this.querySelector('lg-submit-button')!;
   }
 
   get spinner(): HTMLElement {
@@ -42,6 +48,7 @@ class WebauthnVerifyButtonElement extends HTMLElement {
 
   async verify() {
     this.spinner.hidden = false;
+    this.submitButton.activate();
 
     const { userChallenge, credentials } = this;
 
@@ -52,8 +59,12 @@ class WebauthnVerifyButtonElement extends HTMLElement {
       this.setInputValue('client_data_json', result.clientDataJSON);
       this.setInputValue('signature', result.signature);
     } catch (error) {
-      if (!isExpectedWebauthnError(error)) {
+      if (!isExpectedWebauthnError(error, { isVerifying: true })) {
         trackError(error);
+      }
+
+      if (isUserVerificationScreenLockError(error)) {
+        this.setInputValue('screen_lock_error', 'true');
       }
 
       this.setInputValue('webauthn_error', error.name);

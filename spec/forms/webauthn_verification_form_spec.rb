@@ -1,11 +1,13 @@
 require 'rails_helper'
 
 RSpec.describe WebauthnVerificationForm do
+  include Rails.application.routes.url_helpers
   include WebAuthnHelper
 
   let(:user) { create(:user) }
   let(:challenge) { webauthn_challenge }
   let(:webauthn_error) { nil }
+  let(:screen_lock_error) { nil }
   let(:platform_authenticator) { false }
   let(:client_data_json) { verification_client_data_json }
   let!(:webauthn_configuration) do
@@ -22,6 +24,8 @@ RSpec.describe WebauthnVerificationForm do
   subject(:form) do
     WebauthnVerificationForm.new(
       user: user,
+      platform_authenticator:,
+      url_options: {},
       challenge: challenge,
       protocol: protocol,
       authenticator_data: authenticator_data,
@@ -29,6 +33,7 @@ RSpec.describe WebauthnVerificationForm do
       signature: signature,
       credential_id: credential_id,
       webauthn_error: webauthn_error,
+      screen_lock_error:,
     )
   end
 
@@ -59,22 +64,21 @@ RSpec.describe WebauthnVerificationForm do
           )
         end
       end
-    end
 
-    context 'when the input is invalid' do
-      context 'when user is missing' do
-        let(:user) { nil }
+      context 'with client-side webauthn error as blank string' do
+        let(:webauthn_error) { '' }
 
-        it 'returns unsuccessful result' do
+        it 'returns successful result excluding frontend_error' do
           expect(result.to_h).to eq(
-            success: false,
-            error_details: { user: [:blank], webauthn_configuration: [:blank] },
+            success: true,
             multi_factor_auth_method: 'webauthn',
-            webauthn_configuration_id: nil,
+            webauthn_configuration_id: webauthn_configuration.id,
           )
         end
       end
+    end
 
+    context 'when the input is invalid' do
       context 'when challenge is missing' do
         let(:challenge) { nil }
 
@@ -82,8 +86,8 @@ RSpec.describe WebauthnVerificationForm do
           expect(result.to_h).to eq(
             success: false,
             error_details: {
-              challenge: [:blank],
-              authenticator_data: [:invalid_authenticator_data],
+              challenge: { blank: true },
+              authenticator_data: { invalid_authenticator_data: true },
             },
             multi_factor_auth_method: 'webauthn',
             webauthn_configuration_id: webauthn_configuration.id,
@@ -98,7 +102,7 @@ RSpec.describe WebauthnVerificationForm do
           expect(result.to_h).to eq(
             success: false,
             error_details: {
-              authenticator_data: [:blank, :invalid_authenticator_data],
+              authenticator_data: { blank: true, invalid_authenticator_data: true },
             },
             multi_factor_auth_method: 'webauthn',
             webauthn_configuration_id: webauthn_configuration.id,
@@ -113,8 +117,8 @@ RSpec.describe WebauthnVerificationForm do
           expect(result.to_h).to eq(
             success: false,
             error_details: {
-              client_data_json: [:blank],
-              authenticator_data: [:invalid_authenticator_data],
+              client_data_json: { blank: true },
+              authenticator_data: { invalid_authenticator_data: true },
             },
             multi_factor_auth_method: 'webauthn',
             webauthn_configuration_id: webauthn_configuration.id,
@@ -129,8 +133,8 @@ RSpec.describe WebauthnVerificationForm do
           expect(result.to_h).to eq(
             success: false,
             error_details: {
-              signature: [:blank],
-              authenticator_data: [:invalid_authenticator_data],
+              signature: { blank: true },
+              authenticator_data: { invalid_authenticator_data: true },
             },
             multi_factor_auth_method: 'webauthn',
             webauthn_configuration_id: webauthn_configuration.id,
@@ -144,23 +148,129 @@ RSpec.describe WebauthnVerificationForm do
         it 'returns unsuccessful result' do
           expect(result.to_h).to eq(
             success: false,
-            error_details: { webauthn_configuration: [:blank] },
+            error_details: { webauthn_configuration: { blank: true } },
             multi_factor_auth_method: 'webauthn',
-            webauthn_configuration_id: nil,
           )
         end
       end
 
       context 'when a client-side webauthn error is present' do
-        let(:webauthn_error) { 'Unexpected error!' }
+        let(:webauthn_error) { 'NotAllowedError' }
 
         it 'returns unsuccessful result including client-side webauthn error text' do
           expect(result.to_h).to eq(
             success: false,
-            error_details: { webauthn_error: [webauthn_error] },
+            error_details: { webauthn_error: { present: true } },
             multi_factor_auth_method: 'webauthn',
             webauthn_configuration_id: webauthn_configuration.id,
+            frontend_error: webauthn_error,
           )
+        end
+      end
+
+      context 'when a screen lock error is present' do
+        let(:screen_lock_error) { 'true' }
+
+        context 'user does not have another authentication method available' do
+          it 'returns unsuccessful result' do
+            expect(result.to_h).to eq(
+              success: false,
+              error_details: {
+                screen_lock_error: { present: true },
+              },
+              multi_factor_auth_method: 'webauthn',
+              webauthn_configuration_id: webauthn_configuration.id,
+            )
+          end
+
+          it 'provides error message not suggesting other method' do
+            expect(result.first_error_message).to eq t(
+              'two_factor_authentication.webauthn_error.screen_lock_no_other_mfa',
+              link_html: link_to(
+                t('two_factor_authentication.webauthn_error.use_a_different_method'),
+                login_two_factor_options_path,
+              ),
+            )
+          end
+        end
+
+        context 'user has another WebAuthn method available' do
+          context 'the other MFA method is WebAuthn of the same attachment' do
+            let(:platform_authenticator) { false }
+            let(:user) { create(:user, :with_webauthn) }
+
+            it 'returns unsuccessful result' do
+              expect(result.to_h).to eq(
+                success: false,
+                error_details: {
+                  screen_lock_error: { present: true },
+                },
+                multi_factor_auth_method: 'webauthn',
+                webauthn_configuration_id: webauthn_configuration.id,
+              )
+            end
+
+            it 'provides error message not suggesting other method' do
+              expect(result.first_error_message).to eq t(
+                'two_factor_authentication.webauthn_error.screen_lock_no_other_mfa',
+                link_html: link_to(
+                  t('two_factor_authentication.webauthn_error.use_a_different_method'),
+                  login_two_factor_options_path,
+                ),
+              )
+            end
+          end
+
+          context 'the other MFA method is WebAuthn of a different attachment' do
+            let(:platform_authenticator) { false }
+            let(:user) { create(:user, :with_webauthn_platform) }
+
+            it 'returns unsuccessful result' do
+              expect(result.to_h).to eq(
+                success: false,
+                error_details: {
+                  screen_lock_error: { present: true },
+                },
+                multi_factor_auth_method: 'webauthn',
+                webauthn_configuration_id: webauthn_configuration.id,
+              )
+            end
+
+            it 'provides error message suggesting other method' do
+              expect(result.first_error_message).to eq t(
+                'two_factor_authentication.webauthn_error.screen_lock_other_mfa_html',
+                link_html: link_to(
+                  t('two_factor_authentication.webauthn_error.use_a_different_method'),
+                  login_two_factor_options_path,
+                ),
+              )
+            end
+          end
+
+          context 'the other MFA method is not a WebAuthn method' do
+            let(:user) { create(:user, :with_phone) }
+
+            it 'returns unsuccessful result' do
+              expect(result.to_h).to eq(
+                success: false,
+                error_details: {
+                  screen_lock_error: { present: true },
+                },
+                multi_factor_auth_method: 'webauthn',
+                webauthn_configuration_id: webauthn_configuration.id,
+              )
+            end
+
+            it 'provides error message suggesting other method' do
+              expect(result.first_error_message).to eq t(
+                'two_factor_authentication.webauthn_error.screen_lock_other_mfa_html',
+                link_html: link_to(
+                  t('two_factor_authentication.webauthn_error.use_a_different_method'),
+                  login_two_factor_options_path,
+                ),
+              )
+            end
+          end
         end
       end
 
@@ -172,7 +282,7 @@ RSpec.describe WebauthnVerificationForm do
         it 'returns unsuccessful result' do
           expect(result.to_h).to eq(
             success: false,
-            error_details: { authenticator_data: [:invalid_authenticator_data] },
+            error_details: { authenticator_data: { invalid_authenticator_data: true } },
             multi_factor_auth_method: 'webauthn',
             webauthn_configuration_id: webauthn_configuration.id,
           )
@@ -188,7 +298,7 @@ RSpec.describe WebauthnVerificationForm do
         it 'returns unsucessful result' do
           expect(result.to_h).to eq(
             success: false,
-            error_details: { authenticator_data: [:invalid_authenticator_data] },
+            error_details: { authenticator_data: { invalid_authenticator_data: true } },
             multi_factor_auth_method: 'webauthn',
             webauthn_configuration_id: webauthn_configuration.id,
           )

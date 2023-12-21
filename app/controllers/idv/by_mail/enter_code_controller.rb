@@ -1,6 +1,7 @@
 module Idv
   module ByMail
     class EnterCodeController < ApplicationController
+      include Idv::AvailabilityConcern
       include IdvSession
       include Idv::StepIndicatorConcern
       include FraudReviewConcern
@@ -19,17 +20,18 @@ module Idv
         )
 
         if rate_limiter.limited?
-          render_rate_limited
+          redirect_to idv_enter_code_rate_limited_url
           return
         end
 
-        gpo_mail = Idv::GpoMail.new(current_user)
+        @last_date_letter_was_sent = last_date_letter_was_sent
         @gpo_verify_form = GpoVerifyForm.new(user: current_user, pii: pii)
         @code = session[:last_gpo_confirmation_code] if FeatureManagement.reveal_gpo_code?
 
-        @should_prompt_user_to_request_another_letter =
+        gpo_mail = Idv::GpoMail.new(current_user)
+        @can_request_another_letter =
           FeatureManagement.gpo_verification_enabled? &&
-          !gpo_mail.mail_spammed? &&
+          !gpo_mail.rate_limited? &&
           !gpo_mail.profile_too_old?
 
         if pii_locked?
@@ -40,14 +42,16 @@ module Idv
       end
 
       def pii
-        Pii::Cacher.new(current_user, user_session).fetch
+        Pii::Cacher.new(current_user, user_session).
+          fetch(current_user.gpo_verification_pending_profile.id)
       end
 
       def create
         if rate_limiter.limited?
-          render_rate_limited
+          redirect_to idv_enter_code_rate_limited_url
           return
         end
+
         rate_limiter.increment!
 
         @gpo_verify_form = build_gpo_verify_form
@@ -56,12 +60,15 @@ module Idv
         analytics.idv_verify_by_mail_enter_code_submitted(**result.to_h)
         irs_attempts_api_tracker.idv_gpo_verification_submitted(
           success: result.success?,
-          failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
         )
 
         if !result.success?
-          flash[:error] = @gpo_verify_form.errors.first.message
-          redirect_to idv_verify_by_mail_enter_code_url
+          if rate_limiter.limited?
+            redirect_to idv_enter_code_rate_limited_url
+          else
+            flash[:error] = @gpo_verify_form.errors.first.message if !rate_limiter.limited?
+            redirect_to idv_verify_by_mail_enter_code_url
+          end
           return
         end
 
@@ -118,16 +125,6 @@ module Idv
         )
       end
 
-      def render_rate_limited
-        irs_attempts_api_tracker.idv_gpo_verification_rate_limited
-        analytics.rate_limit_reached(
-          limiter_type: :verify_gpo_key,
-        )
-
-        @expires_at = rate_limiter.expires_at
-        render :rate_limited
-      end
-
       def build_gpo_verify_form
         GpoVerifyForm.new(
           user: current_user,
@@ -151,6 +148,11 @@ module Idv
 
       def pii_locked?
         !Pii::Cacher.new(current_user, user_session).exists_in_session?
+      end
+
+      def last_date_letter_was_sent
+        current_user.gpo_verification_pending_profile&.gpo_confirmation_codes&.
+          pluck(:updated_at)&.max
       end
     end
   end

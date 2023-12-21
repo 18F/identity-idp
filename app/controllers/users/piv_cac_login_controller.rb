@@ -37,7 +37,7 @@ module Users
     private
 
     def render_prompt
-      analytics.piv_cac_setup_visit(in_account_creation_flow: false)
+      analytics.piv_cac_login_visited
       @presenter = PivCacAuthenticationLoginPresenter.new(piv_cac_login_form, url_options)
       render :new
     end
@@ -79,7 +79,8 @@ module Users
     end
 
     def next_step
-      if ial_context.ial2_requested?
+      if ial_context.ial2_requested? && current_user.identity_verified? &&
+         !Pii::Cacher.new(current_user, user_session).exists_in_session?
         capture_password_url
       elsif !current_user.accepted_rules_of_use_still_valid?
         rules_of_use_path

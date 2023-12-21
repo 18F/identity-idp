@@ -40,7 +40,7 @@ module IdvStepHelper
     enter_gpo_flow
   end
 
-  def gpo_step
+  def complete_request_letter
     click_on t('idv.buttons.mail.send')
   end
 
@@ -50,7 +50,7 @@ module IdvStepHelper
     choose_idv_otp_delivery_method_sms
   end
 
-  def complete_idv_steps_with_phone_before_review_step(user = user_with_2fa)
+  def complete_idv_steps_with_phone_before_enter_password_step(user = user_with_2fa)
     complete_idv_steps_before_phone_step(user)
     complete_phone_step(user)
   end
@@ -85,26 +85,27 @@ module IdvStepHelper
     t('in_person_proofing.body.barcode.return_to_partner_html', link_html: link_text)
   end
 
-  def complete_review_step(user = user_with_2fa)
+  def complete_enter_password_step(user = user_with_2fa)
     password = user.password || user_password
     fill_in 'Password', with: password
     click_idv_continue
   end
 
   def complete_idv_steps_with_phone_before_confirmation_step(user = user_with_2fa)
-    complete_idv_steps_with_phone_before_review_step(user)
-    complete_review_step(user)
+    complete_idv_steps_with_phone_before_enter_password_step(user)
+    complete_enter_password_step(user)
   end
 
-  alias complete_idv_steps_before_review_step complete_idv_steps_with_phone_before_review_step
+  alias complete_idv_steps_before_enter_password_step
+        complete_idv_steps_with_phone_before_enter_password_step
 
-  def complete_idv_steps_with_gpo_before_review_step(user = user_with_2fa)
+  def complete_idv_steps_with_gpo_before_enter_password_step(user = user_with_2fa)
     complete_idv_steps_before_gpo_step(user)
-    gpo_step
+    complete_request_letter
   end
 
   def complete_idv_steps_with_gpo_before_confirmation_step(user = user_with_2fa)
-    complete_idv_steps_with_gpo_before_review_step(user)
+    complete_idv_steps_with_gpo_before_enter_password_step(user)
     password = user.password || user_password
     fill_in 'Password', with: password
     click_continue
@@ -126,6 +127,18 @@ module IdvStepHelper
     expect(page).to have_css('.step-indicator__step--current', text: text, wait: 5)
   end
 
+  def complete_idv_steps_before_address(user = user_with_2fa)
+    sign_in_and_2fa_user(user)
+    begin_in_person_proofing(user)
+    # prepare page
+    complete_prepare_step(user)
+    # location page
+    complete_location_step(user)
+    # state ID page
+    fill_out_state_id_form_ok(same_address_as_id: false)
+    click_idv_continue
+  end
+
   def complete_idv_steps_before_ssn(user = user_with_2fa)
     sign_in_and_2fa_user(user)
     begin_in_person_proofing(user)
@@ -134,7 +147,7 @@ module IdvStepHelper
     # location page
     complete_location_step(user)
     # state ID page
-    fill_out_state_id_form_ok(same_address_as_id: true, capture_secondary_id_enabled: true)
+    fill_out_state_id_form_ok(same_address_as_id: true)
     click_idv_continue
   end
 

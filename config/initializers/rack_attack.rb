@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'ipaddr'
 
 module Rack
@@ -36,6 +38,7 @@ module Rack
       namespace: 'rack-attack',
       redis: REDIS_THROTTLE_POOL,
       expires_in: 2.weeks.to_i,
+      pool: false,
     )
 
     ### Configure Safelisting ###
@@ -164,7 +167,7 @@ module Rack
         limit: IdentityConfig.store.otps_per_ip_limit,
         period: IdentityConfig.store.otps_per_ip_period,
       ) do |req|
-        req.remote_ip if req.path.match?(%r{/otp/send})
+        req.remote_ip if req.path.include?('/otp/send')
       end
     else
       throttle(
@@ -172,7 +175,7 @@ module Rack
         limit: IdentityConfig.store.otps_per_ip_limit,
         period: IdentityConfig.store.otps_per_ip_period,
       ) do |req|
-        req.remote_ip if req.path.match?(%r{/otp/send})
+        req.remote_ip if req.path.include?('/otp/send')
       end
     end
 
@@ -237,7 +240,7 @@ module Rack
     # If you want to return 503 so that the attacker might be fooled into
     # believing that they've successfully broken your app (or you just want to
     # customize the response), then uncomment these lines.
-    self.throttled_response = lambda do |_env|
+    self.throttled_responder = lambda do |_env|
       [
         429, # status
         { 'Content-Type' => 'text/html' }, # headers
@@ -245,7 +248,7 @@ module Rack
       ]
     end
 
-    self.blocklisted_response = throttled_response
+    self.blocklisted_responder = throttled_responder
   end
 end
 
@@ -254,6 +257,7 @@ ActiveSupport::Notifications.subscribe(
 ) do |_name, _start, _finish, _request_id, payload|
   req = payload[:request]
   user = req.env['warden'].user || AnonymousUser.new
-  analytics = Analytics.new(user: user, request: req, session: {}, sp: nil)
+  sp = req.env.fetch('rack.session', {}).dig('sp', 'issuer')
+  analytics = Analytics.new(user: user, request: req, session: {}, sp: sp)
   analytics.rate_limit_triggered(type: req.env['rack.attack.matched'])
 end

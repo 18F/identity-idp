@@ -1,10 +1,4 @@
 class FeatureManagement
-  ENVS_WHERE_PREFILLING_GPO_CODE_ALLOWED = %w[
-    idp.dev.login.gov idp.int.login.gov idp.qa.login.gov idp.pt.login.gov
-    idp.dev.identitysandbox.gov idp.qa.identitysandbox.gov idp.int.identitysandbox.gov
-    idp.pt.identitysandbox.gov
-  ].freeze
-
   def self.telephony_test_adapter?
     IdentityConfig.store.telephony_adapter == 'test'
   end
@@ -45,6 +39,10 @@ class FeatureManagement
     IdentityConfig.store.enable_load_testing_mode
   end
 
+  def self.enable_additional_mfa_redirect_for_personal_key_mfa?
+    IdentityConfig.store.enable_add_mfa_redirect_for_personal_key
+  end
+
   def self.use_kms?
     IdentityConfig.store.use_kms
   end
@@ -63,7 +61,7 @@ class FeatureManagement
   end
 
   def self.current_env_allowed_to_see_gpo_code?
-    ENVS_WHERE_PREFILLING_GPO_CODE_ALLOWED.include?(IdentityConfig.store.domain_name)
+    Identity::Hostdata.domain == 'identitysandbox.gov'
   end
 
   def self.show_demo_banner?

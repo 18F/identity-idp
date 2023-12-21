@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Idv::ApiImageUploadForm do
+  include DocPiiHelper
+
   subject(:form) do
     Idv::ApiImageUploadForm.new(
       ActionController::Parameters.new(
@@ -8,17 +10,21 @@ RSpec.describe Idv::ApiImageUploadForm do
         front_image_metadata: front_image_metadata,
         back: back_image,
         back_image_metadata: back_image_metadata,
+        selfie: selfie_image,
         document_capture_session_uuid: document_capture_session_uuid,
       ),
       service_provider: build(:service_provider, issuer: 'test_issuer'),
       analytics: fake_analytics,
       irs_attempts_api_tracker: irs_attempts_api_tracker,
       store_encrypted_images: store_encrypted_images,
+      liveness_checking_enabled: liveness_checking_enabled,
     )
   end
 
   let(:front_image) { DocAuthImageFixtures.document_front_image_multipart }
   let(:back_image) { DocAuthImageFixtures.document_back_image_multipart }
+  let(:selfie_image) { nil }
+  let(:liveness_checking_enabled) { false }
   let(:front_image_metadata) do
     { width: 40, height: 40, mimeType: 'image/png', source: 'upload' }.to_json
   end
@@ -71,6 +77,19 @@ RSpec.describe Idv::ApiImageUploadForm do
         expect(form.errors[:limit]).to eq([I18n.t('errors.doc_auth.rate_limited_heading')])
       end
     end
+
+    context 'when liveness check is enabled' do
+      let(:liveness_checking_enabled) { true }
+      it 'is not valid without selfie' do
+        expect(form.valid?).to eq(false)
+      end
+      context 'with valid selfie' do
+        let(:selfie_image) { DocAuthImageFixtures.selfie_image_multipart }
+        it 'is valid' do
+          expect(form.valid?).to eq(true)
+        end
+      end
+    end
   end
 
   describe '#submit' do
@@ -87,7 +106,6 @@ RSpec.describe Idv::ApiImageUploadForm do
             document_issued: '2019-12-31',
             document_number: '1111111111111',
             document_state: 'MT',
-            failure_reason: nil,
             first_name: 'FAKEY',
             last_name: 'MCFAKERSON',
             success: true,
@@ -106,7 +124,6 @@ RSpec.describe Idv::ApiImageUploadForm do
           flow_path: anything,
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
-          getting_started_ab_test_bucket: :welcome_default,
         )
 
         expect(fake_analytics).to have_logged_event(
@@ -142,7 +159,6 @@ RSpec.describe Idv::ApiImageUploadForm do
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
           doc_type_supported: boolean,
-          getting_started_ab_test_bucket: :welcome_default,
         )
       end
 
@@ -204,7 +220,6 @@ RSpec.describe Idv::ApiImageUploadForm do
           flow_path: anything,
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
-          getting_started_ab_test_bucket: :welcome_default,
         )
       end
 
@@ -286,7 +301,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           success: false,
           errors: { doc_pii: 'bad' },
           extra: {
-            pii_like_keypaths: [[:pii]],
+            pii_like_keypaths: pii_like_keypaths,
             attention_with_barcode: false,
           },
         )
@@ -337,7 +352,6 @@ RSpec.describe Idv::ApiImageUploadForm do
           flow_path: anything,
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
-          getting_started_ab_test_bucket: :welcome_default,
           side: 'both',
         )
       end

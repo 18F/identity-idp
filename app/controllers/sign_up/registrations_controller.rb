@@ -1,6 +1,5 @@
 module SignUp
   class RegistrationsController < ApplicationController
-    include PhoneConfirmation
     include ApplicationHelper # for ial2_requested?
 
     before_action :confirm_two_factor_authenticated, only: [:destroy_confirm]
@@ -30,7 +29,6 @@ module SignUp
       irs_attempts_api_tracker.user_registration_email_submitted(
         email: permitted_params[:email],
         success: result.success?,
-        failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
       )
 
       if result.success?

@@ -1,6 +1,11 @@
 ---
 fr:
   user_mailer:
+    account_reinstated:
+      subject: Votre compte est déverrouillé
+      we_have_finished_reviewing: Nous avons terminé l’examen de votre compte
+        %{app_name} et vous pouvez maintenant vous reconnecter avec les
+        informations de votre compte.
     account_rejected:
       intro: Nous n’avons pas pu vérifier votre identité avec %{app_name}. Veuillez
         contacter l’agence dont vous essayez d’accéder au service.
@@ -142,10 +147,6 @@ fr:
         délivré par l’État ne doit pas être périmé. Nous n’acceptons
         actuellement aucune autre forme d’identification, comme les passeports
         et les cartes d’identité militaires.
-      verifying_step_proof_of_address: Si vous tentez à nouveau de vérifier votre
-        identité en personne, vous devez apporter un justificatif de domicile
-        valable si votre adresse actuelle est différente de celle figurant sur
-        votre pièce d’identité.
     in_person_failed_suspected_fraud:
       body:
         help_center_html: Si vous avez besoin d’aide supplémentaire, vous pouvez <a
@@ -208,18 +209,26 @@ fr:
         signaler ce problème, <a href="%{contact_us_url}">contactez l’assistance
         de %{app_name}</a>.
     letter_reminder:
-      info_html: La lettre que vous êtes sur le point de recevoir contiendra un code à
-        usage unique nous permettant de vérifier votre adresse. Vous pouvez
+      info_html: La lettre que vous êtes sur le point de recevoir contiendra un code
+        de vérification nous permettant de vérifier votre adresse. Vous pouvez
         terminer le processus de vérification d’identité en vous connectant à
-        %{link_html} et en entrant le code à usage unique.
+        %{link_html} et en entrant le code de vérification.
       subject: Nous avons envoyé une lettre à l’adresse que vous avez en dossier
+    letter_reminder_14_days:
+      body_html: <p>Vous avez demandé une lettre avec un code de vérification le
+        <strong>%{date_letter_was_sent}</strong>.</p><p>Reconnectez-vous à
+        %{app_name} et saisissez le code de vérification pour terminer la
+        vérification de votre identité. %{help_link}.</p>
+      did_not_get_a_letter_html: Si vous n’avez pas reçu cette lettre, %{another_letter_link_html}.
+      finish: Terminer la vérification de votre identité
+      sign_in_and_request_another_letter: connectez-vous pour en demander une autre
+      subject: Terminer la vérification de votre identité
     new_device_sign_in:
       disavowal_link: réinitialiser votre mot de passe
       help_html: Si vous n’avez pas effectué ce changement, %{disavowal_link_html}.
         Pour plus d’aide, veuillez visiter le %{help_link_html} de
         %{app_name_html} ou %{contact_link_html}.
-      info_html: '<p>Votre compte %{app_name} a été connecté sur un nouvel
-        appareil.</p><br/><p><strong>%{date}<br/>%{location}</strong></p>'
+      info: 'Votre compte %{app_name} a été connecté sur un nouvel appareil.'
       subject: Nouvelle connexion avec votre compte %{app_name}
     password_changed:
       disavowal_link: réinitialiser votre mot de passe
@@ -288,18 +297,18 @@ fr:
         %{app_name}. Nous sommes concernés quelqu’un d’autre que vous tente
         peut-être d’accéder à vos informations.
       learn_more_link_text: En savoir plus sur vos options
-      reminder_html: Pour rappel, <b>%{app_name} ne vous demandera jamais vos
-        identifiants de connexion par téléphone ou par e-mail</b>. Vous pouvez
-        prendre des mesures supplémentaires pour sécuriser votre compte en
-        activant l’authentification à deux facteurs.
+      reminder_html: Pour rappel, <strong>%{app_name} ne vous demandera jamais vos
+        identifiants de connexion par téléphone ou par e-mail</strong>. Vous
+        pouvez prendre des mesures supplémentaires pour sécuriser votre compte
+        en activant l’authentification à deux facteurs.
       step_1: Visitez le site Web %{app_name} et sélectionnez Connexion
       step_2: Sélectionnez “Vous avez oublié votre mot de passe?” au bas de la page
       step_3: Suivez les instructions pour réinitialiser votre mot de passe
       subject: Activité inhabituelle — réinitialisez votre mot de passe %{app_name}
     reset_password_instructions:
       footer: Ce lien expire dans %{expires} heures.
-      gpo_letter_description: Si vous réinitialisez votre mot de passe, le code à
-        usage unique contenu dans votre lettre ne correspondra plus et vous
+      gpo_letter_description: Si vous réinitialisez votre mot de passe, le code de
+        vérification contenu dans votre lettre ne correspondra plus et vous
         devrez de vérifier à nouveau votre identité.
       gpo_letter_header: Votre lettre est en route
       header: Pour terminer la réinitialisation de votre mot de passe, veuillez
@@ -329,3 +338,8 @@ fr:
         appeler notre centre d’appels au %{contact_number} et fournir ce code -
         %{support_code}.
       subject: Nous n’avons pas pu réinitialiser votre mot de passe
+    suspension_confirmed:
+      contact_agency: Veuillez contacter l’agence dont vous essayez d’accéder au service.
+      remain_locked: Nous avons terminé l’examen de votre compte %{app_name} et votre
+        compte restera verrouillé.
+      subject: Votre compte est verrouillé

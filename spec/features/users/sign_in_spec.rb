@@ -5,15 +5,10 @@ RSpec.feature 'Sign in' do
   include ActionView::Helpers::DateHelper
   include PersonalKeyHelper
   include SamlAuthHelper
+  include OidcAuthHelper
   include SpAuthHelper
   include IdvHelper
   include DocAuthHelper
-
-  scenario 'user signs in as ial1 and does not see ial2 help text' do
-    visit_idp_from_sp_with_ial1(:oidc)
-
-    expect(page).to_not have_content t('devise.registrations.start.accordion')
-  end
 
   context 'service provider is on the ialmax allow list' do
     before do
@@ -25,27 +20,8 @@ RSpec.feature 'Sign in' do
     scenario 'user signs in as ialmax and does not see ial2 help text' do
       visit_idp_from_oidc_sp_with_ialmax
 
-      expect(page).to_not have_content t('devise.registrations.start.accordion')
       expect(page).to_not have_content 'The page you were looking for doesn’t exist'
     end
-  end
-
-  scenario 'user signs in as ial2 and does see ial2 help text' do
-    visit_idp_from_sp_with_ial2(:oidc)
-
-    expect(page).to have_content t('devise.registrations.start.accordion')
-  end
-
-  scenario 'user signs in with loa3 request from oidc sp and does see ial2 help text' do
-    visit_idp_from_oidc_sp_with_loa3
-
-    expect(page).to have_content t('devise.registrations.start.accordion')
-  end
-
-  scenario 'user signs in with loa3 request from saml sp and does see ial2 help text' do
-    visit_idp_from_saml_sp_with_loa3
-
-    expect(page).to have_content t('devise.registrations.start.accordion')
   end
 
   scenario 'user cannot sign in if not registered' do
@@ -119,7 +95,7 @@ RSpec.feature 'Sign in' do
 
     expect(current_url).to eq rules_of_use_url
     accept_rules_of_use_and_continue_if_displayed
-    expect(current_url).to start_with service_provider.redirect_uris.first
+    expect(oidc_redirect_url).to start_with service_provider.redirect_uris.first
   end
 
   scenario 'user with old terms of use can accept and continue to IAL2 SP' do
@@ -153,7 +129,7 @@ RSpec.feature 'Sign in' do
 
     expect(current_url).to eq rules_of_use_url
     accept_rules_of_use_and_continue_if_displayed
-    expect(current_url).to start_with service_provider.redirect_uris.first
+    expect(oidc_redirect_url).to start_with service_provider.redirect_uris.first
   end
 
   scenario 'user opts to add piv/cac card but gets an error' do
@@ -215,7 +191,7 @@ RSpec.feature 'Sign in' do
     click_submit_default
     skip_second_mfa_prompt
     click_agree_and_continue
-    expect(current_url).to start_with('http://localhost:7654/auth/result')
+    expect(oidc_redirect_url).to start_with('http://localhost:7654/auth/result')
   end
 
   scenario 'user cannot sign in with certificate none error' do
@@ -404,6 +380,9 @@ RSpec.feature 'Sign in' do
   context 'user attempts too many concurrent sessions' do
     context 'with email and password' do
       scenario 'redirects to home page with error' do
+        analytics = FakeAnalytics.new
+        allow(Analytics).to receive(:new).and_return(analytics)
+
         user = user_with_2fa
 
         perform_in_browser(:one) do
@@ -423,6 +402,8 @@ RSpec.feature 'Sign in' do
 
           expect(current_path).to eq new_user_session_path
           expect(page).to have_content(t('devise.failure.session_limited'))
+
+          expect(analytics.events[:concurrent_session_logout].count).to eq 1
         end
       end
     end
@@ -448,6 +429,34 @@ RSpec.feature 'Sign in' do
 
           expect(current_path).to eq new_user_session_path
           expect(page).to have_content(t('devise.failure.session_limited'))
+        end
+      end
+    end
+
+    context 'with sp' do
+      scenario 'redirects to home page with error  and preserves branded experience' do
+        user = user_with_2fa
+        service_provider = ServiceProvider.find_by(issuer: OidcAuthHelper::OIDC_IAL1_ISSUER)
+        IdentityLinker.new(user, service_provider).link_identity(
+          verified_attributes: %w[openid email],
+        )
+
+        perform_in_browser(:one) do
+          visit_idp_from_sp_with_ial1(:oidc)
+          sign_in_live_with_2fa(user)
+        end
+
+        perform_in_browser(:two) do
+          visit_idp_from_sp_with_ial1(:oidc)
+          sign_in_live_with_2fa(user)
+        end
+
+        perform_in_browser(:one) do
+          visit account_path
+
+          expect(current_path).to eq new_user_session_path
+          expect(page).to have_content(t('devise.failure.session_limited'))
+          expect_branded_experience
         end
       end
     end
@@ -741,7 +750,7 @@ RSpec.feature 'Sign in' do
       click_submit_default
       click_agree_and_continue
 
-      redirect_uri = URI(current_url)
+      redirect_uri = URI(oidc_redirect_url)
 
       expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
     end
@@ -804,7 +813,7 @@ RSpec.feature 'Sign in' do
 
         click_agree_and_continue
 
-        expect(current_url).to start_with('http://localhost:7654/auth/result')
+        expect(oidc_redirect_url).to start_with('http://localhost:7654/auth/result')
       end
 
       it 'returns ial2 info for a verified user' do
@@ -822,7 +831,7 @@ RSpec.feature 'Sign in' do
 
         click_agree_and_continue
 
-        expect(current_url).to start_with('http://localhost:7654/auth/result')
+        expect(oidc_redirect_url).to start_with('http://localhost:7654/auth/result')
       end
     end
 
@@ -831,7 +840,7 @@ RSpec.feature 'Sign in' do
         create(:user, :fully_registered)
         visit_idp_from_oidc_sp_with_ialmax
 
-        expect(page).to have_content 'The page you were looking for doesn’t exist'
+        expect(oidc_redirect_url).to include('error=invalid_request')
       end
     end
   end
@@ -975,7 +984,7 @@ RSpec.feature 'Sign in' do
       action_url = agree_and_continue_button.ancestor('form')[:action]
       agree_and_continue_button.click
 
-      expect(current_url).to start_with('http://localhost:7654/auth/result')
+      expect(oidc_redirect_url).to start_with('http://localhost:7654/auth/result')
 
       response = page.driver.post(action_url)
       expect(response).to be_redirect

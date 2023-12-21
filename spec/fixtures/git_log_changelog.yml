@@ -106,6 +106,18 @@ commit_changelog_capitalized:
   pr_number: '7000'
   commit_messages:
     - 'ChAngElOg: Internal, Changelog, Improve changelog tool flexibility for commit messages'
+commit_changelog_symbols:
+  commit_log: |
+    title: Support symbols in changelog message subcategory (#9697)
+    body:changelog: Internal, Build Tooling (Changelog Script), Support symbols in changelog message subcategory
+    DELIMITER
+  title: Support symbols in changelog message subcategory (#9697)
+  category: Internal
+  subcategory: Build Tooling (Changelog Script)
+  change: Support symbols in changelog message subcategory
+  pr_number: '9697'
+  commit_messages:
+    - 'changelog: Internal, Build Tooling (Changelog Script), Support symbols in changelog message subcategory'
 commit_changelog_whitespace:
   commit_log: |
     title: Improve changelog tool flexibility for commit messages (#7000)
@@ -130,3 +142,18 @@ commit_changelog_with_commas_in_change:
   pr_number: '7000'
   commit_messages:
     - 'changelog:Internal,Changelog,Allow listing one, two, and more items with commas'
+dependabot_dependency_update:
+  commit_log: |
+    title: Bump libphonenumber-js from 1.10.46 to 1.10.47 (#9332)
+    body:...
+
+    Signed-off-by: dependabot[bot] <support@github.com>
+    DELIMITER
+  title: Bump libphonenumber-js from 1.10.46 to 1.10.47 (#9332)
+  category: Internal
+  subcategory: Dependencies
+  change: Update dependencies to latest versions
+  pr_number: '9332'
+  commit_messages:
+    - '...'
+    - 'Signed-off-by: dependabot[bot] <support@github.com>'

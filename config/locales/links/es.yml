@@ -9,19 +9,18 @@ es:
     cancel: Cancelar
     cancel_account_creation: '‹ Cancelar la creación de cuenta'
     contact: Contactar
-    contact_support: Póngase en contacto con el soporte técnico de %{app_name}
     continue_sign_in: Continuar el inicio de sesión
     create_account: Crear cuenta
     exit_login: Salga de %{app_name}
     go_back: Regresa
     help: Ayuda
     new_tab: (abrir nueva pestaña)
-    next: Siguiente
     passwords:
       forgot: '¿Olvidó su contraseña?'
     privacy_policy: Privacidad y seguridad
     resend: Reenviar
     reverify: Verifique su identidad nuevamente.
+    sign_in: Iniciar sesión
     sign_out: Cerrar sesión
     two_factor_authentication:
       send_another_code: Enviar otro código

@@ -32,9 +32,9 @@ class OutOfBandSessionAccessor
   end
 
   # @return [Pii::Attributes, nil]
-  def load_pii
+  def load_pii(profile_id)
     session = session_data.dig('warden.user.user.session')
-    Pii::Cacher.new(nil, session).fetch if session
+    Pii::Cacher.new(nil, session).fetch(profile_id) if session
   end
 
   # @return [X509::Attributes]
@@ -53,10 +53,18 @@ class OutOfBandSessionAccessor
 
   # @api private
   # Only used for convenience in tests
+  def put_empty_user_session(expiration = 5.minutes)
+    data = { test_data: true }
+    put(data, expiration)
+  end
+
+  # @api private
+  # Only used for convenience in tests
   # @param [Pii::Attributes] pii
-  def put_pii(pii, expiration = 5.minutes)
+  # @param [#to_s] profile_id
+  def put_pii(profile_id:, pii:, expiration: 5.minutes)
     data = {
-      decrypted_pii: pii.to_h.to_json,
+      encrypted_profiles: { profile_id.to_s => SessionEncryptor.new.kms_encrypt(pii.to_h.to_json) },
     }
 
     put(data, expiration)

@@ -16,7 +16,7 @@ RSpec.describe 'accounts/show.html.erb' do
   end
 
   it 'has a localized title' do
-    expect(view).to receive(:title).with(t('titles.account'))
+    expect(view).to receive(:title=).with(t('titles.account'))
 
     render
   end

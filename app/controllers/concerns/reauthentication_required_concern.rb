@@ -1,28 +1,23 @@
 module ReauthenticationRequiredConcern
   include MfaSetupConcern
+  include TwoFactorAuthenticatableMethods
 
   def confirm_recently_authenticated_2fa
-    return unless user_fully_authenticated?
-    non_remembered_device_authentication = user_session[:auth_method].present? &&
-                                           user_session[:auth_method] != 'remember_device'
-    return if recently_authenticated? && non_remembered_device_authentication
+    return if !user_fully_authenticated? || recently_authenticated_2fa?
 
     analytics.user_2fa_reauthentication_required(
-      auth_method: user_session[:auth_method],
-      authenticated_at: user_session[:authn_at],
+      auth_method: auth_methods_session.last_auth_event&.[](:auth_method),
+      authenticated_at: auth_methods_session.last_auth_event&.[](:at),
     )
 
     prompt_for_second_factor
   end
 
-  private
-
-  def recently_authenticated?
-    return false if user_session.blank?
-    authn_at = user_session[:authn_at]
-    return false if authn_at.blank?
-    authn_at > Time.zone.now - IdentityConfig.store.reauthn_window
+  def recently_authenticated_2fa?
+    user_fully_authenticated? && auth_methods_session.recently_authenticated_2fa?
   end
+
+  private
 
   def prompt_for_second_factor
     store_location(request.url)

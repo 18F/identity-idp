@@ -7,6 +7,7 @@
   margin-right: 0;
 }
 
+// Upstream: https://github.com/uswds/uswds/pull/5631
 .usa-button--unstyled {
   // Temporary: To be backported to design system. Unstyled buttons should inherit the appearance
   // of a link.
@@ -15,7 +16,7 @@
 }
 
 .usa-button:disabled.usa-button--active,
-.usa-button--disabled.usa-button--active {
+[aria-disabled='true'].usa-button--active {
   &:not(
       .usa-button--unstyled,
       .usa-button--secondary,
@@ -23,8 +24,38 @@
       .usa-button--accent-warm,
       .usa-button--base,
       .usa-button--outline,
-      .usa-button--inverse
+      .usa-button--inverse,
+      .usa-button--danger
     ) {
     @include set-text-and-bg('primary-darker', $context: 'Button');
+  }
+}
+
+// Upstream: https://github.com/18F/identity-design-system/pull/383
+.usa-button--danger.usa-button--outline {
+  &:not(:disabled, [aria-disabled='true']) {
+    background-color: color('white');
+    box-shadow: inset 0 0 0 $theme-button-stroke-width color('secondary');
+    color: color('secondary');
+
+    &:hover,
+    &.usa-button--hover {
+      background-color: color('secondary-lightest');
+      box-shadow: inset 0 0 0 $theme-button-stroke-width color('secondary-dark');
+      color: color('secondary-dark');
+    }
+  }
+
+  &:active,
+  &.usa-button--active {
+    &,
+    &:focus,
+    &.usa-button--focus,
+    &:hover,
+    &.usa-button--hover {
+      background-color: color('secondary-lighter');
+      box-shadow: inset 0 0 0 $theme-button-stroke-width color('secondary-darker');
+      color: color('secondary-darker');
+    }
   }
 }

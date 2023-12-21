@@ -45,10 +45,10 @@ RSpec.shared_examples 'clearing and restarting idv' do
 
     visit account_path
 
-    expect(page).to_not have_content(t('headings.account.profile_info'))
-    expect(page).to_not have_content(t('account.index.address'))
-    expect(page).to_not have_content(t('account.index.dob'))
-    expect(page).to_not have_content(t('account.index.full_name'))
-    expect(page).to_not have_content(t('account.index.ssn'))
+    expect(page).to_not have_content(t('headings.account.verified_information'))
+    expect(page).to_not have_content(t('account.verified_information.address'))
+    expect(page).to_not have_content(t('account.verified_information.dob'))
+    expect(page).to_not have_content(t('account.verified_information.full_name'))
+    expect(page).to_not have_content(t('account.verified_information.ssn'))
   end
 end

@@ -93,16 +93,7 @@ RSpec.describe Idv::PhoneForm do
           unregistered_phone = '+400258567234'
           result = subject.submit(phone: unregistered_phone)
           expect(result.success?).to eq false
-          expect(result.to_h).to include(
-            {
-              error_details: {
-                phone: [t(
-                  'two_factor_authentication.otp_delivery_preference.sms_unsupported',
-                  location: 'Romania',
-                )],
-              },
-            },
-          )
+          expect(result.to_h).to include(error_details: { phone: { sms_unsupported: true } })
         end
       end
 
@@ -126,6 +117,29 @@ RSpec.describe Idv::PhoneForm do
         end
         it 'does not infer the country code from the user phone number' do
           expect(subject.international_code).to eq(nil)
+        end
+      end
+    end
+
+    context 'with a number submitted on the hybrid handoff step' do
+      context 'with a phone number on the user record' do
+        let(:user_phone) { '2025555000' }
+        let(:hybrid_handoff_phone_number) { '2025551234' }
+        let(:user) { build_stubbed(:user, :fully_registered, with: { phone: user_phone }) }
+        let(:optional_params) { { hybrid_handoff_phone_number: hybrid_handoff_phone_number } }
+
+        it 'uses the user phone as the initial value' do
+          expect(subject.phone).to eq(PhoneFormatter.format(user_phone))
+        end
+      end
+
+      context 'without a phone number on the user record' do
+        let(:hybrid_handoff_phone_number) { '2025551234' }
+        let(:user) { build_stubbed(:user) }
+        let(:optional_params) { { hybrid_handoff_phone_number: hybrid_handoff_phone_number } }
+
+        it 'uses the hybrid handoff phone as the initial value' do
+          expect(subject.phone).to eq(PhoneFormatter.format(hybrid_handoff_phone_number))
         end
       end
     end

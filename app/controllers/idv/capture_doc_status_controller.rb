@@ -1,11 +1,21 @@
 module Idv
   class CaptureDocStatusController < ApplicationController
+    include Idv::AvailabilityConcern
+
     before_action :confirm_two_factor_authenticated
 
     respond_to :json
 
     def show
       render(json: { redirect: redirect_url }.compact, status: status)
+    end
+
+    def idv_session
+      @idv_session ||= Idv::Session.new(
+        user_session: user_session,
+        current_user: current_user,
+        service_provider: current_sp,
+      )
     end
 
     private
@@ -20,7 +30,8 @@ module Idv
           :too_many_requests
         elsif confirmed_barcode_attention_result? || user_has_establishing_in_person_enrollment?
           :ok
-        elsif session_result.blank? || pending_barcode_attention_confirmation?
+        elsif session_result.blank? || pending_barcode_attention_confirmation? ||
+              redo_document_capture_pending?
           :accepted
         elsif !session_result.success?
           :unauthorized
@@ -42,8 +53,7 @@ module Idv
 
     def session_result
       return @session_result if defined?(@session_result)
-      @session_result = document_capture_session.load_result ||
-                        document_capture_session.load_doc_auth_async_result
+      @session_result = document_capture_session.load_result
     end
 
     def document_capture_session
@@ -68,11 +78,13 @@ module Idv
     end
 
     def confirmed_barcode_attention_result?
-      had_barcode_attention_result? && !document_capture_session.ocr_confirmation_pending?
+      !redo_document_capture_pending? && had_barcode_attention_result? &&
+        !document_capture_session.ocr_confirmation_pending?
     end
 
     def pending_barcode_attention_confirmation?
-      had_barcode_attention_result? && document_capture_session.ocr_confirmation_pending?
+      !redo_document_capture_pending? && had_barcode_attention_result? &&
+        document_capture_session.ocr_confirmation_pending?
     end
 
     def had_barcode_attention_result?
@@ -83,12 +95,11 @@ module Idv
       idv_session.had_barcode_attention_error
     end
 
-    def idv_session
-      @idv_session ||= Idv::Session.new(
-        user_session: user_session,
-        current_user: current_user,
-        service_provider: current_sp,
-      )
+    def redo_document_capture_pending?
+      return unless session_result&.dig(:captured_at)
+      return unless document_capture_session.requested_at
+
+      document_capture_session.requested_at > session_result.captured_at
     end
   end
 end

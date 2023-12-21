@@ -46,26 +46,6 @@ RSpec.describe Profile do
     end
   end
 
-  describe '#includes_phone_check?' do
-    it 'returns true if the address_check component is lexis_nexis_address' do
-      profile = create(:profile, proofing_components: { address_check: 'lexis_nexis_address' })
-
-      expect(profile.includes_phone_check?).to eq(true)
-    end
-
-    it 'returns false if the address_check componet is gpo_letter' do
-      profile = create(:profile, proofing_components: { address_check: 'gpo_letter' })
-
-      expect(profile.includes_phone_check?).to eq(false)
-    end
-
-    it 'returns false if proofing_components is blank' do
-      profile = create(:profile, proofing_components: '')
-
-      expect(profile.includes_phone_check?).to eq(false)
-    end
-  end
-
   describe '#in_person_verification_pending?' do
     it 'returns true if the in_person_verification_pending_at is present' do
       profile = create(
@@ -191,6 +171,18 @@ RSpec.describe Profile do
       expect(profile.encrypted_pii_recovery).to be_present
       expect(user.reload.encrypted_recovery_code_digest).to_not eq initial_personal_key
       expect(profile.personal_key).to_not eq user.encrypted_recovery_code_digest
+    end
+
+    it 'can be passed a personal key' do
+      expect(profile.encrypted_pii_recovery).to be_nil
+
+      personal_key = 'ABCD-1234'
+      returned_personal_key = profile.encrypt_recovery_pii(pii, personal_key: personal_key)
+
+      expect(returned_personal_key).to eql(personal_key)
+
+      expect(profile.encrypted_pii_recovery).to be_present
+      expect(profile.personal_key).to eq personal_key
     end
   end
 
@@ -1051,6 +1043,45 @@ RSpec.describe Profile do
       expect(profile.fraud_review_pending?).to eq(true)
       expect(profile.fraud_rejection?).to eq(false)
       expect(profile.fraud_pending_reason).to eq('threatmetrix_review')
+    end
+  end
+
+  describe '#deactivate_due_to_gpo_expiration' do
+    let(:profile) { create(:profile, :verify_by_mail_pending, user: user) }
+
+    it 'sets gpo_verification_expired_at' do
+      freeze_time do
+        expect do
+          profile.deactivate_due_to_gpo_expiration
+        end.to change { profile.gpo_verification_expired_at }.to eql(Time.zone.now)
+      end
+    end
+
+    it 'clears gpo_verification_pending_at' do
+      expect do
+        profile.deactivate_due_to_gpo_expiration
+      end.to change { profile.gpo_verification_pending_at }.to eql(nil)
+    end
+
+    it 'maintains active = false' do
+      expect do
+        profile.deactivate_due_to_gpo_expiration
+      end.not_to change { profile.active }.from(false)
+    end
+
+    it 'does not set a deactivation_reason' do
+      expect do
+        profile.deactivate_due_to_gpo_expiration
+      end.not_to change { profile.deactivation_reason }.from(nil)
+    end
+
+    context 'not pending gpo' do
+      let(:profile) { create(:profile, user: user) }
+      it 'raises' do
+        expect do
+          profile.deactivate_due_to_gpo_expiration
+        end.to raise_error
+      end
     end
   end
 

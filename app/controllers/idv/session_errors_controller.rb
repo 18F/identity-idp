@@ -1,5 +1,6 @@
 module Idv
   class SessionErrorsController < ApplicationController
+    include Idv::AvailabilityConcern
     include IdvSession
     include StepIndicatorConcern
 
@@ -18,6 +19,7 @@ module Idv
         rate_limit_type: :idv_resolution,
       )
 
+      @step_indicator_steps = step_indicator_steps
       @remaining_attempts = rate_limiter.remaining_count
       log_event(based_on_limiter: rate_limiter)
     end

@@ -18,6 +18,7 @@ ARTIFACT_DESTINATION_FILE ?= ./tmp/idp.tar.gz
 	clobber_db \
 	clobber_assets \
 	clobber_logs \
+	watch_events \
 	docker_setup \
 	download_acuant_sdk \
 	fast_setup \
@@ -33,6 +34,9 @@ ARTIFACT_DESTINATION_FILE ?= ./tmp/idp.tar.gz
 	lint_tracker_events \
 	lint_yaml \
 	lint_yarn_workspaces \
+	lint_asset_bundle_size \
+	lint_readme \
+	lint_spec_file_name \
 	lintfix \
 	normalize_yaml \
 	optimize_assets \
@@ -101,6 +105,8 @@ endif
 	yarn lint:css
 	@echo "--- README.md ---"
 	make lint_readme
+	@echo "--- lint spec file names ---"
+	make lint_spec_file_name
 	@echo "--- lint migrations ---"
 	make lint_migrations
 
@@ -112,6 +118,16 @@ lint_yaml: normalize_yaml ## Lints YAML files
 
 lint_yarn_workspaces: ## Lints Yarn workspace packages
 	scripts/validate-workspaces.js
+
+lint_asset_bundle_size: ## Lints JavaScript and CSS compiled bundle size
+	@# This enforces an asset size budget to ensure that download sizes are reasonable and to protect
+	@# against accidentally importing large pieces of third-party libraries. If you're here debugging
+	@# a failing build, check to ensure that you've not added more JavaScript or CSS than necessary,
+	@# and you have no options to split that from the common bundles. If you need to increase this
+	@# budget and accept the fact that this will force end-users to endure longer load times, you
+	@# should set the new budget to within a few thousand bytes of the production-compiled size.
+	find app/assets/builds/application.css -size -235000c | grep .
+	find public/packs/js/application-*.digested.js -size -5000c | grep .
 
 lint_migrations:
 	scripts/migration_check
@@ -128,6 +144,22 @@ lint_lockfiles: lint_gemfile_lock lint_yarn_lock ## Lints to ensure lockfiles ar
 
 lint_readme: README.md ## Lints README.md
 	(! git diff --name-only | grep "^README.md$$") || (echo "Error: Run 'make README.md' to regenerate the README.md"; exit 1)
+
+lint_spec_file_name:
+	@find spec/*/** -type f \
+		-name '*.rb' \
+		-and -not -name '*_spec.rb' \
+		-and -not -path 'spec/factories/*' \
+		-and -not -path 'spec/support/*' \
+		-and -not -path '*/previews/*' \
+		-exec false {} + \
+		-exec echo "Error: Spec files named incorrectly, should end in '_spec.rb':" {} +
+	@find app/javascript/packages -type f \
+		"(" -name '*spec.js' -or -name '*spec.ts' -or -name '*spec.jsx' -or -name '*spec.tsx' ")" \
+		-and -not \
+		"(" -name '*.spec.js' -or -name '*.spec.ts' -or -name '*.spec.jsx' -or -name '*.spec.tsx' ")" \
+		-exec false {} + \
+		-exec echo "Error: Spec files named incorrectly, should end in '.spec.(js|ts|jsx|tsx)':" {} +
 
 lintfix: ## Try to automatically fix any Ruby, ERB, JavaScript, YAML, or CSS lint errors
 	@echo "--- rubocop fix ---"
@@ -296,6 +328,9 @@ clobber_logs: ## Purges logs and tmp/
 	rm -rf tmp/encrypted_doc_storage
 	rm -rf tmp/letter_opener
 	rm -rf tmp/mails
+
+watch_events: ## Prints events logging as they happen
+	@tail -F -n0 log/events.log | jq "select(.name | test(\".*$$EVENT_NAME.*\"; \"i\")) | ."
 
 tidy: clobber_assets clobber_logs ## Remove assets, logs, and unused gems, but leave DB alone
 	bundle clean

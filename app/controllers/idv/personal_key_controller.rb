@@ -1,19 +1,27 @@
 module Idv
   class PersonalKeyController < ApplicationController
-    include IdvSession
+    include Idv::AvailabilityConcern
+    include IdvStepConcern
     include StepIndicatorConcern
     include SecureHeadersConcern
-    include FraudReviewConcern
+    include OptInHelper
 
     before_action :apply_secure_headers_override
-    before_action :confirm_two_factor_authenticated
-    before_action :confirm_phone_or_address_confirmed
-    before_action :confirm_profile_has_been_created
+    before_action :confirm_step_allowed
+
+    # Personal key is kind of a special case, since you're always meant to
+    # look at it after your profile has been minted. We opt out of a few
+    # standard before_actions and handle them in our own special way below.
+    skip_before_action :confirm_idv_needed
+    skip_before_action :confirm_personal_key_acknowledged_if_needed
+    skip_before_action :confirm_no_pending_in_person_enrollment
+    skip_before_action :handle_fraud
 
     def show
       analytics.idv_personal_key_visited(
-        address_verification_method: address_verification_method,
+        address_verification_method: idv_session.address_verification_mechanism,
         in_person_verification_pending: idv_session.profile&.in_person_verification_pending?,
+        **opt_in_analytics_properties,
       )
       add_proofing_component
 
@@ -21,23 +29,36 @@ module Idv
     end
 
     def update
-      user_session[:need_personal_key_confirmation] = false
-
       analytics.idv_personal_key_submitted(
-        address_verification_method: address_verification_method,
+        address_verification_method: idv_session.address_verification_mechanism,
         deactivation_reason: idv_session.profile&.deactivation_reason,
         in_person_verification_pending: idv_session.profile&.in_person_verification_pending?,
         fraud_review_pending: fraud_review_pending?,
         fraud_rejection: fraud_rejection?,
       )
+
+      idv_session.acknowledge_personal_key!
+
       redirect_to next_step
     end
 
-    private
-
-    def address_verification_method
-      user_session.dig('idv', 'address_verification_mechanism')
+    def self.step_info
+      Idv::StepInfo.new(
+        key: :personal_key,
+        controller: self,
+        next_steps: [FlowPolicy::FINAL],
+        preconditions: ->(idv_session:, user:) do
+          idv_session.phone_or_address_step_complete? &&
+            user.active_or_pending_profile &&
+            !idv_session.personal_key_acknowledged
+        end,
+        undo_step: ->(idv_session:, user:) {
+          idv_session.invalidate_personal_key!
+        },
+      )
     end
+
+    private
 
     def next_step
       if in_person_enrollment?
@@ -51,10 +72,6 @@ module Idv
       end
     end
 
-    def confirm_profile_has_been_created
-      redirect_to account_url if profile.blank?
-    end
-
     def add_proofing_component
       ProofingComponent.find_or_create_by(user: current_user).update(verified_at: Time.zone.now)
     end
@@ -63,8 +80,7 @@ module Idv
       @code = personal_key
       @personal_key_generated_at = current_user.personal_key_generated_at
 
-      user_session[:personal_key] = @code
-      idv_session.personal_key = nil
+      idv_session.personal_key = @code
 
       irs_attempts_api_tracker.idv_personal_key_generated
     end
@@ -80,7 +96,21 @@ module Idv
 
     def generate_personal_key
       cacher = Pii::Cacher.new(current_user, user_session)
-      profile.encrypt_recovery_pii(cacher.fetch)
+
+      new_personal_key = nil
+
+      Profile.transaction do
+        current_user.profiles.each do |profile|
+          pii = cacher.fetch(profile.id)
+          next if pii.nil?
+
+          new_personal_key = profile.encrypt_recovery_pii(pii, personal_key: new_personal_key)
+
+          profile.save!
+        end
+      end
+
+      new_personal_key
     end
 
     def in_person_enrollment?

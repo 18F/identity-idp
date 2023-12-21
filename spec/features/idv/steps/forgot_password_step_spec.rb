@@ -3,28 +3,28 @@ require 'rails_helper'
 RSpec.feature 'forgot password step', :js do
   include IdvStepHelper
 
-  it 'goes to the forgot password page from the review page' do
+  it 'goes to the forgot password page from the enter password page' do
     start_idv_from_sp
-    complete_idv_steps_before_review_step
+    complete_idv_steps_before_enter_password_step
 
     click_link t('idv.forgot_password.link_text')
 
     expect(page.current_path).to eq(idv_forgot_password_path)
   end
 
-  it 'goes back to the review page from the forgot password page' do
+  it 'goes back to the enter password page from the forgot password page' do
     start_idv_from_sp
-    complete_idv_steps_before_review_step
+    complete_idv_steps_before_enter_password_step
 
     click_link t('idv.forgot_password.link_text')
     click_link t('idv.forgot_password.try_again')
 
-    expect(page.current_path).to eq(idv_review_path)
+    expect(page.current_path).to eq(idv_enter_password_path)
   end
 
   it 'allows the user to reset their password' do
     start_idv_from_sp
-    complete_idv_steps_before_review_step
+    complete_idv_steps_before_enter_password_step
 
     click_link t('idv.forgot_password.link_text')
     click_button t('idv.forgot_password.reset_password')

@@ -8,9 +8,9 @@ es:
     buttons:
       add_new_photos: Añadir nuevas fotos
       continue: Continuar
-      have_phone: Sí tengo teléfono
-      take_or_upload_picture_html: '<lg-take-photo>Toma una foto</lg-take-photo> o
-        <lg-upload>Sube una foto</lg-upload>'
+      take_or_upload_picture_html: '<lg-take-photo>Toma una
+        foto</lg-take-photo><lg-or> o </lg-or> <lg-upload>Sube una
+        foto</lg-upload>'
       take_picture: Toma una foto
       take_picture_retry: Retirar la foto
       upload_picture: Subir foto
@@ -112,15 +112,20 @@ es:
           tengan reflejos. Asegúrese de que el flash de su cámara esté
           desactivado e intente tomar nuevas fotos.
       http:
-        image_load: El archivo de imagen que ha añadido no es compatible. Por favor,
-          tome nuevas fotos de su identificación y vuelva a intentarlo.
-        image_size: El tamaño de la imagen es demasiado grande o demasiado pequeño.
-          Añada imágenes de su documento de identidad de unos 2025 x 1275
-          píxeles.
-        pixel_depth: No es compatible con la profundidad de píxeles de su archivo de
-          imagen. Tome nuevas fotos de su documento de identidad e inténtelo
-          nuevamente. La profundidad de píxeles de la imagen admitida es de 24
-          bits RGB.
+        image_load:
+          failed_short: El archivo de la imagen no es compatible. Inténtalo de nuevo.
+          top_msg: El archivo de imagen que ha añadido no es compatible. Por favor, tome
+            nuevas fotos de su identificación y vuelva a intentarlo.
+        image_size:
+          failed_short: El archivo de la imagen no es compatible. Inténtalo de nuevo.
+          top_msg: El tamaño de la imagen es demasiado grande o demasiado pequeño. Añada
+            imágenes de su documento de identidad de unos 2025 x 1275 píxeles.
+        pixel_depth:
+          failed_short: El archivo de la imagen no es compatible. Inténtalo de nuevo.
+          top_msg: No es compatible con la profundidad de píxeles de su archivo de imagen.
+            Tome nuevas fotos de su documento de identidad e inténtelo
+            nuevamente. La profundidad de píxeles de la imagen admitida es de 24
+            bits RGB.
       not_a_file: La selección no era un archivo válido.
       pii:
         birth_date_min_age: Tu cumpleaños no cumple con el requisito de edad mínima.
@@ -133,6 +138,32 @@ es:
           estén demasiado borrosas u oscuras. Intente tomar nuevas fotos en un
           área iluminada.
       upload_error: Lo siento, algo salió mal por nuestra parte.
+    exit_survey:
+      content_html: <strong>Si no tiene una licencia de conducir o identificación
+        estatal, no puede continuar en %{app_name}.</strong> Por favor <a>salga
+        de %{app_name} y contacte a %{sp_name}</a> para averiguar qué puede
+        hacer.
+      content_nosp_html: <strong>Si no tiene una licencia de conducir o identificación
+        estatal, no puede continuar en %{app_name}.</strong> <a>Cancele la
+        verificación de identidad con %{app_name}</a> y podrá reiniciar el
+        proceso cuando esté listo.
+      header: No cuenta con una licencia de conducir o identificación estatal?
+      optional:
+        button: Enviar y salir de %{app_name}
+        content: Ayúdenos a agregar más identificaciones oficiales a %{app_name}. ¿Qué
+          identificaciones tiene como alternativa?
+        id_types:
+          military_id: Credencial militar (puede ser una credencial del Departamento de
+            Defensa, una credencial de Salud de los Veteranos o una credencial
+            de veterano)
+          other: Una que no aparece en la lista
+          resident_card: Tarjeta Verde de Estados Unidos (también conocida como Tarjeta de
+            Residente Permanente)
+          tribal_id: Credencial tribal
+          us_passport: Pasaporte estadounidense
+          voter_registration_card: Credencial para votar
+        legend: Opcional. Seleccione todas las identificaciones que tenga.
+        tag: Opcional
     forms:
       captured_image: Imagen capturada
       change_file: Cambiar archivo
@@ -140,23 +171,6 @@ es:
         carpeta</lg-underline>
       doc_success: Verificamos sus datos
       selected_file: Archivo seleccionado
-    getting_started:
-      instructions:
-        bullet1: Incluir fotos de su identificación
-        bullet2: Introducir su número de Seguro Social
-        bullet3: Vincular su número de teléfono
-        bullet4: Volver a introducir su contraseña de %{app_name}
-        consent: Al marcar esta casilla, usted permite que %{app_name} solicite,
-          utilice, conserve y comparta su información personal. Los utilizamos
-          para verificar su identidad.
-        getting_started: 'Deberá:'
-        learn_more: Obtenga más información sobre nuestras medidas de privacidad y
-          seguridad
-        text1: Su documento de identidad no puede estar caducado.
-        text2: No necesitará la tarjeta con usted.
-        text3: Su número de teléfono se asocia a su información personal. Después de que
-          lo haya asociado, le enviaremos un código.
-        text4: Su contraseña guarda y encripta su información personal.
     headings:
       address: Actualice su dirección postal
       back: Reverso de su licencia de conducir o identificación estatal
@@ -168,21 +182,28 @@ es:
       document_capture: Incluir fotos de su identificación
       document_capture_back: Parte trasera de su documento de identidad
       document_capture_front: Parte delantera de su documento de identidad
+      document_capture_selfie: Una foto tuya
+      document_capture_subheader_id: Licencia de conducir o con un documento de identidad estatal
+      document_capture_subheader_selfie: Foto suya
+      document_capture_with_selfie: Incluir fotos de su identificación y una foto suya
       front: Anverso de su licencia de conducir o identificación estatal
       getting_started: Vamos a verificar su identidad para %{sp_name}
+      how_to_verify: Elija cómo quiere verificar su identidad
       hybrid_handoff: '¿Cómo desea añadir su documento de identidad?'
       interstitial: Estamos procesando sus imágenes
       lets_go: Cómo funciona la verificación de su identidad
-      phone_question: ¿Tiene un teléfono con el que pueda tomar fotos de su documento
-        de identidad?
+      no_ssn: ¿No tiene un número de Seguro Social?
       review_issues: Revise sus imágenes e inténtelo de nuevo
       secure_account: Asegure su cuenta
+      selfie: Foto
       ssn: Ingrese su número de Seguro Social
       ssn_update: Actualice su número de Seguro Social
       text_message: Enviamos un mensaje a su teléfono
       upload_from_computer: Continuar en esta computadora
       upload_from_phone: Utilice su teléfono para tomar las fotos
+      verify_at_post_office: Verifique su identidad en una oficina de correos
       verify_identity: Verifique su identidad
+      verify_online: Verifique su identidad en línea
       welcome: Comience a verificar su identidad
     hybrid_flow_warning:
       explanation_html: Usted está utilizando <strong>%{app_name}</strong> para
@@ -205,12 +226,12 @@ es:
       capture_status_none: Alinea
       capture_status_small_document: Muévete mas cerca
       capture_status_tap_to_capture: Toque para capturar
-      document_capture_intro_acknowledgment: Recopilaremos información sobre usted
-        leyendo su licencia de conducir o identificación estatal. Usamos esta
-        información para verificar su identidad.
-      getting_started_html: '%{sp_name} necesita asegurarse de que es usted realmente
-        y no alguien que se hace pasar por usted. %{link_html}'
-      getting_started_learn_more: Obtenga más información sobre lo que necesita para verificar su identidad
+      exit:
+        with_sp: Salir de %{app_name} y volver a %{sp_name}
+        without_sp: Salir de la verificación de identidad e ir a la página de su cuenta
+      how_to_verify: Tiene la opción de verificar su identidad en línea o en persona
+        en una oficina de correos participante.
+      how_to_verify_troubleshooting_options_header: ¿Quiere saber más sobre cómo verificar su identidad?
       hybrid_handoff: Recopilaremos información sobre usted leyendo su documento de
         identidad expedido por el estado.
       image_loaded: Imagen cargada
@@ -228,6 +249,8 @@ es:
         completar la verificación de tu identidad.
       link_sent_complete_polling: El siguiente paso se cargará automáticamente una vez
         que verifiques tu identidad a través de tu teléfono.
+      no_ssn: Debe tener un número de Seguro Social para finalizar la verificación de
+        su identidad.
       privacy: '%{app_name} es un sitio web gubernamental seguro que cumple con las
         normas más estrictas de protección de datos. Utilizamos sus datos para
         verificar su identidad.'
@@ -243,8 +266,21 @@ es:
       upload_from_phone: No tendrá que volver a iniciar sesión y volverá a cambiar a
         esta computadora después de tomar las fotos. Su teléfono móvil debe
         tener una cámara y un navegador web.
+      verify_at_post_office_description: Esta opción es mejor si no tiene un
+        dispositivo móvil o una manera fácil de tomar fotografías de su
+        identificación.
+      verify_at_post_office_instruction: Ingresará su información de identificación en
+        línea y verificará tu identidad en persona en una oficina de correos
+        participante.
+      verify_at_post_office_link_text: Obtenga más información sobre la verificación en persona
       verify_identity: Le preguntaremos sus datos personales para verificar su
         identidad comparándola con los registros públicos.
+      verify_online_description: La mayoría de los usuarios finalizan este proceso de
+        una sola vez. Esta opción es mejor si tiene un dispositivo móvil o una
+        forma de tomar fotografías de su identificación.
+      verify_online_instruction: Tomará fotografías de tu identificación para
+        verificar tu identidad completamente en línea.
+      verify_online_link_text: Obtenga más información sobre la verificación en línea
       welcome: '%{sp_name} necesita asegurarse de que es usted y no es alguien que se
         hace pasar por usted.'
       you_entered: 'Ud. entregó:'
@@ -270,15 +306,27 @@ es:
         - '<strong>Verificar por correo</strong>: Le enviaremos una carta a su
           domicilio. Esto tarda entre <strong>5 y 10 días</strong>.'
       welcome: 'Necesitará su:'
-    phone_question:
-      do_not_have: No tengo teléfono
+    not_ready:
+      button_nosp: Cancelar y volver a su perfil
+      button_sp: Salir de %{app_name} y volver a %{sp_name}
+      content_nosp: Si sale ahora de %{app_name}, no habrá verificado su identidad.
+        Puede volver más tarde para completar este proceso.
+      content_sp: Si sale ahora de %{app_name} y regresa a %{sp_name}, no habrá
+        verificado su identidad. Puede volver más tarde para completar este
+        proceso.
+      header: ¿No está listo para enviar las fotos?
     tips:
-      document_capture_header_text: 'Para obtener los mejores resultados:'
       document_capture_hint: Debe ser un JPG o PNG
       document_capture_id_text1: Use un fondo oscuro
       document_capture_id_text2: Tome la foto en una superficie plana
       document_capture_id_text3: No use el flash de su cámara
       document_capture_id_text4: El tamaño del archivo debe ser de al menos 2 MB
+      document_capture_selfie_id_header_text: Consejos para obtener fotografías nítidas
+      document_capture_selfie_selfie_text: Consejos para obtener una foto nítidas
+      document_capture_selfie_text1: Mantenga el dispositivo al mismo nivel que los ojos
+      document_capture_selfie_text2: Asegúrate de que tu rostro completo sea visible
+      document_capture_selfie_text3: Tómese la foto en un sitio con buena iluminación
+      most_common: Más común
       review_issues_id_header_text: 'Revise las imágenes de su documento de identidad
         expedido por el estado:'
       review_issues_id_text1: '¿Ha usado un fondo oscuro?'

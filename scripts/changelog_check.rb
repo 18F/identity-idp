@@ -3,10 +3,9 @@ require 'open3'
 require 'optparse'
 
 CHANGELOG_REGEX =
-  %r{^(?:\* )?changelog: ?(?<category>[\w -]{2,}), ?(?<subcategory>[\w -]{2,}), ?(?<change>.+)$}i
+  %r{^(?:\* )?changelog: ?(?<category>[\w -]{2,}), ?(?<subcategory>[^,]{2,}), ?(?<change>.+)$}i
 CATEGORIES = [
   'User-Facing Improvements',
-  'Improvements', # Temporary for transitional period
   'Bug Fixes',
   'Internal',
   'Upcoming Features',
@@ -18,7 +17,7 @@ REVERT_COMMIT_MESSAGE = /This reverts commit ([a-z\d]+)./
 SECURITY_CHANGELOG = {
   category: 'Internal',
   subcategory: 'Dependencies',
-  change: 'Update dependencies to resolve security advisories',
+  change: 'Update dependencies to latest versions',
 }.freeze
 REVERT_CHANGELOG = {
   category: 'Bug Fixes',
@@ -106,7 +105,7 @@ def generate_invalid_changes(git_log)
 end
 
 def closest_change_category(change)
-  category = CATEGORIES.
+  CATEGORIES.
     map do |category|
       CategoryDistance.new(
         category,
@@ -116,10 +115,6 @@ def closest_change_category(change)
     filter { |category_distance| category_distance.distance <= MAX_CATEGORY_DISTANCE }.
     max { |category_distance| category_distance.distance }&.
     category
-
-  # Temporarily normalize legacy category in transitional period
-  category = 'User-Facing Improvements' if category == 'Improvements'
-  category
 end
 
 # Get the last valid changelog line for every Pull Request and tie it to the commit subject.

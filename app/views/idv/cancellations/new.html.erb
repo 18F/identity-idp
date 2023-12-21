@@ -1,4 +1,4 @@
-<% title t('titles.idv.cancellation_prompt') %>
+<% self.title = t('titles.idv.cancellation_prompt') %>
 
 <%= render StatusPageComponent.new(status: :warning) do |c| %>
   <% if @hybrid_session %>
@@ -34,7 +34,9 @@
             method: :delete,
             big: true,
             wide: true,
-          ).with_content(t('idv.cancel.actions.start_over')) %>
+            form: { 'aria-label': t('idv.cancel.actions.start_over') },
+          ).with_content(t('idv.cancel.actions.start_over'))
+      %>
       <div class="margin-top-2">
         <%= render ButtonComponent.new(
               action: ->(**tag_options, &block) do
@@ -44,6 +46,7 @@
               big: true,
               wide: true,
               outline: true,
+              form: { 'aria-label': t('idv.cancel.actions.keep_going') },
             ).with_content(t('idv.cancel.actions.keep_going')) %>
       </div>
     </div>
@@ -65,7 +68,10 @@
             big: true,
             wide: true,
             outline: true,
-            form: { data: { form_steps_wait: '' } },
+            form: {
+              "aria-label": @presenter.exit_action_text,
+              data: { form_steps_wait: '' },
+            },
           ).with_content(@presenter.exit_action_text) %>
     </div>
   <% end %>

@@ -8,7 +8,7 @@ RSpec.describe 'scripts/changelog_check' do
     it 'builds a git log into structured changelog objects' do
       git_log = git_fixtures.values.pluck('commit_log').join("\n")
       changelog_entries = generate_changelog(git_log)
-      expect(changelog_entries.length).to eq 8
+      expect(changelog_entries.length).to eq 10
       fixture_and_changelog = git_fixtures.values.filter do |x|
         x['category'].present?
       end.zip(changelog_entries)

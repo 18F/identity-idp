@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe 'users/backup_code_setup/reminder.html.erb' do
   it 'has a localized title' do
-    expect(view).to receive(:title).with( \
+    expect(view).to receive(:title=).with( \
       t('forms.backup_code.title'),
     )
 

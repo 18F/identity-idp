@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Idv::AddressController do
-  include IdvHelper
-
   let(:user) { create(:user) }
 
   let(:pii_from_doc) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.stringify_keys }
@@ -10,18 +8,34 @@ RSpec.describe Idv::AddressController do
   before do
     stub_sign_in(user)
     stub_analytics
-    stub_idv_steps_before_verify_step(user)
+    subject.idv_session.welcome_visited = true
+    subject.idv_session.idv_consent_given = true
     subject.idv_session.flow_path = 'standard'
     subject.idv_session.pii_from_doc = pii_from_doc
   end
 
+  describe '#step_info' do
+    it 'returns a valid StepInfo object' do
+      expect(Idv::AddressController.step_info).to be_valid
+    end
+  end
+
   describe '#new' do
-    before do
+    it 'logs an analytics event' do
       get :new
+      expect(@analytics).to have_logged_event('IdV: address visited')
     end
 
-    it 'logs an analytics event' do
-      expect(@analytics).to have_logged_event('IdV: address visited')
+    context 'verify_info already submitted' do
+      before do
+        subject.idv_session.resolution_successful = true
+      end
+
+      it 'renders the :new template' do
+        get :new
+
+        expect(response).to render_template(:new)
+      end
     end
   end
 
@@ -52,7 +66,9 @@ RSpec.describe Idv::AddressController do
     it 'updates pii_from_doc in idv_session' do
       expect do
         put :update, params: params
-      end.to change { subject.idv_session.pii_from_doc }.to eql(
+      end.to change { subject.idv_session.pii_from_doc }
+
+      expect(subject.idv_session.pii_from_doc).to eql(
         pii_from_doc.merge(
           {
             'address1' => '1234 Main St',
@@ -63,6 +79,12 @@ RSpec.describe Idv::AddressController do
           },
         ),
       )
+    end
+
+    it 'invalidates future steps' do
+      expect(subject).to receive(:clear_future_steps!)
+
+      put :update, params: params
     end
 
     it 'logs an analytics event' do

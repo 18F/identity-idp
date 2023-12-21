@@ -23,7 +23,6 @@ RSpec.describe 'Identity verification', :js do
     try_to_skip_ahead_from_hybrid_handoff
     complete_hybrid_handoff_step # upload photos
 
-    try_to_go_back_from_document_capture
     validate_document_capture_page
     complete_document_capture_step
     validate_document_capture_submit(user)
@@ -31,7 +30,6 @@ RSpec.describe 'Identity verification', :js do
     validate_ssn_page
     complete_ssn_step
 
-    try_to_go_back_from_verify_info
     validate_verify_info_page
     complete_verify_step
     validate_verify_info_submit(user)
@@ -41,14 +39,48 @@ RSpec.describe 'Identity verification', :js do
     visit_by_mail_and_return
     complete_otp_verification_page(user)
 
-    validate_review_page
-    complete_review_step(user)
-    validate_review_submit(user)
+    validate_enter_password_page
+    complete_enter_password_step(user)
+    validate_enter_password_submit(user)
 
     validate_personal_key_page
     acknowledge_and_confirm_personal_key
 
     validate_idv_completed_page(user)
+    click_agree_and_continue
+
+    validate_return_to_sp
+  end
+
+  scenario 'Unsupervised proofing back button' do
+    visit_idp_from_sp_with_ial2(sp)
+    user = sign_up_and_2fa_ial1_user
+
+    complete_welcome_step
+
+    test_go_back_from_agreement
+    complete_agreement_step
+
+    test_go_back_from_hybrid_handoff
+    complete_hybrid_handoff_step # upload photos
+
+    test_go_back_from_document_capture
+    complete_document_capture_step
+
+    test_go_back_from_ssn_page
+    complete_ssn_step
+
+    test_go_back_from_verify_info
+    complete_verify_step
+
+    test_go_back_from_phone
+    complete_otp_verification_page(user)
+
+    test_go_back_from_enter_password
+    complete_enter_password_step(user)
+
+    acknowledge_and_confirm_personal_key
+
     click_agree_and_continue
 
     validate_return_to_sp
@@ -68,14 +100,18 @@ RSpec.describe 'Identity verification', :js do
 
       begin_in_person_proofing
       complete_all_in_person_proofing_steps(user)
+      test_restart_in_person_flow(user)
 
       enter_gpo_flow
-      gpo_step
+      test_go_back_from_request_letter
+      complete_request_letter
 
-      complete_review_step(user)
+      test_go_back_in_person_flow
+      complete_enter_password_step(user)
 
-      validate_come_back_later_page
-      complete_come_back_later
+      try_to_go_back_from_letter_enqueued
+      validate_letter_enqueued_page
+      complete_letter_enqueued
       validate_return_to_sp
 
       visit sign_out_url
@@ -178,6 +214,16 @@ RSpec.describe 'Identity verification', :js do
     expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
 
     expect(page.find_field(t('idv.form.ssn_label'))['aria-invalid']).to eq('false')
+    expect(page).to have_content(t('doc_auth.info.no_ssn'))
+    click_link(
+      t(
+        'doc_auth.info.exit.with_sp', app_name: APP_NAME,
+                                      sp_name: 'Test SP'
+      ),
+    )
+
+    expect(page).to have_current_path(idv_cancel_path(step: 'ssn_offramp'))
+    click_on t('idv.cancel.actions.keep_going')
 
     # shows error message on invalid ssn
     fill_out_ssn_form_fail
@@ -251,19 +297,19 @@ RSpec.describe 'Identity verification', :js do
     click_submit_default
   end
 
-  def validate_review_page
-    expect(page).to have_current_path(idv_review_path)
-    expect(page).to have_content(t('idv.messages.review.message', app_name: APP_NAME))
-    expect(page).to have_content(t('idv.messages.review.phone_verified'))
+  def validate_enter_password_page
+    expect(page).to have_current_path(idv_enter_password_path)
+    expect(page).to have_content(t('idv.messages.enter_password.message', app_name: APP_NAME))
+    expect(page).to have_content(t('idv.messages.enter_password.phone_verified'))
 
     # does not move ahead with incorrect password
     fill_in 'Password', with: 'this is not the right password'
     click_idv_continue
     expect(page).to have_content(t('idv.errors.incorrect_password'))
-    expect(page).to have_current_path(idv_review_path)
+    expect(page).to have_current_path(idv_enter_password_path)
   end
 
-  def validate_review_submit(user)
+  def validate_enter_password_submit(user)
     expect(user.events.account_verified.size).to be(1)
     expect(user.profiles.count).to eq 1
 
@@ -273,18 +319,40 @@ RSpec.describe 'Identity verification', :js do
     expect(GpoConfirmation.count).to eq(0)
   end
 
-  def validate_come_back_later_page
+  def validate_letter_enqueued_page
     expect(page).to have_current_path(idv_letter_enqueued_path)
     expect_in_person_gpo_step_indicator_current_step(t('step_indicator.flows.idv.get_a_letter'))
+    expect(page).to have_content(t('idv.titles.come_back_later'))
+    expect(page).not_to have_content(t('step_indicator.flows.idv.verify_phone_or_address'))
   end
 
   def validate_personal_key_page
     expect(current_path).to eq idv_personal_key_path
+
+    # Clicking acknowledge checkbox is required to continue
+    click_continue
+    expect(page).to have_content(t('forms.validation.required_checkbox'))
+    expect(current_path).to eq(idv_personal_key_path)
+
+    expect(page).to have_content(t('forms.personal_key_partial.acknowledgement.header'))
+    expect(page).to have_content(t('forms.personal_key_partial.acknowledgement.text'))
+    expect(page).to have_content(t('forms.personal_key_partial.acknowledgement.help_link_text'))
+    expect(page).to have_content(t('idv.messages.confirm'))
+    expect_step_indicator_current_step(t('step_indicator.flows.idv.secure_account'))
+    expect(page).to have_css(
+      '.step-indicator__step--complete',
+      text: t('step_indicator.flows.idv.verify_phone_or_address'),
+    )
+    expect(page).not_to have_content(t('step_indicator.flows.idv.get_a_letter'))
+
+    # Refreshing shows same page (BUT with new personal key, we should warn the user)
+    visit current_path
+    expect(page).not_to have_content(t('idv.messages.confirm'))
     expect(page).to have_content(t('forms.personal_key_partial.acknowledgement.header'))
   end
 
   def try_to_skip_ahead_before_signing_in
-    visit idv_review_path
+    visit idv_enter_password_path
     expect(current_path).to eq(root_path)
   end
 
@@ -312,7 +380,7 @@ RSpec.describe 'Identity verification', :js do
   end
 
   def try_to_skip_ahead_from_phone
-    visit idv_review_path
+    visit idv_enter_password_path
     expect(page).to have_current_path(idv_phone_path)
   end
 
@@ -322,16 +390,124 @@ RSpec.describe 'Identity verification', :js do
     expect(page).to have_current_path(idv_phone_path)
   end
 
-  def try_to_go_back_from_document_capture
-    visit(idv_agreement_path)
-    expect(page).to have_current_path(idv_document_capture_path)
-    visit(idv_hybrid_handoff_url)
-    expect(page).to have_current_path(idv_document_capture_path)
+  def test_go_back_from_agreement
+    go_back
+    expect(current_path).to eq(idv_welcome_path)
+    complete_welcome_step
+    expect(current_path).to eq(idv_agreement_path)
+    expect(page).not_to have_checked_field(
+      t('doc_auth.instructions.consent', app_name: APP_NAME),
+      visible: :all,
+    )
   end
 
-  def try_to_go_back_from_verify_info
-    visit(idv_document_capture_url)
+  def test_go_back_from_hybrid_handoff
+    go_back
+    expect(current_path).to eql(idv_agreement_path)
+    expect(page).to have_checked_field(
+      t('doc_auth.instructions.consent', app_name: APP_NAME),
+      visible: :all,
+    )
+    visit idv_welcome_path
+    expect(current_path).to eql(idv_welcome_path)
+    complete_welcome_step
+    expect(page).to have_current_path(idv_agreement_path)
+    expect(page).not_to have_checked_field(
+      t('doc_auth.instructions.consent', app_name: APP_NAME),
+      visible: :all,
+    )
+    complete_agreement_step
+  end
+
+  def test_go_back_from_document_capture
+    go_back
+    go_back
+    expect(page).to have_current_path(idv_agreement_path)
+    expect(page).to have_checked_field(
+      t('doc_auth.instructions.consent', app_name: APP_NAME),
+      visible: :all,
+    )
+
+    go_forward
+    expect(page).to have_current_path(idv_hybrid_handoff_path)
+    go_forward
+    expect(page).to have_content(t('doc_auth.headings.front'))
+    expect(page).to have_content(t('doc_auth.headings.back'))
+  end
+
+  def test_go_back_from_ssn_page
+    go_back
+    expect(page).to have_current_path(idv_document_capture_path)
+    go_forward
+  end
+
+  def test_go_back_from_verify_info
+    go_back
+    go_back
+    expect(page).to have_current_path(idv_document_capture_path)
+    go_back
+    go_back
+    go_back
+    expect(page).to have_current_path(idv_welcome_path)
+    5.times { go_forward }
     expect(page).to have_current_path(idv_verify_info_path)
+  end
+
+  def test_go_back_from_phone
+    go_back
+    go_back
+    expect(page).to have_current_path(idv_ssn_path)
+    go_back
+    go_back
+    go_back
+    go_back
+    expect(page).to have_current_path(idv_welcome_path)
+    6.times { go_forward }
+    expect(page).to have_current_path(idv_phone_path)
+  end
+
+  def test_go_back_from_enter_password
+    go_back
+    expect(page).to have_current_path(idv_otp_verification_path)
+    go_back
+    expect(page).to have_current_path(idv_phone_path)
+    go_back
+    expect(page).to have_current_path(idv_verify_info_path)
+    3.times { go_forward }
+
+    expect(page).to have_current_path(idv_enter_password_path)
+  end
+
+  def test_go_back_from_request_letter
+    go_back
+    expect(page).to have_current_path(idv_phone_path)
+    go_back
+    expect(page).to have_current_path(idv_in_person_verify_info_path)
+    2.times { go_forward }
+    expect(page).to have_current_path(idv_request_letter_path)
+  end
+
+  def test_go_back_in_person_flow
+    go_back
+    go_back
+    go_back
+    expect(page).to have_current_path(idv_in_person_verify_info_path)
+    # can't go back further with in person controllers (yet)
+
+    3.times { go_forward }
+  end
+
+  def test_restart_in_person_flow(user)
+    visit(idv_welcome_path)
+    begin_in_person_proofing
+    complete_all_in_person_proofing_steps(user)
+  end
+
+  def try_to_go_back_from_letter_enqueued
+    go_back
+    expect(page).to have_current_path(idv_letter_enqueued_path)
+    visit(idv_welcome_path)
+    expect(page).to have_current_path(idv_letter_enqueued_path)
   end
 
   def same_phone?(phone1, phone2)

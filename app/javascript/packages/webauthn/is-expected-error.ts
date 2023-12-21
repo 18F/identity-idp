@@ -1,3 +1,5 @@
+import isUserVerificationScreenLockError from './is-user-verification-screen-lock-error';
+
 /**
  * Set of expected DOM exceptions, which occur based on some user behavior that is not noteworthy:
  *
@@ -13,7 +15,21 @@ const EXPECTED_DOM_EXCEPTIONS: Set<string> = new Set([
   'InvalidStateError',
 ]);
 
-const isExpectedWebauthnError = (error: Error): boolean =>
-  error instanceof DOMException && EXPECTED_DOM_EXCEPTIONS.has(error.name);
+interface IsExpectedErrorOptions {
+  /**
+   * Whether the error happened in the context of a verification ceremony.
+   */
+  isVerifying: boolean;
+}
+
+function isExpectedWebauthnError(
+  error: Error,
+  { isVerifying }: Partial<IsExpectedErrorOptions> = {},
+): boolean {
+  return (
+    (error instanceof DOMException && EXPECTED_DOM_EXCEPTIONS.has(error.name)) ||
+    (!!isVerifying && isUserVerificationScreenLockError(error))
+  );
+}
 
 export default isExpectedWebauthnError;

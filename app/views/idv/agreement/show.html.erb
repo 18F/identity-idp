@@ -1,4 +1,4 @@
-<% title t('doc_auth.headings.lets_go') %>
+<% self.title = t('doc_auth.headings.lets_go') %>
 
 <% content_for(:pre_flash_content) do %>
   <%= render StepIndicatorComponent.new(
@@ -17,7 +17,8 @@
 <p><%= t('doc_auth.info.secure_account') %></p>
 
 <%= simple_form_for(
-      :doc_auth,
+      @consent_form,
+      as: :doc_auth,
       url: url_for,
       method: 'put',
       html: { autocomplete: 'off', class: 'margin-top-2 margin-bottom-5 js-consent-continue-form' },
@@ -25,7 +26,7 @@
   <%= render ClickObserverComponent.new(event_name: 'IdV: consent checkbox toggled') do %>
     <%= render ValidatedFieldComponent.new(
           form: f,
-          name: :ial2_consent_given,
+          name: :idv_consent_given,
           as: :boolean,
           label: t('doc_auth.instructions.consent', app_name: APP_NAME),
           required: true,

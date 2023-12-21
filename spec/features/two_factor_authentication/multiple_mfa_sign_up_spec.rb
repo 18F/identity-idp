@@ -4,6 +4,12 @@ RSpec.feature 'Multi Two Factor Authentication' do
   include WebAuthnHelper
 
   describe 'When the user has not set up 2FA' do
+    let(:fake_analytics) { FakeAnalytics.new }
+
+    before do
+      allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
+    end
+
     scenario 'user can set up 2 MFA methods properly' do
       sign_in_before_2fa
 
@@ -34,6 +40,7 @@ RSpec.feature 'Multi Two Factor Authentication' do
       click_continue
 
       expect(page).to have_content(t('notices.backup_codes_configured'))
+      expect(fake_analytics).to have_logged_event('User registration: complete')
       expect(current_path).to eq account_path
     end
 
@@ -65,7 +72,8 @@ RSpec.feature 'Multi Two Factor Authentication' do
       expect(page).to have_current_path(authentication_methods_setup_path)
 
       select_2fa_option('auth_app')
-      fill_in t('forms.totp_setup.totp_step_1'), with: 'App'
+
+      fill_in_totp_name
 
       secret = find('#qr-code').text
       totp = generate_totp_code(secret)
@@ -74,6 +82,7 @@ RSpec.feature 'Multi Two Factor Authentication' do
       check t('forms.messages.remember_device')
       click_submit_default
 
+      expect(fake_analytics).to have_logged_event('User registration: complete')
       expect(current_path).to eq account_path
     end
 
@@ -89,7 +98,8 @@ RSpec.feature 'Multi Two Factor Authentication' do
       click_continue
 
       expect(current_path).to eq authenticator_setup_path
-      fill_in t('forms.totp_setup.totp_step_1'), with: 'App'
+
+      fill_in_totp_name
 
       secret = find('#qr-code').text
       totp = generate_totp_code(secret)
@@ -198,7 +208,6 @@ RSpec.feature 'Multi Two Factor Authentication' do
 
       context 'with platform authenticator as the first mfa' do
         it 'does not allow the user to skip selecting second mfa' do
-          allow(IdentityConfig.store).to receive(:platform_auth_set_up_enabled).and_return(true)
           allow(IdentityConfig.store).
             to receive(:show_unsupported_passkey_platform_authentication_setup).
             and_return(true)
@@ -212,7 +221,6 @@ RSpec.feature 'Multi Two Factor Authentication' do
           click_continue
           expect(page).to have_current_path webauthn_setup_path(platform: true)
 
-          fill_in_nickname_and_click_continue
           mock_press_button_on_hardware_key_on_setup
           expect(page).to have_current_path(auth_method_confirmation_path)
           expect(page).to_not have_button(t('mfa.skip'))
@@ -261,14 +269,16 @@ RSpec.feature 'Multi Two Factor Authentication' do
     end
 
     it 'regenerates backup codes path if a user clicks that they need new backup codes' do
-      click_link strip_tags(t('two_factor_authentication.backup_codes.new_backup_codes_html'))
+      find(
+        'a',
+        text: t('two_factor_authentication.backup_codes.new_backup_codes_html').gsub('&nbsp;', ' '),
+      ).click
       expect(page).to have_current_path backup_code_regenerate_path
     end
   end
 
   describe 'adding a phone as a second mfa' do
     it 'at setup, phone as second MFA show a cancel link that returns to mfa setup' do
-      allow(IdentityConfig.store).to receive(:platform_auth_set_up_enabled).and_return(true)
       allow(IdentityConfig.store).
         to receive(:show_unsupported_passkey_platform_authentication_setup).
         and_return(true)
@@ -278,7 +288,7 @@ RSpec.feature 'Multi Two Factor Authentication' do
       select_2fa_option('webauthn_platform', visible: :all)
 
       click_continue
-      fill_in_nickname_and_click_continue
+
       mock_press_button_on_hardware_key_on_setup
 
       click_link t('mfa.add')

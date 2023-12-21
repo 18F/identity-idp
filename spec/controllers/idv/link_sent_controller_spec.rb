@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Idv::LinkSentController do
-  include IdvHelper
-
   let(:user) { create(:user) }
 
   let(:ab_test_args) do
@@ -11,11 +9,19 @@ RSpec.describe Idv::LinkSentController do
 
   before do
     stub_sign_in(user)
+    subject.idv_session.welcome_visited = true
+    subject.idv_session.idv_consent_given = true
     subject.idv_session.flow_path = 'hybrid'
     stub_analytics
     stub_attempts_tracker
     allow(@analytics).to receive(:track_event)
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
+  end
+
+  describe '#step_info' do
+    it 'returns a valid StepInfo object' do
+      expect(Idv::LinkSentController.step_info).to be_valid
+    end
   end
 
   describe 'before_actions' do
@@ -33,10 +39,10 @@ RSpec.describe Idv::LinkSentController do
       )
     end
 
-    it 'checks that hybrid_handoff is complete' do
+    it 'checks that step is allowed' do
       expect(subject).to have_actions(
         :before,
-        :confirm_hybrid_handoff_complete,
+        :confirm_step_allowed,
       )
     end
   end
@@ -72,19 +78,19 @@ RSpec.describe Idv::LinkSentController do
       )
     end
 
-    context '#confirm_hybrid_handoff_complete' do
-      context 'no flow_path' do
-        it 'redirects to idv_hybrid_handoff_url' do
-          subject.idv_session.flow_path = nil
+    context 'no flow_path in idv_session' do
+      it 'redirects to idv_hybrid_handoff_url' do
+        subject.idv_session.flow_path = nil
 
-          get :show
+        get :show
 
-          expect(response).to redirect_to(idv_hybrid_handoff_url)
-        end
+        expect(response).to redirect_to(idv_hybrid_handoff_url)
       end
 
       context 'flow_path is standard' do
         it 'redirects to idv_document_capture_url' do
+          subject.idv_session.welcome_visited = true
+          subject.idv_session.idv_consent_given = true
           subject.idv_session.flow_path = 'standard'
 
           get :show
@@ -92,14 +98,14 @@ RSpec.describe Idv::LinkSentController do
           expect(response).to redirect_to(idv_document_capture_url)
         end
       end
-    end
 
-    context 'with pii in idv_session' do
-      it 'redirects to ssn step' do
-        subject.idv_session.pii_from_doc = Idp::Constants::MOCK_IDV_APPLICANT
-        get :show
+      context 'with pii in idv_session' do
+        it 'allows the back button and does not redirect' do
+          subject.idv_session.pii_from_doc = Idp::Constants::MOCK_IDV_APPLICANT
+          get :show
 
-        expect(response).to redirect_to(idv_ssn_url)
+          expect(response).to render_template :show
+        end
       end
     end
   end
@@ -113,6 +119,14 @@ RSpec.describe Idv::LinkSentController do
         irs_reproofing: false,
         step: 'link_sent',
       }.merge(ab_test_args)
+    end
+
+    it 'invalidates future steps' do
+      subject.idv_session.applicant = Idp::Constants::MOCK_IDV_APPLICANT
+      expect(subject).to receive(:clear_future_steps!).and_call_original
+
+      put :update
+      expect(subject.idv_session.applicant).to be_nil
     end
 
     it 'sends analytics_submitted event' do
@@ -140,14 +154,26 @@ RSpec.describe Idv::LinkSentController do
         allow(subject).to receive(:document_capture_session).and_return(document_capture_session)
       end
 
-      it 'redirects to ssn page when successful' do
-        put :update
+      context 'document capture session successful' do
+        it 'redirects to ssn page' do
+          put :update
 
-        expect(response).to redirect_to(idv_ssn_url)
+          expect(response).to redirect_to(idv_ssn_url)
 
-        pc = ProofingComponent.find_by(user_id: user.id)
-        expect(pc.document_check).to eq('mock')
-        expect(pc.document_type).to eq('state_id')
+          pc = ProofingComponent.find_by(user_id: user.id)
+          expect(pc.document_check).to eq('mock')
+          expect(pc.document_type).to eq('state_id')
+        end
+
+        context 'redo document capture' do
+          before do
+            subject.idv_session.redo_document_capture = true
+          end
+          it 'resets redo_document capture to nil in idv_session' do
+            put :update
+            expect(subject.idv_session.redo_document_capture).to be_nil
+          end
+        end
       end
 
       context 'document capture session canceled' do

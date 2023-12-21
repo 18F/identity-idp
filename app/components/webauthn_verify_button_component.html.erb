@@ -18,9 +18,7 @@
       <%= t('two_factor_authentication.webauthn_authenticating') %>
     </p>
   </div>
-  <%= render ButtonComponent.new(
-        big: true,
-        wide: true,
+  <%= render SubmitButtonComponent.new(
         class: 'webauthn-verify-button__button display-block margin-y-3',
       ).with_content(content) %>
   <%= hidden_field_tag :credential_id, '' %>
@@ -28,4 +26,5 @@
   <%= hidden_field_tag :signature, '' %>
   <%= hidden_field_tag :client_data_json, '' %>
   <%= hidden_field_tag :webauthn_error, '' %>
+  <%= hidden_field_tag :screen_lock_error, '' %>
 <% end %>

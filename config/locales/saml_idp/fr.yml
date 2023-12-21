@@ -1,6 +1,9 @@
 ---
 fr:
   saml_idp:
+    auth:
+      error:
+        title: Erreur
     shared:
       saml_post_binding:
         heading: Soumettre pour continuer

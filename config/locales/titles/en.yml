@@ -35,14 +35,15 @@ en:
       cancelled: Identity verification is cancelled
       come_back_soon: Come back soon
       enter_one_time_code: Enter your one-time code
+      enter_password: Re-enter your password
+      enter_password_letter: Re-enter your password to send your letter
       get_letter: Get a letter
       personal_key: Save your personal key
       phone: Verify your phone number
       reset_password: Reset Password
-      review: Re-enter your password
-      review_letter: Re-enter your password to send your letter
       verify_info: Verify your information
     mfa_setup:
+      face_touch_unlock_confirmation: Face or touch unlock added
       suggest_second_mfa: You’ve added your first authentication method! Add a second
         method as a backup.
     no_auth_option: No sign-in method found
@@ -73,14 +74,13 @@ en:
       completion_ial2: Connect your verified information to %{sp}
       completion_new_attributes: '%{sp} is requesting new information'
       completion_new_sp: You are now signing in for the first time
-      completion_reverified_consent: Update your verified information with %{sp}
+      completion_reverified_consent: Share your updated information with %{sp}
       confirmation: Continue to sign in
     spam_protection: Protecting against spam
     totp_setup:
       new: Add authentication app
     two_factor_setup: Two-factor authentication setup
     verify_email: Check your email
-    verify_profile: Activate your account
     visitors:
       index: Welcome
     webauthn_setup: Add your security key

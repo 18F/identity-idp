@@ -188,29 +188,22 @@ else
         cron: cron_24h,
         args: -> { [14.days.ago] },
       },
+      # Expire old GPO profiles
+      expire_gpo_profiles: {
+        class: 'GpoExpirationJob',
+        cron: cron_24h,
+      },
       # Monthly report checking in on key metrics
       monthly_key_metrics_report: {
         class: 'Reports::MonthlyKeyMetricsReport',
         cron: cron_24h,
-        args: -> { [Time.zone.today] },
+        args: -> { [Time.zone.yesterday.end_of_day] },
       },
-      # Job to backfill encrypted_pii_recovery_multi_region on profiles
-      multi_region_kms_migration_profile_migration: {
-        class: 'MultiRegionKmsMigration::ProfileMigrationJob',
-        cron: cron_12m,
-        kwargs: {
-          profile_count: IdentityConfig.store.multi_region_kms_migration_jobs_profile_count,
-          statement_timeout: IdentityConfig.store.multi_region_kms_migration_jobs_profile_timeout,
-        },
-      },
-      # Job to backfill encrypted_pii_recovery_multi_region on users
-      multi_region_kms_migration_user_migration: {
-        class: 'MultiRegionKmsMigration::UserMigrationJob',
-        cron: cron_12m,
-        kwargs: {
-          user_count: IdentityConfig.store.multi_region_kms_migration_jobs_user_count,
-          statement_timeout: IdentityConfig.store.multi_region_kms_migration_jobs_user_timeout,
-        },
+      # Send weekly authentication reports to partners
+      weekly_authentication_report: {
+        class: 'Reports::AuthenticationReport',
+        cron: cron_1w,
+        args: -> { [Time.zone.now] },
       },
     }.compact
   end

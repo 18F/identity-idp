@@ -45,7 +45,7 @@ RSpec.describe 'SAML requests', type: :request do
 
     it 'does not set a session cookie' do
       post saml_settings.idp_sso_target_url
-      new_cookies = response.header['Set-Cookie'].split("\n").map do |c|
+      new_cookies = response.header['set-cookie'].map do |c|
         cookie_regex.match(c)[:cookie]
       end
 

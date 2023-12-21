@@ -120,7 +120,7 @@ en:
       totp_step_3: Scan this QR barcode with your app
       totp_step_4: Enter the temporary code from your app
     two_factor:
-      backup_code: Security code
+      backup_code: Backup code
       personal_key: Personal key
       try_again: Use another phone number
     validation:
@@ -137,11 +137,12 @@ en:
       continue: Continue
       info_text: You’ll need to set up an additional authentication method after you
         set up face or touch unlock.
-      intro_html: '<p>Save your face or fingerprint as a credential on your device, so
-        you can access your account with it. %{app_name} does not store your
-        face or fingerprint.</p><p>You may need to use the same device to sign
-        in each time. %{link}</p>'
-      intro_link_text: Learn more about face or touch unlock.
+      intro_html: <p>Authenticate the same way you unlock your device, whether it’s
+        with your face or fingerprint, a password, or another method.</p><p>If
+        you use a password manager like iCloud Keychain or Google Password
+        Manager, it may ask to save a passkey. This lets you authenticate on any
+        device with that password manager. %{link}</p>
+      intro_link_text: Learn more about using multiple devices.
       nickname: Device nickname
       nickname_hint: If you add more devices for face or touch unlock, you’ll know
         which one is which.

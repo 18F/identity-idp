@@ -1,8 +1,9 @@
 import { render, screen, within } from '@testing-library/react';
 import DocumentCaptureReviewIssues from '@18f/identity-document-capture/components/document-capture-review-issues';
-import { InPersonContext } from '@18f/identity-document-capture/context';
+import { FeatureFlagContext, InPersonContext } from '@18f/identity-document-capture/context';
 import { toFormEntryError } from '@18f/identity-document-capture/services/upload';
 import { expect } from 'chai';
+import { composeComponents } from '@18f/identity-compose-components';
 
 describe('DocumentCaptureReviewIssues', () => {
   const DEFAULT_OPTIONS = {
@@ -34,16 +35,34 @@ describe('DocumentCaptureReviewIssues', () => {
           },
         ],
       };
-      const { getByText, getByLabelText, getByRole, getAllByRole } = render(
-        <InPersonContext.Provider value={{ inPersonURL: '/verify/doc_capture' }}>
-          <DocumentCaptureReviewIssues
-            {...{
+      const App = composeComponents(
+        [
+          FeatureFlagContext.Provider,
+          {
+            value: {
+              exitQuestionSectionEnabled: true,
+            },
+          },
+        ],
+        [
+          InPersonContext.Provider,
+          {
+            value: {
+              inPersonURL: '/verify/doc_capture',
+            },
+          },
+        ],
+        [
+          DocumentCaptureReviewIssues,
+          {
+            ...{
               ...DEFAULT_OPTIONS,
               ...props,
-            }}
-          />
-        </InPersonContext.Provider>,
+            },
+          },
+        ],
       );
+      const { getByText, getByLabelText, getByRole, getAllByRole } = render(<App />);
       const h1 = screen.getByRole('heading', { name: 'doc_auth.headings.review_issues', level: 1 });
       expect(h1).to.be.ok();
 
@@ -67,9 +86,8 @@ describe('DocumentCaptureReviewIssues', () => {
       const backCapture = getByLabelText('doc_auth.headings.document_capture_back');
       expect(backCapture).to.be.ok();
       expect(getByText('back side error')).to.be.ok();
-      const submitButton = getByRole('button');
-      expect(submitButton).to.be.ok();
-      expect(within(submitButton).getByText('forms.buttons.submit.default')).to.be.ok();
+      expect(getByRole('button', { name: 'forms.buttons.submit.default' })).to.be.ok();
+      expect(getByRole('button', { name: 'doc_auth.exit_survey.optional.button' })).to.be.ok();
     });
 
     it('renders for a doc type failure', () => {
@@ -115,9 +133,7 @@ describe('DocumentCaptureReviewIssues', () => {
       const backCapture = getByLabelText('doc_auth.headings.document_capture_back');
       expect(backCapture).to.be.ok();
       expect(getByText('back side doc type error')).to.be.ok();
-      const submitButton = getByRole('button');
-      expect(submitButton).to.be.ok();
-      expect(within(submitButton).getByText('forms.buttons.submit.default')).to.be.ok();
+      expect(getByRole('button', { name: 'forms.buttons.submit.default' })).to.be.ok();
     });
   });
 });

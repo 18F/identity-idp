@@ -2,20 +2,21 @@ require 'rack/timeout/base'
 
 module Rack
   class Timeout
-    @excludes = [
-      '/api/verify/images',
-      '/verify/doc_auth/document_capture',
-      '/verify/doc_auth/verify',
-      '/verify/capture_doc/document_capture',
-      '/verify/doc_auth/link_sent',
-    ]
+    EXCLUDES = [
+      '/verify/verify_info',
+      '/verify/phone',
+      '/verify/document_capture',
+      '/verify/link_sent',
+    ].flat_map do |path|
+      [path] + Idp::Constants::AVAILABLE_LOCALES.map { |locale| "/#{locale}#{path}" }
+    end + ['/api/verify/images']
 
     class << self
       attr_accessor :excludes
     end
 
     def call_with_excludes(env)
-      if env['REQUEST_URI']&.start_with?(*self.class.excludes)
+      if EXCLUDES.any? { |path| env['REQUEST_URI']&.start_with?(path) }
         @app.call(env)
       else
         call_without_excludes(env)

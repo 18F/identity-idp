@@ -15,6 +15,8 @@ import { useDidUpdateEffect } from '@18f/identity-react-hooks';
 import { useI18n } from '@18f/identity-react-i18n';
 import { removeUnloadProtection } from '@18f/identity-url';
 import AcuantCamera, { AcuantDocumentType } from './acuant-camera';
+import AcuantSelfieCamera from './acuant-selfie-camera';
+import AcuantSelfieCaptureCanvas from './acuant-selfie-capture-canvas';
 import type {
   AcuantCaptureFailureError,
   AcuantSuccessResponse,
@@ -62,7 +64,7 @@ interface ImageAnalyticsPayload {
    * Whether the Acuant SDK captured the image automatically, or using the tap to
    * capture functionality
    */
-  acuantCaptureMode?: AcuantCaptureMode;
+  acuantCaptureMode?: AcuantCaptureMode | null;
 
   /**
    * Fingerprint of the image, base64 encoded SHA-256 digest
@@ -335,6 +337,9 @@ function AcuantCapture(
   const [attempt, incrementAttempt] = useCounter(1);
   const [acuantFailureCookie, setAcuantFailureCookie, refreshAcuantFailureCookie] =
     useCookie('AcuantCameraHasFailed');
+  // There's some pretty significant changes to this component when it's used for
+  // selfie capture vs document image capture. This controls those changes.
+  const selfieCapture = name === 'selfie';
 
   const {
     failedCaptureAttempts,
@@ -376,7 +381,11 @@ function AcuantCapture(
   function getAddAttemptAnalyticsPayload<
     P extends ImageAnalyticsPayload | AcuantImageAnalyticsPayload,
   >(payload: P): P {
-    const enhancedPayload = { ...payload, attempt, acuantCaptureMode };
+    const enhancedPayload = {
+      ...payload,
+      attempt,
+      acuantCaptureMode: payload.source === 'upload' ? null : acuantCaptureMode,
+    };
     incrementAttempt();
     return enhancedPayload;
   }
@@ -387,6 +396,7 @@ function AcuantCapture(
   async function onUpload(nextValue: File | null) {
     let analyticsPayload: ImageAnalyticsPayload | undefined;
     let hasFailed = false;
+
     if (nextValue) {
       const { width, height, fingerprint } = await getImageMetadata(nextValue);
       hasFailed = failedSubmissionImageFingerprints[name]?.includes(fingerprint);
@@ -399,7 +409,11 @@ function AcuantCapture(
         size: nextValue.size,
         failedImageResubmission: hasFailed,
       });
-      trackEvent(`IdV: ${name} image added`, analyticsPayload);
+
+      trackEvent(
+        name === 'selfie' ? 'idv_selfie_image_file_uploaded' : `IdV: ${name} image added`,
+        analyticsPayload,
+      );
     }
 
     onChangeAndResetError(nextValue, analyticsPayload);
@@ -486,6 +500,49 @@ function AcuantCapture(
     } else {
       withoutClickLogging(() => inputRef.current?.click());
     }
+  }
+
+  function onSelfieCaptureOpen() {
+    trackEvent('idv_sdk_selfie_image_capture_opened');
+
+    setIsCapturingEnvironment(true);
+  }
+
+  function onSelfieCaptureClosed() {
+    trackEvent('idv_sdk_selfie_image_capture_closed_without_photo');
+
+    setIsCapturingEnvironment(false);
+  }
+
+  function onSelfieCaptureSuccess({ image }: { image: string }) {
+    trackEvent('idv_sdk_selfie_image_added', { attempt });
+
+    onChangeAndResetError(image);
+    onResetFailedCaptureAttempts();
+    setIsCapturingEnvironment(false);
+  }
+
+  function onSelfieCaptureFailure(error) {
+    trackEvent('idv_sdk_selfie_image_capture_failed', {
+      sdk_error_code: error.code,
+      sdk_error_message: error.message,
+    });
+
+    // Internally, Acuant sets a cookie to bail on guided capture if initialization had
+    // previously failed for any reason, including declined permission. Since the cookie
+    // never expires, and since we want to re-prompt even if the user had previously
+    // declined, unset the cookie value when failure occurs for permissions.
+    setAcuantFailureCookie(null);
+    onCameraAccessDeclined();
+
+    // Due to a bug with Safari on iOS we force the page to refresh on the third
+    // time a user denies permissions.
+    onFailedCameraPermissionAttempt();
+    if (failedCameraPermissionAttempts > 2) {
+      removeUnloadProtection();
+      window.location.reload();
+    }
+    setIsCapturingEnvironment(false);
   }
 
   function onAcuantImageCaptureSuccess(
@@ -598,7 +655,7 @@ function AcuantCapture(
 
   return (
     <div className={[className, 'document-capture-acuant-capture'].filter(Boolean).join(' ')}>
-      {isCapturingEnvironment && (
+      {isCapturingEnvironment && !selfieCapture && (
         <AcuantCamera
           onCropStart={() => setHasStartedCropping(true)}
           onImageCaptureSuccess={onAcuantImageCaptureSuccess}
@@ -614,6 +671,20 @@ function AcuantCapture(
             </FullScreen>
           )}
         </AcuantCamera>
+      )}
+      {isCapturingEnvironment && selfieCapture && (
+        <AcuantSelfieCamera
+          onImageCaptureSuccess={onSelfieCaptureSuccess}
+          onImageCaptureFailure={onSelfieCaptureFailure}
+          onImageCaptureOpen={onSelfieCaptureOpen}
+          onImageCaptureClose={onSelfieCaptureClosed}
+        >
+          <AcuantSelfieCaptureCanvas
+            fullScreenRef={fullScreenRef}
+            fullScreenLabel={t('doc_auth.accessible_labels.document_capture_dialog')}
+            onRequestClose={() => setIsCapturingEnvironment(false)}
+          />
+        </AcuantSelfieCamera>
       )}
       <FileInput
         ref={inputRef}
@@ -654,12 +725,13 @@ function AcuantCapture(
           allowUpload &&
           formatHTML(t('doc_auth.buttons.take_or_upload_picture_html'), {
             'lg-take-photo': () => null,
+            'lg-or': ({ children }) => (
+              <span className="padding-left-1 padding-right-1">{children}</span>
+            ),
             'lg-upload': ({ children }) => (
-              <span className="padding-left-1">
-                <Button isUnstyled onClick={withLoggedClick('upload')(forceUpload)}>
-                  {children}
-                </Button>
-              </span>
+              <Button isUnstyled onClick={withLoggedClick('upload')(forceUpload)}>
+                {children}
+              </Button>
             ),
           })}
       </div>

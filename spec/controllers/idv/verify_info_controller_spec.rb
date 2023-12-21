@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Idv::VerifyInfoController do
-  include IdvHelper
+  include FlowPolicyHelper
 
   let(:user) { create(:user) }
   let(:analytics_hash) do
@@ -18,13 +18,17 @@ RSpec.describe Idv::VerifyInfoController do
   end
 
   before do
+    stub_sign_in(user)
+    stub_up_to(:ssn, idv_session: subject.idv_session)
     stub_analytics
     stub_attempts_tracker
-    stub_idv_steps_before_verify_step(user)
-    subject.idv_session.flow_path = 'standard'
-    subject.idv_session.pii_from_doc = Idp::Constants::MOCK_IDV_APPLICANT.dup
-    subject.idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
+  end
+
+  describe '#step_info' do
+    it 'returns a valid StepInfo object' do
+      expect(Idv::VerifyInfoController.step_info).to be_valid
+    end
   end
 
   describe 'before_actions' do
@@ -39,13 +43,6 @@ RSpec.describe Idv::VerifyInfoController do
       expect(subject).to have_actions(
         :before,
         :check_for_mail_only_outage,
-      )
-    end
-
-    it 'confirms ssn step complete' do
-      expect(subject).to have_actions(
-        :before,
-        :confirm_ssn_step_complete,
       )
     end
   end
@@ -101,12 +98,12 @@ RSpec.describe Idv::VerifyInfoController do
     end
 
     context 'when the user has already verified their info' do
-      it 'redirects to the review controller' do
-        subject.idv_session.resolution_successful = true
+      it 'renders show' do
+        stub_up_to(:verify_info, idv_session: subject.idv_session)
 
         get :show
 
-        expect(response).to redirect_to(idv_review_url)
+        expect(response).to render_template :show
       end
     end
 
@@ -192,8 +189,6 @@ RSpec.describe Idv::VerifyInfoController do
         document_capture_session
       end
 
-      let(:expected_failure_reason) { DocAuthHelper::SAMPLE_TMX_SUMMARY_REASON_CODE }
-
       before do
         controller.
           idv_session.verify_info_step_document_capture_session_uuid = document_capture_session.uuid
@@ -211,7 +206,6 @@ RSpec.describe Idv::VerifyInfoController do
         it 'it logs IRS idv_tmx_fraud_check event' do
           expect(@irs_attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
             success: true,
-            failure_reason: nil,
           )
           get :show
         end
@@ -228,7 +222,6 @@ RSpec.describe Idv::VerifyInfoController do
         it 'it logs IRS idv_tmx_fraud_check event' do
           expect(@irs_attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
             success: false,
-            failure_reason: expected_failure_reason,
           )
           get :show
         end
@@ -245,7 +238,6 @@ RSpec.describe Idv::VerifyInfoController do
         it 'it logs IRS idv_tmx_fraud_check event' do
           expect(@irs_attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
             success: false,
-            failure_reason: expected_failure_reason,
           )
           get :show
         end
@@ -262,7 +254,6 @@ RSpec.describe Idv::VerifyInfoController do
         it 'it logs IRS idv_tmx_fraud_check event' do
           expect(@irs_attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
             success: false,
-            failure_reason: expected_failure_reason,
           )
           get :show
         end
@@ -295,7 +286,7 @@ RSpec.describe Idv::VerifyInfoController do
             verified_attributes: [],
           ),
           device_profiling_result: Proofing::DdpResult.new(success: true),
-          double_address_verification: false,
+          ipp_enrollment_in_progress: false,
           residential_resolution_result: Proofing::Resolution::Result.new(success: true),
           resolution_result: Proofing::Resolution::Result.new(success: true),
           same_address_as_id: true,
@@ -341,8 +332,8 @@ RSpec.describe Idv::VerifyInfoController do
         let(:success) { true }
         let(:vendor_name) { 'UnsupportedJurisdiction' }
 
-        it 'considers the request billable' do
-          expect { put :show }.to change { SpCost.where(cost_type: 'aamva').count }.by(1)
+        it 'does not consider the request billable' do
+          expect { put :show }.to_not change { SpCost.where(cost_type: 'aamva').count }
         end
       end
 
@@ -373,6 +364,12 @@ RSpec.describe Idv::VerifyInfoController do
   end
 
   describe '#update' do
+    it 'invalidates future steps' do
+      expect(subject).to receive(:clear_future_steps!)
+
+      put :update
+    end
+
     it 'logs the correct analytics event' do
       put :update
 
