@@ -363,7 +363,6 @@ development:
   attribute_encryption_key_queue: '[{ "key": "11111111111111111111111111111111" }, { "key": "22222222222222222222222222222222" }]'
   aws_logo_bucket: ''
   component_previews_enabled: true
-  component_previews_embed_frame_ancestors: '["http://localhost:4000"]'
   dashboard_api_token: test_token
   dashboard_url: http://localhost:3001/api/service_providers
   database_host: ''
