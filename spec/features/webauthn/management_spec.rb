@@ -85,11 +85,10 @@ RSpec.describe 'webauthn management' do
       expect(page).to have_content(name)
 
       click_link(
-        format(
-          '%s: %s',
+        [
           t('two_factor_authentication.webauthn_roaming.manage_accessible_label'),
           name,
-        ),
+        ].join(': '),
       )
 
       expect(current_path).to eq(edit_webauthn_path(id: webauthn_config.id))
@@ -111,11 +110,10 @@ RSpec.describe 'webauthn management' do
       expect(page).to have_content(name)
 
       click_link(
-        format(
-          '%s: %s',
+        [
           t('two_factor_authentication.webauthn_roaming.manage_accessible_label'),
           name,
-        ),
+        ].join(': '),
       )
 
       expect(current_path).to eq(edit_webauthn_path(id: webauthn_config.id))
@@ -142,11 +140,10 @@ RSpec.describe 'webauthn management' do
       expect(page).to have_content(name)
 
       click_link(
-        format(
-          '%s: %s',
+        [
           t('two_factor_authentication.webauthn_roaming.manage_accessible_label'),
           name,
-        ),
+        ].join(': '),
       )
 
       expect(current_path).to eq(edit_webauthn_path(id: webauthn_config.id))
@@ -167,11 +164,10 @@ RSpec.describe 'webauthn management' do
       expect(page).to have_content(name)
 
       click_link(
-        format(
-          '%s: %s',
+        [
           t('two_factor_authentication.webauthn_roaming.manage_accessible_label'),
           name,
-        ),
+        ].join(': '),
       )
 
       expect(current_path).to eq(edit_webauthn_path(id: webauthn_config.id))
@@ -193,11 +189,10 @@ RSpec.describe 'webauthn management' do
       expect(page).to have_content(name)
 
       click_link(
-        format(
-          '%s: %s',
+        [
           t('two_factor_authentication.webauthn_roaming.manage_accessible_label'),
           name,
-        ),
+        ].join(': '),
       )
 
       expect(current_path).to eq(edit_webauthn_path(id: webauthn_config.id))
@@ -249,11 +244,10 @@ RSpec.describe 'webauthn management' do
         expect(page).to have_content(name)
 
         click_button(
-          format(
-            '%s: %s',
+          [
             t('two_factor_authentication.webauthn_roaming.manage_accessible_label'),
             name,
-          ),
+          ].join(': '),
         )
 
         # Verify user can cancel deletion. There's an implied assertion here that the button becomes
@@ -281,11 +275,10 @@ RSpec.describe 'webauthn management' do
         expect(page).to have_content(name)
 
         click_button(
-          format(
-            '%s: %s',
+          [
             t('two_factor_authentication.webauthn_roaming.manage_accessible_label'),
             name,
-          ),
+          ].join(': '),
         )
         click_button t('components.manageable_authenticator.rename')
 
@@ -313,11 +306,10 @@ RSpec.describe 'webauthn management' do
         expect(page).to have_content(name)
 
         click_button(
-          format(
-            '%s: %s',
+          [
             t('two_factor_authentication.webauthn_roaming.manage_accessible_label'),
             name,
-          ),
+          ].join(': '),
         )
         accept_confirm(wait: 5) { click_button t('components.manageable_authenticator.delete') }
 
@@ -338,11 +330,10 @@ RSpec.describe 'webauthn management' do
         expect(page).to have_content(name)
 
         click_button(
-          format(
-            '%s: %s',
+          [
             t('two_factor_authentication.webauthn_roaming.manage_accessible_label'),
             name,
-          ),
+          ].join(': '),
         )
         click_button t('components.manageable_authenticator.rename')
 
@@ -404,11 +395,10 @@ RSpec.describe 'webauthn management' do
       expect(page).to have_content(name)
 
       click_link(
-        format(
-          '%s: %s',
+        [
           t('two_factor_authentication.webauthn_platform.manage_accessible_label'),
           name,
-        ),
+        ].join(': '),
       )
 
       expect(current_path).to eq(edit_webauthn_path(id: webauthn_config.id))
@@ -430,11 +420,10 @@ RSpec.describe 'webauthn management' do
       expect(page).to have_content(name)
 
       click_link(
-        format(
-          '%s: %s',
+        [
           t('two_factor_authentication.webauthn_platform.manage_accessible_label'),
           name,
-        ),
+        ].join(': '),
       )
 
       expect(current_path).to eq(edit_webauthn_path(id: webauthn_config.id))
@@ -461,11 +450,10 @@ RSpec.describe 'webauthn management' do
       expect(page).to have_content(name)
 
       click_link(
-        format(
-          '%s: %s',
+        [
           t('two_factor_authentication.webauthn_platform.manage_accessible_label'),
           name,
-        ),
+        ].join(': '),
       )
 
       expect(current_path).to eq(edit_webauthn_path(id: webauthn_config.id))
@@ -486,11 +474,10 @@ RSpec.describe 'webauthn management' do
       expect(page).to have_content(name)
 
       click_link(
-        format(
-          '%s: %s',
+        [
           t('two_factor_authentication.webauthn_platform.manage_accessible_label'),
           name,
-        ),
+        ].join(': '),
       )
 
       expect(current_path).to eq(edit_webauthn_path(id: webauthn_config.id))
@@ -512,11 +499,10 @@ RSpec.describe 'webauthn management' do
       expect(page).to have_content(name)
 
       click_link(
-        format(
-          '%s: %s',
+        [
           t('two_factor_authentication.webauthn_platform.manage_accessible_label'),
           name,
-        ),
+        ].join(': '),
       )
 
       expect(current_path).to eq(edit_webauthn_path(id: webauthn_config.id))
@@ -568,11 +554,10 @@ RSpec.describe 'webauthn management' do
         expect(page).to have_content(name)
 
         click_button(
-          format(
-            '%s: %s',
+          [
             t('two_factor_authentication.webauthn_platform.manage_accessible_label'),
             name,
-          ),
+          ].join(': '),
         )
 
         # Verify user can cancel deletion. There's an implied assertion here that the button becomes
@@ -600,11 +585,10 @@ RSpec.describe 'webauthn management' do
         expect(page).to have_content(name)
 
         click_button(
-          format(
-            '%s: %s',
+          [
             t('two_factor_authentication.webauthn_platform.manage_accessible_label'),
             name,
-          ),
+          ].join(': '),
         )
         click_button t('components.manageable_authenticator.rename')
 
@@ -632,11 +616,10 @@ RSpec.describe 'webauthn management' do
         expect(page).to have_content(name)
 
         click_button(
-          format(
-            '%s: %s',
+          [
             t('two_factor_authentication.webauthn_platform.manage_accessible_label'),
             name,
-          ),
+          ].join(': '),
         )
         accept_confirm(wait: 5) { click_button t('components.manageable_authenticator.delete') }
 
@@ -657,11 +640,10 @@ RSpec.describe 'webauthn management' do
         expect(page).to have_content(name)
 
         click_button(
-          format(
-            '%s: %s',
+          [
             t('two_factor_authentication.webauthn_platform.manage_accessible_label'),
             name,
-          ),
+          ].join(': '),
         )
         click_button t('components.manageable_authenticator.rename')
 
