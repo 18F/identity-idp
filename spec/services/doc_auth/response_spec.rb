@@ -6,6 +6,7 @@ RSpec.describe DocAuth::Response do
   let(:exception) { nil }
   let(:pii_from_doc) { {} }
   let(:attention_with_barcode) { false }
+  let(:selfie_check_performed) { false }
   subject(:response) do
     described_class.new(
       success: success,
@@ -13,6 +14,7 @@ RSpec.describe DocAuth::Response do
       exception: exception,
       pii_from_doc: pii_from_doc,
       attention_with_barcode: attention_with_barcode,
+      selfie_check_performed: selfie_check_performed,
     )
   end
 
@@ -22,6 +24,7 @@ RSpec.describe DocAuth::Response do
     let(:other_exception) { nil }
     let(:other_pii_from_doc) { {} }
     let(:other_attention_with_barcode) { false }
+    let(:other_selfie_check_performed) { false }
     let(:other) do
       described_class.new(
         success: other_success,
@@ -154,6 +157,12 @@ RSpec.describe DocAuth::Response do
   describe 'doc_type_supported?' do
     it 'returns true by default' do
       expect(response.doc_type_supported?).to eq(true)
+    end
+  end
+
+  describe 'selfie_check_performed' do
+    it 'returns false by default' do
+      expect(response.selfie_check_performed?).to eq(false)
     end
   end
 end
