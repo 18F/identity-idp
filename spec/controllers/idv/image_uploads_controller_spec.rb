@@ -964,62 +964,36 @@ RSpec.describe Idv::ImageUploadsController do
       end
     end
 
-    context 'when liveness checking enabled' do
+    context 'the frontend requests a selfie' do
       before do
-        allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).and_return(true)
+        allow(controller).to receive(:decorated_sp_session).
+          and_return(double('decorated_session', { selfie_required?: true }))
       end
+
       let(:selfie_img) { DocAuthImageFixtures.selfie_image_multipart }
+
       it 'returns a successful response' do
         action
         expect(response.status).to eq(200)
         expect(json[:success]).to eq(true)
         expect(document_capture_session.reload.load_result.success?).to eq(true)
       end
+      it 'sends a selfie' do
+        expect_any_instance_of(DocAuth::Mock::DocAuthMockClient).
+          to receive(:post_images).with(
+            front_image: an_instance_of(String),
+            back_image: an_instance_of(String),
+            selfie_image: an_instance_of(String),
+            image_source: :unknown,
+            user_uuid: an_instance_of(String),
+            uuid_prefix: nil,
+            liveness_checking_required: true,
+          ).and_call_original
 
-      context 'the frontend requests a selfie' do
-        before do
-          allow(controller).to receive(:decorated_sp_session).
-            and_return(double('decorated_session', { selfie_required?: true }))
-        end
-        it 'sends a selfie' do
-          expect_any_instance_of(DocAuth::Mock::DocAuthMockClient).
-            to receive(:post_images).with(
-              front_image: an_instance_of(String),
-              back_image: an_instance_of(String),
-              selfie_image: an_instance_of(String),
-              image_source: :unknown,
-              user_uuid: an_instance_of(String),
-              uuid_prefix: nil,
-              liveness_checking_required: true,
-            ).and_call_original
-
-          action
-          expect(response.status).to eq(200)
-          expect(json[:success]).to eq(true)
-          expect(document_capture_session.reload.load_result.success?).to eq(true)
-        end
-
-        context 'hosted env is prod' do
-          it 'does not send a selfie' do
-            allow(Identity::Hostdata).to receive(:env).and_return('prod')
-
-            expect_any_instance_of(DocAuth::Mock::DocAuthMockClient).
-              to receive(:post_images).with(
-                front_image: an_instance_of(String),
-                back_image: an_instance_of(String),
-                selfie_image: nil,
-                image_source: :unknown,
-                user_uuid: an_instance_of(String),
-                uuid_prefix: nil,
-                liveness_checking_required: false,
-              ).and_call_original
-
-            action
-            expect(response.status).to eq(200)
-            expect(json[:success]).to eq(true)
-            expect(document_capture_session.reload.load_result.success?).to eq(true)
-          end
-        end
+        action
+        expect(response.status).to eq(200)
+        expect(json[:success]).to eq(true)
+        expect(document_capture_session.reload.load_result.success?).to eq(true)
       end
     end
   end
