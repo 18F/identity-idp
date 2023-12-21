@@ -145,7 +145,6 @@ module Identity
     if IdentityConfig.store.component_previews_enabled
       require 'lookbook'
       require 'component_preview_csp'
-      config.middleware.insert_after ActionDispatch::Static, ComponentPreviewCsp
 
       config.view_component.preview_controller = 'ComponentPreviewController'
       config.view_component.preview_paths = [Rails.root.join('spec', 'components', 'previews')]
@@ -156,6 +155,8 @@ module Identity
       if IdentityConfig.store.component_previews_embed_frame_ancestors.present?
         # so we can embed a lookbook component into the dev docs
         config.lookbook.preview_embeds.policy = "ALLOWALL"
+        # lookbook strips out CSP, this brings it back so we aren't so permissive
+        config.middleware.insert_after ActionDispatch::Static, ComponentPreviewCsp
       end
     end
   end
