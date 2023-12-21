@@ -913,11 +913,6 @@ module AnalyticsEvents
     )
   end
 
-  # @identity.idp.previous_event_name IdV: in person proofing redo_address submitted
-  def idv_doc_auth_redo_address_submitted(**extra)
-    track_event('IdV: doc auth redo_address submitted', **extra)
-  end
-
   def idv_doc_auth_redo_ssn_submitted(**extra)
     track_event('IdV: doc auth redo_ssn submitted', **extra)
   end
@@ -1614,37 +1609,6 @@ module AnalyticsEvents
       analytics_id: analytics_id,
       irs_reproofing: irs_reproofing,
       opted_in_to_in_person_proofing: opted_in_to_in_person_proofing,
-      **extra,
-    )
-  end
-
-  # @param [String] flow_path
-  # @param [String] step
-  # @param [String] analytics_id
-  # @param [Boolean] irs_reproofing
-  # @param [Boolean] success
-  # @param [Hash] errors
-  # @param [Boolean, nil] same_address_as_id
-  # User clicked cancel on update address page
-  def idv_in_person_proofing_cancel_update_address(
-    flow_path: nil,
-    step: nil,
-    analytics_id: nil,
-    irs_reproofing: nil,
-    success: nil,
-    errors: nil,
-    same_address_as_id: nil,
-    **extra
-  )
-    track_event(
-      'IdV: in person proofing cancel_update_address submitted',
-      flow_path: flow_path,
-      step: step,
-      analytics_id: analytics_id,
-      irs_reproofing: irs_reproofing,
-      success: success,
-      errors: errors,
-      same_address_as_id: same_address_as_id,
       **extra,
     )
   end
