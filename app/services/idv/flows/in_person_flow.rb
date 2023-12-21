@@ -8,10 +8,8 @@ module Idv
       }.freeze
 
       ACTIONS = {
-        cancel_update_address: Idv::Actions::InPerson::CancelUpdateAddressAction,
         cancel_update_state_id: Idv::Actions::InPerson::CancelUpdateStateIdAction,
         redo_state_id: Idv::Actions::InPerson::RedoStateIdAction,
-        redo_address: Idv::Actions::InPerson::RedoAddressAction,
       }.freeze
 
       STEP_INDICATOR_STEPS = [
