@@ -78,7 +78,7 @@ RSpec.describe Idv::ApiImageUploadForm do
       end
     end
 
-    context 'when liveness check is enabled' do
+    context 'when liveness check is required' do
       let(:liveness_checking_required) { 'true' }
       it 'is not valid without selfie' do
         expect(form.valid?).to eq(false)
