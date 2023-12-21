@@ -74,6 +74,28 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController do
         expect(response).to render_template :show
       end
 
+      context 'when a selfie is requested' do
+        before do
+          allow(subject).to receive(:decorated_sp_session).
+            and_return(double('decorated_session', { selfie_required?: true, sp_name: 'sp' }))
+        end
+        context 'when selfie is required by sp session' do
+          it 'requests FE to display selfie' do
+            expect(subject).to receive(:render).with(
+              :show,
+              locals: hash_including(
+                document_capture_session_uuid: document_capture_session_uuid,
+                doc_auth_selfie_capture: true,
+              ),
+            ).and_call_original
+
+            get :show
+
+            expect(response).to render_template :show
+          end
+        end
+      end
+
       it 'sends analytics_visited event' do
         get :show
 
