@@ -426,7 +426,6 @@ production:
   attribute_encryption_key:
   attribute_encryption_key_queue: '[]'
   aws_logo_bucket: ''
-  component_previews_embed_frame_ancestors: ['https://developers.login.gov']
   dashboard_api_token: ''
   dashboard_url: https://dashboard.demo.login.gov
   database_host: ''
