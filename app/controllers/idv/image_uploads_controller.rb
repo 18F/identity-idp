@@ -23,7 +23,7 @@ module Idv
         uuid_prefix: current_sp&.app_id,
         irs_attempts_api_tracker: irs_attempts_api_tracker,
         store_encrypted_images: store_encrypted_images?,
-        liveness_checking_required: liveness_checking_required?,
+        liveness_checking_required: decorated_sp_session.selfie_required?,
       )
     end
 
@@ -33,13 +33,6 @@ module Idv
 
     def liveness_checking_enabled?
       IdentityConfig.store.doc_auth_selfie_capture_enabled
-    end
-
-    def liveness_checking_required?
-      return false if Identity::Hostdata.env == 'prod'
-      return false unless IdentityConfig.store.doc_auth_selfie_capture_enabled
-
-      decorated_sp_session.selfie_required?
     end
   end
 end
