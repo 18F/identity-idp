@@ -6,6 +6,8 @@ RSpec.describe Idv::ImageUploadsController do
   let(:document_filename_regex) { /^[a-f0-9]{8}-([a-f0-9]{4}-){3}[a-f0-9]{12}\.[a-z]+$/ }
   let(:base64_regex) { /^[a-z0-9+\/]+=*$/i }
   let(:selfie_img) { nil }
+  let(:state_id_number) { 'S59397998' }
+
   describe '#create' do
     subject(:action) do
       post :create, params: params
@@ -462,7 +464,6 @@ RSpec.describe Idv::ImageUploadsController do
         let(:zipcode) { '12345' }
         let(:country_code) { 'USA' }
         let(:class_name) { 'Identification Card' }
-        let(:state_id_number) { 'S59397998' }
 
         before do
           DocAuth::Mock::DocAuthMockClient.mock_response!(
@@ -510,7 +511,7 @@ RSpec.describe Idv::ImageUploadsController do
               :idv_document_upload_submitted,
               success: false,
               document_state: 'ND',
-              document_number: 'S59397998',
+              document_number: state_id_number,
               document_issued: nil,
               document_expiration: nil,
               first_name: nil,
@@ -599,7 +600,7 @@ RSpec.describe Idv::ImageUploadsController do
               :idv_document_upload_submitted,
               success: false,
               document_state: 'ND',
-              document_number: 'S59397998',
+              document_number: state_id_number,
               document_issued: nil,
               document_expiration: nil,
               first_name: nil,
@@ -688,7 +689,7 @@ RSpec.describe Idv::ImageUploadsController do
               :idv_document_upload_submitted,
               success: false,
               document_state: 'Maryland',
-              document_number: 'S59397998',
+              document_number: state_id_number,
               document_issued: nil,
               document_expiration: nil,
               first_name: 'FAKEY',
@@ -777,7 +778,7 @@ RSpec.describe Idv::ImageUploadsController do
               document_front_image_filename: nil,
               document_image_encryption_key: nil,
               document_state: 'ND',
-              document_number: 'S59397998',
+              document_number: state_id_number,
               document_issued: nil,
               document_expiration: nil,
               first_name: 'FAKEY',
