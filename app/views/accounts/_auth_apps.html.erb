@@ -1,22 +1,24 @@
 <h2 class="margin-top-0 margin-bottom-1">
   <%= t('headings.account.authentication_apps') %>
 </h2>
-<div class="border-bottom border-primary-light">
-  <% MfaContext.new(current_user).auth_app_configurations.each do |auth_app_configuration| %>
-    <div class="padding-1 grid-row border-top border-left border-right border-primary-light">
-      <div class="grid-col-8">
-        <div class="grid-col-12 tablet:grid-col-6">
-          <%= auth_app_configuration.name %>
-        </div>
-      </div>
-      <% if MfaPolicy.new(current_user).multiple_factors_enabled? %>
-        <div class="grid-col-4 text-right">
-          <%= render 'accounts/actions/disable_totp', id: auth_app_configuration.id %>
-        </div>
-      <% end %>
-    </div>
+
+<div role="list">
+  <% MfaContext.new(current_user).auth_app_configurations.each do |configuration| %>
+    <%= render ManageableAuthenticatorComponent.new(
+          configuration:,
+          user_session:,
+          manage_url: edit_webauthn_path(id: configuration.id),
+          manage_api_url: api_internal_two_factor_authentication_webauthn_path(id: configuration.id),
+          custom_strings: {
+            deleted: t('two_factor_authentication.webauthn_platform.deleted'),
+            renamed: t('two_factor_authentication.webauthn_platform.renamed'),
+            manage_accessible_label: t('two_factor_authentication.webauthn_platform.manage_accessible_label'),
+          },
+          role: 'list-item',
+        ) %>
   <% end %>
 </div>
+
 <% if current_user.auth_app_configurations.count < IdentityConfig.store.max_auth_apps_per_account %>
   <%= render ButtonComponent.new(
         action: ->(**tag_options, &block) do
