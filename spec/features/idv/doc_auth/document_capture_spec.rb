@@ -109,6 +109,8 @@ RSpec.feature 'document capture step', :js do
         end
 
         it 'proceeds to the next page with valid info' do
+          expect(page).to have_current_path(idv_document_capture_url)
+          expect(page).not_to have_content(t('doc_auth.headings.document_capture_selfie'))
           attach_and_submit_images
           expect(page).to have_current_path(idv_ssn_url)
 
@@ -176,6 +178,7 @@ RSpec.feature 'document capture step', :js do
 
         expect(page).to have_current_path(idv_document_capture_url)
         expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+        expect(page).not_to have_content(t('doc_auth.headings.document_capture_selfie'))
 
         attach_and_submit_images
 
@@ -197,30 +200,98 @@ RSpec.feature 'document capture step', :js do
       allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).and_return(true)
     end
 
-    it 'proceeds to the next page with valid info, including a selfie image' do
-      perform_in_browser(:mobile) do
-        visit_idp_from_oidc_sp_with_ial2
-        sign_in_and_2fa_user(user)
-        complete_doc_auth_steps_before_document_capture_step
+    context 'when a selfie is not requested by SP' do
+      it 'proceeds to the next page with valid info, excluding a selfie image' do
+        perform_in_browser(:mobile) do
+          visit_idp_from_oidc_sp_with_ial2
+          sign_in_and_2fa_user(user)
+          complete_doc_auth_steps_before_document_capture_step
 
-        expect(page).to have_current_path(idv_document_capture_url)
-        expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
-        expect_doc_capture_page_header(t('doc_auth.headings.document_capture_with_selfie'))
-        expect_doc_capture_id_subheader
-        expect_doc_capture_selfie_subheader
-        attach_images
-        attach_selfie
-        submit_images
+          expect(page).to have_current_path(idv_document_capture_url)
+          expect(page).not_to have_content(t('doc_auth.headings.document_capture_selfie'))
 
-        expect(page).to have_current_path(idv_ssn_url)
-        expect_costing_for_document
-        expect(DocAuthLog.find_by(user_id: user.id).state).to eq('MT')
+          expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
 
-        expect(page).to have_current_path(idv_ssn_url)
-        fill_out_ssn_form_ok
-        click_idv_continue
-        complete_verify_step
-        expect(page).to have_current_path(idv_phone_url)
+          attach_images
+          submit_images
+
+          expect(page).to have_current_path(idv_ssn_url)
+          expect_costing_for_document
+          expect(DocAuthLog.find_by(user_id: user.id).state).to eq('MT')
+
+          expect(page).to have_current_path(idv_ssn_url)
+          fill_out_ssn_form_ok
+          click_idv_continue
+          complete_verify_step
+          expect(page).to have_current_path(idv_phone_url)
+        end
+      end
+    end
+
+    context 'when a selfie is required by the SP' do
+      before do
+        allow_any_instance_of(FederatedProtocols::Oidc).
+          to receive(:biometric_comparison_required?).
+          and_return({ biometric_comparison_required: true })
+      end
+
+      it 'proceeds to the next page with valid info, including a selfie image' do
+        perform_in_browser(:mobile) do
+          visit_idp_from_oidc_sp_with_ial2
+          sign_in_and_2fa_user(user)
+          complete_doc_auth_steps_before_document_capture_step
+
+          expect(page).to have_current_path(idv_document_capture_url)
+          expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+          expect_doc_capture_page_header(t('doc_auth.headings.document_capture_with_selfie'))
+          expect_doc_capture_id_subheader
+          expect_doc_capture_selfie_subheader
+          attach_images
+          attach_selfie
+          submit_images
+
+          expect(page).to have_current_path(idv_ssn_url)
+          expect_costing_for_document
+          expect(DocAuthLog.find_by(user_id: user.id).state).to eq('MT')
+
+          expect(page).to have_current_path(idv_ssn_url)
+          fill_out_ssn_form_ok
+          click_idv_continue
+          complete_verify_step
+          expect(page).to have_current_path(idv_phone_url)
+        end
+      end
+
+      context 'when hosted env is prod' do
+        before do
+          allow(Identity::Hostdata).to receive(:env).and_return('prod')
+        end
+        it 'proceeds to the next page with valid info, excluding a selfie image' do
+          perform_in_browser(:mobile) do
+            visit_idp_from_oidc_sp_with_ial2
+            sign_in_and_2fa_user(user)
+            complete_doc_auth_steps_before_document_capture_step
+
+            expect(page).to have_current_path(idv_document_capture_url)
+            expect(page).not_to have_content(t('doc_auth.headings.document_capture_selfie'))
+
+            expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+
+            expect(page).not_to have_content(t('doc_auth.headings.document_capture_selfie'))
+            attach_images
+            submit_images
+
+            expect(page).to have_current_path(idv_ssn_url)
+            expect_costing_for_document
+            expect(DocAuthLog.find_by(user_id: user.id).state).to eq('MT')
+
+            expect(page).to have_current_path(idv_ssn_url)
+            fill_out_ssn_form_ok
+            click_idv_continue
+            complete_verify_step
+            expect(page).to have_current_path(idv_phone_url)
+          end
+        end
       end
     end
   end

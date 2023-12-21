@@ -48,6 +48,7 @@ module Idv
         failure_to_proof_url: return_to_sp_failure_to_proof_url(step: 'document_capture'),
         skip_doc_auth: idv_session.skip_doc_auth,
         opted_in_to_in_person_proofing: idv_session.opted_in_to_in_person_proofing,
+        doc_auth_selfie_capture: decorated_sp_session.selfie_required?,
       }.merge(
         acuant_sdk_upgrade_a_b_testing_variables,
       )
