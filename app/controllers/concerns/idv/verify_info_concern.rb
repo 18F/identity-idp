@@ -315,6 +315,10 @@ module Idv
         if stage == :resolution
           # transaction_id comes from ConversationId
           add_cost(:lexis_nexis_resolution, transaction_id: hash[:transaction_id])
+        elsif stage == :residential_address
+          next if pii[:same_address_as_id] == 'true'
+          next if hash[:vendor_name] == 'ResidentialAddressNotRequired'
+          add_cost(:lexis_nexis_resolution, transaction_id: hash[:transaction_id])
         elsif stage == :state_id
           next if hash[:exception].present?
           next if hash[:vendor_name] == 'UnsupportedJurisdiction'
