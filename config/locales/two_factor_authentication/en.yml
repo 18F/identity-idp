@@ -21,10 +21,10 @@ en:
       one: You have <strong>%{count} attempt</strong> remaining.
       other: You have <strong>%{count} attempts</strong> remaining.
     auth_app:
-      delete: Successfully deleted an authentication app method
-      manage_app: Manage authentication app
-      manage_settings: Manage your authentication app settings
-      rename: Successfully renamed your authentication app method
+      deleted: Successfully deleted an authentication app method
+      edit_heading: Manage your authentication app settings
+      manage_accessible_label: Manage authentication app
+      renamed: Successfully renamed your authentication app method
     backup_code_header_text: Enter your backup code
     backup_code_prompt: You can use this backup code once. After you submit it,
       you’ll need to use a new backup code next time.
