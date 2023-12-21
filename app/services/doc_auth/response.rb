@@ -1,6 +1,6 @@
 module DocAuth
   class Response
-    attr_reader :errors, :exception, :extra, :pii_from_doc, :doc_type_supported, :selfie_check_performed
+    attr_reader :errors, :exception, :extra, :pii_from_doc, :doc_type_supported
 
     ID_TYPE_SLUGS = {
       'Identification Card' => 'state_id_card',
@@ -18,13 +18,13 @@ module DocAuth
       selfie_check_performed: false
     )
       @success = success
+      @selfie_check_performed = selfie_check_performed
       @errors = errors.to_h
       @exception = exception
       @extra = extra
       @pii_from_doc = pii_from_doc
       @attention_with_barcode = attention_with_barcode
       @doc_type_supported = doc_type_supported
-      @selfie_check_performed = selfie_check_performed
     end
 
     def merge(other)
@@ -36,6 +36,7 @@ module DocAuth
         pii_from_doc: pii_from_doc.merge(other.pii_from_doc),
         attention_with_barcode: attention_with_barcode? || other.attention_with_barcode?,
         doc_type_supported: doc_type_supported? || other.doc_type_supported?,
+        selfie_check_performed: selfie_check_performed? || other.selfie_check_performed?,
       )
     end
 
