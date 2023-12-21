@@ -58,10 +58,16 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
       it 'fails response with errors' do
         request_stub_liveness = stub_request(:post, full_url).with do |request|
           JSON.parse(request.body, symbolize_names: true)[:Document][:Selfie].present?
-        end.to_return(body: response_body_with_doc_auth_errors(include_liveness_expected), status: 201)
+        end.to_return(
+          body: response_body_with_doc_auth_errors(include_liveness_expected),
+          status: 201,
+        )
         request_stub = stub_request(:post, full_url).with do |request|
           !JSON.parse(request.body, symbolize_names: true)[:Document][:Selfie].present?
-        end.to_return(body: response_body_with_doc_auth_errors(include_liveness_expected), status: 201)
+        end.to_return(
+          body: response_body_with_doc_auth_errors(include_liveness_expected),
+          status: 201,
+        )
 
         response = subject.fetch
 
