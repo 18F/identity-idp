@@ -32,6 +32,7 @@ RSpec.describe DocAuth::Response do
         exception: other_exception,
         pii_from_doc: other_pii_from_doc,
         attention_with_barcode: other_attention_with_barcode,
+        selfie_check_performed: other_selfie_check_performed,
       )
     end
     let!(:merged) { response.merge(other) }
