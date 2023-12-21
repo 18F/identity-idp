@@ -2,11 +2,10 @@ require 'rails_helper'
 
 RSpec.describe Reports::IdentityVerificationReport do
   let(:report_date) { Date.new(2023, 12, 12).in_time_zone('UTC') }
-  let(:team_ada_email) { 'ada@example.com' }
 
   before do
     allow(IdentityConfig.store).to receive(:s3_reports_enabled).and_return(true)
-    allow(IdentityConfig.store).to receive(:team_ada_email).and_return(team_ada_email)
+    allow(IdentityConfig.store).to receive(:team_ada_email).and_return('ada@example.com')
   end
 
   describe '#perform' do
