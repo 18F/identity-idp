@@ -14,6 +14,7 @@ import DocumentSideAcuantCapture from './document-side-acuant-capture';
 import DocumentCaptureNotReady from './document-capture-not-ready';
 import { FeatureFlagContext } from '../context';
 import DocumentCaptureAbandon from './document-capture-abandon';
+import { DocumentCaptureSubheaderOne, SelfieStepWithHeader } from './documents-step';
 
 interface DocumentCaptureReviewIssuesProps {
   isFailedDocType: boolean;
@@ -28,7 +29,7 @@ interface DocumentCaptureReviewIssuesProps {
   hasDismissed: boolean;
 }
 
-type DocumentSide = 'front' | 'back' | 'selfie';
+type DocumentSide = 'front' | 'back';
 
 function DocumentCaptureReviewIssues({
   isFailedDocType,
@@ -47,13 +48,12 @@ function DocumentCaptureReviewIssues({
     useContext(FeatureFlagContext);
 
   // Sides of document to present as file input.
-  const documentSides: DocumentSide[] = selfieCaptureEnabled
-    ? ['front', 'back', 'selfie']
-    : ['front', 'back'];
+  const documentSides: DocumentSide[] = ['front', 'back'];
 
   return (
     <>
       <PageHeading>{t('doc_auth.headings.review_issues')}</PageHeading>
+      <DocumentCaptureSubheaderOne selfieCaptureEnabled={selfieCaptureEnabled} />
       <UnknownError
         unknownFieldErrors={unknownFieldErrors}
         remainingAttempts={remainingAttempts}
@@ -85,6 +85,7 @@ function DocumentCaptureReviewIssues({
           className="document-capture-review-issues-step__input"
         />
       ))}
+      {selfieCaptureEnabled && <SelfieStepWithHeader defaultSideProps selfieValue={value.selfie} />}
       <FormStepsButton.Submit />
       {notReadySectionEnabled && <DocumentCaptureNotReady />}
       {exitQuestionSectionEnabled && <DocumentCaptureAbandon />}
