@@ -12,7 +12,9 @@ class ComponentPreviewCsp
     request = Rack::Request.new(env)
 
     if request.path.match?(COMPONENT_REQUEST_PATH)
-      headers['Content-Security-Policy'] = "frame-ancestors 'self' #{IdentityConfig.store.component_previews_embed_frame_ancestors.join(' ')}"
+      frame_ancestors = IdentityConfig.store.component_previews_embed_frame_ancestors
+      headers['Content-Security-Policy'] =
+        "frame-ancestors 'self' #{frame_ancestors.join(' ')}"
     end
 
     [status, headers, body]

@@ -153,7 +153,7 @@ module Identity
       config.lookbook.ui_theme = 'blue'
       if IdentityConfig.store.component_previews_embed_frame_ancestors.present?
         # so we can embed a lookbook component into the dev docs
-        config.lookbook.preview_embeds.policy = "ALLOWALL"
+        config.lookbook.preview_embeds.policy = 'ALLOWALL'
         # lookbook strips out CSP, this brings it back so we aren't so permissive
         require 'component_preview_csp'
         config.middleware.insert_after ActionDispatch::Static, ComponentPreviewCsp
