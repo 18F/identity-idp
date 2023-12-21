@@ -84,57 +84,18 @@ RSpec.describe Idv::DocumentCaptureController do
           and_return(double('decorated_session', { selfie_required?: true, sp_name: 'sp' }))
       end
 
-      it 'renders the show template without selfie feature flag' do
+      it 'renders the show template with selfie' do
         expect(subject).to receive(:render).with(
           :show,
           locals: hash_including(
             document_capture_session_uuid: document_capture_session_uuid,
-            doc_auth_selfie_capture: false,
+            doc_auth_selfie_capture: true,
           ),
         ).and_call_original
 
         get :show
 
         expect(response).to render_template :show
-      end
-
-      context 'when selfie is enabled' do
-        before do
-          allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).and_return(true)
-        end
-
-        it 'renders the show template with selfie feature flag' do
-          expect(subject).to receive(:render).with(
-            :show,
-            locals: hash_including(
-              document_capture_session_uuid: document_capture_session_uuid,
-              doc_auth_selfie_capture: true,
-            ),
-          ).and_call_original
-
-          get :show
-
-          expect(response).to render_template :show
-        end
-
-        context 'when hosted in a prod env' do
-          before do
-            allow(Identity::Hostdata).to receive(:env).and_return('prod')
-          end
-          it 'renders the show template without selfie feature flag' do
-            expect(subject).to receive(:render).with(
-              :show,
-              locals: hash_including(
-                document_capture_session_uuid: document_capture_session_uuid,
-                doc_auth_selfie_capture: false,
-              ),
-            ).and_call_original
-
-            get :show
-
-            expect(response).to render_template :show
-          end
-        end
       end
     end
 

@@ -76,64 +76,22 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController do
 
       context 'when a selfie is requested' do
         before do
-          allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).and_return(true)
           allow(subject).to receive(:decorated_sp_session).
-            and_return(double('decorated_session', { selfie_required?: true }))
+            and_return(double('decorated_session', { selfie_required?: true, sp_name: 'sp' }))
         end
-        context 'when hosted in a prod env' do
-          before do
-            allow(Identity::Hostdata).to receive(:env).and_return('prod')
-          end
-          it 'renders the show template without selfie feature flag' do
+        context 'when selfie is required by sp session' do
+          it 'requests FE to display selfie' do
             expect(subject).to receive(:render).with(
               :show,
               locals: hash_including(
                 document_capture_session_uuid: document_capture_session_uuid,
-                doc_auth_selfie_capture: false,
+                doc_auth_selfie_capture: true,
               ),
             ).and_call_original
 
             get :show
 
             expect(response).to render_template :show
-          end
-        end
-
-        context 'renders the show template with selfie feature flag enabled' do
-          context 'when selfie is required by sp session' do
-            it 'requests FE to display selfie' do
-              expect(subject).to receive(:render).with(
-                :show,
-                locals: hash_including(
-                  document_capture_session_uuid: document_capture_session_uuid,
-                  doc_auth_selfie_capture: true,
-                ),
-              ).and_call_original
-
-              get :show
-
-              expect(response).to render_template :show
-            end
-          end
-
-          context 'when selfie is not required by sp session' do
-            before do
-              allow(subject).to receive(:decorated_sp_session).
-                and_return(double('decorated_session', { selfie_required?: false }))
-            end
-            it 'requests FE to display selfie' do
-              expect(subject).to receive(:render).with(
-                :show,
-                locals: hash_including(
-                  document_capture_session_uuid: document_capture_session_uuid,
-                  doc_auth_selfie_capture: false,
-                ),
-              ).and_call_original
-
-              get :show
-
-              expect(response).to render_template :show
-            end
           end
         end
       end
