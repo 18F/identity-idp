@@ -1,4 +1,6 @@
 class GpoConfirmationMaker
+  class InvalidEntryError < StandardError; end
+
   def initialize(pii:, service_provider:, profile: nil, profile_id: nil, otp: nil)
     raise ArgumentError 'must have either profile or profile_id' if !profile && !profile_id
 
@@ -14,7 +16,12 @@ class GpoConfirmationMaker
   end
 
   def perform
-    GpoConfirmation.create!(entry: attributes)
+    begin
+      GpoConfirmation.create!(entry: attributes)
+    rescue ActiveRecord::RecordInvalid
+      raise InvalidEntryError
+    end
+
     GpoConfirmationCode.create!(
       profile_id: profile&.id || profile_id,
       otp_fingerprint: Pii::Fingerprinter.fingerprint(otp),
