@@ -18,8 +18,12 @@ module Idv
                                                     I18n.t('doc_auth.errors.general.no_liveness')
                                                   } }
 
+    validates_presence_of :state_id_number, { message: proc {
+      I18n.t('doc_auth.errors.general.no_liveness')
+    } }
+
     attr_reader :first_name, :last_name, :dob, :address1, :state, :zipcode, :attention_with_barcode,
-                :jurisdiction
+                :jurisdiction, :state_id_number
     alias_method :attention_with_barcode?, :attention_with_barcode
 
     def initialize(pii:, attention_with_barcode: false)
@@ -31,6 +35,7 @@ module Idv
       @state = pii[:state]
       @zipcode = pii[:zipcode]
       @jurisdiction = pii[:state_id_jurisdiction]
+      @state_id_number = pii[:state_id_number]
       @attention_with_barcode = attention_with_barcode
     end
 
@@ -49,7 +54,7 @@ module Idv
 
     def self.pii_like_keypaths
       keypaths = [[:pii]]
-      attrs = %i[name dob dob_min_age address1 state zipcode jurisdiction]
+      attrs = %i[name dob dob_min_age address1 state zipcode jurisdiction state_id_number]
       attrs.each do |k|
         keypaths << [:errors, k]
         keypaths << [:error_details, k]
