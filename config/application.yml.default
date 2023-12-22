@@ -152,6 +152,7 @@ in_person_outage_message_enabled: false
 in_person_outage_expected_update_date: 'October 31, 2024'
 in_person_outage_emailed_by_date: 'November 1, 2024'
 in_person_send_proofing_notifications_enabled: false
+in_person_state_id_controller_enabled: false
 in_person_stop_expiring_enrollments: false
 include_slo_in_saml_metadata: false
 logins_per_ip_track_only_mode: false
