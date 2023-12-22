@@ -26,4 +26,26 @@ RSpec.describe EventDisavowal::PasswordResetFromDisavowalForm, type: :model do
       expect(user.reload.valid_password?(new_password)).to eq(false)
     end
   end
+
+  context 'user has an active profile' do
+    let(:user) { create(:user, :proofed) }
+
+    it 'destroys the proofing component' do
+      ProofingComponent.create(user_id: user.id, document_check: 'acuant')
+
+      subject.submit(password: new_password)
+
+      expect(user.reload.proofing_component).to be_nil
+    end
+  end
+
+  context 'user does not have an active profile' do
+    it 'does not destroy the proofing component' do
+      ProofingComponent.create(user_id: user.id, document_check: 'acuant')
+
+      subject.submit(password: new_password)
+
+      expect(user.reload.proofing_component).to_not be_nil
+    end
+  end
 end

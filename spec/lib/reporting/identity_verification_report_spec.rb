@@ -58,6 +58,40 @@ RSpec.describe Reporting::IdentityVerificationReport do
     allow(report).to receive(:cloudwatch_client).and_return(cloudwatch_client)
   end
   # rubocop:enable Layout/LineLength
+  describe '#as_csv' do
+    it 'renders a csv report' do
+      expected_csv = [
+        ['Report Timeframe', "#{time_range.begin} to #{time_range.end}"],
+        ['Report Generated', Date.today.to_s], # rubocop:disable Rails/Date
+        ['Issuer', issuer],
+        [],
+        ['Metric', '# of Users'],
+        [],
+        ['Started IdV Verification', 5],
+        ['Submitted welcome page', 5],
+        ['Images uploaded', 5],
+        [],
+        ['Workflow completed', 4],
+        ['Workflow completed - Verified', 1],
+        ['Workflow completed - Total Pending', 3],
+        ['Workflow completed - GPO Pending', 1],
+        ['Workflow completed - In-Person Pending', 1],
+        ['Workflow completed - Fraud Review Pending', 1],
+        [],
+        ['Successfully verified', 4],
+        ['Successfully verified - Inline', 1],
+        ['Successfully verified - GPO Code Entry', 1],
+        ['Successfully verified - In Person', 1],
+        ['Successfully verified - Passed Fraud Review', 1],
+      ]
+
+      aggregate_failures do
+        report.as_csv.zip(expected_csv).each do |actual, expected|
+          expect(actual).to eq(expected)
+        end
+      end
+    end
+  end
 
   describe '#to_csv' do
     it 'generates a csv' do

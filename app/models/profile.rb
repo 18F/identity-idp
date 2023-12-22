@@ -279,11 +279,6 @@ class Profile < ApplicationRecord
     values.join(':')
   end
 
-  def includes_phone_check?
-    return false if proofing_components.blank?
-    proofing_components['address_check'] == 'lexis_nexis_address'
-  end
-
   def irs_attempts_api_tracker
     @irs_attempts_api_tracker ||= IrsAttemptsApi::Tracker.new
   end

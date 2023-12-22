@@ -70,6 +70,8 @@ export function useAcuant() {
       isCameraSupported = true,
       start = sinon.stub(),
       end = sinon.stub(),
+      selfieStart = sinon.stub(),
+      selfieEnd = sinon.stub(),
       triggerCapture = sinon.stub(),
     } = {}) {
       window.AcuantJavascriptWebSdk = {
@@ -92,7 +94,7 @@ export function useAcuant() {
         }),
         end,
       };
-      window.AcuantPassiveLiveness = { start: sinon.stub(), end: sinon.stub() };
+      window.AcuantPassiveLiveness = { start: selfieStart, end: selfieEnd };
       window.loadAcuantSdk = () => {};
       const sdkScript = document.querySelector('[data-acuant-sdk]');
       sdkScript.onload();
