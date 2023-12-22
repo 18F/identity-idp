@@ -28,7 +28,7 @@ RSpec.feature 'Visitor sets password during signup' do
     create(:user, :unconfirmed)
     confirm_last_user
 
-    expect(page).to have_css('#pw-strength-cntnr.display-none')
+    expect(page).to have_css('lg-password-strength.display-none')
   end
 
   context 'password strength indicator when JS is on', js: true do
