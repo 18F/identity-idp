@@ -58,6 +58,28 @@ RSpec.describe GpoConfirmation do
         end
       end
 
+      describe 'invalid_gpo_confirmation_zipcode' do
+        let(:invalid_gpo_confirmation_zipcode) { '00001' }
+        let(:attributes) do
+          valid_attributes.dup.tap { |a| a[:zipcode] = '00001' }
+        end
+        before do
+          allow(IdentityConfig.store).to receive(:invalid_gpo_confirmation_zipcode).
+            and_return(invalid_gpo_confirmation_zipcode)
+        end
+
+        it 'does not validate' do
+          expect { subject }.to raise_error
+        end
+
+        context 'when option is not set' do
+          let(:invalid_gpo_confirmation_zipcode) { '' }
+          it 'validates' do
+            expect { subject }.not_to raise_error
+          end
+        end
+      end
+
       describe 'zipcode' do
         [
           ['0184', false],

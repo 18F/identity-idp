@@ -154,6 +154,7 @@ in_person_outage_emailed_by_date: 'November 1, 2024'
 in_person_send_proofing_notifications_enabled: false
 in_person_stop_expiring_enrollments: false
 include_slo_in_saml_metadata: false
+invalid_gpo_confirmation_zipcode: '00001'
 logins_per_ip_track_only_mode: false
 # LexisNexis #####################################################
 lexisnexis_base_url: https://www.example.com
@@ -466,6 +467,7 @@ production:
   hmac_fingerprinter_key:
   hmac_fingerprinter_key_queue: '[]'
   idv_sp_required: true
+  invalid_gpo_confirmation_zipcode: ''
   lexisnexis_threatmetrix_mock_enabled: false
   logins_per_ip_limit: 20
   logins_per_ip_period: 20

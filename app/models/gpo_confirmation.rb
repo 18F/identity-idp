@@ -50,8 +50,15 @@ class GpoConfirmation < ApplicationRecord
     Encryption::Encryptors::BackgroundProofingArgEncryptor.new
   end
 
+  def zipcode_should_be_rejected_because_we_are_testing?
+    # We reserve a certain zipcode to be used to test this value in lower environments.
+    return zipcode.present? && zipcode == IdentityConfig.store.invalid_gpo_confirmation_zipcode
+  end
+
   def zipcode_is_valid
-    if self.class.normalize_zipcode(zipcode).nil?
+    normalized = self.class.normalize_zipcode(zipcode)
+
+    if normalized.nil? || zipcode_should_be_rejected_because_we_are_testing?
       errors.add(:zipcode, :invalid)
     end
   end
