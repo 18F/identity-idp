@@ -15,8 +15,7 @@ module DocAuth
       pii_from_doc: {},
       attention_with_barcode: false,
       doc_type_supported: true,
-      # This is a stub to get data paths in place. Replace this as soon as possible.
-      selfie_check_performed: IdentityConfig.store.doc_auth_selfie_capture_enabled
+      selfie_check_performed: false
     )
       @success = success
       @errors = errors.to_h
