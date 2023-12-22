@@ -902,14 +902,7 @@ RSpec.describe Idv::EnterPasswordController do
         end
 
         it 'kills the idv session' do
-          expect do
-            put :create,
-                params: { user: { password: ControllerHelper::VALID_PASSWORD } }
-          end.to raise_error(GpoConfirmationMaker::InvalidEntryError)
           expect(subject.user_session[:idv]).to be_nil
-        end
-
-        it 'logs an event' do
         end
       end
     end

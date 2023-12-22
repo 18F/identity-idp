@@ -121,6 +121,8 @@ module Idv
 
     def clear
       user_session.delete(:idv)
+      @profile = nil
+      @gpo_otp = nil
     end
 
     def associate_in_person_enrollment_with_profile
@@ -139,7 +141,7 @@ module Idv
       rescue
         # We don't have what we need to actually generate a GPO letter.
         profile.deactivate(:encryption_error)
-        @gpo_otp = nil
+        clear
         raise
       end
     end
