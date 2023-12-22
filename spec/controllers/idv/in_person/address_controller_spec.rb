@@ -6,6 +6,10 @@ RSpec.describe Idv::InPerson::AddressController do
 
   let(:user) { build(:user) }
 
+  let(:ab_test_args) do
+    { sample_bucket1: :sample_value1, sample_bucket2: :sample_value2 }
+  end
+
   before do
     allow(IdentityConfig.store).to receive(:in_person_residential_address_controller_enabled).
       and_return(true)
@@ -19,6 +23,7 @@ RSpec.describe Idv::InPerson::AddressController do
     subject.idv_session.ssn = nil
     stub_analytics
     allow(@analytics).to receive(:track_event)
+    allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 
   describe '#step_info' do
@@ -83,13 +88,11 @@ RSpec.describe Idv::InPerson::AddressController do
         irs_reproofing: false,
         opted_in_to_in_person_proofing: nil,
         step: 'address',
-        lexisnexis_instant_verify_workflow_ab_test_bucket: :default,
         pii_like_keypaths: [[:same_address_as_id],
                             [:proofing_results, :context, :stages, :state_id,
                              :state_id_jurisdiction]],
         same_address_as_id: false,
-        skip_hybrid_handoff: nil,
-      }
+      }.merge(ab_test_args)
     end
 
     context 'with address controller flag enabled' do
@@ -153,13 +156,11 @@ RSpec.describe Idv::InPerson::AddressController do
           flow_path: 'standard',
           irs_reproofing: false,
           step: 'address',
-          lexisnexis_instant_verify_workflow_ab_test_bucket: :default,
           pii_like_keypaths: [[:same_address_as_id],
                               [:proofing_results, :context, :stages, :state_id,
                                :state_id_jurisdiction]],
           same_address_as_id: false,
-          skip_hybrid_handoff: nil,
-        }
+        }.merge(ab_test_args)
       end
 
       it 'sets values in the flow session' do
@@ -242,13 +243,11 @@ RSpec.describe Idv::InPerson::AddressController do
           flow_path: 'standard',
           irs_reproofing: false,
           step: 'address',
-          lexisnexis_instant_verify_workflow_ab_test_bucket: :default,
           pii_like_keypaths: [[:same_address_as_id],
                               [:proofing_results, :context, :stages, :state_id,
                                :state_id_jurisdiction]],
           same_address_as_id: false,
-          skip_hybrid_handoff: nil,
-        }
+        }.merge(ab_test_args)
       end
 
       it 'does not proceed to next page' do
