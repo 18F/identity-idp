@@ -19,7 +19,9 @@ RSpec.describe GpoConfirmation do
 
   let(:encryptor) { Encryption::Encryptors::BackgroundProofingArgEncryptor.new }
 
-  subject { GpoConfirmation.create!(entry: attributes) }
+  subject do
+    GpoConfirmation.create!(entry: attributes)
+  end
 
   describe '#entry' do
     it 'stores the entry as an encrypted json string' do
@@ -56,28 +58,52 @@ RSpec.describe GpoConfirmation do
         end
       end
 
-      [
-        ['0184', false],
-        ['982251', false],
-        [' 98225 ', true],
-        [' 98225 - 3938 ', true],
-        [' 98225 - 393 ', false],
-        ['98225-3938', true],
-        ['982253938', true],
-        ['1234', false],
-      ].each do |input, should_pass|
-        context "zipcode = #{input.inspect}" do
-          let(:attributes) { valid_attributes.tap { |a| a[:zipcode] = input } }
-          if should_pass
-            it 'validates' do
-              expect { subject }.not_to raise_error
-            end
-          else
-            it 'does not validate' do
-              expect { subject }.to raise_error(ActiveRecord::RecordInvalid)
+      describe 'zipcode' do
+        [
+          ['0184', false],
+          ['982251', true],
+          [' 98225 ', true],
+          [' 98225 - 3938 ', true],
+          [' 98225 - 393 ', true],
+          ['98225-3938', true],
+          ['982253938', true],
+          ['1234', false],
+        ].each do |input, should_pass|
+          context input.inspect do
+            let(:attributes) { valid_attributes.dup.tap { |a| a[:zipcode] = input } }
+            if should_pass
+              it 'validates' do
+                expect { subject }.not_to raise_error
+              end
+            else
+              it 'does not validate' do
+                expect { subject }.to raise_error(ActiveRecord::RecordInvalid)
+              end
             end
           end
         end
+      end
+    end
+  end
+
+  describe '#normalize_zipcode' do
+    [
+      [nil, nil],
+      ['', nil],
+      ["   \t\t\t\r\n ", nil],
+      ['98225', '98225'],
+      [' 98225 ', '98225'],
+      ['1234', nil],
+      ['12345-0', '12345'],
+      ['12345-6', '12345'],
+      ['12345-67', '12345'],
+      ['12345-678', '12345'],
+      ['12345-6789', '12345-6789'],
+      ['12345  6789', '12345-6789'],
+      ['123456789', '12345-6789'],
+    ].each do |input, expected|
+      it "normalizes #{input.inspect} to #{expected.inspect}" do
+        expect(GpoConfirmation.normalize_zipcode(input)).to eql(expected)
       end
     end
   end

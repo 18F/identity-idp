@@ -49,7 +49,7 @@ class GpoConfirmationMaker
       first_name: pii[:first_name],
       last_name: pii[:last_name],
       state: pii[:state],
-      zipcode: force_zipcode_format(pii[:zipcode]),
+      zipcode: pii[:zipcode],
       issuer: service_provider&.issuer,
     }
   end
@@ -63,13 +63,5 @@ class GpoConfirmationMaker
 
   def update_proofing_cost
     Db::SpCost::AddSpCost.call(service_provider, 2, :gpo_letter)
-  end
-
-  def force_zipcode_format(raw_zipcode)
-    return raw_zipcode if raw_zipcode.nil?
-    return raw_zipcode if raw_zipcode.match?(/^\d{5}$/)
-    return raw_zipcode if raw_zipcode.match?(/^\d{5}-\d{4}$/)
-
-    raw_zipcode[0..4]
   end
 end
