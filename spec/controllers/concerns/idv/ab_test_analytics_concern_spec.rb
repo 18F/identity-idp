@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Idv::AbTestAnalyticsConcern do
+  include FlowPolicyHelper
+
   let(:user) { create(:user) }
   let(:idv_session) do
     Idv::Session.new(user_session: subject.user_session, current_user: user, service_provider: nil)
@@ -46,6 +48,12 @@ RSpec.describe Idv::AbTestAnalyticsConcern do
       it 'includes skip_hybrid_handoff' do
         idv_session.skip_hybrid_handoff = :shh_value
         expect(controller.ab_test_analytics_buckets).to include({ skip_hybrid_handoff: :shh_value })
+      end
+
+      it 'includes latest step so far' do
+        idv_session.latest_step_so_far = 'otp_verification'
+        expect(controller.ab_test_analytics_buckets).
+          to include({ latest_step_so_far: 'otp_verification' })
       end
 
       context 'opted_in_to_in_person_proofing value' do

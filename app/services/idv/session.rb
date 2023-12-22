@@ -12,6 +12,7 @@ module Idv
       had_barcode_read_failure
       idv_consent_given
       idv_phone_step_document_capture_session_uuid
+      latest_step_so_far
       mail_only_warning_shown
       opted_in_to_in_person_proofing
       personal_key

@@ -7,6 +7,7 @@ module Idv
       buckets = {}
       if defined?(idv_session)
         buckets[:skip_hybrid_handoff] = idv_session&.skip_hybrid_handoff
+        buckets[:latest_step_so_far] = idv_session&.latest_step_so_far
         buckets = buckets.merge(opt_in_analytics_properties)
       end
 

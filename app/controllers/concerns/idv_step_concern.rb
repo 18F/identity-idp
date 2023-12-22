@@ -123,6 +123,12 @@ module IdvStepConcern
   end
 
   def clear_future_steps_from!(controller:)
+    # idv_session properties are converted to strings when serialized, so always do a to_s
+    idv_session.latest_step_so_far = latest_step_so_far.to_s
     flow_policy.undo_future_steps_from_controller!(controller: controller)
+  end
+
+  def latest_step_so_far
+    flow_policy.info_for_latest_step.key
   end
 end

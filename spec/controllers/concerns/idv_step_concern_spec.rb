@@ -345,6 +345,13 @@ RSpec.describe 'IdvStepConcern' do
 
         controller.send(:clear_future_steps!)
       end
+
+      it 'sets latest_step_so_far' do
+        idv_session.latest_step_so_far = nil
+        stub_up_to(:phone, idv_session: idv_session)
+        controller.send(:clear_future_steps_from!, controller: Idv::DocumentCaptureController)
+        expect(idv_session.latest_step_so_far).to eq('otp_verification')
+      end
     end
   end
 end
