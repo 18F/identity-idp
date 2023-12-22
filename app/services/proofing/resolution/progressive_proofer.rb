@@ -13,7 +13,7 @@ module Proofing
       end
 
       # @param [Hash] applicant_pii keys are symbols and values are strings, confidential user info
-      # @param [Boolean] ipp_enrollment_in_progress flag remains true and is used in place of DAV flag because DAV is 
+      # @param [Boolean] ipp_enrollment_in_progress flag is used in place of DAV flag because DAV is 
       #   now always true
       # @param [String] request_ip IP address for request
       # @param [Boolean] should_proof_state_id based on state id jurisdiction, indicates if
@@ -130,7 +130,7 @@ module Proofing
 
       def proof_id_address_with_lexis_nexis_if_needed(applicant_pii:, timer:,
                                                       residential_instant_verify_result:,
-                                                      ipp_enrollment_in_progress:)
+                                                      ipp_enrollment_in_progress:,)
         if applicant_pii[:same_address_as_id] == 'true'
           return residential_instant_verify_result
         end
