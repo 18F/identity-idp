@@ -255,6 +255,9 @@ Rails.application.routes.draw do
     get '/manage/webauthn/:id' => 'users/webauthn#edit', as: :edit_webauthn
     put '/manage/webauthn/:id' => 'users/webauthn#update', as: :webauthn
     delete '/manage/webauthn/:id' => 'users/webauthn#destroy', as: nil
+    get '/manage/auth_app/:id' => 'users/auth_app#edit', as: :edit_auth_app
+    put '/manage/auth_app/:id' => 'users/auth_app#update', as: :auth_app
+    delete '/manage/auth_app/:id' => 'users/auth_app#destroy', as: :auth_app_nil
 
     get '/account/personal_key' => 'accounts/personal_keys#new', as: :create_new_personal_key
     post '/account/personal_key' => 'accounts/personal_keys#create'
