@@ -141,7 +141,6 @@ module Idv
       rescue
         # We don't have what we need to actually generate a GPO letter.
         profile.deactivate(:encryption_error)
-        clear
         raise
       end
     end

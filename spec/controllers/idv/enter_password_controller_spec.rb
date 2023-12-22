@@ -900,10 +900,6 @@ RSpec.describe Idv::EnterPasswordController do
         it 'does not mint a GPO pending profile' do
           expect(user.reload.gpo_verification_pending_profile).to be_nil
         end
-
-        it 'kills the idv session' do
-          expect(subject.user_session[:idv]).to be_nil
-        end
       end
     end
   end
