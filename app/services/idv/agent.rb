@@ -28,7 +28,7 @@ module Idv
         user_id: user_id,
         threatmetrix_session_id: threatmetrix_session_id,
         request_ip: request_ip,
-        double_address_verification: ipp_enrollment_in_progress,
+        ipp_enrollment_in_progress: ipp_enrollment_in_progress,
       }
 
       if IdentityConfig.store.ruby_workers_idv_enabled
