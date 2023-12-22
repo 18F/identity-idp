@@ -117,7 +117,9 @@ function DocumentsStep({
           value={value[side]}
         />
       ))}
-      {selfieCaptureEnabled && <SelfieStepWithHeader defaultSideProps selfieValue={value.selfie} />}
+      {selfieCaptureEnabled && (
+        <SelfieStepWithHeader defaultSideProps={defaultSideProps} selfieValue={value.selfie} />
+      )}
       {isLastStep ? <FormStepsButton.Submit /> : <FormStepsButton.Continue />}
       {notReadySectionEnabled && <DocumentCaptureNotReady />}
       {exitQuestionSectionEnabled && <DocumentCaptureAbandon />}
