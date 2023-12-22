@@ -896,6 +896,14 @@ RSpec.describe Idv::EnterPasswordController do
                 params: { user: { password: ControllerHelper::VALID_PASSWORD } }
           end.to raise_error(GpoConfirmationMaker::InvalidEntryError)
         end
+
+        it 'does not mint a GPO pending profile' do
+          expect do
+            put :create,
+                params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+          end.to raise_error(GpoConfirmationMaker::InvalidEntryError)
+          expect(user.reload.gpo_verification_pending_profile).to be_nil
+        end
       end
     end
   end
