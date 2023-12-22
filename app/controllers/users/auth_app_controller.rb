@@ -15,7 +15,7 @@ module Users
       analytics.auth_app_update_name_submitted(**result.to_h)
 
       if result.success?
-        flash[:success] = t('two_factor_authentication.webauthn_platform.renamed')
+        flash[:success] = t('two_factor_authentication.auth_app.renamed')
         redirect_to account_path
       else
         flash.now[:error] = result.first_error_message
@@ -37,7 +37,7 @@ module Users
         redirect_to account_path
       else
         flash[:error] = result.first_error_message
-        redirect_to edit_webauthn_path(id: params[:id])
+        redirect_to edit_auth_app_path(id: params[:id])
       end
     end
 
@@ -52,9 +52,9 @@ module Users
     def form_class
       case action_name
       when 'edit', 'update'
-        TwoFactorAuthentication::WebauthnUpdateForm
+        TwoFactorAuthentication::AuthAppUpdateForm
       when 'destroy'
-        TwoFactorAuthentication::WebauthnDeleteForm
+        TwoFactorAuthentication::AuthAppDeleteForm
       end
     end
 
