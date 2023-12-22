@@ -15,16 +15,17 @@ module DocAuth
       pii_from_doc: {},
       attention_with_barcode: false,
       doc_type_supported: true,
-      selfie_check_performed: false
+      # This is a stub to get data paths in place. Replace this as soon as possible.
+      selfie_check_performed: IdentityConfig.store.doc_auth_selfie_capture_enabled
     )
       @success = success
-      @selfie_check_performed = selfie_check_performed
       @errors = errors.to_h
       @exception = exception
       @extra = extra
       @pii_from_doc = pii_from_doc
       @attention_with_barcode = attention_with_barcode
       @doc_type_supported = doc_type_supported
+      @selfie_check_performed = selfie_check_performed
     end
 
     def merge(other)
@@ -36,7 +37,6 @@ module DocAuth
         pii_from_doc: pii_from_doc.merge(other.pii_from_doc),
         attention_with_barcode: attention_with_barcode? || other.attention_with_barcode?,
         doc_type_supported: doc_type_supported? || other.doc_type_supported?,
-        selfie_check_performed: selfie_check_performed? || other.selfie_check_performed?,
       )
     end
 
