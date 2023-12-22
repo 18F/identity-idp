@@ -56,6 +56,7 @@ module Idv
         hybrid_handoff: Idv::HybridHandoffController.step_info,
         link_sent: Idv::LinkSentController.step_info,
         document_capture: Idv::DocumentCaptureController.step_info,
+        ipp_address: Idv::InPerson::AddressController.step_info,
         ssn: Idv::SsnController.step_info,
         ipp_ssn: Idv::InPerson::SsnController.step_info,
         verify_info: Idv::VerifyInfoController.step_info,
@@ -66,6 +67,7 @@ module Idv
         otp_verification: Idv::OtpVerificationController.step_info,
         request_letter: Idv::ByMail::RequestLetterController.step_info,
         enter_password: Idv::EnterPasswordController.step_info,
+        personal_key: Idv::PersonalKeyController.step_info,
       }
     end
 

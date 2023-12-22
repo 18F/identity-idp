@@ -58,6 +58,8 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
       expect(page).to have_current_path(root_url)
       visit idv_hybrid_mobile_document_capture_url
 
+      expect(page).to have_current_path(idv_hybrid_mobile_document_capture_url)
+      expect(page).not_to have_content(t('doc_auth.headings.document_capture_selfie'))
       attach_and_submit_images
 
       expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
@@ -119,6 +121,8 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
 
     perform_in_browser(:mobile) do
       visit @sms_link
+      expect(page).to have_current_path(idv_hybrid_mobile_document_capture_url)
+      expect(page).not_to have_content(t('doc_auth.headings.document_capture_selfie'))
       click_on t('links.cancel')
       click_on t('forms.buttons.cancel') # Yes, cancel
     end
@@ -259,6 +263,12 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
   end
 
   context 'barcode read error on desktop, redo document capture on mobile' do
+    before do
+      allow(Identity::Hostdata).to receive(:env).and_return('prod')
+      allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).and_return(true)
+      allow_any_instance_of(FederatedProtocols::Oidc).
+        to receive(:biometric_comparison_required?).and_return(true)
+    end
     it 'continues to ssn on desktop when user selects Continue', js: true do
       user = nil
 
@@ -292,6 +302,14 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
         visit @sms_link
 
         DocAuth::Mock::DocAuthMockClient.reset!
+
+        expect(page).to have_current_path(idv_hybrid_mobile_document_capture_url)
+        expect(page).not_to have_content(t('doc_auth.headings.document_capture_selfie'))
+
+        visit(idv_hybrid_mobile_document_capture_url(selfie: true))
+        expect(page).to have_current_path(idv_hybrid_mobile_document_capture_url(selfie: true))
+        expect(page).not_to have_content(t('doc_auth.headings.document_capture_selfie'))
+
         attach_and_submit_images
 
         expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
@@ -317,6 +335,10 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
   end
 
   it 'prefils the phone number used on the phone step if the user has no MFA phone', :js do
+    allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).
+      and_return(true)
+    allow_any_instance_of(FederatedProtocols::Oidc).
+      to receive(:biometric_comparison_required?).and_return(true)
     user = create(:user, :with_authentication_app)
 
     perform_in_browser(:desktop) do
@@ -332,7 +354,12 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
 
     perform_in_browser(:mobile) do
       visit @sms_link
-      attach_and_submit_images
+
+      expect(page).to have_current_path(idv_hybrid_mobile_document_capture_url)
+
+      attach_images
+      attach_selfie
+      submit_images
 
       expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
       expect(page).to have_text(t('doc_auth.instructions.switch_back'))

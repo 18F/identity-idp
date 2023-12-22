@@ -212,7 +212,7 @@ GEM
     bindata (2.4.15)
     bootsnap (1.17.0)
       msgpack (~> 1.2)
-    brakeman (6.0.1)
+    brakeman (6.1.0)
     browser (5.3.1)
     builder (3.2.4)
     bullet (7.1.4)
@@ -383,7 +383,7 @@ GEM
     loofah (2.22.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
-    lookbook (2.0.5)
+    lookbook (2.2.0)
       activemodel
       css_parser
       htmlbeautifier (~> 1.3)
@@ -684,7 +684,7 @@ GEM
       activemodel
       mail (>= 2.6.1)
       simpleidn
-    view_component (3.0.0)
+    view_component (3.8.0)
       activesupport (>= 5.2.0, < 8.0)
       concurrent-ruby (~> 1.0)
       method_source (~> 1.0)
@@ -781,7 +781,7 @@ DEPENDENCIES
   letter_opener (~> 1.8)
   listen
   lograge (>= 0.11.2)
-  lookbook (~> 2.0.0)
+  lookbook (~> 2.2)
   lru_redux
   mail
   maxminddb
@@ -842,7 +842,7 @@ DEPENDENCIES
   tableparser
   terminal-table
   valid_email (>= 0.1.3)
-  view_component (~> 3.0.0)
+  view_component (~> 3.0)
   webauthn (~> 2.5.2)
   webmock
   xmldsig (~> 0.6)

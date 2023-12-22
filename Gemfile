@@ -38,7 +38,7 @@ gem 'jsbundling-rails', '~> 1.1.2'
 gem 'jwe'
 gem 'jwt'
 gem 'lograge', '>= 0.11.2'
-gem 'lookbook', '~> 2.0.0', require: false
+gem 'lookbook', '~> 2.2', require: false
 gem 'lru_redux'
 gem 'mail'
 gem 'msgpack', '~> 1.6'
@@ -74,7 +74,7 @@ gem 'strong_migrations', '>= 0.4.2'
 gem 'subprocess', require: false
 gem 'terminal-table', require: false
 gem 'valid_email', '>= 0.1.3'
-gem 'view_component', '~> 3.0.0'
+gem 'view_component', '~> 3.0'
 gem 'webauthn', '~> 2.5.2'
 gem 'xmldsig', '~> 0.6'
 gem 'xmlenc', '~> 0.7', '>= 0.7.1'

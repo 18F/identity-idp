@@ -30,7 +30,7 @@ module OpenidConnect
         analytics.logout_initiated(**result.to_h.except(:redirect_uri))
         irs_attempts_api_tracker.logout_initiated(success: result.success?)
 
-        redirect_user(redirect_uri)
+        redirect_user(redirect_uri, current_user&.uuid)
         sign_out
       else
         render :error
@@ -39,15 +39,20 @@ module OpenidConnect
 
     private
 
-    def redirect_user(redirect_uri)
-      case IdentityConfig.store.openid_connect_redirect
-      when :client_side
+    def redirect_user(redirect_uri, user_uuid)
+      redirect_method = IdentityConfig.store.openid_connect_redirect_uuid_override_map.fetch(
+        user_uuid,
+        IdentityConfig.store.openid_connect_redirect,
+      )
+
+      case redirect_method
+      when 'client_side'
         @oidc_redirect_uri = redirect_uri
         render(
           'openid_connect/shared/redirect',
           layout: false,
         )
-      when :client_side_js
+      when 'client_side_js'
         @oidc_redirect_uri = redirect_uri
         render(
           'openid_connect/shared/redirect_js',
@@ -105,7 +110,7 @@ module OpenidConnect
 
         sign_out
 
-        redirect_user(redirect_uri)
+        redirect_user(redirect_uri, current_user&.uuid)
       end
     end
 

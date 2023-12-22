@@ -177,6 +177,7 @@ class IdentityConfig
     config.add(:doc_auth_check_failed_image_resubmission_enabled, type: :boolean)
     config.add(:doc_auth_client_glare_threshold, type: :integer)
     config.add(:doc_auth_client_sharpness_threshold, type: :integer)
+    config.add(:doc_auth_custom_ui_enabled, type: :boolean)
     config.add(:doc_auth_error_dpi_threshold, type: :integer)
     config.add(:doc_auth_error_glare_threshold, type: :integer)
     config.add(:doc_auth_error_sharpness_threshold, type: :integer)
@@ -201,6 +202,7 @@ class IdentityConfig
     config.add(:email_registrations_per_ip_limit, type: :integer)
     config.add(:email_registrations_per_ip_period, type: :integer)
     config.add(:email_registrations_per_ip_track_only_mode, type: :boolean)
+    config.add(:enable_add_mfa_redirect_for_personal_key, type: :boolean)
     config.add(:enable_load_testing_mode, type: :boolean)
     config.add(:enable_rate_limiting, type: :boolean)
     config.add(:enable_test_routes, type: :boolean)
@@ -321,8 +323,12 @@ class IdentityConfig
     config.add(:nonessential_email_banlist, type: :json)
     config.add(
       :openid_connect_redirect,
-      type: :symbol,
-      enum: [:server_side, :client_side, :client_side_js],
+      type: :string,
+      enum: ['server_side', 'client_side', 'client_side_js'],
+    )
+    config.add(
+      :openid_connect_redirect_uuid_override_map,
+      type: :json,
     )
     config.add(:openid_connect_content_security_form_action_enabled, type: :boolean)
     config.add(:otp_delivery_blocklist_findtime, type: :integer)
@@ -445,6 +451,7 @@ class IdentityConfig
     config.add(:sp_issuer_user_counts_report_configs, type: :json)
     config.add(:state_tracking_enabled, type: :boolean)
     config.add(:system_demand_report_email, type: :string)
+    config.add(:team_ada_email, type: :string)
     config.add(:team_agnes_email, type: :string)
     config.add(:team_all_contractors_email, type: :string)
     config.add(:team_all_feds_email, type: :string)
