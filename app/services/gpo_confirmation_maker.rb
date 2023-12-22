@@ -1,5 +1,11 @@
 class GpoConfirmationMaker
-  class InvalidEntryError < StandardError; end
+  class InvalidEntryError < StandardError
+    def initialize(reason)
+      @reason = reason
+      super("InvalidEntryError: #{reason}")
+    end
+    attr_reader :reason
+  end
 
   def initialize(pii:, service_provider:, profile: nil, profile_id: nil, otp: nil)
     raise ArgumentError 'must have either profile or profile_id' if !profile && !profile_id
@@ -18,8 +24,8 @@ class GpoConfirmationMaker
   def perform
     begin
       GpoConfirmation.create!(entry: attributes)
-    rescue ActiveRecord::RecordInvalid
-      raise InvalidEntryError
+    rescue ActiveRecord::RecordInvalid => err
+      raise InvalidEntryError.new(err)
     end
 
     GpoConfirmationCode.create!(

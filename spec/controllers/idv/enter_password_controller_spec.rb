@@ -890,7 +890,7 @@ RSpec.describe Idv::EnterPasswordController do
           end
         end
 
-        it 'fails in way that will return an HTTP 500 error' do
+        before do
           expect do
             put :create,
                 params: { user: { password: ControllerHelper::VALID_PASSWORD } }
@@ -898,11 +898,18 @@ RSpec.describe Idv::EnterPasswordController do
         end
 
         it 'does not mint a GPO pending profile' do
+          expect(user.reload.gpo_verification_pending_profile).to be_nil
+        end
+
+        it 'kills the idv session' do
           expect do
             put :create,
                 params: { user: { password: ControllerHelper::VALID_PASSWORD } }
           end.to raise_error(GpoConfirmationMaker::InvalidEntryError)
-          expect(user.reload.gpo_verification_pending_profile).to be_nil
+          expect(subject.user_session[:idv]).to be_nil
+        end
+
+        it 'logs an event' do
         end
       end
     end

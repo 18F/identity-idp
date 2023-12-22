@@ -44,14 +44,14 @@ RSpec.describe GpoConfirmation do
         context "#{prop} not present" do
           let(:attributes) { valid_attributes.tap { |a| a.delete(prop) } }
           it 'fails validation' do
-            expect { subject }.to raise_error
+            expect { subject }.to raise_error(ActiveRecord::RecordInvalid)
           end
         end
 
         context "#{prop} all whitespace" do
           let(:attributes) { valid_attributes.tap { |a| a[prop] = "\n\t\t " } }
           it 'fails validation' do
-            expect { subject }.to raise_error
+            expect { subject }.to raise_error(ActiveRecord::RecordInvalid)
           end
         end
       end
@@ -74,7 +74,7 @@ RSpec.describe GpoConfirmation do
             end
           else
             it 'does not validate' do
-              expect { subject }.to raise_error
+              expect { subject }.to raise_error(ActiveRecord::RecordInvalid)
             end
           end
         end

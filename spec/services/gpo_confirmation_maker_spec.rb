@@ -28,7 +28,9 @@ RSpec.describe GpoConfirmationMaker do
   end
   let(:profile) { create(:profile) }
 
-  subject { described_class.new(pii: pii, service_provider: service_provider, profile: profile) }
+  subject do
+    described_class.new(pii: pii, service_provider: service_provider, profile: profile)
+  end
 
   describe '#perform' do
     before do
