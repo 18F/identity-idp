@@ -85,7 +85,17 @@ function DocumentCaptureReviewIssues({
           className="document-capture-review-issues-step__input"
         />
       ))}
-      {selfieCaptureEnabled && <SelfieStepWithHeader defaultSideProps selfieValue={value.selfie} />}
+      {selfieCaptureEnabled && (
+        <SelfieStepWithHeader
+          defaultSideProps={{
+            registerField,
+            onChange,
+            errors,
+            onError,
+          }}
+          selfieValue={value.selfie}
+        />
+      )}
       <FormStepsButton.Submit />
       {notReadySectionEnabled && <DocumentCaptureNotReady />}
       {exitQuestionSectionEnabled && <DocumentCaptureAbandon />}
