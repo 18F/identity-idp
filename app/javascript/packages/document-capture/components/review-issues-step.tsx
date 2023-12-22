@@ -21,6 +21,11 @@ interface ReviewIssuesStepValue {
   back: Blob | string | null | undefined;
 
   /**
+   * Selfie image value.
+   */
+  selfie?: Blob | string | null | undefined;
+
+  /**
    * Front image metadata.
    */
   front_image_metadata?: string;

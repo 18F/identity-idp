@@ -21,7 +21,11 @@ interface DocumentCaptureReviewIssuesProps {
   remainingAttempts: number;
   captureHints: boolean;
   registerField: RegisterFieldCallback;
-  value: { string: Blob | string | null | undefined } | {};
+  value: {
+    front?: Blob | string | null | undefined;
+    back?: Blob | string | null | undefined;
+    selfie?: Blob | string | null | undefined;
+  };
   unknownFieldErrors: FormStepError<any>[];
   errors: FormStepError<any>[];
   onChange: (...args: any) => void;
@@ -40,7 +44,7 @@ function DocumentCaptureReviewIssues({
   errors = [],
   onChange = () => undefined,
   onError = () => undefined,
-  value = {},
+  value,
   hasDismissed,
 }: DocumentCaptureReviewIssuesProps) {
   const { t } = useI18n();
