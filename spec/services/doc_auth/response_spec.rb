@@ -171,7 +171,7 @@ RSpec.describe DocAuth::Response do
 
     context 'when selfie checks are enabled' do
       let(:selfies_enabled) { true }
-        
+
       it 'returns true by default' do
         expect(response.selfie_check_performed?).to be(true)
       end
