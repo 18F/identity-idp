@@ -12,7 +12,7 @@ class GpoConfirmation < ApplicationRecord
     entry[method] if args.count == 0
   end
 
-  def respond_to_missing?(method)
+  def respond_to_missing?(method, ...)
     method = method.to_s
     !(method.endswith('?') || method.endswith('='))
   end
