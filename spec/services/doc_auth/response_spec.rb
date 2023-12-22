@@ -6,7 +6,7 @@ RSpec.describe DocAuth::Response do
   let(:exception) { nil }
   let(:pii_from_doc) { {} }
   let(:attention_with_barcode) { false }
-  let(:selfie_check_performed) { false }
+
   subject(:response) do
     described_class.new(
       success: success,
@@ -14,7 +14,6 @@ RSpec.describe DocAuth::Response do
       exception: exception,
       pii_from_doc: pii_from_doc,
       attention_with_barcode: attention_with_barcode,
-      selfie_check_performed: selfie_check_performed,
     )
   end
 
@@ -24,7 +23,7 @@ RSpec.describe DocAuth::Response do
     let(:other_exception) { nil }
     let(:other_pii_from_doc) { {} }
     let(:other_attention_with_barcode) { false }
-    let(:other_selfie_check_performed) { false }
+
     let(:other) do
       described_class.new(
         success: other_success,
@@ -32,7 +31,6 @@ RSpec.describe DocAuth::Response do
         exception: other_exception,
         pii_from_doc: other_pii_from_doc,
         attention_with_barcode: other_attention_with_barcode,
-        selfie_check_performed: other_selfie_check_performed,
       )
     end
     let!(:merged) { response.merge(other) }
@@ -161,9 +159,30 @@ RSpec.describe DocAuth::Response do
     end
   end
 
-  describe 'selfie_check_performed' do
-    it 'returns false by default' do
-      expect(response.selfie_check_performed?).to eq(false)
+  # LG-11942
+  # The following is for the stubbed selfie check value. Replace with
+  # the real tests when selfie implementation gets to that point.
+  describe 'selfie_check_performed?' do
+    before do
+      allow(IdentityConfig.store).
+        to receive(:doc_auth_selfie_capture_enabled).
+        and_return(selfies_enabled)
+    end
+
+    context 'when selfie checks are enabled' do
+      let(:selfies_enabled) { true }
+        
+      it 'returns true by default' do
+        expect(response.selfie_check_performed?).to be(true)
+      end
+    end
+
+    context 'when selfie checks are disabled' do
+      let(:selfies_enabled) { false }
+
+      it 'returns false' do
+        expect(response.selfie_check_performed?).to be(false)
+      end
     end
   end
 end
