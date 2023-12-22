@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe 'IdvStepConcern' do
+  include FlowPolicyHelper
+
   let(:user) { create(:user, :fully_registered, email: 'old_email@example.com') }
   let(:idv_session) do
     Idv::Session.new(user_session: subject.user_session, current_user: user, service_provider: nil)
@@ -277,6 +279,71 @@ RSpec.describe 'IdvStepConcern' do
         get :show
 
         expect(response).to redirect_to idv_verify_by_mail_enter_code_url
+      end
+    end
+  end
+
+  describe 'FlowPolicy helper methods' do
+    controller(idv_step_controller_class) do
+    end
+
+    let(:flow_policy) { Idv::FlowPolicy.new(idv_session: idv_session, user: user) }
+    before do
+      sign_in(user)
+      expect(Idv::FlowPolicy).to receive(:new).and_return(flow_policy)
+    end
+
+    describe '#confirm_step_allowed and #url_for_latest_step' do
+      let(:controller_allowed) { false }
+      controller(idv_step_controller_class) do
+        before_action :confirm_step_allowed
+
+        def name
+          'idv/idv_step_controller'
+        end
+      end
+
+      before do
+        routes.draw do
+          get 'show' => 'anonymous#show'
+        end
+      end
+
+      it 'redirects if the step is not allowed' do
+        step_info = Idv::StepInfo.new(
+          key: :idv_step_controller,
+          controller: controller,
+          next_steps: [:agreement],
+          preconditions: ->(idv_session:, user:) { false },
+          undo_step: ->(idv_session:, user:) {},
+        )
+        expect(flow_policy).to receive(:controller_allowed?).
+          with(controller: controller.class).and_return(false)
+        expect(flow_policy).to receive(:info_for_latest_step).
+          and_return(step_info)
+        expect(controller).to receive(:url_for).with(controller: '/idv/idv_step', action: :show).
+          and_return('/verify')
+
+        get :show
+        expect(response.status).to eq 302
+      end
+
+      it 'does not redirect if the step is allowed' do
+        expect(flow_policy).to receive(:controller_allowed?).
+          with(controller: controller.class).and_return(true)
+
+        get :show
+        expect(response.body).to eq 'Hello'
+        expect(response.status).to eq 200
+      end
+    end
+
+    describe '#clear_future_steps! and #clear_future_steps_from!' do
+      it 'calls undo_future_steps_from_controller!' do
+        expect(flow_policy).to receive(:undo_future_steps_from_controller!).
+          with(controller: controller.class)
+
+        controller.send(:clear_future_steps!)
       end
     end
   end
