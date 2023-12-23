@@ -378,6 +378,9 @@ Rails.application.routes.draw do
 
       get '/in_person_proofing/address' => 'in_person/address#show'
       put '/in_person_proofing/address' => 'in_person/address#update'
+      get '/in_person_proofing/state_id' => 'in_person/state_id#show'
+      put '/in_person_proofing/state_id' => 'in_person/state_id#update'
+
 
       get '/in_person' => 'in_person#index'
       get '/in_person/ready_to_verify' => 'in_person/ready_to_verify#show',
