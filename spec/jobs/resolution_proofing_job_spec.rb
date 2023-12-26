@@ -41,7 +41,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
         user_id: user.id,
         threatmetrix_session_id: threatmetrix_session_id,
         request_ip: request_ip,
-        ipp_enrollment_in_progress: ipp_enrollment_in_progress
+        ipp_enrollment_in_progress: ipp_enrollment_in_progress,
       )
     end
 
@@ -120,7 +120,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
           user_id: user.id,
           threatmetrix_session_id: threatmetrix_session_id,
           request_ip: request_ip,
-          ipp_enrollment_in_progress: ipp_enrollment_in_progress
+          ipp_enrollment_in_progress: ipp_enrollment_in_progress,
         )
       end
       it 'stores a successful result' do
@@ -414,7 +414,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
           user_id: user.id,
           threatmetrix_session_id: threatmetrix_session_id,
           request_ip: request_ip,
-          ipp_enrollment_in_progress: ipp_enrollment_in_progress
+          ipp_enrollment_in_progress: ipp_enrollment_in_progress,
         )
       end
 
