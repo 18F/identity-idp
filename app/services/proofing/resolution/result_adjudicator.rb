@@ -12,7 +12,7 @@ module Proofing
         should_proof_state_id:,
         ipp_enrollment_in_progress:,
         device_profiling_result:,
-        same_address_as_id:,
+        same_address_as_id:
       )
         @resolution_result = resolution_result
         @state_id_result = state_id_result
