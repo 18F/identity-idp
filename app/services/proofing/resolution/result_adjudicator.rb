@@ -2,7 +2,7 @@ module Proofing
   module Resolution
     class ResultAdjudicator
       attr_reader :resolution_result, :state_id_result, :device_profiling_result,
-                  :ipp_enrollment_in_progress, :residential_resolution_result, 
+                  :ipp_enrollment_in_progress, :residential_resolution_result,
                   :same_address_as_id
 
       def initialize(
