@@ -29,7 +29,7 @@ module Proofing
         should_proof_state_id:,
         threatmetrix_session_id:,
         timer:,
-        user_email:,
+        user_email:
       )
         device_profiling_result = proof_with_threatmetrix_if_needed(
           applicant_pii: applicant_pii,
@@ -107,7 +107,7 @@ module Proofing
       def proof_residential_address_if_needed(
         applicant_pii:,
         timer:,
-        ipp_enrollment_in_progress:,
+        ipp_enrollment_in_progress:
       )
         return residential_address_unnecessary_result unless ipp_enrollment_in_progress
 
@@ -130,7 +130,7 @@ module Proofing
 
       def proof_id_address_with_lexis_nexis_if_needed(applicant_pii:, timer:,
                                                       residential_instant_verify_result:,
-                                                      ipp_enrollment_in_progress:,)
+                                                      ipp_enrollment_in_progress:)
         if applicant_pii[:same_address_as_id] == 'true'
           return residential_instant_verify_result
         end
@@ -143,7 +143,7 @@ module Proofing
 
       def should_proof_state_id_with_aamva?(ipp_enrollment_in_progress:, same_address_as_id:,
                                             should_proof_state_id:, instant_verify_result:,
-                                            residential_instant_verify_result:,
+                                            residential_instant_verify_result:
                                             )
         return false unless should_proof_state_id
         # If the user is in double-address-verification and they have changed their address then
