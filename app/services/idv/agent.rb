@@ -11,7 +11,7 @@ module Idv
       user_id:,
       threatmetrix_session_id:,
       request_ip:,
-      ipp_enrollment_in_progress: false
+      ipp_enrollment_in_progress:
     )
       document_capture_session.create_proofing_session
 

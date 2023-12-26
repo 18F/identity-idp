@@ -19,7 +19,7 @@ class ResolutionProofingJob < ApplicationJob
     encrypted_arguments:,
     trace_id:,
     should_proof_state_id:,
-    ipp_enrollment_in_progress: false,
+    ipp_enrollment_in_progress:,
     user_id: nil,
     threatmetrix_session_id: nil,
     request_ip: nil,
