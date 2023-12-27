@@ -34,7 +34,7 @@ ENV REDIS_URL redis://redis:6379
 ENV ASSET_HOST http://localhost:3000
 ENV DOMAIN_NAME localhost:3000
 ENV PIV_CAC_SERVICE_URL https://localhost:8443/
-ENV PIV_CAC_VERIFY_TOKEN_URL https://localhost:8443/ 
+ENV PIV_CAC_VERIFY_TOKEN_URL https://localhost:8443/
 
 RUN echo Env Value : $CI_ENVIRONMENT_SLUG
 
@@ -121,7 +121,6 @@ COPY --chown=app:app ./bin ./bin
 COPY --chown=app:app ./public ./public
 COPY --chown=app:app ./scripts ./scripts
 COPY --chown=app:app ./spec ./spec
-COPY --chown=app:app ./vendor ./vendor
 COPY --chown=app:app ./Rakefile ./Rakefile
 COPY --chown=app:app ./Makefile ./Makefile
 COPY --chown=app:app ./babel.config.js ./babel.config.js

@@ -31,6 +31,8 @@ module EventDisavowal
     end
 
     def mark_profile_inactive
+      return if user.active_profile.blank?
+
       user.active_profile&.deactivate(:password_reset)
       Funnel::DocAuth::ResetSteps.call(@user.id)
       user.proofing_component&.destroy

@@ -207,6 +207,21 @@ RSpec.describe ServiceProviderSession do
         sp_session[:biometric_comparison_required] = nil
         expect(subject.selfie_required?).to eq(false)
       end
+
+      context 'when environment is prod' do
+        before do
+          allow(Identity::Hostdata).to receive(:env).and_return('prod')
+        end
+        it 'returns false when sp biometric_comparison_required is true' do
+          sp_session[:biometric_comparison_required] = true
+          expect(subject.selfie_required?).to eq(false)
+        end
+
+        it 'returns false when sp biometric_comparison_required is truthy' do
+          sp_session[:biometric_comparison_required] = 1
+          expect(subject.selfie_required?).to eq(false)
+        end
+      end
     end
 
     context 'doc_auth_selfie_capture_enabled is false' do
