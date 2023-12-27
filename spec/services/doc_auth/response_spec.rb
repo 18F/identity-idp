@@ -158,31 +158,4 @@ RSpec.describe DocAuth::Response do
       expect(response.doc_type_supported?).to eq(true)
     end
   end
-
-  # LG-11942
-  # The following is for the stubbed selfie check value. Replace with
-  # the real tests when selfie implementation gets to that point.
-  describe 'selfie_check_performed?' do
-    before do
-      allow(IdentityConfig.store).
-        to receive(:doc_auth_selfie_capture_enabled).
-        and_return(selfies_enabled)
-    end
-
-    context 'when selfie checks are enabled' do
-      let(:selfies_enabled) { true }
-
-      it 'returns true by default' do
-        expect(response.selfie_check_performed?).to be(true)
-      end
-    end
-
-    context 'when selfie checks are disabled' do
-      let(:selfies_enabled) { false }
-
-      it 'returns false by default' do
-        expect(response.selfie_check_performed?).to be(false)
-      end
-    end
-  end
 end
