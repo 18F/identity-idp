@@ -206,7 +206,7 @@ RSpec.describe DocAuthRouter do
         ),
       )
 
-      response = proxy.get_results(instance_id: 'abcdef')
+      response = proxy.get_results(instance_id: 'abcdef', selfie_check_performed: false)
 
       expect(response.errors[:network]).to eq(I18n.t('doc_auth.errors.general.network_error'))
     end
