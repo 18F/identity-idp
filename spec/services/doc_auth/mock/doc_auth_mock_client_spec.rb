@@ -235,7 +235,10 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
         image: image,
         instance_id: nil,
       )
-      response = client.get_results(instance_id: nil, selfie_check_performed: liveness_checking_required)
+      response = client.get_results(
+        instance_id: nil,
+        selfie_check_performed: liveness_checking_required,
+      )
       expect(response).to be_a(DocAuth::Response)
       expect(response.success?).to eq(false)
       expect(response.errors).to eq(general: ['network'])
