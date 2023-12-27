@@ -29,7 +29,12 @@ module DocAuth
         return mocked_response_for_method(__method__) if method_mocked?(__method__)
 
         instance_id = SecureRandom.uuid
-        Responses::CreateDocumentResponse.new(success: true, errors: {}, instance_id: instance_id)
+        Responses::CreateDocumentResponse.new(
+          success: true,
+          errors: {},
+          instance_id: instance_id,
+          selfie_check_performed: true,
+        )
       end
 
       # rubocop:disable Lint/UnusedMethodArgument
@@ -47,6 +52,14 @@ module DocAuth
         error_response = http_error_response(image, 'back')
         return error_response if error_response
         DocAuth::Response.new(success: true)
+      end
+
+      def post_selfie_image(image:, instance_id:)
+        return mocked_response_for_method(__method__) if method_mocked?(__method__)
+        self.class.last_uploaded_selfie_image = image
+        error_response = http_error_response(image, 'selfie')
+        return error_response if error_response
+        DocAuth::Response.new(success: true, selfie_check_performed: true)
       end
 
       def post_images(
@@ -70,6 +83,9 @@ module DocAuth
 
         back_image_response = post_back_image(image: back_image, instance_id: instance_id)
         return back_image_response unless back_image_response.success?
+
+        selfie_image_response = post_selfie_image(image: selfie_image, instance_id: instance_id)
+        return selfie_image_response unless selfie_image_response.success?
 
         get_results(instance_id: instance_id)
       end
