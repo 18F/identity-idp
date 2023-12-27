@@ -349,12 +349,19 @@ RSpec.describe Idv::ImageUploadsController do
       context 'selfie included' do
         let(:selfie_img) { DocAuthImageFixtures.selfie_image_multipart }
 
+        before do
+          allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).
+            and_return(true)
+
+          allow(controller.decorated_sp_session).to receive(:selfie_required?).and_return(true)
+        end
+
         it 'returns a successful response and modifies the session' do
           expect_any_instance_of(DocAuth::Mock::DocAuthMockClient).
             to receive(:post_images).with(
               front_image: an_instance_of(String),
               back_image: an_instance_of(String),
-              selfie_image: selfie_img,
+              selfie_image: an_instance_of(String),
               image_source: :unknown,
               user_uuid: an_instance_of(String),
               uuid_prefix: nil,
@@ -366,7 +373,7 @@ RSpec.describe Idv::ImageUploadsController do
           expect(response.status).to eq(200)
           expect(json[:success]).to eq(true)
           expect(document_capture_session.reload.load_result.success?).to eq(true)
-          # expect(document_capture_session.reload.load_result.selfie_check_performed).to eq(true)
+          expect(document_capture_session.reload.load_result.selfie_check_performed).to eq(true)
         end
       end
 
