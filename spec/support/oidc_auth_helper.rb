@@ -79,8 +79,8 @@ module OidcAuthHelper
                   nonce: SecureRandom.hex,
                   client_id: OIDC_ISSUER,
                   acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
-                  biometric_comparison_required:,
-                  tid: nil)
+                  tid: nil,
+                  biometric_comparison_required: false)
     ial2_params = {
       client_id: client_id,
       response_type: 'code',
