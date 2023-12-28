@@ -113,7 +113,7 @@ RSpec.feature 'OIDC Authorization Confirmation' do
     end
 
     it 'redirects to the 404 page' do
-      expect(page.path).to eq(page_not_found_path)
+      expect(current_path).to eq(page_not_found_path)
       expect(page.status_code).to eq(404)
     end
   end
