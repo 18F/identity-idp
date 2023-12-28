@@ -21,6 +21,8 @@ Rails.application.routes.draw do
       put '/sessions' => 'sessions#update'
 
       namespace :two_factor_authentication do
+        put '/piv_cac/:id' => 'piv_cac#update', as: :piv_cac
+        delete '/piv_cac/:id' => 'piv_cac#destroy', as: nil        
         put '/webauthn/:id' => 'webauthn#update', as: :webauthn
         delete '/webauthn/:id' => 'webauthn#destroy', as: nil
         put '/auth_app/:id' => 'auth_app#update', as: :auth_app
