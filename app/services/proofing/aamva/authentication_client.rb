@@ -2,7 +2,7 @@ module Proofing
   module Aamva
     class AuthenticationClient
       AAMVA_TOKEN_FRESHNESS_SECONDS = 28 * 60
-      AUTH_TOKEN_CACHE_KEY = 'aamva_api_auth_token'
+      AUTH_TOKEN_CACHE_KEY = 'aamva_api_auth_token'.freeze
 
       def self.auth_token(config)
         Rails.cache.fetch(

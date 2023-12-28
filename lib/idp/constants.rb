@@ -1,6 +1,6 @@
 module Idp
   module Constants
-    AVAILABLE_LOCALES = %w[en es fr]
+    AVAILABLE_LOCALES = %w[en es fr].freeze
     UUID_REGEX = /\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/
 
     KMS_LOG_FILENAME = 'kms.log'
@@ -9,11 +9,11 @@ module Idp
     TELEPHONY_LOG_FILENAME = 'telephony.log'
 
     module Vendors
-      ACUANT = 'acuant'
-      LEXIS_NEXIS = 'lexis_nexis'
-      MOCK = 'mock'
-      USPS = 'usps'
-      AAMVA = 'aamva'
+      ACUANT = 'acuant'.freeze
+      LEXIS_NEXIS = 'lexis_nexis'.freeze
+      MOCK = 'mock'.freeze
+      USPS = 'usps'.freeze
+      AAMVA = 'aamva'.freeze
     end
 
     # US State and Territory codes are
@@ -89,7 +89,7 @@ module Idp
     AAL2 = 2
     AAL3 = 3
 
-    MOCK_IDV_APPLICANT_STATE_ID_JURISDICTION = 'ND'
+    MOCK_IDV_APPLICANT_STATE_ID_JURISDICTION = 'ND'.freeze
     MOCK_IDV_APPLICANT = {
       address1: '1 FAKE RD',
       address2: nil,

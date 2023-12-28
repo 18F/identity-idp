@@ -1,6 +1,6 @@
 module Reports
   class DailyRegistrationsReport < BaseReport
-    REPORT_NAME = 'daily-registrations-report'
+    REPORT_NAME = 'daily-registrations-report'.freeze
 
     attr_reader :report_date
 

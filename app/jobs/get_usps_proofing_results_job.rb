@@ -1,18 +1,18 @@
 class GetUspsProofingResultsJob < ApplicationJob
   MILLISECONDS_PER_SECOND = 1000.0 # Specify float value to use floating point math
-  IPP_STATUS_PASSED = 'In-person passed'
-  IPP_STATUS_FAILED = 'In-person failed'
-  IPP_INCOMPLETE_ERROR_MESSAGE = 'Customer has not been to a post office to complete IPP'
+  IPP_STATUS_PASSED = 'In-person passed'.freeze
+  IPP_STATUS_FAILED = 'In-person failed'.freeze
+  IPP_INCOMPLETE_ERROR_MESSAGE = 'Customer has not been to a post office to complete IPP'.freeze
   IPP_EXPIRED_ERROR_MESSAGE = /More than (?<days>\d+) days have passed since opt-in to IPP/
-  IPP_INVALID_ENROLLMENT_CODE_MESSAGE = 'Enrollment code %s does not exist'
-  IPP_INVALID_APPLICANT_MESSAGE = 'Applicant %s does not exist'
+  IPP_INVALID_ENROLLMENT_CODE_MESSAGE = 'Enrollment code %s does not exist'.freeze
+  IPP_INVALID_APPLICANT_MESSAGE = 'Applicant %s does not exist'.freeze
   SUPPORTED_ID_TYPES = [
     "State driver's license",
     "State non-driver's identification card",
-  ]
+  ].freeze
   SUPPORTED_SECONDARY_ID_TYPES = [
     'Visual Inspection of Name and Address on Primary ID Match',
-  ]
+  ].freeze
 
   queue_as :long_running
 

@@ -15,7 +15,7 @@ module RuboCop
       class ErrorsAddLinter < RuboCop::Cop::Cop
         MSG = 'Please set a unique key for this error'.freeze
 
-        RESTRICT_ON_SEND = [:add]
+        RESTRICT_ON_SEND = [:add].freeze
 
         def_node_matcher :errors_add_match?, <<~PATTERN
           (send (send nil? :errors) :add $...)

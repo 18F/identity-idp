@@ -5,8 +5,8 @@ class WebauthnVisitForm
 
   attr_reader :url_options, :in_mfa_selection_flow
 
-  INVALID_STATE_ERROR = 'InvalidStateError'
-  NOT_SUPPORTED_ERROR = 'NotSupportedError'
+  INVALID_STATE_ERROR = 'InvalidStateError'.freeze
+  NOT_SUPPORTED_ERROR = 'NotSupportedError'.freeze
 
   def initialize(user:, url_options:, in_mfa_selection_flow:)
     @user = user

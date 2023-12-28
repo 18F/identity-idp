@@ -36,7 +36,7 @@ module Proofing
         'lexis_nexis',
         'ddp',
       )
-      TRANSACTION_ID = 'ddp-mock-transaction-id-123'
+      TRANSACTION_ID = 'ddp-mock-transaction-id-123'.freeze
 
       def initialize(response_fixture_file: 'successful_response.json')
         @response_fixture_file = File.expand_path(response_fixture_file, FIXTURES_DIR)

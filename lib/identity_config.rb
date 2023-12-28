@@ -3,7 +3,7 @@ class IdentityConfig
   GIT_TAG = `git tag --points-at HEAD`.chomp.split("\n").first
   GIT_BRANCH = `git rev-parse --abbrev-ref HEAD`.chomp
 
-  VENDOR_STATUS_OPTIONS = %i[operational partial_outage full_outage]
+  VENDOR_STATUS_OPTIONS = %i[operational partial_outage full_outage].freeze
 
   class << self
     attr_reader :store, :key_types, :unused_keys
@@ -56,7 +56,7 @@ class IdentityConfig
       Time.parse(value)
       # rubocop:enable Rails/TimeZone
     end,
-  }
+  }.freeze
 
   attr_reader :key_types
 

@@ -1,10 +1,10 @@
 module Proofing
   module Mock
     class AddressMockClient
-      UNVERIFIABLE_PHONE_NUMBER = '7035555555'
-      PROOFER_TIMEOUT_PHONE_NUMBER = '7035555888'
-      FAILED_TO_CONTACT_PHONE_NUMBER = '7035555999'
-      TRANSACTION_ID = 'address-mock-transaction-id-123'
+      UNVERIFIABLE_PHONE_NUMBER = '7035555555'.freeze
+      PROOFER_TIMEOUT_PHONE_NUMBER = '7035555888'.freeze
+      FAILED_TO_CONTACT_PHONE_NUMBER = '7035555999'.freeze
+      TRANSACTION_ID = 'address-mock-transaction-id-123'.freeze
 
       def proof(applicant)
         plain_phone = applicant[:phone].gsub(/\D/, '').delete_prefix('1')

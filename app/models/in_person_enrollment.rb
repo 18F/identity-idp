@@ -11,12 +11,12 @@ class InPersonEnrollment < ApplicationRecord
 
   has_one :notification_phone_configuration, dependent: :destroy, inverse_of: :in_person_enrollment
 
-  STATUS_ESTABLISHING = 'establishing'
-  STATUS_PENDING = 'pending'
-  STATUS_PASSED = 'passed'
-  STATUS_FAILED = 'failed'
-  STATUS_EXPIRED = 'expired'
-  STATUS_CANCELLED = 'cancelled'
+  STATUS_ESTABLISHING = 'establishing'.freeze
+  STATUS_PENDING = 'pending'.freeze
+  STATUS_PASSED = 'passed'.freeze
+  STATUS_FAILED = 'failed'.freeze
+  STATUS_EXPIRED = 'expired'.freeze
+  STATUS_CANCELLED = 'cancelled'.freeze
 
   enum status: {
     STATUS_ESTABLISHING.to_sym => 0,

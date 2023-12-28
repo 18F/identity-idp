@@ -6,7 +6,7 @@ require 'i18n/tasks'
 # List of keys allowed to contain different interpolation arguments across locales
 ALLOWED_INTERPOLATION_MISMATCH_KEYS = [
   'time.formats.event_timestamp_js',
-]
+].freeze
 
 # A set of patterns which are expected to only occur within specific locales. This is an imperfect
 # solution based on current content, intended to help prevent accidents when adding new translated

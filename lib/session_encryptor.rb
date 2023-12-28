@@ -30,7 +30,7 @@ class SessionEncryptor
     ['flash', 'flashes', 'personal_key'],
     ['flash', 'flashes', 'email'],
     ['email'],
-  ]
+  ].freeze
 
   SENSITIVE_DEFAULT_FIELDS = Idp::Constants::MOCK_IDV_APPLICANT.slice(
     :last_name,

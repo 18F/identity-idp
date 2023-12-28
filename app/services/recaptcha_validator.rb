@@ -1,7 +1,7 @@
 class RecaptchaValidator
   VERIFICATION_ENDPOINT = 'https://www.google.com/recaptcha/api/siteverify'.freeze
-  RESULT_ERRORS = ['missing-input-secret', 'invalid-input-secret']
-  VALID_RECAPTCHA_VERSIONS = [2, 3]
+  RESULT_ERRORS = ['missing-input-secret', 'invalid-input-secret'].freeze
+  VALID_RECAPTCHA_VERSIONS = [2, 3].freeze
 
   attr_reader :recaptcha_version,
               :recaptcha_action,

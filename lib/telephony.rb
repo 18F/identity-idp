@@ -34,7 +34,7 @@ module Telephony
                    GSM_DOUBLE_CHARACTERS).freeze
 
   UCS_2_BASIC_CHAR_MAX = 0xFFFF
-  LOG_FILENAME = 'telephony.log'
+  LOG_FILENAME = 'telephony.log'.freeze
 
   extend SingleForwardable
 

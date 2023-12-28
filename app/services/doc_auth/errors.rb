@@ -1,14 +1,14 @@
 module DocAuth
   module Errors
     # HTTP Status Codes
-    IMAGE_LOAD_FAILURE = 'image_load_failure' # 438
-    IMAGE_LOAD_FAILURE_FIELD = 'image_load_failure_field' # 438
-    PIXEL_DEPTH_FAILURE = 'pixel_depth_failure' # 439
-    PIXEL_DEPTH_FAILURE_FIELD = 'pixel_depth_failure_field'
-    IMAGE_SIZE_FAILURE = 'image_size_failure' # 440
-    IMAGE_SIZE_FAILURE_FIELD = 'image_size_failure_field' # 440
+    IMAGE_LOAD_FAILURE = 'image_load_failure'.freeze # 438
+    IMAGE_LOAD_FAILURE_FIELD = 'image_load_failure_field'.freeze # 438
+    PIXEL_DEPTH_FAILURE = 'pixel_depth_failure'.freeze # 439
+    PIXEL_DEPTH_FAILURE_FIELD = 'pixel_depth_failure_field'.freeze
+    IMAGE_SIZE_FAILURE = 'image_size_failure'.freeze # 440
+    IMAGE_SIZE_FAILURE_FIELD = 'image_size_failure_field'.freeze # 440
     # Network
-    NETWORK = 'network' # usually 500 or other unhandled error
+    NETWORK = 'network'.freeze # usually 500 or other unhandled error
     # Alerts
     BARCODE_CONTENT_CHECK = 'barcode_content_check'
     BARCODE_READ_CHECK = 'barcode_read_check'
@@ -33,23 +33,23 @@ module DocAuth
     VISIBLE_COLOR_CHECK = 'visible_color_check'
     VISIBLE_PHOTO_CHECK = 'visible_photo_check'
     # Image metrics
-    DPI_LOW = 'dpi_low'
-    DPI_LOW_FIELD = 'dpi_low_field'
-    DPI_LOW_ONE_SIDE = 'dpi_low_one_side'
-    DPI_LOW_BOTH_SIDES = 'dpi_low_both_sides'
-    SHARP_LOW = 'sharp_low'
-    SHARP_LOW_FIELD = 'sharp_low_field'
-    SHARP_LOW_ONE_SIDE = 'sharp_low_one_side'
-    SHARP_LOW_BOTH_SIDES = 'sharp_low_both_sides'
-    GLARE_LOW = 'glare_low'
-    GLARE_LOW_FIELD = 'glare_low_field'
-    GLARE_LOW_ONE_SIDE = 'glare_low_one_side'
-    GLARE_LOW_BOTH_SIDES = 'glare_low_both_sides'
+    DPI_LOW = 'dpi_low'.freeze
+    DPI_LOW_FIELD = 'dpi_low_field'.freeze
+    DPI_LOW_ONE_SIDE = 'dpi_low_one_side'.freeze
+    DPI_LOW_BOTH_SIDES = 'dpi_low_both_sides'.freeze
+    SHARP_LOW = 'sharp_low'.freeze
+    SHARP_LOW_FIELD = 'sharp_low_field'.freeze
+    SHARP_LOW_ONE_SIDE = 'sharp_low_one_side'.freeze
+    SHARP_LOW_BOTH_SIDES = 'sharp_low_both_sides'.freeze
+    GLARE_LOW = 'glare_low'.freeze
+    GLARE_LOW_FIELD = 'glare_low_field'.freeze
+    GLARE_LOW_ONE_SIDE = 'glare_low_one_side'.freeze
+    GLARE_LOW_BOTH_SIDES = 'glare_low_both_sides'.freeze
     # Doc type
-    DOC_TYPE_CHECK = 'doc_type_check'
-    CARD_TYPE = 'card_type'
+    DOC_TYPE_CHECK = 'doc_type_check'.freeze
+    CARD_TYPE = 'card_type'.freeze
     # Other
-    FALLBACK_FIELD_LEVEL = 'fallback_field_level'
+    FALLBACK_FIELD_LEVEL = 'fallback_field_level'.freeze
 
     ALL = [
       BARCODE_CONTENT_CHECK,

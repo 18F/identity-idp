@@ -12,15 +12,15 @@ module TwoFactorAuthenticatable
   REMEMBER_2FA_COOKIE = 'remember_tfa'.freeze
 
   class AuthMethod
-    BACKUP_CODE = 'backup_code'
-    PERSONAL_KEY = 'personal_key'
-    PIV_CAC = 'piv_cac'
-    REMEMBER_DEVICE = 'remember_device'
-    SMS = 'sms'
-    TOTP = 'totp'
-    VOICE = 'voice'
-    WEBAUTHN = 'webauthn'
-    WEBAUTHN_PLATFORM = 'webauthn_platform'
+    BACKUP_CODE = 'backup_code'.freeze
+    PERSONAL_KEY = 'personal_key'.freeze
+    PIV_CAC = 'piv_cac'.freeze
+    REMEMBER_DEVICE = 'remember_device'.freeze
+    SMS = 'sms'.freeze
+    TOTP = 'totp'.freeze
+    VOICE = 'voice'.freeze
+    WEBAUTHN = 'webauthn'.freeze
+    WEBAUTHN_PLATFORM = 'webauthn_platform'.freeze
 
     PHISHING_RESISTANT_METHODS = [
       WEBAUTHN,
