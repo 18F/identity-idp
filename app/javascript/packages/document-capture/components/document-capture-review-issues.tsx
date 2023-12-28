@@ -1,13 +1,9 @@
 import { useContext } from 'react';
 import { PageHeading } from '@18f/identity-components';
-import {
-  FormStepError,
-  FormStepsButton,
-  OnErrorCallback,
-  RegisterFieldCallback,
-} from '@18f/identity-form-steps';
+import { FormStepsButton } from '@18f/identity-form-steps';
 import { Cancel } from '@18f/identity-verify-flow';
 import { useI18n } from '@18f/identity-react-i18n';
+import type { FormStepComponentProps } from '@18f/identity-form-steps';
 import UnknownError from './unknown-error';
 import TipList from './tip-list';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
@@ -15,21 +11,13 @@ import DocumentCaptureNotReady from './document-capture-not-ready';
 import { FeatureFlagContext } from '../context';
 import DocumentCaptureAbandon from './document-capture-abandon';
 import { DocumentCaptureSubheaderOne, SelfieStepWithHeader } from './documents-step';
+import type { ReviewIssuesStepValue } from './review-issues-step';
 
-interface DocumentCaptureReviewIssuesProps {
+interface DocumentCaptureReviewIssuesProps
+  extends Omit<FormStepComponentProps<ReviewIssuesStepValue>, 'toPreviousStep'> {
   isFailedDocType: boolean;
   remainingAttempts: number;
   captureHints: boolean;
-  registerField: RegisterFieldCallback;
-  value: {
-    front?: Blob | string | null | undefined;
-    back?: Blob | string | null | undefined;
-    selfie?: Blob | string | null | undefined;
-  };
-  unknownFieldErrors: FormStepError<any>[];
-  errors: FormStepError<any>[];
-  onChange: (...args: any) => void;
-  onError: OnErrorCallback;
   hasDismissed: boolean;
 }
 
