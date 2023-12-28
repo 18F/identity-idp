@@ -10,6 +10,7 @@ module OpenidConnect
     include BillableEventTrackable
     include ForcedReauthenticationConcern
 
+    before_action :redirect_to_not_found_if_selfie_requested_in_production, only: [:index]
     before_action :build_authorize_form_from_params, only: [:index]
     before_action :pre_validate_authorize_form, only: [:index]
     before_action :sign_out_if_prompt_param_is_login_and_user_is_signed_in, only: [:index]
@@ -43,6 +44,11 @@ module OpenidConnect
     end
 
     private
+
+    def redirect_to_not_found_if_selfie_requested_in_production
+      return unless params['biometric_comparison_required'] == 'true'
+      redirect_to '/page_not_found'
+    end
 
     def check_sp_active
       return if @authorize_form.service_provider&.active?

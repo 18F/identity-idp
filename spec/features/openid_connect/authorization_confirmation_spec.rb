@@ -105,4 +105,11 @@ RSpec.feature 'OIDC Authorization Confirmation' do
       end
     end
   end
+
+  context 'when asked for selfie verification in production' do
+    it 'redirects to the 404 page' do
+      visit visit_idp_from_ial2_oidc_sp(biometric_comparison_required: true)
+      expect(page.status_code).to eq(404)
+    end
+  end
 end
