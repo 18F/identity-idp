@@ -107,8 +107,13 @@ RSpec.feature 'OIDC Authorization Confirmation' do
   end
 
   context 'when asked for selfie verification in production' do
-    it 'redirects to the 404 page' do
+    before do
+      allow(Rails.env).to receive(:production?).and_return(true)
       visit visit_idp_from_ial2_oidc_sp(biometric_comparison_required: true)
+    end
+
+    it 'redirects to the 404 page' do
+      expect(page.path).to eq(page_not_found_path)
       expect(page.status_code).to eq(404)
     end
   end

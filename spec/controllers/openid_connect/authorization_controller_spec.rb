@@ -1012,8 +1012,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
           end
 
           # Temporary barrier to public presentation. Remove when we
-          # are ready to accept :biometric_comparison_required for
-          # real in production.
+          # are ready to accept :biometric_comparison_required in
+          # production.
           context 'in production' do
             let(:production) { true }
 
@@ -1022,7 +1022,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
             end
 
             it 'redirects to /page_not_found' do
-              expect(response).to redirect_to('/page_not_found')
+              expect(response).to redirect_to(page_not_found_path)
             end
           end
 

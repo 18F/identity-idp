@@ -421,6 +421,8 @@ Rails.application.routes.draw do
     root to: 'users/sessions#new'
   end
 
+  match '/page_not_found', via: :all, to: 'pages#page_not_found'
+
   # Make sure any new routes are added above this line!
   # The line below will route all requests that aren't
   # defined route to the 404 page. Therefore, anything you put after this rule
