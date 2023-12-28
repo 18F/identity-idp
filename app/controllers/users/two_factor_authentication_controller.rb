@@ -1,6 +1,7 @@
 module Users
   class TwoFactorAuthenticationController < ApplicationController
     include TwoFactorAuthenticatable
+    include ApplicationHelper
     include ActionView::Helpers::DateHelper
 
     before_action :check_remember_device_preference
