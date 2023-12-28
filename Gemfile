@@ -101,7 +101,7 @@ group :development, :test do
   gem 'i18n-tasks', '~> 1.0'
   gem 'knapsack'
   gem 'listen'
-  gem 'nokogiri', '~> 1.14.0'
+  gem 'nokogiri', '~> 1.16.0'
   gem 'pg_query', require: false
   gem 'pry-byebug'
   gem 'pry-doc'

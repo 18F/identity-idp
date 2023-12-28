@@ -427,8 +427,8 @@ GEM
     net-ssh (6.1.0)
     newrelic_rpm (9.7.0)
     nio4r (2.7.0)
-    nokogiri (1.14.5)
-      mini_portile2 (~> 2.8.0)
+    nokogiri (1.16.0)
+      mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     openssl (3.0.2)
     openssl-signature_algorithm (1.2.1)
@@ -788,7 +788,7 @@ DEPENDENCIES
   multiset
   net-sftp
   newrelic_rpm (~> 9.0)
-  nokogiri (~> 1.14.0)
+  nokogiri (~> 1.16.0)
   pg
   pg_query
   phonelib
@@ -852,7 +852,7 @@ DEPENDENCIES
   zxcvbn (= 0.1.9)
 
 RUBY VERSION
-   ruby 3.2.2p53
+   ruby 3.3.0p0
 
 BUNDLED WITH
    2.4.20
