@@ -143,8 +143,6 @@ module Proofing
                                             should_proof_state_id:, instant_verify_result:,
                                             residential_instant_verify_result:)
         return false unless should_proof_state_id
-        # If the user is in double-address-verification and they have changed their address then
-        # they are not eligible for get-to-yes
         if !ipp_enrollment_in_progress || same_address_as_id == 'true'
           user_can_pass_after_state_id_check?(instant_verify_result)
         else
