@@ -46,8 +46,10 @@ module OpenidConnect
     private
 
     def redirect_to_not_found_if_selfie_requested_in_production
-      return unless params['biometric_comparison_required'] == 'true'
-      redirect_to '/page_not_found'
+      if Rails.env.production? &&
+         params['biometric_comparison_required'] == 'true'
+        redirect_to '/page_not_found'
+      end
     end
 
     def check_sp_active

@@ -999,12 +999,66 @@ RSpec.describe OpenidConnect::AuthorizationController do
         )
       end
 
-      it 'sets biometric_comparison_required to true if biometric comparison is required' do
-        params[:biometric_comparison_required] = true
+      context 'the session :biometric_comparison_required value' do
+        before do
+          allow(Rails.env).to receive(:production?).and_return(production)
+        end
 
-        action
+        context 'when the param value :biometric_comparison_required is "true"' do
+          before do
+            params[:biometric_comparison_required] = 'true'
 
-        expect(session[:sp][:biometric_comparison_required]).to eq(true)
+            action
+          end
+
+          # Temporary barrier to public presentation. Remove when we
+          # are ready to accept :biometric_comparison_required for
+          # real in production.
+          context 'in production' do
+            let(:production) { true }
+
+            it 'does not set the :sp value' do
+              expect(session).not_to include(:sp)
+            end
+
+            it 'redirects to /page_not_found' do
+              expect(response).to redirect_to('/page_not_found')
+            end
+          end
+
+          context 'not in production' do
+            let(:production) { false }
+
+            it 'sets the session :biometric_comparison_required value to true' do
+              expect(session[:sp][:biometric_comparison_required]).to eq(true)
+            end
+          end
+        end
+
+        context 'when the param value :biometric_comparison_required is not set' do
+          before do
+            # Should be a no-op, but let's be paranoid.
+            params.delete(:biometric_comparison_required)
+
+            action
+          end
+
+          context 'in production' do
+            let(:production) { true }
+
+            it 'sets the session :biometric_comparison_required value to false' do
+              expect(session[:sp][:biometric_comparison_required]).to eq(false)
+            end
+          end
+
+          context 'not in production' do
+            let(:production) { false }
+
+            it 'sets the session :biometric_comparison_required value to false' do
+              expect(session[:sp][:biometric_comparison_required]).to eq(false)
+            end
+          end
+        end
       end
     end
   end
