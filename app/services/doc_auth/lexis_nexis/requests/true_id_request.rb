@@ -42,7 +42,7 @@ module DocAuth
           LexisNexis::Responses::TrueIdResponse.new(
             http_response,
             config,
-            liveness_checking_required,
+            include_liveness?,
           )
         end
 
