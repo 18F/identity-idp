@@ -1,6 +1,10 @@
 import { useContext } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
-import { FormStepComponentProps, FormStepsButton, FormStepsContext } from '@18f/identity-form-steps';
+import {
+  FormStepComponentProps,
+  FormStepsButton,
+  FormStepsContext,
+} from '@18f/identity-form-steps';
 import { PageHeading } from '@18f/identity-components';
 import { Cancel } from '@18f/identity-verify-flow';
 import HybridDocCaptureWarning from './hybrid-doc-capture-warning';
@@ -12,7 +16,11 @@ import DocumentCaptureNotReady from './document-capture-not-ready';
 import { FeatureFlagContext } from '../context';
 import DocumentCaptureAbandon from './document-capture-abandon';
 
-export function DocumentCaptureSubheaderOne({ selfieCaptureEnabled }) {
+export function DocumentCaptureSubheaderOne({
+  selfieCaptureEnabled,
+}: {
+  selfieCaptureEnabled: boolean;
+}) {
   const { t } = useI18n();
   return (
     <h2>
@@ -22,7 +30,13 @@ export function DocumentCaptureSubheaderOne({ selfieCaptureEnabled }) {
   );
 }
 
-export function SelfieCaptureWithHeader({ defaultSideProps, selfieValue }) {
+export function SelfieCaptureWithHeader({
+  defaultSideProps,
+  selfieValue,
+}: {
+  defaultSideProps: any;
+  selfieValue: any;
+}) {
   const { t } = useI18n();
   return (
     <>
@@ -47,7 +61,13 @@ export function SelfieCaptureWithHeader({ defaultSideProps, selfieValue }) {
   );
 }
 
-export function DocumentFrontAndBackCapture({ defaultSideProps, value }) {
+export function DocumentFrontAndBackCapture({
+  defaultSideProps,
+  value,
+}: {
+  defaultSideProps: any;
+  value: any;
+}) {
   type DocumentSide = 'front' | 'back';
   const documentsSides: DocumentSide[] = ['front', 'back'];
   return (
