@@ -123,6 +123,7 @@ RSpec.describe GpoConfirmation do
       ['12345-6789', '12345-6789'],
       ['12345  6789', '12345-6789'],
       ['123456789', '12345-6789'],
+      ['1234567890', '12345'],
     ].each do |input, expected|
       it "normalizes #{input.inspect} to #{expected.inspect}" do
         expect(GpoConfirmation.normalize_zipcode(input)).to eql(expected)

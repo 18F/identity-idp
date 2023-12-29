@@ -85,6 +85,7 @@ RSpec.describe GpoConfirmationMaker do
     ['12345-67', '12345'],
     ['12345-678', '12345'],
     ['12345-6789', '12345-6789'],
+    ['12345-67890', '12345'],
   ].each do |input, expected|
     context "when zipcode = #{input.inspect}" do
       let(:zipcode) { input }
