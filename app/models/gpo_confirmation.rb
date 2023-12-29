@@ -1,21 +1,18 @@
 class GpoConfirmation < ApplicationRecord
   self.table_name = 'usps_confirmations'
 
+  ENTRY_ATTRIBUTES = %i[otp address1 city state zipcode]
+  ENTRY_ATTRIBUTES.each do |attr|
+    define_method("entry_#{attr}".to_sym) do
+      entry[attr]
+    end
+  end
+
   validates :entry, presence: true
-  validates :otp, :address1, :city, :state, :zipcode, presence: true
-  validate :zipcode_is_valid
+  validates :entry_otp, :entry_address1, :entry_city, :entry_state, :entry_zipcode, presence: true
+  validate :entry_zipcode_is_valid
 
   ZIP_REGEX = /^(\d{5})[-+]?(\d+)?$/
-
-  def method_missing(method, *args)
-    # Forward through attribute reads to entry
-    entry[method] if args.count == 0
-  end
-
-  def respond_to_missing?(method, ...)
-    method = method.to_s
-    !(method.endswith('?') || method.endswith('='))
-  end
 
   # Store the pii as encrypted json
   def entry=(entry_hash)
@@ -50,16 +47,17 @@ class GpoConfirmation < ApplicationRecord
     Encryption::Encryptors::BackgroundProofingArgEncryptor.new
   end
 
-  def zipcode_should_be_rejected_because_we_are_testing?
+  def entry_zipcode_should_be_rejected_because_we_are_testing?
     # We reserve a certain zipcode to be used to test this value in lower environments.
-    return zipcode.present? && zipcode == IdentityConfig.store.invalid_gpo_confirmation_zipcode
+    entry_zipcode.present? &&
+      entry_zipcode == IdentityConfig.store.invalid_gpo_confirmation_zipcode
   end
 
-  def zipcode_is_valid
-    normalized = self.class.normalize_zipcode(zipcode)
+  def entry_zipcode_is_valid
+    normalized = self.class.normalize_zipcode(entry_zipcode)
 
-    if normalized.nil? || zipcode_should_be_rejected_because_we_are_testing?
-      errors.add(:zipcode, :invalid)
+    if normalized.nil? || entry_zipcode_should_be_rejected_because_we_are_testing?
+      errors.add(:entry_zipcode, :invalid)
     end
   end
 end
