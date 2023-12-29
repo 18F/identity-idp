@@ -12,7 +12,7 @@ import DocumentCaptureAbandon from './document-capture-abandon';
 import {
   DocumentCaptureSubheaderOne,
   SelfieCaptureWithHeader,
-  DocumentFrontAndBackCapture
+  DocumentFrontAndBackCapture,
 } from './documents-step';
 import type { ReviewIssuesStepValue } from './review-issues-step';
 
@@ -45,7 +45,7 @@ function DocumentCaptureReviewIssues({
     onChange,
     errors,
     onError,
-  }
+  };
 
   return (
     <>
@@ -72,7 +72,7 @@ function DocumentCaptureReviewIssues({
       )}
       <DocumentFrontAndBackCapture defaultSideProps={defaultSideProps} value={value} />
       {selfieCaptureEnabled && (
-        <SelfieCaptureWithHeader defaultSideProps={defaultSideProps} selfieValue={value.selfie}/>
+        <SelfieCaptureWithHeader defaultSideProps={defaultSideProps} selfieValue={value.selfie} />
       )}
       <FormStepsButton.Submit />
       {notReadySectionEnabled && <DocumentCaptureNotReady />}
