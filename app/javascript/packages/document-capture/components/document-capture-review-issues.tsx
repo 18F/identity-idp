@@ -10,7 +10,7 @@ import DocumentSideAcuantCapture from './document-side-acuant-capture';
 import DocumentCaptureNotReady from './document-capture-not-ready';
 import { FeatureFlagContext } from '../context';
 import DocumentCaptureAbandon from './document-capture-abandon';
-import { DocumentCaptureSubheaderOne, SelfieStepWithHeader } from './documents-step';
+import { DocumentCaptureSubheaderOne, SelfieCaptureWithHeader } from './documents-step';
 import type { ReviewIssuesStepValue } from './review-issues-step';
 
 interface DocumentCaptureReviewIssuesProps
@@ -78,7 +78,7 @@ function DocumentCaptureReviewIssues({
         />
       ))}
       {selfieCaptureEnabled && (
-        <SelfieStepWithHeader
+        <SelfieCaptureWithHeader
           defaultSideProps={{
             registerField,
             onChange,
