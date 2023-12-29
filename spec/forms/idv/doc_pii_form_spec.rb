@@ -18,21 +18,28 @@ RSpec.describe Idv::DocPiiForm do
       zipcode: Faker::Address.zip_code,
       state: Faker::Address.state_abbr,
       state_id_jurisdiction: 'AL',
+      state_id_number: 'S59397998',
     }
   end
   let(:name_errors_pii) do
-    { first_name: nil,
+    {
+      first_name: nil,
       last_name: nil,
       dob: valid_dob,
       address1: Faker::Address.street_address,
-      state: Faker::Address.state_abbr }
+      state: Faker::Address.state_abbr,
+      state_id_number: 'S59397998',
+    }
   end
   let(:name_and_dob_errors_pii) do
-    { first_name: nil,
+    {
+      first_name: nil,
       last_name: nil,
       dob: nil,
       address1: Faker::Address.street_address,
-      state: Faker::Address.state_abbr }
+      state: Faker::Address.state_abbr,
+      state_id_number: 'S59397998',
+    }
   end
   let(:dob_min_age_error_pii) do
     {
@@ -41,6 +48,7 @@ RSpec.describe Idv::DocPiiForm do
       dob: too_young_dob,
       address1: Faker::Address.street_address,
       state: Faker::Address.state_abbr,
+      state_id_number: 'S59397998',
     }
   end
   let(:invalid_zipcode_pii) do
@@ -52,6 +60,7 @@ RSpec.describe Idv::DocPiiForm do
       state: Faker::Address.state_abbr,
       zipcode: 123456,
       state_id_jurisdiction: 'AL',
+      state_id_number: 'S59397998',
     }
   end
   let(:nil_zipcode_pii) do
@@ -63,6 +72,7 @@ RSpec.describe Idv::DocPiiForm do
       state: Faker::Address.state_abbr,
       zipcode: nil,
       state_id_jurisdiction: 'AL',
+      state_id_number: 'S59397998',
     }
   end
   let(:state_error_pii) do
@@ -74,6 +84,7 @@ RSpec.describe Idv::DocPiiForm do
       zipcode: Faker::Address.zip_code,
       state: 'YORK',
       state_id_jurisdiction: 'AL',
+      state_id_number: 'S59397998',
     }
   end
   let(:jurisdiction_error_pii) do
@@ -85,6 +96,7 @@ RSpec.describe Idv::DocPiiForm do
       zipcode: Faker::Address.zip_code,
       state: Faker::Address.state_abbr,
       state_id_jurisdiction: 'XX',
+      state_id_number: 'S59397998',
     }
   end
   let(:address1_error_pii) do
@@ -96,6 +108,19 @@ RSpec.describe Idv::DocPiiForm do
       zipcode: Faker::Address.zip_code,
       state: Faker::Address.state_abbr,
       state_id_jurisdiction: 'AL',
+      state_id_number: 'S59397998',
+    }
+  end
+  let(:nil_state_id_number_pii) do
+    {
+      first_name: Faker::Name.first_name,
+      last_name: Faker::Name.last_name,
+      dob: valid_dob,
+      address1: nil,
+      zipcode: Faker::Address.zip_code,
+      state: Faker::Address.state_abbr,
+      state_id_jurisdiction: 'AL',
+      state_id_number: nil,
     }
   end
   let(:pii) { nil }
@@ -255,6 +280,19 @@ RSpec.describe Idv::DocPiiForm do
 
       expect(result.success?).to eq(false)
       expect(result.errors[:state]).to eq([I18n.t('doc_auth.errors.general.no_liveness')])
+    end
+  end
+
+  context 'when the state_id_number is missing' do
+    let(:subject) { Idv::DocPiiForm.new(pii: nil_state_id_number_pii) }
+
+    it 'responds with an unsuccessful result' do
+      result = subject.submit
+
+      expect(result.success?).to eq(false)
+      expect(result.errors[:state_id_number]).to eq(
+        [I18n.t('doc_auth.errors.general.no_liveness')],
+      )
     end
   end
 end

@@ -1,7 +1,5 @@
 module Idv
   class ImageUploadsController < ApplicationController
-    include ApplicationHelper # for liveness_checking_enabled?
-
     respond_to :json
 
     def create
@@ -20,12 +18,12 @@ module Idv
     def image_upload_form
       @image_upload_form ||= Idv::ApiImageUploadForm.new(
         params,
-        liveness_checking_enabled: liveness_checking_enabled?,
         service_provider: current_sp,
         analytics: analytics,
         uuid_prefix: current_sp&.app_id,
         irs_attempts_api_tracker: irs_attempts_api_tracker,
         store_encrypted_images: store_encrypted_images?,
+        liveness_checking_required: decorated_sp_session.selfie_required?,
       )
     end
 
@@ -35,14 +33,6 @@ module Idv
 
     def liveness_checking_enabled?
       IdentityConfig.store.doc_auth_selfie_capture_enabled
-    end
-
-    def ial_context
-      @ial_context ||= IalContext.new(
-        ial: sp_session_ial,
-        service_provider: current_sp,
-        user: current_user,
-      )
     end
   end
 end

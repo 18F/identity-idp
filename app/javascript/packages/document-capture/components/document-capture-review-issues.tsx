@@ -1,34 +1,27 @@
 import { useContext } from 'react';
 import { PageHeading } from '@18f/identity-components';
-import {
-  FormStepError,
-  FormStepsButton,
-  OnErrorCallback,
-  RegisterFieldCallback,
-} from '@18f/identity-form-steps';
+import { FormStepsButton } from '@18f/identity-form-steps';
 import { Cancel } from '@18f/identity-verify-flow';
 import { useI18n } from '@18f/identity-react-i18n';
+import type { FormStepComponentProps } from '@18f/identity-form-steps';
 import UnknownError from './unknown-error';
 import TipList from './tip-list';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
 import DocumentCaptureNotReady from './document-capture-not-ready';
 import { FeatureFlagContext } from '../context';
 import DocumentCaptureAbandon from './document-capture-abandon';
+import { DocumentCaptureSubheaderOne, SelfieStepWithHeader } from './documents-step';
+import type { ReviewIssuesStepValue } from './review-issues-step';
 
-interface DocumentCaptureReviewIssuesProps {
+interface DocumentCaptureReviewIssuesProps
+  extends Omit<FormStepComponentProps<ReviewIssuesStepValue>, 'toPreviousStep'> {
   isFailedDocType: boolean;
   remainingAttempts: number;
   captureHints: boolean;
-  registerField: RegisterFieldCallback;
-  value: { string: Blob | string | null | undefined } | {};
-  unknownFieldErrors: FormStepError<any>[];
-  errors: FormStepError<any>[];
-  onChange: (...args: any) => void;
-  onError: OnErrorCallback;
   hasDismissed: boolean;
 }
 
-type DocumentSide = 'front' | 'back' | 'selfie';
+type DocumentSide = 'front' | 'back';
 
 function DocumentCaptureReviewIssues({
   isFailedDocType,
@@ -39,7 +32,7 @@ function DocumentCaptureReviewIssues({
   errors = [],
   onChange = () => undefined,
   onError = () => undefined,
-  value = {},
+  value,
   hasDismissed,
 }: DocumentCaptureReviewIssuesProps) {
   const { t } = useI18n();
@@ -47,13 +40,12 @@ function DocumentCaptureReviewIssues({
     useContext(FeatureFlagContext);
 
   // Sides of document to present as file input.
-  const documentSides: DocumentSide[] = selfieCaptureEnabled
-    ? ['front', 'back', 'selfie']
-    : ['front', 'back'];
+  const documentSides: DocumentSide[] = ['front', 'back'];
 
   return (
     <>
       <PageHeading>{t('doc_auth.headings.review_issues')}</PageHeading>
+      <DocumentCaptureSubheaderOne selfieCaptureEnabled={selfieCaptureEnabled} />
       <UnknownError
         unknownFieldErrors={unknownFieldErrors}
         remainingAttempts={remainingAttempts}
@@ -85,6 +77,17 @@ function DocumentCaptureReviewIssues({
           className="document-capture-review-issues-step__input"
         />
       ))}
+      {selfieCaptureEnabled && (
+        <SelfieStepWithHeader
+          defaultSideProps={{
+            registerField,
+            onChange,
+            errors,
+            onError,
+          }}
+          selfieValue={value.selfie}
+        />
+      )}
       <FormStepsButton.Submit />
       {notReadySectionEnabled && <DocumentCaptureNotReady />}
       {exitQuestionSectionEnabled && <DocumentCaptureAbandon />}

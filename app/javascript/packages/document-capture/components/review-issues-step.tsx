@@ -9,16 +9,21 @@ import FailedCaptureAttemptsContext from '../context/failed-capture-attempts';
 import DocumentCaptureWarning from './document-capture-warning';
 import DocumentCaptureReviewIssues from './document-capture-review-issues';
 
-interface ReviewIssuesStepValue {
+export interface ReviewIssuesStepValue {
   /**
    * Front image value.
    */
-  front: Blob | string | null | undefined;
+  front?: Blob | string | null | undefined;
 
   /**
    * Back image value.
    */
-  back: Blob | string | null | undefined;
+  back?: Blob | string | null | undefined;
+
+  /**
+   * Selfie image value.
+   */
+  selfie?: Blob | string | null | undefined;
 
   /**
    * Front image metadata.

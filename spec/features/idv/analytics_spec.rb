@@ -845,6 +845,9 @@ RSpec.feature 'Analytics Regression', js: true do
   context 'Happy selfie path' do
     before do
       allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).and_return(true)
+      allow_any_instance_of(FederatedProtocols::Oidc).
+        to receive(:biometric_comparison_required?).
+        and_return({ biometric_comparison_required: true })
 
       mobile_device = Browser.new(mobile_user_agent)
       allow(BrowserCache).to receive(:parse).and_return(mobile_device)
