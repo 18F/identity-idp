@@ -34,8 +34,8 @@ export function SelfieCaptureWithHeader({
   defaultSideProps,
   selfieValue,
 }: {
-  defaultSideProps: any;
-  selfieValue: any;
+  defaultSideProps: DefaultSideProps;
+  selfieValue: ImageValue;
 }) {
   const { t } = useI18n();
   return (
@@ -65,8 +65,8 @@ export function DocumentFrontAndBackCapture({
   defaultSideProps,
   value,
 }: {
-  defaultSideProps: any;
-  value: any;
+  defaultSideProps: DefaultSideProps;
+  value: Record<string, ImageValue>;
 }) {
   type DocumentSide = 'front' | 'back';
   const documentsSides: DocumentSide[] = ['front', 'back'];
@@ -84,13 +84,20 @@ export function DocumentFrontAndBackCapture({
   );
 }
 
+type ImageValue = Blob | string | null | undefined;
+
 interface DocumentsStepValue {
-  front: Blob | string | null | undefined;
-  back: Blob | string | null | undefined;
-  selfie: Blob | string | null | undefined;
+  front: ImageValue;
+  back: ImageValue;
+  selfie: ImageValue;
   front_image_metadata?: string;
   back_image_metadata?: string;
 }
+
+type DefaultSideProps = Pick<
+  FormStepComponentProps<DocumentsStepValue>,
+  'registerField' | 'onChange' | 'errors' | 'onError'
+>;
 
 function DocumentsStep({
   value = {},
@@ -110,7 +117,7 @@ function DocumentsStep({
     ? t('doc_auth.headings.document_capture_with_selfie')
     : t('doc_auth.headings.document_capture');
 
-  const defaultSideProps = {
+  const defaultSideProps: DefaultSideProps = {
     registerField,
     onChange,
     errors,
