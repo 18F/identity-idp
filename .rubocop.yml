@@ -1422,6 +1422,8 @@ Style/YodaCondition:
 
 ThreadSafety:
   Enabled: true
+  Exclude:
+    - 'spec/**/*'
 
 Style/ClassVars:
   Enabled: true
