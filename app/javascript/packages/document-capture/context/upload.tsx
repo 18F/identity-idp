@@ -91,7 +91,7 @@ export interface UploadErrorResponse {
   ocr_pii?: PII;
 
   /**
-   * Whether the unsuccessful result was the failure type.
+   * Whether the unsuccessful document result was the failure type.
    */
   result_failed: boolean;
 
@@ -104,6 +104,16 @@ export interface UploadErrorResponse {
    * Record of failed image fingerprints
    */
   failed_image_fingerprints: ImageFingerprints | null;
+
+  /**
+   * Whether the unsuccessful selfie result was the failure type.
+   */
+  selfie_result_failed: boolean;
+
+  /**
+   * Whether the unsuccessful selfie result was the notlive or poorquality type.
+   */
+  selfie_result_not_live_or_poor_quality: boolean;
 }
 
 export type UploadImplementation = (
