@@ -22,7 +22,7 @@ export function DocumentCaptureSubheaderOne({ selfieCaptureEnabled }) {
   );
 }
 
-export function SelfieStepWithHeader({ defaultSideProps, selfieValue }) {
+export function SelfieCaptureWithHeader({ defaultSideProps, selfieValue }) {
   const { t } = useI18n();
   return (
     <>
@@ -47,9 +47,28 @@ export function SelfieStepWithHeader({ defaultSideProps, selfieValue }) {
   );
 }
 
-/**
- * @typedef {'front'|'back'} DocumentSide
- */
+export function DocumentFrontAndBackCapture({ defaultSideProps, value }) {
+  /**
+   * Sides of the ID document to present as file input.
+   *
+   *
+   * @typedef {'front'|'back'} DocumentSide
+   * @type {DocumentSide[]}
+   */
+  const documentsSides = ['front', 'back'];
+  return (
+    <>
+      {documentsSides.map((side) => (
+        <DocumentSideAcuantCapture
+          {...defaultSideProps}
+          key={side}
+          side={side}
+          value={value[side]}
+        />
+      ))}
+    </>
+  );
+}
 
 /**
  * @typedef DocumentsStepValue
@@ -71,13 +90,6 @@ function DocumentsStep({
   onError = () => {},
   registerField = () => undefined,
 }) {
-  /**
-   * Sides of the ID document to present as file input.
-   *
-   * @type {DocumentSide[]}
-   */
-  const documentsSides = ['front', 'back'];
-
   const { t } = useI18n();
   const { isMobile } = useContext(DeviceContext);
   const { isLastStep } = useContext(FormStepsContext);
@@ -109,16 +121,9 @@ function DocumentsStep({
           t('doc_auth.tips.document_capture_id_text3'),
         ].concat(!isMobile ? [t('doc_auth.tips.document_capture_id_text4')] : [])}
       />
-      {documentsSides.map((side) => (
-        <DocumentSideAcuantCapture
-          {...defaultSideProps}
-          key={side}
-          side={side}
-          value={value[side]}
-        />
-      ))}
+      <DocumentFrontAndBackCapture defaultSideProps={defaultSideProps} value={value} />
       {selfieCaptureEnabled && (
-        <SelfieStepWithHeader defaultSideProps={defaultSideProps} selfieValue={value.selfie} />
+        <SelfieCaptureWithHeader defaultSideProps={defaultSideProps} selfieValue={value.selfie} />
       )}
       {isLastStep ? <FormStepsButton.Submit /> : <FormStepsButton.Continue />}
       {notReadySectionEnabled && <DocumentCaptureNotReady />}
