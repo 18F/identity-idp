@@ -6,11 +6,14 @@ import { useI18n } from '@18f/identity-react-i18n';
 import type { FormStepComponentProps } from '@18f/identity-form-steps';
 import UnknownError from './unknown-error';
 import TipList from './tip-list';
-import DocumentSideAcuantCapture from './document-side-acuant-capture';
 import DocumentCaptureNotReady from './document-capture-not-ready';
 import { FeatureFlagContext } from '../context';
 import DocumentCaptureAbandon from './document-capture-abandon';
-import { DocumentCaptureSubheaderOne, SelfieStepWithHeader } from './documents-step';
+import {
+  DocumentCaptureSubheaderOne,
+  SelfieCaptureWithHeader,
+  DocumentFrontAndBackCapture,
+} from './documents-step';
 import type { ReviewIssuesStepValue } from './review-issues-step';
 
 interface DocumentCaptureReviewIssuesProps
@@ -20,8 +23,6 @@ interface DocumentCaptureReviewIssuesProps
   captureHints: boolean;
   hasDismissed: boolean;
 }
-
-type DocumentSide = 'front' | 'back';
 
 function DocumentCaptureReviewIssues({
   isFailedDocType,
@@ -39,8 +40,12 @@ function DocumentCaptureReviewIssues({
   const { notReadySectionEnabled, exitQuestionSectionEnabled, selfieCaptureEnabled } =
     useContext(FeatureFlagContext);
 
-  // Sides of document to present as file input.
-  const documentSides: DocumentSide[] = ['front', 'back'];
+  const defaultSideProps = {
+    registerField,
+    onChange,
+    errors,
+    onError,
+  };
 
   return (
     <>
@@ -65,28 +70,9 @@ function DocumentCaptureReviewIssues({
           ]}
         />
       )}
-      {documentSides.map((side) => (
-        <DocumentSideAcuantCapture
-          key={side}
-          side={side}
-          registerField={registerField}
-          value={value[side]}
-          onChange={onChange}
-          errors={errors}
-          onError={onError}
-          className="document-capture-review-issues-step__input"
-        />
-      ))}
+      <DocumentFrontAndBackCapture defaultSideProps={defaultSideProps} value={value} />
       {selfieCaptureEnabled && (
-        <SelfieStepWithHeader
-          defaultSideProps={{
-            registerField,
-            onChange,
-            errors,
-            onError,
-          }}
-          selfieValue={value.selfie}
-        />
+        <SelfieCaptureWithHeader defaultSideProps={defaultSideProps} selfieValue={value.selfie} />
       )}
       <FormStepsButton.Submit />
       {notReadySectionEnabled && <DocumentCaptureNotReady />}
