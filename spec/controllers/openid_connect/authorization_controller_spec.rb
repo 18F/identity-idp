@@ -999,11 +999,11 @@ RSpec.describe OpenidConnect::AuthorizationController do
         )
       end
 
-      context 'the session :biometric_comparison_required value' do
+      describe 'handling the :biometric_comparison_required parameter' do
         before do
           allow(Rails.env).to receive(:production?).and_return(production)
           if require_biometric_comparison
-            params[:biometric_comparison_required] = true
+            params[:biometric_comparison_required] = 'true'
           else
             # Should be a no-op, but let's be paranoid.
             params.delete(:biometric_comparison_required)
@@ -1015,9 +1015,9 @@ RSpec.describe OpenidConnect::AuthorizationController do
         context 'when the param value :biometric_comparison_required is "true"' do
           let(:require_biometric_comparison) { true }
 
-          # Temporary barrier to public presentation. Remove when we
-          # are ready to accept :biometric_comparison_required in
-          # production.
+          # Temporary barrier to public presentation. Update or remove
+          # when we are ready to accept :biometric_comparison_required
+          # in production. See LG-11962.
           context 'in production' do
             let(:production) { true }
 
