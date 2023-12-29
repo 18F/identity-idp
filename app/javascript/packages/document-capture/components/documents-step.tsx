@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
-import { FormStepsButton, FormStepsContext } from '@18f/identity-form-steps';
+import { FormStepComponentProps, FormStepsButton, FormStepsContext } from '@18f/identity-form-steps';
 import { PageHeading } from '@18f/identity-components';
 import { Cancel } from '@18f/identity-verify-flow';
 import HybridDocCaptureWarning from './hybrid-doc-capture-warning';
@@ -48,14 +48,8 @@ export function SelfieCaptureWithHeader({ defaultSideProps, selfieValue }) {
 }
 
 export function DocumentFrontAndBackCapture({ defaultSideProps, value }) {
-  /**
-   * Sides of the ID document to present as file input.
-   *
-   *
-   * @typedef {'front'|'back'} DocumentSide
-   * @type {DocumentSide[]}
-   */
-  const documentsSides = ['front', 'back'];
+  type DocumentSide = 'front' | 'back';
+  const documentsSides: DocumentSide[] = ['front', 'back'];
   return (
     <>
       {documentsSides.map((side) => (
@@ -70,26 +64,21 @@ export function DocumentFrontAndBackCapture({ defaultSideProps, value }) {
   );
 }
 
-/**
- * @typedef DocumentsStepValue
- *
- * @prop {Blob|string|null|undefined} front Front image value.
- * @prop {Blob|string|null|undefined} back Back image value.
- * @prop {Blob|string|null|undefined} selfie Selfie image value.
- * @prop {string=} front_image_metadata Front image metadata.
- * @prop {string=} back_image_metadata Back image metadata.
- */
+interface DocumentsStepValue {
+  front: Blob | string | null | undefined;
+  back: Blob | string | null | undefined;
+  selfie: Blob | string | null | undefined;
+  front_image_metadata?: string;
+  back_image_metadata?: string;
+}
 
-/**
- * @param {import('@18f/identity-form-steps').FormStepComponentProps<DocumentsStepValue>} props Props object.
- */
 function DocumentsStep({
   value = {},
   onChange = () => {},
   errors = [],
   onError = () => {},
   registerField = () => undefined,
-}) {
+}: FormStepComponentProps<DocumentsStepValue>) {
   const { t } = useI18n();
   const { isMobile } = useContext(DeviceContext);
   const { isLastStep } = useContext(FormStepsContext);
