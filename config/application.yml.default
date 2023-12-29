@@ -577,8 +577,8 @@ test:
   skip_encryption_allowed_list: '[]'
   state_tracking_enabled: true
   team_ada_email: 'ada@example.com'
-  team_all_login_emails: '[b@example.com, c@example.com]'
-  team_daily_reports_emails: '[a@example.com, d@example.com]'
+  team_all_login_emails: '["b@example.com", "c@example.com"]'
+  team_daily_reports_emails: '["a@example.com", "d@example.com"]'
   telephony_adapter: test
   test_ssn_allowed_list: '999999999'
   totp_code_interval: 3
