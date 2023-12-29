@@ -47,6 +47,7 @@
           },
         },
       ) %>
+  <%= hidden_field_tag :platform_authenticator_available, '', id: 'platform_authenticator_available' %>
   <%= f.submit t('links.sign_in'), full_width: true, wide: false %>
 <% end %>
 <% if @ial && desktop_device? %>
@@ -86,3 +87,5 @@
 <% end %>
 
 <noscript><link rel="stylesheet" href="<%= no_js_detect_css_path(location: :sign_in) %>"></noscript>
+<%= javascript_packs_tag_once('check-support-ft-unlock') %>
+
