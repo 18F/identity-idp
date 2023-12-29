@@ -1,5 +1,12 @@
 class LoginButtonComponent < BaseComponent
-  attr_reader :action, :big, :color, :outline, :tag_options
+  attr_reader :action, :big, :color, :width, :height, :logo_path, :tag_options
+
+  alias_method :big?, :big
+
+  DEFAULT_HEIGHT = 16
+  DEFAULT_WIDTH = 121
+  BIG_HEIGHT = 20
+  BIG_WIDTH = 152
 
   def initialize(
     action: ->(**tag_options, &block) { button_tag(**tag_options, &block) },
@@ -11,6 +18,21 @@ class LoginButtonComponent < BaseComponent
     @big = big
     @color = color
     @tag_options = tag_options
+  end
+
+  def logo_path
+    return "logo-white.svg" if color == "dark blue"
+    "logo.svg"
+  end
+
+  def width
+    return BIG_WIDTH if big?
+    DEFAULT_WIDTH
+  end
+
+  def height
+    return BIG_HEIGHT if big?
+    DEFAULT_HEIGHT
   end
 
   def css_class

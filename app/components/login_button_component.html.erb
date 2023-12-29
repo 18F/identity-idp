@@ -4,9 +4,5 @@
       class: css_class,
     ) do %> 
   <%= content %>
-  <% if color != "dark blue" %>
-  <%= image_tag(asset_url('logo.svg'), width: 130, height: 30, alt: t('components.login_button.image_alt'), class: 'display-inline text-middle margin-left-1 margin-top-neg-05') %>
-  <% else %>
-  <%= image_tag(asset_url('logo-white.svg'), width: 130, height: 30, alt: t('components.login_button.image_alt'), class: 'display-inline text-middle margin-left-1 margin-top-neg-05') %>
-  <% end %>
+  <%= image_tag(asset_url(logo_path), width: width, height: height, alt: t('components.login_button.image_alt'), class: 'display-inline text-middle margin-left-1 margin-top-neg-05') %>
 <% end %>

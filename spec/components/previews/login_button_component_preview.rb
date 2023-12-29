@@ -7,23 +7,10 @@ class LoginButtonComponentPreview < BaseComponentPreview
     render(LoginButtonComponent.new.with_content('Sign in with'))
   end
 
-  def login_image_url
-    asset_path('logo.svg')
-  end
-
   def big
     render(LoginButtonComponent.new(big: true).with_content('Sign in with'))
   end
 
-  def with_custom_action
-    render(
-      LoginButtonComponent.new(
-        action: ->(**tag_options, &block) do
-          content_tag(:'lg-custom-button', **tag_options, &block)
-        end,
-      ).with_content('Sign in with'),
-    )
-  end
   # @!endgroup
 
   # rubocop:disable Layout/LineLength
@@ -33,13 +20,12 @@ class LoginButtonComponentPreview < BaseComponentPreview
   def workbench(
     content: 'Sign in with',
     big: false,
-    outline: false,
     color: "light blue"
   )
+  
     render(
       LoginButtonComponent.new(
         big:,
-        outline:,
         color:,
       ).with_content(content),
     )
