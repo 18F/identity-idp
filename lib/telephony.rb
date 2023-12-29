@@ -38,11 +38,13 @@ module Telephony
 
   extend SingleForwardable
 
+  # rubocop:disable ThreadSafety/InstanceVariableInClassMethod
   def self.config
     @config ||= Configuration.new
     yield @config if block_given?
     @config
   end
+  # rubocop:enable ThreadSafety/InstanceVariableInClassMethod
 
   def self.send_authentication_otp(to:, otp:, expiration:, otp_format:,
                                    channel:, domain:, country_code:, extra_metadata:)

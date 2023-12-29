@@ -1,3 +1,4 @@
+# rubocop:disable ThreadSafety/InstanceVariableInClassMethod
 module Telephony
   module Test
     class Call
@@ -30,3 +31,4 @@ module Telephony
     end
   end
 end
+# rubocop:enable ThreadSafety/InstanceVariableInClassMethod

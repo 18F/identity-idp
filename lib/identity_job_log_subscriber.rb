@@ -119,9 +119,11 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
     end
   end
 
+  # rubocop:disable ThreadSafety/InstanceVariableInClassMethod
   def self.worker_logger
     Rails.application.config.active_job.logger
   end
+  # rubocop:enable ThreadSafety/InstanceVariableInClassMethod
 
   private
 
