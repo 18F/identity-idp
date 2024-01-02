@@ -54,8 +54,7 @@ function getServiceProvider() {
 
 function getSelfieCaptureEnabled() {
   const { docAuthSelfieCapture } = appRoot.dataset;
-  const docAuthSelfieCaptureObject = docAuthSelfieCapture ? JSON.parse(docAuthSelfieCapture) : {};
-  return !!docAuthSelfieCaptureObject?.enabled;
+  return docAuthSelfieCapture === 'true';
 }
 
 function getMetaContent(name): string | null {
