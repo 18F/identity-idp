@@ -11,7 +11,7 @@ RSpec.describe 'New device tracking' do
     end
 
     it 'sends a user notification on signin' do
-      sign_in_live_with_2fa(user)
+      sign_in_user(user)
 
       expect(user.reload.devices.length).to eq 2
 
