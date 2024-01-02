@@ -77,22 +77,19 @@ class UserEventCreator
   # @return [Array(Event, String)] an (event, disavowal_token) tuple
   def create_event_for_new_device(event_type:, user:, disavowal_token:)
     if user.fully_registered? && user.has_devices? && disavowal_token.nil?
-      if event_type != :sign_in_before_2fa
-        device, event, disavowal_token = Device.transaction do
-          device = create_device_for_user(user)
-          event, disavowal_token = create_user_event_with_disavowal(
-            event_type, user, device
-          )
-          [device, event, disavowal_token]
-        end
-        send_new_device_notification(
-          user: user,
-          device: device,
-          disavowal_token: disavowal_token,
+      device, event, disavowal_token = Device.transaction do
+        device = create_device_for_user(user)
+        event, disavowal_token = create_user_event_with_disavowal(
+          event_type, user, device
         )
-        [event, disavowal_token]
+        [device, event, disavowal_token]
       end
-
+      send_new_device_notification(
+        user: user,
+        device: device,
+        disavowal_token: disavowal_token,
+      )
+      [event, disavowal_token]
     else
       Device.transaction do
         device = create_device_for_user(user)

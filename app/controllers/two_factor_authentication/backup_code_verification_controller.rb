@@ -19,9 +19,9 @@ module TwoFactorAuthentication
     def create
       @backup_code_form = BackupCodeVerificationForm.new(current_user)
       result = @backup_code_form.submit(backup_code_params)
-      analytics_result = result.to_h
-      analytics_result[:new_device] = current_user.new_device(cookies)
-      analytics.track_mfa_submit_event(analytics_result)
+      analytics.track_mfa_submit_event(
+        result.to_h.merge(new_device: user_session[:new_device]),
+      )
       irs_attempts_api_tracker.mfa_login_backup_code(success: result.success?)
       handle_result(result)
     end

@@ -400,12 +400,8 @@ class User < ApplicationRecord
     !recent_devices.empty?
   end
 
-  def new_device(cookies)
-    existing_device = cookies[:device] && Device.find_by(
-      user_id: id,
-      cookie_uuid: cookies[:device],
-    )
-    return existing_device.nil?
+  def new_device?(device_cookie:)
+    !device_cookie || !devices.exists?(cookie_uuid: device_cookie)
   end
 
   # Returns the number of times the user has signed in, corresponding to the `sign_in_before_2fa`
