@@ -84,6 +84,7 @@ RSpec.describe Idv::OtpVerificationController do
       expect(@analytics).to have_received(:track_event).with(
         'IdV: phone confirmation otp visited',
         proofing_components: nil,
+        **ab_test_args,
       )
     end
   end
