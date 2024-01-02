@@ -22,9 +22,7 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
 
   describe '#create' do
     context 'when the user enters a valid backup code' do
-      
       it 'tracks the valid authentication event' do
-        
         freeze_time do
           sign_in_before_2fa(user)
           subject.user_session[:new_device] = true

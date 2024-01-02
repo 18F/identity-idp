@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
   let(:personal_key) { { personal_key: 'foo' } }
   let(:payload) { { personal_key_form: personal_key } }
-  
+
   describe '#show' do
     context 'when there is no session (signed out or locked out), and the user reloads the page' do
       it 'redirects to the home page' do
