@@ -6,6 +6,7 @@ RSpec.describe DocAuth::Response do
   let(:exception) { nil }
   let(:pii_from_doc) { {} }
   let(:attention_with_barcode) { false }
+
   subject(:response) do
     described_class.new(
       success: success,
@@ -22,6 +23,7 @@ RSpec.describe DocAuth::Response do
     let(:other_exception) { nil }
     let(:other_pii_from_doc) { {} }
     let(:other_attention_with_barcode) { false }
+
     let(:other) do
       described_class.new(
         success: other_success,

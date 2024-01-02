@@ -38,7 +38,7 @@ gem 'jsbundling-rails', '~> 1.1.2'
 gem 'jwe'
 gem 'jwt'
 gem 'lograge', '>= 0.11.2'
-gem 'lookbook', '~> 2.0.0', require: false
+gem 'lookbook', '~> 2.2', require: false
 gem 'lru_redux'
 gem 'mail'
 gem 'msgpack', '~> 1.6'

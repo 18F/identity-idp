@@ -53,6 +53,7 @@ module DocAuth
             errors: error_messages,
             extra: extra_attributes,
             pii_from_doc: pii_from_doc,
+            selfie_check_performed: liveness_checking_enabled,
           )
         rescue StandardError => e
           NewRelic::Agent.notice_error(e)
