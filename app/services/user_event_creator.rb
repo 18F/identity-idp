@@ -11,7 +11,10 @@ class UserEventCreator
   # @return [Array(Event, String)] an (event, disavowal_token) tuple
   def create_user_event(event_type, user = current_user, disavowal_token = nil)
     return unless user&.id
-    existing_device = DeviceCookie.check_for_new_device(cookies, current_user)
+    existing_device = cookies[:device] && Device.find_by(
+      user_id: user.id,
+      cookie_uuid: cookies[:device],
+    )
     if existing_device.present?
       create_event_for_existing_device(
         event_type: event_type, user: user, device: existing_device,

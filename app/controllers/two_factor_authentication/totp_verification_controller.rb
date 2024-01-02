@@ -19,7 +19,7 @@ module TwoFactorAuthentication
     def create
       result = TotpVerificationForm.new(current_user, params.require(:code).strip).submit
       analytics_result = result.to_h
-      analytics_result[:new_device] = DeviceCookie.check_for_new_device(cookies, current_user).nil?
+      analytics_result[:new_device] = current_user.new_device(cookies)
       analytics.track_mfa_submit_event(analytics_result)
       irs_attempts_api_tracker.mfa_login_totp(success: result.success?)
 

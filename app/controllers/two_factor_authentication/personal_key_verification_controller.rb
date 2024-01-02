@@ -26,7 +26,7 @@ module TwoFactorAuthentication
       analytics_hash = result.to_h.merge(
         multi_factor_auth_method: 'personal-key',
         multi_factor_auth_method_created_at: mfa_created_at&.strftime('%s%L'),
-        new_device: DeviceCookie.check_for_new_device(cookies, current_user).nil?,
+        new_device: current_user.new_device(cookies),
       )
 
       analytics.track_mfa_submit_event(analytics_hash)
