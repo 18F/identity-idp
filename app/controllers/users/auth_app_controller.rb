@@ -10,6 +10,7 @@ module Users
     def edit; end
 
     def update
+      binding.pry
       result = form.submit(name: params.dig(:form, :name))
 
       analytics.auth_app_update_name_submitted(**result.to_h)
@@ -26,7 +27,7 @@ module Users
     def destroy
       result = form.submit
 
-      analytics.auth_app_update_name_submitted(**result.to_h)
+      analytics.auth_app_delete_submitted(**result.to_h)
 
       if result.success?
         flash[:success] = t('two_factor_authentication.webauthn_platform.deleted')

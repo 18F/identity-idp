@@ -23,6 +23,8 @@ Rails.application.routes.draw do
       namespace :two_factor_authentication do
         put '/webauthn/:id' => 'webauthn#update', as: :webauthn
         delete '/webauthn/:id' => 'webauthn#destroy', as: nil
+        put '/auth_app/:id' => 'auth_app#update', as: :auth_app
+        delete '/app_auth/:id' => 'auth_app#destroy', as: nil
       end
     end
   end
@@ -257,8 +259,7 @@ Rails.application.routes.draw do
     delete '/manage/webauthn/:id' => 'users/webauthn#destroy', as: nil
     get '/manage/auth_app/:id' => 'users/auth_app#edit', as: :edit_auth_app
     put '/manage/auth_app/:id' => 'users/auth_app#update', as: :auth_app
-    delete '/manage/auth_app/:id' => 'users/auth_app#destroy', as: :auth_app_nil
-
+    delete '/manage/app_auth/:id' => 'users/app_auth#destroy', as: nil
     get '/account/personal_key' => 'accounts/personal_keys#new', as: :create_new_personal_key
     post '/account/personal_key' => 'accounts/personal_keys#create'
 

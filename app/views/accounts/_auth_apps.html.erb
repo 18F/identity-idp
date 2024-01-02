@@ -7,8 +7,8 @@
     <%= render ManageableAuthenticatorComponent.new(
           configuration:,
           user_session:,
-          manage_url: edit_webauthn_path(id: configuration.id),
-          manage_api_url: api_internal_two_factor_authentication_webauthn_path(id: configuration.id),
+          manage_url: edit_auth_app_path(id: configuration.id),
+          manage_api_url: api_internal_two_factor_authentication_auth_app_path(id: configuration.id),
           custom_strings: {
             deleted: t('two_factor_authentication.auth_app.deleted'),
             renamed: t('two_factor_authentication.auth_app.renamed'),
