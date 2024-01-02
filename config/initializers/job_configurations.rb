@@ -214,6 +214,12 @@ else
         cron: cron_1w,
         args: -> { [Time.zone.now] },
       },
+      # Send monthly dropoff report
+      monthly_dropoff_report: {
+        class: 'Reports::DropOffReport',
+        cron: cron_1m,
+        args: -> { [Time.zone.now] },
+      },
     }.compact
   end
   # rubocop:enable Metrics/BlockLength
