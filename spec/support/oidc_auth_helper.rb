@@ -93,7 +93,7 @@ module OidcAuthHelper
     ial2_params[:tid] = tid if tid
     ial2_params[:prompt] = prompt if prompt
     if biometric_comparison_required
-      ial2_params[:biometric_comparison_required] = biometric_comparison_required
+      ial2_params[:biometric_comparison_required] = 'true'
     end
     ial2_params
   end
