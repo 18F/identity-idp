@@ -34,6 +34,7 @@ module Idv
       else
         handle_otp_confirmation_failure
       end
+      update_latest_step_so_far!
     end
 
     def self.step_info

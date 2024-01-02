@@ -199,6 +199,7 @@ module Idv
       else
         handle_proofing_failure
       end
+      update_latest_step_so_far!
     end
 
     def is_req_from_frontend?

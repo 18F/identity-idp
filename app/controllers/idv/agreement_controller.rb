@@ -42,6 +42,7 @@ module Idv
       else
         redirect_to idv_agreement_url
       end
+      update_latest_step_so_far!
     end
 
     def self.step_info

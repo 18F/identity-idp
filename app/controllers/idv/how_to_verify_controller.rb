@@ -48,6 +48,7 @@ module Idv
         flash[:error] = result.first_error_message
         redirect_to idv_how_to_verify_url
       end
+      update_latest_step_so_far!
     end
 
     def self.enabled?

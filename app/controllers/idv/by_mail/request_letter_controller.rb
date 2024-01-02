@@ -36,6 +36,7 @@ module Idv
         else
           redirect_to idv_enter_password_url
         end
+        update_latest_step_so_far!
       end
 
       def gpo_mail_service

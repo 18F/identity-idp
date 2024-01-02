@@ -218,6 +218,7 @@ module Idv
         redirect_to next_step_url
       end
       analytics.idv_doc_auth_verify_proofing_results(**analytics_arguments, **form_response.to_h)
+      update_latest_step_so_far!
     end
 
     def next_step_url

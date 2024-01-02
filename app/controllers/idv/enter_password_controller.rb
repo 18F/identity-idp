@@ -63,6 +63,7 @@ module Idv
         **ab_test_analytics_buckets,
       )
 
+      update_latest_step_so_far!
       return unless FeatureManagement.reveal_gpo_code?
       session[:last_gpo_confirmation_code] = idv_session.gpo_otp
     end

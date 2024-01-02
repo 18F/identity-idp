@@ -58,6 +58,7 @@ module Idv
           flash[:error] = form_response.first_error_message
           render 'idv/shared/ssn', locals: threatmetrix_view_variables(ssn_presenter.updating_ssn?)
         end
+        update_latest_step_so_far!
       end
 
       def self.step_info

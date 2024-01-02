@@ -40,6 +40,7 @@ module Idv
       idv_session.acknowledge_personal_key!
 
       redirect_to next_step
+      update_latest_step_so_far!
     end
 
     def self.step_info

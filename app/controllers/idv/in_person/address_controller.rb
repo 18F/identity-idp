@@ -35,6 +35,7 @@ module Idv
         else
           render :show, locals: extra_view_variables
         end
+        update_latest_step_so_far!
       end
 
       def extra_view_variables

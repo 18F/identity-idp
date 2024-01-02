@@ -31,6 +31,7 @@ module Idv
       else
         bypass_send_link_steps
       end
+      update_latest_step_so_far!
     end
 
     def self.step_info

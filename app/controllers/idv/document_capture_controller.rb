@@ -38,6 +38,7 @@ module Idv
       else
         redirect_to idv_document_capture_url
       end
+      update_latest_step_so_far!
     end
 
     def extra_view_variables

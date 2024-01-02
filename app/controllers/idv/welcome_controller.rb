@@ -7,6 +7,7 @@ module Idv
     before_action :confirm_not_rate_limited
 
     def show
+      update_latest_step_so_far!
       analytics.idv_doc_auth_welcome_visited(**analytics_arguments)
 
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
@@ -26,6 +27,7 @@ module Idv
       idv_session.welcome_visited = true
 
       redirect_to idv_agreement_url
+      update_latest_step_so_far!
     end
 
     def self.step_info

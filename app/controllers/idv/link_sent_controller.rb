@@ -30,6 +30,7 @@ module Idv
       idv_session.redo_document_capture = nil
 
       redirect_to idv_ssn_url
+      update_latest_step_so_far!
     end
 
     def extra_view_variables
