@@ -105,6 +105,56 @@ RSpec.describe GpoConfirmationUploader do
         expect(GpoConfirmation.count).to eq 1
       end
     end
+
+    context 'when an a confirmation is not valid' do
+      let!(:valid_confirmation) do
+        GpoConfirmation.create!(
+          entry: {
+            first_name: 'John',
+            last_name: 'Johnson',
+            address1: '123 Sesame St',
+            address2: '',
+            city: 'Anytown',
+            state: 'WA',
+            zipcode: '98021',
+            otp: 'ZYX987',
+            issuer: '',
+          },
+        )
+      end
+      let!(:invalid_confirmation) do
+        confirmation = GpoConfirmation.new
+        confirmation.entry = {
+          first_name: 'John',
+          last_name: 'Johnson',
+          address1: '123 Sesame St',
+          address2: '',
+          city: 'Anytown',
+          state: 'WA',
+          zipcode: nil,
+          otp: 'ZYX654',
+          issuer: '',
+        }
+        confirmation.save(validate: false)
+      end
+
+      it 'excludes the invalid confirmation from the set to be considered' do
+        expect(uploader).to receive(:generate_export).with([valid_confirmation]).and_return(export)
+        expect(uploader).to receive(:upload_export).with(export)
+        expect(uploader).to receive(:clear_confirmations).with([valid_confirmation])
+        subject
+      end
+
+      it 'tells New Relic that there are invalid records' do
+        expect(NewRelic::Agent).to receive(:notice_error).
+          with(GpoConfirmationUploader::InvalidGpoConfirmationsPresent)
+
+        expect(uploader).to receive(:generate_export).with([valid_confirmation]).and_return(export)
+        expect(uploader).to receive(:upload_export).with(export)
+        expect(uploader).to receive(:clear_confirmations).with([valid_confirmation])
+        subject
+      end
+    end
   end
 
   def sftp_options
