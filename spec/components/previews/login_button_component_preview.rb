@@ -1,14 +1,7 @@
-class LoginButtonComponentPreview < BaseComponentPreview
-  include ActionView::Context
-  include ActionView::Helpers::TagHelper
-
+class LoginButtonComponentPreview < ButtonComponentPreview
   # @!group Preview
   def default
     render(LoginButtonComponent.new.with_content('Sign in with'))
-  end
-
-  def big
-    render(LoginButtonComponent.new(big: true).with_content('Sign in with'))
   end
 
   # @!endgroup
