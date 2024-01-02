@@ -6,6 +6,8 @@ RSpec.describe Idv::ImageUploadsController do
   let(:document_filename_regex) { /^[a-f0-9]{8}-([a-f0-9]{4}-){3}[a-f0-9]{12}\.[a-z]+$/ }
   let(:base64_regex) { /^[a-z0-9+\/]+=*$/i }
   let(:selfie_img) { nil }
+  let(:state_id_number) { 'S59397998' }
+
   describe '#create' do
     subject(:action) do
       post :create, params: params
@@ -341,6 +343,40 @@ RSpec.describe Idv::ImageUploadsController do
     end
 
     context 'when image upload succeeds' do
+      # 50/50 state for selfie_check_performed in redis
+      # fake up a response and verify that selfie_check_performed flows through?
+
+      context 'selfie included' do
+        let(:selfie_img) { DocAuthImageFixtures.selfie_image_multipart }
+
+        before do
+          allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).
+            and_return(true)
+
+          allow(controller.decorated_sp_session).to receive(:selfie_required?).and_return(true)
+        end
+
+        it 'returns a successful response and modifies the session' do
+          expect_any_instance_of(DocAuth::Mock::DocAuthMockClient).
+            to receive(:post_images).with(
+              front_image: an_instance_of(String),
+              back_image: an_instance_of(String),
+              selfie_image: an_instance_of(String),
+              image_source: :unknown,
+              user_uuid: an_instance_of(String),
+              uuid_prefix: nil,
+              liveness_checking_required: true,
+            ).and_call_original
+
+          action
+
+          expect(response.status).to eq(200)
+          expect(json[:success]).to eq(true)
+          expect(document_capture_session.reload.load_result.success?).to eq(true)
+          expect(document_capture_session.reload.load_result.selfie_check_performed).to eq(true)
+        end
+      end
+
       it 'returns a successful response and modifies the session' do
         expect_any_instance_of(DocAuth::Mock::DocAuthMockClient).
           to receive(:post_images).with(
@@ -499,6 +535,7 @@ RSpec.describe Idv::ImageUploadsController do
                 state_id_type: state_id_type,
                 dob: dob,
                 state_id_jurisdiction: jurisdiction,
+                state_id_number: state_id_number,
                 zipcode: zipcode,
               },
             ),
@@ -516,7 +553,7 @@ RSpec.describe Idv::ImageUploadsController do
               :idv_document_upload_submitted,
               success: false,
               document_state: 'ND',
-              document_number: nil,
+              document_number: state_id_number,
               document_issued: nil,
               document_expiration: nil,
               first_name: nil,
@@ -605,7 +642,7 @@ RSpec.describe Idv::ImageUploadsController do
               :idv_document_upload_submitted,
               success: false,
               document_state: 'ND',
-              document_number: nil,
+              document_number: state_id_number,
               document_issued: nil,
               document_expiration: nil,
               first_name: nil,
@@ -674,7 +711,7 @@ RSpec.describe Idv::ImageUploadsController do
                 state: [I18n.t('doc_auth.errors.general.no_liveness')],
               },
               error_details: {
-                state: { wrong_length: true },
+                state: { inclusion: true },
               },
               attention_with_barcode: false,
               user_id: user.uuid,
@@ -694,7 +731,7 @@ RSpec.describe Idv::ImageUploadsController do
               :idv_document_upload_submitted,
               success: false,
               document_state: 'Maryland',
-              document_number: nil,
+              document_number: state_id_number,
               document_issued: nil,
               document_expiration: nil,
               first_name: 'FAKEY',
@@ -704,6 +741,92 @@ RSpec.describe Idv::ImageUploadsController do
               document_back_image_filename: nil,
               document_front_image_filename: nil,
               document_image_encryption_key: nil,
+            )
+
+            action
+          end
+        end
+
+        context 'but doc_pii validation fails due to missing state_id_number' do
+          let(:state_id_number) { nil }
+
+          it 'tracks state_id_number validation errors in analytics' do
+            stub_analytics
+            stub_attempts_tracker
+
+            expect(@analytics).to receive(:track_event).with(
+              'IdV: doc auth image upload form submitted',
+              success: true,
+              errors: {},
+              user_id: user.uuid,
+              attempts: 1,
+              remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+              pii_like_keypaths: pii_like_keypaths,
+              flow_path: 'standard',
+              front_image_fingerprint: an_instance_of(String),
+              back_image_fingerprint: an_instance_of(String),
+            )
+
+            expect(@analytics).to receive(:track_event).with(
+              'IdV: doc auth image upload vendor submitted',
+              success: true,
+              errors: {},
+              attention_with_barcode: false,
+              async: false,
+              billed: true,
+              exception: nil,
+              doc_auth_result: 'Passed',
+              state: 'ND',
+              state_id_type: 'drivers_license',
+              user_id: user.uuid,
+              attempts: 1,
+              remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+              client_image_metrics: {
+                front: { glare: 99.99 },
+                back: { glare: 99.99 },
+              },
+              pii_like_keypaths: pii_like_keypaths,
+              flow_path: 'standard',
+              vendor_request_time_in_ms: a_kind_of(Float),
+              front_image_fingerprint: an_instance_of(String),
+              back_image_fingerprint: an_instance_of(String),
+              doc_type_supported: boolean,
+            )
+
+            expect(@analytics).to receive(:track_event).with(
+              'IdV: doc auth image upload vendor pii validation',
+              success: false,
+              errors: {
+                state_id_number: [I18n.t('doc_auth.errors.general.no_liveness')],
+              },
+              error_details: {
+                state_id_number: { blank: true },
+              },
+              attention_with_barcode: false,
+              user_id: user.uuid,
+              attempts: 1,
+              remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+              pii_like_keypaths: pii_like_keypaths,
+              flow_path: 'standard',
+              front_image_fingerprint: an_instance_of(String),
+              back_image_fingerprint: an_instance_of(String),
+              classification_info: hash_including(:Front, :Back),
+            )
+
+            expect(@irs_attempts_api_tracker).to receive(:track_event).with(
+              :idv_document_upload_submitted,
+              success: false,
+              document_back_image_filename: nil,
+              document_front_image_filename: nil,
+              document_image_encryption_key: nil,
+              document_state: 'ND',
+              document_number: state_id_number,
+              document_issued: nil,
+              document_expiration: nil,
+              first_name: 'FAKEY',
+              last_name: 'MCFAKERSON',
+              date_of_birth: '10/06/1938',
+              address: address1,
             )
 
             action
@@ -783,7 +906,7 @@ RSpec.describe Idv::ImageUploadsController do
               document_front_image_filename: nil,
               document_image_encryption_key: nil,
               document_state: 'ND',
-              document_number: nil,
+              document_number: state_id_number,
               document_issued: nil,
               document_expiration: nil,
               first_name: 'FAKEY',
@@ -974,7 +1097,9 @@ RSpec.describe Idv::ImageUploadsController do
         expect(response.status).to eq(200)
         expect(json[:success]).to eq(true)
         expect(document_capture_session.reload.load_result.success?).to eq(true)
+        expect(document_capture_session.reload.load_result.selfie_check_performed).to eq(true)
       end
+
       it 'sends a selfie' do
         expect_any_instance_of(DocAuth::Mock::DocAuthMockClient).
           to receive(:post_images).with(

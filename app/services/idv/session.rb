@@ -79,7 +79,7 @@ module Idv
       associate_in_person_enrollment_with_profile if profile.in_person_verification_pending?
 
       if profile.gpo_verification_pending?
-        create_gpo_entry(profile_maker.pii_attributes)
+        create_gpo_entry(profile_maker.pii_attributes, profile)
       elsif profile.in_person_verification_pending?
         UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(
           current_user,
@@ -122,20 +122,28 @@ module Idv
 
     def clear
       user_session.delete(:idv)
+      @profile = nil
+      @gpo_otp = nil
     end
 
     def associate_in_person_enrollment_with_profile
       current_user.establishing_in_person_enrollment.update(profile: profile)
     end
 
-    def create_gpo_entry(pii)
-      confirmation_maker = GpoConfirmationMaker.new(
-        pii: pii, service_provider: service_provider,
-        profile: profile
-      )
-      confirmation_maker.perform
+    def create_gpo_entry(pii, profile)
+      begin
+        confirmation_maker = GpoConfirmationMaker.new(
+          pii: pii, service_provider: service_provider,
+          profile: profile
+        )
+        confirmation_maker.perform
 
-      @gpo_otp = confirmation_maker.otp
+        @gpo_otp = confirmation_maker.otp
+      rescue
+        # We don't have what we need to actually generate a GPO letter.
+        profile.deactivate(:encryption_error)
+        raise
+      end
     end
 
     def phone_otp_sent?
