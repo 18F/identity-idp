@@ -61,6 +61,7 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController do
     context 'when the user presents a valid PIV/CAC' do
       before(:each) do
         stub_sign_in_before_2fa(user)
+        subject.user_session[:new_device] = true
       end
 
       it 'redirects to the profile' do
@@ -198,6 +199,7 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController do
           IdentityConfig.store.login_otp_confirmation_max_attempts - 1
         user.save
         stub_sign_in_before_2fa(user)
+        subject.user_session[:new_device] = true
 
         stub_analytics
         stub_attempts_tracker

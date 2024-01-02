@@ -127,6 +127,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
       before do
         sign_in_before_2fa
         controller.user_session[:mfa_selections] = ['sms']
+        subject.user_session[:new_device] = true
         expect(controller.current_user.reload.second_factor_attempts_count).to eq 0
         phone_configuration_created_at = controller.current_user.
           default_phone_configuration.created_at
@@ -200,6 +201,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
         )
         sign_in_before_2fa(user)
         controller.user_session[:mfa_selections] = ['sms']
+        subject.user_session[:new_device] = true
         phone_configuration_created_at = controller.current_user.
           default_phone_configuration.created_at
 
@@ -246,6 +248,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
       before do
         sign_in_before_2fa
         subject.user_session[:mfa_selections] = ['sms']
+        subject.user_session[:new_device] = true
         expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
       end
 
@@ -452,6 +455,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
           before do
             subject.user_session[:mfa_selections] = ['sms']
             subject.user_session[:in_account_creation_flow] = true
+            subject.user_session[:new_device] = true
             phone_configuration = MfaContext.new(subject.current_user).phone_configurations.last
             phone_id = phone_configuration.id
             parsed_phone = Phonelib.parse(phone_configuration.phone)
@@ -509,6 +513,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
 
         context 'user enters an invalid code' do
           before do
+            subject.user_session[:new_device] = true
             expect(@irs_attempts_api_tracker).to receive(:mfa_enroll_phone_otp_submitted).
               with(success: false)
 
@@ -618,6 +623,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
 
         context 'when given valid code' do
           before do
+            subject.user_session[:new_device] = true
             post(
               :create,
               params: {

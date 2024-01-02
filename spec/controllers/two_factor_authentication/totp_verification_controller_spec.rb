@@ -10,6 +10,7 @@ RSpec.describe TwoFactorAuthentication::TotpVerificationController do
     context 'when the user enters a valid TOTP' do
       before do
         sign_in_before_2fa
+        subject.user_session[:new_device] = true
         @secret = subject.current_user.generate_totp_secret
         user = subject.current_user
         Db::AuthAppConfiguration.create(user, @secret, nil, 'foo')
@@ -124,6 +125,7 @@ RSpec.describe TwoFactorAuthentication::TotpVerificationController do
             IdentityConfig.store.login_otp_confirmation_max_attempts - 1,
         )
         sign_in_before_2fa(user)
+        subject.user_session[:new_device] = true
         @secret = user.generate_totp_secret
         Db::AuthAppConfiguration.create(user, @secret, nil, 'foo')
 

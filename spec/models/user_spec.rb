@@ -1524,7 +1524,7 @@ RSpec.describe User do
       end
       it 'does not expect a device to be new' do
         cookies = request.cookie_jar
-        device_present = user.new_device(cookies)
+        device_present = user.new_device?(device_cookie: cookies[:device])
         expect(device_present).to eq(false)
       end
     end
@@ -1538,7 +1538,7 @@ RSpec.describe User do
       end
       it 'expects a new device' do
         cookies = request.cookie_jar
-        device_present = user.new_device(cookies)
+        device_present = user.new_device?(device_cookie: cookies[:device])
         expect(device_present).to eq(true)
       end
     end

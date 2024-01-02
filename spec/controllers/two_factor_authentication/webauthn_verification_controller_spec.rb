@@ -146,6 +146,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
 
         before do
           allow(WebauthnVerificationForm).to receive(:domain_name).and_return('localhost:3000')
+          subject.user_session[:new_device] = true
         end
 
         it 'tracks a valid submission' do
@@ -219,7 +220,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
           credential_id: credential_id,
           credential_public_key: credential_public_key,
         )
-
+        subject.user_session[:new_device] = true
         webauthn_configuration = controller.current_user.webauthn_configurations.first
         result = { context: 'authentication',
                    multi_factor_auth_method: 'webauthn',
@@ -250,6 +251,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
 
         before do
           controller.user_session[:webauthn_challenge] = webauthn_challenge
+          subject.user_session[:new_device] = true
         end
 
         let(:view_context) { ActionController::Base.new.view_context }

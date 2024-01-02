@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
   let(:personal_key) { { personal_key: 'foo' } }
   let(:payload) { { personal_key_form: personal_key } }
-
+  
   describe '#show' do
     context 'when there is no session (signed out or locked out), and the user reloads the page' do
       it 'redirects to the home page' do
@@ -47,6 +47,7 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
       it 'tracks the valid authentication event' do
         personal_key
         sign_in_before_2fa(user)
+        subject.user_session[:new_device] = true
         stub_analytics
 
         analytics_hash = {
@@ -179,6 +180,7 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
         user.save
         personal_key_generated_at = controller.current_user.
           encrypted_recovery_code_digest_generated_at
+        subject.user_session[:new_device] = true
         stub_analytics
         stub_attempts_tracker
 
