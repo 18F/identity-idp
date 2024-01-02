@@ -342,14 +342,11 @@ module Users
 
     def webauthn_url
       if webauthn_params[:platform] == true
-        if device_supports_webauthn_platform?
-          login_two_factor_webauthn_url(webauthn_params)
-        else
-          login_two_factor_options_url
+        if !device_supports_webauthn_platform?
+          return login_two_factor_options_url
         end
-      else
-        login_two_factor_webauthn_url
       end
+      login_two_factor_webauthn_url(webauthn_params)
     end
 
     def device_supports_webauthn_platform?
