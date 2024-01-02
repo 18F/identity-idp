@@ -1495,6 +1495,55 @@ RSpec.describe User do
     end
   end
 
+  describe '#new_device' do
+    let(:user_agent) { 'A computer on the internet' }
+    let(:ip_address) { '4.4.4.4' }
+    let(:existing_device_cookie) { 'existing_device_cookie' }
+    let(:cookie_jar) do
+      {
+        device: existing_device_cookie,
+      }.with_indifferent_access.tap do |cookie_jar|
+        allow(cookie_jar).to receive(:permanent).and_return({})
+      end
+    end
+    let(:request) do
+      double(
+        remote_ip: ip_address,
+        user_agent: user_agent,
+        cookie_jar: cookie_jar,
+      )
+    end
+    let(:user) { create(:user, :fully_registered) }
+    let(:device) { create(:device, user: user, cookie_uuid: existing_device_cookie) }
+
+    context 'with existing device' do
+      before do
+        # Memoize user and device before specs run
+        user
+        device
+      end
+      it 'does not expect a device to be new' do
+        cookies = request.cookie_jar
+        device_present = user.new_device(cookies)
+        expect(device_present).to eq(false)
+      end
+    end
+
+    context 'with new device' do
+      let(:device) { create(:device, user: user, cookie_uuid: 'non_existing_device_cookie') }
+      before do
+        # Memoize user and device before specs run
+        user
+        device
+      end
+      it 'expects a new device' do
+        cookies = request.cookie_jar
+        device_present = user.new_device(cookies)
+        expect(device_present).to eq(true)
+      end
+    end
+  end
+
   describe '#password_reset_profile' do
     let(:user) { create(:user) }
 
