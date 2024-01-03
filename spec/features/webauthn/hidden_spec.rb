@@ -106,6 +106,12 @@ RSpec.describe 'webauthn hide' do
       end
 
       context 'with javascript disabled' do
+        before do
+          Warden.on_next_request do |proxy|
+            session = proxy.env['rack.session']
+            session[:platform_authenticator_available] = true
+          end
+        end
         it 'does not display the authenticator option' do
           sign_in_user(user)
           click_on t('two_factor_authentication.login_options_link_text')
