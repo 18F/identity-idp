@@ -22,6 +22,8 @@ const DISPLAY_ATTEMPTS = 3;
 function DocumentCaptureWarning({
   isFailedDocType,
   isFailedResult,
+  selfieResultFailed,
+  selfieResultNotLiveOrPoorQuality,
   remainingAttempts,
   actionOnClick,
   unknownFieldErrors = [],
