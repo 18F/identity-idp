@@ -9,11 +9,11 @@ class LoginButtonComponentPreview < ButtonComponentPreview
   # rubocop:disable Layout/LineLength
   # @param content text
   # @param big toggle
-  # @param color select [~,light blue,dark blue,white]
+  # @param color select [~,primary,primary darker,primary lighter]
   def workbench(
     content: 'Sign in with',
     big: false,
-    color: "light blue"
+    color: "primary"
   )
   
     render(

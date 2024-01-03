@@ -4,5 +4,6 @@
       class: css_class,
     ) do %> 
   <%= content %>
-  <%= image_tag(asset_url(logo_path), alt: t('components.login_button.image_alt'), class: 'display-inline text-middle margin-left-1 margin-top-neg-05') %>
+  <span class="usa-sr-only">Login.gov</span>
+  <%= image_tag(asset_url(logo_path), alt: "", class: 'login-button-img display-inline text-middle margin-left-05 margin-top-neg-05') %>
 <% end %>
