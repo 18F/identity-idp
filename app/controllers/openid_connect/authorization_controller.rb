@@ -46,7 +46,8 @@ module OpenidConnect
     private
 
     def block_biometric_requests_in_production
-      if Rails.env.production? && params['biometric_comparison_required'] == 'true'
+      if params['biometric_comparison_required'] == 'true' &&
+         FeatureManagement.idv_block_biometrics_requests?
         render_not_acceptable
       end
     end
