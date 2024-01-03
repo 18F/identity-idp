@@ -34,6 +34,7 @@ en:
       rate_limited_text_html: 'For your security, we limit the number of times you can
         attempt to verify a document online. <strong>Try again in
         %{timeout}.</strong>'
+      selfie_result_failed_heading: We could not verify the photo of yourself
       send_link_limited: You tried too many times, please try again in %{timeout}. You
         can also go back and choose to use your computer instead.
     enter_code:
