@@ -3,7 +3,7 @@ module SignUp
     include SecureHeadersConcern
 
     before_action :confirm_two_factor_authenticated
-    before_action :verify_confirmed, if: :ial2?
+    before_action :confirm_identity_verified, if: :ial2?
     before_action :apply_secure_headers_override, only: [:show, :update]
     before_action :verify_needs_completions_screen
 
@@ -31,7 +31,7 @@ module SignUp
 
     private
 
-    def verify_confirmed
+    def confirm_identity_verified
       redirect_to idv_url if current_user.identity_not_verified?
     end
 
