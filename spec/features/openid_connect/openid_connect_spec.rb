@@ -929,10 +929,9 @@ RSpec.describe 'OpenID Connect' do
         id_token_hint: id_token,
       )
 
-      expected_redirect_uri = URI('gov.gsa.openidconnect.test://result/signout').
-        tap { |uri| uri.query = URI.encode_www_form(state:) }.
-        to_s
-      expect(oidc_redirect_url).to eq(expected_redirect_uri)
+      expect(oidc_redirect_url).to eq(
+        UriService.add_params('gov.gsa.openidconnect.test://result/signout', state:),
+      )
 
       visit account_path
       expect(page).to_not have_content(t('headings.account.login_info'))
