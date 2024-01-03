@@ -113,7 +113,7 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
       let(:user) { create(:user, :with_phone) }
       let(:personal_key) { { personal_key: PersonalKeyGenerator.new(user).create } }
       let(:payload) { { personal_key_form: personal_key } }
-        
+
       it 'tracks new device value' do
         personal_key
         sign_in_before_2fa(user)

@@ -143,7 +143,7 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController do
         it 'tracks new device value' do
           stub_analytics
           cfg = controller.current_user.piv_cac_configurations.first
-  
+
           submit_attributes = {
             success: true,
             errors: {},
@@ -155,7 +155,7 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController do
           }
           expect(@analytics).to receive(:track_mfa_submit_event).
             with(submit_attributes)
-  
+
           get :show, params: { token: 'good-token' }
         end
       end

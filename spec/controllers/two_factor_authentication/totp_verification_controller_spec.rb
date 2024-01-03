@@ -72,7 +72,7 @@ RSpec.describe TwoFactorAuthentication::TotpVerificationController do
         end
         it 'tracks new device value' do
           cfg = controller.current_user.auth_app_configurations.first
-  
+
           attributes = {
             success: true,
             errors: {},
@@ -83,7 +83,7 @@ RSpec.describe TwoFactorAuthentication::TotpVerificationController do
           }
           expect(@analytics).to receive(:track_mfa_submit_event).
             with(attributes)
-  
+
           post :create, params: { code: generate_totp_code(@secret) }
         end
       end
