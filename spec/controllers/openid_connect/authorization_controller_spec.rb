@@ -281,6 +281,48 @@ RSpec.describe OpenidConnect::AuthorizationController do
               sp_return_log = SpReturnLog.find_by(issuer: client_id)
               expect(sp_return_log.ial).to eq(2)
             end
+
+            context 'SP has biometric_comparison_required' do
+              let(:selfie_capture_enabled) { true }
+              before do
+                params[:biometric_comparison_required] = 'true'
+                allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).
+                  and_return(selfie_capture_enabled)
+                allow(IdentityConfig.store).to receive(:openid_connect_redirect).
+                  and_return('server_side')
+                IdentityLinker.new(user, service_provider).link_identity(ial: 3)
+                user.identities.last.update!(
+                  verified_attributes: %w[given_name family_name birthdate verified_at],
+                )
+                allow(controller).to receive(:pii_requested_but_locked?).and_return(false)
+              end
+
+              context 'selfie check was performed' do
+                it 'redirects to the redirect_uri immediately when pii is unlocked if client-side redirect is disabled' do
+                  user.active_profile.idv_level = :unsupervised_with_selfie
+
+                  action
+    
+                  expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
+                end
+              end
+
+              context 'selfie check was not performed' do
+                it 'redirects to have the user verify their account' do
+                  action
+                  expect(controller).to redirect_to(idv_url)
+                end
+              end
+
+              context 'selfie capture not enabled, selfie check was not performed' do
+                let(:selfie_capture_enabled) { false }
+                  it 'redirects to the redirect_uri immediately when pii is unlocked if client-side redirect is disabled' do
+                    action
+
+                    expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
+                  end
+              end
+            end 
           end
 
           context 'account is not already verified' do

@@ -28,6 +28,7 @@ module OpenidConnect
         return redirect_to reactivate_account_url if user_needs_to_reactivate_account?
         return redirect_to url_for_pending_profile_reason if user_has_pending_profile?
         return redirect_to idv_url if identity_needs_verification?
+        return redirect_to idv_url if selfie_needed?
       end
       return redirect_to sign_up_completed_url if needs_completion_screen_reason
       link_identity_to_service_provider
@@ -97,6 +98,11 @@ module OpenidConnect
         (current_user.identity_not_verified? ||
         decorated_sp_session.requested_more_recent_verification?)) ||
         current_user.reproof_for_irs?(service_provider: current_sp)
+    end
+
+    def selfie_needed?
+      decorated_sp_session.selfie_required? &&
+        !current_user.identity_verified_with_selfie?
     end
 
     def build_authorize_form_from_params
