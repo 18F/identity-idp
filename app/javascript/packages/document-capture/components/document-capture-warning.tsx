@@ -11,6 +11,8 @@ import AnalyticsContext from '../context/analytics';
 interface DocumentCaptureWarningProps {
   isFailedDocType: boolean;
   isFailedResult: boolean;
+  selfieResultFailed: boolean;
+  selfieResultNotLiveOrPoorQuality: boolean;
   remainingAttempts: number;
   actionOnClick?: () => void;
   unknownFieldErrors: FormStepError<{ front: string; back: string }>[];
