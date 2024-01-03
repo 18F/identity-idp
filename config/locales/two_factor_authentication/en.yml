@@ -21,9 +21,12 @@ en:
       one: You have <strong>%{count} attempt</strong> remaining.
       other: You have <strong>%{count} attempts</strong> remaining.
     auth_app:
+      change_nickname: Change nickname
+      delete: Delete this device
       deleted: Successfully deleted an authentication app method
       edit_heading: Manage your authentication app settings
       manage_accessible_label: Manage authentication app
+      nickname: Nickname
       renamed: Successfully renamed your authentication app method
     backup_code_header_text: Enter your backup code
     backup_code_prompt: You can use this backup code once. After you submit it,
