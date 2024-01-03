@@ -25,7 +25,6 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
       it 'tracks the valid authentication event' do
         freeze_time do
           sign_in_before_2fa(user)
-          subject.user_session[:new_device] = true
           stub_analytics
           stub_attempts_tracker
           analytics_hash = {
@@ -33,7 +32,7 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
             errors: {},
             multi_factor_auth_method: 'backup_code',
             multi_factor_auth_method_created_at: Time.zone.now.strftime('%s%L'),
-            new_device: true,
+            new_device: nil,
           }
 
           expect(@analytics).to receive(:track_mfa_submit_event).
@@ -87,7 +86,6 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
       it 'tracks the valid authentication event when there are exisitng codes' do
         freeze_time do
           stub_sign_in_before_2fa(user)
-          subject.user_session[:new_device] = true
           stub_analytics
           stub_attempts_tracker
 
@@ -97,7 +95,7 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
               errors: {},
               multi_factor_auth_method: 'backup_code',
               multi_factor_auth_method_created_at: Time.zone.now.strftime('%s%L'),
-              new_device: true,
+              new_device: nil,
             })
 
           expect(@irs_attempts_api_tracker).to receive(:track_event).
@@ -153,13 +151,12 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
         user.second_factor_attempts_count =
           IdentityConfig.store.login_otp_confirmation_max_attempts - 1
         user.save
-        subject.user_session[:new_device] = true
         properties = {
           success: false,
           errors: {},
           multi_factor_auth_method: 'backup_code',
           multi_factor_auth_method_created_at: nil,
-          new_device: true,
+          new_device: nil,
         }
 
         stub_analytics

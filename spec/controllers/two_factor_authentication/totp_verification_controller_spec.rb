@@ -10,7 +10,6 @@ RSpec.describe TwoFactorAuthentication::TotpVerificationController do
     context 'when the user enters a valid TOTP' do
       before do
         sign_in_before_2fa
-        subject.user_session[:new_device] = true
         @secret = subject.current_user.generate_totp_secret
         user = subject.current_user
         Db::AuthAppConfiguration.create(user, @secret, nil, 'foo')
@@ -54,7 +53,7 @@ RSpec.describe TwoFactorAuthentication::TotpVerificationController do
           errors: {},
           multi_factor_auth_method: 'totp',
           multi_factor_auth_method_created_at: cfg.created_at.strftime('%s%L'),
-          new_device: true,
+          new_device: nil,
           auth_app_configuration_id: controller.current_user.auth_app_configurations.first.id,
         }
         expect(@analytics).to receive(:track_mfa_submit_event).
@@ -65,6 +64,28 @@ RSpec.describe TwoFactorAuthentication::TotpVerificationController do
           with(:mfa_login_totp, success: true)
 
         post :create, params: { code: generate_totp_code(@secret) }
+      end
+
+      context 'with new device session value' do
+        before do
+          subject.user_session[:new_device] = false
+        end
+        it 'tracks new device value' do
+          cfg = controller.current_user.auth_app_configurations.first
+  
+          attributes = {
+            success: true,
+            errors: {},
+            multi_factor_auth_method: 'totp',
+            multi_factor_auth_method_created_at: cfg.created_at.strftime('%s%L'),
+            new_device: false,
+            auth_app_configuration_id: controller.current_user.auth_app_configurations.first.id,
+          }
+          expect(@analytics).to receive(:track_mfa_submit_event).
+            with(attributes)
+  
+          post :create, params: { code: generate_totp_code(@secret) }
+        end
       end
     end
 
@@ -125,7 +146,6 @@ RSpec.describe TwoFactorAuthentication::TotpVerificationController do
             IdentityConfig.store.login_otp_confirmation_max_attempts - 1,
         )
         sign_in_before_2fa(user)
-        subject.user_session[:new_device] = true
         @secret = user.generate_totp_secret
         Db::AuthAppConfiguration.create(user, @secret, nil, 'foo')
 
@@ -134,7 +154,7 @@ RSpec.describe TwoFactorAuthentication::TotpVerificationController do
           errors: {},
           multi_factor_auth_method: 'totp',
           multi_factor_auth_method_created_at: nil,
-          new_device: true,
+          new_device: nil,
           auth_app_configuration_id: nil,
         }
 
