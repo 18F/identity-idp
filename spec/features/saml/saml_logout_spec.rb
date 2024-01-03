@@ -106,6 +106,41 @@ RSpec.feature 'SAML logout' do
       end
     end
 
+    context 'when signed in with another browser' do
+      it 'redirects to the SP after concurrent session logout' do
+        user = user_with_2fa
+        service_provider = ServiceProvider.find_by(issuer: SamlAuthHelper::SP_ISSUER)
+        IdentityLinker.new(user, service_provider).link_identity(
+          verified_attributes: %w[openid email],
+        )
+
+        perform_in_browser(:one) do
+          visit_idp_from_sp_with_ial1(:saml)
+          sign_in_live_with_2fa(user)
+        end
+
+        perform_in_browser(:two) do
+          visit_idp_from_sp_with_ial1(:saml)
+          sign_in_live_with_2fa(user)
+        end
+
+        perform_in_browser(:one) do
+          visit_saml_logout_request_url(
+            overrides: {
+              issuer: SamlAuthHelper::SP_ISSUER,
+            },
+          )
+
+          # It should contain a SAMLResponse
+          expect(page.find('#SAMLResponse', visible: false)).to be_truthy
+
+          # The user should be signed out
+          visit account_path
+          expect(current_path).to eq root_path
+        end
+      end
+    end
+
     context 'the saml request is invalid' do
       it 'renders an error' do
         sign_in_and_2fa_user(user)

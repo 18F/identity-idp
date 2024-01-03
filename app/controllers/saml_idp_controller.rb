@@ -17,6 +17,7 @@ class SamlIdpController < ApplicationController
 
   skip_before_action :verify_authenticity_token
   before_action :require_path_year
+  before_action :set_devise_failure_redirect_for_concurrent_session_logout, only: :logout
   before_action :handle_banned_user
   before_action :bump_auth_count, only: :auth
   before_action :redirect_to_sign_in, only: :auth, unless: :user_signed_in?
@@ -103,6 +104,10 @@ class SamlIdpController < ApplicationController
   def prompt_for_password_if_ial2_request_and_pii_locked
     return unless pii_requested_but_locked?
     redirect_to capture_password_url
+  end
+
+  def set_devise_failure_redirect_for_concurrent_session_logout
+    request.env['devise_session_limited_failure_redirect_url'] = request.url
   end
 
   def pii_requested_but_locked?

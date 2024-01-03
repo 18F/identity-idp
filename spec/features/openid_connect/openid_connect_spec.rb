@@ -4,6 +4,7 @@ require 'query_tracker'
 RSpec.describe 'OpenID Connect' do
   include IdvHelper
   include OidcAuthHelper
+  include SamlAuthHelper
   include DocAuthHelper
 
   it 'sets the sp_issuer cookie' do
@@ -928,9 +929,58 @@ RSpec.describe 'OpenID Connect' do
         id_token_hint: id_token,
       )
 
+      expected_redirect_uri = URI('gov.gsa.openidconnect.test://result/signout').
+        tap { |uri| uri.query = URI.encode_www_form(state:) }.
+        to_s
+      expect(oidc_redirect_url).to eq(expected_redirect_uri)
+
       visit account_path
       expect(page).to_not have_content(t('headings.account.login_info'))
       expect(page).to have_content(t('headings.sign_in_without_sp'))
+    end
+
+    context 'when signed out' do
+      it 'redirects back to the client app' do
+        visit openid_connect_logout_path(
+          client_id: 'urn:gov:gsa:openidconnect:test',
+          post_logout_redirect_uri: 'gov.gsa.openidconnect.test://result/signout',
+        )
+
+        expect(oidc_redirect_url).to eq('gov.gsa.openidconnect.test://result/signout')
+      end
+    end
+
+    context 'when signed in with another browser' do
+      it 'redirects back to the client app after concurrent session logout' do
+        user = user_with_2fa
+        service_provider = ServiceProvider.find_by(issuer: OidcAuthHelper::OIDC_IAL1_ISSUER)
+        IdentityLinker.new(user, service_provider).link_identity(
+          verified_attributes: %w[openid email],
+        )
+
+        perform_in_browser(:one) do
+          visit_idp_from_sp_with_ial1(:oidc)
+          sign_in_live_with_2fa(user)
+        end
+
+        perform_in_browser(:two) do
+          visit_idp_from_sp_with_ial1(:oidc)
+          sign_in_live_with_2fa(user)
+        end
+
+        perform_in_browser(:one) do
+          visit openid_connect_logout_path(
+            client_id: OidcAuthHelper::OIDC_IAL1_ISSUER,
+            post_logout_redirect_uri: 'http://localhost:7654/auth/result',
+          )
+
+          expect(oidc_redirect_url).to eq('http://localhost:7654/auth/result')
+
+          visit account_path
+          expect(page).to_not have_content(t('headings.account.login_info'))
+          expect(page).to have_content(t('headings.sign_in_without_sp'))
+        end
+      end
     end
   end
 

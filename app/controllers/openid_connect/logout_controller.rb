@@ -5,6 +5,7 @@ module OpenidConnect
     include SecureHeadersConcern
     include FullyAuthenticatable
 
+    before_action :set_devise_failure_redirect_for_concurrent_session_logout
     before_action :confirm_two_factor_authenticated, only: [:delete]
 
     def index
@@ -38,6 +39,10 @@ module OpenidConnect
     end
 
     private
+
+    def set_devise_failure_redirect_for_concurrent_session_logout
+      request.env['devise_session_limited_failure_redirect_url'] = request.url
+    end
 
     def redirect_user(redirect_uri, user_uuid)
       redirect_method = IdentityConfig.store.openid_connect_redirect_uuid_override_map.fetch(
