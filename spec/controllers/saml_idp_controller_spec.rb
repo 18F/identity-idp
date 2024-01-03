@@ -8,6 +8,12 @@ RSpec.describe SamlIdpController do
   let(:path_year) { SamlAuthHelper::PATH_YEAR }
 
   describe '/api/saml/logout' do
+    it 'assigns devise session limited failure redirect url' do
+      delete :logout, params: { path_year: path_year }
+
+      expect(request.env['devise_session_limited_failure_redirect_url']).to eq(request.url)
+    end
+
     it 'tracks the event when idp initiated' do
       stub_analytics
       stub_attempts_tracker

@@ -33,6 +33,14 @@ RSpec.describe OpenidConnect::LogoutController do
     ).id_token
   end
 
+  describe '#index' do
+    it 'assigns devise session limited failure redirect url' do
+      get :index
+
+      expect(request.env['devise_session_limited_failure_redirect_url']).to eq(request.url)
+    end
+  end
+
   context 'when accepting id_token_hint and client_id' do
     before do
       allow(IdentityConfig.store).to receive(:reject_id_token_hint_in_logout).

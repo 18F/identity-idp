@@ -5,7 +5,7 @@ module OpenidConnect
     include SecureHeadersConcern
     include FullyAuthenticatable
 
-    before_action :set_devise_failure_redirect_for_concurrent_session_logout
+    before_action :set_devise_failure_redirect_for_concurrent_session_logout, only: [:index]
     before_action :confirm_two_factor_authenticated, only: [:delete]
 
     def index
