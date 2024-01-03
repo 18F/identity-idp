@@ -1,5 +1,5 @@
 module TwoFactorAuthentication
-  class WebauthnDeleteForm
+  class AuthAppDeleteForm
     include ActiveModel::Model
     include ActionView::Helpers::TranslationHelper
 
