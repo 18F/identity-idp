@@ -112,9 +112,8 @@ RSpec.feature 'OIDC Authorization Confirmation' do
       visit visit_idp_from_ial2_oidc_sp(biometric_comparison_required: true)
     end
 
-    it 'redirects to the 404 page' do
-      expect(current_path).to eq(page_not_found_path)
-      expect(page.status_code).to eq(404)
+    it 'redirects to the 406 (unacceptable) page' do
+      expect(page.status_code).to eq(406)
     end
   end
 end
