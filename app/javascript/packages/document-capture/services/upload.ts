@@ -48,9 +48,9 @@ export class UploadFormEntriesError extends FormError {
 
   failed_image_fingerprints: ImageFingerprints = { front: [], back: [] };
 
-  selfie_result_failed = false;
+  selfieResultFailed = false;
 
-  selfie_result_not_live_or_poor_quality = false;
+  selfieResultNotLiveOrPoorQuality = false;
 }
 
 /**
@@ -130,9 +130,9 @@ const upload: UploadImplementation = async function (payload, { method = 'POST',
 
     error.failed_image_fingerprints = result.failed_image_fingerprints ?? { front: [], back: [] };
 
-    error.selfie_result_failed = result.selfie_result_failed;
+    error.selfieResultFailed = result.selfie_result_failed;
 
-    error.selfie_result_not_live_or_poor_quality = result.selfie_result_not_live_or_poor_quality;
+    error.selfieResultNotLiveOrPoorQuality = result.selfie_result_not_live_or_poor_quality;
 
     throw error;
   }
