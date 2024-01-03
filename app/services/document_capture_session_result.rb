@@ -10,9 +10,10 @@ DocumentCaptureSessionResult = RedactedStruct.new(
   :failed_back_image_fingerprints,
   :captured_at,
   :selfie_check_performed,
+  :selfie_check_result,
   keyword_init: true,
   allowed_members: [:id, :success, :attention_with_barcode, :failed_front_image_fingerprints,
-                    :failed_back_image_fingerprints, :captured_at, :selfie_check_performed],
+                    :failed_back_image_fingerprints, :captured_at, :selfie_check_performed, :selfie_check_result],
 ) do
   def self.redis_key_prefix
     'dcs:result'
@@ -34,5 +35,7 @@ DocumentCaptureSessionResult = RedactedStruct.new(
       return false unless self[member_name]&.is_a?(Array)
       return self[member_name]&.include?(fingerprint)
     end
+
+    # We'd probably need to define something here too?
   end
 end
