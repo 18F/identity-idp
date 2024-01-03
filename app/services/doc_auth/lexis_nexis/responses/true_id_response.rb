@@ -206,6 +206,7 @@ module DocAuth
             product_status: product_status,
             decision_product_status: decision_product_status,
             doc_auth_result: doc_auth_result,
+            selfie_result: selfie_result,
             processed_alerts: alerts,
             alert_failure_count: alerts[:failed]&.count.to_i,
             log_alert_results: log_alert_formatter.log_alerts(alerts),
@@ -229,7 +230,8 @@ module DocAuth
           transaction_status_passed? &&
             true_id_product.present? &&
             product_status_passed? &&
-            doc_auth_result_passed?
+            doc_auth_result_passed? &&
+            selfie_result_passed?
         end
 
         def product_status_passed?
@@ -238,6 +240,12 @@ module DocAuth
 
         def doc_auth_result_passed?
           doc_auth_result == 'Passed'
+        end
+
+        def selfie_result_passed?
+          # If liveness checking is disabled, don't evaluate the selfie fields in the response
+          return true if !liveness_checking_enabled
+          return selfie_result == 'Passed'
         end
 
         def doc_auth_result_attention?
@@ -272,6 +280,10 @@ module DocAuth
 
         def doc_auth_result
           true_id_product&.dig(:AUTHENTICATION_RESULT, :DocAuthResult)
+        end
+
+        def selfie_result
+          true_id_product&.dig(:AUTHENTICATION_RESULT, :SomeFieldImNotSureOProbablyFaceMatchResult)
         end
 
         def product_status
