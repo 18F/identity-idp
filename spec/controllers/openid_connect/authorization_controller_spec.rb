@@ -1025,8 +1025,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
               expect(session).not_to include(:sp)
             end
 
-            it 'redirects to /page_not_found' do
-              expect(response).to redirect_to(page_not_found_path)
+            it 'renders the unacceptable page' do
+              expect(controller).to render_template('pages/not_acceptable')
             end
           end
 
