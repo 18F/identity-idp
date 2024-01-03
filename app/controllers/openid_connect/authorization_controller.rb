@@ -46,8 +46,7 @@ module OpenidConnect
     private
 
     def redirect_to_not_found_if_selfie_requested_in_production
-      if Rails.env.production? &&
-          params['biometric_comparison_required'] == 'true'
+      if Rails.env.production? && params['biometric_comparison_required'] == 'true'
         render_not_acceptable
       end
     end
