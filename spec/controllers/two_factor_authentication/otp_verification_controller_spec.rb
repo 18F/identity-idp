@@ -659,6 +659,41 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
           it 'resets context to authentication' do
             expect(subject.user_session[:context]).to eq 'authentication'
           end
+
+          context 'with new device session value' do
+            before do
+              subject.user_session[:new_device] = false
+              post(
+                :create,
+                params: {
+                  code: subject.current_user.direct_otp,
+                  otp_delivery_preference: 'sms',
+                },
+              )
+            end
+            it 'tracks new device value' do
+              subject.user_session[:new_device] = false
+              parsed_phone = Phonelib.parse('+1 (703) 555-5555')
+              properties = {
+                success: true,
+                errors: nil,
+                context: 'confirmation',
+                multi_factor_auth_method: 'sms',
+                multi_factor_auth_method_created_at: nil,
+                new_device: nil,
+                confirmation_for_add_phone: false,
+                phone_configuration_id: nil,
+                area_code: parsed_phone.area_code,
+                country_code: parsed_phone.country,
+                phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+                enabled_mfa_methods_count: 0,
+                in_account_creation_flow: false,
+              }
+
+              expect(@analytics).to have_received(:track_event).
+                with('Multi-Factor Authentication Setup', properties)
+            end
+          end
         end
 
         describe 'multiple MFA handling' do
