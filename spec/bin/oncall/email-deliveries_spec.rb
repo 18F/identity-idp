@@ -68,7 +68,7 @@ RSpec.describe EmailDeliveries do
         { '@timestamp' => '2023-01-01 00:00:01', 'ses_message_id' => 'message-1', 'event_type' => 'Send' },
         { '@timestamp' => '2023-01-01 00:00:02', 'ses_message_id' => 'message-1', 'event_type' => 'Delivery' },
         { '@timestamp' => '2023-01-01 00:00:03', 'ses_message_id' => 'message-2', 'event_type' => 'Send' },
-        { '@timestamp' => '2023-01-01 00:00:04', 'ses_message_id' => 'message-2', 'event_type' => 'Bounce' },
+        { '@timestamp' => '2023-01-01 00:00:04', 'ses_message_id' => 'message-2', 'event_type' => 'Bounce', 'bounce_type' => 'Transient', 'bounce_sub_type' => 'MailboxFull' },
       ]
     end
     # rubocop:enable Layout/LineLength
@@ -82,7 +82,8 @@ RSpec.describe EmailDeliveries do
         [
           ['user_id', 'timestamp', 'message_id', 'email_action', 'events'],
           ['abc123', '2023-01-01 00:00:01', 'message-1', 'forgot_password', 'Send, Delivery'],
-          ['def456', '2023-01-01 00:00:02', 'message-2', 'forgot_password', 'Send, Bounce'],
+          ['def456', '2023-01-01 00:00:02', 'message-2', 'forgot_password',
+           'Send, Bounce-Transient-MailboxFull'],
         ],
       )
     end
