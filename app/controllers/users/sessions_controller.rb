@@ -120,7 +120,7 @@ module Users
         user_id: current_user.id,
         email: auth_params[:email],
       )
-      user_session[:platform_authenticator_available] =
+      session[:platform_authenticator_available] =
         params[:platform_authenticator_available] == 'true'
       redirect_to next_url_after_valid_authentication
     end
