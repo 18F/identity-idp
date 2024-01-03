@@ -1495,7 +1495,7 @@ RSpec.describe User do
     end
   end
 
-  describe '#new_device' do
+  describe '#new_device?' do
     let(:user_agent) { 'A computer on the internet' }
     let(:ip_address) { '4.4.4.4' }
     let(:existing_device_cookie) { 'existing_device_cookie' }
