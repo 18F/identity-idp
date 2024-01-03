@@ -280,6 +280,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   end
 
   context 'when response is not a success' do
+    # I think this test probably needs to be updated when we change this?
     it 'produces appropriate errors without liveness' do
       output = described_class.new(failure_response_no_liveness, config).to_h
       errors = output[:errors]
@@ -313,6 +314,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       expect(errors[:hints]).to eq(true)
     end
 
+    # I think this test probably needs to be updated when we change this?
     it 'returns Failed for visible_pattern when it gets passed and failed value ' do
       output = described_class.new(failure_response_no_liveness, config).to_h
       expect(output.to_h[:log_alert_results]).
