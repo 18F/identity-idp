@@ -569,6 +569,10 @@ RSpec.feature 'Two Factor Authentication' do
 
     before do
       allow(WebauthnVerificationForm).to receive(:domain_name).and_return('localhost:3000')
+      Warden.on_next_request do |proxy|
+        session = proxy.env['rack.session']
+        session[:platform_authenticator_available] = true
+      end
     end
 
     let!(:webauthn_configuration) do
@@ -586,14 +590,12 @@ RSpec.feature 'Two Factor Authentication' do
 
     context 'sign in' do
       it 'allows user to be signed in without issue' do
-        Capybara.using_session('mobile') do
-          mock_webauthn_verification_challenge
+        mock_webauthn_verification_challenge
 
-          sign_in_user(webauthn_configuration.user)
-          mock_successful_webauthn_authentication { click_webauthn_authenticate_button }
+        sign_in_user(webauthn_configuration.user)
+        mock_successful_webauthn_authentication { click_webauthn_authenticate_button }
 
-          expect(page).to have_current_path(account_path)
-        end
+        expect(page).to have_current_path(account_path)
       end
     end
   end

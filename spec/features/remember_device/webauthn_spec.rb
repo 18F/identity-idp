@@ -82,17 +82,19 @@ RSpec.describe 'Remembering a webauthn device' do
           credential_id: credential_id,
           credential_public_key: credential_public_key,
         )
+        Warden.on_next_request do |proxy|
+          session = proxy.env['rack.session']
+          session[:platform_authenticator_available] = true
+        end
       end
 
       def remember_device_and_sign_out_user
-        Capybara.using_session('mobile') do
-          mock_webauthn_verification_challenge
-          sign_in_user(user)
-          check t('forms.messages.remember_device')
-          mock_successful_webauthn_authentication { click_webauthn_authenticate_button }
-          first(:button, t('links.sign_out')).click
-          user
-        end
+        mock_webauthn_verification_challenge
+        sign_in_user(user)
+        check t('forms.messages.remember_device')
+        mock_successful_webauthn_authentication { click_webauthn_authenticate_button }
+        first(:button, t('links.sign_out')).click
+        user
       end
 
       it_behaves_like 'remember device'

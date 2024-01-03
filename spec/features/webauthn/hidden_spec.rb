@@ -83,11 +83,25 @@ RSpec.describe 'webauthn hide' do
       let(:user) { create(:user, :fully_registered, :with_webauthn_platform) }
 
       context 'with javascript enabled', :js do
-        it 'displays the authenticator option' do
-          sign_in_user(user)
-          click_on t('two_factor_authentication.login_options_link_text')
+        context ' with device that supports authenticator' do
+          before do
+            Warden.on_next_request do |proxy|
+              session = proxy.env['rack.session']
+              session[:platform_authenticator_available] = true
+            end
+          end
+          it 'displays the authenticator option' do
+            sign_in_user(user)
+            click_on t('two_factor_authentication.login_options_link_text')
 
-          expect(webauthn_option_hidden?).to eq(false)
+            expect(webauthn_option_hidden?).to eq(false)
+          end
+        end
+        context 'with device that doesnt support authenticator' do
+          it 'redirects to options page on sign in' do
+            sign_in_user(user)
+            expect(current_path).to eq(login_two_factor_options_path)
+          end
         end
       end
 

@@ -71,6 +71,13 @@ RSpec.feature 'webauthn sign in' do
       create(:user, :with_webauthn_platform, with: { credential_id:, credential_public_key: })
     end
 
+    before do
+      Warden.on_next_request do |proxy|
+        session = proxy.env['rack.session']
+        session[:platform_authenticator_available] = true
+      end
+    end
+
     it 'maintains correct platform attachment content if cancelled', :js do
       mock_webauthn_verification_challenge
 
