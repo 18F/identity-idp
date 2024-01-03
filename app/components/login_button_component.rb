@@ -1,7 +1,7 @@
 class LoginButtonComponent < ButtonComponent
   attr_reader :action, :color, :logo_path, :tag_options
 
-  def initialize(color: "light blue", **tag_options)
+  def initialize(color: "primary", **tag_options)
     super(
       color: color,
       **tag_options
