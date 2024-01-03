@@ -256,6 +256,7 @@ ActiveSupport::Notifications.subscribe(
   'rack.attack',
 ) do |_name, _start, _finish, _request_id, payload|
   req = payload[:request]
+  next if req.env['rack.attack.match_type'] == :safelist
   user = req.env['warden'].user || AnonymousUser.new
   sp = req.env.fetch('rack.session', {}).dig('sp', 'issuer')
   analytics = Analytics.new(user: user, request: req, session: {}, sp: sp)

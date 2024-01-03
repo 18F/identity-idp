@@ -14,6 +14,15 @@ RSpec.describe 'throttling requests' do
 
       expect(request.env['rack.attack.throttle_data']).to be_nil
     end
+
+    it 'does not log an event' do
+      analytics = FakeAnalytics.new
+      allow(Analytics).to receive(:new).and_return(analytics)
+
+      get '/'
+
+      expect(analytics).not_to have_logged_event('Rate Limit Triggered')
+    end
   end
 
   describe 'high requests per ip' do
