@@ -9,6 +9,10 @@ class CustomDeviseFailureApp < Devise::FailureApp
     message.is_a?(Symbol) ? build_message(message) : message.to_s
   end
 
+  def redirect_url
+    request.env["devise_#{warden_message}_failure_redirect_url"] || super
+  end
+
   private
 
   def build_message(message)
