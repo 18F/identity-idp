@@ -2,6 +2,9 @@ import { isWebauthnPlatformAuthenticatorAvailable } from '@18f/identity-webauthn
 
 async function checkSupportFtUnlock() {
   let platformauthenticatorAvailableInput = (document.getElementById('platform_authenticator_available') as HTMLInputElement)
+  if (!platformauthenticatorAvailableInput) {
+    return;
+  }
   if (await isWebauthnPlatformAuthenticatorAvailable()){
     platformauthenticatorAvailableInput.value = 'true';
   } else {
