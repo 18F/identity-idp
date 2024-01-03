@@ -21,7 +21,7 @@ RSpec.describe CustomDeviseFailureApp do
 
     context 'with custom redirect url assigned in request env' do
       let(:custom_redirect_url) { '/redirect' }
-      let(:env) { super().merge({ 'devise_invalid_failure_redirect_url' => custom_redirect_url }) }
+      let(:env) { super().merge('devise_invalid_failure_redirect_url' => custom_redirect_url) }
 
       it 'returns the custom redirect url' do
         expect(failure_app.redirect_url).to eq(custom_redirect_url)
