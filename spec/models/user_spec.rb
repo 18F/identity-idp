@@ -1404,6 +1404,34 @@ RSpec.describe User do
     end
   end
 
+  describe '#identity_verified_with_selfie?' do
+    let(:user) { create(:user) }
+    let(:active_profile) do
+      create(
+        :profile, :active, :verified,
+        activated_at: 1.day.ago, pii: { first_name: 'Jane' },
+        user: user
+      )
+    end
+
+    it 'returns true if user has an active profile with selfie' do
+      active_profile.idv_level = :unsupervised_with_selfie
+      active_profile.save
+      expect(user.identity_verified_with_selfie?).to eq true
+    end
+
+    it 'returns false if user has an active profile without selfie' do
+      expect(user.identity_verified_with_selfie?).to eq false
+    end
+
+    context 'user does not have active profile' do
+      let(:active_profile) { nil }
+      it 'returns false' do
+        expect(user.identity_verified_with_selfie?).to eq false
+      end
+    end
+  end
+
   describe '#locked_out?' do
     let(:locked_at) { nil }
     let(:user) { User.new }

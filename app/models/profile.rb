@@ -33,6 +33,7 @@ class Profile < ApplicationRecord
   enum idv_level: {
     legacy_unsupervised: 1,
     legacy_in_person: 2,
+    unsupervised_with_selfie: 3,
   }
 
   attr_reader :personal_key

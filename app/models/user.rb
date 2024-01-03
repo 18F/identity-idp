@@ -346,6 +346,10 @@ class User < ApplicationRecord
     active_profile.present? && !reproof_for_irs?(service_provider: service_provider)
   end
 
+  def identity_verified_with_selfie?
+    active_profile&.idv_level == 'unsupervised_with_selfie'
+  end
+
   def reproof_for_irs?(service_provider:)
     return false unless service_provider&.irs_attempts_api_enabled
     return false unless active_profile.present?
