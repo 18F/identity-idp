@@ -284,6 +284,8 @@ module DocAuth
         end
 
         def selfie_result
+          # We actually probably need to dig out both the facematch and the other field here
+          # and use both of those to determine the result
           true_id_product&.dig(:AUTHENTICATION_RESULT, :SomeFieldImNotSureOProbablyFaceMatchResult)
         end
 
