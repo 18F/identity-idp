@@ -36,6 +36,7 @@ DocumentCaptureSessionResult = RedactedStruct.new(
       return self[member_name]&.include?(fingerprint)
     end
 
+    # Changes in this file are https://cm-jira.usa.gov/browse/LG-12019
     # We'd probably need to define something here too?
   end
 end

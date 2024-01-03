@@ -226,6 +226,7 @@ module DocAuth
           }
         end
 
+        # Changes in this file are https://cm-jira.usa.gov/browse/LG-11983
         def all_passed?
           transaction_status_passed? &&
             true_id_product.present? &&
