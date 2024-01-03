@@ -115,7 +115,7 @@ module Users
     def handle_valid_authentication
       sign_in(resource_name, resource)
       cache_profiles(auth_params[:password])
-      user_session[:new_device] = current_user.new_device?(device_cookie: cookies[:device])
+      user_session[:new_device] = current_user.new_device?(cookie_uuid: cookies[:device])
       create_user_event(:sign_in_before_2fa)
       EmailAddress.update_last_sign_in_at_on_user_id_and_email(
         user_id: current_user.id,

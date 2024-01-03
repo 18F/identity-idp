@@ -140,13 +140,13 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
             success: true,
             webauthn_configuration_id: webauthn_configuration.id,
             multi_factor_auth_method_created_at: webauthn_configuration.created_at.strftime('%s%L'),
-            new_device: true,
+            new_device: false,
           }
         end
 
         before do
           allow(WebauthnVerificationForm).to receive(:domain_name).and_return('localhost:3000')
-          subject.user_session[:new_device] = true
+          # subject.user_session[:new_device] = true
         end
 
         it 'tracks a valid submission' do
