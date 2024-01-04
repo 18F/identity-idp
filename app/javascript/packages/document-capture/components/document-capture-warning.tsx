@@ -21,6 +21,32 @@ interface DocumentCaptureWarningProps {
 
 const DISPLAY_ATTEMPTS = 3;
 
+function getHeadingString({ isFailedDocType, t }) {
+  return isFailedDocType
+    ? t('errors.doc_auth.doc_type_not_supported_heading')
+    : t('errors.doc_auth.rate_limited_heading');
+}
+
+function getActionTextString({ nonIppOrFailedResult, t }) {
+  return nonIppOrFailedResult
+    ? t('idv.failure.button.warning')
+    : t('idv.failure.button.try_online');
+}
+
+function subHeadingRequired ({ nonIppOrFailedResult, isFailedDocType }) {
+  return !nonIppOrFailedResult && !isFailedDocType;
+}
+
+function getWarningTextStrings({ nonIppOrFailedResult, isFailedDocType, t }) {
+  const heading = getHeadingString({ isFailedDocType, t });
+  const actionText = getActionTextString({ nonIppOrFailedResult, t });
+  // we have an h2 subheading when nonIpp is false and isFailed is false
+  const subheading = subHeadingRequired({ nonIppOrFailedResult, isFailedDocType }) ? (
+    <h2>{t('errors.doc_auth.rate_limited_subheading')}</h2>
+  ) : undefined;
+  return { heading, actionText, subheading };
+}
+
 function DocumentCaptureWarning({
   isFailedDocType,
   isFailedResult,
@@ -36,15 +62,11 @@ function DocumentCaptureWarning({
   const { trackEvent } = useContext(AnalyticsContext);
 
   const nonIppOrFailedResult = !inPersonURL || isFailedResult;
-  const heading = isFailedDocType
-    ? t('errors.doc_auth.doc_type_not_supported_heading')
-    : t('errors.doc_auth.rate_limited_heading');
-  const actionText = nonIppOrFailedResult
-    ? t('idv.failure.button.warning')
-    : t('idv.failure.button.try_online');
-  const subheading = !nonIppOrFailedResult && !isFailedDocType && (
-    <h2>{t('errors.doc_auth.rate_limited_subheading')}</h2>
-  );
+  const { heading, actionText, subheading } = getWarningTextStrings({
+    nonIppOrFailedResult,
+    isFailedDocType,
+    t,
+  });
   const subheadingRef = useRef<HTMLDivElement>(null);
   const errorMessageDisplayedRef = useRef<HTMLDivElement>(null);
 
