@@ -51,6 +51,7 @@ function ReviewIssuesStep({
   unknownFieldErrors = [],
   onError = () => {},
   registerField = () => undefined,
+  toPreviousStep = () => undefined,
   remainingAttempts = Infinity,
   isFailedResult = false,
   isFailedDocType = false,
@@ -136,6 +137,7 @@ function ReviewIssuesStep({
       errors={errors}
       onChange={onChange}
       onError={onError}
+      toPreviousStep={toPreviousStep}
       hasDismissed
     />
   );
