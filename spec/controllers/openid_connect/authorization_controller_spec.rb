@@ -1060,7 +1060,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
           context 'in production' do
             let(:in_datacenter) { true }
             let(:env) { 'prod' }
-              
+
             it 'sets the session :biometric_comparison_required value to false' do
               expect(session[:sp][:biometric_comparison_required]).to eq(false)
             end
