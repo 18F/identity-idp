@@ -90,68 +90,6 @@ describe('document-capture/components/documents-step', () => {
     expect(queryByText(notExpectedText)).to.not.exist();
   });
 
-  it('renders optional question part and not ready section', () => {
-    const App = composeComponents(
-      [
-        FeatureFlagContext.Provider,
-        {
-          value: {
-            notReadySectionEnabled: true,
-            exitQuestionSectionEnabled: true,
-          },
-        },
-      ],
-      [
-        InPersonContext.Provider,
-        {
-          value: {
-            inPersonURL: '/verify/doc_capture',
-          },
-        },
-      ],
-      [DocumentsStep],
-    );
-    const { getByRole, getByText } = render(<App />);
-    expect(getByRole('heading', { name: 'doc_auth.not_ready.header', level: 2 })).to.be.ok();
-    expect(getByRole('heading', { name: 'doc_auth.exit_survey.header', level: 2 })).to.be.ok();
-    expect(getByText('doc_auth.exit_survey.optional.button')).to.be.ok();
-  });
-
-  context('not ready section', () => {
-    it('is rendered when enabled', () => {
-      const App = composeComponents(
-        [
-          FeatureFlagContext.Provider,
-          {
-            value: {
-              notReadySectionEnabled: true,
-            },
-          },
-        ],
-        [DocumentsStep],
-      );
-      const { getByRole } = render(<App />);
-      expect(getByRole('heading', { name: 'doc_auth.not_ready.header', level: 2 })).to.be.ok();
-      const button = getByRole('button', { name: 'doc_auth.not_ready.button_nosp' });
-      expect(button).to.be.ok();
-    });
-    it('is not rendered when disabled', () => {
-      const App = composeComponents(
-        [
-          FeatureFlagContext.Provider,
-          {
-            value: {
-              notReadySectionEnabled: false,
-            },
-          },
-        ],
-        [DocumentsStep],
-      );
-      const { queryByRole } = render(<App />);
-      expect(queryByRole('heading', { name: 'doc_auth.not_ready.header', level: 2 })).to.be.null();
-    });
-  });
-
   context('selfie capture', () => {
     it('renders with front, back, and selfie inputs when featureflag is on', () => {
       const App = composeComponents(
