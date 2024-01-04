@@ -6,7 +6,7 @@ RSpec.describe 'Identity verification', :js do
 
   let(:sp) { :oidc }
 
-  scenario 'Unsupervised proofing happy path desktop', allow_browser_log: true do
+  scenario 'Unsupervised proofing happy path desktop' do
     try_to_skip_ahead_before_signing_in
     visit_idp_from_sp_with_ial2(sp)
     user = sign_up_and_2fa_ial1_user
@@ -52,7 +52,7 @@ RSpec.describe 'Identity verification', :js do
     validate_return_to_sp
   end
 
-  scenario 'Unsupervised proofing back button', allow_browser_log: true do
+  scenario 'Unsupervised proofing back button' do
     visit_idp_from_sp_with_ial2(sp)
     user = sign_up_and_2fa_ial1_user
 
