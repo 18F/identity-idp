@@ -111,6 +111,7 @@ module Proofing
         end
       end
 
+      # rubocop:disable Lint/UnusedMethodArgument
       def proof_residential_address_if_needed(
         applicant_pii:,
         timer:,
@@ -123,6 +124,7 @@ module Proofing
           resolution_proofer.proof(applicant_pii)
         end
       end
+      # rubocop:enable Lint/UnusedMethodArgument
 
       def residential_address_unnecessary_result
         Proofing::Resolution::Result.new(
@@ -136,6 +138,7 @@ module Proofing
         )
       end
 
+      # rubocop:disable Lint/UnusedMethodArgument
       def proof_id_address_with_lexis_nexis_if_needed(applicant_pii:, timer:,
                                                       residential_instant_verify_result:,
                                                       double_address_verification:,
@@ -157,14 +160,13 @@ module Proofing
         return false unless should_proof_state_id
         # If the user is in double-address-verification and they have changed their address then
         # they are not eligible for get-to-yes
-        # rubocop:disable Layout/LineLength
         if !ipp_enrollment_in_progress || same_address_as_id == 'true'
-          # rubocop:enable Layout/LineLength
           user_can_pass_after_state_id_check?(instant_verify_result)
         else
           residential_instant_verify_result.success?
         end
       end
+      # rubocop:enable Lint/UnusedMethodArgument
 
       def proof_id_with_aamva_if_needed(
         applicant_pii:, timer:,
