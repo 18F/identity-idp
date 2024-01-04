@@ -189,7 +189,7 @@ module AnalyticsEvents
   end
 
   # Tracks when a user deletes their auth app from account
-    # @param [Boolean] success
+  # @param [Boolean] success
   # @param [Hash] error_details
   # @param [Integer] configuration_id
   def auth_app_delete_submitted(
@@ -226,6 +226,7 @@ module AnalyticsEvents
       **extra,
     )
   end
+
   # When a user views the "you are already signed in with the following email" screen
   def authentication_confirmation
     track_event('Authentication Confirmation')

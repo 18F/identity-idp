@@ -73,7 +73,8 @@ RSpec.describe 'totp management' do
         with: name,
       )
 
-      fill_in t('two_factor_authentication.auth_app.nickname'), with: new_app_auth_configuration.name
+      fill_in t('two_factor_authentication.auth_app.nickname'),
+              with: new_app_auth_configuration.name
 
       click_button t('two_factor_authentication.auth_app.change_nickname')
 
