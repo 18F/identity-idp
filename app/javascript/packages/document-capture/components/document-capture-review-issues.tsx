@@ -16,8 +16,7 @@ import {
 } from './documents-step';
 import type { ReviewIssuesStepValue } from './review-issues-step';
 
-interface DocumentCaptureReviewIssuesProps
-  extends Omit<FormStepComponentProps<ReviewIssuesStepValue>, 'toPreviousStep'> {
+interface DocumentCaptureReviewIssuesProps extends FormStepComponentProps<ReviewIssuesStepValue> {
   isFailedDocType: boolean;
   remainingAttempts: number;
   captureHints: boolean;
