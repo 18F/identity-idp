@@ -302,7 +302,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                   user.active_profile.idv_level = :unsupervised_with_selfie
 
                   action
-    
+
                   expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
                 end
               end
@@ -316,13 +316,13 @@ RSpec.describe OpenidConnect::AuthorizationController do
 
               context 'selfie capture not enabled, selfie check was not performed' do
                 let(:selfie_capture_enabled) { false }
-                  it 'redirects to the redirect_uri immediately when pii is unlocked if client-side redirect is disabled' do
-                    action
+                it 'redirects to the redirect_uri immediately when pii is unlocked if client-side redirect is disabled' do
+                  action
 
-                    expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
-                  end
+                  expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
+                end
               end
-            end 
+            end
           end
 
           context 'account is not already verified' do
