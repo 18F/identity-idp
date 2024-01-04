@@ -2,18 +2,17 @@
   <%= t('headings.account.federal_employee_id') %>
 </h2>
 
-<div class="border-bottom border-primary-light">
+<div role="list"> 
   <% MfaContext.new(current_user).piv_cac_configurations.each do |configuration| %>
     <%= render ManageableAuthenticatorComponent.new(
           configuration:,
           user_session:,
-          manage_url: edit_webauthn_path(id: configuration.id),
+          manage_url: edit_piv_cac_path(id: configuration.id),
           manage_api_url: api_internal_two_factor_authentication_piv_cac_path(id: configuration.id),
           custom_strings: {
-            # TODO: Change
-            deleted: 'deleted', # Change
-            renamed: 'renamed', # Change
-            manage_accessible_label: 'some_label', # Change
+            deleted: t('two_factor_authentication.piv_cac.deleted'),
+            renamed: t('two_factor_authentication.piv_cac.renamed'),
+            manage_accessible_label: t('two_factor_authentication.piv_cac.manage_accessible_label'),
           },
           role: 'list-item',
         ) %>
@@ -26,6 +25,7 @@
           link_to(setup_piv_cac_url, **tag_options, &block)
         end,
         icon: :add,
-        class: 'usa-button usa-button--outline margin-top-2',
+        outline: true,
+        class: 'margin-top-2',
       ).with_content(t('account.index.piv_cac_add')) %>
 <% end %>

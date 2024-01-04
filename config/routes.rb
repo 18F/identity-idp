@@ -22,7 +22,7 @@ Rails.application.routes.draw do
 
       namespace :two_factor_authentication do
         put '/piv_cac/:id' => 'piv_cac#update', as: :piv_cac
-        delete '/piv_cac/:id' => 'piv_cac#destroy', as: nil        
+        delete '/piv_cac/:id' => 'piv_cac#destroy', as: nil
         put '/webauthn/:id' => 'webauthn#update', as: :webauthn
         delete '/webauthn/:id' => 'webauthn#destroy', as: nil
         put '/auth_app/:id' => 'auth_app#update', as: :auth_app
@@ -263,6 +263,9 @@ Rails.application.routes.draw do
     delete '/manage/phone/:id' => 'users/edit_phone#destroy'
     get '/manage/personal_key' => 'users/personal_keys#show', as: :manage_personal_key
     post '/manage/personal_key' => 'users/personal_keys#update'
+    get '/manage/piv_cac/:id' => 'users/piv_cac#edit', as: :edit_piv_cac
+    put '/manage/piv_cac/:id' => 'users/piv_cac#update', as: :piv_cac
+    delete '/manage/piv_cac/:id' => 'users/piv_cac#destroy', as: nil
     get '/manage/webauthn/:id' => 'users/webauthn#edit', as: :edit_webauthn
     put '/manage/webauthn/:id' => 'users/webauthn#update', as: :webauthn
     delete '/manage/webauthn/:id' => 'users/webauthn#destroy', as: nil

@@ -17,8 +17,8 @@ module Api
             configuration_id: params[:id],
           ).submit(name: params[:name])
 
-          # TODO: Change the name of the following
-          # analytics.webauthn_update_name_submitted(**result.to_h)
+          # TODO: Update the following
+          # analytics.piv_cac_update_name_submitted(**result.to_h)
 
           if result.success?
             render json: { success: true }
@@ -33,14 +33,13 @@ module Api
             configuration_id: params[:id],
           ).submit
 
-          # TODO: Change the name of the following
-          # analytics.webauthn_delete_submitted(**result.to_h)
+          # TODO: Update the following
+          # analytics.piv_cac_delete_submitted(**result.to_h)
 
           if result.success?
             create_user_event(:piv_cac_disabled)
             revoke_remember_device(current_user)
-            event = PushNotification::RecoveryInformationChangedEvent.new(user: current_user)
-            PushNotification::HttpPush.deliver(event)
+            deliver_push_notification
             render json: { success: true }
           else
             render json: { success: false, error: result.first_error_message }, status: :bad_request
@@ -48,6 +47,11 @@ module Api
         end
 
         private
+
+        def deliver_push_notification
+          event = PushNotification::RecoveryInformationChangedEvent.new(user: current_user)
+          PushNotification::HttpPush.deliver(event)
+        end
 
         def render_unauthorized
           render json: { error: 'Unauthorized' }, status: :unauthorized
