@@ -16,6 +16,7 @@ class DocumentCaptureSession < ApplicationRecord
     session_result.pii = doc_auth_response.pii_from_doc
     session_result.captured_at = Time.zone.now
     session_result.attention_with_barcode = doc_auth_response.attention_with_barcode?
+    session_result.selfie_check_performed = doc_auth_response.selfie_check_performed?
     EncryptedRedisStructStorage.store(
       session_result,
       expires_in: IdentityConfig.store.doc_capture_request_valid_for_minutes.minutes.seconds.to_i,

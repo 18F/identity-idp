@@ -3,6 +3,8 @@ require 'rails_helper'
 RSpec.describe DocAuth::Mock::DocAuthMockClient do
   subject(:client) { described_class.new }
 
+  let(:liveness_checking_required) { false }
+
   it 'implements all the public methods of the real Acuant client' do
     expect(
       described_class.instance_methods.sort,
@@ -23,7 +25,10 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
       instance_id: instance_id,
       image: DocAuthImageFixtures.document_back_image,
     )
-    get_results_response = client.get_results(instance_id: instance_id)
+    get_results_response = client.get_results(
+      instance_id: instance_id,
+      selfie_check_performed: liveness_checking_required,
+    )
 
     expect(create_document_response.success?).to eq(true)
     expect(create_document_response.instance_id).to_not be_blank
@@ -84,6 +89,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
     )
     get_results_response = client.get_results(
       instance_id: create_document_response.instance_id,
+      selfie_check_performed: liveness_checking_required,
     )
 
     expect(get_results_response.pii_from_doc).to eq(
@@ -124,6 +130,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
     )
     get_results_response = client.get_results(
       instance_id: create_document_response.instance_id,
+      selfie_check_performed: liveness_checking_required,
     )
     expect(get_results_response.attention_with_barcode?).to eq(false)
     errors = get_results_response.errors
@@ -177,6 +184,32 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
     expect(post_images_response).to be_a(DocAuth::Response)
   end
 
+  describe 'selfie check performed flag' do
+    let(:response) do
+      client.post_images(
+        front_image: DocAuthImageFixtures.document_front_image,
+        back_image: DocAuthImageFixtures.document_back_image,
+        liveness_checking_required: liveness_checking_required,
+      )
+    end
+
+    context 'when a liveness check is required' do
+      let(:liveness_checking_required) { true }
+
+      it 'sets selfie_check_performed to true' do
+        expect(response.selfie_check_performed?).to be(true)
+      end
+    end
+
+    context 'when a liveness check is not required' do
+      let(:liveness_checking_required) { false }
+
+      it 'sets selfie_check_performed to false' do
+        expect(response.selfie_check_performed?).to be(false)
+      end
+    end
+  end
+
   describe 'generate response for failure indicating http status' do
     it 'generate network error response for status 500 when post image' do
       image = <<-YAML
@@ -202,7 +235,10 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
         image: image,
         instance_id: nil,
       )
-      response = client.get_results(instance_id: nil)
+      response = client.get_results(
+        instance_id: nil,
+        selfie_check_performed: liveness_checking_required,
+      )
       expect(response).to be_a(DocAuth::Response)
       expect(response.success?).to eq(false)
       expect(response.errors).to eq(general: ['network'])

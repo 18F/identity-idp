@@ -49,8 +49,10 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
       expect(response.exception).to be_nil
       if include_liveness_expected
         expect(request_stub_liveness).to have_been_requested
+        expect(response.selfie_check_performed?).to be(true)
       else
         expect(request_stub).to have_been_requested
+        expect(response.selfie_check_performed?).to be(false)
       end
     end
 
@@ -80,8 +82,10 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
         expect(response.exception).to be_nil
         if include_liveness_expected
           expect(request_stub_liveness).to have_been_requested
+          expect(response.selfie_check_performed?).to be(true)
         else
           expect(request_stub).to have_been_requested
+          expect(response.selfie_check_performed?).to be(false)
         end
       end
     end

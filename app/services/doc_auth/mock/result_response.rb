@@ -6,7 +6,7 @@ module DocAuth
 
       attr_reader :uploaded_file, :config
 
-      def initialize(uploaded_file, config)
+      def initialize(uploaded_file, selfie_check_performed, config)
         @uploaded_file = uploaded_file.to_s
         @config = config
         super(
@@ -14,6 +14,7 @@ module DocAuth
           errors: errors,
           pii_from_doc: pii_from_doc,
           doc_type_supported: id_type_supported?,
+          selfie_check_performed: selfie_check_performed,
           extra: {
             doc_auth_result: doc_auth_result,
             billed: true,
