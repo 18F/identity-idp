@@ -13,10 +13,6 @@ module Proofing
       end
 
       # @param [Hash] applicant_pii keys are symbols and values are strings, confidential user info
-      # @param [Boolean] double_address_verification flag that indicates if user will have
-      #   both state id address and current residential address verified. Note this value is here as
-      #   a placeholder until it can be replaced with ipp_enrollment_in_progress in ticket LG-353:
-      #   https://cm-jira.usa.gov/browse/LG-11353
       # @param [Boolean] ipp_enrollment_in_progress flag that indicates if user will have
       #   both state id address and current residential address verified
       # @param [String] request_ip IP address for request
@@ -28,13 +24,13 @@ module Proofing
       # @return [ResultAdjudicator] object which contains the logic to determine proofing's result
       def proof(
         applicant_pii:,
-        ipp_enrollment_in_progress:,
         request_ip:,
         should_proof_state_id:,
         threatmetrix_session_id:,
         timer:,
         user_email:,
-        double_address_verification: false
+        double_address_verification: nil,
+        ipp_enrollment_in_progress: true
       )
         device_profiling_result = proof_with_threatmetrix_if_needed(
           applicant_pii: applicant_pii,
@@ -52,7 +48,7 @@ module Proofing
         )
 
         applicant_pii_transformed = applicant_pii.clone
-        if ipp_enrollment_in_progress || double_address_verification
+        if ipp_enrollment_in_progress
           applicant_pii_transformed = with_state_id_address(applicant_pii_transformed)
         end
 
@@ -121,8 +117,7 @@ module Proofing
         double_address_verification: false,
         ipp_enrollment_in_progress: false
       )
-        return residential_address_unnecessary_result unless
-          ipp_enrollment_in_progress || double_address_verification
+        return residential_address_unnecessary_result unless ipp_enrollment_in_progress
 
         timer.time('residential address') do
           resolution_proofer.proof(applicant_pii)
@@ -145,8 +140,7 @@ module Proofing
                                                       residential_instant_verify_result:,
                                                       double_address_verification:,
                                                       ipp_enrollment_in_progress:)
-        if applicant_pii[:same_address_as_id] == 'true' &&
-           (ipp_enrollment_in_progress || double_address_verification)
+        if applicant_pii[:same_address_as_id] == 'true' && ipp_enrollment_in_progress
           return residential_instant_verify_result
         end
         return resolution_cannot_pass unless residential_instant_verify_result.success?
@@ -164,7 +158,7 @@ module Proofing
         # If the user is in double-address-verification and they have changed their address then
         # they are not eligible for get-to-yes
         # rubocop:disable Layout/LineLength
-        if !(ipp_enrollment_in_progress || double_address_verification) || same_address_as_id == 'true'
+        if !ipp_enrollment_in_progress || same_address_as_id == 'true'
           # rubocop:enable Layout/LineLength
           user_can_pass_after_state_id_check?(instant_verify_result)
         else
