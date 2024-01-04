@@ -35,7 +35,7 @@ module Api
           analytics.auth_app_delete_submitted(**result.to_h)
 
           if result.success?
-            create_user_event(:webauthn_key_removed)
+            create_user_event(:authenticator_disabled)
             revoke_remember_device(current_user)
             event = PushNotification::RecoveryInformationChangedEvent.new(user: current_user)
             PushNotification::HttpPush.deliver(event)

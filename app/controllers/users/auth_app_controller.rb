@@ -29,8 +29,8 @@ module Users
       analytics.auth_app_delete_submitted(**result.to_h)
 
       if result.success?
-        flash[:success] = t('two_factor_authentication.webauthn_platform.deleted')
-        create_user_event(:webauthn_key_removed)
+        flash[:success] = t('two_factor_authentication.auth_app.deleted')
+        create_user_event(:authenticator_disabled)
         revoke_remember_device(current_user)
         event = PushNotification::RecoveryInformationChangedEvent.new(user: current_user)
         PushNotification::HttpPush.deliver(event)
