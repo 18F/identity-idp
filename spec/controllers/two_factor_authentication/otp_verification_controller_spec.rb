@@ -672,7 +672,6 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
               )
             end
             it 'tracks new device value' do
-              subject.user_session[:new_device] = false
               parsed_phone = Phonelib.parse('+1 (703) 555-5555')
               properties = {
                 success: true,
