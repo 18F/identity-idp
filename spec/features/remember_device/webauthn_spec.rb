@@ -109,6 +109,7 @@ RSpec.describe 'Remembering a webauthn device' do
       end
 
       def remember_device_and_sign_out_user
+        mock_setup_eligible_user_device
         mock_webauthn_setup_challenge
         user = sign_up_and_set_password
         user.password = Features::SessionHelper::VALID_PASSWORD
@@ -148,6 +149,7 @@ RSpec.describe 'Remembering a webauthn device' do
 
     context 'update webauthn' do
       def remember_device_and_sign_out_user
+        mock_setup_eligible_user_device
         mock_webauthn_setup_challenge
         sign_in_and_2fa_user(user)
         visit account_two_factor_authentication_path

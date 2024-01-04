@@ -47,7 +47,7 @@
           },
         },
       ) %>
-  <%= hidden_field_tag :platform_authenticator_available, 'unknown', id: 'platform_authenticator_available' %>
+  <%= hidden_field_tag :platform_authenticator_available, value: 'unknown', id: 'platform_authenticator_available' %>
   <%= f.submit t('links.sign_in'), full_width: true, wide: false %>
 <% end %>
 <% if @ial && desktop_device? %>

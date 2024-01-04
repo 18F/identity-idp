@@ -94,7 +94,6 @@ RSpec.describe 'webauthn hide' do
         end
         context 'with device that doesnt support authenticator' do
           it 'redirects to options page on sign in' do
-            mock_setup_eligible_user_device
             sign_in_user(user)
             expect(current_path).to eq(login_two_factor_options_path)
           end
