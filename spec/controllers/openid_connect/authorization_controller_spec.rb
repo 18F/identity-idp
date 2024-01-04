@@ -999,12 +999,82 @@ RSpec.describe OpenidConnect::AuthorizationController do
         )
       end
 
-      it 'sets biometric_comparison_required to true if biometric comparison is required' do
-        params[:biometric_comparison_required] = true
+      describe 'handling the :biometric_comparison_required parameter' do
+        before do
+          allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).and_return(true)
+          allow(Identity::Hostdata).to receive(:in_datacenter?).and_return(in_datacenter)
+          allow(Identity::Hostdata).to receive(:env).and_return(env)
+        end
 
-        action
+        context 'when the param value :biometric_comparison_required is "true"' do
+          before do
+            params[:biometric_comparison_required] = 'true'
+            action
+          end
 
-        expect(session[:sp][:biometric_comparison_required]).to eq(true)
+          context 'and we are not in production' do
+            context 'because we are not deployed' do
+              let(:in_datacenter) { false }
+              let(:env) { 'prod' }
+
+              it 'sets the session :biometric_comparison_required value to true' do
+                expect(session[:sp][:biometric_comparison_required]).to eq(true)
+              end
+            end
+
+            context 'because the environment is not set to "prod"' do
+              let(:in_datacenter) { true }
+              let(:env) { 'test' }
+
+              it 'sets the session :biometric_comparison_required value to true' do
+                expect(session[:sp][:biometric_comparison_required]).to eq(true)
+              end
+            end
+          end
+
+          # Temporary barrier to public presentation. Update or remove
+          # when we are ready to accept :biometric_comparison_required
+          # in production. See LG-11962.
+          context 'in production' do
+            let(:in_datacenter) { true }
+            let(:env) { 'prod' }
+
+            it 'does not set the :sp value' do
+              expect(session).not_to include(:sp)
+            end
+
+            it 'renders the unacceptable page' do
+              expect(controller).to render_template('pages/not_acceptable')
+            end
+          end
+        end
+
+        context 'when the param value :biometric_comparison_required is not set' do
+          before do
+            # Should be a no-op, but let's be paranoid.
+            params.delete(:biometric_comparison_required)
+
+            action
+          end
+
+          context 'in production' do
+            let(:in_datacenter) { true }
+            let(:env) { 'prod' }
+
+            it 'sets the session :biometric_comparison_required value to false' do
+              expect(session[:sp][:biometric_comparison_required]).to eq(false)
+            end
+          end
+
+          context 'not in production' do
+            let(:in_datacenter) { false }
+            let(:env) { 'test' }
+
+            it 'sets the session :biometric_comparison_required value to false' do
+              expect(session[:sp][:biometric_comparison_required]).to eq(false)
+            end
+          end
+        end
       end
     end
   end
