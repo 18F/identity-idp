@@ -234,11 +234,9 @@ RSpec.describe NewPhoneForm do
 
     context 'voip numbers' do
       let(:telephony_gem_voip_number) { '+12255552000' }
-      let(:voip_block) { false }
       let(:phone_service_check) { true }
 
       before do
-        allow(IdentityConfig.store).to receive(:voip_block).and_return(voip_block)
         allow(IdentityConfig.store).to receive(:phone_service_check).and_return(phone_service_check)
       end
 
@@ -247,8 +245,6 @@ RSpec.describe NewPhoneForm do
       end
 
       context 'when voip numbers are blocked' do
-        let(:voip_block) { true }
-
         it 'is invalid' do
           expect(result.success?).to eq(false)
           expect(result.errors[:phone]).to eq([I18n.t('errors.messages.voip_phone')])
@@ -259,18 +255,6 @@ RSpec.describe NewPhoneForm do
             phone_type: :voip,
             carrier: 'Test VOIP Carrier',
           )
-        end
-
-        context 'when the number is on the allowlist' do
-          before do
-            expect(FeatureManagement).to receive(:voip_allowed_phones).
-              and_return([telephony_gem_voip_number])
-          end
-
-          it 'is valid' do
-            expect(result.success?).to eq(true)
-            expect(result.errors).to be_blank
-          end
         end
 
         context 'when AWS rate limits info type checks' do
@@ -300,17 +284,6 @@ RSpec.describe NewPhoneForm do
             expect(result.success?).to eq(true)
             expect(result.errors).to be_blank
           end
-        end
-      end
-
-      context 'when voip numbers are allowed' do
-        let(:voip_block) { false }
-
-        it 'does a voip check but does not enforce it' do
-          expect(Telephony).to receive(:phone_info).and_call_original
-
-          expect(result.success?).to eq(true)
-          expect(result.to_h).to include(phone_type: :voip)
         end
       end
 

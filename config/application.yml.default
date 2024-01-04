@@ -361,8 +361,6 @@ get_usps_proofing_results_job_reprocess_delay_minutes: 5
 get_usps_proofing_results_job_request_delay_milliseconds: 1000
 voice_otp_pause_time: '0.5s'
 voice_otp_speech_rate: 'slow'
-voip_block: true
-voip_allowed_phones: '[]'
 weekly_auth_funnel_report_config: '[]'
 
 development:
