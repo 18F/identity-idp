@@ -18,6 +18,7 @@ module Idv
       fraud_pending_reason:,
       gpo_verification_needed:,
       in_person_verification_needed:,
+      selfie_check_performed:,
       deactivation_reason: nil
     )
       profile = Profile.new(user: user, active: false, deactivation_reason: deactivation_reason)
@@ -27,11 +28,10 @@ module Idv
       profile.proofing_components = current_proofing_components
       profile.fraud_pending_reason = fraud_pending_reason
 
-      profile.idv_level = if in_person_verification_needed
-                            :legacy_in_person
-                          else
-                            :legacy_unsupervised
-                          end
+      profile.idv_level = set_idv_level(
+        in_person_verification_needed: in_person_verification_needed,
+        selfie_check_performed: selfie_check_performed,
+      )
 
       profile.save!
       profile.deactivate_for_gpo_verification if gpo_verification_needed
@@ -42,6 +42,20 @@ module Idv
     end
 
     private
+
+    def selfie_check_enabled
+      IdentityConfig.store.doc_auth_selfie_capture_enabled
+    end
+
+    def set_idv_level(in_person_verification_needed:, selfie_check_performed:)
+      if in_person_verification_needed
+        :legacy_in_person
+      elsif selfie_check_enabled && selfie_check_performed
+        :unsupervised_with_selfie
+      else
+        :legacy_unsupervised
+      end
+    end
 
     def current_proofing_components
       user.proofing_component&.as_json || {}
