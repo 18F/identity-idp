@@ -53,7 +53,7 @@ module TwoFactorAuthentication
     end
 
     def validate_unique_name
-      return unless user.webauthn_configurations.where.not(id: configuration_id).find_by(name:)
+      return unless user.auth_app_configurations.where.not(id: configuration_id).find_by(name:)
       errors.add(
         :name,
         :duplicate,
