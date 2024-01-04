@@ -2,8 +2,7 @@ module Proofing
   module Resolution
     class ResultAdjudicator
       attr_reader :resolution_result, :state_id_result, :device_profiling_result,
-                  :double_address_verification, :ipp_enrollment_in_progress,
-                  :residential_resolution_result, :same_address_as_id
+                  :ipp_enrollment_in_progress, :residential_resolution_result, :same_address_as_id
 
       def initialize(
         resolution_result:, # InstantVerify
@@ -13,13 +12,11 @@ module Proofing
         ipp_enrollment_in_progress:,
         device_profiling_result:,
         same_address_as_id:,
-        double_address_verification: true
       )
         @resolution_result = resolution_result
         @state_id_result = state_id_result
         @should_proof_state_id = should_proof_state_id
         @ipp_enrollment_in_progress = ipp_enrollment_in_progress
-        @double_address_verification = double_address_verification
         @device_profiling_result = device_profiling_result
         @residential_resolution_result = residential_resolution_result
         @same_address_as_id = same_address_as_id # this is a string, "true" or "false"
