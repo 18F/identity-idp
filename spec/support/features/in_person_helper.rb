@@ -4,7 +4,9 @@ require_relative 'doc_auth_helper'
 module InPersonHelper
   include IdvStepHelper
   include DocAuthHelper
+  # TODO: add our combo step function in this file
 
+  # TODO: make sure all of this mock data makes sense/is truly reflective of what data is expected
   GOOD_FIRST_NAME = Idp::Constants::MOCK_IDV_APPLICANT[:first_name]
   GOOD_LAST_NAME = Idp::Constants::MOCK_IDV_APPLICANT[:last_name]
   # the date in the format '1938-10-06'
@@ -31,6 +33,8 @@ module InPersonHelper
   GOOD_IDENTITY_DOC_ZIPCODE =
     Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:identity_doc_zipcode]
 
+  # TODO: allow this function to call address_form
+  # dont have default value here for same_add to reflect change to complete_state_id_step
   def fill_out_state_id_form_ok(same_address_as_id: false)
     fill_in t('in_person_proofing.form.state_id.first_name'), with: GOOD_FIRST_NAME
     fill_in t('in_person_proofing.form.state_id.last_name'), with: GOOD_LAST_NAME
@@ -70,6 +74,7 @@ module InPersonHelper
     end
   end
 
+  # TODO: may want to change this naming to reflect that this is someone who failed doc auth and so is doing ipp-> can be done in a similar tic for opt-in
   def begin_in_person_proofing(_user = nil)
     complete_doc_auth_steps_before_document_capture_step
     mock_doc_auth_attention_with_barcode
@@ -114,6 +119,8 @@ module InPersonHelper
     click_on t('forms.buttons.continue')
   end
 
+  # TODO: change this to not have same_add w/ a default value to be more reflective of a user having to make a choice
+  #  and to mimic actual behavior; make sure to update usage of the function
   def complete_state_id_step(_user = nil, same_address_as_id: true)
     # Wait for page to load before attempting to fill out form
     expect(page).to have_current_path(idv_in_person_step_path(step: :state_id), wait: 10)
@@ -137,6 +144,15 @@ module InPersonHelper
 
   def complete_verify_step(_user = nil)
     click_idv_submit_default
+  end
+
+  def complete_steps_up_to_location_step
+    sign_in_and_2fa_user
+    begin_in_person_proofing
+    complete_prepare_step
+    complete_location_step
+
+    expect(page).to have_current_path(idv_in_person_step_path(step: :state_id), wait: 10)
   end
 
   def complete_all_in_person_proofing_steps(user = user_with_2fa, same_address_as_id: true)

@@ -420,155 +420,6 @@ RSpec.describe 'In Person Proofing', js: true do
     end
   end
 
-  context 'transliteration' do
-    before(:each) do
-      allow(IdentityConfig.store).to receive(:usps_ipp_transliteration_enabled).
-        and_return(true)
-    end
-
-    let(:user) { user_with_2fa }
-    let(:enrollment) { InPersonEnrollment.new }
-
-    before do
-      allow(user).to receive(:establishing_in_person_enrollment).
-        and_return(enrollment)
-    end
-
-    it 'shows validation errors',
-       allow_browser_log: true do
-      sign_in_and_2fa_user
-      begin_in_person_proofing
-      complete_prepare_step
-      complete_location_step
-      expect(page).to have_current_path(idv_in_person_step_path(step: :state_id), wait: 10)
-
-      fill_out_state_id_form_ok
-      fill_in t('in_person_proofing.form.state_id.first_name'), with: 'T0mmy "Lee"'
-      fill_in t('in_person_proofing.form.state_id.last_name'), with: 'Джейкоб'
-      fill_in t('in_person_proofing.form.state_id.address1'), with: '#1 $treet'
-      fill_in t('in_person_proofing.form.state_id.address2'), with: 'Gr@nd Lañe^'
-      fill_in t('in_person_proofing.form.state_id.city'), with: 'B3st C!ty'
-      click_idv_continue
-
-      expect(page).to have_content(
-        I18n.t(
-          'in_person_proofing.form.state_id.errors.unsupported_chars',
-          char_list: '", 0',
-        ),
-      )
-
-      expect(page).to have_content(
-        I18n.t(
-          'in_person_proofing.form.state_id.errors.unsupported_chars',
-          char_list: 'Д, б, е, ж, й, к, о',
-        ),
-      )
-
-      expect(page).to have_content(
-        I18n.t(
-          'in_person_proofing.form.state_id.errors.unsupported_chars',
-          char_list: '$',
-        ),
-      )
-
-      expect(page).to have_content(
-        I18n.t(
-          'in_person_proofing.form.state_id.errors.unsupported_chars',
-          char_list: '@, ^',
-        ),
-      )
-
-      expect(page).to have_content(
-        I18n.t(
-          'in_person_proofing.form.state_id.errors.unsupported_chars',
-          char_list: '!, 3',
-        ),
-      )
-
-      # re-fill state id form with good inputs
-      fill_in t('in_person_proofing.form.state_id.first_name'),
-              with: InPersonHelper::GOOD_FIRST_NAME
-      fill_in t('in_person_proofing.form.state_id.last_name'),
-              with: InPersonHelper::GOOD_LAST_NAME
-      fill_in t('in_person_proofing.form.state_id.address1'),
-              with: InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS1
-      fill_in t('in_person_proofing.form.state_id.address2'),
-              with: InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS2
-      fill_in t('in_person_proofing.form.state_id.city'),
-              with: InPersonHelper::GOOD_IDENTITY_DOC_CITY
-      click_idv_continue
-
-      expect(page).to have_current_path(idv_in_person_step_path(step: :address), wait: 10)
-    end
-
-    it 'shows hints when user selects Puerto Rico as state',
-       allow_browser_log: true do
-      sign_in_and_2fa_user
-      begin_in_person_proofing
-      complete_prepare_step
-      complete_location_step
-      expect(page).to have_current_path(idv_in_person_step_path(step: :state_id), wait: 10)
-
-      # state id page
-      select 'Puerto Rico',
-             from: t('in_person_proofing.form.state_id.identity_doc_address_state')
-
-      expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address1_hint'))
-      expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address2_hint'))
-
-      # change state selection
-      fill_out_state_id_form_ok
-      expect(page).not_to have_content(I18n.t('in_person_proofing.form.state_id.address1_hint'))
-      expect(page).not_to have_content(I18n.t('in_person_proofing.form.state_id.address2_hint'))
-
-      # re-select puerto rico
-      select 'Puerto Rico',
-             from: t('in_person_proofing.form.state_id.identity_doc_address_state')
-      click_idv_continue
-
-      expect(page).to have_current_path(idv_in_person_step_path(step: :address))
-
-      # address form
-      select 'Puerto Rico',
-             from: t('idv.form.state')
-      expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address1_hint'))
-      expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address2_hint'))
-
-      # change selection
-      fill_out_address_form_ok
-      expect(page).not_to have_content(I18n.t('in_person_proofing.form.state_id.address1_hint'))
-      expect(page).not_to have_content(I18n.t('in_person_proofing.form.state_id.address2_hint'))
-
-      # re-select puerto rico
-      select 'Puerto Rico',
-             from: t('idv.form.state')
-      click_idv_continue
-
-      # ssn page
-      expect(page).to have_current_path(idv_in_person_ssn_url)
-      complete_ssn_step
-
-      # verify page
-      expect(page).to have_current_path(idv_in_person_verify_info_path)
-      expect(page).to have_text('PR').twice
-
-      # update state ID
-      click_button t('idv.buttons.change_state_id_label')
-
-      expect(page).to have_content(t('in_person_proofing.headings.update_state_id'))
-      expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address1_hint'))
-      expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address2_hint'))
-      click_button t('forms.buttons.submit.update')
-
-      # update address
-      click_button t('idv.buttons.change_address_label')
-
-      expect(page).to have_content(t('in_person_proofing.headings.update_address'))
-      expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address1_hint'))
-      expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address2_hint'))
-    end
-  end
-
   context 'same address as id is false',
           allow_browser_log: true do
     let(:user) { user_with_2fa }
@@ -594,6 +445,8 @@ RSpec.describe 'In Person Proofing', js: true do
     end
 
     it 'can update the address page form' do
+      # TODO: This is an opportunity for update - state_id_step calls address_step
+      # TODO: This is an opportunity for update - can add complete_state_id_and_address potentially
       complete_state_id_step(user, same_address_as_id: false)
       complete_address_step(user, same_address_as_id: false)
       complete_ssn_step(user)
@@ -607,6 +460,7 @@ RSpec.describe 'In Person Proofing', js: true do
     end
   end
 
+  # TODO: This is an opportunity for update - context same is true (to better match prev context), then context w/in to cover diff cases
   context 'same address as id is true then update is selected on verify info pg',
           allow_browser_log: true do
     let(:user) { user_with_2fa }
@@ -659,6 +513,8 @@ RSpec.describe 'In Person Proofing', js: true do
     end
   end
 
+  # TODO: This is an opportunity for update - rename spec so its easier to understand
+  #  TODO: This is an opportunity for update - nest state id and address in updates from verify
   context 'Updates are made on state ID page starting from Verify Your Information',
           allow_browser_log: true do
     let(:user) { user_with_2fa }
@@ -808,6 +664,8 @@ RSpec.describe 'In Person Proofing', js: true do
     end
   end
 
+  # TODO: This is an opportunity for update - is this the right location for this spec? (full form)
+  # rename - full form instead of manual
   context 'when manual address entry is enabled for post office search' do
     let(:user) { user_with_2fa }
 
@@ -911,4 +769,8 @@ RSpec.describe 'In Person Proofing', js: true do
       expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
     end
   end
+
+  # TODO:
+  # happy path spec, which exists
+  #  then go through full in person flow and re-visit/update each page
 end
