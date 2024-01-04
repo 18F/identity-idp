@@ -5,8 +5,7 @@ const webpack = require('webpack');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
 const RailsI18nWebpackPlugin = require('./rails-i18n-webpack-plugin.js');
 
-const { dig, fromPairs, uniq, compact, getKeyPath, getKeyDomain, getKeyDomains } =
-  RailsI18nWebpackPlugin;
+const { dig, uniq, compact, getKeyPath, getKeyDomain, getKeyDomains } = RailsI18nWebpackPlugin;
 
 describe('RailsI18nWebpackPlugin', () => {
   it('generates expected output', (done) => {
@@ -208,18 +207,6 @@ describe('dig', () => {
     const result = dig(object, ['a', 'b']);
 
     expect(result).to.be.equal(1);
-  });
-});
-
-describe('fromPairs', () => {
-  it('returns pairs of key value in object form', () => {
-    const pairs = [
-      ['a', 1],
-      ['b', 2],
-    ];
-    const result = fromPairs(pairs);
-
-    expect(result).to.deep.equal({ a: 1, b: 2 });
   });
 });
 

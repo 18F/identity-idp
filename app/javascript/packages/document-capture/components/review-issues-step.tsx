@@ -37,19 +37,12 @@ export interface ReviewIssuesStepValue {
 
 interface ReviewIssuesStepProps extends FormStepComponentProps<ReviewIssuesStepValue> {
   remainingAttempts?: number;
-
   isFailedResult?: boolean;
-
   isFailedDocType?: boolean;
-
   selfieResultFailed?: boolean;
-
   selfieResultNotLiveOrPoorQuality?: boolean;
-
   captureHints?: boolean;
-
   pii?: PII;
-
   failedImageFingerprints?: { front: string[] | null; back: string[] | null };
 }
 
