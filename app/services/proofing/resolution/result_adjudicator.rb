@@ -13,7 +13,7 @@ module Proofing
         ipp_enrollment_in_progress:,
         device_profiling_result:,
         same_address_as_id:,
-        double_address_verification:
+        double_address_verification: true
       )
         @resolution_result = resolution_result
         @state_id_result = state_id_result
