@@ -33,11 +33,19 @@ function getActionTextString({ nonIppOrFailedResult, t }) {
     : t('idv.failure.button.try_online');
 }
 
-function subHeadingRequired ({ nonIppOrFailedResult, isFailedDocType }) {
+function subHeadingRequired({ nonIppOrFailedResult, isFailedDocType }) {
   return !nonIppOrFailedResult && !isFailedDocType;
 }
 
-function getWarningTextStrings({ nonIppOrFailedResult, isFailedDocType, t }) {
+function getWarningTextStrings({ nonIppOrFailedResult, isFailedDocType, selfieResultFailed, t }) {
+  if (selfieResultFailed && !isFailedDocType) {
+    return {
+      heading: t('errors.doc_auth.selfie_result_failed_heading'),
+      actionText: getActionTextString({ nonIppOrFailedResult, t }),
+      subheading: t('errors.doc_auth.selfie_result_failed_subheading'),
+    };
+  }
+
   const heading = getHeadingString({ isFailedDocType, t });
   const actionText = getActionTextString({ nonIppOrFailedResult, t });
   // we have an h2 subheading when nonIpp is false and isFailed is false
@@ -45,6 +53,13 @@ function getWarningTextStrings({ nonIppOrFailedResult, isFailedDocType, t }) {
     <h2>{t('errors.doc_auth.rate_limited_subheading')}</h2>
   ) : undefined;
   return { heading, actionText, subheading };
+}
+
+function showRemainingAttemptsComponent({ isFailedDocType, remainingAttempts }) {
+  if (isFailedDocType) {
+    return false;
+  }
+  return remainingAttempts <= DISPLAY_ATTEMPTS;
 }
 
 function DocumentCaptureWarning({
@@ -65,6 +80,7 @@ function DocumentCaptureWarning({
   const { heading, actionText, subheading } = getWarningTextStrings({
     nonIppOrFailedResult,
     isFailedDocType,
+    selfieResultFailed,
     t,
   });
   const subheadingRef = useRef<HTMLDivElement>(null);
@@ -109,7 +125,7 @@ function DocumentCaptureWarning({
           />
         </div>
 
-        {!isFailedDocType && remainingAttempts <= DISPLAY_ATTEMPTS && (
+        {showRemainingAttemptsComponent({ isFailedDocType, remainingAttempts }) && (
           <p>
             <HtmlTextWithStrongNoWrap
               text={t('idv.failure.attempts_html', { count: remainingAttempts })}
