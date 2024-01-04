@@ -351,7 +351,7 @@ module Users
 
     def device_supports_webauthn_platform?
       if (!desktop_device? && !BrowserCache.parse(request.user_agent).firefox?) ||
-         session[:platform_authenticator_available]
+         user_session[:platform_authenticator_available]
         true
       else
         false

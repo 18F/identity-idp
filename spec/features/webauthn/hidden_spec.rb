@@ -84,13 +84,8 @@ RSpec.describe 'webauthn hide' do
 
       context 'with javascript enabled', :js do
         context ' with device that supports authenticator' do
-          before do
-            Warden.on_next_request do |proxy|
-              session = proxy.env['rack.session']
-              session[:platform_authenticator_available] = true
-            end
-          end
           it 'displays the authenticator option' do
+            mock_setup_eligible_user_device
             sign_in_user(user)
             click_on t('two_factor_authentication.login_options_link_text')
 
@@ -99,6 +94,7 @@ RSpec.describe 'webauthn hide' do
         end
         context 'with device that doesnt support authenticator' do
           it 'redirects to options page on sign in' do
+            mock_setup_eligible_user_device
             sign_in_user(user)
             expect(current_path).to eq(login_two_factor_options_path)
           end
@@ -106,13 +102,8 @@ RSpec.describe 'webauthn hide' do
       end
 
       context 'with javascript disabled' do
-        before do
-          Warden.on_next_request do |proxy|
-            session = proxy.env['rack.session']
-            session[:platform_authenticator_available] = true
-          end
-        end
         it 'does not display the authenticator option' do
+          mock_setup_eligible_user_device
           sign_in_user(user)
           click_on t('two_factor_authentication.login_options_link_text')
 

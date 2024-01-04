@@ -82,13 +82,10 @@ RSpec.describe 'Remembering a webauthn device' do
           credential_id: credential_id,
           credential_public_key: credential_public_key,
         )
-        Warden.on_next_request do |proxy|
-          session = proxy.env['rack.session']
-          session[:platform_authenticator_available] = true
-        end
       end
 
       def remember_device_and_sign_out_user
+        mock_setup_eligible_user_device
         mock_webauthn_verification_challenge
         sign_in_user(user)
         check t('forms.messages.remember_device')
