@@ -315,6 +315,40 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
         end
       end
 
+      context 'with new device session value' do
+        it 'tracks new device value' do
+          subject.user_session[:new_device] = false
+          phone_configuration_created_at = controller.current_user.
+            default_phone_configuration.created_at
+          properties = {
+            success: true,
+            confirmation_for_add_phone: false,
+            context: 'authentication',
+            multi_factor_auth_method: 'sms',
+            multi_factor_auth_method_created_at: phone_configuration_created_at.strftime('%s%L'),
+            new_device: false,
+            phone_configuration_id: controller.current_user.default_phone_configuration.id,
+            area_code: parsed_phone.area_code,
+            country_code: parsed_phone.country,
+            phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+            enabled_mfa_methods_count: 1,
+            in_account_creation_flow: false,
+          }
+
+          stub_analytics
+
+          expect(@analytics).to receive(:track_mfa_submit_event).
+            with(properties)
+
+          freeze_time do
+            post :create, params: {
+              code: subject.current_user.reload.direct_otp,
+              otp_delivery_preference: 'sms',
+            }
+          end
+        end
+      end
+
       context "with a leading '#' sign" do
         it 'redirects to the profile' do
           post :create, params: {
@@ -658,40 +692,6 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
 
           it 'resets context to authentication' do
             expect(subject.user_session[:context]).to eq 'authentication'
-          end
-
-          context 'with new device session value' do
-            before do
-              subject.user_session[:new_device] = false
-              post(
-                :create,
-                params: {
-                  code: subject.current_user.direct_otp,
-                  otp_delivery_preference: 'sms',
-                },
-              )
-            end
-            it 'tracks new device value' do
-              parsed_phone = Phonelib.parse('+1 (703) 555-5555')
-              properties = {
-                success: true,
-                errors: nil,
-                context: 'confirmation',
-                multi_factor_auth_method: 'sms',
-                multi_factor_auth_method_created_at: nil,
-                new_device: nil,
-                confirmation_for_add_phone: false,
-                phone_configuration_id: nil,
-                area_code: parsed_phone.area_code,
-                country_code: parsed_phone.country,
-                phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
-                enabled_mfa_methods_count: 0,
-                in_account_creation_flow: false,
-              }
-
-              expect(@analytics).to have_received(:track_event).
-                with('Multi-Factor Authentication Setup', properties)
-            end
           end
         end
 
