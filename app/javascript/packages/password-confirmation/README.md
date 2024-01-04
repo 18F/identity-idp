@@ -1,4 +1,4 @@
-# `@18f/password-confirmation`
+# `@18f/identity-password-confirmation`
 
 Custom element implementation that adds password inputs with validation for confirmation.
 
@@ -7,7 +7,7 @@ Custom element implementation that adds password inputs with validation for conf
 Importing the element will register the `<lg-password-confirmation>` custom element:
 
 ```ts
-import '@18f/password-confirmation/password-confirmation-element';
+import '@18f/identity-password-confirmation/password-confirmation-element';
 ```
 
 The custom element will implement the behavior for validation, but all markup must already exist.
