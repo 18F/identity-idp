@@ -155,15 +155,14 @@ module Proofing
           residential_instant_verify_result.success?
         end
       end
-      # rubocop:enable Lint/UnusedMethodArgument
 
       def proof_id_with_aamva_if_needed(
-        applicant_pii:, timer:,
-        residential_instant_verify_result:,
-        instant_verify_result:,
-        should_proof_state_id:,
-        ipp_enrollment_in_progress:
-      )
+  applicant_pii:, timer:,
+  residential_instant_verify_result:,
+  instant_verify_result:,
+  should_proof_state_id:,
+  ipp_enrollment_in_progress:
+)
         same_address_as_id = applicant_pii[:same_address_as_id]
         should_proof_state_id_with_aamva = should_proof_state_id_with_aamva?(
           ipp_enrollment_in_progress:,
