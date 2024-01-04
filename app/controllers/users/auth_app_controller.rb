@@ -10,7 +10,6 @@ module Users
     def edit; end
 
     def update
-      binding.pry
       result = form.submit(name: params.dig(:form, :name))
 
       analytics.auth_app_update_name_submitted(**result.to_h)

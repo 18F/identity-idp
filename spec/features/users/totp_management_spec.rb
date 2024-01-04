@@ -17,6 +17,37 @@ RSpec.describe 'totp management' do
 
       expect(current_path).to eq account_two_factor_authentication_path
     end
+
+    it 'allows user to rename an authentication app app' do
+      auth_app_configuration = create(:auth_app_configuration, user:)
+      name = auth_app_configuration.name
+
+      sign_in_and_2fa_user(user)
+      visit account_two_factor_authentication_path
+
+      expect(page).to have_content(name)
+
+      click_link(
+        format(
+          '%s: %s',
+          t('two_factor_authentication.auth_app.manage_accessible_label'),
+          name,
+        ),
+      )
+
+      expect(current_path).to eq(edit_auth_app_path(id: auth_app_configuration.id))
+      expect(page).to have_field(
+        t('two_factor_authentication.auth_app.nickname'),
+        with: name,
+      )
+
+      fill_in t('two_factor_authentication.auth_app.nickname'), with: 'new name'
+
+      click_button t('two_factor_authentication.auth_app.change_nickname')
+
+      expect(page).to have_content('new name')
+      expect(page).to have_content(t('two_factor_authentication.auth_app.renamed'))
+    end
   end
 
   context 'when totp is the only mfa method' do
