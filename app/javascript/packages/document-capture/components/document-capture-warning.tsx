@@ -37,8 +37,13 @@ function subHeadingRequired({ nonIppOrFailedResult, isFailedDocType }) {
   return !nonIppOrFailedResult && !isFailedDocType;
 }
 
-function getWarningTextStrings({ nonIppOrFailedResult, isFailedDocType, selfieResultFailed, t }) {
-  if (selfieResultFailed && !isFailedDocType) {
+function getWarningTextStrings({
+  nonIppOrFailedResult,
+  isFailedDocType,
+  selfieResultNotLiveOrPoorQuality,
+  t,
+}) {
+  if (selfieResultNotLiveOrPoorQuality && !isFailedDocType) {
     return {
       heading: t('errors.doc_auth.selfie_result_failed_heading'),
       actionText: getActionTextString({ nonIppOrFailedResult, t }),
@@ -80,7 +85,7 @@ function DocumentCaptureWarning({
   const { heading, actionText, subheading } = getWarningTextStrings({
     nonIppOrFailedResult,
     isFailedDocType,
-    selfieResultFailed,
+    selfieResultNotLiveOrPoorQuality,
     t,
   });
   const subheadingRef = useRef<HTMLDivElement>(null);
