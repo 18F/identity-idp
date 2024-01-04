@@ -4,18 +4,30 @@ RSpec.describe 'totp management' do
   context 'when the user has totp enabled' do
     let(:user) { create(:user, :fully_registered, :with_authentication_app) }
 
-    it 'allows the user to disable their totp app' do
+    it 'allows user to delete a platform authenticator when another 2FA option is set up' do
+      auth_app_config = create(:auth_app_configuration, user:)
+      name = auth_app_config.name
+
       sign_in_and_2fa_user(user)
       visit account_two_factor_authentication_path
 
-      expect(page).to have_content(t('two_factor_authentication.login_options.auth_app'))
-      expect(page.find('.remove-auth-app')).to_not be_nil
-      page.find('.remove-auth-app').click
+      expect(user.reload.auth_app_configurations.count).to eq(2)
+      expect(page).to have_content(name)
 
-      expect(current_path).to eq auth_app_delete_path
-      click_on t('account.index.totp_confirm_delete')
+      click_link(
+        format(
+          '%s: %s',
+          t('two_factor_authentication.auth_app.manage_accessible_label'),
+          name,
+        ),
+      )
 
-      expect(current_path).to eq account_two_factor_authentication_path
+      expect(current_path).to eq(edit_auth_app_path(id: auth_app_config.id))
+
+      click_button t('two_factor_authentication.auth_app.delete')
+
+      expect(page).to have_content(t('two_factor_authentication.auth_app.deleted'))
+      expect(user.reload.auth_app_configurations.count).to eq(1)
     end
 
     it 'allows user to rename an authentication app app' do
