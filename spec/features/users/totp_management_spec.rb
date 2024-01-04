@@ -50,8 +50,9 @@ RSpec.describe 'totp management' do
     end
 
     it 'requires a user to use a unique name when renaming' do
-      auth_app_configuration = create(:auth_app_configuration, user:, name: 'existing')
-      name = auth_app_configuration.name
+      existing_auth_app_configuration = create(:auth_app_configuration, user:, name: 'existing')
+      new_app_auth_configuration = create(:auth_app_configuration, user:, name: 'new existing')
+      name = existing_auth_app_configuration.name
 
       sign_in_and_2fa_user(user)
       visit account_two_factor_authentication_path
@@ -66,21 +67,18 @@ RSpec.describe 'totp management' do
         ),
       )
 
-      expect(current_path).to eq(edit_auth_app_path(id: auth_app_configuration.id))
+      expect(current_path).to eq(edit_auth_app_path(id: existing_auth_app_configuration.id))
       expect(page).to have_field(
         t('two_factor_authentication.auth_app.nickname'),
         with: name,
       )
 
-      fill_in t('two_factor_authentication.auth_app.nickname'), with: name
+      fill_in t('two_factor_authentication.auth_app.nickname'), with: new_app_auth_configuration.name
 
       click_button t('two_factor_authentication.auth_app.change_nickname')
 
-      expect(current_path).to eq(edit_auth_app_path(id: auth_app_configuration.id))
-      expect(page).to have_field(
-        t('two_factor_authentication.webauthn_platform.nickname'),
-        with: auth_app_configuration.name,
-      )
+      expect(current_path).to eq(edit_auth_app_path(id: existing_auth_app_configuration.id))
+
       expect(page).to have_content(t('errors.manage_authenticator.unique_name_error'))
     end
   end
