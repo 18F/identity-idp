@@ -208,7 +208,7 @@ GEM
       erubi (~> 1.4)
       parser (>= 2.4)
       smart_properties
-    bigdecimal (3.1.4)
+    bigdecimal (3.1.5)
     bindata (2.4.15)
     bootsnap (1.17.0)
       msgpack (~> 1.2)
@@ -684,7 +684,7 @@ GEM
       activemodel
       mail (>= 2.6.1)
       simpleidn
-    view_component (3.8.0)
+    view_component (3.9.0)
       activesupport (>= 5.2.0, < 8.0)
       concurrent-ruby (~> 1.0)
       method_source (~> 1.0)
