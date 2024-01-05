@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+DEPLOY_BRANCH=stages/prod
+PR_JSON_FILE=${PR_JSON_FILE:-.pr.json}
+CHANGELOG_FILE=${CHANGELOG_FILE:-.changelog.md}
+
+USAGE="
+${0} [PULL_REQUEST_NUMBER]
+
+Creates a new release based on the given PR having been merged.
+"
+
+if [ $# -eq 0 ]; then
+    echo $USAGE
+    exit 1
+fi
+
+PR="$1"; shift
+
+if [ -z "${CI:-}" ]; then
+    echo "This script is meant to be run in a continuous integration environment."
+    exit 1
+fi
+
+if [ -z "${GH_TOKEN:-}" ]; then
+    echo "You must set the GH_TOKEN environment variable."
+    exit 1
+fi
+
+
+echo "Getting PR ${PR} data..."
+gh pr list \
+    --json number,title,body \
+    --base "$DEPLOY_BRANCH" \
+    --state closed \
+    --limit 1 | \
+    jq ".[] | select(.number == ${PR})" > "$PR_JSON_FILE"
+
+RC=$(jq --raw-output '.title' < "$PR_JSON_FILE" | sed -E 's/Deploy RC (.+) to .*/\1/')
+jq --raw-output '.body' < "$PR_JSON_FILE" > "$CHANGELOG_FILE"
+TITLE="RC $RC"
+
+echo "Checking for existing release '$TITLE'..."
+EXISTING_RELEASE=$(gh release list --exclude-drafts | (grep "$TITLE" || true))
+
+if [ ! -z "$EXISTING_RELEASE" ]; then
+    echo "❌ Release already exists: $TITLE" >&2
+    exit 10
+else
+    echo "No existing release found."
+fi
+
+TAG=$(date -u +'%Y-%m-%dT%H%M%S')
+
+echo "Creating release $TITLE with tag $TAG..."
+gh release create \
+    "$TAG" \
+    --latest \
+    --target "$GITHUB_SHA" \
+    --title "$TITLE" \
+    --notes-file "$CHANGELOG_FILE"
