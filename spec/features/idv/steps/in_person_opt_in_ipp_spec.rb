@@ -6,7 +6,7 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
   include SpAuthHelper
   include InPersonHelper
   org = 'test_org'
-  
+
   before do
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
     allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).and_return(true)
