@@ -1,4 +1,5 @@
 name: Create release
+run-name: "Create release based on ${{ github.event.pull_request.title }}"
 on:
   pull_request:
     types:
