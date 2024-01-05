@@ -314,9 +314,9 @@ RSpec.describe OpenidConnect::AuthorizationController do
                 end
               end
 
-              context 'selfie capture not enabled, selfie check was not performed' do
+              context 'selfie capture not enabled, biometric_comparison_check requested by sp' do
                 let(:selfie_capture_enabled) { false }
-                it 'redirects to the redirect_uri immediately when pii is unlocked if client-side redirect is disabled' do
+                it 'returns status not_acceptable' do
                   action
 
                   expect(response.status).to eq(406)
