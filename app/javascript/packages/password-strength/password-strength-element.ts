@@ -2,28 +2,6 @@ import zxcvbn from 'zxcvbn';
 import { t } from '@18f/identity-i18n';
 import type { ZXCVBNResult, ZXCVBNScore } from 'zxcvbn';
 
-/**
- * A mapping of zxcvbn scores to corresponding CSS BEM modifier classes.
- */
-const PASSWORD_SCORE_CLASS_MODIFIERS: Record<ZXCVBNScore, string> = {
-  0: 'password-strength--very-weak',
-  1: 'password-strength--weak',
-  2: 'password-strength--average',
-  3: 'password-strength--good',
-  4: 'password-strength--great',
-};
-
-/**
- * A mapping of zxcvbn scores to corresponding strength indicators.
- */
-const PASSWORD_SCORE_STRENGTH: Record<ZXCVBNScore, string> = {
-  0: t('instructions.password.strength.i'),
-  1: t('instructions.password.strength.ii'),
-  2: t('instructions.password.strength.iii'),
-  3: t('instructions.password.strength.iv'),
-  4: t('instructions.password.strength.v'),
-};
-
 const MINIMUM_STRENGTH: ZXCVBNScore = 3;
 
 const snakeCase = (string: string): string =>
@@ -156,20 +134,36 @@ class PasswordStrengthElement extends HTMLElement {
   }
 
   /**
+   * Returns the strength label associated with a given score.
+   *
+   * @param score Score
+   *
+   * @return Strength label.
+   */
+  #getStrengthLabel(score: number): string {
+    // i18n-tasks-use t('instructions.password.strength.0')
+    // i18n-tasks-use t('instructions.password.strength.1')
+    // i18n-tasks-use t('instructions.password.strength.2')
+    // i18n-tasks-use t('instructions.password.strength.3')
+    // i18n-tasks-use t('instructions.password.strength.4')
+    return t(`instructions.password.strength.${score}`);
+  }
+
+  /**
    * Updates the current strength and feedback indicators in response to a changed input value.
    */
   #handleValueChange() {
     const hasValue = !!this.input.value;
     this.classList.toggle('display-none', !hasValue);
-    this.classList.remove(...Object.values(PASSWORD_SCORE_CLASS_MODIFIERS));
+    this.removeAttribute('score');
     if (hasValue) {
       const result = zxcvbn(this.input.value, this.forbiddenPasswords);
       const score = this.#getNormalizedScore(result);
-      this.classList.add(PASSWORD_SCORE_CLASS_MODIFIERS[score]);
+      this.setAttribute('score', String(score));
       this.input.setCustomValidity(
         this.#isValid(result) ? '' : t('errors.messages.stronger_password'),
       );
-      this.strength.textContent = PASSWORD_SCORE_STRENGTH[score];
+      this.strength.textContent = this.#getStrengthLabel(score);
       this.feedback.textContent = this.#getNormalizedFeedback(result);
     }
   }
