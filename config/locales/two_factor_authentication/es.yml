@@ -21,9 +21,11 @@ es:
       one: Le quedan <strong>%{count} intento</strong>.
       other: Le quedan <strong>%{count} intentos</strong>.
     auth_app:
+      delete: Eliminar este dispositivo
       deleted: Se ha eliminado correctamente un método de aplicación de autenticación.
       edit_heading: Gestionar la configuración de su aplicación de autenticación
       manage_accessible_label: Gestionar la aplicación de autenticación
+      nickname: Apodo
       renamed: Se ha cambiado correctamente el nombre de su método de aplicación de
         autenticación.
     backup_code_header_text: Ingrese su código de respaldo
