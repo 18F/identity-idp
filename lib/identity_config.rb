@@ -266,6 +266,7 @@ class IdentityConfig
     config.add(:in_person_send_proofing_notifications_enabled, type: :boolean)
     config.add(:in_person_stop_expiring_enrollments, type: :boolean)
     config.add(:include_slo_in_saml_metadata, type: :boolean)
+    config.add(:invalid_gpo_confirmation_zipcode, type: :string)
     config.add(:lexisnexis_account_id, type: :string)
     config.add(:lexisnexis_base_url, type: :string)
     config.add(:lexisnexis_hmac_auth_enabled, type: :boolean)

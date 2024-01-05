@@ -46,18 +46,6 @@ function dig(object, keyPath) {
 }
 
 /**
- * Given an array of key-value tuple pairs, returns the corresponding object form.
- *
- * @template V
- *
- * @param {[key: string, value: V][]} pairs
- *
- * @return {Record<string, V>}
- */
-const fromPairs = (pairs) =>
-  pairs.reduce((result, [key, value]) => ({ ...result, [key]: value }), {});
-
-/**
  * Returns unique values from the given array.
  *
  * @template V
@@ -237,7 +225,7 @@ class RailsI18nWebpackPlugin extends ExtractKeysWebpackPlugin {
 
     const translations = await Promise.all(keys.map(getKeyTranslationPairs));
     if (translations.length) {
-      return fromPairs(translations);
+      return Object.fromEntries(translations);
     }
   }
 
@@ -256,13 +244,12 @@ class RailsI18nWebpackPlugin extends ExtractKeysWebpackPlugin {
     };
 
     const localeAssets = await Promise.all(locales.map(getLocaleAssetsPairs));
-    return fromPairs(compact(localeAssets));
+    return Object.fromEntries(compact(localeAssets));
   }
 }
 
 module.exports = RailsI18nWebpackPlugin;
 module.exports.dig = dig;
-module.exports.fromPairs = fromPairs;
 module.exports.uniq = uniq;
 module.exports.compact = compact;
 module.exports.getKeyPath = getKeyPath;

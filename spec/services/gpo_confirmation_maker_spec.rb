@@ -28,7 +28,9 @@ RSpec.describe GpoConfirmationMaker do
   end
   let(:profile) { create(:profile) }
 
-  subject { described_class.new(pii: pii, service_provider: service_provider, profile: profile) }
+  subject do
+    described_class.new(pii: pii, service_provider: service_provider, profile: profile)
+  end
 
   describe '#perform' do
     before do
@@ -72,30 +74,40 @@ RSpec.describe GpoConfirmationMaker do
     end
   end
 
-  context 'with a nil zipcode' do
-    let(:zipcode) { nil }
+  [
+    [nil, false],
+    ['1234', false],
+    ['12345+0', '12345'],
+    ['12345 - 0', '12345'],
+    ['12345- 0', '12345'],
+    ['12345-0', '12345'],
+    ['12345-6', '12345'],
+    ['12345-67', '12345'],
+    ['12345-678', '12345'],
+    ['12345-6789', '12345-6789'],
+    ['12345-67890', '12345'],
+  ].each do |input, expected|
+    context "when zipcode = #{input.inspect}" do
+      let(:zipcode) { input }
+      describe '#perform' do
+        if expected
+          it 'accepts the zipcode' do
+            expect { subject.perform }.not_to raise_error
+          end
+        else
+          it 'raises an error' do
+            expect { subject.perform }.to raise_error(GpoConfirmationMaker::InvalidEntryError)
+          end
+        end
 
-    describe '#perform' do
-      it 'accepts the zipcode' do
-        subject.perform
-
-        gpo_confirmation = GpoConfirmation.first
-        entry_hash = gpo_confirmation.entry
-        expect(entry_hash[:zipcode]).to be_nil
-      end
-    end
-  end
-
-  context 'with a (bogus) zip+1 zipcode' do
-    let(:zipcode) { '12345+0' }
-
-    describe '#perform' do
-      it 'strips the +0 from the zipcode' do
-        subject.perform
-
-        gpo_confirmation = GpoConfirmation.first
-        entry_hash = gpo_confirmation.entry
-        expect(entry_hash[:zipcode]).to eq '12345'
+        if expected.is_a?(String)
+          it "formats the zipcode as #{expected.inspect}" do
+            subject.perform
+            gpo_confirmation = GpoConfirmation.first
+            entry_hash = gpo_confirmation.entry
+            expect(entry_hash[:zipcode]).to eq expected
+          end
+        end
       end
     end
   end

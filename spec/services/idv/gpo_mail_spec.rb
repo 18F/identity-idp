@@ -93,7 +93,7 @@ RSpec.describe Idv::GpoMail do
     )
 
     GpoConfirmationMaker.new(
-      pii: {},
+      pii: Idp::Constants::MOCK_IDV_APPLICANT,
       service_provider: nil,
       profile: profile,
     ).perform

@@ -1,4 +1,12 @@
 class GpoConfirmationMaker
+  class InvalidEntryError < StandardError
+    def initialize(reason)
+      @reason = reason
+      super("InvalidEntryError: #{reason}")
+    end
+    attr_reader :reason
+  end
+
   def initialize(pii:, service_provider:, profile: nil, profile_id: nil, otp: nil)
     raise ArgumentError 'must have either profile or profile_id' if !profile && !profile_id
 
@@ -14,7 +22,12 @@ class GpoConfirmationMaker
   end
 
   def perform
-    GpoConfirmation.create!(entry: attributes)
+    begin
+      GpoConfirmation.create!(entry: attributes)
+    rescue ActiveRecord::RecordInvalid => err
+      raise InvalidEntryError.new(err)
+    end
+
     GpoConfirmationCode.create!(
       profile_id: profile&.id || profile_id,
       otp_fingerprint: Pii::Fingerprinter.fingerprint(otp),
@@ -36,7 +49,7 @@ class GpoConfirmationMaker
       first_name: pii[:first_name],
       last_name: pii[:last_name],
       state: pii[:state],
-      zipcode: force_zipcode_format(pii[:zipcode]),
+      zipcode: pii[:zipcode],
       issuer: service_provider&.issuer,
     }
   end
@@ -50,13 +63,5 @@ class GpoConfirmationMaker
 
   def update_proofing_cost
     Db::SpCost::AddSpCost.call(service_provider, 2, :gpo_letter)
-  end
-
-  def force_zipcode_format(raw_zipcode)
-    return raw_zipcode if raw_zipcode.nil?
-    return raw_zipcode if raw_zipcode.match?(/^\d{5}$/)
-    return raw_zipcode if raw_zipcode.match?(/^\d{5}-\d{4}$/)
-
-    raw_zipcode[0..4]
   end
 end
