@@ -155,6 +155,14 @@ fr:
       troubleshooting:
         change_number: Utilisez un autre numéro de téléphone
         code_not_received: Je n’ai pas reçu mon code à usage unique
+    piv_cac:
+      change_nickname: TODO UPDATE TRANSLATION
+      delete: TODO UPDATE TRANSLATION
+      deleted: TODO UPDATE TRANSLATION
+      edit_heading: TODO UPDATE TRANSLATION
+      manage_accessible_label: TODO UPDATE TRANSLATION
+      nickname: TODO UPDATE TRANSLATION
+      renamed: TODO UPDATE TRANSLATION        
     piv_cac_header_text: Veuillez présenter votre carte PIV/CAC
     please_try_again_html: Veuillez essayer de nouveau dans <strong>%{countdown}</strong>.
     read_about_two_factor_authentication: En savoir plus sur l’authentification à deux facteurs

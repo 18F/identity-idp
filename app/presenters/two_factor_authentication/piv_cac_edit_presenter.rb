@@ -9,21 +9,15 @@ module TwoFactorAuthentication
     end
 
     def nickname_field_label
-      # missing translation key
-      # t('two_factor_authentication.piv_cac.nickname')
-      'Nickname'
+      t('two_factor_authentication.piv_cac.nickname')
     end
 
     def rename_button_label
-      # missing translation key
-      # t('two_factor_authentication.piv_cac.change_nickname')
-      'Rename'
+      t('two_factor_authentication.piv_cac.change_nickname')
     end
 
     def delete_button_label
-      # missing translation key
-      # t('two_factor_authentication.piv_cac.delete')
-      'Delete'
+      t('two_factor_authentication.piv_cac.delete')
     end
 
     def rename_success_alert_text

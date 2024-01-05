@@ -45,6 +45,7 @@ module TwoFactorAuthentication
 
     def validate_configuration_exists
       return if configuration.present?
+
       errors.add(
         :configuration_id,
         :configuration_not_found,
@@ -54,6 +55,7 @@ module TwoFactorAuthentication
 
     def validate_unique_name
       return unless user.piv_cac_configurations.where.not(id: configuration_id).find_by(name:)
+
       errors.add(
         :name,
         :duplicate,

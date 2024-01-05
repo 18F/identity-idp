@@ -141,9 +141,12 @@ en:
         change_number: Use another phone number
         code_not_received: I didn’t receive my one-time code
     piv_cac:
+      change_nickname: Change nickname
+      delete: Delete this method
       deleted: Successfully deleted a PIV/CAC method
       edit_heading: Manage your PIV/CAC settings
       manage_accessible_label: Manage PIV/CAC
+      nickname: Nickname
       renamed: Successfully renamed your PIV/CAC method
     piv_cac_header_text: Present your PIV/CAC
     please_try_again_html: Please try again in <strong>%{countdown}</strong>.

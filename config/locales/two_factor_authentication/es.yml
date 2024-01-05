@@ -147,6 +147,14 @@ es:
       troubleshooting:
         change_number: Utilice otro número de teléfono.
         code_not_received: No recibí mi código de un solo uso.
+    piv_cac:
+      change_nickname: TODO UPDATE TRANSLATION
+      delete: TODO UPDATE TRANSLATION
+      deleted: TODO UPDATE TRANSLATION
+      edit_heading: TODO UPDATE TRANSLATION
+      manage_accessible_label: TODO UPDATE TRANSLATION
+      nickname: TODO UPDATE TRANSLATION
+      renamed: TODO UPDATE TRANSLATION
     piv_cac_header_text: Presenta tu PIV/CAC
     please_try_again_html: Inténtelo de nuevo en <strong>%{countdown}</strong>.
     read_about_two_factor_authentication: Conozca la autenticación de dos factores
