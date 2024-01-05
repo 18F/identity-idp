@@ -14,6 +14,4 @@ async function checkSupportFtUnlock() {
   }
 }
 
-if (process.env.NODE_ENV !== 'test') {
-  checkSupportFtUnlock();
-}
+checkSupportFtUnlock();

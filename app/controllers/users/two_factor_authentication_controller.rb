@@ -341,17 +341,15 @@ module Users
     end
 
     def webauthn_url
-      if webauthn_params[:platform] == true
-        if !device_supports_webauthn_platform?
-          return login_two_factor_options_url
-        end
+      if webauthn_params[:platform] == true && !device_supports_webauthn_platform?
+        login_two_factor_options_url
+      else
+        login_two_factor_webauthn_url(webauthn_params)
       end
-      login_two_factor_webauthn_url(webauthn_params)
     end
 
     def device_supports_webauthn_platform?
-      if (!desktop_device? && !BrowserCache.parse(request.user_agent).firefox?) ||
-         user_session[:platform_authenticator_available]
+      if user_session[:platform_authenticator_available]
         true
       else
         false
