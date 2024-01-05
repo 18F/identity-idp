@@ -504,7 +504,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           and_return(result_that_failed_instant_verify)
       end
 
-      context 'the failure can be covered by AAMVA' do
+      context 'user_can_pass_after_state_id_check? is called' do
         let(:failed_aamva_proof) { instance_double(Proofing::StateIdResult) }
         let(:aamva_proofer) { instance_double(Proofing::Aamva::Proofer) }
         before do
