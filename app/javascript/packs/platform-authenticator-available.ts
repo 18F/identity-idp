@@ -1,17 +1,17 @@
-import { isWebauthnPlatformAuthenticatorAvailable } from '@18f/identity-webauthn';
+import { isWebauthnPlatformAuthenticatorAvailable, isWebauthnPasskeySupported } from '@18f/identity-webauthn';
 
-async function checkSupportFtUnlock() {
+async function platformAuthenticatorAvailable() {
   const platformauthenticatorAvailableInput = document.getElementById(
     'platform_authenticator_available',
   ) as HTMLInputElement;
   if (!platformauthenticatorAvailableInput) {
     return;
   }
-  if (await isWebauthnPlatformAuthenticatorAvailable()) {
+  if (isWebauthnPasskeySupported() && await isWebauthnPlatformAuthenticatorAvailable()) {
     platformauthenticatorAvailableInput.value = 'true';
   } else {
     platformauthenticatorAvailableInput.value = 'false';
   }
 }
 
-checkSupportFtUnlock();
+platformAuthenticatorAvailable();
