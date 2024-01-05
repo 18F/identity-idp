@@ -216,6 +216,31 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController do
           expect(subject.document_capture_session.ocr_confirmation_pending).to be_falsey
         end
       end
+
+      context 'selfie checks' do
+        before do
+          expect(controller).to receive(:confirm_selfie_performed_if_needed).
+            and_return(performed_if_needed)
+        end
+
+        context 'not performed' do
+          let(:performed_if_needed) { false }
+
+          it 'stays on hybrid mobile document capture' do
+            put :update
+            expect(response).to redirect_to idv_hybrid_mobile_document_capture_url
+          end
+        end
+
+        context 'performed' do
+          let(:performed_if_needed) { true }
+
+          it 'redirects to capture complete' do
+            put :update
+            expect(response).to redirect_to idv_hybrid_mobile_capture_complete_url
+          end
+        end
+      end
     end
   end
 

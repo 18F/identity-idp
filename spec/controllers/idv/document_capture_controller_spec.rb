@@ -211,6 +211,34 @@ RSpec.describe Idv::DocumentCaptureController do
       )
     end
 
+    context 'selfie checks' do
+      before do
+        expect(controller).to receive(:confirm_selfie_performed_if_needed).
+          and_return(performed_if_needed)
+        allow(result).to receive(:success?).and_return(true)
+        allow(subject).to receive(:stored_result).and_return(result)
+        allow(subject).to receive(:extract_pii_from_doc)
+      end
+
+      context 'not performed' do
+        let(:performed_if_needed) { false }
+
+        it 'stays on document capture' do
+          put :update
+          expect(response).to redirect_to idv_document_capture_url
+        end
+      end
+
+      context 'performed' do
+        let(:performed_if_needed) { true }
+
+        it 'redirects to ssn' do
+          put :update
+          expect(response).to redirect_to idv_ssn_url
+        end
+      end
+    end
+
     context 'user has an establishing in-person enrollment' do
       let!(:enrollment) { create(:in_person_enrollment, :establishing, user: user, profile: nil) }
 
