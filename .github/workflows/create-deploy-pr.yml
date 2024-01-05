@@ -1,5 +1,18 @@
 name: Create deploy PR
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+    inputs:
+      deploy_type:
+        description: 'Type of deploy'
+        required: true
+        type: choice
+        options:
+          - Normal
+          - Patch
+      source:
+        description: 'Source branch/SHA (If blank, the current SHA running on staging will be used)'
+        required: false
+        type: string
 permissions:
   pull-requests: write
   contents: write
@@ -9,6 +22,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GH_TOKEN: ${{ github.token }}
+      PATCH: ${{ inputs.deploy_type == 'Patch' && 1 || 0 }}
+      SOURCE: ${{ inputs.source }}
     steps:
       - uses: actions/checkout@v4
         with:
