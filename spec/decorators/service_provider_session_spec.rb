@@ -211,6 +211,7 @@ RSpec.describe ServiceProviderSession do
       context 'when environment is prod' do
         before do
           allow(Identity::Hostdata).to receive(:env).and_return('prod')
+          allow(Identity::Hostdata).to receive(:in_datacenter?).and_return(true)
         end
         it 'returns false when sp biometric_comparison_required is true' do
           sp_session[:biometric_comparison_required] = true

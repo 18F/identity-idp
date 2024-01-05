@@ -71,9 +71,7 @@ class ServiceProviderSession
   end
 
   def selfie_required?
-    return false if Identity::Hostdata.env == 'prod'
-
-    !!(IdentityConfig.store.doc_auth_selfie_capture_enabled &&
+    !!(!FeatureManagement.idv_block_biometrics_requests? &&
       sp_session[:biometric_comparison_required])
   end
 
