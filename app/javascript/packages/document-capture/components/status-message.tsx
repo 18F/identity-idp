@@ -1,4 +1,4 @@
-/** @typedef {import('react').ReactNode} ReactNode */
+import type { ReactNode } from 'react';
 
 /**
  * @enum {string}
@@ -7,19 +7,13 @@ export const Status = {
   ERROR: 'ERROR',
   SUCCESS: 'SUCCESS',
 };
+interface StatusMessageProps {
+  status?: string;
+  className?: string;
+  children?: ReactNode;
+}
 
-/**
- * @typedef StatusMessageProps
- *
- * @prop {Status} status
- * @prop {string=} className
- * @prop {ReactNode=} children
- */
-
-/**
- * @param {StatusMessageProps} props
- */
-function StatusMessage({ status, className, children }) {
+function StatusMessage({ status, className, children }: StatusMessageProps) {
   const classes = [
     status === Status.ERROR && 'usa-error-message',
     status === Status.SUCCESS && 'usa-success-message',
@@ -30,7 +24,7 @@ function StatusMessage({ status, className, children }) {
     .join(' ');
 
   const role = status === Status.ERROR ? 'alert' : 'status';
-
+  
   return (
     <span role={role} className={classes}>
       {children}
