@@ -78,6 +78,12 @@ if [ -z "${GH_TOKEN:-}" ] && [ "$DRY_RUN" == "0" ]; then
     exit 1
 fi
 
+RC_BRANCH=stages/rc-$(date +'%Y-%m-%d')
+if git rev-parse "$ORIGIN/$RC_BRANCH" > /dev/null 2>&1; then
+    echo "RC branch $RC_BRANCH already exists. Delete that branch and re-run this workflow to create a PR." >&2
+    exit 1
+fi
+
 LAST_RC=$(get_last_rc)
 NEXT_RC=$(get_next_rc "$LAST_RC")
 echo "Last RC was ${LAST_RC}. The next RC will be ${NEXT_RC}."
@@ -95,15 +101,6 @@ else
     else
         echo "Using '$SOURCE' ($SHA) as the source"
     fi
-fi
-
-
-RC_BRANCH=stages/rc-$(date +'%Y-%m-%d')
-echo "Preparing RC branch ${RC_BRANCH}..."
-
-if git rev-parse "$RC_BRANCH" > /dev/null 2>&1; then
-    echo "RC branch $RC_BRANCH already exists." >&2
-    exit 1
 fi
 
 echo "Building changelog..."
