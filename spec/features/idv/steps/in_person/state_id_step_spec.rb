@@ -13,7 +13,11 @@ RSpec.describe 'doc auth IPP state ID step', js: true do
       complete_steps_up_to_location_step
 
       expect(page).to have_content(t('forms.buttons.continue'))
-      expect(page).to have_content(t('in_person_proofing.headings.state_id_milestone_2'), wait: 10)
+      expect(page).to have_content(
+        t(
+          'in_person_proofing.headings.state_id_milestone_2',
+        ).tr(' ', ' '),
+      )
     end
 
     it 'allows the user to cancel and start over', allow_browser_log: true do
