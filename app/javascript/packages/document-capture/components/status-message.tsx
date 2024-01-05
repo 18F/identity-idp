@@ -8,7 +8,7 @@ export const Status = {
   SUCCESS: 'SUCCESS',
 };
 interface StatusMessageProps {
-  status?: string;
+  status: string;
   className?: string;
   children?: ReactNode;
 }
@@ -24,7 +24,7 @@ function StatusMessage({ status, className, children }: StatusMessageProps) {
     .join(' ');
 
   const role = status === Status.ERROR ? 'alert' : 'status';
-  
+
   return (
     <span role={role} className={classes}>
       {children}
