@@ -5,7 +5,15 @@ export enum Status {
   SUCCESS = 'SUCCESS',
 }
 
-function StatusMessage({ status, className, children }: { status: Status, className?: string, children?: ReactNode }) {
+function StatusMessage({
+  status,
+  className,
+  children,
+}: {
+  status: Status;
+  className?: string;
+  children?: ReactNode;
+}) {
   const classes = [
     status === Status.ERROR && 'usa-error-message',
     status === Status.SUCCESS && 'usa-success-message',
