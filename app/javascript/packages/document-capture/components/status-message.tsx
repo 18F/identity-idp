@@ -1,19 +1,11 @@
 import type { ReactNode } from 'react';
 
-/**
- * @enum {string}
- */
-export const Status = {
-  ERROR: 'ERROR',
-  SUCCESS: 'SUCCESS',
-};
-interface StatusMessageProps {
-  status: string;
-  className?: string;
-  children?: ReactNode;
+export enum Status {
+  ERROR = 'ERROR',
+  SUCCESS = 'SUCCESS',
 }
 
-function StatusMessage({ status, className, children }: StatusMessageProps) {
+function StatusMessage({ status, className, children }: { status: Status, className?: string, children?: ReactNode }) {
   const classes = [
     status === Status.ERROR && 'usa-error-message',
     status === Status.SUCCESS && 'usa-success-message',
