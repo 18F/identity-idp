@@ -1,0 +1,17 @@
+name: Create deploy PR
+on: workflow_dispatch
+permissions:
+  pull-requests: write
+  contents: write
+jobs:
+  create-pr:
+    name: Create PR
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Get all commits
+      - uses: ruby/setup-ruby@v1
+      - run: scripts/create-deploy-pr
