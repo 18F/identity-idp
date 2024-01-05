@@ -3,7 +3,5 @@
       **tag_options,
       class: css_class,
     ) do %> 
-  <%= content %>
-  <span class="usa-sr-only">Login.gov</span>
-  <%= image_tag(asset_url(logo_path), alt: "", class: 'login-button-img display-inline text-middle margin-left-05 margin-top-neg-05') %>
+  <%= t('components.login_button.sign_in_html', app_name: content_tag(:span, APP_NAME, class: logo_class)) %>
 <% end %>

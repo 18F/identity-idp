@@ -20,7 +20,7 @@ en:
       next_step: Please refresh this page once you have enabled JavaScript in your
         browser.
     login_button:
-      image_alt: Login.gov logo
+      sign_in_html: Sign in with %{app_name}
     manageable_authenticator:
       cancel: Cancel
       created_on: Created on %{date}
