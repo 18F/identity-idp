@@ -139,14 +139,13 @@ RSpec.describe Idv::LinkSentController do
       let(:load_result) { double('load result') }
       let(:session_canceled_at) { nil }
       let(:load_result_success) { true }
-      let(:selfie_check_performed) { true }
 
       before do
         allow(load_result).to receive(:pii_from_doc).and_return(Idp::Constants::MOCK_IDV_APPLICANT)
         allow(load_result).to receive(:attention_with_barcode?).and_return(false)
 
         allow(load_result).to receive(:success?).and_return(load_result_success)
-        allow(load_result).to receive(:selfie_check_performed).and_return(selfie_check_performed)
+        allow(load_result).to receive(:selfie_check_performed).and_return(false)
 
         document_capture_session = DocumentCaptureSession.create!(
           user: user,

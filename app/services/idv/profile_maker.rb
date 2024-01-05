@@ -43,14 +43,10 @@ module Idv
 
     private
 
-    def selfie_check_enabled
-      IdentityConfig.store.doc_auth_selfie_capture_enabled
-    end
-
     def set_idv_level(in_person_verification_needed:, selfie_check_performed:)
       if in_person_verification_needed
         :legacy_in_person
-      elsif selfie_check_enabled && selfie_check_performed
+      elsif !FeatureManagement.idv_block_biometrics_requests? && selfie_check_performed
         :unsupervised_with_selfie
       else
         :legacy_unsupervised
