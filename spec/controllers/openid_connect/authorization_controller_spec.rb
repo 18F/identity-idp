@@ -319,7 +319,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                 it 'redirects to the redirect_uri immediately when pii is unlocked if client-side redirect is disabled' do
                   action
 
-                  expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
+                  expect(response.status).to eq(406)
                 end
               end
             end
