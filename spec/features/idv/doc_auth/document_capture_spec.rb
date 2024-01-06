@@ -264,7 +264,7 @@ RSpec.feature 'document capture step', :js do
 
       context 'when hosted env is prod' do
         before do
-          allow(Identity::Hostdata).to receive(:env).and_return('prod')
+          allow(FeatureManagement).to receive(:idv_block_biometrics_requests?).and_return(true)
         end
         it 'proceeds to the next page with valid info, excluding a selfie image' do
           perform_in_browser(:mobile) do
