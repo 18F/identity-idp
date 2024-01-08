@@ -53,6 +53,8 @@ function getServiceProvider() {
 }
 
 function getSelfieCaptureEnabled() {
+  // TODO remove this before merge
+  return true;
   const { docAuthSelfieCapture } = appRoot.dataset;
   return docAuthSelfieCapture === 'true';
 }
