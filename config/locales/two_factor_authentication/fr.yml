@@ -23,6 +23,7 @@ fr:
       one: Il vous reste <strong>%{count} tentative</strong>.
       other: Il vous reste <strong>%{count} tentatives</strong>.
     auth_app:
+      change_nickname: Changer de pseudo
       delete: Supprimer cet appareil
       deleted: Suppression réussie d’une méthode d’application d’authentification
       edit_heading: Gérer les paramètres de votre application d’authentification
