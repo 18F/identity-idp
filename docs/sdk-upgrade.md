@@ -87,6 +87,13 @@ Steps:
  
     Set the default to the new SDK version and the alternate to the old version. (That way, the new version is in place if the A/B testing goes well.)
     
+   **Note**: For testing in `staging`, `idv_acuant_sdk_upgrade_a_b_testing_enabled` can be set to `fase` like following to test the new SDK version:
+   ```yaml
+   idv_acuant_sdk_upgrade_a_b_testing_enabled: false
+   idv_acuant_sdk_upgrade_a_b_testing_percent: 50 # ignored
+   idv_acuant_sdk_version_alternate: 11.M.M       # previous
+   idv_acuant_sdk_version_default: 11.N.N         # newest
+   ```
 4. Save the file. If the file opened in the vi editor, use `:wq` to save. A diff of your changes will appear. Copy the diff and paste it into the Slack thread. Type `y` to accept the changes.
 
 5. Recycle the servers [with these Handbook instructions](https://handbook.login.gov/articles/appdev-deploy.html#production). This will involve:
