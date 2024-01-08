@@ -11,10 +11,6 @@ module WebAuthnHelper
     )
   end
 
-  def mock_setup_eligible_user_device
-    set_hidden_field('platform_authenticator_available', 'true')
-  end
-
   def mock_webauthn_verification_challenge
     allow(WebAuthn::Credential).to receive(:options_for_get).and_return(
       instance_double(
