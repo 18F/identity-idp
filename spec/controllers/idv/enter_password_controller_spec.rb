@@ -882,6 +882,25 @@ RSpec.describe Idv::EnterPasswordController do
 
         expect(response).to redirect_to idv_letter_enqueued_url
       end
+
+      context 'applicant data is corrupted' do
+        let(:applicant) do
+          Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.dup.tap do |a|
+            a.delete(:zipcode)
+          end
+        end
+
+        before do
+          expect do
+            put :create,
+                params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+          end.to raise_error(GpoConfirmationMaker::InvalidEntryError)
+        end
+
+        it 'does not mint a GPO pending profile' do
+          expect(user.reload.gpo_verification_pending_profile).to be_nil
+        end
+      end
     end
   end
 end

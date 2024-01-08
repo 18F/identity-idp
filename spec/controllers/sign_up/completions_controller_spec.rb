@@ -93,6 +93,42 @@ RSpec.describe SignUp::CompletionsController do
         it 'creates a presenter object that is requesting ial2' do
           expect(assigns(:presenter).ial2_requested?).to eq true
         end
+
+        context 'user is not identity verified' do
+          let(:user) { create(:user) }
+          it 'redirects to idv_url' do
+            get :show
+
+            expect(response).to redirect_to(idv_url)
+          end
+        end
+
+        context 'sp requires selfie' do
+          let(:selfie_capture_enabled) { true }
+          before do
+            allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).
+              and_return(selfie_capture_enabled)
+            subject.session[:sp][:biometric_comparison_required] = 'true'
+          end
+
+          context 'user does not have a selfie' do
+            it 'redirects to idv_url' do
+              get :show
+
+              expect(response).to redirect_to(idv_url)
+            end
+          end
+
+          context 'selfie capture not enabled' do
+            let(:selfie_capture_enabled) { false }
+
+            it 'does not redirect' do
+              get :show
+
+              expect(response).to render_template :show
+            end
+          end
+        end
       end
 
       context 'IALMax' do

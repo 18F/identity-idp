@@ -30,15 +30,17 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
     }
   end
 
-  let(:mock_proofing_report_data) do
-    [
-      ['metric', 'num_users', 'percent'],
-    ]
-  end
+  let(:mock_all_login_emails) { ['mock_feds@example.com', 'mock_contractors@example.com'] }
+  let(:mock_daily_reports_emails) { ['mock_agnes@example.com', 'mock_daily@example.com'] }
 
   let(:mock_proofing_rate_data) do
     [
       ['Metric', 'Trailing 30d', 'Trailing 60d', 'Trailing 90d'],
+    ]
+  end
+  let(:mock_proofing_report_data) do
+    [
+      ['metric', 'num_users', 'percent'],
     ]
   end
 
@@ -57,11 +59,16 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
 
     allow(report.proofing_rate_report).to receive(:as_csv).
       and_return(mock_proofing_rate_data)
+
+    allow(IdentityConfig.store).to receive(:team_daily_reports_emails).
+      and_return(mock_daily_reports_emails)
+    allow(IdentityConfig.store).to receive(:team_all_login_emails).
+      and_return(mock_all_login_emails)
   end
 
   it 'sends out a report to just to team agnes' do
     expect(ReportMailer).to receive(:tables_report).once.with(
-      email: [IdentityConfig.store.team_agnes_email],
+      email: anything,
       subject: 'Monthly Key Metrics Report - 2021-03-02',
       reports: anything,
       message: report.preamble,
@@ -76,11 +83,7 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
 
     it 'sends out a report to everybody' do
       expect(ReportMailer).to receive(:tables_report).once.with(
-        email: [
-          IdentityConfig.store.team_agnes_email,
-          IdentityConfig.store.team_all_feds_email,
-          IdentityConfig.store.team_all_contractors_email,
-        ],
+        email: anything,
         subject: 'Monthly Key Metrics Report - 2021-02-28',
         reports: anything,
         message: report.preamble,
@@ -92,7 +95,7 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
   end
 
   it 'does not send out a report with no emails' do
-    allow(IdentityConfig.store).to receive(:team_agnes_email).and_return('')
+    allow(IdentityConfig.store).to receive(:team_daily_reports_emails).and_return('')
 
     expect(report).to_not receive(:reports)
 
@@ -110,6 +113,28 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
     end
 
     report.perform(report_date)
+  end
+
+  describe '#emails' do
+    context 'on the first of the month' do
+      let(:report_date) { Date.new(2021, 3, 1).prev_day }
+
+      it 'emails the whole login team' do
+        expected_array = mock_daily_reports_emails
+        expected_array += mock_all_login_emails
+
+        expect(report.emails).to match_array(expected_array)
+      end
+    end
+
+    context 'during the rest of the month' do
+      let(:report_date) { Date.new(2021, 3, 2).prev_day }
+      it 'only emails team_daily_reports' do
+        expect(report.emails).to match_array(
+          mock_daily_reports_emails,
+        )
+      end
+    end
   end
 
   describe '#preamble' do
