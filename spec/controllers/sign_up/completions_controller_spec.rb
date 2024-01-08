@@ -106,7 +106,7 @@ RSpec.describe SignUp::CompletionsController do
         context 'sp requires selfie' do
           let(:selfie_capture_enabled) { true }
           before do
-            allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).
+            allow(FeatureManagement).to receive(:idv_allow_selfie_check_in_login_prod?).
               and_return(selfie_capture_enabled)
             subject.session[:sp][:biometric_comparison_required] = 'true'
           end

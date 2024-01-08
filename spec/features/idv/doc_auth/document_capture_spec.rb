@@ -195,9 +195,11 @@ RSpec.feature 'document capture step', :js do
     end
   end
 
-  context 'with doc_auth_selfie_capture_enabled set to true' do
+  context 'with idv_allow_selfie_check_in_login_prod? set to true' do
+    let(:selfie_check_enabled) { true }
     before do
-      allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).and_return(true)
+      allow(FeatureManagement).to receive(:idv_allow_selfie_check_in_login_prod?).
+        and_return(selfie_check_enabled)
     end
 
     context 'when a selfie is not requested by SP' do
@@ -263,9 +265,7 @@ RSpec.feature 'document capture step', :js do
       end
 
       context 'when hosted env is prod' do
-        before do
-          allow(Identity::Hostdata).to receive(:env).and_return('prod')
-        end
+        let(:selfie_check_enabled) { false }
         it 'proceeds to the next page with valid info, excluding a selfie image' do
           perform_in_browser(:mobile) do
             visit_idp_from_oidc_sp_with_ial2

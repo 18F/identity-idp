@@ -91,10 +91,8 @@ module DocAuth
         end
 
         def include_liveness?
-          return false if Identity::Hostdata.env == 'prod'
-          return false unless IdentityConfig.store.doc_auth_selfie_capture_enabled
-
-          liveness_checking_required
+          FeatureManagement.idv_allow_selfie_check_in_login_prod? &&
+            liveness_checking_required
         end
       end
     end
