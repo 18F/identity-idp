@@ -13,12 +13,12 @@ module Reports
       message = "Report: #{REPORT_NAME} #{report_date}"
       subject = "Drop Off Report - #{report_date}"
 
-      tables = weekly_drop_off_report_tables(issuers).to_csv
+      tables = monthly_drop_off_report_tables(issuers).to_csv
     end
 
     private
 
-    def weekly_drop_off_report_tables(issuers)
+    def monthly_drop_off_report_tables(issuers)
       Reporting::IdentityVerificationReport.new(
         issuers: issuers,
         time_range: report_date.all_month,
@@ -27,7 +27,7 @@ module Reports
     end
 
     def report_configs
-      IdentityConfig.store.weekly_auth_funnel_report_config
+      IdentityConfig.store.monthly_auth_funnel_report_config
     end 	
 	end
 end
