@@ -66,7 +66,7 @@ RSpec.feature 'webauthn sign in' do
     expect(page).to have_content(t('two_factor_authentication.webauthn_header_text'))
   end
 
-  context 'platform authenticator', driver: :headless_chrome_mobile do
+  context 'platform authenticator' do
     let(:user) do
       create(:user, :with_webauthn_platform, with: { credential_id:, credential_public_key: })
     end
@@ -75,6 +75,7 @@ RSpec.feature 'webauthn sign in' do
       mock_webauthn_verification_challenge
 
       sign_in_user_with_eligible_platform_auth_available(user)
+      expect(current_url).to eq(login_two_factor_webauthn_url(platform: true))
       mock_cancelled_webauthn_authentication { click_webauthn_authenticate_button }
 
       expect(page).to have_content(t('two_factor_authentication.webauthn_platform_header_text'))

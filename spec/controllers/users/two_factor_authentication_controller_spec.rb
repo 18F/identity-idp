@@ -189,22 +189,11 @@ RSpec.describe Users::TwoFactorAuthenticationController do
           controller.current_user.webauthn_configurations.
             first.update!(platform_authenticator: true)
         end
-        context 'user is not on valid platform auth device' do
-          it 'redirects to options page' do
-            controller.user_session[:platform_authenticator_available] = false
-            get :show
 
-            expect(response).to redirect_to login_two_factor_options_path
-          end
-        end
+        it 'passes the platform parameter if the user has a platform autheticator' do
+          get :show
 
-        context 'user is on valid platform auth device' do
-          it 'passes the platform parameter if the user has a platform autheticator' do
-            controller.user_session[:platform_authenticator_available] = true
-            get :show
-
-            expect(response).to redirect_to login_two_factor_webauthn_path(platform: true)
-          end
+          expect(response).to redirect_to login_two_factor_webauthn_path(platform: true)
         end
       end
     end

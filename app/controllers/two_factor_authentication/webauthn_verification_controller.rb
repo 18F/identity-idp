@@ -4,7 +4,7 @@ module TwoFactorAuthentication
     include TwoFactorAuthenticatable
 
     before_action :check_sp_required_mfa
-    before_action :check_if_device_supports_platform_auth
+    before_action :check_if_device_supports_platform_auth, only: :show
     before_action :confirm_webauthn_enabled, only: :show
 
     def show
@@ -42,7 +42,7 @@ module TwoFactorAuthentication
     end
 
     def device_supports_webauthn_platform?
-      if user_session[:platform_authenticator_available] == 'true'
+      if user_session[:platform_authenticator_available]
         user_session.delete(:platform_authenticator_available)
         true
       else

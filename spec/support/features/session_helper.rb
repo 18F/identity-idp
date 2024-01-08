@@ -183,7 +183,8 @@ module Features
     end
 
     def sign_in_user_with_eligible_platform_auth_available(
-      user = create(:user), email = nil)
+      user = create(:user), email = nil
+    )
       email ||= user.email_addresses.first.email
       password = user.password
       allow(UserMailer).to receive(:new_device_sign_in).and_call_original
