@@ -98,7 +98,7 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
     end
   end
   describe 'view variables sent correctly' do
-    it 'sends selfie_capture_enabled to the FE' do
+    it 'sends selfie_capture_enabled to the frontend' do
       render_partial
       expect(rendered).to have_css(
         "#document-capture-form[data-doc-auth-selfie-capture='false']",
