@@ -87,7 +87,7 @@ Steps:
  
     Set the default to the new SDK version and the alternate to the old version. (That way, the new version is in place if the A/B testing goes well.)
     
-   **Note**: For testing in `staging`, `idv_acuant_sdk_upgrade_a_b_testing_enabled` can be set to `fase` like following to test the new SDK version:
+   **Note**: For testing in `staging`, `idv_acuant_sdk_upgrade_a_b_testing_enabled` can be set to `false` like following to test the new SDK version:
    ```yaml
    idv_acuant_sdk_upgrade_a_b_testing_enabled: false
    idv_acuant_sdk_upgrade_a_b_testing_percent: 50 # ignored
