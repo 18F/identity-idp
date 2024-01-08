@@ -19,6 +19,8 @@ es:
       enabled_alert: YHabilitó el JavaScript en su navegador.
       next_step: Recargue esta página una vez que haya habilitado JavaScript en su
         navegador.
+    login_button:
+      sign_in_html: Iniciar sesión con la %{logo_html}
     manageable_authenticator:
       cancel: Cancelar
       created_on: Creado el %{date}
