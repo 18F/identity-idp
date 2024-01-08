@@ -6,14 +6,13 @@ class LoginButtonComponentPreview < ButtonComponentPreview
 
   # @!endgroup
 
-  # rubocop:disable Layout/LineLength
   # @param big toggle
   # @param color select [~,primary,primary-darker,primary-lighter]
   def workbench(
     big: false,
-    color: "primary"
+    color: 'primary'
   )
-  
+
     render(
       LoginButtonComponent.new(
         big:,
@@ -21,5 +20,4 @@ class LoginButtonComponentPreview < ButtonComponentPreview
       ),
     )
   end
-  # rubocop:enable Layout/LineLength
-end
+  end
