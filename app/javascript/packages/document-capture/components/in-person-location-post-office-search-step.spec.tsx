@@ -60,9 +60,11 @@ describe('InPersonLocationPostOfficeSearchStep', () => {
   const usStatesTerritories: [string, string][] = [['Delware', 'DE']];
   const locationsURL = 'https://localhost:3000/locations/endpoint';
   const addressSearchURL = 'https://localhost:3000/addresses/endpoint';
+  const inPersonURL = '#in_person';
   const wrapper: ComponentType = ({ children }) => (
     <InPersonContext.Provider
       value={{
+        inPersonURL,
         locationsURL,
         addressSearchURL,
         inPersonOutageMessageEnabled: false,
@@ -353,7 +355,7 @@ describe('InPersonLocationPostOfficeSearchStep', () => {
       await userEvent.click(
         await findByText('in_person_proofing.body.location.po_search.search_button'),
       );
-      const moreResults = await queryAllByText('in_person_proofing.body.location.location_button');
+      const moreResults = queryAllByText('in_person_proofing.body.location.location_button');
 
       expect(moreResults).to.be.empty();
     });
@@ -366,6 +368,7 @@ describe('InPersonLocationPostOfficeSearchStep', () => {
           res(ctx.json(DEFAULT_RESPONSE), ctx.status(200)),
         ),
         rest.post(locationsURL, (_req, res, ctx) => res(ctx.json([{ name: 'Baltimore' }]))),
+        rest.put(locationsURL, (_req, res, ctx) => res(ctx.json({ success: true }))),
       );
     });
 
@@ -387,9 +390,12 @@ describe('InPersonLocationPostOfficeSearchStep', () => {
         await findByLabelText('in_person_proofing.body.location.po_search.address_search_label'),
       );
 
-      await userEvent.click(findAllByText('in_person_proofing.body.location.location_button')[0]);
+      await userEvent.click(
+        (await findAllByText('in_person_proofing.body.location.location_button'))[0],
+      );
 
-      expect(await queryByText('in_person_proofing.body.location.inline_error')).to.be.null();
+      expect(queryByText('in_person_proofing.body.location.inline_error')).to.be.null();
+      expect(window.location.hash).to.equal(inPersonURL);
     });
   });
 });

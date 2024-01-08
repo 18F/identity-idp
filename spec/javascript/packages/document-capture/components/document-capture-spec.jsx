@@ -137,9 +137,10 @@ describe('document-capture/components/document-capture', () => {
     submitButton = getByText('forms.buttons.submit.default');
     expect(isFormValid(submitButton.closest('form'))).to.be.true();
 
+    // eslint-disable-next-line require-await
     await new Promise((resolve) => {
       onSubmit.callsFake(resolve);
-      // eslint-disable-next-line no-restricted-syntax
+      // eslint-disable-next-line testing-library/await-async-events
       userEvent.click(submitButton);
     });
 
