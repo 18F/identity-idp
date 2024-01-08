@@ -7,19 +7,9 @@ updates:
     allow:
       - dependency-name: '@18f/identity-design-system'
       - dependency-name: libphonenumber-js
-  - package-ecosystem: npm
-    directory: /
-    schedule:
-      interval: daily
-    open-pull-requests-limit: 0
   - package-ecosystem: bundler
     directory: /
     schedule:
       interval: daily
     allow:
       - dependency-name: phonelib
-  - package-ecosystem: bundler
-    directory: /
-    schedule:
-      interval: daily
-    open-pull-requests-limit: 0
