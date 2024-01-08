@@ -30,9 +30,5 @@ module Idv
     def store_encrypted_images?
       IdentityConfig.store.encrypted_document_storage_enabled
     end
-
-    def liveness_checking_enabled?
-      IdentityConfig.store.doc_auth_selfie_capture_enabled
-    end
   end
 end
