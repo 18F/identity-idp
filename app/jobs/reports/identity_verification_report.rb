@@ -25,7 +25,7 @@ module Reports
           subject: "Daily Identity Verification Report - #{report_date.to_date}",
           reports: reports,
           message: preamble,
-          attachment_format: :csv,
+          attachment_format: :xlsx,
         ).deliver_now
       end
     end
