@@ -35,6 +35,7 @@ module TwoFactorAuthentication
     private
 
     def check_if_device_supports_platform_auth
+      return unless user_session.has_key?(:platform_authenticator_available)
       if platform_authenticator? && !device_supports_webauthn_platform?
         redirect_to login_two_factor_options_url
       end
