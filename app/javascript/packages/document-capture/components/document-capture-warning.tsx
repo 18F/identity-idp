@@ -21,8 +21,8 @@ interface DocumentCaptureWarningProps {
 
 const DISPLAY_ATTEMPTS = 3;
 
-function getHeadingString({ isFailedDocType, selfieResultNotLiveOrPoorQuality, t }) {
-  if (selfieResultNotLiveOrPoorQuality && !isFailedDocType) {
+function getHeadingString({ isFailedDocType, selfieHasError, t }) {
+  if (selfieHasError && !isFailedDocType) {
     return t('errors.doc_auth.selfie_result_failed_heading');
   }
   if (isFailedDocType) {
@@ -41,16 +41,11 @@ function subHeadingRequired({ nonIppOrFailedResult, isFailedDocType }) {
   return !nonIppOrFailedResult && !isFailedDocType;
 }
 
-function getSubheading({
-  selfieResultNotLiveOrPoorQuality,
-  nonIppOrFailedResult,
-  isFailedDocType,
-  t,
-}) {
+function getSubheading({ selfieHasError, nonIppOrFailedResult, isFailedDocType, t }) {
   if (!subHeadingRequired({ nonIppOrFailedResult, isFailedDocType })) {
     return undefined;
   }
-  if (selfieResultNotLiveOrPoorQuality && !isFailedDocType) {
+  if (selfieHasError && !isFailedDocType) {
     return t('errors.doc_auth.selfie_result_failed_subheading');
   }
   return <h2>{t('errors.doc_auth.rate_limited_subheading')}</h2>;
@@ -78,11 +73,12 @@ function DocumentCaptureWarning({
   const { trackEvent } = useContext(AnalyticsContext);
 
   const nonIppOrFailedResult = !inPersonURL || isFailedResult;
-  const heading = getHeadingString({ isFailedDocType, selfieResultNotLiveOrPoorQuality, t });
+  const selfieHasError = selfieResultFailed || selfieResultNotLiveOrPoorQuality 
+  const heading = getHeadingString({ isFailedDocType, selfieHasError, t });
   const actionText = getActionTextString({ nonIppOrFailedResult, t });
   // we have an h2 subheading when nonIpp is false and isFailed is false
   const subheading = getSubheading({
-    selfieResultNotLiveOrPoorQuality,
+    selfieHasError,
     nonIppOrFailedResult,
     isFailedDocType,
     t,
