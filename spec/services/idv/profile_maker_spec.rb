@@ -172,7 +172,7 @@ RSpec.describe Idv::ProfileMaker do
         let(:selfie_check_performed) { true }
 
         before do
-          allow(FeatureManagement).to receive(:idv_allow_selfie_check_in_login_prod?).
+          expect(FeatureManagement).to receive(:idv_allow_selfie_check_in_login_prod?).
             and_return(true)
         end
 
