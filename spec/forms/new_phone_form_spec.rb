@@ -244,46 +244,44 @@ RSpec.describe NewPhoneForm do
         form.submit(params.merge(phone: telephony_gem_voip_number))
       end
 
-      context 'when voip numbers are blocked' do
-        it 'is invalid' do
-          expect(result.success?).to eq(false)
-          expect(result.errors[:phone]).to eq([I18n.t('errors.messages.voip_phone')])
+      it 'voip numbers are invalid' do
+        expect(result.success?).to eq(false)
+        expect(result.errors[:phone]).to eq([I18n.t('errors.messages.voip_phone')])
+      end
+
+      it 'logs the type and carrier' do
+        expect(result.extra).to include(
+          phone_type: :voip,
+          carrier: 'Test VOIP Carrier',
+        )
+      end
+
+      context 'when AWS rate limits info type checks' do
+        before do
+          expect(Telephony).to receive(:phone_info).
+            and_raise(Aws::Pinpoint::Errors::TooManyRequestsException.new(nil, 'error message'))
         end
 
-        it 'logs the type and carrier' do
-          expect(result.extra).to include(
-            phone_type: :voip,
-            carrier: 'Test VOIP Carrier',
-          )
+        it 'logs a warning and fails open' do
+          expect(result.extra[:warn]).to include('AWS pinpoint phone info rate limit')
+
+          expect(result.success?).to eq(true)
+          expect(result.errors).to be_blank
+        end
+      end
+
+      context 'when voip checks are disabled' do
+        let(:phone_service_check) { false }
+
+        it 'does not check the phone type' do
+          expect(Telephony).to_not receive(:phone_info)
+
+          result
         end
 
-        context 'when AWS rate limits info type checks' do
-          before do
-            expect(Telephony).to receive(:phone_info).
-              and_raise(Aws::Pinpoint::Errors::TooManyRequestsException.new(nil, 'error message'))
-          end
-
-          it 'logs a warning and fails open' do
-            expect(result.extra[:warn]).to include('AWS pinpoint phone info rate limit')
-
-            expect(result.success?).to eq(true)
-            expect(result.errors).to be_blank
-          end
-        end
-
-        context 'when voip checks are disabled' do
-          let(:phone_service_check) { false }
-
-          it 'does not check the phone type' do
-            expect(Telephony).to_not receive(:phone_info)
-
-            result
-          end
-
-          it 'allows voip numbers since it cannot check the type' do
-            expect(result.success?).to eq(true)
-            expect(result.errors).to be_blank
-          end
+        it 'allows voip numbers since it cannot check the type' do
+          expect(result.success?).to eq(true)
+          expect(result.errors).to be_blank
         end
       end
 
