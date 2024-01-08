@@ -29,7 +29,7 @@ fr:
       edit_heading: Gérer les paramètres de votre application d’authentification
       manage_accessible_label: Gérer l’application d’authentification
       nickname: Pseudo
-      renamed: Votre méthode d'application d'authentification a été renommée avec succès
+      renamed: Votre méthode d’application d’authentification a été renommée avec succès
     backup_code_header_text: Entrez votre code de sauvegarde
     backup_code_prompt: Vous pouvez utiliser ce code de sauvegarde une seule fois.
       Après l’avoir envoyé, vous devrez utiliser un nouveau code de sauvegarde
