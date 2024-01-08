@@ -172,8 +172,8 @@ RSpec.describe Idv::ProfileMaker do
         let(:selfie_check_performed) { true }
 
         before do
-          allow(FeatureManagement).to receive(:idv_block_biometrics_requests?).
-            and_return(false)
+          allow(FeatureManagement).to receive(:idv_allow_selfie_check_in_login_prod?).
+            and_return(true)
         end
 
         it 'creates an active profile' do

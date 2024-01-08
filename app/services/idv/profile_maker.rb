@@ -46,7 +46,7 @@ module Idv
     def set_idv_level(in_person_verification_needed:, selfie_check_performed:)
       if in_person_verification_needed
         :legacy_in_person
-      elsif !FeatureManagement.idv_block_biometrics_requests? && selfie_check_performed
+      elsif FeatureManagement.idv_allow_selfie_check_in_login_prod? && selfie_check_performed
         :unsupervised_with_selfie
       else
         :legacy_unsupervised
