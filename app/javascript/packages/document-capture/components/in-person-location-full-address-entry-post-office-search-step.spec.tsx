@@ -44,9 +44,11 @@ const DEFAULT_PROPS = {
 describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
   const usStatesTerritories: [string, string][] = [['Delware', 'DE']];
   const locationsURL = 'https://localhost:3000/locations/endpoint';
+  const inPersonURL = '#in_person';
   const wrapper: ComponentType = ({ children }) => (
     <InPersonContext.Provider
       value={{
+        inPersonURL,
         locationsURL,
         addressSearchURL: 'https://localhost:3000',
         inPersonOutageMessageEnabled: false,
@@ -74,7 +76,10 @@ describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
   beforeEach(() => {
     server.resetHandlers();
     // todo: should we return USPS_RESPONSE here?
-    server.use(rest.post(locationsURL, (_req, res, ctx) => res(ctx.json([{ name: 'Baltimore' }]))));
+    server.use(
+      rest.post(locationsURL, (_req, res, ctx) => res(ctx.json([{ name: 'Baltimore' }]))),
+      rest.put(locationsURL, (_req, res, ctx) => res(ctx.json({ success: true }))),
+    );
   });
 
   it('renders the step', () => {
@@ -326,8 +331,11 @@ describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
       await findByLabelText('in_person_proofing.body.location.po_search.zipcode_label'),
     );
 
-    await userEvent.click(findAllByText('in_person_proofing.body.location.location_button')[0]);
+    await userEvent.click(
+      (await findAllByText('in_person_proofing.body.location.location_button'))[0],
+    );
 
-    expect(await queryByText('simple_form.required.text')).to.be.null();
+    expect(queryByText('simple_form.required.text')).to.be.null();
+    expect(window.location.hash).to.equal(inPersonURL);
   });
 });
