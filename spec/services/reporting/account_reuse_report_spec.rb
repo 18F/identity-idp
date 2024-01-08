@@ -21,11 +21,11 @@ RSpec.describe Reporting::AccountReuseReport do
     let(:sp_c) { 'c' }
     let(:sp_d) { 'd' }
 
-    def create_identity(id, created_time, provider, verified_time)
+    def create_identity(user_id:, created_at:, provider:, verified_at:)
       ServiceProviderIdentity.create(
-        user_id: id, service_provider: provider,
-        created_at: created_time,
-        last_ial2_authenticated_at: in_query, verified_at: verified_time
+        user_id: user_id, service_provider: provider,
+        created_at: created_at,
+        last_ial2_authenticated_at: in_query, verified_at: verified_at
       )
     end
 
@@ -136,7 +136,7 @@ RSpec.describe Reporting::AccountReuseReport do
 
       users_to_query.each do |user|
         user[:sp].each_with_index do |sp, i|
-          create_identity(user[:id], user[:created_timestamp], sp, user[:sp_timestamp][i])
+          create_identity(user_id: user[:id], created_at: user[:created_timestamp], provider: sp, verified_at: user[:sp_timestamp][i])
         end
       end
 
