@@ -1,4 +1,7 @@
-import { isWebauthnPlatformAuthenticatorAvailable, isWebauthnPasskeySupported } from '@18f/identity-webauthn';
+import {
+  isWebauthnPlatformAuthenticatorAvailable,
+  isWebauthnPasskeySupported,
+} from '@18f/identity-webauthn';
 
 async function platformAuthenticatorAvailable() {
   const platformauthenticatorAvailableInput = document.getElementById(
@@ -7,7 +10,7 @@ async function platformAuthenticatorAvailable() {
   if (!platformauthenticatorAvailableInput) {
     return;
   }
-  if (isWebauthnPasskeySupported() && await isWebauthnPlatformAuthenticatorAvailable()) {
+  if (isWebauthnPasskeySupported() && (await isWebauthnPlatformAuthenticatorAvailable())) {
     platformauthenticatorAvailableInput.value = 'true';
   } else {
     platformauthenticatorAvailableInput.value = 'false';

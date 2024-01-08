@@ -12,11 +12,7 @@ module WebAuthnHelper
   end
 
   def mock_setup_eligible_user_device
-    mobile_user_agent = 'Mozilla/5.0 (iPhone; CPU iPhone OS 10_3_2 like Mac OS X) ' \
-    'AppleWebKit/603.2.4 (KHTML, like Gecko) ' \
-    'Version/10.0 Mobile/14F89 Safari/602.1'
-    mobile_device = Browser.new(mobile_user_agent)
-    allow(BrowserCache).to receive(:parse).and_return(mobile_device)
+    set_hidden_field('platform_authenticator_available', 'true')
   end
 
   def mock_webauthn_verification_challenge
