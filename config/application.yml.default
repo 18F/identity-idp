@@ -103,8 +103,8 @@ enable_load_testing_mode: false
 enable_rate_limiting: true
 enable_test_routes: true
 enable_usps_verification: true
-encrypted_document_storage_enabled: true
-encrypted_document_storage_s3_bucket: 'test-bucket-changeme'
+encrypted_document_storage_enabled: false
+encrypted_document_storage_s3_bucket: ''
 event_disavowal_expiration_hours: 240
 feature_idv_force_gpo_verification_enabled: false
 feature_idv_hybrid_flow_enabled: true
@@ -464,8 +464,6 @@ production:
   email_registrations_per_ip_track_only_mode: true
   enable_test_routes: false
   enable_usps_verification: false
-  encrypted_document_storage_enabled: false
-  encrypted_document_storage_s3_bucket: ''
   hmac_fingerprinter_key:
   hmac_fingerprinter_key_queue: '[]'
   idv_sp_required: true
