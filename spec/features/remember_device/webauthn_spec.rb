@@ -96,7 +96,7 @@ RSpec.describe 'Remembering a webauthn device' do
       it_behaves_like 'remember device'
     end
 
-    context 'sign up' do
+    context 'sign up', do
       before do
         allow(IdentityConfig.store).
           to receive(:show_unsupported_passkey_platform_authentication_setup).
@@ -148,7 +148,6 @@ RSpec.describe 'Remembering a webauthn device' do
     context 'update webauthn' do
       def remember_device_and_sign_out_user
         mock_webauthn_setup_challenge
-        sign_in_and_2fa_user(user)
         sign_in_user_with_eligible_platform_auth_available(user)
         visit account_two_factor_authentication_path
         first(:link, t('account.index.webauthn_add'), href: webauthn_setup_path).click

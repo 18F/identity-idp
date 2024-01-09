@@ -13,7 +13,11 @@ RSpec.shared_examples 'remember device' do
     days_to_travel = (IdentityConfig.store.remember_device_expiration_hours_aal_1 + 1).
       hours.from_now
     travel_to(days_to_travel)
-    sign_in_user(user)
+    if TwoFactorAuthentication::WebauthnPolicy.new(user).platform_enabled?
+      sign_in_user_with_eligible_platform_auth_available(user)
+    else
+      sign_in_user(user)
+    end
 
     expect_mfa_to_be_required_for_user(user)
   end
@@ -24,7 +28,11 @@ RSpec.shared_examples 'remember device' do
     second_user = user_with_2fa
 
     # Sign in as second user and expect otp confirmation
-    sign_in_user(second_user)
+    if TwoFactorAuthentication::WebauthnPolicy.new(user).platform_enabled?
+      sign_in_user_with_eligible_platform_auth_available(user)
+    else
+      sign_in_user(user)
+    end
     expect_mfa_to_be_required_for_user(second_user)
 
     # Setup remember device as second user
@@ -36,7 +44,11 @@ RSpec.shared_examples 'remember device' do
     first(:button, t('links.sign_out')).click
 
     # Sign in as first user again and expect otp confirmation
-    sign_in_user(first_user)
+    if TwoFactorAuthentication::WebauthnPolicy.new(user).platform_enabled?
+      sign_in_user_with_eligible_platform_auth_available(user)
+    else
+      sign_in_user(user)
+    end
     expect_mfa_to_be_required_for_user(first_user)
   end
 
