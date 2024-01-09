@@ -193,7 +193,7 @@ RSpec.describe 'doc auth IPP state ID step', js: true do
       fill_in t('in_person_proofing.form.state_id.last_name'), with: 'Джейкоб'
       fill_in t('in_person_proofing.form.state_id.address1'), with: '#1 $treet'
       fill_in t('in_person_proofing.form.state_id.address2'), with: 'Gr@nd Lañe^'
-      fill_in t('in_person_proofing.form.state_id.city'), with: 'B3st C!ty'
+      fill_in t('in_person_proofing.form.state_id.city'), with: 'N3w C!ty'
       click_idv_continue
 
       expect(page).to have_content(
