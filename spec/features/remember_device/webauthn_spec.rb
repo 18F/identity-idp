@@ -72,7 +72,7 @@ RSpec.describe 'Remembering a webauthn device' do
     end
   end
 
-  context 'platform authenticator' do
+  context 'platform authenticator', :js, driver: :headless_chrome_mobile do
     context 'sign in' do
       before do
         create(

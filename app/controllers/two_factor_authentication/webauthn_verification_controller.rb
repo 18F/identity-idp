@@ -42,12 +42,12 @@ module TwoFactorAuthentication
     end
 
     def device_supports_webauthn_platform?
+      supports_webauthn_platform = false
       if user_session[:platform_authenticator_available]
-        user_session.delete(:platform_authenticator_available)
-        true
-      else
-        false
+        supports_webauthn_platform = true
       end
+      user_session.delete(:platform_authenticator_available)
+      supports_webauthn_platform
     end
 
     def handle_webauthn_result(result)
