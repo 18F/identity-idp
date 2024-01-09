@@ -420,7 +420,7 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
     end
   end
 
-  context 'when ipp_enabled is false and ipp_opt_in_enabled is enabled' do
+  context 'when ipp_enabled is false and ipp_opt_in_enabled is true' do
     let(:user) { user_with_2fa }
     let(:sp) { :oidc }
 
