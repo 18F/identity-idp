@@ -195,7 +195,7 @@ RSpec.feature 'document capture step', :js do
     end
   end
 
-  context 'with idv_allow_selfie_check? set to true' do
+  context 'selfie check' do
     let(:selfie_check_enabled) { true }
     before do
       allow(FeatureManagement).to receive(:idv_allow_selfie_check?).
@@ -264,7 +264,7 @@ RSpec.feature 'document capture step', :js do
         end
       end
 
-      context 'when hosted env is prod' do
+      context 'when selfie check is not enabled (flag off, and/or in production)' do
         let(:selfie_check_enabled) { false }
         it 'proceeds to the next page with valid info, excluding a selfie image' do
           perform_in_browser(:mobile) do
