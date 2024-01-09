@@ -22,6 +22,7 @@ RSpec.describe Idv::ProfileMaker do
         fraud_pending_reason: nil,
         gpo_verification_needed: false,
         in_person_verification_needed: false,
+        selfie_check_performed: false,
       )
       pii = subject.pii_attributes
 
@@ -45,6 +46,7 @@ RSpec.describe Idv::ProfileMaker do
           gpo_verification_needed: false,
           deactivation_reason: :encryption_error,
           in_person_verification_needed: false,
+          selfie_check_performed: false,
         )
       end
       it 'creates an inactive profile with deactivation reason' do
@@ -69,6 +71,7 @@ RSpec.describe Idv::ProfileMaker do
           gpo_verification_needed: false,
           deactivation_reason: nil,
           in_person_verification_needed: false,
+          selfie_check_performed: false,
         )
       end
       it 'creates a pending profile for fraud review' do
@@ -93,6 +96,7 @@ RSpec.describe Idv::ProfileMaker do
           gpo_verification_needed: true,
           deactivation_reason: nil,
           in_person_verification_needed: false,
+          selfie_check_performed: false,
         )
       end
       it 'creates a pending profile for gpo verification' do
@@ -117,6 +121,7 @@ RSpec.describe Idv::ProfileMaker do
           gpo_verification_needed: false,
           deactivation_reason: nil,
           in_person_verification_needed: true,
+          selfie_check_performed: false,
         )
       end
       it 'creates a pending profile for in person verification' do
@@ -136,26 +141,54 @@ RSpec.describe Idv::ProfileMaker do
     end
 
     context 'as active' do
+      let(:selfie_check_performed) { false }
       let(:profile) do
         subject.save_profile(
           fraud_pending_reason: nil,
           gpo_verification_needed: false,
           deactivation_reason: nil,
           in_person_verification_needed: false,
+          selfie_check_performed: selfie_check_performed,
         )
       end
-      it 'creates an active profile' do
-        expect(profile.activated_at).to be_nil
-        expect(profile.active).to eq(false)
-        expect(profile.deactivation_reason).to be_nil
-        expect(profile.fraud_pending_reason).to be_nil
-        expect(profile.fraud_review_pending?).to eq(false)
-        expect(profile.gpo_verification_pending_at.present?).to eq(false)
-        expect(profile.initiating_service_provider).to eq(nil)
-        expect(profile.verified_at).to be_nil
+
+      context 'legacy unsupervised' do
+        it 'creates an active profile' do
+          expect(profile.activated_at).to be_nil
+          expect(profile.active).to eq(false)
+          expect(profile.deactivation_reason).to be_nil
+          expect(profile.fraud_pending_reason).to be_nil
+          expect(profile.fraud_review_pending?).to eq(false)
+          expect(profile.gpo_verification_pending_at.present?).to eq(false)
+          expect(profile.initiating_service_provider).to eq(nil)
+          expect(profile.verified_at).to be_nil
+        end
+        it 'marks the profile as legacy_unsupervised' do
+          expect(profile.idv_level).to eql('legacy_unsupervised')
+        end
       end
-      it 'marks the profile as legacy_unsupervised' do
-        expect(profile.idv_level).to eql('legacy_unsupervised')
+
+      context 'unsupervised with selfie' do
+        let(:selfie_check_performed) { true }
+
+        before do
+          allow(FeatureManagement).to receive(:idv_block_biometrics_requests?).
+            and_return(false)
+        end
+
+        it 'creates an active profile' do
+          expect(profile.activated_at).to be_nil
+          expect(profile.active).to eq(false)
+          expect(profile.deactivation_reason).to be_nil
+          expect(profile.fraud_pending_reason).to be_nil
+          expect(profile.fraud_review_pending?).to eq(false)
+          expect(profile.gpo_verification_pending_at.present?).to eq(false)
+          expect(profile.initiating_service_provider).to eq(nil)
+          expect(profile.verified_at).to be_nil
+        end
+        it 'marks the profile as unsupervised_with_selfie' do
+          expect(profile.idv_level).to eql('unsupervised_with_selfie')
+        end
       end
     end
 
@@ -167,6 +200,7 @@ RSpec.describe Idv::ProfileMaker do
           gpo_verification_needed: false,
           deactivation_reason: nil,
           in_person_verification_needed: false,
+          selfie_check_performed: false,
         )
       end
       it 'creates a profile with the initiating sp recorded' do
