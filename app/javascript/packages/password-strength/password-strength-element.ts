@@ -44,7 +44,7 @@ class PasswordStrengthElement extends HTMLElement {
   #getNormalizedScore(result: ZXCVBNResult): ZXCVBNScore {
     const { score } = result;
 
-    if (this.input.value.length < this.minimumLength && score >= MINIMUM_STRENGTH) {
+    if (score >= MINIMUM_STRENGTH && this.input.value.length < this.minimumLength) {
       return Math.max(MINIMUM_STRENGTH - 1, 0) as ZXCVBNScore;
     }
 
