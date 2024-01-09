@@ -202,7 +202,7 @@ module DocAuth
         classification_info: nil
       )
         merged_image_metrics = DEFAULT_IMAGE_METRICS.deep_merge(image_metrics)
-        {
+        true_id_mock_response = {
           vendor: 'Mock',
           doc_auth_result: doc_auth_result,
           processed_alerts: {
@@ -212,9 +212,14 @@ module DocAuth
           alert_failure_count: failed&.count.to_i,
           image_metrics: merged_image_metrics,
           liveness_enabled: liveness_enabled,
-          portrait_match_results: portrait_match_results,
           classification_info: classification_info,
         }.compact
+
+        if @selfie_check_performed
+          true_id_mock_response[:portrait_match_results] = portrait_match_results
+        end
+
+        true_id_mock_response
       end
     end
   end
