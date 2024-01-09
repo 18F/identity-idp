@@ -77,6 +77,14 @@ module InPersonHelper
     click_button t('in_person_proofing.body.cta.button')
   end
 
+  def begin_in_person_proofing_with_opt_in_ipp_enabled_and_opting_in
+    complete_up_to_how_to_verify_step_for_opt_in_ipp_and_opting_in
+  end
+
+  def begin_in_person_proofing_with_opt_in_ipp_enabled_and_opting_out
+    complete_up_to_how_to_verify_step_for_opt_in_ipp_and_opting_out
+  end
+
   def search_for_post_office
     expect(page).to(have_content(t('in_person_proofing.headings.po_search.location')))
     expect(page).to(have_content(t('in_person_proofing.body.location.po_search.po_search_about')))
