@@ -11,10 +11,10 @@
   vertical-align: middle;
   color: transparent;
   background: no-repeat 100% url('logo.svg');
-}
 
-.login-button__logo-white {
-  background-image: url('logo-white.svg');
+  .login-button--primary-darker & {
+    background-image: url('logo-white.svg');
+  }
 }
 
 .login-button.login-button--primary-lighter {
