@@ -1,5 +1,4 @@
 class LoginButtonComponent < ButtonComponent
-  APP_NAME = 'Login.gov'
   VALID_COLORS = ['primary', 'primary-darker', 'primary-lighter'].freeze
 
   attr_reader :color, :tag_options
