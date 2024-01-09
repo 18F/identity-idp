@@ -409,7 +409,7 @@ describe('document-capture/components/review-issues-step', () => {
     });
 
     it('skip renders initially with warning page when failed image is submitted again', () => {
-      const { queryByRole, getByRole, getByText } = render(
+      const { findByRole, getByRole, getByText } = render(
         <I18nContext.Provider
           value={
             new I18n({
@@ -446,9 +446,9 @@ describe('document-capture/components/review-issues-step', () => {
         </I18nContext.Provider>,
       );
 
-      expect(queryByRole('button', { name: 'idv.failure.button.warning' })).to.not.exist();
-      expect(getByRole('heading', { name: 'doc_auth.headings.review_issues' })).to.be.ok();
-      expect(getByText('duplicate image')).to.be.ok();
+      expect(findByRole('button', { name: 'idv.failure.button.warning' })).not.to.exist;
+      expect(getByRole('heading', { name: 'doc_auth.headings.review_issues' })).to.be.ok;
+      expect(getByText('duplicate image')).to.be.ok;
     });
 
     context('ial2 strict', () => {

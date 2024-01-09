@@ -105,15 +105,4 @@ RSpec.feature 'OIDC Authorization Confirmation' do
       end
     end
   end
-
-  context 'when asked for selfie verification in production' do
-    before do
-      allow(Rails.env).to receive(:production?).and_return(true)
-      visit visit_idp_from_ial2_oidc_sp(biometric_comparison_required: true)
-    end
-
-    it 'redirects to the 406 (unacceptable) page' do
-      expect(page.status_code).to eq(406)
-    end
-  end
 end

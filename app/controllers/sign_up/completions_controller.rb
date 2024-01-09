@@ -3,8 +3,7 @@ module SignUp
     include SecureHeadersConcern
 
     before_action :confirm_two_factor_authenticated
-    before_action :confirm_identity_verified, if: :ial2?
-    before_action :confirm_selfie_captured, if: :selfie_required?
+    before_action :verify_confirmed, if: :ial2?
     before_action :apply_secure_headers_override, only: [:show, :update]
     before_action :verify_needs_completions_screen
 
@@ -32,12 +31,8 @@ module SignUp
 
     private
 
-    def confirm_identity_verified
+    def verify_confirmed
       redirect_to idv_url if current_user.identity_not_verified?
-    end
-
-    def confirm_selfie_captured
-      redirect_to idv_url if !current_user.identity_verified_with_selfie?
     end
 
     def verify_needs_completions_screen
@@ -65,10 +60,6 @@ module SignUp
 
     def ial2_requested?
       !!(ial2? || (ial_max? && current_user.identity_verified?))
-    end
-
-    def selfie_required?
-      decorated_sp_session.selfie_required?
     end
 
     def return_to_account

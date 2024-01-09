@@ -4,6 +4,7 @@
 Dir.chdir(__dir__) { require 'bundler/setup' }
 
 require 'active_support'
+require 'active_support/core_ext/object/blank'
 require 'active_support/core_ext/enumerable' # index_by
 require 'active_support/core_ext/integer/time'
 require 'optparse'

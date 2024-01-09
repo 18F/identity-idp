@@ -405,7 +405,7 @@ describe('FormSteps', () => {
 
     await userEvent.click(getByText(t('forms.buttons.continue')));
 
-    await findByText('Second Title');
+    await expect(findByText('Second Title')).to.be.fulfilled();
     await expect(checkFormHasExpectedErrors()).to.be.rejected();
 
     window.history.back();

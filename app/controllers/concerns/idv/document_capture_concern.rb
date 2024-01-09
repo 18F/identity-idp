@@ -43,7 +43,6 @@ module Idv
         if store_in_session
           idv_session.pii_from_doc ||= {}
           idv_session.pii_from_doc.merge!(pii_from_doc)
-          idv_session.selfie_check_performed = response.selfie_check_performed
         end
       end
 

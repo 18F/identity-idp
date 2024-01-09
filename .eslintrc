@@ -6,7 +6,7 @@
     "plugin:react-hooks/recommended",
     "plugin:react/jsx-runtime"
   ],
-  "plugins": ["@18f/eslint-plugin-identity", "testing-library"],
+  "plugins": ["@18f/eslint-plugin-identity"],
   "env": {
     "browser": true,
     "commonjs": true
@@ -20,6 +20,10 @@
       {
         "selector": "AssignmentExpression[left.property.name='href'][right.type=/(Template)?Literal/]",
         "message": "Do not assign window.location.href to a string or string template to avoid losing i18n parameters"
+      },
+      {
+        "selector": "ExpressionStatement[expression.callee.object.name='userEvent']",
+        "message": "Await the promised result of a userEvent interaction"
       }
     ]
   },
@@ -40,17 +44,11 @@
             "devDependencies": true,
             "packageDir": "."
           }
-        ],
-        "testing-library/await-async-events": "error",
-        "testing-library/await-async-queries": "error",
-        "testing-library/await-async-utils": "error",
-        "testing-library/no-await-sync-events": "error",
-        "testing-library/no-await-sync-queries": "error",
-        "testing-library/no-debugging-utils": "error"
+        ]
       }
     },
     {
-      // Turn off react linting rules for most packages/files
+      // Turn off react linting rules for most packages/files 
       "files": [
         "spec/**",
         "app/javascript/packs/**",
@@ -65,8 +63,8 @@
         "app/javascript/packages/validated-field/**",
         "app/javascript/packages/verify-flow/**",
         // In progress: enabling these rules for all files in packages/document-capture
-        "app/javascript/packages/document-capture/context/**",
-        "app/javascript/packages/document-capture/higher-order/**",
+        "app/javascript/packages/document-capture/context/**", 
+        "app/javascript/packages/document-capture/higher-order/**", 
         "app/javascript/packages/document-capture/hooks/**",
         // Comment out a file to enable react lint rules for that file only
         "app/javascript/packages/document-capture/components/acuant-camera.tsx",
@@ -115,6 +113,6 @@
         "react-hooks/exhaustive-deps": "off",
         "react-hooks/rules-of-hooks": "off"
       }
-    }
+    },
   ]
 }

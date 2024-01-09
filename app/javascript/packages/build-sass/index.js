@@ -1,4 +1,4 @@
-import { basename, join, dirname } from 'node:path';
+import { basename, join } from 'node:path';
 import { createWriteStream } from 'node:fs';
 import { Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
@@ -29,7 +29,7 @@ const TARGETS = browserslistToTargets(
  * @return {Promise<CompileResult>}
  */
 export async function buildFile(file, options) {
-  const { outDir = dirname(file), optimize, loadPaths = [], ...sassOptions } = options;
+  const { outDir, optimize, loadPaths = [], ...sassOptions } = options;
   const sassResult = sassCompile(file, {
     style: optimize ? 'compressed' : 'expanded',
     ...sassOptions,
@@ -46,7 +46,9 @@ export async function buildFile(file, options) {
     targets: TARGETS,
   });
 
-  outFile = join(outDir, outFile);
+  if (outDir) {
+    outFile = join(outDir, outFile);
+  }
 
   await pipeline(Readable.from(lightningResult.code), createWriteStream(outFile));
 

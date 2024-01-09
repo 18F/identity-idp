@@ -106,7 +106,6 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController do
         attributes = {
           context: 'authentication',
           multi_factor_auth_method: 'piv_cac',
-          new_device: nil,
           piv_cac_configuration_id: nil,
         }
 
@@ -118,7 +117,6 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController do
           errors: {},
           context: 'authentication',
           multi_factor_auth_method: 'piv_cac',
-          new_device: nil,
           multi_factor_auth_method_created_at: cfg.created_at.strftime('%s%L'),
           piv_cac_configuration_id: cfg.id,
         }
@@ -134,30 +132,6 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController do
           with('User marked authenticated', authentication_type: :valid_2fa)
 
         get :show, params: { token: 'good-token' }
-      end
-
-      context 'with new device session value' do
-        before do
-          subject.user_session[:new_device] = false
-        end
-        it 'tracks new device value' do
-          stub_analytics
-          cfg = controller.current_user.piv_cac_configurations.first
-
-          submit_attributes = {
-            success: true,
-            errors: {},
-            context: 'authentication',
-            multi_factor_auth_method: 'piv_cac',
-            new_device: false,
-            multi_factor_auth_method_created_at: cfg.created_at.strftime('%s%L'),
-            piv_cac_configuration_id: cfg.id,
-          }
-          expect(@analytics).to receive(:track_mfa_submit_event).
-            with(submit_attributes)
-
-          get :show, params: { token: 'good-token' }
-        end
       end
     end
 
@@ -229,7 +203,6 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController do
         attributes = {
           context: 'authentication',
           multi_factor_auth_method: 'piv_cac',
-          new_device: nil,
           piv_cac_configuration_id: nil,
         }
 
@@ -247,7 +220,6 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController do
           context: 'authentication',
           multi_factor_auth_method: 'piv_cac',
           multi_factor_auth_method_created_at: nil,
-          new_device: nil,
           key_id: nil,
           piv_cac_configuration_id: nil,
         }

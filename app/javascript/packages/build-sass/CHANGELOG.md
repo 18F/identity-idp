@@ -4,10 +4,6 @@
 
 - Requires Node.js v18 or newer
 
-### Improvements
-
-- `--out-dir` is now optional. If omitted, files will be output in the same directory as their source files.
-
 ## 2.0.0
 
 ### Breaking Changes

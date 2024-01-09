@@ -138,7 +138,6 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
           context: 'authentication',
           multi_factor_auth_method: 'sms',
           multi_factor_auth_method_created_at: phone_configuration_created_at.strftime('%s%L'),
-          new_device: nil,
           phone_configuration_id: controller.current_user.default_phone_configuration.id,
           area_code: parsed_phone.area_code,
           country_code: parsed_phone.country,
@@ -210,7 +209,6 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
           context: 'authentication',
           multi_factor_auth_method: 'sms',
           multi_factor_auth_method_created_at: phone_configuration_created_at.strftime('%s%L'),
-          new_device: nil,
           phone_configuration_id: controller.current_user.default_phone_configuration.id,
           area_code: parsed_phone.area_code,
           country_code: parsed_phone.country,
@@ -277,7 +275,6 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
           context: 'authentication',
           multi_factor_auth_method: 'sms',
           multi_factor_auth_method_created_at: phone_configuration_created_at.strftime('%s%L'),
-          new_device: nil,
           phone_configuration_id: controller.current_user.default_phone_configuration.id,
           area_code: parsed_phone.area_code,
           country_code: parsed_phone.country,
@@ -312,40 +309,6 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
             ],
           )
           expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq false
-        end
-      end
-
-      context 'with new device session value' do
-        it 'tracks new device value' do
-          subject.user_session[:new_device] = false
-          phone_configuration_created_at = controller.current_user.
-            default_phone_configuration.created_at
-          properties = {
-            success: true,
-            confirmation_for_add_phone: false,
-            context: 'authentication',
-            multi_factor_auth_method: 'sms',
-            multi_factor_auth_method_created_at: phone_configuration_created_at.strftime('%s%L'),
-            new_device: false,
-            phone_configuration_id: controller.current_user.default_phone_configuration.id,
-            area_code: parsed_phone.area_code,
-            country_code: parsed_phone.country,
-            phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
-            enabled_mfa_methods_count: 1,
-            in_account_creation_flow: false,
-          }
-
-          stub_analytics
-
-          expect(@analytics).to receive(:track_mfa_submit_event).
-            with(properties)
-
-          freeze_time do
-            post :create, params: {
-              code: subject.current_user.reload.direct_otp,
-              otp_delivery_preference: 'sms',
-            }
-          end
         end
       end
 
@@ -499,7 +462,6 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
               context: 'confirmation',
               multi_factor_auth_method: 'sms',
               multi_factor_auth_method_created_at: phone_configuration_created_at.strftime('%s%L'),
-              new_device: nil,
               phone_configuration_id: phone_id,
               area_code: parsed_phone.area_code,
               country_code: parsed_phone.country,
@@ -590,7 +552,6 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
               multi_factor_auth_method: 'sms',
               phone_configuration_id: controller.current_user.default_phone_configuration.id,
               multi_factor_auth_method_created_at: phone_configuration_created_at.strftime('%s%L'),
-              new_device: nil,
               area_code: parsed_phone.area_code,
               country_code: parsed_phone.country,
               phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
@@ -673,7 +634,6 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
               context: 'confirmation',
               multi_factor_auth_method: 'sms',
               multi_factor_auth_method_created_at: nil,
-              new_device: nil,
               confirmation_for_add_phone: false,
               phone_configuration_id: nil,
               area_code: parsed_phone.area_code,

@@ -18,12 +18,4 @@ describe('cli', () => {
       await stat(join(cwd, 'fixtures/missing-out-dir/in.css.scss'));
     });
   });
-
-  context('with unconfigured output directory', () => {
-    it('outputs in the same directory as the input file', async () => {
-      await exec('./cli.js fixtures/default-out-dir/styles.css.scss', { cwd });
-
-      await stat(join(cwd, 'fixtures/default-out-dir/styles.css'));
-    });
-  });
 });
