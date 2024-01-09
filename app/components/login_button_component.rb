@@ -9,7 +9,6 @@ class LoginButtonComponent < ButtonComponent
     end
 
     super(
-      color: color,
       **tag_options
     )
 
@@ -22,7 +21,8 @@ class LoginButtonComponent < ButtonComponent
   end
 
   def css_class
-    classes = super || ['usa-button', *tag_options[:class]]
+    classes = ['usa-button', *tag_options[:class]]
+    classes << 'usa-button--big' if big
     classes << "login-button login-button--#{color}"
     classes
   end
