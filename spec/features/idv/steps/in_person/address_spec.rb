@@ -55,6 +55,7 @@ RSpec.describe 'doc auth In person proofing residential address step', js: true 
       expect(page).to have_text(InPersonHelper::GOOD_ADDRESS2)
       expect(page).to have_text(InPersonHelper::GOOD_CITY)
       expect(page).to have_text(InPersonHelper::GOOD_ZIPCODE)
+      expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT_STATE)
     end
   end
 
@@ -107,6 +108,44 @@ RSpec.describe 'doc auth In person proofing residential address step', js: true 
       click_idv_continue
 
       expect(page).to have_current_path(idv_in_person_ssn_url, wait: 10)
+    end
+  end
+
+  context 'State selection' do
+    it 'shows address hint when user selects state that has a specific hint',
+       allow_browser_log: true do
+        complete_idv_steps_before_address
+
+      # address form
+      select 'Puerto Rico',
+             from: t('idv.form.state')
+      expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address1_hint'))
+      expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address2_hint'))
+
+      # change selection
+      fill_out_address_form_ok(same_address_as_id: false)
+      expect(page).not_to have_content(I18n.t('in_person_proofing.form.state_id.address1_hint'))
+      expect(page).not_to have_content(I18n.t('in_person_proofing.form.state_id.address2_hint'))
+
+      # re-select puerto rico
+      select 'Puerto Rico',
+             from: t('idv.form.state')
+      click_idv_continue
+
+      # ssn page
+      expect(page).to have_current_path(idv_in_person_ssn_url)
+      complete_ssn_step
+
+      # verify page
+      expect(page).to have_current_path(idv_in_person_verify_info_path, wait: 10)
+      expect(page).to have_text('PR')
+
+      # update address
+      click_link t('idv.buttons.change_address_label')
+
+      expect(page).to have_content(t('in_person_proofing.headings.update_address'))
+      expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address1_hint'))
+      expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address2_hint'))
     end
   end
 end
