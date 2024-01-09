@@ -37,4 +37,11 @@
   .document-capture-file-image--loading {
     @extend %pad-common-id-card;
   }
+
+  .document-capture-selfie-feedback {
+    left: 50%;
+    position: absolute;
+    transform: translateX(-50%);
+    z-index: 10;
+  }
 }

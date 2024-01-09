@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 import AcuantContext from '../context/acuant';
 
@@ -77,6 +77,7 @@ function AcuantSelfieCamera({
   children,
 }: AcuantSelfieCameraContextProps) {
   const { isReady, setIsActive } = useContext(AcuantContext);
+  const [feedback, setFeedback] = useState('');
 
   useEffect(() => {
     const faceCaptureCallback: FaceCaptureCallback = {
@@ -85,7 +86,9 @@ function AcuantSelfieCamera({
         // Until then, no actions are executed and the user sees only the camera stream.
         // You can opt to display an alert before the callback is triggered.
       },
-      onDetection: () => {
+      onDetection: (text) => {
+        // console.log(text);
+        setFeedback(text);
         // Triggered when the face does not pass the scan. The UI element
         // should be updated here to provide guidence to the user
       },
@@ -104,6 +107,7 @@ function AcuantSelfieCamera({
       },
       onPhotoTaken: () => {
         // The photo has been taken and it's showing a preview with a button to accept or retake the image.
+        setFeedback('');
       },
       onPhotoRetake: () => {
         // Triggered when retake button is tapped
@@ -139,7 +143,7 @@ function AcuantSelfieCamera({
     return () => (isReady ? cleanupSelfieCamera() : undefined);
   }, [isReady]);
 
-  return <>{children}</>;
+  return <>{children}<div id='document-capture-selfie-feedback'>{feedback}</div></>;
 }
 
 export default AcuantSelfieCamera;
