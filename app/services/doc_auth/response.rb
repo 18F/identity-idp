@@ -86,6 +86,7 @@ module DocAuth
 
     def doc_auth_success?
       # to be implemented by concrete subclass
+      false
     end
   end
 end
