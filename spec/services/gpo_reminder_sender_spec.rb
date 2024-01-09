@@ -78,6 +78,21 @@ RSpec.describe GpoReminderSender do
       include_examples 'sends no emails'
     end
 
+    context 'when a user has old reminded code and new code' do
+      before do
+        old_timestamp = time_due_for_reminder - 2.days
+        reminder_timestamp = 1.day.ago
+        set_gpo_verification_pending_at(user, old_timestamp)
+        set_reminder_sent_at(reminder_timestamp)
+
+        # user received reminder email and requests new letter
+        new_confirmation_code = create(:gpo_confirmation_code, created_at: reminder_timestamp)
+        user.gpo_verification_pending_profile.gpo_confirmation_codes << new_confirmation_code
+      end
+
+      include_examples 'sends no emails'
+    end
+
     context 'when a user has requested two letters' do
       before do
         timestamp = time_due_for_reminder - 2.days
@@ -185,9 +200,10 @@ RSpec.describe GpoReminderSender do
       let(:user) { create(:user, :with_pending_in_person_enrollment) }
 
       before do
-        gpo_code = create(:gpo_confirmation_code)
+        timestamp = time_due_for_reminder
+        gpo_code = create(:gpo_confirmation_code, created_at: timestamp)
         user.pending_profile.gpo_confirmation_codes << gpo_code
-        user.pending_profile.gpo_verification_pending_at = time_due_for_reminder
+        user.pending_profile.gpo_verification_pending_at = timestamp
         user.pending_profile.save
       end
 
