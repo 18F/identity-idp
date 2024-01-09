@@ -96,7 +96,7 @@ RSpec.describe 'Remembering a webauthn device' do
       it_behaves_like 'remember device'
     end
 
-    context 'sign up', do
+    context 'sign up' do
       before do
         allow(IdentityConfig.store).
           to receive(:show_unsupported_passkey_platform_authentication_setup).
