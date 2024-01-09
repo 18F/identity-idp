@@ -146,7 +146,7 @@ module InPersonHelper
     click_idv_submit_default
   end
 
-  def complete_steps_up_to_location_step
+  def complete_steps_before_state_id_step
     sign_in_and_2fa_user
     begin_in_person_proofing
     complete_prepare_step

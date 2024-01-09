@@ -114,7 +114,7 @@ RSpec.describe 'doc auth In person proofing residential address step', js: true 
   context 'State selection' do
     it 'shows address hint when user selects state that has a specific hint',
        allow_browser_log: true do
-        complete_idv_steps_before_address
+      complete_idv_steps_before_address
 
       # address form
       select 'Puerto Rico',

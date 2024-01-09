@@ -10,7 +10,7 @@ RSpec.describe 'doc auth IPP state ID step', js: true do
 
   context 'when visiting state id for the first time' do
     it 'displays correct heading and button text', allow_browser_log: true do
-      complete_steps_up_to_location_step
+      complete_steps_before_state_id_step
 
       expect(page).to have_content(t('forms.buttons.continue'))
       expect(page).to have_content(
@@ -21,7 +21,7 @@ RSpec.describe 'doc auth IPP state ID step', js: true do
     end
 
     it 'allows the user to cancel and start over', allow_browser_log: true do
-      complete_steps_up_to_location_step
+      complete_steps_before_state_id_step
 
       expect(page).not_to have_content('forms.buttons.back')
 
@@ -31,7 +31,7 @@ RSpec.describe 'doc auth IPP state ID step', js: true do
     end
 
     it 'allows the user to cancel and return', allow_browser_log: true do
-      complete_steps_up_to_location_step
+      complete_steps_before_state_id_step
 
       expect(page).not_to have_content('forms.buttons.back')
 
@@ -41,7 +41,7 @@ RSpec.describe 'doc auth IPP state ID step', js: true do
     end
 
     it 'allows user to submit valid inputs on form', allow_browser_log: true do
-      complete_steps_up_to_location_step
+      complete_steps_before_state_id_step
       fill_out_state_id_form_ok(same_address_as_id: true)
       click_idv_continue
 
@@ -67,7 +67,7 @@ RSpec.describe 'doc auth IPP state ID step', js: true do
 
   context 'Validation' do
     it 'validates zip code input', allow_browser_log: true do
-      complete_steps_up_to_location_step
+      complete_steps_before_state_id_step
 
       fill_out_state_id_form_ok(same_address_as_id: true)
       # blank out the zip code field
@@ -90,7 +90,7 @@ RSpec.describe 'doc auth IPP state ID step', js: true do
   context 'State selection' do
     it 'shows address hint when user selects state that has a specific hint',
        allow_browser_log: true do
-      complete_steps_up_to_location_step
+      complete_steps_before_state_id_step
 
       # state id page
       select 'Puerto Rico',
@@ -100,7 +100,7 @@ RSpec.describe 'doc auth IPP state ID step', js: true do
       expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address2_hint'))
 
       # change state selection
-      fill_out_state_id_form_ok
+      fill_out_state_id_form_ok(same_address_as_id: true)
       expect(page).not_to have_content(I18n.t('in_person_proofing.form.state_id.address1_hint'))
       expect(page).not_to have_content(I18n.t('in_person_proofing.form.state_id.address2_hint'))
 
@@ -109,31 +109,13 @@ RSpec.describe 'doc auth IPP state ID step', js: true do
              from: t('in_person_proofing.form.state_id.identity_doc_address_state')
       click_idv_continue
 
-      expect(page).to have_current_path(idv_in_person_step_path(step: :address))
-
-      # address form
-      select 'Puerto Rico',
-             from: t('idv.form.state')
-      expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address1_hint'))
-      expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address2_hint'))
-
-      # change selection
-      fill_out_address_form_ok
-      expect(page).not_to have_content(I18n.t('in_person_proofing.form.state_id.address1_hint'))
-      expect(page).not_to have_content(I18n.t('in_person_proofing.form.state_id.address2_hint'))
-
-      # re-select puerto rico
-      select 'Puerto Rico',
-             from: t('idv.form.state')
-      click_idv_continue
-
       # ssn page
       expect(page).to have_current_path(idv_in_person_ssn_url)
       complete_ssn_step
 
       # verify page
       expect(page).to have_current_path(idv_in_person_verify_info_path)
-      expect(page).to have_text('PR').twice
+      expect(page).to have_text('PR')
 
       # update state ID
       click_button t('idv.buttons.change_state_id_label')
@@ -141,19 +123,11 @@ RSpec.describe 'doc auth IPP state ID step', js: true do
       expect(page).to have_content(t('in_person_proofing.headings.update_state_id'))
       expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address1_hint'))
       expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address2_hint'))
-      click_button t('forms.buttons.submit.update')
-
-      # update address
-      click_button t('idv.buttons.change_address_label')
-
-      expect(page).to have_content(t('in_person_proofing.headings.update_address'))
-      expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address1_hint'))
-      expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address2_hint'))
     end
 
     it 'shows id number hint when user selects issuing state that has a specific hint',
        allow_browser_log: true do
-      complete_steps_up_to_location_step
+      complete_steps_before_state_id_step
 
       # expect default hint to be present
       expect(page).to have_content(t('in_person_proofing.form.state_id.state_id_number_hint'))
@@ -186,7 +160,7 @@ RSpec.describe 'doc auth IPP state ID step', js: true do
 
     it 'shows validation errors',
        allow_browser_log: true do
-      complete_steps_up_to_location_step
+      complete_steps_before_state_id_step
 
       fill_out_state_id_form_ok
       fill_in t('in_person_proofing.form.state_id.first_name'), with: 'T0mmy "Lee"'
