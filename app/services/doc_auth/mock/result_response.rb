@@ -39,8 +39,16 @@ module DocAuth
             face_match_result = file_data.dig('portrait_match_results', 'FaceMatchResult')
             classification_info = file_data.dig('classification_info')
             # Pass and doc type is ok
-            if [doc_auth_result, image_metrics, failed, passed, face_match_result,
-                classification_info].any?(&:present?)
+            has_fields = [
+              doc_auth_result,
+              image_metrics,
+              failed,
+              passed,
+              face_match_result,
+              classification_info
+            ].any?(&:present?)
+            
+            if has_fields
               # Error generator is not to be called when it's not failure
               # allows us to test successful results
               return {} if all_doc_capture_values_passing?(
