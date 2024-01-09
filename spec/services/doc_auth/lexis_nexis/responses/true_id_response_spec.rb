@@ -11,6 +11,12 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   let(:success_with_liveness_response) do
     instance_double(Faraday::Response, status: 200, body: success_with_liveness_response_body)
   end
+  let(:failure_face_match_fail_response_body) do
+    LexisNexisFixtures.true_id_response_with_face_match_fail
+  end
+  let(:failure_response_face_match_fail) do
+    instance_double(Faraday::Response, status: 200, body: failure_face_match_fail_response_body)
+  end
   let(:failure_body_no_liveness) { LexisNexisFixtures.true_id_response_failure_no_liveness }
   let(:failure_body_with_liveness) { LexisNexisFixtures.true_id_response_failure_with_liveness }
   let(:failure_body_with_all_failures) do
@@ -688,6 +694,42 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         let(:response) { described_class.new(failure_response_with_liveness, config, true) }
         it 'returns false' do
           expect(response.selfie_success).to eq(false)
+        end
+      end
+    end
+  end
+
+  describe '#successful_result?' do
+    context 'when all checks other than selfie pass' do
+      context 'and selfie check is enabled' do
+        liveness_checking_enabled = true
+
+        it 'returns true with a passing selfie' do
+          response = described_class.new(
+            success_with_liveness_response, config, liveness_checking_enabled
+          )
+
+          expect(response.successful_result?).to eq(true)
+        end
+
+        it 'returns false with a failing selfie' do
+          response = described_class.new(
+            failure_response_face_match_fail, config, liveness_checking_enabled
+          )
+
+          expect(response.successful_result?).to eq(false)
+        end
+      end
+
+      context 'and selfie check is disabled' do
+        liveness_checking_enabled = false
+
+        it 'returns true no matter what the value of selfie is' do
+          response = described_class.new(
+            failure_response_face_match_fail, config, liveness_checking_enabled
+          )
+
+          expect(response.successful_result?).to eq(true)
         end
       end
     end
