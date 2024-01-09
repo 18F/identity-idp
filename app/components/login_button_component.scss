@@ -1,52 +1,52 @@
 @use 'uswds-core' as *;
 
 .login-button.usa-button--big > .login-button__logo {
-    font-size: 1.8rem;
-    margin-top: -2px;
+  font-size: 1.8rem;
+  margin-top: -2px;
 }
 
 .login-button__logo {
-    margin-left: 2px;
-    font-size: 1.45rem;
-    vertical-align: middle;
-    color: transparent;
-    background: no-repeat 100% url('logo.svg');
+  margin-left: 2px;
+  font-size: 1.45rem;
+  vertical-align: middle;
+  color: transparent;
+  background: no-repeat 100% url('logo.svg');
 }
 
 .login-button__logo-white {
-    background-image: url('logo-white.svg');
+  background-image: url('logo-white.svg');
 }
 
 .login-button.login-button--primary-lighter {
+  @include u-bg('primary-lighter');
+  @include u-text('primary-darker');
+
+  &:hover {
     @include u-bg('primary-lighter');
     @include u-text('primary-darker');
-
-    &:hover {
-        @include u-bg('primary-lighter');
-        @include u-text('primary-darker');
-    }
+  }
 }
 
 .login-button.login-button--primary {
+  @include u-bg('white');
+  @include u-text('primary-darker');
+  @include u-border(1px);
+  @include u-border('base');
+
+  &:hover {
+    @include u-border(1px);
     @include u-bg('white');
     @include u-text('primary-darker');
-    @include u-border(1px);
     @include u-border('base');
-
-    &:hover {
-        @include u-border(1px);
-        @include u-bg('white');
-        @include u-text('primary-darker');
-        @include u-border('base');
-    }
+  }
 }
 
 .login-button.login-button--primary-darker {
+  @include u-bg('primary-darker');
+  @include u-text('white');
+
+  &:hover {
     @include u-bg('primary-darker');
     @include u-text('white');
-
-    &:hover {
-        @include u-bg('primary-darker');
-        @include u-text('white');
-    }
+  }
 }

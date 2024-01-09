@@ -19,8 +19,6 @@ fr:
       enabled_alert: Vous avez activé JavaScript dans votre navigateur.
       next_step: Veuillez rafraîchir cette page une fois que vous avez activé
         JavaScript dans votre navigateur.
-    login_button:
-      sign_in_html: Connectez-vous avec %{logo_html}
     manageable_authenticator:
       cancel: Annuler
       created_on: Créé le %{date}
