@@ -17,6 +17,9 @@ class DocumentCaptureSession < ApplicationRecord
     session_result.captured_at = Time.zone.now
     session_result.attention_with_barcode = doc_auth_response.attention_with_barcode?
     session_result.selfie_check_performed = doc_auth_response.selfie_check_performed?
+    session_result.doc_auth_success = doc_auth_response.doc_auth_success?
+    # nil(selfie not required) or true/false
+    session_result.selfie_success = doc_auth_response.selfie_success
     EncryptedRedisStructStorage.store(
       session_result,
       expires_in: IdentityConfig.store.doc_capture_request_valid_for_minutes.minutes.seconds.to_i,

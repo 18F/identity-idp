@@ -142,6 +142,18 @@ module DocAuth
           !!doc_auth_result
         end
 
+        def doc_auth_success?
+          transaction_status_passed? &&
+            true_id_product.present? &&
+            product_status_passed? &&
+            doc_auth_result_passed?
+        end
+
+        def selfie_success
+          return nil unless @liveness_checking_enabled
+          selfie_result == 'Pass'
+        end
+
         private
 
         def conversation_id
@@ -230,6 +242,10 @@ module DocAuth
             true_id_product.present? &&
             product_status_passed? &&
             doc_auth_result_passed?
+        end
+
+        def selfie_result
+          response_info[:portrait_match_results]&.dig(:FaceMatchResult)
         end
 
         def product_status_passed?
