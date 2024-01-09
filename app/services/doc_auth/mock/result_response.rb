@@ -45,9 +45,9 @@ module DocAuth
               failed,
               passed,
               face_match_result,
-              classification_info
+              classification_info,
             ].any?(&:present?)
-            
+
             if has_fields
               # Error generator is not to be called when it's not failure
               # allows us to test successful results
@@ -212,7 +212,7 @@ module DocAuth
         classification_info: nil
       )
         merged_image_metrics = DEFAULT_IMAGE_METRICS.deep_merge(image_metrics)
-        true_id_mock_response = {
+        {
           vendor: 'Mock',
           doc_auth_result: doc_auth_result,
           processed_alerts: {
@@ -225,8 +225,6 @@ module DocAuth
           classification_info: classification_info,
           portrait_match_results: @selfie_check_performed ? portrait_match_results : nil,
         }.compact
-
-        true_id_mock_response
       end
     end
   end
