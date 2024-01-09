@@ -43,14 +43,11 @@ module DocAuth
                 classification_info].any?(&:present?)
               # Error generator is not to be called when it's not failure
               # allows us to test successful results
-              if @selfie_check_performed
-                return {} if
-                  doc_auth_result == 'Passed' &&
-                  face_match_result == 'Pass' &&
-                  id_type_supported?
-              elsif doc_auth_result == 'Passed' && id_type_supported?
-                return {}
-              end
+              return {} if all_doc_capture_values_passing?(
+                doc_auth_result, id_type_supported?,
+                face_match_result
+              )
+
               mock_args = {}
               mock_args[:doc_auth_result] = doc_auth_result if doc_auth_result.present?
               mock_args[:image_metrics] = image_metrics.symbolize_keys if image_metrics.present?
@@ -160,6 +157,12 @@ module DocAuth
         else
           DocAuth::Acuant::ResultCodes::CAUTION.name
         end
+      end
+
+      def all_doc_capture_values_passing?(doc_auth_result, id_type_supported, face_match_result)
+        doc_auth_result == 'Passed' &&
+          id_type_supported &&
+          (@selfie_check_performed ? face_match_result == 'Pass' : true)
       end
 
       def parse_uri
