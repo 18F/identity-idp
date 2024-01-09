@@ -50,6 +50,7 @@ module Features
     def signin(email, password)
       allow(UserMailer).to receive(:new_device_sign_in).and_call_original
       visit new_user_session_path
+      set_hidden_field('platform_authenticator_available', 'true')
       fill_in_credentials_and_submit(email, password)
       continue_as(email, password)
     end
@@ -180,18 +181,6 @@ module Features
       email ||= user.email_addresses.first.email
       signin(email, user.password)
       user
-    end
-
-    def sign_in_user_with_eligible_platform_auth_available(
-      user = create(:user), email = nil
-    )
-      email ||= user.email_addresses.first.email
-      password = user.password
-      allow(UserMailer).to receive(:new_device_sign_in).and_call_original
-      visit new_user_session_path
-      set_hidden_field('platform_authenticator_available', 'true')
-      fill_in_credentials_and_submit(email, password)
-      continue_as(email, password)
     end
 
     def sign_in_user_with_piv(user = user_with_piv_cac)

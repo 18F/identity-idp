@@ -85,7 +85,7 @@ RSpec.describe 'webauthn hide' do
       context 'with javascript enabled', :js do
         context ' with device that supports authenticator' do
           it 'displays the authenticator option' do
-            sign_in_user_with_eligible_platform_auth_available(user)
+            sign_in_user(user)
             click_on t('two_factor_authentication.login_options_link_text')
 
             expect(webauthn_option_hidden?).to eq(false)
@@ -101,7 +101,7 @@ RSpec.describe 'webauthn hide' do
 
       context 'with javascript disabled' do
         it 'does not display the authenticator option' do
-          sign_in_user_with_eligible_platform_auth_available(user)
+          sign_in_user(user)
           click_on t('two_factor_authentication.login_options_link_text')
 
           expect(webauthn_option_hidden?).to eq(true)

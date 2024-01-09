@@ -86,7 +86,7 @@ RSpec.describe 'Remembering a webauthn device' do
 
       def remember_device_and_sign_out_user
         mock_webauthn_verification_challenge
-        sign_in_user_with_eligible_platform_auth_available(user)
+        sign_in_and_2fa_user(user)
         check t('forms.messages.remember_device')
         mock_successful_webauthn_authentication { click_webauthn_authenticate_button }
         first(:button, t('links.sign_out')).click
@@ -148,7 +148,7 @@ RSpec.describe 'Remembering a webauthn device' do
     context 'update webauthn' do
       def remember_device_and_sign_out_user
         mock_webauthn_setup_challenge
-        sign_in_user_with_eligible_platform_auth_available(user)
+        sign_in_and_2fa_user(user)
         visit account_two_factor_authentication_path
         first(:link, t('account.index.webauthn_add'), href: webauthn_setup_path).click
         fill_in_nickname_and_click_continue

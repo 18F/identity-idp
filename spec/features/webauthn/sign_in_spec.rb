@@ -74,7 +74,7 @@ RSpec.feature 'webauthn sign in' do
     it 'maintains correct platform attachment content if cancelled', :js do
       mock_webauthn_verification_challenge
 
-      sign_in_user_with_eligible_platform_auth_available(user)
+      sign_in_user(user)
       expect(current_url).to eq(login_two_factor_webauthn_url(platform: true))
       mock_cancelled_webauthn_authentication { click_webauthn_authenticate_button }
 

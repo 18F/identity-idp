@@ -586,7 +586,7 @@ RSpec.feature 'Two Factor Authentication' do
 
     context 'sign in' do
       it 'allows user to be signed in without issue' do
-        sign_in_user_with_eligible_platform_auth_available(webauthn_configuration.user)
+        sign_in_user(webauthn_configuration.user)
         mock_successful_webauthn_authentication { click_webauthn_authenticate_button }
 
         expect(page).to have_current_path(account_path)
