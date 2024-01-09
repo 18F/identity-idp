@@ -36,7 +36,7 @@ module DocAuth
             image_metrics = file_data.dig('image_metrics')
             failed = file_data.dig('failed_alerts')
             passed = file_data.dig('passed_alerts')
-            face_match_result = file_data.dig('portrait_match_results', 'face_match_result')
+            face_match_result = file_data.dig('portrait_match_results', 'FaceMatchResult')
             classification_info = file_data.dig('classification_info')
             # Pass and doc type is ok
             if [doc_auth_result, image_metrics, failed, passed, face_match_result,
@@ -143,7 +143,9 @@ module DocAuth
       end
 
       def portrait_match_results
-        parsed_data_from_uploaded_file.dig('portrait_match_results')&.deep_symbolize_keys
+        parsed_data_from_uploaded_file.dig('portrait_match_results')&.
+        transform_keys! { |key| key.to_s.camelize }&.
+        deep_symbolize_keys
       end
 
       def classification_info

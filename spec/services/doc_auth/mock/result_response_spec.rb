@@ -634,8 +634,8 @@ RSpec.describe DocAuth::Mock::ResultResponse do
             ClassName: Drivers License
             CountryCode: USA
         portrait_match_results:
-          face_match_result: Pass
-          face_error_message: 'Successful. Liveness: Live'
+          FaceMatchResult: Pass
+          FaceErrorMessage: 'Successful. Liveness: Live'
       YAML
     end
     it 'successfully extracts classification info' do
@@ -655,8 +655,8 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       let(:input) do
         <<~YAML
           portrait_match_results:
-            face_match_result: Pass
-            face_error_message: 'Successful. Liveness: Live'
+            FaceMatchResult: Pass
+            FaceErrorMessage: 'Successful. Liveness: Live'
           doc_auth_result: Passed
           failed_alerts: []
         YAML
@@ -665,8 +665,8 @@ RSpec.describe DocAuth::Mock::ResultResponse do
 
       it 'returns the expected values' do
         selfie_results = {
-          face_match_result: 'Pass',
-          face_error_message: 'Successful. Liveness: Live',
+          FaceMatchResult: 'Pass',
+          FaceErrorMessage: 'Successful. Liveness: Live',
         }
 
         expect(response.selfie_check_performed?).to eq(true)
@@ -678,8 +678,8 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       let(:input) do
         <<~YAML
           portrait_match_results:
-            face_match_result: Fail
-            face_error_message: 'Successful. Liveness: Live'
+            FaceMatchResult: Fail
+            FaceErrorMessage: 'Successful. Liveness: Live'
           doc_auth_result: Passed
           failed_alerts: []
         YAML
@@ -688,8 +688,8 @@ RSpec.describe DocAuth::Mock::ResultResponse do
 
       it 'returns the expected values' do
         selfie_results = {
-          face_match_result: 'Fail',
-          face_error_message: 'Successful. Liveness: Live',
+          FaceMatchResult: 'Fail',
+          FaceErrorMessage: 'Successful. Liveness: Live',
         }
 
         expect(response.selfie_check_performed?).to eq(true)

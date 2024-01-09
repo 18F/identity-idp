@@ -190,8 +190,8 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
 
       image = <<~YAML
         portrait_match_results:
-          face_match_result: Pass
-          face_error_message: 'Successful. Liveness: Live'
+          FaceMatchResult: Pass
+          FaceErrorMessage: 'Successful. Liveness: Live'
         doc_auth_result: Passed
         failed_alerts: []
       YAML
@@ -289,8 +289,8 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
       it 'returns a success response' do
         image = <<~YAML
           portrait_match_results:
-            face_match_result: Pass
-            face_error_message: 'Successful. Liveness: Live'
+            FaceMatchResult: Pass
+            FaceErrorMessage: 'Successful. Liveness: Live'
           doc_auth_result: Passed
           failed_alerts: []
         YAML
@@ -305,7 +305,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
         expect(post_images_response.success?).to eq(true)
         expect(post_images_response.extra[:portrait_match_results]).to eq(
           {
-            face_match_result: 'Pass', face_error_message: 'Successful. Liveness: Live'
+            FaceMatchResult: 'Pass', FaceErrorMessage: 'Successful. Liveness: Live'
           },
         )
         expect(post_images_response.errors).to be_empty
@@ -317,8 +317,8 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
         it 'returns a failure response' do
           image = <<~YAML
             portrait_match_results:
-              face_match_result: Fail
-              face_error_message: 'Liveness: NotLive'
+              FaceMatchResult: Fail
+              FaceErrorMessage: 'Liveness: NotLive'
             doc_auth_result: Passed
             failed_alerts: []
           YAML
@@ -333,7 +333,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
           expect(post_images_response.success?).to eq(false)
           expect(post_images_response.extra[:portrait_match_results]).to eq(
             {
-              face_match_result: 'Fail', face_error_message: 'Liveness: NotLive'
+              FaceMatchResult: 'Fail', FaceErrorMessage: 'Liveness: NotLive'
             },
           )
 
@@ -347,8 +347,8 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
         it 'returns a failure response' do
           image = <<~YAML
             portrait_match_results:
-              face_match_result: Fail
-              face_error_message: 'Liveness: PoorQuality'
+              FaceMatchResult: Fail
+              FaceErrorMessage: 'Liveness: PoorQuality'
             doc_auth_result: Passed
             failed_alerts: []
           YAML
@@ -363,7 +363,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
           expect(post_images_response.success?).to eq(false)
           expect(post_images_response.extra[:portrait_match_results]).to eq(
             {
-              face_match_result: 'Fail', face_error_message: 'Liveness: PoorQuality'
+              FaceMatchResult: 'Fail', FaceErrorMessage: 'Liveness: PoorQuality'
             },
           )
 
@@ -377,8 +377,8 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
         it 'returns a failure response' do
           image = <<~YAML
             portrait_match_results:
-              face_match_result: Fail
-              face_error_message: 'Successful. Liveness: Live'
+              FaceMatchResult: Fail
+              FaceErrorMessage: 'Successful. Liveness: Live'
             doc_auth_result: Passed
             failed_alerts: []
           YAML
@@ -392,7 +392,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
           expect(post_images_response.success?).to eq(false)
           expect(post_images_response.extra[:portrait_match_results]).to eq(
             {
-              face_match_result: 'Fail', face_error_message: 'Successful. Liveness: Live'
+              FaceMatchResult: 'Fail', FaceErrorMessage: 'Successful. Liveness: Live'
             },
           )
 
