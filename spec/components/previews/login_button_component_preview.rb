@@ -12,7 +12,6 @@ class LoginButtonComponentPreview < ButtonComponentPreview
     big: false,
     color: 'primary'
   )
-
     render(
       LoginButtonComponent.new(
         big:,
@@ -20,4 +19,4 @@ class LoginButtonComponentPreview < ButtonComponentPreview
       ),
     )
   end
-  end
+end
