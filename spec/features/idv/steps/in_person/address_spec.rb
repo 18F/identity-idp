@@ -57,4 +57,56 @@ RSpec.describe 'doc auth In person proofing residential address step', js: true 
       expect(page).to have_text(InPersonHelper::GOOD_ZIPCODE)
     end
   end
+
+  context 'transliteration' do
+    before(:each) do
+      allow(IdentityConfig.store).to receive(:usps_ipp_transliteration_enabled).
+        and_return(true)
+    end
+
+    it 'shows validation errors',
+       allow_browser_log: true do
+      complete_idv_steps_before_address
+
+      fill_out_address_form_ok(same_address_as_id: false)
+      fill_in t('idv.form.address1'), with: '#1 $treet'
+      fill_in t('idv.form.address2'), with: 'Gr@nd Lañe^'
+      fill_in t('idv.form.city'), with: 'N3w C!ty'
+      click_idv_continue
+
+      expect(page).to have_content(
+        I18n.t(
+          'in_person_proofing.form.address.errors.unsupported_chars',
+          char_list: '$',
+        ),
+      )
+
+      expect(page).to have_content(
+        I18n.t(
+          'in_person_proofing.form.address.errors.unsupported_chars',
+          char_list: '@, ^',
+        ),
+      )
+
+      expect(page).to have_content(
+        I18n.t(
+          'in_person_proofing.form.address.errors.unsupported_chars',
+          char_list: '!, 3',
+        ),
+      )
+
+      select InPersonHelper::GOOD_STATE, from: t('idv.form.state')
+      fill_in t('idv.form.address1'),
+              with: InPersonHelper::GOOD_ADDRESS1
+      fill_in t('idv.form.address2'),
+              with: InPersonHelper::GOOD_ADDRESS2
+      fill_in t('idv.form.city'),
+              with: InPersonHelper::GOOD_CITY
+      fill_in t('idv.form.zipcode'),
+              with: InPersonHelper::GOOD_ZIPCODE
+      click_idv_continue
+
+      expect(page).to have_current_path(idv_in_person_ssn_url, wait: 10)
+    end
+  end
 end
