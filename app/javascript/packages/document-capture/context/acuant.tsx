@@ -125,12 +125,11 @@ export type AcuantCaptureMode = 'AUTO' | 'TAP';
 /**
  * The minimum glare score value to be considered acceptable.
  */
-export const DEFAULT_ACCEPTABLE_GLARE_SCORE = 30;
-
+export const DEFAULT_ACCEPTABLE_GLARE_SCORE = 50;
 /**
  * The minimum sharpness score value to be considered acceptable.
  */
-export const DEFAULT_ACCEPTABLE_SHARPNESS_SCORE = 30;
+export const DEFAULT_ACCEPTABLE_SHARPNESS_SCORE = 50;
 
 /**
  * Returns the containing directory of the given file, including a trailing slash.
