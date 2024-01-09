@@ -8,8 +8,7 @@ class WebauthnSetupForm
   validates :name, presence: true
   validate :name_is_unique
 
-  attr_reader :attestation_response, :name_taken
-
+  attr_reader :attestation_response
   def initialize(user:, user_session:, device_name:)
     @user = user
     @challenge = user_session[:webauthn_challenge]
@@ -71,8 +70,12 @@ class WebauthnSetupForm
         count
       @name = "#{@name} (#{num_existing_devices})"
     else
-      errors.add :name, I18n.t('errors.webauthn_setup.unique_name'), type: :unique_name
-      @name_taken = true
+      name_error = if form.platform_authenticator?
+        t('errors.webauthn_platform_setup.unique_name')
+      else
+        t('errors.webauthn_setup.unique_name')
+      end
+      errors.add :name, name_error, type: :unique_name
     end
   end
 
@@ -88,14 +91,12 @@ class WebauthnSetupForm
     @attestation_response.valid?(@challenge.pack('c*'), original_origin)
   rescue StandardError
     if @platform_authenticator
-      errors.add :name, I18n.t(
-        'errors.webauthn_platform_setup.attestation_error',
-        link: MarketingSite.contact_url,
-      ), type: :attestation_error
+      errors.add :name, I18n.t('errors.webauthn_platform_setup.general_error'),
+                 type: :attestation_error
     else
       errors.add :name, I18n.t(
-        'errors.webauthn_setup.attestation_error',
-        link: MarketingSite.contact_url,
+        'errors.webauthn_setup.general_error_html',
+        link_html: t('errors.webauthn_setup.additional_methods_link'),
       ), type: :attestation_error
     end
     false

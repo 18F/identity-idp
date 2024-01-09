@@ -85,7 +85,8 @@ module Users
       if result.success?
         process_valid_webauthn(form)
       else
-        process_invalid_webauthn(form)
+        flash[:error] = result.first_error_message
+        render :new
       end
     end
 
@@ -204,25 +205,7 @@ module Users
       return false unless @platform_authenticator
       in_multi_mfa_selection_flow? && mfa_selection_count < 2
     end
-
-    def process_invalid_webauthn(form)
-      if form.name_taken
-        if form.platform_authenticator?
-          flash.now[:error] = t('errors.webauthn_platform_setup.unique_name')
-        else
-          flash.now[:error] = t('errors.webauthn_setup.unique_name')
-        end
-      elsif form.platform_authenticator?
-        flash[:error] = t('errors.webauthn_platform_setup.general_error')
-      else
-        flash[:error] = t(
-          'errors.webauthn_setup.general_error_html',
-          link_html: t('errors.webauthn_setup.additional_methods_link'),
-        )
-      end
-      render :new
-    end
-
+    
     def new_params
       params.permit(:platform, :error)
     end
