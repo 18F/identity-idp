@@ -91,7 +91,7 @@ module DocAuth
         end
 
         def include_liveness?
-          FeatureManagement.idv_allow_selfie_check_in_login_prod? &&
+          FeatureManagement.idv_allow_selfie_check? &&
             liveness_checking_required
         end
       end

@@ -181,7 +181,7 @@ RSpec.describe ServiceProviderSession do
 
   describe '#selfie_required' do
     before do
-      expect(FeatureManagement).to receive(:idv_allow_selfie_check_in_login_prod?).
+      expect(FeatureManagement).to receive(:idv_allow_selfie_check?).
         and_return(selfie_capture_enabled)
     end
 

@@ -71,7 +71,7 @@ class ServiceProviderSession
   end
 
   def selfie_required?
-    !!(FeatureManagement.idv_allow_selfie_check_in_login_prod? &&
+    !!(FeatureManagement.idv_allow_selfie_check? &&
       sp_session[:biometric_comparison_required])
   end
 

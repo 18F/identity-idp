@@ -286,7 +286,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
               let(:selfie_capture_enabled) { true }
               before do
                 params[:biometric_comparison_required] = 'true'
-                allow(FeatureManagement).to receive(:idv_allow_selfie_check_in_login_prod?).
+                allow(FeatureManagement).to receive(:idv_allow_selfie_check?).
                   and_return(selfie_capture_enabled)
                 allow(IdentityConfig.store).to receive(:openid_connect_redirect).
                   and_return('server_side')

@@ -243,7 +243,7 @@ RSpec.feature 'doc auth redo document capture', js: true do
   context 'when selfie is enabled' do
     context 'error due to data issue with 2xx status code', allow_browser_log: true do
       before do
-        allow(FeatureManagement).to receive(:idv_allow_selfie_check_in_login_prod?).and_return(true)
+        allow(FeatureManagement).to receive(:idv_allow_selfie_check?).and_return(true)
         allow_any_instance_of(FederatedProtocols::Oidc).
           to receive(:biometric_comparison_required?).and_return(true)
         start_idv_from_sp

@@ -195,10 +195,10 @@ RSpec.feature 'document capture step', :js do
     end
   end
 
-  context 'with idv_allow_selfie_check_in_login_prod? set to true' do
+  context 'with idv_allow_selfie_check? set to true' do
     let(:selfie_check_enabled) { true }
     before do
-      allow(FeatureManagement).to receive(:idv_allow_selfie_check_in_login_prod?).
+      allow(FeatureManagement).to receive(:idv_allow_selfie_check?).
         and_return(selfie_check_enabled)
     end
 
