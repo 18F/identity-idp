@@ -844,7 +844,8 @@ RSpec.feature 'Analytics Regression', js: true do
 
   context 'Happy selfie path' do
     before do
-      allow(FeatureManagement).to receive(:idv_allow_selfie_check?).and_return(true)
+      expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
+        and_return(true)
       allow_any_instance_of(FederatedProtocols::Oidc).
         to receive(:biometric_comparison_required?).
         and_return({ biometric_comparison_required: true })

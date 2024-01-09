@@ -84,7 +84,7 @@ RSpec.describe DocAuthRouter do
 
       context 'when selfie is enabled' do
         before do
-          allow(FeatureManagement).to receive(:idv_allow_selfie_check?).
+          expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
             and_return(true)
         end
         context 'when vendor is not set to mock' do
@@ -123,7 +123,7 @@ RSpec.describe DocAuthRouter do
 
       context 'with selfie enabled' do
         before do
-          allow(FeatureManagement).to receive(:idv_allow_selfie_check?).
+          expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
             and_return(true)
         end
         it 'is the lexisnexis vendor' do

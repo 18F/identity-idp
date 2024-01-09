@@ -264,7 +264,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
 
   context 'barcode read error on desktop, redo document capture on mobile' do
     before do
-      allow(FeatureManagement).to receive(:idv_allow_selfie_check?).and_return(false)
+      expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).and_return(false)
       allow_any_instance_of(FederatedProtocols::Oidc).
         to receive(:biometric_comparison_required?).and_return(true)
     end
@@ -334,7 +334,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
   end
 
   it 'prefills the phone number used on the phone step if the user has no MFA phone', :js do
-    allow(FeatureManagement).to receive(:idv_allow_selfie_check?).and_return(true)
+    expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).and_return(true)
     allow_any_instance_of(FederatedProtocols::Oidc).
       to receive(:biometric_comparison_required?).and_return(true)
     user = create(:user, :with_authentication_app)
