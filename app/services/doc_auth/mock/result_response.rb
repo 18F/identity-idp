@@ -215,11 +215,8 @@ module DocAuth
           image_metrics: merged_image_metrics,
           liveness_enabled: liveness_enabled,
           classification_info: classification_info,
+          portrait_match_results: @selfie_check_performed ? portrait_match_results : nil,
         }.compact
-
-        if @selfie_check_performed
-          true_id_mock_response[:portrait_match_results] = portrait_match_results
-        end
 
         true_id_mock_response
       end
