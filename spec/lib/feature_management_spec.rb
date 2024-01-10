@@ -541,7 +541,7 @@ RSpec.describe 'FeatureManagement' do
     end
   end
 
-  describe '#idv_block_biometrics_requests?' do
+  describe '#idv_allow_selfie_check?' do
     before do
       allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).
         and_return(selfie_capture_enabled)
@@ -551,25 +551,24 @@ RSpec.describe 'FeatureManagement' do
       let(:selfie_capture_enabled) { false }
 
       it 'says to block biometric requests' do
-        expect(FeatureManagement.idv_block_biometrics_requests?).to eq(true)
+        expect(FeatureManagement.idv_allow_selfie_check?).to eq(false)
       end
     end
 
     context 'selfies are enabled' do
       let(:selfie_capture_enabled) { true }
 
-      it 'says to not block biometric requests' do
-        expect(FeatureManagement.idv_block_biometrics_requests?).to eq(false)
+      it 'says to allow biometric requests' do
+        expect(FeatureManagement.idv_allow_selfie_check?).to eq(true)
       end
 
       context 'in production' do
         before do
-          allow(Identity::Hostdata).to receive(:in_datacenter?).and_return(true)
           allow(Identity::Hostdata).to receive(:env).and_return('prod')
         end
 
         it 'says to block biometric requests' do
-          expect(FeatureManagement.idv_block_biometrics_requests?).to eq(true)
+          expect(FeatureManagement.idv_allow_selfie_check?).to eq(false)
         end
       end
     end
