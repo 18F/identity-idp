@@ -633,9 +633,6 @@ RSpec.describe DocAuth::Mock::ResultResponse do
           Back:
             ClassName: Drivers License
             CountryCode: USA
-        portrait_match_results:
-          FaceMatchResult: Pass
-          FaceErrorMessage: 'Successful. Liveness: Live'
       YAML
     end
     it 'successfully extracts classification info' do
