@@ -23,6 +23,7 @@ RSpec.describe 'doc auth In person proofing residential address step', js: true 
     it 'allows the user to cancel and start over', allow_browser_log: true do
       complete_idv_steps_before_address
 
+      expect(page).to have_current_path(idv_in_person_proofing_address_url, wait: 10)
       expect(page).not_to have_content('forms.buttons.back')
 
       click_link t('links.cancel')
@@ -108,6 +109,28 @@ RSpec.describe 'doc auth In person proofing residential address step', js: true 
       click_idv_continue
 
       expect(page).to have_current_path(idv_in_person_ssn_url, wait: 10)
+    end
+  end
+
+  context 'Validation' do
+    it 'validates zip code input', allow_browser_log: true do
+      complete_idv_steps_before_address
+
+      fill_out_address_form_ok
+      # blank out the zip code field
+      fill_in t('idv.form.zipcode'), with: ''
+      # try to enter invalid input into the zip code field
+      fill_in t('idv.form.zipcode'), with: 'invalid input'
+      expect(page).to have_field(t('idv.form.zipcode'), with: '')
+      # enter valid characters, but invalid length
+      fill_in t('idv.form.zipcode'), with: '123'
+      click_idv_continue
+      expect(page).to have_css('.usa-error-message', text: t('idv.errors.pattern_mismatch.zipcode'))
+      # enter a valid zip and make sure we can continue
+      fill_in t('idv.form.zipcode'), with: '123456789'
+      expect(page).to have_field(t('idv.form.zipcode'), with: '12345-6789')
+      click_idv_continue
+      expect(page).to have_current_path(idv_in_person_ssn_url)
     end
   end
 
