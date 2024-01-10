@@ -130,6 +130,15 @@ module DocAuth
         )
       end
 
+      def doc_auth_success?
+        doc_auth_result_from_uploaded_file == 'Passed'
+      end
+
+      def selfie_success
+        return nil if parsed_data_from_uploaded_file['liveness_result'].nil?
+        parsed_data_from_uploaded_file['liveness_result'] == 'Pass'
+      end
+
       private
 
       def parsed_alerts
@@ -224,6 +233,8 @@ module DocAuth
           liveness_enabled: liveness_enabled,
           classification_info: classification_info,
           portrait_match_results: @selfie_check_performed ? portrait_match_results : nil,
+          doc_auth_success: doc_auth_success?,
+          selfie_success: selfie_success,
         }.compact
       end
     end
