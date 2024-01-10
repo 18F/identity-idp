@@ -113,8 +113,12 @@ RSpec.describe GpoReminderSender do
 
       context 'and the user has multiple emails' do
         let(:code_sent_at) { time_due_for_reminder - 2.days }
-        let!(:user) { create(:user, :with_pending_gpo_profile, :with_multiple_emails,
-          code_sent_at: code_sent_at) }
+        let!(:user) do
+          create(
+            :user, :with_pending_gpo_profile, :with_multiple_emails,
+            code_sent_at: code_sent_at
+          )
+        end
 
         include_examples 'sends emails',
                          expected_number_of_emails: 2,

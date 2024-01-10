@@ -9,16 +9,36 @@ RSpec.describe GpoReminderJob do
 
     let(:job) { GpoReminderJob.new }
 
-    let!(:gpo_expired_user) { create(:user, :with_pending_gpo_profile,
-      code_sent_at: (max_days_ago_to_send_letter + 1).days.ago) }
-    let!(:due_for_reminder_user) { create(:user, :with_pending_gpo_profile,
-      code_sent_at: days_before_sending_reminder.days.ago) }
-    let!(:not_yet_due_for_reminder_user) { create(:user, :with_pending_gpo_profile,
-      code_sent_at: (days_before_sending_reminder - 1).days.ago) }
-    let!(:user_with_invalid_profile) { create(:user, :with_pending_gpo_profile,
-      code_sent_at: days_before_sending_reminder.days.ago) }
-    let!(:user_with_new_gpo_code) { create(:user, :with_pending_gpo_profile,
-      code_sent_at: (max_days_ago_to_send_letter + 1).days.ago) }
+    let!(:gpo_expired_user) do
+      create(
+        :user, :with_pending_gpo_profile,
+        code_sent_at: (max_days_ago_to_send_letter + 1).days.ago
+      )
+    end
+    let!(:due_for_reminder_user) do
+      create(
+        :user, :with_pending_gpo_profile,
+        code_sent_at: days_before_sending_reminder.days.ago
+      )
+    end
+    let!(:not_yet_due_for_reminder_user) do
+      create(
+        :user, :with_pending_gpo_profile,
+        code_sent_at: (days_before_sending_reminder - 1).days.ago
+      )
+    end
+    let!(:user_with_invalid_profile) do
+      create(
+        :user, :with_pending_gpo_profile,
+        code_sent_at: days_before_sending_reminder.days.ago
+      )
+    end
+    let!(:user_with_new_gpo_code) do
+      create(
+        :user, :with_pending_gpo_profile,
+        code_sent_at: (max_days_ago_to_send_letter + 1).days.ago
+      )
+    end
 
     let(:job_analytics) { FakeAnalytics.new }
 
