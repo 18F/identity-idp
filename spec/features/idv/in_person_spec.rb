@@ -664,9 +664,7 @@ RSpec.describe 'In Person Proofing', js: true do
     end
   end
 
-  # TODO: This is an opportunity for update - is this the right location for this spec? (full form)
-  # rename - full form instead of manual
-  context 'when manual address entry is enabled for post office search' do
+  context 'when full form address entry is enabled for post office search' do
     let(:user) { user_with_2fa }
 
     before do
