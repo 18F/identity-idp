@@ -1,4 +1,4 @@
-class LoginButtonComponent < ButtonComponent
+class LoginButtonComponent < BaseComponent
   VALID_COLORS = ['primary', 'primary-darker', 'primary-lighter'].freeze
 
   attr_reader :color, :tag_options
@@ -7,10 +7,6 @@ class LoginButtonComponent < ButtonComponent
     if !VALID_COLORS.include?(color)
       raise ArgumentError, "`color` #{color}} is invalid, expected one of #{VALID_COLORS}"
     end
-
-    super(
-      **tag_options
-    )
 
     @color = color
   end
