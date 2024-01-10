@@ -2,6 +2,7 @@ require 'cgi'
 
 module Features
   module SessionHelper
+    include JavascriptDriverHelper
     include PersonalKeyHelper
 
     VALID_PASSWORD = 'Val!d Pass w0rd'.freeze
