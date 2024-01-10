@@ -564,7 +564,6 @@ RSpec.describe 'FeatureManagement' do
 
       context 'in production' do
         before do
-          allow(Identity::Hostdata).to receive(:in_datacenter?).and_return(true)
           allow(Identity::Hostdata).to receive(:env).and_return('prod')
         end
 

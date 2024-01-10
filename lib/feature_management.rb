@@ -164,7 +164,6 @@ class FeatureManagement
   end
 
   def self.idv_allow_selfie_check?
-    !(Identity::Hostdata.in_datacenter? && Identity::Hostdata.env == 'prod') &&
-      IdentityConfig.store.doc_auth_selfie_capture_enabled
+    !(Identity::Hostdata.env == 'prod') && IdentityConfig.store.doc_auth_selfie_capture_enabled
   end
 end
