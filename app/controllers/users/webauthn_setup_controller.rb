@@ -85,7 +85,7 @@ module Users
       if result.success?
         process_valid_webauthn(form)
       else
-        flash.now[:error] = result.first_error_message
+        flash.now[:error] = form.error_message
         render :new
       end
     end
@@ -205,7 +205,7 @@ module Users
       return false unless @platform_authenticator
       in_multi_mfa_selection_flow? && mfa_selection_count < 2
     end
-    
+
     def new_params
       params.permit(:platform, :error)
     end

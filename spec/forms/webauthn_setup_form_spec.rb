@@ -213,8 +213,8 @@ RSpec.describe WebauthnSetupForm do
         expect(subject.submit(protocol, params).to_h).to eq(
           success: false,
           errors: { name: [I18n.t(
-            'errors.webauthn_setup.attestation_error',
-            link: MarketingSite.contact_url,
+            'errors.webauthn_setup.general_error_html',
+            link_html: I18n.t('errors.webauthn_setup.additional_methods_link'),
           )] },
           error_details: { name: { attestation_error: true } },
           **extra_attributes,
