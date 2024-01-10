@@ -50,7 +50,8 @@ module Features
     def signin(email, password)
       allow(UserMailer).to receive(:new_device_sign_in).and_call_original
       visit new_user_session_path
-      set_hidden_field('platform_authenticator_available', 'true')
+      hidden_eligible_input = first('input#platform_authenticator_available', visible: false)
+      hidden_eligible_input.set('true')
       fill_in_credentials_and_submit(email, password)
       continue_as(email, password)
     end
