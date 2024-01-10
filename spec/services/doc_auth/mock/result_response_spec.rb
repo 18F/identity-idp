@@ -670,6 +670,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
         }
 
         expect(response.selfie_check_performed?).to eq(true)
+        expect(response.success?).to eq(true)
         expect(response.extra[:portrait_match_results]).to eq(selfie_results)
       end
     end
@@ -693,6 +694,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
         }
 
         expect(response.selfie_check_performed?).to eq(true)
+        expect(response.success?).to eq(false)
         expect(response.extra[:portrait_match_results]).to eq(selfie_results)
       end
     end
