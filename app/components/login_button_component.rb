@@ -11,11 +11,6 @@ class LoginButtonComponent < BaseComponent
     @color = color
   end
 
-  def logo_class
-    return 'login-button__logo login-button__logo-white' if color == 'primary-darker'
-    'login-button__logo'
-  end
-
   def css_class
     classes = ['usa-button', *tag_options[:class]]
     classes << 'usa-button--big' if big
