@@ -226,7 +226,7 @@ module Reporting
             FROM
                 identities
             WHERE
-                identities.verified_at < %{query_date}
+                identities.created_at < %{query_date}
             GROUP BY
                 identities.user_id
         ) sps_per_all_users
@@ -294,7 +294,7 @@ module Reporting
           JOIN
               agencies ON sp.agency_id = agencies.id
           WHERE
-              identities.verified_at < %{query_date}
+              identities.created_at < %{query_date}
           GROUP BY
               identities.user_id
       ) agencies_per_user
