@@ -27,7 +27,7 @@ RSpec.describe SignUp::CompletionsController do
         let(:user) { create(:user, :fully_registered, email: temporary_email) }
 
         before do
-          DisposableEmailDomain.create(name: 'temporary.com')
+          DisposableDomain.create(name: 'temporary.com')
           stub_sign_in(user)
           subject.session[:sp] = {
             issuer: current_sp.issuer,
@@ -302,7 +302,7 @@ RSpec.describe SignUp::CompletionsController do
         let(:user) { create(:user, :fully_registered, email: temporary_email) }
 
         it 'logs disposable domain' do
-          DisposableEmailDomain.create(name: 'temporary.com')
+          DisposableDomain.create(name: 'temporary.com')
           stub_sign_in(user)
           subject.session[:sp] = {
             ial2: false,
@@ -331,7 +331,7 @@ RSpec.describe SignUp::CompletionsController do
 
     context 'IAL2' do
       it 'tracks analytics' do
-        DisposableEmailDomain.create(name: 'temporary.com')
+        DisposableDomain.create(name: 'temporary.com')
         user = create(
           :user,
           :fully_registered,
