@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_12_04_232215) do
+ActiveRecord::Schema[7.1].define(version: 2024_01_10_141229) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -98,6 +98,11 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_04_232215) do
   create_table "disposable_domains", force: :cascade do |t|
     t.citext "name", null: false
     t.index ["name"], name: "index_disposable_domains_on_name", unique: true
+  end
+
+  create_table "disposable_email_domains", force: :cascade do |t|
+    t.citext "name", null: false
+    t.index ["name"], name: "index_disposable_email_domains_on_name", unique: true
   end
 
   create_table "doc_auth_logs", force: :cascade do |t|
