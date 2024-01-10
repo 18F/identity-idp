@@ -9,11 +9,16 @@ RSpec.describe GpoReminderJob do
 
     let(:job) { GpoReminderJob.new }
 
-    let(:gpo_expired_user) { create(:user, :with_pending_gpo_profile) }
-    let(:due_for_reminder_user) { create(:user, :with_pending_gpo_profile) }
-    let(:not_yet_due_for_reminder_user) { create(:user, :with_pending_gpo_profile) }
-    let(:user_with_invalid_profile) { create(:user, :with_pending_gpo_profile) }
-    let(:user_with_new_gpo_code) { create(:user, :with_pending_gpo_profile) }
+    let!(:gpo_expired_user) { create(:user, :with_pending_gpo_profile,
+      code_sent_at: (max_days_ago_to_send_letter + 1).days.ago) }
+    let!(:due_for_reminder_user) { create(:user, :with_pending_gpo_profile,
+      code_sent_at: days_before_sending_reminder.days.ago) }
+    let!(:not_yet_due_for_reminder_user) { create(:user, :with_pending_gpo_profile,
+      code_sent_at: (days_before_sending_reminder - 1).days.ago) }
+    let!(:user_with_invalid_profile) { create(:user, :with_pending_gpo_profile,
+      code_sent_at: days_before_sending_reminder.days.ago) }
+    let!(:user_with_new_gpo_code) { create(:user, :with_pending_gpo_profile,
+      code_sent_at: (max_days_ago_to_send_letter + 1).days.ago) }
 
     let(:job_analytics) { FakeAnalytics.new }
 
@@ -22,25 +27,8 @@ RSpec.describe GpoReminderJob do
         and_return(max_days_ago_to_send_letter)
       allow(Analytics).to receive(:new).and_return(job_analytics)
 
-      set_gpo_verification_pending_at(gpo_expired_user, (max_days_ago_to_send_letter + 1).days.ago)
-
-      set_gpo_verification_pending_at(due_for_reminder_user, days_before_sending_reminder.days.ago)
-
-      set_gpo_verification_pending_at(
-        not_yet_due_for_reminder_user,
-        (days_before_sending_reminder - 1).days.ago,
-      )
-
-      set_gpo_verification_pending_at(
-        user_with_invalid_profile,
-        days_before_sending_reminder.days.ago,
-      )
       user_with_invalid_profile.gpo_verification_pending_profile.deactivate(:password_reset)
 
-      set_gpo_verification_pending_at(
-        user_with_new_gpo_code,
-        (max_days_ago_to_send_letter + 1).days.ago,
-      )
       new_confirmation_code = create(:gpo_confirmation_code, created_at: 1.day.ago)
       user_with_new_gpo_code.gpo_verification_pending_profile.gpo_confirmation_codes <<
         new_confirmation_code
@@ -54,17 +42,5 @@ RSpec.describe GpoReminderJob do
         user_id: due_for_reminder_user.uuid,
       )
     end
-  end
-
-  def set_gpo_verification_pending_at(user, to_time)
-    user.
-      gpo_verification_pending_profile.
-      update(gpo_verification_pending_at: to_time)
-
-    user.
-      gpo_verification_pending_profile.
-      gpo_confirmation_codes.each do |code|
-        code.update(code_sent_at: to_time, created_at: to_time, updated_at: to_time)
-      end
   end
 end
