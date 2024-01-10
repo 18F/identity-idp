@@ -213,7 +213,7 @@ RSpec.describe Idv::DocumentCaptureController do
 
     context 'selfie checks' do
       before do
-        expect(controller).to receive(:confirm_selfie_performed_if_needed).
+        expect(controller).to receive(:selfie_requirement_met?).
           and_return(performed_if_needed)
         allow(result).to receive(:success?).and_return(true)
         allow(subject).to receive(:stored_result).and_return(result)

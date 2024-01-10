@@ -13,11 +13,11 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
     end
   end
 
-  # def confirm_selfie_performed_if_needed
+  # def selfie_requirement_met?
   #   !decorated_sp_session.selfie_required? || stored_result.selfie_check_performed
   # end
 
-  describe '#confirm_selfie_performed_if_needed' do
+  describe '#selfie_requirement_met?' do
     controller(idv_document_capture_controller_class) do
     end
 
@@ -37,14 +37,14 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
         context 'selfie check performed' do
           let(:selfie_check_performed) { true }
           it 'returns true' do
-            expect(controller.confirm_selfie_performed_if_needed).to eq(true)
+            expect(controller.selfie_requirement_met?).to eq(true)
           end
         end
 
         context 'selfie check not performed' do
           let(:selfie_check_performed) { false }
           it 'returns false' do
-            expect(controller.confirm_selfie_performed_if_needed).to eq(false)
+            expect(controller.selfie_requirement_met?).to eq(false)
           end
         end
       end
@@ -55,14 +55,14 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
         context 'selfie check performed' do
           let(:selfie_check_performed) { true }
           it 'returns true' do
-            expect(controller.confirm_selfie_performed_if_needed).to eq(true)
+            expect(controller.selfie_requirement_met?).to eq(true)
           end
         end
 
         context 'selfie check not performed' do
           let(:selfie_check_performed) { false }
           it 'returns true' do
-            expect(controller.confirm_selfie_performed_if_needed).to eq(true)
+            expect(controller.selfie_requirement_met?).to eq(true)
           end
         end
       end

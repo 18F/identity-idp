@@ -55,7 +55,7 @@ module Idv
       @stored_result = document_capture_session&.load_result
     end
 
-    def confirm_selfie_performed_if_needed
+    def selfie_requirement_met?
       !decorated_sp_session.selfie_required? || stored_result.selfie_check_performed
     end
 

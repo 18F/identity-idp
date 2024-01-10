@@ -81,7 +81,7 @@ module Idv
 
     def take_photo_with_phone_successful?
       document_capture_session_result.present? && document_capture_session_result.success? &&
-        confirm_selfie_performed_if_needed
+        selfie_requirement_met?
     end
 
     def document_capture_session_result
