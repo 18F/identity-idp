@@ -208,7 +208,7 @@ GEM
       erubi (~> 1.4)
       parser (>= 2.4)
       smart_properties
-    bigdecimal (3.1.4)
+    bigdecimal (3.1.5)
     bindata (2.4.15)
     bootsnap (1.17.0)
       msgpack (~> 1.2)
@@ -427,7 +427,7 @@ GEM
     net-ssh (6.1.0)
     newrelic_rpm (9.6.0)
       base64
-    nio4r (2.6.1)
+    nio4r (2.7.0)
     nokogiri (1.14.5)
       mini_portile2 (~> 2.8.0)
       racc (~> 1.4)
@@ -472,7 +472,7 @@ GEM
     psych (5.1.1.1)
       stringio
     public_suffix (5.0.3)
-    puma (6.4.0)
+    puma (6.4.2)
       nio4r (~> 2.0)
     raabro (1.4.0)
     racc (1.7.3)
@@ -561,7 +561,7 @@ GEM
       activerecord (>= 5.0)
       rgeo (>= 1.0.0)
     rotp (6.2.0)
-    rouge (4.1.3)
+    rouge (4.2.0)
     rqrcode (2.1.0)
       chunky_png (~> 1.0)
       rqrcode_core (~> 1.0)
@@ -684,7 +684,7 @@ GEM
       activemodel
       mail (>= 2.6.1)
       simpleidn
-    view_component (3.8.0)
+    view_component (3.9.0)
       activesupport (>= 5.2.0, < 8.0)
       concurrent-ruby (~> 1.0)
       method_source (~> 1.0)

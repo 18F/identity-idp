@@ -29,7 +29,7 @@ module Proofing
         threatmetrix_session_id:,
         timer:,
         user_email:,
-        ipp_enrollment_in_progress: true
+        ipp_enrollment_in_progress:
       )
         device_profiling_result = proof_with_threatmetrix_if_needed(
           applicant_pii: applicant_pii,
@@ -106,6 +106,7 @@ module Proofing
         end
       end
 
+      # rubocop:disable Lint/UnusedMethodArgument
       def proof_residential_address_if_needed(
         applicant_pii:,
         timer:,
@@ -117,6 +118,7 @@ module Proofing
           resolution_proofer.proof(applicant_pii)
         end
       end
+      # rubocop:enable Lint/UnusedMethodArgument
 
       def residential_address_unnecessary_result
         Proofing::Resolution::Result.new(
@@ -130,6 +132,7 @@ module Proofing
         )
       end
 
+      # rubocop:disable Lint/UnusedMethodArgument
       def proof_id_address_with_lexis_nexis_if_needed(applicant_pii:, timer:,
                                                       residential_instant_verify_result:,
                                                       ipp_enrollment_in_progress:)
@@ -155,6 +158,7 @@ module Proofing
           residential_instant_verify_result.success?
         end
       end
+      # rubocop:enable Lint/UnusedMethodArgument
 
       def proof_id_with_aamva_if_needed(
   applicant_pii:, timer:,
