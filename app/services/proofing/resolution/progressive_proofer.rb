@@ -106,19 +106,17 @@ module Proofing
         end
       end
 
-      # rubocop:disable Lint/UnusedMethodArgument
       def proof_residential_address_if_needed(
-        applicant_pii:,
-        timer:,
-        ipp_enrollment_in_progress: false
-      )
+  applicant_pii:,
+  timer:,
+  ipp_enrollment_in_progress: false
+)
         return residential_address_unnecessary_result unless ipp_enrollment_in_progress
 
         timer.time('residential address') do
           resolution_proofer.proof(applicant_pii)
         end
       end
-      # rubocop:enable Lint/UnusedMethodArgument
 
       def residential_address_unnecessary_result
         Proofing::Resolution::Result.new(
@@ -132,7 +130,6 @@ module Proofing
         )
       end
 
-      # rubocop:disable Lint/UnusedMethodArgument
       def proof_id_address_with_lexis_nexis_if_needed(applicant_pii:, timer:,
                                                       residential_instant_verify_result:,
                                                       ipp_enrollment_in_progress:)
@@ -158,15 +155,14 @@ module Proofing
           residential_instant_verify_result.success?
         end
       end
-      # rubocop:enable Lint/UnusedMethodArgument
 
       def proof_id_with_aamva_if_needed(
-  applicant_pii:, timer:,
-  residential_instant_verify_result:,
-  instant_verify_result:,
-  should_proof_state_id:,
-  ipp_enrollment_in_progress:
-)
+        applicant_pii:, timer:,
+        residential_instant_verify_result:,
+        instant_verify_result:,
+        should_proof_state_id:,
+        ipp_enrollment_in_progress:
+      )
         same_address_as_id = applicant_pii[:same_address_as_id]
         should_proof_state_id_with_aamva = should_proof_state_id_with_aamva?(
           ipp_enrollment_in_progress:,
