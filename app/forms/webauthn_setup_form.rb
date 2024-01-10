@@ -9,6 +9,7 @@ class WebauthnSetupForm
   validate :name_is_unique
 
   attr_reader :attestation_response
+  
   def initialize(user:, user_session:, device_name:)
     @user = user
     @challenge = user_session[:webauthn_challenge]
@@ -70,7 +71,7 @@ class WebauthnSetupForm
         count
       @name = "#{@name} (#{num_existing_devices})"
     else
-      name_error = if form.platform_authenticator?
+      name_error = if platform_authenticator?
         t('errors.webauthn_platform_setup.unique_name')
       else
         t('errors.webauthn_setup.unique_name')
