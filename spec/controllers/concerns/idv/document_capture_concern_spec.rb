@@ -13,20 +13,16 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
     end
   end
 
-  # def selfie_requirement_met?
-  #   !decorated_sp_session.selfie_required? || stored_result.selfie_check_performed
-  # end
-
   describe '#selfie_requirement_met?' do
     controller(idv_document_capture_controller_class) do
     end
 
     context 'selfie checks enabled' do
       before do
-        decorated_sp_session = double
+        decorated_sp_session = instance_double(ServiceProviderSession)
         allow(decorated_sp_session).to receive(:selfie_required?).and_return(selfie_required)
         allow(controller).to receive(:decorated_sp_session).and_return(decorated_sp_session)
-        stored_result = double
+        stored_result = instance_double(DocumentCaptureSessionResult)
         allow(stored_result).to receive(:selfie_check_performed).and_return(selfie_check_performed)
         allow(controller).to receive(:stored_result).and_return(stored_result)
       end

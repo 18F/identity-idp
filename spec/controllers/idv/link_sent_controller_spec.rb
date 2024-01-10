@@ -185,7 +185,7 @@ RSpec.describe Idv::LinkSentController do
           context 'not performed' do
             let(:performed_if_needed) { false }
 
-            it 'stays on document capture' do
+            it 'flashes an error and does not redirect' do
               put :update
 
               expect(flash[:error]).to eq t('errors.doc_auth.phone_step_incomplete')
