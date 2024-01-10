@@ -12,17 +12,6 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
     allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).and_return(true)
   end
 
-  # TO DO: Flows to test...
-  #   1. When in_person_proofing_enabled = true && in_person_proofing_opt_in_enabled true
-  #     a. path when opting out (pick remote) - complete
-  #     b. path when opting in (pick ipp) - complete
-  #   2. When in_person_proofing_enabled = false && in_person_proofing_opt_in_enabled true
-  #     a. Only path (remote flow)
-  #   3. When in_person_proofing_enabled = true && in_person_proofing_opt_in_enabled false
-  #     a. Only path (remote flow)
-  #   3. When in_person_proofing_enabled = false && in_person_proofing_opt_in_enabled false
-  #     a. Only path (remote flow)
-
   context 'when ipp_opt_in_enabled and ipp_opt_in_enabled are both enabled' do
     context 'ThreatMetrix review pending' do
       let(:user) { user_with_2fa }
@@ -434,6 +423,7 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
       visit_idp_from_sp_with_ial2(:oidc)
       complete_welcome_step
       complete_agreement_step
+      expect(page).to have_current_path(idv_hybrid_handoff_url)
       complete_hybrid_handoff_step
       complete_document_capture_step
       complete_ssn_step
@@ -450,6 +440,7 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
       complete_welcome_step
       complete_agreement_step
       complete_how_to_verify_step(remote: true)
+      expect(page).to have_current_path(idv_hybrid_handoff_url)
       complete_hybrid_handoff_step
       complete_document_capture_step
       complete_ssn_step

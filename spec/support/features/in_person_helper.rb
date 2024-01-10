@@ -78,11 +78,11 @@ module InPersonHelper
   end
 
   def begin_in_person_proofing_with_opt_in_ipp_enabled_and_opting_in
-    complete_up_to_how_to_verify_step_for_opt_in_ipp_and_opting_in
+    complete_up_to_how_to_verify_step_for_opt_in_ipp(remote: false)
   end
 
   def begin_in_person_proofing_with_opt_in_ipp_enabled_and_opting_out
-    complete_up_to_how_to_verify_step_for_opt_in_ipp_and_opting_out
+    complete_up_to_how_to_verify_step_for_opt_in_ipp(remote: true)
   end
 
   def search_for_post_office
