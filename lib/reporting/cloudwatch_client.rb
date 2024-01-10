@@ -1,6 +1,7 @@
 require 'aws-sdk-cloudwatchlogs'
 require 'ruby-progressbar'
 require 'identity/hostdata'
+require 'active_support/core_ext/object/blank'
 
 module Reporting
   class CloudwatchClient

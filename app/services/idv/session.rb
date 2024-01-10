@@ -23,6 +23,7 @@ module Idv
       profile_id
       redo_document_capture
       resolution_successful
+      selfie_check_performed
       skip_doc_auth
       skip_hybrid_handoff
       ssn
@@ -64,6 +65,7 @@ module Idv
         fraud_pending_reason: threatmetrix_fraud_pending_reason,
         gpo_verification_needed: !phone_confirmed? || verify_by_mail?,
         in_person_verification_needed: current_user.has_in_person_enrollment?,
+        selfie_check_performed: session[:selfie_check_performed],
       )
 
       profile.activate unless profile.reason_not_to_activate
@@ -181,10 +183,6 @@ module Idv
         user_session['idv/in_person'].delete('Idv::Steps::InPerson::StateIdStep')
         user_session['idv/in_person'].delete('Idv::Steps::InPerson::AddressStep')
       end
-    end
-
-    def document_capture_complete?
-      pii_from_doc || has_pii_from_user_in_flow_session
     end
 
     def remote_document_capture_complete?
