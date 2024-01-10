@@ -51,6 +51,7 @@ RUN addgroup --gid 1000 app && \
     adduser --uid 1000 --gid 1000 --disabled-password --gecos "" app && \
     mkdir -p $RAILS_ROOT && \
     mkdir -p $BUNDLE_PATH && \
+    mkdir -p $RAILS_ROOT/tmp/pids && \
     chown -R app:app $RAILS_ROOT && \
     chown -R app:app $BUNDLE_PATH
 
