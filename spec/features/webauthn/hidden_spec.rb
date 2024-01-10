@@ -93,7 +93,13 @@ RSpec.describe 'webauthn hide' do
         end
         context 'with device that doesnt support authenticator' do
           it 'redirects to options page on sign in' do
-            sign_in_user(user)
+            email ||= user.email_addresses.first.email
+            password = user.password
+            allow(UserMailer).to receive(:new_device_sign_in).and_call_original
+            visit new_user_session_path
+            set_hidden_field('platform_authenticator_available', 'false')
+            fill_in_credentials_and_submit(email, password)
+            continue_as(email, password)
             expect(current_path).to eq(login_two_factor_options_path)
           end
         end

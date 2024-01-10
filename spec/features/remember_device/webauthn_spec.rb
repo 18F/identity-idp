@@ -72,7 +72,7 @@ RSpec.describe 'Remembering a webauthn device' do
     end
   end
 
-  context 'platform authenticator', :js, driver: :headless_chrome_mobile do
+  context 'platform authenticator' do
     context 'sign in' do
       before do
         create(
@@ -86,7 +86,7 @@ RSpec.describe 'Remembering a webauthn device' do
 
       def remember_device_and_sign_out_user
         mock_webauthn_verification_challenge
-        sign_in_and_2fa_user(user)
+        sign_in_user(user)
         check t('forms.messages.remember_device')
         mock_successful_webauthn_authentication { click_webauthn_authenticate_button }
         first(:button, t('links.sign_out')).click
