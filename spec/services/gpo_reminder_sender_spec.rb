@@ -65,7 +65,6 @@ RSpec.describe GpoReminderSender do
     def set_reminder_sent_at(to_time)
       gpo_confirmation_code.update(
         reminder_sent_at: to_time,
-        created_at: to_time,
         updated_at: to_time,
       )
     end
