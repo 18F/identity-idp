@@ -136,7 +136,12 @@ RSpec.describe Reporting::AccountReuseReport do
 
       users_to_query.each do |user|
         user[:sp].each_with_index do |sp, i|
-          create_identity(user_id: user[:id], created_at: user[:created_timestamp], provider: sp, verified_at: user[:sp_timestamp][i])
+          create_identity(
+            user_id: user[:id],
+            created_at: user[:created_timestamp],
+            provider: sp,
+            verified_at: user[:sp_timestamp][i],
+          )
         end
       end
 
