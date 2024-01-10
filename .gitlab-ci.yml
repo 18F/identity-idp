@@ -484,8 +484,10 @@ review-app:
       --set worker.image.tag="${CI_COMMIT_SHA}"
       --set pivcac.image.repository="${ECR_REGISTRY}/identity-pivcac/review"
       --set pivcac.image.tag="${PKI_IMAGE_TAG}"
+      --set pivcac.image.pullPolicy="Always"
       --set dashboard.image.repository="${ECR_REGISTRY}/identity-dashboard/review"
       --set dashboard.image.tag="${DASHBOARD_IMAGE_TAG}"
+      --set dashboard.image.pullPolicy="Always"
       --set-json dashboard.env="$DASHBOARD_ENV"
       --set-json dashboard.enabled=true
       --set-json idp.env="$IDP_ENV"
