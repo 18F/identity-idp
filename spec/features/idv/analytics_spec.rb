@@ -653,7 +653,7 @@ RSpec.feature 'Analytics Regression', js: true do
     end
   end
 
-  context 'Happy hybrid path', allow_browser_log: true do
+  context 'Happy hybrid path' do
     before do
       allow(Telephony).to receive(:send_doc_auth_link).and_wrap_original do |impl, config|
         @sms_link = config[:link]
@@ -744,7 +744,7 @@ RSpec.feature 'Analytics Regression', js: true do
       complete_enter_password_step(user)
     end
 
-    it 'records all of the events', allow_browser_log: true do
+    it 'records all of the events' do
       gpo_path_events.each do |event, attributes|
         expect(fake_analytics).to have_logged_event(event, attributes)
       end
