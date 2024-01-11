@@ -8,8 +8,6 @@ class ImageUploadResponsePresenter
 
   def success?
     @form_response.success?
-    # TODO remove this before merge
-    false
   end
 
   def errors
@@ -56,9 +54,6 @@ class ImageUploadResponsePresenter
       json[:result_failed] = doc_auth_result_failed?
       json[:doc_type_supported] = doc_type_supported?
       json[:failed_image_fingerprints] = failed_fingerprints
-      # TODO Remove/revise these before merge
-      json[:selfie_result_failed] = true 
-      json[:selfie_result_not_live_or_poor_quality] = true
       json
     end
   end
