@@ -23,11 +23,14 @@ module Idv
       idv_session.verify_info_step_document_capture_session_uuid = document_capture_session.uuid
 
       # proof_resolution job expects these values
-      pii[:uuid_prefix] = ServiceProvider.find_by(issuer: sp_session[:issuer])&.app_id
-      pii[:ssn] = idv_session.ssn
-      Idv::Agent.new(pii).proof_resolution(
+      agent_pii = pii.merge(
+        uuid: current_user.uuid,
+        uuid_prefix: ServiceProvider.find_by(issuer: sp_session[:issuer])&.app_id,
+        ssn: idv_session.ssn,
+      )
+      Idv::Agent.new(agent_pii).proof_resolution(
         document_capture_session,
-        should_proof_state_id: aamva_state?(pii),
+        should_proof_state_id: aamva_state?,
         trace_id: amzn_trace_id,
         user_id: current_user.id,
         threatmetrix_session_id: idv_session.threatmetrix_session_id,
@@ -44,10 +47,8 @@ module Idv
       current_user.has_in_person_enrollment?
     end
 
-    def aamva_state?(pii)
-      IdentityConfig.store.aamva_supported_jurisdictions.include?(
-        pii['state_id_jurisdiction'],
-      )
+    def aamva_state?
+      IdentityConfig.store.aamva_supported_jurisdictions.include?(pii['state_id_jurisdiction'])
     end
 
     def resolution_rate_limiter
