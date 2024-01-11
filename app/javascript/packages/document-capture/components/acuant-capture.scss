@@ -40,7 +40,8 @@
 
   .document-capture-selfie-feedback {
     left: 50%;
-    position: absolute;
+    top: 10%;
+    position: fixed;
     transform: translateX(-50%);
     z-index: 11;
   }
