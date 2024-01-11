@@ -4,7 +4,6 @@ RSpec.describe Users::PhoneSetupController do
   let(:mfa_selections) { ['voice'] }
   before do
     allow(IdentityConfig.store).to receive(:phone_service_check).and_return(true)
-    allow(IdentityConfig.store).to receive(:voip_block).and_return(true)
   end
 
   describe 'GET index' do

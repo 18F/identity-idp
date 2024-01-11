@@ -16,12 +16,6 @@ RSpec.describe TwoFactorAuthentication::SetUpPhoneSelectionPresenter do
       it 'does not include a masked number' do
         expect(presenter_without_mfa.info).to_not include('***')
       end
-
-      context 'when VOIP numbers are blocked' do
-        before do
-          allow(IdentityConfig.store).to receive(:voip_block).and_return(true)
-        end
-      end
     end
   end
 
