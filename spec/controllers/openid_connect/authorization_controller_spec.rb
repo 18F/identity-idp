@@ -281,6 +281,48 @@ RSpec.describe OpenidConnect::AuthorizationController do
               sp_return_log = SpReturnLog.find_by(issuer: client_id)
               expect(sp_return_log.ial).to eq(2)
             end
+
+            context 'SP has biometric_comparison_required' do
+              let(:selfie_capture_enabled) { true }
+              before do
+                params[:biometric_comparison_required] = 'true'
+                expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
+                  and_return(selfie_capture_enabled)
+                allow(IdentityConfig.store).to receive(:openid_connect_redirect).
+                  and_return('server_side')
+                IdentityLinker.new(user, service_provider).link_identity(ial: 3)
+                user.identities.last.update!(
+                  verified_attributes: %w[given_name family_name birthdate verified_at],
+                )
+                allow(controller).to receive(:pii_requested_but_locked?).and_return(false)
+              end
+
+              context 'selfie check was performed' do
+                it 'redirects to the redirect_uri immediately when pii is unlocked if client-side redirect is disabled' do
+                  user.active_profile.idv_level = :unsupervised_with_selfie
+
+                  action
+
+                  expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
+                end
+              end
+
+              context 'selfie check was not performed' do
+                it 'redirects to have the user verify their account' do
+                  action
+                  expect(controller).to redirect_to(idv_url)
+                end
+              end
+
+              context 'selfie capture not enabled, biometric_comparison_check requested by sp' do
+                let(:selfie_capture_enabled) { false }
+                it 'returns status not_acceptable' do
+                  action
+
+                  expect(response.status).to eq(406)
+                end
+              end
+            end
           end
 
           context 'account is not already verified' do
@@ -999,12 +1041,68 @@ RSpec.describe OpenidConnect::AuthorizationController do
         )
       end
 
-      it 'sets biometric_comparison_required to true if biometric comparison is required' do
-        params[:biometric_comparison_required] = true
+      describe 'handling the :biometric_comparison_required parameter' do
+        before do
+          allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).and_return(true)
+          allow(Identity::Hostdata).to receive(:env).and_return(env)
+        end
 
-        action
+        context 'when the param value :biometric_comparison_required is "true"' do
+          before do
+            params[:biometric_comparison_required] = 'true'
+            action
+          end
 
-        expect(session[:sp][:biometric_comparison_required]).to eq(true)
+          context 'and we are not in production' do
+            context 'because the environment is not set to "prod"' do
+              let(:env) { 'test' }
+
+              it 'sets the session :biometric_comparison_required value to true' do
+                expect(session[:sp][:biometric_comparison_required]).to eq(true)
+              end
+            end
+          end
+
+          # Temporary barrier to public presentation. Update or remove
+          # when we are ready to accept :biometric_comparison_required
+          # in production. See LG-11962.
+          context 'in production' do
+            let(:env) { 'prod' }
+
+            it 'does not set the :sp value' do
+              expect(session).not_to include(:sp)
+            end
+
+            it 'renders the unacceptable page' do
+              expect(controller).to render_template('pages/not_acceptable')
+            end
+          end
+        end
+
+        context 'when the param value :biometric_comparison_required is not set' do
+          before do
+            # Should be a no-op, but let's be paranoid.
+            params.delete(:biometric_comparison_required)
+
+            action
+          end
+
+          context 'in production' do
+            let(:env) { 'prod' }
+
+            it 'sets the session :biometric_comparison_required value to false' do
+              expect(session[:sp][:biometric_comparison_required]).to eq(false)
+            end
+          end
+
+          context 'not in production' do
+            let(:env) { 'test' }
+
+            it 'sets the session :biometric_comparison_required value to false' do
+              expect(session[:sp][:biometric_comparison_required]).to eq(false)
+            end
+          end
+        end
       end
     end
   end

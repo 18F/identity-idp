@@ -56,7 +56,7 @@ RSpec.describe Reports::IdentityVerificationReport do
         subject: 'Daily Identity Verification Report - 2023-12-12',
         reports: anything,
         message: anything,
-        attachment_format: :csv,
+        attachment_format: :xlsx,
       ).and_call_original
 
       subject.perform(report_date)

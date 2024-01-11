@@ -140,6 +140,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
             success: true,
             webauthn_configuration_id: webauthn_configuration.id,
             multi_factor_auth_method_created_at: webauthn_configuration.created_at.strftime('%s%L'),
+            new_device: nil,
           }
         end
 
@@ -211,6 +212,42 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
         end
       end
 
+      context 'with new device session value' do
+        let!(:webauthn_configuration) do
+          create(
+            :webauthn_configuration,
+            user: controller.current_user,
+            credential_id: credential_id,
+            credential_public_key: credential_public_key,
+          )
+          controller.current_user.webauthn_configurations.first
+        end
+        let(:result) do
+          {
+            context: 'authentication',
+            multi_factor_auth_method: 'webauthn',
+            success: true,
+            webauthn_configuration_id: webauthn_configuration.id,
+            multi_factor_auth_method_created_at: webauthn_configuration.created_at.strftime('%s%L'),
+            new_device: false,
+          }
+        end
+
+        before do
+          allow(WebauthnVerificationForm).to receive(:domain_name).and_return('localhost:3000')
+          subject.user_session[:new_device] = false
+        end
+
+        it 'tracks new device value' do
+          expect(@analytics).to receive(:track_mfa_submit_event).
+            with(result)
+
+          freeze_time do
+            patch :confirm, params: params
+          end
+        end
+      end
+
       it 'tracks an invalid submission' do
         create(
           :webauthn_configuration,
@@ -218,7 +255,6 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
           credential_id: credential_id,
           credential_public_key: credential_public_key,
         )
-
         webauthn_configuration = controller.current_user.webauthn_configurations.first
         result = { context: 'authentication',
                    multi_factor_auth_method: 'webauthn',
@@ -226,7 +262,8 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
                    error_details: { authenticator_data: { invalid_authenticator_data: true } },
                    webauthn_configuration_id: webauthn_configuration.id,
                    multi_factor_auth_method_created_at: webauthn_configuration.created_at.
-                     strftime('%s%L') }
+                     strftime('%s%L'),
+                   new_device: nil }
         expect(@analytics).to receive(:track_mfa_submit_event).
           with(result)
 
@@ -290,6 +327,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
             multi_factor_auth_method: 'webauthn_platform',
             multi_factor_auth_method_created_at:
               second_webauthn_platform_configuration.created_at.strftime('%s%L'),
+            new_device: nil,
             webauthn_configuration_id: nil,
             frontend_error: webauthn_error,
           )

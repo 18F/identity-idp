@@ -126,7 +126,7 @@ module TwoFactorAuthentication
     end
 
     def post_analytics(result)
-      properties = result.to_h.merge(analytics_properties)
+      properties = result.to_h.merge(analytics_properties, new_device: user_session[:new_device])
       analytics.multi_factor_auth_setup(**properties) if context == 'confirmation'
 
       analytics.track_mfa_submit_event(properties)
