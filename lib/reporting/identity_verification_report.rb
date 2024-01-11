@@ -79,7 +79,7 @@ module Reporting
 
     def identity_verification_emailable_report
       EmailableReport.new(
-        title: 'Identiy Verification Metrics',
+        title: 'Identity Verification Metrics',
         table: as_csv,
         filename: 'identity_verification_metrics',
       )

@@ -91,10 +91,8 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
     end
 
     def include_liveness_expected
-      return false if Identity::Hostdata.env == 'prod'
-      return false unless IdentityConfig.store.doc_auth_selfie_capture_enabled
-
-      liveness_checking_required
+      FeatureManagement.idv_allow_selfie_check? &&
+        liveness_checking_required
     end
   end
 
@@ -137,8 +135,10 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
   end
 
   context 'with liveness_checking_enabled as true' do
+    let(:selfie_check_allowed) { true }
     before do
-      allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).and_return(true)
+      expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
+        and_return(selfie_check_allowed)
     end
 
     context 'when liveness checking is NOT required' do
@@ -172,9 +172,7 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
       end
 
       context 'when hosted env is prod' do
-        before do
-          allow(Identity::Hostdata).to receive(:env).and_return('prod')
-        end
+        let(:selfie_check_allowed) { false }
         context 'with acuant image source' do
           let(:workflow) { 'test_workflow' }
           let(:image_source) { DocAuth::ImageSources::ACUANT_SDK }
