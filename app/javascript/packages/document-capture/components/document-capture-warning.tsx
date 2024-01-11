@@ -66,7 +66,7 @@ function DocumentCaptureWarning({
   const { trackEvent } = useContext(AnalyticsContext);
 
   const nonIppOrFailedResult = !inPersonURL || isFailedResult;
-  const selfieHasError = selfieResultFailed || selfieResultNotLiveOrPoorQuality 
+  const selfieHasError = selfieResultFailed || selfieResultNotLiveOrPoorQuality;
   const heading = getHeadingString({ isFailedDocType, selfieHasError, t });
   const actionText = getActionTextString({ nonIppOrFailedResult, t });
   // we have an h2 subheading when nonIpp is false and isFailed is false
@@ -114,6 +114,7 @@ function DocumentCaptureWarning({
             unknownFieldErrors={unknownFieldErrors}
             remainingAttempts={remainingAttempts}
             isFailedDocType={isFailedDocType}
+            selfieResultNotLiveOrPoorQuality={selfieResultNotLiveOrPoorQuality}
             hasDismissed={hasDismissed}
           />
         </div>

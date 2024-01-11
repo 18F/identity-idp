@@ -9,9 +9,18 @@ import MarketingSiteContext from '../context/marketing-site';
 interface UnknownErrorProps extends ComponentProps<'p'> {
   unknownFieldErrors: FormStepError<{ front: string; back: string }>[];
   isFailedDocType: boolean;
+  selfieResultNotLiveOrPoorQuality: boolean;
   remainingAttempts: number;
   altFailedDocTypeMsg?: string | null;
   hasDismissed: boolean;
+}
+
+function FailedDocOrSelfieMessage({ errorMessage, remainingAttempts, warningAttemptText }) {
+  return (
+    <p key={`${errorMessage}-${remainingAttempts}`}>
+      {errorMessage} <HtmlTextWithStrongNoWrap text={warningAttemptText} />
+    </p>
+  );
 }
 
 function formatIdTypeMsg({ altFailedDocTypeMsg, acceptedIdUrl }) {
@@ -27,6 +36,7 @@ function formatIdTypeMsg({ altFailedDocTypeMsg, acceptedIdUrl }) {
 function UnknownError({
   unknownFieldErrors = [],
   isFailedDocType = false,
+  selfieResultNotLiveOrPoorQuality = false,
   remainingAttempts,
   altFailedDocTypeMsg = null,
   hasDismissed,
@@ -54,14 +64,25 @@ function UnknownError({
       <p key={altFailedDocTypeMsg}>{formatIdTypeMsg({ altFailedDocTypeMsg, acceptedIdUrl })}</p>
     );
   }
+  // Failing doc type is the first error we want to show
   if (isFailedDocType && err) {
     return (
-      <p key={`${err.message}-${remainingAttempts}`}>
-        {err.message}{' '}
-        <HtmlTextWithStrongNoWrap
-          text={t('idv.warning.attempts_html', { count: remainingAttempts })}
-        />
-      </p>
+      <FailedDocOrSelfieMessage
+        errorMessage={err.message}
+        remainingAttempts={remainingAttempts}
+        warningAttemptText={t('idv.warning.attempts_html', { count: remainingAttempts })}
+      />
+    );
+  }
+  // Failing selfie liveness is the second error we want to show. This is the same error component
+  // as the isFailedDocType right now, but spelling this out makes it more readable.
+  if (selfieResultNotLiveOrPoorQuality && err) {
+    return (
+      <FailedDocOrSelfieMessage
+        errorMessage={err.message}
+        remainingAttempts={remainingAttempts}
+        warningAttemptText={t('idv.warning.attempts_html', { count: remainingAttempts })}
+      />
     );
   }
   if (err && !hasDismissed) {

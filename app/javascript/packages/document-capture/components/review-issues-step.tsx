@@ -134,6 +134,7 @@ function ReviewIssuesStep({
   return (
     <DocumentCaptureReviewIssues
       isFailedDocType={isFailedDocType}
+      selfieResultNotLiveOrPoorQuality={selfieResultNotLiveOrPoorQuality}
       remainingAttempts={remainingAttempts}
       captureHints={captureHints}
       value={value}
