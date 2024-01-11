@@ -47,7 +47,12 @@ describe('DocumentCaptureWarning', () => {
     }
   }
 
-  function renderCcontent(isFailedDocType, isFailedResult, inPersonUrl) {
+  function renderCcontent(
+    isFailedDocType,
+    selfieResultNotLiveOrPoorQuality,
+    isFailedResult,
+    inPersonUrl,
+  ) {
     const unknownFieldErrors = [
       {
         field: 'general',
@@ -60,6 +65,7 @@ describe('DocumentCaptureWarning', () => {
           <DocumentCaptureWarning
             isFailedDocType={isFailedDocType}
             isFailedResult={isFailedResult}
+            selfieResultNotLiveOrPoorQuality={selfieResultNotLiveOrPoorQuality}
             remainingAttempts={2}
             unknownFieldErrors={unknownFieldErrors}
             actionOnClick={() => {}}
@@ -76,8 +82,14 @@ describe('DocumentCaptureWarning', () => {
     it('logs the warning displayed to the user', () => {
       const isFailedResult = false;
       const isFailedDocType = false;
+      const selfieResultNotLiveOrPoorQuality = false;
 
-      renderCcontent(isFailedDocType, isFailedResult, inPersonUrl);
+      renderCcontent(
+        isFailedDocType,
+        selfieResultNotLiveOrPoorQuality,
+        isFailedResult,
+        inPersonUrl,
+      );
 
       expect(trackEvent).to.have.been.calledWith('IdV: warning shown', {
         location: 'doc_auth_review_issues',
@@ -90,8 +102,15 @@ describe('DocumentCaptureWarning', () => {
 
     context('not failed result', () => {
       const isFailedResult = false;
+      const selfieResultNotLiveOrPoorQuality = false;
+
       it('renders not failed doc type', () => {
-        const { getByRole, getByText } = renderCcontent(false, isFailedResult, inPersonUrl);
+        const { getByRole, getByText } = renderCcontent(
+          false,
+          selfieResultNotLiveOrPoorQuality,
+          isFailedResult,
+          inPersonUrl,
+        );
 
         validateHeader('errors.doc_auth.rate_limited_heading', 1, true);
         validateHeader('errors.doc_auth.rate_limited_subheading', 2, true);
@@ -108,6 +127,7 @@ describe('DocumentCaptureWarning', () => {
         const isFailedDocType = true;
         const { getByRole, getByText } = renderCcontent(
           isFailedDocType,
+          selfieResultNotLiveOrPoorQuality,
           isFailedResult,
           inPersonUrl,
         );
@@ -126,10 +146,13 @@ describe('DocumentCaptureWarning', () => {
 
     context('failed result', () => {
       const isFailedResult = true;
+      const selfieResultNotLiveOrPoorQuality = false;
+
       it('renders not failed doc type', () => {
         const isFailedDocType = false;
         const { getByRole, getByText } = renderCcontent(
           isFailedDocType,
+          selfieResultNotLiveOrPoorQuality,
           isFailedResult,
           inPersonUrl,
         );
@@ -150,6 +173,7 @@ describe('DocumentCaptureWarning', () => {
         const isFailedDocType = true;
         const { getByRole, getByText } = renderCcontent(
           isFailedDocType,
+          selfieResultNotLiveOrPoorQuality,
           isFailedResult,
           inPersonUrl,
         );
@@ -174,8 +198,14 @@ describe('DocumentCaptureWarning', () => {
     it('logs the warning displayed to the user', () => {
       const isFailedResult = true;
       const isFailedDocType = true;
+      const selfieResultNotLiveOrPoorQuality = false;
 
-      renderCcontent(isFailedDocType, isFailedResult, inPersonUrl);
+      renderCcontent(
+        isFailedDocType,
+        selfieResultNotLiveOrPoorQuality,
+        isFailedResult,
+        inPersonUrl,
+      );
 
       expect(trackEvent).to.have.been.calledWith('IdV: warning shown', {
         location: 'doc_auth_review_issues',
@@ -188,10 +218,12 @@ describe('DocumentCaptureWarning', () => {
 
     context('not failed result', () => {
       const isFailedResult = false;
+      const selfieResultNotLiveOrPoorQuality = false;
       it('renders not failed doc type', () => {
         const isFailedDocType = false;
         const { getByRole, getByText } = renderCcontent(
           isFailedDocType,
+          selfieResultNotLiveOrPoorQuality,
           isFailedResult,
           inPersonUrl,
         );
@@ -212,6 +244,7 @@ describe('DocumentCaptureWarning', () => {
         const isFailedDocType = true;
         const { getByRole, getByText } = renderCcontent(
           isFailedDocType,
+          selfieResultNotLiveOrPoorQuality,
           isFailedResult,
           inPersonUrl,
         );
@@ -231,10 +264,12 @@ describe('DocumentCaptureWarning', () => {
 
     context('failed result', () => {
       const isFailedResult = true;
+      const selfieResultNotLiveOrPoorQuality = false;
       it('renders not failed doc type', () => {
         const isFailedDocType = false;
         const { getByRole, getByText } = renderCcontent(
           isFailedDocType,
+          selfieResultNotLiveOrPoorQuality,
           isFailedResult,
           inPersonUrl,
         );
@@ -255,6 +290,7 @@ describe('DocumentCaptureWarning', () => {
         const isFailedDocType = true;
         const { getByRole, getByText } = renderCcontent(
           isFailedDocType,
+          selfieResultNotLiveOrPoorQuality,
           isFailedResult,
           inPersonUrl,
         );

@@ -39,9 +39,9 @@ function getActionTextString({ nonIppOrFailedResult, t }) {
 
 function getSubheading({ selfieHasError, nonIppOrFailedResult, isFailedDocType, t }) {
   if (!nonIppOrFailedResult && !isFailedDocType && !selfieHasError) {
-    return undefined;
+    return <h2>{t('errors.doc_auth.rate_limited_subheading')}</h2>;
   }
-  return <h2>{t('errors.doc_auth.rate_limited_subheading')}</h2>;
+  return undefined;
 }
 
 function showRemainingAttemptsComponent({ isFailedDocType, remainingAttempts }) {
