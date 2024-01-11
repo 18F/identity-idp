@@ -143,7 +143,7 @@ function AcuantSelfieCamera({
     // Cleanup when the AcuantSelfieCamera component is unmounted
     return () => (isReady ? cleanupSelfieCamera() : undefined);
   }, [isReady]);
-  // <div className='document-capture-selfie-feedback'>{feedback}</div>
+
   return <>{children}</>;
 }
 
