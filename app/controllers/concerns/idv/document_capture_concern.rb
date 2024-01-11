@@ -40,7 +40,7 @@ module Idv
         end
       end
 
-      track_document_issuing_state(user, idv_session.pii_from_doc[:state])
+      track_document_issuing_state(user, response.pii_from_doc[:state])
     end
 
     def stored_result
