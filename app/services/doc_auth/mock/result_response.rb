@@ -131,12 +131,12 @@ module DocAuth
       end
 
       def doc_auth_success?
-        doc_auth_result_from_uploaded_file == 'Passed'
+        doc_auth_result_from_uploaded_file == 'Passed' || errors.blank?
       end
 
       def selfie_success
-        return nil if parsed_data_from_uploaded_file['liveness_result'].nil?
-        parsed_data_from_uploaded_file['liveness_result'] == 'Pass'
+        return nil if portrait_match_results&.dig(:FaceMatchResult).nil?
+        portrait_match_results[:FaceMatchResult] == 'Pass'
       end
 
       private
@@ -233,8 +233,6 @@ module DocAuth
           liveness_enabled: liveness_enabled,
           classification_info: classification_info,
           portrait_match_results: @selfie_check_performed ? portrait_match_results : nil,
-          doc_auth_success: doc_auth_success?,
-          selfie_success: selfie_success,
         }.compact
       end
     end
