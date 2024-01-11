@@ -75,8 +75,7 @@ function AcuantSelfieCamera({
   onImageCaptureClose = () => {},
   children,
 }: AcuantSelfieCameraContextProps) {
-  const { isReady, setIsActive } = useContext(AcuantContext);
-  const [feedback, setFeedback] = useState('');
+  const { isReady, setIsActive, setFeedback } = useContext(AcuantContext);
 
   useEffect(() => {
     const faceCaptureCallback: FaceCaptureCallback = {
@@ -86,7 +85,6 @@ function AcuantSelfieCamera({
         // You can opt to display an alert before the callback is triggered.
       },
       onDetection: (text) => {
-        // console.log(text);
         setFeedback(text);
         // Triggered when the face does not pass the scan. The UI element
         // should be updated here to provide guidence to the user
@@ -139,8 +137,8 @@ function AcuantSelfieCamera({
     // Cleanup when the AcuantSelfieCamera component is unmounted
     return () => (isReady ? cleanupSelfieCamera() : undefined);
   }, [isReady]);
-
-  return <>{children}<div className='document-capture-selfie-feedback'>{feedback}</div></>;
+  // <div className='document-capture-selfie-feedback'>{feedback}</div>
+  return <>{children}</>;
 }
 
 export default AcuantSelfieCamera;
