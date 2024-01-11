@@ -118,7 +118,7 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
       end
     end
 
-    it 'works for a happy path when the user opts into opt-in ipp (1b above)',
+    it 'works for a happy path when the user opts into opt-in ipp',
        allow_browser_log: true do
       user = user_with_2fa
       sign_in_and_2fa_user(user)
@@ -268,7 +268,7 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
       expect(page).to have_current_path(account_path)
     end
 
-    it 'works for a happy path when the user opts out of opt-in ipp(1a above)',
+    it 'works for a happy path when the user opts out of opt-in ipp',
        allow_browser_log: true do
       user = user_with_2fa
       sign_in_and_2fa_user(user)
