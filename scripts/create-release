@@ -37,6 +37,11 @@ gh pr list \
     --state merged \
     jq ".[] | select(.number == ${PR})" > "$PR_JSON_FILE"
 
+if [ ! -s "$PR_JSON_FILE" ]; then
+    echo "PR $PR not found."
+    exit 9
+fi
+
 RC=$(jq --raw-output '.title' < "$PR_JSON_FILE" | sed -E 's/Deploy RC (.+) to .*/\1/')
 jq --raw-output '.body' < "$PR_JSON_FILE" > "$CHANGELOG_FILE"
 TITLE="RC $RC"
