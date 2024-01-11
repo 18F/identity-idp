@@ -4,16 +4,16 @@ import {
 } from '@18f/identity-webauthn';
 
 async function platformAuthenticatorAvailable() {
-  const platformauthenticatorAvailableInput = document.getElementById(
+  const platformAuthenticatorAvailableInput = document.getElementById(
     'platform_authenticator_available',
   ) as HTMLInputElement;
-  if (!platformauthenticatorAvailableInput) {
+  if (!platformAuthenticatorAvailableInput) {
     return;
   }
   if (isWebauthnPasskeySupported() && (await isWebauthnPlatformAuthenticatorAvailable())) {
-    platformauthenticatorAvailableInput.value = 'true';
+    platformAuthenticatorAvailableInput.value = 'true';
   } else {
-    platformauthenticatorAvailableInput.value = 'false';
+    platformAuthenticatorAvailableInput.value = 'false';
   }
 }
 
