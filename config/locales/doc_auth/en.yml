@@ -220,6 +220,11 @@ en:
       secure_account: We’ll encrypt your account with your password. Encryption means
         your data is protected and only you will be able to access or change
         your information.
+      selfie_capture_status:
+        face_close_to_border: 'TOO CLOSE TO THE FRAME'
+        face_not_found: 'FACE NOT FOUND'
+        face_too_small: 'FACE TOO SMALL'
+        too_many_faces: 'TOO MANY FACES'
       ssn: We need your Social Security number to verify your name, date of birth and
         address.
       tag: Recommended

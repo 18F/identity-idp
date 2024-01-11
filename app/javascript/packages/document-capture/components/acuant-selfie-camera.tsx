@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 import AcuantContext from '../context/acuant';
+import { t } from '@18f/identity-i18n';
 
 declare global {
   interface Window {
@@ -63,8 +64,6 @@ interface FaceCaptureCallback {
 interface FaceDetectionStates {
   FACE_NOT_FOUND: string;
   TOO_MANY_FACES: string;
-  FACE_ANGLE_TOO_LARGE: string;
-  PROBABILITY_TOO_SMALL: string;
   FACE_TOO_SMALL: string;
   FACE_CLOSE_TO_BORDER: string;
 }
@@ -119,12 +118,10 @@ function AcuantSelfieCamera({
     };
 
     const faceDetectionStates = {
-      FACE_NOT_FOUND: 'FACE NOT FOUND',
-      TOO_MANY_FACES: 'TOO MANY FACES',
-      FACE_ANGLE_TOO_LARGE: 'FACE ANGLE TOO LARGE',
-      PROBABILITY_TOO_SMALL: 'PROBABILITY TOO SMALL',
-      FACE_TOO_SMALL: 'FACE TOO SMALL',
-      FACE_CLOSE_TO_BORDER: 'TOO CLOSE TO THE FRAME',
+      FACE_NOT_FOUND: t('doc_auth.info.selfie_capture_status.face_not_found'),
+      TOO_MANY_FACES: t('doc_auth.info.selfie_capture_status.too_many_faces'),
+      FACE_TOO_SMALL: t('doc_auth.info.selfie_capture_status.face_too_small'),
+      FACE_CLOSE_TO_BORDER: t('doc_auth.info.selfie_capture_status.face_close_to_border'),
     };
     const cleanupSelfieCamera = () => {
       window.AcuantPassiveLiveness.end();
@@ -143,7 +140,7 @@ function AcuantSelfieCamera({
     return () => (isReady ? cleanupSelfieCamera() : undefined);
   }, [isReady]);
 
-  return <>{children}<div id='document-capture-selfie-feedback'>{feedback}</div></>;
+  return <>{children}<div className='document-capture-selfie-feedback'>{feedback}</div></>;
 }
 
 export default AcuantSelfieCamera;
