@@ -1,8 +1,8 @@
 import { AcuantContextProvider, DeviceContext } from '@18f/identity-document-capture';
 import AcuantSelfieCamera from '@18f/identity-document-capture/components/acuant-selfie-camera';
 import AcuantSelfieCaptureCanvas from '@18f/identity-document-capture/components/acuant-selfie-capture-canvas';
-import { render, useAcuant } from '../../../support/document-capture';
 import { t } from '@18f/identity-i18n';
+import { render, useAcuant } from '../../../support/document-capture';
 
 describe('document-capture/components/acuant-selfie-camera', () => {
   const { initialize } = useAcuant();

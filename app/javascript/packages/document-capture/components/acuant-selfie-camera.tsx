@@ -1,7 +1,7 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect } from 'react';
 import type { ReactNode } from 'react';
-import AcuantContext from '../context/acuant';
 import { t } from '@18f/identity-i18n';
+import AcuantContext from '../context/acuant';
 
 declare global {
   interface Window {

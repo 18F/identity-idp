@@ -654,7 +654,7 @@ function AcuantCapture(
     });
   }
 
-  function onImageCaptureFeedback(text: string){
+  function onImageCaptureFeedback(text: string) {
     setImageCaptureText(text);
   }
 
