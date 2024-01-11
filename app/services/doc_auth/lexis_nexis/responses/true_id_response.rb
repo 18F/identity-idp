@@ -149,12 +149,11 @@ module DocAuth
             doc_auth_result_passed?
         end
 
-        # Returns nil, true, false
-        # * When selfie check is not required, return nil
-        # * Otherwise:
-        #    return false if selfie check result != 'Pass'
-        #    return true if selfie check result == 'Pass'
-        #    return false if selfie check result is missing
+        # @return [Boolean, nil]
+        # When selfie check is not required, return nil
+        # Otherwise:
+        #   return true if selfie check result == 'Pass'
+        #   return false
         def selfie_success
           return nil unless @liveness_checking_enabled
           selfie_result == 'Pass'
