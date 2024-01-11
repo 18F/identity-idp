@@ -551,8 +551,8 @@ function AcuantCapture(
     const { image, dpi, moire, glare, sharpness } = nextCapture;
     const cardType = 'cardType' in nextCapture ? nextCapture.cardType : nextCapture.cardtype;
 
-    const isAssessedAsGlare = glare < glareThreshold!;
-    const isAssessedAsBlurry = sharpness < sharpnessThreshold!;
+    const isAssessedAsGlare = !!glareThreshold && glare < glareThreshold;
+    const isAssessedAsBlurry = !!sharpnessThreshold && sharpness < sharpnessThreshold;
     const isAssessedAsUnsupported = cardType !== AcuantDocumentType.ID;
     const { width, height, data } = image;
 
