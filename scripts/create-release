@@ -35,7 +35,6 @@ gh pr list \
     --json number,title,body \
     --base "$DEPLOY_BRANCH" \
     --state merged \
-    --limit 1 | \
     jq ".[] | select(.number == ${PR})" > "$PR_JSON_FILE"
 
 RC=$(jq --raw-output '.title' < "$PR_JSON_FILE" | sed -E 's/Deploy RC (.+) to .*/\1/')
