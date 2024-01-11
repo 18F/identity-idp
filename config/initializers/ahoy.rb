@@ -2,6 +2,17 @@
 
 require 'utf8_cleaner'
 
+Rails.application.configure do
+  config.ahoy = ActiveSupport::OrderedOptions.new
+  config.ahoy.event_logger = if FeatureManagement.log_to_stdout?
+                               ActiveSupport::Logger.new(STDOUT)
+                             else
+                               ActiveSupport::Logger.new(
+                                 Rails.root.join('log', Idp::Constants::EVENT_LOG_FILENAME),
+                               )
+                             end
+end
+
 Ahoy.api = false
 # Period of inactivity before a new visit is created
 Ahoy.visit_duration = IdentityConfig.store.session_timeout_in_minutes.minutes
@@ -12,8 +23,6 @@ Ahoy.track_bots = true
 
 module Ahoy
   class Store < Ahoy::BaseStore
-    EVENT_FILENAME = 'events.log'
-
     def track_visit(data)
       log_visit(data)
     end
@@ -23,7 +32,7 @@ module Ahoy
       data[:id] = data.delete(:event_id)
       data[:visitor_id] = ahoy.visitor_token
       data[:visit_id] = data.delete(:visit_token)
-      data[:log_filename] = EVENT_FILENAME
+      data[:log_filename] = Idp::Constants::EVENT_LOG_FILENAME
 
       log_event(data)
     end
@@ -45,7 +54,7 @@ module Ahoy
     end
 
     def log_event(data)
-      event_logger.info data.to_json
+      Rails.application.config.ahoy.event_logger.info(data.to_json)
     end
 
     def visit_logger
@@ -53,14 +62,6 @@ module Ahoy
                           ActiveSupport::Logger.new(STDOUT)
                         else
                           ActiveSupport::Logger.new(Rails.root.join('log', 'visits.log'))
-                        end
-    end
-
-    def event_logger
-      @event_logger ||= if FeatureManagement.log_to_stdout?
-                          ActiveSupport::Logger.new(STDOUT)
-                        else
-                          ActiveSupport::Logger.new(Rails.root.join('log', EVENT_FILENAME))
                         end
     end
 
