@@ -653,7 +653,7 @@ RSpec.feature 'Analytics Regression', js: true do
     end
   end
 
-  context 'Happy hybrid path', allow_browser_log: true do
+  context 'Happy hybrid path' do
     before do
       allow(Telephony).to receive(:send_doc_auth_link).and_wrap_original do |impl, config|
         @sms_link = config[:link]
@@ -744,7 +744,7 @@ RSpec.feature 'Analytics Regression', js: true do
       complete_enter_password_step(user)
     end
 
-    it 'records all of the events', allow_browser_log: true do
+    it 'records all of the events' do
       gpo_path_events.each do |event, attributes|
         expect(fake_analytics).to have_logged_event(event, attributes)
       end
@@ -844,7 +844,8 @@ RSpec.feature 'Analytics Regression', js: true do
 
   context 'Happy selfie path' do
     before do
-      allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).and_return(true)
+      expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
+        and_return(true)
       allow_any_instance_of(FederatedProtocols::Oidc).
         to receive(:biometric_comparison_required?).
         and_return({ biometric_comparison_required: true })

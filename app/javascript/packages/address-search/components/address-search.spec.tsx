@@ -9,7 +9,7 @@ describe('AddressSearch', () => {
   const locationsURL = 'https://localhost:3000/locations/endpoint';
 
   context('Page Heading and PO Search About Message', () => {
-    it('both render when handleLocationSelect is not null', async () => {
+    it('both render when handleLocationSelect is not null', () => {
       const handleLocationsFound = sandbox.stub();
       const onSelect = sinon.stub();
       const { queryByText, queryByRole } = render(
@@ -25,8 +25,8 @@ describe('AddressSearch', () => {
         </SWRConfig>,
       );
 
-      const heading = await queryByText('in_person_proofing.headings.po_search.location');
-      const aboutMessage = await queryByText(
+      const heading = queryByText('in_person_proofing.headings.po_search.location');
+      const aboutMessage = queryByText(
         'in_person_proofing.body.location.po_search.po_search_about',
       );
 
@@ -37,7 +37,7 @@ describe('AddressSearch', () => {
       ).to.exist();
     });
 
-    it('both do not render when handleLocationSelect is null', async () => {
+    it('both do not render when handleLocationSelect is null', () => {
       const handleLocationsFound = sandbox.stub();
       const onSelect = sinon.stub();
       const { queryByText } = render(
@@ -53,8 +53,8 @@ describe('AddressSearch', () => {
         </SWRConfig>,
       );
 
-      const heading = await queryByText('in_person_proofing.headings.po_search.location');
-      const aboutMessage = await queryByText(
+      const heading = queryByText('in_person_proofing.headings.po_search.location');
+      const aboutMessage = queryByText(
         'in_person_proofing.body.location.po_search.po_search_about',
       );
       expect(heading).to.be.empty;
