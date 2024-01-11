@@ -10,9 +10,7 @@
 
 <p>
   <%= t('two_factor_authentication.phone_fee_disclosure') %>
-  <% if IdentityConfig.store.voip_block %>
-    <%= t('two_factor_authentication.two_factor_choice_options.phone_info_no_voip') %>
-  <% end %>
+  <%= t('two_factor_authentication.two_factor_choice_options.phone_info_no_voip') %>
 </p>
 
 <%= simple_form_for(

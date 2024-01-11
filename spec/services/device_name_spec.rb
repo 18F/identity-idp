@@ -5,7 +5,7 @@ RSpec.describe DeviceName do
     let(:device) { create(:device) }
     it 'gives a shortened os and browser name' do
       name = DeviceName.from_user_agent(device.user_agent)
-      expect(name).to eq('Chrome 58 on Windows 10')
+      expect(name).to eq('Chrome 58 on Windows')
     end
   end
 end
