@@ -35,7 +35,6 @@ en:
         attempt to verify a document online. <strong>Try again in
         %{timeout}.</strong>'
       selfie_result_failed_heading: We could not verify the photo of yourself
-      selfie_result_failed_subheading: Try taking a photo of yourself again. Make sure your whole face is clear and visible in the photo.
       send_link_limited: You tried too many times, please try again in %{timeout}. You
         can also go back and choose to use your computer instead.
     enter_code:

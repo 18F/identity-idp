@@ -37,16 +37,9 @@ function getActionTextString({ nonIppOrFailedResult, t }) {
     : t('idv.failure.button.try_online');
 }
 
-function subHeadingRequired({ nonIppOrFailedResult, isFailedDocType }) {
-  return !nonIppOrFailedResult && !isFailedDocType;
-}
-
 function getSubheading({ selfieHasError, nonIppOrFailedResult, isFailedDocType, t }) {
-  if (!subHeadingRequired({ nonIppOrFailedResult, isFailedDocType })) {
+  if (!nonIppOrFailedResult && !isFailedDocType && !selfieHasError) {
     return undefined;
-  }
-  if (selfieHasError && !isFailedDocType) {
-    return t('errors.doc_auth.selfie_result_failed_subheading');
   }
   return <h2>{t('errors.doc_auth.rate_limited_subheading')}</h2>;
 }

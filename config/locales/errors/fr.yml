@@ -41,7 +41,6 @@ fr:
         vous pouvez tenter de vérifier un document en ligne. <strong>Veuillez
         réessayer dans %{timeout}.</strong>'
       selfie_result_failed_heading: 
-      selfie_result_failed_subheading: 
       send_link_limited: Vous avez essayé trop de fois, veuillez réessayer dans
         %{timeout}. Vous pouvez également revenir en arrière et choisir
         d’utiliser votre ordinateur à la place.
