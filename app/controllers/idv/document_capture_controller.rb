@@ -65,6 +65,7 @@ module Idv
           idv_session.invalidate_in_person_pii_from_user!
           idv_session.had_barcode_attention_error = nil
           idv_session.had_barcode_read_failure = nil
+          idv_session.selfie_check_performed = nil
         end,
       )
     end

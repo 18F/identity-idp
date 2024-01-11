@@ -29,10 +29,6 @@ const { values: flags, positionals: fileArgs } = parseArgs({
 const { watch: isWatching, 'out-dir': outDir, 'load-path': loadPaths = [] } = flags;
 loadPaths.push(...getDefaultLoadPaths());
 
-if (!outDir) {
-  throw new TypeError('Output directory must be provided using the `--out-dir` option.');
-}
-
 /** @type {BuildOptions & SyncSassOptions} */
 const options = { outDir, loadPaths, optimize: isProduction };
 
@@ -84,9 +80,13 @@ function build(files) {
   );
 }
 
-mkdir(outDir, { recursive: true })
-  .then(() => build(fileArgs))
-  .catch((error) => {
-    console.error(error);
-    process.exitCode = 1;
-  });
+if (outDir) {
+  await mkdir(outDir, { recursive: true });
+}
+
+try {
+  await build(fileArgs);
+} catch (error) {
+  console.error(error);
+  process.exitCode = 1;
+}

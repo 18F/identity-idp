@@ -14,7 +14,7 @@ describe('FullAddressSearch', () => {
   const usStatesTerritories = [['Delware', 'DE']];
 
   context('Page Heading and PO Search About Message', () => {
-    it('both render when handleLocationSelect is not null', async () => {
+    it('both render when handleLocationSelect is not null', () => {
       const handleLocationsFound = sandbox.stub();
       const onSelect = sinon.stub();
       const { queryByText, queryByRole } = render(
@@ -30,8 +30,8 @@ describe('FullAddressSearch', () => {
         </SWRConfig>,
       );
 
-      const heading = await queryByText('in_person_proofing.headings.po_search.location');
-      const aboutMessage = await queryByText(
+      const heading = queryByText('in_person_proofing.headings.po_search.location');
+      const aboutMessage = queryByText(
         'in_person_proofing.body.location.po_search.po_search_about',
       );
 
@@ -42,7 +42,7 @@ describe('FullAddressSearch', () => {
       ).to.exist();
     });
 
-    it('both do not render when handleLocationSelect is null', async () => {
+    it('both do not render when handleLocationSelect is null', () => {
       const handleLocationsFound = sandbox.stub();
       const { queryByText } = render(
         <SWRConfig value={{ provider: () => new Map() }}>
@@ -57,8 +57,8 @@ describe('FullAddressSearch', () => {
         </SWRConfig>,
       );
 
-      const heading = await queryByText('in_person_proofing.headings.po_search.location');
-      const aboutMessage = await queryByText(
+      const heading = queryByText('in_person_proofing.headings.po_search.location');
+      const aboutMessage = queryByText(
         'in_person_proofing.body.location.po_search.po_search_about',
       );
       expect(heading).to.be.empty;
@@ -67,7 +67,7 @@ describe('FullAddressSearch', () => {
   });
 
   context('Address Search Label Text', () => {
-    it('does not render when handleLocationSelect is not null', async () => {
+    it('does not render when handleLocationSelect is not null', () => {
       const handleLocationsFound = sandbox.stub();
       const onSelect = sinon.stub();
       const { queryByText } = render(
@@ -83,13 +83,11 @@ describe('FullAddressSearch', () => {
         </SWRConfig>,
       );
 
-      const searchLabel = await queryByText(
-        'in_person_proofing.headings.po_search.address_search_label',
-      );
+      const searchLabel = queryByText('in_person_proofing.headings.po_search.address_search_label');
       expect(searchLabel).to.be.empty;
     });
 
-    it('renders when handleLocationSelect is null', async () => {
+    it('renders when handleLocationSelect is null', () => {
       const handleLocationsFound = sandbox.stub();
       const { queryByText } = render(
         <SWRConfig value={{ provider: () => new Map() }}>
@@ -104,7 +102,7 @@ describe('FullAddressSearch', () => {
         </SWRConfig>,
       );
 
-      const searchLabel = await queryByText(
+      const searchLabel = queryByText(
         'in_person_proofing.body.location.po_search.address_search_label',
       );
       expect(searchLabel).to.exist();

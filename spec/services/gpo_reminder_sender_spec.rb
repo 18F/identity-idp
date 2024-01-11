@@ -36,7 +36,7 @@ RSpec.describe GpoReminderSender do
   describe '#send_emails' do
     subject(:sender) { GpoReminderSender.new }
 
-    let(:user) { create(:user, :with_pending_gpo_profile) }
+    let!(:user) { create(:user, :with_pending_gpo_profile, code_sent_at: code_sent_at) }
     let(:gpo_confirmation_code) do
       user.
         gpo_verification_pending_profile.
@@ -50,22 +50,9 @@ RSpec.describe GpoReminderSender do
     let(:time_not_yet_due) { time_due_for_reminder + 1.day }
     let(:time_yesterday) { Time.zone.now - 1.day }
 
-    def set_gpo_verification_pending_at(user, to_time)
-      user.
-        gpo_verification_pending_profile.
-        update(gpo_verification_pending_at: to_time)
-
-      user.
-        gpo_verification_pending_profile.
-        gpo_confirmation_codes.each do |code|
-          code.update(code_sent_at: to_time, created_at: to_time, updated_at: to_time)
-        end
-    end
-
     def set_reminder_sent_at(to_time)
       gpo_confirmation_code.update(
         reminder_sent_at: to_time,
-        created_at: to_time,
         updated_at: to_time,
       )
     end
@@ -73,16 +60,29 @@ RSpec.describe GpoReminderSender do
     before { allow(Analytics).to receive(:new).and_return(fake_analytics) }
 
     context 'when no users need a reminder' do
-      before { set_gpo_verification_pending_at(user, time_not_yet_due) }
+      let(:code_sent_at) { time_not_yet_due }
+
+      include_examples 'sends no emails'
+    end
+
+    context 'when a user has old reminded code and new code' do
+      let(:code_sent_at) { time_due_for_reminder - 2.days }
+      before do
+        reminder_timestamp = 1.day.ago
+        set_reminder_sent_at(reminder_timestamp)
+
+        # user received reminder email and requests new letter
+        new_confirmation_code = create(:gpo_confirmation_code, created_at: reminder_timestamp)
+        user.gpo_verification_pending_profile.gpo_confirmation_codes << new_confirmation_code
+      end
 
       include_examples 'sends no emails'
     end
 
     context 'when a user has requested two letters' do
+      let(:code_sent_at) { time_due_for_reminder - 2.days }
       before do
-        timestamp = time_due_for_reminder - 2.days
-        set_gpo_verification_pending_at(user, timestamp)
-        new_confirmation_code = create(:gpo_confirmation_code, created_at: timestamp)
+        new_confirmation_code = create(:gpo_confirmation_code, created_at: code_sent_at)
         user.gpo_verification_pending_profile.gpo_confirmation_codes << new_confirmation_code
       end
 
@@ -100,7 +100,7 @@ RSpec.describe GpoReminderSender do
     end
 
     context 'when a user is due for a reminder' do
-      before { set_gpo_verification_pending_at(user, time_due_for_reminder) }
+      let(:code_sent_at) { time_due_for_reminder }
 
       include_examples 'sends emails', expected_number_of_emails: 1
 
@@ -112,7 +112,13 @@ RSpec.describe GpoReminderSender do
       end
 
       context 'and the user has multiple emails' do
-        let(:user) { create(:user, :with_pending_gpo_profile, :with_multiple_emails) }
+        let(:code_sent_at) { time_due_for_reminder - 2.days }
+        let!(:user) do
+          create(
+            :user, :with_pending_gpo_profile, :with_multiple_emails,
+            code_sent_at: code_sent_at
+          )
+        end
 
         include_examples 'sends emails',
                          expected_number_of_emails: 2,
@@ -171,9 +177,9 @@ RSpec.describe GpoReminderSender do
 
     context 'when a user is due for a reminder from too long ago' do
       let(:max_age_to_send_letter_in_days) { 42 }
+      let(:code_sent_at) { (max_age_to_send_letter_in_days + 1).days.ago }
 
       before do
-        set_gpo_verification_pending_at(user, (max_age_to_send_letter_in_days + 1).days.ago)
         allow(IdentityConfig.store).to receive(:usps_confirmation_max_days).
           and_return(max_age_to_send_letter_in_days)
       end
@@ -185,9 +191,10 @@ RSpec.describe GpoReminderSender do
       let(:user) { create(:user, :with_pending_in_person_enrollment) }
 
       before do
-        gpo_code = create(:gpo_confirmation_code)
+        timestamp = time_due_for_reminder
+        gpo_code = create(:gpo_confirmation_code, created_at: timestamp)
         user.pending_profile.gpo_confirmation_codes << gpo_code
-        user.pending_profile.gpo_verification_pending_at = time_due_for_reminder
+        user.pending_profile.gpo_verification_pending_at = timestamp
         user.pending_profile.save
       end
 

@@ -350,9 +350,6 @@ RSpec.describe Idv::ImageUploadsController do
         let(:selfie_img) { DocAuthImageFixtures.selfie_image_multipart }
 
         before do
-          allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).
-            and_return(true)
-
           allow(controller.decorated_sp_session).to receive(:selfie_required?).and_return(true)
         end
 
