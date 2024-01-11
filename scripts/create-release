@@ -34,7 +34,7 @@ echo "Getting PR ${PR} data..."
 gh pr list \
     --json number,title,body \
     --base "$DEPLOY_BRANCH" \
-    --state closed \
+    --state merged \
     --limit 1 | \
     jq ".[] | select(.number == ${PR})" > "$PR_JSON_FILE"
 
