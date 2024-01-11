@@ -127,7 +127,7 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
     if FeatureManagement.log_to_stdout?
       @worker_logger = ActiveSupport::Logger.new(STDOUT)
     else
-      @worker_logger = ActiveSupport::Logger.new(Rails.root.join('log', LOG_FILENAME))
+      @worker_logger = ActiveSupport::Logger.new(Rails.root.join('log', LOG_FILENAME), 'daily')
     end
   end
 

@@ -59,7 +59,7 @@ module Identity
     config.active_job.queue_adapter = :good_job
 
     FileUtils.mkdir_p(Rails.root.join('log'))
-    config.active_job.logger = ActiveSupport::Logger.new(Rails.root.join('log', 'workers.log'))
+    config.active_job.logger = ActiveSupport::Logger.new(Rails.root.join('log', 'workers.log'), 'daily')
     config.active_job.logger.formatter = config.log_formatter
 
     config.good_job.execution_mode = :external

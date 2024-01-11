@@ -52,7 +52,7 @@ module Ahoy
       @visit_logger ||= if FeatureManagement.log_to_stdout?
                           ActiveSupport::Logger.new(STDOUT)
                         else
-                          ActiveSupport::Logger.new(Rails.root.join('log', 'visits.log'))
+                          ActiveSupport::Logger.new(Rails.root.join('log', 'visits.log'), 'daily')
                         end
     end
 

@@ -8,6 +8,6 @@ Aws.config.update(
   http_read_timeout: IdentityConfig.store.aws_http_timeout.to_f,
   retry_limit: IdentityConfig.store.aws_http_retry_limit,
   retry_max_delay: IdentityConfig.store.aws_http_retry_max_delay,
-  logger: ActiveSupport::Logger.new(Rails.root.join('log', 'production.log')),
+  logger: ActiveSupport::Logger.new(Rails.root.join('log', 'production.log'), 'daily'),
   log_formatter: log_formatter,
 )
