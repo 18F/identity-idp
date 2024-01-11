@@ -147,6 +147,7 @@ class IdentityConfig
     config.add(:broken_personal_key_window_start, type: :timestamp)
     config.add(:component_previews_embed_frame_ancestors, type: :json)
     config.add(:component_previews_enabled, type: :boolean)
+    config.add(:confirmation_period_in_hours, type: :integer)
     config.add(:country_phone_number_overrides, type: :json)
     config.add(:dashboard_api_token, type: :string)
     config.add(:dashboard_url, type: :string)
