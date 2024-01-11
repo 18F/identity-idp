@@ -45,6 +45,11 @@ interface AcuantSelfieCameraContextProps {
    */
   onImageCaptureClose: () => void;
   /**
+   * Capture hint text from onDetection callback, tells the user
+   * why the acuant sdk cannot capture a selfie.
+   */
+  onImageCaptureFeedback: (text: string) => void;
+  /**
    * React children node
    */
   children: ReactNode;
@@ -73,9 +78,10 @@ function AcuantSelfieCamera({
   onImageCaptureFailure = () => {},
   onImageCaptureOpen = () => {},
   onImageCaptureClose = () => {},
+  onImageCaptureFeedback = () => {},
   children,
 }: AcuantSelfieCameraContextProps) {
-  const { isReady, setIsActive, setFeedback } = useContext(AcuantContext);
+  const { isReady, setIsActive } = useContext(AcuantContext);
 
   useEffect(() => {
     const faceCaptureCallback: FaceCaptureCallback = {
@@ -85,7 +91,7 @@ function AcuantSelfieCamera({
         // You can opt to display an alert before the callback is triggered.
       },
       onDetection: (text) => {
-        setFeedback(text);
+        onImageCaptureFeedback(text);
         // Triggered when the face does not pass the scan. The UI element
         // should be updated here to provide guidence to the user
       },
@@ -104,7 +110,7 @@ function AcuantSelfieCamera({
       },
       onPhotoTaken: () => {
         // The photo has been taken and it's showing a preview with a button to accept or retake the image.
-        setFeedback('');
+        onImageCaptureFeedback('');
       },
       onPhotoRetake: () => {
         // Triggered when retake button is tapped
