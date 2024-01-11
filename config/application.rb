@@ -79,11 +79,11 @@ module Identity
 
     config.kms_logger = if FeatureManagement.log_to_stdout?
                           ActiveSupport::Logger.new(STDOUT)
-                    else
-                      ActiveSupport::Logger.new(
-                        Rails.root.join('log', Idp::Constants::KMS_LOG_FILENAME),
-                      )
-                    end
+                        else
+                          ActiveSupport::Logger.new(
+                            Rails.root.join('log', Idp::Constants::KMS_LOG_FILENAME),
+                          )
+                        end
 
     config.good_job.execution_mode = :external
     config.good_job.poll_interval = 5
