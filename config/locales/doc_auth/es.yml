@@ -173,21 +173,17 @@ es:
       selected_file: Archivo seleccionado
     getting_started:
       instructions:
-        bullet1: Incluir fotos de su identificación
-        bullet2: Introducir su número de Seguro Social
-        bullet3: Vincular su número de teléfono
-        bullet4: Volver a introducir su contraseña de %{app_name}
-        consent: Al marcar esta casilla, usted permite que %{app_name} solicite,
-          utilice, conserve y comparta su información personal. Los utilizamos
-          para verificar su identidad.
-        getting_started: 'Deberá:'
-        learn_more: Obtenga más información sobre nuestras medidas de privacidad y
-          seguridad
-        text1: Su documento de identidad no puede estar caducado.
-        text2: No necesitará la tarjeta con usted.
-        text3: Su número de teléfono se asocia a su información personal. Después de que
-          lo haya asociado, le enviaremos un código.
-        text4: Su contraseña guarda y encripta su información personal.
+        bullet1: Tomar fotos de tu identificación oficial
+        bullet2: Ingresar tu Número de Seguro Social
+        bullet3: Confirmar tu número de teléfono
+        bullet4: Ingresar de nuevo tu contraseña de %{app_name}
+        getting_started: 'Necesitarás:'
+        text1: Utiliza tu licencia de conducir o identificación oficial estatal. No
+          aceptamos ningún otro tipo de identificación.
+        text2: No necesitarás tu tarjeta física del seguro social.
+        text3: Tu número de teléfono te vincula con tu información personal. Luego de
+          confirmar tu información, te enviaremos un código.
+        text4: Tu contraseña permitirá guardar y encriptar tu información personal.
     headings:
       address: Actualice su dirección postal
       back: Reverso de su licencia de conducir o identificación estatal
@@ -204,7 +200,7 @@ es:
       document_capture_subheader_selfie: Foto suya
       document_capture_with_selfie: Incluir fotos de su identificación y una foto suya
       front: Anverso de su licencia de conducir o identificación estatal
-      getting_started: Vamos a verificar su identidad para %{sp_name}
+      getting_started: Vamos a verificar tu identidad para %{sp_name}
       how_to_verify: Elija cómo quiere verificar su identidad
       hybrid_handoff: '¿Cómo desea añadir su documento de identidad?'
       interstitial: Estamos procesando sus imágenes
@@ -246,9 +242,9 @@ es:
       exit:
         with_sp: Salir de %{app_name} y volver a %{sp_name}
         without_sp: Salir de la verificación de identidad e ir a la página de su cuenta
-      getting_started_html: '%{sp_name} necesita asegurarse de que es usted realmente
-        y no alguien que se hace pasar por usted. %{link_html}'
-      getting_started_learn_more: Obtenga más información sobre lo que necesita para verificar su identidad
+      getting_started_html: '%{sp_name} necesita asegurarse de que es usted y no es
+        alguien que se hace pasar por usted. %{link_html}'
+      getting_started_learn_more: Obtén más información sobre la verificación de tu identidad
       how_to_verify: Tiene la opción de verificar su identidad en línea o en persona
         en una oficina de correos participante.
       how_to_verify_troubleshooting_options_header: ¿Quiere saber más sobre cómo verificar su identidad?
