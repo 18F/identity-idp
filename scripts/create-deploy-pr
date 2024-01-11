@@ -9,21 +9,6 @@ PATCH=${PATCH:-}
 DRY_RUN=${DRY_RUN:-0}
 CHANGELOG_FILE=${CHANGELOG_FILE:-.rc-changelog.md}
 
-while [[ $# -gt 0 ]]
-do
-    case "$1" in
-        --dry-run)
-            DRY_RUN=1
-            shift
-            ;;
-
-        *)
-            echo "Invalid argument: $1"
-            exit 1
-            ;;
-    esac
-done
-
 function get_last_rc {
     GH_OUTPUT=$(gh release list --exclude-drafts --exclude-pre-releases --limit 1 || true)
     if [ -z "$GH_OUTPUT" ]; then
