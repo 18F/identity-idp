@@ -22,20 +22,20 @@
         ) %>
   </p>
 
-  <h2><%= t('doc_auth.getting_started.instructions.getting_started') %></h2>
+  <h2><%= t('doc_auth.instructions.getting_started') %></h2>
 
   <%= render ProcessListComponent.new(heading_level: :h3, class: 'margin-y-3') do |c| %>
-    <%= c.with_item(heading: t('doc_auth.getting_started.instructions.bullet1')) do %>
-      <p><%= t('doc_auth.getting_started.instructions.text1') %></p>
+    <%= c.with_item(heading: t('doc_auth.instructions.bullet1')) do %>
+      <p><%= t('doc_auth.instructions.text1') %></p>
     <% end %>
-    <%= c.with_item(heading: t('doc_auth.getting_started.instructions.bullet2')) do %>
-      <p><%= t('doc_auth.getting_started.instructions.text2') %></p>
+    <%= c.with_item(heading: t('doc_auth.instructions.bullet2')) do %>
+      <p><%= t('doc_auth.instructions.text2') %></p>
     <% end %>
-    <%= c.with_item(heading: t('doc_auth.getting_started.instructions.bullet3')) do %>
-      <p><%= t('doc_auth.getting_started.instructions.text3') %></p>
+    <%= c.with_item(heading: t('doc_auth.instructions.bullet3')) do %>
+      <p><%= t('doc_auth.instructions.text3') %></p>
     <% end %>
-    <%= c.with_item(heading: t('doc_auth.getting_started.instructions.bullet4', app_name: APP_NAME)) do %>
-      <p><%= t('doc_auth.getting_started.instructions.text4') %></p>
+    <%= c.with_item(heading: t('doc_auth.instructions.bullet4', app_name: APP_NAME)) do %>
+      <p><%= t('doc_auth.instructions.text4') %></p>
     <% end %>
   <% end %>
 <%= simple_form_for(

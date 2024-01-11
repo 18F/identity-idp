@@ -147,9 +147,6 @@ RSpec.describe 'Identity verification', :js do
 
   def validate_welcome_page
     expect(page).to have_current_path(idv_welcome_path)
-
-    # Check for expected content
-    expect_step_indicator_current_step(t('step_indicator.flows.idv.getting_started'))
   end
 
   def validate_agreement_page

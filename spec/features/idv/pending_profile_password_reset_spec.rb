@@ -19,7 +19,7 @@ RSpec.describe 'Resetting password with a pending profile' do
     user.password = new_password
     sign_in_live_with_2fa(user)
 
-    expect(page).to have_content(t('doc_auth.headings.welcome'))
+    expect(page).to have_content t('doc_auth.headings.welcome')
     expect(current_path).to eq(idv_welcome_path)
 
     expect(user.reload.active_or_pending_profile).to be_nil

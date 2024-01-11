@@ -171,19 +171,6 @@ es:
         carpeta</lg-underline>
       doc_success: Verificamos sus datos
       selected_file: Archivo seleccionado
-    getting_started:
-      instructions:
-        bullet1: Tomar fotos de tu identificación oficial
-        bullet2: Ingresar tu Número de Seguro Social
-        bullet3: Confirmar tu número de teléfono
-        bullet4: Ingresar de nuevo tu contraseña de %{app_name}
-        getting_started: 'Necesitarás:'
-        text1: Utiliza tu licencia de conducir o identificación oficial estatal. No
-          aceptamos ningún otro tipo de identificación.
-        text2: No necesitarás tu tarjeta física del seguro social.
-        text3: Tu número de teléfono te vincula con tu información personal. Luego de
-          confirmar tu información, te enviaremos un código.
-        text4: Tu contraseña permitirá guardar y encriptar tu información personal.
     headings:
       address: Actualice su dirección postal
       back: Reverso de su licencia de conducir o identificación estatal
@@ -200,7 +187,6 @@ es:
       document_capture_subheader_selfie: Foto suya
       document_capture_with_selfie: Incluir fotos de su identificación y una foto suya
       front: Anverso de su licencia de conducir o identificación estatal
-      getting_started: Vamos a verificar tu identidad para %{sp_name}
       how_to_verify: Elija cómo quiere verificar su identidad
       hybrid_handoff: '¿Cómo desea añadir su documento de identidad?'
       interstitial: Estamos procesando sus imágenes
@@ -217,7 +203,7 @@ es:
       verify_at_post_office: Verifique su identidad en una oficina de correos
       verify_identity: Verifique su identidad
       verify_online: Verifique su identidad en línea
-      welcome: Comience a verificar su identidad
+      welcome: Vamos a verificar tu identidad para %{sp_name}
     hybrid_flow_warning:
       explanation_html: Usted está utilizando <strong>%{app_name}</strong> para
         verificar su identidad y acceder a
@@ -267,9 +253,6 @@ es:
         que verifiques tu identidad a través de tu teléfono.
       no_ssn: Debe tener un número de Seguro Social para finalizar la verificación de
         su identidad.
-      privacy: '%{app_name} es un sitio web gubernamental seguro que cumple con las
-        normas más estrictas de protección de datos. Utilizamos sus datos para
-        verificar su identidad.'
       review_examples_of_photos: Revisa ejemplos de cómo hacer fotos nítidas de tu documento de identidad.
       secure_account: Vamos a encriptar su cuenta con su contraseña. La encriptación
         significa que sus datos están protegidos y solo usted podrá acceder o
@@ -297,20 +280,28 @@ es:
       verify_online_instruction: Tomará fotografías de tu identificación para
         verificar tu identidad completamente en línea.
       verify_online_link_text: Obtenga más información sobre la verificación en línea
-      welcome: '%{sp_name} necesita asegurarse de que es usted y no es alguien que se
-        hace pasar por usted.'
       you_entered: 'Ud. entregó:'
     instructions:
+      bullet1: Tomar fotos de tu identificación oficial
+      bullet2: Ingresar tu Número de Seguro Social
+      bullet3: Confirmar tu número de teléfono
+      bullet4: Ingresar de nuevo tu contraseña de %{app_name}
       consent: Al marcar esta casilla, usted permite que %{app_name} solicite,
         utilice, conserve y comparta su información personal. Los utilizamos
         para verificar su identidad.
+      getting_started: 'Necesitarás:'
       learn_more: Obtenga más información sobre nuestras medidas de privacidad y seguridad
-      privacy: Nuestras normas de privacidad y seguridad
       switch_back: Regrese a su computadora para continuar con la verificación de su
         identidad.
       switch_back_image: Flecha que apunta del teléfono a la computadora
       test_ssn: En el entorno de prueba solo los SSN que comienzan con “900-” o “666-”
         se consideran válidos. No ingrese PII real en este campo.
+      text1: Utiliza tu licencia de conducir o identificación oficial estatal. No
+        aceptamos ningún otro tipo de identificación.
+      text2: No necesitarás tu tarjeta física del seguro social.
+      text3: Tu número de teléfono te vincula con tu información personal. Luego de
+        confirmar tu información, te enviaremos un código.
+      text4: Tu contraseña permitirá guardar y encriptar tu información personal.
     not_ready:
       button_nosp: Cancelar y volver a su perfil
       button_sp: Salir de %{app_name} y volver a %{sp_name}
