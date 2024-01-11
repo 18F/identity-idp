@@ -23,8 +23,8 @@ Ahoy.track_bots = true
 
 module Ahoy
   class Store < Ahoy::BaseStore
-    def track_visit(data)
-      log_visit(data)
+    def track_visit(_data)
+      nil
     end
 
     def track_event(data)
@@ -49,20 +49,8 @@ module Ahoy
 
     protected
 
-    def log_visit(data)
-      visit_logger.info data.to_json
-    end
-
     def log_event(data)
       Rails.application.config.ahoy.event_logger.info(data.to_json)
-    end
-
-    def visit_logger
-      @visit_logger ||= if FeatureManagement.log_to_stdout?
-                          ActiveSupport::Logger.new(STDOUT)
-                        else
-                          ActiveSupport::Logger.new(Rails.root.join('log', 'visits.log'))
-                        end
     end
 
     def invalid_uuid?(token)
