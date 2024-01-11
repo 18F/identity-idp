@@ -9,7 +9,7 @@ RSpec.describe 'idv/welcome/show.html.erb' do
     @decorated_sp_session = instance_double(ServiceProviderSession)
     allow(@decorated_sp_session).to receive(:sp_name).and_return(sp_name)
     @sp_name = @decorated_sp_session.sp_name || APP_NAME
-    @title = t('doc_auth.headings.getting_started', sp_name: @sp_name)
+    @title = t('doc_auth.headings.welcome', sp_name: @sp_name)
     allow(view).to receive(:decorated_sp_session).and_return(@decorated_sp_session)
     allow(view).to receive(:user_fully_authenticated?).and_return(user_fully_authenticated)
     allow(view).to receive(:user_signing_up?).and_return(false)
@@ -32,20 +32,7 @@ RSpec.describe 'idv/welcome/show.html.erb' do
 
     it 'renders the welcome template' do
       expect(rendered).to have_content(@title)
-      expect(rendered).to have_content(t('doc_auth.getting_started.instructions.getting_started'))
-      expect(rendered).to have_link(
-        t('doc_auth.info.getting_started_learn_more'),
-        href: help_center_redirect_path(
-          category: 'verify-your-identity',
-          article: 'how-to-verify-your-identity',
-          flow: :idv,
-          step: :welcome,
-          location: 'intro_paragraph',
-        ),
-      )
-    end
-
-    it 'renders a link to help center article' do
+      expect(rendered).to have_content(t('doc_auth.instructions.getting_started'))
       expect(rendered).to have_link(
         t('doc_auth.info.getting_started_learn_more'),
         href: help_center_redirect_path(
