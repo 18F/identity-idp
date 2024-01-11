@@ -259,9 +259,6 @@ en:
         be you.'
       you_entered: 'You entered:'
     instructions:
-      bullet1: State‑issued ID
-      bullet2: Social Security number
-      bullet3: Phone number OR home address
       consent: By checking this box, you are letting %{app_name} ask for, use, keep,
         and share your personal information. We will use it to verify your
         identity.
@@ -271,14 +268,6 @@ en:
       switch_back_image: Arrow pointing from phone to computer
       test_ssn: In the test environment only SSNs that begin with “900-” or “666-” are
         considered valid. Do not enter real PII in this field.
-      text1: Your ID cannot be expired.
-      text2: You will not need the card with you.
-      text3_html:
-        - '<strong>Verify by phone</strong>: We’ll call or text your phone
-          number. This takes a few minutes.'
-        - '<strong>Verify by mail</strong>: We’ll mail a letter to your home
-          address. This takes <strong>5 to 10 days</strong>.'
-      welcome: 'You will need your:'
     not_ready:
       button_nosp: Cancel and return to your profile
       button_sp: Exit %{app_name} and return to %{sp_name}

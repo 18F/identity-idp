@@ -301,9 +301,6 @@ es:
         hace pasar por usted.'
       you_entered: 'Ud. entregó:'
     instructions:
-      bullet1: Documento de identidad emitido por el estado.
-      bullet2: Número de seguro social
-      bullet3: Número de teléfono O domicilio
       consent: Al marcar esta casilla, usted permite que %{app_name} solicite,
         utilice, conserve y comparta su información personal. Los utilizamos
         para verificar su identidad.
@@ -314,14 +311,6 @@ es:
       switch_back_image: Flecha que apunta del teléfono a la computadora
       test_ssn: En el entorno de prueba solo los SSN que comienzan con “900-” o “666-”
         se consideran válidos. No ingrese PII real en este campo.
-      text1: Su documento de identidad no puede estar caducado.
-      text2: No necesitará la tarjeta con usted.
-      text3_html:
-        - '<strong>Verificar por teléfono</strong>: Le llamaremos o enviaremos
-          un mensaje de texto a su número de teléfono. Esto lleva unos minutos'
-        - '<strong>Verificar por correo</strong>: Le enviaremos una carta a su
-          domicilio. Esto tarda entre <strong>5 y 10 días</strong>.'
-      welcome: 'Necesitará su:'
     not_ready:
       button_nosp: Cancelar y volver a su perfil
       button_sp: Salir de %{app_name} y volver a %{sp_name}

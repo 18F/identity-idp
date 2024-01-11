@@ -311,9 +311,6 @@ fr:
         qui se fait passer pour vous.'
       you_entered: 'Tu as soumis:'
     instructions:
-      bullet1: Carte d’identité délivrée par l’État
-      bullet2: Numéro de sécurité sociale
-      bullet3: Numéro de téléphone OU adresse du domicile
       consent: En cochant cette case, vous autorisez %{app_name} à demander, utiliser,
         conserver et partager vos renseignements personnels. Nous les utilisons
         pour vérifier votre identité.
@@ -324,16 +321,6 @@ fr:
       test_ssn: Dans l’environnement de test seuls les SSN commençant par “900-” ou
         “900-” sont considérés comme valides. N’entrez pas de vrais PII dans ce
         champ.
-      text1: Votre carte d’identité ne doit pas être expirée.
-      text2: Vous n’aurez pas besoin de la carte sur vous.
-      text3_html:
-        - '<strong>Vérification par téléphone</strong> : Nous appellerons ou
-          enverrons un SMS à votre numéro de téléphone. Cela prend quelques
-          minutes.'
-        - '<strong>Vérification par courrier</strong> : Nous vous enverrons une
-          lettre à votre adresse personnelle. Cela prend <strong>5 à 10
-          jours</strong>.'
-      welcome: 'Vous aurez besoin de votre:'
     not_ready:
       button_nosp: Annuler et revenir à votre profil
       button_sp: Quittez %{app_name} et retournez à %{sp_name}
