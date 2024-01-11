@@ -89,7 +89,7 @@
 <% if updating_address %>
   <%= render 'idv/shared/back', fallback_path: idv_in_person_verify_info_path %>
 <% else %>
-  <%= render 'idv/doc_auth/cancel', step: 'address' %>
+  <%= render 'idv/doc_auth/cancel', step: 'state_id' %>
 <% end %>
 
 <%= javascript_packs_tag_once('formatted-fields', 'state-guidance') %>

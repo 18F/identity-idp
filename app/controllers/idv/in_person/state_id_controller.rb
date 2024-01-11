@@ -6,7 +6,7 @@ module Idv
 
       before_action :render_404_if_controller_not_enabled
       before_action :redirect_unless_enrollment # confirm previous step is complete
-      ## before_action :confirm_step_allowed # pending delete PR
+      ## before_action :confirm_step_allowed # pending state_id_controller delete PR
 
       def show
         analytics.idv_in_person_proofing_state_id_visited(**analytics_arguments)
@@ -62,14 +62,14 @@ module Idv
         Idv::StepInfo.new(
           key: :ipp_state_id,
           controller: self,
-          next_steps: [:ipp_address],
+          next_steps: [:ipp_address, :ipp_ssn],
           preconditions: ->(idv_session:, user:) { user.establishing_in_person_enrollment },
           undo_step: ->(idv_session:, user:) do
-            flow_session[:pii_from_user][:dentity_doc_address1] = nil
-            flow_session[:pii_from_user][:dentity_doc_address2] = nil
-            flow_session[:pii_from_user][:dentity_doc_city] = nil
-            flow_session[:pii_from_user][:dentity_doc_zipcode] = nil
-            flow_session[:pii_from_user][:dentity_doc_state] = nil
+            flow_session[:pii_from_user][:identity_doc_address1] = nil
+            flow_session[:pii_from_user][:identity_doc_address2] = nil
+            flow_session[:pii_from_user][:identity_doc_city] = nil
+            flow_session[:pii_from_user][:identity_doc_zipcode] = nil
+            flow_session[:pii_from_user][:identity_doc_state] = nil
           end,
         )
       end
@@ -82,7 +82,7 @@ module Idv
       end
 
       def redirect_unless_enrollment
-        redirect_to idv_url unless current_user.establishing_in_person_enrollment
+        redirect_to idv_document_capture_url unless current_user.establishing_in_person_enrollment
       end
 
       def flow_session
