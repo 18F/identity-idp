@@ -2,6 +2,7 @@ import { AcuantContextProvider, DeviceContext } from '@18f/identity-document-cap
 import AcuantSelfieCamera from '@18f/identity-document-capture/components/acuant-selfie-camera';
 import AcuantSelfieCaptureCanvas from '@18f/identity-document-capture/components/acuant-selfie-capture-canvas';
 import { render, useAcuant } from '../../../support/document-capture';
+import { t } from '@18f/identity-i18n';
 
 describe('document-capture/components/acuant-selfie-camera', () => {
   const { initialize } = useAcuant();
@@ -40,12 +41,10 @@ describe('document-capture/components/acuant-selfie-camera', () => {
     expect(callbackNames).to.equal(expectedCallbackNames);
 
     expect(window.AcuantPassiveLiveness.start.getCall(0).args[1]).to.deep.equal({
-      FACE_NOT_FOUND: 'FACE NOT FOUND',
-      TOO_MANY_FACES: 'TOO MANY FACES',
-      FACE_ANGLE_TOO_LARGE: 'FACE ANGLE TOO LARGE',
-      PROBABILITY_TOO_SMALL: 'PROBABILITY TOO SMALL',
-      FACE_TOO_SMALL: 'FACE TOO SMALL',
-      FACE_CLOSE_TO_BORDER: 'TOO CLOSE TO THE FRAME',
+      FACE_NOT_FOUND: t('doc_auth.info.selfie_capture_status.face_not_found'),
+      TOO_MANY_FACES: t('doc_auth.info.selfie_capture_status.too_many_faces'),
+      FACE_TOO_SMALL: t('doc_auth.info.selfie_capture_status.face_too_small'),
+      FACE_CLOSE_TO_BORDER: t('doc_auth.info.selfie_capture_status.face_close_to_border'),
     });
   });
 
