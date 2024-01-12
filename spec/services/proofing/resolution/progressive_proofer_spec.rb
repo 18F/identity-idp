@@ -3,13 +3,12 @@ require 'rails_helper'
 RSpec.describe Proofing::Resolution::ProgressiveProofer do
   let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS }
   let(:should_proof_state_id) { true }
-  let(:ipp_enrollment_in_progress) { false }
+  let(:ipp_enrollment_in_progress) { true }
   let(:request_ip) { Faker::Internet.ip_v4_address }
   let(:threatmetrix_session_id) { SecureRandom.uuid }
   let(:timer) { JobHelpers::Timer.new }
   let(:user) { create(:user, :fully_registered) }
   let(:instant_verify_proofer) { instance_double(Proofing::LexisNexis::InstantVerify::Proofer) }
-  let(:state_id_result) { instance_double(Proofing::StateIdResult)}
   let(:dcs_uuid) { SecureRandom.uuid }
   let(:instance) { described_class.new(instant_verify_ab_test_discriminator: dcs_uuid) }
   let(:state_id_address) do
@@ -157,7 +156,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       let(:residential_instant_verify_proof) do
         instance_double(Proofing::Resolution::Result)
       end
-      let(:ipp_enrollment_in_progress) { true }
       before do
         allow(instance).to receive(:state_id_proofer).and_return(aamva_proofer)
         allow(instance).to receive(:resolution_proofer).and_return(instant_verify_proofer)
@@ -451,69 +449,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
 
             subject
           end
-        end
-      end
-    end
-
-    context 'ipp_enrollment_in_progress' do
-      let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID }
-      let(:aamva_proofer) { instance_double(Proofing::Aamva::Proofer) }
-      let(:residential_instant_verify_proof) do
-        instance_double(Proofing::Resolution::Result)
-      end
-      let(:ipp_enrollment_in_progress) { true }
-      let(:transformed_pii) do
-        {
-          address1: '123 Way St',
-          address2: '2nd Address Line',
-          city: 'Best City',
-          zipcode: '12345',
-          address_state: 'VA',
-          same_address_as_id: 'false',
-        }
-      end
-      before do
-        allow(instance).to receive(:state_id_proofer).and_return(aamva_proofer)
-        allow(instance).to receive(:resolution_proofer).and_return(instant_verify_proofer)
-        allow(instant_verify_proofer).to receive(:proof).
-          and_return(residential_instant_verify_proof)
-        allow(residential_instant_verify_proof).to receive(:success?).and_return(true)
-      end
-
-      context 'ipp_enrollment_in_progress is true and same_address_as_id is true ' do
-        it 'has an appropriate transaction id' do
-          expect(aamva_proofer).to receive(:proof)
-          result = subject
-          p result
-          #expect(result.transaction_id).to eq('resolution-mock-transaction-id-123')
-          #expect(result.resolution_result.vendor_name).to eq('lexisnexis:instant_verify')
-          #expect(result.state_id_result.vendor_name).to eq('aamva:state_id')
-        end
-        
-        # it 'does transform PII' do
-        #   #expect(instance).to receive(:with_state_id_address)
-        # end
-
-        it 'returns a ResultAdjudicator with a proper residential address result' do
-          #expect(result.residential_resolution_result.vendor_name).to eq()
-        end
-      end
-
-      context 'is nil and same_address_as_id is true (50/50 state)' do
-        let(:ipp_enrollment_in_progress) { nil }
-        let(:result) { subject }
-        it 'has an appropriate transaction id' do
-          expect(result.transaction_id).to eq('resolution-mock-transaction-id-123')
-        end
-
-        it 'does not transform PII' do
-          
-        end
-
-        it 'returns a ResultAdjudicator stating residential address is unnecessary' do
-          expect(aamva_proofer).to receive(:proof)
-
-          expect(result.residential_resolution_result.vendor_name).to eq('ResidentialAddressNotRequired')
         end
       end
     end
