@@ -212,7 +212,7 @@ RSpec.describe 'doc auth IPP state ID step', js: true do
     end
   end
 
-  context 'transliteration' do
+  context 'Transliterable Validation' do
     before(:each) do
       allow(IdentityConfig.store).to receive(:usps_ipp_transliteration_enabled).
         and_return(true)
