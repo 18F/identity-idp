@@ -9,6 +9,8 @@ Rails.application.configure do
                              else
                                ActiveSupport::Logger.new(
                                  Rails.root.join('log', Idp::Constants::EVENT_LOG_FILENAME),
+                                 IdentityConfig.store.log_rotation_age,
+                                 IdentityConfig.store.log_rotation_size,
                                )
                              end
 end
