@@ -601,6 +601,7 @@ RSpec.feature 'Analytics Regression', js: true do
       visit_idp_from_sp_with_ial2(:oidc)
       complete_welcome_step
       complete_agreement_step
+      complete_how_to_verify_step
       complete_hybrid_handoff_step
       complete_document_capture_step
       complete_ssn_step
@@ -665,6 +666,7 @@ RSpec.feature 'Analytics Regression', js: true do
         visit_idp_from_sp_with_ial2(:oidc)
         complete_welcome_step
         complete_agreement_step
+        complete_how_to_verify_step
         click_send_link
       end
 
@@ -735,6 +737,7 @@ RSpec.feature 'Analytics Regression', js: true do
       visit_idp_from_sp_with_ial2(:oidc)
       complete_welcome_step
       complete_agreement_step
+      complete_how_to_verify_step
       complete_hybrid_handoff_step
       complete_document_capture_step
       complete_ssn_step

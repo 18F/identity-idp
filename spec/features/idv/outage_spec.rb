@@ -78,6 +78,7 @@ RSpec.feature 'IdV Outage Spec' do
 
       complete_welcome_step
       complete_agreement_step
+      complete_how_to_verify_step
 
       # Still offer the option for hybrid flow
       expect(current_path).to eq idv_hybrid_handoff_path
@@ -162,6 +163,7 @@ RSpec.feature 'IdV Outage Spec' do
           click_idv_continue
           click_idv_continue
           complete_agreement_step
+          complete_how_to_verify_step
 
           expect(current_path).to eq idv_document_capture_path
         end
@@ -188,6 +190,7 @@ RSpec.feature 'IdV Outage Spec' do
       click_idv_continue
       click_idv_continue
       complete_agreement_step
+      complete_how_to_verify_step
 
       expect(current_path).to eq idv_hybrid_handoff_path
     end
@@ -208,6 +211,7 @@ RSpec.feature 'IdV Outage Spec' do
       click_idv_continue
       click_idv_continue
       complete_agreement_step
+      complete_how_to_verify_step
 
       expect(current_path).to eq idv_document_capture_path
     end

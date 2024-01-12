@@ -18,6 +18,7 @@ RSpec.describe 'Identity verification', :js do
     validate_agreement_page
     try_to_skip_ahead_from_agreement
     complete_agreement_step
+    complete_how_to_verify_step
 
     validate_hybrid_handoff_page
     try_to_skip_ahead_from_hybrid_handoff
@@ -60,6 +61,7 @@ RSpec.describe 'Identity verification', :js do
 
     test_go_back_from_agreement
     complete_agreement_step
+    complete_how_to_verify_step
 
     test_go_back_from_hybrid_handoff
     complete_hybrid_handoff_step # upload photos
@@ -403,6 +405,7 @@ RSpec.describe 'Identity verification', :js do
 
   def test_go_back_from_hybrid_handoff
     go_back
+    go_back
     expect(current_path).to eql(idv_agreement_path)
     expect(page).to have_checked_field(
       t('doc_auth.instructions.consent', app_name: APP_NAME),
@@ -417,9 +420,11 @@ RSpec.describe 'Identity verification', :js do
       visible: :all,
     )
     complete_agreement_step
+    complete_how_to_verify_step
   end
 
   def test_go_back_from_document_capture
+    go_back
     go_back
     go_back
     expect(page).to have_current_path(idv_agreement_path)
@@ -428,6 +433,7 @@ RSpec.describe 'Identity verification', :js do
       visible: :all,
     )
 
+    go_forward
     go_forward
     expect(page).to have_current_path(idv_hybrid_handoff_path)
     go_forward
@@ -448,8 +454,9 @@ RSpec.describe 'Identity verification', :js do
     go_back
     go_back
     go_back
+    go_back
     expect(page).to have_current_path(idv_welcome_path)
-    5.times { go_forward }
+    6.times { go_forward }
     expect(page).to have_current_path(idv_verify_info_path)
   end
 
@@ -461,8 +468,9 @@ RSpec.describe 'Identity verification', :js do
     go_back
     go_back
     go_back
+    go_back
     expect(page).to have_current_path(idv_welcome_path)
-    6.times { go_forward }
+    7.times { go_forward }
     expect(page).to have_current_path(idv_phone_path)
   end
 

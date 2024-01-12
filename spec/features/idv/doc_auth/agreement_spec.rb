@@ -12,6 +12,7 @@ RSpec.feature 'agreement step error checking' do
       sign_in_and_2fa_user
       complete_doc_auth_steps_before_agreement_step
       complete_agreement_step
+      complete_how_to_verify_step
     end
 
     it 'progresses to document capture' do
