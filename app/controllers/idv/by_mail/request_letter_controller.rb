@@ -1,10 +1,14 @@
 module Idv
   module ByMail
     class RequestLetterController < ApplicationController
+      include Idv::PluginAware
+
       include Idv::AvailabilityConcern
       include IdvStepConcern
       skip_before_action :confirm_no_pending_gpo_profile
       include Idv::StepIndicatorConcern
+
+      require_plugin :verify_by_mail
 
       before_action :confirm_mail_not_rate_limited
       before_action :confirm_step_allowed
