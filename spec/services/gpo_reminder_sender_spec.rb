@@ -49,6 +49,7 @@ RSpec.describe GpoReminderSender do
     let(:time_due_for_reminder) { Time.zone.now - wait_for_reminder }
     let(:time_not_yet_due) { time_due_for_reminder + 1.day }
     let(:time_yesterday) { Time.zone.now - 1.day }
+    let(:time_code_expires) { (IdentityConfig.store.usps_confirmation_max_days + 1).days.ago }
 
     def set_reminder_sent_at(to_time)
       gpo_confirmation_code.update(
@@ -77,6 +78,18 @@ RSpec.describe GpoReminderSender do
       end
 
       include_examples 'sends no emails'
+    end
+
+    context 'when a user has very old gpo code and remindable gpo code' do
+      let(:code_sent_at) { time_code_expires }
+
+      before do
+        reminder_timestamp = time_due_for_reminder - 2.days
+        new_confirmation_code = create(:gpo_confirmation_code, created_at: reminder_timestamp)
+        user.gpo_verification_pending_profile.gpo_confirmation_codes << new_confirmation_code
+      end
+
+      include_examples 'sends emails', expected_number_of_emails: 1
     end
 
     context 'when a user has requested two letters' do
@@ -176,13 +189,7 @@ RSpec.describe GpoReminderSender do
     end
 
     context 'when a user is due for a reminder from too long ago' do
-      let(:max_age_to_send_letter_in_days) { 42 }
-      let(:code_sent_at) { (max_age_to_send_letter_in_days + 1).days.ago }
-
-      before do
-        allow(IdentityConfig.store).to receive(:usps_confirmation_max_days).
-          and_return(max_age_to_send_letter_in_days)
-      end
+      let(:code_sent_at) { time_code_expires }
 
       include_examples 'sends no emails'
     end
