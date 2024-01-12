@@ -60,6 +60,30 @@ RSpec.describe 'doc auth In person proofing residential address step', js: true 
     end
   end
 
+  context 'updating address page' do
+    it 'has form fields that are pre-populated', allow_browser_log: true do
+      user = user_with_2fa
+      complete_idv_steps_before_address(user)
+      fill_out_address_form_ok
+      click_idv_continue
+      complete_ssn_step(user)
+
+      expect(page).to have_current_path(idv_in_person_verify_info_url, wait: 10)
+      click_link t('idv.buttons.change_address_label')
+
+      # address page has fields that are pre-populated
+      expect(page).to have_content(t('in_person_proofing.headings.update_address'))
+      expect(page).to have_field(t('idv.form.address1'), with: InPersonHelper::GOOD_ADDRESS1)
+      expect(page).to have_field(t('idv.form.address2'), with: InPersonHelper::GOOD_ADDRESS2)
+      expect(page).to have_field(t('idv.form.city'), with: InPersonHelper::GOOD_CITY)
+      expect(page).to have_field(t('idv.form.zipcode'), with: InPersonHelper::GOOD_ZIPCODE)
+      expect(page).to have_field(
+        t('idv.form.state'),
+        with: Idp::Constants::MOCK_IDV_APPLICANT_STATE,
+      )
+    end
+  end
+
   context 'transliteration' do
     before(:each) do
       allow(IdentityConfig.store).to receive(:usps_ipp_transliteration_enabled).

@@ -61,8 +61,66 @@ RSpec.describe 'doc auth IPP state ID step', js: true do
     end
   end
 
-  context 'when updating by visiting state id from verify info pg' do
-    # is this needed considering the verify_info_spec?
+  context 'updating state id page' do
+    it 'has form fields that are pre-populated', allow_browser_log: true do
+      complete_steps_before_state_id_step
+
+      fill_out_state_id_form_ok(same_address_as_id: true)
+      click_idv_continue
+      expect(page).to have_current_path(idv_in_person_ssn_url, wait: 10)
+      complete_ssn_step
+      expect(page).to have_current_path(idv_in_person_verify_info_url, wait: 10)
+      click_button t('idv.buttons.change_state_id_label')
+
+      # state id page has fields that are pre-populated
+      expect(page).to have_current_path(idv_in_person_step_path(step: :state_id), wait: 10)
+      expect(page).to have_content(t('in_person_proofing.headings.update_state_id'))
+      expect(page).to have_field(
+        t('in_person_proofing.form.state_id.first_name'),
+        with: InPersonHelper::GOOD_FIRST_NAME,
+      )
+      expect(page).to have_field(
+        t('in_person_proofing.form.state_id.last_name'),
+        with: InPersonHelper::GOOD_LAST_NAME,
+      )
+      expect(page).to have_field(t('components.memorable_date.month'), with: '10')
+      expect(page).to have_field(t('components.memorable_date.day'), with: '6')
+      expect(page).to have_field(t('components.memorable_date.year'), with: '1938')
+      expect(page).to have_field(
+        t('in_person_proofing.form.state_id.state_id_jurisdiction'),
+        with: Idp::Constants::MOCK_IDV_APPLICANT[:state_id_jurisdiction],
+      )
+      expect(page).to have_field(
+        t('in_person_proofing.form.state_id.state_id_number'),
+        with: InPersonHelper::GOOD_STATE_ID_NUMBER,
+      )
+      expect(page).to have_field(
+        t('in_person_proofing.form.state_id.address1'),
+        with: InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS1,
+      )
+      expect(page).to have_field(
+        t('in_person_proofing.form.state_id.address2'),
+        with: InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS2,
+      )
+      expect(page).to have_field(
+        t('in_person_proofing.form.state_id.city'),
+        with: InPersonHelper::GOOD_IDENTITY_DOC_CITY,
+      )
+      expect(page).to have_field(
+        t('in_person_proofing.form.state_id.zipcode'),
+        with: InPersonHelper::GOOD_IDENTITY_DOC_ZIPCODE,
+      )
+      expect(page).to have_field(
+        t('in_person_proofing.form.state_id.identity_doc_address_state'),
+        with: Idp::Constants::MOCK_IDV_APPLICANT[:state_id_jurisdiction],
+      )
+      expect(page).to have_checked_field(
+        t('in_person_proofing.form.state_id.same_address_as_id_yes'),
+        visible: false,
+      )
+    end
+
+    # if changed then open address, but check that this isnt already in in person
   end
 
   context 'Validation' do
@@ -85,6 +143,8 @@ RSpec.describe 'doc auth IPP state ID step', js: true do
       click_idv_continue
       expect(page).to have_current_path(idv_in_person_ssn_url)
     end
+
+    # validate date?
   end
 
   context 'State selection' do
