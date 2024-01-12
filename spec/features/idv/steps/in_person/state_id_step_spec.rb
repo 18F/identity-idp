@@ -119,8 +119,6 @@ RSpec.describe 'doc auth IPP state ID step', js: true do
         visible: false,
       )
     end
-
-    # if changed then open address, but check that this isnt already in in person
   end
 
   context 'Validation' do
@@ -288,8 +286,6 @@ RSpec.describe 'doc auth IPP state ID step', js: true do
         ),
       )
 
-      # TODO: may want to update enums to use valid/invalid-> we can workshop this
-      # re-fill state id form with good inputs
       fill_in t('in_person_proofing.form.state_id.first_name'),
               with: InPersonHelper::GOOD_FIRST_NAME
       fill_in t('in_person_proofing.form.state_id.last_name'),
