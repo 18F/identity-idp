@@ -98,10 +98,8 @@ class NewPhoneForm
 
   def validate_not_voip
     return if phone.blank? || !IdentityConfig.store.phone_service_check
-    return unless IdentityConfig.store.voip_block
 
-    if phone_info.type == :voip &&
-       !FeatureManagement.voip_allowed_phones.include?(parsed_phone.e164)
+    if phone_info.type == :voip
       errors.add(:phone, I18n.t('errors.messages.voip_phone'), type: :voip_phone)
     elsif phone_info.error
       errors.add(:phone, I18n.t('errors.messages.voip_check_error'), type: :voip_check_error)

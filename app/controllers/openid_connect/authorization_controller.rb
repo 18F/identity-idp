@@ -48,7 +48,7 @@ module OpenidConnect
 
     def block_biometric_requests_in_production
       if params['biometric_comparison_required'] == 'true' &&
-         FeatureManagement.idv_block_biometrics_requests?
+         !FeatureManagement.idv_allow_selfie_check?
         render_not_acceptable
       end
     end
