@@ -2,8 +2,13 @@
 module Test
   class OidcTestController < ApplicationController
 
+    def initialize
+      @client_id = 'urn:gov:gsa:openidconnect:sp:test'
+      super
+    end
+
     def index
-      @start_url = test_oidc_auth_request_url
+      @start_url = "#{test_oidc_auth_request_url}?ial=biometric-comparison-required"
     end
 
 
@@ -55,7 +60,7 @@ module Test
       if ial == 'step-up'
         ial = '1'
       else
-        ial = '2'
+        ial = 'biometric-comparison-required'
       end
       ial
     end
@@ -142,7 +147,7 @@ module Test
     end
 
     def client_id
-      'urn:gov:gsa:openidconnect:development'
+      @client_id
     end
   end
 end
