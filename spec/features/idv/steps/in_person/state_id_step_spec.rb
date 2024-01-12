@@ -144,7 +144,30 @@ RSpec.describe 'doc auth IPP state ID step', js: true do
       expect(page).to have_current_path(idv_in_person_ssn_url)
     end
 
-    # validate date? -> what we really need to check is that error is shown
+    it 'shows error for dob under minimum age', allow_browser_log: true do
+      complete_steps_before_state_id_step
+
+      fill_in t('components.memorable_date.month'), with: '1'
+      fill_in t('components.memorable_date.day'), with: '1'
+      fill_in t('components.memorable_date.year'), with: Time.now.strftime('%Y')
+      click_idv_continue
+      expect(page).to have_content(
+        t(
+          'in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_min_age',
+          app_name: APP_NAME,
+        ),
+      )
+
+      year = (Time.now - 13.years).strftime('%Y')
+      fill_in t('components.memorable_date.year'), with: year
+      click_idv_continue
+      expect(page).not_to have_content(
+        t(
+          'in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_min_age',
+          app_name: APP_NAME,
+        ),
+      )
+    end
   end
 
   context 'State selection' do
