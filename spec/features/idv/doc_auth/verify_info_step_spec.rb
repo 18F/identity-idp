@@ -181,13 +181,13 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
       visit idv_verify_info_url
       expect(page).to have_current_path(idv_session_errors_failure_path)
 
-      travel_to(IdentityConfig.store.idv_attempt_window_in_hours.hours.from_now + 1) do
+      travel_to(IdentityConfig.store.idv_attempt_window_in_hours.hours.from_now + 2) do
         sign_in_and_2fa_user(user)
         complete_doc_auth_steps_before_verify_step
         complete_verify_step
 
         expect(page).to have_current_path(idv_phone_path)
-        expect(RateLimiter.new(user: user, rate_limit_type: :idv_resolution)).to be_limited
+        expect(RateLimiter.new(user: user, rate_limit_type: :idv_resolution)).to_not be_limited
       end
     end
 
@@ -232,12 +232,13 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
       visit idv_verify_info_url
       expect(page).to have_current_path(idv_session_errors_ssn_failure_path)
 
-      travel_to(IdentityConfig.store.idv_attempt_window_in_hours.hours.from_now + 1) do
+      travel_to(IdentityConfig.store.idv_attempt_window_in_hours.hours.from_now + 2) do
         sign_in_and_2fa_user(user)
         complete_doc_auth_steps_before_verify_step
         complete_verify_step
 
         expect(page).to have_current_path(idv_phone_path)
+        expect(RateLimiter.new(user: user, rate_limit_type: :idv_resolution)).to_not be_limited
       end
     end
 
