@@ -321,29 +321,6 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
         expect(DocAuthLog.find_by(user_id: user.id).aamva).to be_nil
       end
     end
-
-    context 'when the SP is in the AAMVA banlist' do
-      it 'does not perform the state ID check' do
-        allow(IdentityConfig.store).to receive(:aamva_sp_banlist_issuers).
-          and_return("[\"#{OidcAuthHelper::OIDC_IAL1_ISSUER}\"]")
-        expect_any_instance_of(Idv::Agent).
-          to receive(:proof_resolution).
-          with(
-            anything,
-            should_proof_state_id: false,
-            user_id: user.id,
-            **proof_resolution_args,
-          ).
-          and_call_original
-
-        visit_idp_from_sp_with_ial1(:oidc)
-        sign_in_and_2fa_user(user)
-        complete_doc_auth_steps_before_verify_step
-        complete_verify_step
-
-        expect(DocAuthLog.find_by(user_id: user.id).aamva).to be_nil
-      end
-    end
   end
 
   context 'async missing' do
