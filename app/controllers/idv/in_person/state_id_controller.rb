@@ -9,6 +9,7 @@ module Idv
       ## before_action :confirm_step_allowed # pending state_id_controller delete PR
 
       def show
+        flow_session[:pii_from_user] ||= {}
         analytics.idv_in_person_proofing_state_id_visited(**analytics_arguments)
 
         render :show, locals: extra_view_variables
@@ -23,27 +24,39 @@ module Idv
         Idv::StateIdForm::ATTRIBUTES.each do |attr|
           flow_session[:pii_from_user][attr] = flow_params[attr]
         end
-        # Accept Date of Birth from both memorable date and input date components
-        formatted_dob = MemorableDateComponent.extract_date_param flow_params&.[](:dob)
-        pii_from_user[:dob] = formatted_dob if formatted_dob
+        form_result = form.submit(flow_params)
 
-        if pii_from_user[:same_address_as_id] == 'true'
-          copy_state_id_address_to_residential_address(pii_from_user)
-          flow_session['Idv::Steps::InPerson::AddressStep'] = true
-          redirect_to idv_in_person_ssn_url
-        end
+        analytics.idv_in_person_proofing_state_id_submitted(
+          **analytics_arguments.merge(**form_result.to_h),
+        )
 
-        if initial_state_of_same_address_as_id == 'true' &&
-           pii_from_user[:same_address_as_id] == 'false'
-          clear_residential_address(pii_from_user)
-       end
+        if form_result.success?
+          # Accept Date of Birth from both memorable date and input date components
+          formatted_dob = MemorableDateComponent.extract_date_param flow_params&.[](:dob)
+          pii_from_user[:dob] = formatted_dob if formatted_dob
 
-        if idv_session.ssn
-          redirect_to idv_in_person_verify_info_url
-        elsif pii_from_user[:same_address_as_id] == 'false'
-          redirect_to idv_in_person_proofing_address_url
+          if pii_from_user[:same_address_as_id] == 'true'
+            copy_state_id_address_to_residential_address(pii_from_user)
+            flow_session['Idv::Steps::InPerson::AddressStep'] = true
+            redirect_url = idv_in_person_ssn_url
+          end
+
+          if initial_state_of_same_address_as_id == 'true' &&
+             pii_from_user[:same_address_as_id] == 'false'
+            clear_residential_address(pii_from_user)
+          end
+
+          if idv_session.ssn
+            redirect_url = idv_in_person_verify_info_url
+          elsif pii_from_user[:same_address_as_id] == 'false'
+            redirect_url = idv_in_person_proofing_address_url
+          else
+            redirect_url = idv_in_person_ssn_url
+          end
+
+          redirect_to redirect_url if redirect_url
         else
-          redirect to idv_in_person_ssn_url
+          render :show, locals: extra_view_variables
         end
       end
 
@@ -150,10 +163,6 @@ module Idv
 
       def form
         @form ||= Idv::StateIdForm.new(current_user)
-      end
-
-      def form_submit
-        form.submit(flow_params)
       end
     end
   end
