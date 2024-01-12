@@ -489,7 +489,7 @@ RSpec.describe GetUspsProofingResultsJob do
               pending_enrollment.update(
                 status_check_attempted_at: Time.zone.now - 1.day,
                 status_updated_at: Time.zone.now - 2.days,
-                )
+              )
 
               expect { job.perform(Time.zone.now) }.not_to(raise_exception)
 
