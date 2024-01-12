@@ -478,6 +478,31 @@ RSpec.describe GetUspsProofingResultsJob do
           end
         end
 
+        context 'when the profile is deleted before proofing' do
+          before do
+            pending_enrollment.update!(profile_id: nil)
+            stub_request_passed_proofing_results
+          end
+
+          it 'updates the enrollment and ignores the non-existent profile' do
+            freeze_time do
+              pending_enrollment.update(
+                status_check_attempted_at: Time.zone.now - 1.day,
+                status_updated_at: Time.zone.now - 2.days,
+                )
+
+              expect { job.perform(Time.zone.now) }.not_to(raise_exception)
+
+              pending_enrollment.reload
+              expect(pending_enrollment.status_updated_at).to eq(Time.zone.now)
+              expect(pending_enrollment.status_check_attempted_at).to eq(Time.zone.now)
+              expect(pending_enrollment.status_check_completed_at).to eq(Time.zone.now)
+              expect(pending_enrollment.status).to eq(InPersonEnrollment::STATUS_PASSED)
+              expect(pending_enrollment.profile).to eq(nil)
+            end
+          end
+        end
+
         describe 'sending emails' do
           it 'sends proofing failed email on response with failed status' do
             stub_request_failed_proofing_results
