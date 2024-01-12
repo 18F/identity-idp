@@ -30,7 +30,7 @@ module Proofing
         timer:,
         user_email:,
         double_address_verification: nil,
-        ipp_enrollment_in_progress: true
+        ipp_enrollment_in_progress: false
       )
         device_profiling_result = proof_with_threatmetrix_if_needed(
           applicant_pii: applicant_pii,

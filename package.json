@@ -11,7 +11,7 @@
   "scripts": {
     "typecheck": "tsc",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "lint:css": "stylelint 'app/assets/stylesheets/**/*.scss' 'app/javascript/**/*.scss'",
+    "lint:css": "stylelint 'app/assets/stylesheets/**/*.scss' 'app/javascript/**/*.scss' 'app/components/*.scss'",
     "test": "mocha 'spec/javascript/**/**spec.+(j|t)s?(x)' 'app/javascript/packages/**/*.spec.+(j|t)s?(x)'",
     "normalize-yaml": "normalize-yaml",
     "generate-browsers-json": "./scripts/generate-browsers-json.js",
@@ -89,7 +89,7 @@
     "svgo": "^3.0.2",
     "swr": "^2.0.0",
     "typescript": "^5.2.2",
-    "webpack-dev-server": "^4.11.1"
+    "webpack-dev-server": "^4.15.1"
   },
   "resolutions": {
     "minimist": "1.2.6",
