@@ -549,6 +549,12 @@ development:
       - 'http://localhost:3000/'
       - 'http://localhost:3000/test/oidc/auth_result'
       - 'http://localhost:3000/test/oidc/logout'
+      - 'https://localhost:3000/'
+      - 'https://localhost:3000/test/oidc/auth_result'
+      - 'https://localhost:3000/test/oidc/logout'
+      - 'https://192.168.86.22:3000/'
+      - 'https://192.168.86.22:3000/test/oidc/auth_result'
+      - 'https://192.168.86.22:3000/test/oidc/logout'
     certs:
       - 'sp_sinatra_demo'
     friendly_name: 'Example Test OIDC SP'

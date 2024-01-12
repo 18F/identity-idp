@@ -37,6 +37,10 @@ module Test
       redirect_to(idp_url)
     end
 
+    def logout()
+      redirect_to('/')
+    end
+
     def authorization_url(ial:, aal: nil)
       authorization_endpoint = '/openid_connect/authorize'
       request_params = {
