@@ -13,6 +13,19 @@ RSpec.feature 'Accessibility on IDV pages', :js do
       expect_page_to_have_no_accessibility_violations(page)
     end
 
+    scenario 'how to verify page' do
+      allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+      allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).and_return(true)
+      sign_in_and_2fa_user
+
+      visit idv_welcome_url
+      complete_welcome_step
+      complete_agreement_step
+
+      expect(current_path).to eq idv_how_to_verify_path
+      expect_page_to_have_no_accessibility_violations(page)
+    end
+
     scenario 'cancel idv' do
       sign_in_and_2fa_user
 
