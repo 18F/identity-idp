@@ -1,54 +1,55 @@
 class PluginManager
   class HookAlreadyTriggered < StandardError; end
 
-  def self.add_plugin(label, plugin)
-    raise ArgumentError unless label.present?
-    if !looks_like_plugin?(plugin)
-      raise ArgumentError if plugins.
-        raise ArgumentError
-end
-
-    raise HookAlreadyTriggered if any_hook_triggered?
-
-    @shuffled = false
+  def self.instance
+    @instance ||= PluginManager.new
   end
 
-  def self.any_hook_triggered?
+  def add_plugin(label, plugin)
+    raise ArgumentError unless label.present?
+    raise ArgumentError if plugin_registered?(label)
+    raise ArgumentError unless looks_like_plugin?(plugin)
+    raise HookAlreadyTriggered if any_hook_triggered?
+
+    plugins[label] = plugin
+
+    self
+  end
+
+  def any_hook_triggered?
     !!@any_hook_triggered
   end
 
-  def self.looks_like_plugin?(plugin)
+  def looks_like_plugin?(plugin)
     plugin.present?
   end
 
-  def self.reset!
-    @plugins = []
-    @shuffled = false
-    @any_hook_triggered = false
+  def plugin_registered?(label)
+    plugins.include?(label)
   end
 
-  def self.trigger_hook(
+  def reset!
+    @plugins = nil
+    @any_hook_triggered = false
+  end\
+
+  def trigger_hook(
       hook,
       *args,
       **kwargs
     )
     @any_hook_triggered = true
 
-    if !@shuffled
-      plugins.shuffle!
-      @shuffled = true
-    end
+    shuffled_plugins = plugins.values.shuffle
 
-    plugins.each do |plugin|
+    shuffled_plugins.each do |plugin|
       plugin.send(hook, *args, **kwargs)
     end
   end
 
-  class << self
-    private
+  private
 
-    def plugins
-      @plugins ||= Hash.new
-    end
+  def plugins
+    @plugins ||= {}
   end
 end
