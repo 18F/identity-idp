@@ -85,7 +85,7 @@ module Users
       if result.success?
         process_valid_webauthn(form)
       else
-        flash.now[:error] = form.error_message
+        flash.now[:error] = result.first_error_message
         render :new
       end
     end

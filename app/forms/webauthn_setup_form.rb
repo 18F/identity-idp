@@ -1,11 +1,12 @@
 class WebauthnSetupForm
   include ActiveModel::Model
 
-  validates :user, presence: true
-  validates :challenge, presence: true
-  validates :attestation_object, presence: true
-  validates :client_data_json, presence: true
-  validates :name, presence: true
+  validates :user,
+            :challenge,
+            :attestation_object,
+            :client_data_json,
+            :name,
+            presence: { message: proc { |object| object.send(:generic_error_message) } }
   validate :name_is_unique
 
   attr_reader :attestation_response
@@ -43,12 +44,7 @@ class WebauthnSetupForm
     !!@platform_authenticator
   end
 
-  def error_message
-    if errors.where(:name).present?
-      if errors.first.options[:type]
-        return errors.first.message
-      end
-    end
+  def generic_error_message
     if @platform_authenticator
       I18n.t('errors.webauthn_platform_setup.general_error')
     else
