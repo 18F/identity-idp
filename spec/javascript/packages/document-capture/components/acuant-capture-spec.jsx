@@ -596,7 +596,12 @@ describe('document-capture/components/acuant-capture', () => {
       const onChange = sinon.mock();
       const { getByText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
-          <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
+          <AcuantContextProvider
+            sdkSrc="about:blank"
+            cameraSrc="about:blank"
+            sharpnessThreshold={50}
+            glareThreshold={50}
+          >
             <AcuantCapture label="Image" onChange={onChange} />
           </AcuantContextProvider>
         </DeviceContext.Provider>,
@@ -756,7 +761,12 @@ describe('document-capture/components/acuant-capture', () => {
       const { getByText, findByText } = render(
         <AnalyticsContext.Provider value={{ trackEvent }}>
           <DeviceContext.Provider value={{ isMobile: true }}>
-            <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank" glareThreshold={50}>
+            <AcuantContextProvider
+              sdkSrc="about:blank"
+              cameraSrc="about:blank"
+              glareThreshold={50}
+              sharpnessThreshold={50}
+            >
               <AcuantCapture label="Image" name="test" />
             </AcuantContextProvider>
           </DeviceContext.Provider>
@@ -814,6 +824,7 @@ describe('document-capture/components/acuant-capture', () => {
               sdkSrc="about:blank"
               cameraSrc="about:blank"
               sharpnessThreshold={50}
+              glareThreshold={50}
             >
               <AcuantCapture label="Image" name="test" />
             </AcuantContextProvider>
@@ -912,6 +923,7 @@ describe('document-capture/components/acuant-capture', () => {
               sdkSrc="about:blank"
               cameraSrc="about:blank"
               sharpnessThreshold={50}
+              glareThreshold={50}
             >
               <AcuantCapture label="Image" name="test" />
             </AcuantContextProvider>
