@@ -132,16 +132,46 @@ RSpec.describe SamlIdpController do
 
       # the RubySAML library won't let us pass an empty string in as the certificate
       # element, so this test substitutes a SAMLRequest that has that element blank
-      # rubocop:disable Layout/LineLength
       let(:blank_cert_element_req) do
-        'lVVbc6JMEH3fqv0PFD5ahLsiFd3SECNeYkSNl5etcRhwIgzKDN5+/Qfksuhm98tWUTz0dJ8+faZ7+vbHMQy4PYopjkidl28k/kfj+7dbCsJga/YjP0qYg3YJooxLPQk1s5M6n8TEjADF1CQgRNRk0Bw3B31TuZFMQCmKWYrHF0K2f4/ZxhGLYBTwnJWmwgSwnM+asa0piofD4QYdQbgN0A2MQhFssZiBikFOUJEUledsq87/VBTVlY0KFFQdSILmyp6wMmQgQK2qAlerVTRZT10pTZBNKAOE1fk0XBMkWZDliWyYimJK6pLnnt81SenxqSQcl4ti5rFx441ZEEEQrCPKTFWSpFux6JLHuNQcYz+tJ4nRmxwuvSjsoN5EsS8qabwo1cTUx6XYL73m/IWAXJt40Zvx1XwHSERwSgCfc70GiK0jl2sGfhRjtg7/kEYWZSlLI6AjFKCskRIvXuB+EP4yoKS98xbCKEalmAKBroGiV66gHeShGBGIuKlj1/nS1y7sA+IVZBIDQr0oDmnh4Orof0lfiI3IHgXRFrkCfa+9QPzfwT+R+AItxUPQtAkMEor36DGbhy2AiL61CIJfB+aeYuThYx/TtJdLLvJAEjAun7n8z7kpavZhLnSvqxKLZRVlFv+kcyaEhf10Sv+xO9JbL/3WE0W8ZxAkqKE8rlSnv8LtDpHgiZSr3WZ1PVutevLjvj14fgDaYDFZqaOabNdzlsXgj1YTi732PkniZ6N00fCvKNOQOhDMNp15PCWtgTccte4Uyx5t5Hgz2g2gHiXwXGk3X5JgJy3n1d2kfJ6uxstqT0xoOTjDvryO/c4cK4fjS2/sYExncfdxHK7sh4elDbTy1DjYg/UmWej75XPPPzpQAU+GgcVgdpg6A1s2VOw1z3eH7U5faCfQrWw75ZeVvxiycLiG87U8PMR2ebRzqqOxH5ymXV2fDcutO0eqdjyjWbXGTXHmb2vHTtmaHuR7clhZ7jnC1Ul7BzoLY6yNZzaESsXq0J1hhC80pMdm2xmVNVYhwB2SOG6T7qzXRbgdWMbgCEdJCyeLFmI9p28/HU/zXvv4ck+q95uufrY2m7g1O00n2vNE7BK2nqZBim6V94a8nNtzdeLX6x8XUND61yX00Om3F26uSzULMHDVL5n5LtsxXvr6MdTIga+NF71wBZTbigkvqRWe+2w0bYtrp1MA2N93WGbBruDlribLhgcjwvjGT1kFqCa5sqB4tZWgIVdPHznNFdSqoiCgKUg1Km+74zVftoLFT3Zw4z8='
+        <<-XML.gsub(/^[\s\t]*|[\s\t]*\n/, '')
+          <?xml version="1.0"?>
+          <samlp:LogoutRequest xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" Destination="http://www.example.com/api/saml/logout2023" ID="_223d186c-35a0-4d1f-b81a-c473ad496415" IssueInstant="2024-01-11T18:22:03Z" Version="2.0">
+            <saml:Issuer>http://localhost:3000</saml:Issuer>
+            <ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+              <ds:SignedInfo>
+                <ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+                <ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/>
+                <ds:Reference URI="#_223d186c-35a0-4d1f-b81a-c473ad496415">
+                  <ds:Transforms>
+                    <ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
+                    <ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#">
+                      <ec:InclusiveNamespaces xmlns:ec="http://www.w3.org/2001/10/xml-exc-c14n#" PrefixList="#default samlp saml ds xs xsi md"/>
+                    </ds:Transform>
+                  </ds:Transforms>
+                  <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+                  <ds:DigestValue>2Nb3RLbiFHn0cyn+7JA7hWbbK1NvFMVGa4MYTb3Q91I=</ds:DigestValue>
+                </ds:Reference>
+              </ds:SignedInfo>
+              <ds:SignatureValue>UmsRcaWkHXrUnBMfOQBC2DIQk1rkQqMc5oucz6FAjulq0ZX7qT+zUbSZ7K/us+lzcL1hrgHXi2wxjKSRiisWrJNSmbIGGZIa4+U8wIMhkuY5vZVKgxRc2aP88i/lWwURMI183ifAzCwpq5Y4yaJ6pH+jbgYOtmOhcXh1OwrI+QqR7QSglyUJ55WO+BCR07Hf8A7DSA/Wgp9xH+DUw1EnwbDdzoi7TFqaHY8S4SWIcc26DHsq88mjsmsxAFRQ+4t6nadOnrrFnJWKJeiFlD8MxcQuBiuYBetKRLIPxyXKFxjEn7EkJ5zDkkrBWyUT4VT/JnthUlD825D+v81ZXIX3Tg==</ds:SignatureValue>
+              <ds:KeyInfo>
+                <ds:X509Data>
+                  <ds:X509Certificate>
+                  </ds:X509Certificate>
+                </ds:X509Data>
+              </ds:KeyInfo>
+            </ds:Signature>
+            <saml:NameID Format="urn:oasis:names:tc:SAML:2.0:nameid-format:transient">_13ae90d1-2f9b-4ed5-b84d-3722ea42e386</saml:NameID>
+          </samlp:LogoutRequest>
+        XML
       end
-      # rubocop:enable Layout/LineLength
+      let(:deflated_encoded_req) do
+        Base64.encode64(Zlib::Deflate.deflate(blank_cert_element_req, 9)[2..-5])
+      end
 
       it 'a ValidationError is raised' do
         expect do
           delete :logout, params: {
-            'SAMLRequest' => blank_cert_element_req,
+            'SAMLRequest' => deflated_encoded_req,
             path_year:,
           }
         end.to raise_error(
@@ -1335,16 +1365,49 @@ RSpec.describe SamlIdpController do
 
       # the RubySAML library won't let us pass an empty string in as the certificate
       # element, so this test substitutes a SAMLRequest that has that element blank
-      # rubocop:disable Layout/LineLength
       let(:blank_cert_element_req) do
-        'lVbbbuo6EH0/0vmHKH2saC4kNIlKtziElkAolDt92TKJE9wmdmo7hfbrjxNoG3rZFwkhNJ5ZM7M848XFj12aSE+QMkRwU9bOVPnH5b//XDCQJpnTyvkGj+FjDhmXhCNmTnHQlHOKHQIYYg4GKWQOD5xJa+A7+pnqAMYg5QJOroRkv47JKOEkIIkstV6j2wSzPIV0AukTCuBs7DflDeeZoygJCUCyIYw7dVVVFS6qU4okSggDEsKflQpccYYw4GV3h/DtdnsGdyDNEngWkFQBGdqHA9Gurup1WfLcpvyzsdZMVdNgDawjWDMC06zZuhnVGsBc161zHTSMQLgylkMPMw4wb8oi3KipWk3TpprlqHWnbt3J0vyVX9GrLOiVpJJgp4yll1+2daFUXcqYkDkTFItucgoP3IbsqK1t/YzQWNELWlRbET4hQ/HJPuc7Agw9HJGDcW9uA0wwEgWgl5KtAeQbEkqtJCYU8U36TRpN0dQiTQ3uglqgGfhEVo5w3wr+Y0DVeK27lhIKTygDNbYButn4AD2GEaQQB1Cajb2mfPJnF/YGsQeZUoBZRGjKKgcfjn5b9BHZED/BhGQwrLHX3iuF/z34FxQfoQk8GDgeDpKcoSd4UyxXBgLIDiMCgz8HlkYURmjnIyZm+SSEEcgTLpULXH5LoUAtPkhKw49dKdW2qjQr3/FcEOGiWOzoX06HuPWTTzNRxZuDJIeXgHRHrju7m44n3pyt845tGrf9NWlMOIhWT+v5bDQ7zer11Oo0yyqrwW+jplRn7XWTlK9W6Wjg9yi9rjp31YnfB9vJxOY4me1mvh6t5u0XYAymDf/cBmPUv0Vm4xTQ6wiPune6FnirYae7c7G+8+JGZ97gIThdbIcjezGlLH/s+a1ouvBf7NZGb1n5gzf1hquOay7WBJHQpya7f6BG96q/Hd93xtx/Dnywc7m1Ajbv3gIzHd4n2Hr2FleuH0aWfY+XYDqwY/HW6w/aIPPqq2Tjrbq9QctfmTe79XA0naYLuAzRbLbqKh591O9fltQ71Wn+3L7j1jIjNo8Iu7rGZHp99QD752wxTHGYQH3xOO7o9oMxMS291+PLGBktq+deb9V+33oZGD3Od1n/1F2T7Y217RnxIovHWfbwHzJho4fmxkJ1b+K79rm+6N4vZ/5t3Gy+XUCF6/dL6MPnTy/c0lRtF3DwYV4Kc7uQi0i8fhxelsAfjUez8AGotFUTHpf2/txnTrGbnjsiCQqexawnZNumUOA3ZU5zKEtXYj8A/7VUFhYU1qLS1ckKZWEcYn5YhEOmg2jDsJRwoaUc7rjUJmkGKGKFFAkFDLj8qvVO1a+dCAUVE39Z1BGTJydmwAGBExR2UQ7LnJH4tSU0HAnhhoHIU+53Rih3wpwctOtLzANp3zscFh+FKcAghqno7UwUoWCmCI9c5AmggkCiaL9Lsz//hoyic+Xz35zL/wE='
+        <<-XML.gsub(/^[\s\t]*|[\s\t]*\n/, '')
+          <?xml version="1.0"?>
+          <samlp:AuthnRequest xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" AssertionConsumerServiceURL="http://localhost:3000/test/saml/decode_assertion" Destination="http://www.example.com/api/saml/auth2023" ID="_6b15011e-abfe-4c55-925f-6a5b3872a64c" IssueInstant="2024-01-11T18:03:38Z" Version="2.0">
+            <saml:Issuer>http://localhost:3000</saml:Issuer>
+            <ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+              <ds:SignedInfo>
+                <ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+                <ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/>
+                <ds:Reference URI="#_6b15011e-abfe-4c55-925f-6a5b3872a64c">
+                  <ds:Transforms>
+                    <ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
+                    <ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#">
+                      <ec:InclusiveNamespaces xmlns:ec="http://www.w3.org/2001/10/xml-exc-c14n#" PrefixList="#default samlp saml ds xs xsi md"/>
+                    </ds:Transform>
+                  </ds:Transforms>
+                  <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+                  <ds:DigestValue>aoHPDDUZTRSIVsbuE954QKbo6StafYvbVUPU+p33m8E=</ds:DigestValue>
+                </ds:Reference>
+              </ds:SignedInfo>
+              <ds:SignatureValue>JH0VD0SLKawSS9tnlUxUL2fYVCza4MT6L79aRiKQi56+arGfnPHZ21cIYOEHxDn2xIg6EV6tda+WwOP9WTrsuqJLAfTWLz9Ah2A8ukITIOYED5WboiodLr5sjkr4HFKwRjERtLycLaxDt8Ya9tHQa5mOjln8yIWFDLdf89jnXaTM9gReq2k1MpI3YlhIYHJMALY5NxbOPTTmWeXdiUUYH/Irq2jzXrI+2ruyCZt8Xpo9tfosFGnoTGFkeK7sWOmndle2WqRE29k4S582JJtXgi4A8JDGw0KK8zM4JttxpK+DbowN8wJ4gWpgRppkBi5e6JiV4W0DNgZC72WHjXULQg==</ds:SignatureValue>
+              <ds:KeyInfo>
+                <ds:X509Data>
+                  <ds:X509Certificate></ds:X509Certificate>
+                </ds:X509Data>
+              </ds:KeyInfo>
+            </ds:Signature>
+            <samlp:NameIDPolicy AllowCreate="true" Format="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"/>
+            <samlp:RequestedAuthnContext Comparison="exact">
+          <saml:AuthnContextClassRef>urn:gov:gsa:ac:classes:sp:PasswordProtectedTransport:duo</saml:AuthnContextClassRef>
+              <saml:AuthnContextClassRef>http://idmanagement.gov/ns/assurance/ial/1</saml:AuthnContextClassRef>
+            </samlp:RequestedAuthnContext>
+          </samlp:AuthnRequest>
+        XML
       end
-      # rubocop:enable Layout/LineLength
+      let(:deflated_encoded_req) do
+        Base64.encode64(Zlib::Deflate.deflate(blank_cert_element_req, 9)[2..-5])
+      end
 
       before do
         IdentityLinker.new(user, service_provider).link_identity
         user.identities.last.update!(verified_attributes: ['email'])
-        expect(CGI).to receive(:unescape).and_return blank_cert_element_req
+        expect(CGI).to receive(:unescape).and_return deflated_encoded_req
       end
 
       it 'a ValidationError is raised' do
