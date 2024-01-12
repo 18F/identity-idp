@@ -45,7 +45,7 @@ class WebauthnSetupForm
   end
 
   def generic_error_message
-    if @platform_authenticator
+    if platform_authenticator?
       I18n.t('errors.webauthn_platform_setup.general_error')
     else
       I18n.t(
@@ -85,9 +85,9 @@ class WebauthnSetupForm
     else
       name_error = if platform_authenticator?
                      I18n.t('errors.webauthn_platform_setup.unique_name')
-      else
-        I18n.t('errors.webauthn_setup.unique_name')
-      end
+                   else
+                     I18n.t('errors.webauthn_setup.unique_name')
+                   end
       errors.add :name, name_error, type: :unique_name
     end
   end
@@ -101,8 +101,15 @@ class WebauthnSetupForm
   end
 
   def safe_response(original_origin)
-    @attestation_response.valid?(@challenge.pack('c*'), original_origin)
+    response = @attestation_response.valid?(@challenge.pack('c*'), original_origin)
+    add_attestation_error unless response
+    response
   rescue StandardError
+    add_attestation_error
+    false
+  end
+
+  def add_attestation_error
     if @platform_authenticator
       errors.add :name, I18n.t('errors.webauthn_platform_setup.general_error'),
                  type: :attestation_error
@@ -112,7 +119,6 @@ class WebauthnSetupForm
         link_html: I18n.t('errors.webauthn_setup.additional_methods_link'),
       ), type: :attestation_error
     end
-    false
   end
 
   def process_authenticator_data_value(data_value)
