@@ -2,44 +2,51 @@ module Idv
   module ByMail
     class RequestLetterController < ApplicationController
       include Idv::PluginAware
+      require_plugin :verify_by_mail
 
       include Idv::AvailabilityConcern
       include IdvStepConcern
       skip_before_action :confirm_no_pending_gpo_profile
       include Idv::StepIndicatorConcern
 
-      require_plugin :verify_by_mail
-
       before_action :confirm_mail_not_rate_limited
       before_action :confirm_step_allowed
       before_action :confirm_profile_not_too_old
 
       def index
+        trigger_plugin_hook :step_started, step: :request_letter,
+                                           resend_requested: resend_requested?
+
         @applicant = idv_session.applicant
         @presenter = RequestLetterPresenter.new(current_user, url_options)
         @step_indicator_current_step = step_indicator_current_step
-
-        Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
-          call(:usps_address, :view, true)
-        analytics.idv_request_letter_visited(
-          letter_already_sent: @presenter.resend_requested?,
-        )
       end
 
       def create
         clear_future_steps!
-        update_tracking
-        idv_session.address_verification_mechanism = :gpo
 
         if resend_requested? && pii_locked?
           redirect_to capture_password_url
-        elsif resend_requested?
+          return
+        end
+
+        idv_session.address_verification_mechanism = :gpo
+
+        if resend_requested?
+          # Resends are processed _right away_, whereas the initial send is
+          # delayed until the profile is minted.
           resend_letter
           flash[:success] = t('idv.messages.gpo.another_letter_on_the_way')
-          redirect_to idv_letter_enqueued_url
-        else
-          redirect_to idv_enter_password_url
         end
+
+        trigger_plugin_hook(
+          :step_completed,
+          step: :request_letter,
+          # Note that "did we enqueue a letter already?" and "was the user requesting a resend?"
+          # are different questions that _happen_ to have the same answer here.
+          letter_enqueued: resend_requested?,
+          resend_requested: resend_requested?,
+        )
       end
 
       def gpo_mail_service
@@ -73,30 +80,8 @@ module Idv
         end
       end
 
-      def update_tracking
-        Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
-          call(:usps_letter_sent, :update, true)
-
-        analytics.idv_gpo_address_letter_requested(
-          resend: resend_requested?,
-          first_letter_requested_at: first_letter_requested_at,
-          hours_since_first_letter:
-            gpo_mail_service.hours_since_first_letter(first_letter_requested_at),
-          phone_step_attempts: gpo_mail_service.phone_step_attempts,
-          **ab_test_analytics_buckets,
-        )
-        irs_attempts_api_tracker.idv_gpo_letter_requested(resend: resend_requested?)
-        create_user_event(:gpo_mail_sent, current_user)
-
-        ProofingComponent.find_or_create_by(user: current_user).update(address_check: 'gpo_letter')
-      end
-
       def resend_requested?
         current_user.gpo_verification_pending_profile?
-      end
-
-      def first_letter_requested_at
-        current_user.gpo_verification_pending_profile&.gpo_verification_pending_at
       end
 
       def confirm_mail_not_rate_limited
@@ -104,15 +89,6 @@ module Idv
       end
 
       def resend_letter
-        analytics.idv_gpo_address_letter_enqueued(
-          enqueued_at: Time.zone.now,
-          resend: true,
-          first_letter_requested_at: first_letter_requested_at,
-          hours_since_first_letter:
-            gpo_mail_service.hours_since_first_letter(first_letter_requested_at),
-          phone_step_attempts: gpo_mail_service.phone_step_attempts,
-          **ab_test_analytics_buckets,
-        )
         confirmation_maker = confirmation_maker_perform
         send_reminder
         return unless FeatureManagement.reveal_gpo_code?

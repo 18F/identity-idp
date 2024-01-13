@@ -16,6 +16,14 @@ class PluginManager
     self
   end
 
+  def add_plugins(**plugins)
+    plugins.each_pair do |label, plugin|
+      add_plugin label, plugin
+    end
+
+    self
+  end
+
   def any_hook_triggered?
     !!@any_hook_triggered
   end

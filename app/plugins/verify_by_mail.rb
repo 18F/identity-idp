@@ -1,2 +1,0 @@
-class VerifyByMailPlugin
-end

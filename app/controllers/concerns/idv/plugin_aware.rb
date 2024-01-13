@@ -7,6 +7,15 @@ module Idv
         PluginManager.instance
       end
 
+      define_method :trigger_plugin_hook do |hook, **kwargs|
+        plugin_manager.trigger_hook(
+          hook,
+          user: current_user,
+          request: request,
+          **kwargs,
+        )
+      end
+
       def self.require_plugin(plugin_label)
         before_action do |controller|
           if !plugin_manager.plugin_registered?(plugin_label)
