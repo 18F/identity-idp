@@ -150,8 +150,8 @@ Rails.application.routes.draw do
 
         get '/oidc/login' => 'oidc_test#index'
         get '/oidc' => 'oidc_test#start'
-        get '/oidc/auth_result' => 'oidc_test#auth_result'
         get '/oidc/auth_request' => 'oidc_test#auth_request'
+        get '/oidc/auth_result' => 'oidc_test#auth_result'
         get '/oidc/logout' => 'oidc_test#logout'
 
         get '/piv_cac_entry' => 'piv_cac_authentication_test_subject#new'

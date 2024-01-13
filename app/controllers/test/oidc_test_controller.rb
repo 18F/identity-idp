@@ -1,6 +1,7 @@
-
+require './spec/support/oidc_auth_helper'
 module Test
   class OidcTestController < ApplicationController
+    include OidcAuthHelper
 
     def initialize
       @client_id = 'urn:gov:gsa:openidconnect:sp:test'
@@ -8,63 +9,56 @@ module Test
     end
 
     def index
-      @start_url = "#{test_oidc_auth_request_url}?ial=biometric-comparison-required"
+      # default to require
+      @start_url_selfie = "#{test_oidc_auth_request_url}?ial=biometric-comparison-required"
+      @start_url_ial2 = "#{test_oidc_auth_request_url}?ial=2"
+      @start_url_ial1 = "#{test_oidc_auth_request_url}?ial=1"
+      @openid_configuration = nil
     end
 
-
-    def auth_result
-      code = params[:code]
-      if code
-        token_response = token(code)
-        access_token = token_response[:access_token]
-        userinfo_response = userinfo(access_token)
-        redirect_to('/')
-      else
-          redirect_to('/?error=access_denied')
-      end
-    end
-
-    def auth_request()
+    def auth_request
       ial = prepare_step_up_flow(ial: params[:ial], aal: params[:aal])
 
       idp_url = authorization_url(
         ial: ial,
         aal: params[:aal],
-        )
+      )
 
       Rails.logger.info("Redirecting to #{idp_url}")
 
       redirect_to(idp_url)
     end
 
-    def logout()
+    def auth_result
+      redirect_to('/')
+    end
+
+    def logout
       redirect_to('/')
     end
 
     def authorization_url(ial:, aal: nil)
-      authorization_endpoint = '/openid_connect/authorize'
-      request_params = {
+      authorization_endpoint = openid_configuration[:authorization_endpoint]
+      params = ial2_params(
         client_id: client_id,
-        response_type: 'code',
         acr_values: acr_values(ial: ial, aal: aal),
-        scope: scopes_for(ial),
-        redirect_uri:  test_oidc_auth_result_url ,
+        biometric_comparison_required: ial == 'biometric-comparison-required',
         state: random_value,
         nonce: random_value,
-        prompt: 'select_account',
-        biometric_comparison_required: ial == 'biometric-comparison-required',
-      }.compact.to_query
+      )
+      request_params = params.merge(
+        {
+          scope: scopes_for(ial),
+          redirect_uri: test_oidc_auth_result_url,
+        },
+      ).compact.to_query
 
       "#{authorization_endpoint}?#{request_params}"
     end
 
-
-
     def prepare_step_up_flow(ial:, aal: nil)
       if ial == 'step-up'
         ial = '1'
-      else
-        ial = 'biometric-comparison-required'
       end
       ial
     end
@@ -103,16 +97,6 @@ module Test
       values.compact.join(' ')
     end
 
-    def token(code)
-      json Faraday.post(
-        '/api/openid_connect/token',
-        grant_type: 'authorization_code',
-        code: code,
-        client_assertion_type: 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
-        client_assertion: client_assertion_jwt,
-        ).body
-    end
-
     def json(response)
       JSON.parse(response.to_s).with_indifferent_access
     end
@@ -122,7 +106,7 @@ module Test
     end
 
     def maybe_redact_ssn(ssn)
-      if config.redact_ssn?
+      if @redact_ssn
         # redact all characters since they're all sensitive
         ssn = ssn&.gsub(/\d/, '#')
       end
@@ -137,21 +121,42 @@ module Test
         aud: openid_configuration[:token_endpoint],
         jti: random_value,
         nonce: random_value,
-        exp: Time.now.to_i + 1000,
+        exp: Time.zone.now.to_i + 1000,
       }
 
       JWT.encode(jwt_payload, config.sp_private_key, 'RS256')
     end
 
-    def userinfo(access_token)
-      url = '/api/openid_connect/user_info'
-
-      connection = Faraday.new(url: url, headers:{'Authorization' => "Bearer #{access_token}" })
-      JSON.parse(connection.get('').body).with_indifferent_access
-    end
-
     def client_id
       @client_id
+    end
+
+    private
+
+    def logout_uri
+      endpoint = openid_configuration[:end_session_endpoint]
+      request_params = {
+        client_id: client_id,
+        post_logout_redirect_uri: '/',
+        state: SecureRandom.hex,
+      }.to_query
+
+      "#{endpoint}?#{request_params}"
+    end
+
+    def openid_configuration
+      if @openid_configuration.nil?
+        @openid_configuration = OpenidConnectConfigurationPresenter.new.configuration
+      end
+    end
+
+    def idp_public_key
+      @idp_public_key ||= load_idp_public_key
+    end
+
+    def load_idp_public_key
+      keys = OpenidConnectCertsPresenter.new.certs[:keys]
+      JSON::JWK.new(keys.first).to_key
     end
   end
 end
