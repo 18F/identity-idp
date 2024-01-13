@@ -8,12 +8,15 @@ module Idv
       end
 
       define_method :trigger_plugin_hook do |hook, **kwargs|
+        redirector = Redirector.new
         plugin_manager.trigger_hook(
           hook,
           user: current_user,
+          redirector: redirector,
           request: request,
           **kwargs,
         )
+        redirector.resolve!
       end
 
       def self.require_plugin(plugin_label)
