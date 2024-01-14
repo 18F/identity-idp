@@ -20,7 +20,7 @@ module Test
     end
 
     def auth_request
-      ial = prepare_step_up_flow(ial: params[:ial], aal: params[:aal])
+      ial = prepare_step_up_flow(ial: params[:ial])
 
       idp_url = authorization_url(
         ial: ial,
@@ -55,11 +55,10 @@ module Test
           redirect_uri: test_oidc_auth_result_url,
         },
       ).compact.to_query
-      puts "request_params"
       "#{authorization_endpoint}?#{request_params}"
     end
 
-    def prepare_step_up_flow(ial:, aal: nil)
+    def prepare_step_up_flow(ial:)
       if ial == 'step-up'
         ial = '1'
       end
