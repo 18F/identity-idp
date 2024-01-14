@@ -20,6 +20,7 @@ module RedirectUriValidator
   end
 
   def any_registered_sp_redirect_uris_identical_to_the_requested_uri?
+    puts "####### parsed redirect uri: #{parsed_redirect_uri}"
     service_provider.redirect_uris.any? do |sp_redirect_uri|
       parsed_sp_redirect_uri = URI.parse(sp_redirect_uri)
 

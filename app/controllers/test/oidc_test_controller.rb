@@ -3,8 +3,11 @@ module Test
   class OidcTestController < ApplicationController
     include OidcAuthHelper
 
+    BIOMETRIC_REQUIRED = 'biometric-comparison-required'
+
     def initialize
       @client_id = 'urn:gov:gsa:openidconnect:sp:test'
+      @update_redirect_uri = true
       super
     end
 
@@ -13,7 +16,7 @@ module Test
       @start_url_selfie = "#{test_oidc_auth_request_url}?ial=biometric-comparison-required"
       @start_url_ial2 = "#{test_oidc_auth_request_url}?ial=2"
       @start_url_ial1 = "#{test_oidc_auth_request_url}?ial=1"
-      @openid_configuration = nil
+      update_service_provider if @update_redirect_uri
     end
 
     def auth_request
@@ -42,7 +45,7 @@ module Test
       params = ial2_params(
         client_id: client_id,
         acr_values: acr_values(ial: ial, aal: aal),
-        biometric_comparison_required: ial == 'biometric-comparison-required',
+        biometric_comparison_required: ial == BIOMETRIC_REQUIRED,
         state: random_value,
         nonce: random_value,
       )
@@ -52,7 +55,7 @@ module Test
           redirect_uri: test_oidc_auth_result_url,
         },
       ).compact.to_query
-
+      puts "request_params"
       "#{authorization_endpoint}?#{request_params}"
     end
 
@@ -69,7 +72,7 @@ module Test
         'openid email social_security_number'
       when '1', nil
         'openid email'
-      when '2', 'biometric-comparison-required'
+      when '2', BIOMETRIC_REQUIRED
         'openid email profile social_security_number phone address'
       else
         raise ArgumentError.new("Unexpected IAL: #{ial.inspect}")
@@ -145,9 +148,7 @@ module Test
     end
 
     def openid_configuration
-      if @openid_configuration.nil?
-        @openid_configuration = OpenidConnectConfigurationPresenter.new.configuration
-      end
+      @openid_configuration ||= OpenidConnectConfigurationPresenter.new.configuration
     end
 
     def idp_public_key
@@ -157,6 +158,20 @@ module Test
     def load_idp_public_key
       keys = OpenidConnectCertsPresenter.new.certs[:keys]
       JSON::JWK.new(keys.first).to_key
+    end
+
+    def update_service_provider
+      return @service_provider if defined?(@service_provider)
+      @service_provider = ServiceProvider.find_by(issuer: client_id)
+      # inject root url
+      changed = false
+      [test_oidc_logout_url, test_oidc_auth_result_url, root_url].each do |url|
+        if @service_provider&.redirect_uris && !@service_provider.redirect_uris.include?(url)
+          @service_provider.redirect_uris.append(url)
+          changed = true
+        end
+      end
+      @service_provider.save! if changed
     end
   end
 end
