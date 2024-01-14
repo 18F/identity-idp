@@ -14,8 +14,7 @@ module Test
 
     def start
       request = OneLogin::RubySaml::Authrequest.new
-      url = request.create(test_saml_settings, {})
-      redirect_to(url)
+      redirect_to(request.create(test_saml_settings, {}))
     end
 
     def decode_response
