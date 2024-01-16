@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-ORIGIN=${ORIGIN:-origin}
+GIT_REMOTE=${GIT_REMOTE:-origin}
 SOURCE=${SOURCE:-}
 DEPLOY_BRANCH=stages/prod
 PATCH=${PATCH:-}
@@ -24,11 +24,11 @@ function check_gh_configuration {
         exit 1
     fi
 
-    # Verify our origin aligns with GH configuration
-    ORIGIN_REPO=$(git remote get-url "$ORIGIN" | sed -E 's#(^https?://github.com/|^git@github.com:|\.git$)##g')
+    # Verify our git remote aligns with GH configuration
+    GIT_REMOTE_REPO=$(git remote get-url "$GIT_REMOTE" | sed -E 's#(^https?://github.com/|^git@github.com:|\.git$)##g')
 
-    if [ "$ORIGIN_REPO" != "$GITHUB_REPOSITORY" ]; then
-        echo "\$GITHUB_REPOSITORY is set to a different value ($GITHUB_REPOSITORY) than the git remote ($ORIGIN - $ORIGIN_REPO) in use."
+    if [ "$GIT_REMOTE_REPO" != "$GITHUB_REPOSITORY" ]; then
+        echo "\$GITHUB_REPOSITORY is set to a different value ($GITHUB_REPOSITORY) than the git remote ($GIT_REMOTE - $GIT_REMOTE_REPO) in use."
         exit 1
     fi
 }
@@ -80,7 +80,7 @@ function get_staging_sha {
 check_gh_configuration
 
 RC_BRANCH=stages/rc-$(date +'%Y-%m-%d')
-if git rev-parse "$ORIGIN/$RC_BRANCH" > /dev/null 2>&1; then
+if git rev-parse "$GIT_REMOTE/$RC_BRANCH" > /dev/null 2>&1; then
     echo "RC branch $RC_BRANCH already exists. Delete that branch and re-run this workflow to create a PR." >&2
     exit 1
 fi
@@ -107,11 +107,11 @@ fi
 mkdir -p "$(dirname "$CHANGELOG_FILE")" || true
 
 echo "Building changelog..."
-scripts/changelog_check.rb -s "$SHA" -b "${ORIGIN}/${DEPLOY_BRANCH}" > "$CHANGELOG_FILE"
+scripts/changelog_check.rb -s "$SHA" -b "${GIT_REMOTE}/${DEPLOY_BRANCH}" > "$CHANGELOG_FILE"
 
 if [[ $DRY_RUN -eq 0 ]]; then
-    echo "Pushing $RC_BRANCH to origin..."
-    git push "$ORIGIN" "$SHA:refs/heads/$RC_BRANCH"
+    echo "Pushing $RC_BRANCH to $GIT_REMOTE..."
+    git push "$GIT_REMOTE" "$SHA:refs/heads/$RC_BRANCH"
 
     # Create PR
     echo "Creating PR..."
