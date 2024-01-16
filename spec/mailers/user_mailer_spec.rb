@@ -339,6 +339,7 @@ RSpec.describe UserMailer, type: :mailer do
     end
 
     let(:account_reset) { user.account_reset_request }
+    let(:confirmation_period) { 24 }
 
     it_behaves_like 'a system email'
     it_behaves_like 'an email that respects user email locale preference'
@@ -354,9 +355,12 @@ RSpec.describe UserMailer, type: :mailer do
     it 'renders the body' do
       expect(mail.html_part.body).to have_content(
         strip_tags(
-          t('user_mailer.account_reset_request.intro_html', app_name: APP_NAME),
+          t('user_mailer.account_reset_request.intro_html', app_name: APP_NAME, confirmation_period: confirmation_period),
         ),
       )
+    end
+
+    it 'renders the footer' do
     end
 
     it 'does not render the subject in the body' do
