@@ -151,6 +151,7 @@ class IdentityConfig
     config.add(:dashboard_api_token, type: :string)
     config.add(:dashboard_url, type: :string)
     config.add(:database_host, type: :string)
+    config.add(:confirmation_period_hours, type: :integer)
     config.add(:database_name, type: :string)
     config.add(:database_password, type: :string)
     config.add(:database_pool_idp, type: :integer)
