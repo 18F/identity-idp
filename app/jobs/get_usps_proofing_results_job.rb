@@ -310,7 +310,7 @@ class GetUspsProofingResultsJob < ApplicationJob
 
     analytics(user: enrollment.user).
       idv_in_person_usps_proofing_results_job_user_sent_to_fraud_review(
-        **enrollment_analytics_attributes(enrollment, complete: true)
+        **enrollment_analytics_attributes(enrollment, complete: true),
       )
   end
 
