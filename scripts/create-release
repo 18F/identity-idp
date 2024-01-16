@@ -3,6 +3,7 @@
 set -euo pipefail
 
 DEPLOY_BRANCH=stages/prod
+DRY_RUN=${DRY_RUN:-0}
 PR_JSON_FILE=${PR_JSON_FILE:-.pr.json}
 CHANGELOG_FILE=${CHANGELOG_FILE:-.changelog.md}
 
@@ -58,10 +59,14 @@ fi
 
 TAG=$(date -u +'%Y-%m-%dT%H%M%S')
 
-echo "Creating release $TITLE with tag $TAG..."
-gh release create \
-    "$TAG" \
-    --latest \
-    --target "$GITHUB_SHA" \
-    --title "$TITLE" \
-    --notes-file "$CHANGELOG_FILE"
+if [ "${DRY_RUN:-}" == "1" ]; then
+    echo "Dry run. Not creating release $TITLE with tag $TAG ($GITHUB_SHA)..."
+else
+    echo "Creating release $TITLE with tag $TAG..."
+    gh release create \
+        "$TAG" \
+        --latest \
+        --target "$GITHUB_SHA" \
+        --title "$TITLE" \
+        --notes-file "$CHANGELOG_FILE"
+fi
