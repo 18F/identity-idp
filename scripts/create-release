@@ -4,8 +4,8 @@ set -euo pipefail
 
 DEPLOY_BRANCH=stages/prod
 DRY_RUN=${DRY_RUN:-0}
-PR_JSON_FILE=${PR_JSON_FILE:-.pr.json}
-CHANGELOG_FILE=${CHANGELOG_FILE:-.changelog.md}
+PR_JSON_FILE=${PR_JSON_FILE:-tmp/.pr.json}
+CHANGELOG_FILE=${CHANGELOG_FILE:-tmp/.changelog.md}
 
 USAGE="
 ${0} [PULL_REQUEST_NUMBER]
@@ -35,6 +35,9 @@ if [ "${CI:-}" == "1" ]; then
         exit 1
     fi
 fi
+
+mkdir -p "$(dirname "$PR_JSON_FILE")" || true
+mkdir -p "$(dirname "$CHANGELOG_FILE")" || true
 
 echo "Getting PR ${PR} data..."
 gh pr list \
