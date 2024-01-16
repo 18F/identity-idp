@@ -36,6 +36,10 @@ class RateLimiter
   end
 
   def limited?
+    if rate_limit_type == :idv_resultion
+      puts "expired?: #{expired?}; maxed?: #{maxed?}"
+    end
+
     !expired? && maxed?
   end
 
