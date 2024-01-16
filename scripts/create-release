@@ -20,20 +20,25 @@ fi
 
 PR="$1"; shift
 
-if [ -z "${CI:-}" ]; then
-    echo "This script is meant to be run in a continuous integration environment."
-    exit 1
-fi
+if [ "${CI:-}" == "1" ]; then
+    # gh will not work in CI unless GH_TOKEN is explicitly set.
+    if [ -z "${GH_TOKEN:-}" ]; then
+        echo "You must set the GH_TOKEN environment variable."
+        exit 1
+    fi
 
-if [ -z "${GH_TOKEN:-}" ]; then
-    echo "You must set the GH_TOKEN environment variable."
-    exit 1
+    # GITHUB_SHA is provided by Github Actions, but if for some reason
+    # you are running locally with CI=1 trying to simulate a CI run,
+    # make it clear that we want it set.
+    if [ -z "${GITHUB_SHA:-}" ]; then
+        echo "\$GITHUB_SHA must be set."
+        exit 1
+    fi
 fi
-
 
 echo "Getting PR ${PR} data..."
 gh pr list \
-    --json number,title,body \
+    --json number,mergeCommit,title,body \
     --base "$DEPLOY_BRANCH" \
     --state merged \
     | jq ".[] | select(.number == ${PR})" > "$PR_JSON_FILE"
@@ -41,6 +46,12 @@ gh pr list \
 if [ ! -s "$PR_JSON_FILE" ]; then
     echo "PR $PR not found."
     exit 9
+fi
+
+if [ -z "${GITHUB_SHA:-}" ]; then
+    # $GITHUB_SHA is set by Github Actions. But when running locally we can
+    # pull it out of the PR's JSON blob.
+    GITHUB_SHA=$(jq --raw-output '.mergeCommit.oid' < "$PR_JSON_FILE")
 fi
 
 RC=$(jq --raw-output '.title' < "$PR_JSON_FILE" | sed -E 's/Deploy RC (.+) to .*/\1/')
