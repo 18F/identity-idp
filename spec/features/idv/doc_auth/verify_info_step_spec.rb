@@ -187,7 +187,9 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
         complete_verify_step
 
         expect(page).to have_current_path(idv_phone_path)
-        expect(RateLimiter.new(user: user, rate_limit_type: :idv_resolution)).to_not be_limited
+        # expect(RateLimiter.new(user: user, rate_limit_type: :idv_resolution)).to_not be_limited
+        expect(RateLimiter.new(user: user, rate_limit_type: :idv_resolution)).to_not be_maxed
+        expect(RateLimiter.new(user: user, rate_limit_type: :idv_resolution)).to_not be_expired
       end
     end
 
