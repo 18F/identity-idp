@@ -37,7 +37,7 @@ module Test
     end
 
     def logout
-      redirect_to('/')
+      redirect_to(logout_uri)
     end
 
     def authorization_url(ial:, aal: nil)
@@ -105,28 +105,6 @@ module Test
 
     def random_value
       SecureRandom.hex
-    end
-
-    def maybe_redact_ssn(ssn)
-      if @redact_ssn
-        # redact all characters since they're all sensitive
-        ssn = ssn&.gsub(/\d/, '#')
-      end
-
-      ssn
-    end
-
-    def client_assertion_jwt
-      jwt_payload = {
-        iss: client_id,
-        sub: client_id,
-        aud: openid_configuration[:token_endpoint],
-        jti: random_value,
-        nonce: random_value,
-        exp: Time.zone.now.to_i + 1000,
-      }
-
-      JWT.encode(jwt_payload, config.sp_private_key, 'RS256')
     end
 
     def client_id
