@@ -32,27 +32,24 @@ module Idv
     # @param [DocAuth::Response,
     #   DocumentCaptureSessionResult] response
     def extract_pii_from_doc(user, response, store_in_session: false)
-      pii_from_doc = response.pii_from_doc.merge(
-        uuid: user.uuid,
-        phone: user.phone_configurations.take&.phone,
-        uuid_prefix: ServiceProvider.find_by(issuer: sp_session[:issuer])&.app_id,
-      )
-
       if defined?(idv_session) # hybrid mobile does not have idv_session
         idv_session.had_barcode_read_failure = response.attention_with_barcode?
         if store_in_session
-          idv_session.pii_from_doc ||= {}
-          idv_session.pii_from_doc.merge!(pii_from_doc)
+          idv_session.pii_from_doc = response.pii_from_doc
           idv_session.selfie_check_performed = response.selfie_check_performed
         end
       end
 
-      track_document_issuing_state(user, pii_from_doc[:state])
+      track_document_issuing_state(user, response.pii_from_doc[:state])
     end
 
     def stored_result
       return @stored_result if defined?(@stored_result)
       @stored_result = document_capture_session&.load_result
+    end
+
+    def selfie_requirement_met?
+      !decorated_sp_session.selfie_required? || stored_result.selfie_check_performed
     end
 
     private
