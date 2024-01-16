@@ -232,7 +232,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
       visit idv_verify_info_url
       expect(page).to have_current_path(idv_session_errors_ssn_failure_path)
 
-      travel_to(IdentityConfig.store.idv_attempt_window_in_hours.hours.from_now + 2) do
+      travel_to(IdentityConfig.store.idv_attempt_window_in_hours.hours.from_now + 3) do
         sign_in_and_2fa_user(user)
         complete_doc_auth_steps_before_verify_step
         complete_verify_step
