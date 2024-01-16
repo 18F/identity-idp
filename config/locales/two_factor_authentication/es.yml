@@ -11,8 +11,8 @@ es:
       cancel_link: Cancelar su solicitud
       link: eliminando su cuenta
       pending: Actualmente tiene una solicitud pendiente para eliminar su cuenta. Se
-        necesitan %{interval} horas desde el momento en que realizó la solicitud para
-        completar el proceso.  Por favor, vuelva más tarde.
+        necesitan %{interval} horas desde el momento en que realizó la solicitud
+        para completar el proceso.  Por favor, vuelva más tarde.
       successful_cancel: Gracias. Su solicitud para eliminar su cuenta de %{app_name}
         ha sido cancelada.
       text_html: Si no puede usar ninguna de estas opciones de seguridad anteriores,

@@ -31,7 +31,7 @@ en:
     account_reset_request:
       cancel: Don’t want to delete your account? Sign in to your %{app_name} account
         to cancel.
-      header: Your account will be deleted in 24 hours
+      header: Your account will be deleted in %{interval} hours
       intro_html: 'As a security measure, %{app_name} requires a two-step process to
         delete your account:<br><br> Step One: There is a 24 hour waiting period
         if you have lost access to your authentication methods and need to

@@ -62,8 +62,8 @@ fr:
           devrez restaurer chaque connexion.
         - Si vous continuez, vous recevra d’abord un email de confirmation. Par
           mesure de sécurité, vous devrez recevoir un autre e-mail avec le lien
-          pour continuer la suppression de votre compte %{interval} après l’email
-          de confirmation initial arrive.
+          pour continuer la suppression de votre compte %{interval} heurs après
+          l’email de confirmation initial arrive.
       info:
         - Si vous ne pouvez pas accéder à votre compte via les options de
           sécurité que vous avez définies auparavant, la suppression de votre

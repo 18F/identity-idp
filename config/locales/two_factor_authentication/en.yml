@@ -11,8 +11,8 @@ en:
       cancel_link: Cancel your request
       link: deleting your account
       pending: You currently have a pending request to delete your account. It takes
-        %{interval} hours from the time you made the request to complete the process.
-        Please check back later.
+        %{interval} hours from the time you made the request to complete the
+        process. Please check back later.
       successful_cancel: Thank you. Your request to delete your %{app_name} account
         has been cancelled.
       text_html: If you can’t use any of the authentication methods above, you can

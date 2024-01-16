@@ -33,7 +33,7 @@ es:
     account_reset_request:
       cancel: '¿No quieres eliminar tu cuenta? Inicie sesión en su cuenta %{app_name}
         para cancelar.'
-      header: Su cuenta será eliminada en 24 horas
+      header: Su cuenta será eliminada en %{interval} horas
       intro_html: 'Como medida de seguridad, %{app_name} requiere un proceso de dos
         pasos para eliminar su cuenta:<br><br> Paso uno: hay un período de
         espera de 24 horas si ha perdido el acceso a sus métodos de
