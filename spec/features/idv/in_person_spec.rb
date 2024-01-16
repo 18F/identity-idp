@@ -502,6 +502,37 @@ RSpec.describe 'In Person Proofing', js: true do
     end
   end
 
+  context 'Outage alert enabled' do
+    let(:user) { user_with_2fa }
+
+    before do
+      allow(IdentityConfig.store).to receive(:in_person_outage_message_enabled).and_return(true)
+    end
+
+    it 'allows the user to generate a barcode despite outage', allow_browser_log: true do
+      sign_in_and_2fa_user(user)
+      begin_in_person_proofing(user)
+
+      # alert is visible on prepare page
+      expect(page).to have_content(
+        t(
+          'idv.failure.exceptions.in_person_outage_error_message.post_cta.body',
+          app_name: APP_NAME,
+        ),
+      )
+      complete_all_in_person_proofing_steps
+      complete_phone_step(user)
+       complete_enter_password_step(user)
+      acknowledge_and_confirm_personal_key
+
+      # alert is visible on ready to verify page
+      expect(page).to have_content(
+        t('idv.failure.exceptions.in_person_outage_error_message.ready_to_verify.body')
+      )
+      expect(page).to have_current_path(idv_in_person_ready_to_verify_path, wait: 10)
+    end
+  end
+
   context 'when full form address entry is enabled for post office search' do
     let(:user) { user_with_2fa }
 
