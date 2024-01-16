@@ -150,27 +150,26 @@ module Reporting
         super(
           total_all_users:, total_all_percent:,
           total_idv_users:, total_idv_percent:
-          )
+        )
       end
 
-      def update_from_results(results, total_proofed)
-        if !results.nil? && !results[:detail_rows].nil? && !results[:detail_rows].empty?
-          detail_results = results[:detail_rows]
-          detail_results.each do |result_entry|
+      def update_from_results(results:, total_registered:, total_proofed:)
+        if !results.nil? && !results.detail_rows.nil? && !results.detail_rows.empty?
+          results.detail_rows.each do |result_entry|
             self.total_all_users += result_entry.dig(:num_all_users)
             self.total_idv_users += result_entry.dig(:num_idv_users)
           end
 
-          if total_proofed > 0
+          if total_registered > 0 && total_proofed > 0
             # Calculate percentages for breakdowns with both sps and angencies
-            detail_results.each_with_index do |result_entry, index|
-              detail_results[index][:all_percent] =
-                result_entry.dig(:num_all_users) / total_proofed.to_f
-              detail_results[index][:idv_percent] =
+            results.detail_rows.each_with_index do |result_entry, index|
+              results.detail_rows[index][:all_percent] =
+                result_entry.dig(:num_all_users) / total_registered.to_f
+              results.detail_rows[index][:idv_percent] =
                 result_entry.dig(:num_idv_users) / total_proofed.to_f
 
-              self.total_all_percent += detail_results[index].dig(:all_percent)
-              self.total_idv_percent += detail_results[index].dig(:idv_percent)
+              self.total_all_percent += results.detail_rows[index].dig(:all_percent)
+              self.total_idv_percent += results.detail_rows[index].dig(:idv_percent)
             end
           end
         end
@@ -193,19 +192,22 @@ module Reporting
     def total_reuse_report
       return @total_reuse_report if defined?(@total_reuse_report)
 
+      total_registered = num_registered_users
       total_proofed = num_active_profiles
 
       sp_reuse_stats = EntityReuseSummary.new.update_from_results(
-        ReuseDetailSection.new.organize_results(
+        results: ReuseDetailSection.new.organize_results(
           sp_reuse_results_all, sp_reuse_results_idv, 'apps'
         ),
-        total_proofed,
+        total_registered: total_registered,
+        total_proofed: total_proofed,
       )
       agency_reuse_stats = EntityReuseSummary.new.update_from_results(
-        ReuseDetailSection.new.organize_results(
+        results: ReuseDetailSection.new.organize_results(
           agency_reuse_results_all, agency_reuse_results_idv, 'agencies'
         ),
-        total_proofed,
+        total_registered: total_registered,
+        total_proofed: total_proofed,
       )
 
       @total_reuse_report = {
@@ -350,23 +352,16 @@ module Reporting
       agency_idv_results.as_json
     end
 
-    def num_active_profiles
-      proofed_sql = format(<<-SQL, params)
-          SELECT
-            COUNT(*) AS num_proofed
-          FROM
-            profiles
-          WHERE
-            profiles.active = TRUE
-          AND
-            profiles.activated_at < %{query_date}
-      SQL
-
-      proofed_results = Reports::BaseReport.transaction_with_timeout do
-        ActiveRecord::Base.connection.execute(proofed_sql)
+    def num_registered_users
+      @num_registered_users ||= Reports::BaseReport.transaction_with_timeout do
+        RegistrationLog.where('registered_at <= ?', report_date).count
       end
+    end
 
-      proofed_results.first['num_proofed']
+    def num_active_profiles
+      @num_active_profiles ||= Reports::BaseReport.transaction_with_timeout do
+        Profile.where(active: true).where('activated_at < ?', report_date).count
+      end
     end
 
     def params

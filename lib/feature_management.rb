@@ -119,15 +119,6 @@ class FeatureManagement
       IdentityConfig.store.recaptcha_enterprise_project_id.present?
   end
 
-  # Manual allowlist for VOIPs, should only include known VOIPs that we use for smoke tests
-  # @return [Set<String>] set of phone numbers normalized to e164
-  def self.voip_allowed_phones
-    @voip_allowed_phones ||= begin
-      allowed_phones = IdentityConfig.store.voip_allowed_phones
-      allowed_phones.map { |p| Phonelib.parse(p).e164 }.to_set
-    end
-  end
-
   # Whether we collect device profiling information as part of the proofing process.
   def self.proofing_device_profiling_collecting_enabled?
     case IdentityConfig.store.proofing_device_profiling

@@ -1,7 +1,5 @@
 import AcuantContext, {
   Provider as AcuantContextProvider,
-  DEFAULT_ACCEPTABLE_GLARE_SCORE,
-  DEFAULT_ACCEPTABLE_SHARPNESS_SCORE,
   dirname,
 } from '@18f/identity-document-capture/context/acuant';
 import { AnalyticsContext, DeviceContext } from '@18f/identity-document-capture';
@@ -47,8 +45,6 @@ describe('document-capture/context/acuant', () => {
     expect(result.current.setIsActive).to.be.a('function');
     expect(result.current.credentials).to.be.null();
     expect(result.current.endpoint).to.be.null();
-    expect(result.current.glareThreshold).to.equal(DEFAULT_ACCEPTABLE_GLARE_SCORE);
-    expect(result.current.sharpnessThreshold).to.equal(DEFAULT_ACCEPTABLE_SHARPNESS_SCORE);
   });
 
   it('allows configurable acceptable scores', () => {

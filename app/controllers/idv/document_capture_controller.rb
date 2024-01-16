@@ -89,7 +89,7 @@ module Idv
     end
 
     def handle_stored_result
-      if stored_result&.success?
+      if stored_result&.success? && selfie_requirement_met?
         save_proofing_components(current_user)
         extract_pii_from_doc(current_user, stored_result, store_in_session: true)
         flash[:success] = t('doc_auth.headings.capture_complete')
