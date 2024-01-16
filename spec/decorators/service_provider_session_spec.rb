@@ -181,7 +181,7 @@ RSpec.describe ServiceProviderSession do
 
   describe '#selfie_required' do
     before do
-      allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).
+      expect(FeatureManagement).to receive(:idv_allow_selfie_check?).
         and_return(selfie_capture_enabled)
     end
 
@@ -206,21 +206,6 @@ RSpec.describe ServiceProviderSession do
       it 'returns false when sp biometric_comparison_required is nil' do
         sp_session[:biometric_comparison_required] = nil
         expect(subject.selfie_required?).to eq(false)
-      end
-
-      context 'when environment is prod' do
-        before do
-          allow(Identity::Hostdata).to receive(:env).and_return('prod')
-        end
-        it 'returns false when sp biometric_comparison_required is true' do
-          sp_session[:biometric_comparison_required] = true
-          expect(subject.selfie_required?).to eq(false)
-        end
-
-        it 'returns false when sp biometric_comparison_required is truthy' do
-          sp_session[:biometric_comparison_required] = 1
-          expect(subject.selfie_required?).to eq(false)
-        end
       end
     end
 

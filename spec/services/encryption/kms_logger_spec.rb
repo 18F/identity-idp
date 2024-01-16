@@ -10,7 +10,7 @@ RSpec.describe Encryption::KmsLogger do
             encryption_context: { context: 'pii-encryption', user_uuid: '1234-abc' },
             key_id: 'super-duper-aws-kms-key-id',
           },
-          log_filename: Encryption::KmsLogger::LOG_FILENAME,
+          log_filename: Idp::Constants::KMS_LOG_FILENAME,
         }.to_json
 
         expect(described_class.logger).to receive(:info).with(log)
@@ -31,7 +31,7 @@ RSpec.describe Encryption::KmsLogger do
             encryption_context: nil,
             key_id: 'super-duper-aws-kms-key-id',
           },
-          log_filename: Encryption::KmsLogger::LOG_FILENAME,
+          log_filename: Idp::Constants::KMS_LOG_FILENAME,
         }.to_json
 
         expect(described_class.logger).to receive(:info).with(log)

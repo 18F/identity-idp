@@ -5,7 +5,7 @@ RSpec.describe WebauthnSetupForm do
 
   let(:user) { create(:user) }
   let(:user_session) { { webauthn_challenge: webauthn_challenge } }
-  let(:device_name) { 'Chrome 119 on macOS 10' }
+  let(:device_name) { 'Chrome 119 on macOS' }
   let(:domain_name) { 'localhost:3000' }
   let(:params) do
     {
