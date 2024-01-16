@@ -1148,6 +1148,54 @@ RSpec.describe GetUspsProofingResultsJob do
             error_type: Faraday::NilStatusError,
           )
         end
+
+        context 'when a user was flagged with fraud_pending_reason' do
+          before(:each) do
+            pending_enrollment.profile.update!(fraud_pending_reason: "threatmetrix_review")
+            stub_request_passed_proofing_results
+          end
+
+          it 'logs something useful' do
+            job.perform(Time.zone.now)
+
+            expect(job_analytics).to have_logged_event(
+              'GetUspsProofingResultsJob: User transitioned to fraud_review',
+              hash_including(
+                enrollment_code: pending_enrollment.enrollment_code,
+              )
+            )
+          end
+
+          it 'does update the enrollment' do
+            freeze_time do
+              expect(pending_enrollment.status).to eq "pending"
+              job.perform(Time.zone.now)
+              expect(pending_enrollment.reload.status).to eq "passed"
+            end
+          end
+
+          it 'does not send a success email' do
+            user = pending_enrollment.user
+
+            freeze_time do
+              expect { job.perform(Time.zone.now) }.not_to have_enqueued_mail(UserMailer, :in_person_verified).with(
+                params: { user: user, email_address: user.email_addresses.first },
+                args: [{ enrollment: pending_enrollment }],
+                )
+            end
+          end
+
+          it 'marks the user as fraud_review_pending_at' do
+            freeze_time do
+              job.perform(Time.zone.now)
+
+              pending_enrollment.reload
+              profile = pending_enrollment.profile
+              expect(profile).to be_fraud_review_pending
+              expect(profile).not_to be_active
+            end
+          end
+        end
       end
 
       describe 'Proofed with secondary id' do

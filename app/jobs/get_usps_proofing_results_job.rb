@@ -99,7 +99,6 @@ class GetUspsProofingResultsJob < ApplicationJob
 
     status_check_attempted_at = Time.zone.now
     enrollment_outcomes[:enrollments_checked] += 1
-    response = nil
 
     response = proofer.request_proofing_results(
       enrollment.unique_id, enrollment.enrollment_code
@@ -305,6 +304,16 @@ class GetUspsProofingResultsJob < ApplicationJob
     end
   end
 
+  # MW: What else do we want to log here?
+  def handle_fraud_review_pending(enrollment)
+    enrollment.profile&.deactivate_for_fraud_review
+
+    analytics(user: enrollment.user).
+      idv_in_person_usps_proofing_results_job_user_sent_to_fraud_review(
+        **enrollment_analytics_attributes(enrollment, complete: true)
+      )
+  end
+
   def handle_unexpected_response(enrollment, response_message, reason:, cancel: true)
     enrollment.cancelled! if cancel
 
@@ -363,21 +372,25 @@ class GetUspsProofingResultsJob < ApplicationJob
       reason: 'Successful status update',
       job_name: self.class.name,
     )
-    enrollment.profile.activate_after_passing_in_person
     enrollment.update(
       status: :passed,
       proofed_at: proofed_at,
       status_check_completed_at: Time.zone.now,
     )
 
-    # send SMS and email
-    send_enrollment_status_sms_notification(enrollment: enrollment)
-    send_verified_email(enrollment.user, enrollment)
-    analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_email_initiated(
-      **email_analytics_attributes(enrollment),
-      email_type: 'Success',
-      job_name: self.class.name,
-    )
+    unless fraud_pending?(enrollment)
+      enrollment.profile.activate_after_passing_in_person
+
+      # send SMS and email
+      # MW: Do we still want to send the SMS in the fraud case?
+      send_enrollment_status_sms_notification(enrollment: enrollment)
+      send_verified_email(enrollment.user, enrollment)
+      analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_email_initiated(
+        **email_analytics_attributes(enrollment),
+        email_type: 'Success',
+        job_name: self.class.name,
+      )
+    end
   end
 
   def handle_unsupported_secondary_id(enrollment, response)
@@ -397,6 +410,7 @@ class GetUspsProofingResultsJob < ApplicationJob
     )
     # send SMS and email
     send_enrollment_status_sms_notification(enrollment: enrollment)
+    # MW: I _think_ this is desired behavior?
     send_failed_email(enrollment.user, enrollment)
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_email_initiated(
       **email_analytics_attributes(enrollment),
@@ -405,10 +419,20 @@ class GetUspsProofingResultsJob < ApplicationJob
     )
   end
 
+  # MW: This could be inlined but it feels a little cleaner this way:
+  def fraud_pending?(enrollment)
+    enrollment.profile&.fraud_pending_reason.present?
+  end
+
   def process_enrollment_response(enrollment, response)
     unless response.is_a?(Hash)
       handle_response_is_not_a_hash(enrollment)
       return
+    end
+
+    # We want to deactivate them regardless of status:
+    if fraud_pending?(enrollment)
+      handle_fraud_review_pending(enrollment)
     end
 
     case response['status']
