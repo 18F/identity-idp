@@ -91,7 +91,7 @@ RSpec.describe 'webauthn hide' do
             expect(webauthn_option_hidden?).to eq(false)
           end
         end
-        
+
         context 'with device that doesnt support authenticator' do
           it 'redirects to options page on sign in and shows the option' do
             email ||= user.email_addresses.first.email
