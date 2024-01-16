@@ -315,7 +315,7 @@ module DocAuth
           return @new_alerts if defined?(@new_alerts)
 
           @new_alerts = { passed: [], failed: [] }
-          return @new_alerts unless true_id_product&.dig(:AUTHENTICATION_RESULT)&.present?
+          return @new_alerts unless true_id_product&.dig(:AUTHENTICATION_RESULT).present?
           all_alerts = true_id_product[:AUTHENTICATION_RESULT].select do |key|
             key.start_with?('Alert_')
           end
@@ -356,7 +356,7 @@ module DocAuth
 
         def parse_image_metrics
           image_metrics = {}
-          return image_metrics unless true_id_product&.dig(:ParameterDetails)&.present?
+          return image_metrics unless true_id_product&.dig(:ParameterDetails).present?
           true_id_product[:ParameterDetails].each do |detail|
             next unless detail[:Group] == 'IMAGE_METRICS_RESULT'
 
