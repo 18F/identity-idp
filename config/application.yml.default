@@ -24,6 +24,7 @@ aamva_verification_url: https://example.org:12345/verification/url
 all_redirect_uris_cache_duration_minutes: 2
 allowed_ialmax_providers: '[]'
 allowed_verified_within_providers: '[]'
+account_deletion_period_hours: 24
 account_reset_token_valid_for_days: 1
 account_reset_wait_period_days: 1
 account_suspended_support_code: EFGHI
@@ -60,7 +61,6 @@ broken_personal_key_window_start: '2021-07-29T00:00:00Z'
 broken_personal_key_window_finish: '2021-09-22T00:00:00Z'
 component_previews_enabled: false
 component_previews_embed_frame_ancestors: '[]'
-confirmation_period_in_hours: 24
 country_phone_number_overrides: '{}'
 database_pool_idp: 5
 database_socket: ''
@@ -369,11 +369,11 @@ weekly_auth_funnel_report_config: '[]'
 development:
   aamva_private_key: 123abc
   aamva_public_key: 123abc
+  account_deletion_period_hours: 24
   attribute_encryption_key: 2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25
   attribute_encryption_key_queue: '[{ "key": "11111111111111111111111111111111" }, { "key": "22222222222222222222222222222222" }]'
   aws_logo_bucket: ''
   component_previews_enabled: true
-  confirmation_period_in_hours: 42
   dashboard_api_token: test_token
   dashboard_url: http://localhost:3001/api/service_providers
   database_host: ''
@@ -438,11 +438,11 @@ production:
   aamva_auth_url: 'https://authentication-cert.aamva.org/Authentication/Authenticate.svc'
   aamva_private_key: ''
   aamva_public_key: ''
+  account_deletion_period_hours: 24
   aamva_verification_url: 'https://verificationservices-cert.aamva.org:18449/dldv/2.1/online'
   attribute_encryption_key:
   attribute_encryption_key_queue: '[]'
   aws_logo_bucket: ''
-  confirmation_period_in_hours: 42
   dashboard_api_token: ''
   dashboard_url: https://dashboard.demo.login.gov
   database_host: ''
@@ -518,7 +518,7 @@ test:
   acuant_passlive_url: https://liveness.example.com
   attribute_encryption_key: 2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25
   attribute_encryption_key_queue: '[{ "key": "11111111111111111111111111111111" }, { "key": "22222222222222222222222222222222" }]'
-  confirmation_period_in_hours: 42
+  confirmation_period_in_hours: 24
   dashboard_api_token: 123ABC
   dashboard_url: https://dashboard.demo.login.gov
   database_host: ''
