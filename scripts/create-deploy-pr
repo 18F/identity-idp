@@ -8,9 +8,12 @@ DEPLOY_BRANCH=stages/prod
 PATCH=${PATCH:-}
 DRY_RUN=${DRY_RUN:-0}
 CHANGELOG_FILE=${CHANGELOG_FILE:-.rc-changelog.md}
+GITHUB_REPOSITORY=${GITHUB_REPOSITORY:-18f/identity-idp}
+
+GH="gh --repo=$GITHUB_REPOSITORY"
 
 function get_last_rc {
-    GH_OUTPUT=$(gh release list --exclude-drafts --exclude-pre-releases --limit 1 || true)
+    GH_OUTPUT=$($GH release list --exclude-drafts --exclude-pre-releases --limit 1 || true)
     if [ -z "$GH_OUTPUT" ]; then
         echo "Failed to get latest released" >&2
         exit 1
@@ -53,15 +56,14 @@ function get_staging_sha {
     curl --silent https://idp.staging.login.gov/api/deploy.json | jq -r .git_sha
 }
 
-if [ -z "${CI:-}" ]; then
-    echo "This script is meant to be run in a continuous integration environment."
-    exit 1
+if [ "${CI:-}" == "1" ]; then
+    # gh will not work in CI unless GH_TOKEN is explicitly set.
+    if [ -z "${GH_TOKEN:-}" ]; then
+        echo "You must set the GH_TOKEN environment variable."
+        exit 1
+    fi
 fi
 
-if [ -z "${GH_TOKEN:-}" ] && [ "$DRY_RUN" == "0" ]; then
-    echo "You must set the GH_TOKEN environment variable."
-    exit 1
-fi
 
 RC_BRANCH=stages/rc-$(date +'%Y-%m-%d')
 if git rev-parse "$ORIGIN/$RC_BRANCH" > /dev/null 2>&1; then
@@ -97,7 +99,7 @@ if [[ $DRY_RUN -eq 0 ]]; then
 
     # Create PR
     echo "Creating PR..."
-    gh pr create \
+    $GH pr create \
         --title "Deploy RC ${NEXT_RC} to Production" \
         --label 'status - promotion' \
         --base "$DEPLOY_BRANCH" \
