@@ -37,11 +37,6 @@ function check_gh_configuration {
 
 function get_last_rc {
     GH_OUTPUT=$($GH release list --exclude-drafts --exclude-pre-releases --limit 1 || true)
-    if [ -z "$GH_OUTPUT" ]; then
-        echo "Failed to get latest released" >&2
-        exit 1
-    fi
-
     LAST_RC=$(echo "$GH_OUTPUT" | grep -E --only-matching 'RC [0-9]+(\.[0-9]+)?' | sed 's/RC //')
     if [ -z "$LAST_RC" ]; then
         echo 0
