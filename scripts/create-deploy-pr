@@ -12,6 +12,27 @@ GITHUB_REPOSITORY=${GITHUB_REPOSITORY:-18f/identity-idp}
 
 GH="gh --repo=$GITHUB_REPOSITORY"
 
+function check_gh_configuration {
+    if ! which gh > /dev/null 2>&1; then
+        echo "Github CLI (gh) is not installed. You can install it with: brew install gh"
+        exit 1
+    fi
+
+    if [ "${CI:-}" == "1" ] && [ -z "${GH_TOKEN:-}" ]; then
+        # gh will not work in CI unless GH_TOKEN is explicitly set.
+        echo "You must set the GH_TOKEN environment variable."
+        exit 1
+    fi
+
+    # Verify our origin aligns with GH configuration
+    ORIGIN_REPO=$(git remote get-url "$ORIGIN" | sed -E 's#(^https?://github.com/|^git@github.com:|\.git$)##g')
+
+    if [ "$ORIGIN_REPO" != "$GITHUB_REPOSITORY" ]; then
+        echo "\$GITHUB_REPOSITORY is set to a different value ($GITHUB_REPOSITORY) than the git remote ($ORIGIN - $ORIGIN_REPO) in use."
+        exit 1
+    fi
+}
+
 function get_last_rc {
     GH_OUTPUT=$($GH release list --exclude-drafts --exclude-pre-releases --limit 1 || true)
     if [ -z "$GH_OUTPUT" ]; then
@@ -56,14 +77,7 @@ function get_staging_sha {
     curl --silent https://idp.staging.login.gov/api/deploy.json | jq -r .git_sha
 }
 
-if [ "${CI:-}" == "1" ]; then
-    # gh will not work in CI unless GH_TOKEN is explicitly set.
-    if [ -z "${GH_TOKEN:-}" ]; then
-        echo "You must set the GH_TOKEN environment variable."
-        exit 1
-    fi
-fi
-
+check_gh_configuration
 
 RC_BRANCH=stages/rc-$(date +'%Y-%m-%d')
 if git rev-parse "$ORIGIN/$RC_BRANCH" > /dev/null 2>&1; then
