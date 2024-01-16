@@ -7,7 +7,7 @@ Devise.setup do |config|
   require 'devise/orm/active_record'
   config.allow_unconfirmed_access_for = 0.days
   config.case_insensitive_keys = []
-  config.confirm_within = IdentityConfig.store.confirmation_period_in_hours.hours
+  config.confirm_within = IdentityConfig.store.confirmation_period_hours.hours
   config.expire_all_remember_me_on_sign_out = true
   config.mailer_sender = email_with_name(
     IdentityConfig.store.email_from,

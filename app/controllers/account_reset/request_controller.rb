@@ -6,6 +6,8 @@ module AccountReset
 
     def show
       analytics.account_reset_visit
+      presenter = ConfirmationEmailPresenter.new(current_user, view_context)
+      @confirmation_period = presenter.confirmation_period
     end
 
     def create

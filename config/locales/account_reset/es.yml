@@ -62,8 +62,7 @@ es:
           conexión.
         - Si continúas, tú primero recibirá una confirmación por correo
           electrónico. Como medida de seguridad, lo hará reciba otro correo
-          electrónico con el enlace para seguir eliminando su cuenta las 24
-          horas después del correo electrónico de confirmación inicial llega.
+          electrónico con el enlace para seguir eliminando su cuenta las %{interval} después del correo electrónico de confirmación inicial llega.
       info:
         - Si no puede acceder a su cuenta a través de las opciones de seguridad
           que configuró anteriormente, eliminar la cuenta y crear una nueva es
