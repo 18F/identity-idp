@@ -148,6 +148,8 @@ class UserMailer < ActionMailer::Base
 
   def account_reset_request(account_reset)
     with_user_locale(user) do
+      presenter = ConfirmationEmailPresenter.new(user, view_context)
+      @confirmation_period = presenter.confirmation_period
       @token = account_reset&.request_token
       @header = t('user_mailer.account_reset_request.header')
       mail(

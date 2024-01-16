@@ -115,7 +115,10 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
   def account_reset_cancel_link
     safe_join(
       [
-        t('two_factor_authentication.account_reset.pending', interval: time_remaining_until_granted),
+        t(
+          'two_factor_authentication.account_reset.pending',
+          interval: time_remaining_until_granted,
+        ),
         @view.link_to(
           t('two_factor_authentication.account_reset.cancel_link'),
           account_reset_cancel_url(token: account_reset_token),
