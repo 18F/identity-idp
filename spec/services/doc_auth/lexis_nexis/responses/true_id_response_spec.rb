@@ -332,7 +332,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       output = response.to_h
       expect(output[:success]).to eq(false)
       expect(response.doc_auth_success?).to eq(false)
-      expect(response.selfie_success).to eq(nil)
+      expect(response.selfie_success).to eq(false)
     end
 
     it 'produces expected hash output' do
@@ -388,7 +388,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
           Back: a_hash_including(:ClassName, :CountryCode, :IssuerType),
         },
         doc_auth_success: false,
-        selfie_success: nil,
+        selfie_success: false,
       )
     end
     it 'produces appropriate errors with document tampering' do
@@ -674,8 +674,8 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     context 'when selfie check is enabled' do
       context 'whe missing selfie result in response' do
         let(:response) { described_class.new(success_response, config, true) }
-        it 'returns false when missing selfie in response' do
-          expect(response.selfie_success).to eq(false)
+        it 'returns nil when missing selfie in response' do
+          expect(response.selfie_success).to eq(nil)
         end
       end
       context 'when selfie passed' do
