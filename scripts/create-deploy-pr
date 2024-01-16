@@ -7,7 +7,7 @@ SOURCE=${SOURCE:-}
 DEPLOY_BRANCH=stages/prod
 PATCH=${PATCH:-}
 DRY_RUN=${DRY_RUN:-0}
-CHANGELOG_FILE=${CHANGELOG_FILE:-.rc-changelog.md}
+CHANGELOG_FILE=${CHANGELOG_FILE:-tmp/.rc-changelog.md}
 GITHUB_REPOSITORY=${GITHUB_REPOSITORY:-18f/identity-idp}
 
 GH="gh --repo=$GITHUB_REPOSITORY"
@@ -104,6 +104,8 @@ else
     fi
 fi
 
+mkdir -p "$(dirname "$CHANGELOG_FILE")" || true
+
 echo "Building changelog..."
 scripts/changelog_check.rb -s "$SHA" -b "${ORIGIN}/${DEPLOY_BRANCH}" > "$CHANGELOG_FILE"
 
@@ -124,5 +126,5 @@ else
 fi
 
 echo "# Changelog"
-cat "$CHANGELOG_FILE" && rm "$CHANGELOG_FILE"
+cat "$CHANGELOG_FILE"
 
