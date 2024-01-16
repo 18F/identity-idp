@@ -234,11 +234,9 @@ RSpec.describe NewPhoneForm do
 
     context 'voip numbers' do
       let(:telephony_gem_voip_number) { '+12255552000' }
-      let(:voip_block) { false }
       let(:phone_service_check) { true }
 
       before do
-        allow(IdentityConfig.store).to receive(:voip_block).and_return(voip_block)
         allow(IdentityConfig.store).to receive(:phone_service_check).and_return(phone_service_check)
       end
 
@@ -246,71 +244,44 @@ RSpec.describe NewPhoneForm do
         form.submit(params.merge(phone: telephony_gem_voip_number))
       end
 
-      context 'when voip numbers are blocked' do
-        let(:voip_block) { true }
+      it 'voip numbers are invalid' do
+        expect(result.success?).to eq(false)
+        expect(result.errors[:phone]).to eq([I18n.t('errors.messages.voip_phone')])
+      end
 
-        it 'is invalid' do
-          expect(result.success?).to eq(false)
-          expect(result.errors[:phone]).to eq([I18n.t('errors.messages.voip_phone')])
+      it 'logs the type and carrier' do
+        expect(result.extra).to include(
+          phone_type: :voip,
+          carrier: 'Test VOIP Carrier',
+        )
+      end
+
+      context 'when AWS rate limits info type checks' do
+        before do
+          expect(Telephony).to receive(:phone_info).
+            and_raise(Aws::Pinpoint::Errors::TooManyRequestsException.new(nil, 'error message'))
         end
 
-        it 'logs the type and carrier' do
-          expect(result.extra).to include(
-            phone_type: :voip,
-            carrier: 'Test VOIP Carrier',
-          )
-        end
+        it 'logs a warning and fails open' do
+          expect(result.extra[:warn]).to include('AWS pinpoint phone info rate limit')
 
-        context 'when the number is on the allowlist' do
-          before do
-            expect(FeatureManagement).to receive(:voip_allowed_phones).
-              and_return([telephony_gem_voip_number])
-          end
-
-          it 'is valid' do
-            expect(result.success?).to eq(true)
-            expect(result.errors).to be_blank
-          end
-        end
-
-        context 'when AWS rate limits info type checks' do
-          before do
-            expect(Telephony).to receive(:phone_info).
-              and_raise(Aws::Pinpoint::Errors::TooManyRequestsException.new(nil, 'error message'))
-          end
-
-          it 'logs a warning and fails open' do
-            expect(result.extra[:warn]).to include('AWS pinpoint phone info rate limit')
-
-            expect(result.success?).to eq(true)
-            expect(result.errors).to be_blank
-          end
-        end
-
-        context 'when voip checks are disabled' do
-          let(:phone_service_check) { false }
-
-          it 'does not check the phone type' do
-            expect(Telephony).to_not receive(:phone_info)
-
-            result
-          end
-
-          it 'allows voip numbers since it cannot check the type' do
-            expect(result.success?).to eq(true)
-            expect(result.errors).to be_blank
-          end
+          expect(result.success?).to eq(true)
+          expect(result.errors).to be_blank
         end
       end
 
-      context 'when voip numbers are allowed' do
-        let(:voip_block) { false }
+      context 'when voip checks are disabled' do
+        let(:phone_service_check) { false }
 
-        it 'does a voip check but does not enforce it' do
-          expect(Telephony).to receive(:phone_info).and_call_original
+        it 'does not check the phone type' do
+          expect(Telephony).to_not receive(:phone_info)
 
+          result
+        end
+
+        it 'allows voip numbers since it cannot check the type' do
           expect(result.success?).to eq(true)
-          expect(result.to_h).to include(phone_type: :voip)
+          expect(result.errors).to be_blank
         end
       end
 
