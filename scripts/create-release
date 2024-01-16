@@ -23,6 +23,11 @@ fi
 
 PR="$1"; shift
 
+if ! which gh > /dev/null 2>&1; then
+    echo "Github CLI (gh) is not installed. You can install it with: brew install gh"
+    exit 1
+fi
+
 if [ "${CI:-}" == "1" ]; then
     # gh will not work in CI unless GH_TOKEN is explicitly set.
     if [ -z "${GH_TOKEN:-}" ]; then
