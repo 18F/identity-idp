@@ -35,7 +35,7 @@ gh pr list \
     --json number,title,body \
     --base "$DEPLOY_BRANCH" \
     --state merged \
-    jq ".[] | select(.number == ${PR})" > "$PR_JSON_FILE"
+    | jq ".[] | select(.number == ${PR})" > "$PR_JSON_FILE"
 
 if [ ! -s "$PR_JSON_FILE" ]; then
     echo "PR $PR not found."
