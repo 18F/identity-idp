@@ -46,10 +46,6 @@ module Reports
       upload_file_to_s3_timestamped_and_latest(report_name, body, extension)
     end
 
-    def reports_logger
-      @reports_logger ||= ActiveSupport::Logger.new(Rails.root.join('log', 'reports.log'))
-    end
-
     def upload_file_to_s3_timestamped_and_latest(report_name, body, extension)
       latest_path, path = generate_s3_paths(report_name, extension)
       content_type = Mime::Type.lookup_by_extension(extension).to_s

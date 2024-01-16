@@ -27,7 +27,7 @@ module Idv
       pii[:ssn] = idv_session.ssn
       Idv::Agent.new(pii).proof_resolution(
         document_capture_session,
-        should_proof_state_id: should_use_aamva?(pii),
+        should_proof_state_id: aamva_state?(pii),
         trace_id: amzn_trace_id,
         user_id: current_user.id,
         threatmetrix_session_id: idv_session.threatmetrix_session_id,
@@ -44,20 +44,10 @@ module Idv
       current_user.has_in_person_enrollment?
     end
 
-    def should_use_aamva?(pii)
-      aamva_state?(pii) && !aamva_disallowed_for_service_provider?
-    end
-
     def aamva_state?(pii)
       IdentityConfig.store.aamva_supported_jurisdictions.include?(
         pii['state_id_jurisdiction'],
       )
-    end
-
-    def aamva_disallowed_for_service_provider?
-      return false if sp_session.nil?
-      banlist = IdentityConfig.store.aamva_sp_banlist_issuers
-      banlist.include?(sp_session[:issuer])
     end
 
     def resolution_rate_limiter

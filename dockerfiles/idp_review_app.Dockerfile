@@ -16,7 +16,7 @@ ENV LOGIN_CONFIG_FILE $RAILS_ROOT/tmp/application.yml
 ENV RAILS_LOG_LEVEL debug
 ENV BUNDLE_PATH /usr/local/bundle
 ENV YARN_VERSION 1.22.5
-ENV NODE_VERSION 18.16.1
+ENV NODE_VERSION 20.10.0
 ENV BUNDLER_VERSION 2.4.4
 ENV POSTGRES_SSLMODE prefer
 ENV POSTGRES_NAME idp
@@ -162,7 +162,7 @@ COPY --chown=app:app config/integrations.localdev.yml $RAILS_ROOT/config/integra
 COPY --chown=app:app config/partner_account_statuses.localdev.yml $RAILS_ROOT/config/partner_account_statuses.yml
 COPY --chown=app:app config/partner_accounts.localdev.yml $RAILS_ROOT/config/partner_accounts.yml
 COPY --chown=app:app certs.example $RAILS_ROOT/certs
-COPY --chown=app:app config/service_providers.localdev.yml $RAILS_ROOT/config/service_providers.yaml
+COPY --chown=app:app config/service_providers.localdev.yml $RAILS_ROOT/config/service_providers.yml
 
 # Expose the port the app runs on
 EXPOSE 3000
