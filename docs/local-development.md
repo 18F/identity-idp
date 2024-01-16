@@ -13,44 +13,48 @@ Installing the packages differs slightly if you're on a macOS or a different OS.
 If using macOS:
 
 1. Install [rbenv](https://github.com/rbenv/rbenv) (lets you install and switch between different versions of Ruby)
-2. Install Ruby. Choose the version [in the `.ruby-version` file](../.ruby-version)
-3. Skip to the [set up local environment section](#set-up-local-environment). Your other dependencies will be installed in that step.
+1. Install Ruby. Choose the version [in the `.ruby-version` file](../.ruby-version)
+1. Skip to the [set up local environment section](#set-up-local-environment). Your other dependencies will be installed in that step.
 
 If not using macOS:
 
 1. To start, make sure you have the following dependencies installed and a working development environment:
 
-   - [rbenv](https://github.com/rbenv/rbenv) (lets you install and switch between different versions of Ruby)
-   - Ruby. Choose the version [in the `.ruby-version` file](../.ruby-version)
-   - [PostgreSQL](http://www.postgresql.org/download/)
-   - [PostGIS](https://postgis.net/documentation/getting_started/#installing-postgis)
-     - Note: if you run into errors installing `postgis` or creating the database, check [the troubleshooting docs](./troubleshooting.md#errors-related-to-the-databse).
-   - [Redis 7+](http://redis.io/)
-   - [Node.js v18](https://nodejs.org)
-   - [Yarn](https://yarnpkg.com/en/)
-   - [chromedriver](https://formulae.brew.sh/cask/chromedriver)
-2. You will need to install openssl version 1.1:
+    - [rbenv](https://github.com/rbenv/rbenv) (lets you install and switch between different versions of Ruby)
+    - Ruby. Choose the version [in the `.ruby-version` file](../.ruby-version)
+    - [PostgreSQL](http://www.postgresql.org/download/)
+    - [PostGIS](https://postgis.net/documentation/getting_started/#installing-postgis)
+        - Note: if you run into errors installing `postgis` or creating the database, check [the troubleshooting docs](./troubleshooting.md#errors-related-to-the-databse).
+    - [Redis 7+](http://redis.io/)
+    - [Node.js v18](https://nodejs.org)
+    - [Yarn](https://yarnpkg.com/en/)
+    - [chromedriver](https://formulae.brew.sh/cask/chromedriver)
 
-   - Run `brew install openssl@1.1`
-3. Test that you have Postgres and Redis running.
-4. Continue to the [set up local environment section](#set-up-local-environment).
+1. You will need to install openssl version 1.1:
+
+    - Run `brew install openssl@1.1`
+
+1. Test that you have Postgres and Redis running.
+
+1. Continue to the [set up local environment section](#set-up-local-environment).
 
 ### Set up local environment
 
 1. Run the following command to set up your local environment:
 
-   ```
-   $ make setup
-   ```
+    ```
+    $ make setup
+    ```
 
-   This command copies sample configuration files, installs required gems and brew packages (if using macOS), and sets up the database. Check out our [Makefile commands](../Makefile) to learn more about what this command does.
-2. Now that you have you have everything installed, you can run the following command to start your local server:
+    This command copies sample configuration files, installs required gems and brew packages (if using macOS), and sets up the database. Check out our [Makefile commands](../Makefile) to learn more about what this command does.
 
-   ```
-   $ make run
-   ```
+1. Now that you have you have everything installed, you can run the following command to start your local server:
 
-   You should now be able to go to open up your favorite browser, go to `localhost:3000` and see your local development environment running.
+    ```
+    $ make run
+    ```
+
+    You should now be able to go to open up your favorite browser, go to `localhost:3000` and see your local development environment running.
 
 ### Simulating a partner authentication request
 
@@ -60,14 +64,13 @@ asked to consent to share their information with the partner before being sent b
 
 To simulate a true end-to-end user experience, you can either...
 
-- Use the built-in test controllers for SAML logins at http://localhost:3000/test/saml/login, or OIDC logins at http://localhost:3000/test/oidc/login
+- Use the built-in test controller for SAML logins at http://localhost:3000/test/saml/login or OIDC logins at http://localhost:3000/test/oidc/login
   Note: to update service provider configurations,  run __rake db:seed__ comand
 - Or, run a sample partner application, which is configured by default to run with your local IdP instance:
-
-  - OIDC: https://github.com/18F/identity-oidc-sinatra
-    - Runs at http://localhost:9292/
-  - SAML: https://github.com/18F/identity-saml-sinatra
-    - Runs at http://localhost:4567/
+   - OIDC: https://github.com/18F/identity-oidc-sinatra
+      - Runs at http://localhost:9292/
+   - SAML: https://github.com/18F/identity-saml-sinatra
+      - Runs at http://localhost:4567/
 
 Running the sample application requires a few additional steps, but can be useful if you want to
 test the experience of a user being redirected to an external site, or if you want to configure
@@ -75,39 +78,38 @@ different options of the authentication request, such as AAL or IAL.
 
 ### Running tests locally
 
-Login.gov uses the following tools for our testing:
+  Login.gov uses the following tools for our testing:
 
-- [RSpec](https://relishapp.com/rspec/rspec-core/docs/command-line)
-- [Mocha documentation](https://mochajs.org/)
+  - [RSpec](https://relishapp.com/rspec/rspec-core/docs/command-line)
+  - [Mocha documentation](https://mochajs.org/)
 
-To run our full test suite locally, use the following command:
+  To run our full test suite locally, use the following command:
 
-```
-$ make test
-```
+  ```
+  $ make test
+  ```
 
-Use the following command to run a subset of our test suite, excluding slower tests:
+  Use the following command to run a subset of our test suite, excluding slower tests:
 
-```
-$ make fast_test
-```
+  ```
+  $ make fast_test
+  ```
 
-Check out our Makefile commands and learn more about how you can customize this command to run specific tests using rspec: https://github.com/18F/identity-idp/blob/main/Makefile#L41
+  Check out our Makefile commands and learn more about how you can customize this command to run specific tests using rspec: https://github.com/18F/identity-idp/blob/main/Makefile#L41
 
-To test a specific spec file with rspec, you may need to add the following configuration to `/config/application.yml` so the tests do not crash:
-
-```
-test:
-  rack_timeout_service_timeout_seconds: 9_999_999_999
-```
+  To test a specific spec file with rspec, you may need to add the following configuration to `/config/application.yml` so the tests do not crash:
+  ```
+  test:
+    rack_timeout_service_timeout_seconds: 9_999_999_999
+  ```
 
 #### Showing the Browser
 
-By default, the acceptance specs use a headless browser for speed. If you want to see the browser, run the specs with `SHOW_BROWSER=true` environment variable:
+  By default, the acceptance specs use a headless browser for speed. If you want to see the browser, run the specs with `SHOW_BROWSER=true` environment variable:
 
-```
-$ SHOW_BROWSER=true bundle exec rspec spec/features/
-```
+  ```
+  $ SHOW_BROWSER=true bundle exec rspec spec/features/
+  ```
 
 #### Skipping asset compilation in feature tests
 
@@ -127,42 +129,41 @@ stylesheets.
 
 ### Viewing email messages
 
-In local development, the application does not deliver real email messages. Instead, we use a tool
-called [letter_opener](https://github.com/ryanb/letter_opener) to display messages.
+  In local development, the application does not deliver real email messages. Instead, we use a tool
+  called [letter_opener](https://github.com/ryanb/letter_opener) to display messages.
 
 #### Disabling letter opener new window behavior
 
-Letter opener will open each outgoing email in a new browser window or tab. In cases where this
-will be annoying the application also supports writing outgoing emails to a file. To write emails
-to a file add the following config to the `development` group in `config/application.yml`:
+  Letter opener will open each outgoing email in a new browser window or tab. In cases where this
+  will be annoying the application also supports writing outgoing emails to a file. To write emails
+  to a file add the following config to the `development` group in `config/application.yml`:
 
-```
-development:
-  development_mailer_deliver_method: file
-```
+  ```
+  development:
+    development_mailer_deliver_method: file
+  ```
 
-After restarting the app emails will be written to the `tmp/mails` folder.
+  After restarting the app emails will be written to the `tmp/mails` folder.
 
 #### Email template previews
 
-To view email templates with placeholder values, visit http://localhost:3000/rails/mailers/ to see a list of template previews.
+  To view email templates with placeholder values, visit http://localhost:3000/rails/mailers/ to see a list of template previews.
 
 ### Translations
 
-Login.gov translates the IdP into English, French and Spanish. To help us handle extra newlines and make sure we wrap lines consistently, we have a script that helps format YAML consistently. After importing translations (or making changes to the `*.yml` files with strings), run this for the IdP app:
+  Login.gov translates the IdP into English, French and Spanish. To help us handle extra newlines and make sure we wrap lines consistently, we have a script that helps format YAML consistently. After importing translations (or making changes to the `*.yml` files with strings), run this for the IdP app:
 
-```
-$ make normalize_yaml
-```
+  ```
+  $ make normalize_yaml
+  ```
 
-If you would like to preview the translations on a particular page, use the Language dropdown in the footer of the website. To manually override a locale, add the locale as the first segment of the URL:
-
-- http://localhost:3000 becomes http://localhost:3000/es
-- http://localhost:3000/sign_up/enter_email becomes http://localhost:3000/es/sign_up/enter_email
+  If you would like to preview the translations on a particular page, use the Language dropdown in the footer of the website. To manually override a locale, add the locale as the first segment of the URL:
+  - http://localhost:3000 becomes http://localhost:3000/es
+  - http://localhost:3000/sign_up/enter_email becomes http://localhost:3000/es/sign_up/enter_email
 
 ### Viewing outbound SMS messages and phone calls
 
-To see outbound SMS messages and phone calls, visit `http://localhost:3000/test/telephony`.
+  To see outbound SMS messages and phone calls, visit `http://localhost:3000/test/telephony`.
 
 ### Viewing RISC push notifications
 
@@ -183,14 +184,15 @@ By default, the application binds to `localhost`. To test on a local network dev
 
 1. From the "Network" tab on:
 
-* Monterey and below
+  * Monterey and below
 
-  Once on "Network" system settings, your IP address is shown under "Status: Connected" label.
-* Ventura
+    Once on "Network" system settings, your IP address is shown under "Status: Connected" label.
 
-  Select "Wi-Fi" or "Ethernet". This option will change based on how you are connected to the internet. From there, click "Details".
+  * Ventura
 
-  **IP addresses often take the format of `192.168.1.x` or `10.0.0.x`.**
+    Select "Wi-Fi" or "Ethernet". This option will change based on how you are connected to the internet. From there, click "Details".
+
+    **IP addresses often take the format of `192.168.1.x` or `10.0.0.x`.**
 
 2. In `config/application.yml`, add `domain_name` and `mailer_domain_name` keys under `development`, like so:
    ```yaml
@@ -198,7 +200,6 @@ By default, the application binds to `localhost`. To test on a local network dev
      domain_name: <your-local-ip>:3000
      mailer_domain_name: <your-local-ip>:3000
    ```
-
    replacing `<your-local-ip>` with the address you found in Step 1
 3. Start the server using the command `HOST=0.0.0.0 make run`
 4. From on the same network, visit the application using the domain name configured in the second step (for example, `http://192.168.1.131:3000`).
