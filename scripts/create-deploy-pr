@@ -8,6 +8,7 @@ DEPLOY_BRANCH=stages/prod
 PATCH=${PATCH:-}
 DRY_RUN=${DRY_RUN:-0}
 CHANGELOG_FILE=${CHANGELOG_FILE:-tmp/.rc-changelog.md}
+FORMAT_CHANGELOG=${FORMAT_CHANGELOG:-}
 GITHUB_REPOSITORY=${GITHUB_REPOSITORY:-18f/identity-idp}
 
 GH="gh --repo=$GITHUB_REPOSITORY"
@@ -108,6 +109,16 @@ mkdir -p "$(dirname "$CHANGELOG_FILE")" || true
 
 echo "Building changelog..."
 scripts/changelog_check.rb -s "$SHA" -b "${GIT_REMOTE}/${DEPLOY_BRANCH}" > "$CHANGELOG_FILE"
+
+if [ "$FORMAT_CHANGELOG" != "" ]; then
+    # Pipe the changelog in as stdin to the hook
+    echo "Executing changelog formatting hook '${FORMAT_CHANGELOG}'..."
+    ORIGINAL_CHANGELOG_FILE="${CHANGELOG_FILE}.orig"
+    mv "$CHANGELOG_FILE" "$ORIGINAL_CHANGELOG_FILE"
+    cat "$ORIGINAL_CHANGELOG_FILE" | sh -c "$FORMAT_CHANGELOG" > "$CHANGELOG_FILE"
+    echo "Diff:"
+    diff --color=auto "$ORIGINAL_CHANGELOG_FILE" "$CHANGELOG_FILE"
+fi
 
 if [[ $DRY_RUN -eq 0 ]]; then
     echo "Pushing $RC_BRANCH to $GIT_REMOTE..."
