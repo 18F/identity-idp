@@ -94,7 +94,7 @@ if [ -z "$SOURCE" ]; then
     echo "Staging currently running ${SHA}"
 else
     SHA=$(git rev-parse "$SOURCE" || true)
-    if [ -z $SHA ]; then
+    if [ -z "$SHA" ]; then
         echo "Invalid source: '$SOURCE'"
         exit 17
     elif [ "$SOURCE" == "$SHA" ]; then
@@ -111,7 +111,7 @@ scripts/changelog_check.rb -s "$SHA" -b "${ORIGIN}/${DEPLOY_BRANCH}" > "$CHANGEL
 
 if [[ $DRY_RUN -eq 0 ]]; then
     echo "Pushing $RC_BRANCH to origin..."
-    git push $ORIGIN "$SHA:refs/heads/$RC_BRANCH"
+    git push "$ORIGIN" "$SHA:refs/heads/$RC_BRANCH"
 
     # Create PR
     echo "Creating PR..."
