@@ -10,6 +10,7 @@ DRY_RUN=${DRY_RUN:-0}
 CHANGELOG_FILE=${CHANGELOG_FILE:-tmp/.rc-changelog.md}
 FORMAT_CHANGELOG=${FORMAT_CHANGELOG:-}
 GITHUB_REPOSITORY=${GITHUB_REPOSITORY:-18f/identity-idp}
+STATUS_PROMOTION_LABEL='status - promotion'
 
 GH="gh --repo=$GITHUB_REPOSITORY"
 
@@ -124,11 +125,13 @@ if [[ $DRY_RUN -eq 0 ]]; then
     echo "Pushing $RC_BRANCH to $GIT_REMOTE..."
     git push "$GIT_REMOTE" "$SHA:refs/heads/$RC_BRANCH"
 
+    $GH label create "$STATUS_PROMOTION_LABEL" || true
+
     # Create PR
     echo "Creating PR..."
     $GH pr create \
         --title "Deploy RC ${NEXT_RC} to Production" \
-        --label 'status - promotion' \
+        --label "$STATUS_PROMOTION_LABEL" \
         --base "$DEPLOY_BRANCH" \
         --head "$RC_BRANCH" \
         --body-file "$CHANGELOG_FILE"
