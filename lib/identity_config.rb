@@ -103,7 +103,6 @@ class IdentityConfig
     config.add(:aamva_cert_enabled, type: :boolean)
     config.add(:aamva_private_key, type: :string)
     config.add(:aamva_public_key, type: :string)
-    config.add(:aamva_sp_banlist_issuers, type: :json)
     config.add(:aamva_supported_jurisdictions, type: :json)
     config.add(:aamva_verification_request_timeout, type: :float)
     config.add(:aamva_verification_url)

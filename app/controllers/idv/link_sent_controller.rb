@@ -80,7 +80,8 @@ module Idv
     end
 
     def take_photo_with_phone_successful?
-      document_capture_session_result.present? && document_capture_session_result.success?
+      document_capture_session_result.present? && document_capture_session_result.success? &&
+        selfie_requirement_met?
     end
 
     def document_capture_session_result
