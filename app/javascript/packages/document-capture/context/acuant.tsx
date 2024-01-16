@@ -109,11 +109,11 @@ interface AcuantContextProviderProps {
   /**
    * Minimum acceptable glare score for images.
    */
-  glareThreshold: number;
+  glareThreshold: number | null;
   /**
    * Minimum acceptable sharpness score for images.
    */
-  sharpnessThreshold: number;
+  sharpnessThreshold: number | null;
   /**
    * Child element
    */
@@ -121,16 +121,6 @@ interface AcuantContextProviderProps {
 }
 
 export type AcuantCaptureMode = 'AUTO' | 'TAP';
-
-/**
- * The minimum glare score value to be considered acceptable.
- */
-export const DEFAULT_ACCEPTABLE_GLARE_SCORE = 30;
-
-/**
- * The minimum sharpness score value to be considered acceptable.
- */
-export const DEFAULT_ACCEPTABLE_SHARPNESS_SCORE = 30;
 
 /**
  * Returns the containing directory of the given file, including a trailing slash.
@@ -147,8 +137,8 @@ interface AcuantContextInterface {
   acuantCaptureMode: AcuantCaptureMode;
   setAcuantCaptureMode: (type: AcuantCaptureMode) => void;
   credentials: string | null;
-  glareThreshold: number;
-  sharpnessThreshold: number;
+  glareThreshold: number | null;
+  sharpnessThreshold: number | null;
   endpoint: string | null;
 }
 
@@ -162,8 +152,8 @@ const AcuantContext = createContext<AcuantContextInterface>({
   acuantCaptureMode: 'AUTO',
   setAcuantCaptureMode: () => {},
   credentials: null,
-  glareThreshold: DEFAULT_ACCEPTABLE_GLARE_SCORE,
-  sharpnessThreshold: DEFAULT_ACCEPTABLE_SHARPNESS_SCORE,
+  glareThreshold: null,
+  sharpnessThreshold: null,
   endpoint: null as string | null,
 });
 
@@ -225,8 +215,8 @@ function AcuantContextProvider({
   passiveLivenessSrc,
   credentials = null,
   endpoint = null,
-  glareThreshold = DEFAULT_ACCEPTABLE_GLARE_SCORE,
-  sharpnessThreshold = DEFAULT_ACCEPTABLE_SHARPNESS_SCORE,
+  glareThreshold,
+  sharpnessThreshold,
   children,
 }: AcuantContextProviderProps) {
   const { isMobile } = useContext(DeviceContext);
