@@ -50,7 +50,7 @@ $GH pr list \
     | jq ".[] | select(.number == ${PR})" > "$PR_JSON_FILE"
 
 if [ ! -s "$PR_JSON_FILE" ]; then
-    echo "PR $PR not found."
+    echo "Merged PR $PR not found."
     exit 9
 fi
 
