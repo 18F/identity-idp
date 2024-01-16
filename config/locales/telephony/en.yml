@@ -3,7 +3,7 @@ en:
   telephony:
     account_reset_cancellation_notice: Your request to delete your %{app_name} account has been cancelled.
     account_reset_notice: As requested, your %{app_name} account will be deleted in
-      24 hours. Don't want to delete your account? Sign in to your %{app_name}
+      %{interval} hours. Don't want to delete your account? Sign in to your %{app_name}
       account to cancel.
     authentication_otp:
       sms: |-

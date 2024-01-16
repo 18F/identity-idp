@@ -115,7 +115,7 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
   def account_reset_cancel_link
     safe_join(
       [
-        t('two_factor_authentication.account_reset.pending'),
+        t('two_factor_authentication.account_reset.pending', interval: time_remaining_until_granted),
         @view.link_to(
           t('two_factor_authentication.account_reset.cancel_link'),
           account_reset_cancel_url(token: account_reset_token),
@@ -139,5 +139,16 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
     else
       APP_NAME
     end
+  end
+
+  def time_remaining_until_granted(now: Time.zone.now)
+    wait_time = IdentityConfig.store.account_reset_wait_period_days.days
+
+    distance_of_time_in_words(
+      now,
+      account_reset_request.requested_at + wait_time,
+      true,
+      highest_measures: 2,
+    )
   end
 end
