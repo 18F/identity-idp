@@ -10,6 +10,7 @@ FactoryBot.define do
       confirmed_at { Time.zone.now }
       confirmation_token { nil }
       confirmation_sent_at { 5.minutes.ago }
+      registered_at { Time.zone.now }
     end
 
     created_at { Time.zone.now }
@@ -179,8 +180,8 @@ FactoryBot.define do
     trait :fully_registered do
       with_phone
 
-      after :create do |user|
-        user.create_registration_log(registered_at: Time.zone.now)
+      after :create do |user, evaluator|
+        user.create_registration_log(registered_at: evaluator.registered_at)
       end
     end
 
