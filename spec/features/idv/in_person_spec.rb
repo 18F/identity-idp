@@ -477,7 +477,8 @@ RSpec.describe 'In Person Proofing', js: true do
       # click update residential address
       click_button t('idv.buttons.change_address_label')
       expect(page).to have_content(t('in_person_proofing.headings.update_address'))
-      # expect page to have fields already populated
+      # expect address page to have fields populated with address from state id
+      expect(page).to have_field(t('idv.form.address1'), with: InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS1)
 
       # change part of the address
       fill_in t('idv.form.address1'), with: 'new address different from state address1'
