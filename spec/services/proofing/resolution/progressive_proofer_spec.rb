@@ -154,6 +154,21 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
 
     context 'ipp flow' do
       let(:ipp_enrollment_in_progress) { true }
+      let(:transformed_pii) do
+        {
+          first_name: 'FAKEY',
+          last_name: 'MCFAKERSON',
+          dob: '1938-10-06',
+          address1: '123 Way St',
+          address2: '2nd Address Line',
+          city: 'Best City',
+          zipcode: '12345',
+          state_id_jurisdiction: 'Virginia',
+          address_state: 'VA',
+          state_id_number: '1111111111111',
+          same_address_as_id: 'true',
+        }
+      end
       context 'residential address and id address are the same' do
         let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID }
         let(:aamva_proofer) { instance_double(Proofing::Aamva::Proofer) }
@@ -161,6 +176,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           instance_double(Proofing::Resolution::Result)
         end
         before do
+          allow(instance).to receive(:with_state_id_address).and_return(transformed_pii)
           allow(instance).to receive(:state_id_proofer).and_return(aamva_proofer)
           allow(instance).to receive(:resolution_proofer).and_return(instant_verify_proofer)
           allow(instant_verify_proofer).to receive(:proof).
@@ -179,7 +195,16 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           expect(aamva_proofer).to receive(:proof)
 
           result = subject
+          expect(result.same_address_as_id).to eq('true')
+          expect(result.ipp_enrollment_in_progress).to eq(true)
+          expect(result.resolution_result).to eq(result.residential_resolution_result)
+        end
 
+        it 'transforms PII correctly' do
+          expect(aamva_proofer).to receive(:proof).with(transformed_pii)
+          expect(aamva_proofer).not_to receive(:proof).with(applicant_pii)
+
+          result = subject
           expect(result.same_address_as_id).to eq('true')
           expect(result.ipp_enrollment_in_progress).to eq(true)
           expect(result.resolution_result).to eq(result.residential_resolution_result)
