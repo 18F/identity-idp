@@ -29,7 +29,7 @@ class ConfirmationEmailPresenter
 
     view.distance_of_time_in_words(
       current_time,
-      current_time + IdentityConfig.store.account_reset_wait_period_days.days.in_hours,
+      current_time + Devise.confirmed_within,
       true,
       accumulate_on: :hours,
     )
