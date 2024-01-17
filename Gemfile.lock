@@ -253,6 +253,7 @@ GEM
       addressable
     cssbundling-rails (1.0.0)
       railties (>= 6.0.0)
+    csv (3.2.8)
     date (3.3.4)
     dead_end (4.0.0)
     derailed_benchmarks (2.1.2)
@@ -744,7 +745,9 @@ DEPENDENCIES
   axe-core-rspec (~> 4.2)
   barby (~> 0.6.8)
   base32-crockford
+  base64
   better_errors (>= 2.5.1)
+  bigdecimal
   bootsnap (~> 1.0)
   brakeman
   browser
@@ -755,6 +758,7 @@ DEPENDENCIES
   concurrent-ruby
   connection_pool
   cssbundling-rails
+  csv
   derailed_benchmarks
   devise (~> 4.8)
   dotiw (>= 4.0.1)
