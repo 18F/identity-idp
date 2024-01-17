@@ -478,7 +478,10 @@ RSpec.describe 'In Person Proofing', js: true do
       click_button t('idv.buttons.change_address_label')
       expect(page).to have_content(t('in_person_proofing.headings.update_address'))
       # expect address page to have fields populated with address from state id
-      expect(page).to have_field(t('idv.form.address1'), with: InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS1)
+      expect(page).to have_field(
+        t('idv.form.address1'),
+        with: InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS1,
+      )
 
       # change part of the address
       fill_in t('idv.form.address1'), with: 'new address different from state address1'
@@ -521,12 +524,12 @@ RSpec.describe 'In Person Proofing', js: true do
       )
       complete_all_in_person_proofing_steps
       complete_phone_step(user)
-       complete_enter_password_step(user)
+      complete_enter_password_step(user)
       acknowledge_and_confirm_personal_key
 
       # alert is visible on ready to verify page
       expect(page).to have_content(
-        t('idv.failure.exceptions.in_person_outage_error_message.ready_to_verify.body')
+        t('idv.failure.exceptions.in_person_outage_error_message.ready_to_verify.body'),
       )
       expect(page).to have_current_path(idv_in_person_ready_to_verify_path, wait: 10)
     end

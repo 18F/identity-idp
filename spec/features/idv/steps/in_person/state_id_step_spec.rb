@@ -296,7 +296,7 @@ RSpec.describe 'doc auth IPP state ID step', js: true do
 
       fill_in t('components.memorable_date.month'), with: '1'
       fill_in t('components.memorable_date.day'), with: '1'
-      fill_in t('components.memorable_date.year'), with: Time.now.strftime('%Y')
+      fill_in t('components.memorable_date.year'), with: Time.zone.now.strftime('%Y')
       click_idv_continue
       expect(page).to have_content(
         t(
@@ -305,7 +305,7 @@ RSpec.describe 'doc auth IPP state ID step', js: true do
         ),
       )
 
-      year = (Time.now - 13.years).strftime('%Y')
+      year = (Time.zone.now - 13.years).strftime('%Y')
       fill_in t('components.memorable_date.year'), with: year
       click_idv_continue
       expect(page).not_to have_content(
@@ -314,71 +314,6 @@ RSpec.describe 'doc auth IPP state ID step', js: true do
           app_name: APP_NAME,
         ),
       )
-    end
-  end
-
-  context 'State selection' do
-    it 'shows address hint when user selects state that has a specific hint',
-       allow_browser_log: true do
-      complete_steps_before_state_id_step
-
-      # state id page
-      select 'Puerto Rico',
-             from: t('in_person_proofing.form.state_id.identity_doc_address_state')
-
-      expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address1_hint'))
-      expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address2_hint'))
-
-      # change state selection
-      fill_out_state_id_form_ok(same_address_as_id: true)
-      expect(page).not_to have_content(I18n.t('in_person_proofing.form.state_id.address1_hint'))
-      expect(page).not_to have_content(I18n.t('in_person_proofing.form.state_id.address2_hint'))
-
-      # re-select puerto rico
-      select 'Puerto Rico',
-             from: t('in_person_proofing.form.state_id.identity_doc_address_state')
-      click_idv_continue
-
-      # ssn page
-      expect(page).to have_current_path(idv_in_person_ssn_url)
-      complete_ssn_step
-
-      # verify page
-      expect(page).to have_current_path(idv_in_person_verify_info_path)
-      expect(page).to have_text('PR')
-
-      # update state ID
-      click_button t('idv.buttons.change_state_id_label')
-
-      expect(page).to have_content(t('in_person_proofing.headings.update_state_id'))
-      expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address1_hint'))
-      expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address2_hint'))
-    end
-
-    it 'shows id number hint when user selects issuing state that has a specific hint',
-       allow_browser_log: true do
-      complete_steps_before_state_id_step
-
-      # expect default hint to be present
-      expect(page).to have_content(t('in_person_proofing.form.state_id.state_id_number_hint'))
-
-      select 'Texas',
-             from: t('in_person_proofing.form.state_id.state_id_jurisdiction')
-      expect(page).to have_content(t('in_person_proofing.form.state_id.state_id_number_texas_hint'))
-      expect(page).not_to have_content(t('in_person_proofing.form.state_id.state_id_number_hint'))
-
-      select 'Florida',
-             from: t('in_person_proofing.form.state_id.state_id_jurisdiction')
-      expect(page).not_to have_content(t('in_person_proofing.form.state_id.state_id_number_texas_hint'))
-      expect(page).not_to have_content(t('in_person_proofing.form.state_id.state_id_number_hint'))
-      expect(page).to have_content(t('in_person_proofing.form.state_id.state_id_number_florida_hint'))
-
-      # select a state without a state specific hint
-      select 'Ohio',
-             from: t('in_person_proofing.form.state_id.state_id_jurisdiction')
-      expect(page).to have_content(t('in_person_proofing.form.state_id.state_id_number_hint'))
-      expect(page).not_to have_content(t('in_person_proofing.form.state_id.state_id_number_texas_hint'))
-      expect(page).not_to have_content(t('in_person_proofing.form.state_id.state_id_number_florida_hint'))
     end
   end
 
@@ -448,6 +383,79 @@ RSpec.describe 'doc auth IPP state ID step', js: true do
       click_idv_continue
 
       expect(page).to have_current_path(idv_in_person_step_path(step: :address), wait: 10)
+    end
+  end
+
+  context 'State selection' do
+    it 'shows address hint when user selects state that has a specific hint',
+       allow_browser_log: true do
+      complete_steps_before_state_id_step
+
+      # state id page
+      select 'Puerto Rico',
+             from: t('in_person_proofing.form.state_id.identity_doc_address_state')
+
+      expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address1_hint'))
+      expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address2_hint'))
+
+      # change state selection
+      fill_out_state_id_form_ok(same_address_as_id: true)
+      expect(page).not_to have_content(I18n.t('in_person_proofing.form.state_id.address1_hint'))
+      expect(page).not_to have_content(I18n.t('in_person_proofing.form.state_id.address2_hint'))
+
+      # re-select puerto rico
+      select 'Puerto Rico',
+             from: t('in_person_proofing.form.state_id.identity_doc_address_state')
+      click_idv_continue
+
+      # ssn page
+      expect(page).to have_current_path(idv_in_person_ssn_url)
+      complete_ssn_step
+
+      # verify page
+      expect(page).to have_current_path(idv_in_person_verify_info_path)
+      expect(page).to have_text('PR')
+
+      # update state ID
+      click_button t('idv.buttons.change_state_id_label')
+
+      expect(page).to have_content(t('in_person_proofing.headings.update_state_id'))
+      expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address1_hint'))
+      expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address2_hint'))
+    end
+
+    it 'shows id number hint when user selects issuing state that has a specific hint',
+       allow_browser_log: true do
+      complete_steps_before_state_id_step
+
+      # expect default hint to be present
+      expect(page).to have_content(t('in_person_proofing.form.state_id.state_id_number_hint'))
+
+      select 'Texas',
+             from: t('in_person_proofing.form.state_id.state_id_jurisdiction')
+      expect(page).to have_content(t('in_person_proofing.form.state_id.state_id_number_texas_hint'))
+      expect(page).not_to have_content(t('in_person_proofing.form.state_id.state_id_number_hint'))
+
+      select 'Florida',
+             from: t('in_person_proofing.form.state_id.state_id_jurisdiction')
+      expect(page).not_to have_content(
+        t('in_person_proofing.form.state_id.state_id_number_texas_hint'),
+      )
+      expect(page).not_to have_content(t('in_person_proofing.form.state_id.state_id_number_hint'))
+      expect(page).to have_content(
+        t('in_person_proofing.form.state_id.state_id_number_florida_hint'),
+      )
+
+      # select a state without a state specific hint
+      select 'Ohio',
+             from: t('in_person_proofing.form.state_id.state_id_jurisdiction')
+      expect(page).to have_content(t('in_person_proofing.form.state_id.state_id_number_hint'))
+      expect(page).not_to have_content(
+        t('in_person_proofing.form.state_id.state_id_number_texas_hint'),
+      )
+      expect(page).not_to have_content(
+        t('in_person_proofing.form.state_id.state_id_number_florida_hint'),
+      )
     end
   end
 end
