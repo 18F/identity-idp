@@ -67,6 +67,17 @@ RSpec.describe Users::PivCacController do
       expect(flash[:success]).to eq(presenter.rename_success_alert_text)
     end
 
+    it 'logs the submission attempt' do
+      response
+
+      expect(@analytics).to have_logged_event(
+        :piv_cac_update_name_submitted,
+        success: true,
+        error_details: nil,
+        configuration_id: configuration.id.to_s,
+      )
+    end
+
     it 'assigns the form instance' do
       response
 
@@ -126,6 +137,17 @@ RSpec.describe Users::PivCacController do
     it 'responds with successful result' do
       expect(response).to redirect_to(account_path)
       expect(flash[:success]).to eq(presenter.delete_success_alert_text)
+    end
+
+    it 'logs the submission attempt' do
+      response
+
+      expect(@analytics).to have_logged_event(
+        :piv_cac_delete_submitted,
+        success: true,
+        configuration_id: configuration.id.to_s,
+        error_details: nil,
+      )
     end
 
     it 'assigns the form instance' do

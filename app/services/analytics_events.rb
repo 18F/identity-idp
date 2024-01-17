@@ -3869,6 +3869,22 @@ module AnalyticsEvents
     )
   end
 
+  def piv_cac_login_visited
+    track_event(:piv_cac_login_visited)
+  end
+
+  # @identity.idp.previous_event_name User Registration: piv cac setup visited
+  # @identity.idp.previous_event_name PIV CAC setup visited
+  # Tracks when user's piv cac setup
+  # @param [Boolean] in_account_creation_flow
+  def piv_cac_setup_visited(in_account_creation_flow:, **extra)
+    track_event(
+      :piv_cac_setup_visited,
+      in_account_creation_flow:,
+      **extra,
+    )
+  end
+
   # @param [Boolean] success
   # @param [Hash] error_details
   # @param [Integer] configuration_id
@@ -3884,22 +3900,6 @@ module AnalyticsEvents
       success:,
       error_details:,
       configuration_id:,
-      **extra,
-    )
-  end
-
-  def piv_cac_login_visited
-    track_event(:piv_cac_login_visited)
-  end
-
-  # @identity.idp.previous_event_name User Registration: piv cac setup visited
-  # @identity.idp.previous_event_name PIV CAC setup visited
-  # Tracks when user's piv cac setup
-  # @param [Boolean] in_account_creation_flow
-  def piv_cac_setup_visited(in_account_creation_flow:, **extra)
-    track_event(
-      :piv_cac_setup_visited,
-      in_account_creation_flow:,
       **extra,
     )
   end
