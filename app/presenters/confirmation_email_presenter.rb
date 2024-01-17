@@ -29,7 +29,7 @@ class ConfirmationEmailPresenter
 
     view.distance_of_time_in_words(
       current_time,
-      current_time + Devise.confirmed_within,
+      current_time + Devise.confirm_within,
       true,
       accumulate_on: :hours,
     )
