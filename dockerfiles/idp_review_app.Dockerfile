@@ -124,9 +124,6 @@ COPY --chown=app:app public/ban-robots.txt $RAILS_ROOT/public/robots.txt
 # Copy application.yml.default to application.yml
 COPY --chown=app:app ./config/application.yml.default.docker $RAILS_ROOT/config/application.yml
 
-# Precompile assets
-RUN bundle exec rake assets:precompile --trace
-
 # Setup config files
 COPY --chown=app:app config/agencies.localdev.yml $RAILS_ROOT/config/agencies.yml
 COPY --chown=app:app config/iaa_gtcs.localdev.yml $RAILS_ROOT/config/iaa_gtcs.yml
@@ -138,6 +135,9 @@ COPY --chown=app:app config/partner_account_statuses.localdev.yml $RAILS_ROOT/co
 COPY --chown=app:app config/partner_accounts.localdev.yml $RAILS_ROOT/config/partner_accounts.yml
 COPY --chown=app:app certs.example $RAILS_ROOT/certs
 COPY --chown=app:app config/service_providers.localdev.yml $RAILS_ROOT/config/service_providers.yml
+
+# Precompile assets
+RUN bundle exec rake assets:precompile --trace
 
 ARG ARG_CI_COMMIT_BRANCH="branch_placeholder"
 ARG ARG_CI_COMMIT_SHA="sha_placeholder"
