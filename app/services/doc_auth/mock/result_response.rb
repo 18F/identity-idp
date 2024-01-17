@@ -130,6 +130,15 @@ module DocAuth
         )
       end
 
+      def doc_auth_success?
+        doc_auth_result_from_uploaded_file == 'Passed' || errors.blank?
+      end
+
+      def selfie_success
+        return nil if portrait_match_results&.dig(:FaceMatchResult).nil?
+        portrait_match_results[:FaceMatchResult] == 'Pass'
+      end
+
       private
 
       def parsed_alerts
