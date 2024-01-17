@@ -117,7 +117,7 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
       [
         t(
           'two_factor_authentication.account_reset.pending',
-          interval: time_remaining_until_granted,
+          interval: confirmation_period,
         ),
         @view.link_to(
           t('two_factor_authentication.account_reset.cancel_link'),
@@ -144,14 +144,14 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
     end
   end
 
-  def time_remaining_until_granted(now: Time.zone.now)
-    wait_time = IdentityConfig.store.account_reset_wait_period_days.days
+  def confirmation_period
+    current_time = Time.zone.now
 
-    distance_of_time_in_words(
-      now,
-      account_reset_request.requested_at + wait_time,
+    view.distance_of_time_in_words(
+      current_time,
+      current_time + IdentityConfig.store.account_reset_wait_period_days.days,
       true,
-      highest_measures: 2,
+      accumulate_on: :hours,
     )
   end
 end
