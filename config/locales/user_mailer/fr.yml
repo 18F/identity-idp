@@ -34,7 +34,7 @@ fr:
     account_reset_request:
       cancel: Vous ne voulez pas supprimer votre compte? Connectez-vous à votre compte
         %{app_name} pour annuler.
-      header: Votre compte sera supprimé dans %{interval} heures
+      header: Votre compte sera supprimé dans %{interval}
       intro_html: 'Par mesure de sécurité, %{app_name} nécessite un processus en deux
         étapes pour supprimer votre compte: <br> <br> Étape 1: Il y a une
         période d’attente de 24 heures si vous avez perdu l’accès à vos méthodes

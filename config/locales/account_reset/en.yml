@@ -33,7 +33,7 @@ en:
       confirm: If you cancel now, you must create a new request and wait another 24
         hours to delete your account.
       header: You requested to delete your account
-      wait_html: There is a %{interval} hours waiting period to delete your account. In
+      wait_html: There is a %{interval} waiting period to delete your account. In
         <strong>%{interval}</strong>, you will receive an email with
         instructions to complete the deletion.
     recovery_options:
@@ -58,7 +58,7 @@ en:
           to your account and you will need to restore each connection.
         - If you continue, you will first receive an email confirmation.  As a
           security measure, you will receive another email with the link to
-          continue deleting your account %{interval} hours after the initial
+          continue deleting your account %{interval} after the initial
           confirmation email arrives.
       info:
         - If you can’t access your account using the authentication methods you
