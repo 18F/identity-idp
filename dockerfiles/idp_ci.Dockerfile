@@ -1,6 +1,6 @@
 FROM public.ecr.aws/docker/library/ruby:3.2.2-bullseye
 
-ENV NODE_MAJOR 18
+ENV NODE_MAJOR 20
 
 RUN mkdir -p /etc/apt/keyrings
 RUN curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg

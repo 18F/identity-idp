@@ -2,8 +2,14 @@ require 'rails_helper'
 
 RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   let(:success_response_body) { LexisNexisFixtures.true_id_response_success_3 }
+  let(:success_with_liveness_response_body) do
+    LexisNexisFixtures.true_id_response_success_with_liveness
+  end
   let(:success_response) do
     instance_double(Faraday::Response, status: 200, body: success_response_body)
+  end
+  let(:success_with_liveness_response) do
+    instance_double(Faraday::Response, status: 200, body: success_with_liveness_response_body)
   end
   let(:failure_body_no_liveness) { LexisNexisFixtures.true_id_response_failure_no_liveness }
   let(:failure_body_with_liveness) { LexisNexisFixtures.true_id_response_failure_with_liveness }
@@ -140,6 +146,8 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
           Front: a_hash_including(:ClassName, :CountryCode, :IssuerType),
           Back: a_hash_including(:ClassName, :CountryCode, :IssuerType),
         },
+        doc_auth_success: true,
+        selfie_success: nil,
       )
       passed_alerts = response_hash.dig(:processed_alerts, :passed)
       passed_alerts.each do |alert|
@@ -320,8 +328,11 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     end
 
     it 'returns Failed for liveness failure' do
-      output = described_class.new(failure_response_with_liveness, config).to_h
+      response = described_class.new(failure_response_with_liveness, config)
+      output = response.to_h
       expect(output[:success]).to eq(false)
+      expect(response.doc_auth_success?).to eq(false)
+      expect(response.selfie_success).to eq(false)
     end
 
     it 'produces expected hash output' do
@@ -376,6 +387,8 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
           Front: a_hash_including(:ClassName, :CountryCode, :IssuerType),
           Back: a_hash_including(:ClassName, :CountryCode, :IssuerType),
         },
+        doc_auth_success: false,
+        selfie_success: false,
       )
     end
     it 'produces appropriate errors with document tampering' do
@@ -632,6 +645,50 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       it 'mark doc type as not supported' do
         response = described_class.new(error_response, config)
         expect(response.doc_type_supported?).to eq(false)
+      end
+    end
+  end
+  describe '#doc_auth_success?' do
+    context 'when document validation is successful' do
+      let(:response) { described_class.new(success_response, config) }
+      it 'returns true' do
+        expect(response.doc_auth_success?).to eq(true)
+      end
+    end
+    context 'when document validation failed' do
+      let(:response) { described_class.new(failure_response_tampering, config) }
+      it 'returns false' do
+        expect(response.doc_auth_success?).to eq(false)
+      end
+    end
+  end
+
+  describe '#selfie_success' do
+    context 'when selfie check is disabled' do
+      let(:response) { described_class.new(success_response, config, false) }
+      it 'returns nil' do
+        expect(response.selfie_success).to eq(nil)
+      end
+    end
+
+    context 'when selfie check is enabled' do
+      context 'whe missing selfie result in response' do
+        let(:response) { described_class.new(success_response, config, true) }
+        it 'returns nil when missing selfie in response' do
+          expect(response.selfie_success).to eq(nil)
+        end
+      end
+      context 'when selfie passed' do
+        let(:response) { described_class.new(success_with_liveness_response, config, true) }
+        it 'returns true' do
+          expect(response.selfie_success).to eq(true)
+        end
+      end
+      context 'when selfie failed' do
+        let(:response) { described_class.new(failure_response_with_liveness, config, true) }
+        it 'returns false' do
+          expect(response.selfie_success).to eq(false)
+        end
       end
     end
   end

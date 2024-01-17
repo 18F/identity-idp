@@ -22,6 +22,7 @@ module Idv
       profile_id
       redo_document_capture
       resolution_successful
+      selfie_check_performed
       skip_doc_auth
       skip_hybrid_handoff
       ssn
@@ -63,6 +64,7 @@ module Idv
         fraud_pending_reason: threatmetrix_fraud_pending_reason,
         gpo_verification_needed: !phone_confirmed? || verify_by_mail?,
         in_person_verification_needed: current_user.has_in_person_enrollment?,
+        selfie_check_performed: session[:selfie_check_performed],
       )
 
       profile.activate unless profile.reason_not_to_activate
@@ -78,7 +80,7 @@ module Idv
       associate_in_person_enrollment_with_profile if profile.in_person_verification_pending?
 
       if profile.gpo_verification_pending?
-        create_gpo_entry(profile_maker.pii_attributes)
+        create_gpo_entry(profile_maker.pii_attributes, profile)
       elsif profile.in_person_verification_pending?
         UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(
           current_user,
@@ -121,20 +123,28 @@ module Idv
 
     def clear
       user_session.delete(:idv)
+      @profile = nil
+      @gpo_otp = nil
     end
 
     def associate_in_person_enrollment_with_profile
       current_user.establishing_in_person_enrollment.update(profile: profile)
     end
 
-    def create_gpo_entry(pii)
-      confirmation_maker = GpoConfirmationMaker.new(
-        pii: pii, service_provider: service_provider,
-        profile: profile
-      )
-      confirmation_maker.perform
+    def create_gpo_entry(pii, profile)
+      begin
+        confirmation_maker = GpoConfirmationMaker.new(
+          pii: pii, service_provider: service_provider,
+          profile: profile
+        )
+        confirmation_maker.perform
 
-      @gpo_otp = confirmation_maker.otp
+        @gpo_otp = confirmation_maker.otp
+      rescue
+        # We don't have what we need to actually generate a GPO letter.
+        profile.deactivate(:encryption_error)
+        raise
+      end
     end
 
     def phone_otp_sent?
@@ -172,10 +182,6 @@ module Idv
         user_session['idv/in_person'].delete('Idv::Steps::InPerson::StateIdStep')
         user_session['idv/in_person'].delete('Idv::Steps::InPerson::AddressStep')
       end
-    end
-
-    def document_capture_complete?
-      pii_from_doc || has_pii_from_user_in_flow_session
     end
 
     def remote_document_capture_complete?

@@ -350,9 +350,6 @@ RSpec.describe Idv::ImageUploadsController do
         let(:selfie_img) { DocAuthImageFixtures.selfie_image_multipart }
 
         before do
-          allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).
-            and_return(true)
-
           allow(controller.decorated_sp_session).to receive(:selfie_required?).and_return(true)
         end
 
@@ -437,6 +434,8 @@ RSpec.describe Idv::ImageUploadsController do
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
           doc_type_supported: boolean,
+          doc_auth_success: boolean,
+          selfie_success: nil,
         )
 
         expect(@analytics).to receive(:track_event).with(
@@ -613,6 +612,8 @@ RSpec.describe Idv::ImageUploadsController do
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
               doc_type_supported: boolean,
+              doc_auth_success: boolean,
+              selfie_success: nil,
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -702,6 +703,8 @@ RSpec.describe Idv::ImageUploadsController do
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
               doc_type_supported: boolean,
+              doc_auth_success: boolean,
+              selfie_success: nil,
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -791,6 +794,8 @@ RSpec.describe Idv::ImageUploadsController do
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
               doc_type_supported: boolean,
+              doc_auth_success: boolean,
+              selfie_success: nil,
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -877,6 +882,8 @@ RSpec.describe Idv::ImageUploadsController do
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
               doc_type_supported: boolean,
+              doc_auth_success: boolean,
+              selfie_success: nil,
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -988,6 +995,8 @@ RSpec.describe Idv::ImageUploadsController do
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
           doc_type_supported: boolean,
+          doc_auth_success: boolean,
+          selfie_success: nil,
         )
 
         action
@@ -1058,6 +1067,8 @@ RSpec.describe Idv::ImageUploadsController do
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
           doc_type_supported: boolean,
+          doc_auth_success: boolean,
+          selfie_success: nil,
         )
 
         action

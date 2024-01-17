@@ -9,6 +9,7 @@ module DocAuth
       def initialize(uploaded_file, selfie_check_performed, config)
         @uploaded_file = uploaded_file.to_s
         @config = config
+        @selfie_check_performed = selfie_check_performed
         super(
           success: success?,
           errors: errors,
@@ -17,9 +18,10 @@ module DocAuth
           selfie_check_performed: selfie_check_performed,
           extra: {
             doc_auth_result: doc_auth_result,
+            portrait_match_results: portrait_match_results,
             billed: true,
             classification_info: classification_info,
-          },
+          }.compact,
         )
       end
 
@@ -34,20 +36,32 @@ module DocAuth
             image_metrics = file_data.dig('image_metrics')
             failed = file_data.dig('failed_alerts')
             passed = file_data.dig('passed_alerts')
-            liveness_result = file_data.dig('liveness_result')
+            face_match_result = file_data.dig('portrait_match_results', 'FaceMatchResult')
             classification_info = file_data.dig('classification_info')
             # Pass and doc type is ok
-            if [doc_auth_result, image_metrics, failed, passed,
-                liveness_result, classification_info].any?(&:present?)
+            has_fields = [
+              doc_auth_result,
+              image_metrics,
+              failed,
+              passed,
+              face_match_result,
+              classification_info,
+            ].any?(&:present?)
+
+            if has_fields
               # Error generator is not to be called when it's not failure
               # allows us to test successful results
-              return {} if doc_auth_result == 'Passed' && id_type_supported?
+              return {} if all_doc_capture_values_passing?(
+                doc_auth_result, id_type_supported?,
+                face_match_result
+              )
+
               mock_args = {}
               mock_args[:doc_auth_result] = doc_auth_result if doc_auth_result.present?
               mock_args[:image_metrics] = image_metrics.symbolize_keys if image_metrics.present?
-              mock_args[:failed] = failed.map!(&:symbolize_keys) if failed.present?
+              mock_args[:failed] = failed.map!(&:symbolize_keys) unless failed.nil?
               mock_args[:passed] = passed.map!(&:symbolize_keys) if passed.present?
-              mock_args[:liveness_result] = liveness_result if liveness_result.present?
+              mock_args[:liveness_enabled] = @selfie_check_performed
               mock_args[:classification_info] = classification_info if classification_info.present?
               fake_response_info = create_response_info(**mock_args)
               ErrorGenerator.new(config).generate_doc_auth_errors(fake_response_info)
@@ -116,6 +130,15 @@ module DocAuth
         )
       end
 
+      def doc_auth_success?
+        doc_auth_result_from_uploaded_file == 'Passed' || errors.blank?
+      end
+
+      def selfie_success
+        return nil if portrait_match_results&.dig(:FaceMatchResult).nil?
+        portrait_match_results[:FaceMatchResult] == 'Pass'
+      end
+
       private
 
       def parsed_alerts
@@ -136,6 +159,12 @@ module DocAuth
         parsed_data_from_uploaded_file&.[]('doc_auth_result')
       end
 
+      def portrait_match_results
+        parsed_data_from_uploaded_file.dig('portrait_match_results')&.
+        transform_keys! { |key| key.to_s.camelize }&.
+        deep_symbolize_keys
+      end
+
       def classification_info
         info = parsed_data_from_uploaded_file&.[]('classification_info') || {}
         info.to_h.symbolize_keys
@@ -147,6 +176,12 @@ module DocAuth
         else
           DocAuth::Acuant::ResultCodes::CAUTION.name
         end
+      end
+
+      def all_doc_capture_values_passing?(doc_auth_result, id_type_supported, face_match_result)
+        doc_auth_result == 'Passed' &&
+          id_type_supported &&
+          (@selfie_check_performed ? face_match_result == 'Pass' : true)
       end
 
       def parse_uri
@@ -181,7 +216,7 @@ module DocAuth
         doc_auth_result: 'Failed',
         passed: [],
         failed: DEFAULT_FAILED_ALERTS,
-        liveness_result: nil,
+        liveness_enabled: false,
         image_metrics: DEFAULT_IMAGE_METRICS,
         classification_info: nil
       )
@@ -195,9 +230,10 @@ module DocAuth
           },
           alert_failure_count: failed&.count.to_i,
           image_metrics: merged_image_metrics,
-          portrait_match_results: { FaceMatchResult: liveness_result },
+          liveness_enabled: liveness_enabled,
           classification_info: classification_info,
-        }
+          portrait_match_results: @selfie_check_performed ? portrait_match_results : nil,
+        }.compact
       end
     end
   end

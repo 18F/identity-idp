@@ -346,6 +346,10 @@ class User < ApplicationRecord
     active_profile.present? && !reproof_for_irs?(service_provider: service_provider)
   end
 
+  def identity_verified_with_selfie?
+    active_profile&.idv_level == 'unsupervised_with_selfie'
+  end
+
   def reproof_for_irs?(service_provider:)
     return false unless service_provider&.irs_attempts_api_enabled
     return false unless active_profile.present?
@@ -398,6 +402,10 @@ class User < ApplicationRecord
 
   def has_devices?
     !recent_devices.empty?
+  end
+
+  def new_device?(cookie_uuid:)
+    !cookie_uuid || !devices.exists?(cookie_uuid:)
   end
 
   # Returns the number of times the user has signed in, corresponding to the `sign_in_before_2fa`

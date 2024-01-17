@@ -1,10 +1,11 @@
 class GpoConfirmationUploader
+  class InvalidGpoConfirmationsPresent < StandardError; end
+
   def initialize(now = Time.zone.now)
     @now = now
   end
 
   def run
-    confirmations = GpoConfirmation.all.to_a
     export = generate_export(confirmations)
     upload_export(export)
     LetterRequestsToGpoFtpLog.create(ftp_at: @now, letter_requests_count: confirmations.count)
@@ -15,6 +16,23 @@ class GpoConfirmationUploader
   end
 
   private
+
+  def confirmations
+    return @confirmations if defined?(@confirmations)
+
+    all_confirmations = GpoConfirmation.all.to_a
+    invalid_confirmations = all_confirmations.filter { |c| !c.valid? }
+
+    if !invalid_confirmations.empty?
+      NewRelic::Agent.notice_error(
+        InvalidGpoConfirmationsPresent.new(
+          "Found #{invalid_confirmations.length} invalid GPO confirmations.",
+        ),
+      )
+    end
+
+    @confirmations = all_confirmations - invalid_confirmations
+  end
 
   def generate_export(confirmations)
     GpoConfirmationExporter.new(confirmations).run

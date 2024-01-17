@@ -19,11 +19,13 @@ RSpec.describe Reporting::AccountReuseReport do
     let(:sp_a) { 'a' }
     let(:sp_b) { 'b' }
     let(:sp_c) { 'c' }
+    let(:sp_d) { 'd' }
 
-    def create_identity(id, provider, verified_time)
+    def create_identity(user_id:, created_at:, provider:, verified_at:)
       ServiceProviderIdentity.create(
-        user_id: id, service_provider: provider,
-        last_ial2_authenticated_at: in_query, verified_at: verified_time
+        user_id: user_id, service_provider: provider,
+        created_at: created_at,
+        last_ial2_authenticated_at: in_query, verified_at: verified_at
       )
     end
 
@@ -49,6 +51,13 @@ RSpec.describe Reporting::AccountReuseReport do
         friendly_name: 'The Other Other App',
         agency: agency2,
       )
+      create(
+        :service_provider,
+        issuer: sp_d,
+        iaa: 'iaa321',
+        friendly_name: 'The Other First App',
+        agency: agency,
+      )
 
       # Seed the database with data to be queried
       #
@@ -61,22 +70,78 @@ RSpec.describe Reporting::AccountReuseReport do
       # User 7 has 1 SP and 1 shows up in the query
       # User 8 has 1 SP and 0 show up in the query
       #
-      # This will give 2 users with 3 SPs and 3 users with 2 SPs for the report
+      # This will give 1 user with 3 SPs/apps and 3 users with 2 SPs/apps for the IDV app report
+      # This will give 4 users with 3 SPs/apps and 5 users with 2 SPs/apps for the ALL app report
+      # This will give 3 users with 2 agencies for the IDV agency report
+      # This will give 7 users with 2 agencies for the ALL agency report
 
       users_to_query = [
-        { id: 1, sp: [sp_a, sp_b, sp_c], timestamp: [in_query, in_query, in_query] },
-        { id: 2, sp: [sp_a, sp_b, sp_c], timestamp: [in_query, in_query, in_query] },
-        { id: 3, sp: [sp_a, sp_b, sp_c], timestamp: [in_query, in_query, out_of_query] },
-        { id: 4, sp: [sp_a, sp_b], timestamp: [in_query, in_query] },
-        { id: 5, sp: [sp_a, sp_b], timestamp: [in_query, in_query] },
-        { id: 6, sp: [sp_a, sp_b], timestamp: [in_query, out_of_query] },
-        { id: 7, sp: [sp_a], timestamp: [in_query] },
-        { id: 8, sp: [sp_a], timestamp: [out_of_query] },
+        { id: 1, # 3 apps, 2 agencies
+          created_timestamp: in_query,
+          sp: [sp_a, sp_b, sp_c],
+          sp_timestamp: [in_query, in_query, in_query] },
+        { id: 2, # 3 apps, 2 agencies
+          created_timestamp: in_query,
+          sp: [sp_a, sp_b, sp_c],
+          sp_timestamp: [in_query, in_query, out_of_query] },
+        { id: 3, # 3 apps, 2 agencies
+          created_timestamp: in_query,
+          sp: [sp_a, sp_b, sp_c],
+          sp_timestamp: [in_query, out_of_query, out_of_query] },
+        { id: 4, # 3 apps, 2 agencies
+          created_timestamp: in_query,
+          sp: [sp_a, sp_b, sp_c],
+          sp_timestamp: [in_query, out_of_query, out_of_query] },
+        { id: 5, # 3 apps, 2 agencies
+          created_timestamp: out_of_query,
+          sp: [sp_a, sp_b, sp_c],
+          sp_timestamp: [out_of_query, out_of_query, out_of_query] },
+        { id: 6, # 2 apps, 2 agencies
+          created_timestamp: in_query,
+          sp: [sp_a, sp_b],
+          sp_timestamp: [in_query, in_query] },
+        { id: 7, # 2 apps, 1 agency
+          created_timestamp: in_query,
+          sp: [sp_a, sp_d],
+          sp_timestamp: [in_query, in_query] },
+        { id: 8, # 2 apps, 2 agencies
+          created_timestamp: in_query,
+          sp: [sp_a, sp_b],
+          sp_timestamp: [in_query, out_of_query] },
+        { id: 9,  # 2 apps, 1 agency
+          created_timestamp: in_query,
+          sp: [sp_a, sp_d],
+          sp_timestamp: [in_query, out_of_query] },
+        { id: 10, # 2 apps, 2 agencies
+          created_timestamp: in_query,
+          sp: [sp_a, sp_b],
+          sp_timestamp: [out_of_query, out_of_query] },
+        { id: 11, # 2 apps, 2 agencies
+          created_timestamp: out_of_query,
+          sp: [sp_a, sp_b],
+          sp_timestamp: [out_of_query, out_of_query] },
+        { id: 12,
+          created_timestamp: in_query,
+          sp: [sp_a],
+          sp_timestamp: [in_query] },
+        { id: 13,
+          created_timestamp: in_query,
+          sp: [sp_a],
+          sp_timestamp: [out_of_query] },
+        { id: 14,
+          created_timestamp: out_of_query,
+          sp: [sp_a],
+          sp_timestamp: [out_of_query] },
       ]
 
       users_to_query.each do |user|
         user[:sp].each_with_index do |sp, i|
-          create_identity(user[:id], sp, user[:timestamp][i])
+          create_identity(
+            user_id: user[:id],
+            created_at: user[:created_timestamp],
+            provider: sp,
+            verified_at: user[:sp_timestamp][i],
+          )
         end
       end
 
@@ -94,11 +159,11 @@ RSpec.describe Reporting::AccountReuseReport do
       it 'has the correct results' do
         expected_csv = [
           ['Metric', 'Num. all users', '% of accounts', 'Num. IDV users', '% of accounts'],
-          ['2 apps', 3, 0.3, 3, 0.3],
-          ['3 apps', 2, 0.2, 2, 0.2],
-          ['2+ apps', 5, 0.5, 5, 0.5],
-          ['2 agencies', 5, 0.5, 5, 0.5],
-          ['2+ agencies', 5, 0.5, 5, 0.5],
+          ['2 apps', 5, 5 / 13.0, 3, 0.3],
+          ['3 apps', 4, 4 / 13.0, 1, 0.1],
+          ['2+ apps', 9, 9 / 13.0, 4, 0.4],
+          ['2 agencies', 7, 7 / 13.0, 3, 0.3],
+          ['2+ agencies', 7, 7 / 13.0, 3, 0.3],
         ]
 
         aggregate_failures do

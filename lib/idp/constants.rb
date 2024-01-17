@@ -2,6 +2,12 @@ module Idp
   module Constants
     AVAILABLE_LOCALES = %w[en es fr]
     UUID_REGEX = /\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/
+
+    KMS_LOG_FILENAME = 'kms.log'
+    WORKER_LOG_FILENAME = 'workers.log'
+    EVENT_LOG_FILENAME = 'events.log'
+    TELEPHONY_LOG_FILENAME = 'telephony.log'
+
     module Vendors
       ACUANT = 'acuant'
       LEXIS_NEXIS = 'lexis_nexis'

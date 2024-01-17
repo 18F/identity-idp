@@ -8,7 +8,7 @@ variables:
   FF_SCRIPT_SECTIONS: 'true'
   JUNIT_OUTPUT: 'true'
   ECR_REGISTRY: '${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com'
-  IDP_CI_SHA: 'sha256:f0bb8e05d803675cfc84d0183d6776646b25efc0d93b31773af5f376e861ffdb'
+  IDP_CI_SHA: 'sha256:908cb207c214016f3e366b2ebbe89c2077cfe1d40f3b82ad8d79e58e0cec720b'
   PKI_IMAGE_TAG: 'main'
   DASHBOARD_IMAGE_TAG: 'main'
 
@@ -163,17 +163,6 @@ check_changelog:
         exit 0
       fi
 
-check_content_freeze:
-  stage: test
-  script: |-
-    echo "Content change is not allowed during content freeze"
-    exit 1
-  rules:
-    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH || $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "external_pull_request_event" || $CI_PIPELINE_SOURCE == "web"'
-      changes:
-        compare_to: 'refs/heads/main'
-        paths:
-          - config/locales/**/en.yml
 specs:
   stage: test
   needs:
@@ -484,8 +473,10 @@ review-app:
       --set worker.image.tag="${CI_COMMIT_SHA}"
       --set pivcac.image.repository="${ECR_REGISTRY}/identity-pivcac/review"
       --set pivcac.image.tag="${PKI_IMAGE_TAG}"
+      --set pivcac.image.pullPolicy="Always"
       --set dashboard.image.repository="${ECR_REGISTRY}/identity-dashboard/review"
       --set dashboard.image.tag="${DASHBOARD_IMAGE_TAG}"
+      --set dashboard.image.pullPolicy="Always"
       --set-json dashboard.env="$DASHBOARD_ENV"
       --set-json dashboard.enabled=true
       --set-json idp.env="$IDP_ENV"

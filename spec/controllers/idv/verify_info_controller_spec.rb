@@ -391,9 +391,14 @@ RSpec.describe Idv::VerifyInfoController do
       sp_session = { issuer: sp.issuer }
       allow(controller).to receive(:sp_session).and_return(sp_session)
 
-      put :update
+      expect(Idv::Agent).to receive(:new).with(
+        hash_including(
+          uuid_prefix: app_id,
+          uuid: user.uuid,
+        ),
+      ).and_call_original
 
-      expect(subject.idv_session.pii_from_doc[:uuid_prefix]).to eq app_id
+      put :update
     end
 
     it 'updates DocAuthLog verify_submit_count' do
