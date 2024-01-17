@@ -82,7 +82,7 @@ class RateLimiter
     end
 
     @redis_attempts = value.to_i
-    @redis_attempted_at = nil # was Time.zone.now; force reload on next request
+    @redis_attempted_at = Time.zone.now
 
     attempts
   end
