@@ -1,5 +1,6 @@
 import { useContext, useEffect } from 'react';
 import type { ReactNode } from 'react';
+import { t } from '@18f/identity-i18n';
 import AcuantContext from '../context/acuant';
 
 declare global {
@@ -44,6 +45,11 @@ interface AcuantSelfieCameraContextProps {
    */
   onImageCaptureClose: () => void;
   /**
+   * Capture hint text from onDetection callback, tells the user
+   * why the acuant sdk cannot capture a selfie.
+   */
+  onImageCaptureFeedback: (text: string) => void;
+  /**
    * React children node
    */
   children: ReactNode;
@@ -63,8 +69,6 @@ interface FaceCaptureCallback {
 interface FaceDetectionStates {
   FACE_NOT_FOUND: string;
   TOO_MANY_FACES: string;
-  FACE_ANGLE_TOO_LARGE: string;
-  PROBABILITY_TOO_SMALL: string;
   FACE_TOO_SMALL: string;
   FACE_CLOSE_TO_BORDER: string;
 }
@@ -74,6 +78,7 @@ function AcuantSelfieCamera({
   onImageCaptureFailure = () => {},
   onImageCaptureOpen = () => {},
   onImageCaptureClose = () => {},
+  onImageCaptureFeedback = () => {},
   children,
 }: AcuantSelfieCameraContextProps) {
   const { isReady, setIsActive } = useContext(AcuantContext);
@@ -85,7 +90,8 @@ function AcuantSelfieCamera({
         // Until then, no actions are executed and the user sees only the camera stream.
         // You can opt to display an alert before the callback is triggered.
       },
-      onDetection: () => {
+      onDetection: (text) => {
+        onImageCaptureFeedback(text);
         // Triggered when the face does not pass the scan. The UI element
         // should be updated here to provide guidence to the user
       },
@@ -104,6 +110,7 @@ function AcuantSelfieCamera({
       },
       onPhotoTaken: () => {
         // The photo has been taken and it's showing a preview with a button to accept or retake the image.
+        onImageCaptureFeedback('');
       },
       onPhotoRetake: () => {
         // Triggered when retake button is tapped
@@ -115,12 +122,10 @@ function AcuantSelfieCamera({
     };
 
     const faceDetectionStates = {
-      FACE_NOT_FOUND: 'FACE NOT FOUND',
-      TOO_MANY_FACES: 'TOO MANY FACES',
-      FACE_ANGLE_TOO_LARGE: 'FACE ANGLE TOO LARGE',
-      PROBABILITY_TOO_SMALL: 'PROBABILITY TOO SMALL',
-      FACE_TOO_SMALL: 'FACE TOO SMALL',
-      FACE_CLOSE_TO_BORDER: 'TOO CLOSE TO THE FRAME',
+      FACE_NOT_FOUND: t('doc_auth.info.selfie_capture_status.face_not_found'),
+      TOO_MANY_FACES: t('doc_auth.info.selfie_capture_status.too_many_faces'),
+      FACE_TOO_SMALL: t('doc_auth.info.selfie_capture_status.face_too_small'),
+      FACE_CLOSE_TO_BORDER: t('doc_auth.info.selfie_capture_status.face_close_to_border'),
     };
     const cleanupSelfieCamera = () => {
       window.AcuantPassiveLiveness.end();

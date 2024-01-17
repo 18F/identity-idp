@@ -5,9 +5,8 @@ class LoginButtonComponentPreview < ButtonComponentPreview
   end
 
   # @!endgroup
-
-  # @param big toggle
-  # @param color select [~,primary,primary-darker,primary-lighter]
+  # @param big toggle "Change button size"
+  # @param color select [~,primary,primary-darker,primary-lighter] "Select button color"
   def workbench(
     big: false,
     color: 'primary'
