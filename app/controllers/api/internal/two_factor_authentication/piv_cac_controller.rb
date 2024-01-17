@@ -17,6 +17,8 @@ module Api
             configuration_id: params[:id],
           ).submit(name: params[:name])
 
+          analytics.piv_cac_update_name_submitted(**result.to_h)
+
           if result.success?
             render json: { success: true }
           else
@@ -29,6 +31,8 @@ module Api
             user: current_user,
             configuration_id: params[:id],
           ).submit
+
+          analytics.piv_cac_delete_submitted(**result.to_h)
 
           if result.success?
             create_user_event(:piv_cac_disabled)

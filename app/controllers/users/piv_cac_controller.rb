@@ -13,6 +13,8 @@ module Users
     def update
       result = form.submit(name: params.dig(:form, :name))
 
+      analytics.piv_cac_update_name_submitted(**result.to_h)
+
       if result.success?
         flash[:success] = presenter.rename_success_alert_text
         redirect_to account_path
@@ -25,7 +27,13 @@ module Users
     def destroy
       result = form.submit
 
+      analytics.piv_cac_delete_submitted(**result.to_h)
+
       if result.success?
+        create_user_event(:piv_cac_disabled)
+        revoke_remember_device(current_user)
+        deliver_push_notification
+
         flash[:success] = presenter.delete_success_alert_text
         redirect_to account_path
       else
@@ -35,6 +43,11 @@ module Users
     end
 
     private
+
+    def deliver_push_notification
+      event = PushNotification::RecoveryInformationChangedEvent.new(user: current_user)
+      PushNotification::HttpPush.deliver(event)
+    end
 
     def form
       @form ||= form_class.new(user: current_user, configuration_id: params[:id])

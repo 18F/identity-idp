@@ -3830,6 +3830,25 @@ module AnalyticsEvents
     track_event(:phone_input_country_changed, country_code:, **extra)
   end
 
+  # @param [Boolean] success
+  # @param [Hash] error_details
+  # @param [Integer] configuration_id
+  # Tracks when user attempts to delete a PIV/CAC configuraton
+  def piv_cac_delete_submitted(
+    success:,
+    configuration_id:,
+    error_details: nil,
+    **extra
+  )
+    track_event(
+      :piv_cac_delete_submitted,
+      success:,
+      error_details:,
+      configuration_id:,
+      **extra,
+    )
+  end
+
   # @identity.idp.previous_event_name User Registration: piv cac disabled
   # @identity.idp.previous_event_name PIV CAC disabled
   # Tracks when user's piv cac is disabled
@@ -3846,6 +3865,25 @@ module AnalyticsEvents
       :piv_cac_login,
       success: success,
       errors: errors,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success
+  # @param [Hash] error_details
+  # @param [Integer] configuration_id
+  # Tracks when user submits a name change for a PIV/CAC configuraton
+  def piv_cac_update_name_submitted(
+      success:,
+      configuration_id:,
+      error_details: nil,
+      **extra
+    )
+    track_event(
+      :piv_cac_update_name_submitted,
+      success:,
+      error_details:,
+      configuration_id:,
       **extra,
     )
   end
