@@ -86,13 +86,13 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         state_id_type: 'drivers_license',
       }
 
-      expect(response.pii_from_doc).to include(minimum_expected_hash)
+      expect(response.pii_from_doc.to_h).to include(minimum_expected_hash)
     end
     it 'includes expiration' do
-      expect(response.pii_from_doc).to include(state_id_expiration: '2099-10-15')
+      expect(response.pii_from_doc.state_id_expiration).to eq('2099-10-15')
     end
     it 'includes issued date' do
-      expect(response.pii_from_doc).to include(state_id_issued: '2016-10-15')
+      expect(response.pii_from_doc.state_id_issued).to eq('2016-10-15')
     end
 
     it 'excludes pii fields from logging' do
@@ -165,7 +165,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     end
 
     it 'notes that address line 2 was present' do
-      expect(response.pii_from_doc).to include(address2: 'APT 3E')
+      expect(response.pii_from_doc.address2).to eq('APT 3E')
       expect(response.to_h).to include(address_line2_present: true)
     end
 
@@ -204,7 +204,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     let(:response) { described_class.new(success_response_no_line2, config) }
 
     it 'notes that address line 2 was not present' do
-      expect(response.pii_from_doc[:address2]).to be_nil
+      expect(response.pii_from_doc.address2).to be_nil
       expect(response.to_h).to include(address_line2_present: false)
     end
   end
@@ -277,13 +277,13 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         state_id_type: 'drivers_license',
       }
 
-      expect(response.pii_from_doc).to include(minimum_expected_hash)
+      expect(response.pii_from_doc.to_h).to include(minimum_expected_hash)
     end
     it 'includes expiration' do
-      expect(response.pii_from_doc).to include(state_id_expiration: '2099-10-15')
+      expect(response.pii_from_doc.state_id_expiration).to eq('2099-10-15')
     end
     it 'includes issued date' do
-      expect(response.pii_from_doc).to include(state_id_issued: '2016-10-15')
+      expect(response.pii_from_doc.state_id_issued).to eq('2016-10-15')
     end
   end
 

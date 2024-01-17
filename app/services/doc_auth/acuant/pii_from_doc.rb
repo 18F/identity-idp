@@ -33,7 +33,7 @@ module DocAuth
         hash[:dob] = convert_date(hash[:dob])
         hash[:state_id_expiration] = convert_date(hash[:state_id_expiration])
         hash[:state_id_issued] = convert_date(hash[:state_id_issued])
-        hash
+        Idv::PiiFromDoc.new(**hash)
       end
 
       ACUANT_TIMESTAMP_FORMAT = %r{/Date\((?<milliseconds>-?\d+)\)/}

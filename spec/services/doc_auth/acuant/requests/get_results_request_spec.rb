@@ -19,7 +19,7 @@ RSpec.describe DocAuth::Acuant::Requests::GetResultsRequest do
       expect(response.success?).to eq(true)
       expect(response.errors).to eq({})
       expect(response.exception).to be_nil
-      expect(response.pii_from_doc).to_not be_empty
+      expect(response.pii_from_doc).to be_present
       expect(request_stub).to have_been_requested
     end
 

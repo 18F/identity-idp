@@ -84,7 +84,7 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
 
     it 'parsed PII from the doc' do
       # The PII from the response fixture
-      expect(response.pii_from_doc).to eq(
+      expect(response.pii_from_doc.to_h).to eq(
         first_name: 'JANE',
         middle_name: nil,
         last_name: 'DOE',
@@ -157,7 +157,7 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
           hints: true,
         )
 
-        expect(response.pii_from_doc).to include(
+        expect(response.pii_from_doc.to_h).to include(
           first_name: 'FAKEY',
           last_name: 'MCFAKERSON',
           state_id_expiration: '2021-01-14',

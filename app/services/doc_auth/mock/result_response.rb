@@ -73,12 +73,9 @@ module DocAuth
       end
 
       def pii_from_doc
-        if parsed_data_from_uploaded_file.present?
-          raw_pii = parsed_data_from_uploaded_file['document']
-          raw_pii&.symbolize_keys || {}
-        else
-          Idp::Constants::MOCK_IDV_APPLICANT
-        end
+        return nil if parsed_or_default_pii.blank?
+
+        Idv::PiiFromDoc.new(**parsed_or_default_pii.slice(*Idv::PiiFromDoc.members))
       end
 
       def success?
@@ -140,6 +137,17 @@ module DocAuth
       end
 
       private
+
+      def parsed_or_default_pii
+        if parsed_data_from_uploaded_file.present?
+          raw_pii = parsed_data_from_uploaded_file['document']
+          return {} if raw_pii.blank?
+
+          Idp::Constants::MOCK_IDV_APPLICANT.merge(raw_pii.symbolize_keys)
+        else
+          Idp::Constants::MOCK_IDV_APPLICANT
+        end
+      end
 
       def parsed_alerts
         parsed_data_from_uploaded_file&.dig('failed_alerts')

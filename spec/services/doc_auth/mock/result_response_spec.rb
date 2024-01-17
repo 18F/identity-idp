@@ -3,6 +3,10 @@ require 'rails_helper'
 RSpec.describe DocAuth::Mock::ResultResponse do
   let(:warn_notifier) { instance_double('Proc') }
   let(:selfie_check_performed) { false }
+  let(:default_pii_from_doc) { Idv::PiiFromDoc.new(**default_pii_from_doc_hash) }
+  let(:default_pii_from_doc_hash) do
+    Idp::Constants::MOCK_IDV_APPLICANT.except(:phone, :same_address_as_id)
+  end
 
   subject(:response) do
     config = DocAuth::Mock::Config.new(
@@ -21,8 +25,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.success?).to eq(true)
       expect(response.errors).to eq({})
       expect(response.exception).to eq(nil)
-      expect(response.pii_from_doc).
-        to eq(Idp::Constants::MOCK_IDV_APPLICANT)
+      expect(response.pii_from_doc).to eq(default_pii_from_doc)
       expect(response.attention_with_barcode?).to eq(false)
     end
   end
@@ -50,7 +53,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.success?).to eq(true)
       expect(response.errors).to eq({})
       expect(response.exception).to eq(nil)
-      expect(response.pii_from_doc).to eq(
+      expect(response.pii_from_doc.to_h).to eq(
         first_name: 'Susan',
         middle_name: 'Q',
         last_name: 'Smith',
@@ -63,6 +66,8 @@ RSpec.describe DocAuth::Mock::ResultResponse do
         state_id_number: '111111111',
         state_id_jurisdiction: 'ND',
         state_id_type: 'drivers_license',
+        state_id_expiration: '2099-12-31',
+        state_id_issued: '2019-12-31',
       )
       expect(response.attention_with_barcode?).to eq(false)
     end
@@ -91,7 +96,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.success?).to eq(true)
       expect(response.errors).to eq({})
       expect(response.exception).to eq(nil)
-      expect(response.pii_from_doc).to include(dob: '1938-10-06')
+      expect(response.pii_from_doc.dob).to eq('1938-10-06')
       expect(response.attention_with_barcode?).to eq(false)
     end
   end
@@ -115,7 +120,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
         hints: true,
       )
       expect(response.exception).to eq(nil)
-      expect(response.pii_from_doc).to eq({})
+      expect(response.pii_from_doc).to eq(nil)
       expect(response.attention_with_barcode?).to eq(false)
     end
   end
@@ -135,7 +140,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.success?).to eq(true)
       expect(response.errors).to eq({})
       expect(response.exception).to eq(nil)
-      expect(response.pii_from_doc).to eq({ first_name: 'Susan' })
+      expect(response.pii_from_doc.first_name).to eq('Susan')
       expect(response.attention_with_barcode?).to eq(true)
     end
   end
@@ -173,7 +178,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
         hints: false,
       )
       expect(response.exception).to eq(nil)
-      expect(response.pii_from_doc).to eq({})
+      expect(response.pii_from_doc).to eq(nil)
       expect(response.attention_with_barcode?).to eq(false)
     end
   end
@@ -189,8 +194,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.success?).to eq(true)
       expect(response.errors).to eq({})
       expect(response.exception).to eq(nil)
-      expect(response.pii_from_doc).
-        to eq(Idp::Constants::MOCK_IDV_APPLICANT)
+      expect(response.pii_from_doc).to eq(default_pii_from_doc)
       expect(response.attention_with_barcode?).to eq(false)
     end
   end
@@ -206,7 +210,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.success?).to eq(false)
       expect(response.errors).to eq(general: ['parsed URI, but scheme was https (expected data)'])
       expect(response.exception).to eq(nil)
-      expect(response.pii_from_doc).to eq({})
+      expect(response.pii_from_doc).to eq(nil)
       expect(response.attention_with_barcode?).to eq(false)
     end
   end
@@ -222,7 +226,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.success?).to eq(false)
       expect(response.errors).to eq(general: ['YAML data should have been a hash, got String'])
       expect(response.exception).to eq(nil)
-      expect(response.pii_from_doc).to eq({})
+      expect(response.pii_from_doc).to eq(nil)
       expect(response.attention_with_barcode?).to eq(false)
     end
   end
@@ -241,7 +245,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.success?).to eq(false)
       expect(response.errors).to eq(general: ['invalid YAML file'])
       expect(response.exception).to eq(nil)
-      expect(response.pii_from_doc).to eq({})
+      expect(response.pii_from_doc).to eq(nil)
       expect(response.attention_with_barcode?).to eq(false)
     end
   end
@@ -261,7 +265,6 @@ RSpec.describe DocAuth::Mock::ResultResponse do
     let(:input) do
       <<~YAML
         document:
-          type: license
           first_name: Susan
           last_name: Smith
           middle_name: Q
@@ -282,11 +285,10 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.success?).to eq(true)
       expect(response.errors).to eq({})
       expect(response.exception).to eq(nil)
-      expect(response.pii_from_doc).to eq(
+      expect(response.pii_from_doc.to_h).to eq(
         first_name: 'Susan',
         middle_name: 'Q',
         last_name: 'Smith',
-        phone: '+1 314-555-1212',
         address1: '1 Microsoft Way',
         address2: 'Apt 3',
         city: 'Bayside',
@@ -296,7 +298,8 @@ RSpec.describe DocAuth::Mock::ResultResponse do
         zipcode: '11364',
         dob: '1938-10-06',
         state_id_type: 'drivers_license',
-        type: 'license',
+        state_id_expiration: '2099-12-31',
+        state_id_issued: '2019-12-31',
       )
       expect(response.attention_with_barcode?).to eq(false)
       expect(response.extra).to eq(
@@ -326,7 +329,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
         hints: false,
       )
       expect(response.exception).to eq(nil)
-      expect(response.pii_from_doc).to eq({})
+      expect(response.pii_from_doc).to eq(nil)
       expect(response.attention_with_barcode?).to eq(false)
       expect(response.extra).to eq(
         doc_auth_result: DocAuth::Acuant::ResultCodes::CAUTION.name,
@@ -351,7 +354,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
         hints: true,
       )
       expect(response.exception).to eq(nil)
-      expect(response.pii_from_doc).to eq({})
+      expect(response.pii_from_doc).to eq(nil)
       expect(response.attention_with_barcode?).to eq(false)
       expect(response.extra).to eq(
         doc_auth_result: DocAuth::Acuant::ResultCodes::FAILED.name,
@@ -384,20 +387,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.success?).to eq(true)
       expect(response.errors).to eq({})
       expect(response.exception).to eq(nil)
-      expect(response.pii_from_doc).to eq(
-        first_name: 'Susan',
-        middle_name: 'Q',
-        last_name: 'Smith',
-        address1: '1 Microsoft Way',
-        address2: 'Apt 3',
-        city: 'Bayside',
-        state: 'NY',
-        zipcode: '11364',
-        dob: '1938-10-06',
-        state_id_number: '111111111',
-        state_id_jurisdiction: 'ND',
-        state_id_type: 'drivers_license',
-      )
+      expect(response.pii_from_doc.zipcode).to eq('11364')
       expect(response.attention_with_barcode?).to eq(false)
       expect(response.extra).to eq(
         doc_auth_result: DocAuth::Acuant::ResultCodes::PASSED.name,
@@ -549,7 +539,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
             HorizontalResolution: 300
             VerticalResolution: 300,
             SharpnessMetric: 50,
-            GlareMetric: 50   
+            GlareMetric: 50
       YAML
     end
     it 'returns doc type as not supported and generate errors for doc type' do
@@ -580,7 +570,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       YAML
     end
     it 'successfully extracts PII' do
-      expect(response.pii_from_doc.empty?).to eq(false)
+      expect(response.pii_from_doc.to_h.empty?).to eq(false)
     end
   end
   context 'with a yaml file that includes classification info' do

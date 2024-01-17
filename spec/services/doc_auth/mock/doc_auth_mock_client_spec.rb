@@ -37,7 +37,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
     expect(post_back_image_response.success?).to eq(true)
 
     expect(get_results_response.success?).to eq(true)
-    expect(get_results_response.pii_from_doc).to eq(
+    expect(get_results_response.pii_from_doc.to_h).to eq(
       first_name: 'FAKEY',
       middle_name: nil,
       last_name: 'MCFAKERSON',
@@ -52,8 +52,6 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
       state_id_type: 'drivers_license',
       state_id_expiration: '2099-12-31',
       state_id_issued: '2019-12-31',
-      phone: nil,
-      same_address_as_id: nil,
     )
   end
 
@@ -92,7 +90,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
       selfie_check_performed: liveness_checking_required,
     )
 
-    expect(get_results_response.pii_from_doc).to eq(
+    expect(get_results_response.pii_from_doc.to_h).to eq(
       first_name: 'Susan',
       middle_name: 'Q',
       last_name: 'Smith',
@@ -105,6 +103,8 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
       state_id_number: '111111111',
       state_id_jurisdiction: 'ND',
       state_id_type: 'drivers_license',
+      state_id_expiration: '2099-12-31',
+      state_id_issued: '2019-12-31',
     )
     expect(get_results_response.attention_with_barcode?).to eq(false)
   end

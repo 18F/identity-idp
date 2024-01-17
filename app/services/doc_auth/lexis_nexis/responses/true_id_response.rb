@@ -99,35 +99,13 @@ module DocAuth
         end
 
         def pii_from_doc
-          return {} unless true_id_product&.dig(:IDAUTH_FIELD_DATA).present?
-          pii = {}
-          PII_INCLUDES.each do |true_id_key, idp_key|
-            pii[idp_key] = true_id_product[:IDAUTH_FIELD_DATA][true_id_key]
-          end
-          pii[:state_id_type] = DocAuth::Response::ID_TYPE_SLUGS[pii[:state_id_type]]
+          parsed_pii = parsed_pii_from_response
 
-          dob = parse_date(
-            year: pii.delete(:dob_year),
-            month: pii.delete(:dob_month),
-            day: pii.delete(:dob_day),
+          return nil if parsed_pii.blank?
+
+          Idv::PiiFromDoc.new(
+            **parsed_pii_from_response.slice(*Idv::PiiFromDoc.members),
           )
-          pii[:dob] = dob if dob
-
-          exp_date = parse_date(
-            year: pii.delete(:state_id_expiration_year),
-            month: pii.delete(:state_id_expiration_month),
-            day: pii.delete(:state_id_expiration_day),
-          )
-          pii[:state_id_expiration] = exp_date if exp_date
-
-          issued_date = parse_date(
-            year: pii.delete(:state_id_issued_year),
-            month: pii.delete(:state_id_issued_month),
-            day: pii.delete(:state_id_issued_day),
-          )
-          pii[:state_id_issued] = issued_date if issued_date
-
-          pii
         end
 
         def attention_with_barcode?
@@ -160,6 +138,38 @@ module DocAuth
         end
 
         private
+
+        def parsed_pii_from_response
+          return {} unless true_id_product&.dig(:IDAUTH_FIELD_DATA).present?
+          pii = {}
+          PII_INCLUDES.each do |true_id_key, idp_key|
+            pii[idp_key] = true_id_product[:IDAUTH_FIELD_DATA][true_id_key]
+          end
+          pii[:state_id_type] = DocAuth::Response::ID_TYPE_SLUGS[pii[:state_id_type]]
+
+          dob = parse_date(
+            year: pii.delete(:dob_year),
+            month: pii.delete(:dob_month),
+            day: pii.delete(:dob_day),
+          )
+          pii[:dob] = dob if dob
+
+          exp_date = parse_date(
+            year: pii.delete(:state_id_expiration_year),
+            month: pii.delete(:state_id_expiration_month),
+            day: pii.delete(:state_id_expiration_day),
+          )
+          pii[:state_id_expiration] = exp_date if exp_date
+
+          issued_date = parse_date(
+            year: pii.delete(:state_id_issued_year),
+            month: pii.delete(:state_id_issued_month),
+            day: pii.delete(:state_id_issued_day),
+          )
+          pii[:state_id_issued] = issued_date if issued_date
+
+          pii
+        end
 
         def conversation_id
           @conversation_id ||= parsed_response_body.dig(:Status, :ConversationId)
@@ -228,7 +238,7 @@ module DocAuth
             log_alert_results: log_alert_formatter.log_alerts(alerts),
             portrait_match_results: true_id_product&.dig(:PORTRAIT_MATCH_RESULT),
             image_metrics: parse_image_metrics,
-            address_line2_present: !pii_from_doc[:address2].blank?,
+            address_line2_present: !pii_from_doc&.address2.blank?,
             classification_info: classification_info,
           }
         end
@@ -276,7 +286,7 @@ module DocAuth
         def classification_info
           # Acuant response has both sides info, here simulate that
           doc_class = doc_class_name
-          issuing_country = pii_from_doc[:issuing_country_code]
+          issuing_country = parsed_pii_from_response[:issuing_country_code]
           {
             Front: {
               ClassName: doc_class,

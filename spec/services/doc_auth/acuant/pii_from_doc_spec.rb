@@ -7,7 +7,9 @@ RSpec.describe DocAuth::Acuant::PiiFromDoc do
   describe '#call' do
     it 'correctly parses the pii data from acuant and returns a hash' do
       results = pii_from_doc.call
-      expect(results).to eq(
+
+      expect(results).to be_a(Idv::PiiFromDoc)
+      expect(results.to_h).to eq(
         first_name: 'JANE',
         middle_name: nil,
         last_name: 'DOE',
