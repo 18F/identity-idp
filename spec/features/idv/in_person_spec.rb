@@ -445,8 +445,6 @@ RSpec.describe 'In Person Proofing', js: true do
     end
 
     it 'can update the address page form' do
-      # TODO: This is an opportunity for update - state_id_step calls address_step
-      # TODO: This is an opportunity for update - can add complete_state_id_and_address potentially
       complete_state_id_step(user, same_address_as_id: false)
       complete_address_step(user, same_address_as_id: false)
       complete_ssn_step(user)
@@ -636,8 +634,4 @@ RSpec.describe 'In Person Proofing', js: true do
       expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
     end
   end
-
-  # TODO:
-  # happy path spec, which exists
-  #  then go through full in person flow and re-visit/update each page
 end
