@@ -1,5 +1,7 @@
 module AccountReset
   class CreateRequest
+    include ActionView::Helpers::DateHelper
+
     def initialize(user, requesting_issuer)
       @user = user
       @requesting_issuer = requesting_issuer
