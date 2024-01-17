@@ -314,7 +314,6 @@ sp_handoff_bounce_max_seconds: 2
 show_unsupported_passkey_platform_authentication_setup: false
 show_user_attribute_deprecation_warnings: false
 otp_min_attempts_remaining_warning_count: 3
-system_demand_report_email: 'foo@bar.com'
 sp_issuer_user_counts_report_configs: '[]'
 team_ada_email: ''
 team_all_login_emails: '[]'
