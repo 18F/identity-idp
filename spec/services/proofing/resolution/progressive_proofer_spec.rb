@@ -202,12 +202,12 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
 
         it 'transforms PII correctly' do
           expect(aamva_proofer).to receive(:proof).with(transformed_pii)
-          expect(aamva_proofer).not_to receive(:proof).with(applicant_pii)
 
           result = subject
           expect(result.same_address_as_id).to eq('true')
           expect(result.ipp_enrollment_in_progress).to eq(true)
           expect(result.resolution_result).to eq(result.residential_resolution_result)
+          expect(result.resolution_result.success?).to eq(true)
         end
 
         context 'LexisNexis InstantVerify fails' do
