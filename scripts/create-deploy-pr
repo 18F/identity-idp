@@ -120,7 +120,7 @@ if [[ $DRY_RUN -eq 0 ]]; then
     echo "Pushing $RC_BRANCH to $GIT_REMOTE..."
     git push "$GIT_REMOTE" "$SHA:refs/heads/$RC_BRANCH"
 
-    $GH label create "$STATUS_PROMOTION_LABEL" || true
+    $GH label create "$STATUS_PROMOTION_LABEL" 2>/dev/null || true
 
     # Create PR
     echo "Creating PR..."
@@ -134,6 +134,4 @@ else
     echo "Dry run. Not creating PR."
 fi
 
-echo "# Changelog"
-cat "$CHANGELOG_FILE"
 
