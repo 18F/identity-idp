@@ -17,13 +17,20 @@ function FullScreenLoadingSpinner({ fullScreenRef, onRequestClose, fullScreenLab
   );
 }
 
-function AcuantSelfieCaptureCanvas({ fullScreenRef, onRequestClose, fullScreenLabel }) {
+function AcuantSelfieCaptureCanvas({
+  fullScreenRef,
+  onRequestClose,
+  fullScreenLabel,
+  imageCaptureText,
+}) {
   const { isReady } = useContext(AcuantContext);
   // The Acuant SDK script AcuantPassiveLiveness attaches to whatever element has
   // this id. It then uses that element as the root for the full screen selfie capture
   const acuantCaptureContainerId = 'acuant-face-capture-container';
   return isReady ? (
-    <div id={acuantCaptureContainerId} />
+    <div id={acuantCaptureContainerId}>
+      <p className="document-capture-selfie-feedback">{imageCaptureText}</p>
+    </div>
   ) : (
     <FullScreenLoadingSpinner
       fullScreenRef={fullScreenRef}
