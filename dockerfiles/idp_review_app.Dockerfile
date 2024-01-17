@@ -124,12 +124,6 @@ COPY --chown=app:app public/ban-robots.txt $RAILS_ROOT/public/robots.txt
 # Copy application.yml.default to application.yml
 COPY --chown=app:app ./config/application.yml.default.docker $RAILS_ROOT/config/application.yml
 
-# Generate and place SSL certificates for puma
-RUN openssl req -x509 -sha256 -nodes -newkey rsa:2048 -days 1825 \
-    -keyout $RAILS_ROOT/keys/localhost.key \
-    -out $RAILS_ROOT/keys/localhost.crt \
-    -subj "/C=US/ST=Fake/L=Fakerton/O=Dis/CN=localhost"
-
 # Precompile assets
 RUN bundle exec rake assets:precompile --trace
 
@@ -149,6 +143,12 @@ ARG ARG_CI_COMMIT_BRANCH="branch_placeholder"
 ARG ARG_CI_COMMIT_SHA="sha_placeholder"
 RUN mkdir -p $RAILS_ROOT/public/api/
 RUN echo "{\"branch\":\"$ARG_CI_COMMIT_BRANCH\",\"git_sha\":\"$ARG_CI_COMMIT_SHA\"}" > $RAILS_ROOT/public/api/deploy.json
+
+# Generate and place SSL certificates for puma
+RUN openssl req -x509 -sha256 -nodes -newkey rsa:2048 -days 1825 \
+    -keyout $RAILS_ROOT/keys/localhost.key \
+    -out $RAILS_ROOT/keys/localhost.crt \
+    -subj "/C=US/ST=Fake/L=Fakerton/O=Dis/CN=localhost"
 
 # Expose the port the app runs on
 EXPOSE 3000
