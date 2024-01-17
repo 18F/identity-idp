@@ -65,7 +65,8 @@ asked to consent to share their information with the partner before being sent b
 To simulate a true end-to-end user experience, you can either...
 
 - Use the built-in test controller for SAML logins at http://localhost:3000/test/saml/login or OIDC logins at http://localhost:3000/test/oidc/login
-  Note: to update service provider configurations,  run __rake db:seed__ comand
+  
+  Note: to update service provider configurations, run the command `rake db:seed` or `make setup`.
 - Or, run a sample partner application, which is configured by default to run with your local IdP instance:
    - OIDC: https://github.com/18F/identity-oidc-sinatra
       - Runs at http://localhost:9292/
