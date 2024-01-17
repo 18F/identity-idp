@@ -27,7 +27,11 @@ function check_gh_configuration {
     fi
 
     # Verify our git remote aligns with GH configuration
-    GIT_REMOTE_REPO=$(git remote get-url "$GIT_REMOTE" | sed -E 's#(^https?://github.com/|^git@github.com:|\.git$)##g')
+    GIT_REMOTE_REPO=$(
+        git remote get-url "$GIT_REMOTE" \
+        | sed -E 's#(^https?://github.com/|^git@github.com:|\.git$)##g' \
+        | tr '[:upper:]' '[:lower:]' \
+    )
 
     if [ "$GIT_REMOTE_REPO" != "$GITHUB_REPOSITORY" ]; then
         echo "\$GITHUB_REPOSITORY is set to a different value ($GITHUB_REPOSITORY) than the git remote ($GIT_REMOTE - $GIT_REMOTE_REPO) in use."
