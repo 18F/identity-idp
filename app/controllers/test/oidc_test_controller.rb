@@ -7,7 +7,6 @@ module Test
 
     def initialize
       @client_id = 'urn:gov:gsa:openidconnect:sp:test'
-      @update_redirect_uri = true
       super
     end
 
@@ -16,7 +15,7 @@ module Test
       @start_url_selfie = "#{test_oidc_auth_request_url}?ial=biometric-comparison-required"
       @start_url_ial2 = "#{test_oidc_auth_request_url}?ial=2"
       @start_url_ial1 = "#{test_oidc_auth_request_url}?ial=1"
-      update_service_provider if @update_redirect_uri
+      update_service_provider
     end
 
     def auth_request
@@ -50,10 +49,8 @@ module Test
         nonce: random_value,
       )
       request_params = params.merge(
-        {
-          scope: scopes_for(ial),
-          redirect_uri: test_oidc_auth_result_url,
-        },
+        scope: scopes_for(ial),
+        redirect_uri: test_oidc_auth_result_url,
       ).compact.to_query
       "#{authorization_endpoint}?#{request_params}"
     end
@@ -79,9 +76,7 @@ module Test
     end
 
     def acr_values(ial:, aal:)
-      values = []
-
-      values << {
+      ial_value = {
         '0' => 'http://idmanagement.gov/ns/assurance/ial/0',
         nil => 'http://idmanagement.gov/ns/assurance/ial/1',
         '' => 'http://idmanagement.gov/ns/assurance/ial/1',
@@ -89,14 +84,12 @@ module Test
         '2' => 'http://idmanagement.gov/ns/assurance/ial/2',
         'biometric-comparison-required' => 'http://idmanagement.gov/ns/assurance/ial/2',
       }[ial]
-
-      values << {
+      aal_value = {
         '2' => 'http://idmanagement.gov/ns/assurance/aal/2',
         '2-phishing_resistant' => 'http://idmanagement.gov/ns/assurance/aal/2?phishing_resistant=true',
         '2-hspd12' => 'http://idmanagement.gov/ns/assurance/aal/2?hspd12=true',
       }[aal]
-
-      values.compact.join(' ')
+      [ial_value, aal_value].compact.join(' ')
     end
 
     def json(response)
