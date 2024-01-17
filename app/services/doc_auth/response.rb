@@ -56,6 +56,8 @@ module DocAuth
         exception: exception,
         attention_with_barcode: attention_with_barcode?,
         doc_type_supported: doc_type_supported?,
+        doc_auth_success: doc_auth_success?,
+        selfie_success: selfie_success,
       }.merge(extra)
     end
 
@@ -76,6 +78,15 @@ module DocAuth
 
     def selfie_check_performed?
       @selfie_check_performed
+    end
+
+    def selfie_success
+      # to be implemented by concrete subclass
+    end
+
+    def doc_auth_success?
+      # to be implemented by concrete subclass
+      false
     end
   end
 end

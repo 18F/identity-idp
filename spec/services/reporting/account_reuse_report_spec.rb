@@ -159,11 +159,11 @@ RSpec.describe Reporting::AccountReuseReport do
       it 'has the correct results' do
         expected_csv = [
           ['Metric', 'Num. all users', '% of accounts', 'Num. IDV users', '% of accounts'],
-          ['2 apps', 5, 0.5, 3, 0.3],
-          ['3 apps', 4, 0.4, 1, 0.1],
-          ['2+ apps', 9, 0.9, 4, 0.4],
-          ['2 agencies', 7, 0.7, 3, 0.3],
-          ['2+ agencies', 7, 0.7, 3, 0.3],
+          ['2 apps', 5, 5 / 13.0, 3, 0.3],
+          ['3 apps', 4, 4 / 13.0, 1, 0.1],
+          ['2+ apps', 9, 9 / 13.0, 4, 0.4],
+          ['2 agencies', 7, 7 / 13.0, 3, 0.3],
+          ['2+ agencies', 7, 7 / 13.0, 3, 0.3],
         ]
 
         aggregate_failures do

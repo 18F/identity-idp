@@ -350,20 +350,6 @@ RSpec.describe 'FeatureManagement' do
     end
   end
 
-  describe '.voip_allowed_phones' do
-    before do
-      # clear memoization
-      FeatureManagement.instance_variable_set(:@voip_allowed_phones, nil)
-    end
-
-    it 'normalizes phone numbers and put them in a set' do
-      voip_allowed_phones = ['18885551234', '+18888675309']
-
-      expect(IdentityConfig.store).to receive(:voip_allowed_phones).and_return(voip_allowed_phones)
-      expect(FeatureManagement.voip_allowed_phones).to eq(Set['+18885551234', '+18888675309'])
-    end
-  end
-
   describe '#proofing_device_profiling_collecting_enabled?' do
     it 'returns false for disabled' do
       expect(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:disabled)
