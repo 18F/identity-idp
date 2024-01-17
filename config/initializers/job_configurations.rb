@@ -4,6 +4,7 @@ cron_1h = '0 * * * *'
 cron_24h = '0 0 * * *'
 gpo_cron_24h = '0 10 * * *' # 10am UTC is 5am EST/6am EDT
 cron_1w = '0 0 * * 0'
+cron_1mo = '* * 1 * *'
 
 if defined?(Rails::Console)
   Rails.logger.info 'job_configurations: console detected, skipping schedule'
@@ -217,7 +218,7 @@ else
       # Send monthly dropoff report
       monthly_dropoff_report: {
         class: 'Reports::DropOffReport',
-        cron: cron_1m,
+        cron: cron_1mo,
         args: -> { [Time.zone.now] },
       },
     }.compact
