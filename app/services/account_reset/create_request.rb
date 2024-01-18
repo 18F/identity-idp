@@ -48,7 +48,7 @@ module AccountReset
       @telephony_response = Telephony.send_account_reset_notice(
         to: phone,
         country_code: Phonelib.parse(phone).country,
-        confirmed_at: confirmation_period,
+        interval: confirmation_period,
       )
     end
 

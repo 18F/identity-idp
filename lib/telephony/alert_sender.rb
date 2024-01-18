@@ -5,7 +5,7 @@ module Telephony
     def send_account_reset_notice(to:, country_code:, interval:)
       message = I18n.t(
         'telephony.account_reset_notice', app_name: APP_NAME,
-                                          interval: interval,
+                                          interval: interval
       )
       response = adapter.deliver(message: message, to: to, country_code: country_code)
       log_response(response, context: __method__.to_s.gsub(/^send_/, ''))
@@ -88,5 +88,16 @@ module Telephony
         },
       )
     end
+  end
+
+  def confirmation_period
+    current_time = Time.zone.now
+
+    view.distance_of_time_in_words(
+      current_time,
+      current_time + Devise.confirm_within,
+      true,
+      accumulate_on: :hours,
+    )
   end
 end
