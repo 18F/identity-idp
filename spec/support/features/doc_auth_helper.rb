@@ -109,6 +109,13 @@ module DocAuthHelper
     expect_page_to_have_no_accessibility_violations(page) if expect_accessible
   end
 
+  def complete_up_to_how_to_verify_step_for_opt_in_ipp(remote: true)
+    complete_doc_auth_steps_before_welcome_step
+    complete_welcome_step
+    complete_agreement_step
+    complete_how_to_verify_step(remote: remote)
+  end
+
   def complete_document_capture_step
     attach_and_submit_images
   end

@@ -47,6 +47,7 @@ module Idv
           idv_session.invalidate_in_person_pii_from_user!
           idv_session.had_barcode_attention_error = nil
           idv_session.had_barcode_read_failure = nil
+          idv_session.selfie_check_performed = nil
         end,
       )
     end
@@ -79,7 +80,8 @@ module Idv
     end
 
     def take_photo_with_phone_successful?
-      document_capture_session_result.present? && document_capture_session_result.success?
+      document_capture_session_result.present? && document_capture_session_result.success? &&
+        selfie_requirement_met?
     end
 
     def document_capture_session_result

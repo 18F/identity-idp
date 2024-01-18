@@ -286,7 +286,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
               let(:selfie_capture_enabled) { true }
               before do
                 params[:biometric_comparison_required] = 'true'
-                allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).
+                expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
                   and_return(selfie_capture_enabled)
                 allow(IdentityConfig.store).to receive(:openid_connect_redirect).
                   and_return('server_side')
@@ -1044,7 +1044,6 @@ RSpec.describe OpenidConnect::AuthorizationController do
       describe 'handling the :biometric_comparison_required parameter' do
         before do
           allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).and_return(true)
-          allow(Identity::Hostdata).to receive(:in_datacenter?).and_return(in_datacenter)
           allow(Identity::Hostdata).to receive(:env).and_return(env)
         end
 
@@ -1055,17 +1054,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
           end
 
           context 'and we are not in production' do
-            context 'because we are not deployed' do
-              let(:in_datacenter) { false }
-              let(:env) { 'prod' }
-
-              it 'sets the session :biometric_comparison_required value to true' do
-                expect(session[:sp][:biometric_comparison_required]).to eq(true)
-              end
-            end
-
             context 'because the environment is not set to "prod"' do
-              let(:in_datacenter) { true }
               let(:env) { 'test' }
 
               it 'sets the session :biometric_comparison_required value to true' do
@@ -1078,7 +1067,6 @@ RSpec.describe OpenidConnect::AuthorizationController do
           # when we are ready to accept :biometric_comparison_required
           # in production. See LG-11962.
           context 'in production' do
-            let(:in_datacenter) { true }
             let(:env) { 'prod' }
 
             it 'does not set the :sp value' do
@@ -1100,7 +1088,6 @@ RSpec.describe OpenidConnect::AuthorizationController do
           end
 
           context 'in production' do
-            let(:in_datacenter) { true }
             let(:env) { 'prod' }
 
             it 'sets the session :biometric_comparison_required value to false' do
@@ -1109,7 +1096,6 @@ RSpec.describe OpenidConnect::AuthorizationController do
           end
 
           context 'not in production' do
-            let(:in_datacenter) { false }
             let(:env) { 'test' }
 
             it 'sets the session :biometric_comparison_required value to false' do

@@ -82,10 +82,10 @@ interface AcuantImageAnalyticsPayload extends ImageAnalyticsPayload {
   dpi: number;
   moire: number;
   glare: number;
-  glareScoreThreshold: number;
+  glareScoreThreshold: number | null;
   isAssessedAsGlare: boolean;
   sharpness: number;
-  sharpnessScoreThreshold: number;
+  sharpnessScoreThreshold: number | null;
   isAssessedAsBlurry: boolean;
   assessment: AcuantImageAssessment;
   isAssessedAsUnsupported: boolean;
@@ -337,6 +337,7 @@ function AcuantCapture(
   const [attempt, incrementAttempt] = useCounter(1);
   const [acuantFailureCookie, setAcuantFailureCookie, refreshAcuantFailureCookie] =
     useCookie('AcuantCameraHasFailed');
+  const [imageCaptureText, setImageCaptureText] = useState('');
   // There's some pretty significant changes to this component when it's used for
   // selfie capture vs document image capture. This controls those changes.
   const selfieCapture = name === 'selfie';
@@ -551,8 +552,8 @@ function AcuantCapture(
     const { image, dpi, moire, glare, sharpness } = nextCapture;
     const cardType = 'cardType' in nextCapture ? nextCapture.cardType : nextCapture.cardtype;
 
-    const isAssessedAsGlare = glare < glareThreshold;
-    const isAssessedAsBlurry = sharpness < sharpnessThreshold;
+    const isAssessedAsGlare = !!glareThreshold && glare < glareThreshold;
+    const isAssessedAsBlurry = !!sharpnessThreshold && sharpness < sharpnessThreshold;
     const isAssessedAsUnsupported = cardType !== AcuantDocumentType.ID;
     const { width, height, data } = image;
 
@@ -653,6 +654,10 @@ function AcuantCapture(
     });
   }
 
+  function onImageCaptureFeedback(text: string) {
+    setImageCaptureText(text);
+  }
+
   return (
     <div className={[className, 'document-capture-acuant-capture'].filter(Boolean).join(' ')}>
       {isCapturingEnvironment && !selfieCapture && (
@@ -678,11 +683,13 @@ function AcuantCapture(
           onImageCaptureFailure={onSelfieCaptureFailure}
           onImageCaptureOpen={onSelfieCaptureOpen}
           onImageCaptureClose={onSelfieCaptureClosed}
+          onImageCaptureFeedback={onImageCaptureFeedback}
         >
           <AcuantSelfieCaptureCanvas
             fullScreenRef={fullScreenRef}
             fullScreenLabel={t('doc_auth.accessible_labels.document_capture_dialog')}
             onRequestClose={() => setIsCapturingEnvironment(false)}
+            imageCaptureText={imageCaptureText}
           />
         </AcuantSelfieCamera>
       )}

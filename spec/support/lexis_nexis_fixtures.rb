@@ -160,6 +160,10 @@ module LexisNexisFixtures
       read_fixture_file_at_path('true_id/true_id_response_success_3.json')
     end
 
+    def true_id_response_success_with_liveness
+      read_fixture_file_at_path('true_id/true_id_response_success_with_liveness.json')
+    end
+
     def true_id_response_failure_no_liveness
       read_fixture_file_at_path('true_id/true_id_response_failure_no_liveness.json')
     end

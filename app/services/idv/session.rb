@@ -184,10 +184,6 @@ module Idv
       end
     end
 
-    def document_capture_complete?
-      pii_from_doc || has_pii_from_user_in_flow_session
-    end
-
     def remote_document_capture_complete?
       pii_from_doc
     end
