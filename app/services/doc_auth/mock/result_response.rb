@@ -178,7 +178,7 @@ module DocAuth
         end
       end
 
-      def all_doc_capture_values_passing?(doc_auth_result, id_type_supported, face_match_result)
+      def all_doc_capture_values_passing?(doc_auth_result, id_type_supported)
         doc_auth_result == 'Passed' &&
           id_type_supported &&
           (@selfie_check_performed ? selfie_success : true)
