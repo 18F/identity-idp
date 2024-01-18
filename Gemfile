@@ -16,11 +16,14 @@ gem 'aws-sdk-sns'
 gem 'aws-sdk-sqs'
 gem 'barby', '~> 0.6.8'
 gem 'base32-crockford'
+gem 'base64'
+gem 'bigdecimal'
 gem 'bootsnap', '~> 1.0', require: false
 gem 'browser'
 gem 'caxlsx', require: false
 gem 'concurrent-ruby'
 gem 'connection_pool'
+gem 'csv'
 gem 'cssbundling-rails'
 gem 'devise', '~> 4.8'
 gem 'dotiw', '>= 4.0.1'
@@ -101,7 +104,7 @@ group :development, :test do
   gem 'i18n-tasks', '~> 1.0'
   gem 'knapsack'
   gem 'listen'
-  gem 'nokogiri', '~> 1.14.0'
+  gem 'nokogiri', '~> 1.16.0'
   gem 'pg_query', require: false
   gem 'pry-byebug'
   gem 'pry-doc'

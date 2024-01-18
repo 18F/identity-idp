@@ -87,7 +87,6 @@ doc_auth_exit_question_section_enabled: false
 doc_auth_max_attempts: 5
 doc_auth_max_capture_attempts_before_native_camera: 3
 doc_auth_max_submission_attempts_before_native_camera: 3
-doc_auth_not_ready_section_enabled: false
 doc_auth_selfie_capture_enabled: false
 doc_auth_sdk_capture_orientation: '{"horizontal": 100, "vertical": 0}'
 doc_auth_supported_country_codes: '["US", "GU", "VI", "AS", "MP", "PR", "USA" ,"GUM", "VIR", "ASM", "MNP", "PRI"]'
@@ -314,7 +313,6 @@ sp_handoff_bounce_max_seconds: 2
 show_unsupported_passkey_platform_authentication_setup: false
 show_user_attribute_deprecation_warnings: false
 otp_min_attempts_remaining_warning_count: 3
-system_demand_report_email: 'foo@bar.com'
 sp_issuer_user_counts_report_configs: '[]'
 team_ada_email: ''
 team_all_login_emails: '[]'
@@ -369,6 +367,7 @@ development:
   attribute_encryption_key_queue: '[{ "key": "11111111111111111111111111111111" }, { "key": "22222222222222222222222222222222" }]'
   aws_logo_bucket: ''
   component_previews_enabled: true
+  component_previews_embed_frame_ancestors: '["http://localhost:4000"]'
   dashboard_api_token: test_token
   dashboard_url: http://localhost:3001/api/service_providers
   database_host: ''
@@ -383,7 +382,6 @@ development:
   database_worker_jobs_host: ''
   database_worker_jobs_password: ''
   doc_auth_exit_question_section_enabled: false
-  doc_auth_not_ready_section_enabled: false
   doc_auth_selfie_capture_enabled: false
   doc_auth_vendor: 'mock'
   doc_auth_vendor_randomize: false
