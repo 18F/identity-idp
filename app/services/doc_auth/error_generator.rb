@@ -228,11 +228,11 @@ module DocAuth
       end
       # Error when the image on the id is poor quality
       if face_match_result == 'Fail' && face_match_error == 'Liveness: PoorQuality'
-        return Errors::SELFIE_NOT_LIVE
+        return Errors::SELFIE_POOR_QUALITY
       end
       # Error when the image on the id is not live
       if face_match_result == 'Fail' && face_match_error == 'Liveness: NotLive'
-        return Errors::SELFIE_POOR_QUALITY
+        return Errors::SELFIE_NOT_LIVE
       end
     end
 
