@@ -2,46 +2,27 @@ require 'rails_helper'
 
 RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   let(:success_response_body) { LexisNexisFixtures.true_id_response_success_3 }
-  let(:success_with_liveness_response_body) do
-    LexisNexisFixtures.true_id_response_success_with_liveness
-  end
   let(:success_response) do
     instance_double(Faraday::Response, status: 200, body: success_response_body)
   end
+  # rubocop:disable Layout/LineLength
   let(:success_with_liveness_response) do
-    instance_double(Faraday::Response, status: 200, body: success_with_liveness_response_body)
-  end
-  let(:failure_face_match_fail_response_body) do
-    LexisNexisFixtures.true_id_response_with_face_match_fail
+    instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_response_success_with_liveness)
   end
   let(:failure_response_face_match_fail) do
-    instance_double(Faraday::Response, status: 200, body: failure_face_match_fail_response_body)
+    instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_response_with_face_match_fail)
   end
-  let(:failure_body_no_liveness) { LexisNexisFixtures.true_id_response_failure_no_liveness }
-  let(:failure_body_with_liveness) { LexisNexisFixtures.true_id_response_failure_with_liveness }
-  let(:failure_body_with_all_failures) do
-    LexisNexisFixtures.true_id_response_failure_with_all_failures
-  end
-  let(:failure_body_no_liveness_low_dpi) do
-    LexisNexisFixtures.true_id_response_failure_no_liveness_low_dpi
-  end
-
-  let(:failure_body_tampering) do
-    LexisNexisFixtures.true_id_response_failure_tampering
-  end
-
-  # rubocop:disable Layout/LineLength
   let(:failure_response_no_liveness) do
-    instance_double(Faraday::Response, status: 200, body: failure_body_no_liveness)
+    instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_response_failure_no_liveness)
   end
   let(:failure_response_with_liveness) do
-    instance_double(Faraday::Response, status: 200, body: failure_body_with_liveness)
+    instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_response_failure_with_liveness)
   end
   let(:failure_response_tampering) do
-    instance_double(Faraday::Response, status: 200, body: failure_body_tampering)
+    instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_response_failure_tampering)
   end
   let(:failure_response_with_all_failures) do
-    instance_double(Faraday::Response, status: 200, body: failure_body_with_all_failures)
+    instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_response_failure_with_all_failures)
   end
   let(:communications_error_response) do
     instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.communications_error)
@@ -59,7 +40,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_barcode_read_attention)
   end
   let(:failure_response_no_liveness_low_dpi) do
-    instance_double(Faraday::Response, status: 200, body: failure_body_no_liveness_low_dpi)
+    instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_response_failure_no_liveness_low_dpi)
   end
   # rubocop:enable Layout/LineLength
 
