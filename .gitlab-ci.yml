@@ -496,7 +496,7 @@ review-app:
     - echo "Address of Dashboard review app:"
     - echo https://$CI_ENVIRONMENT_SLUG-review-app-dashboard.review-app.identitysandbox.gov
   environment:
-    name: review/$CI_COMMIT_REF_NAME
+    name: development/$CI_COMMIT_REF_NAME
     url: https://$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov
     on_stop: stop-review-app
     auto_stop_in: 2 days
