@@ -52,8 +52,7 @@ module DocAuth
               # Error generator is not to be called when it's not failure
               # allows us to test successful results
               return {} if all_doc_capture_values_passing?(
-                doc_auth_result, id_type_supported?,
-                face_match_result
+                doc_auth_result, id_type_supported?
               )
 
               mock_args = {}
