@@ -149,6 +149,13 @@ Rails.application.routes.draw do
         get '/saml/decode_assertion' => 'saml_test#start'
         post '/saml/decode_assertion' => 'saml_test#decode_response'
         post '/saml/decode_slo_request' => 'saml_test#decode_slo_request'
+
+        get '/oidc/login' => 'oidc_test#index'
+        get '/oidc' => 'oidc_test#start'
+        get '/oidc/auth_request' => 'oidc_test#auth_request'
+        get '/oidc/auth_result' => 'oidc_test#auth_result'
+        get '/oidc/logout' => 'oidc_test#logout'
+
         get '/piv_cac_entry' => 'piv_cac_authentication_test_subject#new'
         post '/piv_cac_entry' => 'piv_cac_authentication_test_subject#create'
 
