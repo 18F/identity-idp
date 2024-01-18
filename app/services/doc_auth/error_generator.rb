@@ -79,7 +79,7 @@ module DocAuth
       # errors to return. This can return errors for only these combinations of fields:
       # - "Front"
       # - "Back"
-      # - "Front, Back"
+      # - "ID" (AKA "Front", "Back" I think)
       # - "Selfie"
       # You'll note we're missing some "Selfie" combinations like: "Front", "Selfie"
       if alert_error_count < 1
