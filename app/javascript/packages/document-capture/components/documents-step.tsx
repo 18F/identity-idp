@@ -12,7 +12,6 @@ import DocumentSideAcuantCapture from './document-side-acuant-capture';
 import DeviceContext from '../context/device';
 import UploadContext from '../context/upload';
 import TipList from './tip-list';
-import DocumentCaptureNotReady from './document-capture-not-ready';
 import { FeatureFlagContext } from '../context';
 import DocumentCaptureAbandon from './document-capture-abandon';
 
@@ -110,8 +109,7 @@ function DocumentsStep({
   const { isMobile } = useContext(DeviceContext);
   const { isLastStep } = useContext(FormStepsContext);
   const { flowPath } = useContext(UploadContext);
-  const { notReadySectionEnabled, exitQuestionSectionEnabled, selfieCaptureEnabled } =
-    useContext(FeatureFlagContext);
+  const { exitQuestionSectionEnabled, selfieCaptureEnabled } = useContext(FeatureFlagContext);
 
   const pageHeaderText = selfieCaptureEnabled
     ? t('doc_auth.headings.document_capture_with_selfie')
@@ -142,7 +140,6 @@ function DocumentsStep({
         <SelfieCaptureWithHeader defaultSideProps={defaultSideProps} selfieValue={value.selfie} />
       )}
       {isLastStep ? <FormStepsButton.Submit /> : <FormStepsButton.Continue />}
-      {notReadySectionEnabled && <DocumentCaptureNotReady />}
       {exitQuestionSectionEnabled && <DocumentCaptureAbandon />}
       <Cancel />
     </>

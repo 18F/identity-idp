@@ -146,12 +146,6 @@ else
         class: 'ThreatMetrixJsVerificationJob',
         cron: cron_1h,
       },
-      # Weekly IRS report returning system demand
-      irs_weekly_summary_report: {
-        class: 'Reports::IrsWeeklySummaryReport',
-        cron: cron_1w,
-        args: -> { [Time.zone.now] },
-      },
       # Reject profiles that have been in fraud_review_pending for 30 days
       fraud_rejection: {
         class: 'FraudRejectionDailyJob',
