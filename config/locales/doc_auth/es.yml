@@ -258,6 +258,11 @@ es:
       secure_account: Vamos a encriptar su cuenta con su contraseña. La encriptación
         significa que sus datos están protegidos y solo usted podrá acceder o
         modificar su información.
+      selfie_capture_status:
+        face_close_to_border: DEMASIADO CERCA DEL MARCO
+        face_not_found: NO SE ENCONTRÓ LA CARA
+        face_too_small: LA CARA ES DEMASIADO CHICA
+        too_many_faces: HAY DEMASIADAS CARAS
       ssn: Necesitamos su número de Seguro Social para validar su nombre, fecha de
         nacimiento y dirección.
       tag: Recomendado
@@ -306,15 +311,6 @@ es:
         - '<strong>Verificar por correo</strong>: Le enviaremos una carta a su
           domicilio. Esto tarda entre <strong>5 y 10 días</strong>.'
       welcome: 'Necesitará su:'
-    not_ready:
-      button_nosp: Cancelar y volver a su perfil
-      button_sp: Salir de %{app_name} y volver a %{sp_name}
-      content_nosp: Si sale ahora de %{app_name}, no habrá verificado su identidad.
-        Puede volver más tarde para completar este proceso.
-      content_sp: Si sale ahora de %{app_name} y regresa a %{sp_name}, no habrá
-        verificado su identidad. Puede volver más tarde para completar este
-        proceso.
-      header: ¿No está listo para enviar las fotos?
     tips:
       document_capture_hint: Debe ser un JPG o PNG
       document_capture_id_text1: Use un fondo oscuro

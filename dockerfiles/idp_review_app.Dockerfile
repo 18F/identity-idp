@@ -1,4 +1,4 @@
-FROM ruby:3.2.2-slim
+FROM ruby:3.3.0-slim
 
 # Set environment variables
 ARG ARG_CI_ENVIRONMENT_SLUG="placeholder"
