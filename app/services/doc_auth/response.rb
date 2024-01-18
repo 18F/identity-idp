@@ -57,7 +57,7 @@ module DocAuth
         attention_with_barcode: attention_with_barcode?,
         doc_type_supported: doc_type_supported?,
         doc_auth_success: doc_auth_success?,
-        selfie_success: selfie_success,
+        selfie_status: selfie_status,
       }.merge(extra)
     end
 
@@ -80,7 +80,7 @@ module DocAuth
       @selfie_check_performed
     end
 
-    def selfie_success
+    def selfie_status
       # to be implemented by concrete subclass
     end
 

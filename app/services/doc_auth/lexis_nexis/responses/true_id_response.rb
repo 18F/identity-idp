@@ -149,14 +149,14 @@ module DocAuth
             doc_auth_result_passed?
         end
 
-        # @return [Boolean, nil]
-        # When selfie result is missing, return nil
+        # @return [:success, :fail, :not_processed]
+        # When selfie result is missing, return :not_processed
         # Otherwise:
-        #   return true if selfie check result == 'Pass'
-        #   return false
-        def selfie_success
-          return selfie_result if selfie_result.nil?
-          selfie_result == 'Pass'
+        #   return :success if selfie check result == 'Pass'
+        #   return :fail
+        def selfie_status
+          return :not_processed if selfie_result.nil?
+          selfie_result == 'Pass' ? :success : :fail
         end
 
         private
