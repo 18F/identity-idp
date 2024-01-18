@@ -198,9 +198,22 @@ module DocAuth
     end
 
     def get_selfie_error(liveness_enabled, response_info)
-      if liveness_enabled && portrait_match_results.dig(:FaceMatchResult) == 'Fail'
-        errors[SELFIE] << get_selfie_error(response_info)
+      # No error if liveness is not enabled
+      if not liveness_enabled
+        return nil
       end
+      # Error when the image on the id does not match the selfie image
+      if portrait_match_results.dig(:FaceMatchResult) == 'Fail'
+        return Errors::SELFIE_FAILURE
+      end
+      # Error when the image on the id is poor quality 
+      if # TODO condition
+        return Errors::SELFIE_NOT_LIVE
+      end
+      if # TODO condition
+        return Errors::SELFIE_POOR_QUALITY
+      end
+      # Error when the image on the id is not live 
     end
 
     def scan_for_unknown_alerts(response_info)
