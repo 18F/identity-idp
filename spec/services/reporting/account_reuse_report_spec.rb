@@ -21,14 +21,6 @@ RSpec.describe Reporting::AccountReuseReport do
     let(:sp_c) { 'c' }
     let(:sp_d) { 'd' }
 
-    def create_identity(user_id:, created_at:, provider:, verified_at:)
-      ServiceProviderIdentity.create(
-        user_id: user_id, service_provider: provider,
-        created_at: created_at,
-        last_ial2_authenticated_at: in_query, verified_at: verified_at
-      )
-    end
-
     before do
       create(
         :service_provider,
@@ -136,10 +128,11 @@ RSpec.describe Reporting::AccountReuseReport do
 
       users_to_query.each do |user|
         user[:sp].each_with_index do |sp, i|
-          create_identity(
+          ServiceProviderIdentity.create(
             user_id: user[:id],
+            service_provider: sp,
             created_at: user[:created_timestamp],
-            provider: sp,
+            last_ial2_authenticated_at: in_query,
             verified_at: user[:sp_timestamp][i],
           )
         end
@@ -148,10 +141,20 @@ RSpec.describe Reporting::AccountReuseReport do
       # Create active profiles for total_proofed_identities
       # These 13 profiles will yield 10 active profiles in the results
       (1..10).each do |_|
-        create(:profile, :active, activated_at: in_query)
+        create(
+          :profile,
+          :active,
+          activated_at: in_query,
+          user: create(:user, :fully_registered, registered_at: in_query),
+        )
       end
       (1..3).each do |_|
-        create(:profile, :active, activated_at: out_of_query)
+        create(
+          :profile,
+          :active,
+          activated_at: out_of_query,
+          user: create(:user, :fully_registered, registered_at: in_query),
+        )
       end
     end
 

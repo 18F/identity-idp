@@ -293,9 +293,12 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
       end
 
       it 'captures state id address fields in the pii' do
-        expect(Idv::Agent).to receive(:new).
-          with(Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS.merge(uuid_prefix: nil)).
-          and_call_original
+        expect(Idv::Agent).to receive(:new).with(
+          Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS.merge(
+            uuid_prefix: nil,
+            uuid: user.uuid,
+          ),
+        ).and_call_original
         put :update
       end
     end

@@ -37,7 +37,6 @@ interface AppRootData {
   securityAndPrivacyHowItWorksUrl: string;
   skipDocAuth: string;
   howToVerifyURL: string;
-  uiNotReadySectionEnabled: string;
   uiExitQuestionSectionEnabled: string;
 }
 
@@ -105,7 +104,6 @@ const {
   usStatesTerritories = '',
   skipDocAuth,
   howToVerifyUrl,
-  uiNotReadySectionEnabled = '',
   uiExitQuestionSectionEnabled = '',
 } = appRoot.dataset as DOMStringMap & AppRootData;
 
@@ -189,7 +187,6 @@ const App = composeComponents(
     FeatureFlagContext.Provider,
     {
       value: {
-        notReadySectionEnabled: String(uiNotReadySectionEnabled) === 'true',
         exitQuestionSectionEnabled: String(uiExitQuestionSectionEnabled) === 'true',
         selfieCaptureEnabled: getSelfieCaptureEnabled(),
       },
