@@ -103,7 +103,6 @@ class IdentityConfig
     config.add(:aamva_cert_enabled, type: :boolean)
     config.add(:aamva_private_key, type: :string)
     config.add(:aamva_public_key, type: :string)
-    config.add(:aamva_sp_banlist_issuers, type: :json)
     config.add(:aamva_supported_jurisdictions, type: :json)
     config.add(:aamva_verification_request_timeout, type: :float)
     config.add(:aamva_verification_url)
@@ -183,7 +182,6 @@ class IdentityConfig
     config.add(:doc_auth_error_glare_threshold, type: :integer)
     config.add(:doc_auth_error_sharpness_threshold, type: :integer)
     config.add(:doc_auth_exit_question_section_enabled, type: :boolean)
-    config.add(:doc_auth_not_ready_section_enabled, type: :boolean)
     config.add(:doc_auth_max_attempts, type: :integer)
     config.add(:doc_auth_max_capture_attempts_before_native_camera, type: :integer)
     config.add(:doc_auth_max_submission_attempts_before_native_camera, type: :integer)
@@ -453,7 +451,6 @@ class IdentityConfig
     config.add(:sp_handoff_bounce_max_seconds, type: :integer)
     config.add(:sp_issuer_user_counts_report_configs, type: :json)
     config.add(:state_tracking_enabled, type: :boolean)
-    config.add(:system_demand_report_email, type: :string)
     config.add(:team_ada_email, type: :string)
     config.add(:team_all_login_emails, type: :json)
     config.add(:team_daily_reports_emails, type: :json)
@@ -498,8 +495,6 @@ class IdentityConfig
     config.add(:version_headers_enabled, type: :boolean)
     config.add(:voice_otp_pause_time)
     config.add(:voice_otp_speech_rate)
-    config.add(:voip_allowed_phones, type: :json)
-    config.add(:voip_block, type: :boolean)
     config.add(:weekly_auth_funnel_report_config, type: :json)
 
     @key_types = config.key_types

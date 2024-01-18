@@ -253,6 +253,7 @@ GEM
       addressable
     cssbundling-rails (1.0.0)
       railties (>= 6.0.0)
+    csv (3.2.8)
     date (3.3.4)
     dead_end (4.0.0)
     derailed_benchmarks (2.1.2)
@@ -355,14 +356,14 @@ GEM
       rainbow (>= 2.2.2, < 4.0)
       terminal-table (>= 1.5.1)
     ice_nine (0.11.2)
-    io-console (0.6.0)
-    irb (1.9.1)
+    io-console (0.7.1)
+    irb (1.11.0)
       rdoc
       reline (>= 0.3.8)
     jmespath (1.6.2)
     jsbundling-rails (1.1.2)
       railties (>= 6.0.0)
-    json (2.7.0)
+    json (2.7.1)
     jwe (0.4.0)
     jwt (2.7.1)
     knapsack (4.0.0)
@@ -425,24 +426,23 @@ GEM
     net-smtp (0.4.0)
       net-protocol
     net-ssh (6.1.0)
-    newrelic_rpm (9.6.0)
-      base64
+    newrelic_rpm (9.7.0)
     nio4r (2.7.0)
-    nokogiri (1.14.5)
-      mini_portile2 (~> 2.8.0)
+    nokogiri (1.16.0)
+      mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     openssl (3.0.2)
     openssl-signature_algorithm (1.2.1)
       openssl (> 2.0, < 3.1)
     orm_adapter (0.5.0)
     parallel (1.23.0)
-    parser (3.2.2.4)
+    parser (3.3.0.0)
       ast (~> 2.4.1)
       racc
     pg (1.5.4)
     pg_query (4.2.3)
       google-protobuf (>= 3.22.3)
-    phonelib (0.8.6)
+    phonelib (0.8.7)
     pkcs11 (0.3.4)
     premailer (1.21.0)
       addressable
@@ -464,12 +464,12 @@ GEM
     pry-byebug (3.10.1)
       byebug (~> 11.0)
       pry (>= 0.13, < 0.15)
-    pry-doc (1.4.0)
+    pry-doc (1.5.0)
       pry (~> 0.11)
       yard (~> 0.9.11)
     pry-rails (0.3.9)
       pry (>= 0.10.4)
-    psych (5.1.1.1)
+    psych (5.1.2)
       stringio
     public_suffix (5.0.3)
     puma (6.4.2)
@@ -482,7 +482,7 @@ GEM
     rack-cors (2.0.1)
       rack (>= 2.0.0)
     rack-headers_filter (0.0.1)
-    rack-mini-profiler (3.1.1)
+    rack-mini-profiler (3.3.0)
       rack (>= 1.2.0)
     rack-proxy (0.7.7)
       rack
@@ -538,7 +538,7 @@ GEM
     rb-fsevent (0.11.2)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
-    rdoc (6.6.0)
+    rdoc (6.6.2)
       psych (>= 4.0.0)
     redacted_struct (1.1.0)
     redcarpet (3.6.0)
@@ -547,7 +547,7 @@ GEM
     redis-client (0.14.1)
       connection_pool
     regexp_parser (2.8.2)
-    reline (0.4.0)
+    reline (0.4.1)
       io-console (~> 0.5)
     request_store (1.5.1)
       rack (>= 1.4)
@@ -659,7 +659,7 @@ GEM
       unf (~> 0.1.4)
     smart_properties (1.17.0)
     stringex (2.8.5)
-    stringio (3.0.9)
+    stringio (3.1.0)
     strong_migrations (1.6.4)
       activerecord (>= 5.2)
     subprocess (1.5.5)
@@ -745,7 +745,9 @@ DEPENDENCIES
   axe-core-rspec (~> 4.2)
   barby (~> 0.6.8)
   base32-crockford
+  base64
   better_errors (>= 2.5.1)
+  bigdecimal
   bootsnap (~> 1.0)
   brakeman
   browser
@@ -756,6 +758,7 @@ DEPENDENCIES
   concurrent-ruby
   connection_pool
   cssbundling-rails
+  csv
   derailed_benchmarks
   devise (~> 4.8)
   dotiw (>= 4.0.1)
@@ -789,7 +792,7 @@ DEPENDENCIES
   multiset
   net-sftp
   newrelic_rpm (~> 9.0)
-  nokogiri (~> 1.14.0)
+  nokogiri (~> 1.16.0)
   pg
   pg_query
   phonelib
@@ -853,7 +856,7 @@ DEPENDENCIES
   zxcvbn (= 0.1.9)
 
 RUBY VERSION
-   ruby 3.2.2p53
+   ruby 3.3.0p0
 
 BUNDLED WITH
    2.4.20
