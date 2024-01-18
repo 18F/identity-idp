@@ -364,6 +364,9 @@ function AcuantCapture(
   }, [hasCapture]);
   useDidUpdateEffect(() => setHasStartedCropping(false), [isCapturingEnvironment]);
   useImperativeHandle(ref, () => inputRef.current);
+  useEffect(() => {
+    setAcuantFailureCookie(null);
+  }, []);
 
   /**
    * Calls onChange with next value and resets any errors which may be present.
