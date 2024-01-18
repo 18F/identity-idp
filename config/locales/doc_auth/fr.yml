@@ -317,15 +317,6 @@ fr:
       text3: Votre numéro de téléphone correspond à vos informations personnelles. Une
         fois la correspondance établie, nous vous enverrons un code.
       text4: Votre mot de passe enregistre et crypte vos informations personnelles.
-    not_ready:
-      button_nosp: Annuler et revenir à votre profil
-      button_sp: Quittez %{app_name} et retournez à %{sp_name}
-      content_nosp: Si vous quittez %{app_name}, votre identité n’aura pas été
-        vérifiée. Vous pourrez revenir plus tard pour terminer ce processus.
-      content_sp: Si vous quittez %{app_name} maintenant et revenez sur %{sp_name},
-        votre identité n’aura pas été vérifiée. Vous pourrez revenir plus tard
-        pour terminer ce processus.
-      header: Vous n’êtes pas prêt à ajouter des photos?
     tips:
       document_capture_hint: Doit être un JPG ou PNG
       document_capture_id_text1: Utilisez un fond sombre

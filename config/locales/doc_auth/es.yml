@@ -307,15 +307,6 @@ es:
       text3: Tu número de teléfono te vincula con tu información personal. Luego de
         confirmar tu información, te enviaremos un código.
       text4: Tu contraseña permitirá guardar y encriptar tu información personal.
-    not_ready:
-      button_nosp: Cancelar y volver a su perfil
-      button_sp: Salir de %{app_name} y volver a %{sp_name}
-      content_nosp: Si sale ahora de %{app_name}, no habrá verificado su identidad.
-        Puede volver más tarde para completar este proceso.
-      content_sp: Si sale ahora de %{app_name} y regresa a %{sp_name}, no habrá
-        verificado su identidad. Puede volver más tarde para completar este
-        proceso.
-      header: ¿No está listo para enviar las fotos?
     tips:
       document_capture_hint: Debe ser un JPG o PNG
       document_capture_id_text1: Use un fondo oscuro
