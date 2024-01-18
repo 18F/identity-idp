@@ -517,7 +517,7 @@ stop-review-app:
   needs:
     - job: review-app
   environment:
-    name: review/$CI_COMMIT_REF_NAME
+    name: development/$CI_COMMIT_REF_NAME
     action: stop
   when: manual
   rules:
