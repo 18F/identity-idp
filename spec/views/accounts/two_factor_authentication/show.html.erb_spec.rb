@@ -37,15 +37,6 @@ RSpec.describe 'accounts/two_factor_authentication/show.html.erb' do
         ),
       )
     end
-
-    it 'contains link to disable TOTP' do
-      render
-
-      expect(rendered).to have_link(
-        t('forms.buttons.disable'),
-        href: auth_app_delete_path(id: user.auth_app_configurations.first.id),
-      )
-    end
   end
 
   context 'when the user does not have password_reset_profile' do

@@ -156,7 +156,6 @@ en:
       document_capture_subheader_selfie: Photo of yourself
       document_capture_with_selfie: Add photos of your ID and a photo of yourself
       front: Front of your driver’s license or state ID
-      getting_started: Let’s verify your identity for %{sp_name}
       how_to_verify: Choose how you want to verify your identity
       hybrid_handoff: How would you like to add your ID?
       interstitial: We are processing your images
@@ -173,7 +172,7 @@ en:
       verify_at_post_office: Verify your identity at a Post Office
       verify_identity: Verify your identity
       verify_online: Verify your identity online
-      welcome: Get started verifying your identity
+      welcome: Let’s verify your identity for %{sp_name}
     hybrid_flow_warning:
       explanation_html: You’re using <strong>%{app_name}</strong> to verify your
         identity for access to <strong>%{service_provider_name}</strong> and its
@@ -195,6 +194,9 @@ en:
       exit:
         with_sp: Exit %{app_name} and return to %{sp_name}
         without_sp: Exit identity verification and go to your account page
+      getting_started_html: '%{sp_name} needs to make sure you are you — not someone
+        pretending to be you. %{link_html}'
+      getting_started_learn_more: Learn more about verifying your identity
       how_to_verify: You have the option to verify your identity online, or in person
         at a participating Post Office
       how_to_verify_troubleshooting_options_header: Want to learn more about how to verify your identity?
@@ -213,9 +215,6 @@ en:
       link_sent_complete_no_polling: When you are done, click Continue here to finish verifying your identity.
       link_sent_complete_polling: The next step will load automatically.
       no_ssn: You must have a Social Security number to finish verifying your identity.
-      privacy: '%{app_name} is a secure, government website that adheres to the
-        highest standards in data protection. We use your data to verify your
-        identity.'
       review_examples_of_photos: Review examples of how to take clear photos of your ID.
       secure_account: We’ll encrypt your account with your password. Encryption means
         your data is protected and only you will be able to access or change
@@ -244,30 +243,27 @@ en:
       verify_online_instruction: You’ll take photos of your ID to verify your identity
         fully online. Most users finish this process in one sitting.
       verify_online_link_text: Learn more about verifying online
-      welcome: '%{sp_name} needs to make sure you are you — not someone pretending to
-        be you.'
       you_entered: 'You entered:'
     instructions:
-      bullet1: State‑issued ID
-      bullet2: Social Security number
-      bullet3: Phone number OR home address
+      bullet1: Take photos of your ID
+      bullet2: Enter your Social Security number
+      bullet3: Match to your phone number
+      bullet4: Re-enter your %{app_name} password
       consent: By checking this box, you are letting %{app_name} ask for, use, keep,
         and share your personal information. We will use it to verify your
         identity.
+      getting_started: 'You’ll need to:'
       learn_more: Learn more about our privacy and security measures
-      privacy: Our privacy and security standards
       switch_back: Switch back to your computer to finish verifying your identity.
       switch_back_image: Arrow pointing from phone to computer
       test_ssn: In the test environment only SSNs that begin with “900-” or “666-” are
         considered valid. Do not enter real PII in this field.
-      text1: Your ID cannot be expired.
-      text2: You will not need the card with you.
-      text3_html:
-        - '<strong>Verify by phone</strong>: We’ll call or text your phone
-          number. This takes a few minutes.'
-        - '<strong>Verify by mail</strong>: We’ll mail a letter to your home
-          address. This takes <strong>5 to 10 days</strong>.'
-      welcome: 'You will need your:'
+      text1: Use your driver’s license or state ID card. Other forms of ID are not
+        accepted.
+      text2: You will not need your physical SSN card.
+      text3: Your phone number matches you to your personal information. After you
+        match, we’ll send you a code.
+      text4: Your password saves and encrypts your personal information.
     tips:
       document_capture_hint: Must be a JPG or PNG
       document_capture_id_text1: Use a dark background
