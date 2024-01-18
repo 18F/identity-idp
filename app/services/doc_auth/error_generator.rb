@@ -189,12 +189,18 @@ module DocAuth
         end
       end
 
-      portrait_match_results = response_info[:portrait_match_results] || {}
-      if liveness_enabled && portrait_match_results.dig(:FaceMatchResult) != 'Pass'
-        errors[SELFIE] << Errors::SELFIE_FAILURE
+      selfie_error = get_selfie_error(liveness_enabled, response_info)
+      if liveness_enabled && selfie_error
+        errors[SELFIE] << selfie_error
       end
 
       errors
+    end
+
+    def get_selfie_error(liveness_enabled, response_info)
+      if liveness_enabled && portrait_match_results.dig(:FaceMatchResult) == 'Fail'
+        errors[SELFIE] << get_selfie_error(response_info)
+      end
     end
 
     def scan_for_unknown_alerts(response_info)
