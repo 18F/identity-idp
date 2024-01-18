@@ -9,7 +9,7 @@ variables:
   JUNIT_OUTPUT: 'true'
   ECR_REGISTRY: '${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com'
   IDP_CI_SHA: 'sha256:756a1d450b422720dee36cb9a6217687bcad1e40b780219d360989861ce94212'
-  PKI_IMAGE_TAG: 'main'
+  PKI_IMAGE_TAG: 'test-update'
   DASHBOARD_IMAGE_TAG: 'main'
 
 default:
