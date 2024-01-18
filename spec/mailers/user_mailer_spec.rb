@@ -339,7 +339,7 @@ RSpec.describe UserMailer, type: :mailer do
     end
 
     let(:account_reset) { user.account_reset_request }
-    let(:confirmation_period) { 24 }
+    let(:interval) { '24 hours' }
 
     it_behaves_like 'a system email'
     it_behaves_like 'an email that respects user email locale preference'
@@ -357,7 +357,7 @@ RSpec.describe UserMailer, type: :mailer do
         strip_tags(
           t(
             'user_mailer.account_reset_request.intro_html', app_name: APP_NAME,
-                                                            confirmation_period: confirmation_period
+                                                            interval: interval
           ),
         ),
       )
@@ -377,7 +377,7 @@ RSpec.describe UserMailer, type: :mailer do
     it 'renders the header within the body' do
       expect(mail.html_part.body).to have_content(
         strip_tags(
-          t('user_mailer.account_reset_request.header'),
+          t('user_mailer.account_reset_request.header', interval: interval),
         ),
       )
     end

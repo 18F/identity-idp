@@ -151,7 +151,7 @@ class UserMailer < ActionMailer::Base
       presenter = ConfirmationEmailPresenter.new(user, view_context)
       @confirmation_period = presenter.confirmation_period
       @token = account_reset&.request_token
-      @header = t('user_mailer.account_reset_request.header')
+      @header = t('user_mailer.account_reset_request.header', interval: @confirmation_period)
       mail(
         to: email_address.email,
         subject: t('user_mailer.account_reset_request.subject', app_name: APP_NAME),
