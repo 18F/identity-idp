@@ -364,6 +364,7 @@ function AcuantCapture(
   }, [hasCapture]);
   useDidUpdateEffect(() => setHasStartedCropping(false), [isCapturingEnvironment]);
   useImperativeHandle(ref, () => inputRef.current);
+  // Always clear the acuant cookie on component load, just in case it accidentally persisted
   useEffect(() => {
     setAcuantFailureCookie(null);
   }, []);
