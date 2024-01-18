@@ -9,10 +9,8 @@ PATCH=${PATCH:-}
 DRY_RUN=${DRY_RUN:-0}
 CHANGELOG_FILE=${CHANGELOG_FILE:-tmp/.rc-changelog.md}
 FORMAT_CHANGELOG=${FORMAT_CHANGELOG:-}
-GITHUB_REPOSITORY=${GITHUB_REPOSITORY:-18f/identity-idp}
+GH_REPO=${GH_REPO:-18f/identity-idp}
 STATUS_PROMOTION_LABEL='status - promotion'
-
-GH="gh --repo=$GITHUB_REPOSITORY"
 
 function check_gh_configuration {
     if ! which gh > /dev/null 2>&1; then
@@ -33,14 +31,14 @@ function check_gh_configuration {
         | tr '[:upper:]' '[:lower:]' \
     )
 
-    if [ "$GIT_REMOTE_REPO" != "$GITHUB_REPOSITORY" ]; then
-        echo "\$GITHUB_REPOSITORY is set to a different value ($GITHUB_REPOSITORY) than the git remote ($GIT_REMOTE - $GIT_REMOTE_REPO) in use."
+    if [ "$GIT_REMOTE_REPO" != "$GH_REPO" ]; then
+        echo "\$GH_REPO is set to a different value ($GH_REPO) than the git remote ($GIT_REMOTE - $GIT_REMOTE_REPO) in use."
         exit 1
     fi
 }
 
 function get_last_rc {
-    GH_OUTPUT=$($GH release list --exclude-drafts --exclude-pre-releases --limit 1 || true)
+    GH_OUTPUT=$(gh release list --exclude-drafts --exclude-pre-releases --limit 1 || true)
     LAST_RC=$(echo "$GH_OUTPUT" | grep -E --only-matching 'RC [0-9]+(\.[0-9]+)?' | sed 's/RC //')
     if [ -z "$LAST_RC" ]; then
         echo 0
@@ -124,11 +122,11 @@ if [[ $DRY_RUN -eq 0 ]]; then
     echo "Pushing $RC_BRANCH to $GIT_REMOTE..."
     git push "$GIT_REMOTE" "$SHA:refs/heads/$RC_BRANCH"
 
-    $GH label create "$STATUS_PROMOTION_LABEL" 2>/dev/null || true
+    gh label create "$STATUS_PROMOTION_LABEL" 2>/dev/null || true
 
     # Create PR
     echo "Creating PR..."
-    $GH pr create \
+    gh pr create \
         --title "Deploy RC ${NEXT_RC} to Production" \
         --label "$STATUS_PROMOTION_LABEL" \
         --base "$DEPLOY_BRANCH" \
