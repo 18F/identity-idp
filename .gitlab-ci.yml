@@ -463,7 +463,7 @@ review-app:
       ]
       EOF
       )
-    - git clone -b main --single-branch https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.login.gov/lg-public/identity-idp-helm-chart.git
+    - git clone -b cmccarthy/environments --single-branch https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.login.gov/lg-public/identity-idp-helm-chart.git
     - >-
       helm upgrade --install --namespace review-apps
       --debug
