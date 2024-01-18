@@ -12,7 +12,8 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
   let(:in_person_proofing_enabled_issuer) { nil }
   let(:acuant_sdk_upgrade_a_b_testing_enabled) { false }
   let(:use_alternate_sdk) { false }
-  let(:doc_auth_selfie_capture) { { enabled: false } }
+  let(:selfie_capture_enabled) { true }
+
   let(:acuant_version) { '1.3.3.7' }
   let(:skip_doc_auth) { false }
   let(:opted_in_to_in_person_proofing) { false }
@@ -44,7 +45,7 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
       acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
       use_alternate_sdk: use_alternate_sdk,
       acuant_version: acuant_version,
-      doc_auth_selfie_capture: doc_auth_selfie_capture,
+      doc_auth_selfie_capture: selfie_capture_enabled,
       skip_doc_auth: skip_doc_auth,
       opted_in_to_in_person_proofing: opted_in_to_in_person_proofing,
     }
@@ -97,11 +98,33 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
     end
   end
   describe 'view variables sent correctly' do
-    it 'sends doc_auth_selfie_capture to the FE' do
+    it 'sends selfie_capture_enabled to the frontend' do
       render_partial
       expect(rendered).to have_css(
-        "#document-capture-form[data-doc-auth-selfie-capture='{\"enabled\":false}']",
+        "#document-capture-form[data-doc-auth-selfie-capture='false']",
       )
+    end
+
+    context 'when selfie FF enabled' do
+      before do
+        expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
+          and_return(selfie_capture_enabled)
+      end
+      it 'does send doc_auth_selfie_capture to the FE' do
+        render_partial
+        expect(rendered).to have_css(
+          "#document-capture-form[data-doc-auth-selfie-capture='true']",
+        )
+      end
+      context 'when hosted in prod env' do
+        let(:selfie_capture_enabled) { false }
+        it 'does not send doc_auth_selfie_capture to the FE' do
+          render_partial
+          expect(rendered).to have_css(
+            "#document-capture-form[data-doc-auth-selfie-capture='false']",
+          )
+        end
+      end
     end
   end
 end

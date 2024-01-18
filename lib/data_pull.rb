@@ -34,13 +34,13 @@ class DataPull
 
         * #{basename} events-summary uuid1 uuid2
 
-        * #{basename} ig-request uuid1 uuid2 --requesting-issuer ABC:DEF:GHI
+        * #{basename} ig-request uuid1 uuid2 --requesting-issuer=ABC:DEF:GHI
 
         * #{basename} profile-summary uuid1 uuid2
 
         * #{basename} uuid-convert partner-uuid1 partner-uuid2
 
-        * #{basename} uuid-export uuid1 uuid2 --requesting-issuer ABC:DEF:GHI
+        * #{basename} uuid-export uuid1 uuid2 --requesting-issuer=ABC:DEF:GHI
 
         * #{basename} uuid-lookup email1@example.com email2@example.com
       Options:

@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Idv::AgreementController do
+  include FlowPolicyHelper
+
   let(:user) { create(:user) }
 
   let(:ab_test_args) do
@@ -9,8 +11,8 @@ RSpec.describe Idv::AgreementController do
 
   before do
     stub_sign_in(user)
+    stub_up_to(:welcome, idv_session: subject.idv_session)
     stub_analytics
-    subject.idv_session.welcome_visited = true
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 
@@ -79,7 +81,7 @@ RSpec.describe Idv::AgreementController do
 
     context 'agreement already visited' do
       it 'does not redirect to hybrid_handoff' do
-        subject.idv_session.idv_consent_given = true
+        stub_up_to(:agreement, idv_session: subject.idv_session)
 
         get :show
 
@@ -88,10 +90,7 @@ RSpec.describe Idv::AgreementController do
 
       context 'and verify info already completed' do
         before do
-          subject.idv_session.flow_path = 'standard'
-          subject.idv_session.pii_from_doc = { first_name: 'Susan' }
-          subject.idv_session.ssn = '123-45-6789'
-          subject.idv_session.resolution_successful = true
+          stub_up_to(:verify_info, idv_session: subject.idv_session)
         end
 
         it 'renders the show template' do

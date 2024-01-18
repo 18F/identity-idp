@@ -19,32 +19,31 @@ RSpec.describe 'Phishing-resistant authentication required in an OIDC context' d
 
       # Regression (LG-11110): Ensure the user can reauthenticate with any existing configuration,
       # not limited based on phishing-resistant requirement.
-      travel (IdentityConfig.store.reauthn_window + 1).seconds do
-        check t('two_factor_authentication.two_factor_choice_options.webauthn')
-        click_continue
+      expire_reauthn_window
+      check t('two_factor_authentication.two_factor_choice_options.webauthn')
+      click_continue
 
-        expect(page).to have_content(t('two_factor_authentication.login_options.sms'))
-        expect(page).to have_content(t('two_factor_authentication.login_options.voice'))
+      expect(page).to have_content(t('two_factor_authentication.login_options.sms'))
+      expect(page).to have_content(t('two_factor_authentication.login_options.voice'))
 
-        choose t('two_factor_authentication.login_options.sms')
-        click_continue
+      choose t('two_factor_authentication.login_options.sms')
+      click_continue
 
-        fill_in_code_with_last_phone_otp
-        click_submit_default
+      fill_in_code_with_last_phone_otp
+      click_submit_default
 
-        # LG-11193: Currently the user is redirected back to the MFA setup selection after
-        # reauthenticating. This should be improved to remember their original selection.
-        expect(page).to have_current_path(authentication_methods_setup_path)
-        expect(page).to have_content(t('two_factor_authentication.two_factor_aal3_choice'))
-        mock_webauthn_setup_challenge
-        check t('two_factor_authentication.two_factor_choice_options.webauthn')
-        click_continue
+      # LG-11193: Currently the user is redirected back to the MFA setup selection after
+      # reauthenticating. This should be improved to remember their original selection.
+      expect(page).to have_current_path(authentication_methods_setup_path)
+      expect(page).to have_content(t('two_factor_authentication.two_factor_aal3_choice'))
+      mock_webauthn_setup_challenge
+      check t('two_factor_authentication.two_factor_choice_options.webauthn')
+      click_continue
 
-        fill_in_nickname_and_click_continue
-        mock_press_button_on_hardware_key_on_setup
+      fill_in_nickname_and_click_continue
+      mock_press_button_on_hardware_key_on_setup
 
-        expect(page).to have_current_path(sign_up_completed_path)
-      end
+      expect(page).to have_current_path(sign_up_completed_path)
     end
   end
 

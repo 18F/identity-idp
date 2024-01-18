@@ -130,7 +130,7 @@ RSpec::Matchers.define :have_description do |description|
 end
 
 RSpec::Matchers.define :have_name do |name|
-  match { |element| AccessibleName.new(page:).computed_name(element) == name }
+  match { |element| AccessibleName.new(page:).computed_name(element).strip == name.strip }
 
   failure_message do |element|
     <<-STR.squish

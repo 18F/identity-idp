@@ -24,10 +24,12 @@ module Idv
         should_proof_state_id: should_proof_state_id,
         trace_id: trace_id,
         result_id: document_capture_session.result_id,
+        instant_verify_ab_test_discriminator: document_capture_session.uuid,
         user_id: user_id,
         threatmetrix_session_id: threatmetrix_session_id,
         request_ip: request_ip,
         double_address_verification: ipp_enrollment_in_progress,
+        ipp_enrollment_in_progress: ipp_enrollment_in_progress,
       }
 
       if IdentityConfig.store.ruby_workers_idv_enabled

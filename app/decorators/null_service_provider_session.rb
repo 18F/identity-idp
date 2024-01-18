@@ -45,6 +45,10 @@ class NullServiceProviderSession
     {}
   end
 
+  def selfie_required?
+    false
+  end
+
   private
 
   attr_reader :view_context

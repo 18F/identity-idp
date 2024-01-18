@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe DocAuth::Mock::ResultResponse do
   let(:warn_notifier) { instance_double('Proc') }
+  let(:selfie_check_performed) { false }
 
   subject(:response) do
     config = DocAuth::Mock::Config.new(
@@ -10,7 +11,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       glare_threshold: 40,
       warn_notifier: warn_notifier,
     )
-    described_class.new(input, config)
+    described_class.new(input, selfie_check_performed, config)
   end
 
   context 'with an image file' do
@@ -254,7 +255,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
           glare_threshold: 40,
         },
       )
-      described_class.new(input, config)
+      described_class.new(input, selfie_check_performed, config)
     end
 
     let(:input) do
@@ -303,6 +304,8 @@ RSpec.describe DocAuth::Mock::ResultResponse do
         billed: true,
         classification_info: {},
       )
+      expect(response.doc_auth_success?).to eq(true)
+      expect(response.selfie_success).to be_nil
     end
   end
 
@@ -643,6 +646,72 @@ RSpec.describe DocAuth::Mock::ResultResponse do
           Back: { ClassName: 'Drivers License', CountryCode: 'USA' },
         },
       )
+    end
+  end
+
+  context 'when a selfie check is performed' do
+    describe 'and it is successful' do
+      let(:input) do
+        <<~YAML
+          portrait_match_results:
+            FaceMatchResult: Pass
+            FaceErrorMessage: 'Successful. Liveness: Live'
+          doc_auth_result: Passed
+          failed_alerts: []
+        YAML
+      end
+      let(:selfie_check_performed) { true }
+
+      it 'returns the expected values' do
+        selfie_results = {
+          FaceMatchResult: 'Pass',
+          FaceErrorMessage: 'Successful. Liveness: Live',
+        }
+
+        expect(response.selfie_check_performed?).to eq(true)
+        expect(response.success?).to eq(true)
+        expect(response.extra[:portrait_match_results]).to eq(selfie_results)
+        expect(response.doc_auth_success?).to eq(true)
+        expect(response.selfie_success).to eq(true)
+      end
+    end
+
+    describe 'and it is not successful' do
+      let(:input) do
+        <<~YAML
+          portrait_match_results:
+            FaceMatchResult: Fail
+            FaceErrorMessage: 'Successful. Liveness: Live'
+          doc_auth_result: Passed
+          failed_alerts: []
+        YAML
+      end
+      let(:selfie_check_performed) { true }
+
+      it 'returns the expected values' do
+        selfie_results = {
+          FaceMatchResult: 'Fail',
+          FaceErrorMessage: 'Successful. Liveness: Live',
+        }
+
+        expect(response.selfie_check_performed?).to eq(true)
+        expect(response.success?).to eq(false)
+        expect(response.extra[:portrait_match_results]).to eq(selfie_results)
+        expect(response.doc_auth_success?).to eq(true)
+        expect(response.selfie_success).to eq(false)
+      end
+    end
+  end
+
+  context 'when a selfie check is not performed' do
+    let(:input) { DocAuthImageFixtures.document_front_image }
+    let(:selfie_check_performed) { false }
+
+    it 'returns the expected values' do
+      expect(response.selfie_check_performed?).to eq(false)
+      expect(response.extra).not_to have_key(:portrait_match_results)
+      expect(response.doc_auth_success?).to eq(true)
+      expect(response.selfie_success).to be_nil
     end
   end
 end

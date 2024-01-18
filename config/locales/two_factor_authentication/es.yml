@@ -208,9 +208,10 @@ es:
       delete: Eliminar este dispositivo
       deleted: Se ha eliminado correctamente un método de desbloqueo facial o táctil
       edit_heading: Gestione su configuración de desbloqueo facial o táctil
+      manage_accessible_label: Gestionar desbloqueo facial o táctil
       nickname: Apodo
       renamed: Se ha cambiado correctamente el nombre de su método de desbloqueo
         facial o táctil
     webauthn_platform_header_text: Usar desbloqueo facial o táctil
-    webauthn_platform_use_key: Usar desbloqueo facial o táctil
+    webauthn_platform_use_key: Usar el desbloqueo de pantalla
     webauthn_use_key: Usar llave de seguridad

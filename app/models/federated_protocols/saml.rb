@@ -26,6 +26,10 @@ module FederatedProtocols
       current_service_provider
     end
 
+    def biometric_comparison_required?
+      false
+    end
+
     private
 
     attr_reader :request

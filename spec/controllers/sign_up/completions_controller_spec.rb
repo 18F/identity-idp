@@ -27,7 +27,7 @@ RSpec.describe SignUp::CompletionsController do
         let(:user) { create(:user, :fully_registered, email: temporary_email) }
 
         before do
-          DisposableDomain.create(name: 'temporary.com')
+          DisposableEmailDomain.create(name: 'temporary.com')
           stub_sign_in(user)
           subject.session[:sp] = {
             issuer: current_sp.issuer,
@@ -71,7 +71,8 @@ RSpec.describe SignUp::CompletionsController do
             requested_attributes: [:email],
             request_url: 'http://localhost:3000',
           }
-          allow(controller).to receive(:user_session).and_return('decrypted_pii' => pii.to_json)
+          Pii::Cacher.new(user, controller.user_session).save_decrypted_pii(pii, 123)
+
           get :show
         end
 
@@ -92,6 +93,42 @@ RSpec.describe SignUp::CompletionsController do
         it 'creates a presenter object that is requesting ial2' do
           expect(assigns(:presenter).ial2_requested?).to eq true
         end
+
+        context 'user is not identity verified' do
+          let(:user) { create(:user) }
+          it 'redirects to idv_url' do
+            get :show
+
+            expect(response).to redirect_to(idv_url)
+          end
+        end
+
+        context 'sp requires selfie' do
+          let(:selfie_capture_enabled) { true }
+          before do
+            expect(FeatureManagement).to receive(:idv_allow_selfie_check?).
+              and_return(selfie_capture_enabled)
+            subject.session[:sp][:biometric_comparison_required] = 'true'
+          end
+
+          context 'user does not have a selfie' do
+            it 'redirects to idv_url' do
+              get :show
+
+              expect(response).to redirect_to(idv_url)
+            end
+          end
+
+          context 'selfie capture not enabled' do
+            let(:selfie_capture_enabled) { false }
+
+            it 'does not redirect' do
+              get :show
+
+              expect(response).to render_template :show
+            end
+          end
+        end
       end
 
       context 'IALMax' do
@@ -109,7 +146,8 @@ RSpec.describe SignUp::CompletionsController do
             requested_attributes: [:email],
             request_url: 'http://localhost:3000',
           }
-          allow(controller).to receive(:user_session).and_return('decrypted_pii' => pii.to_json)
+          Pii::Cacher.new(user, controller.user_session).save_decrypted_pii(pii, 123)
+
           get :show
         end
 
@@ -264,7 +302,7 @@ RSpec.describe SignUp::CompletionsController do
         let(:user) { create(:user, :fully_registered, email: temporary_email) }
 
         it 'logs disposable domain' do
-          DisposableDomain.create(name: 'temporary.com')
+          DisposableEmailDomain.create(name: 'temporary.com')
           stub_sign_in(user)
           subject.session[:sp] = {
             ial2: false,
@@ -293,7 +331,7 @@ RSpec.describe SignUp::CompletionsController do
 
     context 'IAL2' do
       it 'tracks analytics' do
-        DisposableDomain.create(name: 'temporary.com')
+        DisposableEmailDomain.create(name: 'temporary.com')
         user = create(
           :user,
           :fully_registered,

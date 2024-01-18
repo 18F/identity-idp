@@ -135,22 +135,6 @@ const EXCEPTIONS = {
   // Reason: ESLint plugins must follow a specific format for their package names, which conflicts
   // with our standard "identity-" prefix.
   checkHaveCorrectPackageName: ['app/javascript/packages/eslint-plugin/package.json'],
-  // Reason: There is no reason aside from legacy prior to enforcement. Please write documentation!
-  checkHaveDocumentation: [
-    'app/javascript/packages/assets/package.json',
-    'app/javascript/packages/config/package.json',
-    'app/javascript/packages/device/package.json',
-    'app/javascript/packages/document-capture/package.json',
-    'app/javascript/packages/document-capture-polling/package.json',
-    'app/javascript/packages/form-steps/package.json',
-    'app/javascript/packages/masked-text-toggle/package.json',
-    'app/javascript/packages/memorable-date/package.json',
-    'app/javascript/packages/password-toggle/package.json',
-    'app/javascript/packages/phone-input/package.json',
-    'app/javascript/packages/spinner-button/package.json',
-    'app/javascript/packages/time-element/package.json',
-    'app/javascript/packages/validated-field/package.json',
-  ],
 };
 
 const manifestPaths = glob('app/javascript/packages/*/package.json');

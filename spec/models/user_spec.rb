@@ -186,6 +186,36 @@ RSpec.describe User do
 
         expect(user.active_profile).to eq profile1
       end
+
+      context 'when the active profile is deactivated' do
+        it 'is no longer returned' do
+          user = create(:user, :fully_registered)
+          create(:profile, :active, :verified, user: user, pii: { first_name: 'Jane' })
+
+          expect(user.active_profile).not_to be_nil
+          user.active_profile.deactivate(:password_reset)
+          expect(user.active_profile).to be_nil
+        end
+      end
+
+      context 'when there is no active profile' do
+        it 'does not cache the nil value' do
+          user = create(:user, :fully_registered)
+          profile = create(
+            :profile,
+            gpo_verification_pending_at: 2.days.ago,
+            created_at: 2.days.ago,
+            user: user,
+          )
+
+          expect(user.active_profile).to be_nil
+
+          profile.remove_gpo_deactivation_reason
+          profile.activate
+
+          expect(user.active_profile).to eql(profile)
+        end
+      end
     end
   end
 
@@ -607,8 +637,9 @@ RSpec.describe User do
   end
 
   describe '#pending_profile' do
+    let(:user) { User.new }
+
     context 'when a pending profile exists' do
-      let(:user) { User.new }
       let!(:pending) do
         create(
           :profile,
@@ -629,11 +660,20 @@ RSpec.describe User do
 
         expect(user.pending_profile).to eq pending
       end
+
+      it 'returns nil after the pending profile is activated' do
+        pending_profile = user.pending_profile
+        expect(pending_profile).not_to be_nil
+
+        pending_profile.remove_gpo_deactivation_reason
+        pending_profile.activate
+
+        expect(user.pending_profile).to be_nil
+      end
     end
 
     context 'when pending profile does not exist' do
       it 'returns nil' do
-        user = User.new
         create(
           :profile,
           deactivation_reason: :encryption_error,
@@ -641,6 +681,19 @@ RSpec.describe User do
         )
 
         expect(user.pending_profile).to be_nil
+      end
+
+      it 'caches nil until reload' do
+        expect(user.pending_profile).to be_nil
+        pending_profile = create(
+          :profile,
+          gpo_verification_pending_at: 2.days.ago,
+          created_at: 2.days.ago,
+          user: user,
+        )
+        expect(user.pending_profile).to be_nil
+        user.reload
+        expect(user.pending_profile).to eql(pending_profile)
       end
     end
 
@@ -1351,6 +1404,34 @@ RSpec.describe User do
     end
   end
 
+  describe '#identity_verified_with_selfie?' do
+    let(:user) { create(:user) }
+    let(:active_profile) do
+      create(
+        :profile, :active, :verified,
+        activated_at: 1.day.ago, pii: { first_name: 'Jane' },
+        user: user
+      )
+    end
+
+    it 'returns true if user has an active profile with selfie' do
+      active_profile.idv_level = :unsupervised_with_selfie
+      active_profile.save
+      expect(user.identity_verified_with_selfie?).to eq true
+    end
+
+    it 'returns false if user has an active profile without selfie' do
+      expect(user.identity_verified_with_selfie?).to eq false
+    end
+
+    context 'user does not have active profile' do
+      let(:active_profile) { nil }
+      it 'returns false' do
+        expect(user.identity_verified_with_selfie?).to eq false
+      end
+    end
+  end
+
   describe '#locked_out?' do
     let(:locked_at) { nil }
     let(:user) { User.new }
@@ -1439,6 +1520,55 @@ RSpec.describe User do
       end
 
       it { expect(has_devices?).to eq(true) }
+    end
+  end
+
+  describe '#new_device?' do
+    let(:user_agent) { 'A computer on the internet' }
+    let(:ip_address) { '4.4.4.4' }
+    let(:existing_device_cookie) { 'existing_device_cookie' }
+    let(:cookie_jar) do
+      {
+        device: existing_device_cookie,
+      }.with_indifferent_access.tap do |cookie_jar|
+        allow(cookie_jar).to receive(:permanent).and_return({})
+      end
+    end
+    let(:request) do
+      double(
+        remote_ip: ip_address,
+        user_agent: user_agent,
+        cookie_jar: cookie_jar,
+      )
+    end
+    let(:user) { create(:user, :fully_registered) }
+    let(:device) { create(:device, user: user, cookie_uuid: existing_device_cookie) }
+
+    context 'with existing device' do
+      before do
+        # Memoize user and device before specs run
+        user
+        device
+      end
+      it 'does not expect a device to be new' do
+        cookies = request.cookie_jar
+        device_present = user.new_device?(cookie_uuid: cookies[:device])
+        expect(device_present).to eq(false)
+      end
+    end
+
+    context 'with new device' do
+      let(:device) { create(:device, user: user, cookie_uuid: 'non_existing_device_cookie') }
+      before do
+        # Memoize user and device before specs run
+        user
+        device
+      end
+      it 'expects a new device' do
+        cookies = request.cookie_jar
+        device_present = user.new_device?(cookie_uuid: cookies[:device])
+        expect(device_present).to eq(true)
+      end
     end
   end
 

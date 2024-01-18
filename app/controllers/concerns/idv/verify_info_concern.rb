@@ -23,11 +23,14 @@ module Idv
       idv_session.verify_info_step_document_capture_session_uuid = document_capture_session.uuid
 
       # proof_resolution job expects these values
-      pii[:uuid_prefix] = ServiceProvider.find_by(issuer: sp_session[:issuer])&.app_id
-      pii[:ssn] = idv_session.ssn
-      Idv::Agent.new(pii).proof_resolution(
+      agent_pii = pii.merge(
+        uuid: current_user.uuid,
+        uuid_prefix: ServiceProvider.find_by(issuer: sp_session[:issuer])&.app_id,
+        ssn: idv_session.ssn,
+      )
+      Idv::Agent.new(agent_pii).proof_resolution(
         document_capture_session,
-        should_proof_state_id: should_use_aamva?(pii),
+        should_proof_state_id: aamva_state?,
         trace_id: amzn_trace_id,
         user_id: current_user.id,
         threatmetrix_session_id: idv_session.threatmetrix_session_id,
@@ -44,20 +47,8 @@ module Idv
       current_user.has_in_person_enrollment?
     end
 
-    def should_use_aamva?(pii)
-      aamva_state?(pii) && !aamva_disallowed_for_service_provider?
-    end
-
-    def aamva_state?(pii)
-      IdentityConfig.store.aamva_supported_jurisdictions.include?(
-        pii['state_id_jurisdiction'],
-      )
-    end
-
-    def aamva_disallowed_for_service_provider?
-      return false if sp_session.nil?
-      banlist = IdentityConfig.store.aamva_sp_banlist_issuers
-      banlist.include?(sp_session[:issuer])
+    def aamva_state?
+      IdentityConfig.store.aamva_supported_jurisdictions.include?(pii['state_id_jurisdiction'])
     end
 
     def resolution_rate_limiter
@@ -314,6 +305,10 @@ module Idv
       results[:context][:stages].each do |stage, hash|
         if stage == :resolution
           # transaction_id comes from ConversationId
+          add_cost(:lexis_nexis_resolution, transaction_id: hash[:transaction_id])
+        elsif stage == :residential_address
+          next if pii[:same_address_as_id] == 'true'
+          next if hash[:vendor_name] == 'ResidentialAddressNotRequired'
           add_cost(:lexis_nexis_resolution, transaction_id: hash[:transaction_id])
         elsif stage == :state_id
           next if hash[:exception].present?

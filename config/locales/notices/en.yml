@@ -13,9 +13,6 @@ en:
       first_paragraph_start: We sent an email to
       no_email_sent_explanation_start: Didn’t receive an email?
       resend_email_success: We sent another password reset email.
-      use_diff_email:
-        link: create a new account
-        text_html: Or, %{link_html} using a different email address.
     password_changed: You changed your password.
     phone_confirmed: A phone was added to your account.
     piv_cac_configured: A PIV/CAC card was added to your account.

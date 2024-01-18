@@ -22,10 +22,28 @@ class AuthMethodsSession
     auth_events.last
   end
 
-  def recently_authenticated_2fa?
-    auth_events.any? do |auth_event|
-      auth_event[:auth_method] != TwoFactorAuthenticatable::AuthMethod::REMEMBER_DEVICE &&
-        auth_event[:at] > Time.zone.now - IdentityConfig.store.reauthn_window
+  def last_2fa_auth_event
+    auth_events.reverse.find do |auth_event|
+      auth_event[:auth_method] != TwoFactorAuthenticatable::AuthMethod::REMEMBER_DEVICE
     end
+  end
+
+  def reauthenticate_at
+    last_2fa_auth_event_at = last_2fa_auth_event&.[](:at)
+    if last_2fa_auth_event_at
+      last_2fa_auth_event_at.to_datetime + reauthn_window
+    else
+      Time.zone.now
+    end
+  end
+
+  def recently_authenticated_2fa?
+    reauthenticate_at.future?
+  end
+
+  private
+
+  def reauthn_window
+    IdentityConfig.store.reauthn_window.seconds
   end
 end

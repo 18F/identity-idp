@@ -33,6 +33,7 @@ class Profile < ApplicationRecord
   enum idv_level: {
     legacy_unsupervised: 1,
     legacy_in_person: 2,
+    unsupervised_with_selfie: 3,
   }
 
   attr_reader :personal_key
@@ -277,11 +278,6 @@ class Profile < ApplicationRecord
 
     return unless values.all?(&:present?)
     values.join(':')
-  end
-
-  def includes_phone_check?
-    return false if proofing_components.blank?
-    proofing_components['address_check'] == 'lexis_nexis_address'
   end
 
   def irs_attempts_api_tracker

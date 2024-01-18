@@ -35,6 +35,10 @@ module Api
           analytics.webauthn_delete_submitted(**result.to_h)
 
           if result.success?
+            create_user_event(:webauthn_key_removed)
+            revoke_remember_device(current_user)
+            event = PushNotification::RecoveryInformationChangedEvent.new(user: current_user)
+            PushNotification::HttpPush.deliver(event)
             render json: { success: true }
           else
             render json: { success: false, error: result.first_error_message }, status: :bad_request

@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Idv::HybridHandoffController do
+  include FlowPolicyHelper
+
   let(:user) { create(:user) }
 
   let(:ab_test_args) do
@@ -9,9 +11,9 @@ RSpec.describe Idv::HybridHandoffController do
 
   before do
     stub_sign_in(user)
+    stub_up_to(:agreement, idv_session: subject.idv_session)
     stub_analytics
     stub_attempts_tracker
-    subject.idv_session.idv_consent_given = true
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 
@@ -71,7 +73,6 @@ RSpec.describe Idv::HybridHandoffController do
 
     context 'agreement step is not complete' do
       before do
-        subject.idv_session.welcome_visited = true
         subject.idv_session.idv_consent_given = nil
       end
 
@@ -138,7 +139,7 @@ RSpec.describe Idv::HybridHandoffController do
 
       context 'user has already completed verify info' do
         before do
-          subject.idv_session.mark_verify_info_step_complete!
+          stub_up_to(:verify_info, idv_session: subject.idv_session)
         end
 
         it 'does set redo_document_capture to true in idv_session' do

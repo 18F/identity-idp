@@ -74,6 +74,28 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController do
         expect(response).to render_template :show
       end
 
+      context 'when a selfie is requested' do
+        before do
+          allow(subject).to receive(:decorated_sp_session).
+            and_return(double('decorated_session', { selfie_required?: true, sp_name: 'sp' }))
+        end
+        context 'when selfie is required by sp session' do
+          it 'requests FE to display selfie' do
+            expect(subject).to receive(:render).with(
+              :show,
+              locals: hash_including(
+                document_capture_session_uuid: document_capture_session_uuid,
+                doc_auth_selfie_capture: true,
+              ),
+            ).and_call_original
+
+            get :show
+
+            expect(response).to render_template :show
+          end
+        end
+      end
+
       it 'sends analytics_visited event' do
         get :show
 
@@ -192,6 +214,31 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController do
         it 'confirms ocr' do
           put :update
           expect(subject.document_capture_session.ocr_confirmation_pending).to be_falsey
+        end
+      end
+
+      context 'selfie checks' do
+        before do
+          expect(controller).to receive(:selfie_requirement_met?).
+            and_return(performed_if_needed)
+        end
+
+        context 'not performed' do
+          let(:performed_if_needed) { false }
+
+          it 'stays on hybrid mobile document capture' do
+            put :update
+            expect(response).to redirect_to idv_hybrid_mobile_document_capture_url
+          end
+        end
+
+        context 'performed' do
+          let(:performed_if_needed) { true }
+
+          it 'redirects to capture complete' do
+            put :update
+            expect(response).to redirect_to idv_hybrid_mobile_capture_complete_url
+          end
         end
       end
     end

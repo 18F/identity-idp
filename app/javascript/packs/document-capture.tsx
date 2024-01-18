@@ -37,7 +37,6 @@ interface AppRootData {
   securityAndPrivacyHowItWorksUrl: string;
   skipDocAuth: string;
   howToVerifyURL: string;
-  uiNotReadySectionEnabled: string;
   uiExitQuestionSectionEnabled: string;
 }
 
@@ -54,8 +53,7 @@ function getServiceProvider() {
 
 function getSelfieCaptureEnabled() {
   const { docAuthSelfieCapture } = appRoot.dataset;
-  const docAuthSelfieCaptureObject = docAuthSelfieCapture ? JSON.parse(docAuthSelfieCapture) : {};
-  return !!docAuthSelfieCaptureObject?.enabled;
+  return docAuthSelfieCapture === 'true';
 }
 
 function getMetaContent(name): string | null {
@@ -106,7 +104,6 @@ const {
   usStatesTerritories = '',
   skipDocAuth,
   howToVerifyUrl,
-  uiNotReadySectionEnabled = '',
   uiExitQuestionSectionEnabled = '',
 } = appRoot.dataset as DOMStringMap & AppRootData;
 
@@ -190,7 +187,6 @@ const App = composeComponents(
     FeatureFlagContext.Provider,
     {
       value: {
-        notReadySectionEnabled: String(uiNotReadySectionEnabled) === 'true',
         exitQuestionSectionEnabled: String(uiExitQuestionSectionEnabled) === 'true',
         selfieCaptureEnabled: getSelfieCaptureEnabled(),
       },

@@ -19,6 +19,21 @@ fr:
       enabled_alert: Vous avez activé JavaScript dans votre navigateur.
       next_step: Veuillez rafraîchir cette page une fois que vous avez activé
         JavaScript dans votre navigateur.
+    manageable_authenticator:
+      cancel: Annuler
+      created_on: Créé le %{date}
+      delete: Effacer
+      delete_confirm: Êtes-vous sûr de vouloir supprimer cette méthode d’authentification?
+      deleted: Suppression réussie d’une méthode d’authentification
+      deleting: Suppression en cours…
+      done: Terminé
+      manage: Administrer
+      manage_accessible_label: Gérer la méthode d’authentification
+      nickname: Pseudo
+      rename: Renommer
+      renamed: Votre méthode d’authentification a été renommée avec succès
+      save: Sauvegarder
+      saving: Sauvegarde en cours…
     memorable_date:
       day: Jour
       errors:

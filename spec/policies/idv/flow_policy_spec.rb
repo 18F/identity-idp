@@ -222,7 +222,9 @@ RSpec.describe 'Idv::FlowPolicy' do
     context 'preconditions for in_person ssn are present' do
       before do
         stub_up_to(:hybrid_handoff, idv_session: idv_session)
-        idv_session.send(:user_session)['idv/in_person'] = { pii_from_user: { pii: 'value' } }
+        idv_session.send(:user_session)['idv/in_person'] = {
+          pii_from_user: Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID.dup,
+        }
       end
 
       it 'returns ipp_ssn' do
@@ -294,7 +296,7 @@ RSpec.describe 'Idv::FlowPolicy' do
 
           expect(subject.info_for_latest_step.key).to eq(:enter_password)
           expect(subject.controller_allowed?(controller: Idv::EnterPasswordController)).to be
-          # expect(subject.controller_allowed?(controller: Idv::PersonalKeyController)).not_to be
+          expect(subject.controller_allowed?(controller: Idv::PersonalKeyController)).not_to be
         end
       end
 
@@ -304,7 +306,31 @@ RSpec.describe 'Idv::FlowPolicy' do
 
           expect(subject.info_for_latest_step.key).to eq(:enter_password)
           expect(subject.controller_allowed?(controller: Idv::EnterPasswordController)).to be
-          # expect(subject.controller_allowed?(controller: Idv::PersonalKeyController)).not_to be
+          expect(subject.controller_allowed?(controller: Idv::PersonalKeyController)).not_to be
+        end
+      end
+    end
+
+    context 'preconditions for personal_key are present' do
+      let(:password) { 'sekrit phrase' }
+      context 'user has a verify by mail pending profile' do
+        it 'returns personal_key' do
+          stub_up_to(:request_letter, idv_session: idv_session)
+          idv_session.gpo_code_verified = true
+          idv_session.create_profile_from_applicant_with_password('password')
+
+          expect(subject.info_for_latest_step.key).to eq(:personal_key)
+          expect(subject.controller_allowed?(controller: Idv::PersonalKeyController)).to be
+        end
+      end
+
+      context 'user has a newly activated profile' do
+        it 'returns personal_key' do
+          stub_up_to(:otp_verification, idv_session: idv_session)
+          idv_session.create_profile_from_applicant_with_password('password')
+
+          expect(subject.info_for_latest_step.key).to eq(:personal_key)
+          expect(subject.controller_allowed?(controller: Idv::PersonalKeyController)).to be
         end
       end
     end

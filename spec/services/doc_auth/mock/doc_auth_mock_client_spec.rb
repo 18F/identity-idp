@@ -3,6 +3,8 @@ require 'rails_helper'
 RSpec.describe DocAuth::Mock::DocAuthMockClient do
   subject(:client) { described_class.new }
 
+  let(:liveness_checking_required) { false }
+
   it 'implements all the public methods of the real Acuant client' do
     expect(
       described_class.instance_methods.sort,
@@ -23,7 +25,10 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
       instance_id: instance_id,
       image: DocAuthImageFixtures.document_back_image,
     )
-    get_results_response = client.get_results(instance_id: instance_id)
+    get_results_response = client.get_results(
+      instance_id: instance_id,
+      selfie_check_performed: liveness_checking_required,
+    )
 
     expect(create_document_response.success?).to eq(true)
     expect(create_document_response.instance_id).to_not be_blank
@@ -84,6 +89,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
     )
     get_results_response = client.get_results(
       instance_id: create_document_response.instance_id,
+      selfie_check_performed: liveness_checking_required,
     )
 
     expect(get_results_response.pii_from_doc).to eq(
@@ -124,6 +130,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
     )
     get_results_response = client.get_results(
       instance_id: create_document_response.instance_id,
+      selfie_check_performed: liveness_checking_required,
     )
     expect(get_results_response.attention_with_barcode?).to eq(false)
     errors = get_results_response.errors
@@ -177,6 +184,52 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
     expect(post_images_response).to be_a(DocAuth::Response)
   end
 
+  describe 'selfie check performed flag' do
+    context 'when a liveness check is required' do
+      let(:liveness_checking_required) { true }
+
+      image = <<~YAML
+        portrait_match_results:
+          FaceMatchResult: Pass
+          FaceErrorMessage: 'Successful. Liveness: Live'
+        doc_auth_result: Passed
+        failed_alerts: []
+      YAML
+
+      it 'sets selfie_check_performed to true' do
+        response = client.post_images(
+          front_image: image,
+          back_image: image,
+          liveness_checking_required: liveness_checking_required,
+          selfie_image: image,
+        )
+
+        expect(response.selfie_check_performed?).to be(true)
+        expect(response.extra).to have_key(:portrait_match_results)
+      end
+    end
+
+    context 'when a liveness check is not required' do
+      let(:liveness_checking_required) { false }
+
+      image = <<~YAML
+        doc_auth_result: Passed
+        failed_alerts: []
+      YAML
+
+      it 'sets selfie_check_performed to false' do
+        response = client.post_images(
+          front_image: image,
+          back_image: image,
+          liveness_checking_required: liveness_checking_required,
+        )
+
+        expect(response.selfie_check_performed?).to be(false)
+        expect(response.extra).not_to have_key(:portrait_match_results)
+      end
+    end
+  end
+
   describe 'generate response for failure indicating http status' do
     it 'generate network error response for status 500 when post image' do
       image = <<-YAML
@@ -202,7 +255,10 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
         image: image,
         instance_id: nil,
       )
-      response = client.get_results(instance_id: nil)
+      response = client.get_results(
+        instance_id: nil,
+        selfie_check_performed: liveness_checking_required,
+      )
       expect(response).to be_a(DocAuth::Response)
       expect(response.success?).to eq(false)
       expect(response.errors).to eq(general: ['network'])
@@ -223,6 +279,128 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
         { general: [DocAuth::Errors::IMAGE_SIZE_FAILURE],
           front: [DocAuth::Errors::IMAGE_SIZE_FAILURE_FIELD] },
       )
+    end
+  end
+
+  context 'liveness checking is required and doc_auth_result is passed' do
+    let(:liveness_checking_required) { true }
+
+    describe 'when sending a selfie image that is successful (both live and a match)' do
+      it 'returns a success response' do
+        image = <<~YAML
+          portrait_match_results:
+            FaceMatchResult: Pass
+            FaceErrorMessage: 'Successful. Liveness: Live'
+          doc_auth_result: Passed
+          failed_alerts: []
+        YAML
+
+        post_images_response = client.post_images(
+          front_image: image,
+          back_image: image,
+          selfie_image: image,
+          liveness_checking_required: liveness_checking_required,
+        )
+
+        expect(post_images_response.success?).to eq(true)
+        expect(post_images_response.extra[:portrait_match_results]).to eq(
+          {
+            FaceMatchResult: 'Pass', FaceErrorMessage: 'Successful. Liveness: Live'
+          },
+        )
+        expect(post_images_response.errors).to be_empty
+      end
+    end
+
+    describe 'when sending a failing selfie yml' do
+      context 'liveness check fails due to being determined to not be live' do
+        it 'returns a failure response' do
+          image = <<~YAML
+            portrait_match_results:
+              FaceMatchResult: Fail
+              FaceErrorMessage: 'Liveness: NotLive'
+            doc_auth_result: Passed
+            failed_alerts: []
+          YAML
+
+          post_images_response = client.post_images(
+            front_image: image,
+            back_image: image,
+            selfie_image: image,
+            liveness_checking_required: liveness_checking_required,
+          )
+
+          expect(post_images_response.success?).to eq(false)
+          expect(post_images_response.extra[:portrait_match_results]).to eq(
+            {
+              FaceMatchResult: 'Fail', FaceErrorMessage: 'Liveness: NotLive'
+            },
+          )
+
+          errors = post_images_response.errors
+          expect(errors.keys).to contain_exactly(:general, :hints, :selfie)
+          expect(errors[:selfie]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
+        end
+      end
+
+      context 'liveness check fails due to poor quality' do
+        it 'returns a failure response' do
+          image = <<~YAML
+            portrait_match_results:
+              FaceMatchResult: Fail
+              FaceErrorMessage: 'Liveness: PoorQuality'
+            doc_auth_result: Passed
+            failed_alerts: []
+          YAML
+
+          post_images_response = client.post_images(
+            front_image: image,
+            back_image: image,
+            selfie_image: image,
+            liveness_checking_required: liveness_checking_required,
+          )
+
+          expect(post_images_response.success?).to eq(false)
+          expect(post_images_response.extra[:portrait_match_results]).to eq(
+            {
+              FaceMatchResult: 'Fail', FaceErrorMessage: 'Liveness: PoorQuality'
+            },
+          )
+
+          errors = post_images_response.errors
+          expect(errors.keys).to contain_exactly(:general, :hints, :selfie)
+          expect(errors[:selfie]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
+        end
+      end
+
+      context 'assessed to be live but face match result fails' do
+        it 'returns a failure response' do
+          image = <<~YAML
+            portrait_match_results:
+              FaceMatchResult: Fail
+              FaceErrorMessage: 'Successful. Liveness: Live'
+            doc_auth_result: Passed
+            failed_alerts: []
+          YAML
+          post_images_response = client.post_images(
+            front_image: image,
+            back_image: image,
+            selfie_image: image,
+            liveness_checking_required: liveness_checking_required,
+          )
+
+          expect(post_images_response.success?).to eq(false)
+          expect(post_images_response.extra[:portrait_match_results]).to eq(
+            {
+              FaceMatchResult: 'Fail', FaceErrorMessage: 'Successful. Liveness: Live'
+            },
+          )
+
+          errors = post_images_response.errors
+          expect(errors.keys).to contain_exactly(:general, :hints, :selfie)
+          expect(errors[:selfie]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
+        end
+      end
     end
   end
 end

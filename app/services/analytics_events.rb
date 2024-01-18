@@ -1595,7 +1595,6 @@ module AnalyticsEvents
 
   # @param [String] flow_path
   # @param [String] step
-  # @param [Integer] step_count
   # @param [String] analytics_id
   # @param [Boolean] irs_reproofing
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
@@ -1603,7 +1602,6 @@ module AnalyticsEvents
   def idv_in_person_proofing_address_visited(
     flow_path: nil,
     step: nil,
-    step_count: nil,
     analytics_id: nil,
     irs_reproofing: nil,
     opted_in_to_in_person_proofing: nil,
@@ -1613,7 +1611,6 @@ module AnalyticsEvents
       'IdV: in person proofing address visited',
       flow_path: flow_path,
       step: step,
-      step_count: step_count,
       analytics_id: analytics_id,
       irs_reproofing: irs_reproofing,
       opted_in_to_in_person_proofing: opted_in_to_in_person_proofing,
@@ -1623,7 +1620,6 @@ module AnalyticsEvents
 
   # @param [String] flow_path
   # @param [String] step
-  # @param [Integer] step_count
   # @param [String] analytics_id
   # @param [Boolean] irs_reproofing
   # @param [Boolean] success
@@ -1633,7 +1629,6 @@ module AnalyticsEvents
   def idv_in_person_proofing_cancel_update_address(
     flow_path: nil,
     step: nil,
-    step_count: nil,
     analytics_id: nil,
     irs_reproofing: nil,
     success: nil,
@@ -1645,7 +1640,6 @@ module AnalyticsEvents
       'IdV: in person proofing cancel_update_address submitted',
       flow_path: flow_path,
       step: step,
-      step_count: step_count,
       analytics_id: analytics_id,
       irs_reproofing: irs_reproofing,
       success: success,
@@ -1657,7 +1651,6 @@ module AnalyticsEvents
 
   # @param [String] flow_path
   # @param [String] step
-  # @param [Integer] step_count
   # @param [String] analytics_id
   # @param [Boolean] irs_reproofing
   # @param [Boolean] success
@@ -1667,7 +1660,6 @@ module AnalyticsEvents
   def idv_in_person_proofing_cancel_update_state_id(
     flow_path: nil,
     step: nil,
-    step_count: nil,
     analytics_id: nil,
     irs_reproofing: nil,
     success: nil,
@@ -1679,7 +1671,6 @@ module AnalyticsEvents
       'IdV: in person proofing cancel_update_state_id submitted',
       flow_path: flow_path,
       step: step,
-      step_count: step_count,
       analytics_id: analytics_id,
       irs_reproofing: irs_reproofing,
       success: success,
@@ -1760,7 +1751,6 @@ module AnalyticsEvents
 
   # @param [String] flow_path
   # @param [String] step
-  # @param [Integer] step_count
   # @param [String] analytics_id
   # @param [Boolean] irs_reproofing
   # @param [Boolean] success
@@ -1770,7 +1760,6 @@ module AnalyticsEvents
   def idv_in_person_proofing_redo_state_id_submitted(
     flow_path: nil,
     step: nil,
-    step_count: nil,
     analytics_id: nil,
     irs_reproofing: nil,
     success: nil,
@@ -1782,7 +1771,6 @@ module AnalyticsEvents
       'IdV: in person proofing redo_state_id submitted',
       flow_path: flow_path,
       step: step,
-      step_count: step_count,
       analytics_id: analytics_id,
       irs_reproofing: irs_reproofing,
       success: success,
@@ -1798,7 +1786,6 @@ module AnalyticsEvents
 
   # @param [String] flow_path
   # @param [String] step
-  # @param [Integer] step_count
   # @param [String] analytics_id
   # @param [Boolean] irs_reproofing
   # @param [Boolean] success
@@ -1809,7 +1796,6 @@ module AnalyticsEvents
   def idv_in_person_proofing_state_id_submitted(
     flow_path: nil,
     step: nil,
-    step_count: nil,
     analytics_id: nil,
     irs_reproofing: nil,
     success: nil,
@@ -1822,7 +1808,6 @@ module AnalyticsEvents
       'IdV: in person proofing state_id submitted',
       flow_path: flow_path,
       step: step,
-      step_count: step_count,
       analytics_id: analytics_id,
       irs_reproofing: irs_reproofing,
       success: success,
@@ -1835,7 +1820,6 @@ module AnalyticsEvents
 
   # @param [String] flow_path
   # @param [String] step
-  # @param [Integer] step_count
   # @param [String] analytics_id
   # @param [Boolean] irs_reproofing
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
@@ -1843,7 +1827,6 @@ module AnalyticsEvents
   def idv_in_person_proofing_state_id_visited(
     flow_path: nil,
     step: nil,
-    step_count: nil,
     analytics_id: nil,
     irs_reproofing: nil,
     opted_in_to_in_person_proofing: nil,
@@ -1853,7 +1836,6 @@ module AnalyticsEvents
       'IdV: in person proofing state_id visited',
       flow_path: flow_path,
       step: step,
-      step_count: step_count,
       analytics_id: analytics_id,
       irs_reproofing: irs_reproofing,
       opted_in_to_in_person_proofing: opted_in_to_in_person_proofing,
@@ -2747,6 +2729,74 @@ module AnalyticsEvents
     )
   end
 
+  # @param [Integer] attempt number of attempts
+  # User captured and approved of their selfie
+  def idv_sdk_selfie_image_added(attempt:, **extra)
+    track_event(:idv_sdk_selfie_image_added, attempt: attempt, **extra)
+  end
+
+  # User closed the SDK for taking a selfie without submitting a photo
+  def idv_sdk_selfie_image_capture_closed_without_photo(**extra)
+    track_event(:idv_sdk_selfie_image_capture_closed_without_photo, **extra)
+  end
+
+  # @param [Integer] sdk_error_code SDK code for the error encountered
+  # @param [String] sdk_error_message SDK message for the error encountered
+  # User encountered an error with the SDK selfie process
+  # Error code 1: camera permission not granted
+  # Error code 2: unexpected errors
+  def idv_sdk_selfie_image_capture_failed(sdk_error_code:, sdk_error_message:, **extra)
+    track_event(
+      :idv_sdk_selfie_image_capture_failed,
+      sdk_error_code: sdk_error_code,
+      sdk_error_message: sdk_error_message,
+      **extra,
+    )
+  end
+
+  # User opened the SDK to take a selfie
+  def idv_sdk_selfie_image_capture_opened(**extra)
+    track_event(:idv_sdk_selfie_image_capture_opened, **extra)
+  end
+
+  # @param [Integer] attempt number of attempts
+  # @param [Integer] failedImageResubmission
+  # @param [String] fingerprint fingerprint of the image added
+  # @param [String] flow_path whether the user is in the hybrid or standard flow
+  # @param [Integer] height height of image added in pixels
+  # @param [String] mimeType MIME type of image added
+  # @param [Integer] size size of image added in bytes
+  # @param [String] source
+  # @param [Integer] width width of image added in pixels
+  # User uploaded a selfie using the file picker
+  # rubocop:disable Naming/VariableName,Naming/MethodParameterName
+  def idv_selfie_image_file_uploaded(
+    attempt:,
+    failedImageResubmission:,
+    fingerprint:,
+    flow_path:,
+    height:,
+    mimeType:,
+    size:,
+    source:,
+    width:,
+    **_extra
+  )
+    track_event(
+      :idv_selfie_image_file_uploaded,
+      attempt: attempt,
+      failedImageResubmission: failedImageResubmission,
+      fingerprint: fingerprint,
+      flow_path: flow_path,
+      height: height,
+      mimeType: mimeType,
+      size: size,
+      source: source,
+      width: width,
+    )
+  end
+  # rubocop:enable Naming/VariableName,Naming/MethodParameterName
+
   # Tracks when the user visits one of the the session error pages.
   # @param [String] type
   # @param [Integer,nil] attempts_remaining
@@ -3021,6 +3071,7 @@ module AnalyticsEvents
   # @param [Boolean] success Whether authentication was successful
   # @param [Hash] errors Authentication error reasons, if unsuccessful
   # @param [String] context
+  # @param [Boolean] new_device
   # @param [String] multi_factor_auth_method
   # @param [DateTime] multi_factor_auth_method_created_at time auth method was created
   # @param [Integer] auth_app_configuration_id
@@ -3038,6 +3089,7 @@ module AnalyticsEvents
     success:,
     errors: nil,
     context: nil,
+    new_device: nil,
     multi_factor_auth_method: nil,
     multi_factor_auth_method_created_at: nil,
     auth_app_configuration_id: nil,
@@ -3058,6 +3110,7 @@ module AnalyticsEvents
       success: success,
       errors: errors,
       context: context,
+      new_device: new_device,
       multi_factor_auth_method: multi_factor_auth_method,
       multi_factor_auth_method_created_at: multi_factor_auth_method_created_at,
       auth_app_configuration_id: auth_app_configuration_id,
@@ -3315,44 +3368,6 @@ module AnalyticsEvents
       multi_factor_auth_method: multi_factor_auth_method,
       in_account_creation_flow: in_account_creation_flow,
       enabled_mfa_methods_count: enabled_mfa_methods_count,
-      **extra,
-    )
-  end
-
-  # @param [Boolean] success
-  # @param [String] exception
-  # @param [Integer] user_id
-  # A user was migrated from a single-region key to a multi-region key
-  def multi_region_kms_migration_user_migrated(
-    success:,
-    exception:,
-    user_id:,
-    **extra
-  )
-    track_event(
-      'Multi-region KMS migration: User migrated',
-      success: success,
-      exception: exception,
-      user_id: user_id,
-      **extra,
-    )
-  end
-
-  # @param [Integer] user_count
-  # @param [Integer] success_count
-  # @param [Integer] error_count
-  # The user migration job finished running
-  def multi_region_kms_migration_user_migration_summary(
-    user_count:,
-    success_count:,
-    error_count:,
-    **extra
-  )
-    track_event(
-      'Multi-region KMS migration: User migration summary',
-      user_count: user_count,
-      success_count: success_count,
-      error_count: error_count,
       **extra,
     )
   end
@@ -4043,6 +4058,34 @@ module AnalyticsEvents
       flow: flow,
       step: step,
       location: location,
+      **extra,
+    )
+  end
+
+  # Tracks when risc security event is pushed
+  # @param [String] client_id
+  # @param [String] event_type
+  # @param [Boolean] success
+  # @param ['async'|'direct'] transport
+  # @param [Integer] status
+  # @param [String] error
+  def risc_security_event_pushed(
+    client_id:,
+    event_type:,
+    success:,
+    transport:,
+    status: nil,
+    error: nil,
+    **extra
+  )
+    track_event(
+      :risc_security_event_pushed,
+      client_id:,
+      error:,
+      event_type:,
+      status:,
+      success:,
+      transport:,
       **extra,
     )
   end

@@ -84,8 +84,8 @@ RSpec.describe DocAuthRouter do
 
       context 'when selfie is enabled' do
         before do
-          allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture).
-            and_return({ enabled: true })
+          expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
+            and_return(true)
         end
         context 'when vendor is not set to mock' do
           it 'chose lexisnexis' do
@@ -123,8 +123,8 @@ RSpec.describe DocAuthRouter do
 
       context 'with selfie enabled' do
         before do
-          allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture).
-            and_return({ enabled: true })
+          expect(FeatureManagement).to receive(:idv_allow_selfie_check?).at_least(:once).
+            and_return(true)
         end
         it 'is the lexisnexis vendor' do
           expect(DocAuthRouter.doc_auth_vendor(discriminator: discriminator)).
@@ -185,7 +185,7 @@ RSpec.describe DocAuthRouter do
       )
 
       response = I18n.with_locale(:es) do
-        proxy.get_results(instance_id: 'abcdef')
+        proxy.get_results(instance_id: 'abcdef', selfie_check_performed: false)
       end
 
       expect(response.errors[:some_other_key]).to eq(['will not be translated'])
@@ -208,7 +208,7 @@ RSpec.describe DocAuthRouter do
         ),
       )
 
-      response = proxy.get_results(instance_id: 'abcdef')
+      response = proxy.get_results(instance_id: 'abcdef', selfie_check_performed: false)
 
       expect(response.errors[:network]).to eq(I18n.t('doc_auth.errors.general.network_error'))
     end

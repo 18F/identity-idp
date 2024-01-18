@@ -350,20 +350,6 @@ RSpec.describe 'FeatureManagement' do
     end
   end
 
-  describe '.voip_allowed_phones' do
-    before do
-      # clear memoization
-      FeatureManagement.instance_variable_set(:@voip_allowed_phones, nil)
-    end
-
-    it 'normalizes phone numbers and put them in a set' do
-      voip_allowed_phones = ['18885551234', '+18888675309']
-
-      expect(IdentityConfig.store).to receive(:voip_allowed_phones).and_return(voip_allowed_phones)
-      expect(FeatureManagement.voip_allowed_phones).to eq(Set['+18885551234', '+18888675309'])
-    end
-  end
-
   describe '#proofing_device_profiling_collecting_enabled?' do
     it 'returns false for disabled' do
       expect(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:disabled)
@@ -536,6 +522,39 @@ RSpec.describe 'FeatureManagement' do
         let("vendor_status_#{service}".to_sym) { :full_outage }
         it 'returns false' do
           expect(FeatureManagement.idv_available?).to eql(false)
+        end
+      end
+    end
+  end
+
+  describe '#idv_allow_selfie_check?' do
+    before do
+      allow(IdentityConfig.store).to receive(:doc_auth_selfie_capture_enabled).
+        and_return(selfie_capture_enabled)
+    end
+
+    context 'selfies are disabled' do
+      let(:selfie_capture_enabled) { false }
+
+      it 'says to block biometric requests' do
+        expect(FeatureManagement.idv_allow_selfie_check?).to eq(false)
+      end
+    end
+
+    context 'selfies are enabled' do
+      let(:selfie_capture_enabled) { true }
+
+      it 'says to allow biometric requests' do
+        expect(FeatureManagement.idv_allow_selfie_check?).to eq(true)
+      end
+
+      context 'in production' do
+        before do
+          allow(Identity::Hostdata).to receive(:env).and_return('prod')
+        end
+
+        it 'says to block biometric requests' do
+          expect(FeatureManagement.idv_allow_selfie_check?).to eq(false)
         end
       end
     end

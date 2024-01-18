@@ -14,7 +14,8 @@ module DocAuth
       extra: {},
       pii_from_doc: {},
       attention_with_barcode: false,
-      doc_type_supported: true
+      doc_type_supported: true,
+      selfie_check_performed: false
     )
       @success = success
       @errors = errors.to_h
@@ -23,6 +24,7 @@ module DocAuth
       @pii_from_doc = pii_from_doc
       @attention_with_barcode = attention_with_barcode
       @doc_type_supported = doc_type_supported
+      @selfie_check_performed = selfie_check_performed
     end
 
     def merge(other)
@@ -54,6 +56,8 @@ module DocAuth
         exception: exception,
         attention_with_barcode: attention_with_barcode?,
         doc_type_supported: doc_type_supported?,
+        doc_auth_success: doc_auth_success?,
+        selfie_success: selfie_success,
       }.merge(extra)
     end
 
@@ -70,6 +74,19 @@ module DocAuth
     def network_error?
       return false unless @errors
       return !!@errors&.with_indifferent_access&.dig(:network)
+    end
+
+    def selfie_check_performed?
+      @selfie_check_performed
+    end
+
+    def selfie_success
+      # to be implemented by concrete subclass
+    end
+
+    def doc_auth_success?
+      # to be implemented by concrete subclass
+      false
     end
   end
 end

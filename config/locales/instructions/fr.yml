@@ -77,8 +77,14 @@ fr:
           %{number_html}. Ce code expirera dans %{expiration} minutes.
       webauthn:
         confirm_webauthn: Présentez la clé de sécurité associée à votre compte.
-        confirm_webauthn_platform: Vous avez activé le déverrouillage facial ou tactile
-          pour votre compte %{app_name}.
+        confirm_webauthn_platform_html: <p>Vous pouvez vous authentifier de la même
+          manière que vous déverrouillez votre appareil – avec votre visage ou
+          votre empreinte digitale, un mot de passe ou une autre méthode.</p>
+          <p>Si vous avez utilisé un gestionnaire de mots de passe pour
+          configurer le déverrouillage facial ou tactile, vous pouvez vous
+          authentifier à partir de n’importe quel appareil utilisant ce
+          gestionnaire. Sinon, utilisez le même appareil que celui sur lequel
+          vous avez configuré le déverrouillage facial ou tactile.</p>
       webauthn_platform:
         learn_more_help: En savoir plus sur le déverrouillage facial ou tactile
       wrong_number: Vous avez entré un mauvais numéro de téléphone?

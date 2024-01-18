@@ -64,6 +64,7 @@ class ServiceProviderRequestHandler
       ial: protocol.ial,
       aal: protocol.aal,
       requested_attributes: protocol.requested_attributes,
+      biometric_comparison_required: protocol.biometric_comparison_required?,
       uuid: request_id,
       url: url,
     }

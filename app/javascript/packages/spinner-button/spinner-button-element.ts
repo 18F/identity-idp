@@ -4,11 +4,6 @@ interface SpinnerButtonElements {
   actionMessage: HTMLElement;
 }
 
-/**
- * Default time after which to show action message, in milliseconds.
- */
-const DEFAULT_LONG_WAIT_DURATION_MS = 15000;
-
 export class SpinnerButtonElement extends HTMLElement {
   elements: SpinnerButtonElements;
 
@@ -57,7 +52,7 @@ export class SpinnerButtonElement extends HTMLElement {
    * Time after which to show action message, in milliseconds.
    */
   get longWaitDurationMs(): number {
-    return Number(this.getAttribute('long-wait-duration-ms')) || DEFAULT_LONG_WAIT_DURATION_MS;
+    return Number(this.getAttribute('long-wait-duration-ms'));
   }
 
   showSpinner = () => this.toggleSpinner(true);
@@ -77,7 +72,7 @@ export class SpinnerButtonElement extends HTMLElement {
     }
 
     window.clearTimeout(this.#longWaitTimeout);
-    if (isVisible) {
+    if (isVisible && Number.isFinite(this.longWaitDurationMs)) {
       this.#longWaitTimeout = window.setTimeout(
         () => this.handleLongWait(),
         this.longWaitDurationMs,

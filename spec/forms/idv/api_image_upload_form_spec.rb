@@ -17,14 +17,14 @@ RSpec.describe Idv::ApiImageUploadForm do
       analytics: fake_analytics,
       irs_attempts_api_tracker: irs_attempts_api_tracker,
       store_encrypted_images: store_encrypted_images,
-      liveness_checking_enabled: liveness_checking_enabled,
+      liveness_checking_required: liveness_checking_required,
     )
   end
 
   let(:front_image) { DocAuthImageFixtures.document_front_image_multipart }
   let(:back_image) { DocAuthImageFixtures.document_back_image_multipart }
   let(:selfie_image) { nil }
-  let(:liveness_checking_enabled) { false }
+  let(:liveness_checking_required) { false }
   let(:front_image_metadata) do
     { width: 40, height: 40, mimeType: 'image/png', source: 'upload' }.to_json
   end
@@ -78,8 +78,8 @@ RSpec.describe Idv::ApiImageUploadForm do
       end
     end
 
-    context 'when liveness check is enabled' do
-      let(:liveness_checking_enabled) { true }
+    context 'when liveness check is required' do
+      let(:liveness_checking_required) { true }
       it 'is not valid without selfie' do
         expect(form.valid?).to eq(false)
       end
@@ -159,6 +159,8 @@ RSpec.describe Idv::ApiImageUploadForm do
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
           doc_type_supported: boolean,
+          doc_auth_success: boolean,
+          selfie_success: anything,
         )
       end
 
@@ -482,6 +484,8 @@ RSpec.describe Idv::ApiImageUploadForm do
           allow(client_response).to receive(:success?).and_return(false)
           allow(client_response).to receive(:network_error?).and_return(false)
           allow(client_response).to receive(:errors).and_return(errors)
+          allow(client_response).to receive(:doc_auth_success?).and_return(false)
+          allow(client_response).to receive(:selfie_success).and_return(nil)
           form.send(:validate_form)
           capture_result = form.send(:store_failed_images, client_response, doc_pii_response)
           expect(capture_result[:front]).not_to be_empty
@@ -494,6 +498,8 @@ RSpec.describe Idv::ApiImageUploadForm do
           allow(client_response).to receive(:success?).and_return(false)
           allow(client_response).to receive(:network_error?).and_return(false)
           allow(client_response).to receive(:errors).and_return(errors)
+          allow(client_response).to receive(:doc_auth_success?).and_return(false)
+          allow(client_response).to receive(:selfie_success).and_return(nil)
           form.send(:validate_form)
           capture_result = form.send(:store_failed_images, client_response, doc_pii_response)
           expect(capture_result[:front]).not_to be_empty
@@ -506,6 +512,8 @@ RSpec.describe Idv::ApiImageUploadForm do
           allow(client_response).to receive(:success?).and_return(false)
           allow(client_response).to receive(:network_error?).and_return(false)
           allow(client_response).to receive(:errors).and_return(errors)
+          allow(client_response).to receive(:doc_auth_success?).and_return(false)
+          allow(client_response).to receive(:selfie_success).and_return(nil)
           form.send(:validate_form)
           capture_result = form.send(:store_failed_images, client_response, doc_pii_response)
           expect(capture_result[:front]).not_to be_empty
@@ -533,6 +541,8 @@ RSpec.describe Idv::ApiImageUploadForm do
           allow(client_response).to receive(:success?).and_return(false)
           allow(client_response).to receive(:network_error?).and_return(true)
           allow(client_response).to receive(:errors).and_return(errors)
+          allow(client_response).to receive(:doc_auth_success?).and_return(false)
+          allow(client_response).to receive(:selfie_success).and_return(nil)
           allow(doc_pii_response).to receive(:success?).and_return(false)
           form.send(:validate_form)
           capture_result = form.send(:store_failed_images, client_response, doc_pii_response)

@@ -169,7 +169,6 @@ RSpec.describe 'Add a new phone number' do
   let(:telephony_gem_voip_number) { '+12255551000' }
 
   scenario 'adding a VOIP phone' do
-    allow(IdentityConfig.store).to receive(:voip_block).and_return(true)
     allow(IdentityConfig.store).to receive(:phone_service_check).and_return(true)
 
     user = create(:user, :fully_registered)

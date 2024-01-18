@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Idv::SsnController do
+  include FlowPolicyHelper
+
   let(:ssn) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn] }
 
   let(:user) { create(:user) }
@@ -11,8 +13,7 @@ RSpec.describe Idv::SsnController do
 
   before do
     stub_sign_in(user)
-    subject.idv_session.flow_path = 'standard'
-    subject.idv_session.pii_from_doc = Idp::Constants::MOCK_IDV_APPLICANT.dup
+    stub_up_to(:document_capture, idv_session: subject.idv_session)
     stub_analytics
     stub_attempts_tracker
     allow(@analytics).to receive(:track_event)
@@ -218,9 +219,6 @@ RSpec.describe Idv::SsnController do
 
     context 'when pii_from_doc is not present' do
       before do
-        subject.idv_session.welcome_visited = true
-        subject.idv_session.idv_consent_given = true
-        subject.idv_session.flow_path = 'standard'
         subject.idv_session.pii_from_doc = nil
       end
 

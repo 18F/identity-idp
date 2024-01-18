@@ -82,10 +82,10 @@ interface AcuantImageAnalyticsPayload extends ImageAnalyticsPayload {
   dpi: number;
   moire: number;
   glare: number;
-  glareScoreThreshold: number;
+  glareScoreThreshold: number | null;
   isAssessedAsGlare: boolean;
   sharpness: number;
-  sharpnessScoreThreshold: number;
+  sharpnessScoreThreshold: number | null;
   isAssessedAsBlurry: boolean;
   assessment: AcuantImageAssessment;
   isAssessedAsUnsupported: boolean;
@@ -337,6 +337,7 @@ function AcuantCapture(
   const [attempt, incrementAttempt] = useCounter(1);
   const [acuantFailureCookie, setAcuantFailureCookie, refreshAcuantFailureCookie] =
     useCookie('AcuantCameraHasFailed');
+  const [imageCaptureText, setImageCaptureText] = useState('');
   // There's some pretty significant changes to this component when it's used for
   // selfie capture vs document image capture. This controls those changes.
   const selfieCapture = name === 'selfie';
@@ -409,7 +410,11 @@ function AcuantCapture(
         size: nextValue.size,
         failedImageResubmission: hasFailed,
       });
-      trackEvent(`IdV: ${name} image added`, analyticsPayload);
+
+      trackEvent(
+        name === 'selfie' ? 'idv_selfie_image_file_uploaded' : `IdV: ${name} image added`,
+        analyticsPayload,
+      );
     }
 
     onChangeAndResetError(nextValue, analyticsPayload);
@@ -498,13 +503,32 @@ function AcuantCapture(
     }
   }
 
+  function onSelfieCaptureOpen() {
+    trackEvent('idv_sdk_selfie_image_capture_opened');
+
+    setIsCapturingEnvironment(true);
+  }
+
+  function onSelfieCaptureClosed() {
+    trackEvent('idv_sdk_selfie_image_capture_closed_without_photo');
+
+    setIsCapturingEnvironment(false);
+  }
+
   function onSelfieCaptureSuccess({ image }: { image: string }) {
+    trackEvent('idv_sdk_selfie_image_added', { attempt });
+
     onChangeAndResetError(image);
     onResetFailedCaptureAttempts();
     setIsCapturingEnvironment(false);
   }
 
-  function onSelfieCaptureFailure() {
+  function onSelfieCaptureFailure(error) {
+    trackEvent('idv_sdk_selfie_image_capture_failed', {
+      sdk_error_code: error.code,
+      sdk_error_message: error.message,
+    });
+
     // Internally, Acuant sets a cookie to bail on guided capture if initialization had
     // previously failed for any reason, including declined permission. Since the cookie
     // never expires, and since we want to re-prompt even if the user had previously
@@ -528,8 +552,8 @@ function AcuantCapture(
     const { image, dpi, moire, glare, sharpness } = nextCapture;
     const cardType = 'cardType' in nextCapture ? nextCapture.cardType : nextCapture.cardtype;
 
-    const isAssessedAsGlare = glare < glareThreshold;
-    const isAssessedAsBlurry = sharpness < sharpnessThreshold;
+    const isAssessedAsGlare = !!glareThreshold && glare < glareThreshold;
+    const isAssessedAsBlurry = !!sharpnessThreshold && sharpness < sharpnessThreshold;
     const isAssessedAsUnsupported = cardType !== AcuantDocumentType.ID;
     const { width, height, data } = image;
 
@@ -630,6 +654,10 @@ function AcuantCapture(
     });
   }
 
+  function onImageCaptureFeedback(text: string) {
+    setImageCaptureText(text);
+  }
+
   return (
     <div className={[className, 'document-capture-acuant-capture'].filter(Boolean).join(' ')}>
       {isCapturingEnvironment && !selfieCapture && (
@@ -653,13 +681,15 @@ function AcuantCapture(
         <AcuantSelfieCamera
           onImageCaptureSuccess={onSelfieCaptureSuccess}
           onImageCaptureFailure={onSelfieCaptureFailure}
-          onImageCaptureOpen={() => setIsCapturingEnvironment(true)}
-          onImageCaptureClose={() => setIsCapturingEnvironment(false)}
+          onImageCaptureOpen={onSelfieCaptureOpen}
+          onImageCaptureClose={onSelfieCaptureClosed}
+          onImageCaptureFeedback={onImageCaptureFeedback}
         >
           <AcuantSelfieCaptureCanvas
             fullScreenRef={fullScreenRef}
             fullScreenLabel={t('doc_auth.accessible_labels.document_capture_dialog')}
             onRequestClose={() => setIsCapturingEnvironment(false)}
+            imageCaptureText={imageCaptureText}
           />
         </AcuantSelfieCamera>
       )}
@@ -702,12 +732,13 @@ function AcuantCapture(
           allowUpload &&
           formatHTML(t('doc_auth.buttons.take_or_upload_picture_html'), {
             'lg-take-photo': () => null,
+            'lg-or': ({ children }) => (
+              <span className="padding-left-1 padding-right-1">{children}</span>
+            ),
             'lg-upload': ({ children }) => (
-              <span className="padding-left-1">
-                <Button isUnstyled onClick={withLoggedClick('upload')(forceUpload)}>
-                  {children}
-                </Button>
-              </span>
+              <Button isUnstyled onClick={withLoggedClick('upload')(forceUpload)}>
+                {children}
+              </Button>
             ),
           })}
       </div>

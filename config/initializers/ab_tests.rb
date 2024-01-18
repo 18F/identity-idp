@@ -18,4 +18,14 @@ module AbTests
         0,
     },
   )
+
+  LEXISNEXIS_INSTANT_VERIFY_WORKFLOW = AbTestBucket.new(
+    experiment_name: 'LexisNexis Instant Verify Workflow',
+    buckets: {
+      use_alternate_workflow:
+        IdentityConfig.store.lexisnexis_instant_verify_workflow_ab_testing_enabled ?
+          IdentityConfig.store.lexisnexis_instant_verify_workflow_ab_testing_percent :
+          0,
+    },
+  )
 end

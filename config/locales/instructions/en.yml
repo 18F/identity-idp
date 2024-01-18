@@ -66,7 +66,12 @@ en:
           code will expire in %{expiration} minutes.
       webauthn:
         confirm_webauthn: Present the security key that you associated with your account.
-        confirm_webauthn_platform: You have face or touch unlock enabled for your %{app_name} account.
+        confirm_webauthn_platform_html: <p>You can authenticate the same way you unlock
+          your device, whether it’s with your face or fingerprint, a password or
+          another method. </p> <p>If you used a password manager to set up face
+          or touch unlock, you can authenticate from any device that uses that
+          password manager. Otherwise, use the same device where you set up face
+          or touch unlock.</p>
       webauthn_platform:
         learn_more_help: Learn more about face or touch unlock
       wrong_number: Entered the wrong phone number?

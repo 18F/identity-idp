@@ -24,10 +24,13 @@ module Reports
 
     # @return [String]
     def report_body
-      # note, this will table scan until we add an index, for a once-a-day job it may be ok
-      todays_profiles = Profile.
-        select(:id, :ssn_signature).
-        where(active: true, activated_at: start..finish)
+      todays_profiles = transaction_with_timeout do
+        # note, this will table scan until we add an index, for a once-a-day job it may be ok
+        Profile.
+          select(:id, :ssn_signature).
+          where(active: true, activated_at: start..finish).
+          to_a
+      end
 
       todays_profile_ids = todays_profiles.map(&:id).to_set
 

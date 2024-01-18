@@ -68,8 +68,13 @@ es:
           %{number_html}. Este código expirará en %{expiration} minutos.
       webauthn:
         confirm_webauthn: Presente la clave de seguridad que asoció con su cuenta.
-        confirm_webauthn_platform: Tiene activado el desbloqueo facial o táctil para su
-          cuenta de %{app_name}.
+        confirm_webauthn_platform_html: <p>Puede autenticarse de la misma forma que
+          desbloquea el dispositivo, ya sea con su rostro o huella dactilar, una
+          contraseña u otro método.</p> <p>Si ha utilizado un administrador de
+          contraseñas para configurar el desbloqueo facial o táctil, puede
+          autenticarse desde cualquier dispositivo que utilice ese administrador
+          de contraseñas. De lo contrario, utilice el mismo dispositivo en el
+          que configuró el desbloqueo facial o táctil.</p>
       webauthn_platform:
         learn_more_help: Conozca más sobre el desbloqueo facial o táctil
       wrong_number: '¿Ingresó el número de teléfono equivocado?'

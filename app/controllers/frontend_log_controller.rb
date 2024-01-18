@@ -47,6 +47,11 @@ class FrontendLogController < ApplicationController
   # rubocop:enable Layout/LineLength
 
   ALLOWED_EVENTS = %i[
+    idv_sdk_selfie_image_added
+    idv_sdk_selfie_image_capture_closed_without_photo
+    idv_sdk_selfie_image_capture_failed
+    idv_sdk_selfie_image_capture_opened
+    idv_selfie_image_file_uploaded
     phone_input_country_changed
   ].freeze
 

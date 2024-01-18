@@ -33,6 +33,11 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
       'Cache-Control': 'no-store',
       Vary: '*',
     },
+    client: {
+      overlay: {
+        runtimeErrors: false,
+      },
+    },
     hot: false,
   },
   entry: entries.reduce((result, path) => {

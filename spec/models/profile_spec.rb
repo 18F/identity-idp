@@ -46,26 +46,6 @@ RSpec.describe Profile do
     end
   end
 
-  describe '#includes_phone_check?' do
-    it 'returns true if the address_check component is lexis_nexis_address' do
-      profile = create(:profile, proofing_components: { address_check: 'lexis_nexis_address' })
-
-      expect(profile.includes_phone_check?).to eq(true)
-    end
-
-    it 'returns false if the address_check componet is gpo_letter' do
-      profile = create(:profile, proofing_components: { address_check: 'gpo_letter' })
-
-      expect(profile.includes_phone_check?).to eq(false)
-    end
-
-    it 'returns false if proofing_components is blank' do
-      profile = create(:profile, proofing_components: '')
-
-      expect(profile.includes_phone_check?).to eq(false)
-    end
-  end
-
   describe '#in_person_verification_pending?' do
     it 'returns true if the in_person_verification_pending_at is present' do
       profile = create(

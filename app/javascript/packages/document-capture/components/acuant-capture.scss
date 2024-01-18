@@ -37,4 +37,12 @@
   .document-capture-file-image--loading {
     @extend %pad-common-id-card;
   }
+  // Styles for the text that appears over the selfie capture screen to help users position their face for a good photo
+  .document-capture-selfie-feedback {
+    left: 50%;
+    top: 10%;
+    position: fixed;
+    transform: translateX(-50%);
+    z-index: 11;
+  }
 }

@@ -9,16 +9,21 @@ describe('SpinnerButtonElement', () => {
   const { clock } = sandbox;
   const userEvent = baseUserEvent.setup({ advanceTimers: clock.tick });
 
-  const longWaitDurationMs = 1000;
-
   interface WrapperOptions {
     actionMessage?: string;
     spinOnClick?: boolean;
     inForm?: boolean;
     isButtonTo?: boolean;
+    longWaitDurationMs?: number;
   }
 
-  function createWrapper({ actionMessage, spinOnClick, inForm, isButtonTo }: WrapperOptions = {}) {
+  function createWrapper({
+    actionMessage,
+    spinOnClick,
+    inForm,
+    isButtonTo,
+    longWaitDurationMs = 1000,
+  }: WrapperOptions = {}) {
     let button = `
       <button class="usa-button">
         <span class="spinner-button__content">Click Me</span>
@@ -141,7 +146,8 @@ describe('SpinnerButtonElement', () => {
   });
 
   it('shows action message visually after long delay', async () => {
-    const wrapper = createWrapper({ actionMessage: 'Verifying...' });
+    const longWaitDurationMs = 1000;
+    const wrapper = createWrapper({ actionMessage: 'Verifying...', longWaitDurationMs });
     const status = getByRole(wrapper, 'status');
     const button = screen.getByRole('button', { name: 'Click Me' });
 
@@ -152,6 +158,16 @@ describe('SpinnerButtonElement', () => {
     expect(status.classList.contains('usa-sr-only')).to.be.true();
     clock.tick(1);
     expect(status.classList.contains('usa-sr-only')).to.be.false();
+  });
+
+  it('does not show visual action message when given infinite delay', async () => {
+    const longWaitDurationMs = Infinity;
+    createWrapper({ actionMessage: 'Verifying...', longWaitDurationMs });
+    const button = screen.getByRole('button', { name: 'Click Me' });
+
+    sandbox.spy(window, 'setTimeout');
+    await userEvent.click(button);
+    expect(window.setTimeout).not.to.have.been.called();
   });
 
   it('supports external dispatched events to control spinner', () => {

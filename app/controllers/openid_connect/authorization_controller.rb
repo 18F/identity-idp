@@ -10,6 +10,7 @@ module OpenidConnect
     include BillableEventTrackable
     include ForcedReauthenticationConcern
 
+    before_action :block_biometric_requests_in_production, only: [:index]
     before_action :build_authorize_form_from_params, only: [:index]
     before_action :pre_validate_authorize_form, only: [:index]
     before_action :sign_out_if_prompt_param_is_login_and_user_is_signed_in, only: [:index]
@@ -28,6 +29,7 @@ module OpenidConnect
         return redirect_to reactivate_account_url if user_needs_to_reactivate_account?
         return redirect_to url_for_pending_profile_reason if user_has_pending_profile?
         return redirect_to idv_url if identity_needs_verification?
+        return redirect_to idv_url if selfie_needed?
       end
       return redirect_to sign_up_completed_url if needs_completion_screen_reason
       link_identity_to_service_provider
@@ -43,6 +45,13 @@ module OpenidConnect
     end
 
     private
+
+    def block_biometric_requests_in_production
+      if params['biometric_comparison_required'] == 'true' &&
+         !FeatureManagement.idv_allow_selfie_check?
+        render_not_acceptable
+      end
+    end
 
     def check_sp_active
       return if @authorize_form.service_provider&.active?
@@ -76,7 +85,10 @@ module OpenidConnect
       track_events
       SpHandoffBounce::AddHandoffTimeToSession.call(sp_session)
 
-      redirect_user(@authorize_form.success_redirect_uri)
+      redirect_user(
+        @authorize_form.success_redirect_uri,
+        current_user.uuid,
+      )
 
       delete_branded_experience
     end
@@ -94,6 +106,11 @@ module OpenidConnect
         (current_user.identity_not_verified? ||
         decorated_sp_session.requested_more_recent_verification?)) ||
         current_user.reproof_for_irs?(service_provider: current_sp)
+    end
+
+    def selfie_needed?
+      decorated_sp_session.selfie_required? &&
+        !current_user.identity_verified_with_selfie?
     end
 
     def build_authorize_form_from_params
@@ -127,7 +144,7 @@ module OpenidConnect
       if redirect_uri.nil?
         render :error
       else
-        redirect_user(redirect_uri)
+        redirect_user(redirect_uri, current_user&.uuid)
       end
     end
 
@@ -186,15 +203,20 @@ module OpenidConnect
       track_billing_events
     end
 
-    def redirect_user(redirect_uri)
-      case IdentityConfig.store.openid_connect_redirect
-      when :client_side
+    def redirect_user(redirect_uri, user_uuid)
+      redirect_method = IdentityConfig.store.openid_connect_redirect_uuid_override_map.fetch(
+        user_uuid,
+        IdentityConfig.store.openid_connect_redirect,
+      )
+
+      case redirect_method
+      when 'client_side'
         @oidc_redirect_uri = redirect_uri
         render(
           'openid_connect/shared/redirect',
           layout: false,
         )
-      when :client_side_js
+      when 'client_side_js'
         @oidc_redirect_uri = redirect_uri
         render(
           'openid_connect/shared/redirect_js',

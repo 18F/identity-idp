@@ -71,7 +71,10 @@ RSpec.describe Accounts::PersonalKeysController do
 
       expect(response).to redirect_to capture_password_url
 
-      subject.user_session[:decrypted_pii] = { verified_at: Time.zone.now }.to_json
+      Pii::Cacher.new(user, subject.user_session).save_decrypted_pii(
+        { verified_at: Time.zone.now },
+        123,
+      )
 
       post :create
 

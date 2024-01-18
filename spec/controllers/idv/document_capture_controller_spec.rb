@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Idv::DocumentCaptureController do
+  include FlowPolicyHelper
+
   let(:document_capture_session_requested_at) { Time.zone.now }
 
   let!(:document_capture_session) do
@@ -20,8 +22,8 @@ RSpec.describe Idv::DocumentCaptureController do
 
   before do
     stub_sign_in(user)
+    stub_up_to(:hybrid_handoff, idv_session: subject.idv_session)
     stub_analytics
-    subject.idv_session.flow_path = 'standard'
     subject.idv_session.document_capture_session_uuid = document_capture_session_uuid
 
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
@@ -67,12 +69,34 @@ RSpec.describe Idv::DocumentCaptureController do
         :show,
         locals: hash_including(
           document_capture_session_uuid: document_capture_session_uuid,
+          doc_auth_selfie_capture: false,
         ),
       ).and_call_original
 
       get :show
 
       expect(response).to render_template :show
+    end
+
+    context 'when a selfie is requested' do
+      before do
+        allow(subject).to receive(:decorated_sp_session).
+          and_return(double('decorated_session', { selfie_required?: true, sp_name: 'sp' }))
+      end
+
+      it 'renders the show template with selfie' do
+        expect(subject).to receive(:render).with(
+          :show,
+          locals: hash_including(
+            document_capture_session_uuid: document_capture_session_uuid,
+            doc_auth_selfie_capture: true,
+          ),
+        ).and_call_original
+
+        get :show
+
+        expect(response).to render_template :show
+      end
     end
 
     it 'sends analytics_visited event' do
@@ -102,8 +126,6 @@ RSpec.describe Idv::DocumentCaptureController do
 
     context 'hybrid handoff step is not complete' do
       it 'redirects to hybrid handoff' do
-        subject.idv_session.welcome_visited = true
-        subject.idv_session.idv_consent_given = true
         subject.idv_session.flow_path = nil
 
         get :show
@@ -114,12 +136,7 @@ RSpec.describe Idv::DocumentCaptureController do
 
     context 'verify info step is complete' do
       it 'renders show' do
-        subject.idv_session.welcome_visited = true
-        subject.idv_session.idv_consent_given = true
-        subject.idv_session.flow_path = 'standard'
-        subject.idv_session.pii_from_doc = Idp::Constants::MOCK_IDV_APPLICANT
-        subject.idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]
-        subject.idv_session.resolution_successful = true
+        stub_up_to(:verify_info, idv_session: subject.idv_session)
 
         get :show
 
@@ -192,6 +209,34 @@ RSpec.describe Idv::DocumentCaptureController do
       expect { put :update }.to(
         change { doc_auth_log.reload.document_capture_submit_count }.from(0).to(1),
       )
+    end
+
+    context 'selfie checks' do
+      before do
+        expect(controller).to receive(:selfie_requirement_met?).
+          and_return(performed_if_needed)
+        allow(result).to receive(:success?).and_return(true)
+        allow(subject).to receive(:stored_result).and_return(result)
+        allow(subject).to receive(:extract_pii_from_doc)
+      end
+
+      context 'not performed' do
+        let(:performed_if_needed) { false }
+
+        it 'stays on document capture' do
+          put :update
+          expect(response).to redirect_to idv_document_capture_url
+        end
+      end
+
+      context 'performed' do
+        let(:performed_if_needed) { true }
+
+        it 'redirects to ssn' do
+          put :update
+          expect(response).to redirect_to idv_ssn_url
+        end
+      end
     end
 
     context 'user has an establishing in-person enrollment' do

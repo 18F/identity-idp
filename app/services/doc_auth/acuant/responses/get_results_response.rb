@@ -43,6 +43,10 @@ module DocAuth
           end
         end
 
+        def doc_auth_success?
+          passed_result?
+        end
+
         private
 
         attr_reader :http_response
@@ -67,6 +71,8 @@ module DocAuth
             tamper_result: tamper_result_code&.name,
             classification_info: classification_info,
             address_line2_present: !pii_from_doc[:address2].blank?,
+            doc_auth_success: doc_auth_success?,
+            selfie_success: nil,
           }
         end
 

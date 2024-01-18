@@ -42,7 +42,7 @@ module DocAuth
           LexisNexis::Responses::TrueIdResponse.new(
             http_response,
             config,
-            liveness_checking_required,
+            include_liveness?,
           )
         end
 
@@ -91,7 +91,8 @@ module DocAuth
         end
 
         def include_liveness?
-          liveness_checking_required
+          FeatureManagement.idv_allow_selfie_check? &&
+            liveness_checking_required
         end
       end
     end

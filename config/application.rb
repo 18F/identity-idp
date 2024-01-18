@@ -9,6 +9,7 @@ require 'identity/logging/railtie'
 
 require_relative '../lib/asset_sources'
 require_relative '../lib/identity_config'
+require_relative '../lib/feature_management'
 require_relative '../lib/fingerprinter'
 require_relative '../lib/identity_job_log_subscriber'
 require_relative '../lib/email_delivery_observer'
@@ -59,8 +60,30 @@ module Identity
     config.active_job.queue_adapter = :good_job
 
     FileUtils.mkdir_p(Rails.root.join('log'))
-    config.active_job.logger = ActiveSupport::Logger.new(Rails.root.join('log', 'workers.log'))
+    config.active_job.logger = if FeatureManagement.log_to_stdout?
+                                 ActiveSupport::Logger.new(STDOUT)
+                               else
+                                 ActiveSupport::Logger.new(
+                                   Rails.root.join('log', Idp::Constants::WORKER_LOG_FILENAME),
+                                 )
+                               end
     config.active_job.logger.formatter = config.log_formatter
+
+    config.logger = if FeatureManagement.log_to_stdout?
+                      ActiveSupport::Logger.new(STDOUT)
+                    else
+                      ActiveSupport::Logger.new(
+                        Rails.root.join('log', "#{Rails.env}.log"),
+                      )
+                    end
+
+    config.kms_logger = if FeatureManagement.log_to_stdout?
+                          ActiveSupport::Logger.new(STDOUT)
+                        else
+                          ActiveSupport::Logger.new(
+                            Rails.root.join('log', Idp::Constants::KMS_LOG_FILENAME),
+                          )
+                        end
 
     config.good_job.execution_mode = :external
     config.good_job.poll_interval = 5
@@ -151,6 +174,13 @@ module Identity
       config.lookbook.auto_refresh = false
       config.lookbook.project_name = "#{APP_NAME} Component Previews"
       config.lookbook.ui_theme = 'blue'
+      if IdentityConfig.store.component_previews_embed_frame_ancestors.present?
+        # so we can embed a lookbook component into the dev docs
+        config.lookbook.preview_embeds.policy = 'ALLOWALL'
+        # lookbook strips out CSP, this brings it back so we aren't so permissive
+        require 'component_preview_csp'
+        config.middleware.insert_after ActionDispatch::Static, ComponentPreviewCsp
+      end
     end
   end
 end

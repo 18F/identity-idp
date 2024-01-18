@@ -23,6 +23,9 @@ module DocPiiHelper
       [:errors, :jurisdiction],
       [:error_details, :jurisdiction],
       [:error_details, :jurisdiction, :jurisdiction],
+      [:errors, :state_id_number],
+      [:error_details, :state_id_number],
+      [:error_details, :state_id_number, :state_id_number],
     ]
   end
 end

@@ -1,4 +1,4 @@
-FROM ruby:3.2.2-slim
+FROM ruby:3.3.0-slim
 
 # Set environment variables
 ARG ARG_CI_ENVIRONMENT_SLUG="placeholder"
@@ -16,7 +16,7 @@ ENV LOGIN_CONFIG_FILE $RAILS_ROOT/tmp/application.yml
 ENV RAILS_LOG_LEVEL debug
 ENV BUNDLE_PATH /usr/local/bundle
 ENV YARN_VERSION 1.22.5
-ENV NODE_VERSION 18.16.1
+ENV NODE_VERSION 20.10.0
 ENV BUNDLER_VERSION 2.4.4
 ENV POSTGRES_SSLMODE prefer
 ENV POSTGRES_NAME idp
@@ -34,7 +34,7 @@ ENV REDIS_URL redis://redis:6379
 ENV ASSET_HOST http://localhost:3000
 ENV DOMAIN_NAME localhost:3000
 ENV PIV_CAC_SERVICE_URL https://localhost:8443/
-ENV PIV_CAC_VERIFY_TOKEN_URL https://localhost:8443/ 
+ENV PIV_CAC_VERIFY_TOKEN_URL https://localhost:8443/
 
 RUN echo Env Value : $CI_ENVIRONMENT_SLUG
 
@@ -51,6 +51,7 @@ RUN addgroup --gid 1000 app && \
     adduser --uid 1000 --gid 1000 --disabled-password --gecos "" app && \
     mkdir -p $RAILS_ROOT && \
     mkdir -p $BUNDLE_PATH && \
+    mkdir -p $RAILS_ROOT/tmp/pids && \
     chown -R app:app $RAILS_ROOT && \
     chown -R app:app $BUNDLE_PATH
 
@@ -126,7 +127,6 @@ COPY --chown=app:app ./bin ./bin
 COPY --chown=app:app ./public ./public
 COPY --chown=app:app ./scripts ./scripts
 COPY --chown=app:app ./spec ./spec
-COPY --chown=app:app ./vendor ./vendor
 COPY --chown=app:app ./Rakefile ./Rakefile
 COPY --chown=app:app ./Makefile ./Makefile
 COPY --chown=app:app ./babel.config.js ./babel.config.js
@@ -167,7 +167,7 @@ COPY --chown=app:app config/integrations.localdev.yml $RAILS_ROOT/config/integra
 COPY --chown=app:app config/partner_account_statuses.localdev.yml $RAILS_ROOT/config/partner_account_statuses.yml
 COPY --chown=app:app config/partner_accounts.localdev.yml $RAILS_ROOT/config/partner_accounts.yml
 COPY --chown=app:app certs.example $RAILS_ROOT/certs
-COPY --chown=app:app config/service_providers.localdev.yml $RAILS_ROOT/config/service_providers.yaml
+COPY --chown=app:app config/service_providers.localdev.yml $RAILS_ROOT/config/service_providers.yml
 
 # Expose the port the app runs on
 EXPOSE 3000

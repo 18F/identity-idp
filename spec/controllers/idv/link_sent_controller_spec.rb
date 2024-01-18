@@ -145,6 +145,7 @@ RSpec.describe Idv::LinkSentController do
         allow(load_result).to receive(:attention_with_barcode?).and_return(false)
 
         allow(load_result).to receive(:success?).and_return(load_result_success)
+        allow(load_result).to receive(:selfie_check_performed).and_return(false)
 
         document_capture_session = DocumentCaptureSession.create!(
           user: user,
@@ -172,6 +173,34 @@ RSpec.describe Idv::LinkSentController do
           it 'resets redo_document capture to nil in idv_session' do
             put :update
             expect(subject.idv_session.redo_document_capture).to be_nil
+          end
+        end
+
+        context 'selfie checks' do
+          before do
+            expect(controller).to receive(:selfie_requirement_met?).
+              and_return(performed_if_needed)
+          end
+
+          context 'not performed' do
+            let(:performed_if_needed) { false }
+
+            it 'flashes an error and does not redirect' do
+              put :update
+
+              expect(flash[:error]).to eq t('errors.doc_auth.phone_step_incomplete')
+              expect(response.status).to eq(204)
+            end
+          end
+
+          context 'performed' do
+            let(:performed_if_needed) { true }
+
+            it 'redirects to ssn' do
+              put :update
+              expect(flash[:error]).to eq nil
+              expect(response).to redirect_to idv_ssn_url
+            end
           end
         end
       end

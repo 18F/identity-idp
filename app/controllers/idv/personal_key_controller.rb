@@ -1,17 +1,21 @@
 module Idv
   class PersonalKeyController < ApplicationController
     include Idv::AvailabilityConcern
-    include IdvSession
+    include IdvStepConcern
     include StepIndicatorConcern
     include SecureHeadersConcern
-    include FraudReviewConcern
     include OptInHelper
 
     before_action :apply_secure_headers_override
-    before_action :confirm_two_factor_authenticated
-    before_action :confirm_phone_or_address_confirmed
-    before_action :confirm_profile_has_been_created
-    before_action :confirm_personal_key_not_acknowledged
+    before_action :confirm_step_allowed
+
+    # Personal key is kind of a special case, since you're always meant to
+    # look at it after your profile has been minted. We opt out of a few
+    # standard before_actions and handle them in our own special way below.
+    skip_before_action :confirm_idv_needed
+    skip_before_action :confirm_personal_key_acknowledged_if_needed
+    skip_before_action :confirm_no_pending_in_person_enrollment
+    skip_before_action :handle_fraud
 
     def show
       analytics.idv_personal_key_visited(
@@ -38,6 +42,22 @@ module Idv
       redirect_to next_step
     end
 
+    def self.step_info
+      Idv::StepInfo.new(
+        key: :personal_key,
+        controller: self,
+        next_steps: [FlowPolicy::FINAL],
+        preconditions: ->(idv_session:, user:) do
+          idv_session.phone_or_address_step_complete? &&
+            user.active_or_pending_profile &&
+            !idv_session.personal_key_acknowledged
+        end,
+        undo_step: ->(idv_session:, user:) {
+          idv_session.invalidate_personal_key!
+        },
+      )
+    end
+
     private
 
     def next_step
@@ -50,20 +70,6 @@ module Idv
       else
         after_sign_in_path_for(current_user)
       end
-    end
-
-    def confirm_phone_or_address_confirmed
-      return if idv_session.address_confirmed? || idv_session.phone_confirmed?
-
-      redirect_to idv_enter_password_url
-    end
-
-    def confirm_personal_key_not_acknowledged
-      redirect_to next_step if idv_session.personal_key_acknowledged
-    end
-
-    def confirm_profile_has_been_created
-      redirect_to account_url if profile.blank?
     end
 
     def add_proofing_component

@@ -55,6 +55,7 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
           multi_factor_auth_method: 'personal-key',
           multi_factor_auth_method_created_at: user.reload.
             encrypted_recovery_code_digest_generated_at.strftime('%s%L'),
+          new_device: nil,
         }
 
         expect(@analytics).to receive(:track_mfa_submit_event).
@@ -78,6 +79,60 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
             ],
           )
           expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq false
+        end
+      end
+
+      context 'with enable_additional_mfa_redirect_for_personal_key_mfa? set to true' do
+        before do
+          personal_key
+          sign_in_before_2fa(user)
+          allow(FeatureManagement).
+            to receive(:enable_additional_mfa_redirect_for_personal_key_mfa?).and_return(true)
+        end
+        it 'should redirect to mfa selection page' do
+          post :create, params: payload
+          expect(response).to redirect_to(authentication_methods_setup_url)
+        end
+      end
+
+      context 'with enable_additional_mfa_redirect_for_personal_key_mfa? set to false' do
+        before do
+          personal_key
+          sign_in_before_2fa(user)
+          allow(FeatureManagement).
+            to receive(:enable_additional_mfa_redirect_for_personal_key_mfa?).and_return(false)
+        end
+        it 'should redirect to account page' do
+          post :create, params: payload
+          expect(response).to redirect_to(account_path)
+        end
+      end
+    end
+
+    context 'with new device session value' do
+      let(:user) { create(:user, :with_phone) }
+      let(:personal_key) { { personal_key: PersonalKeyGenerator.new(user).create } }
+      let(:payload) { { personal_key_form: personal_key } }
+
+      it 'tracks new device value' do
+        personal_key
+        sign_in_before_2fa(user)
+        stub_analytics
+        subject.user_session[:new_device] = false
+        analytics_hash = {
+          success: true,
+          errors: {},
+          multi_factor_auth_method: 'personal-key',
+          multi_factor_auth_method_created_at: user.reload.
+            encrypted_recovery_code_digest_generated_at.strftime('%s%L'),
+          new_device: false,
+        }
+
+        expect(@analytics).to receive(:track_mfa_submit_event).
+          with(analytics_hash)
+
+        freeze_time do
+          post :create, params: payload
         end
       end
     end
@@ -161,6 +216,7 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
           error_details: { personal_key: { personal_key_incorrect: true } },
           multi_factor_auth_method: 'personal-key',
           multi_factor_auth_method_created_at: personal_key_generated_at.strftime('%s%L'),
+          new_device: nil,
         }
 
         expect(@analytics).to receive(:track_mfa_submit_event).

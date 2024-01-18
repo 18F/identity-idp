@@ -14,6 +14,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
       code_challenge: code_challenge,
       code_challenge_method: code_challenge_method,
       verified_within: verified_within,
+      biometric_comparison_required: biometric_comparison_required,
     )
   end
 
@@ -33,6 +34,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
   let(:code_challenge) { nil }
   let(:code_challenge_method) { nil }
   let(:verified_within) { nil }
+  let(:biometric_comparison_required) { nil }
 
   describe '#submit' do
     subject(:result) { form.submit }

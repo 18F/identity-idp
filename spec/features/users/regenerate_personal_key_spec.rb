@@ -38,7 +38,7 @@ RSpec.feature 'View personal key' do
         first(:link, t('forms.buttons.edit')).click
         click_on(t('links.cancel'))
 
-        travel(IdentityConfig.store.reauthn_window + 1)
+        expire_reauthn_window
 
         visit account_two_factor_authentication_path
         click_on(t('account.links.regenerate_personal_key'), match: :prefer_exact)

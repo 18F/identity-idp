@@ -5,9 +5,12 @@ require 'pinpoint_supported_countries'
 Telephony.config do |c|
   c.adapter = IdentityConfig.store.telephony_adapter.to_sym
   c.logger = if FeatureManagement.log_to_stdout?
-               Logger.new(STDOUT, level: :info)
+               ActiveSupport::Logger.new(STDOUT, level: :info)
              else
-               Logger.new('log/telephony.log', level: :info)
+               ActiveSupport::Logger.new(
+                 Rails.root.join('log', Idp::Constants::TELEPHONY_LOG_FILENAME),
+                 level: :info,
+               )
              end
 
   c.voice_pause_time = IdentityConfig.store.voice_otp_pause_time

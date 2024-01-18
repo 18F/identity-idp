@@ -230,18 +230,18 @@ fr:
       come_back_later: Lettre avec un crochet
     legal_statement:
       information_collection: >-
-        Esta recopilación de información cumple con los requisitos del título 44
-        del U.S.C., § 3507, modificado por la sección 2 de la Ley de Reducción
-        de Trámites de 1995. No es necesario que responda a estas preguntas, a
-        menos que le mostremos un número de control válido de la Oficina de
-        Administración y Presupuesto (OMB). El número de control de la OMB para
-        esta recopilación es 3090-0325. Nous estimons qu’il faut une minute pour
-        lire les instructions, rassembler les preuves et répondre aux questions.
-        N’envoyez que des commentaires relatifs à notre estimation du temps, y
-        compris des suggestions pour réduire cette charge, ou tout autre aspect
-        de cette collecte d’informations à : General Services Administration,
-        Regulatory Secretariat Division (MVCB), ATTN : Lois Mandell/IC
-        3090-0325, 1800 F Street, NW, Washington, DC 20405.
+        Cette collecte d’informations répond aux exigences de l’article 3507 du
+        44 U.S.C., tel que modifié par l’article 2 de la loi de 1995 sur la
+        réduction des tâches administratives. Vous n’avez pas besoin de répondre
+        à ces questions, sauf si nous affichons un numéro de contrôle valide de
+        l’Office of Management and Budget (OMB). Le numéro de contrôle de l’OMB
+        pour cette collecte est 3090-0325. Nous estimons qu’il faut une minute
+        pour lire les instructions, rassembler les preuves et répondre aux
+        questions. N’envoyez que des commentaires relatifs à notre estimation du
+        temps, y compris des suggestions pour réduire cette charge, ou tout
+        autre aspect de cette collecte d’informations à : General Services
+        Administration, Regulatory Secretariat Division (MVCB), ATTN : Lois
+        Mandell/IC 3090-0325, 1800 F Street, NW, Washington, DC 20405.
     messages:
       activated_html: Votre identité a été vérifiée. Si vous souhaitez modifier votre
         information vérifiée, veuillez %{link_html}.

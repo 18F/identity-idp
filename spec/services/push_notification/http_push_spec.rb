@@ -24,6 +24,17 @@ RSpec.describe PushNotification::HttpPush do
   let(:now) { Time.zone.now }
   let(:risc_notifications_active_job_enabled) { false }
   let(:push_notifications_enabled) { true }
+  let(:job_analytics) { FakeAnalytics.new }
+  let(:risc_event_payload) do
+    {
+      client_id: sp_with_push_url.issuer,
+      error: nil,
+      event_type: event.event_type,
+      status: nil,
+      success: false,
+      transport: 'direct',
+    }
+  end
 
   subject(:http_push) { PushNotification::HttpPush.new(event, now: now) }
 
@@ -33,6 +44,7 @@ RSpec.describe PushNotification::HttpPush do
     allow(Identity::Hostdata).to receive(:env).and_return('dev')
     allow(IdentityConfig.store).to receive(:push_notifications_enabled).
       and_return(push_notifications_enabled)
+    allow(Analytics).to receive(:new).and_return(job_analytics)
   end
 
   describe '#deliver' do
@@ -83,6 +95,14 @@ RSpec.describe PushNotification::HttpPush do
         end
 
       deliver
+
+      expect(job_analytics).to have_logged_event(
+        :risc_security_event_pushed,
+        risc_event_payload.merge(
+          status: 200,
+          success: true,
+        ),
+      )
     end
 
     context 'with an event that sends agency-specific iss_sub' do
@@ -123,15 +143,23 @@ RSpec.describe PushNotification::HttpPush do
         expect(WebMock).to have_requested(:post, third_sp.push_notification_url)
       end
 
-      it 'logs a warning' do
-        expect(Rails.logger).to receive(:warn) do |msg|
-          payload = JSON.parse(msg, symbolize_names: true)
-          expect(payload).to include(
-            service_provider: sp_with_push_url.issuer,
-          )
-        end
-
+      it 'logs both events' do
         deliver
+
+        expect(job_analytics).to have_logged_event(
+          :risc_security_event_pushed,
+          risc_event_payload.merge(
+            error: 'execution expired',
+          ),
+        )
+        expect(job_analytics).to have_logged_event(
+          :risc_security_event_pushed,
+          risc_event_payload.merge(
+            client_id: third_sp.issuer,
+            status: 200,
+            success: true,
+          ),
+        )
       end
     end
 
@@ -141,16 +169,16 @@ RSpec.describe PushNotification::HttpPush do
           to_return(status: 500)
       end
 
-      it 'logs a warning' do
-        expect(Rails.logger).to receive(:warn) do |msg|
-          payload = JSON.parse(msg, symbolize_names: true)
-          expect(payload).to include(
-            service_provider: sp_with_push_url.issuer,
-            status: 500,
-          )
-        end
-
+      it 'logs an event' do
         deliver
+
+        expect(job_analytics).to have_logged_event(
+          :risc_security_event_pushed,
+          risc_event_payload.merge(
+            error: 'http_push_error',
+            status: 500,
+          ),
+        )
       end
     end
 

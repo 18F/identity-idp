@@ -90,7 +90,6 @@ RSpec.describe WebauthnSetupPresenter do
         is_expected.to eq(
           t(
             'forms.webauthn_platform_setup.intro_html',
-            app_name: APP_NAME,
             link: link_to(
               t('forms.webauthn_platform_setup.intro_link_text'),
               help_center_redirect_path(

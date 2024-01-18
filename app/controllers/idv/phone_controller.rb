@@ -5,7 +5,6 @@ module Idv
     include StepIndicatorConcern
     include PhoneOtpRateLimitable
     include PhoneOtpSendable
-    include OptInHelper
 
     attr_reader :idv_form
 
@@ -33,7 +32,6 @@ module Idv
 
         analytics.idv_phone_of_record_visited(
           **ab_test_analytics_buckets,
-          **opt_in_analytics_properties,
         )
         render :new, locals: { gpo_letter_available: gpo_letter_available }
       elsif async_state.missing?

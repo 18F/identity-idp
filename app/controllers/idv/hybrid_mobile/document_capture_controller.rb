@@ -41,6 +41,7 @@ module Idv
           flow_path: 'hybrid',
           document_capture_session_uuid: document_capture_session_uuid,
           failure_to_proof_url: return_to_sp_failure_to_proof_url(step: 'document_capture'),
+          doc_auth_selfie_capture: decorated_sp_session.selfie_required?,
         }.merge(
           acuant_sdk_upgrade_a_b_testing_variables,
         )
@@ -60,7 +61,7 @@ module Idv
       end
 
       def handle_stored_result
-        if stored_result&.success?
+        if stored_result&.success? && selfie_requirement_met?
           save_proofing_components(document_capture_user)
           extract_pii_from_doc(document_capture_user, stored_result)
           successful_response
