@@ -247,10 +247,10 @@ RSpec.describe RecaptchaValidator do
         )
       end
 
-      context 'with extra analytics properties' do
+      context 'with extra analytics properties', allowed_extra_analytics: [:extra] do
         let(:extra_analytics_properties) { { extra: true } }
 
-        it 'logs analytics of the body', allowed_extra_analytics: [:extra] do
+        it 'logs analytics of the body' do
           valid
 
           expect(analytics).to have_logged_event(

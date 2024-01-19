@@ -196,7 +196,7 @@ RSpec.describe Analytics do
     end.to raise_error(FakeAnalytics::UndocumentedParams, /some_new_undocumented_keyword/)
   end
 
-  it 'does not error when undocumented params are allowed', allowed_extra_params: [:fun_level] do
+  it 'does not error when undocumented params are allowed', allowed_extra_analytics: [:fun_level] do
     expect(ahoy).to receive(:track).with(
       kind_of(String),
       hash_including(event_properties: hash_including(:fun_level)),

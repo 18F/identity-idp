@@ -72,7 +72,7 @@ class FakeAnalytics < Analytics
   UndocumentedParams = Class.new(StandardError)
 
   module UndocumentedParamsChecker
-    mattr_accessor :allowed_extra_params
+    mattr_accessor :allowed_extra_analytics
 
     def track_event(event, original_attributes = {})
       method_name = caller.
@@ -88,13 +88,13 @@ class FakeAnalytics < Analytics
 
         extra_keywords = original_attributes.keys \
           - [:pii_like_keypaths, :user_id] \
-          - Array(UndocumentedParamsChecker.allowed_extra_params) \
+          - Array(UndocumentedParamsChecker.allowed_extra_analytics) \
           - param_names
 
         if extra_keywords.present?
           raise UndocumentedParams, <<~ERROR
             event :#{method_name} called with undocumented params #{extra_keywords.inspect}
-            (if these params are for specs only, use :allowed_extra_params metadata)
+            (if these params are for specs only, use :allowed_extra_analytics metadata)
           ERROR
         end
       end
@@ -134,10 +134,10 @@ end
 
 RSpec.configure do |c|
   c.around do |ex|
-    FakeAnalytics::UndocumentedParamsChecker.allowed_extra_params = ex.metadata[:allowed_extra_params]
+    FakeAnalytics::UndocumentedParamsChecker.allowed_extra_analytics = ex.metadata[:allowed_extra_analytics]
     ex.run
   ensure
-    FakeAnalytics::UndocumentedParamsChecker.allowed_extra_params = []
+    FakeAnalytics::UndocumentedParamsChecker.allowed_extra_analytics = []
   end
 end
 
