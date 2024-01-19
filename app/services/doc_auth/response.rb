@@ -58,7 +58,7 @@ module DocAuth
         doc_type_supported: doc_type_supported?,
         doc_auth_success: doc_auth_success?,
         selfie_status: self.respond_to?(:selfie_status) ? selfie_status : :not_processed,
-      }.compact!.merge(extra)
+      }.merge(extra)
     end
 
     def first_error_message

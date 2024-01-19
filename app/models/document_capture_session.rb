@@ -19,7 +19,8 @@ class DocumentCaptureSession < ApplicationRecord
     session_result.selfie_check_performed = doc_auth_response.selfie_check_performed?
     session_result.doc_auth_success = doc_auth_response.doc_auth_success?
     # nil(selfie not required) or true/false
-    session_result.selfie_status = doc_auth_response.selfie_status
+    session_result.selfie_status = doc_auth_response.respond_to?(:selfie_status) ?
+    doc_auth_response.selfie_status : :not_processed
     EncryptedRedisStructStorage.store(
       session_result,
       expires_in: IdentityConfig.store.doc_capture_request_valid_for_minutes.minutes.seconds.to_i,

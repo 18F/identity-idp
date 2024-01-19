@@ -107,7 +107,7 @@ RSpec.describe DocumentCaptureSession do
       expect(result.failed_front_image?(nil)).to eq(false)
       expect(result.failed_back_image?(nil)).to eq(false)
       expect(result.doc_auth_success).to eq(false)
-      expect(result.selfie_status).to eq(:fail)
+      expect(result.selfie_status).to eq('fail')
     end
 
     it 'saves failed image finterprints' do
