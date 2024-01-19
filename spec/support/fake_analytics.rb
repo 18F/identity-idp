@@ -69,7 +69,36 @@ class FakeAnalytics < Analytics
     end
   end
 
+  UndocumentedParams = Class.new(StandardError)
+
+  module UndocumentedParamsChecker
+    def track_event(event, original_attributes = {})
+      method_name = caller.
+        grep(/analytics_events\.rb/)&.
+        first&.
+        match(/:in `(?<method_name>[^']+)'/)&.[](:method_name)
+
+      if method_name
+        param_names = AnalyticsEvents.instance_method(method_name).
+          parameters.
+          select { |type, _name| [:keyreq, :key].include?(type) }.
+          map(&:last)
+
+        extra_keywords = original_attributes.keys - [:pii_like_keypaths] - param_names
+
+        if extra_keywords.present?
+          raise UndocumentedParams, <<~ERROR
+            event :#{method_name} called with undocumented params #{extra_keywords.inspect}
+          ERROR
+        end
+      end
+
+      super(event, original_attributes)
+    end
+  end
+
   prepend PiiAlerter
+  prepend UndocumentedParamsChecker
 
   attr_reader :events
   attr_accessor :user

@@ -180,4 +180,19 @@ RSpec.describe Analytics do
       analytics.track_event('Trackable Event')
     end
   end
+
+  it 'errors when undocumented parameters are sent' do
+    expect do
+      analytics.idv_phone_confirmation_otp_submitted(
+        success: true,
+        errors: true,
+        code_expired: true,
+        code_matches: true,
+        second_factor_attempts_count: true,
+        second_factor_locked_at: true,
+        proofing_components: true,
+        some_new_undocumented_keyword: true,
+      )
+    end.to raise_error(FakeAnalytics::UndocumentedParams, /some_new_undocumented_keyword/)
+  end
 end
