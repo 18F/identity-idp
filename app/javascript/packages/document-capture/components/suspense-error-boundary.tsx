@@ -6,14 +6,14 @@ interface SuspenseErrorBoundaryProps {
   /**
    * Fallback to show while suspense pending.
    */
-  fallback: NonNullable<ReactNode>|null;
+  fallback: NonNullable<ReactNode> | null;
   /**
-    * Error callback.
-    */
-  onError: (error: Error)=>void;
+   * Error callback.
+   */
+  onError: (error: Error) => void;
   /**
-    * Error instance caught to allow for acknowledgment of rerender, in order to prevent infinite rerendering.
-    */
+   * Error instance caught to allow for acknowledgment of rerender, in order to prevent infinite rerendering.
+   */
   handledError?: RetrySubmissionError;
   /**
    * Suspense child.
@@ -26,9 +26,12 @@ interface SuspenseErrorBoundaryState {
   error?: Error;
 }
 
-class SuspenseErrorBoundary extends Component<SuspenseErrorBoundaryProps, SuspenseErrorBoundaryState> {
+class SuspenseErrorBoundary extends Component<
+  SuspenseErrorBoundaryProps,
+  SuspenseErrorBoundaryState
+> {
   constructor(props) {
-    super(props); 
+    super(props);
 
     this.state = { hasError: false };
   }
