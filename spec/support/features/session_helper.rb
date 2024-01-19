@@ -2,6 +2,7 @@ require 'cgi'
 
 module Features
   module SessionHelper
+    include JavascriptDriverHelper
     include PersonalKeyHelper
 
     VALID_PASSWORD = 'Val!d Pass w0rd'.freeze
@@ -50,6 +51,7 @@ module Features
     def signin(email, password)
       allow(UserMailer).to receive(:new_device_sign_in).and_call_original
       visit new_user_session_path
+      set_hidden_field('platform_authenticator_available', 'true')
       fill_in_credentials_and_submit(email, password)
       continue_as(email, password)
     end
@@ -728,6 +730,15 @@ module Features
 
     def acknowledge_backup_code_confirmation
       click_on t('two_factor_authentication.backup_codes.saved_backup_codes')
+    end
+
+    def set_hidden_field(id, value)
+      input = first("input##{id}", visible: false)
+      if javascript_enabled?
+        input.execute_script("this.value = #{value.to_json}")
+      else
+        input.set(value)
+      end
     end
   end
 end
