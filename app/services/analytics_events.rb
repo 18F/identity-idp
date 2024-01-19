@@ -338,7 +338,7 @@ module AnalyticsEvents
   # @param response_info
   # Logged when there is a non-user-facing error in the doc auth process, such as an unrecognized
   # field from a vendor
-  def doc_auth_warning(message: nil, unknown_alerts: nil, response_info:, **extra)
+  def doc_auth_warning(message: nil, unknown_alerts: nil, response_info: nil, **extra)
     track_event(
       'Doc Auth Warning',
       message: message,
@@ -3967,11 +3967,13 @@ module AnalyticsEvents
 
   # Tracks when a user triggered a rate limiter
   # @param [String] limiter_type
+  # @param step_name
   # @identity.idp.previous_event_name Throttler Rate Limit Triggered
-  def rate_limit_reached(limiter_type:, **extra)
+  def rate_limit_reached(limiter_type:, step_name: nil, **extra)
     track_event(
       'Rate Limit Reached',
       limiter_type: limiter_type,
+      step_name: step_name,
       **extra,
     )
   end
@@ -3999,6 +4001,7 @@ module AnalyticsEvents
   # @param [String] validator_class Class name of validator
   # @param [String, nil] exception_class Class name of exception, if error occurred
   # @param [String, nil] phone_country_code Country code associated with reCAPTCHA phone result
+  # @param recaptcha_version
   def recaptcha_verify_result_received(
     recaptcha_result:,
     score_threshold:,
@@ -4006,6 +4009,7 @@ module AnalyticsEvents
     validator_class:,
     exception_class:,
     phone_country_code: nil,
+    recaptcha_version: nil,
     **extra
   )
     track_event(
@@ -4017,6 +4021,7 @@ module AnalyticsEvents
         validator_class:,
         exception_class:,
         phone_country_code:,
+        recaptcha_version:,
         **extra,
       }.compact,
     )
@@ -4817,6 +4822,7 @@ module AnalyticsEvents
       enrollment_id: enrollment_id,
       second_address_line_present: second_address_line_present,
       service_provider: service_provider,
+      opted_in_to_in_person_proofing: opted_in_to_in_person_proofing,
       **extra,
     )
   end
