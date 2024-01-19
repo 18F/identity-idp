@@ -83,11 +83,27 @@ RSpec.describe 'webauthn hide' do
       let(:user) { create(:user, :fully_registered, :with_webauthn_platform) }
 
       context 'with javascript enabled', :js do
-        it 'displays the authenticator option' do
-          sign_in_user(user)
-          click_on t('two_factor_authentication.login_options_link_text')
+        context ' with device that supports authenticator' do
+          it 'displays the authenticator option' do
+            sign_in_user(user)
+            click_on t('two_factor_authentication.login_options_link_text')
 
-          expect(webauthn_option_hidden?).to eq(false)
+            expect(webauthn_option_hidden?).to eq(false)
+          end
+        end
+
+        context 'with device that doesnt support authenticator' do
+          it 'redirects to options page on sign in and shows the option' do
+            email ||= user.email_addresses.first.email
+            password = user.password
+            allow(UserMailer).to receive(:new_device_sign_in).and_call_original
+            visit new_user_session_path
+            set_hidden_field('platform_authenticator_available', 'false')
+            fill_in_credentials_and_submit(email, password)
+            continue_as(email, password)
+            expect(current_path).to eq(login_two_factor_options_path)
+            expect(webauthn_option_hidden?).to eq(false)
+          end
         end
       end
 
