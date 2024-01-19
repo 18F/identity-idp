@@ -32,14 +32,28 @@ module AnalyticsEvents
   # @param [String] user_id
   # @param [String, nil] message_id from AWS Pinpoint API
   # @param [String, nil] request_id from AWS Pinpoint API
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [Hash] error_details
   # An account reset was cancelled
-  def account_reset_cancel(user_id:, message_id: nil, request_id: nil, **extra)
+  def account_reset_cancel(
+    user_id:,
+    message_id: nil,
+    request_id: nil,
+    success: nil,
+    errors: nil,
+    error_details: nil,
+    **extra
+  )
     track_event(
       'Account Reset: cancel',
       {
         user_id: user_id,
         message_id: message_id,
         request_id: request_id,
+        success: success,
+        errors: errors,
+        error_details: error_details,
         **extra,
       }.compact,
     )
@@ -159,9 +173,18 @@ module AnalyticsEvents
 
   # @param [Boolean] success
   # @param [String] user_id account the email is linked to
+  # @param [Hash] errors
+  # @param [Hash] error_details
   # A user has clicked the confirmation link in an email
-  def add_email_confirmation(user_id:, success: nil, **extra)
-    track_event('Add Email: Email Confirmation', user_id: user_id, success: success, **extra)
+  def add_email_confirmation(user_id:, success: nil, errors: nil, error_details: nil, **extra)
+    track_event(
+      'Add Email: Email Confirmation',
+      user_id: user_id,
+      success: success,
+      errors: errors,
+      error_details: error_details,
+      **extra
+    )
   end
 
   # @param [Boolean] success
@@ -274,10 +297,14 @@ module AnalyticsEvents
   # @param [Boolean] success
   # @param [Hash] errors
   # @param [Hash] error_details
+  # @param [Hash] mfa_method_counts
+  # @param [Integer] enabled_mfa_methods_count
+  # @param [Boolean] in_account_creation_flow
   def backup_code_setup_visit(
     success:,
     errors: nil,
     error_details: nil,
+    mfa_method_counts: nil,
     **extra
   )
     track_event(
@@ -285,6 +312,9 @@ module AnalyticsEvents
       success: success,
       errors: errors,
       error_details: error_details,
+      mfa_method_counts: mfa_method_counts,
+      enabled_mfa_methods_count: enabled_mfa_methods_count,
+      in_account_creation_flow: in_account_creation_flow,
       **extra,
     )
   end
@@ -398,12 +428,14 @@ module AnalyticsEvents
 
   # @param [Boolean] success
   # @param [Hash] errors
+  # @param [Hash] error_details
   # Tracks if Email Language is updated
-  def email_language_updated(success:, errors:, **extra)
+  def email_language_updated(success:, errors:, error_details: nil, **extra)
     track_event(
       'Email Language: Updated',
       success: success,
       errors: errors,
+      error_details: error_details,
       **extra,
     )
   end
@@ -876,24 +908,122 @@ module AnalyticsEvents
 
   # User has consented to share information with document upload and may
   # view the "hybrid handoff" step next unless "skip_hybrid_handoff" param is true
-  def idv_doc_auth_agreement_submitted(**extra)
-    track_event('IdV: doc auth agreement submitted', **extra)
+  # @param [Boolean] step
+  # @param [String] analytics_id
+  # @param [Boolean] skip_hybrid_handoff
+  # @param [Boolean] irs_reproofing
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [Hash] error_details
+  def idv_doc_auth_agreement_submitted(
+    step: nil,
+    analytics_id: nil,
+    skip_hybrid_handoff: nil,
+    irs_reproofing: nil,
+    success: nil,
+    errors: nil,
+    error_details: nil,
+    **extra
+  )
+    track_event(
+      'IdV: doc auth agreement submitted',
+      step:,
+      analytics_id:,
+      skip_hybrid_handoff:,
+      irs_reproofing:,
+      success:,
+      errors:,
+      error_details:,
+      **extra,
+    )
   end
 
-  def idv_doc_auth_agreement_visited(**extra)
-    track_event('IdV: doc auth agreement visited', **extra)
+  # @param [String] step
+  # @param [String] analytics_id
+  # @param [Boolean] skip_hybrid_handoff
+  # @param [Boolean] irs_reproofing
+  def idv_doc_auth_agreement_visited(
+    step: nil,
+    analytics_id: nil,
+    skip_hybrid_handoff: nil,
+    irs_reproofing: nil,
+    **extra
+  )
+    track_event(
+      'IdV: doc auth agreement visited',
+      step:,
+      analytics_id:,
+      skip_hybrid_handoff:,
+      irs_reproofing:,
+      **extra
+    )
   end
 
   def idv_doc_auth_capture_complete_visited(**extra)
     track_event('IdV: doc auth capture_complete visited', **extra)
   end
 
-  def idv_doc_auth_document_capture_submitted(**extra)
-    track_event('IdV: doc auth document_capture submitted', **extra)
+  # @param [String] analytics_id
+  # @param [Hash] errors
+  # @param [String] flow_path
+  # @param [Boolean] irs_reproofing
+  # @param [Boolean] redo_document_capture
+  # @param [Boolean] skip_hybrid_handoff
+  # @param [String] step
+  # @param [Boolean] stored_result_present
+  # @param [Boolean] success
+  def idv_doc_auth_document_capture_submitted(
+    analytics_id: nil,
+    errors: nil,
+    flow_path: nil,
+    irs_reproofing: nil,
+    redo_document_capture: nil,
+    skip_hybrid_handoff: nil,
+    step: nil,
+    stored_result_present: nil,
+    success: nil,
+    **extra
+  )
+    track_event(
+      'IdV: doc auth document_capture submitted',
+      analytics_id:,
+      errors:,
+      flow_path:,
+      irs_reproofing:,
+      redo_document_capture:,
+      skip_hybrid_handoff:,
+      step:,
+      stored_result_present:,
+      success:,
+      **extra
+    )
   end
 
-  def idv_doc_auth_document_capture_visited(**extra)
-    track_event('IdV: doc auth document_capture visited', **extra)
+  # @param [String] flow_path
+  # @param [String] step
+  # @param [String] analytics_id
+  # @param [Boolean] irs_reproofing
+  # @param [Boolean] redo_document_capture
+  # @param [Boolean] skip_hybrid_handoff
+  def idv_doc_auth_document_capture_visited(
+    flow_path: nil,
+    step: nil,
+    analytics_id: nil,
+    irs_reproofing: nil,
+    redo_document_capture: nil,
+    skip_hybrid_handoff: nil,
+    **extra
+  )
+    track_event(
+      'IdV: doc auth document_capture visited',
+      flow_path:,
+      step:,
+      analytics_id:,
+      irs_reproofing:,
+      redo_document_capture:,
+      skip_hybrid_handoff:,
+      **extra
+    )
   end
 
   # @param [String] step_name which step the user was on
@@ -948,14 +1078,69 @@ module AnalyticsEvents
   # either continue via desktop ("document_capture" destination) or switch
   # to mobile phone ("send_link" destination) to perform document upload.
   # @identity.idp.previous_event_name IdV: doc auth upload submitted
-  def idv_doc_auth_hybrid_handoff_submitted(**extra)
-    track_event('IdV: doc auth hybrid handoff submitted', **extra)
+  # @param [String] analytics_id
+  # @param [String] destination
+  # @param [Hash] errors
+  # @param [String] flow_path
+  # @param [Boolean] irs_reproofing
+  # @param [Boolean] redo_document_capture
+  # @param [Boolean] skip_hybrid_handoff
+  # @param [String] step
+  # @param [Boolean] success
+  # @param [Hash] telephony_response
+  def idv_doc_auth_hybrid_handoff_submitted(
+    analytics_id: nil,
+    destination: nil,
+    errors: nil,
+    flow_path: nil,
+    irs_reproofing: nil,
+    redo_document_capture: nil,
+    skip_hybrid_handoff: nil,
+    step: nil,
+    success: nil,
+    telephony_response: nil,
+    **extra
+  )
+    track_event(
+      'IdV: doc auth hybrid handoff submitted',
+      analytics_id:,
+      destination:,
+      errors:,
+      flow_path:,
+      irs_reproofing:,
+      redo_document_capture:,
+      skip_hybrid_handoff:,
+      step:,
+      success:,
+      telephony_response:,
+      **extra
+    )
   end
 
   # Desktop user has reached the above "hybrid handoff" view
   # @identity.idp.previous_event_name IdV: doc auth upload visited
-  def idv_doc_auth_hybrid_handoff_visited(**extra)
-    track_event('IdV: doc auth hybrid handoff visited', **extra)
+  # @param [String] step
+  # @param [String] analytics_id
+  # @param [Boolean] irs_reproofing
+  # @param [Boolean] redo_document_capture
+  # @param [Boolean] skip_hybrid_handoff
+  def idv_doc_auth_hybrid_handoff_visited(
+    step: nil,
+    analytics_id: nil,
+    irs_reproofing: nil,
+    redo_document_capture: nil,
+    skip_hybrid_handoff: nil,
+    **extra
+  )
+    track_event(
+      'IdV: doc auth hybrid handoff visited',
+      step:,
+      analytics_id:,
+      irs_reproofing:,
+      redo_document_capture:,
+      skip_hybrid_handoff:,
+      **extra
+    )
   end
 
   # @identity.idp.previous_event_name IdV: doc auth send_link submitted
@@ -1049,6 +1234,7 @@ module AnalyticsEvents
   # @param [Boolean] doc_type_supported
   # @param [Boolean] doc_auth_success
   # @param [Boolean] selfie_success
+  # @param [String] vendor
   # The document capture image was uploaded to vendor during the IDV process
   def idv_doc_auth_submitted_image_upload_vendor(
     success:,
@@ -1069,6 +1255,7 @@ module AnalyticsEvents
     doc_type_supported: nil,
     doc_auth_success: nil,
     selfie_success: nil,
+    vendor: nil,
     **extra
   )
     track_event(
@@ -1092,6 +1279,7 @@ module AnalyticsEvents
       doc_type_supported: doc_type_supported,
       doc_auth_success: doc_auth_success,
       selfie_success: selfie_success,
+      vendor: vendor,
       **extra,
     )
   end
@@ -1107,6 +1295,7 @@ module AnalyticsEvents
   # @param [Hash] classification_info document image side information, issuing country and type etc
   # @param [Boolean] attention_with_barcode
   # @param [Integer] attempts
+  # @param [Hash] error_details
   # The PII that came back from the document capture vendor was validated
   def idv_doc_auth_submitted_pii_validation(
     success:,
@@ -1120,6 +1309,7 @@ module AnalyticsEvents
     classification_info: {},
     attention_with_barcode: nil,
     attempts: nil,
+    error_details: nil,
     **extra
   )
     track_event(
@@ -1133,6 +1323,7 @@ module AnalyticsEvents
       front_image_fingerprint: front_image_fingerprint,
       back_image_fingerprint: back_image_fingerprint,
       classification_info: classification_info,
+      error_details: error_details,
       **extra,
     )
   end
@@ -1142,8 +1333,28 @@ module AnalyticsEvents
   end
 
   # @identity.idp.previous_event_name IdV: in person proofing verify submitted
-  def idv_doc_auth_verify_submitted(**extra)
-    track_event('IdV: doc auth verify submitted', **extra)
+  # @param [String] analytics_id
+  # @param [String] flow_path
+  # @param [Boolean] irs_reproofing
+  # @param [Boolean] same_address_as_id
+  # @param [String] step
+  def idv_doc_auth_verify_submitted(
+    analytics_id: nil,
+    flow_path: nil,
+    irs_reproofing: nil,
+    same_address_as_id: nil,
+    step: nil,
+    **extra
+  )
+    track_event(
+      'IdV: doc auth verify submitted',
+      analytics_id:,
+      flow_path:,
+      irs_reproofing:,
+      same_address_as_id:,
+      step:,
+      **extra,
+    )
   end
 
   # @identity.idp.previous_event_name IdV: in person proofing verify visited
