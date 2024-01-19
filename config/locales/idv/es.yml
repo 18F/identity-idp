@@ -317,13 +317,11 @@ es:
       unavailable: Estamos trabajando para resolver un error
     troubleshooting:
       headings:
-        missing_required_items: '¿Le falta alguno de estos puntos?'
         need_assistance: '¿Necesita ayuda inmediata? Así es como puede obtener ayuda:'
       options:
         contact_support: Póngase en contacto con el servicio de asistencia de %{app_name}
         doc_capture_tips: Sugerencias para obtener fotos nítidas de tu documento de identidad
         get_help_at_sp: Obtenga ayuda en %{sp_name}
-        learn_more_address_verification_options: Obtenga más información sobre la verificación por teléfono o por correo
         learn_more_verify_by_mail: Obtenga más información sobre la verificación de su
           dirección por correo
         learn_more_verify_by_phone: Más información sobre qué número de teléfono usar
