@@ -65,15 +65,20 @@ module Reporting
 
       def update_details(
         num_entities: nil, entity_type: nil,
-        num_idv_users: nil, num_all_users: nil
+        num_all_users: nil, all_percent: nil,
+        num_idv_users: nil, idv_percent: nil,
       )
         self.num_entities = num_entities if !num_entities.nil?
 
         self.entity_type = entity_type if !entity_type.nil?
 
+        self.num_all_users = num_all_users if !num_all_users.nil?
+
+        self.all_percent = all_percent if !all_percent.nil?
+
         self.num_idv_users = num_idv_users if !num_idv_users.nil?
 
-        self.num_all_users = num_all_users if !num_all_users.nil?
+        self.idv_percent = idv_percent if !idv_percent.nil?
 
         self
       end
@@ -173,9 +178,29 @@ module Reporting
             end
           end
         end
-        self.details_section = results
 
         # Logic for summarizing rows can go here
+        puts("DETAILS: #{results}")
+        results.each_with_index do |details_section, section_index|
+          details_section.each_with_index do |detail_row, row_index|
+            if detail_row.num_entities >= 10
+              captured_row = detail_row
+              new_num_entities = "10-#{detail_row.num_entities}"
+              new_row = ReuseDetailRow.new.update_details(
+                num_entities: entity_num,
+                entity_type: entity_type,
+                num_all_users: result['num_all_users'],
+                all_percent: ,
+                num_idv_users: ,
+                idv_percent: ,
+              )
+              # remove the row and grab the numbers and aggregate
+            end
+          end
+
+        end
+
+        self.details_section = results
 
         self
       end

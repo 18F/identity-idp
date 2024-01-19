@@ -20,6 +20,15 @@ RSpec.describe Reporting::AccountReuseReport do
     let(:sp_b) { 'b' }
     let(:sp_c) { 'c' }
     let(:sp_d) { 'd' }
+    let(:sp_e) { 'e' }
+    let(:sp_f) { 'f' }
+    let(:sp_g) { 'g' }
+    let(:sp_h) { 'h' }
+    let(:sp_i) { 'i' }
+    let(:sp_j) { 'j' }
+    let(:sp_k) { 'k' }
+    let(:sp_l) { 'l' }
+
 
     before do
       create(
@@ -48,6 +57,62 @@ RSpec.describe Reporting::AccountReuseReport do
         issuer: sp_d,
         iaa: 'iaa321',
         friendly_name: 'The Other First App',
+        agency: agency,
+      )
+      create(
+        :service_provider,
+        issuer: sp_e,
+        iaa: 'iaa123',
+        friendly_name: 'App E',
+        agency: agency,
+      )
+      create(
+        :service_provider,
+        issuer: sp_f,
+        iaa: 'iaa456',
+        friendly_name: 'App F',
+        agency: agency2,
+      )
+      create(
+        :service_provider,
+        issuer: sp_g,
+        iaa: 'iaa789',
+        friendly_name: 'App G',
+        agency: agency2,
+      )
+      create(
+        :service_provider,
+        issuer: sp_h,
+        iaa: 'iaa321',
+        friendly_name: 'App H',
+        agency: agency,
+      )
+      create(
+        :service_provider,
+        issuer: sp_i,
+        iaa: 'iaa123',
+        friendly_name: 'App I',
+        agency: agency,
+      )
+      create(
+        :service_provider,
+        issuer: sp_j,
+        iaa: 'iaa456',
+        friendly_name: 'App J',
+        agency: agency2,
+      )
+      create(
+        :service_provider,
+        issuer: sp_k,
+        iaa: 'iaa789',
+        friendly_name: 'App K',
+        agency: agency2,
+      )
+      create(
+        :service_provider,
+        issuer: sp_l,
+        iaa: 'iaa321',
+        friendly_name: 'App L',
         agency: agency,
       )
 
@@ -124,6 +189,10 @@ RSpec.describe Reporting::AccountReuseReport do
           created_timestamp: out_of_query,
           sp: [sp_a],
           sp_timestamp: [out_of_query] },
+        { id: 15, # 12 apps, 2 agencies
+          created_timestamp: in_query,
+          sp: [sp_a, sp_b, sp_c, sp_d, sp_e, sp_f, sp_g, sp_h, sp_i, sp_j, sp_k, sp_l],
+          sp_timestamp: [in_query, in_query, in_query, in_query, in_query, in_query, in_query, in_query, in_query, in_query, in_query, in_query]},
       ]
 
       users_to_query.each do |user|
@@ -148,7 +217,7 @@ RSpec.describe Reporting::AccountReuseReport do
           user: create(:user, :fully_registered, registered_at: in_query),
         )
       end
-      (1..3).each do |_|
+      (1..5).each do |_|
         create(
           :profile,
           :active,
@@ -162,11 +231,12 @@ RSpec.describe Reporting::AccountReuseReport do
       it 'has the correct results' do
         expected_csv = [
           ['Metric', 'Num. all users', '% of accounts', 'Num. IDV users', '% of accounts'],
-          ['2 apps', 5, 5 / 13.0, 3, 0.3],
-          ['3 apps', 4, 4 / 13.0, 1, 0.1],
-          ['2+ apps', 9, 9 / 13.0, 4, 0.4],
-          ['2 agencies', 7, 7 / 13.0, 3, 0.3],
-          ['2+ agencies', 7, 7 / 13.0, 3, 0.3],
+          ['2 apps', 5, 5 / 15.0, 3, 0.3],
+          ['3 apps', 4, 4 / 15.0, 1, 0.1],
+          ['10-12 apps', 1, 1 / 15.0, 1, 0.1],
+          ['2+ apps', 10, 10 / 15.0, 5, 0.5],
+          ['2 agencies', 8, 8 / 15.0, 4, 0.4],
+          ['2+ agencies', 8, 8 / 15.0, 4, 0.4],
         ]
 
         aggregate_failures do
