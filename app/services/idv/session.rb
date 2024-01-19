@@ -180,7 +180,6 @@ module Idv
         user_session['idv/in_person'][:pii_from_user] = nil
         # Mark the two FSM steps as incomplete so that they can be re-entered.
         user_session['idv/in_person'].delete('Idv::Steps::InPerson::StateIdStep')
-        user_session['idv/in_person'].delete('Idv::Steps::InPerson::AddressStep')
       end
     end
 
