@@ -84,7 +84,7 @@ class FakeAnalytics < Analytics
           select { |type, _name| [:keyreq, :key].include?(type) }.
           map(&:last)
 
-        extra_keywords = original_attributes.keys - [:pii_like_keypaths] - param_names
+        extra_keywords = original_attributes.keys - [:pii_like_keypaths, :user_id] - param_names
 
         if extra_keywords.present?
           raise UndocumentedParams, <<~ERROR

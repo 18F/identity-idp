@@ -334,12 +334,16 @@ module AnalyticsEvents
   end
 
   # @param [String] message the warning
+  # @param unknown_alerts
+  # @param response_info
   # Logged when there is a non-user-facing error in the doc auth process, such as an unrecognized
   # field from a vendor
-  def doc_auth_warning(message: nil, **extra)
+  def doc_auth_warning(message: nil, unknown_alerts: nil, response_info:, **extra)
     track_event(
       'Doc Auth Warning',
       message: message,
+      unknown_alerts: unknown_alerts,
+      response_info: response_info,
       **extra,
     )
   end
@@ -906,10 +910,31 @@ module AnalyticsEvents
   end
 
   # @param [String] side the side of the image submission
-  def idv_doc_auth_failed_image_resubmitted(side:, **extra)
+  # @param attempts
+  # @param remaining_attempts
+  # @param user_id
+  # @param flow_path
+  # @param front_image_fingerprint
+  # @param back_image_fingerprint
+  def idv_doc_auth_failed_image_resubmitted(
+    side:,
+    attempts:,
+    remaining_attempts:,
+    user_id:,
+    flow_path:,
+    front_image_fingerprint:,
+    back_image_fingerprint:,
+    **extra
+  )
     track_event(
       'IdV: failed doc image resubmitted',
       side: side,
+      attempts: attempts,
+      remaining_attempts: remaining_attempts,
+      user_id: user_id,
+      flow_path: flow_path,
+      front_image_fingerprint: front_image_fingerprint,
+      back_image_fingerprint: back_image_fingerprint,
       **extra,
     )
   end
@@ -979,10 +1004,12 @@ module AnalyticsEvents
   # @param [String] flow_path
   # @param [String] front_image_fingerprint Fingerprint of front image data
   # @param [String] back_image_fingerprint Fingerprint of back image data
+  # @param error_details
   # The document capture image uploaded was locally validated during the IDV process
   def idv_doc_auth_submitted_image_upload_form(
     success:,
     errors:,
+    error_details:,
     remaining_attempts:,
     flow_path:,
     attempts: nil,
@@ -995,6 +1022,7 @@ module AnalyticsEvents
       'IdV: doc auth image upload form submitted',
       success: success,
       errors: errors,
+      error_details: error_details,
       attempts: attempts,
       remaining_attempts: remaining_attempts,
       user_id: user_id,
@@ -1036,6 +1064,10 @@ module AnalyticsEvents
     vendor_request_time_in_ms: nil,
     front_image_fingerprint: nil,
     back_image_fingerprint: nil,
+    attention_with_barcode: nil,
+    doc_type_supported: nil,
+    doc_auth_success: nil,
+    selfie_success: nil,
     **extra
   )
     track_event(
@@ -1055,6 +1087,10 @@ module AnalyticsEvents
       vendor_request_time_in_ms: vendor_request_time_in_ms,
       front_image_fingerprint: front_image_fingerprint,
       back_image_fingerprint: back_image_fingerprint,
+      attention_with_barcode: attention_with_barcode,
+      doc_type_supported: doc_type_supported,
+      doc_auth_success: doc_auth_success,
+      selfie_success: selfie_success,
       **extra,
     )
   end
@@ -4766,11 +4802,13 @@ module AnalyticsEvents
   # @param [Integer] enrollment_id
   # @param [Boolean] second_address_line_present
   # @param [String] service_provider
+  # @param [Boolean] opted_in_to_in_person_proofing
   def usps_ippaas_enrollment_created(
     enrollment_code:,
     enrollment_id:,
     second_address_line_present:,
     service_provider:,
+    opted_in_to_in_person_proofing:,
     **extra
   )
     track_event(
