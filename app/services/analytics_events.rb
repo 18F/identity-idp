@@ -334,8 +334,8 @@ module AnalyticsEvents
   end
 
   # @param [String] message the warning
-  # @param unknown_alerts
-  # @param response_info
+  # @param [Array<String>] unknown_alerts
+  # @param [Hash] response_info
   # Logged when there is a non-user-facing error in the doc auth process, such as an unrecognized
   # field from a vendor
   def doc_auth_warning(message: nil, unknown_alerts: nil, response_info: nil, **extra)
@@ -910,17 +910,15 @@ module AnalyticsEvents
   end
 
   # @param [String] side the side of the image submission
-  # @param attempts
-  # @param remaining_attempts
-  # @param user_id
-  # @param flow_path
-  # @param front_image_fingerprint
-  # @param back_image_fingerprint
+  # @param [Integer] attempts
+  # @param [Integer] remaining_attempts
+  # @param [String] flow_path
+  # @param [String] front_image_fingerprint
+  # @param [String] back_image_fingerprint
   def idv_doc_auth_failed_image_resubmitted(
     side:,
     attempts:,
     remaining_attempts:,
-    user_id:,
     flow_path:,
     front_image_fingerprint:,
     back_image_fingerprint:,
@@ -931,7 +929,6 @@ module AnalyticsEvents
       side: side,
       attempts: attempts,
       remaining_attempts: remaining_attempts,
-      user_id: user_id,
       flow_path: flow_path,
       front_image_fingerprint: front_image_fingerprint,
       back_image_fingerprint: back_image_fingerprint,
@@ -1004,18 +1001,18 @@ module AnalyticsEvents
   # @param [String] flow_path
   # @param [String] front_image_fingerprint Fingerprint of front image data
   # @param [String] back_image_fingerprint Fingerprint of back image data
-  # @param error_details
+  # @param [Hash] error_details
   # The document capture image uploaded was locally validated during the IDV process
   def idv_doc_auth_submitted_image_upload_form(
     success:,
     errors:,
-    error_details:,
     remaining_attempts:,
     flow_path:,
     attempts: nil,
     user_id: nil,
     front_image_fingerprint: nil,
     back_image_fingerprint: nil,
+    error_details: nil,
     **extra
   )
     track_event(
@@ -1048,6 +1045,10 @@ module AnalyticsEvents
   # @param [Float] vendor_request_time_in_ms Time it took to upload images & get a response.
   # @param [String] front_image_fingerprint Fingerprint of front image data
   # @param [String] back_image_fingerprint Fingerprint of back image data
+  # @param [Boolean] attention_with_barcode
+  # @param [Boolean] doc_type_supported
+  # @param [Boolean] doc_auth_success
+  # @param [Boolean] selfie_success
   # The document capture image was uploaded to vendor during the IDV process
   def idv_doc_auth_submitted_image_upload_vendor(
     success:,
@@ -1104,6 +1105,8 @@ module AnalyticsEvents
   # @param [String] front_image_fingerprint Fingerprint of front image data
   # @param [String] back_image_fingerprint Fingerprint of back image data
   # @param [Hash] classification_info document image side information, issuing country and type etc
+  # @param [Boolean] attention_with_barcode
+  # @param [Integer] attempts
   # The PII that came back from the document capture vendor was validated
   def idv_doc_auth_submitted_pii_validation(
     success:,
@@ -1115,6 +1118,8 @@ module AnalyticsEvents
     front_image_fingerprint: nil,
     back_image_fingerprint: nil,
     classification_info: {},
+    attention_with_barcode: nil,
+    attempts: nil,
     **extra
   )
     track_event(
@@ -3967,7 +3972,7 @@ module AnalyticsEvents
 
   # Tracks when a user triggered a rate limiter
   # @param [String] limiter_type
-  # @param step_name
+  # @param [String] step_name
   # @identity.idp.previous_event_name Throttler Rate Limit Triggered
   def rate_limit_reached(limiter_type:, step_name: nil, **extra)
     track_event(
@@ -4001,7 +4006,7 @@ module AnalyticsEvents
   # @param [String] validator_class Class name of validator
   # @param [String, nil] exception_class Class name of exception, if error occurred
   # @param [String, nil] phone_country_code Country code associated with reCAPTCHA phone result
-  # @param recaptcha_version
+  # @param [Numeric] recaptcha_version
   def recaptcha_verify_result_received(
     recaptcha_result:,
     score_threshold:,
