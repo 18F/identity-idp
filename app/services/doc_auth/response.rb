@@ -57,8 +57,8 @@ module DocAuth
         attention_with_barcode: attention_with_barcode?,
         doc_type_supported: doc_type_supported?,
         doc_auth_success: doc_auth_success?,
-        selfie_status: selfie_status,
-      }.merge(extra)
+        selfie_status: self.respond_to?(:selfie_status) ? selfie_status : :not_processed,
+      }.compact!.merge(extra)
     end
 
     def first_error_message
@@ -78,11 +78,6 @@ module DocAuth
 
     def selfie_check_performed?
       @selfie_check_performed
-    end
-
-    def selfie_status
-      return :not_processed if portrait_match_results&.dig(:FaceMatchResult).nil?
-      portrait_match_results[:FaceMatchResult] == 'Pass' ? :pass : :fail
     end
 
     def doc_auth_success?

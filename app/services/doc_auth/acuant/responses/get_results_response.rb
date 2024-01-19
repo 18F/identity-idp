@@ -72,7 +72,7 @@ module DocAuth
             classification_info: classification_info,
             address_line2_present: !pii_from_doc[:address2].blank?,
             doc_auth_success: doc_auth_success?,
-            selfie_success: nil,
+            selfie_status: :not_processed,
           }
         end
 
