@@ -247,7 +247,7 @@ module DocAuth
             true_id_product.present? &&
             product_status_passed? &&
             doc_auth_result_passed? &&
-            (@liveness_checking_enabled ? selfie_success : true)
+            (@liveness_checking_enabled ? selfie_status : true)
         end
 
         def selfie_result
