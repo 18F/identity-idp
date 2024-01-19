@@ -147,6 +147,15 @@ module InPersonHelper
     click_idv_submit_default
   end
 
+  def complete_steps_before_state_id_step
+    sign_in_and_2fa_user
+    begin_in_person_proofing
+    complete_prepare_step
+    complete_location_step
+
+    expect(page).to have_current_path(idv_in_person_step_path(step: :state_id), wait: 10)
+  end
+
   def complete_all_in_person_proofing_steps(user = user_with_2fa, same_address_as_id: true)
     complete_prepare_step(user)
     complete_location_step(user)

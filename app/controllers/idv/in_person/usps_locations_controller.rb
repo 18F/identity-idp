@@ -7,7 +7,6 @@ module Idv
       include RenderConditionConcern
       include UspsInPersonProofing
       include EffectiveUser
-      include UspsInPersonProofing
 
       check_or_render_not_found -> { InPersonConfig.enabled? }
 
