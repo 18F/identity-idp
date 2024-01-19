@@ -59,12 +59,14 @@ module DocAuth
       alert_error_count -= unknown_fail_count
 
       # If we have document type errors (Ex: passport was uploaded) return only
-      # those errors for both the "FRONT" and "BACK" fields (but not "SELFIE")
+      # document type errors for both the "FRONT" and "BACK" fields (but not "SELFIE")
+      # this return will never include any selfie errors at the moment.
       doc_type_errors = get_id_type_errors(response_info[:classification_info])
       return doc_type_errors.to_h unless doc_type_errors.nil? || doc_type_errors.empty?
 
       # If we have image metric errors (Ex: DPI too low) return only
-      # those errors for both the "FRONT" and "BACK" fields (but not "SELFIE")
+      # image metric errors for both the "FRONT" and "BACK" fields (but not "SELFIE")
+      # this return will never include any selfie errors at the moment.
       image_metric_errors = get_image_metric_errors(response_info[:image_metrics])
       return image_metric_errors.to_h unless image_metric_errors.empty?
 
@@ -76,12 +78,8 @@ module DocAuth
       side = nil
 
       # If we don't have document type or image metric errors then sort out which
-      # errors to return. This can return errors for only these combinations of fields:
-      # - "Front"
-      # - "Back"
-      # - "ID" (AKA "Front", "Back" I think)
-      # - "Selfie"
-      # You'll note we're missing some "Selfie" combinations like: "Front", "Selfie"
+      # errors to return. Note that there's a :general error added in the
+      # `to_h` method of error_result
       if alert_error_count < 1
         config.warn_notifier&.call(
           message: 'DocAuth failure escaped without useful errors',
