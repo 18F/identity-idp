@@ -217,23 +217,23 @@ module DocAuth
       face_match_error = portrait_match_results.dig(:FaceErrorMessage)
 
       # No error if liveness is not enabled or if there's no failure
-      if !liveness_enabled || face_match_result == 'Pass'
+      if !liveness_enabled || face_match_result != 'Fail'
         return nil
       end
 
+      case face_match_error
       # Error when the image on the id does not match the selfie image, but the image was acceptable
-      if face_match_result == 'Fail' &&
-         face_match_error == "FaceErrorMessage: 'Successful. Liveness: Live'"
+      when "FaceErrorMessage: 'Successful. Liveness: Live'"
         return Errors::SELFIE_FAILURE
-      end
       # Error when the image on the id is poor quality
-      if face_match_result == 'Fail' && face_match_error == 'Liveness: PoorQuality'
+      when 'Liveness: PoorQuality'
         return Errors::SELFIE_POOR_QUALITY
-      end
       # Error when the image on the id is not live
-      if face_match_result == 'Fail' && face_match_error == 'Liveness: NotLive'
+      when 'Liveness: NotLive'
         return Errors::SELFIE_NOT_LIVE
-      end
+      # Fallback, we don't expect this to happen
+      else
+        return Errors::SELFIE_FAILURE
     end
 
     def scan_for_unknown_alerts(response_info)
