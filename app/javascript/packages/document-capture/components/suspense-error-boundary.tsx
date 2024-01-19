@@ -3,13 +3,21 @@ import type { ReactNode } from 'react';
 import { RetrySubmissionError } from './submission-complete';
 
 interface SuspenseErrorBoundaryProps {
-  // Fallback to show while suspense pending.
+  /**
+   * Fallback to show while suspense pending.
+   */
   fallback: NonNullable<ReactNode>|null;
-  // Error callback.
+  /**
+    * Error callback.
+    */
   onError: (error: Error)=>void;
-  // Error instance caught to allow for acknowledgment of rerender, in order to prevent infinite rerendering.
-  handledError: RetrySubmissionError | undefined;
-  // Suspense child.
+  /**
+    * Error instance caught to allow for acknowledgment of rerender, in order to prevent infinite rerendering.
+    */
+  handledError?: RetrySubmissionError;
+  /**
+   * Suspense child.
+   */
   children: ReactNode;
 }
 
