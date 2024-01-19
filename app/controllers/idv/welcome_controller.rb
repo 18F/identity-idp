@@ -13,7 +13,7 @@ module Idv
         call('welcome', :view, true)
 
       @sp_name = decorated_sp_session.sp_name || APP_NAME
-      @title = t('doc_auth.headings.getting_started', sp_name: @sp_name)
+      @title = t('doc_auth.headings.welcome', sp_name: @sp_name)
     end
 
     def update

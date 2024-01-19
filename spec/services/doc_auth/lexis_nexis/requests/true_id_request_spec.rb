@@ -228,7 +228,7 @@ def response_body(include_liveness)
               [
                 Group: 'PORTRAIT_MATCH_RESULT',
                 Name: 'FaceMatchResult',
-                Values: [{ Value: 'Success' }],
+                Values: [{ Value: 'Pass' }],
               ]
             end
           ),
@@ -262,7 +262,7 @@ def response_body_with_doc_auth_errors(include_liveness)
               [
                 Group: 'PORTRAIT_MATCH_RESULT',
                 Name: 'FaceMatchResult',
-                Values: [{ Value: 'Success' }],
+                Values: [{ Value: 'Pass' }],
               ]
             end
           ),

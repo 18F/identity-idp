@@ -52,8 +52,7 @@ module DocAuth
               # Error generator is not to be called when it's not failure
               # allows us to test successful results
               return {} if all_doc_capture_values_passing?(
-                doc_auth_result, id_type_supported?,
-                face_match_result
+                doc_auth_result, id_type_supported?
               )
 
               mock_args = {}
@@ -178,10 +177,10 @@ module DocAuth
         end
       end
 
-      def all_doc_capture_values_passing?(doc_auth_result, id_type_supported, face_match_result)
+      def all_doc_capture_values_passing?(doc_auth_result, id_type_supported)
         doc_auth_result == 'Passed' &&
           id_type_supported &&
-          (@selfie_check_performed ? face_match_result == 'Pass' : true)
+          (@selfie_check_performed ? selfie_success : true)
       end
 
       def parse_uri
