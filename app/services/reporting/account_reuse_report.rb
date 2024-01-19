@@ -175,6 +175,8 @@ module Reporting
         end
         self.details_section = results
 
+        # Logic for summarizing rows can go here
+
         self
       end
 
