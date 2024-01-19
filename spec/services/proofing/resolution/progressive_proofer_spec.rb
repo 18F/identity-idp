@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Proofing::Resolution::ProgressiveProofer do
-  let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS }
+  let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN }
   let(:should_proof_state_id) { true }
   let(:ipp_enrollment_in_progress) { false }
   let(:request_ip) { Faker::Internet.ip_v4_address }
@@ -31,6 +31,21 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       zipcode: applicant_pii[:zipcode],
     }
   end
+  let(:transformed_pii) do
+    {
+      first_name: 'FAKEY',
+      last_name: 'MCFAKERSON',
+      dob: '1938-10-06',
+      address1: '123 Way St',
+      address2: '2nd Address Line',
+      city: 'Best City',
+      zipcode: '12345',
+      state_id_jurisdiction: 'Virginia',
+      address_state: 'VA',
+      state_id_number: '1111111111111',
+      same_address_as_id: 'true',
+    }
+  end
 
   describe '#proof' do
     before do
@@ -54,7 +69,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         proofing_result = proof
 
         expect(proofing_result).to be_an_instance_of(Proofing::Resolution::ResultAdjudicator)
-        expect(proofing_result.same_address_as_id).to eq(applicant_pii[:same_address_as_id])
+        expect(proofing_result.same_address_as_id).to eq(nil)
       end
 
       let(:resolution_result) do
@@ -118,7 +133,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       end
 
       context 'LexisNexis Instant Verify A/B test enabled' do
-        let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID }
         let(:residential_instant_verify_proof) do
           instance_double(Proofing::Resolution::Result)
         end
@@ -150,27 +164,47 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           proof
         end
       end
+
+      context 'remote flow does not augment pii' do
+        let(:aamva_proofer) { instance_double(Proofing::Aamva::Proofer) }
+        let(:id_address_instant_verify_proof) do
+          instance_double(Proofing::Resolution::Result)
+        end
+
+        before do
+          allow(instance).to receive(:state_id_proofer).and_return(aamva_proofer)
+          allow(instance).to receive(:resolution_proofer).and_return(instant_verify_proofer)
+          allow(instant_verify_proofer).to receive(:proof).
+            and_return(id_address_instant_verify_proof)
+          allow(id_address_instant_verify_proof).to receive(:success?).and_return(true)
+        end
+
+        it 'proofs with untransformed pii' do
+          expect(aamva_proofer).to receive(:proof).with(applicant_pii)
+
+          result = subject
+
+          expect(result.same_address_as_id).to eq(nil)
+          expect(result.ipp_enrollment_in_progress).to eq(false)
+          # rubocop:disable Layout/LineLength
+          expect(result.residential_resolution_result.vendor_name).to eq('ResidentialAddressNotRequired')
+          # rubocop:enable Layout/LineLength
+        end
+      end
     end
 
     context 'ipp flow' do
       let(:ipp_enrollment_in_progress) { true }
-      let(:transformed_pii) do
-        {
-          first_name: 'FAKEY',
-          last_name: 'MCFAKERSON',
-          dob: '1938-10-06',
-          address1: '123 Way St',
-          address2: '2nd Address Line',
-          city: 'Best City',
-          zipcode: '12345',
-          state_id_jurisdiction: 'Virginia',
-          address_state: 'VA',
-          state_id_number: '1111111111111',
-          same_address_as_id: 'true',
-        }
+      let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID }
+
+      it 'returns a ResultAdjudicator' do
+        proofing_result = proof
+
+        expect(proofing_result).to be_an_instance_of(Proofing::Resolution::ResultAdjudicator)
+        expect(proofing_result.same_address_as_id).to eq(applicant_pii[:same_address_as_id])
       end
+
       context 'residential address and id address are the same' do
-        let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID }
         let(:aamva_proofer) { instance_double(Proofing::Aamva::Proofer) }
         let(:residential_instant_verify_proof) do
           instance_double(Proofing::Resolution::Result)
