@@ -81,7 +81,8 @@ module DocAuth
     end
 
     def selfie_status
-      # to be implemented by concrete subclass
+      return :not_processed if portrait_match_results&.dig(:FaceMatchResult).nil?
+      portrait_match_results[:FaceMatchResult] == 'Pass' ? :pass : :fail
     end
 
     def doc_auth_success?
