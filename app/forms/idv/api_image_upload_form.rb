@@ -155,6 +155,7 @@ module Idv
 
       @extra_attributes[:front_image_fingerprint] = front_image_fingerprint
       @extra_attributes[:back_image_fingerprint] = back_image_fingerprint
+      @extra_attributes[:selfie_image_fingerprint] = selfie_image_fingerprint
       @extra_attributes[:liveness_checking_required] = liveness_checking_required
       @extra_attributes
     end
@@ -172,6 +173,16 @@ module Idv
       if readable?(:back)
         @back_image_fingerprint =
           Digest::SHA256.urlsafe_base64digest(back_image_bytes)
+      end
+    end
+
+    def selfie_image_fingerprint
+      return unless liveness_checking_required
+      return @selfie_image_fingerprint if @selfie_image_fingerprint
+
+      if readable?(:selfie)
+        @selfie_image_fingerprint =
+          Digest::SHA256.urlsafe_base64digest(selfie_image_bytes)
       end
     end
 
@@ -262,6 +273,12 @@ module Idv
           side: error_sides.length == 2 ? 'both' : error_sides[0], **extra_attributes,
         )
       end
+
+      if capture_result&.failed_selfie_image?(selfie_image_fingerprint)
+        analytics.idv_doc_auth_failed_image_resubmitted(
+          side: 'selfie', **extra_attributes,
+        )
+      end
     end
 
     def limit_if_rate_limited
@@ -350,7 +367,7 @@ module Idv
       }
     end
 
-    def acuant_sdk_capture?
+    def acuant_sdk_capture? # TODO: create ticket incorporate selfie into logic
       image_metadata.dig(:front, :source) == Idp::Constants::Vendors::ACUANT &&
         image_metadata.dig(:back, :source) == Idp::Constants::Vendors::ACUANT
     end
@@ -376,7 +393,7 @@ module Idv
         call(response)
     end
 
-    def update_funnel(client_response)
+    def update_funnel(client_response) # TODO: create ticket to add selfie
       steps = %i[front_image back_image]
       steps.each do |step|
         Funnel::DocAuth::RegisterStep.new(user_id, service_provider&.issuer).
@@ -439,6 +456,7 @@ module Idv
         return {
           front: [],
           back: [],
+          selfie: [],
         }
       end
       # doc auth failed due to non network error or doc_pii is not valid
@@ -459,6 +477,7 @@ module Idv
           store_failed_auth_data(
             front_image_fingerprint: failed_front_fingerprint,
             back_image_fingerprint: failed_back_fingerprint,
+            selfie_image_fingerprint: extra_attributes[:selfie_image_fingerprint],
             doc_auth_success: client_response.doc_auth_success?,
             selfie_status: selfie_status_from_response(client_response),
           )
@@ -466,6 +485,7 @@ module Idv
         document_capture_session.store_failed_auth_data(
           front_image_fingerprint: extra_attributes[:front_image_fingerprint],
           back_image_fingerprint: extra_attributes[:back_image_fingerprint],
+          selfie_image_fingerprint: extra_attributes[:selfie_image_fingerprint],
           doc_auth_success: client_response.doc_auth_success?,
           selfie_status: selfie_status_from_response(client_response),
         )
@@ -475,6 +495,7 @@ module Idv
       {
         front: captured_result&.failed_front_image_fingerprints || [],
         back: captured_result&.failed_back_image_fingerprints || [],
+        selfie: captured_result&.failed_selfie_image_fingerprints || [],
       }
     end
 
