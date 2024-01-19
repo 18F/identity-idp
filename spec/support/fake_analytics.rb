@@ -72,6 +72,8 @@ class FakeAnalytics < Analytics
   UndocumentedParams = Class.new(StandardError)
 
   module UndocumentedParamsChecker
+    mattr_accessor :allowed_extra_params
+
     def track_event(event, original_attributes = {})
       method_name = caller.
         grep(/analytics_events\.rb/)&.
@@ -84,11 +86,15 @@ class FakeAnalytics < Analytics
           select { |type, _name| [:keyreq, :key].include?(type) }.
           map(&:last)
 
-        extra_keywords = original_attributes.keys - [:pii_like_keypaths, :user_id] - param_names
+        extra_keywords = original_attributes.keys \
+          - [:pii_like_keypaths, :user_id] \
+          - Array(UndocumentedParamsChecker.allowed_extra_params) \
+          - param_names
 
         if extra_keywords.present?
           raise UndocumentedParams, <<~ERROR
             event :#{method_name} called with undocumented params #{extra_keywords.inspect}
+            (if these params are for specs only, use :allowed_extra_params metadata)
           ERROR
         end
       end
@@ -123,6 +129,15 @@ class FakeAnalytics < Analytics
 
   def browser_attributes
     {}
+  end
+end
+
+RSpec.configure do |c|
+  c.around do |ex|
+    FakeAnalytics::UndocumentedParamsChecker.allowed_extra_params = ex.metadata[:allowed_extra_params]
+    ex.run
+  ensure
+    FakeAnalytics::UndocumentedParamsChecker.allowed_extra_params = []
   end
 end
 

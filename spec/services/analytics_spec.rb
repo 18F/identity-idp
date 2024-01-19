@@ -195,4 +195,22 @@ RSpec.describe Analytics do
       )
     end.to raise_error(FakeAnalytics::UndocumentedParams, /some_new_undocumented_keyword/)
   end
+
+  it 'does not error when undocumented params are allowed', allowed_extra_params: [:fun_level] do
+    expect(ahoy).to receive(:track).with(
+      kind_of(String),
+      hash_including(event_properties: hash_including(:fun_level)),
+    )
+
+    analytics.idv_phone_confirmation_otp_submitted(
+      success: true,
+      errors: true,
+      code_expired: true,
+      code_matches: true,
+      second_factor_attempts_count: true,
+      second_factor_locked_at: true,
+      proofing_components: true,
+      fun_level: 1000,
+    )
+  end
 end
