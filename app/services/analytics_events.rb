@@ -678,7 +678,7 @@ module AnalyticsEvents
   # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
   # @param [String] acuant_version
   # @param [Boolean] assessment
-  # @param [Integer] attempt number of attempts
+  # @param [Integer] captureAttempts number of attempts to capture / upload an image
   # @param [String] documentType
   # @param [Integer] dpi  dots per inch of image
   # @param [Integer] failedImageResubmission
@@ -705,7 +705,7 @@ module AnalyticsEvents
     acuant_sdk_upgrade_a_b_testing_enabled:,
     acuant_version:,
     assessment:,
-    attempt:,
+    captureAttempts:,
     documentType:,
     dpi:,
     failedImageResubmission:,
@@ -733,7 +733,7 @@ module AnalyticsEvents
       acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
       acuant_version: acuant_version,
       assessment: assessment,
-      attempt: attempt,
+      captureAttempts: captureAttempts,
       documentType: documentType,
       dpi: dpi,
       failedImageResubmission: failedImageResubmission,
@@ -1323,7 +1323,7 @@ module AnalyticsEvents
   # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
   # @param [String] acuant_version
   # @param [Boolean] assessment
-  # @param [Integer] attempt number of attempts
+  # @param [Integer] captureAttempts number of attempts to capture / upload an image
   # @param [String] documentType
   # @param [Integer] dpi  dots per inch of image
   # @param [Integer] failedImageResubmission
@@ -1350,7 +1350,7 @@ module AnalyticsEvents
     acuant_sdk_upgrade_a_b_testing_enabled:,
     acuant_version:,
     assessment:,
-    attempt:,
+    captureAttempts:,
     documentType:,
     dpi:,
     failedImageResubmission:,
@@ -1378,7 +1378,7 @@ module AnalyticsEvents
       acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
       acuant_version: acuant_version,
       assessment: assessment,
-      attempt: attempt,
+      captureAttempts: captureAttempts,
       documentType: documentType,
       dpi: dpi,
       failedImageResubmission: failedImageResubmission,
@@ -2813,11 +2813,13 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Integer] attempt number of attempts
+  # @param [Integer] captureAttempts number of attempts to capture / upload an image
   # User captured and approved of their selfie
-  def idv_sdk_selfie_image_added(attempt:, **extra)
-    track_event(:idv_sdk_selfie_image_added, attempt: attempt, **extra)
+  # rubocop:disable Naming/VariableName,Naming/MethodParameterName
+  def idv_sdk_selfie_image_added(captureAttempts:, **extra)
+    track_event(:idv_sdk_selfie_image_added, captureAttempts: captureAttempts, **extra)
   end
+  # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
   # User closed the SDK for taking a selfie without submitting a photo
   def idv_sdk_selfie_image_capture_closed_without_photo(**extra)
@@ -2843,7 +2845,7 @@ module AnalyticsEvents
     track_event(:idv_sdk_selfie_image_capture_opened, **extra)
   end
 
-  # @param [Integer] attempt number of attempts
+  # @param [Integer] captureAttempts number of attempts to capture / upload an image
   # @param [Integer] failedImageResubmission
   # @param [String] fingerprint fingerprint of the image added
   # @param [String] flow_path whether the user is in the hybrid or standard flow
@@ -2855,7 +2857,7 @@ module AnalyticsEvents
   # User uploaded a selfie using the file picker
   # rubocop:disable Naming/VariableName,Naming/MethodParameterName
   def idv_selfie_image_file_uploaded(
-    attempt:,
+    captureAttempts:,
     failedImageResubmission:,
     fingerprint:,
     flow_path:,
@@ -2868,7 +2870,7 @@ module AnalyticsEvents
   )
     track_event(
       :idv_selfie_image_file_uploaded,
-      attempt: attempt,
+      captureAttempts: captureAttempts,
       failedImageResubmission: failedImageResubmission,
       fingerprint: fingerprint,
       flow_path: flow_path,
