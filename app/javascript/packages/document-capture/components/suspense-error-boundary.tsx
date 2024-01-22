@@ -1,6 +1,5 @@
 import { Component, Suspense } from 'react';
 import type { ReactNode } from 'react';
-import type { RetrySubmissionError } from './submission-complete';
 
 interface SuspenseErrorBoundaryProps {
   /**
