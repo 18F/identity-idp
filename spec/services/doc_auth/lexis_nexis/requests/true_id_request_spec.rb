@@ -3,19 +3,24 @@ require 'rails_helper'
 RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
   let(:image_source) { nil }
   let(:account_id) { 'test_account' }
-  let(:workflow) { nil }
   let(:base_url) { 'https://lexis.nexis.example.com' }
+  let(:workflow) { subject.send(:workflow) }
   let(:path) { "/restws/identity/v3/accounts/#{account_id}/workflows/#{workflow}/conversations" }
   let(:full_url) { base_url + path }
   let(:applicant) { { uuid: SecureRandom.uuid, uuid_prefix: '123' } }
+  let(:non_cropping_non_liveness_flow) { 'test_workflow' }
+  let(:cropping_non_liveness_flow) { 'test_workflow_cropping' }
+  let(:non_cropping_liveness_flow) { 'test_workflow_liveness' }
+  let(:cropping_liveness_flow) { 'test_workflow_liveness_cropping' }
+
   let(:config) do
     DocAuth::LexisNexis::Config.new(
       trueid_account_id: account_id,
       base_url: base_url,
-      trueid_noliveness_cropping_workflow: 'test_workflow_cropping',
-      trueid_noliveness_nocropping_workflow: 'test_workflow',
-      trueid_liveness_cropping_workflow: 'test_workflow_liveness_cropping',
-      trueid_liveness_nocropping_workflow: 'test_workflow_liveness',
+      trueid_noliveness_cropping_workflow: cropping_non_liveness_flow,
+      trueid_noliveness_nocropping_workflow: non_cropping_non_liveness_flow,
+      trueid_liveness_cropping_workflow: cropping_liveness_flow,
+      trueid_liveness_nocropping_workflow: non_cropping_liveness_flow,
     )
   end
   let(:selfie_image) { DocAuthImageFixtures.selfie_image }
@@ -100,10 +105,11 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
     context 'when liveness checking is NOT required' do
       let(:liveness_checking_required) { false }
       context 'with acuant image source' do
-        let(:workflow) { 'test_workflow' }
         let(:image_source) { DocAuth::ImageSources::ACUANT_SDK }
         it_behaves_like 'a successful request'
-
+        it 'uses non-cropping non-liveness workflow' do
+          expect(subject.send(:workflow)).to eq(non_cropping_non_liveness_flow)
+        end
         it 'does not include a nil selfie in the request body sent to TrueID' do
           body_as_json = subject.send(:body)
           body_as_hash = JSON.parse(body_as_json)
@@ -111,9 +117,10 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
         end
       end
       context 'with unknown image source' do
-        let(:workflow) { 'test_workflow_cropping' }
         let(:image_source) { DocAuth::ImageSources::UNKNOWN }
-
+        it 'uses cropping non-liveness workflow' do
+          expect(subject.send(:workflow)).to eq(cropping_non_liveness_flow)
+        end
         it_behaves_like 'a successful request'
       end
     end
@@ -121,14 +128,17 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
     context 'when liveness checking is required' do
       let(:liveness_checking_required) { true }
       context 'with acuant image source' do
-        let(:workflow) { 'test_workflow' }
         let(:image_source) { DocAuth::ImageSources::ACUANT_SDK }
+        it 'uses non-cropping non-liveness workflow' do
+          expect(subject.send(:workflow)).to eq(non_cropping_non_liveness_flow)
+        end
         it_behaves_like 'a successful request'
       end
       context 'with unknown image source' do
-        let(:workflow) { 'test_workflow_cropping' }
         let(:image_source) { DocAuth::ImageSources::UNKNOWN }
-
+        it 'uses cropping non-liveness workflow' do
+          expect(subject.send(:workflow)).to eq(cropping_non_liveness_flow)
+        end
         it_behaves_like 'a successful request'
       end
     end
@@ -144,14 +154,17 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
     context 'when liveness checking is NOT required' do
       let(:liveness_checking_required) { false }
       context 'with acuant image source' do
-        let(:workflow) { 'test_workflow' }
         let(:image_source) { DocAuth::ImageSources::ACUANT_SDK }
+        it 'use non-cropping non-liveness workflow' do
+          expect(subject.send(:workflow)).to eq(non_cropping_non_liveness_flow)
+        end
         it_behaves_like 'a successful request'
       end
       context 'with unknown image source' do
-        let(:workflow) { 'test_workflow_cropping' }
         let(:image_source) { DocAuth::ImageSources::UNKNOWN }
-
+        it 'use cropping non-liveness workflow' do
+          expect(subject.send(:workflow)).to eq(cropping_non_liveness_flow)
+        end
         it_behaves_like 'a successful request'
       end
     end
@@ -159,29 +172,34 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
     context 'when liveness checking is required' do
       let(:liveness_checking_required) { true }
       context 'with acuant image source' do
-        let(:workflow) { 'test_workflow_liveness' }
         let(:image_source) { DocAuth::ImageSources::ACUANT_SDK }
-
+        it 'use non-cropping liveness workflow' do
+          expect(subject.send(:workflow)).to eq(non_cropping_liveness_flow)
+        end
         it_behaves_like 'a successful request'
       end
       context 'with unknown image source' do
-        let(:workflow) { 'test_workflow_liveness_cropping' }
         let(:image_source) { DocAuth::ImageSources::UNKNOWN }
-
+        it 'use cropping liveness workflow' do
+          expect(subject.send(:workflow)).to eq(cropping_liveness_flow)
+        end
         it_behaves_like 'a successful request'
       end
 
       context 'when hosted env is prod' do
         let(:selfie_check_allowed) { false }
         context 'with acuant image source' do
-          let(:workflow) { 'test_workflow' }
           let(:image_source) { DocAuth::ImageSources::ACUANT_SDK }
+          it 'use non-cropping non-liveness workflow' do
+            expect(subject.send(:workflow)).to eq(non_cropping_non_liveness_flow)
+          end
           it_behaves_like 'a successful request'
         end
         context 'with unknown image source' do
-          let(:workflow) { 'test_workflow_cropping' }
           let(:image_source) { DocAuth::ImageSources::UNKNOWN }
-
+          it 'use cropping non-liveness workflow' do
+            expect(subject.send(:workflow)).to eq(cropping_non_liveness_flow)
+          end
           it_behaves_like 'a successful request'
         end
       end
@@ -189,7 +207,6 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
   end
 
   context 'with non 200 http status code' do
-    let(:workflow) { 'test_workflow' }
     let(:image_source) { DocAuth::ImageSources::ACUANT_SDK }
     it 'is a network error with 5xx status' do
       stub_request(:post, full_url).to_return(body: '{}', status: 500)
