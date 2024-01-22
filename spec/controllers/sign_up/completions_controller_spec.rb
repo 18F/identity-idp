@@ -263,6 +263,7 @@ RSpec.describe SignUp::CompletionsController do
           sp_request_requested_attributes: nil,
           sp_session_requested_attributes: nil,
           in_account_creation_flow: true,
+          disposable_email_domain: nil,
         )
       end
 

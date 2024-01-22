@@ -17,6 +17,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
   let(:threatmetrix_session_id) { SecureRandom.uuid }
   let(:proofing_device_profiling) { :enabled }
   let(:lexisnexis_threatmetrix_mock_enabled) { false }
+  let(:ipp_enrollment_in_progress) { false }
 
   before do
     allow(IdentityConfig.store).to receive(:proofing_device_profiling).
@@ -40,6 +41,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
         user_id: user.id,
         threatmetrix_session_id: threatmetrix_session_id,
         request_ip: request_ip,
+        ipp_enrollment_in_progress: ipp_enrollment_in_progress,
       )
     end
 
@@ -118,6 +120,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
           user_id: user.id,
           threatmetrix_session_id: threatmetrix_session_id,
           request_ip: request_ip,
+          ipp_enrollment_in_progress: ipp_enrollment_in_progress,
         )
       end
       it 'stores a successful result' do
@@ -378,6 +381,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
 
     context "when the user's state ID address does not match their residential address" do
       let(:pii) { Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS }
+      let(:ipp_enrollment_in_progress) { true }
 
       let(:residential_address) do
         {
@@ -411,7 +415,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
           user_id: user.id,
           threatmetrix_session_id: threatmetrix_session_id,
           request_ip: request_ip,
-          ipp_enrollment_in_progress: true,
+          ipp_enrollment_in_progress: ipp_enrollment_in_progress,
         )
       end
 
@@ -510,6 +514,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
 
     context 'without a threatmetrix session ID' do
       let(:threatmetrix_session_id) { nil }
+      let(:ipp_enrollment_in_progress) { false }
 
       it 'does not make a request to threatmetrix' do
         stub_vendor_requests
