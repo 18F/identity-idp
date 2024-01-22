@@ -56,6 +56,7 @@ class ImageUploadResponsePresenter
       json[:result_failed] = doc_auth_result_failed?
       json[:doc_type_supported] = doc_type_supported?
       json[:failed_image_fingerprints] = failed_fingerprints
+      json
     end
   end
 
