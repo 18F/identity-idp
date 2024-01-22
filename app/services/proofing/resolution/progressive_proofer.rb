@@ -107,10 +107,10 @@ module Proofing
       end
 
       def proof_residential_address_if_needed(
-  applicant_pii:,
-  timer:,
-  ipp_enrollment_in_progress: false
-)
+        applicant_pii:,
+        timer:,
+        ipp_enrollment_in_progress: false
+      )
         return residential_address_unnecessary_result unless ipp_enrollment_in_progress
 
         timer.time('residential address') do
