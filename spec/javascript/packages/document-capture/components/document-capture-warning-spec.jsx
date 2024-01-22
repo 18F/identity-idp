@@ -66,7 +66,7 @@ describe('DocumentCaptureWarning', () => {
             isFailedDocType={isFailedDocType}
             isFailedResult={isFailedResult}
             isFailedSelfieLivenessOrQuality={isFailedSelfieLivenessOrQuality}
-            remainingAttempts={2}
+            remainingSubmitAttempts={2}
             unknownFieldErrors={unknownFieldErrors}
             actionOnClick={() => {}}
           />

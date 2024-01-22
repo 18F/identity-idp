@@ -17,7 +17,7 @@ import { getFixtureFile } from '../../../support/file';
 
 describe('document-capture/components/review-issues-step', () => {
   const DEFAULT_PROPS = {
-    remainingAttempts: 3,
+    remainingSubmitAttempts: 3,
     unknownFieldErrors: [
       {
         field: 'general',
@@ -144,7 +144,7 @@ describe('document-capture/components/review-issues-step', () => {
         }
       >
         <ReviewIssuesStep
-          remainingAttempts={1}
+          remainingSubmitAttempts={1}
           unknownFieldErrors={[
             {
               field: 'unknown',
@@ -280,7 +280,7 @@ describe('document-capture/components/review-issues-step', () => {
         >
           <ReviewIssuesStep
             isFailedDocType
-            remainingAttempts={3}
+            remainingSubmitAttempts={3}
             unknownFieldErrors={[
               {
                 field: 'general',
@@ -335,7 +335,7 @@ describe('document-capture/components/review-issues-step', () => {
         >
           <ReviewIssuesStep
             isFailedDocType
-            remainingAttempts={3}
+            remainingSubmitAttempts={3}
             unknownFieldErrors={[
               {
                 field: 'general',

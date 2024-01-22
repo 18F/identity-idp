@@ -66,8 +66,8 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
             front: { blank: true },
           },
           user_id: user.uuid,
-          attempts: 1,
-          remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+          submit_attempts: 1,
+          remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
           pii_like_keypaths: pii_like_keypaths,
           flow_path: 'standard',
         ).exactly(0).times
@@ -127,8 +127,8 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
             front: { not_a_file: true },
           },
           user_id: user.uuid,
-          attempts: 1,
-          remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+          submit_attempts: 1,
+          remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
           pii_like_keypaths: pii_like_keypaths,
           flow_path: 'standard',
           front_image_fingerprint: nil,
@@ -190,7 +190,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
     end
 
     context 'throttling' do
-      it 'returns remaining_attempts with error' do
+      it 'returns remaining_submit_attempts with error' do
         params.delete(:front)
         RateLimiter.new(rate_limit_type: :idv_doc_auth, user: user).increment!
 
@@ -201,7 +201,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
           {
             success: false,
             errors: [{ field: 'front', message: 'Please fill in this field.' }],
-            remaining_attempts: RateLimiter.max_attempts(:idv_doc_auth) - 2,
+            remaining_submit_attempts: RateLimiter.max_attempts(:idv_doc_auth) - 2,
             result_failed: false,
             ocr_pii: nil,
             doc_type_supported: true,
@@ -217,7 +217,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
             success: false,
             errors: [{ field: 'limit', message: 'We couldn’t verify your ID' }],
             redirect: redirect_url,
-            remaining_attempts: 0,
+            remaining_submit_attempts: 0,
             result_failed: false,
             ocr_pii: nil,
             doc_type_supported: true,
@@ -263,8 +263,8 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
             limit: { rate_limited: true },
           },
           user_id: user.uuid,
-          attempts: IdentityConfig.store.doc_auth_max_attempts,
-          remaining_attempts: 0,
+          submit_attempts: IdentityConfig.store.doc_auth_max_attempts,
+          remaining_submit_attempts: 0,
           pii_like_keypaths: pii_like_keypaths,
           flow_path: 'standard',
           front_image_fingerprint: an_instance_of(String),
@@ -333,7 +333,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
         action
         expect(response.status).to eq(400)
         expect(json[:success]).to eq(false)
-        expect(json[:remaining_attempts]).to be_a_kind_of(Numeric)
+        expect(json[:remaining_submit_attempts]).to be_a_kind_of(Numeric)
         expect(json[:errors]).to eq [
           {
             field: 'general',
@@ -408,8 +408,8 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
           success: true,
           errors: {},
           user_id: user.uuid,
-          attempts: 1,
-          remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+          submit_attempts: 1,
+          remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
           pii_like_keypaths: pii_like_keypaths,
           flow_path: 'standard',
           front_image_fingerprint: an_instance_of(String),
@@ -430,8 +430,8 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
           state: 'MT',
           state_id_type: 'drivers_license',
           user_id: user.uuid,
-          attempts: 1,
-          remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+          submit_attempts: 1,
+          remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
           client_image_metrics: {
             front: { glare: 99.99 },
             back: { glare: 99.99 },
@@ -469,8 +469,8 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
           errors: {},
           attention_with_barcode: false,
           user_id: user.uuid,
-          attempts: 1,
-          remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+          submit_attempts: 1,
+          remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
           pii_like_keypaths: pii_like_keypaths,
           flow_path: 'standard',
           front_image_fingerprint: an_instance_of(String),
@@ -607,8 +607,8 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
               success: true,
               errors: {},
               user_id: user.uuid,
-              attempts: 1,
-              remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+              submit_attempts: 1,
+              remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
               pii_like_keypaths: pii_like_keypaths,
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
@@ -629,8 +629,8 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
               state: 'ND',
               state_id_type: 'drivers_license',
               user_id: user.uuid,
-              attempts: 1,
-              remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+              submit_attempts: 1,
+              remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
               client_image_metrics: {
                 front: { glare: 99.99 },
                 back: { glare: 99.99 },
@@ -673,8 +673,8 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
               },
               attention_with_barcode: false,
               user_id: user.uuid,
-              attempts: 1,
-              remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+              submit_attempts: 1,
+              remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
               pii_like_keypaths: pii_like_keypaths,
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
@@ -719,8 +719,8 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
               success: true,
               errors: {},
               user_id: user.uuid,
-              attempts: 1,
-              remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+              submit_attempts: 1,
+              remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
               pii_like_keypaths: pii_like_keypaths,
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
@@ -741,8 +741,8 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
               state: 'Maryland',
               state_id_type: 'drivers_license',
               user_id: user.uuid,
-              attempts: 1,
-              remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+              submit_attempts: 1,
+              remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
               client_image_metrics: {
                 front: { glare: 99.99 },
                 back: { glare: 99.99 },
@@ -785,8 +785,8 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
               },
               attention_with_barcode: false,
               user_id: user.uuid,
-              attempts: 1,
-              remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+              submit_attempts: 1,
+              remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
               pii_like_keypaths: pii_like_keypaths,
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
@@ -831,8 +831,8 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
               success: true,
               errors: {},
               user_id: user.uuid,
-              attempts: 1,
-              remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+              submit_attempts: 1,
+              remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
               pii_like_keypaths: pii_like_keypaths,
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
@@ -853,8 +853,8 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
               state: 'ND',
               state_id_type: 'drivers_license',
               user_id: user.uuid,
-              attempts: 1,
-              remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+              submit_attempts: 1,
+              remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
               client_image_metrics: {
                 front: { glare: 99.99 },
                 back: { glare: 99.99 },
@@ -897,8 +897,8 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
               },
               attention_with_barcode: false,
               user_id: user.uuid,
-              attempts: 1,
-              remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+              submit_attempts: 1,
+              remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
               pii_like_keypaths: pii_like_keypaths,
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
@@ -940,8 +940,8 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
               success: true,
               errors: {},
               user_id: user.uuid,
-              attempts: 1,
-              remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+              submit_attempts: 1,
+              remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
               pii_like_keypaths: pii_like_keypaths,
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
@@ -962,8 +962,8 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
               state: 'ND',
               state_id_type: 'drivers_license',
               user_id: user.uuid,
-              attempts: 1,
-              remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+              submit_attempts: 1,
+              remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
               client_image_metrics: {
                 front: { glare: 99.99 },
                 back: { glare: 99.99 },
@@ -1006,8 +1006,8 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
               },
               attention_with_barcode: false,
               user_id: user.uuid,
-              attempts: 1,
-              remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+              submit_attempts: 1,
+              remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
               pii_like_keypaths: pii_like_keypaths,
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
@@ -1055,7 +1055,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
 
         expect(response.status).to eq(400)
         expect(json[:success]).to eq(false)
-        expect(json[:remaining_attempts]).to be_a_kind_of(Numeric)
+        expect(json[:remaining_submit_attempts]).to be_a_kind_of(Numeric)
         expect(json[:errors]).to eq [
           {
             field: 'front',
@@ -1072,8 +1072,8 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
           success: true,
           errors: {},
           user_id: user.uuid,
-          attempts: 1,
-          remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+          submit_attempts: 1,
+          remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
           pii_like_keypaths: pii_like_keypaths,
           flow_path: 'standard',
           front_image_fingerprint: an_instance_of(String),
@@ -1090,9 +1090,9 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
           },
           attention_with_barcode: false,
           user_id: user.uuid,
-          attempts: 1,
+          submit_attempts: 1,
           billed: nil,
-          remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+          remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
           state: nil,
           state_id_type: nil,
           exception: nil,
@@ -1141,7 +1141,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
       it 'returns error from yaml file' do
         action
 
-        expect(json[:remaining_attempts]).to be_a_kind_of(Numeric)
+        expect(json[:remaining_submit_attempts]).to be_a_kind_of(Numeric)
         expect(json[:errors]).to eq [
           {
             field: 'general',
@@ -1161,8 +1161,8 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
           success: true,
           errors: {},
           user_id: user.uuid,
-          attempts: 1,
-          remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+          submit_attempts: 1,
+          remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
           pii_like_keypaths: pii_like_keypaths,
           flow_path: 'standard',
           front_image_fingerprint: an_instance_of(String),
@@ -1187,8 +1187,8 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
           state_id_type: nil,
           exception: nil,
           user_id: user.uuid,
-          attempts: 1,
-          remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+          submit_attempts: 1,
+          remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
           client_image_metrics: {
             front: { glare: 99.99 },
             back: { glare: 99.99 },
@@ -1234,7 +1234,7 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
 
         expect(response.status).to eq(400)
         expect(json[:success]).to eq(false)
-        expect(json[:remaining_attempts]).to be_a_kind_of(Numeric)
+        expect(json[:remaining_submit_attempts]).to be_a_kind_of(Numeric)
         expect(json[:errors]).to eq [
           {
             field: 'dob',

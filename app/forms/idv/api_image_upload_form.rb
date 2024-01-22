@@ -144,10 +144,10 @@ module Idv
 
     def extra_attributes
       return @extra_attributes if defined?(@extra_attributes) &&
-                                  @extra_attributes&.dig('attempts') == attempts
+                                  @extra_attributes&.dig('submit_attempts') == submit_attempts
       @extra_attributes = {
-        attempts: attempts,
-        remaining_attempts: remaining_attempts,
+        submit_attempts: submit_attempts,
+        remaining_submit_attempts: remaining_submit_attempts,
         user_id: user_uuid,
         pii_like_keypaths: DocPiiForm.pii_like_keypaths,
         flow_path: params[:flow_path],
@@ -186,11 +186,11 @@ module Idv
       end
     end
 
-    def remaining_attempts
+    def remaining_submit_attempts
       rate_limiter.remaining_count if document_capture_session
     end
 
-    def attempts
+    def submit_attempts
       rate_limiter.attempts if document_capture_session
     end
 

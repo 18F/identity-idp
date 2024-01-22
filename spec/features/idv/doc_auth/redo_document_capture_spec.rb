@@ -120,13 +120,13 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
       )
       expect(fake_analytics).to have_logged_event(
         'IdV: doc auth image upload form submitted',
-        hash_including(remaining_attempts: 3),
+        hash_including(remaining_submit_attempts: 3),
       )
       DocAuth::Mock::DocAuthMockClient.reset!
       attach_and_submit_images
       expect(fake_analytics).to have_logged_event(
         'IdV: doc auth image upload form submitted',
-        hash_including(remaining_attempts: 2),
+        hash_including(remaining_submit_attempts: 2),
       )
       expect(current_path).to eq(idv_ssn_path)
       check t('forms.ssn.show')
@@ -141,7 +141,7 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
       )
       expect(fake_analytics).to have_logged_event(
         'IdV: doc auth image upload form submitted',
-        hash_including(remaining_attempts: 3, attempts: 1),
+        hash_including(remaining_submit_attempts: 3, submit_attempts: 1),
       )
       DocAuth::Mock::DocAuthMockClient.reset!
       attach_images

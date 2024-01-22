@@ -9,7 +9,11 @@ describe('UnknownError', () => {
   context('there is no doc type failure', () => {
     it('render an empty paragraph when no errors', () => {
       const { container } = render(
-        <UnknownError unknownFieldErrors={[]} isFailedDocType={false} remainingAttempts={10} />,
+        <UnknownError
+          unknownFieldErrors={[]}
+          isFailedDocType={false}
+          remainingSubmitAttempts={10}
+        />,
       );
       expect(container.querySelector('p')).to.be.ok();
     });
@@ -25,7 +29,7 @@ describe('UnknownError', () => {
               },
             ]}
             isFailedDocType={false}
-            remainingAttempts={10}
+            remainingSubmitAttempts={10}
             hasDismissed
           />,
         );
@@ -47,7 +51,7 @@ describe('UnknownError', () => {
               },
             ]}
             isFailedDocType={false}
-            remainingAttempts={10}
+            remainingSubmitAttempts={10}
             hasDismissed={false}
           />,
         );
@@ -86,7 +90,7 @@ describe('UnknownError', () => {
                 error: toFormEntryError({ field: 'general', message: 'An unknown error occurred' }),
               },
             ]}
-            remainingAttempts={2}
+            remainingSubmitAttempts={2}
             isFailedDocType
           />
         </I18nContext.Provider>,

@@ -968,8 +968,8 @@ module AnalyticsEvents
 
   # @param [Boolean] success
   # @param [Hash] errors
-  # @param [Integer] attempts
-  # @param [Integer] remaining_attempts
+  # @param [Integer] submit_attempts
+  # @param [Integer] remaining_submit_attempts
   # @param [String] user_id
   # @param [String] flow_path
   # @param [String] front_image_fingerprint Fingerprint of front image data
@@ -978,9 +978,9 @@ module AnalyticsEvents
   def idv_doc_auth_submitted_image_upload_form(
     success:,
     errors:,
-    remaining_attempts:,
+    remaining_submit_attempts:,
     flow_path:,
-    attempts: nil,
+    submit_attempts: nil,
     user_id: nil,
     front_image_fingerprint: nil,
     back_image_fingerprint: nil,
@@ -990,8 +990,8 @@ module AnalyticsEvents
       'IdV: doc auth image upload form submitted',
       success: success,
       errors: errors,
-      attempts: attempts,
-      remaining_attempts: remaining_attempts,
+      submit_attempts: submit_attempts,
+      remaining_submit_attempts: remaining_submit_attempts,
       user_id: user_id,
       flow_path: flow_path,
       front_image_fingerprint: front_image_fingerprint,
@@ -1008,8 +1008,8 @@ module AnalyticsEvents
   # @param [String] state
   # @param [String] state_id_type
   # @param [Boolean] async
-  # @param [Integer] attempts
-  # @param [Integer] remaining_attempts
+  # @param [Integer] submit_attempts
+  # @param [Integer] remaining_submit_attempts
   # @param [Hash] client_image_metrics
   # @param [String] flow_path
   # @param [Float] vendor_request_time_in_ms Time it took to upload images & get a response.
@@ -1053,9 +1053,8 @@ module AnalyticsEvents
     exception:,
     state:,
     state_id_type:,
-    async:,
-    attempts:,
-    remaining_attempts:,
+    async:, submit_attempts:,
+    remaining_submit_attempts:,
     client_image_metrics:,
     flow_path:,
     billed: nil,
@@ -1092,8 +1091,8 @@ module AnalyticsEvents
       state:,
       state_id_type:,
       async:,
-      attempts:,
-      remaining_attempts:,
+      submit_attempts: submit_attempts,
+      remaining_submit_attempts: remaining_submit_attempts,
       client_image_metrics:,
       flow_path:,
       vendor_request_time_in_ms:,
@@ -1123,7 +1122,7 @@ module AnalyticsEvents
   # @param [Boolean] success
   # @param [Hash] errors
   # @param [String] user_id
-  # @param [Integer] remaining_attempts
+  # @param [Integer] remaining_submit_attempts
   # @param [Hash] pii_like_keypaths
   # @param [String] flow_path
   # @param [String] front_image_fingerprint Fingerprint of front image data
@@ -1133,7 +1132,7 @@ module AnalyticsEvents
   def idv_doc_auth_submitted_pii_validation(
     success:,
     errors:,
-    remaining_attempts:,
+    remaining_submit_attempts:,
     pii_like_keypaths:,
     flow_path:,
     user_id: nil,
@@ -1147,7 +1146,7 @@ module AnalyticsEvents
       success: success,
       errors: errors,
       user_id: user_id,
-      remaining_attempts: remaining_attempts,
+      remaining_submit_attempts: remaining_submit_attempts,
       pii_like_keypaths: pii_like_keypaths,
       flow_path: flow_path,
       front_image_fingerprint: front_image_fingerprint,
