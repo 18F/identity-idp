@@ -298,6 +298,7 @@ fr:
       you_entered: 'Tu as soumis:'
     instructions:
       bullet1: Prendre des photos de votre pièce d’identité
+      bullet1_with_selfie: Prenez des photos de vous et de vos pièces d’identité
       bullet2: Saisissez votre numéro de sécurité sociale
       bullet3: Faites correspondre votre numéro de téléphone
       bullet4: Saisissez à nouveau votre mot de passe %{app_name}
@@ -313,6 +314,9 @@ fr:
         champ.
       text1: Utilisez votre permis de conduire ou votre carte d’identité nationale.
         Les autres pièces d’identité ne sont pas acceptées.
+      text1_with_selfie: Prenez une photo de vous et une de votre permis de conduire
+        ou carte d’identité nationale. Les autres pièces d’identité ne sont pas
+        acceptées.
       text2: Vous n’aurez pas besoin de votre carte de sécurité sociale.
       text3: Votre numéro de téléphone correspond à vos informations personnelles. Une
         fois la correspondance établie, nous vous enverrons un code.
