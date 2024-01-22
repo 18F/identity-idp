@@ -359,36 +359,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           instance_double(Proofing::Resolution::Result)
         end
         let(:ipp_enrollment_in_progress) { true }
-        let(:applicant_pii) do
-          JSON.parse(<<-STR, symbolize_names: true)
-              {
-                "uuid": "3e8db152-4d35-4207-b828-3eee8c52c50f",
-                "middle_name": "",
-                "phone": "",
-                "state_id_expiration": "2029-01-01",
-                "state_id_issued": "MI",
-                "first_name": "Imaginary",
-                "last_name": "Person",
-                "dob": "1999-09-00",
-                "identity_doc_address1": "1 Seaview",
-                "identity_doc_address2": "",
-                "identity_doc_city": "Sant Cruz",
-                "identity_doc_zipcode": "91000",
-                "state_id_jurisdiction": "AZ",
-                "identity_doc_address_state": "CA",
-                "state_id_number": "AZ333222111",
-                "same_address_as_id": "false",
-                "state": "MI",
-                "zipcode": "48880",
-                "city": "Pontiac",
-                "address1": "1 Mobile Dr",
-                "address2": "",
-                "ssn": "900-32-1898",
-                "state_id_type": "drivers_license",
-                "uuid_prefix": null
-              }
-          STR
-        end
+        let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS }
         let(:residential_address) do
           {
             address1: applicant_pii[:address1],
