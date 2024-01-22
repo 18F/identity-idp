@@ -2298,6 +2298,10 @@ module AnalyticsEvents
   # @param [Integer] enrollments_failed number of enrollments which failed identity proofing
   # @param [Integer] enrollments_in_progress number of enrollments which did not have any change
   # @param [Integer] enrollments_passed number of enrollments which passed identity proofing
+  # @param [Integer] enrollments_network_error
+  # @param [Boolean] percent_enrollments_errored
+  # @param [Float] percent_enrollments_network_error
+  # @param [String] job_name
   def idv_in_person_usps_proofing_results_job_completed(
     duration_seconds:,
     enrollments_checked:,
@@ -2306,6 +2310,10 @@ module AnalyticsEvents
     enrollments_failed:,
     enrollments_in_progress:,
     enrollments_passed:,
+    enrollments_network_error:,
+    percent_enrollments_errored:,
+    percent_enrollments_network_error:,
+    job_name:,
     **extra
   )
     track_event(
@@ -2317,6 +2325,10 @@ module AnalyticsEvents
       enrollments_failed: enrollments_failed,
       enrollments_in_progress: enrollments_in_progress,
       enrollments_passed: enrollments_passed,
+      enrollments_network_error: enrollments_network_error,
+      percent_enrollments_errored: percent_enrollments_errored,
+      percent_enrollments_network_error: percent_enrollments_network_error,
+      job_name: job_name,
       **extra,
     )
   end
@@ -2371,11 +2383,23 @@ module AnalyticsEvents
   # @param [String] enrollment_id
   # @param [Float] minutes_since_established
   # @param [String] response_message
+  # @param [Numeric] minutes_since_last_status_check
+  # @param [Numeric] minutes_since_last_status_check_completed
+  # @param [Numeric] minutes_since_last_status_update
+  # @param [Numeric] minutes_to_completion
+  # @param [String] issuer
+  # @param [String] job_name
   def idv_in_person_usps_proofing_results_job_enrollment_incomplete(
     enrollment_code:,
     enrollment_id:,
     minutes_since_established:,
     response_message:,
+    minutes_since_last_status_check:,
+    minutes_since_last_status_check_completed:,
+    minutes_since_last_status_update:,
+    minutes_to_completion:,
+    issuer:,
+    job_name:,
     **extra
   )
     track_event(
@@ -2384,6 +2408,12 @@ module AnalyticsEvents
       enrollment_id: enrollment_id,
       minutes_since_established: minutes_since_established,
       response_message: response_message,
+      minutes_since_last_status_check: minutes_since_last_status_check,
+      minutes_since_last_status_check_completed: minutes_since_last_status_check_completed,
+      minutes_since_last_status_update: minutes_since_last_status_update,
+      minutes_to_completion: minutes_to_completion,
+      issuer: issuer,
+      job_name: job_name,
       **extra,
     )
   end
@@ -2395,6 +2425,25 @@ module AnalyticsEvents
   # @param [Boolean] fraud_suspected
   # @param [Boolean] passed did this enrollment pass or fail?
   # @param [String] reason why did this enrollment pass or fail?
+  # @param [Integer] minutes_since_last_status_check
+  # @param [Integer] minutes_since_last_status_check_completed
+  # @param [Integer] minutes_since_last_status_update
+  # @param [Integer] minutes_to_completion
+  # @param [String] issuer
+  # @param [String] primary_id_type
+  # @param [String] secondary_id_type
+  # @param [String] failure_reason
+  # @param [String] transaction_end_date_time
+  # @param [String] transaction_start_date_time
+  # @param [String] status
+  # @param [String] assurance_level
+  # @param [String] proofing_post_office
+  # @param [String] proofing_city
+  # @param [String] proofing_state
+  # @param [String] scan_count
+  # @param [String] response_message
+  # @param [Boolean] response_present
+  # @param [String] job_name
   def idv_in_person_usps_proofing_results_job_enrollment_updated(
     enrollment_code:,
     enrollment_id:,
@@ -2402,6 +2451,25 @@ module AnalyticsEvents
     fraud_suspected:,
     passed:,
     reason:,
+    minutes_since_last_status_check:,
+    minutes_since_last_status_check_completed:,
+    minutes_since_last_status_update:,
+    minutes_to_completion:,
+    issuer:,
+    primary_id_type:,
+    secondary_id_type:,
+    failure_reason:,
+    transaction_end_date_time:,
+    transaction_start_date_time:,
+    status:,
+    assurance_level:,
+    proofing_post_office:,
+    proofing_city:,
+    proofing_state:,
+    scan_count:,
+    response_message:,
+    response_present:,
+    job_name:,
     **extra
   )
     track_event(
@@ -2412,6 +2480,25 @@ module AnalyticsEvents
       fraud_suspected: fraud_suspected,
       passed: passed,
       reason: reason,
+      minutes_since_last_status_check: minutes_since_last_status_check,
+      minutes_since_last_status_check_completed: minutes_since_last_status_check_completed,
+      minutes_since_last_status_update: minutes_since_last_status_update,
+      minutes_to_completion: minutes_to_completion,
+      issuer: issuer,
+      primary_id_type: primary_id_type,
+      secondary_id_type: secondary_id_type,
+      failure_reason: failure_reason,
+      transaction_end_date_time: transaction_end_date_time,
+      transaction_start_date_time: transaction_start_date_time,
+      status: status,
+      assurance_level: assurance_level,
+      proofing_post_office: proofing_post_office,
+      proofing_city: proofing_city,
+      proofing_state: proofing_state,
+      scan_count: scan_count,
+      response_message: response_message,
+      response_present: response_present,
+      job_name: job_name,
       **extra,
     )
   end
@@ -2440,6 +2527,10 @@ module AnalyticsEvents
   # @param [String] scan_count
   # @param [String] response_message
   # @param [Integer] response_status_code
+  # @param [Integer] minutes_since_last_status_check_completed
+  # @param [String] issuer
+  # @param [String] job_name
+  # @param [Boolean] response_present
   def idv_in_person_usps_proofing_results_job_exception(
     reason:,
     enrollment_id:,
@@ -2464,6 +2555,10 @@ module AnalyticsEvents
     scan_count: nil,
     response_message: nil,
     response_status_code: nil,
+    minutes_since_last_status_check_completed: nil,
+    issuer: nil,
+    job_name: nil,
+    response_present: nil,
     **extra
   )
     track_event(
@@ -2498,15 +2593,18 @@ module AnalyticsEvents
   # GetUspsProofingResultsJob is beginning. Includes some metadata about what the job will do
   # @param [Integer] enrollments_count number of enrollments eligible for status check
   # @param [Integer] reprocess_delay_minutes minimum delay since last status check
+  # @param [String] job_name
   def idv_in_person_usps_proofing_results_job_started(
     enrollments_count:,
     reprocess_delay_minutes:,
+    job_name:,
     **extra
   )
     track_event(
       'GetUspsProofingResultsJob: Job started',
       enrollments_count: enrollments_count,
       reprocess_delay_minutes: reprocess_delay_minutes,
+      job_name: job_name,
       **extra,
     )
   end
@@ -2517,12 +2615,24 @@ module AnalyticsEvents
   # @param [Float] minutes_since_established
   # @param [String] response_message
   # @param [String] reason why was this error unexpected?
+  # @param [Integer] minutes_since_last_status_check
+  # @param [Integer] minutes_since_last_status_check_completed
+  # @param [Integer] minutes_since_last_status_update
+  # @param [Integer] minutes_to_completion
+  # @param [String] issuer
+  # @param [String] job_name
   def idv_in_person_usps_proofing_results_job_unexpected_response(
     enrollment_code:,
     enrollment_id:,
     minutes_since_established:,
     response_message:,
     reason:,
+    minutes_since_last_status_check:,
+    minutes_since_last_status_check_completed:,
+    minutes_since_last_status_update:,
+    minutes_to_completion:,
+    issuer:,
+    job_name:,
     **extra
   )
     track_event(
@@ -2532,6 +2642,12 @@ module AnalyticsEvents
       minutes_since_established: minutes_since_established,
       response_message: response_message,
       reason: reason,
+      minutes_since_last_status_check: minutes_since_last_status_check,
+      minutes_since_last_status_check_completed: minutes_since_last_status_check_completed,
+      minutes_since_last_status_update: minutes_since_last_status_update,
+      minutes_to_completion: minutes_to_completion,
+      issuer: issuer,
+      job_name: job_name,
       **extra,
     )
   end
