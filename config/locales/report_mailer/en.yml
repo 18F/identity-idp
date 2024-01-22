@@ -5,6 +5,3 @@ en:
       issuers: Issuers
       name: Name
       subject: Deleted accounts report
-    system_demand_report:
-      name: Name
-      subject: System demand report

@@ -142,6 +142,23 @@ module DocAuth
           !!doc_auth_result
         end
 
+        def doc_auth_success?
+          transaction_status_passed? &&
+            true_id_product.present? &&
+            product_status_passed? &&
+            doc_auth_result_passed?
+        end
+
+        # @return [Boolean, nil]
+        # When selfie result is missing, return nil
+        # Otherwise:
+        #   return true if selfie check result == 'Pass'
+        #   return false
+        def selfie_success
+          return selfie_result if selfie_result.nil?
+          selfie_result == 'Pass'
+        end
+
         private
 
         def conversation_id
@@ -209,7 +226,7 @@ module DocAuth
             processed_alerts: alerts,
             alert_failure_count: alerts[:failed]&.count.to_i,
             log_alert_results: log_alert_formatter.log_alerts(alerts),
-            portrait_match_results: true_id_product[:PORTRAIT_MATCH_RESULT],
+            portrait_match_results: true_id_product&.dig(:PORTRAIT_MATCH_RESULT),
             image_metrics: parse_image_metrics,
             address_line2_present: !pii_from_doc[:address2].blank?,
             classification_info: classification_info,
@@ -229,7 +246,12 @@ module DocAuth
           transaction_status_passed? &&
             true_id_product.present? &&
             product_status_passed? &&
-            doc_auth_result_passed?
+            doc_auth_result_passed? &&
+            (@liveness_checking_enabled ? selfie_success : true)
+        end
+
+        def selfie_result
+          response_info&.dig(:portrait_match_results, :FaceMatchResult)
         end
 
         def product_status_passed?
@@ -294,6 +316,7 @@ module DocAuth
           return @new_alerts if defined?(@new_alerts)
 
           @new_alerts = { passed: [], failed: [] }
+          return @new_alerts unless true_id_product&.dig(:AUTHENTICATION_RESULT).present?
           all_alerts = true_id_product[:AUTHENTICATION_RESULT].select do |key|
             key.start_with?('Alert_')
           end
@@ -334,7 +357,7 @@ module DocAuth
 
         def parse_image_metrics
           image_metrics = {}
-
+          return image_metrics unless true_id_product&.dig(:ParameterDetails).present?
           true_id_product[:ParameterDetails].each do |detail|
             next unless detail[:Group] == 'IMAGE_METRICS_RESULT'
 

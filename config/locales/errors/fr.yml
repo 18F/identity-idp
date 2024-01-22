@@ -144,11 +144,6 @@ fr:
       already_registered: Le déverrouillage facial ou le déverrouillage tactile est
         déjà enregistré sur cet appareil. Veuillez essayer d’ajouter une autre
         méthode d’authentification.
-      attestation_error: Désolé, mais votre déverrouillage facial ou tactile ne semble
-        pas fonctionner. Veuillez vous assurer que votre appareil est répertorié
-        sur https://fidoalliance.org/certification/fido-certified-products/ et
-        si vous pensez qu’il s’agit d’une erreur de notre part, veuillez nous
-        contacter à %{link}.
       choose_another_method: choisir une autre méthode d’authentification
       general_error: Nous n’avons pas pu ajouter le déverrouillage facial ni le
         déverrouillage tactile. Veuillez réessayer ou choisir une autre méthode
@@ -163,11 +158,6 @@ fr:
       additional_methods_link: choisir une autre méthode d’authentification
       already_registered: Clé de sécurité déjà enregistrée. Veuillez essayer une clé
         de sécurité différente.
-      attestation_error: Désolé, votre clé de sécurité ne semble pas être une clé de
-        sécurité FIDO. Veuillez vérifier que votre appareil est répertorié sur
-        https://fidoalliance.org/certification/fido-certified-products/. Si vous
-        pensez qu’il s’agit d’une erreur de notre part, veuillez contacter
-        %{link}.
       general_error_html: Nous n’avons pas pu ajouter la clé de sécurité. Veuillez
         réessayer ou %{link_html}.
       not_supported: Votre navigateur ne prend pas en charge les clés de sécurité.

@@ -23,6 +23,8 @@ Rails.application.routes.draw do
       namespace :two_factor_authentication do
         put '/webauthn/:id' => 'webauthn#update', as: :webauthn
         delete '/webauthn/:id' => 'webauthn#destroy', as: nil
+        put '/auth_app/:id' => 'auth_app#update', as: :auth_app
+        delete '/auth_app/:id' => 'auth_app#destroy', as: nil
       end
     end
   end
@@ -147,6 +149,13 @@ Rails.application.routes.draw do
         get '/saml/decode_assertion' => 'saml_test#start'
         post '/saml/decode_assertion' => 'saml_test#decode_response'
         post '/saml/decode_slo_request' => 'saml_test#decode_slo_request'
+
+        get '/oidc/login' => 'oidc_test#index'
+        get '/oidc' => 'oidc_test#start'
+        get '/oidc/auth_request' => 'oidc_test#auth_request'
+        get '/oidc/auth_result' => 'oidc_test#auth_result'
+        get '/oidc/logout' => 'oidc_test#logout'
+
         get '/piv_cac_entry' => 'piv_cac_authentication_test_subject#new'
         post '/piv_cac_entry' => 'piv_cac_authentication_test_subject#create'
 
@@ -255,7 +264,9 @@ Rails.application.routes.draw do
     get '/manage/webauthn/:id' => 'users/webauthn#edit', as: :edit_webauthn
     put '/manage/webauthn/:id' => 'users/webauthn#update', as: :webauthn
     delete '/manage/webauthn/:id' => 'users/webauthn#destroy', as: nil
-
+    get '/manage/auth_app/:id' => 'users/auth_app#edit', as: :edit_auth_app
+    put '/manage/auth_app/:id' => 'users/auth_app#update', as: :auth_app
+    delete '/manage/auth_app/:id' => 'users/auth_app#destroy', as: nil
     get '/account/personal_key' => 'accounts/personal_keys#new', as: :create_new_personal_key
     post '/account/personal_key' => 'accounts/personal_keys#create'
 

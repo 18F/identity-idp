@@ -75,9 +75,33 @@ RSpec.feature 'webauthn sign in' do
       mock_webauthn_verification_challenge
 
       sign_in_user(user)
+      expect(current_url).to eq(login_two_factor_webauthn_url(platform: true))
       mock_cancelled_webauthn_authentication { click_webauthn_authenticate_button }
 
       expect(page).to have_content(t('two_factor_authentication.webauthn_platform_header_text'))
+    end
+
+    context 'with device that doesnt support authenticator' do
+      before do
+        email ||= user.email_addresses.first.email
+        password = user.password
+        allow(UserMailer).to receive(:new_device_sign_in).and_call_original
+        visit new_user_session_path
+        set_hidden_field('platform_authenticator_available', 'false')
+        fill_in_credentials_and_submit(email, password)
+        continue_as(email, password)
+      end
+
+      it 'redirects to options page on sign in' do
+        expect(current_path).to eq(login_two_factor_options_path)
+      end
+
+      it 'allows user to go to options page and still select webauthn as their option' do
+        expect(current_path).to eq(login_two_factor_options_path)
+        select_2fa_option('webauthn_platform', visible: :all)
+        click_continue
+        expect(current_url).to eq(login_two_factor_webauthn_url(platform: true))
+      end
     end
   end
 end

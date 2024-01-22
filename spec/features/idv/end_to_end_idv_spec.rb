@@ -5,6 +5,7 @@ RSpec.describe 'Identity verification', :js do
   include InPersonHelper
 
   let(:sp) { :oidc }
+  let(:sp_name) { 'Test SP' }
 
   scenario 'Unsupervised proofing happy path desktop' do
     try_to_skip_ahead_before_signing_in
@@ -148,8 +149,7 @@ RSpec.describe 'Identity verification', :js do
   def validate_welcome_page
     expect(page).to have_current_path(idv_welcome_path)
 
-    # Check for expected content
-    expect_step_indicator_current_step(t('step_indicator.flows.idv.getting_started'))
+    expect(page).to have_content t('doc_auth.headings.welcome', sp_name: sp_name)
   end
 
   def validate_agreement_page
@@ -215,12 +215,7 @@ RSpec.describe 'Identity verification', :js do
 
     expect(page.find_field(t('idv.form.ssn_label'))['aria-invalid']).to eq('false')
     expect(page).to have_content(t('doc_auth.info.no_ssn'))
-    click_link(
-      t(
-        'doc_auth.info.exit.with_sp', app_name: APP_NAME,
-                                      sp_name: 'Test SP'
-      ),
-    )
+    click_link(t('doc_auth.info.exit.with_sp', app_name: APP_NAME, sp_name: sp_name))
 
     expect(page).to have_current_path(idv_cancel_path(step: 'ssn_offramp'))
     click_on t('idv.cancel.actions.keep_going')

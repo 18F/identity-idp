@@ -337,6 +337,7 @@ function AcuantCapture(
   const [attempt, incrementAttempt] = useCounter(1);
   const [acuantFailureCookie, setAcuantFailureCookie, refreshAcuantFailureCookie] =
     useCookie('AcuantCameraHasFailed');
+  const [imageCaptureText, setImageCaptureText] = useState('');
   // There's some pretty significant changes to this component when it's used for
   // selfie capture vs document image capture. This controls those changes.
   const selfieCapture = name === 'selfie';
@@ -653,6 +654,10 @@ function AcuantCapture(
     });
   }
 
+  function onImageCaptureFeedback(text: string) {
+    setImageCaptureText(text);
+  }
+
   return (
     <div className={[className, 'document-capture-acuant-capture'].filter(Boolean).join(' ')}>
       {isCapturingEnvironment && !selfieCapture && (
@@ -678,11 +683,13 @@ function AcuantCapture(
           onImageCaptureFailure={onSelfieCaptureFailure}
           onImageCaptureOpen={onSelfieCaptureOpen}
           onImageCaptureClose={onSelfieCaptureClosed}
+          onImageCaptureFeedback={onImageCaptureFeedback}
         >
           <AcuantSelfieCaptureCanvas
             fullScreenRef={fullScreenRef}
             fullScreenLabel={t('doc_auth.accessible_labels.document_capture_dialog')}
             onRequestClose={() => setIsCapturingEnvironment(false)}
+            imageCaptureText={imageCaptureText}
           />
         </AcuantSelfieCamera>
       )}
