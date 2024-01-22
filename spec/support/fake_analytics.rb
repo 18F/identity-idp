@@ -134,7 +134,8 @@ end
 
 RSpec.configure do |c|
   c.around do |ex|
-    FakeAnalytics::UndocumentedParamsChecker.allowed_extra_analytics = ex.metadata[:allowed_extra_analytics]
+    keys = ex.metadata[:allowed_extra_analytics]
+    FakeAnalytics::UndocumentedParamsChecker.allowed_extra_analytics = keys
     ex.run
   ensure
     FakeAnalytics::UndocumentedParamsChecker.allowed_extra_analytics = []

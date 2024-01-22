@@ -183,7 +183,7 @@ module AnalyticsEvents
       success: success,
       errors: errors,
       error_details: error_details,
-      **extra
+      **extra,
     )
   end
 
@@ -955,7 +955,7 @@ module AnalyticsEvents
       analytics_id:,
       skip_hybrid_handoff:,
       irs_reproofing:,
-      **extra
+      **extra,
     )
   end
 
@@ -995,7 +995,7 @@ module AnalyticsEvents
       step:,
       stored_result_present:,
       success:,
-      **extra
+      **extra,
     )
   end
 
@@ -1022,7 +1022,7 @@ module AnalyticsEvents
       irs_reproofing:,
       redo_document_capture:,
       skip_hybrid_handoff:,
-      **extra
+      **extra,
     )
   end
 
@@ -1113,7 +1113,7 @@ module AnalyticsEvents
       step:,
       success:,
       telephony_response:,
-      **extra
+      **extra,
     )
   end
 
@@ -1139,7 +1139,7 @@ module AnalyticsEvents
       irs_reproofing:,
       redo_document_capture:,
       skip_hybrid_handoff:,
-      **extra
+      **extra,
     )
   end
 
@@ -1323,6 +1323,8 @@ module AnalyticsEvents
       front_image_fingerprint: front_image_fingerprint,
       back_image_fingerprint: back_image_fingerprint,
       classification_info: classification_info,
+      attention_with_barcode: attention_with_barcode,
+      attempts: attempts,
       error_details: error_details,
       **extra,
     )
