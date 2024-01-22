@@ -7,6 +7,7 @@
 ### Improvements
 
 - `--out-dir` is now optional. If omitted, files will be output in the same directory as their source files.
+- The command-line tool now uses [Sass Shared Resources API](https://github.com/sass/sass/blob/main/accepted/shared-resources.d.ts.md), improving performance when compiling multiple files that share common resources.
 
 ## 2.0.0
 

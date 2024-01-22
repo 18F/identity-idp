@@ -2,10 +2,11 @@ import { basename, join, dirname } from 'node:path';
 import { createWriteStream } from 'node:fs';
 import { Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
-import { compile as sassCompile } from 'sass-embedded';
+import { compile as baseSassCompile } from 'sass-embedded';
 import { transform as lightningTransform, browserslistToTargets } from 'lightningcss';
 import browserslist from 'browserslist';
 
+/** @typedef {import('sass-embedded').Compiler} Compiler */
 /** @typedef {import('sass-embedded').CompileResult} CompileResult */
 /** @typedef {import('sass-embedded').Options<'sync'>} SyncSassOptions */
 
@@ -14,6 +15,7 @@ import browserslist from 'browserslist';
  *
  * @prop {string=} outDir Output directory.
  * @prop {boolean} optimize Whether to optimize output for production.
+ * @prop {Compiler=} sassCompiler Sass compiler to use, particularly useful with initCompiler
  */
 
 const TARGETS = browserslistToTargets(
@@ -29,7 +31,14 @@ const TARGETS = browserslistToTargets(
  * @return {Promise<CompileResult>}
  */
 export async function buildFile(file, options) {
-  const { outDir = dirname(file), optimize, loadPaths = [], ...sassOptions } = options;
+  const {
+    outDir = dirname(file),
+    optimize,
+    loadPaths = [],
+    sassCompiler,
+    ...sassOptions
+  } = options;
+  const sassCompile = sassCompiler ? sassCompiler.compile.bind(sassCompiler) : baseSassCompile;
   const sassResult = sassCompile(file, {
     style: optimize ? 'compressed' : 'expanded',
     ...sassOptions,

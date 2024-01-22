@@ -31,6 +31,6 @@
     "browserslist": "^4.22.1",
     "chokidar": "^3.5.3",
     "lightningcss": "^1.22.0",
-    "sass-embedded": "^1.69.2"
+    "sass-embedded": "^1.70.0"
   }
 }
