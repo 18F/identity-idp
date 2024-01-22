@@ -64,39 +64,37 @@ RSpec.describe Idv::InPerson::AddressController do
       }
     end
 
-    context 'with address controller flag enabled' do
-      it 'renders the show template' do
-        get :show
+    it 'renders the show template' do
+      get :show
 
-        expect(response).to render_template :show
-      end
+      expect(response).to render_template :show
+    end
 
-      it 'redirects to ssn page when address1 present' do
-        subject.user_session['idv/in_person'][:pii_from_user][:address1] = '123 Main St'
+    it 'redirects to ssn page when address1 present' do
+      subject.user_session['idv/in_person'][:pii_from_user][:address1] = '123 Main St'
 
-        get :show
+      get :show
 
-        expect(response).to redirect_to idv_in_person_ssn_url
-      end
+      expect(response).to redirect_to idv_in_person_ssn_url
+    end
 
-      it 'logs idv_in_person_proofing_address_visited' do
-        get :show
+    it 'logs idv_in_person_proofing_address_visited' do
+      get :show
 
-        expect(@analytics).to have_received(
-          :track_event,
-        ).with(analytics_name, analytics_args)
-      end
+      expect(@analytics).to have_received(
+        :track_event,
+      ).with(analytics_name, analytics_args)
+    end
 
-      it 'has correct extra_view_variables' do
-        expect(subject.extra_view_variables).to include(
-          form: Idv::InPerson::AddressForm,
-          updating_address: false,
-        )
+    it 'has correct extra_view_variables' do
+      expect(subject.extra_view_variables).to include(
+        form: Idv::InPerson::AddressForm,
+        updating_address: false,
+      )
 
-        expect(subject.extra_view_variables[:pii]).to_not have_key(
-          :address1,
-        )
-      end
+      expect(subject.extra_view_variables[:pii]).to_not have_key(
+        :address1,
+      )
     end
   end
 
