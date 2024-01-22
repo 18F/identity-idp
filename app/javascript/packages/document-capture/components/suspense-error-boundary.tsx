@@ -1,6 +1,6 @@
 import { Component, Suspense } from 'react';
 import type { ReactNode } from 'react';
-import { RetrySubmissionError } from './submission-complete';
+import type { RetrySubmissionError } from './submission-complete';
 
 interface SuspenseErrorBoundaryProps {
   /**
@@ -14,7 +14,7 @@ interface SuspenseErrorBoundaryProps {
   /**
    * Error instance caught to allow for acknowledgment of rerender, in order to prevent infinite rerendering.
    */
-  handledError?: RetrySubmissionError;
+  handledError?: Error;
   /**
    * Suspense child.
    */
