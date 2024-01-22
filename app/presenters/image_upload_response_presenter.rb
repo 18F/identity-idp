@@ -41,7 +41,9 @@ class ImageUploadResponsePresenter
       json = { success: false,
                errors: errors,
                remaining_attempts: remaining_attempts,
-               doc_type_supported: doc_type_supported? }
+               doc_type_supported: doc_type_supported?,
+               selfie_live: selfie_live?,
+               selfie_quality_good: selfie_quality_good? }
       if remaining_attempts&.zero?
         if @form_response.extra[:flow_path] == 'standard'
           json[:redirect] = idv_session_errors_rate_limited_url
@@ -54,7 +56,6 @@ class ImageUploadResponsePresenter
       json[:result_failed] = doc_auth_result_failed?
       json[:doc_type_supported] = doc_type_supported?
       json[:failed_image_fingerprints] = failed_fingerprints
-      json
     end
   end
 
@@ -88,5 +89,13 @@ class ImageUploadResponsePresenter
 
   def failed_fingerprints
     @form_response.extra[:failed_image_fingerprints] || { front: [], back: [] }
+  end
+
+  def selfie_live?
+    return true
+  end
+
+  def selfie_quality_good?
+    return true
   end
 end
