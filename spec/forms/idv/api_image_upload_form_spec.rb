@@ -268,8 +268,10 @@ RSpec.describe Idv::ApiImageUploadForm do
           extra: { remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1 },
         )
       end
+      let(:doc_auth_client) { double(DocAuth::LexisNexis::LexisNexisClient) }
       before do
-        allow(subject).to receive(:post_images_to_client).and_return(failed_response)
+        subject.instance_variable_set(:@doc_auth_client, doc_auth_client)
+        allow(doc_auth_client).to receive(:post_images) { failed_response }
       end
 
       it 'is not successful' do
@@ -279,6 +281,7 @@ RSpec.describe Idv::ApiImageUploadForm do
         expect(response.success?).to eq(false)
         expect(response.attention_with_barcode?).to eq(false)
         expect(response.pii_from_doc).to eq({})
+        expect(response.doc_auth_success?).to eq(false)
       end
 
       it 'includes remaining_attempts' do
@@ -299,6 +302,33 @@ RSpec.describe Idv::ApiImageUploadForm do
         response = form.submit
         expect(response.errors).to have_key(:front)
         expect(response.errors).to have_value([I18n.t('doc_auth.errors.doc.resubmit_failed_image')])
+      end
+
+      it 'logs analytics event' do
+        form.submit
+        expect(fake_analytics).to have_logged_event(
+          'IdV: doc auth image upload vendor submitted',
+          async: false,
+          attempts: 1,
+          attention_with_barcode: false,
+          billed: nil,
+          client_image_metrics: an_instance_of(Hash),
+          doc_auth_result: nil,
+          errors: { front: 'glare' },
+          exception: nil,
+          flow_path: anything,
+          remaining_attempts: 3,
+          state: nil,
+          state_id_type: nil,
+          success: false,
+          user_id: document_capture_session.user.uuid,
+          vendor_request_time_in_ms: a_kind_of(Float),
+          front_image_fingerprint: an_instance_of(String),
+          back_image_fingerprint: an_instance_of(String),
+          doc_type_supported: boolean,
+          doc_auth_success: boolean,
+          selfie_success: nil,
+        )
       end
     end
 

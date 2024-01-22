@@ -88,12 +88,15 @@ RSpec.describe DocAuth::LexisNexis::Request do
         end
 
         it 'includes information on the error' do
-          response = subject.fetch
           expected_message = [
             subject.class.name,
             'Unexpected HTTP response',
-            status,
+            500,
           ].join(' ')
+          expect(NewRelic::Agent).to receive(:notice_error).with(
+            DocAuth::RequestError.new(expected_message, 500),
+          )
+          response = subject.fetch
 
           expect(response.exception.message).to eq(expected_message)
         end

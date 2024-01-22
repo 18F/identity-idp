@@ -120,7 +120,7 @@ RSpec.describe DocAuth::LexisNexis::LexisNexisClient do
     end
   end
 
-  context 'when selfie check enabled' do
+  context 'with selfie check enabled' do
     describe 'when success response returned' do
       before do
         stub_request(:post, image_upload_url).to_return(

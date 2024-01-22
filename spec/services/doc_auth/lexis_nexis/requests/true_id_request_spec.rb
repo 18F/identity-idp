@@ -196,8 +196,8 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
       response = subject.fetch
       expect(response.network_error?).to eq(true)
     end
-    it 'is not a network error with 440, 438, 439' do
-      stub_request(:post, full_url).to_return(body: '{}', status: 443)
+    it 'is non 500 error' do
+      stub_request(:post, full_url).to_return(body: '{}', status: 401)
       response = subject.fetch
       expect(response.network_error?).to eq(true)
     end
