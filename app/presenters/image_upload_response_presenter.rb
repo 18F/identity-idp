@@ -92,10 +92,10 @@ class ImageUploadResponsePresenter
   end
 
   def selfie_live?
-    return true
+    @form_response.respond_to?(:selfie_live?) ? @form_response.selfie_live? : true
   end
 
   def selfie_quality_good?
-    return true
+    @form_response.respond_to?(:selfie_quality_good?) ? @form_response.selfie_quality_good? : true
   end
 end

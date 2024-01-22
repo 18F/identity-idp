@@ -2,6 +2,7 @@ module DocAuth
   module Mock
     class ResultResponse < DocAuth::Response
       include DocAuth::ClassificationConcern
+      include DocAuth::SelfieConcern
       include DocAuth::Mock::YmlLoaderConcern
 
       attr_reader :uploaded_file, :config
@@ -16,6 +17,8 @@ module DocAuth
           pii_from_doc: pii_from_doc,
           doc_type_supported: id_type_supported?,
           selfie_check_performed: selfie_check_performed,
+          selfie_live: selfie_live?,
+          selfie_quality_good: selfie_quality_good?,
           extra: {
             doc_auth_result: doc_auth_result,
             portrait_match_results: portrait_match_results,

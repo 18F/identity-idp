@@ -3,6 +3,7 @@ module DocAuth
     module Responses
       class GetResultsResponse < DocAuth::Response
         include ClassificationConcern
+        include SelfieConcern
         attr_reader :config
 
         BARCODE_COULD_NOT_BE_READ_ERROR = '2D Barcode Read'.freeze

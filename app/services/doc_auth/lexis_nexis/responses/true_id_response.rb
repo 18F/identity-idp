@@ -5,6 +5,7 @@ module DocAuth
     module Responses
       class TrueIdResponse < DocAuth::Response
         include ClassificationConcern
+        include SelfieConcern
         PII_EXCLUDES = %w[
           Age
           DocSize
@@ -226,7 +227,7 @@ module DocAuth
             processed_alerts: alerts,
             alert_failure_count: alerts[:failed]&.count.to_i,
             log_alert_results: log_alert_formatter.log_alerts(alerts),
-            portrait_match_results: true_id_product&.dig(:PORTRAIT_MATCH_RESULT),
+            portrait_match_results: portrait_match_results,
             image_metrics: parse_image_metrics,
             address_line2_present: !pii_from_doc[:address2].blank?,
             classification_info: classification_info,
@@ -289,6 +290,10 @@ module DocAuth
               CountryCode: issuing_country,
             },
           }
+        end
+
+        def portrait_match_results
+          true_id_product&.dig(:PORTRAIT_MATCH_RESULT)
         end
 
         def doc_auth_result
