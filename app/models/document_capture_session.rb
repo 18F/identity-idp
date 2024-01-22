@@ -18,7 +18,6 @@ class DocumentCaptureSession < ApplicationRecord
     session_result.attention_with_barcode = doc_auth_response.attention_with_barcode?
     session_result.selfie_check_performed = doc_auth_response.selfie_check_performed?
     session_result.doc_auth_success = doc_auth_response.doc_auth_success?
-    # nil(selfie not required) or true/false
     session_result.selfie_status = doc_auth_response.respond_to?(:selfie_status) ?
     doc_auth_response.selfie_status : :not_processed
     EncryptedRedisStructStorage.store(

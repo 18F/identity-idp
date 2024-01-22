@@ -159,6 +159,10 @@ module DocAuth
           selfie_result == 'Pass' ? :success : :fail
         end
 
+        def selfie_passed?
+          selfie_status == :success
+        end
+
         private
 
         def conversation_id
@@ -247,7 +251,7 @@ module DocAuth
             true_id_product.present? &&
             product_status_passed? &&
             doc_auth_result_passed? &&
-            (@liveness_checking_enabled ? selfie_status : true)
+            (@liveness_checking_enabled ? selfie_passed? : true)
         end
 
         def selfie_result

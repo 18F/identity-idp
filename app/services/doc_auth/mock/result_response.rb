@@ -135,7 +135,7 @@ module DocAuth
 
       def selfie_status
         return :not_processed if portrait_match_results&.dig(:FaceMatchResult).nil?
-        portrait_match_results[:FaceMatchResult] == 'Pass' ? :pass : :fail
+        portrait_match_results[:FaceMatchResult] == 'Pass' ? :success : :fail
       end
 
       private
@@ -180,7 +180,11 @@ module DocAuth
       def all_doc_capture_values_passing?(doc_auth_result, id_type_supported)
         doc_auth_result == 'Passed' &&
           id_type_supported &&
-          (@selfie_check_performed ? selfie_success : true)
+          (@selfie_check_performed ? selfie_passed? : true)
+      end
+
+      def selfie_passed?
+        selfie_status == :success
       end
 
       def parse_uri

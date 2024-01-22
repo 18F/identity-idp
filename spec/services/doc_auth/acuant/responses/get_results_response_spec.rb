@@ -63,7 +63,7 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
         address_line2_present: true,
         doc_type_supported: true,
         doc_auth_success: true,
-        selfie_success: nil,
+        selfie_status: :not_processed,
       }
 
       processed_alerts = response_hash[:processed_alerts]
@@ -421,7 +421,7 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
           address_line2_present: true,
           doc_type_supported: false,
           doc_auth_success: true,
-          selfie_success: nil,
+          selfie_status: :not_processed,
         }
 
         processed_alerts = response_hash[:processed_alerts]
@@ -504,7 +504,7 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
             address_line2_present: true,
             doc_type_supported: false,
             doc_auth_success: true,
-            selfie_success: nil,
+            selfie_status: :not_processed,
           }
 
           expect(response_hash).to match(expected_hash)

@@ -160,7 +160,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           back_image_fingerprint: an_instance_of(String),
           doc_type_supported: boolean,
           doc_auth_success: boolean,
-          selfie_success: anything,
+          selfie_status: anything,
         )
       end
 
