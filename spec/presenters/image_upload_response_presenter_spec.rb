@@ -130,6 +130,8 @@ RSpec.describe ImageUploadResponsePresenter do
           remaining_attempts: 0,
           ocr_pii: nil,
           doc_type_supported: true,
+          selfie_live: true,
+          selfie_quality_good: true,
           failed_image_fingerprints: { back: [], front: ['12345'] },
         }
 
@@ -152,6 +154,8 @@ RSpec.describe ImageUploadResponsePresenter do
             remaining_attempts: 0,
             ocr_pii: nil,
             doc_type_supported: true,
+            selfie_live: true,
+            selfie_quality_good: true,
             failed_image_fingerprints: { back: [], front: ['12345'] },
           }
 
@@ -181,6 +185,8 @@ RSpec.describe ImageUploadResponsePresenter do
           remaining_attempts: 3,
           ocr_pii: nil,
           doc_type_supported: true,
+          selfie_live: true,
+          selfie_quality_good: true,
           failed_image_fingerprints: { back: [], front: [] },
         }
 
@@ -208,6 +214,8 @@ RSpec.describe ImageUploadResponsePresenter do
             remaining_attempts: 3,
             ocr_pii: nil,
             doc_type_supported: true,
+            selfie_live: true,
+            selfie_quality_good: true,
             failed_image_fingerprints: { front: [], back: [] },
           }
 
@@ -245,6 +253,8 @@ RSpec.describe ImageUploadResponsePresenter do
               remaining_attempts: 0,
               ocr_pii: nil,
               doc_type_supported: true,
+              selfie_live: true,
+              selfie_quality_good: true,
               failed_image_fingerprints: { front: [], back: [] },
             }
 
@@ -262,6 +272,8 @@ RSpec.describe ImageUploadResponsePresenter do
             remaining_attempts: 0,
             ocr_pii: nil,
             doc_type_supported: true,
+            selfie_live: true,
+            selfie_quality_good: true,
             failed_image_fingerprints: { back: [], front: [] },
           }
 
@@ -290,6 +302,8 @@ RSpec.describe ImageUploadResponsePresenter do
           remaining_attempts: 3,
           ocr_pii: Idp::Constants::MOCK_IDV_APPLICANT.slice(:first_name, :last_name, :dob),
           doc_type_supported: true,
+          selfie_live: true,
+          selfie_quality_good: true,
           failed_image_fingerprints: { back: [], front: [] },
         }
 
@@ -316,6 +330,8 @@ RSpec.describe ImageUploadResponsePresenter do
             remaining_attempts: 3,
             ocr_pii: Idp::Constants::MOCK_IDV_APPLICANT.slice(:first_name, :last_name, :dob),
             doc_type_supported: true,
+            selfie_live: true,
+            selfie_quality_good: true,
             failed_image_fingerprints: { back: [], front: [] },
           }
 
