@@ -4570,6 +4570,7 @@ module AnalyticsEvents
   # @param [String] needs_completion_screen_reason
   # @param [Array] sp_request_requested_attributes
   # @param [Array] sp_session_requested_attributes
+  # @param [String, nil] disposable_email_domain Disposable email domain used for registration
   def user_registration_complete(
     ial2:,
     service_provider_name:,
@@ -4578,6 +4579,7 @@ module AnalyticsEvents
     sp_session_requested_attributes:,
     sp_request_requested_attributes: nil,
     ialmax: nil,
+    disposable_email_domain: nil,
     **extra
   )
     track_event(
@@ -4589,6 +4591,7 @@ module AnalyticsEvents
       needs_completion_screen_reason: needs_completion_screen_reason,
       sp_request_requested_attributes: sp_request_requested_attributes,
       sp_session_requested_attributes: sp_session_requested_attributes,
+      disposable_email_domain: disposable_email_domain,
       **extra,
     )
   end
