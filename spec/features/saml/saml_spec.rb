@@ -34,17 +34,11 @@ RSpec.feature 'saml api' do
       sp.save
     end
 
-    it 'returns the user to the account page after authentication' do
-      expect(page).
-        to have_link t('links.back_to_sp', sp: sp.friendly_name),
-                     href: return_to_sp_cancel_path(step: :authentication)
-
+    it 'returns a 403' do
       sign_in_via_branded_page(user)
       click_submit_default
-      click_agree_and_continue
-      click_submit_default
 
-      expect(current_url).to eq account_url
+      expect(page.status_code).to eq 403
     end
   end
 
