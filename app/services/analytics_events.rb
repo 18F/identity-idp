@@ -135,6 +135,7 @@ module AnalyticsEvents
   # @param [Integer] email_addresses number of email addresses the user has
   # @param [String, nil] message_id from AWS Pinpoint API
   # @param [String, nil] request_id from AWS Pinpoint API
+  # @param [Hash, nil] errors
   # An account reset has been requested
   def account_reset_request(
     success:,
@@ -144,6 +145,7 @@ module AnalyticsEvents
     email_addresses:,
     request_id: nil,
     message_id: nil,
+    errors: nil,
     **extra
   )
     track_event(
@@ -156,6 +158,7 @@ module AnalyticsEvents
         email_addresses: email_addresses,
         request_id: request_id,
         message_id: message_id,
+        errors: errors,
         **extra,
       }.compact,
     )

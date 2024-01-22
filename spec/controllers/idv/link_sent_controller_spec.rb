@@ -47,7 +47,7 @@ RSpec.describe Idv::LinkSentController do
     end
   end
 
-  describe '#show' do
+  describe '#show', allowed_extra_analytics: [:sample_bucket1, :sample_bucket2] do
     let(:analytics_name) { 'IdV: doc auth link_sent visited' }
     let(:analytics_args) do
       {

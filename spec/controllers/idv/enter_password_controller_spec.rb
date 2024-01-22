@@ -121,7 +121,7 @@ RSpec.describe Idv::EnterPasswordController do
     end
   end
 
-  describe '#new' do
+  describe '#new', allowed_extra_analytics: [:sample_bucket1, :sample_bucket2] do
     context 'user has completed all steps' do
       it 'shows completed session' do
         get :new

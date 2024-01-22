@@ -43,7 +43,7 @@ RSpec.describe Idv::HybridMobile::CaptureCompleteController do
     end
   end
 
-  describe '#show' do
+  describe '#show', allowed_extra_analytics: [:sample_bucket1, :sample_bucket2] do
     let(:analytics_name) { 'IdV: doc auth capture_complete visited' }
     let(:analytics_args) do
       {

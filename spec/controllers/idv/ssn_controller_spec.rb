@@ -49,7 +49,7 @@ RSpec.describe Idv::SsnController do
     end
   end
 
-  describe '#show' do
+  describe '#show', allowed_extra_analytics: [:sample_bucket1, :sample_bucket2] do
     let(:analytics_name) { 'IdV: doc auth ssn visited' }
     let(:analytics_args) do
       {
@@ -123,7 +123,7 @@ RSpec.describe Idv::SsnController do
     end
   end
 
-  describe '#update' do
+  describe '#update', allowed_extra_analytics: [:sample_bucket1, :sample_bucket2] do
     context 'with valid ssn' do
       let(:params) { { doc_auth: { ssn: ssn } } }
       let(:analytics_name) { 'IdV: doc auth ssn submitted' }

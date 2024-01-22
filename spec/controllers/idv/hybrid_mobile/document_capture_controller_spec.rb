@@ -39,7 +39,7 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController do
     end
   end
 
-  describe '#show' do
+  describe '#show', allowed_extra_analytics: [:sample_bucket1, :sample_bucket2] do
     context 'with no user id in session' do
       let(:document_capture_session) { nil }
       let(:user) { nil }

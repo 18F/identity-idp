@@ -47,7 +47,7 @@ RSpec.describe Idv::VerifyInfoController do
     end
   end
 
-  describe '#show' do
+  describe '#show', allowed_extra_analytics: [:sample_bucket1, :sample_bucket2] do
     let(:analytics_name) { 'IdV: doc auth verify visited' }
     let(:analytics_args) do
       {
@@ -363,7 +363,7 @@ RSpec.describe Idv::VerifyInfoController do
     end
   end
 
-  describe '#update' do
+  describe '#update', allowed_extra_analytics: [:sample_bucket1, :sample_bucket2] do
     it 'invalidates future steps' do
       expect(subject).to receive(:clear_future_steps!)
 

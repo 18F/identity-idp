@@ -58,7 +58,7 @@ RSpec.describe Idv::OtpVerificationController do
     end
   end
 
-  describe '#show' do
+  describe '#show', allowed_extra_analytics: [:sample_bucket1, :sample_bucket2] do
     context 'the user has not been sent an otp' do
       let(:user_phone_confirmation_session) { nil }
       let(:vendor_phone_confirmation) { nil }
