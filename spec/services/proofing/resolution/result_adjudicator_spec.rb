@@ -29,7 +29,6 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
   end
 
   let(:should_proof_state_id) { true }
-  let(:double_address_verification) { true }
   let(:ipp_enrollment_in_progress) { true }
   let(:same_address_as_id) { 'false' }
 
@@ -52,7 +51,6 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
       state_id_result: state_id_result,
       should_proof_state_id: should_proof_state_id,
       ipp_enrollment_in_progress: ipp_enrollment_in_progress,
-      double_address_verification: double_address_verification,
       device_profiling_result: device_profiling_result,
       same_address_as_id: same_address_as_id,
     )
@@ -91,33 +89,6 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
           expect(result.success?).to eq(false)
           resolution_adjudication_reason = result.extra[:context][:resolution_adjudication_reason]
           expect(resolution_adjudication_reason).to eq(:fail_state_id)
-        end
-      end
-
-      # rubocop:disable Layout/LineLength
-      context 'Confirm adjudication works for either double_address_verification or ipp_enrollment_in_progress' do
-        context 'Adjudication passes if double_address_verification is false and ipp_enrollment_in_progress is true' do
-          # rubocop:enable Layout/LineLength
-          let(:double_address_verification) { false }
-          let(:ipp_enrollment_in_progress) { true }
-
-          it 'returns a successful response' do
-            result = subject.adjudicated_result
-
-            expect(result.success?).to eq(true)
-          end
-        end
-        # rubocop:disable Layout/LineLength
-        context 'Adjudication passes if ipp_enrollment_in_progress is false and double_address_verification is true' do
-          # rubocop:enable Layout/LineLength
-          let(:double_address_verification) { true }
-          let(:ipp_enrollment_in_progress) { false }
-
-          it 'returns a successful response' do
-            result = subject.adjudicated_result
-
-            expect(result.success?).to eq(true)
-          end
         end
       end
     end
