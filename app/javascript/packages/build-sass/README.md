@@ -44,7 +44,7 @@ function buildFile(
   options: {
     outDir: string,
     optimize: boolean,
-    sassCompiler: SassCompiler,
+    sassCompiler: SassAsyncCompiler,
     ...sassOptions: SassOptions<'sync'>,
   },
 ): Promise<SassCompileResult>;

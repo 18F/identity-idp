@@ -6,7 +6,7 @@ import { mkdir } from 'node:fs/promises';
 import { parseArgs } from 'node:util';
 import { fileURLToPath } from 'node:url';
 import { watch } from 'chokidar';
-import { initCompiler as initSassCompiler } from 'sass-embedded';
+import { initAsyncCompiler as initAsyncSassCompiler } from 'sass-embedded';
 import { buildFile } from './index.js';
 import getDefaultLoadPaths from './get-default-load-paths.js';
 import getErrorSassStackPaths from './get-error-sass-stack-paths.js';
@@ -30,7 +30,7 @@ const { values: flags, positionals: fileArgs } = parseArgs({
 const { watch: isWatching, 'out-dir': outDir, 'load-path': loadPaths = [] } = flags;
 loadPaths.push(...getDefaultLoadPaths());
 
-const sassCompiler = initSassCompiler();
+const sassCompiler = await initAsyncSassCompiler();
 
 /** @type {BuildOptions & SyncSassOptions} */
 const options = { outDir, loadPaths, sassCompiler, optimize: isProduction };
@@ -94,6 +94,6 @@ try {
   process.exitCode = 1;
 } finally {
   if (!isWatching) {
-    sassCompiler.dispose();
+    await sassCompiler.dispose();
   }
 }
