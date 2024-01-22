@@ -672,7 +672,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
         expect(response.success?).to eq(true)
         expect(response.extra[:portrait_match_results]).to eq(selfie_results)
         expect(response.doc_auth_success?).to eq(true)
-        expect(response.selfie_status).to eq(:pass)
+        expect(response.selfie_status).to eq(:success)
       end
     end
 
