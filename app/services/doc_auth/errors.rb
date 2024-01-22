@@ -117,9 +117,11 @@ module DocAuth
       MULTIPLE_FRONT_ID_FAILURES => { long_msg: MULTIPLE_FRONT_ID_FAILURES, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
       MULTIPLE_BACK_ID_FAILURES => { long_msg: MULTIPLE_BACK_ID_FAILURES, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
       GENERAL_ERROR => { long_msg: GENERAL_ERROR, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
+      # TODO, theses messages need modifying
       # Liveness, use general error for now
-      # TODO, this is one of the messages to modify
       SELFIE_FAILURE => { long_msg: GENERAL_ERROR, field_msg: FALLBACK_FIELD_LEVEL, hints: false },
+      SELFIE_NOT_LIVE => { long_msg: GENERAL_ERROR, field_msg: FALLBACK_FIELD_LEVEL, hints: false },
+      SELFIE_POOR_QUALITY => { long_msg: GENERAL_ERROR, field_msg: FALLBACK_FIELD_LEVEL, hints: false },
     }
     # rubocop:enable Layout/LineLength
   end
