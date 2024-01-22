@@ -163,9 +163,8 @@ RSpec.describe Idv::Agent do
         let(:ipp_enrollment_in_progress) { true }
 
         it 'returns a successful result' do
-          # rubocop:disable Layout/LineLength
-          agent = Idv::Agent.new(Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS.merge(uuid: user.uuid))
-          # rubocop:enable Layout/LineLength
+          addr = Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS
+          agent = Idv::Agent.new(addr.merge(uuid: user.uuid))
           agent.proof_resolution(
             document_capture_session,
             should_proof_state_id: true,
