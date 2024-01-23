@@ -5,7 +5,7 @@ module SamlIdpAuthConcern
 
   included do
     # rubocop:disable Rails/LexicallyScopedActionFilter
-    before_action :create_saml_request_object, only: :auth
+    before_action :validate_and_create_saml_request_object, only: :auth
     before_action :validate_service_provider_and_authn_context, only: :auth
     before_action :check_sp_active, only: :auth
     before_action :log_external_saml_auth_request, only: [:auth]
@@ -62,7 +62,7 @@ module SamlIdpAuthConcern
     )
   end
 
-  def create_saml_request_object
+  def validate_and_create_saml_request_object
     # this saml_idp method creates the saml_request object used for validations
     validate_saml_request
     @saml_request_validator = SamlRequestValidator.new

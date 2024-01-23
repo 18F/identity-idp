@@ -2281,9 +2281,9 @@ RSpec.describe SamlIdpController do
     it 'includes the appropriate before_actions' do
       expect(subject).to have_actions(
         :before,
-        :create_saml_request_object,
         :disable_caching,
         :store_saml_request,
+        :validate_and_create_saml_request_object,
         :validate_service_provider_and_authn_context,
       )
     end
