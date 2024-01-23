@@ -308,6 +308,8 @@ module AnalyticsEvents
     errors: nil,
     error_details: nil,
     mfa_method_counts: nil,
+    enabled_mfa_methods_count: nil,
+    in_account_creation_flow: nil,
     **extra
   )
     track_event(
