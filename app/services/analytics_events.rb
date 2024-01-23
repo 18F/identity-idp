@@ -1155,11 +1155,9 @@ module AnalyticsEvents
     track_event('IdV: doc auth link_sent visited', **extra)
   end
 
-  def idv_doc_auth_randomizer_defaulted
-    track_event(
-      'IdV: doc_auth random vendor error',
-      error: 'document_capture_session_uuid_key missing',
-    )
+  # @param [String] error
+  def idv_doc_auth_randomizer_defaulted(error: 'document_capture_session_uuid_key missing', **extra)
+    track_event('IdV: doc_auth random vendor error', error:, **extra)
   end
 
   # @identity.idp.previous_event_name IdV: in person proofing redo_address submitted

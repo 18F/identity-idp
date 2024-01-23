@@ -74,7 +74,7 @@ RSpec.describe DocAuthRouter do
     context 'with a nil discriminator' do
       let(:discriminator) { nil }
 
-      it 'is the default vendor, and logs analytics events', allowed_extra_analytics: [:error] do
+      it 'is the default vendor, and logs analytics events' do
         expect(analytics).to receive(:idv_doc_auth_randomizer_defaulted)
 
         result = DocAuthRouter.doc_auth_vendor(discriminator: discriminator, analytics: analytics)
