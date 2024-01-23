@@ -370,7 +370,7 @@ module Idv
       }
     end
 
-    def acuant_sdk_capture? # TODO: create ticket incorporate selfie into logic
+    def acuant_sdk_capture?
       image_metadata.dig(:front, :source) == Idp::Constants::Vendors::ACUANT &&
         image_metadata.dig(:back, :source) == Idp::Constants::Vendors::ACUANT
     end
@@ -396,7 +396,7 @@ module Idv
         call(response)
     end
 
-    def update_funnel(client_response) # TODO: create ticket to add selfie
+    def update_funnel(client_response)
       steps = %i[front_image back_image]
       steps.each do |step|
         Funnel::DocAuth::RegisterStep.new(user_id, service_provider&.issuer).
