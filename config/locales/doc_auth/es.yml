@@ -288,6 +288,7 @@ es:
       you_entered: 'Ud. entregó:'
     instructions:
       bullet1: Tomar fotos de tu identificación oficial
+      bullet1_with_selfie: Tomar fotos tuyas y de tu identificación oficial
       bullet2: Ingresar tu Número de Seguro Social
       bullet3: Confirmar tu número de teléfono
       bullet4: Ingresar de nuevo tu contraseña de %{app_name}
@@ -303,6 +304,9 @@ es:
         se consideran válidos. No ingrese PII real en este campo.
       text1: Utiliza tu licencia de conducir o identificación oficial estatal. No
         aceptamos ningún otro tipo de identificación.
+      text1_with_selfie: Tómate una foto y toma fotografías de tu licencia de conducir
+        o identificación oficial estatal. No aceptamos ningún otro tipo de
+        identificación.
       text2: No necesitarás tu tarjeta física del seguro social.
       text3: Tu número de teléfono te vincula con tu información personal. Luego de
         confirmar tu información, te enviaremos un código.

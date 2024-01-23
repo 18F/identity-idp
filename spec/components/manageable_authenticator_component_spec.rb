@@ -56,11 +56,10 @@ RSpec.describe ManageableAuthenticatorComponent, type: :component do
 
     expect(edit_element.attr('tabindex')).to be_present
     expect(edit_element).to have_name(
-      format(
-        '%s: %s',
+      [
         t('components.manageable_authenticator.manage_accessible_label'),
         configuration.name,
-      ),
+      ].join(': '),
     )
   end
 
@@ -80,11 +79,10 @@ RSpec.describe ManageableAuthenticatorComponent, type: :component do
 
   it 'renders with buttons that have accessibly distinct manage label' do
     expect(rendered).to have_button(
-      format(
-        '%s: %s',
+      [
         t('components.manageable_authenticator.manage_accessible_label'),
         configuration.name,
-      ),
+      ].join(': '),
     )
   end
 
@@ -147,7 +145,7 @@ RSpec.describe ManageableAuthenticatorComponent, type: :component do
         let(:custom_strings) { { manage_accessible_label: custom_manage_accessible_label } }
 
         it 'overrides button label and affected linked content' do
-          manage_label = format('%s: %s', custom_manage_accessible_label, configuration.name)
+          manage_label = [custom_manage_accessible_label, configuration.name].join(': ')
           expect(rendered).to have_button(manage_label)
           edit_element = page.find_css('.manageable-authenticator__edit').first
           expect(edit_element).to have_name(manage_label)

@@ -156,15 +156,19 @@ module Users
       else
         flash[:success] = t('notices.webauthn_deleted')
       end
-      track_delete(true)
+      track_delete(success: true, platform_authenticator: webauthn.platform_authenticator?)
     end
 
     def handle_failed_delete
-      track_delete(false)
+      track_delete(success: false, platform_authenticator: nil)
     end
 
-    def track_delete(success)
-      analytics.webauthn_delete_submitted(success:, configuration_id: delete_params[:id])
+    def track_delete(success:, platform_authenticator:)
+      analytics.webauthn_delete_submitted(
+        success:,
+        configuration_id: delete_params[:id],
+        platform_authenticator:,
+      )
     end
 
     def save_challenge_in_session
