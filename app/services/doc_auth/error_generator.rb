@@ -221,7 +221,7 @@ module DocAuth
 
       case face_match_error
       # Error when the image on the id does not match the selfie image, but the image was acceptable
-      when "FaceErrorMessage: 'Successful. Liveness: Live'"
+      when 'Successful. Liveness: Live'
         return Errors::SELFIE_FAILURE
       # Error when the image on the id is poor quality
       when 'Liveness: PoorQuality'
