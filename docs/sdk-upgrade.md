@@ -94,6 +94,7 @@ Steps:
    idv_acuant_sdk_version_alternate: 11.M.M       # previous
    idv_acuant_sdk_version_default: 11.N.N         # newest
    ```
+   The testing phase should continue until we have accumulated sufficient traffic.
 4. Save the file. If the file opened in the vi editor, use `:wq` to save. A diff of your changes will appear. Copy the diff and paste it into the Slack thread. Type `y` to accept the changes.
 
 5. Recycle the servers [with these Handbook instructions](https://handbook.login.gov/articles/appdev-deploy.html#production). This will involve:
@@ -105,6 +106,26 @@ Steps:
 6. While you monitor the recycle, manually check the document capture page in the environment you are deploying to. Ensure the SDK loads and can capture images.
 
 Monitoring the A/B test begins now. Proceed to the next section.
+## Testing Considerations
+Manual testing should be preformed to cover the following with verification *Success* or *Failure*:
+* SDK UI
+  * Camera permission prompt is shown
+  * Instruction text for taking ID and selfie
+  * Countdown while capturing
+  * Auto-capture mode
+* Camera permissions
+  * Prompt is shown upon the first time open the SDK
+  * Tapping 'Decline' shows error message on the 'Add photos' page
+  * Opening the SDK again shows the same prompt
+
+Operating systems: 
+  * iOS
+  * Android
+
+Browser:
+  * Chrome
+  * Firefox
+  * Safari
 
 ## Monitor A/B testing
 
