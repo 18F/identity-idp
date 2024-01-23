@@ -542,8 +542,7 @@ deploy_production:
     deployment_tier: production
     url: https://$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov
   rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-      when: manual
+    - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "push"
 
 
 include:
