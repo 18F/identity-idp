@@ -22,6 +22,14 @@ fr:
     attempt_remaining_warning_html:
       one: Il vous reste <strong>%{count} tentative</strong>.
       other: Il vous reste <strong>%{count} tentatives</strong>.
+    auth_app:
+      change_nickname: Changer de pseudo
+      delete: Supprimer cet appareil
+      deleted: Suppression réussie d’une méthode d’application d’authentification
+      edit_heading: Gérer les paramètres de votre application d’authentification
+      manage_accessible_label: Gérer l’application d’authentification
+      nickname: Pseudo
+      renamed: Votre méthode d’application d’authentification a été renommée avec succès
     backup_code_header_text: Entrez votre code de sauvegarde
     backup_code_prompt: Vous pouvez utiliser ce code de sauvegarde une seule fois.
       Après l’avoir envoyé, vous devrez utiliser un nouveau code de sauvegarde
@@ -227,4 +235,12 @@ fr:
         empreinte digitale a été renommée avec succès
     webauthn_platform_header_text: Utilisez le déverrouillage facial ou tactile
     webauthn_platform_use_key: Utiliser le déverrouillage de l’écran
+    webauthn_roaming:
+      change_nickname: Changer de pseudo
+      delete: Supprimer cet appareil
+      deleted: Suppression réussie d’une méthode de clé de sécurité
+      edit_heading: Gérer les paramètres de votre clé de sécurité
+      manage_accessible_label: Gérer la clé de sécurité
+      nickname: Pseudo
+      renamed: Votre méthode de clé de sécurité a été renommée avec succès
     webauthn_use_key: Utiliser la clé de sécurité

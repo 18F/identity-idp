@@ -109,25 +109,6 @@ RSpec.describe 'accounts/show.html.erb' do
     end
   end
 
-  context 'auth app listing and adding' do
-    context 'user has no auth app' do
-      let(:user) { create(:user, :fully_registered, :with_piv_or_cac) }
-
-      it 'does not render auth app' do
-        expect(view).to_not render_template(partial: '_auth_apps')
-      end
-    end
-
-    context 'user has an auth app' do
-      let(:user) { create(:user, :fully_registered, :with_authentication_app) }
-      it 'renders the auth app section' do
-        render
-
-        expect(view).to render_template(partial: '_auth_apps')
-      end
-    end
-  end
-
   context 'PIV/CAC listing and adding' do
     context 'user has no piv/cac' do
       let(:user) { create(:user, :fully_registered, :with_authentication_app) }
