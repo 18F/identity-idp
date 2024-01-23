@@ -88,12 +88,12 @@ en:
         you verified your identity with this account. If you don’t have it, you
         can still reset your password and then reverify your identity.
       strength:
-        i: Very weak
-        ii: Weak
-        iii: Average
+        0: Very weak
+        1: Weak
+        2: Average
+        3: Good
+        4: Great
         intro: 'Password strength: '
-        iv: Good
-        v: Great
     sp_handoff_bounced: Your sign in was successful, but %{sp_name} sent you back to
       %{app_name}. Please contact %{sp_link} for help.
     sp_handoff_bounced_with_no_sp: your service provider

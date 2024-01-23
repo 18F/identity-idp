@@ -105,12 +105,12 @@ fr:
         avec ce compte. Si vous ne l’avez pas, vous pouvez toujours
         réinitialiser votre mot de passe et ensuite revérifier votre identité.
       strength:
-        i: Très faible
-        ii: Faible
-        iii: Moyen
+        0: Très faible
+        1: Faible
+        2: Moyen
+        3: Bonne
+        4: Excellente
         intro: 'Force du mot de passe : '
-        iv: Bonne
-        v: Excellente
     sp_handoff_bounced: Votre connexion a réussi, mais %{sp_name} vous a renvoyé à
       %{app_name}. Veuillez contacter %{sp_link} pour obtenir de l’aide.
     sp_handoff_bounced_with_no_sp: votre fournisseur de service
