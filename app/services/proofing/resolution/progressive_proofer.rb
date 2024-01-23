@@ -29,8 +29,7 @@ module Proofing
         threatmetrix_session_id:,
         timer:,
         user_email:,
-        double_address_verification: nil,
-        ipp_enrollment_in_progress: false
+        ipp_enrollment_in_progress:
       )
         device_profiling_result = proof_with_threatmetrix_if_needed(
           applicant_pii: applicant_pii,
@@ -43,7 +42,6 @@ module Proofing
         residential_instant_verify_result = proof_residential_address_if_needed(
           applicant_pii: applicant_pii,
           timer: timer,
-          double_address_verification: double_address_verification,
           ipp_enrollment_in_progress: ipp_enrollment_in_progress,
         )
 
@@ -56,7 +54,6 @@ module Proofing
           applicant_pii: applicant_pii_transformed,
           timer: timer,
           residential_instant_verify_result: residential_instant_verify_result,
-          double_address_verification: double_address_verification,
           ipp_enrollment_in_progress: ipp_enrollment_in_progress,
         )
 
@@ -66,13 +63,11 @@ module Proofing
           residential_instant_verify_result: residential_instant_verify_result,
           instant_verify_result: instant_verify_result,
           should_proof_state_id: should_proof_state_id,
-          double_address_verification: double_address_verification,
           ipp_enrollment_in_progress: ipp_enrollment_in_progress,
         )
 
         ResultAdjudicator.new(
           device_profiling_result: device_profiling_result,
-          double_address_verification: double_address_verification,
           ipp_enrollment_in_progress: ipp_enrollment_in_progress,
           resolution_result: instant_verify_result,
           should_proof_state_id: should_proof_state_id,
@@ -111,11 +106,9 @@ module Proofing
         end
       end
 
-      # rubocop:disable Lint/UnusedMethodArgument
       def proof_residential_address_if_needed(
         applicant_pii:,
         timer:,
-        double_address_verification: false,
         ipp_enrollment_in_progress: false
       )
         return residential_address_unnecessary_result unless ipp_enrollment_in_progress
@@ -124,7 +117,6 @@ module Proofing
           resolution_proofer.proof(applicant_pii)
         end
       end
-      # rubocop:enable Lint/UnusedMethodArgument
 
       def residential_address_unnecessary_result
         Proofing::Resolution::Result.new(
@@ -138,10 +130,8 @@ module Proofing
         )
       end
 
-      # rubocop:disable Lint/UnusedMethodArgument
       def proof_id_address_with_lexis_nexis_if_needed(applicant_pii:, timer:,
                                                       residential_instant_verify_result:,
-                                                      double_address_verification:,
                                                       ipp_enrollment_in_progress:)
         if applicant_pii[:same_address_as_id] == 'true' && ipp_enrollment_in_progress
           return residential_instant_verify_result
@@ -155,10 +145,9 @@ module Proofing
 
       def should_proof_state_id_with_aamva?(ipp_enrollment_in_progress:, same_address_as_id:,
                                             should_proof_state_id:, instant_verify_result:,
-                                            residential_instant_verify_result:,
-                                            double_address_verification:)
+                                            residential_instant_verify_result:)
         return false unless should_proof_state_id
-        # If the user is in double-address-verification and they have changed their address then
+        # If the user is in in-person-proofing and they have changed their address then
         # they are not eligible for get-to-yes
         if !ipp_enrollment_in_progress || same_address_as_id == 'true'
           user_can_pass_after_state_id_check?(instant_verify_result)
@@ -166,19 +155,16 @@ module Proofing
           residential_instant_verify_result.success?
         end
       end
-      # rubocop:enable Lint/UnusedMethodArgument
 
       def proof_id_with_aamva_if_needed(
         applicant_pii:, timer:,
         residential_instant_verify_result:,
         instant_verify_result:,
         should_proof_state_id:,
-        ipp_enrollment_in_progress:,
-        double_address_verification:
+        ipp_enrollment_in_progress:
       )
         same_address_as_id = applicant_pii[:same_address_as_id]
         should_proof_state_id_with_aamva = should_proof_state_id_with_aamva?(
-          double_address_verification:,
           ipp_enrollment_in_progress:,
           same_address_as_id:,
           should_proof_state_id:,

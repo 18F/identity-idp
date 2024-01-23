@@ -28,6 +28,6 @@ class PasswordToggleComponent < BaseComponent
   end
 
   def input_id
-    "password-toggle-input-#{unique_id}"
+    field_options.dig(:input_html, :id) || "password-toggle-input-#{unique_id}"
   end
 end

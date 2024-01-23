@@ -59,7 +59,6 @@ fr:
       webauthn: Clé de sécurité
       webauthn_add: Ajouter une clé de sécurité
       webauthn_confirm_delete: Oui, supprimer la clé
-      webauthn_delete: Supprimer la clé
       webauthn_platform: Le déverouillage facial ou déverrouillage par empreinte digitale
       webauthn_platform_add: Ajouter le déverouillage facial ou déverrouillage par empreinte digitale
       webauthn_platform_confirm_delete: Oui, supprimer le déverouillage facial ou
