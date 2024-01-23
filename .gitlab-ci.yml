@@ -357,12 +357,7 @@ trigger_devops:
     - if: $CI_COMMIT_BRANCH == "main"
   trigger: lg/identity-devops
 
-review-app:
-  stage: review
-  allow_failure: true
-  needs:
-    - job: build-review-image
-  resource_group: $CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov
+.deploy:
   image:
     name: dtzar/helm-kubectl:latest
   script:
@@ -495,6 +490,15 @@ review-app:
     - echo https://$CI_ENVIRONMENT_SLUG-review-app.pivcac.identitysandbox.gov
     - echo "Address of Dashboard review app:"
     - echo https://$CI_ENVIRONMENT_SLUG-review-app-dashboard.review-app.identitysandbox.gov
+
+
+review-app:
+  stage: review
+  allow_failure: true
+  needs:
+    - job: build-review-image
+  resource_group: $CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov
+  extends: .deploy
   environment:
     name: development/$CI_COMMIT_REF_NAME
     url: https://$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov
