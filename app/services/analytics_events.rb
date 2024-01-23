@@ -2661,12 +2661,14 @@ module AnalyticsEvents
   # @param [Integer] enrollment_id
   # @param [String] exception_class
   # @param [String] exception_message
+  # @param [String] original_exception_class
   def idv_in_person_usps_request_enroll_exception(
     context:,
     reason:,
     enrollment_id:,
     exception_class:,
     exception_message:,
+    original_exception_class:,
     **extra
   )
     track_event(
@@ -2676,6 +2678,7 @@ module AnalyticsEvents
       exception_class: exception_class,
       exception_message: exception_message,
       reason: reason,
+      original_exception_class: original_exception_class,
       **extra,
     )
   end
@@ -2808,6 +2811,7 @@ module AnalyticsEvents
   # @param [Boolean] fraud_review_pending Profile is under review for fraud
   # @param [Boolean] fraud_rejection Profile is rejected due to fraud
   # @param [Boolean] in_person_verification_pending Profile is pending in-person verification
+  # @param [String] address_verification_method
   # User submitted IDV personal key page
   def idv_personal_key_submitted(
     fraud_review_pending:,
@@ -2815,6 +2819,7 @@ module AnalyticsEvents
     in_person_verification_pending:,
     proofing_components: nil,
     deactivation_reason: nil,
+    address_verification_method: nil,
     **extra
   )
     track_event(
@@ -2824,16 +2829,26 @@ module AnalyticsEvents
       fraud_review_pending: fraud_review_pending,
       fraud_rejection: fraud_rejection,
       proofing_components: proofing_components,
+      address_verification_method: address_verification_method,
       **extra,
     )
   end
 
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # @param [String] address_verification_method
+  # @param [Boolean] in_person_verification_pending
   # User visited IDV personal key page
-  def idv_personal_key_visited(proofing_components: nil, **extra)
+  def idv_personal_key_visited(
+    proofing_components: nil,
+    address_verification_method: nil,
+    in_person_verification_pending: nil,
+    **extra
+  )
     track_event(
       'IdV: personal key visited',
       proofing_components: proofing_components,
+      address_verification_method: address_verification_method,
+      in_person_verification_pending: in_person_verification_pending,
       **extra,
     )
   end
