@@ -2,6 +2,7 @@
 
 module DocAuth
   class ErrorGenerator
+    include SelfieConcern
     attr_reader :config
 
     def initialize(config)
@@ -219,20 +220,20 @@ module DocAuth
         return nil
       end
 
-      case face_match_error
       # Error when the image on the id does not match the selfie image, but the image was acceptable
-      when 'Successful. Liveness: Live'
-        return Errors::SELFIE_FAILURE
-      # Error when the image on the id is poor quality
-      when 'Liveness: PoorQuality'
-        return Errors::SELFIE_POOR_QUALITY
-      # Error when the image on the id is not live
-      when 'Liveness: NotLive'
-        return Errors::SELFIE_NOT_LIVE
-      # Fallback, we don't expect this to happen
-      else
+      if error_is_success(face_match_error)
         return Errors::SELFIE_FAILURE
       end
+      # Error when the image on the id is poor quality
+      if error_is_poor_quality(face_match_error)
+        return Errors::SELFIE_POOR_QUALITY
+      end
+      # Error when the image on the id is not live
+      if error_is_not_live(face_match_error)
+        return Errors::SELFIE_NOT_LIVE
+      end
+      # Fallback, we don't expect this to happen
+      return Errors::SELFIE_FAILURE
     end
 
     def scan_for_unknown_alerts(response_info)
