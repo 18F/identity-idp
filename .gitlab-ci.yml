@@ -63,6 +63,7 @@ stages:
   - after_test
   - review
   - scan
+  - deploy_production
 
 workflow:
   rules:
