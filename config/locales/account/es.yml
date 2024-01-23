@@ -56,7 +56,6 @@ es:
       webauthn: Clave de seguridad
       webauthn_add: Añadir clave de seguridad
       webauthn_confirm_delete: Si quitar la llave
-      webauthn_delete: Quitar llave
       webauthn_platform: El desbloqueo facial o táctil
       webauthn_platform_add: Añadir el desbloqueo facial o táctil
       webauthn_platform_confirm_delete: Si, quitar el desbloqueo facial o táctil
