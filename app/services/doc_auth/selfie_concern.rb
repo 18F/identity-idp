@@ -3,13 +3,13 @@ module DocAuth
     extend ActiveSupport::Concern
     def selfie_live?
       portait_error = get_portrait_error(portrait_match_results)
-      return true if portait_error.empty?
+      return true if portait_error.nil? || portait_error.empty?
       return error_is_not_live(portait_error)
     end
 
     def selfie_quality_good?
       portait_error = get_portrait_error(portrait_match_results)
-      return true if portait_error.empty?
+      return true if portait_error.nil? || portait_error.empty?
       return error_is_poor_quality(portait_error)
     end
 
