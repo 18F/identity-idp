@@ -35,7 +35,8 @@ module Idv
 
       profile.save!
       profile.deactivate_for_gpo_verification if gpo_verification_needed
-      if fraud_pending_reason.present? && !gpo_verification_needed
+
+      if fraud_pending_reason.present? && !gpo_verification_needed && !in_person_verification_needed
         profile.deactivate_for_fraud_review
       end
       profile
