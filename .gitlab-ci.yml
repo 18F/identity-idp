@@ -529,6 +529,24 @@ stop-review-app:
     - if: $CI_PIPELINE_SOURCE != "merge_request_event"
       when: never
 
+deploy_production:
+  stage: production
+  allow_failure: false
+  needs:
+    - job: build-review-image
+  resource_group: $CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov
+  extends: .deploy
+  environment:
+    name: production
+    url: https://$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov
+    on_stop: stop-review-app
+    auto_stop_in: 2 days
+  rules:
+    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
+    - if: $CI_PIPELINE_SOURCE != "merge_request_event"
+      when: never
+
+
 include:
   - template: Jobs/SAST.gitlab-ci.yml
   - template: Jobs/Dependency-Scanning.gitlab-ci.yml
