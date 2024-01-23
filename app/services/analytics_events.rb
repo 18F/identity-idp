@@ -2589,6 +2589,10 @@ module AnalyticsEvents
       scan_count: scan_count,
       response_message: response_message,
       response_status_code: response_status_code,
+      minutes_since_last_status_check_completed: minutes_since_last_status_check_completed,
+      issuer: issuer,
+      job_name: job_name,
+      response_present: response_present,
       **extra,
     )
   end
