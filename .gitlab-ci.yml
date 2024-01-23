@@ -531,7 +531,7 @@ stop-review-app:
       when: never
 
 deploy_production:
-  stage: production
+  stage: deploy_production
   allow_failure: false
   needs:
     - job: build-review-image
