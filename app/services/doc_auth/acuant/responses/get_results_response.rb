@@ -145,6 +145,11 @@ module DocAuth
           result_code == DocAuth::Acuant::ResultCodes::PASSED
         end
 
+        # This is not implemented for the acuant call since that is currently not in use
+        def portrait_match_results
+          return {}
+        end
+
         def get_image_side_name(side_number)
           side_number == 0 ? :front : :back
         end
