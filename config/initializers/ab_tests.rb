@@ -1,5 +1,6 @@
 require 'ab_test_bucket'
 
+# When adding an A/B test, be sure to add related analytics to AbTestAnalyticsConcern
 module AbTests
   DOC_AUTH_VENDOR = AbTestBucket.new(
     experiment_name: 'Doc Auth Vendor',

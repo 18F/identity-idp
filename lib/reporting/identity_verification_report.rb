@@ -67,6 +67,9 @@ module Reporting
       @threads = threads
       @data = data
       @cloudwatch_client = cloudwatch_client
+      @ab_tests = Hash.new do |h, ab_test|
+        h[ab_test] = Set.new
+      end
     end
 
     def verbose?
@@ -95,22 +98,41 @@ module Reporting
       csv << []
       csv << ['Metric', '# of Users']
       csv << []
-      csv << ['Started IdV Verification', idv_started]
-      csv << ['Submitted welcome page', idv_doc_auth_welcome_submitted]
-      csv << ['Images uploaded', idv_doc_auth_image_vendor_submitted]
+
+      collect_data(csv, data['all'])
+
+      if @ab_tests.present?
+        @ab_tests.keys.each do |ab_test|
+          @ab_tests[ab_test].each do |bucket|
+            csv << []
+            csv << ['A/B test', ab_test]
+            csv << ['bucket', bucket]
+            collect_data(csv, data[ab_test][bucket])
+          end
+        end
+      end
+
+      csv
+    end
+
+    def collect_data(csv, data_set)
+      csv << ['Started IdV Verification', idv_started(data_set)]
+      csv << ['Submitted welcome page', idv_doc_auth_welcome_submitted(data_set)]
+      csv << ['Images uploaded', idv_doc_auth_image_vendor_submitted(data_set)]
       csv << []
-      csv << ['Workflow completed', idv_final_resolution]
-      csv << ['Workflow completed - Verified', idv_final_resolution_verified]
-      csv << ['Workflow completed - Total Pending', idv_final_resolution_total_pending]
-      csv << ['Workflow completed - GPO Pending', idv_final_resolution_gpo]
-      csv << ['Workflow completed - In-Person Pending', idv_final_resolution_in_person]
-      csv << ['Workflow completed - Fraud Review Pending', idv_final_resolution_fraud_review]
+      csv << ['Workflow completed', idv_final_resolution(data_set)]
+      csv << ['Workflow completed - Verified', idv_final_resolution_verified(data_set)]
+      csv << ['Workflow completed - Total Pending', idv_final_resolution_total_pending(data_set)]
+      csv << ['Workflow completed - GPO Pending', idv_final_resolution_gpo(data_set)]
+      csv << ['Workflow completed - In-Person Pending', idv_final_resolution_in_person(data_set)]
+      csv << ['Workflow completed - Fraud Review Pending',
+              idv_final_resolution_fraud_review(data_set)]
       csv << []
-      csv << ['Successfully verified', successfully_verified_users]
-      csv << ['Successfully verified - Inline', idv_final_resolution_verified]
-      csv << ['Successfully verified - GPO Code Entry', gpo_verification_submitted]
-      csv << ['Successfully verified - In Person', usps_enrollment_status_updated]
-      csv << ['Successfully verified - Passed Fraud Review', fraud_review_passed]
+      csv << ['Successfully verified', successfully_verified_users(data_set)]
+      csv << ['Successfully verified - Inline', idv_final_resolution_verified(data_set)]
+      csv << ['Successfully verified - GPO Code Entry', gpo_verification_submitted(data_set)]
+      csv << ['Successfully verified - In Person', usps_enrollment_status_updated(data_set)]
+      csv << ['Successfully verified - Passed Fraud Review', fraud_review_passed(data_set)]
     end
 
     def to_csv
@@ -136,75 +158,77 @@ module Reporting
       )
     end
 
-    def idv_final_resolution
-      data[Events::IDV_FINAL_RESOLUTION].count
+    def idv_final_resolution(data_set = data['all'])
+      data_set[Events::IDV_FINAL_RESOLUTION].count
     end
 
-    def idv_final_resolution_verified
-      data[Results::IDV_FINAL_RESOLUTION_VERIFIED].count
+    def idv_final_resolution_verified(data_set = data['all'])
+      data_set[Results::IDV_FINAL_RESOLUTION_VERIFIED].count
     end
 
-    def idv_final_resolution_gpo
-      data[Results::IDV_FINAL_RESOLUTION_GPO].count
+    def idv_final_resolution_gpo(data_set = data['all'])
+      data_set[Results::IDV_FINAL_RESOLUTION_GPO].count
     end
 
-    def idv_final_resolution_in_person
-      data[Results::IDV_FINAL_RESOLUTION_IN_PERSON].count
+    def idv_final_resolution_in_person(data_set = data['all'])
+      data_set[Results::IDV_FINAL_RESOLUTION_IN_PERSON].count
     end
 
-    def idv_final_resolution_fraud_review
-      data[Results::IDV_FINAL_RESOLUTION_FRAUD_REVIEW].count
+    def idv_final_resolution_fraud_review(data_set = data['all'])
+      data_set[Results::IDV_FINAL_RESOLUTION_FRAUD_REVIEW].count
     end
 
-    def idv_final_resolution_total_pending
-      @idv_final_resolution_total_pending ||=
-        (data[Events::IDV_FINAL_RESOLUTION] - data[Results::IDV_FINAL_RESOLUTION_VERIFIED]).count
+    def idv_final_resolution_total_pending(data_set = data['all'])
+      (data_set[Events::IDV_FINAL_RESOLUTION] -
+        data_set[Results::IDV_FINAL_RESOLUTION_VERIFIED]).count
     end
 
-    def gpo_verification_submitted
-      @gpo_verification_submitted ||= (
-        data[Events::GPO_VERIFICATION_SUBMITTED] +
-          data[Events::GPO_VERIFICATION_SUBMITTED_OLD]).count
+    def gpo_verification_submitted(data_set = data['all'])
+      (data_set[Events::GPO_VERIFICATION_SUBMITTED] +
+        data_set[Events::GPO_VERIFICATION_SUBMITTED_OLD]).count
     end
 
-    def usps_enrollment_status_updated
-      data[Events::USPS_ENROLLMENT_STATUS_UPDATED].count
+    def usps_enrollment_status_updated(data_set = data['all'])
+      data_set[Events::USPS_ENROLLMENT_STATUS_UPDATED].count
     end
 
-    def successfully_verified_users
-      idv_final_resolution_verified + gpo_verification_submitted + usps_enrollment_status_updated +
-        fraud_review_passed
+    def successfully_verified_users(data_set = data['all'])
+      idv_final_resolution_verified(data_set) +
+        gpo_verification_submitted(data_set) +
+        usps_enrollment_status_updated(data_set) +
+        fraud_review_passed(data_set)
     end
 
-    def idv_started
-      @idv_started ||=
-        (data[Events::IDV_DOC_AUTH_WELCOME] + data[Events::IDV_DOC_AUTH_GETTING_STARTED]).count
+    def idv_started(data_set = data['all'])
+      (data_set[Events::IDV_DOC_AUTH_WELCOME] +
+        data_set[Events::IDV_DOC_AUTH_GETTING_STARTED]).count
     end
 
-    def idv_doc_auth_image_vendor_submitted
-      data[Events::IDV_DOC_AUTH_IMAGE_UPLOAD].count
+    def idv_doc_auth_image_vendor_submitted(data_set = data['all'])
+      data_set[Events::IDV_DOC_AUTH_IMAGE_UPLOAD].count
     end
 
-    def idv_doc_auth_welcome_submitted
-      data[Events::IDV_DOC_AUTH_WELCOME_SUBMITTED].count
+    def idv_doc_auth_welcome_submitted(data_set = data['all'])
+      data_set[Events::IDV_DOC_AUTH_WELCOME_SUBMITTED].count
     end
 
-    def idv_doc_auth_rejected
-      @idv_doc_auth_rejected ||= (
-        data[Results::IDV_REJECT_DOC_AUTH] +
-        data[Results::IDV_REJECT_VERIFY] +
-        data[Results::IDV_REJECT_PHONE_FINDER] -
-        data[Results::IDV_FINAL_RESOLUTION_VERIFIED] -
-        data[Results::IDV_FINAL_RESOLUTION_IN_PERSON]
+    def idv_doc_auth_rejected(data_set = data['all'])
+      (
+        data_set[Results::IDV_REJECT_DOC_AUTH] +
+        data_set[Results::IDV_REJECT_VERIFY] +
+        data_set[Results::IDV_REJECT_PHONE_FINDER] -
+        data_set[Results::IDV_FINAL_RESOLUTION_VERIFIED] -
+        data_set[Results::IDV_FINAL_RESOLUTION_IN_PERSON]
       ).count
     end
 
-    def idv_fraud_rejected
-      (data[Events::FRAUD_REVIEW_REJECT_AUTOMATIC] + data[Events::FRAUD_REVIEW_REJECT_MANUAL]).count
+    def idv_fraud_rejected(data_set = data['all'])
+      (data_set[Events::FRAUD_REVIEW_REJECT_AUTOMATIC] +
+        data_set[Events::FRAUD_REVIEW_REJECT_MANUAL]).count
     end
 
-    def fraud_review_passed
-      data[Events::FRAUD_REVIEW_PASSED].count
+    def fraud_review_passed(data_set = data['all'])
+      data_set[Events::FRAUD_REVIEW_PASSED].count
     end
 
     # rubocop:disable Layout/LineLength
@@ -213,10 +237,18 @@ module Reporting
     # @return [Hash<Set<String>>]
     def data
       @data ||= begin
-        event_users = Hash.new do |h, event_name|
+        all_data = Hash.new do |all_data_hash, ab_test_key|
+          all_data_hash[ab_test_key] = Hash.new do |h, bucket_name|
+            h[bucket_name] = Hash.new do |h, event_name|
+              h[event_name] = Set.new
+            end
+          end
+        end
+        all_data['all'] = Hash.new do |h, event_name|
           h[event_name] = Set.new
         end
 
+        # rubocop:disable Metrics/BlockLength
         # IDEA: maybe there's a block form if this we can do that yields results as it loads them
         # to go slightly faster
         fetch_results.each do |row|
@@ -224,24 +256,47 @@ module Reporting
           user_id = row['user_id']
           success = row['success']
 
-          event_users[event] << user_id
+          all_data['all'][event] << user_id
 
           case event
           when Events::IDV_FINAL_RESOLUTION
-            event_users[Results::IDV_FINAL_RESOLUTION_VERIFIED] << user_id if row['identity_verified'] == '1'
-            event_users[Results::IDV_FINAL_RESOLUTION_GPO] << user_id if row['gpo_verification_pending'] == '1'
-            event_users[Results::IDV_FINAL_RESOLUTION_IN_PERSON] << user_id if row['in_person_verification_pending'] == '1'
-            event_users[Results::IDV_FINAL_RESOLUTION_FRAUD_REVIEW] << user_id if row['fraud_review_pending'] == '1'
+            all_data['all'][Results::IDV_FINAL_RESOLUTION_VERIFIED] << user_id if row['identity_verified'] == '1'
+            all_data['all'][Results::IDV_FINAL_RESOLUTION_GPO] << user_id if row['gpo_verification_pending'] == '1'
+            all_data['all'][Results::IDV_FINAL_RESOLUTION_IN_PERSON] << user_id if row['in_person_verification_pending'] == '1'
+            all_data['all'][Results::IDV_FINAL_RESOLUTION_FRAUD_REVIEW] << user_id if row['fraud_review_pending'] == '1'
           when Events::IDV_DOC_AUTH_IMAGE_UPLOAD
-            event_users[Results::IDV_REJECT_DOC_AUTH] << user_id if row['doc_auth_failed_non_fraud'] == '1'
+            all_data['all'][Results::IDV_REJECT_DOC_AUTH] << user_id if row['doc_auth_failed_non_fraud'] == '1'
           when Events::IDV_DOC_AUTH_VERIFY_RESULTS
-            event_users[Results::IDV_REJECT_VERIFY] << user_id if success == '0'
+            all_data['all'][Results::IDV_REJECT_VERIFY] << user_id if success == '0'
           when Events::IDV_PHONE_FINDER_RESULTS
-            event_users[Results::IDV_REJECT_PHONE_FINDER] << user_id if success == '0'
+            all_data['all'][Results::IDV_REJECT_PHONE_FINDER] << user_id if success == '0'
+          end
+
+          if row['ab_test_buckets'].present?
+            row['ab_test_buckets'].keys.each do |ab_test|
+              bucket = row['ab_test_buckets'][ab_test]
+              @ab_tests[ab_test] << bucket
+              all_data[ab_test][bucket][event] << user_id
+
+              case event
+              when Events::IDV_FINAL_RESOLUTION
+                all_data[ab_test][bucket][Results::IDV_FINAL_RESOLUTION_VERIFIED] << user_id if row['identity_verified'] == '1'
+                all_data[ab_test][bucket][Results::IDV_FINAL_RESOLUTION_GPO] << user_id if row['gpo_verification_pending'] == '1'
+                all_data[ab_test][bucket][Results::IDV_FINAL_RESOLUTION_IN_PERSON] << user_id if row['in_person_verification_pending'] == '1'
+                all_data[ab_test][bucket][Results::IDV_FINAL_RESOLUTION_FRAUD_REVIEW] << user_id if row['fraud_review_pending'] == '1'
+              when Events::IDV_DOC_AUTH_IMAGE_UPLOAD
+                all_data[ab_test][bucket][Results::IDV_REJECT_DOC_AUTH] << user_id if row['doc_auth_failed_non_fraud'] == '1'
+              when Events::IDV_DOC_AUTH_VERIFY_RESULTS
+                all_data[ab_test][bucket][Results::IDV_REJECT_VERIFY] << user_id if success == '0'
+              when Events::IDV_PHONE_FINDER_RESULTS
+                all_data[ab_test][bucket][Results::IDV_REJECT_PHONE_FINDER] << user_id if success == '0'
+              end
+            end
           end
         end
+        # rubocop:enable Metrics/BlockLength
 
-        event_users
+        all_data
       end
     end
     # rubocop:enable Layout/LineLength
@@ -286,6 +341,8 @@ module Reporting
           , properties.event_properties.success = '0' AND properties.event_properties.doc_auth_result NOT IN ['Failed', 'Attention'] AS doc_auth_failed_non_fraud
         | fields
             !fraud_review_pending and !gpo_verification_pending and !in_person_verification_pending and !has_other_deactivation_reason AS identity_verified
+        | fields
+            properties.event_properties.ab_test_buckets AS ab_test_buckets
         | limit 10000
       QUERY
     end

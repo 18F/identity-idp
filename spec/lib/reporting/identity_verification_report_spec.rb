@@ -4,90 +4,187 @@ require 'reporting/identity_verification_report'
 RSpec.describe Reporting::IdentityVerificationReport do
   let(:issuer) { 'my:example:issuer' }
   let(:time_range) { Date.new(2022, 1, 1).all_day }
+  let(:bucket_default) { 'default' }
+  let(:bucket_alt1) { 'alt1' }
+  let(:bucket_alt2) { 'alt2' }
+  let(:expected_as_csv) do
+    expected_csv = [
+      ['Report Timeframe', "#{time_range.begin} to #{time_range.end}"],
+      ['Report Generated', Date.today.to_s], # rubocop:disable Rails/Date
+      ['Issuer', issuer],
+      [],
+      ['Metric', '# of Users'],
+      [],
+      ['Started IdV Verification', 5],
+      ['Submitted welcome page', 5],
+      ['Images uploaded', 5],
+      [],
+      ['Workflow completed', 4],
+      ['Workflow completed - Verified', 1],
+      ['Workflow completed - Total Pending', 3],
+      ['Workflow completed - GPO Pending', 1],
+      ['Workflow completed - In-Person Pending', 1],
+      ['Workflow completed - Fraud Review Pending', 1],
+      [],
+      ['Successfully verified', 4],
+      ['Successfully verified - Inline', 1],
+      ['Successfully verified - GPO Code Entry', 1],
+      ['Successfully verified - In Person', 1],
+      ['Successfully verified - Passed Fraud Review', 1],
+    ]
+    if ab_tests_default.present?
+      expected_csv << []
+      expected_csv << ['A/B test', 'my_ab_test']
+      expected_csv << ['bucket', bucket_default]
+      expected_csv << ['Started IdV Verification', 3]
+      expected_csv << ['Submitted welcome page', 3]
+      expected_csv << ['Images uploaded', 3]
+      expected_csv << []
+      expected_csv << ['Workflow completed', 3]
+      expected_csv << ['Workflow completed - Verified', 1]
+      expected_csv << ['Workflow completed - Total Pending', 2]
+      expected_csv << ['Workflow completed - GPO Pending', 0]
+      expected_csv << ['Workflow completed - In-Person Pending', 1]
+      expected_csv << ['Workflow completed - Fraud Review Pending', 1]
+      expected_csv << []
+      expected_csv << ['Successfully verified', 3]
+      expected_csv << ['Successfully verified - Inline', 1]
+      expected_csv << ['Successfully verified - GPO Code Entry', 0]
+      expected_csv << ['Successfully verified - In Person', 1]
+      expected_csv << ['Successfully verified - Passed Fraud Review', 1]
+    end
+    if ab_tests_alt1.present?
+      expected_csv << []
+      expected_csv << ['A/B test', 'my_ab_test']
+      expected_csv << ['bucket', bucket_alt1]
+      expected_csv << ['Started IdV Verification', 1]
+      expected_csv << ['Submitted welcome page', 1]
+      expected_csv << ['Images uploaded', 1]
+      expected_csv << []
+      expected_csv << ['Workflow completed', 1]
+      expected_csv << ['Workflow completed - Verified', 0]
+      expected_csv << ['Workflow completed - Total Pending', 1]
+      expected_csv << ['Workflow completed - GPO Pending', 1]
+      expected_csv << ['Workflow completed - In-Person Pending', 0]
+      expected_csv << ['Workflow completed - Fraud Review Pending', 0]
+      expected_csv << []
+      expected_csv << ['Successfully verified', 1]
+      expected_csv << ['Successfully verified - Inline', 0]
+      expected_csv << ['Successfully verified - GPO Code Entry', 1]
+      expected_csv << ['Successfully verified - In Person', 0]
+      expected_csv << ['Successfully verified - Passed Fraud Review', 0]
+    end
+    if ab_tests_alt2.present?
+      expected_csv << []
+      expected_csv << ['A/B test', 'my_ab_test']
+      expected_csv << ['bucket', bucket_alt2]
+      expected_csv << ['Started IdV Verification', 1]
+      expected_csv << ['Submitted welcome page', 1]
+      expected_csv << ['Images uploaded', 1]
+      expected_csv << []
+      expected_csv << ['Workflow completed', 0]
+      expected_csv << ['Workflow completed - Verified', 0]
+      expected_csv << ['Workflow completed - Total Pending', 0]
+      expected_csv << ['Workflow completed - GPO Pending', 0]
+      expected_csv << ['Workflow completed - In-Person Pending', 0]
+      expected_csv << ['Workflow completed - Fraud Review Pending', 0]
+      expected_csv << []
+      expected_csv << ['Successfully verified', 0]
+      expected_csv << ['Successfully verified - Inline', 0]
+      expected_csv << ['Successfully verified - GPO Code Entry', 0]
+      expected_csv << ['Successfully verified - In Person', 0]
+      expected_csv << ['Successfully verified - Passed Fraud Review', 0]
+    end
+    expected_csv
+  end
+  let(:expected_to_csv) do
+    expected = CSV.generate do |csv|
+      expected_as_csv.each do |row|
+        csv << row
+      end
+    end
+    CSV.parse(expected, headers: false)
+  end
+  let(:ab_tests_default) { {} }
+  let(:ab_tests_alt1) { {} }
+  let(:ab_tests_alt2) { {} }
+  # rubocop:disable Layout/LineLength
+  let(:cloudwatch_results) do
+    [
+      # Online verification user (failed each vendor once, then suceeded once)
+      { 'user_id' => 'user1', 'name' => 'IdV: doc auth welcome visited', 'ab_test_buckets' => ab_tests_default },
+      { 'user_id' => 'user1', 'name' => 'IdV: doc auth welcome submitted', 'ab_test_buckets' => ab_tests_default },
+      { 'user_id' => 'user1', 'name' => 'IdV: doc auth image upload vendor submitted', 'doc_auth_failed_non_fraud' => '1', 'ab_test_buckets' => ab_tests_default },
+      { 'user_id' => 'user1', 'name' => 'IdV: doc auth image upload vendor submitted', 'success' => '1', 'ab_test_buckets' => ab_tests_default },
+      { 'user_id' => 'user1', 'name' => 'IdV: doc auth verify proofing results', 'success' => '0', 'ab_test_buckets' => ab_tests_default },
+      { 'user_id' => 'user1', 'name' => 'IdV: doc auth verify proofing results', 'success' => '1', 'ab_test_buckets' => ab_tests_default },
+      { 'user_id' => 'user1', 'name' => 'IdV: phone confirmation vendor', 'success' => '0', 'ab_test_buckets' => ab_tests_default },
+      { 'user_id' => 'user1', 'name' => 'IdV: phone confirmation vendor', 'success' => '1', 'ab_test_buckets' => ab_tests_default },
+      { 'user_id' => 'user1', 'name' => 'IdV: final resolution', 'identity_verified' => '1', 'ab_test_buckets' => ab_tests_default },
+
+      # Letter requested user (incomplete)
+      { 'user_id' => 'user2', 'name' => 'IdV: doc auth welcome visited', 'ab_test_buckets' => ab_tests_alt1 },
+      { 'user_id' => 'user2', 'name' => 'IdV: doc auth welcome submitted', 'ab_test_buckets' => ab_tests_alt1 },
+      { 'user_id' => 'user2', 'name' => 'IdV: doc auth image upload vendor submitted', 'success' => '1', 'ab_test_buckets' => ab_tests_alt1 },
+      { 'user_id' => 'user2', 'name' => 'IdV: final resolution', 'gpo_verification_pending' => '1', 'ab_test_buckets' => ab_tests_alt1 },
+
+      # Fraud review user (incomplete)
+      { 'user_id' => 'user3', 'name' => 'IdV: doc auth welcome visited', 'ab_test_buckets' => ab_tests_default },
+      { 'user_id' => 'user3', 'name' => 'IdV: doc auth welcome submitted', 'ab_test_buckets' => ab_tests_default },
+      { 'user_id' => 'user3', 'name' => 'IdV: doc auth image upload vendor submitted', 'success' => '1', 'ab_test_buckets' => ab_tests_default },
+      { 'user_id' => 'user3', 'name' => 'IdV: final resolution', 'fraud_review_pending' => '1', 'ab_test_buckets' => ab_tests_default },
+      { 'user_id' => 'user3', 'name' => 'Fraud: Profile review passed', 'success' => '1', 'ab_test_buckets' => ab_tests_default },
+
+      # Success through address confirmation user
+      { 'user_id' => 'user4', 'name' => 'IdV: GPO verification submitted', 'ab_test_buckets' => ab_tests_alt1 },
+
+      # Success through in-person verification, failed doc auth (rejected)
+      { 'user_id' => 'user5', 'name' => 'IdV: doc auth welcome visited', 'ab_test_buckets' => ab_tests_default },
+      { 'user_id' => 'user5', 'name' => 'IdV: doc auth welcome submitted', 'ab_test_buckets' => ab_tests_default },
+      { 'user_id' => 'user5', 'name' => 'IdV: doc auth image upload vendor submitted', 'doc_auth_failed_non_fraud' => '1', 'ab_test_buckets' => ab_tests_default },
+      { 'user_id' => 'user5', 'name' => 'IdV: final resolution', 'in_person_verification_pending' => '1', 'ab_test_buckets' => ab_tests_default },
+      { 'user_id' => 'user5', 'name' => 'GetUspsProofingResultsJob: Enrollment status updated', 'ab_test_buckets' => ab_tests_default },
+
+      # Incomplete user
+      { 'user_id' => 'user6', 'name' => 'IdV: doc auth welcome visited', 'ab_test_buckets' => ab_tests_alt2 },
+      { 'user_id' => 'user6', 'name' => 'IdV: doc auth welcome submitted', 'ab_test_buckets' => ab_tests_alt2 },
+      { 'user_id' => 'user6', 'name' => 'IdV: doc auth image upload vendor submitted', 'doc_auth_failed_non_fraud' => '1', 'ab_test_buckets' => ab_tests_alt2 },
+    ]
+  end
+  # rubocop:enable Layout/LineLength
 
   subject(:report) do
     Reporting::IdentityVerificationReport.new(issuers: Array(issuer), time_range:)
   end
 
-  # rubocop:disable Layout/LineLength
   before do
     cloudwatch_client = double(
       'Reporting::CloudwatchClient',
-      fetch: [
-        # Online verification user (failed each vendor once, then suceeded once)
-        { 'user_id' => 'user1', 'name' => 'IdV: doc auth welcome visited' },
-        { 'user_id' => 'user1', 'name' => 'IdV: doc auth welcome submitted' },
-        { 'user_id' => 'user1', 'name' => 'IdV: doc auth image upload vendor submitted', 'doc_auth_failed_non_fraud' => '1' },
-        { 'user_id' => 'user1', 'name' => 'IdV: doc auth image upload vendor submitted', 'success' => '1' },
-        { 'user_id' => 'user1', 'name' => 'IdV: doc auth verify proofing results', 'success' => '0' },
-        { 'user_id' => 'user1', 'name' => 'IdV: doc auth verify proofing results', 'success' => '1' },
-        { 'user_id' => 'user1', 'name' => 'IdV: phone confirmation vendor', 'success' => '0' },
-        { 'user_id' => 'user1', 'name' => 'IdV: phone confirmation vendor', 'success' => '1' },
-        { 'user_id' => 'user1', 'name' => 'IdV: final resolution', 'identity_verified' => '1' },
-
-        # Letter requested user (incomplete)
-        { 'user_id' => 'user2', 'name' => 'IdV: doc auth welcome visited' },
-        { 'user_id' => 'user2', 'name' => 'IdV: doc auth welcome submitted' },
-        { 'user_id' => 'user2', 'name' => 'IdV: doc auth image upload vendor submitted', 'success' => '1' },
-        { 'user_id' => 'user2', 'name' => 'IdV: final resolution', 'gpo_verification_pending' => '1' },
-
-        # Fraud review user (incomplete)
-        { 'user_id' => 'user3', 'name' => 'IdV: doc auth welcome visited' },
-        { 'user_id' => 'user3', 'name' => 'IdV: doc auth welcome submitted' },
-        { 'user_id' => 'user3', 'name' => 'IdV: doc auth image upload vendor submitted', 'success' => '1' },
-        { 'user_id' => 'user3', 'name' => 'IdV: final resolution', 'fraud_review_pending' => '1' },
-        { 'user_id' => 'user3', 'name' => 'Fraud: Profile review passed', 'success' => '1' },
-
-        # Success through address confirmation user
-        { 'user_id' => 'user4', 'name' => 'IdV: GPO verification submitted' },
-
-        # Success through in-person verification, failed doc auth (rejected)
-        { 'user_id' => 'user5', 'name' => 'IdV: doc auth welcome visited' },
-        { 'user_id' => 'user5', 'name' => 'IdV: doc auth welcome submitted' },
-        { 'user_id' => 'user5', 'name' => 'IdV: doc auth image upload vendor submitted', 'doc_auth_failed_non_fraud' => '1' },
-        { 'user_id' => 'user5', 'name' => 'IdV: final resolution', 'in_person_verification_pending' => '1' },
-        { 'user_id' => 'user5', 'name' => 'GetUspsProofingResultsJob: Enrollment status updated' },
-
-        # Incomplete user
-        { 'user_id' => 'user6', 'name' => 'IdV: doc auth welcome visited' },
-        { 'user_id' => 'user6', 'name' => 'IdV: doc auth welcome submitted' },
-        { 'user_id' => 'user6', 'name' => 'IdV: doc auth image upload vendor submitted', 'doc_auth_failed_non_fraud' => '1' },
-      ],
+      fetch: cloudwatch_results,
     )
 
     allow(report).to receive(:cloudwatch_client).and_return(cloudwatch_client)
   end
-  # rubocop:enable Layout/LineLength
+
   describe '#as_csv' do
     it 'renders a csv report' do
-      expected_csv = [
-        ['Report Timeframe', "#{time_range.begin} to #{time_range.end}"],
-        ['Report Generated', Date.today.to_s], # rubocop:disable Rails/Date
-        ['Issuer', issuer],
-        [],
-        ['Metric', '# of Users'],
-        [],
-        ['Started IdV Verification', 5],
-        ['Submitted welcome page', 5],
-        ['Images uploaded', 5],
-        [],
-        ['Workflow completed', 4],
-        ['Workflow completed - Verified', 1],
-        ['Workflow completed - Total Pending', 3],
-        ['Workflow completed - GPO Pending', 1],
-        ['Workflow completed - In-Person Pending', 1],
-        ['Workflow completed - Fraud Review Pending', 1],
-        [],
-        ['Successfully verified', 4],
-        ['Successfully verified - Inline', 1],
-        ['Successfully verified - GPO Code Entry', 1],
-        ['Successfully verified - In Person', 1],
-        ['Successfully verified - Passed Fraud Review', 1],
-      ]
-
       aggregate_failures do
-        report.as_csv.zip(expected_csv).each do |actual, expected|
+        report.as_csv.zip(JSON.parse(expected_as_csv.to_json)).each do |actual, expected|
           expect(actual).to eq(expected)
+        end
+      end
+    end
+
+    context 'when A/B tests are live' do
+      let(:ab_tests_default) { { 'my_ab_test' => bucket_default } }
+      let(:ab_tests_alt1) { { 'my_ab_test' => bucket_alt1 } }
+      let(:ab_tests_alt2) { { 'my_ab_test' => bucket_alt2 } }
+
+      it 'renders a csv report' do
+        aggregate_failures do
+          report.as_csv.zip(JSON.parse(expected_as_csv.to_json)).each do |actual, expected|
+            expect(actual).to eq(expected)
+          end
         end
       end
     end
@@ -97,34 +194,25 @@ RSpec.describe Reporting::IdentityVerificationReport do
     it 'generates a csv' do
       csv = CSV.parse(report.to_csv, headers: false)
 
-      expected_csv = [
-        ['Report Timeframe', "#{time_range.begin} to #{time_range.end}"],
-        ['Report Generated', Date.today.to_s], # rubocop:disable Rails/Date
-        ['Issuer', issuer],
-        [],
-        ['Metric', '# of Users'],
-        [],
-        ['Started IdV Verification', '5'],
-        ['Submitted welcome page', '5'],
-        ['Images uploaded', '5'],
-        [],
-        ['Workflow completed', '4'],
-        ['Workflow completed - Verified', '1'],
-        ['Workflow completed - Total Pending', '3'],
-        ['Workflow completed - GPO Pending', '1'],
-        ['Workflow completed - In-Person Pending', '1'],
-        ['Workflow completed - Fraud Review Pending', '1'],
-        [],
-        ['Successfully verified', '4'],
-        ['Successfully verified - Inline', '1'],
-        ['Successfully verified - GPO Code Entry', '1'],
-        ['Successfully verified - In Person', '1'],
-        ['Successfully verified - Passed Fraud Review', '1'],
-      ]
-
       aggregate_failures do
-        csv.map(&:to_a).zip(expected_csv).each do |actual, expected|
+        csv.map(&:to_a).zip(expected_to_csv).each do |actual, expected|
           expect(actual).to eq(expected)
+        end
+      end
+    end
+
+    context 'when A/B tests are live' do
+      let(:ab_tests_default) { { 'my_ab_test' => bucket_default } }
+      let(:ab_tests_alt1) { { 'my_ab_test' => bucket_alt1 } }
+      let(:ab_tests_alt2) { { 'my_ab_test' => bucket_alt2 } }
+
+      it 'generates a csv' do
+        csv = CSV.parse(report.to_csv, headers: false)
+
+        aggregate_failures do
+          csv.map(&:to_a).zip(expected_to_csv).each do |actual, expected|
+            expect(actual).to eq(expected)
+          end
         end
       end
     end
@@ -132,7 +220,7 @@ RSpec.describe Reporting::IdentityVerificationReport do
 
   describe '#data' do
     it 'counts unique users per event as a hash' do
-      expect(report.data.transform_values(&:count)).to eq(
+      expect(report.data['all'].transform_values(&:count)).to eq(
         # events
         'GetUspsProofingResultsJob: Enrollment status updated' => 1,
         'IdV: doc auth image upload vendor submitted' => 5,
