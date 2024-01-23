@@ -1155,11 +1155,11 @@ RSpec.describe GetUspsProofingResultsJob do
             stub_request_passed_proofing_results
           end
 
-          it 'logs something useful' do
+          it 'logs an analytics event' do
             job.perform(Time.zone.now)
 
             expect(job_analytics).to have_logged_event(
-              'GetUspsProofingResultsJob: User transitioned to fraud_review',
+              :idv_in_person_usps_proofing_results_job_user_sent_to_fraud_review,
               hash_including(
                 enrollment_code: pending_enrollment.enrollment_code,
               ),
