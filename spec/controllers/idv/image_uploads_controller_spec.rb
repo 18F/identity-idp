@@ -57,18 +57,20 @@ RSpec.describe Idv::ImageUploadsController do
 
         expect(@analytics).to receive(:track_event).with(
           'IdV: doc auth image upload form submitted,',
-          success: false,
-          errors: {
-            front: ['Please fill in this field.'],
+          {
+            success: false,
+            errors: {
+              front: ['Please fill in this field.'],
+            },
+            error_details: {
+              front: { blank: true },
+            },
+            user_id: user.uuid,
+            attempts: 1,
+            remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+            pii_like_keypaths: pii_like_keypaths,
+            flow_path: 'standard',
           },
-          error_details: {
-            front: { blank: true },
-          },
-          user_id: user.uuid,
-          attempts: 1,
-          remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
-          pii_like_keypaths: pii_like_keypaths,
-          flow_path: 'standard',
         ).exactly(0).times
 
         expect(@analytics).not_to receive(:track_event).with(
@@ -118,20 +120,21 @@ RSpec.describe Idv::ImageUploadsController do
 
         expect(@analytics).to receive(:track_event).with(
           'IdV: doc auth image upload form submitted',
-          success: false,
-          errors: {
-            front: [I18n.t('doc_auth.errors.not_a_file')],
+          {
+            success: false,
+            errors: {
+              front: [I18n.t('doc_auth.errors.not_a_file')],
+            },
+            error_details: {
+              front: { not_a_file: true },
+            },
+            user_id: user.uuid,
+            attempts: 1,
+            remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+            pii_like_keypaths: pii_like_keypaths,
+            flow_path: 'standard',
+            back_image_fingerprint: an_instance_of(String),
           },
-          error_details: {
-            front: { not_a_file: true },
-          },
-          user_id: user.uuid,
-          attempts: 1,
-          remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
-          pii_like_keypaths: pii_like_keypaths,
-          flow_path: 'standard',
-          front_image_fingerprint: nil,
-          back_image_fingerprint: an_instance_of(String),
         )
 
         expect(@irs_attempts_api_tracker).to receive(:track_event).with(
@@ -252,20 +255,22 @@ RSpec.describe Idv::ImageUploadsController do
 
         expect(@analytics).to receive(:track_event).with(
           'IdV: doc auth image upload form submitted',
-          success: false,
-          errors: {
-            limit: [I18n.t('errors.doc_auth.rate_limited_heading')],
+          {
+            success: false,
+            errors: {
+              limit: [I18n.t('errors.doc_auth.rate_limited_heading')],
+            },
+            error_details: {
+              limit: { rate_limited: true },
+            },
+            user_id: user.uuid,
+            attempts: IdentityConfig.store.doc_auth_max_attempts,
+            remaining_attempts: 0,
+            pii_like_keypaths: pii_like_keypaths,
+            flow_path: 'standard',
+            front_image_fingerprint: an_instance_of(String),
+            back_image_fingerprint: an_instance_of(String),
           },
-          error_details: {
-            limit: { rate_limited: true },
-          },
-          user_id: user.uuid,
-          attempts: IdentityConfig.store.doc_auth_max_attempts,
-          remaining_attempts: 0,
-          pii_like_keypaths: pii_like_keypaths,
-          flow_path: 'standard',
-          front_image_fingerprint: an_instance_of(String),
-          back_image_fingerprint: an_instance_of(String),
         )
 
         expect(@irs_attempts_api_tracker).to receive(:track_event).with(
@@ -399,15 +404,17 @@ RSpec.describe Idv::ImageUploadsController do
 
         expect(@analytics).to receive(:track_event).with(
           'IdV: doc auth image upload form submitted',
-          success: true,
-          errors: {},
-          user_id: user.uuid,
-          attempts: 1,
-          remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
-          pii_like_keypaths: pii_like_keypaths,
-          flow_path: 'standard',
-          front_image_fingerprint: an_instance_of(String),
-          back_image_fingerprint: an_instance_of(String),
+          {
+            success: true,
+            errors: {},
+            user_id: user.uuid,
+            attempts: 1,
+            remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+            pii_like_keypaths: pii_like_keypaths,
+            flow_path: 'standard',
+            front_image_fingerprint: an_instance_of(String),
+            back_image_fingerprint: an_instance_of(String),
+          },
         )
 
         expect(@analytics).to receive(:track_event).with(
@@ -431,6 +438,7 @@ RSpec.describe Idv::ImageUploadsController do
           pii_like_keypaths: pii_like_keypaths,
           flow_path: 'standard',
           vendor_request_time_in_ms: a_kind_of(Float),
+          vendor: nil,
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
           doc_type_supported: boolean,
@@ -442,6 +450,7 @@ RSpec.describe Idv::ImageUploadsController do
           'IdV: doc auth image upload vendor pii validation',
           success: true,
           errors: {},
+          error_details: nil,
           attention_with_barcode: false,
           user_id: user.uuid,
           attempts: 1,
@@ -577,15 +586,17 @@ RSpec.describe Idv::ImageUploadsController do
 
             expect(@analytics).to receive(:track_event).with(
               'IdV: doc auth image upload form submitted',
-              success: true,
-              errors: {},
-              user_id: user.uuid,
-              attempts: 1,
-              remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
-              pii_like_keypaths: pii_like_keypaths,
-              flow_path: 'standard',
-              front_image_fingerprint: an_instance_of(String),
-              back_image_fingerprint: an_instance_of(String),
+              {
+                success: true,
+                errors: {},
+                user_id: user.uuid,
+                attempts: 1,
+                remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+                pii_like_keypaths: pii_like_keypaths,
+                flow_path: 'standard',
+                front_image_fingerprint: an_instance_of(String),
+                back_image_fingerprint: an_instance_of(String),
+              },
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -609,6 +620,7 @@ RSpec.describe Idv::ImageUploadsController do
               pii_like_keypaths: pii_like_keypaths,
               flow_path: 'standard',
               vendor_request_time_in_ms: a_kind_of(Float),
+              vendor: nil,
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
               doc_type_supported: boolean,
@@ -668,15 +680,17 @@ RSpec.describe Idv::ImageUploadsController do
 
             expect(@analytics).to receive(:track_event).with(
               'IdV: doc auth image upload form submitted',
-              success: true,
-              errors: {},
-              user_id: user.uuid,
-              attempts: 1,
-              remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
-              pii_like_keypaths: pii_like_keypaths,
-              flow_path: 'standard',
-              front_image_fingerprint: an_instance_of(String),
-              back_image_fingerprint: an_instance_of(String),
+              {
+                success: true,
+                errors: {},
+                user_id: user.uuid,
+                attempts: 1,
+                remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+                pii_like_keypaths: pii_like_keypaths,
+                flow_path: 'standard',
+                front_image_fingerprint: an_instance_of(String),
+                back_image_fingerprint: an_instance_of(String),
+              },
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -700,6 +714,7 @@ RSpec.describe Idv::ImageUploadsController do
               pii_like_keypaths: pii_like_keypaths,
               flow_path: 'standard',
               vendor_request_time_in_ms: a_kind_of(Float),
+              vendor: nil,
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
               doc_type_supported: boolean,
@@ -759,15 +774,17 @@ RSpec.describe Idv::ImageUploadsController do
 
             expect(@analytics).to receive(:track_event).with(
               'IdV: doc auth image upload form submitted',
-              success: true,
-              errors: {},
-              user_id: user.uuid,
-              attempts: 1,
-              remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
-              pii_like_keypaths: pii_like_keypaths,
-              flow_path: 'standard',
-              front_image_fingerprint: an_instance_of(String),
-              back_image_fingerprint: an_instance_of(String),
+              {
+                success: true,
+                errors: {},
+                user_id: user.uuid,
+                attempts: 1,
+                remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+                pii_like_keypaths: pii_like_keypaths,
+                flow_path: 'standard',
+                front_image_fingerprint: an_instance_of(String),
+                back_image_fingerprint: an_instance_of(String),
+              },
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -791,6 +808,7 @@ RSpec.describe Idv::ImageUploadsController do
               pii_like_keypaths: pii_like_keypaths,
               flow_path: 'standard',
               vendor_request_time_in_ms: a_kind_of(Float),
+              vendor: nil,
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
               doc_type_supported: boolean,
@@ -847,15 +865,17 @@ RSpec.describe Idv::ImageUploadsController do
 
             expect(@analytics).to receive(:track_event).with(
               'IdV: doc auth image upload form submitted',
-              success: true,
-              errors: {},
-              user_id: user.uuid,
-              attempts: 1,
-              remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
-              pii_like_keypaths: pii_like_keypaths,
-              flow_path: 'standard',
-              front_image_fingerprint: an_instance_of(String),
-              back_image_fingerprint: an_instance_of(String),
+              {
+                success: true,
+                errors: {},
+                user_id: user.uuid,
+                attempts: 1,
+                remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+                pii_like_keypaths: pii_like_keypaths,
+                flow_path: 'standard',
+                front_image_fingerprint: an_instance_of(String),
+                back_image_fingerprint: an_instance_of(String),
+              },
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -879,6 +899,7 @@ RSpec.describe Idv::ImageUploadsController do
               pii_like_keypaths: pii_like_keypaths,
               flow_path: 'standard',
               vendor_request_time_in_ms: a_kind_of(Float),
+              vendor: nil,
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
               doc_type_supported: boolean,
@@ -958,15 +979,17 @@ RSpec.describe Idv::ImageUploadsController do
 
         expect(@analytics).to receive(:track_event).with(
           'IdV: doc auth image upload form submitted',
-          success: true,
-          errors: {},
-          user_id: user.uuid,
-          attempts: 1,
-          remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
-          pii_like_keypaths: pii_like_keypaths,
-          flow_path: 'standard',
-          front_image_fingerprint: an_instance_of(String),
-          back_image_fingerprint: an_instance_of(String),
+          {
+            success: true,
+            errors: {},
+            user_id: user.uuid,
+            attempts: 1,
+            remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+            pii_like_keypaths: pii_like_keypaths,
+            flow_path: 'standard',
+            front_image_fingerprint: an_instance_of(String),
+            back_image_fingerprint: an_instance_of(String),
+          },
         )
 
         expect(@analytics).to receive(:track_event).with(
@@ -992,6 +1015,7 @@ RSpec.describe Idv::ImageUploadsController do
           pii_like_keypaths: pii_like_keypaths,
           flow_path: 'standard',
           vendor_request_time_in_ms: a_kind_of(Float),
+          vendor: nil,
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
           doc_type_supported: boolean,
@@ -1028,15 +1052,17 @@ RSpec.describe Idv::ImageUploadsController do
 
         expect(@analytics).to receive(:track_event).with(
           'IdV: doc auth image upload form submitted',
-          success: true,
-          errors: {},
-          user_id: user.uuid,
-          attempts: 1,
-          remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
-          pii_like_keypaths: pii_like_keypaths,
-          flow_path: 'standard',
-          front_image_fingerprint: an_instance_of(String),
-          back_image_fingerprint: an_instance_of(String),
+          {
+            success: true,
+            errors: {},
+            user_id: user.uuid,
+            attempts: 1,
+            remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+            pii_like_keypaths: pii_like_keypaths,
+            flow_path: 'standard',
+            front_image_fingerprint: an_instance_of(String),
+            back_image_fingerprint: an_instance_of(String),
+          },
         )
 
         expect(@analytics).to receive(:track_event).with(
@@ -1064,6 +1090,7 @@ RSpec.describe Idv::ImageUploadsController do
           pii_like_keypaths: pii_like_keypaths,
           flow_path: 'standard',
           vendor_request_time_in_ms: a_kind_of(Float),
+          vendor: nil,
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
           doc_type_supported: boolean,

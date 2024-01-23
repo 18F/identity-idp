@@ -3777,12 +3777,14 @@ module AnalyticsEvents
   # @param [Boolean] success
   # @param [Hash] errors
   # @param [String] selection
-  def multi_factor_auth_option_list(success:, errors:, selection:, **extra)
+  # @param [Hash] error_details
+  def multi_factor_auth_option_list(success:, errors:, selection:, error_details: nil, **extra)
     track_event(
       'Multi-Factor Authentication: option list',
       success: success,
       errors: errors,
       selection: selection,
+      error_details: error_details,
       **extra,
     )
   end
