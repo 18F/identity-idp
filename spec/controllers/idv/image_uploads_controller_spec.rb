@@ -203,6 +203,8 @@ RSpec.describe Idv::ImageUploadsController do
             ocr_pii: nil,
             doc_type_supported: true,
             failed_image_fingerprints: { front: [], back: [] },
+            selfie_live: true,
+            selfie_quality_good: true,
           },
         )
       end
@@ -219,6 +221,8 @@ RSpec.describe Idv::ImageUploadsController do
             ocr_pii: nil,
             doc_type_supported: true,
             failed_image_fingerprints: { front: [], back: [] },
+            selfie_live: true,
+            selfie_quality_good: true,
           }
         end
 
@@ -436,6 +440,8 @@ RSpec.describe Idv::ImageUploadsController do
           doc_type_supported: boolean,
           doc_auth_success: boolean,
           selfie_success: nil,
+          selfie_live: true,
+          selfie_quality_good: true,
         )
 
         expect(@analytics).to receive(:track_event).with(
@@ -614,6 +620,8 @@ RSpec.describe Idv::ImageUploadsController do
               doc_type_supported: boolean,
               doc_auth_success: boolean,
               selfie_success: nil,
+              selfie_live: true,
+              selfie_quality_good: true,
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -705,6 +713,8 @@ RSpec.describe Idv::ImageUploadsController do
               doc_type_supported: boolean,
               doc_auth_success: boolean,
               selfie_success: nil,
+              selfie_live: true,
+              selfie_quality_good: true,
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -796,6 +806,8 @@ RSpec.describe Idv::ImageUploadsController do
               doc_type_supported: boolean,
               doc_auth_success: boolean,
               selfie_success: nil,
+              selfie_live: true,
+              selfie_quality_good: true,
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -884,6 +896,8 @@ RSpec.describe Idv::ImageUploadsController do
               doc_type_supported: boolean,
               doc_auth_success: boolean,
               selfie_success: nil,
+              selfie_live: true,
+              selfie_quality_good: true,
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -997,6 +1011,8 @@ RSpec.describe Idv::ImageUploadsController do
           doc_type_supported: boolean,
           doc_auth_success: boolean,
           selfie_success: nil,
+          selfie_live: true,
+          selfie_quality_good: true,
         )
 
         action
@@ -1069,6 +1085,8 @@ RSpec.describe Idv::ImageUploadsController do
           doc_type_supported: boolean,
           doc_auth_success: boolean,
           selfie_success: nil,
+          selfie_live: true,
+          selfie_quality_good: true,
         )
 
         action
