@@ -400,10 +400,7 @@ RSpec.describe Users::WebauthnSetupController do
             'Multi-Factor Authentication Setup',
             {
               enabled_mfa_methods_count: 0,
-              errors: { name: [I18n.t(
-                'errors.webauthn_platform_setup.attestation_error',
-                link: MarketingSite.contact_url,
-              )] },
+              errors: { name: [I18n.t('errors.webauthn_platform_setup.general_error')] },
               error_details: { name: { attestation_error: true } },
               in_account_creation_flow: false,
               mfa_method_counts: {},
