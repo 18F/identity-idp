@@ -501,7 +501,7 @@ review-app:
   resource_group: $CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov
   extends: .deploy
   environment:
-    name: development/$CI_COMMIT_REF_NAME
+    name: review/$CI_COMMIT_REF_NAME
     url: https://$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov
     on_stop: stop-review-app
     auto_stop_in: 2 days
@@ -542,9 +542,8 @@ deploy_production:
     deployment_tier: production
     url: https://$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov
   rules:
-    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
-    - if: $CI_PIPELINE_SOURCE != "merge_request_event"
-      when: never
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: manual
 
 
 include:
