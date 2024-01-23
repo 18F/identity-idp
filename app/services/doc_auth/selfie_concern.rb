@@ -2,13 +2,11 @@ module DocAuth
   module SelfieConcern
     extend ActiveSupport::Concern
     def selfie_live?
-      portrait_match_results ||= {}
       portait_error = get_portrait_error(portrait_match_results)
       return portait_error != 'Liveness: NotLive'
     end
 
     def selfie_quality_good?
-      portrait_match_results ||= {}
       portait_error = get_portrait_error(portrait_match_results)
       return portait_error != 'Liveness: PoorQuality'
     end
