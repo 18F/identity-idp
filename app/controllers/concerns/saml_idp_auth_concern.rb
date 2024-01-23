@@ -5,7 +5,7 @@ module SamlIdpAuthConcern
 
   included do
     # rubocop:disable Rails/LexicallyScopedActionFilter
-    before_action :validate_saml_request, only: :auth
+    before_action :create_saml_request_object, only: :auth
     before_action :validate_service_provider_and_authn_context, only: :auth
     before_action :check_sp_active, only: :auth
     before_action :log_external_saml_auth_request, only: [:auth]
@@ -45,21 +45,29 @@ module SamlIdpAuthConcern
   end
 
   def validate_service_provider_and_authn_context
-    @saml_request_validator = SamlRequestValidator.new
+    return if result.success?
 
-    @result = @saml_request_validator.call(
+    analytics.saml_auth(
+      **result.to_h.merge(request_signed: saml_request.signed?),
+    )
+    render 'saml_idp/auth/error', status: :bad_request
+  end
+
+  def result
+    @result ||= @saml_request_validator.call(
       service_provider: saml_request_service_provider,
       authn_context: requested_authn_contexts,
       authn_context_comparison: saml_request.requested_authn_context_comparison,
       nameid_format: name_id_format,
     )
+  end
 
-    return if @result.success?
-
-    analytics.saml_auth(
-      **@result.to_h.merge(request_signed: saml_request.signed?),
-    )
-    render 'saml_idp/auth/error', status: :bad_request
+  def create_saml_request_object
+    # this saml_idp method creates the saml_request object used for validations
+    validate_saml_request
+    @saml_request_validator = SamlRequestValidator.new
+  rescue SamlIdp::XMLSecurity::SignedDocument::ValidationError
+    @saml_request_validator = SamlRequestValidator.new(blank_cert: true)
   end
 
   def name_id_format
