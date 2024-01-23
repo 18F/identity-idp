@@ -138,7 +138,7 @@ RSpec.describe Idv::ByMail::RequestLetterController do
     end
   end
 
-  describe '#create' do
+  describe '#create', allowed_extra_analytics: [:sample_bucket1, :sample_bucket2] do
     context 'first time through the idv process' do
       before do
         stub_verify_steps_one_and_two(user)

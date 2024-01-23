@@ -181,7 +181,7 @@ RSpec.describe Idv::HybridHandoffController do
     end
   end
 
-  describe '#update' do
+  describe '#update', allowed_extra_analytics: [:sample_bucket1, :sample_bucket2] do
     let(:analytics_name) { 'IdV: doc auth hybrid handoff submitted' }
 
     context 'hybrid flow' do

@@ -157,7 +157,7 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController do
     end
   end
 
-  describe '#update' do
+  describe '#update', allowed_extra_analytics: [:sample_bucket1, :sample_bucket2] do
     before do
       stub_document_capture_session_result
     end

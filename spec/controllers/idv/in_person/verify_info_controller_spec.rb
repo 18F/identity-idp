@@ -230,7 +230,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
     end
   end
 
-  describe '#update' do
+  describe '#update', allowed_extra_analytics: [:sample_bucket1, :sample_bucket2] do
     it 'redirects to the expected page' do
       put :update
 

@@ -271,7 +271,7 @@ RSpec.describe Idv::EnterPasswordController do
     end
   end
 
-  describe '#create' do
+  describe '#create', allowed_extra_analytics: [:sample_bucket1, :sample_bucket2] do
     context 'user fails to supply correct password' do
       it 'redirects to original path' do
         put :create, params: { user: { password: 'wrong' } }
