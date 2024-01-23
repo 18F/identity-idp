@@ -2141,7 +2141,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'GetUspsProofingResultsJob: User transitioned to fraud_review',
+      :idv_in_person_usps_proofing_results_job_user_sent_to_fraud_review,
       user: user,
       enrollment_id: enrollment_id,
       **extra,
