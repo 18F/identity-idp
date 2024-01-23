@@ -340,6 +340,7 @@ RSpec.describe UserMailer, type: :mailer do
 
     let(:account_reset) { user.account_reset_request }
     let(:interval) { '24 hours' }
+    let(:deactivation_period_hours) { 24 }
 
     it_behaves_like 'a system email'
     it_behaves_like 'an email that respects user email locale preference'
@@ -357,7 +358,8 @@ RSpec.describe UserMailer, type: :mailer do
         strip_tags(
           t(
             'user_mailer.account_reset_request.intro_html', app_name: APP_NAME,
-                                                            interval: interval
+                                                            interval: interval,
+                                                            hours: deactivation_period_hours
           ),
         ),
       )
@@ -388,6 +390,7 @@ RSpec.describe UserMailer, type: :mailer do
       UserMailer.with(user: user, email_address: email_address).
         account_reset_granted(user.account_reset_request)
     end
+    let(:deactivation_period_hours) { 24 }
 
     it_behaves_like 'a system email'
     it_behaves_like 'an email that respects user email locale preference'
@@ -403,7 +406,7 @@ RSpec.describe UserMailer, type: :mailer do
     it 'renders the body' do
       expect(mail.html_part.body).to \
         have_content(
-          strip_tags(t('user_mailer.account_reset_granted.intro_html', app_name: APP_NAME)),
+          strip_tags(t('user_mailer.account_reset_granted.intro_html', app_name: APP_NAME, hours: deactivation_period_hours)),
         )
     end
   end

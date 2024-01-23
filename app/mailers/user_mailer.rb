@@ -151,6 +151,7 @@ class UserMailer < ActionMailer::Base
       presenter = ConfirmationEmailPresenter.new(user, view_context)
       @confirmation_period = presenter.confirmation_period
       @token = account_reset&.request_token
+      @deactivation_period_hours = deactivation_period_hours
       @header = t('user_mailer.account_reset_request.header', interval: @confirmation_period)
       mail(
         to: email_address.email,
@@ -165,6 +166,7 @@ class UserMailer < ActionMailer::Base
       @confirmation_period = presenter.confirmation_period
       @token = account_reset&.request_token
       @granted_token = account_reset&.granted_token
+      @deactivation_period_hours = deactivation_period_hours
       mail(
         to: email_address.email,
         subject: t('user_mailer.account_reset_granted.subject', app_name: APP_NAME),
@@ -433,5 +435,9 @@ class UserMailer < ActionMailer::Base
     return true if banlist.empty?
     modified_email = email.gsub(/\+[^@]+@/, '@')
     !banlist.include?(modified_email)
+  end
+
+  def deactivation_period_hours
+    IdentityConfig.store.account_reset_wait_period_days.days.in_hours.to_i
   end
 end
