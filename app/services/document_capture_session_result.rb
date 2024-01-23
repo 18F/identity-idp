@@ -16,6 +16,8 @@ DocumentCaptureSessionResult = RedactedStruct.new(
                     :failed_back_image_fingerprints, :captured_at, :selfie_check_performed,
                     :doc_auth_success, :selfie_status]
 ) do
+  prepend Symbolizer
+
   def self.redis_key_prefix
     'dcs:result'
   end

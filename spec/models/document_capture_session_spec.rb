@@ -107,7 +107,7 @@ RSpec.describe DocumentCaptureSession do
       expect(result.failed_front_image?(nil)).to eq(false)
       expect(result.failed_back_image?(nil)).to eq(false)
       expect(result.doc_auth_success).to eq(false)
-      expect(result.selfie_status).to eq('not_processed')
+      expect(result.selfie_status).to eq(:not_processed)
     end
 
     it 'saves failed image finterprints' do
@@ -133,13 +133,13 @@ RSpec.describe DocumentCaptureSession do
       expect(old_result.failed_front_image?('fingerprint2')).to eq(false)
       expect(old_result.failed_back_image?('fingerprint3')).to eq(false)
       expect(old_result.doc_auth_success).to eq(false)
-      expect(old_result.selfie_status).to eq('not_processed')
+      expect(old_result.selfie_status).to eq(:not_processed)
 
       expect(new_result.failed_front_image?('fingerprint1')).to eq(true)
       expect(new_result.failed_front_image?('fingerprint2')).to eq(true)
       expect(new_result.failed_back_image?('fingerprint3')).to eq(true)
       expect(new_result.doc_auth_success).to eq(false)
-      expect(new_result.selfie_status).to eq('not_processed')
+      expect(new_result.selfie_status).to eq(:not_processed)
     end
   end
 end
