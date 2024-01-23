@@ -36,7 +36,7 @@ es:
       header: Su cuenta será eliminada en %{interval}
       intro_html: 'Como medida de seguridad, %{app_name} requiere un proceso de dos
         pasos para eliminar su cuenta:<br><br> Paso uno: hay un período de
-        espera de %{horas} horas si ha perdido el acceso a sus métodos de
+        espera de %{hours} horas si ha perdido el acceso a sus métodos de
         autenticación y necesita eliminar su cuenta. Si encuentra sus métodos de
         autenticación, puede iniciar sesión en su cuenta %{app_name} para
         cancelar esta solicitud.<br><br> Paso dos: Después de su período de
