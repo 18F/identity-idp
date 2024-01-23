@@ -539,6 +539,7 @@ deploy_production:
   extends: .deploy
   environment:
     name: production
+    deployment_tier: production
     url: https://$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov
   rules:
     - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
