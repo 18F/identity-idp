@@ -15,6 +15,7 @@ class OpenidConnectAuthorizeForm
     redirect_uri
     response_type
     state
+    vtr
   ].freeze
 
   ATTRS = [
@@ -37,7 +38,7 @@ class OpenidConnectAuthorizeForm
   RANDOM_VALUE_MINIMUM_LENGTH = 22
   MINIMUM_REPROOF_VERIFIED_WITHIN_DAYS = 30
 
-  validates :acr_values, presence: true
+  validates :acr_values, presence: true, if: ->(form) { form.vtr.nil? }
   validates :client_id, presence: true
   validates :redirect_uri, presence: true
   validates :scope, presence: true
@@ -49,6 +50,7 @@ class OpenidConnectAuthorizeForm
   validates :code_challenge_method, inclusion: { in: %w[S256] }, if: :code_challenge
 
   validate :validate_acr_values
+  validate :validate_vtr
   validate :validate_client_id
   validate :validate_scope
   validate :validate_unauthorized_scope
@@ -119,7 +121,13 @@ class OpenidConnectAuthorizeForm
   end
 
   def ial
-    Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_IAL[ial_values.sort.max]
+    if parsed_vector_of_trust&.identity_proofing == :no_identity_proofing
+      1
+    elsif parsed_vector_of_trust.present?
+      2
+    else
+      Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_IAL[ial_values.sort.max]
+    end
   end
 
   def aal_values
@@ -127,7 +135,13 @@ class OpenidConnectAuthorizeForm
   end
 
   def aal
-    Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_AAL[requested_aal_value]
+    if parsed_vector_of_trust&.credential_usage == :default
+      1
+    elsif parsed_vector_of_trust.present?
+      2
+    else
+      Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_AAL[requested_aal_value]
+    end
   end
 
   def requested_aal_value
@@ -164,6 +178,8 @@ class OpenidConnectAuthorizeForm
   end
 
   def validate_acr_values
+    return if vtr.present?
+
     if acr_values.empty?
       errors.add(
         :acr_values, t('openid_connect.authorization.errors.no_valid_acr_values'),
@@ -175,6 +191,16 @@ class OpenidConnectAuthorizeForm
         type: :missing_ial
       )
     end
+  end
+
+  def validate_vtr
+    return if vtr.nil?
+    return if parsed_vector_of_trust.present?
+    errors.add(
+      :vtr, t('openid_connect.authorization.errors.no_valid_vtr'),
+      type: :no_valid_vtr
+    )
+    # TODO: Add an error
   end
 
   # This checks that the SP matches something in the database
@@ -246,6 +272,7 @@ class OpenidConnectAuthorizeForm
       redirect_uri: result_uri,
       scope: scope&.sort&.join(' '),
       acr_values: acr_values&.sort&.join(' '),
+      vtr: vtr,
       unauthorized_scope: @unauthorized_scope,
       code_digest: code ? Digest::SHA256.hexdigest(code) : nil,
       code_challenge_present: code_challenge.present?,
@@ -275,6 +302,21 @@ class OpenidConnectAuthorizeForm
     OpenidConnectAttributeScoper::VALID_IAL1_SCOPES
   end
 
+  def parsed_vector_of_trust
+    return @parsed_vector_of_trust if defined?(@parsed_vector_of_trust)
+    return @parsed_vector_of_trust = nil if vtr.blank?
+
+    @parsed_vector_of_trust = begin
+      parsed_vtr = JSON.parse(vtr)
+      if parsed_vtr.is_a?(Array) && !parsed_vtr.empty?
+        VotParser.new(parsed_vtr.first).parse_vot
+      end
+    rescue JSON::ParserError, VotParser::VotParseException
+      nil
+    end
+  end
+
+  # TODO: Be smart about VTR vs ACR
   def validate_privileges
     if (ial2_requested? && !ial_context.ial2_service_provider?) ||
        (ial_context.ialmax_requested? &&
