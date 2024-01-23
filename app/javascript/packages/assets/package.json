@@ -4,5 +4,6 @@
   "version": "1.0.0",
   "peerDependencies": {
     "webpack": ">=5"
-  }
+  },
+  "sideEffects": false
 }
