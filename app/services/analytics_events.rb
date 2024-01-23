@@ -4525,11 +4525,13 @@ module AnalyticsEvents
   # Tracks when rules of use is submitted with a success or failure
   # @param [Boolean] success
   # @param [Hash] errors
-  def rules_of_use_submitted(success: nil, errors: nil, **extra)
+  # @param [Hash] error_details
+  def rules_of_use_submitted(success: nil, errors: nil, error_details: nil, **extra)
     track_event(
       'Rules of Use Submitted',
       success: success,
       errors: errors,
+      error_details: error_details,
       **extra,
     )
   end
@@ -4661,12 +4663,14 @@ module AnalyticsEvents
   # @param [Boolean] new_user
   # @param [Boolean] has_other_auth_methods
   # @param [Integer] phone_configuration_id
+  # @param [Hash] errors
   # tracks when a user opts into SMS
   def sms_opt_in_submitted(
     success:,
     new_user:,
     has_other_auth_methods:,
     phone_configuration_id:,
+    errors: nil,
     **extra
   )
     track_event(
@@ -4675,6 +4679,7 @@ module AnalyticsEvents
       new_user: new_user,
       has_other_auth_methods: has_other_auth_methods,
       phone_configuration_id: phone_configuration_id,
+      errors: errors,
       **extra,
     )
   end
