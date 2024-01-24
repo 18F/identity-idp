@@ -144,7 +144,7 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
     end
   end
 
-  def confirmation_period
+  def account_reset_deletion_period
     current_time = Time.zone.now
 
     view.distance_of_time_in_words(
