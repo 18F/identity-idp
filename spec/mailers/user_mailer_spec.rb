@@ -406,7 +406,12 @@ RSpec.describe UserMailer, type: :mailer do
     it 'renders the body' do
       expect(mail.html_part.body).to \
         have_content(
-          strip_tags(t('user_mailer.account_reset_granted.intro_html', app_name: APP_NAME, hours: deactivation_period_hours)),
+          strip_tags(
+            t(
+              'user_mailer.account_reset_granted.intro_html', app_name: APP_NAME,
+                                                              hours: deactivation_period_hours
+            ),
+          ),
         )
     end
   end
