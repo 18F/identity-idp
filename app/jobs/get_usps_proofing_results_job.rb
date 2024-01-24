@@ -304,7 +304,6 @@ class GetUspsProofingResultsJob < ApplicationJob
     end
   end
 
-  # MW: What else do we want to log here?
   def handle_fraud_review_pending(enrollment)
     return unless IdentityConfig.store.in_person_proofing_enforce_tmx
     enrollment.profile&.deactivate_for_fraud_review
@@ -379,11 +378,10 @@ class GetUspsProofingResultsJob < ApplicationJob
       status_check_completed_at: Time.zone.now,
     )
 
-    unless fraud_pending?(enrollment)
+    unless fraud_result_pending?(enrollment)
       enrollment.profile.activate_after_passing_in_person
 
       # send SMS and email
-      # MW: Do we still want to send the SMS in the fraud case?
       send_enrollment_status_sms_notification(enrollment: enrollment)
       send_verified_email(enrollment.user, enrollment)
       analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_email_initiated(
@@ -411,7 +409,6 @@ class GetUspsProofingResultsJob < ApplicationJob
     )
     # send SMS and email
     send_enrollment_status_sms_notification(enrollment: enrollment)
-    # MW: I _think_ this is desired behavior?
     send_failed_email(enrollment.user, enrollment)
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_email_initiated(
       **email_analytics_attributes(enrollment),
@@ -420,8 +417,7 @@ class GetUspsProofingResultsJob < ApplicationJob
     )
   end
 
-  # MW: This could be inlined but it feels a little cleaner this way:
-  def fraud_pending?(enrollment)
+  def fraud_result_pending?(enrollment)
     enrollment.profile&.fraud_pending_reason.present?
   end
 
@@ -431,8 +427,9 @@ class GetUspsProofingResultsJob < ApplicationJob
       return
     end
 
-    # We want to deactivate them regardless of status:
-    if fraud_pending?(enrollment)
+    # We want to deactivate them regardless of status, but then allow the
+    # case statement below to pick up the correct flow.
+    if fraud_result_pending?(enrollment)
       handle_fraud_review_pending(enrollment)
     end
 

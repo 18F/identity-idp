@@ -1228,7 +1228,7 @@ RSpec.describe GetUspsProofingResultsJob do
               job.perform(Time.zone.now)
 
               profile = pending_enrollment.reload.profile
-              expect(profile).to be_fraud_review_pending
+              expect(profile.fraud_review_pending_at).not_to be_nil
               expect(profile).not_to be_active
             end
           end
