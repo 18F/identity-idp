@@ -47,7 +47,7 @@ describe('document-capture/components/review-issues-step', () => {
 
     expect(trackEvent).to.have.been.calledWith('IdV: warning shown', {
       location: 'doc_auth_review_issues',
-      remaining_attempts: 3,
+      remaining_submit_attempts: 3,
       heading: 'We couldn’t verify your ID',
       subheading: '',
       error_message_displayed: 'test error',

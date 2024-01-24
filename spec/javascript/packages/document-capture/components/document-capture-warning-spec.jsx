@@ -90,7 +90,7 @@ describe('DocumentCaptureWarning', () => {
         heading: 'errors.doc_auth.rate_limited_heading',
         subheading: 'errors.doc_auth.rate_limited_subheading',
         error_message_displayed: 'general error',
-        remaining_attempts: 2,
+        remaining_submit_attempts: 2,
       });
     });
 
@@ -219,7 +219,7 @@ describe('DocumentCaptureWarning', () => {
         heading: 'errors.doc_auth.doc_type_not_supported_heading',
         subheading: '',
         error_message_displayed: 'general error idv.warning.attempts_html',
-        remaining_attempts: 2,
+        remaining_submit_attempts: 2,
       });
     });
 

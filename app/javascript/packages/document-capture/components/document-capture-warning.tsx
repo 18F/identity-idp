@@ -66,7 +66,7 @@ function DocumentCaptureWarning({
 
     trackEvent('IdV: warning shown', {
       location: 'doc_auth_review_issues',
-      remaining_attempts: remainingSubmitAttempts,
+      remaining_submit_attempts: remainingSubmitAttempts,
       heading,
       subheading: subheadingText,
       error_message_displayed: errorMessageDisplayed,

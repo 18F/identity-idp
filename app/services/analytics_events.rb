@@ -3046,7 +3046,7 @@ module AnalyticsEvents
   # @param [String] flow_path
   # @param [String] heading
   # @param [String] location
-  # @param [Integer] remaining_attempts
+  # @param [Integer] remaining_submit_attempts
   # @param [String] subheading
   # @param [Boolean] use_alternate_sdk
   def idv_warning_shown(
@@ -3056,7 +3056,7 @@ module AnalyticsEvents
     flow_path:,
     heading:,
     location:,
-    remaining_attempts:,
+    remaining_submit_attempts:,
     subheading:,
     use_alternate_sdk:,
     **_extra
@@ -3069,7 +3069,7 @@ module AnalyticsEvents
       flow_path: flow_path,
       heading: heading,
       location: location,
-      remaining_attempts: remaining_attempts,
+      remaining_submit_attempts: remaining_submit_attempts,
       subheading: subheading,
       use_alternate_sdk: use_alternate_sdk,
     )
