@@ -50,6 +50,7 @@ en:
     messages:
       already_confirmed: was already confirmed, please try signing in
       blank: Please fill in this field.
+      blank_cert_element_req: We cannot detect a certificate in your request.
       confirmation_code_incorrect: Incorrect verification code. Did you type it in correctly?
       confirmation_invalid_token: Invalid confirmation link. Either the link expired
         or you already confirmed your account.
