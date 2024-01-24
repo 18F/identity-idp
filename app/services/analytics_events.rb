@@ -1381,7 +1381,7 @@ module AnalyticsEvents
       address_line2_present:,
       proofing_results:,
       ssn_is_unique:,
-      **extra
+      **extra,
     )
   end
 
@@ -1460,7 +1460,7 @@ module AnalyticsEvents
       step:,
       analytics_id:,
       irs_reproofing:,
-      **extra
+      **extra,
     )
   end
 
@@ -3170,9 +3170,9 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: phone of record visited',
-      proofing_components: proofing_components,
-      skip_hybrid_handoff: skip_hybrid_handoff,
-      lexisnexis_instant_verify_workflow_ab_test_bucket: lexisnexis_instant_verify_workflow_ab_test_bucket,
+      proofing_components:,
+      skip_hybrid_handoff:,
+      lexisnexis_instant_verify_workflow_ab_test_bucket:,
       **extra,
     )
   end
@@ -4280,7 +4280,7 @@ module AnalyticsEvents
       error_details: error_details,
       active_profile_present: active_profile_present,
       pending_profile_present: pending_profile_present,
-      **extra
+      **extra,
     )
   end
 
