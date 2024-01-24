@@ -3932,7 +3932,7 @@ module AnalyticsEvents
     country_code:,
     phone_type:,
     types:,
-    error_details:,
+    error_details: nil,
     **extra
   )
     track_event(
@@ -4445,7 +4445,7 @@ module AnalyticsEvents
   # @param [Hash] errors
   # @param [Hash] error_details
   # Personal key form submitted
-  def personal_key_reactivation_submitted(success:, errors:, error_details:, **extra)
+  def personal_key_reactivation_submitted(success:, errors:, error_details: nil, **extra)
     track_event(
       'Personal key reactivation: Personal key form submitted',
       success: success,
