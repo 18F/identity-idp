@@ -13,6 +13,8 @@ module FlowPolicyHelper
       idv_session.welcome_visited = true
     when :agreement
       idv_session.idv_consent_given = true
+    when :how_to_verify 
+      idv_session.skip_doc_auth = false
     when :hybrid_handoff
       idv_session.flow_path = 'standard'
     when :link_sent
@@ -53,29 +55,34 @@ module FlowPolicyHelper
       %i[welcome]
     when :agreement
       %i[welcome agreement]
+    when :how_to_verify
+      %i[welcome agreement how_to_verify]
     when :hybrid_handoff
-      %i[welcome agreement hybrid_handoff]
+      %i[welcome agreement how_to_verify hybrid_handoff]
     when :link_sent
-      %i[welcome agreement hybrid_handoff link_sent]
+      %i[welcome agreement how_to_verify hybrid_handoff link_sent]
     when :document_capture
-      %i[welcome agreement hybrid_handoff document_capture]
+      %i[welcome agreement how_to_verify hybrid_handoff document_capture]
     when :ssn
-      %i[welcome agreement hybrid_handoff document_capture ssn]
+      %i[welcome agreement how_to_verify hybrid_handoff document_capture ssn]
     when :ipp_ssn
-      %i[welcome agreement hybrid_handoff ipp_ssn]
+      %i[welcome agreement how_to_verify hybrid_handoff ipp_ssn]
     when :verify_info
-      %i[welcome agreement hybrid_handoff document_capture ssn verify_info]
+      %i[welcome agreement how_to_verify hybrid_handoff document_capture ssn verify_info]
     when :ipp_verify_info
-      %i[welcome agreement hybrid_handoff ipp_ssn ipp_verify_info]
+      %i[welcome agreement how_to_verify hybrid_handoff ipp_ssn ipp_verify_info]
     when :phone
-      %i[welcome agreement hybrid_handoff document_capture ssn verify_info phone]
+      %i[welcome agreement how_to_verify hybrid_handoff document_capture ssn 
+        verify_info phone]
     when :otp_verification
-      %i[welcome agreement hybrid_handoff document_capture ssn verify_info phone otp_verification]
+      %i[welcome agreement how_to_verify hybrid_handoff document_capture ssn verify_info 
+        phone otp_verification]
     when :request_letter
-      %i[welcome agreement hybrid_handoff document_capture ssn verify_info request_letter]
+      %i[welcome agreement how_to_verify hybrid_handoff document_capture ssn verify_info 
+        request_letter]
     when :enter_password
-      %i[welcome agreement hybrid_handoff document_capture ssn verify_info phone otp_verification
-         enter_password]
+      %i[welcome agreement how_to_verify hybrid_handoff document_capture ssn verify_info
+        phone otp_verification enter_password]
     else
       []
     end
