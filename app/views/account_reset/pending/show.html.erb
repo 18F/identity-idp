@@ -5,7 +5,7 @@
 <p>
   <%= t(
         'account_reset.pending.wait_html',
-        interval: @pending_presenter.time_remaining_until_granted,
+        hours: @pending_presenter.time_remaining_until_granted,
       ) %>
 </p>
 
