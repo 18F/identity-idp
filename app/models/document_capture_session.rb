@@ -1,5 +1,6 @@
 class DocumentCaptureSession < ApplicationRecord
   include NonNullUuid
+  include ApplicationHelper
 
   belongs_to :user
 
@@ -18,8 +19,7 @@ class DocumentCaptureSession < ApplicationRecord
     session_result.attention_with_barcode = doc_auth_response.attention_with_barcode?
     session_result.selfie_check_performed = doc_auth_response.selfie_check_performed?
     session_result.doc_auth_success = doc_auth_response.doc_auth_success?
-    session_result.selfie_status = doc_auth_response.respond_to?(:selfie_status) ?
-      doc_auth_response.selfie_status : :not_processed
+    session_result.selfie_status = selfie_status_from_response(doc_auth_response)
     EncryptedRedisStructStorage.store(
       session_result,
       expires_in: IdentityConfig.store.doc_capture_request_valid_for_minutes.minutes.seconds.to_i,

@@ -1,5 +1,7 @@
 module DocAuth
   class Response
+    include ApplicationHelper
+
     attr_reader :errors, :exception, :extra, :pii_from_doc, :doc_type_supported
 
     ID_TYPE_SLUGS = {
@@ -57,7 +59,7 @@ module DocAuth
         attention_with_barcode: attention_with_barcode?,
         doc_type_supported: doc_type_supported?,
         doc_auth_success: doc_auth_success?,
-        selfie_status: self.respond_to?(:selfie_status) ? selfie_status : :not_processed,
+        selfie_status: selfie_status_from_response(self),
       }.merge(extra)
     end
 
