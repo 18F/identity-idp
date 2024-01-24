@@ -409,6 +409,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           analytics_hash = {
             success: true,
             errors: {},
+            error_details: nil,
             user_id: user.uuid,
             profile_deactivated: false,
             pending_profile_invalidated: false,
@@ -464,6 +465,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
         analytics_hash = {
           success: true,
           errors: {},
+          error_details: nil,
           user_id: user.uuid,
           profile_deactivated: true,
           pending_profile_invalidated: false,
@@ -516,6 +518,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
         analytics_hash = {
           success: true,
           errors: {},
+          error_details: nil,
           user_id: user.uuid,
           profile_deactivated: false,
           pending_profile_invalidated: false,
@@ -584,6 +587,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
         {
           success: true,
           errors: {},
+          error_details: nil,
           user_id: user.uuid,
           confirmed: true,
           active_profile: false,
@@ -617,6 +621,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
         {
           success: true,
           errors: {},
+          error_details: nil,
           user_id: user.uuid,
           confirmed: false,
           active_profile: false,
@@ -664,6 +669,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
         analytics_hash = {
           success: true,
           errors: {},
+          error_details: nil,
           user_id: user.uuid,
           confirmed: true,
           active_profile: true,

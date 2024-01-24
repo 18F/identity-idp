@@ -367,7 +367,8 @@ RSpec.describe Users::TotpSetupController, devise: true do
             pii_like_keypaths: [[:mfa_method_counts, :phone]],
           }
 
-          expect(@analytics).to have_logged_event('Multi-Factor Authentication Setup', result)
+          expect(@analytics).to have_received(:track_event).
+            with('Multi-Factor Authentication Setup', result)
 
           expect(@irs_attempts_api_tracker).to have_received(:track_event).
             with(:mfa_enroll_totp, success: false)

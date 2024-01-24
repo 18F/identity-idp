@@ -24,7 +24,6 @@ RSpec.describe SignUp::PasswordsController do
         {
           success: true,
           errors: {},
-          error_details: nil,
           user_id: user.uuid,
         }
       end
@@ -41,7 +40,7 @@ RSpec.describe SignUp::PasswordsController do
         )
         expect(@analytics).to receive(:track_event).with(
           'Password Creation',
-          analytics_hash.merge({ request_id_present: false }),
+          analytics_hash.merge({ error_details: nil, request_id_present: false }),
         )
 
         expect(@irs_attempts_api_tracker).to receive(:user_registration_password_submitted).
