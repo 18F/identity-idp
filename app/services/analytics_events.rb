@@ -17,6 +17,10 @@ module AnalyticsEvents
     track_event('Account Delete submitted', success: success, **extra)
   end
 
+  def z_out_of_order
+    # remove before commit
+  end
+
   # When a user visits the page to delete their account
   def account_delete_visited
     track_event('Account Delete visited')
