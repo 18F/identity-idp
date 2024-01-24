@@ -1,5 +1,3 @@
-// import { trackEvent } from '@18f/identity-analytics';
-
 export type PromptOnNavigateOptions = {
   stillOnPageIntervalsInSeconds: number[];
 };
@@ -7,10 +5,6 @@ export type PromptOnNavigateOptions = {
 const defaults = {
   stillOnPageIntervalsInSeconds: [5, 15, 30],
 };
-
-// export const PROMPT_EVENT = 'User prompted before navigation';
-
-// export const STILL_ON_PAGE_EVENT = 'User prompted before navigation and still on page';
 
 /**
  * Configures the window.onbeforeunload handler such that the user will be prompted before
