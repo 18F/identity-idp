@@ -306,6 +306,7 @@ class GetUspsProofingResultsJob < ApplicationJob
 
   # MW: What else do we want to log here?
   def handle_fraud_review_pending(enrollment)
+    return unless IdentityConfig.store.in_person_proofing_enforce_tmx
     enrollment.profile&.deactivate_for_fraud_review
 
     analytics(user: enrollment.user).
