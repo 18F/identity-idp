@@ -52,19 +52,21 @@ RSpec.describe OpenidConnect::TokenController do
 
       it 'tracks a successful event in analytics' do
         stub_analytics
-        expect(@analytics).to receive(:track_event).
-          with('OpenID Connect: token', {
-            success: true,
-            client_id: client_id,
-            user_id: user.uuid,
-            errors: {},
-            code_digest: kind_of(String),
-            code_verifier_present: false,
-            service_provider_pkce: nil,
-            expires_in: 0,
-            ial: 1,
-          })
+
         action
+
+        expect(@analytics).to have_logged_event(
+          'OpenID Connect: token',
+          success: true,
+          client_id: client_id,
+          user_id: user.uuid,
+          errors: {},
+          code_digest: kind_of(String),
+          code_verifier_present: false,
+          service_provider_pkce: nil,
+          expires_in: 0,
+          ial: 1,
+        )
       end
     end
 

@@ -1025,15 +1025,13 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: doc auth document_capture visited',
-      {
-        flow_path:,
-        step:,
-        analytics_id:,
-        irs_reproofing:,
-        redo_document_capture:,
-        skip_hybrid_handoff:,
-        **extra,
-      }.compact,
+      flow_path:,
+      step:,
+      analytics_id:,
+      irs_reproofing:,
+      redo_document_capture:,
+      skip_hybrid_handoff:,
+      **extra,
     )
   end
 

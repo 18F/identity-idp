@@ -7,7 +7,6 @@ RSpec.describe SignUp::EmailConfirmationsController do
         success: false,
         error_details: { confirmation_token: { not_found: true } },
         errors: { confirmation_token: ['not found'] },
-        user_id: nil,
       }
     end
     let(:attempts_tracker_error_hash) do
@@ -84,7 +83,6 @@ RSpec.describe SignUp::EmailConfirmationsController do
       analytics_hash = {
         success: false,
         errors: { email: [t('errors.messages.already_confirmed')] },
-        error_details: nil,
         user_id: email_address.user.uuid,
       }
 
@@ -213,7 +211,6 @@ RSpec.describe SignUp::EmailConfirmationsController do
       analytics_hash = {
         success: true,
         errors: {},
-        error_details: nil,
         user_id: user.uuid,
       }
 
