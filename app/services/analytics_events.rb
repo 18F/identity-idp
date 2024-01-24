@@ -2257,7 +2257,7 @@ module AnalyticsEvents
       user: user,
       enrollment_id: enrollment_id,
       **extra,
-      )
+    )
   end
 
   # Tracks if USPS in-person proofing enrollment request fails
