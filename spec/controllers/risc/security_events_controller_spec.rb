@@ -47,17 +47,19 @@ RSpec.describe Risc::SecurityEventsController do
 
     it 'tracks an successful in analytics' do
       stub_analytics
-      expect(@analytics).to receive(:track_event).
-        with('RISC: Security event received',
-             client_id: service_provider.issuer,
-             event_type: event_type,
-             error_code: nil,
-             errors: {},
-             jti: jti,
-             success: true,
-             user_id: user.uuid)
 
       action
+
+      expect(@analytics).to have_logged_event(
+        'RISC: Security event received',
+        client_id: service_provider.issuer,
+        event_type: event_type,
+        error_code: nil,
+        errors: {},
+        jti: jti,
+        success: true,
+        user_id: user.uuid,
+      )
     end
 
     context 'with a bad request' do
@@ -77,18 +79,20 @@ RSpec.describe Risc::SecurityEventsController do
 
       it 'tracks an error event in analytics' do
         stub_analytics
-        expect(@analytics).to receive(:track_event).
-          with('RISC: Security event received',
-               client_id: service_provider.issuer,
-               event_type: event_type,
-               error_code: SecurityEventForm::ErrorCodes::JWT_AUD,
-               errors: kind_of(Hash),
-               error_details: kind_of(Hash),
-               jti: jti,
-               success: false,
-               user_id: user.uuid)
 
         action
+
+        expect(@analytics).to have_logged_event(
+          'RISC: Security event received',
+          client_id: service_provider.issuer,
+          event_type: event_type,
+          error_code: SecurityEventForm::ErrorCodes::JWT_AUD,
+          errors: kind_of(Hash),
+          error_details: kind_of(Hash),
+          jti: jti,
+          success: false,
+          user_id: user.uuid,
+        )
       end
     end
   end

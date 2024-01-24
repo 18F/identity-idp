@@ -70,7 +70,8 @@ RSpec.describe Idv::EnterPasswordController do
     end
   end
 
-  describe '#confirm_current_password' do
+  describe '#confirm_current_password',
+           allowed_extra_analytics: [:sample_bucket1, :sample_bucket2] do
     controller do
       before_action :confirm_current_password
 

@@ -193,8 +193,6 @@ RSpec.describe Idv::HybridHandoffController do
           flow_path: 'hybrid',
           step: 'hybrid_handoff',
           analytics_id: 'Doc Auth',
-          redo_document_capture: nil,
-          skip_hybrid_handoff: nil,
           irs_reproofing: false,
           telephony_response: {
             errors: {},
@@ -251,8 +249,6 @@ RSpec.describe Idv::HybridHandoffController do
           flow_path: 'standard',
           step: 'hybrid_handoff',
           analytics_id: 'Doc Auth',
-          redo_document_capture: nil,
-          skip_hybrid_handoff: nil,
           irs_reproofing: false,
         }.merge(ab_test_args)
       end

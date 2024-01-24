@@ -174,7 +174,7 @@ RSpec.describe Users::VerifyPersonalKeyController do
         ).once
         expect(@analytics).to receive(:track_event).with(
           'Rate Limit Reached',
-          limiter_type: :verify_personal_key,
+          { limiter_type: :verify_personal_key },
         ).once
 
         expect(@irs_attempts_api_tracker).to receive(:personal_key_reactivation_rate_limited).once

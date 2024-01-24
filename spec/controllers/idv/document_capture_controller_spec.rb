@@ -165,7 +165,7 @@ RSpec.describe Idv::DocumentCaptureController do
     end
   end
 
-  describe '#update' do
+  describe '#update', allowed_extra_analytics: [:sample_bucket1, :sample_bucket2] do
     let(:analytics_name) { 'IdV: doc auth document_capture submitted' }
     let(:analytics_args) do
       {
@@ -173,8 +173,6 @@ RSpec.describe Idv::DocumentCaptureController do
         errors: {},
         analytics_id: 'Doc Auth',
         flow_path: 'standard',
-        redo_document_capture: nil,
-        skip_hybrid_handoff: nil,
         irs_reproofing: false,
         step: 'document_capture',
       }.merge(ab_test_args)

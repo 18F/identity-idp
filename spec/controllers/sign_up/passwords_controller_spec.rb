@@ -36,7 +36,7 @@ RSpec.describe SignUp::PasswordsController do
       it 'tracks analytics' do
         expect(@analytics).to receive(:track_event).with(
           'User Registration: Email Confirmation',
-          analytics_hash.merge({ error_details: nil }),
+          analytics_hash,
         )
         expect(@analytics).to receive(:track_event).with(
           'Password Creation',
@@ -73,9 +73,7 @@ RSpec.describe SignUp::PasswordsController do
 
         it 'tracks an invalid password event' do
           expect(@irs_attempts_api_tracker).to receive(:user_registration_password_submitted).
-            with(
-              success: false,
-            )
+            with(success: false)
           expect(@irs_attempts_api_tracker).not_to receive(:user_registration_email_confirmation)
 
           subject
@@ -83,7 +81,6 @@ RSpec.describe SignUp::PasswordsController do
           expect(@analytics).to have_logged_event(
             'User Registration: Email Confirmation',
             errors: {},
-            error_details: nil,
             success: true,
             user_id: user.uuid,
           )
@@ -118,7 +115,6 @@ RSpec.describe SignUp::PasswordsController do
           expect(@analytics).to have_logged_event(
             'User Registration: Email Confirmation',
             errors: {},
-            error_details: nil,
             success: true,
             user_id: user.uuid,
           )
