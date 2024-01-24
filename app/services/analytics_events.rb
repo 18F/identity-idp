@@ -1002,6 +1002,8 @@ module AnalyticsEvents
   # @param [String] step
   # @param [Boolean] stored_result_present
   # @param [Boolean] success
+  # @param [String] lexisnexis_instant_verify_workflow_ab_test_bucket
+  # @param [String] acuant_sdk_upgrade_ab_test_bucket
   def idv_doc_auth_document_capture_submitted(
     analytics_id: nil,
     errors: nil,
@@ -1012,6 +1014,8 @@ module AnalyticsEvents
     step: nil,
     stored_result_present: nil,
     success: nil,
+    lexisnexis_instant_verify_workflow_ab_test_bucket: nil,
+    acuant_sdk_upgrade_ab_test_bucket: nil,
     **extra
   )
     track_event(
@@ -1026,6 +1030,8 @@ module AnalyticsEvents
         step:,
         stored_result_present:,
         success:,
+        lexisnexis_instant_verify_workflow_ab_test_bucket:,
+        acuant_sdk_upgrade_ab_test_bucket:,
         **extra,
       }.compact,
     )
@@ -1037,6 +1043,8 @@ module AnalyticsEvents
   # @param [Boolean] irs_reproofing
   # @param [Boolean] redo_document_capture
   # @param [Boolean] skip_hybrid_handoff
+  # @param [String] lexisnexis_instant_verify_workflow_ab_test_bucket
+  # @param [String] acuant_sdk_upgrade_ab_test_bucket
   def idv_doc_auth_document_capture_visited(
     flow_path: nil,
     step: nil,
@@ -1044,6 +1052,8 @@ module AnalyticsEvents
     irs_reproofing: nil,
     redo_document_capture: nil,
     skip_hybrid_handoff: nil,
+    lexisnexis_instant_verify_workflow_ab_test_bucket: nil,
+    acuant_sdk_upgrade_ab_test_bucket: nil,
     **extra
   )
     track_event(
@@ -1054,6 +1064,8 @@ module AnalyticsEvents
       irs_reproofing:,
       redo_document_capture:,
       skip_hybrid_handoff:,
+      lexisnexis_instant_verify_workflow_ab_test_bucket:,
+      acuant_sdk_upgrade_ab_test_bucket:,
       **extra,
     )
   end
@@ -1120,6 +1132,8 @@ module AnalyticsEvents
   # @param [String] step
   # @param [Boolean] success
   # @param [Hash] telephony_response
+  # @param [String] lexisnexis_instant_verify_workflow_ab_test_bucket
+  # @param [String] acuant_sdk_upgrade_ab_test_bucket
   def idv_doc_auth_hybrid_handoff_submitted(
     analytics_id: nil,
     destination: nil,
@@ -1131,6 +1145,8 @@ module AnalyticsEvents
     step: nil,
     success: nil,
     telephony_response: nil,
+    lexisnexis_instant_verify_workflow_ab_test_bucket: nil,
+    acuant_sdk_upgrade_ab_test_bucket: nil,
     **extra
   )
     track_event(
@@ -1146,6 +1162,8 @@ module AnalyticsEvents
         step:,
         success:,
         telephony_response:,
+        lexisnexis_instant_verify_workflow_ab_test_bucket:,
+        acuant_sdk_upgrade_ab_test_bucket:,
         **extra,
       }.compact,
     )
@@ -1207,13 +1225,71 @@ module AnalyticsEvents
   end
 
   # @identity.idp.previous_event_name IdV: in person proofing ssn submitted
-  def idv_doc_auth_ssn_submitted(**extra)
-    track_event('IdV: doc auth ssn submitted', **extra)
+  # @param [String] flow_path
+  # @param [String] step
+  # @param [String] analytics_id
+  # @param [Boolean] irs_reproofing
+  # @param [Boolean] skip_hybrid_handoff
+  # @param [String] lexisnexis_instant_verify_workflow_ab_test_bucket
+  # @param [String] acuant_sdk_upgrade_ab_test_bucket
+  # @param [Boolean] success
+  # @param [Hash] errors
+  def idv_doc_auth_ssn_submitted(
+    flow_path: nil,
+    step: nil,
+    analytics_id: nil,
+    irs_reproofing: nil,
+    skip_hybrid_handoff: nil,
+    lexisnexis_instant_verify_workflow_ab_test_bucket: nil,
+    acuant_sdk_upgrade_ab_test_bucket: nil,
+    success: nil,
+    errors: nil,
+    **extra
+  )
+    track_event(
+      'IdV: doc auth ssn submitted',
+      flow_path:,
+      step:,
+      analytics_id:,
+      irs_reproofing:,
+      skip_hybrid_handoff:,
+      lexisnexis_instant_verify_workflow_ab_test_bucket:,
+      acuant_sdk_upgrade_ab_test_bucket:,
+      success:,
+      errors:,
+      **extra,
+    )
   end
 
   # @identity.idp.previous_event_name IdV: in person proofing ssn visited
-  def idv_doc_auth_ssn_visited(**extra)
-    track_event('IdV: doc auth ssn visited', **extra)
+  # @param [String] flow_path
+  # @param [String] step
+  # @param [String] analytics_id
+  # @param [Boolean] irs_reproofing
+  # @param [Boolean] skip_hybrid_handoff
+  # @param [String] lexisnexis_instant_verify_workflow_ab_test_bucket
+  # @param [String] acuant_sdk_upgrade_ab_test_bucket
+  def idv_doc_auth_ssn_visited(
+    flow_path: nil,
+    step: nil,
+    analytics_id: nil,
+    irs_reproofing: nil,
+    skip_hybrid_handoff: nil,
+    lexisnexis_instant_verify_workflow_ab_test_bucket: nil,
+    acuant_sdk_upgrade_ab_test_bucket: nil,
+    **extra
+  )
+    track_event(
+      'IdV: doc auth ssn visited',
+      flow_path:,
+      step:,
+      analytics_id:,
+      irs_reproofing:,
+      skip_hybrid_handoff:,
+      lexisnexis_instant_verify_workflow_ab_test_bucket:,
+      acuant_sdk_upgrade_ab_test_bucket:,
+      **extra
+    )
   end
 
   # @param [Boolean] success
@@ -1381,6 +1457,9 @@ module AnalyticsEvents
   # @param [Boolean] address_line2_present
   # @param [Hash] proofing_results
   # @param [Boolean] ssn_is_unique
+  # @param [Boolean] skip_hybrid_handoff
+  # @param [String] lexisnexis_instant_verify_workflow_ab_test_bucket
+  # @param [String] acuant_sdk_upgrade_ab_test_bucket
   def idv_doc_auth_verify_proofing_results(
     flow_path:,
     step:,
@@ -1393,6 +1472,9 @@ module AnalyticsEvents
     proofing_results:,
     ssn_is_unique:,
     same_address_as_id: nil,
+    skip_hybrid_handoff: nil,
+    lexisnexis_instant_verify_workflow_ab_test_bucket: nil,
+    acuant_sdk_upgrade_ab_test_bucket: nil,
     **extra
   )
     track_event(
@@ -1408,6 +1490,9 @@ module AnalyticsEvents
       address_line2_present:,
       proofing_results:,
       ssn_is_unique:,
+      skip_hybrid_handoff:,
+      lexisnexis_instant_verify_workflow_ab_test_bucket:,
+      acuant_sdk_upgrade_ab_test_bucket:,
       **extra,
     )
   end
@@ -1418,12 +1503,16 @@ module AnalyticsEvents
   # @param [Boolean] irs_reproofing
   # @param [Boolean] same_address_as_id
   # @param [String] step
+  # @param [String] lexisnexis_instant_verify_workflow_ab_test_bucket
+  # @param [String] acuant_sdk_upgrade_ab_test_bucket
   def idv_doc_auth_verify_submitted(
     analytics_id: nil,
     flow_path: nil,
     irs_reproofing: nil,
     same_address_as_id: nil,
     step: nil,
+    lexisnexis_instant_verify_workflow_ab_test_bucket: nil,
+    acuant_sdk_upgrade_ab_test_bucket: nil,
     **extra
   )
     track_event(
@@ -1434,6 +1523,8 @@ module AnalyticsEvents
         irs_reproofing:,
         same_address_as_id:,
         step:,
+        lexisnexis_instant_verify_workflow_ab_test_bucket:,
+        acuant_sdk_upgrade_ab_test_bucket:,
         **extra,
       }.compact,
     )
@@ -1445,12 +1536,16 @@ module AnalyticsEvents
   # @param [String] analytics_id
   # @param [Boolean] irs_reproofing
   # @param [Boolean] same_address_as_id
+  # @param [String] lexisnexis_instant_verify_workflow_ab_test_bucket
+  # @param [String] acuant_sdk_upgrade_ab_test_bucket
   def idv_doc_auth_verify_visited(
     flow_path:,
     step:,
     analytics_id:,
     irs_reproofing:,
     same_address_as_id: nil,
+    lexisnexis_instant_verify_workflow_ab_test_bucket: nil,
+    acuant_sdk_upgrade_ab_test_bucket: nil,
     **extra
   )
     track_event(
@@ -1461,6 +1556,8 @@ module AnalyticsEvents
         analytics_id:,
         irs_reproofing:,
         same_address_as_id:,
+        lexisnexis_instant_verify_workflow_ab_test_bucket:,
+        acuant_sdk_upgrade_ab_test_bucket:,
         **extra,
       }.compact,
     )
@@ -3038,12 +3135,28 @@ module AnalyticsEvents
   # @param [Hash] errors
   # @param ["sms", "voice"] otp_delivery_preference
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # @param [String] phone_type
+  # @param [Array] types
+  # @param [String] carrier
+  # @param [String] country_code
+  # @param [String] area_code
+  # @param [Boolean] skip_hybrid_handoff
+  # @param [String] lexisnexis_instant_verify_workflow_ab_test_bucket
+  # @param [String] acuant_sdk_upgrade_ab_test_bucket
   # The user submitted their phone on the phone confirmation page
   def idv_phone_confirmation_form_submitted(
     success:,
     otp_delivery_preference:,
     errors:,
     proofing_components: nil,
+    phone_type: nil,
+    types: nil,
+    carrier: nil,
+    country_code: nil,
+    area_code: nil,
+    skip_hybrid_handoff: nil,
+    lexisnexis_instant_verify_workflow_ab_test_bucket: nil,
+    acuant_sdk_upgrade_ab_test_bucket: nil,
     **extra
   )
     track_event(
@@ -3052,6 +3165,14 @@ module AnalyticsEvents
       errors: errors,
       otp_delivery_preference: otp_delivery_preference,
       proofing_components: proofing_components,
+      phone_type:,
+      types:,
+      carrier:,
+      country_code:,
+      area_code:,
+      skip_hybrid_handoff:,
+      lexisnexis_instant_verify_workflow_ab_test_bucket:,
+      acuant_sdk_upgrade_ab_test_bucket:,
       **extra,
     )
   end
@@ -3247,11 +3368,13 @@ module AnalyticsEvents
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [Boolean] skip_hybrid_handoff
   # @param [String] lexisnexis_instant_verify_workflow_ab_test_bucket
+  # @param [String] acuant_sdk_upgrade_ab_test_bucket
   # User visited idv phone of record
   def idv_phone_of_record_visited(
     proofing_components: nil,
     skip_hybrid_handoff: nil,
     lexisnexis_instant_verify_workflow_ab_test_bucket: nil,
+    acuant_sdk_upgrade_ab_test_bucket: nil,
     **extra
   )
     track_event(
@@ -3259,6 +3382,7 @@ module AnalyticsEvents
       proofing_components:,
       skip_hybrid_handoff:,
       lexisnexis_instant_verify_workflow_ab_test_bucket:,
+      acuant_sdk_upgrade_ab_test_bucket:,
       **extra,
     )
   end
