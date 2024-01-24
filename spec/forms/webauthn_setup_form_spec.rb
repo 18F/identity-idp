@@ -283,7 +283,7 @@ RSpec.describe WebauthnSetupForm do
               2,
               name: device_name,
               platform_authenticator: true,
-              transports: 'internal,hybrid',
+              transports: ['internal', 'hybrid'],
             ),
           )
         end
