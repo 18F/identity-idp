@@ -283,7 +283,7 @@ lint_analytics_events: .yardoc ## Checks that all methods on AnalyticsEvents are
 
 lint_analytics_events_sorted:
 	@test "$(shell grep '^  def ' app/services/analytics_events.rb)" = "$(shell grep '^  def ' app/services/analytics_events.rb | sort)" \
-		|| (echo 'Error: methods in analytics_events.rb are not sorted alphabetically' && exit 1)
+		|| (echo -e '\033[1;31mError: methods in analytics_events.rb are not sorted alphabetically\033[0m' && exit 1)
 
 lint_tracker_events: .yardoc ## Checks that all methods on AnalyticsEvents are documented
 	bundle exec ruby lib/analytics_events_documenter.rb --class-name="IrsAttemptsApi::TrackerEvents" --check --skip-extra-params $<
