@@ -43,9 +43,16 @@ function checkHaveCommonDependencyVersions(manifests) {
  */
 function checkHaveRequiredFields(manifests) {
   for (const [path, manifest] of manifests) {
-    ['name', 'version', 'private', 'sideEffects'].forEach((field) => {
+    Object.entries({
+      name: `Expected "@18f/identity-${basename(dirname(path))}".`,
+      version: '"1.0.0" is recommended for private packages.',
+      private: '`true` is recommended unless the package is intended to be published to NPM.',
+      sideEffects:
+        'This is usually `false`, unless there are files which include side effects, ' +
+        'such as custom elements registering to the custom element registry.',
+    }).forEach(([field, guidance]) => {
       if (!(field in manifest)) {
-        throw new Error(`Missing required field ${field} in ${path}`);
+        throw new Error([`Missing required field ${field} in ${path}`, guidance].join(' '));
       }
     });
   }
