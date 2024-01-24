@@ -1,4 +1,4 @@
-import { trackEvent } from '@18f/identity-analytics';
+// import { trackEvent } from '@18f/identity-analytics';
 
 export type PromptOnNavigateOptions = {
   stillOnPageIntervalsInSeconds: number[];
@@ -8,9 +8,9 @@ const defaults = {
   stillOnPageIntervalsInSeconds: [5, 15, 30],
 };
 
-export const PROMPT_EVENT = 'User prompted before navigation';
+// export const PROMPT_EVENT = 'User prompted before navigation';
 
-export const STILL_ON_PAGE_EVENT = 'User prompted before navigation and still on page';
+// export const STILL_ON_PAGE_EVENT = 'User prompted before navigation and still on page';
 
 /**
  * Configures the window.onbeforeunload handler such that the user will be prompted before
@@ -24,8 +24,6 @@ export function promptOnNavigate(options: PromptOnNavigateOptions = defaults): (
   function handleBeforeUnload(ev: BeforeUnloadEvent) {
     ev.preventDefault();
     ev.returnValue = '';
-
-    trackEvent(PROMPT_EVENT, { path: window.location.pathname });
 
     const stillOnPageIntervalsInSeconds = [...options.stillOnPageIntervalsInSeconds];
     let elapsed = 0;
@@ -45,10 +43,6 @@ export function promptOnNavigate(options: PromptOnNavigateOptions = defaults): (
       elapsed = interval;
 
       stillOnPageTimer = window.setTimeout(() => {
-        trackEvent(STILL_ON_PAGE_EVENT, {
-          path: window.location.pathname,
-          seconds: elapsed,
-        });
         scheduleNextStillOnPagePing();
       }, offsetFromNow * 1000);
     }
