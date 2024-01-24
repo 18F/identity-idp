@@ -156,6 +156,7 @@ RSpec.describe Users::WebauthnSetupController do
           success: true,
           error_details: nil,
           configuration_id: webauthn_configuration.id.to_s,
+          platform_authenticator: false,
         )
       end
 
@@ -164,6 +165,22 @@ RSpec.describe Users::WebauthnSetupController do
           with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
 
         delete :delete, params: { id: webauthn_configuration.id }
+      end
+
+      context 'when authenticator is the sole authentication method' do
+        let(:user) { create(:user) }
+
+        it 'tracks the delete in analytics' do
+          delete :delete, params: { id: webauthn_configuration.id }
+
+          expect(@analytics).to have_logged_event(
+            :webauthn_delete_submitted,
+            success: false,
+            error_details: nil,
+            configuration_id: webauthn_configuration.id.to_s,
+            platform_authenticator: nil,
+          )
+        end
       end
     end
 

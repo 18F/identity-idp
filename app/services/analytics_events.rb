@@ -5562,22 +5562,25 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Boolean] success
-  # @param [Hash] error_details
-  # @param [Integer] configuration_id
+  # @param [Boolean] success Whether the submission was successful
+  # @param [Integer] configuration_id Database ID for the configuration
+  # @param [Boolean] platform_authenticator Whether the configuration was a platform authenticator
+  # @param [Hash] error_details Details for error that occurred in unsuccessful submission
   # Tracks when user attempts to delete a WebAuthn configuration
   # @identity.idp.previous_event_name WebAuthn Deleted
   def webauthn_delete_submitted(
     success:,
     configuration_id:,
+    platform_authenticator:,
     error_details: nil,
     **extra
   )
     track_event(
       :webauthn_delete_submitted,
       success:,
-      error_details:,
       configuration_id:,
+      platform_authenticator:,
+      error_details:,
       **extra,
     )
   end
@@ -5615,21 +5618,24 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Boolean] success
-  # @param [Hash] error_details
-  # @param [Integer] configuration_id
+  # @param [Boolean] success Whether the submission was successful
+  # @param [Integer] configuration_id Database ID for the configuration
+  # @param [Boolean] platform_authenticator Whether the configuration was a platform authenticator
+  # @param [Hash] error_details Details for error that occurred in unsuccessful submission
   # Tracks when user submits a name change for a WebAuthn configuration
   def webauthn_update_name_submitted(
     success:,
     configuration_id:,
+    platform_authenticator:,
     error_details: nil,
     **extra
   )
     track_event(
       :webauthn_update_name_submitted,
       success:,
-      error_details:,
+      platform_authenticator:,
       configuration_id:,
+      error_details:,
       **extra,
     )
   end
