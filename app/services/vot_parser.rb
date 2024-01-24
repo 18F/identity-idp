@@ -9,13 +9,13 @@ class VotParser
     '0' => :no_identity_proofing,
     '1' => :identity_proofing_no_biometric,
     '2' => :identity_proofing_biometric_required,
-  }
+  }.freeze
   CREDENTIAL_USAGE_VECTOR_VALUES = {
     '0' => :default,
     '1' => :no_remember_device,
     '2' => :unphishable_mfa,
     '3' => :piv_cac_required,
-  }
+  }.freeze
 
   attr_reader :vector_of_trust
 
@@ -23,7 +23,7 @@ class VotParser
     @vector_of_trust = vector_of_trust
   end
 
-  def parse_vot
+  def parse
     result = { identity_proofing: :no_identity_proofing, credential_usage: :default }
     vector_component_map.each do |component, value|
       if component == 'P'
