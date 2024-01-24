@@ -63,7 +63,7 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
         address_line2_present: true,
         doc_type_supported: true,
         doc_auth_success: true,
-        selfie_success: nil,
+        selfie_status: :not_processed,
         selfie_live: true,
         selfie_quality_good: true,
       }
@@ -423,7 +423,7 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
           address_line2_present: true,
           doc_type_supported: false,
           doc_auth_success: true,
-          selfie_success: nil,
+          selfie_status: :not_processed,
           selfie_live: true,
           selfie_quality_good: true,
         }
@@ -508,7 +508,7 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
             address_line2_present: true,
             doc_type_supported: false,
             doc_auth_success: true,
-            selfie_success: nil,
+            selfie_status: :not_processed,
             selfie_live: true,
             selfie_quality_good: true,
           }

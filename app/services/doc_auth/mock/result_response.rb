@@ -9,8 +9,8 @@ module DocAuth
 
       def initialize(uploaded_file, selfie_check_performed, config)
         @uploaded_file = uploaded_file.to_s
-        @config = config
         @selfie_check_performed = selfie_check_performed
+        @config = config
         super(
           success: success?,
           errors: errors,
@@ -136,9 +136,9 @@ module DocAuth
         doc_auth_result_from_uploaded_file == 'Passed' || errors.blank?
       end
 
-      def selfie_success
-        return nil if portrait_match_results&.dig(:FaceMatchResult).nil?
-        portrait_match_results[:FaceMatchResult] == 'Pass'
+      def selfie_status
+        return :not_processed if portrait_match_results&.dig(:FaceMatchResult).nil?
+        portrait_match_results[:FaceMatchResult] == 'Pass' ? :success : :fail
       end
 
       private
@@ -183,7 +183,11 @@ module DocAuth
       def all_doc_capture_values_passing?(doc_auth_result, id_type_supported)
         doc_auth_result == 'Passed' &&
           id_type_supported &&
-          (@selfie_check_performed ? selfie_success : true)
+          (@selfie_check_performed ? selfie_passed? : true)
+      end
+
+      def selfie_passed?
+        selfie_status == :success
       end
 
       def parse_uri

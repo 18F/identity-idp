@@ -1,7 +1,9 @@
 module DocAuth
   class Response
-    attr_reader :errors, :exception, :extra, :pii_from_doc, :doc_type_supported, :selfie_live,
-                :selfie_quality_good
+    include ApplicationHelper
+
+    attr_reader :errors, :exception, :extra, :pii_from_doc, :doc_type_supported,
+                :selfie_live, :selfie_quality_good
 
     ID_TYPE_SLUGS = {
       'Identification Card' => 'state_id_card',
@@ -74,7 +76,7 @@ module DocAuth
         selfie_live: selfie_live?,
         selfie_quality_good: selfie_quality_good?,
         doc_auth_success: doc_auth_success?,
-        selfie_success: selfie_success,
+        selfie_status: selfie_status_from_response(self),
       }.merge(extra)
     end
 
@@ -95,10 +97,6 @@ module DocAuth
 
     def selfie_check_performed?
       @selfie_check_performed
-    end
-
-    def selfie_success
-      # to be implemented by concrete subclass
     end
 
     def doc_auth_success?

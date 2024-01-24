@@ -305,7 +305,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
         classification_info: {},
       )
       expect(response.doc_auth_success?).to eq(true)
-      expect(response.selfie_success).to be_nil
+      expect(response.selfie_status).to eq(:not_processed)
     end
   end
 
@@ -672,7 +672,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
         expect(response.success?).to eq(true)
         expect(response.extra[:portrait_match_results]).to eq(selfie_results)
         expect(response.doc_auth_success?).to eq(true)
-        expect(response.selfie_success).to eq(true)
+        expect(response.selfie_status).to eq(:success)
       end
     end
 
@@ -699,7 +699,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
         expect(response.success?).to eq(false)
         expect(response.extra[:portrait_match_results]).to eq(selfie_results)
         expect(response.doc_auth_success?).to eq(true)
-        expect(response.selfie_success).to eq(false)
+        expect(response.selfie_status).to eq(:fail)
       end
     end
   end
@@ -712,7 +712,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.selfie_check_performed?).to eq(false)
       expect(response.extra).not_to have_key(:portrait_match_results)
       expect(response.doc_auth_success?).to eq(true)
-      expect(response.selfie_success).to be_nil
+      expect(response.selfie_status).to eq(:not_processed)
     end
   end
 end
