@@ -110,7 +110,8 @@ RSpec.describe ApplicationHelper do
           errors: errors,
           exception: exception,
           pii_from_doc: pii_from_doc,
-          attention_with_barcode: attention_with_barcode)
+          attention_with_barcode: attention_with_barcode,
+        )
       end
 
       it 'returns :not_processed' do
