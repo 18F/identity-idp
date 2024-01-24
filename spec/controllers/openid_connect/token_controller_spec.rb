@@ -61,6 +61,7 @@ RSpec.describe OpenidConnect::TokenController do
           client_id: client_id,
           user_id: user.uuid,
           errors: {},
+          error_details: nil,
           code_digest: kind_of(String),
           code_verifier_present: false,
           service_provider_pkce: nil,

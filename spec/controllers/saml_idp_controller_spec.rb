@@ -841,6 +841,11 @@ RSpec.describe SamlIdpController do
           authn_context_comparison: 'exact',
           service_provider: 'http://localhost:3000',
           request_signed: true,
+          endpoint: nil,
+          requested_ial: nil,
+          matching_cert_serial: nil,
+          idv: nil,
+          finish_profile: nil,
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -1060,6 +1065,11 @@ RSpec.describe SamlIdpController do
           authn_context_comparison: 'exact',
           service_provider: nil,
           request_signed: true,
+          endpoint: nil,
+          requested_ial: nil,
+          matching_cert_serial: nil,
+          idv: nil,
+          finish_profile: nil,
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -1104,6 +1114,11 @@ RSpec.describe SamlIdpController do
           authn_context_comparison: 'exact',
           service_provider: nil,
           request_signed: true,
+          endpoint: nil,
+          requested_ial: nil,
+          matching_cert_serial: nil,
+          idv: nil,
+          finish_profile: nil,
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -1372,6 +1387,11 @@ RSpec.describe SamlIdpController do
           authn_context_comparison: 'exact',
           service_provider: 'http://localhost:3000',
           request_signed: true,
+          endpoint: nil,
+          requested_ial: nil,
+          matching_cert_serial: nil,
+          idv: nil,
+          finish_profile: nil,
         }
       end
 
@@ -1576,6 +1596,11 @@ RSpec.describe SamlIdpController do
           authn_context_comparison: 'exact',
           service_provider: 'http://localhost:3000',
           request_signed: true,
+          endpoint: nil,
+          requested_ial: nil,
+          matching_cert_serial: nil,
+          idv: nil,
+          finish_profile: nil,
         }
 
         expect(@analytics).to have_received(:track_event).

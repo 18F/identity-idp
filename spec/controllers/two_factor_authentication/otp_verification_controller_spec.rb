@@ -494,12 +494,10 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
 
             properties = {
               success: true,
-              errors: nil,
               confirmation_for_add_phone: true,
               context: 'confirmation',
               multi_factor_auth_method: 'sms',
               multi_factor_auth_method_created_at: phone_configuration_created_at.strftime('%s%L'),
-              new_device: nil,
               phone_configuration_id: phone_id,
               area_code: parsed_phone.area_code,
               country_code: parsed_phone.country,
@@ -583,14 +581,12 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
 
             properties = {
               success: false,
-              errors: nil,
               error_details: { code: { wrong_length: true, incorrect: true } },
               confirmation_for_add_phone: true,
               context: 'confirmation',
               multi_factor_auth_method: 'sms',
               phone_configuration_id: controller.current_user.default_phone_configuration.id,
               multi_factor_auth_method_created_at: phone_configuration_created_at.strftime('%s%L'),
-              new_device: nil,
               area_code: parsed_phone.area_code,
               country_code: parsed_phone.country,
               phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
@@ -669,13 +665,9 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
             parsed_phone = Phonelib.parse('+1 (703) 555-5555')
             properties = {
               success: true,
-              errors: nil,
               context: 'confirmation',
               multi_factor_auth_method: 'sms',
-              multi_factor_auth_method_created_at: nil,
-              new_device: nil,
               confirmation_for_add_phone: false,
-              phone_configuration_id: nil,
               area_code: parsed_phone.area_code,
               country_code: parsed_phone.country,
               phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),

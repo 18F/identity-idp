@@ -84,6 +84,7 @@ RSpec.describe TwoFactorAuthentication::OptionsController do
         selection: 'sms',
         success: true,
         errors: {},
+        error_details: nil,
       }
 
       expect(@analytics).to receive(:track_event).
