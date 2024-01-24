@@ -2446,26 +2446,56 @@ module AnalyticsEvents
 
   # Tracks deadline email initiated during GetUspsProofingResultsJob
   # @param [String] enrollment_id
+  # @param [Boolean] enrollment_code
+  # @param [String] timestamp
+  # @param [String] service_provider
+  # @param [String] wait_until
+  # @param [String] job_name
   def idv_in_person_usps_proofing_results_job_deadline_passed_email_initiated(
     enrollment_id:,
+    enrollment_code:,
+    timestamp:,
+    service_provider:,
+    wait_until:,
+    job_name:,
     **extra
   )
     track_event(
       'GetUspsProofingResultsJob: deadline passed email initiated',
       enrollment_id: enrollment_id,
+      enrollment_code: enrollment_code,
+      timestamp: timestamp,
+      service_provider: service_provider,
+      wait_until: wait_until,
+      job_name: job_name,
       **extra,
     )
   end
 
   # Tracks emails that are initiated during GetUspsProofingResultsJob
   # @param [String] email_type success, failed or failed fraud
+  # @param [Boolean] enrollment_code
+  # @param [String] timestamp
+  # @param [String] service_provider
+  # @param [String] wait_until
+  # @param [String] job_name
   def idv_in_person_usps_proofing_results_job_email_initiated(
     email_type:,
+    enrollment_code:,
+    timestamp:,
+    service_provider:,
+    wait_until:,
+    job_name:,
     **extra
   )
     track_event(
       'GetUspsProofingResultsJob: Success or failure email initiated',
       email_type: email_type,
+      enrollment_code: enrollment_code,
+      timestamp: timestamp,
+      service_provider: service_provider,
+      wait_until: wait_until,
+      job_name: job_name,
       **extra,
     )
   end
@@ -3402,7 +3432,7 @@ module AnalyticsEvents
   # @param [Integer] attempts Number of attempts to enter a correct code
   # @param [Boolean] pending_in_person_enrollment
   # @param [Boolean] fraud_check_failed
-  # @param [Hash] error_Details
+  # @param [Hash] error_details
   # @see Reporting::IdentityVerificationReport#query This event is used by the identity verification
   #       report. Changes here should be reflected there.
   # GPO verification submitted
@@ -3892,7 +3922,7 @@ module AnalyticsEvents
   # @param [String] country_code
   # @param [String] phone_type
   # @param [Hash] types
-  # @param [Hash] error_details,
+  # @param [Hash] error_details
   def multi_factor_auth_phone_setup(
     success:,
     errors:,
@@ -4107,7 +4137,7 @@ module AnalyticsEvents
   # @param [String] client_id Service Provider issuer
   # @param [Hash] errors
   # @param [Hash] error_details
-  def openid_connect_bearer_token(success:, ial:, client_id:, errors:, error_details:, **extra)
+  def openid_connect_bearer_token(success:, ial:, client_id:, errors:, error_details: nil, **extra)
     track_event(
       'OpenID Connect: bearer token authentication',
       success: success,
