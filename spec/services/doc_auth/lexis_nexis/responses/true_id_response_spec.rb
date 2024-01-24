@@ -135,6 +135,8 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         },
         doc_auth_success: true,
         selfie_status: :not_processed,
+        selfie_live: true,
+        selfie_quality_good: true,
       )
       passed_alerts = response_hash.dig(:processed_alerts, :passed)
       passed_alerts.each do |alert|
@@ -376,6 +378,8 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         },
         doc_auth_success: false,
         selfie_status: :fail,
+        selfie_live: true,
+        selfie_quality_good: false,
       )
     end
     it 'produces appropriate errors with document tampering' do

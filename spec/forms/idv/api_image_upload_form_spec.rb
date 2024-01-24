@@ -124,6 +124,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           flow_path: anything,
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
+          liveness_checking_required: boolean,
         )
 
         expect(fake_analytics).to have_logged_event(
@@ -159,6 +160,9 @@ RSpec.describe Idv::ApiImageUploadForm do
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
           doc_type_supported: boolean,
+          liveness_checking_required: boolean,
+          selfie_live: boolean,
+          selfie_quality_good: boolean,
           doc_auth_success: boolean,
           selfie_status: anything,
         )
@@ -222,6 +226,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           flow_path: anything,
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
+          liveness_checking_required: boolean,
         )
       end
 
@@ -354,6 +359,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           flow_path: anything,
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
+          liveness_checking_required: boolean,
           side: 'both',
         )
       end

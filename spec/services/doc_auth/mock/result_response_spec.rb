@@ -676,6 +676,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       end
     end
 
+    # TODO update this test, looks like the same problem as in error_generator_spec.rb
     describe 'and it is not successful' do
       let(:input) do
         <<~YAML

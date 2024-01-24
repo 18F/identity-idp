@@ -24,22 +24,17 @@ module Idv
 
           if pii_from_user[:same_address_as_id] == 'true'
             copy_state_id_address_to_residential_address(pii_from_user)
-            flow_session['Idv::Steps::InPerson::AddressStep'] = true
             redirect_to idv_in_person_ssn_url
           end
 
           if initial_state_of_same_address_as_id == 'true' &&
              pii_from_user[:same_address_as_id] == 'false'
             clear_residential_address(pii_from_user)
-            flow_session.delete('Idv::Steps::InPerson::AddressStep')
          end
 
-          if flow_session['Idv::Steps::InPerson::AddressStep']
-            redirect_to idv_in_person_verify_info_url
-          end
+          redirect_to idv_in_person_verify_info_url if updating_state_id?
 
-          if pii_from_user[:same_address_as_id] == 'false' &&
-             IdentityConfig.store.in_person_residential_address_controller_enabled
+          if pii_from_user[:same_address_as_id] == 'false'
             redirect_to idv_in_person_proofing_address_url
           end
         end
