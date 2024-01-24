@@ -62,10 +62,12 @@ module AnalyticsEvents
   # @identity.idp.previous_event_name Account Reset
   # @param [String] user_id
   # @param [Hash] errors
+  # @param [Boolean] success
   # Validates the token used for cancelling an account reset
-  def account_reset_cancel_token_validation(user_id:, errors: nil, **extra)
+  def account_reset_cancel_token_validation(success:, user_id:, errors: nil, **extra)
     track_event(
       'Account Reset: cancel token validation',
+      success: success,
       user_id: user_id,
       errors: errors,
       **extra,
@@ -105,10 +107,12 @@ module AnalyticsEvents
   # @identity.idp.previous_event_name Account Reset
   # @param [String] user_id
   # @param [Hash] errors
+  # @param [Boolean] success
   # Validates the granted token for account reset
-  def account_reset_granted_token_validation(user_id: nil, errors: nil, **extra)
+  def account_reset_granted_token_validation(success: nil, user_id: nil, errors: nil, **extra)
     track_event(
       'Account Reset: granted token validation',
+      success: success,
       user_id: user_id,
       errors: errors,
       **extra,
@@ -192,12 +196,16 @@ module AnalyticsEvents
 
   # @param [Boolean] success
   # @param [Hash] errors
+  # @param [Hash] error_details
+  # @param [String] domain_name
   # Tracks request for adding new emails to an account
-  def add_email_request(success:, errors:, **extra)
+  def add_email_request(success:, errors:, error_details: nil, domain_name: nil, **extra)
     track_event(
       'Add Email Requested',
       success: success,
       errors: errors,
+      error_details: error_details,
+      domain_name: domain_name,
       **extra,
     )
   end
@@ -503,6 +511,7 @@ module AnalyticsEvents
 
   # @param [Boolean] success
   # @param [Hash] errors
+  # @param [Hash, nil] error_details
   # @param [Time, nil] event_created_at timestamp for the event
   # @param [Time, nil] disavowed_device_last_used_at
   # @param [String, nil] disavowed_device_user_agent
@@ -514,6 +523,7 @@ module AnalyticsEvents
   def event_disavowal_password_reset(
     success:,
     errors:,
+    error_details: nil,
     event_created_at: nil,
     disavowed_device_last_used_at: nil,
     disavowed_device_user_agent: nil,
@@ -527,6 +537,7 @@ module AnalyticsEvents
       'Event disavowal password reset',
       success: success,
       errors: errors,
+      error_details: error_details,
       event_created_at: event_created_at,
       disavowed_device_last_used_at: disavowed_device_last_used_at,
       disavowed_device_user_agent: disavowed_device_user_agent,
@@ -1452,12 +1463,23 @@ module AnalyticsEvents
   # @param [String] step
   # @param [String] analytics_id
   # @param [Boolean] irs_reproofing
-  def idv_doc_auth_welcome_submitted(step:, analytics_id:, irs_reproofing:, **extra)
+  # @param [Boolean] skip_hybrid_handoff
+  # @param [String] lexisnexis_instant_verify_workflow_ab_test_bucket
+  def idv_doc_auth_welcome_submitted(
+    step:,
+    analytics_id:,
+    irs_reproofing:,
+    skip_hybrid_handoff: nil,
+    lexisnexis_instant_verify_workflow_ab_test_bucket: nil,
+    **extra
+  )
     track_event(
       'IdV: doc auth welcome submitted',
       step:,
       analytics_id:,
       irs_reproofing:,
+      skip_hybrid_handoff:,
+      lexisnexis_instant_verify_workflow_ab_test_bucket:,
       **extra,
     )
   end
@@ -1465,13 +1487,25 @@ module AnalyticsEvents
   # @param [String] step
   # @param [String] analytics_id
   # @param [Boolean] irs_reproofing
+  # @param [Boolean] skip_hybrid_handoff
+  # @param [String] lexisnexis_instant_verify_workflow_ab_test_bucket
   def idv_doc_auth_welcome_visited(
     step:,
     analytics_id:,
     irs_reproofing:,
+    skip_hybrid_handoff: nil,
+    lexisnexis_instant_verify_workflow_ab_test_bucket: nil,
     **extra
   )
-    track_event('IdV: doc auth welcome visited', step:, analytics_id:, irs_reproofing:, **extra)
+    track_event(
+      'IdV: doc auth welcome visited',
+      step:,
+      analytics_id:,
+      irs_reproofing:,
+      skip_hybrid_handoff:,
+      lexisnexis_instant_verify_workflow_ab_test_bucket:,
+      **extra,
+    )
   end
 
   # User submitted IDV password confirm page
@@ -1744,6 +1778,7 @@ module AnalyticsEvents
   #                  and now in hours
   # @param [Integer] phone_step_attempts Number of attempts at phone step before requesting letter
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # @param [Boolean] skip_hybrid_handoff
   # GPO letter was requested
   def idv_gpo_address_letter_requested(
     resend:,
@@ -1751,6 +1786,7 @@ module AnalyticsEvents
     hours_since_first_letter:,
     phone_step_attempts:,
     proofing_components: nil,
+    skip_hybrid_handoff: nil,
     **extra
   )
     track_event(
@@ -1760,6 +1796,7 @@ module AnalyticsEvents
       hours_since_first_letter:,
       phone_step_attempts:,
       proofing_components: proofing_components,
+      skip_hybrid_handoff: skip_hybrid_handoff,
       **extra,
     )
   end
@@ -3704,12 +3741,20 @@ module AnalyticsEvents
 
   # Tracks when the the user has added the MFA method phone to their account
   # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
-  def multi_factor_auth_added_phone(enabled_mfa_methods_count:, **extra)
+  # @param [String] method_name
+  # @param [Boolean] in_account_creation_flow
+  def multi_factor_auth_added_phone(
+    enabled_mfa_methods_count:,
+    method_name: :phone,
+    in_account_creation_flow: nil,
+    **extra
+  )
     track_event(
       'Multi-Factor Authentication: Added phone',
       {
-        method_name: :phone,
+        method_name: method_name,
         enabled_mfa_methods_count: enabled_mfa_methods_count,
+        in_account_creation_flow: in_account_creation_flow,
         **extra,
       }.compact,
     )
@@ -3867,11 +3912,13 @@ module AnalyticsEvents
   # webauthn means a roaming authenticator like a yubikey, webauthn_platform means a platform
   # authenticator like face or touch ID
   # @param [Integer, nil] webauthn_configuration_id webauthn database ID
+  # @param [String] multi_factor_auth_method_created_at
   # User visited the page to authenticate with webauthn (yubikey, face ID or touch ID)
   def multi_factor_auth_enter_webauthn_visit(
     context:,
     multi_factor_auth_method:,
     webauthn_configuration_id:,
+    multi_factor_auth_method_created_at: nil,
     **extra
   )
     track_event(
@@ -3879,6 +3926,7 @@ module AnalyticsEvents
       context: context,
       multi_factor_auth_method: multi_factor_auth_method,
       webauthn_configuration_id: webauthn_configuration_id,
+      multi_factor_auth_method_created_at: multi_factor_auth_method_created_at,
       **extra,
     )
   end
@@ -3954,19 +4002,41 @@ module AnalyticsEvents
   # Tracks when a user sets up a multi factor auth method
   # @param [Boolean] success Whether authenticator setup was successful
   # @param [Hash] errors Authenticator setup error reasons, if unsuccessful
+  # @param [Hash] error_details
   # @param [String] multi_factor_auth_method
   # @param [Boolean] in_account_creation_flow whether user is going through account creation flow
   # @param [Integer] enabled_mfa_methods_count
   # @param [Hash] mfa_method_counts
   # @param [String] key_id
+  # @param [String] context
+  # @param [String] confirmation_for_add_phone
+  # @param [String] area_code
+  # @param [String] country_code
+  # @param [String] phone_fingerprint
+  # @param [Boolean] totp_secret_present
+  # @param [String] auth_app_configuration_id
+  # @param [String] multi_factor_auth_method_created_at
+  # @param [String] phone_configuration_id
+  # @param [Boolean] new_device
   def multi_factor_auth_setup(
     success:,
     multi_factor_auth_method:,
     enabled_mfa_methods_count:,
     in_account_creation_flow:,
     errors: nil,
+    error_details: nil,
     key_id: nil,
     mfa_method_counts: nil,
+    context: nil,
+    confirmation_for_add_phone: nil,
+    area_code: nil,
+    country_code: nil,
+    phone_fingerprint: nil,
+    totp_secret_present: nil,
+    auth_app_configuration_id: nil,
+    multi_factor_auth_method_created_at: nil,
+    phone_configuration_id: nil,
+    new_device: nil,
     **extra
   )
     track_event(
@@ -3974,11 +4044,22 @@ module AnalyticsEvents
       {
         success: success,
         errors: errors,
+        error_details: error_details,
         multi_factor_auth_method: multi_factor_auth_method,
         in_account_creation_flow: in_account_creation_flow,
         enabled_mfa_methods_count: enabled_mfa_methods_count,
         key_id: key_id,
         mfa_method_counts: mfa_method_counts,
+        context: context,
+        confirmation_for_add_phone: confirmation_for_add_phone,
+        area_code: area_code,
+        country_code: country_code,
+        phone_fingerprint: phone_fingerprint,
+        totp_secret_present: totp_secret_present,
+        auth_app_configuration_id: auth_app_configuration_id,
+        multi_factor_auth_method_created_at: multi_factor_auth_method_created_at,
+        phone_configuration_id: phone_configuration_id,
+        new_device: new_device,
         **extra,
       }.compact,
     )
@@ -4529,12 +4610,14 @@ module AnalyticsEvents
   # @identity.idp.previous_event_name PIV/CAC login
   # @param [Boolean] success
   # @param [Hash] errors
+  # @param [String] key_id
   # tracks piv cac login event
-  def piv_cac_login(success:, errors:, **extra)
+  def piv_cac_login(success:, errors:, key_id: nil, **extra)
     track_event(
       :piv_cac_login,
       success: success,
       errors: errors,
+      key_id: key_id,
       **extra,
     )
   end
@@ -4857,6 +4940,7 @@ module AnalyticsEvents
   # Record SAML authentication payload Hash
   # @param [Boolean] success
   # @param [Hash] errors
+  # @param [Hash] error_details
   # @param [String] nameid_format
   # @param [Array] authn_context
   # @param [String] authn_context_comparison
@@ -4874,6 +4958,7 @@ module AnalyticsEvents
     authn_context:,
     authn_context_comparison:,
     service_provider:,
+    error_details: nil,
     endpoint: nil,
     idv: nil,
     finish_profile: nil,
@@ -4886,6 +4971,7 @@ module AnalyticsEvents
       'SAML Auth',
       success: success,
       errors: errors,
+      error_details: error_details,
       nameid_format: nameid_format,
       authn_context: authn_context,
       authn_context_comparison: authn_context_comparison,
