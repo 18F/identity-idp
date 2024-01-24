@@ -59,13 +59,14 @@ module Idv
         key: :document_capture,
         controller: self,
         next_steps: [:ssn, :ipp_ssn], # :ipp_state_id
-        preconditions: ->(idv_session:, user:) { idv_session.flow_path == 'standard' },
+        preconditions: ->(idv_session:, user:) { idv_session.flow_path == 'standard' && idv_session.opted_in_to_in_person_proofing },
         undo_step: ->(idv_session:, user:) do
           idv_session.pii_from_doc = nil
           idv_session.invalidate_in_person_pii_from_user!
           idv_session.had_barcode_attention_error = nil
           idv_session.had_barcode_read_failure = nil
           idv_session.selfie_check_performed = nil
+          idv_session.opted_in_to_in_person_proofing = nil
         end,
       )
     end
