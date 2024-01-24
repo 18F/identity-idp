@@ -38,10 +38,11 @@ module Idv
         key: :hybrid_handoff,
         controller: self,
         next_steps: [:link_sent, :document_capture],
-        preconditions: ->(idv_session:, user:) { idv_session.idv_consent_given && !idv_session.opted_in_to_in_person_proofing },
+        preconditions: ->(idv_session:, user:) { idv_session.idv_consent_given && !idv_session.skip_doc_auth },
         undo_step: ->(idv_session:, user:) do
           idv_session.flow_path = nil
           idv_session.phone_for_mobile_flow = nil
+          idv_session.skip_doc_auth = nil
           idv_session.opted_in_to_in_person_proofing = nil
         end,
       )
