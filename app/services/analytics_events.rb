@@ -2134,20 +2134,6 @@ module AnalyticsEvents
     )
   end
 
-  # A user has been moved to fraud review after completing proofing at the USPS
-  # @param [String] enrollment_id
-  def idv_in_person_usps_proofing_results_job_user_sent_to_fraud_review(
-    enrollment_id:,
-    **extra
-  )
-    track_event(
-      :idv_in_person_usps_proofing_results_job_user_sent_to_fraud_review,
-      user: user,
-      enrollment_id: enrollment_id,
-      **extra,
-    )
-  end
-
   # Tracks individual enrollments that are updated during GetUspsProofingResultsJob
   # @param [String] enrollment_code
   # @param [String] enrollment_id
@@ -2294,6 +2280,20 @@ module AnalyticsEvents
       reason: reason,
       **extra,
     )
+  end
+
+  # A user has been moved to fraud review after completing proofing at the USPS
+  # @param [String] enrollment_id
+  def idv_in_person_usps_proofing_results_job_user_sent_to_fraud_review(
+    enrollment_id:,
+    **extra
+  )
+    track_event(
+      :idv_in_person_usps_proofing_results_job_user_sent_to_fraud_review,
+      user: user,
+      enrollment_id: enrollment_id,
+      **extra,
+      )
   end
 
   # Tracks if USPS in-person proofing enrollment request fails
