@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { readFile, stat } from 'node:fs/promises';
-import { dirname, basename, join, resolve } from 'node:path';
+import { dirname, basename, join, resolve, relative } from 'node:path';
 import glob from 'fast-glob';
 
 /** @typedef {[path: string, manifest: Record<string, any>]} ManifestPair */
@@ -137,9 +137,10 @@ function checkPackageSideEffectsIncludesCustomElements(manifests) {
       const hasExpected = expectedPaths.every((path) => actualPaths.includes(path));
       if (!hasExpected) {
         throw new Error(
-          `Missing expected custom elements in ${manifestPath} sideEffects: ${customElementPaths.map(
-            (path) => resolve(manifestDirectory, path),
-          )}`,
+          [
+            `Missing expected custom elements in ${manifestPath} sideEffects:`,
+            customElementPaths.map((path) => `./${relative(manifestDirectory, path)}`).join(', '),
+          ].join(' '),
         );
       }
     }),
