@@ -14,15 +14,15 @@ module DocAuth
     end
 
     def error_is_success(error_message)
-      return error_message == ERROR_TEXTS['success']
+      return error_message != ERROR_TEXTS[:success]
     end
 
     def error_is_not_live(error_message)
-      return error_message == ERROR_TEXTS['not_live']
+      return error_message != ERROR_TEXTS[:not_live]
     end
 
     def error_is_poor_quality(error_message)
-      return error_message == ERROR_TEXTS['poor_quality']
+      return error_message != ERROR_TEXTS[:poor_quality]
     end
 
   private

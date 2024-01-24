@@ -19,7 +19,14 @@ RSpec.describe DocAuth::SelfieConcern do
   end
 
   describe '#selfie_live?' do
-    context 'no liveness error message' do
+    context 'no error message' do
+      it 'returns true' do
+        expect(subject.selfie_live?).to eq(true)
+      end
+    end
+
+    context 'an error message other than liveness' do
+      let(:face_error_message) { 'Another error message' }
       it 'returns true' do
         expect(subject.selfie_live?).to eq(true)
       end
@@ -34,9 +41,16 @@ RSpec.describe DocAuth::SelfieConcern do
   end
 
   describe '#selfie_quality_good?' do
-    context 'no liveness error message' do
+    context 'no error message' do
       it 'returns true' do
         expect(subject.selfie_quality_good?).to eq(true)
+      end
+    end
+
+    context 'an error message other than quality' do
+      let(:face_error_message) { 'Another error message' }
+      it 'returns true' do
+        expect(subject.selfie_live?).to eq(true)
       end
     end
 
