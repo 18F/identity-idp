@@ -16,10 +16,12 @@ DocumentCaptureSessionResult = RedactedStruct.new(
                     :failed_back_image_fingerprints, :captured_at, :selfie_check_performed,
                     :doc_auth_success, :selfie_status, :selfie_success]
 ) do
-  prepend Symbolizer
-
   def self.redis_key_prefix
     'dcs:result'
+  end
+
+  def selfie_status
+    self[:selfie_status].to_sym
   end
 
   alias_method :success?, :success

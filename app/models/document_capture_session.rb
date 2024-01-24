@@ -1,6 +1,5 @@
 class DocumentCaptureSession < ApplicationRecord
   include NonNullUuid
-  prepend Symbolizer
 
   belongs_to :user
 
