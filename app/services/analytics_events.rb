@@ -1462,6 +1462,9 @@ module AnalyticsEvents
     )
   end
 
+  # @param [String] step
+  # @param [String] analytics_id
+  # @param [Boolean] irs_reproofing
   def idv_doc_auth_welcome_visited(
     step:,
     analytics_id:,
