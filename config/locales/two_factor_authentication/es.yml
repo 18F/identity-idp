@@ -223,4 +223,12 @@ es:
         facial o táctil
     webauthn_platform_header_text: Usar desbloqueo facial o táctil
     webauthn_platform_use_key: Usar el desbloqueo de pantalla
+    webauthn_roaming:
+      change_nickname: Cambiar apodo
+      delete: Eliminar este dispositivo
+      deleted: Se ha eliminado correctamente un método de clave de seguridad
+      edit_heading: Gestionar la configuración de su clave de seguridad
+      manage_accessible_label: Gestionar la clave de seguridad
+      nickname: Apodo
+      renamed: Se ha cambiado correctamente el nombre de su método de clave de seguridad
     webauthn_use_key: Usar llave de seguridad

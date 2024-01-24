@@ -25,8 +25,14 @@
   <h2><%= t('doc_auth.instructions.getting_started') %></h2>
 
   <%= render ProcessListComponent.new(heading_level: :h3, class: 'margin-y-3') do |c| %>
-    <%= c.with_item(heading: t('doc_auth.instructions.bullet1')) do %>
-      <p><%= t('doc_auth.instructions.text1') %></p>
+    <% if decorated_sp_session.selfie_required? %>
+      <%= c.with_item(heading: t('doc_auth.instructions.bullet1_with_selfie')) do %>
+        <p><%= t('doc_auth.instructions.text1_with_selfie') %></p>
+      <% end %>
+    <% else %>
+      <%= c.with_item(heading: t('doc_auth.instructions.bullet1')) do %>
+        <p><%= t('doc_auth.instructions.text1') %></p>
+      <% end %>
     <% end %>
     <%= c.with_item(heading: t('doc_auth.instructions.bullet2')) do %>
       <p><%= t('doc_auth.instructions.text2') %></p>

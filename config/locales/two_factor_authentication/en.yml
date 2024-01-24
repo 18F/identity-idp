@@ -208,4 +208,12 @@ en:
       renamed: Successfully renamed your face or touch unlock method
     webauthn_platform_header_text: Use face or touch unlock
     webauthn_platform_use_key: Use screen unlock
+    webauthn_roaming:
+      change_nickname: Change nickname
+      delete: Delete this device
+      deleted: Successfully deleted a security key method
+      edit_heading: Manage your security key settings
+      manage_accessible_label: Manage security key
+      nickname: Nickname
+      renamed: Successfully renamed your security key method
     webauthn_use_key: Use security key

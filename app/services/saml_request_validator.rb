@@ -1,9 +1,14 @@
 class SamlRequestValidator
   include ActiveModel::Model
 
+  validate :cert_exists
   validate :authorized_service_provider
   validate :authorized_authn_context
   validate :authorized_email_nameid_format
+
+  def initialize(blank_cert: false)
+    @blank_cert = blank_cert
+  end
 
   def call(service_provider:, authn_context:, nameid_format:, authn_context_comparison: nil)
     self.service_provider = service_provider
@@ -43,6 +48,12 @@ class SamlRequestValidator
        (ial_max_requested? &&
         !IdentityConfig.store.allowed_ialmax_providers.include?(service_provider&.issuer))
       errors.add(:authn_context, :unauthorized_authn_context, type: :unauthorized_authn_context)
+    end
+  end
+
+  def cert_exists
+    if @blank_cert
+      errors.add(:service_provider, :blank_cert_element_req, type: :blank_cert_element_req)
     end
   end
 
