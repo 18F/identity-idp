@@ -6,6 +6,7 @@ module Users
     before_action :confirm_recently_authenticated_2fa
     before_action :set_form
     before_action :validate_configuration_exists
+    before_action :set_presenter
 
     def edit; end
 
@@ -15,7 +16,7 @@ module Users
       analytics.webauthn_update_name_submitted(**result.to_h)
 
       if result.success?
-        flash[:success] = t('two_factor_authentication.webauthn_platform.renamed')
+        flash[:success] = presenter.rename_success_alert_text
         redirect_to account_path
       else
         flash.now[:error] = result.first_error_message
@@ -29,7 +30,7 @@ module Users
       analytics.webauthn_delete_submitted(**result.to_h)
 
       if result.success?
-        flash[:success] = t('two_factor_authentication.webauthn_platform.deleted')
+        flash[:success] = presenter.delete_success_alert_text
         create_user_event(:webauthn_key_removed)
         revoke_remember_device(current_user)
         event = PushNotification::RecoveryInformationChangedEvent.new(user: current_user)
@@ -49,6 +50,14 @@ module Users
 
     alias_method :set_form, :form
 
+    delegate :configuration, to: :form
+
+    def presenter
+      @presenter ||= TwoFactorAuthentication::WebauthnEditPresenter.new(configuration:)
+    end
+
+    alias_method :set_presenter, :presenter
+
     def form_class
       case action_name
       when 'edit', 'update'
@@ -59,7 +68,7 @@ module Users
     end
 
     def validate_configuration_exists
-      render_not_found if form.configuration.blank?
+      render_not_found if configuration.blank?
     end
   end
 end

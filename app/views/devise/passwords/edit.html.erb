@@ -17,16 +17,14 @@
   <%= render PasswordConfirmationComponent.new(
         form: f,
         password_label: t('forms.passwords.edit.labels.password'),
+        forbidden_passwords: @forbidden_passwords,
         field_options: {
           input_html: {
             aria: { describedby: 'password-description' },
           },
         },
       ) %>
-  <%= render 'devise/shared/password_strength', forbidden_passwords: @forbidden_passwords %>
   <%= f.submit t('forms.passwords.edit.buttons.submit'), class: 'display-block margin-y-5' %>
 <% end %>
 
 <%= render 'shared/password_accordion' %>
-
-<%= javascript_packs_tag_once 'pw-strength' %>

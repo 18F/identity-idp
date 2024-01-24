@@ -1,6 +1,6 @@
-<% self.title = t('two_factor_authentication.webauthn_platform.edit_heading') %>
+<% self.title = @presenter.heading %>
 
-<%= render PageHeadingComponent.new.with_content(t('two_factor_authentication.webauthn_platform.edit_heading')) %>
+<%= render PageHeadingComponent.new.with_content(@presenter.heading) %>
 
 <%= simple_form_for(
       @form,
@@ -12,20 +12,17 @@
   <%= render ValidatedFieldComponent.new(
         form: f,
         name: :name,
-        label: t('two_factor_authentication.webauthn_platform.nickname'),
+        label: @presenter.nickname_field_label,
       ) %>
 
-  <%= f.submit(
-        t('two_factor_authentication.webauthn_platform.change_nickname'),
-        class: 'display-block margin-top-5',
-      ) %>
+  <%= f.submit(@presenter.rename_button_label, class: 'display-block margin-top-5') %>
 <% end %>
 
 <%= render ButtonComponent.new(
       action: ->(**tag_options, &block) do
         button_to(
           webauthn_path(id: @form.configuration.id),
-          form: { aria: { label: t('two_factor_authentication.webauthn_platform.delete') } },
+          form: { aria: { label: @presenter.delete_button_label } },
           **tag_options,
           &block
         )
@@ -35,6 +32,6 @@
       wide: true,
       danger: true,
       class: 'display-block margin-top-2',
-    ).with_content(t('two_factor_authentication.webauthn_platform.delete')) %>
+    ).with_content(@presenter.delete_button_label) %>
 
 <%= render 'shared/cancel', link: account_path %>

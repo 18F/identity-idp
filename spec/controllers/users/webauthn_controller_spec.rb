@@ -13,11 +13,12 @@ RSpec.describe Users::WebauthnController do
     let(:params) { { id: configuration.id } }
     let(:response) { get :edit, params: params }
 
-    it 'assigns the form instance' do
+    it 'assigns the form and presenter instances' do
       response
 
       expect(assigns(:form)).to be_kind_of(TwoFactorAuthentication::WebauthnUpdateForm)
       expect(assigns(:form).configuration).to eq(configuration)
+      expect(assigns(:presenter)).to be_kind_of(TwoFactorAuthentication::WebauthnEditPresenter)
     end
 
     context 'signed out' do
@@ -63,7 +64,7 @@ RSpec.describe Users::WebauthnController do
 
     it 'redirects to account page with success message' do
       expect(response).to redirect_to(account_path)
-      expect(flash[:success]).to eq(t('two_factor_authentication.webauthn_platform.renamed'))
+      expect(flash[:success]).to eq(t('two_factor_authentication.webauthn_roaming.renamed'))
     end
 
     it 'assigns the form instance' do
@@ -80,6 +81,7 @@ RSpec.describe Users::WebauthnController do
         :webauthn_update_name_submitted,
         success: true,
         configuration_id: configuration.id.to_s,
+        platform_authenticator: false,
         error_details: nil,
       )
     end
@@ -96,6 +98,14 @@ RSpec.describe Users::WebauthnController do
     context 'with invalid submission' do
       let(:name) { '' }
 
+      it 'assigns form and presenter instances' do
+        response
+
+        expect(assigns(:form)).to be_kind_of(TwoFactorAuthentication::WebauthnUpdateForm)
+        expect(assigns(:form).configuration).to eq(configuration)
+        expect(assigns(:presenter)).to be_kind_of(TwoFactorAuthentication::WebauthnEditPresenter)
+      end
+
       it 'renders edit template with error' do
         expect(response).to render_template(:edit)
         expect(flash.now[:error]).to eq(t('errors.messages.blank'))
@@ -108,6 +118,7 @@ RSpec.describe Users::WebauthnController do
           :webauthn_update_name_submitted,
           success: false,
           configuration_id: configuration.id.to_s,
+          platform_authenticator: false,
           error_details: { name: { blank: true } },
         )
       end
@@ -146,7 +157,7 @@ RSpec.describe Users::WebauthnController do
 
     it 'responds with successful result' do
       expect(response).to redirect_to(account_path)
-      expect(flash[:success]).to eq(t('two_factor_authentication.webauthn_platform.deleted'))
+      expect(flash[:success]).to eq(t('two_factor_authentication.webauthn_roaming.deleted'))
     end
 
     it 'logs the submission attempt' do
@@ -156,6 +167,7 @@ RSpec.describe Users::WebauthnController do
         :webauthn_delete_submitted,
         success: true,
         configuration_id: configuration.id.to_s,
+        platform_authenticator: false,
         error_details: nil,
       )
     end
@@ -211,6 +223,7 @@ RSpec.describe Users::WebauthnController do
           :webauthn_delete_submitted,
           success: false,
           configuration_id: configuration.id.to_s,
+          platform_authenticator: false,
           error_details: { configuration_id: { only_method: true } },
         )
       end

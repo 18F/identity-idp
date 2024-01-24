@@ -13,7 +13,21 @@ RSpec.describe TwoFactorAuthentication::WebauthnUpdateForm do
 
     it 'returns a successful result' do
       expect(result.success?).to eq(true)
-      expect(result.to_h).to eq(success: true, configuration_id:)
+      expect(result.to_h).to eq(
+        success: true,
+        configuration_id:,
+        platform_authenticator: false,
+      )
+    end
+
+    context 'with platform authenticator' do
+      let(:configuration) do
+        create(:webauthn_configuration, :platform_authenticator, user:, name: original_name)
+
+        it 'includes platform authenticator detail in result' do
+          expect(result.to_h[:platform_authenticator]).to eq(true)
+        end
+      end
     end
 
     it 'saves the new name' do
@@ -33,6 +47,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnUpdateForm do
             configuration_id: { configuration_not_found: true },
           },
           configuration_id:,
+          platform_authenticator: nil,
         )
       end
     end
@@ -48,6 +63,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnUpdateForm do
             configuration_id: { configuration_not_found: true },
           },
           configuration_id:,
+          platform_authenticator: nil,
         )
       end
     end
@@ -63,6 +79,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnUpdateForm do
             configuration_id: { configuration_not_found: true },
           },
           configuration_id:,
+          platform_authenticator: nil,
         )
       end
 
@@ -86,6 +103,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnUpdateForm do
             name: { blank: true },
           },
           configuration_id:,
+          platform_authenticator: false,
         )
       end
 
@@ -95,6 +113,16 @@ RSpec.describe TwoFactorAuthentication::WebauthnUpdateForm do
         result
 
         expect(configuration.reload.name).to eq(original_name)
+      end
+
+      context 'with platform authenticator' do
+        let(:configuration) do
+          create(:webauthn_configuration, :platform_authenticator, user:, name: original_name)
+
+          it 'includes platform authenticator detail in result' do
+            expect(result.to_h[:platform_authenticator]).to eq(true)
+          end
+        end
       end
     end
 
@@ -111,6 +139,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnUpdateForm do
             name: { duplicate: true },
           },
           configuration_id:,
+          platform_authenticator: false,
         )
       end
 
@@ -120,6 +149,16 @@ RSpec.describe TwoFactorAuthentication::WebauthnUpdateForm do
         result
 
         expect(configuration.reload.name).to eq(original_name)
+      end
+
+      context 'with platform authenticator' do
+        let(:configuration) do
+          create(:webauthn_configuration, :platform_authenticator, user:, name: original_name)
+
+          it 'includes platform authenticator detail in result' do
+            expect(result.to_h[:platform_authenticator]).to eq(true)
+          end
+        end
       end
     end
   end

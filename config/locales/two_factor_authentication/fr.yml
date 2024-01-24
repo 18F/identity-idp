@@ -235,4 +235,12 @@ fr:
         empreinte digitale a été renommée avec succès
     webauthn_platform_header_text: Utilisez le déverrouillage facial ou tactile
     webauthn_platform_use_key: Utiliser le déverrouillage de l’écran
+    webauthn_roaming:
+      change_nickname: Changer de pseudo
+      delete: Supprimer cet appareil
+      deleted: Suppression réussie d’une méthode de clé de sécurité
+      edit_heading: Gérer les paramètres de votre clé de sécurité
+      manage_accessible_label: Gérer la clé de sécurité
+      nickname: Pseudo
+      renamed: Votre méthode de clé de sécurité a été renommée avec succès
     webauthn_use_key: Utiliser la clé de sécurité

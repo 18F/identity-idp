@@ -27,6 +27,7 @@ RSpec.describe Api::Internal::TwoFactorAuthentication::WebauthnController do
         :webauthn_update_name_submitted,
         success: true,
         configuration_id: configuration.id.to_s,
+        platform_authenticator: false,
         error_details: nil,
       )
     end
@@ -60,6 +61,7 @@ RSpec.describe Api::Internal::TwoFactorAuthentication::WebauthnController do
           :webauthn_update_name_submitted,
           success: false,
           configuration_id: configuration.id.to_s,
+          platform_authenticator: false,
           error_details: { name: { blank: true } },
         )
       end
@@ -118,6 +120,7 @@ RSpec.describe Api::Internal::TwoFactorAuthentication::WebauthnController do
         :webauthn_delete_submitted,
         success: true,
         configuration_id: configuration.id.to_s,
+        platform_authenticator: false,
         error_details: nil,
       )
     end
@@ -174,6 +177,7 @@ RSpec.describe Api::Internal::TwoFactorAuthentication::WebauthnController do
           :webauthn_delete_submitted,
           success: false,
           configuration_id: configuration.id.to_s,
+          platform_authenticator: false,
           error_details: { configuration_id: { only_method: true } },
         )
       end

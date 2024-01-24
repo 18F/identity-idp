@@ -6,6 +6,7 @@ RSpec.describe 'users/webauthn/edit.html.erb' do
   let(:nickname) { 'Example' }
   let(:configuration) { create(:webauthn_configuration, :platform_authenticator, name: nickname) }
   let(:user) { create(:user, webauthn_configurations: [configuration]) }
+  let(:presenter) { TwoFactorAuthentication::WebauthnEditPresenter.new(configuration:) }
   let(:form) do
     TwoFactorAuthentication::WebauthnUpdateForm.new(
       user:,
@@ -17,6 +18,7 @@ RSpec.describe 'users/webauthn/edit.html.erb' do
 
   before do
     @form = form
+    @presenter = presenter
   end
 
   it 'renders form to update configuration' do

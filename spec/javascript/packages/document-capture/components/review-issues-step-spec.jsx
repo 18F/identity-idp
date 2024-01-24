@@ -375,7 +375,6 @@ describe('document-capture/components/review-issues-step', () => {
         FeatureFlagContext.Provider,
         {
           value: {
-            notReadySectionEnabled: true,
             exitQuestionSectionEnabled: true,
           },
         },
