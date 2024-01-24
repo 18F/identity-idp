@@ -41,7 +41,7 @@ Steps:
 
 6. Inspect the `Sources` of the page. Expand the local IP address from which you are serving the page. You should see a folder with a version number in the name, like `acuant/11.N.N`. Check that the version here is the new one &mdash; the version you noted in step 1. This screenshot shows where the version number appears in Chrome:
 
-    ![acuant-vesion-location](https://user-images.githubusercontent.com/546123/232644328-35922329-ad30-489e-943f-4125c009f74d.png)
+    ![acuant-version-location](https://user-images.githubusercontent.com/546123/232644328-35922329-ad30-489e-943f-4125c009f74d.png)
 
 
 7. Assuming the version is correct, you are ready to test it. On your phone, tap to photograph your state ID card. Point the camera at the card. Ensure the SDK finds the edges of the card and captures an image. Normally the SDK will put a yellowish box over the card to show where it believes the edges are.
@@ -107,14 +107,14 @@ Steps:
 
 Monitoring the A/B test begins now. Proceed to the next section.
 ## Testing Considerations
-Manual testing should be preformed to cover the following with verification *Success* or *Failure*:
+Manual testing should be performed to cover the following with verification *Success* or *Failure*:
 * SDK UI
   * Camera permission prompt is shown
   * Instruction text for taking ID and selfie
   * Countdown while capturing
   * Auto-capture mode
 * Camera permissions
-  * Prompt is shown upon the first time open the SDK
+  * Prompt is shown upon the first time opening the SDK
   * Tapping 'Decline' shows error message on the 'Add photos' page
   * Opening the SDK again shows the same prompt
 
