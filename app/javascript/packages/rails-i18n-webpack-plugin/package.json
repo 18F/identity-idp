@@ -11,5 +11,7 @@
     "sinon": "*",
     "webpack": ">=5"
   },
-  "sideEffects": false
+  "sideEffects": [
+    "./spec/**"
+  ]
 }
