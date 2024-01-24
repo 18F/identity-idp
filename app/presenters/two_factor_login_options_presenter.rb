@@ -117,7 +117,7 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
       [
         t(
           'two_factor_authentication.account_reset.pending',
-          interval: confirmation_period,
+          interval: account_reset_deletion_period_interval,
         ),
         @view.link_to(
           t('two_factor_authentication.account_reset.cancel_link'),
@@ -144,7 +144,7 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
     end
   end
 
-  def account_reset_deletion_period
+  def account_reset_deletion_period_interval
     current_time = Time.zone.now
 
     view.distance_of_time_in_words(

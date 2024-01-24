@@ -1,5 +1,5 @@
 <p class="lead">
-  <%= t('user_mailer.account_reset_request.intro_html', app_name: link_to(APP_NAME, IdentityConfig.store.mailer_domain_name, class: 'gray'), hours: @deactivation_period_hours) %>
+  <%= t('user_mailer.account_reset_request.intro_html', app_name: link_to(APP_NAME, IdentityConfig.store.mailer_domain_name, class: 'gray'), hours: @account_reset_deletion_period_hours) %>
 </p>
 
 <p class="lead">
