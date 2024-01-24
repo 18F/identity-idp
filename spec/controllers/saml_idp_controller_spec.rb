@@ -1362,6 +1362,23 @@ RSpec.describe SamlIdpController do
     context 'cert element in SAML request is blank' do
       let(:user) { create(:user, :fully_registered) }
       let(:service_provider) { build(:service_provider, issuer: 'http://localhost:3000') }
+      let(:analytics_hash) do
+        {
+          success: false,
+          errors: { service_provider: ['We cannot detect a certificate in your request.'] },
+          error_details: { service_provider: { blank_cert_element_req: true } },
+          nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
+          authn_context: [Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF],
+          authn_context_comparison: 'exact',
+          service_provider: 'http://localhost:3000',
+          request_signed: true,
+        }
+      end
+
+      before do
+        stub_analytics
+        allow(@analytics).to receive(:track_event)
+      end
 
       # the RubySAML library won't let us pass an empty string in as the certificate
       # element, so this test substitutes a SAMLRequest that has that element blank
@@ -1395,7 +1412,6 @@ RSpec.describe SamlIdpController do
             <samlp:NameIDPolicy AllowCreate="true" Format="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"/>
             <samlp:RequestedAuthnContext Comparison="exact">
           <saml:AuthnContextClassRef>urn:gov:gsa:ac:classes:sp:PasswordProtectedTransport:duo</saml:AuthnContextClassRef>
-              <saml:AuthnContextClassRef>http://idmanagement.gov/ns/assurance/ial/1</saml:AuthnContextClassRef>
             </samlp:RequestedAuthnContext>
           </samlp:AuthnRequest>
         XML
@@ -1410,11 +1426,17 @@ RSpec.describe SamlIdpController do
         expect(CGI).to receive(:unescape).and_return deflated_encoded_req
       end
 
-      it 'a ValidationError is raised' do
-        expect { generate_saml_response(user, saml_settings) }.to raise_error(
-          SamlIdp::XMLSecurity::SignedDocument::ValidationError,
-          'Certificate element present in response (ds:X509Certificate) but evaluating to nil',
-        )
+      it 'notes it in the analytics event' do
+        generate_saml_response(user, saml_settings)
+        expect(@analytics).to have_received(:track_event).
+          with('SAML Auth', analytics_hash)
+      end
+
+      it 'returns a 400' do
+        generate_saml_response(user, saml_settings)
+        expect(controller).to render_template('saml_idp/auth/error')
+        expect(response.status).to eq(400)
+        expect(response.body).to include(t('errors.messages.blank_cert_element_req'))
       end
     end
 
@@ -2260,9 +2282,9 @@ RSpec.describe SamlIdpController do
       expect(subject).to have_actions(
         :before,
         :disable_caching,
-        :validate_saml_request,
-        :validate_service_provider_and_authn_context,
         :store_saml_request,
+        :validate_and_create_saml_request_object,
+        :validate_service_provider_and_authn_context,
       )
     end
   end
