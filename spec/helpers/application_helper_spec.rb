@@ -97,7 +97,7 @@ RSpec.describe ApplicationHelper do
     end
   end
 
-  describe 'selfie_status_from_response' do
+  describe '#selfie_status_from_response' do
     context 'the response does not have selfie_status method defined on it' do
       let(:success) { true }
       let(:errors) { {} }
