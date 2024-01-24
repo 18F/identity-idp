@@ -933,6 +933,8 @@ module AnalyticsEvents
   # @param [Boolean] success
   # @param [Hash] errors
   # @param [Hash] error_details
+  # @param [String] lexisnexis_instant_verify_workflow_ab_test_bucket
+  # @param [String] acuant_sdk_upgrade_ab_test_bucket
   def idv_doc_auth_agreement_submitted(
     step: nil,
     analytics_id: nil,
@@ -941,6 +943,8 @@ module AnalyticsEvents
     success: nil,
     errors: nil,
     error_details: nil,
+    lexisnexis_instant_verify_workflow_ab_test_bucket: nil,
+    acuant_sdk_upgrade_ab_test_bucket: nil,
     **extra
   )
     track_event(
@@ -952,6 +956,8 @@ module AnalyticsEvents
       success:,
       errors:,
       error_details:,
+      lexisnexis_instant_verify_workflow_ab_test_bucket:,
+      acuant_sdk_upgrade_ab_test_bucket:,
       **extra,
     )
   end
@@ -960,11 +966,15 @@ module AnalyticsEvents
   # @param [String] analytics_id
   # @param [Boolean] skip_hybrid_handoff
   # @param [Boolean] irs_reproofing
+  # @param [String] lexisnexis_instant_verify_workflow_ab_test_bucket
+  # @param [String] acuant_sdk_upgrade_ab_test_bucket
   def idv_doc_auth_agreement_visited(
     step: nil,
     analytics_id: nil,
     skip_hybrid_handoff: nil,
     irs_reproofing: nil,
+    lexisnexis_instant_verify_workflow_ab_test_bucket: nil,
+    acuant_sdk_upgrade_ab_test_bucket: nil,
     **extra
   )
     track_event(
@@ -973,6 +983,8 @@ module AnalyticsEvents
       analytics_id:,
       skip_hybrid_handoff:,
       irs_reproofing:,
+      lexisnexis_instant_verify_workflow_ab_test_bucket:,
+      acuant_sdk_upgrade_ab_test_bucket:,
       **extra,
     )
   end
@@ -1146,12 +1158,16 @@ module AnalyticsEvents
   # @param [Boolean] irs_reproofing
   # @param [Boolean] redo_document_capture
   # @param [Boolean] skip_hybrid_handoff
+  # @param [String] lexisnexis_instant_verify_workflow_ab_test_bucket
+  # @param [String] acuant_sdk_upgrade_ab_test_bucket
   def idv_doc_auth_hybrid_handoff_visited(
     step: nil,
     analytics_id: nil,
     irs_reproofing: nil,
     redo_document_capture: nil,
     skip_hybrid_handoff: nil,
+    lexisnexis_instant_verify_workflow_ab_test_bucket: nil,
+    acuant_sdk_upgrade_ab_test_bucket: nil,
     **extra
   )
     track_event(
@@ -1161,6 +1177,8 @@ module AnalyticsEvents
       irs_reproofing:,
       redo_document_capture:,
       skip_hybrid_handoff:,
+      lexisnexis_instant_verify_workflow_ab_test_bucket:,
+      acuant_sdk_upgrade_ab_test_bucket:,
       **extra,
     )
   end
