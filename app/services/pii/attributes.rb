@@ -23,7 +23,7 @@ module Pii
       attrs = new
       hash.with_indifferent_access.
         slice(*members).
-        each { |key, val| attrs[key] = val }
+        each { |key, val| attrs[key] = val&.squish }
       attrs
     end
 
