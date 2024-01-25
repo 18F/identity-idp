@@ -212,9 +212,27 @@ RSpec.describe Idv::HowToVerifyController do
         put :update, params: { undo_step: true }
 
         expect(subject.idv_session.skip_doc_auth).to be_nil
+        expect(subject.idv_session.opted_in_to_in_person_proofing).to be_nil
         expect(response).to redirect_to(idv_how_to_verify_url)
       end
     end
+  end
+
+  context 'form submission error' do
+    let(:invalid_params)  do
+      {
+        idv_how_to_verify_form: { selection: '' },
+      }
+    end
+
+    it 'redirects to how to verify when a form submission error is encountered' do
+      put :update, params: invalid_params
+
+      expect(flash[:error]).to be_present
+      expect(subject.idv_session.skip_doc_auth).to be_nil
+      expect(subject.idv_session.opted_in_to_in_person_proofing).to be_nil
+      expect(response).to redirect_to(idv_how_to_verify_url)
+    end 
   end
 
   describe '#step_info' do
