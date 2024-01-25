@@ -1140,6 +1140,8 @@ Style/HashExcept:
 Style/HashSyntax:
   EnforcedStyle: ruby19
   EnforcedShorthandSyntax: either
+  Exclude:
+   - app/services/analytics_events.rb
 
 Style/IdenticalConditionalBranches:
   Enabled: true

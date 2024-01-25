@@ -1,0 +1,10 @@
+# Separate Rubocop config so that we can override Style/HashSyntax for a specific file
+
+inherit_from: .rubocop.yml
+
+Style/HashSyntax:
+  EnforcedStyle: ruby19
+  EnforcedShorthandSyntax: always
+  Exclude: []
+  Include:
+   - app/services/analytics_events.rb

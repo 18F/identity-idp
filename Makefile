@@ -77,6 +77,7 @@ ifdef JUNIT_OUTPUT
 else
 	bundle exec rubocop --parallel
 endif
+	bundle exec rubocop -c .rubocop.analytics.yml -- app/services/analytics_events.rb
 	@echo "--- analytics_events ---"
 	make lint_analytics_events
 	make lint_tracker_events
