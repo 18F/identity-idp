@@ -20,14 +20,14 @@ interface DocumentCaptureWarningProps {
 
 const DISPLAY_ATTEMPTS = 3;
 
-function getHeadingI8nKey({ isFailedDocType, isFailedSelfieLivenessOrQuality }) {
+function getHeadingI8nKey({ isFailedDocType, isFailedSelfieLivenessOrQuality, t }) {
   if (isFailedDocType) {
-    return 'errors.doc_auth.doc_type_not_supported_heading';
+    return t('errors.doc_auth.doc_type_not_supported_heading');
   }
   if (isFailedSelfieLivenessOrQuality) {
-    return 'errors.doc_auth.selfie_not_live_or_poor_quality_heading';
+    return t('errors.doc_auth.selfie_not_live_or_poor_quality_heading');
   }
-  return 'errors.doc_auth.rate_limited_heading';
+  return t('errors.doc_auth.rate_limited_heading');
 }
 
 function DocumentCaptureWarning({
@@ -44,7 +44,7 @@ function DocumentCaptureWarning({
   const { trackEvent } = useContext(AnalyticsContext);
 
   const nonIppOrFailedResult = !inPersonURL || isFailedResult;
-  const heading = t(getHeadingI8nKey({ isFailedDocType, isFailedSelfieLivenessOrQuality }));
+  const heading = t(getHeadingI8nKey({ isFailedDocType, isFailedSelfieLivenessOrQuality, t }));
   const actionText = nonIppOrFailedResult
     ? t('idv.failure.button.warning')
     : t('idv.failure.button.try_online');
