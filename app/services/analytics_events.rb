@@ -1206,8 +1206,34 @@ module AnalyticsEvents
     track_event('IdV: doc auth link_sent submitted', **extra)
   end
 
-  def idv_doc_auth_link_sent_visited(**extra)
-    track_event('IdV: doc auth link_sent visited', **extra)
+  # @param [String] step
+  # @param [String] analytics_id
+  # @param [String] flow_path
+  # @param [Boolean] irs_reproofing
+  # @param [Boolean] skip_hybrid_handoff
+  # @param [String] lexisnexis_instant_verify_workflow_ab_test_bucket
+  # @param [String] acuant_sdk_upgrade_ab_test_bucket
+  def idv_doc_auth_link_sent_visited(
+    step: nil,
+    analytics_id: nil,
+    flow_path: nil,
+    irs_reproofing: nil,
+    skip_hybrid_handoff: nil,
+    lexisnexis_instant_verify_workflow_ab_test_bucket: nil,
+    acuant_sdk_upgrade_ab_test_bucket: nil,
+    **extra
+  )
+    track_event(
+      'IdV: doc auth link_sent visited',
+      step:,
+      analytics_id:,
+      flow_path:,
+      irs_reproofing:,
+      skip_hybrid_handoff:,
+      lexisnexis_instant_verify_workflow_ab_test_bucket:,
+      acuant_sdk_upgrade_ab_test_bucket:,
+      **extra,
+    )
   end
 
   # @param [String] error
@@ -1288,7 +1314,7 @@ module AnalyticsEvents
       skip_hybrid_handoff:,
       lexisnexis_instant_verify_workflow_ab_test_bucket:,
       acuant_sdk_upgrade_ab_test_bucket:,
-      **extra
+      **extra,
     )
   end
 
@@ -1589,6 +1615,7 @@ module AnalyticsEvents
   # @param [Boolean] same_address_as_id
   # @param [String] lexisnexis_instant_verify_workflow_ab_test_bucket
   # @param [String] acuant_sdk_upgrade_ab_test_bucket
+  # @param [Boolean] skip_hybrid_handoff
   def idv_doc_auth_verify_visited(
     flow_path:,
     step:,
@@ -1597,6 +1624,7 @@ module AnalyticsEvents
     same_address_as_id: nil,
     lexisnexis_instant_verify_workflow_ab_test_bucket: nil,
     acuant_sdk_upgrade_ab_test_bucket: nil,
+    skip_hybrid_handoff: nil,
     **extra
   )
     track_event(
@@ -1609,6 +1637,7 @@ module AnalyticsEvents
         same_address_as_id:,
         lexisnexis_instant_verify_workflow_ab_test_bucket:,
         acuant_sdk_upgrade_ab_test_bucket:,
+        skip_hybrid_handoff:,
         **extra,
       }.compact,
     )
@@ -1655,12 +1684,14 @@ module AnalyticsEvents
   # @param [Boolean] irs_reproofing
   # @param [Boolean] skip_hybrid_handoff
   # @param [String] lexisnexis_instant_verify_workflow_ab_test_bucket
+  # @param [Boolean] opted_in_to_in_person_proofing
   def idv_doc_auth_welcome_visited(
     step:,
     analytics_id:,
     irs_reproofing:,
     skip_hybrid_handoff: nil,
     lexisnexis_instant_verify_workflow_ab_test_bucket: nil,
+    opted_in_to_in_person_proofing: nil,
     **extra
   )
     track_event(
@@ -1670,6 +1701,7 @@ module AnalyticsEvents
       irs_reproofing:,
       skip_hybrid_handoff:,
       lexisnexis_instant_verify_workflow_ab_test_bucket:,
+      opted_in_to_in_person_proofing:,
       **extra,
     )
   end
@@ -4032,12 +4064,17 @@ module AnalyticsEvents
   # Tracks when the user has added the MFA method TOTP to their account
   # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
   # @param [Boolean] in_account_creation_flow whether user is going through creation flow
-  def multi_factor_auth_added_totp(enabled_mfa_methods_count:, in_account_creation_flow:,
-                                   **extra)
+  # @param [String] method_name
+  def multi_factor_auth_added_totp(
+    enabled_mfa_methods_count:,
+    in_account_creation_flow:,
+    method_name: :totp,
+    **extra
+  )
     track_event(
       'Multi-Factor Authentication: Added TOTP',
       {
-        method_name: :totp,
+        method_name:,
         in_account_creation_flow:,
         enabled_mfa_methods_count:,
         **extra,
