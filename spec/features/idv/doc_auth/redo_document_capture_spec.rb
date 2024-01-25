@@ -153,6 +153,31 @@ RSpec.feature 'doc auth redo document capture', js: true do
     end
   end
 
+  shared_examples_for 'selfie image re-upload not allowed' do
+    it 'stops user submitting the same image again' do
+      expect(fake_analytics).to have_logged_event(
+        'IdV: doc auth document_capture visited',
+        hash_including(redo_document_capture: nil),
+      )
+      expect(fake_analytics).to have_logged_event(
+        'IdV: doc auth image upload form submitted',
+        hash_including(remaining_attempts: 3, attempts: 1),
+      )
+      DocAuth::Mock::DocAuthMockClient.reset!
+      expect(page).not_to have_css(
+        '.usa-error-message[role="alert"]',
+        text: t('doc_auth.errors.doc.resubmit_failed_image'),
+      )
+      # sleep(1)
+      attach_selfie
+      # Error message without submit
+      expect(page).to have_css(
+        '.usa-error-message[role="alert"]',
+        text: t('doc_auth.errors.doc.resubmit_failed_image'),
+      )
+    end
+  end
+
   shared_examples_for 'inline error for 4xx status shown' do |status|
     it "shows inline error for status #{status}" do
       error = case status
@@ -258,6 +283,7 @@ RSpec.feature 'doc auth redo document capture', js: true do
         sleep(10)
       end
       it_behaves_like 'image re-upload not allowed'
+      it_behaves_like 'selfie image re-upload not allowed'
       it 'shows current existing header' do
         expect_doc_capture_page_header(t('doc_auth.headings.review_issues'))
       end
