@@ -103,12 +103,12 @@ export interface UploadErrorResponse {
   /*
    * Whether the selfie passed the liveness check from trueid
    */
-  selfie_live: boolean;
+  selfie_live?: boolean;
 
   /*
    * Whether the selfie passed the quality check from trueid.
    */
-  selfie_quality_good: boolean;
+  selfie_quality_good?: boolean;
 
   /**
    * Record of failed image fingerprints
