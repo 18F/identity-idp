@@ -73,6 +73,8 @@ class FakeAnalytics < Analytics
 
   module UndocumentedParamsChecker
     mattr_accessor :allowed_extra_analytics
+    mattr_accessor :asts
+    mattr_accessor :docstrings
 
     def track_event(event, original_attributes = {})
       method_name = caller.
@@ -90,7 +92,7 @@ class FakeAnalytics < Analytics
 
         extra_keywords = original_attributes.keys \
           - [:pii_like_keypaths, :user_id] \
-          - Array(UndocumentedParamsChecker.allowed_extra_analytics) \
+          - Array(allowed_extra_analytics) \
           - param_names \
           - option_param_names(analytics_method)
 
@@ -108,17 +110,29 @@ class FakeAnalytics < Analytics
     # @api private
     # Returns the names of @option tags from the source of a method
     def option_param_names(instance_method)
-      file = instance_method.source_location.first
+      self.asts ||= {}
+      self.docstrings ||= {}
 
-      ast = YARD::Parser::Ruby::RubyParser.new(File.read(file), file).
-        parse.
-        ast
-
-      node = ast.traverse do |node|
-        break node if node.type == :def && node.jump(:ident)&.first == instance_method.name.to_s
+      if !YARD::Tags::Library.instance.has_tag?(:'identity.idp.previous_event_name')
+        YARD::Tags::Library.define_tag('Previous Event Name', :'identity.idp.previous_event_name')
       end
 
-      docstring = YARD::DocstringParser.new.parse(node.docstring).to_docstring
+      file = instance_method.source_location.first
+
+
+      ast = self.asts[file] ||= begin
+        YARD::Parser::Ruby::RubyParser.new(File.read(file), file).
+          parse.
+          ast
+      end
+
+      docstring = self.docstrings[instance_method.name] ||= begin
+        node = ast.traverse do |node|
+          break node if node.type == :def && node.jump(:ident)&.first == instance_method.name.to_s
+        end
+
+        YARD::DocstringParser.new.parse(node.docstring).to_docstring
+      end
 
       docstring.tags.select { |tag| tag.tag_name == 'option' }
         .map { |tag| tag.pair.name.tr(%|'"|, '') }
