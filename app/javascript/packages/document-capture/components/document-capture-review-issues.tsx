@@ -55,8 +55,8 @@ function DocumentCaptureReviewIssues({
         remainingAttempts={remainingAttempts}
         isFailedDocType={isFailedDocType}
         isFailedSelfieLivenessOrQuality={isFailedSelfieLivenessOrQuality}
+        altIsFailedSelfieDontIncludeAttempts
         altFailedDocTypeMsg={isFailedDocType ? t('doc_auth.errors.doc.wrong_id_type_html') : null}
-        altIsFailedSelfieLivenessOrQualityMessage
         hasDismissed={hasDismissed}
       />
       {!isFailedDocType && captureHints && (

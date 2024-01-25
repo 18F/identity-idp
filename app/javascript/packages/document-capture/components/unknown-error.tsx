@@ -12,7 +12,7 @@ interface UnknownErrorProps extends ComponentProps<'p'> {
   isFailedSelfieLivenessOrQuality: boolean;
   remainingAttempts: number;
   altFailedDocTypeMsg?: string | null;
-  altIsFailedSelfieLivenessOrQualityMessage?: boolean;
+  altIsFailedSelfieDontIncludeAttempts?: boolean;
   hasDismissed: boolean;
 }
 
@@ -43,7 +43,7 @@ function UnknownError({
   isFailedSelfieLivenessOrQuality = false,
   remainingAttempts,
   altFailedDocTypeMsg = null,
-  altIsFailedSelfieLivenessOrQualityMessage = false,
+  altIsFailedSelfieDontIncludeAttempts = false,
   hasDismissed,
 }: UnknownErrorProps) {
   const { t } = useI18n();
@@ -82,7 +82,7 @@ function UnknownError({
       <>
         <p>{err.message}</p>
         <p>
-          {!altIsFailedSelfieLivenessOrQualityMessage && (
+          {!altIsFailedSelfieDontIncludeAttempts && (
             <HtmlTextWithStrongNoWrap
               text={t('idv.warning.attempts_html', { count: remainingAttempts })}
             />
