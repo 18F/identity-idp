@@ -68,17 +68,18 @@ function UnknownError({
       </p>
     );
   }
-  if (isFailedSelfieLivenessOrQuality && !!altIsFailedSelfieLivenessOrQualityMessage) {
-    return <p>THIS IS THE REVIEW PAGE TEXT</p>;
-  }
   if (isFailedSelfieLivenessOrQuality && err) {
     return (
-      <p>
-        UNKNOWN ERROR FAIL TEXT
-        <HtmlTextWithStrongNoWrap
-          text={t('idv.warning.attempts_html', { count: remainingAttempts })}
-        />
-      </p>
+      <>
+        <p>{err.message}</p>
+        <p>
+          {!altIsFailedSelfieLivenessOrQualityMessage && (
+            <HtmlTextWithStrongNoWrap
+              text={t('idv.warning.attempts_html', { count: remainingAttempts })}
+            />
+          )}
+        </p>
+      </>
     );
   }
   if (err && !hasDismissed) {

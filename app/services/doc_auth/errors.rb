@@ -120,8 +120,8 @@ module DocAuth
       # TODO, theses messages need modifying
       # Liveness, use general error for now
       SELFIE_FAILURE => { long_msg: GENERAL_ERROR, field_msg: FALLBACK_FIELD_LEVEL, hints: false },
-      SELFIE_NOT_LIVE => { long_msg: GENERAL_ERROR, field_msg: FALLBACK_FIELD_LEVEL, hints: false },
-      SELFIE_POOR_QUALITY => { long_msg: GENERAL_ERROR, field_msg: FALLBACK_FIELD_LEVEL, hints: false },
+      SELFIE_NOT_LIVE => { long_msg: 'SELFIE NOT LIVE MESSAGE', field_msg: 'SELFIE NOT LIVE FIELD', hints: false },
+      SELFIE_POOR_QUALITY => { long_msg: 'SELFIE POOR QUALITY MESSAGE', field_msg: 'SELFIE POOR QUALITY FIELD', hints: false },
     }
     # rubocop:enable Layout/LineLength
   end
