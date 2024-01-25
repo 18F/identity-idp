@@ -9,6 +9,7 @@ import MarketingSiteContext from '../context/marketing-site';
 interface UnknownErrorProps extends ComponentProps<'p'> {
   unknownFieldErrors: FormStepError<{ front: string; back: string }>[];
   isFailedDocType: boolean;
+  isFailedSelfieLivenessOrQuality: boolean;
   remainingAttempts: number;
   altFailedDocTypeMsg?: string | null;
   hasDismissed: boolean;
@@ -27,6 +28,7 @@ function formatIdTypeMsg({ altFailedDocTypeMsg, acceptedIdUrl }) {
 function UnknownError({
   unknownFieldErrors = [],
   isFailedDocType = false,
+  isFailedSelfieLivenessOrQuality = false,
   remainingAttempts,
   altFailedDocTypeMsg = null,
   hasDismissed,
@@ -58,6 +60,16 @@ function UnknownError({
     return (
       <p key={`${err.message}-${remainingAttempts}`}>
         {err.message}{' '}
+        <HtmlTextWithStrongNoWrap
+          text={t('idv.warning.attempts_html', { count: remainingAttempts })}
+        />
+      </p>
+    );
+  }
+  if (isFailedSelfieLivenessOrQuality && err) {
+    return (
+      <p>
+        UNKNOWN ERROR FAIL TEXT
         <HtmlTextWithStrongNoWrap
           text={t('idv.warning.attempts_html', { count: remainingAttempts })}
         />

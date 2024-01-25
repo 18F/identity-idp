@@ -11,6 +11,7 @@ import AnalyticsContext from '../context/analytics';
 interface DocumentCaptureWarningProps {
   isFailedDocType: boolean;
   isFailedResult: boolean;
+  isFailedSelfieLivenessOrQuality: boolean;
   remainingAttempts: number;
   actionOnClick?: () => void;
   unknownFieldErrors: FormStepError<{ front: string; back: string }>[];
@@ -19,9 +20,20 @@ interface DocumentCaptureWarningProps {
 
 const DISPLAY_ATTEMPTS = 3;
 
+function getHeadingI8nKey({ isFailedDocType, isFailedSelfieLivenessOrQuality }) {
+  if (isFailedDocType) {
+    return 'errors.doc_auth.doc_type_not_supported_heading';
+  }
+  if (isFailedSelfieLivenessOrQuality) {
+    return 'SELFIE FAILED HEADING';
+  }
+  return 'errors.doc_auth.rate_limited_heading';
+}
+
 function DocumentCaptureWarning({
   isFailedDocType,
   isFailedResult,
+  isFailedSelfieLivenessOrQuality,
   remainingAttempts,
   actionOnClick,
   unknownFieldErrors = [],
@@ -32,9 +44,7 @@ function DocumentCaptureWarning({
   const { trackEvent } = useContext(AnalyticsContext);
 
   const nonIppOrFailedResult = !inPersonURL || isFailedResult;
-  const heading = isFailedDocType
-    ? t('errors.doc_auth.doc_type_not_supported_heading')
-    : t('errors.doc_auth.rate_limited_heading');
+  const heading = t(getHeadingI8nKey({ isFailedDocType, isFailedSelfieLivenessOrQuality }));
   const actionText = nonIppOrFailedResult
     ? t('idv.failure.button.warning')
     : t('idv.failure.button.try_online');
@@ -79,6 +89,7 @@ function DocumentCaptureWarning({
             unknownFieldErrors={unknownFieldErrors}
             remainingAttempts={remainingAttempts}
             isFailedDocType={isFailedDocType}
+            isFailedSelfieLivenessOrQuality={isFailedSelfieLivenessOrQuality}
             hasDismissed={hasDismissed}
           />
         </div>

@@ -115,6 +115,7 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
                     remainingAttempts: submissionError.remainingAttempts,
                     isFailedResult: submissionError.isFailedResult,
                     isFailedDocType: submissionError.isFailedDocType,
+                    isFailedSelfieLivenessOrQuality: true,
                     captureHints: submissionError.hints,
                     pii: submissionError.pii,
                     failedImageFingerprints: submissionError.failed_image_fingerprints,
