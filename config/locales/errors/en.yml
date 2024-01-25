@@ -36,6 +36,7 @@ en:
         %{timeout}.</strong>'
       send_link_limited: You tried too many times, please try again in %{timeout}. You
         can also go back and choose to use your computer instead.
+      selfie_not_live_or_poor_quality_heading: We could not verify the photo of yourself
     enter_code:
       rate_limited_html: You entered an incorrect verification code too many times.
         <strong>Try again in %{timeout}.</strong>

@@ -25,7 +25,7 @@ function getHeadingI8nKey({ isFailedDocType, isFailedSelfieLivenessOrQuality }) 
     return 'errors.doc_auth.doc_type_not_supported_heading';
   }
   if (isFailedSelfieLivenessOrQuality) {
-    return 'SELFIE FAILED HEADING';
+    return 'errors.doc_auth.selfie_not_live_or_poor_quality_heading';
   }
   return 'errors.doc_auth.rate_limited_heading';
 }

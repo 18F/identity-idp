@@ -39,6 +39,7 @@ es:
       send_link_limited: Ha intentado demasiadas veces, por favor, inténtelo de nuevo
         en %{timeout}. También puede retroceder y elegir utilizar su computadora
         como alternativa.
+      selfie_not_live_or_poor_quality_heading: No pudimos verificar tu foto
     enter_code:
       rate_limited_html: Ingresó un código de verificación incorrecto demasiadas
         veces. <strong>Inténtelo de nuevo en %{timeout}.</strong>

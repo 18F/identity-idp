@@ -43,6 +43,7 @@ fr:
       send_link_limited: Vous avez essayé trop de fois, veuillez réessayer dans
         %{timeout}. Vous pouvez également revenir en arrière et choisir
         d’utiliser votre ordinateur à la place.
+      selfie_not_live_or_poor_quality_heading: Nous n’avons pas pu vérifier votre photo
     enter_code:
       rate_limited_html: Vous avez saisi un code de vérification inexact à trop de
         reprises. <strong>Réessayez dans %{timeout}.</strong>
