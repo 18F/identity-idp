@@ -170,7 +170,7 @@ RSpec.feature 'doc auth redo document capture', js: true do
       )
       # re-attach same selfie
       attach_selfie
-      # Error message without submit
+      sleep(1)
       expect(page).to have_css(
         '.usa-error-message[role="alert"]',
         text: t('doc_auth.errors.doc.resubmit_failed_image'),
