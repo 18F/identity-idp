@@ -33,9 +33,8 @@ DocumentCaptureSessionResult = RedactedStruct.new(
   %w[front back selfie].each do |side|
     define_method("add_failed_#{side}_image!") do |fingerprint|
       member_name = "failed_#{side}_image_fingerprints"
-      return if fingerprint.nil?
       self[member_name] ||= []
-      self[member_name] << fingerprint
+      self[member_name] << fingerprint if fingerprint
     end
 
     define_method("failed_#{side}_image?") do |fingerprint|

@@ -465,16 +465,14 @@ module Idv
       # doc auth failed due to non network error or doc_pii is not valid
       if client_response && !client_response.success? && !client_response.network_error?
         errors_hash = client_response.errors&.to_h || {}
-        ## assume both sides' error presents or both sides' error missing
-        failed_front_fingerprint = extra_attributes[:front_image_fingerprint]
-        failed_back_fingerprint = extra_attributes[:back_image_fingerprint]
-        ## not both sides' error present nor both sides' error missing
-        ## equivalent to: only one side error presents
-        only_one_side_error = errors_hash[:front]&.present? ^ errors_hash[:back]&.present?
-        if only_one_side_error
-          ## find which side is missing
-          failed_front_fingerprint = nil unless errors_hash[:front]&.present?
-          failed_back_fingerprint = nil unless errors_hash[:back]&.present?
+        failed_front_fingerprint = nil
+        failed_back_fingerprint = nil
+        if errors_hash[:front] || errors_hash[:back]
+          failed_front_fingerprint = extra_attributes[:front_image_fingerprint] if errors_hash[:front]
+          failed_back_fingerprint = extra_attributes[:back_image_fingerprint] if errors_hash[:back]
+        elsif !client_response.doc_auth_success?
+          failed_front_fingerprint = extra_attributes[:front_image_fingerprint]
+          failed_back_fingerprint = extra_attributes[:back_image_fingerprint]
         end
         document_capture_session.
           store_failed_auth_data(
