@@ -382,7 +382,7 @@ RSpec.describe 'doc auth IPP state ID step', js: true do
               with: InPersonHelper::GOOD_IDENTITY_DOC_CITY
       click_idv_continue
 
-      expect(page).to have_current_path(idv_in_person_step_path(step: :address), wait: 10)
+      expect(page).to have_current_path(idv_in_person_proofing_address_url, wait: 10)
     end
   end
 

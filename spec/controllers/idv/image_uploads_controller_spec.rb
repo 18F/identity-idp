@@ -132,6 +132,7 @@ RSpec.describe Idv::ImageUploadsController do
           flow_path: 'standard',
           front_image_fingerprint: nil,
           back_image_fingerprint: an_instance_of(String),
+          liveness_checking_required: boolean,
         )
 
         expect(@irs_attempts_api_tracker).to receive(:track_event).with(
@@ -266,6 +267,7 @@ RSpec.describe Idv::ImageUploadsController do
           flow_path: 'standard',
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
+          liveness_checking_required: boolean,
         )
 
         expect(@irs_attempts_api_tracker).to receive(:track_event).with(
@@ -408,6 +410,7 @@ RSpec.describe Idv::ImageUploadsController do
           flow_path: 'standard',
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
+          liveness_checking_required: boolean,
         )
 
         expect(@analytics).to receive(:track_event).with(
@@ -435,7 +438,10 @@ RSpec.describe Idv::ImageUploadsController do
           back_image_fingerprint: an_instance_of(String),
           doc_type_supported: boolean,
           doc_auth_success: boolean,
-          selfie_success: nil,
+          selfie_status: :not_processed,
+          liveness_checking_required: boolean,
+          selfie_live: boolean,
+          selfie_quality_good: boolean,
         )
 
         expect(@analytics).to receive(:track_event).with(
@@ -450,6 +456,7 @@ RSpec.describe Idv::ImageUploadsController do
           flow_path: 'standard',
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
+          liveness_checking_required: boolean,
           classification_info: a_kind_of(Hash),
         )
 
@@ -586,6 +593,7 @@ RSpec.describe Idv::ImageUploadsController do
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
+              liveness_checking_required: boolean,
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -613,7 +621,10 @@ RSpec.describe Idv::ImageUploadsController do
               back_image_fingerprint: an_instance_of(String),
               doc_type_supported: boolean,
               doc_auth_success: boolean,
-              selfie_success: nil,
+              selfie_status: :not_processed,
+              liveness_checking_required: boolean,
+              selfie_live: true,
+              selfie_quality_good: true,
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -633,6 +644,7 @@ RSpec.describe Idv::ImageUploadsController do
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
+              liveness_checking_required: boolean,
               classification_info: hash_including(
                 Front: hash_including(ClassName: 'Identification Card', CountryCode: 'USA'),
                 Back: hash_including(ClassName: 'Identification Card', CountryCode: 'USA'),
@@ -677,6 +689,7 @@ RSpec.describe Idv::ImageUploadsController do
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
+              liveness_checking_required: boolean,
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -704,7 +717,10 @@ RSpec.describe Idv::ImageUploadsController do
               back_image_fingerprint: an_instance_of(String),
               doc_type_supported: boolean,
               doc_auth_success: boolean,
-              selfie_success: nil,
+              selfie_status: :not_processed,
+              liveness_checking_required: boolean,
+              selfie_live: true,
+              selfie_quality_good: true,
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -724,6 +740,7 @@ RSpec.describe Idv::ImageUploadsController do
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
+              liveness_checking_required: boolean,
               classification_info: hash_including(
                 Front: hash_including(ClassName: 'Identification Card', CountryCode: 'USA'),
                 Back: hash_including(ClassName: 'Identification Card', CountryCode: 'USA'),
@@ -768,6 +785,7 @@ RSpec.describe Idv::ImageUploadsController do
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
+              liveness_checking_required: boolean,
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -795,7 +813,10 @@ RSpec.describe Idv::ImageUploadsController do
               back_image_fingerprint: an_instance_of(String),
               doc_type_supported: boolean,
               doc_auth_success: boolean,
-              selfie_success: nil,
+              selfie_status: :not_processed,
+              liveness_checking_required: boolean,
+              selfie_live: true,
+              selfie_quality_good: true,
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -815,6 +836,7 @@ RSpec.describe Idv::ImageUploadsController do
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
+              liveness_checking_required: boolean,
               classification_info: hash_including(:Front, :Back),
             )
 
@@ -856,6 +878,7 @@ RSpec.describe Idv::ImageUploadsController do
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
+              liveness_checking_required: boolean,
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -883,7 +906,10 @@ RSpec.describe Idv::ImageUploadsController do
               back_image_fingerprint: an_instance_of(String),
               doc_type_supported: boolean,
               doc_auth_success: boolean,
-              selfie_success: nil,
+              selfie_status: :not_processed,
+              liveness_checking_required: boolean,
+              selfie_live: true,
+              selfie_quality_good: true,
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -903,6 +929,7 @@ RSpec.describe Idv::ImageUploadsController do
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
+              liveness_checking_required: boolean,
               classification_info: hash_including(:Front, :Back),
             )
 
@@ -967,6 +994,7 @@ RSpec.describe Idv::ImageUploadsController do
           flow_path: 'standard',
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
+          liveness_checking_required: boolean,
         )
 
         expect(@analytics).to receive(:track_event).with(
@@ -996,7 +1024,10 @@ RSpec.describe Idv::ImageUploadsController do
           back_image_fingerprint: an_instance_of(String),
           doc_type_supported: boolean,
           doc_auth_success: boolean,
-          selfie_success: nil,
+          selfie_status: :not_processed,
+          liveness_checking_required: boolean,
+          selfie_live: true,
+          selfie_quality_good: true,
         )
 
         action
@@ -1037,6 +1068,7 @@ RSpec.describe Idv::ImageUploadsController do
           flow_path: 'standard',
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
+          liveness_checking_required: boolean,
         )
 
         expect(@analytics).to receive(:track_event).with(
@@ -1068,7 +1100,10 @@ RSpec.describe Idv::ImageUploadsController do
           back_image_fingerprint: an_instance_of(String),
           doc_type_supported: boolean,
           doc_auth_success: boolean,
-          selfie_success: nil,
+          selfie_status: :not_processed,
+          liveness_checking_required: boolean,
+          selfie_live: boolean,
+          selfie_quality_good: boolean,
         )
 
         action

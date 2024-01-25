@@ -50,8 +50,8 @@ RSpec.describe 'doc auth IPP VerifyInfo', js: true do
     expect(page).to have_text(InPersonHelper::GOOD_FIRST_NAME)
     expect(page).not_to have_text('bad first name')
 
-    # click update address button
-    click_button t('idv.buttons.change_address_label')
+    # click update address link
+    click_link t('idv.buttons.change_address_label')
     expect(page).to have_content(t('in_person_proofing.headings.update_address'))
     fill_in t('idv.form.address1'), with: 'bad address'
     click_doc_auth_back_link
@@ -110,8 +110,8 @@ RSpec.describe 'doc auth IPP VerifyInfo', js: true do
     expect(page).to have_text('Natalya')
     expect(page).not_to have_text('bad first name')
 
-    # click update address button
-    click_button t('idv.buttons.change_address_label')
+    # click update address link
+    click_link t('idv.buttons.change_address_label')
     expect(page).to have_content(t('in_person_proofing.headings.update_address'))
     fill_in t('idv.form.address1'), with: '987 Fake St.'
     click_button t('forms.buttons.submit.update')

@@ -60,4 +60,10 @@ module ApplicationHelper
   def desktop_device?
     !BrowserCache.parse(request.user_agent).mobile?
   end
+
+  def selfie_status_from_response(client_response)
+    return client_response.selfie_status if client_response.respond_to?(:selfie_status)
+
+    :not_processed
+  end
 end
