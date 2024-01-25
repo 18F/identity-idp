@@ -141,7 +141,7 @@ class AnalyticsEventsDocumenter
         }
       end.compact + method_object.tags('option').map do |tag|
         {
-          name: tag.pair.name.tr(%|'"|, ''),
+          name: tag.pair.name.tr(%('"), ''),
           types: tag.pair.types,
           description: tag.pair.text.presence,
         }

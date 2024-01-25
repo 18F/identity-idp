@@ -1580,6 +1580,7 @@ module AnalyticsEvents
   # @param [Boolean] irs_reproofing
   # @param [Boolean] same_address_as_id
   # @param [String] step
+  # @param [Boolean] skip_hybrid_handoff
   # @param [String] lexisnexis_instant_verify_workflow_ab_test_bucket
   # @param [String] acuant_sdk_upgrade_ab_test_bucket
   def idv_doc_auth_verify_submitted(
@@ -1588,6 +1589,7 @@ module AnalyticsEvents
     irs_reproofing: nil,
     same_address_as_id: nil,
     step: nil,
+    skip_hybrid_handoff: nil,
     lexisnexis_instant_verify_workflow_ab_test_bucket: nil,
     acuant_sdk_upgrade_ab_test_bucket: nil,
     **extra
@@ -1600,6 +1602,7 @@ module AnalyticsEvents
         irs_reproofing:,
         same_address_as_id:,
         step:,
+        skip_hybrid_handoff:,
         lexisnexis_instant_verify_workflow_ab_test_bucket:,
         acuant_sdk_upgrade_ab_test_bucket:,
         **extra,
@@ -1660,12 +1663,14 @@ module AnalyticsEvents
   # @param [Boolean] irs_reproofing
   # @param [Boolean] skip_hybrid_handoff
   # @param [String] lexisnexis_instant_verify_workflow_ab_test_bucket
+  # @param [Boolean] opted_in_to_in_person_proofing
   def idv_doc_auth_welcome_submitted(
     step:,
     analytics_id:,
     irs_reproofing:,
     skip_hybrid_handoff: nil,
     lexisnexis_instant_verify_workflow_ab_test_bucket: nil,
+    opted_in_to_in_person_proofing: nil,
     **extra
   )
     track_event(
@@ -1675,6 +1680,7 @@ module AnalyticsEvents
       irs_reproofing:,
       skip_hybrid_handoff:,
       lexisnexis_instant_verify_workflow_ab_test_bucket:,
+      opted_in_to_in_person_proofing:,
       **extra,
     )
   end
@@ -2471,6 +2477,7 @@ module AnalyticsEvents
   # @param [String] analytics_id
   # @param [Boolean] irs_reproofing
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
+  # @param [Integer] step_count
   # State id page visited
   def idv_in_person_proofing_state_id_visited(
     flow_path: nil,

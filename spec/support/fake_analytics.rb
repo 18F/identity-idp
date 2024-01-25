@@ -119,7 +119,6 @@ class FakeAnalytics < Analytics
 
       file = instance_method.source_location.first
 
-
       ast = self.asts[file] ||= begin
         YARD::Parser::Ruby::RubyParser.new(File.read(file), file).
           parse.
@@ -134,8 +133,8 @@ class FakeAnalytics < Analytics
         YARD::DocstringParser.new.parse(node.docstring).to_docstring
       end
 
-      docstring.tags.select { |tag| tag.tag_name == 'option' }
-        .map { |tag| tag.pair.name.tr(%|'"|, '') }
+      docstring.tags.select { |tag| tag.tag_name == 'option' }.
+        map { |tag| tag.pair.name.tr(%('"), '') }
     end
   end
 
