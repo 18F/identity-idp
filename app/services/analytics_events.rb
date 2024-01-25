@@ -1631,6 +1631,9 @@ module AnalyticsEvents
   # @param [Boolean] in_person_verification_pending
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [String, nil] deactivation_reason Reason user's profile was deactivated, if any.
+  # @param [Boolean] skip_hybrid_handoff
+  # @param [String] lexisnexis_instant_verify_workflow_ab_test_bucket
+  # @param [String] acuant_sdk_upgrade_ab_test_bucket
   def idv_enter_password_submitted(
     success:,
     fraud_review_pending:,
@@ -1639,6 +1642,9 @@ module AnalyticsEvents
     in_person_verification_pending:,
     deactivation_reason: nil,
     proofing_components: nil,
+    skip_hybrid_handoff: nil,
+    lexisnexis_instant_verify_workflow_ab_test_bucket: nil,
+    acuant_sdk_upgrade_ab_test_bucket: nil,
     **extra
   )
     track_event(
@@ -1650,6 +1656,9 @@ module AnalyticsEvents
       in_person_verification_pending: in_person_verification_pending,
       fraud_rejection: fraud_rejection,
       proofing_components: proofing_components,
+      skip_hybrid_handoff:,
+      lexisnexis_instant_verify_workflow_ab_test_bucket:,
+      acuant_sdk_upgrade_ab_test_bucket:,
       **extra,
     )
   end
@@ -1712,6 +1721,9 @@ module AnalyticsEvents
   # @param [Boolean] gpo_verification_pending Profile is awaiting gpo verificaiton
   # @param [Boolean] in_person_verification_pending Profile is awaiting in person verificaiton
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # @param [Boolean] skip_hybrid_handoff
+  # @param [String] lexisnexis_instant_verify_workflow_ab_test_bucket
+  # @param [String] acuant_sdk_upgrade_ab_test_bucket
   # @see Reporting::IdentityVerificationReport#query This event is used by the identity verification
   #       report. Changes here should be reflected there.
   # Tracks the last step of IDV, indicates the user successfully proofed
@@ -1723,6 +1735,9 @@ module AnalyticsEvents
     in_person_verification_pending:,
     deactivation_reason: nil,
     proofing_components: nil,
+    skip_hybrid_handoff: nil,
+    lexisnexis_instant_verify_workflow_ab_test_bucket: nil,
+    acuant_sdk_upgrade_ab_test_bucket: nil,
     **extra
   )
     track_event(
@@ -1734,6 +1749,9 @@ module AnalyticsEvents
       in_person_verification_pending: in_person_verification_pending,
       deactivation_reason: deactivation_reason,
       proofing_components: proofing_components,
+      skip_hybrid_handoff:,
+      lexisnexis_instant_verify_workflow_ab_test_bucket:,
+      acuant_sdk_upgrade_ab_test_bucket:,
       **extra,
     )
   end
