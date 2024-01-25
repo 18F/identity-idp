@@ -109,7 +109,7 @@ RSpec.describe ImageUploadResponsePresenter do
       let(:extra_attributes) do
         { remaining_attempts: 0,
           flow_path: 'standard',
-          failed_image_fingerprints: { back: [], front: ['12345'] } }
+          failed_image_fingerprints: { back: [], front: ['12345'], selfie: [] } }
       end
       let(:form_response) do
         FormResponse.new(
@@ -130,7 +130,7 @@ RSpec.describe ImageUploadResponsePresenter do
           remaining_attempts: 0,
           ocr_pii: nil,
           doc_type_supported: true,
-          failed_image_fingerprints: { back: [], front: ['12345'] },
+          failed_image_fingerprints: { back: [], front: ['12345'], selfie: [] },
         }
 
         expect(presenter.as_json).to eq expected
@@ -140,7 +140,7 @@ RSpec.describe ImageUploadResponsePresenter do
         let(:extra_attributes) do
           { remaining_attempts: 0,
             flow_path: 'hybrid',
-            failed_image_fingerprints: { back: [], front: ['12345'] } }
+            failed_image_fingerprints: { back: [], front: ['12345'], selfie: [] } }
         end
 
         it 'returns hash of properties redirecting to capture_complete' do
@@ -152,7 +152,7 @@ RSpec.describe ImageUploadResponsePresenter do
             remaining_attempts: 0,
             ocr_pii: nil,
             doc_type_supported: true,
-            failed_image_fingerprints: { back: [], front: ['12345'] },
+            failed_image_fingerprints: { back: [], front: ['12345'], selfie: [] },
           }
 
           expect(presenter.as_json).to eq expected
