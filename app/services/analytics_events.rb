@@ -1351,6 +1351,32 @@ module AnalyticsEvents
   # @param [Boolean] doc_auth_success
   # @param [Boolean] selfie_success
   # @param [String] vendor
+  # @param [String] conversation_id
+  # @param [String] reference
+  # @param [String] transaction_status
+  # @param [String] transaction_reason_code
+  # @param [String] product_status
+  # @param [String] decision_product_status
+  # @param [Array] processed_alerts
+  # @param [Integer] alert_failure_count
+  # @param [Hash] log_alert_results
+  # @param [Hash] portrait_match_results
+  # @param [Hash] image_metrics
+  # @param [Boolean] address_line2_present
+  # @option extra [String] 'DocumentName'
+  # @option extra [String] 'DocAuthResult'
+  # @option extra [String] 'DocIssuerCode'
+  # @option extra [String] 'DocIssuerName'
+  # @option extra [String] 'DocIssuerType'
+  # @option extra [String] 'DocClassCode'
+  # @option extra [String] 'DocClass'
+  # @option extra [String] 'DocClassName'
+  # @option extra [Boolean] 'DocIsGeneric'
+  # @option extra [String] 'DocIssue'
+  # @option extra [String] 'DocIssueType'
+  # @option extra [String] 'ClassificationMode'
+  # @option extra [Boolean] 'OrientationChanged'
+  # @option extra [Boolean] 'PresentationChanged'
   # The document capture image was uploaded to vendor during the IDV process
   def idv_doc_auth_submitted_image_upload_vendor(
     success:,
@@ -1358,7 +1384,8 @@ module AnalyticsEvents
     exception:,
     state:,
     state_id_type:,
-    async:, attempts:,
+    async:,
+    attempts:,
     remaining_attempts:,
     client_image_metrics:,
     flow_path:,
@@ -1372,6 +1399,18 @@ module AnalyticsEvents
     doc_auth_success: nil,
     selfie_success: nil,
     vendor: nil,
+    conversation_id: nil,
+    reference: nil,
+    transaction_status: nil,
+    transaction_reason_code: nil,
+    product_status: nil,
+    decision_product_status: nil,
+    processed_alerts: nil,
+    alert_failure_count: nil,
+    log_alert_results: nil,
+    portrait_match_results: nil,
+    image_metrics: nil,
+    address_line2_present: nil,
     **extra
   )
     track_event(
@@ -1396,6 +1435,18 @@ module AnalyticsEvents
       doc_auth_success: doc_auth_success,
       selfie_success: selfie_success,
       vendor: vendor,
+      conversation_id:,
+      reference:,
+      transaction_status:,
+      transaction_reason_code:,
+      product_status:,
+      decision_product_status:,
+      processed_alerts:,
+      alert_failure_count:,
+      log_alert_results:,
+      portrait_match_results:,
+      image_metrics:,
+      address_line2_present:,
       **extra,
     )
   end

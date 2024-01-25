@@ -81,7 +81,9 @@ class FakeAnalytics < Analytics
         match(/:in `(?<method_name>[^']+)'/)&.[](:method_name)
 
       if method_name
-        param_names = AnalyticsEvents.instance_method(method_name).
+        analytics_method = AnalyticsEvents.instance_method(method_name)
+
+        param_names = analytics_method.
           parameters.
           select { |type, _name| [:keyreq, :key].include?(type) }.
           map(&:last)
@@ -89,7 +91,8 @@ class FakeAnalytics < Analytics
         extra_keywords = original_attributes.keys \
           - [:pii_like_keypaths, :user_id] \
           - Array(UndocumentedParamsChecker.allowed_extra_analytics) \
-          - param_names
+          - param_names \
+          - option_param_names(analytics_method)
 
         if extra_keywords.present?
           raise UndocumentedParams, <<~ERROR
@@ -100,6 +103,25 @@ class FakeAnalytics < Analytics
       end
 
       super(event, original_attributes)
+    end
+
+    # @api private
+    # Returns the names of @option tags from the source of a method
+    def option_param_names(instance_method)
+      file = instance_method.source_location.first
+
+      ast = YARD::Parser::Ruby::RubyParser.new(File.read(file), file).
+        parse.
+        ast
+
+      node = ast.traverse do |node|
+        break node if node.type == :def && node.jump(:ident)&.first == instance_method.name.to_s
+      end
+
+      docstring = YARD::DocstringParser.new.parse(node.docstring).to_docstring
+
+      docstring.tags.select { |tag| tag.tag_name == 'option' }
+        .map { |tag| tag.pair.name.tr(%|'"|, '') }
     end
   end
 

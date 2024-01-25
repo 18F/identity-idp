@@ -213,4 +213,25 @@ RSpec.describe Analytics do
       fun_level: 1000,
     )
   end
+
+  it 'does not error when string tags are documented as options' do
+    expect(ahoy).to receive(:track).with(
+      kind_of(String),
+      hash_including(event_properties: hash_including('DocumentName')),
+    )
+
+    analytics.idv_doc_auth_submitted_image_upload_vendor(
+      success: nil,
+      errors: nil,
+      exception: nil,
+      state: nil,
+      state_id_type: nil,
+      async: nil,
+      attempts: nil,
+      remaining_attempts: nil,
+      client_image_metrics: nil,
+      flow_path: nil,
+      'DocumentName' => 'some_name',
+    )
+  end
 end
