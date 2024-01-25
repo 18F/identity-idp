@@ -2523,7 +2523,6 @@ module AnalyticsEvents
   # @param [String] enrollment_code enrollment_code
   # @param [String] enrollment_id enrollment_id
   # @param [Hash] telephony_response response from Telephony gem
-  # @param [Hash] extra extra information
   def idv_in_person_send_proofing_notification_attempted(
     success:,
     enrollment_code:,
@@ -2544,7 +2543,6 @@ module AnalyticsEvents
   # Track sms notification job completion
   # @param [String] enrollment_code enrollment_code
   # @param [String] enrollment_id enrollment_id
-  # @param [Hash] extra extra information
   def idv_in_person_send_proofing_notification_job_completed(
     enrollment_code:,
     enrollment_id:,
@@ -2563,7 +2561,6 @@ module AnalyticsEvents
   # @param [String] enrollment_id
   # @param [String] exception_class
   # @param [String] exception_message
-  # @param [Hash] extra extra information
   def idv_in_person_send_proofing_notification_job_exception(
     enrollment_code:,
     enrollment_id:,
@@ -2584,7 +2581,6 @@ module AnalyticsEvents
   # Track sms notification job skipped
   # @param [String] enrollment_code enrollment_code
   # @param [String] enrollment_id enrollment_id
-  # @param [Hash] extra extra information
   def idv_in_person_send_proofing_notification_job_skipped(
     enrollment_code:,
     enrollment_id:,
@@ -2601,7 +2597,6 @@ module AnalyticsEvents
   # Track sms notification job started
   # @param [String] enrollment_code enrollment_code
   # @param [String] enrollment_id enrollment_id
-  # @param [Hash] extra extra information
   def idv_in_person_send_proofing_notification_job_started(
     enrollment_code:,
     enrollment_id:,
