@@ -26,6 +26,17 @@ function formatIdTypeMsg({ altFailedDocTypeMsg, acceptedIdUrl }) {
   });
 }
 
+function getError({ unknownFieldErrors }) {
+  const errs =
+    !!unknownFieldErrors &&
+    // Errors where the field than is not 'front' or 'back'. In practice this means the field
+    // should either be 'general' or 'selfie'
+    unknownFieldErrors.filter((error) => !['front', 'back'].includes(error.field!));
+  const err = errs.length !== 0 ? errs[0].error : null;
+
+  return err;
+}
+
 function UnknownError({
   unknownFieldErrors = [],
   isFailedDocType = false,
@@ -49,10 +60,8 @@ function UnknownError({
     location: 'document_capture_review_issues',
   });
 
-  const errs =
-    !!unknownFieldErrors &&
-    unknownFieldErrors.filter((error) => !['front', 'back'].includes(error.field!));
-  const err = errs.length !== 0 ? errs[0].error : null;
+  const err = getError({ unknownFieldErrors });
+
   if (isFailedDocType && !!altFailedDocTypeMsg) {
     return (
       <p key={altFailedDocTypeMsg}>{formatIdTypeMsg({ altFailedDocTypeMsg, acceptedIdUrl })}</p>
