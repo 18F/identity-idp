@@ -93,12 +93,12 @@ es:
         con ella, de todos modos puede restablecer su contraseña y luego volver
         a verificar su identidad.
       strength:
-        i: Muy débil
-        ii: Débil
-        iii: Promedio
+        0: Muy débil
+        1: Débil
+        2: Promedio
+        3: Buena
+        4: 'Muy buena'
         intro: 'Seguridad de la contraseña:'
-        iv: Buena
-        v: 'Muy buena'
     sp_handoff_bounced: Su inicio de sesión fue exitoso, pero %{sp_name} lo envió de
       regreso a %{app_name}. Póngase en contacto con %{sp_link} para obtener
       ayuda.

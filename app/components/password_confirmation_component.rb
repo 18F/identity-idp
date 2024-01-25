@@ -1,17 +1,19 @@
 class PasswordConfirmationComponent < BaseComponent
-  attr_reader :form, :field_options, :tag_options
+  attr_reader :form, :field_options, :forbidden_passwords, :tag_options
 
   def initialize(
     form:,
     password_label: nil,
     confirmation_label: nil,
     field_options: {},
+    forbidden_passwords: [],
     **tag_options
   )
     @form = form
     @password_label = password_label
     @confirmation_label = confirmation_label
     @field_options = field_options
+    @forbidden_passwords = forbidden_passwords
     @tag_options = tag_options
   end
 

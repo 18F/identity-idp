@@ -5,8 +5,8 @@ RSpec.describe PushNotification::HttpPush do
 
   let(:user) { create(:user) }
 
-  let(:sp_with_push_url) { create(:service_provider, push_notification_url: 'http://foo.bar/push') }
-  let(:sp_no_push_url) { create(:service_provider, push_notification_url: nil) }
+  let(:sp_with_push_url) { create(:service_provider, active: true, push_notification_url: 'http://foo.bar/push') }
+  let(:sp_no_push_url) { create(:service_provider, active: true, push_notification_url: nil) }
 
   let!(:sp_with_push_url_identity) do
     IdentityLinker.new(user, sp_with_push_url).link_identity
@@ -128,7 +128,7 @@ RSpec.describe PushNotification::HttpPush do
     end
 
     context 'with a timeout when posting to one url' do
-      let(:third_sp) { create(:service_provider, push_notification_url: 'http://sp.url/push') }
+      let(:third_sp) { create(:service_provider, active: true, push_notification_url: 'http://sp.url/push') }
 
       before do
         IdentityLinker.new(user, third_sp).link_identity
@@ -179,6 +179,16 @@ RSpec.describe PushNotification::HttpPush do
             status: 500,
           ),
         )
+      end
+    end
+
+    context 'when a service provider is no longer active' do
+      before { sp_with_push_url.update!(active: false) }
+
+      it 'does not notify that SP' do
+        deliver
+
+        expect(WebMock).not_to have_requested(:get, sp_with_push_url.push_notification_url)
       end
     end
 
