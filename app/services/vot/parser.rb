@@ -7,6 +7,7 @@ module Vot
       :hspd12?,
       :identity_proofing?,
       :biometric_comparison?,
+      :ialmax?,
     ].freeze
     Result = Data.define(:vector_of_trust, *SUPPORTED_COMPONENT_VALUE_REQUIREMENTS)
 
@@ -18,17 +19,12 @@ module Vot
 
     def parse
       initial_components = map_initial_vector_of_trust_componets_to_component_values
-      validate_component_uniqueness!(initial_components)
-      resulting_components = add_implied_components(initial_components).sort_by(&:name)
-      requirement_list = resulting_components.flat_map(&:requirements)
-      Result.new(
-        vector_of_trust: resulting_components.map(&:name).join('.'),
-        aal2?: requirement_list.include?(:aal2),
-        phishing_resistant?: requirement_list.include?(:phishing_resistant),
-        hspd12?: requirement_list.include?(:hspd12),
-        identity_proofing?: requirement_list.include?(:identity_proofing),
-        biometric_comparison?: requirement_list.include?(:biometric_comparison),
-      )
+      expand_components_with_initial_components(initial_components)
+    end
+
+    def parse_acr
+      initial_components = map_initial_acr_values_to_component_values
+      expand_components_with_initial_components(initial_components)
     end
 
     private
@@ -41,6 +37,31 @@ module Vot
         end
         component_value
       end
+    end
+
+    def map_initial_acr_values_to_component_values
+      vector_of_trust.split(' ').map do |component_value_name|
+        component_value = LegacyComponentValues::MAPPED_BY_NAME[component_value_name]
+        if component_value.nil?
+          raise_unsupported_component_exception(component_value_name)
+        end
+        component_value
+      end
+    end
+
+    def expand_components_with_initial_components(initial_components)
+      validate_component_uniqueness!(initial_components)
+      resulting_components = add_implied_components(initial_components).sort_by(&:name)
+      requirement_list = resulting_components.flat_map(&:requirements)
+      Result.new(
+        vector_of_trust: resulting_components.map(&:name).join('.'),
+        aal2?: requirement_list.include?(:aal2),
+        phishing_resistant?: requirement_list.include?(:phishing_resistant),
+        hspd12?: requirement_list.include?(:hspd12),
+        identity_proofing?: requirement_list.include?(:identity_proofing),
+        biometric_comparison?: requirement_list.include?(:biometric_comparison),
+        ialmax?: requirement_list.include?(:ialmax),
+      )
     end
 
     def validate_component_uniqueness!(component_values)
