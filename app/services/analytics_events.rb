@@ -17,15 +17,15 @@ module AnalyticsEvents
     track_event('Account Delete submitted', success: success, **extra)
   end
 
+  # When a user visits the page to delete their account
+  def account_delete_visited
+    track_event('Account Delete visited')
+  end
+
   # @param [String] request_came_from the controller/action the request came from
   # When a user deletes their account
   def account_deletion(request_came_from:, **extra)
     track_event('Account Deletion Requested', request_came_from: request_came_from, **extra)
-  end
-
-  # When a user visits the page to delete their account
-  def account_delete_visited
-    track_event('Account Delete visited')
   end
 
   # @identity.idp.previous_event_name Account Reset
