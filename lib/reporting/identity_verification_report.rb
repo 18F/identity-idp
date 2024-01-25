@@ -231,7 +231,6 @@ module Reporting
       data_set[Events::FRAUD_REVIEW_PASSED].count
     end
 
-    # rubocop:disable Layout/LineLength
     # Turns query results into a hash keyed by event name, values are a count of unique users
     # for that event
     # @return [Hash<Set<String>>]
@@ -248,55 +247,43 @@ module Reporting
           h[event_name] = Set.new
         end
 
-        # rubocop:disable Metrics/BlockLength
         # IDEA: maybe there's a block form if this we can do that yields results as it loads them
         # to go slightly faster
         fetch_results.each do |row|
-          event = row['name']
-          user_id = row['user_id']
-          success = row['success']
-
-          all_data['all'][event] << user_id
-
-          case event
-          when Events::IDV_FINAL_RESOLUTION
-            all_data['all'][Results::IDV_FINAL_RESOLUTION_VERIFIED] << user_id if row['identity_verified'] == '1'
-            all_data['all'][Results::IDV_FINAL_RESOLUTION_GPO] << user_id if row['gpo_verification_pending'] == '1'
-            all_data['all'][Results::IDV_FINAL_RESOLUTION_IN_PERSON] << user_id if row['in_person_verification_pending'] == '1'
-            all_data['all'][Results::IDV_FINAL_RESOLUTION_FRAUD_REVIEW] << user_id if row['fraud_review_pending'] == '1'
-          when Events::IDV_DOC_AUTH_IMAGE_UPLOAD
-            all_data['all'][Results::IDV_REJECT_DOC_AUTH] << user_id if row['doc_auth_failed_non_fraud'] == '1'
-          when Events::IDV_DOC_AUTH_VERIFY_RESULTS
-            all_data['all'][Results::IDV_REJECT_VERIFY] << user_id if success == '0'
-          when Events::IDV_PHONE_FINDER_RESULTS
-            all_data['all'][Results::IDV_REJECT_PHONE_FINDER] << user_id if success == '0'
-          end
+          fetch_row(all_data['all'], row)
 
           if row['ab_tests'].present?
             row['ab_tests'].keys.each do |ab_test|
               bucket = row['ab_tests'][ab_test]
               @ab_tests[ab_test] << bucket
-              all_data[ab_test][bucket][event] << user_id
-
-              case event
-              when Events::IDV_FINAL_RESOLUTION
-                all_data[ab_test][bucket][Results::IDV_FINAL_RESOLUTION_VERIFIED] << user_id if row['identity_verified'] == '1'
-                all_data[ab_test][bucket][Results::IDV_FINAL_RESOLUTION_GPO] << user_id if row['gpo_verification_pending'] == '1'
-                all_data[ab_test][bucket][Results::IDV_FINAL_RESOLUTION_IN_PERSON] << user_id if row['in_person_verification_pending'] == '1'
-                all_data[ab_test][bucket][Results::IDV_FINAL_RESOLUTION_FRAUD_REVIEW] << user_id if row['fraud_review_pending'] == '1'
-              when Events::IDV_DOC_AUTH_IMAGE_UPLOAD
-                all_data[ab_test][bucket][Results::IDV_REJECT_DOC_AUTH] << user_id if row['doc_auth_failed_non_fraud'] == '1'
-              when Events::IDV_DOC_AUTH_VERIFY_RESULTS
-                all_data[ab_test][bucket][Results::IDV_REJECT_VERIFY] << user_id if success == '0'
-              when Events::IDV_PHONE_FINDER_RESULTS
-                all_data[ab_test][bucket][Results::IDV_REJECT_PHONE_FINDER] << user_id if success == '0'
-              end
+              fetch_row(all_data[ab_test][bucket], row)
             end
           end
         end
-        # rubocop:enable Metrics/BlockLength
-
         all_data
+      end
+    end
+
+    # rubocop:disable Layout/LineLength
+    def fetch_row(data_set, row)
+      event = row['name']
+      user_id = row['user_id']
+      success = row['success']
+
+      data_set[event] << user_id
+
+      case event
+      when Events::IDV_FINAL_RESOLUTION
+        data_set[Results::IDV_FINAL_RESOLUTION_VERIFIED] << user_id if row['identity_verified'] == '1'
+        data_set[Results::IDV_FINAL_RESOLUTION_GPO] << user_id if row['gpo_verification_pending'] == '1'
+        data_set[Results::IDV_FINAL_RESOLUTION_IN_PERSON] << user_id if row['in_person_verification_pending'] == '1'
+        data_set[Results::IDV_FINAL_RESOLUTION_FRAUD_REVIEW] << user_id if row['fraud_review_pending'] == '1'
+      when Events::IDV_DOC_AUTH_IMAGE_UPLOAD
+        data_set[Results::IDV_REJECT_DOC_AUTH] << user_id if row['doc_auth_failed_non_fraud'] == '1'
+      when Events::IDV_DOC_AUTH_VERIFY_RESULTS
+        data_set[Results::IDV_REJECT_VERIFY] << user_id if success == '0'
+      when Events::IDV_PHONE_FINDER_RESULTS
+        data_set[Results::IDV_REJECT_PHONE_FINDER] << user_id if success == '0'
       end
     end
     # rubocop:enable Layout/LineLength
