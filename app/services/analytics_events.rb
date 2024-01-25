@@ -1658,16 +1658,25 @@ module AnalyticsEvents
   #        current proofing components
   # @param [String] address_verification_method The method (phone or gpo) being
   #        used to verify the user's identity
+  # @param [Boolean] skip_hybrid_handoff
+  # @param [String] lexisnexis_instant_verify_workflow_ab_test_bucket
+  # @param [String] acuant_sdk_upgrade_ab_test_bucket
   # User visited IDV password confirm page
   def idv_enter_password_visited(
     proofing_components: nil,
     address_verification_method: nil,
+    skip_hybrid_handoff: nil,
+    lexisnexis_instant_verify_workflow_ab_test_bucket: nil,
+    acuant_sdk_upgrade_ab_test_bucket: nil,
     **extra
   )
     track_event(
       :idv_enter_password_visited,
       address_verification_method: address_verification_method,
       proofing_components: proofing_components,
+      skip_hybrid_handoff:,
+      lexisnexis_instant_verify_workflow_ab_test_bucket:,
+      acuant_sdk_upgrade_ab_test_bucket:,
       **extra,
     )
   end
@@ -3288,6 +3297,9 @@ module AnalyticsEvents
   # @param [Integer] second_factor_attempts_count number of attempts to confirm this phone
   # @param [Time, nil] second_factor_locked_at timestamp when the phone was locked out
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # @param [Boolean] skip_hybrid_handoff
+  # @param [String] lexisnexis_instant_verify_workflow_ab_test_bucket
+  # @param [String] acuant_sdk_upgrade_ab_test_bucket
   # When a user attempts to confirm posession of a new phone number during the IDV process
   def idv_phone_confirmation_otp_submitted(
     success:,
@@ -3297,6 +3309,9 @@ module AnalyticsEvents
     second_factor_attempts_count:,
     second_factor_locked_at:,
     proofing_components: nil,
+    skip_hybrid_handoff: nil,
+    lexisnexis_instant_verify_workflow_ab_test_bucket: nil,
+    acuant_sdk_upgrade_ab_test_bucket: nil,
     **extra
   )
     track_event(
@@ -3308,6 +3323,9 @@ module AnalyticsEvents
       second_factor_attempts_count: second_factor_attempts_count,
       second_factor_locked_at: second_factor_locked_at,
       proofing_components: proofing_components,
+      skip_hybrid_handoff:,
+      lexisnexis_instant_verify_workflow_ab_test_bucket:,
+      acuant_sdk_upgrade_ab_test_bucket:,
       **extra,
     )
   end
@@ -3325,11 +3343,23 @@ module AnalyticsEvents
   # @param [Boolean] success
   # @param [Hash] errors
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # @param [String] vendor
+  # @param [String] area_code
+  # @param [String] country_code
+  # @param [String] phone_fingerprint
+  # @param [Boolean] new_phone_added
+  # @param [Boolean] hybrid_handoff_phone_used
   # The vendor finished the process of confirming the users phone
   def idv_phone_confirmation_vendor_submitted(
     success:,
     errors:,
     proofing_components: nil,
+    vendor: nil,
+    area_code: nil,
+    country_code: nil,
+    phone_fingerprint: nil,
+    new_phone_added: nil,
+    hybrid_handoff_phone_used: nil,
     **extra
   )
     track_event(
@@ -3337,6 +3367,12 @@ module AnalyticsEvents
       success: success,
       errors: errors,
       proofing_components: proofing_components,
+      vendor: vendor,
+      area_code: area_code,
+      country_code: country_code,
+      phone_fingerprint: phone_fingerprint,
+      new_phone_added: new_phone_added,
+      hybrid_handoff_phone_used: hybrid_handoff_phone_used,
       **extra,
     )
   end
