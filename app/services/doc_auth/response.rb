@@ -103,5 +103,10 @@ module DocAuth
       # to be implemented by concrete subclass
       false
     end
+
+    def selfie_status
+      # to be implemented by concrete subclass
+      :not_processed
+    end
   end
 end

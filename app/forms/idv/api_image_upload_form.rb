@@ -478,14 +478,13 @@ module Idv
           failed_front_fingerprint = extra_attributes[:front_image_fingerprint]
           failed_back_fingerprint = extra_attributes[:back_image_fingerprint]
         end
-        document_capture_session.
-          store_failed_auth_data(
-            front_image_fingerprint: failed_front_fingerprint,
-            back_image_fingerprint: failed_back_fingerprint,
-            selfie_image_fingerprint: extra_attributes[:selfie_image_fingerprint],
-            doc_auth_success: client_response.doc_auth_success?,
-            selfie_status: selfie_status_from_response(client_response),
-          )
+        document_capture_session.store_failed_auth_data(
+          front_image_fingerprint: failed_front_fingerprint,
+          back_image_fingerprint: failed_back_fingerprint,
+          selfie_image_fingerprint: extra_attributes[:selfie_image_fingerprint],
+          doc_auth_success: client_response.doc_auth_success?,
+          selfie_status: selfie_status_from_response(client_response),
+        )
       elsif doc_pii_response && !doc_pii_response.success?
         document_capture_session.store_failed_auth_data(
           front_image_fingerprint: extra_attributes[:front_image_fingerprint],

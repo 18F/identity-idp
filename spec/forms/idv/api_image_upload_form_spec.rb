@@ -176,7 +176,7 @@ RSpec.describe Idv::ApiImageUploadForm do
         expect(response).to be_a_kind_of DocAuth::Response
         expect(response.success?).to eq(true)
         expect(response.doc_auth_success?).to eq(true)
-        expect(response.selfie_success).to be_nil
+        expect(response.selfie_status).to eq(:not_processed)
         expect(response.errors).to eq({})
         expect(response.attention_with_barcode?).to eq(false)
         expect(response.pii_from_doc).to eq(Idp::Constants::MOCK_IDV_APPLICANT)
@@ -217,6 +217,7 @@ RSpec.describe Idv::ApiImageUploadForm do
             front_image_fingerprint: an_instance_of(String),
             back_image_fingerprint: an_instance_of(String),
             selfie_image_fingerprint: an_instance_of(String),
+            liveness_checking_required: boolean,
           )
 
           expect(fake_analytics).to have_logged_event(
@@ -253,8 +254,11 @@ RSpec.describe Idv::ApiImageUploadForm do
             back_image_fingerprint: an_instance_of(String),
             selfie_image_fingerprint: an_instance_of(String),
             doc_type_supported: boolean,
+            liveness_checking_required: boolean,
+            selfie_live: boolean,
+            selfie_quality_good: boolean,
             doc_auth_success: boolean,
-            selfie_success: anything,
+            selfie_status: :success,
             portrait_match_results: anything, # this shouldn't be here
           )
         end
@@ -266,7 +270,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           expect(response.success?).to eq(true)
           expect(response.doc_auth_success?).to eq(true)
           expect(response.selfie_check_performed?).to eq(true)
-          expect(response.selfie_success).to eq(true)
+          expect(response.selfie_status).to eq(:success)
           expect(response.errors).to eq({})
           expect(response.attention_with_barcode?).to eq(false)
           # expect(response.pii_from_doc).to eq(Idp::Constants::MOCK_IDV_APPLICANT)
@@ -378,7 +382,7 @@ RSpec.describe Idv::ApiImageUploadForm do
         expect(response).to be_a_kind_of DocAuth::Response
         expect(response.success?).to eq(false)
         expect(response.doc_auth_success?).to eq(false)
-        expect(response.selfie_success).to be_nil
+        expect(response.selfie_status).to eq(:not_processed)
         expect(response.attention_with_barcode?).to eq(false)
         expect(response.pii_from_doc).to eq({})
       end
@@ -413,7 +417,7 @@ RSpec.describe Idv::ApiImageUploadForm do
 
         before do
           allow(failed_response).to receive(:doc_auth_success?).and_return(true)
-          allow(failed_response).to receive(:selfie_success).and_return(false)
+          allow(failed_response).to receive(:selfie_status).and_return(:fail)
         end
 
         it 'includes client response errors' do
@@ -526,6 +530,7 @@ RSpec.describe Idv::ApiImageUploadForm do
             front_image_fingerprint: an_instance_of(String),
             back_image_fingerprint: an_instance_of(String),
             selfie_image_fingerprint: nil,
+            liveness_checking_required: boolean,
             side: 'both',
           )
         end
