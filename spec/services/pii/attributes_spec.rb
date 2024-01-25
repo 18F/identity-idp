@@ -70,6 +70,11 @@ RSpec.describe Pii::Attributes do
       expect(pii.identity_doc_zipcode).to eq('20005')
       expect(pii.identity_doc_address_state).to eq('NY')
     end
+
+    it 'accepts Date values' do
+      pii = described_class.new_from_hash(dob: Date.new(2000, 1, 2))
+      expect(pii.dob).to eql(Date.new(2000, 1, 2))
+    end
   end
 
   describe '#new_from_json' do
