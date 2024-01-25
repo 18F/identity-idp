@@ -121,6 +121,11 @@ RSpec.describe DocAuth::LexisNexis::LexisNexisClient do
   end
 
   context 'with selfie check enabled' do
+    ## enable feature
+    let(:workflow) { 'LIVENESS.CROPPING.WORKFLOW' }
+    before do
+      allow(FeatureManagement).to receive(:idv_allow_selfie_check?).and_return(true)
+    end
     describe 'when success response returned' do
       before do
         stub_request(:post, image_upload_url).to_return(
@@ -138,7 +143,9 @@ RSpec.describe DocAuth::LexisNexis::LexisNexisClient do
         expect(result.success?).to eq(true)
         expect(result.class).to eq(DocAuth::LexisNexis::Responses::TrueIdResponse)
         expect(result.doc_auth_success?).to eq(true)
-        expect(result.selfie_success).to eq(true)
+        expect(result.selfie_live?).to eq(true)
+        expect(result.selfie_quality_good?).to eq(true)
+        expect(result.selfie_check_performed?).to eq(true)
       end
     end
 
@@ -160,7 +167,11 @@ RSpec.describe DocAuth::LexisNexis::LexisNexisClient do
         expect(result.success?).to eq(false)
         expect(result.class).to eq(DocAuth::LexisNexis::Responses::TrueIdResponse)
         expect(result.doc_auth_success?).to eq(false)
-        expect(result.selfie_success).to eq(false)
+        result_hash = result.to_h
+        expect(result_hash[:selfie_status]).to eq(:fail)
+        expect(result.selfie_live?).to eq(true)
+        expect(result.selfie_quality_good?).to eq(false)
+        expect(result.selfie_check_performed?).to eq(true)
       end
     end
 
@@ -181,9 +192,10 @@ RSpec.describe DocAuth::LexisNexis::LexisNexisClient do
         expect(result.exception.message).to eq(
           'DocAuth::LexisNexis::Requests::TrueIdRequest Unexpected HTTP response 401',
         )
-        expect(result.selfie_success).to eq(nil)
         result_hash = result.to_h
         expect(result_hash[:vendor]).to eq('TrueID')
+        expect(result_hash[:doc_auth_success]).to eq(false)
+        expect(result_hash[:selfie_status]).to eq(:not_processed)
         expect(result.class).to eq(DocAuth::Response)
       end
     end
