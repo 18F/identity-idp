@@ -44,10 +44,6 @@ describe('DocumentCapturePolling', () => {
     subject.bind();
   });
 
-  afterEach(() => {
-    subject.bindPromptOnNavigate(false);
-  });
-
   it('hides form', () => {
     expect(screen.getByText('Submit').closest('.display-none')).to.be.ok();
   });

@@ -1,5 +1,4 @@
 import { trackEvent as defaultTrackEvent } from '@18f/identity-analytics';
-import { promptOnNavigate } from '@18f/identity-prompt-on-navigate';
 
 export const DOC_CAPTURE_TIMEOUT = 1000 * 60 * 25; // 25 minutes
 export const DOC_CAPTURE_POLL_INTERVAL = 5000;
@@ -45,8 +44,6 @@ export class DocumentCapturePolling {
 
   pollAttempts = 0;
 
-  cleanUpPromptOnNavigate: (() => void) | undefined;
-
   constructor({
     elements,
     statusEndpoint,
@@ -61,27 +58,10 @@ export class DocumentCapturePolling {
     this.toggleFormVisible(false);
     this.trackEvent('IdV: Link sent capture doc polling started');
     this.schedulePoll();
-    this.bindPromptOnNavigate(true);
-    this.elements.backLink.addEventListener('click', () => this.bindPromptOnNavigate(false));
   }
 
   toggleFormVisible(isVisible: boolean) {
     this.elements.form.classList.toggle('display-none', !isVisible);
-  }
-
-  /**
-   * @param {boolean} shouldPrompt Whether to bind or unbind page unload behavior.
-   */
-  bindPromptOnNavigate(shouldPrompt) {
-    const isAlreadyBound = !!this.cleanUpPromptOnNavigate;
-
-    if (shouldPrompt && !isAlreadyBound) {
-      this.cleanUpPromptOnNavigate = promptOnNavigate();
-    } else if (!shouldPrompt && isAlreadyBound) {
-      const cleanUp = this.cleanUpPromptOnNavigate ?? (() => {});
-      this.cleanUpPromptOnNavigate = undefined;
-      cleanUp();
-    }
   }
 
   onMaxPollAttempts() {
@@ -93,7 +73,6 @@ export class DocumentCapturePolling {
       isCancelled: result === ResultType.CANCELLED,
       isRateLimited: result === ResultType.RATE_LIMITED,
     });
-    this.bindPromptOnNavigate(false);
     if (redirect) {
       window.location.href = redirect;
     } else {
