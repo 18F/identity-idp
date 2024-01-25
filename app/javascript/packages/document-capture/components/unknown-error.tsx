@@ -12,6 +12,7 @@ interface UnknownErrorProps extends ComponentProps<'p'> {
   isFailedSelfieLivenessOrQuality: boolean;
   remainingAttempts: number;
   altFailedDocTypeMsg?: string | null;
+  altIsFailedSelfieLivenessOrQualityMessage?: boolean;
   hasDismissed: boolean;
 }
 
@@ -31,6 +32,7 @@ function UnknownError({
   isFailedSelfieLivenessOrQuality = false,
   remainingAttempts,
   altFailedDocTypeMsg = null,
+  altIsFailedSelfieLivenessOrQualityMessage = false,
   hasDismissed,
 }: UnknownErrorProps) {
   const { t } = useI18n();
@@ -65,6 +67,9 @@ function UnknownError({
         />
       </p>
     );
+  }
+  if (isFailedSelfieLivenessOrQuality && !!altIsFailedSelfieLivenessOrQualityMessage) {
+    return <p>THIS IS THE REVIEW PAGE TEXT</p>;
   }
   if (isFailedSelfieLivenessOrQuality && err) {
     return (
