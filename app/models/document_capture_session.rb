@@ -43,7 +43,7 @@ class DocumentCaptureSession < ApplicationRecord
       session_result.add_failed_back_image!(back_image_fingerprint)
     end
     if selfie_status == :fail
-      session_result.add_selfie_back_image!(selfie_image_fingerprint)
+      session_result.add_failed_selfie_image!(selfie_image_fingerprint)
     end
     EncryptedRedisStructStorage.store(
       session_result,

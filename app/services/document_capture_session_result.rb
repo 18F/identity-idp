@@ -34,7 +34,9 @@ DocumentCaptureSessionResult = RedactedStruct.new(
     define_method("add_failed_#{side}_image!") do |fingerprint|
       member_name = "failed_#{side}_image_fingerprints"
       self[member_name] ||= []
-      self[member_name] << fingerprint if fingerprint
+      if fingerprint && !self[member_name].include?(fingerprint)
+        self[member_name] << fingerprint
+      end
     end
 
     define_method("failed_#{side}_image?") do |fingerprint|
