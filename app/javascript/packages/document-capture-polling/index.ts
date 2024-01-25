@@ -58,10 +58,24 @@ export class DocumentCapturePolling {
     this.toggleFormVisible(false);
     this.trackEvent('IdV: Link sent capture doc polling started');
     this.schedulePoll();
+    this.bindPromptOnNavigate(true);
+    this.elements.backLink.addEventListener('click', () => this.bindPromptOnNavigate(false));
   }
 
   toggleFormVisible(isVisible: boolean) {
     this.elements.form.classList.toggle('display-none', !isVisible);
+  }
+
+  /**
+   * @param {boolean} shouldPrompt Whether to bind or unbind page unload behavior.
+   */
+  bindPromptOnNavigate(shouldPrompt) {
+    window.onbeforeunload = shouldPrompt
+      ? (event) => {
+          event.preventDefault();
+          event.returnValue = '';
+        }
+      : null;
   }
 
   onMaxPollAttempts() {
@@ -73,6 +87,7 @@ export class DocumentCapturePolling {
       isCancelled: result === ResultType.CANCELLED,
       isRateLimited: result === ResultType.RATE_LIMITED,
     });
+    this.bindPromptOnNavigate(false);
     if (redirect) {
       window.location.href = redirect;
     } else {
