@@ -468,8 +468,12 @@ module Idv
         failed_front_fingerprint = nil
         failed_back_fingerprint = nil
         if errors_hash[:front] || errors_hash[:back]
-          failed_front_fingerprint = extra_attributes[:front_image_fingerprint] if errors_hash[:front]
-          failed_back_fingerprint = extra_attributes[:back_image_fingerprint] if errors_hash[:back]
+          if errors_hash[:front]
+            failed_front_fingerprint = extra_attributes[:front_image_fingerprint]
+          end
+          if errors_hash[:back]
+            failed_back_fingerprint = extra_attributes[:back_image_fingerprint]
+          end
         elsif !client_response.doc_auth_success?
           failed_front_fingerprint = extra_attributes[:front_image_fingerprint]
           failed_back_fingerprint = extra_attributes[:back_image_fingerprint]

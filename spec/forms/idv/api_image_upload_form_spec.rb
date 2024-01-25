@@ -432,7 +432,8 @@ RSpec.describe Idv::ApiImageUploadForm do
           expect(capture_result.failed_selfie_image_fingerprints.length).to eq(1)
           response = form.submit
           expect(response.errors).to have_key(:selfie)
-          expect(response.errors).to have_value([I18n.t('doc_auth.errors.doc.resubmit_failed_image')])
+          expect(response.errors).
+            to have_value([I18n.t('doc_auth.errors.doc.resubmit_failed_image')])
         end
       end
     end
@@ -514,7 +515,8 @@ RSpec.describe Idv::ApiImageUploadForm do
           response = form.submit
           expect(response.errors).to have_key(:front)
           expect(response.errors).to have_key(:back)
-          expect(response.errors).to have_value([I18n.t('doc_auth.errors.doc.resubmit_failed_image')])
+          expect(response.errors).
+            to have_value([I18n.t('doc_auth.errors.doc.resubmit_failed_image')])
           expect(fake_analytics).to have_logged_event(
             'IdV: failed doc image resubmitted',
             attempts: 1,
