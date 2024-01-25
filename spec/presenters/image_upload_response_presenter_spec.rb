@@ -181,7 +181,7 @@ RSpec.describe ImageUploadResponsePresenter do
           remaining_attempts: 3,
           ocr_pii: nil,
           doc_type_supported: true,
-          failed_image_fingerprints: { back: [], front: [] },
+          failed_image_fingerprints: { back: [], front: [], selfie: [] },
         }
 
         expect(presenter.as_json).to eq expected
@@ -208,7 +208,7 @@ RSpec.describe ImageUploadResponsePresenter do
             remaining_attempts: 3,
             ocr_pii: nil,
             doc_type_supported: true,
-            failed_image_fingerprints: { front: [], back: [] },
+            failed_image_fingerprints: { front: [], back: [], selfie: [] },
           }
 
           expect(presenter.as_json).to eq expected
@@ -245,7 +245,7 @@ RSpec.describe ImageUploadResponsePresenter do
               remaining_attempts: 0,
               ocr_pii: nil,
               doc_type_supported: true,
-              failed_image_fingerprints: { front: [], back: [] },
+              failed_image_fingerprints: { front: [], back: [], selfie: [] },
             }
 
             expect(presenter.as_json).to eq expected
@@ -262,7 +262,7 @@ RSpec.describe ImageUploadResponsePresenter do
             remaining_attempts: 0,
             ocr_pii: nil,
             doc_type_supported: true,
-            failed_image_fingerprints: { back: [], front: [] },
+            failed_image_fingerprints: { back: [], front: [], selfie: [] },
           }
 
           expect(presenter.as_json).to eq expected
@@ -290,7 +290,7 @@ RSpec.describe ImageUploadResponsePresenter do
           remaining_attempts: 3,
           ocr_pii: Idp::Constants::MOCK_IDV_APPLICANT.slice(:first_name, :last_name, :dob),
           doc_type_supported: true,
-          failed_image_fingerprints: { back: [], front: [] },
+          failed_image_fingerprints: { back: [], front: [], selfie: [] },
         }
 
         expect(presenter.as_json).to eq expected
@@ -316,7 +316,7 @@ RSpec.describe ImageUploadResponsePresenter do
             remaining_attempts: 3,
             ocr_pii: Idp::Constants::MOCK_IDV_APPLICANT.slice(:first_name, :last_name, :dob),
             doc_type_supported: true,
-            failed_image_fingerprints: { back: [], front: [] },
+            failed_image_fingerprints: { back: [], front: [], selfie: [] },
           }
 
           expect(presenter.as_json).to eq expected

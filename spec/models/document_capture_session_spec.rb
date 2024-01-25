@@ -95,6 +95,7 @@ RSpec.describe DocumentCaptureSession do
       record.store_failed_auth_data(
         front_image_fingerprint: 'fingerprint1',
         back_image_fingerprint: nil,
+        selfie_image_fingerprint: nil,
         doc_auth_success: false,
         selfie_status: :not_processed,
       )
@@ -116,6 +117,7 @@ RSpec.describe DocumentCaptureSession do
       record.store_failed_auth_data(
         front_image_fingerprint: 'fingerprint1',
         back_image_fingerprint: nil,
+        selfie_image_fingerprint: nil,
         doc_auth_success: false,
         selfie_status: :not_processed,
       )
@@ -124,6 +126,7 @@ RSpec.describe DocumentCaptureSession do
       record.store_failed_auth_data(
         front_image_fingerprint: 'fingerprint2',
         back_image_fingerprint: 'fingerprint3',
+        selfie_image_fingerprint: nil, # should add selfie
         doc_auth_success: false,
         selfie_status: :not_processed,
       )

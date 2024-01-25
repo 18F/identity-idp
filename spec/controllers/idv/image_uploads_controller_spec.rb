@@ -132,6 +132,7 @@ RSpec.describe Idv::ImageUploadsController do
           flow_path: 'standard',
           front_image_fingerprint: nil,
           back_image_fingerprint: an_instance_of(String),
+          selfie_image_fingerprint: nil,
           liveness_checking_required: boolean,
         )
 
@@ -203,7 +204,7 @@ RSpec.describe Idv::ImageUploadsController do
             result_failed: false,
             ocr_pii: nil,
             doc_type_supported: true,
-            failed_image_fingerprints: { front: [], back: [] },
+            failed_image_fingerprints: { front: [], back: [], selfie: [] },
           },
         )
       end
@@ -219,7 +220,7 @@ RSpec.describe Idv::ImageUploadsController do
             result_failed: false,
             ocr_pii: nil,
             doc_type_supported: true,
-            failed_image_fingerprints: { front: [], back: [] },
+            failed_image_fingerprints: { front: [], back: [], selfie: [] },
           }
         end
 
@@ -267,6 +268,7 @@ RSpec.describe Idv::ImageUploadsController do
           flow_path: 'standard',
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
+          selfie_image_fingerprint: nil,
           liveness_checking_required: boolean,
         )
 
@@ -410,6 +412,7 @@ RSpec.describe Idv::ImageUploadsController do
           flow_path: 'standard',
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
+          selfie_image_fingerprint: nil,
           liveness_checking_required: boolean,
         )
 
@@ -436,6 +439,7 @@ RSpec.describe Idv::ImageUploadsController do
           vendor_request_time_in_ms: a_kind_of(Float),
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
+          selfie_image_fingerprint: nil,
           doc_type_supported: boolean,
           doc_auth_success: boolean,
           selfie_status: :not_processed,
@@ -456,6 +460,7 @@ RSpec.describe Idv::ImageUploadsController do
           flow_path: 'standard',
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
+          selfie_image_fingerprint: nil,
           liveness_checking_required: boolean,
           classification_info: a_kind_of(Hash),
         )
@@ -593,6 +598,7 @@ RSpec.describe Idv::ImageUploadsController do
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
+              selfie_image_fingerprint: nil,
               liveness_checking_required: boolean,
             )
 
@@ -619,6 +625,7 @@ RSpec.describe Idv::ImageUploadsController do
               vendor_request_time_in_ms: a_kind_of(Float),
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
+              selfie_image_fingerprint: nil,
               doc_type_supported: boolean,
               doc_auth_success: boolean,
               selfie_status: :not_processed,
@@ -644,6 +651,7 @@ RSpec.describe Idv::ImageUploadsController do
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
+              selfie_image_fingerprint: nil,
               liveness_checking_required: boolean,
               classification_info: hash_including(
                 Front: hash_including(ClassName: 'Identification Card', CountryCode: 'USA'),
@@ -689,6 +697,7 @@ RSpec.describe Idv::ImageUploadsController do
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
+              selfie_image_fingerprint: nil,
               liveness_checking_required: boolean,
             )
 
@@ -715,6 +724,7 @@ RSpec.describe Idv::ImageUploadsController do
               vendor_request_time_in_ms: a_kind_of(Float),
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
+              selfie_image_fingerprint: nil,
               doc_type_supported: boolean,
               doc_auth_success: boolean,
               selfie_status: :not_processed,
@@ -740,6 +750,7 @@ RSpec.describe Idv::ImageUploadsController do
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
+              selfie_image_fingerprint: nil,
               liveness_checking_required: boolean,
               classification_info: hash_including(
                 Front: hash_including(ClassName: 'Identification Card', CountryCode: 'USA'),
@@ -785,6 +796,7 @@ RSpec.describe Idv::ImageUploadsController do
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
+              selfie_image_fingerprint: nil,
               liveness_checking_required: boolean,
             )
 
@@ -811,6 +823,7 @@ RSpec.describe Idv::ImageUploadsController do
               vendor_request_time_in_ms: a_kind_of(Float),
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
+              selfie_image_fingerprint: nil,
               doc_type_supported: boolean,
               doc_auth_success: boolean,
               selfie_status: :not_processed,
@@ -836,6 +849,7 @@ RSpec.describe Idv::ImageUploadsController do
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
+              selfie_image_fingerprint: nil,
               liveness_checking_required: boolean,
               classification_info: hash_including(:Front, :Back),
             )
@@ -878,6 +892,7 @@ RSpec.describe Idv::ImageUploadsController do
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
+              selfie_image_fingerprint: nil,
               liveness_checking_required: boolean,
             )
 
@@ -904,6 +919,7 @@ RSpec.describe Idv::ImageUploadsController do
               vendor_request_time_in_ms: a_kind_of(Float),
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
+              selfie_image_fingerprint: nil,
               doc_type_supported: boolean,
               doc_auth_success: boolean,
               selfie_status: :not_processed,
@@ -929,6 +945,7 @@ RSpec.describe Idv::ImageUploadsController do
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
+              selfie_image_fingerprint: nil,
               liveness_checking_required: boolean,
               classification_info: hash_including(:Front, :Back),
             )
@@ -994,6 +1011,7 @@ RSpec.describe Idv::ImageUploadsController do
           flow_path: 'standard',
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
+          selfie_image_fingerprint: nil,
           liveness_checking_required: boolean,
         )
 
@@ -1022,6 +1040,7 @@ RSpec.describe Idv::ImageUploadsController do
           vendor_request_time_in_ms: a_kind_of(Float),
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
+          selfie_image_fingerprint: nil,
           doc_type_supported: boolean,
           doc_auth_success: boolean,
           selfie_status: :not_processed,
@@ -1068,6 +1087,7 @@ RSpec.describe Idv::ImageUploadsController do
           flow_path: 'standard',
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
+          selfie_image_fingerprint: nil,
           liveness_checking_required: boolean,
         )
 
@@ -1098,6 +1118,7 @@ RSpec.describe Idv::ImageUploadsController do
           vendor_request_time_in_ms: a_kind_of(Float),
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
+          selfie_image_fingerprint: nil,
           doc_type_supported: boolean,
           doc_auth_success: boolean,
           selfie_status: :not_processed,
