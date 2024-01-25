@@ -16,7 +16,7 @@ module Idv
         buckets = buckets.merge(lniv_args)
       end
 
-      { ab_test_buckets: buckets.merge(acuant_sdk_ab_test_analytics_args) }
+      { ab_tests: buckets.merge(acuant_sdk_ab_test_analytics_args) }
     end
   end
 end

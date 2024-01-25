@@ -112,43 +112,43 @@ RSpec.describe Reporting::IdentityVerificationReport do
   let(:cloudwatch_results) do
     [
       # Online verification user (failed each vendor once, then suceeded once)
-      { 'user_id' => 'user1', 'name' => 'IdV: doc auth welcome visited', 'ab_test_buckets' => ab_tests_default },
-      { 'user_id' => 'user1', 'name' => 'IdV: doc auth welcome submitted', 'ab_test_buckets' => ab_tests_default },
-      { 'user_id' => 'user1', 'name' => 'IdV: doc auth image upload vendor submitted', 'doc_auth_failed_non_fraud' => '1', 'ab_test_buckets' => ab_tests_default },
-      { 'user_id' => 'user1', 'name' => 'IdV: doc auth image upload vendor submitted', 'success' => '1', 'ab_test_buckets' => ab_tests_default },
-      { 'user_id' => 'user1', 'name' => 'IdV: doc auth verify proofing results', 'success' => '0', 'ab_test_buckets' => ab_tests_default },
-      { 'user_id' => 'user1', 'name' => 'IdV: doc auth verify proofing results', 'success' => '1', 'ab_test_buckets' => ab_tests_default },
-      { 'user_id' => 'user1', 'name' => 'IdV: phone confirmation vendor', 'success' => '0', 'ab_test_buckets' => ab_tests_default },
-      { 'user_id' => 'user1', 'name' => 'IdV: phone confirmation vendor', 'success' => '1', 'ab_test_buckets' => ab_tests_default },
-      { 'user_id' => 'user1', 'name' => 'IdV: final resolution', 'identity_verified' => '1', 'ab_test_buckets' => ab_tests_default },
+      { 'user_id' => 'user1', 'name' => 'IdV: doc auth welcome visited', 'ab_tests' => ab_tests_default },
+      { 'user_id' => 'user1', 'name' => 'IdV: doc auth welcome submitted', 'ab_tests' => ab_tests_default },
+      { 'user_id' => 'user1', 'name' => 'IdV: doc auth image upload vendor submitted', 'doc_auth_failed_non_fraud' => '1', 'ab_tests' => ab_tests_default },
+      { 'user_id' => 'user1', 'name' => 'IdV: doc auth image upload vendor submitted', 'success' => '1', 'ab_tests' => ab_tests_default },
+      { 'user_id' => 'user1', 'name' => 'IdV: doc auth verify proofing results', 'success' => '0', 'ab_tests' => ab_tests_default },
+      { 'user_id' => 'user1', 'name' => 'IdV: doc auth verify proofing results', 'success' => '1', 'ab_tests' => ab_tests_default },
+      { 'user_id' => 'user1', 'name' => 'IdV: phone confirmation vendor', 'success' => '0', 'ab_tests' => ab_tests_default },
+      { 'user_id' => 'user1', 'name' => 'IdV: phone confirmation vendor', 'success' => '1', 'ab_tests' => ab_tests_default },
+      { 'user_id' => 'user1', 'name' => 'IdV: final resolution', 'identity_verified' => '1', 'ab_tests' => ab_tests_default },
 
       # Letter requested user (incomplete)
-      { 'user_id' => 'user2', 'name' => 'IdV: doc auth welcome visited', 'ab_test_buckets' => ab_tests_alt1 },
-      { 'user_id' => 'user2', 'name' => 'IdV: doc auth welcome submitted', 'ab_test_buckets' => ab_tests_alt1 },
-      { 'user_id' => 'user2', 'name' => 'IdV: doc auth image upload vendor submitted', 'success' => '1', 'ab_test_buckets' => ab_tests_alt1 },
-      { 'user_id' => 'user2', 'name' => 'IdV: final resolution', 'gpo_verification_pending' => '1', 'ab_test_buckets' => ab_tests_alt1 },
+      { 'user_id' => 'user2', 'name' => 'IdV: doc auth welcome visited', 'ab_tests' => ab_tests_alt1 },
+      { 'user_id' => 'user2', 'name' => 'IdV: doc auth welcome submitted', 'ab_tests' => ab_tests_alt1 },
+      { 'user_id' => 'user2', 'name' => 'IdV: doc auth image upload vendor submitted', 'success' => '1', 'ab_tests' => ab_tests_alt1 },
+      { 'user_id' => 'user2', 'name' => 'IdV: final resolution', 'gpo_verification_pending' => '1', 'ab_tests' => ab_tests_alt1 },
 
       # Fraud review user (incomplete)
-      { 'user_id' => 'user3', 'name' => 'IdV: doc auth welcome visited', 'ab_test_buckets' => ab_tests_default },
-      { 'user_id' => 'user3', 'name' => 'IdV: doc auth welcome submitted', 'ab_test_buckets' => ab_tests_default },
-      { 'user_id' => 'user3', 'name' => 'IdV: doc auth image upload vendor submitted', 'success' => '1', 'ab_test_buckets' => ab_tests_default },
-      { 'user_id' => 'user3', 'name' => 'IdV: final resolution', 'fraud_review_pending' => '1', 'ab_test_buckets' => ab_tests_default },
-      { 'user_id' => 'user3', 'name' => 'Fraud: Profile review passed', 'success' => '1', 'ab_test_buckets' => ab_tests_default },
+      { 'user_id' => 'user3', 'name' => 'IdV: doc auth welcome visited', 'ab_tests' => ab_tests_default },
+      { 'user_id' => 'user3', 'name' => 'IdV: doc auth welcome submitted', 'ab_tests' => ab_tests_default },
+      { 'user_id' => 'user3', 'name' => 'IdV: doc auth image upload vendor submitted', 'success' => '1', 'ab_tests' => ab_tests_default },
+      { 'user_id' => 'user3', 'name' => 'IdV: final resolution', 'fraud_review_pending' => '1', 'ab_tests' => ab_tests_default },
+      { 'user_id' => 'user3', 'name' => 'Fraud: Profile review passed', 'success' => '1', 'ab_tests' => ab_tests_default },
 
       # Success through address confirmation user
-      { 'user_id' => 'user4', 'name' => 'IdV: GPO verification submitted', 'ab_test_buckets' => ab_tests_alt1 },
+      { 'user_id' => 'user4', 'name' => 'IdV: GPO verification submitted', 'ab_tests' => ab_tests_alt1 },
 
       # Success through in-person verification, failed doc auth (rejected)
-      { 'user_id' => 'user5', 'name' => 'IdV: doc auth welcome visited', 'ab_test_buckets' => ab_tests_default },
-      { 'user_id' => 'user5', 'name' => 'IdV: doc auth welcome submitted', 'ab_test_buckets' => ab_tests_default },
-      { 'user_id' => 'user5', 'name' => 'IdV: doc auth image upload vendor submitted', 'doc_auth_failed_non_fraud' => '1', 'ab_test_buckets' => ab_tests_default },
-      { 'user_id' => 'user5', 'name' => 'IdV: final resolution', 'in_person_verification_pending' => '1', 'ab_test_buckets' => ab_tests_default },
-      { 'user_id' => 'user5', 'name' => 'GetUspsProofingResultsJob: Enrollment status updated', 'ab_test_buckets' => ab_tests_default },
+      { 'user_id' => 'user5', 'name' => 'IdV: doc auth welcome visited', 'ab_tests' => ab_tests_default },
+      { 'user_id' => 'user5', 'name' => 'IdV: doc auth welcome submitted', 'ab_tests' => ab_tests_default },
+      { 'user_id' => 'user5', 'name' => 'IdV: doc auth image upload vendor submitted', 'doc_auth_failed_non_fraud' => '1', 'ab_tests' => ab_tests_default },
+      { 'user_id' => 'user5', 'name' => 'IdV: final resolution', 'in_person_verification_pending' => '1', 'ab_tests' => ab_tests_default },
+      { 'user_id' => 'user5', 'name' => 'GetUspsProofingResultsJob: Enrollment status updated', 'ab_tests' => ab_tests_default },
 
       # Incomplete user
-      { 'user_id' => 'user6', 'name' => 'IdV: doc auth welcome visited', 'ab_test_buckets' => ab_tests_alt2 },
-      { 'user_id' => 'user6', 'name' => 'IdV: doc auth welcome submitted', 'ab_test_buckets' => ab_tests_alt2 },
-      { 'user_id' => 'user6', 'name' => 'IdV: doc auth image upload vendor submitted', 'doc_auth_failed_non_fraud' => '1', 'ab_test_buckets' => ab_tests_alt2 },
+      { 'user_id' => 'user6', 'name' => 'IdV: doc auth welcome visited', 'ab_tests' => ab_tests_alt2 },
+      { 'user_id' => 'user6', 'name' => 'IdV: doc auth welcome submitted', 'ab_tests' => ab_tests_alt2 },
+      { 'user_id' => 'user6', 'name' => 'IdV: doc auth image upload vendor submitted', 'doc_auth_failed_non_fraud' => '1', 'ab_tests' => ab_tests_alt2 },
     ]
   end
   # rubocop:enable Layout/LineLength
@@ -246,7 +246,7 @@ RSpec.describe Reporting::IdentityVerificationReport do
 
   describe '#idv_doc_auth_rejected' do
     it 'is the number of users who failed proofing and never passed' do
-      expect(report.idv_doc_auth_rejected).to eq(1)
+      expect(report.idv_doc_auth_rejected(report.data['all'])).to eq(1)
     end
   end
 
