@@ -100,6 +100,16 @@ export interface UploadErrorResponse {
    */
   doc_type_supported: boolean;
 
+  /*
+   * Whether the selfie passed the liveness check from trueid
+   */
+  selfie_live: boolean;
+
+  /*
+   * Whether the selfie passed the quality check from trueid.
+   */
+  selfie_quality_good: boolean;
+
   /**
    * Record of failed image fingerprints
    */
