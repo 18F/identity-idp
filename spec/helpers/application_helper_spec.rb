@@ -96,4 +96,27 @@ RSpec.describe ApplicationHelper do
       end
     end
   end
+
+  describe '#selfie_status_from_response' do
+    context 'the response does not have selfie_status method defined on it' do
+      let(:success) { true }
+      let(:errors) { {} }
+      let(:exception) { nil }
+      let(:pii_from_doc) { {} }
+      let(:attention_with_barcode) { false }
+      let(:response) do
+        DocAuth::Response.new(
+          success: success,
+          errors: errors,
+          exception: exception,
+          pii_from_doc: pii_from_doc,
+          attention_with_barcode: attention_with_barcode,
+        )
+      end
+
+      it 'returns :not_processed' do
+        expect(selfie_status_from_response(response)).to eq(:not_processed)
+      end
+    end
+  end
 end
