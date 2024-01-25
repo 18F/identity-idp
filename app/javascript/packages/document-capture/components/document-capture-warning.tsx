@@ -44,7 +44,7 @@ function DocumentCaptureWarning({
   const { trackEvent } = useContext(AnalyticsContext);
 
   const nonIppOrFailedResult = !inPersonURL || isFailedResult;
-  const heading = t(getHeadingI8nKey({ isFailedDocType, isFailedSelfieLivenessOrQuality, t }));
+  const heading = getHeadingI8nKey({ isFailedDocType, isFailedSelfieLivenessOrQuality, t });
   const actionText = nonIppOrFailedResult
     ? t('idv.failure.button.warning')
     : t('idv.failure.button.try_online');
