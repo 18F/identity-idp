@@ -9,7 +9,8 @@ RSpec.describe DocumentCaptureSessionResult do
     it 'works with EncryptedRedisStructStorage' do
       result = DocumentCaptureSessionResult.new(
         id: id,
-        success: success,
+        doc_auth_success: success,
+        selfie_status: :success,
         pii: pii,
         attention_with_barcode: false,
       )
@@ -18,13 +19,15 @@ RSpec.describe DocumentCaptureSessionResult do
 
       expect(loaded_result.id).to eq(id)
       expect(loaded_result.success?).to eq(success)
+      expect(loaded_result)
       expect(loaded_result.pii).to eq(pii.deep_symbolize_keys)
       expect(loaded_result.attention_with_barcode?).to eq(false)
+      expect(loaded_result.selfie_status).to eq(:success)
+      expect(loaded_result.doc_auth_success).to eq(true)
     end
     it 'add fingerprint with EncryptedRedisStructStorage' do
       result = DocumentCaptureSessionResult.new(
         id: id,
-        success: success,
         pii: pii,
         attention_with_barcode: false,
       )
@@ -45,6 +48,31 @@ RSpec.describe DocumentCaptureSessionResult do
           selfie_status: 'success',
         )
         expect(result.selfie_status).to be_an_instance_of(Symbol)
+      end
+    end
+
+    describe '#success?' do
+      it 'doest not read old success value' do
+        result = DocumentCaptureSessionResult.new(
+          id: id,
+          success: false,
+          pii: pii,
+          attention_with_barcode: false,
+          selfie_status: :not_processed,
+          doc_auth_success: true,
+        )
+        expect(result.success?).to eq(true)
+      end
+      it 'reports correct value' do
+        result = DocumentCaptureSessionResult.new(
+          id: id,
+          success: false,
+          pii: pii,
+          attention_with_barcode: false,
+          selfie_status: :fail,
+          doc_auth_success: true,
+        )
+        expect(result.success?).to eq(false)
       end
     end
   end
