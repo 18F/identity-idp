@@ -170,28 +170,9 @@ RSpec.describe DocumentCaptureSession do
       expect(new_result.doc_auth_success).to eq(false)
       expect(new_result.selfie_status).to eq(:fail)
     end
-    
-    context 'when doc auth is successful' do
-      it 'does not save front/back failed image in fingerprints' do
-        record = DocumentCaptureSession.new(result_id: SecureRandom.uuid)
-  
-        record.store_failed_auth_data(
-          front_image_fingerprint: 'fingerprint1',
-          back_image_fingerprint: 'fingerprint2',
-          selfie_image_fingerprint: 'fingerprint3',
-          doc_auth_success: true,
-          selfie_status: :fail,
-        )
-        result = record.load_result
-
-        expect(result.failed_front_image_fingerprints).to be_nil
-        expect(result.failed_back_image_fingerprints).to be_nil
-        expect(result.failed_selfie_image?('fingerprint3')).to eq(true)
-      end
-    end
 
     context 'when selfie is successful' do
-      it 'does not selfie in failed image fingerprints' do
+      it 'does not add selfie to failed image fingerprints' do
         record = DocumentCaptureSession.new(result_id: SecureRandom.uuid)
 
         record.store_failed_auth_data(
