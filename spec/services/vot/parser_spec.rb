@@ -8,11 +8,11 @@ RSpec.describe Vot::Parser do
       result = Vot::Parser.new(vector_of_trust).parse
 
       expect(result.vector_of_trust).to eq('C1.C2.Cb')
-      expect(result.aal2).to eq(true)
-      expect(result.phishing_resistant).to eq(false)
-      expect(result.hspd12).to eq(true)
-      expect(result.identity_proofing).to eq(false)
-      expect(result.biometric_comparison).to eq(false)
+      expect(result.aal2?).to eq(true)
+      expect(result.phishing_resistant?).to eq(false)
+      expect(result.hspd12?).to eq(true)
+      expect(result.identity_proofing?).to eq(false)
+      expect(result.biometric_comparison?).to eq(false)
     end
   end
 
@@ -23,11 +23,11 @@ RSpec.describe Vot::Parser do
       result = Vot::Parser.new(vector_of_trust).parse
 
       expect(result.vector_of_trust).to eq('C1.C2.P1.Pb')
-      expect(result.aal2).to eq(true)
-      expect(result.phishing_resistant).to eq(false)
-      expect(result.hspd12).to eq(false)
-      expect(result.identity_proofing).to eq(true)
-      expect(result.biometric_comparison).to eq(true)
+      expect(result.aal2?).to eq(true)
+      expect(result.phishing_resistant?).to eq(false)
+      expect(result.hspd12?).to eq(false)
+      expect(result.identity_proofing?).to eq(true)
+      expect(result.biometric_comparison?).to eq(true)
     end
   end
 
