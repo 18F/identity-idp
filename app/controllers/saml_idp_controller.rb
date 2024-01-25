@@ -118,7 +118,7 @@ class SamlIdpController < ApplicationController
   end
 
   def capture_analytics
-    analytics_payload = @result.to_h.merge(
+    analytics_payload = result.to_h.merge(
       endpoint: api_saml_auth_path(path_year: params[:path_year]),
       idv: identity_needs_verification?,
       finish_profile: user_has_pending_profile?,

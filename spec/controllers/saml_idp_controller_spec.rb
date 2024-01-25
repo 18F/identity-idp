@@ -135,7 +135,7 @@ RSpec.describe SamlIdpController do
       let(:blank_cert_element_req) do
         <<-XML.gsub(/^[\s\t]*|[\s\t]*\n/, '')
           <?xml version="1.0"?>
-          <samlp:LogoutRequest xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" Destination="http://www.example.com/api/saml/logout2023" ID="_223d186c-35a0-4d1f-b81a-c473ad496415" IssueInstant="2024-01-11T18:22:03Z" Version="2.0">
+          <samlp:LogoutRequest xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" Destination="http://www.example.com/api/saml/logout2024" ID="_223d186c-35a0-4d1f-b81a-c473ad496415" IssueInstant="2024-01-11T18:22:03Z" Version="2.0">
             <saml:Issuer>http://localhost:3000</saml:Issuer>
             <ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
               <ds:SignedInfo>
@@ -1362,13 +1362,30 @@ RSpec.describe SamlIdpController do
     context 'cert element in SAML request is blank' do
       let(:user) { create(:user, :fully_registered) }
       let(:service_provider) { build(:service_provider, issuer: 'http://localhost:3000') }
+      let(:analytics_hash) do
+        {
+          success: false,
+          errors: { service_provider: ['We cannot detect a certificate in your request.'] },
+          error_details: { service_provider: { blank_cert_element_req: true } },
+          nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
+          authn_context: [Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF],
+          authn_context_comparison: 'exact',
+          service_provider: 'http://localhost:3000',
+          request_signed: true,
+        }
+      end
+
+      before do
+        stub_analytics
+        allow(@analytics).to receive(:track_event)
+      end
 
       # the RubySAML library won't let us pass an empty string in as the certificate
       # element, so this test substitutes a SAMLRequest that has that element blank
       let(:blank_cert_element_req) do
         <<-XML.gsub(/^[\s\t]*|[\s\t]*\n/, '')
           <?xml version="1.0"?>
-          <samlp:AuthnRequest xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" AssertionConsumerServiceURL="http://localhost:3000/test/saml/decode_assertion" Destination="http://www.example.com/api/saml/auth2023" ID="_6b15011e-abfe-4c55-925f-6a5b3872a64c" IssueInstant="2024-01-11T18:03:38Z" Version="2.0">
+          <samlp:AuthnRequest xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" AssertionConsumerServiceURL="http://localhost:3000/test/saml/decode_assertion" Destination="http://www.example.com/api/saml/auth2024" ID="_6b15011e-abfe-4c55-925f-6a5b3872a64c" IssueInstant="2024-01-11T18:03:38Z" Version="2.0">
             <saml:Issuer>http://localhost:3000</saml:Issuer>
             <ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
               <ds:SignedInfo>
@@ -1395,7 +1412,6 @@ RSpec.describe SamlIdpController do
             <samlp:NameIDPolicy AllowCreate="true" Format="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"/>
             <samlp:RequestedAuthnContext Comparison="exact">
           <saml:AuthnContextClassRef>urn:gov:gsa:ac:classes:sp:PasswordProtectedTransport:duo</saml:AuthnContextClassRef>
-              <saml:AuthnContextClassRef>http://idmanagement.gov/ns/assurance/ial/1</saml:AuthnContextClassRef>
             </samlp:RequestedAuthnContext>
           </samlp:AuthnRequest>
         XML
@@ -1410,11 +1426,17 @@ RSpec.describe SamlIdpController do
         expect(CGI).to receive(:unescape).and_return deflated_encoded_req
       end
 
-      it 'a ValidationError is raised' do
-        expect { generate_saml_response(user, saml_settings) }.to raise_error(
-          SamlIdp::XMLSecurity::SignedDocument::ValidationError,
-          'Certificate element present in response (ds:X509Certificate) but evaluating to nil',
-        )
+      it 'notes it in the analytics event' do
+        generate_saml_response(user, saml_settings)
+        expect(@analytics).to have_received(:track_event).
+          with('SAML Auth', analytics_hash)
+      end
+
+      it 'returns a 400' do
+        generate_saml_response(user, saml_settings)
+        expect(controller).to render_template('saml_idp/auth/error')
+        expect(response.status).to eq(400)
+        expect(response.body).to include(t('errors.messages.blank_cert_element_req'))
       end
     end
 
@@ -1670,7 +1692,7 @@ RSpec.describe SamlIdpController do
 
     describe 'HEAD /api/saml/auth', type: :request do
       it 'responds with "403 Forbidden"' do
-        head '/api/saml/auth2023?SAMLRequest=bang!'
+        head '/api/saml/auth2024?SAMLRequest=bang!'
 
         expect(response.status).to eq(403)
       end
@@ -1846,7 +1868,7 @@ RSpec.describe SamlIdpController do
             ds: Saml::XML::Namespaces::SIGNATURE,
           )
 
-          crt = AppArtifacts.store.saml_2023_cert
+          crt = AppArtifacts.store.saml_2024_cert
           expect(element.text).to eq(crt.split("\n")[1...-1].join("\n").delete("\n"))
         end
 
@@ -2260,9 +2282,9 @@ RSpec.describe SamlIdpController do
       expect(subject).to have_actions(
         :before,
         :disable_caching,
-        :validate_saml_request,
-        :validate_service_provider_and_authn_context,
         :store_saml_request,
+        :validate_and_create_saml_request_object,
+        :validate_service_provider_and_authn_context,
       )
     end
   end

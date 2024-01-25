@@ -35,5 +35,17 @@ RSpec.describe DocumentCaptureSessionResult do
       expect(result.failed_front_image?(nil)).to eq(false)
       expect(result.failed_back_image?(nil)).to eq(false)
     end
+    describe '#selfie_status' do
+      it 'returns a symbol' do
+        result = DocumentCaptureSessionResult.new(
+          id: id,
+          success: success,
+          pii: pii,
+          attention_with_barcode: false,
+          selfie_status: 'success',
+        )
+        expect(result.selfie_status).to be_an_instance_of(Symbol)
+      end
+    end
   end
 end
