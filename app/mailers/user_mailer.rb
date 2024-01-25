@@ -364,6 +364,20 @@ class UserMailer < ActionMailer::Base
     end
   end
 
+  def in_person_please_call(enrollment:)
+    with_user_locale(user) do
+      @presenter = Idv::InPerson::VerificationResultsEmailPresenter.new(
+        enrollment: enrollment,
+        url_options: url_options,
+      )
+      @hide_title = true
+      mail(
+        to: email_address.email,
+        subject: t('user_mailer.in_person_please_call.subject'),
+      )
+    end
+  end
+
   def in_person_outage_notification(enrollment:)
     with_user_locale(user) do
       @presenter = Idv::InPerson::VerificationResultsEmailPresenter.new(

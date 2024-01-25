@@ -159,6 +159,14 @@ en:
           identity verification at a Post Office between May 20 and May 29, your
           results may not be emailed to you until Tuesday, May 30.</strong>
       subject: '%{app_name} In-Person Verification Results Delayed'
+    in_person_please_call:
+      body:
+        contact_message: Call %{contact_number} and provide them with the error code
+          %{support_code}.
+        intro_html: Call our contact center by <strong>%{date}</strong> to continue
+          verifying your identity.
+      header: Please give us a call
+      subject: Call Login.gov to continue with your identity verification
     in_person_ready_to_verify:
       subject: You’re ready to verify your identity with %{app_name} in person
     in_person_ready_to_verify_reminder:
