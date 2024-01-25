@@ -275,6 +275,9 @@ module Idv
       end
 
       if capture_result&.failed_selfie_image?(selfie_image_fingerprint)
+        errors.add(
+          :selfie, t('doc_auth.errors.doc.resubmit_failed_image'), type: :duplicate_image
+        )
         analytics.idv_doc_auth_failed_image_resubmitted(
           side: 'selfie', **extra_attributes,
         )
