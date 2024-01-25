@@ -400,7 +400,10 @@ RSpec.describe UserMailer, type: :mailer do
     end
 
     it 'renders the subject' do
-      expect(mail.subject).to eq t('user_mailer.account_reset_granted.subject', app_name: APP_NAME)
+      expect(mail.subject).to eq t(
+        'user_mailer.account_reset_granted.subject', app_name: APP_NAME,
+                                                     hours: device_name
+      )
     end
 
     it 'renders the body' do
