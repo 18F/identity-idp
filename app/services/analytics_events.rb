@@ -1171,13 +1171,13 @@ module AnalyticsEvents
   end
 
   # @param [String] step_name
-  # @param [Integer] remaining_attempts
+  # @param [Integer] remaining_submit_attempts
   # The user was sent to a warning page during the IDV flow
-  def idv_doc_auth_warning_visited(step_name:, remaining_attempts:, **extra)
+  def idv_doc_auth_warning_visited(step_name:, remaining_submit_attempts:, **extra)
     track_event(
       'IdV: doc auth warning visited',
       step_name: step_name,
-      remaining_attempts: remaining_attempts,
+      remaining_submit_attempts: remaining_submit_attempts,
       **extra,
     )
   end
