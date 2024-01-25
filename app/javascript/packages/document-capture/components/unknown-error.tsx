@@ -30,7 +30,7 @@ function getError({ unknownFieldErrors }) {
   const errs =
     !!unknownFieldErrors &&
     // Errors where the field than is not 'front' or 'back'. In practice this means the field
-    // should either be 'general' or 'selfie'
+    // should be from the 'general' field in the "IdV: doc auth image upload vendor submitted" event
     unknownFieldErrors.filter((error) => !['front', 'back'].includes(error.field!));
   const err = errs.length !== 0 ? errs[0].error : null;
 
