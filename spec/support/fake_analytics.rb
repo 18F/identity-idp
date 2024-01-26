@@ -83,7 +83,6 @@ class FakeAnalytics < Analytics
     if attributes[:proofing_components].instance_of?(Idv::ProofingComponentsLogging)
       attributes[:proofing_components] = attributes[:proofing_components].as_json.symbolize_keys
     end
-    attributes[:user_id] = user.uuid if user && !attributes[:user_id]
     events[event] ||= []
     events[event] << attributes
     nil
