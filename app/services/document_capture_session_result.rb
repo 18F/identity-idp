@@ -23,7 +23,7 @@ DocumentCaptureSessionResult = RedactedStruct.new(
     self[:selfie_status].to_sym
   end
 
-  def selfie_check_performed
+  def selfie_check_performed?
     %i[success fail].include?(selfie_status)
   end
 

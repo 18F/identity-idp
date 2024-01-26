@@ -375,7 +375,7 @@ RSpec.describe Idv::ImageUploadsController do
           expect(response.status).to eq(200)
           expect(json[:success]).to eq(true)
           expect(document_capture_session.reload.load_result.success?).to eq(true)
-          expect(document_capture_session.reload.load_result.selfie_check_performed).to eq(true)
+          expect(document_capture_session.reload.load_result.selfie_check_performed?).to eq(true)
         end
       end
 
@@ -1149,7 +1149,7 @@ RSpec.describe Idv::ImageUploadsController do
         expect(response.status).to eq(200)
         expect(json[:success]).to eq(true)
         expect(document_capture_session.reload.load_result.success?).to eq(true)
-        expect(document_capture_session.reload.load_result.selfie_check_performed).to eq(true)
+        expect(document_capture_session.reload.load_result.selfie_check_performed?).to eq(true)
       end
 
       it 'sends a selfie' do
