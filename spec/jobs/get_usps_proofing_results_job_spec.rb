@@ -181,7 +181,8 @@ RSpec.describe GetUspsProofingResultsJob do
   let(:reprocess_delay_minutes) { 2.0 }
   let(:request_delay_ms) { 0 }
   let(:job) { GetUspsProofingResultsJob.new }
-  let(:job_analytics) { FakeAnalytics.new }
+  let(:user) { nil }
+  let(:job_analytics) { FakeAnalytics.new(user: user) }
   let(:transaction_start_date_time) do
     ActiveSupport::TimeZone[-6].strptime(
       '12/17/2020 033855',
@@ -534,7 +535,7 @@ RSpec.describe GetUspsProofingResultsJob do
             end
           end
 
-          it 'sends proofing verifed email on 2xx responses with valid JSON' do
+          it 'sends proofing verified email on 2xx responses with valid JSON' do
             stub_request_passed_proofing_results
 
             user = pending_enrollment.user
@@ -584,6 +585,7 @@ RSpec.describe GetUspsProofingResultsJob do
                 timestamp: anything,
                 wait_until: wait_until,
                 job_name: 'GetUspsProofingResultsJob',
+                user_id: user.uuid,
               )
             end
 
@@ -610,6 +612,7 @@ RSpec.describe GetUspsProofingResultsJob do
                 timestamp: anything,
                 wait_until: wait_until,
                 job_name: 'GetUspsProofingResultsJob',
+                user_id: user.uuid,
               )
             end
           end
@@ -1189,6 +1192,8 @@ RSpec.describe GetUspsProofingResultsJob do
           end
 
           context 'when the in_person_proofing_enforce_tmx flag is true' do
+            let(:user) { pending_enrollment.user }
+
             before do
               allow(IdentityConfig.store).to receive(:in_person_proofing_enforce_tmx).
                 and_return(true)
@@ -1207,6 +1212,7 @@ RSpec.describe GetUspsProofingResultsJob do
                 :idv_in_person_usps_proofing_results_job_user_sent_to_fraud_review,
                 hash_including(
                   enrollment_code: pending_enrollment.enrollment_code,
+                  user_id: user.uuid,
                 ),
               )
             end
