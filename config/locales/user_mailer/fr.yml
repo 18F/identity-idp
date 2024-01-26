@@ -176,6 +176,14 @@ fr:
           de poste entre le 20 et le 29 mai, vos résultats ne vous seront
           peut-être pas envoyés par courriel avant le mardi 30 mai.</strong>
       subject: Les résultats de la vérification en personne de %{app_name} sont reportés
+    in_person_please_call:
+      body:
+        contact_message_html: Appelez le <strong>%{contact_number}</strong> et indiquez
+          le code d’erreur <strong>%{support_code}</strong>.
+        intro_html: Appelez notre centre de contact avant le <strong>%{date}</strong>
+          pour continuer à vérifier votre identité.
+      header: S’il vous plaît, appelez-nous
+      subject: Call Login.gov to continue with your identity verification
     in_person_ready_to_verify:
       subject: Vous êtes prêt à vérifier votre identité avec %{app_name} en personne
     in_person_ready_to_verify_reminder:
