@@ -250,10 +250,14 @@ module Reporting
       cloudwatch_client.fetch(query:, from: time_range.begin, to: time_range.end)
     end
 
+    def event_names
+      quote(Events.all_events)
+    end
+
     def query
       params = {
         issuers: issuers.present? && quote(issuers),
-        event_names: quote(Events.all_events),
+        event_names:,
         usps_enrollment_status_updated: quote(Events::USPS_ENROLLMENT_STATUS_UPDATED),
         gpo_verification_submitted: quote(
           [
