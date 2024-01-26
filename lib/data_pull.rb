@@ -16,6 +16,7 @@ class DataPull
       stderr:,
       subtask_class: subtask(argv.shift),
       banner: banner,
+      reason_arg: false,
     )
   end
 
