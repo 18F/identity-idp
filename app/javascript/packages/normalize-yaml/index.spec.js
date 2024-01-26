@@ -22,6 +22,13 @@ describe('normalize', () => {
     expect(await normalize(original)).to.equal(expected);
   });
 
+  it('collapses multiple spaces between sentences', async () => {
+    const original = '---\nparagraph: Lorem ipsum.  Dolor sit amet.';
+    const expected = '---\nparagraph: Lorem ipsum. Dolor sit amet.\n';
+
+    expect(await normalize(original)).to.equal(expected);
+  });
+
   it('formats using prettier', async () => {
     const original = "---\nfoo:  'bar' ";
     const expected = '---\nfoo: "bar"\n';

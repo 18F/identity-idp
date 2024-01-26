@@ -6,6 +6,7 @@ Normalizes YAML files to ensure consistency and typographical quality:
 - Applies improved punctuation.
   - Converts straight quotes `"` and `'` to smart quotes `“`, `”`, and `’`
   - Converts three dots `...` to ellipsis `…`
+  - Reduces multiple spaces between sentences to a single space.
 - Stylizes content using [Prettier](https://prettier.io/), respecting local project Prettier configuration.
 
 ## Installation
@@ -32,6 +33,7 @@ The included `normalize-yaml` binary receives files as an argument, with optiona
 
 - `--disable-sort-keys`: Disable the default behavior to sort keys.
 - `--disable-smart-punctuation`: Disable the default behavior to apply smart punctuation.
+- `--disable-collapse-sentence-spacing`: Disable the default behavior to reduce multiple spaces between sentences to a single space.
 
 **Example:**
 
