@@ -168,9 +168,8 @@ RSpec.feature 'doc auth redo document capture', js: true do
         '.usa-error-message[role="alert"]',
         text: t('doc_auth.errors.doc.resubmit_failed_image'),
       )
-      # re-attach same selfie
       attach_selfie
-      sleep(1)
+      # Error message without submit
       expect(page).to have_css(
         '.usa-error-message[role="alert"]',
         text: t('doc_auth.errors.doc.resubmit_failed_image'),
@@ -272,6 +271,7 @@ RSpec.feature 'doc auth redo document capture', js: true do
           and_return(true)
         allow_any_instance_of(FederatedProtocols::Oidc).
           to receive(:biometric_comparison_required?).and_return(true)
+        allow_any_instance_of(DocAuth::Response).to receive(:selfie_status).and_return(:fail)
         start_idv_from_sp
         sign_in_and_2fa_user
         complete_doc_auth_steps_before_document_capture_step
