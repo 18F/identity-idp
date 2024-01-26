@@ -18,7 +18,6 @@ module DocAuth
       pii_from_doc: {},
       attention_with_barcode: false,
       doc_type_supported: true,
-      selfie_check_performed: false,
       selfie_live: true,
       selfie_quality_good: true
     )
@@ -29,7 +28,6 @@ module DocAuth
       @pii_from_doc = pii_from_doc
       @attention_with_barcode = attention_with_barcode
       @doc_type_supported = doc_type_supported
-      @selfie_check_performed = selfie_check_performed
       @selfie_live = selfie_live
       @selfie_quality_good = selfie_quality_good
     end
@@ -96,7 +94,7 @@ module DocAuth
     end
 
     def selfie_check_performed?
-      @selfie_check_performed
+      %i[success fail].include?(selfie_status_from_response(self))
     end
 
     def doc_auth_success?

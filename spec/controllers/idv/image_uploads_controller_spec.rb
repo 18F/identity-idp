@@ -5,6 +5,7 @@ RSpec.describe Idv::ImageUploadsController do
 
   let(:document_filename_regex) { /^[a-f0-9]{8}-([a-f0-9]{4}-){3}[a-f0-9]{12}\.[a-z]+$/ }
   let(:base64_regex) { /^[a-z0-9+\/]+=*$/i }
+  let(:back_image) { DocAuthImageFixtures.document_back_image_multipart }
   let(:selfie_img) { nil }
   let(:state_id_number) { 'S59397998' }
 
@@ -20,8 +21,8 @@ RSpec.describe Idv::ImageUploadsController do
       {
         front: DocAuthImageFixtures.document_front_image_multipart,
         front_image_metadata: '{"glare":99.99}',
-        back: DocAuthImageFixtures.document_back_image_multipart,
-        selfie: (selfie_img unless selfie_img.nil?),
+        back: back_image,
+        selfie: selfie_img,
         back_image_metadata: '{"glare":99.99}',
         document_capture_session_uuid: document_capture_session.uuid,
         flow_path: flow_path,
@@ -349,10 +350,12 @@ RSpec.describe Idv::ImageUploadsController do
       # fake up a response and verify that selfie_check_performed flows through?
 
       context 'selfie included' do
+        # let(:back_image) { DocAuthImageFixtures.portrait_match_success_yaml } add post LG-12041 deply
         let(:selfie_img) { DocAuthImageFixtures.selfie_image_multipart }
 
         before do
           allow(controller.decorated_sp_session).to receive(:selfie_required?).and_return(true)
+          allow_any_instance_of(DocAuth::Mock::ResultResponse).to receive(:selfie_status).and_return(:success) # remove post LG-12041 deply
         end
 
         it 'returns a successful response and modifies the session' do
@@ -1136,9 +1139,12 @@ RSpec.describe Idv::ImageUploadsController do
           and_return(double('decorated_session', { selfie_required?: true }))
       end
 
+      # let(:back_image) { DocAuthImageFixtures.portrait_match_success_yaml } add post LG-12041 deply
       let(:selfie_img) { DocAuthImageFixtures.selfie_image_multipart }
 
       it 'returns a successful response' do
+        allow_any_instance_of(DocAuth::Mock::ResultResponse).to receive(:selfie_status).
+          and_return(:success) # remove post LG-12041 deply
         action
         expect(response.status).to eq(200)
         expect(json[:success]).to eq(true)
