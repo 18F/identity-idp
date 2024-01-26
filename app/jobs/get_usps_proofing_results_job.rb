@@ -125,6 +125,10 @@ class GetUspsProofingResultsJob < ApplicationJob
            SUPPORTED_SECONDARY_ID_TYPES.exclude?(response['secondaryIdType'])
   end
 
+  def enrollment_with_fraud_pending_reason?(enrollment)
+    IdentityConfig.store.in_person_proofing_enforce_tmx && enrollment.profile.fraud_pending_reason.present?
+  end
+
   def analytics(user: AnonymousUser.new)
     Analytics.new(user: user, request: nil, session: {}, sp: nil)
   end
@@ -380,6 +384,32 @@ class GetUspsProofingResultsJob < ApplicationJob
     )
   end
 
+  def handle_call_in_needed(enrollment, response)
+    proofed_at = parse_usps_timestamp(response['transactionEndDateTime'])
+    enrollment_outcomes[:enrollments_passed] += 1
+    analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_updated(
+      **enrollment_analytics_attributes(enrollment, complete: true),
+      **response_analytics_attributes(response),
+      passed: true,
+      reason: 'Successful status update',
+      job_name: self.class.name,
+    )
+    enrollment.profile.activate_after_passing_in_person
+    enrollment.update(
+      status: :passed,
+      proofed_at: proofed_at,
+      status_check_completed_at: Time.zone.now,
+    )
+
+    # send email
+    send_please_call_email(enrollment.user, enrollment)
+    analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_email_initiated(
+      **email_analytics_attributes(enrollment),
+      email_type: 'Please call',
+      job_name: self.class.name,
+    )
+  end
+
   def handle_unsupported_secondary_id(enrollment, response)
     proofed_at = parse_usps_timestamp(response['transactionEndDateTime'])
     enrollment_outcomes[:enrollments_failed] += 1
@@ -413,7 +443,9 @@ class GetUspsProofingResultsJob < ApplicationJob
 
     case response['status']
     when IPP_STATUS_PASSED
-      if passed_with_unsupported_secondary_id_type?(response)
+      if enrollment_with_fraud_pending_reason?(enrollment)
+        handle_call_in_needed(enrollment, response)
+      elsif passed_with_unsupported_secondary_id_type?(response)
         handle_unsupported_secondary_id(enrollment, response)
       elsif SUPPORTED_ID_TYPES.include?(response['primaryIdType'])
         handle_successful_status_update(enrollment, response)
@@ -461,6 +493,16 @@ class GetUspsProofingResultsJob < ApplicationJob
     user.confirmed_email_addresses.each do |email_address|
       # rubocop:disable IdentityIdp/MailLaterLinter
       UserMailer.with(user: user, email_address: email_address).in_person_failed_fraud(
+        enrollment: enrollment,
+      ).deliver_later(**notification_delivery_params(enrollment))
+      # rubocop:enable IdentityIdp/MailLaterLinter
+    end
+  end
+
+  def send_please_call_email(user, enrollment)
+    user.confirmed_email_addresses.each do |email_address|
+      # rubocop:disable IdentityIdp/MailLaterLinter
+      UserMailer.with(user: user, email_address: email_address).in_person_please_call(
         enrollment: enrollment,
       ).deliver_later(**notification_delivery_params(enrollment))
       # rubocop:enable IdentityIdp/MailLaterLinter
