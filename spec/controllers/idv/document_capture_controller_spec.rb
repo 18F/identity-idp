@@ -163,6 +163,29 @@ RSpec.describe Idv::DocumentCaptureController do
         expect(response).to redirect_to(idv_session_errors_rate_limited_url)
       end
     end
+
+    context 'opt in ipp is enabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { true }
+        allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { true }
+      end
+
+      it 'renders show when flow path is standard' do
+        stub_up_to(:how_to_verify, idv_session: subject.idv_session)
+
+        get :show
+
+        expect(response).to render_template :show
+      end
+
+      it 'redirects to hybrid handoff url when flow path is undefined' do
+        subject.idv_session.flow_path = nil
+
+        get :show
+
+        expect(response).to redirect_to(idv_hybrid_handoff_url)
+      end
+    end
   end
 
   describe '#update' do

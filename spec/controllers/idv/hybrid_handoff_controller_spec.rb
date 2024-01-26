@@ -179,6 +179,46 @@ RSpec.describe Idv::HybridHandoffController do
         }.from(false)
       end
     end
+
+    context 'opt in ipp is enabled' do
+      before do
+        stub_up_to(:how_to_verify, idv_session: subject.idv_session)
+        allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { true }
+        allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { true }
+      end
+
+      context 'opt in selection is nil' do
+        before do
+          subject.idv_session.skip_doc_auth = nil
+        end
+
+        it 'does not render the show template' do
+          get :show
+          
+          expect(response).not_to render_template :show
+        end
+      end
+
+      context 'opted in to hybrid flow' do
+        it 'renders the show template' do
+          get :show
+          
+          expect(response).to render_template :show
+        end
+      end
+
+      context 'opted in to ipp flow' do
+        before do
+          subject.idv_session.skip_doc_auth = true
+        end
+
+        it 'redirects to the how to verify page' do
+          get :show
+
+          expect(response).to redirect_to(idv_how_to_verify_url)
+        end
+      end
+    end
   end
 
   describe '#update' do
