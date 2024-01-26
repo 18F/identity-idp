@@ -312,6 +312,10 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
       end
     end
 
+    # TODO fix this set of tests, this looks like something broken with error generation?
+    #      NoMethodError:
+    # undefined method `empty?' for nil
+    # ./app/services/doc_auth/error_result.rb:33:in `to_h'
     describe 'when sending a failing selfie yml' do
       context 'liveness check fails due to being determined to not be live' do
         it 'returns a failure response' do

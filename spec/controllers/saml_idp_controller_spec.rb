@@ -135,7 +135,7 @@ RSpec.describe SamlIdpController do
       let(:blank_cert_element_req) do
         <<-XML.gsub(/^[\s\t]*|[\s\t]*\n/, '')
           <?xml version="1.0"?>
-          <samlp:LogoutRequest xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" Destination="http://www.example.com/api/saml/logout2023" ID="_223d186c-35a0-4d1f-b81a-c473ad496415" IssueInstant="2024-01-11T18:22:03Z" Version="2.0">
+          <samlp:LogoutRequest xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" Destination="http://www.example.com/api/saml/logout2024" ID="_223d186c-35a0-4d1f-b81a-c473ad496415" IssueInstant="2024-01-11T18:22:03Z" Version="2.0">
             <saml:Issuer>http://localhost:3000</saml:Issuer>
             <ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
               <ds:SignedInfo>
@@ -1405,7 +1405,7 @@ RSpec.describe SamlIdpController do
       let(:blank_cert_element_req) do
         <<-XML.gsub(/^[\s\t]*|[\s\t]*\n/, '')
           <?xml version="1.0"?>
-          <samlp:AuthnRequest xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" AssertionConsumerServiceURL="http://localhost:3000/test/saml/decode_assertion" Destination="http://www.example.com/api/saml/auth2023" ID="_6b15011e-abfe-4c55-925f-6a5b3872a64c" IssueInstant="2024-01-11T18:03:38Z" Version="2.0">
+          <samlp:AuthnRequest xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" AssertionConsumerServiceURL="http://localhost:3000/test/saml/decode_assertion" Destination="http://www.example.com/api/saml/auth2024" ID="_6b15011e-abfe-4c55-925f-6a5b3872a64c" IssueInstant="2024-01-11T18:03:38Z" Version="2.0">
             <saml:Issuer>http://localhost:3000</saml:Issuer>
             <ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
               <ds:SignedInfo>
@@ -1717,7 +1717,7 @@ RSpec.describe SamlIdpController do
 
     describe 'HEAD /api/saml/auth', type: :request do
       it 'responds with "403 Forbidden"' do
-        head '/api/saml/auth2023?SAMLRequest=bang!'
+        head '/api/saml/auth2024?SAMLRequest=bang!'
 
         expect(response.status).to eq(403)
       end
@@ -1893,7 +1893,7 @@ RSpec.describe SamlIdpController do
             ds: Saml::XML::Namespaces::SIGNATURE,
           )
 
-          crt = AppArtifacts.store.saml_2023_cert
+          crt = AppArtifacts.store.saml_2024_cert
           expect(element.text).to eq(crt.split("\n")[1...-1].join("\n").delete("\n"))
         end
 
