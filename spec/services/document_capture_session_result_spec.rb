@@ -24,6 +24,7 @@ RSpec.describe DocumentCaptureSessionResult do
       expect(loaded_result.attention_with_barcode?).to eq(false)
       expect(loaded_result.selfie_status).to eq(:success)
       expect(loaded_result.doc_auth_success).to eq(true)
+      loaded_result.inspect
     end
     it 'add fingerprint with EncryptedRedisStructStorage' do
       result = DocumentCaptureSessionResult.new(
