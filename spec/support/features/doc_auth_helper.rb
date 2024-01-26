@@ -272,7 +272,7 @@ module DocAuthHelper
     failure_response = instance_double(
       Faraday::Response,
       status: 200,
-      body: LexisNexisFixtures.true_id_response_failure_no_liveness, # true_id_response_failure_with_all_failures,
+      body: LexisNexisFixtures.true_id_response_failure_no_liveness,
     )
     DocAuth::Mock::DocAuthMockClient.mock_response!(
       method: :get_results,
