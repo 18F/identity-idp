@@ -305,8 +305,7 @@ class GetUspsProofingResultsJob < ApplicationJob
   end
 
   def handle_fraud_review_pending(enrollment)
-    return unless IdentityConfig.store.in_person_proofing_enforce_tmx
-    enrollment.profile&.deactivate_for_fraud_review
+    enrollment.profile.deactivate_for_fraud_review
 
     analytics(user: enrollment.user).
       idv_in_person_usps_proofing_results_job_user_sent_to_fraud_review(
@@ -379,7 +378,7 @@ class GetUspsProofingResultsJob < ApplicationJob
     )
 
     unless fraud_result_pending?(enrollment)
-      enrollment.profile.activate_after_passing_in_person
+      enrollment.profile&.activate_after_passing_in_person
 
       # send SMS and email
       send_enrollment_status_sms_notification(enrollment: enrollment)
@@ -418,7 +417,8 @@ class GetUspsProofingResultsJob < ApplicationJob
   end
 
   def fraud_result_pending?(enrollment)
-    enrollment.profile&.fraud_pending_reason.present?
+    IdentityConfig.store.in_person_proofing_enforce_tmx &&
+      enrollment.profile&.fraud_pending_reason.present?
   end
 
   def process_enrollment_response(enrollment, response)
