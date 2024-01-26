@@ -1,4 +1,5 @@
 import { render } from '@testing-library/react';
+import { waitFor } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
 import { i18n } from '@18f/identity-i18n';
 import { usePropertyValue } from '@18f/identity-test-helpers';
@@ -395,7 +396,7 @@ describe('InPersonLocationPostOfficeSearchStep', () => {
       );
 
       expect(queryByText('in_person_proofing.body.location.inline_error')).to.be.null();
-      expect(window.location.hash).to.equal(inPersonURL);
+      await waitFor(() => expect(window.location.hash).to.equal(inPersonURL));
     });
   });
 });

@@ -1,4 +1,5 @@
 import { render } from '@testing-library/react';
+import { waitFor } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
 import { i18n } from '@18f/identity-i18n';
 import { setupServer } from 'msw/node';
@@ -336,6 +337,6 @@ describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
     );
 
     expect(queryByText('simple_form.required.text')).to.be.null();
-    expect(window.location.hash).to.equal(inPersonURL);
+    await waitFor(() => expect(window.location.hash).to.equal(inPersonURL));
   });
 });
