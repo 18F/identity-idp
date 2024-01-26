@@ -2,7 +2,7 @@ module Vot
   class Parser
     class ParseException < StandardError; end
     Result = Data.define(
-      :vector_of_trust,
+      :component_values,
       :aal2?,
       :phishing_resistant?,
       :hspd12?,
@@ -31,7 +31,7 @@ module Vot
 
     def map_initial_vector_of_trust_componets_to_component_values
       vector_of_trust.split('.').map do |component_value_name|
-        component_value = SupportedComponentValues::MAPPED_BY_NAME[component_value_name]
+        component_value = SupportedComponentValues.by_name[component_value_name]
         if component_value.nil?
           raise_unsupported_component_exception(component_value_name)
         end
@@ -41,7 +41,7 @@ module Vot
 
     def map_initial_acr_values_to_component_values
       vector_of_trust.split(' ').map do |component_value_name|
-        component_value = LegacyComponentValues::MAPPED_BY_NAME[component_value_name]
+        component_value = LegacyComponentValues.by_name[component_value_name]
         if component_value.nil?
           raise_unsupported_component_exception(component_value_name)
         end
@@ -54,7 +54,7 @@ module Vot
       resulting_components = add_implied_components(initial_components).sort_by(&:name)
       requirement_list = resulting_components.flat_map(&:requirements)
       Result.new(
-        vector_of_trust: resulting_components.map(&:name).join('.'),
+        component_values: resulting_components,
         aal2?: requirement_list.include?(:aal2),
         phishing_resistant?: requirement_list.include?(:phishing_resistant),
         hspd12?: requirement_list.include?(:hspd12),

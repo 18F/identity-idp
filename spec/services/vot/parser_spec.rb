@@ -8,7 +8,7 @@ RSpec.describe Vot::Parser do
 
         result = Vot::Parser.new(vector_of_trust).parse
 
-        expect(result.vector_of_trust).to eq('C1.C2.Cb')
+        expect(result.component_values.map(&:name).join('.')).to eq('C1.C2.Cb')
         expect(result.aal2?).to eq(true)
         expect(result.phishing_resistant?).to eq(false)
         expect(result.hspd12?).to eq(true)
@@ -24,7 +24,7 @@ RSpec.describe Vot::Parser do
 
         result = Vot::Parser.new(vector_of_trust).parse
 
-        expect(result.vector_of_trust).to eq('C1.C2.P1.Pb')
+        expect(result.component_values.map(&:name).join('.')).to eq('C1.C2.P1.Pb')
         expect(result.aal2?).to eq(true)
         expect(result.phishing_resistant?).to eq(false)
         expect(result.hspd12?).to eq(false)
@@ -59,12 +59,13 @@ RSpec.describe Vot::Parser do
   describe '#parse_acr' do
     it 'parsed ACR values to component values' do
       vector_of_trust = [
-        'http://idmanagement.gov/ns/assurance/ial/2
-        http://idmanagement.gov/ns/assurance/aal/2?hspd12=true',
+        'http://idmanagement.gov/ns/assurance/aal/2?hspd12=true',
+        'http://idmanagement.gov/ns/assurance/ial/2',
       ].join(' ')
 
       result = Vot::Parser.new(vector_of_trust).parse_acr
 
+      expect(result.component_values.map(&:name).join(' ')).to eq(vector_of_trust)
       expect(result.aal2?).to eq(true)
       expect(result.phishing_resistant?).to eq(false)
       expect(result.hspd12?).to eq(true)
