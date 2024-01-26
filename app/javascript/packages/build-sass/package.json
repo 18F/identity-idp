@@ -28,9 +28,9 @@
   "homepage": "https://github.com/18f/identity-idp",
   "dependencies": {
     "@aduth/is-dependency": "^1.0.0",
-    "browserslist": "^4.22.1",
+    "browserslist": "^4.22.3",
     "chokidar": "^3.5.3",
-    "lightningcss": "^1.22.0",
+    "lightningcss": "^1.23.0",
     "sass-embedded": "^1.70.0"
   }
 }
