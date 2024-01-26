@@ -164,10 +164,11 @@ class UserMailer < ActionMailer::Base
 
   def account_reset_granted(account_reset)
     with_user_locale(user) do
+      presenter = ConfirmationEmailPresenter.new(user, view_context)
+      @confirmation_period = presenter.confirmation_period
       @token = account_reset&.request_token
       @granted_token = account_reset&.granted_token
       @account_reset_deletion_period_hours = account_reset_deletion_period_hours
-      @interval = account_reset_deletion_period_interval
       mail(
         to: email_address.email,
         subject: t('user_mailer.account_reset_granted.subject', app_name: APP_NAME),
