@@ -161,8 +161,8 @@ en:
       subject: '%{app_name} In-Person Verification Results Delayed'
     in_person_please_call:
       body:
-        contact_message: Call %{contact_number} and provide them with the error code
-          %{support_code}.
+        contact_message_html: Call <strong>%{contact_number}</strong> and provide them
+          with the error code <strong>%{support_code}</strong>.
         intro_html: Call our contact center by <strong>%{date}</strong> to continue
           verifying your identity.
       header: Please give us a call
