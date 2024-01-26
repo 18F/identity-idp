@@ -59,7 +59,7 @@ module Idv
         key: :document_capture,
         controller: self,
         next_steps: [:ssn, :ipp_ssn], # :ipp_state_id
-        preconditions: ->(idv_session:, user:) { idv_session.skip_doc_auth },
+        preconditions: ->(idv_session:, user:) { idv_session.flow_path == "standard" },
         undo_step: ->(idv_session:, user:) do
           idv_session.pii_from_doc = nil
           idv_session.invalidate_in_person_pii_from_user!
