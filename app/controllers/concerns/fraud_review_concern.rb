@@ -11,6 +11,18 @@ module FraudReviewConcern
     handle_fraud_rejection
   end
 
+  def in_person_handle_fraud
+    return unless IdentityConfig.store.in_person_proofing_enforce_tmx
+    in_person_handle_pending_fraud_review
+  end
+
+  def in_person_handle_pending_fraud_review
+    puts "is profile active? #{enrollment.profile.active}"
+    # profile isnt active yet until we get a status update from usps
+    # will need to find another way to check if we should show the screen
+    redirect_to_fraud_review if fraud_review_pending? && enrollment.profile.active == false
+  end
+
   def handle_pending_fraud_review
     redirect_to_fraud_review if fraud_review_pending?
   end
