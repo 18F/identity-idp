@@ -654,6 +654,13 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         expect(response.doc_auth_success?).to eq(false)
       end
     end
+
+    context 'when attention barcode read' do
+      let(:response) { described_class.new(attention_barcode_read, config) }
+      it 'returns true' do
+        expect(response.doc_auth_success?).to eq(true)
+      end
+    end
   end
 
   describe '#selfie_status' do

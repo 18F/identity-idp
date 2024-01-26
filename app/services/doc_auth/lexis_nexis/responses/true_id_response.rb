@@ -143,10 +143,14 @@ module DocAuth
         end
 
         def doc_auth_success?
-          transaction_status_passed? &&
+          # really it's everything else excluding selfie
+          ((transaction_status_passed? &&
             true_id_product.present? &&
             product_status_passed? &&
             doc_auth_result_passed?
+           ) ||
+            attention_with_barcode?
+          ) && id_type_supported?
         end
 
         # @return [:success, :fail, :not_processed]
