@@ -167,6 +167,7 @@ class UserMailer < ActionMailer::Base
       @token = account_reset&.request_token
       @granted_token = account_reset&.granted_token
       @account_reset_deletion_period_hours = account_reset_deletion_period_hours
+      @interval = account_reset_deletion_period_interval
       mail(
         to: email_address.email,
         subject: t('user_mailer.account_reset_granted.subject', app_name: APP_NAME),

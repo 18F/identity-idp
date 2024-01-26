@@ -392,6 +392,7 @@ RSpec.describe UserMailer, type: :mailer do
         account_reset_granted(user.account_reset_request)
     end
     let(:account_reset_deletion_period_hours) { 24 }
+    let(:interval) { '24 hours' }
 
     it_behaves_like 'a system email'
     it_behaves_like 'an email that respects user email locale preference'
