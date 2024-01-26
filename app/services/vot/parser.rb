@@ -18,7 +18,7 @@ module Vot
     end
 
     def parse
-      initial_components = map_initial_vector_of_trust_componets_to_component_values
+      initial_components = map_initial_vector_of_trust_components_to_component_values
       expand_components_with_initial_components(initial_components)
     end
 
@@ -29,7 +29,7 @@ module Vot
 
     private
 
-    def map_initial_vector_of_trust_componets_to_component_values
+    def map_initial_vector_of_trust_components_to_component_values
       vector_of_trust.split('.').map do |component_value_name|
         component_value = SupportedComponentValues.by_name[component_value_name]
         if component_value.nil?
