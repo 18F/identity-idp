@@ -4850,6 +4850,25 @@ module AnalyticsEvents
     track_event(:phone_input_country_changed, country_code:, **extra)
   end
 
+  # @param [Boolean] success
+  # @param [Hash] error_details
+  # @param [Integer] configuration_id
+  # Tracks when user attempts to delete a PIV/CAC configuraton
+  def piv_cac_delete_submitted(
+    success:,
+    configuration_id:,
+    error_details: nil,
+    **extra
+  )
+    track_event(
+      :piv_cac_delete_submitted,
+      success:,
+      error_details:,
+      configuration_id:,
+      **extra,
+    )
+  end
+
   # @identity.idp.previous_event_name User Registration: piv cac disabled
   # @identity.idp.previous_event_name PIV CAC disabled
   # Tracks when user's piv cac is disabled
@@ -4886,6 +4905,25 @@ module AnalyticsEvents
       :piv_cac_setup_visited,
       in_account_creation_flow:,
       enabled_mfa_methods_count:,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success
+  # @param [Hash] error_details
+  # @param [Integer] configuration_id
+  # Tracks when user submits a name change for a PIV/CAC configuraton
+  def piv_cac_update_name_submitted(
+      success:,
+      configuration_id:,
+      error_details: nil,
+      **extra
+    )
+    track_event(
+      :piv_cac_update_name_submitted,
+      success:,
+      error_details:,
+      configuration_id:,
       **extra,
     )
   end
@@ -5533,30 +5571,6 @@ module AnalyticsEvents
     track_event(
       'User marked authenticated',
       authentication_type: authentication_type,
-      **extra,
-    )
-  end
-
-  # User was shown an "Are you sure you want to navigate away from this page?" message from their
-  # browser (via onbeforeunload). (This is a frontend event.)
-  # @param [String] path Path where this event was encountered.
-  def user_prompted_before_navigation(path:, **extra)
-    track_event(
-      'User prompted before navigation',
-      path: path,
-      **extra,
-    )
-  end
-
-  # User was shown an "Are you sure you want to navigate away from this page?" prompt via
-  # onbeforeunload and was still on the page <seconds> later. (This is a frontend event.)
-  # @param [String] path Path where this event was encountered.
-  # @param [Integer] seconds Amount of time user has been on page since prompt.
-  def user_prompted_before_navigation_and_still_on_page(path:, seconds:, **extra)
-    track_event(
-      'User prompted before navigation and still on page',
-      path: path,
-      seconds: seconds,
       **extra,
     )
   end
