@@ -1,15 +1,15 @@
 module Vot
   class Parser
     class ParseException < StandardError; end
-    SUPPORTED_COMPONENT_VALUE_REQUIREMENTS = [
+    Result = Data.define(
+      :vector_of_trust,
       :aal2?,
       :phishing_resistant?,
       :hspd12?,
       :identity_proofing?,
       :biometric_comparison?,
       :ialmax?,
-    ].freeze
-    Result = Data.define(:vector_of_trust, *SUPPORTED_COMPONENT_VALUE_REQUIREMENTS)
+    )
 
     attr_reader :vector_of_trust
 
