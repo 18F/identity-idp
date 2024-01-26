@@ -4,6 +4,7 @@ module DocAuth
   module LexisNexis
     module Responses
       class TrueIdResponse < DocAuth::Response
+        include ImageMetricsConcern
         include DocPiiConcern
         include ClassificationConcern
         include SelfieConcern
@@ -14,11 +15,12 @@ module DocAuth
           @config = config
           @http_response = http_response
           @liveness_checking_enabled = liveness_checking_enabled
+          @pii_from_doc = read_pii
           super(
             success: successful_result?,
             errors: error_messages,
             extra: extra_attributes,
-            pii_from_doc: pii_from_doc,
+            pii_from_doc: @pii_from_doc,
           )
         rescue StandardError => e
           NewRelic::Agent.notice_error(e)
@@ -167,7 +169,7 @@ module DocAuth
             alert_failure_count: alerts[:failed]&.count.to_i,
             log_alert_results: log_alert_formatter.log_alerts(alerts),
             portrait_match_results: portrait_match_results,
-            image_metrics: parse_image_metrics,
+            image_metrics: read_image_metrics,
             address_line2_present: !pii_from_doc[:address2].blank?,
             classification_info: classification_info,
             liveness_enabled: @liveness_checking_enabled,
@@ -192,7 +194,7 @@ module DocAuth
         end
 
         def selfie_result
-          response_info&.dig(:portrait_match_results, :FaceMatchResult)
+          portrait_match_results&.dig(:FaceMatchResult)
         end
 
         def product_status_passed?
@@ -298,28 +300,6 @@ module DocAuth
           end
 
           new_alert_data
-        end
-
-        def parse_image_metrics
-          image_metrics = {}
-          return image_metrics unless true_id_product&.dig(:ParameterDetails).present?
-          true_id_product[:ParameterDetails].each do |detail|
-            next unless detail[:Group] == 'IMAGE_METRICS_RESULT'
-
-            inner_val = detail.dig(:Values).collect { |value| value.dig(:Value) }
-            image_metrics[detail[:Name]] = inner_val
-          end
-
-          transform_metrics(image_metrics)
-        end
-
-        def transform_metrics(img_metrics)
-          new_metrics = {}
-          img_metrics['Side']&.each_with_index do |side, i|
-            new_metrics[side.downcase.to_sym] = img_metrics.transform_values { |v| v[i] }
-          end
-
-          new_metrics
         end
 
         # Generate a hash for image references information that can be linked to Alert
