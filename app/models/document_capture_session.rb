@@ -17,7 +17,6 @@ class DocumentCaptureSession < ApplicationRecord
     session_result.pii = doc_auth_response.pii_from_doc
     session_result.captured_at = Time.zone.now
     session_result.attention_with_barcode = doc_auth_response.attention_with_barcode?
-    session_result.selfie_check_performed = doc_auth_response.selfie_check_performed?
     session_result.doc_auth_success = doc_auth_response.doc_auth_success?
     session_result.selfie_status = selfie_status_from_response(doc_auth_response)
     EncryptedRedisStructStorage.store(
