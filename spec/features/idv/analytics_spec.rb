@@ -850,6 +850,10 @@ RSpec.feature 'Analytics Regression', js: true do
         to receive(:biometric_comparison_required?).
         and_return({ biometric_comparison_required: true })
 
+      allow_any_instance_of(DocAuth::Response).to receive(:selfie_status).and_return(:success)
+      allow_any_instance_of(DocumentCaptureSessionResult).
+        to receive(:selfie_status).and_return(:success)
+
       mobile_device = Browser.new(mobile_user_agent)
       allow(BrowserCache).to receive(:parse).and_return(mobile_device)
 
