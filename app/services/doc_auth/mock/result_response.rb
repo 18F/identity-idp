@@ -61,7 +61,7 @@ module DocAuth
               mock_args[:image_metrics] = image_metrics.symbolize_keys if image_metrics.present?
               mock_args[:failed] = failed.map!(&:symbolize_keys) unless failed.nil?
               mock_args[:passed] = passed.map!(&:symbolize_keys) if passed.present?
-              mock_args[:liveness_enabled] = selfie_check_performed?
+              mock_args[:liveness_enabled] = face_match_result ? true : false
               mock_args[:classification_info] = classification_info if classification_info.present?
               fake_response_info = create_response_info(**mock_args)
               ErrorGenerator.new(config).generate_doc_auth_errors(fake_response_info)

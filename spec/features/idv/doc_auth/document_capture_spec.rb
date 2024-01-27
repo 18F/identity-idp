@@ -234,8 +234,7 @@ RSpec.feature 'document capture step', :js do
           expect_doc_capture_page_header(t('doc_auth.headings.document_capture_with_selfie'))
           expect_doc_capture_id_subheader
           expect_doc_capture_selfie_subheader
-          attach_images
-          attach_selfie
+          attach_liveness_images
           submit_images
 
           expect(page).to have_current_path(idv_ssn_url)
