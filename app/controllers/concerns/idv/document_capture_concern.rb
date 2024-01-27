@@ -49,7 +49,7 @@ module Idv
     end
 
     def selfie_requirement_met?
-      !decorated_sp_session.selfie_required? || stored_result.selfie_check_performed
+      !decorated_sp_session.selfie_required? || stored_result.selfie_check_performed?
     end
 
     private
