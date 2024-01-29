@@ -18,7 +18,7 @@ en:
           one: Password must be at least one character long
           other: Password must be at least %{count} characters long
     capture_doc:
-      invalid_link: This link is expired or not valid.  Please request another link to
+      invalid_link: This link is expired or not valid. Please request another link to
         verify your identity on a mobile phone.
     confirm_password_incorrect: Incorrect password.
     doc_auth:
