@@ -1,4 +1,7 @@
 class UserProfilesEncryptor
+  class MissingPiiError < StandardError
+  end
+
   attr_reader :personal_key
 
   def initialize(user:, user_session:, password:)
@@ -8,18 +11,14 @@ class UserProfilesEncryptor
   end
 
   def encrypt
-    pii_cache = Pii::Cacher.new(user, user_session)
-
     if user.active_profile.present?
-      pii = pii_cache.fetch(user.active_profile.id)
-      encrypt_pii_for_profile(user.active_profile, pii)
+      encrypt_pii_for_profile(user.active_profile)
     end
 
     if user.pending_profile.present?
-      pii = pii_cache.fetch(user.pending_profile.id)
-      if pii
-        encrypt_pii_for_profile(user.pending_profile, pii)
-      else
+      begin
+        encrypt_pii_for_profile(user.pending_profile)
+      rescue MissingPiiError
         user.pending_profile.deactivate(:encryption_error)
       end
     end
@@ -29,7 +28,11 @@ class UserProfilesEncryptor
 
   attr_reader :user, :password, :user_session
 
-  def encrypt_pii_for_profile(profile, pii)
+  def encrypt_pii_for_profile(profile)
+    pii_cache = Pii::Cacher.new(user, user_session)
+    pii = pii_cache.fetch(profile.id)
+    raise MissingPiiError unless pii
+
     @personal_key = profile.encrypt_pii(pii, password)
     profile.save!
   end
