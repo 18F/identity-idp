@@ -376,7 +376,7 @@ module Reporting
     end
 
     def idv_enter_password_submitted
-      (data[Events::IDV_ENTER_PASSWORD_SUBMITTED] &&
+      (data[Events::IDV_ENTER_PASSWORD_SUBMITTED] +
         data[Events::OLD_IDV_ENTER_PASSWORD_SUBMITTED]).count
     end
 
