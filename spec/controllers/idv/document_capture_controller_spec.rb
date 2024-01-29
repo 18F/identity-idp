@@ -185,6 +185,14 @@ RSpec.describe Idv::DocumentCaptureController do
 
         expect(response).to redirect_to(idv_hybrid_handoff_url)
       end
+
+      it 'redirects to hybrid handoff url when flow path is false' do
+        subject.idv_session.flow_path = false
+
+        get :show
+
+        expect(response).to redirect_to(idv_hybrid_handoff_url)
+      end
     end
   end
 
