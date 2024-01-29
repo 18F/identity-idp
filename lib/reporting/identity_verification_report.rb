@@ -253,7 +253,7 @@ module Reporting
     def query
       params = {
         issuers: issuers.present? && quote(issuers),
-        event_names:  quote(Events.all_events),
+        event_names: quote(Events.all_events),
         usps_enrollment_status_updated: quote(Events::USPS_ENROLLMENT_STATUS_UPDATED),
         gpo_verification_submitted: quote(
           [
