@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe AuthnContextResolver do
   context 'when the user uses a vtr param' do
     it 'parses the vtr param into requirements' do
-      vtr = '["C2.Pb"]'
+      vtr = ['C2.Pb']
 
       result = AuthnContextResolver.new(
         service_provider: nil,
@@ -21,7 +21,7 @@ RSpec.describe AuthnContextResolver do
     end
 
     it 'ignores any acr_values params that are passed' do
-      vtr = '["C2.Pb"]'
+      vtr = ['C2.Pb']
 
       acr_values = [
         'http://idmanagement.gov/ns/assurance/aal/2',
@@ -35,18 +35,6 @@ RSpec.describe AuthnContextResolver do
       ).resolve
 
       expect(result.component_values.map(&:name).join('.')).to eq('C1.C2.P1.Pb')
-    end
-
-    it 'raises an error if the vtr has invalid JSON' do
-      vtr = 'this is not valid json:^%$#'
-
-      expect do
-        AuthnContextResolver.new(
-          service_provider: nil,
-          vtr: vtr,
-          acr_values: nil,
-        ).resolve
-      end.to raise_error(JSON::ParserError)
     end
   end
 

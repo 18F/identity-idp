@@ -18,10 +18,8 @@ class AuthnContextResolver
   private
 
   def vot_parser_result
-    vector_of_trust = JSON.parse(vtr).first if vtr.present?
-
     @vot_result = Vot::Parser.new(
-      vector_of_trust: vector_of_trust,
+      vector_of_trust: vtr&.first,
       acr_values: acr_values,
     ).parse
   end
