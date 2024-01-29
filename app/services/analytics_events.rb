@@ -968,6 +968,40 @@ module AnalyticsEvents
 
   # @param [Boolean] success
   # @param [Hash] errors
+  # @param [Integer] attempts
+  # @param [Integer] remaining_attempts
+  # @param [String] user_id
+  # @param [String] flow_path
+  # @param [String] front_image_fingerprint Fingerprint of front image data
+  # @param [String] back_image_fingerprint Fingerprint of back image data
+  # The document capture image uploaded was locally validated during the IDV process
+  def idv_doc_auth_submitted_image_upload_form(
+    success:,
+    errors:,
+    remaining_attempts:,
+    flow_path:,
+    attempts: nil,
+    user_id: nil,
+    front_image_fingerprint: nil,
+    back_image_fingerprint: nil,
+    **extra
+  )
+    track_event(
+      'IdV: doc auth image upload form submitted',
+      success: success,
+      errors: errors,
+      attempts: attempts,
+      remaining_attempts: remaining_attempts,
+      user_id: user_id,
+      flow_path: flow_path,
+      front_image_fingerprint: front_image_fingerprint,
+      back_image_fingerprint: back_image_fingerprint,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success
+  # @param [Hash] errors
   # @param [String] exception
   # @param [Boolean] billed
   # @param [String] doc_auth_result
