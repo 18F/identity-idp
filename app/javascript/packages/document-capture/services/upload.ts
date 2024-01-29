@@ -126,6 +126,8 @@ const upload: UploadImplementation = async function (payload, { method = 'POST',
 
     error.isFailedResult = !!result.result_failed;
 
+    error.isFailedDocType = !result.doc_type_supported;
+
     error.selfieNotLive = result.selfie_live === undefined ? false : !result.selfie_live;
 
     error.selfieNotGoodQuality =
