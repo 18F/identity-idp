@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::EnterPasswordController do
+RSpec.describe Idv::EnterPasswordController, allowed_extra_analytics: [:*] do
   include UspsIppHelper
 
   let(:user) do

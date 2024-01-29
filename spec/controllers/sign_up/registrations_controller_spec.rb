@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe SignUp::RegistrationsController, devise: true do
+RSpec.describe SignUp::RegistrationsController, devise: true, allowed_extra_analytics: [:*] do
   describe '#new' do
     it 'allows user to visit the sign up page' do
       get :new

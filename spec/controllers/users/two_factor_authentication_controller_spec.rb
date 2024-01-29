@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Users::TwoFactorAuthenticationController do
+RSpec.describe Users::TwoFactorAuthenticationController, allowed_extra_analytics: [:*] do
   include ActionView::Helpers::DateHelper
   include UserAgentHelper
 

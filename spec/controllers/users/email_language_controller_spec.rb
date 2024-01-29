@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Users::EmailLanguageController do
+RSpec.describe Users::EmailLanguageController, allowed_extra_analytics: [:*] do
   describe 'before_actions' do
     it 'includes appropriate before_actions' do
       expect(subject).to have_actions(

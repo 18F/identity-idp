@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe OpenidConnect::UserInfoController do
+RSpec.describe OpenidConnect::UserInfoController, allowed_extra_analytics: [:*] do
   let(:json_response) { JSON.parse(response.body).with_indifferent_access }
 
   describe '#show' do
