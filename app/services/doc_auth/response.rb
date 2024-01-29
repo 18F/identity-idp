@@ -76,7 +76,7 @@ module DocAuth
         selfie_live: selfie_live?,
         selfie_quality_good: selfie_quality_good?,
         doc_auth_success: doc_auth_success?,
-        selfie_status: selfie_status_from_response(self),
+        selfie_status: selfie_status,
       }.merge(extra)
     end
 
