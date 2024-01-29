@@ -20,7 +20,7 @@ interface DocumentCaptureWarningProps {
 
 const DISPLAY_ATTEMPTS = 3;
 
-function getHeadingI8nKey({ isFailedDocType, isFailedSelfieLivenessOrQuality, t }) {
+function getHeading({ isFailedDocType, isFailedSelfieLivenessOrQuality, t }) {
   if (isFailedDocType) {
     return t('errors.doc_auth.doc_type_not_supported_heading');
   }
@@ -44,7 +44,7 @@ function DocumentCaptureWarning({
   const { trackEvent } = useContext(AnalyticsContext);
 
   const nonIppOrFailedResult = !inPersonURL || isFailedResult;
-  const heading = getHeadingI8nKey({ isFailedDocType, isFailedSelfieLivenessOrQuality, t });
+  const heading = getHeading({ isFailedDocType, isFailedSelfieLivenessOrQuality, t });
   const actionText = nonIppOrFailedResult
     ? t('idv.failure.button.warning')
     : t('idv.failure.button.try_online');
