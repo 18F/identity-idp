@@ -219,7 +219,7 @@ RSpec.describe Idv::HowToVerifyController do
   end
 
   context 'form submission error' do
-    let(:invalid_params)  do
+    let(:invalid_params) do
       {
         idv_how_to_verify_form: { selection: '' },
       }
@@ -232,7 +232,7 @@ RSpec.describe Idv::HowToVerifyController do
       expect(subject.idv_session.skip_doc_auth).to be_nil
       expect(subject.idv_session.opted_in_to_in_person_proofing).to be_nil
       expect(response).to redirect_to(idv_how_to_verify_url)
-    end 
+    end
   end
 
   describe '#step_info' do

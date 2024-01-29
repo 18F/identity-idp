@@ -194,7 +194,7 @@ RSpec.describe Idv::HybridHandoffController do
 
         it 'does not render the show template' do
           get :show
-          
+
           expect(response).not_to render_template :show
         end
       end
@@ -202,7 +202,7 @@ RSpec.describe Idv::HybridHandoffController do
       context 'opted in to hybrid flow' do
         it 'renders the show template' do
           get :show
-          
+
           expect(response).to render_template :show
         end
       end

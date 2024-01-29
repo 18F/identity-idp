@@ -63,10 +63,10 @@ module Idv
         preconditions: ->(idv_session:, user:) do
           self.enabled? && idv_session.idv_consent_given
         end,
-        undo_step: ->(idv_session:, user:) { 
-          idv_session.skip_doc_auth = nil
-          idv_session.opted_in_to_in_person_proofing = nil
-         },
+        undo_step: ->(idv_session:, user:) {
+                     idv_session.skip_doc_auth = nil
+                     idv_session.opted_in_to_in_person_proofing = nil
+                   },
       )
     end
 

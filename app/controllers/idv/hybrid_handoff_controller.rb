@@ -35,7 +35,7 @@ module Idv
 
     def self.can_do_hybrid(session:)
       if IdentityConfig.store.in_person_proofing_opt_in_enabled &&
-        IdentityConfig.store.in_person_proofing_enabled
+         IdentityConfig.store.in_person_proofing_enabled
         session.skip_doc_auth == false
       else
         !session.skip_doc_auth
@@ -47,7 +47,9 @@ module Idv
         key: :hybrid_handoff,
         controller: self,
         next_steps: [:link_sent, :document_capture],
-        preconditions: ->(idv_session:, user:) { idv_session.idv_consent_given && self.can_do_hybrid(session: idv_session) },
+        preconditions: ->(idv_session:, user:) {
+                         idv_session.idv_consent_given && self.can_do_hybrid(session: idv_session)
+                       },
         undo_step: ->(idv_session:, user:) do
           idv_session.flow_path = nil
           idv_session.phone_for_mobile_flow = nil
