@@ -23,8 +23,6 @@ class AuthnContextResolver
     @vot_result = Vot::Parser.new(
       JSON.parse(vtr).first,
     ).parse
-  rescue JSON::ParserError
-    # TODO: Handle the error here
   end
 
   def acr_result_with_sp_defaults
@@ -44,8 +42,10 @@ class AuthnContextResolver
   def result_with_sp_aal_defaults(result)
     if acr_aal_component_values.any?
       result
-    elsif service_provider&.default_all == 2
-      return result.with(aal2: true)
+    elsif service_provider&.default_aal.to_i == 2
+      result.with(aal2?: true)
+    elsif service_provider&.default_aal.to_i >= 3
+      result.with(aal2?: true, phishing_resistant?: true)
     else
       result
     end
@@ -55,7 +55,7 @@ class AuthnContextResolver
     if acr_ial_component_values.any?
       result
     elsif service_provider&.ial.to_i >= 2
-      return result.with(identity_proofing: true, aal2: true)
+      result.with(identity_proofing?: true, aal2?: true)
     else
       result
     end
