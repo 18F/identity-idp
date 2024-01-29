@@ -94,8 +94,10 @@ RSpec.describe Reporting::DropOffReport do
     let(:default_args) do
       {
         num_threads: 5,
+        ensure_complete_logs: true,
         slice_interval: 3.hours,
         progress: false,
+        logger: nil,
       }
     end
 
@@ -148,7 +150,7 @@ RSpec.describe Reporting::DropOffReport do
         ['Capture Document (page viewed)'] + string_or_num(strings, 4, 1, 0.2, 0.8),
         ['Document submitted (event)'] + string_or_num(strings, 4, 0, 0.0, 0.8),
         ['SSN (page view)'] + string_or_num(strings, 3, 1, 0.25, 0.6),
-        ['Verify Info (page view)'] + string_or_num(strings, 2, 1, 0.33, 0.4),
+        ['Verify Info (page view)'] + string_or_num(strings, 2, 1, 0.3333333333333333, 0.4),
         ['Verify submit (event)'] + string_or_num(strings, 2, 0, 0.0, 0.4),
         ['Phone finder (page view)'] + string_or_num(strings, 2, 0, 0.0, 0.4),
         ['Encrypt account: enter password (page view)'] + string_or_num(strings, 1, 1, 0.5, 0.2),

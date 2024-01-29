@@ -33,7 +33,6 @@ module Reporting
       @threads = threads
     end
 
-
     module Events
       IDV_DOC_AUTH_WELCOME = 'IdV: doc auth welcome visited'
       IDV_DOC_AUTH_WELCOME_SUBMITTED = 'IdV: doc auth welcome submitted'
@@ -405,13 +404,12 @@ module Reporting
 
     # @return [Float]
     def percent(numerator:, denominator:)
-      (numerator.to_f / denominator.to_f).round(2)
+      (numerator.to_f / denominator.to_f)
     end
 
     def fetch_results
       cloudwatch_client.fetch(query:, from: time_range.begin, to: time_range.end)
     end
-
 
     def query
       params = {
