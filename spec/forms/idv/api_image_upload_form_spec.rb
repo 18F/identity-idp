@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::ApiImageUploadForm do
+RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
   include DocPiiHelper
 
   subject(:form) do
@@ -132,6 +132,8 @@ RSpec.describe Idv::ApiImageUploadForm do
           async: false,
           attempts: 1,
           attention_with_barcode: false,
+          address_line2_present: nil,
+          alert_failure_count: nil,
           billed: true,
           client_image_metrics: {
             back: {
@@ -147,7 +149,10 @@ RSpec.describe Idv::ApiImageUploadForm do
               width: 40,
             },
           },
+          image_metrics: nil,
+          conversation_id: nil,
           doc_auth_result: 'Passed',
+          decision_product_status: nil,
           errors: {},
           exception: nil,
           flow_path: anything,
@@ -161,10 +166,19 @@ RSpec.describe Idv::ApiImageUploadForm do
           back_image_fingerprint: an_instance_of(String),
           doc_type_supported: boolean,
           liveness_checking_required: boolean,
+          log_alert_results: nil,
+          portrait_match_results: nil,
+          processed_alerts: nil,
+          product_status: nil,
+          reference: nil,
           selfie_live: boolean,
           selfie_quality_good: boolean,
+          selfie_success: nil,
           doc_auth_success: boolean,
           selfie_status: anything,
+          vendor: nil,
+          transaction_status: nil,
+          transaction_reason_code: nil,
         )
       end
 
