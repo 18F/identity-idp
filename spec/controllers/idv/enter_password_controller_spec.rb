@@ -65,7 +65,7 @@ RSpec.describe Idv::EnterPasswordController do
       )
     end
 
-    it 'includes before_actions from IdvSession' do
+    it 'includes before_actions from IdvSessionConcern' do
       expect(subject).to have_actions(:before, :redirect_unless_sp_requested_verification)
     end
   end

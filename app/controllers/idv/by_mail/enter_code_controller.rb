@@ -2,7 +2,7 @@ module Idv
   module ByMail
     class EnterCodeController < ApplicationController
       include Idv::AvailabilityConcern
-      include IdvSession
+      include IdvSessionConcern
       include Idv::StepIndicatorConcern
       include FraudReviewConcern
 

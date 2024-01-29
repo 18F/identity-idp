@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Idv::ForgotPasswordController do
   describe 'before_actions' do
-    it 'includes before_actions from IdvSession' do
+    it 'includes before_actions from IdvSessionConcern' do
       expect(subject).to have_actions(:before, :redirect_unless_sp_requested_verification)
     end
   end

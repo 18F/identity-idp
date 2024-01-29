@@ -9,7 +9,7 @@ RSpec.describe 'RateLimitConcern' do
     end
 
     include RateLimitConcern
-    include IdvSession
+    include IdvSessionConcern
 
     def show
       render plain: 'Hello'
