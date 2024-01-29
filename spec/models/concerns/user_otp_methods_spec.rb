@@ -10,7 +10,7 @@ RSpec.describe UserOtpMethods do
       # minimal ActiveRecord impl
       def update(attrs)
         attrs.each do |key, value|
-          send("#{key}=", value)
+          send(:"#{key}=", value)
         end
       end
     end

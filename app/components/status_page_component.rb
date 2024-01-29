@@ -30,7 +30,7 @@ class StatusPageComponent < BaseComponent
 
   def icon_name
     if @icon
-      "#{status}_#{icon}".to_sym
+      :"#{status}_#{icon}"
     else
       status.to_sym
     end

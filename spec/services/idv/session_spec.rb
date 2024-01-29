@@ -56,7 +56,7 @@ RSpec.describe Idv::Session do
       Idv::Session::VALID_SESSION_ATTRIBUTES.each do |attr|
         subject.send attr, 'foo'
         expect(subject.send(attr)).to eq 'foo'
-        subject.send "#{attr}=".to_sym, 'foo'
+        subject.send :"#{attr}=", 'foo'
         expect(subject.send(attr)).to eq 'foo'
       end
     end
@@ -70,7 +70,7 @@ RSpec.describe Idv::Session do
     it 'allows supported attributes' do
       Idv::Session::VALID_SESSION_ATTRIBUTES.each do |attr|
         expect(subject.respond_to?(attr, false)).to eq true
-        expect(subject.respond_to?("#{attr}=".to_sym, false)).to eq true
+        expect(subject.respond_to?(:"#{attr}=", false)).to eq true
       end
     end
   end
