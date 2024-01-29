@@ -31,21 +31,17 @@ module Vot
 
     def map_initial_vector_of_trust_components_to_component_values
       vector_of_trust.split('.').map do |component_value_name|
-        component_value = SupportedComponentValues.by_name[component_value_name]
-        if component_value.nil?
-          raise_unsupported_component_exception(component_value_name)
-        end
-        component_value
+        SupportedComponentValues.by_name.fetch(component_value_name)
+      rescue KeyError
+        raise_unsupported_component_exception(component_value_name)
       end
     end
 
     def map_initial_acr_values_to_component_values
       vector_of_trust.split(' ').map do |component_value_name|
-        component_value = LegacyComponentValues.by_name[component_value_name]
-        if component_value.nil?
-          raise_unsupported_component_exception(component_value_name)
-        end
-        component_value
+        LegacyComponentValues.by_name.fetch(component_value_name)
+      rescue KeyError
+        raise_unsupported_component_exception(component_value_name)
       end
     end
 
