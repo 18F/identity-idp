@@ -82,7 +82,7 @@ class FakeAnalytics < Analytics
         first&.
         match(/:in `(?<method_name>[^']+)'/)&.[](:method_name)
 
-      if method_name
+      if method_name && !allowed_extra_analytics.include?(:*)
         analytics_method = AnalyticsEvents.instance_method(method_name)
 
         param_names = analytics_method.
@@ -169,7 +169,7 @@ end
 
 RSpec.configure do |c|
   c.around do |ex|
-    keys = ex.metadata[:allowed_extra_analytics]
+    keys = Array(ex.metadata[:allowed_extra_analytics])
     FakeAnalytics::UndocumentedParamsChecker.allowed_extra_analytics = keys
     ex.run
   ensure

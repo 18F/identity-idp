@@ -214,6 +214,24 @@ RSpec.describe Analytics do
     )
   end
 
+  it 'does not error when undocumented params are allowed via *', allowed_extra_analytics: [:*] do
+    expect(ahoy).to receive(:track).with(
+      kind_of(String),
+      hash_including(event_properties: hash_including(:fun_level)),
+    )
+
+    analytics.idv_phone_confirmation_otp_submitted(
+      success: true,
+      errors: true,
+      code_expired: true,
+      code_matches: true,
+      second_factor_attempts_count: true,
+      second_factor_locked_at: true,
+      proofing_components: true,
+      fun_level: 1000,
+    )
+  end
+
   it 'does not error when string tags are documented as options' do
     expect(ahoy).to receive(:track).with(
       kind_of(String),
