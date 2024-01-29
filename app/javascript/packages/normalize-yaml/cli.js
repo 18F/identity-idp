@@ -23,7 +23,7 @@ const options = {
     [
       flags.includes('--disable-sort-keys') && 'sortKeys',
       flags.includes('--disable-smart-punctuation') && 'smartPunctuation',
-      flags.includes('--disable-collapse-sentence-spacing') && 'collapseSentenceSpacing',
+      flags.includes('--disable-collapse-spacing') && 'collapseSpacing',
     ].filter(Boolean)
   ),
 };

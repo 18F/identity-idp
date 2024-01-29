@@ -18,7 +18,7 @@
     "cli.js",
     "index.js",
     "visitors/index.js",
-    "visitors/colllapse-sentence-spacing.js",
+    "visitors/colllapse-spacing.js",
     "visitors/smart-punctuation.js",
     "visitors/sort-keys.js",
     "types"

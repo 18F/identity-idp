@@ -1,12 +1,12 @@
 import smartPunctuation from './smart-punctuation.js';
 import sortKeys from './sort-keys.js';
-import collapseSentenceSpacing from './collapse-sentence-spacing.js';
+import collapseSpacing from './collapse-spacing.js';
 
 /** @typedef {import('yaml').visitor} Visitor */
 /** @typedef {import('../').Formatter} Formatter */
 
 /** @type {Record<Formatter, Visitor>} */
-const DEFAULT_VISITORS = { smartPunctuation, sortKeys, collapseSentenceSpacing };
+const DEFAULT_VISITORS = { smartPunctuation, sortKeys, collapseSpacing };
 
 /** @type {(...callbacks: Array<(...args: any[]) => any>) => (...args: any[]) => void} */
 const over =

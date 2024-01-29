@@ -283,7 +283,7 @@ en:
         your letter will no longer work and you’ll have to verify your identity
         again.
       gpo_letter_header: Your letter is on the way
-      header: To finish resetting your password, please click the link below  or copy
+      header: To finish resetting your password, please click the link below or copy
         and paste the entire link into your browser.
       link_text: Reset your password
       subject: Reset your password

@@ -6,7 +6,7 @@
 
 ### New Features
 
-- Added new punctuation formatter to enforce single spaces between sentences.
+- Added new punctuation formatter to collapse multiple spaces to a single space.
 
 ## v2.0.0
 
