@@ -1122,60 +1122,6 @@ module AnalyticsEvents
 
   # @param [Boolean] success
   # @param [Hash] errors
-  # @param [String] exception
-  # @param [Boolean] billed
-  # @param [String] doc_auth_result
-  # @param [String] state
-  # @param [String] state_id_type
-  # @param [Boolean] async
-  # @param [Integer] attempts
-  # @param [Integer] remaining_attempts
-  # @param [Hash] client_image_metrics
-  # @param [String] flow_path
-  # @param [Float] vendor_request_time_in_ms Time it took to upload images & get a response.
-  # @param [String] front_image_fingerprint Fingerprint of front image data
-  # @param [String] back_image_fingerprint Fingerprint of back image data
-  # The document capture image was uploaded to vendor during the IDV process
-  def idv_doc_auth_submitted_image_upload_vendor(
-    success:,
-    errors:,
-    exception:,
-    state:,
-    state_id_type:,
-    async:, attempts:,
-    remaining_attempts:,
-    client_image_metrics:,
-    flow_path:,
-    billed: nil,
-    doc_auth_result: nil,
-    vendor_request_time_in_ms: nil,
-    front_image_fingerprint: nil,
-    back_image_fingerprint: nil,
-    **extra
-  )
-    track_event(
-      'IdV: doc auth image upload vendor submitted',
-      success: success,
-      errors: errors,
-      exception: exception,
-      billed: billed,
-      doc_auth_result: doc_auth_result,
-      state: state,
-      state_id_type: state_id_type,
-      async: async,
-      attempts: attempts,
-      remaining_attempts: remaining_attempts,
-      client_image_metrics: client_image_metrics,
-      flow_path: flow_path,
-      vendor_request_time_in_ms: vendor_request_time_in_ms,
-      front_image_fingerprint: front_image_fingerprint,
-      back_image_fingerprint: back_image_fingerprint,
-      **extra,
-    )
-  end
-
-  # @param [Boolean] success
-  # @param [Hash] errors
   # @param [String] user_id
   # @param [Integer] remaining_attempts
   # @param [Hash] pii_like_keypaths

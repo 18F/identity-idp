@@ -1,6 +1,7 @@
 require 'rails_helper'
 
-RSpec.describe TwoFactorAuthentication::PivCacVerificationController, allowed_extra_analytics: [:*] do
+RSpec.describe TwoFactorAuthentication::PivCacVerificationController,
+               allowed_extra_analytics: [:*] do
   let(:user) do
     create(
       :user, :fully_registered, :with_piv_or_cac,
