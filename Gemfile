@@ -112,8 +112,8 @@ group :development, :test do
   gem 'psych'
   gem 'rspec', '~> 3.12.0'
   gem 'rspec-rails', '~> 6.0'
-  gem 'rubocop', '~> 1.55.1', require: false
-  gem 'rubocop-performance', '~> 1.19.0', require: false
+  gem 'rubocop', '~> 1.59.0', require: false
+  gem 'rubocop-performance', '~> 1.20.2', require: false
   gem 'rubocop-rails', '>= 2.5.2', require: false
   gem 'rubocop-rspec', require: false
 end
