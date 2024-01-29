@@ -3,12 +3,17 @@ require 'optparse'
 class ScriptBase
   attr_reader :argv, :stdout, :stderr, :subtask_class, :banner
 
-  def initialize(argv:, stdout:, stderr:, subtask_class:, banner:)
+  def initialize(argv:, stdout:, stderr:, subtask_class:, banner:, reason_arg:)
     @argv = argv
     @stdout = stdout
     @stderr = stderr
     @subtask_class = subtask_class
     @banner = banner
+    @reason_arg = reason_arg
+  end
+
+  def reason_arg?
+    !!@reason_arg
   end
 
   Result = Struct.new(
@@ -26,6 +31,7 @@ class ScriptBase
     :show_help,
     :requesting_issuers,
     :deflate,
+    :reason,
     keyword_init: true,
   ) do
     alias_method :include_missing?, :include_missing
@@ -40,6 +46,7 @@ class ScriptBase
       show_help: false,
       requesting_issuers: [],
       deflate: false,
+      reason: nil,
     )
   end
 
@@ -126,6 +133,12 @@ class ScriptBase
         Whether or not to add rows in the output for missing inputs, defaults to on
       STR
         config.include_missing = include_missing
+      end
+
+      if reason_arg?
+        opts.on('--reason=REASON', 'Reason for command') do |reason|
+          config.reason = reason
+        end
       end
     end
   end

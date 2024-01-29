@@ -155,6 +155,14 @@ fr:
       troubleshooting:
         change_number: Utilisez un autre numéro de téléphone
         code_not_received: Je n’ai pas reçu mon code à usage unique
+    piv_cac:
+      change_nickname: Changer de pseudo
+      delete: Supprimer cette méthode
+      deleted: Suppression réussie d’une méthode PIV/CAC
+      edit_heading: Gérer les paramètres de PIV/CAC
+      manage_accessible_label: Gérer la carte PIV/CAC
+      nickname: Pseudo
+      renamed: Votre méthode PIV/CAC a été renommée avec succès
     piv_cac_header_text: Veuillez présenter votre carte PIV/CAC
     please_try_again_html: Veuillez essayer de nouveau dans <strong>%{countdown}</strong>.
     read_about_two_factor_authentication: En savoir plus sur l’authentification à deux facteurs
