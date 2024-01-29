@@ -8,11 +8,20 @@ class UserProfilesEncryptor
   end
 
   def encrypt
+    pii_cache = Pii::Cacher.new(user, user_session)
+
     if user.active_profile.present?
-      encrypt_pii_for_profile(user.active_profile)
+      pii = pii_cache.fetch(user.active_profile.id)
+      encrypt_pii_for_profile(user.active_profile, pii)
     end
+
     if user.pending_profile.present?
-      encrypt_pii_for_profile(user.pending_profile)
+      pii = pii_cache.fetch(user.pending_profile.id)
+      if pii
+        encrypt_pii_for_profile(user.pending_profile, pii)
+      else
+        user.pending_profile.deactivate(:encryption_error)
+      end
     end
   end
 
@@ -20,8 +29,7 @@ class UserProfilesEncryptor
 
   attr_reader :user, :password, :user_session
 
-  def encrypt_pii_for_profile(profile)
-    pii = Pii::Cacher.new(user, user_session).fetch(profile.id)
+  def encrypt_pii_for_profile(profile, pii)
     @personal_key = profile.encrypt_pii(pii, password)
     profile.save!
   end

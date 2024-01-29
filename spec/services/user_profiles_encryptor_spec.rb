@@ -63,7 +63,7 @@ RSpec.describe UserProfilesEncryptor do
           encryptor.encrypt
           profile.reload
 
-          expect(profile.deactivation_reason).to eq(:encryption_error)
+          expect(profile.deactivation_reason).to eq('encryption_error')
         end
       end
     end
