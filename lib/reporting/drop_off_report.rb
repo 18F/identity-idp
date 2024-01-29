@@ -371,7 +371,7 @@ module Reporting
     end
 
     def idv_enter_password_visited
-      (data[Events::IDV_ENTER_PASSWORD_VISITED] &&
+      (data[Events::IDV_ENTER_PASSWORD_VISITED] +
         data[Events::OLD_IDV_ENTER_PASSWORD_VISITED]).count
     end
 
