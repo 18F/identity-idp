@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <title><%= t('headings.redirecting') %> | <%= APP_NAME %></title>
     <%= javascript_tag(nonce: true) do %>
-      document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/, 'js');
+      document.documentElement.classList.replace('no-js', 'js');
     <% end %>
     <%= stylesheet_link_tag 'application', media: 'all' %>
     <%= render_stylesheet_once_tags %>
