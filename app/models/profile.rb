@@ -96,7 +96,7 @@ class Profile < ApplicationRecord
       activated_at: now,
     }
 
-    attrs[:verified_at] = now unless (reason_deactivated == :password_reset || verified_at)
+    attrs[:verified_at] = now unless reason_deactivated == :password_reset || verified_at
 
     transaction do
       Profile.where(user_id: user_id).update_all(active: false)

@@ -108,7 +108,7 @@ module Idv
 
     def otp_delivery_preference
       preference = idv_session.previous_phone_step_params[:otp_delivery_preference]
-      return :sms if (preference.nil? || preference.empty?)
+      return :sms if preference.nil? || preference.empty?
       preference.to_sym
     end
 
