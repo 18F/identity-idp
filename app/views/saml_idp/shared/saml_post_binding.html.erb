@@ -26,7 +26,7 @@
             <% if params.key?(:RelayState) %>
               <%= hidden_field_tag('RelayState', params[:RelayState]) %>
             <% end %>
-            <%= f.submit t('forms.buttons.submit.default'), data: { click_immediate: true } %>
+            <%= f.submit t('forms.buttons.submit.default'), data: { click_immediate: '' } %>
           <% end %>
         </div>
       </div>

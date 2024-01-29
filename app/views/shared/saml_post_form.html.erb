@@ -23,7 +23,7 @@
             <% form_params.each do |key, val| %>
               <%= hidden_field_tag(key, val) %>
             <% end %>
-            <%= f.submit t('forms.buttons.submit.default'), data: { click_immediate: true } %>
+            <%= f.submit t('forms.buttons.submit.default'), data: { click_immediate: '' } %>
           <% end %>
         </div>
       </div>
