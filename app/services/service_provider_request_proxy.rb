@@ -34,7 +34,7 @@ class ServiceProviderRequestProxy
     spr = ServiceProviderRequest.new(
       uuid: uuid, issuer: nil, url: nil, ial: nil,
       aal: nil, requested_attributes: nil,
-      biometric_comparison_required: false
+      biometric_comparison_required: false, acr_values: nil, vtr: nil
     )
     yield(spr)
     create(
@@ -45,13 +45,22 @@ class ServiceProviderRequestProxy
       aal: spr.aal,
       requested_attributes: spr.requested_attributes,
       biometric_comparison_required: spr.biometric_comparison_required,
+      acr_values: spr.acr_values,
+      vtr: spr.vtr,
     )
   end
 
   def self.create(hash)
     uuid = hash[:uuid]
     obj = hash.slice(
-      :issuer, :url, :ial, :aal, :requested_attributes, :biometric_comparison_required
+      :issuer,
+      :url,
+      :ial,
+      :aal,
+      :requested_attributes,
+      :biometric_comparison_required,
+      :acr_values,
+      :vtr,
     )
     write(obj, uuid)
     hash_to_spr(obj, uuid)
