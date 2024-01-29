@@ -9,7 +9,7 @@ RSpec.describe 'when using PIV/CAC to sign in', allowed_extra_analytics: [:*] do
   end
 end
 
-RSpec.describe '2FA options when signing in', allowed_extra_analytics: [:*]  do
+RSpec.describe '2FA options when signing in', allowed_extra_analytics: [:*] do
   context 'when the user only has SMS configured' do
     it 'only displays SMS and Voice' do
       user = create(:user, :fully_registered, otp_delivery_preference: 'sms')
