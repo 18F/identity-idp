@@ -1176,10 +1176,10 @@ RSpec.describe GetUspsProofingResultsJob do
             end
 
             it 'does not mark the user as fraud_review_pending_at' do
-                job.perform(Time.zone.now)
+              job.perform(Time.zone.now)
 
-                profile = pending_enrollment.reload.profile
-                expect(profile).not_to be_fraud_review_pending
+              profile = pending_enrollment.reload.profile
+              expect(profile).not_to be_fraud_review_pending
             end
 
             it 'does not log a user_sent_to_fraud_review analytics event' do
