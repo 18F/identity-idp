@@ -1133,6 +1133,7 @@ module AnalyticsEvents
   # @param [Boolean] in_person_verification_pending
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [String, nil] deactivation_reason Reason user's profile was deactivated, if any.
+  # @identity.idp.previous_event_name  IdV: review info visited
   def idv_enter_password_submitted(
     success:,
     fraud_review_pending:,
@@ -1161,6 +1162,7 @@ module AnalyticsEvents
   # @param [String] address_verification_method The method (phone or gpo) being
   #        used to verify the user's identity
   # User visited IDV password confirm page
+  # @identity.idp.previous_event_name  IdV: review info visited
   def idv_enter_password_visited(
     proofing_components: nil,
     address_verification_method: nil,

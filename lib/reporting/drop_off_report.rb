@@ -44,7 +44,9 @@ module Reporting
       IDV_DOC_AUTH_VERIFY_SUBMITTED = 'IdV: doc auth verify submitted'
       IDV_DOC_AUTH_PHONE_VISITED = 'IdV: phone of record visited'
       IDV_ENTER_PASSWORD_VISITED = 'idv_enter_password_visited'
+      OLD_IDV_ENTER_PASSWORD_VISITED = 'IdV: review info visited'
       IDV_ENTER_PASSWORD_SUBMITTED = 'idv_enter_password_submitted'
+      OLD_IDV_ENTER_PASSWORD_SUBMITTED = 'IdV: review complete'
       IDV_PERSONAL_KEY_SUBMITTED = 'IdV: personal key submitted'
 
       def self.all_events
@@ -369,11 +371,13 @@ module Reporting
     end
 
     def idv_enter_password_visited
-      data[Events::IDV_ENTER_PASSWORD_VISITED].count
+      (data[Events::IDV_ENTER_PASSWORD_VISITED] &&
+        data[Events::OLD_IDV_ENTER_PASSWORD_VISITED]).count
     end
 
     def idv_enter_password_submitted
-      data[Events::IDV_ENTER_PASSWORD_SUBMITTED].count
+      (data[Events::IDV_ENTER_PASSWORD_SUBMITTED] &&
+        data[Events::OLD_IDV_ENTER_PASSWORD_SUBMITTED]).count
     end
 
     def idv_personal_key_submitted
