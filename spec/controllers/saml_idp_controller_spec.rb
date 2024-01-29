@@ -651,7 +651,6 @@ RSpec.describe SamlIdpController do
             finish_profile: false,
             request_signed: true,
             matching_cert_serial: saml_test_sp_cert_serial,
-            error_details: nil,
           })
         expect(@analytics).to receive(:track_event).
           with('SP redirect initiated', {
@@ -800,7 +799,6 @@ RSpec.describe SamlIdpController do
             finish_profile: false,
             request_signed: true,
             matching_cert_serial: saml_test_sp_cert_serial,
-            error_details: nil,
           })
         expect(@analytics).to receive(:track_event).
           with('SP redirect initiated', { ial: 0, billed_ial: 2 })
@@ -843,11 +841,6 @@ RSpec.describe SamlIdpController do
           authn_context_comparison: 'exact',
           service_provider: 'http://localhost:3000',
           request_signed: true,
-          endpoint: nil,
-          requested_ial: nil,
-          matching_cert_serial: nil,
-          idv: nil,
-          finish_profile: nil,
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -1067,11 +1060,6 @@ RSpec.describe SamlIdpController do
           authn_context_comparison: 'exact',
           service_provider: nil,
           request_signed: true,
-          endpoint: nil,
-          requested_ial: nil,
-          matching_cert_serial: nil,
-          idv: nil,
-          finish_profile: nil,
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -1116,11 +1104,6 @@ RSpec.describe SamlIdpController do
           authn_context_comparison: 'exact',
           service_provider: nil,
           request_signed: true,
-          endpoint: nil,
-          requested_ial: nil,
-          matching_cert_serial: nil,
-          idv: nil,
-          finish_profile: nil,
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -1369,7 +1352,6 @@ RSpec.describe SamlIdpController do
           finish_profile: false,
           request_signed: false,
           matching_cert_serial: nil,
-          error_details: nil,
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -1390,11 +1372,6 @@ RSpec.describe SamlIdpController do
           authn_context_comparison: 'exact',
           service_provider: 'http://localhost:3000',
           request_signed: true,
-          endpoint: nil,
-          requested_ial: nil,
-          matching_cert_serial: nil,
-          idv: nil,
-          finish_profile: nil,
         }
       end
 
@@ -1497,7 +1474,6 @@ RSpec.describe SamlIdpController do
           finish_profile: false,
           request_signed: true,
           matching_cert_serial: saml_test_sp_cert_serial,
-          error_details: nil,
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -1535,7 +1511,6 @@ RSpec.describe SamlIdpController do
           finish_profile: false,
           request_signed: true,
           matching_cert_serial: saml_test_sp_cert_serial,
-          error_details: nil,
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -1571,7 +1546,6 @@ RSpec.describe SamlIdpController do
           finish_profile: false,
           request_signed: true,
           matching_cert_serial: saml_test_sp_cert_serial,
-          error_details: nil,
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -1602,11 +1576,6 @@ RSpec.describe SamlIdpController do
           authn_context_comparison: 'exact',
           service_provider: 'http://localhost:3000',
           request_signed: true,
-          endpoint: nil,
-          requested_ial: nil,
-          matching_cert_serial: nil,
-          idv: nil,
-          finish_profile: nil,
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -1649,7 +1618,6 @@ RSpec.describe SamlIdpController do
           finish_profile: false,
           request_signed: true,
           matching_cert_serial: saml_test_sp_cert_serial,
-          error_details: nil,
         }
 
         expect(name_id.children.first.to_s).to eq(user.agency_identities.last.uuid)
@@ -1682,7 +1650,6 @@ RSpec.describe SamlIdpController do
           finish_profile: false,
           request_signed: true,
           matching_cert_serial: saml_test_sp_cert_serial,
-          error_details: nil,
         }
 
         expect(name_id.children.first.to_s).to eq(user.email_addresses.first.email)
@@ -1715,7 +1682,6 @@ RSpec.describe SamlIdpController do
           finish_profile: false,
           request_signed: true,
           matching_cert_serial: saml_test_sp_cert_serial,
-          error_details: nil,
         }
 
         expect(name_id.children.first.to_s).to eq(user.id.to_s)
@@ -2202,7 +2168,6 @@ RSpec.describe SamlIdpController do
           finish_profile: false,
           request_signed: false,
           matching_cert_serial: nil,
-          error_details: nil,
         }
 
         expect(@analytics).to receive(:track_event).
@@ -2251,7 +2216,6 @@ RSpec.describe SamlIdpController do
           finish_profile: false,
           request_signed: true,
           matching_cert_serial: saml_test_sp_cert_serial,
-          error_details: nil,
         }
 
         expect(@analytics).to receive(:track_event).
@@ -2291,7 +2255,6 @@ RSpec.describe SamlIdpController do
           finish_profile: true,
           request_signed: true,
           matching_cert_serial: saml_test_sp_cert_serial,
-          error_details: nil,
         }
 
         expect(@analytics).to receive(:track_event).

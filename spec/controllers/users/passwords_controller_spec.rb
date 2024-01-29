@@ -19,6 +19,7 @@ RSpec.describe Users::PasswordsController do
         stub_sign_in
         stub_analytics
         stub_attempts_tracker
+        allow(@analytics).to receive(:track_event)
 
         expect(@irs_attempts_api_tracker).to receive(:logged_in_password_change).
           with(success: true)
@@ -29,11 +30,10 @@ RSpec.describe Users::PasswordsController do
         }
         patch :update, params: { update_user_password_form: params }
 
-        expect(@analytics).to have_logged_event(
+        expect(@analytics).to have_received(:track_event).with(
           'Password Changed',
           success: true,
           errors: {},
-          error_details: nil,
           pending_profile_present: false,
           active_profile_present: false,
           user_id: subject.current_user.uuid,

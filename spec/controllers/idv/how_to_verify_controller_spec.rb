@@ -84,7 +84,7 @@ RSpec.describe Idv::HowToVerifyController do
     end
   end
 
-  describe '#show', allowed_extra_analytics: [:sample_bucket1, :sample_bucket2] do
+  describe '#show' do
     let(:analytics_name) { :idv_doc_auth_how_to_verify_visited }
     let(:analytics_args) do
       {

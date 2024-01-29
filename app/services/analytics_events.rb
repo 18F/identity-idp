@@ -32,28 +32,14 @@ module AnalyticsEvents
   # @param [String] user_id
   # @param [String, nil] message_id from AWS Pinpoint API
   # @param [String, nil] request_id from AWS Pinpoint API
-  # @param [Boolean] success
-  # @param [Hash] errors
-  # @param [Hash] error_details
   # An account reset was cancelled
-  def account_reset_cancel(
-    user_id:,
-    message_id: nil,
-    request_id: nil,
-    success: nil,
-    errors: nil,
-    error_details: nil,
-    **extra
-  )
+  def account_reset_cancel(user_id:, message_id: nil, request_id: nil, **extra)
     track_event(
       'Account Reset: cancel',
       {
         user_id: user_id,
         message_id: message_id,
         request_id: request_id,
-        success: success,
-        errors: errors,
-        error_details: error_details,
         **extra,
       }.compact,
     )
@@ -62,12 +48,10 @@ module AnalyticsEvents
   # @identity.idp.previous_event_name Account Reset
   # @param [String] user_id
   # @param [Hash] errors
-  # @param [Boolean] success
   # Validates the token used for cancelling an account reset
-  def account_reset_cancel_token_validation(success:, user_id:, errors: nil, **extra)
+  def account_reset_cancel_token_validation(user_id:, errors: nil, **extra)
     track_event(
       'Account Reset: cancel token validation',
-      success: success,
       user_id: user_id,
       errors: errors,
       **extra,
@@ -107,12 +91,10 @@ module AnalyticsEvents
   # @identity.idp.previous_event_name Account Reset
   # @param [String] user_id
   # @param [Hash] errors
-  # @param [Boolean] success
   # Validates the granted token for account reset
-  def account_reset_granted_token_validation(success: nil, user_id: nil, errors: nil, **extra)
+  def account_reset_granted_token_validation(user_id: nil, errors: nil, **extra)
     track_event(
       'Account Reset: granted token validation',
-      success: success,
       user_id: user_id,
       errors: errors,
       **extra,
@@ -139,7 +121,6 @@ module AnalyticsEvents
   # @param [Integer] email_addresses number of email addresses the user has
   # @param [String, nil] message_id from AWS Pinpoint API
   # @param [String, nil] request_id from AWS Pinpoint API
-  # @param [Hash, nil] errors
   # An account reset has been requested
   def account_reset_request(
     success:,
@@ -149,7 +130,6 @@ module AnalyticsEvents
     email_addresses:,
     request_id: nil,
     message_id: nil,
-    errors: nil,
     **extra
   )
     track_event(
@@ -162,7 +142,6 @@ module AnalyticsEvents
         email_addresses: email_addresses,
         request_id: request_id,
         message_id: message_id,
-        errors: errors,
         **extra,
       }.compact,
     )
@@ -180,32 +159,19 @@ module AnalyticsEvents
 
   # @param [Boolean] success
   # @param [String] user_id account the email is linked to
-  # @param [Hash] errors
-  # @param [Hash] error_details
   # A user has clicked the confirmation link in an email
-  def add_email_confirmation(user_id:, success: nil, errors: nil, error_details: nil, **extra)
-    track_event(
-      'Add Email: Email Confirmation',
-      user_id: user_id,
-      success: success,
-      errors: errors,
-      error_details: error_details,
-      **extra,
-    )
+  def add_email_confirmation(user_id:, success: nil, **extra)
+    track_event('Add Email: Email Confirmation', user_id: user_id, success: success, **extra)
   end
 
   # @param [Boolean] success
   # @param [Hash] errors
-  # @param [Hash] error_details
-  # @param [String] domain_name
   # Tracks request for adding new emails to an account
-  def add_email_request(success:, errors:, error_details: nil, domain_name: nil, **extra)
+  def add_email_request(success:, errors:, **extra)
     track_event(
       'Add Email Requested',
       success: success,
       errors: errors,
-      error_details: error_details,
-      domain_name: domain_name,
       **extra,
     )
   end
@@ -290,12 +256,10 @@ module AnalyticsEvents
 
   # Tracks when the user creates a set of backup mfa codes.
   # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
-  # @param [Boolean] in_account_creation_flow
-  def backup_code_created(enabled_mfa_methods_count:, in_account_creation_flow:, **extra)
+  def backup_code_created(enabled_mfa_methods_count:, **extra)
     track_event(
       'Backup Code Created',
       enabled_mfa_methods_count: enabled_mfa_methods_count,
-      in_account_creation_flow: in_account_creation_flow,
       **extra,
     )
   end
@@ -310,16 +274,10 @@ module AnalyticsEvents
   # @param [Boolean] success
   # @param [Hash] errors
   # @param [Hash] error_details
-  # @param [Hash] mfa_method_counts
-  # @param [Integer] enabled_mfa_methods_count
-  # @param [Boolean] in_account_creation_flow
   def backup_code_setup_visit(
     success:,
     errors: nil,
     error_details: nil,
-    mfa_method_counts: nil,
-    enabled_mfa_methods_count: nil,
-    in_account_creation_flow: nil,
     **extra
   )
     track_event(
@@ -327,9 +285,6 @@ module AnalyticsEvents
       success: success,
       errors: errors,
       error_details: error_details,
-      mfa_method_counts: mfa_method_counts,
-      enabled_mfa_methods_count: enabled_mfa_methods_count,
-      in_account_creation_flow: in_account_creation_flow,
       **extra,
     )
   end
@@ -379,16 +334,12 @@ module AnalyticsEvents
   end
 
   # @param [String] message the warning
-  # @param [Array<String>] unknown_alerts
-  # @param [Hash] response_info
   # Logged when there is a non-user-facing error in the doc auth process, such as an unrecognized
   # field from a vendor
-  def doc_auth_warning(message: nil, unknown_alerts: nil, response_info: nil, **extra)
+  def doc_auth_warning(message: nil, **extra)
     track_event(
       'Doc Auth Warning',
       message: message,
-      unknown_alerts: unknown_alerts,
-      response_info: response_info,
       **extra,
     )
   end
@@ -443,14 +394,12 @@ module AnalyticsEvents
 
   # @param [Boolean] success
   # @param [Hash] errors
-  # @param [Hash] error_details
   # Tracks if Email Language is updated
-  def email_language_updated(success:, errors:, error_details: nil, **extra)
+  def email_language_updated(success:, errors:, **extra)
     track_event(
       'Email Language: Updated',
       success: success,
       errors: errors,
-      error_details: error_details,
       **extra,
     )
   end
@@ -511,7 +460,6 @@ module AnalyticsEvents
 
   # @param [Boolean] success
   # @param [Hash] errors
-  # @param [Hash, nil] error_details
   # @param [Time, nil] event_created_at timestamp for the event
   # @param [Time, nil] disavowed_device_last_used_at
   # @param [String, nil] disavowed_device_user_agent
@@ -523,7 +471,6 @@ module AnalyticsEvents
   def event_disavowal_password_reset(
     success:,
     errors:,
-    error_details: nil,
     event_created_at: nil,
     disavowed_device_last_used_at: nil,
     disavowed_device_user_agent: nil,
@@ -537,7 +484,6 @@ module AnalyticsEvents
       'Event disavowal password reset',
       success: success,
       errors: errors,
-      error_details: error_details,
       event_created_at: event_created_at,
       disavowed_device_last_used_at: disavowed_device_last_used_at,
       disavowed_device_user_agent: disavowed_device_user_agent,
@@ -926,148 +872,24 @@ module AnalyticsEvents
 
   # User has consented to share information with document upload and may
   # view the "hybrid handoff" step next unless "skip_hybrid_handoff" param is true
-  # @param [Boolean] step
-  # @param [String] analytics_id
-  # @param [Boolean] skip_hybrid_handoff
-  # @param [Boolean] irs_reproofing
-  # @param [Boolean] success
-  # @param [Hash] errors
-  # @param [Hash] error_details
-  # @param [String] lexisnexis_instant_verify_workflow_ab_test_bucket
-  # @param [String] acuant_sdk_upgrade_ab_test_bucket
-  def idv_doc_auth_agreement_submitted(
-    step: nil,
-    analytics_id: nil,
-    skip_hybrid_handoff: nil,
-    irs_reproofing: nil,
-    success: nil,
-    errors: nil,
-    error_details: nil,
-    lexisnexis_instant_verify_workflow_ab_test_bucket: nil,
-    acuant_sdk_upgrade_ab_test_bucket: nil,
-    **extra
-  )
-    track_event(
-      'IdV: doc auth agreement submitted',
-      step:,
-      analytics_id:,
-      skip_hybrid_handoff:,
-      irs_reproofing:,
-      success:,
-      errors:,
-      error_details:,
-      lexisnexis_instant_verify_workflow_ab_test_bucket:,
-      acuant_sdk_upgrade_ab_test_bucket:,
-      **extra,
-    )
+  def idv_doc_auth_agreement_submitted(**extra)
+    track_event('IdV: doc auth agreement submitted', **extra)
   end
 
-  # @param [String] step
-  # @param [String] analytics_id
-  # @param [Boolean] skip_hybrid_handoff
-  # @param [Boolean] irs_reproofing
-  # @param [String] lexisnexis_instant_verify_workflow_ab_test_bucket
-  # @param [String] acuant_sdk_upgrade_ab_test_bucket
-  def idv_doc_auth_agreement_visited(
-    step: nil,
-    analytics_id: nil,
-    skip_hybrid_handoff: nil,
-    irs_reproofing: nil,
-    lexisnexis_instant_verify_workflow_ab_test_bucket: nil,
-    acuant_sdk_upgrade_ab_test_bucket: nil,
-    **extra
-  )
-    track_event(
-      'IdV: doc auth agreement visited',
-      step:,
-      analytics_id:,
-      skip_hybrid_handoff:,
-      irs_reproofing:,
-      lexisnexis_instant_verify_workflow_ab_test_bucket:,
-      acuant_sdk_upgrade_ab_test_bucket:,
-      **extra,
-    )
+  def idv_doc_auth_agreement_visited(**extra)
+    track_event('IdV: doc auth agreement visited', **extra)
   end
 
   def idv_doc_auth_capture_complete_visited(**extra)
     track_event('IdV: doc auth capture_complete visited', **extra)
   end
 
-  # @param [String] analytics_id
-  # @param [Hash] errors
-  # @param [String] flow_path
-  # @param [Boolean] irs_reproofing
-  # @param [Boolean] redo_document_capture
-  # @param [Boolean] skip_hybrid_handoff
-  # @param [String] step
-  # @param [Boolean] stored_result_present
-  # @param [Boolean] success
-  # @param [String] lexisnexis_instant_verify_workflow_ab_test_bucket
-  # @param [String] acuant_sdk_upgrade_ab_test_bucket
-  def idv_doc_auth_document_capture_submitted(
-    analytics_id: nil,
-    errors: nil,
-    flow_path: nil,
-    irs_reproofing: nil,
-    redo_document_capture: nil,
-    skip_hybrid_handoff: nil,
-    step: nil,
-    stored_result_present: nil,
-    success: nil,
-    lexisnexis_instant_verify_workflow_ab_test_bucket: nil,
-    acuant_sdk_upgrade_ab_test_bucket: nil,
-    **extra
-  )
-    track_event(
-      'IdV: doc auth document_capture submitted',
-      {
-        analytics_id:,
-        errors:,
-        flow_path:,
-        irs_reproofing:,
-        redo_document_capture:,
-        skip_hybrid_handoff:,
-        step:,
-        stored_result_present:,
-        success:,
-        lexisnexis_instant_verify_workflow_ab_test_bucket:,
-        acuant_sdk_upgrade_ab_test_bucket:,
-        **extra,
-      }.compact,
-    )
+  def idv_doc_auth_document_capture_submitted(**extra)
+    track_event('IdV: doc auth document_capture submitted', **extra)
   end
 
-  # @param [String] flow_path
-  # @param [String] step
-  # @param [String] analytics_id
-  # @param [Boolean] irs_reproofing
-  # @param [Boolean] redo_document_capture
-  # @param [Boolean] skip_hybrid_handoff
-  # @param [String] lexisnexis_instant_verify_workflow_ab_test_bucket
-  # @param [String] acuant_sdk_upgrade_ab_test_bucket
-  def idv_doc_auth_document_capture_visited(
-    flow_path: nil,
-    step: nil,
-    analytics_id: nil,
-    irs_reproofing: nil,
-    redo_document_capture: nil,
-    skip_hybrid_handoff: nil,
-    lexisnexis_instant_verify_workflow_ab_test_bucket: nil,
-    acuant_sdk_upgrade_ab_test_bucket: nil,
-    **extra
-  )
-    track_event(
-      'IdV: doc auth document_capture visited',
-      flow_path:,
-      step:,
-      analytics_id:,
-      irs_reproofing:,
-      redo_document_capture:,
-      skip_hybrid_handoff:,
-      lexisnexis_instant_verify_workflow_ab_test_bucket:,
-      acuant_sdk_upgrade_ab_test_bucket:,
-      **extra,
-    )
+  def idv_doc_auth_document_capture_visited(**extra)
+    track_event('IdV: doc auth document_capture visited', **extra)
   end
 
   # @param [String] step_name which step the user was on
@@ -1084,28 +906,10 @@ module AnalyticsEvents
   end
 
   # @param [String] side the side of the image submission
-  # @param [Integer] attempts
-  # @param [Integer] remaining_attempts
-  # @param [String] flow_path
-  # @param [String] front_image_fingerprint
-  # @param [String] back_image_fingerprint
-  def idv_doc_auth_failed_image_resubmitted(
-    side:,
-    attempts:,
-    remaining_attempts:,
-    flow_path:,
-    front_image_fingerprint:,
-    back_image_fingerprint:,
-    **extra
-  )
+  def idv_doc_auth_failed_image_resubmitted(side:, **extra)
     track_event(
       'IdV: failed doc image resubmitted',
       side: side,
-      attempts: attempts,
-      remaining_attempts: remaining_attempts,
-      flow_path: flow_path,
-      front_image_fingerprint: front_image_fingerprint,
-      back_image_fingerprint: back_image_fingerprint,
       **extra,
     )
   end
@@ -1122,83 +926,14 @@ module AnalyticsEvents
   # either continue via desktop ("document_capture" destination) or switch
   # to mobile phone ("send_link" destination) to perform document upload.
   # @identity.idp.previous_event_name IdV: doc auth upload submitted
-  # @param [String] analytics_id
-  # @param [String] destination
-  # @param [Hash] errors
-  # @param [String] flow_path
-  # @param [Boolean] irs_reproofing
-  # @param [Boolean] redo_document_capture
-  # @param [Boolean] skip_hybrid_handoff
-  # @param [String] step
-  # @param [Boolean] success
-  # @param [Hash] telephony_response
-  # @param [String] lexisnexis_instant_verify_workflow_ab_test_bucket
-  # @param [String] acuant_sdk_upgrade_ab_test_bucket
-  def idv_doc_auth_hybrid_handoff_submitted(
-    analytics_id: nil,
-    destination: nil,
-    errors: nil,
-    flow_path: nil,
-    irs_reproofing: nil,
-    redo_document_capture: nil,
-    skip_hybrid_handoff: nil,
-    step: nil,
-    success: nil,
-    telephony_response: nil,
-    lexisnexis_instant_verify_workflow_ab_test_bucket: nil,
-    acuant_sdk_upgrade_ab_test_bucket: nil,
-    **extra
-  )
-    track_event(
-      'IdV: doc auth hybrid handoff submitted',
-      {
-        analytics_id:,
-        destination:,
-        errors:,
-        flow_path:,
-        irs_reproofing:,
-        redo_document_capture:,
-        skip_hybrid_handoff:,
-        step:,
-        success:,
-        telephony_response:,
-        lexisnexis_instant_verify_workflow_ab_test_bucket:,
-        acuant_sdk_upgrade_ab_test_bucket:,
-        **extra,
-      }.compact,
-    )
+  def idv_doc_auth_hybrid_handoff_submitted(**extra)
+    track_event('IdV: doc auth hybrid handoff submitted', **extra)
   end
 
   # Desktop user has reached the above "hybrid handoff" view
   # @identity.idp.previous_event_name IdV: doc auth upload visited
-  # @param [String] step
-  # @param [String] analytics_id
-  # @param [Boolean] irs_reproofing
-  # @param [Boolean] redo_document_capture
-  # @param [Boolean] skip_hybrid_handoff
-  # @param [String] lexisnexis_instant_verify_workflow_ab_test_bucket
-  # @param [String] acuant_sdk_upgrade_ab_test_bucket
-  def idv_doc_auth_hybrid_handoff_visited(
-    step: nil,
-    analytics_id: nil,
-    irs_reproofing: nil,
-    redo_document_capture: nil,
-    skip_hybrid_handoff: nil,
-    lexisnexis_instant_verify_workflow_ab_test_bucket: nil,
-    acuant_sdk_upgrade_ab_test_bucket: nil,
-    **extra
-  )
-    track_event(
-      'IdV: doc auth hybrid handoff visited',
-      step:,
-      analytics_id:,
-      irs_reproofing:,
-      redo_document_capture:,
-      skip_hybrid_handoff:,
-      lexisnexis_instant_verify_workflow_ab_test_bucket:,
-      acuant_sdk_upgrade_ab_test_bucket:,
-      **extra,
-    )
+  def idv_doc_auth_hybrid_handoff_visited(**extra)
+    track_event('IdV: doc auth hybrid handoff visited', **extra)
   end
 
   # @identity.idp.previous_event_name IdV: doc auth send_link submitted
@@ -1206,39 +941,15 @@ module AnalyticsEvents
     track_event('IdV: doc auth link_sent submitted', **extra)
   end
 
-  # @param [String] step
-  # @param [String] analytics_id
-  # @param [String] flow_path
-  # @param [Boolean] irs_reproofing
-  # @param [Boolean] skip_hybrid_handoff
-  # @param [String] lexisnexis_instant_verify_workflow_ab_test_bucket
-  # @param [String] acuant_sdk_upgrade_ab_test_bucket
-  def idv_doc_auth_link_sent_visited(
-    step: nil,
-    analytics_id: nil,
-    flow_path: nil,
-    irs_reproofing: nil,
-    skip_hybrid_handoff: nil,
-    lexisnexis_instant_verify_workflow_ab_test_bucket: nil,
-    acuant_sdk_upgrade_ab_test_bucket: nil,
-    **extra
-  )
-    track_event(
-      'IdV: doc auth link_sent visited',
-      step:,
-      analytics_id:,
-      flow_path:,
-      irs_reproofing:,
-      skip_hybrid_handoff:,
-      lexisnexis_instant_verify_workflow_ab_test_bucket:,
-      acuant_sdk_upgrade_ab_test_bucket:,
-      **extra,
-    )
+  def idv_doc_auth_link_sent_visited(**extra)
+    track_event('IdV: doc auth link_sent visited', **extra)
   end
 
-  # @param [String] error
-  def idv_doc_auth_randomizer_defaulted(error: 'document_capture_session_uuid_key missing', **extra)
-    track_event('IdV: doc_auth random vendor error', error:, **extra)
+  def idv_doc_auth_randomizer_defaulted
+    track_event(
+      'IdV: doc_auth random vendor error',
+      error: 'document_capture_session_uuid_key missing',
+    )
   end
 
   def idv_doc_auth_redo_ssn_submitted(**extra)
@@ -1246,110 +957,13 @@ module AnalyticsEvents
   end
 
   # @identity.idp.previous_event_name IdV: in person proofing ssn submitted
-  # @param [String] flow_path
-  # @param [String] step
-  # @param [String] analytics_id
-  # @param [Boolean] irs_reproofing
-  # @param [Boolean] skip_hybrid_handoff
-  # @param [String] lexisnexis_instant_verify_workflow_ab_test_bucket
-  # @param [String] acuant_sdk_upgrade_ab_test_bucket
-  # @param [Boolean] success
-  # @param [Hash] errors
-  def idv_doc_auth_ssn_submitted(
-    flow_path: nil,
-    step: nil,
-    analytics_id: nil,
-    irs_reproofing: nil,
-    skip_hybrid_handoff: nil,
-    lexisnexis_instant_verify_workflow_ab_test_bucket: nil,
-    acuant_sdk_upgrade_ab_test_bucket: nil,
-    success: nil,
-    errors: nil,
-    **extra
-  )
-    track_event(
-      'IdV: doc auth ssn submitted',
-      flow_path:,
-      step:,
-      analytics_id:,
-      irs_reproofing:,
-      skip_hybrid_handoff:,
-      lexisnexis_instant_verify_workflow_ab_test_bucket:,
-      acuant_sdk_upgrade_ab_test_bucket:,
-      success:,
-      errors:,
-      **extra,
-    )
+  def idv_doc_auth_ssn_submitted(**extra)
+    track_event('IdV: doc auth ssn submitted', **extra)
   end
 
   # @identity.idp.previous_event_name IdV: in person proofing ssn visited
-  # @param [String] flow_path
-  # @param [String] step
-  # @param [String] analytics_id
-  # @param [Boolean] irs_reproofing
-  # @param [Boolean] skip_hybrid_handoff
-  # @param [String] lexisnexis_instant_verify_workflow_ab_test_bucket
-  # @param [String] acuant_sdk_upgrade_ab_test_bucket
-  def idv_doc_auth_ssn_visited(
-    flow_path: nil,
-    step: nil,
-    analytics_id: nil,
-    irs_reproofing: nil,
-    skip_hybrid_handoff: nil,
-    lexisnexis_instant_verify_workflow_ab_test_bucket: nil,
-    acuant_sdk_upgrade_ab_test_bucket: nil,
-    **extra
-  )
-    track_event(
-      'IdV: doc auth ssn visited',
-      flow_path:,
-      step:,
-      analytics_id:,
-      irs_reproofing:,
-      skip_hybrid_handoff:,
-      lexisnexis_instant_verify_workflow_ab_test_bucket:,
-      acuant_sdk_upgrade_ab_test_bucket:,
-      **extra,
-    )
-  end
-
-  # @param [Boolean] success
-  # @param [Hash] errors
-  # @param [Integer] attempts
-  # @param [Integer] remaining_attempts
-  # @param [String] user_id
-  # @param [String] flow_path
-  # @param [String] front_image_fingerprint Fingerprint of front image data
-  # @param [String] back_image_fingerprint Fingerprint of back image data
-  # @param [Hash] error_details
-  # The document capture image uploaded was locally validated during the IDV process
-  def idv_doc_auth_submitted_image_upload_form(
-    success:,
-    errors:,
-    remaining_attempts:,
-    flow_path:,
-    attempts: nil,
-    user_id: nil,
-    front_image_fingerprint: nil,
-    back_image_fingerprint: nil,
-    error_details: nil,
-    **extra
-  )
-    track_event(
-      'IdV: doc auth image upload form submitted',
-      {
-        success: success,
-        errors: errors,
-        error_details: error_details,
-        attempts: attempts,
-        remaining_attempts: remaining_attempts,
-        user_id: user_id,
-        flow_path: flow_path,
-        front_image_fingerprint: front_image_fingerprint,
-        back_image_fingerprint: back_image_fingerprint,
-        **extra,
-      }.compact,
-    )
+  def idv_doc_auth_ssn_visited(**extra)
+    track_event('IdV: doc auth ssn visited', **extra)
   end
 
   # @param [Boolean] success
@@ -1436,26 +1050,26 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: doc auth image upload vendor submitted',
-      success: success,
-      errors: errors,
-      exception: exception,
-      billed: billed,
-      doc_auth_result: doc_auth_result,
-      state: state,
-      state_id_type: state_id_type,
-      async: async,
-      attempts: attempts,
-      remaining_attempts: remaining_attempts,
-      client_image_metrics: client_image_metrics,
-      flow_path: flow_path,
-      vendor_request_time_in_ms: vendor_request_time_in_ms,
-      front_image_fingerprint: front_image_fingerprint,
-      back_image_fingerprint: back_image_fingerprint,
-      attention_with_barcode: attention_with_barcode,
-      doc_type_supported: doc_type_supported,
-      doc_auth_success: doc_auth_success,
-      selfie_success: selfie_success,
-      vendor: vendor,
+      success:,
+      errors:,
+      exception:,
+      billed:,
+      doc_auth_result:,
+      state:,
+      state_id_type:,
+      async:,
+      attempts:,
+      remaining_attempts:,
+      client_image_metrics:,
+      flow_path:,
+      vendor_request_time_in_ms:,
+      front_image_fingerprint:,
+      back_image_fingerprint:,
+      attention_with_barcode:,
+      doc_type_supported:,
+      doc_auth_success:,
+      selfie_success:,
+      vendor:,
       conversation_id:,
       reference:,
       transaction_status:,
@@ -1474,6 +1088,60 @@ module AnalyticsEvents
 
   # @param [Boolean] success
   # @param [Hash] errors
+  # @param [String] exception
+  # @param [Boolean] billed
+  # @param [String] doc_auth_result
+  # @param [String] state
+  # @param [String] state_id_type
+  # @param [Boolean] async
+  # @param [Integer] attempts
+  # @param [Integer] remaining_attempts
+  # @param [Hash] client_image_metrics
+  # @param [String] flow_path
+  # @param [Float] vendor_request_time_in_ms Time it took to upload images & get a response.
+  # @param [String] front_image_fingerprint Fingerprint of front image data
+  # @param [String] back_image_fingerprint Fingerprint of back image data
+  # The document capture image was uploaded to vendor during the IDV process
+  def idv_doc_auth_submitted_image_upload_vendor(
+    success:,
+    errors:,
+    exception:,
+    state:,
+    state_id_type:,
+    async:, attempts:,
+    remaining_attempts:,
+    client_image_metrics:,
+    flow_path:,
+    billed: nil,
+    doc_auth_result: nil,
+    vendor_request_time_in_ms: nil,
+    front_image_fingerprint: nil,
+    back_image_fingerprint: nil,
+    **extra
+  )
+    track_event(
+      'IdV: doc auth image upload vendor submitted',
+      success: success,
+      errors: errors,
+      exception: exception,
+      billed: billed,
+      doc_auth_result: doc_auth_result,
+      state: state,
+      state_id_type: state_id_type,
+      async: async,
+      attempts: attempts,
+      remaining_attempts: remaining_attempts,
+      client_image_metrics: client_image_metrics,
+      flow_path: flow_path,
+      vendor_request_time_in_ms: vendor_request_time_in_ms,
+      front_image_fingerprint: front_image_fingerprint,
+      back_image_fingerprint: back_image_fingerprint,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success
+  # @param [Hash] errors
   # @param [String] user_id
   # @param [Integer] remaining_attempts
   # @param [Hash] pii_like_keypaths
@@ -1481,9 +1149,6 @@ module AnalyticsEvents
   # @param [String] front_image_fingerprint Fingerprint of front image data
   # @param [String] back_image_fingerprint Fingerprint of back image data
   # @param [Hash] classification_info document image side information, issuing country and type etc
-  # @param [Boolean] attention_with_barcode
-  # @param [Integer] attempts
-  # @param [Hash] error_details
   # The PII that came back from the document capture vendor was validated
   def idv_doc_auth_submitted_pii_validation(
     success:,
@@ -1495,9 +1160,6 @@ module AnalyticsEvents
     front_image_fingerprint: nil,
     back_image_fingerprint: nil,
     classification_info: {},
-    attention_with_barcode: nil,
-    attempts: nil,
-    error_details: nil,
     **extra
   )
     track_event(
@@ -1511,134 +1173,22 @@ module AnalyticsEvents
       front_image_fingerprint: front_image_fingerprint,
       back_image_fingerprint: back_image_fingerprint,
       classification_info: classification_info,
-      attention_with_barcode: attention_with_barcode,
-      attempts: attempts,
-      error_details: error_details,
       **extra,
     )
   end
 
-  # @param [String] flow_path
-  # @param [String] step
-  # @param [String] analytics_id
-  # @param [Boolean] irs_reproofing
-  # @param [Boolean] same_address_as_id
-  # @param [Boolean] success
-  # @param [Hash] errors
-  # @param [Boolean] address_edited
-  # @param [Boolean] address_line2_present
-  # @param [Hash] proofing_results
-  # @param [Boolean] ssn_is_unique
-  # @param [Boolean] skip_hybrid_handoff
-  # @param [String] lexisnexis_instant_verify_workflow_ab_test_bucket
-  # @param [String] acuant_sdk_upgrade_ab_test_bucket
-  def idv_doc_auth_verify_proofing_results(
-    flow_path:,
-    step:,
-    analytics_id:,
-    irs_reproofing:,
-    success:,
-    errors:,
-    address_edited:,
-    address_line2_present:,
-    proofing_results:,
-    ssn_is_unique:,
-    same_address_as_id: nil,
-    skip_hybrid_handoff: nil,
-    lexisnexis_instant_verify_workflow_ab_test_bucket: nil,
-    acuant_sdk_upgrade_ab_test_bucket: nil,
-    **extra
-  )
-    track_event(
-      'IdV: doc auth verify proofing results',
-      flow_path:,
-      step:,
-      analytics_id:,
-      irs_reproofing:,
-      same_address_as_id:,
-      success:,
-      errors:,
-      address_edited:,
-      address_line2_present:,
-      proofing_results:,
-      ssn_is_unique:,
-      skip_hybrid_handoff:,
-      lexisnexis_instant_verify_workflow_ab_test_bucket:,
-      acuant_sdk_upgrade_ab_test_bucket:,
-      **extra,
-    )
+  def idv_doc_auth_verify_proofing_results(**extra)
+    track_event('IdV: doc auth verify proofing results', **extra)
   end
 
   # @identity.idp.previous_event_name IdV: in person proofing verify submitted
-  # @param [String] analytics_id
-  # @param [String] flow_path
-  # @param [Boolean] irs_reproofing
-  # @param [Boolean] same_address_as_id
-  # @param [String] step
-  # @param [Boolean] skip_hybrid_handoff
-  # @param [String] lexisnexis_instant_verify_workflow_ab_test_bucket
-  # @param [String] acuant_sdk_upgrade_ab_test_bucket
-  def idv_doc_auth_verify_submitted(
-    analytics_id: nil,
-    flow_path: nil,
-    irs_reproofing: nil,
-    same_address_as_id: nil,
-    step: nil,
-    skip_hybrid_handoff: nil,
-    lexisnexis_instant_verify_workflow_ab_test_bucket: nil,
-    acuant_sdk_upgrade_ab_test_bucket: nil,
-    **extra
-  )
-    track_event(
-      'IdV: doc auth verify submitted',
-      {
-        analytics_id:,
-        flow_path:,
-        irs_reproofing:,
-        same_address_as_id:,
-        step:,
-        skip_hybrid_handoff:,
-        lexisnexis_instant_verify_workflow_ab_test_bucket:,
-        acuant_sdk_upgrade_ab_test_bucket:,
-        **extra,
-      }.compact,
-    )
+  def idv_doc_auth_verify_submitted(**extra)
+    track_event('IdV: doc auth verify submitted', **extra)
   end
 
   # @identity.idp.previous_event_name IdV: in person proofing verify visited
-  # @param [String] flow_path
-  # @param [String] step
-  # @param [String] analytics_id
-  # @param [Boolean] irs_reproofing
-  # @param [Boolean] same_address_as_id
-  # @param [String] lexisnexis_instant_verify_workflow_ab_test_bucket
-  # @param [String] acuant_sdk_upgrade_ab_test_bucket
-  # @param [Boolean] skip_hybrid_handoff
-  def idv_doc_auth_verify_visited(
-    flow_path:,
-    step:,
-    analytics_id:,
-    irs_reproofing:,
-    same_address_as_id: nil,
-    lexisnexis_instant_verify_workflow_ab_test_bucket: nil,
-    acuant_sdk_upgrade_ab_test_bucket: nil,
-    skip_hybrid_handoff: nil,
-    **extra
-  )
-    track_event(
-      'IdV: doc auth verify visited',
-      {
-        flow_path:,
-        step:,
-        analytics_id:,
-        irs_reproofing:,
-        same_address_as_id:,
-        lexisnexis_instant_verify_workflow_ab_test_bucket:,
-        acuant_sdk_upgrade_ab_test_bucket:,
-        skip_hybrid_handoff:,
-        **extra,
-      }.compact,
-    )
+  def idv_doc_auth_verify_visited(**extra)
+    track_event('IdV: doc auth verify visited', **extra)
   end
 
   # @param [String] step_name
@@ -1653,58 +1203,12 @@ module AnalyticsEvents
     )
   end
 
-  # @param [String] step
-  # @param [String] analytics_id
-  # @param [Boolean] irs_reproofing
-  # @param [Boolean] skip_hybrid_handoff
-  # @param [String] lexisnexis_instant_verify_workflow_ab_test_bucket
-  # @param [Boolean] opted_in_to_in_person_proofing
-  def idv_doc_auth_welcome_submitted(
-    step:,
-    analytics_id:,
-    irs_reproofing:,
-    skip_hybrid_handoff: nil,
-    lexisnexis_instant_verify_workflow_ab_test_bucket: nil,
-    opted_in_to_in_person_proofing: nil,
-    **extra
-  )
-    track_event(
-      'IdV: doc auth welcome submitted',
-      step:,
-      analytics_id:,
-      irs_reproofing:,
-      skip_hybrid_handoff:,
-      lexisnexis_instant_verify_workflow_ab_test_bucket:,
-      opted_in_to_in_person_proofing:,
-      **extra,
-    )
+  def idv_doc_auth_welcome_submitted(**extra)
+    track_event('IdV: doc auth welcome submitted', **extra)
   end
 
-  # @param [String] step
-  # @param [String] analytics_id
-  # @param [Boolean] irs_reproofing
-  # @param [Boolean] skip_hybrid_handoff
-  # @param [String] lexisnexis_instant_verify_workflow_ab_test_bucket
-  # @param [Boolean] opted_in_to_in_person_proofing
-  def idv_doc_auth_welcome_visited(
-    step:,
-    analytics_id:,
-    irs_reproofing:,
-    skip_hybrid_handoff: nil,
-    lexisnexis_instant_verify_workflow_ab_test_bucket: nil,
-    opted_in_to_in_person_proofing: nil,
-    **extra
-  )
-    track_event(
-      'IdV: doc auth welcome visited',
-      step:,
-      analytics_id:,
-      irs_reproofing:,
-      skip_hybrid_handoff:,
-      lexisnexis_instant_verify_workflow_ab_test_bucket:,
-      opted_in_to_in_person_proofing:,
-      **extra,
-    )
+  def idv_doc_auth_welcome_visited(**extra)
+    track_event('IdV: doc auth welcome visited', **extra)
   end
 
   # User submitted IDV password confirm page
@@ -1715,9 +1219,6 @@ module AnalyticsEvents
   # @param [Boolean] in_person_verification_pending
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [String, nil] deactivation_reason Reason user's profile was deactivated, if any.
-  # @param [Boolean] skip_hybrid_handoff
-  # @param [String] lexisnexis_instant_verify_workflow_ab_test_bucket
-  # @param [String] acuant_sdk_upgrade_ab_test_bucket
   def idv_enter_password_submitted(
     success:,
     fraud_review_pending:,
@@ -1726,9 +1227,6 @@ module AnalyticsEvents
     in_person_verification_pending:,
     deactivation_reason: nil,
     proofing_components: nil,
-    skip_hybrid_handoff: nil,
-    lexisnexis_instant_verify_workflow_ab_test_bucket: nil,
-    acuant_sdk_upgrade_ab_test_bucket: nil,
     **extra
   )
     track_event(
@@ -1740,9 +1238,6 @@ module AnalyticsEvents
       in_person_verification_pending: in_person_verification_pending,
       fraud_rejection: fraud_rejection,
       proofing_components: proofing_components,
-      skip_hybrid_handoff:,
-      lexisnexis_instant_verify_workflow_ab_test_bucket:,
-      acuant_sdk_upgrade_ab_test_bucket:,
       **extra,
     )
   end
@@ -1751,25 +1246,16 @@ module AnalyticsEvents
   #        current proofing components
   # @param [String] address_verification_method The method (phone or gpo) being
   #        used to verify the user's identity
-  # @param [Boolean] skip_hybrid_handoff
-  # @param [String] lexisnexis_instant_verify_workflow_ab_test_bucket
-  # @param [String] acuant_sdk_upgrade_ab_test_bucket
   # User visited IDV password confirm page
   def idv_enter_password_visited(
     proofing_components: nil,
     address_verification_method: nil,
-    skip_hybrid_handoff: nil,
-    lexisnexis_instant_verify_workflow_ab_test_bucket: nil,
-    acuant_sdk_upgrade_ab_test_bucket: nil,
     **extra
   )
     track_event(
       :idv_enter_password_visited,
       address_verification_method: address_verification_method,
       proofing_components: proofing_components,
-      skip_hybrid_handoff:,
-      lexisnexis_instant_verify_workflow_ab_test_bucket:,
-      acuant_sdk_upgrade_ab_test_bucket:,
       **extra,
     )
   end
@@ -1805,9 +1291,6 @@ module AnalyticsEvents
   # @param [Boolean] gpo_verification_pending Profile is awaiting gpo verificaiton
   # @param [Boolean] in_person_verification_pending Profile is awaiting in person verificaiton
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
-  # @param [Boolean] skip_hybrid_handoff
-  # @param [String] lexisnexis_instant_verify_workflow_ab_test_bucket
-  # @param [String] acuant_sdk_upgrade_ab_test_bucket
   # @see Reporting::IdentityVerificationReport#query This event is used by the identity verification
   #       report. Changes here should be reflected there.
   # Tracks the last step of IDV, indicates the user successfully proofed
@@ -1819,9 +1302,6 @@ module AnalyticsEvents
     in_person_verification_pending:,
     deactivation_reason: nil,
     proofing_components: nil,
-    skip_hybrid_handoff: nil,
-    lexisnexis_instant_verify_workflow_ab_test_bucket: nil,
-    acuant_sdk_upgrade_ab_test_bucket: nil,
     **extra
   )
     track_event(
@@ -1833,9 +1313,6 @@ module AnalyticsEvents
       in_person_verification_pending: in_person_verification_pending,
       deactivation_reason: deactivation_reason,
       proofing_components: proofing_components,
-      skip_hybrid_handoff:,
-      lexisnexis_instant_verify_workflow_ab_test_bucket:,
-      acuant_sdk_upgrade_ab_test_bucket:,
       **extra,
     )
   end
@@ -2004,7 +1481,6 @@ module AnalyticsEvents
   #                  and now in hours
   # @param [Integer] phone_step_attempts Number of attempts at phone step before requesting letter
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
-  # @param [Boolean] skip_hybrid_handoff
   # GPO letter was requested
   def idv_gpo_address_letter_requested(
     resend:,
@@ -2012,7 +1488,6 @@ module AnalyticsEvents
     hours_since_first_letter:,
     phone_step_attempts:,
     proofing_components: nil,
-    skip_hybrid_handoff: nil,
     **extra
   )
     track_event(
@@ -2022,7 +1497,6 @@ module AnalyticsEvents
       hours_since_first_letter:,
       phone_step_attempts:,
       proofing_components: proofing_components,
-      skip_hybrid_handoff: skip_hybrid_handoff,
       **extra,
     )
   end
@@ -2168,14 +1642,12 @@ module AnalyticsEvents
   # @param [Boolean] response_body_present
   # @param [Hash] response_body
   # @param [Integer] response_status_code
-  # @param [Integer] api_status_code
   def idv_in_person_locations_request_failure(
     exception_class:,
     exception_message:,
     response_body_present:,
     response_body:,
     response_status_code:,
-    api_status_code:,
     **extra
   )
     track_event(
@@ -2185,7 +1657,6 @@ module AnalyticsEvents
       response_body_present: response_body_present,
       response_body: response_body,
       response_status_code: response_status_code,
-      api_status_code: api_status_code,
       **extra,
     )
   end
@@ -2441,7 +1912,6 @@ module AnalyticsEvents
   # @param [String] analytics_id
   # @param [Boolean] irs_reproofing
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
-  # @param [Integer] step_count
   # State id page visited
   def idv_in_person_proofing_state_id_visited(
     flow_path: nil,
@@ -2494,6 +1964,7 @@ module AnalyticsEvents
   # @param [String] enrollment_code enrollment_code
   # @param [String] enrollment_id enrollment_id
   # @param [Hash] telephony_response response from Telephony gem
+  # @param [Hash] extra extra information
   def idv_in_person_send_proofing_notification_attempted(
     success:,
     enrollment_code:,
@@ -2514,6 +1985,7 @@ module AnalyticsEvents
   # Track sms notification job completion
   # @param [String] enrollment_code enrollment_code
   # @param [String] enrollment_id enrollment_id
+  # @param [Hash] extra extra information
   def idv_in_person_send_proofing_notification_job_completed(
     enrollment_code:,
     enrollment_id:,
@@ -2532,6 +2004,7 @@ module AnalyticsEvents
   # @param [String] enrollment_id
   # @param [String] exception_class
   # @param [String] exception_message
+  # @param [Hash] extra extra information
   def idv_in_person_send_proofing_notification_job_exception(
     enrollment_code:,
     enrollment_id:,
@@ -2552,6 +2025,7 @@ module AnalyticsEvents
   # Track sms notification job skipped
   # @param [String] enrollment_code enrollment_code
   # @param [String] enrollment_id enrollment_id
+  # @param [Hash] extra extra information
   def idv_in_person_send_proofing_notification_job_skipped(
     enrollment_code:,
     enrollment_id:,
@@ -2568,6 +2042,7 @@ module AnalyticsEvents
   # Track sms notification job started
   # @param [String] enrollment_code enrollment_code
   # @param [String] enrollment_id enrollment_id
+  # @param [Hash] extra extra information
   def idv_in_person_send_proofing_notification_job_started(
     enrollment_code:,
     enrollment_id:,
@@ -2619,10 +2094,6 @@ module AnalyticsEvents
   # @param [Integer] enrollments_failed number of enrollments which failed identity proofing
   # @param [Integer] enrollments_in_progress number of enrollments which did not have any change
   # @param [Integer] enrollments_passed number of enrollments which passed identity proofing
-  # @param [Integer] enrollments_network_error
-  # @param [Boolean] percent_enrollments_errored
-  # @param [Float] percent_enrollments_network_error
-  # @param [String] job_name
   def idv_in_person_usps_proofing_results_job_completed(
     duration_seconds:,
     enrollments_checked:,
@@ -2631,10 +2102,6 @@ module AnalyticsEvents
     enrollments_failed:,
     enrollments_in_progress:,
     enrollments_passed:,
-    enrollments_network_error:,
-    percent_enrollments_errored:,
-    percent_enrollments_network_error:,
-    job_name:,
     **extra
   )
     track_event(
@@ -2646,10 +2113,6 @@ module AnalyticsEvents
       enrollments_failed: enrollments_failed,
       enrollments_in_progress: enrollments_in_progress,
       enrollments_passed: enrollments_passed,
-      enrollments_network_error: enrollments_network_error,
-      percent_enrollments_errored: percent_enrollments_errored,
-      percent_enrollments_network_error: percent_enrollments_network_error,
-      job_name: job_name,
       **extra,
     )
   end
@@ -2675,56 +2138,26 @@ module AnalyticsEvents
 
   # Tracks deadline email initiated during GetUspsProofingResultsJob
   # @param [String] enrollment_id
-  # @param [Boolean] enrollment_code
-  # @param [String] timestamp
-  # @param [String] service_provider
-  # @param [String] wait_until
-  # @param [String] job_name
   def idv_in_person_usps_proofing_results_job_deadline_passed_email_initiated(
     enrollment_id:,
-    enrollment_code:,
-    timestamp:,
-    service_provider:,
-    wait_until:,
-    job_name:,
     **extra
   )
     track_event(
       'GetUspsProofingResultsJob: deadline passed email initiated',
       enrollment_id: enrollment_id,
-      enrollment_code: enrollment_code,
-      timestamp: timestamp,
-      service_provider: service_provider,
-      wait_until: wait_until,
-      job_name: job_name,
       **extra,
     )
   end
 
   # Tracks emails that are initiated during GetUspsProofingResultsJob
   # @param [String] email_type success, failed or failed fraud
-  # @param [Boolean] enrollment_code
-  # @param [String] timestamp
-  # @param [String] service_provider
-  # @param [String] wait_until
-  # @param [String] job_name
   def idv_in_person_usps_proofing_results_job_email_initiated(
     email_type:,
-    enrollment_code:,
-    timestamp:,
-    service_provider:,
-    wait_until:,
-    job_name:,
     **extra
   )
     track_event(
       'GetUspsProofingResultsJob: Success or failure email initiated',
       email_type: email_type,
-      enrollment_code: enrollment_code,
-      timestamp: timestamp,
-      service_provider: service_provider,
-      wait_until: wait_until,
-      job_name: job_name,
       **extra,
     )
   end
@@ -2734,23 +2167,11 @@ module AnalyticsEvents
   # @param [String] enrollment_id
   # @param [Float] minutes_since_established
   # @param [String] response_message
-  # @param [Numeric] minutes_since_last_status_check
-  # @param [Numeric] minutes_since_last_status_check_completed
-  # @param [Numeric] minutes_since_last_status_update
-  # @param [Numeric] minutes_to_completion
-  # @param [String] issuer
-  # @param [String] job_name
   def idv_in_person_usps_proofing_results_job_enrollment_incomplete(
     enrollment_code:,
     enrollment_id:,
     minutes_since_established:,
     response_message:,
-    minutes_since_last_status_check:,
-    minutes_since_last_status_check_completed:,
-    minutes_since_last_status_update:,
-    minutes_to_completion:,
-    issuer:,
-    job_name:,
     **extra
   )
     track_event(
@@ -2759,12 +2180,6 @@ module AnalyticsEvents
       enrollment_id: enrollment_id,
       minutes_since_established: minutes_since_established,
       response_message: response_message,
-      minutes_since_last_status_check: minutes_since_last_status_check,
-      minutes_since_last_status_check_completed: minutes_since_last_status_check_completed,
-      minutes_since_last_status_update: minutes_since_last_status_update,
-      minutes_to_completion: minutes_to_completion,
-      issuer: issuer,
-      job_name: job_name,
       **extra,
     )
   end
@@ -2776,25 +2191,6 @@ module AnalyticsEvents
   # @param [Boolean] fraud_suspected
   # @param [Boolean] passed did this enrollment pass or fail?
   # @param [String] reason why did this enrollment pass or fail?
-  # @param [Integer] minutes_since_last_status_check
-  # @param [Integer] minutes_since_last_status_check_completed
-  # @param [Integer] minutes_since_last_status_update
-  # @param [Integer] minutes_to_completion
-  # @param [String] issuer
-  # @param [String] primary_id_type
-  # @param [String] secondary_id_type
-  # @param [String] failure_reason
-  # @param [String] transaction_end_date_time
-  # @param [String] transaction_start_date_time
-  # @param [String] status
-  # @param [String] assurance_level
-  # @param [String] proofing_post_office
-  # @param [String] proofing_city
-  # @param [String] proofing_state
-  # @param [String] scan_count
-  # @param [String] response_message
-  # @param [Boolean] response_present
-  # @param [String] job_name
   def idv_in_person_usps_proofing_results_job_enrollment_updated(
     enrollment_code:,
     enrollment_id:,
@@ -2802,25 +2198,6 @@ module AnalyticsEvents
     fraud_suspected:,
     passed:,
     reason:,
-    minutes_since_last_status_check:,
-    minutes_since_last_status_check_completed:,
-    minutes_since_last_status_update:,
-    minutes_to_completion:,
-    issuer:,
-    primary_id_type:,
-    secondary_id_type:,
-    failure_reason:,
-    transaction_end_date_time:,
-    transaction_start_date_time:,
-    status:,
-    assurance_level:,
-    proofing_post_office:,
-    proofing_city:,
-    proofing_state:,
-    scan_count:,
-    response_message:,
-    response_present:,
-    job_name:,
     **extra
   )
     track_event(
@@ -2831,25 +2208,6 @@ module AnalyticsEvents
       fraud_suspected: fraud_suspected,
       passed: passed,
       reason: reason,
-      minutes_since_last_status_check: minutes_since_last_status_check,
-      minutes_since_last_status_check_completed: minutes_since_last_status_check_completed,
-      minutes_since_last_status_update: minutes_since_last_status_update,
-      minutes_to_completion: minutes_to_completion,
-      issuer: issuer,
-      primary_id_type: primary_id_type,
-      secondary_id_type: secondary_id_type,
-      failure_reason: failure_reason,
-      transaction_end_date_time: transaction_end_date_time,
-      transaction_start_date_time: transaction_start_date_time,
-      status: status,
-      assurance_level: assurance_level,
-      proofing_post_office: proofing_post_office,
-      proofing_city: proofing_city,
-      proofing_state: proofing_state,
-      scan_count: scan_count,
-      response_message: response_message,
-      response_present: response_present,
-      job_name: job_name,
       **extra,
     )
   end
@@ -2878,10 +2236,6 @@ module AnalyticsEvents
   # @param [String] scan_count
   # @param [String] response_message
   # @param [Integer] response_status_code
-  # @param [Integer] minutes_since_last_status_check_completed
-  # @param [String] issuer
-  # @param [String] job_name
-  # @param [Boolean] response_present
   def idv_in_person_usps_proofing_results_job_exception(
     reason:,
     enrollment_id:,
@@ -2906,10 +2260,6 @@ module AnalyticsEvents
     scan_count: nil,
     response_message: nil,
     response_status_code: nil,
-    minutes_since_last_status_check_completed: nil,
-    issuer: nil,
-    job_name: nil,
-    response_present: nil,
     **extra
   )
     track_event(
@@ -2937,10 +2287,6 @@ module AnalyticsEvents
       scan_count: scan_count,
       response_message: response_message,
       response_status_code: response_status_code,
-      minutes_since_last_status_check_completed: minutes_since_last_status_check_completed,
-      issuer: issuer,
-      job_name: job_name,
-      response_present: response_present,
       **extra,
     )
   end
@@ -2948,18 +2294,15 @@ module AnalyticsEvents
   # GetUspsProofingResultsJob is beginning. Includes some metadata about what the job will do
   # @param [Integer] enrollments_count number of enrollments eligible for status check
   # @param [Integer] reprocess_delay_minutes minimum delay since last status check
-  # @param [String] job_name
   def idv_in_person_usps_proofing_results_job_started(
     enrollments_count:,
     reprocess_delay_minutes:,
-    job_name:,
     **extra
   )
     track_event(
       'GetUspsProofingResultsJob: Job started',
       enrollments_count: enrollments_count,
       reprocess_delay_minutes: reprocess_delay_minutes,
-      job_name: job_name,
       **extra,
     )
   end
@@ -2970,24 +2313,12 @@ module AnalyticsEvents
   # @param [Float] minutes_since_established
   # @param [String] response_message
   # @param [String] reason why was this error unexpected?
-  # @param [Integer] minutes_since_last_status_check
-  # @param [Integer] minutes_since_last_status_check_completed
-  # @param [Integer] minutes_since_last_status_update
-  # @param [Integer] minutes_to_completion
-  # @param [String] issuer
-  # @param [String] job_name
   def idv_in_person_usps_proofing_results_job_unexpected_response(
     enrollment_code:,
     enrollment_id:,
     minutes_since_established:,
     response_message:,
     reason:,
-    minutes_since_last_status_check:,
-    minutes_since_last_status_check_completed:,
-    minutes_since_last_status_update:,
-    minutes_to_completion:,
-    issuer:,
-    job_name:,
     **extra
   )
     track_event(
@@ -2997,12 +2328,6 @@ module AnalyticsEvents
       minutes_since_established: minutes_since_established,
       response_message: response_message,
       reason: reason,
-      minutes_since_last_status_check: minutes_since_last_status_check,
-      minutes_since_last_status_check_completed: minutes_since_last_status_check_completed,
-      minutes_since_last_status_update: minutes_since_last_status_update,
-      minutes_to_completion: minutes_to_completion,
-      issuer: issuer,
-      job_name: job_name,
       **extra,
     )
   end
@@ -3013,14 +2338,12 @@ module AnalyticsEvents
   # @param [Integer] enrollment_id
   # @param [String] exception_class
   # @param [String] exception_message
-  # @param [String] original_exception_class
   def idv_in_person_usps_request_enroll_exception(
     context:,
     reason:,
     enrollment_id:,
     exception_class:,
     exception_message:,
-    original_exception_class:,
     **extra
   )
     track_event(
@@ -3030,7 +2353,6 @@ module AnalyticsEvents
       exception_class: exception_class,
       exception_message: exception_message,
       reason: reason,
-      original_exception_class: original_exception_class,
       **extra,
     )
   end
@@ -3075,11 +2397,9 @@ module AnalyticsEvents
   end
 
   # Tracks when the user visits Mail only warning when vendor_status_sms is set to full_outage
-  # @param [String] analytics_id
-  def idv_mail_only_warning_visited(analytics_id:, **extra)
+  def idv_mail_only_warning_visited(**extra)
     track_event(
       'IdV: Mail only warning visited',
-      analytics_id:,
       **extra,
     )
   end
@@ -3165,7 +2485,6 @@ module AnalyticsEvents
   # @param [Boolean] fraud_review_pending Profile is under review for fraud
   # @param [Boolean] fraud_rejection Profile is rejected due to fraud
   # @param [Boolean] in_person_verification_pending Profile is pending in-person verification
-  # @param [String] address_verification_method
   # User submitted IDV personal key page
   def idv_personal_key_submitted(
     fraud_review_pending:,
@@ -3173,7 +2492,6 @@ module AnalyticsEvents
     in_person_verification_pending:,
     proofing_components: nil,
     deactivation_reason: nil,
-    address_verification_method: nil,
     **extra
   )
     track_event(
@@ -3183,26 +2501,16 @@ module AnalyticsEvents
       fraud_review_pending: fraud_review_pending,
       fraud_rejection: fraud_rejection,
       proofing_components: proofing_components,
-      address_verification_method: address_verification_method,
       **extra,
     )
   end
 
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
-  # @param [String] address_verification_method
-  # @param [Boolean] in_person_verification_pending
   # User visited IDV personal key page
-  def idv_personal_key_visited(
-    proofing_components: nil,
-    address_verification_method: nil,
-    in_person_verification_pending: nil,
-    **extra
-  )
+  def idv_personal_key_visited(proofing_components: nil, **extra)
     track_event(
       'IdV: personal key visited',
       proofing_components: proofing_components,
-      address_verification_method: address_verification_method,
-      in_person_verification_pending: in_person_verification_pending,
       **extra,
     )
   end
@@ -3211,28 +2519,12 @@ module AnalyticsEvents
   # @param [Hash] errors
   # @param ["sms", "voice"] otp_delivery_preference
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
-  # @param [String] phone_type
-  # @param [Array] types
-  # @param [String] carrier
-  # @param [String] country_code
-  # @param [String] area_code
-  # @param [Boolean] skip_hybrid_handoff
-  # @param [String] lexisnexis_instant_verify_workflow_ab_test_bucket
-  # @param [String] acuant_sdk_upgrade_ab_test_bucket
   # The user submitted their phone on the phone confirmation page
   def idv_phone_confirmation_form_submitted(
     success:,
     otp_delivery_preference:,
     errors:,
     proofing_components: nil,
-    phone_type: nil,
-    types: nil,
-    carrier: nil,
-    country_code: nil,
-    area_code: nil,
-    skip_hybrid_handoff: nil,
-    lexisnexis_instant_verify_workflow_ab_test_bucket: nil,
-    acuant_sdk_upgrade_ab_test_bucket: nil,
     **extra
   )
     track_event(
@@ -3241,14 +2533,6 @@ module AnalyticsEvents
       errors: errors,
       otp_delivery_preference: otp_delivery_preference,
       proofing_components: proofing_components,
-      phone_type:,
-      types:,
-      carrier:,
-      country_code:,
-      area_code:,
-      skip_hybrid_handoff:,
-      lexisnexis_instant_verify_workflow_ab_test_bucket:,
-      acuant_sdk_upgrade_ab_test_bucket:,
       **extra,
     )
   end
@@ -3364,9 +2648,6 @@ module AnalyticsEvents
   # @param [Integer] second_factor_attempts_count number of attempts to confirm this phone
   # @param [Time, nil] second_factor_locked_at timestamp when the phone was locked out
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
-  # @param [Boolean] skip_hybrid_handoff
-  # @param [String] lexisnexis_instant_verify_workflow_ab_test_bucket
-  # @param [String] acuant_sdk_upgrade_ab_test_bucket
   # When a user attempts to confirm posession of a new phone number during the IDV process
   def idv_phone_confirmation_otp_submitted(
     success:,
@@ -3376,9 +2657,6 @@ module AnalyticsEvents
     second_factor_attempts_count:,
     second_factor_locked_at:,
     proofing_components: nil,
-    skip_hybrid_handoff: nil,
-    lexisnexis_instant_verify_workflow_ab_test_bucket: nil,
-    acuant_sdk_upgrade_ab_test_bucket: nil,
     **extra
   )
     track_event(
@@ -3390,9 +2668,6 @@ module AnalyticsEvents
       second_factor_attempts_count: second_factor_attempts_count,
       second_factor_locked_at: second_factor_locked_at,
       proofing_components: proofing_components,
-      skip_hybrid_handoff:,
-      lexisnexis_instant_verify_workflow_ab_test_bucket:,
-      acuant_sdk_upgrade_ab_test_bucket:,
       **extra,
     )
   end
@@ -3410,23 +2685,11 @@ module AnalyticsEvents
   # @param [Boolean] success
   # @param [Hash] errors
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
-  # @param [String] vendor
-  # @param [String] area_code
-  # @param [String] country_code
-  # @param [String] phone_fingerprint
-  # @param [Boolean] new_phone_added
-  # @param [Boolean] hybrid_handoff_phone_used
   # The vendor finished the process of confirming the users phone
   def idv_phone_confirmation_vendor_submitted(
     success:,
     errors:,
     proofing_components: nil,
-    vendor: nil,
-    area_code: nil,
-    country_code: nil,
-    phone_fingerprint: nil,
-    new_phone_added: nil,
-    hybrid_handoff_phone_used: nil,
     **extra
   )
     track_event(
@@ -3434,12 +2697,6 @@ module AnalyticsEvents
       success: success,
       errors: errors,
       proofing_components: proofing_components,
-      vendor: vendor,
-      area_code: area_code,
-      country_code: country_code,
-      phone_fingerprint: phone_fingerprint,
-      new_phone_added: new_phone_added,
-      hybrid_handoff_phone_used: hybrid_handoff_phone_used,
       **extra,
     )
   end
@@ -3469,23 +2726,11 @@ module AnalyticsEvents
   end
 
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
-  # @param [Boolean] skip_hybrid_handoff
-  # @param [String] lexisnexis_instant_verify_workflow_ab_test_bucket
-  # @param [String] acuant_sdk_upgrade_ab_test_bucket
   # User visited idv phone of record
-  def idv_phone_of_record_visited(
-    proofing_components: nil,
-    skip_hybrid_handoff: nil,
-    lexisnexis_instant_verify_workflow_ab_test_bucket: nil,
-    acuant_sdk_upgrade_ab_test_bucket: nil,
-    **extra
-  )
+  def idv_phone_of_record_visited(proofing_components: nil, **extra)
     track_event(
       'IdV: phone of record visited',
-      proofing_components:,
-      skip_hybrid_handoff:,
-      lexisnexis_instant_verify_workflow_ab_test_bucket:,
-      acuant_sdk_upgrade_ab_test_bucket:,
+      proofing_components: proofing_components,
       **extra,
     )
   end
@@ -3715,7 +2960,6 @@ module AnalyticsEvents
   # @param [Integer] attempts Number of attempts to enter a correct code
   # @param [Boolean] pending_in_person_enrollment
   # @param [Boolean] fraud_check_failed
-  # @param [Hash] error_details
   # @see Reporting::IdentityVerificationReport#query This event is used by the identity verification
   #       report. Changes here should be reflected there.
   # GPO verification submitted
@@ -3729,7 +2973,6 @@ module AnalyticsEvents
     attempts:,
     pending_in_person_enrollment:,
     fraud_check_failed:,
-    error_details: nil,
     **extra
   )
     track_event(
@@ -3743,7 +2986,6 @@ module AnalyticsEvents
       attempts: attempts,
       pending_in_person_enrollment: pending_in_person_enrollment,
       fraud_check_failed: fraud_check_failed,
-      error_details: error_details,
       **extra,
     )
   end
@@ -3931,9 +3173,6 @@ module AnalyticsEvents
   # @param [String] country_code
   # @param [String] phone_fingerprint the hmac fingerprint of the phone number formatted as e164
   # @param [String] frontend_error Name of error that occurred in frontend during submission
-  # @param [Boolean] in_account_creation_flow
-  # @param [Integer] enabled_mfa_methods_count
-  # @param [Hash] error_details
   # Multi-Factor Authentication
   def multi_factor_auth(
     success:,
@@ -3953,9 +3192,6 @@ module AnalyticsEvents
     country_code: nil,
     phone_fingerprint: nil,
     frontend_error: nil,
-    in_account_creation_flow: nil,
-    enabled_mfa_methods_count: nil,
-    error_details: nil,
     **extra
   )
     track_event(
@@ -3977,29 +3213,18 @@ module AnalyticsEvents
       country_code: country_code,
       phone_fingerprint: phone_fingerprint,
       frontend_error:,
-      in_account_creation_flow:,
-      enabled_mfa_methods_count:,
-      error_details:,
       **extra,
     )
   end
 
   # Tracks when the the user has added the MFA method phone to their account
   # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
-  # @param [String] method_name
-  # @param [Boolean] in_account_creation_flow
-  def multi_factor_auth_added_phone(
-    enabled_mfa_methods_count:,
-    method_name: :phone,
-    in_account_creation_flow: nil,
-    **extra
-  )
+  def multi_factor_auth_added_phone(enabled_mfa_methods_count:, **extra)
     track_event(
       'Multi-Factor Authentication: Added phone',
       {
-        method_name: method_name,
+        method_name: :phone,
         enabled_mfa_methods_count: enabled_mfa_methods_count,
-        in_account_creation_flow: in_account_creation_flow,
         **extra,
       }.compact,
     )
@@ -4009,17 +3234,12 @@ module AnalyticsEvents
   # Tracks when the user has added the MFA method piv_cac to their account
   # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
   # @param [Boolean] in_account_creation_flow whether user is going through creation flow
-  # @param [String] method_name
-  def multi_factor_auth_added_piv_cac(
-    enabled_mfa_methods_count:,
-    in_account_creation_flow:,
-    method_name: :piv_cac,
-    **extra
-  )
+  def multi_factor_auth_added_piv_cac(enabled_mfa_methods_count:, in_account_creation_flow:,
+                                      **extra)
     track_event(
       :multi_factor_auth_added_piv_cac,
       {
-        method_name:,
+        method_name: :piv_cac,
         enabled_mfa_methods_count:,
         in_account_creation_flow:,
         **extra,
@@ -4030,17 +3250,12 @@ module AnalyticsEvents
   # Tracks when the user has added the MFA method TOTP to their account
   # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
   # @param [Boolean] in_account_creation_flow whether user is going through creation flow
-  # @param [String] method_name
-  def multi_factor_auth_added_totp(
-    enabled_mfa_methods_count:,
-    in_account_creation_flow:,
-    method_name: :totp,
-    **extra
-  )
+  def multi_factor_auth_added_totp(enabled_mfa_methods_count:, in_account_creation_flow:,
+                                   **extra)
     track_event(
       'Multi-Factor Authentication: Added TOTP',
       {
-        method_name:,
+        method_name: :totp,
         in_account_creation_flow:,
         enabled_mfa_methods_count:,
         **extra,
@@ -4085,22 +3300,12 @@ module AnalyticsEvents
   # @param [String] multi_factor_auth_method
   # @param [Boolean] confirmation_for_add_phone
   # @param [Integer] phone_configuration_id
-  # @param [String] area_code
-  # @param [String] country_code
-  # @param [String] phone_fingerprint
-  # @param [Boolean] in_account_creation_flow
-  # @param [Integer] enabled_mfa_methods_count
   # Multi-Factor Authentication enter OTP visited
   def multi_factor_auth_enter_otp_visit(
     context:,
     multi_factor_auth_method:,
     confirmation_for_add_phone:,
     phone_configuration_id:,
-    area_code:,
-    country_code:,
-    phone_fingerprint:,
-    in_account_creation_flow:,
-    enabled_mfa_methods_count:,
     **extra
   )
     track_event(
@@ -4109,11 +3314,6 @@ module AnalyticsEvents
       multi_factor_auth_method: multi_factor_auth_method,
       confirmation_for_add_phone: confirmation_for_add_phone,
       phone_configuration_id: phone_configuration_id,
-      area_code: area_code,
-      country_code: country_code,
-      phone_fingerprint: phone_fingerprint,
-      in_account_creation_flow: in_account_creation_flow,
-      enabled_mfa_methods_count: enabled_mfa_methods_count,
       **extra,
     )
   end
@@ -4132,13 +3332,11 @@ module AnalyticsEvents
   # @param ["authentication","reauthentication","confirmation"] context user session context
   # @param ["piv_cac"] multi_factor_auth_method
   # @param [Integer, nil] piv_cac_configuration_id PIV/CAC configuration database ID
-  # @param [Boolean] new_device
   # User used a PIV/CAC as their mfa
   def multi_factor_auth_enter_piv_cac(
     context:,
     multi_factor_auth_method:,
     piv_cac_configuration_id:,
-    new_device:,
     **extra
   )
     track_event(
@@ -4146,7 +3344,6 @@ module AnalyticsEvents
       context: context,
       multi_factor_auth_method: multi_factor_auth_method,
       piv_cac_configuration_id: piv_cac_configuration_id,
-      new_device: new_device,
       **extra,
     )
   end
@@ -4162,13 +3359,11 @@ module AnalyticsEvents
   # webauthn means a roaming authenticator like a yubikey, webauthn_platform means a platform
   # authenticator like face or touch ID
   # @param [Integer, nil] webauthn_configuration_id webauthn database ID
-  # @param [String] multi_factor_auth_method_created_at
   # User visited the page to authenticate with webauthn (yubikey, face ID or touch ID)
   def multi_factor_auth_enter_webauthn_visit(
     context:,
     multi_factor_auth_method:,
     webauthn_configuration_id:,
-    multi_factor_auth_method_created_at: nil,
     **extra
   )
     track_event(
@@ -4176,7 +3371,6 @@ module AnalyticsEvents
       context: context,
       multi_factor_auth_method: multi_factor_auth_method,
       webauthn_configuration_id: webauthn_configuration_id,
-      multi_factor_auth_method_created_at: multi_factor_auth_method_created_at,
       **extra,
     )
   end
@@ -4195,14 +3389,12 @@ module AnalyticsEvents
   # @param [Boolean] success
   # @param [Hash] errors
   # @param [String] selection
-  # @param [Hash] error_details
-  def multi_factor_auth_option_list(success:, errors:, selection:, error_details: nil, **extra)
+  def multi_factor_auth_option_list(success:, errors:, selection:, **extra)
     track_event(
       'Multi-Factor Authentication: option list',
       success: success,
       errors: errors,
       selection: selection,
-      error_details: error_details,
       **extra,
     )
   end
@@ -4221,19 +3413,15 @@ module AnalyticsEvents
   # @param [String] country_code
   # @param [String] phone_type
   # @param [Hash] types
-  # @param [Hash] error_details
-  def multi_factor_auth_phone_setup(
-    success:,
-    errors:,
-    otp_delivery_preference:,
-    area_code:,
-    carrier:,
-    country_code:,
-    phone_type:,
-    types:,
-    error_details: nil,
-    **extra
-  )
+  def multi_factor_auth_phone_setup(success:,
+                                    errors:,
+                                    otp_delivery_preference:,
+                                    area_code:,
+                                    carrier:,
+                                    country_code:,
+                                    phone_type:,
+                                    types:,
+                                    **extra)
     track_event(
       'Multi-Factor Authentication: phone setup',
       success: success,
@@ -4244,7 +3432,6 @@ module AnalyticsEvents
       country_code: country_code,
       phone_type: phone_type,
       types: types,
-      error_details: error_details,
       **extra,
     )
   end
@@ -4252,66 +3439,25 @@ module AnalyticsEvents
   # Tracks when a user sets up a multi factor auth method
   # @param [Boolean] success Whether authenticator setup was successful
   # @param [Hash] errors Authenticator setup error reasons, if unsuccessful
-  # @param [Hash] error_details
   # @param [String] multi_factor_auth_method
   # @param [Boolean] in_account_creation_flow whether user is going through account creation flow
-  # @param [Integer] enabled_mfa_methods_count
-  # @param [Hash] mfa_method_counts
-  # @param [String] key_id
-  # @param [String] context
-  # @param [String] confirmation_for_add_phone
-  # @param [String] area_code
-  # @param [String] country_code
-  # @param [String] phone_fingerprint
-  # @param [Boolean] totp_secret_present
-  # @param [String] auth_app_configuration_id
-  # @param [String] multi_factor_auth_method_created_at
-  # @param [String] phone_configuration_id
-  # @param [Boolean] new_device
+  # @param [integer] enabled_mfa_methods_count
   def multi_factor_auth_setup(
     success:,
     multi_factor_auth_method:,
     enabled_mfa_methods_count:,
     in_account_creation_flow:,
     errors: nil,
-    error_details: nil,
-    key_id: nil,
-    mfa_method_counts: nil,
-    context: nil,
-    confirmation_for_add_phone: nil,
-    area_code: nil,
-    country_code: nil,
-    phone_fingerprint: nil,
-    totp_secret_present: nil,
-    auth_app_configuration_id: nil,
-    multi_factor_auth_method_created_at: nil,
-    phone_configuration_id: nil,
-    new_device: nil,
     **extra
   )
     track_event(
       'Multi-Factor Authentication Setup',
-      {
-        success: success,
-        errors: errors,
-        error_details: error_details,
-        multi_factor_auth_method: multi_factor_auth_method,
-        in_account_creation_flow: in_account_creation_flow,
-        enabled_mfa_methods_count: enabled_mfa_methods_count,
-        key_id: key_id,
-        mfa_method_counts: mfa_method_counts,
-        context: context,
-        confirmation_for_add_phone: confirmation_for_add_phone,
-        area_code: area_code,
-        country_code: country_code,
-        phone_fingerprint: phone_fingerprint,
-        totp_secret_present: totp_secret_present,
-        auth_app_configuration_id: auth_app_configuration_id,
-        multi_factor_auth_method_created_at: multi_factor_auth_method_created_at,
-        phone_configuration_id: phone_configuration_id,
-        new_device: new_device,
-        **extra,
-      }.compact,
+      success: success,
+      errors: errors,
+      multi_factor_auth_method: multi_factor_auth_method,
+      in_account_creation_flow: in_account_creation_flow,
+      enabled_mfa_methods_count: enabled_mfa_methods_count,
+      **extra,
     )
   end
 
@@ -4444,21 +3590,15 @@ module AnalyticsEvents
   # Tracks when a sucessful openid authorization request is returned
   # @param [String] client_id
   # @param [String] code_digest hash of returned "code" param
-  # @param [Boolean] user_sp_authorized
-  # @param [Boolean] success
   def openid_connect_authorization_handoff(
     client_id:,
     code_digest:,
-    user_sp_authorized:,
-    success:,
     **extra
   )
     track_event(
       'OpenID Connect: authorization request handoff',
       client_id: client_id,
       code_digest: code_digest,
-      user_sp_authorized: user_sp_authorized,
-      success: success,
       **extra,
     )
   end
@@ -4468,15 +3608,13 @@ module AnalyticsEvents
   # @param [Integer] ial
   # @param [String] client_id Service Provider issuer
   # @param [Hash] errors
-  # @param [Hash] error_details
-  def openid_connect_bearer_token(success:, ial:, client_id:, errors:, error_details: nil, **extra)
+  def openid_connect_bearer_token(success:, ial:, client_id:, errors:, **extra)
     track_event(
       'OpenID Connect: bearer token authentication',
       success: success,
       ial: ial,
       client_id: client_id,
       errors: errors,
-      error_details: error_details,
       **extra,
     )
   end
@@ -4487,28 +3625,12 @@ module AnalyticsEvents
   # @param [Array] acr_values
   # @param [Boolean] unauthorized_scope
   # @param [Boolean] user_fully_authenticated
-  # @param [Boolean] success
-  # @param [Hash] errors
-  # @param [String] prompt
-  # @param [Boolean] allow_prompt_login
-  # @param [Boolean] code_challenge_present
-  # @param [String] service_provider_pkce
-  # @param [String] referer
-  # @param [Hash] error_details
   def openid_connect_request_authorization(
     client_id:,
     scope:,
     acr_values:,
     unauthorized_scope:,
     user_fully_authenticated:,
-    success:,
-    errors:,
-    prompt:,
-    allow_prompt_login:,
-    code_challenge_present:,
-    service_provider_pkce:,
-    referer:,
-    error_details: nil,
     **extra
   )
     track_event(
@@ -4518,14 +3640,6 @@ module AnalyticsEvents
       acr_values: acr_values,
       unauthorized_scope: unauthorized_scope,
       user_fully_authenticated: user_fully_authenticated,
-      success: success,
-      errors: errors,
-      prompt: prompt,
-      allow_prompt_login: allow_prompt_login,
-      code_challenge_present: code_challenge_present,
-      service_provider_pkce: service_provider_pkce,
-      referer: referer,
-      error_details: error_details,
       **extra,
     )
   end
@@ -4536,24 +3650,7 @@ module AnalyticsEvents
   # @param [String] code_digest hash of "code" param
   # @param [Integer, nil] expires_in time to expiration of token
   # @param [Integer, nil] ial ial level of identity
-  # @param [Boolean] success
-  # @param [Hash] errors
-  # @param [Boolean] code_verifier_present
-  # @param [Boolean] service_provider_pkce
-  # @param [Hash] error_details
-  def openid_connect_token(
-    client_id:,
-    user_id:,
-    code_digest:,
-    expires_in:,
-    ial:,
-    success:,
-    errors:,
-    code_verifier_present:,
-    service_provider_pkce:,
-    error_details: nil,
-    **extra
-  )
+  def openid_connect_token(client_id:, user_id:, code_digest:, expires_in:, ial:, **extra)
     track_event(
       'OpenID Connect: token',
       client_id: client_id,
@@ -4561,11 +3658,6 @@ module AnalyticsEvents
       code_digest: code_digest,
       expires_in: expires_in,
       ial: ial,
-      success: success,
-      errors: errors,
-      code_verifier_present: code_verifier_present,
-      service_provider_pkce: service_provider_pkce,
-      error_details: error_details,
       **extra,
     )
   end
@@ -4576,18 +3668,14 @@ module AnalyticsEvents
   # @param [String] country_code
   # @param [String] area_code
   # @param ["authentication","reauthentication","confirmation"] context user session context
-  # @param [Boolean] success
-  # @param [Hash] errors
-  # @param [Hash] error_details
+  # @param [Hash] pii_like_keypaths
   def otp_delivery_selection(
     otp_delivery_preference:,
     resend:,
     country_code:,
     area_code:,
     context:,
-    success:,
-    errors:,
-    error_details: nil,
+    pii_like_keypaths:,
     **extra
   )
     track_event(
@@ -4597,9 +3685,7 @@ module AnalyticsEvents
       country_code: country_code,
       area_code: area_code,
       context: context,
-      success: success,
-      errors: errors,
-      error_details: error_details,
+      pii_like_keypaths: pii_like_keypaths,
       **extra,
     )
   end
@@ -4609,57 +3695,28 @@ module AnalyticsEvents
   # @param [String] error
   # @param [String] context
   # @param [String] country
-  # @param [String] message
-  def otp_phone_validation_failed(error:, context:, country:, message:, **extra)
+  def otp_phone_validation_failed(error:, context:, country:, **extra)
     track_event(
       'Vendor Phone Validation failed',
       error: error,
       context: context,
       country: country,
-      message: message,
       **extra,
     )
   end
 
   # @param [Boolean] success
   # @param [Hash] errors
-  # @param [Hash] error_details
-  # @param [Boolean] active_profile_present
-  # @param [Boolean] pending_profile_present
   # The user updated their password
-  def password_changed(
-    success:,
-    errors:,
-    error_details: nil,
-    active_profile_present: nil,
-    pending_profile_present: nil,
-    **extra
-  )
-    track_event(
-      'Password Changed',
-      success: success,
-      errors: errors,
-      error_details: error_details,
-      active_profile_present: active_profile_present,
-      pending_profile_present: pending_profile_present,
-      **extra,
-    )
+  def password_changed(success:, errors:, **extra)
+    track_event('Password Changed', success: success, errors: errors, **extra)
   end
 
   # @param [Boolean] success
   # @param [Hash] errors
-  # @param [Hash] error_details
-  # @param [Boolean] request_id_present
   # The user added a password after verifying their email for account creation
-  def password_creation(success:, errors:, error_details: nil, request_id_present: nil, **extra)
-    track_event(
-      'Password Creation',
-      success:,
-      errors:,
-      error_details:,
-      request_id_present:,
-      **extra,
-    )
+  def password_creation(success:, errors:, **extra)
+    track_event('Password Creation', success: success, errors: errors, **extra)
   end
 
   # The user got their password incorrect the max number of times, their session was terminated
@@ -4669,27 +3726,18 @@ module AnalyticsEvents
 
   # @param [Boolean] success
   # @param [Hash] errors
-  # @param [Hash] error_details
   # @param [Boolean, nil] confirmed if the account the reset is being requested for has a
   # confirmed email
   # @param [Boolean, nil] active_profile if the account the reset is being requested for has an
   # active proofed profile
   # The user entered an email address to request a password reset
-  def password_reset_email(
-    success:,
-    errors:,
-    confirmed:,
-    active_profile:,
-    error_details: nil,
-    **extra
-  )
+  def password_reset_email(success:, errors:, confirmed:, active_profile:, **extra)
     track_event(
       'Password Reset: Email Submitted',
       success: success,
       errors: errors,
       confirmed: confirmed,
       active_profile: active_profile,
-      error_details: error_details,
       **extra,
     )
   end
@@ -4697,28 +3745,14 @@ module AnalyticsEvents
   # @param [Boolean] success
   # @param [Hash] errors
   # @param [Boolean] profile_deactivated if the active profile for the account was deactivated
-  # @param [Boolean] pending_profile_invalidated
-  # @param [String] pending_profile_pending_reasons
-  # @param [Hash] error_details
   # (the user will need to use their personal key to reactivate their profile)
   # The user changed the password for their account via the password reset flow
-  def password_reset_password(
-    success:,
-    errors:,
-    profile_deactivated:,
-    pending_profile_invalidated:,
-    pending_profile_pending_reasons:,
-    error_details: nil,
-    **extra
-  )
+  def password_reset_password(success:, errors:, profile_deactivated:, **extra)
     track_event(
       'Password Reset: Password Submitted',
       success: success,
       errors: errors,
       profile_deactivated: profile_deactivated,
-      pending_profile_invalidated: pending_profile_invalidated,
-      pending_profile_pending_reasons: pending_profile_pending_reasons,
-      error_details: error_details,
       **extra,
     )
   end
@@ -4754,16 +3788,12 @@ module AnalyticsEvents
 
   # @param [Boolean] success
   # @param [Hash] errors
-  # @param [Array] emails
-  # @param [Array] sms_message_ids
   # Alert user if a personal key was used to sign in
-  def personal_key_alert_about_sign_in(success:, errors:, emails:, sms_message_ids:, **extra)
+  def personal_key_alert_about_sign_in(success:, errors:, **extra)
     track_event(
       'Personal key: Alert user about sign in',
       success: success,
       errors: errors,
-      emails: emails,
-      sms_message_ids: sms_message_ids,
       **extra,
     )
   end
@@ -4775,14 +3805,14 @@ module AnalyticsEvents
 
   # @param [Boolean] success
   # @param [Hash] errors
-  # @param [Hash] error_details
+  # @param [Hash] pii_like_keypaths
   # Personal key form submitted
-  def personal_key_reactivation_submitted(success:, errors:, error_details: nil, **extra)
+  def personal_key_reactivation_submitted(success:, errors:, pii_like_keypaths:, **extra)
     track_event(
       'Personal key reactivation: Personal key form submitted',
       success: success,
       errors: errors,
-      error_details: error_details,
+      pii_like_keypaths: pii_like_keypaths,
       **extra,
     )
   end
@@ -4879,14 +3909,12 @@ module AnalyticsEvents
   # @identity.idp.previous_event_name PIV/CAC login
   # @param [Boolean] success
   # @param [Hash] errors
-  # @param [String] key_id
   # tracks piv cac login event
-  def piv_cac_login(success:, errors:, key_id: nil, **extra)
+  def piv_cac_login(success:, errors:, **extra)
     track_event(
       :piv_cac_login,
       success: success,
       errors: errors,
-      key_id: key_id,
       **extra,
     )
   end
@@ -4899,12 +3927,10 @@ module AnalyticsEvents
   # @identity.idp.previous_event_name PIV CAC setup visited
   # Tracks when user's piv cac setup
   # @param [Boolean] in_account_creation_flow
-  # @param [Integer] enabled_mfa_methods_count
-  def piv_cac_setup_visited(in_account_creation_flow:, enabled_mfa_methods_count: nil, **extra)
+  def piv_cac_setup_visited(in_account_creation_flow:, **extra)
     track_event(
       :piv_cac_setup_visited,
       in_account_creation_flow:,
-      enabled_mfa_methods_count:,
       **extra,
     )
   end
@@ -4960,22 +3986,14 @@ module AnalyticsEvents
   # @param [Integer] emails number of email addresses the notification was sent to
   # @param [Array<String>] sms_message_ids AWS Pinpoint SMS message IDs for each phone number that
   # was notified
-  # @param [Hash] errors
   # User has chosen to receive a new personal key, contains stats about notifications that
   # were sent to phone numbers and email addresses for the user
-  def profile_personal_key_create_notifications(
-    success:,
-    emails:,
-    sms_message_ids:,
-    errors:,
-    **extra
-  )
+  def profile_personal_key_create_notifications(success:, emails:, sms_message_ids:, **extra)
     track_event(
       'Profile: Created new personal key notifications',
       success: success,
       emails: emails,
       sms_message_ids: sms_message_ids,
-      errors: errors,
       **extra,
     )
   end
@@ -5001,16 +4019,12 @@ module AnalyticsEvents
 
   # Tracks when a user triggered a rate limiter
   # @param [String] limiter_type
-  # @param [String] step_name
   # @identity.idp.previous_event_name Throttler Rate Limit Triggered
-  def rate_limit_reached(limiter_type:, step_name: nil, **extra)
+  def rate_limit_reached(limiter_type:, **extra)
     track_event(
       'Rate Limit Reached',
-      {
-        limiter_type: limiter_type,
-        step_name: step_name,
-        **extra,
-      }.compact,
+      limiter_type: limiter_type,
+      **extra,
     )
   end
 
@@ -5037,7 +4051,7 @@ module AnalyticsEvents
   # @param [String] validator_class Class name of validator
   # @param [String, nil] exception_class Class name of exception, if error occurred
   # @param [String, nil] phone_country_code Country code associated with reCAPTCHA phone result
-  # @param [Numeric] recaptcha_version
+  # @param [String] recaptcha_version
   def recaptcha_verify_result_received(
     recaptcha_result:,
     score_threshold:,
@@ -5209,13 +4223,11 @@ module AnalyticsEvents
   # Tracks when rules of use is submitted with a success or failure
   # @param [Boolean] success
   # @param [Hash] errors
-  # @param [Hash] error_details
-  def rules_of_use_submitted(success: nil, errors: nil, error_details: nil, **extra)
+  def rules_of_use_submitted(success: nil, errors: nil, **extra)
     track_event(
       'Rules of Use Submitted',
       success: success,
       errors: errors,
-      error_details: error_details,
       **extra,
     )
   end
@@ -5228,17 +4240,10 @@ module AnalyticsEvents
   # Record SAML authentication payload Hash
   # @param [Boolean] success
   # @param [Hash] errors
-  # @param [Hash] error_details
   # @param [String] nameid_format
   # @param [Array] authn_context
   # @param [String] authn_context_comparison
   # @param [String] service_provider
-  # @param [String] endpoint
-  # @param [Boolean] idv
-  # @param [Boolean] finish_profile
-  # @param [String] requested_ial
-  # @param [Param] request_signed
-  # @param [String] matching_cert_serial
   def saml_auth(
     success:,
     errors:,
@@ -5246,30 +4251,16 @@ module AnalyticsEvents
     authn_context:,
     authn_context_comparison:,
     service_provider:,
-    error_details: nil,
-    endpoint: nil,
-    idv: nil,
-    finish_profile: nil,
-    requested_ial: nil,
-    request_signed: nil,
-    matching_cert_serial: nil,
     **extra
   )
     track_event(
       'SAML Auth',
       success: success,
       errors: errors,
-      error_details: error_details,
       nameid_format: nameid_format,
       authn_context: authn_context,
       authn_context_comparison: authn_context_comparison,
       service_provider: service_provider,
-      endpoint: endpoint,
-      idv: idv,
-      finish_profile: finish_profile,
-      requested_ial: requested_ial,
-      request_signed: request_signed,
-      matching_cert_serial: matching_cert_serial,
       **extra,
     )
   end
@@ -5278,16 +4269,12 @@ module AnalyticsEvents
   # @param [String,nil] requested_aal_authn_context
   # @param [Boolean,nil] force_authn
   # @param [String] service_provider
-  # @param [Boolean] user_fully_authenticated
-  # @param [Boolean] final_auth_request
   # An external request for SAML Authentication was received
   def saml_auth_request(
     requested_ial:,
     requested_aal_authn_context:,
     force_authn:,
     service_provider:,
-    user_fully_authenticated:,
-    final_auth_request: nil,
     **extra
   )
     track_event(
@@ -5297,8 +4284,6 @@ module AnalyticsEvents
         requested_aal_authn_context: requested_aal_authn_context,
         force_authn: force_authn,
         service_provider: service_provider,
-        user_fully_authenticated: user_fully_authenticated,
-        final_auth_request: final_auth_request,
         **extra,
       }.compact,
     )
@@ -5317,19 +4302,15 @@ module AnalyticsEvents
 
   # Tracks when security event is received
   # @param [Boolean] success
-  # @param [String] event_type
   # @param [String] error_code
   # @param [Hash] errors
-  # @param [Hash] error_details
   # @param [String] jti
   # @param [String] user_id
   # @param [String] client_id
   def security_event_received(
     success:,
-    event_type: nil,
     error_code: nil,
     errors: nil,
-    error_details: nil,
     jti: nil,
     user_id: nil,
     client_id: nil,
@@ -5338,9 +4319,7 @@ module AnalyticsEvents
     track_event(
       'RISC: Security event received',
       success: success,
-      event_type: event_type,
       error_code: error_code,
-      error_details: error_details,
       errors: errors,
       jti: jti,
       user_id: user_id,
@@ -5380,14 +4359,12 @@ module AnalyticsEvents
   # @param [Boolean] new_user
   # @param [Boolean] has_other_auth_methods
   # @param [Integer] phone_configuration_id
-  # @param [Hash] errors
   # tracks when a user opts into SMS
   def sms_opt_in_submitted(
     success:,
     new_user:,
     has_other_auth_methods:,
     phone_configuration_id:,
-    errors: nil,
     **extra
   )
     track_event(
@@ -5396,7 +4373,6 @@ module AnalyticsEvents
       new_user: new_user,
       has_other_auth_methods: has_other_auth_methods,
       phone_configuration_id: phone_configuration_id,
-      errors: errors,
       **extra,
     )
   end
@@ -5577,7 +4553,6 @@ module AnalyticsEvents
 
   # @param [Boolean] success
   # @param [Hash] errors
-  # @param [Hash] error_details
   # @param [Integer] enabled_mfa_methods_count
   # @param [Integer] selected_mfa_count
   # @param ['voice', 'auth_app'] selection
@@ -5585,7 +4560,6 @@ module AnalyticsEvents
   def user_registration_2fa_setup(
     success:,
     errors: nil,
-    error_details: nil,
     selected_mfa_count: nil,
     enabled_mfa_methods_count: nil,
     selection: nil,
@@ -5596,7 +4570,6 @@ module AnalyticsEvents
       {
         success: success,
         errors: errors,
-        error_details: error_details,
         selected_mfa_count: selected_mfa_count,
         enabled_mfa_methods_count: enabled_mfa_methods_count,
         selection: selection,
@@ -5623,7 +4596,6 @@ module AnalyticsEvents
   # @param [String] needs_completion_screen_reason
   # @param [Array] sp_request_requested_attributes
   # @param [Array] sp_session_requested_attributes
-  # @param [Boolean] in_account_creation_flow
   def user_registration_agency_handoff_page_visit(
       ial2:,
       service_provider_name:,
@@ -5632,7 +4604,6 @@ module AnalyticsEvents
       sp_session_requested_attributes:,
       sp_request_requested_attributes: nil,
       ialmax: nil,
-      in_account_creation_flow: nil,
       **extra
     )
     track_event(
@@ -5644,7 +4615,6 @@ module AnalyticsEvents
       needs_completion_screen_reason: needs_completion_screen_reason,
       sp_request_requested_attributes: sp_request_requested_attributes,
       sp_session_requested_attributes: sp_session_requested_attributes,
-      in_account_creation_flow: in_account_creation_flow,
       **extra,
     )
   end
@@ -5668,7 +4638,6 @@ module AnalyticsEvents
   # @param [Array] sp_request_requested_attributes
   # @param [Array] sp_session_requested_attributes
   # @param [String, nil] disposable_email_domain Disposable email domain used for registration
-  # @param [Boolean, nil] in_account_creation_flow
   def user_registration_complete(
     ial2:,
     service_provider_name:,
@@ -5678,7 +4647,6 @@ module AnalyticsEvents
     sp_request_requested_attributes: nil,
     ialmax: nil,
     disposable_email_domain: nil,
-    in_account_creation_flow: nil,
     **extra
   )
     track_event(
@@ -5691,7 +4659,6 @@ module AnalyticsEvents
       sp_request_requested_attributes: sp_request_requested_attributes,
       sp_session_requested_attributes: sp_session_requested_attributes,
       disposable_email_domain: disposable_email_domain,
-      in_account_creation_flow: in_account_creation_flow,
       **extra,
     )
   end
@@ -5703,7 +4670,6 @@ module AnalyticsEvents
   # @param [Hash] error_details
   # @param [String] user_id
   # @param [String] domain_name
-  # @param [Boolean] email_already_exists
   def user_registration_email(
     success:,
     rate_limited:,
@@ -5711,7 +4677,6 @@ module AnalyticsEvents
     error_details: nil,
     user_id: nil,
     domain_name: nil,
-    email_already_exists: nil,
     **extra
   )
     track_event(
@@ -5723,7 +4688,6 @@ module AnalyticsEvents
         error_details: error_details,
         user_id: user_id,
         domain_name: domain_name,
-        email_already_exists: email_already_exists,
         **extra,
       }.compact,
     )
@@ -5734,25 +4698,20 @@ module AnalyticsEvents
   # @param [Hash] errors
   # @param [Hash] error_details
   # @param [String] user_id
-  # @param [Boolean] email_already_exists
   def user_registration_email_confirmation(
     success:,
     errors:,
     error_details: nil,
     user_id: nil,
-    email_already_exists: nil,
     **extra
   )
     track_event(
       'User Registration: Email Confirmation',
-      {
-        success: success,
-        errors: errors,
-        error_details: error_details,
-        user_id: user_id,
-        email_already_exists: email_already_exists,
-        **extra,
-      }.compact,
+      success: success,
+      errors: errors,
+      error_details: error_details,
+      user_id: user_id,
+      **extra,
     )
   end
 
@@ -5765,14 +4724,14 @@ module AnalyticsEvents
   # @param [Hash] mfa_method_counts
   # @param [Integer] enabled_mfa_methods_count
   # @param [Boolean] second_mfa_reminder_conversion Whether it is a result of second MFA reminder.
-  # @param [Boolean] in_account_creation_flow
+  # @param [Hash] pii_like_keypaths
   # Tracks when a user has completed MFA setup
   def user_registration_mfa_setup_complete(
     success:,
     mfa_method_counts:,
     enabled_mfa_methods_count:,
+    pii_like_keypaths:,
     second_mfa_reminder_conversion: nil,
-    in_account_creation_flow: nil,
     **extra
   )
     track_event(
@@ -5781,8 +4740,8 @@ module AnalyticsEvents
         success: success,
         mfa_method_counts: mfa_method_counts,
         enabled_mfa_methods_count: enabled_mfa_methods_count,
+        pii_like_keypaths: pii_like_keypaths,
         second_mfa_reminder_conversion:,
-        in_account_creation_flow:,
         **extra,
       }.compact,
     )
@@ -5877,13 +4836,11 @@ module AnalyticsEvents
   # @param [Integer] enrollment_id
   # @param [Boolean] second_address_line_present
   # @param [String] service_provider
-  # @param [Boolean] opted_in_to_in_person_proofing
   def usps_ippaas_enrollment_created(
     enrollment_code:,
     enrollment_id:,
     second_address_line_present:,
     service_provider:,
-    opted_in_to_in_person_proofing:,
     **extra
   )
     track_event(
@@ -5892,7 +4849,6 @@ module AnalyticsEvents
       enrollment_id: enrollment_id,
       second_address_line_present: second_address_line_present,
       service_provider: service_provider,
-      opted_in_to_in_person_proofing: opted_in_to_in_person_proofing,
       **extra,
     )
   end
@@ -5952,19 +4908,12 @@ module AnalyticsEvents
 
   # @param [Hash] platform_authenticator
   # @param [Integer] enabled_mfa_methods_count
-  # @param [Boolean] in_account_creation_flow
   # Tracks when WebAuthn setup is visited
-  def webauthn_setup_visit(
-    platform_authenticator:,
-    enabled_mfa_methods_count:,
-    in_account_creation_flow:,
-    **extra
-  )
+  def webauthn_setup_visit(platform_authenticator:, enabled_mfa_methods_count:, **extra)
     track_event(
       'WebAuthn Setup Visited',
       platform_authenticator: platform_authenticator,
       enabled_mfa_methods_count: enabled_mfa_methods_count,
-      in_account_creation_flow: in_account_creation_flow,
       **extra,
     )
   end

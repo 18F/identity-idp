@@ -239,7 +239,7 @@ RSpec.describe Idv::PhoneController do
     end
   end
 
-  describe '#create', allowed_extra_analytics: [:sample_bucket1, :sample_bucket2] do
+  describe '#create' do
     let(:user) do
       create(
         :user, :with_phone,

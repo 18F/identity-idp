@@ -60,7 +60,7 @@ RSpec.describe Users::VerifyPersonalKeyController do
         ).once
         expect(@analytics).to receive(:track_event).with(
           'Rate Limit Reached',
-          { limiter_type: :verify_personal_key },
+          limiter_type: :verify_personal_key,
         ).once
 
         expect(@irs_attempts_api_tracker).to receive(:personal_key_reactivation_rate_limited)
@@ -110,7 +110,6 @@ RSpec.describe Users::VerifyPersonalKeyController do
         expect(@analytics).to receive(:track_event).with(
           'Personal key reactivation: Personal key form submitted',
           errors: {},
-          error_details: nil,
           success: true,
           pii_like_keypaths: pii_like_keypaths_errors,
         ).once
@@ -175,7 +174,7 @@ RSpec.describe Users::VerifyPersonalKeyController do
         ).once
         expect(@analytics).to receive(:track_event).with(
           'Rate Limit Reached',
-          { limiter_type: :verify_personal_key },
+          limiter_type: :verify_personal_key,
         ).once
 
         expect(@irs_attempts_api_tracker).to receive(:personal_key_reactivation_rate_limited).once

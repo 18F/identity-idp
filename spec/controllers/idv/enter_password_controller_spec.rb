@@ -70,8 +70,7 @@ RSpec.describe Idv::EnterPasswordController do
     end
   end
 
-  describe '#confirm_current_password',
-           allowed_extra_analytics: [:sample_bucket1, :sample_bucket2] do
+  describe '#confirm_current_password' do
     controller do
       before_action :confirm_current_password
 
@@ -122,7 +121,7 @@ RSpec.describe Idv::EnterPasswordController do
     end
   end
 
-  describe '#new', allowed_extra_analytics: [:sample_bucket1, :sample_bucket2] do
+  describe '#new' do
     context 'user has completed all steps' do
       it 'shows completed session' do
         get :new
@@ -272,7 +271,7 @@ RSpec.describe Idv::EnterPasswordController do
     end
   end
 
-  describe '#create', allowed_extra_analytics: [:sample_bucket1, :sample_bucket2] do
+  describe '#create' do
     context 'user fails to supply correct password' do
       it 'redirects to original path' do
         put :create, params: { user: { password: 'wrong' } }

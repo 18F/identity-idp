@@ -38,7 +38,7 @@ RSpec.describe Idv::AgreementController do
     end
   end
 
-  describe '#show', allowed_extra_analytics: [:sample_bucket1, :sample_bucket2] do
+  describe '#show' do
     let(:analytics_name) { 'IdV: doc auth agreement visited' }
     let(:analytics_args) do
       {
@@ -101,14 +101,13 @@ RSpec.describe Idv::AgreementController do
     end
   end
 
-  describe '#update', allowed_extra_analytics: [:sample_bucket1, :sample_bucket2] do
+  describe '#update' do
     let(:analytics_name) { 'IdV: doc auth agreement submitted' }
 
     let(:analytics_args) do
       {
         success: true,
         errors: {},
-        error_details: nil,
         step: 'agreement',
         analytics_id: 'Doc Auth',
         skip_hybrid_handoff: nil,

@@ -35,7 +35,7 @@ RSpec.describe Idv::ByMail::RequestLetterController do
     end
   end
 
-  describe '#index', allowed_extra_analytics: [:sample_bucket1, :sample_bucket2] do
+  describe '#index' do
     before do
       stub_verify_steps_one_and_two(user)
     end
@@ -138,7 +138,7 @@ RSpec.describe Idv::ByMail::RequestLetterController do
     end
   end
 
-  describe '#create', allowed_extra_analytics: [:sample_bucket1, :sample_bucket2] do
+  describe '#create' do
     context 'first time through the idv process' do
       before do
         stub_verify_steps_one_and_two(user)

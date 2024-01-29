@@ -35,7 +35,7 @@ RSpec.describe Idv::WelcomeController do
     end
   end
 
-  describe '#show', allowed_extra_analytics: [:sample_bucket1, :sample_bucket2] do
+  describe '#show' do
     let(:analytics_name) { 'IdV: doc auth welcome visited' }
     let(:analytics_args) do
       {
@@ -100,7 +100,7 @@ RSpec.describe Idv::WelcomeController do
     end
   end
 
-  describe '#update', allowed_extra_analytics: [:sample_bucket1, :sample_bucket2] do
+  describe '#update' do
     let(:analytics_name) { 'IdV: doc auth welcome submitted' }
 
     let(:analytics_args) do

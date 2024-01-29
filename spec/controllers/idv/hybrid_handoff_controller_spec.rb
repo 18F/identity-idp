@@ -39,7 +39,7 @@ RSpec.describe Idv::HybridHandoffController do
     end
   end
 
-  describe '#show', allowed_extra_analytics: [:sample_bucket1, :sample_bucket2] do
+  describe '#show' do
     let(:analytics_name) { 'IdV: doc auth hybrid handoff visited' }
     let(:analytics_args) do
       {
@@ -181,7 +181,7 @@ RSpec.describe Idv::HybridHandoffController do
     end
   end
 
-  describe '#update', allowed_extra_analytics: [:sample_bucket1, :sample_bucket2] do
+  describe '#update' do
     let(:analytics_name) { 'IdV: doc auth hybrid handoff submitted' }
 
     context 'hybrid flow' do
@@ -193,6 +193,8 @@ RSpec.describe Idv::HybridHandoffController do
           flow_path: 'hybrid',
           step: 'hybrid_handoff',
           analytics_id: 'Doc Auth',
+          redo_document_capture: nil,
+          skip_hybrid_handoff: nil,
           irs_reproofing: false,
           telephony_response: {
             errors: {},
@@ -249,6 +251,8 @@ RSpec.describe Idv::HybridHandoffController do
           flow_path: 'standard',
           step: 'hybrid_handoff',
           analytics_id: 'Doc Auth',
+          redo_document_capture: nil,
+          skip_hybrid_handoff: nil,
           irs_reproofing: false,
         }.merge(ab_test_args)
       end

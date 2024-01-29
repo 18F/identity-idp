@@ -55,7 +55,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
     stub_attempts_tracker
   end
 
-  describe '#show', allowed_extra_analytics: [:sample_bucket1, :sample_bucket2] do
+  describe '#show' do
     let(:analytics_name) { 'IdV: doc auth verify visited' }
     let(:analytics_args) do
       {
@@ -230,7 +230,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
     end
   end
 
-  describe '#update', allowed_extra_analytics: [:sample_bucket1, :sample_bucket2] do
+  describe '#update' do
     it 'redirects to the expected page' do
       put :update
 

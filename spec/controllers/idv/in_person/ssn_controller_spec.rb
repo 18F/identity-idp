@@ -42,7 +42,7 @@ RSpec.describe Idv::InPerson::SsnController do
     end
   end
 
-  describe '#show', allowed_extra_analytics: [:sample_bucket1, :sample_bucket2] do
+  describe '#show' do
     let(:analytics_name) { 'IdV: doc auth ssn visited' }
     let(:analytics_args) do
       {
