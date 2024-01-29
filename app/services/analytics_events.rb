@@ -1015,6 +1015,37 @@ module AnalyticsEvents
   # @param [Float] vendor_request_time_in_ms Time it took to upload images & get a response.
   # @param [String] front_image_fingerprint Fingerprint of front image data
   # @param [String] back_image_fingerprint Fingerprint of back image data
+  # @param [Boolean] attention_with_barcode
+  # @param [Boolean] doc_type_supported
+  # @param [Boolean] doc_auth_success
+  # @param [Boolean] selfie_success
+  # @param [String] vendor
+  # @param [String] conversation_id
+  # @param [String] reference
+  # @param [String] transaction_status
+  # @param [String] transaction_reason_code
+  # @param [String] product_status
+  # @param [String] decision_product_status
+  # @param [Array] processed_alerts
+  # @param [Integer] alert_failure_count
+  # @param [Hash] log_alert_results
+  # @param [Hash] portrait_match_results
+  # @param [Hash] image_metrics
+  # @param [Boolean] address_line2_present
+  # @option extra [String] 'DocumentName'
+  # @option extra [String] 'DocAuthResult'
+  # @option extra [String] 'DocIssuerCode'
+  # @option extra [String] 'DocIssuerName'
+  # @option extra [String] 'DocIssuerType'
+  # @option extra [String] 'DocClassCode'
+  # @option extra [String] 'DocClass'
+  # @option extra [String] 'DocClassName'
+  # @option extra [Boolean] 'DocIsGeneric'
+  # @option extra [String] 'DocIssue'
+  # @option extra [String] 'DocIssueType'
+  # @option extra [String] 'ClassificationMode'
+  # @option extra [Boolean] 'OrientationChanged'
+  # @option extra [Boolean] 'PresentationChanged'
   # The document capture image was uploaded to vendor during the IDV process
   def idv_doc_auth_submitted_image_upload_vendor(
     success:,
@@ -1022,7 +1053,8 @@ module AnalyticsEvents
     exception:,
     state:,
     state_id_type:,
-    async:, attempts:,
+    async:,
+    attempts:,
     remaining_attempts:,
     client_image_metrics:,
     flow_path:,
@@ -1031,25 +1063,59 @@ module AnalyticsEvents
     vendor_request_time_in_ms: nil,
     front_image_fingerprint: nil,
     back_image_fingerprint: nil,
+    attention_with_barcode: nil,
+    doc_type_supported: nil,
+    doc_auth_success: nil,
+    selfie_success: nil,
+    vendor: nil,
+    conversation_id: nil,
+    reference: nil,
+    transaction_status: nil,
+    transaction_reason_code: nil,
+    product_status: nil,
+    decision_product_status: nil,
+    processed_alerts: nil,
+    alert_failure_count: nil,
+    log_alert_results: nil,
+    portrait_match_results: nil,
+    image_metrics: nil,
+    address_line2_present: nil,
     **extra
   )
     track_event(
       'IdV: doc auth image upload vendor submitted',
-      success: success,
-      errors: errors,
-      exception: exception,
-      billed: billed,
-      doc_auth_result: doc_auth_result,
-      state: state,
-      state_id_type: state_id_type,
-      async: async,
-      attempts: attempts,
-      remaining_attempts: remaining_attempts,
-      client_image_metrics: client_image_metrics,
-      flow_path: flow_path,
-      vendor_request_time_in_ms: vendor_request_time_in_ms,
-      front_image_fingerprint: front_image_fingerprint,
-      back_image_fingerprint: back_image_fingerprint,
+      success:,
+      errors:,
+      exception:,
+      billed:,
+      doc_auth_result:,
+      state:,
+      state_id_type:,
+      async:,
+      attempts:,
+      remaining_attempts:,
+      client_image_metrics:,
+      flow_path:,
+      vendor_request_time_in_ms:,
+      front_image_fingerprint:,
+      back_image_fingerprint:,
+      attention_with_barcode:,
+      doc_type_supported:,
+      doc_auth_success:,
+      selfie_success:,
+      vendor:,
+      conversation_id:,
+      reference:,
+      transaction_status:,
+      transaction_reason_code:,
+      product_status:,
+      decision_product_status:,
+      processed_alerts:,
+      alert_failure_count:,
+      log_alert_results:,
+      portrait_match_results:,
+      image_metrics:,
+      address_line2_present:,
       **extra,
     )
   end
@@ -3978,6 +4044,7 @@ module AnalyticsEvents
   # @param [String] validator_class Class name of validator
   # @param [String, nil] exception_class Class name of exception, if error occurred
   # @param [String, nil] phone_country_code Country code associated with reCAPTCHA phone result
+  # @param [String] recaptcha_version
   def recaptcha_verify_result_received(
     recaptcha_result:,
     score_threshold:,
@@ -3985,6 +4052,7 @@ module AnalyticsEvents
     validator_class:,
     exception_class:,
     phone_country_code: nil,
+    recaptcha_version: nil,
     **extra
   )
     track_event(
@@ -3996,6 +4064,7 @@ module AnalyticsEvents
         validator_class:,
         exception_class:,
         phone_country_code:,
+        recaptcha_version:,
         **extra,
       }.compact,
     )

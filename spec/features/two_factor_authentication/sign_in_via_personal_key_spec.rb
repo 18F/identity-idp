@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'Signing in via one-time use personal key' do
+RSpec.feature 'Signing in via one-time use personal key', allowed_extra_analytics: [:*] do
   it 'destroys old key, does not offer new one' do
     user = create(
       :user, :fully_registered, :with_phone, :with_personal_key,

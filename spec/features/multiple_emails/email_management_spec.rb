@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'managing email address' do
+RSpec.feature 'managing email address', allowed_extra_analytics: [:*] do
   context 'show one email address if only one is configured' do
     scenario 'shows one email address for a user with only one' do
       user = create(:user, :fully_registered, :with_multiple_emails)

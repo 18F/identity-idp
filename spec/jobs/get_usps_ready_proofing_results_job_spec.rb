@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe GetUspsReadyProofingResultsJob do
+RSpec.describe GetUspsReadyProofingResultsJob, allowed_extra_analytics: [:*] do
   include UspsIppHelper
 
   let(:reprocess_delay_minutes) { 2.0 }

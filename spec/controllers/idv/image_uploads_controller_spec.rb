@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::ImageUploadsController do
+RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
   include DocPiiHelper
 
   let(:document_filename_regex) { /^[a-f0-9]{8}-([a-f0-9]{4}-){3}[a-f0-9]{12}\.[a-z]+$/ }
@@ -442,6 +442,20 @@ RSpec.describe Idv::ImageUploadsController do
           liveness_checking_required: boolean,
           selfie_live: boolean,
           selfie_quality_good: boolean,
+          address_line2_present: nil,
+          alert_failure_count: nil,
+          conversation_id: nil,
+          decision_product_status: nil,
+          image_metrics: nil,
+          log_alert_results: nil,
+          portrait_match_results: nil,
+          processed_alerts: nil,
+          product_status: nil,
+          reference: nil,
+          selfie_success: nil,
+          transaction_reason_code: nil,
+          transaction_status: nil,
+          vendor: nil,
         )
 
         expect(@analytics).to receive(:track_event).with(
@@ -625,6 +639,20 @@ RSpec.describe Idv::ImageUploadsController do
               liveness_checking_required: boolean,
               selfie_live: true,
               selfie_quality_good: true,
+              address_line2_present: nil,
+              alert_failure_count: nil,
+              conversation_id: nil,
+              decision_product_status: nil,
+              image_metrics: nil,
+              log_alert_results: nil,
+              portrait_match_results: nil,
+              processed_alerts: nil,
+              product_status: nil,
+              reference: nil,
+              selfie_success: nil,
+              transaction_reason_code: nil,
+              transaction_status: nil,
+              vendor: nil,
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -721,6 +749,20 @@ RSpec.describe Idv::ImageUploadsController do
               liveness_checking_required: boolean,
               selfie_live: true,
               selfie_quality_good: true,
+              address_line2_present: nil,
+              alert_failure_count: nil,
+              conversation_id: nil,
+              decision_product_status: nil,
+              image_metrics: nil,
+              log_alert_results: nil,
+              portrait_match_results: nil,
+              processed_alerts: nil,
+              product_status: nil,
+              reference: nil,
+              selfie_success: nil,
+              transaction_reason_code: nil,
+              transaction_status: nil,
+              vendor: nil,
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -817,6 +859,20 @@ RSpec.describe Idv::ImageUploadsController do
               liveness_checking_required: boolean,
               selfie_live: true,
               selfie_quality_good: true,
+              address_line2_present: nil,
+              alert_failure_count: nil,
+              conversation_id: nil,
+              decision_product_status: nil,
+              image_metrics: nil,
+              log_alert_results: nil,
+              portrait_match_results: nil,
+              processed_alerts: nil,
+              product_status: nil,
+              reference: nil,
+              selfie_success: nil,
+              transaction_reason_code: nil,
+              transaction_status: nil,
+              vendor: nil,
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -910,6 +966,20 @@ RSpec.describe Idv::ImageUploadsController do
               liveness_checking_required: boolean,
               selfie_live: true,
               selfie_quality_good: true,
+              address_line2_present: nil,
+              alert_failure_count: nil,
+              conversation_id: nil,
+              decision_product_status: nil,
+              image_metrics: nil,
+              log_alert_results: nil,
+              portrait_match_results: nil,
+              processed_alerts: nil,
+              product_status: nil,
+              reference: nil,
+              selfie_success: nil,
+              transaction_reason_code: nil,
+              transaction_status: nil,
+              vendor: nil,
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -1028,6 +1098,20 @@ RSpec.describe Idv::ImageUploadsController do
           liveness_checking_required: boolean,
           selfie_live: true,
           selfie_quality_good: true,
+          address_line2_present: nil,
+          alert_failure_count: nil,
+          conversation_id: nil,
+          decision_product_status: nil,
+          image_metrics: nil,
+          log_alert_results: nil,
+          portrait_match_results: nil,
+          processed_alerts: nil,
+          product_status: nil,
+          reference: nil,
+          selfie_success: nil,
+          transaction_reason_code: nil,
+          transaction_status: nil,
+          vendor: nil,
         )
 
         action
@@ -1104,6 +1188,20 @@ RSpec.describe Idv::ImageUploadsController do
           liveness_checking_required: boolean,
           selfie_live: boolean,
           selfie_quality_good: boolean,
+          address_line2_present: nil,
+          alert_failure_count: nil,
+          conversation_id: nil,
+          decision_product_status: nil,
+          image_metrics: nil,
+          log_alert_results: nil,
+          portrait_match_results: nil,
+          processed_alerts: nil,
+          product_status: nil,
+          reference: nil,
+          selfie_success: nil,
+          transaction_reason_code: nil,
+          transaction_status: nil,
+          vendor: nil,
         )
 
         action
