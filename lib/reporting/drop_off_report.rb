@@ -12,8 +12,27 @@ rescue LoadError => e
 end
 
 module Reporting
-  class DropOffReport < IdentityVerificationReport
+  class DropOffReport
     include Reporting::CloudwatchQueryQuoting
+
+    attr_reader :issuers, :time_range
+
+    def initialize(
+      issuers:,
+      time_range:,
+      verbose: false,
+      progress: false,
+      slice: 3.hours,
+      threads: 5
+    )
+      @issuers = issuers
+      @time_range = time_range
+      @verbose = verbose
+      @progress = progress
+      @slice = slice
+      @threads = threads
+    end
+
 
     module Events
       IDV_DOC_AUTH_WELCOME = 'IdV: doc auth welcome visited'
@@ -50,6 +69,7 @@ module Reporting
         Reporting::EmailableReport.new(
           title: 'DropOff Metrics',
           table: dropoff_metrics_table,
+          float_as_percent: true,
         ),
       ]
     end
@@ -75,22 +95,22 @@ module Reporting
           'User agreement (page viewed)',
           idv_doc_auth_welcome_submitted,
           dropoff = idv_started - idv_doc_auth_welcome_submitted,
-          format_as_percent(
+          percent(
             numerator: dropoff,
             denominator: idv_started,
           ),
-          format_as_percent(numerator: idv_doc_auth_welcome_submitted, denominator: idv_started),
+          percent(numerator: idv_doc_auth_welcome_submitted, denominator: idv_started),
         ],
         [
           'Capture Document (page viewed)',
           idv_doc_auth_document_captured,
           dropoff = idv_doc_auth_welcome_submitted -
                     idv_doc_auth_document_captured,
-          format_as_percent(
+          percent(
             numerator: dropoff,
             denominator: idv_doc_auth_welcome_submitted,
           ),
-          format_as_percent(
+          percent(
             numerator: idv_doc_auth_document_captured,
             denominator: idv_started,
           ),
@@ -100,11 +120,11 @@ module Reporting
           idv_doc_auth_image_vendor_submitted,
           dropoff = idv_doc_auth_document_captured -
                     idv_doc_auth_image_vendor_submitted,
-          format_as_percent(
+          percent(
             numerator: dropoff,
             denominator: idv_doc_auth_document_captured,
           ),
-          format_as_percent(
+          percent(
             numerator: idv_doc_auth_image_vendor_submitted,
             denominator: idv_started,
           ),
@@ -114,11 +134,11 @@ module Reporting
           idv_doc_auth_ssn_visited,
           dropoff = idv_doc_auth_image_vendor_submitted -
                     idv_doc_auth_ssn_visited,
-          format_as_percent(
+          percent(
             numerator: dropoff,
             denominator: idv_doc_auth_image_vendor_submitted,
           ),
-          format_as_percent(
+          percent(
             numerator: idv_doc_auth_ssn_visited,
             denominator: idv_started,
           ),
@@ -128,11 +148,11 @@ module Reporting
           idv_doc_auth_verify_visited,
           dropoff = idv_doc_auth_ssn_visited -
                     idv_doc_auth_verify_visited,
-          format_as_percent(
+          percent(
             numerator: dropoff,
             denominator: idv_doc_auth_ssn_visited,
           ),
-          format_as_percent(
+          percent(
             numerator: idv_doc_auth_verify_visited,
             denominator: idv_started,
           ),
@@ -142,11 +162,11 @@ module Reporting
           idv_doc_auth_verify_submitted,
           dropoff = idv_doc_auth_verify_visited -
                     idv_doc_auth_verify_submitted,
-          format_as_percent(
+          percent(
             numerator: dropoff,
             denominator: idv_doc_auth_verify_visited,
           ),
-          format_as_percent(
+          percent(
             numerator: idv_doc_auth_verify_submitted,
             denominator: idv_started,
           ),
@@ -156,11 +176,11 @@ module Reporting
           idv_doc_auth_phone_visited,
           dropoff = idv_doc_auth_verify_submitted -
                     idv_doc_auth_phone_visited,
-          format_as_percent(
+          percent(
             numerator: dropoff,
             denominator: idv_doc_auth_verify_submitted,
           ),
-          format_as_percent(
+          percent(
             numerator: idv_doc_auth_phone_visited,
             denominator: idv_started,
           ),
@@ -170,11 +190,11 @@ module Reporting
           idv_enter_password_visited,
           dropoff = idv_doc_auth_phone_visited -
                     idv_enter_password_visited,
-          format_as_percent(
+          percent(
             numerator: dropoff,
             denominator: idv_doc_auth_phone_visited,
           ),
-          format_as_percent(
+          percent(
             numerator: idv_enter_password_visited,
             denominator: idv_started,
           ),
@@ -184,11 +204,11 @@ module Reporting
           idv_enter_password_submitted,
           dropoff = idv_enter_password_visited -
                     idv_enter_password_submitted,
-          format_as_percent(
+          percent(
             numerator: dropoff,
             denominator: idv_enter_password_visited,
           ),
-          format_as_percent(
+          percent(
             numerator: idv_enter_password_submitted,
             denominator: idv_started,
           ),
@@ -198,11 +218,11 @@ module Reporting
           idv_personal_key_submitted,
           dropoff = idv_enter_password_submitted -
                     idv_personal_key_submitted,
-          format_as_percent(
+          percent(
             numerator: dropoff,
             denominator: idv_enter_password_submitted,
           ),
-          format_as_percent(
+          percent(
             numerator: idv_personal_key_submitted,
             denominator: idv_started,
           ),
@@ -212,7 +232,7 @@ module Reporting
           '',
           '',
           '',
-          format_as_percent(
+          percent(
             numerator: idv_personal_key_submitted,
             denominator: idv_doc_auth_welcome_submitted,
           ),
@@ -222,7 +242,7 @@ module Reporting
           '',
           '',
           '',
-          format_as_percent(
+          percent(
             numerator: idv_enter_password_visited,
             denominator: idv_doc_auth_image_vendor_submitted,
           ),
@@ -232,7 +252,7 @@ module Reporting
           '',
           '',
           '',
-          format_as_percent(
+          percent(
             numerator: idv_personal_key_submitted,
             denominator: idv_doc_auth_image_vendor_submitted,
           ),
@@ -328,6 +348,10 @@ module Reporting
       data[Events::IDV_DOC_AUTH_CAPTURED].count
     end
 
+    def idv_doc_auth_image_vendor_submitted
+      data[Events::IDV_DOC_AUTH_IMAGE_UPLOAD].count
+    end
+
     def idv_doc_auth_ssn_visited
       data[Events::IDV_DOC_AUTH_SSN_VISITED].count
     end
@@ -375,13 +399,57 @@ module Reporting
       end
     end
 
-    # @return [String]
-    def format_as_percent(numerator:, denominator:)
-      (100 * numerator.to_f / denominator.to_f).round(2).to_s + '%'
+    # @return [Float]
+    def percent(numerator:, denominator:)
+      (numerator.to_f / denominator.to_f).round(2)
     end
 
-    def event_names
-      quote(Events.all_events)
+    def fetch_results
+      cloudwatch_client.fetch(query:, from: time_range.begin, to: time_range.end)
+    end
+
+
+    def query
+      params = {
+        issuers: issuers.present? && quote(issuers),
+        event_names: quote(Events.all_events),
+      }
+
+      format(<<~QUERY, params)
+        fields
+            name
+          , properties.user_id AS user_id
+          , coalesce(properties.event_properties.success, 0) AS success
+        #{issuers.present? ? '| filter properties.service_provider IN %{issuers}' : ''}
+        | filter name in %{event_names}
+        | limit 10000
+      QUERY
+    end
+
+    # event name => set(user ids)
+    # @return Hash<String,Set<String>>
+    def data
+      @data ||= begin
+        event_users = Hash.new do |h, uuid|
+          h[uuid] = Set.new
+        end
+
+        fetch_results.each do |row|
+          event_users[row['name']] << row['user_id']
+        end
+
+        event_users
+      end
+    end
+
+    def cloudwatch_client
+      @cloudwatch_client ||= Reporting::CloudwatchClient.new(
+        num_threads: @threads,
+        ensure_complete_logs: true,
+        slice_interval: @slice,
+        progress: false,
+        logger: nil,
+      )
     end
   end
 end

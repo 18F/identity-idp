@@ -88,6 +88,48 @@ RSpec.describe Reporting::DropOffReport do
     end
   end
 
+  describe '#cloudwatch_client' do
+    let(:opts) { {} }
+    let(:subject) { described_class.new(issuers: Array(issuer), time_range:, **opts) }
+    let(:default_args) do
+      {
+        num_threads: 5,
+        slice_interval: 3.hours,
+        progress: false,
+      }
+    end
+
+    describe 'when all args are default' do
+      it 'creates a client with the default options' do
+        expect(Reporting::CloudwatchClient).to receive(:new).with(default_args)
+
+        subject.cloudwatch_client
+      end
+    end
+
+    describe 'when threads is passed in' do
+      let(:opts) { { threads: 17 } }
+      before { default_args[:num_threads] = 17 }
+
+      it 'creates a client with the expected thread count' do
+        expect(Reporting::CloudwatchClient).to receive(:new).with(default_args)
+
+        subject.cloudwatch_client
+      end
+    end
+
+    describe 'when slice is passed in' do
+      let(:opts) { { slice: 2.weeks } }
+      before { default_args[:slice_interval] = 2.weeks }
+
+      it 'creates a client with expected time slice' do
+        expect(Reporting::CloudwatchClient).to receive(:new).with(default_args)
+
+        subject.cloudwatch_client
+      end
+    end
+  end
+
   def expected_tables(strings: false)
     [
       # these two tables are static
@@ -101,22 +143,25 @@ RSpec.describe Reporting::DropOffReport do
       [
         ['Step', 'Unique user count', 'Users lost', 'Dropoff from last step',
          'Users left from start'],
-        ['Welcome (page viewed)', strings ? '5' : 5],
-        ['User agreement (page viewed)', strings ? '5' : 5, strings ? '0' : 0, '0.0%', '100.0%'],
-        ['Capture Document (page viewed)', strings ? '4' : 4, strings ? '1' : 1, '20.0%', '80.0%'],
-        ['Document submitted (event)', strings ? '4' : 4, strings ? '0' : 0, '0.0%', '80.0%'],
-        ['SSN (page view)', strings ? '3' : 3, strings ? '1' : 1, '25.0%', '60.0%'],
-        ['Verify Info (page view)', strings ? '2' : 2, strings ? '1' : 1, '33.33%', '40.0%'],
-        ['Verify submit (event)', strings ? '2' : 2, strings ? '0' : 0, '0.0%', '40.0%'],
-        ['Phone finder (page view)', strings ? '2' : 2, strings ? '0' : 0, '0.0%', '40.0%'],
-        ['Encrypt account: enter password (page view)', strings ? '1' : 1, strings ? '1' : 1,
-         '50.0%', '20.0%'],
-        ['Personal key input (page view)', strings ? '1' : 1, strings ? '0' : 0, '0.0%', '20.0%'],
-        ['Verified (event)', strings ? '1' : 1, strings ? '0' : 0, '0.0%', '20.0%'],
-        ['Blanket proofing rate', '', '', '', '20.0%'],
-        ['Actual proofing rate', '', '', '', '25.0%'],
-        ['Verified proofing rate', '', '', '', '25.0%'],
+        ['Welcome (page viewed)'] + string_or_num(strings, 5),
+        ['User agreement (page viewed)'] + string_or_num(strings, 5, 0, 0.0, 1.0),
+        ['Capture Document (page viewed)'] + string_or_num(strings, 4, 1, 0.2, 0.8),
+        ['Document submitted (event)'] + string_or_num(strings, 4, 0, 0.0, 0.8),
+        ['SSN (page view)'] + string_or_num(strings, 3, 1, 0.25, 0.6),
+        ['Verify Info (page view)'] + string_or_num(strings, 2, 1, 0.33, 0.4),
+        ['Verify submit (event)'] + string_or_num(strings, 2, 0, 0.0, 0.4),
+        ['Phone finder (page view)'] + string_or_num(strings, 2, 0, 0.0, 0.4),
+        ['Encrypt account: enter password (page view)'] + string_or_num(strings, 1, 1, 0.5, 0.2),
+        ['Personal key input (page view)'] + string_or_num(strings, 1, 0, 0.0, 0.2),
+        ['Verified (event)'] + string_or_num(strings, 1, 0, 0.0, 0.2),
+        ['Blanket proofing rate', '', '', ''] + string_or_num(strings, 0.2),
+        ['Actual proofing rate', '', '', ''] + string_or_num(strings, 0.25),
+        ['Verified proofing rate', '', '', ''] + string_or_num(strings, 0.25),
       ],
     ]
+  end
+
+  def string_or_num(strings, *values)
+    strings ? values.map(&:to_s) : values
   end
 end
