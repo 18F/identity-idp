@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'when using PIV/CAC to sign in' do
+RSpec.describe 'when using PIV/CAC to sign in', allowed_extra_analytics: [:*] do
   let(:user) { user_with_piv_cac }
 
   it 'does not show any MFA options' do
