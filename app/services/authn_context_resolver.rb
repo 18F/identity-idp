@@ -9,7 +9,7 @@ class AuthnContextResolver
 
   def resolve
     if vtr.present?
-      vot_result
+      vot_parser_result
     else
       acr_result_with_sp_defaults
     end
@@ -17,26 +17,21 @@ class AuthnContextResolver
 
   private
 
-  def vot_result
-    return nil if vtr.blank?
+  def vot_parser_result
+    vector_of_trust = JSON.parse(vtr).first if vtr.present?
 
     @vot_result = Vot::Parser.new(
-      JSON.parse(vtr).first,
+      vector_of_trust: vector_of_trust,
+      acr_values: acr_values,
     ).parse
   end
 
   def acr_result_with_sp_defaults
     result_with_sp_aal_defaults(
       result_with_sp_ial_defaults(
-        acr_result,
+        vot_parser_result,
       ),
     )
-  end
-
-  def acr_result
-    return nil if acr_values.blank?
-
-    @acr_result = Vot::Parser.new(acr_values).parse_acr
   end
 
   def result_with_sp_aal_defaults(result)
@@ -62,10 +57,14 @@ class AuthnContextResolver
   end
 
   def acr_aal_component_values
-    acr_result.component_values.filter { |cv| cv.name.include?('aal') }
+    vot_parser_result.component_values.filter do |component_value|
+      component_value.name.include?('aal')
+    end
   end
 
   def acr_ial_component_values
-    acr_result.component_values.filter { |cv| cv.name.include?('ial') || cv.name.include?('loa') }
+    vot_parser_result.component_values.filter do |component_value|
+      component_value.name.include?('ial') || component_value.name.include?('loa')
+    end
   end
 end

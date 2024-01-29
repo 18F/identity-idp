@@ -6,7 +6,7 @@ RSpec.describe Vot::Parser do
       it 'returns the vector along with requirements' do
         vector_of_trust = 'C1.C2.Cb'
 
-        result = Vot::Parser.new(vector_of_trust).parse
+        result = Vot::Parser.new(vector_of_trust:).parse
 
         expect(result.component_values.map(&:name).join('.')).to eq('C1.C2.Cb')
         expect(result.aal2?).to eq(true)
@@ -22,7 +22,7 @@ RSpec.describe Vot::Parser do
       it 'adds the implied components' do
         vector_of_trust = 'Pb'
 
-        result = Vot::Parser.new(vector_of_trust).parse
+        result = Vot::Parser.new(vector_of_trust:).parse
 
         expect(result.component_values.map(&:name).join('.')).to eq('C1.C2.P1.Pb')
         expect(result.aal2?).to eq(true)
@@ -38,7 +38,7 @@ RSpec.describe Vot::Parser do
       it 'raises an exception' do
         vector_of_trust = 'C1.C2.Xx'
 
-        expect { Vot::Parser.new(vector_of_trust).parse }.to raise_exception(
+        expect { Vot::Parser.new(vector_of_trust:).parse }.to raise_exception(
           Vot::Parser::ParseException,
           'C1.C2.Xx contains unkown component Xx',
         )
@@ -48,30 +48,30 @@ RSpec.describe Vot::Parser do
     context 'when a vector include duplicate components' do
       it 'raises an exception' do
         vector_of_trust = 'C1.C1'
-        expect { Vot::Parser.new(vector_of_trust).parse }.to raise_exception(
+        expect { Vot::Parser.new(vector_of_trust:).parse }.to raise_exception(
           Vot::Parser::ParseException,
           'C1.C1 contains duplicate components',
         )
       end
-    end
-  end
 
-  describe '#parse_acr' do
-    it 'parsed ACR values to component values' do
-      vector_of_trust = [
-        'http://idmanagement.gov/ns/assurance/aal/2?hspd12=true',
-        'http://idmanagement.gov/ns/assurance/ial/2',
-      ].join(' ')
+      context 'when ACR values are provided' do
+        it 'parses ACR values to component values' do
+          acr_values = [
+            'http://idmanagement.gov/ns/assurance/aal/2?hspd12=true',
+            'http://idmanagement.gov/ns/assurance/ial/2',
+          ].join(' ')
 
-      result = Vot::Parser.new(vector_of_trust).parse_acr
+          result = Vot::Parser.new(acr_values:).parse
 
-      expect(result.component_values.map(&:name).join(' ')).to eq(vector_of_trust)
-      expect(result.aal2?).to eq(true)
-      expect(result.phishing_resistant?).to eq(false)
-      expect(result.hspd12?).to eq(true)
-      expect(result.identity_proofing?).to eq(true)
-      expect(result.biometric_comparison?).to eq(false)
-      expect(result.ialmax?).to eq(false)
+          expect(result.component_values.map(&:name).join(' ')).to eq(acr_values)
+          expect(result.aal2?).to eq(true)
+          expect(result.phishing_resistant?).to eq(false)
+          expect(result.hspd12?).to eq(true)
+          expect(result.identity_proofing?).to eq(true)
+          expect(result.biometric_comparison?).to eq(false)
+          expect(result.ialmax?).to eq(false)
+        end
+      end
     end
   end
 end

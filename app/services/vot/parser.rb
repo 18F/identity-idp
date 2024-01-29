@@ -11,19 +11,20 @@ module Vot
       :ialmax?,
     )
 
-    attr_reader :vector_of_trust
+    attr_reader :vector_of_trust, :acr_values
 
-    def initialize(vector_of_trust)
+    def initialize(vector_of_trust: nil, acr_values: nil)
       @vector_of_trust = vector_of_trust
+      @acr_values = acr_values
     end
 
     def parse
-      initial_components = map_initial_vector_of_trust_components_to_component_values
-      expand_components_with_initial_components(initial_components)
-    end
-
-    def parse_acr
-      initial_components = map_initial_acr_values_to_component_values
+      initial_components =
+        if vector_of_trust.present?
+          map_initial_vector_of_trust_components_to_component_values
+        elsif acr_values.present?
+          map_initial_acr_values_to_component_values
+        end
       expand_components_with_initial_components(initial_components)
     end
 
@@ -38,7 +39,7 @@ module Vot
     end
 
     def map_initial_acr_values_to_component_values
-      vector_of_trust.split(' ').map do |component_value_name|
+      acr_values.split(' ').map do |component_value_name|
         LegacyComponentValues.by_name.fetch(component_value_name)
       rescue KeyError
         raise_unsupported_component_exception(component_value_name)
@@ -82,11 +83,19 @@ module Vot
     end
 
     def raise_unsupported_component_exception(component_value_name)
-      raise ParseException, "#{vector_of_trust} contains unkown component #{component_value_name}"
+      if vector_of_trust.present?
+        raise ParseException, "#{vector_of_trust} contains unkown component #{component_value_name}"
+      else
+        raise ParseException, "#{acr_values} contains unkown acr value #{component_value_name}"
+      end
     end
 
     def raise_duplicate_component_exception
-      raise ParseException, "#{vector_of_trust} contains duplicate components"
+      if vector_of_trust.present?
+        raise ParseException, "#{vector_of_trust} contains duplicate components"
+      else
+        raise ParseException, "#{acr_values} ontains duplicate acr values"
+      end
     end
   end
 end
