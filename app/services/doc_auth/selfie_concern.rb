@@ -25,7 +25,13 @@ module DocAuth
       return error_message != ERROR_TEXTS[:poor_quality]
     end
 
+    def selfie_check_performed?
+      SELFIE_PERFORMED_STATUSES.include?(selfie_status)
+    end
+
   private
+
+    SELFIE_PERFORMED_STATUSES = %i[success fail]
 
     ERROR_TEXTS = {
       success: 'Successful. Liveness: Live',

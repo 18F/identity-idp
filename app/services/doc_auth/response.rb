@@ -94,7 +94,7 @@ module DocAuth
     end
 
     def selfie_check_performed?
-      %i[success fail].include?(selfie_status_from_response(self))
+      false
     end
 
     def doc_auth_success?

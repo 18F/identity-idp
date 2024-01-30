@@ -15,16 +15,14 @@ DocumentCaptureSessionResult = RedactedStruct.new(
                     :failed_back_image_fingerprints, :captured_at, :doc_auth_success,
                     :selfie_status, :selfie_success]
 ) do
+  include DocAuth::SelfieConcern
+
   def self.redis_key_prefix
     'dcs:result'
   end
 
   def selfie_status
     self[:selfie_status].to_sym
-  end
-
-  def selfie_check_performed?
-    %i[success fail].include?(selfie_status)
   end
 
   alias_method :success?, :success
