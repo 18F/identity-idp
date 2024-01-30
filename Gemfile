@@ -56,7 +56,7 @@ gem 'premailer-rails', '>= 1.12.0'
 gem 'profanity_filter'
 gem 'propshaft'
 gem 'rack', '>= 3.0'
-gem 'rack-attack', '>= 6.2.1'
+gem 'rack-attack', github: 'rack/rack-attack', ref: 'd9fedfae4f7f6409f33857763391f4e18a6d7467'
 gem 'rack-cors', '>= 1.0.5', require: 'rack/cors'
 gem 'rack-headers_filter'
 gem 'rack-timeout', require: false
