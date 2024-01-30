@@ -33,7 +33,7 @@ module Idv
       end
     end
 
-    def self.can_do_hybrid(session:)
+    def self.opted_in_to_remote(session:)
       if IdentityConfig.store.in_person_proofing_opt_in_enabled &&
          IdentityConfig.store.in_person_proofing_enabled
         session.skip_doc_auth == false
@@ -48,13 +48,11 @@ module Idv
         controller: self,
         next_steps: [:link_sent, :document_capture],
         preconditions: ->(idv_session:, user:) {
-                         idv_session.idv_consent_given && self.can_do_hybrid(session: idv_session)
+                         idv_session.idv_consent_given && self.opted_in_to_remote(session: idv_session)
                        },
         undo_step: ->(idv_session:, user:) do
           idv_session.flow_path = nil
           idv_session.phone_for_mobile_flow = nil
-          idv_session.skip_doc_auth = nil
-          idv_session.opted_in_to_in_person_proofing = nil
         end,
       )
     end
