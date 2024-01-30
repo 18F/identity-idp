@@ -25,5 +25,5 @@
     "./*.js",
     "scripts"
   ],
-  "exclude": ["**/fixtures", "**/*.spec.js"]
+  "exclude": ["**/fixtures", "spec/**/*.spec.js"]
 }
