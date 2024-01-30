@@ -16,6 +16,14 @@ module FederatedProtocols
       request.aal_values.sort.max
     end
 
+    def acr_values
+      [aal, ial].join(' ')
+    end
+
+    def vtr
+      request.vtr
+    end
+
     def requested_attributes
       OpenidConnectAttributeScoper.new(request.scope).requested_attributes
     end

@@ -16,6 +16,14 @@ module FederatedProtocols
       request.requested_aal_authn_context
     end
 
+    def acr_values
+      [aal, ial].join(' ')
+    end
+
+    def vtr
+      nil
+    end
+
     def requested_attributes
       @requested_attributes ||= SamlRequestPresenter.new(
         request: request, service_provider: current_service_provider,
