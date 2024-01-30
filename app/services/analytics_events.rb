@@ -2953,7 +2953,7 @@ module AnalyticsEvents
   # @param [DateTime] enqueued_at When was this letter enqueued
   # @param [Integer] which_letter Sorted by enqueue time, which letter had this code
   # @param [Integer] letter_count How many letters did the user enqueue for this profile
-  # @param [Integer] attempts Number of attempts to enter a correct code
+  # @param [Integer] submit_attempts Number of attempts to enter a correct code
   # @param [Boolean] pending_in_person_enrollment
   # @param [Boolean] fraud_check_failed
   # @see Reporting::IdentityVerificationReport#query This event is used by the identity verification
@@ -2966,7 +2966,7 @@ module AnalyticsEvents
     enqueued_at:,
     which_letter:,
     letter_count:,
-    attempts:,
+    submit_attempts:,
     pending_in_person_enrollment:,
     fraud_check_failed:,
     **extra
@@ -2979,7 +2979,7 @@ module AnalyticsEvents
       enqueued_at: enqueued_at,
       which_letter: which_letter,
       letter_count: letter_count,
-      attempts: attempts,
+      submit_attempts: submit_attempts,
       pending_in_person_enrollment: pending_in_person_enrollment,
       fraud_check_failed: fraud_check_failed,
       **extra,
