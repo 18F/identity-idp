@@ -255,14 +255,18 @@ RSpec.feature 'document capture step', :js do
           visit_idp_from_oidc_sp_with_ial2
           sign_in_and_2fa_user(user)
           complete_doc_auth_steps_before_document_capture_step
-          attach_images(Rails.root.join(
-            'spec', 'fixtures',
-            'ial2_test_credential_no_liveness.yml'
-          ))
-          attach_selfie(Rails.root.join(
-            'spec', 'fixtures',
-            'ial2_test_credential_no_liveness.yml'
-          ))
+          attach_images(
+            Rails.root.join(
+              'spec', 'fixtures',
+              'ial2_test_credential_no_liveness.yml'
+            ),
+          )
+          attach_selfie(
+            Rails.root.join(
+              'spec', 'fixtures',
+              'ial2_test_credential_no_liveness.yml'
+            ),
+          )
           submit_images
           message = strip_tags(t('errors.doc_auth.selfie_not_live_or_poor_quality_heading'))
           expect(page).to have_content(message)
@@ -274,7 +278,9 @@ RSpec.feature 'document capture step', :js do
             ),
           )
           expect(page).to have_content(detail_message << "\n" << security_message)
-          review_issues_header = strip_tags(t('errors.doc_auth.selfie_not_live_or_poor_quality_heading'))
+          review_issues_header = strip_tags(
+            t('errors.doc_auth.selfie_not_live_or_poor_quality_heading'),
+          )
           expect(page).to have_content(review_issues_header)
           expect(page).to have_current_path(idv_document_capture_path)
           click_try_again
@@ -283,19 +289,22 @@ RSpec.feature 'document capture step', :js do
           expect(page).to have_content(inline_error)
         end
 
-
         it 'try again and page show poor quality inline error message' do
           visit_idp_from_oidc_sp_with_ial2
           sign_in_and_2fa_user(user)
           complete_doc_auth_steps_before_document_capture_step
-          attach_images(Rails.root.join(
-            'spec', 'fixtures',
-            'ial2_test_credential_poor_quality.yml'
-          ))
-          attach_selfie(Rails.root.join(
-            'spec', 'fixtures',
-            'ial2_test_credential_poor_quality.yml'
-          ))
+          attach_images(
+            Rails.root.join(
+              'spec', 'fixtures',
+              'ial2_test_credential_poor_quality.yml'
+            ),
+          )
+          attach_selfie(
+            Rails.root.join(
+              'spec', 'fixtures',
+              'ial2_test_credential_poor_quality.yml'
+            ),
+          )
           submit_images
           message = strip_tags(t('errors.doc_auth.selfie_not_live_or_poor_quality_heading'))
           expect(page).to have_content(message)
@@ -307,7 +316,9 @@ RSpec.feature 'document capture step', :js do
             ),
           )
           expect(page).to have_content(detail_message << "\n" << security_message)
-          review_issues_header = strip_tags(t('errors.doc_auth.selfie_not_live_or_poor_quality_heading'))
+          review_issues_header = strip_tags(
+            t('errors.doc_auth.selfie_not_live_or_poor_quality_heading'),
+          )
           expect(page).to have_content(review_issues_header)
           expect(page).to have_current_path(idv_document_capture_path)
           click_try_again
