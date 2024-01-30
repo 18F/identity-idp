@@ -2142,6 +2142,16 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks please call emails that are initiated during GetUspsProofingResultsJob
+  def idv_in_person_usps_proofing_results_job_please_call_email_initiated(
+    **extra
+  )
+    track_event(
+      'GetUspsProofingResultsJob: Please call email initiated',
+      **extra,
+    )
+  end
+
   # Tracks incomplete enrollments checked via the USPS API
   # @param [String] enrollment_code
   # @param [String] enrollment_id

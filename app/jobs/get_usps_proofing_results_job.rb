@@ -398,7 +398,7 @@ class GetUspsProofingResultsJob < ApplicationJob
       **enrollment_analytics_attributes(enrollment, complete: true),
       **response_analytics_attributes(response),
       passed: true,
-      reason: 'Successful status update',
+      reason: 'Passed with fraud pending',
       job_name: self.class.name,
     )
     enrollment.update(
@@ -409,11 +409,11 @@ class GetUspsProofingResultsJob < ApplicationJob
 
     # send email
     send_please_call_email(enrollment.user, enrollment)
-    analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_email_initiated(
-      **email_analytics_attributes(enrollment),
-      email_type: 'Please call',
-      job_name: self.class.name,
-    )
+    analytics(user: enrollment.user).
+      idv_in_person_usps_proofing_results_job_please_call_email_initiated(
+        **email_analytics_attributes(enrollment),
+        job_name: self.class.name,
+      )
   end
 
   def handle_unsupported_secondary_id(enrollment, response)
