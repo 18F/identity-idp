@@ -29,7 +29,6 @@ RSpec.describe Reporting::AccountReuseReport do
     let(:sp_k) { 'k' }
     let(:sp_l) { 'l' }
 
-
     before do
       create(
         :service_provider,
@@ -189,14 +188,16 @@ RSpec.describe Reporting::AccountReuseReport do
           created_timestamp: out_of_query,
           sp: [sp_a],
           sp_timestamp: [out_of_query] },
-          { id: 15, # 12 apps, 2 agencies
+        { id: 15, # 12 apps, 2 agencies
           created_timestamp: in_query,
           sp: [sp_a, sp_b, sp_c, sp_d, sp_e, sp_f, sp_g, sp_h, sp_i, sp_j, sp_k],
-          sp_timestamp: [in_query, in_query, in_query, in_query, in_query, in_query, in_query, in_query, in_query, in_query, in_query]},
-          { id: 16, # 12 apps, 2 agencies
+          sp_timestamp: [in_query, in_query, in_query, in_query, in_query, in_query, in_query,
+                         in_query, in_query, in_query, in_query] },
+        { id: 16, # 12 apps, 2 agencies
           created_timestamp: in_query,
           sp: [sp_a, sp_b, sp_c, sp_d, sp_e, sp_f, sp_g, sp_h, sp_i, sp_j, sp_k, sp_l],
-          sp_timestamp: [in_query, in_query, in_query, in_query, in_query, in_query, in_query, in_query, in_query, in_query, in_query, in_query]},
+          sp_timestamp: [in_query, in_query, in_query, in_query, in_query, in_query, in_query,
+                         in_query, in_query, in_query, in_query, in_query] },
       ]
 
       users_to_query.each do |user|

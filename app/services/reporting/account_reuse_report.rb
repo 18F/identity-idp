@@ -179,16 +179,15 @@ module Reporting
           end
         end
 
-        # Logic for summarizing rows can go here
-        puts("DETAILS: #{results}")
+        # rubocop:disable Metrics/BlockLength
         results.each_with_index do |details_section, section_index|
           details_section.each_with_index do |detail_row, row_index|
             if detail_row.num_entities >= 10
               captured_row = detail_row
-              previous_row = details_section[row_index-1]
- 
+              previous_row = details_section[row_index - 1]
+
               if !previous_row.num_entities.is_a?(String) && previous_row.num_entities < 10
-                new_num_entities = "#{captured_row.num_entities}"
+                new_num_entities = captured_row.num_entities.to_s
                 running_all_users = captured_row.num_all_users
                 running_all_percent = captured_row.all_percent
                 running_idv_users = captured_row.num_idv_users
@@ -200,7 +199,7 @@ module Reporting
                 running_all_percent = previous_row.all_percent + captured_row.all_percent
                 running_idv_users = previous_row.num_idv_users + captured_row.num_idv_users
                 running_idv_percent = previous_row.idv_percent + captured_row.idv_percent
-                summary_row_index = row_index-1
+                summary_row_index = row_index - 1
 
                 details_section.delete_at(row_index)
               end
@@ -218,8 +217,8 @@ module Reporting
 
             end
           end
-
         end
+        # rubocop:enable Metrics/BlockLength
 
         self.details_section = results
 
