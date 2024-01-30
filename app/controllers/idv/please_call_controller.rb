@@ -13,6 +13,7 @@ module Idv
       analytics.idv_please_call_visited
       pending_at = current_user.fraud_review_pending_profile.fraud_review_pending_at
       @call_by_date = pending_at + FRAUD_REVIEW_CONTACT_WITHIN_DAYS
+      @in_person = in_person_proofing?
     end
 
     private
@@ -21,6 +22,10 @@ module Idv
       if !fraud_review_pending?
         redirect_to account_url
       end
+    end
+
+    def in_person_proofing?
+      IdentityConfig.store.in_person_proofing_enabled && idv_session.flow_path == 'standard'
     end
   end
 end
