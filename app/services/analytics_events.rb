@@ -2697,14 +2697,14 @@ module AnalyticsEvents
 
   # @param ['warning','jobfail','failure'] type
   # @param [Time] limiter_expires_at when the rate limit expires
-  # @param [Integer] remaining_attempts number of attempts remaining
+  # @param [Integer] remaining_submit_attempts number of submit attempts remaining
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # When a user gets an error during the phone finder flow of IDV
   def idv_phone_error_visited(
     type:,
     proofing_components: nil,
     limiter_expires_at: nil,
-    remaining_attempts: nil,
+    remaining_submit_attempts: nil,
     **extra
   )
     track_event(
@@ -2713,7 +2713,7 @@ module AnalyticsEvents
         type: type,
         proofing_components: proofing_components,
         limiter_expires_at: limiter_expires_at,
-        remaining_attempts: remaining_attempts,
+        remaining_submit_attempts: remaining_submit_attempts,
         **extra,
       }.compact,
     )
