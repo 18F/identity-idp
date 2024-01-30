@@ -11,6 +11,11 @@ module FraudReviewConcern
     handle_fraud_rejection
   end
 
+  def in_person_handle_pending_fraud_review
+    return unless IdentityConfig.store.in_person_proofing_enforce_tmx
+    handle_pending_fraud_review
+  end
+
   def handle_pending_fraud_review
     redirect_to_fraud_review if fraud_review_pending?
   end
