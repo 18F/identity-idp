@@ -38,7 +38,7 @@ module Idv
          IdentityConfig.store.in_person_proofing_enabled
         session.skip_doc_auth == false
       else
-        !session.skip_doc_auth
+        session.skip_doc_auth.nil? || session.skip_doc_auth == false
       end
     end
 
