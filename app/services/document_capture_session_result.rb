@@ -28,13 +28,8 @@ DocumentCaptureSessionResult = RedactedStruct.new(
     self[:selfie_status].to_sym
   end
 
-  # To-do: remove before merge
-  def success
-    raise NotImplementedError
-  end
-
   def success_status
-    (doc_auth_success || attention_with_barcode) && selfie_status != :fail
+    doc_auth_success && selfie_status != :fail
   end
 
   alias_method :success?, :success_status
