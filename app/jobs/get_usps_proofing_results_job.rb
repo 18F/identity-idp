@@ -124,10 +124,6 @@ class GetUspsProofingResultsJob < ApplicationJob
            SUPPORTED_SECONDARY_ID_TYPES.exclude?(response['secondaryIdType'])
   end
 
-  def enrollment_with_fraud_pending_reason?(enrollment)
-    IdentityConfig.store.in_person_proofing_enforce_tmx && enrollment.profile.fraud_pending_reason.present?
-  end
-
   def analytics(user: AnonymousUser.new)
     Analytics.new(user: user, request: nil, session: {}, sp: nil)
   end
@@ -464,7 +460,7 @@ class GetUspsProofingResultsJob < ApplicationJob
 
     case response['status']
     when IPP_STATUS_PASSED
-      if enrollment_with_fraud_pending_reason?(enrollment)
+      if fraud_result_pending?(enrollment)
         handle_call_in_needed(enrollment, response)
       elsif passed_with_unsupported_secondary_id_type?(response)
         handle_unsupported_secondary_id(enrollment, response)
