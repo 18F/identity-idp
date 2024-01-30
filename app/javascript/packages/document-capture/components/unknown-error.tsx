@@ -26,7 +26,10 @@ function formatIdTypeMsg({ altFailedDocTypeMsg, acceptedIdUrl }) {
   });
 }
 
-function getError({ unknownFieldErrors }) {
+type GetErrorArguments = {
+  unknownFieldErrors: FormStepError<{ front: string; back: string }>[];
+};
+function getError({ unknownFieldErrors }: GetErrorArguments) {
   const errs =
     !!unknownFieldErrors &&
     // Errors where the field than is not 'front' or 'back'. In practice this means the field
