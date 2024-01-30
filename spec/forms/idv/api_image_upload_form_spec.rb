@@ -282,8 +282,10 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
           extra: { remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1 },
         )
       end
+      let(:doc_auth_client) { double(DocAuth::LexisNexis::LexisNexisClient) }
       before do
-        allow(subject).to receive(:post_images_to_client).and_return(failed_response)
+        subject.instance_variable_set(:@doc_auth_client, doc_auth_client)
+        allow(doc_auth_client).to receive(:post_images) { failed_response }
       end
 
       it 'is not successful' do
@@ -293,6 +295,7 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
         expect(response.success?).to eq(false)
         expect(response.attention_with_barcode?).to eq(false)
         expect(response.pii_from_doc).to eq({})
+        expect(response.doc_auth_success?).to eq(false)
       end
 
       it 'includes remaining_attempts' do
@@ -313,6 +316,24 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
         response = form.submit
         expect(response.errors).to have_key(:front)
         expect(response.errors).to have_value([I18n.t('doc_auth.errors.doc.resubmit_failed_image')])
+      end
+
+      it 'logs analytics event' do
+        form.submit
+        expect(fake_analytics).to have_logged_event(
+          'IdV: doc auth image upload vendor submitted',
+          hash_including(
+            doc_auth_result: nil,
+            errors: { front: 'glare' },
+            success: false,
+            doc_type_supported: boolean,
+            doc_auth_success: boolean,
+            liveness_checking_required: boolean,
+            selfie_status: :not_processed,
+            selfie_live: boolean,
+            selfie_quality_good: boolean,
+          ),
+        )
       end
     end
 

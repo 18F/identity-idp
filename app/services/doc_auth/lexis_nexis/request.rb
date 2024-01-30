@@ -54,7 +54,11 @@ module DocAuth
           success: false,
           errors: { network: true },
           exception: exception,
-          extra: { vendor: 'TrueID' },
+          extra: {
+            vendor: 'TrueID',
+            selfie_live: false,
+            selfie_quality_good: false,
+          },
         )
       end
 
