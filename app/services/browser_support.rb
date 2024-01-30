@@ -48,18 +48,18 @@ class BrowserSupport
     end
 
     def matchers
-      @matchers ||= browser_support_config.flat_map do |config_entry|
+      @matchers ||= browser_support_config.each_with_object({}) do |config_entry, result|
         key, version = config_entry.split(' ', 2)
         key = key.to_sym
         browser_matcher = BROWSERSLIST_TO_BROWSER_MAP[key]
-        next [] if !browser_matcher
+        next if !browser_matcher
 
         low_version, _high_version = version.split('-', 2)
         low_version = nil if !numeric?(low_version)
         version_test = low_version && ">= #{low_version}"
         matcher = proc { |browser| browser_matcher.call(browser, version_test) }
-        [[key, matcher]]
-      end.to_h
+        result[key] = matcher
+      end
     end
 
     def numeric?(value)
