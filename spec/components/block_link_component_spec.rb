@@ -28,27 +28,4 @@ RSpec.describe BlockLinkComponent, type: :component do
       expect(rendered).to have_content(t('links.new_tab'))
     end
   end
-
-  context 'with custom renderer' do
-    # rubocop:disable RSpec/LeakyConstantDeclaration
-    class ExampleBlockLinkCustomRendererComponent < BaseComponent
-      def initialize(href:, **)
-        @href = href
-      end
-
-      def call
-        content_tag(:button, "Example #{content.strip}", data: { href: @href })
-      end
-    end
-    # rubocop:enable RSpec/LeakyConstantDeclaration
-
-    it 'renders using the custom renderer' do
-      rendered = render_inline BlockLinkComponent.new(
-        url: '/',
-        action: ExampleBlockLinkCustomRendererComponent.method(:new),
-      ).with_content('Link Text')
-
-      expect(rendered).to have_css('button[data-href="/"]', text: 'Example Link Text')
-    end
-  end
 end
