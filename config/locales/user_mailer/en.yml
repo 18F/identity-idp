@@ -166,7 +166,7 @@ en:
         intro_html: Call our contact center by <strong>%{date}</strong> to continue
           verifying your identity.
       header: Please give us a call
-      subject: Call Login.gov to continue with your identity verification
+      subject: Call %{app_name} to continue with your identity verification
     in_person_ready_to_verify:
       subject: You’re ready to verify your identity with %{app_name} in person
     in_person_ready_to_verify_reminder:

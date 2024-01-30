@@ -373,7 +373,7 @@ class UserMailer < ActionMailer::Base
       @hide_title = true
       mail(
         to: email_address.email,
-        subject: t('user_mailer.in_person_please_call.subject'),
+        subject: t('user_mailer.in_person_please_call.subject', app_name: APP_NAME),
       )
     end
   end

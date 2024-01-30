@@ -180,7 +180,7 @@ es:
         intro_html: Llame a nuestro centro de atención antes del
           <strong>%{date}</strong> para seguir verificando su identidad.
       header: Llámenos
-      subject: Llame a Login.gov para proseguir con la verificación de su identidad
+      subject: Llame a %{app_name} para proseguir con la verificación de su identidad
     in_person_ready_to_verify:
       subject: Está listo para verificar su identidad con %{app_name} en persona
     in_person_ready_to_verify_reminder:
