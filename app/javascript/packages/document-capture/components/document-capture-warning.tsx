@@ -20,7 +20,12 @@ interface DocumentCaptureWarningProps {
 
 const DISPLAY_ATTEMPTS = 3;
 
-function getHeading({ isFailedDocType, isFailedSelfieLivenessOrQuality, t }) {
+type GetHeadingArguments = {
+  isFailedDocType: boolean;
+  isFailedSelfieLivenessOrQuality: boolean;
+  t: { (key: string): string };
+};
+function getHeading({ isFailedDocType, isFailedSelfieLivenessOrQuality, t }: GetHeadingArguments) {
   if (isFailedDocType) {
     return t('errors.doc_auth.doc_type_not_supported_heading');
   }
