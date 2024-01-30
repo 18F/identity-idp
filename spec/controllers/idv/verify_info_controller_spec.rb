@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::VerifyInfoController do
+RSpec.describe Idv::VerifyInfoController, allowed_extra_analytics: [:*] do
   include FlowPolicyHelper
 
   let(:user) { create(:user) }

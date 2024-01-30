@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'Account connected applications' do
+RSpec.describe 'Account connected applications', allowed_extra_analytics: [:*] do
   let(:user) { create(:user, :fully_registered, created_at: Time.zone.now - 100.days) }
   let(:identity_with_link) do
     create(

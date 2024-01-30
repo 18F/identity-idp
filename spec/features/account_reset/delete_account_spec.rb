@@ -1,6 +1,7 @@
 require 'rails_helper'
 
-RSpec.describe 'Account Reset Request: Delete Account', email: true do
+RSpec.describe 'Account Reset Request: Delete Account', email: true,
+                                                        allowed_extra_analytics: [:*] do
   include PushNotificationsHelper
   include OidcAuthHelper
   include IrsAttemptsApiTrackingHelper

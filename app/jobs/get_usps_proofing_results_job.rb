@@ -99,7 +99,6 @@ class GetUspsProofingResultsJob < ApplicationJob
 
     status_check_attempted_at = Time.zone.now
     enrollment_outcomes[:enrollments_checked] += 1
-    response = nil
 
     response = proofer.request_proofing_results(
       enrollment.unique_id, enrollment.enrollment_code
@@ -309,6 +308,15 @@ class GetUspsProofingResultsJob < ApplicationJob
     end
   end
 
+  def handle_fraud_review_pending(enrollment)
+    enrollment.profile.deactivate_for_fraud_review
+
+    analytics(user: enrollment.user).
+      idv_in_person_usps_proofing_results_job_user_sent_to_fraud_review(
+        **enrollment_analytics_attributes(enrollment, complete: true),
+      )
+  end
+
   def handle_unexpected_response(enrollment, response_message, reason:, cancel: true)
     enrollment.cancelled! if cancel
 
@@ -367,21 +375,24 @@ class GetUspsProofingResultsJob < ApplicationJob
       reason: 'Successful status update',
       job_name: self.class.name,
     )
-    enrollment.profile.activate_after_passing_in_person
     enrollment.update(
       status: :passed,
       proofed_at: proofed_at,
       status_check_completed_at: Time.zone.now,
     )
 
-    # send SMS and email
-    send_enrollment_status_sms_notification(enrollment: enrollment)
-    send_verified_email(enrollment.user, enrollment)
-    analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_email_initiated(
-      **email_analytics_attributes(enrollment),
-      email_type: 'Success',
-      job_name: self.class.name,
-    )
+    unless fraud_result_pending?(enrollment)
+      enrollment.profile&.activate_after_passing_in_person
+
+      # send SMS and email
+      send_enrollment_status_sms_notification(enrollment: enrollment)
+      send_verified_email(enrollment.user, enrollment)
+      analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_email_initiated(
+        **email_analytics_attributes(enrollment),
+        email_type: 'Success',
+        job_name: self.class.name,
+      )
+    end
   end
 
   def handle_call_in_needed(enrollment, response)
@@ -434,10 +445,21 @@ class GetUspsProofingResultsJob < ApplicationJob
     )
   end
 
+  def fraud_result_pending?(enrollment)
+    IdentityConfig.store.in_person_proofing_enforce_tmx &&
+      enrollment.profile&.fraud_pending_reason.present?
+  end
+
   def process_enrollment_response(enrollment, response)
     unless response.is_a?(Hash)
       handle_response_is_not_a_hash(enrollment)
       return
+    end
+
+    # We want to deactivate them regardless of status, but then allow the
+    # case statement below to pick up the correct flow.
+    if fraud_result_pending?(enrollment)
+      handle_fraud_review_pending(enrollment)
     end
 
     case response['status']

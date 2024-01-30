@@ -3,6 +3,7 @@ module DocAuth
     module Responses
       class GetResultsResponse < DocAuth::Response
         include ClassificationConcern
+        include SelfieConcern
         attr_reader :config
 
         BARCODE_COULD_NOT_BE_READ_ERROR = '2D Barcode Read'.freeze
@@ -72,7 +73,7 @@ module DocAuth
             classification_info: classification_info,
             address_line2_present: !pii_from_doc[:address2].blank?,
             doc_auth_success: doc_auth_success?,
-            selfie_success: nil,
+            selfie_status: :not_processed,
           }
         end
 
@@ -142,6 +143,11 @@ module DocAuth
 
         def passed_result?
           result_code == DocAuth::Acuant::ResultCodes::PASSED
+        end
+
+        # This is not implemented for the acuant call since that is currently not in use
+        def portrait_match_results
+          return {}
         end
 
         def get_image_side_name(side_number)

@@ -134,7 +134,9 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
           Back: a_hash_including(:ClassName, :CountryCode, :IssuerType),
         },
         doc_auth_success: true,
-        selfie_success: nil,
+        selfie_status: :not_processed,
+        selfie_live: true,
+        selfie_quality_good: true,
       )
       passed_alerts = response_hash.dig(:processed_alerts, :passed)
       passed_alerts.each do |alert|
@@ -319,7 +321,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       output = response.to_h
       expect(output[:success]).to eq(false)
       expect(response.doc_auth_success?).to eq(false)
-      expect(response.selfie_success).to eq(false)
+      expect(response.selfie_status).to eq(:fail)
     end
 
     it 'produces expected hash output' do
@@ -375,7 +377,9 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
           Back: a_hash_including(:ClassName, :CountryCode, :IssuerType),
         },
         doc_auth_success: false,
-        selfie_success: false,
+        selfie_status: :fail,
+        selfie_live: true,
+        selfie_quality_good: false,
       )
     end
     it 'produces appropriate errors with document tampering' do
@@ -650,31 +654,31 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     end
   end
 
-  describe '#selfie_success' do
+  describe '#selfie_status' do
     context 'when selfie check is disabled' do
       let(:response) { described_class.new(success_response, config, false) }
-      it 'returns nil' do
-        expect(response.selfie_success).to eq(nil)
+      it 'returns :not_processed' do
+        expect(response.selfie_status).to eq(:not_processed)
       end
     end
 
     context 'when selfie check is enabled' do
       context 'whe missing selfie result in response' do
         let(:response) { described_class.new(success_response, config, true) }
-        it 'returns nil when missing selfie in response' do
-          expect(response.selfie_success).to eq(nil)
+        it 'returns :not_processed when missing selfie in response' do
+          expect(response.selfie_status).to eq(:not_processed)
         end
       end
       context 'when selfie passed' do
         let(:response) { described_class.new(success_with_liveness_response, config, true) }
-        it 'returns true' do
-          expect(response.selfie_success).to eq(true)
+        it 'returns :success' do
+          expect(response.selfie_status).to eq(:success)
         end
       end
       context 'when selfie failed' do
         let(:response) { described_class.new(failure_response_with_liveness, config, true) }
-        it 'returns false' do
-          expect(response.selfie_success).to eq(false)
+        it 'returns :fail' do
+          expect(response.selfie_status).to eq(:fail)
         end
       end
     end

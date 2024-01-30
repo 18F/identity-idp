@@ -291,7 +291,7 @@ en:
         your letter will no longer work and you’ll have to verify your identity
         again.
       gpo_letter_header: Your letter is on the way
-      header: To finish resetting your password, please click the link below  or copy
+      header: To finish resetting your password, please click the link below or copy
         and paste the entire link into your browser.
       link_text: Reset your password
       subject: Reset your password
@@ -300,7 +300,7 @@ en:
         visit the %{app_name_html} %{help_link_html} or %{contact_link_html}.
       intro_html: This email address is already associated with a %{app_name_html}
         account, so we can’t use it to create a new account. To sign in with
-        your existing account, follow the link below.  If you are not trying to
+        your existing account, follow the link below. If you are not trying to
         sign in with this email address, you can ignore this message.
       link_text: Go to %{app_name}
       reset_password_html: If you can’t remember your password, go to %{app_name_html} to reset it.

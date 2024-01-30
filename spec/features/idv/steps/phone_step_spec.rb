@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'idv phone step', :js do
+RSpec.feature 'idv phone step', :js, allowed_extra_analytics: [:*] do
   include IdvStepHelper
   include IdvHelper
 

@@ -282,7 +282,7 @@ es:
     phone_added:
       disavowal_link: restablezca su contraseña
       help_html: Si no realizó este cambio, inicie sesión en su perfil y administre
-        sus números de teléfono.  También le recomendamos que
+        sus números de teléfono. También le recomendamos que
         %{disavowal_link_html}.
       intro: Se agregó un nuevo número de teléfono a su perfil de %{app_name}.
       subject: Nuevo número de teléfono añadido

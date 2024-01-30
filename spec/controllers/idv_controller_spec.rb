@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe IdvController do
+RSpec.describe IdvController, allowed_extra_analytics: [:*] do
   before do
     stub_sign_in
   end

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Users::EmailConfirmationsController do
+RSpec.describe Users::EmailConfirmationsController, allowed_extra_analytics: [:*] do
   describe '#create' do
     describe 'Valid email confirmation tokens' do
       it 'tracks a valid email confirmation token event' do
