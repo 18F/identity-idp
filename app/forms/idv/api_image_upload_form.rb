@@ -373,7 +373,9 @@ module Idv
     def acuant_sdk_capture?
       image_metadata.dig(:front, :source) == Idp::Constants::Vendors::ACUANT &&
         image_metadata.dig(:back, :source) == Idp::Constants::Vendors::ACUANT &&
-        image_metadata.dig(:selfie, :source) == Idp::Constants::Vendors::ACUANT
+        (liveness_checking_required ?
+          image_metadata.dig(:selfie, :source) == Idp::Constants::Vendors::ACUANT :
+           true)
     end
 
     def image_metadata
