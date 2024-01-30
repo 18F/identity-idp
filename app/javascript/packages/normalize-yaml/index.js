@@ -1,8 +1,8 @@
 import YAML from 'yaml';
 import prettier from 'prettier';
-import { getVisitors } from './visitors/index.js';
+import { getUnifiedVisitor } from './visitors/index.js';
 
-/** @typedef {'smartPunctuation'|'sortKeys'} Formatter */
+/** @typedef {'smartPunctuation'|'sortKeys'|'collapseSpacing'} Formatter */
 
 /**
  * @typedef NormalizeOptions
@@ -21,7 +21,7 @@ import { getVisitors } from './visitors/index.js';
  */
 function normalize(content, { prettierConfig, exclude } = {}) {
   const document = YAML.parseDocument(content);
-  YAML.visit(document, getVisitors({ exclude }));
+  YAML.visit(document, getUnifiedVisitor({ exclude }));
   return prettier.format(document.toString(), { ...prettierConfig, parser: 'yaml' });
 }
 

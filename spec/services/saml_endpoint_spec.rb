@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe SamlEndpoint do
-  let(:year) { '2023' }
+  let(:year) { '2024' }
 
   subject { described_class.new(year) }
 
@@ -9,7 +9,7 @@ RSpec.describe SamlEndpoint do
     it 'should list the suffixes that are configured' do
       result = described_class.suffixes
 
-      expect(result).to eq(%w[2023 2022])
+      expect(result).to eq(%w[2024 2023])
     end
   end
 
@@ -19,13 +19,13 @@ RSpec.describe SamlEndpoint do
 
       expect(result).to eq(
         [
-          { suffix: '2023', secret_key_passphrase: 'trust-but-verify' },
+          { suffix: '2024', secret_key_passphrase: 'trust-but-verify' },
           {
             # rubocop:disable Layout/LineLength
             comment: 'this extra year is needed to demonstrate how handling multiple live years works in spec/requests/saml_requests_spec.rb',
             # rubocop:enable Layout/LineLength
             secret_key_passphrase: 'trust-but-verify',
-            suffix: '2022',
+            suffix: '2023',
           },
         ],
       )
@@ -38,7 +38,7 @@ RSpec.describe SamlEndpoint do
         subject.secret_key.to_pem,
       ).to eq(
         OpenSSL::PKey::RSA.new(
-          AppArtifacts.store.saml_2023_key,
+          AppArtifacts.store.saml_2024_key,
           'trust-but-verify',
         ).to_pem,
       )
@@ -68,7 +68,7 @@ RSpec.describe SamlEndpoint do
       expect(
         subject.x509_certificate,
       ).to eq(
-        AppArtifacts.store.saml_2023_cert,
+        AppArtifacts.store.saml_2024_cert,
       )
     end
   end
@@ -77,7 +77,7 @@ RSpec.describe SamlEndpoint do
     it 'returns the saml metadata with the suffix added to the urls' do
       result = subject.saml_metadata
 
-      expect(result.configurator.single_service_post_location).to match(%r{api/saml/auth2023\Z})
+      expect(result.configurator.single_service_post_location).to match(%r{api/saml/auth2024\Z})
     end
 
     it 'does not include the SingLogoutService endpoints when configured' do
@@ -95,10 +95,10 @@ RSpec.describe SamlEndpoint do
       result = subject.saml_metadata
 
       expect(result.configurator.single_logout_service_post_location).to match(
-        %r{api/saml/logout2023\Z},
+        %r{api/saml/logout2024\Z},
       )
       expect(result.configurator.remote_logout_service_post_location).to match(
-        %r{api/saml/remotelogout2023\Z},
+        %r{api/saml/remotelogout2024\Z},
       )
     end
   end

@@ -2,6 +2,7 @@ module Idv
   class ApiImageUploadForm
     include ActiveModel::Model
     include ActionView::Helpers::TranslationHelper
+    include ApplicationHelper
 
     validates_presence_of :front
     validates_presence_of :back
@@ -154,6 +155,7 @@ module Idv
 
       @extra_attributes[:front_image_fingerprint] = front_image_fingerprint
       @extra_attributes[:back_image_fingerprint] = back_image_fingerprint
+      @extra_attributes[:liveness_checking_required] = liveness_checking_required
       @extra_attributes
     end
 
@@ -458,14 +460,14 @@ module Idv
             front_image_fingerprint: failed_front_fingerprint,
             back_image_fingerprint: failed_back_fingerprint,
             doc_auth_success: client_response.doc_auth_success?,
-            selfie_success: client_response.selfie_success,
+            selfie_status: selfie_status_from_response(client_response),
           )
       elsif doc_pii_response && !doc_pii_response.success?
         document_capture_session.store_failed_auth_data(
           front_image_fingerprint: extra_attributes[:front_image_fingerprint],
           back_image_fingerprint: extra_attributes[:back_image_fingerprint],
           doc_auth_success: client_response.doc_auth_success?,
-          selfie_success: client_response.selfie_success,
+          selfie_status: selfie_status_from_response(client_response),
         )
       end
       # retrieve updated data from session

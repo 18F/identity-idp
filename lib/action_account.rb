@@ -17,6 +17,7 @@ class ActionAccount
       stderr:,
       subtask_class: subtask(argv.shift),
       banner: banner,
+      reason_arg: true,
     )
   end
 
@@ -58,8 +59,8 @@ class ActionAccount
   end
 
   module LogBase
-    def log_message(uuid:, log:, table:, messages:)
-      table << [uuid, log]
+    def log_message(uuid:, log:, reason:, table:, messages:)
+      table << [uuid, log, reason]
       messages << '`' + uuid + '`: ' + log
       [table, messages]
     end
@@ -88,7 +89,7 @@ class ActionAccount
       table = []
       messages = []
       uuids = args
-      table << %w[uuid status]
+      table << %w[uuid status reason]
 
       users = User.where(uuid: uuids).order(:uuid)
       users.each do |user|
@@ -124,6 +125,7 @@ class ActionAccount
           table, messages = log_message(
             uuid: user.uuid,
             log: text,
+            reason: config.reason,
             table:,
             messages:,
           )
@@ -135,6 +137,7 @@ class ActionAccount
           table, messages = log_message(
             uuid: missing_uuid,
             log: log_text[:missing_uuid],
+            reason: config.reason,
             table:,
             messages:,
           )
@@ -164,7 +167,7 @@ class ActionAccount
       users = User.where(uuid: uuids).order(:uuid)
 
       table = []
-      table << %w[uuid status]
+      table << %w[uuid status reason]
 
       messages = []
 
@@ -191,6 +194,7 @@ class ActionAccount
           table, messages = log_message(
             uuid: user.uuid,
             log: text,
+            reason: config.reason,
             table:,
             messages:,
           )
@@ -215,6 +219,7 @@ class ActionAccount
           table, messages = log_message(
             uuid: missing_uuid,
             log: log_text[:missing_uuid],
+            reason: config.reason,
             table:,
             messages:,
           )
@@ -255,7 +260,7 @@ class ActionAccount
       users = User.where(uuid: uuids).order(:uuid)
 
       table = []
-      table << %w[uuid status]
+      table << %w[uuid status reason]
 
       messages = []
       users.each do |user|
@@ -289,6 +294,7 @@ class ActionAccount
           table, messages = log_message(
             uuid: user.uuid,
             log: text,
+            reason: config.reason,
             table:,
             messages:,
           )
@@ -313,6 +319,7 @@ class ActionAccount
           table, messages = log_message(
             uuid: missing_uuid,
             log: log_text[:missing_uuid],
+            reason: config.reason,
             table:,
             messages:,
           )

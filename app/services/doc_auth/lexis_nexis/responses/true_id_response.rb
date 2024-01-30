@@ -5,6 +5,7 @@ module DocAuth
     module Responses
       class TrueIdResponse < DocAuth::Response
         include ClassificationConcern
+        include SelfieConcern
         PII_EXCLUDES = %w[
           Age
           DocSize
@@ -149,14 +150,18 @@ module DocAuth
             doc_auth_result_passed?
         end
 
-        # @return [Boolean, nil]
-        # When selfie result is missing, return nil
+        # @return [:success, :fail, :not_processed]
+        # When selfie result is missing, return :not_processed
         # Otherwise:
-        #   return true if selfie check result == 'Pass'
-        #   return false
-        def selfie_success
-          return selfie_result if selfie_result.nil?
-          selfie_result == 'Pass'
+        #   return :success if selfie check result == 'Pass'
+        #   return :fail
+        def selfie_status
+          return :not_processed if selfie_result.nil?
+          selfie_result == 'Pass' ? :success : :fail
+        end
+
+        def selfie_passed?
+          selfie_status == :success
         end
 
         private
@@ -226,7 +231,7 @@ module DocAuth
             processed_alerts: alerts,
             alert_failure_count: alerts[:failed]&.count.to_i,
             log_alert_results: log_alert_formatter.log_alerts(alerts),
-            portrait_match_results: true_id_product&.dig(:PORTRAIT_MATCH_RESULT),
+            portrait_match_results: portrait_match_results,
             image_metrics: parse_image_metrics,
             address_line2_present: !pii_from_doc[:address2].blank?,
             classification_info: classification_info,
@@ -247,7 +252,7 @@ module DocAuth
             true_id_product.present? &&
             product_status_passed? &&
             doc_auth_result_passed? &&
-            (@liveness_checking_enabled ? selfie_success : true)
+            (@liveness_checking_enabled ? selfie_passed? : true)
         end
 
         def selfie_result
@@ -290,6 +295,10 @@ module DocAuth
               CountryCode: issuing_country,
             },
           }
+        end
+
+        def portrait_match_results
+          true_id_product&.dig(:PORTRAIT_MATCH_RESULT)
         end
 
         def doc_auth_result

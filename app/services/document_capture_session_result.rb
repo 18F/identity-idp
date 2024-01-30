@@ -10,14 +10,18 @@ DocumentCaptureSessionResult = RedactedStruct.new(
   :failed_back_image_fingerprints,
   :captured_at,
   :selfie_check_performed,
-  :doc_auth_success, :selfie_success,
+  :doc_auth_success, :selfie_status, :selfie_success,
   keyword_init: true,
   allowed_members: [:id, :success, :attention_with_barcode, :failed_front_image_fingerprints,
                     :failed_back_image_fingerprints, :captured_at, :selfie_check_performed,
-                    :doc_auth_success, :selfie_success]
+                    :doc_auth_success, :selfie_status, :selfie_success]
 ) do
   def self.redis_key_prefix
     'dcs:result'
+  end
+
+  def selfie_status
+    self[:selfie_status].to_sym
   end
 
   alias_method :success?, :success

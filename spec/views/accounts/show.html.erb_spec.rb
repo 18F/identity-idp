@@ -120,6 +120,11 @@ RSpec.describe 'accounts/show.html.erb' do
 
     context 'user has a piv/cac' do
       let(:user) { create(:user, :fully_registered, :with_piv_or_cac) }
+
+      before do
+        allow(view).to receive(:user_session).and_return({})
+      end
+
       it 'renders the piv/cac section' do
         render
 
