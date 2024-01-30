@@ -23,7 +23,7 @@ class BrowserSupport
 
       cache.getset(user_agent) do
         browser = BrowserCache.parse(user_agent)
-        matchers(browserslist_to_browser_map(browser)).any? { |matcher| matcher.call(browser) }
+        matchers_for_browser(browser).any? { |_key, matcher| matcher.call(browser) }
       end
     end
 
@@ -37,26 +37,29 @@ class BrowserSupport
 
     attr_reader :cache
 
-    def browserslist_to_browser_map(browser)
+    def matchers_for_browser(browser)
       if browser.ios?
-        BROWSERSLIST_TO_BROWSER_MAP.slice(:ios_saf)
+        matchers.slice(:ios_saf)
       elsif browser.platform.android_webview?
-        BROWSERSLIST_TO_BROWSER_MAP.slice(:android)
+        matchers.slice(:android)
       else
-        BROWSERSLIST_TO_BROWSER_MAP
+        matchers
       end
     end
 
-    def matchers(mapping)
+    def matchers
       @matchers ||= browser_support_config.flat_map do |config_entry|
         key, version = config_entry.split(' ', 2)
-        browser_matcher = mapping[key.to_sym]
+        key = key.to_sym
+        browser_matcher = BROWSERSLIST_TO_BROWSER_MAP[key]
         next [] if !browser_matcher
 
         low_version, _high_version = version.split('-', 2)
         low_version = nil if !numeric?(low_version)
-        proc { |browser| browser_matcher.call(browser, low_version && ">= #{low_version}") }
-      end
+        version_test = low_version && ">= #{low_version}"
+        matcher = proc { |browser| browser_matcher.call(browser, version_test) }
+        [[key, matcher]]
+      end.to_h
     end
 
     def numeric?(value)
