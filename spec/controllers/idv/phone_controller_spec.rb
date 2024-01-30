@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::PhoneController do
+RSpec.describe Idv::PhoneController, allowed_extra_analytics: [:*] do
   include FlowPolicyHelper
 
   let(:max_attempts) { RateLimiter.max_attempts(:proof_address) }

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe SignUp::CompletionsController do
+RSpec.describe SignUp::CompletionsController, allowed_extra_analytics: [:*] do
   let(:temporary_email) { 'name@temporary.com' }
 
   describe '#show' do

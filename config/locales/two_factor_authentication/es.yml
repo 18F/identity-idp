@@ -12,7 +12,7 @@ es:
       link: eliminando su cuenta
       pending: Actualmente tiene una solicitud pendiente para eliminar su cuenta. Se
         necesitan 24 horas desde el momento en que realizó la solicitud para
-        completar el proceso.  Por favor, vuelva más tarde.
+        completar el proceso. Por favor, vuelva más tarde.
       successful_cancel: Gracias. Su solicitud para eliminar su cuenta de %{app_name}
         ha sido cancelada.
       text_html: Si no puede usar ninguna de estas opciones de seguridad anteriores,
@@ -147,6 +147,14 @@ es:
       troubleshooting:
         change_number: Utilice otro número de teléfono.
         code_not_received: No recibí mi código de un solo uso.
+    piv_cac:
+      change_nickname: Cambiar apodo
+      delete: Eliminar este método
+      deleted: Se ha eliminado correctamente un método PIV/CAC
+      edit_heading: Gestionar la configuración de PIV/CAC
+      manage_accessible_label: Gestionar PIV/CAC
+      nickname: Apodo
+      renamed: Se ha cambiado correctamente el nombre de su método PIV/CAC
     piv_cac_header_text: Presenta tu PIV/CAC
     please_try_again_html: Inténtelo de nuevo en <strong>%{countdown}</strong>.
     read_about_two_factor_authentication: Conozca la autenticación de dos factores

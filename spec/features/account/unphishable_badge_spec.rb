@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'Unphishable account badge' do
+RSpec.feature 'Unphishable account badge', allowed_extra_analytics: [:*] do
   before do
     sign_in_and_2fa_user(user)
   end

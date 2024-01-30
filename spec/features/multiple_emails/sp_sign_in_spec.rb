@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'signing into an SP with multiple emails enabled' do
+RSpec.feature 'signing into an SP with multiple emails enabled', allowed_extra_analytics: [:*] do
   include SamlAuthHelper
   include OidcAuthHelper
 

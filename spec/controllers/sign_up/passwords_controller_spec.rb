@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe SignUp::PasswordsController do
+RSpec.describe SignUp::PasswordsController, allowed_extra_analytics: [:*] do
   let(:token) { 'new token' }
 
   describe '#create' do

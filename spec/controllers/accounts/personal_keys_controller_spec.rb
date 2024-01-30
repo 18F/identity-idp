@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Accounts::PersonalKeysController do
+RSpec.describe Accounts::PersonalKeysController, allowed_extra_analytics: [:*] do
   describe 'before_actions' do
     it 'require recent reauthn' do
       expect(subject).to have_actions(

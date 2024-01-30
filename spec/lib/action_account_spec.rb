@@ -10,7 +10,7 @@ RSpec.describe ActionAccount do
   subject(:action_account) { ActionAccount.new(argv:, stdout:, stderr:) }
 
   describe 'command line run' do
-    let(:argv) { ['review-pass', user.uuid] }
+    let(:argv) { ['review-pass', user.uuid, '--reason', 'INV1234'] }
     let(:user) { create(:user) }
 
     it 'logs UUIDs and the command name to STDERR formatted for Slack', aggregate_failures: true do
@@ -60,8 +60,8 @@ RSpec.describe ActionAccount do
 
           expect(CSV.parse(stdout.string)).to eq(
             [
-              ['uuid', 'status'],
-              [user.uuid, 'Error: User does not have a pending fraud review'],
+              ['uuid', 'status', 'reason'],
+              [user.uuid, 'Error: User does not have a pending fraud review', 'INV1234'],
             ],
           )
         end
@@ -74,8 +74,8 @@ RSpec.describe ActionAccount do
 
           expect(Tableparser.parse(stdout.string)).to eq(
             [
-              ['uuid', 'status'],
-              [user.uuid, 'Error: User does not have a pending fraud review'],
+              ['uuid', 'status', 'reason'],
+              [user.uuid, 'Error: User does not have a pending fraud review', 'INV1234'],
             ],
           )
         end
@@ -91,6 +91,7 @@ RSpec.describe ActionAccount do
               {
                 'uuid' => user.uuid,
                 'status' => 'Error: User does not have a pending fraud review',
+                'reason' => 'INV1234',
               },
             ],
           )
@@ -109,6 +110,7 @@ RSpec.describe ActionAccount do
               {
                 'uuid' => 'does_not_exist@example.com',
                 'status' => 'Error: Could not find user with that UUID',
+                'reason' => nil,
               },
             ],
           )
@@ -143,20 +145,22 @@ RSpec.describe ActionAccount do
 
       let(:args) { [user.uuid, user_without_profile.uuid, 'uuid-does-not-exist'] }
       let(:include_missing) { true }
-      let(:config) { ScriptBase::Config.new(include_missing:) }
+      let(:config) { ScriptBase::Config.new(include_missing:, reason: 'INV1234') }
       subject(:result) { subtask.run(args:, config:) }
 
       it 'Reject a user that has a pending review', aggregate_failures: true do
         profile_fraud_review_pending_at = user.pending_profile.fraud_review_pending_at
 
+        # rubocop:disable Layout/LineLength
         expect(result.table).to match_array(
           [
-            ['uuid', 'status'],
-            [user.uuid, "User's profile has been deactivated due to fraud rejection."],
-            [user_without_profile.uuid, 'Error: User does not have a pending fraud review'],
-            ['uuid-does-not-exist', 'Error: Could not find user with that UUID'],
+            ['uuid', 'status', 'reason'],
+            [user.uuid, "User's profile has been deactivated due to fraud rejection.", 'INV1234'],
+            [user_without_profile.uuid, 'Error: User does not have a pending fraud review', 'INV1234'],
+            ['uuid-does-not-exist', 'Error: Could not find user with that UUID', 'INV1234'],
           ],
         )
+        # rubocop:enable Layout/LineLength
 
         expect(result.subtask).to eq('review-reject')
         expect(result.uuids).to match_array([user.uuid, user_without_profile.uuid])
@@ -201,20 +205,22 @@ RSpec.describe ActionAccount do
 
       let(:args) { [user.uuid, user_without_profile.uuid, 'uuid-does-not-exist'] }
       let(:include_missing) { true }
-      let(:config) { ScriptBase::Config.new(include_missing:) }
+      let(:config) { ScriptBase::Config.new(include_missing:, reason: 'INV1234') }
       subject(:result) { subtask.run(args:, config:) }
 
       it 'Pass a user that has a pending review', aggregate_failures: true do
         profile_fraud_review_pending_at = user.pending_profile.fraud_review_pending_at
 
+        # rubocop:disable Layout/LineLength
         expect(result.table).to match_array(
           [
-            ['uuid', 'status'],
-            [user.uuid, "User's profile has been activated and the user has been emailed."],
-            [user_without_profile.uuid, 'Error: User does not have a pending fraud review'],
-            ['uuid-does-not-exist', 'Error: Could not find user with that UUID'],
+            ['uuid', 'status', 'reason'],
+            [user.uuid, "User's profile has been activated and the user has been emailed.", 'INV1234'],
+            [user_without_profile.uuid, 'Error: User does not have a pending fraud review', 'INV1234'],
+            ['uuid-does-not-exist', 'Error: Could not find user with that UUID', 'INV1234'],
           ],
         )
+        # rubocop:enable Layout/LineLength
 
         expect(result.subtask).to eq('review-pass')
         expect(result.uuids).to match_array([user.uuid, user_without_profile.uuid])
@@ -253,17 +259,17 @@ RSpec.describe ActionAccount do
       let(:reinstated_user) { create(:user, :reinstated) }
       let(:args) { [user.uuid, suspended_user.uuid, reinstated_user.uuid, 'uuid-does-not-exist'] }
       let(:include_missing) { true }
-      let(:config) { ScriptBase::Config.new(include_missing:) }
+      let(:config) { ScriptBase::Config.new(include_missing:, reason: 'INV1234') }
       subject(:result) { subtask.run(args:, config:) }
 
       it 'suspend a user that is not suspended already', aggregate_failures: true do
         expect(result.table).to match_array(
           [
-            ['uuid', 'status'],
-            [user.uuid, 'User has been suspended'],
-            [suspended_user.uuid, 'User has already been suspended'],
-            [reinstated_user.uuid, 'User has been suspended'],
-            ['uuid-does-not-exist', 'Error: Could not find user with that UUID'],
+            ['uuid', 'status', 'reason'],
+            [user.uuid, 'User has been suspended', 'INV1234'],
+            [suspended_user.uuid, 'User has already been suspended', 'INV1234'],
+            [reinstated_user.uuid, 'User has been suspended', 'INV1234'],
+            ['uuid-does-not-exist', 'Error: Could not find user with that UUID', 'INV1234'],
           ],
         )
 
@@ -281,20 +287,22 @@ RSpec.describe ActionAccount do
       let(:suspended_user) { create(:user, :suspended) }
       let(:args) { [user.uuid, suspended_user.uuid, 'uuid-does-not-exist'] }
       let(:include_missing) { true }
-      let(:config) { ScriptBase::Config.new(include_missing:) }
+      let(:config) { ScriptBase::Config.new(include_missing:, reason: 'INV1234') }
       subject(:result) { subtask.run(args:, config:) }
 
       it 'suspends users that are not suspended already', aggregate_failures: true do
         expect { result }.to(change { ActionMailer::Base.deliveries.count }.by(1))
 
+        # rubocop:disable Layout/LineLength
         expect(result.table).to match_array(
           [
-            ['uuid', 'status'],
-            [user.uuid, 'User is not suspended'],
-            [suspended_user.uuid, 'User has been reinstated and the user has been emailed'],
-            ['uuid-does-not-exist', 'Error: Could not find user with that UUID'],
+            ['uuid', 'status', 'reason'],
+            [user.uuid, 'User is not suspended', 'INV1234'],
+            [suspended_user.uuid, 'User has been reinstated and the user has been emailed', 'INV1234'],
+            ['uuid-does-not-exist', 'Error: Could not find user with that UUID', 'INV1234'],
           ],
         )
+        # rubocop:enable Layout/LineLength
 
         expect(result.subtask).to eq('reinstate-user')
         expect(result.uuids).to match_array([user.uuid, suspended_user.uuid])
@@ -310,7 +318,7 @@ RSpec.describe ActionAccount do
       let(:suspended_user) { create(:user, :suspended) }
       let(:args) { [suspended_user.uuid, user.uuid, 'uuid-does-not-exist'] }
       let(:include_missing) { true }
-      let(:config) { ScriptBase::Config.new(include_missing:) }
+      let(:config) { ScriptBase::Config.new(include_missing:, reason: 'INV1234') }
       subject(:result) { subtask.run(args:, config:) }
 
       let(:analytics) { FakeAnalytics.new }
@@ -324,10 +332,10 @@ RSpec.describe ActionAccount do
 
         expect(result.table).to match_array(
           [
-            ['uuid', 'status'],
-            [suspended_user.uuid, 'User has been emailed'],
-            [user.uuid, 'User is not suspended'],
-            ['uuid-does-not-exist', 'Error: Could not find user with that UUID'],
+            ['uuid', 'status', 'reason'],
+            [suspended_user.uuid, 'User has been emailed', 'INV1234'],
+            [user.uuid, 'User is not suspended', 'INV1234'],
+            ['uuid-does-not-exist', 'Error: Could not find user with that UUID', 'INV1234'],
           ],
         )
 

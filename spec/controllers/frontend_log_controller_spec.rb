@@ -251,21 +251,6 @@ RSpec.describe FrontendLogController do
           expect(request.session_options[:skip]).to eql(true)
         end
       end
-
-      context 'for a named analytics method' do
-        let(:event) { 'User prompted before navigation' }
-
-        it 'logs the analytics event' do
-          expect(fake_analytics).to receive(:track_event).with(
-            'User prompted before navigation',
-            path: nil,
-          )
-          action
-
-          expect(response).to have_http_status(:ok)
-          expect(json[:success]).to eq(true)
-        end
-      end
     end
   end
 end
