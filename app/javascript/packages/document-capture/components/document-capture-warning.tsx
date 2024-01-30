@@ -2,6 +2,7 @@ import { Cancel } from '@18f/identity-verify-flow';
 import { useI18n, HtmlTextWithStrongNoWrap } from '@18f/identity-react-i18n';
 import { useContext, useEffect, useRef } from 'react';
 import { FormStepError } from '@18f/identity-form-steps';
+import type { I18n } from '@18f/identity-i18n';
 import Warning from './warning';
 import DocumentCaptureTroubleshootingOptions from './document-capture-troubleshooting-options';
 import UnknownError from './unknown-error';
@@ -23,7 +24,7 @@ const DISPLAY_ATTEMPTS = 3;
 type GetHeadingArguments = {
   isFailedDocType: boolean;
   isFailedSelfieLivenessOrQuality: boolean;
-  t: { (key: string): string };
+  t: typeof I18n.prototype.t;
 };
 function getHeading({ isFailedDocType, isFailedSelfieLivenessOrQuality, t }: GetHeadingArguments) {
   if (isFailedDocType) {
