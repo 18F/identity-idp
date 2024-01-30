@@ -1,9 +1,9 @@
 module DocAuth
   module LexisNexis
-    module ImageMetricsConcern
+    module ImageMetricsReader
       private
 
-      def read_image_metrics
+      def read_image_metrics(true_id_product)
         image_metrics = {}
         return image_metrics unless true_id_product&.dig(:ParameterDetails).present?
         true_id_product[:ParameterDetails].each do |detail|

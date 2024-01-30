@@ -1,8 +1,6 @@
 module DocAuth
   module LexisNexis
-    module DocPiiConcern
-      extend ActiveSupport::Concern
-
+    module DocPiiReader
       PII_EXCLUDES = %w[
         Age
         DocSize
@@ -19,7 +17,7 @@ module DocAuth
 
       private
 
-      def read_pii
+      def read_pii(true_id_product)
         return {} unless true_id_product&.dig(:IDAUTH_FIELD_DATA).present?
         pii = {}
         PII_INCLUDES.each do |true_id_key, idp_key|
