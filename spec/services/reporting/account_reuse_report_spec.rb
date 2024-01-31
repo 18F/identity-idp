@@ -29,8 +29,10 @@ RSpec.describe Reporting::AccountReuseReport do
     let(:sp_k) { 'k' }
     let(:sp_l) { 'l' }
 
-    let(:agency1_apps) {[sp_a, sp_d, sp_e, sp_h, sp_i, sp_l]}
-    let(:all_agency_apps) {[sp_a, sp_b, sp_c, sp_d, sp_e, sp_f, sp_g, sp_h, sp_i, sp_j, sp_k, sp_l]}
+    let(:agency1_apps) { [sp_a, sp_d, sp_e, sp_h, sp_i, sp_l] }
+    let(:all_agency_apps) do
+      [sp_a, sp_b, sp_c, sp_d, sp_e, sp_f, sp_g, sp_h, sp_i, sp_j, sp_k, sp_l]
+    end
 
     before do
       create(
@@ -118,7 +120,6 @@ RSpec.describe Reporting::AccountReuseReport do
         agency: agency1,
       )
 
-
       # Seed the database with data to be queried
       #
       # User 1 has 3 SPs and 3 show up in the query
@@ -154,31 +155,31 @@ RSpec.describe Reporting::AccountReuseReport do
         { id: 1, # 3 apps, 2 agencies
           created_timestamp: in_query,
           sp: all_agency_apps[0..2],
-          sp_timestamp: Array.new(3) {in_query} },
+          sp_timestamp: Array.new(3) { in_query } },
         { id: 2, # 3 apps, 2 agencies
           created_timestamp: in_query,
           sp: all_agency_apps[0..2],
-          sp_timestamp: Array.new(2) {in_query} + Array.new(1) {out_of_query} },
+          sp_timestamp: Array.new(2) { in_query } + Array.new(1) { out_of_query } },
         { id: 3, # 3 apps, 2 agencies
           created_timestamp: in_query,
           sp: all_agency_apps[0..2],
-          sp_timestamp: Array.new(1) {in_query} + Array.new(2) {out_of_query} },
+          sp_timestamp: Array.new(1) { in_query } + Array.new(2) { out_of_query } },
         { id: 4, # 3 apps, 2 agencies
           created_timestamp: in_query,
           sp: all_agency_apps[0..2],
-          sp_timestamp: Array.new(1) {in_query} + Array.new(2) {out_of_query} },
+          sp_timestamp: Array.new(1) { in_query } + Array.new(2) { out_of_query } },
         { id: 5, # 3 apps, 2 agencies
           created_timestamp: out_of_query,
           sp: all_agency_apps[0..2],
-          sp_timestamp: Array.new(3) {out_of_query} },
+          sp_timestamp: Array.new(3) { out_of_query } },
         { id: 6, # 2 apps, 2 agencies
           created_timestamp: in_query,
           sp: all_agency_apps[0..1],
-          sp_timestamp: Array.new(2) {in_query} },
+          sp_timestamp: Array.new(2) { in_query } },
         { id: 7, # 2 apps, 1 agency
           created_timestamp: in_query,
           sp: agency1_apps[0..1],
-          sp_timestamp: Array.new(2) {in_query} },
+          sp_timestamp: Array.new(2) { in_query } },
         { id: 8, # 2 apps, 2 agencies
           created_timestamp: in_query,
           sp: all_agency_apps[0..1],
@@ -190,11 +191,11 @@ RSpec.describe Reporting::AccountReuseReport do
         { id: 10, # 2 apps, 2 agencies
           created_timestamp: in_query,
           sp: all_agency_apps[0..1],
-          sp_timestamp: Array.new(2) {out_of_query} },
+          sp_timestamp: Array.new(2) { out_of_query } },
         { id: 11, # 2 apps, 2 agencies
           created_timestamp: out_of_query,
           sp: all_agency_apps[0..1],
-          sp_timestamp: Array.new(2) {out_of_query} },
+          sp_timestamp: Array.new(2) { out_of_query } },
         { id: 12,
           created_timestamp: in_query,
           sp: [sp_a],
@@ -210,27 +211,27 @@ RSpec.describe Reporting::AccountReuseReport do
         { id: 15, # 12 apps, 2 agencies
           created_timestamp: in_query,
           sp: all_agency_apps,
-          sp_timestamp: Array.new(12) {in_query} },
+          sp_timestamp: Array.new(12) { in_query } },
         { id: 16, # 11 apps, 2 agencies
           created_timestamp: in_query,
           sp: all_agency_apps[0..10],
-          sp_timestamp: Array.new(11) {in_query}},
+          sp_timestamp: Array.new(11) { in_query } },
         { id: 17, # 11 apps, 2 agencies
           created_timestamp: in_query,
           sp: all_agency_apps[0..10],
-          sp_timestamp: Array.new(11) {in_query} },
+          sp_timestamp: Array.new(11) { in_query } },
         { id: 18, # 10 apps, 2 agencies
           created_timestamp: in_query,
           sp: all_agency_apps[0..9],
-          sp_timestamp: Array.new(10) {in_query} },
+          sp_timestamp: Array.new(10) { in_query } },
         { id: 19, # 10 apps, 2 agencies
           created_timestamp: in_query,
           sp: all_agency_apps[0..9],
-          sp_timestamp: Array.new(10) {in_query} },
+          sp_timestamp: Array.new(10) { in_query } },
         { id: 20, # 10 apps, 2 agencies
           created_timestamp: in_query,
           sp: all_agency_apps[0..9],
-          sp_timestamp: Array.new(9) {in_query} + Array.new(1) {out_of_query} },
+          sp_timestamp: Array.new(9) { in_query } + Array.new(1) { out_of_query } },
 
       ]
 
