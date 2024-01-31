@@ -512,7 +512,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
     end
 
     context 'with ACR values' do
-      let (:vtr) { nil }
+      let(:vtr) { nil }
       context 'when AAL2 passed' do
         let(:acr_values) { Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF }
 
@@ -562,7 +562,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
       context 'when AAL3_HSPD12 and AAL2_HSPD12 passed' do
         let(:acr_values) do
           [Saml::Idp::Constants::AAL3_HSPD12_AUTHN_CONTEXT_CLASSREF,
-          Saml::Idp::Constants::AAL2_HSPD12_AUTHN_CONTEXT_CLASSREF].join(' ')
+           Saml::Idp::Constants::AAL2_HSPD12_AUTHN_CONTEXT_CLASSREF].join(' ')
         end
 
         it 'returns AAL2+HSPD12' do
