@@ -55,12 +55,11 @@ module Idv
         IdentityConfig.store.in_person_proofing_enabled
     end
 
-    def self.sp_ipp_enabled?(idv_session: )
+    def self.sp_ipp_enabled?(idv_session:)
       idv_session.service_provider&.in_person_proofing_enabled
     end
 
     def self.step_info
-      #puts "*** yo I got called"
       Idv::StepInfo.new(
         key: :how_to_verify,
         controller: self,

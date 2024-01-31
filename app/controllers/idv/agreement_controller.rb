@@ -35,7 +35,6 @@ module Idv
 
         if IdentityConfig.store.in_person_proofing_opt_in_enabled &&
            IdentityConfig.store.in_person_proofing_enabled
-          #puts "*** #{idv_session.service_provider.inspect}"
           redirect_to idv_how_to_verify_url
         else
           redirect_to idv_hybrid_handoff_url
