@@ -1,5 +1,5 @@
 class IdvController < ApplicationController
-  include IdvSession
+  include IdvSessionConcern
   include AccountReactivationConcern
   include VerifyProfileConcern
   include RateLimitConcern

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'reset password with pending profile' do
+RSpec.feature 'reset password with pending profile', allowed_extra_analytics: [:*] do
   include PersonalKeyHelper
 
   let(:user) { create(:user, :fully_registered) }

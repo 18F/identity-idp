@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Users::TwoFactorAuthenticationSetupController do
+RSpec.describe Users::TwoFactorAuthenticationSetupController, allowed_extra_analytics: [:*] do
   describe 'GET index' do
     it 'tracks the visit in analytics' do
       stub_sign_in_before_2fa

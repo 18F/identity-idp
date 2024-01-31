@@ -8,7 +8,7 @@ module Idv
     before_action :confirm_two_factor_authenticated
     before_action :redirect_unless_enrollment
 
-    include IdvSession
+    include IdvSessionConcern
     include Flow::FlowStateMachine
     include Idv::ThreatMetrixConcern
 

@@ -147,6 +147,51 @@ RSpec.describe BrowserSupport do
         end
       end
 
+      context 'with user agent for chrome on ios' do
+        # All browsers on iOS use the Safari browser engine, so we expect the specific browser
+        # version to be disregarded in favor of the iOS version.
+
+        context 'with both chrome version and ios version below supported range' do
+          let(:user_agent) do
+            # Chrome 100 on iOS 14.0
+            'Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15 ' \
+              '(KHTML, like Gecko) CriOS/100.0.0000.000 Mobile/15E148 Safari/604.1'
+          end
+
+          it { expect(supported).to eq(false) }
+        end
+
+        context 'with chrome version above supported range, ios version below supported range' do
+          let(:user_agent) do
+            # Chrome 120 on iOS 14.0
+            'Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15 ' \
+              '(KHTML, like Gecko) CriOS/120.0.0000.000 Mobile/15E148 Safari/604.1'
+          end
+
+          it { expect(supported).to eq(false) }
+        end
+
+        context 'with chrome version below supported range, ios version above supported range' do
+          let(:user_agent) do
+            # Chrome 100 on iOS 15.0
+            'Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 ' \
+              '(KHTML, like Gecko) CriOS/120.0.0000.000 Mobile/15E148 Safari/604.1'
+          end
+
+          it { expect(supported).to eq(true) }
+        end
+
+        context 'with both chrome version and ios version above supported range' do
+          let(:user_agent) do
+            # Chrome 120 on iOS 17.3
+            'Mozilla/5.0 (iPhone; CPU iPhone OS 17_3 like Mac OS X) AppleWebKit/605.1.15 ' \
+              '(KHTML, like Gecko) CriOS/120.0.0000.000 Mobile/15E148 Safari/604.1'
+          end
+
+          it { expect(supported).to eq(true) }
+        end
+      end
+
       context 'with opera desktop user agent' do
         let(:user_agent) do
           # Opera 83

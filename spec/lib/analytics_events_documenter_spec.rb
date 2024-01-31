@@ -210,8 +210,9 @@ RSpec.describe AnalyticsEventsDocumenter do
         # @param [Boolean] success
         # @param [Integer] count number of attempts
         # The event that does something with stuff
-        def some_event(success:, count:)
-          track_event('Some Event')
+        # @option extra [String] 'DocumentName' the document name
+        def some_event(success:, count:, **extra)
+          track_event('Some Event', **extra)
         end
 
         # @identity.idp.previous_event_name The Old Other Event
@@ -232,10 +233,11 @@ RSpec.describe AnalyticsEventsDocumenter do
             attributes: [
               { name: 'success', types: ['Boolean'], description: nil },
               { name: 'count', types: ['Integer'], description: 'number of attempts' },
+              { name: 'DocumentName', types: ['String'], description: 'the document name' },
             ],
             method_name: :some_event,
             source_file: '(stdin)',
-            source_line: 5,
+            source_line: kind_of(Integer),
             source_sha: kind_of(String),
           },
           {
@@ -248,7 +250,7 @@ RSpec.describe AnalyticsEventsDocumenter do
             attributes: [],
             method_name: :other_event,
             source_file: '(stdin)',
-            source_line: 11,
+            source_line: kind_of(Integer),
             source_sha: kind_of(String),
           },
         ],

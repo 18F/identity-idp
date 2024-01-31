@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'content security policy' do
+RSpec.describe 'content security policy', allowed_extra_analytics: [:*] do
   context 'on endpoints that will redirect to an SP' do
     context 'when openid_connect_content_security_form_action_enabled is enabled' do
       before do

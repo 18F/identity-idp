@@ -1,6 +1,7 @@
 require 'rails_helper'
 
-RSpec.describe 'user signs in partially and visits openid_connect/authorize' do
+RSpec.describe 'user signs in partially and visits openid_connect/authorize',
+               allowed_extra_analytics: [:*] do
   let(:user) { create(:user, :fully_registered, with: { phone: '+1 (202) 555-1213' }) }
 
   it 'prompts the user to 2FA' do

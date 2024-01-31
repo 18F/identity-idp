@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'Banning users for an SP' do
+RSpec.feature 'Banning users for an SP', allowed_extra_analytics: [:*] do
   include SamlAuthHelper
   include OidcAuthHelper
 

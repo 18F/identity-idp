@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'RateLimitConcern' do
+RSpec.describe RateLimitConcern, allowed_extra_analytics: [:*] do
   let(:user) { create(:user, :fully_registered, email: 'old_email@example.com') }
 
   idv_step_controller_class = Class.new(ApplicationController) do
@@ -9,7 +9,7 @@ RSpec.describe 'RateLimitConcern' do
     end
 
     include RateLimitConcern
-    include IdvSession
+    include IdvSessionConcern
 
     def show
       render plain: 'Hello'

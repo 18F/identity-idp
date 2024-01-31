@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'idv enter letter code step' do
+RSpec.feature 'idv enter letter code step', allowed_extra_analytics: [:*] do
   include IdvStepHelper
 
   let(:otp) { 'ABC123' }

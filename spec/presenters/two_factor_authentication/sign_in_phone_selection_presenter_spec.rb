@@ -31,7 +31,7 @@ RSpec.describe TwoFactorAuthentication::SignInPhoneSelectionPresenter do
         let(:user) { create(:user, :with_phone) }
 
         it 'returns delivery method appended with configuration id' do
-          expect(presenter.type).to eq "sms_#{configuration.id}".to_sym
+          expect(presenter.type).to eq :"sms_#{configuration.id}"
         end
       end
     end

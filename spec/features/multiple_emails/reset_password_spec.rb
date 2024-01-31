@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'reset password with multiple emails' do
+RSpec.describe 'reset password with multiple emails', allowed_extra_analytics: [:*] do
   scenario 'it sends the reset instruction to the email the user enters' do
     user = create(:user, :with_multiple_emails)
     email1, email2 = user.reload.email_addresses.map(&:email)

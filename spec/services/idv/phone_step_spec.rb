@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::PhoneStep do
+RSpec.describe Idv::PhoneStep, allowed_extra_analytics: [:*] do
   before { stub_attempts_tracker }
 
   let(:user) { create(:user) }

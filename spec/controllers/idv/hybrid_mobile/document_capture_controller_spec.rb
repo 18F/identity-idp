@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::HybridMobile::DocumentCaptureController do
+RSpec.describe Idv::HybridMobile::DocumentCaptureController, allowed_extra_analytics: [:*] do
   let(:user) { create(:user) }
 
   let!(:document_capture_session) do

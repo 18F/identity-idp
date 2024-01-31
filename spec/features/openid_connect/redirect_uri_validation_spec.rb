@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'redirect_uri validation' do
+RSpec.describe 'redirect_uri validation', allowed_extra_analytics: [:*] do
   include OidcAuthHelper
 
   context 'when the redirect_uri in the request does not match one that is registered' do

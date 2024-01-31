@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe TwoFactorAuthentication::SmsOptInController do
+RSpec.describe TwoFactorAuthentication::SmsOptInController, allowed_extra_analytics: [:*] do
   describe '#new' do
     subject(:action) { get :new, params: { opt_out_uuid: opt_out_uuid } }
 
