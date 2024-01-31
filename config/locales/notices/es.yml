@@ -37,7 +37,6 @@ es:
       first_paragraph_end: con un enlace para confirmar su email. Siga el enlace para
         continuar creando su cuenta.
       first_paragraph_start: Enviamos un email a
-      no_email_sent_explanation_start: '¿No recibió un email?'
     timeout_warning:
       partially_signed_in:
         continue: Continuar el inicio de sesión
