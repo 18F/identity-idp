@@ -154,47 +154,47 @@ RSpec.describe Reporting::AccountReuseReport do
       users_to_query = [
         { id: 1, # 3 apps, 2 agencies
           created_timestamp: in_query,
-          sp: all_agency_apps[0..2],
+          sp: all_agency_apps.first(3),
           sp_timestamp: Array.new(3) { in_query } },
         { id: 2, # 3 apps, 2 agencies
           created_timestamp: in_query,
-          sp: all_agency_apps[0..2],
+          sp: all_agency_apps.first(3),
           sp_timestamp: Array.new(2) { in_query } + Array.new(1) { out_of_query } },
         { id: 3, # 3 apps, 2 agencies
           created_timestamp: in_query,
-          sp: all_agency_apps[0..2],
+          sp: all_agency_apps.first(3),
           sp_timestamp: Array.new(1) { in_query } + Array.new(2) { out_of_query } },
         { id: 4, # 3 apps, 2 agencies
           created_timestamp: in_query,
-          sp: all_agency_apps[0..2],
+          sp: all_agency_apps.first(3),
           sp_timestamp: Array.new(1) { in_query } + Array.new(2) { out_of_query } },
         { id: 5, # 3 apps, 2 agencies
           created_timestamp: out_of_query,
-          sp: all_agency_apps[0..2],
+          sp: all_agency_apps.first(3),
           sp_timestamp: Array.new(3) { out_of_query } },
         { id: 6, # 2 apps, 2 agencies
           created_timestamp: in_query,
-          sp: all_agency_apps[0..1],
+          sp: all_agency_apps.first(2),
           sp_timestamp: Array.new(2) { in_query } },
         { id: 7, # 2 apps, 1 agency
           created_timestamp: in_query,
-          sp: agency1_apps[0..1],
+          sp: agency1_apps.first(2),
           sp_timestamp: Array.new(2) { in_query } },
         { id: 8, # 2 apps, 2 agencies
           created_timestamp: in_query,
-          sp: all_agency_apps[0..1],
+          sp: all_agency_apps.first(2),
           sp_timestamp: [in_query, out_of_query] },
         { id: 9,  # 2 apps, 1 agency
           created_timestamp: in_query,
-          sp: agency1_apps[0..1],
+          sp: agency1_apps.first(2),
           sp_timestamp: [in_query, out_of_query] },
         { id: 10, # 2 apps, 2 agencies
           created_timestamp: in_query,
-          sp: all_agency_apps[0..1],
+          sp: all_agency_apps.first(2),
           sp_timestamp: Array.new(2) { out_of_query } },
         { id: 11, # 2 apps, 2 agencies
           created_timestamp: out_of_query,
-          sp: all_agency_apps[0..1],
+          sp: all_agency_apps.first(2),
           sp_timestamp: Array.new(2) { out_of_query } },
         { id: 12,
           created_timestamp: in_query,
@@ -214,23 +214,23 @@ RSpec.describe Reporting::AccountReuseReport do
           sp_timestamp: Array.new(12) { in_query } },
         { id: 16, # 11 apps, 2 agencies
           created_timestamp: in_query,
-          sp: all_agency_apps[0..10],
+          sp: all_agency_apps.first(11),
           sp_timestamp: Array.new(11) { in_query } },
         { id: 17, # 11 apps, 2 agencies
           created_timestamp: in_query,
-          sp: all_agency_apps[0..10],
+          sp: all_agency_apps.first(11),
           sp_timestamp: Array.new(11) { in_query } },
         { id: 18, # 10 apps, 2 agencies
           created_timestamp: in_query,
-          sp: all_agency_apps[0..9],
+          sp: all_agency_apps.first(10),
           sp_timestamp: Array.new(10) { in_query } },
         { id: 19, # 10 apps, 2 agencies
           created_timestamp: in_query,
-          sp: all_agency_apps[0..9],
+          sp: all_agency_apps.first(10),
           sp_timestamp: Array.new(10) { in_query } },
         { id: 20, # 10 apps, 2 agencies
           created_timestamp: in_query,
-          sp: all_agency_apps[0..9],
+          sp: all_agency_apps.first(10),
           sp_timestamp: Array.new(9) { in_query } + Array.new(1) { out_of_query } },
 
       ]
