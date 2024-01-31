@@ -2149,7 +2149,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'GetUspsProofingResultsJob: Please call email initiated',
+      :idv_in_person_usps_proofing_results_job_please_call_email_initiated,
       **extra,
     )
   end
