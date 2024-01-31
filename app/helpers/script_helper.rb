@@ -6,8 +6,7 @@ module ScriptHelper
     without_preload_links_header { javascript_include_tag(...) }
   end
 
-  def javascript_packs_tag_once(*names, async: nil)
-    attributes = { async: }
+  def javascript_packs_tag_once(*names, **attributes)
     @scripts = @scripts.to_h.merge(names.index_with(attributes))
     nil
   end

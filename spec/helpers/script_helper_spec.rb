@@ -102,7 +102,7 @@ RSpec.describe ScriptHelper do
         end
       end
 
-      context 'with async option' do
+      context 'with attributes' do
         before do
           javascript_packs_tag_once('track-errors', async: true)
           allow(AssetSources).to receive(:get_sources).with('track-errors').
@@ -112,7 +112,7 @@ RSpec.describe ScriptHelper do
             and_return([])
         end
 
-        it 'adds async attribute' do
+        it 'adds attribute' do
           output = render_javascript_pack_once_tags
 
           expect(output).to have_css(
