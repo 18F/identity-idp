@@ -414,7 +414,20 @@ RSpec.describe UserMailer, type: :mailer do
             t(
               'user_mailer.account_reset_granted.intro_html', app_name: APP_NAME,
                                                               hours:
-                                                                token_expiration_interval
+                                                              account_reset_deletion_period_hours
+            ),
+          ),
+        )
+    end
+
+    it 'renders the footer' do
+      expect(mail.html_part.body).to \
+        have_content(
+          strip_tags(
+            t(
+              'user_mailer.email_confirmation_instructions.footer',
+              token_expiration_interval:
+              token_expiration_interval,
             ),
           ),
         )
