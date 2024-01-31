@@ -55,6 +55,10 @@ module Idv
         IdentityConfig.store.in_person_proofing_enabled
     end
 
+    def self.sp_ipp_enabled?(idv_session: )
+      idv_session.service_provider&.in_person_proofing_enabled
+    end
+
     def self.step_info
       #puts "*** yo I got called"
       Idv::StepInfo.new(
@@ -63,7 +67,7 @@ module Idv
         next_steps: [:hybrid_handoff, :document_capture],
         preconditions: ->(idv_session:, user:) do
           # TODO: We need idv_session here, not in enabled, because it's not available. :-\
-          self.enabled? && idv_session.idv_consent_given && idv_session.service_provider&.in_person_proofing_enabled
+          self.enabled? && idv_session.idv_consent_given && self.sp_ipp_enabled?(idv_session:)
         end,
         undo_step: ->(idv_session:, user:) { idv_session.skip_doc_auth = nil },
       )
