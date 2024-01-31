@@ -17,7 +17,7 @@ module FederatedProtocols
     end
 
     def acr_values
-      [aal, ial].join(' ')
+      [aal, ial].compact.join(' ')
     end
 
     def vtr
