@@ -198,12 +198,22 @@ RSpec.describe Reporting::AccountReuseReport do
           sp: [sp_a, sp_b, sp_c, sp_d, sp_e, sp_f, sp_g, sp_h, sp_i, sp_j, sp_k],
           sp_timestamp: [in_query, in_query, in_query, in_query, in_query, in_query, in_query,
                          in_query, in_query, in_query, in_query] },
-        { id: 17, # 10 apps, 2 agencies
+        { id: 17, # 11 apps, 2 agencies
+          created_timestamp: in_query,
+          sp: [sp_a, sp_b, sp_c, sp_d, sp_e, sp_f, sp_g, sp_h, sp_i, sp_j, sp_k],
+          sp_timestamp: [in_query, in_query, in_query, in_query, in_query, in_query, in_query,
+                         in_query, in_query, in_query, in_query] },
+        { id: 18, # 10 apps, 2 agencies
           created_timestamp: in_query,
           sp: [sp_a, sp_b, sp_c, sp_d, sp_e, sp_f, sp_g, sp_h, sp_i, sp_j],
           sp_timestamp: [in_query, in_query, in_query, in_query, in_query, in_query, in_query,
                          in_query, in_query, in_query] },
-        { id: 18, # 10 apps, 2 agencies
+        { id: 19, # 10 apps, 2 agencies
+          created_timestamp: in_query,
+          sp: [sp_a, sp_b, sp_c, sp_d, sp_e, sp_f, sp_g, sp_h, sp_i, sp_j],
+          sp_timestamp: [in_query, in_query, in_query, in_query, in_query, in_query, in_query,
+                         in_query, in_query, in_query] },
+        { id: 20, # 10 apps, 2 agencies
           created_timestamp: in_query,
           sp: [sp_a, sp_b, sp_c, sp_d, sp_e, sp_f, sp_g, sp_h, sp_i, sp_j],
           sp_timestamp: [in_query, in_query, in_query, in_query, in_query, in_query, in_query,
@@ -224,7 +234,7 @@ RSpec.describe Reporting::AccountReuseReport do
       end
 
       # Create active profiles for total_proofed_identities
-      # These 13 profiles will yield 10 active profiles in the results
+      # These 20 profiles will yield 10 active profiles in the results
       10.times do
         create(
           :profile,
@@ -233,7 +243,7 @@ RSpec.describe Reporting::AccountReuseReport do
           user: create(:user, :fully_registered, registered_at: in_query),
         )
       end
-      5.times do
+      10.times do
         create(
           :profile,
           :active,
@@ -247,12 +257,12 @@ RSpec.describe Reporting::AccountReuseReport do
       it 'has the correct results' do
         expected_csv = [
           ['Metric', 'Num. all users', '% of accounts', 'Num. IDV users', '% of accounts'],
-          ['2 apps', 5, 5 / 15.0, 3, 0.3],
-          ['3 apps', 4, 4 / 15.0, 1, 0.1],
-          ['10-12 apps', 4, 4 / 15.0, 4, 0.4],
-          ['2+ apps', 13, 0.8666666666666666, 8, 0.8],
-          ['2 agencies', 11, 11 / 15.0, 7, 0.7],
-          ['2+ agencies', 11, 11 / 15.0, 7, 0.7],
+          ['2 apps', 5, 5 / 20.0, 3, 0.3],
+          ['3 apps', 4, 4 / 20.0, 1, 0.1],
+          ['10-12 apps', 6, 6 / 20.0, 6, 0.6],
+          ['2+ apps', 15, 15 / 20.0, 10, 0.9999999999999999],
+          ['2 agencies', 13, 13 / 20.0, 9, 0.9],
+          ['2+ agencies', 13, 13 / 20.0, 9, 0.9],
         ]
 
         aggregate_failures do

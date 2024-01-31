@@ -182,17 +182,17 @@ module Reporting
         results.each_with_index do |details_section, section_index|
           details_section.select { |details| details.num_entities >= 10 }.
             reduce do |summary_row, captured_row|
-            # Delete any rows after the first captured_row (which becomes the summary_row)
-            details_section.delete(captured_row) if captured_row != summary_row
-            summary_row.update_details(
-              num_entities: "10-#{captured_row.num_entities}",
-              entity_type: summary_row.entity_type,
-              num_all_users: summary_row.num_all_users + captured_row.num_all_users,
-              all_percent: summary_row.all_percent + captured_row.all_percent,
-              num_idv_users: summary_row.num_idv_users + captured_row.num_idv_users,
-              idv_percent: summary_row.idv_percent + captured_row.idv_percent,
-            )
-          end
+              # Delete any rows after the first captured_row (which becomes the summary_row)
+              details_section.delete(captured_row) if captured_row != summary_row
+              summary_row.update_details(
+                num_entities: "10-#{captured_row.num_entities}",
+                entity_type: summary_row.entity_type,
+                num_all_users: summary_row.num_all_users + captured_row.num_all_users,
+                all_percent: summary_row.all_percent + captured_row.all_percent,
+                num_idv_users: summary_row.num_idv_users + captured_row.num_idv_users,
+                idv_percent: summary_row.idv_percent + captured_row.idv_percent,
+              )
+            end
         end
 
         self.details_section = results
