@@ -47,7 +47,7 @@
 </table>
 
 <p>
-  <%= t('user_mailer.email_confirmation_instructions.footer', token_expiration_interval: @account_reset_token_valid_period) %>
+  <%= t('user_mailer.email_confirmation_instructions.footer', confirmation_period: @account_reset_token_valid_period) %>
 </p>
 <p>
   <%= t(

@@ -88,7 +88,7 @@ fr:
           compte %{app_name}, mais nous ne possédons pas de compte associé à
           cette adresse courriel.
         unconfirmed: Merci d’avoir envoyé votre adresse email.
-      footer: Ce lien expirera dans %{token_expiration_interval}.
+      footer: Ce lien expirera dans %{confirmation_period}.
       header: '%{intro} Veuillez cliquer sur le lien ci-dessous ou copier et coller le
         lien complet dans votre navigateur.'
       link_text: Confirmez votre adresse email

@@ -83,7 +83,7 @@ es:
         forgot_password: Intentó restablecer su contraseña de %{app_name} pero no
           tenemos una cuenta vinculada a esta dirección de correo electrónico.
         unconfirmed: Gracias por enviar su dirección de correo electrónico.
-      footer: Este enlace expira en %{token_expiration_interval}.
+      footer: Este enlace expira en %{confirmation_period}.
       header: '%{intro} Haga clic en el enlace de abajo o copie y pegue el enlace
         completo en su navegador.'
       link_text: Confirmar el correo

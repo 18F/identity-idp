@@ -426,8 +426,7 @@ RSpec.describe UserMailer, type: :mailer do
           strip_tags(
             t(
               'user_mailer.email_confirmation_instructions.footer',
-              token_expiration_interval:
-              token_expiration_interval,
+              confirmation_period: token_expiration_interval,
             ),
           ),
         )
