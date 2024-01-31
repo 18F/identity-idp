@@ -159,15 +159,15 @@ RSpec.describe Reporting::AccountReuseReport do
         { id: 2, # 3 apps, 2 agencies
           created_timestamp: in_query,
           sp: all_agency_apps.first(3),
-          sp_timestamp: Array.new(2) { in_query } + Array.new(1) { out_of_query } },
+          sp_timestamp: [in_query, in_query, out_of_query] },
         { id: 3, # 3 apps, 2 agencies
           created_timestamp: in_query,
           sp: all_agency_apps.first(3),
-          sp_timestamp: Array.new(1) { in_query } + Array.new(2) { out_of_query } },
+          sp_timestamp: [in_query, out_of_query, out_of_query] },
         { id: 4, # 3 apps, 2 agencies
           created_timestamp: in_query,
           sp: all_agency_apps.first(3),
-          sp_timestamp: Array.new(1) { in_query } + Array.new(2) { out_of_query } },
+          sp_timestamp: [in_query, out_of_query, out_of_query] },
         { id: 5, # 3 apps, 2 agencies
           created_timestamp: out_of_query,
           sp: all_agency_apps.first(3),
