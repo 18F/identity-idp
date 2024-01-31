@@ -14,6 +14,7 @@ module Users
       irs_attempts_api_tracker.logged_in_account_purged(success: true)
       send_push_notifications
       notify_user_via_email_of_deletion
+      notify_user_via_text_of_deletion
       delete_user
       sign_out
       flash[:success] = t('devise.registrations.destroyed')
@@ -52,13 +53,21 @@ module Users
       PushNotification::HttpPush.deliver(event)
     end
 
-    # rubocop:disable IdentityIdp/MailLaterLinter
     def notify_user_via_email_of_deletion
       current_user.confirmed_email_addresses.each do |email_address|
         UserMailer.with(user: current_user, email_address: email_address).
-          account_delete_submitted.deliver_now
+          account_delete_submitted.deliver_now_or_later
       end
     end
-    # rubocop:enable IdentityIdp/MailLaterLinter
+
+    def notify_user_via_text_of_deletion
+      phone_numbers = MfaContext.new(current_user).phone_configurations.map(&:phone)
+      phone_numbers.each do |phone|
+        Telephony.send_account_deleted_notice(
+          to: phone,
+          country_code: Phonelib.parse(phone).country,
+        )
+      end
+    end
   end
 end

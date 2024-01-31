@@ -80,6 +80,7 @@ module Telephony
                  :send_doc_auth_link,
                  :send_personal_key_regeneration_notice,
                  :send_personal_key_sign_in_notice,
+                 :send_account_deleted_notice,
                  :send_account_reset_notice,
                  :send_account_reset_cancellation_notice,
                  :send_notification

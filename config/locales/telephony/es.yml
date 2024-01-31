@@ -1,6 +1,7 @@
 ---
 es:
   telephony:
+    account_deleted_notice: Este SMS confirma que ha eliminado su cuenta de %{app_name}. 
     account_reset_cancellation_notice: Su solicitud para eliminar su cuenta de %{app_name} ha sido cancelada.
     account_reset_notice: Según lo solicitado, su cuenta %{app_name} se eliminará en
       24 horas. ¿No quieres eliminar tu cuenta? Inicie sesión en su cuenta
