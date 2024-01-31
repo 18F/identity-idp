@@ -179,46 +179,21 @@ module Reporting
           end
         end
 
-        # rubocop:disable Metrics/BlockLength
         results.each_with_index do |details_section, section_index|
-          details_section.each_with_index do |detail_row, row_index|
-            if detail_row.num_entities >= 10
-              captured_row = detail_row
-              previous_row = details_section[row_index - 1]
-
-              if !previous_row.num_entities.is_a?(String) && previous_row.num_entities < 10
-                new_num_entities = captured_row.num_entities.to_s
-                running_all_users = captured_row.num_all_users
-                running_all_percent = captured_row.all_percent
-                running_idv_users = captured_row.num_idv_users
-                running_idv_percent = captured_row.idv_percent
-                summary_row_index = row_index
-              else
-                new_num_entities = "10-#{captured_row.num_entities}"
-                running_all_users = previous_row.num_all_users + captured_row.num_all_users
-                running_all_percent = previous_row.all_percent + captured_row.all_percent
-                running_idv_users = previous_row.num_idv_users + captured_row.num_idv_users
-                running_idv_percent = previous_row.idv_percent + captured_row.idv_percent
-                summary_row_index = row_index - 1
-
-                details_section.delete_at(row_index)
-              end
-
-              new_row = ReuseDetailRow.new.update_details(
-                num_entities: new_num_entities,
-                entity_type: captured_row.entity_type,
-                num_all_users: running_all_users,
-                all_percent: running_all_percent,
-                num_idv_users: running_idv_users,
-                idv_percent: running_idv_percent,
-              )
-
-              details_section[summary_row_index] = new_row
-
-            end
+          details_section.select { |details| details.num_entities >= 10 }.
+            reduce do |summary_row, captured_row|
+            # Delete any rows after the first captured_row (which becomes the summary_row)
+            details_section.delete(captured_row) if captured_row != summary_row
+            summary_row.update_details(
+              num_entities: "10-#{captured_row.num_entities}",
+              entity_type: summary_row.entity_type,
+              num_all_users: summary_row.num_all_users + captured_row.num_all_users,
+              all_percent: summary_row.all_percent + captured_row.all_percent,
+              num_idv_users: summary_row.num_idv_users + captured_row.num_idv_users,
+              idv_percent: summary_row.idv_percent + captured_row.idv_percent,
+            )
           end
         end
-        # rubocop:enable Metrics/BlockLength
 
         self.details_section = results
 
