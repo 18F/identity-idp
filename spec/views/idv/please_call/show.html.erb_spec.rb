@@ -1,8 +1,12 @@
 require 'rails_helper'
 
 RSpec.describe 'idv/please_call/show.html.erb' do
+  let(:in_person_proofing_enabled) { false }
   before do
     @call_by_date = Date.new(2023, 10, 13)
+    @in_person = false
+    allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).
+      and_return(in_person_proofing_enabled)
     render
   end
 
@@ -23,5 +27,19 @@ RSpec.describe 'idv/please_call/show.html.erb' do
         ),
       ),
     )
+  end
+
+  context 'ipp enabled' do
+    let(:in_person_proofing_enabled) { true }
+    before do
+      @in_person = true
+    end
+
+    it 'does not show step indicator secure account' do
+      expect(view.content_for(:pre_flash_content)).not_to have_css(
+        '.step-indicator__step--current',
+        text: t('step_indicator.flows.idv.secure_account'),
+      )
+    end
   end
 end
