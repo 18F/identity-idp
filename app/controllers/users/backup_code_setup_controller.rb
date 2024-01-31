@@ -15,10 +15,6 @@ module Users
 
     helper_method :in_multi_mfa_selection_flow?
 
-    def index
-      track_backup_codes_confirmation_setup_visit
-    end
-
     def create
       generate_codes
       result = BackupCodeSetupForm.new(current_user).submit
