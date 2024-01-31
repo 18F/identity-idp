@@ -19,6 +19,7 @@
   <% c.with_header { t('components.troubleshooting_options.default_heading') } %>
   <% c.with_option(render_as_link: false) do %>
     <%= simple_form_for @resend_email_confirmation_form,
+                        html: { class: '' },
                         url: sign_up_register_path do |f| %>
       <%= f.input :email, as: :hidden %>
       <%= f.input :resend, as: :hidden %>
@@ -34,7 +35,6 @@
        url: sign_up_email_path,
      ).with_content(t('notices.use_diff_email.link')) %>
 <% end %>
-
 
 <p><%= t('devise.registrations.close_window') %></p>
 

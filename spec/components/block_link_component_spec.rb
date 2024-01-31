@@ -28,4 +28,14 @@ RSpec.describe BlockLinkComponent, type: :component do
       expect(rendered).to have_content(t('links.new_tab'))
     end
   end
+
+  context 'when render_as_link is false' do
+    it 'renders content within a div and not a link' do
+      rendered = render_inline BlockLinkComponent.new(render_as_link: false).with_content('Not a link')
+
+      expect(rendered).to have_css('div.usa-link.block-link')
+      expect(rendered).to have_text('Not a link')
+      expect(rendered).to have_no_link
+    end
+  end
 end
