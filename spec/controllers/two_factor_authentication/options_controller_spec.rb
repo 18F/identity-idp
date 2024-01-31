@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe TwoFactorAuthentication::OptionsController do
+RSpec.describe TwoFactorAuthentication::OptionsController, allowed_extra_analytics: [:*] do
   describe '#index' do
     it 'renders the page' do
       sign_in_before_2fa

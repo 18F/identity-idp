@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'Account history' do
+RSpec.describe 'Account history', allowed_extra_analytics: [:*] do
   let(:user) { create(:user, :fully_registered, created_at: Time.zone.now - 100.days) }
   let(:account_created_event) { create(:event, user: user, created_at: Time.zone.now - 98.days) }
   let(:gpo_mail_sent_event) do

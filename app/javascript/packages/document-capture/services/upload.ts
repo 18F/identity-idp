@@ -42,6 +42,10 @@ export class UploadFormEntriesError extends FormError {
 
   isFailedDocType = false;
 
+  selfieNotLive = false;
+
+  selfieNotGoodQuality = false;
+
   pii?: PII;
 
   hints = false;
@@ -123,6 +127,11 @@ const upload: UploadImplementation = async function (payload, { method = 'POST',
     error.isFailedResult = !!result.result_failed;
 
     error.isFailedDocType = !result.doc_type_supported;
+
+    error.selfieNotLive = result.selfie_live === undefined ? false : !result.selfie_live;
+
+    error.selfieNotGoodQuality =
+      result.selfie_quality_good === undefined ? false : !result.selfie_quality_good;
 
     error.failed_image_fingerprints = result.failed_image_fingerprints ?? { front: [], back: [] };
 

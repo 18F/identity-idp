@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'phone rate limitting' do
+RSpec.describe 'phone rate limitting', allowed_extra_analytics: [:*] do
   let(:phone) { '2025551234' }
 
   context 'on sign up' do

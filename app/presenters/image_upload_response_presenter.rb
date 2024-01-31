@@ -89,7 +89,7 @@ class ImageUploadResponsePresenter
   end
 
   def failed_fingerprints
-    @form_response.extra[:failed_image_fingerprints] || { front: [], back: [] }
+    @form_response.extra[:failed_image_fingerprints] || { front: [], back: [], selfie: [] }
   end
 
   def show_selfie_failures

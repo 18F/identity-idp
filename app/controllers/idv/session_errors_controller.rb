@@ -1,7 +1,7 @@
 module Idv
   class SessionErrorsController < ApplicationController
     include Idv::AvailabilityConcern
-    include IdvSession
+    include IdvSessionConcern
     include StepIndicatorConcern
 
     before_action :confirm_two_factor_authenticated_or_user_id_in_session

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::ApiImageUploadForm do
+RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
   include DocPiiHelper
 
   subject(:form) do
@@ -124,6 +124,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           flow_path: anything,
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
+          selfie_image_fingerprint: nil,
           liveness_checking_required: boolean,
         )
 
@@ -132,6 +133,8 @@ RSpec.describe Idv::ApiImageUploadForm do
           async: false,
           attempts: 1,
           attention_with_barcode: false,
+          address_line2_present: nil,
+          alert_failure_count: nil,
           billed: true,
           client_image_metrics: {
             back: {
@@ -147,7 +150,10 @@ RSpec.describe Idv::ApiImageUploadForm do
               width: 40,
             },
           },
+          image_metrics: nil,
+          conversation_id: nil,
           doc_auth_result: 'Passed',
+          decision_product_status: nil,
           errors: {},
           exception: nil,
           flow_path: anything,
@@ -159,12 +165,21 @@ RSpec.describe Idv::ApiImageUploadForm do
           vendor_request_time_in_ms: a_kind_of(Float),
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
+          selfie_image_fingerprint: nil,
           doc_type_supported: boolean,
           liveness_checking_required: boolean,
+          log_alert_results: nil,
+          portrait_match_results: nil,
+          processed_alerts: nil,
+          product_status: nil,
+          reference: nil,
           selfie_live: boolean,
           selfie_quality_good: boolean,
           doc_auth_success: boolean,
           selfie_status: anything,
+          vendor: nil,
+          transaction_status: nil,
+          transaction_reason_code: nil,
         )
       end
 
@@ -173,9 +188,118 @@ RSpec.describe Idv::ApiImageUploadForm do
 
         expect(response).to be_a_kind_of DocAuth::Response
         expect(response.success?).to eq(true)
+        expect(response.doc_auth_success?).to eq(true)
+        expect(response.selfie_status).to eq(:not_processed)
         expect(response.errors).to eq({})
         expect(response.attention_with_barcode?).to eq(false)
         expect(response.pii_from_doc).to eq(Idp::Constants::MOCK_IDV_APPLICANT)
+      end
+
+      context 'when liveness check is required' do
+        let(:liveness_checking_required) { true }
+        let(:back_image) { DocAuthImageFixtures.portrait_match_success_yaml }
+        let(:selfie_image) { DocAuthImageFixtures.selfie_image_multipart }
+        it 'logs analytics' do
+          expect(irs_attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+            {
+              address: '1800 F Street',
+              date_of_birth: '1938-10-06',
+              document_back_image_filename: nil,
+              document_expiration: nil,
+              document_front_image_filename: nil,
+              document_image_encryption_key: nil,
+              document_issued: nil,
+              document_number: '1111111111111',
+              document_state: 'NY',
+              first_name: 'John',
+              last_name: 'Doe',
+              success: true,
+            },
+          )
+
+          form.submit
+
+          expect(fake_analytics).to have_logged_event(
+            'IdV: doc auth image upload form submitted',
+            success: true,
+            errors: {},
+            attempts: 1,
+            remaining_attempts: 3,
+            user_id: document_capture_session.user.uuid,
+            flow_path: anything,
+            front_image_fingerprint: an_instance_of(String),
+            back_image_fingerprint: an_instance_of(String),
+            selfie_image_fingerprint: an_instance_of(String),
+            liveness_checking_required: boolean,
+          )
+
+          expect(fake_analytics).to have_logged_event(
+            'IdV: doc auth image upload vendor submitted',
+            address_line2_present: nil,
+            alert_failure_count: nil,
+            async: false,
+            attempts: 1,
+            attention_with_barcode: false,
+            billed: true,
+            client_image_metrics: {
+              back: {
+                height: 20,
+                mimeType: 'image/png',
+                source: 'upload',
+                width: 20,
+              },
+              front: {
+                height: 40,
+                mimeType: 'image/png',
+                source: 'upload',
+                width: 40,
+              },
+            },
+            conversation_id: nil,
+            decision_product_status: nil,
+            doc_auth_result: 'Passed',
+            errors: {},
+            exception: nil,
+            flow_path: anything,
+            image_metrics: nil,
+            liveness_checking_required: boolean,
+            log_alert_results: nil,
+            portrait_match_results: anything,
+            processed_alerts: nil,
+            product_status: nil,
+            reference: nil,
+            remaining_attempts: 3,
+            state: 'NY',
+            state_id_type: nil,
+            success: true,
+            user_id: document_capture_session.user.uuid,
+            vendor_request_time_in_ms: a_kind_of(Float),
+            front_image_fingerprint: an_instance_of(String),
+            back_image_fingerprint: an_instance_of(String),
+            selfie_image_fingerprint: an_instance_of(String),
+            doc_type_supported: boolean,
+            selfie_live: boolean,
+            selfie_quality_good: boolean,
+            doc_auth_success: boolean,
+            selfie_status: :success,
+            vendor: nil,
+            transaction_status: nil,
+            transaction_reason_code: nil,
+          )
+        end
+
+        it 'returns the expected response' do
+          response = form.submit
+
+          expect(response).to be_a_kind_of DocAuth::Response
+          expect(response.success?).to eq(true)
+          expect(response.doc_auth_success?).to eq(true)
+          expect(response.selfie_check_performed?).to eq(true)
+          expect(response.selfie_status).to eq(:success)
+          expect(response.errors).to eq({})
+          expect(response.attention_with_barcode?).to eq(false)
+          # expect(response.pii_from_doc).to eq(Idp::Constants::MOCK_IDV_APPLICANT)
+        end
       end
     end
 
@@ -226,6 +350,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           flow_path: anything,
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
+          selfie_image_fingerprint: nil,
           liveness_checking_required: boolean,
         )
       end
@@ -261,15 +386,21 @@ RSpec.describe Idv::ApiImageUploadForm do
     end
 
     context 'posting images to client fails' do
+      let(:errors) do
+        { front: 'glare' }
+      end
+
       let(:failed_response) do
         DocAuth::Response.new(
           success: false,
-          errors: { front: 'glare' },
+          errors: errors,
           extra: { remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1 },
         )
       end
+      let(:doc_auth_client) { double(DocAuth::LexisNexis::LexisNexisClient) }
       before do
-        allow(subject).to receive(:post_images_to_client).and_return(failed_response)
+        subject.instance_variable_set(:@doc_auth_client, doc_auth_client)
+        allow(doc_auth_client).to receive(:post_images) { failed_response }
       end
 
       it 'is not successful' do
@@ -277,8 +408,11 @@ RSpec.describe Idv::ApiImageUploadForm do
 
         expect(response).to be_a_kind_of DocAuth::Response
         expect(response.success?).to eq(false)
+        expect(response.doc_auth_success?).to eq(false)
+        expect(response.selfie_status).to eq(:not_processed)
         expect(response.attention_with_barcode?).to eq(false)
         expect(response.pii_from_doc).to eq({})
+        expect(response.doc_auth_success?).to eq(false)
       end
 
       it 'includes remaining_attempts' do
@@ -299,6 +433,58 @@ RSpec.describe Idv::ApiImageUploadForm do
         response = form.submit
         expect(response.errors).to have_key(:front)
         expect(response.errors).to have_value([I18n.t('doc_auth.errors.doc.resubmit_failed_image')])
+      end
+
+      it 'logs analytics event' do
+        form.submit
+        expect(fake_analytics).to have_logged_event(
+          'IdV: doc auth image upload vendor submitted',
+          hash_including(
+            doc_auth_result: nil,
+            errors: { front: 'glare' },
+            success: false,
+            doc_type_supported: boolean,
+            doc_auth_success: boolean,
+            liveness_checking_required: boolean,
+            selfie_status: :not_processed,
+            selfie_live: boolean,
+            selfie_quality_good: boolean,
+          ),
+        )
+      end
+
+      context 'selfie is checked for liveness' do
+        let(:liveness_checking_required) { true }
+        let(:selfie_image) { DocAuthImageFixtures.selfie_image_multipart }
+        let(:errors) do
+          { selfie: 'glare' }
+        end
+        let(:back_image) { DocAuthImageFixtures.portrait_match_fail_yaml }
+
+        before do
+          allow(failed_response).to receive(:doc_auth_success?).and_return(true)
+          allow(failed_response).to receive(:selfie_status).and_return(:fail)
+        end
+
+        it 'includes client response errors' do
+          response = form.submit
+          expect(response.errors[:front]).to be_nil
+          expect(response.errors[:back]).to be_nil
+          expect(response.errors[:selfie]).to eq('glare')
+        end
+
+        it 'keeps fingerprints of failed image and triggers error when submit same image' do
+          form.submit
+          session = DocumentCaptureSession.find_by(uuid: document_capture_session_uuid)
+          capture_result = session.load_result
+          expect(capture_result.failed_front_image_fingerprints).to match_array([])
+          expect(capture_result.failed_back_image_fingerprints).to match_array([])
+          expect(capture_result.failed_selfie_image_fingerprints.length).to eq(1)
+          response = form.submit
+          expect(response.errors).to have_key(:selfie)
+          expect(response.errors).
+            to have_value([I18n.t('doc_auth.errors.doc.resubmit_failed_image')])
+        end
       end
     end
 
@@ -347,7 +533,8 @@ RSpec.describe Idv::ApiImageUploadForm do
         form.submit
         session = DocumentCaptureSession.find_by(uuid: document_capture_session_uuid)
         capture_result = session.load_result
-        expect(capture_result.failed_front_image_fingerprints).not_to match_array([])
+        expect(capture_result.failed_front_image_fingerprints.length).to eq(1)
+        expect(capture_result.failed_back_image_fingerprints.length).to eq(1)
         response = form.submit
         expect(response.errors).to have_key(:front)
         expect(response.errors).to have_value([I18n.t('doc_auth.errors.doc.resubmit_failed_image')])
@@ -359,9 +546,40 @@ RSpec.describe Idv::ApiImageUploadForm do
           flow_path: anything,
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
+          selfie_image_fingerprint: nil,
           liveness_checking_required: boolean,
           side: 'both',
         )
+      end
+
+      context 'when selfie is checked for liveness' do
+        let(:selfie_image) { DocAuthImageFixtures.selfie_image_multipart }
+        let(:back_image) { DocAuthImageFixtures.portrait_match_success_yaml }
+        it 'keeps fingerprints of failed image and triggers error when submit same image' do
+          form.submit
+          session = DocumentCaptureSession.find_by(uuid: document_capture_session_uuid)
+          capture_result = session.load_result
+          expect(capture_result.failed_front_image_fingerprints.length).to eq(1)
+          expect(capture_result.failed_back_image_fingerprints.length).to eq(1)
+          expect(capture_result.failed_selfie_image_fingerprints).to be_nil
+          response = form.submit
+          expect(response.errors).to have_key(:front)
+          expect(response.errors).to have_key(:back)
+          expect(response.errors).
+            to have_value([I18n.t('doc_auth.errors.doc.resubmit_failed_image')])
+          expect(fake_analytics).to have_logged_event(
+            'IdV: failed doc image resubmitted',
+            attempts: 1,
+            remaining_attempts: 3,
+            user_id: document_capture_session.user.uuid,
+            flow_path: anything,
+            front_image_fingerprint: an_instance_of(String),
+            back_image_fingerprint: an_instance_of(String),
+            selfie_image_fingerprint: nil,
+            liveness_checking_required: boolean,
+            side: 'both',
+          )
+        end
       end
     end
 
@@ -491,6 +709,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           allow(client_response).to receive(:network_error?).and_return(false)
           allow(client_response).to receive(:errors).and_return(errors)
           allow(client_response).to receive(:doc_auth_success?).and_return(false)
+          allow(client_response).to receive(:selfie_status).and_return(:not_processed)
           form.send(:validate_form)
           capture_result = form.send(:store_failed_images, client_response, doc_pii_response)
           expect(capture_result[:front]).not_to be_empty
@@ -504,6 +723,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           allow(client_response).to receive(:network_error?).and_return(false)
           allow(client_response).to receive(:errors).and_return(errors)
           allow(client_response).to receive(:doc_auth_success?).and_return(false)
+          allow(client_response).to receive(:selfie_status).and_return(:not_processed)
           form.send(:validate_form)
           capture_result = form.send(:store_failed_images, client_response, doc_pii_response)
           expect(capture_result[:front]).not_to be_empty
@@ -517,6 +737,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           allow(client_response).to receive(:network_error?).and_return(false)
           allow(client_response).to receive(:errors).and_return(errors)
           allow(client_response).to receive(:doc_auth_success?).and_return(false)
+          allow(client_response).to receive(:selfie_status).and_return(:not_processed)
           form.send(:validate_form)
           capture_result = form.send(:store_failed_images, client_response, doc_pii_response)
           expect(capture_result[:front]).not_to be_empty
@@ -546,6 +767,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           allow(client_response).to receive(:errors).and_return(errors)
           allow(client_response).to receive(:doc_auth_success?).and_return(false)
           allow(doc_pii_response).to receive(:success?).and_return(false)
+          allow(client_response).to receive(:selfie_status).and_return(:not_processed)
           form.send(:validate_form)
           capture_result = form.send(:store_failed_images, client_response, doc_pii_response)
           expect(capture_result[:front]).not_to be_empty

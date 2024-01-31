@@ -12,7 +12,9 @@ class ServiceProviderRequest
     ial: nil,
     aal: nil,
     requested_attributes: [],
-    biometric_comparison_required: false
+    biometric_comparison_required: false,
+    acr_values: nil, # rubocop:disable Lint/UnusedMethodArgument
+    vtr: nil # rubocop:disable Lint/UnusedMethodArgument
   )
     @uuid = uuid
     @issuer = issuer

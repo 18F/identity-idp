@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'Email confirmation during sign up' do
+RSpec.feature 'Email confirmation during sign up', allowed_extra_analytics: [:*] do
   scenario 'confirms valid email and sets valid password' do
     allow(IdentityConfig.store).to receive(:participate_in_dap).and_return(true)
     reset_email

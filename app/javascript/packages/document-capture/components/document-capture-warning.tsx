@@ -2,6 +2,7 @@ import { Cancel } from '@18f/identity-verify-flow';
 import { useI18n, HtmlTextWithStrongNoWrap } from '@18f/identity-react-i18n';
 import { useContext, useEffect, useRef } from 'react';
 import { FormStepError } from '@18f/identity-form-steps';
+import type { I18n } from '@18f/identity-i18n';
 import Warning from './warning';
 import DocumentCaptureTroubleshootingOptions from './document-capture-troubleshooting-options';
 import UnknownError from './unknown-error';
@@ -11,6 +12,7 @@ import AnalyticsContext from '../context/analytics';
 interface DocumentCaptureWarningProps {
   isFailedDocType: boolean;
   isFailedResult: boolean;
+  isFailedSelfieLivenessOrQuality: boolean;
   remainingAttempts: number;
   actionOnClick?: () => void;
   unknownFieldErrors: FormStepError<{ front: string; back: string }>[];
@@ -19,9 +21,25 @@ interface DocumentCaptureWarningProps {
 
 const DISPLAY_ATTEMPTS = 3;
 
+type GetHeadingArguments = {
+  isFailedDocType: boolean;
+  isFailedSelfieLivenessOrQuality: boolean;
+  t: typeof I18n.prototype.t;
+};
+function getHeading({ isFailedDocType, isFailedSelfieLivenessOrQuality, t }: GetHeadingArguments) {
+  if (isFailedDocType) {
+    return t('errors.doc_auth.doc_type_not_supported_heading');
+  }
+  if (isFailedSelfieLivenessOrQuality) {
+    return t('errors.doc_auth.selfie_not_live_or_poor_quality_heading');
+  }
+  return t('errors.doc_auth.rate_limited_heading');
+}
+
 function DocumentCaptureWarning({
   isFailedDocType,
   isFailedResult,
+  isFailedSelfieLivenessOrQuality,
   remainingAttempts,
   actionOnClick,
   unknownFieldErrors = [],
@@ -32,15 +50,13 @@ function DocumentCaptureWarning({
   const { trackEvent } = useContext(AnalyticsContext);
 
   const nonIppOrFailedResult = !inPersonURL || isFailedResult;
-  const heading = isFailedDocType
-    ? t('errors.doc_auth.doc_type_not_supported_heading')
-    : t('errors.doc_auth.rate_limited_heading');
+  const heading = getHeading({ isFailedDocType, isFailedSelfieLivenessOrQuality, t });
   const actionText = nonIppOrFailedResult
     ? t('idv.failure.button.warning')
     : t('idv.failure.button.try_online');
-  const subheading = !nonIppOrFailedResult && !isFailedDocType && (
-    <h2>{t('errors.doc_auth.rate_limited_subheading')}</h2>
-  );
+  const subheading = !nonIppOrFailedResult &&
+    !isFailedDocType &&
+    !isFailedSelfieLivenessOrQuality && <h2>{t('errors.doc_auth.rate_limited_subheading')}</h2>;
   const subheadingRef = useRef<HTMLDivElement>(null);
   const errorMessageDisplayedRef = useRef<HTMLDivElement>(null);
 
@@ -79,6 +95,7 @@ function DocumentCaptureWarning({
             unknownFieldErrors={unknownFieldErrors}
             remainingAttempts={remainingAttempts}
             isFailedDocType={isFailedDocType}
+            isFailedSelfieLivenessOrQuality={isFailedSelfieLivenessOrQuality}
             hasDismissed={hasDismissed}
           />
         </div>

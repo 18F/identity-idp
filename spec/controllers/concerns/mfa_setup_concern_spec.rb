@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'MfaSetupConcern' do
+RSpec.describe MfaSetupConcern, allowed_extra_analytics: [:*] do
   controller ApplicationController do
     include MfaSetupConcern
   end
