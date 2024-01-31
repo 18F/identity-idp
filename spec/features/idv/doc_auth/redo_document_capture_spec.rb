@@ -161,7 +161,7 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
       )
       expect(fake_analytics).to have_logged_event(
         'IdV: doc auth image upload form submitted',
-        hash_including(remaining_attempts: 3, attempts: 1),
+        hash_including(remaining_submit_attempts: 3, submit_attempts: 1),
       )
       DocAuth::Mock::DocAuthMockClient.reset!
       expect(page).not_to have_css(
@@ -326,7 +326,7 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
         )
         expect(fake_analytics).to have_logged_event(
           'IdV: doc auth image upload form submitted',
-          hash_including(remaining_attempts: 3, attempts: 1),
+          hash_including(remaining_submit_attempts: 3, submit_attempts: 1),
         )
         DocAuth::Mock::DocAuthMockClient.reset!
         expect(page).not_to have_css(
@@ -375,7 +375,7 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
         )
         expect(fake_analytics).to have_logged_event(
           'IdV: doc auth image upload form submitted',
-          hash_including(remaining_attempts: 3, attempts: 1),
+          hash_including(remaining_submit_attempts: 3, submit_attempts: 1),
         )
         DocAuth::Mock::DocAuthMockClient.reset!
         expect(page).not_to have_css(
@@ -447,7 +447,7 @@ RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytic
         )
         expect(fake_analytics).to have_logged_event(
           'IdV: doc auth image upload form submitted',
-          hash_including(remaining_attempts: 3, attempts: 1),
+          hash_including(remaining_submit_attempts: 3, submit_attempts: 1),
         )
         DocAuth::Mock::DocAuthMockClient.reset!
         expect(page).not_to have_css(
