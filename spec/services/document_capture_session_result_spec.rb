@@ -9,6 +9,7 @@ RSpec.describe DocumentCaptureSessionResult do
     it 'works with EncryptedRedisStructStorage' do
       result = DocumentCaptureSessionResult.new(
         id: id,
+        success: success,
         doc_auth_success: success,
         selfie_status: :success,
         pii: pii,
@@ -19,16 +20,15 @@ RSpec.describe DocumentCaptureSessionResult do
 
       expect(loaded_result.id).to eq(id)
       expect(loaded_result.success?).to eq(success)
-      expect(loaded_result)
       expect(loaded_result.pii).to eq(pii.deep_symbolize_keys)
       expect(loaded_result.attention_with_barcode?).to eq(false)
       expect(loaded_result.selfie_status).to eq(:success)
       expect(loaded_result.doc_auth_success).to eq(true)
-      loaded_result.inspect
     end
     it 'add fingerprint with EncryptedRedisStructStorage' do
       result = DocumentCaptureSessionResult.new(
         id: id,
+        success: success,
         pii: pii,
         attention_with_barcode: false,
       )
@@ -64,6 +64,17 @@ RSpec.describe DocumentCaptureSessionResult do
         )
         expect(result.success?).to eq(true)
       end
+      it 'reports correctly from success when missing doc_auth_success and selfie_status' do
+        result = DocumentCaptureSessionResult.new(
+          id: id,
+          success: true,
+          pii: pii,
+          attention_with_barcode: false,
+          selfie_status: :nil,
+          doc_auth_success: nil,
+        )
+        expect(result.success?).to eq(true)
+      end
       it 'reports failure when selfie_status is :fail' do
         result = DocumentCaptureSessionResult.new(
           id: id,
@@ -88,7 +99,7 @@ RSpec.describe DocumentCaptureSessionResult do
         expect(result.success?).to eq(false)
       end
 
-      describe 'hypothetically when old success field and contradicting new status filed' do
+      describe 'when success field, doc_auth_success, and selfie_status conflict' do
         it 'reports correct result' do
           result = DocumentCaptureSessionResult.new(
             id: id,
