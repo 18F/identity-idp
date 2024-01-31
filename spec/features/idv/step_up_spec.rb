@@ -8,7 +8,7 @@ RSpec.describe 'IdV step up flow', allowed_extra_analytics: [:*] do
   let(:sp_name) { 'Test SP' }
 
   let(:user) do
-    create(:user, :proofed)
+    create(:user, :proofed, password: RequestHelper::VALID_PASSWORD)
   end
 
   before do
@@ -21,18 +21,7 @@ RSpec.describe 'IdV step up flow', allowed_extra_analytics: [:*] do
 
     expect(page).to have_current_path(idv_welcome_path)
 
-    complete_doc_auth_steps_before_document_capture_step
-
-    # TODO: Refactor this
-    attach_images
-    attach_selfie
-    submit_images
-
-    complete_ssn_step
-    complete_verify_step
-    complete_phone_step(user)
-    complete_enter_password_step(user)
-    acknowledge_and_confirm_personal_key
+    complete_proofing_steps(with_selfie: true)
   end
 
   scenario 'User with active profile cannot redo idv when selfie not required' do
