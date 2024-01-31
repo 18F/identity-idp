@@ -25,10 +25,8 @@
                         url: sign_up_register_path do |f| %>
       <%= f.input :email, as: :hidden %>
       <%= f.input :resend, as: :hidden %>
-      <!-- TODO: Change text !-->
-      <!-- Text: Resend the confirmation email !-->
       <!-- TODO: Improve styling !-->
-      <%= f.button :button, t('links.resend'), class: 'usa-button--unstyled' %>
+      <%= f.button :button, t('notices.signed_up_but_unconfirmed.resend_confirmation_email'), class: 'usa-button--unstyled' %>
     <% end %>
   <% end %>
 

@@ -22,7 +22,8 @@ RSpec.describe 'sign_up/emails/show.html.erb' do
   it 'contains link to resend confirmation page' do
     render
 
-    expect(rendered).to have_button(t('links.resend'))
+    expect(rendered).
+      to have_button(t('notices.signed_up_but_unconfirmed.resend_confirmation_email'))
   end
 
   context 'when enable_load_testing_mode? is true and email address found' do
