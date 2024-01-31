@@ -352,12 +352,11 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
       # fake up a response and verify that selfie_check_performed flows through?
 
       context 'selfie included' do
-        # let(:back_image) { DocAuthImageFixtures.portrait_match_success_yaml } add post LG-12041 deply
+        let(:back_image) { DocAuthImageFixtures.portrait_match_success_yaml }
         let(:selfie_img) { DocAuthImageFixtures.selfie_image_multipart }
 
         before do
           allow(controller.decorated_sp_session).to receive(:selfie_required?).and_return(true)
-          allow_any_instance_of(DocAuth::Mock::ResultResponse).to receive(:selfie_status).and_return(:success) # remove post LG-12041 deply
         end
 
         it 'returns a successful response and modifies the session' do
@@ -1251,12 +1250,10 @@ RSpec.describe Idv::ImageUploadsController, allowed_extra_analytics: [:*] do
           and_return(double('decorated_session', { selfie_required?: true }))
       end
 
-      # let(:back_image) { DocAuthImageFixtures.portrait_match_success_yaml } add post LG-12041 deply
+      let(:back_image) { DocAuthImageFixtures.portrait_match_success_yaml }
       let(:selfie_img) { DocAuthImageFixtures.selfie_image_multipart }
 
       it 'returns a successful response' do
-        allow_any_instance_of(DocAuth::Mock::ResultResponse).to receive(:selfie_status).
-          and_return(:success) # remove post LG-12041 deply
         action
         expect(response.status).to eq(200)
         expect(json[:success]).to eq(true)
