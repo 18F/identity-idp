@@ -697,6 +697,31 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
         it 'sets image source to acuant sdk' do
           form.submit
         end
+
+        context 'selfie is submitted' do
+          let(:liveness_checking_required) { true }
+          let(:selfie_image) { DocAuthImageFixtures.selfie_image_multipart }
+          context 'captured with acuant sdk' do
+            let(:selfie_image_metadata) do
+              { width: 10, height: 10, mimeType: 'image/png', source: source }.to_json
+            end
+
+            it 'sets image source to acuant sdk' do
+              form.submit
+            end
+          end
+
+          context 'add using file upload' do
+            let(:selfie_image_metadata) do
+              { width: 10, height: 10, mimeType: 'image/png', source: 'upload' }.to_json
+            end
+            let(:image_source) { DocAuth::ImageSources::UNKNOWN }
+
+            it 'sets image source to acuant sdk' do
+              form.submit
+            end
+          end
+        end
       end
 
       context 'malformed image metadata' do
