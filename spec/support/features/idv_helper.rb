@@ -141,7 +141,8 @@ module IdvHelper
     client_id: sp_oidc_issuer,
     state: SecureRandom.hex,
     nonce: SecureRandom.hex,
-    verified_within: nil
+    verified_within: nil,
+    biometric_comparison_required: nil
   )
     visit openid_connect_authorize_path(
       client_id: client_id,
@@ -153,6 +154,7 @@ module IdvHelper
       prompt: 'select_account',
       nonce: nonce,
       verified_within: verified_within,
+      biometric_comparison_required: biometric_comparison_required,
     )
   end
 
