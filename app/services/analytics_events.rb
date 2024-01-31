@@ -678,7 +678,7 @@ module AnalyticsEvents
   # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
   # @param [String] acuant_version
   # @param [Boolean] assessment
-  # @param [Integer] captureAttempts number of attempts to capture / upload an image
+  # @param [Integer] captureAttempts number of attempts to capture / upload an image (previously called "attempt")
   # @param [String] documentType
   # @param [Integer] dpi  dots per inch of image
   # @param [Integer] failedImageResubmission
@@ -893,7 +893,7 @@ module AnalyticsEvents
   end
 
   # @param [String] step_name which step the user was on
-  # @param [Integer] remaining_submit_attempts how many attempts the user has left before
+  # @param [Integer] remaining_submit_attempts how many attempts the user has left before (previously called "remaining_attempts")
   #                  we rate limit them
   # The user visited an error page due to an encountering an exception talking to a proofing vendor
   def idv_doc_auth_exception_visited(step_name:, remaining_submit_attempts:, **extra)
@@ -968,8 +968,8 @@ module AnalyticsEvents
 
   # @param [Boolean] success
   # @param [Hash] errors
-  # @param [Integer] submit_attempts
-  # @param [Integer] remaining_submit_attempts
+  # @param [Integer] submit_attempts (previously called "attempts")
+  # @param [Integer] remaining_submit_attempts (previously called "remaining_attempts")
   # @param [String] user_id
   # @param [String] flow_path
   # @param [String] front_image_fingerprint Fingerprint of front image data
@@ -1008,8 +1008,8 @@ module AnalyticsEvents
   # @param [String] state
   # @param [String] state_id_type
   # @param [Boolean] async
-  # @param [Integer] submit_attempts
-  # @param [Integer] remaining_submit_attempts
+  # @param [Integer] submit_attempts (previously called "attempts")
+  # @param [Integer] remaining_submit_attempts (previously called "remaining_attempts")
   # @param [Hash] client_image_metrics
   # @param [String] flow_path
   # @param [Float] vendor_request_time_in_ms Time it took to upload images & get a response.
@@ -1053,7 +1053,8 @@ module AnalyticsEvents
     exception:,
     state:,
     state_id_type:,
-    async:, submit_attempts:,
+    async:,
+    submit_attempts:,
     remaining_submit_attempts:,
     client_image_metrics:,
     flow_path:,
@@ -1122,7 +1123,7 @@ module AnalyticsEvents
   # @param [Boolean] success
   # @param [Hash] errors
   # @param [String] user_id
-  # @param [Integer] remaining_submit_attempts
+  # @param [Integer] remaining_submit_attempts (previously called "remaining_attempts")
   # @param [Hash] pii_like_keypaths
   # @param [String] flow_path
   # @param [String] front_image_fingerprint Fingerprint of front image data
@@ -1171,7 +1172,7 @@ module AnalyticsEvents
   end
 
   # @param [String] step_name
-  # @param [Integer] remaining_submit_attempts
+  # @param [Integer] remaining_submit_attempts (previously called "remaining_attempts")
   # The user was sent to a warning page during the IDV flow
   def idv_doc_auth_warning_visited(step_name:, remaining_submit_attempts:, **extra)
     track_event(
@@ -1322,7 +1323,7 @@ module AnalyticsEvents
   # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
   # @param [String] acuant_version
   # @param [Boolean] assessment
-  # @param [Integer] captureAttempts number of attempts to capture / upload an image
+  # @param [Integer] captureAttempts number of attempts to capture / upload an image (previously called "attempt")
   # @param [String] documentType
   # @param [Integer] dpi  dots per inch of image
   # @param [Integer] failedImageResubmission
@@ -2697,7 +2698,7 @@ module AnalyticsEvents
 
   # @param ['warning','jobfail','failure'] type
   # @param [Time] limiter_expires_at when the rate limit expires
-  # @param [Integer] remaining_submit_attempts number of submit attempts remaining
+  # @param [Integer] remaining_submit_attempts number of submit attempts remaining (previously called "remaining_attempts")
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # When a user gets an error during the phone finder flow of IDV
   def idv_phone_error_visited(
@@ -2812,7 +2813,7 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Integer] captureAttempts number of attempts to capture / upload an image
+  # @param [Integer] captureAttempts number of attempts to capture / upload an image (previously called "attempt")
   # User captured and approved of their selfie
   # rubocop:disable Naming/VariableName,Naming/MethodParameterName
   def idv_sdk_selfie_image_added(captureAttempts:, **extra)
@@ -2844,7 +2845,7 @@ module AnalyticsEvents
     track_event(:idv_sdk_selfie_image_capture_opened, **extra)
   end
 
-  # @param [Integer] captureAttempts number of attempts to capture / upload an image
+  # @param [Integer] captureAttempts number of attempts to capture / upload an image (previously called "attempt")
   # @param [Integer] failedImageResubmission
   # @param [String] fingerprint fingerprint of the image added
   # @param [String] flow_path whether the user is in the hybrid or standard flow
@@ -2884,7 +2885,7 @@ module AnalyticsEvents
 
   # Tracks when the user visits one of the the session error pages.
   # @param [String] type
-  # @param [Integer,nil] submit_attempts_remaining
+  # @param [Integer,nil] submit_attempts_remaining (previously called "attempts_remaining")
   def idv_session_error_visited(
     type:,
     submit_attempts_remaining: nil,
@@ -2953,7 +2954,7 @@ module AnalyticsEvents
   # @param [DateTime] enqueued_at When was this letter enqueued
   # @param [Integer] which_letter Sorted by enqueue time, which letter had this code
   # @param [Integer] letter_count How many letters did the user enqueue for this profile
-  # @param [Integer] submit_attempts Number of attempts to enter a correct code
+  # @param [Integer] submit_attempts Number of attempts to enter a correct code (previously called "attempts")
   # @param [Boolean] pending_in_person_enrollment
   # @param [Boolean] fraud_check_failed
   # @see Reporting::IdentityVerificationReport#query This event is used by the identity verification
@@ -3046,7 +3047,7 @@ module AnalyticsEvents
   # @param [String] flow_path
   # @param [String] heading
   # @param [String] location
-  # @param [Integer] remaining_submit_attempts
+  # @param [Integer] remaining_submit_attempts (previously called "remaining_attempts")
   # @param [String] subheading
   # @param [Boolean] use_alternate_sdk
   def idv_warning_shown(
