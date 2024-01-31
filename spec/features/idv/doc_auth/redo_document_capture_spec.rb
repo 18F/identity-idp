@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'doc auth redo document capture', js: true do
+RSpec.feature 'doc auth redo document capture', js: true, allowed_extra_analytics: [:*] do
   include IdvStepHelper
   include DocAuthHelper
   include DocCaptureHelper
@@ -217,6 +217,8 @@ RSpec.feature 'doc auth redo document capture', js: true do
       complete_doc_auth_steps_before_document_capture_step
       mock_doc_auth_trueid_http_non2xx_status(438)
       attach_and_submit_images
+      # verify it's a network error
+      expect(page).to have_content(I18n.t('doc_auth.errors.general.network_error'))
       click_try_again
     end
 
@@ -230,6 +232,8 @@ RSpec.feature 'doc auth redo document capture', js: true do
       complete_doc_auth_steps_before_document_capture_step
       mock_doc_auth_trueid_http_non2xx_status(500)
       attach_and_submit_images
+      # verify it's a network error
+      expect(page).to have_content(I18n.t('doc_auth.errors.general.network_error'))
       click_try_again
     end
     it_behaves_like 'image re-upload allowed'

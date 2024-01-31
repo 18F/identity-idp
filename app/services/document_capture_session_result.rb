@@ -31,7 +31,7 @@ DocumentCaptureSessionResult = RedactedStruct.new(
   alias_method :pii_from_doc, :pii
 
   %w[front back selfie].each do |side|
-    define_method("add_failed_#{side}_image!") do |fingerprint|
+    define_method(:"add_failed_#{side}_image!") do |fingerprint|
       member_name = "failed_#{side}_image_fingerprints"
       self[member_name] ||= []
       if fingerprint && !self[member_name].include?(fingerprint)
@@ -39,7 +39,7 @@ DocumentCaptureSessionResult = RedactedStruct.new(
       end
     end
 
-    define_method("failed_#{side}_image?") do |fingerprint|
+    define_method(:"failed_#{side}_image?") do |fingerprint|
       member_name = "failed_#{side}_image_fingerprints"
       return false unless self[member_name]&.is_a?(Array)
       return self[member_name]&.include?(fingerprint)

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'sign up with backup code' do
+RSpec.feature 'sign up with backup code', allowed_extra_analytics: [:*] do
   include DocAuthHelper
   include SamlAuthHelper
 

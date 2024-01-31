@@ -1,7 +1,7 @@
 # rubocop:disable Layout/LineLength
 require 'rails_helper'
 
-RSpec.describe OpenidConnect::AuthorizationController do
+RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: [:*] do
   include WebAuthnHelper
   before do
     # All the tests here were written prior to the interstitial

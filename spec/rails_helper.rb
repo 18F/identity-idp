@@ -57,6 +57,7 @@ RSpec.configure do |config|
 
     class Analytics
       prepend FakeAnalytics::PiiAlerter
+      prepend FakeAnalytics::UndocumentedParamsChecker
     end
 
     begin

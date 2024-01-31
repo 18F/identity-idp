@@ -75,3 +75,28 @@
 .manageable-authenticator__actions {
   @include grid-col('auto');
 }
+
+.manageable-authenticator__done-button,
+.manageable-authenticator__rename-button,
+.manageable-authenticator__delete-button .usa-button,
+.manageable-authenticator__save-rename-button .usa-button,
+.manageable-authenticator__cancel-rename-button {
+  @include at-media-max('tablet') {
+    @include button-unstyled;
+    width: auto;
+  }
+}
+
+.manageable-authenticator__rename-button,
+.manageable-authenticator__save-rename-button {
+  @include at-media-max('tablet') {
+    margin-right: 1rem;
+  }
+}
+
+.manageable-authenticator__delete-button
+  .usa-button.usa-button--danger.usa-button--outline:not(:disabled, [aria-disabled='true']) {
+  @include at-media-max('tablet') {
+    box-shadow: none;
+  }
+}

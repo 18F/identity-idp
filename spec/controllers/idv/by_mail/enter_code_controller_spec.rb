@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::ByMail::EnterCodeController do
+RSpec.describe Idv::ByMail::EnterCodeController, allowed_extra_analytics: [:*] do
   let(:good_otp) { 'ABCDE12345' }
   let(:bad_otp) { 'bad-otp' }
   let(:threatmetrix_enabled) { false }
