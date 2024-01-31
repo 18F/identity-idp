@@ -16,10 +16,12 @@ class PhoneConfiguration < ApplicationRecord
     PhoneFormatter.mask(phone)
   end
 
+  def phone_confirmed?
+    !!confirmed_at
+  end
+
   def selection_presenters
     options = []
-
-    capabilities = PhoneNumberCapabilities.new(phone, phone_confirmed: !!confirmed_at?)
 
     if capabilities.supports_sms?
       options << TwoFactorAuthentication::SignInPhoneSelectionPresenter.
@@ -32,6 +34,10 @@ class PhoneConfiguration < ApplicationRecord
     end
 
     options
+  end
+
+  def capabilities
+    PhoneNumberCapabilities.new(phone, phone_confirmed: !!confirmed_at?)
   end
 
   def friendly_name

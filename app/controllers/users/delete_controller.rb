@@ -61,11 +61,12 @@ module Users
     end
 
     def notify_user_via_text_of_deletion
-      phone_numbers = MfaContext.new(current_user).phone_configurations.map(&:phone)
-      phone_numbers.each do |phone|
+      phone_configurations = current_user.confirmed_phone_configurations
+      phone_configurations.each do |configuration|
+        next unless configuration.capabilities.supports_sms?
         Telephony.send_account_deleted_notice(
-          to: phone,
-          country_code: Phonelib.parse(phone).country,
+          to: configuration.phone,
+          country_code: Phonelib.parse(configuration.phone).country,
         )
       end
     end
