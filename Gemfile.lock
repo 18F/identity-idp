@@ -57,6 +57,14 @@ GIT
       selenium-webdriver (>= 4.0)
       webrick (>= 1.7)
 
+GIT
+  remote: https://github.com/rack/rack-attack.git
+  revision: d9fedfae4f7f6409f33857763391f4e18a6d7467
+  ref: d9fedfae4f7f6409f33857763391f4e18a6d7467
+  specs:
+    rack-attack (6.7.0)
+      rack (>= 1.0, < 4)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -435,7 +443,7 @@ GEM
     openssl-signature_algorithm (1.2.1)
       openssl (> 2.0, < 3.1)
     orm_adapter (0.5.0)
-    parallel (1.23.0)
+    parallel (1.24.0)
     parser (3.3.0.0)
       ast (~> 2.4.1)
       racc
@@ -477,8 +485,6 @@ GEM
     raabro (1.4.0)
     racc (1.7.3)
     rack (3.0.8)
-    rack-attack (6.7.0)
-      rack (>= 1.0, < 4)
     rack-cors (2.0.1)
       rack (>= 2.0.0)
     rack-headers_filter (0.0.1)
@@ -591,15 +597,15 @@ GEM
     rspec-support (3.12.1)
     rspec_junit_formatter (0.6.0)
       rspec-core (>= 2, < 4, != 2.12.0)
-    rubocop (1.55.1)
+    rubocop (1.59.0)
       json (~> 2.3)
       language_server-protocol (>= 3.17.0)
       parallel (~> 1.10)
-      parser (>= 3.2.2.3)
+      parser (>= 3.2.2.4)
       rainbow (>= 2.2.2, < 4.0)
       regexp_parser (>= 1.8, < 3.0)
       rexml (>= 3.2.5, < 4.0)
-      rubocop-ast (>= 1.28.1, < 2.0)
+      rubocop-ast (>= 1.30.0, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 2.4.0, < 3.0)
     rubocop-ast (1.30.0)
@@ -608,9 +614,9 @@ GEM
       rubocop (~> 1.41)
     rubocop-factory_bot (2.24.0)
       rubocop (~> 1.33)
-    rubocop-performance (1.19.1)
-      rubocop (>= 1.7.0, < 2.0)
-      rubocop-ast (>= 0.4.0)
+    rubocop-performance (1.20.2)
+      rubocop (>= 1.48.1, < 2.0)
+      rubocop-ast (>= 1.30.0, < 2.0)
     rubocop-rails (2.20.2)
       activesupport (>= 4.2.0)
       rack (>= 1.1)
@@ -805,7 +811,7 @@ DEPENDENCIES
   psych
   puma (~> 6.0)
   rack (>= 3.0)
-  rack-attack (>= 6.2.1)
+  rack-attack!
   rack-cors (>= 1.0.5)
   rack-headers_filter
   rack-mini-profiler (>= 1.1.3)
@@ -824,8 +830,8 @@ DEPENDENCIES
   rspec-rails (~> 6.0)
   rspec-retry
   rspec_junit_formatter
-  rubocop (~> 1.55.1)
-  rubocop-performance (~> 1.19.0)
+  rubocop (~> 1.59.0)
+  rubocop-performance (~> 1.20.2)
   rubocop-rails (>= 2.5.2)
   rubocop-rspec
   ruby-progressbar

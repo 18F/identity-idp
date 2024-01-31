@@ -1,7 +1,7 @@
 module Idv
   class CancellationsController < ApplicationController
     include Idv::AvailabilityConcern
-    include IdvSession
+    include IdvSessionConcern
     include GoBackHelper
 
     before_action :confirm_idv_needed

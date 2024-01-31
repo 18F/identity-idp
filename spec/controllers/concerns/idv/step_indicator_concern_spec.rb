@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Idv::StepIndicatorConcern, type: :controller do
   controller ApplicationController do
-    include IdvSession
+    include IdvSessionConcern
     include Idv::StepIndicatorConcern
   end
 

@@ -18,7 +18,7 @@
   <title><%= title %> | <%= APP_NAME %></title>
 
   <%= javascript_tag(nonce: true) do %>
-    document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/, 'js');
+    document.documentElement.classList.replace('no-js', 'js');
   <% end %>
   <%= preload_link_tag font_url('public-sans/PublicSans-Bold.woff2') %>
   <%= preload_link_tag font_url('public-sans/PublicSans-Regular.woff2') %>

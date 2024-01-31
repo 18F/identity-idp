@@ -8,17 +8,17 @@ module Funnel
       end
 
       def self.update_submit_count(doc_auth_log, issuer, token)
-        method = "#{token}_submit_count".to_sym
+        method = :"#{token}_submit_count"
         return unless doc_auth_log.respond_to?(method)
         doc_auth_log[method] += 1
-        method = "#{token}_submit_at".to_sym
+        method = :"#{token}_submit_at"
         doc_auth_log[method] = Time.zone.now if doc_auth_log.respond_to?(method)
         doc_auth_log.issuer = issuer
       end
       private_class_method :update_submit_count
 
       def self.update_error_count(doc_auth_log, token, success)
-        error_count = "#{token}_error_count".to_sym
+        error_count = :"#{token}_error_count"
         return unless doc_auth_log.respond_to?(error_count) && !success
         doc_auth_log[error_count] += 1
       end
