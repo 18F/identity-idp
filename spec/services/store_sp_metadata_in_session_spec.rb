@@ -27,6 +27,7 @@ RSpec.describe StoreSpMetadataInSession do
         app_session_hash = {
           issuer: 'issuer',
           aal_level_requested: nil,
+          acr_values: nil,
           piv_cac_requested: false,
           phishing_resistant_requested: false,
           ial: 1,
@@ -36,6 +37,7 @@ RSpec.describe StoreSpMetadataInSession do
           request_id: request_id,
           requested_attributes: %w[email],
           biometric_comparison_required: false,
+          vtr: nil,
         }
 
         instance.call
@@ -60,6 +62,7 @@ RSpec.describe StoreSpMetadataInSession do
         app_session_hash = {
           issuer: 'issuer',
           aal_level_requested: 3,
+          acr_values: nil,
           piv_cac_requested: false,
           phishing_resistant_requested: true,
           ial: 2,
@@ -69,6 +72,7 @@ RSpec.describe StoreSpMetadataInSession do
           request_id: request_id,
           requested_attributes: %w[email],
           biometric_comparison_required: false,
+          vtr: nil,
         }
 
         instance.call
@@ -93,6 +97,7 @@ RSpec.describe StoreSpMetadataInSession do
         app_session_hash = {
           issuer: 'issuer',
           aal_level_requested: 2,
+          acr_values: nil,
           piv_cac_requested: false,
           phishing_resistant_requested: true,
           ial: 2,
@@ -102,6 +107,7 @@ RSpec.describe StoreSpMetadataInSession do
           request_id: request_id,
           requested_attributes: %w[email],
           biometric_comparison_required: false,
+          vtr: nil,
         }
 
         instance.call
@@ -126,6 +132,7 @@ RSpec.describe StoreSpMetadataInSession do
         app_session_hash = {
           issuer: 'issuer',
           aal_level_requested: 3,
+          acr_values: nil,
           piv_cac_requested: false,
           phishing_resistant_requested: true,
           ial: 2,
@@ -135,6 +142,7 @@ RSpec.describe StoreSpMetadataInSession do
           request_id: request_id,
           requested_attributes: %w[email],
           biometric_comparison_required: true,
+          vtr: nil,
         }
 
         instance.call
