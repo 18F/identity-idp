@@ -52,6 +52,7 @@ RSpec.describe Idv::HowToVerifyController do
           get :show
 
           expect(Idv::HowToVerifyController.enabled?).to be false
+          Rails.logger.debug subject.idv_session.service_provider
           expect(subject.idv_session.skip_doc_auth).to be_nil
           expect(response).to redirect_to(idv_hybrid_handoff_url)
         end
@@ -73,12 +74,23 @@ RSpec.describe Idv::HowToVerifyController do
       end
 
       context 'when both ipp and opt-in ipp are enabled' do
-        it 'renders the show template for how to verify' do
-          get :show
+        context 'when the ServiceProvider has IPP enabled' do
+          # FIXME: This is extremely gross. We should set up a ServiceProvider in
+          # the test setup. But, walk before you run.
+          before do
+            allow_any_instance_of(Idv::Session).to receive(:service_provider).
+              and_return(ServiceProvider.last)
+            allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled).
+              and_return(true)
+          end
 
-          expect(Idv::HowToVerifyController.enabled?).to be true
-          expect(subject.idv_session.skip_doc_auth).to be_nil
-          expect(response).to render_template :show
+          it 'renders the show template for how to verify' do
+            get :show
+
+            expect(Idv::HowToVerifyController.enabled?).to be true
+            expect(subject.idv_session.skip_doc_auth).to be_nil
+            expect(response).to render_template :show
+          end
         end
       end
     end
@@ -94,6 +106,14 @@ RSpec.describe Idv::HowToVerifyController do
         irs_reproofing: false,
       }.merge(ab_test_args)
     end
+
+    before do
+      allow_any_instance_of(Idv::Session).to receive(:service_provider).
+        and_return(ServiceProvider.last)
+      allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled).
+        and_return(true)
+    end
+
     it 'renders the show template' do
       get :show
 
@@ -127,6 +147,14 @@ RSpec.describe Idv::HowToVerifyController do
       }
     end
     let(:analytics_name) { :idv_doc_auth_how_to_verify_submitted }
+
+    before do
+      allow_any_instance_of(Idv::Session).to receive(:service_provider).
+        and_return(ServiceProvider.last)
+      allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled).
+        and_return(true)
+    end
+
     context 'no selection made' do
       let(:analytics_args) do
         {
@@ -218,6 +246,13 @@ RSpec.describe Idv::HowToVerifyController do
   end
 
   describe '#step_info' do
+    before do
+      allow_any_instance_of(Idv::Session).to receive(:service_provider).
+        and_return(ServiceProvider.last)
+      allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled).
+        and_return(true)
+    end
+
     it 'returns a valid StepInfo object' do
       expect(Idv::HowToVerifyController.step_info).to be_valid
     end

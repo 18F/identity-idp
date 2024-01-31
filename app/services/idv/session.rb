@@ -40,6 +40,7 @@ module Idv
       @user_session = user_session
       @current_user = current_user
       @service_provider = service_provider
+      puts "*** #{service_provider.inspect}"
       set_idv_session
     end
 
