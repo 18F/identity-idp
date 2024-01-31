@@ -25,7 +25,7 @@ class BlockLinkComponent < BaseComponent
       action = tag.method(:a)
       action.call(**tag_options, href: url, class: css_class, target:, &block)
     else
-      content_tag(:div, capture(&block), class: "usa-link block-link")
+      content_tag(:div, capture(&block), class: 'usa-link block-link')
     end
   end
 end
