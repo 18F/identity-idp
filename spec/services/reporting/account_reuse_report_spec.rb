@@ -233,7 +233,7 @@ RSpec.describe Reporting::AccountReuseReport do
           user: create(:user, :fully_registered, registered_at: in_query),
         )
       end
-      (1..5).each do |_|
+      (1..5).each do
         create(
           :profile,
           :active,
