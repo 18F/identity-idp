@@ -1,13 +1,14 @@
-<% content_for(:pre_flash_content) do %>
-  <% unless @in_person == true %>
-    <%= render StepIndicatorComponent.new(
-          steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS,
-          current_step: :secure_account,
-          locale_scope: 'idv',
-          class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
-        ) %>
+<% if @in_person == false or @in_person.nil? %>
+  <% content_for(:pre_flash_content) do %>
+      <%= render StepIndicatorComponent.new(
+            steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS,
+            current_step: :secure_account,
+            locale_scope: 'idv',
+            class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
+          ) %>
   <% end %>
 <% end %> 
+
 <%= render(
       'idv/shared/error',
       title: t('titles.failure.information_not_verified'),
