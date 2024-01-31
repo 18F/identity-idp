@@ -225,7 +225,7 @@ RSpec.describe Reporting::AccountReuseReport do
 
       # Create active profiles for total_proofed_identities
       # These 13 profiles will yield 10 active profiles in the results
-      (1..10).each do |_|
+      10.times do
         create(
           :profile,
           :active,
