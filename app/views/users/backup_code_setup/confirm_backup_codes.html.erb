@@ -11,27 +11,17 @@
 </p>
 
 <div class="grid-row margin-top-5">
-  <div class="tablet:grid-col-6">
+  <div class="col-12">
     <%= render ButtonComponent.new(
-          action: ->(**tag_options, &block) { link_to(sign_up_completed_path, **tag_options, &block) },
+          action: ->(**tag_options, &block) { link_to(authentication_methods_setup_path, **tag_options, &block) },
           big: true,
           full_width: true,
           class: 'margin-bottom-205',
-        ).with_content(t('two_factor_authentication.backup_codes.saved_backup_codes')) %>
-  </div>
-</div>
-<div class="grid-row">
-  <div class="tablet:grid-col-6">
-    <%= render ButtonComponent.new(
-          action: ->(**tag_options, &block) { link_to(backup_code_regenerate_path, **tag_options, &block) },
-          big: true,
-          full_width: true,
-          outline: true,
-        ).with_content(t('two_factor_authentication.backup_codes.new_backup_codes_html')) %>
+        ).with_content(t('mfa.add')) %>
   </div>
 </div>
 
 <%= render PageFooterComponent.new do %>
-  <%= link_to t('two_factor_authentication.backup_codes.add_another_authentication_option'), authentication_methods_setup_path %>
+  <%= link_to t('forms.buttons.continue'), sign_up_completed_path %>
 <% end %>
 
