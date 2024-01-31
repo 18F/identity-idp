@@ -678,7 +678,8 @@ module AnalyticsEvents
   # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
   # @param [String] acuant_version
   # @param [Boolean] assessment
-  # @param [Integer] captureAttempts number of attempts to capture / upload an image (previously called "attempt")
+  # @param [Integer] captureAttempts number of attempts to capture / upload an image
+  #                  (previously called "attempt")
   # @param [String] documentType
   # @param [Integer] dpi  dots per inch of image
   # @param [Integer] failedImageResubmission
@@ -893,8 +894,8 @@ module AnalyticsEvents
   end
 
   # @param [String] step_name which step the user was on
-  # @param [Integer] remaining_submit_attempts how many attempts the user has left before (previously called "remaining_attempts")
-  #                  we rate limit them
+  # @param [Integer] remaining_submit_attempts how many attempts the user has left before
+  #                  we rate limit them (previously called "remaining_attempts")
   # The user visited an error page due to an encountering an exception talking to a proofing vendor
   def idv_doc_auth_exception_visited(step_name:, remaining_submit_attempts:, **extra)
     track_event(
@@ -1323,7 +1324,8 @@ module AnalyticsEvents
   # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
   # @param [String] acuant_version
   # @param [Boolean] assessment
-  # @param [Integer] captureAttempts number of attempts to capture / upload an image (previously called "attempt")
+  # @param [Integer] captureAttempts number of attempts to capture / upload an image
+  #                  (previously called "attempt")
   # @param [String] documentType
   # @param [Integer] dpi  dots per inch of image
   # @param [Integer] failedImageResubmission
@@ -2698,7 +2700,8 @@ module AnalyticsEvents
 
   # @param ['warning','jobfail','failure'] type
   # @param [Time] limiter_expires_at when the rate limit expires
-  # @param [Integer] remaining_submit_attempts number of submit attempts remaining (previously called "remaining_attempts")
+  # @param [Integer] remaining_submit_attempts number of submit attempts remaining
+  #                  (previously called "remaining_attempts")
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # When a user gets an error during the phone finder flow of IDV
   def idv_phone_error_visited(
@@ -2813,7 +2816,8 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Integer] captureAttempts number of attempts to capture / upload an image (previously called "attempt")
+  # @param [Integer] captureAttempts number of attempts to capture / upload an image
+  #                  (previously called "attempt")
   # User captured and approved of their selfie
   # rubocop:disable Naming/VariableName,Naming/MethodParameterName
   def idv_sdk_selfie_image_added(captureAttempts:, **extra)
@@ -2845,7 +2849,8 @@ module AnalyticsEvents
     track_event(:idv_sdk_selfie_image_capture_opened, **extra)
   end
 
-  # @param [Integer] captureAttempts number of attempts to capture / upload an image (previously called "attempt")
+  # @param [Integer] captureAttempts number of attempts to capture / upload an image
+  #                  (previously called "attempt")
   # @param [Integer] failedImageResubmission
   # @param [String] fingerprint fingerprint of the image added
   # @param [String] flow_path whether the user is in the hybrid or standard flow
@@ -2954,7 +2959,8 @@ module AnalyticsEvents
   # @param [DateTime] enqueued_at When was this letter enqueued
   # @param [Integer] which_letter Sorted by enqueue time, which letter had this code
   # @param [Integer] letter_count How many letters did the user enqueue for this profile
-  # @param [Integer] submit_attempts Number of attempts to enter a correct code (previously called "attempts")
+  # @param [Integer] submit_attempts Number of attempts to enter a correct code
+  #                  (previously called "attempts")
   # @param [Boolean] pending_in_person_enrollment
   # @param [Boolean] fraud_check_failed
   # @see Reporting::IdentityVerificationReport#query This event is used by the identity verification
