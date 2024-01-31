@@ -77,7 +77,7 @@ en:
         forgot_password: You tried to reset your %{app_name} password but we don’t have
           an account linked to this email address.
         unconfirmed: Thanks for submitting your email address.
-      footer: This link will expire in %{confirmation_period}.
+      footer: This link will expire in %{token_expiration_interval}.
       header: '%{intro} Please click the link below or copy and paste the entire link
         into your browser.'
       link_text: Confirm email address

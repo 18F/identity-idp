@@ -169,6 +169,7 @@ class UserMailer < ActionMailer::Base
       @token = account_reset&.request_token
       @granted_token = account_reset&.granted_token
       @account_reset_deletion_period_hours = account_reset_deletion_period_hours
+      @account_reset_token_valid_period = account_reset_token_valid_period
       mail(
         to: email_address.email,
         subject: t('user_mailer.account_reset_granted.subject', app_name: APP_NAME),
@@ -452,5 +453,16 @@ class UserMailer < ActionMailer::Base
 
   def account_reset_deletion_period_hours
     IdentityConfig.store.account_reset_wait_period_days.days.in_hours.to_i
+  end
+
+  def account_reset_token_valid_period
+    current_time = Time.zone.now
+
+    distance_of_time_in_words(
+      current_time,
+      current_time + IdentityConfig.store.account_reset_token_valid_for_days.days,
+      true,
+      accumulate_on: :hours,
+    )
   end
 end
