@@ -547,7 +547,6 @@ module Features
 
     def set_up_mfa_with_backup_codes
       click_on t('forms.buttons.continue')
-      click_on t('forms.buttons.continue')
     end
 
     def register_user(email = 'test@test.com')
@@ -593,7 +592,7 @@ module Features
 
     def set_up_2fa_with_backup_codes
       select_2fa_option('backup_code')
-      
+
       expect(page).to have_current_path auth_method_confirmation_path
     end
 
