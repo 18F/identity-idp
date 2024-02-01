@@ -61,7 +61,7 @@ module Users
     end
 
     def notify_user_via_sms_of_deletion
-      phone_configurations = current_user.confirmed_phone_configurations
+      phone_configurations = current_user.phone_configurations
       phone_configurations.each do |configuration|
         next unless configuration.capabilities.supports_sms?
         Telephony.send_account_deleted_notice(

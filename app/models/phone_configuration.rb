@@ -16,10 +16,6 @@ class PhoneConfiguration < ApplicationRecord
     PhoneFormatter.mask(phone)
   end
 
-  def phone_confirmed?
-    !!confirmed_at
-  end
-
   def selection_presenters
     options = []
 
