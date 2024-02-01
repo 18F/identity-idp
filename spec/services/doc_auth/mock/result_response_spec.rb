@@ -2,7 +2,6 @@ require 'rails_helper'
 
 RSpec.describe DocAuth::Mock::ResultResponse do
   let(:warn_notifier) { instance_double('Proc') }
-  let(:selfie_check_performed) { false }
 
   subject(:response) do
     config = DocAuth::Mock::Config.new(
@@ -11,7 +10,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       glare_threshold: 40,
       warn_notifier: warn_notifier,
     )
-    described_class.new(input, selfie_check_performed, config)
+    described_class.new(input, config)
   end
 
   context 'with an image file' do
@@ -255,7 +254,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
           glare_threshold: 40,
         },
       )
-      described_class.new(input, selfie_check_performed, config)
+      described_class.new(input, config)
     end
 
     let(:input) do

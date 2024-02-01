@@ -18,6 +18,8 @@ DocumentCaptureSessionResult = RedactedStruct.new(
                     :captured_at, :selfie_check_performed, :doc_auth_success, :selfie_status,
                     :selfie_success]
 ) do
+  include DocAuth::SelfieConcern
+
   def self.redis_key_prefix
     'dcs:result'
   end
