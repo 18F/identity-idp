@@ -75,6 +75,19 @@ RSpec.describe Idv::DocPiiForm do
       state_id_number: 'S59397998',
     }
   end
+  let(:numeric_zipcode_pii) do
+    {
+      first_name: Faker::Name.first_name,
+      last_name: Faker::Name.last_name,
+      dob: valid_dob,
+      address1: Faker::Address.street_address,
+      state: Faker::Address.state_abbr,
+      # Hardcoding because Faker returns a string
+      zipcode: 12345,
+      state_id_jurisdiction: 'AL',
+      state_id_number: 'S59397998',
+    }
+  end
   let(:state_error_pii) do
     {
       first_name: Faker::Name.first_name,
@@ -231,6 +244,17 @@ RSpec.describe Idv::DocPiiForm do
           attention_with_barcode: false,
           pii_like_keypaths: pii_like_keypaths,
         )
+      end
+    end
+
+    context 'when the zipcode is numeric' do
+      let(:pii) { numeric_zipcode_pii }
+
+      it 'succeeds' do
+        result = subject.submit
+
+        expect(result).to be_kind_of(FormResponse)
+        expect(result.success?).to eq(true)
       end
     end
 
