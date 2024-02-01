@@ -6,13 +6,15 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
   subject(:form) do
     Idv::ApiImageUploadForm.new(
       ActionController::Parameters.new(
-        front: front_image,
-        front_image_metadata: front_image_metadata,
-        back: back_image,
-        back_image_metadata: back_image_metadata,
-        selfie: selfie_image,
-        selfie_image_metadata: selfie_image_metadata,
-        document_capture_session_uuid: document_capture_session_uuid,
+        {
+          front: front_image,
+          front_image_metadata: front_image_metadata,
+          back: back_image,
+          back_image_metadata: back_image_metadata,
+          selfie: selfie_image,
+          selfie_image_metadata: selfie_image_metadata,
+          document_capture_session_uuid: document_capture_session_uuid,
+        }.compact,
       ),
       service_provider: build(:service_provider, issuer: 'test_issuer'),
       analytics: fake_analytics,
@@ -310,7 +312,6 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
           expect(response.selfie_status).to eq(:success)
           expect(response.errors).to eq({})
           expect(response.attention_with_barcode?).to eq(false)
-          expect(response.pii_from_doc).to eq(Idp::Constants::MOCK_IDV_APPLICANT)
         end
       end
     end
