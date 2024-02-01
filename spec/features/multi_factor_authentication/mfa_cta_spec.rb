@@ -35,8 +35,7 @@ RSpec.feature 'mfa cta banner', allowed_extra_analytics: [:*] do
       expect(MfaPolicy.new(user).multiple_factors_enabled?).to eq false
       expect(page).to have_current_path(confirm_backup_codes_path)
 
-      acknowledge_backup_code_confirmation
-
+      click_on t('forms.buttons.continue')
       expect(page).to have_content(t('mfa.second_method_warning.text'))
     end
 
@@ -66,8 +65,7 @@ RSpec.feature 'mfa cta banner', allowed_extra_analytics: [:*] do
       click_button t('mfa.skip')
 
       expect(page).to have_current_path(confirm_backup_codes_path)
-      acknowledge_backup_code_confirmation
-      click_link(t('mfa.second_method_warning.link'))
+      click_link(t('mfa.add'))
       expect(page).to have_current_path(authentication_methods_setup_path)
     end
   end
