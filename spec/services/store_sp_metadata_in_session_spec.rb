@@ -4,13 +4,14 @@ RSpec.describe StoreSpMetadataInSession do
   describe '#call' do
     let(:request_id) { SecureRandom.uuid }
     let(:app_session) { {} }
+    let(:instance) do
+      StoreSpMetadataInSession.new(session: app_session, request_id: request_id)
+    end
 
     context 'when a ServiceProviderRequestProxy is not found' do
       let(:request_id) { 'foo' }
 
       it 'does not set the session[:sp] hash' do
-        instance = StoreSpMetadataInSession.new(session: app_session, request_id: request_id)
-
         expect { instance.call }.to_not change(app_session, :keys)
       end
     end
@@ -24,7 +25,6 @@ RSpec.describe StoreSpMetadataInSession do
           sp_request.requested_attributes = %w[email]
           sp_request.biometric_comparison_required = false
         end
-        instance = StoreSpMetadataInSession.new(session: app_session, request_id: request_id)
 
         app_session_hash = {
           issuer: 'issuer',
@@ -55,7 +55,6 @@ RSpec.describe StoreSpMetadataInSession do
           sp_request.requested_attributes = %w[email]
           sp_request.biometric_comparison_required = false
         end
-        instance = StoreSpMetadataInSession.new(session: app_session, request_id: request_id)
 
         app_session_hash = {
           issuer: 'issuer',
@@ -86,7 +85,6 @@ RSpec.describe StoreSpMetadataInSession do
           sp_request.requested_attributes = %w[email]
           sp_request.biometric_comparison_required = false
         end
-        instance = StoreSpMetadataInSession.new(session: app_session, request_id: request_id)
 
         app_session_hash = {
           issuer: 'issuer',
@@ -117,7 +115,6 @@ RSpec.describe StoreSpMetadataInSession do
           sp_request.requested_attributes = %w[email]
           sp_request.biometric_comparison_required = true
         end
-        instance = StoreSpMetadataInSession.new(session: app_session, request_id: request_id)
 
         app_session_hash = {
           issuer: 'issuer',
