@@ -560,11 +560,8 @@ module Features
 
     def set_up_2fa_with_backup_codes
       select_2fa_option('backup_code')
-
-      expect(page).to have_current_path backup_code_setup_path
-
-      check t('forms.backup_code.saved')
-      click_button 'Continue'
+      
+      expect(page).to have_current_path auth_method_confirmation_path
     end
 
     def register_user_with_piv_cac(email = 'test@test.com')
