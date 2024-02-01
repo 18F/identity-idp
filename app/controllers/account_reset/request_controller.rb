@@ -1,13 +1,13 @@
 module AccountReset
   class RequestController < ApplicationController
     include TwoFactorAuthenticatable
+    include ActionView::Helpers::DateHelper
 
     before_action :confirm_two_factor_enabled
 
     def show
       analytics.account_reset_visit
-      presenter = ConfirmationEmailPresenter.new(current_user, view_context)
-      @confirmation_period = presenter.confirmation_period
+      @account_reset_deletion_period_interval = account_reset_deletion_period_interval
     end
 
     def create
@@ -40,6 +40,17 @@ module AccountReset
         piv_cac: TwoFactorAuthentication::PivCacPolicy.new(current_user).configured?,
         email_addresses: current_user.email_addresses.count,
       }
+    end
+
+    def account_reset_deletion_period_interval
+      current_time = Time.zone.now
+
+      distance_of_time_in_words(
+        current_time,
+        current_time + IdentityConfig.store.account_reset_wait_period_days.days,
+        true,
+        accumulate_on: :hours,
+      )
     end
   end
 end

@@ -8,7 +8,7 @@
 
 <h2><%= t('account_reset.request.delete_account') %></h2>
 
-<% t('account_reset.request.delete_account_info', interval: @confirmation_period).each do |info_p| %>
+<% t('account_reset.request.delete_account_info', interval: @account_reset_deletion_period_interval).each do |info_p| %>
   <p><%= info_p %></p>
 <% end %>
 
