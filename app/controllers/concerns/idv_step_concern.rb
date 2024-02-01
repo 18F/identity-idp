@@ -1,7 +1,7 @@
 module IdvStepConcern
   extend ActiveSupport::Concern
 
-  include IdvSession
+  include IdvSessionConcern
   include RateLimitConcern
   include FraudReviewConcern
   include Idv::AbTestAnalyticsConcern

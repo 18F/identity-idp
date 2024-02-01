@@ -1,4 +1,4 @@
-module IdvSession
+module IdvSessionConcern
   extend ActiveSupport::Concern
 
   included do

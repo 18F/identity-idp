@@ -1018,7 +1018,7 @@ module AnalyticsEvents
   # @param [Boolean] attention_with_barcode
   # @param [Boolean] doc_type_supported
   # @param [Boolean] doc_auth_success
-  # @param [Boolean] selfie_success
+  # @param [String] selfie_status
   # @param [String] vendor
   # @param [String] conversation_id
   # @param [String] reference
@@ -1066,7 +1066,7 @@ module AnalyticsEvents
     attention_with_barcode: nil,
     doc_type_supported: nil,
     doc_auth_success: nil,
-    selfie_success: nil,
+    selfie_status: nil,
     vendor: nil,
     conversation_id: nil,
     reference: nil,
@@ -1102,7 +1102,7 @@ module AnalyticsEvents
       attention_with_barcode:,
       doc_type_supported:,
       doc_auth_success:,
-      selfie_success:,
+      selfie_status:,
       vendor:,
       conversation_id:,
       reference:,
@@ -1199,6 +1199,7 @@ module AnalyticsEvents
   # @param [Boolean] in_person_verification_pending
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [String, nil] deactivation_reason Reason user's profile was deactivated, if any.
+  # @identity.idp.previous_event_name  IdV: review info visited
   def idv_enter_password_submitted(
     success:,
     fraud_review_pending:,
@@ -1227,6 +1228,7 @@ module AnalyticsEvents
   # @param [String] address_verification_method The method (phone or gpo) being
   #        used to verify the user's identity
   # User visited IDV password confirm page
+  # @identity.idp.previous_event_name  IdV: review info visited
   def idv_enter_password_visited(
     proofing_components: nil,
     address_verification_method: nil,

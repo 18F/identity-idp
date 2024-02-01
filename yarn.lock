@@ -2,12 +2,12 @@
 # yarn lockfile v1
 
 
-"@18f/identity-design-system@^8.0.1":
-  version "8.0.1"
-  resolved "https://registry.yarnpkg.com/@18f/identity-design-system/-/identity-design-system-8.0.1.tgz#72176fe0e8f0418c87caca42f57d9bb370346a55"
-  integrity sha512-SnVw2Cp2HYaR9bMCQ7RtCjze4j4BOEp83GXB44uMBkOmtk0JViM7BlerHR9XtJ9FH4ke2MnvVx4ScuBbSRhsIQ==
+"@18f/identity-design-system@^8.1.2":
+  version "8.1.2"
+  resolved "https://registry.yarnpkg.com/@18f/identity-design-system/-/identity-design-system-8.1.2.tgz#d9f36e50c615afb4ff81befe02309a618647bd33"
+  integrity sha512-EvhnRvqOWmvjAdV2EedvSeoiN55RFA4RqAIsPTScw1N6QstbXEzJmDA242k3X81nf6Kd1yRFKxrKxNdl1CbmDQ==
   dependencies:
-    "@uswds/uswds" "^3.6.1"
+    "@uswds/uswds" "^3.7.1"
 
 "@aashutoshrathi/word-wrap@^1.2.3":
   version "1.2.6"
@@ -1827,7 +1827,7 @@
   resolved "https://registry.yarnpkg.com/@ungap/promise-all-settled/-/promise-all-settled-1.1.2.tgz#aa58042711d6e3275dd37dc597e5d31e8c290a44"
   integrity sha512-sL/cEvJWAnClXw0wHk85/2L0G6Sj8UB0Ctc1TEMbKSsmpRosqhwj9gWgFRZSrBr2f9tiXISwNhCPmlfqUqyb9Q==
 
-"@uswds/uswds@^3.6.1":
+"@uswds/uswds@^3.7.1":
   version "3.7.1"
   resolved "https://registry.yarnpkg.com/@uswds/uswds/-/uswds-3.7.1.tgz#455dee2d7a9c7b316192bb2e21ecd0df6fad3085"
   integrity sha512-32u2S50bf5dwIujebqL+f1Jgx2rmRrpxcaccSZzdo3Qv9HaDUdcmeavlrxHqN30edHc7p8kRPjvjevOmOJKB7w==

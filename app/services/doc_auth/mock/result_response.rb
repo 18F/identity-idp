@@ -163,8 +163,8 @@ module DocAuth
 
       def portrait_match_results
         parsed_data_from_uploaded_file.dig('portrait_match_results')&.
-        transform_keys! { |key| key.to_s.camelize }&.
-        deep_symbolize_keys
+          transform_keys! { |key| key.to_s.camelize }&.
+          deep_symbolize_keys
       end
 
       def classification_info

@@ -34,7 +34,7 @@ module SamlAuthHelper
     settings.idp_cert_fingerprint_algorithm = 'http://www.w3.org/2001/04/xmlenc#sha256'
 
     overrides.except(:security).each do |setting, value|
-      settings.send("#{setting}=", value)
+      settings.send(:"#{setting}=", value)
     end
     settings.security.merge!(overrides[:security]) if overrides[:security]
     settings

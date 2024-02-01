@@ -75,7 +75,7 @@ module Idv
         user_session.dig('idv/in_person', :pii_from_user)
       end
 
-      # override IdvSession concern
+      # override IdvSessionConcern
       def flow_session
         user_session.fetch('idv/in_person', {})
       end
