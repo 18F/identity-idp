@@ -20,8 +20,8 @@ RSpec.describe StoreSpMetadataInSession do
       let(:issuer) { 'issuer' }
       let(:ial) { nil }
       let(:aal) { nil }
-      let(:url) { 'http://issuer.gov' }
-      let(:requested_attributes) { %w[email] }
+      let(:request_url) { 'http://issuer.gov' }
+      let(:requested_attributes) { requested_attributes }
       let(:biometric_comparison_required) { false }
 
       before do
@@ -29,7 +29,7 @@ RSpec.describe StoreSpMetadataInSession do
           sp_request.issuer = issuer
           sp_request.ial = ial
           sp_request.aal = aal
-          sp_request.url = url
+          sp_request.url = request_url
           sp_request.requested_attributes = requested_attributes
           sp_request.biometric_comparison_required = biometric_comparison_required
         end
@@ -43,16 +43,16 @@ RSpec.describe StoreSpMetadataInSession do
         it 'sets the session[:sp] hash' do
           expect(app_session[:sp]).to eq(
             {
-              issuer: 'issuer',
+              issuer: issuer,
               aal_level_requested: nil,
               piv_cac_requested: false,
               phishing_resistant_requested: false,
               ial: 1,
               ial2: false,
               ialmax: false,
-              request_url: 'http://issuer.gov',
+              request_url: request_url,
               request_id: request_id,
-              requested_attributes: %w[email],
+              requested_attributes: requested_attributes,
               biometric_comparison_required: false,
             },
           )
@@ -66,16 +66,16 @@ RSpec.describe StoreSpMetadataInSession do
         it 'sets the session[:sp] hash' do
           expect(app_session[:sp]).to eq(
             {
-              issuer: 'issuer',
+              issuer: issuer,
               aal_level_requested: 3,
               piv_cac_requested: false,
               phishing_resistant_requested: true,
               ial: 2,
               ial2: true,
               ialmax: false,
-              request_url: 'http://issuer.gov',
+              request_url: request_url,
               request_id: request_id,
-              requested_attributes: %w[email],
+              requested_attributes: requested_attributes,
               biometric_comparison_required: false,
             },
           )
@@ -89,16 +89,16 @@ RSpec.describe StoreSpMetadataInSession do
         it 'sets the session[:sp] hash' do
           expect(app_session[:sp]).to eq(
             {
-              issuer: 'issuer',
+              issuer: issuer,
               aal_level_requested: 2,
               piv_cac_requested: false,
               phishing_resistant_requested: true,
               ial: 2,
               ial2: true,
               ialmax: false,
-              request_url: 'http://issuer.gov',
+              request_url: request_url,
               request_id: request_id,
-              requested_attributes: %w[email],
+              requested_attributes: requested_attributes,
               biometric_comparison_required: false,
             },
           )
@@ -113,16 +113,16 @@ RSpec.describe StoreSpMetadataInSession do
         it 'sets the session[:sp] hash' do
           expect(app_session[:sp]).to eq(
             {
-              issuer: 'issuer',
+              issuer: issuer,
               aal_level_requested: 3,
               piv_cac_requested: false,
               phishing_resistant_requested: true,
               ial: 2,
               ial2: true,
               ialmax: false,
-              request_url: 'http://issuer.gov',
+              request_url: request_url,
               request_id: request_id,
-              requested_attributes: %w[email],
+              requested_attributes: requested_attributes,
               biometric_comparison_required: true,
             },
           )
