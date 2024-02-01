@@ -110,10 +110,6 @@ RSpec.feature 'Sign Up', allowed_extra_analytics: [:*] do
       fill_in_code_with_last_phone_otp
       click_submit_default
 
-      expect(current_path).to eq backup_code_setup_path
-
-      click_continue
-
       expect(page).to have_link(t('components.download_button.label'))
 
       click_continue
@@ -470,8 +466,7 @@ RSpec.feature 'Sign Up', allowed_extra_analytics: [:*] do
     set_up_2fa_with_backup_codes
     skip_second_mfa_prompt
 
-    acknowledge_backup_code_confirmation
-
+    click_link t('forms.buttons.continue')
     expect(page).to have_current_path account_path
     visit phone_setup_path
     expect(page).to have_current_path phone_setup_path
