@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::ApiImageUploadForm do
+RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
   include DocPiiHelper
 
   subject(:form) do
@@ -132,6 +132,8 @@ RSpec.describe Idv::ApiImageUploadForm do
           async: false,
           attempts: 1,
           attention_with_barcode: false,
+          address_line2_present: nil,
+          alert_failure_count: nil,
           billed: true,
           client_image_metrics: {
             back: {
@@ -147,7 +149,10 @@ RSpec.describe Idv::ApiImageUploadForm do
               width: 40,
             },
           },
+          image_metrics: nil,
+          conversation_id: nil,
           doc_auth_result: 'Passed',
+          decision_product_status: nil,
           errors: {},
           exception: nil,
           flow_path: anything,
@@ -161,10 +166,19 @@ RSpec.describe Idv::ApiImageUploadForm do
           back_image_fingerprint: an_instance_of(String),
           doc_type_supported: boolean,
           liveness_checking_required: boolean,
+          log_alert_results: nil,
+          portrait_match_results: nil,
+          processed_alerts: nil,
+          product_status: nil,
+          reference: nil,
           selfie_live: boolean,
           selfie_quality_good: boolean,
+          selfie_success: nil,
           doc_auth_success: boolean,
           selfie_status: anything,
+          vendor: nil,
+          transaction_status: nil,
+          transaction_reason_code: nil,
         )
       end
 
@@ -268,8 +282,10 @@ RSpec.describe Idv::ApiImageUploadForm do
           extra: { remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1 },
         )
       end
+      let(:doc_auth_client) { double(DocAuth::LexisNexis::LexisNexisClient) }
       before do
-        allow(subject).to receive(:post_images_to_client).and_return(failed_response)
+        subject.instance_variable_set(:@doc_auth_client, doc_auth_client)
+        allow(doc_auth_client).to receive(:post_images) { failed_response }
       end
 
       it 'is not successful' do
@@ -279,6 +295,7 @@ RSpec.describe Idv::ApiImageUploadForm do
         expect(response.success?).to eq(false)
         expect(response.attention_with_barcode?).to eq(false)
         expect(response.pii_from_doc).to eq({})
+        expect(response.doc_auth_success?).to eq(false)
       end
 
       it 'includes remaining_attempts' do
@@ -299,6 +316,24 @@ RSpec.describe Idv::ApiImageUploadForm do
         response = form.submit
         expect(response.errors).to have_key(:front)
         expect(response.errors).to have_value([I18n.t('doc_auth.errors.doc.resubmit_failed_image')])
+      end
+
+      it 'logs analytics event' do
+        form.submit
+        expect(fake_analytics).to have_logged_event(
+          'IdV: doc auth image upload vendor submitted',
+          hash_including(
+            doc_auth_result: nil,
+            errors: { front: 'glare' },
+            success: false,
+            doc_type_supported: boolean,
+            doc_auth_success: boolean,
+            liveness_checking_required: boolean,
+            selfie_status: :not_processed,
+            selfie_live: boolean,
+            selfie_quality_good: boolean,
+          ),
+        )
       end
     end
 

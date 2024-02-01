@@ -1,6 +1,7 @@
 require 'rails_helper'
 
-RSpec.describe 'signing in with remember device and idling on the sign in page' do
+RSpec.describe 'signing in with remember device and idling on the sign in page',
+               allowed_extra_analytics: [:*] do
   include SamlAuthHelper
   include OidcAuthHelper
 

@@ -7,4 +7,4 @@ module Redirect
       )
     end
   end
-  end
+end

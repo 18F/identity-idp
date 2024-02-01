@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'address proofing rate limit' do
+RSpec.feature 'address proofing rate limit', allowed_extra_analytics: [:*] do
   include IdvStepHelper
   include IdvHelper
 

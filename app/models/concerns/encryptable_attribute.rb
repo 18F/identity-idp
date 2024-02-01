@@ -86,6 +86,6 @@ module EncryptableAttribute
   end
 
   def encrypted_attribute_name(name)
-    "encrypted_#{name}".to_sym
+    :"encrypted_#{name}"
   end
 end

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'clearing IdV and restarting' do
+RSpec.describe 'clearing IdV and restarting', allowed_extra_analytics: [:*] do
   include IdvStepHelper
 
   let(:user) { user_with_2fa }

@@ -90,7 +90,7 @@ namespace :dev do
       )
     end
     random = Random.new(num_users)
-    raw_enrollment_status = (ENV['ENROLLMENT_STATUS'] || InPersonEnrollment::STATUS_PENDING)
+    raw_enrollment_status = ENV['ENROLLMENT_STATUS'] || InPersonEnrollment::STATUS_PENDING
     enrollment_status = InPersonEnrollment.statuses[raw_enrollment_status]
     is_established = [
       InPersonEnrollment::STATUS_PENDING,

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::ByMail::RequestLetterController do
+RSpec.describe Idv::ByMail::RequestLetterController, allowed_extra_analytics: [:*] do
   let(:user) { create(:user) }
 
   let(:ab_test_args) do
@@ -30,7 +30,7 @@ RSpec.describe Idv::ByMail::RequestLetterController do
       )
     end
 
-    it 'includes before_actions from IdvSession' do
+    it 'includes before_actions from IdvSessionConcern' do
       expect(subject).to have_actions(:before, :redirect_unless_sp_requested_verification)
     end
   end

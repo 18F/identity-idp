@@ -2,7 +2,7 @@ module Idv
   module InPerson
     class ReadyToVerifyController < ApplicationController
       include Idv::AvailabilityConcern
-      include IdvSession
+      include IdvSessionConcern
       include RenderConditionConcern
       include StepIndicatorConcern
       include OptInHelper

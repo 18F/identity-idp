@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::PhoneController do
+RSpec.describe Idv::PhoneController, allowed_extra_analytics: [:*] do
   include FlowPolicyHelper
 
   let(:max_attempts) { RateLimiter.max_attempts(:proof_address) }
@@ -36,7 +36,7 @@ RSpec.describe Idv::PhoneController do
   end
 
   describe 'before_actions' do
-    it 'includes before_actions from IdvSession' do
+    it 'includes before_actions from IdvSessionConcern' do
       expect(subject).to have_actions(:before, :redirect_unless_sp_requested_verification)
     end
   end

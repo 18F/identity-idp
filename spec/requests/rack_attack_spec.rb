@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'throttling requests' do
+RSpec.describe 'throttling requests', allowed_extra_analytics: [:*] do
   before(:all) { Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new }
   before(:each) { Rack::Attack.cache.store.clear }
 

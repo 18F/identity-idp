@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'Visitor sets password during signup' do
+RSpec.feature 'Visitor sets password during signup', allowed_extra_analytics: [:*] do
   scenario 'visitor is redirected back to password form when password is blank' do
     create(:user, :unconfirmed)
     confirm_last_user

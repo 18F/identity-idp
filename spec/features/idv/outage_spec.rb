@@ -12,7 +12,7 @@ def sign_in_with_idv_required(user:, sms_or_totp: :sms)
   click_submit_default
 end
 
-RSpec.feature 'IdV Outage Spec' do
+RSpec.feature 'IdV Outage Spec', allowed_extra_analytics: [:*] do
   include PersonalKeyHelper
   include IdvStepHelper
 
@@ -53,7 +53,7 @@ RSpec.feature 'IdV Outage Spec' do
   before do
     # Wire up various let()s to configuration keys
     vendors.each do |service|
-      vendor_status_key = "vendor_status_#{service}".to_sym
+      vendor_status_key = :"vendor_status_#{service}"
       allow(IdentityConfig.store).to receive(vendor_status_key).
         and_return(send(vendor_status_key))
     end
@@ -239,7 +239,7 @@ RSpec.feature 'IdV Outage Spec' do
 
   %w[acuant lexisnexis_instant_verify lexisnexis_trueid].each do |service|
     context "vendor_status_#{service} set to full_outage", js: true do
-      let("vendor_status_#{service}".to_sym) { :full_outage }
+      let(:"vendor_status_#{service}") { :full_outage }
 
       it_behaves_like 'IDV is unavailable'
 

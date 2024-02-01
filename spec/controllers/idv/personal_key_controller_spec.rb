@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::PersonalKeyController do
+RSpec.describe Idv::PersonalKeyController, allowed_extra_analytics: [:*] do
   include FlowPolicyHelper
   include SamlAuthHelper
   include PersonalKeyValidator
@@ -181,7 +181,7 @@ RSpec.describe Idv::PersonalKeyController do
       )
     end
 
-    it 'includes before_actions from IdvSession' do
+    it 'includes before_actions from IdvSessionConcern' do
       expect(subject).to have_actions(
         :before,
         :redirect_unless_sp_requested_verification,

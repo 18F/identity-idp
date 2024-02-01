@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'SAML IALMAX sign in' do
+RSpec.feature 'SAML IALMAX sign in', allowed_extra_analytics: [:*] do
   include SamlAuthHelper
 
   context 'with an ial2 SP' do

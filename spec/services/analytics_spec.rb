@@ -180,4 +180,76 @@ RSpec.describe Analytics do
       analytics.track_event('Trackable Event')
     end
   end
+
+  it 'errors when undocumented parameters are sent' do
+    expect do
+      analytics.idv_phone_confirmation_otp_submitted(
+        success: true,
+        errors: true,
+        code_expired: true,
+        code_matches: true,
+        second_factor_attempts_count: true,
+        second_factor_locked_at: true,
+        proofing_components: true,
+        some_new_undocumented_keyword: true,
+      )
+    end.to raise_error(FakeAnalytics::UndocumentedParams, /some_new_undocumented_keyword/)
+  end
+
+  it 'does not error when undocumented params are allowed', allowed_extra_analytics: [:fun_level] do
+    expect(ahoy).to receive(:track).with(
+      kind_of(String),
+      hash_including(event_properties: hash_including(:fun_level)),
+    )
+
+    analytics.idv_phone_confirmation_otp_submitted(
+      success: true,
+      errors: true,
+      code_expired: true,
+      code_matches: true,
+      second_factor_attempts_count: true,
+      second_factor_locked_at: true,
+      proofing_components: true,
+      fun_level: 1000,
+    )
+  end
+
+  it 'does not error when undocumented params are allowed via *', allowed_extra_analytics: [:*] do
+    expect(ahoy).to receive(:track).with(
+      kind_of(String),
+      hash_including(event_properties: hash_including(:fun_level)),
+    )
+
+    analytics.idv_phone_confirmation_otp_submitted(
+      success: true,
+      errors: true,
+      code_expired: true,
+      code_matches: true,
+      second_factor_attempts_count: true,
+      second_factor_locked_at: true,
+      proofing_components: true,
+      fun_level: 1000,
+    )
+  end
+
+  it 'does not error when string tags are documented as options' do
+    expect(ahoy).to receive(:track).with(
+      kind_of(String),
+      hash_including(event_properties: hash_including('DocumentName')),
+    )
+
+    analytics.idv_doc_auth_submitted_image_upload_vendor(
+      success: nil,
+      errors: nil,
+      exception: nil,
+      state: nil,
+      state_id_type: nil,
+      async: nil,
+      attempts: nil,
+      remaining_attempts: nil,
+      client_image_metrics: nil,
+      flow_path: nil,
+      'DocumentName' => 'some_name',
+    )
+  end
 end

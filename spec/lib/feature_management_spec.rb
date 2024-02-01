@@ -519,7 +519,7 @@ RSpec.describe 'FeatureManagement' do
 
     %w[acuant lexisnexis_instant_verify lexisnexis_trueid].each do |service|
       context "#{service} is in :full_outage" do
-        let("vendor_status_#{service}".to_sym) { :full_outage }
+        let(:"vendor_status_#{service}") { :full_outage }
         it 'returns false' do
           expect(FeatureManagement.idv_available?).to eql(false)
         end
