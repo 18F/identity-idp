@@ -146,8 +146,16 @@ RSpec.describe IdentityLinker do
       service_provider1 = build(:service_provider, issuer: 'client1')
       service_provider2 = build(:service_provider, issuer: 'client2')
 
-      IdentityLinker.new(user, service_provider1).link_identity(rails_session_id: rails_session_id)
-      IdentityLinker.new(user, service_provider2).link_identity(rails_session_id: rails_session_id)
+      identity1 = IdentityLinker.new(user, service_provider1).link_identity(
+        rails_session_id: rails_session_id,
+      )
+      identity2 = IdentityLinker.new(user, service_provider2).link_identity(
+        rails_session_id: rails_session_id,
+      )
+
+      expect(identity1.id).to_not eq(identity2.id)
+      expect(identity1.id).to_not be_nil
+      expect(identity2.id).to_not be_nil
     end
   end
 end
