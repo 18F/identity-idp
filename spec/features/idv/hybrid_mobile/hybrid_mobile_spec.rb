@@ -356,8 +356,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start, allowed_extra_analyti
 
       expect(page).to have_current_path(idv_hybrid_mobile_document_capture_url)
 
-      attach_images
-      attach_selfie
+      attach_liveness_images
       submit_images
 
       expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
