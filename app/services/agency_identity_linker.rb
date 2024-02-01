@@ -1,7 +1,8 @@
 class AgencyIdentityLinker
-  def initialize(sp_identity)
+  attr_reader :agency_id
+  def initialize(sp_identity, agency_id)
     @sp_identity = sp_identity
-    @agency_id = nil
+    @agency_id = agency_id
   end
 
   def link_identity
@@ -38,27 +39,11 @@ class AgencyIdentityLinker
   private
 
   def find_or_create_agency_identity
-    agency_identity || create_agency_identity_for_sp
-  end
-
-  def create_agency_identity_for_sp
     return unless agency_id
-    AgencyIdentity.create(
+    AgencyIdentity.create_or_find_by(
       agency_id: agency_id,
       user_id: @sp_identity.user_id,
       uuid: @sp_identity.uuid,
     )
-  end
-
-  def agency_identity
-    ai = AgencyIdentity.where(uuid: @sp_identity.uuid).take
-    return ai if ai
-    sp = ServiceProvider.where(issuer: @sp_identity.service_provider).take
-    return unless agency_id(sp)
-    AgencyIdentity.where(agency_id: agency_id, user_id: @sp_identity.user_id).take
-  end
-
-  def agency_id(service_provider = nil)
-    @agency_id ||= service_provider&.agency_id
   end
 end

@@ -41,7 +41,7 @@ class IdentityLinker
       end,
     )
 
-    AgencyIdentityLinker.new(identity).link_identity
+    AgencyIdentityLinker.new(identity, service_provider.agency_id).link_identity
     identity
   end
 
