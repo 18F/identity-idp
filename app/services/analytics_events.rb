@@ -1018,7 +1018,7 @@ module AnalyticsEvents
   # @param [Boolean] attention_with_barcode
   # @param [Boolean] doc_type_supported
   # @param [Boolean] doc_auth_success
-  # @param [Boolean] selfie_success
+  # @param [String] selfie_status
   # @param [String] vendor
   # @param [String] conversation_id
   # @param [String] reference
@@ -1066,7 +1066,7 @@ module AnalyticsEvents
     attention_with_barcode: nil,
     doc_type_supported: nil,
     doc_auth_success: nil,
-    selfie_success: nil,
+    selfie_status: nil,
     vendor: nil,
     conversation_id: nil,
     reference: nil,
@@ -1102,7 +1102,7 @@ module AnalyticsEvents
       attention_with_barcode:,
       doc_type_supported:,
       doc_auth_success:,
-      selfie_success:,
+      selfie_status:,
       vendor:,
       conversation_id:,
       reference:,

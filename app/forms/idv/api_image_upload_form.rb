@@ -155,6 +155,7 @@ module Idv
 
       @extra_attributes[:front_image_fingerprint] = front_image_fingerprint
       @extra_attributes[:back_image_fingerprint] = back_image_fingerprint
+      @extra_attributes[:selfie_image_fingerprint] = selfie_image_fingerprint
       @extra_attributes[:liveness_checking_required] = liveness_checking_required
       @extra_attributes
     end
@@ -172,6 +173,16 @@ module Idv
       if readable?(:back)
         @back_image_fingerprint =
           Digest::SHA256.urlsafe_base64digest(back_image_bytes)
+      end
+    end
+
+    def selfie_image_fingerprint
+      return unless liveness_checking_required
+      return @selfie_image_fingerprint if @selfie_image_fingerprint
+
+      if readable?(:selfie)
+        @selfie_image_fingerprint =
+          Digest::SHA256.urlsafe_base64digest(selfie_image_bytes)
       end
     end
 
@@ -260,6 +271,15 @@ module Idv
       unless error_sides.empty?
         analytics.idv_doc_auth_failed_image_resubmitted(
           side: error_sides.length == 2 ? 'both' : error_sides[0], **extra_attributes,
+        )
+      end
+
+      if capture_result&.failed_selfie_image?(selfie_image_fingerprint)
+        errors.add(
+          :selfie, t('doc_auth.errors.doc.resubmit_failed_image'), type: :duplicate_image
+        )
+        analytics.idv_doc_auth_failed_image_resubmitted(
+          side: 'selfie', **extra_attributes,
         )
       end
     end
@@ -439,35 +459,39 @@ module Idv
         return {
           front: [],
           back: [],
+          selfie: [],
         }
       end
       # doc auth failed due to non network error or doc_pii is not valid
       if client_response && !client_response.success? && !client_response.network_error?
         errors_hash = client_response.errors&.to_h || {}
-        ## assume both sides' error presents or both sides' error missing
-        failed_front_fingerprint = extra_attributes[:front_image_fingerprint]
-        failed_back_fingerprint = extra_attributes[:back_image_fingerprint]
-        ## not both sides' error present nor both sides' error missing
-        ## equivalent to: only one side error presents
-        only_one_side_error = errors_hash[:front]&.present? ^ errors_hash[:back]&.present?
-        if only_one_side_error
-          ## find which side is missing
-          failed_front_fingerprint = nil unless errors_hash[:front]&.present?
-          failed_back_fingerprint = nil unless errors_hash[:back]&.present?
+        failed_front_fingerprint = nil
+        failed_back_fingerprint = nil
+        if errors_hash[:front] || errors_hash[:back]
+          if errors_hash[:front]
+            failed_front_fingerprint = extra_attributes[:front_image_fingerprint]
+          end
+          if errors_hash[:back]
+            failed_back_fingerprint = extra_attributes[:back_image_fingerprint]
+          end
+        elsif !client_response.doc_auth_success?
+          failed_front_fingerprint = extra_attributes[:front_image_fingerprint]
+          failed_back_fingerprint = extra_attributes[:back_image_fingerprint]
         end
-        document_capture_session.
-          store_failed_auth_data(
-            front_image_fingerprint: failed_front_fingerprint,
-            back_image_fingerprint: failed_back_fingerprint,
-            doc_auth_success: client_response.doc_auth_success?,
-            selfie_status: selfie_status_from_response(client_response),
-          )
+        document_capture_session.store_failed_auth_data(
+          front_image_fingerprint: failed_front_fingerprint,
+          back_image_fingerprint: failed_back_fingerprint,
+          selfie_image_fingerprint: extra_attributes[:selfie_image_fingerprint],
+          doc_auth_success: client_response.doc_auth_success?,
+          selfie_status: client_response.selfie_status,
+        )
       elsif doc_pii_response && !doc_pii_response.success?
         document_capture_session.store_failed_auth_data(
           front_image_fingerprint: extra_attributes[:front_image_fingerprint],
           back_image_fingerprint: extra_attributes[:back_image_fingerprint],
+          selfie_image_fingerprint: extra_attributes[:selfie_image_fingerprint],
           doc_auth_success: client_response.doc_auth_success?,
-          selfie_status: selfie_status_from_response(client_response),
+          selfie_status: client_response.selfie_status,
         )
       end
       # retrieve updated data from session
@@ -475,6 +499,7 @@ module Idv
       {
         front: captured_result&.failed_front_image_fingerprints || [],
         back: captured_result&.failed_back_image_fingerprints || [],
+        selfie: captured_result&.failed_selfie_image_fingerprints || [],
       }
     end
 

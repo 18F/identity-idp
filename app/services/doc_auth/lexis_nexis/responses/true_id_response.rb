@@ -54,7 +54,6 @@ module DocAuth
             errors: error_messages,
             extra: extra_attributes,
             pii_from_doc: pii_from_doc,
-            selfie_check_performed: liveness_checking_enabled,
           )
         rescue StandardError => e
           NewRelic::Agent.notice_error(e)
@@ -221,7 +220,6 @@ module DocAuth
         def create_response_info
           alerts = parsed_alerts
           log_alert_formatter = DocAuth::ProcessedAlertToLogAlertFormatter.new
-
           {
             transaction_status: transaction_status,
             transaction_reason_code: transaction_reason_code,
@@ -235,6 +233,7 @@ module DocAuth
             image_metrics: parse_image_metrics,
             address_line2_present: !pii_from_doc[:address2].blank?,
             classification_info: classification_info,
+            liveness_enabled: @liveness_checking_enabled,
           }
         end
 

@@ -185,7 +185,7 @@ RSpec.describe DocAuthRouter, allowed_extra_analytics: [:*] do
       )
 
       response = I18n.with_locale(:es) do
-        proxy.get_results(instance_id: 'abcdef', selfie_check_performed: false)
+        proxy.get_results(instance_id: 'abcdef')
       end
 
       expect(response.errors[:some_other_key]).to eq(['will not be translated'])
@@ -208,7 +208,7 @@ RSpec.describe DocAuthRouter, allowed_extra_analytics: [:*] do
         ),
       )
 
-      response = proxy.get_results(instance_id: 'abcdef', selfie_check_performed: false)
+      response = proxy.get_results(instance_id: 'abcdef')
 
       expect(response.errors[:network]).to eq(I18n.t('doc_auth.errors.general.network_error'))
     end
