@@ -4,18 +4,40 @@ RSpec.feature 'how to verify step', js: true, allowed_extra_analytics: [:*] do
   include IdvHelper
   include DocAuthHelper
 
-  context 'when ipp is enabled and opt-in ipp is disabled' do
-    before do
-      allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { true }
-      allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { false }
+  let(:user) { user_with_2fa }
+  let(:ipp_service_provider) { create(:service_provider, :active, :in_person_proofing_enabled) }
 
-      sign_in_and_2fa_user
-      complete_doc_auth_steps_before_agreement_step
-      complete_agreement_step
+  context 'when ipp is enabled and opt-in ipp is disabled' do
+    context 'and when sp has opted into ipp' do
+      before do
+        allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { true }
+        allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { false }
+        allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled).and_return(true)
+        sign_in_and_2fa_user(user, issuer: ipp_service_provider.issuer)
+
+        complete_doc_auth_steps_before_agreement_step
+        complete_agreement_step
+      end
+
+      it 'skips when disabled and redirects to hybrid handoff' do
+        expect(page).to have_current_path(idv_hybrid_handoff_url)
+      end
     end
 
-    it 'skips when disabled and redirects to hybrid handoff' do
-      expect(page).to have_current_path(idv_hybrid_handoff_url)
+    context 'and when sp has not opted into ipp' do
+      before do
+        allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { true }
+        allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { false }
+        allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled).and_return(false)
+        sign_in_and_2fa_user(user, issuer: ipp_service_provider.issuer)
+
+        complete_doc_auth_steps_before_agreement_step
+        complete_agreement_step
+      end
+
+      it 'skips when disabled and redirects to hybrid handoff' do
+        expect(page).to have_current_path(idv_hybrid_handoff_url)
+      end
     end
   end
 
@@ -29,7 +51,7 @@ RSpec.feature 'how to verify step', js: true, allowed_extra_analytics: [:*] do
       complete_agreement_step
     end
 
-    it 'skips when disabled and redirects to hybird handoff' do
+    it 'skips when disabled and redirects to hybrid handoff' do
       expect(page).to have_current_path(idv_hybrid_handoff_url)
     end
   end
@@ -44,7 +66,7 @@ RSpec.feature 'how to verify step', js: true, allowed_extra_analytics: [:*] do
       complete_agreement_step
     end
 
-    it 'skips when disabled and redirects to hybird handoff' do
+    it 'skips when disabled and redirects to hybrid handoff' do
       expect(page).to have_current_path(idv_hybrid_handoff_url)
     end
   end
@@ -53,8 +75,9 @@ RSpec.feature 'how to verify step', js: true, allowed_extra_analytics: [:*] do
     before do
       allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { true }
       allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { true }
+      allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled).and_return(true)
 
-      sign_in_and_2fa_user
+      sign_in_and_2fa_user(user, issuer: ipp_service_provider.issuer)
       complete_doc_auth_steps_before_agreement_step
       complete_agreement_step
     end
@@ -74,13 +97,15 @@ RSpec.feature 'how to verify step', js: true, allowed_extra_analytics: [:*] do
   end
 
   describe 'navigating to How To Verify from Agreement page in 50/50 state' do
+    let(:user) { user_with_2fa }
     before do
       allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { true }
       allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) {
                                        initial_opt_in_enabled
                                      }
+      allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled).and_return(true)
 
-      sign_in_and_2fa_user
+      sign_in_and_2fa_user(user, issuer: ipp_service_provider.issuer)
       complete_doc_auth_steps_before_agreement_step
       complete_agreement_step
     end
