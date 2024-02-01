@@ -26,7 +26,7 @@ RSpec.describe StoreSpMetadataInSession do
           sp_request.biometric_comparison_required = false
         end
 
-        app_session_hash = {
+        expected_sp_values = {
           issuer: 'issuer',
           aal_level_requested: nil,
           piv_cac_requested: false,
@@ -41,7 +41,7 @@ RSpec.describe StoreSpMetadataInSession do
         }
 
         instance.call
-        expect(app_session[:sp]).to eq app_session_hash
+        expect(app_session[:sp]).to eq expected_sp_values
       end
     end
 
@@ -56,7 +56,7 @@ RSpec.describe StoreSpMetadataInSession do
           sp_request.biometric_comparison_required = false
         end
 
-        app_session_hash = {
+        expected_sp_values = {
           issuer: 'issuer',
           aal_level_requested: 3,
           piv_cac_requested: false,
@@ -71,7 +71,7 @@ RSpec.describe StoreSpMetadataInSession do
         }
 
         instance.call
-        expect(app_session[:sp]).to eq app_session_hash
+        expect(app_session[:sp]).to eq expected_sp_values
       end
     end
 
@@ -86,7 +86,7 @@ RSpec.describe StoreSpMetadataInSession do
           sp_request.biometric_comparison_required = false
         end
 
-        app_session_hash = {
+        expected_sp_values = {
           issuer: 'issuer',
           aal_level_requested: 2,
           piv_cac_requested: false,
@@ -101,7 +101,7 @@ RSpec.describe StoreSpMetadataInSession do
         }
 
         instance.call
-        expect(app_session[:sp]).to eq app_session_hash
+        expect(app_session[:sp]).to eq expected_sp_values
       end
     end
 
@@ -116,7 +116,7 @@ RSpec.describe StoreSpMetadataInSession do
           sp_request.biometric_comparison_required = true
         end
 
-        app_session_hash = {
+        expected_sp_values = {
           issuer: 'issuer',
           aal_level_requested: 3,
           piv_cac_requested: false,
@@ -131,7 +131,7 @@ RSpec.describe StoreSpMetadataInSession do
         }
 
         instance.call
-        expect(app_session[:sp]).to eq app_session_hash
+        expect(app_session[:sp]).to eq expected_sp_values
       end
     end
   end
