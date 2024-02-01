@@ -100,13 +100,15 @@ function DocumentCaptureWarning({
           />
         </div>
 
-        {!isFailedDocType && remainingAttempts <= DISPLAY_ATTEMPTS && (
-          <p>
-            <HtmlTextWithStrongNoWrap
-              text={t('idv.failure.attempts_html', { count: remainingAttempts })}
-            />
-          </p>
-        )}
+        {!isFailedDocType &&
+          !isFailedSelfieLivenessOrQuality &&
+          remainingAttempts <= DISPLAY_ATTEMPTS && (
+            <p>
+              <HtmlTextWithStrongNoWrap
+                text={t('idv.failure.attempts_html', { count: remainingAttempts })}
+              />
+            </p>
+          )}
       </Warning>
       {nonIppOrFailedResult && <Cancel />}
     </>
