@@ -88,12 +88,12 @@ module IdvHelper
     click_idv_send_security_code
   end
 
-  def visit_idp_from_sp_with_ial2(sp, **extra)
+  def visit_idp_from_sp_with_ial2(sp, client_id_override: nil, **extra)
     if sp == :saml
       visit_idp_from_saml_sp_with_ial2
     elsif sp == :oidc
       @state = SecureRandom.hex
-      @client_id = sp_oidc_issuer
+      @client_id = client_id_override || sp_oidc_issuer
       @nonce = SecureRandom.hex
       visit_idp_from_oidc_sp_with_ial2(state: @state, client_id: @client_id, nonce: @nonce, **extra)
     end

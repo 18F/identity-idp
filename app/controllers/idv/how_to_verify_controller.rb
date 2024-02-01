@@ -65,7 +65,6 @@ module Idv
         controller: self,
         next_steps: [:hybrid_handoff, :document_capture],
         preconditions: ->(idv_session:, user:) do
-          # TODO: We need idv_session here, not in enabled, because it's not available. :-\
           self.enabled? && idv_session.idv_consent_given && self.sp_ipp_enabled?(idv_session:)
         end,
         undo_step: ->(idv_session:, user:) { idv_session.skip_doc_auth = nil },

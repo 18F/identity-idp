@@ -7,6 +7,9 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true, allowed_extra_analy
   include InPersonHelper
   org = 'test_org'
 
+  let(:ipp_service_provider) { create(:service_provider, :active, :in_person_proofing_enabled) }
+  let(:non_ipp_service_provider) { create(:service_provider, :active) }
+
   before do
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
     allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).and_return(true)
@@ -19,11 +22,12 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true, allowed_extra_analy
       before do
         allow(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:enabled)
         allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_org_id).and_return(org)
+        allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled).and_return(true)
       end
 
       it 'allows the user to continue down the happy path selecting to opt in',
          allow_browser_log: true do
-        sign_in_and_2fa_user(user)
+        sign_in_and_2fa_user(user, issuer: ipp_service_provider.issuer)
 
         # complete welcome step, agreement step, how to verify step (and opts into Opt-in Ipp)
         begin_in_person_proofing_with_opt_in_ipp_enabled_and_opting_in
@@ -121,7 +125,7 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true, allowed_extra_analy
     it 'works for a happy path when the user opts into opt-in ipp',
        allow_browser_log: true do
       user = user_with_2fa
-      sign_in_and_2fa_user(user)
+      sign_in_and_2fa_user(user, issuer: ipp_service_provider.issuer)
 
       # complete welcome step, agreement step, how to verify step (and opts into Opt-in Ipp)
       begin_in_person_proofing_with_opt_in_ipp_enabled_and_opting_in
@@ -271,7 +275,7 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true, allowed_extra_analy
     it 'works for a happy path when the user opts out of opt-in ipp',
        allow_browser_log: true do
       user = user_with_2fa
-      sign_in_and_2fa_user(user)
+      sign_in_and_2fa_user(user, issuer: ipp_service_provider.issuer)
 
       # complete welcome step, agreement step, how to verify step (and opts out of Opt-in Ipp)
       begin_in_person_proofing_with_opt_in_ipp_enabled_and_opting_out
@@ -416,6 +420,8 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true, allowed_extra_analy
     before do
       allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { false }
       allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { true }
+      allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled).
+        and_return(true)
     end
 
     it 'skips how to verify and continues along the normal path' do
@@ -435,8 +441,8 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true, allowed_extra_analy
 
     it 'works properly along the normal path when in_person_proofing_enabled is true' do
       allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { true }
-      sign_in_and_2fa_user(user)
-      visit_idp_from_sp_with_ial2(:oidc)
+      sign_in_and_2fa_user(user, issuer: ipp_service_provider.issuer)
+      visit_idp_from_sp_with_ial2(:oidc) # , client_id_override: ipp_service_provider.issuer)
       complete_welcome_step
       complete_agreement_step
       complete_how_to_verify_step(remote: true)
