@@ -1259,7 +1259,7 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
                   job.perform(Time.zone.now)
                 end
                 expect(job_analytics).to have_logged_event(
-                  'GetUspsProofingResultsJob: Please call email initiated',
+                  :idv_in_person_usps_proofing_results_job_please_call_email_initiated,
                   hash_including(
                     job_name: 'GetUspsProofingResultsJob',
                   ),

@@ -2144,16 +2144,6 @@ module AnalyticsEvents
     )
   end
 
-  # Tracks please call emails that are initiated during GetUspsProofingResultsJob
-  def idv_in_person_usps_proofing_results_job_please_call_email_initiated(
-    **extra
-  )
-    track_event(
-      :idv_in_person_usps_proofing_results_job_please_call_email_initiated,
-      **extra,
-    )
-  end
-
   # Tracks incomplete enrollments checked via the USPS API
   # @param [String] enrollment_code
   # @param [String] enrollment_id
@@ -2279,6 +2269,16 @@ module AnalyticsEvents
       scan_count: scan_count,
       response_message: response_message,
       response_status_code: response_status_code,
+      **extra,
+    )
+  end
+
+  # Tracks please call emails that are initiated during GetUspsProofingResultsJob
+  def idv_in_person_usps_proofing_results_job_please_call_email_initiated(
+    **extra
+  )
+    track_event(
+      :idv_in_person_usps_proofing_results_job_please_call_email_initiated,
       **extra,
     )
   end
