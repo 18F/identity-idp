@@ -214,7 +214,6 @@ module Features
           session['warden.user.user.session']['auth_events'] = [{ auth_method:, at: Time.zone.now }]
         end
         session['sp'] = { issuer: } if issuer
-        session
       end
       visit account_path
     end

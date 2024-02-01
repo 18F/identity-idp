@@ -56,7 +56,6 @@ RSpec.describe Idv::HowToVerifyController do
           get :show
 
           expect(Idv::HowToVerifyController.enabled?).to be false
-          Rails.logger.debug subject.idv_session.service_provider
           expect(subject.idv_session.skip_doc_auth).to be_nil
           expect(response).to redirect_to(idv_hybrid_handoff_url)
         end

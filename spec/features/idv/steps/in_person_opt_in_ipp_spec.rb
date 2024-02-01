@@ -8,7 +8,6 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true, allowed_extra_analy
   org = 'test_org'
 
   let(:ipp_service_provider) { create(:service_provider, :active, :in_person_proofing_enabled) }
-  let(:non_ipp_service_provider) { create(:service_provider, :active) }
 
   before do
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
@@ -22,7 +21,8 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true, allowed_extra_analy
       before do
         allow(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:enabled)
         allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_org_id).and_return(org)
-        allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled).and_return(true)
+        allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled).
+          and_return(true)
       end
 
       it 'allows the user to continue down the happy path selecting to opt in',
@@ -442,7 +442,7 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true, allowed_extra_analy
     it 'works properly along the normal path when in_person_proofing_enabled is true' do
       allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { true }
       sign_in_and_2fa_user(user, issuer: ipp_service_provider.issuer)
-      visit_idp_from_sp_with_ial2(:oidc) # , client_id_override: ipp_service_provider.issuer)
+      visit_idp_from_sp_with_ial2(:oidc)
       complete_welcome_step
       complete_agreement_step
       complete_how_to_verify_step(remote: true)
