@@ -1239,6 +1239,65 @@ describe('document-capture/components/acuant-capture', () => {
     });
   });
 
+  context('acuant cookie management', () => {
+    it.only('clears the error cookie when permissions are denied then allowed', async () => {
+      const trackEvent = sinon.spy();
+      const { getByLabelText, findByText } = render(
+        <AnalyticsContext.Provider value={{ trackEvent }}>
+          <DeviceContext.Provider value={{ isMobile: true }}>
+            <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
+              <AcuantCapture label="Image" name="test" />
+            </AcuantContextProvider>
+          </DeviceContext.Provider>
+        </AnalyticsContext.Provider>,
+      );
+
+      const setFailureCookie = (callbacks) => {
+        const { onError } = callbacks;
+        setTimeout(() => {
+          const code = 'sequence-break-code';
+          document.cookie = `AcuantCameraHasFailed=${code}`;
+          onError('iOS 15 sequence break', code);
+        }, 0);
+      };
+      let onCropped;
+      const clearFailureCookie = (callbacks) => {
+        setTimeout(() => {
+          callbacks.onCaptured();
+          onCropped = () => callbacks.onCropped(ACUANT_CAPTURE_SUCCESS_RESULT);
+        }, 0);
+      };
+      initialize({
+        start: sinon
+          .stub()
+          .onFirstCall()
+          .callsFake(setFailureCookie)
+          .onSecondCall()
+          .callsFake(clearFailureCookie),
+      });
+
+      // Click the image upload button, `initialize` above simulates the user denying
+      // camera permissions immediately
+      const button = getByLabelText('Image');
+      await userEvent.click(button);
+
+      // Wait for the fullscreen overlay to close
+      await findByText('doc_auth.errors.upload_error errors.messages.try_again');
+      // The acuant failure cookie should be set so we can show permission errors
+      expect(document.cookie).to.include('AcuantCameraHasFailed');
+      await expect(window.window.AcuantCameraUI.end).to.eventually.be.called();
+      // Open up the upload again
+      onCropped();
+      await userEvent.click(button);
+      expect(document.cookie).to.not.include('AcuantCameraHasFailed');
+    });
+    /*
+    it('clears the error cookie if there is one when the page loads', () => {
+
+    })
+    */
+  });
+
   it('optionally disallows upload', () => {
     const { getByText } = render(
       <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
