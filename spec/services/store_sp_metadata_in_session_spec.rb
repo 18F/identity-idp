@@ -2,10 +2,14 @@ require 'rails_helper'
 
 RSpec.describe StoreSpMetadataInSession do
   describe '#call' do
+    let(:request_id) { SecureRandom.uuid }
+
     context 'when a ServiceProviderRequestProxy is not found' do
+      let(:request_id) { 'foo' }
+
       it 'does not set the session[:sp] hash' do
         app_session = {}
-        instance = StoreSpMetadataInSession.new(session: app_session, request_id: 'foo')
+        instance = StoreSpMetadataInSession.new(session: app_session, request_id: request_id)
 
         expect { instance.call }.to_not change(app_session, :keys)
       end
@@ -14,7 +18,6 @@ RSpec.describe StoreSpMetadataInSession do
     context 'when a ServiceProviderRequestProxy is found' do
       it 'sets the session[:sp] hash' do
         app_session = {}
-        request_id = SecureRandom.uuid
         ServiceProviderRequestProxy.find_or_create_by(uuid: request_id) do |sp_request|
           sp_request.issuer = 'issuer'
           sp_request.ial = Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
@@ -46,7 +49,6 @@ RSpec.describe StoreSpMetadataInSession do
     context 'when IAL2 and AAL3 are requested' do
       it 'sets the session[:sp] hash' do
         app_session = {}
-        request_id = SecureRandom.uuid
         ServiceProviderRequestProxy.find_or_create_by(uuid: request_id) do |sp_request|
           sp_request.issuer = 'issuer'
           sp_request.ial = Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
@@ -79,7 +81,6 @@ RSpec.describe StoreSpMetadataInSession do
     context 'when IAL2 and phishing-resistant are requested' do
       it 'sets the session[:sp] hash' do
         app_session = {}
-        request_id = SecureRandom.uuid
         ServiceProviderRequestProxy.find_or_create_by(uuid: request_id) do |sp_request|
           sp_request.issuer = 'issuer'
           sp_request.ial = Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
@@ -112,7 +113,6 @@ RSpec.describe StoreSpMetadataInSession do
     context 'when biometric comparison is requested' do
       it 'sets the session[:sp] hash' do
         app_session = {}
-        request_id = SecureRandom.uuid
         ServiceProviderRequestProxy.find_or_create_by(uuid: request_id) do |sp_request|
           sp_request.issuer = 'issuer'
           sp_request.ial = Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
