@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'Remembering a TOTP device' do
+RSpec.describe 'Remembering a TOTP device', allowed_extra_analytics: [:*] do
   before do
     allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry).and_return(1000)
   end
@@ -41,17 +41,29 @@ RSpec.describe 'Remembering a TOTP device' do
 
   context 'update totp' do
     def remember_device_and_sign_out_user
+      auth_app_config = create(:auth_app_configuration, user:)
+      name = auth_app_config.name
+
       sign_in_and_2fa_user(user)
       visit account_two_factor_authentication_path
-      page.find('.remove-auth-app').click # Delete
-      click_on t('account.index.totp_confirm_delete')
+
+      click_link(
+        format(
+          '%s: %s',
+          t('two_factor_authentication.auth_app.manage_accessible_label'),
+          name,
+        ),
+      )
+
+      click_button t('two_factor_authentication.auth_app.delete')
+
       travel_to(10.seconds.from_now) # Travel past the revoked at date from disabling the device
       click_link t('account.index.auth_app_add'), href: authenticator_setup_url
       fill_in_totp_name
       fill_in :code, with: totp_secret_from_page
       check t('forms.messages.remember_device')
       click_submit_default
-      expect(page).to have_current_path(account_two_factor_authentication_path)
+      expect(page).to have_current_path(account_path)
       first(:button, t('links.sign_out')).click
       user
     end

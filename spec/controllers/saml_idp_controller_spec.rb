@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe SamlIdpController do
+RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
   include SamlAuthHelper
 
   render_views
@@ -124,6 +124,61 @@ RSpec.describe SamlIdpController do
       ).merge(path_year: path_year)
 
       expect(response).to be_bad_request
+    end
+
+    context 'cert element in SAML request is blank' do
+      let(:user) { create(:user, :fully_registered) }
+      let(:service_provider) { build(:service_provider, issuer: 'http://localhost:3000') }
+
+      # the RubySAML library won't let us pass an empty string in as the certificate
+      # element, so this test substitutes a SAMLRequest that has that element blank
+      let(:blank_cert_element_req) do
+        <<-XML.gsub(/^[\s\t]*|[\s\t]*\n/, '')
+          <?xml version="1.0"?>
+          <samlp:LogoutRequest xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" Destination="http://www.example.com/api/saml/logout2024" ID="_223d186c-35a0-4d1f-b81a-c473ad496415" IssueInstant="2024-01-11T18:22:03Z" Version="2.0">
+            <saml:Issuer>http://localhost:3000</saml:Issuer>
+            <ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+              <ds:SignedInfo>
+                <ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+                <ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/>
+                <ds:Reference URI="#_223d186c-35a0-4d1f-b81a-c473ad496415">
+                  <ds:Transforms>
+                    <ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
+                    <ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#">
+                      <ec:InclusiveNamespaces xmlns:ec="http://www.w3.org/2001/10/xml-exc-c14n#" PrefixList="#default samlp saml ds xs xsi md"/>
+                    </ds:Transform>
+                  </ds:Transforms>
+                  <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+                  <ds:DigestValue>2Nb3RLbiFHn0cyn+7JA7hWbbK1NvFMVGa4MYTb3Q91I=</ds:DigestValue>
+                </ds:Reference>
+              </ds:SignedInfo>
+              <ds:SignatureValue>UmsRcaWkHXrUnBMfOQBC2DIQk1rkQqMc5oucz6FAjulq0ZX7qT+zUbSZ7K/us+lzcL1hrgHXi2wxjKSRiisWrJNSmbIGGZIa4+U8wIMhkuY5vZVKgxRc2aP88i/lWwURMI183ifAzCwpq5Y4yaJ6pH+jbgYOtmOhcXh1OwrI+QqR7QSglyUJ55WO+BCR07Hf8A7DSA/Wgp9xH+DUw1EnwbDdzoi7TFqaHY8S4SWIcc26DHsq88mjsmsxAFRQ+4t6nadOnrrFnJWKJeiFlD8MxcQuBiuYBetKRLIPxyXKFxjEn7EkJ5zDkkrBWyUT4VT/JnthUlD825D+v81ZXIX3Tg==</ds:SignatureValue>
+              <ds:KeyInfo>
+                <ds:X509Data>
+                  <ds:X509Certificate>
+                  </ds:X509Certificate>
+                </ds:X509Data>
+              </ds:KeyInfo>
+            </ds:Signature>
+            <saml:NameID Format="urn:oasis:names:tc:SAML:2.0:nameid-format:transient">_13ae90d1-2f9b-4ed5-b84d-3722ea42e386</saml:NameID>
+          </samlp:LogoutRequest>
+        XML
+      end
+      let(:deflated_encoded_req) do
+        Base64.encode64(Zlib::Deflate.deflate(blank_cert_element_req, 9)[2..-5])
+      end
+
+      it 'a ValidationError is raised' do
+        expect do
+          delete :logout, params: {
+            'SAMLRequest' => deflated_encoded_req,
+            path_year:,
+          }
+        end.to raise_error(
+          SamlIdp::XMLSecurity::SignedDocument::ValidationError,
+          'Certificate element present in response (ds:X509Certificate) but evaluating to nil',
+        )
+      end
     end
   end
 
@@ -1103,7 +1158,7 @@ RSpec.describe SamlIdpController do
         )
       end
 
-      it 'deoes not blow up' do
+      it 'does not blow up' do
         user = create(:user, :fully_registered)
 
         expect { generate_saml_response(user, second_cert_settings) }.to_not raise_error
@@ -1301,6 +1356,87 @@ RSpec.describe SamlIdpController do
 
         expect(@analytics).to have_received(:track_event).
           with('SAML Auth', analytics_hash)
+      end
+    end
+
+    context 'cert element in SAML request is blank' do
+      let(:user) { create(:user, :fully_registered) }
+      let(:service_provider) { build(:service_provider, issuer: 'http://localhost:3000') }
+      let(:analytics_hash) do
+        {
+          success: false,
+          errors: { service_provider: ['We cannot detect a certificate in your request.'] },
+          error_details: { service_provider: { blank_cert_element_req: true } },
+          nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
+          authn_context: [Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF],
+          authn_context_comparison: 'exact',
+          service_provider: 'http://localhost:3000',
+          request_signed: true,
+        }
+      end
+
+      before do
+        stub_analytics
+        allow(@analytics).to receive(:track_event)
+      end
+
+      # the RubySAML library won't let us pass an empty string in as the certificate
+      # element, so this test substitutes a SAMLRequest that has that element blank
+      let(:blank_cert_element_req) do
+        <<-XML.gsub(/^[\s\t]*|[\s\t]*\n/, '')
+          <?xml version="1.0"?>
+          <samlp:AuthnRequest xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" AssertionConsumerServiceURL="http://localhost:3000/test/saml/decode_assertion" Destination="http://www.example.com/api/saml/auth2024" ID="_6b15011e-abfe-4c55-925f-6a5b3872a64c" IssueInstant="2024-01-11T18:03:38Z" Version="2.0">
+            <saml:Issuer>http://localhost:3000</saml:Issuer>
+            <ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+              <ds:SignedInfo>
+                <ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+                <ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/>
+                <ds:Reference URI="#_6b15011e-abfe-4c55-925f-6a5b3872a64c">
+                  <ds:Transforms>
+                    <ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
+                    <ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#">
+                      <ec:InclusiveNamespaces xmlns:ec="http://www.w3.org/2001/10/xml-exc-c14n#" PrefixList="#default samlp saml ds xs xsi md"/>
+                    </ds:Transform>
+                  </ds:Transforms>
+                  <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+                  <ds:DigestValue>aoHPDDUZTRSIVsbuE954QKbo6StafYvbVUPU+p33m8E=</ds:DigestValue>
+                </ds:Reference>
+              </ds:SignedInfo>
+              <ds:SignatureValue>JH0VD0SLKawSS9tnlUxUL2fYVCza4MT6L79aRiKQi56+arGfnPHZ21cIYOEHxDn2xIg6EV6tda+WwOP9WTrsuqJLAfTWLz9Ah2A8ukITIOYED5WboiodLr5sjkr4HFKwRjERtLycLaxDt8Ya9tHQa5mOjln8yIWFDLdf89jnXaTM9gReq2k1MpI3YlhIYHJMALY5NxbOPTTmWeXdiUUYH/Irq2jzXrI+2ruyCZt8Xpo9tfosFGnoTGFkeK7sWOmndle2WqRE29k4S582JJtXgi4A8JDGw0KK8zM4JttxpK+DbowN8wJ4gWpgRppkBi5e6JiV4W0DNgZC72WHjXULQg==</ds:SignatureValue>
+              <ds:KeyInfo>
+                <ds:X509Data>
+                  <ds:X509Certificate></ds:X509Certificate>
+                </ds:X509Data>
+              </ds:KeyInfo>
+            </ds:Signature>
+            <samlp:NameIDPolicy AllowCreate="true" Format="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"/>
+            <samlp:RequestedAuthnContext Comparison="exact">
+          <saml:AuthnContextClassRef>urn:gov:gsa:ac:classes:sp:PasswordProtectedTransport:duo</saml:AuthnContextClassRef>
+            </samlp:RequestedAuthnContext>
+          </samlp:AuthnRequest>
+        XML
+      end
+      let(:deflated_encoded_req) do
+        Base64.encode64(Zlib::Deflate.deflate(blank_cert_element_req, 9)[2..-5])
+      end
+
+      before do
+        IdentityLinker.new(user, service_provider).link_identity
+        user.identities.last.update!(verified_attributes: ['email'])
+        expect(CGI).to receive(:unescape).and_return deflated_encoded_req
+      end
+
+      it 'notes it in the analytics event' do
+        generate_saml_response(user, saml_settings)
+        expect(@analytics).to have_received(:track_event).
+          with('SAML Auth', analytics_hash)
+      end
+
+      it 'returns a 400' do
+        generate_saml_response(user, saml_settings)
+        expect(controller).to render_template('saml_idp/auth/error')
+        expect(response.status).to eq(400)
+        expect(response.body).to include(t('errors.messages.blank_cert_element_req'))
       end
     end
 
@@ -1556,7 +1692,7 @@ RSpec.describe SamlIdpController do
 
     describe 'HEAD /api/saml/auth', type: :request do
       it 'responds with "403 Forbidden"' do
-        head '/api/saml/auth2023?SAMLRequest=bang!'
+        head '/api/saml/auth2024?SAMLRequest=bang!'
 
         expect(response.status).to eq(403)
       end
@@ -1732,7 +1868,7 @@ RSpec.describe SamlIdpController do
             ds: Saml::XML::Namespaces::SIGNATURE,
           )
 
-          crt = AppArtifacts.store.saml_2023_cert
+          crt = AppArtifacts.store.saml_2024_cert
           expect(element.text).to eq(crt.split("\n")[1...-1].join("\n").delete("\n"))
         end
 
@@ -2146,9 +2282,9 @@ RSpec.describe SamlIdpController do
       expect(subject).to have_actions(
         :before,
         :disable_caching,
-        :validate_saml_request,
-        :validate_service_provider_and_authn_context,
         :store_saml_request,
+        :validate_and_create_saml_request_object,
+        :validate_service_provider_and_authn_context,
       )
     end
   end

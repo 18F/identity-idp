@@ -20,6 +20,14 @@ en:
     attempt_remaining_warning_html:
       one: You have <strong>%{count} attempt</strong> remaining.
       other: You have <strong>%{count} attempts</strong> remaining.
+    auth_app:
+      change_nickname: Change nickname
+      delete: Delete this device
+      deleted: Successfully deleted an authentication app method
+      edit_heading: Manage your authentication app settings
+      manage_accessible_label: Manage authentication app
+      nickname: Nickname
+      renamed: Successfully renamed your authentication app method
     backup_code_header_text: Enter your backup code
     backup_code_prompt: You can use this backup code once. After you submit it,
       you’ll need to use a new backup code next time.
@@ -132,6 +140,14 @@ en:
       troubleshooting:
         change_number: Use another phone number
         code_not_received: I didn’t receive my one-time code
+    piv_cac:
+      change_nickname: Change nickname
+      delete: Delete this method
+      deleted: Successfully deleted a PIV/CAC method
+      edit_heading: Manage your PIV/CAC settings
+      manage_accessible_label: Manage PIV/CAC
+      nickname: Nickname
+      renamed: Successfully renamed your PIV/CAC method
     piv_cac_header_text: Present your PIV/CAC
     please_try_again_html: Please try again in <strong>%{countdown}</strong>.
     read_about_two_factor_authentication: Read about two-factor authentication
@@ -200,4 +216,12 @@ en:
       renamed: Successfully renamed your face or touch unlock method
     webauthn_platform_header_text: Use face or touch unlock
     webauthn_platform_use_key: Use screen unlock
+    webauthn_roaming:
+      change_nickname: Change nickname
+      delete: Delete this device
+      deleted: Successfully deleted a security key method
+      edit_heading: Manage your security key settings
+      manage_accessible_label: Manage security key
+      nickname: Nickname
+      renamed: Successfully renamed your security key method
     webauthn_use_key: Use security key

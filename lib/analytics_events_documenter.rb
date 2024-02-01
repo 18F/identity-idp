@@ -132,12 +132,20 @@ class AnalyticsEventsDocumenter
   def as_json
     events_json_summary = analytics_methods.map do |method_object|
       attributes = method_object.tags('param').map do |tag|
+        next if tag.name == 'extra'
+
         {
           name: tag.name,
           types: tag.types,
           description: tag.text.presence,
         }
-      end.compact
+      end.compact + method_object.tags('option').map do |tag|
+        {
+          name: tag.pair.name.tr(%('"), ''),
+          types: tag.pair.types,
+          description: tag.pair.text.presence,
+        }
+      end
 
       {
         event_name: extract_event_name(method_object),

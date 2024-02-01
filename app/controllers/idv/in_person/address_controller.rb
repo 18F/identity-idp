@@ -29,7 +29,6 @@ module Idv
           attrs.each do |attr|
             pii_from_user[attr] = flow_params[attr]
           end
-          flow_session['Idv::Steps::InPerson::AddressStep'] = true
           redirect_to_next_page
         else
           render :show, locals: extra_view_variables
@@ -112,7 +111,7 @@ module Idv
       end
 
       def confirm_in_person_address_step_needed
-        return if pii_from_user && pii_from_user[:same_address_as_id] == 'false' &&
+        return if pii_from_user&.dig(:same_address_as_id) == 'false' &&
                   !pii_from_user.has_key?(:address1)
         return if request.referer == idv_in_person_verify_info_url
         redirect_to idv_in_person_ssn_url

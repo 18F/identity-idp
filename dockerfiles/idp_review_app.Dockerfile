@@ -1,12 +1,6 @@
 FROM ruby:3.3.0-slim
 
 # Set environment variables
-ARG ARG_CI_ENVIRONMENT_SLUG="placeholder"
-ARG ARG_CI_COMMIT_BRANCH="branch_placeholder"
-ARG ARG_CI_COMMIT_SHA="sha_placeholder"
-ENV CI_ENVIRONMENT_SLUG=${ARG_CI_ENVIRONMENT_SLUG}
-ENV CI_COMMIT_BRANCH=${ARG_CI_COMMIT_BRANCH}
-ENV CI_COMMIT_SHA=${ARG_CI_COMMIT_SHA}
 ENV RAILS_ROOT /app
 ENV RAILS_ENV production
 ENV NODE_ENV production
@@ -35,29 +29,6 @@ ENV ASSET_HOST http://localhost:3000
 ENV DOMAIN_NAME localhost:3000
 ENV PIV_CAC_SERVICE_URL https://localhost:8443/
 ENV PIV_CAC_VERIFY_TOKEN_URL https://localhost:8443/
-
-RUN echo Env Value : $CI_ENVIRONMENT_SLUG
-
-# Prevent documentation installation
-RUN echo 'path-exclude=/usr/share/doc/*' > /etc/dpkg/dpkg.cfg.d/00_nodoc && \
-    echo 'path-exclude=/usr/share/man/*' >> /etc/dpkg/dpkg.cfg.d/00_nodoc && \
-    echo 'path-exclude=/usr/share/groff/*' >> /etc/dpkg/dpkg.cfg.d/00_nodoc && \
-    echo 'path-exclude=/usr/share/info/*' >> /etc/dpkg/dpkg.cfg.d/00_nodoc && \
-    echo 'path-exclude=/usr/share/lintian/*' >> /etc/dpkg/dpkg.cfg.d/00_nodoc && \
-    echo 'path-exclude=/usr/share/linda/*' >> /etc/dpkg/dpkg.cfg.d/00_nodoc
-
-# Create a new user and set up the working directory
-RUN addgroup --gid 1000 app && \
-    adduser --uid 1000 --gid 1000 --disabled-password --gecos "" app && \
-    mkdir -p $RAILS_ROOT && \
-    mkdir -p $BUNDLE_PATH && \
-    mkdir -p $RAILS_ROOT/tmp/pids && \
-    chown -R app:app $RAILS_ROOT && \
-    chown -R app:app $BUNDLE_PATH
-
-# Setup timezone data
-ENV TZ=Etc/UTC
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # Install dependencies
 RUN apt-get update && \
@@ -89,6 +60,19 @@ RUN curl -fsSLO --compressed "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor | tee /usr/share/keyrings/yarn-archive-keyring.gpg >/dev/null
 RUN echo "deb [signed-by=/usr/share/keyrings/yarn-archive-keyring.gpg] https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
 RUN apt-get update && apt-get install -y yarn=1.22.5-1
+
+# Create a new user and set up the working directory
+RUN addgroup --gid 1000 app && \
+    adduser --uid 1000 --gid 1000 --disabled-password --gecos "" app && \
+    mkdir -p $RAILS_ROOT && \
+    mkdir -p $BUNDLE_PATH && \
+    mkdir -p $RAILS_ROOT/tmp/pids && \
+    chown -R app:app $RAILS_ROOT && \
+    chown -R app:app $BUNDLE_PATH
+
+# Setup timezone data
+ENV TZ=Etc/UTC
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # Create the working directory
 WORKDIR $RAILS_ROOT
@@ -128,9 +112,6 @@ COPY --chown=app:app ./babel.config.js ./babel.config.js
 COPY --chown=app:app ./webpack.config.js ./webpack.config.js
 COPY --chown=app:app ./.browserslistrc ./.browserslistrc
 
-RUN mkdir -p $RAILS_ROOT/public/api/
-RUN echo "{\"branch\":\"$CI_COMMIT_BRANCH\",\"git_sha\":\"$CI_COMMIT_SHA\"}" > $RAILS_ROOT/public/api/deploy.json
-
 # Copy keys
 COPY --chown=app:app keys.example $RAILS_ROOT/keys
 
@@ -143,15 +124,6 @@ COPY --chown=app:app public/ban-robots.txt $RAILS_ROOT/public/robots.txt
 # Copy application.yml.default to application.yml
 COPY --chown=app:app ./config/application.yml.default.docker $RAILS_ROOT/config/application.yml
 
-# Generate and place SSL certificates for puma
-RUN openssl req -x509 -sha256 -nodes -newkey rsa:2048 -days 1825 \
-    -keyout $RAILS_ROOT/keys/localhost.key \
-    -out $RAILS_ROOT/keys/localhost.crt \
-    -subj "/C=US/ST=Fake/L=Fakerton/O=Dis/CN=localhost"
-
-# Precompile assets
-RUN bundle exec rake assets:precompile --trace
-
 # Setup config files
 COPY --chown=app:app config/agencies.localdev.yml $RAILS_ROOT/config/agencies.yml
 COPY --chown=app:app config/iaa_gtcs.localdev.yml $RAILS_ROOT/config/iaa_gtcs.yml
@@ -163,6 +135,20 @@ COPY --chown=app:app config/partner_account_statuses.localdev.yml $RAILS_ROOT/co
 COPY --chown=app:app config/partner_accounts.localdev.yml $RAILS_ROOT/config/partner_accounts.yml
 COPY --chown=app:app certs.example $RAILS_ROOT/certs
 COPY --chown=app:app config/service_providers.localdev.yml $RAILS_ROOT/config/service_providers.yml
+
+# Precompile assets
+RUN bundle exec rake assets:precompile --trace
+
+ARG ARG_CI_COMMIT_BRANCH="branch_placeholder"
+ARG ARG_CI_COMMIT_SHA="sha_placeholder"
+RUN mkdir -p $RAILS_ROOT/public/api/
+RUN echo "{\"branch\":\"$ARG_CI_COMMIT_BRANCH\",\"git_sha\":\"$ARG_CI_COMMIT_SHA\"}" > $RAILS_ROOT/public/api/deploy.json
+
+# Generate and place SSL certificates for puma
+RUN openssl req -x509 -sha256 -nodes -newkey rsa:2048 -days 1825 \
+    -keyout $RAILS_ROOT/keys/localhost.key \
+    -out $RAILS_ROOT/keys/localhost.crt \
+    -subj "/C=US/ST=Fake/L=Fakerton/O=Dis/CN=localhost"
 
 # Expose the port the app runs on
 EXPOSE 3000

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'agreement step error checking' do
+RSpec.feature 'agreement step error checking', allowed_extra_analytics: [:*] do
   include DocAuthHelper
   context 'skipping hybrid_handoff step', :js, driver: :headless_chrome_mobile do
     let(:fake_analytics) { FakeAnalytics.new }

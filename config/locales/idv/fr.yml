@@ -328,14 +328,12 @@ fr:
       unavailable: Nous travaillons à la résolution d’une erreur
     troubleshooting:
       headings:
-        missing_required_items: Est-ce qu’il vous manque un de ces éléments?
         need_assistance: 'Avez-vous besoin d’une assistance immédiate? Voici comment
           obtenir de l’aide:'
       options:
         contact_support: Contacter le service d’assistance de %{app_name}
         doc_capture_tips: Conseils pour prendre des photos claires de votre pièce d’identité
         get_help_at_sp: Demandez de l’aide à %{sp_name}
-        learn_more_address_verification_options: En savoir plus sur la vérification par téléphone ou par courrier
         learn_more_verify_by_mail: En savoir plus sur la vérification de votre adresse par courrier
         learn_more_verify_by_phone: Apprenez-en plus sur quel numéro de téléphone utiliser
         learn_more_verify_by_phone_in_person: En savoir plus sur la vérification de votre numéro de téléphone

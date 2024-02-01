@@ -21,7 +21,7 @@
     "build:css": "build-sass app/assets/stylesheets/*.css.scss app/components/*.scss --load-path=app/assets/stylesheets --out-dir=app/assets/builds"
   },
   "dependencies": {
-    "@18f/identity-design-system": "^8.0.1",
+    "@18f/identity-design-system": "^8.1.2",
     "@babel/core": "^7.20.7",
     "@babel/preset-env": "^7.15.6",
     "@babel/preset-react": "^7.14.5",
@@ -29,7 +29,7 @@
     "@babel/register": "^7.15.3",
     "babel-loader": "^9.1.0",
     "babel-plugin-polyfill-corejs3": "^0.5.2",
-    "browserslist": "^4.22.1",
+    "browserslist": "^4.22.3",
     "cleave.js": "^1.6.0",
     "core-js": "^3.21.1",
     "fast-glob": "^3.2.7",
@@ -40,8 +40,7 @@
     "source-map-loader": "^4.0.0",
     "webpack": "^5.76.1",
     "webpack-assets-manifest": "^5.1.0",
-    "webpack-cli": "^4.10.0",
-    "zxcvbn": "4.4.2"
+    "webpack-cli": "^4.10.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.22.15",
@@ -61,6 +60,7 @@
     "@types/react-dom": "^17.0.11",
     "@types/sinon": "^10.0.13",
     "@types/sinon-chai": "^3.2.8",
+    "@types/zxcvbn": "^4.4.4",
     "@typescript-eslint/eslint-plugin": "^6.7.5",
     "@typescript-eslint/parser": "^6.7.5",
     "chai": "^4.3.10",

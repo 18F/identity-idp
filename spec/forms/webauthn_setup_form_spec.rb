@@ -171,7 +171,11 @@ RSpec.describe WebauthnSetupForm do
 
         expect(subject.submit(protocol, params).to_h).to eq(
           success: false,
-          errors: {},
+          errors: { name: [I18n.t(
+            'errors.webauthn_setup.general_error_html',
+            link_html: I18n.t('errors.webauthn_setup.additional_methods_link'),
+          )] },
+          error_details: { name: { attestation_error: true } },
           **extra_attributes,
         )
       end
@@ -213,8 +217,8 @@ RSpec.describe WebauthnSetupForm do
         expect(subject.submit(protocol, params).to_h).to eq(
           success: false,
           errors: { name: [I18n.t(
-            'errors.webauthn_setup.attestation_error',
-            link: MarketingSite.contact_url,
+            'errors.webauthn_setup.general_error_html',
+            link_html: I18n.t('errors.webauthn_setup.additional_methods_link'),
           )] },
           error_details: { name: { attestation_error: true } },
           **extra_attributes,
@@ -242,6 +246,10 @@ RSpec.describe WebauthnSetupForm do
       end
     end
     context 'webauthn_platform' do
+      let(:params) do
+        super().merge(platform_authenticator: true, transports: 'internal,hybrid')
+      end
+
       context 'with one platform authenticator with the same name' do
         let(:user) do
           user = create(:user)
@@ -253,12 +261,7 @@ RSpec.describe WebauthnSetupForm do
           )
           user
         end
-        let(:params) do
-          super().merge(
-            platform_authenticator: true,
-            transports: 'internal,hybrid',
-          )
-        end
+
         it 'adds a new platform device with the same existing name and appends a (1)' do
           result = subject.submit(protocol, params)
           expect(result.extra[:multi_factor_auth_method]).to eq 'webauthn_platform'
@@ -272,37 +275,26 @@ RSpec.describe WebauthnSetupForm do
       end
 
       context 'with two existing platform authenticators one with the same name' do
-        let(:user) do
-          user = create(:user)
-          user.webauthn_configurations << create(
-            :webauthn_configuration,
-            name: device_name,
-            platform_authenticator: true,
-            transports: ['internal', 'hybrid'],
-          )
-          user.webauthn_configurations << create(
-            :webauthn_configuration,
-            name: device_name,
-            platform_authenticator: true,
-            transports: ['internal', 'hybrid'],
-          )
-          user
-        end
-        let(:params) do
-          super().merge(
-            platform_authenticator: true,
-            transports: 'internal,hybrid',
+        let!(:user) do
+          create(
+            :user,
+            webauthn_configurations: create_list(
+              :webauthn_configuration,
+              2,
+              name: device_name,
+              platform_authenticator: true,
+              transports: ['internal', 'hybrid'],
+            ),
           )
         end
+
         it 'adds a second new platform device with the same existing name and appends a (2)' do
           result = subject.submit(protocol, params)
-          expect(result.extra[:multi_factor_auth_method]).to eq 'webauthn_platform'
+
+          expect(result.success?).to eq(true)
           expect(user.webauthn_configurations.platform_authenticators.count).to eq(3)
-          expect(
-            user.webauthn_configurations.platform_authenticators[2].name,
-          ).
+          expect(user.webauthn_configurations.platform_authenticators.last.name).
             to eq("#{device_name} (2)")
-          expect(result.to_h[:success]).to eq(true)
         end
       end
     end

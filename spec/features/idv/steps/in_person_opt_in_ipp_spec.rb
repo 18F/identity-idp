@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'axe-rspec'
 
-RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
+RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true, allowed_extra_analytics: [:*] do
   include IdvStepHelper
   include SpAuthHelper
   include InPersonHelper
@@ -179,7 +179,7 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
       expect(page).to have_current_path(idv_in_person_verify_info_path)
 
       # click update address button
-      click_button t('idv.buttons.change_address_label')
+      click_link t('idv.buttons.change_address_label')
       expect(page).to have_content(t('in_person_proofing.headings.update_address'))
       click_button t('forms.buttons.submit.update')
       expect(page).to have_content(t('headings.verify'))

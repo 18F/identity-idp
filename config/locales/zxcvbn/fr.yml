@@ -26,7 +26,7 @@ fr:
       repeats_like_aaa_are_easy_to_guess: Les répétitions comme « aaa » sont faciles à deviner
       repeats_like_abcabcabc_are_only_slightly_harder_to_guess_than_abc: |-
         Les répétitions comme « abcabcabc » sont à peine
-                 plus difficiles à deviner que « abc »
+         plus difficiles à deviner que « abc »
       reversed_words_arent_much_harder_to_guess: Les mots inversés ne sont pas très difficiles à deviner
       sequences_like_abc_or_6543_are_easy_to_guess: Les séquences comme abc ou 6543 sont faciles à deviner
       short_keyboard_patterns_are_easy_to_guess: Les motifs de clavier courts sont faciles à deviner

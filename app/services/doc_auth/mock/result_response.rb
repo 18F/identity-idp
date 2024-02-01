@@ -2,20 +2,23 @@ module DocAuth
   module Mock
     class ResultResponse < DocAuth::Response
       include DocAuth::ClassificationConcern
+      include DocAuth::SelfieConcern
       include DocAuth::Mock::YmlLoaderConcern
 
       attr_reader :uploaded_file, :config
 
       def initialize(uploaded_file, selfie_check_performed, config)
         @uploaded_file = uploaded_file.to_s
-        @config = config
         @selfie_check_performed = selfie_check_performed
+        @config = config
         super(
           success: success?,
           errors: errors,
           pii_from_doc: pii_from_doc,
           doc_type_supported: id_type_supported?,
           selfie_check_performed: selfie_check_performed,
+          selfie_live: selfie_live?,
+          selfie_quality_good: selfie_quality_good?,
           extra: {
             doc_auth_result: doc_auth_result,
             portrait_match_results: portrait_match_results,
@@ -52,8 +55,7 @@ module DocAuth
               # Error generator is not to be called when it's not failure
               # allows us to test successful results
               return {} if all_doc_capture_values_passing?(
-                doc_auth_result, id_type_supported?,
-                face_match_result
+                doc_auth_result, id_type_supported?
               )
 
               mock_args = {}
@@ -134,9 +136,9 @@ module DocAuth
         doc_auth_result_from_uploaded_file == 'Passed' || errors.blank?
       end
 
-      def selfie_success
-        return nil if portrait_match_results&.dig(:FaceMatchResult).nil?
-        portrait_match_results[:FaceMatchResult] == 'Pass'
+      def selfie_status
+        return :not_processed if portrait_match_results&.dig(:FaceMatchResult).nil?
+        portrait_match_results[:FaceMatchResult] == 'Pass' ? :success : :fail
       end
 
       private
@@ -161,8 +163,8 @@ module DocAuth
 
       def portrait_match_results
         parsed_data_from_uploaded_file.dig('portrait_match_results')&.
-        transform_keys! { |key| key.to_s.camelize }&.
-        deep_symbolize_keys
+          transform_keys! { |key| key.to_s.camelize }&.
+          deep_symbolize_keys
       end
 
       def classification_info
@@ -178,10 +180,14 @@ module DocAuth
         end
       end
 
-      def all_doc_capture_values_passing?(doc_auth_result, id_type_supported, face_match_result)
+      def all_doc_capture_values_passing?(doc_auth_result, id_type_supported)
         doc_auth_result == 'Passed' &&
           id_type_supported &&
-          (@selfie_check_performed ? face_match_result == 'Pass' : true)
+          (@selfie_check_performed ? selfie_passed? : true)
+      end
+
+      def selfie_passed?
+        selfie_status == :success
       end
 
       def parse_uri

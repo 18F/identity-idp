@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::VerifyInfoController do
+RSpec.describe Idv::VerifyInfoController, allowed_extra_analytics: [:*] do
   include FlowPolicyHelper
 
   let(:user) { create(:user) }
@@ -286,7 +286,7 @@ RSpec.describe Idv::VerifyInfoController do
             verified_attributes: [],
           ),
           device_profiling_result: Proofing::DdpResult.new(success: true),
-          ipp_enrollment_in_progress: false,
+          ipp_enrollment_in_progress: true,
           residential_resolution_result: Proofing::Resolution::Result.new(success: true),
           resolution_result: Proofing::Resolution::Result.new(success: true),
           same_address_as_id: true,

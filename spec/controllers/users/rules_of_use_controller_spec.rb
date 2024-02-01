@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Users::RulesOfUseController do
+RSpec.describe Users::RulesOfUseController, allowed_extra_analytics: [:*] do
   let(:rules_of_use_updated_at) { 1.day.ago }
   let(:accepted_terms_at) { nil }
   let(:user) { create(:user, :fully_registered, accepted_terms_at: accepted_terms_at) }

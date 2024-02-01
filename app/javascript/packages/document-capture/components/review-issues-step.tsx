@@ -39,6 +39,7 @@ interface ReviewIssuesStepProps extends FormStepComponentProps<ReviewIssuesStepV
   remainingAttempts?: number;
   isFailedResult?: boolean;
   isFailedDocType?: boolean;
+  isFailedSelfieLivenessOrQuality?: boolean;
   captureHints?: boolean;
   pii?: PII;
   failedImageFingerprints?: { front: string[] | null; back: string[] | null };
@@ -55,6 +56,7 @@ function ReviewIssuesStep({
   remainingAttempts = Infinity,
   isFailedResult = false,
   isFailedDocType = false,
+  isFailedSelfieLivenessOrQuality = false,
   pii,
   captureHints = false,
   failedImageFingerprints = { front: [], back: [] },
@@ -118,6 +120,7 @@ function ReviewIssuesStep({
       <DocumentCaptureWarning
         isFailedDocType={isFailedDocType}
         isFailedResult={isFailedResult}
+        isFailedSelfieLivenessOrQuality={isFailedSelfieLivenessOrQuality}
         remainingAttempts={remainingAttempts}
         unknownFieldErrors={unknownFieldErrors}
         actionOnClick={onWarningPageDismissed}
@@ -129,6 +132,7 @@ function ReviewIssuesStep({
   return (
     <DocumentCaptureReviewIssues
       isFailedDocType={isFailedDocType}
+      isFailedSelfieLivenessOrQuality={isFailedSelfieLivenessOrQuality}
       remainingAttempts={remainingAttempts}
       captureHints={captureHints}
       value={value}

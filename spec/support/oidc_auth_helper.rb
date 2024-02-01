@@ -120,8 +120,7 @@ module OidcAuthHelper
   end
 
   def extract_redirect_url
-    content = page.find('a#openid-connect-redirect')
-    content[:href]
+    page.find_link(t('forms.buttons.continue'))[:href]
   end
 
   def oidc_redirect_url

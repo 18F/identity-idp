@@ -3,7 +3,7 @@ class GpoConfirmation < ApplicationRecord
 
   ENTRY_ATTRIBUTES = %i[otp address1 city state zipcode]
   ENTRY_ATTRIBUTES.each do |attr|
-    define_method("entry_#{attr}".to_sym) do
+    define_method(:"entry_#{attr}") do
       entry[attr]
     end
   end

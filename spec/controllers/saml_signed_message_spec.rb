@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe SamlIdpController do
+RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
   include SamlAuthHelper
 
   before do

@@ -4,8 +4,9 @@
 
 import { mkdir } from 'node:fs/promises';
 import { parseArgs } from 'node:util';
+import { fileURLToPath } from 'node:url';
 import { watch } from 'chokidar';
-import { fileURLToPath } from 'url';
+import { initAsyncCompiler as initAsyncSassCompiler } from 'sass-embedded';
 import { buildFile } from './index.js';
 import getDefaultLoadPaths from './get-default-load-paths.js';
 import getErrorSassStackPaths from './get-error-sass-stack-paths.js';
@@ -29,8 +30,10 @@ const { values: flags, positionals: fileArgs } = parseArgs({
 const { watch: isWatching, 'out-dir': outDir, 'load-path': loadPaths = [] } = flags;
 loadPaths.push(...getDefaultLoadPaths());
 
+const sassCompiler = await initAsyncSassCompiler();
+
 /** @type {BuildOptions & SyncSassOptions} */
-const options = { outDir, loadPaths, optimize: isProduction };
+const options = { outDir, loadPaths, sassCompiler, optimize: isProduction };
 
 /**
  * Watches given file path(s), triggering the callback on the first change.
@@ -89,4 +92,8 @@ try {
 } catch (error) {
   console.error(error);
   process.exitCode = 1;
+} finally {
+  if (!isWatching) {
+    await sassCompiler.dispose();
+  }
 }

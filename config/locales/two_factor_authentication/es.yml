@@ -12,7 +12,7 @@ es:
       link: eliminando su cuenta
       pending: Actualmente tiene una solicitud pendiente para eliminar su cuenta. Se
         necesitan 24 horas desde el momento en que realizó la solicitud para
-        completar el proceso.  Por favor, vuelva más tarde.
+        completar el proceso. Por favor, vuelva más tarde.
       successful_cancel: Gracias. Su solicitud para eliminar su cuenta de %{app_name}
         ha sido cancelada.
       text_html: Si no puede usar ninguna de estas opciones de seguridad anteriores,
@@ -20,6 +20,15 @@ es:
     attempt_remaining_warning_html:
       one: Le quedan <strong>%{count} intento</strong>.
       other: Le quedan <strong>%{count} intentos</strong>.
+    auth_app:
+      change_nickname: Cambiar apodo
+      delete: Eliminar este dispositivo
+      deleted: Se ha eliminado correctamente un método de aplicación de autenticación.
+      edit_heading: Gestionar la configuración de su aplicación de autenticación
+      manage_accessible_label: Gestionar la aplicación de autenticación
+      nickname: Apodo
+      renamed: Se ha cambiado correctamente el nombre de su método de aplicación de
+        autenticación.
     backup_code_header_text: Ingrese su código de respaldo
     backup_code_prompt: Puede utilizar este código de respaldo una vez. Tendrá que
       usar un nuevo código de respaldo la próxima vez después de que lo envíe.
@@ -138,6 +147,14 @@ es:
       troubleshooting:
         change_number: Utilice otro número de teléfono.
         code_not_received: No recibí mi código de un solo uso.
+    piv_cac:
+      change_nickname: Cambiar apodo
+      delete: Eliminar este método
+      deleted: Se ha eliminado correctamente un método PIV/CAC
+      edit_heading: Gestionar la configuración de PIV/CAC
+      manage_accessible_label: Gestionar PIV/CAC
+      nickname: Apodo
+      renamed: Se ha cambiado correctamente el nombre de su método PIV/CAC
     piv_cac_header_text: Presenta tu PIV/CAC
     please_try_again_html: Inténtelo de nuevo en <strong>%{countdown}</strong>.
     read_about_two_factor_authentication: Conozca la autenticación de dos factores
@@ -214,4 +231,12 @@ es:
         facial o táctil
     webauthn_platform_header_text: Usar desbloqueo facial o táctil
     webauthn_platform_use_key: Usar el desbloqueo de pantalla
+    webauthn_roaming:
+      change_nickname: Cambiar apodo
+      delete: Eliminar este dispositivo
+      deleted: Se ha eliminado correctamente un método de clave de seguridad
+      edit_heading: Gestionar la configuración de su clave de seguridad
+      manage_accessible_label: Gestionar la clave de seguridad
+      nickname: Apodo
+      renamed: Se ha cambiado correctamente el nombre de su método de clave de seguridad
     webauthn_use_key: Usar llave de seguridad

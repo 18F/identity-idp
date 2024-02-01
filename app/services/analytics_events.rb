@@ -188,6 +188,45 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks when a user deletes their auth app from account
+  # @param [Boolean] success
+  # @param [Hash] error_details
+  # @param [Integer] configuration_id
+  def auth_app_delete_submitted(
+    success:,
+    configuration_id:,
+    error_details: nil,
+    **extra
+  )
+    track_event(
+      :auth_app_delete_submitted,
+      success:,
+      error_details:,
+      configuration_id:,
+      **extra,
+    )
+  end
+
+  # When a user updates name for auth app
+  # @param [Boolean] success
+  # @param [Hash] error_details
+  # @param [Integer] configuration_id
+  # Tracks when user submits a name change for an Auth App configuration
+  def auth_app_update_name_submitted(
+    success:,
+    configuration_id:,
+    error_details: nil,
+    **extra
+  )
+    track_event(
+      :auth_app_update_name_submitted,
+      success:,
+      error_details:,
+      configuration_id:,
+      **extra,
+    )
+  end
+
   # When a user views the "you are already signed in with the following email" screen
   def authentication_confirmation
     track_event('Authentication Confirmation')
@@ -913,11 +952,6 @@ module AnalyticsEvents
     )
   end
 
-  # @identity.idp.previous_event_name IdV: in person proofing redo_address submitted
-  def idv_doc_auth_redo_address_submitted(**extra)
-    track_event('IdV: doc auth redo_address submitted', **extra)
-  end
-
   def idv_doc_auth_redo_ssn_submitted(**extra)
     track_event('IdV: doc auth redo_ssn submitted', **extra)
   end
@@ -981,6 +1015,37 @@ module AnalyticsEvents
   # @param [Float] vendor_request_time_in_ms Time it took to upload images & get a response.
   # @param [String] front_image_fingerprint Fingerprint of front image data
   # @param [String] back_image_fingerprint Fingerprint of back image data
+  # @param [Boolean] attention_with_barcode
+  # @param [Boolean] doc_type_supported
+  # @param [Boolean] doc_auth_success
+  # @param [String] selfie_status
+  # @param [String] vendor
+  # @param [String] conversation_id
+  # @param [String] reference
+  # @param [String] transaction_status
+  # @param [String] transaction_reason_code
+  # @param [String] product_status
+  # @param [String] decision_product_status
+  # @param [Array] processed_alerts
+  # @param [Integer] alert_failure_count
+  # @param [Hash] log_alert_results
+  # @param [Hash] portrait_match_results
+  # @param [Hash] image_metrics
+  # @param [Boolean] address_line2_present
+  # @option extra [String] 'DocumentName'
+  # @option extra [String] 'DocAuthResult'
+  # @option extra [String] 'DocIssuerCode'
+  # @option extra [String] 'DocIssuerName'
+  # @option extra [String] 'DocIssuerType'
+  # @option extra [String] 'DocClassCode'
+  # @option extra [String] 'DocClass'
+  # @option extra [String] 'DocClassName'
+  # @option extra [Boolean] 'DocIsGeneric'
+  # @option extra [String] 'DocIssue'
+  # @option extra [String] 'DocIssueType'
+  # @option extra [String] 'ClassificationMode'
+  # @option extra [Boolean] 'OrientationChanged'
+  # @option extra [Boolean] 'PresentationChanged'
   # The document capture image was uploaded to vendor during the IDV process
   def idv_doc_auth_submitted_image_upload_vendor(
     success:,
@@ -988,7 +1053,8 @@ module AnalyticsEvents
     exception:,
     state:,
     state_id_type:,
-    async:, attempts:,
+    async:,
+    attempts:,
     remaining_attempts:,
     client_image_metrics:,
     flow_path:,
@@ -997,25 +1063,59 @@ module AnalyticsEvents
     vendor_request_time_in_ms: nil,
     front_image_fingerprint: nil,
     back_image_fingerprint: nil,
+    attention_with_barcode: nil,
+    doc_type_supported: nil,
+    doc_auth_success: nil,
+    selfie_status: nil,
+    vendor: nil,
+    conversation_id: nil,
+    reference: nil,
+    transaction_status: nil,
+    transaction_reason_code: nil,
+    product_status: nil,
+    decision_product_status: nil,
+    processed_alerts: nil,
+    alert_failure_count: nil,
+    log_alert_results: nil,
+    portrait_match_results: nil,
+    image_metrics: nil,
+    address_line2_present: nil,
     **extra
   )
     track_event(
       'IdV: doc auth image upload vendor submitted',
-      success: success,
-      errors: errors,
-      exception: exception,
-      billed: billed,
-      doc_auth_result: doc_auth_result,
-      state: state,
-      state_id_type: state_id_type,
-      async: async,
-      attempts: attempts,
-      remaining_attempts: remaining_attempts,
-      client_image_metrics: client_image_metrics,
-      flow_path: flow_path,
-      vendor_request_time_in_ms: vendor_request_time_in_ms,
-      front_image_fingerprint: front_image_fingerprint,
-      back_image_fingerprint: back_image_fingerprint,
+      success:,
+      errors:,
+      exception:,
+      billed:,
+      doc_auth_result:,
+      state:,
+      state_id_type:,
+      async:,
+      attempts:,
+      remaining_attempts:,
+      client_image_metrics:,
+      flow_path:,
+      vendor_request_time_in_ms:,
+      front_image_fingerprint:,
+      back_image_fingerprint:,
+      attention_with_barcode:,
+      doc_type_supported:,
+      doc_auth_success:,
+      selfie_status:,
+      vendor:,
+      conversation_id:,
+      reference:,
+      transaction_status:,
+      transaction_reason_code:,
+      product_status:,
+      decision_product_status:,
+      processed_alerts:,
+      alert_failure_count:,
+      log_alert_results:,
+      portrait_match_results:,
+      image_metrics:,
+      address_line2_present:,
       **extra,
     )
   end
@@ -1099,6 +1199,7 @@ module AnalyticsEvents
   # @param [Boolean] in_person_verification_pending
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [String, nil] deactivation_reason Reason user's profile was deactivated, if any.
+  # @identity.idp.previous_event_name  IdV: review info visited
   def idv_enter_password_submitted(
     success:,
     fraud_review_pending:,
@@ -1127,6 +1228,7 @@ module AnalyticsEvents
   # @param [String] address_verification_method The method (phone or gpo) being
   #        used to verify the user's identity
   # User visited IDV password confirm page
+  # @identity.idp.previous_event_name  IdV: review info visited
   def idv_enter_password_visited(
     proofing_components: nil,
     address_verification_method: nil,
@@ -1614,37 +1716,6 @@ module AnalyticsEvents
       analytics_id: analytics_id,
       irs_reproofing: irs_reproofing,
       opted_in_to_in_person_proofing: opted_in_to_in_person_proofing,
-      **extra,
-    )
-  end
-
-  # @param [String] flow_path
-  # @param [String] step
-  # @param [String] analytics_id
-  # @param [Boolean] irs_reproofing
-  # @param [Boolean] success
-  # @param [Hash] errors
-  # @param [Boolean, nil] same_address_as_id
-  # User clicked cancel on update address page
-  def idv_in_person_proofing_cancel_update_address(
-    flow_path: nil,
-    step: nil,
-    analytics_id: nil,
-    irs_reproofing: nil,
-    success: nil,
-    errors: nil,
-    same_address_as_id: nil,
-    **extra
-  )
-    track_event(
-      'IdV: in person proofing cancel_update_address submitted',
-      flow_path: flow_path,
-      step: step,
-      analytics_id: analytics_id,
-      irs_reproofing: irs_reproofing,
-      success: success,
-      errors: errors,
-      same_address_as_id: same_address_as_id,
       **extra,
     )
   end
@@ -2239,6 +2310,19 @@ module AnalyticsEvents
       minutes_since_established: minutes_since_established,
       response_message: response_message,
       reason: reason,
+      **extra,
+    )
+  end
+
+  # A user has been moved to fraud review after completing proofing at the USPS
+  # @param [String] enrollment_id
+  def idv_in_person_usps_proofing_results_job_user_sent_to_fraud_review(
+    enrollment_id:,
+    **extra
+  )
+    track_event(
+      :idv_in_person_usps_proofing_results_job_user_sent_to_fraud_review,
+      enrollment_id: enrollment_id,
       **extra,
     )
   end
@@ -3791,6 +3875,25 @@ module AnalyticsEvents
     track_event(:phone_input_country_changed, country_code:, **extra)
   end
 
+  # @param [Boolean] success
+  # @param [Hash] error_details
+  # @param [Integer] configuration_id
+  # Tracks when user attempts to delete a PIV/CAC configuraton
+  def piv_cac_delete_submitted(
+    success:,
+    configuration_id:,
+    error_details: nil,
+    **extra
+  )
+    track_event(
+      :piv_cac_delete_submitted,
+      success:,
+      error_details:,
+      configuration_id:,
+      **extra,
+    )
+  end
+
   # @identity.idp.previous_event_name User Registration: piv cac disabled
   # @identity.idp.previous_event_name PIV CAC disabled
   # Tracks when user's piv cac is disabled
@@ -3823,6 +3926,25 @@ module AnalyticsEvents
     track_event(
       :piv_cac_setup_visited,
       in_account_creation_flow:,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success
+  # @param [Hash] error_details
+  # @param [Integer] configuration_id
+  # Tracks when user submits a name change for a PIV/CAC configuraton
+  def piv_cac_update_name_submitted(
+      success:,
+      configuration_id:,
+      error_details: nil,
+      **extra
+    )
+    track_event(
+      :piv_cac_update_name_submitted,
+      success:,
+      error_details:,
+      configuration_id:,
       **extra,
     )
   end
@@ -3924,6 +4046,7 @@ module AnalyticsEvents
   # @param [String] validator_class Class name of validator
   # @param [String, nil] exception_class Class name of exception, if error occurred
   # @param [String, nil] phone_country_code Country code associated with reCAPTCHA phone result
+  # @param [String] recaptcha_version
   def recaptcha_verify_result_received(
     recaptcha_result:,
     score_threshold:,
@@ -3931,6 +4054,7 @@ module AnalyticsEvents
     validator_class:,
     exception_class:,
     phone_country_code: nil,
+    recaptcha_version: nil,
     **extra
   )
     track_event(
@@ -3942,6 +4066,7 @@ module AnalyticsEvents
         validator_class:,
         exception_class:,
         phone_country_code:,
+        recaptcha_version:,
         **extra,
       }.compact,
     )
@@ -4421,30 +4546,6 @@ module AnalyticsEvents
     )
   end
 
-  # User was shown an "Are you sure you want to navigate away from this page?" message from their
-  # browser (via onbeforeunload). (This is a frontend event.)
-  # @param [String] path Path where this event was encountered.
-  def user_prompted_before_navigation(path:, **extra)
-    track_event(
-      'User prompted before navigation',
-      path: path,
-      **extra,
-    )
-  end
-
-  # User was shown an "Are you sure you want to navigate away from this page?" prompt via
-  # onbeforeunload and was still on the page <seconds> later. (This is a frontend event.)
-  # @param [String] path Path where this event was encountered.
-  # @param [Integer] seconds Amount of time user has been on page since prompt.
-  def user_prompted_before_navigation_and_still_on_page(path:, seconds:, **extra)
-    track_event(
-      'User prompted before navigation and still on page',
-      path: path,
-      seconds: seconds,
-      **extra,
-    )
-  end
-
   # @param [Boolean] success
   # @param [Hash] errors
   # @param [Integer] enabled_mfa_methods_count
@@ -4531,6 +4632,7 @@ module AnalyticsEvents
   # @param [String] needs_completion_screen_reason
   # @param [Array] sp_request_requested_attributes
   # @param [Array] sp_session_requested_attributes
+  # @param [String, nil] disposable_email_domain Disposable email domain used for registration
   def user_registration_complete(
     ial2:,
     service_provider_name:,
@@ -4539,6 +4641,7 @@ module AnalyticsEvents
     sp_session_requested_attributes:,
     sp_request_requested_attributes: nil,
     ialmax: nil,
+    disposable_email_domain: nil,
     **extra
   )
     track_event(
@@ -4550,6 +4653,7 @@ module AnalyticsEvents
       needs_completion_screen_reason: needs_completion_screen_reason,
       sp_request_requested_attributes: sp_request_requested_attributes,
       sp_session_requested_attributes: sp_session_requested_attributes,
+      disposable_email_domain: disposable_email_domain,
       **extra,
     )
   end
@@ -4760,22 +4864,25 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Boolean] success
-  # @param [Hash] error_details
-  # @param [Integer] configuration_id
+  # @param [Boolean] success Whether the submission was successful
+  # @param [Integer] configuration_id Database ID for the configuration
+  # @param [Boolean] platform_authenticator Whether the configuration was a platform authenticator
+  # @param [Hash] error_details Details for error that occurred in unsuccessful submission
   # Tracks when user attempts to delete a WebAuthn configuration
   # @identity.idp.previous_event_name WebAuthn Deleted
   def webauthn_delete_submitted(
     success:,
     configuration_id:,
+    platform_authenticator:,
     error_details: nil,
     **extra
   )
     track_event(
       :webauthn_delete_submitted,
       success:,
-      error_details:,
       configuration_id:,
+      platform_authenticator:,
+      error_details:,
       **extra,
     )
   end
@@ -4806,21 +4913,24 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Boolean] success
-  # @param [Hash] error_details
-  # @param [Integer] configuration_id
+  # @param [Boolean] success Whether the submission was successful
+  # @param [Integer] configuration_id Database ID for the configuration
+  # @param [Boolean] platform_authenticator Whether the configuration was a platform authenticator
+  # @param [Hash] error_details Details for error that occurred in unsuccessful submission
   # Tracks when user submits a name change for a WebAuthn configuration
   def webauthn_update_name_submitted(
     success:,
     configuration_id:,
+    platform_authenticator:,
     error_details: nil,
     **extra
   )
     track_event(
       :webauthn_update_name_submitted,
       success:,
-      error_details:,
+      platform_authenticator:,
       configuration_id:,
+      error_details:,
       **extra,
     )
   end

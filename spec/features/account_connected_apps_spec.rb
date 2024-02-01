@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'Account connected applications' do
+RSpec.describe 'Account connected applications', allowed_extra_analytics: [:*] do
   let(:user) { create(:user, :fully_registered, created_at: Time.zone.now - 100.days) }
   let(:identity_with_link) do
     create(
@@ -37,7 +37,7 @@ RSpec.describe 'Account connected applications' do
     expect(page).to have_content(t('headings.account.connected_accounts'))
 
     visit account_history_path
-    expect(page).to have_content( \
+    expect(page).to have_content(
       t('event_types.authenticated_at', service_provider: identity_without_link.display_name),
     )
     expect(page).to_not have_link(identity_without_link.display_name)

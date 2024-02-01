@@ -312,6 +312,10 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
       end
     end
 
+    # TODO fix this set of tests, this looks like something broken with error generation?
+    #      NoMethodError:
+    # undefined method `empty?' for nil
+    # ./app/services/doc_auth/error_result.rb:33:in `to_h'
     describe 'when sending a failing selfie yml' do
       context 'liveness check fails due to being determined to not be live' do
         it 'returns a failure response' do
@@ -339,7 +343,9 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
 
           errors = post_images_response.errors
           expect(errors.keys).to contain_exactly(:general, :hints, :selfie)
-          expect(errors[:selfie]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
+          expect(errors[:selfie]).to contain_exactly(
+            DocAuth::Errors::SELFIE_NOT_LIVE_POOR_QUALITY_FIELD,
+          )
         end
       end
 
@@ -369,7 +375,9 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
 
           errors = post_images_response.errors
           expect(errors.keys).to contain_exactly(:general, :hints, :selfie)
-          expect(errors[:selfie]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
+          expect(errors[:selfie]).to contain_exactly(
+            DocAuth::Errors::SELFIE_NOT_LIVE_POOR_QUALITY_FIELD,
+          )
         end
       end
 

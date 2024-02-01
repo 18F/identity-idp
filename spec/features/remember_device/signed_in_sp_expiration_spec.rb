@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'SP expiration while signed in' do
+RSpec.feature 'SP expiration while signed in', allowed_extra_analytics: [:*] do
   include SamlAuthHelper
 
   ##

@@ -8,7 +8,7 @@ module Idv
     before_action :confirm_two_factor_authenticated
     before_action :redirect_unless_enrollment
 
-    include IdvSession
+    include IdvSessionConcern
     include Flow::FlowStateMachine
     include Idv::ThreatMetrixConcern
 
@@ -16,7 +16,7 @@ module Idv
 
     FLOW_STATE_MACHINE_SETTINGS = {
       step_url: :idv_in_person_step_url,
-      final_url: :idv_in_person_ssn_url,
+      final_url: :idv_in_person_proofing_address_url,
       flow: Idv::Flows::InPersonFlow,
       analytics_id: 'In Person Proofing',
     }.freeze

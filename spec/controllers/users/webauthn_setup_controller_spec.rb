@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Users::WebauthnSetupController do
+RSpec.describe Users::WebauthnSetupController, allowed_extra_analytics: [:*] do
   include WebAuthnHelper
 
   describe 'before_actions' do
@@ -156,6 +156,7 @@ RSpec.describe Users::WebauthnSetupController do
           success: true,
           error_details: nil,
           configuration_id: webauthn_configuration.id.to_s,
+          platform_authenticator: false,
         )
       end
 
@@ -164,6 +165,22 @@ RSpec.describe Users::WebauthnSetupController do
           with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
 
         delete :delete, params: { id: webauthn_configuration.id }
+      end
+
+      context 'when authenticator is the sole authentication method' do
+        let(:user) { create(:user) }
+
+        it 'tracks the delete in analytics' do
+          delete :delete, params: { id: webauthn_configuration.id }
+
+          expect(@analytics).to have_logged_event(
+            :webauthn_delete_submitted,
+            success: false,
+            error_details: nil,
+            configuration_id: webauthn_configuration.id.to_s,
+            platform_authenticator: nil,
+          )
+        end
       end
     end
 
@@ -400,10 +417,7 @@ RSpec.describe Users::WebauthnSetupController do
             'Multi-Factor Authentication Setup',
             {
               enabled_mfa_methods_count: 0,
-              errors: { name: [I18n.t(
-                'errors.webauthn_platform_setup.attestation_error',
-                link: MarketingSite.contact_url,
-              )] },
+              errors: { name: [I18n.t('errors.webauthn_platform_setup.general_error')] },
               error_details: { name: { attestation_error: true } },
               in_account_creation_flow: false,
               mfa_method_counts: {},

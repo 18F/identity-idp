@@ -15,6 +15,7 @@ RSpec.describe Idv::Agent do
     let(:issuer) { 'fake-issuer' }
     let(:friendly_name) { 'fake-name' }
     let(:app_id) { 'fake-app-id' }
+    let(:ipp_enrollment_in_progress) { false }
 
     let(:agent) { Idv::Agent.new(applicant) }
 
@@ -41,6 +42,7 @@ RSpec.describe Idv::Agent do
             user_id: user.id,
             threatmetrix_session_id: nil,
             request_ip: request_ip,
+            ipp_enrollment_in_progress: ipp_enrollment_in_progress,
           )
 
           result = document_capture_session.load_proofing_result.result
@@ -57,6 +59,7 @@ RSpec.describe Idv::Agent do
             user_id: user.id,
             threatmetrix_session_id: nil,
             request_ip: request_ip,
+            ipp_enrollment_in_progress: ipp_enrollment_in_progress,
           )
           result = document_capture_session.load_proofing_result.result
           expect(result[:context][:stages][:state_id]).to include(
@@ -82,6 +85,7 @@ RSpec.describe Idv::Agent do
             user_id: user.id,
             threatmetrix_session_id: nil,
             request_ip: request_ip,
+            ipp_enrollment_in_progress: ipp_enrollment_in_progress,
           )
           result = document_capture_session.load_proofing_result.result
           expect(result[:errors][:ssn]).to eq ['Unverified SSN.']
@@ -97,6 +101,7 @@ RSpec.describe Idv::Agent do
             user_id: user.id,
             threatmetrix_session_id: nil,
             request_ip: request_ip,
+            ipp_enrollment_in_progress: ipp_enrollment_in_progress,
           )
 
           result = document_capture_session.load_proofing_result.result
@@ -118,6 +123,7 @@ RSpec.describe Idv::Agent do
             user_id: user.id,
             threatmetrix_session_id: nil,
             request_ip: request_ip,
+            ipp_enrollment_in_progress: ipp_enrollment_in_progress,
           )
           result = document_capture_session.load_proofing_result.result
 
@@ -142,6 +148,7 @@ RSpec.describe Idv::Agent do
           user_id: user.id,
           threatmetrix_session_id: nil,
           request_ip: request_ip,
+          ipp_enrollment_in_progress: ipp_enrollment_in_progress,
         )
         result = document_capture_session.load_proofing_result.result
 
@@ -150,6 +157,32 @@ RSpec.describe Idv::Agent do
           success: false,
           timed_out: true,
         )
+      end
+
+      context 'successfully proofs in IPP flow' do
+        let(:ipp_enrollment_in_progress) { true }
+
+        it 'returns a successful result' do
+          addr = Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS
+          agent = Idv::Agent.new(addr.merge(uuid: user.uuid))
+          agent.proof_resolution(
+            document_capture_session,
+            should_proof_state_id: true,
+            trace_id: trace_id,
+            user_id: user.id,
+            threatmetrix_session_id: nil,
+            request_ip: request_ip,
+            ipp_enrollment_in_progress: ipp_enrollment_in_progress,
+          )
+          result = document_capture_session.load_proofing_result.result
+          expect(result[:context][:stages][:state_id]).to include(
+            transaction_id: Proofing::Mock::StateIdMockClient::TRANSACTION_ID,
+            errors: {},
+            exception: nil,
+            success: true,
+            timed_out: false,
+          )
+        end
       end
     end
 

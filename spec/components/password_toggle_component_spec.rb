@@ -64,6 +64,15 @@ RSpec.describe PasswordToggleComponent, type: :component do
       expect(toggle_two.input_id).to be_present
       expect(toggle_one.input_id).not_to eq(toggle_two.input_id)
     end
+
+    context 'with field_options customizing id' do
+      let(:options) { { field_options: { input_html: { id: 'custom' } } } }
+
+      it 'respects customized id' do
+        expect(rendered).to have_css('#custom[type=password]')
+        expect(rendered).to have_css('[aria-controls=custom]')
+      end
+    end
   end
 
   context 'with tag options' do

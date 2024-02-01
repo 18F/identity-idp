@@ -36,25 +36,35 @@ RSpec.describe UserProfilesEncryptor do
 
     context 'when the user has a pending profile' do
       let(:profile) { create(:profile, :verify_by_mail_pending, :verified, pii: pii.to_h) }
-
-      it 'encrypts the PII for the pending profile with the password' do
-        encryptor = UserProfilesEncryptor.new(
+      let(:encryptor) do
+        UserProfilesEncryptor.new(
           user: user,
           user_session: user_session,
           password: password,
         )
-        encryptor.encrypt
+      end
+      let(:personal_key) { PersonalKeyGenerator.new(user).normalize(encryptor.personal_key) }
+      let(:decrypted_profile_pii) { profile.decrypt_pii(password) }
+      let(:decrypted_profile_recovery_pii) { profile.recover_pii(personal_key) }
 
+      it 'encrypts the PII for the pending profile with the password' do
+        encryptor.encrypt
         profile.reload
 
-        personal_key = PersonalKeyGenerator.new(user).normalize(encryptor.personal_key)
-
-        decrypted_profile_pii = profile.decrypt_pii(password)
-        decrypted_profile_recovery_pii = profile.recover_pii(personal_key)
-
-        expect(pii).to eq(decrypted_profile_pii)
-        expect(pii).to eq(decrypted_profile_recovery_pii)
+        expect(decrypted_profile_pii).to eq(pii)
+        expect(decrypted_profile_recovery_pii).to eq(pii)
         expect(user.valid_personal_key?(personal_key)).to eq(true)
+      end
+
+      context 'but the pending profile has no PII associated with it' do
+        before { user_session.delete(:encrypted_profiles) }
+
+        it 'deactivates the profile with an encryption error' do
+          encryptor.encrypt
+          profile.reload
+
+          expect(profile.deactivation_reason).to eq('encryption_error')
+        end
       end
     end
 

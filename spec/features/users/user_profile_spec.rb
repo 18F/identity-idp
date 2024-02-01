@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'User profile' do
+RSpec.feature 'User profile', allowed_extra_analytics: [:*] do
   include IdvStepHelper
   include NavigationHelper
   include PersonalKeyHelper
@@ -123,7 +123,7 @@ RSpec.feature 'User profile' do
               with: 'this is a great sentence'
 
       expect(page).to have_content(t('instructions.password.strength.intro'))
-      expect(page).to have_content t('instructions.password.strength.v')
+      expect(page).to have_content t('instructions.password.strength.4')
 
       check t('components.password_toggle.toggle_label')
 

@@ -18,7 +18,7 @@ en:
           one: Password must be at least one character long
           other: Password must be at least %{count} characters long
     capture_doc:
-      invalid_link: This link is expired or not valid.  Please request another link to
+      invalid_link: This link is expired or not valid. Please request another link to
         verify your identity on a mobile phone.
     confirm_password_incorrect: Incorrect password.
     doc_auth:
@@ -34,6 +34,7 @@ en:
       rate_limited_text_html: 'For your security, we limit the number of times you can
         attempt to verify a document online. <strong>Try again in
         %{timeout}.</strong>'
+      selfie_not_live_or_poor_quality_heading: We could not verify the photo of yourself
       send_link_limited: You tried too many times, please try again in %{timeout}. You
         can also go back and choose to use your computer instead.
     enter_code:
@@ -50,6 +51,7 @@ en:
     messages:
       already_confirmed: was already confirmed, please try signing in
       blank: Please fill in this field.
+      blank_cert_element_req: We cannot detect a certificate in your request.
       confirmation_code_incorrect: Incorrect verification code. Did you type it in correctly?
       confirmation_invalid_token: Invalid confirmation link. Either the link expired
         or you already confirmed your account.
@@ -124,10 +126,6 @@ en:
       account_setup_error: We were unable to add face or touch unlock. Please try again or %{link}.
       already_registered: Face or touch unlock is already registered on this device.
         Please try adding another authentication method.
-      attestation_error: Sorry, but your platform authenticator doesn’t appear to be a
-        FIDO platform authenticator. Please make sure your device is listed at
-        https://fidoalliance.org/certification/fido-certified-products/ and if
-        you believe this is our error, please contact at %{link}.
       choose_another_method: choose another authentication method
       general_error: We were unable to add face or touch unlock. Please try again or
         choose another method.
@@ -138,10 +136,6 @@ en:
     webauthn_setup:
       additional_methods_link: choose another authentication method
       already_registered: Security key already registered. Please try a different security key.
-      attestation_error: Sorry, but your security key doesn’t appear to be a FIDO
-        security key. Please make sure your device is listed at
-        https://fidoalliance.org/certification/fido-certified-products/ and if
-        you believe this is our error, please contact at %{link}.
       general_error_html: We were unable to add the security key. Please try again or %{link_html}.
       not_supported: Your browser doesn’t support security keys. Use the latest
         version of Google Chrome, Microsoft Edge, Mozilla Firefox or Safari to

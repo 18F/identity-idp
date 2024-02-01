@@ -2,7 +2,7 @@ require 'saml_idp_constants'
 
 ## GET /api/saml/auth helper methods
 module SamlAuthHelper
-  PATH_YEAR = '2023'
+  PATH_YEAR = '2024'
   SP_ISSUER = 'http://localhost:3000'
 
   def saml_settings(overrides: {})
@@ -34,7 +34,7 @@ module SamlAuthHelper
     settings.idp_cert_fingerprint_algorithm = 'http://www.w3.org/2001/04/xmlenc#sha256'
 
     overrides.except(:security).each do |setting, value|
-      settings.send("#{setting}=", value)
+      settings.send(:"#{setting}=", value)
     end
     settings.security.merge!(overrides[:security]) if overrides[:security]
     settings
@@ -136,7 +136,7 @@ module SamlAuthHelper
   end
 
   def saml_test_idp_cert
-    AppArtifacts.store.saml_2023_cert
+    AppArtifacts.store.saml_2024_cert
   end
 
   public

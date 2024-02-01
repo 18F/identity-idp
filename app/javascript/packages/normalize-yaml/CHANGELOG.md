@@ -1,3 +1,13 @@
+## Unreleased
+
+### Breaking Changes
+
+- The new punctuation formatter described in "New Features" is enabled by default, which may identify new existing issues in your YAML files.
+
+### New Features
+
+- Added new punctuation formatter to collapse multiple spaces to a single space.
+
 ## v2.0.0
 
 ### Breaking Changes

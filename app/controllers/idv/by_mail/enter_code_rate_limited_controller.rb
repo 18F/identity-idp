@@ -2,7 +2,7 @@ module Idv
   module ByMail
     class EnterCodeRateLimitedController < ApplicationController
       include Idv::AvailabilityConcern
-      include IdvSession
+      include IdvSessionConcern
       include FraudReviewConcern
 
       before_action :confirm_two_factor_authenticated

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'PIV/CAC Management' do
+RSpec.feature 'PIV/CAC Management', allowed_extra_analytics: [:*] do
   def find_form(page, attributes)
     page.all('form').detect do |form|
       attributes.all? { |key, value| form[key] == value }
@@ -35,9 +35,9 @@ RSpec.feature 'PIV/CAC Management' do
 
       expect(current_path).to eq account_path
       visit account_two_factor_authentication_path
-      expect(page.find('.remove-piv')).to_not be_nil
-
       user.reload
+      expect(page).to have_link(href: edit_piv_cac_path(id: user.piv_cac_configurations.first.id))
+
       expect(user.piv_cac_configurations.first.x509_dn_uuid).to eq uuid
       expect(user.events.order(created_at: :desc).last.event_type).to eq('piv_cac_enabled')
     end
@@ -160,6 +160,7 @@ RSpec.feature 'PIV/CAC Management' do
         with: { phone: '+1 202-555-1212' },
       )
     end
+    let(:piv_name) { 'My PIV Card' }
 
     scenario 'does allow association of another piv/cac with the account' do
       stub_piv_cac_service
@@ -175,15 +176,20 @@ RSpec.feature 'PIV/CAC Management' do
       sign_in_and_2fa_user(user)
       visit account_two_factor_authentication_path
 
-      expect(page.find('.remove-piv')).to_not be_nil
-      page.find('.remove-piv').click
+      expect(page).to have_content(piv_name)
 
-      expect(current_path).to eq piv_cac_delete_path
-      click_on t('account.index.piv_cac_confirm_delete')
+      click_link(
+        format(
+          '%s: %s',
+          t('two_factor_authentication.piv_cac.manage_accessible_label'),
+          piv_name,
+        ),
+      )
 
-      expect(current_path).to eq account_two_factor_authentication_path
+      expect(current_path).to eq(edit_piv_cac_path(id: user.piv_cac_configurations.first.id))
+      click_button t('two_factor_authentication.piv_cac.delete')
 
-      expect(page).to have_link(t('account.index.piv_cac_add'), href: setup_piv_cac_url)
+      expect(page).to have_content(t('two_factor_authentication.piv_cac.deleted'))
 
       user.reload
       expect(user.piv_cac_configurations.first&.x509_dn_uuid).to be_nil
