@@ -11,6 +11,7 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
         back: back_image,
         back_image_metadata: back_image_metadata,
         selfie: selfie_image,
+        selfie_image_metadata: selfie_image_metadata,
         document_capture_session_uuid: document_capture_session_uuid,
       ),
       service_provider: build(:service_provider, issuer: 'test_issuer'),
@@ -31,6 +32,7 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
   let(:back_image_metadata) do
     { width: 20, height: 20, mimeType: 'image/png', source: 'upload' }.to_json
   end
+  let(:selfie_image_metadata) { nil }
   let!(:document_capture_session) { DocumentCaptureSession.create!(user: create(:user)) }
   let(:document_capture_session_uuid) { document_capture_session.uuid }
   let(:fake_analytics) { FakeAnalytics.new }
@@ -199,6 +201,10 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
         let(:liveness_checking_required) { true }
         let(:back_image) { DocAuthImageFixtures.portrait_match_success_yaml }
         let(:selfie_image) { DocAuthImageFixtures.selfie_image_multipart }
+        let(:selfie_image_metadata) do
+          { width: 10, height: 10, mimeType: 'image/png', source: 'upload' }.to_json
+        end
+
         it 'logs analytics' do
           expect(irs_attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
             {
@@ -254,6 +260,12 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
                 source: 'upload',
                 width: 40,
               },
+              selfie: {
+                height: 10,
+                mimeType: 'image/png',
+                source: 'upload',
+                width: 10,
+              },
             },
             conversation_id: nil,
             decision_product_status: nil,
@@ -298,7 +310,7 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
           expect(response.selfie_status).to eq(:success)
           expect(response.errors).to eq({})
           expect(response.attention_with_barcode?).to eq(false)
-          # expect(response.pii_from_doc).to eq(Idp::Constants::MOCK_IDV_APPLICANT)
+          expect(response.pii_from_doc).to eq(Idp::Constants::MOCK_IDV_APPLICANT)
         end
       end
     end
