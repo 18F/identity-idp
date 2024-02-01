@@ -20,4 +20,8 @@ class FraudReviewChecker
   def fraud_review_eligible?
     !!user&.fraud_review_pending_profile&.fraud_review_pending_at&.after?(30.days.ago)
   end
+
+  def ipp_fraud_review_pending?
+    user&.fraud_review_pending_profile.fraud_review_pending_at.present?
+  end
 end

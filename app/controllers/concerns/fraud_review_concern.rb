@@ -4,16 +4,12 @@ module FraudReviewConcern
   delegate :fraud_check_failed?,
            :fraud_review_pending?,
            :fraud_rejection?,
+           :ipp_fraud_review_pending?,
            to: :fraud_review_checker
 
   def handle_fraud
     handle_pending_fraud_review
     handle_fraud_rejection
-  end
-
-  def in_person_handle_pending_fraud_review
-    return unless IdentityConfig.store.in_person_proofing_enforce_tmx
-    handle_pending_fraud_review
   end
 
   def handle_pending_fraud_review
@@ -22,6 +18,11 @@ module FraudReviewConcern
 
   def handle_fraud_rejection
     redirect_to_fraud_rejection if fraud_rejection?
+  end
+
+  def in_person_handle_pending_fraud_review
+    return unless IdentityConfig.store.in_person_proofing_enforce_tmx
+    redirect_to_fraud_review if ipp_fraud_review_pending?
   end
 
   def redirect_to_fraud_review
