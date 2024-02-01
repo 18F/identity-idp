@@ -47,7 +47,7 @@ describe('DocumentCaptureWarning', () => {
     }
   }
 
-  function renderCcontent(isFailedDocType, isFailedResult, inPersonUrl) {
+  function renderContent({ isFailedDocType, isFailedResult, inPersonUrl }) {
     const unknownFieldErrors = [
       {
         field: 'general',
@@ -77,7 +77,7 @@ describe('DocumentCaptureWarning', () => {
       const isFailedResult = false;
       const isFailedDocType = false;
 
-      renderCcontent(isFailedDocType, isFailedResult, inPersonUrl);
+      renderContent({ isFailedDocType, isFailedResult, inPersonUrl });
 
       expect(trackEvent).to.have.been.calledWith('IdV: warning shown', {
         location: 'doc_auth_review_issues',
@@ -91,7 +91,11 @@ describe('DocumentCaptureWarning', () => {
     context('not failed result', () => {
       const isFailedResult = false;
       it('renders not failed doc type', () => {
-        const { getByRole, getByText } = renderCcontent(false, isFailedResult, inPersonUrl);
+        const { getByRole, getByText } = renderContent({
+          isFailedDocType: false,
+          isFailedResult,
+          inPersonUrl,
+        });
 
         validateHeader('errors.doc_auth.rate_limited_heading', 1, true);
         validateHeader('errors.doc_auth.rate_limited_subheading', 2, true);
@@ -106,11 +110,11 @@ describe('DocumentCaptureWarning', () => {
 
       it('renders with failed doc type', () => {
         const isFailedDocType = true;
-        const { getByRole, getByText } = renderCcontent(
+        const { getByRole, getByText } = renderContent({
           isFailedDocType,
           isFailedResult,
           inPersonUrl,
-        );
+        });
         // error message section
         validateHeader('errors.doc_auth.doc_type_not_supported_heading', 1, true);
         validateHeader('errors.doc_auth.rate_limited_subheading', 2, false);
@@ -128,11 +132,11 @@ describe('DocumentCaptureWarning', () => {
       const isFailedResult = true;
       it('renders not failed doc type', () => {
         const isFailedDocType = false;
-        const { getByRole, getByText } = renderCcontent(
+        const { getByRole, getByText } = renderContent({
           isFailedDocType,
           isFailedResult,
           inPersonUrl,
-        );
+        });
 
         // error message section
         validateHeader('errors.doc_auth.rate_limited_heading', 1, true);
@@ -148,11 +152,11 @@ describe('DocumentCaptureWarning', () => {
 
       it('renders with failed doc type', () => {
         const isFailedDocType = true;
-        const { getByRole, getByText } = renderCcontent(
+        const { getByRole, getByText } = renderContent({
           isFailedDocType,
           isFailedResult,
           inPersonUrl,
-        );
+        });
 
         // error message section
         validateHeader('errors.doc_auth.doc_type_not_supported_heading', 1, true);
@@ -165,6 +169,28 @@ describe('DocumentCaptureWarning', () => {
         // troubleshooting section
         validateTroubleShootingSection();
       });
+
+      /*
+      it('renders with successful selfie', () => {
+        const isFailedDocType = false;
+        const { getByRole, getByText } = renderContent({
+          isFailedDocType,
+          isFailedResult,
+          inPersonUrl,
+        });
+
+        // error message section
+        validateHeader('errors.doc_auth.doc_type_not_supported_heading', 1, true);
+        validateHeader('errors.doc_auth.rate_limited_subheading', 2, false);
+        expect(getByText(/general error/)).to.be.ok();
+        expect(getByText(/idv.warning.attempts_html/)).to.be.ok();
+        expect(getByRole('button', { name: 'idv.failure.button.warning' })).to.be.ok();
+        // ipp section not existing
+        validateIppSection(false);
+        // troubleshooting section
+        validateTroubleShootingSection();
+      });
+      */
     });
   });
 
@@ -175,7 +201,7 @@ describe('DocumentCaptureWarning', () => {
       const isFailedResult = true;
       const isFailedDocType = true;
 
-      renderCcontent(isFailedDocType, isFailedResult, inPersonUrl);
+      renderContent({ isFailedDocType, isFailedResult, inPersonUrl });
 
       expect(trackEvent).to.have.been.calledWith('IdV: warning shown', {
         location: 'doc_auth_review_issues',
@@ -190,11 +216,11 @@ describe('DocumentCaptureWarning', () => {
       const isFailedResult = false;
       it('renders not failed doc type', () => {
         const isFailedDocType = false;
-        const { getByRole, getByText } = renderCcontent(
+        const { getByRole, getByText } = renderContent({
           isFailedDocType,
           isFailedResult,
           inPersonUrl,
-        );
+        });
 
         // error message section
         validateHeader('errors.doc_auth.rate_limited_heading', 1, true);
@@ -210,11 +236,11 @@ describe('DocumentCaptureWarning', () => {
 
       it('renders with failed doc type', () => {
         const isFailedDocType = true;
-        const { getByRole, getByText } = renderCcontent(
+        const { getByRole, getByText } = renderContent({
           isFailedDocType,
           isFailedResult,
           inPersonUrl,
-        );
+        });
 
         // error message section
         validateHeader('errors.doc_auth.doc_type_not_supported_heading', 1, true);
@@ -233,11 +259,11 @@ describe('DocumentCaptureWarning', () => {
       const isFailedResult = true;
       it('renders not failed doc type', () => {
         const isFailedDocType = false;
-        const { getByRole, getByText } = renderCcontent(
+        const { getByRole, getByText } = renderContent({
           isFailedDocType,
           isFailedResult,
           inPersonUrl,
-        );
+        });
 
         // error message section
         validateHeader('errors.doc_auth.rate_limited_heading', 1, true);
@@ -253,11 +279,11 @@ describe('DocumentCaptureWarning', () => {
 
       it('renders with failed doc type', () => {
         const isFailedDocType = true;
-        const { getByRole, getByText } = renderCcontent(
+        const { getByRole, getByText } = renderContent({
           isFailedDocType,
           isFailedResult,
           inPersonUrl,
-        );
+        });
         // error message section
         validateHeader('errors.doc_auth.doc_type_not_supported_heading', 1, true);
         validateHeader('errors.doc_auth.rate_limited_subheading', 2, false);
