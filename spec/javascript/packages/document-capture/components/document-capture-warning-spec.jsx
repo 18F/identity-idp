@@ -52,11 +52,6 @@ describe('DocumentCaptureWarning', () => {
     isFailedResult,
     isFailedSelfieLivenessOrQuality = false,
     inPersonUrl,
-  } : {
-    isFailedDocType: boolean;
-    isFailedResult: boolean;
-    isFailedSelfieLivenessOrQuality?: boolean;
-    inPersonUrl: string;
   }) {
     const unknownFieldErrors = [
       {
