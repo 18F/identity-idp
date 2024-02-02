@@ -50,8 +50,13 @@ describe('DocumentCaptureWarning', () => {
   function renderContent({
     isFailedDocType,
     isFailedResult,
-    isFailedSelfieLivenessOrQuality,
+    isFailedSelfieLivenessOrQuality = false,
     inPersonUrl,
+  } : {
+    isFailedDocType: boolean;
+    isFailedResult: boolean;
+    isFailedSelfieLivenessOrQuality?: boolean;
+    inPersonUrl: string;
   }) {
     const unknownFieldErrors = [
       {
