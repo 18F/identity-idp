@@ -27,10 +27,12 @@ RSpec.describe ScriptHelper do
 
     context 'scripts enqueued' do
       before do
+        javascript_packs_tag_once('application')
         javascript_packs_tag_once('document-capture', 'document-capture')
-        javascript_packs_tag_once('application', prepend: true)
-        allow(AssetSources).to receive(:get_sources).with('application', 'document-capture').
-          and_return(['/application.js', '/document-capture.js'])
+        allow(AssetSources).to receive(:get_sources).with('application').
+          and_return(['/application.js'])
+        allow(AssetSources).to receive(:get_sources).with('document-capture').
+          and_return(['/document-capture.js'])
         allow(AssetSources).to receive(:get_assets).with('application', 'document-capture').
           and_return(['clock.svg', 'sprite.svg'])
       end
@@ -94,6 +96,27 @@ RSpec.describe ScriptHelper do
 
           expect(output).to have_css(
             "script[src^='/application.js'][integrity^='sha256-']",
+            count: 1,
+            visible: :all,
+          )
+        end
+      end
+
+      context 'with attributes' do
+        before do
+          javascript_packs_tag_once('track-errors', async: true)
+          allow(AssetSources).to receive(:get_sources).with('track-errors').
+            and_return(['/track-errors.js'])
+          allow(AssetSources).to receive(:get_assets).
+            with('application', 'document-capture', 'track-errors').
+            and_return([])
+        end
+
+        it 'adds attribute' do
+          output = render_javascript_pack_once_tags
+
+          expect(output).to have_css(
+            "script[src^='/track-errors.js'][async]",
             count: 1,
             visible: :all,
           )

@@ -6,33 +6,28 @@ module ScriptHelper
     without_preload_links_header { javascript_include_tag(...) }
   end
 
-  def javascript_packs_tag_once(*names, prepend: false)
-    @scripts ||= []
-    if prepend
-      @scripts = names | @scripts
-    else
-      @scripts |= names
-    end
+  def javascript_packs_tag_once(*names, **attributes)
+    @scripts = @scripts.to_h.merge(names.index_with(attributes))
     nil
   end
 
   alias_method :enqueue_component_scripts, :javascript_packs_tag_once
 
-  def render_javascript_pack_once_tags(*names)
-    names = names.presence || @scripts
-    if names && (sources = AssetSources.get_sources(*names)).present?
-      safe_join(
-        [
-          javascript_assets_tag(*names),
-          *sources.map do |source|
-            javascript_include_tag(
-              source,
-              crossorigin: local_crossorigin_sources? ? true : nil,
-              integrity: AssetSources.get_integrity(source),
-            )
-          end,
-        ],
-      )
+  def render_javascript_pack_once_tags(...)
+    capture do
+      javascript_packs_tag_once(...)
+      return if @scripts.blank?
+      concat javascript_assets_tag
+      @scripts.each do |name, attributes|
+        AssetSources.get_sources(name).each do |source|
+          concat javascript_include_tag(
+            source,
+            **attributes,
+            crossorigin: local_crossorigin_sources? ? true : nil,
+            integrity: AssetSources.get_integrity(source),
+          )
+        end
+      end
     end
   end
 
@@ -46,8 +41,8 @@ module ScriptHelper
     Rails.env.development? && ENV['WEBPACK_PORT'].present?
   end
 
-  def javascript_assets_tag(*names)
-    assets = AssetSources.get_assets(*names)
+  def javascript_assets_tag
+    assets = AssetSources.get_assets(*@scripts.keys)
     if assets.present?
       asset_map = assets.index_with { |path| asset_path(path, host: asset_host(path)) }
       content_tag(
