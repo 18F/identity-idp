@@ -340,6 +340,7 @@ verify_personal_key_max_attempts: 5
 version_headers_enabled: false
 use_dashboard_service_providers: false
 use_kms: false
+use_vot_in_sp_requests: false
 usps_auth_token_refresh_job_enabled: false
 usps_confirmation_max_days: 30
 usps_ipp_password: ''
