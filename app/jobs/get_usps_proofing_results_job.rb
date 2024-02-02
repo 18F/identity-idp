@@ -391,7 +391,7 @@ class GetUspsProofingResultsJob < ApplicationJob
     end
   end
 
-  def handle_call_in_needed(enrollment, response)
+  def handle_passed_with_fraud_review_pending(enrollment, response)
     proofed_at = parse_usps_timestamp(response['transactionEndDateTime'])
     enrollment_outcomes[:enrollments_passed] += 1
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_updated(
@@ -461,7 +461,7 @@ class GetUspsProofingResultsJob < ApplicationJob
     case response['status']
     when IPP_STATUS_PASSED
       if fraud_result_pending?(enrollment)
-        handle_call_in_needed(enrollment, response)
+        handle_passed_with_fraud_review_pending(enrollment, response)
       elsif passed_with_unsupported_secondary_id_type?(response)
         handle_unsupported_secondary_id(enrollment, response)
       elsif SUPPORTED_ID_TYPES.include?(response['primaryIdType'])
