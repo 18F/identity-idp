@@ -33,8 +33,6 @@ RSpec.feature 'Multi Two Factor Authentication', allowed_extra_analytics: [:*] d
 
       expect(current_path).to eq backup_code_setup_path
 
-      click_continue
-
       expect(page).to have_link(t('components.download_button.label'))
 
       click_continue
@@ -67,7 +65,7 @@ RSpec.feature 'Multi Two Factor Authentication', allowed_extra_analytics: [:*] d
 
       expect(current_path).to eq backup_code_setup_path
 
-      click_link t('two_factor_authentication.choose_another_option')
+      click_link t('two_factor_authentication.backup_codes.add_another_authentication_option')
 
       expect(page).to have_current_path(authentication_methods_setup_path)
 
@@ -120,11 +118,6 @@ RSpec.feature 'Multi Two Factor Authentication', allowed_extra_analytics: [:*] d
         fill_in :code, with: totp
 
         click_submit_default
-        click_continue
-
-        expect(page).to have_link(t('components.download_button.label'))
-
-        click_continue
 
         expect(page).to have_content(t('notices.backup_codes_configured'))
 
@@ -170,7 +163,6 @@ RSpec.feature 'Multi Two Factor Authentication', allowed_extra_analytics: [:*] d
           click_continue
           expect(current_path).to eq backup_code_setup_path
 
-          click_continue
           expect(page).to have_link(t('components.download_button.label'))
 
           click_continue
@@ -190,8 +182,6 @@ RSpec.feature 'Multi Two Factor Authentication', allowed_extra_analytics: [:*] d
 
           click_continue
           expect(current_path).to eq backup_code_setup_path
-
-          click_continue
           expect(page).to have_link(t('components.download_button.label'))
 
           click_continue
@@ -250,8 +240,6 @@ RSpec.feature 'Multi Two Factor Authentication', allowed_extra_analytics: [:*] d
 
       expect(current_path).to eq backup_code_setup_path
 
-      click_continue
-
       expect(page).to have_link(t('components.download_button.label'))
 
       click_continue
@@ -264,16 +252,7 @@ RSpec.feature 'Multi Two Factor Authentication', allowed_extra_analytics: [:*] d
     end
 
     it 'goes to the next page after user confirms that they have saved their backup codes' do
-      acknowledge_backup_code_confirmation
-      expect(page).to have_current_path account_path
-    end
-
-    it 'regenerates backup codes path if a user clicks that they need new backup codes' do
-      find(
-        'a',
-        text: t('two_factor_authentication.backup_codes.new_backup_codes_html').gsub('&nbsp;', ' '),
-      ).click
-      expect(page).to have_current_path backup_code_regenerate_path
+      expect(page).to have_current_path confirm_backup_codes_path
     end
   end
 
