@@ -70,8 +70,6 @@ RSpec.describe DocumentCaptureSessionResult do
           success: true,
           pii: pii,
           attention_with_barcode: false,
-          selfie_status: :nil,
-          doc_auth_success: nil,
         )
         expect(result.success?).to eq(true)
       end
