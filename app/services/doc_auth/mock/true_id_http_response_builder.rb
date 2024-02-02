@@ -4,39 +4,26 @@ module DocAuth
   module Mock
     class TrueIdHttpResponseBuilder
       include YmlLoaderConcern
-      def initialize(templatefile: nil)
+      def initialize(templatefile: nil, selfie_check_enabled: false)
         @template_file = templatefile
         @template = read_fixture_file_at_path(templatefile)
+        @selfie_check_enabled = selfie_check_enabled
         parse_template
+        available_checks
+        with_default_pii
       end
 
       def use_uploaded_file(upload_file_content)
         @uploaded_file = upload_file_content
+        @parsed_uploaded_file = parse_yaml(@uploaded_file).deep_symbolize_keys
       end
 
-      def alerts
-        process_alerts
+      def failed_input_alerts
+        process_input_alerts
       end
 
       def alert_idx(alert_name)
-        details = param_details
-        detail = details.select do |d|
-          d[:Group] == 'AUTHENTICATION_RESULT' && d[:Values][0][:Value] == alert_name
-        end
-        return 0 if detail.empty?
-        alert_index_name = detail[0][:Name]
-        name_spec = alert_index_name.split('_')
-        return 0 if name_spec.size < 3
-        name_spec[1]
-      end
-
-      def set_alert_result(alert_name, result)
-        idx = alert_idx(alert_name)
-        details = param_details
-        detail = details.select do |d|
-          d[:Group] == 'AUTHENTICATION_RESULT' && d[:Name] == "Alert_#{idx}_AuthenticationResult"
-        end
-        detail[0][:Values][0][:Value] = result
+        available_checks.dig(alert_name)
       end
 
       def set_doc_auth_result(result)
@@ -56,7 +43,8 @@ module DocAuth
         doc_class_name: 'Drivers License',
         doc_issue_type: "Driver's License - STAR",
         doc_issuer_type: 'StateProvince',
-        doc_size: 'ID1'
+        doc_size: 'ID1',
+        expire_date: nil
       )
         details = param_details
         target_details = details.select { |d| d[:Group] == 'AUTHENTICATION_RESULT' }
@@ -65,36 +53,42 @@ module DocAuth
           when 'DocumentName'
             set_value(detail: d, value: doc_name)
           when 'DocIssuerCode'
-            d[:Values][0][:Value] = doc_issuer_code
+            set_value(detail: d, value: doc_issuer_code)
           when 'DocClassCode'
-            d[:Values][0][:Value] = doc_class_code
+            set_value(detail: d, value: doc_class_code)
           when 'DocClassName'
-            d[:Values][0][:Value] = doc_class_name
+            set_value(detail: d, value: doc_class_name)
           when 'DocClass'
-            d[:Values][0][:Value] = doc_class
+            set_value(detail: d, value: doc_class)
           when 'DocIssuerType'
-            d[:Values][0][:Value] = doc_issuer_type
+            set_value(detail: d, value: doc_issuer_type)
           when 'DocIssue'
-            d[:Values][0][:Value] = doc_issue
+            set_value(detail: d, value: doc_issue)
           when 'DocIssueType'
-            d[:Values][0][:Value] = doc_issue_type
+            set_value(detail: d, value: doc_issue_type)
           when 'DocSize'
-            d[:Values][0][:Value] = doc_size unless doc_size.blank?
+            set_value(detail: d, value: doc_size)
+          when 'ExpirationDate_Year'
+            set_value(detail: d, value: expire_date.year.to_s) unless expire_date.blank?
+          when 'ExpirationDate_Month'
+            set_value(detail: d, value: expire_date.month.to_s) unless expire_date.blank?
+          when 'ExpirationDate_Day'
+            set_value(detail: d, value: expire_date.day.to_s) unless expire_date.blank?
           end
         end
       end
 
-      def set_portrait_match_result(result:, status_code:, error_msg:)
+      def set_portrait_match_result(result:, error_msg:, status_code: nil)
         details = param_details
         target_details = details.select { |d| d[:Group] == 'PORTRAIT_MATCH_RESULT' }
         target_details.each do |target_detail|
           case target_detail[:Name]
           when 'FaceStatusCode'
-            target_detail[:Values][0][:Value] = status_code
+            target_detail[:Values][0][:Value] = status_code unless status_code.blank?
           when 'FaceMatchResult'
-            target_detail[:Values][0][:Value] = result
+            target_detail[:Values][0][:Value] = result unless result.blank?
           when 'FaceErrorMessage'
-            target_detail[:Values][0][:Value] = error_msg
+            target_detail[:Values][0][:Value] = error_msg unless error_msg.blank?
           end
         end
       end
@@ -135,14 +129,14 @@ module DocAuth
         target_details.each do |d|
           case d[:Name]
           when 'Fields_DOB_Year'
-            d[:Values][0][:Value] = year
+            set_value(detail: d, value: year&.to_s)
           when 'Fields_DOBMonth'
-            d[:Values][0][:Value] = month
+            set_value(detail: d, value: month&.to_s)
           when 'Fields_DOBDay'
-            d[:Values][0][:Value] = day
+            set_value(detail: d, value: day&.to_s)
           when 'Fields_Sex'
             sex_s = sex == 'Male' || sex == 'M' ? 'M' : 'F'
-            d[:Values][0][:Value] = sex_s
+            set_value(detail: d, value: sex_s)
           end
         end
       end
@@ -158,27 +152,45 @@ module DocAuth
         target_details.each do |d|
           case d[:Name]
           when 'Fields_DocumentClassName'
-            d[:Values][0][:Value] = document_class_name
+            v = document_class_name
+            set_value(detail: d, value: v)
           when 'Fields_DocumentNumber'
-            d[:Values][0][:Value] = document_number
+            v = document_number
+            set_value(detail: d, value: v)
           when 'Fields_ExpirationDate_Month'
-            d[:Values][0][:Value] = expiration_month
+            v = expiration_month&.to_s
+            set_value(detail: d, value: v)
           when 'Fields_xpirationDate_Day'
-            d[:Values][0][:Value] = expiration_day
+            v = expiration_day&.to_s
+            set_value(detail: d, value: v)
           when 'Fields_ExpirationDate_Year'
-            d[:Values][0][:Value] = expiration_year
+            v = expiration_year&.to_s
+            set_value(detail: d, value: v)
           when 'Fields_IssuingStateCode'
-            d[:Values][0][:Value] = issuing_st_code
+            v = issuing_st_code
+            set_value(detail: d, value: v)
           when 'Fields_IssuingStateName'
-            d[:Values][0][:Value] = issuing_st_name
+            v = issuing_st_name
+            set_value(detail: d, value: v)
           when 'Fields_IssueDate_Year'
-            d[:Values][0][:Value] = issuing_year
+            set_value(detail: d, value: issuing_year&.to_s)
           when 'Fields_IssueDate_Month'
-            d[:Values][0][:Value] = issuing_month
+            set_value(detail: d, value: issuing_month&.to_s)
           when 'Fields_IssueDate_Day'
-            d[:Values][0][:Value] = issuing_day
+            set_value(detail: d, value: issuing_day&.to_s)
           end
         end
+      end
+
+      def set_issuing_country_code(
+        country_code = 'USA'
+      )
+        grp_name = 'IDAUTH_FIELD_DATA'
+        details = param_details
+        target_details = details.select do |d|
+          d[:Group] == grp_name && d[:Name] == 'Fields_CountryCode'
+        end
+        target_details[0][:Values][0][:Value] = country_code
       end
 
       def set_address(address_line1:, city:, state:, postal_code:, address_line2: nil)
@@ -287,6 +299,62 @@ module DocAuth
         product[0][:ProductStatus] = status
       end
 
+      def set_expire_date(expire_date)
+        return if expire_date.blank?
+        grp_name = 'IDAUTH_FIELD_DATA'
+        details = param_details
+        target_details = details.select { |d| d[:Group] == grp_name }
+        target_details.each do |d|
+          case d[:Name]
+          when 'Fields_ExpirationDate_Month'
+            v = expire_date&.month.to_s
+            set_value(detail: d, value: v)
+          when 'Fields_xpirationDate_Day'
+            v = expire_date&.day.to_s
+            set_value(detail: d, value: v)
+          when 'Fields_ExpirationDate_Year'
+            v = expire_date&.year.to_s
+            set_value(detail: d, value: v)
+          end
+        end
+        target_details = details.select { |d| d[:Group] == 'AUTHENTICATION_RESULT' }
+        target_details.each do |d|
+          case d[:Name]
+          when 'ExpirationDate_Year'
+            set_value(detail: d, value: expire_date.year.to_s)
+          when 'ExpirationDate_Month'
+            set_value(detail: d, value: expire_date.month.to_s)
+          when 'ExpirationDate_Day'
+            set_value(detail: d, value: expire_date.day.to_s)
+          end
+        end
+        if expire_date.past?
+          set_check_status('Document Expired', 'Failed')
+        end
+      end
+
+      def set_check_status(check_name, status)
+        idx = available_checks[check_name]
+        grp_name = 'AUTHENTICATION_RESULT'
+        details = param_details
+        alert_name = "Alert_#{idx}_AuthenticationResult"
+        target_details = details.select { |d| d[:Group] == grp_name && d[:Name] == alert_name }
+        return if target_details.blank?
+        detail = target_details[0]
+        set_value(detail: detail, value: status)
+      end
+
+      def get_check_status(check_name)
+        idx = available_checks[check_name]
+        grp_name = 'AUTHENTICATION_RESULT'
+        details = param_details
+        alert_name = "Alert_#{idx}_AuthenticationResult"
+        target_details = details.select { |d| d[:Group] == grp_name && d[:Name] == alert_name }
+        return if target_details.blank?
+        detail = target_details[0]
+        detail[:Values][0][:Value]
+      end
+
       def with_default_pii
         # Faker::Config.random = Random.new(42)
         last_name = Faker::Name.last_name
@@ -301,36 +369,39 @@ module DocAuth
           sex: [true, false].sample ? 'M' : 'F'
         )
 
-        # doc class info
-        # a
-        issue_st_code = Faker::Address.state_abbr
-        issue_st_name = state_name(issue_st_code.to_sym)
-        issue_date = Faker::Date.between(from: 3.years.ago, to: Time.zone.today - 10.days)
-        exp_date = issue_date + 5.years
-        document_num = Faker::DrivingLicence.usa_driving_licence(issue_st_name)
+        @issue_st_code = Faker::Address.state_abbr
+        @issue_st_name = state_name(@issue_st_code.to_sym)
+        @issue_date = Faker::Date.between(
+          from: 3.years.ago.to_s,
+          to: (Time.zone.today - 10.days).to_s,
+        )
+        @exp_date = @issue_date + 5.years
+
+        document_num = Faker::DrivingLicence.usa_driving_licence(@issue_st_name)
         set_document(
           document_number: document_num,
-          issuing_st_code: issue_st_code,
-          issuing_st_name: issue_st_name,
-          issuing_year: issue_date.year,
-          issuing_month: issue_date.month,
-          issuing_day: issue_date.day,
-          expiration_year: exp_date.year,
-          expiration_month: exp_date.month,
-          expiration_day: exp_date.day,
+          issuing_st_code: @issue_st_code,
+          issuing_st_name: @issue_st_name,
+          issuing_year: @issue_date.year,
+          issuing_month: @issue_date.month,
+          issuing_day: @issue_date.day,
+          expiration_year: @exp_date.year,
+          expiration_month: @exp_date.month,
+          expiration_day: @exp_date.day,
         )
 
         set_doc_auth_info(
-          doc_name: "#{issue_st_name} Driver's License - STAR",
-          doc_issuer_code: issue_st_code,
-          doc_issue: issue_st_name,
+          doc_name: "#{@issue_st_name} Driver's License - STAR",
+          doc_issuer_code: @issue_st_code,
+          doc_issue: @issue_st_name,
+          expire_date: @exp_date,
         )
         # address
         set_address(
           address_line1: Faker::Address.street_address,
           city: Faker::Address.city,
-          state: issue_st_code,
-          postal_code: Faker::Address.zip(state_abbreviation: issue_st_code),
+          state: @issue_st_code,
+          postal_code: Faker::Address.zip(state_abbreviation: @issue_st_code),
         )
       end
 
@@ -338,7 +409,76 @@ module DocAuth
         @parsed_template.to_json
       end
 
+      def available_checks
+        return @available_checks if defined?(@available_checks)
+        @available_checks = [] if @template.blank?
+        template_data = JSON.parse(@template, symbolize_names: true)
+        products = template_data.dig(:Products)
+        product = products.select do |p|
+          p.key?(:ParameterDetails) && p[:ParameterDetails].is_a?(Array)
+        end
+        details = product[0].dig(:ParameterDetails)
+        checks = {}
+        details.each do |d|
+          next unless d[:Group] == 'AUTHENTICATION_RESULT' && d[:Name].end_with?('_AlertName')
+          check_name = d[:Values][0][:Value]
+          check_index = d[:Name].split('_')[1]
+          checks[check_name] = check_index
+        end
+        @available_checks = checks
+      end
+
       private
+
+      def update_with_yaml
+        return unless defined?(@parsed_uploaded_file)
+        return if @parsed_uploaded_file.blank?
+        file_data = @parsed_uploaded_file
+        doc_auth_result = file_data.dig(:doc_auth_result)
+        set_doc_auth_result(doc_auth_result)
+        image_metrics = file_data.dig(:image_metrics)
+        unless image_metrics.blank?
+          set_image_metrics(image_metrics[:front], image_metrics[:back])
+        end
+        failed_alerts = file_data.dig(:failed_alerts)
+        unless failed_alerts.blank?
+          failed_alerts.each do |alert|
+            name = alert[:name]
+            value = alert[:result]
+            set_check_status(name, value)
+          end
+        end
+
+        if @selfie_check_enabled
+          portrait_match_result = file_data.dig(:portrait_match_result)
+          # portrait_match_results:
+          #             FaceMatchResult: Pass
+          #             FaceErrorMessage: 'Successful. Liveness: Live'
+          set_portrait_match_result(
+            result: portrait_match_result[:FaceMatchResult],
+            error_msg: portrait_match_result[:FaceErrorMessage],
+          )
+        else
+          # remove portrait match part
+          no_portrait_match_result
+        end
+
+        classification_info = file_data.dig(:classification_info, :Front)
+        doc_class = classification_info[:ClassName]
+        issuer_type = classification_info[:IssuerType]
+        country_code = classification_info[:CountryCode]
+
+        set_doc_auth_info(
+          doc_name: "#{@issue_st_name} #{doc_class}",
+          doc_class_name: doc_class,
+          doc_class: doc_class.split('_').join(''),
+          doc_class_code: doc_class.split('_').join(''),
+          doc_issuer_type: issuer_type,
+          doc_issuer_code: @issue_st_name,
+          doc_issue: @issue_date.year.to_s,
+        )
+        set_issuing_country_code(country_code) unless country_code.blank?
+      end
 
       def param_details
         products = @parsed_template.dig(:Products)
@@ -348,11 +488,15 @@ module DocAuth
         product[0].dig(:ParameterDetails)
       end
 
-      def process_alerts
-        return if parsed_alerts.blank?
-        parsed_alerts.to_h do |parsed_alert|
+      def process_alerts_input
+        return if parsed_input_alerts.blank?
+        parsed_input_alerts.to_h do |parsed_alert|
           [parsed_alert.dig('name'), parsed_alert.dig('result')]
         end
+      end
+
+      def failed_alerts
+        re
       end
 
       def read_fixture_file_at_path(filepath)
@@ -377,7 +521,7 @@ module DocAuth
         @parsed_data_from_uploaded_file = parse_yaml(@uploaded_file)
       end
 
-      def parsed_alerts
+      def parsed_input_alerts
         parsed_data_from_uploaded_file&.dig('failed_alerts')
       end
 

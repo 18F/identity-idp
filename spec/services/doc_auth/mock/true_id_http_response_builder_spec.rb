@@ -5,7 +5,10 @@ require 'rails_helper'
 RSpec.describe 'DocAuth::Mock::TrueIdHttpResponseBuilder' do
   let(:template_file) { 'true_id_response_success_3.json' }
   let(:subject) do
-    DocAuth::Mock::TrueIdHttpResponseBuilder.new(templatefile: template_file)
+    DocAuth::Mock::TrueIdHttpResponseBuilder.new(
+      templatefile: template_file,
+      selfie_check_enabled: true,
+    )
   end
 
   let(:input_with_alerts) do
@@ -25,9 +28,6 @@ RSpec.describe 'DocAuth::Mock::TrueIdHttpResponseBuilder' do
         Front:
           ClassName: Drivers License
           CountryCode: USA
-        Back:
-          ClassName: Drivers License
-          CountryCode: USA
     YAML
   end
   before do
@@ -37,16 +37,31 @@ RSpec.describe 'DocAuth::Mock::TrueIdHttpResponseBuilder' do
   after do
     # Do nothing
   end
-
-  context 'when condition' do
+  describe '#available_checks' do
+    it 'returns array of checks' do
+      result = subject.available_checks
+      expect(result).to be_kind_of(Hash)
+    end
+  end
+  context 'when change the builder for response' do
     it 'succeeds to change' do
-      expect(subject).to be_truthy
+      status = subject.get_check_status('2D Barcode Read')
+      expect(status).to eq('Attention')
       subject.use_uploaded_file(input_with_alerts)
-      expect(subject.set_alert_result('2D Barcode Read', 'Attention')).to be_truthy
-      subject.set_doc_auth_result('Passed')
-      subject.set_doc_auth_result('Attention')
-      subject.set_doc_auth_result('Pass')
-      subject.with_default_pii
+      expect(subject.set_check_status('2D Barcode Read', 'Failed')).to be_truthy
+      subject.set_expire_date(DateTime.now - 1.year)
+      status = subject.get_check_status('Document Expired')
+      expect(status).to eq('Failed')
+      status = subject.get_check_status('2D Barcode Read')
+      expect(status).to eq('Failed')
+    end
+  end
+
+  describe 'with a yaml file as input' do
+    it 'applies the change' do
+      subject.use_uploaded_file(input_with_alerts)
+      status = subject.get_check_status('2D Barcode Read')
+      expect(status).to eq('Attention')
     end
   end
 end
