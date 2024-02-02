@@ -23,6 +23,7 @@ module Idv
       redo_document_capture
       resolution_successful
       selfie_check_performed
+      selfie_check_required
       skip_doc_auth
       skip_hybrid_handoff
       ssn
