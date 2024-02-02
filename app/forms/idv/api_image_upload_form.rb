@@ -372,12 +372,15 @@ module Idv
 
     def acuant_sdk_capture?
       image_metadata.dig(:front, :source) == Idp::Constants::Vendors::ACUANT &&
-        image_metadata.dig(:back, :source) == Idp::Constants::Vendors::ACUANT
+        image_metadata.dig(:back, :source) == Idp::Constants::Vendors::ACUANT &&
+        (liveness_checking_required ?
+          image_metadata.dig(:selfie, :source) == Idp::Constants::Vendors::ACUANT :
+           true)
     end
 
     def image_metadata
-      @image_metadata ||= params.permit(:front_image_metadata, :back_image_metadata).
-        to_h.
+      @image_metadata ||= params.
+        permit(:front_image_metadata, :back_image_metadata, :selfie_image_metadata).to_h.
         transform_values do |str|
           JSON.parse(str)
         rescue JSON::ParserError
