@@ -272,6 +272,25 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true, allowed_extra_analy
       expect(page).to have_current_path(account_path)
     end
 
+    context 'when the service provider does not participate in IPP',
+            allow_browser_log: true do
+      before do
+        allow(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:enabled)
+        allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_org_id).and_return(org)
+        allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled).
+          and_return(false)
+      end
+
+      it 'skips how to verify and goes to hybrid_handoff' do
+        user = user_with_2fa
+        sign_in_and_2fa_user(user)
+        visit_idp_from_sp_with_ial2(:oidc)
+        complete_welcome_step
+        complete_agreement_step
+        expect(page).to have_current_path(idv_hybrid_handoff_url)
+      end
+    end
+
     it 'works for a happy path when the user opts out of opt-in ipp',
        allow_browser_log: true do
       user = user_with_2fa

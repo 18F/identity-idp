@@ -139,6 +139,11 @@ RSpec.feature 'how to verify step', js: true, allowed_extra_analytics: [:*] do
 
         complete_how_to_verify_step(remote: true)
         expect(page).to have_current_path(idv_hybrid_handoff_url)
+
+        # go back and also test remote: false case
+        page.go_back
+        complete_how_to_verify_step(remote: false)
+        expect(page).to have_current_path(idv_document_capture_path)
       end
     end
 
