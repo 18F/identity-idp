@@ -718,7 +718,7 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
             end
             let(:image_source) { DocAuth::ImageSources::UNKNOWN }
 
-            it 'sets image source to acuant sdk' do
+            it 'sets image source to unknown' do
               form.submit
             end
           end
