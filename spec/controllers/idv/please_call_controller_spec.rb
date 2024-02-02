@@ -3,9 +3,6 @@ require 'rails_helper'
 RSpec.describe Idv::PleaseCallController do
   let(:user) { create(:user) }
   let(:in_person_proofing_enabled) { false }
-  let(:idv_session) do
-    Idv::Session.new(user_session: subject.user_session, current_user: user, service_provider: nil)
-  end
   let(:fraud_review_pending_date) { profile.fraud_review_pending_at }
   let(:verify_date) { profile.verified_at }
   let!(:profile) { create(:profile, :verified, :fraud_review_pending, user: user) }
@@ -55,13 +52,11 @@ RSpec.describe Idv::PleaseCallController do
     expect(response.body).to include(call_by_formatted)
   end
 
-  context 'in person proofing enabled enforce tmx true' do
+  context 'in person proofing enabled' do
     let(:in_person_proofing_enabled) { true }
     before do
       allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).
         and_return(in_person_proofing_enabled)
-      allow(subject).to receive(:idv_session).and_return(idv_session)
-      allow(idv_session).to receive(:idv).and_return({ flow_path: 'standard' })
     end
 
     it 'renders the show template' do
@@ -84,18 +79,6 @@ RSpec.describe Idv::PleaseCallController do
       get :show
 
       expect(response).to redirect_to(idv_not_verified_url)
-    end
-
-    context 'flow path is hybrid' do
-      before do
-        allow(idv_session).to receive(:idv).and_return({ flow_path: 'hybrid' })
-      end
-      # the change expected here is in the view not the controller
-      it 'shows the page if flow path is not standard' do
-        get :show
-
-        expect(response).to render_template :show
-      end
     end
   end
 end
