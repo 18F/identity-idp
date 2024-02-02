@@ -19,16 +19,22 @@
 
 <%= render TroubleshootingOptionsComponent.new do |c| %>
   <% c.with_header { t('components.troubleshooting_options.default_heading') } %>
-  <% c.with_option(render_as_link: false) do %>
-    <%= simple_form_for @resend_email_confirmation_form,
-                        html: { class: '' },
-                        url: sign_up_register_path do |f| %>
-      <%= f.input :email, as: :hidden %>
-      <%= f.input :resend, as: :hidden %>
-      <!-- TODO: Improve styling !-->
-      <%= f.button :button, t('notices.signed_up_but_unconfirmed.resend_confirmation_email'), class: 'usa-button--unstyled' %>
-    <% end %>
-  <% end %>
+  <% c.with_option(
+       action: ->(**tag_options, &block) do
+         button_to(
+           sign_up_register_path,
+           method: :post,
+           params: {
+             email: @resend_email_confirmation_form.email,
+             resend: @resend_email_confirmation_form.resend,
+           },
+           **tag_options,
+           form_class: tag_options[:class],
+           class: 'usa-button usa-button--unstyled',
+           &block
+         )
+       end,
+     ) %>
 
   <!-- TODO: Capitalize text !-->
   <% c.with_option(
