@@ -29,13 +29,17 @@ const subscribers: Array<() => void> = [];
  */
 function useHistoryParam(
   initialValue?: string,
+  validValues?: string[],
 ): [string | undefined, (nextParamValue: ParamValue) => void] {
-  function getCurrentValue(): ParamValue {
+  function getCurrentValue(currentValue?: string): ParamValue {
     const path = window.location.hash.slice(1);
 
     if (path) {
-      return getStepParam(path);
+      const value = getStepParam(path);
+      return !validValues || validValues.includes(value) ? value : currentValue;
     }
+
+    return initialValue;
   }
 
   const [value, setValue] = useState(initialValue ?? getCurrentValue);

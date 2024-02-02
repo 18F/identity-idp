@@ -58,11 +58,8 @@ fr:
         success: Nous avons vérifié vos informations
       webauthn: Clé de sécurité
       webauthn_add: Ajouter une clé de sécurité
-      webauthn_confirm_delete: Oui, supprimer la clé
       webauthn_platform: Le déverouillage facial ou déverrouillage par empreinte digitale
       webauthn_platform_add: Ajouter le déverouillage facial ou déverrouillage par empreinte digitale
-      webauthn_platform_confirm_delete: Oui, supprimer le déverouillage facial ou
-        déverrouillage par empreinte digitale
     items:
       delete_your_account: Supprimer votre compte
       personal_key: Clé personnelle

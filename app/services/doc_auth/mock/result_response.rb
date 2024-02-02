@@ -7,16 +7,14 @@ module DocAuth
 
       attr_reader :uploaded_file, :config
 
-      def initialize(uploaded_file, selfie_check_performed, config)
+      def initialize(uploaded_file, config)
         @uploaded_file = uploaded_file.to_s
-        @selfie_check_performed = selfie_check_performed
         @config = config
         super(
           success: success?,
           errors: errors,
           pii_from_doc: pii_from_doc,
           doc_type_supported: id_type_supported?,
-          selfie_check_performed: selfie_check_performed,
           selfie_live: selfie_live?,
           selfie_quality_good: selfie_quality_good?,
           extra: {
@@ -63,7 +61,7 @@ module DocAuth
               mock_args[:image_metrics] = image_metrics.symbolize_keys if image_metrics.present?
               mock_args[:failed] = failed.map!(&:symbolize_keys) unless failed.nil?
               mock_args[:passed] = passed.map!(&:symbolize_keys) if passed.present?
-              mock_args[:liveness_enabled] = @selfie_check_performed
+              mock_args[:liveness_enabled] = face_match_result ? true : false
               mock_args[:classification_info] = classification_info if classification_info.present?
               fake_response_info = create_response_info(**mock_args)
               ErrorGenerator.new(config).generate_doc_auth_errors(fake_response_info)
@@ -183,7 +181,7 @@ module DocAuth
       def all_doc_capture_values_passing?(doc_auth_result, id_type_supported)
         doc_auth_result == 'Passed' &&
           id_type_supported &&
-          (@selfie_check_performed ? selfie_passed? : true)
+          (selfie_check_performed? ? selfie_passed? : true)
       end
 
       def selfie_passed?
@@ -238,7 +236,7 @@ module DocAuth
           image_metrics: merged_image_metrics,
           liveness_enabled: liveness_enabled,
           classification_info: classification_info,
-          portrait_match_results: @selfie_check_performed ? portrait_match_results : nil,
+          portrait_match_results: selfie_check_performed? ? portrait_match_results : nil,
         }.compact
       end
     end
