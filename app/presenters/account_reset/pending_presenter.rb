@@ -18,5 +18,9 @@ module AccountReset
         highest_measures: 2,
       )
     end
+
+    def account_reset_deletion_period_hours
+      IdentityConfig.store.account_reset_wait_period_days.days.in_hours.to_i
+    end
   end
 end

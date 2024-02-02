@@ -55,14 +55,12 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
   end
 
   it 'supplies a cancel link when the token is valid' do
-    allow_any_instance_of(TwoFactorLoginOptionsPresenter).to \
-      receive(:account_reset_token_valid?).and_return(true)
-
-    allow_any_instance_of(TwoFactorLoginOptionsPresenter).to \
-      receive(:account_reset_token).and_return('foo')
+    allow(presenter).to receive(:account_reset_token).and_return('foo')
+    allow(presenter).to receive(:account_reset_token_valid?).and_return(true)
+    allow(presenter).to receive(:confirmation_period).and_return('24 hours')
 
     expect(presenter.account_reset_or_cancel_link).to eq(
-      t('two_factor_authentication.account_reset.pending') + ' ' +
+      t('two_factor_authentication.account_reset.pending', interval: '24 hours') + ' ' +
         view.link_to(
           t('two_factor_authentication.account_reset.cancel_link'),
           account_reset_cancel_url(token: 'foo'),
