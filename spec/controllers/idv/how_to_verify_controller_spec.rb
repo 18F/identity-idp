@@ -82,6 +82,7 @@ RSpec.describe Idv::HowToVerifyController do
             get :show
 
             expect(Idv::HowToVerifyController.enabled?).to be true
+            expect(subject.idv_session.service_provider.in_person_proofing_enabled).to be true
             expect(subject.idv_session.skip_doc_auth).to be_nil
             expect(response).to render_template :show
           end
