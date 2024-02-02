@@ -31,10 +31,10 @@ RSpec.describe BlockLinkComponent, type: :component do
 
   context 'when render_as_link is false' do
     it 'renders content within a div and not a link' do
-      rendered = render_inline BlockLinkComponent.new(render_as_link: false).
+      rendered = render_inline BlockLinkComponent.new(render_as_link: false, class: 'block-button').
         with_content('Not a link')
 
-      expect(rendered).to have_css('div.usa-link.block-link')
+      expect(rendered).to have_css('div.block-button')
       expect(rendered).to have_text('Not a link')
       expect(rendered).to have_no_link
     end

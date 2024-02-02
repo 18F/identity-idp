@@ -44,3 +44,41 @@
   transform: translateY(-50%);
   width: 7px;
 }
+
+.block-button {
+  @include u-position('relative');
+  @include u-display('block');
+  @include u-margin-y(3);
+  @include u-border-y(1px, 'primary-light');
+  @include u-text('no-underline');
+  color: #0071bb; // Color for arrow
+
+  button {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    padding-right: 2.5rem;
+    width: 100%;
+    border: none;
+    background-color: transparent;
+    text-align: inherit;
+    cursor: pointer;
+    text-decoration: none;
+    padding-inline: 0;
+  }
+
+  button:focus {
+    outline: none;
+
+    &::before {
+      @include u-border('1px', 'primary');
+      border-radius: 6px;
+      bottom: 0;
+      content: '';
+      left: units(-1);
+      pointer-events: none;
+      position: absolute;
+      right: units(-1);
+      top: 0;
+    }
+  }
+}
