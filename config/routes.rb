@@ -282,8 +282,9 @@ Rails.application.routes.draw do
     get '/backup_code_refreshed' => 'users/backup_code_setup#refreshed'
     get '/backup_code_reminder' => 'users/backup_code_setup#reminder'
     get '/backup_code_setup' => 'users/backup_code_setup#create'
-    patch '/backup_code_setup' => 'users/backup_code_setup#create'
+    patch '/backup_code_setup' => 'users/backup_code_setup#create', as: :backup_code_create
     patch '/backup_code_continue' => 'users/backup_code_setup#continue'
+    get '/backup_code_continue' => 'users/backup_code_setup#continue'
     get '/backup_code_regenerate' => 'users/backup_code_setup#edit'
     get '/backup_code_delete' => 'users/backup_code_setup#confirm_delete'
     get '/backup_code_create' => 'users/backup_code_setup#confirm_create'
