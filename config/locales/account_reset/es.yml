@@ -31,8 +31,8 @@ es:
     pending:
       cancel_request: Cancelar petición
       cancelled: Hemos cancelado su solicitud para eliminar su cuenta.
-      confirm: Si cancela ahora, debe crear una nueva solicitud y esperar otras 24
-        horas para eliminar su cuenta.
+      confirm: Si cancela ahora, debe crear una nueva solicitud y esperar otras
+        %{interval} para eliminar su cuenta.
       header: Solicitaste eliminar tu cuenta
       wait_html: Hay un período de espera de %{hours} horas para eliminar su cuenta.
         En <strong>%{interval}</strong>, recibirá un correo electrónico con

@@ -32,7 +32,7 @@ fr:
       cancel_request: Demande d’annulation
       cancelled: Nous avons annulé votre demande de suppression de votre compte.
       confirm: Si vous annulez maintenant, vous devez créer une nouvelle demande et
-        attendre encore 24 heures pour supprimer votre compte.
+        attendre encore %{interval} pour supprimer votre compte.
       header: Vous avez demandé de supprimer votre compte
       wait_html: Il y a un délai d’attente de %{hours} heures pour supprimer votre
         compte. Dans <strong>%{interval}</strong>, vous recevrez un e-mail avec
