@@ -339,6 +339,8 @@ RSpec.describe UserMailer, type: :mailer do
     end
 
     let(:account_reset) { user.account_reset_request }
+    let(:interval) { '24 hours' }
+    let(:account_reset_deletion_period_hours) { 24 }
 
     it_behaves_like 'a system email'
     it_behaves_like 'an email that respects user email locale preference'
@@ -354,9 +356,17 @@ RSpec.describe UserMailer, type: :mailer do
     it 'renders the body' do
       expect(mail.html_part.body).to have_content(
         strip_tags(
-          t('user_mailer.account_reset_request.intro_html', app_name: APP_NAME),
+          t(
+            'user_mailer.account_reset_request.intro_html', app_name: APP_NAME,
+                                                            interval: interval,
+                                                            hours:
+                                                              account_reset_deletion_period_hours
+          ),
         ),
       )
+    end
+
+    it 'renders the footer' do
     end
 
     it 'does not render the subject in the body' do
@@ -370,7 +380,7 @@ RSpec.describe UserMailer, type: :mailer do
     it 'renders the header within the body' do
       expect(mail.html_part.body).to have_content(
         strip_tags(
-          t('user_mailer.account_reset_request.header'),
+          t('user_mailer.account_reset_request.header', interval: interval),
         ),
       )
     end
@@ -381,6 +391,8 @@ RSpec.describe UserMailer, type: :mailer do
       UserMailer.with(user: user, email_address: email_address).
         account_reset_granted(user.account_reset_request)
     end
+    let(:account_reset_deletion_period_hours) { 24 }
+    let(:token_expiration_interval) { '24 hours' }
 
     it_behaves_like 'a system email'
     it_behaves_like 'an email that respects user email locale preference'
@@ -390,13 +402,33 @@ RSpec.describe UserMailer, type: :mailer do
     end
 
     it 'renders the subject' do
-      expect(mail.subject).to eq t('user_mailer.account_reset_granted.subject', app_name: APP_NAME)
+      expect(mail.subject).to eq t(
+        'user_mailer.account_reset_granted.subject', app_name: APP_NAME
+      )
     end
 
     it 'renders the body' do
       expect(mail.html_part.body).to \
         have_content(
-          strip_tags(t('user_mailer.account_reset_granted.intro_html', app_name: APP_NAME)),
+          strip_tags(
+            t(
+              'user_mailer.account_reset_granted.intro_html', app_name: APP_NAME,
+                                                              hours:
+                                                              account_reset_deletion_period_hours
+            ),
+          ),
+        )
+    end
+
+    it 'renders the footer' do
+      expect(mail.html_part.body).to \
+        have_content(
+          strip_tags(
+            t(
+              'user_mailer.email_confirmation_instructions.footer',
+              confirmation_period: token_expiration_interval,
+            ),
+          ),
         )
     end
   end
