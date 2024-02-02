@@ -611,8 +611,9 @@ module AnalyticsEvents
   # @param [String] name
   # @param [String] message
   # @param [String] stack
-  def frontend_error(name:, message:, stack: nil, **_extra)
-    track_event('Frontend Error', name:, message:, stack:)
+  # @param [String] filename
+  def frontend_error(name:, message:, stack: nil, filename: nil, **_extra)
+    track_event('Frontend Error', name:, message:, stack:, filename:)
   end
 
   # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
