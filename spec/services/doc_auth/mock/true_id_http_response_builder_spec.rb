@@ -46,6 +46,7 @@ RSpec.describe 'DocAuth::Mock::TrueIdHttpResponseBuilder' do
       subject.set_doc_auth_result('Passed')
       subject.set_doc_auth_result('Attention')
       subject.set_doc_auth_result('Pass')
+      subject.with_default_pii
     end
   end
 end

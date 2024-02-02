@@ -1,8 +1,9 @@
+require 'faker'
+
 module DocAuth
   module Mock
     class TrueIdHttpResponseBuilder
       include YmlLoaderConcern
-      -
       def initialize(templatefile: nil)
         @template_file = templatefile
         @template = read_fixture_file_at_path(templatefile)
@@ -62,7 +63,7 @@ module DocAuth
         target_details.each do |d|
           case d[:Name]
           when 'DocumentName'
-            set_value(details: d, value: doc_name)
+            set_value(detail: d, value: doc_name)
           when 'DocIssuerCode'
             d[:Values][0][:Value] = doc_issuer_code
           when 'DocClassCode'
@@ -147,16 +148,9 @@ module DocAuth
       end
 
       def set_document(
-        document_class_name:,
-        document_number:,
-        expiration_year:,
-        expiration_month:,
-        expiration_day:,
-        issuing_st_code:,
-        issuing_st_name:,
-        issuing_year:,
-        issuing_month:,
-        issuing_day:
+        document_number:, expiration_year:, expiration_month:, expiration_day:,
+        issuing_st_code:, issuing_st_name:, issuing_year:, issuing_month:,
+        issuing_day:, document_class_name: 'Drivers License'
       )
         grp_name = 'IDAUTH_FIELD_DATA'
         details = param_details
@@ -187,7 +181,7 @@ module DocAuth
         end
       end
 
-      def set_address(address_line1:, address_line2:, city:, state:, postal_code:)
+      def set_address(address_line1:, city:, state:, postal_code:, address_line2: nil)
         grp_name = 'IDAUTH_FIELD_DATA'
         details = param_details
         target_details = details.select { |d| d[:Group] == grp_name }
@@ -197,10 +191,15 @@ module DocAuth
           when 'Fields_AddressLine1'
             d[:Values][0][:Value] = address_line1
           when 'Fields_AddressLine2'
-            unless address_line2.blank?
+            if !address_line2.blank?
               d[:Values][0][:Value] = address_line2
               address_line2_set
+            else
+              d[:Values][0][:Value] = ''
             end
+          when 'Fields_Address'
+            address = "#{address_line1}xE2x80xA8#{city}, #{state}, #{postal_code}"
+            d[:Values][0][:Value] = address
           when 'Fields_State'
             d[:Values][0][:Value] = state
           when 'Fields_City'
@@ -227,37 +226,38 @@ module DocAuth
         grp_name = 'IMAGE_METRICS_RESULT'
         details = param_details
         target_details = details.select { |d| d[:Group] == grp_name }
+        front = front_data&.symbolize_keys
+        back = back_data&.symbolize_keys
         target_details.each do |d|
           name = d[:Name]
           case name
           when 'GlareMetric'
-            v = front_data&.symbolize_keys&.dig(:GlareMetric)
+            v = front&.dig(:GlareMetric)
             d[:Values][0][:Value] = v unless v.blank?
-            w = back_data&.symbolize_keys&.dig(:GlareMetric)
+            w = back&.dig(:GlareMetric)
             d[:Values][1][:Value] = w unless w.blank?
           when 'SharpnessMetric'
-            v = front_data&.symbolize_keys&.dig(:SharpnessMetric)
+            v = front&.dig(:SharpnessMetric)
             d[:Values][0][:Value] = v unless v.blank?
-            w = back_data&.symbolize_keys&.dig(:SharpnessMetric)
+            w = back&.dig(:SharpnessMetric)
             d[:Values][1][:Value] = w unless w.blank?
           when 'HorizontalResolution'
-            v = front_data&.symbolize_keys&.dig(:HorizontalResolution)
+            v = front&.dig(:HorizontalResolution)
             d[:Values][0][:Value] = v unless v.blank?
-            w = back_data&.symbolize_keys&.dig(:HorizontalResolution)
+            w = back&.dig(:HorizontalResolution)
             d[:Values][1][:Value] = w unless w.blank?
           when 'VerticalResolution'
-            v = front_data&.symbolize_keys&.dig(:VerticalResolution)
+            v = front&.dig(:VerticalResolution)
             d[:Values][0][:Value] = v unless v.blank?
-            w = back_data&.symbolize_keys&.dig(:VerticalResolution)
+            w = back&.dig(:VerticalResolution)
             d[:Values][1][:Value] = w unless w.blank?
           when 'IsTampered'
-            v = front_data&.symbolize_keys&.dig(:Tampered)
+            v = front&.dig(:Tampered, false)
             d[:Values][0][:Value] = 1 unless !!v
-            w = back_data&.symbolize_keys&.dig(:Tampered)
+            w = back&.dig(:Tampered)
             d[:Values][1][:Value] = 1 unless !!w
           end
         end
-
       end
 
       def set_transaction_status(
@@ -269,7 +269,7 @@ module DocAuth
         status_data[:TransactionReasonCode][:Code] = code
       end
 
-      def set_product_status(status='pass')
+      def set_product_status(status = 'pass')
         return if status.blank?
         products = @parsed_template.dig(:Products)
         product = products.select do |p|
@@ -282,15 +282,62 @@ module DocAuth
         return if status.blank?
         products = @parsed_template.dig(:Products)
         product = products.select do |p|
-          p.key?(:ProductType) && p[:ProductType]== 'TrueID_Decision'
+          p.key?(:ProductType) && p[:ProductType] == 'TrueID_Decision'
         end
         product[0][:ProductStatus] = status
       end
 
+      def with_default_pii
+        # Faker::Config.random = Random.new(42)
+        last_name = Faker::Name.last_name
+        first_name = Faker::Name.first_name
+        middle_name = Faker::Name.middle_name
+        set_name(first_name: first_name, middle_name: middle_name, last_name: last_name)
+
+        # dob
+        dob = DateTime.now - 22.years
+        set_dob(
+          year: dob.year, month: dob.month, day: dob.day,
+          sex: [true, false].sample ? 'M' : 'F'
+        )
+
+        # doc class info
+        # a
+        issue_st_code = Faker::Address.state_abbr
+        issue_st_name = state_name(issue_st_code.to_sym)
+        issue_date = Faker::Date.between(from: 3.years.ago, to: Time.zone.today - 10.days)
+        exp_date = issue_date + 5.years
+        document_num = Faker::DrivingLicence.usa_driving_licence(issue_st_name)
+        set_document(
+          document_number: document_num,
+          issuing_st_code: issue_st_code,
+          issuing_st_name: issue_st_name,
+          issuing_year: issue_date.year,
+          issuing_month: issue_date.month,
+          issuing_day: issue_date.day,
+          expiration_year: exp_date.year,
+          expiration_month: exp_date.month,
+          expiration_day: exp_date.day,
+        )
+
+        set_doc_auth_info(
+          doc_name: "#{issue_st_name} Driver's License - STAR",
+          doc_issuer_code: issue_st_code,
+          doc_issue: issue_st_name,
+        )
+        # address
+        set_address(
+          address_line1: Faker::Address.street_address,
+          city: Faker::Address.city,
+          state: issue_st_code,
+          postal_code: Faker::Address.zip(state_abbreviation: issue_st_code),
+        )
+      end
 
       def build
         @parsed_template.to_json
       end
+
       private
 
       def param_details
@@ -341,7 +388,72 @@ module DocAuth
           detail[:Values][0][:Value] = value unless value.blank?
         end
       end
+
+      def state_name(state_abbr)
+        states = { AK: 'Alaska',
+                   AL: 'Alabama',
+                   AS: 'American Samoa',
+                   AZ: 'Arizona',
+                   AR: 'Arkansas',
+                   CA: 'California',
+                   CO: 'Colorado',
+                   CT: 'Connecticut',
+                   DE: 'Delaware',
+                   DC: 'District of Columbia',
+                   FM: 'Federated States of Micronesia',
+                   FL: 'Florida',
+                   GA: 'Georgia',
+                   GU: 'Guam',
+                   HI: 'Hawaii',
+                   ID: 'Idaho',
+                   IL: 'Illinois',
+                   IN: 'Indiana',
+                   IA: 'Iowa',
+                   KS: 'Kansas',
+                   KY: 'Kentucky',
+                   LA: 'Louisiana',
+                   ME: 'Maine',
+                   MH: 'Marshall Islands',
+                   MD: 'Maryland',
+                   MA: 'Massachusetts',
+                   MI: 'Michigan',
+                   MN: 'Minnesota',
+                   MS: 'Mississippi',
+                   MO: 'Missouri',
+                   MT: 'Montana',
+                   NE: 'Nebraska',
+                   NV: 'Nevada',
+                   NH: 'New Hampshire',
+                   NJ: 'New Jersey',
+                   NM: 'New Mexico',
+                   NY: 'New York',
+                   NC: 'North Carolina',
+                   ND: 'North Dakota',
+                   MP: 'Northern Mariana Islands',
+                   OH: 'Ohio',
+                   OK: 'Oklahoma',
+                   OR: 'Oregon',
+                   PW: 'Palau',
+                   PA: 'Pennsylvania',
+                   PR: 'Puerto Rico',
+                   RI: 'Rhode Island',
+                   SC: 'South Carolina',
+                   SD: 'South Dakota',
+                   TN: 'Tennessee',
+                   TX: 'Texas',
+                   UT: 'Utah',
+                   VT: 'Vermont',
+                   VI: 'Virgin Islands',
+                   VA: 'Virginia',
+                   WA: 'Washington',
+                   WV: 'West Virginia',
+                   WI: 'Wisconsin',
+                   WY: 'Wyoming',
+                   AE: 'Armed Forces Middle East',
+                   AA: 'Armed Forces Americas (except Canada)',
+                   AP: 'Armed Forces Pacific' }
+        states[state_abbr] || state_abbr.to_s
+      end
     end
   end
 end
-
