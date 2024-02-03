@@ -16,6 +16,8 @@ module DocAuth
       def use_uploaded_file(upload_file_content)
         @uploaded_file = upload_file_content
         @parsed_uploaded_file = parse_yaml(@uploaded_file).deep_symbolize_keys
+        doc_auth_result = @parsed_uploaded_file[:doc_auth_result]
+        set_doc_auth_result(doc_auth_result)
         pii = @parsed_uploaded_file[:document]
         set_pii(pii)
       end
@@ -254,6 +256,9 @@ module DocAuth
         unless expiration.blank?
           exp_date = Date.strptime(expiration, '%m/%d/%Y')
           set_expire_date(exp_date)
+          if exp_date.past?
+            set_id_auth_field('Document Expired', 'Failed')
+          end
         end
 
         issued = pii_info[:state_id_issued]
