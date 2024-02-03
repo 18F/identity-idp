@@ -62,6 +62,7 @@ RSpec.describe 'DocAuth::Mock::TrueIdHttpResponseBuilder' do
       subject.use_uploaded_file(input_with_alerts)
       status = subject.get_check_status('2D Barcode Read')
       expect(status).to eq('Attention')
+      puts subject.build
     end
   end
 end
