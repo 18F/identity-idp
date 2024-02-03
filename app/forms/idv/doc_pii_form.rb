@@ -1,6 +1,7 @@
 module Idv
   class DocPiiForm
     include ActiveModel::Model
+    include ActiveModel::Validations::Callbacks
 
     validate :name_valid?
     validate :dob_valid?
@@ -16,6 +17,8 @@ module Idv
     validates_presence_of :state_id_number, { message: proc {
       I18n.t('doc_auth.errors.general.no_liveness')
     } }
+
+    after_validation :set_inline_error
 
     attr_reader :first_name, :last_name, :dob, :address1, :state, :zipcode, :attention_with_barcode,
                 :jurisdiction, :state_id_number
@@ -103,6 +106,21 @@ module Idv
 
     def dob_min_age_error
       I18n.t('doc_auth.errors.pii.birth_date_min_age')
+    end
+
+    def set_inline_error
+      if errors.any?
+        errors.add(
+          :front,
+          I18n.t('doc_auth.errors.general.multiple_front_id_failures'),
+          type: :front,
+        )
+        errors.add(
+          :back,
+          I18n.t('doc_auth.errors.general.multiple_back_id_failures'),
+          type: :back,
+        )
+      end
     end
   end
 end
