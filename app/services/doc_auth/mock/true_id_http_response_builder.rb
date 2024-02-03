@@ -37,16 +37,17 @@ module DocAuth
       end
 
       def set_doc_auth_info(
-        doc_name:,
-        doc_issuer_code:,
-        doc_issue:,
+        doc_name: nil,
+        doc_issuer_code: nil,
+        doc_issue: nil,
         doc_class_code: 'DriversLicense',
         doc_class: 'DriversLicense',
         doc_class_name: 'Drivers License',
         doc_issue_type: "Driver's License - STAR",
         doc_issuer_type: 'StateProvince',
         doc_size: 'ID1',
-        expire_date: nil
+        expire_date: nil,
+        doc_issuer_name: nil
       )
         details = param_details
         target_details = details.select { |d| d[:Group] == 'AUTHENTICATION_RESULT' }
@@ -64,6 +65,8 @@ module DocAuth
             set_value(detail: d, value: doc_class)
           when 'DocIssuerType'
             set_value(detail: d, value: doc_issuer_type)
+          when 'DocIssuerName'
+            set_value(detail: d, value: doc_issuer_name)
           when 'DocIssue'
             set_value(detail: d, value: doc_issue)
           when 'DocIssueType'
@@ -86,11 +89,11 @@ module DocAuth
         target_details.each do |target_detail|
           case target_detail[:Name]
           when 'FaceStatusCode'
-            target_detail[:Values][0][:Value] = status_code unless status_code.blank?
+            set_value(detail: target_detail,  value: status_code)
           when 'FaceMatchResult'
-            target_detail[:Values][0][:Value] = result unless result.blank?
+            set_value(detail: target_detail,  value: result)
           when 'FaceErrorMessage'
-            target_detail[:Values][0][:Value] = error_msg unless error_msg.blank?
+            set_value(detail: target_detail,  value: error_msg)
           end
         end
       end
@@ -233,6 +236,7 @@ module DocAuth
           target_details.append(line2_detail)
         end
       end
+
       def set_pii(
         pii_info
       )
@@ -248,29 +252,46 @@ module DocAuth
 
         expiration = pii_info[:state_id_expiration]
         unless expiration.blank?
-          exp_date = Date.strptime(expiration)
+          exp_date = Date.strptime(expiration, '%m/%d/%Y')
           set_expire_date(exp_date)
         end
 
         issued = pii_info[:state_id_issued]
         unless issued.blank?
-          issued_date = Date.strptime(issued)
+          issued_date = Date.strptime(issued, '%m/%d/%Y')
           pii_info[:state_id_issued_year] = issued_date.year
           pii_info[:state_id_issued_month] = issued_date.month
           pii_info[:state_id_issued_day] = issued_date.day
         end
-
+        id_state = pii_info[:state_id_jurisdiction]
+        unless id_state.blank?
+          field_name = 'Fields_IssuingStateName'
+          state = state_name(id_state)
+          set_id_auth_field(field_name, state)
+          set_doc_auth_info(
+            doc_issuer_code: id_state,
+            doc_issuer_name: state,
+          )
+        end
         pii_info.slice(*supported_keys)
         return if pii_info.blank?
+        id_type = pii_info.delete(:state_id_type)
+        unless id_type.blank?
+          value = id_type.humanize.titleize
+          set_id_auth_field(pii_field_name(:state_id_type), value)
+          set_doc_auth_info(
+            doc_class_name: value,
+            doc_class: value.split(' ').join(''),
+            doc_class_code: value.split(' ').join(''),
+            doc_name: "#{state_name(id_state)} #{value}",
+          )
+        end
         pii_info.each do |key, value|
-          if key.to_s == :state_id_type
-            # turn driver
-            value = value.humanize.titleize
-          end
           filed_name = pii_field_name(key)
           set_id_auth_field(filed_name, value)
         end
       end
+
       def set_image_metrics(
         front_data, back_data
       )
@@ -644,7 +665,7 @@ module DocAuth
                    AE: 'Armed Forces Middle East',
                    AA: 'Armed Forces Americas (except Canada)',
                    AP: 'Armed Forces Pacific' }
-        states[state_abbr] || state_abbr.to_s
+        states[state_abbr.to_sym] || state_abbr.to_s
       end
 
       def pii_field_name(pii_key)
