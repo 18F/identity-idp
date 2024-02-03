@@ -232,7 +232,10 @@ RSpec.describe Reporting::AccountReuseReport do
           created_timestamp: in_query,
           sp: all_agency_apps.first(10),
           sp_timestamp: Array.new(9) { in_query } + Array.new(1) { out_of_query } },
-
+        { id: 21, # 3 apps, 2 agencies - User gets deleted
+          created_timestamp: in_query,
+          sp: all_agency_apps.first(3),
+          sp_timestamp: Array.new(3) { in_query } },
       ]
 
       users_to_query.each do |user|
@@ -245,11 +248,19 @@ RSpec.describe Reporting::AccountReuseReport do
             verified_at: user[:sp_timestamp][i],
           )
         end
+
+        if user[:id] == 21
+          user_to_delete = User.create({ id: user[:id] })
+          DeletedUser.create_from_user(user_to_delete)
+          user_to_delete.destroy!
+        else
+          User.create({ id: user[:id] })
+        end
       end
 
       # Create active profiles for total_proofed_identities
-      # These 20 profiles will yield 10 active profiles in the results
-      10.times do
+      # These 30 profiles will yield 20 active profiles in the results
+      20.times do
         create(
           :profile,
           :active,
@@ -271,13 +282,13 @@ RSpec.describe Reporting::AccountReuseReport do
       it 'has the correct results' do
         expected_csv = [
           ['Metric', 'Num. all users', '% of accounts', 'Num. IDV users', '% of accounts'],
-          ['2 apps', 5, 5 / 20.0, 3, 0.3],
-          ['3 apps', 4, 4 / 20.0, 1, 0.1],
-          ['9 apps', 0, 0 / 20.0, 1, 0.1],
-          ['10-12 apps', 6, 6 / 20.0, 5, 0.5],
-          ['2+ apps', 15, 15 / 20.0, 10, 0.9999999999999999],
-          ['2 agencies', 13, 13 / 20.0, 9, 0.9],
-          ['2+ agencies', 13, 13 / 20.0, 9, 0.9],
+          ['2 apps', 5, 5 / 30.0, 3, 3 / 20.0],
+          ['3 apps', 4, 4 / 30.0, 1, 1 / 20.0],
+          ['9 apps', 0, 0 / 30.0, 1, 1 / 20.0],
+          ['10-12 apps', 6, 6 / 30.0, 5, 5 / 20.0],
+          ['2+ apps', 15, 15 / 30.0, 10, 0.49999999999999994],
+          ['2 agencies', 13, 13 / 30.0, 9, 9 / 20.0],
+          ['2+ agencies', 13, 13 / 30.0, 9, 9 / 20.0],
         ]
 
         aggregate_failures do
