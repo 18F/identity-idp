@@ -122,8 +122,8 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
           'IdV: doc auth image upload form submitted',
           success: true,
           errors: {},
-          attempts: 1,
-          remaining_attempts: 3,
+          submit_attempts: 1,
+          remaining_submit_attempts: 3,
           user_id: document_capture_session.user.uuid,
           flow_path: anything,
           front_image_fingerprint: an_instance_of(String),
@@ -135,7 +135,7 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
         expect(fake_analytics).to have_logged_event(
           'IdV: doc auth image upload vendor submitted',
           async: false,
-          attempts: 1,
+          submit_attempts: 1,
           attention_with_barcode: false,
           address_line2_present: nil,
           alert_failure_count: nil,
@@ -161,7 +161,7 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
           errors: {},
           exception: nil,
           flow_path: anything,
-          remaining_attempts: 3,
+          remaining_submit_attempts: 3,
           state: 'MT',
           state_id_type: 'drivers_license',
           success: true,
@@ -231,8 +231,8 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
             'IdV: doc auth image upload form submitted',
             success: true,
             errors: {},
-            attempts: 1,
-            remaining_attempts: 3,
+            submit_attempts: 1,
+            remaining_submit_attempts: 3,
             user_id: document_capture_session.user.uuid,
             flow_path: anything,
             front_image_fingerprint: an_instance_of(String),
@@ -246,7 +246,7 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
             address_line2_present: nil,
             alert_failure_count: nil,
             async: false,
-            attempts: 1,
+            submit_attempts: 1,
             attention_with_barcode: false,
             billed: true,
             client_image_metrics: {
@@ -282,7 +282,7 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
             processed_alerts: nil,
             product_status: nil,
             reference: nil,
-            remaining_attempts: 3,
+            remaining_submit_attempts: 3,
             state: 'MT',
             state_id_type: 'drivers_license',
             success: true,
@@ -357,8 +357,8 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
           'IdV: doc auth image upload form submitted',
           success: true,
           errors: {},
-          attempts: 1,
-          remaining_attempts: 3,
+          submit_attempts: 1,
+          remaining_submit_attempts: 3,
           user_id: document_capture_session.user.uuid,
           flow_path: anything,
           front_image_fingerprint: an_instance_of(String),
@@ -392,9 +392,9 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
         expect(response.pii_from_doc).to eq({})
       end
 
-      it 'includes remaining_attempts' do
+      it 'includes remaining_submit_attempts' do
         response = form.submit
-        expect(response.extra[:remaining_attempts]).to be_a_kind_of(Numeric)
+        expect(response.extra[:remaining_submit_attempts]).to be_a_kind_of(Numeric)
       end
     end
 
@@ -407,7 +407,7 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
         DocAuth::Response.new(
           success: false,
           errors: errors,
-          extra: { remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1 },
+          extra: { remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1 },
         )
       end
       let(:doc_auth_client) { double(DocAuth::LexisNexis::LexisNexisClient) }
@@ -428,9 +428,9 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
         expect(response.doc_auth_success?).to eq(false)
       end
 
-      it 'includes remaining_attempts' do
+      it 'includes remaining_submit_attempts' do
         response = form.submit
-        expect(response.extra[:remaining_attempts]).to be_a_kind_of(Numeric)
+        expect(response.extra[:remaining_submit_attempts]).to be_a_kind_of(Numeric)
       end
 
       it 'includes client response errors' do
@@ -525,9 +525,9 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
         expect(response.pii_from_doc).to eq({})
       end
 
-      it 'includes remaining_attempts' do
+      it 'includes remaining_submit_attempts' do
         response = form.submit
-        expect(response.extra[:remaining_attempts]).to be_a_kind_of(Numeric)
+        expect(response.extra[:remaining_submit_attempts]).to be_a_kind_of(Numeric)
       end
 
       it 'includes doc_pii errors' do
@@ -553,8 +553,8 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
         expect(response.errors).to have_value([I18n.t('doc_auth.errors.doc.resubmit_failed_image')])
         expect(fake_analytics).to have_logged_event(
           'IdV: failed doc image resubmitted',
-          attempts: 1,
-          remaining_attempts: 3,
+          submit_attempts: 1,
+          remaining_submit_attempts: 3,
           user_id: document_capture_session.user.uuid,
           flow_path: anything,
           front_image_fingerprint: an_instance_of(String),
@@ -582,8 +582,8 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
             to have_value([I18n.t('doc_auth.errors.doc.resubmit_failed_image')])
           expect(fake_analytics).to have_logged_event(
             'IdV: failed doc image resubmitted',
-            attempts: 1,
-            remaining_attempts: 3,
+            submit_attempts: 1,
+            remaining_submit_attempts: 3,
             user_id: document_capture_session.user.uuid,
             flow_path: anything,
             front_image_fingerprint: an_instance_of(String),

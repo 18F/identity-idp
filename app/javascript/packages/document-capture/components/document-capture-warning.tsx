@@ -13,7 +13,7 @@ interface DocumentCaptureWarningProps {
   isFailedDocType: boolean;
   isFailedResult: boolean;
   isFailedSelfieLivenessOrQuality: boolean;
-  remainingAttempts: number;
+  remainingSubmitAttempts: number;
   actionOnClick?: () => void;
   unknownFieldErrors: FormStepError<{ front: string; back: string }>[];
   hasDismissed: boolean;
@@ -40,7 +40,7 @@ function DocumentCaptureWarning({
   isFailedDocType,
   isFailedResult,
   isFailedSelfieLivenessOrQuality,
-  remainingAttempts,
+  remainingSubmitAttempts,
   actionOnClick,
   unknownFieldErrors = [],
   hasDismissed,
@@ -66,7 +66,7 @@ function DocumentCaptureWarning({
 
     trackEvent('IdV: warning shown', {
       location: 'doc_auth_review_issues',
-      remaining_attempts: remainingAttempts,
+      remaining_submit_attempts: remainingSubmitAttempts,
       heading,
       subheading: subheadingText,
       error_message_displayed: errorMessageDisplayed,
@@ -93,7 +93,7 @@ function DocumentCaptureWarning({
         <div ref={errorMessageDisplayedRef}>
           <UnknownError
             unknownFieldErrors={unknownFieldErrors}
-            remainingAttempts={remainingAttempts}
+            remainingSubmitAttempts={remainingSubmitAttempts}
             isFailedDocType={isFailedDocType}
             isFailedSelfieLivenessOrQuality={isFailedSelfieLivenessOrQuality}
             hasDismissed={hasDismissed}
@@ -102,10 +102,10 @@ function DocumentCaptureWarning({
 
         {!isFailedDocType &&
           !isFailedSelfieLivenessOrQuality &&
-          remainingAttempts <= DISPLAY_ATTEMPTS && (
+          remainingSubmitAttempts <= DISPLAY_ATTEMPTS && (
             <p>
               <HtmlTextWithStrongNoWrap
-                text={t('idv.failure.attempts_html', { count: remainingAttempts })}
+                text={t('idv.failure.attempts_html', { count: remainingSubmitAttempts })}
               />
             </p>
           )}

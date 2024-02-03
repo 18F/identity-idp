@@ -36,7 +36,7 @@ export class UploadFormEntryError extends FormError {
 export class UploadFormEntriesError extends FormError {
   formEntryErrors: UploadFormEntryError[] = [];
 
-  remainingAttempts = Infinity;
+  remainingSubmitAttempts = Infinity;
 
   isFailedResult = false;
 
@@ -112,8 +112,8 @@ const upload: UploadImplementation = async function (payload, { method = 'POST',
       error.formEntryErrors = result.errors.map(toFormEntryError);
     }
 
-    if (result.remaining_attempts) {
-      error.remainingAttempts = result.remaining_attempts;
+    if (result.remaining_submit_attempts) {
+      error.remainingSubmitAttempts = result.remaining_submit_attempts;
     }
 
     if (result.ocr_pii) {
