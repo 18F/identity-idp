@@ -96,6 +96,8 @@ module Reporting
       self
     end
 
+    # Each EntityReuseSummary (there are two - apps and agencies) contains
+    # a ReuseDetailSection which is made up of individual ReuseDetailRows
     ReuseDetailSection = Struct.new(:detail_rows) do
       def initialize(detail_rows: [ReuseDetailRow.new])
         super(detail_rows:)
