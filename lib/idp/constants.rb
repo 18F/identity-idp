@@ -11,6 +11,7 @@ module Idp
     module Vendors
       ACUANT = 'acuant'
       LEXIS_NEXIS = 'lexis_nexis'
+      LEXIS_NEXIS_MOCK = 'lexisnexis_mock'
       MOCK = 'mock'
       USPS = 'usps'
       AAMVA = 'aamva'

@@ -2,7 +2,7 @@
 
 module DocAuth
   module Mock
-    module TrueIdServiceMock
+    class TrueIdMockClient < DocAuth::Mock::DocAuthMockClient
       # rubocop:disable Lint/UnusedMethodArgument
       def post_images(
         front_image:,
@@ -13,7 +13,7 @@ module DocAuth
         uuid_prefix: nil,
         liveness_checking_required: false
       )
-        if respond_to?(:method_mocked?)
+        if respond_to?(:method_mocked?, true)
           return mocked_response_for_method(__method__) if method_mocked?(__method__)
         end
         http_response_builder = TrueIdHttpResponseBuilder.new(

@@ -2,8 +2,7 @@
 
 require 'rails_helper'
 
-class DummyTrueIDService
-  include DocAuth::Mock::TrueIdServiceMock
+class DummyTrueIDService < DocAuth::Mock::TrueIdMockClient
 
   def initialize(config)
     @config = config
@@ -13,7 +12,7 @@ class DummyTrueIDService
     @config
   end
 end
-RSpec.describe 'DocAuth::Mock::TrueIDServiceMock' do
+RSpec.describe 'DocAuth::Mock::TrueIdMockClient' do
   let(:warn_notifier) { instance_double('Proc') }
   let(:config) do
     DocAuth::Mock::Config.new(

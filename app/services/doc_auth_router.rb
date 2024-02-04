@@ -201,9 +201,12 @@ module DocAuthRouter
       )
     when Idp::Constants::Vendors::MOCK
       DocAuthErrorTranslatorProxy.new(
-        DocAuth::Mock::DocAuthMockClient.new(
+        # DocAuth::Mock::DocAuthMockClient.new(
+        #   warn_notifier: warn_notifier,
+        # ),
+        DocAuth::Mock::TrueIdMockClient.new(
           warn_notifier: warn_notifier,
-        ),
+          ),
       )
     else
       raise "#{doc_auth_vendor(discriminator: vendor_discriminator)} is not a valid doc auth vendor"
