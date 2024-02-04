@@ -61,7 +61,7 @@ RSpec.describe 'DocAuth::Mock::TrueIDServiceMock' do
   describe '#post_image' do
     context 'with bar code attention' do
       it 'succeeds to generate response indicate it' do
-        response = service.post_image(
+        response = service.post_images(
           front_image: input_with_alerts,
           back_image: input_with_alerts,
         )
@@ -75,7 +75,7 @@ RSpec.describe 'DocAuth::Mock::TrueIDServiceMock' do
     context 'without expired id' do
       it 'return failed response with expired id error' do
         allow(warn_notifier).to receive(:call)
-        response = service.post_image(
+        response = service.post_images(
           front_image: input_id_expired,
           back_image: input_id_expired,
         )

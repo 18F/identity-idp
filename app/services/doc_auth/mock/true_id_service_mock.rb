@@ -4,7 +4,7 @@ module DocAuth
   module Mock
     module TrueIdServiceMock
       # rubocop:disable Lint/UnusedMethodArgument
-      def post_image(
+      def post_images(
         front_image:,
         back_image: nil,
         selfie_image: nil,
@@ -13,8 +13,11 @@ module DocAuth
         uuid_prefix: nil,
         liveness_checking_required: false
       )
+        if respond_to?(:method_mocked?)
+          return mocked_response_for_method(__method__) if method_mocked?(__method__)
+        end
         http_response_builder = TrueIdHttpResponseBuilder.new(
-          templatefile: 'true_id_response_success_3.json',
+          templatefile: 'true_id_response_success_with_liveness.json',
           selfie_check_enabled: liveness_checking_required,
         )
         http_response_builder.set_check_status('2D Barcode Read', 'Passed')
@@ -33,7 +36,7 @@ module DocAuth
         response = conn.post('/dummy')
         DocAuth::LexisNexis::Responses::TrueIdResponse.new(
           response, config,
-          false
+          liveness_checking_required
         )
       end
       # rubocop:enable Lint/UnusedMethodArgument

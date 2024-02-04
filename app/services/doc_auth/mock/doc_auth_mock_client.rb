@@ -2,6 +2,7 @@ module DocAuth
   module Mock
     class DocAuthMockClient
       include DocAuth::Mock::YmlLoaderConcern
+      prepend DocAuth::Mock::TrueIdServiceMock
       attr_reader :config
 
       def initialize(**config_keywords)

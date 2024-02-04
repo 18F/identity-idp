@@ -16,8 +16,7 @@ module DocAuth
       def use_uploaded_file(upload_file_content)
         @uploaded_file = upload_file_content
         @parsed_uploaded_file = parse_yaml(@uploaded_file).deep_symbolize_keys
-        doc_auth_result = @parsed_uploaded_file[:doc_auth_result]
-        set_doc_auth_result(doc_auth_result)
+        update_with_yaml
         pii = @parsed_uploaded_file[:document]
         set_pii(pii)
       end
@@ -524,29 +523,28 @@ module DocAuth
         end
 
         if @selfie_check_enabled
-          portrait_match_result = file_data.dig(:portrait_match_result)
-          # portrait_match_results:
-          #             FaceMatchResult: Pass
-          #             FaceErrorMessage: 'Successful. Liveness: Live'
-          set_portrait_match_result(
-            result: portrait_match_result[:FaceMatchResult],
-            error_msg: portrait_match_result[:FaceErrorMessage],
-          )
+          portrait_match_result = file_data.dig(:portrait_match_results)
+          unless portrait_match_result.blank?
+            set_portrait_match_result(
+              result: portrait_match_result[:FaceMatchResult],
+              error_msg: portrait_match_result[:FaceErrorMessage],
+            )
+          end
         else
           # remove portrait match part
           no_portrait_match_result
         end
 
         classification_info = file_data.dig(:classification_info, :Front)
-        doc_class = classification_info[:ClassName]
-        issuer_type = classification_info[:IssuerType]
-        country_code = classification_info[:CountryCode]
+        doc_class = classification_info&.dig(:ClassName)
+        issuer_type = classification_info&.dig(:IssuerType)
+        country_code = classification_info&.dig(:CountryCode)
 
         set_doc_auth_info(
           doc_name: "#{@issue_st_name} #{doc_class}",
           doc_class_name: doc_class,
-          doc_class: doc_class.split('_').join(''),
-          doc_class_code: doc_class.split('_').join(''),
+          doc_class: doc_class&.split('_')&.join(''),
+          doc_class_code: doc_class&.split('_')&.join(''),
           doc_issuer_type: issuer_type,
           doc_issuer_code: @issue_st_name,
           doc_issue: @issue_date.year.to_s,
