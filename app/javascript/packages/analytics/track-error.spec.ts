@@ -11,7 +11,7 @@ describe('trackError', () => {
     document.body.innerHTML = `<script type="application/json" data-config>{"analyticsEndpoint":"${endpoint}"}</script>`;
   });
 
-  it('tracks event', async () => {
+  it('tracks event', () => {
     trackError(new Error('Oops!'));
 
     expect(global.navigator.sendBeacon).to.have.been.calledOnce();
@@ -19,7 +19,7 @@ describe('trackError', () => {
     const [actualEndpoint, data] = (global.navigator.sendBeacon as SinonStub).firstCall.args;
     expect(actualEndpoint).to.eql(endpoint);
 
-    const { event, payload } = JSON.parse(await data.text());
+    const { event, payload } = JSON.parse(data);
     const { name, message, stack, filename } = payload;
 
     expect(event).to.equal('Frontend Error');
@@ -30,7 +30,7 @@ describe('trackError', () => {
   });
 
   context('with event parameter', () => {
-    it('tracks event', async () => {
+    it('tracks event', () => {
       const error = new Error('Oops!');
       const errorEvent = new ErrorEvent('error', { error, filename: 'file.js' });
       trackError(error, errorEvent);
@@ -40,7 +40,7 @@ describe('trackError', () => {
       const [actualEndpoint, data] = (global.navigator.sendBeacon as SinonStub).firstCall.args;
       expect(actualEndpoint).to.eql(endpoint);
 
-      const { event, payload } = JSON.parse(await data.text());
+      const { event, payload } = JSON.parse(data);
       const { name, message, stack, filename } = payload;
 
       expect(event).to.equal('Frontend Error');

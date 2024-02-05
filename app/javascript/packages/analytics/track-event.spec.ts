@@ -27,7 +27,7 @@ describe('trackEvent', () => {
     });
 
     context('no payload', () => {
-      it('calls sendBeacon and resolves to undefined', async () => {
+      it('calls sendBeacon and resolves to undefined', () => {
         const result = trackEvent('name');
 
         expect(result).to.be.undefined();
@@ -36,14 +36,12 @@ describe('trackEvent', () => {
 
         const [actualEndpoint, data] = (global.navigator.sendBeacon as SinonStub).firstCall.args;
         expect(actualEndpoint).to.eql(endpoint);
-        expect(data).to.have.property('type').eql('application/json');
-
-        expect(await data.text()).to.eql('{"event":"name"}');
+        expect(data).to.eql('{"event":"name"}');
       });
     });
 
     context('payload', () => {
-      it('calls sendBeacon and resolves to undefined', async () => {
+      it('calls sendBeacon and resolves to undefined', () => {
         const result = trackEvent('name', { foo: 'bar' });
 
         expect(result).to.be.undefined();
@@ -53,8 +51,7 @@ describe('trackEvent', () => {
         const [actualEndpoint, data] = (global.navigator.sendBeacon as SinonStub).firstCall.args;
 
         expect(actualEndpoint).to.eql(endpoint);
-        expect(data).to.have.property('type').eql('application/json');
-        expect(await data.text()).to.eql('{"event":"name","payload":{"foo":"bar"}}');
+        expect(data).to.eql('{"event":"name","payload":{"foo":"bar"}}');
       });
     });
 

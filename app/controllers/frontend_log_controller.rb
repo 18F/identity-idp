@@ -73,7 +73,15 @@ class FrontendLogController < ApplicationController
   end
 
   def log_params
-    params.permit(:event, payload: {})
+    if request.format.json?
+      params.permit(:event, payload: {})
+    else
+      begin
+        JSON.parse(request.raw_post, symbolize_names: true).slice(:event, :payload)
+      rescue JSON::ParserError
+        {}
+      end
+    end
   end
 
   def validate_parameter_types

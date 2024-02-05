@@ -2,8 +2,7 @@ import { getByLabelText, getByRole, getAllByRole } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
 import { computeAccessibleName } from 'dom-accessibility-api';
 import type { SinonStub } from 'sinon';
-import * as analytics from '@18f/identity-analytics';
-import { useSandbox } from '@18f/identity-test-helpers';
+import { useSandbox, useAnalytics } from '@18f/identity-test-helpers';
 import { CAPTCHA_EVENT_NAME } from '@18f/identity-captcha-submit-button/captcha-submit-button-element';
 
 const MULTIPLE_OPTIONS_HTML = `
@@ -25,15 +24,12 @@ const SINGLE_OPTION_SELECT_NON_US_HTML = `
 
 describe('PhoneInput', () => {
   const sandbox = useSandbox();
+  const trackEvent = useAnalytics();
 
   before(async () => {
     await import('intl-tel-input/build/js/utils.js');
     window.intlTelInputUtils = global.intlTelInputUtils;
     await import('./index');
-  });
-
-  beforeEach(() => {
-    sandbox.stub(analytics, 'trackEvent');
   });
 
   function createAndConnectElement({
@@ -192,7 +188,7 @@ describe('PhoneInput', () => {
     const phoneNumber = getByLabelText(input, 'Phone number') as HTMLInputElement;
 
     await userEvent.type(phoneNumber, '+1306');
-    expect(analytics.trackEvent).to.have.been.calledOnceWith('phone_input_country_changed', {
+    expect(trackEvent).to.have.been.calledOnceWith('phone_input_country_changed', {
       country_code: 'CA',
     });
 
@@ -200,13 +196,13 @@ describe('PhoneInput', () => {
     await userEvent.click(dropdownButton);
     const usOption = getByRole(iti, 'option', { name: 'United States +1' });
     await userEvent.click(usOption);
-    expect(analytics.trackEvent).to.have.been.calledWith('phone_input_country_changed', {
+    expect(trackEvent).to.have.been.calledWith('phone_input_country_changed', {
       country_code: 'US',
     });
 
     await userEvent.clear(phoneNumber);
     await userEvent.type(phoneNumber, '+6');
-    expect(analytics.trackEvent).to.have.callCount(2);
+    expect(trackEvent).to.have.callCount(2);
   });
 
   it('renders as an accessible combobox', () => {

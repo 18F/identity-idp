@@ -1,12 +1,12 @@
 import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { useSandbox } from '@18f/identity-test-helpers';
+import { useAnalytics, useSandbox } from '@18f/identity-test-helpers';
 import { t } from '@18f/identity-i18n';
-import * as analytics from '@18f/identity-analytics';
 import BarcodeAttentionWarning from './barcode-attention-warning';
 
 describe('BarcodeAttentionWarning', () => {
   const sandbox = useSandbox();
+  const trackEvent = useAnalytics();
   let form: HTMLFormElement;
 
   beforeEach(() => {
@@ -16,7 +16,6 @@ describe('BarcodeAttentionWarning', () => {
     document.body.appendChild(form);
 
     sandbox.stub(global, 'fetch').resolves();
-    sandbox.stub(analytics, 'trackEvent');
   });
 
   afterEach(() => {
@@ -52,7 +51,7 @@ describe('BarcodeAttentionWarning', () => {
 
     expect(form.submit).to.have.been.calledOnce();
     expect(onbeforeunload).not.to.have.been.called();
-    expect(analytics.trackEvent).to.have.been.calledWith('IdV: barcode warning continue clicked');
+    expect(trackEvent).to.have.been.calledWith('IdV: barcode warning continue clicked');
   });
 
   it('lets the user dismiss to take new photos', async () => {
@@ -67,8 +66,6 @@ describe('BarcodeAttentionWarning', () => {
     await userEvent.click(dismissButton);
 
     expect(onDismiss).to.have.been.calledOnce();
-    expect(analytics.trackEvent).to.have.been.calledWith(
-      'IdV: barcode warning retake photos clicked',
-    );
+    expect(trackEvent).to.have.been.calledWith('IdV: barcode warning retake photos clicked');
   });
 });

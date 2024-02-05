@@ -4,7 +4,6 @@ import userEvent from '@testing-library/user-event';
 import { waitFor } from '@testing-library/dom';
 import sinon from 'sinon';
 import { PageHeading } from '@18f/identity-components';
-import * as analytics from '@18f/identity-analytics';
 import { t } from '@18f/identity-i18n';
 import FormSteps, { FormStepComponentProps, getStepIndexByName } from './form-steps';
 import FormError from './form-error';
@@ -24,10 +23,6 @@ const sleep = (ms: number) => () => new Promise<void>((resolve) => setTimeout(re
 
 describe('FormSteps', () => {
   const sandbox = sinon.createSandbox();
-
-  beforeEach(() => {
-    sandbox.spy(analytics, 'trackEvent');
-  });
 
   afterEach(() => {
     sandbox.restore();
