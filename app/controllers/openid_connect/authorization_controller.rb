@@ -199,6 +199,7 @@ module OpenidConnect
       analytics.sp_redirect_initiated(
         ial: event_ial_context.ial,
         billed_ial: event_ial_context.bill_for_ial_1_or_2,
+        sign_in_flow: session[:sign_in_flow],
       )
       track_billing_events
     end

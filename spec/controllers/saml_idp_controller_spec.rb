@@ -579,9 +579,11 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
           user_session: {},
         )
       end
+      let(:sign_in_flow) { :sign_in }
 
       before do
         stub_sign_in(user)
+        session[:sign_in_flow] = sign_in_flow
         IdentityLinker.new(user, sp1).link_identity(ial: ial)
         user.identities.last.update!(
           verified_attributes: %w[given_name family_name social_security_number address],
@@ -652,11 +654,12 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
             request_signed: true,
             matching_cert_serial: saml_test_sp_cert_serial,
           })
-        expect(@analytics).to receive(:track_event).
-          with('SP redirect initiated', {
-            ial: ial,
-            billed_ial: [ial, 2].min,
-          })
+        expect(@analytics).to receive(:track_event).with(
+          'SP redirect initiated',
+          ial: ial,
+          billed_ial: [ial, 2].min,
+          sign_in_flow:,
+        )
 
         allow(controller).to receive(:identity_needs_verification?).and_return(false)
         saml_get_auth(ial2_settings)
