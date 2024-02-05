@@ -55,7 +55,7 @@ class ServiceProviderRequestProxy
     uuid = hash[:uuid]
     obj = hash.slice(
       :issuer, :url, :ial, :aal, :requested_attributes, :biometric_comparison_required,
-      :vtr, :acl_values,
+      :vtr, :acr_values,
     )
     write(obj, uuid)
     hash_to_spr(obj, uuid)
