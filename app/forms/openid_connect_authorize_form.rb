@@ -179,6 +179,7 @@ class OpenidConnectAuthorizeForm
   end
 
   def parse_vtr(param_value)
+    return if !IdentityConfig.store.use_vot_in_sp_requests
     return [] if param_value.blank?
 
     JSON.parse(param_value)

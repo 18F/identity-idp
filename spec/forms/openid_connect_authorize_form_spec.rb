@@ -92,6 +92,18 @@ RSpec.describe OpenidConnectAuthorizeForm do
         expect(result.extra[:redirect_uri]).to be_nil
       end
     end
+
+    context 'when use_vot_in_sp_requests flag is false' do
+      before do
+        allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(false)
+      end
+
+      let(:vtr) { ['C1.P1'].to_json }
+
+      it 'does not consume the VTR param' do
+        expect(form.vtr).to be_nil
+      end
+    end
   end
 
   describe '#valid?' do
