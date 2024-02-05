@@ -10,6 +10,7 @@ module DocAuth
       end
 
       def fetch
+        # return DocAuth::Respose with DocAuth:Error if worflow invalid
         http_response = send_http_request
         return handle_invalid_response(http_response) unless http_response.success?
 
