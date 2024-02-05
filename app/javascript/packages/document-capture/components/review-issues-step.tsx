@@ -36,9 +36,10 @@ export interface ReviewIssuesStepValue {
 }
 
 interface ReviewIssuesStepProps extends FormStepComponentProps<ReviewIssuesStepValue> {
-  remainingAttempts?: number;
+  remainingSubmitAttempts?: number;
   isFailedResult?: boolean;
   isFailedDocType?: boolean;
+  isFailedSelfieLivenessOrQuality?: boolean;
   captureHints?: boolean;
   pii?: PII;
   failedImageFingerprints?: { front: string[] | null; back: string[] | null };
@@ -52,15 +53,16 @@ function ReviewIssuesStep({
   onError = () => {},
   registerField = () => undefined,
   toPreviousStep = () => undefined,
-  remainingAttempts = Infinity,
+  remainingSubmitAttempts = Infinity,
   isFailedResult = false,
   isFailedDocType = false,
+  isFailedSelfieLivenessOrQuality = false,
   pii,
   captureHints = false,
   failedImageFingerprints = { front: [], back: [] },
 }: ReviewIssuesStepProps) {
   const { trackEvent } = useContext(AnalyticsContext);
-  const [hasDismissed, setHasDismissed] = useState(remainingAttempts === Infinity);
+  const [hasDismissed, setHasDismissed] = useState(remainingSubmitAttempts === Infinity);
   const { onPageTransition, changeStepCanComplete } = useContext(FormStepsContext);
   const [skipWarning, setSkipWarning] = useState(false);
   useDidUpdateEffect(onPageTransition, [hasDismissed]);
@@ -118,7 +120,8 @@ function ReviewIssuesStep({
       <DocumentCaptureWarning
         isFailedDocType={isFailedDocType}
         isFailedResult={isFailedResult}
-        remainingAttempts={remainingAttempts}
+        isFailedSelfieLivenessOrQuality={isFailedSelfieLivenessOrQuality}
+        remainingSubmitAttempts={remainingSubmitAttempts}
         unknownFieldErrors={unknownFieldErrors}
         actionOnClick={onWarningPageDismissed}
         hasDismissed={false}
@@ -129,7 +132,8 @@ function ReviewIssuesStep({
   return (
     <DocumentCaptureReviewIssues
       isFailedDocType={isFailedDocType}
-      remainingAttempts={remainingAttempts}
+      isFailedSelfieLivenessOrQuality={isFailedSelfieLivenessOrQuality}
+      remainingSubmitAttempts={remainingSubmitAttempts}
       captureHints={captureHints}
       value={value}
       unknownFieldErrors={unknownFieldErrors}

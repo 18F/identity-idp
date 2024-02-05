@@ -16,7 +16,7 @@ const hashSuffix = isProductionEnv ? '-[chunkhash:8].digested' : '';
 const devServerPort = process.env.WEBPACK_PORT;
 const devtool = process.env.WEBPACK_DEVTOOL || (isProductionEnv ? 'source-map' : 'eval-source-map');
 
-const entries = glob('app/{components,javascript/packs}/*.{ts,tsx,js,jsx}');
+const entries = glob('app/{components,javascript/packs}/*.{ts,tsx}');
 
 module.exports = /** @type {import('webpack').Configuration} */ ({
   mode,

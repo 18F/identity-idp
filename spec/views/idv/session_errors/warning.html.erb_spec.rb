@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe 'idv/session_errors/warning.html.erb' do
   let(:sp_name) { nil }
   let(:try_again_path) { '/example/path' }
-  let(:remaining_attempts) { 5 }
+  let(:remaining_submit_attempts) { 5 }
   let(:user_session) { {} }
 
   before do
@@ -11,7 +11,7 @@ RSpec.describe 'idv/session_errors/warning.html.erb' do
     allow(view).to receive(:decorated_sp_session).and_return(decorated_sp_session)
     allow(view).to receive(:user_session).and_return(user_session)
 
-    assign(:remaining_attempts, remaining_attempts)
+    assign(:remaining_submit_attempts, remaining_submit_attempts)
     assign(:try_again_path, try_again_path)
 
     @step_indicator_steps = Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS
@@ -26,7 +26,7 @@ RSpec.describe 'idv/session_errors/warning.html.erb' do
   it 'shows remaining attempts' do
     expect(rendered).to have_text(
       strip_tags(
-        t('idv.warning.attempts_html', count: remaining_attempts),
+        t('idv.warning.attempts_html', count: remaining_submit_attempts),
       ),
     )
   end
@@ -45,7 +45,7 @@ RSpec.describe 'idv/session_errors/warning.html.erb' do
       expect(rendered).to have_link(t('idv.failure.button.warning'), href: try_again_path)
       expect(rendered).to have_text(
         strip_tags(
-          t('idv.warning.attempts_html', count: remaining_attempts),
+          t('idv.warning.attempts_html', count: remaining_submit_attempts),
         ),
       )
       expect(rendered).to have_link(

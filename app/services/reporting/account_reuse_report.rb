@@ -65,15 +65,20 @@ module Reporting
 
       def update_details(
         num_entities: nil, entity_type: nil,
-        num_idv_users: nil, num_all_users: nil
+        num_all_users: nil, all_percent: nil,
+        num_idv_users: nil, idv_percent: nil
       )
         self.num_entities = num_entities if !num_entities.nil?
 
         self.entity_type = entity_type if !entity_type.nil?
 
+        self.num_all_users = num_all_users if !num_all_users.nil?
+
+        self.all_percent = all_percent if !all_percent.nil?
+
         self.num_idv_users = num_idv_users if !num_idv_users.nil?
 
-        self.num_all_users = num_all_users if !num_all_users.nil?
+        self.idv_percent = idv_percent if !idv_percent.nil?
 
         self
       end
@@ -173,6 +178,23 @@ module Reporting
             end
           end
         end
+
+        results.each_with_index do |details_section, section_index|
+          details_section.select { |details| details.num_entities >= 10 }.
+            reduce do |summary_row, captured_row|
+              # Delete any rows after the first captured_row (which becomes the summary_row)
+              details_section.delete(captured_row) if captured_row != summary_row
+              summary_row.update_details(
+                num_entities: "10-#{captured_row.num_entities}",
+                entity_type: summary_row.entity_type,
+                num_all_users: summary_row.num_all_users + captured_row.num_all_users,
+                all_percent: summary_row.all_percent + captured_row.all_percent,
+                num_idv_users: summary_row.num_idv_users + captured_row.num_idv_users,
+                idv_percent: summary_row.idv_percent + captured_row.idv_percent,
+              )
+            end
+        end
+
         self.details_section = results
 
         self
