@@ -16,6 +16,14 @@ class StoreSpMetadataInSession
 
   attr_reader :session, :request_id
 
+  def parsed_vot
+    @parsed_vot ||= AuthnContextResolver.new(
+      service_provider: service_provider,
+      vtr: sp_request.vtr,
+      acr_values: sp_request.acr_values,
+    ).resolve
+  end
+
   def ial_context
     @ial_context ||= IalContext.new(ial: sp_request.ial, service_provider: service_provider)
   end
@@ -24,20 +32,76 @@ class StoreSpMetadataInSession
     @sp_request ||= ServiceProviderRequestProxy.from_uuid(request_id)
   end
 
+  def ial_value
+    if parsed_vot.ialmax?
+      0
+    elsif parsed_vot.identity_proofing?
+      2
+    else
+      1
+    end
+  end
+
+  def ial2_value
+    parsed_vot.identity_proofing?
+  end
+
+  def ialmax_value
+    parsed_vot.ialmax?
+  end
+
+  def aal_level_requested_value
+    if parsed_vot.phishing_resistant?
+      3
+    elsif parsed_vot.aal2?
+      2
+    else
+      1
+    end
+  end
+
+  def piv_cac_requested_value
+    parsed_vot.hspd12?
+  end
+
+  def phishing_resistant_value
+    parsed_vot.phishing_resistant?
+  end
+
+  def biometric_comparison_required_value
+    parsed_vot.biometric_comparison?
+  end
+
   def update_session
-    session[:sp] = {
-      issuer: sp_request.issuer,
-      ial: ial_context.ial,
-      ial2: ial_context.ial2_requested?,
-      ialmax: ial_context.ialmax_requested?,
-      aal_level_requested: aal_requested,
-      piv_cac_requested: hspd12_requested,
-      phishing_resistant_requested: phishing_resistant_requested,
-      request_url: sp_request.url,
-      request_id: sp_request.uuid,
-      requested_attributes: sp_request.requested_attributes,
-      biometric_comparison_required: sp_request.biometric_comparison_required,
-    }
+    if IdentityConfig.store.use_vot_in_sp_requests
+      session[:sp] = {
+        issuer: sp_request.issuer,
+        ial: ial_value,
+        ial2: ial2_value,
+        ialmax: ialmax_value,
+        aal_level_requested: aal_level_requested_value,
+        piv_cac_requested: piv_cac_requested_value,
+        phishing_resistant_requested: phishing_resistant_value,
+        request_url: sp_request.url,
+        request_id: sp_request.uuid,
+        requested_attributes: sp_request.requested_attributes,
+        biometric_comparison_required: biometric_comparison_required_value,
+      }
+    else
+      session[:sp] = {
+        issuer: sp_request.issuer,
+        ial: ial_context.ial,
+        ial2: ial_context.ial2_requested?,
+        ialmax: ial_context.ialmax_requested?,
+        aal_level_requested: aal_requested,
+        piv_cac_requested: hspd12_requested,
+        phishing_resistant_requested: phishing_resistant_requested,
+        request_url: sp_request.url,
+        request_id: sp_request.uuid,
+        requested_attributes: sp_request.requested_attributes,
+        biometric_comparison_required: sp_request.biometric_comparison_required,
+      }
+    end
   end
 
   def aal_requested
