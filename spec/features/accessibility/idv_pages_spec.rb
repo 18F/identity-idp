@@ -1,9 +1,13 @@
 require 'rails_helper'
 require 'axe-rspec'
 
-RSpec.feature 'Accessibility on IDV pages', :js do
+RSpec.feature 'Accessibility on IDV pages', :js, allowed_extra_analytics: [:*] do
   describe 'IDV pages' do
     include IdvStepHelper
+
+    let(:service_provider) do
+      create(:service_provider, :active, :in_person_proofing_enabled)
+    end
 
     scenario 'home page' do
       sign_in_and_2fa_user
@@ -16,6 +20,7 @@ RSpec.feature 'Accessibility on IDV pages', :js do
     scenario 'how to verify page' do
       allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
       allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).and_return(true)
+      allow_any_instance_of(Idv::Session).to receive(:service_provider).and_return(service_provider)
       sign_in_and_2fa_user
 
       visit idv_welcome_url

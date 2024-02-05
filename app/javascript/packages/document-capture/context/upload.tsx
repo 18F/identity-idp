@@ -78,7 +78,7 @@ export interface UploadErrorResponse {
   /**
    * Number of remaining doc capture attempts for user.
    */
-  remaining_attempts?: number;
+  remaining_submit_attempts?: number;
 
   /**
    * Boolean to decide if capture hints should be shown with error.
@@ -99,6 +99,16 @@ export interface UploadErrorResponse {
    * Whether the doc type is clearly not supported type.
    */
   doc_type_supported: boolean;
+
+  /*
+   * Whether the selfie passed the liveness check from trueid
+   */
+  selfie_live?: boolean;
+
+  /*
+   * Whether the selfie passed the quality check from trueid.
+   */
+  selfie_quality_good?: boolean;
 
   /**
    * Record of failed image fingerprints

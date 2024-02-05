@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Users::PivCacAuthenticationSetupController do
+RSpec.describe Users::PivCacAuthenticationSetupController, allowed_extra_analytics: [:*] do
   describe 'before_actions' do
     it 'includes appropriate before_actions' do
       expect(subject).to have_actions(

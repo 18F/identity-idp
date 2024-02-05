@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Users::WebauthnSetupController do
+RSpec.describe Users::WebauthnSetupController, allowed_extra_analytics: [:*] do
   include WebAuthnHelper
 
   describe 'before_actions' do
@@ -120,82 +120,6 @@ RSpec.describe Users::WebauthnSetupController do
           )
 
         patch :confirm, params: params
-      end
-    end
-
-    describe 'delete' do
-      let(:webauthn_configuration) { create(:webauthn_configuration, user: user) }
-
-      it 'creates a webauthn key removed event' do
-        delete :delete, params: { id: webauthn_configuration.id }
-
-        expect(response).to redirect_to(account_two_factor_authentication_path)
-        expect(flash.now[:success]).to eq t('notices.webauthn_deleted')
-        expect(WebauthnConfiguration.count).to eq(0)
-        expect(
-          Event.where(
-            user_id: controller.current_user.id,
-            event_type: :webauthn_key_removed, ip: '0.0.0.0'
-          ).count,
-        ).to eq 1
-      end
-
-      it 'revokes remember device cookies' do
-        expect(user.remember_device_revoked_at).to eq nil
-        freeze_time do
-          delete :delete, params: { id: webauthn_configuration.id }
-          expect(user.reload.remember_device_revoked_at).to eq Time.zone.now
-        end
-      end
-
-      it 'tracks the delete in analytics' do
-        delete :delete, params: { id: webauthn_configuration.id }
-
-        expect(@analytics).to have_logged_event(
-          :webauthn_delete_submitted,
-          success: true,
-          error_details: nil,
-          configuration_id: webauthn_configuration.id.to_s,
-          platform_authenticator: false,
-        )
-      end
-
-      it 'sends a recovery information changed event' do
-        expect(PushNotification::HttpPush).to receive(:deliver).
-          with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
-
-        delete :delete, params: { id: webauthn_configuration.id }
-      end
-
-      context 'when authenticator is the sole authentication method' do
-        let(:user) { create(:user) }
-
-        it 'tracks the delete in analytics' do
-          delete :delete, params: { id: webauthn_configuration.id }
-
-          expect(@analytics).to have_logged_event(
-            :webauthn_delete_submitted,
-            success: false,
-            error_details: nil,
-            configuration_id: webauthn_configuration.id.to_s,
-            platform_authenticator: nil,
-          )
-        end
-      end
-    end
-
-    describe 'show_delete' do
-      let(:webauthn_configuration) { create(:webauthn_configuration, user: user) }
-
-      it 'renders page when configuration exists' do
-        get :show_delete, params: { id: webauthn_configuration.id }
-        expect(response).to render_template :delete
-      end
-
-      it 'redirects when the configuration does not exist' do
-        get :show_delete, params: { id: '_' }
-        expect(response).to redirect_to(new_user_session_url)
-        expect(flash[:error]).to eq t('errors.general')
       end
     end
   end

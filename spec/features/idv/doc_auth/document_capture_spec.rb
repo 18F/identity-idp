@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'document capture step', :js do
+RSpec.feature 'document capture step', :js, allowed_extra_analytics: [:*] do
   include IdvStepHelper
   include DocAuthHelper
   include DocCaptureHelper
@@ -234,8 +234,7 @@ RSpec.feature 'document capture step', :js do
           expect_doc_capture_page_header(t('doc_auth.headings.document_capture_with_selfie'))
           expect_doc_capture_id_subheader
           expect_doc_capture_selfie_subheader
-          attach_images
-          attach_selfie
+          attach_liveness_images
           submit_images
 
           expect(page).to have_current_path(idv_ssn_url)
@@ -247,6 +246,84 @@ RSpec.feature 'document capture step', :js do
           click_idv_continue
           complete_verify_step
           expect(page).to have_current_path(idv_phone_url)
+        end
+      end
+
+      context 'selfie with no liveness or poor quality is uploaded', allow_browser_log: true do
+        it 'try again and page show no liveness inline error message' do
+          visit_idp_from_oidc_sp_with_ial2
+          sign_in_and_2fa_user(user)
+          complete_doc_auth_steps_before_document_capture_step
+          attach_images(
+            Rails.root.join(
+              'spec', 'fixtures',
+              'ial2_test_credential_no_liveness.yml'
+            ),
+          )
+          attach_selfie(
+            Rails.root.join(
+              'spec', 'fixtures',
+              'ial2_test_credential_no_liveness.yml'
+            ),
+          )
+          submit_images
+          message = strip_tags(t('errors.doc_auth.selfie_not_live_or_poor_quality_heading'))
+          expect(page).to have_content(message)
+          detail_message = strip_tags(t('doc_auth.errors.alerts.selfie_not_live'))
+          security_message = strip_tags(
+            t(
+              'idv.warning.attempts_html',
+              count: IdentityConfig.store.doc_auth_max_attempts - 1,
+            ),
+          )
+          expect(page).to have_content(detail_message << "\n" << security_message)
+          review_issues_header = strip_tags(
+            t('errors.doc_auth.selfie_not_live_or_poor_quality_heading'),
+          )
+          expect(page).to have_content(review_issues_header)
+          expect(page).to have_current_path(idv_document_capture_path)
+          click_try_again
+          expect(page).to have_current_path(idv_document_capture_path)
+          inline_error = strip_tags(t('doc_auth.errors.alerts.selfie_not_live_poor_quality'))
+          expect(page).to have_content(inline_error)
+        end
+
+        it 'try again and page show poor quality inline error message' do
+          visit_idp_from_oidc_sp_with_ial2
+          sign_in_and_2fa_user(user)
+          complete_doc_auth_steps_before_document_capture_step
+          attach_images(
+            Rails.root.join(
+              'spec', 'fixtures',
+              'ial2_test_credential_poor_quality.yml'
+            ),
+          )
+          attach_selfie(
+            Rails.root.join(
+              'spec', 'fixtures',
+              'ial2_test_credential_poor_quality.yml'
+            ),
+          )
+          submit_images
+          message = strip_tags(t('errors.doc_auth.selfie_not_live_or_poor_quality_heading'))
+          expect(page).to have_content(message)
+          detail_message = strip_tags(t('doc_auth.errors.alerts.selfie_poor_quality'))
+          security_message = strip_tags(
+            t(
+              'idv.warning.attempts_html',
+              count: IdentityConfig.store.doc_auth_max_attempts - 1,
+            ),
+          )
+          expect(page).to have_content(detail_message << "\n" << security_message)
+          review_issues_header = strip_tags(
+            t('errors.doc_auth.selfie_not_live_or_poor_quality_heading'),
+          )
+          expect(page).to have_content(review_issues_header)
+          expect(page).to have_current_path(idv_document_capture_path)
+          click_try_again
+          expect(page).to have_current_path(idv_document_capture_path)
+          inline_error = strip_tags(t('doc_auth.errors.alerts.selfie_not_live_poor_quality'))
+          expect(page).to have_content(inline_error)
         end
       end
 

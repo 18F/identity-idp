@@ -41,7 +41,7 @@ Steps:
 
 6. Inspect the `Sources` of the page. Expand the local IP address from which you are serving the page. You should see a folder with a version number in the name, like `acuant/11.N.N`. Check that the version here is the new one &mdash; the version you noted in step 1. This screenshot shows where the version number appears in Chrome:
 
-    ![acuant-vesion-location](https://user-images.githubusercontent.com/546123/232644328-35922329-ad30-489e-943f-4125c009f74d.png)
+    ![acuant-version-location](https://user-images.githubusercontent.com/546123/232644328-35922329-ad30-489e-943f-4125c009f74d.png)
 
 
 7. Assuming the version is correct, you are ready to test it. On your phone, tap to photograph your state ID card. Point the camera at the card. Ensure the SDK finds the edges of the card and captures an image. Normally the SDK will put a yellowish box over the card to show where it believes the edges are.
@@ -87,6 +87,14 @@ Steps:
  
     Set the default to the new SDK version and the alternate to the old version. (That way, the new version is in place if the A/B testing goes well.)
     
+   **Note**: For testing in `staging`, `idv_acuant_sdk_upgrade_a_b_testing_enabled` can be set to `false` like following to test the new SDK version:
+   ```yaml
+   idv_acuant_sdk_upgrade_a_b_testing_enabled: false
+   idv_acuant_sdk_upgrade_a_b_testing_percent: 50 # ignored
+   idv_acuant_sdk_version_alternate: 11.M.M       # previous
+   idv_acuant_sdk_version_default: 11.N.N         # newest
+   ```
+   The testing phase should continue until we have accumulated sufficient traffic.
 4. Save the file. If the file opened in the vi editor, use `:wq` to save. A diff of your changes will appear. Copy the diff and paste it into the Slack thread. Type `y` to accept the changes.
 
 5. Recycle the servers [with these Handbook instructions](https://handbook.login.gov/articles/appdev-deploy.html#production). This will involve:
@@ -98,6 +106,26 @@ Steps:
 6. While you monitor the recycle, manually check the document capture page in the environment you are deploying to. Ensure the SDK loads and can capture images.
 
 Monitoring the A/B test begins now. Proceed to the next section.
+## Testing Considerations
+Manual testing should be performed to cover the following with verification *Success* or *Failure*:
+* SDK UI
+  * Camera permission prompt is shown
+  * Instruction text for taking ID and selfie
+  * Countdown while capturing
+  * Auto-capture mode
+* Camera permissions
+  * Prompt is shown upon the first time opening the SDK
+  * Tapping 'Decline' shows error message on the 'Add photos' page
+  * Opening the SDK again shows the same prompt
+
+Operating systems: 
+  * iOS
+  * Android
+
+Browser:
+  * Chrome
+  * Firefox
+  * Safari
 
 ## Monitor A/B testing
 

@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'axe-rspec'
 
-RSpec.describe 'In Person Proofing', js: true do
+RSpec.describe 'In Person Proofing', js: true, allowed_extra_analytics: [:*] do
   include IdvStepHelper
   include SpAuthHelper
   include InPersonHelper
@@ -166,8 +166,8 @@ RSpec.describe 'In Person Proofing', js: true do
     expect(page).to have_content(t('headings.verify'))
     expect(page).to have_current_path(idv_in_person_verify_info_path)
 
-    # click update address button
-    click_button t('idv.buttons.change_address_label')
+    # click update address link
+    click_link t('idv.buttons.change_address_label')
     expect(page).to have_content(t('in_person_proofing.headings.update_address'))
     click_button t('forms.buttons.submit.update')
     expect(page).to have_content(t('headings.verify'))
@@ -448,8 +448,8 @@ RSpec.describe 'In Person Proofing', js: true do
       complete_state_id_step(user, same_address_as_id: false)
       complete_address_step(user, same_address_as_id: false)
       complete_ssn_step(user)
-      # click update address button on the verify page
-      click_button t('idv.buttons.change_address_label')
+      # click update address link on the verify page
+      click_link t('idv.buttons.change_address_label')
       expect(page).to have_content(t('in_person_proofing.headings.update_address'))
       fill_out_address_form_ok(same_address_as_id: true)
       click_button t('forms.buttons.submit.update')
@@ -474,8 +474,8 @@ RSpec.describe 'In Person Proofing', js: true do
       # skip address step b/c residential address is same as state id address
       complete_ssn_step(user)
 
-      # click update residential address
-      click_button t('idv.buttons.change_address_label')
+      # click "update residential address"
+      click_link t('idv.buttons.change_address_label')
       expect(page).to have_content(t('in_person_proofing.headings.update_address'))
       # expect address page to have fields populated with address from state id
       expect(page).to have_field(

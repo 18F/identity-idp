@@ -20,8 +20,8 @@ class ImageUploadResponsePresenter
     end
   end
 
-  def remaining_attempts
-    @form_response.to_h[:remaining_attempts]
+  def remaining_submit_attempts
+    @form_response.to_h[:remaining_submit_attempts]
   end
 
   def status
@@ -40,9 +40,9 @@ class ImageUploadResponsePresenter
     else
       json = { success: false,
                errors: errors,
-               remaining_attempts: remaining_attempts,
+               remaining_submit_attempts: remaining_submit_attempts,
                doc_type_supported: doc_type_supported? }
-      if remaining_attempts&.zero?
+      if remaining_submit_attempts&.zero?
         if @form_response.extra[:flow_path] == 'standard'
           json[:redirect] = idv_session_errors_rate_limited_url
         else # hybrid flow on mobile
@@ -53,6 +53,8 @@ class ImageUploadResponsePresenter
       json[:ocr_pii] = ocr_pii
       json[:result_failed] = doc_auth_result_failed?
       json[:doc_type_supported] = doc_type_supported?
+      json[:selfie_live] = selfie_live? if show_selfie_failures
+      json[:selfie_quality_good] = selfie_quality_good? if show_selfie_failures
       json[:failed_image_fingerprints] = failed_fingerprints
       json
     end
@@ -87,6 +89,18 @@ class ImageUploadResponsePresenter
   end
 
   def failed_fingerprints
-    @form_response.extra[:failed_image_fingerprints] || { front: [], back: [] }
+    @form_response.extra[:failed_image_fingerprints] || { front: [], back: [], selfie: [] }
+  end
+
+  def show_selfie_failures
+    @form_response.extra[:liveness_checking_required] == true
+  end
+
+  def selfie_live?
+    @form_response.respond_to?(:selfie_live?) ? @form_response.selfie_live? : true
+  end
+
+  def selfie_quality_good?
+    @form_response.respond_to?(:selfie_quality_good?) ? @form_response.selfie_quality_good? : true
   end
 end

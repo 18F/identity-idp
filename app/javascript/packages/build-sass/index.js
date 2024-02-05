@@ -26,7 +26,7 @@ const TARGETS = browserslistToTargets(
  * Compiles a given Sass file.
  *
  * @param {string} file File to build.
- * @param {BuildOptions & SyncSassOptions} options Build options.
+ * @param {Partial<BuildOptions> & SyncSassOptions} options Build options.
  *
  * @return {Promise<CompileResult>}
  */

@@ -61,7 +61,9 @@ module Idv
         controller: self,
         next_steps: [:hybrid_handoff, :document_capture],
         preconditions: ->(idv_session:, user:) do
-          self.enabled? && idv_session.idv_consent_given
+          self.enabled? &&
+          idv_session.idv_consent_given &&
+          idv_session.service_provider&.in_person_proofing_enabled
         end,
         undo_step: ->(idv_session:, user:) {
                      idv_session.skip_doc_auth = nil

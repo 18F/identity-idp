@@ -274,7 +274,7 @@ RSpec.describe RecaptchaEnterpriseValidator do
         it { expect(valid).to eq(false) }
       end
 
-      context 'with extra analytics properties' do
+      context 'with extra analytics properties', allowed_extra_analytics: [:extra] do
         let(:extra_analytics_properties) { { extra: true } }
 
         it 'logs analytics of the body' do

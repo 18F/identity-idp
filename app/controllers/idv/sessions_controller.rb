@@ -1,7 +1,7 @@
 module Idv
   class SessionsController < ApplicationController
     include Idv::AvailabilityConcern
-    include IdvSession
+    include IdvSessionConcern
 
     before_action :confirm_two_factor_authenticated
 

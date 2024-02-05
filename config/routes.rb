@@ -21,6 +21,8 @@ Rails.application.routes.draw do
       put '/sessions' => 'sessions#update'
 
       namespace :two_factor_authentication do
+        put '/piv_cac/:id' => 'piv_cac#update', as: :piv_cac
+        delete '/piv_cac/:id' => 'piv_cac#destroy', as: nil
         put '/webauthn/:id' => 'webauthn#update', as: :webauthn
         delete '/webauthn/:id' => 'webauthn#destroy', as: nil
         put '/auth_app/:id' => 'auth_app#update', as: :auth_app
@@ -233,10 +235,6 @@ Rails.application.routes.draw do
     get '/webauthn_setup' => 'users/webauthn_setup#new', as: :webauthn_setup
     patch '/webauthn_setup' => 'users/webauthn_setup#confirm'
 
-    # Deprecated routes: Remove once LG-11454 is fully deployed to production.
-    delete '/webauthn_setup' => 'users/webauthn_setup#delete'
-    get '/webauthn_setup_delete' => 'users/webauthn_setup#show_delete'
-
     delete '/authenticator_setup' => 'users/totp_setup#disable', as: :disable_totp
     get '/authenticator_setup' => 'users/totp_setup#new'
     patch '/authenticator_setup' => 'users/totp_setup#confirm'
@@ -261,6 +259,9 @@ Rails.application.routes.draw do
     delete '/manage/phone/:id' => 'users/edit_phone#destroy'
     get '/manage/personal_key' => 'users/personal_keys#show', as: :manage_personal_key
     post '/manage/personal_key' => 'users/personal_keys#update'
+    get '/manage/piv_cac/:id' => 'users/piv_cac#edit', as: :edit_piv_cac
+    put '/manage/piv_cac/:id' => 'users/piv_cac#update', as: :piv_cac
+    delete '/manage/piv_cac/:id' => 'users/piv_cac#destroy', as: nil
     get '/manage/webauthn/:id' => 'users/webauthn#edit', as: :edit_webauthn
     put '/manage/webauthn/:id' => 'users/webauthn#update', as: :webauthn
     delete '/manage/webauthn/:id' => 'users/webauthn#destroy', as: nil

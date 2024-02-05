@@ -12,7 +12,7 @@ RSpec.describe Idv::PhoneErrorsController do
   end
 
   before do
-    allow(subject).to receive(:remaining_attempts).and_return(5)
+    allow(subject).to receive(:remaining_submit_attempts).and_return(5)
     stub_analytics
     allow(@analytics).to receive(:track_event)
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
@@ -33,7 +33,7 @@ RSpec.describe Idv::PhoneErrorsController do
 
   shared_examples_for 'an idv phone errors controller action' do
     describe 'before_actions' do
-      it 'includes before_actions from IdvSession' do
+      it 'includes before_actions from IdvSessionConcern' do
         expect(subject).to have_actions(:before, :redirect_unless_sp_requested_verification)
       end
     end
@@ -149,10 +149,10 @@ RSpec.describe Idv::PhoneErrorsController do
         end
       end
 
-      it 'assigns remaining count' do
+      it 'assigns the remaining submit count' do
         get action
 
-        expect(assigns(:remaining_attempts)).to be_kind_of(Numeric)
+        expect(assigns(:remaining_submit_attempts)).to be_kind_of(Numeric)
       end
 
       it 'logs an event' do
@@ -161,7 +161,7 @@ RSpec.describe Idv::PhoneErrorsController do
         expect(@analytics).to have_received(:track_event).with(
           'IdV: phone error visited',
           type: action,
-          remaining_attempts: 4,
+          remaining_submit_attempts: 4,
           **ab_test_args,
         )
       end
@@ -184,7 +184,7 @@ RSpec.describe Idv::PhoneErrorsController do
       it 'assigns remaining count' do
         get action
 
-        expect(assigns(:remaining_step_attempts)).to be_kind_of(Numeric)
+        expect(assigns(:remaining_submit_attempts)).to be_kind_of(Numeric)
       end
     end
   end
@@ -205,7 +205,7 @@ RSpec.describe Idv::PhoneErrorsController do
       it 'assigns remaining count' do
         get action
 
-        expect(assigns(:remaining_attempts)).to be_kind_of(Numeric)
+        expect(assigns(:remaining_submit_attempts)).to be_kind_of(Numeric)
       end
 
       it 'logs an event' do
@@ -214,7 +214,7 @@ RSpec.describe Idv::PhoneErrorsController do
         expect(@analytics).to have_received(:track_event).with(
           'IdV: phone error visited',
           type: action,
-          remaining_attempts: 4,
+          remaining_submit_attempts: 4,
           **ab_test_args,
         )
       end

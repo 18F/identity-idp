@@ -36,6 +36,7 @@ es:
       rate_limited_text_html: 'Por su seguridad, limitamos el número de veces que
         puede intentar verificar un documento en línea. <strong>Inténtelo de
         nuevo en %{timeout}.</strong>'
+      selfie_not_live_or_poor_quality_heading: No pudimos verificar tu foto
       send_link_limited: Ha intentado demasiadas veces, por favor, inténtelo de nuevo
         en %{timeout}. También puede retroceder y elegir utilizar su computadora
         como alternativa.
@@ -54,6 +55,7 @@ es:
     messages:
       already_confirmed: ya estaba confirmado, por favor intente iniciar una sesión
       blank: Por favor, rellenar este campo.
+      blank_cert_element_req: No podemos detectar un certificado en su solicitud.
       confirmation_code_incorrect: Código de verificación incorrecto. ¿Lo escribió correctamente?
       confirmation_invalid_token: El enlace de confirmación no es válido. El enlace
         expiró o usted ya ha confirmado su cuenta.

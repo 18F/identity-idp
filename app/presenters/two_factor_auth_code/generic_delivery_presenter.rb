@@ -8,7 +8,7 @@ module TwoFactorAuthCode
 
     def initialize(data:, view:, service_provider:, remember_device_default: true)
       data.each do |key, value|
-        instance_variable_set("@#{key}", value)
+        instance_variable_set(:"@#{key}", value)
       end
       @view = view
       @service_provider = service_provider

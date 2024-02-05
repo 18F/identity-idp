@@ -678,7 +678,8 @@ module AnalyticsEvents
   # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
   # @param [String] acuant_version
   # @param [Boolean] assessment
-  # @param [Integer] attempt number of attempts
+  # @param [Integer] captureAttempts number of attempts to capture / upload an image
+  #                  (previously called "attempt")
   # @param [String] documentType
   # @param [Integer] dpi  dots per inch of image
   # @param [Integer] failedImageResubmission
@@ -705,7 +706,7 @@ module AnalyticsEvents
     acuant_sdk_upgrade_a_b_testing_enabled:,
     acuant_version:,
     assessment:,
-    attempt:,
+    captureAttempts:,
     documentType:,
     dpi:,
     failedImageResubmission:,
@@ -733,7 +734,7 @@ module AnalyticsEvents
       acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
       acuant_version: acuant_version,
       assessment: assessment,
-      attempt: attempt,
+      captureAttempts: captureAttempts,
       documentType: documentType,
       dpi: dpi,
       failedImageResubmission: failedImageResubmission,
@@ -893,14 +894,14 @@ module AnalyticsEvents
   end
 
   # @param [String] step_name which step the user was on
-  # @param [Integer] remaining_attempts how many attempts the user has left before
-  #                  we rate limit them
+  # @param [Integer] remaining_submit_attempts how many attempts the user has left before
+  #                  we rate limit them (previously called "remaining_attempts")
   # The user visited an error page due to an encountering an exception talking to a proofing vendor
-  def idv_doc_auth_exception_visited(step_name:, remaining_attempts:, **extra)
+  def idv_doc_auth_exception_visited(step_name:, remaining_submit_attempts:, **extra)
     track_event(
       'IdV: doc auth exception visited',
       step_name: step_name,
-      remaining_attempts: remaining_attempts,
+      remaining_submit_attempts: remaining_submit_attempts,
       **extra,
     )
   end
@@ -952,11 +953,6 @@ module AnalyticsEvents
     )
   end
 
-  # @identity.idp.previous_event_name IdV: in person proofing redo_address submitted
-  def idv_doc_auth_redo_address_submitted(**extra)
-    track_event('IdV: doc auth redo_address submitted', **extra)
-  end
-
   def idv_doc_auth_redo_ssn_submitted(**extra)
     track_event('IdV: doc auth redo_ssn submitted', **extra)
   end
@@ -973,8 +969,8 @@ module AnalyticsEvents
 
   # @param [Boolean] success
   # @param [Hash] errors
-  # @param [Integer] attempts
-  # @param [Integer] remaining_attempts
+  # @param [Integer] submit_attempts (previously called "attempts")
+  # @param [Integer] remaining_submit_attempts (previously called "remaining_attempts")
   # @param [String] user_id
   # @param [String] flow_path
   # @param [String] front_image_fingerprint Fingerprint of front image data
@@ -983,9 +979,9 @@ module AnalyticsEvents
   def idv_doc_auth_submitted_image_upload_form(
     success:,
     errors:,
-    remaining_attempts:,
+    remaining_submit_attempts:,
     flow_path:,
-    attempts: nil,
+    submit_attempts: nil,
     user_id: nil,
     front_image_fingerprint: nil,
     back_image_fingerprint: nil,
@@ -995,8 +991,8 @@ module AnalyticsEvents
       'IdV: doc auth image upload form submitted',
       success: success,
       errors: errors,
-      attempts: attempts,
-      remaining_attempts: remaining_attempts,
+      submit_attempts: submit_attempts,
+      remaining_submit_attempts: remaining_submit_attempts,
       user_id: user_id,
       flow_path: flow_path,
       front_image_fingerprint: front_image_fingerprint,
@@ -1013,13 +1009,44 @@ module AnalyticsEvents
   # @param [String] state
   # @param [String] state_id_type
   # @param [Boolean] async
-  # @param [Integer] attempts
-  # @param [Integer] remaining_attempts
+  # @param [Integer] submit_attempts (previously called "attempts")
+  # @param [Integer] remaining_submit_attempts (previously called "remaining_attempts")
   # @param [Hash] client_image_metrics
   # @param [String] flow_path
   # @param [Float] vendor_request_time_in_ms Time it took to upload images & get a response.
   # @param [String] front_image_fingerprint Fingerprint of front image data
   # @param [String] back_image_fingerprint Fingerprint of back image data
+  # @param [Boolean] attention_with_barcode
+  # @param [Boolean] doc_type_supported
+  # @param [Boolean] doc_auth_success
+  # @param [String] selfie_status
+  # @param [String] vendor
+  # @param [String] conversation_id
+  # @param [String] reference
+  # @param [String] transaction_status
+  # @param [String] transaction_reason_code
+  # @param [String] product_status
+  # @param [String] decision_product_status
+  # @param [Array] processed_alerts
+  # @param [Integer] alert_failure_count
+  # @param [Hash] log_alert_results
+  # @param [Hash] portrait_match_results
+  # @param [Hash] image_metrics
+  # @param [Boolean] address_line2_present
+  # @option extra [String] 'DocumentName'
+  # @option extra [String] 'DocAuthResult'
+  # @option extra [String] 'DocIssuerCode'
+  # @option extra [String] 'DocIssuerName'
+  # @option extra [String] 'DocIssuerType'
+  # @option extra [String] 'DocClassCode'
+  # @option extra [String] 'DocClass'
+  # @option extra [String] 'DocClassName'
+  # @option extra [Boolean] 'DocIsGeneric'
+  # @option extra [String] 'DocIssue'
+  # @option extra [String] 'DocIssueType'
+  # @option extra [String] 'ClassificationMode'
+  # @option extra [Boolean] 'OrientationChanged'
+  # @option extra [Boolean] 'PresentationChanged'
   # The document capture image was uploaded to vendor during the IDV process
   def idv_doc_auth_submitted_image_upload_vendor(
     success:,
@@ -1027,8 +1054,9 @@ module AnalyticsEvents
     exception:,
     state:,
     state_id_type:,
-    async:, attempts:,
-    remaining_attempts:,
+    async:,
+    submit_attempts:,
+    remaining_submit_attempts:,
     client_image_metrics:,
     flow_path:,
     billed: nil,
@@ -1036,25 +1064,59 @@ module AnalyticsEvents
     vendor_request_time_in_ms: nil,
     front_image_fingerprint: nil,
     back_image_fingerprint: nil,
+    attention_with_barcode: nil,
+    doc_type_supported: nil,
+    doc_auth_success: nil,
+    selfie_status: nil,
+    vendor: nil,
+    conversation_id: nil,
+    reference: nil,
+    transaction_status: nil,
+    transaction_reason_code: nil,
+    product_status: nil,
+    decision_product_status: nil,
+    processed_alerts: nil,
+    alert_failure_count: nil,
+    log_alert_results: nil,
+    portrait_match_results: nil,
+    image_metrics: nil,
+    address_line2_present: nil,
     **extra
   )
     track_event(
       'IdV: doc auth image upload vendor submitted',
-      success: success,
-      errors: errors,
-      exception: exception,
-      billed: billed,
-      doc_auth_result: doc_auth_result,
-      state: state,
-      state_id_type: state_id_type,
-      async: async,
-      attempts: attempts,
-      remaining_attempts: remaining_attempts,
-      client_image_metrics: client_image_metrics,
-      flow_path: flow_path,
-      vendor_request_time_in_ms: vendor_request_time_in_ms,
-      front_image_fingerprint: front_image_fingerprint,
-      back_image_fingerprint: back_image_fingerprint,
+      success:,
+      errors:,
+      exception:,
+      billed:,
+      doc_auth_result:,
+      state:,
+      state_id_type:,
+      async:,
+      submit_attempts: submit_attempts,
+      remaining_submit_attempts: remaining_submit_attempts,
+      client_image_metrics:,
+      flow_path:,
+      vendor_request_time_in_ms:,
+      front_image_fingerprint:,
+      back_image_fingerprint:,
+      attention_with_barcode:,
+      doc_type_supported:,
+      doc_auth_success:,
+      selfie_status:,
+      vendor:,
+      conversation_id:,
+      reference:,
+      transaction_status:,
+      transaction_reason_code:,
+      product_status:,
+      decision_product_status:,
+      processed_alerts:,
+      alert_failure_count:,
+      log_alert_results:,
+      portrait_match_results:,
+      image_metrics:,
+      address_line2_present:,
       **extra,
     )
   end
@@ -1062,7 +1124,7 @@ module AnalyticsEvents
   # @param [Boolean] success
   # @param [Hash] errors
   # @param [String] user_id
-  # @param [Integer] remaining_attempts
+  # @param [Integer] remaining_submit_attempts (previously called "remaining_attempts")
   # @param [Hash] pii_like_keypaths
   # @param [String] flow_path
   # @param [String] front_image_fingerprint Fingerprint of front image data
@@ -1072,7 +1134,7 @@ module AnalyticsEvents
   def idv_doc_auth_submitted_pii_validation(
     success:,
     errors:,
-    remaining_attempts:,
+    remaining_submit_attempts:,
     pii_like_keypaths:,
     flow_path:,
     user_id: nil,
@@ -1086,7 +1148,7 @@ module AnalyticsEvents
       success: success,
       errors: errors,
       user_id: user_id,
-      remaining_attempts: remaining_attempts,
+      remaining_submit_attempts: remaining_submit_attempts,
       pii_like_keypaths: pii_like_keypaths,
       flow_path: flow_path,
       front_image_fingerprint: front_image_fingerprint,
@@ -1111,13 +1173,13 @@ module AnalyticsEvents
   end
 
   # @param [String] step_name
-  # @param [Integer] remaining_attempts
+  # @param [Integer] remaining_submit_attempts (previously called "remaining_attempts")
   # The user was sent to a warning page during the IDV flow
-  def idv_doc_auth_warning_visited(step_name:, remaining_attempts:, **extra)
+  def idv_doc_auth_warning_visited(step_name:, remaining_submit_attempts:, **extra)
     track_event(
       'IdV: doc auth warning visited',
       step_name: step_name,
-      remaining_attempts: remaining_attempts,
+      remaining_submit_attempts: remaining_submit_attempts,
       **extra,
     )
   end
@@ -1138,6 +1200,7 @@ module AnalyticsEvents
   # @param [Boolean] in_person_verification_pending
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [String, nil] deactivation_reason Reason user's profile was deactivated, if any.
+  # @identity.idp.previous_event_name  IdV: review info visited
   def idv_enter_password_submitted(
     success:,
     fraud_review_pending:,
@@ -1166,6 +1229,7 @@ module AnalyticsEvents
   # @param [String] address_verification_method The method (phone or gpo) being
   #        used to verify the user's identity
   # User visited IDV password confirm page
+  # @identity.idp.previous_event_name  IdV: review info visited
   def idv_enter_password_visited(
     proofing_components: nil,
     address_verification_method: nil,
@@ -1260,7 +1324,8 @@ module AnalyticsEvents
   # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
   # @param [String] acuant_version
   # @param [Boolean] assessment
-  # @param [Integer] attempt number of attempts
+  # @param [Integer] captureAttempts number of attempts to capture / upload an image
+  #                  (previously called "attempt")
   # @param [String] documentType
   # @param [Integer] dpi  dots per inch of image
   # @param [Integer] failedImageResubmission
@@ -1287,7 +1352,7 @@ module AnalyticsEvents
     acuant_sdk_upgrade_a_b_testing_enabled:,
     acuant_version:,
     assessment:,
-    attempt:,
+    captureAttempts:,
     documentType:,
     dpi:,
     failedImageResubmission:,
@@ -1315,7 +1380,7 @@ module AnalyticsEvents
       acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
       acuant_version: acuant_version,
       assessment: assessment,
-      attempt: attempt,
+      captureAttempts: captureAttempts,
       documentType: documentType,
       dpi: dpi,
       failedImageResubmission: failedImageResubmission,
@@ -1653,37 +1718,6 @@ module AnalyticsEvents
       analytics_id: analytics_id,
       irs_reproofing: irs_reproofing,
       opted_in_to_in_person_proofing: opted_in_to_in_person_proofing,
-      **extra,
-    )
-  end
-
-  # @param [String] flow_path
-  # @param [String] step
-  # @param [String] analytics_id
-  # @param [Boolean] irs_reproofing
-  # @param [Boolean] success
-  # @param [Hash] errors
-  # @param [Boolean, nil] same_address_as_id
-  # User clicked cancel on update address page
-  def idv_in_person_proofing_cancel_update_address(
-    flow_path: nil,
-    step: nil,
-    analytics_id: nil,
-    irs_reproofing: nil,
-    success: nil,
-    errors: nil,
-    same_address_as_id: nil,
-    **extra
-  )
-    track_event(
-      'IdV: in person proofing cancel_update_address submitted',
-      flow_path: flow_path,
-      step: step,
-      analytics_id: analytics_id,
-      irs_reproofing: irs_reproofing,
-      success: success,
-      errors: errors,
-      same_address_as_id: same_address_as_id,
       **extra,
     )
   end
@@ -2241,6 +2275,16 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks please call emails that are initiated during GetUspsProofingResultsJob
+  def idv_in_person_usps_proofing_results_job_please_call_email_initiated(
+    **extra
+  )
+    track_event(
+      :idv_in_person_usps_proofing_results_job_please_call_email_initiated,
+      **extra,
+    )
+  end
+
   # GetUspsProofingResultsJob is beginning. Includes some metadata about what the job will do
   # @param [Integer] enrollments_count number of enrollments eligible for status check
   # @param [Integer] reprocess_delay_minutes minimum delay since last status check
@@ -2278,6 +2322,19 @@ module AnalyticsEvents
       minutes_since_established: minutes_since_established,
       response_message: response_message,
       reason: reason,
+      **extra,
+    )
+  end
+
+  # A user has been moved to fraud review after completing proofing at the USPS
+  # @param [String] enrollment_id
+  def idv_in_person_usps_proofing_results_job_user_sent_to_fraud_review(
+    enrollment_id:,
+    **extra
+  )
+    track_event(
+      :idv_in_person_usps_proofing_results_job_user_sent_to_fraud_review,
+      enrollment_id: enrollment_id,
       **extra,
     )
   end
@@ -2653,14 +2710,15 @@ module AnalyticsEvents
 
   # @param ['warning','jobfail','failure'] type
   # @param [Time] limiter_expires_at when the rate limit expires
-  # @param [Integer] remaining_attempts number of attempts remaining
+  # @param [Integer] remaining_submit_attempts number of submit attempts remaining
+  #                  (previously called "remaining_attempts")
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # When a user gets an error during the phone finder flow of IDV
   def idv_phone_error_visited(
     type:,
     proofing_components: nil,
     limiter_expires_at: nil,
-    remaining_attempts: nil,
+    remaining_submit_attempts: nil,
     **extra
   )
     track_event(
@@ -2669,7 +2727,7 @@ module AnalyticsEvents
         type: type,
         proofing_components: proofing_components,
         limiter_expires_at: limiter_expires_at,
-        remaining_attempts: remaining_attempts,
+        remaining_submit_attempts: remaining_submit_attempts,
         **extra,
       }.compact,
     )
@@ -2768,11 +2826,14 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Integer] attempt number of attempts
+  # @param [Integer] captureAttempts number of attempts to capture / upload an image
+  #                  (previously called "attempt")
   # User captured and approved of their selfie
-  def idv_sdk_selfie_image_added(attempt:, **extra)
-    track_event(:idv_sdk_selfie_image_added, attempt: attempt, **extra)
+  # rubocop:disable Naming/VariableName,Naming/MethodParameterName
+  def idv_sdk_selfie_image_added(captureAttempts:, **extra)
+    track_event(:idv_sdk_selfie_image_added, captureAttempts: captureAttempts, **extra)
   end
+  # rubocop:enable Naming/VariableName,Naming/MethodParameterName
 
   # User closed the SDK for taking a selfie without submitting a photo
   def idv_sdk_selfie_image_capture_closed_without_photo(**extra)
@@ -2798,7 +2859,8 @@ module AnalyticsEvents
     track_event(:idv_sdk_selfie_image_capture_opened, **extra)
   end
 
-  # @param [Integer] attempt number of attempts
+  # @param [Integer] captureAttempts number of attempts to capture / upload an image
+  #                  (previously called "attempt")
   # @param [Integer] failedImageResubmission
   # @param [String] fingerprint fingerprint of the image added
   # @param [String] flow_path whether the user is in the hybrid or standard flow
@@ -2810,7 +2872,7 @@ module AnalyticsEvents
   # User uploaded a selfie using the file picker
   # rubocop:disable Naming/VariableName,Naming/MethodParameterName
   def idv_selfie_image_file_uploaded(
-    attempt:,
+    captureAttempts:,
     failedImageResubmission:,
     fingerprint:,
     flow_path:,
@@ -2823,7 +2885,7 @@ module AnalyticsEvents
   )
     track_event(
       :idv_selfie_image_file_uploaded,
-      attempt: attempt,
+      captureAttempts: captureAttempts,
       failedImageResubmission: failedImageResubmission,
       fingerprint: fingerprint,
       flow_path: flow_path,
@@ -2838,16 +2900,16 @@ module AnalyticsEvents
 
   # Tracks when the user visits one of the the session error pages.
   # @param [String] type
-  # @param [Integer,nil] attempts_remaining
+  # @param [Integer,nil] submit_attempts_remaining (previously called "attempts_remaining")
   def idv_session_error_visited(
     type:,
-    attempts_remaining: nil,
+    submit_attempts_remaining: nil,
     **extra
   )
     track_event(
       'IdV: session error visited',
       type: type,
-      attempts_remaining: attempts_remaining,
+      submit_attempts_remaining: submit_attempts_remaining,
       **extra,
     )
   end
@@ -2907,7 +2969,8 @@ module AnalyticsEvents
   # @param [DateTime] enqueued_at When was this letter enqueued
   # @param [Integer] which_letter Sorted by enqueue time, which letter had this code
   # @param [Integer] letter_count How many letters did the user enqueue for this profile
-  # @param [Integer] attempts Number of attempts to enter a correct code
+  # @param [Integer] submit_attempts Number of attempts to enter a correct code
+  #                  (previously called "attempts")
   # @param [Boolean] pending_in_person_enrollment
   # @param [Boolean] fraud_check_failed
   # @see Reporting::IdentityVerificationReport#query This event is used by the identity verification
@@ -2920,7 +2983,7 @@ module AnalyticsEvents
     enqueued_at:,
     which_letter:,
     letter_count:,
-    attempts:,
+    submit_attempts:,
     pending_in_person_enrollment:,
     fraud_check_failed:,
     **extra
@@ -2933,7 +2996,7 @@ module AnalyticsEvents
       enqueued_at: enqueued_at,
       which_letter: which_letter,
       letter_count: letter_count,
-      attempts: attempts,
+      submit_attempts: submit_attempts,
       pending_in_person_enrollment: pending_in_person_enrollment,
       fraud_check_failed: fraud_check_failed,
       **extra,
@@ -3000,7 +3063,7 @@ module AnalyticsEvents
   # @param [String] flow_path
   # @param [String] heading
   # @param [String] location
-  # @param [Integer] remaining_attempts
+  # @param [Integer] remaining_submit_attempts (previously called "remaining_attempts")
   # @param [String] subheading
   # @param [Boolean] use_alternate_sdk
   def idv_warning_shown(
@@ -3010,7 +3073,7 @@ module AnalyticsEvents
     flow_path:,
     heading:,
     location:,
-    remaining_attempts:,
+    remaining_submit_attempts:,
     subheading:,
     use_alternate_sdk:,
     **_extra
@@ -3023,7 +3086,7 @@ module AnalyticsEvents
       flow_path: flow_path,
       heading: heading,
       location: location,
-      remaining_attempts: remaining_attempts,
+      remaining_submit_attempts: remaining_submit_attempts,
       subheading: subheading,
       use_alternate_sdk: use_alternate_sdk,
     )
@@ -3830,6 +3893,25 @@ module AnalyticsEvents
     track_event(:phone_input_country_changed, country_code:, **extra)
   end
 
+  # @param [Boolean] success
+  # @param [Hash] error_details
+  # @param [Integer] configuration_id
+  # Tracks when user attempts to delete a PIV/CAC configuraton
+  def piv_cac_delete_submitted(
+    success:,
+    configuration_id:,
+    error_details: nil,
+    **extra
+  )
+    track_event(
+      :piv_cac_delete_submitted,
+      success:,
+      error_details:,
+      configuration_id:,
+      **extra,
+    )
+  end
+
   # @identity.idp.previous_event_name User Registration: piv cac disabled
   # @identity.idp.previous_event_name PIV CAC disabled
   # Tracks when user's piv cac is disabled
@@ -3862,6 +3944,25 @@ module AnalyticsEvents
     track_event(
       :piv_cac_setup_visited,
       in_account_creation_flow:,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success
+  # @param [Hash] error_details
+  # @param [Integer] configuration_id
+  # Tracks when user submits a name change for a PIV/CAC configuraton
+  def piv_cac_update_name_submitted(
+      success:,
+      configuration_id:,
+      error_details: nil,
+      **extra
+    )
+    track_event(
+      :piv_cac_update_name_submitted,
+      success:,
+      error_details:,
+      configuration_id:,
       **extra,
     )
   end
@@ -3963,6 +4064,7 @@ module AnalyticsEvents
   # @param [String] validator_class Class name of validator
   # @param [String, nil] exception_class Class name of exception, if error occurred
   # @param [String, nil] phone_country_code Country code associated with reCAPTCHA phone result
+  # @param [String] recaptcha_version
   def recaptcha_verify_result_received(
     recaptcha_result:,
     score_threshold:,
@@ -3970,6 +4072,7 @@ module AnalyticsEvents
     validator_class:,
     exception_class:,
     phone_country_code: nil,
+    recaptcha_version: nil,
     **extra
   )
     track_event(
@@ -3981,6 +4084,7 @@ module AnalyticsEvents
         validator_class:,
         exception_class:,
         phone_country_code:,
+        recaptcha_version:,
         **extra,
       }.compact,
     )
@@ -4456,30 +4560,6 @@ module AnalyticsEvents
     track_event(
       'User marked authenticated',
       authentication_type: authentication_type,
-      **extra,
-    )
-  end
-
-  # User was shown an "Are you sure you want to navigate away from this page?" message from their
-  # browser (via onbeforeunload). (This is a frontend event.)
-  # @param [String] path Path where this event was encountered.
-  def user_prompted_before_navigation(path:, **extra)
-    track_event(
-      'User prompted before navigation',
-      path: path,
-      **extra,
-    )
-  end
-
-  # User was shown an "Are you sure you want to navigate away from this page?" prompt via
-  # onbeforeunload and was still on the page <seconds> later. (This is a frontend event.)
-  # @param [String] path Path where this event was encountered.
-  # @param [Integer] seconds Amount of time user has been on page since prompt.
-  def user_prompted_before_navigation_and_still_on_page(path:, seconds:, **extra)
-    track_event(
-      'User prompted before navigation and still on page',
-      path: path,
-      seconds: seconds,
       **extra,
     )
   end

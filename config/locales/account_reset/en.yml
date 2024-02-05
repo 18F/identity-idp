@@ -30,10 +30,10 @@ en:
     pending:
       cancel_request: Cancel request
       cancelled: We have cancelled your request to delete your account.
-      confirm: If you cancel now, you must create a new request and wait another 24
-        hours to delete your account.
+      confirm: If you cancel now, you must create a new request and wait another
+        %{interval} to delete your account.
       header: You requested to delete your account
-      wait_html: There is a 24-hour waiting period to delete your account. In
+      wait_html: There is a %{hours}-hour waiting period to delete your account. In
         <strong>%{interval}</strong>, you will receive an email with
         instructions to complete the deletion.
     recovery_options:
@@ -59,10 +59,10 @@ en:
           to use the same email address and set up new authentication methods.
           However, deleting will remove any agency applications you have linked
           to your account and you will need to restore each connection.
-        - If you continue, you will first receive an email confirmation.  As a
+        - If you continue, you will first receive an email confirmation. As a
           security measure, you will receive another email with the link to
-          continue deleting your account 24 hours after the initial confirmation
-          email arrives.
+          continue deleting your account %{interval} after the initial
+          confirmation email arrives.
       info:
         - If you can’t access your account using the authentication methods you
           set up previously, deleting your account and creating a new one is the

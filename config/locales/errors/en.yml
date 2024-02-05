@@ -18,7 +18,7 @@ en:
           one: Password must be at least one character long
           other: Password must be at least %{count} characters long
     capture_doc:
-      invalid_link: This link is expired or not valid.  Please request another link to
+      invalid_link: This link is expired or not valid. Please request another link to
         verify your identity on a mobile phone.
     confirm_password_incorrect: Incorrect password.
     doc_auth:
@@ -34,6 +34,7 @@ en:
       rate_limited_text_html: 'For your security, we limit the number of times you can
         attempt to verify a document online. <strong>Try again in
         %{timeout}.</strong>'
+      selfie_not_live_or_poor_quality_heading: We could not verify the photo of yourself
       send_link_limited: You tried too many times, please try again in %{timeout}. You
         can also go back and choose to use your computer instead.
     enter_code:
@@ -50,6 +51,7 @@ en:
     messages:
       already_confirmed: was already confirmed, please try signing in
       blank: Please fill in this field.
+      blank_cert_element_req: We cannot detect a certificate in your request.
       confirmation_code_incorrect: Incorrect verification code. Did you type it in correctly?
       confirmation_invalid_token: Invalid confirmation link. Either the link expired
         or you already confirmed your account.

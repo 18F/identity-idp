@@ -11,7 +11,7 @@ en:
       cancel_link: Cancel your request
       link: deleting your account
       pending: You currently have a pending request to delete your account. It takes
-        24 hours from the time you made the request to complete the process.
+        %{interval} from the time you made the request to complete the process.
         Please check back later.
       successful_cancel: Thank you. Your request to delete your %{app_name} account
         has been cancelled.
@@ -140,6 +140,14 @@ en:
       troubleshooting:
         change_number: Use another phone number
         code_not_received: I didn’t receive my one-time code
+    piv_cac:
+      change_nickname: Change nickname
+      delete: Delete this method
+      deleted: Successfully deleted a PIV/CAC method
+      edit_heading: Manage your PIV/CAC settings
+      manage_accessible_label: Manage PIV/CAC
+      nickname: Nickname
+      renamed: Successfully renamed your PIV/CAC method
     piv_cac_header_text: Present your PIV/CAC
     please_try_again_html: Please try again in <strong>%{countdown}</strong>.
     read_about_two_factor_authentication: Read about two-factor authentication

@@ -1,5 +1,6 @@
 class DocumentCaptureSession < ApplicationRecord
   include NonNullUuid
+  include ApplicationHelper
 
   belongs_to :user
 
@@ -16,10 +17,8 @@ class DocumentCaptureSession < ApplicationRecord
     session_result.pii = doc_auth_response.pii_from_doc
     session_result.captured_at = Time.zone.now
     session_result.attention_with_barcode = doc_auth_response.attention_with_barcode?
-    session_result.selfie_check_performed = doc_auth_response.selfie_check_performed?
     session_result.doc_auth_success = doc_auth_response.doc_auth_success?
-    # nil(selfie not required) or true/false
-    session_result.selfie_success = doc_auth_response.selfie_success
+    session_result.selfie_status = doc_auth_response.selfie_status
     EncryptedRedisStructStorage.store(
       session_result,
       expires_in: IdentityConfig.store.doc_capture_request_valid_for_minutes.minutes.seconds.to_i,
@@ -28,17 +27,20 @@ class DocumentCaptureSession < ApplicationRecord
     save!
   end
 
-  def store_failed_auth_data(front_image_fingerprint:, back_image_fingerprint:, doc_auth_success:,
-                             selfie_success:)
+  def store_failed_auth_data(front_image_fingerprint:, back_image_fingerprint:,
+                             selfie_image_fingerprint:, doc_auth_success:, selfie_status:)
     session_result = load_result || DocumentCaptureSessionResult.new(
       id: generate_result_id,
     )
     session_result.success = false
     session_result.captured_at = Time.zone.now
     session_result.doc_auth_success = doc_auth_success
-    session_result.selfie_success = selfie_success
-    session_result.add_failed_front_image!(front_image_fingerprint) if front_image_fingerprint
-    session_result.add_failed_back_image!(back_image_fingerprint) if back_image_fingerprint
+    session_result.selfie_status = selfie_status
+
+    session_result.add_failed_front_image!(front_image_fingerprint)
+    session_result.add_failed_back_image!(back_image_fingerprint)
+    session_result.add_failed_selfie_image!(selfie_image_fingerprint) if selfie_status == :fail
+
     EncryptedRedisStructStorage.store(
       session_result,
       expires_in: IdentityConfig.store.doc_capture_request_valid_for_minutes.minutes.seconds.to_i,

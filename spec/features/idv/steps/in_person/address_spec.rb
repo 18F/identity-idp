@@ -1,13 +1,13 @@
 require 'rails_helper'
 
-RSpec.describe 'doc auth In person proofing residential address step', js: true do
+RSpec.describe 'doc auth In person proofing residential address step',
+               js: true,
+               allowed_extra_analytics: [:*] do
   include IdvStepHelper
   include InPersonHelper
 
   before do
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
-    allow(IdentityConfig.store).to receive(:in_person_residential_address_controller_enabled).
-      and_return(true)
   end
 
   context 'when visiting address for the first time' do

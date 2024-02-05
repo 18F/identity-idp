@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::VerifyInfoController do
+RSpec.describe Idv::VerifyInfoController, allowed_extra_analytics: [:*] do
   include FlowPolicyHelper
 
   let(:user) { create(:user) }
@@ -352,7 +352,7 @@ RSpec.describe Idv::VerifyInfoController do
           expect(@analytics).to have_logged_event(
             'IdV: doc auth warning visited',
             step_name: 'verify_info',
-            remaining_attempts: kind_of(Numeric),
+            remaining_submit_attempts: kind_of(Numeric),
           )
         end
 

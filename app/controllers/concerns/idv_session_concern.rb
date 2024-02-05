@@ -1,4 +1,4 @@
-module IdvSession
+module IdvSessionConcern
   extend ActiveSupport::Concern
 
   included do
@@ -7,15 +7,18 @@ module IdvSession
   end
 
   def confirm_idv_needed
-    return if idv_session_user.active_profile.blank? ||
-              decorated_sp_session.requested_more_recent_verification? ||
-              idv_session_user.reproof_for_irs?(service_provider: current_sp)
-
-    redirect_to idv_activated_url
+    redirect_to idv_activated_url unless idv_needed?
   end
 
   def hybrid_session?
     session[:doc_capture_user_id].present?
+  end
+
+  def idv_needed?
+    user_needs_selfie? ||
+      idv_session_user.active_profile.blank? ||
+      decorated_sp_session.requested_more_recent_verification? ||
+      idv_session_user.reproof_for_irs?(service_provider: current_sp)
   end
 
   def idv_session
@@ -65,5 +68,9 @@ module IdvSession
     return User.find_by(id: session[:doc_capture_user_id]) if !current_user && hybrid_session?
 
     current_user
+  end
+
+  def user_needs_selfie?
+    decorated_sp_session.selfie_required? && !current_user.identity_verified_with_selfie?
   end
 end

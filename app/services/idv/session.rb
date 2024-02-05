@@ -178,9 +178,8 @@ module Idv
     def invalidate_in_person_pii_from_user!
       if has_pii_from_user_in_flow_session
         user_session['idv/in_person'][:pii_from_user] = nil
-        # Mark the two FSM steps as incomplete so that they can be re-entered.
+        # Mark the FSM step as incomplete so that it can be re-entered.
         user_session['idv/in_person'].delete('Idv::Steps::InPerson::StateIdStep')
-        user_session['idv/in_person'].delete('Idv::Steps::InPerson::AddressStep')
       end
     end
 

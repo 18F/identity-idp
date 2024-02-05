@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::HybridHandoffController do
+RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
   include FlowPolicyHelper
 
   let(:user) { create(:user) }

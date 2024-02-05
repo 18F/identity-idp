@@ -134,7 +134,7 @@ RSpec.describe Idv::SessionErrorsController do
   end
 
   describe 'before_actions' do
-    it 'includes before_actions from IdvSession' do
+    it 'includes before_actions from IdvSessionConcern' do
       expect(subject).to have_actions(:before, :redirect_unless_sp_requested_verification)
     end
   end
@@ -170,7 +170,7 @@ RSpec.describe Idv::SessionErrorsController do
       it 'assigns remaining count' do
         response
 
-        expect(assigns(:remaining_attempts)).to be_kind_of(Numeric)
+        expect(assigns(:remaining_submit_attempts)).to be_kind_of(Numeric)
       end
 
       it 'assigns URL to try again' do
@@ -184,7 +184,7 @@ RSpec.describe Idv::SessionErrorsController do
           'IdV: session error visited',
           hash_including(
             type: action.to_s,
-            attempts_remaining: IdentityConfig.store.idv_max_attempts - 1,
+            submit_attempts_remaining: IdentityConfig.store.idv_max_attempts - 1,
           ),
         )
         response
@@ -264,7 +264,7 @@ RSpec.describe Idv::SessionErrorsController do
           'IdV: session error visited',
           hash_including(
             type: action.to_s,
-            attempts_remaining: 0,
+            submit_attempts_remaining: 0,
           ),
         )
         get action
@@ -305,7 +305,7 @@ RSpec.describe Idv::SessionErrorsController do
           'IdV: session error visited',
           hash_including(
             type: 'ssn_failure',
-            attempts_remaining: 0,
+            submit_attempts_remaining: 0,
           ),
         )
         get action
@@ -338,7 +338,7 @@ RSpec.describe Idv::SessionErrorsController do
           'IdV: session error visited',
           hash_including(
             type: action.to_s,
-            attempts_remaining: 0,
+            submit_attempts_remaining: 0,
           ),
         )
 
