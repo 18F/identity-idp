@@ -344,6 +344,50 @@ RSpec.describe StoreSpMetadataInSession do
             )
           end
         end
+
+        context 'when proofing is requested with no explicit authentication requirement' do
+          let(:request_vtr) { ['P1'] }
+
+          it 'sets the session[:sp] hash correctly' do
+            expect(app_session[:sp]).to eq(
+              {
+                issuer: issuer,
+                aal_level_requested: 2,
+                piv_cac_requested: false,
+                phishing_resistant_requested: false,
+                ial: 2,
+                ial2: true,
+                ialmax: false,
+                request_url: request_url,
+                request_id: request_id,
+                requested_attributes: requested_attributes,
+                biometric_comparison_required: false,
+              },
+            )
+          end
+        end
+
+        context 'when proofing is requested with no explicit authentication requirement' do
+          let(:request_vtr) { ['Pb'] }
+
+          it 'sets the session[:sp] hash correctly' do
+            expect(app_session[:sp]).to eq(
+              {
+                issuer: issuer,
+                aal_level_requested: 2,
+                piv_cac_requested: false,
+                phishing_resistant_requested: false,
+                ial: 2,
+                ial2: true,
+                ialmax: false,
+                request_url: request_url,
+                request_id: request_id,
+                requested_attributes: requested_attributes,
+                biometric_comparison_required: true,
+              },
+            )
+          end
+        end
       end
     end
   end
