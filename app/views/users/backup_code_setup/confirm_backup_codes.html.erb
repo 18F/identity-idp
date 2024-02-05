@@ -10,16 +10,15 @@
   <%= t('two_factor_authentication.backup_codes.instructions', app_name: APP_NAME) %>
 </p>
 
-<div class="grid-row margin-top-5">
-  <div class="col-12">
-    <%= render ButtonComponent.new(
-          action: ->(**tag_options, &block) { link_to(authentication_methods_setup_path, **tag_options, &block) },
-          big: true,
-          full_width: true,
-          class: 'margin-bottom-205',
-        ).with_content(t('mfa.add')) %>
-  </div>
-</div>
+
+<%= render ButtonComponent.new(
+      action: ->(**tag_options, &block) { link_to(authentication_methods_setup_path, **tag_options, &block) },
+      big: true,
+      full_width: false,
+      class: 'margin-y-205',
+    ).with_content(t('mfa.add')) %>
+
+
 
 <%= render PageFooterComponent.new do %>
   <%= link_to t('forms.buttons.continue'), sign_up_completed_path %>
