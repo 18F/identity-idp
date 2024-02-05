@@ -158,7 +158,9 @@ RSpec.describe StoreSpMetadataInSession do
         before do
           allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
 
-          sp_request = ServiceProviderRequestProxy.find_or_create_by(uuid: request_id) do |sp_request|
+          sp_request = ServiceProviderRequestProxy.find_or_create_by(
+            uuid: request_id,
+          ) do |sp_request|
             sp_request.issuer = issuer
             sp_request.url = request_url
             sp_request.requested_attributes = requested_attributes
