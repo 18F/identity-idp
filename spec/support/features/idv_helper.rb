@@ -93,8 +93,8 @@ module IdvHelper
       visit_idp_from_saml_sp_with_ial2
     elsif sp == :oidc
       @state = SecureRandom.hex
-      @client_id = sp_oidc_issuer
       @nonce = SecureRandom.hex
+      @client_id = sp_oidc_issuer
       visit_idp_from_oidc_sp_with_ial2(state: @state, client_id: @client_id, nonce: @nonce, **extra)
     end
   end

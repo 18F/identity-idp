@@ -6,6 +6,9 @@ RSpec.describe Idv::HowToVerifyController do
   let(:ab_test_args) do
     { sample_bucket1: :sample_value1, sample_bucket2: :sample_value2 }
   end
+  let(:service_provider) do
+    create(:service_provider, :active, :in_person_proofing_enabled)
+  end
 
   before do
     allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { true }
@@ -14,6 +17,7 @@ RSpec.describe Idv::HowToVerifyController do
     stub_analytics
     allow(@analytics).to receive(:track_event)
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
+    allow(subject.idv_session).to receive(:service_provider).and_return(service_provider)
     subject.idv_session.welcome_visited = true
     subject.idv_session.idv_consent_given = true
   end
@@ -73,12 +77,29 @@ RSpec.describe Idv::HowToVerifyController do
       end
 
       context 'when both ipp and opt-in ipp are enabled' do
-        it 'renders the show template for how to verify' do
-          get :show
+        context 'when the ServiceProvider has IPP enabled' do
+          it 'renders the show template for how to verify' do
+            get :show
 
-          expect(Idv::HowToVerifyController.enabled?).to be true
-          expect(subject.idv_session.skip_doc_auth).to be_nil
-          expect(response).to render_template :show
+            expect(Idv::HowToVerifyController.enabled?).to be true
+            expect(subject.idv_session.service_provider.in_person_proofing_enabled).to be true
+            expect(subject.idv_session.skip_doc_auth).to be_nil
+            expect(response).to render_template :show
+          end
+        end
+
+        context 'when the ServiceProvider has IPP disabled' do
+          let(:service_provider) do
+            create(:service_provider, :active)
+          end
+
+          it 'redirects to hybrid_handoff' do
+            get :show
+
+            expect(Idv::HowToVerifyController.enabled?).to be true
+            expect(subject.idv_session.service_provider.in_person_proofing_enabled).to be false
+            expect(response).to redirect_to(idv_hybrid_handoff_url)
+          end
         end
       end
     end
@@ -94,6 +115,7 @@ RSpec.describe Idv::HowToVerifyController do
         irs_reproofing: false,
       }.merge(ab_test_args)
     end
+
     it 'renders the show template' do
       get :show
 
@@ -127,6 +149,7 @@ RSpec.describe Idv::HowToVerifyController do
       }
     end
     let(:analytics_name) { :idv_doc_auth_how_to_verify_submitted }
+
     context 'no selection made' do
       let(:analytics_args) do
         {
