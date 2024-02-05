@@ -74,9 +74,7 @@ module DocAuth
             include_liveness? ?
               config.trueid_liveness_nocropping_workflow :
               config.trueid_noliveness_nocropping_workflow
-          else
-            raise 'sdsk images required' if include_liveness?
-
+          elsif !include_liveness?
             config.trueid_noliveness_cropping_workflow
           end
         end
