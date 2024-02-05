@@ -29,14 +29,18 @@ RSpec.describe BlockLinkComponent, type: :component do
     end
   end
 
-  context 'when render_as_link is false' do
-    it 'renders content within a div and not a link' do
-      rendered = render_inline BlockLinkComponent.new(render_as_link: false, class: 'block-button').
-        with_content('Not a link')
+  context 'with a component' do
+    it 'renders using the specified component' do
+      TestComponent = Class.new(BaseComponent) do
+        def call
+          content_tag(:div, 'from test component', class: 'style')
+        end
+      end
 
-      expect(rendered).to have_css('div.block-button')
-      expect(rendered).to have_text('Not a link')
-      expect(rendered).to have_no_link
+      rendered = render_inline(BlockLinkComponent.new(component: TestComponent))
+
+      expect(rendered).to have_css('.style')
+      expect(rendered).to have_text('from test component')
     end
   end
 end

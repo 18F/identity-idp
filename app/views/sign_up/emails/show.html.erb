@@ -19,16 +19,16 @@
 
 <%= render TroubleshootingOptionsComponent.new do |c| %>
   <% c.with_header { t('components.troubleshooting_options.default_heading') } %>
-  <% c.with_option(render_as_link: false, class: 'block-button') do %>
+  <% c.with_option(component: FormLinkComponent) do %>
+    <%= t('notices.signed_up_but_unconfirmed.resend_confirmation_email') %>
     <%= simple_form_for @resend_email_confirmation_form,
-                        html: { class: '' },
+                        html: { class: 'display-none' },
                         url: sign_up_register_path do |f| %>
       <%= f.input :email, as: :hidden %>
       <%= f.input :resend, as: :hidden %>
-      <%= button_tag t('notices.signed_up_but_unconfirmed.resend_confirmation_email'), type: 'submit', class: 'usa-link' %>
+      <%= f.button :button, t('notices.signed_up_but_unconfirmed.resend_confirmation_email') %>
     <% end %>
-  <% end %>
-
+  <% end %> 
   <% c.with_option(
        url: sign_up_email_path,
      ).with_content(t('notices.use_diff_email.link').upcase_first) %>

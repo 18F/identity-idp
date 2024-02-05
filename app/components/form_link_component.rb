@@ -1,9 +1,7 @@
 class FormLinkComponent < BaseComponent
-  attr_reader :href, :method, :tag_options
+  attr_reader :tag_options
 
-  def initialize(href:, method:, **tag_options)
-    @href = href
-    @method = method
+  def initialize(**tag_options)
     @tag_options = tag_options
   end
 end
