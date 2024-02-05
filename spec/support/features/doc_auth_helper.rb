@@ -117,8 +117,12 @@ module DocAuthHelper
   end
 
   def complete_document_capture_step(with_selfie: false)
-    attach_images
-    attach_selfie if with_selfie
+    if with_selfie
+      attach_liveness_images
+    else
+      attach_images
+    end
+
     submit_images
   end
 
