@@ -2275,6 +2275,16 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks please call emails that are initiated during GetUspsProofingResultsJob
+  def idv_in_person_usps_proofing_results_job_please_call_email_initiated(
+    **extra
+  )
+    track_event(
+      :idv_in_person_usps_proofing_results_job_please_call_email_initiated,
+      **extra,
+    )
+  end
+
   # GetUspsProofingResultsJob is beginning. Includes some metadata about what the job will do
   # @param [Integer] enrollments_count number of enrollments eligible for status check
   # @param [Integer] reprocess_delay_minutes minimum delay since last status check

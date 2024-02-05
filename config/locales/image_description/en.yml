@@ -10,6 +10,7 @@ en:
     laptop: Laptop computer
     laptop_and_phone: Laptop and phone
     personal_key: Personal key
+    phone_icon: Image of a phone
     post_office: Post office
     totp_qrcode: QR code for authenticator app
     us_flag: US flag

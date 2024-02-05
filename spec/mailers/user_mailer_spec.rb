@@ -754,6 +754,17 @@ RSpec.describe UserMailer, type: :mailer do
       it_behaves_like 'an email that respects user email locale preference'
     end
 
+    describe '#in_person_please_call' do
+      let(:mail) do
+        UserMailer.with(user: user, email_address: email_address).in_person_please_call(
+          enrollment: enrollment,
+        )
+      end
+
+      it_behaves_like 'a system email'
+      it_behaves_like 'an email that respects user email locale preference'
+    end
+
     describe '#in_person_completion_survey' do
       let(:mail) do
         UserMailer.with(user: user, email_address: email_address).in_person_completion_survey
