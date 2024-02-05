@@ -6,12 +6,15 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
   subject(:form) do
     Idv::ApiImageUploadForm.new(
       ActionController::Parameters.new(
-        front: front_image,
-        front_image_metadata: front_image_metadata,
-        back: back_image,
-        back_image_metadata: back_image_metadata,
-        selfie: selfie_image,
-        document_capture_session_uuid: document_capture_session_uuid,
+        {
+          front: front_image,
+          front_image_metadata: front_image_metadata,
+          back: back_image,
+          back_image_metadata: back_image_metadata,
+          selfie: selfie_image,
+          selfie_image_metadata: selfie_image_metadata,
+          document_capture_session_uuid: document_capture_session_uuid,
+        }.compact,
       ),
       service_provider: build(:service_provider, issuer: 'test_issuer'),
       analytics: fake_analytics,
@@ -31,6 +34,7 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
   let(:back_image_metadata) do
     { width: 20, height: 20, mimeType: 'image/png', source: 'upload' }.to_json
   end
+  let(:selfie_image_metadata) { nil }
   let!(:document_capture_session) { DocumentCaptureSession.create!(user: create(:user)) }
   let(:document_capture_session_uuid) { document_capture_session.uuid }
   let(:fake_analytics) { FakeAnalytics.new }
@@ -118,8 +122,8 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
           'IdV: doc auth image upload form submitted',
           success: true,
           errors: {},
-          attempts: 1,
-          remaining_attempts: 3,
+          submit_attempts: 1,
+          remaining_submit_attempts: 3,
           user_id: document_capture_session.user.uuid,
           flow_path: anything,
           front_image_fingerprint: an_instance_of(String),
@@ -131,7 +135,7 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
         expect(fake_analytics).to have_logged_event(
           'IdV: doc auth image upload vendor submitted',
           async: false,
-          attempts: 1,
+          submit_attempts: 1,
           attention_with_barcode: false,
           address_line2_present: nil,
           alert_failure_count: nil,
@@ -157,7 +161,7 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
           errors: {},
           exception: nil,
           flow_path: anything,
-          remaining_attempts: 3,
+          remaining_submit_attempts: 3,
           state: 'MT',
           state_id_type: 'drivers_license',
           success: true,
@@ -199,20 +203,24 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
         let(:liveness_checking_required) { true }
         let(:back_image) { DocAuthImageFixtures.portrait_match_success_yaml }
         let(:selfie_image) { DocAuthImageFixtures.selfie_image_multipart }
+        let(:selfie_image_metadata) do
+          { width: 10, height: 10, mimeType: 'image/png', source: 'upload' }.to_json
+        end
+
         it 'logs analytics' do
           expect(irs_attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
             {
-              address: '1800 F Street',
+              address: '1 FAKE RD',
               date_of_birth: '1938-10-06',
               document_back_image_filename: nil,
-              document_expiration: nil,
+              document_expiration: '2099-12-31',
               document_front_image_filename: nil,
               document_image_encryption_key: nil,
-              document_issued: nil,
+              document_issued: '2019-12-31',
               document_number: '1111111111111',
-              document_state: 'NY',
-              first_name: 'John',
-              last_name: 'Doe',
+              document_state: 'MT',
+              first_name: 'FAKEY',
+              last_name: 'MCFAKERSON',
               success: true,
             },
           )
@@ -223,8 +231,8 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
             'IdV: doc auth image upload form submitted',
             success: true,
             errors: {},
-            attempts: 1,
-            remaining_attempts: 3,
+            submit_attempts: 1,
+            remaining_submit_attempts: 3,
             user_id: document_capture_session.user.uuid,
             flow_path: anything,
             front_image_fingerprint: an_instance_of(String),
@@ -238,7 +246,7 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
             address_line2_present: nil,
             alert_failure_count: nil,
             async: false,
-            attempts: 1,
+            submit_attempts: 1,
             attention_with_barcode: false,
             billed: true,
             client_image_metrics: {
@@ -254,6 +262,12 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
                 source: 'upload',
                 width: 40,
               },
+              selfie: {
+                height: 10,
+                mimeType: 'image/png',
+                source: 'upload',
+                width: 10,
+              },
             },
             conversation_id: nil,
             decision_product_status: nil,
@@ -268,9 +282,9 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
             processed_alerts: nil,
             product_status: nil,
             reference: nil,
-            remaining_attempts: 3,
-            state: 'NY',
-            state_id_type: nil,
+            remaining_submit_attempts: 3,
+            state: 'MT',
+            state_id_type: 'drivers_license',
             success: true,
             user_id: document_capture_session.user.uuid,
             vendor_request_time_in_ms: a_kind_of(Float),
@@ -298,7 +312,6 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
           expect(response.selfie_status).to eq(:success)
           expect(response.errors).to eq({})
           expect(response.attention_with_barcode?).to eq(false)
-          # expect(response.pii_from_doc).to eq(Idp::Constants::MOCK_IDV_APPLICANT)
         end
       end
     end
@@ -344,8 +357,8 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
           'IdV: doc auth image upload form submitted',
           success: true,
           errors: {},
-          attempts: 1,
-          remaining_attempts: 3,
+          submit_attempts: 1,
+          remaining_submit_attempts: 3,
           user_id: document_capture_session.user.uuid,
           flow_path: anything,
           front_image_fingerprint: an_instance_of(String),
@@ -379,9 +392,9 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
         expect(response.pii_from_doc).to eq({})
       end
 
-      it 'includes remaining_attempts' do
+      it 'includes remaining_submit_attempts' do
         response = form.submit
-        expect(response.extra[:remaining_attempts]).to be_a_kind_of(Numeric)
+        expect(response.extra[:remaining_submit_attempts]).to be_a_kind_of(Numeric)
       end
     end
 
@@ -394,7 +407,7 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
         DocAuth::Response.new(
           success: false,
           errors: errors,
-          extra: { remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1 },
+          extra: { remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1 },
         )
       end
       let(:doc_auth_client) { double(DocAuth::LexisNexis::LexisNexisClient) }
@@ -415,9 +428,9 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
         expect(response.doc_auth_success?).to eq(false)
       end
 
-      it 'includes remaining_attempts' do
+      it 'includes remaining_submit_attempts' do
         response = form.submit
-        expect(response.extra[:remaining_attempts]).to be_a_kind_of(Numeric)
+        expect(response.extra[:remaining_submit_attempts]).to be_a_kind_of(Numeric)
       end
 
       it 'includes client response errors' do
@@ -512,9 +525,9 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
         expect(response.pii_from_doc).to eq({})
       end
 
-      it 'includes remaining_attempts' do
+      it 'includes remaining_submit_attempts' do
         response = form.submit
-        expect(response.extra[:remaining_attempts]).to be_a_kind_of(Numeric)
+        expect(response.extra[:remaining_submit_attempts]).to be_a_kind_of(Numeric)
       end
 
       it 'includes doc_pii errors' do
@@ -540,8 +553,8 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
         expect(response.errors).to have_value([I18n.t('doc_auth.errors.doc.resubmit_failed_image')])
         expect(fake_analytics).to have_logged_event(
           'IdV: failed doc image resubmitted',
-          attempts: 1,
-          remaining_attempts: 3,
+          submit_attempts: 1,
+          remaining_submit_attempts: 3,
           user_id: document_capture_session.user.uuid,
           flow_path: anything,
           front_image_fingerprint: an_instance_of(String),
@@ -569,8 +582,8 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
             to have_value([I18n.t('doc_auth.errors.doc.resubmit_failed_image')])
           expect(fake_analytics).to have_logged_event(
             'IdV: failed doc image resubmitted',
-            attempts: 1,
-            remaining_attempts: 3,
+            submit_attempts: 1,
+            remaining_submit_attempts: 3,
             user_id: document_capture_session.user.uuid,
             flow_path: anything,
             front_image_fingerprint: an_instance_of(String),
@@ -684,6 +697,31 @@ RSpec.describe Idv::ApiImageUploadForm, allowed_extra_analytics: [:*] do
 
         it 'sets image source to acuant sdk' do
           form.submit
+        end
+
+        context 'selfie is submitted' do
+          let(:liveness_checking_required) { true }
+          let(:selfie_image) { DocAuthImageFixtures.selfie_image_multipart }
+          context 'captured with acuant sdk' do
+            let(:selfie_image_metadata) do
+              { width: 10, height: 10, mimeType: 'image/png', source: source }.to_json
+            end
+
+            it 'sets image source to acuant sdk' do
+              form.submit
+            end
+          end
+
+          context 'add using file upload' do
+            let(:selfie_image_metadata) do
+              { width: 10, height: 10, mimeType: 'image/png', source: 'upload' }.to_json
+            end
+            let(:image_source) { DocAuth::ImageSources::UNKNOWN }
+
+            it 'sets image source to unknown' do
+              form.submit
+            end
+          end
         end
       end
 

@@ -204,7 +204,7 @@ module Features
       user
     end
 
-    def sign_in_with_warden(user, auth_method: nil)
+    def sign_in_with_warden(user, auth_method: nil, issuer: nil)
       login_as(user, scope: :user, run_callbacks: false)
 
       Warden.on_next_request do |proxy|
@@ -213,12 +213,13 @@ module Features
         if auth_method
           session['warden.user.user.session']['auth_events'] = [{ auth_method:, at: Time.zone.now }]
         end
+        session['sp'] = { issuer: } if issuer
       end
       visit account_path
     end
 
-    def sign_in_and_2fa_user(user = user_with_2fa)
-      sign_in_with_warden(user, auth_method: 'phone')
+    def sign_in_and_2fa_user(user = user_with_2fa, issuer: nil)
+      sign_in_with_warden(user, auth_method: 'phone', issuer:)
       user
     end
 

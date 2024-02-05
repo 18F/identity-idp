@@ -30,7 +30,6 @@ RSpec.describe BaseComponent, type: :component do
 
       def self.sidecar_files(extensions)
         files = []
-        files << '/components/example_component_with_script_js.js' if extensions.include?('js')
         files << '/components/example_component_with_script_ts.ts' if extensions.include?('ts')
         files.presence || super(extensions)
       end
@@ -44,8 +43,8 @@ RSpec.describe BaseComponent, type: :component do
       end
 
       def self.sidecar_files(extensions)
-        if extensions.include?('js')
-          ['/components/example_component_with_script_rendering_other_component_with_script.js']
+        if extensions.include?('ts')
+          ['/components/example_component_with_script_rendering_other_component_with_script.ts']
         else
           super(extensions)
         end
@@ -56,8 +55,8 @@ RSpec.describe BaseComponent, type: :component do
     # rubocop:disable RSpec/LeakyConstantDeclaration
     class NestedExampleComponentWithScript < ExampleComponentWithScript
       def self.sidecar_files(extensions)
-        if extensions.include?('js')
-          ['/components/nested_example_component_with_script.js']
+        if extensions.include?('ts')
+          ['/components/nested_example_component_with_script.ts']
         else
           super(extensions)
         end
@@ -67,7 +66,6 @@ RSpec.describe BaseComponent, type: :component do
 
     it 'adds script to class variable when rendered' do
       expect(view_context).to receive(:enqueue_component_scripts).with(
-        'example_component_with_script_js',
         'example_component_with_script_ts',
       )
 
@@ -77,7 +75,6 @@ RSpec.describe BaseComponent, type: :component do
     it 'adds own and parent scripts to class variable when rendered' do
       expect(view_context).to receive(:enqueue_component_scripts).with(
         'nested_example_component_with_script',
-        'example_component_with_script_js',
         'example_component_with_script_ts',
       )
 
@@ -95,7 +92,6 @@ RSpec.describe BaseComponent, type: :component do
           ]
         when 2
           expect(args).to eq [
-            'example_component_with_script_js',
             'example_component_with_script_ts',
           ]
         end

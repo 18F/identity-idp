@@ -235,10 +235,6 @@ Rails.application.routes.draw do
     get '/webauthn_setup' => 'users/webauthn_setup#new', as: :webauthn_setup
     patch '/webauthn_setup' => 'users/webauthn_setup#confirm'
 
-    # Deprecated routes: Remove once LG-11454 is fully deployed to production.
-    delete '/webauthn_setup' => 'users/webauthn_setup#delete'
-    get '/webauthn_setup_delete' => 'users/webauthn_setup#show_delete'
-
     delete '/authenticator_setup' => 'users/totp_setup#disable', as: :disable_totp
     get '/authenticator_setup' => 'users/totp_setup#new'
     patch '/authenticator_setup' => 'users/totp_setup#confirm'

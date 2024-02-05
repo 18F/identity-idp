@@ -4,7 +4,7 @@ RSpec.describe ImageUploadResponsePresenter do
   include Rails.application.routes.url_helpers
 
   let(:extra_attributes) do
-    { remaining_attempts: 3, flow_path: 'standard' }
+    { remaining_submit_attempts: 3, flow_path: 'standard' }
   end
 
   let(:form_response) do
@@ -52,9 +52,9 @@ RSpec.describe ImageUploadResponsePresenter do
     end
   end
 
-  describe '#remaining_attempts' do
-    it 'returns remaining attempts' do
-      expect(presenter.remaining_attempts).to eq 3
+  describe '#remaining_submit_attempts' do
+    it 'returns remaining submit attempts' do
+      expect(presenter.remaining_submit_attempts).to eq 3
     end
   end
 
@@ -107,7 +107,7 @@ RSpec.describe ImageUploadResponsePresenter do
 
     context 'rate limited' do
       let(:extra_attributes) do
-        { remaining_attempts: 0,
+        { remaining_submit_attempts: 0,
           flow_path: 'standard',
           failed_image_fingerprints: { back: [], front: ['12345'], selfie: [] } }
       end
@@ -127,7 +127,7 @@ RSpec.describe ImageUploadResponsePresenter do
           result_failed: false,
           errors: [{ field: :limit, message: t('errors.doc_auth.rate_limited_heading') }],
           redirect: idv_session_errors_rate_limited_url,
-          remaining_attempts: 0,
+          remaining_submit_attempts: 0,
           ocr_pii: nil,
           doc_type_supported: true,
           failed_image_fingerprints: { back: [], front: ['12345'], selfie: [] },
@@ -138,7 +138,7 @@ RSpec.describe ImageUploadResponsePresenter do
 
       context 'hybrid flow' do
         let(:extra_attributes) do
-          { remaining_attempts: 0,
+          { remaining_submit_attempts: 0,
             flow_path: 'hybrid',
             failed_image_fingerprints: { back: [], front: ['12345'], selfie: [] } }
         end
@@ -149,7 +149,7 @@ RSpec.describe ImageUploadResponsePresenter do
             result_failed: false,
             errors: [{ field: :limit, message: t('errors.doc_auth.rate_limited_heading') }],
             redirect: idv_hybrid_mobile_capture_complete_url,
-            remaining_attempts: 0,
+            remaining_submit_attempts: 0,
             ocr_pii: nil,
             doc_type_supported: true,
             failed_image_fingerprints: { back: [], front: ['12345'], selfie: [] },
@@ -178,7 +178,7 @@ RSpec.describe ImageUploadResponsePresenter do
           result_failed: false,
           errors: [{ field: :front, message: t('doc_auth.errors.not_a_file') }],
           hints: true,
-          remaining_attempts: 3,
+          remaining_submit_attempts: 3,
           ocr_pii: nil,
           doc_type_supported: true,
           failed_image_fingerprints: { back: [], front: [], selfie: [] },
@@ -195,7 +195,7 @@ RSpec.describe ImageUploadResponsePresenter do
               front: t('doc_auth.errors.not_a_file'),
               hints: true,
             },
-            extra: { doc_auth_result: 'Failed', remaining_attempts: 3 },
+            extra: { doc_auth_result: 'Failed', remaining_submit_attempts: 3 },
           )
         end
 
@@ -205,7 +205,7 @@ RSpec.describe ImageUploadResponsePresenter do
             result_failed: true,
             errors: [{ field: :front, message: t('doc_auth.errors.not_a_file') }],
             hints: true,
-            remaining_attempts: 3,
+            remaining_submit_attempts: 3,
             ocr_pii: nil,
             doc_type_supported: true,
             failed_image_fingerprints: { front: [], back: [], selfie: [] },
@@ -217,7 +217,7 @@ RSpec.describe ImageUploadResponsePresenter do
 
       context 'no remaining attempts' do
         let(:extra_attributes) do
-          { remaining_attempts: 0, flow_path: 'standard' }
+          { remaining_submit_attempts: 0, flow_path: 'standard' }
         end
         let(:form_response) do
           FormResponse.new(
@@ -232,7 +232,7 @@ RSpec.describe ImageUploadResponsePresenter do
 
         context 'hybrid flow' do
           let(:extra_attributes) do
-            { remaining_attempts: 0, flow_path: 'hybrid' }
+            { remaining_submit_attempts: 0, flow_path: 'hybrid' }
           end
 
           it 'returns hash of properties' do
@@ -242,7 +242,7 @@ RSpec.describe ImageUploadResponsePresenter do
               errors: [{ field: :front, message: t('doc_auth.errors.not_a_file') }],
               hints: true,
               redirect: idv_hybrid_mobile_capture_complete_url,
-              remaining_attempts: 0,
+              remaining_submit_attempts: 0,
               ocr_pii: nil,
               doc_type_supported: true,
               failed_image_fingerprints: { front: [], back: [], selfie: [] },
@@ -259,7 +259,7 @@ RSpec.describe ImageUploadResponsePresenter do
             errors: [{ field: :front, message: t('doc_auth.errors.not_a_file') }],
             hints: true,
             redirect: idv_session_errors_rate_limited_url,
-            remaining_attempts: 0,
+            remaining_submit_attempts: 0,
             ocr_pii: nil,
             doc_type_supported: true,
             failed_image_fingerprints: { back: [], front: [], selfie: [] },
@@ -274,7 +274,7 @@ RSpec.describe ImageUploadResponsePresenter do
       let(:form_response) do
         response = DocAuth::Response.new(
           success: true,
-          extra: { remaining_attempts: 3 },
+          extra: { remaining_submit_attempts: 3 },
           pii_from_doc: Idp::Constants::MOCK_IDV_APPLICANT,
         )
         allow(response).to receive(:attention_with_barcode?).and_return(true)
@@ -287,7 +287,7 @@ RSpec.describe ImageUploadResponsePresenter do
           result_failed: false,
           errors: [],
           hints: true,
-          remaining_attempts: 3,
+          remaining_submit_attempts: 3,
           ocr_pii: Idp::Constants::MOCK_IDV_APPLICANT.slice(:first_name, :last_name, :dob),
           doc_type_supported: true,
           failed_image_fingerprints: { back: [], front: [], selfie: [] },
@@ -300,7 +300,7 @@ RSpec.describe ImageUploadResponsePresenter do
         let(:form_response) do
           response = DocAuth::Response.new(
             success: true,
-            extra: { remaining_attempts: 3 },
+            extra: { remaining_submit_attempts: 3 },
             pii_from_doc: Idp::Constants::MOCK_IDV_APPLICANT,
           )
           allow(response).to receive(:attention_with_barcode?).and_return(true)
@@ -313,7 +313,7 @@ RSpec.describe ImageUploadResponsePresenter do
             result_failed: false,
             errors: [],
             hints: true,
-            remaining_attempts: 3,
+            remaining_submit_attempts: 3,
             ocr_pii: Idp::Constants::MOCK_IDV_APPLICANT.slice(:first_name, :last_name, :dob),
             doc_type_supported: true,
             failed_image_fingerprints: { back: [], front: [], selfie: [] },

@@ -36,7 +36,7 @@ module Idv
         idv_session.had_barcode_read_failure = response.attention_with_barcode?
         if store_in_session
           idv_session.pii_from_doc = response.pii_from_doc
-          idv_session.selfie_check_performed = response.selfie_check_performed
+          idv_session.selfie_check_performed = response.selfie_check_performed?
         end
       end
 
@@ -49,7 +49,7 @@ module Idv
     end
 
     def selfie_requirement_met?
-      !decorated_sp_session.selfie_required? || stored_result.selfie_check_performed
+      !decorated_sp_session.selfie_required? || stored_result.selfie_check_performed?
     end
 
     private

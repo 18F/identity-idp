@@ -125,14 +125,6 @@ en:
       try_again: Use another phone number
     validation:
       required_checkbox: Please check this box to continue
-    webauthn_delete:
-      caution: If you remove your security key you won’t be able to use it to access
-        your %{app_name} account.
-      confirm: Are you sure you want to remove your security key?
-    webauthn_platform_delete:
-      caution: If you remove face or touch unlock you won’t be able to use it to
-        access your %{app_name} account.
-      confirm: Are you sure you want to remove face or touch unlock?
     webauthn_platform_setup:
       continue: Continue
       info_text: You’ll need to set up an additional authentication method after you

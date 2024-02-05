@@ -4,83 +4,179 @@ RSpec.feature 'how to verify step', js: true, allowed_extra_analytics: [:*] do
   include IdvHelper
   include DocAuthHelper
 
-  context 'when ipp is enabled and opt-in ipp is disabled' do
-    before do
-      allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { true }
-      allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { false }
+  let(:user) { user_with_2fa }
+  let(:ipp_service_provider) { create(:service_provider, :active, :in_person_proofing_enabled) }
 
-      sign_in_and_2fa_user
-      complete_doc_auth_steps_before_agreement_step
-      complete_agreement_step
+  context 'when ipp is enabled and opt-in ipp is disabled' do
+    context 'and when sp has opted into ipp' do
+      before do
+        allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { true }
+        allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { false }
+        allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled).
+          and_return(true)
+        sign_in_and_2fa_user(user, issuer: ipp_service_provider.issuer)
+
+        complete_doc_auth_steps_before_agreement_step
+        complete_agreement_step
+      end
+
+      it 'skips when disabled and redirects to hybrid handoff' do
+        expect(page).to have_current_path(idv_hybrid_handoff_url)
+      end
     end
 
-    it 'skips when disabled and redirects to hybrid handoff' do
-      expect(page).to have_current_path(idv_hybrid_handoff_url)
+    context 'and when sp has not opted into ipp' do
+      before do
+        allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { true }
+        allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { false }
+        allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled).
+          and_return(false)
+        sign_in_and_2fa_user(user, issuer: ipp_service_provider.issuer)
+
+        complete_doc_auth_steps_before_agreement_step
+        complete_agreement_step
+      end
+
+      it 'skips when disabled and redirects to hybrid handoff' do
+        expect(page).to have_current_path(idv_hybrid_handoff_url)
+      end
     end
   end
 
   context 'when ipp is disabled and opt-in ipp is enabled' do
-    before do
-      allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { false }
-      allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { true }
+    context 'and when sp has opted into ipp' do
+      before do
+        allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { false }
+        allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { true }
+        allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled).
+          and_return(true)
+        sign_in_and_2fa_user(user, issuer: ipp_service_provider.issuer)
 
-      sign_in_and_2fa_user
-      complete_doc_auth_steps_before_agreement_step
-      complete_agreement_step
+        complete_doc_auth_steps_before_agreement_step
+        complete_agreement_step
+      end
+
+      it 'skips when disabled and redirects to hybrid handoff' do
+        expect(page).to have_current_path(idv_hybrid_handoff_url)
+      end
     end
 
-    it 'skips when disabled and redirects to hybird handoff' do
-      expect(page).to have_current_path(idv_hybrid_handoff_url)
+    context 'and when sp has not opted into ipp' do
+      before do
+        allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { false }
+        allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { true }
+        allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled).
+          and_return(false)
+        sign_in_and_2fa_user(user, issuer: ipp_service_provider.issuer)
+
+        complete_doc_auth_steps_before_agreement_step
+        complete_agreement_step
+      end
+
+      it 'skips when disabled and redirects to hybrid handoff' do
+        expect(page).to have_current_path(idv_hybrid_handoff_url)
+      end
     end
   end
 
   context 'when both ipp and opt-in ipp are disabled' do
-    before do
-      allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { false }
-      allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { false }
+    context 'and when sp has opted into ipp' do
+      before do
+        allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { false }
+        allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { false }
+        allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled).
+          and_return(true)
+        sign_in_and_2fa_user(user, issuer: ipp_service_provider.issuer)
 
-      sign_in_and_2fa_user
-      complete_doc_auth_steps_before_agreement_step
-      complete_agreement_step
+        complete_doc_auth_steps_before_agreement_step
+        complete_agreement_step
+      end
+
+      it 'skips when disabled and redirects to hybrid handoff' do
+        expect(page).to have_current_path(idv_hybrid_handoff_url)
+      end
     end
 
-    it 'skips when disabled and redirects to hybird handoff' do
-      expect(page).to have_current_path(idv_hybrid_handoff_url)
+    context 'and when sp has not opted into ipp' do
+      before do
+        allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { false }
+        allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { false }
+        allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled).
+          and_return(false)
+        sign_in_and_2fa_user(user, issuer: ipp_service_provider.issuer)
+
+        complete_doc_auth_steps_before_agreement_step
+        complete_agreement_step
+      end
+
+      it 'skips when disabled and redirects to hybrid handoff' do
+        expect(page).to have_current_path(idv_hybrid_handoff_url)
+      end
     end
   end
 
   context 'when both ipp and opt-in ipp are enabled' do
-    before do
-      allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { true }
-      allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { true }
+    context 'and when sp has opted into ipp' do
+      before do
+        allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { true }
+        allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { true }
+        allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled).
+          and_return(true)
 
-      sign_in_and_2fa_user
-      complete_doc_auth_steps_before_agreement_step
-      complete_agreement_step
+        sign_in_and_2fa_user(user, issuer: ipp_service_provider.issuer)
+        complete_doc_auth_steps_before_agreement_step
+        complete_agreement_step
+      end
+
+      it 'displays expected content and requires a choice' do
+        expect(page).to have_current_path(idv_how_to_verify_path)
+
+        # Try to continue without an option
+        click_continue
+
+        expect(page).to have_current_path(idv_how_to_verify_path)
+        expect(page).to have_content(t('errors.doc_auth.how_to_verify_form'))
+
+        complete_how_to_verify_step(remote: true)
+        expect(page).to have_current_path(idv_hybrid_handoff_url)
+
+        # go back and also test remote: false case
+        page.go_back
+        complete_how_to_verify_step(remote: false)
+        expect(page).to have_current_path(idv_document_capture_path)
+      end
     end
 
-    it 'displays expected content and requires a choice' do
-      expect(page).to have_current_path(idv_how_to_verify_path)
+    context 'and when sp has not opted into ipp' do
+      before do
+        allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { true }
+        allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { true }
+        allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled).
+          and_return(false)
 
-      # Try to continue without an option
-      click_continue
+        sign_in_and_2fa_user(user, issuer: ipp_service_provider.issuer)
+        complete_doc_auth_steps_before_agreement_step
+        complete_agreement_step
+      end
 
-      expect(page).to have_current_path(idv_how_to_verify_path)
-      expect(page).to have_content(t('errors.doc_auth.how_to_verify_form'))
-
-      complete_how_to_verify_step(remote: true)
-      expect(page).to have_current_path(idv_hybrid_handoff_url)
+      it 'skips when disabled and redirects to hybrid handoff' do
+        expect(page).to have_current_path(idv_hybrid_handoff_url)
+      end
     end
   end
 
-  describe 'navigating to How To Verify from Agreement page in 50/50 state' do
+  describe 'navigating to How To Verify from Agreement page in 50/50 state
+   when the sp has opted into ipp' do
+    let(:user) { user_with_2fa }
     before do
       allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { true }
       allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) {
                                        initial_opt_in_enabled
                                      }
+      allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled).
+        and_return(true)
 
-      sign_in_and_2fa_user
+      sign_in_and_2fa_user(user, issuer: ipp_service_provider.issuer)
       complete_doc_auth_steps_before_agreement_step
       complete_agreement_step
     end

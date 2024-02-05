@@ -168,6 +168,12 @@ class UserMailerPreview < ActionMailer::Preview
     )
   end
 
+  def in_person_please_call
+    UserMailer.with(user: user, email_address: email_address_record).in_person_please_call(
+      enrollment: in_person_enrollment,
+    )
+  end
+
   def in_person_outage_notification
     UserMailer.with(user: user, email_address: email_address_record).in_person_outage_notification(
       enrollment: in_person_enrollment,

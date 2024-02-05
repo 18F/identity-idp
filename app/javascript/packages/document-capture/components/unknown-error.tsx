@@ -10,7 +10,7 @@ interface UnknownErrorProps extends ComponentProps<'p'> {
   unknownFieldErrors: FormStepError<{ front: string; back: string }>[];
   isFailedDocType: boolean;
   isFailedSelfieLivenessOrQuality: boolean;
-  remainingAttempts: number;
+  remainingSubmitAttempts: number;
   altFailedDocTypeMsg?: string | null;
   altIsFailedSelfieDontIncludeAttempts?: boolean;
   hasDismissed: boolean;
@@ -44,7 +44,7 @@ function UnknownError({
   unknownFieldErrors = [],
   isFailedDocType = false,
   isFailedSelfieLivenessOrQuality = false,
-  remainingAttempts,
+  remainingSubmitAttempts,
   altFailedDocTypeMsg = null,
   altIsFailedSelfieDontIncludeAttempts = false,
   hasDismissed,
@@ -72,10 +72,10 @@ function UnknownError({
   }
   if (isFailedDocType && err) {
     return (
-      <p key={`${err.message}-${remainingAttempts}`}>
+      <p key={`${err.message}-${remainingSubmitAttempts}`}>
         {err.message}{' '}
         <HtmlTextWithStrongNoWrap
-          text={t('idv.warning.attempts_html', { count: remainingAttempts })}
+          text={t('idv.warning.attempts_html', { count: remainingSubmitAttempts })}
         />
       </p>
     );
@@ -87,7 +87,7 @@ function UnknownError({
         <p>
           {!altIsFailedSelfieDontIncludeAttempts && (
             <HtmlTextWithStrongNoWrap
-              text={t('idv.warning.attempts_html', { count: remainingAttempts })}
+              text={t('idv.warning.attempts_html', { count: remainingSubmitAttempts })}
             />
           )}
         </p>

@@ -1,6 +1,6 @@
 <% self.title = t('account_reset.cancel_request.title') %>
 
-<p><%= t('account_reset.pending.confirm') %></p>
+<p><%= t('account_reset.pending.confirm', interval: @account_reset_deletion_period_interval) %></p>
 
 <%= button_to(
       account_reset_pending_cancel_path,

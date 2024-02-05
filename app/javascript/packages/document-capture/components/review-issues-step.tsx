@@ -36,7 +36,7 @@ export interface ReviewIssuesStepValue {
 }
 
 interface ReviewIssuesStepProps extends FormStepComponentProps<ReviewIssuesStepValue> {
-  remainingAttempts?: number;
+  remainingSubmitAttempts?: number;
   isFailedResult?: boolean;
   isFailedDocType?: boolean;
   isFailedSelfieLivenessOrQuality?: boolean;
@@ -53,7 +53,7 @@ function ReviewIssuesStep({
   onError = () => {},
   registerField = () => undefined,
   toPreviousStep = () => undefined,
-  remainingAttempts = Infinity,
+  remainingSubmitAttempts = Infinity,
   isFailedResult = false,
   isFailedDocType = false,
   isFailedSelfieLivenessOrQuality = false,
@@ -62,7 +62,7 @@ function ReviewIssuesStep({
   failedImageFingerprints = { front: [], back: [] },
 }: ReviewIssuesStepProps) {
   const { trackEvent } = useContext(AnalyticsContext);
-  const [hasDismissed, setHasDismissed] = useState(remainingAttempts === Infinity);
+  const [hasDismissed, setHasDismissed] = useState(remainingSubmitAttempts === Infinity);
   const { onPageTransition, changeStepCanComplete } = useContext(FormStepsContext);
   const [skipWarning, setSkipWarning] = useState(false);
   useDidUpdateEffect(onPageTransition, [hasDismissed]);
@@ -121,7 +121,7 @@ function ReviewIssuesStep({
         isFailedDocType={isFailedDocType}
         isFailedResult={isFailedResult}
         isFailedSelfieLivenessOrQuality={isFailedSelfieLivenessOrQuality}
-        remainingAttempts={remainingAttempts}
+        remainingSubmitAttempts={remainingSubmitAttempts}
         unknownFieldErrors={unknownFieldErrors}
         actionOnClick={onWarningPageDismissed}
         hasDismissed={false}
@@ -133,7 +133,7 @@ function ReviewIssuesStep({
     <DocumentCaptureReviewIssues
       isFailedDocType={isFailedDocType}
       isFailedSelfieLivenessOrQuality={isFailedSelfieLivenessOrQuality}
-      remainingAttempts={remainingAttempts}
+      remainingSubmitAttempts={remainingSubmitAttempts}
       captureHints={captureHints}
       value={value}
       unknownFieldErrors={unknownFieldErrors}

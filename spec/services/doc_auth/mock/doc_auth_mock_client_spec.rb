@@ -27,7 +27,6 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
     )
     get_results_response = client.get_results(
       instance_id: instance_id,
-      selfie_check_performed: liveness_checking_required,
     )
 
     expect(create_document_response.success?).to eq(true)
@@ -89,7 +88,6 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
     )
     get_results_response = client.get_results(
       instance_id: create_document_response.instance_id,
-      selfie_check_performed: liveness_checking_required,
     )
 
     expect(get_results_response.pii_from_doc).to eq(
@@ -130,7 +128,6 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
     )
     get_results_response = client.get_results(
       instance_id: create_document_response.instance_id,
-      selfie_check_performed: liveness_checking_required,
     )
     expect(get_results_response.attention_with_barcode?).to eq(false)
     errors = get_results_response.errors
@@ -257,7 +254,6 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
       )
       response = client.get_results(
         instance_id: nil,
-        selfie_check_performed: liveness_checking_required,
       )
       expect(response).to be_a(DocAuth::Response)
       expect(response.success?).to eq(false)

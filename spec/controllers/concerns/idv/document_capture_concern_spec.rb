@@ -23,7 +23,7 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
         allow(decorated_sp_session).to receive(:selfie_required?).and_return(selfie_required)
         allow(controller).to receive(:decorated_sp_session).and_return(decorated_sp_session)
         stored_result = instance_double(DocumentCaptureSessionResult)
-        allow(stored_result).to receive(:selfie_check_performed).and_return(selfie_check_performed)
+        allow(stored_result).to receive(:selfie_check_performed?).and_return(selfie_check_performed)
         allow(controller).to receive(:stored_result).and_return(stored_result)
       end
 
