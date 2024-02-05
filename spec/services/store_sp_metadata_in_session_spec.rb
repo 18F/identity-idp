@@ -229,17 +229,6 @@ RSpec.describe StoreSpMetadataInSession do
               expect(app_session[:sp]).to eq(expected_sp_session)
             end
           end
-
-          xcontext 'using ACR values' do
-            let(:request_acr) do
-              [Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
-               Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF].join(' ')
-            end
-
-            it 'sets the session[:sp] hash correctly' do
-              expect(app_session[:sp]).to eq(expected_sp_session)
-            end
-          end
         end
 
         context 'when AAL2 and proofing are requested' do
@@ -298,17 +287,6 @@ RSpec.describe StoreSpMetadataInSession do
 
           context 'using VTR' do
             let(:request_vtr) { ['C2.Pb'] }
-
-            it 'sets the session[:sp] hash correctly' do
-              expect(app_session[:sp]).to eq(expected_sp_session)
-            end
-          end
-
-          xcontext 'using ACR values' do
-            let(:request_acr) do
-              [Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
-               Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF].join(' ')
-            end
 
             it 'sets the session[:sp] hash correctly' do
               expect(app_session[:sp]).to eq(expected_sp_session)
@@ -377,17 +355,6 @@ RSpec.describe StoreSpMetadataInSession do
               expect(app_session[:sp]).to eq(expected_sp_session)
             end
           end
-
-          xcontext 'using ACR values' do
-            let(:request_acr) do
-              [Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF,
-               Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF].join(' ')
-            end
-
-            it 'sets the session[:sp] hash correctly' do
-              expect(app_session[:sp]).to eq(expected_sp_session)
-            end
-          end
         end
 
         context 'when PIV/CAC and proofing are requested' do
@@ -446,17 +413,6 @@ RSpec.describe StoreSpMetadataInSession do
 
           context 'using VTR' do
             let(:request_vtr) { ['Cb.Pb'] }
-
-            it 'sets the session[:sp] hash correctly' do
-              expect(app_session[:sp]).to eq(expected_sp_session)
-            end
-          end
-
-          xcontext 'using ACR values' do
-            let(:request_acr) do
-              [Saml::Idp::Constants::AAL2_HSPD12_AUTHN_CONTEXT_CLASSREF,
-               Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF].join(' ')
-            end
 
             it 'sets the session[:sp] hash correctly' do
               expect(app_session[:sp]).to eq(expected_sp_session)
