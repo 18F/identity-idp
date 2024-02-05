@@ -456,7 +456,7 @@ RSpec.describe StoreSpMetadataInSession do
           end
         end
 
-        context 'when proofing is requested with no explicit authentication requirement' do
+        context 'when IAL2 proofing is requested with no explicit authentication requirement' do
           let(:expected_sp_session) do
             {
               issuer: issuer,
@@ -469,7 +469,7 @@ RSpec.describe StoreSpMetadataInSession do
               request_url: request_url,
               request_id: request_id,
               requested_attributes: requested_attributes,
-              biometric_comparison_required: true,
+              biometric_comparison_required: false,
             }
           end
 
@@ -483,10 +483,10 @@ RSpec.describe StoreSpMetadataInSession do
 
           context 'using ACR values' do
             let(:request_acr) do
-              [].join(' ')
+              [Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF].join(' ')
             end
 
-            xit 'sets the session[:sp] hash correctly' do
+            it 'sets the session[:sp] hash correctly' do
               expect(app_session[:sp]).to eq(expected_sp_session)
             end
           end

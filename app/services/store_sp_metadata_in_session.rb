@@ -73,34 +73,37 @@ class StoreSpMetadataInSession
   end
 
   def update_session
+    session[:sp] = {
+      issuer: sp_request.issuer,
+      request_url: sp_request.url,
+      request_id: sp_request.uuid,
+      requested_attributes: sp_request.requested_attributes,
+    }
+
     if IdentityConfig.store.use_vot_in_sp_requests
-      session[:sp] = {
-        issuer: sp_request.issuer,
-        ial: ial_value,
-        ial2: ial2_value,
-        ialmax: ialmax_value,
-        aal_level_requested: aal_level_requested_value,
-        piv_cac_requested: piv_cac_requested_value,
-        phishing_resistant_requested: phishing_resistant_value,
-        request_url: sp_request.url,
-        request_id: sp_request.uuid,
-        requested_attributes: sp_request.requested_attributes,
-        biometric_comparison_required: biometric_comparison_required_value,
-      }
+      session[:sp].merge!(
+        {
+          ial: ial_value,
+          ial2: ial2_value,
+          ialmax: ialmax_value,
+          aal_level_requested: aal_level_requested_value,
+          piv_cac_requested: piv_cac_requested_value,
+          phishing_resistant_requested: phishing_resistant_value,
+          biometric_comparison_required: biometric_comparison_required_value,
+        },
+      )
     else
-      session[:sp] = {
-        issuer: sp_request.issuer,
-        ial: ial_context.ial,
-        ial2: ial_context.ial2_requested?,
-        ialmax: ial_context.ialmax_requested?,
-        aal_level_requested: aal_requested,
-        piv_cac_requested: hspd12_requested,
-        phishing_resistant_requested: phishing_resistant_requested,
-        request_url: sp_request.url,
-        request_id: sp_request.uuid,
-        requested_attributes: sp_request.requested_attributes,
-        biometric_comparison_required: sp_request.biometric_comparison_required,
-      }
+      session[:sp].merge!(
+        {
+          ial: ial_context.ial,
+          ial2: ial_context.ial2_requested?,
+          ialmax: ial_context.ialmax_requested?,
+          aal_level_requested: aal_requested,
+          piv_cac_requested: hspd12_requested,
+          phishing_resistant_requested: phishing_resistant_requested,
+          biometric_comparison_required: sp_request.biometric_comparison_required,
+        },
+      )
     end
   end
 
