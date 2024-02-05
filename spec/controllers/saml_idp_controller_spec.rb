@@ -730,9 +730,11 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
           user_session: {},
         )
       end
+      let(:sign_in_flow) { :sign_in }
 
       before do
         stub_sign_in(user)
+        session[:sign_in_flow] = sign_in_flow
         IdentityLinker.new(user, ServiceProvider.find_by(issuer: sp1_issuer)).link_identity(ial: 2)
         user.identities.last.update!(
           verified_attributes: %w[email given_name family_name social_security_number address],
@@ -803,8 +805,12 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
             request_signed: true,
             matching_cert_serial: saml_test_sp_cert_serial,
           })
-        expect(@analytics).to receive(:track_event).
-          with('SP redirect initiated', { ial: 0, billed_ial: 2 })
+        expect(@analytics).to receive(:track_event).with(
+          'SP redirect initiated',
+          ial: 0,
+          billed_ial: 2,
+          sign_in_flow:,
+        )
 
         allow(controller).to receive(:identity_needs_verification?).and_return(false)
         saml_get_auth(ialmax_settings)
@@ -2204,6 +2210,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
         user = create(:user, :fully_registered)
 
         stub_analytics
+        session[:sign_in_flow] = :sign_in
         allow(controller).to receive(:identity_needs_verification?).and_return(false)
 
         analytics_hash = {
@@ -2230,8 +2237,12 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
             user_fully_authenticated: true,
           })
         expect(@analytics).to receive(:track_event).with('SAML Auth', analytics_hash)
-        expect(@analytics).to receive(:track_event).
-          with('SP redirect initiated', { ial: 1, billed_ial: 1 })
+        expect(@analytics).to receive(:track_event).with(
+          'SP redirect initiated',
+          ial: 1,
+          billed_ial: 1,
+          sign_in_flow: :sign_in,
+        )
 
         generate_saml_response(user)
       end
@@ -2242,6 +2253,7 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
         user = create(:user, :fully_registered)
 
         stub_analytics
+        session[:sign_in_flow] = :sign_in
         allow(controller).to receive(:identity_needs_verification?).and_return(false)
         allow(controller).to receive(:user_has_pending_profile?).and_return(true)
 
@@ -2269,11 +2281,12 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
             user_fully_authenticated: true,
           })
         expect(@analytics).to receive(:track_event).with('SAML Auth', analytics_hash)
-        expect(@analytics).to receive(:track_event).
-          with('SP redirect initiated', {
-            ial: 1,
-            billed_ial: 1,
-          })
+        expect(@analytics).to receive(:track_event).with(
+          'SP redirect initiated',
+          ial: 1,
+          billed_ial: 1,
+          sign_in_flow: :sign_in,
+        )
 
         generate_saml_response(user)
       end
