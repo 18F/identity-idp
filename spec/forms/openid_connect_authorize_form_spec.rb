@@ -374,7 +374,17 @@ RSpec.describe OpenidConnectAuthorizeForm do
     context 'with vtr param' do
       let(:acr_values) { nil }
 
-      it 'works and is tested'
+      context 'when proofing is requested' do
+        let(:vtr) { ['C1.P1'].to_json }
+
+        it { expect(form.ial).to eq(2) }
+      end
+
+      context 'when proofing is not requested' do
+        let(:vtr) { ['C1'].to_json }
+
+        it { expect(form.ial).to eq(1) }
+      end
     end
 
     context 'with acr_values param' do
@@ -426,7 +436,17 @@ RSpec.describe OpenidConnectAuthorizeForm do
     context 'with vtr param' do
       let(:acr_values) { nil }
 
-      it 'works and is tested'
+      context 'when AAL2 is requested' do
+        let(:vtr) { ['C2'].to_json }
+
+        it { expect(form.aal).to eq(2) }
+      end
+
+      context 'when AAL2 is not requested' do
+        let(:vtr) { ['C1'].to_json }
+
+        it { expect(form.aal).to eq(1) }
+      end
     end
 
     context 'with acr_values param' do
@@ -505,12 +525,6 @@ RSpec.describe OpenidConnectAuthorizeForm do
   end
 
   describe '#requested_aal_value' do
-    context 'with vtr param' do
-      let(:acr_values) { nil }
-
-      it 'is tested and works'
-    end
-
     context 'with ACR values' do
       let(:vtr) { nil }
       context 'when AAL2 passed' do
@@ -702,7 +716,15 @@ RSpec.describe OpenidConnectAuthorizeForm do
     context 'with vtr params' do
       let(:acr_values) { nil }
 
-      it 'is tested and works'
+      context 'when identity proofing is requested' do
+        let(:vtr) { ['P1'].to_json }
+        it { expect(ial2_requested?).to eq(true) }
+      end
+
+      context 'when identity proofing is not requested' do
+        let(:vtr) { ['C1'].to_json }
+        it { expect(ial2_requested?).to eq(false) }
+      end
     end
 
     context 'with acr_values param' do
