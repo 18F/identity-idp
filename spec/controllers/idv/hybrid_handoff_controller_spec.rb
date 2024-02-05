@@ -8,6 +8,9 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
   let(:ab_test_args) do
     { sample_bucket1: :sample_value1, sample_bucket2: :sample_value2 }
   end
+  let(:service_provider) do
+    create(:service_provider, :active, :in_person_proofing_enabled)
+  end
 
   before do
     stub_sign_in(user)
@@ -15,6 +18,7 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
     stub_analytics
     stub_attempts_tracker
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
+    allow(subject.idv_session).to receive(:service_provider).and_return(service_provider)
   end
 
   describe '#step_info' do
@@ -185,6 +189,7 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
         stub_up_to(:how_to_verify, idv_session: subject.idv_session)
         allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { true }
         allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { true }
+        subject.idv_session.service_provider.in_person_proofing_enabled = true
       end
 
       context 'opt in selection is nil' do
