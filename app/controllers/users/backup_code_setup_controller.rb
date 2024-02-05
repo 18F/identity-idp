@@ -76,13 +76,6 @@ module Users
       @mfa_user ||= MfaContext.new(current_user)
     end
 
-    def track_backup_codes_confirmation_setup_visit
-      analytics.multi_factor_auth_enter_backup_code_confirmation_visit(
-        enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
-        in_account_creation_flow: in_account_creation_flow?,
-      )
-    end
-
     def ensure_backup_codes_in_session
       redirect_to backup_code_setup_url unless user_session[:backup_codes]
     end
