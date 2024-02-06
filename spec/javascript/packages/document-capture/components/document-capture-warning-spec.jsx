@@ -51,6 +51,7 @@ describe('DocumentCaptureWarning', () => {
     isFailedDocType,
     isFailedResult,
     isFailedSelfieLivenessOrQuality = false,
+    isFailedSelfieFacematch = false,
     inPersonUrl,
   }) {
     const unknownFieldErrors = [
@@ -65,6 +66,7 @@ describe('DocumentCaptureWarning', () => {
           <DocumentCaptureWarning
             isFailedDocType={isFailedDocType}
             isFailedResult={isFailedResult}
+            isFailedSelfie={isFailedSelfieFacematch}
             isFailedSelfieLivenessOrQuality={isFailedSelfieLivenessOrQuality}
             remainingSubmitAttempts={2}
             unknownFieldErrors={unknownFieldErrors}
@@ -180,7 +182,30 @@ describe('DocumentCaptureWarning', () => {
         validateTroubleShootingSection();
       });
 
-      it('renders with successful selfie', () => {
+      it('renders with failed facematch for selfie', () => {
+        const isFailedDocType = false;
+        const isFailedSelfieFacematch = true;
+        const { getByRole, getByText, queryByText } = renderContent({
+          isFailedDocType,
+          isFailedSelfieFacematch,
+          isFailedResult,
+          inPersonUrl,
+        });
+
+        // error message section
+        validateHeader('errors.doc_auth.selfie_no_facematch_heading', 1, true);
+        validateHeader('errors.doc_auth.rate_limited_subheading', 2, false);
+        expect(getByText('general error')).to.be.ok();
+        expect(getByText('idv.warning.attempts_html')).to.be.ok();
+        expect(queryByText('idv.failure.attempts_html')).to.null();
+        expect(getByRole('button', { name: 'idv.failure.button.warning' })).to.be.ok();
+        // ipp section not existing
+        validateIppSection(false);
+        // troubleshooting section
+        validateTroubleShootingSection();
+      });
+
+      it('renders with failed quality/liveness selfie', () => {
         const isFailedDocType = false;
         const isFailedSelfieLivenessOrQuality = true;
         const { getByRole, getByText, queryByText } = renderContent({
