@@ -18,6 +18,7 @@ RSpec.describe StoreSpMetadataInSession do
         ServiceProviderRequestProxy.find_or_create_by(uuid: request_id) do |sp_request|
           sp_request.issuer = 'issuer'
           sp_request.ial = Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
+          sp_request.acr_values = Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
           sp_request.url = 'http://issuer.gov'
           sp_request.requested_attributes = %w[email]
           sp_request.biometric_comparison_required = false
@@ -27,6 +28,7 @@ RSpec.describe StoreSpMetadataInSession do
         app_session_hash = {
           issuer: 'issuer',
           aal_level_requested: nil,
+          acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
           piv_cac_requested: false,
           phishing_resistant_requested: false,
           ial: 1,
@@ -36,6 +38,7 @@ RSpec.describe StoreSpMetadataInSession do
           request_id: request_id,
           requested_attributes: %w[email],
           biometric_comparison_required: false,
+          vtr: nil,
         }
 
         instance.call
@@ -51,6 +54,10 @@ RSpec.describe StoreSpMetadataInSession do
           sp_request.issuer = 'issuer'
           sp_request.ial = Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
           sp_request.aal = Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF
+          sp_request.acr_values = [
+            Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+            Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
+          ].join(' ')
           sp_request.url = 'http://issuer.gov'
           sp_request.requested_attributes = %w[email]
           sp_request.biometric_comparison_required = false
@@ -60,6 +67,10 @@ RSpec.describe StoreSpMetadataInSession do
         app_session_hash = {
           issuer: 'issuer',
           aal_level_requested: 3,
+          acr_values: [
+            Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+            Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
+          ].join(' '),
           piv_cac_requested: false,
           phishing_resistant_requested: true,
           ial: 2,
@@ -69,6 +80,7 @@ RSpec.describe StoreSpMetadataInSession do
           request_id: request_id,
           requested_attributes: %w[email],
           biometric_comparison_required: false,
+          vtr: nil,
         }
 
         instance.call
@@ -84,6 +96,10 @@ RSpec.describe StoreSpMetadataInSession do
           sp_request.issuer = 'issuer'
           sp_request.ial = Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
           sp_request.aal = Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF
+          sp_request.acr_values = [
+            Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+            Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF,
+          ].join(' ')
           sp_request.url = 'http://issuer.gov'
           sp_request.requested_attributes = %w[email]
           sp_request.biometric_comparison_required = false
@@ -93,6 +109,10 @@ RSpec.describe StoreSpMetadataInSession do
         app_session_hash = {
           issuer: 'issuer',
           aal_level_requested: 2,
+          acr_values: [
+            Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+            Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF,
+          ].join(' '),
           piv_cac_requested: false,
           phishing_resistant_requested: true,
           ial: 2,
@@ -102,6 +122,7 @@ RSpec.describe StoreSpMetadataInSession do
           request_id: request_id,
           requested_attributes: %w[email],
           biometric_comparison_required: false,
+          vtr: nil,
         }
 
         instance.call
@@ -117,6 +138,10 @@ RSpec.describe StoreSpMetadataInSession do
           sp_request.issuer = 'issuer'
           sp_request.ial = Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
           sp_request.aal = Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF
+          sp_request.acr_values = [
+            Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+            Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
+          ].join(' ')
           sp_request.url = 'http://issuer.gov'
           sp_request.requested_attributes = %w[email]
           sp_request.biometric_comparison_required = true
@@ -126,6 +151,10 @@ RSpec.describe StoreSpMetadataInSession do
         app_session_hash = {
           issuer: 'issuer',
           aal_level_requested: 3,
+          acr_values: [
+            Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+            Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
+          ].join(' '),
           piv_cac_requested: false,
           phishing_resistant_requested: true,
           ial: 2,
@@ -135,6 +164,43 @@ RSpec.describe StoreSpMetadataInSession do
           request_id: request_id,
           requested_attributes: %w[email],
           biometric_comparison_required: true,
+          vtr: nil,
+        }
+
+        instance.call
+        expect(app_session[:sp]).to eq app_session_hash
+      end
+    end
+
+    context 'when a vtr is present' do
+      it 'sets the session[:sp] hash' do
+        app_session = {}
+        request_id = SecureRandom.uuid
+        ServiceProviderRequestProxy.find_or_create_by(uuid: request_id) do |sp_request|
+          sp_request.issuer = 'issuer'
+          sp_request.ial = nil
+          sp_request.aal = nil
+          sp_request.vtr = ['C2.P1']
+          sp_request.url = 'http://issuer.gov'
+          sp_request.requested_attributes = %w[email]
+          sp_request.biometric_comparison_required = false
+        end
+        instance = StoreSpMetadataInSession.new(session: app_session, request_id: request_id)
+
+        app_session_hash = {
+          issuer: 'issuer',
+          aal_level_requested: nil,
+          acr_values: nil,
+          piv_cac_requested: false,
+          phishing_resistant_requested: false,
+          ial: nil,
+          ial2: false,
+          ialmax: nil,
+          request_url: 'http://issuer.gov',
+          request_id: request_id,
+          requested_attributes: %w[email],
+          biometric_comparison_required: false,
+          vtr: ['C2.P1'],
         }
 
         instance.call

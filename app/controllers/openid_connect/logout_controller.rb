@@ -31,7 +31,7 @@ module OpenidConnect
         analytics.logout_initiated(**result.to_h.except(:redirect_uri))
         irs_attempts_api_tracker.logout_initiated(success: result.success?)
 
-        redirect_user(redirect_uri, current_user&.uuid)
+        redirect_user(redirect_uri, @logout_form.service_provider&.issuer, current_user&.uuid)
         sign_out
       else
         render :error
@@ -44,11 +44,16 @@ module OpenidConnect
       request.env['devise_session_limited_failure_redirect_url'] = request.url
     end
 
-    def redirect_user(redirect_uri, user_uuid)
-      redirect_method = IdentityConfig.store.openid_connect_redirect_uuid_override_map.fetch(
-        user_uuid,
-        IdentityConfig.store.openid_connect_redirect,
-      )
+    def redirect_user(redirect_uri, issuer, user_uuid)
+      user_redirect_method_override =
+        IdentityConfig.store.openid_connect_redirect_uuid_override_map[user_uuid]
+
+      sp_redirect_method_override =
+        IdentityConfig.store.openid_connect_redirect_issuer_override_map[issuer]
+
+      redirect_method =
+        user_redirect_method_override || sp_redirect_method_override ||
+        IdentityConfig.store.openid_connect_redirect
 
       case redirect_method
       when 'client_side'
@@ -115,7 +120,7 @@ module OpenidConnect
 
         sign_out
 
-        redirect_user(redirect_uri, current_user&.uuid)
+        redirect_user(redirect_uri, @logout_form.service_provider&.issuer, current_user&.uuid)
       end
     end
 

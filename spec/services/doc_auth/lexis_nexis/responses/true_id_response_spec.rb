@@ -431,6 +431,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     end
 
     it 'produces reasonable output for a malformed TrueID response' do
+      allow(NewRelic::Agent).to receive(:notice_error)
       output = described_class.new(failure_response_malformed, config).to_h
 
       expect(output[:success]).to eq(false)
@@ -652,6 +653,13 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       let(:response) { described_class.new(failure_response_tampering, config) }
       it 'returns false' do
         expect(response.doc_auth_success?).to eq(false)
+      end
+    end
+
+    context 'when attention barcode read' do
+      let(:response) { described_class.new(attention_barcode_read, config) }
+      it 'returns true' do
+        expect(response.doc_auth_success?).to eq(true)
       end
     end
   end

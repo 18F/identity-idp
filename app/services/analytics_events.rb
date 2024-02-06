@@ -412,11 +412,13 @@ module AnalyticsEvents
   # Logs after an email is sent
   # @param [String] action type of email being sent
   # @param [String, nil] ses_message_id AWS SES Message ID
-  def email_sent(action:, ses_message_id:, **extra)
+  # @param [Integer] email_address_id Database identifier for email address record
+  def email_sent(action:, ses_message_id:, email_address_id:, **extra)
     track_event(
       'Email Sent',
       action: action,
       ses_message_id: ses_message_id,
+      email_address_id: email_address_id,
       **extra,
     )
   end
@@ -3636,12 +3638,14 @@ module AnalyticsEvents
   # @param [String] client_id
   # @param [String] scope
   # @param [Array] acr_values
+  # @param [Array] vtr
   # @param [Boolean] unauthorized_scope
   # @param [Boolean] user_fully_authenticated
   def openid_connect_request_authorization(
     client_id:,
     scope:,
     acr_values:,
+    vtr:,
     unauthorized_scope:,
     user_fully_authenticated:,
     **extra
@@ -3651,6 +3655,7 @@ module AnalyticsEvents
       client_id: client_id,
       scope: scope,
       acr_values: acr_values,
+      vtr: vtr,
       unauthorized_scope: unauthorized_scope,
       user_fully_authenticated: user_fully_authenticated,
       **extra,
