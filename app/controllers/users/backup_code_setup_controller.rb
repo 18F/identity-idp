@@ -15,6 +15,17 @@ module Users
 
     helper_method :in_multi_mfa_selection_flow?
 
+    def index
+      generate_codes
+      result = BackupCodeSetupForm.new(current_user).submit
+      visit_result = result.to_h.merge(analytics_properties_for_visit)
+      analytics.backup_code_setup_visit(**visit_result)
+      irs_attempts_api_tracker.mfa_enroll_backup_code(success: result.success?)
+
+      save_backup_codes
+      track_backup_codes_created
+    end
+
     def create
       generate_codes
       result = BackupCodeSetupForm.new(current_user).submit
