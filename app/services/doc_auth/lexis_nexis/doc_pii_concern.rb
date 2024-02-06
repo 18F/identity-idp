@@ -17,31 +17,9 @@ module DocAuth
         Sex
       ].freeze
 
-      PII_INCLUDES = {
-        'Fields_FirstName' => :first_name,
-        'Fields_MiddleName' => :middle_name,
-        'Fields_Surname' => :last_name,
-        'Fields_AddressLine1' => :address1,
-        'Fields_AddressLine2' => :address2,
-        'Fields_City' => :city,
-        'Fields_State' => :state,
-        'Fields_PostalCode' => :zipcode,
-        'Fields_DOB_Year' => :dob_year,
-        'Fields_DOB_Month' => :dob_month,
-        'Fields_DOB_Day' => :dob_day,
-        'Fields_DocumentNumber' => :state_id_number,
-        'Fields_IssuingStateCode' => :state_id_jurisdiction,
-        'Fields_xpirationDate_Day' => :state_id_expiration_day, # this is NOT a typo
-        'Fields_ExpirationDate_Month' => :state_id_expiration_month,
-        'Fields_ExpirationDate_Year' => :state_id_expiration_year,
-        'Fields_IssueDate_Day' => :state_id_issued_day,
-        'Fields_IssueDate_Month' => :state_id_issued_month,
-        'Fields_IssueDate_Year' => :state_id_issued_year,
-        'Fields_DocumentClassName' => :state_id_type,
-        'Fields_CountryCode' => :issuing_country_code,
-      }.freeze
+      private
 
-      def pii_from_doc
+      def read_pii
         return {} unless true_id_product&.dig(:IDAUTH_FIELD_DATA).present?
         pii = {}
         PII_INCLUDES.each do |true_id_key, idp_key|
@@ -73,7 +51,29 @@ module DocAuth
         pii
       end
 
-      private
+      PII_INCLUDES = {
+        'Fields_FirstName' => :first_name,
+        'Fields_MiddleName' => :middle_name,
+        'Fields_Surname' => :last_name,
+        'Fields_AddressLine1' => :address1,
+        'Fields_AddressLine2' => :address2,
+        'Fields_City' => :city,
+        'Fields_State' => :state,
+        'Fields_PostalCode' => :zipcode,
+        'Fields_DOB_Year' => :dob_year,
+        'Fields_DOB_Month' => :dob_month,
+        'Fields_DOB_Day' => :dob_day,
+        'Fields_DocumentNumber' => :state_id_number,
+        'Fields_IssuingStateCode' => :state_id_jurisdiction,
+        'Fields_xpirationDate_Day' => :state_id_expiration_day, # this is NOT a typo
+        'Fields_ExpirationDate_Month' => :state_id_expiration_month,
+        'Fields_ExpirationDate_Year' => :state_id_expiration_year,
+        'Fields_IssueDate_Day' => :state_id_issued_day,
+        'Fields_IssueDate_Month' => :state_id_issued_month,
+        'Fields_IssueDate_Year' => :state_id_issued_year,
+        'Fields_DocumentClassName' => :state_id_type,
+        'Fields_CountryCode' => :issuing_country_code,
+      }.freeze
 
       def parse_date(year:, month:, day:)
         Date.new(year.to_i, month.to_i, day.to_i).to_s if year.to_i.positive?
