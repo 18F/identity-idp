@@ -30,13 +30,17 @@ RSpec.describe BlockLinkComponent, type: :component do
   end
 
   context 'with a component' do
-    it 'renders using the specified component' do
-      TestComponent = Class.new(BaseComponent) do
-        def call
-          content_tag(:div, 'from test component', class: 'style')
-        end
-      end
+    before do
+      stub_const(
+        'TestComponent', Class.new(BaseComponent) do
+                           def call
+                             content_tag(:div, 'from test component', class: 'style')
+                           end
+                         end
+      )
+    end
 
+    it 'renders using the specified component' do
       rendered = render_inline(BlockLinkComponent.new(component: TestComponent))
 
       expect(rendered).to have_css('.style')
