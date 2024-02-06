@@ -412,11 +412,13 @@ module AnalyticsEvents
   # Logs after an email is sent
   # @param [String] action type of email being sent
   # @param [String, nil] ses_message_id AWS SES Message ID
-  def email_sent(action:, ses_message_id:, **extra)
+  # @param [Integer] email_address_id Database identifier for email address record
+  def email_sent(action:, ses_message_id:, email_address_id:, **extra)
     track_event(
       'Email Sent',
       action: action,
       ses_message_id: ses_message_id,
+      email_address_id: email_address_id,
       **extra,
     )
   end
