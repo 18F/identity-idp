@@ -55,7 +55,7 @@ RSpec.describe Idv::PleaseCallController do
   context 'in person proofing enabled' do
     let(:in_person_proofing_enabled) { true }
     let!(:enrollment) { create(:in_person_enrollment, :passed, user: user, profile: profile) }
-    
+
     before do
       allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).
         and_return(in_person_proofing_enabled)

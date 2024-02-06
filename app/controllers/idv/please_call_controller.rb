@@ -25,8 +25,8 @@ module Idv
     end
 
     def in_person_proofing?
-      IdentityConfig.store.in_person_proofing_enabled && 
-        current_user&.pending_profile&.in_person_enrollment.status == 'passed'
+      IdentityConfig.store.in_person_proofing_enabled &&
+        current_user&.pending_profile&.in_person_enrollment&.status == 'passed'
     end
   end
 end

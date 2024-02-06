@@ -97,18 +97,19 @@ RSpec.describe FraudReviewChecker do
       let!(:profile) { create(:profile, fraud_review_pending_at: 1.day.ago, user: user) }
       let!(:enrollment) { create(:in_person_enrollment, :passed, user: user, profile: profile) }
 
-      it { expect(subject.ipp_fraud_review_pending?).to eq(true) } 
+      it { expect(subject.ipp_fraud_review_pending?).to eq(true) }
     end
-    
+
     context 'fraud review is pending for non-passed ipp enrollment' do
       let(:user) { create(:user) }
       let!(:profile) { create(:profile, fraud_review_pending_at: 1.day.ago, user: user) }
-      let!(:enrollment) { create(:in_person_enrollment, :establishing, user: user, profile: profile) }
+      let!(:enrollment) do
+        create(:in_person_enrollment, :establishing, user: user, profile: profile)
+      end
 
-      it 'returns false' do 
+      it 'returns false' do
         expect(subject.ipp_fraud_review_pending?).to eq(false)
       end
     end
-
   end
 end
