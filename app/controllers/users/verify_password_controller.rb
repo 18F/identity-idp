@@ -7,7 +7,7 @@ module Users
     before_action :confirm_personal_key
 
     def new
-      analytics.track_event(:reactivate_account_verify_password_visited)
+      analytics.reactivate_account_verify_password_visited
     end
 
     def update
