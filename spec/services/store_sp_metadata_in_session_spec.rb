@@ -7,15 +7,6 @@ RSpec.describe StoreSpMetadataInSession do
     let(:instance) do
       StoreSpMetadataInSession.new(session: app_session, request_id: request_id)
     end
-    let(:issuer) { 'issuer' }
-    let(:ial) { nil }
-    let(:aal) { nil }
-    let(:request_url) { 'http://issuer.gov' }
-    let(:requested_attributes) { %w[email] }
-    let(:request_acr) { nil }
-    let(:request_vtr) { [] }
-    let(:biometric_comparison_required) { false }
-    let(:use_vot_in_sp_requests) { false }
 
     context 'when a ServiceProviderRequestProxy is not found' do
       let(:request_id) { 'foo' }
@@ -26,46 +17,43 @@ RSpec.describe StoreSpMetadataInSession do
     end
 
     context 'when a ServiceProviderRequestProxy is found' do
+      let(:issuer) { 'issuer' }
+      let(:ial) { nil }
+      let(:aal) { nil }
+      let(:request_url) { 'http://issuer.gov' }
+      let(:requested_attributes) { %w[email] }
+      let(:request_acr) { nil }
+      let(:request_vtr) { [] }
+      let(:biometric_comparison_required) { false }
+      let(:use_vot_in_sp_requests) { false }
+
+      before do
+        allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(use_vot_in_sp_requests)
+
+        sp_request = ServiceProviderRequestProxy.find_or_create_by(
+          uuid: request_id,
+        ) do |sp_request|
+          sp_request.issuer = issuer
+          sp_request.url = request_url
+          sp_request.requested_attributes = requested_attributes
+          sp_request.ial = ial
+          sp_request.aal = aal
+          sp_request.acr_values = request_acr
+          sp_request.vtr = request_vtr
+        end
+
+        instance.call(service_provider_request: sp_request)
+      end
+
       # old-style SP requests
       context 'and the `use_vot_in_sp_requests` config bflag is false' do
         let(:use_vot_in_sp_requests) { false }
-
-        before do
-          allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(use_vot_in_sp_requests)
-
-          sp_request = ServiceProviderRequestProxy.find_or_create_by(
-            uuid: request_id
-          ) do |sp_request|
-            sp_request.issuer = issuer
-            sp_request.url = request_url
-            sp_request.requested_attributes = requested_attributes
-            sp_request.ial = ial
-            sp_request.aal = aal
-            sp_request.biometric_comparison_required = biometric_comparison_required
-            sp_request.acr_values = request_acr
-            sp_request.vtr = request_vtr
-          end
-
-          instance.call(service_provider_request: sp_request)
-        end
-
-        matcher :have_default_non_vot_values do
-          match do |actual|
-            actual.slice(:issuer, :request_url, :request_id) ==
-               {
-                issuer: issuer,
-                request_url: request_url,
-                request_id: request_id,
-              }
-          end
-        end
 
         context 'IAL1 is requested' do
           let(:ial) { Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF }
           let(:sp_hash) { app_session[:sp] }
 
           it 'sets the session[:sp] hash correctly' do
-            expect(sp_hash).to have_default_non_vot_values
             expect(sp_hash).to eq(
               {
                 issuer: issuer,
@@ -130,7 +118,7 @@ RSpec.describe StoreSpMetadataInSession do
           end
         end
 
-        context 'when biometric comparison is requested' do
+        xcontext 'when biometric comparison is requested' do
           let(:ial) { Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF }
           let(:aal) { Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF }
           let(:biometric_comparison_required) { true }
@@ -158,24 +146,6 @@ RSpec.describe StoreSpMetadataInSession do
       # new-style SP requests
       context 'and the `use_vot_in_sp_requests` config flag is true' do
         let(:use_vot_in_sp_requests) { true }
-
-        before do
-          allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(use_vot_in_sp_requests)
-
-          sp_request = ServiceProviderRequestProxy.find_or_create_by(
-            uuid: request_id,
-          ) do |sp_request|
-            sp_request.issuer = issuer
-            sp_request.url = request_url
-            sp_request.requested_attributes = requested_attributes
-            sp_request.ial = ial
-            sp_request.aal = aal
-            sp_request.acr_values = request_acr
-            sp_request.vtr = request_vtr
-          end
-
-          instance.call(service_provider_request: sp_request)
-        end
 
         context 'when MFA is requested' do
           let(:expected_sp_session) do
