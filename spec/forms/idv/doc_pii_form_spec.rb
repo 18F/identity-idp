@@ -293,12 +293,6 @@ RSpec.describe Idv::DocPiiForm do
       expect(result.errors[:state_id_number]).to eq(
         [I18n.t('doc_auth.errors.general.no_liveness')],
       )
-      expect(result.errors[:front]).to eq(
-        [I18n.t('doc_auth.errors.general.multiple_front_id_failures')],
-      )
-      expect(result.errors[:back]).to eq(
-        [I18n.t('doc_auth.errors.general.multiple_back_id_failures')],
-      )
     end
   end
 end

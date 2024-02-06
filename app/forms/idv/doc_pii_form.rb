@@ -1,7 +1,6 @@
 module Idv
   class DocPiiForm
     include ActiveModel::Model
-    include ActiveModel::Validations::Callbacks
 
     validate :name_valid?
     validate :dob_valid?
@@ -17,8 +16,6 @@ module Idv
     validates_presence_of :state_id_number, { message: proc {
       I18n.t('doc_auth.errors.general.no_liveness')
     } }
-
-    after_validation :set_inline_error
 
     attr_reader :first_name, :last_name, :dob, :address1, :state, :zipcode, :attention_with_barcode,
                 :jurisdiction, :state_id_number
@@ -59,6 +56,26 @@ module Idv
         keypaths << [:error_details, k, k]
       end
       keypaths
+    end
+
+    # Modifies the errors object and consolidate/mutate it,
+    # used in image_upload_response_presenter to customizer
+    # error message rendering for pii errors
+    #
+    # errors: The DocPiiForm errors object
+    def self.present_error(existing_errors)
+      return if existing_errors.blank?
+      if existing_errors.any? do |k, v|
+        %i[name dob address1 state zipcode jurisdiction state_id_number dob_min_age].include?(k)
+      end
+        existing_errors[:front] = [I18n.t('doc_auth.errors.general.multiple_front_id_failures')]
+        existing_errors[:back] = [I18n.t('doc_auth.errors.general.multiple_back_id_failures')]
+      end
+
+      if existing_errors.many? { |k, v| %i[name dob dob_min_age state].include?(k) }
+        existing_errors.slice!(:front, :back)
+        existing_errors[:pii] = [I18n.t('doc_auth.errors.general.no_liveness')]
+      end
     end
 
     private
@@ -106,21 +123,6 @@ module Idv
 
     def dob_min_age_error
       I18n.t('doc_auth.errors.pii.birth_date_min_age')
-    end
-
-    def set_inline_error
-      if errors.any?
-        errors.add(
-          :front,
-          I18n.t('doc_auth.errors.general.multiple_front_id_failures'),
-          type: :front,
-        )
-        errors.add(
-          :back,
-          I18n.t('doc_auth.errors.general.multiple_back_id_failures'),
-          type: :back,
-        )
-      end
     end
   end
 end
