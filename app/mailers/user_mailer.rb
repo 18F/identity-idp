@@ -46,7 +46,11 @@ class UserMailer < ActionMailer::Base
   end
 
   def add_metadata
-    message.instance_variable_set(:@_metadata, { user: user, action: action_name })
+    message.instance_variable_set(
+      :@_metadata, {
+        user: user, email_address: email_address, action: action_name
+      }
+    )
   end
 
   def email_confirmation_instructions(token, request_id:, instructions:)
