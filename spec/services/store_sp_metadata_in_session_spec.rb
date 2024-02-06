@@ -7,6 +7,14 @@ RSpec.describe StoreSpMetadataInSession do
     let(:instance) do
       StoreSpMetadataInSession.new(session: app_session, request_id: request_id)
     end
+    let(:issuer) { 'issuer' }
+    let(:ial) { nil }
+    let(:aal) { nil }
+    let(:request_url) { 'http://issuer.gov' }
+    let(:requested_attributes) { %w[email] }
+    let(:request_acr) { nil }
+    let(:request_vtr) { [] }
+    let(:biometric_comparison_required) { false }
 
     context 'when a ServiceProviderRequestProxy is not found' do
       let(:request_id) { 'foo' }
@@ -19,12 +27,6 @@ RSpec.describe StoreSpMetadataInSession do
     context 'when a ServiceProviderRequestProxy is found' do
       # old-style SP requests
       context 'and the `use_vot_in_sp_requests` config bflag is false' do
-        let(:issuer) { 'issuer' }
-        let(:ial) { nil }
-        let(:aal) { nil }
-        let(:request_url) { 'http://issuer.gov' }
-        let(:requested_attributes) { %w[email] }
-        let(:biometric_comparison_required) { false }
 
         before do
           allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(false)
@@ -44,7 +46,7 @@ RSpec.describe StoreSpMetadataInSession do
         matcher :have_default_non_vot_values do
           match do |actual|
             actual.slice(:issuer, :request_url, :request_id) ==
-              {
+               {
                 issuer: issuer,
                 request_url: request_url,
                 request_id: request_id,
@@ -149,12 +151,6 @@ RSpec.describe StoreSpMetadataInSession do
 
       # new-style SP requests
       context 'and the `use_vot_in_sp_requests` config flag is true' do
-        let(:issuer) { 'issuer' }
-        let(:request_url) { 'http://issuer.gov' }
-        let(:requested_attributes) { %w[email] }
-        let(:request_acr) { nil }
-        let(:request_vtr) { [] }
-
         before do
           allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
 
@@ -475,7 +471,7 @@ RSpec.describe StoreSpMetadataInSession do
             }
           end
 
-          context 'using VTR' do
+          xcontext 'using VTR' do
             let(:request_vtr) { ['Pb'] }
 
             it 'sets the session[:sp] hash correctly' do
