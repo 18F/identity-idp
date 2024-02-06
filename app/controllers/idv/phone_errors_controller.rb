@@ -10,7 +10,7 @@ module Idv
     before_action :ignore_form_step_wait_requests
 
     def warning
-      @remaining_attempts = rate_limiter.remaining_count
+      @remaining_submit_attempts = rate_limiter.remaining_count
 
       if idv_session.previous_phone_step_params
         @phone = idv_session.previous_phone_step_params[:phone]
@@ -21,12 +21,12 @@ module Idv
     end
 
     def timeout
-      @remaining_step_attempts = rate_limiter.remaining_count
+      @remaining_submit_attempts = rate_limiter.remaining_count
       track_event(type: :timeout)
     end
 
     def jobfail
-      @remaining_attempts = rate_limiter.remaining_count
+      @remaining_submit_attempts = rate_limiter.remaining_count
       track_event(type: :jobfail)
     end
 
@@ -63,7 +63,7 @@ module Idv
       if type == :failure
         attributes[:limiter_expires_at] = @expires_at
       else
-        attributes[:remaining_attempts] = @remaining_attempts
+        attributes[:remaining_submit_attempts] = @remaining_submit_attempts
       end
 
       analytics.idv_phone_error_visited(**attributes)

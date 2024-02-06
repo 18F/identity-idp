@@ -1234,6 +1234,46 @@ RSpec.describe GetUspsProofingResultsJob, allowed_extra_analytics: [:*] do
               expect(profile.fraud_review_pending_at).not_to be_nil
               expect(profile).not_to be_active
             end
+
+            context 'when the enrollment has passed' do
+              before(:each) do
+                pending_enrollment.profile.update!(fraud_pending_reason: 'threatmetrix_review')
+                stub_request_passed_proofing_results
+              end
+
+              it 'sends the please call email' do
+                user = pending_enrollment.user
+
+                freeze_time do
+                  expect do
+                    job.perform(Time.zone.now)
+                  end.to have_enqueued_mail(UserMailer, :in_person_please_call).with(
+                    params: { user: user, email_address: user.email_addresses.first },
+                    args: [{ enrollment: pending_enrollment }],
+                  )
+                end
+              end
+
+              it 'logs the expected analytics events' do
+                freeze_time do
+                  job.perform(Time.zone.now)
+                end
+                expect(job_analytics).to have_logged_event(
+                  :idv_in_person_usps_proofing_results_job_please_call_email_initiated,
+                  hash_including(
+                    job_name: 'GetUspsProofingResultsJob',
+                  ),
+                )
+                expect(job_analytics).to have_logged_event(
+                  'GetUspsProofingResultsJob: Enrollment status updated',
+                  hash_including(
+                    passed: true,
+                    reason: 'Passed with fraud pending',
+                    job_name: 'GetUspsProofingResultsJob',
+                  ),
+                )
+              end
+            end
           end
         end
       end

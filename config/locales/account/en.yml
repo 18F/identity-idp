@@ -54,10 +54,8 @@ en:
         success: We verified your information
       webauthn: Security key
       webauthn_add: Add security key
-      webauthn_confirm_delete: Yes, remove key
       webauthn_platform: Face or touch unlock
       webauthn_platform_add: Add face or touch unlock
-      webauthn_platform_confirm_delete: Yes, remove face or touch unlock
     items:
       delete_your_account: Delete your account
       personal_key: Personal key

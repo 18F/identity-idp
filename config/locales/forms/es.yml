@@ -132,15 +132,6 @@ es:
       try_again: Use otro número de teléfono.
     validation:
       required_checkbox: Marque esta casilla para continuar
-    webauthn_delete:
-      caution: Si elimina su clave de seguridad, no podrá usarla para acceder a su
-        cuenta %{app_name}.
-      confirm: '¿Estás seguro de que quieres eliminar tu clave de seguridad?'
-    webauthn_platform_delete:
-      caution: Si elimina su desbloqueo facial o táctil, no podrá usarla para acceder
-        a su cuenta %{app_name}.
-      confirm: '¿Estás seguro de que quieres eliminar tu desbloqueo facial o táctil de
-        seguridad?'
     webauthn_platform_setup:
       continue: Continuar
       info_text: Tendrá que configurar un método de autenticación adicional después de
