@@ -195,7 +195,7 @@ RSpec.describe Idv::ByMail::EnterCodeController, allowed_extra_analytics: [:*] d
           enqueued_at: pending_profile.gpo_confirmation_codes.last.code_sent_at,
           which_letter: 1,
           letter_count: 1,
-          attempts: 1,
+          submit_attempts: 1,
         )
         event_count = user.events.where(event_type: :account_verified, ip: '0.0.0.0').
           where(disavowal_token_fingerprint: nil).count
@@ -240,7 +240,7 @@ RSpec.describe Idv::ByMail::EnterCodeController, allowed_extra_analytics: [:*] d
             enqueued_at: pending_profile.gpo_confirmation_codes.last.code_sent_at,
             which_letter: 1,
             letter_count: 1,
-            attempts: 1,
+            submit_attempts: 1,
           )
           expect(response).to redirect_to(idv_personal_key_url)
         end
@@ -271,7 +271,7 @@ RSpec.describe Idv::ByMail::EnterCodeController, allowed_extra_analytics: [:*] d
               enqueued_at: pending_profile.gpo_confirmation_codes.last.code_sent_at,
               which_letter: 1,
               letter_count: 1,
-              attempts: 1,
+              submit_attempts: 1,
             )
             event_count = user.events.where(event_type: :account_verified, ip: '0.0.0.0').
               where(disavowal_token_fingerprint: nil).count
@@ -299,7 +299,7 @@ RSpec.describe Idv::ByMail::EnterCodeController, allowed_extra_analytics: [:*] d
               enqueued_at: user.pending_profile.gpo_confirmation_codes.last.code_sent_at,
               which_letter: 1,
               letter_count: 1,
-              attempts: 1,
+              submit_attempts: 1,
             )
 
             expect(response).to redirect_to(idv_personal_key_url)
@@ -332,7 +332,7 @@ RSpec.describe Idv::ByMail::EnterCodeController, allowed_extra_analytics: [:*] d
               enqueued_at: user.pending_profile.gpo_confirmation_codes.last.code_sent_at,
               which_letter: 1,
               letter_count: 1,
-              attempts: 1,
+              submit_attempts: 1,
             )
 
             expect(response).to redirect_to(idv_personal_key_url)
@@ -363,7 +363,7 @@ RSpec.describe Idv::ByMail::EnterCodeController, allowed_extra_analytics: [:*] d
           enqueued_at: nil,
           which_letter: nil,
           letter_count: 1,
-          attempts: 1,
+          submit_attempts: 1,
           error_details: { otp: { confirmation_code_incorrect: true } },
         )
         expect(response).to redirect_to(idv_verify_by_mail_enter_code_url)
@@ -398,7 +398,7 @@ RSpec.describe Idv::ByMail::EnterCodeController, allowed_extra_analytics: [:*] d
             enqueued_at: nil,
             which_letter: nil,
             letter_count: 1,
-            attempts: 1,
+            submit_attempts: 1,
             error_details: { otp: { confirmation_code_incorrect: true } },
           }
           post(:create, params: { gpo_verify_form: { otp: bad_otp } })
@@ -408,7 +408,7 @@ RSpec.describe Idv::ByMail::EnterCodeController, allowed_extra_analytics: [:*] d
             **analytics_args,
           )
 
-          analytics_args[:attempts] = 2
+          analytics_args[:submit_attempts] = 2
 
           expect(@analytics).to have_logged_event(
             'IdV: enter verify by mail code submitted',

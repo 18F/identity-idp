@@ -53,9 +53,9 @@ interface ImageAnalyticsPayload {
    */
   source: ImageSource;
   /**
-   * Total number of attempts at this point
+   * Total number of attempts to capture / upload an image at this point
    */
-  attempt?: number;
+  captureAttempts?: number;
   /**
    * Size of the image in bytes
    */
@@ -334,7 +334,7 @@ function AcuantCapture(
   useMemo(() => setOwnErrorMessage(null), [value]);
   const { isMobile } = useContext(DeviceContext);
   const { t, formatHTML } = useI18n();
-  const [attempt, incrementAttempt] = useCounter(1);
+  const [captureAttempts, incrementCaptureAttempts] = useCounter(1);
   const [acuantFailureCookie, setAcuantFailureCookie, refreshAcuantFailureCookie] =
     useCookie('AcuantCameraHasFailed');
   const [imageCaptureText, setImageCaptureText] = useState('');
@@ -384,10 +384,10 @@ function AcuantCapture(
   >(payload: P): P {
     const enhancedPayload = {
       ...payload,
-      attempt,
+      captureAttempts,
       acuantCaptureMode: payload.source === 'upload' ? null : acuantCaptureMode,
     };
-    incrementAttempt();
+    incrementCaptureAttempts();
     return enhancedPayload;
   }
 
@@ -516,7 +516,7 @@ function AcuantCapture(
   }
 
   function onSelfieCaptureSuccess({ image }: { image: string }) {
-    trackEvent('idv_sdk_selfie_image_added', { attempt });
+    trackEvent('idv_sdk_selfie_image_added', { captureAttempts });
 
     onChangeAndResetError(image);
     onResetFailedCaptureAttempts();

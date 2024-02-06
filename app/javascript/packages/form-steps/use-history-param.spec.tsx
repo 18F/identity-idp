@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react';
+import { render, act } from '@testing-library/react';
 import { renderHook } from '@testing-library/react-hooks';
 import userEvent from '@testing-library/user-event';
 import useHistoryParam, { getStepParam } from './use-history-param';
@@ -13,8 +13,14 @@ describe('getStepParam', () => {
 });
 
 describe('useHistoryParam', () => {
-  function TestComponent({ initialValue }: { initialValue?: string }) {
-    const [count = 0, setCount] = useHistoryParam(initialValue);
+  function TestComponent({
+    initialValue,
+    validValues,
+  }: {
+    initialValue?: string;
+    validValues?: string[];
+  }) {
+    const [count = 0, setCount] = useHistoryParam(initialValue, validValues);
 
     return (
       <>
@@ -118,5 +124,42 @@ describe('useHistoryParam', () => {
 
     const [path2] = inst2.result.current;
     expect(path2).to.equal('root');
+  });
+
+  context('when specifying valid values', () => {
+    it('syncs by history events for a valid value', async () => {
+      const { getByText, getByDisplayValue, findByDisplayValue } = render(
+        <TestComponent validValues={['0', '1']} />,
+      );
+      expect(getByDisplayValue('0')).to.be.ok();
+
+      await userEvent.click(getByText('Increment'));
+
+      expect(getByDisplayValue('1')).to.be.ok();
+      expect(window.location.hash).to.equal('#1');
+
+      act(() => {
+        window.history.back();
+      });
+
+      expect(await findByDisplayValue('0')).to.be.ok();
+      expect(window.location.hash).to.equal('');
+    });
+
+    it('maintains value (does not sync) by history events for an invalid value', async () => {
+      const { getByDisplayValue } = render(<TestComponent validValues={['0', '1']} />);
+      expect(getByDisplayValue('0')).to.be.ok();
+      const popstateHandled = new Promise((resolve) =>
+        window.addEventListener('popstate', resolve, { once: true }),
+      );
+
+      act(() => {
+        window.location.hash = '#wrong';
+      });
+
+      await popstateHandled;
+      expect(getByDisplayValue('0')).to.be.ok();
+      expect(window.location.hash).to.equal('#wrong');
+    });
   });
 });

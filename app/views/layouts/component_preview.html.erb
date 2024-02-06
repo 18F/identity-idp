@@ -16,7 +16,7 @@
     <% else %>
       <%= yield %>
     <% end %>
-    <%= javascript_packs_tag_once('application', prepend: true) %>
+    <%= javascript_packs_tag_once('application') %>
     <%= render_javascript_pack_once_tags %>
   </body>
 </html>

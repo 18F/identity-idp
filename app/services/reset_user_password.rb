@@ -32,7 +32,7 @@ class ResetUserPassword
   end
 
   def notify_user
-    user.email_addresses.each do |email_address|
+    user.confirmed_email_addresses.each do |email_address|
       UserMailer.with(user: user, email_address: email_address).please_reset_password.
         deliver_now_or_later
     end

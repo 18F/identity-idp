@@ -90,28 +90,6 @@ module Users
       end
     end
 
-    def delete
-      if MfaPolicy.new(current_user).multiple_factors_enabled?
-        handle_successful_delete
-      else
-        handle_failed_delete
-      end
-      redirect_to account_two_factor_authentication_path
-    end
-
-    def show_delete
-      @webauthn = WebauthnConfiguration.where(
-        user_id: current_user.id, id: delete_params[:id],
-      ).first
-
-      if @webauthn
-        render 'users/webauthn_setup/delete'
-      else
-        flash[:error] = t('errors.general')
-        redirect_back fallback_location: new_user_session_url, allow_other_host: false
-      end
-    end
-
     private
 
     def validate_existing_platform_authenticator
@@ -140,35 +118,6 @@ module Users
 
     def exclude_credentials
       current_user.webauthn_configurations.map(&:credential_id)
-    end
-
-    def handle_successful_delete
-      webauthn = WebauthnConfiguration.find_by(user_id: current_user.id, id: delete_params[:id])
-      return unless webauthn
-
-      create_user_event(:webauthn_key_removed)
-      webauthn.destroy
-      revoke_remember_device(current_user)
-      event = PushNotification::RecoveryInformationChangedEvent.new(user: current_user)
-      PushNotification::HttpPush.deliver(event)
-      if webauthn.platform_authenticator
-        flash[:success] = t('notices.webauthn_platform_deleted')
-      else
-        flash[:success] = t('notices.webauthn_deleted')
-      end
-      track_delete(success: true, platform_authenticator: webauthn.platform_authenticator?)
-    end
-
-    def handle_failed_delete
-      track_delete(success: false, platform_authenticator: nil)
-    end
-
-    def track_delete(success:, platform_authenticator:)
-      analytics.webauthn_delete_submitted(
-        success:,
-        configuration_id: delete_params[:id],
-        platform_authenticator:,
-      )
     end
 
     def save_challenge_in_session
@@ -223,10 +172,6 @@ module Users
         :platform_authenticator,
         :transports,
       )
-    end
-
-    def delete_params
-      params.permit(:id)
     end
   end
 end

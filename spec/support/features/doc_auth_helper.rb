@@ -116,8 +116,14 @@ module DocAuthHelper
     complete_how_to_verify_step(remote: remote)
   end
 
-  def complete_document_capture_step
-    attach_and_submit_images
+  def complete_document_capture_step(with_selfie: false)
+    if with_selfie
+      attach_liveness_images
+    else
+      attach_images
+    end
+
+    submit_images
   end
 
   # yml_file example: 'spec/fixtures/puerto_rico_resident.yml'
@@ -128,8 +134,11 @@ module DocAuthHelper
     expect(page).to have_current_path(expected_path, wait: 10)
   end
 
-  def complete_doc_auth_steps_before_phone_otp_step(expect_accessible: false)
-    complete_doc_auth_steps_before_verify_step(expect_accessible: expect_accessible)
+  def complete_doc_auth_steps_before_phone_otp_step(expect_accessible: false, with_selfie: false)
+    complete_doc_auth_steps_before_verify_step(
+      expect_accessible: expect_accessible,
+      with_selfie: with_selfie,
+    )
     click_idv_continue
     expect_page_to_have_no_accessibility_violations(page) if expect_accessible
     click_idv_continue
@@ -139,9 +148,9 @@ module DocAuthHelper
     Browser.new(mobile_user_agent)
   end
 
-  def complete_doc_auth_steps_before_ssn_step(expect_accessible: false)
+  def complete_doc_auth_steps_before_ssn_step(expect_accessible: false, with_selfie: false)
     complete_doc_auth_steps_before_document_capture_step(expect_accessible: expect_accessible)
-    complete_document_capture_step
+    complete_document_capture_step(with_selfie: with_selfie)
     expect_page_to_have_no_accessibility_violations(page) if expect_accessible
   end
 
@@ -150,8 +159,11 @@ module DocAuthHelper
     click_idv_continue
   end
 
-  def complete_doc_auth_steps_before_verify_step(expect_accessible: false)
-    complete_doc_auth_steps_before_ssn_step(expect_accessible: expect_accessible)
+  def complete_doc_auth_steps_before_verify_step(expect_accessible: false, with_selfie: false)
+    complete_doc_auth_steps_before_ssn_step(
+      expect_accessible: expect_accessible,
+      with_selfie: with_selfie,
+    )
     complete_ssn_step
     expect_page_to_have_no_accessibility_violations(page) if expect_accessible
   end
@@ -160,8 +172,8 @@ module DocAuthHelper
     click_idv_submit_default
   end
 
-  def complete_doc_auth_steps_before_address_step(expect_accessible: false)
-    complete_doc_auth_steps_before_verify_step
+  def complete_doc_auth_steps_before_address_step(expect_accessible: false, with_selfie: false)
+    complete_doc_auth_steps_before_verify_step(with_selfie: with_selfie)
     expect_page_to_have_no_accessibility_violations(page) if expect_accessible
     click_link t('idv.buttons.change_address_label')
   end
@@ -187,14 +199,17 @@ module DocAuthHelper
     click_on t('idv.cancel.actions.exit', app_name: APP_NAME)
   end
 
-  def complete_all_doc_auth_steps(expect_accessible: false)
-    complete_doc_auth_steps_before_verify_step(expect_accessible: expect_accessible)
+  def complete_all_doc_auth_steps(expect_accessible: false, with_selfie: false)
+    complete_doc_auth_steps_before_verify_step(
+      expect_accessible: expect_accessible,
+      with_selfie: with_selfie,
+    )
     complete_verify_step
     expect_page_to_have_no_accessibility_violations(page) if expect_accessible
   end
 
-  def complete_all_doc_auth_steps_before_password_step(expect_accessible: false)
-    complete_all_doc_auth_steps(expect_accessible: expect_accessible)
+  def complete_all_doc_auth_steps_before_password_step(expect_accessible: false, with_selfie: false)
+    complete_all_doc_auth_steps(expect_accessible: expect_accessible, with_selfie: with_selfie)
     fill_out_phone_form_ok if find('#idv_phone_form_phone').value.blank?
     click_continue
     verify_phone_otp
@@ -202,8 +217,8 @@ module DocAuthHelper
     expect_page_to_have_no_accessibility_violations(page) if expect_accessible
   end
 
-  def complete_proofing_steps
-    complete_all_doc_auth_steps_before_password_step
+  def complete_proofing_steps(with_selfie: false)
+    complete_all_doc_auth_steps_before_password_step(with_selfie: with_selfie)
     fill_in 'Password', with: RequestHelper::VALID_PASSWORD
     click_continue
     acknowledge_and_confirm_personal_key
@@ -248,6 +263,70 @@ module DocAuthHelper
       response: DocAuth::LexisNexis::Responses::TrueIdResponse.new(
         attention_with_barcode_response,
         DocAuth::LexisNexis::Config.new,
+      ),
+    )
+  end
+
+  def mock_doc_auth_success_face_match_fail
+    failure_response = instance_double(
+      Faraday::Response,
+      status: 200,
+      body: LexisNexisFixtures.true_id_response_with_face_match_fail,
+    )
+    DocAuth::Mock::DocAuthMockClient.mock_response!(
+      method: :get_results,
+      response: DocAuth::LexisNexis::Responses::TrueIdResponse.new(
+        failure_response,
+        DocAuth::LexisNexis::Config.new,
+        true, # liveness_checking_enabled
+      ),
+    )
+  end
+
+  def mock_doc_auth_failure_face_match_fail
+    failure_response = instance_double(
+      Faraday::Response,
+      status: 200,
+      body: LexisNexisFixtures.true_id_response_failure_no_liveness,
+    )
+    DocAuth::Mock::DocAuthMockClient.mock_response!(
+      method: :get_results,
+      response: DocAuth::LexisNexis::Responses::TrueIdResponse.new(
+        failure_response,
+        DocAuth::LexisNexis::Config.new,
+        true, # liveness_checking_enabled
+      ),
+    )
+  end
+
+  def mock_doc_auth_failure_face_match_pass
+    failure_response = instance_double(
+      Faraday::Response,
+      status: 200,
+      body: LexisNexisFixtures.true_id_response_failure_with_face_match_pass,
+    )
+    DocAuth::Mock::DocAuthMockClient.mock_response!(
+      method: :get_results,
+      response: DocAuth::LexisNexis::Responses::TrueIdResponse.new(
+        failure_response,
+        DocAuth::LexisNexis::Config.new,
+        true, # liveness_checking_enabled
+      ),
+    )
+  end
+
+  def mock_doc_auth_pass_face_match_pass_no_address1
+    response = instance_double(
+      Faraday::Response,
+      status: 200,
+      body: LexisNexisFixtures.true_id_response_success_with_liveness,
+    )
+    DocAuth::Mock::DocAuthMockClient.mock_response!(
+      method: :get_results,
+      response: DocAuth::LexisNexis::Responses::TrueIdResponse.new(
+        response,
+        DocAuth::LexisNexis::Config.new,
+        true, # liveness_checking_enabled
       ),
     )
   end

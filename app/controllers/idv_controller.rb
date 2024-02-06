@@ -10,10 +10,7 @@ class IdvController < ApplicationController
   before_action :confirm_not_rate_limited
 
   def index
-    if decorated_sp_session.requested_more_recent_verification? ||
-       current_user.reproof_for_irs?(service_provider: current_sp)
-      verify_identity
-    elsif active_profile?
+    if already_verified?
       redirect_to idv_activated_url
     else
       verify_identity
@@ -31,6 +28,14 @@ class IdvController < ApplicationController
   end
 
   private
+
+  def already_verified?
+    if decorated_sp_session.selfie_required?
+      return current_user.identity_verified_with_selfie?
+    end
+
+    return current_user.active_profile.present?
+  end
 
   def verify_identity
     analytics.idv_intro_visit
