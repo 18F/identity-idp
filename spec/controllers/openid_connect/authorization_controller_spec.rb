@@ -232,6 +232,42 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
               expect(assigns(:oidc_redirect_uri)).to start_with(params[:redirect_uri])
             end
 
+            it 'respects UUID redirect config when issuer config is also set' do
+              allow(IdentityConfig.store).to receive(:openid_connect_redirect).
+                and_return('server_side')
+              allow(IdentityConfig.store).to receive(:openid_connect_redirect_issuer_override_map).
+                and_return({ service_provider.issuer => 'client_side' })
+              allow(IdentityConfig.store).to receive(:openid_connect_redirect_uuid_override_map).
+                and_return({ user.uuid => 'client_side_js' })
+
+              IdentityLinker.new(user, service_provider).link_identity(ial: 3)
+              user.identities.last.update!(
+                verified_attributes: %w[given_name family_name birthdate verified_at],
+              )
+              allow(controller).to receive(:pii_requested_but_locked?).and_return(false)
+              action
+
+              expect(controller).to render_template('openid_connect/shared/redirect_js')
+              expect(assigns(:oidc_redirect_uri)).to start_with(params[:redirect_uri])
+            end
+
+            it 'respects issuer redirect config if UUID config is not set' do
+              allow(IdentityConfig.store).to receive(:openid_connect_redirect).
+                and_return('server_side')
+              allow(IdentityConfig.store).to receive(:openid_connect_redirect_issuer_override_map).
+                and_return({ service_provider.issuer => 'client_side_js' })
+
+              IdentityLinker.new(user, service_provider).link_identity(ial: 3)
+              user.identities.last.update!(
+                verified_attributes: %w[given_name family_name birthdate verified_at],
+              )
+              allow(controller).to receive(:pii_requested_but_locked?).and_return(false)
+              action
+
+              expect(controller).to render_template('openid_connect/shared/redirect_js')
+              expect(assigns(:oidc_redirect_uri)).to start_with(params[:redirect_uri])
+            end
+
             it 'redirects to the password capture url when pii is locked' do
               IdentityLinker.new(user, service_provider).link_identity(ial: 3)
               user.identities.last.update!(
