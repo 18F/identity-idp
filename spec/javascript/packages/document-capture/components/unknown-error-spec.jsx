@@ -132,4 +132,68 @@ describe('UnknownError', () => {
       expect(within(paragraph).getByText(/alternative message/)).to.be.ok();
     });
   });
+
+  context('there is a selfie quality/liveness failure', () => {
+    it('renders error message with errors', () => {
+      const { container } = render(
+        <I18nContext.Provider
+          value={
+            new I18n({
+              strings: {
+                'idv.warning.attempts_html': {
+                  one: 'You have <strong>One attempt</strong> remaining',
+                  other: 'You have<strong>%{count} attempts</strong> remaining',
+                },
+              },
+            })
+          }
+        >
+          <UnknownError
+            unknownFieldErrors={[
+              {
+                field: 'general',
+                error: toFormEntryError({ field: 'general', message: 'An unknown error occurred' }),
+              },
+            ]}
+            remainingSubmitAttempts={2}
+            isFailedSelfieLivenessOrQuality
+          />
+        </I18nContext.Provider>,
+      );
+      expect(within(container).getByText(/An unknown error occurred/)).to.be.ok();
+      expect(within(container).getByText(/2 attempts/)).to.be.ok();
+      expect(within(container).getByText(/remaining/)).to.be.ok();
+    });
+
+    it('renders alternative error message without retry information', () => {
+      const { container } = render(
+        <I18nContext.Provider
+          value={
+            new I18n({
+              strings: {
+                'idv.warning.attempts_html': {
+                  one: 'You have <strong>One attempt</strong> remaining',
+                  other: 'You have <strong>%{count} attempts</strong> remaining',
+                },
+              },
+            })
+          }
+        >
+          <UnknownError
+            unknownFieldErrors={[
+              {
+                field: 'general',
+                error: toFormEntryError({ field: 'general', message: 'An unknown error occurred' }),
+              },
+            ]}
+            remainingAttempts={2}
+            isFailedSelfieLivenessOrQuality
+            altIsFailedSelfieDontIncludeAttempts
+          />
+        </I18nContext.Provider>,
+      );
+      expect(within(container).getByText(/An unknown error occurred/)).to.be.ok();
+      expect(within(container).queryByText(/2 attempts/)).to.be.null();
+    });
+  });
 });
