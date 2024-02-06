@@ -114,6 +114,7 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
                 ? withProps({
                     remainingSubmitAttempts: submissionError.remainingSubmitAttempts,
                     isFailedResult: submissionError.isFailedResult,
+                    isFailedSelfie: submissionError.isFailedSelfie,
                     isFailedDocType: submissionError.isFailedDocType,
                     isFailedSelfieLivenessOrQuality:
                       submissionError.selfieNotLive || submissionError.selfieNotGoodQuality,
