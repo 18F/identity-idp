@@ -3636,12 +3636,14 @@ module AnalyticsEvents
   # @param [String] client_id
   # @param [String] scope
   # @param [Array] acr_values
+  # @param [Array] vtr
   # @param [Boolean] unauthorized_scope
   # @param [Boolean] user_fully_authenticated
   def openid_connect_request_authorization(
     client_id:,
     scope:,
     acr_values:,
+    vtr:,
     unauthorized_scope:,
     user_fully_authenticated:,
     **extra
@@ -3651,6 +3653,7 @@ module AnalyticsEvents
       client_id: client_id,
       scope: scope,
       acr_values: acr_values,
+      vtr: vtr,
       unauthorized_scope: unauthorized_scope,
       user_fully_authenticated: user_fully_authenticated,
       **extra,
