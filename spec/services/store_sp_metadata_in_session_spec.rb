@@ -27,20 +27,23 @@ RSpec.describe StoreSpMetadataInSession do
     context 'when a ServiceProviderRequestProxy is found' do
       # old-style SP requests
       context 'and the `use_vot_in_sp_requests` config bflag is false' do
-
         before do
           allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(false)
 
-          ServiceProviderRequestProxy.find_or_create_by(uuid: request_id) do |sp_request|
+          sp_request = ServiceProviderRequestProxy.find_or_create_by(
+            uuid: request_id
+          ) do |sp_request|
             sp_request.issuer = issuer
-            sp_request.ial = ial
-            sp_request.aal = aal
             sp_request.url = request_url
             sp_request.requested_attributes = requested_attributes
+            sp_request.ial = ial
+            sp_request.aal = aal
             sp_request.biometric_comparison_required = biometric_comparison_required
+            sp_request.acr_values = request_acr
+            sp_request.vtr = request_vtr
           end
 
-          instance.call
+          instance.call(service_provider_request: sp_request)
         end
 
         matcher :have_default_non_vot_values do
@@ -160,6 +163,8 @@ RSpec.describe StoreSpMetadataInSession do
             sp_request.issuer = issuer
             sp_request.url = request_url
             sp_request.requested_attributes = requested_attributes
+            sp_request.ial = ial
+            sp_request.aal = aal
             sp_request.acr_values = request_acr
             sp_request.vtr = request_vtr
           end
