@@ -253,26 +253,17 @@ RSpec.describe Reporting::AccountReuseReport do
           sp_timestamp: Array.new(9) { in_query } + Array.new(1) { out_of_query },
         },
         { # 3 apps, 2 agencies - Last user gets deleted
-          created_timestamp: in_query - 1.day, # change so last is unique
+          created_timestamp: in_query,
           sp: all_agency_apps.first(3),
           sp_timestamp: Array.new(3) { in_query },
+          deleted: true,
         },
       ]
 
       mock_users_to_query.each do |mock_user|
         current_user = create(:user, :fully_registered, registered_at: in_query)
 
-        mock_user[:sp].each_with_index do |sp, i|
-          ServiceProviderIdentity.create(
-            user_id: current_user[:id],
-            service_provider: sp,
-            created_at: mock_user[:created_timestamp],
-            last_ial2_authenticated_at: in_query,
-            verified_at: mock_user[:sp_timestamp][i],
-          )
-        end
-
-        if mock_user == mock_users_to_query.last
+        if mock_user[:deleted]
           DeletedUser.create_from_user(current_user)
           current_user.destroy!
         else
@@ -281,6 +272,16 @@ RSpec.describe Reporting::AccountReuseReport do
             :active,
             activated_at: in_query,
             user: current_user,
+          )
+        end
+
+        mock_user[:sp].each_with_index do |sp, i|
+          ServiceProviderIdentity.create(
+            user_id: current_user.id,
+            service_provider: sp,
+            created_at: mock_user[:created_timestamp],
+            last_ial2_authenticated_at: in_query,
+            verified_at: mock_user[:sp_timestamp][i],
           )
         end
       end
