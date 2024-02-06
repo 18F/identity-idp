@@ -252,6 +252,7 @@ describe('UnknownError', () => {
             ]}
             remainingAttempts={2}
             isFailedSelfie
+            altIsFailedSelfieDontIncludeAttempts
           />
         </I18nContext.Provider>,
       );
