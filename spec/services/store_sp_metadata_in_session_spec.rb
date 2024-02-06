@@ -15,6 +15,7 @@ RSpec.describe StoreSpMetadataInSession do
     let(:request_acr) { nil }
     let(:request_vtr) { [] }
     let(:biometric_comparison_required) { false }
+    let(:use_vot_in_sp_requests) { false }
 
     context 'when a ServiceProviderRequestProxy is not found' do
       let(:request_id) { 'foo' }
@@ -27,8 +28,10 @@ RSpec.describe StoreSpMetadataInSession do
     context 'when a ServiceProviderRequestProxy is found' do
       # old-style SP requests
       context 'and the `use_vot_in_sp_requests` config bflag is false' do
+        let(:use_vot_in_sp_requests) { false }
+
         before do
-          allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(false)
+          allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(use_vot_in_sp_requests)
 
           sp_request = ServiceProviderRequestProxy.find_or_create_by(
             uuid: request_id
@@ -154,8 +157,10 @@ RSpec.describe StoreSpMetadataInSession do
 
       # new-style SP requests
       context 'and the `use_vot_in_sp_requests` config flag is true' do
+        let(:use_vot_in_sp_requests) { true }
+
         before do
-          allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
+          allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(use_vot_in_sp_requests)
 
           sp_request = ServiceProviderRequestProxy.find_or_create_by(
             uuid: request_id,
