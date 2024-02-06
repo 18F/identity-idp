@@ -78,47 +78,14 @@ class StoreSpMetadataInSession
       request_url: sp_request.url,
       request_id: sp_request.uuid,
       requested_attributes: sp_request.requested_attributes,
+      ial: ial_value,
+      ial2: ial2_value,
+      ialmax: ialmax_value,
+      aal_level_requested: aal_level_requested_value,
+      piv_cac_requested: piv_cac_requested_value,
+      phishing_resistant_requested: phishing_resistant_value,
+      biometric_comparison_required: biometric_comparison_required_value,
     }
-
-    if IdentityConfig.store.use_vot_in_sp_requests
-      session[:sp].merge!(
-        {
-          ial: ial_value,
-          ial2: ial2_value,
-          ialmax: ialmax_value,
-          aal_level_requested: aal_level_requested_value,
-          piv_cac_requested: piv_cac_requested_value,
-          phishing_resistant_requested: phishing_resistant_value,
-          biometric_comparison_required: biometric_comparison_required_value,
-        },
-      )
-    else
-      session[:sp].merge!(
-        {
-          ial: ial_context.ial,
-          ial2: ial_context.ial2_requested?,
-          ialmax: ial_context.ialmax_requested?,
-          aal_level_requested: aal_requested,
-          piv_cac_requested: hspd12_requested,
-          phishing_resistant_requested: phishing_resistant_requested,
-          biometric_comparison_required: sp_request.biometric_comparison_required,
-        },
-      )
-    end
-  end
-
-  def aal_requested
-    Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_AAL[sp_request.aal]
-  end
-
-  def phishing_resistant_requested
-    sp_request.aal == Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF ||
-      sp_request.aal == Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF
-  end
-
-  def hspd12_requested
-    sp_request.aal == Saml::Idp::Constants::AAL3_HSPD12_AUTHN_CONTEXT_CLASSREF ||
-      sp_request.aal == Saml::Idp::Constants::AAL2_HSPD12_AUTHN_CONTEXT_CLASSREF
   end
 
   def service_provider
