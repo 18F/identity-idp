@@ -48,6 +48,7 @@ es:
           identidad. Intente tomar nuevas fotos.
         ref_control_number_check: No pudimos leer el código de barras del número de
           control. Intente tomar nuevas fotografías.
+        selfie_fail: TODO SELFIE FAIL
         selfie_not_live: 'Intenta volver a tomarte una foto. Asegúrate de que tu rostro
           completo esté claro y visible en la foto.'
         selfie_not_live_poor_quality: 'No pudimos verificar su foto. Trate de tomarse otra foto.'
