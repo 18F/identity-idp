@@ -12,7 +12,6 @@ es:
         no_auth: Los acr_values no están autorizados
         no_valid_acr_values: ial_valores encontrados no aceptables
         no_valid_scope: No se han encontrado valores de magnitud válidos
-        no_valid_vtr: vots encontrados no aceptables
         prompt_invalid: Prompt no es válido
         redirect_uri_invalid: Redirect_uri no es válido
         redirect_uri_no_match: Redirect_uri no coincide con redirect_uri registrado
