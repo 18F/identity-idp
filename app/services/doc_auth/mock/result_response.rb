@@ -131,7 +131,10 @@ module DocAuth
       end
 
       def doc_auth_success?
-        doc_auth_result_from_uploaded_file == 'Passed' || errors.blank?
+        (doc_auth_result_from_uploaded_file == 'Passed' ||
+          errors.blank? ||
+          attention_with_barcode?
+        ) && id_type_supported?
       end
 
       def selfie_status
