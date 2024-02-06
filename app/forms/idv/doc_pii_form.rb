@@ -66,7 +66,7 @@ module Idv
     def self.present_error(existing_errors)
       return if existing_errors.blank?
       if existing_errors.any? do |k, v|
-        %i[name dob address1 state zipcode jurisdiction state_id_number dob_min_age].include?(k)
+        PII_ERROR_KEYS.include?(k)
       end
         existing_errors[:front] = [I18n.t('doc_auth.errors.general.multiple_front_id_failures')]
         existing_errors[:back] = [I18n.t('doc_auth.errors.general.multiple_back_id_failures')]
@@ -79,6 +79,8 @@ module Idv
     end
 
     private
+
+    PII_ERROR_KEYS = %i[name dob address1 state zipcode jurisdiction state_id_number dob_min_age]
 
     attr_reader :pii_from_doc
 
