@@ -4052,6 +4052,17 @@ module AnalyticsEvents
     track_event('Reactivate Account Submitted')
   end
 
+  # Submission event for the "verify password" page the user sees after entering their personal key.
+  # @param [Boolean] success Whether the form was submitted successfully.
+  def reactivate_account_verify_password_submitted(success:, **extra)
+    track_event(:reactivate_account_verify_password_submitted, success: success, **extra)
+  end
+
+  # Visit event for the "verify password" page the user sees after entering their personal key.
+  def reactivate_account_verify_password_visited(**extra)
+    track_event(:reactivate_account_verify_password_visited, **extra)
+  end
+
   # Account profile reactivation page visited
   def reactivate_account_visit
     track_event('Reactivate Account Visited')
