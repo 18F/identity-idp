@@ -12,6 +12,7 @@ import AnalyticsContext from '../context/analytics';
 interface DocumentCaptureWarningProps {
   isFailedDocType: boolean;
   isFailedResult: boolean;
+  isFailedSelfie: boolean;
   isFailedSelfieLivenessOrQuality: boolean;
   remainingSubmitAttempts: number;
   actionOnClick?: () => void;
@@ -23,12 +24,21 @@ const DISPLAY_ATTEMPTS = 3;
 
 type GetHeadingArguments = {
   isFailedDocType: boolean;
+  isFailedSelfie: boolean;
   isFailedSelfieLivenessOrQuality: boolean;
   t: typeof I18n.prototype.t;
 };
-function getHeading({ isFailedDocType, isFailedSelfieLivenessOrQuality, t }: GetHeadingArguments) {
+function getHeading({
+  isFailedDocType,
+  isFailedSelfie,
+  isFailedSelfieLivenessOrQuality,
+  t,
+}: GetHeadingArguments) {
   if (isFailedDocType) {
     return t('errors.doc_auth.doc_type_not_supported_heading');
+  }
+  if (isFailedSelfie) {
+    return t('errors.doc_auth.selfie_no_facematch_heading');
   }
   if (isFailedSelfieLivenessOrQuality) {
     return t('errors.doc_auth.selfie_not_live_or_poor_quality_heading');
@@ -39,6 +49,7 @@ function getHeading({ isFailedDocType, isFailedSelfieLivenessOrQuality, t }: Get
 function DocumentCaptureWarning({
   isFailedDocType,
   isFailedResult,
+  isFailedSelfie,
   isFailedSelfieLivenessOrQuality,
   remainingSubmitAttempts,
   actionOnClick,
@@ -50,7 +61,12 @@ function DocumentCaptureWarning({
   const { trackEvent } = useContext(AnalyticsContext);
 
   const nonIppOrFailedResult = !inPersonURL || isFailedResult;
-  const heading = getHeading({ isFailedDocType, isFailedSelfieLivenessOrQuality, t });
+  const heading = getHeading({
+    isFailedDocType,
+    isFailedSelfie,
+    isFailedSelfieLivenessOrQuality,
+    t,
+  });
   const actionText = nonIppOrFailedResult
     ? t('idv.failure.button.warning')
     : t('idv.failure.button.try_online');
@@ -95,12 +111,14 @@ function DocumentCaptureWarning({
             unknownFieldErrors={unknownFieldErrors}
             remainingSubmitAttempts={remainingSubmitAttempts}
             isFailedDocType={isFailedDocType}
+            isFailedSelfie={isFailedSelfie}
             isFailedSelfieLivenessOrQuality={isFailedSelfieLivenessOrQuality}
             hasDismissed={hasDismissed}
           />
         </div>
 
         {!isFailedDocType &&
+          !isFailedSelfie &&
           !isFailedSelfieLivenessOrQuality &&
           remainingSubmitAttempts <= DISPLAY_ATTEMPTS && (
             <p>
