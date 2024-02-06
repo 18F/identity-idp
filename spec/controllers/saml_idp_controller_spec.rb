@@ -1166,12 +1166,6 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
     end
 
     context 'POST to auth correctly stores SP in session' do
-      let(:acr_values) do
-        Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF +
-          ' ' +
-          Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
-      end
-
       before do
         @user = create(:user, :fully_registered)
         @saml_request = saml_request(saml_settings)
@@ -1187,7 +1181,6 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
           issuer: saml_settings.issuer,
           aal_level_requested: aal_level,
           piv_cac_requested: false,
-          acr_values: acr_values,
           phishing_resistant_requested: false,
           ial: 1,
           ial2: false,
@@ -1196,7 +1189,6 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
           request_id: sp_request_id,
           requested_attributes: ['email'],
           biometric_comparison_required: false,
-          vtr: nil,
         )
       end
 
@@ -1209,12 +1201,6 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
     end
 
     context 'service provider is valid' do
-      let(:acr_values) do
-        Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF +
-          ' ' +
-          Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
-      end
-
       before do
         @user = create(:user, :fully_registered)
         @saml_request = saml_get_auth(saml_settings)
@@ -1226,7 +1212,6 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
         expect(session[:sp]).to eq(
           issuer: saml_settings.issuer,
           aal_level_requested: aal_level,
-          acr_values: acr_values,
           piv_cac_requested: false,
           phishing_resistant_requested: false,
           ial: 1,
@@ -1236,7 +1221,6 @@ RSpec.describe SamlIdpController, allowed_extra_analytics: [:*] do
           request_id: sp_request_id,
           requested_attributes: ['email'],
           biometric_comparison_required: false,
-          vtr: nil,
         )
       end
 
