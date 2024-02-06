@@ -52,8 +52,8 @@ RSpec.describe Idv::InPerson::ReadyToVerifyController do
         end
 
         context 'with in_person_proofing_enforce_tmx disabled and pending fraud review' do
-          let(:user) { create(:user, :with_pending_in_person_enrollment, :fraud_review_pending) }
-
+          let!(:profile) { create(:profile, fraud_review_pending_at: 1.day.ago, user: user) }
+          let!(:enrollment) { create(:in_person_enrollment, :passed, user: user, profile: profile) }
           it 'renders show template' do
             response
 
@@ -61,14 +61,30 @@ RSpec.describe Idv::InPerson::ReadyToVerifyController do
           end
         end
 
-        context 'with in_person_proofing_enforce_tmx enabled and pending fraud review' do
-          let(:user) { create(:user, :with_pending_in_person_enrollment, :fraud_review_pending) }
+        context 'in_person_proofing_enforce_tmx enabled, pending fraud review, enrollment passed' do
           let(:in_person_proofing_enforce_tmx) { true }
+          let!(:profile) { create(:profile, fraud_review_pending_at: 1.day.ago, user: user) }
+          let!(:enrollment) { create(:in_person_enrollment, :passed, user: user, profile: profile) }
 
           it 'redirects to please call' do
             response
 
             expect(response).to redirect_to idv_please_call_url
+          end
+        end
+
+        context 'in_person_proofing_enforce_tmx enabled, pending fraud review,
+          enrollment not passed' do
+          let(:in_person_proofing_enforce_tmx) { true }
+          let!(:profile) { create(:profile, fraud_review_pending_at: 1.day.ago, user: user) }
+          let!(:enrollment) do
+            create(:in_person_enrollment, :establishing, user: user, profile: profile)
+          end
+
+          it 'redirects to please call' do
+            response
+
+            expect(response).to render_template :show
           end
         end
       end
