@@ -37,8 +37,6 @@ es:
       instructions: Si no tiene acceso a otro dispositivo, guarde bien sus códigos de
         respaldo. No podrá iniciar sesión en %{app_name} si pierde sus códigos
         de respaldo.
-      new_backup_codes_html: Necesito nuevos códigos de respaldo
-      saved_backup_codes: Ya guardé mis códigos de respaldo
       warning_html: <strong>Solo ha configurado códigos de respaldo en su cuenta.
         </strong>Si tiene acceso a otro dispositivo, como un celular, proteja su
         cuenta mediante otro método de autenticación.
