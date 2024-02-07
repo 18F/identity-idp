@@ -71,8 +71,9 @@ RSpec.describe StoreSpMetadataInSession do
             {
               issuer: issuer,
               aal_level_requested: 3,
-              piv_cac_requested: true,
-              phishing_resistant_requested: false,
+              acr_values: request_acr,
+              piv_cac_requested: false,
+              phishing_resistant_requested: true,
               ial: 2,
               ial2: true,
               ialmax: false,
@@ -96,6 +97,7 @@ RSpec.describe StoreSpMetadataInSession do
             {
               issuer: issuer,
               aal_level_requested: 2,
+              acr_values: request_acr,
               piv_cac_requested: false,
               phishing_resistant_requested: true,
               ial: 2,
@@ -122,6 +124,7 @@ RSpec.describe StoreSpMetadataInSession do
             {
               issuer: issuer,
               aal_level_requested: 3,
+              acr_values: request_acr,
               piv_cac_requested: false,
               phishing_resistant_requested: true,
               ial: 2,
@@ -144,6 +147,7 @@ RSpec.describe StoreSpMetadataInSession do
             {
               issuer: issuer,
               aal_level_requested: 1,
+              acr_values: request_acr,
               piv_cac_requested: false,
               phishing_resistant_requested: false,
               ial: 1,
@@ -159,9 +163,6 @@ RSpec.describe StoreSpMetadataInSession do
       end
 
       context 'when MFA and biometric comparison are requested using a VTR' do
-        let(:expected_sp_session) do
-        end
-
         context 'using VTR' do
           let(:request_vtr) { ['C1.Pb'] }
 
@@ -170,6 +171,7 @@ RSpec.describe StoreSpMetadataInSession do
               {
                 issuer: issuer,
                 aal_level_requested: 2,
+                acr_values: request_acr,
                 piv_cac_requested: false,
                 phishing_resistant_requested: false,
                 ial: 2,
@@ -193,6 +195,7 @@ RSpec.describe StoreSpMetadataInSession do
             {
               issuer: issuer,
               aal_level_requested: 2,
+              acr_values: request_acr,
               piv_cac_requested: false,
               phishing_resistant_requested: false,
               ial: 2,
@@ -215,6 +218,7 @@ RSpec.describe StoreSpMetadataInSession do
             {
               issuer: issuer,
               aal_level_requested: 2,
+              acr_values: request_acr,
               piv_cac_requested: false,
               phishing_resistant_requested: false,
               ial: 2,
@@ -237,6 +241,7 @@ RSpec.describe StoreSpMetadataInSession do
             {
               issuer: issuer,
               aal_level_requested: 3,
+              acr_values: request_acr,
               piv_cac_requested: false,
               phishing_resistant_requested: true,
               ial: 2,
@@ -258,6 +263,7 @@ RSpec.describe StoreSpMetadataInSession do
           expect(app_session[:sp]).to eq(
             {
               issuer: issuer,
+              acr_values: request_acr,
               aal_level_requested: 3,
               piv_cac_requested: false,
               phishing_resistant_requested: true,
@@ -281,6 +287,7 @@ RSpec.describe StoreSpMetadataInSession do
             {
               issuer: issuer,
               aal_level_requested: 2,
+              acr_values: request_acr,
               piv_cac_requested: true,
               phishing_resistant_requested: false,
               ial: 2,
@@ -303,6 +310,7 @@ RSpec.describe StoreSpMetadataInSession do
             {
               issuer: issuer,
               aal_level_requested: 2,
+              acr_values: request_acr,
               piv_cac_requested: true,
               phishing_resistant_requested: false,
               ial: 2,
@@ -325,6 +333,7 @@ RSpec.describe StoreSpMetadataInSession do
             {
               issuer: issuer,
               aal_level_requested: 2,
+              acr_values: request_acr,
               piv_cac_requested: false,
               phishing_resistant_requested: false,
               ial: 2,
