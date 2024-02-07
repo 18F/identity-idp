@@ -27,7 +27,12 @@ DocumentCaptureSessionResult = RedactedStruct.new(
     self[:selfie_status].to_sym
   end
 
-  alias_method :success?, :success
+  def success_status
+    # doc_auth_success : including document, attention_with_barcode and id type verification
+    (doc_auth_success && selfie_status != :fail) || success
+  end
+
+  alias_method :success?, :success_status
   alias_method :attention_with_barcode?, :attention_with_barcode
   alias_method :pii_from_doc, :pii
 
