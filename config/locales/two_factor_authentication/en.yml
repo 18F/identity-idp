@@ -36,8 +36,6 @@ en:
       instructions: If you don’t have access to another device, keep your backup codes
         safe. If you lose your backup codes, you won’t be able to sign into
         %{app_name}.
-      new_backup_codes_html: I need new backup&nbsp;codes
-      saved_backup_codes: I’ve saved my backup codes
       warning_html: <strong>You’ve only set up backup codes on your account.
         </strong>If you have access to another device, such as a phone, protect
         your account with another authentication method.
