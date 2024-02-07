@@ -477,6 +477,22 @@ RSpec.feature 'Sign Up', allowed_extra_analytics: [:*] do
     expect(page).to have_current_path phone_setup_path
   end
 
+  it 'logs expected analytics events for end-to-end sign-up' do
+    analytics = FakeAnalytics.new
+    allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(analytics)
+
+    visit_idp_from_sp_with_ial1(:oidc)
+    register_user
+    click_agree_and_continue
+
+    expect(analytics).to have_logged_event(
+      'SP redirect initiated',
+      ial: 1,
+      billed_ial: 1,
+      sign_in_flow: 'create_account',
+    )
+  end
+
   describe 'visiting the homepage by clicking the logo image' do
     context 'on the password confirmation screen' do
       before do

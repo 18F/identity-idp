@@ -109,10 +109,6 @@ RSpec.feature 'SAML logout', allowed_extra_analytics: [:*] do
     context 'when signed in with another browser' do
       it 'redirects to the SP after concurrent session logout' do
         user = user_with_2fa
-        service_provider = ServiceProvider.find_by(issuer: SamlAuthHelper::SP_ISSUER)
-        IdentityLinker.new(user, service_provider).link_identity(
-          verified_attributes: %w[openid email],
-        )
 
         perform_in_browser(:one) do
           visit_idp_from_sp_with_ial1(:saml)

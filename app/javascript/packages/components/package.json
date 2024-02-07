@@ -32,5 +32,6 @@
     "type": "git",
     "url": "https://github.com/18f/identity-idp.git",
     "directory": "app/javascript/packages/components"
-  }
+  },
+  "sideEffects": false
 }

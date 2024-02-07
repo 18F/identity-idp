@@ -98,10 +98,36 @@ RSpec.describe OpenidConnectAuthorizeForm do
         allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(false)
       end
 
-      let(:vtr) { ['C1.P1'].to_json }
+      context 'with only a vtr param' do
+        let(:vtr) { ['C1.P1'].to_json }
+        let(:acr_values) { nil }
 
-      it 'does not consume the VTR param' do
-        expect(form.vtr).to be_nil
+        it 'is invalid' do
+          expect(form.vtr).to be_nil
+          expect(form.valid?).to eq(false)
+          expect(form.errors[:acr_values]).
+            to include(t('openid_connect.authorization.errors.no_valid_acr_values'))
+          expect(form.errors[:vtr]).to be_empty
+        end
+      end
+
+      context 'with a vtr and acr_values param' do
+        let(:vtr) { ['C1.P1'].to_json }
+        let(:acr_values) { Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF }
+
+        it 'uses the acr_values param and ignores vtr' do
+          expect(form.vtr).to be_nil
+          expect(form.valid?).to eq(true)
+        end
+      end
+
+      context 'with only an acr_values param' do
+        let(:vtr) { nil }
+        let(:acr_values) { Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF }
+
+        it 'uses the acr_values param' do
+          expect(form.valid?).to eq(true)
+        end
       end
     end
   end

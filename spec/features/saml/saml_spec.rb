@@ -460,6 +460,33 @@ RSpec.feature 'saml api', allowed_extra_analytics: [:*] do
           ),
         )
       end
+
+      context 'when signed in with another browser' do
+        it 'maintains authentication request if logged out by concurrent session logout' do
+          user = user_with_2fa
+
+          perform_in_browser(:one) do
+            visit_idp_from_sp_with_ial1(:oidc)
+            sign_in_live_with_2fa(user)
+          end
+
+          perform_in_browser(:two) do
+            visit_idp_from_sp_with_ial1(:oidc)
+            sign_in_live_with_2fa(user)
+          end
+
+          perform_in_browser(:one) do
+            visit_idp_from_sp_with_ial1(:saml)
+
+            expect(page).to have_content(
+              [
+                ServiceProvider.find_by(issuer: SamlAuthHelper::SP_ISSUER).friendly_name,
+                t('headings.create_account_with_sp.sp_text', app_name: APP_NAME),
+              ].join(' '),
+            )
+          end
+        end
+      end
     end
   end
 

@@ -38,7 +38,7 @@ class OpenidConnectAuthorizeForm
   RANDOM_VALUE_MINIMUM_LENGTH = 22
   MINIMUM_REPROOF_VERIFIED_WITHIN_DAYS = 30
 
-  validates :acr_values, presence: true, if: ->(form) { form.vtr.empty? }
+  validates :acr_values, presence: true, if: ->(form) { form.vtr.blank? }
   validates :client_id, presence: true
   validates :redirect_uri, presence: true
   validates :scope, presence: true
@@ -180,7 +180,7 @@ class OpenidConnectAuthorizeForm
 
   def parse_vtr(param_value)
     return if !IdentityConfig.store.use_vot_in_sp_requests
-    return [] if param_value.blank?
+    return if param_value.blank?
 
     JSON.parse(param_value)
   rescue JSON::ParserError
