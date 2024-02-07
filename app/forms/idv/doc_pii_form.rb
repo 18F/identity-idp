@@ -64,13 +64,10 @@ module Idv
     # errors: The DocPiiForm errors object
     def self.present_error(existing_errors)
       return if existing_errors.blank?
-      if existing_errors.any? do |k, v|
-        PII_ERROR_KEYS.include?(k)
-      end
+      if existing_errors.any? { |k, v| PII_ERROR_KEYS.include?(k) }
         existing_errors[:front] = [I18n.t('doc_auth.errors.general.multiple_front_id_failures')]
         existing_errors[:back] = [I18n.t('doc_auth.errors.general.multiple_back_id_failures')]
       end
-
       if existing_errors.many? { |k, v| %i[name dob dob_min_age state].include?(k) }
         existing_errors.slice!(:front, :back)
         existing_errors[:pii] = [I18n.t('doc_auth.errors.general.no_liveness')]
