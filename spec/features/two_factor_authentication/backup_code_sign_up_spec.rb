@@ -20,11 +20,6 @@ RSpec.feature 'sign up with backup code', allowed_extra_analytics: [:*] do
       expect(page).to have_link(t('components.download_button.label'))
       expect(current_path).to eq backup_code_setup_path
 
-      click_continue
-      click_continue
-
-      expect(page).to have_content(t('forms.validation.required_checkbox'))
-
       check t('forms.backup_code.saved')
       click_continue
 
@@ -35,7 +30,7 @@ RSpec.feature 'sign up with backup code', allowed_extra_analytics: [:*] do
       click_on t('mfa.skip')
       expect(current_path).to eq(confirm_backup_codes_path)
 
-      click_on t('two_factor_authentication.backup_codes.saved_backup_codes')
+      click_on t('forms.buttons.continue')
 
       expect(fake_analytics).to have_logged_event('User registration: complete')
       expect(page).to have_title(t('titles.account'))
@@ -81,7 +76,7 @@ RSpec.feature 'sign up with backup code', allowed_extra_analytics: [:*] do
     skip_second_mfa_prompt
 
     expect(page).to have_current_path(confirm_backup_codes_path)
-    acknowledge_backup_code_confirmation
+    click_on t('forms.buttons.continue')
 
     expect(current_path).to eq(sign_up_completed_path)
   end
