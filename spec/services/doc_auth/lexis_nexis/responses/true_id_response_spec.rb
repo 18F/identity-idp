@@ -674,9 +674,19 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
 
     context 'when selfie check is enabled' do
       context 'whe missing selfie result in response' do
-        let(:response) { described_class.new(success_response, config, true) }
+        let(:request_context) do
+          {
+            workflow: 'selfie_workflow',
+          }
+        end
+        let(:response) { described_class.new(success_response, config, true, request_context) }
         it 'returns :not_processed when missing selfie in response' do
           expect(response.selfie_status).to eq(:not_processed)
+        end
+        it 'includes workflow in extra_attributes' do
+          expect(response.extra_attributes).to include(
+            workflow: 'selfie_workflow',
+          )
         end
       end
       context 'when selfie passed' do

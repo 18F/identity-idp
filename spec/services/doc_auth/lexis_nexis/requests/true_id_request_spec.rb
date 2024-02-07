@@ -219,6 +219,13 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
       expect(response.network_error?).to eq(true)
     end
   end
+  describe '#request_context' do
+    it 'returns needed information' do
+      # expect(subject.request_context).to eq(
+      #
+      # )
+    end
+  end
 end
 
 def response_body(include_liveness)
