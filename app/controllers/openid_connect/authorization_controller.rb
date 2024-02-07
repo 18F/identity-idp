@@ -87,6 +87,7 @@ module OpenidConnect
 
       redirect_user(
         @authorize_form.success_redirect_uri,
+        @authorize_form.service_provider.issuer,
         current_user.uuid,
       )
 
@@ -144,7 +145,7 @@ module OpenidConnect
       if redirect_uri.nil?
         render :error
       else
-        redirect_user(redirect_uri, current_user&.uuid)
+        redirect_user(redirect_uri, @authorize_form.service_provider.issuer, current_user&.uuid)
       end
     end
 
@@ -199,15 +200,21 @@ module OpenidConnect
       analytics.sp_redirect_initiated(
         ial: event_ial_context.ial,
         billed_ial: event_ial_context.bill_for_ial_1_or_2,
+        sign_in_flow: session[:sign_in_flow],
       )
       track_billing_events
     end
 
-    def redirect_user(redirect_uri, user_uuid)
-      redirect_method = IdentityConfig.store.openid_connect_redirect_uuid_override_map.fetch(
-        user_uuid,
-        IdentityConfig.store.openid_connect_redirect,
-      )
+    def redirect_user(redirect_uri, issuer, user_uuid)
+      user_redirect_method_override =
+        IdentityConfig.store.openid_connect_redirect_uuid_override_map[user_uuid]
+
+      sp_redirect_method_override =
+        IdentityConfig.store.openid_connect_redirect_issuer_override_map[issuer]
+
+      redirect_method =
+        user_redirect_method_override || sp_redirect_method_override ||
+        IdentityConfig.store.openid_connect_redirect
 
       case redirect_method
       when 'client_side'

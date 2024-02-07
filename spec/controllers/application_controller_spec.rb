@@ -458,6 +458,23 @@ RSpec.describe ApplicationController do
     end
   end
 
+  describe '#resolved_authn_context_result' do
+    it 'returns a resolved authn context result' do
+      sp = build(:service_provider, ial: 2)
+      acr_values = [
+        'http://idmanagement.gov/ns/assurance/aal/1',
+      ].join(' ')
+      sp_session = { vtr: nil, acr_values: acr_values }
+      allow(controller).to receive(:current_sp).and_return(sp)
+      allow(controller).to receive(:sp_session).and_return(sp_session)
+
+      result = subject.resolved_authn_context_result
+
+      expect(result.aal2?).to eq(true)
+      expect(result.identity_proofing?).to eq(true)
+    end
+  end
+
   describe '#sp_session_request_url_with_updated_params' do
     controller do
       def index

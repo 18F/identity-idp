@@ -4,5 +4,6 @@
   "private": true,
   "dependencies": {
     "react": "^17.0.2"
-  }
+  },
+  "sideEffects": false
 }

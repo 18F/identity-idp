@@ -32,6 +32,7 @@ module Users
     end
 
     def create
+      session[:sign_in_flow] = :sign_in
       return process_locked_out_session if session_bad_password_count_max_exceeded?
       return process_locked_out_user if current_user && user_locked_out?(current_user)
 

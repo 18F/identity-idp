@@ -4,56 +4,23 @@ module DocAuth
   module LexisNexis
     module Responses
       class TrueIdResponse < DocAuth::Response
+        include ImageMetricsReader
+        include DocPiiReader
         include ClassificationConcern
         include SelfieConcern
-        PII_EXCLUDES = %w[
-          Age
-          DocSize
-          DOB_Day
-          DOB_Month
-          DOB_Year
-          ExpirationDate_Day
-          ExpirationDate_Month
-          ExpirationDate_Year
-          FullName
-          Portrait
-          Sex
-        ].freeze
 
-        PII_INCLUDES = {
-          'Fields_FirstName' => :first_name,
-          'Fields_MiddleName' => :middle_name,
-          'Fields_Surname' => :last_name,
-          'Fields_AddressLine1' => :address1,
-          'Fields_AddressLine2' => :address2,
-          'Fields_City' => :city,
-          'Fields_State' => :state,
-          'Fields_PostalCode' => :zipcode,
-          'Fields_DOB_Year' => :dob_year,
-          'Fields_DOB_Month' => :dob_month,
-          'Fields_DOB_Day' => :dob_day,
-          'Fields_DocumentNumber' => :state_id_number,
-          'Fields_IssuingStateCode' => :state_id_jurisdiction,
-          'Fields_xpirationDate_Day' => :state_id_expiration_day, # this is NOT a typo
-          'Fields_ExpirationDate_Month' => :state_id_expiration_month,
-          'Fields_ExpirationDate_Year' => :state_id_expiration_year,
-          'Fields_IssueDate_Day' => :state_id_issued_day,
-          'Fields_IssueDate_Month' => :state_id_issued_month,
-          'Fields_IssueDate_Year' => :state_id_issued_year,
-          'Fields_DocumentClassName' => :state_id_type,
-          'Fields_CountryCode' => :issuing_country_code,
-        }.freeze
         attr_reader :config, :http_response
 
         def initialize(http_response, config, liveness_checking_enabled = false)
           @config = config
           @http_response = http_response
           @liveness_checking_enabled = liveness_checking_enabled
+          @pii_from_doc = read_pii(true_id_product)
           super(
             success: successful_result?,
             errors: error_messages,
             extra: extra_attributes,
-            pii_from_doc: pii_from_doc,
+            pii_from_doc: @pii_from_doc,
           )
         rescue StandardError => e
           NewRelic::Agent.notice_error(e)
@@ -65,14 +32,33 @@ module DocAuth
           )
         end
 
+        ## returns full check success status, considering all checks:
+        #    vendor (document and selfie if requested)
+        #    document type
+        #    bar code attention
         def successful_result?
           (all_passed? || attention_with_barcode?) && id_type_supported?
+        end
+
+        # all checks from document perspectives, without considering selfie:
+        #  vendor (document only)
+        #  document_type
+        #  bar code attention
+        def doc_auth_success?
+          # really it's everything else excluding selfie
+          ((transaction_status_passed? &&
+            true_id_product.present? &&
+            product_status_passed? &&
+            doc_auth_result_passed?
+           ) ||
+            attention_with_barcode?
+          ) && id_type_supported?
         end
 
         def error_messages
           return {} if successful_result?
 
-          if true_id_product&.dig(:AUTHENTICATION_RESULT).present?
+          if with_authentication_result?
             ErrorGenerator.new(config).generate_doc_auth_errors(response_info)
           elsif true_id_product.present?
             ErrorGenerator.wrapped_general_error(@liveness_checking_enabled)
@@ -82,7 +68,7 @@ module DocAuth
         end
 
         def extra_attributes
-          if true_id_product&.dig(:AUTHENTICATION_RESULT).present?
+          if with_authentication_result?
             attrs = response_info.merge(true_id_product[:AUTHENTICATION_RESULT])
             attrs.reject! do |k, _v|
               PII_EXCLUDES.include?(k) || k.start_with?('Alert_')
@@ -98,38 +84,6 @@ module DocAuth
           basic_logging_info.merge(attrs)
         end
 
-        def pii_from_doc
-          return {} unless true_id_product&.dig(:IDAUTH_FIELD_DATA).present?
-          pii = {}
-          PII_INCLUDES.each do |true_id_key, idp_key|
-            pii[idp_key] = true_id_product[:IDAUTH_FIELD_DATA][true_id_key]
-          end
-          pii[:state_id_type] = DocAuth::Response::ID_TYPE_SLUGS[pii[:state_id_type]]
-
-          dob = parse_date(
-            year: pii.delete(:dob_year),
-            month: pii.delete(:dob_month),
-            day: pii.delete(:dob_day),
-          )
-          pii[:dob] = dob if dob
-
-          exp_date = parse_date(
-            year: pii.delete(:state_id_expiration_year),
-            month: pii.delete(:state_id_expiration_month),
-            day: pii.delete(:state_id_expiration_day),
-          )
-          pii[:state_id_expiration] = exp_date if exp_date
-
-          issued_date = parse_date(
-            year: pii.delete(:state_id_issued_year),
-            month: pii.delete(:state_id_issued_month),
-            day: pii.delete(:state_id_issued_day),
-          )
-          pii[:state_id_issued] = issued_date if issued_date
-
-          pii
-        end
-
         def attention_with_barcode?
           return false unless doc_auth_result_attention?
 
@@ -140,13 +94,6 @@ module DocAuth
 
         def billed?
           !!doc_auth_result
-        end
-
-        def doc_auth_success?
-          transaction_status_passed? &&
-            true_id_product.present? &&
-            product_status_passed? &&
-            doc_auth_result_passed?
         end
 
         # @return [:success, :fail, :not_processed]
@@ -230,7 +177,7 @@ module DocAuth
             alert_failure_count: alerts[:failed]&.count.to_i,
             log_alert_results: log_alert_formatter.log_alerts(alerts),
             portrait_match_results: portrait_match_results,
-            image_metrics: parse_image_metrics,
+            image_metrics: read_image_metrics(true_id_product),
             address_line2_present: !pii_from_doc[:address2].blank?,
             classification_info: classification_info,
             liveness_enabled: @liveness_checking_enabled,
@@ -246,6 +193,7 @@ module DocAuth
           }
         end
 
+        # Status of all checks from Vendor perspective
         def all_passed?
           transaction_status_passed? &&
             true_id_product.present? &&
@@ -255,7 +203,7 @@ module DocAuth
         end
 
         def selfie_result
-          response_info&.dig(:portrait_match_results, :FaceMatchResult)
+          portrait_match_results&.dig(:FaceMatchResult)
         end
 
         def product_status_passed?
@@ -324,7 +272,7 @@ module DocAuth
           return @new_alerts if defined?(@new_alerts)
 
           @new_alerts = { passed: [], failed: [] }
-          return @new_alerts unless true_id_product&.dig(:AUTHENTICATION_RESULT).present?
+          return @new_alerts unless with_authentication_result?
           all_alerts = true_id_product[:AUTHENTICATION_RESULT].select do |key|
             key.start_with?('Alert_')
           end
@@ -361,28 +309,6 @@ module DocAuth
           end
 
           new_alert_data
-        end
-
-        def parse_image_metrics
-          image_metrics = {}
-          return image_metrics unless true_id_product&.dig(:ParameterDetails).present?
-          true_id_product[:ParameterDetails].each do |detail|
-            next unless detail[:Group] == 'IMAGE_METRICS_RESULT'
-
-            inner_val = detail.dig(:Values).collect { |value| value.dig(:Value) }
-            image_metrics[detail[:Name]] = inner_val
-          end
-
-          transform_metrics(image_metrics)
-        end
-
-        def transform_metrics(img_metrics)
-          new_metrics = {}
-          img_metrics['Side']&.each_with_index do |side, i|
-            new_metrics[side.downcase.to_sym] = img_metrics.transform_values { |v| v[i] }
-          end
-
-          new_metrics
         end
 
         # Generate a hash for image references information that can be linked to Alert
@@ -432,14 +358,8 @@ module DocAuth
           end
         end
 
-        def parse_date(year:, month:, day:)
-          Date.new(year.to_i, month.to_i, day.to_i).to_s if year.to_i.positive?
-        rescue ArgumentError
-          message = {
-            event: 'Failure to parse TrueID date',
-          }.to_json
-          Rails.logger.info(message)
-          nil
+        def with_authentication_result?
+          true_id_product&.dig(:AUTHENTICATION_RESULT).present?
         end
       end
     end
