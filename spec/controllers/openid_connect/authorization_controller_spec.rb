@@ -43,8 +43,10 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
 
     context 'user is signed in' do
       let(:user) { create(:user, :fully_registered) }
+      let(:sign_in_flow) { :sign_in }
       before do
         stub_sign_in user
+        session[:sign_in_flow] = sign_in_flow
       end
 
       context 'with valid params' do
@@ -123,6 +125,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
               'SP redirect initiated',
               ial: 1,
               billed_ial: 1,
+              sign_in_flow:,
             )
 
           IdentityLinker.new(user, service_provider).link_identity(ial: 1)
@@ -307,6 +310,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                   'SP redirect initiated',
                   ial: 2,
                   billed_ial: 2,
+                  sign_in_flow:,
                 )
 
               IdentityLinker.new(user, service_provider).link_identity(ial: 2)
@@ -546,6 +550,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                     'SP redirect initiated',
                     ial: 0,
                     billed_ial: 2,
+                    sign_in_flow:,
                   )
 
                 IdentityLinker.new(user, service_provider).link_identity(ial: 2)
@@ -625,12 +630,12 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                        client_id: client_id,
                        user_sp_authorized: true,
                        code_digest: kind_of(String))
-                expect(@analytics).to receive(:track_event).
-                  with(
-                    'SP redirect initiated',
-                    ial: 0,
-                    billed_ial: 1,
-                  )
+                expect(@analytics).to receive(:track_event).with(
+                  'SP redirect initiated',
+                  ial: 0,
+                  billed_ial: 1,
+                  sign_in_flow:,
+                )
 
                 IdentityLinker.new(user, service_provider).link_identity(ial: 1)
                 user.identities.last.update!(
@@ -711,12 +716,12 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
                        client_id: client_id,
                        user_sp_authorized: true,
                        code_digest: kind_of(String))
-                expect(@analytics).to receive(:track_event).
-                  with(
-                    'SP redirect initiated',
-                    ial: 0,
-                    billed_ial: 1,
-                  )
+                expect(@analytics).to receive(:track_event).with(
+                  'SP redirect initiated',
+                  ial: 0,
+                  billed_ial: 1,
+                  sign_in_flow:,
+                )
 
                 IdentityLinker.new(user, service_provider).link_identity(ial: 1)
                 user.identities.last.update!(

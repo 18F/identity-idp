@@ -4432,11 +4432,13 @@ module AnalyticsEvents
   # Tracks when a user is redirected back to the service provider
   # @param [Integer] ial
   # @param [Integer] billed_ial
-  def sp_redirect_initiated(ial:, billed_ial:, **extra)
+  # @param [String, nil] sign_in_flow
+  def sp_redirect_initiated(ial:, billed_ial:, sign_in_flow:, **extra)
     track_event(
       'SP redirect initiated',
-      ial: ial,
-      billed_ial: billed_ial,
+      ial:,
+      billed_ial:,
+      sign_in_flow:,
       **extra,
     )
   end
