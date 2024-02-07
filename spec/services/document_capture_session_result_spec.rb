@@ -64,14 +64,14 @@ RSpec.describe DocumentCaptureSessionResult do
         )
         expect(result.success?).to eq(true)
       end
-      it 'reports correctly from success when missing doc_auth_success and selfie_status' do
+      it 'reports correctly from false when missing doc_auth_success and selfie_status' do
         result = DocumentCaptureSessionResult.new(
           id: id,
           success: true,
           pii: pii,
           attention_with_barcode: false,
         )
-        expect(result.success?).to eq(true)
+        expect(result.success?).to eq(false)
       end
       it 'reports failure when selfie_status is :fail' do
         result = DocumentCaptureSessionResult.new(
@@ -117,7 +117,7 @@ RSpec.describe DocumentCaptureSessionResult do
             selfie_status: :fail,
             doc_auth_success: true,
           )
-          expect(result.success?).to eq(true)
+          expect(result.success?).to eq(false)
         end
       end
     end
