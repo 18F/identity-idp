@@ -23,6 +23,7 @@ class Profile < ApplicationRecord
     gpo_verification_pending_NO_LONGER_USED: 3, # deprecated
     verification_cancelled: 4,
     in_person_verification_pending_NO_LONGER_USED: 5, # deprecated
+    expired_profile_under_fraud_review: 6
   }
 
   enum fraud_pending_reason: {

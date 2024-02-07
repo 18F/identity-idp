@@ -271,6 +271,13 @@ class GetUspsProofingResultsJob < ApplicationJob
       status_check_completed_at: Time.zone.now,
     )
 
+    if fraud_result_pending?(enrollment) 
+      analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_user_deactivated_deadline_passed(
+        **enrollment_analytics_attributes(enrollment, complete: true)
+      )
+      enrollment.profile.deactivate(:expired_profile_under_fraud_review)
+    end
+
     begin
       send_deadline_passed_email(enrollment.user, enrollment) unless enrollment.deadline_passed_sent
     rescue StandardError => err

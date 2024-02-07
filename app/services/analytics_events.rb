@@ -5006,4 +5006,17 @@ module AnalyticsEvents
       **extra,
     )
   end
+
+   # A user has been moved deactivated due to not visting the post office before the deadline
+  # @param [String] enrollment_id
+  def idv_in_person_usps_proofing_results_job_user_deactivated_deadline_passed(
+    enrollment_id:,
+    **extra
+  )
+    track_event(
+      :idv_in_person_usps_proofing_results_job_user_deactivated_deadline_passed,
+      enrollment_id: enrollment_id,
+      **extra,
+    )
+  end
 end
