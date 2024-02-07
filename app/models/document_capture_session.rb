@@ -13,7 +13,6 @@ class DocumentCaptureSession < ApplicationRecord
     session_result = load_result || DocumentCaptureSessionResult.new(
       id: generate_result_id,
     )
-    session_result.success = doc_auth_response.success?
     session_result.pii = doc_auth_response.pii_from_doc
     session_result.captured_at = Time.zone.now
     session_result.attention_with_barcode = doc_auth_response.attention_with_barcode?
@@ -32,7 +31,6 @@ class DocumentCaptureSession < ApplicationRecord
     session_result = load_result || DocumentCaptureSessionResult.new(
       id: generate_result_id,
     )
-    session_result.success = false
     session_result.captured_at = Time.zone.now
     session_result.doc_auth_success = doc_auth_success
     session_result.selfie_status = selfie_status
