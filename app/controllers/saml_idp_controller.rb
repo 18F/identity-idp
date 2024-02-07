@@ -2,6 +2,8 @@ require 'saml_idp_constants'
 require 'saml_idp'
 
 class SamlIdpController < ApplicationController
+  # Ordering is significant, since failure URL must be assigned before any references to the user,
+  # as the concurrent session timeout occurs as a callback to Warden's `after_set_user` hook.
   before_action :set_devise_failure_redirect_for_concurrent_session_logout, only: [:auth, :logout]
 
   include SamlIdp::Controller
