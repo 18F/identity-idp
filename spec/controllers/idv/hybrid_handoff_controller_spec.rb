@@ -227,6 +227,19 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
           expect(response).to redirect_to(idv_how_to_verify_url)
         end
       end
+
+      context 'opt in ipp is not available on service provider' do
+        before do
+          subject.idv_session.service_provider.in_person_proofing_enabled = false
+          subject.idv_session.skip_doc_auth = nil
+        end
+
+        it 'renders the show template' do
+          get :show
+
+          expect(response).to render_template :show
+        end
+      end
     end
   end
 
