@@ -58,9 +58,8 @@ module Idv
       keypaths
     end
 
-    # Modifies the errors object and consolidate/mutate it,
-    # used in image_upload_response_presenter to customizer
-    # error message rendering for pii errors
+    # Modifies the errors object, used in image_upload_response_presenter to customize
+    # error messages for rendering  pii errors
     #
     # errors: The DocPiiForm errors object
     def self.present_error(existing_errors)
