@@ -39,25 +39,47 @@ namespace :data_requests do
     users_report = JSON.parse(File.read(ENV['USERS_REPORT']), symbolize_names: true)
     output_dir = ENV['OUTPUT_DIR']
 
-    users_report.each do |user_report|
+    users_csv = CSV.open(File.join(output_dir, 'users.csv'), 'w')
+    user_events_csv = CSV.open(File.join(output_dir, 'user_events.csv'), 'w')
+    logs_csv = CSV.open(File.join(output_dir, 'logs.csv'), 'w')
+
+    users_report.each_with_index do |user_report, idx|
       puts "Processing user: #{user_report[:requesting_issuer_uuid]}"
       user_output_dir = File.join(output_dir, user_report[:requesting_issuer_uuid])
       FileUtils.mkdir_p(user_output_dir)
 
-      DataRequests::Local::WriteUserInfo.new(user_report, user_output_dir).call
+      DataRequests::Local::WriteUserInfo.new(
+        user_report:,
+        csv: users_csv,
+        include_header: idx == 0,
+      ).call
+
       DataRequests::Local::WriteUserEvents.new(
-        user_report, user_output_dir, user_report[:requesting_issuer_uuid]
+        user_report:,
+        requesting_issuer_uuid: user_report[:requesting_issuer_uuid],
+        csv: user_events_csv,
+        include_header: idx == 0,
       ).call
 
       cloudwatch_dates = user_report[:user_events].pluck(:date_time).map do |date_time|
         Time.zone.parse(date_time).to_date
       end.uniq
+
       cloudwatch_results = DataRequests::Local::FetchCloudwatchLogs.new(
         user_report[:login_uuid],
         cloudwatch_dates,
       ).call
 
-      DataRequests::Local::WriteCloudwatchLogs.new(cloudwatch_results, user_output_dir).call
+      DataRequests::Local::WriteCloudwatchLogs.new(
+        cloudwatch_results:,
+        requesting_issuer_uuid: user_report[:requesting_issuer_uuid],
+        csv: logs_csv,
+        include_header: idx == 0,
+      ).call
     end
+  ensure
+    users_csv&.close
+    user_events_csv&.close
+    logs_csv&.close
   end
 end
