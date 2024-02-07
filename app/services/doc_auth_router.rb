@@ -55,7 +55,7 @@ module DocAuthRouter
     DocAuth::Errors::REF_CONTROL_NUMBER_CHECK =>
       'doc_auth.errors.alerts.ref_control_number_check',
     # i18n-tasks-use t('doc_auth.errors.general.selfie_failure')
-    DocAuth::Errors::SELFIE_FAIL => 'doc_auth.errors.general.selfie_failure',
+    DocAuth::Errors::SELFIE_FAILURE => 'doc_auth.errors.general.selfie_failure',
     # i18n-tasks-use t('doc_auth.errors.alerts.selfie_not_live')
     DocAuth::Errors::SELFIE_NOT_LIVE => 'doc_auth.errors.alerts.selfie_not_live',
     # i18n-tasks-use t('doc_auth.errors.alerts.selfie_poor_quality')
