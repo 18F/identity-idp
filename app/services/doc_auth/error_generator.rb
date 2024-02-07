@@ -71,7 +71,16 @@ module DocAuth
       image_metric_errors = get_image_metric_errors(response_info[:image_metrics])
       return image_metric_errors.to_h unless image_metric_errors.empty?
 
+      # If we have a selfie failure (selfie does not match id), then all three fields:
+      # front, back, and selfie should fail with specific in line errors.
       liveness_enabled = response_info[:liveness_enabled]
+      selfie_error = get_selfie_error(liveness_enabled, response_info)
+      if selfie_error == Errors::SELFIE_FAILURE
+        return selfie_fail_errors.to_h
+      end
+
+      # This block can also return errors for front, back, and/or selfie
+      # But we only get here if none of the returns above are triggered
       alert_errors = get_error_messages(liveness_enabled, response_info)
       alert_error_count += 1 if alert_errors.include?(SELFIE)
 
@@ -234,6 +243,19 @@ module DocAuth
       end
       # Fallback, we don't expect this to happen
       return Errors::SELFIE_FAILURE
+    end
+
+    def selfie_fail_errors
+      error_result = ErrorResult.new
+
+      error_result.set_error(Errors::MULTIPLE_FRONT_ID_FAILURES)
+      error_result.add_side(:front)
+      error_result.set_error(Errors::MULTIPLE_BACK_ID_FAILURES)
+      error_result.add_side(:front)
+      error_result.set_error(Errors::SELFIE_FAIL)
+      error_result.add_side(:selfie)
+
+      error_result
     end
 
     def scan_for_unknown_alerts(response_info)

@@ -120,7 +120,7 @@ module DocAuth
       GENERAL_ERROR => { long_msg: GENERAL_ERROR, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
       # TODO, theses messages need modifying
       # Liveness, use general error for now
-      SELFIE_FAILURE => { long_msg: GENERAL_ERROR, field_msg: FALLBACK_FIELD_LEVEL, hints: false },
+      SELFIE_FAILURE => { long_msg: SELFIE_FAILURE, field_msg: SELFIE_NOT_LIVE_POOR_QUALITY_FIELD, hints: false },
       SELFIE_NOT_LIVE => { long_msg: SELFIE_NOT_LIVE, field_msg: SELFIE_NOT_LIVE_POOR_QUALITY_FIELD, hints: false },
       SELFIE_POOR_QUALITY => { long_msg: SELFIE_POOR_QUALITY, field_msg: SELFIE_NOT_LIVE_POOR_QUALITY_FIELD, hints: false },
     }
