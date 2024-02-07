@@ -109,6 +109,30 @@ RSpec.describe 'In Person Proofing', js: true, allowed_extra_analytics: [:*] do
       visit_idp_from_sp_with_ial2(:oidc)
       expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
     end
+
+    it 'handles profiles in fraud review after 30 days', allow_browser_log: true do
+      sign_in_and_2fa_user(user)
+      begin_in_person_proofing(user)
+      complete_prepare_step(user)
+      complete_location_step
+      complete_state_id_step(user)
+
+      # ssn page
+      select 'Review', from: :mock_profiling_result
+      complete_ssn_step(user)
+      complete_verify_step(user)
+      complete_phone_step(user)
+      complete_enter_password_step(user)
+      acknowledge_and_confirm_personal_key
+
+      profile = InPersonEnrollment.last.profile
+      expect(profile.fraud_rejection_at).to eq(nil)
+      profile.update(fraud_rejection_at: 30.days.ago)
+      FraudRejectionDailyJob.new.perform(Time.zone.now)
+
+      # profile is rejected
+      expect(profile.fraud_rejection_at).to_not eq(nil)
+    end
   end
 
   it 'works for a happy path', allow_browser_log: true do
