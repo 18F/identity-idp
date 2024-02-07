@@ -15,7 +15,7 @@ module Users
 
     helper_method :in_multi_mfa_selection_flow?
 
-    def index;
+    def index
     end
 
     def create
