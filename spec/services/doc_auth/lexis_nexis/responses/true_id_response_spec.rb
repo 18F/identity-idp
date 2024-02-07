@@ -137,6 +137,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         selfie_status: :not_processed,
         selfie_live: true,
         selfie_quality_good: true,
+        liveness_enabled: false,
       )
       passed_alerts = response_hash.dig(:processed_alerts, :passed)
       passed_alerts.each do |alert|
@@ -380,6 +381,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         selfie_status: :fail,
         selfie_live: true,
         selfie_quality_good: false,
+        liveness_enabled: false,
       )
     end
     it 'produces appropriate errors with document tampering' do
@@ -429,6 +431,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     end
 
     it 'produces reasonable output for a malformed TrueID response' do
+      allow(NewRelic::Agent).to receive(:notice_error)
       output = described_class.new(failure_response_malformed, config).to_h
 
       expect(output[:success]).to eq(false)
@@ -650,6 +653,13 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       let(:response) { described_class.new(failure_response_tampering, config) }
       it 'returns false' do
         expect(response.doc_auth_success?).to eq(false)
+      end
+    end
+
+    context 'when attention barcode read' do
+      let(:response) { described_class.new(attention_barcode_read, config) }
+      it 'returns true' do
+        expect(response.doc_auth_success?).to eq(true)
       end
     end
   end

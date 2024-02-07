@@ -31,11 +31,11 @@ es:
     pending:
       cancel_request: Cancelar petición
       cancelled: Hemos cancelado su solicitud para eliminar su cuenta.
-      confirm: Si cancela ahora, debe crear una nueva solicitud y esperar otras 24
-        horas para eliminar su cuenta.
+      confirm: Si cancela ahora, debe crear una nueva solicitud y esperar otras
+        %{interval} para eliminar su cuenta.
       header: Solicitaste eliminar tu cuenta
-      wait_html: Hay un período de espera de 24 horas para eliminar su cuenta. En
-        <strong>%{interval}</strong>, recibirá un correo electrónico con
+      wait_html: Hay un período de espera de %{hours} horas para eliminar su cuenta.
+        En <strong>%{interval}</strong>, recibirá un correo electrónico con
         instrucciones para completar la eliminación.
     recovery_options:
       check_saved_credential: Verifica si tienes una credencial almacenada
@@ -65,8 +65,9 @@ es:
           conexión.
         - Si continúas, tú primero recibirá una confirmación por correo
           electrónico. Como medida de seguridad, lo hará reciba otro correo
-          electrónico con el enlace para seguir eliminando su cuenta las 24
-          horas después del correo electrónico de confirmación inicial llega.
+          electrónico con el enlace para seguir eliminando su cuenta las
+          %{interval} después del correo electrónico de confirmación inicial
+          llega.
       info:
         - Si no puede acceder a su cuenta a través de las opciones de seguridad
           que configuró anteriormente, eliminar la cuenta y crear una nueva es

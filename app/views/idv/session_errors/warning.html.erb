@@ -13,7 +13,7 @@
   <% c.with_header { t('idv.warning.sessions.heading') } %>
 
   <p><%= t('idv.failure.sessions.warning') %></p>
-  <p><%= t('idv.warning.attempts_html', count: @remaining_attempts) %></p>
+  <p><%= t('idv.warning.attempts_html', count: @remaining_submit_attempts) %></p>
 
   <% c.with_action_button(
        action: ->(**tag_options, &block) { link_to(@try_again_path, **tag_options, &block) },

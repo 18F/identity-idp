@@ -257,12 +257,13 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController, allowed_extra_analy
     allow_any_instance_of(DocumentCaptureSession).to receive(:load_result).and_return(
       DocumentCaptureSessionResult.new(
         id: 1234,
-        success: document_capture_session_result_success,
         pii: {
           state: 'WA',
         },
         attention_with_barcode: true,
         captured_at: document_capture_session_result_captured_at,
+        doc_auth_success: document_capture_session_result_success,
+        selfie_status: document_capture_session_result_success ? :success : :fail,
       ),
     )
   end

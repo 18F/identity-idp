@@ -391,6 +391,31 @@ class GetUspsProofingResultsJob < ApplicationJob
     end
   end
 
+  def handle_passed_with_fraud_review_pending(enrollment, response)
+    proofed_at = parse_usps_timestamp(response['transactionEndDateTime'])
+    enrollment_outcomes[:enrollments_passed] += 1
+    analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_updated(
+      **enrollment_analytics_attributes(enrollment, complete: true),
+      **response_analytics_attributes(response),
+      passed: true,
+      reason: 'Passed with fraud pending',
+      job_name: self.class.name,
+    )
+    enrollment.update(
+      status: :passed,
+      proofed_at: proofed_at,
+      status_check_completed_at: Time.zone.now,
+    )
+
+    # send email
+    send_please_call_email(enrollment.user, enrollment)
+    analytics(user: enrollment.user).
+      idv_in_person_usps_proofing_results_job_please_call_email_initiated(
+        **email_analytics_attributes(enrollment),
+        job_name: self.class.name,
+      )
+  end
+
   def handle_unsupported_secondary_id(enrollment, response)
     proofed_at = parse_usps_timestamp(response['transactionEndDateTime'])
     enrollment_outcomes[:enrollments_failed] += 1
@@ -435,7 +460,9 @@ class GetUspsProofingResultsJob < ApplicationJob
 
     case response['status']
     when IPP_STATUS_PASSED
-      if passed_with_unsupported_secondary_id_type?(response)
+      if fraud_result_pending?(enrollment)
+        handle_passed_with_fraud_review_pending(enrollment, response)
+      elsif passed_with_unsupported_secondary_id_type?(response)
         handle_unsupported_secondary_id(enrollment, response)
       elsif SUPPORTED_ID_TYPES.include?(response['primaryIdType'])
         handle_successful_status_update(enrollment, response)
@@ -483,6 +510,16 @@ class GetUspsProofingResultsJob < ApplicationJob
     user.confirmed_email_addresses.each do |email_address|
       # rubocop:disable IdentityIdp/MailLaterLinter
       UserMailer.with(user: user, email_address: email_address).in_person_failed_fraud(
+        enrollment: enrollment,
+      ).deliver_later(**notification_delivery_params(enrollment))
+      # rubocop:enable IdentityIdp/MailLaterLinter
+    end
+  end
+
+  def send_please_call_email(user, enrollment)
+    user.confirmed_email_addresses.each do |email_address|
+      # rubocop:disable IdentityIdp/MailLaterLinter
+      UserMailer.with(user: user, email_address: email_address).in_person_please_call(
         enrollment: enrollment,
       ).deliver_later(**notification_delivery_params(enrollment))
       # rubocop:enable IdentityIdp/MailLaterLinter
