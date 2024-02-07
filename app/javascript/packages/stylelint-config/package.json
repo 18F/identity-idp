@@ -23,5 +23,6 @@
   "peerDependencies": {
     "prettier": ">=3.0.0",
     "stylelint": ">=15.10.0"
-  }
+  },
+  "sideEffects": false
 }

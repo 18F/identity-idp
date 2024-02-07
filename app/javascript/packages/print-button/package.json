@@ -1,5 +1,8 @@
 {
   "name": "@18f/identity-print-button",
   "version": "1.0.0",
-  "private": true
+  "private": true,
+  "sideEffects": [
+    "./print-button-element.ts"
+  ]
 }
