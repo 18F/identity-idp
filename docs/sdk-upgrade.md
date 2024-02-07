@@ -106,6 +106,7 @@ Steps:
 6. While you monitor the recycle, manually check the document capture page in the environment you are deploying to. Ensure the SDK loads and can capture images.
 
 Monitoring the A/B test begins now. Proceed to the next section.
+
 ## Testing Considerations
 Manual testing should be performed to cover the following with verification *Success* or *Failure*:
 * SDK UI
@@ -131,13 +132,13 @@ Browser:
 
 Per the handbook, above, you should monitor the server instances as they come online and manually verify image capture still works.
 
-For 2 weeks, monitor the A/B test with this [AWS CloudWatch Acuant upgrade dashboard](https://us-west-2.console.aws.amazon.com/cloudwatch/home?region=us-west-2#dashboards:name=js-acuant-upgrade).
+For 3 days, monitor the A/B test with this [AWS CloudWatch Acuant upgrade dashboard](https://us-west-2.console.aws.amazon.com/cloudwatch/home?region=us-west-2#dashboards:name=js-acuant-upgrade).
 
 ![pie-charts-sdk](https://user-images.githubusercontent.com/546123/232889932-432e5cd5-c460-4a0a-8c6b-9f54324f327b.png)
 
 In this screenshot from the dashboard, the pie chart on the right shows a newer version of the SDK approaching 50% of document capture requests as A/B testing kicks in. The chart on the left shows that the newer version of the SDK is responsible for a proportionately lesser share of document capture failures, indicating that the new version is likely an improvement on the old.
 
-If the new version of the SDK is performing well for a couple weeks of A/B testing, it is time to cut over 100% of traffic to the new version per the next section.
+If the new version of the SDK is performing well for a few days of A/B testing, it is time to cut over 100% of traffic to the new version per the next section.
 
 ## Switch versions
 

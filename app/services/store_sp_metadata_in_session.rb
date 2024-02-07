@@ -78,14 +78,9 @@ class StoreSpMetadataInSession
       request_url: sp_request.url,
       request_id: sp_request.uuid,
       requested_attributes: sp_request.requested_attributes,
-      ial: ial_value,
-      ial2: ial2_value,
-      ialmax: ialmax_value,
-      aal_level_requested: aal_level_requested_value,
-      piv_cac_requested: piv_cac_requested_value,
-      phishing_resistant_requested: phishing_resistant_value,
-      biometric_comparison_required: biometric_comparison_required_value,
+      biometric_comparison_required: sp_request.biometric_comparison_required,
       acr_values: sp_request.acr_values,
+      vtr: sp_request.vtr,
     }
   end
 

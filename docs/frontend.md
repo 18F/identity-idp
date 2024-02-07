@@ -79,6 +79,7 @@ In practice:
     package is intended to be published to NPM.
   - ...a value for the `version` field, since it is required. The value value can be anything, and
     `"1.0.0"` is a good default.
+  - ...a `sideEffects` value listing files containing any side effects, used for [Webpack's Tree Shaking optimization](https://webpack.js.org/guides/tree-shaking/).
 - The package should be importable by its bare name, either with an `index.ts` or equivalent
   [package entrypoints](https://nodejs.org/api/packages.html#package-entry-points)
 

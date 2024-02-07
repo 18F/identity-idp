@@ -85,7 +85,6 @@ RSpec.describe StoreSpMetadataInSession do
           )
         end
       end
-
       context 'when IAL2 and phishing-resistant are requested with ACRs' do
         let(:request_acr) do
           [Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
