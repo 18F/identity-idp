@@ -137,10 +137,10 @@ en:
         warning: Please check the information you entered and try again. Common mistakes
           are an incorrect Social Security number or ZIP Code.
       setup:
-        fail: Call %{contact_number} and provide them with the error code
-          %{support_code}.
-        fail_date_html: Call our contact center by %{date_html} to continue verifying
-          your identity.
+        fail_html: Call <strong>%{contact_number}</strong> and provide them with the error
+          <br/>code <strong>%{support_code}</strong>.
+        fail_date_html: Call our contact center by <strong>%{date_html}</strong> to
+          continue verifying your identity.
         heading: Please give us a call
       timeout: We are experiencing higher than usual wait time processing your
         request. Please try again.

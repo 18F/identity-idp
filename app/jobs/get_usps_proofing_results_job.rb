@@ -327,7 +327,7 @@ class GetUspsProofingResultsJob < ApplicationJob
 
   def handle_failed_status(enrollment, response)
     proofed_at = parse_usps_timestamp(response['transactionEndDateTime'])
-    enrollment_outcomes[:enrollments_failed] += 1
+    #enrollment_outcomes[:enrollments_failed] += 1
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_updated(
       **enrollment_analytics_attributes(enrollment, complete: true),
       **response_analytics_attributes(response),
@@ -393,7 +393,7 @@ class GetUspsProofingResultsJob < ApplicationJob
 
   def handle_passed_with_fraud_review_pending(enrollment, response)
     proofed_at = parse_usps_timestamp(response['transactionEndDateTime'])
-    enrollment_outcomes[:enrollments_passed] += 1
+    #enrollment_outcomes[:enrollments_passed] += 1
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_updated(
       **enrollment_analytics_attributes(enrollment, complete: true),
       **response_analytics_attributes(response),

@@ -147,10 +147,10 @@ es:
           Los errores más comunes suelen producirse al ingresar un Número de
           Seguridad Social o un Código Postal incorrecto.
       setup:
-        fail: Llame al %{contact_number} y facilíteles el código de error
-          %{support_code}.
-        fail_date_html: Llame a nuestro centro de atención antes del %{date_html} para
-          seguir verificando su identidad.
+        fail_html: Llame al <strong>%{contact_number}</strong> y facilíteles el código de
+          <br/>error <strong>%{support_code}</strong>.
+        fail_date_html: Llame a nuestro centro de atención antes del
+          <strong>%{date_html}</strong> para seguir verificando su identidad.
         heading: Llámenos
       timeout: Estamos experimentando un tiempo de espera superior al habitual al
         procesar su solicitud. Inténtalo de nuevo.

@@ -18,6 +18,6 @@
       <%= t('idv.failure.setup.fail_date_html', date_html: I18n.l(@call_by_date, format: I18n.t('time.formats.event_date'))) %>
     </p>
     <p>
-      <%= t('idv.failure.setup.fail', support_code: IdentityConfig.store.lexisnexis_threatmetrix_support_code, contact_number: IdentityConfig.store.idv_contact_phone_number) %>
+      <%= t('idv.failure.setup.fail_html', support_code: IdentityConfig.store.lexisnexis_threatmetrix_support_code, contact_number: IdentityConfig.store.idv_contact_phone_number) %>
     </p>
 <% end %>

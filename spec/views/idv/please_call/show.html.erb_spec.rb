@@ -22,7 +22,7 @@ RSpec.describe 'idv/please_call/show.html.erb' do
     expect(rendered).to have_text(
       strip_tags(
         t(
-          'idv.failure.setup.fail',
+          'idv.failure.setup.fail_html',
           support_code: 'ABCD',
           contact_number: '(844) 555-5555',
         ),
