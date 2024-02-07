@@ -22,7 +22,9 @@ RSpec.describe Idv::HybridHandoffController, allowed_extra_analytics: [:*] do
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
     allow(subject.idv_session).to receive(:service_provider).and_return(service_provider)
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { in_person_proofing }
-    allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { ipp_opt_in_enabled }
+    allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) {
+                                     ipp_opt_in_enabled
+                                   }
   end
 
   describe '#step_info' do
