@@ -1,46 +1,31 @@
 import { t } from '@18f/identity-i18n';
-
-/** @typedef {import('@18f/identity-phone-input').PhoneInputElement} PhoneInput */
+import type { PhoneInputElement } from '@18f/identity-phone-input';
 
 /**
  * Returns the OTP delivery preference element.
- *
- * @return {HTMLElement}
  */
-const getOTPDeliveryMethodContainer = () =>
-  /** @type {HTMLElement} */ (document.querySelector('.js-otp-delivery-preferences'));
+const getOTPDeliveryMethodContainer = (): HTMLElement =>
+  document.querySelector<HTMLElement>('.js-otp-delivery-preferences')!;
 
-/**
- * @return {HTMLInputElement[]}
- */
 const getOTPDeliveryMethods = () =>
-  Array.from(document.querySelectorAll('.js-otp-delivery-preference'));
+  Array.from(document.querySelectorAll<HTMLInputElement>('.js-otp-delivery-preference'));
 
 /**
  * Returns true if the delivery option is valid for the selected option, or false otherwise.
- *
- * @param {string} delivery
- * @param {HTMLOptionElement} selectedOption
- * @return {boolean}
  */
-const isDeliveryOptionSupported = (delivery, selectedOption) =>
+const isDeliveryOptionSupported = (delivery: string, selectedOption: HTMLOptionElement): boolean =>
   selectedOption.getAttribute(`data-supports-${delivery}`) !== 'false';
 
-/**
- * @param {string} delivery
- * @param {string} location
- * @return {string=}
- */
-const getHintTextForDisabledDeliveryOption = (delivery, location) =>
+const getHintTextForDisabledDeliveryOption = (
+  delivery: string,
+  location: string,
+): string | undefined =>
   // i18n-tasks-use t('two_factor_authentication.otp_delivery_preference.voice_unsupported')
   // i18n-tasks-use t('two_factor_authentication.otp_delivery_preference.sms_unsupported')
   t(`two_factor_authentication.otp_delivery_preference.${delivery}_unsupported`, { location });
 
-/**
- * @param {string=} hintText
- */
 function setHintText(
-  hintText = t('two_factor_authentication.otp_delivery_preference.instruction'),
+  hintText: string = t('two_factor_authentication.otp_delivery_preference.instruction'),
 ) {
   const hintElement = document.querySelector('#otp_delivery_preference_instruction');
   if (hintElement) {
@@ -50,38 +35,31 @@ function setHintText(
 
 /**
  * Returns true if all inputs are disabled, or false otherwise.
- *
- * @param {HTMLInputElement[]} inputs
- * @return {boolean}
  */
-const isAllDisabled = (inputs) => inputs.every((input) => input.disabled);
+const isAllDisabled = (inputs: HTMLInputElement[]): boolean =>
+  inputs.every((input) => input.disabled);
 
 /**
  * Returns the next non-disabled input in the set of inputs, if one exists.
- *
- * @param {HTMLInputElement[]} inputs
- * @return {HTMLInputElement=}
  */
-const getFirstEnabledInput = (inputs) => inputs.find((input) => !input.disabled);
+const getFirstEnabledInput = (inputs: HTMLInputElement[]): HTMLInputElement | undefined =>
+  inputs.find((input) => !input.disabled);
 
 /**
  * Toggles the delivery preferences selection visible or hidden.
  *
- * @param {boolean} isVisible Whether the selection element should be visible.
+ * @param isVisible Whether the selection element should be visible.
  */
-const toggleDeliveryPreferencesVisible = (isVisible) =>
+const toggleDeliveryPreferencesVisible = (isVisible: boolean) =>
   getOTPDeliveryMethodContainer().classList.toggle('display-none', !isVisible);
 
-/**
- * @param {Event} event
- */
-function updateOTPDeliveryMethods(event) {
+function updateOTPDeliveryMethods(event: Event) {
   if (!(event.target instanceof HTMLSelectElement)) {
     return;
   }
 
   const { target: select, currentTarget } = event;
-  const { textInput } = /** @type {PhoneInput} */ (currentTarget);
+  const { textInput } = currentTarget as PhoneInputElement;
   if (!textInput) {
     return;
   }
@@ -90,7 +68,7 @@ function updateOTPDeliveryMethods(event) {
   const methods = getOTPDeliveryMethods();
   setHintText();
 
-  const location = /** @type {string} */ (selectedOption.dataset.countryName);
+  const location = selectedOption.dataset.countryName!;
 
   methods.forEach((method) => {
     const delivery = method.value;
@@ -113,7 +91,6 @@ function updateOTPDeliveryMethods(event) {
   toggleDeliveryPreferencesVisible(!isAllMethodsDisabled);
 }
 
-document.querySelectorAll('lg-phone-input').forEach((node) => {
-  const phoneInput = /** @type {PhoneInput} */ (node);
+document.querySelectorAll('lg-phone-input').forEach((phoneInput) => {
   phoneInput.addEventListener('change', updateOTPDeliveryMethods);
 });

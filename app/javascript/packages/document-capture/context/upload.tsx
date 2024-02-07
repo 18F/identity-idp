@@ -78,7 +78,7 @@ export interface UploadErrorResponse {
   /**
    * Number of remaining doc capture attempts for user.
    */
-  remaining_attempts?: number;
+  remaining_submit_attempts?: number;
 
   /**
    * Boolean to decide if capture hints should be shown with error.

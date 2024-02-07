@@ -4,6 +4,9 @@
   "version": "1.0.0",
   "dependencies": {
     "intl-tel-input": "^17.0.19",
-    "libphonenumber-js": "^1.10.54"
-  }
+    "libphonenumber-js": "^1.10.55"
+  },
+  "sideEffects": [
+    "./index.ts"
+  ]
 }

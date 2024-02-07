@@ -18,7 +18,7 @@ import type { ReviewIssuesStepValue } from './review-issues-step';
 interface DocumentCaptureReviewIssuesProps extends FormStepComponentProps<ReviewIssuesStepValue> {
   isFailedDocType: boolean;
   isFailedSelfieLivenessOrQuality: boolean;
-  remainingAttempts: number;
+  remainingSubmitAttempts: number;
   captureHints: boolean;
   hasDismissed: boolean;
 }
@@ -26,7 +26,7 @@ interface DocumentCaptureReviewIssuesProps extends FormStepComponentProps<Review
 function DocumentCaptureReviewIssues({
   isFailedDocType,
   isFailedSelfieLivenessOrQuality,
-  remainingAttempts = Infinity,
+  remainingSubmitAttempts = Infinity,
   captureHints,
   registerField = () => undefined,
   unknownFieldErrors = [],
@@ -52,7 +52,7 @@ function DocumentCaptureReviewIssues({
       <DocumentCaptureSubheaderOne selfieCaptureEnabled={selfieCaptureEnabled} />
       <UnknownError
         unknownFieldErrors={unknownFieldErrors}
-        remainingAttempts={remainingAttempts}
+        remainingSubmitAttempts={remainingSubmitAttempts}
         isFailedDocType={isFailedDocType}
         isFailedSelfieLivenessOrQuality={isFailedSelfieLivenessOrQuality}
         altIsFailedSelfieDontIncludeAttempts

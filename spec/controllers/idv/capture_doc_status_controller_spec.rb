@@ -2,7 +2,6 @@ require 'rails_helper'
 
 RSpec.describe Idv::CaptureDocStatusController do
   let(:user) { build(:user) }
-
   let(:doc_auth_response) do
     DocAuth::Response.new(
       success: true,

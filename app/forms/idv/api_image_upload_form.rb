@@ -144,10 +144,10 @@ module Idv
 
     def extra_attributes
       return @extra_attributes if defined?(@extra_attributes) &&
-                                  @extra_attributes&.dig('attempts') == attempts
+                                  @extra_attributes&.dig('submit_attempts') == submit_attempts
       @extra_attributes = {
-        attempts: attempts,
-        remaining_attempts: remaining_attempts,
+        submit_attempts: submit_attempts,
+        remaining_submit_attempts: remaining_submit_attempts,
         user_id: user_uuid,
         pii_like_keypaths: DocPiiForm.pii_like_keypaths,
         flow_path: params[:flow_path],
@@ -186,11 +186,11 @@ module Idv
       end
     end
 
-    def remaining_attempts
+    def remaining_submit_attempts
       rate_limiter.remaining_count if document_capture_session
     end
 
-    def attempts
+    def submit_attempts
       rate_limiter.attempts if document_capture_session
     end
 
@@ -372,12 +372,15 @@ module Idv
 
     def acuant_sdk_capture?
       image_metadata.dig(:front, :source) == Idp::Constants::Vendors::ACUANT &&
-        image_metadata.dig(:back, :source) == Idp::Constants::Vendors::ACUANT
+        image_metadata.dig(:back, :source) == Idp::Constants::Vendors::ACUANT &&
+        (liveness_checking_required ?
+          image_metadata.dig(:selfie, :source) == Idp::Constants::Vendors::ACUANT :
+           true)
     end
 
     def image_metadata
-      @image_metadata ||= params.permit(:front_image_metadata, :back_image_metadata).
-        to_h.
+      @image_metadata ||= params.
+        permit(:front_image_metadata, :back_image_metadata, :selfie_image_metadata).to_h.
         transform_values do |str|
           JSON.parse(str)
         rescue JSON::ParserError

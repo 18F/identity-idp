@@ -110,7 +110,7 @@ describe('document-capture/services/upload', () => {
           { field: 'front', message: 'Please fill in this field' },
           { field: 'back', message: 'Please fill in this field' },
         ],
-        remaining_attempts: 3,
+        remaining_submit_attempts: 3,
         hints: true,
         result_failed: true,
         ocr_pii: { first_name: 'Fakey', last_name: 'McFakerson', dob: '1938-10-06' },
@@ -125,7 +125,7 @@ describe('document-capture/services/upload', () => {
       throw new Error('This is a safeguard and should never be reached, since upload should error');
     } catch (error) {
       expect(error).to.be.instanceOf(UploadFormEntriesError);
-      expect(error.remainingAttempts).to.equal(3);
+      expect(error.remainingSubmitAttempts).to.equal(3);
       expect(error.hints).to.be.true();
       expect(error.pii).to.deep.equal({
         first_name: 'Fakey',
@@ -149,7 +149,7 @@ describe('document-capture/services/upload', () => {
       JSON.stringify({
         success: false,
         errors: [{ field: 'front', message: 'Using failed image' }],
-        remaining_attempts: 3,
+        remaining_submit_attempts: 3,
         hints: true,
         result_failed: true,
         ocr_pii: { first_name: 'Fakey', last_name: 'McFakerson', dob: '1938-10-06' },
@@ -165,7 +165,7 @@ describe('document-capture/services/upload', () => {
       throw new Error('This is a safeguard and should never be reached, since upload should error');
     } catch (error) {
       expect(error).to.be.instanceOf(UploadFormEntriesError);
-      expect(error.remainingAttempts).to.equal(3);
+      expect(error.remainingSubmitAttempts).to.equal(3);
       expect(error.hints).to.be.true();
       expect(error.pii).to.deep.equal({
         first_name: 'Fakey',

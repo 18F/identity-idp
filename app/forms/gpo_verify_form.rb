@@ -41,7 +41,7 @@ class GpoVerifyForm
         enqueued_at: gpo_confirmation_code&.code_sent_at,
         which_letter: which_letter,
         letter_count: letter_count,
-        attempts: attempts,
+        submit_attempts: submit_attempts,
         pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
         pending_in_person_enrollment: !!pending_profile&.in_person_enrollment&.pending?,
         fraud_check_failed: fraud_check_failed,
@@ -76,7 +76,7 @@ class GpoVerifyForm
     pending_profile&.gpo_confirmation_codes&.count
   end
 
-  def attempts
+  def submit_attempts
     RateLimiter.new(user: user, rate_limit_type: :verify_gpo_key).attempts
   end
 
