@@ -4,7 +4,7 @@ module Idv
     include OptInHelper
 
     def ab_test_analytics_buckets
-      buckets = {}
+      buckets = { ab_tests: {} }
       if defined?(idv_session)
         buckets[:skip_hybrid_handoff] = idv_session&.skip_hybrid_handoff
         buckets = buckets.merge(opt_in_analytics_properties)
@@ -13,10 +13,11 @@ module Idv
       if defined?(document_capture_session_uuid)
         lniv_args = LexisNexisInstantVerify.new(document_capture_session_uuid).
           workflow_ab_test_analytics_args
-        buckets = buckets.merge(lniv_args)
+        buckets[:ab_tests].merge!(lniv_args)
       end
 
-      { ab_tests: buckets.merge(acuant_sdk_ab_test_analytics_args) }
+      buckets[:ab_tests].merge!(acuant_sdk_ab_test_analytics_args)
+      buckets
     end
   end
 end
