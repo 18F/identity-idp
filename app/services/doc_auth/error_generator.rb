@@ -76,7 +76,15 @@ module DocAuth
       liveness_enabled = response_info[:liveness_enabled]
       selfie_error = get_selfie_error(liveness_enabled, response_info)
       if selfie_error == Errors::SELFIE_FAILURE
-        return selfie_fail_errors.to_h
+        # This returns the same sort of object that ErrorResult.to_h returns
+        # but we need to do something more complex than that's set up to handle
+        return {
+          general: [Errors::SELFIE_FAILURE],
+          front: [Errors::MULTIPLE_FRONT_ID_FAILURES],
+          back: [Errors::MULTIPLE_BACK_ID_FAILURES],
+          selfie: [Errors::SELFIE_NOT_LIVE_POOR_QUALITY_FIELD],
+          hints: false,
+        }
       end
 
       # This block can also return errors for front, back, and/or selfie
@@ -243,19 +251,6 @@ module DocAuth
       end
       # Fallback, we don't expect this to happen
       return Errors::SELFIE_FAILURE
-    end
-
-    def selfie_fail_errors
-      error_result = ErrorResult.new
-
-      error_result.set_error(Errors::MULTIPLE_FRONT_ID_FAILURES)
-      error_result.add_side(:front)
-      error_result.set_error(Errors::MULTIPLE_BACK_ID_FAILURES)
-      error_result.add_side(:front)
-      error_result.set_error(Errors::SELFIE_FAIL)
-      error_result.add_side(:selfie)
-
-      error_result
     end
 
     def scan_for_unknown_alerts(response_info)
