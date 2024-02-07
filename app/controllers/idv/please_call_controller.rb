@@ -13,7 +13,7 @@ module Idv
       analytics.idv_please_call_visited
       pending_at = current_user.fraud_review_pending_profile.fraud_review_pending_at
       @call_by_date = pending_at + FRAUD_REVIEW_CONTACT_WITHIN_DAYS
-      @in_person = in_person_proofing?
+      @in_person = ipp_and_enrollment_passed?
     end
 
     private
@@ -24,9 +24,17 @@ module Idv
       end
     end
 
-    def in_person_proofing?
-      IdentityConfig.store.in_person_proofing_enabled &&
-        current_user&.pending_profile&.in_person_enrollment&.status == 'passed'
+    def in_person_proofing_enabled?
+      IdentityConfig.store.in_person_proofing_enabled
+    end
+
+    # we only want to handle enrollments that have passed
+    def ipp_enrollment_passed?
+      current_user&.in_person_enrollment_status == 'passed'
+    end
+
+    def ipp_enabled_and_enrollment_passed?
+      in_person_proofing_enabled? && ipp_enrollment_passed?
     end
   end
 end

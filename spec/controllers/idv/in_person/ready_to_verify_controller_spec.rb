@@ -81,10 +81,11 @@ RSpec.describe Idv::InPerson::ReadyToVerifyController do
             create(:in_person_enrollment, :establishing, user: user, profile: profile)
           end
 
-          it 'redirects to please call' do
+          it 'does not redirect to please call' do
             response
 
             expect(response).to render_template :show
+            expect(response).not_to redirect_to idv_please_call_url
           end
         end
       end

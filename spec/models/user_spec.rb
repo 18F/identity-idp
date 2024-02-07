@@ -381,6 +381,31 @@ RSpec.describe User do
         expect(new_user.has_establishing_in_person_enrollment_safe?).to eq(true)
       end
     end
+
+    describe '#in_person_enrollment_status' do
+    let(:new_user) { create(:user, :fully_registered) }
+    let(:proofing_components) { nil }
+    let(:new_pending_profile) do
+      create(
+        :profile,
+        :verify_by_mail_pending,
+        user: new_user,
+        proofing_components: proofing_components,
+      )
+    end
+    let!(:establishing_enrollment) do
+      create(
+        :in_person_enrollment,
+        :passed,
+        profile: new_pending_profile,
+        user: new_user,
+      )
+    end
+
+    it 'returns the status of the enrollment' do
+      expect(new_user.in_person_enrollment_status).to eq('passed')
+    end
+    end
   end
 
   describe 'deleting identities' do

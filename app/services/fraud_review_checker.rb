@@ -23,6 +23,6 @@ class FraudReviewChecker
 
   def ipp_fraud_review_pending?
     fraud_review_pending? &&
-      user&.fraud_review_pending_profile&.in_person_enrollment&.status == 'passed'
+      user&.in_person_enrollment_status == 'passed'
   end
 end
