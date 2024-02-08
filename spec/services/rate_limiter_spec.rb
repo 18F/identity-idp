@@ -145,6 +145,21 @@ RSpec.describe RateLimiter do
             of(rate_limiter.attempted_at + attempt_window.minutes)
         end
       end
+
+      context 'when we are out of sync with Redis' do
+        it 'expires at the correct time' do
+          fake_attempt_time = 1.year.ago
+          travel_to(fake_attempt_time) do
+            # Redis should immediately delete the rate limiter because
+            # we're supplying an expiration time which has long since
+            # passed.
+            rate_limiter.increment!
+          end
+
+          new_rate_limiter = RateLimiter.new(target: '1', rate_limit_type: rate_limit_type)
+          expect(new_rate_limiter.expires_at).to be_nil
+        end
+      end
     end
 
     context 'with active rate_limiter' do
@@ -153,16 +168,6 @@ RSpec.describe RateLimiter do
           rate_limiter.increment!
           expect(rate_limiter.expires_at).to be_within(1.second).
             of(rate_limiter.attempted_at + attempt_window.minutes)
-        end
-      end
-
-      context 'when we are out of sync with Redis' do
-        it 'returns the correct expiration time' do
-          fake_attempt_time = 1.year.ago
-          travel_to(fake_attempt_time) { rate_limiter.increment! }
-
-          expect(rate_limiter.expires_at).to be_within(1.second).
-            of(fake_attempt_time + attempt_window.minutes)
         end
       end
     end
