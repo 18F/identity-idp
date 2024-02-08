@@ -48,7 +48,7 @@ class UserPivCacSetupForm
     self.x509_dn_uuid = @data['uuid']
     self.x509_dn = @data['subject']
     self.x509_issuer = @data['issuer']
-    if PivCacConfiguration.find_by(x509_dn_uuid: x509_dn_uuid)&.user
+    if PivCacConfiguration.exists?(x509_dn_uuid: x509_dn_uuid)
       self.error_type = 'piv_cac.already_associated'
       false
     else
