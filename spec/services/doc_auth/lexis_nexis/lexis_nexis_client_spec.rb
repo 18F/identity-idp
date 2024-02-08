@@ -168,6 +168,7 @@ RSpec.describe DocAuth::LexisNexis::LexisNexisClient do
         expect(result.class).to eq(DocAuth::LexisNexis::Responses::TrueIdResponse)
         expect(result.doc_auth_success?).to eq(false)
         result_hash = result.to_h
+        expect(result_hash[:reference]).not_to be_nil
         expect(result_hash[:selfie_status]).to eq(:fail)
         expect(result.selfie_live?).to eq(true)
         expect(result.selfie_quality_good?).to eq(false)
@@ -206,6 +207,7 @@ RSpec.describe DocAuth::LexisNexis::LexisNexisClient do
         result_hash = result.to_h
         expect(result_hash[:vendor]).to eq('TrueID')
         expect(result_hash[:doc_auth_success]).to eq(false)
+        expect(result_hash[:reference]).not_to be_nil
         expect(result_hash[:selfie_status]).to eq(:not_processed)
         expect(result_hash[:vendor_status_code]).to eq(status_code)
         expect(result_hash[:vendor_status_message]).to eq(status_message)
@@ -236,6 +238,7 @@ RSpec.describe DocAuth::LexisNexis::LexisNexisClient do
           result_hash = result.to_h
           expect(result_hash[:vendor]).to eq('TrueID')
           expect(result_hash[:doc_auth_success]).to eq(false)
+          expect(result_hash[:reference]).not_to be_nil
           expect(result_hash[:selfie_status]).to eq(:not_processed)
           expect(result_hash[:vendor_status_code]).to be_nil
           expect(result_hash[:vendor_status_message]).to be_nil
