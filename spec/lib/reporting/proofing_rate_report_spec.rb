@@ -22,6 +22,7 @@ RSpec.describe Reporting::ProofingRateReport do
             idv_doc_auth_rejected: 1,
             idv_fraud_rejected: 0,
             time_range: (end_date - 30.days)..end_date,
+            data: {},
           ),
           instance_double(
             'Reporting::IdentityVerificationReport',
@@ -32,6 +33,7 @@ RSpec.describe Reporting::ProofingRateReport do
             idv_doc_auth_rejected: 1,
             idv_fraud_rejected: 1,
             time_range: (end_date - 60.days)..end_date,
+            data: {},
           ),
           instance_double(
             'Reporting::IdentityVerificationReport',
@@ -42,6 +44,7 @@ RSpec.describe Reporting::ProofingRateReport do
             idv_doc_auth_rejected: 1,
             idv_fraud_rejected: 2,
             time_range: (end_date - 90.days)..end_date,
+            data: {},
           ),
         ],
       )
