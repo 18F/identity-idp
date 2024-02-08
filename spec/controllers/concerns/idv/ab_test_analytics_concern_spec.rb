@@ -36,11 +36,11 @@ RSpec.describe Idv::AbTestAnalyticsConcern do
       end
 
       it 'includes acuant_sdk_ab_test_analytics_args' do
-        expect(controller.ab_test_analytics_buckets).to include(acuant_sdk_args)
+        expect(controller.ab_test_analytics_buckets[:ab_tests]).to include(acuant_sdk_args)
       end
 
       it 'includes lexisnexis_instant_verify_sdk_ab_test_analytics_args' do
-        expect(controller.ab_test_analytics_buckets).to include(instant_verify_sdk_args)
+        expect(controller.ab_test_analytics_buckets[:ab_tests]).to include(instant_verify_sdk_args)
       end
 
       it 'includes skip_hybrid_handoff' do
@@ -69,11 +69,11 @@ RSpec.describe Idv::AbTestAnalyticsConcern do
 
     context 'idv_session is not available' do
       it 'still includes acuant_sdk_ab_test_analytics_args' do
-        expect(controller.ab_test_analytics_buckets).to include(acuant_sdk_args)
+        expect(controller.ab_test_analytics_buckets[:ab_tests]).to include(acuant_sdk_args)
       end
 
       it 'still includes lexisnexis_instant_verify_sdk_ab_test_analytics_args' do
-        expect(controller.ab_test_analytics_buckets).to include(instant_verify_sdk_args)
+        expect(controller.ab_test_analytics_buckets[:ab_tests]).to include(instant_verify_sdk_args)
       end
     end
   end
