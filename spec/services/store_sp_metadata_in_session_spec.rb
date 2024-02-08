@@ -70,7 +70,7 @@ RSpec.describe StoreSpMetadataInSession do
           expect(app_session[:sp]).to eq(
             {
               issuer: issuer,
-              aal_level_requested: 3,
+              aal_level_requested: 2,
               acr_values: request_acr,
               piv_cac_requested: false,
               phishing_resistant_requested: true,
@@ -122,7 +122,7 @@ RSpec.describe StoreSpMetadataInSession do
           expect(app_session[:sp]).to eq(
             {
               issuer: issuer,
-              aal_level_requested: 3,
+              aal_level_requested: 2,
               acr_values: request_acr,
               piv_cac_requested: false,
               phishing_resistant_requested: true,
@@ -239,7 +239,7 @@ RSpec.describe StoreSpMetadataInSession do
           expect(app_session[:sp]).to eq(
             {
               issuer: issuer,
-              aal_level_requested: 3,
+              aal_level_requested: 2,
               acr_values: request_acr,
               piv_cac_requested: false,
               phishing_resistant_requested: true,
@@ -263,7 +263,7 @@ RSpec.describe StoreSpMetadataInSession do
             {
               issuer: issuer,
               acr_values: request_acr,
-              aal_level_requested: 3,
+              aal_level_requested: 2,
               piv_cac_requested: false,
               phishing_resistant_requested: true,
               ial: 2,
