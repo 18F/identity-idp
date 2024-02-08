@@ -45,8 +45,6 @@ namespace :data_requests do
 
     users_report.each_with_index do |user_report, idx|
       puts "Processing user: #{user_report[:requesting_issuer_uuid]}"
-      user_output_dir = File.join(output_dir, user_report[:requesting_issuer_uuid])
-      FileUtils.mkdir_p(user_output_dir)
 
       DataRequests::Local::WriteUserInfo.new(
         user_report:,
@@ -76,6 +74,10 @@ namespace :data_requests do
         csv: logs_csv,
         include_header: idx == 0,
       ).call
+
+      users_csv.flush
+      user_events_csv.flush
+      logs_csv.flush
     end
   ensure
     users_csv&.close
