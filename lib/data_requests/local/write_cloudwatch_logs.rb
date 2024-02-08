@@ -19,7 +19,9 @@ module DataRequests
 
       def initialize(cloudwatch_results:, requesting_issuer_uuid:, csv:, include_header: false)
         @cloudwatch_results = cloudwatch_results
+        @requesting_issuer_uuid = requesting_issuer_uuid
         @csv = csv
+        @include_header = include_header
       end
 
       def include_header?
