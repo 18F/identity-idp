@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-const { readFile, stat } = require('fs/promises');
-const { dirname, basename, join } = require('path');
-const { sync: glob } = require('fast-glob');
+import { readFile, stat } from 'node:fs/promises';
+import { dirname, basename, join, resolve, relative } from 'node:path';
+import glob from 'fast-glob';
 
 /** @typedef {[path: string, manifest: Record<string, any>]} ManifestPair */
 /** @typedef {ManifestPair[]} ManifestPairs */
@@ -43,9 +43,16 @@ function checkHaveCommonDependencyVersions(manifests) {
  */
 function checkHaveRequiredFields(manifests) {
   for (const [path, manifest] of manifests) {
-    ['name', 'version', 'private'].forEach((field) => {
+    Object.entries({
+      name: `Expected "@18f/identity-${basename(dirname(path))}".`,
+      version: '"1.0.0" is recommended for private packages.',
+      private: '`true` is recommended unless the package is intended to be published to NPM.',
+      sideEffects:
+        'This is usually `false`, unless there are files which include side effects, ' +
+        'such as custom elements registering to the custom element registry.',
+    }).forEach(([field, guidance]) => {
       if (!(field in manifest)) {
-        throw new Error(`Missing required field ${field} in ${path}`);
+        throw new Error([`Missing required field ${field} in ${path}`, guidance].join(' '));
       }
     });
   }
@@ -116,6 +123,31 @@ async function checkHaveDocumentation(manifests) {
 }
 
 /**
+ * @param {ManifestPairs} manifests
+ */
+function checkPackageSideEffectsIncludesCustomElements(manifests) {
+  return Promise.all(
+    manifests.map(async ([manifestPath, manifest]) => {
+      const manifestDirectory = dirname(manifestPath);
+      const customElementPaths = await glob(join(manifestDirectory, '*-element.ts'));
+      const expectedPaths = customElementPaths.map((path) => resolve(path));
+      const actualPaths = Array.from(manifest.sideEffects).map((path) =>
+        resolve(join(manifestDirectory, path)),
+      );
+      const hasExpected = expectedPaths.every((path) => actualPaths.includes(path));
+      if (!hasExpected) {
+        throw new Error(
+          [
+            `Missing expected custom elements in ${manifestPath} sideEffects:`,
+            customElementPaths.map((path) => `./${relative(manifestDirectory, path)}`).join(', '),
+          ].join(' '),
+        );
+      }
+    }),
+  );
+}
+
+/**
  * @type {Record<string, (manifests: ManifestPairs) => void>}
  */
 const CHECKS = {
@@ -126,6 +158,7 @@ const CHECKS = {
   checkHaveCorrectVersion,
   checkHaveNoSiblingDependencies,
   checkHaveDocumentation,
+  checkPackageSideEffectsIncludesCustomElements,
 };
 
 /**
@@ -137,7 +170,7 @@ const EXCEPTIONS = {
   checkHaveCorrectPackageName: ['app/javascript/packages/eslint-plugin/package.json'],
 };
 
-const manifestPaths = glob('app/javascript/packages/*/package.json');
+const manifestPaths = await glob('app/javascript/packages/*/package.json');
 Promise.all(manifestPaths.map(async (path) => [path, await readFile(path, 'utf-8')]))
   .then((contents) =>
     contents.map(([path, content]) => /** @type {ManifestPair} */ ([path, JSON.parse(content)])),

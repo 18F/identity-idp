@@ -32,5 +32,6 @@
     "chokidar": "^3.5.3",
     "lightningcss": "^1.23.0",
     "sass-embedded": "^1.70.0"
-  }
+  },
+  "sideEffects": false
 }

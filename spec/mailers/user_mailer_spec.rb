@@ -531,6 +531,23 @@ RSpec.describe UserMailer, type: :mailer do
       expect(mail.html_part.body).
         to have_content(strip_tags(t('user_mailer.please_reset_password.call_to_action')))
     end
+
+    it 'logs email metadata to analytics' do
+      analytics = FakeAnalytics.new
+      allow(Analytics).to receive(:new).and_return(analytics)
+      allow(analytics).to receive(:track_event)
+
+      user = create(:user)
+      email_address = user.email_addresses.first
+      mail = UserMailer.with(user: user, email_address: email_address).please_reset_password
+      mail.deliver_now
+
+      expect(analytics).
+        to have_received(:track_event).with(
+          'Email Sent',
+          action: 'please_reset_password', ses_message_id: nil, email_address_id: email_address.id,
+        )
+    end
   end
 
   describe '#letter_reminder' do

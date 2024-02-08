@@ -10,5 +10,8 @@
   "peerDependencies": {
     "sinon": "*",
     "webpack": ">=5"
-  }
+  },
+  "sideEffects": [
+    "./spec/**"
+  ]
 }

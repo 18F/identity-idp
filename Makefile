@@ -117,7 +117,7 @@ lint_yaml: normalize_yaml ## Lints YAML files
 	(! git diff --name-only | grep "^config/.*\.yml$$") || (echo "Error: Run 'make normalize_yaml' to normalize YAML"; exit 1)
 
 lint_yarn_workspaces: ## Lints Yarn workspace packages
-	scripts/validate-workspaces.js
+	scripts/validate-workspaces.mjs
 
 lint_asset_bundle_size: ## Lints JavaScript and CSS compiled bundle size
 	@# This enforces an asset size budget to ensure that download sizes are reasonable and to protect

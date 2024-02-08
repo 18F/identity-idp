@@ -30,6 +30,27 @@ RSpec.shared_examples 'signing in from service provider' do |sp|
 
     expect(page).to_not have_content t('devise.failure.timeout')
   end
+
+  it 'logs expected analytics events' do
+    user = create(:user, :fully_registered)
+    analytics = FakeAnalytics.new(user:)
+    allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(analytics)
+
+    visit_idp_from_sp_with_ial1(sp)
+    fill_in_credentials_and_submit(user.email, user.password)
+    fill_in_code_with_last_phone_otp
+    click_submit_default
+    click_submit_default if current_path == complete_saml_path
+    click_agree_and_continue
+    click_submit_default if current_path == complete_saml_path
+
+    expect(analytics).to have_logged_event(
+      'SP redirect initiated',
+      ial: 1,
+      billed_ial: 1,
+      sign_in_flow: 'sign_in',
+    )
+  end
 end
 
 RSpec.shared_examples 'signing in as IAL1 with personal key' do |sp|
