@@ -176,9 +176,9 @@ RSpec.describe DocAuth::LexisNexis::LexisNexisClient do
     end
 
     describe 'when http request failed' do
+      let(:status_code) { 1002 }
+      let(:status_message) { 'The request sent by the client was syntactically incorrect.' }
       it 'return failed response with correct statuses' do
-        status_code = 1002
-        status_message = 'The request sent by the client was syntactically incorrect.'
         stub_request(:post, image_upload_url).
           to_return(
             body: {
