@@ -97,20 +97,20 @@ RSpec.describe Idv::PleaseCallController do
       let(:in_person_proofing_enabled) { true }
       let(:in_person_proofing_enforce_tmx) { false }
       let!(:enrollment) { create(:in_person_enrollment, :passed, user: user, profile: profile) }
-  
+
       before do
         allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).
           and_return(in_person_proofing_enabled)
         allow(IdentityConfig.store).to receive(:in_person_proofing_enforce_tmx).
           and_return(in_person_proofing_enforce_tmx)
       end
-  
+
       it 'renders the show template' do
         get :show
-  
+
         expect(response).to render_template :show
       end
-  
+
       it 'returns false from ipp_enabled_and_enrollment_passed' do
         expect(subject.ipp_enabled_and_enrollment_passed?).to eq(nil)
       end
