@@ -46,6 +46,7 @@ RSpec.describe StoreSpMetadataInSession do
             {
               issuer: issuer,
               aal_level_requested: 1,
+              acr_values: request_acr,
               piv_cac_requested: false,
               phishing_resistant_requested: false,
               ial: 1,
