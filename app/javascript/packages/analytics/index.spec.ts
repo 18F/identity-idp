@@ -108,4 +108,26 @@ describe('trackError', () => {
     expect(message).to.equal('Oops!');
     expect(stack).to.be.a('string');
   });
+
+  context('with event parameter', () => {
+    it('tracks event', async () => {
+      const error = new Error('Oops!');
+      const errorEvent = new ErrorEvent('error', { error, filename: 'file.js' });
+      trackError(error, errorEvent);
+
+      expect(global.navigator.sendBeacon).to.have.been.calledOnce();
+
+      const [actualEndpoint, data] = (global.navigator.sendBeacon as SinonStub).firstCall.args;
+      expect(actualEndpoint).to.eql(endpoint);
+
+      const { event, payload } = JSON.parse(await data.text());
+      const { name, message, stack, filename } = payload;
+
+      expect(event).to.equal('Frontend Error');
+      expect(name).to.equal('Error');
+      expect(message).to.equal('Oops!');
+      expect(stack).to.be.a('string');
+      expect(filename).to.equal('file.js');
+    });
+  });
 });
