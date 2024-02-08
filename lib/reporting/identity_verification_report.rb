@@ -146,15 +146,26 @@ module Reporting
     # @param [Reporting::IdentityVerificationReport] other
     # @return [Reporting::IdentityVerificationReport]
     def merge(other)
+      merged_data = {
+        'all' => data['all'].merge(other.data['all']) do |_event, old_user_ids, new_user_ids|
+          old_user_ids + new_user_ids
+        end,
+      }
+      if @ab_tests.present?
+        @ab_tests.keys.each do |ab_test|
+          merged_data[ab_test] = data[ab_test].
+            merge(other.data[ab_test]) do |_event, old_user_ids, new_user_ids|
+              old_user_ids + new_user_ids
+            end
+        end
+      end
       self.class.new(
         issuers: (Array(issuers) + Array(other.issuers)).uniq,
         time_range: Range.new(
           [time_range.begin, other.time_range.begin].min,
           [time_range.end, other.time_range.end].max,
         ),
-        data: data.merge(other.data) do |_event, old_user_ids, new_user_ids|
-          old_user_ids + new_user_ids
-        end,
+        data: merged_data,
       )
     end
 
