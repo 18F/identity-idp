@@ -45,7 +45,7 @@ module DocAuth
         ].join(' ')
         exception = DocAuth::RequestError.new(message, http_response.status)
 
-        response_body = JSON.parse(http_response.body)
+        response_body = http_response.body.present? ? JSON.parse(http_response.body) : {}
         handle_connection_error(
           exception: exception,
           status_code: response_body.dig('status', 'code'),

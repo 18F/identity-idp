@@ -177,7 +177,18 @@ RSpec.describe DocAuth::LexisNexis::LexisNexisClient do
 
     describe 'when http request failed' do
       it 'return failed response with correct statuses' do
-        stub_request(:post, image_upload_url).to_return(body: '', status: 401)
+        status_code = 1002
+        status_message = 'The request sent by the client was syntactically incorrect.'
+        stub_request(:post, image_upload_url).
+          to_return(
+            body: {
+              status: {
+                code: status_code,
+                message: status_message,
+              },
+            }.to_json,
+            status: 401,
+          )
 
         result = client.post_images(
           front_image: DocAuthImageFixtures.document_front_image,
@@ -196,6 +207,8 @@ RSpec.describe DocAuth::LexisNexis::LexisNexisClient do
         expect(result_hash[:vendor]).to eq('TrueID')
         expect(result_hash[:doc_auth_success]).to eq(false)
         expect(result_hash[:selfie_status]).to eq(:not_processed)
+        expect(result_hash[:vendor_status_code]).to eq(status_code)
+        expect(result_hash[:vendor_status_message]).to eq(status_message)
         expect(result.class).to eq(DocAuth::Response)
       end
     end
