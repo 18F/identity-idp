@@ -169,7 +169,7 @@ RSpec.describe Reporting::IdentityVerificationReport do
   describe '#as_csv' do
     it 'renders a csv report' do
       aggregate_failures do
-        report.as_csv.zip(JSON.parse(expected_as_csv.to_json)).each do |actual, expected|
+        report.as_csv.zip(expected_as_csv).each do |actual, expected|
           expect(actual).to eq(expected)
         end
       end
@@ -257,8 +257,10 @@ RSpec.describe Reporting::IdentityVerificationReport do
         issuers: %w[a],
       )
       allow(report1).to receive(:data).and_return(
-        'IdV: doc auth image upload vendor submitted' => %w[a b].to_set,
-        'IdV: final resolution' => %w[a].to_set,
+        'all' => {
+          'IdV: doc auth image upload vendor submitted' => %w[a b].to_set,
+          'IdV: final resolution' => %w[a].to_set,
+        },
       )
 
       report2 = Reporting::IdentityVerificationReport.new(
@@ -266,8 +268,10 @@ RSpec.describe Reporting::IdentityVerificationReport do
         issuers: %w[b],
       )
       allow(report2).to receive(:data).and_return(
-        'IdV: doc auth image upload vendor submitted' => %w[b c].to_set,
-        'IdV: final resolution' => %w[c].to_set,
+        'all' => {
+          'IdV: doc auth image upload vendor submitted' => %w[b c].to_set,
+          'IdV: final resolution' => %w[c].to_set,
+        },
       )
 
       merged = report1.merge(report2)
@@ -278,8 +282,10 @@ RSpec.describe Reporting::IdentityVerificationReport do
         expect(merged.issuers).to eq(%w[a b])
 
         expect(merged.data).to eq(
-          'IdV: doc auth image upload vendor submitted' => %w[a b c].to_set,
-          'IdV: final resolution' => %w[a c].to_set,
+          'all' => {
+            'IdV: doc auth image upload vendor submitted' => %w[a b c].to_set,
+            'IdV: final resolution' => %w[a c].to_set,
+          },
         )
       end
     end
