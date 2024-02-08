@@ -38,7 +38,7 @@ function getHeading({
     return t('errors.doc_auth.doc_type_not_supported_heading');
   }
   if (isFailedSelfie) {
-    return t('errors.doc_auth.selfie_no_facematch_heading');
+    return t('errors.doc_auth.selfie_fail_heading');
   }
   if (isFailedSelfieLivenessOrQuality) {
     return t('errors.doc_auth.selfie_not_live_or_poor_quality_heading');

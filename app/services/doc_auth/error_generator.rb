@@ -79,7 +79,7 @@ module DocAuth
         # This returns the same sort of object that ErrorResult.to_h returns
         # but we need to do something more complex than that's set up to handle
         return {
-          general: [Errors::SELFIE_FAILURE],
+          general: [Errors::SELFIE_NOT_LIVE],
           front: [Errors::MULTIPLE_FRONT_ID_FAILURES],
           back: [Errors::MULTIPLE_BACK_ID_FAILURES],
           selfie: [Errors::SELFIE_NOT_LIVE_POOR_QUALITY_FIELD],
