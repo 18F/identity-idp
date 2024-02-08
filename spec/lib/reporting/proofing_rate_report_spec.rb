@@ -14,7 +14,7 @@ RSpec.describe Reporting::ProofingRateReport do
       allow(report).to receive(:reports).and_return(
         [
           instance_double(
-            'Reporting::IdentityVerificationReport',
+            'Reporting::IdentityVerificationReport::Result',
             idv_started: 4,
             idv_doc_auth_welcome_submitted: 3,
             idv_doc_auth_image_vendor_submitted: 2,
@@ -25,7 +25,7 @@ RSpec.describe Reporting::ProofingRateReport do
             data: {},
           ),
           instance_double(
-            'Reporting::IdentityVerificationReport',
+            'Reporting::IdentityVerificationReport::Result',
             idv_started: 5,
             idv_doc_auth_welcome_submitted: 4,
             idv_doc_auth_image_vendor_submitted: 3,
@@ -36,7 +36,7 @@ RSpec.describe Reporting::ProofingRateReport do
             data: {},
           ),
           instance_double(
-            'Reporting::IdentityVerificationReport',
+            'Reporting::IdentityVerificationReport::Result',
             idv_started: 6,
             idv_doc_auth_welcome_submitted: 5,
             idv_doc_auth_image_vendor_submitted: 4,

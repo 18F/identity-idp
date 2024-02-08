@@ -56,7 +56,6 @@ module Reporting
       progress: false,
       slice: 3.hours,
       threads: 5,
-      data: nil,
       cloudwatch_client: nil
     )
       @issuers = issuers
@@ -65,7 +64,6 @@ module Reporting
       @progress = progress
       @slice = slice
       @threads = threads
-      @data = data
       @cloudwatch_client = cloudwatch_client
     end
 
@@ -77,172 +75,183 @@ module Reporting
       @progress
     end
 
-    def identity_verification_emailable_report
-      EmailableReport.new(
-        title: 'Identity Verification Metrics',
-        table: as_csv,
-        filename: 'identity_verification_metrics',
+    def result
+      Result.new(
+        data: build_data(fetch_results),
+        issuers:,
+        time_range:,
       )
     end
 
-    def as_csv
-      csv = []
+    Result = Struct.new(:data, :issuers, :time_range, :ab_test, :bucket) do
+      def identity_verification_emailable_report
+        EmailableReport.new(
+          title: 'Identity Verification Metrics',
+          table: as_csv,
+          filename: 'identity_verification_metrics',
+        )
+      end
 
-      csv << ['Report Timeframe', "#{time_range.begin} to #{time_range.end}"]
-      # This needs to be Date.today so it works when run on the command line
-      csv << ['Report Generated', Date.today.to_s] # rubocop:disable Rails/Date
-      csv << ['Issuer', issuers.join(', ')] if issuers.present?
-      csv << []
-      csv << ['Metric', '# of Users']
-      csv << []
-      csv << ['Started IdV Verification', idv_started]
-      csv << ['Submitted welcome page', idv_doc_auth_welcome_submitted]
-      csv << ['Images uploaded', idv_doc_auth_image_vendor_submitted]
-      csv << []
-      csv << ['Workflow completed', idv_final_resolution]
-      csv << ['Workflow completed - Verified', idv_final_resolution_verified]
-      csv << ['Workflow completed - Total Pending', idv_final_resolution_total_pending]
-      csv << ['Workflow completed - GPO Pending', idv_final_resolution_gpo]
-      csv << ['Workflow completed - In-Person Pending', idv_final_resolution_in_person]
-      csv << ['Workflow completed - Fraud Review Pending', idv_final_resolution_fraud_review]
-      csv << []
-      csv << ['Successfully verified', successfully_verified_users]
-      csv << ['Successfully verified - Inline', idv_final_resolution_verified]
-      csv << ['Successfully verified - GPO Code Entry', gpo_verification_submitted]
-      csv << ['Successfully verified - In Person', usps_enrollment_status_updated]
-      csv << ['Successfully verified - Passed Fraud Review', fraud_review_passed]
-    end
+      def as_csv
+        csv = []
 
-    def to_csv
-      CSV.generate do |csv|
-        as_csv.each do |row|
-          csv << row
+        csv << ['Report Timeframe', "#{time_range.begin} to #{time_range.end}"]
+        # This needs to be Date.today so it works when run on the command line
+        csv << ['Report Generated', Date.today.to_s] # rubocop:disable Rails/Date
+        csv << ['Issuer', issuers.join(', ')] if issuers.present?
+        csv << []
+        csv << ['Metric', '# of Users']
+        csv << []
+        csv << ['Started IdV Verification', idv_started]
+        csv << ['Submitted welcome page', idv_doc_auth_welcome_submitted]
+        csv << ['Images uploaded', idv_doc_auth_image_vendor_submitted]
+        csv << []
+        csv << ['Workflow completed', idv_final_resolution]
+        csv << ['Workflow completed - Verified', idv_final_resolution_verified]
+        csv << ['Workflow completed - Total Pending', idv_final_resolution_total_pending]
+        csv << ['Workflow completed - GPO Pending', idv_final_resolution_gpo]
+        csv << ['Workflow completed - In-Person Pending', idv_final_resolution_in_person]
+        csv << ['Workflow completed - Fraud Review Pending', idv_final_resolution_fraud_review]
+        csv << []
+        csv << ['Successfully verified', successfully_verified_users]
+        csv << ['Successfully verified - Inline', idv_final_resolution_verified]
+        csv << ['Successfully verified - GPO Code Entry', gpo_verification_submitted]
+        csv << ['Successfully verified - In Person', usps_enrollment_status_updated]
+        csv << ['Successfully verified - Passed Fraud Review', fraud_review_passed]
+      end
+
+      def to_csv
+        CSV.generate do |csv|
+          as_csv.each do |row|
+            csv << row
+          end
         end
       end
-    end
 
-    # @param [Reporting::IdentityVerificationReport] other
-    # @return [Reporting::IdentityVerificationReport]
-    def merge(other)
-      self.class.new(
-        issuers: (Array(issuers) + Array(other.issuers)).uniq,
-        time_range: Range.new(
-          [time_range.begin, other.time_range.begin].min,
-          [time_range.end, other.time_range.end].max,
-        ),
-        data: data.merge(other.data) do |_event, old_user_ids, new_user_ids|
-          old_user_ids + new_user_ids
-        end,
-      )
-    end
+      # @param [Reporting::IdentityVerificationReport::Result] other
+      # @return [Reporting::IdentityVerificationReport::Result]
+      def merge(other)
+        self.class.new(
+          issuers: (Array(issuers) + Array(other.issuers)).uniq,
+          time_range: Range.new(
+            [time_range.begin, other.time_range.begin].min,
+            [time_range.end, other.time_range.end].max,
+          ),
+          data: data.merge(other.data) do |_event, old_user_ids, new_user_ids|
+            old_user_ids + new_user_ids
+          end,
+          ab_test: [ab_test, other.ab_test].first,
+          bucket: [bucket, other.bucket].first,
+        )
+      end
 
-    def idv_final_resolution
-      data[Events::IDV_FINAL_RESOLUTION].count
-    end
+      def idv_final_resolution
+        data[Events::IDV_FINAL_RESOLUTION].count
+      end
 
-    def idv_final_resolution_verified
-      data[Results::IDV_FINAL_RESOLUTION_VERIFIED].count
-    end
+      def idv_final_resolution_verified
+        data[Results::IDV_FINAL_RESOLUTION_VERIFIED].count
+      end
 
-    def idv_final_resolution_gpo
-      data[Results::IDV_FINAL_RESOLUTION_GPO].count
-    end
+      def idv_final_resolution_gpo
+        data[Results::IDV_FINAL_RESOLUTION_GPO].count
+      end
 
-    def idv_final_resolution_in_person
-      data[Results::IDV_FINAL_RESOLUTION_IN_PERSON].count
-    end
+      def idv_final_resolution_in_person
+        data[Results::IDV_FINAL_RESOLUTION_IN_PERSON].count
+      end
 
-    def idv_final_resolution_fraud_review
-      data[Results::IDV_FINAL_RESOLUTION_FRAUD_REVIEW].count
-    end
+      def idv_final_resolution_fraud_review
+        data[Results::IDV_FINAL_RESOLUTION_FRAUD_REVIEW].count
+      end
 
-    def idv_final_resolution_total_pending
-      @idv_final_resolution_total_pending ||=
-        (data[Events::IDV_FINAL_RESOLUTION] - data[Results::IDV_FINAL_RESOLUTION_VERIFIED]).count
-    end
+      def idv_final_resolution_total_pending
+        @idv_final_resolution_total_pending ||=
+          (data[Events::IDV_FINAL_RESOLUTION] - data[Results::IDV_FINAL_RESOLUTION_VERIFIED]).count
+      end
 
-    def gpo_verification_submitted
-      @gpo_verification_submitted ||= (
-        data[Events::GPO_VERIFICATION_SUBMITTED] +
-          data[Events::GPO_VERIFICATION_SUBMITTED_OLD]).count
-    end
+      def gpo_verification_submitted
+        @gpo_verification_submitted ||= (
+          data[Events::GPO_VERIFICATION_SUBMITTED] +
+            data[Events::GPO_VERIFICATION_SUBMITTED_OLD]).count
+      end
 
-    def usps_enrollment_status_updated
-      data[Events::USPS_ENROLLMENT_STATUS_UPDATED].count
-    end
+      def usps_enrollment_status_updated
+        data[Events::USPS_ENROLLMENT_STATUS_UPDATED].count
+      end
 
-    def successfully_verified_users
-      idv_final_resolution_verified + gpo_verification_submitted + usps_enrollment_status_updated +
-        fraud_review_passed
-    end
+      def successfully_verified_users
+        idv_final_resolution_verified + gpo_verification_submitted + usps_enrollment_status_updated +
+          fraud_review_passed
+      end
 
-    def idv_started
-      @idv_started ||=
-        (data[Events::IDV_DOC_AUTH_WELCOME] + data[Events::IDV_DOC_AUTH_GETTING_STARTED]).count
-    end
+      def idv_started
+        @idv_started ||=
+          (data[Events::IDV_DOC_AUTH_WELCOME] + data[Events::IDV_DOC_AUTH_GETTING_STARTED]).count
+      end
 
-    def idv_doc_auth_image_vendor_submitted
-      data[Events::IDV_DOC_AUTH_IMAGE_UPLOAD].count
-    end
+      def idv_doc_auth_image_vendor_submitted
+        data[Events::IDV_DOC_AUTH_IMAGE_UPLOAD].count
+      end
 
-    def idv_doc_auth_welcome_submitted
-      data[Events::IDV_DOC_AUTH_WELCOME_SUBMITTED].count
-    end
+      def idv_doc_auth_welcome_submitted
+        data[Events::IDV_DOC_AUTH_WELCOME_SUBMITTED].count
+      end
 
-    def idv_doc_auth_rejected
-      @idv_doc_auth_rejected ||= (
-        data[Results::IDV_REJECT_DOC_AUTH] +
-        data[Results::IDV_REJECT_VERIFY] +
-        data[Results::IDV_REJECT_PHONE_FINDER] -
-        data[Results::IDV_FINAL_RESOLUTION_VERIFIED] -
-        data[Results::IDV_FINAL_RESOLUTION_IN_PERSON]
-      ).count
-    end
+      def idv_doc_auth_rejected
+        @idv_doc_auth_rejected ||= (
+          data[Results::IDV_REJECT_DOC_AUTH] +
+          data[Results::IDV_REJECT_VERIFY] +
+          data[Results::IDV_REJECT_PHONE_FINDER] -
+          data[Results::IDV_FINAL_RESOLUTION_VERIFIED] -
+          data[Results::IDV_FINAL_RESOLUTION_IN_PERSON]
+        ).count
+      end
 
-    def idv_fraud_rejected
-      (data[Events::FRAUD_REVIEW_REJECT_AUTOMATIC] + data[Events::FRAUD_REVIEW_REJECT_MANUAL]).count
-    end
+      def idv_fraud_rejected
+        (data[Events::FRAUD_REVIEW_REJECT_AUTOMATIC] + data[Events::FRAUD_REVIEW_REJECT_MANUAL]).count
+      end
 
-    def fraud_review_passed
-      data[Events::FRAUD_REVIEW_PASSED].count
+      def fraud_review_passed
+        data[Events::FRAUD_REVIEW_PASSED].count
+      end
     end
 
     # rubocop:disable Layout/LineLength
     # Turns query results into a hash keyed by event name, values are a count of unique users
     # for that event
+    # @param [Array<Hash>] results
     # @return [Hash<Set<String>>]
-    def data
-      @data ||= begin
-        event_users = Hash.new do |h, event_name|
-          h[event_name] = Set.new
-        end
-
-        # IDEA: maybe there's a block form if this we can do that yields results as it loads them
-        # to go slightly faster
-        fetch_results.each do |row|
-          event = row['name']
-          user_id = row['user_id']
-          success = row['success']
-
-          event_users[event] << user_id
-
-          case event
-          when Events::IDV_FINAL_RESOLUTION
-            event_users[Results::IDV_FINAL_RESOLUTION_VERIFIED] << user_id if row['identity_verified'] == '1'
-            event_users[Results::IDV_FINAL_RESOLUTION_GPO] << user_id if row['gpo_verification_pending'] == '1'
-            event_users[Results::IDV_FINAL_RESOLUTION_IN_PERSON] << user_id if row['in_person_verification_pending'] == '1'
-            event_users[Results::IDV_FINAL_RESOLUTION_FRAUD_REVIEW] << user_id if row['fraud_review_pending'] == '1'
-          when Events::IDV_DOC_AUTH_IMAGE_UPLOAD
-            event_users[Results::IDV_REJECT_DOC_AUTH] << user_id if row['doc_auth_failed_non_fraud'] == '1'
-          when Events::IDV_DOC_AUTH_VERIFY_RESULTS
-            event_users[Results::IDV_REJECT_VERIFY] << user_id if success == '0'
-          when Events::IDV_PHONE_FINDER_RESULTS
-            event_users[Results::IDV_REJECT_PHONE_FINDER] << user_id if success == '0'
-          end
-        end
-
-        event_users
+    def build_data(results)
+      event_users = Hash.new do |h, event_name|
+        h[event_name] = Set.new
       end
+
+      # IDEA: maybe there's a block form if this we can do that yields results as it loads them
+      # to go slightly faster
+      results.each do |row|
+        event = row['name']
+        user_id = row['user_id']
+        success = row['success']
+
+        event_users[event] << user_id
+
+        case event
+        when Events::IDV_FINAL_RESOLUTION
+          event_users[Results::IDV_FINAL_RESOLUTION_VERIFIED] << user_id if row['identity_verified'] == '1'
+          event_users[Results::IDV_FINAL_RESOLUTION_GPO] << user_id if row['gpo_verification_pending'] == '1'
+          event_users[Results::IDV_FINAL_RESOLUTION_IN_PERSON] << user_id if row['in_person_verification_pending'] == '1'
+          event_users[Results::IDV_FINAL_RESOLUTION_FRAUD_REVIEW] << user_id if row['fraud_review_pending'] == '1'
+        when Events::IDV_DOC_AUTH_IMAGE_UPLOAD
+          event_users[Results::IDV_REJECT_DOC_AUTH] << user_id if row['doc_auth_failed_non_fraud'] == '1'
+        when Events::IDV_DOC_AUTH_VERIFY_RESULTS
+          event_users[Results::IDV_REJECT_VERIFY] << user_id if success == '0'
+        when Events::IDV_PHONE_FINDER_RESULTS
+          event_users[Results::IDV_REJECT_PHONE_FINDER] << user_id if success == '0'
+        end
+      end
+
+      event_users
     end
     # rubocop:enable Layout/LineLength
 

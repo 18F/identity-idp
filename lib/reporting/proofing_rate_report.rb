@@ -84,6 +84,7 @@ module Reporting
       end
     end
 
+    # @return [Array<Reporting::IdentityVerificationReport::Result>]
     def reports
       @reports ||= begin
         sub_reports = [0, *DATE_INTERVALS].each_cons(2).map do |slice_end, slice_start|
@@ -97,10 +98,10 @@ module Reporting
           )
         end
 
-        reports = if parallel?
+        results = if parallel?
                     threads = sub_reports.map do |report|
                       Thread.new do
-                        report.tap(&:data)
+                        report.result
                       end.tap do |thread|
                         thread.report_on_exception = false
                       end
@@ -111,15 +112,15 @@ module Reporting
                     end
                   else
                     Reporting::UnknownProgressBar.wrap(show_bar: progress?) do
-                      sub_reports.each(&:data)
+                      sub_reports.map(&:result)
                     end
                   end
 
-        reports.reduce([]) do |acc, report|
+        results.reduce([]) do |acc, result|
           if acc.empty?
-            acc << report
+            acc << result
           else
-            acc << report.merge(acc.last)
+            acc << result.merge(acc.last)
           end
         end
       end

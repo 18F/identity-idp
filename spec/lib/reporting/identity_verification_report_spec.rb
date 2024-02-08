@@ -57,142 +57,147 @@ RSpec.describe Reporting::IdentityVerificationReport do
 
     allow(report).to receive(:cloudwatch_client).and_return(cloudwatch_client)
   end
-  # rubocop:enable Layout/LineLength
-  describe '#as_csv' do
-    it 'renders a csv report' do
-      expected_csv = [
-        ['Report Timeframe', "#{time_range.begin} to #{time_range.end}"],
-        ['Report Generated', Date.today.to_s], # rubocop:disable Rails/Date
-        ['Issuer', issuer],
-        [],
-        ['Metric', '# of Users'],
-        [],
-        ['Started IdV Verification', 5],
-        ['Submitted welcome page', 5],
-        ['Images uploaded', 5],
-        [],
-        ['Workflow completed', 4],
-        ['Workflow completed - Verified', 1],
-        ['Workflow completed - Total Pending', 3],
-        ['Workflow completed - GPO Pending', 1],
-        ['Workflow completed - In-Person Pending', 1],
-        ['Workflow completed - Fraud Review Pending', 1],
-        [],
-        ['Successfully verified', 4],
-        ['Successfully verified - Inline', 1],
-        ['Successfully verified - GPO Code Entry', 1],
-        ['Successfully verified - In Person', 1],
-        ['Successfully verified - Passed Fraud Review', 1],
-      ]
 
-      aggregate_failures do
-        report.as_csv.zip(expected_csv).each do |actual, expected|
-          expect(actual).to eq(expected)
+  describe Reporting::IdentityVerificationReport::Result do
+    subject(:result) { report.result }
+
+    # rubocop:enable Layout/LineLength
+    describe '#as_csv' do
+      it 'renders a csv report' do
+        expected_csv = [
+          ['Report Timeframe', "#{time_range.begin} to #{time_range.end}"],
+          ['Report Generated', Date.today.to_s], # rubocop:disable Rails/Date
+          ['Issuer', issuer],
+          [],
+          ['Metric', '# of Users'],
+          [],
+          ['Started IdV Verification', 5],
+          ['Submitted welcome page', 5],
+          ['Images uploaded', 5],
+          [],
+          ['Workflow completed', 4],
+          ['Workflow completed - Verified', 1],
+          ['Workflow completed - Total Pending', 3],
+          ['Workflow completed - GPO Pending', 1],
+          ['Workflow completed - In-Person Pending', 1],
+          ['Workflow completed - Fraud Review Pending', 1],
+          [],
+          ['Successfully verified', 4],
+          ['Successfully verified - Inline', 1],
+          ['Successfully verified - GPO Code Entry', 1],
+          ['Successfully verified - In Person', 1],
+          ['Successfully verified - Passed Fraud Review', 1],
+        ]
+
+        aggregate_failures do
+          result.as_csv.zip(expected_csv).each do |actual, expected|
+            expect(actual).to eq(expected)
+          end
         end
       end
     end
-  end
 
-  describe '#to_csv' do
-    it 'generates a csv' do
-      csv = CSV.parse(report.to_csv, headers: false)
+    describe '#to_csv' do
+      it 'generates a csv' do
+        csv = CSV.parse(result.to_csv, headers: false)
 
-      expected_csv = [
-        ['Report Timeframe', "#{time_range.begin} to #{time_range.end}"],
-        ['Report Generated', Date.today.to_s], # rubocop:disable Rails/Date
-        ['Issuer', issuer],
-        [],
-        ['Metric', '# of Users'],
-        [],
-        ['Started IdV Verification', '5'],
-        ['Submitted welcome page', '5'],
-        ['Images uploaded', '5'],
-        [],
-        ['Workflow completed', '4'],
-        ['Workflow completed - Verified', '1'],
-        ['Workflow completed - Total Pending', '3'],
-        ['Workflow completed - GPO Pending', '1'],
-        ['Workflow completed - In-Person Pending', '1'],
-        ['Workflow completed - Fraud Review Pending', '1'],
-        [],
-        ['Successfully verified', '4'],
-        ['Successfully verified - Inline', '1'],
-        ['Successfully verified - GPO Code Entry', '1'],
-        ['Successfully verified - In Person', '1'],
-        ['Successfully verified - Passed Fraud Review', '1'],
-      ]
+        expected_csv = [
+          ['Report Timeframe', "#{time_range.begin} to #{time_range.end}"],
+          ['Report Generated', Date.today.to_s], # rubocop:disable Rails/Date
+          ['Issuer', issuer],
+          [],
+          ['Metric', '# of Users'],
+          [],
+          ['Started IdV Verification', '5'],
+          ['Submitted welcome page', '5'],
+          ['Images uploaded', '5'],
+          [],
+          ['Workflow completed', '4'],
+          ['Workflow completed - Verified', '1'],
+          ['Workflow completed - Total Pending', '3'],
+          ['Workflow completed - GPO Pending', '1'],
+          ['Workflow completed - In-Person Pending', '1'],
+          ['Workflow completed - Fraud Review Pending', '1'],
+          [],
+          ['Successfully verified', '4'],
+          ['Successfully verified - Inline', '1'],
+          ['Successfully verified - GPO Code Entry', '1'],
+          ['Successfully verified - In Person', '1'],
+          ['Successfully verified - Passed Fraud Review', '1'],
+        ]
 
-      aggregate_failures do
-        csv.map(&:to_a).zip(expected_csv).each do |actual, expected|
-          expect(actual).to eq(expected)
+        aggregate_failures do
+          csv.map(&:to_a).zip(expected_csv).each do |actual, expected|
+            expect(actual).to eq(expected)
+          end
         end
       end
     end
-  end
 
-  describe '#data' do
-    it 'counts unique users per event as a hash' do
-      expect(report.data.transform_values(&:count)).to eq(
-        # events
-        'GetUspsProofingResultsJob: Enrollment status updated' => 1,
-        'IdV: doc auth image upload vendor submitted' => 5,
-        'IdV: doc auth verify proofing results' => 1,
-        'IdV: doc auth welcome submitted' => 5,
-        'IdV: doc auth welcome visited' => 5,
-        'IdV: final resolution' => 4,
-        'IdV: GPO verification submitted' => 1,
-        'IdV: phone confirmation vendor' => 1,
+    describe '#data' do
+      it 'counts unique users per event as a hash' do
+        expect(result.data.transform_values(&:count)).to eq(
+          # events
+          'GetUspsProofingResultsJob: Enrollment status updated' => 1,
+          'IdV: doc auth image upload vendor submitted' => 5,
+          'IdV: doc auth verify proofing results' => 1,
+          'IdV: doc auth welcome submitted' => 5,
+          'IdV: doc auth welcome visited' => 5,
+          'IdV: final resolution' => 4,
+          'IdV: GPO verification submitted' => 1,
+          'IdV: phone confirmation vendor' => 1,
 
-        # results
-        'IdV: final resolution - Fraud Review Pending' => 1,
-        'IdV: final resolution - GPO Pending' => 1,
-        'IdV: final resolution - In Person Proofing' => 1,
-        'IdV: final resolution - Verified' => 1,
-        'IdV Reject: Doc Auth' => 3,
-        'IdV Reject: Phone Finder' => 1,
-        'IdV Reject: Verify' => 1,
-        'Fraud: Profile review passed' => 1,
-      )
-    end
-  end
-
-  describe '#idv_doc_auth_rejected' do
-    it 'is the number of users who failed proofing and never passed' do
-      expect(report.idv_doc_auth_rejected).to eq(1)
-    end
-  end
-
-  describe '#merge', :freeze_time do
-    it 'makes a new instance with merged data' do
-      report1 = Reporting::IdentityVerificationReport.new(
-        time_range: 4.days.ago..3.days.ago,
-        issuers: %w[a],
-      )
-      allow(report1).to receive(:data).and_return(
-        'IdV: doc auth image upload vendor submitted' => %w[a b].to_set,
-        'IdV: final resolution' => %w[a].to_set,
-      )
-
-      report2 = Reporting::IdentityVerificationReport.new(
-        time_range: 2.days.ago..1.day.ago,
-        issuers: %w[b],
-      )
-      allow(report2).to receive(:data).and_return(
-        'IdV: doc auth image upload vendor submitted' => %w[b c].to_set,
-        'IdV: final resolution' => %w[c].to_set,
-      )
-
-      merged = report1.merge(report2)
-
-      aggregate_failures do
-        expect(merged.time_range).to eq(4.days.ago..1.day.ago)
-
-        expect(merged.issuers).to eq(%w[a b])
-
-        expect(merged.data).to eq(
-          'IdV: doc auth image upload vendor submitted' => %w[a b c].to_set,
-          'IdV: final resolution' => %w[a c].to_set,
+          # results
+          'IdV: final resolution - Fraud Review Pending' => 1,
+          'IdV: final resolution - GPO Pending' => 1,
+          'IdV: final resolution - In Person Proofing' => 1,
+          'IdV: final resolution - Verified' => 1,
+          'IdV Reject: Doc Auth' => 3,
+          'IdV Reject: Phone Finder' => 1,
+          'IdV Reject: Verify' => 1,
+          'Fraud: Profile review passed' => 1,
         )
+      end
+    end
+
+    describe '#idv_doc_auth_rejected' do
+      it 'is the number of users who failed proofing and never passed' do
+        expect(result.idv_doc_auth_rejected).to eq(1)
+      end
+    end
+
+    describe '#merge', :freeze_time do
+      it 'makes a new instance with merged data' do
+        report1 = Reporting::IdentityVerificationReport::Result.new(
+          time_range: 4.days.ago..3.days.ago,
+          issuers: %w[a],
+          data: {
+            'IdV: doc auth image upload vendor submitted' => %w[a b].to_set,
+            'IdV: final resolution' => %w[a].to_set,
+          },
+        )
+
+        report2 = Reporting::IdentityVerificationReport::Result.new(
+          time_range: 2.days.ago..1.day.ago,
+          issuers: %w[b],
+          data: {
+            'IdV: doc auth image upload vendor submitted' => %w[b c].to_set,
+            'IdV: final resolution' => %w[c].to_set,
+          },
+        )
+
+        merged = report1.merge(report2)
+
+        aggregate_failures do
+          expect(merged.time_range).to eq(4.days.ago..1.day.ago)
+
+          expect(merged.issuers).to eq(%w[a b])
+
+          expect(merged.data).to eq(
+            'IdV: doc auth image upload vendor submitted' => %w[a b c].to_set,
+            'IdV: final resolution' => %w[a c].to_set,
+          )
+        end
       end
     end
   end
