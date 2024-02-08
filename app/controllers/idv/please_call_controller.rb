@@ -16,6 +16,11 @@ module Idv
       @in_person = ipp_enabled_and_enrollment_passed?
     end
 
+    def ipp_enabled_and_enrollment_passed?
+      return unless in_person_tmx_enabled?
+      in_person_proofing_enabled? && ipp_enrollment_passed?
+    end
+
     private
 
     def confirm_fraud_pending
@@ -28,13 +33,13 @@ module Idv
       IdentityConfig.store.in_person_proofing_enabled
     end
 
+    def in_person_tmx_enabled?
+      IdentityConfig.store.in_person_proofing_enforce_tmx
+    end
+
     # we only want to handle enrollments that have passed
     def ipp_enrollment_passed?
       current_user&.in_person_enrollment_status == 'passed'
-    end
-
-    def ipp_enabled_and_enrollment_passed?
-      in_person_proofing_enabled? && ipp_enrollment_passed?
     end
   end
 end
