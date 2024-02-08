@@ -85,6 +85,7 @@ class StoreSpMetadataInSession
       phishing_resistant_requested: phishing_resistant_value,
       biometric_comparison_required: biometric_comparison_required_value,
       acr_values: sp_request.acr_values,
+      vtr: sp_request.vtr,
     }
   end
 

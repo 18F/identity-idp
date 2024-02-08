@@ -1076,7 +1076,7 @@ RSpec.describe OpenidConnect::AuthorizationController, allowed_extra_analytics: 
         sp_request_id = ServiceProviderRequestProxy.last.uuid
 
         expect(session[:sp]).to eq(
-          aal_level_requested: nil,
+          aal_level_requested: 1, # ToDo: Get Hooper's opinion
           acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
           piv_cac_requested: false,
           phishing_resistant_requested: false,
