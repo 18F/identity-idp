@@ -158,61 +158,61 @@ module Reporting
       )
     end
 
-    def idv_final_resolution(data_set)
+    def idv_final_resolution(data_set = data['all'])
       data_set[Events::IDV_FINAL_RESOLUTION].count
     end
 
-    def idv_final_resolution_verified(data_set)
+    def idv_final_resolution_verified(data_set = data['all'])
       data_set[Results::IDV_FINAL_RESOLUTION_VERIFIED].count
     end
 
-    def idv_final_resolution_gpo(data_set)
+    def idv_final_resolution_gpo(data_set = data['all'])
       data_set[Results::IDV_FINAL_RESOLUTION_GPO].count
     end
 
-    def idv_final_resolution_in_person(data_set)
+    def idv_final_resolution_in_person(data_set = data['all'])
       data_set[Results::IDV_FINAL_RESOLUTION_IN_PERSON].count
     end
 
-    def idv_final_resolution_fraud_review(data_set)
+    def idv_final_resolution_fraud_review(data_set = data['all'])
       data_set[Results::IDV_FINAL_RESOLUTION_FRAUD_REVIEW].count
     end
 
-    def idv_final_resolution_total_pending(data_set)
+    def idv_final_resolution_total_pending(data_set = data['all'])
       (data_set[Events::IDV_FINAL_RESOLUTION] -
         data_set[Results::IDV_FINAL_RESOLUTION_VERIFIED]).count
     end
 
-    def gpo_verification_submitted(data_set)
+    def gpo_verification_submitted(data_set = data['all'])
       (data_set[Events::GPO_VERIFICATION_SUBMITTED] +
         data_set[Events::GPO_VERIFICATION_SUBMITTED_OLD]).count
     end
 
-    def usps_enrollment_status_updated(data_set)
+    def usps_enrollment_status_updated(data_set = data['all'])
       data_set[Events::USPS_ENROLLMENT_STATUS_UPDATED].count
     end
 
-    def successfully_verified_users(data_set)
+    def successfully_verified_users(data_set = data['all'])
       idv_final_resolution_verified(data_set) +
         gpo_verification_submitted(data_set) +
         usps_enrollment_status_updated(data_set) +
         fraud_review_passed(data_set)
     end
 
-    def idv_started(data_set)
+    def idv_started(data_set = data['all'])
       (data_set[Events::IDV_DOC_AUTH_WELCOME] +
         data_set[Events::IDV_DOC_AUTH_GETTING_STARTED]).count
     end
 
-    def idv_doc_auth_image_vendor_submitted(data_set)
+    def idv_doc_auth_image_vendor_submitted(data_set = data['all'])
       data_set[Events::IDV_DOC_AUTH_IMAGE_UPLOAD].count
     end
 
-    def idv_doc_auth_welcome_submitted(data_set)
+    def idv_doc_auth_welcome_submitted(data_set = data['all'])
       data_set[Events::IDV_DOC_AUTH_WELCOME_SUBMITTED].count
     end
 
-    def idv_doc_auth_rejected(data_set)
+    def idv_doc_auth_rejected(data_set = data['all'])
       (
         data_set[Results::IDV_REJECT_DOC_AUTH] +
         data_set[Results::IDV_REJECT_VERIFY] +
@@ -222,12 +222,12 @@ module Reporting
       ).count
     end
 
-    def idv_fraud_rejected(data_set)
+    def idv_fraud_rejected(data_set = data['all'])
       (data_set[Events::FRAUD_REVIEW_REJECT_AUTOMATIC] +
         data_set[Events::FRAUD_REVIEW_REJECT_MANUAL]).count
     end
 
-    def fraud_review_passed(data_set)
+    def fraud_review_passed(data_set = data['all'])
       data_set[Events::FRAUD_REVIEW_PASSED].count
     end
 
