@@ -25,6 +25,8 @@ module Vot
         elsif acr_values.present?
           map_initial_acr_values_to_component_values
         end
+      raise 'VoT parser called without VoT or ACR values' unless initial_components
+
       expand_components_with_initial_components(initial_components)
     end
 
