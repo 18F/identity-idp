@@ -35,6 +35,12 @@ DocumentCaptureSessionResult = RedactedStruct.new(
   alias_method :attention_with_barcode?, :attention_with_barcode
   alias_method :pii_from_doc, :pii
 
+  def self.deprecator
+    ActiveSupport::Deprecation.new('2024Q1', 'TrueIdRequest')
+  end
+
+  deprecate pii_from_doc: :dummy, deprecator: deprecator
+
   %w[front back selfie].each do |side|
     define_method(:"add_failed_#{side}_image!") do |fingerprint|
       member_name = "failed_#{side}_image_fingerprints"

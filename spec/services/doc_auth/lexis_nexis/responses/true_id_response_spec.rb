@@ -62,6 +62,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       extra_attributes = response.extra_attributes
       expect(extra_attributes).not_to be_empty
       expect(extra_attributes[:classification_info]).to include(:Front, :Back)
+      expect(extra_attributes).to have_key(:workflow)
     end
     it 'has PII data' do
       # This is the minimum expected by doc_pii_form in the core IDP
@@ -138,6 +139,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         selfie_live: true,
         selfie_quality_good: true,
         liveness_enabled: false,
+        workflow: anything,
       )
       passed_alerts = response_hash.dig(:processed_alerts, :passed)
       passed_alerts.each do |alert|
@@ -382,6 +384,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         selfie_live: true,
         selfie_quality_good: false,
         liveness_enabled: false,
+        workflow: anything,
       )
     end
     it 'produces appropriate errors with document tampering' do

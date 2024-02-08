@@ -11,7 +11,8 @@ module DocAuth
 
         attr_reader :config, :http_response
 
-        def initialize(http_response, config, liveness_checking_enabled = false, request_context = {})
+        def initialize(http_response, config, liveness_checking_enabled = false,
+                       request_context = {})
           @config = config
           @http_response = http_response
           @request_context = request_context
@@ -192,7 +193,7 @@ module DocAuth
             vendor: 'TrueID',
             billed: billed?,
             workflow: @request_context&.dig(:workflow),
-          }.compact
+          }
         end
 
         # Status of all checks from Vendor perspective

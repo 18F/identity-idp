@@ -220,10 +220,10 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
     end
   end
   describe '#request_context' do
-    it 'returns needed information' do
-      # expect(subject.request_context).to eq(
-      #
-      # )
+    it 'returns needed information including workflow' do
+      expect(subject.request_context).to include(
+        workflow: an_instance_of(String),
+      )
     end
   end
 end
