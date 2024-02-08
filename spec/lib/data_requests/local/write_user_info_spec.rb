@@ -40,7 +40,7 @@ RSpec.describe DataRequests::Local::WriteUserInfo do
     end
 
     context 'with a not_found user' do
-      let(:uuid) { SecureRandom.hex  }
+      let(:uuid) { SecureRandom.hex }
       let(:user_report) do
         {
           user_id: nil,

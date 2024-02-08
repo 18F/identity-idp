@@ -68,7 +68,7 @@ module DataRequests
             'Backup code configuration',
             nil,
             backup_code_config[:created_at],
-            backup_code_config[:used_at]
+            backup_code_config[:used_at],
           ]
         end
       end
