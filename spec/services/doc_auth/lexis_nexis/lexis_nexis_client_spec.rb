@@ -211,6 +211,37 @@ RSpec.describe DocAuth::LexisNexis::LexisNexisClient do
         expect(result_hash[:vendor_status_message]).to eq(status_message)
         expect(result.class).to eq(DocAuth::Response)
       end
+
+      context 'when json is not returned in the body' do
+        it 'return failed response with correct statuses' do
+          stub_request(:post, image_upload_url).
+            to_return(
+              body: 'not json',
+              status: 401,
+            )
+
+          result = client.post_images(
+            front_image: DocAuthImageFixtures.document_front_image,
+            back_image: DocAuthImageFixtures.document_back_image,
+            image_source: image_source,
+            selfie_image: DocAuthImageFixtures.selfie_image,
+            liveness_checking_required: true,
+          )
+
+          expect(result.success?).to eq(false)
+          expect(result.errors).to eq(network: true)
+          expect(result.exception.message).to eq(
+            'DocAuth::LexisNexis::Requests::TrueIdRequest Unexpected HTTP response 401',
+          )
+          result_hash = result.to_h
+          expect(result_hash[:vendor]).to eq('TrueID')
+          expect(result_hash[:doc_auth_success]).to eq(false)
+          expect(result_hash[:selfie_status]).to eq(:not_processed)
+          expect(result_hash[:vendor_status_code]).to be_nil
+          expect(result_hash[:vendor_status_message]).to be_nil
+          expect(result.class).to eq(DocAuth::Response)
+        end
+      end
     end
   end
 end
