@@ -33,14 +33,14 @@ RSpec.describe OpenidConnectAuthorizeForm do
   let(:verified_within) { nil }
   let(:biometric_comparison_required) { nil }
 
+  before do
+    allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
+  end
+
   describe '#submit' do
     subject(:result) { form.submit }
 
     context 'with valid params' do
-      before do
-        allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
-      end
-
       it 'is successful' do
         expect(result.to_h).to eq(
           success: true,
@@ -63,10 +63,6 @@ RSpec.describe OpenidConnectAuthorizeForm do
     context 'with invalid params' do
       context 'with a bad response_type' do
         let(:response_type) { nil }
-
-        before do
-          allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
-        end
 
         it 'is unsuccessful and has error messages' do
           expect(result.to_h).to eq(
@@ -144,10 +140,6 @@ RSpec.describe OpenidConnectAuthorizeForm do
     subject(:valid?) { form.valid? }
 
     context 'with all valid attributes' do
-      before do
-        allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
-      end
-
       it { expect(valid?).to eq(true) }
       it 'has no errors' do
         valid?
@@ -157,10 +149,6 @@ RSpec.describe OpenidConnectAuthorizeForm do
 
     context 'with an invalid vtr' do
       let(:vtr) { ['A1.B2.C3'].to_json }
-
-      before do
-        allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
-      end
 
       it 'has errors' do
         expect(valid?).to eq(false)
@@ -182,10 +170,6 @@ RSpec.describe OpenidConnectAuthorizeForm do
     context 'with no authorized vtr components' do
       let(:vtr) { ['C1.P1'].to_json }
       let(:client_id) { 'urn:gov:gsa:openidconnect:test:loa1' }
-
-      before do
-        allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
-      end
 
       it 'has errors' do
         expect(valid?).to eq(false)
@@ -268,10 +252,6 @@ RSpec.describe OpenidConnectAuthorizeForm do
     context 'when prompt is not given' do
       let(:prompt) { nil }
 
-      before do
-        allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
-      end
-
       it { expect(valid?).to eq(true) }
     end
 
@@ -279,7 +259,6 @@ RSpec.describe OpenidConnectAuthorizeForm do
       let(:prompt) { 'login' }
       before do
         allow_any_instance_of(ServiceProvider).to receive(:allow_prompt_login).and_return true
-        allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
       end
 
       it { expect(valid?).to eq(true) }
@@ -311,10 +290,6 @@ RSpec.describe OpenidConnectAuthorizeForm do
     context 'when scope is unauthorized and we block unauthorized scopes' do
       let(:scope) { 'email profile' }
 
-      before do
-        allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
-      end
-
       it 'has errors' do
         allow(IdentityConfig.store).to receive(:unauthorized_scope_enabled).and_return(true)
         expect(valid?).to eq(false)
@@ -326,10 +301,6 @@ RSpec.describe OpenidConnectAuthorizeForm do
     context 'when scope is good and we block unauthorized scopes' do
       let(:scope) { 'email' }
 
-      before do
-        allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
-      end
-
       it 'does not have errors' do
         allow(IdentityConfig.store).to receive(:unauthorized_scope_enabled).and_return(false)
         expect(valid?).to eq(true)
@@ -338,10 +309,6 @@ RSpec.describe OpenidConnectAuthorizeForm do
 
     context 'when scope is unauthorized and we do not block unauthorized scopes' do
       let(:scope) { 'email profile' }
-
-      before do
-        allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
-      end
 
       it 'does not have errors' do
         allow(IdentityConfig.store).to receive(:unauthorized_scope_enabled).and_return(false)
@@ -455,10 +422,6 @@ RSpec.describe OpenidConnectAuthorizeForm do
     context 'with vtr param' do
       let(:acr_values) { nil }
 
-      before do
-        allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
-      end
-
       context 'when proofing is requested' do
         let(:vtr) { ['C1.P1'].to_json }
 
@@ -520,10 +483,6 @@ RSpec.describe OpenidConnectAuthorizeForm do
   describe '#aal' do
     context 'with vtr param' do
       let(:acr_values) { nil }
-
-      before do
-        allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
-      end
 
       context 'when AAL2 is requested' do
         let(:vtr) { ['C2'].to_json }
@@ -806,10 +765,6 @@ RSpec.describe OpenidConnectAuthorizeForm do
 
     context 'with vtr params' do
       let(:acr_values) { nil }
-
-      before do
-        allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
-      end
 
       context 'when identity proofing is requested' do
         let(:vtr) { ['P1'].to_json }
