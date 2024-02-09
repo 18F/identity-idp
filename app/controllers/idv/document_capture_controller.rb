@@ -97,7 +97,6 @@ module Idv
       else
         extra = { stored_result_present: stored_result.present? }
         failure(I18n.t('doc_auth.errors.general.network_error'), extra)
-        # no response is returned here
       end
     end
   end
