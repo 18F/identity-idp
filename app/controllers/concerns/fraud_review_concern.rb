@@ -14,7 +14,7 @@ module FraudReviewConcern
   end
 
   def handle_pending_fraud_review
-    return if current_user&.pending_profile&.in_person_enrollment&.status
+    return if in_person_can_perform_fraud_review?
     redirect_to_fraud_review if fraud_review_pending?
   end
 
@@ -23,8 +23,15 @@ module FraudReviewConcern
   end
 
   def in_person_handle_pending_fraud_review
-    return unless IdentityConfig.store.in_person_proofing_enforce_tmx
-    redirect_to_fraud_review if ipp_fraud_review_pending?
+    return unless in_person_can_perform_fraud_review?
+    if fraud_review_pending? && current_user&.in_person_enrollment_status == 'passed'
+      redirect_to_fraud_review
+    end
+  end
+
+  def in_person_can_perform_fraud_review?
+    IdentityConfig.store.in_person_proofing_enforce_tmx && 
+      current_user&.in_person_enrollment_status
   end
 
   def redirect_to_fraud_review
