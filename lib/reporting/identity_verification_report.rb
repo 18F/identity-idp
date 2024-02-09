@@ -83,6 +83,34 @@ module Reporting
       )
     end
 
+    def results_by_ab_test
+      by_ab_test = Hash.new do |h, ab_test|
+        h[ab_test] = Hash.new do |ab, bucket|
+          ab[bucket] = []
+        end
+      end
+
+      fetch_results.each do |row|
+        by_ab_test[:all][nil] << row
+
+        row['ab_tests'].each do |ab_test, bucket|
+          by_ab_test[ab_test][bucket] << row
+        end
+      end
+
+      by_ab_test.flat_map do |ab_test, buckets|
+        buckets.flat_map do |bucket, rows|
+          Result.new(
+            data: build_data(rows),
+            issuers:,
+            time_range:,
+            ab_test:,
+            bucket:,
+          )
+        end
+      end
+    end
+
     Result = Struct.new(:data, :issuers, :time_range, :ab_test, :bucket) do
       def identity_verification_emailable_report
         EmailableReport.new(
@@ -279,6 +307,7 @@ module Reporting
             name
           , properties.user_id AS user_id
           , coalesce(properties.event_properties.success, 0) AS success
+          , properties.event_properties.ab_tests AS ab_tests
         #{issuers.present? ? '| filter properties.service_provider IN %{issuers}' : ''}
         | filter name in %{event_names}
         | filter (name = %{usps_enrollment_status_updated} and properties.event_properties.passed = 1)
