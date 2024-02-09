@@ -8,4 +8,4 @@
         ) %>
   <% end %>
 <% end %>
-<%= extends_layout :application { render(template: step_template, locals: local_assigns) } %>
+<%= extends_layout(:application) { render(template: step_template, locals: local_assigns) } %>
