@@ -2,15 +2,7 @@ require 'rails_helper'
 
 RSpec.describe DocumentCaptureSession do
   let(:doc_auth_response) do
-    Class.new(DocAuth::Response) do
-      def doc_auth_success?
-        true
-      end
-
-      def selfie_status
-        :success
-      end
-    end.new(
+    DocAuth::Response.new(
       success: true,
       pii_from_doc: {
         first_name: 'Testy',
@@ -23,6 +15,11 @@ RSpec.describe DocumentCaptureSession do
     DocAuth::Response.new(
       success: false,
     )
+  end
+
+  before do
+    allow(doc_auth_response).to receive(:doc_auth_success?).and_return(true)
+    allow(doc_auth_response).to receive(:selfie_status).and_return(:success)
   end
 
   describe '#store_result_from_response' do
