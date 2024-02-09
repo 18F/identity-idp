@@ -27,10 +27,6 @@ module ApplicationHelper
     render template: "layouts/#{layout}", locals:
   end
 
-  def background_cls(cls)
-    content_for(:background_cls) { cls }
-  end
-
   def sp_session
     session.fetch(:sp, {})
   end
