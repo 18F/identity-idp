@@ -261,7 +261,7 @@ class IconComponent < BaseComponent
   end
 
   def icon_path
-    asset_path([asset_path('sprite.svg'), '#', icon].join, host: asset_host)
+    asset_path("usa-icons/#{icon}.svg", host: asset_host)
   end
 
   private
