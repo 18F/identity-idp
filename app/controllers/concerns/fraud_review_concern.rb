@@ -8,11 +8,13 @@ module FraudReviewConcern
            to: :fraud_review_checker
 
   def handle_fraud
+    in_person_handle_pending_fraud_review
     handle_pending_fraud_review
     handle_fraud_rejection
   end
 
   def handle_pending_fraud_review
+    return if current_user&.pending_profile&.in_person_enrollment&.status
     redirect_to_fraud_review if fraud_review_pending?
   end
 
