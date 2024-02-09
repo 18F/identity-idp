@@ -64,6 +64,7 @@ RSpec.describe Users::SessionsController, devise: true do
         with(email: user.email, success: true)
 
       post :create, params: { user: { email: user.email, password: user.password } }
+      expect(subject.session[:sign_in_flow]).to eq(:sign_in)
     end
 
     it 'tracks the unsuccessful authentication for existing user' do
@@ -85,6 +86,7 @@ RSpec.describe Users::SessionsController, devise: true do
         with('Email and Password Authentication', analytics_hash)
 
       post :create, params: { user: { email: user.email.upcase, password: 'invalid_password' } }
+      expect(subject.session[:sign_in_flow]).to eq(:sign_in)
     end
 
     it 'tracks the authentication attempt for nonexistent user' do

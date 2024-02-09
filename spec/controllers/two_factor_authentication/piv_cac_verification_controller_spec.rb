@@ -301,6 +301,10 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController,
         it 'resets the x509 session information' do
           expect(subject.user_session[:decrypted_x509]).to be_nil
         end
+
+        it 'sets session value for sign in flow' do
+          expect(subject.session[:sign_in_flow]).to eq(:sign_in)
+        end
       end
 
       describe 'when user submits a valid piv/cac' do
@@ -314,6 +318,10 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController,
 
         it 'resets second_factor_locked_at' do
           expect(subject.current_user.reload.second_factor_locked_at).to eq nil
+        end
+
+        it 'sets session value for sign in flow' do
+          expect(subject.session[:sign_in_flow]).to eq(:sign_in)
         end
       end
     end
