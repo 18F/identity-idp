@@ -29,17 +29,15 @@ module Idv
       FormResponse.new(**form_response_params)
     end
 
-    # @param [DocAuth::Response,
-    #   DocumentCaptureSessionResult] response
-    def extract_pii_from_doc(user, response, store_in_session: false)
+    def extract_pii_from_doc(user, store_in_session: false)
       if defined?(idv_session) # hybrid mobile does not have idv_session
-        idv_session.had_barcode_read_failure = response.attention_with_barcode?
+        idv_session.had_barcode_read_failure = stored_result.attention_with_barcode?
         if store_in_session
-          idv_session.pii_from_doc = response.pii_from_doc
-          idv_session.selfie_check_performed = response.selfie_check_performed?
+          idv_session.pii_from_doc = response.pii_from_doc # this requires a response
+          idv_session.selfie_check_performed = stored_result.selfie_check_performed?
         end
       end
-
+      # this must be moved or pass in response
       track_document_issuing_state(user, response.pii_from_doc[:state])
     end
 
