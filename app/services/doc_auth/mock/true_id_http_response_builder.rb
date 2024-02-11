@@ -21,7 +21,13 @@ module DocAuth
         @parsed_uploaded_file = parse_yaml(@uploaded_file).deep_symbolize_keys
         upload_failed_alerts = @parsed_uploaded_file.dig(:failed_alerts) ||
                                @parsed_uploaded_file.dig(:failed_alert)
-        if upload_failed_alerts.nil?
+        pii = @parsed_uploaded_file[:document]
+        pii_available = !pii.blank?
+        if pii_available
+          set_doc_auth_result('Passed')
+          set_check_status('2D Barcode Read', 'Passed')
+          update_with_yaml(@parsed_uploaded_file)
+        elsif upload_failed_alerts.nil?
           update_with_yaml(@parsed_uploaded_file)
           set_check_status('2D Barcode Read', 'Failed')
           set_doc_auth_result('Failed')
@@ -34,8 +40,8 @@ module DocAuth
           set_check_status('2D Barcode Read', 'Passed')
           update_with_yaml(@parsed_uploaded_file)
         end
-        pii = @parsed_uploaded_file[:document]
         set_pii(pii)
+        clean_up_pii(pii)
       end
 
       def failed_input_alerts
@@ -803,6 +809,36 @@ module DocAuth
         data[:failed_alerts] = []
         data = uploaded_file.ascii_only? ? uploaded_file : data.deep_stringify_keys.to_yaml
         super(data)
+      end
+
+      def clean_up_pii(pii)
+        # pii non empty
+        return if pii.blank?
+        missing_keys = %i[first_name last_name address1 dob city state zipcode] - pii.keys
+        id_auth_fields_missing = []
+        missing_keys.each do |missing_key|
+          case missing_key
+          when :dob
+            id_auth_fields_missing << pii_field_name(:dob_year)
+            id_auth_fields_missing << pii_field_name(:dob_month)
+            id_auth_fields_missing << pii_field_name(:dob_day)
+          when :address1
+            id_auth_fields_missing << pii_field_name(:address1)
+          when :first_name
+            id_auth_fields_missing << pii_field_name(:first_name)
+          when :last_name
+            id_auth_fields_missing << pii_field_name(:last_name)
+          end
+        end
+        remove_id_auth_fields(id_auth_fields_missing)
+      end
+
+      def remove_id_auth_fields(fields)
+        return if fields.blank?
+        details = param_details
+        details.delete_if do |d|
+          d[:Group] == 'IDAUTH_FIELD_DATA' && fields.include?(d[:Name])
+        end
       end
 
       PII_MAPPING = {
