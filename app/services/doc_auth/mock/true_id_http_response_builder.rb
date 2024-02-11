@@ -4,19 +4,36 @@ module DocAuth
   module Mock
     class TrueIdHttpResponseBuilder
       include YmlLoaderConcern
+
       def initialize(templatefile: nil, selfie_check_enabled: false)
         @template_file = templatefile
         @template = read_fixture_file_at_path(templatefile)
         @selfie_check_enabled = selfie_check_enabled
         parse_template
         available_checks
-        with_default_pii
+        with_mock_pii
+        set_doc_auth_result(default_data[:doc_auth_result])
+        set_image_metrics(default_data[:image_metrics][:front], default_data[:image_metrics][:back])
       end
 
       def use_uploaded_file(upload_file_content)
         @uploaded_file = upload_file_content
         @parsed_uploaded_file = parse_yaml(@uploaded_file).deep_symbolize_keys
-        update_with_yaml
+        upload_failed_alerts = @parsed_uploaded_file.dig(:failed_alerts) ||
+                               @parsed_uploaded_file.dig(:failed_alert)
+        if upload_failed_alerts.nil?
+          update_with_yaml(@parsed_uploaded_file)
+          set_check_status('2D Barcode Read', 'Failed')
+          set_doc_auth_result('Failed')
+        elsif upload_failed_alerts.blank?
+          set_doc_auth_result('Passed')
+          set_check_status('2D Barcode Read', 'Passed')
+          update_with_yaml(@parsed_uploaded_file)
+        else
+          set_doc_auth_result('Failed')
+          set_check_status('2D Barcode Read', 'Passed')
+          update_with_yaml(@parsed_uploaded_file)
+        end
         pii = @parsed_uploaded_file[:document]
         set_pii(pii)
       end
@@ -34,7 +51,7 @@ module DocAuth
         detail = details.select do |d|
           d[:Group] == 'AUTHENTICATION_RESULT' && d[:Name] == 'DocAuthResult'
         end
-        detail[0][:Values][0][:Value] = result
+        detail[0][:Values][0][:Value] = (result.presence || 'Passed')
       end
 
       def set_doc_auth_info(
@@ -90,11 +107,11 @@ module DocAuth
         target_details.each do |target_detail|
           case target_detail[:Name]
           when 'FaceStatusCode'
-            set_value(detail: target_detail,  value: status_code)
+            set_value(detail: target_detail, value: status_code)
           when 'FaceMatchResult'
-            set_value(detail: target_detail,  value: result)
+            set_value(detail: target_detail, value: result)
           when 'FaceErrorMessage'
-            set_value(detail: target_detail,  value: error_msg)
+            set_value(detail: target_detail, value: error_msg)
           end
         end
       end
@@ -136,9 +153,9 @@ module DocAuth
           case d[:Name]
           when 'Fields_DOB_Year'
             set_value(detail: d, value: year&.to_s)
-          when 'Fields_DOBMonth'
+          when 'Fields_DOB_Month'
             set_value(detail: d, value: month&.to_s)
-          when 'Fields_DOBDay'
+          when 'Fields_DOB_Day'
             set_value(detail: d, value: day&.to_s)
           when 'Fields_Sex'
             sex_s = sex == 'Male' || sex == 'M' ? 'M' : 'F'
@@ -253,7 +270,14 @@ module DocAuth
 
         expiration = pii_info[:state_id_expiration]
         unless expiration.blank?
-          exp_date = Date.strptime(expiration, '%m/%d/%Y')
+          Rails.logger.debug { "expiration: #{expiration}" }
+          exp_date = begin
+            Date.parse(expiration)
+          rescue
+            begin
+              Date.parse(expiration, '%Y-%m-%d')
+            end
+          end
           set_expire_date(exp_date)
           if exp_date.past?
             set_id_auth_field('Document Expired', 'Failed')
@@ -262,7 +286,11 @@ module DocAuth
 
         issued = pii_info[:state_id_issued]
         unless issued.blank?
-          issued_date = Date.strptime(issued, '%m/%d/%Y')
+          issued_date = begin
+            Date.strptime(issued, '%m/%d/%Y')
+          rescue
+            Date.strptime(issued, '%Y-%m-%d')
+          end
           pii_info[:state_id_issued_year] = issued_date.year
           pii_info[:state_id_issued_month] = issued_date.month
           pii_info[:state_id_issued_day] = issued_date.day
@@ -428,6 +456,66 @@ module DocAuth
         detail[:Values][0][:Value]
       end
 
+      def with_mock_pii
+        last_name = Idp::Constants::MOCK_IDV_APPLICANT[:last_name]
+        first_name = Idp::Constants::MOCK_IDV_APPLICANT[:first_name]
+        middle_name = Idp::Constants::MOCK_IDV_APPLICANT[:middle_name]
+        set_name(first_name: first_name, middle_name: middle_name, last_name: last_name)
+        dob_str = Idp::Constants::MOCK_IDV_APPLICANT[:dob]
+        dob = begin
+          Date.parse(dob_str)
+        rescue
+          DateTime.no - 22.years
+        end
+        set_dob(
+          year: dob.year, month: dob.month, day: dob.day,
+          sex: [true, false].sample ? 'M' : 'F'
+        )
+        @issue_st_code = Idp::Constants::MOCK_IDV_APPLICANT[:state] || Faker::Address.state_abbr
+        @issue_st_name = state_name(@issue_st_code.to_sym)
+        @issue_date = begin
+          Date.parse(Idp::Constants::MOCK_IDV_APPLICANT[:state_id_issued])
+        rescue
+          Faker::Date.between(
+            from: 3.years.ago.to_s,
+            to: (Time.zone.today - 10.days).to_s,
+          )
+        end
+        @exp_date = begin
+          Date.parse(Idp::Constants::MOCK_IDV_APPLICANT[:state_id_expiration])
+        rescue
+          @issue_date + 5.years
+        end
+        document_num = Idp::Constants::MOCK_IDV_APPLICANT[:state_id_number] ||
+                       Faker::DrivingLicence.usa_driving_licence(@issue_st_name)
+        set_document(
+          document_number: document_num,
+          issuing_st_code: @issue_st_code,
+          issuing_st_name: @issue_st_name,
+          issuing_year: @issue_date.year,
+          issuing_month: @issue_date.month,
+          issuing_day: @issue_date.day,
+          expiration_year: @exp_date.year,
+          expiration_month: @exp_date.month,
+          expiration_day: @exp_date.day,
+        )
+        set_doc_auth_info(
+          doc_name: "#{@issue_st_name} Driver's License - STAR",
+          doc_issuer_code: @issue_st_code,
+          doc_issue: @issue_st_name,
+          expire_date: @exp_date,
+        )
+        # address
+        # rubocop:disable Layout/LineLength
+        set_address(
+          address_line1: Idp::Constants::MOCK_IDV_APPLICANT[:address1] || Faker::Address.street_address,
+          city: Idp::Constants::MOCK_IDV_APPLICANT[:city] || Faker::Address.city,
+          state: Idp::Constants::MOCK_IDV_APPLICANT[:state] || @issue_st_code,
+          postal_code: Idp::Constants::MOCK_IDV_APPLICANT[:zipcode] || Faker::Address.zip(state_abbreviation: @issue_st_code),
+        )
+        # rubocop:enable Layout/LineLength
+      end
+
       def with_default_pii
         # Faker::Config.random = Random.new(42)
         last_name = Faker::Name.last_name
@@ -479,6 +567,7 @@ module DocAuth
       end
 
       def build
+        clean_unknown_alert
         @parsed_template.to_json
       end
 
@@ -501,14 +590,28 @@ module DocAuth
         @available_checks = checks
       end
 
+      def clean_unknown_alert
+        unknown_alert = ['Series Expired', 'Document Tampering Detection', 'Barcode Encoding']
+        details = param_details
+        target_details = details.select do |d|
+          d[:Group] == 'AUTHENTICATION_RESULT' && unknown_alert.include?(d[:Values][0][:Value])
+        end
+        idx = []
+        target_details.each do |d|
+          idx << d[:Name].split('_')[1]
+        end
+        details.delete_if do |d|
+          d[:Group] == 'AUTHENTICATION_RESULT' && idx.include?(d[:Name].split('_')[1])
+        end
+      end
+
       private
 
-      def update_with_yaml
-        return unless defined?(@parsed_uploaded_file)
-        return if @parsed_uploaded_file.blank?
-        file_data = @parsed_uploaded_file
+      def update_with_yaml(parsed_uploaded_file)
+        return if parsed_uploaded_file.blank?
+        file_data = parsed_uploaded_file
         doc_auth_result = file_data.dig(:doc_auth_result)
-        set_doc_auth_result(doc_auth_result)
+        set_doc_auth_result(doc_auth_result) unless doc_auth_result.blank?
         image_metrics = file_data.dig(:image_metrics)
         unless image_metrics.blank?
           set_image_metrics(image_metrics[:front], image_metrics[:back])
@@ -673,6 +776,33 @@ module DocAuth
 
       def pii_field_name(pii_key)
         PII_MAPPING.key(pii_key)
+      end
+
+      def default_data
+        {
+          doc_auth_result: 'Passed',
+          image_metrics: {
+            front: {
+              'VerticalResolution' => 600,
+              'HorizontalResolution' => 600,
+              'GlareMetric' => 100,
+              'SharpnessMetric' => 100,
+            },
+            back: {
+              'VerticalResolution' => 600,
+              'HorizontalResolution' => 600,
+              'GlareMetric' => 100,
+              'SharpnessMetric' => 100,
+            },
+          },
+        }.deep_symbolize_keys
+      end
+
+      public def parse_yaml(uploaded_file)
+        data = default_data.clone
+        data[:failed_alerts] = []
+        data = uploaded_file.ascii_only? ? uploaded_file : data.deep_stringify_keys.to_yaml
+        super(data)
       end
 
       PII_MAPPING = {

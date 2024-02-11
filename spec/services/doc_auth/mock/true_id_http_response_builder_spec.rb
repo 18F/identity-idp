@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'rails_helper'
 
 RSpec.describe 'DocAuth::Mock::TrueIdHttpResponseBuilder' do
@@ -51,6 +49,20 @@ RSpec.describe 'DocAuth::Mock::TrueIdHttpResponseBuilder' do
       expect(status).to eq('Failed')
       status = subject.get_check_status('2D Barcode Read')
       expect(status).to eq('Failed')
+      json = subject.build
+      city = get_id_auth_data(json, 'City')
+      expect(city).to eq('Bayside')
+      postal_code = get_id_auth_data(json, 'PostalCode')
+      expect(postal_code).to eq('11364')
+      state = get_id_auth_data(json, 'State')
+      expect(state).to eq('NY')
+      dob_year = get_id_auth_data(json, 'DOB_Year')
+      expect(dob_year).to eq(1938)
+
+      issuing_state = get_auth_result(json, 'DocIssuerCode')
+      expect(issuing_state).to eq('ND')
+      expiration_year = get_id_auth_data(json, 'ExpirationDate_Year')
+      expect(expiration_year).to eq((DateTime.now - 1.year).year.to_s)
     end
   end
 
@@ -64,7 +76,24 @@ RSpec.describe 'DocAuth::Mock::TrueIdHttpResponseBuilder' do
     it 'has no error with empty yaml' do
       subject.use_uploaded_file(empty_yaml)
       status = subject.get_check_status('2D Barcode Read')
-      expect(status).to eq('Attention')
+      expect(status).to eq('Failed')
+      json = subject.build
+      dob_month = get_id_auth_data(json, 'DOB_Month')
+      expect(dob_month).to eq('10')
     end
   end
+end
+
+def get_id_auth_data(json, field_name)
+  # rubocop:disable Layout/LineLength
+  path = "Products[].ParameterDetails[?Group=='IDAUTH_FIELD_DATA' && Name=='Fields_#{field_name}'].Values[0]"
+  # rubocop:enable Layout/LineLength
+  JMESPath.search(path, JSON.parse(json))[0][0]['Value']
+end
+
+def get_auth_result(json, field_name)
+  # rubocop:disable Layout/LineLength
+  path = "Products[].ParameterDetails[?Group=='AUTHENTICATION_RESULT' && Name=='#{field_name}'].Values[0]"
+  # rubocop:enable Layout/LineLength
+  JMESPath.search(path, JSON.parse(json))[0][0]['Value']
 end
