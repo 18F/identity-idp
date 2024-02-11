@@ -206,7 +206,7 @@ module DocAuthRouter
         # ),
         DocAuth::Mock::TrueIdMockClient.new(
           warn_notifier: warn_notifier,
-          ),
+        ),
       )
     else
       raise "#{doc_auth_vendor(discriminator: vendor_discriminator)} is not a valid doc auth vendor"
