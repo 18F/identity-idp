@@ -17,6 +17,8 @@ class StoreSpMetadataInSession
   attr_reader :session, :request_id
 
   def parsed_vot
+    return nil if !sp_request.vtr && !sp_request.acr_values
+
     @parsed_vot ||= AuthnContextResolver.new(
       service_provider: service_provider,
       vtr: sp_request.vtr,
@@ -33,24 +35,28 @@ class StoreSpMetadataInSession
   end
 
   def ial_value
-    if parsed_vot.ialmax?
+    return nil unless parsed_vot
+
+    if parsed_vot&.ialmax?
       0
-    elsif parsed_vot.identity_proofing?
+    elsif parsed_vot&.identity_proofing?
       2
-    else
+    elsif parsed_vot
       1
     end
   end
 
   def ial2_value
-    parsed_vot.identity_proofing?
+    parsed_vot&.identity_proofing?
   end
 
   def ialmax_value
-    parsed_vot.ialmax?
+    parsed_vot&.ialmax?
   end
 
   def aal_level_requested_value
+    return nil unless parsed_vot
+
     if parsed_vot.aal2?
       2
     else
@@ -59,16 +65,15 @@ class StoreSpMetadataInSession
   end
 
   def piv_cac_requested_value
-    parsed_vot.hspd12?
+    parsed_vot&.hspd12?
   end
 
   def phishing_resistant_value
-    parsed_vot.phishing_resistant?
+    parsed_vot&.phishing_resistant?
   end
 
   def biometric_comparison_required_value
-    parsed_vot.biometric_comparison? ||
-      sp_request.biometric_comparison_required
+    parsed_vot&.biometric_comparison? || sp_request&.biometric_comparison_required
   end
 
   def update_session

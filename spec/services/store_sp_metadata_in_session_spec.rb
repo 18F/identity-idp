@@ -56,6 +56,7 @@ RSpec.describe StoreSpMetadataInSession do
               request_id: request_id,
               requested_attributes: requested_attributes,
               biometric_comparison_required: false,
+              vtr: request_vtr,
             },
           )
         end
@@ -82,6 +83,7 @@ RSpec.describe StoreSpMetadataInSession do
               request_id: request_id,
               requested_attributes: requested_attributes,
               biometric_comparison_required: false,
+              vtr: request_vtr,
             },
           )
         end
@@ -107,6 +109,7 @@ RSpec.describe StoreSpMetadataInSession do
               request_id: request_id,
               requested_attributes: requested_attributes,
               biometric_comparison_required: false,
+              vtr: request_vtr,
             },
           )
         end
@@ -134,6 +137,7 @@ RSpec.describe StoreSpMetadataInSession do
               request_id: request_id,
               requested_attributes: requested_attributes,
               biometric_comparison_required: true,
+              vtr: request_vtr,
             },
           )
         end
@@ -157,6 +161,7 @@ RSpec.describe StoreSpMetadataInSession do
               request_id: request_id,
               requested_attributes: requested_attributes,
               biometric_comparison_required: false,
+              vtr: request_vtr,
             },
           )
         end
@@ -181,6 +186,7 @@ RSpec.describe StoreSpMetadataInSession do
                 request_id: request_id,
                 requested_attributes: requested_attributes,
                 biometric_comparison_required: true,
+                vtr: request_vtr,
               },
             )
           end
@@ -205,7 +211,8 @@ RSpec.describe StoreSpMetadataInSession do
               request_id: request_id,
               requested_attributes: requested_attributes,
               biometric_comparison_required: false,
-            },
+              vtr: request_vtr, 
+           },
           )
         end
       end
@@ -228,6 +235,7 @@ RSpec.describe StoreSpMetadataInSession do
               request_id: request_id,
               requested_attributes: requested_attributes,
               biometric_comparison_required: true,
+              vtr: request_vtr,
             },
           )
         end
@@ -251,6 +259,7 @@ RSpec.describe StoreSpMetadataInSession do
               request_id: request_id,
               requested_attributes: requested_attributes,
               biometric_comparison_required: false,
+              vtr: request_vtr,
             },
           )
         end
@@ -274,6 +283,7 @@ RSpec.describe StoreSpMetadataInSession do
               request_id: request_id,
               requested_attributes: requested_attributes,
               biometric_comparison_required: true,
+              vtr: request_vtr,
             },
           )
         end
@@ -297,6 +307,7 @@ RSpec.describe StoreSpMetadataInSession do
               request_id: request_id,
               requested_attributes: requested_attributes,
               biometric_comparison_required: false,
+              vtr: request_vtr,
             },
           )
         end
@@ -320,6 +331,7 @@ RSpec.describe StoreSpMetadataInSession do
               request_id: request_id,
               requested_attributes: requested_attributes,
               biometric_comparison_required: true,
+              vtr: request_vtr,
             },
           )
         end
@@ -343,6 +355,7 @@ RSpec.describe StoreSpMetadataInSession do
               request_id: request_id,
               requested_attributes: requested_attributes,
               biometric_comparison_required: true,
+              vtr: request_vtr,
             },
           )
         end
