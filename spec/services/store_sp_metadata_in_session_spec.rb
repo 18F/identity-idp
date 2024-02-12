@@ -2,209 +2,363 @@ require 'rails_helper'
 
 RSpec.describe StoreSpMetadataInSession do
   describe '#call' do
-    context 'when a ServiceProviderRequestProxy is not found' do
-      it 'does not set the session[:sp] hash' do
-        app_session = {}
-        instance = StoreSpMetadataInSession.new(session: app_session, request_id: 'foo')
+    let(:request_id) { SecureRandom.uuid }
+    let(:app_session) { {} }
+    let(:instance) do
+      StoreSpMetadataInSession.new(session: app_session, request_id: request_id)
+    end
 
+    context 'when a ServiceProviderRequestProxy is not found' do
+      let(:request_id) { 'foo' }
+
+      it 'does not set the session[:sp] hash' do
         expect { instance.call }.to_not change(app_session, :keys)
       end
     end
 
-    context 'when a ServiceProviderRequestProxy is found' do
-      it 'sets the session[:sp] hash' do
-        app_session = {}
-        request_id = SecureRandom.uuid
+    context 'when a ServiceProviderRequest is found' do
+      let(:issuer) { 'issuer' }
+      let(:request_url) { 'http://issuer.gov' }
+      let(:requested_attributes) { %w[email] }
+      let(:request_acr) { nil }
+      let(:request_vtr) { nil }
+      let(:biometric_comparison_required) { false }
+      let(:sp_request) do
         ServiceProviderRequestProxy.find_or_create_by(uuid: request_id) do |sp_request|
-          sp_request.issuer = 'issuer'
-          sp_request.ial = Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
-          sp_request.acr_values = Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
-          sp_request.url = 'http://issuer.gov'
-          sp_request.requested_attributes = %w[email]
-          sp_request.biometric_comparison_required = false
+          sp_request.issuer = issuer
+          sp_request.url = request_url
+          sp_request.requested_attributes = requested_attributes
+          sp_request.biometric_comparison_required = biometric_comparison_required
+          sp_request.acr_values = request_acr
+          sp_request.vtr = request_vtr
         end
-        instance = StoreSpMetadataInSession.new(session: app_session, request_id: request_id)
-
-        app_session_hash = {
-          issuer: 'issuer',
-          aal_level_requested: nil,
-          acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-          piv_cac_requested: false,
-          phishing_resistant_requested: false,
-          ial: 1,
-          ial2: false,
-          ialmax: false,
-          request_url: 'http://issuer.gov',
-          request_id: request_id,
-          requested_attributes: %w[email],
-          biometric_comparison_required: false,
-          vtr: nil,
-        }
-
-        instance.call
-        expect(app_session[:sp]).to eq app_session_hash
       end
-    end
 
-    context 'when IAL2 and AAL3 are requested' do
-      it 'sets the session[:sp] hash' do
-        app_session = {}
-        request_id = SecureRandom.uuid
-        ServiceProviderRequestProxy.find_or_create_by(uuid: request_id) do |sp_request|
-          sp_request.issuer = 'issuer'
-          sp_request.ial = Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
-          sp_request.aal = Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF
-          sp_request.acr_values = [
-            Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
-            Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
-          ].join(' ')
-          sp_request.url = 'http://issuer.gov'
-          sp_request.requested_attributes = %w[email]
-          sp_request.biometric_comparison_required = false
-        end
-        instance = StoreSpMetadataInSession.new(session: app_session, request_id: request_id)
-
-        app_session_hash = {
-          issuer: 'issuer',
-          aal_level_requested: 3,
-          acr_values: [
-            Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
-            Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
-          ].join(' '),
-          piv_cac_requested: false,
-          phishing_resistant_requested: true,
-          ial: 2,
-          ial2: true,
-          ialmax: false,
-          request_url: 'http://issuer.gov',
-          request_id: request_id,
-          requested_attributes: %w[email],
-          biometric_comparison_required: false,
-          vtr: nil,
-        }
-
-        instance.call
-        expect(app_session[:sp]).to eq app_session_hash
+      before do
+        instance.call(service_provider_request: sp_request)
       end
-    end
 
-    context 'when IAL2 and phishing-resistant are requested' do
-      it 'sets the session[:sp] hash' do
-        app_session = {}
-        request_id = SecureRandom.uuid
-        ServiceProviderRequestProxy.find_or_create_by(uuid: request_id) do |sp_request|
-          sp_request.issuer = 'issuer'
-          sp_request.ial = Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
-          sp_request.aal = Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF
-          sp_request.acr_values = [
-            Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
-            Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF,
-          ].join(' ')
-          sp_request.url = 'http://issuer.gov'
-          sp_request.requested_attributes = %w[email]
-          sp_request.biometric_comparison_required = false
+      context 'IAL1 is requested with ACRs' do
+        let(:request_acr) { Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF }
+
+        it 'sets the session[:sp] hash correctly' do
+          expect(app_session[:sp]).to eq(
+            {
+              issuer: issuer,
+              aal_level_requested: 1,
+              acr_values: request_acr,
+              piv_cac_requested: false,
+              phishing_resistant_requested: false,
+              ial: 1,
+              ial2: false,
+              ialmax: false,
+              request_url: request_url,
+              request_id: request_id,
+              requested_attributes: requested_attributes,
+              biometric_comparison_required: false,
+              vtr: request_vtr,
+            },
+          )
         end
-        instance = StoreSpMetadataInSession.new(session: app_session, request_id: request_id)
-
-        app_session_hash = {
-          issuer: 'issuer',
-          aal_level_requested: 2,
-          acr_values: [
-            Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
-            Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF,
-          ].join(' '),
-          piv_cac_requested: false,
-          phishing_resistant_requested: true,
-          ial: 2,
-          ial2: true,
-          ialmax: false,
-          request_url: 'http://issuer.gov',
-          request_id: request_id,
-          requested_attributes: %w[email],
-          biometric_comparison_required: false,
-          vtr: nil,
-        }
-
-        instance.call
-        expect(app_session[:sp]).to eq app_session_hash
       end
-    end
 
-    context 'when biometric comparison is requested' do
-      it 'sets the session[:sp] hash' do
-        app_session = {}
-        request_id = SecureRandom.uuid
-        ServiceProviderRequestProxy.find_or_create_by(uuid: request_id) do |sp_request|
-          sp_request.issuer = 'issuer'
-          sp_request.ial = Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
-          sp_request.aal = Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF
-          sp_request.acr_values = [
-            Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
-            Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
-          ].join(' ')
-          sp_request.url = 'http://issuer.gov'
-          sp_request.requested_attributes = %w[email]
-          sp_request.biometric_comparison_required = true
+      context 'when IAL2 and AAL3 are requested with ACRs' do
+        let(:request_acr) do
+          [Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+           Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF].join(' ')
         end
-        instance = StoreSpMetadataInSession.new(session: app_session, request_id: request_id)
 
-        app_session_hash = {
-          issuer: 'issuer',
-          aal_level_requested: 3,
-          acr_values: [
-            Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
-            Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
-          ].join(' '),
-          piv_cac_requested: false,
-          phishing_resistant_requested: true,
-          ial: 2,
-          ial2: true,
-          ialmax: false,
-          request_url: 'http://issuer.gov',
-          request_id: request_id,
-          requested_attributes: %w[email],
-          biometric_comparison_required: true,
-          vtr: nil,
-        }
-
-        instance.call
-        expect(app_session[:sp]).to eq app_session_hash
+        it 'sets the session[:sp] hash correctly' do
+          expect(app_session[:sp]).to eq(
+            {
+              issuer: issuer,
+              aal_level_requested: 2,
+              acr_values: request_acr,
+              piv_cac_requested: false,
+              phishing_resistant_requested: true,
+              ial: 2,
+              ial2: true,
+              ialmax: false,
+              request_url: request_url,
+              request_id: request_id,
+              requested_attributes: requested_attributes,
+              biometric_comparison_required: false,
+              vtr: request_vtr,
+            },
+          )
+        end
       end
-    end
-
-    context 'when a vtr is present' do
-      it 'sets the session[:sp] hash' do
-        app_session = {}
-        request_id = SecureRandom.uuid
-        ServiceProviderRequestProxy.find_or_create_by(uuid: request_id) do |sp_request|
-          sp_request.issuer = 'issuer'
-          sp_request.ial = nil
-          sp_request.aal = nil
-          sp_request.vtr = ['C2.P1']
-          sp_request.url = 'http://issuer.gov'
-          sp_request.requested_attributes = %w[email]
-          sp_request.biometric_comparison_required = false
+      context 'when IAL2 and phishing-resistant are requested with ACRs' do
+        let(:request_acr) do
+          [Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+           Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF].join(' ')
         end
-        instance = StoreSpMetadataInSession.new(session: app_session, request_id: request_id)
 
-        app_session_hash = {
-          issuer: 'issuer',
-          aal_level_requested: nil,
-          acr_values: nil,
-          piv_cac_requested: false,
-          phishing_resistant_requested: false,
-          ial: nil,
-          ial2: false,
-          ialmax: nil,
-          request_url: 'http://issuer.gov',
-          request_id: request_id,
-          requested_attributes: %w[email],
-          biometric_comparison_required: false,
-          vtr: ['C2.P1'],
-        }
+        it 'sets the session[:sp] hash correctly' do
+          expect(app_session[:sp]).to eq(
+            {
+              issuer: issuer,
+              aal_level_requested: 2,
+              acr_values: request_acr,
+              piv_cac_requested: false,
+              phishing_resistant_requested: true,
+              ial: 2,
+              ial2: true,
+              ialmax: false,
+              request_url: request_url,
+              request_id: request_id,
+              requested_attributes: requested_attributes,
+              biometric_comparison_required: false,
+              vtr: request_vtr,
+            },
+          )
+        end
+      end
 
-        instance.call
-        expect(app_session[:sp]).to eq app_session_hash
+      context 'when biometric comparison is requested with ACRs' do
+        let(:request_acr) do
+          [Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+           Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF].join(' ')
+        end
+        let(:biometric_comparison_required) { true }
+
+        it 'sets the session[:sp] hash correctly' do
+          expect(app_session[:sp]).to eq(
+            {
+              issuer: issuer,
+              aal_level_requested: 2,
+              acr_values: request_acr,
+              piv_cac_requested: false,
+              phishing_resistant_requested: true,
+              ial: 2,
+              ial2: true,
+              ialmax: false,
+              request_url: request_url,
+              request_id: request_id,
+              requested_attributes: requested_attributes,
+              biometric_comparison_required: true,
+              vtr: request_vtr,
+            },
+          )
+        end
+      end
+
+      context 'when MFA is requested using a VTR' do
+        let(:request_vtr) { ['C1'] }
+
+        it 'sets the session[:sp] hash correctly' do
+          expect(app_session[:sp]).to eq(
+            {
+              issuer: issuer,
+              aal_level_requested: 1,
+              acr_values: request_acr,
+              piv_cac_requested: false,
+              phishing_resistant_requested: false,
+              ial: 1,
+              ial2: false,
+              ialmax: false,
+              request_url: request_url,
+              request_id: request_id,
+              requested_attributes: requested_attributes,
+              biometric_comparison_required: false,
+              vtr: request_vtr,
+            },
+          )
+        end
+      end
+
+      context 'when MFA and biometric comparison are requested using a VTR' do
+        context 'using VTR' do
+          let(:request_vtr) { ['C1.Pb'] }
+
+          it 'sets the session[:sp] hash correctly' do
+            expect(app_session[:sp]).to eq(
+              {
+                issuer: issuer,
+                aal_level_requested: 2,
+                acr_values: request_acr,
+                piv_cac_requested: false,
+                phishing_resistant_requested: false,
+                ial: 2,
+                ial2: true,
+                ialmax: false,
+                request_url: request_url,
+                request_id: request_id,
+                requested_attributes: requested_attributes,
+                biometric_comparison_required: true,
+                vtr: request_vtr,
+              },
+            )
+          end
+        end
+      end
+
+      context 'when AAL2 and proofing are requested using a VTR' do
+        let(:request_vtr) { ['C2.P1'] }
+
+        it 'sets the session[:sp] hash correctly' do
+          expect(app_session[:sp]).to eq(
+            {
+              issuer: issuer,
+              aal_level_requested: 2,
+              acr_values: request_acr,
+              piv_cac_requested: false,
+              phishing_resistant_requested: false,
+              ial: 2,
+              ial2: true,
+              ialmax: false,
+              request_url: request_url,
+              request_id: request_id,
+              requested_attributes: requested_attributes,
+              biometric_comparison_required: false,
+              vtr: request_vtr,
+            },
+          )
+        end
+      end
+
+      context 'when AAL2 and biometric comparison are requested using a VTR' do
+        let(:request_vtr) { ['C2.Pb'] }
+
+        it 'sets the session[:sp] hash correctly' do
+          expect(app_session[:sp]).to eq(
+            {
+              issuer: issuer,
+              aal_level_requested: 2,
+              acr_values: request_acr,
+              piv_cac_requested: false,
+              phishing_resistant_requested: false,
+              ial: 2,
+              ial2: true,
+              ialmax: false,
+              request_url: request_url,
+              request_id: request_id,
+              requested_attributes: requested_attributes,
+              biometric_comparison_required: true,
+              vtr: request_vtr,
+            },
+          )
+        end
+      end
+
+      context 'when phishing resistant ID and proofing are requested using a VTR' do
+        let(:request_vtr) { ['Ca.P1'] }
+
+        it 'sets the session[:sp] hash correctly' do
+          expect(app_session[:sp]).to eq(
+            {
+              issuer: issuer,
+              aal_level_requested: 2,
+              acr_values: request_acr,
+              piv_cac_requested: false,
+              phishing_resistant_requested: true,
+              ial: 2,
+              ial2: true,
+              ialmax: false,
+              request_url: request_url,
+              request_id: request_id,
+              requested_attributes: requested_attributes,
+              biometric_comparison_required: false,
+              vtr: request_vtr,
+            },
+          )
+        end
+      end
+
+      context 'when phishing resistant and ID biometric comparison are requested using a VTR' do
+        let(:request_vtr) { ['Ca.Pb'] }
+
+        it 'sets the session[:sp] hash correctly' do
+          expect(app_session[:sp]).to eq(
+            {
+              issuer: issuer,
+              acr_values: request_acr,
+              aal_level_requested: 2,
+              piv_cac_requested: false,
+              phishing_resistant_requested: true,
+              ial: 2,
+              ial2: true,
+              ialmax: false,
+              request_url: request_url,
+              request_id: request_id,
+              requested_attributes: requested_attributes,
+              biometric_comparison_required: true,
+              vtr: request_vtr,
+            },
+          )
+        end
+      end
+
+      context 'when PIV/CAC and proofing are requested using a VTR' do
+        let(:request_vtr) { ['Cb.P1'] }
+
+        it 'sets the session[:sp] hash correctly' do
+          expect(app_session[:sp]).to eq(
+            {
+              issuer: issuer,
+              aal_level_requested: 2,
+              acr_values: request_acr,
+              piv_cac_requested: true,
+              phishing_resistant_requested: false,
+              ial: 2,
+              ial2: true,
+              ialmax: false,
+              request_url: request_url,
+              request_id: request_id,
+              requested_attributes: requested_attributes,
+              biometric_comparison_required: false,
+              vtr: request_vtr,
+            },
+          )
+        end
+      end
+
+      context 'when PIV/CAC and biometric comparison are requested using a VTR' do
+        let(:request_vtr) { ['Cb.Pb'] }
+
+        it 'sets the session[:sp] hash correctly' do
+          expect(app_session[:sp]).to eq(
+            {
+              issuer: issuer,
+              aal_level_requested: 2,
+              acr_values: request_acr,
+              piv_cac_requested: true,
+              phishing_resistant_requested: false,
+              ial: 2,
+              ial2: true,
+              ialmax: false,
+              request_url: request_url,
+              request_id: request_id,
+              requested_attributes: requested_attributes,
+              biometric_comparison_required: true,
+              vtr: request_vtr,
+            },
+          )
+        end
+      end
+
+      context 'IAL2 proofing requested with no authentication requirement using a VTR' do
+        let(:request_vtr) { ['Pb'] }
+
+        it 'sets the session[:sp] hash correctly' do
+          expect(app_session[:sp]).to eq(
+            {
+              issuer: issuer,
+              aal_level_requested: 2,
+              acr_values: request_acr,
+              piv_cac_requested: false,
+              phishing_resistant_requested: false,
+              ial: 2,
+              ial2: true,
+              ialmax: false,
+              request_url: request_url,
+              request_id: request_id,
+              requested_attributes: requested_attributes,
+              biometric_comparison_required: true,
+              vtr: request_vtr,
+            },
+          )
+        end
       end
     end
   end
