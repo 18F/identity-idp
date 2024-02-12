@@ -73,8 +73,8 @@ RSpec.describe Idv::PleaseCallController do
       expect(response).to render_template :show
     end
 
-    it 'returns true from ipp_enabled_and_enrollment_passed' do
-      expect(subject.ipp_enabled_and_enrollment_passed?).to eq(true)
+    it 'returns true from in_person_can_perform_fraud_review' do
+      expect(subject.in_person_can_perform_fraud_review?).to eq(true)
     end
 
     it 'redirects a user who is not fraud review pending' do
@@ -105,14 +105,8 @@ RSpec.describe Idv::PleaseCallController do
           and_return(in_person_proofing_enforce_tmx)
       end
 
-      it 'renders the show template' do
-        get :show
-
-        expect(response).to render_template :show
-      end
-
-      it 'returns false from ipp_enabled_and_enrollment_passed' do
-        expect(subject.ipp_enabled_and_enrollment_passed?).to eq(nil)
+      it 'returns false from in_person_can_perform_fraud_review' do
+        expect(subject.in_person_can_perform_fraud_review?).to eq(false)
       end
     end
   end
