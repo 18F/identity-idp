@@ -201,6 +201,7 @@ RSpec.describe FrontendLogController do
               'name' => 'name',
               'message' => 'message',
               'stack' => 'stack',
+              'filename' => 'filename',
             },
           }
         end
@@ -214,6 +215,7 @@ RSpec.describe FrontendLogController do
                 name: 'name',
                 message: 'message',
                 stack: 'stack',
+                filename: 'filename',
               },
             },
             expected: true,

@@ -270,6 +270,51 @@ RSpec.describe ImageUploadResponsePresenter do
       end
     end
 
+    context 'pii_error' do
+      describe 'there are multiple pii errors' do
+        let(:form_response) do
+          FormResponse.new(
+            success: false,
+            errors: {
+              dob: 'Invalid dob',
+              name: 'Missing',
+            },
+            extra: extra_attributes,
+          )
+        end
+        it 'processes multiple pii errors' do
+          expect(presenter.errors).to include(
+            hash_including(field: :pii),
+            hash_including(field: :front),
+            hash_including(field: :back),
+          )
+        end
+      end
+      describe 'there is one related pii error' do
+        let(:form_response) do
+          FormResponse.new(
+            success: false,
+            errors: {
+              dob_min_age: 'age too young',
+            },
+            extra: extra_attributes,
+          )
+        end
+        it 'processes the pii error' do
+          expect(presenter.errors).to include(
+            hash_including(field: :dob_min_age),
+            hash_including(
+              field: :front,
+              message: I18n.t('doc_auth.errors.general.multiple_front_id_failures'),
+            ),
+            hash_including(
+              field: :back,
+              message: I18n.t('doc_auth.errors.general.multiple_back_id_failures'),
+            ),
+          )
+        end
+      end
+    end
     context 'with form response as attention with barcode' do
       let(:form_response) do
         response = DocAuth::Response.new(

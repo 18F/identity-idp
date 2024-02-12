@@ -11,11 +11,17 @@ RSpec.describe FrontendErrorLogger do
             name: 'name',
             message: 'message',
             stack: 'stack',
+            filename: 'filename',
           },
         },
       )
 
-      FrontendErrorLogger.track_error(name: 'name', message: 'message', stack: 'stack')
+      FrontendErrorLogger.track_error(
+        name: 'name',
+        message: 'message',
+        stack: 'stack',
+        filename: 'filename',
+      )
     end
   end
 end

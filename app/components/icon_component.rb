@@ -244,13 +244,20 @@ class IconComponent < BaseComponent
     zoom_out_map
   ].to_set.freeze
 
-  attr_reader :icon, :tag_options
+  attr_reader :icon, :size, :tag_options
 
-  def initialize(icon:, **tag_options)
+  def initialize(icon:, size: nil, **tag_options)
     raise ArgumentError, "`icon` #{icon} is not a valid icon" if !ICONS.include?(icon)
 
     @icon = icon
+    @size = size
     @tag_options = tag_options
+  end
+
+  def css_class
+    classes = ['usa-icon', *tag_options[:class]]
+    classes << "usa-icon--size-#{size}" if size
+    classes
   end
 
   def icon_path
