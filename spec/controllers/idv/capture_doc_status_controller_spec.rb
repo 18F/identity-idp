@@ -3,11 +3,7 @@ require 'rails_helper'
 RSpec.describe Idv::CaptureDocStatusController do
   let(:user) { build(:user) }
   let(:doc_auth_response) do
-    Class.new(DocAuth::Response) do
-      def doc_auth_success?; true; end
-
-      def selfie_status; :success; end
-    end.new(
+    DocAuth::Response.new(
       success: true,
       pii_from_doc: {
         first_name: 'Testy',
