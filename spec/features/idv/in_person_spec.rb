@@ -126,12 +126,16 @@ RSpec.describe 'In Person Proofing', js: true, allowed_extra_analytics: [:*] do
       acknowledge_and_confirm_personal_key
 
       profile = InPersonEnrollment.last.profile
+      profile.deactivate_for_fraud_review
+      expect(profile.fraud_review_pending_at).to be_truthy
       expect(profile.fraud_rejection_at).to eq(nil)
-      profile.update(fraud_rejection_at: 30.days.ago)
+      profile.update(fraud_review_pending_at: 31.days.ago)
       FraudRejectionDailyJob.new.perform(Time.zone.now)
 
       # profile is rejected
-      expect(profile.fraud_rejection_at).to_not eq(nil)
+      profile.reload
+      expect(profile.fraud_review_pending_at).to be(nil)
+      expect(profile.fraud_rejection_at).to be_truthy
     end
   end
 
