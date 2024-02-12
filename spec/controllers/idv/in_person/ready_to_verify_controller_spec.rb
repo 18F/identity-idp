@@ -18,7 +18,7 @@ RSpec.describe Idv::InPerson::ReadyToVerifyController do
     it 'includes authentication before_action' do
       expect(subject).to have_actions(
         :before, :confirm_two_factor_authenticated,
-        :in_person_handle_pending_fraud_review
+        :handle_fraud
       )
     end
   end
@@ -54,10 +54,11 @@ RSpec.describe Idv::InPerson::ReadyToVerifyController do
         context 'with in_person_proofing_enforce_tmx disabled and pending fraud review' do
           let!(:profile) { create(:profile, fraud_review_pending_at: 1.day.ago, user: user) }
           let!(:enrollment) { create(:in_person_enrollment, :passed, user: user, profile: profile) }
-          it 'renders show template' do
+          it 'redirects to please call page' do
             response
 
-            expect(response).to render_template :show
+            expect(response).not_to render_template :show
+            expect(response).to redirect_to idv_please_call_url
           end
         end
 
