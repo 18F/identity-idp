@@ -1,6 +1,6 @@
 import { createContext } from 'react';
 
-const FileBase64CacheContext = createContext(new WeakMap());
+const FileBase64CacheContext = createContext(new WeakMap<Blob, string>());
 
 FileBase64CacheContext.displayName = 'FileBase64CacheContext';
 
