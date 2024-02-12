@@ -211,8 +211,8 @@ RSpec.describe StoreSpMetadataInSession do
               request_id: request_id,
               requested_attributes: requested_attributes,
               biometric_comparison_required: false,
-              vtr: request_vtr, 
-           },
+              vtr: request_vtr,
+            },
           )
         end
       end
