@@ -3,7 +3,7 @@ module DocAuth
     module ImageMetricsReader
       private
 
-      def read_image_metrics(true_id_product)
+      def parse_image_metrics
         image_metrics = {}
         return image_metrics unless true_id_product&.dig(:ParameterDetails).present?
         true_id_product[:ParameterDetails].each do |detail|

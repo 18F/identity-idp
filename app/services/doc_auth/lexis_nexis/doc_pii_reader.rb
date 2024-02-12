@@ -15,9 +15,7 @@ module DocAuth
         Sex
       ].freeze
 
-      private
-
-      def read_pii(true_id_product)
+      def pii_from_doc
         return {} unless true_id_product&.dig(:IDAUTH_FIELD_DATA).present?
         pii = {}
         PII_INCLUDES.each do |true_id_key, idp_key|
@@ -72,6 +70,8 @@ module DocAuth
         'Fields_DocumentClassName' => :state_id_type,
         'Fields_CountryCode' => :issuing_country_code,
       }.freeze
+
+      private
 
       def parse_date(year:, month:, day:)
         Date.new(year.to_i, month.to_i, day.to_i).to_s if year.to_i.positive?

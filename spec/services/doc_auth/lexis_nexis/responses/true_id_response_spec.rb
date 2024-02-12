@@ -729,4 +729,11 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       end
     end
   end
+
+  describe '#pii_from_doc' do
+    let(:response) { described_class.new(success_with_liveness_response, config, true) }
+    it 'returns pii as expected' do
+      expect(response.pii_from_doc).to include(:address1, :city, :dob, :first_name, :last_name)
+    end
+  end
 end

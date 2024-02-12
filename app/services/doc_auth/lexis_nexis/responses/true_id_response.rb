@@ -15,12 +15,11 @@ module DocAuth
           @config = config
           @http_response = http_response
           @liveness_checking_enabled = liveness_checking_enabled
-          @pii_from_doc = read_pii(true_id_product)
           super(
             success: successful_result?,
             errors: error_messages,
             extra: extra_attributes,
-            pii_from_doc: @pii_from_doc,
+            pii_from_doc: pii_from_doc,
           )
         rescue StandardError => e
           NewRelic::Agent.notice_error(e)
@@ -177,7 +176,7 @@ module DocAuth
             alert_failure_count: alerts[:failed]&.count.to_i,
             log_alert_results: log_alert_formatter.log_alerts(alerts),
             portrait_match_results: portrait_match_results,
-            image_metrics: read_image_metrics(true_id_product),
+            image_metrics: parse_image_metrics,
             address_line2_present: !pii_from_doc[:address2].blank?,
             classification_info: classification_info,
             liveness_enabled: @liveness_checking_enabled,
