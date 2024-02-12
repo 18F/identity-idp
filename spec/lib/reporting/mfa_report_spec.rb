@@ -11,23 +11,26 @@ RSpec.describe Reporting::MfaReport do
     cloudwatch_client = double(
       'Reporting::CloudwatchClient',
       fetch: [
-        # sms
-        { 'user_id' => 'user1', 'mfa_method' => 'sms' },
-        { 'user_id' => 'user2', 'mfa_method' => 'sms' },
-        { 'user_id' => 'user3', 'mfa_method' => 'sms' },
-
-        # phishing-resistant
-        { 'user_id' => 'user4', 'mfa_method' => 'webauthn' },
-        { 'user_id' => 'user5', 'mfa_method' => 'webauthn_platform' },
-        { 'user_id' => 'user6', 'mfa_method' => 'piv_cac' },
-        { 'user_id' => 'user7', 'mfa_method' => 'piv_cac' },
-
-        #
-        { 'user_id' => 'user8', 'mfa_method' => 'backup_code' },
-        { 'user_id' => 'user9', 'mfa_method' => 'personal-key' },
-        { 'user_id' => 'user10', 'mfa_method' => 'voice' },
-        { 'user_id' => 'user11', 'mfa_method' => 'totp' },
-        { 'user_id' => 'user12', 'mfa_method' => 'totp' },
+        {
+          'personal_key_total' => '2',
+          'sms_total' => '5',
+          'totp_total' => '4',
+          'webauthn_platform_total' => '3',
+          'webauthn_total' => '3',
+          'backup_code_total' => '1',
+          'voice_total' => '4',
+          'piv_cac_total' => '3',
+        },
+        {
+          'personal_key_total' => '1',
+          'sms_total' => '4',
+          'totp_total' => '3',
+          'webauthn_platform_total' => '2',
+          'webauthn_total' => '2',
+          'backup_code_total' => '0',
+          'voice_total' => '3',
+          'piv_cac_total' => '2',
+        },
       ],
     )
 
@@ -71,9 +74,9 @@ RSpec.describe Reporting::MfaReport do
     let(:subject) { described_class.new(issuers: [issuer], time_range:, **opts) }
     let(:default_args) do
       {
-        num_threads: 5,
+        num_threads: 10,
         ensure_complete_logs: true,
-        slice_interval: 3.hours,
+        slice_interval: 1.day,
         progress: false,
         logger: nil,
       }
@@ -146,15 +149,15 @@ RSpec.describe Reporting::MfaReport do
       ],
       [
         ['Multi Factor Authentication (MFA) method', 'Number of successful sign-ins'],
-        ['SMS', string_or_num(strings, 3)],
-        ['Voice', string_or_num(strings, 1)],
-        ['Security key', string_or_num(strings, 1)],
-        ['Face or touch unlock', string_or_num(strings, 1)],
-        ['PIV/CAC', string_or_num(strings, 2)],
-        ['Authentication app', string_or_num(strings, 2)],
+        ['SMS', string_or_num(strings, 9)],
+        ['Voice', string_or_num(strings, 7)],
+        ['Security key', string_or_num(strings, 5)],
+        ['Face or touch unlock', string_or_num(strings, 5)],
+        ['PIV/CAC', string_or_num(strings, 5)],
+        ['Authentication app', string_or_num(strings, 7)],
         ['Backup codes', string_or_num(strings, 1)],
-        ['Personal key', string_or_num(strings, 1)],
-        ['Total number of phishing resistant methods', string_or_num(strings, 4)],
+        ['Personal key', string_or_num(strings, 3)],
+        ['Total number of phishing resistant methods', string_or_num(strings, 15)],
       ],
     ]
   end

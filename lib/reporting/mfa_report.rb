@@ -27,12 +27,14 @@ module Reporting
     module Methods
       def self.all_methods
         TwoFactorAuthenticatable::AuthMethod.constants.map do |c|
-          next if c == :PHISHING_RESISTANT_METHODS
+          next if c == :PHISHING_RESISTANT_METHODS || c == :REMEMBER_DEVICE
 
           if c == :PERSONAL_KEY
+            # The AuthMethod constant defines this as `personal_key`
+            # but in the events it is `personal-key`
             'personal-key'
           else
-            TwoFactorAuthenticatable::AuthMethod::const_get(c)
+            TwoFactorAuthenticatable::AuthMethod.const_get(c)
           end
         end.compact
       end
@@ -45,8 +47,8 @@ module Reporting
       time_range:,
       verbose: false,
       progress: false,
-      slice: 3.hours,
-      threads: 5
+      slice: 1.day,
+      threads: 10
     )
       @issuers = issuers
       @time_range = time_range
@@ -94,40 +96,48 @@ module Reporting
       end
     end
 
-    # event name => set(user ids)
-    # @return Hash<String,Set<String>>
+    # @return Array<Hash>
     def data
       @data ||= begin
-        event_users = Hash.new do |h, uuid|
-          h[uuid] = Set.new
-        end
-
-        fetch_results.each do |row|
-          event_users[row['mfa_method']] << row['user_id']
-        end
-
-        event_users
+        fetch_results
       end
     end
 
     def fetch_results
-      @fetch_results ||= cloudwatch_client.fetch(query:, from: time_range.begin, to: time_range.end)
+      cloudwatch_client.fetch(query:, from: time_range.begin, to: time_range.end)
     end
 
     def query
       params = {
         issuers: quote(issuers),
         event_names: quote(Events.all_events),
+        fields:,
+        stats:,
       }
 
       format(<<~QUERY, params)
-        fields properties.event_properties.multi_factor_auth_method as mfa_method
-          , properties.user_id AS user_id
+        fields %{fields}
         | filter properties.service_provider IN %{issuers}
         | filter name in %{event_names} and not properties.event_properties.confirmation_for_add_phone and properties.event_properties.context != 'reauthentication'
         | filter properties.event_properties.success = '1'
-        | limit 10000
+        | stats %{stats}
       QUERY
+    end
+
+    def fields
+      Methods.all_methods.map do |method|
+        # Cloudwatch doesn't like the hyphen in personal-key
+        no_hypen_method = method.tr('-', '_')
+        'properties.event_properties.multi_factor_auth_method = ' +
+          "#{method}' as #{no_hypen_method}"
+      end.join(', ')
+    end
+
+    def stats
+      Methods.all_methods.map do |method|
+        m = method.tr('-', '_')
+        "sum(#{m}) as `#{m + '_total'}`"
+      end.join(', ')
     end
 
     def cloudwatch_client
@@ -149,43 +159,8 @@ module Reporting
       ]
     end
 
-    def sms_auths
-      data[TwoFactorAuthenticatable::AuthMethod::SMS].count
-    end
-
-    def webauthn_platform_auths
-      data[TwoFactorAuthenticatable::AuthMethod::WEBAUTHN_PLATFORM].count
-    end
-
-    def webauthn_auths
-      data[TwoFactorAuthenticatable::AuthMethod::WEBAUTHN].count
-    end
-
-
-    def totp_auths
-      data[TwoFactorAuthenticatable::AuthMethod::TOTP].count
-    end
-
-    def backup_code_auths
-      data[TwoFactorAuthenticatable::AuthMethod::BACKUP_CODE].count
-    end
-
-    def voice_auths
-      data[TwoFactorAuthenticatable::AuthMethod::VOICE].count
-    end
-
-    def piv_cac_auths
-      data[TwoFactorAuthenticatable::AuthMethod::PIV_CAC].count
-    end
-
-    def personal_key_auths
-      # TwoFactorAuthenticatable::AuthMethod::PERSONAL_KEY has an underscore rather
-      # than a hyphen
-      data['personal-key'].count
-    end
-
-    def phishing_resistant_total
-      webauthn_auths + webauthn_platform_auths + piv_cac_auths
+    def totals(key)
+      data.inject(0) { |sum, slice| slice[key].to_i + sum }
     end
 
     def multi_factor_auth_table
@@ -193,41 +168,40 @@ module Reporting
         ['Multi Factor Authentication (MFA) method', 'Number of successful sign-ins'],
         [
           'SMS',
-          sms_auths,
+          totals('sms_total'),
         ],
         [
           'Voice',
-          voice_auths,
+          totals('voice_total'),
         ],
         [
           'Security key',
-          webauthn_auths,
+          totals('webauthn_total'),
         ],
         [
           'Face or touch unlock',
-          webauthn_platform_auths
+          totals('webauthn_platform_total'),
         ],
         [
           'PIV/CAC',
-          piv_cac_auths
+          totals('piv_cac_total'),
         ],
         [
           'Authentication app',
-          totp_auths,
+          totals('totp_total'),
         ],
         [
           'Backup codes',
-          backup_code_auths,
+          totals('backup_code_total'),
         ],
-
         [
           'Personal key',
-          personal_key_auths
+          totals('personal_key_total'),
         ],
         [
           'Total number of phishing resistant methods',
-          phishing_resistant_total
-        ]
+          totals('webauthn_total') + totals('webauthn_platform_total') + totals('piv_cac_total'),
+        ],
       ]
     end
   end
