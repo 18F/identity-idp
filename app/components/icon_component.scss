@@ -1,5 +1,7 @@
 @use 'uswds-core' as *;
-@use '../variables/app' as *;
+@use 'variables/app' as *;
+
+@forward 'usa-icon';
 
 $icon-min-padding: 2px;
 

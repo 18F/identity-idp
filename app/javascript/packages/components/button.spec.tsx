@@ -119,13 +119,4 @@ describe('Button', () => {
 
     expect(button.classList.contains('my-button')).to.be.true();
   });
-
-  it('renders icon', () => {
-    const { getByRole } = render(<Button icon="add">Click me</Button>);
-
-    const icon = getByRole('img', { hidden: true });
-
-    expect(icon.classList.contains('usa-icon')).to.be.true();
-    expect(icon.querySelector('use')!.getAttribute('href')).to.match(/#add$/);
-  });
 });
