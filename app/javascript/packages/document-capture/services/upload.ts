@@ -129,7 +129,7 @@ const upload: UploadImplementation = async function (payload, { method = 'POST',
     error.isFailedResult = !!result.result_failed;
 
     // TODO send isFailed from the BE
-    error.isFailedSelfie = true; //!!result.selfie_failed;
+    error.isFailedSelfie = true; // TODO !!result.selfie_failed;
 
     error.isFailedDocType = !result.doc_type_supported;
 
