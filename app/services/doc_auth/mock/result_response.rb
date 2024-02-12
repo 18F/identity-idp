@@ -22,6 +22,7 @@ module DocAuth
             portrait_match_results: portrait_match_results,
             billed: true,
             classification_info: classification_info,
+            liveness_enabled: liveness_enabled,
           }.compact,
         )
       end
