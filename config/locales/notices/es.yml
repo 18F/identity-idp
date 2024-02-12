@@ -37,7 +37,7 @@ es:
       first_paragraph_end: con un enlace para confirmar su email. Siga el enlace para
         continuar creando su cuenta.
       first_paragraph_start: Enviamos un email a
-      resend_confirmation_email: TODO ADD TRANSLATION
+      resend_confirmation_email: Reenviar el correo electrónico de confirmación
     timeout_warning:
       partially_signed_in:
         continue: Continuar el inicio de sesión
