@@ -17,11 +17,7 @@ import { removeUnloadProtection } from '@18f/identity-url';
 import AcuantCamera, { AcuantDocumentType } from './acuant-camera';
 import AcuantSelfieCamera from './acuant-selfie-camera';
 import AcuantSelfieCaptureCanvas from './acuant-selfie-capture-canvas';
-import type {
-  AcuantCaptureFailureError,
-  AcuantSuccessResponse,
-  LegacyAcuantSuccessResponse,
-} from './acuant-camera';
+import type { AcuantCaptureFailureError, AcuantSuccessResponse } from './acuant-camera';
 import AcuantCaptureCanvas from './acuant-capture-canvas';
 import AcuantContext, { AcuantCaptureMode } from '../context/acuant';
 import AnalyticsContext from '../context/analytics';
@@ -546,11 +542,8 @@ function AcuantCapture(
     setIsCapturingEnvironment(false);
   }
 
-  function onAcuantImageCaptureSuccess(
-    nextCapture: AcuantSuccessResponse | LegacyAcuantSuccessResponse,
-  ) {
-    const { image, dpi, moire, glare, sharpness } = nextCapture;
-    const cardType = 'cardType' in nextCapture ? nextCapture.cardType : nextCapture.cardtype;
+  function onAcuantImageCaptureSuccess(nextCapture: AcuantSuccessResponse) {
+    const { image, dpi, moire, glare, sharpness, cardType } = nextCapture;
 
     const isAssessedAsGlare = !!glareThreshold && glare < glareThreshold;
     const isAssessedAsBlurry = !!sharpnessThreshold && sharpness < sharpnessThreshold;

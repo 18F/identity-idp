@@ -25,5 +25,5 @@ export function trackEvent(event: string, payload?: object) {
  *
  * @param error Error object.
  */
-export const trackError = ({ name, message, stack }: Error) =>
-  trackEvent('Frontend Error', { name, message, stack });
+export const trackError = ({ name, message, stack }: Error, event?: ErrorEvent) =>
+  trackEvent('Frontend Error', { name, message, stack, filename: event?.filename });
