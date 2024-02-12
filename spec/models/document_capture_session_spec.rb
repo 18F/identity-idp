@@ -17,6 +17,11 @@ RSpec.describe DocumentCaptureSession do
     )
   end
 
+  before do
+    allow(doc_auth_response).to receive(:doc_auth_success?).and_return(true)
+    allow(doc_auth_response).to receive(:selfie_status).and_return(:success)
+  end
+
   describe '#store_result_from_response' do
     it 'generates a result ID stores the result encrypted in redis' do
       record = DocumentCaptureSession.new

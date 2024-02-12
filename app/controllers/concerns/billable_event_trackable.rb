@@ -14,14 +14,17 @@ module BillableEventTrackable
     user_ial_context = IalContext.new(
       ial: ial_context.ial, service_provider: current_sp, user: current_user,
     )
-    Db::SpReturnLog.create_return(
+    SpReturnLog.create(
       request_id: request_id,
-      user_id: current_user.id,
+      user: current_user,
       billable: billable,
       ial: user_ial_context.bill_for_ial_1_or_2,
       issuer: current_sp.issuer,
       requested_at: session[:session_started_at],
+      returned_at: Time.zone.now,
     )
+  rescue ActiveRecord::RecordNotUnique
+    nil
   end
 
   def current_session_has_been_billed?

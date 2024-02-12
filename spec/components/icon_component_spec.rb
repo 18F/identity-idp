@@ -23,6 +23,14 @@ RSpec.describe IconComponent, type: :component do
     end
   end
 
+  context 'with size' do
+    it 'adds size variant class' do
+      rendered = render_inline IconComponent.new(icon: :print, size: 2)
+
+      expect(rendered).to have_css('.usa-icon.usa-icon--size-2')
+    end
+  end
+
   context 'with custom class' do
     it 'renders with class' do
       rendered = render_inline IconComponent.new(icon: :print, class: 'my-custom-class')
